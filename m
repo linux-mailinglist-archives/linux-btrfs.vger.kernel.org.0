@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-4268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19DE68A500A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 14:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAE738A50CE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 15:17:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C49C4286572
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 12:59:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7070C28CE59
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 13:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9CB12AACE;
-	Mon, 15 Apr 2024 12:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6BD74437;
+	Mon, 15 Apr 2024 12:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LvODWCmr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CBZJEkrz"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6CC5129A6D
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2098071B48
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185418; cv=none; b=kPI6NTNKTgyGlAukgitV71huy2lo4Q+Kej6X7qFC8/pQphl9ENM1kAUYkJQnKBookj3xQUevwJuoYoBwffuOJRgZgKSSkmGoM9XVx3R+oNwwrjlHNLDsVyPB4wq78KlWRDo7SbifFhYh8XNnBgu7Hdp5Uh/g4Bw1t+TyR4GbkO4=
+	t=1713185826; cv=none; b=tfg0SJgdTwvUj6ZLbO06TcfWychveW1XyTinV96US7seAmsLcuNW4lHwO9mPSecZ1OeNM5eRNbFLLhBP7em/K+F6pgMiu6S7yX94rfzxQOdLb7M7RlI2Qi2McptI7og+RvBYHqQCBlMkk/v17N5pqko7VjZMl1jE6Cab1IbLpQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185418; c=relaxed/simple;
-	bh=9JbRGXAuT45k6vChYmgiuLce952Gn8/5N8cngcJBopA=;
+	s=arc-20240116; t=1713185826; c=relaxed/simple;
+	bh=sA+JeUpoGyA39b15ZQIA9Hzpp291vOM6yI+Fiv3Pyos=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hbI6z4tfjIhEU00u4KaIdU3p+k/5FPtvdAW0P0EpD76p7hu2gboV2FjlTbk1JbvTLgYWMOFZeVjSRZzPs1DItH1Ax7tznSmTNp7f1xYULbLjET0jhjE7wXE/BAdKdPgGmHrAKoDjvKxjMuJrxioYPEwq2YmaYJLbY80ymLaE86k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LvODWCmr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B07CAC3277B
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:50:17 +0000 (UTC)
+	 To:Cc:Content-Type; b=Hpyx3uvj+ejpkDFaSyNGT97ogAYihTNHI3my3+poiL5eCXvO2bqksBb/iiMXN93AdF+Z1E/fReOjQtODxzUvAh8Y8nycwv8kslWUOmmX14aHgH1kpXm5kX94XbNmYhIBSA2DR3x4IrfYxD2FV0NYFeRvBz7BJAmVhNrdVrFJshk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CBZJEkrz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E3ECC113CC
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:57:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185417;
-	bh=9JbRGXAuT45k6vChYmgiuLce952Gn8/5N8cngcJBopA=;
+	s=k20201202; t=1713185825;
+	bh=sA+JeUpoGyA39b15ZQIA9Hzpp291vOM6yI+Fiv3Pyos=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=LvODWCmrsrLoCis+YbFNishrecUf7VkiHGTi0vdDhivKbZxHrK/2j6A2VQUfKq6FV
-	 8PyvWJAI0KHJwLA2fvCSU6rWksJ3tIOmUwJbpfPUt5s69bT7p3p4tS8vVNgTZl7E/z
-	 LIvNwUEnv6yv9XeKs/eWpleVPiZT1rGis4F3NZZIZ92GZ1KJL13KSp+Nrcu9r6mZNa
-	 3ABAEB45Ckx7XHKYpiWd36fHzueDz0EBH82MgGtZSPZjrr4NXQ0Kjt8K1nI1c4m7EU
-	 Jf1hlPGGRn/rIsiuOv6v9f8xVSMfo31eG8Wld2POGoUyFr4WZI7iGlA0LdS6vbkOqp
-	 REpJT20TX3Hcg==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a523dad53e0so379751066b.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 05:50:17 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxSBxzOdHVvVyu9gJuD16NXq/QX9Sx1gxBP+cwTE1SNbf2ugQgS
-	d4hENaXyknCUT3e45G18JBDY5mywJKffj4/tR3JRSRtuaXfRbY7dGl2NE2pzaNuV0VWk5RlZWn0
-	OWM/Zw14s7dwVHBxFEIGQImnL9nw=
-X-Google-Smtp-Source: AGHT+IGBBvhubHI0ncmAJ5RSdYSS/aAeEh9iw6IumejTkJ2d+rPPXbmyJuaNPDHjlTCBfMdH8dJb8dWP1NQpM0S7iLs=
-X-Received: by 2002:a17:906:f187:b0:a52:613d:b5 with SMTP id
- gs7-20020a170906f18700b00a52613d00b5mr3114445ejb.13.1713185416168; Mon, 15
- Apr 2024 05:50:16 -0700 (PDT)
+	b=CBZJEkrzjoOCuh+pG61zuLcr9U5WumS+yWpF3tDA3wtgZb3vgftg4R5W+uCNNPG9V
+	 p822/xQkksO8GasunduD3gThWv9TZJbU2ovAaAOQb/B32D+BFM9P87/lz7e+dWlbNw
+	 7V8aJX+4Ds7/FbUSLxiipWCLvbMMFyHljgtMROoPaRE/X1q2UWhppdZd8wP4c8QqjQ
+	 gZA0NF3RNiBwlol27TW51Dl4GQEbT2/XPQ3Xq3Um/AEDz9Dg/HLfySzCosCFcKxGx6
+	 05+I3FHhItFXyu3KRBwIY7U4m3dSlCDSwH/ixr9+YM6orKuTGvTkfpmIVYzbphcRSA
+	 tZN8j1iAUtLAQ==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so4388732a12.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 05:57:05 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxBkNQnj8HZ4+6K+e1gNHf5VuMA6OaBjNd3otwBlbrghMmXMQgg
+	hx1AMvpWbXj0BMXL5yK8txtcBm2oriA7KASqvZIA1QkQXRVGhGBb/pmvZaYHQh0YbHsH0TjerYc
+	3L0XfPYTaghuSTI3YCdFqIqRhhpY=
+X-Google-Smtp-Source: AGHT+IEcmfqcSkOgfOxIPfFlSFv3HXFLm4ByfVAb8OXnGbKJdFUYCNQj9eJVJZgDbAB3Q4kf4RvfqJDwBSAHwlw2900=
+X-Received: by 2002:a17:906:2a5a:b0:a51:80d0:c596 with SMTP id
+ k26-20020a1709062a5a00b00a5180d0c596mr5430584eje.18.1713185824122; Mon, 15
+ Apr 2024 05:57:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1713052088.git.josef@toxicpanda.com> <62df4a1c018a2b6de344b4ed9db11a59df3a3448.1713052088.git.josef@toxicpanda.com>
-In-Reply-To: <62df4a1c018a2b6de344b4ed9db11a59df3a3448.1713052088.git.josef@toxicpanda.com>
+References: <cover.1713052088.git.josef@toxicpanda.com> <b5d8f7677e5200ca546113804816fa811b502111.1713052088.git.josef@toxicpanda.com>
+In-Reply-To: <b5d8f7677e5200ca546113804816fa811b502111.1713052088.git.josef@toxicpanda.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 15 Apr 2024 13:49:39 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H781PpwAbOsqxVeceGibSwjLK0BdBNAvEtTTUALMXkkYg@mail.gmail.com>
-Message-ID: <CAL3q7H781PpwAbOsqxVeceGibSwjLK0BdBNAvEtTTUALMXkkYg@mail.gmail.com>
-Subject: Re: [PATCH 10/19] btrfs: rename ->len to ->num_bytes in btrfs_ref
+Date: Mon, 15 Apr 2024 13:56:27 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6Dvwb0OtRyZGHA4Pb1sfLLjnyYo+8c8GxkTMf2VBCL1g@mail.gmail.com>
+Message-ID: <CAL3q7H6Dvwb0OtRyZGHA4Pb1sfLLjnyYo+8c8GxkTMf2VBCL1g@mail.gmail.com>
+Subject: Re: [PATCH 11/19] btrfs: move ->parent and ->ref_root into btrfs_delayed_ref_node
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -71,343 +71,370 @@ Content-Transfer-Encoding: quoted-printable
 On Sun, Apr 14, 2024 at 12:54=E2=80=AFAM Josef Bacik <josef@toxicpanda.com>=
  wrote:
 >
-> We consistently use ->num_bytes everywhere through the delayed ref code,
-> except in btrfs_ref.  Rename btrfs_ref to match all the other code.
+> These two members are shared by both the tree refs and data refs, so
+> move them into btrfs_delayed_ref_node proper.  This allows us to greatly
+> simplify the comparison code, as the shared refs always only sort on
+> parent, and the non shared refs always sort first on ref_root, and then
+> only data refs sort on their specific fields.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/backref.c           | 12 ++----
+>  fs/btrfs/delayed-ref.c       | 82 ++++++++++++------------------------
+>  fs/btrfs/delayed-ref.h       | 13 ++++--
+>  fs/btrfs/extent-tree.c       | 18 ++++----
+>  include/trace/events/btrfs.h |  8 ++--
+>  5 files changed, 52 insertions(+), 81 deletions(-)
+>
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index c1e6a5bbeeaf..98a0cf68d198 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -928,7 +928,7 @@ static int add_delayed_refs(const struct btrfs_fs_inf=
+o *fs_info,
+>                         }
+>
+>                         ref =3D btrfs_delayed_node_to_tree_ref(node);
+> -                       ret =3D add_indirect_ref(fs_info, preftrees, ref-=
+>root,
+> +                       ret =3D add_indirect_ref(fs_info, preftrees, node=
+->ref_root,
+>                                                key_ptr, ref->level + 1,
+>                                                node->bytenr, count, sc,
+>                                                GFP_ATOMIC);
+> @@ -941,7 +941,7 @@ static int add_delayed_refs(const struct btrfs_fs_inf=
+o *fs_info,
+>                         ref =3D btrfs_delayed_node_to_tree_ref(node);
+>
+>                         ret =3D add_direct_ref(fs_info, preftrees, ref->l=
+evel + 1,
+> -                                            ref->parent, node->bytenr, c=
+ount,
+> +                                            node->parent, node->bytenr, =
+count,
+>                                              sc, GFP_ATOMIC);
+>                         break;
+>                 }
+> @@ -972,18 +972,14 @@ static int add_delayed_refs(const struct btrfs_fs_i=
+nfo *fs_info,
+>                         if (sc && count < 0)
+>                                 sc->have_delayed_delete_refs =3D true;
+>
+> -                       ret =3D add_indirect_ref(fs_info, preftrees, ref-=
+>root,
+> +                       ret =3D add_indirect_ref(fs_info, preftrees, node=
+->ref_root,
+>                                                &key, 0, node->bytenr, cou=
+nt, sc,
+>                                                GFP_ATOMIC);
+>                         break;
+>                 }
+>                 case BTRFS_SHARED_DATA_REF_KEY: {
+>                         /* SHARED DIRECT FULL backref */
+> -                       struct btrfs_delayed_data_ref *ref;
+> -
+> -                       ref =3D btrfs_delayed_node_to_data_ref(node);
+> -
+> -                       ret =3D add_direct_ref(fs_info, preftrees, 0, ref=
+->parent,
+> +                       ret =3D add_direct_ref(fs_info, preftrees, 0, nod=
+e->parent,
+>                                              node->bytenr, count, sc,
+>                                              GFP_ATOMIC);
+>                         break;
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index a3eb3eb2f321..f9779142a174 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -303,55 +303,20 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_i=
+nfo *fs_info,
+>         return 0;
+>  }
+>
+> -/*
+> - * compare two delayed tree backrefs with same bytenr and type
+> - */
+> -static int comp_tree_refs(struct btrfs_delayed_tree_ref *ref1,
+> -                         struct btrfs_delayed_tree_ref *ref2)
+> -{
+> -       struct btrfs_delayed_ref_node *node =3D btrfs_delayed_tree_ref_to=
+_node(ref1);
+> -
+> -       if (node->type =3D=3D BTRFS_TREE_BLOCK_REF_KEY) {
+> -               if (ref1->root < ref2->root)
+> -                       return -1;
+> -               if (ref1->root > ref2->root)
+> -                       return 1;
+> -       } else {
+> -               if (ref1->parent < ref2->parent)
+> -                       return -1;
+> -               if (ref1->parent > ref2->parent)
+> -                       return 1;
+> -       }
+> -       return 0;
+> -}
+> -
+>  /*
+>   * compare two delayed data backrefs with same bytenr and type
+>   */
+> -static int comp_data_refs(struct btrfs_delayed_data_ref *ref1,
+> -                         struct btrfs_delayed_data_ref *ref2)
+> +static int comp_data_refs(struct btrfs_delayed_ref_node *ref1,
+> +                         struct btrfs_delayed_ref_node *ref2)
+>  {
+> -       struct btrfs_delayed_ref_node *node =3D btrfs_delayed_data_ref_to=
+_node(ref1);
+> -
+> -       if (node->type =3D=3D BTRFS_EXTENT_DATA_REF_KEY) {
+> -               if (ref1->root < ref2->root)
+> -                       return -1;
+> -               if (ref1->root > ref2->root)
+> -                       return 1;
+> -               if (ref1->objectid < ref2->objectid)
+> -                       return -1;
+> -               if (ref1->objectid > ref2->objectid)
+> -                       return 1;
+> -               if (ref1->offset < ref2->offset)
+> -                       return -1;
+> -               if (ref1->offset > ref2->offset)
+> -                       return 1;
+> -       } else {
+> -               if (ref1->parent < ref2->parent)
+> -                       return -1;
+> -               if (ref1->parent > ref2->parent)
+> -                       return 1;
+> -       }
+> +       if (ref1->data_ref.objectid < ref2->data_ref.objectid)
+> +               return -1;
+> +       if (ref1->data_ref.objectid > ref2->data_ref.objectid)
+> +               return 1;
+> +       if (ref1->data_ref.offset < ref2->data_ref.offset)
+> +               return -1;
+> +       if (ref1->data_ref.offset > ref2->data_ref.offset)
+> +               return 1;
+>         return 0;
+>  }
+>
+> @@ -365,13 +330,20 @@ static int comp_refs(struct btrfs_delayed_ref_node =
+*ref1,
+>                 return -1;
+>         if (ref1->type > ref2->type)
+>                 return 1;
+> -       if (ref1->type =3D=3D BTRFS_TREE_BLOCK_REF_KEY ||
+> -           ref1->type =3D=3D BTRFS_SHARED_BLOCK_REF_KEY)
+> -               ret =3D comp_tree_refs(btrfs_delayed_node_to_tree_ref(ref=
+1),
+> -                                    btrfs_delayed_node_to_tree_ref(ref2)=
+);
+> -       else
+> -               ret =3D comp_data_refs(btrfs_delayed_node_to_data_ref(ref=
+1),
+> -                                    btrfs_delayed_node_to_data_ref(ref2)=
+);
+> +       if (ref1->type =3D=3D BTRFS_SHARED_BLOCK_REF_KEY ||
+> +           ref1->type =3D=3D BTRFS_SHARED_DATA_REF_KEY) {
+> +               if (ref1->parent < ref2->parent)
+> +                       return -1;
+> +               if (ref1->parent > ref2->parent)
+> +                       return 1;
+> +       } else {
+> +               if (ref1->ref_root < ref2->ref_root)
+> +                       return -1;
+> +               if (ref1->ref_root > ref2->ref_root)
+> +                       return -1;
+> +               if (ref1->type =3D=3D BTRFS_EXTENT_DATA_REF_KEY)
+> +                       ret =3D comp_data_refs(ref1, ref2);
+> +       }
+>         if (ret)
+>                 return ret;
+>         if (check_seq) {
+> @@ -1005,17 +977,15 @@ static void init_delayed_ref_common(struct btrfs_f=
+s_info *fs_info,
+>         ref->action =3D action;
+>         ref->seq =3D seq;
+>         ref->type =3D btrfs_ref_type(generic_ref);
+> +       ref->ref_root =3D generic_ref->ref_root;
+> +       ref->parent =3D generic_ref->parent;
+>         RB_CLEAR_NODE(&ref->ref_node);
+>         INIT_LIST_HEAD(&ref->add_list);
+>
+>         if (generic_ref->type =3D=3D BTRFS_REF_DATA) {
+> -               ref->data_ref.root =3D generic_ref->ref_root;
+> -               ref->data_ref.parent =3D generic_ref->parent;
+>                 ref->data_ref.objectid =3D generic_ref->data_ref.ino;
+>                 ref->data_ref.offset =3D generic_ref->data_ref.offset;
+>         } else {
+> -               ref->tree_ref.root =3D generic_ref->ref_root;
+> -               ref->tree_ref.parent =3D generic_ref->parent;
+>                 ref->tree_ref.level =3D generic_ref->tree_ref.level;
+>         }
+>  }
+> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+> index 000fdcaf2314..6ad48e0a0a1a 100644
+> --- a/fs/btrfs/delayed-ref.h
+> +++ b/fs/btrfs/delayed-ref.h
+> @@ -31,14 +31,10 @@ enum btrfs_delayed_ref_action {
+>  } __packed;
+>
+>  struct btrfs_delayed_tree_ref {
+> -       u64 root;
+> -       u64 parent;
+>         int level;
+>  };
+>
+>  struct btrfs_delayed_data_ref {
+> -       u64 root;
+> -       u64 parent;
+>         u64 objectid;
+>         u64 offset;
+>  };
+> @@ -61,6 +57,15 @@ struct btrfs_delayed_ref_node {
+>         /* seq number to keep track of insertion order */
+>         u64 seq;
+>
+> +       /* the ref_root for this ref */
+
+Please capitalize the first world and add punctuation at the end of
+the sentence.
+
+> +       u64 ref_root;
+> +
+> +       /*
+> +        * the parent for this ref, if this isn't set the ref_root is the
+> +        * reference owner.
+
+Same here, capitalize the first word of the sentence.
+
+Other than that it looks good, so:
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Looks good, thanks.
+Thanks.
 
-> ---
->  fs/btrfs/delayed-ref.c |  8 ++++----
->  fs/btrfs/delayed-ref.h |  2 +-
->  fs/btrfs/extent-tree.c | 14 +++++++-------
->  fs/btrfs/file.c        | 10 +++++-----
->  fs/btrfs/inode-item.c  |  2 +-
->  fs/btrfs/ref-verify.c  |  2 +-
->  fs/btrfs/relocation.c  | 14 +++++++-------
->  fs/btrfs/tree-log.c    |  2 +-
->  8 files changed, 27 insertions(+), 27 deletions(-)
+
+> +        */
+> +       u64 parent;
+> +
+>         /* ref count on this data structure */
+>         refcount_t refs;
 >
-> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> index 342f32ae08c9..a3eb3eb2f321 100644
-> --- a/fs/btrfs/delayed-ref.c
-> +++ b/fs/btrfs/delayed-ref.c
-> @@ -874,7 +874,7 @@ static void init_delayed_ref_head(struct btrfs_delaye=
-d_ref_head *head_ref,
->
->         refcount_set(&head_ref->refs, 1);
->         head_ref->bytenr =3D generic_ref->bytenr;
-> -       head_ref->num_bytes =3D generic_ref->len;
-> +       head_ref->num_bytes =3D generic_ref->num_bytes;
->         head_ref->ref_mod =3D count_mod;
->         head_ref->reserved_bytes =3D reserved;
->         head_ref->must_insert_reserved =3D must_insert_reserved;
-> @@ -895,7 +895,7 @@ static void init_delayed_ref_head(struct btrfs_delaye=
-d_ref_head *head_ref,
->                         qrecord->data_rsv_refroot =3D generic_ref->ref_ro=
-ot;
->                 }
->                 qrecord->bytenr =3D generic_ref->bytenr;
-> -               qrecord->num_bytes =3D generic_ref->len;
-> +               qrecord->num_bytes =3D generic_ref->num_bytes;
->                 qrecord->old_roots =3D NULL;
->         }
->  }
-> @@ -1000,7 +1000,7 @@ static void init_delayed_ref_common(struct btrfs_fs=
-_info *fs_info,
->
->         refcount_set(&ref->refs, 1);
->         ref->bytenr =3D generic_ref->bytenr;
-> -       ref->num_bytes =3D generic_ref->len;
-> +       ref->num_bytes =3D generic_ref->num_bytes;
->         ref->ref_mod =3D 1;
->         ref->action =3D action;
->         ref->seq =3D seq;
-> @@ -1157,7 +1157,7 @@ int btrfs_add_delayed_extent_op(struct btrfs_trans_=
-handle *trans,
->                 .type =3D BTRFS_REF_METADATA,
->                 .action =3D BTRFS_UPDATE_DELAYED_HEAD,
->                 .bytenr =3D bytenr,
-> -               .len =3D num_bytes,
-> +               .num_bytes =3D num_bytes,
->         };
->
->         head_ref =3D kmem_cache_alloc(btrfs_delayed_ref_head_cachep, GFP_=
-NOFS);
-> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-> index 83fcb32715a4..000fdcaf2314 100644
-> --- a/fs/btrfs/delayed-ref.h
-> +++ b/fs/btrfs/delayed-ref.h
-> @@ -260,7 +260,7 @@ struct btrfs_ref {
->         u64 real_root;
->  #endif
->         u64 bytenr;
-> -       u64 len;
-> +       u64 num_bytes;
->         u64 owning_root;
->
->         /*
 > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 805e3e904368..268516003927 100644
+> index 268516003927..0e42c8bddc0c 100644
 > --- a/fs/btrfs/extent-tree.c
 > +++ b/fs/btrfs/extent-tree.c
-> @@ -2542,7 +2542,7 @@ static int __btrfs_mod_ref(struct btrfs_trans_handl=
-e *trans,
->                         if (ref.bytenr =3D=3D 0)
->                                 continue;
+> @@ -1577,7 +1577,7 @@ static int run_delayed_data_ref(struct btrfs_trans_=
+handle *trans,
+>         trace_run_delayed_data_ref(trans->fs_info, node);
 >
-> -                       ref.len =3D btrfs_file_extent_disk_num_bytes(buf,=
- fi);
-> +                       ref.num_bytes =3D btrfs_file_extent_disk_num_byte=
-s(buf, fi);
->                         ref.owning_root =3D ref_root;
+>         if (node->type =3D=3D BTRFS_SHARED_DATA_REF_KEY)
+> -               parent =3D ref->parent;
+> +               parent =3D node->parent;
 >
->                         key.offset -=3D btrfs_file_extent_offset(buf, fi)=
-;
-> @@ -2557,7 +2557,7 @@ static int __btrfs_mod_ref(struct btrfs_trans_handl=
-e *trans,
->                 } else {
->                         /* We don't know the owning_root, leave as 0. */
->                         ref.bytenr =3D btrfs_node_blockptr(buf, i);
-> -                       ref.len =3D fs_info->nodesize;
-> +                       ref.num_bytes =3D fs_info->nodesize;
+>         if (node->action =3D=3D BTRFS_ADD_DELAYED_REF && insert_reserved)=
+ {
+>                 struct btrfs_key key;
+> @@ -1596,7 +1596,7 @@ static int run_delayed_data_ref(struct btrfs_trans_=
+handle *trans,
+>                 key.type =3D BTRFS_EXTENT_ITEM_KEY;
+>                 key.offset =3D node->num_bytes;
 >
->                         btrfs_init_tree_ref(&ref, level - 1,
->                                             root->root_key.objectid, for_=
-reloc);
-> @@ -3466,7 +3466,7 @@ void btrfs_free_tree_block(struct btrfs_trans_handl=
-e *trans,
->                 struct btrfs_ref generic_ref =3D {
->                         .action =3D BTRFS_DROP_DELAYED_REF,
->                         .bytenr =3D buf->start,
-> -                       .len =3D buf->len,
-> +                       .num_bytes =3D buf->len,
->                         .parent =3D parent,
->                         .owning_root =3D btrfs_header_owner(buf),
->                         .ref_root =3D root_id,
-> @@ -3560,7 +3560,7 @@ int btrfs_free_extent(struct btrfs_trans_handle *tr=
-ans, struct btrfs_ref *ref)
->          * tree, just update pinning info and exit early.
->          */
->         if (ref->ref_root =3D=3D BTRFS_TREE_LOG_OBJECTID) {
-> -               btrfs_pin_extent(trans, ref->bytenr, ref->len, 1);
-> +               btrfs_pin_extent(trans, ref->bytenr, ref->num_bytes, 1);
->                 ret =3D 0;
->         } else if (ref->type =3D=3D BTRFS_REF_METADATA) {
->                 ret =3D btrfs_add_delayed_tree_ref(trans, ref, NULL);
-> @@ -4967,7 +4967,7 @@ int btrfs_alloc_reserved_file_extent(struct btrfs_t=
-rans_handle *trans,
->         struct btrfs_ref generic_ref =3D {
->                 .action =3D BTRFS_ADD_DELAYED_EXTENT,
->                 .bytenr =3D ins->objectid,
-> -               .len =3D ins->offset,
-> +               .num_bytes =3D ins->offset,
->                 .owning_root =3D root->root_key.objectid,
->                 .ref_root =3D root->root_key.objectid,
->         };
-> @@ -5209,7 +5209,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct=
- btrfs_trans_handle *trans,
->                 struct btrfs_ref generic_ref =3D {
->                         .action =3D BTRFS_ADD_DELAYED_EXTENT,
->                         .bytenr =3D ins.objectid,
-> -                       .len =3D ins.offset,
-> +                       .num_bytes =3D ins.offset,
->                         .parent =3D parent,
->                         .owning_root =3D owning_root,
->                         .ref_root =3D root_objectid,
-> @@ -5594,7 +5594,7 @@ static noinline int do_walk_down(struct btrfs_trans=
-_handle *trans,
->                 struct btrfs_ref ref =3D {
->                         .action =3D BTRFS_DROP_DELAYED_REF,
->                         .bytenr =3D bytenr,
-> -                       .len =3D fs_info->nodesize,
-> +                       .num_bytes =3D fs_info->nodesize,
->                         .owning_root =3D owner_root,
->                         .ref_root =3D root->root_key.objectid,
->                 };
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 416fa1f48fe5..c657dea23396 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -375,7 +375,7 @@ int btrfs_drop_extents(struct btrfs_trans_handle *tra=
-ns,
->                                 struct btrfs_ref ref =3D {
->                                         .action =3D BTRFS_ADD_DELAYED_REF=
-,
->                                         .bytenr =3D disk_bytenr,
-> -                                       .len =3D num_bytes,
-> +                                       .num_bytes =3D num_bytes,
->                                         .parent =3D 0,
->                                         .owning_root =3D root->root_key.o=
-bjectid,
->                                         .ref_root =3D root->root_key.obje=
-ctid,
-> @@ -468,7 +468,7 @@ int btrfs_drop_extents(struct btrfs_trans_handle *tra=
-ns,
->                                 struct btrfs_ref ref =3D {
->                                         .action =3D BTRFS_DROP_DELAYED_RE=
-F,
->                                         .bytenr =3D disk_bytenr,
-> -                                       .len =3D num_bytes,
-> +                                       .num_bytes =3D num_bytes,
->                                         .parent =3D 0,
->                                         .owning_root =3D root->root_key.o=
-bjectid,
->                                         .ref_root =3D root->root_key.obje=
-ctid,
-> @@ -753,7 +753,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_hand=
-le *trans,
+> -               ret =3D alloc_reserved_file_extent(trans, parent, ref->ro=
+ot,
+> +               ret =3D alloc_reserved_file_extent(trans, parent, node->r=
+ef_root,
+>                                                  flags, ref->objectid,
+>                                                  ref->offset, &key,
+>                                                  node->ref_mod, href->own=
+ing_root);
+> @@ -1604,12 +1604,12 @@ static int run_delayed_data_ref(struct btrfs_tran=
+s_handle *trans,
+>                 if (!ret)
+>                         ret =3D btrfs_record_squota_delta(trans->fs_info,=
+ &delta);
+>         } else if (node->action =3D=3D BTRFS_ADD_DELAYED_REF) {
+> -               ret =3D __btrfs_inc_extent_ref(trans, node, parent, ref->=
+root,
+> +               ret =3D __btrfs_inc_extent_ref(trans, node, parent, node-=
+>ref_root,
+>                                              ref->objectid, ref->offset,
+>                                              extent_op);
+>         } else if (node->action =3D=3D BTRFS_DROP_DELAYED_REF) {
+>                 ret =3D __btrfs_free_extent(trans, href, node, parent,
+> -                                         ref->root, ref->objectid,
+> +                                         node->ref_root, ref->objectid,
+>                                           ref->offset, extent_op);
+>         } else {
+>                 BUG();
+> @@ -1740,8 +1740,8 @@ static int run_delayed_tree_ref(struct btrfs_trans_=
+handle *trans,
+>         trace_run_delayed_tree_ref(trans->fs_info, node);
 >
->                 ref.action =3D BTRFS_ADD_DELAYED_REF;
->                 ref.bytenr =3D bytenr;
-> -               ref.len =3D num_bytes;
-> +               ref.num_bytes =3D num_bytes;
->                 ref.parent =3D 0;
->                 ref.owning_root =3D root->root_key.objectid;
->                 ref.ref_root =3D root->root_key.objectid;
-> @@ -783,7 +783,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_hand=
-le *trans,
+>         if (node->type =3D=3D BTRFS_SHARED_BLOCK_REF_KEY)
+> -               parent =3D ref->parent;
+> -       ref_root =3D ref->root;
+> +               parent =3D node->parent;
+> +       ref_root =3D node->ref_root;
 >
->         ref.action =3D BTRFS_DROP_DELAYED_REF;
->         ref.bytenr =3D bytenr;
-> -       ref.len =3D num_bytes;
-> +       ref.num_bytes =3D num_bytes;
->         ref.parent =3D 0;
->         ref.owning_root =3D root->root_key.objectid;
->         ref.ref_root =3D root->root_key.objectid;
-> @@ -2326,7 +2326,7 @@ static int btrfs_insert_replace_extent(struct btrfs=
+>         if (unlikely(node->ref_mod !=3D 1)) {
+>                 btrfs_err(trans->fs_info,
+> @@ -2359,7 +2359,7 @@ static noinline int check_delayed_ref(struct btrfs_=
+root *root,
+>                  * If our ref doesn't match the one we're currently looki=
+ng at
+>                  * then we have a cross reference.
+>                  */
+> -               if (data_ref->root !=3D root->root_key.objectid ||
+> +               if (ref->ref_root !=3D root->root_key.objectid ||
+>                     data_ref->objectid !=3D objectid ||
+>                     data_ref->offset !=3D offset) {
+>                         ret =3D 1;
+> @@ -4946,11 +4946,11 @@ static int alloc_reserved_tree_block(struct btrfs=
 _trans_handle *trans,
->                 struct btrfs_ref ref =3D {
->                         .action =3D BTRFS_ADD_DELAYED_REF,
->                         .bytenr =3D extent_info->disk_offset,
-> -                       .len =3D extent_info->disk_len,
-> +                       .num_bytes =3D extent_info->disk_len,
->                         .owning_root =3D root->root_key.objectid,
->                         .ref_root =3D root->root_key.objectid,
->                 };
-> diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-> index e24605df35bb..7565ff15a69a 100644
-> --- a/fs/btrfs/inode-item.c
-> +++ b/fs/btrfs/inode-item.c
-> @@ -673,7 +673,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_han=
-dle *trans,
->                         struct btrfs_ref ref =3D {
->                                 .action =3D BTRFS_DROP_DELAYED_REF,
->                                 .bytenr =3D extent_start,
-> -                               .len =3D extent_num_bytes,
-> +                               .num_bytes =3D extent_num_bytes,
->                                 .owning_root =3D root->root_key.objectid,
->                                 .ref_root =3D btrfs_header_owner(leaf),
->                         };
-> diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
-> index 1108be7a050c..94bbb7ef9a13 100644
-> --- a/fs/btrfs/ref-verify.c
-> +++ b/fs/btrfs/ref-verify.c
-> @@ -673,7 +673,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
->         int ret =3D 0;
->         bool metadata;
->         u64 bytenr =3D generic_ref->bytenr;
-> -       u64 num_bytes =3D generic_ref->len;
-> +       u64 num_bytes =3D generic_ref->num_bytes;
->         u64 parent =3D generic_ref->parent;
->         u64 ref_root =3D 0;
->         u64 owner =3D 0;
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 9e460b79f8b2..9a5a9142ea53 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -1162,7 +1162,7 @@ int replace_file_extents(struct btrfs_trans_handle =
-*trans,
->                 key.offset -=3D btrfs_file_extent_offset(leaf, fi);
->                 ref.action =3D BTRFS_ADD_DELAYED_REF;
->                 ref.bytenr =3D new_bytenr;
-> -               ref.len =3D num_bytes;
-> +               ref.num_bytes =3D num_bytes;
->                 ref.parent =3D parent;
->                 ref.owning_root =3D root->root_key.objectid;
->                 ref.ref_root =3D btrfs_header_owner(leaf);
-> @@ -1176,7 +1176,7 @@ int replace_file_extents(struct btrfs_trans_handle =
-*trans,
+>         if (node->type =3D=3D BTRFS_SHARED_BLOCK_REF_KEY) {
+>                 btrfs_set_extent_inline_ref_type(leaf, iref,
+>                                                  BTRFS_SHARED_BLOCK_REF_K=
+EY);
+> -               btrfs_set_extent_inline_ref_offset(leaf, iref, ref->paren=
+t);
+> +               btrfs_set_extent_inline_ref_offset(leaf, iref, node->pare=
+nt);
+>         } else {
+>                 btrfs_set_extent_inline_ref_type(leaf, iref,
+>                                                  BTRFS_TREE_BLOCK_REF_KEY=
+);
+> -               btrfs_set_extent_inline_ref_offset(leaf, iref, ref->root)=
+;
+> +               btrfs_set_extent_inline_ref_offset(leaf, iref, node->ref_=
+root);
+>         }
 >
->                 ref.action =3D BTRFS_DROP_DELAYED_REF;
->                 ref.bytenr =3D bytenr;
-> -               ref.len =3D num_bytes;
-> +               ref.num_bytes =3D num_bytes;
->                 ref.parent =3D parent;
->                 ref.owning_root =3D root->root_key.objectid;
->                 ref.ref_root =3D btrfs_header_owner(leaf);
-> @@ -1392,7 +1392,7 @@ int replace_path(struct btrfs_trans_handle *trans, =
-struct reloc_control *rc,
->
->                 ref.action =3D BTRFS_ADD_DELAYED_REF;
->                 ref.bytenr =3D old_bytenr;
-> -               ref.len =3D blocksize;
-> +               ref.num_bytes =3D blocksize;
->                 ref.parent =3D path->nodes[level]->start;
->                 ref.owning_root =3D src->root_key.objectid;
->                 ref.ref_root =3D src->root_key.objectid;
-> @@ -1405,7 +1405,7 @@ int replace_path(struct btrfs_trans_handle *trans, =
-struct reloc_control *rc,
->
->                 ref.action =3D BTRFS_ADD_DELAYED_REF;
->                 ref.bytenr =3D new_bytenr;
-> -               ref.len =3D blocksize;
-> +               ref.num_bytes =3D blocksize;
->                 ref.parent =3D 0;
->                 ref.owning_root =3D dest->root_key.objectid;
->                 ref.ref_root =3D dest->root_key.objectid;
-> @@ -1419,7 +1419,7 @@ int replace_path(struct btrfs_trans_handle *trans, =
-struct reloc_control *rc,
->                 /* We don't know the real owning_root, use 0. */
->                 ref.action =3D BTRFS_DROP_DELAYED_REF;
->                 ref.bytenr =3D new_bytenr;
-> -               ref.len =3D blocksize;
-> +               ref.num_bytes =3D blocksize;
->                 ref.parent =3D path->nodes[level]->start;
->                 ref.owning_root =3D 0;
->                 ref.ref_root =3D src->root_key.objectid;
-> @@ -1433,7 +1433,7 @@ int replace_path(struct btrfs_trans_handle *trans, =
-struct reloc_control *rc,
->                 /* We don't know the real owning_root, use 0. */
->                 ref.action =3D BTRFS_DROP_DELAYED_REF;
->                 ref.bytenr =3D old_bytenr;
-> -               ref.len =3D blocksize;
-> +               ref.num_bytes =3D blocksize;
->                 ref.parent =3D 0;
->                 ref.owning_root =3D 0;
->                 ref.ref_root =3D dest->root_key.objectid;
-> @@ -2537,7 +2537,7 @@ static int do_relocation(struct btrfs_trans_handle =
-*trans,
->                         struct btrfs_ref ref =3D {
->                                 .action =3D BTRFS_ADD_DELAYED_REF,
->                                 .bytenr =3D node->eb->start,
-> -                               .len =3D blocksize,
-> +                               .num_bytes =3D blocksize,
->                                 .parent =3D upper->eb->start,
->                                 .owning_root =3D btrfs_header_owner(upper=
-->eb),
->                                 .ref_root =3D btrfs_header_owner(upper->e=
-b),
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index da319ffda4ee..d8e7eb53cd0b 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -764,7 +764,7 @@ static noinline int replay_one_extent(struct btrfs_tr=
-ans_handle *trans,
->                                 struct btrfs_ref ref =3D {
->                                         .action =3D BTRFS_ADD_DELAYED_REF=
-,
->                                         .bytenr =3D ins.objectid,
-> -                                       .len =3D ins.offset,
-> +                                       .num_bytes =3D ins.offset,
->                                         .owning_root =3D root->root_key.o=
-bjectid,
->                                         .ref_root =3D root->root_key.obje=
-ctid,
->                                 };
+>         btrfs_mark_buffer_dirty(trans, leaf);
+> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+> index dae29f6d6b4c..e6cee75c384c 100644
+> --- a/include/trace/events/btrfs.h
+> +++ b/include/trace/events/btrfs.h
+> @@ -887,8 +887,8 @@ DECLARE_EVENT_CLASS(btrfs_delayed_tree_ref,
+>                 __entry->bytenr         =3D ref->bytenr;
+>                 __entry->num_bytes      =3D ref->num_bytes;
+>                 __entry->action         =3D ref->action;
+> -               __entry->parent         =3D ref->tree_ref.parent;
+> -               __entry->ref_root       =3D ref->tree_ref.root;
+> +               __entry->parent         =3D ref->parent;
+> +               __entry->ref_root       =3D ref->ref_root;
+>                 __entry->level          =3D ref->tree_ref.level;
+>                 __entry->type           =3D ref->type;
+>                 __entry->seq            =3D ref->seq;
+> @@ -945,8 +945,8 @@ DECLARE_EVENT_CLASS(btrfs_delayed_data_ref,
+>                 __entry->bytenr         =3D ref->bytenr;
+>                 __entry->num_bytes      =3D ref->num_bytes;
+>                 __entry->action         =3D ref->action;
+> -               __entry->parent         =3D ref->data_ref.parent;
+> -               __entry->ref_root       =3D ref->data_ref.root;
+> +               __entry->parent         =3D ref->parent;
+> +               __entry->ref_root       =3D ref->ref_root;
+>                 __entry->owner          =3D ref->data_ref.objectid;
+>                 __entry->offset         =3D ref->data_ref.offset;
+>                 __entry->type           =3D ref->type;
 > --
 > 2.43.0
 >
