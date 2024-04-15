@@ -1,208 +1,92 @@
-Return-Path: <linux-btrfs+bounces-4277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B128A512C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 15:25:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2C6D8A596B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 19:48:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7FB9B23A2F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 13:25:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FCDD28579F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 17:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8266F7F492;
-	Mon, 15 Apr 2024 13:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B5E71B50;
+	Mon, 15 Apr 2024 17:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PlYB9j+G"
+	dkim=pass (1024-bit key) header.d=oluceps.uk header.i=@oluceps.uk header.b="lMTx/hj7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-200166.simplelogin.co (mail-200166.simplelogin.co [176.119.200.166])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAF76AF88
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 13:12:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713186754; cv=none; b=M2Nwr9BxEUzLZlcGrAqzPoHj0G1Vj/CxaaVCb//19YOyvnQaQ2YXNCHiVdzaDOt9VUa/ddgIpuhWO5KpSpdrqdjKUsfc8s9Hj8qHu9rmjcHONXqrF3XxktfCSyLgigDHp3KE6C5nPVGeYHK7J3TFyHgCF0lCXgnYn2yNonWKzGs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713186754; c=relaxed/simple;
-	bh=c7j4Wmsja3MH4yUA+gtBXUSakLW8Q7bygPZDJjgerZQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jOwDbT58uDunoF5VoJ6SsSot7F2y70WEv3cXmR8WZyg8QwJiDk3TSbd+FQiiyAjfKuR32IJJC7OYFHxFHYSI6uey9uPqkHPJPsZNj+tiomkBt4cdoz+FsIDcU5YVKOdl5z7FktXWPCXhlqYcJk0DfhUGbgZdwROI2M8bk7lFYJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PlYB9j+G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39CE1C113CC
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 13:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713186754;
-	bh=c7j4Wmsja3MH4yUA+gtBXUSakLW8Q7bygPZDJjgerZQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PlYB9j+GKnHgyxRdPT8SGSN1nqVxN7cwZumFzz+/jCHHTbH8Q3/iJAIlHpYFLZa3n
-	 OQ5r990RTQ6/l9reUAcnUWo4GQ1hwc96Js3ucrn16zriToaZuO0BDt/fztMJFCMBXi
-	 AgVanUAq4OH55LtoqiiluIsh1yIDQgsYCewG50zDGqvRyZVju9Uvacg3hGIvugt6KY
-	 dCmJeiyy4TvZBJsJmvfcIrWRzfgC6eueQhHyx5Mln8l+KQ2wuzv1bwLmBIJtfNa2le
-	 TVOUKiDf4kT3/3WKb+f40sapX4FrZt9bYVav1PtZ532Wp6FUVtaMj2QtJwts5wksYL
-	 TLl53p4kJPkcg==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4702457ccbso396106066b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 06:12:34 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz9iwFhrmI3FJ4xjEyzKDTnR298CEKdnYtS0hGNN3g5kutYBQll
-	TxTwQiuT9XZaovMPjE7HZAiuJXE6QI3fHgFkAPRqjDWHrcVsPB69OCWna7zyE+hoCb9lfOtnaox
-	/58oNOOvsF1xATH8SQ3G1W252rag=
-X-Google-Smtp-Source: AGHT+IHkRy2lYeLAgmN++u7CKnMtABZAwjf3y5XFV9mkAdTQe5kZDVY2nVp0mxPC6J4YSunYI38vT8hRy5D+87k2I0s=
-X-Received: by 2002:a17:906:aec6:b0:a51:a28e:837e with SMTP id
- me6-20020a170906aec600b00a51a28e837emr6181999ejb.31.1713186752731; Mon, 15
- Apr 2024 06:12:32 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFD085925
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 17:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=176.119.200.166
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713203331; cv=pass; b=tHZFeAelx5+jbWwWJ2eORKUfTlHBlsrM4G0npCXxrxy3e7PbBYk0DXLIZl4tlF456L+3bA9VrC+tjNvDfRVmCsPy9XvzE1Jjf6wVbYEviD7EVCBr/YeZ7mIe/DjMwWyq3CDEyXFvKqHU9Vk6NbZ68nQV9iC3qsOB0esUojdt2gA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713203331; c=relaxed/simple;
+	bh=/3/rml+TRaxg3yfp9K/dkIDkYV292Jhp96ckzXDT1uA=;
+	h=Subject:Date:MIME-Version:From:To:Cc:Message-ID; b=kPh9PKfr6kx6fW4MVx6DZJCjX0X9/rykVqlb00XeSzc7r06xXfGrV3fHSQno9kK5RXQ1M8VWKpL3SoihqlAIEecOcqwTv3M+G4BMlxeOoedSMlTS1ZQ+lqsjuNmQ6C3grYYstqBnNAcxG6rAkhYs6O/1mbOQmcI88YTbuEy87+w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oluceps.uk; spf=pass smtp.mailfrom=oluceps.uk; dkim=pass (1024-bit key) header.d=oluceps.uk header.i=@oluceps.uk header.b=lMTx/hj7; arc=pass smtp.client-ip=176.119.200.166
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oluceps.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oluceps.uk
+ARC-Seal: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626; t=1713201823;
+	cv=none; b=ZinZODvw4AzBWnyHtMRSiznzV1F9Ph9+ryiJxaSxEcGoy+m8IywFTUJbnnLZluiQySrZFd+/NTzwVpOPn2p7Ci8I5g29iGk9VNW0kBN6XmNrvQgrWNKf6HXdLFbj76SG4bSmZwWwuHx25fb9eYlRcnksgADklJ13SH/QfZl7wYyH6kSUh/T1bU6TeWmSswX5at96pIP5/6Xkl6JbGm4Knxa7I2SMT+R5aqExLXvvlxCM8Q2d7I86WmmXwdkmpbDWQGNH6wiZUJqj4dpTu7jzEr9YtJ/kk9Unyn1PM9W3yMkmx7SDqHAAlw4TH7ZUj+Sf4YBWlP8KtfhHjlbphZwLrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=simplelogin.co; s=arc-20230626;
+	t=1713201823; c=relaxed/simple;
+	bh=/3/rml+TRaxg3yfp9K/dkIDkYV292Jhp96ckzXDT1uA=;
+	h=Subject:Date:From:To:Cc; b=QkhDH0nx4EtyeWAO+yJdGfHQQsvKYfzli6qNcyNjLeCd4N6BcMpa1vT+FWV9bIjSNoTdpcdIad1m+8gr7tBwf4ctT62KioezeC+bf7KzX0QIvQ5w9a+R5e9ojmBqdJtHCPYaOao0y9rmkfkrVYXYA+GXFndUYOyD1QZT+xoXAG3Ig2f0wZIfSsJSEyRfwGT2pvXj1wld4FHxjRgrdv/Xwonq0OkwT9yb3S8UtbuZwHY+pm6e96ooiPIa+3p3HuMPxc++9Z6+mekP0BSD3XthIMtTdQltTCOTED4bW3A76K4eRLGlx2Oqmil52uy+A3c78uLIURqG0xXnydoGq+RwTw==
+ARC-Authentication-Results: i=1; mail.protonmail.ch
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oluceps.uk; s=dkim;
+	t=1713201823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=88ik/rMfbQcx58W/ixq31XYoyzb3p2Kuj8XbnQkdTZ0=;
+	b=lMTx/hj7NmOPFKuEdpSIt35MceXcvq3BRNRqiyG3LqtQVCTN3g6V3QjC/Uj8mwVM4Ny8OQ
+	JEp5N8JIohRyHz1TRC4f+a/SIe+43a/yrLp77p3CK1pYrh6yxMvAgcIFqfTFrUKGcP62LR
+	mm9qws2htR7jDidbBtYmpAnklyu+N+A=
+Subject: [PATCH] btrfs-progs: property set: fix typo in help message
+Date: Mon, 15 Apr 2024 17:23:06 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1713052088.git.josef@toxicpanda.com> <803b5e1780c28bb432930ab7df4459c0f3d4edaf.1713052088.git.josef@toxicpanda.com>
-In-Reply-To: <803b5e1780c28bb432930ab7df4459c0f3d4edaf.1713052088.git.josef@toxicpanda.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 15 Apr 2024 14:11:56 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6kM1Fh5kv+NNiU2F8rTjd6U_6AQLFubOvSgSYwuPgHaw@mail.gmail.com>
-Message-ID: <CAL3q7H6kM1Fh5kv+NNiU2F8rTjd6U_6AQLFubOvSgSYwuPgHaw@mail.gmail.com>
-Subject: Re: [PATCH 19/19] btrfs: replace btrfs_delayed_*_ref with btrfs_*_ref
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+From: linux@oluceps.uk
+To: dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org
+Message-ID: <171320182308.8.1632190135551877582.308812139@oluceps.uk>
+X-SimpleLogin-Type: Reply
+X-SimpleLogin-EmailLog-ID: 308812140
+X-SimpleLogin-Want-Signing: yes
 
-On Sun, Apr 14, 2024 at 12:55=E2=80=AFAM Josef Bacik <josef@toxicpanda.com>=
- wrote:
->
-> Now that these two structs are the same, move the btrfs_data_ref and
-> btrfs_tree_ref up and use these in the btrfs_delayed_ref_node.  Then
-> remove the btrfs_delayed_*_ref structs.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/delayed-ref.c | 10 +++-----
->  fs/btrfs/delayed-ref.h | 57 ++++++++++++++++++------------------------
->  2 files changed, 28 insertions(+), 39 deletions(-)
->
-> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> index 397e1d0b4010..582660833c1b 100644
-> --- a/fs/btrfs/delayed-ref.c
-> +++ b/fs/btrfs/delayed-ref.c
-> @@ -982,12 +982,10 @@ static void init_delayed_ref_common(struct btrfs_fs=
-_info *fs_info,
->         RB_CLEAR_NODE(&ref->ref_node);
->         INIT_LIST_HEAD(&ref->add_list);
->
-> -       if (generic_ref->type =3D=3D BTRFS_REF_DATA) {
-> -               ref->data_ref.objectid =3D generic_ref->data_ref.objectid=
-;
-> -               ref->data_ref.offset =3D generic_ref->data_ref.offset;
-> -       } else {
-> -               ref->tree_ref.level =3D generic_ref->tree_ref.level;
-> -       }
-> +       if (generic_ref->type =3D=3D BTRFS_REF_DATA)
-> +               ref->data_ref =3D generic_ref->data_ref;
-> +       else
-> +               ref->tree_ref =3D generic_ref->tree_ref;
->  }
->
->  void btrfs_init_tree_ref(struct btrfs_ref *generic_ref, int level, u64 m=
-od_root,
-> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-> index 84bc990e34fd..dfacbafb1b00 100644
-> --- a/fs/btrfs/delayed-ref.h
-> +++ b/fs/btrfs/delayed-ref.h
-> @@ -30,13 +30,30 @@ enum btrfs_delayed_ref_action {
->         BTRFS_UPDATE_DELAYED_HEAD,
->  } __packed;
->
-> -struct btrfs_delayed_tree_ref {
-> -       int level;
-> +struct btrfs_data_ref {
-> +       /* For EXTENT_DATA_REF */
-> +
-> +       /* Inode which refers to this data extent */
-> +       u64 objectid;
-> +
-> +       /*
-> +        * file_offset - extent_offset
-> +        *
-> +        * file_offset is the key.offset of the EXTENT_DATA key.
-> +        * extent_offset is btrfs_file_extent_offset() of the EXTENT_DATA=
- data.
-> +        */
-> +       u64 offset;
->  };
->
-> -struct btrfs_delayed_data_ref {
-> -       u64 objectid;
-> -       u64 offset;
-> +struct btrfs_tree_ref {
-> +       /*
-> +        * Level of this tree block
+From: oluceps <linux@oluceps.uk>
 
-Add missing punctuation at the end of the sentence.
+Correct a typo by replacing "then" with "than".
 
-Otherwise it looks good, so:
+Signed-off-by: oluceps <linux@oluceps.uk>
+---
+ cmds/property.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
+diff --git a/cmds/property.c b/cmds/property.c
+index 8777d144..a36b5ab2 100644
+--- a/cmds/property.c
++++ b/cmds/property.c
+@@ -588,7 +588,7 @@ static const char * const cmd_property_get_usage[] = {
+ 	"A filesystem object can be the filesystem itself, a subvolume,",
+ 	"an inode or a device. The option -t can be used to explicitly",
+ 	"specify what type of object you meant. This is only needed when a",
+-	"property could be set for more then one object type.",
++	"property could be set for more than one object type.",
+ 	"",
+ 	"Possible values for type are: inode, subvol, filesystem, device.",
+ 	"They can be abbreviated to the first letter, i/s/f/d",
+-- 
+2.44.0
 
 
-> +        *
-> +        * Shared for skinny (TREE_BLOCK_REF) and normal tree ref.
-> +        */
-> +       int level;
-> +
-> +       /* For non-skinny metadata, no special member needed */
->  };
->
->  struct btrfs_delayed_ref_node {
-> @@ -84,8 +101,8 @@ struct btrfs_delayed_ref_node {
->         unsigned int type:8;
->
->         union {
-> -               struct btrfs_delayed_tree_ref tree_ref;
-> -               struct btrfs_delayed_data_ref data_ref;
-> +               struct btrfs_tree_ref tree_ref;
-> +               struct btrfs_data_ref data_ref;
->         };
->  };
->
-> @@ -222,32 +239,6 @@ enum btrfs_ref_type {
->         BTRFS_REF_LAST,
->  } __packed;
->
-> -struct btrfs_data_ref {
-> -       /* For EXTENT_DATA_REF */
-> -
-> -       /* Inode which refers to this data extent */
-> -       u64 objectid;
-> -
-> -       /*
-> -        * file_offset - extent_offset
-> -        *
-> -        * file_offset is the key.offset of the EXTENT_DATA key.
-> -        * extent_offset is btrfs_file_extent_offset() of the EXTENT_DATA=
- data.
-> -        */
-> -       u64 offset;
-> -};
-> -
-> -struct btrfs_tree_ref {
-> -       /*
-> -        * Level of this tree block
-> -        *
-> -        * Shared for skinny (TREE_BLOCK_REF) and normal tree ref.
-> -        */
-> -       int level;
-> -
-> -       /* For non-skinny metadata, no special member needed */
-> -};
-> -
->  struct btrfs_ref {
->         enum btrfs_ref_type type;
->         enum btrfs_delayed_ref_action action;
-> --
-> 2.43.0
->
->
 
