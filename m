@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-4271-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4272-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 862918A50DD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 15:18:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B4A8A50E3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 15:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA2231C21673
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 13:18:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C717728CEF6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 13:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5006B8627E;
-	Mon, 15 Apr 2024 13:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4FD0824BD;
+	Mon, 15 Apr 2024 13:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vzyi8MjE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="STIGhkKE"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7480C74E3A
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 13:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C953757FA
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 13:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713186041; cv=none; b=Xho5Xye95LVtAkg3Dd7RxWPu4wPAEVe3tiTSfG2bkXSsebgI+C17NGPOJahSr851Ay5JE0B6eDAdKkEr6idFS+VM1IVJ20Nsi2iUnz5RGhwKpPy4wjNpBAgzYjXetu7Ombsddnh9CoykXo71L218kv8Eo8x9AFFSBmiPy5j9qfo=
+	t=1713186094; cv=none; b=A2rdjSGZAXU3krOb4NXgR4H6Czk0oBz4tGRTEsDsbC84YLwiORxD/cFrQho3hm01htKRBMfQJ/3nJRKCKmVyVSiQOtMudWtRI5DCiSPhkjW61twEPZ2EWsS75ofXGA2UyeC8iRvcI+8R5FDg/B7RKb6qhYdBSgCaBZMjq6aHHxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713186041; c=relaxed/simple;
-	bh=7sqjRin/PtFvbcHf7TEIz2QpuydAHBTYSLUmQi8FTQs=;
+	s=arc-20240116; t=1713186094; c=relaxed/simple;
+	bh=+Zubz3KMdA1+gpz8OBr4gwy6M4aeJ9NbdkaMAwNYh9I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=enbg66VLmvvRDUdrLs41IEwrBqoPqDe01QiEVkUIHejggkUl9p4ZSQSzFHxIPEQNkyxEUj3e+3YG4xoYdE3TR+DnKJvKl1IuzbHdsUNZy2BUEmrXRmVLxAUFJqvXJr38EvCaqrARkFiTYgnkumsQln8wnFJ9V9EIbYPhHBn4UBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vzyi8MjE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB90C2BD11
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 13:00:40 +0000 (UTC)
+	 To:Cc:Content-Type; b=Iwd7HOLC54ad0MsM9SiX1SbIk+xV0AOCxNP1ciIkybkW2/8BjgjCktmy5NqJnCXn6IARfoW2y4sCLAkY9Sfq4h8K3gUlWt3OQtrawI41WV+BZXHhV8nAjOgF+AlSBVeL5B2z+jeEXaoVhdrLw4uEbdDaha3Z2DxFaonHpJOaFUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STIGhkKE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A44D0C2BD11
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 13:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713186041;
-	bh=7sqjRin/PtFvbcHf7TEIz2QpuydAHBTYSLUmQi8FTQs=;
+	s=k20201202; t=1713186093;
+	bh=+Zubz3KMdA1+gpz8OBr4gwy6M4aeJ9NbdkaMAwNYh9I=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Vzyi8MjEQtt541VzbkyjHpJNIfQcdsuCW/rAarOqdDvbZOxGLX4q570+A6PGirFZg
-	 QTluYKqbR0EIhfCG9CA5Ibdm3o1SgaWq7kWVoja9kaVytOrQbp6+DIY1KQmCCXBcwd
-	 d+1BrW1Wt93npccp+i7CC9Z+I9dV5C4R8HQapbQi35irfTR5HzgrTsH2YdYtNUd2hy
-	 eufZnTDiiMTHlWLghFeOZ7j6vvSl4XnRATeo7Uc9RMI4XjlYDAuoIwRQNva/cdcjbz
-	 kKAF7Z9B5KVt/RD71EXWfS/hw+WLfjrqHLcavr0Z08NTd12Ie++1hzSe3QOqjipF+q
-	 VQaFlw/5WfNMQ==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e1bbdb362so3236519a12.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 06:00:40 -0700 (PDT)
-X-Gm-Message-State: AOJu0YySLz6D2u40StluDng7mO0QVU9frhgm5bYwF0KWo1cCm9FnDDzl
-	0KTKzhkNHoyNYBEmDpIA4yuxGuyrWYUB/OtYOZVlCZIOyu5FjdbWTOBGWK2+9/A24IkF5htkFSP
-	Tz5sUuZHdstb1QKrFrbtwATTNeF4=
-X-Google-Smtp-Source: AGHT+IHXSrmoChAZrcsJ5sKvkWZ420GBFP5I7q+qqAHqHe4XlK5U4Qonsa1XAx/MwLepTtZ9UKUPZ7Su4Mx3mfGcWDM=
-X-Received: by 2002:a17:907:7247:b0:a52:55c6:692c with SMTP id
- ds7-20020a170907724700b00a5255c6692cmr5512007ejc.76.1713186039446; Mon, 15
- Apr 2024 06:00:39 -0700 (PDT)
+	b=STIGhkKE0OyIDoug3e4KNkir5/5+6HCAd/T1k9Na16I5ihtKnrKkCeBOFj4uXubL5
+	 p26SvrpZHXdkouY05QBSNiBQn4i1RwY2hhMIvLpLgP1oga0YBf4t6a/1RjKA5NGoA5
+	 r6CksgAnbs7Volt5KK9tFx/bdS/L0pAeA4kkVkOsdYLNuu2FItVh3NpfYLMJZNBjWB
+	 Zv8xN/5mLxvBNFlL05JOTi27fXWQkElayPmInL8J4rQpt9DZQzcNObAd60JynEe+8E
+	 9BTYcfvgYX2R/gdwO1I2uKJK93O+j9k+dAaNiFueBwvd+rvK2v6R6wYcenJqx/6/KI
+	 +S54vhY1jlusQ==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a44ad785a44so374462466b.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 06:01:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzYljibC1EZ/Or/miG7eo0kBGw3D/faQeyHJR0/CT/ww0Ror2dW
+	jp698vn+vrSbgY+r4xkrZbzXx9MjDWPSLED/tQqz8nUrOXpGoPZ72T0VlLTV8ASgtJyLFILGkCy
+	dMM58hruPwn9J7JMNFuyN8NB7ZIg=
+X-Google-Smtp-Source: AGHT+IHZxNLo3LiwdboTZpZijVCEuTKkepe2Gna0XN5OIAqjoY5Hf1mVuWpyw1HGm0VdyZFgGyBsCI+TWide4CvXEDc=
+X-Received: by 2002:a17:907:7ea1:b0:a52:3bc1:3383 with SMTP id
+ qb33-20020a1709077ea100b00a523bc13383mr7214302ejc.36.1713186091584; Mon, 15
+ Apr 2024 06:01:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1713052088.git.josef@toxicpanda.com> <c927df817dc837de0678790446568f03b054feda.1713052088.git.josef@toxicpanda.com>
-In-Reply-To: <c927df817dc837de0678790446568f03b054feda.1713052088.git.josef@toxicpanda.com>
+References: <cover.1713052088.git.josef@toxicpanda.com> <6a421fc3d13c9a6520e7e5c041ddb199116c91e6.1713052088.git.josef@toxicpanda.com>
+In-Reply-To: <6a421fc3d13c9a6520e7e5c041ddb199116c91e6.1713052088.git.josef@toxicpanda.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 15 Apr 2024 14:00:02 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4XooPFwnA4W7g-OEkkuG4dsT18PrKD+VCf7qF91Pif7A@mail.gmail.com>
-Message-ID: <CAL3q7H4XooPFwnA4W7g-OEkkuG4dsT18PrKD+VCf7qF91Pif7A@mail.gmail.com>
-Subject: Re: [PATCH 13/19] btrfs: make __btrfs_inc_extent_ref take a btrfs_delayed_ref_node
+Date: Mon, 15 Apr 2024 14:00:55 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4xw6pp_7SxmrdAM6P1aeA-g-XjJX6B9S6P+pacpV1GEw@mail.gmail.com>
+Message-ID: <CAL3q7H4xw6pp_7SxmrdAM6P1aeA-g-XjJX6B9S6P+pacpV1GEw@mail.gmail.com>
+Subject: Re: [PATCH 14/19] btrfs: drop unnecessary arguments from __btrfs_free_extent
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -71,189 +71,126 @@ Content-Transfer-Encoding: quoted-printable
 On Sun, Apr 14, 2024 at 12:54=E2=80=AFAM Josef Bacik <josef@toxicpanda.com>=
  wrote:
 >
-> We're just extracting the values from btrfs_delayed_ref_node and passing
-> them through, simply pass the btrfs_delayed_ref_node into
-> __btrfs_inc_extent_ref and shrink the function arguments.
+> We have all the information we need in our btrfs_delayed_ref_node, which
+> we already pass into __btrfs_free_extent.  Drop the extra arguments and
+> just extract the values from btrfs_delayed_ref_node.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/delayed-ref.h | 16 ++++++++++++++++
->  fs/btrfs/extent-tree.c | 41 +++++++++--------------------------------
->  2 files changed, 25 insertions(+), 32 deletions(-)
->
-> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-> index 3e7afac518ac..0bc80ed8b2c7 100644
-> --- a/fs/btrfs/delayed-ref.h
-> +++ b/fs/btrfs/delayed-ref.h
-> @@ -426,6 +426,22 @@ btrfs_delayed_data_ref_to_node(struct btrfs_delayed_=
-data_ref *ref)
->         return container_of(ref, struct btrfs_delayed_ref_node, data_ref)=
-;
->  }
->
-> +static inline u64 btrfs_delayed_ref_owner(struct btrfs_delayed_ref_node =
-*node)
-> +{
-> +       if ((node->type =3D=3D BTRFS_EXTENT_DATA_REF_KEY) ||
-> +           (node->type =3D=3D BTRFS_SHARED_DATA_REF_KEY))
-
-There's no need for so many parenthesis, easier to read and what we
-generally do in simple cases like this:
-
-if (node->type =3D=3D ... || node->type =3D=3D ...)
-> +               return node->data_ref.objectid;
-> +       return node->tree_ref.level;
-> +}
-> +
-> +static inline u64 btrfs_delayed_ref_offset(struct btrfs_delayed_ref_node=
- *node)
-> +{
-> +       if ((node->type =3D=3D BTRFS_EXTENT_DATA_REF_KEY) ||
-> +           (node->type =3D=3D BTRFS_SHARED_DATA_REF_KEY))
-
-Same here.
-
-Either way, the change looks good, so:
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Thanks.
+Looks good, thanks.
 
-> +               return node->data_ref.offset;
-> +       return 0;
-> +}
-> +
->  static inline u8 btrfs_ref_type(struct btrfs_ref *ref)
->  {
->         ASSERT(ref->type !=3D BTRFS_REF_NOT_SET);
+> ---
+>  fs/btrfs/extent-tree.c | 23 ++++++++---------------
+>  1 file changed, 8 insertions(+), 15 deletions(-)
+>
 > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 0e42c8bddc0c..6a8108e151d7 100644
+> index 6a8108e151d7..540dadcefb92 100644
 > --- a/fs/btrfs/extent-tree.c
 > +++ b/fs/btrfs/extent-tree.c
-> @@ -1462,34 +1462,12 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handl=
-e *trans,
->   * @node:          The delayed ref node used to get the bytenr/length fo=
-r
->   *                 extent whose references are incremented.
->   *
-> - * @parent:        If this is a shared extent (BTRFS_SHARED_DATA_REF_KEY=
-/
-> - *                 BTRFS_SHARED_BLOCK_REF_KEY) then it holds the logical
-> - *                 bytenr of the parent block. Since new extents are alw=
-ays
-> - *                 created with indirect references, this will only be t=
-he case
-> - *                 when relocating a shared extent. In that case, root_o=
-bjectid
-> - *                 will be BTRFS_TREE_RELOC_OBJECTID. Otherwise, parent =
-must
-> - *                 be 0
-> - *
-> - * @root_objectid:  The id of the root where this modification has origi=
-nated,
-> - *                 this can be either one of the well-known metadata tre=
-es or
-> - *                 the subvolume id which references this extent.
-> - *
-> - * @owner:         For data extents it is the inode number of the owning=
- file.
-> - *                 For metadata extents this parameter holds the level i=
-n the
-> - *                 tree of the extent.
-> - *
-> - * @offset:        For metadata extents the offset is ignored and is cur=
-rently
-> - *                 always passed as 0. For data extents it is the fileof=
-fset
-> - *                 this extent belongs to.
-> - *
->   * @extent_op       Pointer to a structure, holding information necessar=
-y when
->   *                  updating a tree block's flags
->   *
->   */
->  static int __btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
->                                   struct btrfs_delayed_ref_node *node,
-> -                                 u64 parent, u64 root_objectid,
-> -                                 u64 owner, u64 offset,
->                                   struct btrfs_delayed_extent_op *extent_=
-op)
+> @@ -46,9 +46,7 @@
+>
+>  static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+>                                struct btrfs_delayed_ref_head *href,
+> -                              struct btrfs_delayed_ref_node *node, u64 p=
+arent,
+> -                              u64 root_objectid, u64 owner_objectid,
+> -                              u64 owner_offset,
+> +                              struct btrfs_delayed_ref_node *node,
+>                                struct btrfs_delayed_extent_op *extra_op);
+>  static void __run_delayed_extent_op(struct btrfs_delayed_extent_op *exte=
+nt_op,
+>                                     struct extent_buffer *leaf,
+> @@ -1586,9 +1584,7 @@ static int run_delayed_data_ref(struct btrfs_trans_=
+handle *trans,
+>         } else if (node->action =3D=3D BTRFS_ADD_DELAYED_REF) {
+>                 ret =3D __btrfs_inc_extent_ref(trans, node, extent_op);
+>         } else if (node->action =3D=3D BTRFS_DROP_DELAYED_REF) {
+> -               ret =3D __btrfs_free_extent(trans, href, node, parent,
+> -                                         node->ref_root, ref->objectid,
+> -                                         ref->offset, extent_op);
+> +               ret =3D __btrfs_free_extent(trans, href, node, extent_op)=
+;
+>         } else {
+>                 BUG();
+>         }
+> @@ -1710,11 +1706,9 @@ static int run_delayed_tree_ref(struct btrfs_trans=
+_handle *trans,
 >  {
->         struct btrfs_path *path;
-> @@ -1498,6 +1476,8 @@ static int __btrfs_inc_extent_ref(struct btrfs_tran=
-s_handle *trans,
->         struct btrfs_key key;
+>         int ret =3D 0;
+>         struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> -       struct btrfs_delayed_tree_ref *ref;
+>         u64 parent =3D 0;
+>         u64 ref_root =3D 0;
+>
+> -       ref =3D btrfs_delayed_node_to_tree_ref(node);
+>         trace_run_delayed_tree_ref(trans->fs_info, node);
+>
+>         if (node->type =3D=3D BTRFS_SHARED_BLOCK_REF_KEY)
+> @@ -1744,8 +1738,7 @@ static int run_delayed_tree_ref(struct btrfs_trans_=
+handle *trans,
+>         } else if (node->action =3D=3D BTRFS_ADD_DELAYED_REF) {
+>                 ret =3D __btrfs_inc_extent_ref(trans, node, extent_op);
+>         } else if (node->action =3D=3D BTRFS_DROP_DELAYED_REF) {
+> -               ret =3D __btrfs_free_extent(trans, href, node, parent, re=
+f_root,
+> -                                         ref->level, 0, extent_op);
+> +               ret =3D __btrfs_free_extent(trans, href, node, extent_op)=
+;
+>         } else {
+>                 BUG();
+>         }
+> @@ -3077,9 +3070,7 @@ static int do_free_extent_accounting(struct btrfs_t=
+rans_handle *trans,
+>   */
+>  static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+>                                struct btrfs_delayed_ref_head *href,
+> -                              struct btrfs_delayed_ref_node *node, u64 p=
+arent,
+> -                              u64 root_objectid, u64 owner_objectid,
+> -                              u64 owner_offset,
+> +                              struct btrfs_delayed_ref_node *node,
+>                                struct btrfs_delayed_extent_op *extent_op)
+>  {
+>         struct btrfs_fs_info *info =3D trans->fs_info;
+> @@ -3099,6 +3090,8 @@ static int __btrfs_free_extent(struct btrfs_trans_h=
+andle *trans,
+>         u64 refs;
 >         u64 bytenr =3D node->bytenr;
 >         u64 num_bytes =3D node->num_bytes;
-> +       u64 owner =3D btrfs_delayed_ref_owner(node);
-> +       u64 offset =3D btrfs_delayed_ref_offset(node);
->         u64 refs;
->         int refs_to_add =3D node->ref_mod;
->         int ret;
-> @@ -1508,7 +1488,7 @@ static int __btrfs_inc_extent_ref(struct btrfs_tran=
-s_handle *trans,
+> +       u64 owner_objectid =3D btrfs_delayed_ref_owner(node);
+> +       u64 owner_offset =3D btrfs_delayed_ref_offset(node);
+>         bool skinny_metadata =3D btrfs_fs_incompat(info, SKINNY_METADATA)=
+;
+>         u64 delayed_ref_root =3D href->owning_root;
 >
->         /* this will setup the path even if it fails to insert the back r=
-ef */
->         ret =3D insert_inline_extent_backref(trans, path, bytenr, num_byt=
+> @@ -3124,7 +3117,7 @@ static int __btrfs_free_extent(struct btrfs_trans_h=
+andle *trans,
+>                 skinny_metadata =3D false;
+>
+>         ret =3D lookup_extent_backref(trans, path, &iref, bytenr, num_byt=
 es,
-> -                                          parent, root_objectid, owner,
-> +                                          node->parent, node->ref_root, =
-owner,
->                                            offset, refs_to_add, extent_op=
-);
->         if ((ret < 0 && ret !=3D -EAGAIN) || !ret)
+> -                                   parent, root_objectid, owner_objectid=
+,
+> +                                   node->parent, node->ref_root, owner_o=
+bjectid,
+>                                     owner_offset);
+>         if (ret =3D=3D 0) {
+>                 /*
+> @@ -3226,7 +3219,7 @@ static int __btrfs_free_extent(struct btrfs_trans_h=
+andle *trans,
+>         } else if (WARN_ON(ret =3D=3D -ENOENT)) {
+>                 abort_and_dump(trans, path,
+>  "unable to find ref byte nr %llu parent %llu root %llu owner %llu offset=
+ %llu slot %d",
+> -                              bytenr, parent, root_objectid, owner_objec=
+tid,
+> +                              bytenr, node->parent, node->ref_root, owne=
+r_objectid,
+>                                owner_offset, path->slots[0]);
 >                 goto out;
-> @@ -1531,11 +1511,11 @@ static int __btrfs_inc_extent_ref(struct btrfs_tr=
-ans_handle *trans,
->
->         /* now insert the actual backref */
->         if (owner < BTRFS_FIRST_FREE_OBJECTID)
-> -               ret =3D insert_tree_block_ref(trans, path, bytenr, parent=
-,
-> -                                           root_objectid);
-> +               ret =3D insert_tree_block_ref(trans, path, bytenr, node->=
-parent,
-> +                                           node->ref_root);
->         else
-> -               ret =3D insert_extent_data_ref(trans, path, bytenr, paren=
-t,
-> -                                            root_objectid, owner, offset=
-,
-> +               ret =3D insert_extent_data_ref(trans, path, bytenr, node-=
->parent,
-> +                                            node->ref_root, owner, offse=
-t,
->                                              refs_to_add);
->
->         if (ret)
-> @@ -1604,9 +1584,7 @@ static int run_delayed_data_ref(struct btrfs_trans_=
-handle *trans,
->                 if (!ret)
->                         ret =3D btrfs_record_squota_delta(trans->fs_info,=
- &delta);
->         } else if (node->action =3D=3D BTRFS_ADD_DELAYED_REF) {
-> -               ret =3D __btrfs_inc_extent_ref(trans, node, parent, node-=
->ref_root,
-> -                                            ref->objectid, ref->offset,
-> -                                            extent_op);
-> +               ret =3D __btrfs_inc_extent_ref(trans, node, extent_op);
->         } else if (node->action =3D=3D BTRFS_DROP_DELAYED_REF) {
->                 ret =3D __btrfs_free_extent(trans, href, node, parent,
->                                           node->ref_root, ref->objectid,
-> @@ -1764,8 +1742,7 @@ static int run_delayed_tree_ref(struct btrfs_trans_=
-handle *trans,
->                 if (!ret)
->                         btrfs_record_squota_delta(fs_info, &delta);
->         } else if (node->action =3D=3D BTRFS_ADD_DELAYED_REF) {
-> -               ret =3D __btrfs_inc_extent_ref(trans, node, parent, ref_r=
-oot,
-> -                                            ref->level, 0, extent_op);
-> +               ret =3D __btrfs_inc_extent_ref(trans, node, extent_op);
->         } else if (node->action =3D=3D BTRFS_DROP_DELAYED_REF) {
->                 ret =3D __btrfs_free_extent(trans, href, node, parent, re=
-f_root,
->                                           ref->level, 0, extent_op);
+>         } else {
 > --
 > 2.43.0
 >
