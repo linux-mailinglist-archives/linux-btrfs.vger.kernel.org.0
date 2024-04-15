@@ -1,166 +1,246 @@
-Return-Path: <linux-btrfs+bounces-4257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4258-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DA6C8A4DC5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 13:34:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB478A4F38
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 14:38:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE67A1C224A9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 11:34:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF897B217C3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 12:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E373F65197;
-	Mon, 15 Apr 2024 11:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2019E6F505;
+	Mon, 15 Apr 2024 12:38:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uj3wHBDP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rN6hw7X+"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBAA633FE
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 11:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452166BFA6
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713180864; cv=none; b=ghuBtDs/VwgQm1vLPb02iLfgm0GIXdRWjN44qQBTQhcSUHMoe7bfaIQ2bcRvfF7X2kC5fIuFrG3hrKgd70GWRNU8G3L8odXglJxHP53a71oI8KePLdS/61M4G4QrUgNZ8WSryjGHxPC5vqcC9lsXazw4NZ5xlGVREXq79TTu2gU=
+	t=1713184715; cv=none; b=kf9gfGTqpYSOI+mQrKPi584XNZ+OZ3dddonYif+/9Op/kOfPpbUaZRhLuzp21qdN9iO7uCqpW3DPnJlmXhrVQzoF63+sioFgy9w8hqM88K/idUPnuuWN04JUOBqiq25vtmWIuJ7uarZ0ir9C4x/4cx5Iil1ZgUIUxhOfQkBXQCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713180864; c=relaxed/simple;
-	bh=elquyA1u2Q+VuTrnM2oBhkN7l8Q+/nLtGfIABHEUEb8=;
+	s=arc-20240116; t=1713184715; c=relaxed/simple;
+	bh=9gwhggrQ4IwEXndt61qrjHBRtDiGn7nC3Ig0ArrDlFo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oZM0K2Ww3rJH90IUzx7lFpnelWLzbXDQx3PpZ6X15+IZXFYZBwrKnpTk6eLylxloqLXBY3C0kzed9fR5cn0QcNiU91yUhiXiz6E2lYUt1O/1Bnkid+zV+jo4CidFapkKrhJKTbZcjvfjYzILIkqKLFtq57S7G5zsh/Z67kiDbVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uj3wHBDP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC21FC2BD11
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 11:34:23 +0000 (UTC)
+	 To:Cc:Content-Type; b=hodEk+TpvnrIaGxLs6G/UjGbzmQvb3ERXoAoWRuAUiVwzRL5r3VmbQGc5Ce1UJpWpK5cSJ8OjgvhtKiIBeSeL1iaOZELpSPkE09hUai/AC3RBo9AA8JYAkJS8pq8ycwMVwAOxPkuDBmvC2jzrxnJlFFM7R6cbQPYZg/l9NTHdKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rN6hw7X+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE25AC4AF08
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 12:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713180863;
-	bh=elquyA1u2Q+VuTrnM2oBhkN7l8Q+/nLtGfIABHEUEb8=;
+	s=k20201202; t=1713184714;
+	bh=9gwhggrQ4IwEXndt61qrjHBRtDiGn7nC3Ig0ArrDlFo=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uj3wHBDPt0KvkfKY+EnadY9M/4KgYFxPPdUFSKOpNBXtTnrMD0wTHusPcykNk8c1e
-	 pVtVGHPwwca4yN8FycmrXH3fR6NAnrNkMiRpUuuELFAYg6KB4IDdVoSWaryVHhLPbb
-	 1CHBc1IS7jYRP7d5+rTIhqU+viNYkRd51of6btH8T6x39aiAn9PAaYsdeoY1kdhLbP
-	 gzoxPOjOX2PEfmTWQEdJH/BAI1KHHC7VkoXs4C9+irFOfcdwIYO6mZB3GCpketuSHb
-	 leTjK3TG9xH4DXl7dtEqk4accJSijRcZhM5uX0BFXp1MS9Igk0K5Hv5zxueQ7msfK+
-	 OfHjGkqKmMQeQ==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a526d0b2349so90781066b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 04:34:23 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyyGKoJnKPJgKaF6pqmUEQI2gjVAq0iSAHAO3DYm7G8kAC/Px7B
-	O+l/LevmjZeeWyVazDDuuVoBq4kniNAfoQu3QhVjv11L6D6+VHBU7TzEdsttV9CcZjEpFpt+yYk
-	OZpYzGuF9xFUCtLLnLy9vcmFakDs=
-X-Google-Smtp-Source: AGHT+IFpoZDZTp0peKqnpuyPU/ftFpY5ya+Dg9dZHO18kBvbSwCdxT0l4+/+K/6zvShT9CHzQxV0X/DNjTWoV9nrd7M=
-X-Received: by 2002:a17:906:eec1:b0:a55:201f:75f with SMTP id
- wu1-20020a170906eec100b00a55201f075fmr616302ejb.36.1713180862200; Mon, 15 Apr
- 2024 04:34:22 -0700 (PDT)
+	b=rN6hw7X+ofIpdXrMMyq3ZNOqD/GGW06aVVPC1iPlZkyY1QNADLAMPpvy5GDlwhUu9
+	 +hsWawBESyvd886p4q0leVNd9eQxUhpbX8h64iRb10OFrwUwc35QIT5fNv7GfA+hAf
+	 vyrw39Ol/x+SLJWOCsVVzme0T35YpcsqfAnJaR/dLhuvN6VQkYsjFlJPKClKOlT7is
+	 DEd00nlbUm+qJ2/OS7a4u/ntrnYFGODRHuX0gAoGrUomsxIafVQUwsYy8yNzM3068N
+	 ttKPZVObo5msfukmU3IZEQng4gIfJjDEACdenhHk8jLb1jbiCj0yBFySyrD7H/tftm
+	 JY41eAamV43zA==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a51a7d4466bso359755766b.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 05:38:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzuAYFnmjsBOeyv9tcmOa+ut/tzLhmfXkXvrzg2IJLTvMJk7hEb
+	48OlTTnBanv1nQMFjjq1FiJjr08C6gwfD5ceMuZIDZpIdClGJ0VTtrz15ziG15yYZlPnhhPnqMt
+	xJSP4XzjGw3QgbV5Q66fld2b9Uuw=
+X-Google-Smtp-Source: AGHT+IF0s4NYZrG/WwVqJmXyZnUVNJ0WryCBVDjlvCygKNc2DisNHdlvkr7J2ewyRqEhEROlqg3bvp+jXjxtruR+MfE=
+X-Received: by 2002:a17:906:6954:b0:a52:5774:69cc with SMTP id
+ c20-20020a170906695400b00a52577469ccmr2594318ejs.46.1713184713214; Mon, 15
+ Apr 2024 05:38:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cbf5bf79edc537544f383ee3d6c79a1bec45a964.1713100883.git.josef@toxicpanda.com>
-In-Reply-To: <cbf5bf79edc537544f383ee3d6c79a1bec45a964.1713100883.git.josef@toxicpanda.com>
+References: <cover.1713052088.git.josef@toxicpanda.com> <2b6d5c91e6d8d25c9a8d4d21d7ce46df6ddba7f8.1713052088.git.josef@toxicpanda.com>
+In-Reply-To: <2b6d5c91e6d8d25c9a8d4d21d7ce46df6ddba7f8.1713052088.git.josef@toxicpanda.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 15 Apr 2024 12:33:45 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7XjBHGkz68PW9oqXKMaU5EN+jshBAZ5ndgqk5RgEDhdw@mail.gmail.com>
-Message-ID: <CAL3q7H7XjBHGkz68PW9oqXKMaU5EN+jshBAZ5ndgqk5RgEDhdw@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: set start on clone before calling copy_extent_buffer_full
+Date: Mon, 15 Apr 2024 13:37:56 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4=krmhG2+u8pQ7N_2FVUA0GFFB0n+stnU=JXB_PDMwzQ@mail.gmail.com>
+Message-ID: <CAL3q7H4=krmhG2+u8pQ7N_2FVUA0GFFB0n+stnU=JXB_PDMwzQ@mail.gmail.com>
+Subject: Re: [PATCH 01/19] btrfs: add a helper to get the delayed ref node
+ from the data/tree ref
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 14, 2024 at 2:22=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
+On Sun, Apr 14, 2024 at 12:53=E2=80=AFAM Josef Bacik <josef@toxicpanda.com>=
+ wrote:
 >
-> Our subpage testing started hanging on generic/560 and I bisected it
-> down to 1cab1375ba6d ("btrfs: reuse cloned extent buffer during
-> fiemap to avoid re-allocations").  This is subtle because we use
-> eb->start to figure out where in the folio we're copying to when we're
-> subpage, as our ->start may refer to an area inside of the folio.
+> We have several different ways we refer to references throughout the
+> code and it's not consistent and there's a bit of duplication.  In order
+> to clean this up I want to have one structure we use to define reference
+> information, and one structure we use for the delayed reference
+> information.
+> Start this process by adding a helper to get from the
+> btrfs_delayed_data_ref/btrfs_delayed_tree_ref to the
+> btrfs_delayed_ref_node so that it'll make moving these structures around
+> simpler.
 >
-> For example, assume a 16k page size machine with a 4k node size, and
-> assume that we already have a cloned extent buffer when we cloned the
-> previous search.
->
-> copy_extent_buffer_full() will do the following when copying the extent
-> buffer path->nodes[0] (src) into cloned (dest):
->
-> src->start =3D 8k; // this is the new leaf we're cloning
-> cloned->start =3D 4k; // this is left over from the previous clone
->
-> src_addr =3D folio_address(src->folios[0]);
-> dest_addr =3D folio_address(dest->folios[0]);
->
-> memcpy(dest_addr + get_eb_offset_in_folio(dst, 0),
->        src_addr + get_eb_offset_in_folio(src, 0), src->len);
->
-> Now get_eb_offset_in_folio() is where the problems occur, because for
-> sub-pagesize blocksize we can have multiple eb's per folio, the code for
-> this is as follows
->
-> size_t get_eb_offset_in_folio(eb, offset) {
->         return (eb->start + offset & (folio_size(eb->folio[0]) - 1));
-> }
->
-> So in the above example we are copying into offset 4k inside the folio.
-> However once we update cloned->start to 8k to match the src the math for
-> get_eb_offset_in_folio() changes, and any subsequent reads (ie
-> btrfs_item_key_to_cpu()) will start reading from the offset 8k instead
-> of 4k where we copied to, giving us garbage.
->
-> Fix this by setting start before we co copy_extent_buffer_full() to make
-> sure that we're copying into the same offset inside of the folio that we
-> will read from later.
->
-> All other sites of copy_extent_buffer_full() are correct because we
-> either set ->start beforehand or we simply don't change it in the case
-> of the tree-log usage.
->
-> With this fix we now pass generic/560 on our subpage tests.
->
-> Fixes: 1cab1375ba6d ("btrfs: reuse cloned extent buffer during fiemap to =
-avoid re-allocations")
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Now this change log is informative and helpful. Thanks for the update.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
+Looks good, thanks.
+
 > ---
->  fs/btrfs/extent_io.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+>  fs/btrfs/delayed-ref.c | 28 +++++++++++++++++++---------
+>  fs/btrfs/delayed-ref.h | 12 ++++++++++++
+>  2 files changed, 31 insertions(+), 9 deletions(-)
 >
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 49f7161a6578..a59cd88cf318 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2809,13 +2809,19 @@ static int fiemap_next_leaf_item(struct btrfs_ino=
-de *inode, struct btrfs_path *p
->                 goto out;
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index e44e62cf76bc..d920663a18fd 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -310,7 +310,9 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_inf=
+o *fs_info,
+>  static int comp_tree_refs(struct btrfs_delayed_tree_ref *ref1,
+>                           struct btrfs_delayed_tree_ref *ref2)
+>  {
+> -       if (ref1->node.type =3D=3D BTRFS_TREE_BLOCK_REF_KEY) {
+> +       struct btrfs_delayed_ref_node *node =3D btrfs_delayed_tree_ref_to=
+_node(ref1);
+> +
+> +       if (node->type =3D=3D BTRFS_TREE_BLOCK_REF_KEY) {
+>                 if (ref1->root < ref2->root)
+>                         return -1;
+>                 if (ref1->root > ref2->root)
+> @@ -330,7 +332,9 @@ static int comp_tree_refs(struct btrfs_delayed_tree_r=
+ef *ref1,
+>  static int comp_data_refs(struct btrfs_delayed_data_ref *ref1,
+>                           struct btrfs_delayed_data_ref *ref2)
+>  {
+> -       if (ref1->node.type =3D=3D BTRFS_EXTENT_DATA_REF_KEY) {
+> +       struct btrfs_delayed_ref_node *node =3D btrfs_delayed_data_ref_to=
+_node(ref1);
+> +
+> +       if (node->type =3D=3D BTRFS_EXTENT_DATA_REF_KEY) {
+>                 if (ref1->root < ref2->root)
+>                         return -1;
+>                 if (ref1->root > ref2->root)
+> @@ -1061,6 +1065,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_h=
+andle *trans,
+>  {
+>         struct btrfs_fs_info *fs_info =3D trans->fs_info;
+>         struct btrfs_delayed_tree_ref *ref;
+> +       struct btrfs_delayed_ref_node *node;
+>         struct btrfs_delayed_ref_head *head_ref;
+>         struct btrfs_delayed_ref_root *delayed_refs;
+>         struct btrfs_qgroup_extent_record *record =3D NULL;
+> @@ -1096,12 +1101,14 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans=
+_handle *trans,
+>                 }
 >         }
 >
-> -       /* See the comment at fiemap_search_slot() about why we clone. */
-> -       copy_extent_buffer_full(clone, path->nodes[0]);
->         /*
->          * Important to preserve the start field, for the optimizations w=
-hen
->          * checking if extents are shared (see extent_fiemap()).
-> +        *
-> +        * We must set ->start before calling copy_extent_buffer_full(). =
- If we
-> +        * are on sub-pagesize blocksize, we use ->start to determine the=
- offset
-> +        * into the folio where our eb exists, and if we update ->start a=
-fter
-> +        * the fact then any subsequent reads of the eb may read from a
-> +        * different offset in the folio than where we originally copied =
-into.
->          */
->         clone->start =3D path->nodes[0]->start;
-> +       /* See the comment at fiemap_search_slot() about why we clone. */
-> +       copy_extent_buffer_full(clone, path->nodes[0]);
+> +       node =3D btrfs_delayed_tree_ref_to_node(ref);
+> +
+>         if (parent)
+>                 ref_type =3D BTRFS_SHARED_BLOCK_REF_KEY;
+>         else
+>                 ref_type =3D BTRFS_TREE_BLOCK_REF_KEY;
 >
->         slot =3D path->slots[0];
->         btrfs_release_path(path);
+> -       init_delayed_ref_common(fs_info, &ref->node, bytenr, num_bytes,
+> +       init_delayed_ref_common(fs_info, node, bytenr, num_bytes,
+>                                 generic_ref->tree_ref.ref_root, action,
+>                                 ref_type);
+>         ref->root =3D generic_ref->tree_ref.ref_root;
+> @@ -1123,7 +1130,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_h=
+andle *trans,
+>         head_ref =3D add_delayed_ref_head(trans, head_ref, record,
+>                                         action, &qrecord_inserted);
+>
+> -       merged =3D insert_delayed_ref(trans, head_ref, &ref->node);
+> +       merged =3D insert_delayed_ref(trans, head_ref, node);
+>         spin_unlock(&delayed_refs->lock);
+>
+>         /*
+> @@ -1132,7 +1139,7 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_h=
+andle *trans,
+>          */
+>         btrfs_update_delayed_refs_rsv(trans);
+>
+> -       trace_add_delayed_tree_ref(fs_info, &ref->node, ref,
+> +       trace_add_delayed_tree_ref(fs_info, node, ref,
+>                                    action =3D=3D BTRFS_ADD_DELAYED_EXTENT=
+ ?
+>                                    BTRFS_ADD_DELAYED_REF : action);
+>         if (merged)
+> @@ -1153,6 +1160,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_h=
+andle *trans,
+>  {
+>         struct btrfs_fs_info *fs_info =3D trans->fs_info;
+>         struct btrfs_delayed_data_ref *ref;
+> +       struct btrfs_delayed_ref_node *node;
+>         struct btrfs_delayed_ref_head *head_ref;
+>         struct btrfs_delayed_ref_root *delayed_refs;
+>         struct btrfs_qgroup_extent_record *record =3D NULL;
+> @@ -1172,12 +1180,14 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans=
+_handle *trans,
+>         if (!ref)
+>                 return -ENOMEM;
+>
+> +       node =3D btrfs_delayed_data_ref_to_node(ref);
+> +
+>         if (parent)
+>                 ref_type =3D BTRFS_SHARED_DATA_REF_KEY;
+>         else
+>                 ref_type =3D BTRFS_EXTENT_DATA_REF_KEY;
+> -       init_delayed_ref_common(fs_info, &ref->node, bytenr, num_bytes,
+> -                               ref_root, action, ref_type);
+> +       init_delayed_ref_common(fs_info, node, bytenr, num_bytes, ref_roo=
+t,
+> +                               action, ref_type);
+>         ref->root =3D ref_root;
+>         ref->parent =3D parent;
+>         ref->objectid =3D owner;
+> @@ -1214,7 +1224,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_h=
+andle *trans,
+>         head_ref =3D add_delayed_ref_head(trans, head_ref, record,
+>                                         action, &qrecord_inserted);
+>
+> -       merged =3D insert_delayed_ref(trans, head_ref, &ref->node);
+> +       merged =3D insert_delayed_ref(trans, head_ref, node);
+>         spin_unlock(&delayed_refs->lock);
+>
+>         /*
+> @@ -1223,7 +1233,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_h=
+andle *trans,
+>          */
+>         btrfs_update_delayed_refs_rsv(trans);
+>
+> -       trace_add_delayed_data_ref(trans->fs_info, &ref->node, ref,
+> +       trace_add_delayed_data_ref(trans->fs_info, node, ref,
+>                                    action =3D=3D BTRFS_ADD_DELAYED_EXTENT=
+ ?
+>                                    BTRFS_ADD_DELAYED_REF : action);
+>         if (merged)
+> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+> index b291147cb8ab..b3a78bf7b072 100644
+> --- a/fs/btrfs/delayed-ref.h
+> +++ b/fs/btrfs/delayed-ref.h
+> @@ -413,4 +413,16 @@ btrfs_delayed_node_to_data_ref(struct btrfs_delayed_=
+ref_node *node)
+>         return container_of(node, struct btrfs_delayed_data_ref, node);
+>  }
+>
+> +static inline struct btrfs_delayed_ref_node *
+> +btrfs_delayed_tree_ref_to_node(struct btrfs_delayed_tree_ref *ref)
+> +{
+> +       return &ref->node;
+> +}
+> +
+> +static inline struct btrfs_delayed_ref_node *
+> +btrfs_delayed_data_ref_to_node(struct btrfs_delayed_data_ref *ref)
+> +{
+> +       return &ref->node;
+> +}
+> +
+>  #endif
 > --
 > 2.43.0
 >
