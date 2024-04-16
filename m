@@ -1,214 +1,217 @@
-Return-Path: <linux-btrfs+bounces-4314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227AE8A71E3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 19:04:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930808A71D4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 19:01:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E9A11F23F74
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 17:04:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A7EF1C2275D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 17:01:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762FC1327ED;
-	Tue, 16 Apr 2024 17:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF18131E21;
+	Tue, 16 Apr 2024 17:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MDYr91ST";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2joM5M0e";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ae0gGnxd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="amWRgvx/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b="Rvqx8CXr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx.tnonline.net (mx.tnonline.net [65.109.230.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68AB02EAF9;
-	Tue, 16 Apr 2024 17:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D317042055
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 17:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.230.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713287066; cv=none; b=cv7vwNCYNNWrhHryew0M3yqisn8p8UEYjZTFRquP7bBUg3oTeCaU0fNHSTKrsTRfr/pZpY67DYbEFEYcKJpn/pC6MpCS0uA1VwWMdFYO+s9KiOUv1qzDuhSi7dY3tx8RwP/wPEBGS7INad4Kf0oNlPCfmMrXavzBVunSg7Po+Vk=
+	t=1713286848; cv=none; b=SUbF0FfBPyykB0N5yI7dj2ZCj/nvJZr5hZO1bLl0MtYkD8uLOEnPYqVMhKQLXsfI/J1M6rAVfjsxWrGqwYIpQIez/fkQhVDitPoI3Kh/73SZYpJb4DxdoSs5rn4caB7/3iOar+ExeWGqDXjTzb5iBbav8cM0LPQxvHsDyY8IfP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713287066; c=relaxed/simple;
-	bh=smozM9jF1fgEa0jo5wcKDyao5GQFouQ/Furzv3/aqFM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oZjgcLEiet2FOW6/99SP5RwnzOVhzx9QaupSMID/uS+bfiN+tj1LpNnIOT8Fiyjv4Wdfm+xBJWdgs5BPHAaXFsUn3LvJGuyYewH8ONI0B0TP+M0vEgm4c/R2zVziyFSmab2zUhB3tJ/qazItrkOc7+smTrbX9wYaqV96qUt2o5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MDYr91ST; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2joM5M0e; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ae0gGnxd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=amWRgvx/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6CAA81F7C4;
-	Tue, 16 Apr 2024 17:04:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713287059;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
-	b=MDYr91STVJoNWxZhqSg2uy5Kw/MIdL6pC2WieISYnxY9HMaDRBMHgCBUd2f9BFVZRRJYyJ
-	fCO6/k6uH+2fpTspFFMk6tmRRanOmAvap1oKKgGfmqkRZBfJNeWazjC6V+nSqqcfDp5pMe
-	ILLp977WnrTzxjuEpUO27tmXdkA3u7I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713287059;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
-	b=2joM5M0egcib8sTxUUqc6TrDI43rBAkVjVtCEg1SYgWpB8zoD/efYFIY50vMJbHCIGisMC
-	gdRZGy2264fm6aBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713287058;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
-	b=ae0gGnxd/wTLaP35Hhq8QbqNn1rtWeL1tBCL1XkgKi+bbABrBWF7NlJvbbhlmCkluKteGl
-	h5PcfVfBOyw2dOttqIjaOLZsCwCSKhRn2OG93UqISqwUS0WbuOiQ1rUeJ7nMwYSMRj9RMd
-	PsuU4WQRIAHTSkluuoViKVoqfoNjcJU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713287058;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HmF+X66qXKP4uAwVMy4ZKy9VoRjMIrIQQD+AMJy3/rM=;
-	b=amWRgvx/OUa0dd0i2x47/zLltJnD+n/BDPibTKM2vgWgECWLwE5xskJZhvpQrhdoL1KzAm
-	QswOoa635H1i4OAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 428DF13432;
-	Tue, 16 Apr 2024 17:04:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id lXwdEJKvHmYbKQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 16 Apr 2024 17:04:18 +0000
-Date: Tue, 16 Apr 2024 18:56:49 +0200
-From: David Sterba <dsterba@suse.cz>
-To: syzbot <syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com>
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] KMSAN: kernel-infoleak in
- btrfs_ioctl_logical_to_ino (2)
-Message-ID: <20240416165648.GS3492@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <000000000000196a39061636840a@google.com>
+	s=arc-20240116; t=1713286848; c=relaxed/simple;
+	bh=x6r5o+Y1uVuGcoWsA5eKhPku/gOCM3vSqbcKMRBS2Zs=;
+	h=Date:From:To:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=D15oy+piu6EAJREDyYt5ofWL1NZh+B+lCN0iQcxPOHM319bneXjlxDo0VgYW+n56fde1ln8vriwWZ52v6pPXhik+UinDZ4FKZJM4gj4akultS1tNTL1lulBOJBF2/NAdtM3pN+KrPHq0Y0PdlHlfOfP8LgIae2KRl+c5f8uinuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net; spf=pass smtp.mailfrom=tnonline.net; dkim=pass (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b=Rvqx8CXr; arc=none smtp.client-ip=65.109.230.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnonline.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=tnonline.net; s=default; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Subject:References:In-Reply-To:Message-ID:To:From:Date:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=NaJ505wUKlADMx2acrhRWTEiCP9hfkPkdlBmEy3cY48=; t=1713286846; x=1714496446; 
+	b=Rvqx8CXrOg+S+cRgXR7KegHbz5cwS/raipjpylcuBDU+2E0+YQkRQ32K+J+sAbwg5FQuG1tHnVJ
+	O3RVf16sb5C2Ay2SFGUtDJy8B5cQa2hAcyf3Ofgmxgy0ztL98N2Ca7yT1fke8YWfX1tbJuKtWaT+A
+	DbLu0EbNtw0ogIfDvALCyn9zg7S63g/VtVgrQ1iUjdUSprIQS+RF7mIdNpjRrwBz+D0XLUj3ctckC
+	WD3aZJjzXrGWSJ2UcvYMaqsXBaHGsYTeoCKc3XnPaSvKpg7GzIC1xCRtSwDVz6UL2bzlHtHOq1V63
+	DK/B6p8StR3dZoBCqvZW9MZRhVjJmlmjpOnQ==;
+Received: from tnonline.net ([2001:470:28:704::1]:51054)
+	by mx.tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <postmaster@tnonline.net>)
+	id 1rwmAV-000000005V1-1xpf;
+	Tue, 16 Apr 2024 17:00:28 +0000
+Received: from [192.168.0.132] (port=53870)
+	by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.97.1)
+	(envelope-from <forza@tnonline.net>)
+	id 1rwmAR-00000000ETJ-2lFJ;
+	Tue, 16 Apr 2024 19:00:23 +0200
+Date: Tue, 16 Apr 2024 19:00:23 +0200 (GMT+02:00)
+From: Forza <forza@tnonline.net>
+To: Leszek Dubiel <leszek@dubiel.pl>, HAN Yuwei <hrx@bupt.moe>,
+	linux-btrfs@vger.kernel.org
+Message-ID: <3aefeb1.20bf1a80.18ee7da3d40@tnonline.net>
+In-Reply-To: <b2806d95-a50c-41a2-b321-cf62c4f28966@dubiel.pl>
+References: <47e425a3-76b9-4e51-93a0-cde31dd39003@dubiel.pl> <79D2FA23B59927D1+bde927bc-1ccf-4a5d-95fb-9389906d33f6@bupt.moe> <b2806d95-a50c-41a2-b321-cf62c4f28966@dubiel.pl>
+Subject: =?UTF-8?Q?Re:_enospc_errors_during_balanc?=
+ =?UTF-8?Q?e_=E2=80=94_how_to_prevent_out_of_space?=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000196a39061636840a@google.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -1.50
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=87a805e655619c64];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[510a1abbb8116eeb341d];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,appspotmail.com:email,syzkaller.appspot.com:url,storage.googleapis.com:url];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	SUBJECT_HAS_QUESTION(0.00)[]
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: R2Mail2
+X-Spam-Score: -1.6 (-)
 
-On Tue, Apr 16, 2024 at 06:14:20AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    cef27048e5c2 Merge tag 'bcachefs-2024-04-15' of https://ev..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11a1fec7180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
-> dashboard link: https://syzkaller.appspot.com/bug?extid=510a1abbb8116eeb341d
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/fce0439cf562/disk-cef27048.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/99540e71cf72/vmlinux-cef27048.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/65fbfc2c486f/bzImage-cef27048.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com
-> 
-> BTRFS info (device loop1): first mount of filesystem c9fe44da-de57-406a-8241-57ec7d4412cf
-> BTRFS info (device loop1): using crc32c (crc32c-generic) checksum algorithm
-> BTRFS info (device loop1): using free-space-tree
-> =====================================================
-> BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
-> BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x110 lib/usercopy.c:40
->  instrument_copy_to_user include/linux/instrumented.h:114 [inline]
->  _copy_to_user+0xbc/0x110 lib/usercopy.c:40
->  copy_to_user include/linux/uaccess.h:191 [inline]
->  btrfs_ioctl_logical_to_ino+0x440/0x750 fs/btrfs/ioctl.c:3499
->  btrfs_ioctl+0x714/0x1260
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:904 [inline]
->  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
->  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
->  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:17
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Uninit was created at:
->  __kmalloc_large_node+0x231/0x370 mm/slub.c:3921
->  __do_kmalloc_node mm/slub.c:3954 [inline]
->  __kmalloc_node+0xb07/0x1060 mm/slub.c:3973
->  kmalloc_node include/linux/slab.h:648 [inline]
->  kvmalloc_node+0xc0/0x2d0 mm/util.c:634
->  kvmalloc include/linux/slab.h:766 [inline]
->  init_data_container+0x49/0x1e0 fs/btrfs/backref.c:2779
 
-2767 struct btrfs_data_container *init_data_container(u32 total_bytes)
-2768 {
-2769         struct btrfs_data_container *data;
-2770         size_t alloc_bytes;
-2771
-2772         alloc_bytes = max_t(size_t, total_bytes, sizeof(*data));
-2773         data = kvmalloc(alloc_bytes, GFP_KERNEL);
 
-and then data is passed around in the ioctl.
+---- From: Leszek Dubiel <leszek@dubiel.pl> -- Sent: 2024-04-16 - 17:17 ---=
+-
 
->  btrfs_ioctl_logical_to_ino+0x17c/0x750 fs/btrfs/ioctl.c:3480
->  btrfs_ioctl+0x714/0x1260
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:904 [inline]
->  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
->  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
->  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:17
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Bytes 40-65535 of 65536 are uninitialized
+>=20
+>=20
+>>>
+>>>
+>>> I noticed 1Mb for Unallocated space, so
+>>> I have run multiple times balance (data usage filter):
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs balance start -d=
+usage=3DXX,limit=3D1 /
+>>>
+>>>
+>>> and it didn't help.
+>> You can try add a small device (USB stick) and rebalance.
+>>> It even got error no space when balancing:
+>=20
+>=20
+> When it refused to balance i tried musage, dusage, few times and it helpe=
+d.
+> Thanks for tip.
+>=20
 
-It is possible to let the ioctl allocate a big buffer but return it
-filled only partially. So it should be kvcalloc.
+It is not wise to balance metadata block groups because it can directly lea=
+d to the situation you ended up with. Btrfs needs unallocated disk space to=
+ be able to allocate new data or metadata chunks If it cannot allocate new =
+data chunks you will see an out of disk space error. However if btrfs canno=
+t allocate new metadata chunks, the filesystem will turn read-only, making =
+it much harder to fix - as you cannot balance or add additional space in an=
+ read-only filesystem.=20
+
+
+>=20
+>=20
+>=20
+>> If you have zabbix or other monitoring mechanism, you can try=20
+>> monitoring "Unallocated" and reserve at least 2 block group (2GiB). Or=
+=20
+>> you can have a weekly timer to rebalance your btrfs volume.
+>> kdave/btrfsmaintenance should helps you.
+>=20
+> I started to run this script from cron every 10 minutes:
+>=20
+>=20
+> #!/usr/bin/bash
+>=20
+> mount | sed -nr 's%^/dev/sd[a-z][0-9] on (/[/_[:alnum:]]+) type btrfs=20
+> .*$%\1%; T; p' |
+> while read mnt; do
+>  =C2=A0=C2=A0 =C2=A0if
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 btrfs dev usage "$mnt" -g |
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 perl -ne '/Unallocated: +([0-9]+\.=
+[0-9]{2})GiB/ and $1 < 64 and=20
+> print $1' |
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 grep -q .
+>  =C2=A0=C2=A0 =C2=A0then
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 echo "porz=C4=85dkowa=C4=87 $mnt"
+>=20
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 for usa in $(seq 0 10 100); do
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # I don't know =
+whether to start with "dusage" or "musage",=20
+> so i shuffle it;
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # 15 april 2024=
+ my serwer was locked, "dusage" returned=20
+> "enospace", and it
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # got unlocked =
+after "musage=3D0"
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 {
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
+=A0 echo d $usa
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
+=A0 echo m $usa
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 } | shuf
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 done |
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 while read typ usa; do
+>=20
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 echo; echo; dat=
+e; echo "balance type=3D$typ, usage=3D$usa"
+>=20
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 out=3D"$(btrfs =
+balance start -${typ}usage=3D$usa,limit=3D3 "$mnt"=20
+> 2>&1)"
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 echo "$out"
+>=20
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # if nothing wa=
+s done, then try higher usage
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 echo "$out" | g=
+rep -q "had to relocate 0 out of" && continue
+>=20
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # otherwise fin=
+ish: on error or on successful relocate
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 break
+>  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 done
+>  =C2=A0=C2=A0 =C2=A0fi
+> done
+>=20
+>=20
+>=20
+
+Do you mean you run this continuously on your filesystem? This is normally =
+not required and will increase wear on your disks.=20
+>=20
+>=20
+>=20
+>=20
+>> "Unallocated" and reserve at least If you have zabbix or other=20
+>> monitoring mechanism, you can try monitoring 2 block group (2GiB). Or=20
+>> you can have a weekly timer to rebalance your btrfs volume.
+>> kdave/btrfsmaintenance should helps you.=20
+>=20
+> Thanks for hints :) :)
+>=20
+> This solves my questions:
+>=20
+> 1. i have to rebalance when Unallocated is low
+>=20
+> 2. i have to keep 2Gb at least.
+
+You should keep at least 1GB x profile mode. That is for DUP, 2GB, and for =
+RAID1, at least 1GB on two devices.
+
+It would be better to have more, to be safe.
+
+An option that could be used is 'bg_reclaim_threshold', which is a sysfs kn=
+ob to let the kernel automatically reclaim (balance) block groups that fall=
+ under a specific threshold.
+
+https://btrfs.readthedocs.io/en/latest/ch-sysfs.html
+
+>=20
+>=20
+>=20
+>=20
+>=20
+
+
 
