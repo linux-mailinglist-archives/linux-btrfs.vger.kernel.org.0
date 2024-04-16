@@ -1,79 +1,80 @@
-Return-Path: <linux-btrfs+bounces-4315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4316-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72018A7239
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 19:26:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28288A723D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 19:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A920D1C215A0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 17:26:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 593531F21944
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 17:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2301339B1;
-	Tue, 16 Apr 2024 17:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313E91332B6;
+	Tue, 16 Apr 2024 17:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="mV98KsJH"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="M86aI3/H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F75E1332BC
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 17:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292AB133284
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 17:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713288360; cv=none; b=q3AWD239Ld+0u/m7GBMb8BPfLkRj8iG+eupZreLbGnzDaDzNu+WYTAsp4+NlbXtZg0t9AKBOxyX8iDzAL+2EACFm9rQrUy2VR1p4WF9QxJFn4DdHstLra2YtnyZNfmuu1sd6Bzq8vvfR7g1IowcHsyLDq4WXYLdrJMcyNPzD384=
+	t=1713288403; cv=none; b=Ppo1gJ0ggNIulqk6PSpzF/qH7Zaojhl15wP0TZAi5NG25bNEEGKxZf2xkJCxS99xCf6sKgfh5ZNl/rkzjzehYmNYL2Da3BuKk8jd2SwFYIGef4vt9zB9sHOhkztl3bb+AsHN9u2Mpe4P9TP3Bb9hvKrHj5Y1h6BKtAsR6ZuVAZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713288360; c=relaxed/simple;
-	bh=/kWlJSS7zBtJtDgV8EHoeQt3koCkXLMn2okRgHvcohw=;
+	s=arc-20240116; t=1713288403; c=relaxed/simple;
+	bh=sdBRpEGJTFO1+Mr19YyKENU3kDnRM+pEJ8oBCRtJGgc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yf6i7Cf4OOS3G3WwwitK4ZpwWq/L7n39HAzHcHZ0yVFlv49+7a6rebZ5VkbkxzAWy83Emf4ftLq0/q+czxT0Olkn2Wl6iXPAJZf7r4VZvbBrYIEMFwWlSOQVKHZz5cDIdNw/ZHz7U+sxwj2+SFhNxLO5Kx2gbbHXV+nSMn3J81w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=mV98KsJH; arc=none smtp.client-ip=209.85.221.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=pQtt4/vLk0jchNKOOAR/i1CreNzMVCoGwXROQDbfADg/hf9F0Eu9EZ41UdBp34vpd3X+0xJ6cjP4vqe1HmuFfPCrgy6OYVUacFS5FpX4w1PAXCYT0vEZE2WU0ebLudbFyk7BpV4LcZjzAsUQ9RSLA5+4SZLsUS26dTF0Ol1DUVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=M86aI3/H; arc=none smtp.client-ip=209.85.222.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4dac4791267so1548578e0c.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 10:25:57 -0700 (PDT)
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78d7558bf10so409013085a.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 10:26:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713288356; x=1713893156; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713288401; x=1713893201; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2mTvmt2RHf+Cx+fN/+61PRl0LJepWHQcF3XxlfhqGDg=;
-        b=mV98KsJHxZsz/xABC12NqQ/tN5EAW+Ots+lqbG+WeCYjfGI3Oy48Nf4ezZgs6bGLSc
-         QODn1PGf2R5/vXCYwTRPit1dDoLq55jEp0BL2l9EBl7uKKcogVpwjDwQRA7AlxAgGqys
-         vBZqQfMYTOmkZTq8Gd22xHBZ2qbtoERc6BypvtIIQP1VWQ/eij4E4r38NoFTDeSQmd2w
-         /9Z3LBG+3s6TOVjyu95HJ5AG/kyFAlpyFE4A7COkHhvjeSOCTtcNY3DBFWKsDnRoKJV/
-         fBfBi6VfMDFEwDJIM8eiDIS/5WSHxIB29rhvAlr5uSW9fRStolJWluEl8P0ezsHtc7jQ
-         7tww==
+        bh=JXtLCo9TPypaGlB6IDj7YdRm0RAyHmSGNdt7p9r0NIg=;
+        b=M86aI3/HDp0+aNgCniy+E+aLAAylgoRHeKIBU307ifnisdEglUhev8zt4pFk5irNZ+
+         4LKCet0rw5YNgaCNX80Mc4hvLR0gq3b0ESRNlJXeGu7K9YCpvrf3KkiDuG3TxRpNxnoQ
+         3BcuDuqmIe4Th3yGSHR0g6IMcVy9C3bdCImTewdwLxIovrv5H20JRnjgODVzZuHh47IN
+         fAK2SQpbs0QU5c2idjckXF0sF6yOZgtY4QVJOwmsTdbzrpvPO1Ha1V7/3385wghUuDqU
+         OGLTIJS4ooYIgW7F6SH8Wk4xNYHBkDEI9hO+qARlGzR8hqgo25UMORjSYIx9An8+MxWU
+         r4wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713288356; x=1713893156;
+        d=1e100.net; s=20230601; t=1713288401; x=1713893201;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2mTvmt2RHf+Cx+fN/+61PRl0LJepWHQcF3XxlfhqGDg=;
-        b=nBBfvul8EDYXUGEW3R7Z2SSUMJEE5dIvCMXFnC3TH0kSBXoO3mrakLQ5pAREFkOVMI
-         1HXz7Vv26QSqWixw3s0YRrqz11HmdMZU/rM9GSEgMI16+35l+sHmfgKt9NLEwZDHeOqU
-         zTKoDLSuDPHVew2qHNNYCkgEjMoThSEoPNJ2B5zXLif9UlCSfDQOpQ7+K8w+URRmxuFf
-         PKsKabDvhxvTH5+cXQuOodTLNTU/tIT1E+rang1o1JNLfLl68Dh8n4NfWJN/fIGACCm8
-         QsjlRcK+U7th+dFhDJQBPDYKCRexB+A5TtGCQgU1pn1aBYk89IMd27FkvXen3vHgVnd2
-         GpZw==
-X-Gm-Message-State: AOJu0YxVVV79NoBMIJW7INFZHrtRni547pOjI9KIM48s/Z/rETyxkNuq
-	z3mErx/sk3ytmXwW22kF623OaSRJaZVosgTAupGBiIlFYuRt+1KjXJMM4+s7BaEDYl3jEqRfgzh
-	7
-X-Google-Smtp-Source: AGHT+IEPlmhXWe+jXCyjnrZVEfbIIVIMW8v/oZY5AxWYobvJkwvJ09TChlhCDGCIzdrN1QZVtAGlkQ==
-X-Received: by 2002:a05:6122:2009:b0:4da:a82e:95f5 with SMTP id l9-20020a056122200900b004daa82e95f5mr10387710vkd.5.1713288356331;
-        Tue, 16 Apr 2024 10:25:56 -0700 (PDT)
+        bh=JXtLCo9TPypaGlB6IDj7YdRm0RAyHmSGNdt7p9r0NIg=;
+        b=OnLKp889n7fG0WkkTnkIpbzTBAVJQyittetPOBNw0131aObA+QBp2J9z6/35ku9lHO
+         kiHfmOCepYDuTfO3VSDgxLyYV5tRLJLsDONpOMmIQmZYrSg+tiBrzpBBe8sX+BhdlSrU
+         ulX5On3NK3qtQAadwsrRBVTARX2BLxwJETdmI+f1d7KCHWK3HEuRvPG08CUY+XhB30Z6
+         278Gc35cXU1kW6vgy6pzs6nPGd0Caf85JC06Q0meOyMVlFzGH9Mim+Jnkp6txXLZT49C
+         kdgiE8DUQ1Oz5x+TQJlSlPQGDtRihpZTOU5og/+vC8UJyiGKUVMbE8nn5cwvMMgT1aFx
+         rGrw==
+X-Gm-Message-State: AOJu0YwEGBD0lHHvbEGhQ4Ww07NInZcF3uEqqBq5P4FmAYRg8h8mYZw2
+	eBdPTUGnFI2ltxUXNbU1gT+oSboNulxyN0O+GX+xjiP89Q27EkiH0wAJm5sf70gOb1FlhcettZA
+	g
+X-Google-Smtp-Source: AGHT+IH7kdtXYkFiIbBmmt2L9cKmjkcF3wIK2wZahm+R1hdvAdVQ5zgXP4J0/2br6OyA4oGfKeQSEA==
+X-Received: by 2002:ae9:e119:0:b0:78d:409a:1d6c with SMTP id g25-20020ae9e119000000b0078d409a1d6cmr13758566qkm.21.1713288401073;
+        Tue, 16 Apr 2024 10:26:41 -0700 (PDT)
 Received: from localhost ([76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id b12-20020ad4518c000000b0069b27dad8c7sm7519284qvp.101.2024.04.16.10.25.55
+        by smtp.gmail.com with ESMTPSA id w14-20020ae9e50e000000b0078ebe12976dsm7684203qkf.19.2024.04.16.10.26.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 10:25:55 -0700 (PDT)
-Date: Tue, 16 Apr 2024 13:25:55 -0400
+        Tue, 16 Apr 2024 10:26:40 -0700 (PDT)
+Date: Tue, 16 Apr 2024 13:26:40 -0400
 From: Josef Bacik <josef@toxicpanda.com>
 To: fdmanana@kernel.org
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 08/10] btrfs: add a shrinker for extent maps
-Message-ID: <20240416172555.GA2094489@perftesting>
+Subject: Re: [PATCH v3 10/10] btrfs: add tracepoints for extent map shrinker
+ events
+Message-ID: <20240416172640.GB2094489@perftesting>
 References: <cover.1713267925.git.fdmanana@suse.com>
- <4bfde54904b5a91a71eb0d86b9c78367865f93d8.1713267925.git.fdmanana@suse.com>
+ <1f936e6053adef193d57f9ca87c68797c88fae1e.1713267925.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,123 +83,15 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4bfde54904b5a91a71eb0d86b9c78367865f93d8.1713267925.git.fdmanana@suse.com>
+In-Reply-To: <1f936e6053adef193d57f9ca87c68797c88fae1e.1713267925.git.fdmanana@suse.com>
 
-On Tue, Apr 16, 2024 at 02:08:10PM +0100, fdmanana@kernel.org wrote:
+On Tue, Apr 16, 2024 at 02:08:12PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> Extent maps are used either to represent existing file extent items, or to
-> represent new extents that are going to be written and the respective file
-> extent items are created when the ordered extent completes.
-> 
-> We currently don't have any limit for how many extent maps we can have,
-> neither per inode nor globally. Most of the time this not too noticeable
-> because extent maps are removed in the following situations:
-> 
-> 1) When evicting an inode;
-> 
-> 2) When releasing folios (pages) through the btrfs_release_folio() address
->    space operation callback.
-> 
->    However we won't release extent maps in the folio range if the folio is
->    either dirty or under writeback or if the inode's i_size is less than
->    or equals to 16M (see try_release_extent_mapping(). This 16M i_size
->    constraint was added back in 2008 with commit 70dec8079d78 ("Btrfs:
->    extent_io and extent_state optimizations"), but there's no explanation
->    about why we have it or why the 16M value.
-> 
-> This means that for buffered IO we can reach an OOM situation due to too
-> many extent maps if either of the following happens:
-> 
-> 1) There's a set of tasks constantly doing IO on many files with a size
->    not larger than 16M, specially if they keep the files open for very
->    long periods, therefore preventing inode eviction.
-> 
->    This requires a really high number of such files, and having many non
->    mergeable extent maps (due to random 4K writes for example) and a
->    machine with very little memory;
-> 
-> 2) There's a set tasks constantly doing random write IO (therefore
->    creating many non mergeable extent maps) on files and keeping them
->    open for long periods of time, so inode eviction doesn't happen and
->    there's always a lot of dirty pages or pages under writeback,
->    preventing btrfs_release_folio() from releasing the respective extent
->    maps.
-> 
-> This second case was actually reported in the thread pointed by the Link
-> tag below, and it requires a very large file under heavy IO and a machine
-> with very little amount of RAM, which is probably hard to happen in
-> practice in a real world use case.
-> 
-> However when using direct IO this is not so hard to happen, because the
-> page cache is not used, and therefore btrfs_release_folio() is never
-> called. Which means extent maps are dropped only when evicting the inode,
-> and that means that if we have tasks that keep a file descriptor open and
-> keep doing IO on a very large file (or files), we can exhaust memory due
-> to an unbounded amount of extent maps. This is especially easy to happen
-> if we have a huge file with millions of small extents and their extent
-> maps are not mergeable (non contiguous offsets and disk locations).
-> This was reported in that thread with the following fio test:
-> 
->    $ cat test.sh
->    #!/bin/bash
-> 
->    DEV=/dev/sdj
->    MNT=/mnt/sdj
->    MOUNT_OPTIONS="-o ssd"
->    MKFS_OPTIONS=""
-> 
->    cat <<EOF > /tmp/fio-job.ini
->    [global]
->    name=fio-rand-write
->    filename=$MNT/fio-rand-write
->    rw=randwrite
->    bs=4K
->    direct=1
->    numjobs=16
->    fallocate=none
->    time_based
->    runtime=90000
-> 
->    [file1]
->    size=300G
->    ioengine=libaio
->    iodepth=16
-> 
->    EOF
-> 
->    umount $MNT &> /dev/null
->    mkfs.btrfs -f $MKFS_OPTIONS $DEV
->    mount $MOUNT_OPTIONS $DEV $MNT
-> 
->    fio /tmp/fio-job.ini
->    umount $MNT
-> 
-> Monitoring the btrfs_extent_map slab while running the test with:
-> 
->    $ watch -d -n 1 'cat /sys/kernel/slab/btrfs_extent_map/objects \
->                         /sys/kernel/slab/btrfs_extent_map/total_objects'
-> 
-> Shows the number of active and total extent maps skyrocketing to tens of
-> millions, and on systems with a short amount of memory it's easy and quick
-> to get into an OOM situation, as reported in that thread.
-> 
-> So to avoid this issue add a shrinker that will remove extents maps, as
-> long as they are not pinned, and takes proper care with any concurrent
-> fsync to avoid missing extents (setting the full sync flag while in the
-> middle of a fast fsync). This shrinker is triggered through the callbacks
-> nr_cached_objects and free_cached_objects of struct super_operations.
-> 
-> The shrinker will iterates over all roots and over all inodes of each
-> root, and keeps track of the last scanned root and inode, so that the
-> next time it runs, it starts from that root and from the next inode.
-> This is similar to what xfs does for its inode reclaim (implements those
-> callbacks, and cycles through inodes by starting from where it ended
-> last time).
+> Add some tracepoints for the extent map shrinker to help debug and analyse
+> main events. These have proved useful during development of the shrinker.
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-This is great, thanks Filipe!
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
