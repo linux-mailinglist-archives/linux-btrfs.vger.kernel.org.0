@@ -1,217 +1,208 @@
-Return-Path: <linux-btrfs+bounces-4313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930808A71D4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 19:01:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B72018A7239
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 19:26:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A7EF1C2275D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 17:01:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A920D1C215A0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 17:26:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF18131E21;
-	Tue, 16 Apr 2024 17:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C2301339B1;
+	Tue, 16 Apr 2024 17:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b="Rvqx8CXr"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="mV98KsJH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx.tnonline.net (mx.tnonline.net [65.109.230.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D317042055
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 17:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.230.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F75E1332BC
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 17:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713286848; cv=none; b=SUbF0FfBPyykB0N5yI7dj2ZCj/nvJZr5hZO1bLl0MtYkD8uLOEnPYqVMhKQLXsfI/J1M6rAVfjsxWrGqwYIpQIez/fkQhVDitPoI3Kh/73SZYpJb4DxdoSs5rn4caB7/3iOar+ExeWGqDXjTzb5iBbav8cM0LPQxvHsDyY8IfP8=
+	t=1713288360; cv=none; b=q3AWD239Ld+0u/m7GBMb8BPfLkRj8iG+eupZreLbGnzDaDzNu+WYTAsp4+NlbXtZg0t9AKBOxyX8iDzAL+2EACFm9rQrUy2VR1p4WF9QxJFn4DdHstLra2YtnyZNfmuu1sd6Bzq8vvfR7g1IowcHsyLDq4WXYLdrJMcyNPzD384=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713286848; c=relaxed/simple;
-	bh=x6r5o+Y1uVuGcoWsA5eKhPku/gOCM3vSqbcKMRBS2Zs=;
-	h=Date:From:To:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=D15oy+piu6EAJREDyYt5ofWL1NZh+B+lCN0iQcxPOHM319bneXjlxDo0VgYW+n56fde1ln8vriwWZ52v6pPXhik+UinDZ4FKZJM4gj4akultS1tNTL1lulBOJBF2/NAdtM3pN+KrPHq0Y0PdlHlfOfP8LgIae2KRl+c5f8uinuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net; spf=pass smtp.mailfrom=tnonline.net; dkim=pass (2048-bit key) header.d=tnonline.net header.i=@tnonline.net header.b=Rvqx8CXr; arc=none smtp.client-ip=65.109.230.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tnonline.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tnonline.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=tnonline.net; s=default; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Subject:References:In-Reply-To:Message-ID:To:From:Date:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=NaJ505wUKlADMx2acrhRWTEiCP9hfkPkdlBmEy3cY48=; t=1713286846; x=1714496446; 
-	b=Rvqx8CXrOg+S+cRgXR7KegHbz5cwS/raipjpylcuBDU+2E0+YQkRQ32K+J+sAbwg5FQuG1tHnVJ
-	O3RVf16sb5C2Ay2SFGUtDJy8B5cQa2hAcyf3Ofgmxgy0ztL98N2Ca7yT1fke8YWfX1tbJuKtWaT+A
-	DbLu0EbNtw0ogIfDvALCyn9zg7S63g/VtVgrQ1iUjdUSprIQS+RF7mIdNpjRrwBz+D0XLUj3ctckC
-	WD3aZJjzXrGWSJ2UcvYMaqsXBaHGsYTeoCKc3XnPaSvKpg7GzIC1xCRtSwDVz6UL2bzlHtHOq1V63
-	DK/B6p8StR3dZoBCqvZW9MZRhVjJmlmjpOnQ==;
-Received: from tnonline.net ([2001:470:28:704::1]:51054)
-	by mx.tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.97.1)
-	(envelope-from <postmaster@tnonline.net>)
-	id 1rwmAV-000000005V1-1xpf;
-	Tue, 16 Apr 2024 17:00:28 +0000
-Received: from [192.168.0.132] (port=53870)
-	by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-	(Exim 4.97.1)
-	(envelope-from <forza@tnonline.net>)
-	id 1rwmAR-00000000ETJ-2lFJ;
-	Tue, 16 Apr 2024 19:00:23 +0200
-Date: Tue, 16 Apr 2024 19:00:23 +0200 (GMT+02:00)
-From: Forza <forza@tnonline.net>
-To: Leszek Dubiel <leszek@dubiel.pl>, HAN Yuwei <hrx@bupt.moe>,
-	linux-btrfs@vger.kernel.org
-Message-ID: <3aefeb1.20bf1a80.18ee7da3d40@tnonline.net>
-In-Reply-To: <b2806d95-a50c-41a2-b321-cf62c4f28966@dubiel.pl>
-References: <47e425a3-76b9-4e51-93a0-cde31dd39003@dubiel.pl> <79D2FA23B59927D1+bde927bc-1ccf-4a5d-95fb-9389906d33f6@bupt.moe> <b2806d95-a50c-41a2-b321-cf62c4f28966@dubiel.pl>
-Subject: =?UTF-8?Q?Re:_enospc_errors_during_balanc?=
- =?UTF-8?Q?e_=E2=80=94_how_to_prevent_out_of_space?=
+	s=arc-20240116; t=1713288360; c=relaxed/simple;
+	bh=/kWlJSS7zBtJtDgV8EHoeQt3koCkXLMn2okRgHvcohw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yf6i7Cf4OOS3G3WwwitK4ZpwWq/L7n39HAzHcHZ0yVFlv49+7a6rebZ5VkbkxzAWy83Emf4ftLq0/q+czxT0Olkn2Wl6iXPAJZf7r4VZvbBrYIEMFwWlSOQVKHZz5cDIdNw/ZHz7U+sxwj2+SFhNxLO5Kx2gbbHXV+nSMn3J81w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=mV98KsJH; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4dac4791267so1548578e0c.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 10:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713288356; x=1713893156; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2mTvmt2RHf+Cx+fN/+61PRl0LJepWHQcF3XxlfhqGDg=;
+        b=mV98KsJHxZsz/xABC12NqQ/tN5EAW+Ots+lqbG+WeCYjfGI3Oy48Nf4ezZgs6bGLSc
+         QODn1PGf2R5/vXCYwTRPit1dDoLq55jEp0BL2l9EBl7uKKcogVpwjDwQRA7AlxAgGqys
+         vBZqQfMYTOmkZTq8Gd22xHBZ2qbtoERc6BypvtIIQP1VWQ/eij4E4r38NoFTDeSQmd2w
+         /9Z3LBG+3s6TOVjyu95HJ5AG/kyFAlpyFE4A7COkHhvjeSOCTtcNY3DBFWKsDnRoKJV/
+         fBfBi6VfMDFEwDJIM8eiDIS/5WSHxIB29rhvAlr5uSW9fRStolJWluEl8P0ezsHtc7jQ
+         7tww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713288356; x=1713893156;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2mTvmt2RHf+Cx+fN/+61PRl0LJepWHQcF3XxlfhqGDg=;
+        b=nBBfvul8EDYXUGEW3R7Z2SSUMJEE5dIvCMXFnC3TH0kSBXoO3mrakLQ5pAREFkOVMI
+         1HXz7Vv26QSqWixw3s0YRrqz11HmdMZU/rM9GSEgMI16+35l+sHmfgKt9NLEwZDHeOqU
+         zTKoDLSuDPHVew2qHNNYCkgEjMoThSEoPNJ2B5zXLif9UlCSfDQOpQ7+K8w+URRmxuFf
+         PKsKabDvhxvTH5+cXQuOodTLNTU/tIT1E+rang1o1JNLfLl68Dh8n4NfWJN/fIGACCm8
+         QsjlRcK+U7th+dFhDJQBPDYKCRexB+A5TtGCQgU1pn1aBYk89IMd27FkvXen3vHgVnd2
+         GpZw==
+X-Gm-Message-State: AOJu0YxVVV79NoBMIJW7INFZHrtRni547pOjI9KIM48s/Z/rETyxkNuq
+	z3mErx/sk3ytmXwW22kF623OaSRJaZVosgTAupGBiIlFYuRt+1KjXJMM4+s7BaEDYl3jEqRfgzh
+	7
+X-Google-Smtp-Source: AGHT+IEPlmhXWe+jXCyjnrZVEfbIIVIMW8v/oZY5AxWYobvJkwvJ09TChlhCDGCIzdrN1QZVtAGlkQ==
+X-Received: by 2002:a05:6122:2009:b0:4da:a82e:95f5 with SMTP id l9-20020a056122200900b004daa82e95f5mr10387710vkd.5.1713288356331;
+        Tue, 16 Apr 2024 10:25:56 -0700 (PDT)
+Received: from localhost ([76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id b12-20020ad4518c000000b0069b27dad8c7sm7519284qvp.101.2024.04.16.10.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 10:25:55 -0700 (PDT)
+Date: Tue, 16 Apr 2024 13:25:55 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 08/10] btrfs: add a shrinker for extent maps
+Message-ID: <20240416172555.GA2094489@perftesting>
+References: <cover.1713267925.git.fdmanana@suse.com>
+ <4bfde54904b5a91a71eb0d86b9c78367865f93d8.1713267925.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: R2Mail2
-X-Spam-Score: -1.6 (-)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4bfde54904b5a91a71eb0d86b9c78367865f93d8.1713267925.git.fdmanana@suse.com>
 
+On Tue, Apr 16, 2024 at 02:08:10PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Extent maps are used either to represent existing file extent items, or to
+> represent new extents that are going to be written and the respective file
+> extent items are created when the ordered extent completes.
+> 
+> We currently don't have any limit for how many extent maps we can have,
+> neither per inode nor globally. Most of the time this not too noticeable
+> because extent maps are removed in the following situations:
+> 
+> 1) When evicting an inode;
+> 
+> 2) When releasing folios (pages) through the btrfs_release_folio() address
+>    space operation callback.
+> 
+>    However we won't release extent maps in the folio range if the folio is
+>    either dirty or under writeback or if the inode's i_size is less than
+>    or equals to 16M (see try_release_extent_mapping(). This 16M i_size
+>    constraint was added back in 2008 with commit 70dec8079d78 ("Btrfs:
+>    extent_io and extent_state optimizations"), but there's no explanation
+>    about why we have it or why the 16M value.
+> 
+> This means that for buffered IO we can reach an OOM situation due to too
+> many extent maps if either of the following happens:
+> 
+> 1) There's a set of tasks constantly doing IO on many files with a size
+>    not larger than 16M, specially if they keep the files open for very
+>    long periods, therefore preventing inode eviction.
+> 
+>    This requires a really high number of such files, and having many non
+>    mergeable extent maps (due to random 4K writes for example) and a
+>    machine with very little memory;
+> 
+> 2) There's a set tasks constantly doing random write IO (therefore
+>    creating many non mergeable extent maps) on files and keeping them
+>    open for long periods of time, so inode eviction doesn't happen and
+>    there's always a lot of dirty pages or pages under writeback,
+>    preventing btrfs_release_folio() from releasing the respective extent
+>    maps.
+> 
+> This second case was actually reported in the thread pointed by the Link
+> tag below, and it requires a very large file under heavy IO and a machine
+> with very little amount of RAM, which is probably hard to happen in
+> practice in a real world use case.
+> 
+> However when using direct IO this is not so hard to happen, because the
+> page cache is not used, and therefore btrfs_release_folio() is never
+> called. Which means extent maps are dropped only when evicting the inode,
+> and that means that if we have tasks that keep a file descriptor open and
+> keep doing IO on a very large file (or files), we can exhaust memory due
+> to an unbounded amount of extent maps. This is especially easy to happen
+> if we have a huge file with millions of small extents and their extent
+> maps are not mergeable (non contiguous offsets and disk locations).
+> This was reported in that thread with the following fio test:
+> 
+>    $ cat test.sh
+>    #!/bin/bash
+> 
+>    DEV=/dev/sdj
+>    MNT=/mnt/sdj
+>    MOUNT_OPTIONS="-o ssd"
+>    MKFS_OPTIONS=""
+> 
+>    cat <<EOF > /tmp/fio-job.ini
+>    [global]
+>    name=fio-rand-write
+>    filename=$MNT/fio-rand-write
+>    rw=randwrite
+>    bs=4K
+>    direct=1
+>    numjobs=16
+>    fallocate=none
+>    time_based
+>    runtime=90000
+> 
+>    [file1]
+>    size=300G
+>    ioengine=libaio
+>    iodepth=16
+> 
+>    EOF
+> 
+>    umount $MNT &> /dev/null
+>    mkfs.btrfs -f $MKFS_OPTIONS $DEV
+>    mount $MOUNT_OPTIONS $DEV $MNT
+> 
+>    fio /tmp/fio-job.ini
+>    umount $MNT
+> 
+> Monitoring the btrfs_extent_map slab while running the test with:
+> 
+>    $ watch -d -n 1 'cat /sys/kernel/slab/btrfs_extent_map/objects \
+>                         /sys/kernel/slab/btrfs_extent_map/total_objects'
+> 
+> Shows the number of active and total extent maps skyrocketing to tens of
+> millions, and on systems with a short amount of memory it's easy and quick
+> to get into an OOM situation, as reported in that thread.
+> 
+> So to avoid this issue add a shrinker that will remove extents maps, as
+> long as they are not pinned, and takes proper care with any concurrent
+> fsync to avoid missing extents (setting the full sync flag while in the
+> middle of a fast fsync). This shrinker is triggered through the callbacks
+> nr_cached_objects and free_cached_objects of struct super_operations.
+> 
+> The shrinker will iterates over all roots and over all inodes of each
+> root, and keeps track of the last scanned root and inode, so that the
+> next time it runs, it starts from that root and from the next inode.
+> This is similar to what xfs does for its inode reclaim (implements those
+> callbacks, and cycles through inodes by starting from where it ended
+> last time).
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
+This is great, thanks Filipe!
 
----- From: Leszek Dubiel <leszek@dubiel.pl> -- Sent: 2024-04-16 - 17:17 ---=
--
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
->=20
->=20
->>>
->>>
->>> I noticed 1Mb for Unallocated space, so
->>> I have run multiple times balance (data usage filter):
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs balance start -d=
-usage=3DXX,limit=3D1 /
->>>
->>>
->>> and it didn't help.
->> You can try add a small device (USB stick) and rebalance.
->>> It even got error no space when balancing:
->=20
->=20
-> When it refused to balance i tried musage, dusage, few times and it helpe=
-d.
-> Thanks for tip.
->=20
+Thanks,
 
-It is not wise to balance metadata block groups because it can directly lea=
-d to the situation you ended up with. Btrfs needs unallocated disk space to=
- be able to allocate new data or metadata chunks If it cannot allocate new =
-data chunks you will see an out of disk space error. However if btrfs canno=
-t allocate new metadata chunks, the filesystem will turn read-only, making =
-it much harder to fix - as you cannot balance or add additional space in an=
- read-only filesystem.=20
-
-
->=20
->=20
->=20
->> If you have zabbix or other monitoring mechanism, you can try=20
->> monitoring "Unallocated" and reserve at least 2 block group (2GiB). Or=
-=20
->> you can have a weekly timer to rebalance your btrfs volume.
->> kdave/btrfsmaintenance should helps you.
->=20
-> I started to run this script from cron every 10 minutes:
->=20
->=20
-> #!/usr/bin/bash
->=20
-> mount | sed -nr 's%^/dev/sd[a-z][0-9] on (/[/_[:alnum:]]+) type btrfs=20
-> .*$%\1%; T; p' |
-> while read mnt; do
->  =C2=A0=C2=A0 =C2=A0if
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 btrfs dev usage "$mnt" -g |
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 perl -ne '/Unallocated: +([0-9]+\.=
-[0-9]{2})GiB/ and $1 < 64 and=20
-> print $1' |
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 grep -q .
->  =C2=A0=C2=A0 =C2=A0then
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 echo "porz=C4=85dkowa=C4=87 $mnt"
->=20
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 for usa in $(seq 0 10 100); do
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # I don't know =
-whether to start with "dusage" or "musage",=20
-> so i shuffle it;
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # 15 april 2024=
- my serwer was locked, "dusage" returned=20
-> "enospace", and it
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # got unlocked =
-after "musage=3D0"
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 {
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
-=A0 echo d $usa
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
-=A0 echo m $usa
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 } | shuf
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 done |
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 while read typ usa; do
->=20
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 echo; echo; dat=
-e; echo "balance type=3D$typ, usage=3D$usa"
->=20
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 out=3D"$(btrfs =
-balance start -${typ}usage=3D$usa,limit=3D3 "$mnt"=20
-> 2>&1)"
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 echo "$out"
->=20
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # if nothing wa=
-s done, then try higher usage
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 echo "$out" | g=
-rep -q "had to relocate 0 out of" && continue
->=20
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 # otherwise fin=
-ish: on error or on successful relocate
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 break
->  =C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0 done
->  =C2=A0=C2=A0 =C2=A0fi
-> done
->=20
->=20
->=20
-
-Do you mean you run this continuously on your filesystem? This is normally =
-not required and will increase wear on your disks.=20
->=20
->=20
->=20
->=20
->> "Unallocated" and reserve at least If you have zabbix or other=20
->> monitoring mechanism, you can try monitoring 2 block group (2GiB). Or=20
->> you can have a weekly timer to rebalance your btrfs volume.
->> kdave/btrfsmaintenance should helps you.=20
->=20
-> Thanks for hints :) :)
->=20
-> This solves my questions:
->=20
-> 1. i have to rebalance when Unallocated is low
->=20
-> 2. i have to keep 2Gb at least.
-
-You should keep at least 1GB x profile mode. That is for DUP, 2GB, and for =
-RAID1, at least 1GB on two devices.
-
-It would be better to have more, to be safe.
-
-An option that could be used is 'bg_reclaim_threshold', which is a sysfs kn=
-ob to let the kernel automatically reclaim (balance) block groups that fall=
- under a specific threshold.
-
-https://btrfs.readthedocs.io/en/latest/ch-sysfs.html
-
->=20
->=20
->=20
->=20
->=20
-
-
+Josef
 
