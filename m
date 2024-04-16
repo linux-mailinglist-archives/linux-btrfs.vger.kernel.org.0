@@ -1,247 +1,213 @@
-Return-Path: <linux-btrfs+bounces-4317-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4318-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23AB48A73E8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 20:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A69E88A7538
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 22:07:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FE3CB23E0B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 18:54:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11291B22A82
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 20:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E5013791E;
-	Tue, 16 Apr 2024 18:54:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qHbFDiEm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB587139CE7;
+	Tue, 16 Apr 2024 20:07:23 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from naboo.endor.pl (naboo.endor.pl [91.194.229.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BDFA137777;
-	Tue, 16 Apr 2024 18:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D981386A8
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 20:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.194.229.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713293678; cv=none; b=I7WmiopufYAaG6npum2vIAtq7pdiyj0188KVIDCv0yGzAeVHXqhsceKjX8We99nAgy1jaYvuSDg8UEs84FXgdLrP06u99a56cSTJ3LW191i+Htiqf+YUKGGaiyIelNSyG/XM21Ura5dmjm8bMYE1yE3LDrEhQAF8fZOMAxE6c6Y=
+	t=1713298043; cv=none; b=nyJwGzcCvjNN9/9MhM7hpwJ6j2nx9CJ/IuNq77gx2Hk4fC5IckzACdVAEfcpCEU/UGyshQENTZfOiqFapmUy8dSPFrLlmNtlQdgznKcry/fCDoRTouEgwpIa4C3bjG4dsy1NEkjOh+XwMLFmi6wxr6xwdVJdTICsPLlXa2VWeXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713293678; c=relaxed/simple;
-	bh=xJ3ftGNzRS7dJYoIVM3ZHP3r4xo+Wd1ulNlCQl45kc0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kgg8olNRhP/mwOTynzedS0ozq+T0dBkiIUX2m8Tr+FreKRFwSE7SW2FySMHZdMBIyFae+LnFvEXfLBCUtAyqpuPDszZ+5Fdr+GNu7peEY2Md0XJ88bGpd4vqMFLihgvsVm5gSZi2Xt3CxfA3egPFp2AOU0hxwGIyCwp5WSlYoqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qHbFDiEm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88F9DC113CE;
-	Tue, 16 Apr 2024 18:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713293677;
-	bh=xJ3ftGNzRS7dJYoIVM3ZHP3r4xo+Wd1ulNlCQl45kc0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qHbFDiEmyK94B/DlFB9XUUXHA5ZV2RZLCjsG/Y3GIKTP/okcXqwPVQwpaCSob8QBL
-	 1UT1fXQPB70laIUyvuCJ+CdTxGk4EiM+723TXnuQfYPoGPYJnm1/H2N4SSq0+i7/5a
-	 RKiBe3Uat/89YPEkuGLh/8j2txTbOfcVn8gCZdgIGyKPF8J7LbGjBn/UvVe0e5Rlb5
-	 fdkaB9rW91owt8Jb8wRQNW0uid9mI4VBauGEn7p466zlCANXqrUwStXQlWXc9lqKFg
-	 17fUG2T2lrZv8QU3FuLpoUz69MAAWwLYun9TODJpp9p5ro2NeDKOw6wT9+2M/nVYsO
-	 8WBy2xvtT40UQ==
-Date: Tue, 16 Apr 2024 11:54:37 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Hans Holmberg <Hans.Holmberg@wdc.com>
-Cc: Zorro Lang <zlang@redhat.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	Damien Le Moal <Damien.LeMoal@wdc.com>,
-	Matias =?iso-8859-1?Q?Bj=F8rling?= <Matias.Bjorling@wdc.com>,
-	Naohiro Aota <Naohiro.Aota@wdc.com>,
-	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-	"hch@lst.de" <hch@lst.de>,
-	"fstests@vger.kernel.org" <fstests@vger.kernel.org>
-Subject: Re: [PATCH] generic: add gc stress test
-Message-ID: <20240416185437.GC11935@frogsfrogsfrogs>
-References: <20240415112259.21760-1-hans.holmberg@wdc.com>
- <e748ee35-e53e-475a-8f38-68522fb80bee@wdc.com>
+	s=arc-20240116; t=1713298043; c=relaxed/simple;
+	bh=GVKv2UNCjOU+S6eP/UWN8cHS+vsoVaSEpZLfVU79SzE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=ZJe60NuABa7nfIYdHr2YHwPfxDtQhRImAM3WryTr6z4xbLHUrxLnd9JlvPTiEuCVLa8/ypuAJprSQxj+YJ7In58QF9vv1cciJDjuDD9D2ls46A5GWdWHfr+bxYW+KuRZLXryT0lyi836hxiuDuXog2Wf1mniIsO6V2dpbuASPnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubiel.pl; spf=pass smtp.mailfrom=dubiel.pl; arc=none smtp.client-ip=91.194.229.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubiel.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubiel.pl
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by naboo.endor.pl (Postfix) with ESMTP id 1F52CC0801C
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 22:07:18 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at 
+Received: from naboo.endor.pl ([91.194.229.15])
+	by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id DLuvXUZQcY_p for <linux-btrfs@vger.kernel.org>;
+	Tue, 16 Apr 2024 22:07:15 +0200 (CEST)
+Received: from [192.168.1.195] (unknown [81.56.116.160])
+	(Authenticated sender: leszek@dubiel.pl)
+	by naboo.endor.pl (Postfix) with ESMTPSA id 4CDC8C08007
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 22:07:15 +0200 (CEST)
+Message-ID: <99701acc-161b-477c-b1b3-d61e95903045@dubiel.pl>
+Date: Tue, 16 Apr 2024 22:07:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e748ee35-e53e-475a-8f38-68522fb80bee@wdc.com>
+User-Agent: Mozilla Thunderbird
+From: Leszek Dubiel <leszek@dubiel.pl>
+Subject: =?UTF-8?Q?Re=3A_enospc_errors_during_balance_=E2=80=94_how_to_preve?=
+ =?UTF-8?Q?nt_out_of_space?=
+To: linux-btrfs@vger.kernel.org
+References: <47e425a3-76b9-4e51-93a0-cde31dd39003@dubiel.pl>
+ <79D2FA23B59927D1+bde927bc-1ccf-4a5d-95fb-9389906d33f6@bupt.moe>
+ <b2806d95-a50c-41a2-b321-cf62c4f28966@dubiel.pl>
+ <3aefeb1.20bf1a80.18ee7da3d40@tnonline.net>
+Content-Language: pl-PL
+In-Reply-To: <3aefeb1.20bf1a80.18ee7da3d40@tnonline.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 09:07:43AM +0000, Hans Holmberg wrote:
-> +Zorro (doh!)
-> 
-> On 2024-04-15 13:23, Hans Holmberg wrote:
-> > This test stresses garbage collection for file systems by first filling
-> > up a scratch mount to a specific usage point with files of random size,
-> > then doing overwrites in parallel with deletes to fragment the backing
-> > storage, forcing reclaim.
-> > 
-> > Signed-off-by: Hans Holmberg <hans.holmberg@wdc.com>
-> > ---
-> > 
-> > Test results in my setup (kernel 6.8.0-rc4+)
-> > 	f2fs on zoned nullblk: pass (77s)
-> > 	f2fs on conventional nvme ssd: pass (13s)
-> > 	btrfs on zoned nublk: fails (-ENOSPC)
-> > 	btrfs on conventional nvme ssd: fails (-ENOSPC)
-> > 	xfs on conventional nvme ssd: pass (8s)
-> > 
-> > Johannes(cc) is working on the btrfs ENOSPC issue.
-> > 	
-> >   tests/generic/744     | 124 ++++++++++++++++++++++++++++++++++++++++++
-> >   tests/generic/744.out |   6 ++
-> >   2 files changed, 130 insertions(+)
-> >   create mode 100755 tests/generic/744
-> >   create mode 100644 tests/generic/744.out
-> > 
-> > diff --git a/tests/generic/744 b/tests/generic/744
-> > new file mode 100755
-> > index 000000000000..2c7ab76bf8b1
-> > --- /dev/null
-> > +++ b/tests/generic/744
-> > @@ -0,0 +1,124 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2024 Western Digital Corporation.  All Rights Reserved.
-> > +#
-> > +# FS QA Test No. 744
-> > +#
-> > +# Inspired by btrfs/273 and generic/015
-> > +#
-> > +# This test stresses garbage collection in file systems
-> > +# by first filling up a scratch mount to a specific usage point with
-> > +# files of random size, then doing overwrites in parallel with
-> > +# deletes to fragment the backing zones, forcing reclaim.
-> > +
-> > +. ./common/preamble
-> > +_begin_fstest auto
-> > +
-> > +# real QA test starts here
-> > +
-> > +_require_scratch
-> > +
-> > +# This test requires specific data space usage, skip if we have compression
-> > +# enabled.
-> > +_require_no_compress
-> > +
-> > +M=$((1024 * 1024))
-> > +min_fsz=$((1 * ${M}))
-> > +max_fsz=$((256 * ${M}))
-> > +bs=${M}
-> > +fill_percent=95
-> > +overwrite_percentage=20
-> > +seq=0
-> > +
-> > +_create_file() {
-> > +	local file_name=${SCRATCH_MNT}/data_$1
-> > +	local file_sz=$2
-> > +	local dd_extra=$3
-> > +
-> > +	POSIXLY_CORRECT=yes dd if=/dev/zero of=${file_name} \
-> > +		bs=${bs} count=$(( $file_sz / ${bs} )) \
-> > +		status=none $dd_extra  2>&1
-> > +
-> > +	status=$?
-> > +	if [ $status -ne 0 ]; then
-> > +		echo "Failed writing $file_name" >>$seqres.full
-> > +		exit
-> > +	fi
-> > +}
+> It is not wise to balance metadata block groups
 
-I wonder, is there a particular reason for doing all these file
-operations with shell code instead of using fsstress to create and
-delete files to fill the fs and stress all the zone-gc code?  This test
-reminds me a lot of generic/476 but with more fork()ing.
+I have never run balancing with musage=.
 
---D
+Disk got full.
+I remove snapshots.
+Run balance with  dusage= many times.
+Hit "no space" error agian.
+As a last rescue try i used  musage=0.
+This helped.
 
-> > +
-> > +_total_M() {
-> > +	local total=$(stat -f -c '%b' ${SCRATCH_MNT})
-> > +	local bs=$(stat -f -c '%S' ${SCRATCH_MNT})
-> > +	echo $(( ${total} * ${bs} / ${M}))
-> > +}
-> > +
-> > +_used_percent() {
-> > +	local available=$(stat -f -c '%a' ${SCRATCH_MNT})
-> > +	local total=$(stat -f -c '%b' ${SCRATCH_MNT})
-> > +	echo $((100 - (100 * ${available}) / ${total} ))
-> > +}
-> > +
-> > +
-> > +_delete_random_file() {
-> > +	local to_delete=$(find ${SCRATCH_MNT} -type f | shuf | head -1)
-> > +	rm $to_delete
-> > +	sync ${SCRATCH_MNT}
-> > +}
-> > +
-> > +_get_random_fsz() {
-> > +	local r=$RANDOM
-> > +	echo $(( ${min_fsz} + (${max_fsz} - ${min_fsz}) * (${r} % 100) / 100 ))
-> > +}
-> > +
-> > +_direct_fillup () {
-> > +	while [ $(_used_percent) -lt $fill_percent ]; do
-> > +		local fsz=$(_get_random_fsz)
-> > +
-> > +		_create_file $seq $fsz "oflag=direct conv=fsync"
-> > +		seq=$((${seq} + 1))
-> > +	done
-> > +}
-> > +
-> > +_mixed_write_delete() {
-> > +	local dd_extra=$1
-> > +	local total_M=$(_total_M)
-> > +	local to_write_M=$(( ${overwrite_percentage} * ${total_M} / 100 ))
-> > +	local written_M=0
-> > +
-> > +	while [ $written_M -lt $to_write_M ]; do
-> > +		if [ $(_used_percent) -lt $fill_percent ]; then
-> > +			local fsz=$(_get_random_fsz)
-> > +
-> > +			_create_file $seq $fsz "$dd_extra"
-> > +			written_M=$((${written_M} + ${fsz}/${M}))
-> > +			seq=$((${seq} + 1))
-> > +		else
-> > +			_delete_random_file
-> > +		fi
-> > +	done
-> > +}
-> > +
-> > +seed=$RANDOM
-> > +RANDOM=$seed
-> > +echo "Running test with seed=$seed" >>$seqres.full
-> > +
-> > +_scratch_mkfs_sized $((8 * 1024 * 1024 * 1024)) >>$seqres.full
-> > +_scratch_mount
-> > +
-> > +echo "Starting fillup using direct IO"
-> > +_direct_fillup
-> > +
-> > +echo "Starting mixed write/delete test using direct IO"
-> > +_mixed_write_delete "oflag=direct"
-> > +
-> > +echo "Starting mixed write/delete test using buffered IO"
-> > +_mixed_write_delete ""
-> > +
-> > +echo "Syncing"
-> > +sync ${SCRATCH_MNT}/*
-> > +
-> > +echo "Done, all good"
-> > +
-> > +# success, all done
-> > +status=0
-> > +exit
-> > diff --git a/tests/generic/744.out b/tests/generic/744.out
-> > new file mode 100644
-> > index 000000000000..b40c2f43108e
-> > --- /dev/null
-> > +++ b/tests/generic/744.out
-> > @@ -0,0 +1,6 @@
-> > +QA output created by 744
-> > +Starting fillup using direct IO
-> > +Starting mixed write/delete test using direct IO
-> > +Starting mixed write/delete test using buffered IO
-> > +Syncing
-> > +Done, all good
-> 
+
+In script from Kdave:
+
+https://github.com/kdave/btrfsmaintenance/blob/be42cb6267055d125994abd6927cf3a26deab74c/btrfs-balance.sh#L55
+
+Anyway — I will use musage as a last resort.
+
+
+
+
+
+>   Btrfs needs unallocated disk space to be able to allocate new data or metadata chunks
+
+Yes, thank you.
+
+
+
+
+
+
+>   If it cannot allocate new data chunks you will see an out of disk space error. However if btrfs cannot allocate new metadata chunks, the filesystem will turn read-only, making it much harder to fix - as you cannot balance or add additional space in an read-only filesystem.
+
+Now I understand it. :)
+
+
+
+
+>> I started to run this script from cron every 10 minutes:
+>>
+>>
+>> #!/usr/bin/bash
+>>
+>> mount | sed -nr 's%^/dev/sd[a-z][0-9] on (/[/_[:alnum:]]+) type btrfs
+>> .*$%\1%; T; p' |
+>> while read mnt; do
+>>       if
+>>           btrfs dev usage "$mnt" -g |
+>>           perl -ne '/Unallocated: +([0-9]+\.[0-9]{2})GiB/ and $1 < 64 and
+>> print $1' |
+>>           grep -q .
+>>       then
+>>           echo "porządkować $mnt"
+>>
+>>           for usa in $(seq 0 10 100); do
+>>               # I don't know whether to start with "dusage" or "musage",
+>> so i shuffle it;
+>>               # 15 april 2024 my serwer was locked, "dusage" returned
+>> "enospace", and it
+>>               # got unlocked after "musage=0"
+>>               {
+>>                   echo d $usa
+>>                   echo m $usa
+>>               } | shuf
+>>           done |
+>>           while read typ usa; do
+>>
+>>               echo; echo; date; echo "balance type=$typ, usage=$usa"
+>>
+>>               out="$(btrfs balance start -${typ}usage=$usa,limit=3 "$mnt"
+>> 2>&1)"
+>>               echo "$out"
+>>
+>>               # if nothing was done, then try higher usage
+>>               echo "$out" | grep -q "had to relocate 0 out of" && continue
+>>
+>>               # otherwise finish: on error or on successful relocate
+>>               break
+>>           done
+>>       fi
+>> done
+>>
+> Do you mean you run this continuously on your filesystem? This is normally not required and will increase wear on your disks.
+
+Yes. But it runs balance only when Unallocated is less then limit.
+
+
+>> Thanks for hints :) :)
+>>
+>> This solves my questions:
+>>
+>> 1. i have to rebalance when Unallocated is low
+>>
+>> 2. i have to keep 2Gb at least.
+> You should keep at least 1GB x profile mode. That is for DUP, 2GB, and for RAID1, at least 1GB on two devices.
+
+Great info. :)
+
+My raid is 3 disk, so I will set limit of 3 disk * 1Gb = 3Gb minimum.
+
+
+> It would be better to have more, to be safe.
+>
+> An option that could be used is 'bg_reclaim_threshold', which is a sysfs knob to let the kernel automatically reclaim (balance) block groups that fall under a specific threshold.
+>
+> https://btrfs.readthedocs.io/en/latest/ch-sysfs.html
+
+On my system it is set to 75.
+
+Disk got full.
+I remove snapshots.
+Disk showed it has free space 1Tb out of 8TB.
+And I got "no space" error again.
+I spotted then "Unallocated = 1 MiB",
+then started to balance by hand.
+
+I will observe that system and test all i know from your help.
+Thank you.
+
+
+
+# cat 
+/sys/fs/btrfs/ec3525ef-b73a-452a-a4ee-86286252d730/bg_reclaim_threshold
+75
+
+
+# btrfs fi show /
+Label: none  uuid: ec3525ef-b73a-452a-a4ee-86286252d730
+     Total devices 3 FS bytes used 7.22TiB
+     devid    1 size 5.43TiB used 5.36TiB path /dev/sdc3
+     devid    2 size 5.43TiB used 5.36TiB path /dev/sda3
+     devid    3 size 5.43TiB used 5.37TiB path /dev/sdb3
+
+
+
+# btrfs fi df /
+Data, RAID1: total=8.00TiB, used=7.18TiB
+System, RAID1: total=32.00MiB, used=1.36MiB
+Metadata, RAID1: total=43.00GiB, used=39.31GiB
+GlobalReserve, single: total=512.00MiB, used=48.00KiB
+
+
+
+
+
+
+
 
