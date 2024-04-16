@@ -1,205 +1,187 @@
-Return-Path: <linux-btrfs+bounces-4288-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4289-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5368A5E6D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 01:36:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C9388A6116
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 04:37:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F3951C20DD6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Apr 2024 23:36:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07AEE1F21BED
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Apr 2024 02:37:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3B1159206;
-	Mon, 15 Apr 2024 23:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27617FC1F;
+	Tue, 16 Apr 2024 02:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hBwCC/0u";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="vMXHWb9d"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VyBHEnFE";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="0BJfdosY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04DD15746D
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Apr 2024 23:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713224170; cv=none; b=MYT1ViCIYjzookKPeTs2Yu+rcXmhTAS8jrIV0m0u4BVCm2ojDZJp3YQlEcjPdA/0tQ9VjsiV6OluDAiH2Emyl74+ihE8rmD3A4h9NRIrMnxsxqs8PQnkUFHiCVZtUNLIDuPQEo49ZoWYWqiCjlcRtWUe0VTE2cTX2Y7SY7cilRc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713224170; c=relaxed/simple;
-	bh=iyigEEghyqfaq4beWuemVzPOxUhbZC7lm9cajPWnN5A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Cy0owJ7A8lLFpAnFCGu6Sl4r35ltg+dHRdofoAwZo/rtjbeGi0kja61O8i9c/r2EwsIQoTD2V0EOlcXjqmU3u79BwX8SFex48lcC1Lpsq0gO2Fs0z4btElYt9DxTW5tnkT2B5ICsFu+nD1IPK1Gt7N7U7sDUlLX4LiB7zJ6yk5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hBwCC/0u; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=vMXHWb9d; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F0AA83762A;
-	Mon, 15 Apr 2024 23:36:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713224164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W+W3eyhTPhFh3H+d3eHTVEFq9E5NTf0/YVcrJToa2As=;
-	b=hBwCC/0uhGOOZNp7NhwSnX+IP49gYmJnsqH9ekc3zUGXdbyczIcqi7Oyq9ggG7DbvD4IGJ
-	vwa4iJdmi2SCPfUNJ7yA5Rq+oc00Ll5xUGYQdWaB5iLv4xZgM02P8mS36pNfkL070sYkkb
-	RrKvVoB3Puoz/mKHZnEyDp9WZ/Hbxl8=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713224163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W+W3eyhTPhFh3H+d3eHTVEFq9E5NTf0/YVcrJToa2As=;
-	b=vMXHWb9dhhhg7F02WDtx8zkJ7QIXfVKKu+Y9E7/5VRYW/srezJ+yJ+S8bbLQak/NEEdEIY
-	QvV3gEc2FPvqa5Qj8w1RdlgdxwKPdEdOGnr1DUqCmWcS9gWVAlQ7BRgHAOh/Yom9qZJl6d
-	zBAarC2VVuowKZH0W4tXgFkzHfhzPzM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E563A1368B;
-	Mon, 15 Apr 2024 23:36:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OKbLKOK5HWZyTQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 15 Apr 2024 23:36:02 +0000
-From: Qu Wenruo <wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6582A171D2
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Apr 2024 02:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713235042; cv=fail; b=K5Ht7/O2Ln2/62WHMq8ap3GSDCc3Q2jUpDq/ciZxRaCcRO5uzNgtV8fc1wUm/fZolgB1MzkNHKfrHKuas7YJ0e8QuPxcH6pwaQdrTY9N+STqqlWlmQmNIQ0mvf1X9kt3z9mL0FxSeoXUCjk37f8phFlE4Ie3ilTk9aWwpvY4FHo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713235042; c=relaxed/simple;
+	bh=FnYkrBkwtT5j+Qq47AL5cyEpMnx3nCHqkAWMPv9M7AA=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=PeAToXABRJWgByGc2I2mkbvTwssgDk4OpRDDOUOn52vF8e3QBvdUvjMeLhhLZpHW0YQb3un3q9CB74gXx23BuZjk4cr3Q/hHV10j0ZY0Uq9r8/mquIi4Pm94D9oMO92w52vNnlR9pTyZWGBM0hctVGFUomWdDQ5rNXhjraIe9EE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VyBHEnFE; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=0BJfdosY; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FNE95S017717;
+	Tue, 16 Apr 2024 02:37:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=iSgwe8CysT1mx05Nk6KhDLSEZxIxwKei+7+xbn5eASA=;
+ b=VyBHEnFE1CkD+ZAIxu6fnJnwsLqXk7eRAGvwEqi+NgiJoTEa6INQTe/T63bw6j0e83HF
+ orMppZYIfD4QlauqVE9WDMTtpDW/EPPbFqDMll2l+vRtYCs3cYC8yQ00acq8URB1Dabd
+ SNWiaNXxbfo/mhmU9ktrvvT89Er74FrZJ8S/QaDXI4PRuIjUeGZ8mBpyjkZ2+6JFrdZF
+ d8Xg8CERfMKS4R3JEOwX+lKJZU/zU7p8bKyEvUxrZ9NKSfshVnN9d/iogKL55EW+VC0y
+ 19r+XJ5udR9T7Jco9F6DX4TjrTkEI3SpUVuTOgWumDv9W9mP6xWnhijNqRl3Lt64IYXU qw== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgffc7pj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Apr 2024 02:37:18 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43G22kdm029018;
+	Tue, 16 Apr 2024 02:37:17 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xfgg6kg13-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Apr 2024 02:37:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T27Zf/zIeiDasuYcc0pIAdXtq24eZxbk/2j7mvOztUb+Ln1snJduTXyH0HU7koJDhG4aDTXQIuWnp1mwpfDpdwkn8VLyLUOcWsi3W9k+Ghxes5jNquuldSIYo6jQjOXIc5Mtp0sa5PfgiKAKOsdm3gt5kww+//i+XlOc+gOontk03xkop2ys4aM2ZokIdMW/KhrCXRpOjTH/zCRPir8nGrb03ICkSux5KP4ITFgFx4SGgZHi81CUVjNeWtvxqDLwxY9fap9EO02hETe/ZGlmkHg3BTkk963YL9eruLLmJJxUzsW8FIa/v4y34WbPa+Z1Je3+qXWMjLeDtZ4MU/2UEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iSgwe8CysT1mx05Nk6KhDLSEZxIxwKei+7+xbn5eASA=;
+ b=N8jfphUYWQSfwoouUGWocrTyn4yjWbEh3SeGOibuhLHtdO3YWDb/9fH0Om5tqf2O4DFNROkTHqXlQ+OCmjmnJwPgKQMNm+r85CNGl5SrTZKWhvWWwPp1zPR/rrE+dWot2Lnmq7InBey0GjeJQ5VZDOAdeTE+vsnmR4t/PdoNFh5dMTSh0Aiz/SyxWj/g1v14DpOQwCX8IbXjK9Wzpcb7BbZw7SaRFlF1PLa/YvnYnaH7t+ngFApH+b/2DxXJ8qGTtZc6OBfV2LSDh4h3g3EdkHvRb0mwjkrw5uCklAiks43tfCkAMarr12AsakgWEeslhlKiMOpR42AqvhYLRqDLkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iSgwe8CysT1mx05Nk6KhDLSEZxIxwKei+7+xbn5eASA=;
+ b=0BJfdosYvDU+hikeZIdIdfdrFmJETpilALd6XQwciQSNrL/ZLF9MJxmEBBd7ySMqx+QJgexM5J7TmtjzaV57zSB+IC5cjXFycmSGsR+0J3EEtQmrVfK5bOIgJ2e8dYqpH2+bpPhfIDPy3Np8XssejuX1IqwQ4RvE7vNk3Aippzo=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by CY5PR10MB5937.namprd10.prod.outlook.com (2603:10b6:930:2e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 16 Apr
+ 2024 02:37:15 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
+ 02:37:15 +0000
+From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v5 3/3] btrfs: add extra sanity checks for create_io_em()
-Date: Tue, 16 Apr 2024 09:05:40 +0930
-Message-ID: <b63666662f99e0c93b192bfb539e4d697436c4f4.1713224013.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1713224013.git.wqu@suse.com>
-References: <cover.1713224013.git.wqu@suse.com>
+Cc: Anand Jain <anand.jain@oracle.com>, Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH 1/1] btrfs: report filemap_fdata<write|wait>_range error
+Date: Tue, 16 Apr 2024 10:36:00 +0800
+Message-ID: <80c3c9ccb6e7ea366d88f0e5b2798f5bbd3b381c.1713234880.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.42.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR06CA0007.apcprd06.prod.outlook.com
+ (2603:1096:4:186::9) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
-	RCVD_TLS_ALL(0.00)[]
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CY5PR10MB5937:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc135be7-8a6c-4336-4ec0-08dc5dbe20f1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	1V5gxNXMTIo3PwNwfsYVSEOhTZVeT9bVZhibP3K/+G5XRVuR5vwGIfgTRKpcCj/RWDg9+4qj9JwNzuRorz3ik/RJet+LLdcYk11fXYfPisQGQaAiStzMbQwTCHcg892zAJemP86zuVRIIpYMlZVDOGTp9pHf5QvwuBFElySCFPvOtqeAL0Y45f1rx2IY3qY7Vk/zZ6Ik1p6VfGA4KAXmLPxA1hhlemMKX4xbmcxBNEv5MNUSbDguZ4T7nrGhq4mn1qfsmvk6O9A5qgAOVPxitSTJNxVTrdw1KqYMasljKXsyQJ86kttVdFLatfyq2B56+d2w5UT5ALqWa+KKHNIIPT32SB3YxSERCdTPrxe4fQU3NFF3mDhQx7AT3h3ZRUBLfGvrQHfsADseZCQ6WzcwcATSdnqgqIjEG0Y33a41DVcO5/FIDmnB4cnG4jzDJOdIPdtXtHeVF0vnH9pzeXsWWruthYg2/WOvPdv1ZZusWD1WMELE3UGqS6DJ7q0EcMKZRvypv4EHXwAfjDJvizOsjYX/J2uz8PCzV5SDdj6ojKjPZ/QDsqy7dQLnMuhCs1Rqnts50nVSoqdvW64d09NdKfe4v4zuzkHCM61Es5BvrfeO7KHazKc/sTgu8NwrskAyM9MKVpyJX86pfb/q/pSZmvtJ4ZG1f0+PA/EoLSi3Xec=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?l8pTnuE0T+QKT8mIUZPVvncjrGJT+u2SFo7C7u1IZTvrtVaVQpIRjtjqh/9B?=
+ =?us-ascii?Q?ycyP8I6cP+XR1KG3inEsxdeBAeHKgIshVzHcCXlvea/LzvlxV6F+eqv9BaQj?=
+ =?us-ascii?Q?s/sHJaCQs6i9XQcj7ZX4LEFTu70UnaOUJKqdmW+NWJaFPGclHdDelahiO1sa?=
+ =?us-ascii?Q?FeVrMtR9b4YGb73htedD8haI3Z4Av98K7CF85rnsUpBFgttTzkEykOuiPXZW?=
+ =?us-ascii?Q?4dExp1PzyVoHwcJeP/tLbx0zQXDMcSUzGep2KIMXIXqJ6WyVIMTuUL525bKn?=
+ =?us-ascii?Q?N8vtqFNBKsKvcTrlZMg4uZgCxaz0oBuQ6eTPsam04xDtJ7JLZyC99B3C9M9o?=
+ =?us-ascii?Q?z1lwudeLP1n0iVam3Fga4MBxh8RRPOPxSn3vyiM2RIG2A5LzT5MjI58D8bLE?=
+ =?us-ascii?Q?PRrKJMNpgtCSEZ2LzPXSeJ11ysHjCmhl0z15JgcHNm9UCRaUYqq1i3ltPADk?=
+ =?us-ascii?Q?XQvr3UDf1x3MOw2VeQevW4TUlXAS9XJA7D+H7BIalPTdMz/MIO+CZXMJNtRR?=
+ =?us-ascii?Q?k6HPF1x7h7E6TXubzjKnzOGNRkf5ZZ9CrXer8Rr5O6wpqLoMALngYXjuMGec?=
+ =?us-ascii?Q?Nz0W7F6JseolbKffU8X2dpQp+sG+OgXZNi0+IhGd4oH/pvutyApXDSnWv1FS?=
+ =?us-ascii?Q?AAjYATd7ShkGa4N/DW+A8D03lTTlmCLtPOMVpG4GYN1qMgOP8io5f1YOpfXy?=
+ =?us-ascii?Q?3lwsCr067cGGS8QU0Jdk/NsQ0DbYzlB8g9Pn6o0WvPGqjny2pIOdFAIPOaT4?=
+ =?us-ascii?Q?k2zByaugS3+4QiQS/gj4fWlrai3DLyz7Rnd7jT6KxPbfhMPq7E5mx2XyQZWM?=
+ =?us-ascii?Q?+5DPAZpHNgR3oVEOkjfDfGDYOchhAMWQx3HV95Ak9ffIh5qum4brKGxAnpiu?=
+ =?us-ascii?Q?UD14YBqSv5btcFRuwVxUrUjlxCIn9DgDJlRLAieVCrSC4rSWiEHDYnKL95iZ?=
+ =?us-ascii?Q?78EHW8GUi6SGt2ZU401T0NxErS+9NS5KbbPD2q2J1RMu4FOEtxEYvL6AAn6F?=
+ =?us-ascii?Q?2zvZrg5uQQIx5dIaOb4i9u+EMauYEyh/78lvvjPauIO4N+77DBzqUyjKenxh?=
+ =?us-ascii?Q?JwoAJlqkHNbcXX8Du9NgUG+pPmVo+q1zhGzXrYhwOs1AqJe5mVposjAZbiaI?=
+ =?us-ascii?Q?6y2jYTMn5lcxAZTtHRkudeDgV08iJwCmUe1Wz9b9orqfB61SNBEL/Q1J7pPU?=
+ =?us-ascii?Q?MjHSYnI5sQ39XQMtIr4p6V00Z4QuJzfF5oxfv8LtGF5mvEFg0oKyIHC5m9fN?=
+ =?us-ascii?Q?fTB8mE2Z4lAaeJZ1TU5c6Cvpys71dZK3B3k+U8XcryNjexcF5Q/KSbaya0+N?=
+ =?us-ascii?Q?o2tNluez68IAHWv0Wxa0BQ+FBVVNdfkeQuDhfe13/0JIcems7ur2RiXdBy6r?=
+ =?us-ascii?Q?CH3EBnOjn8Tjbxu7gdnWGrfCsvYs/joM6Wz9/4kJklLoph7Y+Car/kaLFRGk?=
+ =?us-ascii?Q?Aw3cbsKwrJip/AmLo5Xize2t+yS8g3oHOPa41g5C4RuGP0Bkry5X4PVGKTYH?=
+ =?us-ascii?Q?KlECQJ0r9No9OxDRlBBpt53WlU+WrSv+RyqIu7qvTauv0IWt2msMBMB+SqhH?=
+ =?us-ascii?Q?c0zRx2JkMUSkZE4YlHsF2NdGP5sXAYlAsyzv8JkB?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	X2oyDlCckBZQXJkkr934L/8QXJ/JVzxdSYR5JZtyTDLwmj4ih/uYoOvPv/xUoSBn+h+DzIWbToojmhrVIwuyCOX+VttlsDQ3pAcnP6HQ3rCgFSjmDHIxOD0H2WD5D3PRBCky+IdGV92SDa7ULoI1dT9fS38DyR2AEwiW79tFEWoQKs37cbPtlySeLglj6SCT8+wRAhY3txqiLk+REiuOEwSukqxXIwUGKsO0jL8mB31LgQnHShVq8AwjCV/Ila2o5q/hQHAim+aeNJgcanaa1SmpxaBmFnE1IXDowOoMgy9vVwiZ8gy9tUUpiNkx4x1jtZpDYGCsNhARvCcxCMUDAJUvuNz9Bw+ajFfsla19XuwZetwsmAW2WGFOcNueaEfbAbzIveUw6U+G3tKt49q19F4yCgGWFTSLU+CvzqC28c2OIELOAvrD1ueae9IOr1lIs/F8xUDTNaMXiQGKcrHD2WuBjw2L55DinOwWR6K+KjaJvfv8oQOBbaLpdnfsJxMxhVqRPfoz8o6jTgCNFFUyQlMyHzHN2k9wMlgKPVxY4AtxoLxOLyC4e1KIZ670X4i7Baek3oH6MotOG58hQaArM7H/PA2isMemdJnfRfS5d/k=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc135be7-8a6c-4336-4ec0-08dc5dbe20f1
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 02:37:15.8636
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JvPKI324G13qsAmUm2/HuVbl2jxwi/MrtqwDkqNLlK1klsN9wCLzQwTam4Z8tHCRnSNhtPCZMiJRo6CQnCqLoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB5937
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_02,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404160015
+X-Proofpoint-ORIG-GUID: WZCQAl97uTtXrmkx2Qa5uZC-xSymIQEk
+X-Proofpoint-GUID: WZCQAl97uTtXrmkx2Qa5uZC-xSymIQEk
 
-The function create_io_em() is called before we submit an IO, to update
-the in-memory extent map for the involved range.
+In the function btrfs_write_marked_extents() in the while loop check and break if
+filemap_fdata<write|wait>_range() has any error.
 
-This patch changes the following aspects:
-
-- Does not allow BTRFS_ORDERED_NOCOW type
-  For real NOCOW (excluding NOCOW writes into preallocated ranges)
-  writes, we never call create_io_em(), as we does not need to update
-  the extent map at all.
-
-  So remove the sanity check allowing BTRFS_ORDERED_NOCOW type.
-
-- Add extra sanity checks
-  * PREALLOC
-    - @block_len == len
-      For uncompressed writes.
-
-  * REGULAR
-    - @block_len == @orig_block_len == @ram_bytes == @len
-      We're creating a new uncompressed extent, and referring all of it.
-
-    - @orig_start == @start
-      We haven no offset inside the extent.
-
-  * COMPRESSED
-    - valid @compress_type
-    - @len <= @ram_bytes
-      This is to co-operate with encoded writes, which can cause a new
-      file extent referring only part of a uncompressed extent.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Suggested-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/inode.c | 40 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ fs/btrfs/transaction.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c6f2b5d1dee1..ced916f42bab 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7320,11 +7320,49 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- 	struct extent_map *em;
- 	int ret;
- 
-+	/*
-+	 * Note the missing of NOCOW type.
-+	 *
-+	 * For pure NOCOW writes, we should not create an io extent map,
-+	 * but just reusing the existing one.
-+	 * Only PREALLOC writes (NOCOW write into preallocated range) can
-+	 * create io extent map.
-+	 */
- 	ASSERT(type == BTRFS_ORDERED_PREALLOC ||
- 	       type == BTRFS_ORDERED_COMPRESSED ||
--	       type == BTRFS_ORDERED_NOCOW ||
- 	       type == BTRFS_ORDERED_REGULAR);
- 
-+	switch (type) {
-+	case BTRFS_ORDERED_PREALLOC:
-+		/* Uncompressed extents. */
-+		ASSERT(block_len == len);
-+
-+		/* We're only referring part of a larger preallocated extent. */
-+		ASSERT(block_len <= ram_bytes);
-+		break;
-+	case BTRFS_ORDERED_REGULAR:
-+		/* Uncompressed extents. */
-+		ASSERT(block_len == len);
-+
-+		/* COW results a new extent matching our file extent size. */
-+		ASSERT(orig_block_len == len);
-+		ASSERT(ram_bytes == len);
-+
-+		/* Since it's a new extent, we should not have any offset. */
-+		ASSERT(orig_start == start);
-+		break;
-+	case BTRFS_ORDERED_COMPRESSED:
-+		/* Must be compressed. */
-+		ASSERT(compress_type != BTRFS_COMPRESS_NONE);
-+
-+		/*
-+		 * Encoded write can make us to refer to part of the
-+		 * uncompressed extent.
-+		 */
-+		ASSERT(len <= ram_bytes);
-+		break;
-+	}
-+
- 	em = alloc_extent_map();
- 	if (!em)
- 		return ERR_PTR(-ENOMEM);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index df2e58aa824a..a1c43fa6fd3d 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1156,6 +1156,8 @@ int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
+ 		else if (wait_writeback)
+ 			werr = filemap_fdatawait_range(mapping, start, end);
+ 		free_extent_state(cached_state);
++		if (werr)
++			break;
+ 		cached_state = NULL;
+ 		cond_resched();
+ 		start = end + 1;
 -- 
-2.44.0
+2.41.0
 
 
