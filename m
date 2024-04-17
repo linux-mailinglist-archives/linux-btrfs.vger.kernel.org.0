@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-4362-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4363-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E925A8A8608
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 16:36:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 811CA8A8609
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 16:36:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD4B1B21E32
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 14:36:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA9681F226B1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 14:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1552A1422BE;
-	Wed, 17 Apr 2024 14:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF401422C7;
+	Wed, 17 Apr 2024 14:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="OkjzH1Z8"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="d2ZqnFp2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68451422AB
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 14:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2104413A265
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 14:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713364575; cv=none; b=mR5GQ4LkgIkZcUbFtvbr3NFRp4S3MIek7El/dLnpSSnTlkNz9XOPFuBNvMQ/t78YrbscYQW9DlzdNFm+8IrvXWcbDDZ57IjC4POKrqPhg7lx7xLczSwEbpqHwED2nK4eIdhNvHkIAd2Je9Ui+vzQXY2rAhmyVmWSNkFR6dH5F8w=
+	t=1713364576; cv=none; b=cs8qCH48eCKwG+nSgudSQSvK2isdjdOH6TkEiCaeBorrYA7oAFyln3cEzdifaKnMAB78+n3Br0JWbHA8QYlzPquEQ8pw+5a59iBWz0JgsNoZkNKFpFbG9+kRIvOj4HVfu2fu+EsEYndeoIbxZRGAvcJQlQFJdBc7yH8H5cDZ6Dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713364575; c=relaxed/simple;
-	bh=QXlnfj7KDQpyGNoJS+FwefXlm27btOTcqxy70TUZ+Fo=;
+	s=arc-20240116; t=1713364576; c=relaxed/simple;
+	bh=lIJeEDcKILQVjBQnlVNn9tmEJ70mLgziM0k/V/uafN0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J59gqCJoxN7qs1vSNZ4LzjJ9d6KXZeaqiNUB1wZ69rtkCOkippizeklSzsucfSKt+J7//HiRa9gHK605fK7Rdxva10SKM6fL9we/x6n1C7O/TU2v5gjrcTZKxjNzY9HcYlyfmjExYy7YY6v6gM6XNb676wDIdw7wKRNy7LgCjfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=OkjzH1Z8; arc=none smtp.client-ip=209.85.219.50
+	 MIME-Version; b=Ca/Xps8ceWWA0mpVQeYz2WRh92shY5t+Wou/fqxQ5np7PbcKKm2/Fx5yedCFV0a9NRhZSvRxfCR5KkHNyDx/QQGEpbnl13sbv/Z0OR8eD/dtCioS5m6bJxefRLeL158CS6tzyBmZWtfCUwQ0wuJDmZsfNuvhX3fK4qTVHCntrxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=d2ZqnFp2; arc=none smtp.client-ip=209.85.160.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-69b24162dd6so25277436d6.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 07:36:13 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-434925427c6so21909631cf.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 07:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713364572; x=1713969372; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713364574; x=1713969374; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=4EHxmW3m3DWN7fzZ1oF9jWMjtNhrvXB9gqGHTf88rEA=;
-        b=OkjzH1Z8zvfjOLfVL3DkVFWVNfn8XqpEKRcPpPRvhTDGBuEfo5svoaW3b/K5fz/QN5
-         Mh/WhqpgJ0P4+zGvASUAn4JkFN7Czbb3gZqiidaYkk4CtIdOB8C2B2oX5INj8/YtyJMj
-         zOm55OVjh+Kb0pfWLsoLrJa2KA25tgdGsVVi2SoU5ZxMwAYzqgZV4UuhoCG3Mk2GR5RV
-         Ppe18vbRYIc4CbxHQ4ysYNvRo9LqsmJZPqACr6kA72eVP/ffYf3jqDEZHTi4ECleKbGe
-         FqLGCN8D0Fs6Sxp94MCfhdDVtSmeapn5hz4FYgex+7hb8RgjGWLeMXMq6MuZOOe9xpnj
-         tk9g==
+        bh=3VGkqAoXTQ2oHa57gANyYrDf03wmc4JWQxuxHSVnr00=;
+        b=d2ZqnFp2Y7dafzqZzO2GRgzRUeIud+ZpIL/at2ZQ2Z62zgXQzVsCiNfaZN8ITyCP9Y
+         9qzda8BTxW6wLvKGDgpzSHs00X/9ySlBEuExHmc+Ko6+6oWwI9zqyniuezeSQWsmK6Bj
+         +1vM+938hautXqLkpoxYxPhS/WUee/6UsK78yr9Z9dXt+kmlUFzjeC1w2fCe+hNR/ne7
+         2L/Ynj5t3TzVNq98RFsq1ZlGqdrCD4M7ke5wjs+h5iQDWx2dVcqmK4cCg+6YBbdcgZAQ
+         cPIeVy0Ksq7QRgzY0xIDOaDgFb4RFI+hDXi/PP3LaPK5w6OtzLs2a6jp7qYkl+w1t+cW
+         KrYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713364572; x=1713969372;
+        d=1e100.net; s=20230601; t=1713364574; x=1713969374;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4EHxmW3m3DWN7fzZ1oF9jWMjtNhrvXB9gqGHTf88rEA=;
-        b=QLd6KtUbafqnNM2lntPomyeHAnBaNQdKkecm8+JQRSW4KBi26uobTmcwiUXSSu8+uH
-         YTf8G8PKs5TT0uGGdLg2gyfpI39kiUYQnP9bnNEXodanDVp1MFN45S0XVTCAtA8The8a
-         Q6iQygcTx8FizXGCD9Ol7vp4iWMaXYvGpz2AM+W9H/9PtyQ32elJVhRzOnNZFoEfbvLK
-         +ntHJ4iwCkb9b0R2vOjHdURarTp9yQGDBVqKLyBzHGtlvigCMInek+1S3+vzu6dXn8OJ
-         ud7NYsK31QHE+1rz7YcaZzyKu8/lLd+aa0Mdh5rxYVK2Z7iTje1+Hyq19Om/CBecuAAG
-         1i9g==
-X-Gm-Message-State: AOJu0YyB6d2443JZ7nMTvXr5Y6rerRNPI3gnbLMmWL/w7IO8ZLm4Sabs
-	IZiQnvGEk5m26IYOBJmN8ZBIoFEVe07TIxszUlmQC+0brG4phOeJO0DLDGISH9g4cvJffrsZdIS
-	a
-X-Google-Smtp-Source: AGHT+IGdhO2z1n6SHg7aQObIJe8Wj5A+4p5Rm5LFvhYYe7zPfXmQgMBWPl3K6yOlEbKVVfGWMdHjzA==
-X-Received: by 2002:ad4:4f8f:0:b0:699:2293:92ba with SMTP id em15-20020ad44f8f000000b00699229392bamr14184925qvb.61.1713364572603;
-        Wed, 17 Apr 2024 07:36:12 -0700 (PDT)
+        bh=3VGkqAoXTQ2oHa57gANyYrDf03wmc4JWQxuxHSVnr00=;
+        b=Lr0KDnLHWI3e66aapcUfwz0YiUJJeiyiWbLBPbLk+SAbpOhCqC7pTKHxEA/NtWhcO3
+         PXGnVCe43zgwtI5PZqZxnmYLwOMk6OV6MZMaFzaH+kYZlhJWlUHXQLCW32qNQkQ9cU2S
+         B5wfQuE2LKRS9umjwb4jlSYy3wf7lle4vTuI4bD7iKnIZgGWH1jzimbpGEnYojBRp4ku
+         ms0C9gMYOOEY3gRtUbiwZxf62NSOMrOfoAvyNnsQ/JGjtR6gfkgf/sImZQwOrBcxhPWq
+         B2ovO9WKDC4Qb0qOzzRg86zEhflliVArtOrTLAi4rYFy4/Kh7b+LdRsLHCspn2X+A8wN
+         v+cA==
+X-Gm-Message-State: AOJu0Ywxyrl6PCBtNAPkqTFtghapTDNoZSRtEbtMriv75ilwSfK5IuaW
+	pMQRRodZmwQORjB6X8kIR4+AzZbY6NH4QL6Hba5bNf6h2LbHkqj6F3TxDUTYPxY9eM9zR0jUJOk
+	Y
+X-Google-Smtp-Source: AGHT+IHEyfXQNojGXuKSNWnkuhLAWlTirXgln08NhGqlDaqKLmwyxUcJDwRx6MmYbmXD19ZISSgTVw==
+X-Received: by 2002:a05:622a:1a0d:b0:437:87f9:5ad2 with SMTP id f13-20020a05622a1a0d00b0043787f95ad2mr676066qtb.45.1713364573904;
+        Wed, 17 Apr 2024 07:36:13 -0700 (PDT)
 Received: from localhost ([76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id j15-20020a0ceb0f000000b00698fd83ac04sm8345943qvp.135.2024.04.17.07.36.12
+        by smtp.gmail.com with ESMTPSA id m25-20020ac84459000000b004377f87147bsm272836qtn.69.2024.04.17.07.36.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 07:36:12 -0700 (PDT)
+        Wed, 17 Apr 2024 07:36:13 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 05/17] btrfs: lock extent when doing inline extent in compression
-Date: Wed, 17 Apr 2024 10:35:49 -0400
-Message-ID: <99be1657b5273f3a9d24e53f6be9303b381a51eb.1713363472.git.josef@toxicpanda.com>
+Subject: [PATCH 06/17] btrfs: push the extent lock into btrfs_run_delalloc_range
+Date: Wed, 17 Apr 2024 10:35:50 -0400
+Message-ID: <1d2952b7fccde719e25867471e61a0126e77e3b6.1713363472.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1713363472.git.josef@toxicpanda.com>
 References: <cover.1713363472.git.josef@toxicpanda.com>
@@ -84,82 +84,79 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We currently don't lock the extent when we're doing a
-cow_file_range_inline() for a compressed extent.  This isn't a problem
-necessarily, but it's inconsistent with the rest of our usage of
-cow_file_range_inline().  This also leads to some extra weird logic
-around whether the extent is locked or not.  Fix this to lock the extent
-before calling cow_file_range_inline() in compression to make it
-consistent with the rest of the inline users.  In future patches this
-will be pushed down into the cow_file_range_inline() helper, so we're
-fine with the quick and dirty locking here.  This patch exists to make
-the behavior change obvious.
+We want to limit the scope of the extent lock to be around operations
+that can change in flight.  Currently we hold the extent lock through
+the entire writepage operation, which isn't really necessary.
+
+We want to protect to make sure nobody has updated DELALLOC.  In
+find_lock_delalloc_range we must lock the range in order to validate the
+contents of our io_tree.  However once we've done that we're safe to
+unlock the range and continue, as we have the page lock already held for
+the range.
+
+We are protected from all operations at this point.
+
+* mmap() - we're holding the page lock, thus are protected.
+* buffered writes - again, we're protected because we take the page lock
+  for the first and last page in our range for buffered writes so we
+  won't create new delalloc ranges in this area.
+* direct IO - we invalidate pagecache before attempting to write a new
+  area, which requires the page lock, so again are protected once we're
+  holding the page lock on this range.
+
+Additionally this behavior actually already exists for compressed, we
+unlock the range as soon as we start to process the async extents, and
+re-lock it during compression.  So this is completely safe, and makes
+the locking more consistent.
+
+Make this simple by just pushing the extent lock into
+btrfs_run_delalloc_range.  From there followup patches will push the
+lock further down into its users.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ fs/btrfs/extent_io.c | 5 ++---
+ fs/btrfs/inode.c     | 5 +++++
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 7b10f47d8f83..c09f46f969b1 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -396,15 +396,14 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+ 	/* then test to make sure it is all still delalloc */
+ 	ret = test_range_bit(tree, delalloc_start, delalloc_end,
+ 			     EXTENT_DELALLOC, cached_state);
++
++	unlock_extent(tree, delalloc_start, delalloc_end, &cached_state);
+ 	if (!ret) {
+-		unlock_extent(tree, delalloc_start, delalloc_end,
+-			      &cached_state);
+ 		__unlock_for_delalloc(inode, locked_page,
+ 			      delalloc_start, delalloc_end);
+ 		cond_resched();
+ 		goto again;
+ 	}
+-	free_extent_state(cached_state);
+ 	*start = delalloc_start;
+ 	*end = delalloc_end;
+ out_failed:
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6fd866a793bb..ba74476ac423 100644
+index ba74476ac423..2083005f2828 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -742,10 +742,10 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 offset,
- 					  size_t compressed_size,
- 					  int compress_type,
- 					  struct folio *compressed_folio,
--					  bool update_i_size, bool locked)
-+					  bool update_i_size)
- {
- 	unsigned long clear_flags = EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
--		EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING;
-+		EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING | EXTENT_LOCKED;
- 	u64 size = min_t(u64, i_size_read(&inode->vfs_inode), end + 1);
+@@ -2249,6 +2249,11 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+ 	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
  	int ret;
  
-@@ -755,9 +755,6 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 offset,
- 	if (ret > 0)
- 		return ret;
- 
--	if (locked)
--		clear_flags |= EXTENT_LOCKED;
--
- 	extent_clear_unlock_delalloc(inode, offset, end, NULL, clear_flags,
- 				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
- 				     PAGE_END_WRITEBACK);
-@@ -1031,18 +1028,19 @@ static void compress_file_range(struct btrfs_work *work)
- 	 * Check cow_file_range() for why we don't even try to create inline
- 	 * extent for the subpage case.
- 	 */
++	/*
++	 * We're unlocked by the different fill functions below.
++	 */
 +	lock_extent(&inode->io_tree, start, end, NULL);
- 	if (total_in < actual_end)
- 		ret = cow_file_range_inline(inode, start, end, 0,
--					    BTRFS_COMPRESS_NONE, NULL, false,
--					    false);
-+					    BTRFS_COMPRESS_NONE, NULL, false);
- 	else
- 		ret = cow_file_range_inline(inode, start, end, total_compressed,
--					    compress_type, folios[0], false, false);
-+					    compress_type, folios[0], false);
- 	if (ret <= 0) {
- 		if (ret < 0)
- 			mapping_set_error(mapping, -EIO);
- 		goto free_pages;
- 	}
-+	unlock_extent(&inode->io_tree, start, end, NULL);
- 
++
  	/*
- 	 * We aren't doing an inline extent. Round the compressed size up to a
-@@ -1352,8 +1350,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	if (!no_inline) {
- 		/* lets try to make an inline extent */
- 		ret = cow_file_range_inline(inode, start, end, 0,
--					    BTRFS_COMPRESS_NONE, NULL, false,
--					    true);
-+					    BTRFS_COMPRESS_NONE, NULL, false);
- 		if (ret <= 0) {
- 			/*
- 			 * We succeeded, return 1 so the caller knows we're done
+ 	 * The range must cover part of the @locked_page, or a return of 1
+ 	 * can confuse the caller.
 -- 
 2.43.0
 
