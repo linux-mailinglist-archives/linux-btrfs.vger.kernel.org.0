@@ -1,222 +1,157 @@
-Return-Path: <linux-btrfs+bounces-4352-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4353-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8790F8A8458
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 15:23:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D67598A84FB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 15:41:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3E42B253BE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 13:23:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28B21C20834
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 13:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C5D13FD9D;
-	Wed, 17 Apr 2024 13:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942A41411D0;
+	Wed, 17 Apr 2024 13:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q/yRUj7T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFegkUE5"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4748C13E414
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 13:23:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96BC13F42D
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 13:38:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713360192; cv=none; b=qCghcYb06/mXBrpa+BH2fv1xfnRMfeWkplP7GvGZAzS8zWK9eWCSYvYUUTL5lZohqgGSCAvmsIfrWq4uttY1TWNNibdmuuNOcIOpVqug5kY6llGobBEClLsI3REzTxuK2ltX2DrK+tx2zjlArSDw6G3uhZfNjd7eHSeKSjfRwik=
+	t=1713361131; cv=none; b=bEODEKaGZ4aUoNHsMmPLJhveDSfxNdvQ9+htc9GtqD8KaNzGouL6HnOvHzihivcC/+09XyoQilOv+NbfwhS4zPBtFFY+DnflpfayF9FpL++V8OGQ6yG9QFD5A5WOqNXQr81egxSqFCg/prje9Tpl9MS9DKQMwZHJ4bTdxnlNOCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713360192; c=relaxed/simple;
-	bh=MegZYV5VnMj6iR/NqNENjrC0LjnfYtpYVCS0wW0jdZs=;
+	s=arc-20240116; t=1713361131; c=relaxed/simple;
+	bh=L0GXBDzowC3z4rhFB030m4mwICy/q1ZZ5xavWMp42HI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hA861e+G1DcHvkLnWCIQPy0cYPUFjrCBIaF6yPfa+j+kzIYssk5DgULzzeuN5i1GOIFu8pgMc0IhpLF+qSnalaqMbzHM+W2s8L88Ke6MkutJGARNp8A+f4LMjf7qOg79s0A6t5rJRaygv0AgeLEvkatnyhxg12KMSoo2JvNozDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/yRUj7T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC27C4AF07
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 13:23:11 +0000 (UTC)
+	 To:Cc:Content-Type; b=Xo8EVpngdlDYdzx94YB3QyAdOQtMCwuNXF/u681YduF8z1tr2JEo10m0iugeGqTghMSYaczYiIj3taeQ1ruT7E0FPsx5WR61EdVjcBcPc0Sakt+quA7ZZ8Xj9h3a91BgVNRiHetaNjVe1jHynNA/CZstim+mGfW6gAGSx3pGFjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KFegkUE5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A358C3277B
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 13:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713360191;
-	bh=MegZYV5VnMj6iR/NqNENjrC0LjnfYtpYVCS0wW0jdZs=;
+	s=k20201202; t=1713361131;
+	bh=L0GXBDzowC3z4rhFB030m4mwICy/q1ZZ5xavWMp42HI=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Q/yRUj7Ta21ejfCNHcPKa6WzGOZJyEWln99ty6VfT4A6Y+ndOGY0AH234Mss1sljD
-	 Q3MDiAeQv5EzOib7XzSFUgAxKZKopWb/ADKKbLFseL8U84VNNFAOTpADCjtBE3J0tE
-	 7xmvGyjn2rochL0Pgf9cCBDKm6cLsmDUjR5PuLrUbUqaD26U/M3EbnrmC2sAuY7SvY
-	 HinApjjWycPcpMjQ6I8DKdVMf0/SzEkdZBZQvlI2aoP/PT0XF4PuIL5r3g5U62F2zq
-	 QgOHgZqbDOakaMR5ejFJyeuxzjayN76d+xRCZFDvFPWgDHd6fMBxhWlV/JlyeQJkBi
-	 KK8bV3jwkLSwg==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a55323f2ef9so358407966b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 06:23:11 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxJVLEbu4fzeBRcLzcthgZkoSeyAT5oUrGdVS5woR87WLBCEWGg
-	MC/OceoqW6L32F1wPSbE1wBZShE7nuXBQ4ElujaW0Snq9fncNqOPBBV5jOpG++49wguh28J0rTC
-	0fzgdGx8pENSB8uI21rkP79JMBiw=
-X-Google-Smtp-Source: AGHT+IEp/N8WmhguNen8mYr7GXkBYxgnbo7omYru4f9SKc6mFdFzEHb9VgpHvVo3TMzuPJ9PYiAYMOwZesCxmCplqus=
-X-Received: by 2002:a17:907:7208:b0:a51:a329:cd76 with SMTP id
- dr8-20020a170907720800b00a51a329cd76mr13209457ejc.13.1713360190335; Wed, 17
- Apr 2024 06:23:10 -0700 (PDT)
+	b=KFegkUE5BirOFVF6tXvh86qVrG9UrDr5pt/r6qWx4k4cXjq1tuCU7O1iIsOuw0Pe7
+	 OBFVTc4370q2qeud2cD2DZQ0rvJ4+Efdv2YiLcjj0h5yetS1pdUntQNjqL3d0tLkqm
+	 JbIXmnLlfA5oY9pDjXFnhSXRH5gD1Ux0VOqALI2a/veS7xwZNFu2dwgx5oRBsSpKXp
+	 RhBwW1DpqoJ68XVlbvTwspWeA1RMJHd5r1OOHx+XJr7/fP4hHCejWfenb3DHg95qIe
+	 2A0bWGxyPwvqRY0lkLIGd/pwtZ+ulw4KRpAIqgtDw1j+kqBwZcAl9wlgkHUrvXDLx6
+	 XaCx8qL4PQ4uQ==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e1f3462caso7354540a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 06:38:51 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx6OKASH68VxkPPdJp64yj63MINNKdhEcok1SpB23WVAEuHTMcg
+	CVBR27rPAduizYsIertnrsorVZjiHnPR4/wV5XshPzlDAUOm4Ha7mBcESrTK8PlAMd1WcmnHsgD
+	W/tF0ab7lKbG0vqUCv6iJQrrbGro=
+X-Google-Smtp-Source: AGHT+IHEmwzkOsLp3BpFSDEyjr5Kl2u8qPPsWnufgddDckFycNf3ECTsDhOjtlHoFM1dW3QrjiU080u6Wd8Y4pfLbnU=
+X-Received: by 2002:a17:907:7d93:b0:a51:d1a7:ad6 with SMTP id
+ oz19-20020a1709077d9300b00a51d1a70ad6mr15232596ejc.76.1713361129682; Wed, 17
+ Apr 2024 06:38:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1480374e3f65371d4b857fb45a3fd9f6a5fa4a25.1713357984.git.jth@kernel.org>
-In-Reply-To: <1480374e3f65371d4b857fb45a3fd9f6a5fa4a25.1713357984.git.jth@kernel.org>
+References: <93ee5e5a0e35342480860317b1c3d4f5680f7e54.1713344114.git.jth@kernel.org>
+In-Reply-To: <93ee5e5a0e35342480860317b1c3d4f5680f7e54.1713344114.git.jth@kernel.org>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 17 Apr 2024 14:22:33 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H708=OB+XSLjx5ZL8g_Z8j1TC8RHmx1fHE63h6PT8SB0g@mail.gmail.com>
-Message-ID: <CAL3q7H708=OB+XSLjx5ZL8g_Z8j1TC8RHmx1fHE63h6PT8SB0g@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: zoned: reserve relocation zone on mount
+Date: Wed, 17 Apr 2024 14:38:12 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6LjU8UMvfv_BXUOPNK9hDpGbNcyxKeL61CJkbJ9LD0rg@mail.gmail.com>
+Message-ID: <CAL3q7H6LjU8UMvfv_BXUOPNK9hDpGbNcyxKeL61CJkbJ9LD0rg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix information leak in btrfs_ioctl_logical_to_ino()
 To: Johannes Thumshirn <jth@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, 
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>, Boris Burkov <boris@bur.io>, 
-	Naohiro Aota <naohiro.aota@wdc.com>
+Cc: linux-btrfs@vger.kernel.org, josef@toxicpanda.com, dsterba@suse.com, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>, 
+	syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 1:47=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
+On Wed, Apr 17, 2024 at 9:59=E2=80=AFAM Johannes Thumshirn <jth@kernel.org>=
  wrote:
 >
 > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 >
-> Reserve one zone as a data relocation target on each mount. If we already
-> find one empty block group, there's no need to force a chunk allocation,
-> but we can use this empty data block group as our relocation target.
+> Syzbot reported the information leak for in btrfs_ioctl_logical_to_ino():
 >
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/inst=
+rumented.h:114 [inline]
+> BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x110 lib/usercopy.c:40
+>  instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+>  _copy_to_user+0xbc/0x110 lib/usercopy.c:40
+>  copy_to_user include/linux/uaccess.h:191 [inline]
+>  btrfs_ioctl_logical_to_ino+0x440/0x750 fs/btrfs/ioctl.c:3499
+>  btrfs_ioctl+0x714/0x1260
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:904 [inline]
+>  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
+>  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
+>  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:=
+17
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> Uninit was created at:
+>  __kmalloc_large_node+0x231/0x370 mm/slub.c:3921
+>  __do_kmalloc_node mm/slub.c:3954 [inline]
+>  __kmalloc_node+0xb07/0x1060 mm/slub.c:3973
+>  kmalloc_node include/linux/slab.h:648 [inline]
+>  kvmalloc_node+0xc0/0x2d0 mm/util.c:634
+>  kvmalloc include/linux/slab.h:766 [inline]
+>  init_data_container+0x49/0x1e0 fs/btrfs/backref.c:2779
+>  btrfs_ioctl_logical_to_ino+0x17c/0x750 fs/btrfs/ioctl.c:3480
+>  btrfs_ioctl+0x714/0x1260
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:904 [inline]
+>  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
+>  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
+>  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:=
+17
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+>
+> Bytes 40-65535 of 65536 are uninitialized
+> Memory access of size 65536 starts at ffff888045a40000
+>
+> This happens, because we're copying a 'struct btrfs_data_container' back
+> to user-space. This btrfs_data_container is allocated in
+> 'init_data_container()' via kvmalloc(), which does not zero-fill the
+> memory.
+>
+> Fix this by using kvzalloc() which zeroes out the memory on allocation.
+>
+> Reported-by: syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com
+> Signed-off-by: Johannes Thumshirn <Johannes.thumshirn@wdc.com>
 > ---
->  fs/btrfs/disk-io.c |  2 ++
->  fs/btrfs/zoned.c   | 60 ++++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/zoned.h   |  3 +++
->  3 files changed, 65 insertions(+)
+>  fs/btrfs/backref.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index c2dc88f909b0..680ea8924333 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3559,6 +3559,8 @@ int __cold open_ctree(struct super_block *sb, struc=
-t btrfs_fs_devices *fs_device
->         }
->         btrfs_discard_resume(fs_info);
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index c1e6a5bbeeaf..4b993c7104fe 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -2776,7 +2776,7 @@ struct btrfs_data_container *init_data_container(u3=
+2 total_bytes)
+>         size_t alloc_bytes;
 >
-> +       btrfs_reserve_relocation_zone(fs_info);
-> +
->         if (fs_info->uuid_root &&
->             (btrfs_test_opt(fs_info, RESCAN_UUID_TREE) ||
->              fs_info->generation !=3D btrfs_super_uuid_tree_generation(di=
-sk_super))) {
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index d51faf7f4162..1d44c268da96 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -17,6 +17,7 @@
->  #include "fs.h"
->  #include "accessors.h"
->  #include "bio.h"
-> +#include "transaction.h"
->
->  /* Maximum number of zones to report per blkdev_report_zones() call */
->  #define BTRFS_REPORT_NR_ZONES   4096
-> @@ -2634,3 +2635,62 @@ void btrfs_check_active_zone_reservation(struct bt=
-rfs_fs_info *fs_info)
->         }
->         spin_unlock(&fs_info->zone_active_bgs_lock);
->  }
-> +
-> +static u64 find_empty_block_group(struct btrfs_space_info *sinfo, u64 fl=
-ags)
-> +{
-> +       struct btrfs_block_group *bg;
-> +
-> +       for (int i =3D 0; i < BTRFS_NR_RAID_TYPES; i++) {
-> +               list_for_each_entry(bg, &sinfo->block_groups[i], list) {
-> +                       if (bg->flags !=3D flags)
-> +                               continue;
-> +                       if (bg->used =3D=3D 0)
-> +                               return bg->start;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +void btrfs_reserve_relocation_zone(struct btrfs_fs_info *fs_info)
-> +{
-> +       struct btrfs_root *tree_root =3D fs_info->tree_root;
-> +       struct btrfs_space_info *sinfo =3D fs_info->data_sinfo;
-> +       struct btrfs_trans_handle *trans;
-> +       u64 flags =3D btrfs_get_alloc_profile(fs_info, sinfo->flags);
-> +       u64 bytenr =3D 0;
-> +
-> +       lockdep_assert_not_held(&fs_info->relocation_bg_lock);
-> +
-> +       if (!btrfs_is_zoned(fs_info))
-> +               return;
-> +
-> +       bytenr =3D find_empty_block_group(sinfo, flags);
-> +       if (!bytenr) {
-> +               int ret;
-> +
-> +               trans =3D btrfs_join_transaction(tree_root);
-> +               if (IS_ERR(trans))
-> +                       return;
-> +
-> +               ret =3D btrfs_chunk_alloc(trans, flags, CHUNK_ALLOC_FORCE=
-);
-> +               btrfs_end_transaction(trans);
-> +
-> +               if (!ret) {
-> +                       struct btrfs_block_group *bg;
-> +
-> +                       bytenr =3D find_empty_block_group(sinfo, flags);
-> +                       if (!bytenr)
-> +                               goto out;
-> +                       bg =3D btrfs_lookup_block_group(fs_info, bytenr);
-> +                       ASSERT(bg);
-> +
-> +                       if (!btrfs_zone_activate(bg))
-> +                               bytenr =3D 0;
-> +                       btrfs_put_block_group(bg);
-> +               }
-> +       }
+>         alloc_bytes =3D max_t(size_t, total_bytes, sizeof(*data));
+> -       data =3D kvmalloc(alloc_bytes, GFP_KERNEL);
+> +       data =3D kvzalloc(alloc_bytes, GFP_KERNEL);
 
-At mount time before reaching this code, we read all block groups and
-any unused block groups are added to the list of unused block groups,
-so that the cleaner kthread will delete them the next time it runs (if
-they are still unused).
-
-Don't you need to remove the block group from the list?
+After this we can remove the initialization of several fields to 0
+(down below, not seen in the diff), since they become redundant and
+make the code shorter.
 
 Thanks.
 
-> +
-> +out:
-> +       fs_info->data_reloc_bg =3D bytenr;
-> +}
-> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-> index 77c4321e331f..048ffada4549 100644
-> --- a/fs/btrfs/zoned.h
-> +++ b/fs/btrfs/zoned.h
-> @@ -97,6 +97,7 @@ int btrfs_zone_finish_one_bg(struct btrfs_fs_info *fs_i=
-nfo);
->  int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
->                                 struct btrfs_space_info *space_info, bool=
- do_finish);
->  void btrfs_check_active_zone_reservation(struct btrfs_fs_info *fs_info);
-> +void btrfs_reserve_relocation_zone(struct btrfs_fs_info *fs_info);
->  #else /* CONFIG_BLK_DEV_ZONED */
->  static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 po=
-s,
->                                      struct blk_zone *zone)
-> @@ -271,6 +272,8 @@ static inline int btrfs_zoned_activate_one_bg(struct =
-btrfs_fs_info *fs_info,
+>         if (!data)
+>                 return ERR_PTR(-ENOMEM);
 >
->  static inline void btrfs_check_active_zone_reservation(struct btrfs_fs_i=
-nfo *fs_info) { }
->
-> +static inline void btrfs_reserve_relocation_zone(struct btrfs_fs_info *f=
-s_info) { }
-> +
->  #endif
->
->  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, =
-u64 pos)
 > --
 > 2.35.3
 >
