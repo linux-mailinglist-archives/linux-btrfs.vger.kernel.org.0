@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-4323-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4324-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D1698A7B9A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 06:55:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B67C8A7B9B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 06:55:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E8541C21800
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 04:55:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85A061F22DC5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 04:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE92945013;
-	Wed, 17 Apr 2024 04:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E9847F4A;
+	Wed, 17 Apr 2024 04:55:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oAm6rn2x";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oAm6rn2x"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NmpaVi4F";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DhDOXvRE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A70E2CCB4
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 04:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E608641C7C
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 04:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713329708; cv=none; b=p38bQ+EqoXVPhrYhsVTASgJ/lMDZ8gavAyX8Z7uaazxyECSsyAx9SZ1rzUcD0QmvkBlKEIgo+52fqvdMZot/8w55YSqwqAgey8RCxU/mC4ObNvqw81FctP+zPAfKD4NjkymNl3qcxqjS0ZSb8+o2Ujx559qoL/RqBS8U01lXttc=
+	t=1713329709; cv=none; b=XZY73hmLXT03FKF+AygxJuLpejGnlLWWO2NVBnkJCxdb5ScHBbuENw4fsbXWF/PEkWfrOA74wwzosa/jQLoiQVJ4uRrj1fLXezyExMiCWCZgfcuRRduj4SmuJXbZCzo81HSSIe1FwEXUOlBU8ij/JgPP4twUmwy0IFroKxFQPTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713329708; c=relaxed/simple;
-	bh=3kSDHc20VDuYXYHEKydTVqNaJVkvglfEtLJySo2YpNg=;
+	s=arc-20240116; t=1713329709; c=relaxed/simple;
+	bh=CPz8N+rGQ82Cp5cm/+HsrDHNFOyPJuE51kKjV/LDZAk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jRLj/A4KClSAeWbdO459pavBaxo4a8G0w5LCdfYadUxbngdw2hNb4IubSJsxozeAE5D5fe1o9HGoNX1gTpTQaVKN4VyNcMk1r5gy26wyM1w6KqkDzH1dTCpal9twOxgSG3tY2KYbW7b8kJNiZHQSYYvFPvI3kS5UlfnTh+8iqAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oAm6rn2x; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oAm6rn2x; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=nED7SgSBdb1oh1y6vWeVFpB1V6vBmSfWhMiojLqNVGvqG9X6byhVs1BtCvu8wIPsl8DxVSMspMc9Yg3NXQvZgJuLfH91ddQq3wigYpyc8p7ux6UtiiNYxOPDhyuy5ds5Wru2GipUNk9KS/IG2p4mn5r5Db13VQxvdT7L0yaHtQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NmpaVi4F; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DhDOXvRE; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 35BA2202D7;
-	Wed, 17 Apr 2024 04:55:04 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F0E4E22B8F;
+	Wed, 17 Apr 2024 04:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713329704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1713329706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rcuTw6FcB8UjnmhWfGxe8lIWJWHR8pRHZk5JSAVLV/g=;
-	b=oAm6rn2x+8rdPZhjS0zPdmqfTDxjhdOf11STWrws9vGeQnpKg7LvVSTF/LGXo5Pdb9g08r
-	h9O1pVlsSPCSywBorEcIiVa24iiSnmK6865V5bYp0Ex+hWmGuffqcf0vcPF/bSabmYnnNM
-	cNY8EjIFSWzjTvU6XUXjfgaKFDb1wTE=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=oAm6rn2x
+	bh=iO+rxhwQORihmOX2XX/ma7PTV2ydAT3ZHExFcwr7KrU=;
+	b=NmpaVi4Ft/n8LgkVAMOZzp0OWLnGGHZmovahYighZl31dP/B8fEF4v758trTp4kGAO8cAI
+	/oS6+lVaWiU5PGqL5gj6NkmrTvThe8FggYfrvWQDxYd/PRQUKOKvuM9IyZqy7xDU104JLz
+	RilOcQCkzbJ0t1tW4yrVALIsQ65txQc=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=DhDOXvRE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713329704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1713329705; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rcuTw6FcB8UjnmhWfGxe8lIWJWHR8pRHZk5JSAVLV/g=;
-	b=oAm6rn2x+8rdPZhjS0zPdmqfTDxjhdOf11STWrws9vGeQnpKg7LvVSTF/LGXo5Pdb9g08r
-	h9O1pVlsSPCSywBorEcIiVa24iiSnmK6865V5bYp0Ex+hWmGuffqcf0vcPF/bSabmYnnNM
-	cNY8EjIFSWzjTvU6XUXjfgaKFDb1wTE=
+	bh=iO+rxhwQORihmOX2XX/ma7PTV2ydAT3ZHExFcwr7KrU=;
+	b=DhDOXvRE6POXwuii/7oSp7X0fuerQE+DLjbZZrV8tcOnInBUT0S6JraDCiNT5yZvwVM7+F
+	IPhrV67eE00QRFJJcjL5ZmKfvVx4xvuQFHRsX5LmbCVyLDytl7wGIRRcI3zU6tKDcZrOPg
+	Mu3qpusqHaVGnhcKnZQAoi3r2ZILkvw=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0FCD91384C;
-	Wed, 17 Apr 2024 04:55:02 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B42941384C;
+	Wed, 17 Apr 2024 04:55:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yLtbLyZWH2YkeQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 17 Apr 2024 04:55:02 +0000
+	id QAJIGyhWH2YkeQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 17 Apr 2024 04:55:04 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2 1/2] btrfs: set correct ram_bytes when splitting ordered extent
-Date: Wed, 17 Apr 2024 14:24:38 +0930
-Message-ID: <294cfed81888b2ea5ed4fffeb79ef9892443a3d3.1713329516.git.wqu@suse.com>
+Subject: [PATCH v2 2/2] btrfs: tree-checker: add one extra file extent item ram_bytes check
+Date: Wed, 17 Apr 2024 14:24:39 +0930
+Message-ID: <1860b41b9aa1e1522bd480d748bbba3a70b6d4e0.1713329516.git.wqu@suse.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1713329516.git.wqu@suse.com>
 References: <cover.1713329516.git.wqu@suse.com>
@@ -87,7 +87,7 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
 X-Spam-Score: -4.01
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 35BA2202D7
+X-Rspamd-Queue-Id: F0E4E22B8F
 X-Spam-Level: 
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-4.01 / 50.00];
@@ -115,60 +115,103 @@ X-Spamd-Result: default: False [-4.01 / 50.00];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_TRACE(0.00)[suse.com:+]
 
-[BUG]
-When running generic/287, the following file extent items can be
-generated:
+During my development on extent map cleanups, I hit a case where we can
+create a file extent item that has ram_bytes double the size of
+num_bytes but it's not compressed.
 
-        item 16 key (258 EXTENT_DATA 2682880) itemoff 15305 itemsize 53
-                generation 9 type 1 (regular)
-                extent data disk byte 1378414592 nr 462848
-                extent data offset 0 nr 462848 ram 2097152
-                extent compression 0 (none)
+Later it turns out to be a bug in btrfs_split_ordered_extent(), and
+thankfully it doesn't cause any real corruption, just a drift from
+on-disk format.
 
-Note that file extent item is not a compressed one, but its ram_bytes is
-way larger than its disk_num_bytes.
+Here we add an extra check on ram_bytes for btrfs_file_extent_item to
+catch such problem.
 
-According to btrfs on-disk scheme, ram_bytes should match disk_num_bytes
-if it's not a compressed one.
+However considering the incorrect ram_bytes are already in the wild, and
+no real data corruption, we do not want end users to be bothered as their
+data is still consistent.
 
-[CAUSE]
-Since commit b73a6fd1b1ef ("btrfs: split partial dio bios before
-submit"), for partial dio writes, we would split the ordered extent.
+So this patch would only hide the check behind DEBUG builds for us
+developers to catch future problem.
 
-However the function btrfs_split_ordered_extent() doesn't update the
-ram_bytes even it has already shrunk the disk_num_bytes.
-
-Originally the function btrfs_split_ordered_extent() is only introduced
-for zoned devices in commit d22002fd37bd ("btrfs: zoned: split ordered
-extent when bio is sent"), but later commit b73a6fd1b1ef ("btrfs: split
-partial dio bios before submit") makes non-zoned btrfs affected.
-
-Thankfully for un-compressed file extent, we do not really utilize the
-ram_bytes member, thus it won't cause any real problem.
-
-[FIX]
-Also update btrfs_ordered_extent::ram_bytes inside
-btrfs_split_ordered_extent().
-
-Fixes: d22002fd37bd ("btrfs: zoned: split ordered extent when bio is sent")
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ordered-data.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/btrfs/tree-checker.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index b749ba45da2b..c2a42bcde98e 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -1188,6 +1188,7 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
- 	ordered->disk_bytenr += len;
- 	ordered->num_bytes -= len;
- 	ordered->disk_num_bytes -= len;
-+	ordered->ram_bytes -= len;
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index c8fbcae4e88e..9f1597fe40e7 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -212,6 +212,7 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+ 	u32 sectorsize = fs_info->sectorsize;
+ 	u32 item_size = btrfs_item_size(leaf, slot);
+ 	u64 extent_end;
++	u8 compression;
  
- 	if (test_bit(BTRFS_ORDERED_IO_DONE, &ordered->flags)) {
- 		ASSERT(ordered->bytes_left == 0);
+ 	if (unlikely(!IS_ALIGNED(key->offset, sectorsize))) {
+ 		file_extent_err(leaf, slot,
+@@ -251,16 +252,15 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+ 		return -EUCLEAN;
+ 	}
+ 
++	compression = btrfs_file_extent_compression(leaf, fi);
+ 	/*
+ 	 * Support for new compression/encryption must introduce incompat flag,
+ 	 * and must be caught in open_ctree().
+ 	 */
+-	if (unlikely(btrfs_file_extent_compression(leaf, fi) >=
+-		     BTRFS_NR_COMPRESS_TYPES)) {
++	if (unlikely(compression >= BTRFS_NR_COMPRESS_TYPES)) {
+ 		file_extent_err(leaf, slot,
+ 	"invalid compression for file extent, have %u expect range [0, %u]",
+-			btrfs_file_extent_compression(leaf, fi),
+-			BTRFS_NR_COMPRESS_TYPES - 1);
++			compression, BTRFS_NR_COMPRESS_TYPES - 1);
+ 		return -EUCLEAN;
+ 	}
+ 	if (unlikely(btrfs_file_extent_encryption(leaf, fi))) {
+@@ -279,8 +279,7 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+ 		}
+ 
+ 		/* Compressed inline extent has no on-disk size, skip it */
+-		if (btrfs_file_extent_compression(leaf, fi) !=
+-		    BTRFS_COMPRESS_NONE)
++		if (compression != BTRFS_COMPRESS_NONE)
+ 			return 0;
+ 
+ 		/* Uncompressed inline extent size must match item size */
+@@ -319,6 +318,30 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+ 		return -EUCLEAN;
+ 	}
+ 
++	/*
++	 * If it's a uncompressed regular extents, its ram size should match
++	 * disk_num_bytes. But for now we have several call sites that doesn't
++	 * properly update @ram_bytes, so at least make sure
++	 * @ram_bytes <= @disk_num_bytes.
++	 *
++	 * However we had a bug related to @ram_bytes update, causing
++	 * all zoned and regular DIO to be affected.
++	 * Thankfully the ram_bytes is not critical for non-compressed file extents.
++	 * So here we hide the check behind DEBUG builds for developers only.
++	 */
++#ifdef CONFIG_BTRFS_DEBUG
++	if (unlikely(compression == BTRFS_COMPRESS_NONE &&
++		     btrfs_file_extent_disk_bytenr(leaf, fi) &&
++		     btrfs_file_extent_ram_bytes(leaf, fi) >
++		     btrfs_file_extent_disk_num_bytes(leaf, fi))) {
++		file_extent_err(leaf, slot,
++				"invalid ram_bytes, have %llu expect <= %llu",
++				btrfs_file_extent_ram_bytes(leaf, fi),
++				btrfs_file_extent_disk_num_bytes(leaf, fi));
++		return -EUCLEAN;
++	}
++#endif
++
+ 	/*
+ 	 * Check that no two consecutive file extent items, in the same leaf,
+ 	 * present ranges that overlap each other.
 -- 
 2.44.0
 
