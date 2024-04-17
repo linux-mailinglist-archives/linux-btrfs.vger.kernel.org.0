@@ -1,104 +1,100 @@
-Return-Path: <linux-btrfs+bounces-4384-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0711D8A8DE1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 23:26:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 773198A8E54
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 23:51:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B20FC28369F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 21:26:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A186B1C20C0D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 21:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A06A651AF;
-	Wed, 17 Apr 2024 21:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B81C84D3F;
+	Wed, 17 Apr 2024 21:51:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M6Aaaunh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="n1gE8ohU";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M6Aaaunh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="n1gE8ohU"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dOIkyQ96";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/QAY5Ze6";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dOIkyQ96";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/QAY5Ze6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B59818C19
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 21:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8039C171A1
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 21:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713389196; cv=none; b=QmhF0b8aRW51GMM8MwsZaR/rSCR11s6mW82pAZIfzTM4wjCdgDzdXwd2oAcAhZbS0VhH+oKBAMsCaVQwr7ifcjjCErWIf8DSsm7yZgTBcd01ixJcyIE8UJdd+pWhQucmmcAMLIlNeMTv0+8fDhGMG75FqJH5PjIsaUtotrjVmSU=
+	t=1713390695; cv=none; b=CV+iLpkQwnaW8g1SiNuZK1LkyK45bTwrOIqHoK5dobm6LbzDjRyPQK4t9/F2hUvd6GI8u49/cwZnE6FmRI0Zo9b1dQL0vaMy0FBIYds9eTxFl+nkyBNI1J0uOUIfmwqIMQqARsi7EkJcEnaGRLZ+Tm+uQLNld4KoaC+e6LaFaV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713389196; c=relaxed/simple;
-	bh=cFicshi9hQM4ZjVFU6I2lODbYokQh34hWuJDTPxzpxg=;
+	s=arc-20240116; t=1713390695; c=relaxed/simple;
+	bh=/Lowb2lSU/0JtuGJBqTkqSvE0LXMaf6S77J+Mc5a8Kc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z1stolB3QuKEaumrmQaiexQvk5xApAR6ubwhTipSO82ya6ZttXACwu+nicfjv0DUpWIG8LWlofM5VT4UjfcRS13dXlUrb/4Ia2h3bq0okZIaVrvzN6qKzW3GEIf6pLMLIwyEe6sZdqqXSm7Iej9yARZBAHd53cEMUAwMe4p+njM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M6Aaaunh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=n1gE8ohU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M6Aaaunh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=n1gE8ohU; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=ca0wLTd7i6zn/OWjI+RSZhTpxhiSGeS1Jdc8QNY/00G3aoexJ/QsPyujewBth0yj0Jk6QMIFQUMSm77QRYl12oGuoxMEOqHyg7Jfv2XtlegJ6BqbhIhCm5awFMyRCWeCv522F4yjSBMVvwosNNn0KuTmx4oNJDLPz9nIg83lTE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dOIkyQ96; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/QAY5Ze6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dOIkyQ96; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/QAY5Ze6; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A29FA342C5;
-	Wed, 17 Apr 2024 21:26:32 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8F25B5BD3B;
+	Wed, 17 Apr 2024 21:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713389192;
+	t=1713390691;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kitwWCttdpw8PhOC8pBJNKMzdQ422Iu1CWJNJ8V7bcI=;
-	b=M6Aaaunh5gbvfSfV5QBAAvhIpnQwQ0P1Gru6I3ILaXDuDJEZ0dWc25v24+uNwwM+L1CynZ
-	vNNsdJg1vmm2zRkYNriqdBiR7jHUWsGDlMNHtcxl4DMUozDRtsfNuxik865XSQcGZ9CnAr
-	YRRln4dNyE3RWsjT5eswouCbEos0lik=
+	bh=kg71Wuegb1n/foB6UirlRzfj1UDTHZtXybxQ71PbLFE=;
+	b=dOIkyQ96vGdIqSTtSgFn+e93wTVWLAWhjA4fOR7w/ZYWCXFf8kZDmZNaPe5fNLitLDVDuH
+	yrAVy3fYmTBBAfxeesdeuoBvtsJVPTXFlWTOxqLXgTjUJCovOcs0bYP9pD5wy/hIRxB/gO
+	ovCCl132XwOcE2GzUZaDCVL4/PfH760=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713389192;
+	s=susede2_ed25519; t=1713390691;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kitwWCttdpw8PhOC8pBJNKMzdQ422Iu1CWJNJ8V7bcI=;
-	b=n1gE8ohUpb5DsuhewH9nqlqNxQO0xot7SHvF21r3yTM3sqMpE0Kt5h4z7ZlWZN3VPG6cQ8
-	uZguqMySnz2gXQCQ==
-Authentication-Results: smtp-out1.suse.de;
+	bh=kg71Wuegb1n/foB6UirlRzfj1UDTHZtXybxQ71PbLFE=;
+	b=/QAY5Ze6uI5ug16Kldz1pBEIIvuMbOtZR+wu7AV7A32z38ATKLJJiEb9QM9Ass4VMfOCgn
+	fSwsV/Wb62rkDkAg==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713389192;
+	t=1713390691;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kitwWCttdpw8PhOC8pBJNKMzdQ422Iu1CWJNJ8V7bcI=;
-	b=M6Aaaunh5gbvfSfV5QBAAvhIpnQwQ0P1Gru6I3ILaXDuDJEZ0dWc25v24+uNwwM+L1CynZ
-	vNNsdJg1vmm2zRkYNriqdBiR7jHUWsGDlMNHtcxl4DMUozDRtsfNuxik865XSQcGZ9CnAr
-	YRRln4dNyE3RWsjT5eswouCbEos0lik=
+	bh=kg71Wuegb1n/foB6UirlRzfj1UDTHZtXybxQ71PbLFE=;
+	b=dOIkyQ96vGdIqSTtSgFn+e93wTVWLAWhjA4fOR7w/ZYWCXFf8kZDmZNaPe5fNLitLDVDuH
+	yrAVy3fYmTBBAfxeesdeuoBvtsJVPTXFlWTOxqLXgTjUJCovOcs0bYP9pD5wy/hIRxB/gO
+	ovCCl132XwOcE2GzUZaDCVL4/PfH760=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713389192;
+	s=susede2_ed25519; t=1713390691;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kitwWCttdpw8PhOC8pBJNKMzdQ422Iu1CWJNJ8V7bcI=;
-	b=n1gE8ohUpb5DsuhewH9nqlqNxQO0xot7SHvF21r3yTM3sqMpE0Kt5h4z7ZlWZN3VPG6cQ8
-	uZguqMySnz2gXQCQ==
+	bh=kg71Wuegb1n/foB6UirlRzfj1UDTHZtXybxQ71PbLFE=;
+	b=/QAY5Ze6uI5ug16Kldz1pBEIIvuMbOtZR+wu7AV7A32z38ATKLJJiEb9QM9Ass4VMfOCgn
+	fSwsV/Wb62rkDkAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 88BF41384C;
-	Wed, 17 Apr 2024 21:26:32 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8207C13957;
+	Wed, 17 Apr 2024 21:51:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id b4vyIIg+IGY/WgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 17 Apr 2024 21:26:32 +0000
-Date: Wed, 17 Apr 2024 23:19:02 +0200
+	id 6oiIH2NEIGadYQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 17 Apr 2024 21:51:31 +0000
+Date: Wed, 17 Apr 2024 23:44:01 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: linux-btrfs@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Filipe Manana <fdmanana@kernel.org>,
-	syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com,
-	Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH v2] btrfs: fix information leak in
- btrfs_ioctl_logical_to_ino()
-Message-ID: <20240417211902.GU3492@twin.jikos.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/5] btrfs: cleanups and improvements around extent map
+ release
+Message-ID: <20240417214401.GV3492@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <7eb2d171cdb1a2a89288a989dc0ef28c21bebc59.1713361686.git.jth@kernel.org>
+References: <cover.1713302470.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -107,88 +103,44 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7eb2d171cdb1a2a89288a989dc0ef28c21bebc59.1713361686.git.jth@kernel.org>
+In-Reply-To: <cover.1713302470.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Level: 
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-3.98 / 50.00];
+	BAYES_HAM(-2.98)[99.92%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email];
-	RCVD_TLS_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[510a1abbb8116eeb341d];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6]
-X-Spam-Score: -2.50
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Spam-Score: -3.98
 X-Spam-Flag: NO
 
-On Wed, Apr 17, 2024 at 03:48:49PM +0200, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Wed, Apr 17, 2024 at 12:03:30PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Syzbot reported the following information leak for in
-> btrfs_ioctl_logical_to_ino():
+> These make the folio release path release extent maps more often when they
+> are not needed, as well as some cleanups. More details in the change logs.
 > 
-> BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
-> BUG: KMSAN: kernel-infoleak in _copy_to_user+0xbc/0x110 lib/usercopy.c:40
->  instrument_copy_to_user include/linux/instrumented.h:114 [inline]
->  _copy_to_user+0xbc/0x110 lib/usercopy.c:40
->  copy_to_user include/linux/uaccess.h:191 [inline]
->  btrfs_ioctl_logical_to_ino+0x440/0x750 fs/btrfs/ioctl.c:3499
->  btrfs_ioctl+0x714/0x1260
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:904 [inline]
->  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
->  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
->  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:17
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Uninit was created at:
->  __kmalloc_large_node+0x231/0x370 mm/slub.c:3921
->  __do_kmalloc_node mm/slub.c:3954 [inline]
->  __kmalloc_node+0xb07/0x1060 mm/slub.c:3973
->  kmalloc_node include/linux/slab.h:648 [inline]
->  kvmalloc_node+0xc0/0x2d0 mm/util.c:634
->  kvmalloc include/linux/slab.h:766 [inline]
->  init_data_container+0x49/0x1e0 fs/btrfs/backref.c:2779
->  btrfs_ioctl_logical_to_ino+0x17c/0x750 fs/btrfs/ioctl.c:3480
->  btrfs_ioctl+0x714/0x1260
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:904 [inline]
->  __se_sys_ioctl+0x261/0x450 fs/ioctl.c:890
->  __x64_sys_ioctl+0x96/0xe0 fs/ioctl.c:890
->  x64_sys_call+0x1883/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:17
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> 
-> Bytes 40-65535 of 65536 are uninitialized
-> Memory access of size 65536 starts at ffff888045a40000
-> 
-> This happens, because we're copying a 'struct btrfs_data_container' back
-> to user-space. This btrfs_data_container is allocated in
-> 'init_data_container()' via kvmalloc(), which does not zero-fill the
-> memory.
-> 
-> Fix this by using kvzalloc() which zeroes out the memory on allocation.
-> 
-> Reported-by:  <syzbot+510a1abbb8116eeb341d@syzkaller.appspotmail.com>
-> Signed-off-by: Johannes Thumshirn <Johannes.thumshirn@wdc.com>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Filipe Manana (5):
+>   btrfs: rename some variables at try_release_extent_mapping()
+>   btrfs: use btrfs_get_fs_generation() at try_release_extent_mapping()
+>   btrfs: remove i_size restriction at try_release_extent_mapping()
+>   btrfs: be better releasing extent maps at try_release_extent_mapping()
+>   btrfs: make try_release_extent_mapping() return a bool
 
 Reviewed-by: David Sterba <dsterba@suse.com>
 
