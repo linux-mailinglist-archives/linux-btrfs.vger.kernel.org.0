@@ -1,75 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4409-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4410-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CE9E8A93ED
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Apr 2024 09:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC6088A94D8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Apr 2024 10:24:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13FC1281BF1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Apr 2024 07:22:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61D4028271C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Apr 2024 08:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D78F3D984;
-	Thu, 18 Apr 2024 07:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A57127B57;
+	Thu, 18 Apr 2024 08:24:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MTvVhat6"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="spF5no39"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B3C110A0E
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Apr 2024 07:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6CB7D413
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Apr 2024 08:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713424970; cv=none; b=VpqkURGcuGExYGyndmnlsx5KyHLeIN5rLAk1lrT8bD+xiPmpdz5UcM0618r96QKAeqyUyJeFjAsCZDoNrD62x+Vc/QFtQdbraiVqwBHPg+l1BAf3TR02+PC/zGcbKsIndw4TECXYzEmsISRdbphhsPzObjAYMjy25rHNVRQ18dg=
+	t=1713428647; cv=none; b=NePltFff/uizOJF5e6OgaIBl/W3bcf9zVQxN+90qrhMKdqI23apA+RdGfvx5Rs8THWo0cM4w7HvAuXbHAKBcayFXMT3v4FSfVJredwWFDMD1vMhofjB0wYzn1fjM7oUJ4HAkx8x2djuLI1eDrW3PZqhYc7ZSAc9ikwN6SPQUn40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713424970; c=relaxed/simple;
-	bh=o/pTv5el/hQEx3orz0yvbldltKzQeab7MfeSreWtVF8=;
+	s=arc-20240116; t=1713428647; c=relaxed/simple;
+	bh=CmfwcUw2v6PRJYFzUJSQJHZ72IQjH1Ej9fUInkgWwoA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hAk2xx/+sObIDnKnhbik702F0b+k0sBPhkf8IgVb1VfHeyh20XshQn1654HmgNTamFD7isHVze21RXB1iQBncG7pypv5u4CrSTaLuzD+ymZOY5PiJPmzQgg729kr6KCKQAYN5u7AstmsIOUJxO9eY2+zSXCuYG3XV/8MYX/U3TI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MTvVhat6; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso7283311fa.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Apr 2024 00:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1713424965; x=1714029765; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Vd8GrCW/T3TEVrhsBk5dZV3rGew6QXg2eysnc1aDeA=;
-        b=MTvVhat62o+F5HjDa3+HuaT2hwxdajAyYi8Lbj6fRNz09tjxVV9Jk/IfB9kBsyXMCN
-         IzjFgwuM97rpWGMigr6OvXL6znyV5UfNF+VwxGa+V4CpD8r3PcmJ10VA8q0Zx/xPNsW4
-         3mLiL255SHo5Fy7NNP0UiBcS5QKV4yKMp9PzqTbxM/r8vaFrpBNynioWpgI6fwftONat
-         4/Dmws8o1GzfBDQHwvAE7OGrbDAwW+S4Ww+TDHsmSzAx4V2bZsYB9/Hb6Lb28114sx/+
-         daHE7ECogQDEcjvXmI/tmQLo1+NWfxx5S8jaWdwnK2Ht9TpIU1OJtRnJlAlG7KkpInPg
-         3evw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713424965; x=1714029765;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Vd8GrCW/T3TEVrhsBk5dZV3rGew6QXg2eysnc1aDeA=;
-        b=RzXJsfzM24CKaFO67EAa9As+L2+b8ylUsZQ9dzvBw/9EEU5kaE6/EtRKEPR719eUG/
-         7G1spz/K7m8xQQDmJVBl7C4U+lfMFCTUiPFUDS6KwR22c8/5TI85FfOmSoxXGSDjm6DG
-         UOJMvbdDaiWjy78QBipj/PFlNn5C6ORwDJUjuNGT1r69QlgXIqcrWetVQNAsLl41XMs+
-         ZIbmIkmxYzu6xzYCacxMotH9NVcoRlVN+gXcbh8psvtN8ziSybNctCe2VKiCpoOk5zca
-         kYFge2Ee+qymkXaztgG/DaAyRel2czbeJNBAFfFWDVIuRutpL3v1fxu6HH+db7OZpwF3
-         i8Gw==
-X-Forwarded-Encrypted: i=1; AJvYcCU8t+k30ZGSA2XMc62WR4Rn7NNrYq/t5hTpksyCfYgcmE4ElyG20ynOviPnaBZ8grAnaLRLU4pI4rQ06v46Z4vHq5zBlYWPaqbkoqQ=
-X-Gm-Message-State: AOJu0YzXDjs4fNo82JayKLS5zC0mJ5/oDB3rXDkm9+Jo8ahrh83UWgQp
-	PxaVQISvURwm+xoCx63bUaA8RO4qvvqsX3AteQqoVSIdz7ghEvUCJKCPTS8GspY=
-X-Google-Smtp-Source: AGHT+IELU8+DViFH8rc5LOxgE3CnM08yerBmU3kZy09PXM2wZN1uytgKG3c2Vw4Zqdtpg5/5nHrKWQ==
-X-Received: by 2002:a05:651c:230c:b0:2d6:c726:ee64 with SMTP id bi12-20020a05651c230c00b002d6c726ee64mr1234447ljb.13.1713424965118;
-        Thu, 18 Apr 2024 00:22:45 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id b9-20020a63a109000000b005f77b2c207dsm771525pgf.12.2024.04.18.00.22.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 00:22:44 -0700 (PDT)
-Message-ID: <b2818f72-0158-4caf-9687-9d0ca4672a03@suse.com>
-Date: Thu, 18 Apr 2024 16:52:39 +0930
+	 In-Reply-To:Content-Type; b=J16vCuPDmRnNqR7V4XzAt+8rgxnP0weHrk3uVkseXFukWMighGt+N9YvdKB0UZcresVYCMRfoidUSfbDq43Cl0pRZsbqURN7ZOd0QBrpIPZF9NjA9FU4eNTh1V+yYA7zQLJNilJm5XqQsSFvhHOEILFqhe/mJQiLXR7iQe6S+4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=spF5no39; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1713428638; x=1714033438; i=quwenruo.btrfs@gmx.com;
+	bh=CmfwcUw2v6PRJYFzUJSQJHZ72IQjH1Ej9fUInkgWwoA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=spF5no39jb7SAqfewLzL08sA3U6JNKmteTImZOtd5/VVePQM/nLjfoZUUMJ1fCg+
+	 36Puq6VqEk/0JpQPAvih9UwBzox5J06tUIavegs5FT4j0AWeBN51OScPBXmuvCIK5
+	 NSndfJEbB1AjYEen0ZJZXvWkNckXjHXgULDdT0VETLghELr+thO0POBxsSv46L9Xu
+	 k/52LZ8sWFNMkoKXdxE4i9PWRWuAnqPu/+brT6bUHB75R+j9Vl1ciJOfV0epEarW4
+	 vWUpeD6FG1xnszVU3rpqxWbkJQwZ045V2CT4wHrZImjfBmSYHt32Ed1Ej73LrNrvC
+	 YCLDD03cpq8OULefjg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M4JmN-1rxeAu2jgn-000JMW; Thu, 18
+ Apr 2024 10:23:58 +0200
+Message-ID: <01c4de1f-ef41-4332-be50-a8a2a7b2efe9@gmx.com>
+Date: Thu, 18 Apr 2024 17:53:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,115 +59,163 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2] btrfs: report filemap_fdata<write|wait>_range error
-To: Anand Jain <anand.jain@oracle.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+To: Qu Wenruo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
  linux-btrfs@vger.kernel.org
 Cc: Josef Bacik <josef@toxicpanda.com>
 References: <80c3c9ccb6e7ea366d88f0e5b2798f5bbd3b381c.1713234880.git.anand.jain@oracle.com>
  <1556267cd2fd5f2d560a50b4b169ec4d58c95221.1713334462.git.anand.jain@oracle.com>
  <041bef79-743b-4726-adee-9c0ddf332e6b@gmx.com>
  <d3a646ed-ce67-4380-82f9-920fcbec5300@oracle.com>
+ <b2818f72-0158-4caf-9687-9d0ca4672a03@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <d3a646ed-ce67-4380-82f9-920fcbec5300@oracle.com>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <b2818f72-0158-4caf-9687-9d0ca4672a03@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:reYlT6g7U3JZTry9qB4MF4E1A5FPN9LjEbRk3c/ofkMrDqvxmL5
+ czQU+Rj21ZAm0cde4IzP7ww3V55tXHukPp2ozXpWvL4VabpqlsUHWeGr8J00FnUUbgI5wS3
+ r0I1E0MCofX4u+oZqk0M61v+0oGlFKZ677pfoHYbYeEX1uU31B8wBZhJozGUp2eHaI5vvQw
+ GSUNpJNCJqq25l9Ln5Xmg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:qAD917qY9/0=;0YPK7R4MmhVeOQDIpMBussmz2Tp
+ 6gTcdcSp3RmTRqg5mgNYN6K6PWnfxerlU9QxH1Du0eIUfnoD5WtyMmROVRniMnx77Imbt/S++
+ NnHUjDHU31vDJBOKtoL9iQsvEyhAwxTGof3uPAR/5ukRGJU9V848ZEfi1dm4JtkhVXxXi9mpO
+ 3c7dcB2m9xJAGFWUWzSa50ng1Ou6x2hUgCJJhaxpO6waGEasdQYcFHQcfNnuMn4NeI3w7GPed
+ D0M0263xqhUhosiHk+TOdp2Glq2txqRXH+eRXuQv1Yddk2KxhvwIod77JzUPVUttwjAuJU7Zh
+ XHacq9p0v4T/HfNdohdUbdtJLjRgNNvPSePn8k4Rt3wAbLPG+D9GfbZIa5Rdrv+2TQn835yga
+ P8q5L6iRCOUdcnJcw5yqL8m9oDkQt7PbSfnqmloBz9NJCcXP9Br9pN+KxKjY09iDdZWVJyYWy
+ /XSQLAfI1zckhq/sOCbMQ93wpRjUBwv3kp/MKs2j/BGVUBXme7kkUOGa8lappBpp+SAUzhz/r
+ uhrS3xwuHrBYYOg10P9KHUMfT0vRZzBf6RdWImxWmxtvnlfMSXxtmYHlu4XtnbOloT8vW1IyL
+ 22LSFByU/gt9xqHCIkrb+QHLqHzHNayWocXfpsvhQMbB7IUely1EZK1YIgq6V96Abyj+NoGio
+ l0j06xtMsY2uKYpl0njEeQHo+dVjnwAKhqHpRDFY68cKveCp1KNLSV11hJ9shji4Gervg3Y4C
+ Wa++DLF98UaK1eaAutpBcift72uZynJy3nws1+p/VRdcy2DgXeX739WO4K3Kt7CTcWFSI/hlT
+ kLMYSgUy6aRrzgCEHfIj5skZpd0Hj3QM9PAuYBMle5v+E=
 
 
 
-在 2024/4/18 16:48, Anand Jain 写道:
-> 
-> 
-> On 4/18/24 14:30, Qu Wenruo wrote:
+=E5=9C=A8 2024/4/18 16:52, Qu Wenruo =E5=86=99=E9=81=93:
+>
+>
+> =E5=9C=A8 2024/4/18 16:48, Anand Jain =E5=86=99=E9=81=93:
 >>
 >>
->> 在 2024/4/18 15:44, Anand Jain 写道:
->>> In the function btrfs_write_marked_extents() and in 
->>> __btrfs_wait_marked_extents()
->>> return the actual error if when filemap_fdata<write|wait>_range() fails.
+>> On 4/18/24 14:30, Qu Wenruo wrote:
 >>>
->>> Suggested-by: Josef Bacik <josef@toxicpanda.com>
->>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>>>
+>>> =E5=9C=A8 2024/4/18 15:44, Anand Jain =E5=86=99=E9=81=93:
+>>>> In the function btrfs_write_marked_extents() and in
+>>>> __btrfs_wait_marked_extents()
+>>>> return the actual error if when filemap_fdata<write|wait>_range()
+>>>> fails.
+>>>>
+>>>> Suggested-by: Josef Bacik <josef@toxicpanda.com>
+>>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>>>
+>>> Looks fine for the patch, although I have a small question.
+>>>
+>>> If we failed to write some metadata extents, we break out, meaning the=
+re
+>>> would be dirty metadata still hanging there.
+>>>
+>>> Would it be a problem?
+>>>
 >>
->> Looks fine for the patch, although I have a small question.
->>
->> If we failed to write some metadata extents, we break out, meaning there
->> would be dirty metadata still hanging there.
->>
->> Would it be a problem?
->>
-> 
-> I had the exact same question, but what I discovered is that the
-> error originated here will lead to our handle errors and to readonly
-> state. So it should be fine.
+>> I had the exact same question, but what I discovered is that the
+>> error originated here will lead to our handle errors and to readonly
+>> state. So it should be fine.
+>
+> Yep, I know we would mark the fs error, but would things like
+> close_ctree() report other warnings as we still have dirty pages for
+> metadata inode?
 
-Yep, I know we would mark the fs error, but would things like 
-close_ctree() report other warnings as we still have dirty pages for 
-metadata inode?
+Nevermind, I just injected a metadata leaf writeback error with this
+patch applied, and everything looks fine, no extra warning on btree inode.
+
+So I believe we're already doing proper cleanup.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> Further, if submit layer write/wait is
-> failing there is nothing much we can do as of now. However, in the
-> long run we probably should provide an option to fail-safe.
-> 
-> Thanks, Anand
-> 
->> Thanks,
->> Qu
->>> ---
->>> v2: add __btrfs_wait_marked_extents() as well.
->>>
->>>   fs/btrfs/transaction.c | 4 ++++
->>>   1 file changed, 4 insertions(+)
->>>
->>> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
->>> index 3e3bcc5f64c6..8c3b3cda1390 100644
->>> --- a/fs/btrfs/transaction.c
->>> +++ b/fs/btrfs/transaction.c
->>> @@ -1156,6 +1156,8 @@ int btrfs_write_marked_extents(struct 
->>> btrfs_fs_info *fs_info,
->>>           else if (wait_writeback)
->>>               werr = filemap_fdatawait_range(mapping, start, end);
->>>           free_extent_state(cached_state);
->>> +        if (werr)
->>> +            break;
->>>           cached_state = NULL;
->>>           cond_resched();
->>>           start = end + 1;
->>> @@ -1198,6 +1200,8 @@ static int __btrfs_wait_marked_extents(struct 
->>> btrfs_fs_info *fs_info,
->>>           if (err)
->>>               werr = err;
->>>           free_extent_state(cached_state);
->>> +        if (werr)
->>> +            break;
->>>           cached_state = NULL;
->>>           cond_resched();
->>>           start = end + 1;
-> 
+>
+> Thanks,
+> Qu
+>
+>> Further, if submit layer write/wait is
+>> failing there is nothing much we can do as of now. However, in the
+>> long run we probably should provide an option to fail-safe.
+>>
+>> Thanks, Anand
+>>
+>>> Thanks,
+>>> Qu
+>>>> ---
+>>>> v2: add __btrfs_wait_marked_extents() as well.
+>>>>
+>>>> =C2=A0 fs/btrfs/transaction.c | 4 ++++
+>>>> =C2=A0 1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+>>>> index 3e3bcc5f64c6..8c3b3cda1390 100644
+>>>> --- a/fs/btrfs/transaction.c
+>>>> +++ b/fs/btrfs/transaction.c
+>>>> @@ -1156,6 +1156,8 @@ int btrfs_write_marked_extents(struct
+>>>> btrfs_fs_info *fs_info,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else if (wait_=
+writeback)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 werr =3D filemap_fdatawait_range(mapping, start, end);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free_extent_st=
+ate(cached_state);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (werr)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 b=
+reak;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cached_state =
+=3D NULL;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cond_resched()=
+;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 start =3D end =
++ 1;
+>>>> @@ -1198,6 +1200,8 @@ static int __btrfs_wait_marked_extents(struct
+>>>> btrfs_fs_info *fs_info,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (err)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 werr =3D err;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free_extent_st=
+ate(cached_state);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (werr)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 b=
+reak;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cached_state =
+=3D NULL;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cond_resched()=
+;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 start =3D end =
++ 1;
+>>
+>
 
