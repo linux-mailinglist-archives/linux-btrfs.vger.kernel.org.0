@@ -1,149 +1,97 @@
-Return-Path: <linux-btrfs+bounces-4387-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4388-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D0A8A8FB9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Apr 2024 01:53:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5B48A8FE7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Apr 2024 02:15:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB3271C2125E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Apr 2024 23:53:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06AE6282617
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Apr 2024 00:15:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A75812D759;
-	Wed, 17 Apr 2024 23:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391C53FEF;
+	Thu, 18 Apr 2024 00:15:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="f2OFh7cd";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="f2OFh7cd"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QNPOVqHK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B96586634;
-	Wed, 17 Apr 2024 23:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2B715C3
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Apr 2024 00:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713397998; cv=none; b=p2kMN9UqzBgGOUJmJZB1wFkGsLZF87THIcFoG9tKClBxnQA/Fa1OwgkdQneFZFSDgLN/23bJN4iRT3FLk/gO0m/6lE3nBESfF4m3lFBkBu+2s9CwLt78w7bArQvxc/5tv9Rvxb0HfCxJz4tkrVCTECEmTdPXyM1N03p/WHIYeko=
+	t=1713399317; cv=none; b=pYXeuGLwWm+R49z55ZrcWiZR3cFrFaAFAguBGkaXF3KYzYjWFdf6L75+vgQKYNc7ljtMLzQk7MovN1F076dFQg9JnRS6SFDLNk/JN1D1TVHX7bCfNl97cOYxQZGH9vEwNQnN9Se6xXwdbQLgI8yBbhrBLWj+ZAU6VraRx9j8uNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713397998; c=relaxed/simple;
-	bh=BZbM0yFFQWacApkv2yzxp8iBa8jtgGewk9581bFZLc4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AEA/yTd3n6s9izeMJ+GDFerrQ1pv6YxjinWG2feMhvsX9OA7opiK7uwAmyz1jow0w7hHiCluVJe+QE4igy1OPHtsf2z0/PEdeE/cb4sVoMuDZFI5a3cz8+sKyP1ZwwliKb/v+5SMIIAZWI3xzpKQs65b8xdeB5IWfjYyvmCT7Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=f2OFh7cd; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=f2OFh7cd; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 68A035BF01;
-	Wed, 17 Apr 2024 23:53:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713397994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=qoKj9Ceuv1j+XfjhqeFyhNCHpOwULMy/JgT08VwnSQA=;
-	b=f2OFh7cdbO/JrjSq6d+RrFdACVGfuVSpsMDkQmk/5JsB3xKHt87jyA7FYCIxL5Rfpdn9Af
-	3VJuhE2+k0hxg1+vE0rvFdXaqIgppw9RcUMtyMJCRKiQ2n+8uZVM2p0lgATqWm0f+EqKsc
-	gN34EDNEW39HoMFbiz3ksIjZSqOdMQo=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=f2OFh7cd
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713397994; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=qoKj9Ceuv1j+XfjhqeFyhNCHpOwULMy/JgT08VwnSQA=;
-	b=f2OFh7cdbO/JrjSq6d+RrFdACVGfuVSpsMDkQmk/5JsB3xKHt87jyA7FYCIxL5Rfpdn9Af
-	3VJuhE2+k0hxg1+vE0rvFdXaqIgppw9RcUMtyMJCRKiQ2n+8uZVM2p0lgATqWm0f+EqKsc
-	gN34EDNEW39HoMFbiz3ksIjZSqOdMQo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 624B813957;
-	Wed, 17 Apr 2024 23:53:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Vgr2F+pgIGarBAAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 17 Apr 2024 23:53:14 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.9-rc5
-Date: Thu, 18 Apr 2024 01:45:43 +0200
-Message-ID: <cover.1713396900.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713399317; c=relaxed/simple;
+	bh=hyvG3v6XAKRWm3hH6ODN6kbZbNuRyM4HM33dcRdxujU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W65V7yPB+PZI+QIz7IbpFterDbiUWzx84Db5chQKfTzNXLWSfJpm7rKHuL06KXP2DVHjTIpYplOtW8Kb6/rNTnCqK08WvJCAiWvsfIDbo2U1TLwGc9UegL8YmYNWuT4uwSAhkDpmJH7akS4/OXCbM3AgSm+UV6ZmElAkhhmE9OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QNPOVqHK; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e509baddaso275218a12.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 17:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1713399314; x=1714004114; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=E+HEY7o6NmipJTF9VPab4N+W3wy3ABQnhFnH4fGACVM=;
+        b=QNPOVqHKZtKRd0I9CLUYkbzzETC3erXf7309SHt9HlN5qRq4cND5ErBxL9hxebVBLs
+         ggpRB75ptkwx5yE0m49ON0b6o3zVTf56fx0TsbT8Fx5R7Kwhvt30cNU2PJWHEiHwbB5i
+         jENTNKNnsKeZ/pTixEs7S03kk1ec2b5fVhrxY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713399314; x=1714004114;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=E+HEY7o6NmipJTF9VPab4N+W3wy3ABQnhFnH4fGACVM=;
+        b=td81/1r69i8Amc0/tlIDlPDUjADceGy5rL26eWtw2wt3pB4rywEmoDoV1vBw/3/bhK
+         KDzBhJdn/3xjr1ytRo0yGMELgFB7BBPWsLNJA5yq/568kaMksjmwU8og05wfgSmlyXkq
+         Y1ey/d12n7mZ2uzQNbbQpexuhKdKpgFfoEw2TpvrQe7VP20iIhk6p/JODzx1r9++k4J1
+         z20B4kb+4EPoerwGs5k3e+VXOImIwj1hVwgkwIBRrvYnks3mM4VNcsSojDYWmoT67zIz
+         Pcdolf4dKWImLKt6GSxr08xTGseWLXut0wAYdBj1ErJXEY+j8VIcnX1Aa+orAQr/47zG
+         00lw==
+X-Gm-Message-State: AOJu0Ywm2+LE4cReWWJyVx0YtQa0bpKy7TcrWN2ZA6GAPpWZYzFkUPrl
+	FKTVqKMR13NWLu+f5LmZrQCeT84xs0ainEQXkkgIYdsqs7nhFZs5vftq/ayeFjyNQNK9bEtAU9G
+	DO5Y=
+X-Google-Smtp-Source: AGHT+IEdxQekCtmfj71vSvU4IV52PP9589CO56xI1X5oDVfvGHKuixVZ+6R+LVggWjfyjiGr4L2Jlg==
+X-Received: by 2002:a17:906:3ada:b0:a52:4d96:85e with SMTP id z26-20020a1709063ada00b00a524d96085emr453530ejd.53.1713399313799;
+        Wed, 17 Apr 2024 17:15:13 -0700 (PDT)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id w23-20020a170907271700b00a556f2f18d6sm108344ejk.57.2024.04.17.17.15.13
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 17:15:13 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so291352a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Apr 2024 17:15:13 -0700 (PDT)
+X-Received: by 2002:a17:906:32d2:b0:a51:c71b:e1df with SMTP id
+ k18-20020a17090632d200b00a51c71be1dfmr570874ejk.47.1713399312874; Wed, 17 Apr
+ 2024 17:15:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.04 / 50.00];
-	BAYES_HAM(-1.03)[87.50%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 68A035BF01
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -1.04
+References: <cover.1713396900.git.dsterba@suse.com>
+In-Reply-To: <cover.1713396900.git.dsterba@suse.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 17 Apr 2024 17:14:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wirVv7e6r+UOe5Svjrkx-Cy_=1bNSigdYrWWwzfv_-4gA@mail.gmail.com>
+Message-ID: <CAHk-=wirVv7e6r+UOe5Svjrkx-Cy_=1bNSigdYrWWwzfv_-4gA@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs fixes for 6.9-rc5
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+On Wed, 17 Apr 2024 at 16:53, David Sterba <dsterba@suse.com> wrote:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.9-rc4-tag
 
-please pull the following fixes, thanks.
+Nol such tag. I see the branch 'for-6.9-rc4' with the right commit,
+but not the signed tag. Forgot to push out?
 
-- fixup in zoned mode for out-of-order writes of metadata that are no
-  longer necessary, this used to be tracked in a separate list but now
-  the old locaion needs to be zeroed out, also add assertions
-
-- fix bulk page allocation retry, this may stall after first failure for
-  compression read/write
-
-----------------------------------------------------------------
-The following changes since commit 6e68de0bb0ed59e0554a0c15ede7308c47351e2d:
-
-  btrfs: always clear PERTRANS metadata during commit (2024-04-02 19:19:13 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.9-rc4-tag
-
-for you to fetch changes up to 1db7959aacd905e6487d0478ac01d89f86eb1e51:
-
-  btrfs: do not wait for short bulk allocation (2024-04-09 23:20:32 +0200)
-
-----------------------------------------------------------------
-Naohiro Aota (2):
-      btrfs: zoned: do not flag ZEROOUT on non-dirty extent buffer
-      btrfs: zoned: add ASSERT and WARN for EXTENT_BUFFER_ZONED_ZEROOUT handling
-
-Qu Wenruo (1):
-      btrfs: do not wait for short bulk allocation
-
- fs/btrfs/extent-tree.c |  8 ++++++++
- fs/btrfs/extent_io.c   | 21 ++++++---------------
- 2 files changed, 14 insertions(+), 15 deletions(-)
+               Linus
 
