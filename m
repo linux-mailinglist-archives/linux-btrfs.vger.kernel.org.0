@@ -1,179 +1,169 @@
-Return-Path: <linux-btrfs+bounces-4457-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4458-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EB968AB6FB
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Apr 2024 00:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 359CA8AB75D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Apr 2024 00:52:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18D0B1F22696
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Apr 2024 22:01:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A662F1F218B4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Apr 2024 22:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061E513D26D;
-	Fri, 19 Apr 2024 22:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A83B213D633;
+	Fri, 19 Apr 2024 22:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gTTcxIQI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="L9pNLjv3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y80DIiU3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="14yGA0Zv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eLTZAgiE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17252AEF5
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Apr 2024 22:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B5713D511
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Apr 2024 22:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713564051; cv=none; b=XQOvxlEWyF2pTEpbhYd9lkQDtspIWxmNm7tMyQdAhPS0dnEbkZ8Tv5WUmMHHQ47MCpB3G7+owLB38YRHVi/qTHWgHa0FaFCnOZHYZrQRdi4u864j3EJSnTzT9Z47MSArIVuPdi4Na5erK+WEnw8dnledHi1KqA9qmWzymlZXLaQ=
+	t=1713567153; cv=none; b=N3Ud0MFjyPnSwe89cpGTjH+vn9+kHCsxAIu1ICI1357n9Dy8BTqXL5B8lBseAI8qENAI/pvrp447a6DQFXRzl7CAkuCrT5ei+Oog6+lJYqNcIsN3dv7p0VE7wtH/VWYgbGhwbjJjo3hoWAYEEdjcxLXOU8iWFi9gN+MFJJWjpHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713564051; c=relaxed/simple;
-	bh=HSwL/OYLQtrk8ji1SflEtLIsfj9f9c7RWSL9K6YUZmQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i9eLtHeCsFFUhP5GX53Q38VGrso0Icz92vqwIZMReV8Jm0hqBAjqNVJvm30SyXyTf+w0Kt1hojvdThnkMymuHClbVHDoFWMseP3qVTgdt3z8ECW6TEszII2YCAWl5WYIJ6J5KJ8NZZoNwvFdj6+dQEDofh3gmqQKO/DqyBj7lQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=gTTcxIQI; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1713564045; x=1714168845; i=quwenruo.btrfs@gmx.com;
-	bh=aLQgAiuzC99AmxlBwKqm9VrplCUBn9fflVyB0JvLhvA=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=gTTcxIQIQgaN7JWn+cHIbNdm9YuUBkB6PkmCXQH/8ar/JNx3xkcJAYbqB1Q4Ganr
-	 CExjm4BKWHT+r/Py76VfnkWzN8VkGWzMhi3+Ri9KmOsf0iqoZDLhfDQUNwJe3SJ7Q
-	 ILNwL27c1O5Q11HjmS8jb3Zil9IWQqzT8g35xaRjO5bd7pkIZOy9edL+hsMj8igwm
-	 tXin2bB7F3y3sCa/ThG4+LcKnLMz/95P5gZpatCBrP8ghYADVuCp8DWDG/18VuELl
-	 7PWFtEPApguQHevgnekADw3DYTbhjBJ8m5S880S81Jt8u7+aSKtD8qc1Nbwro3+TY
-	 R93UAz8jREwJ4p6CqQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWAOQ-1sChE62M4w-00XbV2; Sat, 20
- Apr 2024 00:00:45 +0200
-Message-ID: <430b7a16-621c-4aae-a94c-bb3d0124ae96@gmx.com>
-Date: Sat, 20 Apr 2024 07:30:39 +0930
+	s=arc-20240116; t=1713567153; c=relaxed/simple;
+	bh=XzUKhCS2JFkGUjGXBT7Jx25IeXb8DYOpmxm8FVlsCgo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c5ag+9ON9dBoZ/QCwdCCYCqYcXpfJNpIaiiQMBzlj3u3lvTvcAchZ6bbMBagaLvNArHETfywmL4Tm3H1bZJ7LalyuhVWaPRQ0Hz5CJSITuP2Epf15sObw+6xMjdGFDCVYctgJ23uL7+sZ6E9ZLkV04WquPAsNAjqWI2UNumMbT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=L9pNLjv3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y80DIiU3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=14yGA0Zv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eLTZAgiE; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F35ED5F9C6;
+	Fri, 19 Apr 2024 22:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713567150;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VvawXII7ycIBr7DafDVVtQIBuLwvJQRcpkkHLhHP+xs=;
+	b=L9pNLjv3C5t5ycGtibeUK1UM8c+0EQi+xZTOcVdWbUbi2WRcDE0vEK+oVzhrbdpnicxNAv
+	hu0dnC6feq1RY5f0ACZNpJtT0+AC5WDAuQx2ialEHK6SQQwnvQfwLhKDWbSqGguEJPIal1
+	IYbIhXzsDiRigKpydjrRoKA6PUNslkU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713567150;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VvawXII7ycIBr7DafDVVtQIBuLwvJQRcpkkHLhHP+xs=;
+	b=y80DIiU3UjTwmYy1QwceIVJ4sYg/k6CujEzv3OUgJ2vjGwdFZwQo+d17ebIjkmwNLOJeDt
+	Z5NCq1gqVUn3vRDg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713567149;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VvawXII7ycIBr7DafDVVtQIBuLwvJQRcpkkHLhHP+xs=;
+	b=14yGA0ZvHoVW+2wv6hhKTMpN9y58Gkw1XtHnGgla6hW29n7D87qpG/iGpQPntinzkW/NDr
+	HXcnbVvgGsdVjk2BPIiMAGWHrRABaDtQjf+Acb1utlpDq63K7XQIvoLfXEMjPEeIbauyps
+	kBcZoCsf9XHxJ7701dun8RRaKwO97S0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713567149;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VvawXII7ycIBr7DafDVVtQIBuLwvJQRcpkkHLhHP+xs=;
+	b=eLTZAgiEh8XOxCTeTHFjJqIk+Vf1n+zZ0h4CnD4YVFggg+2dpcnMhUQtcEZ6x4IsrkXhH+
+	cwIN6233lvYIR+AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C829813687;
+	Fri, 19 Apr 2024 22:52:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NaR0MKz1Ima2fQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 19 Apr 2024 22:52:28 +0000
+Date: Sat, 20 Apr 2024 00:44:49 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] btrfs: fix btrfs_file_extent_item::ram_bytes of
+ btrfs_split_ordered_extent()
+Message-ID: <20240419224449.GD3492@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1713329516.git.wqu@suse.com>
+ <20240419172932.GC3492@twin.jikos.cz>
+ <430b7a16-621c-4aae-a94c-bb3d0124ae96@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] btrfs: fix btrfs_file_extent_item::ram_bytes of
- btrfs_split_ordered_extent()
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1713329516.git.wqu@suse.com>
- <20240419172932.GC3492@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240419172932.GC3492@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7N4DYbwhN/kgWhwxyVxNZj9XhWg48kf4/zD5ZB1/sy0tBoMN5Mp
- AXaJ98FYpzNAVnt9UqPzuata3wWupvtg3q2iVxD3f2cYT29bZs61d8wwo4nSOW6kRu82zi6
- bf1PCvUVrBjEag6YkMKiVAhDiKAhw+YbQJMi5Th8Xc1xKcA3Fgma4yMNLcciEtyhlVBVK9h
- 7BPbuFbDupO7qJNF4OD8w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <430b7a16-621c-4aae-a94c-bb3d0124ae96@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmx.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4]
+X-Spam-Score: -4.00
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:g4xWP6U5W7I=;Xz3ag1p82yQqMFfGN29dIfmAIn2
- ToYmxzx5bFWSUyKria1Wci0BhoVBjAY/e8euDahRtlTFrgnYeDeXeCPyDcp1FNkEarQhaIH3B
- QEfyqhTOvKFxGA9hw9D8nfm8YkniMHfsWMhQzDiAVXbq0gvken8Bj6FX3lriqzuHJSmE579r1
- DGyqgL1MV/Bslga2Mdu+xFUnoB2vckdJS5wScoRi3VT6dpwG5pdeyWJp0aE3/daDBatowHSEP
- Z3y3b217FQk9y7SpcKiQli3JhMwL+ZUdslucDV4DLlt5u7TDAJEJ+VQg+EyoKJ+xFypIhrg64
- GReOwk3AJK4HtSLa/HVye8hopP4YmD5JaaoLBCIKJH7J5JVJwF51vy9OdUNQHpIc7vfgXB/pR
- /BSveqOQ4fNFQlu5CZ7rYqimWIOfat+zeVfZRcrAuPQKo7pxHl/nXD8Zl6g3/upJapLBZKJHp
- 3/Vrm3bk9tYpZmHB9CpsO2jockf/bbzbTn+aodDyfwZ8ANSyJwSg0fNj4zV6QoHxQUHPmwGr1
- E7F/S7IGoDZz99zBo7wQzNQ3OAT8jhTuaf34Tx2SXoEtvm4TiJM0oBi8dJSXLLyB5p/ffT+JI
- 5ioxOWWuNHmADvg9FEJLDh9ThGJGvk43/UaANRRwi+Kxs2b7syISVzXFUwv0OcZxV50+5Z1BU
- UixKpmMPIUpZb2LmXWiwBNk0uRu7I5OhNbVpUuokwNHpLeaA7rR5BlmO9/QI2sUpgXSo3bdpJ
- HxZFAk1Tve010w0J7BXAzefOx5HP6A4Y3vS2yscja6USnojcbaw6BTpRlhfFfZ34tKFvv7WmV
- mdkMBKpyBoKVs/19Z+VLvyn/iLjsnd3+a8q8N+w9a+yQg=
 
+On Sat, Apr 20, 2024 at 07:30:39AM +0930, Qu Wenruo wrote:
+> >> And since the invalid ram_bytes is already in the wild for a while, we
+> >> do not want to bother the end users to fix their fs for nothing.
+> >> So the check is only behind DEBUG builds.
+> >
+> > For testing this is OK, but would it make sense to fix the wrong values
+> > automatically?
+> >
+> 
+> I'm also thinking about this, two alternatives, but neither is perfect:
+> 
+> - Fix the value at eb level, aka, updates the ram_bytes directly at read
+>    time
+>    This should fix the problem forever, but it has its own problems
+>    related to read-only mounts.
+>    If we do not do the fix for RO mounts, then remounting to RW, and we
+>    would have cached result untouched.
+>    But if we do, we're modifying ebs, how to write them back for a full
+>    RO mounts (e.g. rescue=all)?
+> 
+> - Only fix the extent_map::ram_bytes value
+>    This is not going to change anything on-disk.
+> 
+> And considering this "problem" has no real chance for corruption, I do
+> not believe we need all those hassles.
+> 
+> My plan to repair the mismatch would all be inside btrfs-progs, after I
+> have pinned down other call sites resulting smaller ram_bytes than
+> disk_num_bytes.
 
-
-=E5=9C=A8 2024/4/20 02:59, David Sterba =E5=86=99=E9=81=93:
-> On Wed, Apr 17, 2024 at 02:24:37PM +0930, Qu Wenruo wrote:
->> [CHANGELOG]
->> v2:
->> - Update the comment on file extent item tree-checker
->>    To be less confusing for future readers.
->>
->> - Remove one fixes tag of the first patch
->>    The bug goes back to the introduction of zoned ordered extent
->>    splitting, thus that oldest commit should be the cause.
->>
->> During my extent_map members rework, I added a sanity check to make sur=
-e
->> regular non-compressed extent_map would have its disk_num_bytes to matc=
-h
->> ram_bytes.
->>
->> But that extent_map sanity check always fail as we have on-disk file
->> extent items which has its ram_bytes much larger than the corresponding
->> disk_num_bytes, even if it's not compressed.
->>
->> It turns out that, the ram_bytes > disk_num_bytes is caused by
->> btrfs_split_ordered_extent(), where it doesn't properly update
->> ram_bytes, resulting it larger than disk_num_bytes.
->>
->> Thankfully everything is fine, as our code doesn't really bother
->> ram_bytes for non-compressed regular file extents, so no real damage.
->>
->> Still I'd like to catch such problem in the future, so add another
->> tree-checker patch for this case.
->>
->> And since the invalid ram_bytes is already in the wild for a while, we
->> do not want to bother the end users to fix their fs for nothing.
->> So the check is only behind DEBUG builds.
->
-> For testing this is OK, but would it make sense to fix the wrong values
-> automatically?
->
-
-I'm also thinking about this, two alternatives, but neither is perfect:
-
-- Fix the value at eb level, aka, updates the ram_bytes directly at read
-   time
-   This should fix the problem forever, but it has its own problems
-   related to read-only mounts.
-   If we do not do the fix for RO mounts, then remounting to RW, and we
-   would have cached result untouched.
-   But if we do, we're modifying ebs, how to write them back for a full
-   RO mounts (e.g. rescue=3Dall)?
-
-- Only fix the extent_map::ram_bytes value
-   This is not going to change anything on-disk.
-
-And considering this "problem" has no real chance for corruption, I do
-not believe we need all those hassles.
-
-My plan to repair the mismatch would all be inside btrfs-progs, after I
-have pinned down other call sites resulting smaller ram_bytes than
-disk_num_bytes.
-
-Thanks,
-Qu
+I see, so the only chance to fix it on disk is to change the extent for
+some other reason. Otherwise we can only make sure that an in-memory
+value is correct so it does not propagate further.
 
