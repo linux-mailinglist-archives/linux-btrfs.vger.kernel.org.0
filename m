@@ -1,83 +1,77 @@
-Return-Path: <linux-btrfs+bounces-4455-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4456-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E39688AB54B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Apr 2024 20:54:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 625D58AB550
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Apr 2024 20:56:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1D4B281FE4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Apr 2024 18:54:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4476B21085
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Apr 2024 18:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713511311AD;
-	Fri, 19 Apr 2024 18:54:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BBC13A419;
+	Fri, 19 Apr 2024 18:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="SOMnHftH"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="CCeriSxt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C85422071
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Apr 2024 18:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E7313C679
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Apr 2024 18:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713552855; cv=none; b=aCXQFFOcbxAnbE8USMYSO4CmoTodk4f43USjUcH7Au6TTK50oYwfq3chNGqPbRW+8hnsBoN4TEKuPR/wSk9RTqpfKTRpue42rCnXLz/Q9xnKSVA+uQPdy/LZ/0Kt6mkCOvTS5PPphF5LUBceuNO7PeziQenFuR9kwm7ER0K0jb4=
+	t=1713552963; cv=none; b=aDHm/GxMZO6sKCKp4COl7kkbtZyGbQ0hMNhniydLUbDWj1w9isjY/amwTCJERVeRJ0ijhhyV5KjSrFPKRb0Og4oVTziyq5uORqk2JyO6U0QzQ1/Hfee4/CHSmw6ydK++IIextMbx3gbkDDbE1Yq7P+GTzeJZCH2OLld7BgUavYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713552855; c=relaxed/simple;
-	bh=Rk6puKjiTDkKAjCvDHQxUFjNBRCnDAdMrud6VyhcWZk=;
+	s=arc-20240116; t=1713552963; c=relaxed/simple;
+	bh=XYpv/X9i8lqQwfic9+Z4Uvf/TRnl0y8wD+9+vJrbzlg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WLW9mODGewdcDwzWFEPaTW95fO38vHR/OVpbTksaNhzVz/TTzS5nqCW8CzWNss6DHhl6Ni+CLkIzyzrDi9MgFYlWpKMt09F5K9xZ8sQ8ctl7FhL/X7UIv7yksqDuDULUzaGz8tH85nsiEwE2HFqXDioMXuzCeRdx9TtghLdPMNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=SOMnHftH; arc=none smtp.client-ip=209.85.160.175
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lz89B/YlvtA8J9PRN6P48f1zJ/UZUXLmIA4LlYKLTXCiqmx6w4c2QoaHiLvCT1oAe7GcyYvISswJUX6Eny4/Evvkz6JiW0wDIra9SD2aIyvpPXokHecn7POanaEmzBdse+QIBqfsTfnSfjNvdJypEgOJhJlg2Bh6ln7a1v1nf8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=CCeriSxt; arc=none smtp.client-ip=209.85.219.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-437202687bfso14645431cf.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Apr 2024 11:54:14 -0700 (PDT)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6a0406438b5so11006086d6.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Apr 2024 11:56:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713552853; x=1714157653; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713552960; x=1714157760; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TruwZnWZri7iH+nXQ3qA54Ge5XfX6vswZ56ilhC1jao=;
-        b=SOMnHftHkZIjm+DvDbL1yhNU+SZn7XUnCBluXlGHY0zBoanaO8gbuvG8gku4yq0iNr
-         7WT9LaOfkXfH1gJJXkOw8OxuO5D+XK798zeXHsVjpzz1poM/Y26DW1qgbYpQZGCSvn1N
-         FBACDZn4UDqPQFZrtVMLWKnbCmLBSRuDRWOQHcVNoe4+iLausiWEeBRRTNIVCzN6HiIK
-         HOy7dt3Nt2IwPviU1UYZIkBFc4A0/7GkaxjEr/7MXprWIfw/DzO1PGLUmz7rGK6L/tSQ
-         s4p2z5eNjBTjrv6I+4jUMLttGMelDH+hKu7fMDlHNvXYRuDiypHzYW4ortwaENtYCRhv
-         SgfQ==
+        bh=KPtKRdIEPLzYrwCUCh9hiXhqpNNzvXiSnAJ3dNueYoQ=;
+        b=CCeriSxtQKocXgec7zu2lkaJhzdy4JlV1Rwkka8MhwUTpVcc1ShYZuUTQiIGUjL7Co
+         r95NJEnQFNo1YG4hjEMp0r60/2hFhJU8uC+5BR1LMLa7zz4XCKvZ5DV+cEtevtNbh5nY
+         /gwkyDAZWgfT3n2rwz0JuQZLhasgzx3BtBxqd/UDMZg9SQC8SUwRN2hwEW1WnjNeWAmI
+         77L5TO+YeagiZ5qm8u//3melOw1hZ9dUeUmNdy58cC3XuADJux4+YIIWqlGV0Dxi3/Ur
+         bdEYmqcFlHrHo6EsEy+Dkn2fuUzUDBSeLk4ms6VRLx3q1/0kVx5hkD23C0uIMKIUBuhg
+         N+DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713552853; x=1714157653;
+        d=1e100.net; s=20230601; t=1713552960; x=1714157760;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TruwZnWZri7iH+nXQ3qA54Ge5XfX6vswZ56ilhC1jao=;
-        b=VOBueaDoHWkZmvuycaGKRHmrkhRxwM7Av47lkGeIPmGGvQD22otPAAYY5jKU4zLB4r
-         kP1+3/bxEkXuHOX+jkvBZ2n5ZCpoutzVkL0397LNqHZdPXf5PXdBiIcmbMZH5fjoZkHa
-         COu4pdGHHTIDJrC5Tr7hJWqy7bpGsVPHCo6H1ucjTZj0YhnjXuQiLpXtQ7BPC/+TTZdY
-         ALQthXR4Zkbccr9+KF9pWNpv3J4Tz+Bm6JGcVQuXnvz20pT+VCBAk3QtXINSi9AxHSeZ
-         oUOmjtyft010meRdTtZPvZvWujXeYSUohAMKBPJ9hViY5KMrnc+Sv3MYKGCLEcUeIXht
-         fZEw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0xLWMCzDXivdYPJQd/GTenvgRn2I4rCoJNw66bFFARWcl0fXgNtlsHZJyFZZ5eq07Tt7WdUza9BeDiWQ6rdt43aRmT1P9hyVEArY=
-X-Gm-Message-State: AOJu0YwLXTsXQlX+f3jL9Het3Nni0OVq1qjDlV4XCfPDWFPxDB9sGA5/
-	0igohVyfK1lBtVAfaM6TjLDGxv9cbZRnkbwiRIA5GIv2GPlei2wzSEUu7MRP+cQAarqpwiIYbbe
-	I
-X-Google-Smtp-Source: AGHT+IEjevCFy8Hr2VU3/1skcuqbvmfNMigqg4bLh0KuG90yPTNOFNAIFXppazGiVum3G1Nvt+BOEQ==
-X-Received: by 2002:a05:622a:1982:b0:437:b8e9:d200 with SMTP id u2-20020a05622a198200b00437b8e9d200mr2939271qtc.16.1713552853243;
-        Fri, 19 Apr 2024 11:54:13 -0700 (PDT)
+        bh=KPtKRdIEPLzYrwCUCh9hiXhqpNNzvXiSnAJ3dNueYoQ=;
+        b=KlkCxoBK6f1dAKKLMs3/Yavl6162SVuovZA60p0byLPKg09bV8z5SJx4OR78hgTK0k
+         kpwbo+bKMcwFFaRqVsXmCFKVrHMrOixeWpjLrMoRuMMqEMAeBcKpDB8BFSFvrARsMiL1
+         Qfbvwz65Q8T4kznC4CFh/8/d2Gw3exvQtdVutE6YNjQAFc1QAxj1QxhohyZ5vXt/IrwE
+         s5H2rV3dhFDTuGTWSsCGI8n8uBIQDndIagJVk6l2Qgx80ZM//OC5FwWZoFKyJySQTZmK
+         x7NeBAlEPhzSjctVV6M86t+j8TFP8draFvnM2PupZFy9mayg5ft+OQhyUHos2GAaeYlv
+         g5cw==
+X-Gm-Message-State: AOJu0YwSgEKdL1TW1g8HvjeV6ZetXTfpKHYj5aZgIvFEwt/GV4J0QeUE
+	5Pm2r3X7C1ZtI8/21Im/ikMG8NhT9sBL6jzbl3hYzH4+bUkr1FO0MQpKfPiQxOI=
+X-Google-Smtp-Source: AGHT+IHf2TFyT9CtiIaaqLlyG/oYm+gV3Vfwn8kvqGglyGjR9ljhFf9U+ySPW/65YEvbPmP7AVrXtQ==
+X-Received: by 2002:a0c:db06:0:b0:699:4a50:c5c0 with SMTP id d6-20020a0cdb06000000b006994a50c5c0mr3335000qvk.18.1713552960500;
+        Fri, 19 Apr 2024 11:56:00 -0700 (PDT)
 Received: from localhost ([76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id k8-20020ac86048000000b00434efa0feaasm1811800qtm.1.2024.04.19.11.54.12
+        by smtp.gmail.com with ESMTPSA id p17-20020a0cf551000000b006a04a14b5e1sm1777426qvm.104.2024.04.19.11.56.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 11:54:12 -0700 (PDT)
-Date: Fri, 19 Apr 2024 14:54:12 -0400
+        Fri, 19 Apr 2024 11:56:00 -0700 (PDT)
+Date: Fri, 19 Apr 2024 14:55:59 -0400
 From: Josef Bacik <josef@toxicpanda.com>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH 00/17] btrfs: restrain lock extent usage during writeback
-Message-ID: <20240419185412.GB2725564@perftesting>
-References: <cover.1713363472.git.josef@toxicpanda.com>
- <ZiC1hbcG4rFFz1BM@infradead.org>
- <qjy6xzmwpggluuwbgu4aljweoiwnrowvgklw6trn6tvwyk4wqi@akofzgx2tnms>
- <ZiEyfvCOrlsIgtiR@infradead.org>
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: use btrfs_is_testing() everywhere
+Message-ID: <20240419185559.GA2726825@perftesting>
+References: <20240417232452.20839-1-dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -86,32 +80,20 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZiEyfvCOrlsIgtiR@infradead.org>
+In-Reply-To: <20240417232452.20839-1-dsterba@suse.com>
 
-On Thu, Apr 18, 2024 at 07:47:26AM -0700, Christoph Hellwig wrote:
-> On Thu, Apr 18, 2024 at 08:45:35AM -0500, Goldwyn Rodrigues wrote:
-> > The only reason I have encountered for taking extent locks during reads
-> > is for checksums. read()s collects checksums before submitting the bio
-> > where as writeback() adds the checksums during bio completion.
-> > 
-> > So, there is a small window where a read() performed immediately after
-> > writeback+truncate pages would give an EIO because the checksum is
-> > not in the checksum tree and does not match the calculated checksum.
-> > 
-> > If we can delay retrieving the checksum or wait for ordered extents to
-> > complete before performing the read, I think avoiding extent locks
-> > during read is possible.
+On Thu, Apr 18, 2024 at 01:24:52AM +0200, David Sterba wrote:
+> There are open coded tests of BTRFS_FS_STATE_DUMMY_FS_INFO and we have a
+> wrapper for that that's a compile-time constant when self-tests are not
+> built in. As this is only for development we can save some bytes and
+> conditions on release configs by using the helper in the remaining
+> cases.
 > 
-> And the fix for that is to only clear the writeback bit once the
-> ordered extent processing has finished, which is the other bit
-> making btrfs I/O so different from the core kernels expectations.
-> It is highly coupled with the extent lock semantics as far as I
-> can tell.
-> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-They aren't coupled, but they are related.  My follow-up work is to make this
-change and see what breaks, and then tackle the read side.  This should pave the
-way for a straightforward iomap conversion.  Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
 
