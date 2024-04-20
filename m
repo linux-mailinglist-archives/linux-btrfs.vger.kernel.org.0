@@ -1,151 +1,95 @@
-Return-Path: <linux-btrfs+bounces-4465-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4466-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 647F98ABA29
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Apr 2024 09:52:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 510538ABB39
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Apr 2024 13:05:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4A6928142B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Apr 2024 07:52:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09FDE281BB5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Apr 2024 11:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7213B13FFC;
-	Sat, 20 Apr 2024 07:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ACGsslyx";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CnGLdw80"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7119B2561D;
+	Sat, 20 Apr 2024 11:05:05 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3236134A0
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Apr 2024 07:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B060D25750
+	for <linux-btrfs@vger.kernel.org>; Sat, 20 Apr 2024 11:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713599535; cv=none; b=eEkcefggoOVHb8+jVquysR2yEIfkFnunEbc2RVG25mlJAEu71GXy7386t99i2vyZHxnSyYI7/UZOK2mNPYejUjR6LkCd5rIfTR3qKrhW50T5sGiT+WA4GW+WYvAh6P9lrDfvBADQDu2Z+u1wxdlAB85e0A+YuWkN0NkJxJ8d4bg=
+	t=1713611104; cv=none; b=G05n49H5flWd3ASIJ/Ozphho0i3Hd3HyBjRJw58e3/f1eFrP78d3av3jl7QsJDZdc50kIFhhRHpdS2TydnrwlzRXNz4A1rimDwtp7i/P4FnM6F2hU8YGv8T+m5rfCD/LntduN0Ar8grvQF3bY0j3sIsqpXIUxPP1S7TLQltfgSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713599535; c=relaxed/simple;
-	bh=P8cXwWLRvH53cQpR+inhEGNOyoTE/9YNWsTx8TK5ZiE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VAIfLlfZO9uMa9rJTOXkW5E+LWdv+/hsjPs5vWQXFShWgOclGPF5ZBJYK7P8DARwo4xLDazFPX18WNZKwIKg8gsSzrYGXtgOJ9So/TIcpgLl+qUaGvHIYaiRMuJOHzWbsV1FrOb6bp8EZFmJ97g7a9JgJupyaAjtEtFro2omK0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ACGsslyx; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CnGLdw80; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 083A25FEAB
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Apr 2024 07:52:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713599525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=PydcwRm5VQJJOc86uF80E/wlKTJtOlGlHeWCfj7zNMk=;
-	b=ACGsslyxzcvf+O2czlBiASjFlKqiK1gvnzoIvsMNhxN/IHerc3LACphGGN5yMYDD7Lanpb
-	uHHGii9ZbbOq5ujqhtPUzBbmgy+I9xFmtJkM0UELxMEFDw/4D25dcCYJiz8f/NGQE4lRfT
-	+eTOu66dr5CjP/DLUTbfDgal3E7XnXM=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713599524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=PydcwRm5VQJJOc86uF80E/wlKTJtOlGlHeWCfj7zNMk=;
-	b=CnGLdw80X+WHF9VDlyf16JNY+J3+/4KiBVUVglKeEPCsqTEW3keGo1sXw7o0bTVZWZJPaM
-	h3ObYz/FnnXFa3WJpkSoIIKCPCZ4p0MLwWXkjM/AKiAQw0CXOIJpGHR5lOMBt+l/ocvEbe
-	+U+iNdMO8jmQrgAyxx1/WvrcJlM32dM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 740BF13977
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Apr 2024 07:52:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id x+QzByJ0I2ZyDwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Apr 2024 07:52:02 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: qgroup: do not check qgroup inherit if qgroup is disabled
-Date: Sat, 20 Apr 2024 17:20:27 +0930
-Message-ID: <bd677611fcbd89c21d60585e22c8d4aed3b90090.1713599418.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713611104; c=relaxed/simple;
+	bh=s27xjU6RMPvfYBmkk7ft79miI0KqGUXUlJx7W0BFBWM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=qrE/A/zWReF/Qesq14KxtAwWN7vUNAGVrsB5EIObHUl3UV1faLFFA6hO2EmAgZK4xxOZKeabmbSvF/veOSkTTmw+ViaITQoqyKSkEQNmnDGi2y9137XO8yLTr1JU5Y7xz+ePy7+zdpacoCYWus28mOe1/1/cwXEz1RDgd7j/XQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36b3b387b4eso37552365ab.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Apr 2024 04:05:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713611103; x=1714215903;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e7yBwfO66aHRa1O9L8HvVyvKH1lIkd1DRxqnowucHIE=;
+        b=Dmfptwxn+YEk+QCdLUx94z+xSHTNh7whVtPNsEV6huv85MKgkOc6OUU89CSci0PvjB
+         Af7vWu2m82qqIVzR4yRAy+BE5z8u3qwH6TNh4dBm11V9AeacwF6xSpKCZ8eoemdx4eRN
+         2F8EkCrB4m1Ppwrn6fqjFC6tXX5oHvix8O/UPrGR8/vJGE6iqQD6Xj0NQSD6Eqi36l4/
+         457ks3nHodJ2q10nk+6CvVhN1g+i0kdeURsr3XAdRvDh3HeMmQOqDIEfNcYF+v8cxmHu
+         SDnaasafbSFOXb3oquZ+E+D01lIRQzijoOwme7eoVBtQs5LkV+dAT2QX3rtAys+9VQXp
+         NkSg==
+X-Forwarded-Encrypted: i=1; AJvYcCXgHjimao/UDRfrdSR8Khz9jWkF+W5dP5qrt5TKO+RyvQmNaAzAUFfl+sB0N83R+cn0igAfO1kqDB70E7/8H+DjQddwQCcWetw+Zqo=
+X-Gm-Message-State: AOJu0YwJYPu6fF127Qup/a9WbW5BTQG190meJzcSCfGXBZ7BihaFf0EJ
+	BwxAJnS6q7V8rE5fyRQGwdmdK0Xx05HcVZrCxpYrnJAJQOV2bKEOXhZkkpvQu5uprPeevon8Q9s
+	ZcCi945qeM64q9YWR+5sscyyFnWmQi6dYQSIdUU2mnXvL/Zs6VTUilJQ=
+X-Google-Smtp-Source: AGHT+IGB/32niRDTyR/zhkffl/x3qMTy7ZqvWF2/VowCteX1IAeq/8/uNnmDt0iYor7nG+cfLEc0nQ6RnF5XV/gx2fSNQlSWchCP
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -1.60
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.60 / 50.00];
-	BAYES_HAM(-1.80)[93.81%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
+X-Received: by 2002:a05:6e02:2144:b0:36a:fa56:b0fb with SMTP id
+ d4-20020a056e02214400b0036afa56b0fbmr316784ilv.6.1713611103032; Sat, 20 Apr
+ 2024 04:05:03 -0700 (PDT)
+Date: Sat, 20 Apr 2024 04:05:03 -0700
+In-Reply-To: <00000000000089deb205ee0ddd58@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000146a6a0616852ded@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_chunk_alloc
+From: syzbot <syzbot+e8e56d5d31d38b5b47e7@syzkaller.appspotmail.com>
+To: alfredidavidson@usa.com, anamartinez@projectloan.org, 
+	anand.jain@oracle.com, brauner@kernel.org, clm@fb.com, dsterba@suse.com, 
+	dvyukov@google.com, fdmanana@kernel.org, franklinozil@usa.com, 
+	inquiry@usa.com, johannes.thumshirn@wdc.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-[BUG]
-After kernel commit 86211eea8ae1 ("btrfs: qgroup: validate
-btrfs_qgroup_inherit parameter"), user space tool snapper will fail to
-create snapshot using its timeline feature.
+syzbot suspects this issue was fixed by commit:
 
-[CAUSE]
-It turns out that, if using timeline snapper would unconditionally pass
-btrfs_qgroup_inherit parameter (assigning the new snapshot to qgroup 1/0)
-for snapshot creation.
+commit a1912f712188291f9d7d434fba155461f1ebef66
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Wed Nov 22 17:17:55 2023 +0000
 
-In that case, since qgroup is disabled there would be no qgroup 1/0, and
-btrfs_qgroup_check_inherit() would return -ENOENT and fail the whole
-snapshot creation.
+    btrfs: remove code for inode_cache and recovery mount options
 
-[FIX]
-Just skip the check if qgroup is not enabled.
-This is to keep the older behavior for user space tools, as if the
-kernel behavior changed for user space, it is a regression of kernel.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123666bf180000
+start commit:   82714078aee4 Merge tag 'pm-6.6-rc5' of git://git.kernel.or..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a5682d32a74b423
+dashboard link: https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139f64ee680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12da37d1680000
 
-Thankfully snapper is also fixing the behavior by detecting if qgroup is
-running in the first place, so the effect should not be that huge.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Link: https://github.com/openSUSE/snapper/issues/894
-Fixes: 86211eea8ae1 ("btrfs: qgroup: validate btrfs_qgroup_inherit parameter")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/qgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+#syz fix: btrfs: remove code for inode_cache and recovery mount options
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 9aeb740388ab..2f55a89709b3 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3138,6 +3138,9 @@ int btrfs_qgroup_check_inherit(struct btrfs_fs_info *fs_info,
- 			       struct btrfs_qgroup_inherit *inherit,
- 			       size_t size)
- {
-+	/* Qgroup not enabled, ignore the inherit parameter. */
-+	if (!btrfs_qgroup_enabled(fs_info))
-+		return 0;
- 	if (inherit->flags & ~BTRFS_QGROUP_INHERIT_FLAGS_SUPP)
- 		return -EOPNOTSUPP;
- 	if (size < sizeof(*inherit) || size > PAGE_SIZE)
--- 
-2.44.0
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
