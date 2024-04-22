@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4470-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4471-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EB958AC549
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Apr 2024 09:22:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0664C8AC829
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Apr 2024 10:57:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FB0E282BD4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Apr 2024 07:22:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3489D1C218CD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Apr 2024 08:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B1A4CE0F;
-	Mon, 22 Apr 2024 07:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8183D524A6;
+	Mon, 22 Apr 2024 08:56:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Fas+PG21"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="J5y3fT1k"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD84482FF
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Apr 2024 07:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B2A751C40
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Apr 2024 08:56:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713770172; cv=none; b=WNOlVATvSyO19NotwQ828/RG7pOOApC7fosBw286geVCyLuMD61j7BAk78uTBBoG7fDlKbpPyOajAQlmLS7/evaWVt+VevVxVeJcy/1whS79Ae31Q91Lai9gz5lKEFGxRTON6UFsAx3fcwmX1lyZrLbhsRU0gOPoftr0Gq5Q16M=
+	t=1713776177; cv=none; b=kVgJ8VjlmLozISs8gxossUDS/QXqpbzpGnL8xG7VQg4g9MNQG0HLPx7WU48DTe5k2pmuCKX7nezxjgQHICnijt+MXJZMTBiY3mqstWjdhPorarIr5n7G7xAgT5zdvxQsys/ir20bm+/VNdCL8bldW3fI1mOIYYYuLE3B9tqVA9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713770172; c=relaxed/simple;
-	bh=L6R+wgB+toPLuRufpV0A9DMXqFK67XNwB8MR8ZavXZw=;
+	s=arc-20240116; t=1713776177; c=relaxed/simple;
+	bh=KlDA+mzuQHgY2llGnkjpjscUQsm5ccOzUaUyBoW1ABE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iDDeQ9AXgZsZl2iIQFJnaYuyG5AVM4mbQPBOZCmRbqxUtI24KtAVYG+iN4mrdPpKJOV4WA89vyN3iz1p4ypEoKH64v/1qsBL0xmmQxgj29pprjD95D/2cFyuulRr/UKVI7horrTNCPx555fk6s04lObvkpFFopoFGgclTjVzMtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Fas+PG21; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=nDkFFGNKC0G5a7TS220tjAP/ihlTYaOtgNf0v0t5NMSz92ISJQZWtiO1/TwimYCaphEUrpqy5RgEk9yBMcbfYNgMdnaaT3cZUwCoLOZKTq8IE5cylMD3LY1G5D3ma97l2lLqfdXH9OmBcrwQeQqwwjf77MUG7n/3LIFPRFo0Ckw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=J5y3fT1k; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1713770156; x=1714374956; i=quwenruo.btrfs@gmx.com;
-	bh=uoE5L2twvooST21nx5EdbMerKIDYDBL5aPVi9PhcJ9o=;
+	s=s31663417; t=1713776165; x=1714380965; i=quwenruo.btrfs@gmx.com;
+	bh=KlDA+mzuQHgY2llGnkjpjscUQsm5ccOzUaUyBoW1ABE=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Fas+PG21+wR6K2nV2AAII/IDQx2/MlYFVAa6AcIZMSISVHh12x08/frAccTWhktK
-	 Tu0TxxGXGNOhKNTOYX41SoJJLjgF8n65oY80PVraDNCaMCyz9Dpe+XpqhfbZ3dmPM
-	 LSZuQqWrEoYdWCkGbV0TxwsoywGcIXi39JLhvRws0qmBcSduEDNz1rS1C42bfI1Va
-	 K19ausJKSQ8qS0kpExZ9GWyaj2PnWfJJ+j7NTbhlm9mp4Iq9sy4hfFnYPq6Pw/BrZ
-	 bREURaoLNs3IhfPfhfv1cAYfBIAkuOemOAQ3LzvEPmbPXfiftdo7y6SJAxeDVLlRh
-	 P/3GoBb6524t/IIwIg==
+	b=J5y3fT1kQVuM1oG7bex9/R6rZnopP4xUUmRdd0ELsWcmHFvZRHJuaNuyNQ8Xfatb
+	 50x0zaHPS5NHYP6REFbTxQpwFTmHV2MXweGRlKgAzCAgC+EWbPOfXBc1AQMMMQMKX
+	 xm56/sS3Aor46o5L/8EzbfEzXQSKm9v05LYMqsmOKQCWHlVoHM8k0V9pUdXeZyUXw
+	 PG1QK+pnvs/42dEAMRjhOl3Uz+N8o+fKFSKItlyBx1kzRewciGUPAFk5x1Xi/OEIs
+	 p3bwfY0Cd41n94NyQJWYsqxnVxGsGJ5XcS7628XJiOIel9ko2y7u+d0UEsj3ZWZu3
+	 MFvXyjYAn6F0ZWqU4w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIMbU-1rtLqx1Gzs-00EPJs; Mon, 22
- Apr 2024 09:15:56 +0200
-Message-ID: <995dd168-8e1e-4b99-896c-ece4dc88d6e9@gmx.com>
-Date: Mon, 22 Apr 2024 16:45:50 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6bfq-1sly4g14GM-0182Jq; Mon, 22
+ Apr 2024 10:56:05 +0200
+Message-ID: <9086a324-b17a-4e00-906b-816fb2b05880@gmx.com>
+Date: Mon, 22 Apr 2024 18:25:58 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -62,6 +62,7 @@ Subject: Re: BTRFS use-after-free bug at free_extent_buffer_internal
 To: Sachi King <nakato@nakato.io>, u-boot@lists.denx.de
 Cc: kabel@kernel.org, wqu@suse.com, linux-btrfs@vger.kernel.org
 References: <3281192.oiGErgHkdL@youmu>
+ <995dd168-8e1e-4b99-896c-ece4dc88d6e9@gmx.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,398 +89,48 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <3281192.oiGErgHkdL@youmu>
+In-Reply-To: <995dd168-8e1e-4b99-896c-ece4dc88d6e9@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:nb2no6jzXdD1t4WOrACtoyqvjuXQmlgmRi0WQUn44IqZTwd/7n0
- GmGwtECFOTcrXdvQdoO+dw/sQ5zXKm15I/QBjNryXID1sEO0qIV9YFcyA30ZiMmAp71e+R4
- Rd+0slrPRZ7hLzuvwKj6YEpUXC/5qX/atwtfBTfldA5s3vbJPjMHyI9doCYDdFigE1n/1Km
- R+1uyjx7g/xSYuEAQidWg==
+X-Provags-ID: V03:K1:OnLqQhTQy1xBmQX62aNyvc009v9RCRKNn/azxXAOn0Of5FhnVkh
+ LntlbX04fKVHdqacrmzVeUa9Iav9jVOxj8Mul8R4j73HQTPJV7YQQ4xPFowOXsi2axO2wya
+ 4cGN0UR94FeT/44NTO16pPP4aFYD10RBmday/x2XcVdKiUAkue2/cNhj/fXdqeUsyiJ3GQW
+ B6OLHjRk11X4UoOcOiX+Q==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:p2to0LcfYCI=;DMzPj2j+ACq5nbAPCXZlIi2ePCm
- irxd5sLAwjYARnBNXv4tt9wCH97pxJiqaEVs0uMfCCUKdFHjmcyk6/nMsFjWixEpchnEQsCCH
- zxmJ1UhqnwPVrOhckR4d61PTP3gREbpBx1CkVD4xTcNIBWIWZLnVwCceyXIwMZ3ncsNBA1syP
- pGqLrNj2sLVMbz3j7VPwwnDNGuTYjx8oN7/hShMcBqfzVjgK1ppXpwJiDdzBsNPSPRmKDsXul
- MdMVuGnQ6Vy5ONqw5f2cc2E54QvA1+dm3BduLjt7/Ouir2c5v9YUxaa1qcZLrBU9CCFl0bRvZ
- ha9HH+8q/Pd2XPaWCJ3bDD8XShJjCMSqaSUHFRVgwbFc9PUknmQxj06GBS2M1b2BOYggxvm9Q
- nxssDAymtTKf/vqf4E1PHXa2VMEF15lobDmk1MjOJLVzSC6O/Ex1ofBuKGfo3W1m84RLAEDfm
- iCXd1sokm/QQ8y04SxKmbjiW9m+f4HzpM9jyIy8/kPV1hyczvvbO/FDubYWk7JOygep8zZCET
- zApIyhSOxKg19YDpRRem9C3sdc4aZF51AbGu4GTB4V96Hng86a+LDUxSLkEbiVaHinzWBD2Ca
- YdtrBXKN0zm3qCqkH+arQgVpq1h/xd22kh3Y8n4gvD+EcywOakQ6tfDdiI+BLt+ujN1cbz2z8
- WAoYQVTsKUAcW8uahFm2AabNiuXZt6P5jobYpJYpOTzXyHypaJIZDhuxLmfN9gWjCdyZI/QBZ
- xv9z+CltOGIkdnTU4rmpUowZ+JfgEt64tIJldH6wW3abN898Yo63Q3wi6TsHtIQg2+8mczySt
- UOHvJvDxs1+PuxOpLpsWJf9juvmBjRM8k+IU0iPK7WZ04=
+UI-OutboundReport: notjunk:1;M01:P0:47B513+HHHA=;1AFOLtfDMpHGAdII9mwMGqMvgNt
+ AD/TPjHIZWnZu3Pw4kkxVpnExW7MSwqoyMiu7PyoyWnaso6tlWRkT6gcXF1U0umhls+EtTtDR
+ W9NgCTI34I7VSEUBOxIa9riMdC3CGNhsNnzyKsQAoszsHszetnWcykszitdBdpikZX9KoTCBS
+ hM1Ft4USTZjNPZlitd6PZl/Oo+eLQMq1CH2C4M+NH4H+EBATsxteULBMZPe4zY7WpTRrz8jQa
+ KlDUEXf4YG1IAQj7Vl9sCfjAr0sYniFRnR7FzRreaAgR7lYH8yJZ5jfMgYmUmT6VEQz1YRocp
+ 80S5t8g2ci/oehPVJdTPxY/qP51xLxY605v6BGEUoyFJ2nqM9qF7Z6KDDFmW3OIiwcmM1x4Vk
+ vxljcdL7HdDj3E8pz7fwm6rsezLg87dQI1N+Xs78wr7cKznWWb24ByAoDrSCb9oCl9FUZpyEY
+ vf0+J6A0g5/Y7xhYORtU7PcL+21tSh+2TOYrqYdsXa5KCywYRqiZmo8UgZ+6lowZJ2Z3hJIl/
+ azjWAUeFbFixUknOcdBjFEmm3icKLbWuJD/dBgqSyzmrad8GFVoD3F7dvI/2wg/4nYuJEkMz+
+ KJvBEOZNQSBDBBHM07kGNU6yPr2swAHzNtz/oEd9WrtAfBJ1/B7PCkawBBRBt1uNsuQVvvOPU
+ ln6shh/2jgmiZGBmkOw5TDwGCLDjmWGozPDBMp9UMgdQmmWmMO03VkWi+it7qocLNZ8g/c5uc
+ R4fxjknYzjll7+/MOHgK+k9iTuGpltCM3V2V6IA7h2HReqpvaBGYOQsr3sBhUeiddklqgGMfJ
+ btKWwlJCizuEN8cuW5V1hkV3VfeTv/iJ403DPJI3Eykos=
 
 
 
-=E5=9C=A8 2024/4/22 16:07, Sachi King =E5=86=99=E9=81=93:
-> Hi,
->
-> I've hit a bug with u-boot on my BTRFS filesystem, and I'm fairly certai=
-n
-> it's a bug and not a corruption issue.
->
-> A bit of history on the filesystem.  It is a fairly new filesystem as it=
- was
-> being used to give me access to test a wayland application on a
-> Raspberry Pi.  The filesystem was about 3 days old when I hit the bug, a=
-nd
-> I'm fairly certain it never had an unclean shutdown.  I have checked the
-> filesystem with "btrfs check" which has found no errors.  The filesystem
-> mounts on Linux and is functional.
->
->> # btrfs check --check-data-csum /dev/sda2
->> Opening filesystem to check...
->> Checking filesystem on /dev/sda2
->> UUID: 18db6211-ac36-42c1-a22f-5e15e1486e0d
->> [1/7] checking root items
->> [2/7] checking extents
->> [3/7] checking free space tree
->> [4/7] checking fs roots
->> [5/7] checking csums against data
->> [6/7] checking root refs
->> [7/7] checking quota groups skipped (not enabled on this FS)
->> found 5070573568 bytes used, no error found
->> total csum bytes: 4451620
->> total tree bytes: 370458624
->> total fs tree bytes: 353124352
->> total extent tree bytes: 10010624
->> btree space waste bytes: 62303284
->> file data blocks allocated: 6786519040
->>   referenced 6328619008
-
-Since btrfs check reports no error, the fs must be valid.
-
-But considering how new it is, it may be related to some new features
-not properly implemented in Uboot.
-
-Is it possible to provide the whole binary dump of the fs?
-
->
->
-> I've made an image of the filesystem so I could reproduce the bug in an
-> environment that doesn't require the physical SBC, and have reproduced
-> the issue using the head of the master branch with "qemu-x86_64_defconfi=
-g".
->
-> My testing qemu was produced with the following:
->> # make qemu-x86_64_defconfig
->> # cat << EOF >> .config
->> CONFIG_AUTOBOOT=3Dy
->> CONFIG_BOOTDELAY=3D1
->> CONFIG_USE_BOOTCOMMAND=3Dy
->> CONFIG_BOOTSTD_DEFAULTS=3Dy
->> CONFIG_BOOTSTD_FULL=3Dy
->> CONFIG_CMD_BOOTFLOW_FULL=3Dy
->> CONFIG_BOOTCOMMAND=3D"bootflow scan -lb"
->> CONFIG_ENV_IS_NOWHERE=3Dy
->> CONFIG_LZ4=3Dy
->> CONFIG_BZIP2=3Dy
->> CONFIG_ZSTD=3Dy
->> CONFIG_FS_BTRFS=3Dy
->> CONFIG_CMD_BTRFS=3Dy
->> CONFIG_GZIP=3Dy
->> CONFIG_DEVICE_TREE_INCLUDES=3D"bootstd.dtsi"
->> EOF
->> # make -j24
->
-> bootstd.dtsi is placed at "arch/x86/dts/bootstd.dtsi" and contains:
->> / {
->>          bootstd {
->>                  compatible =3D "u-boot,boot-std";
->>                  filename-prefixes =3D "/@boot/", "/boot/", "/";
->>                  bootdev-order =3D "scsi";
->>                  extlinux {
->>                          compatible =3D "u-boot,extlinux";
->>                  };
->>          };
->> };
->
->
-> The VM was run with
->> qemu-system-x86_64 -bios u-boot.rom -nographic -M q35 -action reboot=3D=
-shutdown -drive file=3D/mnt/dbg/u-boot-debug.img
->
-> The error message I recive on boot is
->> BUG at fs/btrfs/extent-io.c:629/free_extent_buffer_internal()!
->> BUG!
->> resetting ...
->
->
-> I added a print statement to free_extent_buffer_internal that prints the
-> start address of the extent_buffer as I'm not sure what to be looking fo=
-r
-> here.  This print statement is before the decrement.
->> printf("free_extent_buffer_internal: eb->start[%llx] eb->refs[%i]\n", e=
-b->start, eb->refs);
->
-> The last message before the crash reported eb->start to be "0", with 0 r=
-efs.
->> free_extent_buffer_internal: eb->start[0] eb->refs[0]
->
-> The extent at 0 struck me as odd, so I tried commenting out the freeing,=
- by
-> removing the call to free_extent_buffer_final, and this resulted in boot=
-flow
-> succeeding and showing me the boot menu, which suprised me.
-> I expected to see the bug reproduce itself, with refs being zero, but eb=
-->start
-> pointing somewhere valid, but I instead got a valid address with refs at=
- 2.
->
-> I'm assuming that the order free_extent_buffer_internal is called is
-> deterministic, so by counting the print outputs the line that prior held
-> the extent_buffer with a 0 start was replaced with:
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->
-> Interestingly, as can be seen in the full logs with my included print
-> messages, 249c000 is being used just before this, with a ref count of
-> 2.  249c000 does appear to reach a point where it should have been freed
-> in the past, before it gets used again as seen in both logs.
->
-> The failing boot log:
->> U-Boot SPL 2024.04-00949-g1dd659fd62-dirty (Apr 22 2024 - 11:32:37 +100=
-0)
->> Trying to boot from SPI
->> Jumping to 64-bit U-Boot: Note many features are missing
+=E5=9C=A8 2024/4/22 16:45, Qu Wenruo =E5=86=99=E9=81=93:
+[...]
 >>
+>> I added a print statement to free_extent_buffer_internal that prints th=
+e
+>> start address of the extent_buffer as I'm not sure what to be looking f=
+or
+>> here.=C2=A0 This print statement is before the decrement.
+>>> printf("free_extent_buffer_internal: eb->start[%llx] eb->refs[%i]\n",
+>>> eb->start, eb->refs);
 >>
->> U-Boot 2024.04-00949-g1dd659fd62-dirty (Apr 22 2024 - 11:32:37 +1000)
->>
->> CPU:   QEMU Virtual CPU version 2.5+
->> DRAM:  128 MiB
->> Core:  13 devices, 13 uclasses, devicetree: separate
->> Loading Environment from nowhere... OK
->> Model: QEMU x86 (I440FX)
->> Net:   e1000: 00:00:00:00:00:00
->>
->> Error: e1000#0 No valid MAC address found.
->>        eth_initialize() No ethernet found.
->>
->>
->> Hit any key to stop autoboot:  0
->> Scanning for bootflows in all bootdevs
->> Seq  Method       State   Uclass    Part  Name                      Fil=
-ename
->> ---  -----------  ------  --------  ----  ------------------------  ---=
--------------
->> scanning bus for devices...
->> Target spinup took 0 ms.
->> SATA link 1 timeout.
->> Target spinup took 0 ms.
->> SATA link 3 timeout.
->> SATA link 4 timeout.
->> SATA link 5 timeout.
->> AHCI 0001.0000 32 slots 6 ports 1.5 Gbps 0x3f impl SATA mode
->> flags: 64bit ncq only
->> free_extent_buffer_internal: eb->start[10000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1548000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[150c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[154c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[6de0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[1]
->>    Device 0: (0:0) Vendor: ATA Prod.: QEMU HARDDISK Rev: 2.5+
->>              Type: Hard Disk
->>              Capacity: 58680.0 MB =3D 57.3 GB (120176640 x 512)
->> timeout exit!
->> Scanning bootdev 'ahci_scsi.id0lun0.bootdev':
->> free_extent_buffer_internal: eb->start[10000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1548000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[150c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[154c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[6de0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[10000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1548000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[150c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[154c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[0] eb->refs[0]
->> BUG at fs/btrfs/extent-io.c:626/free_extent_buffer_internal()!
 
-The eb[0] seems very weird.
-Even for superblock reading, we got eb at 64K, and every eb should have
-at least one ref at creation time.
+Just a small advice, in fact you can go with sandbox mode, running
+U-boot in userspace, and bind a host file as a device to test the
+filesystem code.
 
-So this indeed looks like the direct cause.
-But without a full call trace (is it possible inside U-boot runtime?), I
-do not have an immediate clue.
+At least that's what I did for most U-boot bugs.
 
 Thanks,
 Qu
-
->> BUG!
->> resetting ...
->
-> The succeeding log with the removed freeing:
->> U-Boot SPL 2024.04-00949-g1dd659fd62-dirty (Apr 22 2024 - 11:38:25 +100=
-0)
->> Trying to boot from SPI
->> Jumping to 64-bit U-Boot: Note many features are missing
->>
->>
->> U-Boot 2024.04-00949-g1dd659fd62-dirty (Apr 22 2024 - 11:38:25 +1000)
->>
->> CPU:   QEMU Virtual CPU version 2.5+
->> DRAM:  128 MiB
->> Core:  13 devices, 13 uclasses, devicetree: separate
->> Loading Environment from nowhere... OK
->> Model: QEMU x86 (I440FX)
->> Net:   e1000: 00:00:00:00:00:00
->>
->> Error: e1000#0 No valid MAC address found.
->>        eth_initialize() No ethernet found.
->>
->>
->> Hit any key to stop autoboot:  0
->> Scanning for bootflows in all bootdevs
->> Seq  Method       State   Uclass    Part  Name                      Fil=
-ename
->> ---  -----------  ------  --------  ----  ------------------------  ---=
--------------
->> scanning bus for devices...
->> Target spinup took 0 ms.
->> SATA link 1 timeout.
->> Target spinup took 0 ms.
->> SATA link 3 timeout.
->> SATA link 4 timeout.
->> SATA link 5 timeout.
->> AHCI 0001.0000 32 slots 6 ports 1.5 Gbps 0x3f impl SATA mode
->> flags: 64bit ncq only
->> free_extent_buffer_internal: eb->start[10000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1548000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[150c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[154c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[6de0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[1]
->>    Device 0: (0:0) Vendor: ATA Prod.: QEMU HARDDISK Rev: 2.5+
->>              Type: Hard Disk
->>              Capacity: 58680.0 MB =3D 57.3 GB (120176640 x 512)
->> timeout exit!
->> Scanning bootdev 'ahci_scsi.id0lun0.bootdev':
->> free_extent_buffer_internal: eb->start[10000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1548000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[150c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[154c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[6de0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[10000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1548000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[150c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[154c000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[24a4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[249c000] eb->refs[2]
->> free_extent_buffer_internal: eb->start[2490000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[6de0000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[28f4000] eb->refs[1]
->> free_extent_buffer_internal: eb->start[1544000] eb->refs[1]
->>    0  extlinux     ready   scsi         2  ahci_scsi.id0lun0.bootdev /@=
-boot/extlinux/extlinux.conf
->> ** Booting bootflow 'ahci_scsi.id0lun0.bootdev.part_2' with extlinux
->> ------------------------------------------------------------
->> 1:      NixOS - Default
->> 2:      NixOS - Configuration 5 (2024-03-04 11:00 - 24.05.20240205.faf9=
-12b)
->> 3:      NixOS - Configuration 4 (2024-03-02 15:05 - 24.05.20240205.faf9=
-12b)
->> 4:      NixOS - Configuration 3 (2024-03-02 14:26 - 24.05.20240205.faf9=
-12b)
->> 5:      NixOS - Configuration 2 (2024-03-02 14:06 - 24.05.20240205.faf9=
-12b)
->> 6:      NixOS - Configuration 1 (1970-01-01 10:00 - 24.05.20240205.faf9=
-12b)
->> Enter choice: 1:        NixOS - Default
->> Retrieving file: /@boot/extlinux/../nixos/gq8jsgxnhq2wvsjrni3cjw1wb5540=
-wjw-linux-6.1.63-stable_20231123-Image
->> free_extent_buffer_internal: eb->start[10000] eb->refs[1]
->
->
-> I'm not sure where to go from here with the bug, so I'm hoping for some
-> help in tracking it down so it can be fixed.
->
-> Thanks,
-> Sachi
->
->
->
 
