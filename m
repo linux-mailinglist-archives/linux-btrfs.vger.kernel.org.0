@@ -1,105 +1,79 @@
-Return-Path: <linux-btrfs+bounces-4500-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4501-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F20BD8AE9CB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Apr 2024 16:45:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B46108AF49C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Apr 2024 18:49:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FAE41C22DB3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Apr 2024 14:45:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAD2A1C23D67
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Apr 2024 16:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604FF13B293;
-	Tue, 23 Apr 2024 14:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5187F13D8A6;
+	Tue, 23 Apr 2024 16:49:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kYHpLDkH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iDgKYK0Q";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1evyy4Cl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V3cxaLrz"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="2eTgWFlh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBDD88F5E;
-	Tue, 23 Apr 2024 14:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C6C13D606
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Apr 2024 16:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713883538; cv=none; b=UTVEySOiiJmVhxSdwZbOTrOdeXjxRD2VgAQuG9kuY0KgHYLI/ihGd4drhF8fsl7idjn5zuvdHwfQ8guBD33VUs1sdpV0fM8NFr5iIkA4Ej6zms2Q4KyAu++HV/wsGDIzUWolC/ucXSd9LncaNXmikx55j53uPHkkPmVdY50pdjk=
+	t=1713890958; cv=none; b=m8UjUU7THXiFXTH8+BCSY6/KfqjjXbbFUtpndFoKfT2o8/F72f9q83QalGG7fFc9gX6jn07UriCFKdvRk3oK6Cnv2gghC54Fe5ejW136UH7Mr/hwQb4N3ATKjerrgTXEqpxaaBUNynXfQwPR5ghoUP/H6WU0HhBcotgavCgD/vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713883538; c=relaxed/simple;
-	bh=gPByzlowu52gZBR0jPs98e/qH0LAV1N1EdaNJp9k5pU=;
+	s=arc-20240116; t=1713890958; c=relaxed/simple;
+	bh=ZPzp9LD6qTKsGWhlV4UxsXgnForDZzTMX6xxKyTYtUA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q9edEq/S4EC2QfnlXWQXU+px8aSlsMGRKvnGpK1RZFviLVoyVNOxfnEkzJV+KJjYs4P71mX4r2O1X8h1ZPD8qL8EMfunLNR2XBiv8v8k921N/NbVYXfJlsoGG9nnkovhkrIwsAEH/T4wRhko422LWfjkT8NtCgOEY1OAfu2CCRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kYHpLDkH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iDgKYK0Q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1evyy4Cl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V3cxaLrz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E128D600B8;
-	Tue, 23 Apr 2024 14:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713883535;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
-	b=kYHpLDkHdRQHUO1ImpunLE2b+SuGC8tpIhIpKCZ3ftKd3KHoFYV0RoM07n6lxcqokvr2Sm
-	7cnoUIUEi2KVdSuiUTYx8CJ8sDJkSZ1tQjYoEiNC//Ea9w6saukAwUi8thmUw4EbqUTWzm
-	tqSKhTzFHTVMA626W0tBctGtN6mUF3Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713883535;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
-	b=iDgKYK0Qtdgpl1cAc8B+ZT8wMjb8Fks1FJhQJht044mBoApnXedDU1NrW5lYMjiXcgptoC
-	YGEwQFgEDkW4K7Ag==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713883534;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
-	b=1evyy4Cl+UoOgOnUIXg1/q4G5gjdSMMfixQ9AUFI3ZH1o4Ji3ZEE7xe6lduUFDUScD9NRC
-	U+AoxYUdaKdUEymg+XTYyoA/OlCGQGJOFflWUcTAiJhTqG7+8L6hNXmyMTmVyOtLp+oUAg
-	oI1Z3yPCLULJo7wFclpk/jYpNxpDkWI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713883534;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ERxOOMezRAufIKqgnoffsNNUlab+BjMEAF6+1TvdqL0=;
-	b=V3cxaLrzAwF9PoRBfy+nEXrfs7bAIm0jGSbLKDT06xCnPrOa+fQwscTdxYcbeoWNhVGS/G
-	CE18HfQ/g2ubJ+Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4D4113894;
-	Tue, 23 Apr 2024 14:45:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ESPiL47JJ2ZyAwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 23 Apr 2024 14:45:34 +0000
-Date: Tue, 23 Apr 2024 16:38:01 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Dominique Martinet <asmadeus@codewreck.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Dominique Martinet <dominique.martinet@atmark-techno.com>,
-	Pavel Machek <pavel@denx.de>, stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add missing mutex_unlock in
- btrfs_relocate_sys_chunks()
-Message-ID: <20240423143801.GI3492@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240419-btrfs_unlock-v1-1-c3557976a691@codewreck.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uXD4OCsOIH27XO4HOtRQ5hKCd3q0ss2FMkueIoomxqR1pOlo7CFdGzGQPrbkiJ9rZlljv/9BS0Q61TRXT1p1mwDQ/cdeojh4LoyWEj4Me0gWfIPkIGdg5wMaaHM3pph2JMMQp9uw4tDOLndoTQ7q2hURotDjeAqNo4cfoN8di70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=2eTgWFlh; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-de46b113a5dso5518637276.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Apr 2024 09:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1713890955; x=1714495755; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=27zQqgEtMMu+Y/tN4IIT8sDhgjNw0jSCTN3IG6Yi1v0=;
+        b=2eTgWFlho6jQT5PZ4YRONT+44UGIEUJlI7SPdkQriAceDSbfitOsQWQgLTIF2/L5/X
+         sQsNpYRgCuKztlp77tlO5XzTqp+eTYjXnMilFuX3e0Bgf5XJ1kk29AEddKZnjoS+zHZ7
+         MVb5dEcJnBysQGLnjkz8tD8sWI2JlqMo4TfTAP0+8yu3FzFBajtZ7yJ16PgTCxetim0E
+         6BFAWJ/9zxXa7d7jTPc3p+EjpboufrDkuZr9X7I0GL8NJhnCeVGJW20mWRpbb2e2Vmaf
+         Av2smpTBr0x+HZIKwcP9M6ylK70PKdCdlUaALT5DMINpQ/GJlwsHRSPkk1V9kvt7prGR
+         dC0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713890955; x=1714495755;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=27zQqgEtMMu+Y/tN4IIT8sDhgjNw0jSCTN3IG6Yi1v0=;
+        b=nnfQJ39WPSFQAHEq0ovxe5kuTn3W3+RLhNT8RdWwGO28MoMEdd0d9/0BSu19KeuISI
+         6sxtP2BPaoF4HHfD23SRAV4ACsORGNF8qflF4iUwJiZFlcBFnapXEeFXjPsPtpz01fF3
+         +mgI3CAPlGobyi+r3J4blipFX3UozJpNR7QqY7LaJP8Lq5zL27GerEnWvTwA8GBrEWyk
+         hV0GJd7r/QtFR1JnlpgnBT0DKMZWb9AaERQhGa6mCp2zslzbAoKMk5/cA97tL2Y5toQu
+         qUs20ASwfkoVYlMZfGLpqx7lmCSuHbSSl5riEp5w6UID22kihlX3FBaSlhYT0tEpA7nl
+         gQDA==
+X-Gm-Message-State: AOJu0YwcqMzGN1PKRS71Am2h3kNtfrXpgmBMiYuNStldsAWVrL+f14Cn
+	if9KlW2fMrIfX934IMbmbSPzzqUXGP64diyyhjMZDNgJmG3LcMRumcd2y3u9FYc=
+X-Google-Smtp-Source: AGHT+IHhQV62lYD+ubDAKYJH2PoHfOU60KaFE0rflb7uhuHS+k+57H8clicjJfa+6mwYLXesC1F95w==
+X-Received: by 2002:a5b:9d0:0:b0:de5:5825:5133 with SMTP id y16-20020a5b09d0000000b00de558255133mr130512ybq.22.1713890955499;
+        Tue, 23 Apr 2024 09:49:15 -0700 (PDT)
+Received: from localhost ([76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id w15-20020a25ac0f000000b00de5503cc6a8sm472673ybi.15.2024.04.23.09.49.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 09:49:14 -0700 (PDT)
+Date: Tue, 23 Apr 2024 12:49:14 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 07/17] btrfs: push extent lock into run_delalloc_nocow
+Message-ID: <20240423164914.GA3019378@perftesting>
+References: <cover.1713363472.git.josef@toxicpanda.com>
+ <60f8e6362e50086d796d8cdd44031d9496398b08.1713363472.git.josef@toxicpanda.com>
+ <2dqiyvawsd6g3zxtfhgcmyv7i257l2hhgrd2zcpl3yumugbcnz@twvnaux5ahe6>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -108,42 +82,53 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240419-btrfs_unlock-v1-1-c3557976a691@codewreck.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.69 / 50.00];
-	BAYES_HAM(-2.69)[98.66%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto]
-X-Spam-Score: -3.69
-X-Spam-Flag: NO
+In-Reply-To: <2dqiyvawsd6g3zxtfhgcmyv7i257l2hhgrd2zcpl3yumugbcnz@twvnaux5ahe6>
 
-On Fri, Apr 19, 2024 at 11:22:48AM +0900, Dominique Martinet wrote:
-> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+On Tue, Apr 23, 2024 at 06:33:25AM -0500, Goldwyn Rodrigues wrote:
+> On 10:35 17/04, Josef Bacik wrote:
+> > run_delalloc_nocow is a bit special as it walks through the file extents
+> > for the inode and determines what it can nocow and what it can't.  This
+> > is the more complicated area for extent locking, so start with this
+> > function.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > 
-> The previous patch forgot to unlock in the error path
 > 
-> Link: https://lore.kernel.org/all/Zh%2fHpAGFqa7YAFuM@duo.ucw.cz
-> Reported-by: Pavel Machek <pavel@denx.de>
-> Cc: stable@vger.kernel.org
-> Fixes: 7411055db5ce ("btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()")
-> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+> > ---
+> >  fs/btrfs/inode.c | 12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > index 2083005f2828..f14b3cecce47 100644
+> > --- a/fs/btrfs/inode.c
+> > +++ b/fs/btrfs/inode.c
+> > @@ -1977,6 +1977,8 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+> >  	 */
+> >  	ASSERT(!btrfs_is_zoned(fs_info) || btrfs_is_data_reloc_root(root));
+> >  
+> > +	lock_extent(&inode->io_tree, start, end, NULL);
+> > +
+> >  	path = btrfs_alloc_path();
+> >  	if (!path) {
+> >  		ret = -ENOMEM;
+> > @@ -2249,11 +2251,6 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+> >  	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
+> >  	int ret;
+> >  
+> > -	/*
+> > -	 * We're unlocked by the different fill functions below.
+> > -	 */
+> > -	lock_extent(&inode->io_tree, start, end, NULL);
+> > -
+> 
+> So, you are adding this hunk in the previous patch and (re)moving it here.
+> Do you think it would be better to merge this with the previous patch?
 
-Added to for-next, thanks for catching it.
+It depends?  I did it like this so people could follow closely as I pushed the
+locking down.  Most of these "push extent lock into.." patches do a variation of
+this, where I push it down into a function and move the lock down in the set of
+things.  I'm happy to merge them together, but I split it this way so my logic
+could be followed.  Thanks,
+
+Josef
 
