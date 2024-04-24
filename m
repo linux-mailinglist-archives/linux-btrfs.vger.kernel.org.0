@@ -1,56 +1,58 @@
-Return-Path: <linux-btrfs+bounces-4504-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4505-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C9E28AFB91
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 00:10:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA2A8B0144
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 07:47:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C3E1C2127C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Apr 2024 22:10:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2797C284288
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 05:46:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40C83143895;
-	Tue, 23 Apr 2024 22:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624E2156873;
+	Wed, 24 Apr 2024 05:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="qZp1NQL/"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="hA48lR2H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0363726288
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Apr 2024 22:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8EA13CFAD
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 05:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.54.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713910207; cv=none; b=Xud5TjlDi/ZRRzfp/wIWCCi+U/khXzEUUn58TMok8smiaRCewMnGDhL0M0bMggzB11p1vXQV7BmLmCU8BnKyz9ShZjUtVuE3WnT+nJJttjQCqmsYhURBeX044UZuq6MDBxz/JL12eGk/nblTZw5LBGLbJvKmrbLcznEbp1Y6suA=
+	t=1713937613; cv=none; b=j6jm9I0Faq93gt2Rhq9uZ6RWbEtXGwVAP9BhNBdhwnZTZOVPAs/1aOJuc61JjtAk4+t95PAE2raaSzgujtDMPLlpBsT3iF6fZRAuAUpBUvCHU5PfffYs+wmrY3nTjfma/c3w7pnHdllOWuFR4nO0j0b7OkcSLAtWaIPWCXlg7CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713910207; c=relaxed/simple;
-	bh=WHPqMPq3r+2kcZ8aYWuJx1izq+frZGtMYrqzHDZls+w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=C0V7erRja6xqzRO6TVxCKxH2ZBZ55yI/OKsVvTDsEevnuqsB/NK0mupnV2O1Xt8jH9bX4Pr2b5yZicN00/dYUqHIQIqR3OC9m8zgy8s7Fz2cfkvSyIqO1i3BWR6CPcMZ1N32WZYW1wCxJQ/05UApzdZjmfK7xafkVUkQllTrtpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=qZp1NQL/; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1713910199; x=1714514999; i=quwenruo.btrfs@gmx.com;
-	bh=ScPLjZby5CEdpl1yij8xtge6dzz5+T9mmFd3oyyu7VY=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=qZp1NQL/v2N3lSpPU1t0omleMOdb81F3AbTC+/b1PxK0JiG6XPsRdzy4QlW1d5Ly
-	 fx5NreGuZIvsIUwwtoUR0ihSLPeXRHPYgQkaBOfKzvwNL7kkSBBNrOI+Dp1xpS1gY
-	 MbqKt7XhXbQbL1o5mcknAllerhzpbv7A5ZuRRznnfPjHYYwQrOEkub4cHykbEi9Vz
-	 sfGGRCDftYTBnbJz/YdTD2POybQ5rh4vhL0lcaMBLZnKrO7pa+PySOvEE3wrPPfBf
-	 7y1E9CoMoOU7iYsIWAxZfKMehBtxt33cCLsOa1BV+/tO8Y/MU8j4O77eDN0Dq69m9
-	 jlWhJzq5VW0Wch08uQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJVDW-1sErt800ka-00LrZZ; Wed, 24
- Apr 2024 00:09:58 +0200
-Message-ID: <b57a9598-b9b6-4466-8bec-536d06f780f9@gmx.com>
-Date: Wed, 24 Apr 2024 07:39:53 +0930
+	s=arc-20240116; t=1713937613; c=relaxed/simple;
+	bh=s9w40z+nhCV+GkEhIzmpgP24Dql2UVDimlAle4gJD8Q=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=mk4qdlzDmOIJ87GkQpd64X6eFv4sfZx/vhi3nEA80YnrSL2uMYDxHocBdL6U0jI77+YeChBg3gFRtnZsQRA16dRmHyabYSFx9Q/ovpV5QRpC+PELsamK4ua/Xx0AtKnDyN3zfMlXHSYxSNPjanqiY34Qt1oSqS3NzA0UVUruM54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=hA48lR2H; arc=none smtp.client-ip=43.154.54.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1713937607;
+	bh=s9w40z+nhCV+GkEhIzmpgP24Dql2UVDimlAle4gJD8Q=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject;
+	b=hA48lR2HtT/B123vQlEGVBfPcWl6j1gdj0wZsoNx8Hth7Dt0SxAPnVN/6FtdQmYi7
+	 TSulocymFsqbr99sJz6oZblN5aDK2rUHEIyiabuuFS1IIgIQaxMznl481GsB7bo20i
+	 yvAyh2fzXVlaSEHewkKtBrLJvPxdlnQrRiGqdq/k=
+X-QQ-mid: bizesmtpsz4t1713937525t3hf8z3
+X-QQ-Originating-IP: sAbFFudxh9pWL5osy3p8EP98KBRzPlhpxszgCJeXtTI=
+Received: from [192.168.1.5] ( [223.150.241.123])
+	by bizesmtp.qq.com (ESMTP) with SMTP id 0
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 13:45:24 +0800 (CST)
+X-QQ-SSF: 01100000000000E0Z000000A0000000
+X-QQ-FEAT: FgQwkxey2E5MRptkTBMX/XhWzeyJIHB3kLcgw/YRdItky5r+OT4HXpiYqMN8x
+	83AGOcllWuSIoadozf0o2vmVJykS2MmSTiPR4d4UdytrlUD4RAZo5hxv8EWTqHnDT18zz7j
+	QB0Dwr8fFIuQJFRMwUQRAj08izBdjhCAWZfps0qdZSE6eGoO1JGWnatAAolgobffwNQxhpd
+	ZnUzW/d4jfVcHppx/bVZ8Y/v5/YNRm9mbRwufAuo96eGbpAZyGfSpJ6bVpbBrJbFGE2rWJI
+	u1ALAmknSW9ovcB13MsRsSg52hzkqrIS4F91TxjRPs5320EZNd5e1LzmMcKOfBPYtiQczc7
+	1ooMsDJztSJ2Mi4XiEna94jrtw0ffc6pw3842Di
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16391282065916029165
+Message-ID: <46FCC719DD77BA7B+fd2aa1a9-91c4-4634-a584-0989f055cb40@bupt.moe>
+Date: Wed, 24 Apr 2024 13:45:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,129 +60,75 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/15] btrfs: push ->owner_root check into
- btrfs_read_extent_buffer
-To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <cover.1713550368.git.josef@toxicpanda.com>
- <3487ee70ac2e8fd2c82027c892e91f12a4a47324.1713550368.git.josef@toxicpanda.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <3487ee70ac2e8fd2c82027c892e91f12a4a47324.1713550368.git.josef@toxicpanda.com>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: HAN Yuwei <hrx@bupt.moe>
+Subject: mkfs.btrfs enabled RST by default casuing unable to mount on stable
+ kernel
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------h6ogTsg4JfTQpsObi12nGc25"
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------h6ogTsg4JfTQpsObi12nGc25
+Content-Type: multipart/mixed; boundary="------------OWzfONlEtoFnJQt0OeU2SjYI";
+ protected-headers="v1"
+From: HAN Yuwei <hrx@bupt.moe>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Message-ID: <fd2aa1a9-91c4-4634-a584-0989f055cb40@bupt.moe>
+Subject: mkfs.btrfs enabled RST by default casuing unable to mount on stable
+ kernel
+
+--------------OWzfONlEtoFnJQt0OeU2SjYI
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yl5d2AlfPo8sVTVEkSHHsoS+ZgU7/cQv+49ZZ2E7E0LA1l9kny7
- 8mRIY5fLUFoXurYMsJ+SAYXxi1ifKoNiM1Phwd9JPUsw9p0W3lL5tXcrtuc/ZH1SVVSs3PH
- 79FrQr8TRG98qnGO6+SxSGgecHhx7Aru8bmqaazvq1RSjZwAP5suivcPeTiSLKVnCmpiHjO
- 8lsnELDaDTXoTtxjslr+w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:pHT1PsGqqTQ=;Csh/aOR5skWmndW9z8scdTeyDSx
- HdSl58p4BivK3yS3FzvfTdRe1LflIi4YViOoQJ0RQ/t6FjW3FMZTbw1+4EEWiH0hQ8ai1zf59
- 6lVn/z/kiSXIopomP/UywhfWfY+J6vc1AA3qlS8zLfyNF/2JDy37kWHh6yULA8VGEDY3XxOhH
- P9QOJjo/lXc9ZlOOVfCum8nmpcTuJvr9cIKghiDDk2hRmNvXsl/5+rFlIdST1tsEddUo6yfc0
- C2g7UikIg+0pbdc0wNji6QJQkc/aA/yziKHRxdZJb6wDZtv+8EG6PmAF5ivgrwzuEeE+NSmCk
- WX9CFZuvrAWYzBvbf4z1QCq9XSxGG6u+RUOe33nCfex4i/NraNF4vv2OtH10OfifV4Vln6SFN
- o35QS+tfZG+mAvRjGsW75ZMkXFgRPt0X/aZCFBmkRy2L1WOxQxQ+eVDWCQWrW85LclWKUnGYo
- Gxh30aE8eg+oNSCDyXtbPGTwaMvgrUEju1J416Ffbo2ZlRv2GjJtTf0MIIxxG5yhru1h1YpeD
- QD9lP8Nf1+rJh3DCJcRBTr1CIW2IV7WHuUaCISGCrz9VFUQoRd2n+uY6HgoMvZPVNNC1nuwXF
- FTWiE/JSi1b+iSN7RztqkmuDllsKEi74Ngwa2xKKNNv8IQBZpf377Ag97zQF26/OnTI/IiNG5
- 6h45NaNULWZhzNQQXwpnHiuzH0NgoTYKn/uBSxs+p0+/QrstcC9WdNG4csr9QsmOhc6RzWr42
- XzUNy/GPhcR2K+Osp45mHhyeGPFr7m1wWAKa3HsH7braXBC5qAQsrqJ3FxG2sCcqpHR/Sj291
- hWXOVQNdK+w+mSXFqHG/Au9xhR8j831+EpnQLFK2J98ow=
+Content-Transfer-Encoding: base64
 
+SGksIGFsbC4NCg0KSSBoYXZlIGZvdW5kIGluY29tcGF0aWJpbGl0eSBpc3N1ZSBvbiBidHJm
+cy1wcm9nICYga2VybmVsLiBidHJmcy1wcm9ncyANCmlzIHY2LjcuMSwga2VybmVsIGlzIDYu
+Ny41LWFvc2MtbWFpbi4NCg0KVXNpbmcgdGhpcyBjb21tYW5kIHRvIGNyZWF0ZSBidHJmcyB2
+b2x1bWU6DQojIG1rZnMuYnRyZnMgLWYgLWQgcmFpZDEwIC1tIHJhaWQxYzQgLXMgMTZrIC1M
+IEhZV0RBVEFfWk9ORURfVEVTVCANCi9kZXYvc2RiIC9kZXYvc2RjIC9kZXYvc2RkIC9kZXYv
+c2RlDQoNCldoZW4gbW91bnRpbmcsIGRtZXNnIHNhaWQ6DQpbwqAgMzI5LjA3MTQwM10gQlRS
+RlMgaW5mbyAoZGV2aWNlIHNkYik6IGZpcnN0IG1vdW50IG9mIGZpbGVzeXN0ZW0gDQo3YjRm
+MmNhNi1lZmUzLTQ4ZDktODFmNi1iYTY1YTAwZGI4NWUNClvCoCAzMjkuMDgwNDIyXSBCVFJG
+UyBpbmZvIChkZXZpY2Ugc2RiKTogdXNpbmcgY3JjMzJjIChjcmMzMmMtZ2VuZXJpYykgDQpj
+aGVja3N1bSBhbGdvcml0aG0NClvCoCAzMjkuMDg4MjIyXSBCVFJGUyBpbmZvIChkZXZpY2Ug
+c2RiKTogdXNpbmcgZnJlZSBzcGFjZSB0cmVlDQpbwqAgMzI5LjA5MzY3M10gQlRSRlMgZXJy
+b3IgKGRldmljZSBzZGIpOiBjYW5ub3QgbW91bnQgYmVjYXVzZSBvZiB1bmtub3duIA0KaW5j
+b21wYXQgZmVhdHVyZXMgKDB4NWI0MSkNClvCoCAzMjkuMTAyNDQyXSBCVFJGUyBlcnJvciAo
+ZGV2aWNlIHNkYik6IG9wZW5fY3RyZWUgZmFpbGVkDQoNCmR1bXAtc3VwZXIgc2FpZDoNClsu
+Li5dDQppbmNvbXBhdF9mbGFnc8KgwqDCoMKgwqDCoMKgwqDCoCAweDViNDENCiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICggTUlYRURfQkFDS1JF
+RiB8DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgRVhURU5ERURfSVJFRiB8DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgU0tJTk5ZX01FVEFEQVRBIHwNCiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBOT19IT0xFUyB8DQogwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgUkFJRDFDMzQg
+fA0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IFpPTkVEIHwNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBSQUlEX1NUUklQRV9UUkVFICkNClsuLi5dDQoNCg0KUkFJRF9TVFJJUEVfVFJF
+RSBuZWVkIENPTkZJR19CVFJGU19ERUJVRyB0byBiZSBzdXBwb3J0ZWQgYW5kIHRoaXMgDQpm
+ZWF0dXJlIGZsYWcgaXMgZGlzYWJsZWQgb24gbW9zdCBkaXN0cmlidXRpb25zLiBJIGhvcGUg
+UlNUIGNhbiBiZSANCmRpc2FibGVkIGJ5IGRlZmF1bHQgb24gYnRyZnMtcHJvZ3MuDQoNCkhB
+TiBZdXdlaQ0KDQo=
 
+--------------OWzfONlEtoFnJQt0OeU2SjYI--
 
-=E5=9C=A8 2024/4/20 03:46, Josef Bacik =E5=86=99=E9=81=93:
-> Currently we're only doing this in read_tree_block(), however
-> btrfs_check_eb_owner() properly deals with ->owner_root being set to 0,
-> and in fact we're duplicating this check in read_block_for_search().
-> Push this check up into btrfs_read_extent_buffer() and fixup
-> read_block_for_search() to just return the result from
-> btrfs_read_extent_buffer() and drop the duplicate check.
+--------------h6ogTsg4JfTQpsObi12nGc25
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-Since end_bbio_meta_read() is already calling
-btrfs_validate_extent_buffer() with bbio->parent_check copied from the
-callers, can we just remove the btrfs_check_eb_owner() calls directly
-from all the higher layer callers?
+-----BEGIN PGP SIGNATURE-----
 
-Even the check in btrfs_read_extent_buffer() seems unnecessary now.
+iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZiicdAAKCRBLkKfpYfpB
+Uz7EAP9cKNvd3dOBzmd9DcxZhgtPPVvD6UAN4KOgE+t0gBqmFQD/XC08w7W60SHW
+M/2XCgL78K2xlwaB0LBj5io2MrAUjAg=
+=TK1y
+-----END PGP SIGNATURE-----
 
-Thanks,
-Qu
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->   fs/btrfs/ctree.c   | 7 +------
->   fs/btrfs/disk-io.c | 6 ++----
->   2 files changed, 3 insertions(+), 10 deletions(-)
->
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 1a49b9232990..48aa14046343 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -1551,12 +1551,7 @@ read_block_for_search(struct btrfs_root *root, st=
-ruct btrfs_path *p,
->   		if (ret) {
->   			free_extent_buffer(tmp);
->   			btrfs_release_path(p);
-> -			return -EIO;
-> -		}
-> -		if (btrfs_check_eb_owner(tmp, btrfs_root_id(root))) {
-> -			free_extent_buffer(tmp);
-> -			btrfs_release_path(p);
-> -			return -EUCLEAN;
-> +			return ret;
->   		}
->
->   		if (unlock_up)
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index c2dc88f909b0..64523dc1060d 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -251,6 +251,8 @@ int btrfs_read_extent_buffer(struct extent_buffer *e=
-b,
->   	if (failed && !ret && failed_mirror)
->   		btrfs_repair_eb_io_failure(eb, failed_mirror);
->
-> +	if (!ret)
-> +		ret =3D btrfs_check_eb_owner(eb, check->owner_root);
->   	return ret;
->   }
->
-> @@ -635,10 +637,6 @@ struct extent_buffer *read_tree_block(struct btrfs_=
-fs_info *fs_info, u64 bytenr,
->   		free_extent_buffer_stale(buf);
->   		return ERR_PTR(ret);
->   	}
-> -	if (btrfs_check_eb_owner(buf, check->owner_root)) {
-> -		free_extent_buffer_stale(buf);
-> -		return ERR_PTR(-EUCLEAN);
-> -	}
->   	return buf;
->
->   }
+--------------h6ogTsg4JfTQpsObi12nGc25--
+
 
