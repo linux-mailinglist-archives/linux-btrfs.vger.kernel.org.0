@@ -1,99 +1,98 @@
-Return-Path: <linux-btrfs+bounces-4527-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4528-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 082418B10D0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 19:21:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F5FC8B10E9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 19:25:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5B01F2514E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 17:21:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D9CAB2B8F3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 17:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 558B716D335;
-	Wed, 24 Apr 2024 17:21:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6C616D4F4;
+	Wed, 24 Apr 2024 17:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="HlTY58BF";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TeAiDM3L";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vDbFyv6U";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SJyoG0Us"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XgulTLNv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TEqCwjHR";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XgulTLNv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TEqCwjHR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F9015E7E9
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 17:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E39165FA8
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 17:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713979294; cv=none; b=PZmhUaunUlYH9PjIzGyPZRJ+9r/lpuoog4fmsQJS8xRpIMvXojqBdLxcifT3DpofDlgFbuWLykg3GRXi+pXoKx/Ed6n4aoCPohdz0y7YbdzuRRjDuf0WvBSZ8D7rOH7dvSaEAa6KIYcjzmmgeioy3/dYMtKO+V9d+CoXtv+jisg=
+	t=1713979419; cv=none; b=GPpoDFuj8JsAJDPiNFvvd+C7HR6l2CjKHLa0tARnngwhS9ye6+5TqBVlIqd82Jk5wzxAG7KvG9xfrtxXvAnyf2NM62456m2x4C2QryvyVwDyV3PK8Brz9WFcPd4Q/XL+7Iw80MbNWrQk5peuHo95XQPmtUyOlV/yhelbahZVuzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713979294; c=relaxed/simple;
-	bh=JgcUAXNrimRdK/MHi4Iu4pCuP8b3gcZYUFPpGzMSFtc=;
+	s=arc-20240116; t=1713979419; c=relaxed/simple;
+	bh=8aYcZix3LBkrjJF6ChElzCTyN7nwlnVy+8BeE2r8664=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MPsZuytn5HnoZ7kKiPZGt2VYsRNDFBSxDXAwg/+OKn2xSH3dwbNGogV9ZHAvXGp4wWYHlWKxaT4jIGY1IY1/EgoZOdH/zpbNrJxQN310asdq64WCq9qmMFkC+rIUQMq4wFrkHqiSLAelYiwIpR+vH5zIZ+XqvGQuTWfMh9WDgvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=HlTY58BF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TeAiDM3L; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vDbFyv6U; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SJyoG0Us; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=nS95ktSHAn4hHLlhtXRV2f2auuFaYD7lYlw1jO0QlelJqcNCnkKveNJI2C+Xyple/AP2RxuWtnClXYp0TYGBvHvim5vbFzDRzX0SWQSAZN7Qy1q4ncuYsJtcGSRgkI0FKBuMD8F1mCzSWp1sONlGfJjlsse1fMWH5E3eJ1Hmq5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XgulTLNv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TEqCwjHR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XgulTLNv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TEqCwjHR; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7E3DA1F7FD;
-	Wed, 24 Apr 2024 17:21:28 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3BBDE21B31;
+	Wed, 24 Apr 2024 17:23:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713979289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1713979416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HumZEOXMy7t0FipfmEQhfP7X9u+B/mP1ixurSXzbpFc=;
-	b=HlTY58BFtv9HfMDX/Ky1YrVPeZjj9U2WS+FJ/wDJlby4EZDXURwCBOgx14/4PDDpCM4ZJr
-	UcdS+UFgayH6YE7iO2azW6beS2EWtBVukq/EQylRhkL7Q8Kl6GOcQMReBBCuzs39PQ/Dd1
-	FtfPoP50UyqRxGSE2kKOFdviNYwKCXw=
+	bh=TijVEnPmtYS98UkIYoscddPP4byS8T1j46Cl5U5f5c8=;
+	b=XgulTLNvoV8d0XJbALAa/AgO94tLyP5/86NF+iHqO5FnWl/PlSo/J1aF6jhcM4eVLihUhS
+	Oi7HeQvAaaRUuHK9Hm+lhvRR5Sv2pv7C20LdO158rARSF3GgwGklrT+sPjR1n4J8u9PjSe
+	822PVhxGpyuIRWSzfz0EwlFCXedFvLg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713979289;
+	s=susede2_ed25519; t=1713979416;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HumZEOXMy7t0FipfmEQhfP7X9u+B/mP1ixurSXzbpFc=;
-	b=TeAiDM3LrzUoNMrvZN1AbHbiAnkRCTe3KBRW56ru04f1jIUTs2tH6SMkWRosXDwoGCapsJ
-	GGylwvG6/mgC5RCA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=vDbFyv6U;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=SJyoG0Us
+	bh=TijVEnPmtYS98UkIYoscddPP4byS8T1j46Cl5U5f5c8=;
+	b=TEqCwjHRANEyy5nFjsfcN3jTTPxTTret7NbSS/f1I1CEyaXEXGn66E80Lu+STEYBj2Wdbv
+	nk76pWlUjyGbmiAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=XgulTLNv;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=TEqCwjHR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713979288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1713979416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HumZEOXMy7t0FipfmEQhfP7X9u+B/mP1ixurSXzbpFc=;
-	b=vDbFyv6ULlHH4TkxcL/o2d1lR3m+4KXnYpWBXVZt/NtaptY15i2gfHmdEuvmZDV0bA3qBU
-	eSXjrKzyr2zE+lqD8JYz3z6KS7l2VFsg2q/vblmTNcG8x4k8woVjYc8dnNgEfpXxECl8Mi
-	aiLxFh8kl8RJpD5I+p278p2q+rD4lCY=
+	bh=TijVEnPmtYS98UkIYoscddPP4byS8T1j46Cl5U5f5c8=;
+	b=XgulTLNvoV8d0XJbALAa/AgO94tLyP5/86NF+iHqO5FnWl/PlSo/J1aF6jhcM4eVLihUhS
+	Oi7HeQvAaaRUuHK9Hm+lhvRR5Sv2pv7C20LdO158rARSF3GgwGklrT+sPjR1n4J8u9PjSe
+	822PVhxGpyuIRWSzfz0EwlFCXedFvLg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713979288;
+	s=susede2_ed25519; t=1713979416;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HumZEOXMy7t0FipfmEQhfP7X9u+B/mP1ixurSXzbpFc=;
-	b=SJyoG0Us2L13nKjONVIwUpx7dLlcKiPrNhXa1gkWYiYPeqjotqfGP9Z4qImDgoYLtbNwTQ
-	5O8Y3zgqDaXr9cBQ==
+	bh=TijVEnPmtYS98UkIYoscddPP4byS8T1j46Cl5U5f5c8=;
+	b=TEqCwjHRANEyy5nFjsfcN3jTTPxTTret7NbSS/f1I1CEyaXEXGn66E80Lu+STEYBj2Wdbv
+	nk76pWlUjyGbmiAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 694711393C;
-	Wed, 24 Apr 2024 17:21:28 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 262B813690;
+	Wed, 24 Apr 2024 17:23:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9Xg+GZg/KWZcRwAAD6G6ig
-	(envelope-from <rgoldwyn@suse.de>); Wed, 24 Apr 2024 17:21:28 +0000
-Date: Wed, 24 Apr 2024 12:21:23 -0500
+	id QTeSCBhAKWb6RwAAD6G6ig
+	(envelope-from <rgoldwyn@suse.de>); Wed, 24 Apr 2024 17:23:36 +0000
+Date: Wed, 24 Apr 2024 12:23:31 -0500
 From: Goldwyn Rodrigues <rgoldwyn@suse.de>
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 17/17] btrfs: add a cached state to
- extent_clear_unlock_delalloc
-Message-ID: <soy27ti6urv5yxtptzqzm4gnf4w3emyfdfvsv7rmvtcz67ts53@hp5jmu4tau5k>
+Subject: Re: [PATCH 02/17] btrfs: push all inline logic into cow_file_range
+Message-ID: <7hluf74kfy2ffaax7w6avwljauysxquaf5bphmjtq656ewnhpi@6inplrng5k4j>
 References: <cover.1713363472.git.josef@toxicpanda.com>
- <62f3c0fa890b9bebc7f2d1871ec4c885c5287ed5.1713363472.git.josef@toxicpanda.com>
+ <2796fb5d2b04c3ff87c2ab5b285fd7e072a8e4a2.1713363472.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -102,22 +101,27 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <62f3c0fa890b9bebc7f2d1871ec4c885c5287ed5.1713363472.git.josef@toxicpanda.com>
+In-Reply-To: <2796fb5d2b04c3ff87c2ab5b285fd7e072a8e4a2.1713363472.git.josef@toxicpanda.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.93
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 3BBDE21B31
 X-Spam-Level: 
-X-Spamd-Result: default: False [-3.35 / 50.00];
-	BAYES_HAM(-2.34)[96.94%];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.93 / 50.00];
+	BAYES_HAM(-1.92)[94.55%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	RCVD_TLS_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
@@ -126,22 +130,24 @@ X-Spamd-Result: default: False [-3.35 / 50.00];
 	RCPT_COUNT_THREE(0.00)[3];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[toxicpanda.com:email,suse.com:email,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[toxicpanda.com:email,suse.de:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
 	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 7E3DA1F7FD
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.35
 
-On 10:36 17/04, Josef Bacik wrote:
-> Now that we have the lock_extent tightly coupled with
-> extent_clear_unlock_delalloc we can add a cached state to
-> extent_clear_unlock_delalloc and benefit from skipping the extra lookup
-> when we're doing cow.
+On 10:35 17/04, Josef Bacik wrote:
+> Currently we have a lot of duplicated checks of
+> 
+> if (start == 0 && fs_info->sectorsize == PAGE_SIZE)
+> 	cow_file_range_inline();
+> 
+> Instead of duplicating this check everywhere, consolidate all of the
+> inline extent logic into a helper which documents all of the checks and
+> then use that helper inside of cow_file_range_inline().  With this we
+> can clean up all of the calls to either unconditionally call
+> cow_file_range_inline(), or at least reduce the checks we're doing
+> before we call cow_file_range_inline();
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Looks good.
 Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+
 
