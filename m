@@ -1,87 +1,87 @@
-Return-Path: <linux-btrfs+bounces-4520-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4521-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 517E18B0C6C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 16:24:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEED8B0CC1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 16:39:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05EAD288A61
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 14:24:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A15611C233C4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Apr 2024 14:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE25C15E5D1;
-	Wed, 24 Apr 2024 14:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072DD15ECF9;
+	Wed, 24 Apr 2024 14:38:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VpbTXBvM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AZF7K3fl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DAEA15D5C0
-	for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 14:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAAAA15ECEF
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 14:38:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713968648; cv=none; b=H9SbcOFgLfrFfkwSs+rtBIOk64ZXQUqBD7dPrSQ2NhpqpFxFbMGCkJYD6F+y6YLE38E4olqBzhG89slcpJ+HfSnnW+yfSmUYUPGp/LMderokniI9yqILoYIwrsM658ZEuE1Kia8OkezAU9ZakhFhMJbNHxngP0qOtoXsQNGqddg=
+	t=1713969488; cv=none; b=KLFIwslEVmJGOwRVLlK0BDtQzw+ReqqD3zqQnJiDAaXNd55a/3wJpAdSdnnU1mAoJC2L4RP5BFNrAsBDwFGaBf3Mw/wP7rqQCUbq1b6AenmkEGfZ4tPOGJ+YS4MbfXAVqq+kpizJU00Se9NPsPCBXRF8bvra3cCiHxR9wrISljU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713968648; c=relaxed/simple;
-	bh=0llEGKkwxSECjp38KpeBbaalQ6Ta/RRX1nxrXLOLFxg=;
+	s=arc-20240116; t=1713969488; c=relaxed/simple;
+	bh=A1iKnBwprN1x/134qM7jnGUpEQlazq/km+mba9YfOto=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fUeiT+vjpTd25ktjW9OdQ+4q+jNee61t31kewj6wBKf/+Hl7E/EULobAz9p+RXXuzdj54v7K/L0/Lk93z01gwOZpkmIGtH2aBwbmi2qD8xFf+5zXB+oZo1iutNEcW92L8BSfEcKzgsz8CWUl6zlJtJ9IsBDxjWg+zM2/R5IIhfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VpbTXBvM; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=qTflaaj5RWX8G2maDz/tfqdi0UqC7M6zmyWq2AfMCV0LfHcQyLzurf6UguLWi3NzAAQLr7qK7jLvgxXkEPQS2h0qL/Tf769o2+vBk8deTx5zmWRSBacHFwCoc33qLDZ+wWL18C269v7Lr32zjfWzxyaeea2OQTJH0Emn0KBpz1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AZF7K3fl; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713968645;
+	s=mimecast20190719; t=1713969485;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CijgBuqpinbwWpr6/n739zJMWlXp4vcjh+ibzWbPTCM=;
-	b=VpbTXBvMFnY6jDJExaCqvLrzk1t0T4xb357dRWYxTzxHqBre0VhqEY1OuRvS/Rza5rFuNX
-	j2uR5C2vT6C7ystwZMIf2BwMpxa7LojTfzuQaRGsgRyWIXcClLfvyeFqYAceHUV2/3bn+/
-	M0ZTf70RA7tV2hsb6Y0exbQMFjSzrBY=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=BZVWCOEobo4H5vYXBacZjw/B4qqMhk3RzzEe9CEOCeY=;
+	b=AZF7K3flI2edCuij/HQVtKqHqOJQrvscQ4+dW/OjgCeqNSOpibMtrFs5gTvxJ9ThQv/I2G
+	kB7iVCD7mvAO8Q0LoOJibmM2qduUP8X29BiL2HMuZDUN9ArDwaT9KYAJ2SuZCBD0T4aqI2
+	wjO7ESuBVQIzzvlU/dKvjjFA0vIcRtg=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-482-3C1DAYdLOrm_tn7RmKRfMQ-1; Wed, 24 Apr 2024 10:24:03 -0400
-X-MC-Unique: 3C1DAYdLOrm_tn7RmKRfMQ-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1e8d6480f77so61514605ad.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 07:24:03 -0700 (PDT)
+ us-mta-331-YR2sY_aFPQWDd7-Vobx8KA-1; Wed, 24 Apr 2024 10:38:00 -0400
+X-MC-Unique: YR2sY_aFPQWDd7-Vobx8KA-1
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-22efb0b809aso7295991fac.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Apr 2024 07:38:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713968642; x=1714573442;
+        d=1e100.net; s=20230601; t=1713969480; x=1714574280;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CijgBuqpinbwWpr6/n739zJMWlXp4vcjh+ibzWbPTCM=;
-        b=Q3vTWBKr8K0aLAWQ6uOUENBM2iJDi9WKTlING6/WSqpXQqBUmN3GCeNBAIy9jNbniB
-         kiK4CHz8ggFcZU62GjcUVy/kYNKXZGViOS1Gb2MDqXXwPYG6UhsKzg6llRJUaXieGGxv
-         6STLQEavHqZz0e8dAvV1jSn9EkAMM56iDwClaZTCO5z4VGhzVBKr+xPTzVm7VtW0OJDj
-         4EtGa27FXpgW5D1hK/cF0Vq78Ot3xCReaY25a9rxvXJzdZeJeogSk6uVj3a2RULkYTUV
-         xz9mkglTKmnROboGnTXlxUPrC+8jSd4jW5m0dRY1MHbgONpmy5QqQDc6kImhNhyZOTLc
-         q1+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWLPz0hRJ1u0+e2iJMCp0vs4UX56DKxkF4g0t5IALRQfNmuTsRYc1G9tknD5veYmsJVKnF57FXyGIHwDfLDdzbMzOd7QZe5LcGf/BU=
-X-Gm-Message-State: AOJu0Yx+bXAKyUGZHBFkrGLWwfm1nIW3JnqKFYzFelo8fE8o+nCXzKMQ
-	Wwamy7S6ee200mH1L+ASfJCoh1GCYKj/wirOsiU7/R43w2cGpjMSO7KOqPT6bWmxCE0T7BD5oHQ
-	xLi8iD2YUH45R8x57Km+19vSoiKzmerUMvWXQ3e7Vz/tsBD5CJaAO2Wa8HuZ3
-X-Received: by 2002:a17:902:e74a:b0:1e4:b051:f870 with SMTP id p10-20020a170902e74a00b001e4b051f870mr3037060plf.24.1713968642268;
-        Wed, 24 Apr 2024 07:24:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF55NYo7g3f1cSl6tm2v+1PKGR4pJQi+Qh1RbC8U0nDypc/bN+5yDX6o3jpF5duewXP+66xZw==
-X-Received: by 2002:a17:902:e74a:b0:1e4:b051:f870 with SMTP id p10-20020a170902e74a00b001e4b051f870mr3037024plf.24.1713968641665;
-        Wed, 24 Apr 2024 07:24:01 -0700 (PDT)
+        bh=BZVWCOEobo4H5vYXBacZjw/B4qqMhk3RzzEe9CEOCeY=;
+        b=PRabS+xLML3jWj/qUKwlzRiRSaoEQDTEWKy4kn1UX1RdJDHqR7f8gjmNiSg8dVdQ16
+         nNj48wBZt0i9cbAFQ7cJmZPXD7KvxPr6eSKVHpna6a0Lby4QZLSqu72Pnvjqwemw0yqT
+         scTr8cQ8MwEjm+yAk0amr2ttHCwwSxL+PmTQ4TOueWCYPCkNPhysnioDG/82QidQgFlu
+         wsNXqHT5STHR2KsCNzpJ5d/gw2FbvyaENjBjLs1578suKvH5gyxDeIwOS69aOvcv9HPl
+         uuchOs/Lw3pxNK07IaX4HupxDwsFVrcwsmesHgW5Ck9YLdEmG3bZFSFQbUpmSVnqRn64
+         pI1g==
+X-Forwarded-Encrypted: i=1; AJvYcCXzzyMGobYjJ/u63dnXSpL66c5T+f1dEfq674MaonpyA4H7qzH5CZFMt7cwZVFBUfwhXUTsuIXWlUQxdSpKUlvOlw5nAJyIS7tiIvM=
+X-Gm-Message-State: AOJu0YyXkrZKmfrP8bXi0iVRecmBEm9GdwFnAlYTOAlpXLl9jPxTZe+I
+	H/PoMW34fAk7nW7oKdIdZWCuw4TpcU8RpyQLOmcdn0wkPhG1MNNpW3jf17hCSb4PJhOyPqIb3Hl
+	HiDjZlTctlxEc5S0yW/8mET6+JFWtMd7ymqt5M/Vna49dfHwIbmgzWbk/VXaU
+X-Received: by 2002:a05:6870:242a:b0:22e:bb57:94c6 with SMTP id n42-20020a056870242a00b0022ebb5794c6mr2720499oap.4.1713969479998;
+        Wed, 24 Apr 2024 07:37:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGr1tzaa3z2pPVZPV2MNsPBBRLkNRI1Ed2u7VfRgFJvxM49r9Ljc62JuSW8DyVb3EYSr3h7bQ==
+X-Received: by 2002:a05:6870:242a:b0:22e:bb57:94c6 with SMTP id n42-20020a056870242a00b0022ebb5794c6mr2720477oap.4.1713969479592;
+        Wed, 24 Apr 2024 07:37:59 -0700 (PDT)
 Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id f15-20020a170902ce8f00b001dd0d0d26a4sm11945427plg.147.2024.04.24.07.23.59
+        by smtp.gmail.com with ESMTPSA id p13-20020a635b0d000000b005dc98d9114bsm11308564pgb.43.2024.04.24.07.37.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 07:24:01 -0700 (PDT)
-Date: Wed, 24 Apr 2024 22:23:57 +0800
+        Wed, 24 Apr 2024 07:37:59 -0700 (PDT)
+Date: Wed, 24 Apr 2024 22:37:54 +0800
 From: Zorro Lang <zlang@redhat.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: Anand Jain <anand.jain@oracle.com>, zlang@kernel.org,
-	fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [GIT PULL] fstests: btrfs changes staged-20240418
-Message-ID: <20240424142357.gprsxpkufxbhxt4x@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240423220656.4994-1-anand.jain@oracle.com>
- <20240424091243.72n37q2xlwf5hxky@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <20240424121436.GK3492@twin.jikos.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	fdmanana@kernel.org
+Subject: Re: [PATCH v2 1/3] common/btrfs: refactor
+ _require_btrfs_corrupt_block to check option
+Message-ID: <20240424143754.ag7kc24yysudoigp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <cover.1711097698.git.anand.jain@oracle.com>
+ <206f5635cffc0c923afd1a297058fa406bd8e43a.1711097698.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -90,67 +90,75 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240424121436.GK3492@twin.jikos.cz>
+In-Reply-To: <206f5635cffc0c923afd1a297058fa406bd8e43a.1711097698.git.anand.jain@oracle.com>
 
-On Wed, Apr 24, 2024 at 02:14:36PM +0200, David Sterba wrote:
-> On Wed, Apr 24, 2024 at 05:12:43PM +0800, Zorro Lang wrote:
-> > On Wed, Apr 24, 2024 at 06:06:43AM +0800, Anand Jain wrote:
-> > > (I just realized that the previous attempt to send this PR failed. Resending it now.)
-> > > 
-> > > Zorro,
-> > > 
-> > > Several of the btrfs test cases were failing due to a change in the golden
-> > > output. The commits here fix them. These patches are on top of the last PR
-> > > branch staged-20240414.
-> > 
-> > Hi Anand,
-> > 
-> > I found lots of patches in this branch doesn't have RVB. That's not safe, if
-> > we always do things like that. We need one single peer review at least, that
-> > requirement is low enough I think.
-> > 
-> > Better to ping btrfs-list or fstests-list or particular reviewers to get
-> > review, if some patches missed RVB.
+On Fri, Mar 22, 2024 at 04:46:39PM +0530, Anand Jain wrote:
+> The -v and -o short options in btrfs-corrupt-block were introduced and
+> replaced with the long options --value and --offset in the same
+> btrfs-progs release 5.19 by the following commits:
 > 
-> Anand is maintainer within fstests and I guess he reviews the patches
-> when putting them to the branch for merge. Filipe is mentioned as
-> reviewer but please don't expect him to reivew each and every patch.
-
-Hi David,
-
-Sure, mostly I trust the pull request from Anand. But this time those patches are
-from himself, can we say "I've reviewed the patches from myself"? Is that an
-acceptable work process? In other words, should maintainers have the privilege
-to merge his own patches without any other review? I'm a bit confused, if that's
-acceptable by all of you, especially we just through the "xz backdoor".
-
+>   b2ada0594116 ("btrfs-progs: corrupt-block: corrupt generic item data")
+>   22ffee3c6cf2 ("btrfs-progs: corrupt-block: use only long options for value and offset")
 > 
-> I have a feeling that you're following process of merging patches that
-> is maybe modeled after linux kernel, with the multiple branches and
-> even merge window (mentioned in previsous PR), but this is IMO
-> inadequate for a testsuite where we need quick fixups to test cases to
-> be released in a much shorter turnaround.
-
-I try to learn it, but won't follow it totally. Due to fstests is not linux
-project, it's small and fast, we can accept quick fixes, but not without
-control.
-
-I'm not removing all the patches from his PR. I've merged those patches
-which got reviewed. For those un-reviewed patches, I'll try to deal with
-them in these 2 days, and try to help to catch the next release.
-
+> We hope that if these commits are backported, they are both backported at
+> the same time.
 > 
-> I was expecting that if there was a dedicated maintainer for a
-> filesystem then things would go smoothly and we could skip formalities
-> because the maintainer is expected to do reviews that count too.
+> Use only the long options of btrfs-corrupt-block in the test cases. Also,
+> check if btrfs-corrupt-block has the options --value and --offset.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  common/btrfs | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/common/btrfs b/common/btrfs
+> index ae13fb55cbc6..a8340fdd4748 100644
+> --- a/common/btrfs
+> +++ b/common/btrfs
+> @@ -659,7 +659,22 @@ _btrfs_buffered_read_on_mirror()
+>  
+>  _require_btrfs_corrupt_block()
+>  {
+> +	# An optional arg1 argument to also check the option.
+> +	local opt=$1
+> +	local ret
+> +
+>  	_require_command "$BTRFS_CORRUPT_BLOCK_PROG" btrfs-corrupt-block
+> +
+> +	if [ -z "$opt" ]; then
+> +		return
+> +	fi
+> +
+> +	$BTRFS_CORRUPT_BLOCK_PROG -h 2>&1 | grep -q -- " --$opt "
 
-Anand is already particular for btrfs part of fstests. But this time the
-patches are from him. Anyway, I'll help to review his patches, and merge
-them if no more other opinions from btrfs-list.
+I'm wondering if we can use the "-w" option to replace the two
+blanks around the --$opt (due to I don't know if there always be
+two blanks), likes:
 
-Thanks,
-Zorro
+  grep -qw -- "--$opt"
 
+?
+
+> +	ret=$?
+> +
+> +	if [ $ret != 0 ]; then
+
+The "ret" looks like useless at here. If there's not other place uses
+this return value, we can use "$?" directly.
+
+If no objection from you, I can help to change that when I merge. Others
+looks good to me.
+
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+> +		_notrun "Require $BTRFS_CORRUPT_BLOCK_PROG option --$opt"
+> +	fi
+>  }
+>  
+>  _require_btrfs_send_version()
+> -- 
+> 2.39.3
+> 
 > 
 
 
