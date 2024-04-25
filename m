@@ -1,188 +1,197 @@
-Return-Path: <linux-btrfs+bounces-4543-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 860448B192C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Apr 2024 05:07:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D52CE8B21CA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Apr 2024 14:42:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 897161C21331
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Apr 2024 03:07:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0674C1C2232A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Apr 2024 12:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B7D17BD9;
-	Thu, 25 Apr 2024 03:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F8A1494C3;
+	Thu, 25 Apr 2024 12:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="g/KTIyKh"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="amOoiJyg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4odgAL/+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="s9cyZWV1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZEl/GqA0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674FC629
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Apr 2024 03:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.54.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29AE712CD8B
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Apr 2024 12:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714014467; cv=none; b=jhowQu9wYSkmJdRvlpRfThD0HI2AV7neIeNvkCr83BmX8wa87MDZov/79hTSqejYyFVCZ7PkrWWu7gIRIfwTFKf2HkGy8ec74AMUHKHGdfnVbMD80PtKXkCE/KJiaeUXj1FpZOYNFVzWT/0T+qHfCve2rZsQ+JuGatnVNW4Vi64=
+	t=1714048948; cv=none; b=cyhO/gvCMPyTtpT4pP2Vo/qKdClITkItaus44WGdV1vpUQvtCAohxwPA0Smv9gD3reqxv4kTiBUME+QR3HXAFKSL25BFua0hG+bExB9bZhyYeIL6mGqPlyUv3HorKXGECAmmwSB5IDHbC7hljqbeAQ9DgXudTHDu1X6A81ZTtmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714014467; c=relaxed/simple;
-	bh=ft4hucsAY2FmBS3GLywT0At1f6cJRAWPQyxFb+HCVmE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fib5DYF4axNOP22f/MM+etFtAEPtJnT3cvu5rH9PDQ2cIxXkEbce+4G0EX4Jmz/eemjVgeZ76Av7QXRF65H7SnihV+P8AP0tCQTJiy35d9RPZW9VQcut3JxPtzrXG2MigCARlWOTtUiweUjgeV82L+xXIt9MNW2S297pJKyvtVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=g/KTIyKh; arc=none smtp.client-ip=43.154.54.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1714014451;
-	bh=ft4hucsAY2FmBS3GLywT0At1f6cJRAWPQyxFb+HCVmE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=g/KTIyKh/TbVRTxszKIljSnUMfQdDdXz1Mb77a08jOEQWxsEWQmNyJjmm5Ukufcte
-	 I/HlIJaZSd1kh/441PDvu6WgYGaOp1M3BDtbPWKSJawpd8cqOMjw/6HL1pp4B0KKa5
-	 u+3xwCSvt28Dw1b5AIOF4aZtSsz92fCcvK5aHT8w=
-X-QQ-mid: bizesmtp84t1714014449tqwfc7jj
-X-QQ-Originating-IP: WrdHM39JoxoJ0b3/k16y4AhtlYADhTxs8WwUyUYINWs=
-Received: from [192.168.1.5] ( [223.150.241.123])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 25 Apr 2024 11:07:26 +0800 (CST)
-X-QQ-SSF: 00100000000000E0Z000000A0000000
-X-QQ-FEAT: vAA8WNYefta9Vw97IiVydT6OAkO9VMNDFx+ItCygodxJHP+zfuiobNWYoBd+q
-	b2iUKB4cZaKlfmDK5JNX4kXyx+UGu8AjLvu7VxjR2lC87ZXDDUI0mStK1duZyNB9Pp3TP2k
-	rHIpvVzxjmIJ/nqwZjoJK0Ro7SCOg1HpmojmKZvFesJsAZRDTvF6Mp3QMMOX7GbPE7wNak/
-	HhnFSscm4dGirlw/So56vX+h9OGh37bv8YU3kyxqhJvJtnD4Ud1oyxu0++mSJdxXX7vmN2v
-	+XppGUpzvUv2zbBVFiwzYLtfyknfAR62UAzCxGB61/5t7rAczBGTr2N6epotY1RJaW7LWvk
-	rNONJLmvuHXQXKIg94N/Uf+qeWIqAdPG3MSNzRLlIcjBQi6PzopLU8oDXxKaSj/uj3wOABj
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3758918843705813871
-Message-ID: <B9DB8244635257EC+464c494f-aa0f-44b2-8026-f20035df9f9d@bupt.moe>
-Date: Thu, 25 Apr 2024 11:07:25 +0800
+	s=arc-20240116; t=1714048948; c=relaxed/simple;
+	bh=X4pYV3jIcetZDjncq6+7O5Y+yR0BAiebPo5D8PCEW9I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k5fa4lQgs313oN7nHf/rG/iMAE0MvbVaByuWbpJtkXInPVaLgLA7IV8BEkHa/kEOfWohWAUoF7bbFUYxzleq92/5x/4BwxB/6fwBZd7a/pEtGRCWb01x8WmaHlv20X2TRdjh0/lU3zkW7H3ZW06JdXTffIDP33jRFcotpfCo+G4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=amOoiJyg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4odgAL/+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=s9cyZWV1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZEl/GqA0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4E2C933AD7;
+	Thu, 25 Apr 2024 12:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714048945;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxuglnISm3HwOBFN7/Ybg2Xv2RCkN9+saDyY0yhNvNA=;
+	b=amOoiJyg3upI5VHuVDtIPixRT7h/MLKWdDNFm1Ei3LXaMJwRGnp96T8ZH2ONPj5WzFQ0wV
+	3WzP2SzvNseuDyCse0OIsaeWCTd4tOKAkprG6sL1w+VxLZmUjHUojf3Zz+Mj1tixo7zuX/
+	9dV3yaMAiuSeJU1M3AXmed3PGD80X1A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714048945;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxuglnISm3HwOBFN7/Ybg2Xv2RCkN9+saDyY0yhNvNA=;
+	b=4odgAL/+jNoDKL8yKbUUsD96biXJmf6kaU+6CARoo/xJIBKRyo907N4s6aPZF/Y+337TNX
+	/2i8/bhv0eXprzCQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=s9cyZWV1;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="ZEl/GqA0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714048944;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxuglnISm3HwOBFN7/Ybg2Xv2RCkN9+saDyY0yhNvNA=;
+	b=s9cyZWV18eP45nGpR6rTxHzEk/mx+/KmbkbmjKCxQucwkru0yhgP6WplLLDO5bRnZ127g1
+	O5k0j+K4rZOraUjH4Y1svOw0JjE+UJlvBA/4gRehNsht0PlJ0pY2ygosPucJutlrXgs4d2
+	rJ9KYSX/1RbPHggutkefAhzN1jgajno=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714048944;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zxuglnISm3HwOBFN7/Ybg2Xv2RCkN9+saDyY0yhNvNA=;
+	b=ZEl/GqA0C1H7qfPHdPdnwxjEQFsqbJqt6JZFdr7+5Qq0uoEM7+NTX6M1Uokki9B/sxk+74
+	YbXLyhH+jIGJkuDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 296F413991;
+	Thu, 25 Apr 2024 12:42:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6d8gCbBPKmY2ZAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 25 Apr 2024 12:42:24 +0000
+Date: Thu, 25 Apr 2024 14:34:50 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	boris@bur.io
+Subject: Re: [PATCH v2 2/2] btrfs: automatically remove the subvolume qgroup
+Message-ID: <20240425123450.GP3492@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1713519718.git.wqu@suse.com>
+ <07e54de6747a5bf1e6a422cba80cbb06ba832cf4.1713519718.git.wqu@suse.com>
+ <20240424124156.GO3492@twin.jikos.cz>
+ <598907d6-77e0-4134-b709-51106dcfb2f8@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: mkfs.btrfs enabled RST by default casuing unable to mount on
- stable kernel
-To: kreijack@inwind.it, dsterba@suse.cz
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <46FCC719DD77BA7B+fd2aa1a9-91c4-4634-a584-0989f055cb40@bupt.moe>
- <20240424094818.GJ3492@twin.jikos.cz>
- <CC278E560522C9D1+f2ceab96-c158-49b9-b885-7ae55fa260ff@bupt.moe>
- <04a4bfa7-9596-424d-afb0-c9ab9458f969@libero.it>
-Content-Language: en-US
-From: HAN Yuwei <hrx@bupt.moe>
-In-Reply-To: <04a4bfa7-9596-424d-afb0-c9ab9458f969@libero.it>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0OXbRPOxhNWt0dFZodKU05XN"
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <598907d6-77e0-4134-b709-51106dcfb2f8@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_TO(0.00)[gmx.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCPT_COUNT_FIVE(0.00)[5]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4E2C933AD7
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0OXbRPOxhNWt0dFZodKU05XN
-Content-Type: multipart/mixed; boundary="------------TND2nxkt0Pmznu9jHdC0DHyH";
- protected-headers="v1"
-From: HAN Yuwei <hrx@bupt.moe>
-To: kreijack@inwind.it, dsterba@suse.cz
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Message-ID: <464c494f-aa0f-44b2-8026-f20035df9f9d@bupt.moe>
-Subject: Re: mkfs.btrfs enabled RST by default casuing unable to mount on
- stable kernel
-References: <46FCC719DD77BA7B+fd2aa1a9-91c4-4634-a584-0989f055cb40@bupt.moe>
- <20240424094818.GJ3492@twin.jikos.cz>
- <CC278E560522C9D1+f2ceab96-c158-49b9-b885-7ae55fa260ff@bupt.moe>
- <04a4bfa7-9596-424d-afb0-c9ab9458f969@libero.it>
-In-Reply-To: <04a4bfa7-9596-424d-afb0-c9ab9458f969@libero.it>
+On Thu, Apr 25, 2024 at 07:49:12AM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/4/24 22:11, David Sterba 写道:
+> > On Fri, Apr 19, 2024 at 07:16:53PM +0930, Qu Wenruo wrote:
+> >> Currently if we fully removed a subvolume (not only unlinked, but fully
+> >> dropped its root item), its qgroup would not be removed.
+> >>
+> >> Thus we have "btrfs qgroup clear-stale" to handle such 0 level qgroups.
+> >
+> > There's also an option 'btrfs subvolume delete --delete-qgroup' that
+> > does that and is going to be default in 6.9. With this kernel change it
+> > would break the behaviour of the --no-delete-qgroup, which is there for
+> > the case something depends on that.  For now I'd rather postpone
+> > changing the kernel behaviour.
+> >
+> 
+> A quick glance of the --delete-qgroup shows it won't work as expected at
+> all.
+> 
+> Firstly, the qgroup delete requires the qgroup numbers to be 0.
+> Meanwhile qgroup numbers can only be 0 after 1) the full subvolume has
+> been dropped 2) a transaction is committed to reflect the qgroup numbers.
 
---------------TND2nxkt0Pmznu9jHdC0DHyH
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+The deletion option calls ioctl, so this means that 'btrfs qgroup remove'
+will not delete it either?
 
-5ZyoIDIwMjQvNC8yNSAzOjU3LCBHb2ZmcmVkbyBCYXJvbmNlbGxpIOWGmemBkzoNCj4gT24g
-MjQvMDQvMjAyNCAxOC4xNSwgSEFOIFl1d2VpIHdyb3RlOg0KPj4NCj4+IOWcqCAyMDI0LzQv
-MjQgMTc6NDgsIERhdmlkIFN0ZXJiYSDlhpnpgZM6DQo+Pj4gT24gV2VkLCBBcHIgMjQsIDIw
-MjQgYXQgMDE6NDU6MjRQTSArMDgwMCwgSEFOIFl1d2VpIHdyb3RlOg0KPj4+PiBJIGhhdmUg
-Zm91bmQgaW5jb21wYXRpYmlsaXR5IGlzc3VlIG9uIGJ0cmZzLXByb2cgJiBrZXJuZWwuIGJ0
-cmZzLXByb2dzDQo+Pj4+IGlzIHY2LjcuMSwga2VybmVsIGlzIDYuNy41LWFvc2MtbWFpbi4N
-Cj4+Pj4NCj4+Pj4gVXNpbmcgdGhpcyBjb21tYW5kIHRvIGNyZWF0ZSBidHJmcyB2b2x1bWU6
-DQo+Pj4+ICMgbWtmcy5idHJmcyAtZiAtZCByYWlkMTAgLW0gcmFpZDFjNCAtcyAxNmsgLUwg
-SFlXREFUQV9aT05FRF9URVNUDQo+Pj4+IC9kZXYvc2RiIC9kZXYvc2RjIC9kZXYvc2RkIC9k
-ZXYvc2RlDQo+Pj4+DQo+Pj4+IFdoZW4gbW91bnRpbmcsIGRtZXNnIHNhaWQ6DQo+Pj4+IFvC
-oCAzMjkuMDcxNDAzXSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogZmlyc3QgbW91bnQgb2Yg
-ZmlsZXN5c3RlbQ0KPj4+PiA3YjRmMmNhNi1lZmUzLTQ4ZDktODFmNi1iYTY1YTAwZGI4NWUN
-Cj4+Pj4gW8KgIDMyOS4wODA0MjJdIEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiB1c2luZyBj
-cmMzMmMgKGNyYzMyYy1nZW5lcmljKQ0KPj4+PiBjaGVja3N1bSBhbGdvcml0aG0NCj4+Pj4g
-W8KgIDMyOS4wODgyMjJdIEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiB1c2luZyBmcmVlIHNw
-YWNlIHRyZWUNCj4+Pj4gW8KgIDMyOS4wOTM2NzNdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2Ri
-KTogY2Fubm90IG1vdW50IGJlY2F1c2Ugb2YgDQo+Pj4+IHVua25vd24NCj4+Pj4gaW5jb21w
-YXQgZmVhdHVyZXMgKDB4NWI0MSkNCj4+Pj4gW8KgIDMyOS4xMDI0NDJdIEJUUkZTIGVycm9y
-IChkZXZpY2Ugc2RiKTogb3Blbl9jdHJlZSBmYWlsZWQNCj4+Pj4NCj4+Pj4gZHVtcC1zdXBl
-ciBzYWlkOg0KPj4+PiBbLi4uXQ0KPj4+PiBpbmNvbXBhdF9mbGFnc8KgwqDCoMKgwqDCoMKg
-wqDCoCAweDViNDENCj4+Pj4gwqAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAoIE1JWEVEX0JBQ0tSRUYgfA0KPj4+PiDCoCDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBFWFRFTkRFRF9JUkVGIHwN
-Cj4+Pj4gwqAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgU0tJTk5ZX01FVEFEQVRBIHwNCj4+Pj4gwqAgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgTk9fSE9MRVMgfA0KPj4+PiDCoCDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBSQUlEMUMz
-NCB8DQo+Pj4+IMKgIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIFpPTkVEIHwNCj4+Pj4gwqAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgUkFJRF9TVFJJUEVfVFJFRSApDQo+Pj4+IFsuLi5d
-DQo+Pj4+DQo+Pj4+DQo+Pj4+IFJBSURfU1RSSVBFX1RSRUUgbmVlZCBDT05GSUdfQlRSRlNf
-REVCVUcgdG8gYmUgc3VwcG9ydGVkIGFuZCB0aGlzDQo+Pj4+IGZlYXR1cmUgZmxhZyBpcyBk
-aXNhYmxlZCBvbiBtb3N0IGRpc3RyaWJ1dGlvbnMuIEkgaG9wZSBSU1QgY2FuIGJlDQo+Pj4+
-IGRpc2FibGVkIGJ5IGRlZmF1bHQgb24gYnRyZnMtcHJvZ3MuDQo+Pj4gSU1PIHRoaXMgd29y
-a3MgYXMgaW50ZW5kZWQuIEZlYXR1cmVzIG1heSBiZSBlbmFibGVkIGFoZWFkIG9mIHRpbWUg
-aW4NCj4+PiBidHJmcy1wcm9ncyBkdWUgdG8gZWFybHkgdGVzdGluZyBhbmQgbm90IHJlcXVp
-cmluZyB0aGUgZXhwZXJpbWVudGFsDQo+Pj4gYnVpbGQuIFRoZSBleHBlcmltZW50YWwgc3Rh
-dHVzIG9mIHByb2dzIGZlYXR1cmVzIGlzIGFib3V0IGNvbXBsZXRlbmVzcw0KPj4+IG9mIHRo
-ZSBpbXBsZW1lbnRhdGlvbiwgc28gaWYgbWtmcyBjcmVhdGVzIGEgZmlsZXN5c3RlbSB3aXRo
-IFJTVCB0aGVuIGl0DQo+Pj4gY291bGQgYmUgZW5hYmxlZC4NCj4+IElmIGR1ZSB0byBlYXJs
-eSB0ZXN0aW5nLCBidHJmcy1wcm9ncyBjb3VsZCBoYXZlIC0tZXhwZXJpbWVudGFsIG9wdGlv
-biANCj4+IHRvIGVuYWJsZSBpdCBpbnN0ZWFkIG9mDQo+Pg0KPj4gZW5hYmxpbmcgaXQgYnkg
-ZGVmYXVsdCB3aGljaCB3b3VsZCBjYXVzaW5nIGNvbmZ1c2lvbiB0byBub3JtYWwgdXNlcnMu
-IA0KPj4gRm9yIGV4cGVyaWVuY2VkIHVzZXIgd2hvIHdhbnRzIHRvIHRlc3QgbmV3IGZlYXR1
-cmUsIHdlIGNhbiBoaW50IHRoZW0gDQo+PiB0byB1c2UgdGhpcyBvcHRpb24gd2hlbiBuZWVk
-ZWQuDQo+Pg0KPj4gZS5nLg0KPj4NCj4+ICMgbWtmcy5idHJmcyAtZiAtZCByYWlkMTAgLW0g
-cmFpZDFjNCAtcyAxNmsNCj4+IGNhbid0IHVzZSByYWlkMTAsIHRoaXMgaXMgYSBleHBlcmlt
-ZW50YWwgZmVhdHVyZSwgdXNlIC0tZXhwZXJpbWVudGFsIA0KPj4gaWYgeW91IHJlYWxseSB3
-YW50IGl0Lg0KPj4NCj4+ICMgbWtmcy5idHJmcyAtZiAtZCByYWlkMTAgLW0gcmFpZDFjNCAt
-cyAxNmsgLS1leHBlcmltZW50YWwNCj4+DQo+PiBbc3VjY2VlZF0NCj4+DQo+Pj4gVGhlIGtl
-cm5lbCBzdXBwb3J0IGlzIHN0aWxsIG1pc3Npbmcgc29tZSBmZWF0dXJlcyBhbmQgdGhlcmUg
-YXJlIHNvbWUNCj4+PiBrbm93biBidWdzLCB0aGlzIGlzIGNvbnZlbmllbnRseSBoaWRkZW4g
-YmVoaW5kIHRoZSBERUJVRyBvcHRpb24gc28gaXQNCj4+PiBkb2VzIG5vdCBhZmZlY3QgZGlz
-dHJpYnV0aW9ucy4NCj4+Pg0KPj4+IEhvd2V2ZXIgaXQgc2VlbXMgdGhhdCB0aGUgZG9jdW1l
-bnRhdGlvbiBpcyBub3QgY2xlYXIgYWJvdXQgdGhhdCBhbmQgdGhlDQo+Pj4gc3RhdHVzIHBh
-Z2Ugc2hvdWxkIGJlIHVwZGF0ZWQuDQo+Pj4NCj4NCj4gSSB0aGluayB0aGF0IHRoZSBwcm9i
-bGVtIGlzIHRoZSBmb2xsb3dpbmc6IGlmIHlvdSB3YW50IHRvIHVzZSBhICJ6b25lZCANCj4g
-ZGV2aWNlIg0KPiBhbmQgYSAicmFpZCBkZXZpY2UiLCB5b3UgTkVFRCBhIHJhaWQtc3RyaXBl
-LXRyZWUuDQo+IEluIGZhY3QgYnkgZGVmYXVsdCB0aGUgUlNUIGlzIG5vdCBlbmFibGVkLCBi
-dXQgaXQgaXMgcHVsbGVkIGlmIHdlIGhhdmUNCj4gYSB6b25lZCBkZXZpY2UgYW5kIGEgcmFp
-ZDEwLg0KPg0KPiBTbyBpdCBpcyBub3QgYSBwcm9ibGVtIG9mIGJ0cmZzLXByb2dzIGl0c2Vs
-Zi4NCj4NCj4gSSB0aGluayB0aGF0IGJ0cmZzLm1rZnMgc2hvdWxkIGJlIG1vcmUgdmVyYm9z
-ZSBhYm91dCBwdWxsaW5nIGluY29tYXB0DQo+IGZlYXR1cmUgYXMgYSBkZXBlbmRlbmN5Lg0K
-Pg0KPg0KSSB0aGluayB0aGF0IGJ0cmZzLXByb2dzIGNvdWxkIHJlcXVpcmUgdXNlciB0byBl
-eHBsaWNpdGx5IGludHJvZHVjZSANCmZlYXR1cmVzIHdoaWNoIGN1cnJlbnQgc3RhYmxlIGtl
-cm5lbCBtYXkgbm90IGVuYWJsZWQgYnkgZGVmYXVsdCBpbnN0ZWFkIA0Kb2YgYmVpbmcgbW9y
-ZSB2ZXJib3NlIGluIG91dHB1dC4NCg0KQmVjYXVzZSB1c2VycyBtYXkgMS4gZG9uJ3QgcmVh
-ZCBvdXRwdXQgMi4gYXJlIHVzaW5nIHR0eSB3aGljaCB3b3VsZCANCnRydW5jYXRlIHRoZWly
-IG91dHB1dC4gTWFraW5nIHRoaXMgZXhwbGljaXRseSBpcyBiZXR0ZXIgdGhhbiBzdXJwcmlz
-aW5nIA0KdXNlcnMgYWZ0ZXJ3YXJkcy4NCg0KSEFOIFl1d2VpDQoNCg==
+> Both situation is only handled in my patchset, thus this means for a lot
+> of cases it won't work at all.
+> 
+> Furthermore, there is the drop_subtree_threshold thing, which can mark
+> qgroup inconsistent and skip accounting, making the target subvolume's
+> qgroup numbers never fall back to 0 (until next rescan).
+> 
+> So I'm afraid the --delete-qgroup won't work until the 1/2 patch get
+> merged (allowing deleting qgroups as long as the target subvolume is gone).
 
---------------TND2nxkt0Pmznu9jHdC0DHyH--
+Ok, so for emulation of the complete removal in userspace it's
 
---------------0OXbRPOxhNWt0dFZodKU05XN
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+btrfs subvolume delete 123
+btrfs subvolume sync 123
+btrfs qgroup remove 0/123
 
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZinI7QAKCRBLkKfpYfpB
-U737AQDltPU2rAHBqimnrj0PYOOcvMGeoe6r4KkZcxcQmi0jYQEAhHoh1k8G0UWL
-q7SGxtyaVQ4fQVluGqR8vZprNcD3twM=
-=wCyc
------END PGP SIGNATURE-----
-
---------------0OXbRPOxhNWt0dFZodKU05XN--
+but this needs to wait until the sync is finished and that is not
+expected for the subvolume delete command. It needs to be fixed but now
+I'm not sure this can be default in 6.9 as planned.
 
