@@ -1,74 +1,78 @@
-Return-Path: <linux-btrfs+bounces-4552-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4553-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AACDF8B2F65
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 06:19:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 340D18B3655
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 13:10:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E28B0B22157
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 04:19:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE7231F21A03
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 11:10:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89138249F;
-	Fri, 26 Apr 2024 04:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9332A144D3F;
+	Fri, 26 Apr 2024 11:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fSmreUMF";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fSmreUMF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LGaz5vzH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8350EACD
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Apr 2024 04:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083781448DF;
+	Fri, 26 Apr 2024 11:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714105135; cv=none; b=BGzz863ucpGKF9A2BNGdnxiB2PybSHLfJhk4yZIUnnSw0LAAiorad8UF9//JSd31NGpA1frlSxRAxqvS0MuyO/qe5EKEaZPfU8AXXXwu+FxdihCnat0Xf1sHmpbK6BMfUrsA15Xw2NAxCg0pay+qc5EZ6p+OkdHDOLTiXatf6YM=
+	t=1714129802; cv=none; b=ZSpYQaK/AoKXjUI8aYz+v9dmx4mTsfbiIQWBshAcbQHE5oLIwgT+NMSKeQJS2iunLdaz9WQDn17QRRQaxZMQH8EVE9+TsWCoiSjZfmAXNljcRJ10uc6HxUWeLRrwCaY6+nq94Y5P3LD/SWLIdjBKFCnNWgInWt443i88m5mnmkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714105135; c=relaxed/simple;
-	bh=E0uTj6JFRJkLr+JoxOJtVx604GHUkcGyBrZjlg/LsIA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=a80878+4SGYrBuK41zxGZC02ZThP/vvavqprliTHzcDe+xRB8QU68kpqeJRmWzeKs3+adfrUmPuxD4a+JVdjVdX8c5fUFIX1lTVAOOWnw9AIkB3BCliq+nYgy3BA3UfXqDn8TQr3YXVBGnDqNNbRhx6IzfX3HKyTguaR7tHHO30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fSmreUMF; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fSmreUMF; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0205D348C6
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Apr 2024 04:18:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714105132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=mvtI1a8L9FRY4Jqsc7NxWTMvgudC2hXvP8LQF8F6OUs=;
-	b=fSmreUMF4/n3U6rgYx+Cq2rW/y0OtwQDPP6/R83i/SirrD+F+Mr+WI33Ur3Rn/WIE7FyZI
-	xLzNunhdsZMa6Wsbha3GKjWPNkHMKxg14qox6/Nj39dwSQCI3uohxN3irf4YW9ecsh/e5L
-	SnXIMxKrfbVO1iVaR+ViUPAtCIMcJDU=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=fSmreUMF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714105132; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=mvtI1a8L9FRY4Jqsc7NxWTMvgudC2hXvP8LQF8F6OUs=;
-	b=fSmreUMF4/n3U6rgYx+Cq2rW/y0OtwQDPP6/R83i/SirrD+F+Mr+WI33Ur3Rn/WIE7FyZI
-	xLzNunhdsZMa6Wsbha3GKjWPNkHMKxg14qox6/Nj39dwSQCI3uohxN3irf4YW9ecsh/e5L
-	SnXIMxKrfbVO1iVaR+ViUPAtCIMcJDU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD98E1398B
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Apr 2024 04:18:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tu4HGyorK2ZOUwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Apr 2024 04:18:50 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove the recursive include of btrfs_inode.h from itself
-Date: Fri, 26 Apr 2024 13:48:27 +0930
-Message-ID: <6165f2c27b4d02fa4f94d8373cd3506e3028fc71.1714105096.git.wqu@suse.com>
+	s=arc-20240116; t=1714129802; c=relaxed/simple;
+	bh=yArjolxFXXxo/rbVYFC3ofkx+zApG1M75mGf/E3/juA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=N0yVAI8Nww5nUrjQQ4yaa0IfaREvEvda9ZJBzkNtxca2G/z0hnKFrv/3Gs02w4h1JqK3Z7QuFGXIuQX/IjxIJ3tGI7HjmXY2F1cbX8O0Nk5Fvy/eGJzGoSnRc1a5vib6rtrGuEhHV4LMJXu03kAqQlEwtxyM3eukeV44u3tPo+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LGaz5vzH; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714129801; x=1745665801;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yArjolxFXXxo/rbVYFC3ofkx+zApG1M75mGf/E3/juA=;
+  b=LGaz5vzHg8bLDk1F7wnytRFJRaChEjuKqWg1jpWcae3fybtht0vHMa8B
+   mkaLoX+SpIAftzyu/Wy8FFK2G9Qdnt64tUwlI+bUxs0yM6vSn7CvYQuxG
+   y3ZUdy1H926ldRt1pBGVMoEbqKuh+t/73iIHNA4Bcf/eUoW4rYE7fzn7e
+   M/PtaXXYYleJLxNr5v2GfXwGPfsYL0r53mHzs5e2ZVuPXa/tcPIqVoSDm
+   2LzXRyDHImlqzIg2ho42WOzBLa5vKl7CLglQlwThsSMqqwo3nCfldFZfC
+   hmF3V0ru2yql0M6k5WcIta9LD8PHLiAaym/ElziaMfYb8nbQzhZU703DV
+   A==;
+X-CSE-ConnectionGUID: 8dfZB+fBREaPf1V3bMQ5aA==
+X-CSE-MsgGUID: tesGisYDSDmrYRmJxiuI+A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20474048"
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="20474048"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 04:10:00 -0700
+X-CSE-ConnectionGUID: FiFbvnJZRr+OApU+k7sG2A==
+X-CSE-MsgGUID: Atx6dXyBSYGBOl+iUnbvfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
+   d="scan'208";a="30030834"
+Received: from unknown (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.216])
+  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 04:09:57 -0700
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	herbert@gondor.apana.org.au
+Cc: linux-btrfs@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	qat-linux@intel.com,
+	embg@meta.com,
+	cyan@meta.com,
+	brian.will@intel.com,
+	weigang.li@intel.com,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: [RFC PATCH 0/6] btrfs: offload zlib-deflate to accelerators
+Date: Fri, 26 Apr 2024 11:54:23 +0100
+Message-ID: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -76,62 +80,73 @@ List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -1.15
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 0205D348C6
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.15 / 50.00];
-	BAYES_HAM(-1.14)[88.61%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+]
 
-Inside btrfs_inode.h we include itself, although it's not causing any
-problem, it's still being reported by clangd, and is really unnecessary.
+Add support for zlib compression and decompression through the acomp
+APIs in BTRFS. This enables [de]compression operations to be offloaded
+to accelerators. This is a rework of [1].
 
-Just remove the recursive include.
+This set also re-enables zlib-deflate in the Crypto API and in the QAT
+driver as they were removed in [2] since there was no user in kernel.
+The re-enablement is done by reverting the commits that removed such
+feature.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/btrfs_inode.h | 1 -
- 1 file changed, 1 deletion(-)
+The code has been benchmarked on a system with the following specs:
+ * Dual socket Intel(R) Xeon(R) Platinum 8470N
+ * 512GB (16x32GB DDR5 4800 MT/s [4800 MT/s])
+ * 4 NVMe disks (349.3G INTEL SSDPE21K375GA)
+ * 2 QAT 4xxx devices, one per socket, configured for compression only
+ * Kernel 6.8.2
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 91c994b569f3..de918d89a582 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -19,7 +19,6 @@
- #include <uapi/linux/btrfs_tree.h>
- #include <trace/events/btrfs.h>
- #include "block-rsv.h"
--#include "btrfs_inode.h"
- #include "extent_map.h"
- #include "extent_io.h"
- #include "extent-io-tree.h"
+The test consisted of 4 processes running `dd` that wrote in parallel
+50GB of data (Silesia corpus) to the 4 NVMe disks separately. We captured
+disk write throughput, CPU utilization and compression ratio:
+
+    +---------------------------+---------+---------+---------+---------+
+    |                           | QAT-L9  | ZSTD-L3 | ZLIB-L3 | LZO-L1  |
+    +---------------------------+---------+---------+---------+---------+
+    | Disk Write TPUT (GiB/s)   | 6.5     | 5.2     | 2.2     | 6.5     |
+    +---------------------------+---------+---------+---------+---------+
+    | CPU utils %age @208 cores | 4.56%   | 15.67%  | 12.79%  | 19.85%  |
+    +---------------------------+---------+---------+---------+---------+
+    | Compression Ratio         | 34%     | 35%     | 37%     | 58%     |
+    +---------------------------+---------+---------+---------+---------+
+
+From the results we see that BTRFS with QAT configured for zlib-deflate Level 9
+provides the best throughput with less CPU utilization and better compression
+ratio compared with software zstd-l3, zlib-l3 and lzo. 
+
+Limitations: 
+  * The implementation is synchronous, even if acomp is an asynchronous API.
+  * The implementation tries always to use an acomp tfm even if only
+    zlib-deflate-scomp is present. This ignores the compression levels
+    configuration for zlib.
+  * There is no way to configure a compression level for acomp(zlib-deflate).
+    This is hardcoded in the acomp algorithm implementation/provider.
+
+[1] https://lore.kernel.org/all/1467083180-111750-1-git-send-email-weigang.li@intel.com/  
+[2] https://lore.kernel.org/all/ZO8ULhlJSrJ0Mcsx@gondor.apana.org.au/
+
+Giovanni Cabiddu (5):
+  Revert "crypto: testmgr - Remove zlib-deflate"
+  Revert "crypto: deflate - Remove zlib-deflate"
+  Revert "crypto: qat - Remove zlib-deflate"
+  Revert "crypto: qat - remove unused macros in qat_comp_alg.c"
+  crypto: qat - change compressor settings for QAT GEN4
+
+Weigang Li (1):
+  btrfs: zlib: add support for zlib-deflate through acomp
+
+ crypto/deflate.c                              |  61 +++--
+ crypto/testmgr.c                              |  10 +
+ crypto/testmgr.h                              |  75 ++++++
+ .../crypto/intel/qat/qat_common/adf_gen4_dc.c |   4 +-
+ .../intel/qat/qat_common/qat_comp_algs.c      | 138 ++++++++++-
+ fs/btrfs/zlib.c                               | 216 ++++++++++++++++++
+ 6 files changed, 484 insertions(+), 20 deletions(-)
+
+base-commit: ed265f7fd9a635d77c8022fc6d9a1b735dd4dfd7
 -- 
 2.44.0
 
