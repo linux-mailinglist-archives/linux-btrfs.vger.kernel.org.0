@@ -1,63 +1,63 @@
-Return-Path: <linux-btrfs+bounces-4557-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4558-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B58E48B365D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 13:10:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB59F8B365F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 13:10:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 828D7B231D5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 11:10:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8746B2849BF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 11:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91328145B12;
-	Fri, 26 Apr 2024 11:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1346F145343;
+	Fri, 26 Apr 2024 11:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a8Zk3wO5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Mv3Z/e9W"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EE9144D2E;
-	Fri, 26 Apr 2024 11:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858C8145321;
+	Fri, 26 Apr 2024 11:10:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714129816; cv=none; b=CyI/88PM5KBcR5hZWq/hLuOqKsUfdPvnqzQo5cKxevNgcPm+LuLTTzjI2YF+QQJ5Mv2bLkSK8jzGfimzLATZ5fwtPlg4WpfBbASDzhuwiIaRIEqNUnpd2z3gwhrG69a7On4qhL9FMq3fPbJz2+ipyP+hNCSbGhwFISz/FCfu/hQ=
+	t=1714129821; cv=none; b=YHv1KXK46KKUHUluFWgNwK2/8AA2bL+2j7hA3SmT1kcmDitqNUa8Fv0LFhoMDssHSLdXQCcRrvOi5KcG5cvgipbkSVynu3v7cyHW8SgAikej0BDIluIF5zoJ/iec0m0/cGGjPllp+TuYjLicSELMGZTLxS4z9YIIRy/l5VxuYKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714129816; c=relaxed/simple;
-	bh=E3lsNuPY2s3Q+h3/lR91Vlx3BxKcj68xT1Zz7FHBTtU=;
+	s=arc-20240116; t=1714129821; c=relaxed/simple;
+	bh=Tqra8/1ha5Kv33pjuHHw6inu+5h3ytJKKpKbhL4wab0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mQ0wag+rQ4vWazg0KIpb2RaIkTkJlZ0cFqGC4rRkmue+2JKzWEvKvRP1DTyU4cgpzJafD2Z29lwcNWlNTd/D+x6oiqwKS0sF+eAFCg03wqIHs+hZHUNbBGIFcg8vAwEP9Sc8J9H/wsu1hIHClI0nsRPxcpkHNODys4d3z37Ruqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a8Zk3wO5; arc=none smtp.client-ip=192.198.163.11
+	 MIME-Version; b=q1zAjAtzdD4HPEE63AmnSI+7iEMYW6Wp/d1WGOtHZB0PsTC7DIVWyama61K/GjFTJfJzIGOEr5DKjAXGQXv4B68EyLWXEaPLYeONRM3mGPTyQ6DDvRuaQOtt3u3KzWrx/jLLNNXHZVgnebG95We825xcaYFGk63ECbz8ZpymggU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Mv3Z/e9W; arc=none smtp.client-ip=192.198.163.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714129815; x=1745665815;
+  t=1714129820; x=1745665820;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=E3lsNuPY2s3Q+h3/lR91Vlx3BxKcj68xT1Zz7FHBTtU=;
-  b=a8Zk3wO5B/VXm5RQgqOyffddDfFv2kUZdwPDoK71wtz9UcvQaYGug5Bf
-   4UYF5n2SxbB8V3UtGWYpJsuUpeYlPyASK//GD28EsfS/zHI0HUz0cDyXO
-   brtQGonU9mHctC5MIxyNEAfjm+QX7Hy8+MXB9hz74yjc40BqDtz4vPRq/
-   6dL/XHonotCZr7P+a5BEwcY+11qTbPvd6w9B6af1V3ZQKzILyAjw+A9cc
-   WH0ONwhmp9RzfjTPto8yxTYObQLeRpryChPnO5OPxf5GzGz/bRwK2fEco
-   irsiwGrRz7OFuX2f6xyAMIm8FcfUhihvP1rKe7RK1JVTeH5I3suNVDlN1
-   Q==;
-X-CSE-ConnectionGUID: tXmwf2fERiyCjh/kAEyv8g==
-X-CSE-MsgGUID: 6757YmJURFmYXMF5juMurQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20474090"
+  bh=Tqra8/1ha5Kv33pjuHHw6inu+5h3ytJKKpKbhL4wab0=;
+  b=Mv3Z/e9WXVYRjq20ernWPpUF83sRR0Lz6w9icKVycHhqvDCi3IDxnOBG
+   KcAV+zFgfSQlFYGhz04+jdoqwFeawImjnrmfDFYGlPIR4D6tdQVVFLPBB
+   F96W6uaiXboxO7tFL3Kh8lnZKMODFEFVKr73KiJ7mP93FKUOP4FBhULLp
+   l3kftlMvbEXmcTOhiyPCdA04Gm/Ko1kdl9SIqoy1eZMfqPp7IT7c29pU0
+   ldmwukD2f8twmx+YtfgHO2vfdj6UK0hrAFkS+eqtATpLpX4cqGt83WgIU
+   TIWq9tOa00uROlPvx6Kd3S6gue3dOfQK3T68faTPsoHS5K0vRBQGdaH6s
+   g==;
+X-CSE-ConnectionGUID: v3eN1JPuQ7aVbb3RH8lscg==
+X-CSE-MsgGUID: kvmD0tO6TTe6R7VmlWr1+w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20474097"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="20474090"
+   d="scan'208";a="20474097"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 04:10:15 -0700
-X-CSE-ConnectionGUID: sdKP7++bTUSW5ohpdhqj2Q==
-X-CSE-MsgGUID: lK7pFLwlSvyr4TJS5CEU1A==
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 04:10:19 -0700
+X-CSE-ConnectionGUID: mSzro9B9Tk+ws7rfLtpUng==
+X-CSE-MsgGUID: swgjxfjcSImSwmOo8mjnYA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="30030940"
+   d="scan'208";a="30030955"
 Received: from unknown (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.216])
-  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 04:10:12 -0700
+  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 04:10:15 -0700
 From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 To: clm@fb.com,
 	josef@toxicpanda.com,
@@ -71,9 +71,9 @@ Cc: linux-btrfs@vger.kernel.org,
 	brian.will@intel.com,
 	weigang.li@intel.com,
 	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [RFC PATCH 4/6] Revert "crypto: qat - remove unused macros in qat_comp_alg.c"
-Date: Fri, 26 Apr 2024 11:54:27 +0100
-Message-ID: <20240426110941.5456-5-giovanni.cabiddu@intel.com>
+Subject: [RFC PATCH 5/6] crypto: qat - change compressor settings for QAT GEN4
+Date: Fri, 26 Apr 2024 11:54:28 +0100
+Message-ID: <20240426110941.5456-6-giovanni.cabiddu@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
 References: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
@@ -86,31 +86,36 @@ MIME-Version: 1.0
 Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
 Content-Transfer-Encoding: 8bit
 
-This reverts commit b4bf8295892924fca60d0704ac7cbc3b5897d233.
----
- drivers/crypto/intel/qat/qat_common/qat_comp_algs.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Enable dynamic compression by default for QAT GEN4 and change
+compression level to 9.
 
-diff --git a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-index 79de04cfa012..b533984906ec 100644
---- a/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-+++ b/drivers/crypto/intel/qat/qat_common/qat_comp_algs.c
-@@ -13,6 +13,15 @@
- #include "qat_compression.h"
- #include "qat_algs_send.h"
- 
-+#define QAT_RFC_1950_HDR_SIZE 2
-+#define QAT_RFC_1950_FOOTER_SIZE 4
-+#define QAT_RFC_1950_CM_DEFLATE 8
-+#define QAT_RFC_1950_CM_DEFLATE_CINFO_32K 7
-+#define QAT_RFC_1950_CM_MASK 0x0f
-+#define QAT_RFC_1950_CM_OFFSET 4
-+#define QAT_RFC_1950_DICT_MASK 0x20
-+#define QAT_RFC_1950_COMP_HDR 0x785e
-+
- static DEFINE_MUTEX(algs_lock);
- static unsigned int active_devs;
- 
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+---
+ drivers/crypto/intel/qat/qat_common/adf_gen4_dc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/intel/qat/qat_common/adf_gen4_dc.c b/drivers/crypto/intel/qat/qat_common/adf_gen4_dc.c
+index 5859238e37de..34f418b88738 100644
+--- a/drivers/crypto/intel/qat/qat_common/adf_gen4_dc.c
++++ b/drivers/crypto/intel/qat/qat_common/adf_gen4_dc.c
+@@ -22,7 +22,7 @@ static void qat_comp_build_deflate(void *ctx)
+ 	header->hdr_flags =
+ 		ICP_QAT_FW_COMN_HDR_FLAGS_BUILD(ICP_QAT_FW_COMN_REQ_FLAG_SET);
+ 	header->service_type = ICP_QAT_FW_COMN_REQ_CPM_FW_COMP;
+-	header->service_cmd_id = ICP_QAT_FW_COMP_CMD_STATIC;
++	header->service_cmd_id = ICP_QAT_FW_COMP_CMD_DYNAMIC;
+ 	header->comn_req_flags =
+ 		ICP_QAT_FW_COMN_FLAGS_BUILD(QAT_COMN_CD_FLD_TYPE_16BYTE_DATA,
+ 					    QAT_COMN_PTR_TYPE_SGL);
+@@ -35,7 +35,7 @@ static void qat_comp_build_deflate(void *ctx)
+ 	hw_comp_lower_csr.skip_ctrl = ICP_QAT_HW_COMP_20_BYTE_SKIP_3BYTE_LITERAL;
+ 	hw_comp_lower_csr.algo = ICP_QAT_HW_COMP_20_HW_COMP_FORMAT_ILZ77;
+ 	hw_comp_lower_csr.lllbd = ICP_QAT_HW_COMP_20_LLLBD_CTRL_LLLBD_ENABLED;
+-	hw_comp_lower_csr.sd = ICP_QAT_HW_COMP_20_SEARCH_DEPTH_LEVEL_1;
++	hw_comp_lower_csr.sd = ICP_QAT_HW_COMP_20_SEARCH_DEPTH_LEVEL_9;
+ 	hw_comp_lower_csr.hash_update = ICP_QAT_HW_COMP_20_SKIP_HASH_UPDATE_DONT_ALLOW;
+ 	hw_comp_lower_csr.edmm = ICP_QAT_HW_COMP_20_EXTENDED_DELAY_MATCH_MODE_EDMM_ENABLED;
+ 	hw_comp_upper_csr.nice = ICP_QAT_HW_COMP_20_CONFIG_CSR_NICE_PARAM_DEFAULT_VAL;
 -- 
 2.44.0
 
