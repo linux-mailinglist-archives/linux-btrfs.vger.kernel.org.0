@@ -1,63 +1,63 @@
-Return-Path: <linux-btrfs+bounces-4554-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4555-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E72F8B3658
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 13:10:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE6868B3659
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 13:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95094B2361F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 11:10:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 670132844F4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Apr 2024 11:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCBBA145338;
-	Fri, 26 Apr 2024 11:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1481448DF;
+	Fri, 26 Apr 2024 11:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TMIc2Elf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RTLRs/l+"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262BB1448DF;
-	Fri, 26 Apr 2024 11:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B7A14532D;
+	Fri, 26 Apr 2024 11:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714129805; cv=none; b=ooQk12jF6mrG0jF/2PuOKMyE3zs/lQzEvVnDFvCGoIeRUIN+T+SG81qmAcD2lZb30s7Jmegkl0meyOVlSgxZs6urpCVAT4NVH/Jlafe1qzdlokW9xRa89Co9Y+wLrlNkmOk7IG4A+mBDcekaQlxcayKdPi/kdKFlDLpF7CK65M8=
+	t=1714129810; cv=none; b=aJb+U4VRYDOx8q3O945UoccSJm33MfjeQ3zh3axddiIgO4MuORiPbooKeZqMYYOAGn1DkuMHZyi/h9odokCQyNMkfy435OOKQZ9eNBqWJOFHS8cLGj+u72z9NX+UqyC9M6Q54MvtG5Y3Abu/0Vw0nywcuXCOqRvQ2hMS+eECsCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714129805; c=relaxed/simple;
-	bh=C6zwMGNw1Pfmrr7no50l7uH5Ymdi1QlJcQQQ87iPgkw=;
+	s=arc-20240116; t=1714129810; c=relaxed/simple;
+	bh=JQTIe8JMxkNxe5JfmeBIbVWz9NGiNeER2iB56mvI2JA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WZTHCHPm042rFdU1Y0fbrpbXHGwy86HYmWCiFEvfEkFAZWxo//6pyET4xWaMeYlbDsrXbo8sJ7GtI8vj7kFHh3fafND5CjTOlmC4g0xQq5ApUofYxCGTNkPeFcJBsAfZeIYcl1AXeN1g0HHt+MHtPlgoDzyoBLoUzj3dL90EGak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TMIc2Elf; arc=none smtp.client-ip=192.198.163.11
+	 MIME-Version; b=opw2G6/Z+UF4801N9w99cw2SgmR3KHiea4w8QgC4Oj/nO74/Hb835FDTF1jeVTKVibl5iL/jgptlW7htnqzLs/X9u9nVHycmux+qHM2SAPhm2EplonSDvIjW3uOA+mL5gvJbiG3/zhtYOJHVm1+lIgF1I/0bDq/vOiBFUsCxn54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RTLRs/l+; arc=none smtp.client-ip=192.198.163.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714129804; x=1745665804;
+  t=1714129809; x=1745665809;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=C6zwMGNw1Pfmrr7no50l7uH5Ymdi1QlJcQQQ87iPgkw=;
-  b=TMIc2ElfWFv0IN7bPzdTlLYDQIxaQAkNqO84p3s7e5znxV2QiKMqXdI7
-   qtUEBL3JyFCvva88Ov2qeOUPAedKtNLX5WwB5XleVg4UXpsjaZTjpiwG/
-   igyHbq1puJR/fu6SiQdv/L7Ob0JoxxfNiQRY6v3d7nkFN85US8HR3bVNo
-   Kc9Be4gXj1BG8TJuITYzs/vBZ/ln34Pjtfwm2EgELZ0kr2AmK7K4d7/FA
-   iHw6Cxvil+ab1g9Ga/fk5w2+Q9cF3TSwx+4y8WFgrXoBTG8IZcWKtFx51
-   oQGIOOIeKvRcHtJb+3H8yP+zbxxMt/14SZcVmp8H8UDwEnmzjM7tfW6Mg
+  bh=JQTIe8JMxkNxe5JfmeBIbVWz9NGiNeER2iB56mvI2JA=;
+  b=RTLRs/l+llQEEVP7LHg3394BRU+g7KPkJtpuWPQ7O7KyifOLzNhlPru7
+   Gj0MTjyKmIY+aB/7ayUD94meKWO/c6Ce2Kv34MvUsmcQfPQ0gNVZGsMZ1
+   5szTkxH5A/FkyftSmoQU3oThx/2s0zpo78OAhUTMXV0xI19tQzktDtLym
+   6dh/T3qL6bj2nm2Ryp/tJNTvw1BMPrtuUJdtkXwYN7E4y8DxRqb66DKkJ
+   hWJ32k1DVuSvukq4WbTl5OqfR6PkN3ayoOgjj/8EgcpFnNN/9ZEGJ94F3
+   02lJRWXIOuWZTxwqAnY9It4gqTDvwh5/49Dshh6z4H5FZIbFaEHeoMng6
    Q==;
-X-CSE-ConnectionGUID: vX6aZOF3TLePOf5BbcEaUg==
-X-CSE-MsgGUID: qbd+KKHxQ361gO52+dbojg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20474059"
+X-CSE-ConnectionGUID: NyKx0v9vSemB51EDXFg4FA==
+X-CSE-MsgGUID: q8fXYOY2SDaxUlACQYtLbA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="20474068"
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="20474059"
+   d="scan'208";a="20474068"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 04:10:04 -0700
-X-CSE-ConnectionGUID: F79QqFACRQKhnxQq7r9pUw==
-X-CSE-MsgGUID: 7968Phl+SruEgmQlfrBD9A==
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2024 04:10:08 -0700
+X-CSE-ConnectionGUID: dNgowoCqTdqrrUIRnOLusw==
+X-CSE-MsgGUID: fhK8fq9ASAyJ8H6m2n3snA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,232,1708416000"; 
-   d="scan'208";a="30030866"
+   d="scan'208";a="30030901"
 Received: from unknown (HELO silpixa00400314.ger.corp.intel.com) ([10.237.222.216])
-  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 04:10:00 -0700
+  by fmviesa004.fm.intel.com with ESMTP; 26 Apr 2024 04:10:04 -0700
 From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 To: clm@fb.com,
 	josef@toxicpanda.com,
@@ -71,9 +71,9 @@ Cc: linux-btrfs@vger.kernel.org,
 	brian.will@intel.com,
 	weigang.li@intel.com,
 	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [RFC PATCH 1/6] Revert "crypto: testmgr - Remove zlib-deflate"
-Date: Fri, 26 Apr 2024 11:54:24 +0100
-Message-ID: <20240426110941.5456-2-giovanni.cabiddu@intel.com>
+Subject: [RFC PATCH 2/6] Revert "crypto: deflate - Remove zlib-deflate"
+Date: Fri, 26 Apr 2024 11:54:25 +0100
+Message-ID: <20240426110941.5456-3-giovanni.cabiddu@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
 References: <20240426110941.5456-1-giovanni.cabiddu@intel.com>
@@ -86,119 +86,170 @@ MIME-Version: 1.0
 Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
 Content-Transfer-Encoding: 8bit
 
-This reverts commit 30febae71c6182e0762dc7744737012b4f8e6a6d.
+This reverts commit 62a465c25e99b9a98259a6b7f5bb759f5296d501.
 ---
- crypto/testmgr.c | 10 +++++++
- crypto/testmgr.h | 75 ++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 85 insertions(+)
+ crypto/deflate.c | 61 ++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 44 insertions(+), 17 deletions(-)
 
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 00f5a6cf341a..ab904ab74bee 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -5733,6 +5733,16 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		.suite = {
- 			.hash = __VECS(xxhash64_tv_template)
- 		}
-+	}, {
-+		.alg = "zlib-deflate",
-+		.test = alg_test_comp,
-+		.fips_allowed = 1,
-+		.suite = {
-+			.comp = {
-+				.comp = __VECS(zlib_deflate_comp_tv_template),
-+				.decomp = __VECS(zlib_deflate_decomp_tv_template)
-+			}
-+		}
- 	}, {
- 		.alg = "zstd",
- 		.test = alg_test_comp,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 5350cfd9d325..71d87a2fd842 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -34752,6 +34752,81 @@ static const struct comp_testvec deflate_decomp_tv_template[] = {
- 	},
+diff --git a/crypto/deflate.c b/crypto/deflate.c
+index 6e31e0db0e86..b2a46f6dc961 100644
+--- a/crypto/deflate.c
++++ b/crypto/deflate.c
+@@ -39,20 +39,24 @@ struct deflate_ctx {
+ 	struct z_stream_s decomp_stream;
  };
  
-+static const struct comp_testvec zlib_deflate_comp_tv_template[] = {
-+	{
-+		.inlen	= 70,
-+		.outlen	= 44,
-+		.input	= "Join us now and share the software "
-+			"Join us now and share the software ",
-+		.output	= "\x78\x5e\xf3\xca\xcf\xcc\x53\x28"
-+			  "\x2d\x56\xc8\xcb\x2f\x57\x48\xcc"
-+			  "\x4b\x51\x28\xce\x48\x2c\x4a\x55"
-+			  "\x28\xc9\x48\x55\x28\xce\x4f\x2b"
-+			  "\x29\x07\x71\xbc\x08\x2b\x01\x00"
-+			  "\x7c\x65\x19\x3d",
-+	}, {
-+		.inlen	= 191,
-+		.outlen	= 129,
-+		.input	= "This document describes a compression method based on the DEFLATE"
-+			"compression algorithm.  This document defines the application of "
-+			"the DEFLATE algorithm to the IP Payload Compression Protocol.",
-+		.output	= "\x78\x5e\x5d\xce\x41\x0a\xc3\x30"
-+			  "\x0c\x04\xc0\xaf\xec\x0b\xf2\x87"
-+			  "\xd2\xa6\x50\xe8\xc1\x07\x7f\x40"
-+			  "\xb1\x95\x5a\x60\x5b\xc6\x56\x0f"
-+			  "\xfd\x7d\x93\x1e\x42\xe8\x51\xec"
-+			  "\xee\x20\x9f\x64\x20\x6a\x78\x17"
-+			  "\xae\x86\xc8\x23\x74\x59\x78\x80"
-+			  "\x10\xb4\xb4\xce\x63\x88\x56\x14"
-+			  "\xb6\xa4\x11\x0b\x0d\x8e\xd8\x6e"
-+			  "\x4b\x8c\xdb\x7c\x7f\x5e\xfc\x7c"
-+			  "\xae\x51\x7e\x69\x17\x4b\x65\x02"
-+			  "\xfc\x1f\xbc\x4a\xdd\xd8\x7d\x48"
-+			  "\xad\x65\x09\x64\x3b\xac\xeb\xd9"
-+			  "\xc2\x01\xc0\xf4\x17\x3c\x1c\x1c"
-+			  "\x7d\xb2\x52\xc4\xf5\xf4\x8f\xeb"
-+			  "\x6a\x1a\x34\x4f\x5f\x2e\x32\x45"
-+			  "\x4e",
-+	},
-+};
+-static int deflate_comp_init(struct deflate_ctx *ctx)
++static int deflate_comp_init(struct deflate_ctx *ctx, int format)
+ {
+ 	int ret = 0;
+ 	struct z_stream_s *stream = &ctx->comp_stream;
+ 
+ 	stream->workspace = vzalloc(zlib_deflate_workspacesize(
+-				    -DEFLATE_DEF_WINBITS, MAX_MEM_LEVEL));
++				    MAX_WBITS, MAX_MEM_LEVEL));
+ 	if (!stream->workspace) {
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+-	ret = zlib_deflateInit2(stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
+-				-DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL,
+-				Z_DEFAULT_STRATEGY);
++	if (format)
++		ret = zlib_deflateInit(stream, 3);
++	else
++		ret = zlib_deflateInit2(stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
++					-DEFLATE_DEF_WINBITS,
++					DEFLATE_DEF_MEMLEVEL,
++					Z_DEFAULT_STRATEGY);
+ 	if (ret != Z_OK) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -64,7 +68,7 @@ static int deflate_comp_init(struct deflate_ctx *ctx)
+ 	goto out;
+ }
+ 
+-static int deflate_decomp_init(struct deflate_ctx *ctx)
++static int deflate_decomp_init(struct deflate_ctx *ctx, int format)
+ {
+ 	int ret = 0;
+ 	struct z_stream_s *stream = &ctx->decomp_stream;
+@@ -74,7 +78,10 @@ static int deflate_decomp_init(struct deflate_ctx *ctx)
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+-	ret = zlib_inflateInit2(stream, -DEFLATE_DEF_WINBITS);
++	if (format)
++		ret = zlib_inflateInit(stream);
++	else
++		ret = zlib_inflateInit2(stream, -DEFLATE_DEF_WINBITS);
+ 	if (ret != Z_OK) {
+ 		ret = -EINVAL;
+ 		goto out_free;
+@@ -98,21 +105,21 @@ static void deflate_decomp_exit(struct deflate_ctx *ctx)
+ 	vfree(ctx->decomp_stream.workspace);
+ }
+ 
+-static int __deflate_init(void *ctx)
++static int __deflate_init(void *ctx, int format)
+ {
+ 	int ret;
+ 
+-	ret = deflate_comp_init(ctx);
++	ret = deflate_comp_init(ctx, format);
+ 	if (ret)
+ 		goto out;
+-	ret = deflate_decomp_init(ctx);
++	ret = deflate_decomp_init(ctx, format);
+ 	if (ret)
+ 		deflate_comp_exit(ctx);
+ out:
+ 	return ret;
+ }
+ 
+-static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
++static void *gen_deflate_alloc_ctx(struct crypto_scomp *tfm, int format)
+ {
+ 	struct deflate_ctx *ctx;
+ 	int ret;
+@@ -121,7 +128,7 @@ static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
+ 	if (!ctx)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ret = __deflate_init(ctx);
++	ret = __deflate_init(ctx, format);
+ 	if (ret) {
+ 		kfree(ctx);
+ 		return ERR_PTR(ret);
+@@ -130,11 +137,21 @@ static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
+ 	return ctx;
+ }
+ 
++static void *deflate_alloc_ctx(struct crypto_scomp *tfm)
++{
++	return gen_deflate_alloc_ctx(tfm, 0);
++}
 +
-+static const struct comp_testvec zlib_deflate_decomp_tv_template[] = {
-+	{
-+		.inlen	= 128,
-+		.outlen	= 191,
-+		.input	= "\x78\x9c\x5d\x8d\x31\x0e\xc2\x30"
-+			  "\x10\x04\xbf\xb2\x2f\xc8\x1f\x10"
-+			  "\x04\x09\x89\xc2\x85\x3f\x70\xb1"
-+			  "\x2f\xf8\x24\xdb\x67\xd9\x47\xc1"
-+			  "\xef\x49\x68\x12\x51\xae\x76\x67"
-+			  "\xd6\x27\x19\x88\x1a\xde\x85\xab"
-+			  "\x21\xf2\x08\x5d\x16\x1e\x20\x04"
-+			  "\x2d\xad\xf3\x18\xa2\x15\x85\x2d"
-+			  "\x69\xc4\x42\x83\x23\xb6\x6c\x89"
-+			  "\x71\x9b\xef\xcf\x8b\x9f\xcf\x33"
-+			  "\xca\x2f\xed\x62\xa9\x4c\x80\xff"
-+			  "\x13\xaf\x52\x37\xed\x0e\x52\x6b"
-+			  "\x59\x02\xd9\x4e\xe8\x7a\x76\x1d"
-+			  "\x02\x98\xfe\x8a\x87\x83\xa3\x4f"
-+			  "\x56\x8a\xb8\x9e\x8e\x5c\x57\xd3"
-+			  "\xa0\x79\xfa\x02\x2e\x32\x45\x4e",
-+		.output	= "This document describes a compression method based on the DEFLATE"
-+			"compression algorithm.  This document defines the application of "
-+			"the DEFLATE algorithm to the IP Payload Compression Protocol.",
-+	}, {
-+		.inlen	= 44,
-+		.outlen	= 70,
-+		.input	= "\x78\x9c\xf3\xca\xcf\xcc\x53\x28"
-+			  "\x2d\x56\xc8\xcb\x2f\x57\x48\xcc"
-+			  "\x4b\x51\x28\xce\x48\x2c\x4a\x55"
-+			  "\x28\xc9\x48\x55\x28\xce\x4f\x2b"
-+			  "\x29\x07\x71\xbc\x08\x2b\x01\x00"
-+			  "\x7c\x65\x19\x3d",
-+		.output	= "Join us now and share the software "
-+			"Join us now and share the software ",
-+	},
-+};
++static void *zlib_deflate_alloc_ctx(struct crypto_scomp *tfm)
++{
++	return gen_deflate_alloc_ctx(tfm, 1);
++}
 +
- /*
-  * LZO test vectors (null-terminated strings).
-  */
+ static int deflate_init(struct crypto_tfm *tfm)
+ {
+ 	struct deflate_ctx *ctx = crypto_tfm_ctx(tfm);
+ 
+-	return __deflate_init(ctx);
++	return __deflate_init(ctx, 0);
+ }
+ 
+ static void __deflate_exit(void *ctx)
+@@ -269,7 +286,7 @@ static struct crypto_alg alg = {
+ 	.coa_decompress  	= deflate_decompress } }
+ };
+ 
+-static struct scomp_alg scomp = {
++static struct scomp_alg scomp[] = { {
+ 	.alloc_ctx		= deflate_alloc_ctx,
+ 	.free_ctx		= deflate_free_ctx,
+ 	.compress		= deflate_scompress,
+@@ -279,7 +296,17 @@ static struct scomp_alg scomp = {
+ 		.cra_driver_name = "deflate-scomp",
+ 		.cra_module	 = THIS_MODULE,
+ 	}
+-};
++}, {
++	.alloc_ctx		= zlib_deflate_alloc_ctx,
++	.free_ctx		= deflate_free_ctx,
++	.compress		= deflate_scompress,
++	.decompress		= deflate_sdecompress,
++	.base			= {
++		.cra_name	= "zlib-deflate",
++		.cra_driver_name = "zlib-deflate-scomp",
++		.cra_module	 = THIS_MODULE,
++	}
++} };
+ 
+ static int __init deflate_mod_init(void)
+ {
+@@ -289,7 +316,7 @@ static int __init deflate_mod_init(void)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = crypto_register_scomp(&scomp);
++	ret = crypto_register_scomps(scomp, ARRAY_SIZE(scomp));
+ 	if (ret) {
+ 		crypto_unregister_alg(&alg);
+ 		return ret;
+@@ -301,7 +328,7 @@ static int __init deflate_mod_init(void)
+ static void __exit deflate_mod_fini(void)
+ {
+ 	crypto_unregister_alg(&alg);
+-	crypto_unregister_scomp(&scomp);
++	crypto_unregister_scomps(scomp, ARRAY_SIZE(scomp));
+ }
+ 
+ subsys_initcall(deflate_mod_init);
 -- 
 2.44.0
 
