@@ -1,76 +1,63 @@
-Return-Path: <linux-btrfs+bounces-4577-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4578-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B67048B4BDA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 14:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56EFB8B4D64
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 20:19:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA35F1C20E0A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 12:54:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5910E1C20C90
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 18:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6DC96BB37;
-	Sun, 28 Apr 2024 12:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0062174429;
+	Sun, 28 Apr 2024 18:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fBMV4B/I"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="J6ko6ECE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CA66A8DB
-	for <linux-btrfs@vger.kernel.org>; Sun, 28 Apr 2024 12:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8686E7351A;
+	Sun, 28 Apr 2024 18:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714308863; cv=none; b=XOSQFcdfk7S7hRae8CyiPtYmRBjNbUEm+yUGGxpwPdl49qSAYK20UKM61nMf7SZT8/pG8CBtjIyfcdZGuHghTNQtwOrLm26iYDaAiOKupt+NdGXNXTnP4lmWvbERHikWUsTT3gWkKDcHkB/pAzvi1iuuRriO3VYOTD6IhfMm1uQ=
+	t=1714328382; cv=none; b=Hmrf8+jKsPBPHh92zK+uUDpr+ZrmcqWe3SStY/Y4qWJO2aStWR+FP0Y+50DjgBzdJxzViiab+b/R7xqS6tz8214o/22aS3uiOEHdqpTjdUgd1IXClsQv86O51zNnkAG47oaiR1vXOltTjBM7fRKE8MSxColk72eJi1PdkEoSwiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714308863; c=relaxed/simple;
-	bh=e4GvHByfVPKZdNWa6lawORkUi/dUpn/3m19pmLdcUcc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=imb5Wsx8Dp6hu1BSZShnF81+4iEpsMM36KZO2SANS6yv6TsZblh8aRlRl8APM+jTq64Cg53PZmAyBO0P6dpibZeC0p4YyvLMpKmoX8d0VDLBIhA79tJkPRyByBWIATxp1c5Zk0uBGdRgTyQvanB6mhARjZJlx6nVdhXkpKSPMx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fBMV4B/I; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5724e69780bso3414385a12.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Apr 2024 05:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714308859; x=1714913659; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QWIqWAXvOZGUUEyaPl4m9BaL9TTohCeBv7pV6UpiPvA=;
-        b=fBMV4B/IGDqXhnvGLCBMKBd9NOTYvK9I2wP1fJpRT13zY3+zSgkIwa7hVp1MxrAFSu
-         ufBXRyq5XeMN3t9ZkWi/gZO/3mYuO/ORyIMPtBqaxRlbGiArIa5NiBo6rDy3QEKlHQCn
-         WJX/ITl+0zd9p90PauO4U5TiPxEuICpLQLfa90lQV5h4N6wQXy15rgRrQCc2eii1rJTx
-         pjlAp7TdNqK0831ZSOiLkPpqZEPeCxUlED5+FJRKlvkWHZt9sPILZGWlVdnh5ZXwRGFP
-         PLO+APTCZcwe3gzR0HKOpjBsbFkQa7Ipco4alk/YvrjCbqkPRlmRjpq/BibYVPSzhPtF
-         ML8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714308859; x=1714913659;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QWIqWAXvOZGUUEyaPl4m9BaL9TTohCeBv7pV6UpiPvA=;
-        b=OrPMga0MDei9KWgwVDsumEMyunjeUkUi9KDtxJybALxEKRNa/6jdLT317VcMnNK8rh
-         LK2TS2ufxsnLrn7xd/Urj+xJ/fsNppuT1lU6G3NHd7JpUDSYqRAKKOm4qA7VSsSYXpr9
-         edz8SUTyCCgs2vV0LCWT0J6U2+2oeejgqIrqauaGgGtwPDZBXlLldUpXQ/Xite4wJaFE
-         HAp4JmkAXuBGXTsgsTi1Vaj5lxWW0u0JsEvLVo5aSSblw0uGOO5S4LIq5ckLxlLPvYvn
-         98G58WjQ2fxaVm5nwT3TWrHzjo8qpsG7zImTmbvyI9gxIeeBUif/M27bcc98Ku2gppf/
-         yuag==
-X-Gm-Message-State: AOJu0YzgzOKKkWXfHM+TBxpPPwAC/4NCqArd+0QJ3g9Zf5mjOM4dPkug
-	EHauMNpRtYvnRMukeStwV73eGch2K7QuMNNhbUKs3DRVt1WPEcu6cVaspbJapzc=
-X-Google-Smtp-Source: AGHT+IHM8FhZ0K2RCjed/Hqiziz9BQeC9/HyFlaQJuM/NlIcgxe6FPoJ4kxdgbjZVfClbWfIirdT+g==
-X-Received: by 2002:a50:f61e:0:b0:56e:2a7d:827c with SMTP id c30-20020a50f61e000000b0056e2a7d827cmr5537931edn.18.1714308859064;
-        Sun, 28 Apr 2024 05:54:19 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id ew14-20020a056402538e00b0056e2432d10bsm12056743edb.70.2024.04.28.05.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Apr 2024 05:54:18 -0700 (PDT)
-Date: Sun, 28 Apr 2024 15:54:15 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: josef@toxicpanda.com
-Cc: linux-btrfs@vger.kernel.org
-Subject: [bug report] btrfs: clean up our handling of refs == 0 in snapshot
- delete
-Message-ID: <96789032-42fb-41c0-b16c-561ac00ca7c3@moroto.mountain>
+	s=arc-20240116; t=1714328382; c=relaxed/simple;
+	bh=KHWabH/Dh5y+pJMK4dr1ObQ1jU/r8N2vAS44IfI5sJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jkPRUCwsIHnVE8nwTiDy39+mjP/l3FGOF7NnVoloimVOddb0gYwL70pPDdIUhjQ6N20K6ckGjYMNtDwXCQQ/1W9pWa7gJpRpmsj9tCkOKybM0ZABfG1fG4J/nSP3YfJopNQeHYB1EtN03a8s02TKktJw7PQT1vziM5qa7uCZmxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=J6ko6ECE; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=H5pYDAKHCRpClX9jMWalas5W1Jyl6HgR4eTgrthlE7Q=; b=J6ko6ECEXnhOkftsRWA1k6Tac8
+	u3QkzK02ARkqO6LCfpvIfdV/f9xz00AFV6xxjdap8DtC2k/1RTODpuT0/QMMeDfR4Ctb1W6cw1IGr
+	aigdDKJzRHUMMmqxYtaT8pLvtdC/P4N69GuwhoUsBvTLiqY9fIG4axJUt+zWkawdqxS5OEMgdrwhN
+	nUkadOASticQ++AGUCETjl91IgX2RN4aFBd5PJjkaG5JUBeTLgECi2QhnrppKlfgXzA5rJYRiCS/l
+	kLk291G0X2gW96H+9gTTjyciXWaniL91BXjpnvWSc4Ug34s6Hkgo82yJ40GqzwDk9FbsxRtSWt9v6
+	M2fSKWOQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1s197e-006uuH-21;
+	Sun, 28 Apr 2024 18:19:34 +0000
+Date: Sun, 28 Apr 2024 19:19:34 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 4/7] swapon(2): open swap with O_EXCL
+Message-ID: <20240428181934.GV2118490@ZenIV>
+References: <20240427210920.GR2118490@ZenIV>
+ <20240427211128.GD1495312@ZenIV>
+ <CAHk-=wiag-Dn=7v0tX2UazhMTBzG7P42FkgLSsVc=rfN8_NC2A@mail.gmail.com>
+ <20240427234623.GS2118490@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,84 +66,175 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240427234623.GS2118490@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Hello Josef Bacik,
+On Sun, Apr 28, 2024 at 12:46:23AM +0100, Al Viro wrote:
+> On Sat, Apr 27, 2024 at 02:40:22PM -0700, Linus Torvalds wrote:
+> > On Sat, 27 Apr 2024 at 14:11, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > >
+> > > ... eliminating the need to reopen block devices so they could be
+> > > exclusively held.
+> > 
+> > This looks like a good change, but it raises the question of why we
+> > did it this odd way to begin with?
+> > 
+> > Is it just because O_EXCL without O_CREAT is kind of odd, and only has
+> > meaning for block devices?
+> > 
+> > Or is it just that before we used fiel pointers for block devices, the
+> > old model made more sense?
+> > 
+> > Anyway, I like it, it just makes me go "why didn't we do it that way
+> > originally?"
+> 
+> Exclusion for swap partitions:
+> 
+> commit 75e9c9e1bffbe4a1767172855296b94ccba28f71
+> Author: Alexander Viro <viro@math.psu.edu>
+> Date:   Mon Mar 4 22:56:47 2002 -0800
+> 
+>     [PATCH] death of is_mounted() and aother fixes
+> 
+> 
+> O_EXCL for block devices:
+> 
+> commit c366082d9ed0a0d3c46441d1b3fdf895d8e55ca9
+> Author: Andrew Morton <akpm@osdl.org>
+> Date:   Wed Aug 20 10:26:57 2003 -0700
+> 
+>     [PATCH] Allow O_EXCL on a block device to claim exclusive use.
+> 
+> IOW, O_EXCL hadn't been available at the time - it had been implemented
+> on top of bd_claim()/bd_release() introduced in the same earlier commit.
+> 
+> Switching swap exclusion to O_EXCL could've been done back in 2003 or
+> at any later point; it's just that swapon(2)/swapoff(2) is something that
+> rarely gets a look...
 
-Commit a07155f4e6b8 ("btrfs: clean up our handling of refs == 0 in
-snapshot delete") from Apr 19, 2024 (linux-next), leads to the
-following Smatch static checker warning:
+FWIW, pretty much the same can be done with zram - open with O_EXCL and to
+hell with reopening.  Guys, are there any objections to that?
 
-	fs/btrfs/extent-tree.c:5875 walk_up_proc()
-	warn: inconsistent returns '&eb->lock'.
-
-fs/btrfs/extent-tree.c
-    5766 static noinline int walk_up_proc(struct btrfs_trans_handle *trans,
-    5767                                  struct btrfs_root *root,
-    5768                                  struct btrfs_path *path,
-    5769                                  struct walk_control *wc)
-    5770 {
-    5771         struct btrfs_fs_info *fs_info = root->fs_info;
-    5772         int ret;
-    5773         int level = wc->level;
-    5774         struct extent_buffer *eb = path->nodes[level];
-    5775         u64 parent = 0;
-    5776 
-    5777         if (wc->stage == UPDATE_BACKREF) {
-    5778                 ASSERT(wc->shared_level >= level);
-    5779                 if (level < wc->shared_level)
-    5780                         goto out;
-    5781 
-    5782                 ret = find_next_key(path, level + 1, &wc->update_progress);
-    5783                 if (ret > 0)
-    5784                         wc->update_ref = 0;
-    5785 
-    5786                 wc->stage = DROP_REFERENCE;
-    5787                 wc->shared_level = -1;
-    5788                 path->slots[level] = 0;
-    5789 
-    5790                 /*
-    5791                  * check reference count again if the block isn't locked.
-    5792                  * we should start walking down the tree again if reference
-    5793                  * count is one.
-    5794                  */
-    5795                 if (!path->locks[level]) {
-    5796                         ASSERT(level > 0);
-    5797                         btrfs_tree_lock(eb);
-                                 ^^^^^^^^^^^^^^^^^^^^
-Takes the lock
-
-    5798                         path->locks[level] = BTRFS_WRITE_LOCK;
-    5799 
-    5800                         ret = btrfs_lookup_extent_info(trans, fs_info,
-    5801                                                        eb->start, level, 1,
-    5802                                                        &wc->refs[level],
-    5803                                                        &wc->flags[level],
-    5804                                                        NULL);
-    5805                         if (ret < 0) {
-    5806                                 btrfs_tree_unlock_rw(eb, path->locks[level]);
-
-These paths drop the lock
-
-    5807                                 path->locks[level] = 0;
-    5808                                 return ret;
-    5809                         }
-    5810                         if (unlikely(wc->refs[level] == 0)) {
-    5811                                 btrfs_err(fs_info, "Missing refs.");
-    5812                                 return -EUCLEAN;
-
-But this new return doesn't.
-
-    5813                         }
-    5814                         if (wc->refs[level] == 1) {
-    5815                                 btrfs_tree_unlock_rw(eb, path->locks[level]);
-    5816                                 path->locks[level] = 0;
-    5817                                 return 1;
-    5818                         }
-    5819                 }
-    5820         }
-    5821 
-    5822         /* wc->stage == DROP_REFERENCE */
-
-regards,
-dan carpenter
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index f0639df6cd18..d882a0c7b522 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -426,11 +426,10 @@ static void reset_bdev(struct zram *zram)
+ 	if (!zram->backing_dev)
+ 		return;
+ 
+-	fput(zram->bdev_file);
+ 	/* hope filp_close flush all of IO */
+ 	filp_close(zram->backing_dev, NULL);
+ 	zram->backing_dev = NULL;
+-	zram->bdev_file = NULL;
++	zram->bdev = NULL;
+ 	zram->disk->fops = &zram_devops;
+ 	kvfree(zram->bitmap);
+ 	zram->bitmap = NULL;
+@@ -473,10 +472,8 @@ static ssize_t backing_dev_store(struct device *dev,
+ 	size_t sz;
+ 	struct file *backing_dev = NULL;
+ 	struct inode *inode;
+-	struct address_space *mapping;
+ 	unsigned int bitmap_sz;
+ 	unsigned long nr_pages, *bitmap = NULL;
+-	struct file *bdev_file = NULL;
+ 	int err;
+ 	struct zram *zram = dev_to_zram(dev);
+ 
+@@ -497,15 +494,14 @@ static ssize_t backing_dev_store(struct device *dev,
+ 	if (sz > 0 && file_name[sz - 1] == '\n')
+ 		file_name[sz - 1] = 0x00;
+ 
+-	backing_dev = filp_open(file_name, O_RDWR|O_LARGEFILE, 0);
++	backing_dev = filp_open(file_name, O_RDWR|O_LARGEFILE|O_EXCL, 0);
+ 	if (IS_ERR(backing_dev)) {
+ 		err = PTR_ERR(backing_dev);
+ 		backing_dev = NULL;
+ 		goto out;
+ 	}
+ 
+-	mapping = backing_dev->f_mapping;
+-	inode = mapping->host;
++	inode = backing_dev->f_mapping->host;
+ 
+ 	/* Support only block device in this moment */
+ 	if (!S_ISBLK(inode->i_mode)) {
+@@ -513,14 +509,6 @@ static ssize_t backing_dev_store(struct device *dev,
+ 		goto out;
+ 	}
+ 
+-	bdev_file = bdev_file_open_by_dev(inode->i_rdev,
+-				BLK_OPEN_READ | BLK_OPEN_WRITE, zram, NULL);
+-	if (IS_ERR(bdev_file)) {
+-		err = PTR_ERR(bdev_file);
+-		bdev_file = NULL;
+-		goto out;
+-	}
+-
+ 	nr_pages = i_size_read(inode) >> PAGE_SHIFT;
+ 	bitmap_sz = BITS_TO_LONGS(nr_pages) * sizeof(long);
+ 	bitmap = kvzalloc(bitmap_sz, GFP_KERNEL);
+@@ -531,7 +519,7 @@ static ssize_t backing_dev_store(struct device *dev,
+ 
+ 	reset_bdev(zram);
+ 
+-	zram->bdev_file = bdev_file;
++	zram->bdev = I_BDEV(inode);
+ 	zram->backing_dev = backing_dev;
+ 	zram->bitmap = bitmap;
+ 	zram->nr_pages = nr_pages;
+@@ -544,9 +532,6 @@ static ssize_t backing_dev_store(struct device *dev,
+ out:
+ 	kvfree(bitmap);
+ 
+-	if (bdev_file)
+-		fput(bdev_file);
+-
+ 	if (backing_dev)
+ 		filp_close(backing_dev, NULL);
+ 
+@@ -587,7 +572,7 @@ static void read_from_bdev_async(struct zram *zram, struct page *page,
+ {
+ 	struct bio *bio;
+ 
+-	bio = bio_alloc(file_bdev(zram->bdev_file), 1, parent->bi_opf, GFP_NOIO);
++	bio = bio_alloc(zram->bdev, 1, parent->bi_opf, GFP_NOIO);
+ 	bio->bi_iter.bi_sector = entry * (PAGE_SIZE >> 9);
+ 	__bio_add_page(bio, page, PAGE_SIZE, 0);
+ 	bio_chain(bio, parent);
+@@ -703,7 +688,7 @@ static ssize_t writeback_store(struct device *dev,
+ 			continue;
+ 		}
+ 
+-		bio_init(&bio, file_bdev(zram->bdev_file), &bio_vec, 1,
++		bio_init(&bio, zram->bdev, &bio_vec, 1,
+ 			 REQ_OP_WRITE | REQ_SYNC);
+ 		bio.bi_iter.bi_sector = blk_idx * (PAGE_SIZE >> 9);
+ 		__bio_add_page(&bio, page, PAGE_SIZE, 0);
+@@ -785,7 +770,7 @@ static void zram_sync_read(struct work_struct *work)
+ 	struct bio_vec bv;
+ 	struct bio bio;
+ 
+-	bio_init(&bio, file_bdev(zw->zram->bdev_file), &bv, 1, REQ_OP_READ);
++	bio_init(&bio, zw->zram->bdev, &bv, 1, REQ_OP_READ);
+ 	bio.bi_iter.bi_sector = zw->entry * (PAGE_SIZE >> 9);
+ 	__bio_add_page(&bio, zw->page, PAGE_SIZE, 0);
+ 	zw->error = submit_bio_wait(&bio);
+diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
+index 37bf29f34d26..35e322144629 100644
+--- a/drivers/block/zram/zram_drv.h
++++ b/drivers/block/zram/zram_drv.h
+@@ -132,7 +132,7 @@ struct zram {
+ 	spinlock_t wb_limit_lock;
+ 	bool wb_limit_enable;
+ 	u64 bd_wb_limit;
+-	struct file *bdev_file;
++	struct block_device *bdev;
+ 	unsigned long *bitmap;
+ 	unsigned long nr_pages;
+ #endif
 
