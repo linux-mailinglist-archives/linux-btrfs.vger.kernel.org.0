@@ -1,110 +1,96 @@
-Return-Path: <linux-btrfs+bounces-4579-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4580-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 008768B4D81
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 20:46:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED0988B4D98
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 21:07:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AADB61F21309
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 18:46:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A4471C20A6B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 19:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4937A64CC0;
-	Sun, 28 Apr 2024 18:46:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD32745EF;
+	Sun, 28 Apr 2024 19:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OD+kJilx"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="FibtZezt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ACF1E4B0
-	for <linux-btrfs@vger.kernel.org>; Sun, 28 Apr 2024 18:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E0A64CC0;
+	Sun, 28 Apr 2024 19:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714329986; cv=none; b=XU2Fg8Xnsq4Y+94701GoDjMwcaG8FKVfVuNAUCoRGIiGLQ4GFy1dzWrOxG4DqmtO7LkbKyCGVwb46JScRgfvcx9sdcYWDBMCctxPn76Jr9OvlElIMDx1fpbECJj8lMYlA2Phe0Jsp91ToF7vAbsz8ZnJnJ710SxxF0FMEEs+858=
+	t=1714331233; cv=none; b=TA1jIDhoZ9uFaviKBoHzSKsdGFrs85nI6f8423PVTEpeoU6oZdhTWf8KK3l1MzHj0uRJHYcH27G+Q5LRbC6VBo8xgfRpp8RStxc7Sg0l6Vmzm5opwFr9Z73v998unk8Z0iOAgjC4B+m9+5QTNycSTubGQ7OlwY/gmJ+IQie1IRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714329986; c=relaxed/simple;
-	bh=UCyUGbVStsQ4PqcA5v9cIrp44bn4QBwbJ1SKpM09zOc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZXgR0vVR+GABziq7Y04tFEPgUzk4jjAxViMwwZ9lLBjzcc6ooOqRhweYMkBupXflNz4K9yWg53TBY4vTfr/Gd5UmfuC82uPm0Az3Y6r2nLpvS0ghR122hMM5Ji7Mhv+j+lusYrZm1q7n0QH3kqcwsvSbZVrpTElX/R6fiUxcyB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OD+kJilx; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e6acb39d4so4495898a12.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Apr 2024 11:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1714329983; x=1714934783; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jGHcgF+VuTvfty4lb510NeRVdXMmfzGhEByfgWFXZww=;
-        b=OD+kJilx9xZ9IEnsJx70FScd6agDuG5vRjpJ0LOL784/QHP39vMTjDMQvdRcOeThli
-         4WI/T/8IxkN0k4h+Y7p98Sq9F9JeqIOc61MG5SLD6Jj+ZKAUlL1hilvyPcJa9z0IRV61
-         ZND9lUMZ4R4febOMl3bHzZyfJ/6NkBW/fNS2w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714329983; x=1714934783;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jGHcgF+VuTvfty4lb510NeRVdXMmfzGhEByfgWFXZww=;
-        b=rO3ib7WhkIQynz+/QpN89h0SQ3OQp5jCJswKqrgcjRzkpZXXciE8MNEV3Kg4zvftEO
-         3az/nhe4nLq3H/kWmDUq7pjvAJQfisr+Y0KLpo57WULEK+UQFFDxliH1g/Uh8UQ8XJRt
-         nfOi3Qw66G+BsvdIE7CZkLptr9Yo0Dc+Nv4w7JV7Q0lsiDt4+uoUH6Cf59GwRliIQEMG
-         VZN8aY50quN/sVz2RKKwqocemvdtxLyGBtP+cqd9qpKP4OLSVTkTnqRASZVqodzcpOma
-         5FlR7EfulLCiWTqr/IvPa1auu1mg8WpcsTpQaBjKKFMYjqaoVTX8/ERSwMezjFz3CDSD
-         prSg==
-X-Forwarded-Encrypted: i=1; AJvYcCWeNg+itrrFYfNvewMbVGHKe7bX46Dal2MuzJodPSLd4FDHiPipN+CeQJO9UEkNOEuYelbJcCRfOzVeu51wRf6k2BCGcCrQBPxHGJo=
-X-Gm-Message-State: AOJu0YxxrusYXydiIG3O8PRQacoEVwn9cMVAHzoQS7Y4tKWYRwaVjM8n
-	ynSkQ+zLruxPE1bAKpsZj96Gr7hTmvG5rtSX1r5wdgF0eXIM/zLEVnkPp9pMtuO89fzrtN4c8bu
-	QK6fO9Q==
-X-Google-Smtp-Source: AGHT+IH4Pyb3T4GO7VnRrtSmrugmgEKX5avBsNNkTbRUbvXRQhWViPw0et5loUPhE7hszQuJmr7+gw==
-X-Received: by 2002:a50:955c:0:b0:572:46db:1670 with SMTP id v28-20020a50955c000000b0057246db1670mr5835966eda.20.1714329983240;
-        Sun, 28 Apr 2024 11:46:23 -0700 (PDT)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id q25-20020aa7cc19000000b0057203242f31sm8413969edt.11.2024.04.28.11.46.22
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Apr 2024 11:46:22 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-572669fd9f9so2049763a12.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 28 Apr 2024 11:46:22 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWc0VAJ+L1xR2eD+VyLHNasA4zvktD3LidLMDVIxSOrKmR3kTIPcJ4ZZFUCqy0YdyE+7noMksH4KQCZyPihFOukX32pZh8Ql9PidXE=
-X-Received: by 2002:a17:906:c7d6:b0:a58:a13b:37b with SMTP id
- dc22-20020a170906c7d600b00a58a13b037bmr5288677ejb.56.1714329981787; Sun, 28
- Apr 2024 11:46:21 -0700 (PDT)
+	s=arc-20240116; t=1714331233; c=relaxed/simple;
+	bh=b5cvrCbZsmN8LkAL+zAyl9pSrzy3Xs+uHy/uTuVSP2E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bic/SrVDlZsM9h9lbb1CU9PQry7eEaNBDkTKu5hmyk2lCwLy2jfhxrr6SmbOUmC7Z72ZuEv/Hi6fowQcKDrTHRf5QolyTUEPQeLk5p9XAYc6wESbywbv/OUrtCY/djgrsCbPdhC5RJ0SMmmeHbK7AorbhGaAW4QF7ZhYABlFT1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=FibtZezt; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=O9aBO2yF7wh1qXln0prXHRgrrREVpn8Q86UMRWAhbc4=; b=FibtZeztHmj1g72O1E31Vtuqxc
+	LGL2Tboc4G5/AlhKjfmA8s4CO5qEFWbege8rXS3r/nDOJWETPFQwR5KHByPpT+03sXS2OpbCEbXqV
+	IE2R+o5IcWOiRdLlE1OFtG6wOohBkCuvkbSF0m9+CkoWl4s2Jkn/32T/lKcZp1ugHdrMv/uT7/3OF
+	gbXDijtt24OAJyA6OKTcG/S8DWnsDj0Yen7L3fv+rQofio/ew4Qjrp3Q3fZ23Hd6wmAs1C26i6n6b
+	tbWLWh24pq2Yn1IifF0MBRAeXW6EGjgwhaydKYJEP+rrAKiZ1L9HeAJWoUMf4gQZ+smRSL4cTUkOk
+	/mxKjlkA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1s19rh-006w9Y-0h;
+	Sun, 28 Apr 2024 19:07:09 +0000
+Date: Sun, 28 Apr 2024 20:07:09 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 4/7] swapon(2): open swap with O_EXCL
+Message-ID: <20240428190709.GX2118490@ZenIV>
+References: <20240427210920.GR2118490@ZenIV>
+ <20240427211128.GD1495312@ZenIV>
+ <CAHk-=wiag-Dn=7v0tX2UazhMTBzG7P42FkgLSsVc=rfN8_NC2A@mail.gmail.com>
+ <20240427234623.GS2118490@ZenIV>
+ <20240428181934.GV2118490@ZenIV>
+ <CAHk-=wgPpeg1fj4zk0mvCmpYrrs0jVqrFrRONNFgA8Yq6nLTeg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240427210920.GR2118490@ZenIV> <20240427211128.GD1495312@ZenIV>
- <CAHk-=wiag-Dn=7v0tX2UazhMTBzG7P42FkgLSsVc=rfN8_NC2A@mail.gmail.com>
- <20240427234623.GS2118490@ZenIV> <20240428181934.GV2118490@ZenIV>
-In-Reply-To: <20240428181934.GV2118490@ZenIV>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 28 Apr 2024 11:46:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgPpeg1fj4zk0mvCmpYrrs0jVqrFrRONNFgA8Yq6nLTeg@mail.gmail.com>
-Message-ID: <CAHk-=wgPpeg1fj4zk0mvCmpYrrs0jVqrFrRONNFgA8Yq6nLTeg@mail.gmail.com>
-Subject: Re: [PATCH 4/7] swapon(2): open swap with O_EXCL
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
-	Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>, 
-	linux-btrfs@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgPpeg1fj4zk0mvCmpYrrs0jVqrFrRONNFgA8Yq6nLTeg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Sun, 28 Apr 2024 at 11:19, Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> FWIW, pretty much the same can be done with zram - open with O_EXCL and to
-> hell with reopening.  Guys, are there any objections to that?
+On Sun, Apr 28, 2024 at 11:46:05AM -0700, Linus Torvalds wrote:
+> On Sun, 28 Apr 2024 at 11:19, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > FWIW, pretty much the same can be done with zram - open with O_EXCL and to
+> > hell with reopening.  Guys, are there any objections to that?
+> 
+> Please do. The fewer of these strange "re-open block device" things we
+> have, the better.
+> 
+> I particularly dislike our "holder" logic, and this re-opening is one
+> source of nasty confusion, and if we could replace them all with just
+> the "O_EXCL uses the file itself as the holder", that would be
+> absolutely _lovely_.
 
-Please do. The fewer of these strange "re-open block device" things we
-have, the better.
+The tricky part is blk_holder_ops, and I'm no fonder of it than you are.
 
-I particularly dislike our "holder" logic, and this re-opening is one
-source of nasty confusion, and if we could replace them all with just
-the "O_EXCL uses the file itself as the holder", that would be
-absolutely _lovely_.
+Christoph, do you have any plans along those lines for swap devices?
+If they are not going to grow holder_ops, I'd say we should switch
+to O_EXCL open and be done with that; zram is in the same situation,
+AFAICS.
 
-                Linus
+Might be worth a topic at LSF, actually...
 
