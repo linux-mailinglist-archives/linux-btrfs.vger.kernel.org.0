@@ -1,65 +1,66 @@
-Return-Path: <linux-btrfs+bounces-4580-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4581-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED0988B4D98
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 21:07:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF7A58B4ED0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 01:41:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A4471C20A6B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 19:07:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53750280EFF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Apr 2024 23:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD32745EF;
-	Sun, 28 Apr 2024 19:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20591CD21;
+	Sun, 28 Apr 2024 23:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="FibtZezt"
+	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="sCZJJ3Kf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from mxex2.tik.uni-stuttgart.de (mxex2.tik.uni-stuttgart.de [129.69.192.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49E0A64CC0;
-	Sun, 28 Apr 2024 19:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2D78F59
+	for <linux-btrfs@vger.kernel.org>; Sun, 28 Apr 2024 23:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714331233; cv=none; b=TA1jIDhoZ9uFaviKBoHzSKsdGFrs85nI6f8423PVTEpeoU6oZdhTWf8KK3l1MzHj0uRJHYcH27G+Q5LRbC6VBo8xgfRpp8RStxc7Sg0l6Vmzm5opwFr9Z73v998unk8Z0iOAgjC4B+m9+5QTNycSTubGQ7OlwY/gmJ+IQie1IRA=
+	t=1714347651; cv=none; b=PmkfUeFJikc+AfBpP8cEJAyi/oa0q27/4jKxwbC3YaMttm/YcWPgcKmdegkyCtVCvREfqwZcVeCh6kbS2G4wmDcJBQSnj3GTL9Ez7Sk0D8caHYuBLBmc3ZJ29W7y6Fx2KVWcJvvomF0mLhZmvBPRFxDAUn3KXX1dz3yO/m04o+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714331233; c=relaxed/simple;
-	bh=b5cvrCbZsmN8LkAL+zAyl9pSrzy3Xs+uHy/uTuVSP2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bic/SrVDlZsM9h9lbb1CU9PQry7eEaNBDkTKu5hmyk2lCwLy2jfhxrr6SmbOUmC7Z72ZuEv/Hi6fowQcKDrTHRf5QolyTUEPQeLk5p9XAYc6wESbywbv/OUrtCY/djgrsCbPdhC5RJ0SMmmeHbK7AorbhGaAW4QF7ZhYABlFT1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=FibtZezt; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=O9aBO2yF7wh1qXln0prXHRgrrREVpn8Q86UMRWAhbc4=; b=FibtZeztHmj1g72O1E31Vtuqxc
-	LGL2Tboc4G5/AlhKjfmA8s4CO5qEFWbege8rXS3r/nDOJWETPFQwR5KHByPpT+03sXS2OpbCEbXqV
-	IE2R+o5IcWOiRdLlE1OFtG6wOohBkCuvkbSF0m9+CkoWl4s2Jkn/32T/lKcZp1ugHdrMv/uT7/3OF
-	gbXDijtt24OAJyA6OKTcG/S8DWnsDj0Yen7L3fv+rQofio/ew4Qjrp3Q3fZ23Hd6wmAs1C26i6n6b
-	tbWLWh24pq2Yn1IifF0MBRAeXW6EGjgwhaydKYJEP+rrAKiZ1L9HeAJWoUMf4gQZ+smRSL4cTUkOk
-	/mxKjlkA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s19rh-006w9Y-0h;
-	Sun, 28 Apr 2024 19:07:09 +0000
-Date: Sun, 28 Apr 2024 20:07:09 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-	Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 4/7] swapon(2): open swap with O_EXCL
-Message-ID: <20240428190709.GX2118490@ZenIV>
-References: <20240427210920.GR2118490@ZenIV>
- <20240427211128.GD1495312@ZenIV>
- <CAHk-=wiag-Dn=7v0tX2UazhMTBzG7P42FkgLSsVc=rfN8_NC2A@mail.gmail.com>
- <20240427234623.GS2118490@ZenIV>
- <20240428181934.GV2118490@ZenIV>
- <CAHk-=wgPpeg1fj4zk0mvCmpYrrs0jVqrFrRONNFgA8Yq6nLTeg@mail.gmail.com>
+	s=arc-20240116; t=1714347651; c=relaxed/simple;
+	bh=hQAnokbNxHMgBnu+13E7xjaSPQVXFxoX1uvKCAAuPR4=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=b2N6QkSTIL21LQutdbkfIswvKZS5ZcBxom6Pwu64E5aLD8I+KX0zsAmxUOgZS87voVOWzOCAwJpUQ9eyhsIi9KOinO6lXNNz8Vg3U1IgbhZ/b1dy9iHIY9UlKTa1nVftPZ0pZGj+p35875XSMwKVpxayTXkAYdZQ6rvq0J+jsXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=sCZJJ3Kf; arc=none smtp.client-ip=129.69.192.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rus.uni-stuttgart.de
+Received: from localhost (localhost [127.0.0.1])
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id 5879F60DFB
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 01:31:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
+	 h=x-mailer:user-agent:content-disposition:content-type
+	:content-type:mime-version:message-id:subject:subject:from:from
+	:date:date; s=dkim; i=@rus.uni-stuttgart.de; t=1714347094; x=
+	1716085895; bh=hQAnokbNxHMgBnu+13E7xjaSPQVXFxoX1uvKCAAuPR4=; b=s
+	CZJJ3KfHgru/uVkMVygAYiLHw1MPvakeD/Ncrcvhhx6MwAT1/2yEiXcmsAq+hW+S
+	shskxrdr41rlsC8h4BZo5EZHsFjiX689XUAU/QdT1g+kXykWzT6pEYZqs4KLRVNa
+	h0VD4S/geDyBPV9xbn0r3FeM7CL7eQxUe2ZXWdg7fI8T5Wjraqq8Pou7IDFW3ZPK
+	TNQzu+Z7VmjRJGA8/6BOZXGIKr9DoV0IqPfzZQvjewTT7YGrG0nLXdxqy0n597Fk
+	u2RFBCQpHX1kUVAHjmB9J2HrcpaPV3SxNoRx6luSQ+l2vi5fjRf+Pe12m1r1J4Sw
+	1U3A9ZJe08RX4VWZ/+fZQ==
+X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
+Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
+ by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
+ with ESMTP id ODmgAhL-A5hh for <linux-btrfs@vger.kernel.org>;
+ Mon, 29 Apr 2024 01:31:34 +0200 (CEST)
+Received: from authenticated client
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
+Date: Mon, 29 Apr 2024 01:31:34 +0200
+From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+To: linux-btrfs@vger.kernel.org
+Subject: 2 PB filesystem ok?
+Message-ID: <20240428233134.GA355040@tik.uni-stuttgart.de>
+Mail-Followup-To: linux-btrfs@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -68,29 +69,26 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgPpeg1fj4zk0mvCmpYrrs0jVqrFrRONNFgA8Yq6nLTeg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Mailer: smtpsend-20230822
 
-On Sun, Apr 28, 2024 at 11:46:05AM -0700, Linus Torvalds wrote:
-> On Sun, 28 Apr 2024 at 11:19, Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > FWIW, pretty much the same can be done with zram - open with O_EXCL and to
-> > hell with reopening.  Guys, are there any objections to that?
-> 
-> Please do. The fewer of these strange "re-open block device" things we
-> have, the better.
-> 
-> I particularly dislike our "holder" logic, and this re-opening is one
-> source of nasty confusion, and if we could replace them all with just
-> the "O_EXCL uses the file itself as the holder", that would be
-> absolutely _lovely_.
 
-The tricky part is blk_holder_ops, and I'm no fonder of it than you are.
+We are planing to use a Seagate Exos Corvault System with 2 PB as the
+storage backend for restic backup. It has some hundreds hard disks and
+exports them as a single virtual disk (via SAS). Linux sees only a big
+SCSI disk. This special RAID is all in hardware, no need for BTRFS
+software RAID.
 
-Christoph, do you have any plans along those lines for swap devices?
-If they are not going to grow holder_ops, I'd say we should switch
-to O_EXCL open and be done with that; zram is in the same situation,
-AFAICS.
+So far my biggest btrfs filesystems have only about 100 TB.
 
-Might be worth a topic at LSF, actually...
+Is 2 PB ok for one btrfs filesystem?
+
+
+-- 
+Ullrich Horlacher              Server und Virtualisierung
+Rechenzentrum TIK
+Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
+Allmandring 30a                Tel:    ++49-711-68565868
+70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
+REF:<20240428233134.GA355040@tik.uni-stuttgart.de>
 
