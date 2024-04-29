@@ -1,104 +1,100 @@
-Return-Path: <linux-btrfs+bounces-4627-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4628-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A9C18B5F4D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 18:44:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA3498B602B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 19:32:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CD8B1C21996
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 16:44:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C5D41F22B02
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 17:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4B7385C62;
-	Mon, 29 Apr 2024 16:43:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8E81272DB;
+	Mon, 29 Apr 2024 17:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RVtqP71h";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2oqCFjFu";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rU6iDkNQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vz7Al63S"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IJDkVh0Y";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/AEv3afU";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IJDkVh0Y";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/AEv3afU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C8F184D15
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 16:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4581272CB
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 17:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714409033; cv=none; b=ZCgfRor2v+gdkP5gmRaRRH4vX0AzsMvo7rq+04HoTayvW/5+3WYrbw+G0q2Z3oRO61sy5dALK/FNSWrUZZTMUBt0KJa/n71T6Rb52RVCn8biJtgl9+12vEsRQ4jMGokI74kN7qnEAWrbLFXnUhxeWuuZuv6xWnLKAEyUMqfzrrY=
+	t=1714411886; cv=none; b=NoOn/gWN0SKO8wsvajtMyvAghqOwWtC9fI6eZLjf6hvgA9AWEF+V45yoHfJZ3gb7QlQE4V00JUR3EHvXdWOOIZ46u3+Ubk/0D5rQDQgB69L9345DPB/L8NpSwmAqBSVUWILWxj+Oil0CMN1Ju7s+9fkTyQ52iD22b6tglkP/pZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714409033; c=relaxed/simple;
-	bh=XH8Cx56RkkDJgWmoDaOw4ogo/13UqvBrfQ0rBB3ky0U=;
+	s=arc-20240116; t=1714411886; c=relaxed/simple;
+	bh=+oM6+9UIACZUma0GQgWF/mFPrJy2NK4/2t52LBZvamo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=haH/ZNBlWybSW6aiQE+/zobndGuxX1A1RWePIIwtcNj+B4TEjoimkWuain4lOsB1MCFJ1VTy67v51r2tol7aKeJ6pvVDticwabXemXcA68GVOzDp6aRmAUSOxpYijP++yA+miqkZVsUCXmvtvJB6htiOXwPzuhtAa58TlAll5V8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RVtqP71h; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2oqCFjFu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rU6iDkNQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vz7Al63S; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=gINk92Z9lrUXyf7JaM5eZM9fx1NOhfrwGvTWAPVMacmz5urOctv4PHsKlpXMhRj/Q7l6ejadBtQfArK/HWJtPkOjCbPE05WbQg7b+lUHo8JC2XYri733uJDDOkTAAgT+Fq8uDM+FI/RFRgPqY8/0ej6E8Ei/wLjTHv4xv7EBj18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IJDkVh0Y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/AEv3afU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IJDkVh0Y; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/AEv3afU; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7C6581F385;
-	Mon, 29 Apr 2024 16:43:48 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 319863399C;
+	Mon, 29 Apr 2024 17:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714409030;
+	t=1714411883;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=svx7K1Kil5Y7USEvYNARe7yyQTUi7DU8m27i92KWoMg=;
-	b=RVtqP71hMP1o9UvxoUGwz1T8qA0/JCKWU8QB7EgC+Lp79CAGDaZC2dxTfrjxP5qlUjmApS
-	dak7dAGQNPJXT1FQxsOMdHXzlEKkNCEsTwmQzGv1UxGyZDcBkOuJuow3UspB/jPJ3FoGwO
-	791JrPLoCNmnQp8mWQ98S/7HIsoxFUk=
+	bh=y3qI1nNuL+68bSU78vKuBLG1tC5Fs1Yh/Xask/ydGgg=;
+	b=IJDkVh0YnDofh42x4skEwtek0LwcSYyYUfaVS28ppZR/4/M0SHh3Loe8Gg15e0qbsxQXrZ
+	BksAatfFjdjE6gAKTeKtaxjlvTTfMPTcshKjl6kRe8gLRbt5lIVfZY4XAHevqpW5qPagPw
+	G79Y4JKypOdgU28fAmChD/fFTtN7dEU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714409030;
+	s=susede2_ed25519; t=1714411883;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=svx7K1Kil5Y7USEvYNARe7yyQTUi7DU8m27i92KWoMg=;
-	b=2oqCFjFuMyYxo8EWRvFaniFCqUlhhFnvI7zfCmhKSuSdRWidXMBimgkmI3VaKhltpT1Dl8
-	3yc1jD39TLCrrgCg==
-Authentication-Results: smtp-out2.suse.de;
+	bh=y3qI1nNuL+68bSU78vKuBLG1tC5Fs1Yh/Xask/ydGgg=;
+	b=/AEv3afUaW8au5YklKjRZndgMcVdoRpgpg5GvQPZmRWpl6CVlJW9uGJI8TU6H4Dt4sMbzd
+	11A9vVpnadOxNMDA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714409028;
+	t=1714411883;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=svx7K1Kil5Y7USEvYNARe7yyQTUi7DU8m27i92KWoMg=;
-	b=rU6iDkNQwEuU2wubvpVK4xxAuNcQN7mvFWzvIX10s4pO9XtbAcIkYSWMxe1v/UkM/1gPn7
-	peVXGlu5k+GgKcXpn9CcMmaCa2hwwDj0Efj/Ytv9ghA8AF7YfJW9vSfem1l6ky+1YcM+eG
-	sAoMkgVAPtyy6QR2/JRDIkD1mP0Q9hY=
+	bh=y3qI1nNuL+68bSU78vKuBLG1tC5Fs1Yh/Xask/ydGgg=;
+	b=IJDkVh0YnDofh42x4skEwtek0LwcSYyYUfaVS28ppZR/4/M0SHh3Loe8Gg15e0qbsxQXrZ
+	BksAatfFjdjE6gAKTeKtaxjlvTTfMPTcshKjl6kRe8gLRbt5lIVfZY4XAHevqpW5qPagPw
+	G79Y4JKypOdgU28fAmChD/fFTtN7dEU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714409028;
+	s=susede2_ed25519; t=1714411883;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=svx7K1Kil5Y7USEvYNARe7yyQTUi7DU8m27i92KWoMg=;
-	b=vz7Al63SY0AHJjmXGtONDHgMRd0rBaGZnBJSr80l1CeycrY75kPQ7g1w8BZ/rsrPIy/CUQ
-	FnEG+ju/QlGNpuAg==
+	bh=y3qI1nNuL+68bSU78vKuBLG1tC5Fs1Yh/Xask/ydGgg=;
+	b=/AEv3afUaW8au5YklKjRZndgMcVdoRpgpg5GvQPZmRWpl6CVlJW9uGJI8TU6H4Dt4sMbzd
+	11A9vVpnadOxNMDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 67B6E138A7;
-	Mon, 29 Apr 2024 16:43:48 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DE8B138A7;
+	Mon, 29 Apr 2024 17:31:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nSziGETOL2b3NwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 29 Apr 2024 16:43:48 +0000
-Date: Mon, 29 Apr 2024 18:36:34 +0200
+	id nqQoB2vZL2avRwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 29 Apr 2024 17:31:23 +0000
+Date: Mon, 29 Apr 2024 19:24:05 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, boris@bur.io
-Subject: Re: [PATCH v2 2/2] btrfs: automatically remove the subvolume qgroup
-Message-ID: <20240429163634.GH2585@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: fix documentation build due to phony
+ contents.rst
+Message-ID: <20240429172405.GI2585@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1713519718.git.wqu@suse.com>
- <07e54de6747a5bf1e6a422cba80cbb06ba832cf4.1713519718.git.wqu@suse.com>
- <20240424124156.GO3492@twin.jikos.cz>
- <598907d6-77e0-4134-b709-51106dcfb2f8@gmx.com>
- <20240425123450.GP3492@twin.jikos.cz>
- <9df817bc-f3a8-4096-aabc-12044447a900@gmx.com>
+References: <8018c8dd90b26bcf9bdf1d76d731022b85147be1.1714086020.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -107,61 +103,90 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9df817bc-f3a8-4096-aabc-12044447a900@gmx.com>
+In-Reply-To: <8018c8dd90b26bcf9bdf1d76d731022b85147be1.1714086020.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
 X-Spam-Level: 
 X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.98%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmx.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4]
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
 
-On Fri, Apr 26, 2024 at 07:21:08AM +0930, Qu Wenruo wrote:
-> > btrfs subvolume delete 123
-> > btrfs subvolume sync 123
-> > btrfs qgroup remove 0/123
-> >
-> > but this needs to wait until the sync is finished and that is not
-> > expected for the subvolume delete command.
+On Fri, Apr 26, 2024 at 08:30:22AM +0930, Qu Wenruo wrote:
+> [BUG]
+> Since commit 8049446bb0ba ("btrfs-progs: docs: placeholder for
+> contents.rst file on older sphinx version"), on systems with much newer
+> sphinx-build, "make" would not work for Documentation directory:
 > 
-> That's the problem, and why doing it in user space has it limits.
+>  $ make clean-all && ./autogen.sh && ./configure --prefix=/usr/ && make -j12
+>  $ ls -alh Documentation/_build
+>  ls: cannot access 'Documentation/_build': No such file or directory
 > 
-> Furthermore, with drop_subtree_threshold or other qgroup operations
-> marking the qgroup inconsistent, you can not delete that qgroup at all,
-> until the next rescan.
+> The sphinx-build has a much newer version:
+> 
+>  $ sphinx-build --version
+>  sphinx-build 7.2.6
+> 
+> [CAUSE]
+> On systems which doesn't need the workaround, the phony target of
+> contents.rst seems to cause a dependency loop:
+> 
+>  GNU Make 4.4.1
+>  Built for x86_64-pc-linux-gnu
+>  Copyright (C) 1988-2023 Free Software Foundation, Inc.
+>  License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>
+>  This is free software: you are free to change and redistribute it.
+>  There is NO WARRANTY, to the extent permitted by law.
+>  Reading makefiles...
+>  Reading makefile 'Makefile'...
+>  Updating makefiles....
+>   Considering target file 'Makefile'.
+>    Looking for an implicit rule for 'Makefile'.
+>     Trying pattern rule '%:' with stem 'Makefile'.
+>    Found implicit rule '%:' for 'Makefile'.
+>   Finished prerequisites of target file 'Makefile'.
+>   No need to remake target 'Makefile'.
+>  Updating goal targets....
+>  Considering target file 'contents.rst'.
+>   File 'contents.rst' does not exist.
+>  Finished prerequisites of target file 'contents.rst'.
+>  Must remake target 'contents.rst'.
+>  Makefile:35: update target 'contents.rst' due to: target is .PHONY
+>  if [ "$(sphinx-build --version | cut -d' ' -f2)" \< "1.7.7" ]; then \
+>  	touch contents.rst; \
+>  fi
+>  Putting child 0x64ee81960130 (contents.rst) PID 66833 on the chain.
+>  Live child 0x64ee81960130 (contents.rst) PID 66833
+>  Reaping winning child 0x64ee81960130 PID 66833
+>  Removing child 0x64ee81960130 PID 66833 from chain.
+>  Successfully remade target file 'contents.rst'.
+> 
+> All the default make doing is just try to generate contents.rst, but
+> since we have much newer version, we won't generate the file at all.
+> 
+> [FIX]
+> Instead of a phony target, just move the contents.rst generation into
+> man page target so that we won't cause loop target on contents.rst.
+> 
+> Fixes: 8049446bb0ba ("btrfs-progs: docs: placeholder for contents.rst file on older sphinx version")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Ok so that makes it more complicated and better solved in kernel, with
-the compatibility issues mentioned in the other mail.
-
-> > It needs to be fixed but now
-> > I'm not sure this can be default in 6.9 as planned.
-> 
-> I'd say, you should not implement this feature without really
-> understanding the challenges in the first place.
-> 
-> And that's why I really prefer you send out non-trivial btrfs-progs for
-> review, other than pushing them directly into github repo.
-
-As discussed on slack, the development happens in git, for btrfs-progs
-the mails are overhead that does not pay off.
+Added to devel, thanks.
 
