@@ -1,79 +1,78 @@
-Return-Path: <linux-btrfs+bounces-4604-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4605-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C20858B5A27
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 15:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9A08B5A2A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 15:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A921DB26C16
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 13:30:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00F67B26C92
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 13:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAEF70CCB;
-	Mon, 29 Apr 2024 13:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDA6173177;
+	Mon, 29 Apr 2024 13:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="A4iskGXX"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="c6w2JPnl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9004D67A14
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 13:29:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E03E6F061
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 13:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714397399; cv=none; b=hzRDKEM/O25sWcJ/BRMZ83SEcK6BJ+Mus+8GHNLAUdnzILCjkqluuQqbqsJkyttKHqfoJwxsPyhErCCtft5p8mAv3OBmBSOGy7qyab4HktF6VDV+rCo5VOF9B0RcAh09Pmtl9e8ZN7Qt3N5wQFJTyQYyxCB6pAGcf8l0h80HsF4=
+	t=1714397401; cv=none; b=t0+K1ZpPkxUyIFT7GjcYFOIrkma88/zCx/HThcepOVA0TxVk6SPjqcVB4W0+2oP3kmuXaq2OgS1xdRvCvRvpYQuU85Nl0mBoQUkfo7sYfjErQj0QNPXa85rkz1w1X6/48fAAGh5huPUDJznTmO1Gb5tM+jbvwvYS2OQiRXWgRPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714397399; c=relaxed/simple;
-	bh=F3d6Qihv++wQKFxkvWTlrSEB4w4EXSa83G5JD6f4ARE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rrqz7PtPIytZXGSoB/12t1nts+ywZQmwYOfNV1VjLQOQfYeAjUc2hRRdNAk74e7nP9aVarfTBZpmBuKQUd03Fh3xUpD7Q3zVrxfPIFUjIsNtaL25jNXL9kppjnFVdsZuaohPFH3EAKxp65yPcN9DCCmFSLz8Fg4QDJIPZ2KNNS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=A4iskGXX; arc=none smtp.client-ip=209.85.128.177
+	s=arc-20240116; t=1714397401; c=relaxed/simple;
+	bh=YGbDPi0JuDlU0hgLtxPiEPepBwlaJupeGP3H60dU4cg=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Vf78gSk4Qoi7Vs5peIYUpZB0WuFcVW9gy0jeCDKXKxEweE4T98WEf6Ow4iMJJ8xSyHLUDtvfn/0bnRD7Jw8me8AcxWSRJv8L1n6hHGhbgVFLLzbG7NFbTYE3Pn4qzOHSQTxXLWOPuS1z+ciTVVEV8e5mesbQ//F2mUILmDLD3gE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=c6w2JPnl; arc=none smtp.client-ip=209.85.160.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6150670d372so33300567b3.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 06:29:57 -0700 (PDT)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-43a317135a5so35826531cf.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 06:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1714397396; x=1715002196; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1714397398; x=1715002198; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T6YgBjv6xHbxEq4dJcwOVpR1231RQWvmYFp/ZNwUhRM=;
-        b=A4iskGXXF0M1L1WIhsJULQ1P84hs56zQ8c+tuxGkLLQlLdvllihWqU9bzMT0RyaxGv
-         m+x+3dxhoi42/REJo5zMK/7sL1ht23YkWPWVpOkzBoKHc2ug3g6b9tykG/7zXsFKESRe
-         jr8PMMDKRSqvYS9oCVYfMlMSVt1ftRFfcz0hWG3T2AHBi+739XqFyOZLnGGaFchhW966
-         xSdUjdKqR5ohHp3Lcx2WCwRwMyIc2zbKooYST2gBPBA2YQd8vECMEeHi8pYWSAVRop+H
-         AssRR9DgKMue0ejtw9mex5vRYbePhSFEMOp/j1S/9O+9dToEFVlNuYocXQNSxfjx9PUD
-         hA9g==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6/RFmZaq/0kMptzjzbqc1Lm9EPYN2ceZgwlM7sZe9EE=;
+        b=c6w2JPnlYjaD9xfqaeRojxtgpe5HL0kyxAfl4VVq03s76+38F7WIE36Zi79UZylR5y
+         DPLo6Tc/S/+1Xc4m1gBw+Bd2vPrqFYKPvk+eDUjU4rNgpayXPd9b6fjApJTHBT44m7KY
+         z7j9/bv+sfMqLDZSuBKiPfTiGQvHrtUha+vQpCNDcNOro1+561qyzXXHdi7IWCppcJPS
+         CvWNgRSg/n6TNAGH3jAS4rSnzUWQAJVAhhl3BPjjV7A7YfePVWicDDEOSEApZBBWtVYb
+         GcPbclfpWJ8q1iC1QGKOlvcCNRsvwRmyLWUCp5nKzjPtb3eYchPEuLOn6JiQVZni4x7Q
+         punQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714397396; x=1715002196;
+        d=1e100.net; s=20230601; t=1714397398; x=1715002198;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T6YgBjv6xHbxEq4dJcwOVpR1231RQWvmYFp/ZNwUhRM=;
-        b=bPor3cw76Wb8oQAJ7wPeIHKmP/KqJOetAs4A9Q2bwAZylZpAYh4P0NmLow3l99KznJ
-         dW9JL34SLPuY5lGA7/1cJvBkz3UTvQD6uCHRPnp3EpLRtA4ztyoU65daWhtlR86UuUYz
-         jvnbZKP/Yg/YMDDuFl22E3Leo50LrwTHsTwiCppUNb3BNB4knXw3ZVIIQrhVKdjB2MT0
-         /mPPCQiNL4TRo/YccjgcRz4bhQbHJ18AIrWglwWsdcgOkQNM2MkkFVQEMwVqqw2+nGLp
-         W/WztOCRph+pBAzTLdPoOZ+t4fFfTsgVC2efUY3yPb50wquKQGd/TdEu+9UA/kFybQ1g
-         NjEg==
-X-Gm-Message-State: AOJu0YwLp5brpM0UkJKD7MslvqVgoczk3ZrrsmyDSBFvTLv6LI8+G0VD
-	XlXbIpq4Z9NJ9Dc03i6KFAXhdhPB0AQZjquGeyPI6kx6a3M3FGcHCJvFvblxSMcMXJ1GXEgTUSp
-	M
-X-Google-Smtp-Source: AGHT+IFodyB+9L1wOEzOh35UAb9Wnkrwcc7XidsaQnVX0b//7Jwp8qGT95CnpLWMYk1I0vDeDHV3Lg==
-X-Received: by 2002:a05:690c:630c:b0:61a:b548:93a8 with SMTP id ho12-20020a05690c630c00b0061ab54893a8mr7987552ywb.1.1714397396409;
-        Mon, 29 Apr 2024 06:29:56 -0700 (PDT)
+        bh=6/RFmZaq/0kMptzjzbqc1Lm9EPYN2ceZgwlM7sZe9EE=;
+        b=ZT6mMcO7RyOFvFLVMB75k1YC73acxeanExT5/iNrTKgvO1WgGzrPDW3iJ6Q0c5nVEg
+         GpSoVawdKwqmalEoecQQlPRlr0SIynTccN9TcQaDFQXWg3VYPnZIrB3JV3XWsMVJ6Uon
+         DkCEPmDmBQxoUxp64KqKLIzxkpiI9/S6mKGTnxGBVUT1xVdq0Dhl7/cr8jy6Ywh0LmJ/
+         Ed+eYR9Vsh457roOP5k6ffS1HZu0j5UF9R2mraj6JrUMyB0vWTCqzpLKapW6mXYUV7OQ
+         NNRtEr2e+SErI6e6EHMlSiVFNgcadpfX9NWmDfGtJ/Blso11V0SQfdw6KM3VeDkvDllO
+         KscA==
+X-Gm-Message-State: AOJu0YzWzz1hztRyWIhVqci5uUhsA/+zJ6+OiRftOUMc/pT+kg3+rhxS
+	QtVayrjU0yHnJP8AUqRqQp6L5VnbRKZ2i+nmIekTPfB1ul0d65VQPs0hdoqfS8OtR1EpYhgRMVw
+	T
+X-Google-Smtp-Source: AGHT+IGng+95vhaConYKbfVLDo4GlF5K3lPb7kqLNs0o3CvrIiVE63JjGAB3t642Brg10vVip8z47A==
+X-Received: by 2002:ac8:6f10:0:b0:43a:f50e:c7e6 with SMTP id bs16-20020ac86f10000000b0043af50ec7e6mr3470884qtb.10.1714397398025;
+        Mon, 29 Apr 2024 06:29:58 -0700 (PDT)
 Received: from localhost ([76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id t16-20020ac85310000000b0043718ece8dfsm10283013qtn.12.2024.04.29.06.29.56
+        by smtp.gmail.com with ESMTPSA id w2-20020ac84d02000000b00435163abba5sm10363602qtv.94.2024.04.29.06.29.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 06:29:56 -0700 (PDT)
+        Mon, 29 Apr 2024 06:29:57 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Cc: Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v2 01/15] btrfs: don't do find_extent_buffer in do_walk_down
-Date: Mon, 29 Apr 2024 09:29:36 -0400
-Message-ID: <bd8fa39f78cc0f691c5b947c46d95fba20948572.1714397222.git.josef@toxicpanda.com>
+Subject: [PATCH v2 02/15] btrfs: remove all extra btrfs_check_eb_owner() calls
+Date: Mon, 29 Apr 2024 09:29:37 -0400
+Message-ID: <5bda8e7bb4a93c39c3af31e0a7b62a7191aa572d.1714397223.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1714397222.git.josef@toxicpanda.com>
 References: <cover.1714397222.git.josef@toxicpanda.com>
@@ -85,67 +84,51 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We do find_extent_buffer(), and then if we don't find the eb in cache we
-call btrfs_find_create_tree_block(), which calls find_extent_buffer()
-first and then allocates the extent buffer.
+Currently we have a handful of btrfs_check_eb_owner() calls in various
+places and helpers that read extent buffers.  However we call this in
+the endio handler for every metadata block, so these extra checks are
+unnecessary, simply remove them from everywhere except the endio
+handler.
 
-The reason we're doing this is because if we don't find the extent
-buffer in cache we set reada = 1.  However this doesn't matter, because
-lower down we only trigger reada if !btrfs_buffer_uptodate(eb), which is
-what the case would be if we didn't find the extent buffer in cache and
-had to allocate it.
-
-Clean this up to simply call btrfs_find_create_tree_block(), and then
-use the fact that we're having to read the extent buffer off of disk to
-go ahead and kick off readahead.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ fs/btrfs/ctree.c   | 7 +------
+ fs/btrfs/disk-io.c | 4 ----
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 47d48233b592..d020ee1a6473 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5433,7 +5433,6 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
- 	struct btrfs_key key;
- 	struct extent_buffer *next;
- 	int level = wc->level;
--	int reada = 0;
- 	int ret = 0;
- 	bool need_account = false;
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 1a49b9232990..48aa14046343 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1551,12 +1551,7 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
+ 		if (ret) {
+ 			free_extent_buffer(tmp);
+ 			btrfs_release_path(p);
+-			return -EIO;
+-		}
+-		if (btrfs_check_eb_owner(tmp, btrfs_root_id(root))) {
+-			free_extent_buffer(tmp);
+-			btrfs_release_path(p);
+-			return -EUCLEAN;
++			return ret;
+ 		}
  
-@@ -5459,14 +5458,11 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
- 	btrfs_node_key_to_cpu(path->nodes[level], &check.first_key,
- 			      path->slots[level]);
- 
--	next = find_extent_buffer(fs_info, bytenr);
--	if (!next) {
--		next = btrfs_find_create_tree_block(fs_info, bytenr,
--				btrfs_root_id(root), level - 1);
--		if (IS_ERR(next))
--			return PTR_ERR(next);
--		reada = 1;
--	}
-+	next = btrfs_find_create_tree_block(fs_info, bytenr,
-+					    btrfs_root_id(root), level - 1);
-+	if (IS_ERR(next))
-+		return PTR_ERR(next);
-+
- 	btrfs_tree_lock(next);
- 
- 	ret = btrfs_lookup_extent_info(trans, fs_info, bytenr, level - 1, 1,
-@@ -5517,7 +5513,7 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
+ 		if (unlock_up)
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index e0bdf3ed2449..de71e793431d 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -635,10 +635,6 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 		free_extent_buffer_stale(buf);
+ 		return ERR_PTR(ret);
  	}
+-	if (btrfs_check_eb_owner(buf, check->owner_root)) {
+-		free_extent_buffer_stale(buf);
+-		return ERR_PTR(-EUCLEAN);
+-	}
+ 	return buf;
  
- 	if (!next) {
--		if (reada && level == 1)
-+		if (level == 1)
- 			reada_walk_down(trans, root, wc, path);
- 		next = read_tree_block(fs_info, bytenr, &check);
- 		if (IS_ERR(next)) {
+ }
 -- 
 2.43.0
 
