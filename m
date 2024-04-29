@@ -1,719 +1,250 @@
-Return-Path: <linux-btrfs+bounces-4644-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4645-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE998B65AF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Apr 2024 00:24:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5738B65BC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Apr 2024 00:29:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 110B62834DC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 22:24:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E425C1F22662
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2024 22:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD95199E9D;
-	Mon, 29 Apr 2024 22:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE93E194C8A;
+	Mon, 29 Apr 2024 22:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dHipAtgG";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dHipAtgG"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="S+8JFZXJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA27D199E96
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 22:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98969194C7A
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 22:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714429429; cv=none; b=i3sdRd7BVJHUDYYmfkGo2MGSyrLnK4yixPlIKnuWph2NblaHYDxawXOKzfeAZYqdNVl69Vac8PLcDC4KM9upYVZalfECw/dCzjudiLLcXPRIUbG3y7TrNpRg/xXRa/NAxnY7NvD/iXksLFqoIJJsGqzoNrSa+306TzXS+Yx0YMA=
+	t=1714429767; cv=none; b=L2zQcr9I1DF/hCuCB9gbgvoch/4fNgzAiJTW8IdBbNP9A6YbfjkybPXF9tC7nvlEz80sISNpU29Xe+qJqerQboGcZ1/rMbITw+VNq156Tai253aRFDRst9bEXdKwnNZX5j7k4V8y/UyAm6vFP1V1iDblAdDoVWFZqyNxx8tTNv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714429429; c=relaxed/simple;
-	bh=YQLHcQmNFEnbQN7DVs0aqb/QeheFpURrMMqEyPTO3Ag=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CSq6uXY2kPSIa3CZsa4cRiks+D862kPHiHAiY5QtaZy6cMK5uceZnaCObxhiGxcZKBcSf2z3FIbRe6sXBNAQnTUMle1O+gCeSuAyxoW3PC+bRG0HhxfN+MIRMBUazjId1vUn7xbBMAkrINqZweesqFc2r4NRHXzgLwYFtCfdpNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dHipAtgG; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dHipAtgG; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1714429767; c=relaxed/simple;
+	bh=uoZFgw2KtOLQh77eCuxijMYDSWaRyS+Cc4YXEmd4PSc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=diMzr0oTDuDZ0x4TcPcb+vp+EQIYnOm4QtvKTfCgExq6Xw2JganXK+KAI/ggKYBfr/iZ/ujwIPQB+WQI08yi5k5MfW7I5imsX3V2842cldR1lLX10Cnru9x6XiiemGAdD3P/SQyxjKPDxkJXg2C2Zi0r1+e6yIW/CSNo1C+gLgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=S+8JFZXJ; arc=none smtp.client-ip=209.85.208.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1211233B64
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 22:23:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714429425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bACQOIrXIEf0IDJ29gEenMxS5LLE/NG095zhE6V1ygQ=;
-	b=dHipAtgGVqaWewAxUBQz8R1da4Rmv6QuEdFombixsTd1otV4DaQn5KWSfhPNaxzkYgA7OG
-	Xa7EiMZWtzQjnNYaYRNo11P424tllf8UtvsYOvfDuoPYD/ZKNmhq26cfjFQ/KrpPldbAFH
-	Eb6OSvT3+ZIEG40b3PNmkZl2mUjFnHI=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714429425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bACQOIrXIEf0IDJ29gEenMxS5LLE/NG095zhE6V1ygQ=;
-	b=dHipAtgGVqaWewAxUBQz8R1da4Rmv6QuEdFombixsTd1otV4DaQn5KWSfhPNaxzkYgA7OG
-	Xa7EiMZWtzQjnNYaYRNo11P424tllf8UtvsYOvfDuoPYD/ZKNmhq26cfjFQ/KrpPldbAFH
-	Eb6OSvT3+ZIEG40b3PNmkZl2mUjFnHI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F38E9139DE
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 22:23:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aJJiJe8dMGb2GQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 22:23:43 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 9/9] btrfs: remove parameters duplicated from btrfs_file_extent
-Date: Tue, 30 Apr 2024 07:53:07 +0930
-Message-ID: <61a7e583dd76123ba2649039f0ae4d100f9b3d00.1714428940.git.wqu@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1714428940.git.wqu@suse.com>
-References: <cover.1714428940.git.wqu@suse.com>
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2e0b2ddc5d1so12661841fa.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2024 15:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1714429763; x=1715034563; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jd7cdwE2QiT8NF57naSj6tU12MFL03a9rfZv/c5f8q4=;
+        b=S+8JFZXJ6ebKjP7fjzZvhsFji366WNTt1WTwNREni6tlBAxB76LpqlsCjgC56krIav
+         mnrHgO6NKtosBoIAakU5pV0dGo5XajUWQgPCwImAXRyR1QidHbZqu4jKQBUGgOzPshAp
+         FMcIrE28Kf98oEi/Qd/6IF4cbqTgoBLm4HIQCGJfZYh268QHUlvlHgT86mQBd1nDz9e4
+         Tl7h9yGpQLhUx1ALSRzroYRhkxChWgydSwuwiVnEp9JsFvdnPDrainMXtdiF9Xi+s8j+
+         FGpD4/SztvSSYw7EfE5Z80TscapV0pgzcjQ1GRrn1yd9kaqfsq+eX1DoYoWsxBVmu3de
+         yCHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714429763; x=1715034563;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jd7cdwE2QiT8NF57naSj6tU12MFL03a9rfZv/c5f8q4=;
+        b=a2Z/hIg9KZNHDsjIEuQnovw37LKC8LZYKhkQRhAN7k5b7DOk6duQWSvjeGUyV7ezof
+         kSLHctLO4sFI8VcyWkCVGoH+rG0qC1A+G/J0cJn5g8rQWwxjGvrJDMSsetUL/6MmF1DO
+         JQC49ruF89fjIx7FLFWYHE3wum4oa/9UhF08s6s9cFPw+QJ96ozKIgN++pMKFJyCH+MN
+         KSchOkFSy7cSXHne1E+DL1sZXNlbmG1Q0URogDj+akd3b/FKQzQzWw5TwWxT6TycbvG9
+         i/Xyow/B/OaPZvmIWzEuwIT04opRJU5F0erVK4KUh3Tl0Tw7C+RK4ImasZMOLh/+2HKl
+         jpVw==
+X-Gm-Message-State: AOJu0Yzg/Vu+55dqLBFSaQN/UKigxD9SJ+6zj1VDWmuC+NXoCZyJ7fME
+	maCK4ytB58EQBtlo51dgYxRos2JXMjyfb9OUk8O720IS37ELKplEf6qSTQhL59o=
+X-Google-Smtp-Source: AGHT+IGHh9ooQbpWid71S39BUjs/F1JIXDktZds/Uj/MmwhJ1Zgjsi7PXUIoT78U6QGZJdO4BetioQ==
+X-Received: by 2002:a2e:a789:0:b0:2e0:9ab7:22af with SMTP id c9-20020a2ea789000000b002e09ab722afmr2239456ljf.53.1714429762707;
+        Mon, 29 Apr 2024 15:29:22 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id f25-20020a056a000b1900b006ed97aa7975sm19798621pfu.111.2024.04.29.15.29.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 15:29:22 -0700 (PDT)
+Message-ID: <5dc104ea-7dbb-41a5-b170-5beba73ce583@suse.com>
+Date: Tue, 30 Apr 2024 07:59:17 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] btrfs: slightly loose the requirement for qgroup
+ removal
+To: Boris Burkov <boris@bur.io>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1713519718.git.wqu@suse.com>
+ <3fa525bceeec6096ddd131da98036e07b9947c9c.1713519718.git.wqu@suse.com>
+ <20240429124741.GA21573@zen.localdomain>
+ <d817e2ba-799c-4c88-b5b6-98b8e7233687@gmx.com>
+ <20240429221956.GA36465@zen.localdomain>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20240429221956.GA36465@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_NONE(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 
-The following functions are using parameters which can fetch from
-structure btrfs_file_extent:
 
-- create_io_em()
-- btrfs_create_dio_extent()
-- can_nocow_extent()
-- btrfs_alloc_ordered_extent()
-- struct can_nocow_file_extent_args
 
-Also to do the cleanup, the function btrfs_alloc_ordered_extent() from
-ordered-data.[ch] needs to have the btrfs_file_extent declaration.
+在 2024/4/30 07:49, Boris Burkov 写道:
+> On Tue, Apr 30, 2024 at 07:30:58AM +0930, Qu Wenruo wrote:
+[...]
+>>
+>> I'm totally fine to do it conditional, although I'd also like to get
+>> feedback on dropping the numbers from parent qgroup (so we can do it for
+>> both qgroup and squota).
+>>
+>> Would the auto drop for parent numbers be a solution?
+> 
+> It's a good question. It never occurred to me until this discussion
+> today.
+> 
+> Thinking out loud, squotas as a feature is already "comfortable" with
+> unaccounted space. If you enable it on a live FS, all the extents that
+> already exist are unaccounted, so there is no objection on that front.
+> 
+> I think from a container isolation perspective, the current behavior
+> makes more sense than auto dropping from the parent on subvol delete to
+> allow cleaning up the qgroup.
+> 
+> Suppose we create a container wrapping parent qgroup with ID 1/100. To
+> enforce a limit on the container customer, we set some limit on 1/100.
+> Then we create a container subvol and put 0/svid0 into 1/100. The
+> customer gets to do stuff in the subvol. They are a fancy customer and
+> create a subvol svid1, snapshot it svid2, and delete svid1.
+> 
+> svid1 and svid2 are created in the subvol of id svid0, so auto-inheritance
+> ensured that 1/100 was the parent of 0/svid1 and 0/svid2, but now
+> deleting svid1 frees all that customer usage from 1/100 and allows the
+> customer to escape the limit. This is obviously quite undesirable, and
+> wouldn't require a particularly malicious customer to hit.
 
-Thankfully btrfs_inode.h would include ordered-data.h, so move the
-declaration of btrfs_file_extent to ordered-data.h.
+OK, got your point. Thanks for the detailed explanation, and I can not 
+come up with any alternative so far.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/btrfs_inode.h  |  19 +----
- fs/btrfs/file.c         |   2 +-
- fs/btrfs/inode.c        | 174 ++++++++++++++--------------------------
- fs/btrfs/ordered-data.c |  20 +++--
- fs/btrfs/ordered-data.h |  22 ++++-
- 5 files changed, 95 insertions(+), 142 deletions(-)
+So I'll make the qgroup drop to have an extra condition for squota, so 
+that a squota qgroup can only be dropped when:
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index f30afce4f6ca..a673dbe5a7d7 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -444,25 +444,8 @@ int btrfs_check_sector_csum(struct btrfs_fs_info *fs_info, struct page *page,
- bool btrfs_data_csum_ok(struct btrfs_bio *bbio, struct btrfs_device *dev,
- 			u32 bio_offset, struct bio_vec *bv);
- 
--/*
-- * A more access-friendly representation of btrfs_file_extent_item.
-- *
-- * Unused members are excluded.
-- */
--struct btrfs_file_extent {
--	u64 disk_bytenr;
--	u64 disk_num_bytes;
--
--	u64 num_bytes;
--	u64 ram_bytes;
--	u64 offset;
--
--	u8 compression;
--};
--
- noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
--			      u64 *orig_block_len,
--			      u64 *ram_bytes, struct btrfs_file_extent *file_extent,
-+			      struct btrfs_file_extent *file_extent,
- 			      bool nowait, bool strict);
- 
- void btrfs_del_delalloc_inode(struct btrfs_inode *inode);
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 102b5c17ece1..6aaeb9ee048d 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1104,7 +1104,7 @@ int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
- 						   &cached_state);
- 	}
- 	ret = can_nocow_extent(&inode->vfs_inode, lockstart, &num_bytes,
--			NULL, NULL, NULL, nowait, false);
-+			       NULL, nowait, false);
- 	if (ret <= 0)
- 		btrfs_drew_write_unlock(&root->snapshot_lock);
- 	else
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index d74249b70541..775a9ef82377 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -138,9 +138,6 @@ static noinline int run_delalloc_cow(struct btrfs_inode *inode,
- 				     u64 end, struct writeback_control *wbc,
- 				     bool pages_dirty);
- static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
--				       u64 len,
--				       u64 disk_num_bytes,
--				       u64 ram_bytes, int compress_type,
- 				       struct btrfs_file_extent *file_extent,
- 				       int type);
- 
-@@ -1167,12 +1164,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 	file_extent.offset = 0;
- 	file_extent.compression = async_extent->compress_type;
- 
--	em = create_io_em(inode, start,
--			  async_extent->ram_size,	/* len */
--			  ins.offset,			/* orig_block_len */
--			  async_extent->ram_size,	/* ram_bytes */
--			  async_extent->compress_type,
--			  &file_extent,
-+	em = create_io_em(inode, start, &file_extent,
- 			  BTRFS_ORDERED_COMPRESSED);
- 	if (IS_ERR(em)) {
- 		ret = PTR_ERR(em);
-@@ -1180,14 +1172,8 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 	}
- 	free_extent_map(em);
- 
--	ordered = btrfs_alloc_ordered_extent(inode, start,	/* file_offset */
--				       async_extent->ram_size,	/* num_bytes */
--				       async_extent->ram_size,	/* ram_bytes */
--				       ins.objectid,		/* disk_bytenr */
--				       ins.offset,		/* disk_num_bytes */
--				       0,			/* offset */
--				       1 << BTRFS_ORDERED_COMPRESSED,
--				       async_extent->compress_type);
-+	ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
-+				       1 << BTRFS_ORDERED_COMPRESSED);
- 	if (IS_ERR(ordered)) {
- 		btrfs_drop_extent_map_range(inode, start, end, false);
- 		ret = PTR_ERR(ordered);
-@@ -1435,11 +1421,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		file_extent.ram_bytes = ins.offset;
- 		file_extent.offset = 0;
- 		file_extent.compression = BTRFS_COMPRESS_NONE;
--		em = create_io_em(inode, start, ins.offset, /* len */
--				  ins.offset, /* orig_block_len */
--				  ram_size, /* ram_bytes */
--				  BTRFS_COMPRESS_NONE, /* compress_type */
--				  &file_extent,
-+		em = create_io_em(inode, start, &file_extent,
- 				  BTRFS_ORDERED_REGULAR /* type */);
- 		if (IS_ERR(em)) {
- 			ret = PTR_ERR(em);
-@@ -1447,10 +1429,8 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		}
- 		free_extent_map(em);
- 
--		ordered = btrfs_alloc_ordered_extent(inode, start, ram_size,
--					ram_size, ins.objectid, cur_alloc_size,
--					0, 1 << BTRFS_ORDERED_REGULAR,
--					BTRFS_COMPRESS_NONE);
-+		ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
-+					1 << BTRFS_ORDERED_REGULAR);
- 		if (IS_ERR(ordered)) {
- 			ret = PTR_ERR(ordered);
- 			goto out_drop_extent_cache;
-@@ -1835,13 +1815,11 @@ struct can_nocow_file_extent_args {
- 	 */
- 	bool free_path;
- 
--	/* Output fields. Only set when can_nocow_file_extent() returns 1. */
--
--	u64 disk_bytenr;
--	u64 disk_num_bytes;
--	u64 extent_offset;
--
--	/* Number of bytes that can be written to in NOCOW mode. */
-+	/*
-+	 * Output fields. Only set when can_nocow_file_extent() returns 1.
-+	 *
-+	 * Number of bytes that can be written to in NOCOW mode.
-+	 */
- 	u64 num_bytes;
- 
- 	/* The expected file extent for the NOCOW write. */
-@@ -1867,6 +1845,7 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_file_extent_item *fi;
- 	struct btrfs_root *csum_root;
-+	u64 block_start;
- 	u64 extent_end;
- 	u8 extent_type;
- 	int can_nocow = 0;
-@@ -1880,9 +1859,7 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 		goto out;
- 
- 	/* Can't access these fields unless we know it's not an inline extent. */
--	args->disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
--	args->disk_num_bytes = btrfs_file_extent_disk_num_bytes(leaf, fi);
--	args->extent_offset = btrfs_file_extent_offset(leaf, fi);
-+	args->file_extent.disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
- 
- 	if (!(inode->flags & BTRFS_INODE_NODATACOW) &&
- 	    extent_type == BTRFS_FILE_EXTENT_REG)
-@@ -1899,7 +1876,7 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 		goto out;
- 
- 	/* An explicit hole, must COW. */
--	if (args->disk_bytenr == 0)
-+	if (args->file_extent.disk_bytenr == 0)
- 		goto out;
- 
- 	/* Compressed/encrypted/encoded extents must be COWed. */
-@@ -1910,7 +1887,6 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 
- 	extent_end = btrfs_file_extent_end(path);
- 
--	args->file_extent.disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
- 	args->file_extent.disk_num_bytes = btrfs_file_extent_disk_num_bytes(leaf, fi);
- 	args->file_extent.ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
- 	args->file_extent.offset = btrfs_file_extent_offset(leaf, fi);
-@@ -1924,8 +1900,8 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	btrfs_release_path(path);
- 
- 	ret = btrfs_cross_ref_exist(root, btrfs_ino(inode),
--				    key->offset - args->extent_offset,
--				    args->disk_bytenr, args->strict, path);
-+				    key->offset - args->file_extent.offset,
-+				    args->file_extent.disk_bytenr, args->strict, path);
- 	WARN_ON_ONCE(ret > 0 && is_freespace_inode);
- 	if (ret != 0)
- 		goto out;
-@@ -1946,8 +1922,6 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	    atomic_read(&root->snapshot_force_cow))
- 		goto out;
- 
--	args->disk_bytenr += args->extent_offset;
--	args->disk_bytenr += args->start - key->offset;
- 	args->num_bytes = min(args->end + 1, extent_end) - args->start;
- 
- 	args->file_extent.num_bytes = args->num_bytes;
-@@ -1957,10 +1931,11 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	 * Force COW if csums exist in the range. This ensures that csums for a
- 	 * given extent are either valid or do not exist.
- 	 */
-+	block_start = args->file_extent.disk_bytenr + args->file_extent.num_bytes;
- 
--	csum_root = btrfs_csum_root(root->fs_info, args->disk_bytenr);
--	ret = btrfs_lookup_csums_list(csum_root, args->disk_bytenr,
--				      args->disk_bytenr + args->num_bytes - 1,
-+	csum_root = btrfs_csum_root(root->fs_info, block_start);
-+	ret = btrfs_lookup_csums_list(csum_root, block_start,
-+				      block_start + args->num_bytes - 1,
- 				      NULL, nowait);
- 	WARN_ON_ONCE(ret > 0 && is_freespace_inode);
- 	if (ret != 0)
-@@ -2018,7 +1993,6 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		struct btrfs_file_extent_item *fi;
- 		struct extent_buffer *leaf;
- 		u64 extent_end;
--		u64 ram_bytes;
- 		u64 nocow_end;
- 		int extent_type;
- 		bool is_prealloc;
-@@ -2097,7 +2071,6 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 			ret = -EUCLEAN;
- 			goto error;
- 		}
--		ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
- 		extent_end = btrfs_file_extent_end(path);
- 
- 		/*
-@@ -2117,7 +2090,8 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 			goto must_cow;
- 
- 		ret = 0;
--		nocow_bg = btrfs_inc_nocow_writers(fs_info, nocow_args.disk_bytenr);
-+		nocow_bg = btrfs_inc_nocow_writers(fs_info,
-+				nocow_args.file_extent.disk_bytenr);
- 		if (!nocow_bg) {
- must_cow:
- 			/*
-@@ -2158,9 +2132,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		if (is_prealloc) {
- 			struct extent_map *em;
- 
--			em = create_io_em(inode, cur_offset, nocow_args.num_bytes,
--					  nocow_args.disk_num_bytes, /* orig_block_len */
--					  ram_bytes, BTRFS_COMPRESS_NONE,
-+			em = create_io_em(inode, cur_offset,
- 					  &nocow_args.file_extent,
- 					  BTRFS_ORDERED_PREALLOC);
- 			if (IS_ERR(em)) {
-@@ -2172,12 +2144,9 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		}
- 
- 		ordered = btrfs_alloc_ordered_extent(inode, cur_offset,
--				nocow_args.num_bytes, nocow_args.num_bytes,
--				nocow_args.disk_bytenr, nocow_args.num_bytes, 0,
--				is_prealloc
--				? (1 << BTRFS_ORDERED_PREALLOC)
--				: (1 << BTRFS_ORDERED_NOCOW),
--				BTRFS_COMPRESS_NONE);
-+				&nocow_args.file_extent,
-+				is_prealloc ? (1 << BTRFS_ORDERED_PREALLOC) :
-+				(1 << BTRFS_ORDERED_NOCOW));
- 		btrfs_dec_nocow_writers(nocow_bg);
- 		if (IS_ERR(ordered)) {
- 			if (is_prealloc) {
-@@ -6965,19 +6934,15 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
- static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
- 						  struct btrfs_dio_data *dio_data,
- 						  const u64 start,
--						  const u64 len,
--						  const u64 orig_block_len,
--						  const u64 ram_bytes,
--						  const int type,
--						  struct btrfs_file_extent *file_extent)
-+						  struct btrfs_file_extent *file_extent,
-+						  const int type)
- {
- 	struct extent_map *em = NULL;
- 	struct btrfs_ordered_extent *ordered;
-+	struct btrfs_file_extent tmp = { 0 };
- 
- 	if (type != BTRFS_ORDERED_NOCOW) {
--		em = create_io_em(inode, start, len,
--				  orig_block_len, ram_bytes,
--				  BTRFS_COMPRESS_NONE, /* compress_type */
-+		em = create_io_em(inode, start,
- 				  file_extent, type);
- 		if (IS_ERR(em))
- 			goto out;
-@@ -7003,18 +6968,21 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
- 	 * routine to handle NOCOW/PREALLOC splits, meanwhile result nothing
- 	 * different.
- 	 */
--	ordered = btrfs_alloc_ordered_extent(inode, start, len, len,
--					     file_extent->disk_bytenr +
--					     file_extent->offset,
--					     len, 0,
-+	tmp.disk_bytenr = file_extent->disk_bytenr + file_extent->offset;
-+	tmp.disk_num_bytes = file_extent->num_bytes;
-+	tmp.num_bytes = file_extent->num_bytes;
-+	tmp.ram_bytes = file_extent->num_bytes;
-+	tmp.offset = 0;
-+	tmp.compression = file_extent->compression;
-+	ordered = btrfs_alloc_ordered_extent(inode, start,
-+					     &tmp,
- 					     (1 << type) |
--					     (1 << BTRFS_ORDERED_DIRECT),
--					     BTRFS_COMPRESS_NONE);
-+					     (1 << BTRFS_ORDERED_DIRECT));
- 	if (IS_ERR(ordered)) {
- 		if (em) {
- 			free_extent_map(em);
- 			btrfs_drop_extent_map_range(inode, start,
--						    start + len - 1, false);
-+				start + file_extent->num_bytes - 1, false);
- 		}
- 		em = ERR_CAST(ordered);
- 	} else {
-@@ -7057,10 +7025,8 @@ static struct extent_map *btrfs_new_extent_direct(struct btrfs_inode *inode,
- 	file_extent.ram_bytes = ins.offset;
- 	file_extent.offset = 0;
- 	file_extent.compression = BTRFS_COMPRESS_NONE;
--	em = btrfs_create_dio_extent(inode, dio_data, start, ins.offset,
--				     ins.offset,
--				     ins.offset, BTRFS_ORDERED_REGULAR,
--				     &file_extent);
-+	em = btrfs_create_dio_extent(inode, dio_data, start,
-+				     &file_extent, BTRFS_ORDERED_REGULAR);
- 	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
- 	if (IS_ERR(em))
- 		btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset,
-@@ -7088,9 +7054,6 @@ static bool btrfs_extent_readonly(struct btrfs_fs_info *fs_info, u64 bytenr)
-  * @offset:	File offset
-  * @len:	The length to write, will be updated to the nocow writeable
-  *		range
-- * @orig_start:	(optional) Return the original file offset of the file extent
-- * @orig_len:	(optional) Return the original on-disk length of the file extent
-- * @ram_bytes:	(optional) Return the ram_bytes of the file extent
-  * @strict:	if true, omit optimizations that might force us into unnecessary
-  *		cow. e.g., don't trust generation number.
-  *
-@@ -7103,8 +7066,7 @@ static bool btrfs_extent_readonly(struct btrfs_fs_info *fs_info, u64 bytenr)
-  *	 any ordered extents.
-  */
- noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
--			      u64 *orig_block_len,
--			      u64 *ram_bytes, struct btrfs_file_extent *file_extent,
-+			      struct btrfs_file_extent *file_extent,
- 			      bool nowait, bool strict)
- {
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
-@@ -7155,8 +7117,6 @@ noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
- 
- 	fi = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
- 	found_type = btrfs_file_extent_type(leaf, fi);
--	if (ram_bytes)
--		*ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
- 
- 	nocow_args.start = offset;
- 	nocow_args.end = offset + *len - 1;
-@@ -7174,7 +7134,7 @@ noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
- 	}
- 
- 	ret = 0;
--	if (btrfs_extent_readonly(fs_info, nocow_args.disk_bytenr))
-+	if (btrfs_extent_readonly(fs_info, nocow_args.file_extent.disk_bytenr))
- 		goto out;
- 
- 	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATACOW) &&
-@@ -7190,8 +7150,6 @@ noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
- 		}
- 	}
- 
--	if (orig_block_len)
--		*orig_block_len = nocow_args.disk_num_bytes;
- 	if (file_extent)
- 		memcpy(file_extent, &nocow_args.file_extent,
- 		       sizeof(struct btrfs_file_extent));
-@@ -7298,9 +7256,6 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
- 
- /* The callers of this must take lock_extent() */
- static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
--				       u64 len,
--				       u64 disk_num_bytes,
--				       u64 ram_bytes, int compress_type,
- 				       struct btrfs_file_extent *file_extent,
- 				       int type)
- {
-@@ -7322,25 +7277,25 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- 	switch (type) {
- 	case BTRFS_ORDERED_PREALLOC:
- 		/* We're only referring part of a larger preallocated extent. */
--		ASSERT(len <= ram_bytes);
-+		ASSERT(file_extent->num_bytes <= file_extent->ram_bytes);
- 		break;
- 	case BTRFS_ORDERED_REGULAR:
- 		/* COW results a new extent matching our file extent size. */
--		ASSERT(disk_num_bytes == len);
--		ASSERT(ram_bytes == len);
-+		ASSERT(file_extent->disk_num_bytes == file_extent->num_bytes);
-+		ASSERT(file_extent->ram_bytes == file_extent->num_bytes);
- 
- 		/* Since it's a new extent, we should not have any offset. */
- 		ASSERT(file_extent->offset == 0);
- 		break;
- 	case BTRFS_ORDERED_COMPRESSED:
- 		/* Must be compressed. */
--		ASSERT(compress_type != BTRFS_COMPRESS_NONE);
-+		ASSERT(file_extent->compression != BTRFS_COMPRESS_NONE);
- 
- 		/*
- 		 * Encoded write can make us to refer to part of the
- 		 * uncompressed extent.
- 		 */
--		ASSERT(len <= ram_bytes);
-+		ASSERT(file_extent->num_bytes <= file_extent->ram_bytes);
- 		break;
- 	}
- 
-@@ -7349,15 +7304,15 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- 		return ERR_PTR(-ENOMEM);
- 
- 	em->start = start;
--	em->len = len;
-+	em->len = file_extent->num_bytes;
- 	em->disk_bytenr = file_extent->disk_bytenr;
--	em->disk_num_bytes = disk_num_bytes;
--	em->ram_bytes = ram_bytes;
-+	em->disk_num_bytes = file_extent->disk_num_bytes;
-+	em->ram_bytes = file_extent->ram_bytes;
- 	em->generation = -1;
- 	em->offset = file_extent->offset;
- 	em->flags |= EXTENT_FLAG_PINNED;
- 	if (type == BTRFS_ORDERED_COMPRESSED)
--		extent_map_set_compression(em, compress_type);
-+		extent_map_set_compression(em, file_extent->compression);
- 
- 	ret = btrfs_replace_extent_map_range(inode, em, true);
- 	if (ret) {
-@@ -7381,7 +7336,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
- 	struct btrfs_file_extent file_extent = { 0 };
- 	struct extent_map *em = *map;
- 	int type;
--	u64 block_start, orig_block_len, ram_bytes;
-+	u64 block_start;
- 	struct btrfs_block_group *bg;
- 	bool can_nocow = false;
- 	bool space_reserved = false;
-@@ -7409,7 +7364,6 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
- 		block_start = extent_map_block_start(em) + (start - em->start);
- 
- 		if (can_nocow_extent(inode, start, &len,
--				     &orig_block_len, &ram_bytes,
- 				     &file_extent, false, false) == 1) {
- 			bg = btrfs_inc_nocow_writers(fs_info, block_start);
- 			if (bg)
-@@ -7435,10 +7389,8 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
- 		}
- 		space_reserved = true;
- 
--		em2 = btrfs_create_dio_extent(BTRFS_I(inode), dio_data, start, len,
--					      orig_block_len,
--					      ram_bytes, type,
--					      &file_extent);
-+		em2 = btrfs_create_dio_extent(BTRFS_I(inode), dio_data, start,
-+					      &file_extent, type);
- 		btrfs_dec_nocow_writers(bg);
- 		if (type == BTRFS_ORDERED_PREALLOC) {
- 			free_extent_map(em);
-@@ -10334,21 +10286,17 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
- 	file_extent.ram_bytes = ram_bytes;
- 	file_extent.offset = encoded->unencoded_offset;
- 	file_extent.compression = compression;
--	em = create_io_em(inode, start, num_bytes,
--			  ins.offset, ram_bytes, compression,
--			  &file_extent, BTRFS_ORDERED_COMPRESSED);
-+	em = create_io_em(inode, start, &file_extent,
-+			  BTRFS_ORDERED_COMPRESSED);
- 	if (IS_ERR(em)) {
- 		ret = PTR_ERR(em);
- 		goto out_free_reserved;
- 	}
- 	free_extent_map(em);
- 
--	ordered = btrfs_alloc_ordered_extent(inode, start, num_bytes, ram_bytes,
--				       ins.objectid, ins.offset,
--				       encoded->unencoded_offset,
-+	ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
- 				       (1 << BTRFS_ORDERED_ENCODED) |
--				       (1 << BTRFS_ORDERED_COMPRESSED),
--				       compression);
-+				       (1 << BTRFS_ORDERED_COMPRESSED));
- 	if (IS_ERR(ordered)) {
- 		btrfs_drop_extent_map_range(inode, start, end, false);
- 		ret = PTR_ERR(ordered);
-@@ -10666,7 +10614,7 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 		free_extent_map(em);
- 		em = NULL;
- 
--		ret = can_nocow_extent(inode, start, &len, NULL, NULL, NULL, false, true);
-+		ret = can_nocow_extent(inode, start, &len, NULL, false, true);
- 		if (ret < 0) {
- 			goto out;
- 		} else if (ret) {
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 03b2f646b2f9..5a7fee6fb051 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -247,12 +247,15 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
-  *
-  * @inode:           Inode that this extent is for.
-  * @file_offset:     Logical offset in file where the extent starts.
-+ * @flags:           Flags specifying type of extent (1 << BTRFS_ORDERED_*).
-+ *
-+ * The following members are from @file_extent:
-+ *
-  * @num_bytes:       Logical length of extent in file.
-  * @ram_bytes:       Full length of unencoded data.
-  * @disk_bytenr:     Offset of extent on disk.
-  * @disk_num_bytes:  Size of extent on disk.
-  * @offset:          Offset into unencoded data where file data starts.
-- * @flags:           Flags specifying type of extent (1 << BTRFS_ORDERED_*).
-  * @compress_type:   Compression algorithm used for data.
-  *
-  * Most of these parameters correspond to &struct btrfs_file_extent_item. The
-@@ -263,17 +266,20 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
-  */
- struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
- 			struct btrfs_inode *inode, u64 file_offset,
--			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			u64 disk_num_bytes, u64 offset, unsigned long flags,
--			int compress_type)
-+			struct btrfs_file_extent *file_extent,
-+			unsigned long flags)
- {
- 	struct btrfs_ordered_extent *entry;
- 
- 	ASSERT((flags & ~BTRFS_ORDERED_TYPE_FLAGS) == 0);
- 
--	entry = alloc_ordered_extent(inode, file_offset, num_bytes, ram_bytes,
--				     disk_bytenr, disk_num_bytes, offset, flags,
--				     compress_type);
-+	entry = alloc_ordered_extent(inode, file_offset,
-+				     file_extent->num_bytes,
-+				     file_extent->ram_bytes,
-+				     file_extent->disk_bytenr,
-+				     file_extent->disk_num_bytes,
-+				     file_extent->offset, flags,
-+				     file_extent->compression);
- 	if (!IS_ERR(entry))
- 		insert_ordered_extent(entry);
- 	return entry;
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 34413fc5b4bd..b89b5f6ae088 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -171,11 +171,27 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
- bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 				    struct btrfs_ordered_extent **cached,
- 				    u64 file_offset, u64 io_size);
-+
-+/*
-+ * A more access-friendly representation of btrfs_file_extent_item.
-+ *
-+ * Unused members are excluded.
-+ */
-+struct btrfs_file_extent {
-+	u64 disk_bytenr;
-+	u64 disk_num_bytes;
-+
-+	u64 num_bytes;
-+	u64 ram_bytes;
-+	u64 offset;
-+
-+	u8 compression;
-+};
-+
- struct btrfs_ordered_extent *btrfs_alloc_ordered_extent(
- 			struct btrfs_inode *inode, u64 file_offset,
--			u64 num_bytes, u64 ram_bytes, u64 disk_bytenr,
--			u64 disk_num_bytes, u64 offset, unsigned long flags,
--			int compress_type);
-+			struct btrfs_file_extent *file_extent,
-+			unsigned long flags);
- void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
- 			   struct btrfs_ordered_sum *sum);
- struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *inode,
--- 
-2.44.0
+1) The subvolume is fully dropped
+    The same one for both regular qgroup and squota
 
+2) The number are all zero
+    This would be squota specific one.
+
+So that the numbers would still be correct while regular qgroup can 
+still handle auto-deletion for inconsistent case.
+
+Thanks,
+Qu
+
+> 
+> Boris
+> 
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> Thanks,
+>>> Boris
+>>>
+>>>> +	key.objectid = qgroup->qgroupid;
+>>>> +	key.type = BTRFS_ROOT_ITEM_KEY;
+>>>> +	key.offset = -1ULL;
+>>>> +	path = btrfs_alloc_path();
+>>>> +	if (!path)
+>>>> +		return false;
+>>>> +
+>>>> +	ret = btrfs_find_root(fs_info->tree_root, &key, path, NULL, NULL);
+>>>> +	btrfs_free_path(path);
+>>>> +	if (ret > 0)
+>>>> +		return true;
+>>>> +	return false;
+>>>>    }
+>>>>
+>>>>    int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+>>>> @@ -1764,7 +1789,7 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+>>>>    		goto out;
+>>>>    	}
+>>>>
+>>>> -	if (is_fstree(qgroupid) && qgroup_has_usage(qgroup)) {
+>>>> +	if (!can_delete_qgroup(fs_info, qgroup)) {
+>>>>    		ret = -EBUSY;
+>>>>    		goto out;
+>>>>    	}
+>>>> @@ -1789,6 +1814,36 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+>>>>    	}
+>>>>
+>>>>    	spin_lock(&fs_info->qgroup_lock);
+>>>> +	/*
+>>>> +	 * Warn on reserved space. The subvolume should has no child nor
+>>>> +	 * corresponding subvolume.
+>>>> +	 * Thus its reserved space should all be zero, no matter if qgroup
+>>>> +	 * is consistent or the mode.
+>>>> +	 */
+>>>> +	WARN_ON(qgroup->rsv.values[BTRFS_QGROUP_RSV_DATA] ||
+>>>> +		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PREALLOC] ||
+>>>> +		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PERTRANS]);
+>>>> +	/*
+>>>> +	 * The same for rfer/excl numbers, but that's only if our qgroup is
+>>>> +	 * consistent and if it's in regular qgroup mode.
+>>>> +	 * For simple mode it's not as accurate thus we can hit non-zero values
+>>>> +	 * very frequently.
+>>>> +	 */
+>>>> +	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_FULL &&
+>>>> +	    !(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT)) {
+>>>> +		if (WARN_ON(qgroup->rfer || qgroup->excl ||
+>>>> +			    qgroup->rfer_cmpr || qgroup->excl_cmpr)) {
+>>>> +			btrfs_warn_rl(fs_info,
+>>>> +"to be deleted qgroup %u/%llu has non-zero numbers, rfer %llu rfer_cmpr %llu excl %llu excl_cmpr %llu",
+>>>> +				      btrfs_qgroup_level(qgroup->qgroupid),
+>>>> +				      btrfs_qgroup_subvolid(qgroup->qgroupid),
+>>>> +				      qgroup->rfer,
+>>>> +				      qgroup->rfer_cmpr,
+>>>> +				      qgroup->excl,
+>>>> +				      qgroup->excl_cmpr);
+>>>> +			qgroup_mark_inconsistent(fs_info);
+>>>> +		}
+>>>> +	}
+>>>
+>>> If you go ahead with making it conditional, I would fold this warning
+>>> into the check logic. Either way is fine, of course.
+>>>
+>>>>    	del_qgroup_rb(fs_info, qgroupid);
+>>>>    	spin_unlock(&fs_info->qgroup_lock);
+>>>>
+>>>> --
+>>>> 2.44.0
+>>>>
+>>>
 
