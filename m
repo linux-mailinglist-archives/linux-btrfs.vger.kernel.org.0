@@ -1,169 +1,161 @@
-Return-Path: <linux-btrfs+bounces-4654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFCC48B8293
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 May 2024 00:05:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE7CD8B82A0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 May 2024 00:16:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2121D1F2183B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Apr 2024 22:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E159284B3B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Apr 2024 22:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C12E1BF6C0;
-	Tue, 30 Apr 2024 22:05:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42CE61BF6D1;
+	Tue, 30 Apr 2024 22:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HP3d+b4d"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Kq8wNGgg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="g1tkYUsS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF2274E11
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Apr 2024 22:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24CE11802D8
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Apr 2024 22:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714514724; cv=none; b=RcVxuKjnirx3C+N/7hQVMKLbNUo65PSwIvpzsPTABSWNta/wdlWDgqImJOt7wFnX30faJ1xc5etnXSuiVLK4UN2TNyDsaV9/u1A+Qe3+8Kjrfi81uszRJZAs+gDkVaSWqf8HVCZ8KEAKs8tqwBQWnIvYzsdpWSi7Bw2MQHBMABc=
+	t=1714515374; cv=none; b=dyTLfegwsikGTr9tUWSkE//1qLad20za1oo6nSXYUT1FQ6s4h29mZodWXM6ywPCdEd4NVyJWjyvpOG6TacXPC1723wIOzE6GBf+NhaNb3a4n6imTcwfaxbOKHR15xdm+mXnwJaM5M0TjsEcnRzb53ZWLjefaJblxpjrfJuMWUNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714514724; c=relaxed/simple;
-	bh=L9r7fgOgk3x6b8ux1NUj3Ius7IZu4LyIxlK36J8JUMU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NT7eUmUReSX4M9oMUDW2QOCOuO4igsMj4wk7CNf/mg1yqJXjdwRawJSjjFnAjrC2VKFZJJ7yAXQbpYUsWAS/fN9EMHfQ3qzxip+CVXthH2qd03Te61h3mh1UEbPnuUuITfKvpmS9sAVpga2SXPZiQDhtMTZoYK9/4/g/oDwQ0cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HP3d+b4d; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1714514716; x=1715119516; i=quwenruo.btrfs@gmx.com;
-	bh=L9r7fgOgk3x6b8ux1NUj3Ius7IZu4LyIxlK36J8JUMU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=HP3d+b4dOi9MlVpmKggWg7XXsR9MMH4AuaBeBy9XcYSZ6ouPxdoLuShjjx6p9iMA
-	 M3i7F/kKyDJHE6zzlLsthFLi29G6jHY5Mg61HRUA+gyNKAlw7kciSswplxMQ4TaPA
-	 45RFWTgi8+jyz4H19R5HrrZ8Zyqp5QSsCPJpNzhzkE4WLr2CFqt2sxaZbzXijFm8c
-	 eGAgDoy+n0bJqtoaHCI3uw4v2WLqIWK4pOhK86ktRrv+jA9JrOgeiGJJSu4BL0MWa
-	 y98xPSTDFuXWRJZYROKT+xLHChwKF+/gwlRbS8syQFS+eWbrtqtVapI7g1hyJZJhj
-	 VZ10RC7rpKFSkVyidw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeCpb-1scdjA0k7T-00bIRH; Wed, 01
- May 2024 00:05:16 +0200
-Message-ID: <4a83b326-9cde-45f5-8a53-da7b62c45619@gmx.com>
-Date: Wed, 1 May 2024 07:35:09 +0930
+	s=arc-20240116; t=1714515374; c=relaxed/simple;
+	bh=e/CcXsNQn0vaQKHsOzEyZoj9i4a3iSlKxalTu2LNTkQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pxoa1Bly2HzxV4Qqub77UN4vxW1eNZMvZoN5bp6prl1eFntFxhmmwtggs/du4dz36JS9E5wQ1y2lzI+00O7mfxm696AhTodPIrG2qb4+UQTu6W/0Na/eai0OqLOeMovcQGHpyNquVzqUQE9Fpeu9UbEDeKDTLhJucvJQOczi6vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Kq8wNGgg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=g1tkYUsS; arc=none smtp.client-ip=64.147.123.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id C360E1800137;
+	Tue, 30 Apr 2024 18:16:09 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 30 Apr 2024 18:16:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1714515369;
+	 x=1714601769; bh=RPf9GFvcLK7k31/JtnUNmqbUYuSBKN+LwXrElZQl8q8=; b=
+	Kq8wNGgg9FaQprWvCFMUUS6SmHUOMFgDHGeJu8TkemN9WOOaX/V4pI3YvWZGoZ46
+	d9LR7HoQlT9Uj1gFjD0qzvCDeTjVDiek7yJJyPGYv20COXcwA50TFlGaqe9YBnHG
+	53dCT4wS49JRVCyg03IJM+OICfdTZijUigcqu9a0/2BiTf+SIpk+kj4tW9YBNGHf
+	jWBY39KNimhHjdMFTDTMeAw+aZfqNJeaRkCsbJ+OJL1TuKnNedPKJ6tvO0l2qZ/L
+	RlDBGgtT0502TqmeY1m+A9ud8Mio8E4DCCEMNjKkTC1yWsvtNnPY0sfrAU26THp1
+	f1bpQjf6QvqB0RoRPZREgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1714515369; x=
+	1714601769; bh=RPf9GFvcLK7k31/JtnUNmqbUYuSBKN+LwXrElZQl8q8=; b=g
+	1tkYUsSzbWkkOHKDfQA4B1aYl0sJfpslHQYHU/00mLk9U4JtZ7Gruif3NC2SUfDE
+	sD5vriXZ8v/9duFebSOLkUQYrJFpAyQUUUfnUYGsPPavc2ZrWmnkbK546rL8Jxe0
+	r+WRFP1G2JFUTUorRV71Sb9jWBpN/F56D13axu1EkAy7bi9cPiw8Q2ZHyzOepkpF
+	Jal0J52utIzi2TPoLKVHCXwnJFjcUqqEjk39SOVC6lMxZ7ceVZWMeclrFhsm5gb0
+	JxHxqCvK9APKipWZf95QPNKLL/UqFyo5ymADcV98uDXHSFSkh+289qZ2005Bgt8Y
+	LHCfeYhfw7kq0I6lJ42Eg==
+X-ME-Sender: <xms:qG0xZrXDwEuDE6S6hYINunOtfoi995RzEIKLaY3QITiSPMb-qV2YSw>
+    <xme:qG0xZjkOuhkVVwS5UQ0MVXtsHbiBCVh5m-F12TciBo-PquQWwjyXZwKIGFHghy2OW
+    rHnU_8ymLTtg9jML78>
+X-ME-Received: <xmr:qG0xZnac654J6RlyJntWDjDk8NiG0QFzGVqXgi06SmRkbE2Yfl5u3F-w9xrRZmAYftFDKEXdz2azN5m27pc_Sb2wDDo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddugedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epudelhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:qG0xZmUOjy4e9nigrksXl7wZMEOg2XpSDrLTDiRVFyhp9ixn52rd0A>
+    <xmx:qG0xZlmjN3GArHhNd1lc4qZAs4l7YWKt_c3DW0wmCXy4MzOH80eX3w>
+    <xmx:qG0xZjcfZXbkXw-DxxK0J246E58DLxSD0PpP8cou7jfcGMOucUKEcg>
+    <xmx:qG0xZvFFay64GoXbCaUy7nCaZz8baCwvKGSvQZCtS66Bj6D0DQ9IoQ>
+    <xmx:qW0xZuBBC7yXNJW90305rDoDkT_NYmK2PyC_Lyz7btc1gLFcXsziUKjv>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 30 Apr 2024 18:16:08 -0400 (EDT)
+Date: Tue, 30 Apr 2024 15:18:39 -0700
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] btrfs: automatically remove the subvolume qgroup
+Message-ID: <20240430221839.GA51927@zen.localdomain>
+References: <07e54de6747a5bf1e6a422cba80cbb06ba832cf4.1713519718.git.wqu@suse.com>
+ <20240424124156.GO3492@twin.jikos.cz>
+ <598907d6-77e0-4134-b709-51106dcfb2f8@gmx.com>
+ <20240425123450.GP3492@twin.jikos.cz>
+ <9df817bc-f3a8-4096-aabc-12044447a900@gmx.com>
+ <20240429131333.GC21573@zen.localdomain>
+ <20240429163136.GG2585@suse.cz>
+ <f8d3bf56-0554-44ec-ac1a-2604aaf37972@gmx.com>
+ <20240430105938.GM2585@suse.cz>
+ <4a83b326-9cde-45f5-8a53-da7b62c45619@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] btrfs: automatically remove the subvolume qgroup
-To: dsterba@suse.cz
-Cc: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <cover.1713519718.git.wqu@suse.com>
- <07e54de6747a5bf1e6a422cba80cbb06ba832cf4.1713519718.git.wqu@suse.com>
- <20240424124156.GO3492@twin.jikos.cz>
- <598907d6-77e0-4134-b709-51106dcfb2f8@gmx.com>
- <20240425123450.GP3492@twin.jikos.cz>
- <9df817bc-f3a8-4096-aabc-12044447a900@gmx.com>
- <20240429131333.GC21573@zen.localdomain> <20240429163136.GG2585@suse.cz>
- <f8d3bf56-0554-44ec-ac1a-2604aaf37972@gmx.com>
- <20240430105938.GM2585@suse.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240430105938.GM2585@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:onvKilrUGkh4ee8cC4x0xpIBTVpU0ldxuI/EdzqMRlrVy+25b23
- FPyPTRy8sFWgUDl+uYBgvD1WBGZNQizHS06IzxWyO8xV3Wm5RMR6fbcwgplTcMzucJCCjUX
- P0ilvdd+zMpAzq0M5+dBx8IdlSE5+kIeYZ6WgxXDhnyO0jl5rvT88iusUDn7H6UgF89iisj
- Jj/UCX9a+kDEL3gDH3o5Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:leGS3NUYC+4=;wGtKLpUWmA8YT1wUXO2K6bYzfV2
- gkxs9NBq6UgW6Fw2fVx81/HjBt/liauFznZyzjTSq7iDQ7Fv14z2I8LKUkc9vkKj00JYeLnyK
- Qo/ScQGe1xZfw4ck7wy6DwKTUzFn9XvJIwluKiVywoVYjipcIJhtAGDMD9v/4rAeYv+3RjenN
- 5wElikiDHZHyzp4e+oiINw3P6n+nshrlDmNZLO9MC2v8YG1uUChLYE5VB4X0IMYnEg79zpP1T
- 81m9iCKSeBycgrA80wKg0Un6EKbMne9gY0LviH6v01gG4IIQjZwqnt+outuSdIFDuvASVC8Xs
- M5Gm8/y0bgzo28tcOy4lprrYNuVcodnQBsAGM6e71kSxHIjH0CGAN9YBd65+3LxfhOGMMg0Ew
- l9gWvau2CZj4tSXJyH4s9YbaaDQxquNehnQrBY3y/COk/ZHaIIjKXFbaKhAibL8+GOKTqeIs2
- 2IT0mSEzKSUIsIGbY0PoMgIMzn+lv7qp4oW/u28Hv0lKzcobEsHcHzVGkiLAzA/rZRfEt6P5j
- dsezishTGGu1k6vv9zdEd64qG+3LCEfX/vyGrutRsQ6/0QWAWpbZyBeY/ZHk8X+K/YHvPNTfr
- vkiBEKhbwvvqF5lMys2hx7IVrFwHvdEob+DzHLs3Ipapn37YPORNSZHPpkuOkh9ZhH9bqGrxF
- /I1mRCNhuAKddtvZyJrY6XtwGDilNrFN1fedt+nQlIwGuvflL+mDySkmksxd/f0uIErNGC9cJ
- HnUWbf9HHfNxNRwY82vhBD1PJnPL4Y3tBgbyBsfpY0bkDD0IbAwag6RLeLEtGdviQscIg2ofu
- bzZwJKFc51PFk10oxCTqV4OVt0aV2m1zN3iqyq9X0hksA=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a83b326-9cde-45f5-8a53-da7b62c45619@gmx.com>
 
+On Wed, May 01, 2024 at 07:35:09AM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/4/30 20:29, David Sterba 写道:
+> > On Tue, Apr 30, 2024 at 07:35:11AM +0930, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > 在 2024/4/30 02:01, David Sterba 写道:
+> > > > On Mon, Apr 29, 2024 at 06:13:33AM -0700, Boris Burkov wrote:
+> > > > > I support the auto deletion in the kernel as you propose, I think it
+> > > > > just makes sense. Who wants stale, empty qgroups around that aren't
+> > > > > attached to any subvol? I suppose that with the drop_thresh thing, it is
+> > > > > possible some parent qgroup still reflects the usage until the next full
+> > > > > scan?
+> > > > 
+> > > > The stale qgroups have been out for a long time so removing them after
+> > > > subvolume deletion is changing default behaviour, this always breaks
+> > > > somebody's scripts or tools.
+> > > 
+> > > If needed I can introduce a compat bit (the first one), to tell the
+> > > behavior difference.
+> > > 
+> > > And if we go the compat bit way, I believe it can be the first example
+> > > on how to do a kernel behavior change correctly without breaking any
+> > > user space assumption.
+> > 
+> > I don't see how a compat bit would work here, we use them for feature
+> > compatibility and for general access to data (full or read-only). What
+> > we do with individual behavioral changes are sysfs files. They're
+> > detectable by scripts and can be also used for configuration. In this
+> > case enabling/disabling autoclean of the qgroups.
 
+This was my initial thought too, but your compat bit idea is interesting
+since it persists? I vote sysfs since it has good
+infrastructure/momentum already for similar config.
 
-=E5=9C=A8 2024/4/30 20:29, David Sterba =E5=86=99=E9=81=93:
-> On Tue, Apr 30, 2024 at 07:35:11AM +0930, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2024/4/30 02:01, David Sterba =E5=86=99=E9=81=93:
->>> On Mon, Apr 29, 2024 at 06:13:33AM -0700, Boris Burkov wrote:
->>>> I support the auto deletion in the kernel as you propose, I think it
->>>> just makes sense. Who wants stale, empty qgroups around that aren't
->>>> attached to any subvol? I suppose that with the drop_thresh thing, it=
- is
->>>> possible some parent qgroup still reflects the usage until the next f=
-ull
->>>> scan?
->>>
->>> The stale qgroups have been out for a long time so removing them after
->>> subvolume deletion is changing default behaviour, this always breaks
->>> somebody's scripts or tools.
->>
->> If needed I can introduce a compat bit (the first one), to tell the
->> behavior difference.
->>
->> And if we go the compat bit way, I believe it can be the first example
->> on how to do a kernel behavior change correctly without breaking any
->> user space assumption.
->
-> I don't see how a compat bit would work here, we use them for feature
-> compatibility and for general access to data (full or read-only). What
-> we do with individual behavioral changes are sysfs files. They're
-> detectable by scripts and can be also used for configuration. In this
-> case enabling/disabling autoclean of the qgroups.
->
-
-I mean the compat bit, which is fully empty now.
-
-The new bit would be something like BTRFS_QGROUP_AUTO_REMOVAL, with that
-set, btrfs would auto remove any stale qgroups (for regular qgroups though=
-).
-
-Without that, it would be as usual (no auto removal).
-
-Since this doesn't cause any on-disk change, it does not needs compat-ro
-nor incompat.
-
-Thanks,
-Qu
+> > 
+> 
+> I mean the compat bit, which is fully empty now.
+> 
+> The new bit would be something like BTRFS_QGROUP_AUTO_REMOVAL, with that
+> set, btrfs would auto remove any stale qgroups (for regular qgroups though).
+> 
+> Without that, it would be as usual (no auto removal).
+> 
+> Since this doesn't cause any on-disk change, it does not needs compat-ro
+> nor incompat.
+> 
+> Thanks,
+> Qu
 
