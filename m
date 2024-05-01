@@ -1,97 +1,233 @@
-Return-Path: <linux-btrfs+bounces-4660-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4661-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C90F88B9044
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 May 2024 21:54:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E84AF8B911C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 May 2024 23:45:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 898B72833E2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 May 2024 19:54:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CDDA1F2314F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 May 2024 21:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D8216190A;
-	Wed,  1 May 2024 19:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E57F165FC4;
+	Wed,  1 May 2024 21:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="UIMntn30"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.lichtvoll.de (lichtvoll.de [37.120.160.25])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978FC37E
-	for <linux-btrfs@vger.kernel.org>; Wed,  1 May 2024 19:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.120.160.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95834D5BF
+	for <linux-btrfs@vger.kernel.org>; Wed,  1 May 2024 21:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714593274; cv=none; b=qWIvGARV9JHLBii5Z3MiwLHJX3u7hnlRF13dIJS1eChVSrQf86cGbpliAJStosxLjaaoWmSDQIikDIRSR0jjK2pCHRj9/2ib0vhRYywbgbBiGvfOjWs0WjeW9UpjAFJkhciMUxfPMsH4Pu2Fr9YQGwL6jam+JhHcNzfZcS3Y0PM=
+	t=1714599952; cv=none; b=pQnK+1cMfk8GzdvHzFSZHcMFe2/Xh5xPMe2ZUBHYYVsrsn9hko+WFJTznllRX0MiH9S/SIGN2U2cAp7wuedntq/wSR6KiUPE5ifflC2u6IMX0pJgpmrP8C/ONkz3Uarq4rhuzPnuey7JmARskCkIV7SEOu/kngwvJ1yewmu5Ktw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714593274; c=relaxed/simple;
-	bh=//3bUKCofx6JxQNpLytpeV8ziI7CwIxshXg5cjYWxWk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jAvod/vA936jkdHAPIQSMxp+x1FUNrWKqRZ7WnPtdjC8vx3o4K/BTBf8qJenFRhtzUH8OFHKdZaYr/0/UNr3QpJsqgao+2q4IIUxUx0fwtTUW971B2hqNmzDDz4PH4KFeSHwlJIhuKtICFVu7bEwuflQVjzvVG49FjETKS9Du0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=37.120.160.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id B17891940A;
-	Wed,  1 May 2024 19:47:45 +0000 (UTC)
-Authentication-Results: mail.lichtvoll.de;
-	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
-From: Martin Steigerwald <martin@lichtvoll.de>
-To: Linux BTRFS mailing list <linux-btrfs@vger.kernel.org>,
- Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-Subject: Re: 2 PB filesystem ok?
-Date: Wed, 01 May 2024 21:47:45 +0200
-Message-ID: <2183753.irdbgypaU6@lichtvoll.de>
-In-Reply-To: <20240501181903.GB393383@tik.uni-stuttgart.de>
-References:
- <20240428233134.GA355040@tik.uni-stuttgart.de> <ZjJOuiu0o1PqV3jA@ws>
- <20240501181903.GB393383@tik.uni-stuttgart.de>
+	s=arc-20240116; t=1714599952; c=relaxed/simple;
+	bh=+cVO0q8ubWqJ0zJkDTc5EyyU0NnVcFli5ZSOfuzTn08=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kuKSSURwG1/PYsbYUByEOpDLgkvjzpVcIF1oHDebfTeNyQRyU2d9BIz6mJQopwhmcuWiP+CdOR98s3QsKbJJSwMFTrea+IuwjQHTxlZiZ4pC/4JkcTFWWl5Zlgw94Tp1uLYYn983gyv19RGDyaM1BxbZ5uDr1yKOeUZUzCGEfR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=UIMntn30; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1714599943; x=1715204743; i=quwenruo.btrfs@gmx.com;
+	bh=4AhKj7r9TbQJYw6yB/p8iDxgEaIVr438aZw3fnUL6Lw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=UIMntn308JXaRE2909DMvj/9tLPBua1o+pbEOSib8GSZh+RUIj0Wko4tkgKa+sx/
+	 b6ZCvfghaM+B9m9WJ16yMInI/yWaerdNOtBeB3YQ2l9/y+ojYLdvQnLOAa96eypMA
+	 NdzrIZ+lMX+he0gcpDj32bFHeevkekgwa9kZGNlrOV+j5TsuQ86OkWfnFYQoAJ8yl
+	 3Up0ElNACTvFQ7+UZ1Lz8Z5XNl+xaM1fMaFFg6oyiDZ6vBdSgU9nhmezrTgntqSo0
+	 BBwNvZjAjnSfLrEBALiMv1t35DVrE3b1l7QV4IwPunaRuVTrb9eanzYnBUgi9uGDU
+	 KV4NuhfpY7cmJLYfMg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbRjt-1sdoVz3if3-00daNb; Wed, 01
+ May 2024 23:45:43 +0200
+Message-ID: <2aec5fb2-f881-416a-b558-cb265886dad7@gmx.com>
+Date: Thu, 2 May 2024 07:15:36 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: make sure that WRITTEN is set on all metadata
+ blocks
+To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+Cc: lei lu <llfamsec@gmail.com>
+References: <d82bd6cef76e7beaa0d33ef48f9292f3779d015c.1714395805.git.josef@toxicpanda.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <d82bd6cef76e7beaa0d33ef48f9292f3779d015c.1714395805.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-
-Ulli Horlacher - 01.05.24, 20:19:03 CEST:
-> On Wed 2024-05-01 (16:16), Tomas Volf wrote:
-> > On 2024-05-01 10:50:12 +0200, Ulli Horlacher wrote:
-> > > On Mon 2024-04-29 (12:34), Johannes Thumshirn wrote:
-> > > > I have used 2PB filesystems in my RAID Stripe Tree test
-> > > > environment, but for practical uses, I suggest you to enable the
-> > > > block-group tree feature during mkfs time.
-> > >=20
-> > > I cannot find such an option in man-page for mkfs.btrfs
-> > >=20
-> >     $ mkfs.btrfs  -O list-all
-[=E2=80=A6]
-> > So I believe it would be `mkfs.btrfs -O block-group-tree ...'.
->=20
-> root@fex:~# mkfs.btrfs  -O list-all
-[=E2=80=A6]
-> root@fex:~# btrfs --version
-> btrfs-progs v5.16.2
->=20
->=20
-> This is Ubuntu 22.04
-
-Too old.
-
-See here for minimum requirements:
-
-https://btrfs.readthedocs.io/en/latest/Feature-by-version.html
-
-Kernel (and I bet) btrfs progs 6.1.
-
-I bet there is a PPA for newer kernels for Ubuntu. Whether there is a PPA=20
-for never btrfs progs, I don't know.
-
-Best,
-=2D-=20
-Martin
+X-Provags-ID: V03:K1:w13AQYWnatDP0qb48INFxYan7YeioDozhBUP3DBQMBA9K+9Kw9j
+ ikcpYh3vMVtD9806/FSP3b+ni3eURw0WTJVsLg9adu8LJ/cUeiLzqS6zxpNGT1XKBn5JmY+
+ vgSOdwVhHCBUxXWMsUSPVzmlN4lqnhG7feS4SHsy+QcktD1rVTLfZZ4GR0LAwNXYD/l3qYW
+ bt6/Hm0JiMK6JH8FG4v5Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:c6bcNh7Brxg=;2/ksbD5IxWAqIG9gvWsZWNS61dy
+ +QD29i5GlYrkIZ7HaRZRpgG76RhMuAbTjYtV33W9LRUNRXM5iFDWxfAy2V3Fbxxml0V6tPVwI
+ YufI1vbD9lDlLODYqmQpPodoZPGvziEKx0FQE5GsaSutBB0+9+fkbXaMpP0j9yazT2udQ0jlL
+ Yl422lOI1pVkPsDY2OYtgaUEyMFNgzcpFWfRA3aatX5tlzr65Bj7R97zL5G2YYxLbZlQCF01w
+ qBbvezwQQNMae8lt20vjxhcovl+8zddwFnB9GsCiLFIxTSkVHh5/xDVE1KdS3Azca1hQUOmKP
+ CHBmikvfesXGIsdEYkg4y3aJ0eNS8W7DpVO1m+dtXW5InOCQpaGjL/nhkCa0NKYed+t/Tce3U
+ hTVq+wFV3497R6ggd+2MS2pscSTsCFeeD17kQA9jDI65ZytPEkSQ80XzoIUy3rgXyo/0yfhOy
+ 1qgscXTWvOqfjAHbhuyq+uINgPaSsZKvXFc7Kvhv9MiRYkjIXd3lEv1OsqwASYkSCiRQxiuRy
+ lFq6PwOQw+7B8HOq4WlTqxQrqWeUUR/nRTnYCsYKBGugeq37YmfISJS4HasHlwMx3+joYA5P8
+ Gl7t/dZUMIJLlt+nbpWIRTZkge15TaPJM74AzIkFP8pBHOQAq/fZ1hwD4eyiWifadiUCPYrxj
+ uix4WYZCgIjR3Zx4xpwmmBtIintJM3TVTnRNvX9CdAzzfSIeJPKxBG7XR1oA9EwGKf64X2xRZ
+ miRUk0B29Y3xqIdaUHsnoCYgOWwzjnwJDgNeURTWQSI0NqvlWhPJuVsBxFusc6dXs2lFaLbfT
+ yL2OCw0Nlcls8nC0zlS4UJA7hZpaKYLT9yJt7W5x6P4rQ=
 
 
+
+=E5=9C=A8 2024/4/29 22:33, Josef Bacik =E5=86=99=E9=81=93:
+> We previously would call btrfs_check_leaf() if we had the check
+> integrity code enabled, which meant that we could only run the extended
+> leaf checks if we had WRITTEN set on the header flags.
+>
+> This leaves a gap in our checking, because we could end up with
+> corruption on disk where WRITTEN isn't set on the leaf, and then the
+> extended leaf checks don't get run which we rely on to validate all of
+> the item pointers to make sure we don't access memory outside of the
+> extent buffer.
+>
+> However, since 732fab95abe2 ("btrfs: check-integrity: remove
+> CONFIG_BTRFS_FS_CHECK_INTEGRITY option") we no longer call
+> btrfs_check_leaf() from btrfs_mark_buffer_dirty(), which means we only
+> ever call it on blocks that are being written out, and thus have WRITTEN
+> set, or that are being read in, which should have WRITTEN set.
+>
+> Add checks to make sure we have WRITTEN set appropriately, and then make
+> sure __btrfs_check_leaf() always does the item checking.  This will
+> protect us from file systems that have been corrupted and no longer have
+> WRITTEN set on some of the blocks.
+>
+> Reported-by: lei lu <llfamsec@gmail.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Is there any real world bug report on this? Or just some code reading
+exposed this problem?
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/tree-checker.c | 30 +++++++++++++++---------------
+>   fs/btrfs/tree-checker.h |  1 +
+>   2 files changed, 16 insertions(+), 15 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index a127abbc09c3..5a7e869da230 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -1797,6 +1797,11 @@ enum btrfs_tree_block_status __btrfs_check_leaf(s=
+truct extent_buffer *leaf)
+>   		return BTRFS_TREE_BLOCK_INVALID_LEVEL;
+>   	}
+>
+> +	if (unlikely(!btrfs_header_flag(leaf, BTRFS_HEADER_FLAG_WRITTEN))) {
+> +		generic_err(leaf, 0, "invalid flag for leaf, WRITTEN not set");
+> +		return BTRFS_TREE_BLOCK_WRITTEN_NOT_SET;
+> +	}
+> +
+>   	/*
+>   	 * Extent buffers from a relocation tree have a owner field that
+>   	 * corresponds to the subvolume tree they are based on. So just from =
+an
+> @@ -1858,6 +1863,7 @@ enum btrfs_tree_block_status __btrfs_check_leaf(st=
+ruct extent_buffer *leaf)
+>   	for (slot =3D 0; slot < nritems; slot++) {
+>   		u32 item_end_expected;
+>   		u64 item_data_end;
+> +		enum btrfs_tree_block_status ret;
+>
+>   		btrfs_item_key_to_cpu(leaf, &key, slot);
+>
+> @@ -1913,21 +1919,10 @@ enum btrfs_tree_block_status __btrfs_check_leaf(=
+struct extent_buffer *leaf)
+>   			return BTRFS_TREE_BLOCK_INVALID_OFFSETS;
+>   		}
+>
+> -		/*
+> -		 * We only want to do this if WRITTEN is set, otherwise the leaf
+> -		 * may be in some intermediate state and won't appear valid.
+> -		 */
+> -		if (btrfs_header_flag(leaf, BTRFS_HEADER_FLAG_WRITTEN)) {
+> -			enum btrfs_tree_block_status ret;
+> -
+> -			/*
+> -			 * Check if the item size and content meet other
+> -			 * criteria
+> -			 */
+> -			ret =3D check_leaf_item(leaf, &key, slot, &prev_key);
+> -			if (unlikely(ret !=3D BTRFS_TREE_BLOCK_CLEAN))
+> -				return ret;
+> -		}
+> +		/* Check if the item size and content meet other criteria */
+> +		ret =3D check_leaf_item(leaf, &key, slot, &prev_key);
+> +		if (unlikely(ret !=3D BTRFS_TREE_BLOCK_CLEAN))
+> +			return ret;
+>
+>   		prev_key.objectid =3D key.objectid;
+>   		prev_key.type =3D key.type;
+> @@ -1957,6 +1952,11 @@ enum btrfs_tree_block_status __btrfs_check_node(s=
+truct extent_buffer *node)
+>   	int level =3D btrfs_header_level(node);
+>   	u64 bytenr;
+>
+> +	if (unlikely(!btrfs_header_flag(node, BTRFS_HEADER_FLAG_WRITTEN))) {
+> +		generic_err(node, 0, "invalid flag for node, WRITTEN not set");
+> +		return BTRFS_TREE_BLOCK_WRITTEN_NOT_SET;
+> +	}
+> +
+>   	if (unlikely(level <=3D 0 || level >=3D BTRFS_MAX_LEVEL)) {
+>   		generic_err(node, 0,
+>   			"invalid level for node, have %d expect [1, %d]",
+> diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
+> index 5c809b50b2d0..01669cfa6578 100644
+> --- a/fs/btrfs/tree-checker.h
+> +++ b/fs/btrfs/tree-checker.h
+> @@ -53,6 +53,7 @@ enum btrfs_tree_block_status {
+>   	BTRFS_TREE_BLOCK_INVALID_BLOCKPTR,
+>   	BTRFS_TREE_BLOCK_INVALID_ITEM,
+>   	BTRFS_TREE_BLOCK_INVALID_OWNER,
+> +	BTRFS_TREE_BLOCK_WRITTEN_NOT_SET,
+>   };
+>
+>   /*
 
