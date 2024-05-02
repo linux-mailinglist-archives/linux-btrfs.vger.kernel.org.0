@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4686-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F14DC8BA256
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 May 2024 23:29:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFD808BA258
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 May 2024 23:33:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B06F1F24DEF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 May 2024 21:29:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DAE1281128
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 May 2024 21:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AAD0181BB2;
-	Thu,  2 May 2024 21:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF4F181BBA;
+	Thu,  2 May 2024 21:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="BVJEwBJV"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="NXmaqY4p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFD1181304
-	for <linux-btrfs@vger.kernel.org>; Thu,  2 May 2024 21:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67CF1DDF8
+	for <linux-btrfs@vger.kernel.org>; Thu,  2 May 2024 21:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714685357; cv=none; b=AtYlzl5GjnjdVLxoggRYL2BB1HXijebXF+kcoVwHM0EaINHr+KgSeJKxGu2xgUQm9UvG2VR1Za7DuioK8Ep/wf7+s2z61gX2QEFhqTJ8ZoVzkyeltv8qE6NF2ErJlHPCsU9NFDBuMkcXzatUHJbseRMlo6xaBamutwcsbVhePP4=
+	t=1714685589; cv=none; b=ukiCBMIou1LVJY2BEu7j94gpYIeDjp0/5Aj43Qo/k1bsh3EMlMVJ3BCLtQld86JsYpfppDB9ztLo63Q+ALy7HdqbDot9FGDsYL12AgWxxMHwiC9ydtC9t4Zdgn3RT4HiTAY92xKlz/NhIzCgvzKUCZbKBWp0MVqF7KEA2zVoEWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714685357; c=relaxed/simple;
-	bh=qKLsezAb2U1r/8pZB7lhFW4+IIUnp+ISdIydRQqLHE0=;
+	s=arc-20240116; t=1714685589; c=relaxed/simple;
+	bh=439MjiPGSWZqWYWxcWheE9NNRtOq3c+CNrw7Cq/R69o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KbIe0qtwGnWqqI7sYtFEDZRopJE8O+4N72LiNnrtTGktfjzhW4PrkqIe+1sNVg/LSbCX1TUUtvaAgsKHimMU/OO2NO1WltPunOYO+zN223qZIESLrn2++QBU9opPKf/P7AuH845mMOxxU1BNL8DhkTVRfWtTtzrkYD8ISmDyRmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=BVJEwBJV; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=to+18M2DkJBvbDTfXQGxB8SoHPWLZtqHicxKE52UmbmAWZ7XdqkjV90o9+QDybSZ543XpyT+RhAtRdBMM8+PPSQK8we2eNS76yFNOAn0zAw56yrMIB/GV/PwANniOgMsGwPO3vO1iqnnvRZMaUQ/MIt6tPVZM7GRYhoQ+MuDC24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=NXmaqY4p; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1714685350; x=1715290150; i=quwenruo.btrfs@gmx.com;
-	bh=qKLsezAb2U1r/8pZB7lhFW4+IIUnp+ISdIydRQqLHE0=;
+	s=s31663417; t=1714685579; x=1715290379; i=quwenruo.btrfs@gmx.com;
+	bh=XUg6xofUx7PiAbD+Kg2oHTMu/1OdPbEFM7R/IDzofIw=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=BVJEwBJVFLoKeLxscyZZyHne1xvbhSkBr2RT32JDVmaOy8r0Mxb1Op/oAfl7EShf
-	 jS8fKKu4unzIbDnVDhrdwp4lV3x7zCV4ZwOb/kgNfsEEthpCssU5oqpHY0SUS1ibq
-	 g+5ZhV4HGVZfHdeKRub6Phbzor48sI7FC50USyXI9P+ey2m5wlRtoM7CwKgBHRqAt
-	 jr0BMK0zRoKX2Ce9/wrkg+U7zcKoStLhT19NAvwX6TPylcRrPwBqwQWjgzxpirpk5
-	 NJ+ZbYGlS+aatywxZhw3zhZSA1YCOKUIgs+1np56UNE9Btjm0+XHIl3/j9nd0xymF
-	 WLJgkaPsxMYxNSD/PA==
+	b=NXmaqY4pKNmx5fiCoLi4c0AkkvVTusChiA3K7aKwxVWfFLT24nTqTzhgWNU45Z4+
+	 pLi6sgqzBMyn/LcsIbnK50y5WdWtJUxWMQSM7N1qu5xJKPPNTbT0Sw4BGajdVIURY
+	 I546FA4mYXzeZ88T2KjzLIST3ASjYH8it/8CzQ54HblAZYW7pn0PskRyoz04FeWXC
+	 /9X2jcXISpC/sg8jL8oHqLwF0V+svw9bfVaeMl/5AEn2cdXwbK4kCO/cm3dpTaB14
+	 jNL7ROheEwkX0uGUrCTZVngt3L3H7gmDoorXEAM2rpannfHMpGVxMD+Vt7hqjoGtV
+	 /uvT4cOkrEC3fIYnvQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1po0-1s4quj1TyK-00402e; Thu, 02
- May 2024 23:29:10 +0200
-Message-ID: <d1c91b71-8196-4ea3-943d-db30883acb8c@gmx.com>
-Date: Fri, 3 May 2024 06:59:03 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtwUm-1sukfW2pbQ-00tjkq; Thu, 02
+ May 2024 23:32:59 +0200
+Message-ID: <0a5cb0b8-617b-4e11-beb3-8a60a2e5bffa@gmx.com>
+Date: Fri, 3 May 2024 07:02:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,20 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] btrfs: automatically remove the subvolume qgroup
+Subject: Re: [PATCH] btrfs: make sure that WRITTEN is set on all metadata
+ blocks
 To: dsterba@suse.cz
-Cc: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <598907d6-77e0-4134-b709-51106dcfb2f8@gmx.com>
- <20240425123450.GP3492@twin.jikos.cz>
- <9df817bc-f3a8-4096-aabc-12044447a900@gmx.com>
- <20240429131333.GC21573@zen.localdomain> <20240429163136.GG2585@suse.cz>
- <f8d3bf56-0554-44ec-ac1a-2604aaf37972@gmx.com>
- <20240430105938.GM2585@suse.cz>
- <4a83b326-9cde-45f5-8a53-da7b62c45619@gmx.com>
- <20240430221839.GA51927@zen.localdomain>
- <d49e13f2-59ff-49ef-b81c-8c2c96d8284b@gmx.com>
- <20240502150332.GS2585@twin.jikos.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com, lei lu <llfamsec@gmail.com>
+References: <d82bd6cef76e7beaa0d33ef48f9292f3779d015c.1714395805.git.josef@toxicpanda.com>
+ <2aec5fb2-f881-416a-b558-cb265886dad7@gmx.com>
+ <20240502122722.GP2585@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -98,77 +92,73 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240502150332.GS2585@twin.jikos.cz>
+In-Reply-To: <20240502122722.GP2585@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MuagGtsdrIDMs3wb3JrWINj+c41O3q1vimfLGlTNojN9xFGnhHV
- OWPtQCQy8WwkSD/vZCpvt/+m+DnTbp3HafnJSUvD0SS8s2griIXex1AFn3swVcrf/QzOmwR
- 9aTtwwr5EFd9Ko2NXDswK5688k6yOnO7Guii2hPluvjNNueUC64zPZPFMGAS0FXUoOUNjv3
- wKmZvEGgmmcdj7as6WXxA==
+X-Provags-ID: V03:K1:27dUS+wDke+Hu6ANQVaRzX961ZFVwuIeRlY9LEipzFgJF8Wt9Gc
+ 2HlaP649SCy3J2EGhCMt/Q1mF7Q3nTrw8tzXMI/suXQxI/4H2jv9NeJAnVzA2+7daUAIZAC
+ Y9UCW7ivFwe2x6IdbAkOnEa8v0IPKbw3quNM3BL9Mf8TtvhLxQ/gTH7GOptvuslAG3E+LY9
+ qsUiFVpEJdPHpLD8yQy2A==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mV6IOOL6FWY=;GnpqtbCceJ6erUbjrkWfXhLcOHx
- yBoP6b40k7imkxp+NEj9Z/9gTWBzQhOwPLbKbWXHhpRP+DfTQKzWeP5ihSbUB7KAsDjjABe4H
- /aa4LDPyV/3/Ze2+ESjnG7/uttgJUqEtVAyDrNbx4wuxm9sqVOijHoclfI/I3wTKu8klQ3/TB
- qzQ4vxtfsMY6eUDt5kEg8OESN07PThgB12Puj8lRTkIku0mIy9mGIVgSlFsjjJ+Qs4gWyGuat
- oRNmM766EH/H6koyTokn/8i4J4njTHXpDV04I54hTbecCmp3lQ9t9VouoTvDLpz8ybthtmf9N
- JzyzqfS+Rhvt5JOzVsiVZRaPhLwiyHxOVLMX++SQRXOhTMO+VIwAuack2PPALpcvgzkhfedsn
- rw9ZQnqxBaMllbHdwU0Thckdc+EcDu+gi86Saiz3HgFbYVEKebRRNPUhoAWd+L0qD6124Nh5K
- sXp9VztxVjtVdicBysypD7kbMO50Q1DAHUKvQTMw387qo2gvaHGkk+F6RvTSag8QVSLbmezPX
- ftnxwx87JWHt5pU9zo22rolbnqwaRH5yojlgroZZphtZZYzsGswLsCGbY8e1kIB2X4rXN+Tf5
- tpUoSb+QmXBEAyz+OsYWk76n3UY9uEe9qFB8xXAYWA0dWNfndw256EqyCZe7+jPknKM0/tgl2
- uMF8EPdkqjrMMkLgfAqoikAafcVS/ueIsSJPOXeHmzSIErDYdWeePNVavzs5JNXqCjZLDMeT7
- gF34DDQFQO7j0tDECC6BGCal+MzmXfkfD7pO3JIbOe8gETwLrVdii1HaZgdVhVlrxpA6eLb6h
- OCOXKJrNLuHzuxTI1l6lU/TcFcXZfSPX1jnsuJUAHOWCM=
+UI-OutboundReport: notjunk:1;M01:P0:g4fbeKWjfJQ=;69+XAWJtAIpajDx9/PrcyyQraBe
+ 5nzpsUEYunPzprAgMrUJesjPpTEYYjr5Drg61EHk/WtumnTo+b2CAofdYHiCLMwgDCGDUNW8T
+ 6f91tUo+4C3parlMk0Zhh43sndTiQWbuKp56kHeCP9FKUh5bqMPC5scLgxJYWq7AU1cJ3eXBX
+ XfMvjGwMZ1nVx0mZbJMHq8e6LM/J9rLLJ+OTsyyP4OpHtl93/YRLVLJQUCrU6VQFAS3iXickj
+ timpHNSqmf6WENuQvrqX16KOXjJERDsy4eM4E60bzhemF4oQ8iIc0OVA0lB+nfrc2ONb0pfrr
+ Cl8ymci8AO3DGhqg+SYY1C1GNq8S+WPfn2RlG5WqOOXtCU2cJrQyKGPdxlHcrqp4wJV651R+d
+ Clcq1VFCxybHy0Ep1EmaBcAjHSZ2KED4D5canCdWd+J6ZqvpLLgCP62vF+ZRnvoy13WxMTPm3
+ iejehi30VS3lDvEVFa9GafI+FrfDMoa007ebrRNdjz7Wntlear/selQwK3Tb7yzZfscD80kzd
+ JMl6/YH2toeQV+m92h/6bqAIKJToqkYaSGPky5MDiXFGtXAPsPFPYuJBorMg1jUDVO44KVO2V
+ GInWfKBNoow4Qa7Cy6O63Vqxpf+X0RD75WFb8MYWnzFxq8cD2KCyiaJqmtq2Rjnmu1R1+qBY0
+ X9Ys+UJoGTGlP8MZK8Xdr1ITRMkA/D4gZJL+xYJ5jVWqk0gKjdfqCr44B8BTonuvPUHgWYLLR
+ QxV5nfHRvr+b9EhXVwvQ5RS9+2VdBUA+PvzF3m668NQJw7vrWC3En0VhSuIlCzsqbQR0IOBIk
+ Disla+FCLxWQUwOdsReHW4VzP5NFYnbVDyyT213wJ9p3Y=
 
 
 
-=E5=9C=A8 2024/5/3 00:33, David Sterba =E5=86=99=E9=81=93:
-> On Wed, May 01, 2024 at 07:57:08AM +0930, Qu Wenruo wrote:
+=E5=9C=A8 2024/5/2 21:57, David Sterba =E5=86=99=E9=81=93:
+> On Thu, May 02, 2024 at 07:15:36AM +0930, Qu Wenruo wrote:
 >>
 >>
->> =E5=9C=A8 2024/5/1 07:48, Boris Burkov =E5=86=99=E9=81=93:
->>> On Wed, May 01, 2024 at 07:35:09AM +0930, Qu Wenruo wrote:
->> [...]
->>>>>
->>>>> I don't see how a compat bit would work here, we use them for featur=
-e
->>>>> compatibility and for general access to data (full or read-only). Wh=
-at
->>>>> we do with individual behavioral changes are sysfs files. They're
->>>>> detectable by scripts and can be also used for configuration. In thi=
-s
->>>>> case enabling/disabling autoclean of the qgroups.
+>> =E5=9C=A8 2024/4/29 22:33, Josef Bacik =E5=86=99=E9=81=93:
+>>> We previously would call btrfs_check_leaf() if we had the check
+>>> integrity code enabled, which meant that we could only run the extende=
+d
+>>> leaf checks if we had WRITTEN set on the header flags.
 >>>
->>> This was my initial thought too, but your compat bit idea is interesti=
-ng
->>> since it persists? I vote sysfs since it has good
->>> infrastructure/momentum already for similar config.
+>>> This leaves a gap in our checking, because we could end up with
+>>> corruption on disk where WRITTEN isn't set on the leaf, and then the
+>>> extended leaf checks don't get run which we rely on to validate all of
+>>> the item pointers to make sure we don't access memory outside of the
+>>> extent buffer.
+>>>
+>>> However, since 732fab95abe2 ("btrfs: check-integrity: remove
+>>> CONFIG_BTRFS_FS_CHECK_INTEGRITY option") we no longer call
+>>> btrfs_check_leaf() from btrfs_mark_buffer_dirty(), which means we only
+>>> ever call it on blocks that are being written out, and thus have WRITT=
+EN
+>>> set, or that are being read in, which should have WRITTEN set.
+>>>
+>>> Add checks to make sure we have WRITTEN set appropriately, and then ma=
+ke
+>>> sure __btrfs_check_leaf() always does the item checking.  This will
+>>> protect us from file systems that have been corrupted and no longer ha=
+ve
+>>> WRITTEN set on some of the blocks.
+>>>
+>>> Reported-by: lei lu <llfamsec@gmail.com>
+>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 >>
->> Sysfs is another way which we are already utilizing for qgroups, like
->> drop_subtree_threshold.
+>> Reviewed-by: Qu Wenruo <wqu@suse.com>
 >>
->> The problem is as mentioned already, it's not persistent, thus it needs
->> a user space daemon to set it for every fs after mount.
+>> Is there any real world bug report on this? Or just some code reading
+>> exposed this problem?
 >
-> My idea of using sysfs is to export the information that the
-> autocleaning feature is present and if we make it on by default then
-> there's no need for additional step to enable it. The feedback about
-> that was that it should have been default so we're going to make that
-> change, but with sysfs export also provide a fallback to disable it in
-> case it breaks things for somebody.
+> There is a report.
 >
->> I'm totally fine to go sysfs for now, but I really hope to a persistent
->> solution.
->> Maybe a dedicated config tree?
->
-> No, we already have a way to store data in the trees or in the
-> properties so no new tree.
+Where?
 
-That means a on-disk format change.
-IIRC everytime we introduce a new TEMP objectid, it should at least be
-compat or compat_ro bit change.
-
-Or older kernel won't understand nor follow the new TEMP key.
+I searched btrfs ML using this name, but no hit at all.
 
 Thanks,
 Qu
