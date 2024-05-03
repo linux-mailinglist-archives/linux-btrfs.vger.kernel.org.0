@@ -1,63 +1,75 @@
-Return-Path: <linux-btrfs+bounces-4699-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4700-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622578BA6AA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 07:35:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 510E18BA6CC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 08:02:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CB332830DC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 05:35:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E32BB215CA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 06:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90421139CE1;
-	Fri,  3 May 2024 05:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCDA139CEE;
+	Fri,  3 May 2024 06:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CHdxdkW9";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CHdxdkW9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B81F139591
-	for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2024 05:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1291C6BD
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2024 06:02:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714714511; cv=none; b=KSbjJKnWxcLedx7kDrdJ5VzZERlRwlVTyxKzVWYtknLKjDJFLAgBY0mm5M1/5/3O87tpZnC7G3OdNNgEVY2jdhh5HoP6osb2zk4tjA3/4TvkCftwLXqrdf9RpLCY+j4RAJLQvqHr4dFmOA7OiAkWPJxlWOFV7hNRJ/7UOWp5w60=
+	t=1714716129; cv=none; b=IW/AB7CXXc91mPA9oX6RZZl0XJpLnmiMU2+xBxog6xHL5Zgd1Pq9ZnuAp27fiROAAjaHn4HURxY4a+16rskTjjBjl/D2mrm+WaB+/a3u+2uyGWz/f+/b/0AGi7JbV0EaZbbwuLXuxhp8prAfJ1Fxapo6WgQGxsRcBd/102qewZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714714511; c=relaxed/simple;
-	bh=IxfLcYEGu2vZhozhLf2zzY2UEHrUL6vCIwQBoRntHZQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aT8WPqG3Hqqgs4B+6+YfcSQJTloyxYYgl7RKd8+OCRgGzNMJz2fTpQ0LCNf+rFXUs5TMTYN10sWdZqhfEPQBDM5Q2OqNy81++ucRlJa3GRa4Sl5QgQU+TJAcv3RXKe2t1lNNMB/UTi2IrpeK7b8MUSgWPH5ZIQbnIrLWaVzDLSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55911bff66so1162179666b.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 May 2024 22:35:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714714508; x=1715319308;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CnIzRxAKWsNwqdlccr13lXN81lXKA5W9Ab3dXAmZcTw=;
-        b=Hq4yIouqxztU7axYI2+GkU4BFyvXF+L0FsRv3xa2rSTOtUkSOx6a9eyPACbjweUD0Q
-         p+6bWPKYBILHHexhZQ4sZjmtv1GwjtMP/qLYQcn3I0jS46F9SaJG4AZ+j4mxBJXPjQVO
-         a+RfGbfomQ7ZGqaK5kxgqNd7ES1k8cMkatEw159aL1SNKLu6OjxNUaEbyI3Pf81Akudt
-         B3KXA+UD5QwBjxnhAp4kyN2gl8S0O9ureR3UCT9Oz7lViuEMaFseUNk0e5WjjNpzbLkL
-         4bX8L9hCDQze5XHhxn3LUr7PAFgh9zJN5Tokh55zZrG/6V8pj33od1zqzyJnTQvzn55b
-         itsw==
-X-Gm-Message-State: AOJu0YwiZZV6VkefpOfWGJLbykGanG01ST6+SxaFQCW3+8pBmpKcQVtF
-	ZQ4VcPsTqdx2Cxo+Zp+3ERKx0+AQxrhnAPubhSh9bpBP8Ps5ArwRKqnnba3g
-X-Google-Smtp-Source: AGHT+IFabRDRUU0p/Ht59TX4TojOYBX2YR7LPmfNDvyjHAUKpqjQ5vgfbuIc+eEawglv4uYrnx4fgQ==
-X-Received: by 2002:a17:906:114a:b0:a58:ca91:7855 with SMTP id i10-20020a170906114a00b00a58ca917855mr982310eja.0.1714714507630;
-        Thu, 02 May 2024 22:35:07 -0700 (PDT)
-Received: from nuc.fritz.box (p200300f6f718be00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f718:be00:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id i2-20020a1709061cc200b00a598a32f21bsm534275ejh.102.2024.05.02.22.35.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 22:35:07 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
+	s=arc-20240116; t=1714716129; c=relaxed/simple;
+	bh=OF7tCqqoCfcOZrgxH9dI8Na+caDKCd4jgY3+x60CEBE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=HLuowte/B4XPvloQL2iwIYmVe+sjNwKKvObGg7x+BAd1RssIboho4oXpdBgy05jC/+gGco4zKYCavNmYGPZVthNs3dToPmCwubhKCo29lTyz0CEGdUuNlK2X6X7E/1uR3LmlxHo2D3CGIv+7mmI/7cIF5nKd3n3LLQq5Qh47MRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CHdxdkW9; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CHdxdkW9; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0C6F31FDBE
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2024 06:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1714716126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lEPT7PSLqlIq4Qpg6X0/JU8KkLH1lS+EXIWHC/95uZ8=;
+	b=CHdxdkW9sUgegQ+MiyfTMvoYisF5JrlL8mg/JtWUYWE3ZpLRRmBY1obTi+dvtatvE6ygOq
+	D6nu0zvWOhEMinVgSz25EcvwGp3o3J6bNsRNt9W2oO66weW8yAQ6QrtSOc5t8Z+eb6zWVS
+	d/CF8nQLvOFPXZOMUTPzyJtq0/eLXKU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1714716126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lEPT7PSLqlIq4Qpg6X0/JU8KkLH1lS+EXIWHC/95uZ8=;
+	b=CHdxdkW9sUgegQ+MiyfTMvoYisF5JrlL8mg/JtWUYWE3ZpLRRmBY1obTi+dvtatvE6ygOq
+	D6nu0zvWOhEMinVgSz25EcvwGp3o3J6bNsRNt9W2oO66weW8yAQ6QrtSOc5t8Z+eb6zWVS
+	d/CF8nQLvOFPXZOMUTPzyJtq0/eLXKU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2CF2513991
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2024 06:02:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Xg1sMdx9NGbgawAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 03 May 2024 06:02:04 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH RFC] btrfs: don't hold dev_replace rwsem over whole of btrfs_map_block
-Date: Fri,  3 May 2024 07:34:57 +0200
-Message-Id: <2454cd4eb1694d37056e492af32b23743c63202b.1714663442.git.jth@kernel.org>
-X-Mailer: git-send-email 2.35.3
+Subject: [PATCH v2 00/11] btrfs: extent-map: unify the members with btrfs_ordered_extent
+Date: Fri,  3 May 2024 15:31:35 +0930
+Message-ID: <cover.1714707707.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,100 +77,140 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+[CHANGELOG]
+v2:
+- Rebased to the latest for-next
+  There is a conflicts with extent locking, and maybe some other
+  hidden conflicts for NOCOW/PREALLOC?
+  As previously the patchset passes fstests auto group, but after
+  the merging with other patches, it always crashes as btrfs/060.
 
-Don't hold the dev_replace rwsem for the entirety of btrfs_map_block().
+- Fix an error in the final cleanup patch
+  It's the NOCOW/PREALLOC shenanigans again, in the buffered NOCOW path,
+  that we have to use the old inaccurate numbers for NOCOW/PREALLOC OEs.
 
-It is only needed to protect
-a) calls to find_live_mirror() and
-b) calling into handle_ops_on_dev_replace().
+- Split the final cleanup into 4 patches
+  Most cleanups are very straightforward, but the cleanup for
+  btrfs_alloc_ordered_extent() needs extra special handling for
+  NOCOW/PREALLOC.
 
-But there is no need to hold the rwsem for any kind of set_io_stripe()
-calls.
+v1:
+- Rebased to the latest for-next
+  To resolve the conflicts with the recently introduced extent map
+  shrinker
 
-So relax taking the dev_replace rwsem to only protect both cases and check
-if the device replace status has changed in the meantime, for which we have
-to re-do the find_live_mirror() calls.
+- A new cleanup patch to remove the recursive header inclusion
 
-This fixes a deadlock on raid-stripe-tree where device replace performs a
-scrub operation, which in turn calls into btrfs_map_block() to find the
-physical location of the block.
+- Use a new structure to pass the file extent item related members
+  around
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/volumes.c | 30 +++++++++++++++++++-----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
+- Add a new comment on why we're intentionally passing incorrect
+  numbers for NOCOW/PREALLOC ordered extents inside
+  btrfs_create_dio_extent()
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a3dc88e420d1..3a842b9960b2 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6649,14 +6649,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	max_len = btrfs_max_io_len(map, map_offset, &io_geom);
- 	*length = min_t(u64, map->chunk_len - map_offset, max_len);
- 
-+again:
- 	down_read(&dev_replace->rwsem);
- 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
--	/*
--	 * Hold the semaphore for read during the whole operation, write is
--	 * requested at commit time but must wait.
--	 */
--	if (!dev_replace_is_ongoing)
--		up_read(&dev_replace->rwsem);
- 
- 	switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
- 	case BTRFS_BLOCK_GROUP_RAID0:
-@@ -6689,6 +6684,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		map_blocks_single(map, &io_geom);
- 		break;
- 	}
-+
-+	up_read(&dev_replace->rwsem);
-+
- 	if (io_geom.stripe_index >= map->num_stripes) {
- 		btrfs_crit(fs_info,
- 			   "stripe index math went horribly wrong, got stripe_index=%u, num_stripes=%u",
-@@ -6784,10 +6782,25 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	if (op != BTRFS_MAP_READ)
- 		io_geom.max_errors = btrfs_chunk_max_errors(map);
- 
-+	/*
-+	 * Check if something changed the dev_replace state since
-+	 * we've checked it for the last time and if redo the whole
-+	 * mapping operation.
-+	 */
-+	down_read(&dev_replace->rwsem);
-+	if (!dev_replace_is_ongoing &&
-+	    btrfs_dev_replace_is_ongoing(dev_replace)) {
-+		up_read(&dev_replace->rwsem);
-+		goto again;
-+	}
-+	up_read(&dev_replace->rwsem);
-+
- 	if (dev_replace_is_ongoing && dev_replace->tgtdev != NULL &&
- 	    op != BTRFS_MAP_READ) {
-+		down_read(&dev_replace->rwsem);
- 		handle_ops_on_dev_replace(op, bioc, dev_replace, logical,
- 					  &io_geom.num_stripes, &io_geom.max_errors);
-+		up_read(&dev_replace->rwsem);
- 	}
- 
- 	*bioc_ret = bioc;
-@@ -6796,11 +6809,6 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	bioc->mirror_num = io_geom.mirror_num;
- 
- out:
--	if (dev_replace_is_ongoing) {
--		lockdep_assert_held(&dev_replace->rwsem);
--		/* Unlock and let waiting writers proceed */
--		up_read(&dev_replace->rwsem);
--	}
- 	btrfs_free_chunk_map(map);
- 	return ret;
- }
+[REPO]
+https://github.com/adam900710/linux/tree/em_cleanup
+
+This series introduce two new members (disk_bytenr/offset) to
+extent_map, and removes three old members
+(block_start/block_len/offset), finally rename one member
+(orig_block_len -> disk_num_bytes).
+
+This should save us one u64 for extent_map, although with the recent
+extent map shrinker, the saving is not that useful.
+
+But to make things safe to migrate, I introduce extra sanity checks for
+extent_map, and do cross check for both old and new members.
+
+The extra sanity checks already exposed one bug (thankfully harmless)
+causing em::block_start to be incorrect.
+
+But so far, the patchset is fine for default fstests run.
+
+Furthermore, since we're already having too long parameter lists for
+extent_map/ordered_extent/can_nocow_extent, here is a new structure,
+btrfs_file_extent, a memory-access-friendly structure to represent a
+btrfs_file_extent_item.
+
+With the help of that structure, we can use that to represent a file
+extent item without a super long parameter list.
+
+The patchset would rename orig_block_len to disk_num_bytes first.
+Then introduce the new member, the extra sanity checks, and introduce the
+new btrfs_file_extent structure and use that to remove the older 3 members
+from extent_map.
+
+After all above works done, use btrfs_file_extent to further cleanup
+can_nocow_file_extent_args()/btrfs_alloc_ordered_extent()/create_io_em()/
+btrfs_create_dio_extent().
+
+The cleanup is in fact pretty tricky, the current code base never
+expects correct numbers for NOCOW/PREALLOC OEs, thus we have to keep the
+old but incorrect numbers just for NOCOW/PREALLOC.
+
+I will address the NOCOW/PREALLOC shenanigans the future, but
+after the huge cleanup across multiple core structures.
+
+Qu Wenruo (11):
+  btrfs: rename extent_map::orig_block_len to disk_num_bytes
+  btrfs: export the expected file extent through can_nocow_extent()
+  btrfs: introduce new members for extent_map
+  btrfs: introduce extra sanity checks for extent maps
+  btrfs: remove extent_map::orig_start member
+  btrfs: remove extent_map::block_len member
+  btrfs: remove extent_map::block_start member
+  btrfs: cleanup duplicated parameters related to
+    can_nocow_file_extent_args
+  btrfs: cleanup duplicated parameters related to
+    btrfs_alloc_ordered_extent
+  btrfs: cleanup duplicated parameters related to create_io_em()
+  btrfs: cleanup duplicated parameters related to
+    btrfs_create_dio_extent()
+
+ fs/btrfs/btrfs_inode.h            |   4 +-
+ fs/btrfs/compression.c            |   7 +-
+ fs/btrfs/defrag.c                 |  14 +-
+ fs/btrfs/extent_io.c              |  10 +-
+ fs/btrfs/extent_map.c             | 187 ++++++++++++------
+ fs/btrfs/extent_map.h             |  51 +++--
+ fs/btrfs/file-item.c              |  23 +--
+ fs/btrfs/file.c                   |  18 +-
+ fs/btrfs/inode.c                  | 308 +++++++++++++-----------------
+ fs/btrfs/ordered-data.c           |  36 +++-
+ fs/btrfs/ordered-data.h           |  22 ++-
+ fs/btrfs/relocation.c             |   5 +-
+ fs/btrfs/tests/extent-map-tests.c | 114 ++++++-----
+ fs/btrfs/tests/inode-tests.c      | 177 ++++++++---------
+ fs/btrfs/tree-log.c               |  25 +--
+ fs/btrfs/zoned.c                  |   4 +-
+ include/trace/events/btrfs.h      |  26 +--
+ 17 files changed, 548 insertions(+), 483 deletions(-)
+
 -- 
-2.35.3
+2.45.0
 
 
