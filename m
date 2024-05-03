@@ -1,229 +1,303 @@
-Return-Path: <linux-btrfs+bounces-4717-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4718-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C1F8BA9D4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 11:23:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01ABF8BA9FC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 11:38:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BDD92867B3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 09:23:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED6DAB20C86
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 09:38:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7CE14A4FF;
-	Fri,  3 May 2024 09:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451D814F9F1;
+	Fri,  3 May 2024 09:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VGV/JV8H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A8E14D2BC;
-	Fri,  3 May 2024 09:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E45253372
+	for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2024 09:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714728058; cv=none; b=FYUyPiX+sWUSRGkUcAs2gytwftYaz46lvHRMk7Odb/6+sMGvyTY9A/UWq54OVsKd7rxwZa25aUer+xijeFHMg9BZqNBy5jcesU44/rnbVihKluyE5Ywz8vtRm/N6DOcYQdz54uS7FiWuz4jJYu+8RJ97fDyzEKk09+pPXOAdMcU=
+	t=1714729064; cv=none; b=nkZ3FBqWlozGVmAzFcssjAh3APMyOT1tmj60HErB7HtRS+gButdBKjQAYSkUG537IGRYB13TNnthXxQ9bT4l0lq6q2mlOa/VslZnvQmjJW5/UO9JRbPa1a/ZvfZygLi5UY8SbjYQSez/2iE2TmQx4+11xLs0jiL9QdieR8LmZ2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714728058; c=relaxed/simple;
-	bh=b/BN+fNuxRuORWf9+ySA1VDQ+emZr+DHAxB7JhCbPC8=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tZlZqThgacuwhfTsJyiGegkY9zGfycdnSxonmYwnWUVrzpPQpBGOH7IhXMxYNbPzVglUJOLgGgbAMk74L6jeUcMUz25zR/DwcAlFvnNuaLzb8FR92zDk/MnlqIjpWuSr1nAAvZi0uP9Upthm/EceSBaS1Qi6QwWSoF/odwX3oPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VW4z25zRKz6D92V;
-	Fri,  3 May 2024 17:20:30 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0020F140B39;
-	Fri,  3 May 2024 17:20:53 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 3 May
- 2024 10:20:52 +0100
-Date: Fri, 3 May 2024 10:20:51 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
-	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-Message-ID: <20240503102051.00004a99@Huawei.com>
-In-Reply-To: <6632d503f3ae5_e1f58294df@iweiny-mobl.notmuch>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240404184901.00002104@Huawei.com>
-	<6632d503f3ae5_e1f58294df@iweiny-mobl.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1714729064; c=relaxed/simple;
+	bh=MUDMXGhnmgCttahpDBLYCsS3yirlf+8mMqFpJSFLoaY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=YwhlNnJ2a57LVbAXVR9y1zZNJzQLOeN3NG4IHXPrbXGd9dBPZkIM4weN+hLvnitDnr7EoKpIwp701BRoFlIxHuG2MOZm7iFuatMgTPvoBrvcIvpmjZ68aclpTwviWbaF6WDUvG68ilFEkvlFCr5nMPt/ieLOoRZ5egSa4f8xTO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VGV/JV8H; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-34dc9065606so1566948f8f.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 May 2024 02:37:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1714729060; x=1715333860; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=r3ZjahHZ6zMJICY7twkxvFwt8SZIyE9UiR0xavsVa48=;
+        b=VGV/JV8Hpo+UwmfovswDZznwAgrE4RKsANboPG5zl/Tjxu2omQfzSH9oHM+Css9+VJ
+         UG+w9wfRNSYah5Cj2ahTZuf4J5yt8QZeG0RO1vv1zca6RtoVZqXmPRWN2yUAQn/B6EOk
+         QgCJYxehO5NLG1kOcw2lDGHAHptt+iyA0aBzy+aKy8efENFtr3jSERXJJ2uBVT3x49CM
+         2xRqWtGwYKqmIubwLWD61eKyno5CYd7J2TTyLdQblcKTrDMkUlXcwtcQB95nzmauO1WW
+         gmrvp5xMUaC2Hvptw+5O4w7Kow2lLHOIFFizi7USnUK64WrB5M6DIF+s9pa5KhUw5LJM
+         ZVtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714729060; x=1715333860;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r3ZjahHZ6zMJICY7twkxvFwt8SZIyE9UiR0xavsVa48=;
+        b=K3VSP4VXDr9BwlVD+IdTZqaoiJGzo3DBn5aYsmAcoO+E74djBmKZMXiylxNQFutpYk
+         W3Gf2oOrFWR5gwHrBBa+HAeztTiQdqqLrF60YUyytkcM0iZK3Nm/SOBxF32FDWjFxftN
+         Fw95j7FEr81jjIa8b+p3kdMLQUEMSFiQ7bX6PiAWNplGoMnbDR9dY/D0sZ5zHRWqYZ/0
+         o9LXvVqBweWLNWzA989Xd1gGbSTFRO1AjFYkHQlLVOVMlve/OrlnJtsbj08WT+wdM7QL
+         Sg+aW0A9onLdOvIxW/6/TpxFAQcZEGsJ/uvmBggwuKrVYsZ9FpZIBDnnYhadIGlVqrKY
+         vr5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVF0yyf1GD2FVK+0STDSiGMQtTE0O8SKVtf4s6eZoiG1rB+wqteoQd4a7KOtsUowuT6/LS7Oh6oTQXZR7w1EWBZubdCnZKrHBctu2Q=
+X-Gm-Message-State: AOJu0YzXDwdBBeYLmxtmYD8rUVIxehml1PLbbFWRNW8DmMjHSM52Af1Z
+	TmdSn8g23swAHdL1S2ikNUTMolxQ8dIczHYpUjFfOscUc7QwYXPifW6HGWXYOrh8Ennz9hwFnwp
+	l
+X-Google-Smtp-Source: AGHT+IEolOZ48yES3mwawHw4rWIYuPyIg7EEZMVVZ7HgzZxXkAEJJMPQ5xDio/1GS/tB1XIbe2i7Xg==
+X-Received: by 2002:a05:6000:188:b0:34d:c4c7:7ca with SMTP id p8-20020a056000018800b0034dc4c707camr4627516wrx.20.1714729060539;
+        Fri, 03 May 2024 02:37:40 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id e14-20020a17090301ce00b001ec80dbb8b1sm2804169plh.73.2024.05.03.02.37.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 02:37:40 -0700 (PDT)
+Message-ID: <48787c70-1abf-433e-ad3f-9e212237f9a5@suse.com>
+Date: Fri, 3 May 2024 19:07:35 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-
-On Wed, 1 May 2024 16:49:24 -0700
-Ira Weiny <ira.weiny@intel.com> wrote:
-
-> Jonathan Cameron wrote:
-> >   
-> > > 
-> > > Fan Ni's latest v5 of Qemu DCD was used for testing.[2]  
-> > Hi Ira, Navneet.  
-> > > 
-> > > Remaining work:
-> > > 
-> > > 	1) Integrate the QoS work from Dave Jiang
-> > > 	2) Interleave support  
-> > 
-> > 
-> > More flag.  This one I think is potentially important and don't
-> > see any handling in here.  
-> 
-> Nope I admit I missed the spec requirement.
-> 
-> > 
-> > Whilst an FM could in theory be careful to avoid sending a
-> > sparse set of extents, if the device is managing the memory range
-> > (which is possible all it supports) and the FM issues an Initiate Dynamic
-> > Capacity Add with Free (again may be all device supports) then we
-> > can't stop the device issuing a bunch of sparse extents.
-> > 
-> > Now it won't be broken as such without this, but every time we
-> > accept the first extent that will implicitly reject the rest.
-> > That will look very ugly to an FM which has to poke potentially many
-> > times to successfully allocate memory to a host.  
-> 
-> This helps me to see see why the more bit is useful.
-> 
-> > 
-> > I also don't think it will be that hard to support, but maybe I'm
-> > missing something?   
-> 
-> Just a bunch of code and refactoring busy work.  ;-)  It's not rocket
-> science but does fundamentally change the arch again.
-> 
-> > 
-> > My first thought is it's just a loop in cxl_handle_dcd_add_extent()
-> > over a list of extents passed in then slightly more complex response
-> > generation.  
-> 
-> Not exactly 'just a loop'.  No matter how I work this out there is the
-> possibility that some extents get surfaced and then the kernel tries to
-> remove them because it should not have.
-
-Lets consider why it might need to back out.
-1) Device sends an invalid set of extents - so maybe one in a later message
-   overlaps with an already allocated extent.   Device bug, handling can
-   be extremely inelegant - up to crashing the kernel.  Worst that happens
-   due to race is probably a poison storm / machine check fun?  Not our
-   responsibility to deal with something that broken (in my view!) Best effort
-   only.
-
-2) Host can't handle the extent for some reason and didn't know that until
-   later - can just reject the ones it can't handle. 
-
-> 
-> To be most safe the cxl core is going to have to make 2 round trips to the
-> cxl region layer for each extent.  The first determines if the extent is
-> valid and creates the extent as much as possible.  The second actually
-> surfaces the extents.  However, if the surface fails then you might not
-> get the extents back.  So now we are in an invalid state.  :-/  WARN and
-> continue I guess?!??!
-
-Yes. Orchestrator can decide how to handle - probably reboot server in as
-gentle a fashion as possible.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 4/4] btrfs-progs: convert: support ext2 unwritten file
+ data extents
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org
+References: <cover.1714722726.git.anand.jain@oracle.com>
+ <6d2a19ced4551bfcf2a5d841921af7f84c4ea950.1714722726.git.anand.jain@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <6d2a19ced4551bfcf2a5d841921af7f84c4ea950.1714722726.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-> 
-> I think the safest way to handle this is add a new kernel notify event
-> called 'extent create' which stops short of surfacing the extent.  [I'm
-> not 100% sure how this is going to affect interleave.]
-> 
-> I think the safest logic for add is something like:
-> 
-> 	cxl_handle_dcd_add_event()
-> 		add_extent(squirl_list, extent);
-> 
-> 		if (more bit) /* wait for more */
-> 			return;
-> 
-> 		/* Create extents to hedge the bets against failure */
-> 		for_each(squirl_list)
-> 			if (notify 'extent create' != ok)
-> 				send_response(fail);
-> 				return;
-> 		
-> 		for_each(squirl_list)
-> 			if (notify 'surface' != ok)
-> 				/*
-> 				 * If the more bit was set, some extents
-> 				 * have been surfaced and now need to be
-> 				 * removed...
-> 				 *
-> 				 * Try to remove them and hope...
-> 				 */
 
-If we failed to surface them all another option is just tell the device
-that.   Responds with the extents that successfully surfaced and reject
-all others (or all after the one that failed?)  So for the lower layers
-send the device a response that says "thanks but I only took these ones"
-and for the upper layers pretend "I was only offered these ones"
-
-> 				WARN_ON('surface extents failed');
-> 				for_each(squirl_list)
-> 					notify 'remove without response'
-> 				send_response(fail);
-> 				return;
+在 2024/5/3 18:38, Anand Jain 写道:
+> This patch, along with the dependent patches below, adds support for
+> ext4 unwritten file extents as preallocated file extent in btrfs.
 > 
-> 		send_response(squirl_list, accept);
+>   btrfs-progs: convert: refactor ext2_create_file_extents add argument ext2_inode
+>   btrfs-progs: convert: struct blk_iterate_data, add ext2-specific file inode pointers
+>   btrfs-progs: convert: refactor __btrfs_record_file_extent to add a prealloc flag
 > 
-> The logic for remove is not changed AFAICS because the device must allow
-> for memory to be released at any time so the host is free to release each
-> of the extents individually despite the 'more' bit???
-
-Yes, but only after it accepted them - which needs to be done in one go.
-So you can't just send releases before that (the device will return an
-error and keep them in the pending list I think...)
-
+> The patch is developed with POV of portability with the current
+> e2fsprogs library.
 > 
-> > 
-> > I don't want this to block getting initial DCD support in but it
-> > will be a bit ugly if we quickly support the more flag and then end
-> > up with just one kernel that an FM has to be careful with...  
+> Testcase:
 > 
-> I'm not sure which is worse.  Given your use case above it seems like the
-> more bit may be more important for 'dumb' devices which want to add
-> extents in blocks before responding to the FM.  Thus complicating the FM.
+>       $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=1 conv=fsync status=none
+>       $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=2 conv=fsync seek=1 status=none
+>       $ xfs_io -f -c 'falloc -k 12K 12K' /mnt/test/foo
+>       $ dd if=/dev/zero of=/mnt/test/foo bs=4K count=1 conv=fsync seek=6 status=none
 > 
-> It seems 'smarter' devices which could figure this out (not requiring the
-> more bit) are the ones which will be developed later.  So it seems the use
-> case time line is the opposite of what we need right now.
-
-Once we hit shareable capacity (which the smarter devices will use) then
-this become the dominant approach to non contiguous allocations because
-you can't add extents with a given tag in multiple goes.
-
-So I'd expect the more flag to be more common not less over time.
+>       $ filefrag -v /mnt/test/foo
+>       Filesystem type is: ef53
+>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+> 	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+> 	   0:        0..       0:      33280..     33280:      1:
+> 	   1:        1..       2:      33792..     33793:      2:      33281:
+> 	   2:        3..       5:      33281..     33283:      3:      33794: unwritten
+> 	   3:        6..       6:      33794..     33794:      1:      33284: last,eof
 > 
-> For that reason I'm inclined to try and get this in.
+>       $ sha256sum /mnt/test/foo
+>       18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  /mnt/test/foo
 > 
-
-Great - but I'd not worry too much about bad effects if you get invalid
-lists from the device.  If the only option is shout and panic, then fine
-though I'd imagine we can do slightly better than that, so maybe warn
-extensively and don't let the region be used.
-
-Jonathan
-
-> Ira
+>     Convert and compare the checksum
 > 
+>     Before:
+> 
+>       $ filefrag -v /mnt/test/foo
+>       Filesystem type is: 9123683e
+>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+>        ext:     logical_offset:        physical_offset: length:   expected: flags:
+>        0:        0..       0:      33280..     33280:      1:             shared
+>        1:        1..       2:      33792..     33793:      2:      33281: shared
+>        2:        3..       6:      33281..     33284:      4:      33794: last,shared,eof
+>       /mnt/test/foo: 3 extents found
+> 
+>       $ sha256sum /mnt/test/foo
+>       6874a1733e5785682210d69c07f256f684cf5433c7235ed29848b4a4d52030e0  /mnt/test/foo
+> 
+>     After:
+> 
+>       $ filefrag -v /mnt/test/foo
+>       Filesystem type is: 9123683e
+>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+> 	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+> 	   0:        0..       0:      33280..     33280:      1:             shared
+> 	   1:        1..       2:      33792..     33793:      2:      33281: shared
+> 	   2:        3..       5:      33281..     33283:      3:      33794: unwritten,shared
+> 	   3:        6..       6:      33794..     33794:      1:      33284: last,shared,eof
+>       /mnt/test/foo: 4 extents found
+> 
+>       $ sha256sum /mnt/test/foo
+>       18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  /mnt/test/foo
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> RFC: Limited tested. Is there a ready file or test case available to
+> exercise the feature?
+> 
+>   convert/source-fs.c | 49 ++++++++++++++++++++++++++++++++++++++++++++-
+>   convert/source-fs.h |  1 +
+>   2 files changed, 49 insertions(+), 1 deletion(-)
+> 
+> diff --git a/convert/source-fs.c b/convert/source-fs.c
+> index 9039b0e66758..647ea1f29060 100644
+> --- a/convert/source-fs.c
+> +++ b/convert/source-fs.c
+> @@ -239,6 +239,45 @@ fail:
+>   	return ret;
+>   }
+>   
+> +int find_prealloc(struct blk_iterate_data *data, int index, bool *prealloc)
 
+This function is called for every file extent we're going to create.
+I'm not a big fan of doing so many lookup.
+
+My question is, is this the only way to determine the flag of the data 
+extent?
+
+My instinct says there should be a straight forward way to determine if 
+a file extent is preallocated or not, just like what we do in our file 
+extent items.
+Thus during the ext2fs_block_iterate2(), there should be some way to 
+tell if a block is preallocated or not.
+
+Thus adding ext4 ML to get some feedback.
+
+Thanks,
+Qu
+
+> +{
+> +	ext2_extent_handle_t handle;
+> +	struct ext2fs_extent extent;
+> +
+> +	if (ext2fs_extent_open2(data->ext2_fs, data->ext2_ino,
+> +				data->ext2_inode, &handle)) {
+> +		error("ext2fs_extent_open2 failed, inode %d", data->ext2_ino);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (ext2fs_extent_goto2(handle, 0, index)) {
+> +		error("ext2fs_extent_goto2 failed, inode %d num_blocks %llu",
+> +		       data->ext2_ino, data->num_blocks);
+> +		ext2fs_extent_free(handle);
+> +		return -EINVAL;
+> +	}
+> +
+> +	memset(&extent, 0, sizeof(struct ext2fs_extent));
+> +	if (ext2fs_extent_get(handle, EXT2_EXTENT_CURRENT, &extent)) {
+> +		error("ext2fs_extent_get EXT2_EXTENT_CURRENT failed inode %d",
+> +		       data->ext2_ino);
+> +		ext2fs_extent_free(handle);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (extent.e_pblk != data->disk_block) {
+> +	error("inode %d index %d found wrong extent e_pblk %llu wanted disk_block %llu",
+> +		       data->ext2_ino, index, extent.e_pblk, data->disk_block);
+> +		ext2fs_extent_free(handle);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT)
+> +		*prealloc = true;
+> +
+> +	return 0;
+> +}
+> +
+>   /*
+>    * Record a file extent in original filesystem into btrfs one.
+>    * The special point is, old disk_block can point to a reserved range.
+> @@ -257,6 +296,7 @@ int record_file_blocks(struct blk_iterate_data *data,
+>   	u64 old_disk_bytenr = disk_block * sectorsize;
+>   	u64 num_bytes = num_blocks * sectorsize;
+>   	u64 cur_off = old_disk_bytenr;
+> +	int index = data->first_block;
+>   
+>   	/* Hole, pass it to record_file_extent directly */
+>   	if (old_disk_bytenr == 0)
+> @@ -276,6 +316,12 @@ int record_file_blocks(struct blk_iterate_data *data,
+>   		u64 extent_num_bytes;
+>   		u64 real_disk_bytenr;
+>   		u64 cur_len;
+> +		bool prealloc = false;
+> +
+> +		if (find_prealloc(data, index, &prealloc)) {
+> +			data->errcode = -1;
+> +			return -EINVAL;
+> +		}
+>   
+>   		key.objectid = data->convert_ino;
+>   		key.type = BTRFS_EXTENT_DATA_KEY;
+> @@ -317,11 +363,12 @@ int record_file_blocks(struct blk_iterate_data *data,
+>   		ret = btrfs_record_file_extent(data->trans, data->root,
+>   					data->objectid, data->inode, file_pos,
+>   					real_disk_bytenr, cur_len,
+> -					false);
+> +					prealloc);
+>   		if (ret < 0)
+>   			break;
+>   		cur_off += cur_len;
+>   		file_pos += cur_len;
+> +		index++;
+>   
+>   		/*
+>   		 * No need to care about csum
+> diff --git a/convert/source-fs.h b/convert/source-fs.h
+> index 0e71e79eddcc..3922c444de10 100644
+> --- a/convert/source-fs.h
+> +++ b/convert/source-fs.h
+> @@ -156,5 +156,6 @@ int read_disk_extent(struct btrfs_root *root, u64 bytenr,
+>   		            u32 num_bytes, char *buffer);
+>   int record_file_blocks(struct blk_iterate_data *data,
+>   			      u64 file_block, u64 disk_block, u64 num_blocks);
+> +int find_prealloc(struct blk_iterate_data *data, int index, bool *prealloc);
+>   
+>   #endif
 
