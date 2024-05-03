@@ -1,303 +1,111 @@
-Return-Path: <linux-btrfs+bounces-4718-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4719-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01ABF8BA9FC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 11:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 947D28BAA04
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 11:41:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED6DAB20C86
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 09:38:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A836FB211CC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 09:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451D814F9F1;
-	Fri,  3 May 2024 09:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE05D14F9F0;
+	Fri,  3 May 2024 09:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VGV/JV8H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cQDlFno/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E45253372
-	for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2024 09:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7697714BFBF;
+	Fri,  3 May 2024 09:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714729064; cv=none; b=nkZ3FBqWlozGVmAzFcssjAh3APMyOT1tmj60HErB7HtRS+gButdBKjQAYSkUG537IGRYB13TNnthXxQ9bT4l0lq6q2mlOa/VslZnvQmjJW5/UO9JRbPa1a/ZvfZygLi5UY8SbjYQSez/2iE2TmQx4+11xLs0jiL9QdieR8LmZ2c=
+	t=1714729251; cv=none; b=X4zPpeLTQ+cfd6n9IIy3E1bQuHXJYHPQJl7Yv03g/NjAisQgdZ/KKxWxB1p82/zLcmWMmFL+8wahRLVwYpDkZ+tzpCsX/fxI6hTi5Eab5PVE+Fqpul+ox3TzUhH1xgO+gi+zBHahg32lf5Fdy4N2gKOJiOaNXxN3IvsMkk6QDQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714729064; c=relaxed/simple;
-	bh=MUDMXGhnmgCttahpDBLYCsS3yirlf+8mMqFpJSFLoaY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=YwhlNnJ2a57LVbAXVR9y1zZNJzQLOeN3NG4IHXPrbXGd9dBPZkIM4weN+hLvnitDnr7EoKpIwp701BRoFlIxHuG2MOZm7iFuatMgTPvoBrvcIvpmjZ68aclpTwviWbaF6WDUvG68ilFEkvlFCr5nMPt/ieLOoRZ5egSa4f8xTO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VGV/JV8H; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-34dc9065606so1566948f8f.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 May 2024 02:37:41 -0700 (PDT)
+	s=arc-20240116; t=1714729251; c=relaxed/simple;
+	bh=39A8OWlUv3UHFjQvm5veN9ZOLUCUQiJrOOD153SpmyI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=GE/d//afzv26eSvUMF7eJSxWJtuCZ6/CltunBH3mb4ZsoG0vLXlF1+smD0GwJFLHoNtHGOBv0JPysQYQckHdA3QP8OyrRRU/ds1OS00meIHPwkKPTBCRMuKkPPKBiXAebgvtXyMmvfDe43xFV+ZlTGwU4bvol23twHvMaagMSiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cQDlFno/; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51f174e316eso1944918e87.0;
+        Fri, 03 May 2024 02:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1714729060; x=1715333860; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=r3ZjahHZ6zMJICY7twkxvFwt8SZIyE9UiR0xavsVa48=;
-        b=VGV/JV8Hpo+UwmfovswDZznwAgrE4RKsANboPG5zl/Tjxu2omQfzSH9oHM+Css9+VJ
-         UG+w9wfRNSYah5Cj2ahTZuf4J5yt8QZeG0RO1vv1zca6RtoVZqXmPRWN2yUAQn/B6EOk
-         QgCJYxehO5NLG1kOcw2lDGHAHptt+iyA0aBzy+aKy8efENFtr3jSERXJJ2uBVT3x49CM
-         2xRqWtGwYKqmIubwLWD61eKyno5CYd7J2TTyLdQblcKTrDMkUlXcwtcQB95nzmauO1WW
-         gmrvp5xMUaC2Hvptw+5O4w7Kow2lLHOIFFizi7USnUK64WrB5M6DIF+s9pa5KhUw5LJM
-         ZVtw==
+        d=gmail.com; s=20230601; t=1714729248; x=1715334048; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b9gO1v4sXfXdAITvo0BN7gOXupM7E3E+qa7nXDHVYeI=;
+        b=cQDlFno/TX6BZuiftdQM7AQb2g87c1a+46b0ArciDE9O7xkuTXmkbzf/yW3Qcy059c
+         OWLYdItV4MZKe5nIh3iU0AviS6zz259iA+QVgxGHJl5r/Sr8s3DCpiXBiVoDDTJS34Ci
+         lJTqqu0f8o3IVby6VR4vDr/jOMCo1KuuJ+79BYGf9y85jJ0wGCU22MCrb/8GgAFELSI7
+         svgb1yfCmxBURheHByeZp9ZDm9m+UOvy/4TKaYg1ITmQfqgsNL5rzR4c6df6fHcBwb9k
+         ZvrlOaMSqzT1OlnJZdnQqmKm2QihWxL24X1NnAyUMpEcnWfVBQn7rAmYBlXTiBVMKmWA
+         AxZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714729060; x=1715333860;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1714729248; x=1715334048;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=r3ZjahHZ6zMJICY7twkxvFwt8SZIyE9UiR0xavsVa48=;
-        b=K3VSP4VXDr9BwlVD+IdTZqaoiJGzo3DBn5aYsmAcoO+E74djBmKZMXiylxNQFutpYk
-         W3Gf2oOrFWR5gwHrBBa+HAeztTiQdqqLrF60YUyytkcM0iZK3Nm/SOBxF32FDWjFxftN
-         Fw95j7FEr81jjIa8b+p3kdMLQUEMSFiQ7bX6PiAWNplGoMnbDR9dY/D0sZ5zHRWqYZ/0
-         o9LXvVqBweWLNWzA989Xd1gGbSTFRO1AjFYkHQlLVOVMlve/OrlnJtsbj08WT+wdM7QL
-         Sg+aW0A9onLdOvIxW/6/TpxFAQcZEGsJ/uvmBggwuKrVYsZ9FpZIBDnnYhadIGlVqrKY
-         vr5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVF0yyf1GD2FVK+0STDSiGMQtTE0O8SKVtf4s6eZoiG1rB+wqteoQd4a7KOtsUowuT6/LS7Oh6oTQXZR7w1EWBZubdCnZKrHBctu2Q=
-X-Gm-Message-State: AOJu0YzXDwdBBeYLmxtmYD8rUVIxehml1PLbbFWRNW8DmMjHSM52Af1Z
-	TmdSn8g23swAHdL1S2ikNUTMolxQ8dIczHYpUjFfOscUc7QwYXPifW6HGWXYOrh8Ennz9hwFnwp
-	l
-X-Google-Smtp-Source: AGHT+IEolOZ48yES3mwawHw4rWIYuPyIg7EEZMVVZ7HgzZxXkAEJJMPQ5xDio/1GS/tB1XIbe2i7Xg==
-X-Received: by 2002:a05:6000:188:b0:34d:c4c7:7ca with SMTP id p8-20020a056000018800b0034dc4c707camr4627516wrx.20.1714729060539;
-        Fri, 03 May 2024 02:37:40 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id e14-20020a17090301ce00b001ec80dbb8b1sm2804169plh.73.2024.05.03.02.37.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 May 2024 02:37:40 -0700 (PDT)
-Message-ID: <48787c70-1abf-433e-ad3f-9e212237f9a5@suse.com>
-Date: Fri, 3 May 2024 19:07:35 +0930
+        bh=b9gO1v4sXfXdAITvo0BN7gOXupM7E3E+qa7nXDHVYeI=;
+        b=S2M4EigGlI6XzzF3TiGl8xo85gynYr577ZEP6y9tpgKqIxvgEmRxAmy8JAnUTVJMJF
+         c95fCnB9i91XVlgrhh9uOkUtTMFn1tZ0Y7outUfJW6+T3+eaYfpugbydB0/K60GLjIBr
+         uwWb2nq1gtxz528s5vIhVNpMI7CeemG/EOCEG3SkMTKgp1Owzh/PItR/E+SmhZ45MHHp
+         kRNHbN3ie4/oOz/4cCeD1B6oLIFDGl3xttdtikSo2RtmKr8BxE+mL7j2ngFWpsEunhEH
+         szP0jNbM5tbc8Mz4DiKQd7N3mX04Y624QqeTtgWdrEBGMHcxyAiXFg8Diw9rIVeDHAhJ
+         iJZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXKRrUTeAKoLxel5KWPCFFAi3qcFE0s0ILOROMyW0iT518x9L/tx9KGJJNyvkY1nvSfKIOZD/ZFrEEz6ZKIscT8XiwN1nYAVHIsEj4hIh4Hm58UNf2BUbBQzjkQbpwBsRcMcJF9OJMNzsI=
+X-Gm-Message-State: AOJu0Yy8ybGOt5zJdednbYxD+gDuOOhBjesMwk5LkFqdP7w8Za6GOE81
+	BsguiMiTEWRcnyo2Nf6sXkXxPq0KGY/i/MTUtmsZpIL3BDp1kX4O
+X-Google-Smtp-Source: AGHT+IGEMJv3fOcAWHTovUp3S5CuQ55ZULKUeY4/+3V4Dqn+tcro3oKC6xYCBsyM8UR7dEUmI4dU5w==
+X-Received: by 2002:ac2:4e83:0:b0:51f:4dba:d331 with SMTP id o3-20020ac24e83000000b0051f4dbad331mr1258629lfr.67.1714729247323;
+        Fri, 03 May 2024 02:40:47 -0700 (PDT)
+Received: from localhost (host81-157-180-37.range81-157.btcentralplus.com. [81.157.180.37])
+        by smtp.gmail.com with ESMTPSA id bf9-20020a0560001cc900b00341b451a31asm3327791wrb.36.2024.05.03.02.40.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 02:40:46 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] btrfs: Fix spelling mistake "decompresssed" -> "decompressed"
+Date: Fri,  3 May 2024 10:40:40 +0100
+Message-Id: <20240503094040.2712326-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 4/4] btrfs-progs: convert: support ext2 unwritten file
- data extents
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
- linux-ext4@vger.kernel.org
-References: <cover.1714722726.git.anand.jain@oracle.com>
- <6d2a19ced4551bfcf2a5d841921af7f84c4ea950.1714722726.git.anand.jain@oracle.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <6d2a19ced4551bfcf2a5d841921af7f84c4ea950.1714722726.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+There is a spelling mistake in a btrfs_err message. Fix it.
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/btrfs/zlib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-在 2024/5/3 18:38, Anand Jain 写道:
-> This patch, along with the dependent patches below, adds support for
-> ext4 unwritten file extents as preallocated file extent in btrfs.
-> 
->   btrfs-progs: convert: refactor ext2_create_file_extents add argument ext2_inode
->   btrfs-progs: convert: struct blk_iterate_data, add ext2-specific file inode pointers
->   btrfs-progs: convert: refactor __btrfs_record_file_extent to add a prealloc flag
-> 
-> The patch is developed with POV of portability with the current
-> e2fsprogs library.
-> 
-> Testcase:
-> 
->       $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=1 conv=fsync status=none
->       $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=2 conv=fsync seek=1 status=none
->       $ xfs_io -f -c 'falloc -k 12K 12K' /mnt/test/foo
->       $ dd if=/dev/zero of=/mnt/test/foo bs=4K count=1 conv=fsync seek=6 status=none
-> 
->       $ filefrag -v /mnt/test/foo
->       Filesystem type is: ef53
->       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
-> 	 ext:     logical_offset:        physical_offset: length:   expected: flags:
-> 	   0:        0..       0:      33280..     33280:      1:
-> 	   1:        1..       2:      33792..     33793:      2:      33281:
-> 	   2:        3..       5:      33281..     33283:      3:      33794: unwritten
-> 	   3:        6..       6:      33794..     33794:      1:      33284: last,eof
-> 
->       $ sha256sum /mnt/test/foo
->       18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  /mnt/test/foo
-> 
->     Convert and compare the checksum
-> 
->     Before:
-> 
->       $ filefrag -v /mnt/test/foo
->       Filesystem type is: 9123683e
->       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
->        ext:     logical_offset:        physical_offset: length:   expected: flags:
->        0:        0..       0:      33280..     33280:      1:             shared
->        1:        1..       2:      33792..     33793:      2:      33281: shared
->        2:        3..       6:      33281..     33284:      4:      33794: last,shared,eof
->       /mnt/test/foo: 3 extents found
-> 
->       $ sha256sum /mnt/test/foo
->       6874a1733e5785682210d69c07f256f684cf5433c7235ed29848b4a4d52030e0  /mnt/test/foo
-> 
->     After:
-> 
->       $ filefrag -v /mnt/test/foo
->       Filesystem type is: 9123683e
->       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
-> 	 ext:     logical_offset:        physical_offset: length:   expected: flags:
-> 	   0:        0..       0:      33280..     33280:      1:             shared
-> 	   1:        1..       2:      33792..     33793:      2:      33281: shared
-> 	   2:        3..       5:      33281..     33283:      3:      33794: unwritten,shared
-> 	   3:        6..       6:      33794..     33794:      1:      33284: last,shared,eof
->       /mnt/test/foo: 4 extents found
-> 
->       $ sha256sum /mnt/test/foo
->       18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  /mnt/test/foo
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> RFC: Limited tested. Is there a ready file or test case available to
-> exercise the feature?
-> 
->   convert/source-fs.c | 49 ++++++++++++++++++++++++++++++++++++++++++++-
->   convert/source-fs.h |  1 +
->   2 files changed, 49 insertions(+), 1 deletion(-)
-> 
-> diff --git a/convert/source-fs.c b/convert/source-fs.c
-> index 9039b0e66758..647ea1f29060 100644
-> --- a/convert/source-fs.c
-> +++ b/convert/source-fs.c
-> @@ -239,6 +239,45 @@ fail:
->   	return ret;
->   }
->   
-> +int find_prealloc(struct blk_iterate_data *data, int index, bool *prealloc)
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index 518d05b00a20..d7e5f681bc32 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -435,7 +435,7 @@ int zlib_decompress(struct list_head *ws, const u8 *data_in,
+ 		struct btrfs_inode *inode = BTRFS_I(dest_page->mapping->host);
+ 
+ 		btrfs_err(inode->root->fs_info,
+-"zlib decompression failed, error %d root %llu inode %llu offset %llu decompresssed %lu expected %zu",
++"zlib decompression failed, error %d root %llu inode %llu offset %llu decompressed %lu expected %zu",
+ 			  ret, inode->root->root_key.objectid, btrfs_ino(inode),
+ 			  page_offset(dest_page), to_copy, destlen);
+ 		ret = -EIO;
+-- 
+2.39.2
 
-This function is called for every file extent we're going to create.
-I'm not a big fan of doing so many lookup.
-
-My question is, is this the only way to determine the flag of the data 
-extent?
-
-My instinct says there should be a straight forward way to determine if 
-a file extent is preallocated or not, just like what we do in our file 
-extent items.
-Thus during the ext2fs_block_iterate2(), there should be some way to 
-tell if a block is preallocated or not.
-
-Thus adding ext4 ML to get some feedback.
-
-Thanks,
-Qu
-
-> +{
-> +	ext2_extent_handle_t handle;
-> +	struct ext2fs_extent extent;
-> +
-> +	if (ext2fs_extent_open2(data->ext2_fs, data->ext2_ino,
-> +				data->ext2_inode, &handle)) {
-> +		error("ext2fs_extent_open2 failed, inode %d", data->ext2_ino);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (ext2fs_extent_goto2(handle, 0, index)) {
-> +		error("ext2fs_extent_goto2 failed, inode %d num_blocks %llu",
-> +		       data->ext2_ino, data->num_blocks);
-> +		ext2fs_extent_free(handle);
-> +		return -EINVAL;
-> +	}
-> +
-> +	memset(&extent, 0, sizeof(struct ext2fs_extent));
-> +	if (ext2fs_extent_get(handle, EXT2_EXTENT_CURRENT, &extent)) {
-> +		error("ext2fs_extent_get EXT2_EXTENT_CURRENT failed inode %d",
-> +		       data->ext2_ino);
-> +		ext2fs_extent_free(handle);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (extent.e_pblk != data->disk_block) {
-> +	error("inode %d index %d found wrong extent e_pblk %llu wanted disk_block %llu",
-> +		       data->ext2_ino, index, extent.e_pblk, data->disk_block);
-> +		ext2fs_extent_free(handle);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT)
-> +		*prealloc = true;
-> +
-> +	return 0;
-> +}
-> +
->   /*
->    * Record a file extent in original filesystem into btrfs one.
->    * The special point is, old disk_block can point to a reserved range.
-> @@ -257,6 +296,7 @@ int record_file_blocks(struct blk_iterate_data *data,
->   	u64 old_disk_bytenr = disk_block * sectorsize;
->   	u64 num_bytes = num_blocks * sectorsize;
->   	u64 cur_off = old_disk_bytenr;
-> +	int index = data->first_block;
->   
->   	/* Hole, pass it to record_file_extent directly */
->   	if (old_disk_bytenr == 0)
-> @@ -276,6 +316,12 @@ int record_file_blocks(struct blk_iterate_data *data,
->   		u64 extent_num_bytes;
->   		u64 real_disk_bytenr;
->   		u64 cur_len;
-> +		bool prealloc = false;
-> +
-> +		if (find_prealloc(data, index, &prealloc)) {
-> +			data->errcode = -1;
-> +			return -EINVAL;
-> +		}
->   
->   		key.objectid = data->convert_ino;
->   		key.type = BTRFS_EXTENT_DATA_KEY;
-> @@ -317,11 +363,12 @@ int record_file_blocks(struct blk_iterate_data *data,
->   		ret = btrfs_record_file_extent(data->trans, data->root,
->   					data->objectid, data->inode, file_pos,
->   					real_disk_bytenr, cur_len,
-> -					false);
-> +					prealloc);
->   		if (ret < 0)
->   			break;
->   		cur_off += cur_len;
->   		file_pos += cur_len;
-> +		index++;
->   
->   		/*
->   		 * No need to care about csum
-> diff --git a/convert/source-fs.h b/convert/source-fs.h
-> index 0e71e79eddcc..3922c444de10 100644
-> --- a/convert/source-fs.h
-> +++ b/convert/source-fs.h
-> @@ -156,5 +156,6 @@ int read_disk_extent(struct btrfs_root *root, u64 bytenr,
->   		            u32 num_bytes, char *buffer);
->   int record_file_blocks(struct blk_iterate_data *data,
->   			      u64 file_block, u64 disk_block, u64 num_blocks);
-> +int find_prealloc(struct blk_iterate_data *data, int index, bool *prealloc);
->   
->   #endif
 
