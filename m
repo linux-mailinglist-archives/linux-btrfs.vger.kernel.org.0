@@ -1,109 +1,61 @@
-Return-Path: <linux-btrfs+bounces-4688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9101A8BA392
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 00:57:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 262648BA59E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 05:18:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD071B217D7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 May 2024 22:57:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6893283339
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 03:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750193218B;
-	Thu,  2 May 2024 22:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C808E1CD3F;
+	Fri,  3 May 2024 03:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vXFR8b+4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HNqahZD0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vXFR8b+4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HNqahZD0"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="OjgJo//a"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3D71C2AD;
-	Thu,  2 May 2024 22:57:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5149F1B299;
+	Fri,  3 May 2024 03:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714690646; cv=none; b=iJGP6xGPpgMl5ojVXS0srlWeewAw4xpVjxvHxWZjFlmM5TnnwiIsQPc5j5X7P55/6I2MoSkn2UO0ejEXUCvUUVlFgqF9zxsEWXpjpX5DxYkwmAgNwrcBUKl0D6fd9oCsPvrt9ThDQLimmlR7kVKOvLDjPXilcPuufVY3pjdL2og=
+	t=1714706319; cv=none; b=XMq8gt8xe1Ar/hNu2upEM0P4QZPttsQQkbtd5W7xhd/v81gPr1XvCrEduHLLhIhmCJJdDt4DvTpq1HpB61aWKGnDWvK54Y6Gxf0H8J35dg5wWyKd3SiZaUa7ge7DdXcv6O7NOaZomI/VgQ0VlVXt1M1ucT+jlS1gCJAYmtSFmIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714690646; c=relaxed/simple;
-	bh=KNuj+zPw1itV3KkMBcKodkx4OvddR49LGBRoZuKC0jw=;
+	s=arc-20240116; t=1714706319; c=relaxed/simple;
+	bh=FUU9iVfjt1Iwtk/vnvoYlu5LlKdIrGnJl89nXQBrA3I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MAtxZuLuvlYhcytpkBcwSWiWgr8dKLatm7G8A7EmXwEGa+Qevtf1OWoXEEJZIV/EpFwSa13SHfFiDBVN+WGu891d0dejgkrZBpSAITZ29yhwTDrNGS/v20mkx/3ZdpTGFMvgoyKdReSmorHh87HYCvMQzhmryAuOaiH6alUBono=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vXFR8b+4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HNqahZD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vXFR8b+4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HNqahZD0; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4BA8521B6D;
-	Thu,  2 May 2024 22:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714690642;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
-	b=vXFR8b+47fVienxCNHPpZEgaFl8IRR1Mv71xdUtU2622Csxiucd04oEJVudXAF/3dZZNOL
-	5qNcdcB9sSojwmpUriiCZRok+GGh4OGmhrQ7fE2dhTP1etELCXv80VumvTxLCy0EOxtpo/
-	H8bcJ9lxrkFjfxAvCydRKS1OSGHKjno=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714690642;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
-	b=HNqahZD0v59hLZv9836klkwGH5Zx+9048K1YzBWruiSenefzAMz0+ei9HFfuJv8vmMbSVh
-	rve/oT7LivploiAQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vXFR8b+4;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HNqahZD0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714690642;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
-	b=vXFR8b+47fVienxCNHPpZEgaFl8IRR1Mv71xdUtU2622Csxiucd04oEJVudXAF/3dZZNOL
-	5qNcdcB9sSojwmpUriiCZRok+GGh4OGmhrQ7fE2dhTP1etELCXv80VumvTxLCy0EOxtpo/
-	H8bcJ9lxrkFjfxAvCydRKS1OSGHKjno=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714690642;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YzZUXDPV0PB0GLA7qoIAy85H9S+PZoQXohv8tj76ZUE=;
-	b=HNqahZD0v59hLZv9836klkwGH5Zx+9048K1YzBWruiSenefzAMz0+ei9HFfuJv8vmMbSVh
-	rve/oT7LivploiAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D3EC1386E;
-	Thu,  2 May 2024 22:57:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XE/sClIaNGauegAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 02 May 2024 22:57:22 +0000
-Date: Fri, 3 May 2024 00:50:06 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, Baoquan He <bhe@redhat.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netfs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, kexec@lists.infradead.org
-Subject: Re: [PATCH 1/4] btrfs: Remove duplicate included header
-Message-ID: <20240502225006.GU2585@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240502212631.110175-1-thorsten.blum@toblux.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ahD2PleZIB0xFkfn82ZnejuFQsh/fr2bzCzzvFIgSFz2SSaBaE8Ko4QvVTA/4L1Iejonm48N352SIlzRFkS6u9GLpWBtfL//eym46EYeD0En+Li9/hCrBI5xCuyG2sE/U0o2n6/7buOojG1KuPNSAPVrxn2N2ixoD94lCkgj+7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=OjgJo//a; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=AD1DWCmY12Xm6FHUbR56Tj82yPsHjkXdgFTV9BSpp4E=; b=OjgJo//aBsu1n+3YSE8Rq8CrEz
+	uCx2vLqnLAheat0PP105qYxUZm6q+QVvYWx8zjdxoyS7QkVqhYyNU/5+IkvMUmhu3euV39SI0f3hm
+	6U/l7AifaEJs93QL3OeeaOwd3ctDL7ePIHymbvpdwMt8erXL+aVOIvZJ6KvnaSK7txkUqXJ61znt2
+	azsLWNNyxdgOJ9nsfDPTIOl74amCs89DCwhnL3fKYAApNjkc++i4iV2zikDGujpXthd4+EZa0RPDa
+	vT+Xto49R3aUnh8ZbM4m12IpJc5QXjq8qFCBdFus/HCf3JUbDSi0IjJ0T9hypdhF0xd6bSgN7ruqt
+	KFf2JgLQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1s2jRR-00A2Fw-0O;
+	Fri, 03 May 2024 03:18:33 +0000
+Date: Fri, 3 May 2024 04:18:33 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>, linux-btrfs@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCHES v2][RFC] set_blocksize() rework
+Message-ID: <20240503031833.GU2118490@ZenIV>
+References: <20240427210920.GR2118490@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -112,45 +64,79 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240502212631.110175-1-thorsten.blum@toblux.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.17 / 50.00];
-	BAYES_HAM(-2.96)[99.83%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[fb.com,toxicpanda.com,suse.com,redhat.com,kernel.org,szeredi.hu,gmail.com,vger.kernel.org,lists.linux.dev,lists.infradead.org];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 4BA8521B6D
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.17
+In-Reply-To: <20240427210920.GR2118490@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Thu, May 02, 2024 at 11:26:28PM +0200, Thorsten Blum wrote:
-> Remove duplicate included header file linux/blkdev.h
+On Sat, Apr 27, 2024 at 10:09:20PM +0100, Al Viro wrote:
+> 	Any buffer-cache based filesystem is going to be FUBAR
+> if somebody manages to change block size of device under it,
+> since primitives (sb_bread(), sb_getblk(), etc.) operate in
+> terms of block numbers.  If block size suddenly doubles, so
+> will the offsets from the beginning of device.  Results are
+> not pretty, obviously.
 > 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> 	The thing that (mostly) prevents that kind of mess
+> is that most of the mechanisms that lead to block size
+> change require the device being opened exclusive.  However,
+> there are several exceptions that allow to do that without
+> an exclusive open.  Fortunately, all of them require
+> CAP_SYS_ADMIN, so it's not a security problem - anyone
+> who already has that level of access can screw the system
+> into the ground in any number of ways.  However, security
+> problems or not, that crap should be fixed.
+> 
+> 	The series below eliminates these calls of set_blocksize()
+> and changes calling conventsion of set_blocksize() so that it
+> uses struct file * instead of struct block_device * to tell
+> which device to act upon.  Unlike struct block_device, struct
+> file has enough information to tell an exclusive open from
+> non-exclusive one, so we can reject the operation in non-exclusive
+> case.
+> 
+> 	The branch is available at
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #work.set_blocksize
+> Individual patches in followups.
+> 
+> Review (and testing, obviously) would be very welcome.
 
-Added to for-next, thanks.
+Branch updated and force-pushed (same place).  Individual patches in
+followups.
+
+Changes:
+* zram elimination of double-open added.
+* hopefully better description of btrfs side of things.
+* final commit split into switch of set_blocksize() to struct file
+  and adding a check for exclusive open.
+* chunk in Documentation/filesystems/porting.rst added.
+
+Shortlog:
+Al Viro (9):
+      bcache_register(): don't bother with set_blocksize()
+      pktcdvd: sort set_blocksize() calls out
+      swapon(2)/swapoff(2): don't bother with block size
+      swapon(2): open swap with O_EXCL
+      zram: don't bother with reopening - just use O_EXCL for open
+      swsusp: don't bother with setting block size
+      btrfs_get_bdev_and_sb(): call set_blocksize() only for exclusive opens
+      set_blocksize(): switch to passing struct file *
+      make set_blocksize() fail unless block device is opened exclusive
+
+Diffstat:
+ Documentation/filesystems/porting.rst |  7 +++++++
+ block/bdev.c                          | 14 ++++++++++----
+ block/ioctl.c                         | 21 ++++++++++++---------
+ drivers/block/pktcdvd.c               |  7 +------
+ drivers/block/zram/zram_drv.c         | 29 +++++++----------------------
+ drivers/block/zram/zram_drv.h         |  2 +-
+ drivers/md/bcache/super.c             |  4 ----
+ fs/btrfs/dev-replace.c                |  2 +-
+ fs/btrfs/volumes.c                    | 13 ++++++++-----
+ fs/ext4/super.c                       |  2 +-
+ fs/reiserfs/journal.c                 |  5 ++---
+ fs/xfs/xfs_buf.c                      |  2 +-
+ include/linux/blkdev.h                |  2 +-
+ include/linux/swap.h                  |  2 --
+ kernel/power/swap.c                   |  7 +------
+ mm/swapfile.c                         | 29 ++---------------------------
+ 16 files changed, 55 insertions(+), 93 deletions(-)
 
