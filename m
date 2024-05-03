@@ -1,48 +1,48 @@
-Return-Path: <linux-btrfs+bounces-4690-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4697-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0BAD8BA5A6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 05:23:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A5408BA5B5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 05:24:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEA221C22985
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 03:23:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9AD5284F2C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2024 03:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E08D71CD2A;
-	Fri,  3 May 2024 03:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F72537E9;
+	Fri,  3 May 2024 03:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="g+Eqsup9"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="muwBl8fJ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74FF1B299;
-	Fri,  3 May 2024 03:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06CD51CD3F;
+	Fri,  3 May 2024 03:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714706619; cv=none; b=CBTsFs/pI6DVC+cwQrOmTw7baCMw2ydA8QdK/BEUVilO8FjOV0HrtK6PpzK8kYWf8K3ew+RSQHPjvGEaQzJl9V5/2yfVX6BVhbnPbtDSbDEvLnStN3nrGD9v2KcBGiJJLbQYLlMVrCUnVmZX0q9i7geh/QxfZ6LBPkeG0XkX9kI=
+	t=1714706622; cv=none; b=C/iWrkciixI9A3HPMe7n6NGpeEunkXvaxkfFNR6gEAptbA5MFmTKNz4NPTBPMTLaEnMm+EFQQe4kpAj4gUj/tMC5ARYn4HCDmX3I7ATJFT+0cDsOmW36z0Z2FEeyCrzosSjLfEc2+qyZHs6z3VGL9aKofutaaf0e+qgS5GsJt4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714706619; c=relaxed/simple;
-	bh=coQnFaUQk+YonHP9VZcg1wZRWOXon1n6rf16Uoitesw=;
+	s=arc-20240116; t=1714706622; c=relaxed/simple;
+	bh=8ebE4XUh6TIL3U3rsVcYwl6FXdU+e0pvqo+4boUMA0U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Y7I5f8CiBsAr0RSd1868Vf/Y6HVN2UcJ+enVWADu+CTAZm5Uto8KbHjIFIJ2HkrzBU8404QsAdS4PPsrlunxaa8KmhTh/xn+5eVBkJTNWkzGJF3sJ5A3nK9YZiCDAUTkOxk2TJ5R6oqy2m+i9paZW4J+i3/+Y+0Pk2H0A+LkKms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=g+Eqsup9; arc=none smtp.client-ip=62.89.141.173
+	 MIME-Version; b=EMKIU6K7wUkjR0ymkeslLqVX+gXMC/UMKdaWCLcn7UTV2vIhdHjJez6ltHy2GM9zJBQZ6SGe3FuOe9FEYRJsCjy5X8PEIN9F+GTZTJNPWFcLLH+pDdxxbsgF0u29mK2XeY9CJm0TeOVWneGqm267zHE+Qjy3yI6YppO4xMW6Dpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=muwBl8fJ; arc=none smtp.client-ip=62.89.141.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=cwCXl7bDNgEK3wEeB1dHuYl82HeOEvaS0e413hiuNX4=; b=g+Eqsup9JNOHEYfCE32VG18AWm
-	7XWmN+HFgVTYrb441G625Ti6JvwG0GsoemplB+bAIfMS6RxeDB1mQpt8Gzmuyha/tdQlOIioA4z0b
-	hCO6nE+LhIEjEprz/fA/F5ZO0HewVWiDpjHQVQ69SGTj75rFp9whVITT3+RjROME4X/4MNoVMJ1gS
-	K+hwH0TgxPE6BrO3KGsBLdQwe674rDozvXZsrlvc3w/ZphJwe0I/XJwXKIyz2Y6yd2rb741HiRZtz
-	kd4QJPPm/IrlydeGFmVTz5N34m9Zz7b0so/HG1mc6gYhJCyUbmGaUlah5KJpwHJIFMt1o3qsbFfa5
-	wYIx64fg==;
+	bh=Ve7iu3CXoCO+LauZkbPs8hbuR/S5IyZ4gzxOBBwRvaY=; b=muwBl8fJadoWlPuoDDbZv4caNb
+	mvU3noT3VW7Ak7LfsjC7+LIBuOu54+uW9jQc7uyxlkVWHBJCUQMRBPhud1cOvekjZ84moQJUCY4yB
+	yGA6QqY23MvAuqUe8a8jAysOOD7+Z/HL0HuN/mQq7IRhyT9RgcQx7miIi3olySNx3AQqXg56VtPqy
+	8j6ibVKPnkO5wr+d9Lnz6xHGtOXJzDQxezt2tG2mUImVvcOBEcSQLfx/JUyRNnw9mFoyqr6bxF9IA
+	btCRrkA1vTLi2m8/YEOx57hBW0VEJE+74fdOMg2m7IcvtegMqB50Fyg7p4vqR06B5wi7ey/Wrv/B9
+	6nDTnLOA==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1s2jWE-00A2W0-1h;
+	id 1s2jWE-00A2W3-2E;
 	Fri, 03 May 2024 03:23:30 +0000
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: linux-fsdevel@vger.org
@@ -54,9 +54,9 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-btrfs@vger.kernel.org,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 6/9] swsusp: don't bother with setting block size
-Date: Fri,  3 May 2024 04:23:26 +0100
-Message-Id: <20240503032329.2392931-6-viro@zeniv.linux.org.uk>
+Subject: [PATCH v2 7/9] btrfs_get_bdev_and_sb(): call set_blocksize() only for exclusive opens
+Date: Fri,  3 May 2024 04:23:27 +0100
+Message-Id: <20240503032329.2392931-7-viro@zeniv.linux.org.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240503032329.2392931-1-viro@zeniv.linux.org.uk>
 References: <20240503031833.GU2118490@ZenIV>
@@ -70,40 +70,60 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Al Viro <viro@ftp.linux.org.uk>
 
-same as with the swap...
+btrfs_get_bdev_and_sb() has two callers - btrfs_open_one_device(),
+which asks for open to be exclusive and btrfs_get_dev_args_from_path(),
+which doesn't.  Currently it does set_blocksize() in all cases.
+
+I'm rather dubious about the need to do set_blocksize() anywhere in btrfs,
+to be honest - there's some access to page cache of underlying block
+devices in there, but it's nowhere near the hot paths, AFAICT.
+
+In any case, btrfs_get_dev_args_from_path() only needs to read
+the on-disk superblock and copy several fields out of it; all
+callers are only interested in devices that are already opened
+and brought into per-filesystem set, so setting the block size
+is redundant for those and actively harmful if we are given
+a pathname of unrelated device.
+
+So we only need btrfs_get_bdev_and_sb() to call set_blocksize()
+when it's asked to open exclusive.
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Christian Brauner <brauner@kernel.org>
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- kernel/power/swap.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ fs/btrfs/volumes.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 5bc04bfe2db1..d9abb7ab031d 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -368,11 +368,7 @@ static int swsusp_swap_check(void)
- 	if (IS_ERR(hib_resume_bdev_file))
- 		return PTR_ERR(hib_resume_bdev_file);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index f15591f3e54f..43af5a9fb547 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -482,10 +482,12 @@ btrfs_get_bdev_and_sb(const char *device_path, blk_mode_t flags, void *holder,
  
--	res = set_blocksize(file_bdev(hib_resume_bdev_file), PAGE_SIZE);
--	if (res < 0)
--		fput(hib_resume_bdev_file);
--
--	return res;
-+	return 0;
+ 	if (flush)
+ 		sync_blockdev(bdev);
+-	ret = set_blocksize(bdev, BTRFS_BDEV_BLOCKSIZE);
+-	if (ret) {
+-		fput(*bdev_file);
+-		goto error;
++	if (holder) {
++		ret = set_blocksize(bdev, BTRFS_BDEV_BLOCKSIZE);
++		if (ret) {
++			fput(*bdev_file);
++			goto error;
++		}
+ 	}
+ 	invalidate_bdev(bdev);
+ 	*disk_super = btrfs_read_dev_super(bdev);
+@@ -498,6 +500,7 @@ btrfs_get_bdev_and_sb(const char *device_path, blk_mode_t flags, void *holder,
+ 	return 0;
+ 
+ error:
++	*disk_super = NULL;
+ 	*bdev_file = NULL;
+ 	return ret;
  }
- 
- /**
-@@ -1574,7 +1570,6 @@ int swsusp_check(bool exclusive)
- 	hib_resume_bdev_file = bdev_file_open_by_dev(swsusp_resume_device,
- 				BLK_OPEN_READ, holder, NULL);
- 	if (!IS_ERR(hib_resume_bdev_file)) {
--		set_blocksize(file_bdev(hib_resume_bdev_file), PAGE_SIZE);
- 		clear_page(swsusp_header);
- 		error = hib_submit_io(REQ_OP_READ, swsusp_resume_block,
- 					swsusp_header, NULL);
 -- 
 2.39.2
 
