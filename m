@@ -1,112 +1,300 @@
-Return-Path: <linux-btrfs+bounces-4749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66EA68BBF8B
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 09:03:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 114CF8BC19A
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 17:06:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ECBC281F40
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 07:03:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24430B20D0E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 15:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6F36FBF;
-	Sun,  5 May 2024 07:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBBB364A4;
+	Sun,  5 May 2024 15:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NsHxNlXI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mTiPlV0h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5A163A5
-	for <linux-btrfs@vger.kernel.org>; Sun,  5 May 2024 07:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3E22CCA0
+	for <linux-btrfs@vger.kernel.org>; Sun,  5 May 2024 15:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714892597; cv=none; b=kDvmEkzQty6SveQX/Mu6sUkbzijnN0s2YoYvQsL+B+3IS27O7u5syNjSMDOeDY6t1dtLimtodj3O2x/owv/+MzWAmdE3qOtMI8+fq9xRP7JCXNCOKtMyqRjDBNL4FhxMTiX+dGMYd52w9di1xF4uCHXVCzOwCwpb3zPzkwHvwhs=
+	t=1714921563; cv=none; b=p4RCZhERDvnriSdjUevkE6aRYc0LtjYe2LWRE3twVvn9pJiSOwGH781vWxJvleoPTi88I6a/miX8baA0/73nfTfA5VS/SwmGZkt4MEFF76ojcWDmwhL34NhyP8iiGlZzM8KpLcOypjo3NrU3Xt5NVJ82XTArjlZ+SWnaFjdWXsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714892597; c=relaxed/simple;
-	bh=9hZnRh56Hgq6alvC3MohA6OZF2IYSHDrjE3HGOFKtuY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KuqkjuVvbln6yY0gfPBnidlwwyyDp4GljGhvuF/+L5ThmqrfU76CP9PcojwUS81KhrjnCOGzlieKzdvbeQuIN+nBxd6b1TbPytlywKmI2pBzuvooPNLfaFZz+8vF+4WsF04jHp13zpmvUK9W4wySFDtDFOaXRpz7BDoDeGWu/rU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NsHxNlXI; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714892595;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=S52qHVoar7wlTTIceOF47yDBu4Qxt+6rlWLzG9qUz8Q=;
-	b=NsHxNlXIorVvQeCaJpN7+gcKALOqe4xQ0N4wDP/3FF7f8CetlEXFAQjQe7hg4kdva7eQnQ
-	aVgC8ThSx+mWa5oSdNy0IVxNtImDWD4K2CFl+2wPzzKQoL1IRetk4AHXipE9iswWrLjR1j
-	ZxqrDmQTeeH4ePkxyRCQaY6EifqIT8o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-88-3gqcqRtTPkC4Q8LzzG5xBQ-1; Sun, 05 May 2024 03:03:11 -0400
-X-MC-Unique: 3gqcqRtTPkC4Q8LzzG5xBQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 74A49101150D;
-	Sun,  5 May 2024 07:03:10 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.31])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 36F65C13FA1;
-	Sun,  5 May 2024 07:03:08 +0000 (UTC)
-Date: Sun, 5 May 2024 15:03:05 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netfs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, kexec@lists.infradead.org
-Subject: Re: [PATCH 4/4] crash: Remove duplicate included header
-Message-ID: <ZjcvKd+n74MFCJtj@MiWiFi-R3L-srv>
-References: <20240502212631.110175-1-thorsten.blum@toblux.com>
- <20240502212631.110175-4-thorsten.blum@toblux.com>
+	s=arc-20240116; t=1714921563; c=relaxed/simple;
+	bh=AIl0Xb++g8qWiyWj7rgCPglubLPPgukGT0vW2rNN0F0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=QSj7Lvqz3n3KbDacdzrq89uF+sZtrBipebVKvmLNXm4QZuZ3MMoYYvbUrdRiw4xG4yjEv/16SeCl5dZqBsQAYteQ/MkShzGAgw8/bPicd3py4sUcwfKm4Lqj5tHWKO3WhnoVjU025YQjiij76vckLzSWo6SnajAt91pfPdrJAoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mTiPlV0h; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c8317d1f25so782491b6e.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 05 May 2024 08:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714921561; x=1715526361; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=AIl0Xb++g8qWiyWj7rgCPglubLPPgukGT0vW2rNN0F0=;
+        b=mTiPlV0hS6yB43kz9abzTgJcBnyHCUHWtkKeEruwxAUOOEgigzqs5nVizYKSe4iRFD
+         CIVIKyltxOnMQBF+VKrxUG9msS2KPpMs/BEDkEUeL6Vcz9TxgIYTvBS/obW/lrsCYyZU
+         wwY7I7kDdHPIkxoKLal5iA3VROfhXc1fQAZ5IsyJiWbFSLH/AxARWmMj2FpMwGushYED
+         fVIIhT7IlV+voTJzA4TpFEDssxvJFnd/rre5Q3LehKqI6VPVOO3yNABbjwua/jtQCUtP
+         qabwzNca1kNl7jkwxIQ9jaPLiHAxH7VaHB5NMyb1X4CzuO7YhkyIQkMGbBgqHvr6OvL4
+         zLaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714921561; x=1715526361;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AIl0Xb++g8qWiyWj7rgCPglubLPPgukGT0vW2rNN0F0=;
+        b=Esw4AzN5J2RArbVf20abHocmiNe554JcqoEvEYWhm2DHLBEFPIi5k4pyr7mM8q67nb
+         PY8LW6GpUPkiABC7dbGuryWwXSObln3VR6o9qx/MURsXAZXYHpHspeXvZhLHGIC3PDOw
+         GD/v5lbc2qlUTLwJ00BsruA6HIJmj7lLiaKD7P6AcBmbWRf84hDfKkGDEo1HXz+yTZ41
+         p82B5wh9Vpoqwoo4LL4NQq0rl9UwgoRx9YIAopWZfs7v7AsWx2yiYdQsv/5QCY+xB9wg
+         ick9VFNUhyzGqTIpG8I/Iw6ANrtVUgD4q8UZbPr7aw1fUPuXl3xeo53TChmou63w8DMw
+         JH7g==
+X-Forwarded-Encrypted: i=1; AJvYcCVt4oYN0XQj37REJxVeLzAyQqgQNoEd4PVtbn/Sh98NuyfgE1SCMTUWTWi7m6hBite8jx+igQx6touoOJ4dTuIysl5YkQpXdXa8s2w=
+X-Gm-Message-State: AOJu0YxXI/fXPSZKrkP5rMmPwZAJD8ATrgSp3OQA/DywLbvjtAXlXuKI
+	cJGRG0XiUgoc6AdHrMV7CrDJ1NrPeOu/K4Uk34VT7d/EQ020QgenTfAiXbgxWxaKN5FCyhv19K/
+	w7/ft1GiRaSvc9azT3lycu2mVAZnzxJpMbi3lRg==
+X-Google-Smtp-Source: AGHT+IH0aNVCz3BABAGQYtq2e69CYVF6NLiwQx6JrQcz2cb10gTJr5/9PhsUPxo4Zco7Wm6IBejLBEY0dK6M4lJXNK4=
+X-Received: by 2002:a05:6808:2a86:b0:3c8:6422:fb4b with SMTP id
+ fc6-20020a0568082a8600b003c86422fb4bmr8561607oib.45.1714921561089; Sun, 05
+ May 2024 08:06:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240502212631.110175-4-thorsten.blum@toblux.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+From: Yordan <y16267966@gmail.com>
+Date: Sun, 5 May 2024 18:05:28 +0300
+Message-ID: <CAE0VrXL99p1ra6aRyqZgEbHKJ2LBKU0Yn+sPd4WoHxq0pONjGg@mail.gmail.com>
+Subject: Re: btrfs-convert on 24Gb image corrupts files.
+To: quwenruo.btrfs@gmx.com, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 05/02/24 at 11:26pm, Thorsten Blum wrote:
-> Remove duplicate included header file linux/kexec.h
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
->  kernel/crash_reserve.c | 1 -
->  1 file changed, 1 deletion(-)
+Hi, it's Jordan - the reporter, I'm switching the email server as the
+first one presumably did dirty things and was rejected by the "mlmmj
+program managing the mailing list".
 
-Acked-by: Baoquan He <bhe@redhat.com>
+>Mind to provide the "filefrag -v" output after conversion using Anand's
+fixes?
 
-> 
-> diff --git a/kernel/crash_reserve.c b/kernel/crash_reserve.c
-> index 066668799f75..c460e687edd6 100644
-> --- a/kernel/crash_reserve.c
-> +++ b/kernel/crash_reserve.c
-> @@ -13,7 +13,6 @@
->  #include <linux/memory.h>
->  #include <linux/cpuhotplug.h>
->  #include <linux/memblock.h>
-> -#include <linux/kexec.h>
->  #include <linux/kmemleak.h>
->  
->  #include <asm/page.h>
-> -- 
-> 2.44.0
-> 
+>Mind to provide the "filefrag -v" output after conversion using Anand's
 
+fixes?
+
+After applying the 4 patches and compiling:
+
+(chroot) livecd / # B/btrfs-progs/btrfs-convert sda3.img
+btrfs-convert from btrfs-progs v6.8.1
+
+Source filesystem:
+Type: ext2
+Label:
+Blocksize: 4096
+UUID: b3a78a9f-37e7-4ccb-bedb-1f800a6a5a19
+Target filesystem:
+Label:
+Blocksize: 4096
+Nodesize: 16384
+UUID: 981d2a1c-c1a9-47b7-acf2-9724ebc96ed0
+Checksum: crc32c
+Features: extref, skinny-metadata, no-holes, free-space-tree (default)
+Data csum: yes
+Inline data: yes
+Copy xattr: yes
+Reported stats:
+Total space: 25769803776
+Free space: 8862961664 (34.39%)
+Inode count: 1572864
+Free inodes: 1326275
+Block count: 6291456
+Create initial btrfs filesystem
+Create ext2 image file
+Create btrfs metadata
+Copy inodes [o] [ 388838/ 246589]
+Free space cache cleared
+Conversion complete
+
+(chroot) livecd / # mount -o ro sda3.img k
+(chroot) livecd / # cd k
+(chroot) livecd /k # md5sum -c ../files.md5 | grep -v OK
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite:
+FAILED
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite:
+FAILED
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite:
+FAILED
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite:
+FAILED
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite:
+FAILED
+./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite: FAILED
+./root/.mozilla/firefox/s554srh9.default-release/places.sqlite: FAILED
+md5sum: WARNING: 7 computed checksums did NOT match
+
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
+Filesystem type is: 9123683e
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2217003.. 2217004: 2: shared
+1: 2.. 11: 2217019.. 2217028: 10: 2217005: last,shared,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
+Filesystem type is: 9123683e
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2217085.. 2217086: 2: shared
+1: 2.. 11: 2217101.. 2217110: 10: 2217087: last,shared,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
+Filesystem type is: 9123683e
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2222643.. 2222644: 2: shared
+1: 2.. 11: 2244137.. 2244146: 10: 2222645: last,shared,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
+Filesystem type is: 9123683e
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2244148.. 2244149: 2: shared
+1: 2.. 11: 2244164.. 2244173: 10: 2244150: last,shared,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
+Filesystem type is: 9123683e
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2217030.. 2217031: 2: shared
+1: 2.. 11: 2217046.. 2217055: 10: 2217032: last,shared,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
+Filesystem type is: 9123683e
+File size of ./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
+is 5242880 (1280 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 7: 2244106.. 2244113: 8: shared
+1: 8.. 1279: 1449984.. 1451255: 1272: 2244114: last,shared,eof
+./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite: 2
+extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
+Filesystem type is: 9123683e
+File size of ./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
+is 5242880 (1280 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 7: 2244097.. 2244104: 8: shared
+1: 8.. 1279: 1485312.. 1486583: 1272: 2244105: last,shared,eof
+./root/.mozilla/firefox/s554srh9.default-release/places.sqlite: 2 extents found
+(chroot) livecd /k # cd ..
+(chroot) livecd / # umount k
+(chroot) livecd / # B/btrfs-progs/btrfs-convert -r sda3.img
+btrfs-convert from btrfs-progs v6.8.1
+
+Open filesystem for rollback:
+Label:
+UUID: 981d2a1c-c1a9-47b7-acf2-9724ebc96ed0
+Restoring from: ext2_saved/image
+Rollback succeeded
+
+(chroot) livecd / # mount -o ro sda3.img k
+(chroot) livecd / # cd k
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
+Filesystem type is: ef53
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2217003.. 2217004: 2:
+1: 2.. 10: 2217019.. 2217027: 9: 2217005:
+2: 11.. 11: 2217028.. 2217028: 1: last,unwritten,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
+Filesystem type is: ef53
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2217085.. 2217086: 2:
+1: 2.. 10: 2217101.. 2217109: 9: 2217087:
+2: 11.. 11: 2217110.. 2217110: 1: last,unwritten,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
+Filesystem type is: ef53
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2222643.. 2222644: 2:
+1: 2.. 10: 2244137.. 2244145: 9: 2222645:
+2: 11.. 11: 2244146.. 2244146: 1: last,unwritten,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
+Filesystem type is: ef53
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2244148.. 2244149: 2:
+1: 2.. 10: 2244164.. 2244172: 9: 2244150:
+2: 11.. 11: 2244173.. 2244173: 1: last,unwritten,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
+Filesystem type is: ef53
+File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
+is 49152 (12 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 1: 2217030.. 2217031: 2:
+1: 2.. 10: 2217046.. 2217054: 9: 2217032:
+2: 11.. 11: 2217055.. 2217055: 1: last,unwritten,eof
+./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite:
+2 extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
+Filesystem type is: ef53
+File size of ./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
+is 5242880 (1280 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 7: 2244106.. 2244113: 8:
+1: 8.. 79: 1449984.. 1450055: 72: 2244114:
+2: 80.. 1279: 1450056.. 1451255: 1200: last,unwritten,eof
+./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite: 2
+extents found
+(chroot) livecd /k # filefrag -v
+./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
+Filesystem type is: ef53
+File size of ./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
+is 5242880 (1280 blocks of 4096 bytes)
+ext: logical_offset: physical_offset: length: expected: flags:
+0: 0.. 7: 2244097.. 2244104: 8:
+1: 8.. 415: 1485312.. 1485719: 408: 2244105:
+2: 416.. 1279: 1485720.. 1486583: 864: last,unwritten,eof
+./root/.mozilla/firefox/s554srh9.default-release/places.sqlite: 2 extents found
+(chroot) livecd /k #
+
+Regards, Jordan.
 
