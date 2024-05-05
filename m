@@ -1,300 +1,144 @@
-Return-Path: <linux-btrfs+bounces-4750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4751-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114CF8BC19A
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 17:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADB018BC3B9
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 22:39:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24430B20D0E
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 15:06:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0A13B21A62
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 20:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBBB364A4;
-	Sun,  5 May 2024 15:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8DC1E895;
+	Sun,  5 May 2024 20:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mTiPlV0h"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="l/AkBQpQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3E22CCA0
-	for <linux-btrfs@vger.kernel.org>; Sun,  5 May 2024 15:06:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4A576025
+	for <linux-btrfs@vger.kernel.org>; Sun,  5 May 2024 20:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714921563; cv=none; b=p4RCZhERDvnriSdjUevkE6aRYc0LtjYe2LWRE3twVvn9pJiSOwGH781vWxJvleoPTi88I6a/miX8baA0/73nfTfA5VS/SwmGZkt4MEFF76ojcWDmwhL34NhyP8iiGlZzM8KpLcOypjo3NrU3Xt5NVJ82XTArjlZ+SWnaFjdWXsA=
+	t=1714941555; cv=none; b=qwK0OTFCMQ5Z4u9F4zluGbq3PFg5HrIQ3lrzEPghPx+1qoxw8zs9tosGql9d8QsKg52fu1U7p2Sg3wLPudNcLEq4YHXgkzg4/+PXMXiI2enMJcJuAZNqzMTwx2tELwMMia1rLelzrM0c9M5U1cfbF2BRbP2szi5RR5bt//YCsOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714921563; c=relaxed/simple;
-	bh=AIl0Xb++g8qWiyWj7rgCPglubLPPgukGT0vW2rNN0F0=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=QSj7Lvqz3n3KbDacdzrq89uF+sZtrBipebVKvmLNXm4QZuZ3MMoYYvbUrdRiw4xG4yjEv/16SeCl5dZqBsQAYteQ/MkShzGAgw8/bPicd3py4sUcwfKm4Lqj5tHWKO3WhnoVjU025YQjiij76vckLzSWo6SnajAt91pfPdrJAoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mTiPlV0h; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c8317d1f25so782491b6e.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 May 2024 08:06:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714921561; x=1715526361; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AIl0Xb++g8qWiyWj7rgCPglubLPPgukGT0vW2rNN0F0=;
-        b=mTiPlV0hS6yB43kz9abzTgJcBnyHCUHWtkKeEruwxAUOOEgigzqs5nVizYKSe4iRFD
-         CIVIKyltxOnMQBF+VKrxUG9msS2KPpMs/BEDkEUeL6Vcz9TxgIYTvBS/obW/lrsCYyZU
-         wwY7I7kDdHPIkxoKLal5iA3VROfhXc1fQAZ5IsyJiWbFSLH/AxARWmMj2FpMwGushYED
-         fVIIhT7IlV+voTJzA4TpFEDssxvJFnd/rre5Q3LehKqI6VPVOO3yNABbjwua/jtQCUtP
-         qabwzNca1kNl7jkwxIQ9jaPLiHAxH7VaHB5NMyb1X4CzuO7YhkyIQkMGbBgqHvr6OvL4
-         zLaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714921561; x=1715526361;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AIl0Xb++g8qWiyWj7rgCPglubLPPgukGT0vW2rNN0F0=;
-        b=Esw4AzN5J2RArbVf20abHocmiNe554JcqoEvEYWhm2DHLBEFPIi5k4pyr7mM8q67nb
-         PY8LW6GpUPkiABC7dbGuryWwXSObln3VR6o9qx/MURsXAZXYHpHspeXvZhLHGIC3PDOw
-         GD/v5lbc2qlUTLwJ00BsruA6HIJmj7lLiaKD7P6AcBmbWRf84hDfKkGDEo1HXz+yTZ41
-         p82B5wh9Vpoqwoo4LL4NQq0rl9UwgoRx9YIAopWZfs7v7AsWx2yiYdQsv/5QCY+xB9wg
-         ick9VFNUhyzGqTIpG8I/Iw6ANrtVUgD4q8UZbPr7aw1fUPuXl3xeo53TChmou63w8DMw
-         JH7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVt4oYN0XQj37REJxVeLzAyQqgQNoEd4PVtbn/Sh98NuyfgE1SCMTUWTWi7m6hBite8jx+igQx6touoOJ4dTuIysl5YkQpXdXa8s2w=
-X-Gm-Message-State: AOJu0YxXI/fXPSZKrkP5rMmPwZAJD8ATrgSp3OQA/DywLbvjtAXlXuKI
-	cJGRG0XiUgoc6AdHrMV7CrDJ1NrPeOu/K4Uk34VT7d/EQ020QgenTfAiXbgxWxaKN5FCyhv19K/
-	w7/ft1GiRaSvc9azT3lycu2mVAZnzxJpMbi3lRg==
-X-Google-Smtp-Source: AGHT+IH0aNVCz3BABAGQYtq2e69CYVF6NLiwQx6JrQcz2cb10gTJr5/9PhsUPxo4Zco7Wm6IBejLBEY0dK6M4lJXNK4=
-X-Received: by 2002:a05:6808:2a86:b0:3c8:6422:fb4b with SMTP id
- fc6-20020a0568082a8600b003c86422fb4bmr8561607oib.45.1714921561089; Sun, 05
- May 2024 08:06:01 -0700 (PDT)
+	s=arc-20240116; t=1714941555; c=relaxed/simple;
+	bh=83ZyI1UQWavGsAJUzMPhIuW7RBI2gpRd9zRjsxqzuBk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ad59HZgxiFXM1e1vm+UyUPslYpoTBLws7AhSpayoeINLGaVTnppBggnWEeZxImUsJ0trX3UhCx482GTaHcynnU+u8dK2h5LAVwkpjIRbiDs/hGfPVbIRreQpy1tkvMvRf1u+GRwsL16WHnHRngIaaySHKQ7Orkn6QZv+7UPjU4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=l/AkBQpQ; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4VXbnf33wnzDqKb;
+	Sun,  5 May 2024 20:32:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1714941158; bh=83ZyI1UQWavGsAJUzMPhIuW7RBI2gpRd9zRjsxqzuBk=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=l/AkBQpQA2zKGB6DwGuBvsmG46oDHntpyZd9j9Qo1Ql7z6Ax7Bwq75hYptqJTdbsa
+	 N3v1SZsm61bhrCbwhgeFHPCMcB2bhEfpV+ZtQa4rsvhcGvRx0JGYxuvdyYEudIPIc6
+	 WDdYRNR1OiFWCThg5diU3iWNfXGccAIXG0OIkO8E=
+X-Riseup-User-ID: 6F3485521ADF08A27BCB71C19CA75A6D4259A78F29866706EE676C8124F0EE55
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4VXbnf1c21zJvM8;
+	Sun,  5 May 2024 20:32:38 +0000 (UTC)
+Message-ID: <7b7cf8e4-90ff-438d-817a-445ce13f5767@riseup.net>
+Date: Sun, 5 May 2024 13:32:37 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Yordan <y16267966@gmail.com>
-Date: Sun, 5 May 2024 18:05:28 +0300
-Message-ID: <CAE0VrXL99p1ra6aRyqZgEbHKJ2LBKU0Yn+sPd4WoHxq0pONjGg@mail.gmail.com>
-Subject: Re: btrfs-convert on 24Gb image corrupts files.
-To: quwenruo.btrfs@gmx.com, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: Help with ROFS on Cache Folder Deletion
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <2236adc5-3520-4ceb-ad88-5bcc6afd18d0@riseup.net>
+ <3b8eed12-0fb0-4bcd-9b32-1d04d89cc780@gmx.com>
+Content-Language: en-US
+From: Eliza May <eliza@riseup.net>
+In-Reply-To: <3b8eed12-0fb0-4bcd-9b32-1d04d89cc780@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi, it's Jordan - the reporter, I'm switching the email server as the
-first one presumably did dirty things and was rejected by the "mlmmj
-program managing the mailing list".
+Hi all,
 
->Mind to provide the "filefrag -v" output after conversion using Anand's
-fixes?
+I have run the tests, removed the failing ram, and the results are here:
 
->Mind to provide the "filefrag -v" output after conversion using Anand's
+https://termbin.com/rrsn
 
-fixes?
+Is this recoverable with a repair?
 
-After applying the 4 patches and compiling:
+(My other filesystem returned no errors, and is not included in this.)
 
-(chroot) livecd / # B/btrfs-progs/btrfs-convert sda3.img
-btrfs-convert from btrfs-progs v6.8.1
+Thank you,
 
-Source filesystem:
-Type: ext2
-Label:
-Blocksize: 4096
-UUID: b3a78a9f-37e7-4ccb-bedb-1f800a6a5a19
-Target filesystem:
-Label:
-Blocksize: 4096
-Nodesize: 16384
-UUID: 981d2a1c-c1a9-47b7-acf2-9724ebc96ed0
-Checksum: crc32c
-Features: extref, skinny-metadata, no-holes, free-space-tree (default)
-Data csum: yes
-Inline data: yes
-Copy xattr: yes
-Reported stats:
-Total space: 25769803776
-Free space: 8862961664 (34.39%)
-Inode count: 1572864
-Free inodes: 1326275
-Block count: 6291456
-Create initial btrfs filesystem
-Create ext2 image file
-Create btrfs metadata
-Copy inodes [o] [ 388838/ 246589]
-Free space cache cleared
-Conversion complete
+Eliza
 
-(chroot) livecd / # mount -o ro sda3.img k
-(chroot) livecd / # cd k
-(chroot) livecd /k # md5sum -c ../files.md5 | grep -v OK
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite:
-FAILED
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite:
-FAILED
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite:
-FAILED
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite:
-FAILED
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite:
-FAILED
-./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite: FAILED
-./root/.mozilla/firefox/s554srh9.default-release/places.sqlite: FAILED
-md5sum: WARNING: 7 computed checksums did NOT match
 
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
-Filesystem type is: 9123683e
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2217003.. 2217004: 2: shared
-1: 2.. 11: 2217019.. 2217028: 10: 2217005: last,shared,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
-Filesystem type is: 9123683e
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2217085.. 2217086: 2: shared
-1: 2.. 11: 2217101.. 2217110: 10: 2217087: last,shared,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
-Filesystem type is: 9123683e
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2222643.. 2222644: 2: shared
-1: 2.. 11: 2244137.. 2244146: 10: 2222645: last,shared,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
-Filesystem type is: 9123683e
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2244148.. 2244149: 2: shared
-1: 2.. 11: 2244164.. 2244173: 10: 2244150: last,shared,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
-Filesystem type is: 9123683e
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2217030.. 2217031: 2: shared
-1: 2.. 11: 2217046.. 2217055: 10: 2217032: last,shared,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
-Filesystem type is: 9123683e
-File size of ./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
-is 5242880 (1280 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 7: 2244106.. 2244113: 8: shared
-1: 8.. 1279: 1449984.. 1451255: 1272: 2244114: last,shared,eof
-./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite: 2
-extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
-Filesystem type is: 9123683e
-File size of ./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
-is 5242880 (1280 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 7: 2244097.. 2244104: 8: shared
-1: 8.. 1279: 1485312.. 1486583: 1272: 2244105: last,shared,eof
-./root/.mozilla/firefox/s554srh9.default-release/places.sqlite: 2 extents found
-(chroot) livecd /k # cd ..
-(chroot) livecd / # umount k
-(chroot) livecd / # B/btrfs-progs/btrfs-convert -r sda3.img
-btrfs-convert from btrfs-progs v6.8.1
-
-Open filesystem for rollback:
-Label:
-UUID: 981d2a1c-c1a9-47b7-acf2-9724ebc96ed0
-Restoring from: ext2_saved/image
-Rollback succeeded
-
-(chroot) livecd / # mount -o ro sda3.img k
-(chroot) livecd / # cd k
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
-Filesystem type is: ef53
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2217003.. 2217004: 2:
-1: 2.. 10: 2217019.. 2217027: 9: 2217005:
-2: 11.. 11: 2217028.. 2217028: 1: last,unwritten,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/3561288849sdhlie.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
-Filesystem type is: ef53
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2217085.. 2217086: 2:
-1: 2.. 10: 2217101.. 2217109: 9: 2217087:
-2: 11.. 11: 2217110.. 2217110: 1: last,unwritten,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1657114595AmcateirvtiSty.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
-Filesystem type is: ef53
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2222643.. 2222644: 2:
-1: 2.. 10: 2244137.. 2244145: 9: 2222645:
-2: 11.. 11: 2244146.. 2244146: 1: last,unwritten,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2823318777ntouromlalnodry--naod.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
-Filesystem type is: ef53
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2244148.. 2244149: 2:
-1: 2.. 10: 2244164.. 2244172: 9: 2244150:
-2: 11.. 11: 2244173.. 2244173: 1: last,unwritten,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/2918063365piupsah.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
-Filesystem type is: ef53
-File size of ./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite
-is 49152 (12 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 1: 2217030.. 2217031: 2:
-1: 2.. 10: 2217046.. 2217054: 9: 2217032:
-2: 11.. 11: 2217055.. 2217055: 1: last,unwritten,eof
-./root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chrome/idb/1451318868ntouromlalnodry--epcr.sqlite:
-2 extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
-Filesystem type is: ef53
-File size of ./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite
-is 5242880 (1280 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 7: 2244106.. 2244113: 8:
-1: 8.. 79: 1449984.. 1450055: 72: 2244114:
-2: 80.. 1279: 1450056.. 1451255: 1200: last,unwritten,eof
-./root/.mozilla/firefox/s554srh9.default-release/favicons.sqlite: 2
-extents found
-(chroot) livecd /k # filefrag -v
-./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
-Filesystem type is: ef53
-File size of ./root/.mozilla/firefox/s554srh9.default-release/places.sqlite
-is 5242880 (1280 blocks of 4096 bytes)
-ext: logical_offset: physical_offset: length: expected: flags:
-0: 0.. 7: 2244097.. 2244104: 8:
-1: 8.. 415: 1485312.. 1485719: 408: 2244105:
-2: 416.. 1279: 1485720.. 1486583: 864: last,unwritten,eof
-./root/.mozilla/firefox/s554srh9.default-release/places.sqlite: 2 extents found
-(chroot) livecd /k #
-
-Regards, Jordan.
+On 5/2/24 12:17 AM, Qu Wenruo wrote:
+>
+>
+> 在 2024/5/2 15:59, Eliza May 写道:
+>> Hi,
+>>
+>>
+>> I am trying to remove the paru .cache folder from my computer, but every
+>> time I do my btrfs filesystem goes read-only. Here is the dmesg output:
+>> https://termbin.com/f4sw
+>>
+>> A scrub found no errors, and I have not yet ran a check -- I will be
+>> doing so and reporting back when I figure out how to do so.
+>>
+>>
+>> My filesystem is a main partition, a separate home subvolume, a var/log
+>> subvolume, and a /var/cache/pacman/pkg subfolder, but I am attempting to
+>> delete the paru one; not the pacman one.
+>>
+>>
+>> If there are any other logs or details I should include, let me know.
+>
+> The dump tree shows:
+>
+> [ 1623.783513]     item 97 key (3069062266880 169 0) itemoff 13049 
+> itemsize 33
+> [ 1623.783514]         extent refs 1 gen 1396868 flags 2
+> [ 1623.783515]         ref#0: tree block backref root 16391
+> ...
+> [ 1623.783683] BTRFS critical (device nvme0n1p2: state EA): unable to
+> find ref byte nr 3069062266880 parent 0 root 7 owner 0 offset 0 slot 98
+>
+> This means the bytenr 3069062266880 should have a tree backref for 
+> root 7.
+> But the dump tree shows it belongs to root 16391.
+>
+> Furthermore this looks like a memory biflip:
+>
+> hex(7)     = 0x0007
+> hex(16391) = 0x4007
+>
+> So please unmount all your fs and run a memtest first to make sure your
+> hardware memory is working correctly.
+> And do necessary memory replacement (if possible).
+>
+> Then finally run "btrfs check --readonly" for the unmounted fs, to make
+> sure that is the only error (please paste the output).
+>
+> Then we can determine if it's safe to run "btrfs check --repair" or
+> there are too many corruption and can only do a data salvage.
+> (I bet a repair can be done, but still want to be sure)
+>
+> Thanks,
+> Qu
+>>
+>>
+>> Thank you,
+>>
+>> Eliza
+>>
+>>
 
