@@ -1,143 +1,180 @@
-Return-Path: <linux-btrfs+bounces-4746-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4747-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2518BBF2D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 05:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 24F0A8BBF64
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 07:55:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AE331C20D0D
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 03:55:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4027F1C20AED
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2024 05:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DE41860;
-	Sun,  5 May 2024 03:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CA763D0;
+	Sun,  5 May 2024 05:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GUHXlLWe"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jvN4i90p"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 189AD17CD
-	for <linux-btrfs@vger.kernel.org>; Sun,  5 May 2024 03:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F07A6112
+	for <linux-btrfs@vger.kernel.org>; Sun,  5 May 2024 05:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714881333; cv=none; b=Zk1JBHj/YxCrzkwR06//bROUJkkVTEMhufUVvFzlnLk3j//miGw25RW+6o3sre+3ZVsLDVWNDgRKoWOdZD5zNfZOMY2OP5mEw9FbgEFNNhBJ5Wm3x80Ch7zXZl5thFT9hHhblkyBdFtEispA9xQdAF6Di7tPRXpNytH9P5M405c=
+	t=1714888507; cv=none; b=WjZJFN3e/sBy0nna8ALtNRqA08UA5oqjwz4iLFmHfokIZjfmXMKhIlLeAfiJxsN9yoyKBY1pRFpIXWvgv9X38eaMGnve41oeQRdR1xI4wsiUr5Fi0we7YEfRZK9OTBNju44Jj63MyvqQBOuLQz5Mtqa7LTD2bMMQe8vk9EScgkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714881333; c=relaxed/simple;
-	bh=JaXwEA09zycgmDB0wWvsPe3RtdD5ybtnQsgDcKKB0Ks=;
-	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To; b=Hc2tRHiYhDnr1ZW9z3SKtgDii92A9M7LV8FenfGJhst/wPoIca1zWXuZ9DNJsigAFMw2xTcq0L5B4iN+ILi3GzASWfHdtkCJl3LwtDOWyIWc2AppO3C58J8ElADEoYr4MWZya8EVQ2eXk6Xqwu8jxPIdLgo16l89w17XwNK0ouA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GUHXlLWe; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-23f0d7d2ce6so394338fac.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 04 May 2024 20:55:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714881331; x=1715486131; darn=vger.kernel.org;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=l8NAvUQ4DPpmb1UUFW5JDh8kuGyMn7LqgynOJtpk7+o=;
-        b=GUHXlLWeHMskmCbGkSeZfbGbORi8cp850MTI0Y5An3FD2lqlaEcZlJpluDHGwalyxk
-         +t4h7Hj0H54TqI65irUfKm4OFgiAkWl0rDQ2It2Tmc0Cryf3UfsEd4kdgdnQ87gm2G/5
-         XF2S5sl+3yMz06TNxfsxSlz2y71MZZSg46+wuDAY+w7GvFHHlqvbtF4IAZ9kkRuQqcD8
-         ehhAm2Jg/q0/U3q8Aq1JyKlckHfMHK87IduXDW27HQ9cyMad+uV4+kM1bYpA82oac99p
-         yQnE8+Ys/Xuzs3t3g0hmSOs8miCU79Vy8yu5bpGV87CVwR5XmqCoW+lcxa4jsqpcPhhz
-         /9xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714881331; x=1715486131;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l8NAvUQ4DPpmb1UUFW5JDh8kuGyMn7LqgynOJtpk7+o=;
-        b=JYvO2i+mpNDLowAEKL+LPI8/b1sFaTEDriXlMVn9RO2ySuatwVCiSoVw6ji8o2OTlp
-         LjlbspAM3OpCNOQQdn/JI1OnnvEg+2VWY5LCZQ1TlbIwvHqsqXDor+9zd/g3TEErxjr3
-         H2iu/IJfRxDYXsNvhzxIZLz28uu1Gj6ft55nouxnuquFDZYVMmPHWsqSJRGIvNa7D4J8
-         zV5WCKvQ5igKq4p+nQ84tt+ZFd2TTKxAGmuv+veA7EaOjPvLh3FQtoVClmM6rXsLspqa
-         h2TNvzvG1Vn3VzJO7Ytj8PXsUIQudzxAa9QD0xyHsY3nuJen1vXs934bHZjRiOwQrflO
-         FGEQ==
-X-Gm-Message-State: AOJu0YzlndXiNmskmevSUz3aOcxzvbqKIbzUIgIQgYe7C2pXM4ZNcHYU
-	+MEszBp9qSithv3sWiNsplzEqcVbCXwLq8EXGP5EMUrgGF/MKR5qWQ5/hw==
-X-Google-Smtp-Source: AGHT+IFquVGTG1bygNuW9/blkJ0EHsOG06f6itUFG2h/95hh7HZE8pK3FgnvcldsKBgVjQFzGWcJ0A==
-X-Received: by 2002:a05:6870:d1ce:b0:239:77fc:b762 with SMTP id b14-20020a056870d1ce00b0023977fcb762mr8587452oac.45.1714881330876;
-        Sat, 04 May 2024 20:55:30 -0700 (PDT)
-Received: from smtpclient.apple ([2404:c804:b5f:1f00:5ccb:21cb:8c32:74f6])
-        by smtp.gmail.com with ESMTPSA id z6-20020a633306000000b0061f2dc31b96sm2754068pgz.47.2024.05.04.20.55.29
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 04 May 2024 20:55:30 -0700 (PDT)
-From: O'Brien Dave <odaiwai@gmail.com>
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1714888507; c=relaxed/simple;
+	bh=g7o4XFKYC/H5SLM+qAdf+OaWs77ljsHIrtehzk0kngw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Jl3y1j1t6wZ1s4fkEbnP4QOx74kufO0IPd4fqTDVa7n9Ku1Ya1VgMSnzuh/sxx49M4m1Nzk4/eRjCLq5zBW6YrYCJlQzNVwUQAI5HwKb4QNCxSXXJl2UKCBs01KXKCPfK0eX3l0S/BNzEiPEbHtQnebL6Undp+kLKndjBtnj2DM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jvN4i90p; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1714888486; x=1715493286; i=quwenruo.btrfs@gmx.com;
+	bh=Wf/EITvpajNOx35ey1gCps86FO/rXhmDe6LqDVrbDGY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=jvN4i90pgjB09wyErgZZlkmZClWz9blf1yK8+wUe5Je0bqASM4iOZ+r+/7O9phRG
+	 uYVSSyrFFJIfgVC6UBV+v9N2lOS5kGmTNqcKpk/siBy82bL9jnfl40HQ9K0ipObp2
+	 6OBDcQOY08BQiBwY+Nr84P5b39pQHj1JYfc/OschYLLeIhG6XkFEjDqLErCDGoBL0
+	 r6z4wqaG3tSfsc+t836+lcVIfG+w+6BG9pDeugrHFSH8JPpUZnH3CmdVnayol1gl1
+	 60E6yEx2H1PuuAw030fKsW8ohIkFzl7VDy9AUzr+o1RPBxnvujWmX2/ta5Ispqf5v
+	 bqFKFlE+BNPmB078fQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1ML9uK-1sKc0l1JnW-00J7dP; Sun, 05
+ May 2024 07:54:46 +0200
+Message-ID: <f6aca430-55fe-433c-93ef-4fb2efc19ec5@gmx.com>
+Date: Sun, 5 May 2024 15:24:40 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: BTRFS w/ quotas hangs on read-write mount using all available RAM
- - rev2
-Message-Id: <57CAA156-27B5-453F-8A83-1C8812E49B98@gmail.com>
-Date: Sun, 5 May 2024 11:55:17 +0800
-To: linux-btrfs@vger.kernel.org
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs-convert on 24Gb image corrupts files.
+To: Anand Jain <anand.jain@oracle.com>, jordan.j@mail.bg,
+ linux-btrfs@vger.kernel.org
+References: <d34c7d77a7f00c93bea6a4d6e83c7caf.mailbg@mail.bg>
+ <0fbad9f2-6f26-4fcb-ac8e-a1fa4ebc80db@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <0fbad9f2-6f26-4fcb-ac8e-a1fa4ebc80db@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bq5953+lxERwbDRaSpVVIxYYSq62GZzU2BzbXfatwIqwRwx4JQW
+ WwJ919qXtWVwtOY+z087WQoHLZCps7DCxh+1Y5enttHKfdLz+qxJK8zdHRxXQWqqkqrOarR
+ yskuBY3TolKl0S3UzkR6qMWIgwdSrH/Qgh+8Kb+huGKmD3lt948QFi7Ss1lyAUF63AUXIWW
+ /woWLxdDw+KvCVsVdqLSw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:caTPdIaipEg=;vq76XqfQAA0Y7pURoYj6Ul3h86A
+ QjJyavl61w5c2w2EfESS06C5Kf4DvVJyKIp3Gzq6rKSSqRyFT0P1TNpWp3WkuSi015upI2DbG
+ OizAdnxIlrkSH6RKtGb9XIzRBrU8g6WQRvZdFuACyFxyMnCto0zGJJJNzXYs62HAxYcc7XIDj
+ sQCgqVvUVa0dhYo+AF5kNr9npJeqP/CfBhjx3upMY/Hf0L32XXP570lgDwi8GZ7IWYzbI8YBP
+ RL5p3ROHSk/Jumhu4+MI1xxqxO1Rp9foxqsF3viBdI4e0UBmxzxHKuuviOXd/06STjJN/DyqM
+ ibeDbxLRgWHj4naoSoMBOaAdMJ7qBG0VmSMx53iCyU7Q0BlrEV1LslL3GdVyK1mzRiwUE7IXj
+ 9WRwQvN72ipKheB4EKVldYvuTcvT4B8e68J4xONq6xkwxRK/5aG+mI5lQahaqg+A++gwqnE7d
+ eUOGGHZS1jDNzCFCEPEEbq2p9HvzMIfmQgJahIx1MOHVOMWc3C2TKpgrSeKketQ0+q7upOB5F
+ 3pvciqN9JvnQEV79mMmawE4chycDu9KNY+mN4LVxkJsmZz8lLluF01Hll784qUVsIIrKxYq3E
+ 5yyPwYj+Rq1eTnn4gjccI/7JbR6R8N9+Iuzde4LvlAHNqN4M737npwwEOWfPHuHMVdBKHLKbf
+ TN61r4uPWXtqgxOUW0uiglUY6mEbut5xRdcevwojyDLTUXnzAcGDug7Rp9b2Ppe+2J0gSn9V8
+ inY2kcnysEiAvF3MJ/Z8L2SaDp23eQTWmxiByhC3vi/IfSC5bVLzXR7pifFemwO3xLh9y5ToP
+ +ypktbAd5XbTyFuJT3JKT8N4E+t77pXwEDR/uMP3RUlJ0=
 
-Dear BTRFS team,=20
 
-I=E2=80=99ve had a weird hanging situation as described by the previous =
-email in this chain: =
-https://lore.kernel.org/linux-btrfs/133101d8dbce$c666a030$5333e090$@admira=
-lbulli.de/
-The situation:
-I have /home as 2x6TB hdd in BTRFS Raid0/data, RAID1/MData. I make a =
-daily snapshot by cronjob overnight, so there's about 1000 snapshots on =
-it. (/ is on a separated ssd)
 
-To see where all the space was going, I enabled quotas: `btrfs quota =
-enable /home`, and it started doing its thing. When it was nearly =
-complete, I deleted one of the subvols with `btrfs subvol delete =
-/home/BACKUP....` (one of the earlier backups, about 117MB exclusive, =
-according to the qgroup), and realised it would take a while to =
-complete, so I left it alone.
+=E5=9C=A8 2024/5/5 10:26, Anand Jain =E5=86=99=E9=81=93:
+>
+>> on ext4:
+>>
+>> ilefrag -v
+>> m/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chro=
+me/idb/3561288849sdhlie.sqlite
+>> Filesystem type is: ef53
+>> File size of
+>> m/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chro=
+me/idb/3561288849sdhlie.sqlite is 49152 (12 blocks of 4096 bytes)
+>> =C2=A0=C2=A0ext:=C2=A0=C2=A0=C2=A0=C2=A0 logical_offset:=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 physical_offset: length:=C2=A0=C2=A0 expected:
+>> flags:
+>> =C2=A0=C2=A0=C2=A0 0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0..=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1:=C2=A0=C2=A0=C2=A0 2217003..=C2=A0=C2=
+=A0 2217004:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2:
+>> =C2=A0=C2=A0=C2=A0 1:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2..=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 10:=C2=A0=C2=A0=C2=A0 2217019..=C2=A0=C2=A0 22=
+17027:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 9:=C2=A0=C2=A0=C2=A0 2217005:
+>> =C2=A0=C2=A0=C2=A0 2:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 11..=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 11:=C2=A0=C2=A0=C2=A0 2217028..=C2=A0=C2=A0 2217028:=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1:
+>> last,unwritten,eof
+>> m/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/chro=
+me/idb/3561288849sdhlie.sqlite: 2 extents found
+>>
+>
+>
+> btrfs-convert doesn't support ext4's "unwritten" extents. V2 of the fix
+> is in progress.
+>
+>  =C2=A0 [PATCH 0/4] btrfs-progs: add support ext4 unwritten file extent
 
-Later that same day, there was a power outage, and when I restarted the =
-box, everything came up as normal, but a `btrfs-cleaner` process started =
-that eventually took all of memory (32GB) and then eventually made the =
-machine non-responsive. I tried to disable the quotas with `btrfs quota =
-disable /home` while this was happening, but the command didn't return.
+But the reporter also tried your patchset already:
 
-I rebooted in single user with `/home` unmounted, set up 128GB of swap =
-using a USB 3.0 flashdrive, then ran `btrfs check -p -Q /home`. It took =
-75 hours to run, and used a max of about 80GB of RAM+Swap, and reported =
-no errors.  I tried to mount the drive as normal again, and once more =
-`btrfs-cleaner` spins up, takes all memory and makes everything =
-unresponsive, with constant `OOM` killings of all processes, until =
-eventually the system crashed. It didn't use the swap much, which might =
-be relevant.  All through this, `btrfs-orphan-cleanup-progress` reports =
-that there is one orphan to be deleted, corresponding to the snapshot I =
-deleted, and it doesn't go away.
+ > *********
+ >
+ > Tried the four patches from:
+https://lore.kernel.org/linux-btrfs/6d2a19ced4551bfcf2a5d841921af7f84c4ea9=
+50.1714722726.git.anand.jain@oracle.com/
 
-`btrfs qgroup show /home` shows the deleted subvol as <stale>.
+ > on the https://github.com/kdave/btrfs-progs.git tree - no change.
+ >
+ > **********
 
-I can mount the volume read-only and with `ro,rescue-all` with no drama, =
-and nothing dramatic appears in the system logs, but mounting as =
-`default` causes the eventual crash of the machine as described above.
+Any clue why it doesn't work?
 
-I cannot run `btrfs quota disable /home` as the command doesn't return, =
-and the system eventually locks up when mounted RW.
+Anyway, for now I'd prefer to change those unwritten extents just to holes=
+.
 
-My current kernel is 6.8.7-fc200, which should all of the optimisations =
-discussed in previous emails in this thread. The filesystem is about 3 =
-years old (2021/04) but I don=E2=80=99t remember which kernel was =
-running then, but it should have been at least 5.8 according to =
-https://en.wikipedia.org/wiki/Fedora_Linux_release_history.
+Remember every file extent is shared between the inode and the ext4
+image, meaning even if we created the preallocated extents correctly,
+any newer write would be COWed anyway.
 
-Is there a way to disable the quotas with device unmounted (I don=E2=80=99=
-t really need that info, and I can always rescan later.) I made a start =
-at patching the `disable-quota` command into btrfs-progs, but it reports =
-an open transaction, when run.
+Thus for now, I believe changing the unwritten extents to holes would be
+much easier.
 
-Any advice on how to proceed?  (Apart from backup everything, of course)
-
-thanks and regards,
-dave=
+Thanks,
+Qu
+>
+>
+> Thanks, Anand
+>
 
