@@ -1,331 +1,406 @@
-Return-Path: <linux-btrfs+bounces-4765-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4766-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF6128BC691
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 06:36:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF098BC713
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 07:41:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BDA828159E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 04:35:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 126CBB20C05
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 05:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DAD345944;
-	Mon,  6 May 2024 04:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BE747F4A;
+	Mon,  6 May 2024 05:41:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XkvXXdEu"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="pZbe1Poc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E54C1EB36;
-	Mon,  6 May 2024 04:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714970149; cv=fail; b=pry7Hq3QqOp8fK7cb5kp110vXk3idSDhvuGk5V5Oc3zy+RUieomycuP0UsLqQs0j4Afe0C21G56rPIga5ZiEv6nCICWVM+Iyf3GLluMnmmsJz/aJzD98c2b13Z6aID5vOyPhQvKIl4iO06/Blomryf24qiR6FyBj1UOq9uQzumI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714970149; c=relaxed/simple;
-	bh=ItI1xlddnTgbSoLUEY4MvvGr0OHvzj7tAGC/MOI7JOo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=c5AojmTTp0sYStM1uNjaDoXM252gC6lGyToAzcLnvPNiZ+8RyRpxXLpGeQjtGlWRym0F6GuvVMPUuf3W+SXNMgQ5gOzGd6KCUbVhjIMvsH/WjrBKSkbaW7vPSQh/28X1lUU0sWeSnRWzACEFNACXgMef1dA7esssrWvInfqw5fw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XkvXXdEu; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714970147; x=1746506147;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=ItI1xlddnTgbSoLUEY4MvvGr0OHvzj7tAGC/MOI7JOo=;
-  b=XkvXXdEuCA1qXivLnEM5PS7Wb8LBqD3ZSqT3+cVewEJ62f72/3H5B/76
-   Hv6Wp7cM6P9kkojtFaWqRa9KU6GUhjY28z7ugqAYuzX6ocZz8ZqZOks3I
-   d8Dowjm9IDu5iItx+u8ajD2TW3S+dgjFujVeeFw7PSwKI8N2mpUOnA8LM
-   9yzQgp2UC+03ev3LmsWEn2m75ZiZ3Oqvk6fugKupiXBtnatLQpXZwdJlB
-   hPmn4vtFTAFdiWOSg/GXN4gGawRShWh9uC3CMvRRY39zcxZciP8ajodys
-   salxtU3IBWeP5PAN94d/by4Ce3wvccFI+g75u22hxguquIyw6wLp3RxtK
-   w==;
-X-CSE-ConnectionGUID: 8e0W9w5uSXOxl55Y6T15JQ==
-X-CSE-MsgGUID: dQ9on6I2T0a91nqfQ0iZ7g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11064"; a="21253952"
-X-IronPort-AV: E=Sophos;i="6.07,257,1708416000"; 
-   d="scan'208";a="21253952"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2024 21:35:46 -0700
-X-CSE-ConnectionGUID: BKVfxM99RQSZVtmS6Yowog==
-X-CSE-MsgGUID: dIJEq91QTYmkeQJeV6VVBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,257,1708416000"; 
-   d="scan'208";a="32516608"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 May 2024 21:35:45 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 5 May 2024 21:35:45 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 5 May 2024 21:35:44 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 5 May 2024 21:35:44 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 5 May 2024 21:35:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lbQEmkLr5lXXb3WVPh+QzC2clZ+yMESyRqcyIklt4+7mUGH+MGXB51WMjUOSwcxCo+xP9ukl8i1eQiq7DOPz7nyTe+NGOkXM9w5XTkL76+tSQuJti05C1WZLVgN1tt/3O1xuiQfFAA1EKceciM5bKZRYUu2Xl3rnu3EDrqi5ywRmVEeuPEHqSH9eNcE4D/oVNVEzXZpfldPSrKZzpOaRNzepdO7GmVRdJidK4zrQv2P0tWDXAnHEwZeb6EtyQ6gks75pon7BhLHI/YIBwJnAM7NawossbeSfp6mEofRRqHuwznFOI7Gq+LjN445bFPaz6u3G07PLhl6cKLOj6Ns97A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wy+LdVj2mPIvgBCWtMG2XwuX50IgtB98CLP9CboWVik=;
- b=dZaQl3mlegoXa0wyfSY6AO/TOI9S9NaaemiKwh/gc1ZStjVXM3Z9aTnAzfI6tmao2JPSMkYZPkncn53xa1ylUwy9Cj5grBWCgziMkyXC5bF0tKAXXgkUaIzqiSd8TQoSqeIpN8HoKj0M5Wxa12bcUlfCUTWO5/UyUL+/6SQWgMxswWyT5cLlui4zUquN7tIERZhErp4nYJ4RToYxyAnFs36NpCwGvWALscXOruaq/qWvOqbnKI3LIscmu9qeAE/qSGM5l/+XCRwsQ0UcBwVFSrxqhZ88LFZBfkZjF1Rjih/BkfcMtfIXf4UIsNBeiRLCru2li4/kc2gKIcLrOzpCzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by SA1PR11MB6823.namprd11.prod.outlook.com (2603:10b6:806:2b0::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.29; Mon, 6 May
- 2024 04:35:42 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57%4]) with mapi id 15.20.7544.041; Mon, 6 May 2024
- 04:35:42 +0000
-Date: Sun, 5 May 2024 21:35:39 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-To: Dan Williams <dan.j.williams@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 16/26] cxl/extent: Realize extent devices
-Message-ID: <66385e1b63173_25842129417@iweiny-mobl.notmuch>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-16-b7b00d623625@intel.com>
- <20240404173241.00003a6f@Huawei.com>
- <6630641e5238e_e1f5829431@iweiny-mobl.notmuch>
- <663401ba2e237_1384629438@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <663401ba2e237_1384629438@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-ClientProxiedBy: BYAPR02CA0014.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::27) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22722B9C4
+	for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2024 05:41:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714974102; cv=none; b=TPt/DnR2Daqe/3Yszl1oUbW+MBqgbn7q5z1Y/4REdT33vUx6mm//mbYwBsM5s0bCWDXfhKEFFP6Avm5+j2D9UtAQWzcEfzxemVxg4GplJ2Amwb+O6fnYwrOyN2SD75/iawfNn0YXCnsxcu1Vu2kwDVYft9pQBjFi/5zZsIwQ+90=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714974102; c=relaxed/simple;
+	bh=E3x5IZnUPqmiHpXZzfhKjdWDD4n3BYBrZoHlayqZ9Cw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RX7TGC2jvCOWXzT/mSBJoPR2qbt6DBs+k878tt4ZrQy9mu+WjGTzCqYImUbbcjP2Gn3NEArAe04Sv4R/YbqfI5gfJCdKbvrJsdSb7vf2XbBSgN9koweEph+slQPSyr84VsLjPgKL2J4ai3ktqK/fXfqM93ug5/1rW8Y3DGD6kn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=pZbe1Poc; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1714974092; x=1715578892; i=quwenruo.btrfs@gmx.com;
+	bh=JULG+Qd3RVavNroaANFSQU39J7pxcL2tNRpLUm5vaXk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=pZbe1Poc6f7tTMEP3FLJAWOAcI6P3sK/HNEd7pve+opVlPWRfPBOF4TSmPyexkxt
+	 xvasUkuNsWn5fy/xScGFbjDmlNWxShmMVJVpGP+8tGkPS3MR6DyZ2W562OB8XKpHW
+	 qVM6g9xw+gPKAlfxyx4YaqOSOXxS6MDMJCAUiGwddXzh5qByczChp6WagxSpGVPyf
+	 K19Ejqc9cE7CoxJ8ZmfEEFnj9ZBPh7omW5I8RseanMfwTwBd3e8AcNfepx45sIigv
+	 fS9wWMAK2VylY/rCkQOsvTjnDVHzfrLPaV+S3LXnXNhxGuetJ1TzCg0U3ZeffQDrY
+	 hw6ZCAEsOLElKjjQKw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MGQjH-1rpngk3Co9-00GoHP; Mon, 06
+ May 2024 07:41:32 +0200
+Message-ID: <4c6ce351-e1fe-483a-8a9b-a1abb2324ea1@gmx.com>
+Date: Mon, 6 May 2024 15:11:26 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SA1PR11MB6823:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4199748-39a3-480a-f51c-08dc6d85fd0d
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?VT8KlVhwtB5f7yGbI8FuntIWZhd3dKpE7GTsVULSgbMoLX1wToQk5qVpP8N4?=
- =?us-ascii?Q?EhHBzcOKwN7NSIpXvfqrpor6BerqfTrBdi58+M2pGmzqq1sSBM6eaxMQ7lsY?=
- =?us-ascii?Q?REoH2wcyljG5De4dr1OeZdPNzg2xPFfvhfmNThaqzx80bydex2uYDBZI5fvc?=
- =?us-ascii?Q?qhK0fqn8hfKFcM5S6/ta7w3116iORzfGYtkXRvzs0S2hDPEbWfjBYxideJPT?=
- =?us-ascii?Q?h8Lhvs08mjIHbqm772OfLgLdVfRPIP19wrfoM0dQmksY/Izvy58kx6iMe1rp?=
- =?us-ascii?Q?lBo84+i2+yaQoTYa068xzj6kvzBweLtRg5Inquec2x6FysE9qsSap0O1T1pv?=
- =?us-ascii?Q?nGzFoPhNtHnWvordvJF/R0+lL287MaEpEvKUxeqn9EWnvKG3Lm9B5GKBDaEb?=
- =?us-ascii?Q?hn6W1gI2M0Pb1OkKGKICJrnWGmQcTcYlJxtxlPUNdJ35J0Pa8f9hsJNTQIOS?=
- =?us-ascii?Q?JUKRA6g/j9yx2lE+Dwi6Wc+B4LCUn4CoOrPDyBKMonfmeGWBmI+6ashq2Z1d?=
- =?us-ascii?Q?O8HapBGNce2ntpYhj3uuyx6dBIM8h2fjsm2fLer3TYh0Jkd3LM3ZA4zJowuv?=
- =?us-ascii?Q?7y4ZS6qTbrVIKVAF19jLZ0vElICDYlSQQU43aFc/X5rQyfuNdLqNq2IpmdQd?=
- =?us-ascii?Q?qZgyNnFZd+xyXdS1m4T5JIp3YYLiv2uHH0wEZw6QenuY5yjNs6/zYZyULwf5?=
- =?us-ascii?Q?TBm5JuC77v0Y9JZdGkBJ+0LN4UDHizHTYq+Xu6Bxt2p+Abhs+rgrZgTgOpd2?=
- =?us-ascii?Q?KmkN603J7gBce05/xhZwFAWLcSddmDfadGmc1Ms4qCsUJWHd3WEEQY+ulNbF?=
- =?us-ascii?Q?GvqNZFq7uNVLkBNANb8QfwMEPshxdGjUGroBgO8SyY385usXqB3Gcw0VsJvX?=
- =?us-ascii?Q?TxuzVuw8tYBwWPhy+39d6b0n5montmkKGxLcXe4zTHVQjIxqHaiesl6KmxFc?=
- =?us-ascii?Q?7wvA8q9yhttZAaB5oSYkSyWn86h7q5TzPDlLC5afGSGSjUp0Z8z6lGurtvDz?=
- =?us-ascii?Q?n4NsHoovdYazwRhfySOSYzzOSK8Ps5fDpjsu2VGwRgRogNJEM08+ofRyEe2a?=
- =?us-ascii?Q?IkYncCa0IB0H8/LmYbpb/Uu7M0IzdUUYS8Vv2GnLEPB26P8OXWBVGgNzSyWQ?=
- =?us-ascii?Q?vsyrG8Bt6sQt5IOIPe9C5nqOFcJylajXSmcIzptcc6jY18ZUjsMox8HHZklL?=
- =?us-ascii?Q?YuHe09pHDoGXSp5gp+LlCTmjcVSY1bgkAzNEDbHRYNRcuUv2crYG0raMZiTA?=
- =?us-ascii?Q?KbcFjAxBNu6UlXplt9cyU5e3uh+FOPRyIwlNuFXPvw=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nG9qRyJaou7ar+qXHNLyuX9trYCc8USk3lcV6WvFF8/Q3QInNvJa6t/1QgA8?=
- =?us-ascii?Q?5skLiEFM0XSMmF5QmQ0h+Bs+h4FxtDKMbyQwf+SlT3zcUtVJhiBOXRjgaddB?=
- =?us-ascii?Q?12DvvQWZpgGDKLUVdNhKcp6qlV0Q1HlmllQvQn+7NksnlGASDIUfU759rMDp?=
- =?us-ascii?Q?fToS3aHxMbFbNqd1EE0ZB50OZjWsAIAJqS4NQJFXn0pNN/0ca9pIfmojmvhF?=
- =?us-ascii?Q?haCjcWhoPFsqQvr0HI/K11WUfgIem2u5WXEx5pEvvAe7KQKLKmWxn+NWHk6l?=
- =?us-ascii?Q?zt4IXNqNaLnOPsqyPlxv4+1QET5Zegmf1ETlI+x9C/D3g9WxrrIj2zSwY3R6?=
- =?us-ascii?Q?zl5BFIYpEmw4nVeJot4JcG79c1tIzmXF71EykNgyI6np4vJLxqBGX4xLeVtB?=
- =?us-ascii?Q?Jxyoo1+w5kz51aAnv6E7E2MJRyOoApREu3utafhDlYbQfatVMiu8kgnDCEo+?=
- =?us-ascii?Q?tp8oor3zy1D9GTij1x+VXnbaDARH37MF92ufHUJSA3/4dlHpuTlFQSHgWTUy?=
- =?us-ascii?Q?sTDsYn6fhJlQmGzmeU0BzI/lV8wF+GUb/wnA/NWk6uzH5RV6F3D6lTUrPOEI?=
- =?us-ascii?Q?8RTxVKfA9Bo+3XEawQsXeP4KVKgUbpNOJPMHBfEw1b9YVQKux5FHA1IGznCz?=
- =?us-ascii?Q?t/CT5bYNY+Ukj2u8Q2NRDh1WCQ8DOvxMp70fDFHxSxkPJ/7ibrWdsBSYO1S0?=
- =?us-ascii?Q?oNtkDiBcyjaySutFJnGiDbm8GhO5hjqLZ1/jL/4FBKFmhnoPJb/sHHnY+Pxe?=
- =?us-ascii?Q?KPnzzO3y3J1j5elUAG2/imS8ziLPf99vgFdtvPQ8azCSbgip7ccMwURs38AL?=
- =?us-ascii?Q?3pGWszrHXyW2Ihn/FUSG3T3kX8NV+tA3eM6g+2Unra2UU79VoB6Hzc51myXE?=
- =?us-ascii?Q?oAATd9b+5Mep9DAVKp7oR5FY18N32jYvWi09V4tCGN1zoBFwmGBx1laIL6xu?=
- =?us-ascii?Q?8e4Wrtv26GqAkcF7dGOQPhd7SYyM04pCYICEDYPgTHojdj4r/UmzZ1ExOwJx?=
- =?us-ascii?Q?g0rUAoRckKguyenjyYl9jMyfw5zxYSo6MFMp2CE8fSecPubLRHTANfegcA0B?=
- =?us-ascii?Q?zxxQk1EliN1DnWGVLRFjiMS4Zpei6z/HnFwi+qn2z3mpUHM/VMSuKVxDM3xV?=
- =?us-ascii?Q?o1yW+TGURoP/sbaxrR7z6J1paUBN5FhvRDwokbahesb92yQd44HSMP3ocTfo?=
- =?us-ascii?Q?S9EuDO4o+JYrAHQ8F0qLju/nEIpms5uU0b4Vfdf2mvd/goAYCANbdMaThji+?=
- =?us-ascii?Q?cxPW2fcW0iZw0AGc7X8TpI/ppTIz1mcoQZqSiWE+y3yTdyoL8Vbt/a3Gk+/f?=
- =?us-ascii?Q?u9KL93topSyKRN9dYvkBaN2vCdGjZMRrL5wQ8phAbMidpmtmwv7lgvIa4vLi?=
- =?us-ascii?Q?xqXgNIucvHBmuxFLuMdYQRdruKtKyCGeaA/Mfp7ZJ6TbCWsWpll+TUd+XnXf?=
- =?us-ascii?Q?9rPRISQJj2iTIskZps55x8j1PDh8juZlOEHv9Vr9G/5zJWz7SCMuRGMD1H8A?=
- =?us-ascii?Q?2qVs5GH7tDjjzxH6Wx/KNuMAIa1RFHTC+ASR3rXVTXzQvUPu6ffSVrzIfjED?=
- =?us-ascii?Q?zfrPpcTIeJzhagAe8DG+uw1L7JOLtUvG4ZWQEXfo?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4199748-39a3-480a-f51c-08dc6d85fd0d
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2024 04:35:42.4817
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4qG0/TxZ+LKoCyXgtDIPx75xFiFle49ngt+zKgbIXy/uXJ9TrJEzP8Ms1yNez1xjPV9lmVO9bHLqdN9mrVQXPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6823
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/4] btrfs-progs: convert: support ext2 unwritten file
+ data extents
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc: wqu@suse.com, dsterba@suse.com, y16267966@gmail.com
+References: <cover.1714963428.git.anand.jain@oracle.com>
+ <91f25251b1d57ee972179d707d13b453f43b5614.1714963428.git.anand.jain@oracle.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <91f25251b1d57ee972179d707d13b453f43b5614.1714963428.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sL/OMb6jAfDcprT/ELaAPC+EEhorolHn0kIwjg0rrwp9BYVSJ7v
+ AvJ82q2caLtwM5sVEJNmH8HHX4QLeur9ttPm4pCGkzZURE8bqB4ce73w8SUkXhgAw2ptrZq
+ YF3kPF87Ggeq7GIBDKw+SSNLttPBPvpyu06YTPeK0Dw+0VA9HZoiPZQuolWr26QyPEUEn1J
+ WAnpy1FjLnUnQP9H0HFQw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:3mvJ0Ioey2s=;plqEbegcEEwfwwyr62FLYh4ER6g
+ MO/+ArjhwxdjplObdY07UTFyjUn5fw4KV3uMNnTOKXlzoJP1IXxEnpXfwFccIYfQEAY2GM0Fp
+ YqVXWTKGWeQtTnAsD1aKmNFAvPjuUMilnqY8arl0mHD9b+eDo5vptdlhntx+WXbtRPIr14VMk
+ T3gN4nnJ/WO22raPBqeLvUHWVfCWx7c3VfFmz6GMzM6ydiWU/piJh1xU+c88T217bMlZZUYN7
+ mvwsnnbdGWI3j5t+J+4uhELt0UPQqFshdyaWw840yLGXuOMEObVGTYAigDoPy6esmCm2qSvyK
+ LBrrEdtub9t6adP/+cYzflGVrMqbFu+gjsEULiY8bZEEgeKHGB6QXq1qCBAXqxREuFR6TRG02
+ X4GTUQ2Yjh75k/lrOukSHerinYi6vpYWscTU4vHLZhHA9d6BhsMceyz/ckio9lxCEd5Kb3J50
+ Q4TgPVGNQZ9WzFrlKFTh9+i2LRrJoeksEbctP0DIa5HMH9itVduWFlzO5qy2SMf0NeFCrTzh9
+ j1rjXkeq7DaYq6UAPUD238Z4eyoHcGQXsMe5VA85/Yawemjyz8qVKC4QrkDGge4pS8779Q+Xj
+ ifvAW7anCZCddIOz7NvnGdo9r5z14fojT8rVg8doGf2u4XRmq+SHxm3sV+v5gLQNDNpAhYAjS
+ HHMdb31mEZmLWzLND/92u5Q23UcG9sRpp7MMp8p79BspL73JiKzEK/ErI1rs/2F/qBliL4/Bf
+ PUoCgs06vQ7brde6AflBJPI4YkJS8XocIXN4ZnWndcLd8OfGfW7Xl5IJWlOCzV+NIzFv7m6PL
+ h/msq6YBtPokE/y5kBwkLcTYcZwffW+aPvty8rEh98n/0=
 
-Dan Williams wrote:
-> Ira Weiny wrote:
-> > Jonathan Cameron wrote:
-> > > On Sun, 24 Mar 2024 16:18:19 -0700
-> > > ira.weiny@intel.com wrote:
-> > > 
-> > > > From: Navneet Singh <navneet.singh@intel.com>
-> > > > 
-> > > > Once all extents of an interleave set are present a region must
-> > > > surface an extent to the region.
-> > > > 
-> > > > Without interleaving; endpoint decoder and region extents have a 1:1
-> > > > relationship.  Future support for IW > 1 will maintain a N:1
-> > > > relationship between the device extents and region extents.
-> > > > 
-> > > > Create a region extent device for every device extent found.  Release of
-> > > > the extent device triggers a response to the underlying hardware extent.
-> > > > 
-> > > > There is no strong use case to support the addition of extents which
-> > > > overlap previously accepted extent ranges.  Reject such new extents
-> > > > until such time as a good use case emerges.
-> > > > 
-> > > > Expose the necessary details of region extents by creating the following
-> > > > sysfs entries.
-> > > > 
-> > > > 	/sys/bus/cxl/devices/dax_regionX/extentY
-> > > > 	/sys/bus/cxl/devices/dax_regionX/extentY/offset
-> > > > 	/sys/bus/cxl/devices/dax_regionX/extentY/length
-> > > > 	/sys/bus/cxl/devices/dax_regionX/extentY/label
-> > > 
-> > > Docs?
-> > 
-> > That is a good idea.
-> > 
-> > > The label in particular worries me a little as I'm not sure what
-> > > is in it.
-> > 
-> > I envisioned a pass through of the tag.
-> > 
-> > >
-> > > If it's the tag one possible format is a uuid (not a coincidence
-> > > that it is the same length) and interpreting that as characters isn't
-> > > going to get us far.  I wonder if we have to treat it as a binary attr
-> > > given we have no idea what it is.
-> > 
-> > In thinking about this more (and running some experiments): none of these are
-> > strictly necessary in this initial implementation.  No code currently uses
-> > them directly.
-> > 
-> > I questioned these in the past and I've done so again over the weekend.
-> > 
-> > I was about to rip them out entirely when I remembered Gregory Price's
-> > comments on Discord.  There he indicating a desire to very carefully place
-> > dax devices.  Without at least the offset and length above (and to a
-> > lesser extent the label) this can't be done.
-> 
-> Careful placement of dax-devices physically requires an entirely new
-> allocation ABI. There is the mapping_store() interface that was added
-> for a specific kexec / VMM fast restore use case, but that never
-> envisioned the sparse region case. So I do think it is worthwhile to
-> punt on that question to a later add-on feature.
 
-Agreed.
 
->  
-> [..]
-> > I don't think this is exactly what the user is going to expect.  This can
-> > be resolved by by looking at the dax device mappings though.[0]  So I'm going
-> > to leave this for now.  But I expect some additional porcelain is going to
-> > be required to fully meet Gregory's requirements.
-> 
-> Not sure what the exact requirement is, but if it's the typical, "I want
-> to allocate by tag",
+=E5=9C=A8 2024/5/6 12:34, Anand Jain =E5=86=99=E9=81=93:
+> This patch, along with the dependent patches below, adds support for
+> ext4 unmerged  unwritten file extents as preallocated file extent in btr=
+fs.
+>
+>   btrfs-progs: convert: refactor ext2_create_file_extents add argument e=
+xt2_inode
+>   btrfs-progs: convert: struct blk_iterate_data, add ext2-specific file =
+inode pointers
+>   btrfs-progs: convert: refactor __btrfs_record_file_extent to add a pre=
+alloc flag
+>
+> The patch is developed with POV of portability with the current
+> e2fsprogs library.
+>
+> This patch will handle independent unwritten extents by marking them wit=
+h prealloc
+> flag and will identify merged unwritten extents, triggering a fail.
+>
+> Testcase:
+>
+>       $ dd if=3D/dev/urandom of=3D/mnt/test/foo bs=3D4K count=3D1 conv=
+=3Dfsync status=3Dnone
+>       $ dd if=3D/dev/urandom of=3D/mnt/test/foo bs=3D4K count=3D2 conv=
+=3Dfsync seek=3D1 status=3Dnone
+>       $ xfs_io -f -c 'falloc -k 12K 12K' /mnt/test/foo
+>       $ dd if=3D/dev/zero of=3D/mnt/test/foo bs=3D4K count=3D1 conv=3Dfs=
+ync seek=3D6 status=3Dnone
+>
+>       $ filefrag -v /mnt/test/foo
+>       Filesystem type is: ef53
+>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+> 	 ext:     logical_offset:        physical_offset: length:   expected: f=
+lags:
+> 	   0:        0..       0:      33280..     33280:      1:
+> 	   1:        1..       2:      33792..     33793:      2:      33281:
+> 	   2:        3..       5:      33281..     33283:      3:      33794: u=
+nwritten
+> 	   3:        6..       6:      33794..     33794:      1:      33284: l=
+ast,eof
+>
+>       $ sha256sum /mnt/test/foo
+>       18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  =
+/mnt/test/foo
+>
+>     Convert and compare the checksum
+>
+>     Before:
+>
+>       $ filefrag -v /mnt/test/foo
+>       Filesystem type is: 9123683e
+>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+>        ext:     logical_offset:        physical_offset: length:   expect=
+ed: flags:
+>        0:        0..       0:      33280..     33280:      1:           =
+  shared
+>        1:        1..       2:      33792..     33793:      2:      33281=
+: shared
+>        2:        3..       6:      33281..     33284:      4:      33794=
+: last,shared,eof
+>       /mnt/test/foo: 3 extents found
+>
+>       $ sha256sum /mnt/test/foo
+>       6874a1733e5785682210d69c07f256f684cf5433c7235ed29848b4a4d52030e0  =
+/mnt/test/foo
+>
+>     After:
+>
+>       $ filefrag -v /mnt/test/foo
+>       Filesystem type is: 9123683e
+>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+> 	 ext:     logical_offset:        physical_offset: length:   expected: f=
+lags:
+> 	   0:        0..       0:      33280..     33280:      1:             s=
+hared
+> 	   1:        1..       2:      33792..     33793:      2:      33281: s=
+hared
+> 	   2:        3..       5:      33281..     33283:      3:      33794: u=
+nwritten,shared
+> 	   3:        6..       6:      33794..     33794:      1:      33284: l=
+ast,shared,eof
+>       /mnt/test/foo: 4 extents found
+>
+>       $ sha256sum /mnt/test/foo
+>       18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  =
+/mnt/test/foo
+>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2:
+>
+> . Remove RFC
+> . Identify the block with a merged preallocated extent and call fail-saf=
+e
+> . Qu has an idea that it could be marked as a hole, which may be based o=
+n
+>    top of this patch.
 
-I'm extrapolating that it will be.  I want to allocate on the first extent.
-Tags were removed from the series a while ago.
+Well, my idea of going holes other than preallocated extents is mostly
+to avoid the extra @prealloc flag parameter.
 
-> then I think there is another potential coarse
-> grained solution that probably covers most cases. Allow multiple
-> dax_regions per cxl_dcd_regions, where each dax_region manages an
-> exclusive set of tags.
+But that's not a big deal for now, as I found the following way to
+easily crack your v2 patchset:
 
-I'll have to think on that because don't dax regions map to specific dpas on
-creation?
+  # fallocate -l 1G test.img
+  # mkfs.ext4 -F test.img
+  # mount test.img $mnt
+  # xfs_io -f -c "falloc 0 16K" $mnt/file
+  # sync
+  # xfs_io -f -c "pwrite 0 4k" -c "pwrite 12k 4k" $mnt/file
+  # umount $mnt
+  # ./btrfs-convert test.img
+btrfs-convert from btrfs-progs v6.8
 
-> 
-> The host negotiates a dax_region tag layout with the orchestrator and
-> can then trust that all of the extents that show up in a given dax_region
-> belong to a given tag or set of tags.
-> 
-> This is not something that needs to be considered in the initial
-> enabling, but is potentially a way to avoid bolting-on a new fine grained
-> allocation api after the fact.
-> 
+Source filesystem:
+   Type:           ext2
+   Label:
+   Blocksize:      4096
+   UUID:           0f98aa2a-b1ee-4e91-8815-9b9a7b4af00a
+Target filesystem:
+   Label:
+   Blocksize:      4096
+   Nodesize:       16384
+   UUID:           3b8db399-8e25-495b-a41c-47afcb672020
+   Checksum:       crc32c
+   Features:       extref, skinny-metadata, no-holes, free-space-tree
+(default)
+     Data csum:    yes
+     Inline data:  yes
+     Copy xattr:   yes
+Reported stats:
+   Total space:      1073741824
+   Free space:        872349696 (81.24%)
+   Inode count:           65536
+   Free inodes:           65523
+   Block count:          262144
+Create initial btrfs filesystem
+Create ext2 image file
+Create btrfs metadata
+ERROR: inode 13 index 0: identified unsupported merged block length 1
+wanted 4
+ERROR: failed to copy ext2 inode 13: -22
+ERROR: error during copy_inodes -22
+WARNING: error during conversion, the original filesystem is not modified
 
-The point is I'm not trying to bolt anything on.  Just trying to explain what
-can and can't be done.   The purpose of these entries was to give the user the
-ability to see what extents existed and by correlating the dax mappings could
-see where their dax mappings landed.  Careful allocation of dax devices could
-result in the use of some extents and not others.  But this was __not__ at all
-intended to be done initially.  Just use the space as it come available without
-any tag use at all.
+[...]
+> +
+> +	memset(&extent, 0, sizeof(struct ext2fs_extent));
+> +	if (ext2fs_extent_get(handle, EXT2_EXTENT_CURRENT, &extent)) {
+> +		error("ext2fs_extent_get EXT2_EXTENT_CURRENT failed inode %d",
+> +		       src->ext2_ino);
+> +		ext2fs_extent_free(handle);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (extent.e_pblk !=3D data->disk_block) {
+> +	error("inode %d index %d found wrong extent e_pblk %llu wanted disk_bl=
+ock %llu",
+> +		       src->ext2_ino, index, extent.e_pblk, data->disk_block);
+> +		ext2fs_extent_free(handle);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (extent.e_len !=3D data->num_blocks) {
+> +	error("inode %d index %d: identified unsupported merged block length %=
+u wanted %llu",
+> +			src->ext2_ino, index, extent.e_len, data->num_blocks);
+> +		ext2fs_extent_free(handle);
+> +		return -EINVAL;
+> +	}
 
-> 
-> > [0]
-> > 	/sys/bus/dax/devices/daxX.Y/mapping[0..N]/start
-> > 	/sys/bus/dax/devices/daxX.Y/mapping[0..N]/end
-> > 
-> > Back to the label field:  It is currently just the 'tag' of the individual
-> > extent (because no interleaving).  My vision for the interleave case would
-> > be for the kernel to assemble device extents into a region extent only if
-> > the tags match and export that.
-> > 
-> > Thinking on it more though we should leave label out for now.  This is the
-> > second time it has been questioned.
-> 
-> I don't understand the issue. That is a critical piece of information
-> and it is at the cxl device level
-> 
-> /sys/bus/cxl/devices/dax_regionX/extentY/label
-> 
-> ...now I would just call that "tag" and UUID format it (to Jonathan's
-> point), but I see no rationale to hide what is most likely the most
-> useful information about an extent.
+You have to split the extent in this case. As the example I gave, part
+of the extent can have been written.
+(And I'm not sure if the e_pblk check is also correct)
 
-The rationale is that the user was not going to use it.  So no use case == no
-reason to have it...  yet.  I had code a while back to allocate dax devices on
-specific tags.  But that was deemed to different from the current dax
-allocation mechanism so it was scrapped...  for now.
+I believe the example I gave could be a pretty good test case.
+(Or you can go one step further to interleave every 4K)
 
-I can add it back...  But I'm just getting a bit testy about who wants what and
-how this is all going to get used.
+Thanks,
+Qu
 
-Ira
+> +
+> +	if (extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT)
+> +		*has_unwritten =3D true;
+> +
+> +	return 0;
+> +}
+> +
+>   static int ext2_dir_iterate_proc(ext2_ino_t dir, int entry,
+>   			    struct ext2_dir_entry *dirent,
+>   			    int offset, int blocksize,
+> diff --git a/convert/source-ext2.h b/convert/source-ext2.h
+> index 026a7cad8ac8..19014d3c25e6 100644
+> --- a/convert/source-ext2.h
+> +++ b/convert/source-ext2.h
+> @@ -82,6 +82,9 @@ struct ext2_source_fs {
+>   	ext2_ino_t ext2_ino;
+>   };
+>
+> +int ext2_find_unwritten(struct blk_iterate_data *data, int index,
+> +			bool *has_unwritten);
+> +
+>   #define EXT2_ACL_VERSION	0x0001
+>
+>   #endif	/* BTRFSCONVERT_EXT2 */
+> diff --git a/convert/source-fs.c b/convert/source-fs.c
+> index df5ce66caf7f..88a6ceaf41f6 100644
+> --- a/convert/source-fs.c
+> +++ b/convert/source-fs.c
+> @@ -31,6 +31,7 @@
+>   #include "common/extent-tree-utils.h"
+>   #include "convert/common.h"
+>   #include "convert/source-fs.h"
+> +#include "convert/source-ext2.h"
+>
+>   const struct simple_range btrfs_reserved_ranges[3] =3D {
+>   	{ 0,			     SZ_1M },
+> @@ -239,6 +240,15 @@ fail:
+>   	return ret;
+>   }
+>
+> +int find_prealloc(struct blk_iterate_data *data, int index,
+> +		  bool *has_prealloc)
+> +{
+> +	if (data->source_fs)
+> +		return ext2_find_unwritten(data, index, has_prealloc);
+> +
+> +	return -EINVAL;
+> +}
+> +
+>   /*
+>    * Record a file extent in original filesystem into btrfs one.
+>    * The special point is, old disk_block can point to a reserved range.
+> @@ -257,6 +267,7 @@ int record_file_blocks(struct blk_iterate_data *data=
+,
+>   	u64 old_disk_bytenr =3D disk_block * sectorsize;
+>   	u64 num_bytes =3D num_blocks * sectorsize;
+>   	u64 cur_off =3D old_disk_bytenr;
+> +	int index =3D data->first_block;
+>
+>   	/* Hole, pass it to record_file_extent directly */
+>   	if (old_disk_bytenr =3D=3D 0)
+> @@ -276,6 +287,16 @@ int record_file_blocks(struct blk_iterate_data *dat=
+a,
+>   		u64 extent_num_bytes;
+>   		u64 real_disk_bytenr;
+>   		u64 cur_len;
+> +		u64 flags =3D BTRFS_FILE_EXTENT_REG;
+> +		bool has_prealloc =3D false;
+> +
+> +		if (find_prealloc(data, index, &has_prealloc)) {
+> +			data->errcode =3D -1;
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (has_prealloc)
+> +			flags =3D BTRFS_FILE_EXTENT_PREALLOC;
+>
+>   		key.objectid =3D data->convert_ino;
+>   		key.type =3D BTRFS_EXTENT_DATA_KEY;
+> @@ -316,12 +337,12 @@ int record_file_blocks(struct blk_iterate_data *da=
+ta,
+>   			      old_disk_bytenr + num_bytes) - cur_off;
+>   		ret =3D btrfs_record_file_extent(data->trans, data->root,
+>   					data->objectid, data->inode, file_pos,
+> -					real_disk_bytenr, cur_len,
+> -					BTRFS_FILE_EXTENT_REG);
+> +					real_disk_bytenr, cur_len, flags);
+>   		if (ret < 0)
+>   			break;
+>   		cur_off +=3D cur_len;
+>   		file_pos +=3D cur_len;
+> +		index++;
+>
+>   		/*
+>   		 * No need to care about csum
+> diff --git a/convert/source-fs.h b/convert/source-fs.h
+> index 25916c65681b..db7ead422585 100644
+> --- a/convert/source-fs.h
+> +++ b/convert/source-fs.h
+> @@ -153,5 +153,6 @@ int read_disk_extent(struct btrfs_root *root, u64 by=
+tenr,
+>   		            u32 num_bytes, char *buffer);
+>   int record_file_blocks(struct blk_iterate_data *data,
+>   			      u64 file_block, u64 disk_block, u64 num_blocks);
+> +int find_prealloc(struct blk_iterate_data *data, int index, bool *has_p=
+realloc);
+>
+>   #endif
 
