@@ -1,95 +1,95 @@
-Return-Path: <linux-btrfs+bounces-4759-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4760-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2BAC8BC60E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 05:05:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0338BC60F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 05:05:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0256E1C20FFC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 03:05:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23DF01F21C8F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 03:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9D040855;
-	Mon,  6 May 2024 03:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E412242AB1;
+	Mon,  6 May 2024 03:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jLPSxWDU";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Ppk9Atj1"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="XITrXNNa";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="XH3X09Yt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA30242062
-	for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2024 03:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56834206F
+	for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2024 03:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714964744; cv=fail; b=sOAigPHMOZ7+JGxNhAuiGTk9SDXIc4wWqBF6RsuIOGRzBwLTBwixf/wUcsVrRMb48QH8kXYELFRq8vh5Tpxc/tlpKbukKpSMuHhUoGktwMB5DWvoJrdU0HxHJjH23cOVoDpLLEFnryW2pD0EN6XIVmCxOCR+WTZKl8ECLzAtySY=
+	t=1714964748; cv=fail; b=cFcpZpSf1E2GKmxCE4B7rZ7INUfHpWGXq5uPPCTa1Ba1OYz9AXwSPxcwftgAw9piz74DDM0qoQvvffeon9XWYbv0JnOJEH5pdvNCHukxwJCjxWwjaew+DjrjihvHtExlIc+By4AiR7mqO/Rn6a60JCk6jQuRXJ+3cKwqzac0Nng=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714964744; c=relaxed/simple;
-	bh=81C0yVN3owSj2j2+4jp3yCX8lydduas7Pf+hiEjsC4o=;
+	s=arc-20240116; t=1714964748; c=relaxed/simple;
+	bh=HbM7g9g9KmsxCqujP2IeZ5t01WoELewNMzKlkj/1+B0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tGpN+MUANayv5d70J49zAm+lr118/QTUbbatjuM9PnOyIqj5HaMQw5tEM2VJGm3P6/NmnxJTJOcgRCluI2Jw8JsyajIOHTBCMWt1no/wOzNj6S2Xqg1m8DlHNd7hNoDLLz15HGZxVC9GKXptcqwqQBjwj7X53LgbxS5GbXPOycw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jLPSxWDU; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Ppk9Atj1; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=B00CypM94j70lxmnAc52lLeeo2kVOQMlw9bEr1S9r7ySI2hFB0a2bulxA/2kyZgGaZqHJ/i/5VLf1IirTxswtbI7Mb9Ot0ETTwexrAm0Fn9kl3cTxG+UlOy3fY00nnwH87WCLpjUjv5kspBS1wyFvynngh9iMVO3DZQp63GfRTA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=XITrXNNa; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=XH3X09Yt; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 445Lodou024928;
-	Mon, 6 May 2024 03:05:39 GMT
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 445MVorG007496;
+	Mon, 6 May 2024 03:05:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=XYU6epzK/+e2/0ZvEgcGGAzysaGDB1hLcOvc+k4kCtQ=;
- b=jLPSxWDUIB5BmhaUg7QU9EI8+DJsgzAj2mECIGbudVZ/FTBf899J5+24aRlyM+yJTMxg
- 4J2KMovqAin/GKISdMpotKgriNDZvWssCT3NZyhuZdK1eLZbEIzJ8JFelJTj1iXF/UDS
- 4X8oBTTfLQpMTBvPs2/nKbwBZr135T81l0ezUsustAiWw+ouKw15k4Yp04BCffGuKeav
- iBy0yDNJTRCJId8ucFcHn6C9FIxYEx1P7pj81bbKgv+JWaVXRLWNki6dK34+bAbeuA0A
- u4X9QT+0GugBJqSthXeRBlVriHLx/VabCgtrwlPCveGEXcuO8+EPdRkpMy8NzRotuB4u mg== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xwbxcsqw3-1
+ s=corp-2023-11-20; bh=0ojAu7Ucp/S6VGxtrKUIdjSluhnJsX/+/X5KyZc0C2o=;
+ b=XITrXNNaZvS09UDMbB+YLqJwZdXa9Fiu9rr2XLFYH2SSQWwYu4rFBKyKy5ps/Oi31r+T
+ S+9YFZIw6IPc+6Z8I+zdYSsSjLCZOf9GgDJXUSMuWglX64TvO3xJIxdlPjnKUPRrMheW
+ Mr+yp5Yeiqee9VIxIXHFeBu9UdeDf5qucVAnQLh8aZc/wtewQBmwCXVGRzyxvLPWirLN
+ d1XSwyXWyC18LlwjQWzp0l+Kb4b9xroSYMsosQaPXMOMZ8Sry/da90epuHAetG2wsq7Q
+ aHmqqHsRMcqdWw5an0qr7LtDcj5VKZGxyAbno1EJMGvUT/xxtg0hiiTZaYPtDBzP445b kQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xwd2dsn6p-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 06 May 2024 03:05:38 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4461MUl7006964;
-	Mon, 6 May 2024 03:05:38 GMT
+	Mon, 06 May 2024 03:05:43 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4461h4vN039348;
+	Mon, 6 May 2024 03:05:42 GMT
 Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xwbf61xw6-1
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xwbf51qn4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 06 May 2024 03:05:38 +0000
+	Mon, 06 May 2024 03:05:42 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e96moF7Po9Zn7g2O29dhJCR3vI1idtxThJwJF4+0bBp55/utd9e9419HUQhllvjy7b+dbusUJr0C3yLsPTf2K0EbeR+Z87mx57AWORkCrqtgCwaRb2/clQ+9hAd5ofkCsbheBBAvfwnJNVrqWqigvWIcK6+aFFA/SUKgkJuGu7izF2EjbuirJj40AsmJ0dl9A5x2+xJD/+u2Z37/yemBhJzPkE0S0g5XefJIW5W47XhDam8TU27Gvui3sFzu8d6/o+iYX4vAXJlwMdDX0uf+Omdphi50f3re8suOfy4HrdSzJn9OGsYlLnqRGnHinFBRbNh0ADvJ4CSrWn/zPBo9MQ==
+ b=KW/0itnVPphL7UIijHXKrl/RPJRKYJA2CCQRNWj2LzNtoqgQZ9M1+jzIGygIzBgIU1ZGx9iHMciOSz+I4DJszAj5ERCZ/8N8WnwzUUgAKd0YSleUO7ZfDq0hXYpf6FYplJaFhnH33apVIw7hYDEIQcEi2UUP5/e+8F0/a6OvYN3SuF8nnQlrV0GSyZV17v+uUk35ouOqddjNi7P1I/DLnwifRHJjPLKrJ+XtTZrsCxOYFtb9Eh74Nt4RBIzbeexlLY8DeICg80wzaQZsONCOKnEt8jOAZYR8vNco6H4VtZIT+UiOzDU5MQPJe06xzyY7xkOEdBNPmNIx1hf0xPOqQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XYU6epzK/+e2/0ZvEgcGGAzysaGDB1hLcOvc+k4kCtQ=;
- b=l6QXLJ8TsxGtS1+mIq7wApyqEsEL6rjOwuIUKg2jd5F5kMAMfrgIkYy3Fapo7dypCWLHaKER0Q458D03Vw33YIcvo9akO0D3gLOUVIEhOePKCna0X+6VrQ8XWDSZvHptFucPB52GTvzjPOnNwie5+Zy72LtPMf/JEhrPwQh24JeT1ZSI9qDFwONYzoMzEWS9oe0IeCAdIb2Cyly0Y2V5aswLXX49S8lYOg3EU8UBMsof+hlE8lX60DX1sXvBCRGRGlNcjUJZFlRJEYkFmTRqxZNi6Oj9VWGfUz2EJ+4j604tplQIUScT4ioYucEwxqalkio8MiW9y9e3K46CLwYTUA==
+ bh=0ojAu7Ucp/S6VGxtrKUIdjSluhnJsX/+/X5KyZc0C2o=;
+ b=OXM2z4zTKY6HMnijZfZXTeTCGrQjldr0cV+5+qrzJj9uyA5sUTViD8WumLiSq/vvuUJX9fzCL8D42KtDToooYaV+2l5rkLoY7ZT4csRcL5lLgs2Cz6RW+rKbjqbqArUq/y1brNmzW6dtg5HTCtJ/CDlm+pQ3MEsB+EwHZ5MY/Pu6tzqD+JioTUOXNkSEsXAbY7W78OQDgNgUNXzFHNYrq0dmZ76HP/FyOeZoCacECiSI5uGqo+UXqr7335z0+d69Mwga4U4ZecoOcafmXc9Wy1DszcauuyTSv26+BnDOnSbD1IA+eWmr7+Y6aATEcgRwxI+ZxVrp+k4lJmJGwxoj7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XYU6epzK/+e2/0ZvEgcGGAzysaGDB1hLcOvc+k4kCtQ=;
- b=Ppk9Atj1KRTfwtvVQ2ub8/eTVqhZdwF+jXYnFUVBy5dWjcpWVp4U2AjNCY85xlj2QN8elqeqtFZr7+BtqGTz1MRK4f2xyn5CUcTT/xxwg+VM9+/wll1fBh2bSIrs+EQ7rdVFuHx3omV/4nHug8GgQFqIOtcrFoYYgANOJg90qh0=
+ bh=0ojAu7Ucp/S6VGxtrKUIdjSluhnJsX/+/X5KyZc0C2o=;
+ b=XH3X09Ytm6iyqGbt0AysJKRH8SJnKHFSfJnwQziet/M+GUVmoMD6hSkxOj4XO5BCCdKDEKheABE1/FXBNPHGM7iAapjY8nR8p++wl3DkL7zn2irx9fOXBd0kPcGlO8BFDr8xqzFBHWFIDYd/p8UQfchzHPkHPTG56/M1wonbRts=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
  by DS7PR10MB5975.namprd10.prod.outlook.com (2603:10b6:8:9d::7) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7544.41; Mon, 6 May 2024 03:05:36 +0000
+ 15.20.7544.41; Mon, 6 May 2024 03:05:40 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65%5]) with mapi id 15.20.7544.041; Mon, 6 May 2024
- 03:05:36 +0000
+ 03:05:40 +0000
 From: Anand Jain <anand.jain@oracle.com>
 To: linux-btrfs@vger.kernel.org
 Cc: wqu@suse.com, dsterba@suse.com, y16267966@gmail.com
-Subject: [PATCH v2 3/4] btrfs-progs: convert: refactor __btrfs_record_file_extent to add a prealloc flag
-Date: Mon,  6 May 2024 11:04:57 +0800
-Message-ID: <3953c91e40178273e0896b544e0a7bf9f219deb0.1714963428.git.anand.jain@oracle.com>
+Subject: [PATCH v2 4/4] btrfs-progs: convert: support ext2 unwritten file data extents
+Date: Mon,  6 May 2024 11:04:58 +0800
+Message-ID: <91f25251b1d57ee972179d707d13b453f43b5614.1714963428.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1714963428.git.anand.jain@oracle.com>
 References: <cover.1714963428.git.anand.jain@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0196.apcprd06.prod.outlook.com (2603:1096:4:1::28)
+X-ClientProxiedBy: SG2PR04CA0163.apcprd04.prod.outlook.com (2603:1096:4::25)
  To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -99,248 +99,320 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|DS7PR10MB5975:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23235a7b-6a48-4a89-433f-08dc6d79666d
+X-MS-Office365-Filtering-Correlation-Id: 1acb0284-3234-405c-e736-08dc6d796908
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?wycVZ+f7nCS4NfEGtJTlYS31AT/KW9+HVsTdz6FOJ2F81pYBwjTsA6oQbiKj?=
- =?us-ascii?Q?kKoIVKgxnGqxT0WPHQAr5TqXI7yBzCUPhoPbQhtECOhHVNT/g0Zahgyzgxv4?=
- =?us-ascii?Q?DeshoAC4MUtftltSB1szsKJ9clY2zxifGZCyWAeWAimEEO0V6+kivlI8qte1?=
- =?us-ascii?Q?KWvax7OcKz5nWrts4PQXZYlE7DSfgJsrUy9B+2huR281pXjAUlSE0V3Ao81v?=
- =?us-ascii?Q?YGkIlOUNLB8K0t2o5sMMCirXBsxFvQ1MGtIyEfCNmrR0jrv6KD48J6uO3+t3?=
- =?us-ascii?Q?GRoOIRHZ6HkQgzL7O5kaydVTH9Xa9gUxJB0x0gGAvFGTVqETrx0DcBwIXSFt?=
- =?us-ascii?Q?wJ7tO8BSVhaIuYVS6adulfSjv/7uc2xxrjj7eyrR4m3c+jBpzAQVP0H4Tgm9?=
- =?us-ascii?Q?efX3ErM1b9m+jj2aOKjLNgemq3ds94JwcwnFs/dKgkUUz08x+yU7Py8NN3W5?=
- =?us-ascii?Q?kdlHkVxLTfWouY7Ipb55pXwnOeqlarOHZyPftTWkRAfXASekk7QWyqhqCNMN?=
- =?us-ascii?Q?HfcIOAgqWfQ7x9shRD9exEv8bN3dhB7vFtaDFJnr3JgEobz01RcjClvDhsg1?=
- =?us-ascii?Q?qdUd3ovzV6rGOH3QptAVm9KjOQheGHk1e4SUf7i1MyGDE2iNj2PSJ/G9esdU?=
- =?us-ascii?Q?AV9Kb4PgVZg4h2BbyCuKh8oIlQNU6QLXJI3onXEZjaQfqw9hqbxpi377zXcV?=
- =?us-ascii?Q?yGpXXaMiJtaibhAR8Fc9byNxvkWvwtbxJyi5+GQEMctERPp0pDFCNFx+oIaG?=
- =?us-ascii?Q?aZhxF1cEVSdASqAnXLpDmjunPo64Ynj06YcHxHXcO/1cznFQcsPHHfyGB3oQ?=
- =?us-ascii?Q?jYL2PlZJlKtrCsNO6aDyw/2qPB7xgOlIoLcndJa+bESzCCmCHlBvYXmZWUlq?=
- =?us-ascii?Q?d6DKP+d2mzbpiG8iwenpOAG2nt4NJLgIIjZBtKqn0evLft7AqtA1QLKXEqBm?=
- =?us-ascii?Q?j+s5MUG50i9WwFcza/0wNSyePJMQx81j5900/Yeyz0ZgNbpAjxCtREhyQxT2?=
- =?us-ascii?Q?fI1/E9Ph7Faatd4ApCWs5HUSQP4zRVr4G4fOpApFdxX1aLIafOcI+mW2uk+J?=
- =?us-ascii?Q?gUAiKOATVOYZi9cV+WAYU9cQhJeBypw8l1gLyaqENNb7U79JwzZijNWdngpP?=
- =?us-ascii?Q?nernFct4E/lh9NVQ52JjLcxpzREHZ+D6b6cZ7CCFtNMpo1zx/N/CdLgjwLSU?=
- =?us-ascii?Q?baXFrD1YkhJBh6X0l0WhSBD3L3TfhSqlLKcPq43kyGZJB5cHxYWELlVPhGwl?=
- =?us-ascii?Q?r4dXvkuHrDVuWpWnnmmXcBX98+ATDqrP4sa8y6SSBw=3D=3D?=
+	=?us-ascii?Q?Zg0YLGkxBTPJ3JqgZPiGA8g3PxePv5FcQ67Bd2onL2TyAHCZKjFwASinkh1X?=
+ =?us-ascii?Q?TjPxugfcX1+L6lA0LAn+cMdPXcdymnKcwFE9Cj6vQAJ0aS8a83+g+Wm/q/0b?=
+ =?us-ascii?Q?JPD541EgIKgZdggkXPkYSdqGb3zipNlzGTbrmnBpckQbJCZrjc70uCQGly0r?=
+ =?us-ascii?Q?SoebD1SOocg5z8IEu6UTd8AUZb8nG6n2SH/x16nC6GaNMVSOWVWyVs7ggOtZ?=
+ =?us-ascii?Q?hit6tB0TN6+/1YFaLfCyJuNOLHf4GCpW9ysXZgw6L58ouN9e8eQKNHFIbwG7?=
+ =?us-ascii?Q?8vGUF0CD9sZqeFoKQM4r2NWTq5riXTDSpr4exZ+DLuM4IElJDlJ/kq649fIB?=
+ =?us-ascii?Q?NVTNG5HPFDDggoJncz1M4986wiBcU+DQrSUTWc8m81oOkDkcjoKZ7dMzBpk6?=
+ =?us-ascii?Q?pqIaknrakBkdkiI5SSFg+iTXTcBmJM30NaFkUJxokeAHCKXBt9x6FE+3jho+?=
+ =?us-ascii?Q?VlBo8mq+mkzACiYPv62Q7O7KGJl7u2La3KcQii+NzBdywsl9CdepB+0Py/Pe?=
+ =?us-ascii?Q?Nd8OAoDaShvrxoQrDpmH6arkAbROLukkdaZXdyXtuuIzvCzQAqBBSzIBHZx6?=
+ =?us-ascii?Q?jkCYc7OI7QfXJhpGO5d7SoK7TbY6L1boCz1hlYS8RwH5Ozvez3Jn3Rh7EtOa?=
+ =?us-ascii?Q?vcFuN4gjeJ30cjwKIFi3e8ovxYXhbgwrarwI2POFEECCxEV6MGGsxR4C1J5P?=
+ =?us-ascii?Q?CF7HbFYtlY1I6dcGmu3e/AsolkcXqHlPq7R+ohTMPpQ/8g37uOK7WX2yvUoL?=
+ =?us-ascii?Q?c8t88VA/XiKZ3sDj3xzYDYDy6gFoUCSd5bwfX4521qHOHqQgCinVIlT+A1ps?=
+ =?us-ascii?Q?WIEwq1dw0jwvSLi5/rg33PKhFiDq7OjwDXAfNM51Yhp/5ZfXKUJbJXzN+aGR?=
+ =?us-ascii?Q?qud14VWkjsDswlY1wrm8yIgx0ebGe6bio1tLMnD3A1TKpcpoTSw7AmRX/3ML?=
+ =?us-ascii?Q?MgD/j6rE5lfdgVDQn7s3eHJ0iH0GJTF5+ZEEHetp/ANG+PiA8FNONXZATSNi?=
+ =?us-ascii?Q?lshFQ7wMkq5B2XX/P6PwwwFsPxNL5q4YzxbHBtpSSaVnoqPGrPj0walHfnb5?=
+ =?us-ascii?Q?0t7DBfL4xc/A9EiG2ir7ki2E1j4Nupzisun9mi0J9Eek7mFniOF723Kzyl/d?=
+ =?us-ascii?Q?SXuPQZBpbYAfdsekGWuH9T5j1wZaIKwTTlPznobSVzUmtxk2WEQm2+RihCzH?=
+ =?us-ascii?Q?oLyPrkc6ujtRohrX9q+1takHCKv0Mf6mOhMGzt4TEt36z+v31F0rd1N5ifT4?=
+ =?us-ascii?Q?PV9GBn4jJbwRE1vOfMOQD1uN7FUsHvIXyCSNx9H4pQ=3D=3D?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?i/i1VLtqTGSXqlKVaK67wuUd8zaGhuWQ9ZSr3DMV0/RnxDZXotsXrSs4q9ne?=
- =?us-ascii?Q?OeeaxZEea+/gS30ngBoAiWeoZwO/7bWCuQ/sK0tJOoNOfK9gqKGAD/mmLBAl?=
- =?us-ascii?Q?LjrQFwJbnrPavwjmYuJ2x0PM7ONQyX84eUj/ZotESEbn4OMuzWbPZq78ixO3?=
- =?us-ascii?Q?FJ16SAg4nTMgnsY/2nZNYbXIONgYRAU482HGz0FJhntLoi8Ickn4tjHD/696?=
- =?us-ascii?Q?QMb3hgFpfE9hYCTdceGT5tRSN/3lz8Z15ZeNWK4PkOmrYYnuqMeuMMXIY1T8?=
- =?us-ascii?Q?fj+e37Dr7kbOfAQrYS6VifxZlVK6+4hzVCtXv9gqaqKdQhysayZeqVVe3YOK?=
- =?us-ascii?Q?mTbNPl+Z5r+GlopLrJgIVepXcsoCS5MNmwLKBZi3bSrWp/9CwfBzNV7XjaHH?=
- =?us-ascii?Q?cebKAaPO7V05XQJF1chxbTdFbWg6q5OKofatffBO6yM+Yb+b5Pxe28T2zL2Z?=
- =?us-ascii?Q?cjbZqBkyafXnIwfPvsNEcxUpZYVUDsUJsPQFnbvzYgT7jeBZ69hVqRoO1hDm?=
- =?us-ascii?Q?80SwNjzE2FN2fYhUfJVvCLIloKs0LVK5XSZFjCZx4i4hQRxiJJxgZZVXbiAA?=
- =?us-ascii?Q?UwhgnKYbyyPUqLTLa3IMzlOvZ5oN1RgC0qn5NPfKDmUybLnJT+4oZbdFuHMn?=
- =?us-ascii?Q?5n8ofE4MNbXM9oeYAoUpYG1KOSy76WoT5O4rNwR2BaVZh4cKmmkfOZiFL0JQ?=
- =?us-ascii?Q?GwJn8+YoxAm8Dg9m+BciOW83UgHYb5Qi98RN92tMKcaQLSxy1EXDkHSxMAFX?=
- =?us-ascii?Q?4vFvok8S0ToJb3D2lcsv1mvc/iUPDiEjXkTucNKyjzUx6SgUASiEl4zokGt5?=
- =?us-ascii?Q?k987mhkFzHEMzHaCYrkM0IGw3sfrDdfRHwqLn6jTXMwV5LUV8WuMMDHVpXgJ?=
- =?us-ascii?Q?tvqo/WXFsS3nCoGqUkX1MjG3iez46Ja2MMOa4Sxk202QBIlgy10gGxs6jOlK?=
- =?us-ascii?Q?ZbWsMiOFUg/Vg8ijnpF37piohfYG0us8kqqv1KUfP7nrB6Chy28a24JRRRQX?=
- =?us-ascii?Q?umba7ZhxFp0TUC4OApiLykyVzwTucOl37I+my5iYbkcMlxj1vS7u4h41TwDX?=
- =?us-ascii?Q?4O0ybdY/c7+mugJotNnfUqwv0eZCl5n7WoRBxD1TPW6UQi9ePd1yTr8j7IWG?=
- =?us-ascii?Q?elexbRbGPZuPFFxiXYTRivw8WAOykv1WLMQceL60KOC9sQ1ecm46VNe/WnW5?=
- =?us-ascii?Q?/wbhNpmyDE/Jt/Z16CClGh5DiJB54RSexiFmYfgO42pcXdVioa1OIHV+hlEz?=
- =?us-ascii?Q?VLCSW5KXdRIFDC8EGb9FQWqmG8KbbEQJitaDEGK77V2p70O+GugjtDi54UPM?=
- =?us-ascii?Q?0mWUhyKBk9yBfhLI8z+A5yJHqWmvVmW6UvR2xcKpCiwVWbqbOnfJsn4J0KwF?=
- =?us-ascii?Q?ud7LMU5JJc+mH3d9NzuV/o6ZNNaK8DCM+hF3ClSTD0G4wRxoeIVYeIIk7l4A?=
- =?us-ascii?Q?Lk34hqorNavFVuv15AAJywNEVGNs1df5Losh37HfhReehEUoyhlfmGO6aBAT?=
- =?us-ascii?Q?DTmXw68ltEfR/BXHGDNR6lJ+Ac0DXBvDV8kBRAhrJD3XvPLmCm12Xaq5gdBe?=
- =?us-ascii?Q?118xBxKMZ1bo+6i7p8RgbHve7et2EC5O52CcoR/kZO/rqWd5EBZ6L0fiL/7k?=
- =?us-ascii?Q?mw=3D=3D?=
+	=?us-ascii?Q?tFD0eI0iEezRkC8iS8vfxlO7Ae9cdauOoozTZHN1vY+d071j7GdEden5mcY1?=
+ =?us-ascii?Q?P6Tlx8uX3pl+nQii4Q/2TBTV4cSBZIboRvmc6jB2cnY6W42c7FLilZ3pnCuS?=
+ =?us-ascii?Q?imr2Xl92gaYvyiRuvhTmZnPoaox2Ky/8l+OQvvoCBxdpA7R2wQDKF1r75G7Q?=
+ =?us-ascii?Q?uKjBrQz7xddMcyRz4XCc344GRB8o/zEDDWcibA2dky9tub1E3704/ytaSQV5?=
+ =?us-ascii?Q?oP8JAxZQT0EChkLXWcv5QYsfrbUdECaPfRz6+pJ87kFTN4xvFRYmS1Uhs93i?=
+ =?us-ascii?Q?zowbSSNd+MDBrocZQ1hjoXhA2FR7KaAY0Mxniu72IZIjP5pb609lcij6gR6P?=
+ =?us-ascii?Q?mV/mTScXHxg4vCHiWYO39w9BSyypcuRZYolGvDY42Vaqn22H58kpcV+Kjev9?=
+ =?us-ascii?Q?WblJpv0sSGhDGi/8Ou9qAwHVDIPiN1LBiJAR8aisYZce61YyrC3n8806NYVV?=
+ =?us-ascii?Q?/oKBQZpDTBtIMHv4yhpCpjvRF3ROxqbagi5iCrxw2KUOHgCrcPtydLZCnwdq?=
+ =?us-ascii?Q?KjGnQ28/C27nbOm3gu+s14gcpbvixnRV5UcQoQbvUln/+hQ/AcDCRhjfey/R?=
+ =?us-ascii?Q?1fo+o8FQRiz0GZNNUHDjTWjQp0KlMH0vOa/uGg0Sn0WPX800q3ECsDPATaxp?=
+ =?us-ascii?Q?S2L5aIcoWvC8Od1A/ooUQ8ifI/kqb0l2J4wV2SXSqcXgA0XwkG1YkwlY0nsV?=
+ =?us-ascii?Q?bFTg2ms1Nokrht7GAxGN4eZ9z12g7hcSX/dLI9ywHEa5Fapo5Celyk8RwQJC?=
+ =?us-ascii?Q?U8ZJSaHg/nRJtRfCdjAtcYyx4fp7FWbvWpYL3uZ6Z+ukKdmmwVE108e96PTZ?=
+ =?us-ascii?Q?B0QwXKYRLAVNoTYhbqRXaRfJ5GdOM4MQXnSBNKA/JnJ23tBql72Lzw6nNmY/?=
+ =?us-ascii?Q?HUi7EWur/S8a+BOZiR4sSh71HKhPYZj2cHqRuKWI5Jxz08Js2C4ab+xXdjT7?=
+ =?us-ascii?Q?mTf06Hjed843NPLFU2M0xJd8JugEbAwnH2cU8Kos+ALN+qXz7nleLGL9Q6Pu?=
+ =?us-ascii?Q?bRI+NkBGcwGGesqn2j5RQpgTlfsr0kG1k172AndpGeG3xkolahoUqKxb0+D1?=
+ =?us-ascii?Q?fXdUMRJatFHzKu4QC2fUveEq4AwspRzlowZNrZavOT0HBJhRSPSEG+Bv0X3H?=
+ =?us-ascii?Q?FkklzPizx/At5S5kM8UirlenswYhoArVpeKxehUFsItgq9lIT5hegfSXol0M?=
+ =?us-ascii?Q?xLgxgnTGcWwV1iX9RjT5/p6M5s5jNXIi3L850u6OAzTf3uj6kd6lpIrXKuYD?=
+ =?us-ascii?Q?ScbbIabGdD1Gc/hwez1DzqeasBy/RB/DMmcX5dtle4O6YRajg4wvIcvEDjtO?=
+ =?us-ascii?Q?DcyVgAmCdvWJa4+jglzO9NycNJAekQ7HUYbN4WCrUY9oSf3FWzlZ7BvnJZxq?=
+ =?us-ascii?Q?qVc8utYmXRTjpkAaRUIwYfyBAf/rDPBgaq/jfWeBtQmawEykmVhe6SugEBdY?=
+ =?us-ascii?Q?svFBLN1cOS5XTrL2i5CTCr2GEnNyyvWEtMj/6UzVL3hyG5R0t77n45eOsxFc?=
+ =?us-ascii?Q?H6h6n3nDiPMxqglARTdJgBfhHGkK3pR8PjVAn5uyFAhC49Y21pWIfD8kE7MK?=
+ =?us-ascii?Q?cMt2HcT0AXC0VV6BCZFawWfgivTI5JeIGHnCdM550qE+x2P1QpJ8k6e5tR0K?=
+ =?us-ascii?Q?SQ=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	10y1BtwX/Gfbh7U9ySupkI3vVl5rpvR20qgw5PaueC/3mFAA+cou+INqlHoGzIjNSMR9TzhRlshx6AfUxRNT8wbT0U/SyO5Yau6pXDeHQZd0eZRSks8+BWZDsKa67O4ml5nOnRIqQVwrisexsz/pLB6KMJsdc0B0Gz4HT8U2L5b5v0S+rZuY+q6R0ok8dFOgZuk3D+p1av1Fj8OEPPU4izetgB5pk0xapQHETyk+LrXXUeDyfP/NZzwLYGVmhnYMMl+N8F9Qw4ER9MKeEf21ecs8fUKICORDn7hR4a+ZUcV4qlNQtKDhTvRl8hoTciBblLdHIjc9/suj7HsVDqqsqy59TvCtukvSBZBFXSjt0rQL6bLs9xjOj1BcoEve9bXy6zMS/HXtvp7fm17jgyuf8x7yyy4H/JYQbXd4fDFZERf1jnmWPQWUkOmqEzFTFJFRHOoyDZ4Ayudbx6BHX+PcCBylrr3GnuFKf8FBTJLxtEea/UgqnV526iDR7HuSOGdfzA5MWFotFUFitHn0g21nHayHmmHKRZY6bLbANrdt3BMfyEbb+TD0V97YP3chvWoJDedaR7IlWBhrZW5oSe8dOPNX0Iy24BzrU0TsngDYTNg=
+	QBk6SZ3Drm9SOk3gPovJ9ZhfGDLT23GxGP2b5WlUpDANTDyNlIA5bOcuYcLkv2ZsXl0qUah1LGB8O/pgzgyImrqxmEJobZ8uF4n6DEtUhOiqMUD99+qQX5wU+Oew2WCL7N6V/0ER0g2p0Qm6WBqzQfJUtCz03+uP2Fayw+/sQ7vfmeC+aR1au1slf7Y6ZibGYr4lBCwr6mQGkq7PG0b11Ewx+ETyiMq5ClDUxIr0JIkhk/vBRuzSHhfBD1mx3onLPiPGjTRpTHsfH+7dtLMaJsHOPz5sBTdYK6fLm46Zv6+Tgj7+et5D8io+2wQI3QJoCyFif9mfoQXuWp3vyfF/GTBcCYoDxbAyyB6gSQYrdtDdAnM+BE2HXNaSnI3cRObtRlmTPdF5H8HHZMRjRhTOXwMZcdFsiSy+oLG1X+/zDdnlNkN3InNuZilb/lt2drJgXseIDvjje2zv+AWwSSuWR5jmOvi92x5TLPNWSn+OfvhK8xSyRVcRsAbJ/amrsAECLwK+XV1jlzl2T/XswodmggwrY7ASdAAXPimGvY9L2yzQw+EgoSCszjpJHwrd4845nKS/dU3QxE2YitoHOC+/GpHR7CziOH8feqjqcmu0f3k=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23235a7b-6a48-4a89-433f-08dc6d79666d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1acb0284-3234-405c-e736-08dc6d796908
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2024 03:05:35.9404
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2024 03:05:40.1695
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dYh5yn2XjFvOcdkMVgkEPrcq/nQUWqoEBw/pqzIiiaeg1BpNDzc0HgE+g4fOu/5S+YRG+HLAy5CPjbbHzJ23rA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Sm4sKuIkBqjgq77ABq2nqlj1vnDwbOcVo0gpuMtI9XttJM3MdQITqWaf6mTilEnsoC8JXHTCnfxPkyapJsjEAw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5975
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-05-05_17,2024-05-03_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 spamscore=0 suspectscore=0 mlxscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2404010000 definitions=main-2405060014
-X-Proofpoint-GUID: M5upc7lTFDpGKXK3DxwZz3fsVtDgfabU
-X-Proofpoint-ORIG-GUID: M5upc7lTFDpGKXK3DxwZz3fsVtDgfabU
+X-Proofpoint-GUID: IiJIPOUq5sGYrg5OQdlocf7zsTjpeiSf
+X-Proofpoint-ORIG-GUID: IiJIPOUq5sGYrg5OQdlocf7zsTjpeiSf
 
-This preparatory patch adds an argument '%prealloc' to the function
-__btrfs_record_file_extent(), to be used in the following patches.
+This patch, along with the dependent patches below, adds support for
+ext4 unmerged  unwritten file extents as preallocated file extent in btrfs.
+
+ btrfs-progs: convert: refactor ext2_create_file_extents add argument ext2_inode
+ btrfs-progs: convert: struct blk_iterate_data, add ext2-specific file inode pointers
+ btrfs-progs: convert: refactor __btrfs_record_file_extent to add a prealloc flag
+
+The patch is developed with POV of portability with the current
+e2fsprogs library.
+
+This patch will handle independent unwritten extents by marking them with prealloc
+flag and will identify merged unwritten extents, triggering a fail.
+
+Testcase:
+
+     $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=1 conv=fsync status=none
+     $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=2 conv=fsync seek=1 status=none
+     $ xfs_io -f -c 'falloc -k 12K 12K' /mnt/test/foo
+     $ dd if=/dev/zero of=/mnt/test/foo bs=4K count=1 conv=fsync seek=6 status=none
+
+     $ filefrag -v /mnt/test/foo
+     Filesystem type is: ef53
+     File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+	   0:        0..       0:      33280..     33280:      1:
+	   1:        1..       2:      33792..     33793:      2:      33281:
+	   2:        3..       5:      33281..     33283:      3:      33794: unwritten
+	   3:        6..       6:      33794..     33794:      1:      33284: last,eof
+
+     $ sha256sum /mnt/test/foo
+     18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  /mnt/test/foo
+
+   Convert and compare the checksum
+
+   Before:
+
+     $ filefrag -v /mnt/test/foo
+     Filesystem type is: 9123683e
+     File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+      ext:     logical_offset:        physical_offset: length:   expected: flags:
+      0:        0..       0:      33280..     33280:      1:             shared
+      1:        1..       2:      33792..     33793:      2:      33281: shared
+      2:        3..       6:      33281..     33284:      4:      33794: last,shared,eof
+     /mnt/test/foo: 3 extents found
+
+     $ sha256sum /mnt/test/foo
+     6874a1733e5785682210d69c07f256f684cf5433c7235ed29848b4a4d52030e0  /mnt/test/foo
+
+   After:
+
+     $ filefrag -v /mnt/test/foo
+     Filesystem type is: 9123683e
+     File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+	   0:        0..       0:      33280..     33280:      1:             shared
+	   1:        1..       2:      33792..     33793:      2:      33281: shared
+	   2:        3..       5:      33281..     33283:      3:      33794: unwritten,shared
+	   3:        6..       6:      33794..     33794:      1:      33284: last,shared,eof
+     /mnt/test/foo: 4 extents found
+
+     $ sha256sum /mnt/test/foo
+     18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  /mnt/test/foo
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-v2: pass btrfs_record_file_extent() actual flags instead of has_prealloc boolean.
+v2:
 
- common/extent-tree-utils.c |  8 ++++----
- common/extent-tree-utils.h |  2 +-
- convert/main.c             | 10 ++++++----
- convert/source-fs.c        |  5 +++--
- convert/source-reiserfs.c  |  2 +-
- mkfs/rootdir.c             |  3 ++-
- 6 files changed, 17 insertions(+), 13 deletions(-)
+. Remove RFC
+. Identify the block with a merged preallocated extent and call fail-safe
+. Qu has an idea that it could be marked as a hole, which may be based on
+  top of this patch.
+. Updated the change log.
 
-diff --git a/common/extent-tree-utils.c b/common/extent-tree-utils.c
-index 34c7e5095160..53c10734408d 100644
---- a/common/extent-tree-utils.c
-+++ b/common/extent-tree-utils.c
-@@ -122,7 +122,7 @@ static int __btrfs_record_file_extent(struct btrfs_trans_handle *trans,
- 				      struct btrfs_root *root, u64 objectid,
- 				      struct btrfs_inode_item *inode,
- 				      u64 file_pos, u64 disk_bytenr,
--				      u64 *ret_num_bytes)
-+				      u64 *ret_num_bytes, u64 flags)
- {
- 	int ret;
- 	struct btrfs_fs_info *info = root->fs_info;
-@@ -229,7 +229,7 @@ static int __btrfs_record_file_extent(struct btrfs_trans_handle *trans,
- 	leaf = path->nodes[0];
- 	fi = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
- 	btrfs_set_file_extent_generation(leaf, fi, trans->transid);
--	btrfs_set_file_extent_type(leaf, fi, BTRFS_FILE_EXTENT_REG);
-+	btrfs_set_file_extent_type(leaf, fi, flags);
- 	btrfs_set_file_extent_disk_bytenr(leaf, fi, extent_bytenr);
- 	btrfs_set_file_extent_disk_num_bytes(leaf, fi, extent_num_bytes);
- 	btrfs_set_file_extent_offset(leaf, fi, extent_offset);
-@@ -265,7 +265,7 @@ int btrfs_record_file_extent(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root, u64 objectid,
- 			     struct btrfs_inode_item *inode,
- 			     u64 file_pos, u64 disk_bytenr,
--			     u64 num_bytes)
-+			     u64 num_bytes, u64 flags)
- {
- 	u64 cur_disk_bytenr = disk_bytenr;
- 	u64 cur_file_pos = file_pos;
-@@ -276,7 +276,7 @@ int btrfs_record_file_extent(struct btrfs_trans_handle *trans,
- 		ret = __btrfs_record_file_extent(trans, root, objectid,
- 						 inode, cur_file_pos,
- 						 cur_disk_bytenr,
--						 &cur_num_bytes);
-+						 &cur_num_bytes, flags);
- 		if (ret < 0)
- 			break;
- 		cur_disk_bytenr += cur_num_bytes;
-diff --git a/common/extent-tree-utils.h b/common/extent-tree-utils.h
-index f03d9c438375..dce48c43faf5 100644
---- a/common/extent-tree-utils.h
-+++ b/common/extent-tree-utils.h
-@@ -31,6 +31,6 @@ int btrfs_record_file_extent(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root, u64 objectid,
- 			     struct btrfs_inode_item *inode,
- 			     u64 file_pos, u64 disk_bytenr,
--			     u64 num_bytes);
-+			     u64 num_bytes, u64 flags);
+ convert/source-ext2.c | 48 +++++++++++++++++++++++++++++++++++++++++++
+ convert/source-ext2.h |  3 +++
+ convert/source-fs.c   | 25 ++++++++++++++++++++--
+ convert/source-fs.h   |  1 +
+ 4 files changed, 75 insertions(+), 2 deletions(-)
+
+diff --git a/convert/source-ext2.c b/convert/source-ext2.c
+index 477c39d9d658..9de591e34c18 100644
+--- a/convert/source-ext2.c
++++ b/convert/source-ext2.c
+@@ -208,6 +208,54 @@ static u8 ext2_filetype_conversion_table[EXT2_FT_MAX] = {
+ 	[EXT2_FT_SYMLINK]	= BTRFS_FT_SYMLINK,
+ };
  
- #endif
-diff --git a/convert/main.c b/convert/main.c
-index f18fab4a236c..fb0f97d949d4 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -337,7 +337,7 @@ static int create_image_file_range(struct btrfs_trans_handle *trans,
- 		return -EINVAL;
- 	}
- 	ret = btrfs_record_file_extent(trans, root, ino, inode, bytenr,
--				       disk_bytenr, len);
-+				       disk_bytenr, len, BTRFS_FILE_EXTENT_REG);
- 	if (ret < 0)
- 		return ret;
++int ext2_find_unwritten(struct blk_iterate_data *data, int index,
++			bool *has_unwritten)
++{
++	ext2_extent_handle_t handle;
++	struct ext2fs_extent extent;
++	struct ext2_source_fs  *src = (struct ext2_source_fs *) data->source_fs;
++
++	if (ext2fs_extent_open2(src->ext2_fs, src->ext2_ino,
++				src->ext2_inode, &handle)) {
++		error("ext2fs_extent_open2 failed, inode %d", src->ext2_ino);
++		return -EINVAL;
++	}
++
++	if (ext2fs_extent_goto2(handle, 0, index)) {
++		error("ext2fs_extent_goto2 failed, inode %d num_blocks %llu",
++		       src->ext2_ino, data->num_blocks);
++		ext2fs_extent_free(handle);
++		return -EINVAL;
++	}
++
++	memset(&extent, 0, sizeof(struct ext2fs_extent));
++	if (ext2fs_extent_get(handle, EXT2_EXTENT_CURRENT, &extent)) {
++		error("ext2fs_extent_get EXT2_EXTENT_CURRENT failed inode %d",
++		       src->ext2_ino);
++		ext2fs_extent_free(handle);
++		return -EINVAL;
++	}
++
++	if (extent.e_pblk != data->disk_block) {
++	error("inode %d index %d found wrong extent e_pblk %llu wanted disk_block %llu",
++		       src->ext2_ino, index, extent.e_pblk, data->disk_block);
++		ext2fs_extent_free(handle);
++		return -EINVAL;
++	}
++
++	if (extent.e_len != data->num_blocks) {
++	error("inode %d index %d: identified unsupported merged block length %u wanted %llu",
++			src->ext2_ino, index, extent.e_len, data->num_blocks);
++		ext2fs_extent_free(handle);
++		return -EINVAL;
++	}
++
++	if (extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT)
++		*has_unwritten = true;
++
++	return 0;
++}
++
+ static int ext2_dir_iterate_proc(ext2_ino_t dir, int entry,
+ 			    struct ext2_dir_entry *dirent,
+ 			    int offset, int blocksize,
+diff --git a/convert/source-ext2.h b/convert/source-ext2.h
+index 026a7cad8ac8..19014d3c25e6 100644
+--- a/convert/source-ext2.h
++++ b/convert/source-ext2.h
+@@ -82,6 +82,9 @@ struct ext2_source_fs {
+ 	ext2_ino_t ext2_ino;
+ };
  
-@@ -426,7 +426,8 @@ static int migrate_one_reserved_range(struct btrfs_trans_handle *trans,
++int ext2_find_unwritten(struct blk_iterate_data *data, int index,
++			bool *has_unwritten);
++
+ #define EXT2_ACL_VERSION	0x0001
  
- 		/* Now handle extent item and file extent things */
- 		ret = btrfs_record_file_extent(trans, root, ino, inode, cur_off,
--					       key.objectid, key.offset);
-+					       key.objectid, key.offset,
-+					       BTRFS_FILE_EXTENT_REG);
- 		if (ret < 0)
- 			break;
- 		/* Finally, insert csum items */
-@@ -438,7 +439,7 @@ static int migrate_one_reserved_range(struct btrfs_trans_handle *trans,
- 		hole_len = cur_off - hole_start;
- 		if (hole_len) {
- 			ret = btrfs_record_file_extent(trans, root, ino, inode,
--					hole_start, 0, hole_len);
-+					hole_start, 0, hole_len, BTRFS_FILE_EXTENT_REG);
- 			if (ret < 0)
- 				break;
- 		}
-@@ -455,7 +456,8 @@ static int migrate_one_reserved_range(struct btrfs_trans_handle *trans,
- 	 */
- 	if (range_end(range) - hole_start > 0)
- 		ret = btrfs_record_file_extent(trans, root, ino, inode,
--				hole_start, 0, range_end(range) - hole_start);
-+				hole_start, 0, range_end(range) - hole_start,
-+				BTRFS_FILE_EXTENT_REG);
+ #endif	/* BTRFSCONVERT_EXT2 */
+diff --git a/convert/source-fs.c b/convert/source-fs.c
+index df5ce66caf7f..88a6ceaf41f6 100644
+--- a/convert/source-fs.c
++++ b/convert/source-fs.c
+@@ -31,6 +31,7 @@
+ #include "common/extent-tree-utils.h"
+ #include "convert/common.h"
+ #include "convert/source-fs.h"
++#include "convert/source-ext2.h"
+ 
+ const struct simple_range btrfs_reserved_ranges[3] = {
+ 	{ 0,			     SZ_1M },
+@@ -239,6 +240,15 @@ fail:
  	return ret;
  }
  
-diff --git a/convert/source-fs.c b/convert/source-fs.c
-index 66561438866e..df5ce66caf7f 100644
---- a/convert/source-fs.c
-+++ b/convert/source-fs.c
-@@ -262,7 +262,7 @@ int record_file_blocks(struct blk_iterate_data *data,
- 	if (old_disk_bytenr == 0)
- 		return btrfs_record_file_extent(data->trans, root,
- 				data->objectid, data->inode, file_pos, 0,
--				num_bytes);
-+				num_bytes, BTRFS_FILE_EXTENT_REG);
++int find_prealloc(struct blk_iterate_data *data, int index,
++		  bool *has_prealloc)
++{
++	if (data->source_fs)
++		return ext2_find_unwritten(data, index, has_prealloc);
++
++	return -EINVAL;
++}
++
+ /*
+  * Record a file extent in original filesystem into btrfs one.
+  * The special point is, old disk_block can point to a reserved range.
+@@ -257,6 +267,7 @@ int record_file_blocks(struct blk_iterate_data *data,
+ 	u64 old_disk_bytenr = disk_block * sectorsize;
+ 	u64 num_bytes = num_blocks * sectorsize;
+ 	u64 cur_off = old_disk_bytenr;
++	int index = data->first_block;
  
- 	/*
- 	 * Search real disk bytenr from convert root
-@@ -316,7 +316,8 @@ int record_file_blocks(struct blk_iterate_data *data,
+ 	/* Hole, pass it to record_file_extent directly */
+ 	if (old_disk_bytenr == 0)
+@@ -276,6 +287,16 @@ int record_file_blocks(struct blk_iterate_data *data,
+ 		u64 extent_num_bytes;
+ 		u64 real_disk_bytenr;
+ 		u64 cur_len;
++		u64 flags = BTRFS_FILE_EXTENT_REG;
++		bool has_prealloc = false;
++
++		if (find_prealloc(data, index, &has_prealloc)) {
++			data->errcode = -1;
++			return -EINVAL;
++		}
++
++		if (has_prealloc)
++			flags = BTRFS_FILE_EXTENT_PREALLOC;
+ 
+ 		key.objectid = data->convert_ino;
+ 		key.type = BTRFS_EXTENT_DATA_KEY;
+@@ -316,12 +337,12 @@ int record_file_blocks(struct blk_iterate_data *data,
  			      old_disk_bytenr + num_bytes) - cur_off;
  		ret = btrfs_record_file_extent(data->trans, data->root,
  					data->objectid, data->inode, file_pos,
--					real_disk_bytenr, cur_len);
-+					real_disk_bytenr, cur_len,
-+					BTRFS_FILE_EXTENT_REG);
+-					real_disk_bytenr, cur_len,
+-					BTRFS_FILE_EXTENT_REG);
++					real_disk_bytenr, cur_len, flags);
  		if (ret < 0)
  			break;
  		cur_off += cur_len;
-diff --git a/convert/source-reiserfs.c b/convert/source-reiserfs.c
-index 3edc72ed08a5..746892ff0a8d 100644
---- a/convert/source-reiserfs.c
-+++ b/convert/source-reiserfs.c
-@@ -365,7 +365,7 @@ static int convert_direct(struct btrfs_trans_handle *trans,
- 		return ret;
+ 		file_pos += cur_len;
++		index++;
  
- 	return btrfs_record_file_extent(trans, root, objectid, inode, offset,
--					key.objectid, sectorsize);
-+					key.objectid, sectorsize, BTRFS_FILE_EXTENT_REG);
- }
+ 		/*
+ 		 * No need to care about csum
+diff --git a/convert/source-fs.h b/convert/source-fs.h
+index 25916c65681b..db7ead422585 100644
+--- a/convert/source-fs.h
++++ b/convert/source-fs.h
+@@ -153,5 +153,6 @@ int read_disk_extent(struct btrfs_root *root, u64 bytenr,
+ 		            u32 num_bytes, char *buffer);
+ int record_file_blocks(struct blk_iterate_data *data,
+ 			      u64 file_block, u64 disk_block, u64 num_blocks);
++int find_prealloc(struct blk_iterate_data *data, int index, bool *has_prealloc);
  
- static int reiserfs_convert_tail(struct btrfs_trans_handle *trans,
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index 4ae9f435a7b7..cb6659319b7d 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -411,7 +411,8 @@ again:
- 
- 	if (bytes_read) {
- 		ret = btrfs_record_file_extent(trans, root, objectid,
--				btrfs_inode, file_pos, first_block, cur_bytes);
-+				btrfs_inode, file_pos, first_block, cur_bytes,
-+				false);
- 		if (ret)
- 			goto end;
- 
+ #endif
 -- 
 2.39.3
 
