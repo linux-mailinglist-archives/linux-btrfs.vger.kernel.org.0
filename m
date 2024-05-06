@@ -1,262 +1,214 @@
-Return-Path: <linux-btrfs+bounces-4778-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4779-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D358BD0DC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 16:58:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD93A8BD28B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 18:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 247B0B2262C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 14:58:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D112D1C21F56
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 16:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F271D15383A;
-	Mon,  6 May 2024 14:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E920B15665A;
+	Mon,  6 May 2024 16:22:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z4j0/6mb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b1IBJpPo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886A3381AA
-	for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2024 14:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715007497; cv=none; b=itMfq/rviTB+91p8KbAb3eZWd+wPcyKx4YlJOwSwCLx3uz2rsK8VA7R1722z+pxS+fccVkaJN+z5/w3YwEMxkmdOi5/uQ0uOQgKSriH9hLaWeUK5KOxLN2TsEqAII1pZOKntkd0BL/lS1LW7yDY2VGEQWxDRWSqr3daeGcxf99Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715007497; c=relaxed/simple;
-	bh=Sn22q7PLMQUJ/u8XmCwpUDMtxReiZen8COc2Z4ScssM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n32byrRaKPH4M8zFwhHOsrZKZOitldTUBuGjSorWg9m4GH7H2B2ISQxqxWejn6lllLVs4wtA3/YIv0bol8iVVa0P/egX9ZNz3cHMVz/3X3GvQbkgwopiW2XjRnTelcjspAWdhRasRGAU4RhqSULdMlDONV+jsfEmg5dqpz2F/f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z4j0/6mb; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a59a9d66a51so435739566b.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 May 2024 07:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715007494; x=1715612294; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qujjpKeDbT7AelAzKAdobzxAdDnwPxYV5VSvUfQMTrA=;
-        b=Z4j0/6mbBqF1VzDNRxs0G2Qm7YC2cf4M6naxuPI7Z8MldWFo2gbqK1oM2wPivFgbax
-         AHVuQcpYar5+/zVTz21x8F23w0z8sqEPUcHxDgXvNzUrP+Lth6evP+DnT4UyOQBwi2F8
-         HymFFOn7vsPjY2felKDfjmZdSMwVPs6JSYoiCCgp6sNZUUhRnAV6kwPGDzPMQVMEbpsS
-         nxwxH+imjI7cHB/1TB84Yk9ipYm7Hw/XDARNoJj51Kr/Q/vttOub1sltQ5e2zjBZRJRd
-         BvPg0/CsSW/XAF+l/m6WyeR3UgfRYcJPQRL9L+UuqsuJN/3y3mtpuwXYtQBMch7xzX0h
-         4Ffw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715007494; x=1715612294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qujjpKeDbT7AelAzKAdobzxAdDnwPxYV5VSvUfQMTrA=;
-        b=m214Qhvr/MrEe5unNYYKBCTpZHR4597CzgM0Q5PIYUnt+7p5q3fbgamxhiOGeupvb+
-         OWxtRKiWbJIS+rw92vCPe6hDgtQs3aXgWAy9iaqITxLzJ3KYj8RqMxjKfwdkdNB3Qp4z
-         qtARvGrBILqqWjro6pFWCz4cOxMeTx6VEBJsLN3vXGbKcIN3GCfUWW+jH8jtW9jQwRgA
-         MmbS1Auyyqnj5/kYoXVD0rVwCtyLcnUjX54sOVgU7fSFAjaTF8+ylVy9tPKEwznTiYlg
-         +H2x5MkWK3tvcbe+5H4WAYRlS00QZCOGdztEsLXOYeGEEYEjx9FYz9xuEUV9ho3qNP0A
-         8k4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWFU5M0i83JIpX7JXjMjsy7M8pyNZBPQrh4eA5IvBBrlyp4tPQe1ORVqN4qYQuo019L/lcdYApPFTEZ/7B3rwbkx2R9dVRWzSA4hOY=
-X-Gm-Message-State: AOJu0YzTxfRNBDaOKDGFbJdMTAdLPD5cei884I7PbTNTjbgs11my27+f
-	Zac/GwGicGfa1YbBLSDdlsV6o5wI5Pd1sDtypDHepgsseJ9m+pm/7qQl0xwTbeIpL5q3aJQDoTx
-	RjmMiDfn65MtBO8ZGH5rA0qIA23Q=
-X-Google-Smtp-Source: AGHT+IFIBRq3LDIBt2djdbEZVIKoLoYgMZWKUMGQvh9rwrzgPezYtXtEC3GzsAEIr91C8sjw9LZxAr4EmTgSAya4Sws=
-X-Received: by 2002:a50:8e1e:0:b0:56e:42e0:e53c with SMTP id
- 30-20020a508e1e000000b0056e42e0e53cmr6830055edw.34.1715007493606; Mon, 06 May
- 2024 07:58:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AAE155A4F;
+	Mon,  6 May 2024 16:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715012541; cv=fail; b=XkeMUgL4/MzE8sgrAokfNnH86U0STXLilvJy6s7d1EldiwCcE25TvTZRFoOokNf3KOMRJdeIxtPJHQ72WIMlmo8ON1ff2amigIsDf/phAhejpBmW59F23ZwfQwJpa1XydU0d+UwNQzj+N7a6CMulBxKGVVlCldQCfpngwbnwXGg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715012541; c=relaxed/simple;
+	bh=lEC7XDP3YUivlQ9SpmlCWWNRbhym7f6CanKN1Ts0ORI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=hscIw8XdyB/HpATrqSsfjyuqhkiZd1PuxrjhAypX5A0jvTCuWnW/a+lCZVVSZWt4gYcC1Pp35hEIhMfto2sHcYW6rluNG7cQ6+wjDJ1fftFoToJb1+raMwTrVjpC0Spn9bfbM0CLeLqU9LFi41ZkFBphlzVFNwqeFt0xo1Zq1Lk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b1IBJpPo; arc=fail smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715012540; x=1746548540;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=lEC7XDP3YUivlQ9SpmlCWWNRbhym7f6CanKN1Ts0ORI=;
+  b=b1IBJpPocvCKyWxQe02BlPfinBa2nPPzwwx2TXcq/Yh1VZpWQzmxaYzt
+   4hLkRxwPX/5Xl1CLoO+XPl5Qr1uAIvxpVKxojujHyKUDnpafjD3lR2U13
+   c+TYl6KMiwgRjMpGpEeurKWKwoJC0smDBi/r61tdCaBDjJ9zJED9Std/N
+   C3zlZ7q19n7RqCIQtdORDZwOSsnh6urq+c7of3ukfhnAiMjXN3Ue7pEVY
+   w5Yg56g5O7BjKqqp9vQ8/MD798aoC9qlR9FjMqsJl7rEZuPr0tVFukc+H
+   5EkNtEM2vUm5qrzuuy1ltYEfZ0R8k7z18D5m3b2uIx58XERZIqdmOf4fP
+   A==;
+X-CSE-ConnectionGUID: 92xhuhFhTkmQxizhiZ2TZQ==
+X-CSE-MsgGUID: 3g0ezANkT9+YG5fpHZADcA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11065"; a="11306276"
+X-IronPort-AV: E=Sophos;i="6.07,258,1708416000"; 
+   d="scan'208";a="11306276"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 09:22:20 -0700
+X-CSE-ConnectionGUID: /p6sf1k7Q0Wyo9yNVBpBkA==
+X-CSE-MsgGUID: etnZUyafTf6Y+A3RZ9evrg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,258,1708416000"; 
+   d="scan'208";a="65675552"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 May 2024 09:22:18 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 6 May 2024 09:22:18 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 6 May 2024 09:22:18 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 6 May 2024 09:22:18 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 6 May 2024 09:22:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aZAzADgLeAA0HAl1z6iHng2vbc/aPhmrHwtD2OWFKcVS9SvSzQA2fyQgaZZoe8jFsjrIeZgG7KTpYYKovO+cSNsPv1M64s+tZREzovlolYgENn0hr9b7/lQTQ0nl2YThr38Ofn3uEmrEROovOeH60kcay9yfFfuKyyIk/xUdUf8N/K6NKZb0pu9q7n+dDRhMvoOf9F4gwsCDHJ2z9yuzgybV6xYPWfH4sgPP7SM9WSEqYSXih4NQEk1Ynz5w6YO/vMYV6VWLRtzrBJ91p3qLqraCssJbd0GR/LNAH95WQ7BAK6LDa6fRIB5cSdDL5WCoxtCGvfjc5n1EnDgD8VG1ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=60GSO+1Z+b+yT94aCbq0eGLeoeqlkhUQgqmcUayJONo=;
+ b=J3jRu3WAx7PAXejO6e3leI7Hq0Jn83kImg0V+DMhHatr/ODEYRhfMUzqsnlP0vDqvbQg7HLFHBUoBegpQPOqq53dauFx7Pmkl/HOn+G8HB5pk/9iKw47nSUeLEJSut5xNZRjZFSe3WNOVH2MOztTEUb3iLEEKGa0RgcMyIp49qBWRgpqFIo0iKyzUXYsWoI+igjLdaLiSRetvdIFXshubMfZeola2/qo2gu0ScFrXql/Hr8Cx1vUceZRZkup9zg60R/fKpFqLflii6iv+g6TQRndyp8DTt8rI79H5XEEPUlS0SDWDVkzYmVsFBXv/5orEW8hVJVaL6rQmP2HrEW3NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by IA1PR11MB6324.namprd11.prod.outlook.com (2603:10b6:208:388::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.41; Mon, 6 May
+ 2024 16:22:15 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6b05:74cf:a304:ecd8%6]) with mapi id 15.20.7544.041; Mon, 6 May 2024
+ 16:22:14 +0000
+Date: Mon, 6 May 2024 09:22:11 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Ira Weiny <ira.weiny@intel.com>, Jonathan Cameron
+	<Jonathan.Cameron@huawei.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 06/26] cxl/port: Add Dynamic Capacity mode support to
+ endpoint decoders
+Message-ID: <663903b35b66e_2e2d22945a@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
+ <20240404093201.00004f33@Huawei.com>
+ <661065683552f_e9f9f2946@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <661065683552f_e9f9f2946@iweiny-mobl.notmuch>
+X-ClientProxiedBy: MW4PR03CA0217.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::12) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAE0VrXJhJT98yucUDDvWTbcdXczTM4Mhy2XCqZtp+H00FYJfkg@mail.gmail.com>
- <CAE0VrXJ_8ZYjnKs+DQo1bmh7PxkQ=J6cWss3Fci0L2__mZbxxg@mail.gmail.com>
- <2bcc9d83-2442-4b06-92e8-2006eb980c83@oracle.com> <CAE0VrXJksFYCHr_JscryWS1TYT9+QX9opmZ9Y_2Lanc_=oybzA@mail.gmail.com>
- <0f97e260-bb17-48fb-898a-a71cdcf68ba7@oracle.com>
-In-Reply-To: <0f97e260-bb17-48fb-898a-a71cdcf68ba7@oracle.com>
-From: Yordan <y16267966@gmail.com>
-Date: Mon, 6 May 2024 17:57:41 +0300
-Message-ID: <CAE0VrXKbOXprWU7VdPTWK8+St1eeM2hpjvWOYw+BL9HjW-FSFA@mail.gmail.com>
-Subject: Re: btrfs-convert on 24Gb image corrupts files.
-To: Anand Jain <anand.jain@oracle.com>
-Cc: quwenruo.btrfs@gmx.com, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|IA1PR11MB6324:EE_
+X-MS-Office365-Filtering-Correlation-Id: c8b47720-c842-4f13-3dca-08dc6de8b08f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|376005|1800799015;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?ojNj9H70rTjpMLi60Ta74kYqI7WRx8wJniWNWhOdqvEFvOpM7omsrgb/oOpK?=
+ =?us-ascii?Q?wDs3JXhKkj7d2g9quYb93Q5rAoL3nNv1Gj2vF0IHezo4hHX6O+m68TI3pyAV?=
+ =?us-ascii?Q?xt4TXgG8dCCkyKYCIPDPzKwZNAQOKovqYoRQG9v+5ND7qWq1hv2Ne/Rnc8r5?=
+ =?us-ascii?Q?mF91LFRTAHhqot84TrE1ZE4Opdyn3FvF3NI8ICLUOqHDk+AOK1LGbpK064H2?=
+ =?us-ascii?Q?wJJcdWLDyMywkHk01coPAJvCp7GzvUAcypdSmZMXajq7nOz2ZBZQ0eS2pYPL?=
+ =?us-ascii?Q?+DneYFdBxtW6Qfxs9G2Wlm5NxAnP5LoakUr0+4sag0Xt7QEuyxtZ88UwSHEh?=
+ =?us-ascii?Q?QA3gDTJupUdgT3Vgngq4FIT/7Jb+GiRDEpohTq56BzM6b2Xz7kUuIRNKBtrw?=
+ =?us-ascii?Q?PUgkZd8+aXMA2sNiNQ2bk1Dup//TJNdi4hit0a3bO9hXwOp5qYj5R1c1xpBd?=
+ =?us-ascii?Q?BEK/yrUCDguus4wbeypt8gTGneSMintK0R1kY+eZ5RfrB5KBItv9h+YNFVgZ?=
+ =?us-ascii?Q?ehKvjC8wzD2sFu4QY4mbvbxqiOag5nijq56eD+UmWrcupNdes+r9Lbc0txES?=
+ =?us-ascii?Q?SlaXA7+sys9MgeiiIeLCAkqzssIP/BWmtYcluE/Nt61EIiDCWTrY07Y1Z3Sv?=
+ =?us-ascii?Q?25Z3+7FvtH0Dl5nJ/BuWdsMkIX4ULFInfsrW+h5vZJrnAz7EA+gnJt92cl/Q?=
+ =?us-ascii?Q?LqiVOc+K062CUThb/2fYW3QrwvU+jp97esOq2B9J0RHZRO+YpvToPgR4eZ2H?=
+ =?us-ascii?Q?nO0o99qKHDT+nQO+49Nm2OsLPOjMYTSk2kVFtQ+8uK2KJD3Z4vTaWMuXfgeq?=
+ =?us-ascii?Q?SwMAZtBv7Kb9bgAHjrqp3Wu94sQs80bJs7dCdFRidNu3npmJza2zeUeA6ZE4?=
+ =?us-ascii?Q?QCa+GOYS6UtZMZp6w8Q82QGWV3ceH2LfXdSNkOUtkIGWL+/oS15yjQfMeTPl?=
+ =?us-ascii?Q?7Lg46D4sGxm7dlivSeXMo0gKr6+j9T+nsRpirZU5pS7oZ2ZUpiKSOUiw0Eoy?=
+ =?us-ascii?Q?B7+z0OWErLQ8n/gyA6xOy8A16YWs5Ai3B2JGP9Rgw84Hvm9eecnfbXC1gJxY?=
+ =?us-ascii?Q?WtKvakpVqkThOFr+8WemRTOR15CZ9cA2ziy1LVLDi8b13fGuZSuPJpDFBXrr?=
+ =?us-ascii?Q?Gdoxdpqin/OZw1DaLKYtLqQLW+mnSEODWRhuhpClnGqXaQIUE/gk3lCy7fTk?=
+ =?us-ascii?Q?E5+zqESK2Pu10vaRAiX0KPecgG1j+o5pFQn0Y0ABndkS7Nlc9W9W0FKPWb2+?=
+ =?us-ascii?Q?8hfRf8hKvxVzEBDv9bM4ems05PyLbAb/QDpPJcZ78g=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vM7arkHwqtqPbIxyVjIbqYo4O022Ux5PCLppDEXIeCzMJnDhthdJgfHVEI2j?=
+ =?us-ascii?Q?oBVLNANSwlziOyXZ4Ff7rqoKvq/04TzTSn4nxwPRDVssmPqLxxQveI5iCeDS?=
+ =?us-ascii?Q?3+SL6Uy0N3CmABN162hMrJq4nnBzkxX/S8BZq/RnZJr+stwbUGONneMbp9eb?=
+ =?us-ascii?Q?otmi3z5om97lQBPREoYiDuw18J/OiBv7s72SHpZS32yeTiRyFYlQd25XRvsk?=
+ =?us-ascii?Q?txNTzM9UfiDgFb3VJNRb78X7zfy86HJydJZv5ajCPqFgep+2/rLcikEVOIsj?=
+ =?us-ascii?Q?hFXieg5b81khtuTalGRCUVdcmVX8f+Yw3RsalhEEkGNOr1/Eya10wmdbSHh1?=
+ =?us-ascii?Q?3hBPL6yUcqP06sGcaOuiH8RYeRuDZcQuDdMmb4tC3F+PuDu4xYyjxdwnyBQ4?=
+ =?us-ascii?Q?k/X1G4mhAIzwkEOP3MuGouVhd6hP7ixfdSWSLql04FU74yAL0X3soTorwjN5?=
+ =?us-ascii?Q?w6/R7k90UhWoezOIISAGl+gBJCBS1rDWT14vzVmZH7XYPQix+7RyC19qWlNf?=
+ =?us-ascii?Q?owtZ0HXhHx5EVqobuRBS/413Sm5I3I3KXTjSFrnVYhMaxjR6Nw/syRCD1pgh?=
+ =?us-ascii?Q?qIhzMpBXpBVilZhgMlo+vs5aYJMaYRVaGZ8/mGt5JD7gGDNAkid7vJayrCWZ?=
+ =?us-ascii?Q?2lHAnWPsOfljTYxK/ljeUV57apqkSFaS1/3kcoYohWPYOudNr5YRMuPM1hUb?=
+ =?us-ascii?Q?fQkyhVpQO7XMTjyY6TT+KX58T5j0wG46hk8C4sDNw9jeBz+sp/IA0diKNyNS?=
+ =?us-ascii?Q?it1DbmekPQ9RBZ/q+w7++x38XjqwPtRTFkJS8Lg6erCEhFp6WlUKLxOlJ6yo?=
+ =?us-ascii?Q?VJA5NRtV/agDcrbhFl8/lCGkMHz4E9/+RanWXDivPb1kdtWiu19Lj25fLE92?=
+ =?us-ascii?Q?CcMojWGXM7WV583OsVQo6ugHsj9CRS4z+/xBQPiaQz34CCgoyd7iiSgUGLub?=
+ =?us-ascii?Q?18DgTjK82tw84Bf7uNz8iO7DRjaHFxvs0aTT/PbhU6MoQmkQquqiF3w7V47e?=
+ =?us-ascii?Q?Fdjm921rJ1V3Yqe2/DQZ/Vz/vj7dtprAoGP2CXueGrDj4OA5o8aOR4XV3CET?=
+ =?us-ascii?Q?fd5H4qAFXYNKJd/5Ani+i3UZYvZs9RKi6S4AEVjDRLh7D8vNYEwh07Dhcu3D?=
+ =?us-ascii?Q?ILXUbK2jkhhMdN3eMYAq31ekpVovKr8auMhA78u8cBn8o06103ThenD+Q6TC?=
+ =?us-ascii?Q?J4lIrqHtlA1bsY7WZRG1KLaiPeVdJ5eBVThrun+r0oyhcgCtSYIMKg7FQOJe?=
+ =?us-ascii?Q?q66yc9h/NdBhUF/47UuU43EkWEe01UhjTChs8lOUM794IRFli73pGgDpNCpH?=
+ =?us-ascii?Q?uDmFFo7MPbf0M2w/oKJIzw6LyFHInh2ozplPXaONAs1zJSqM3PCZq+27tzTd?=
+ =?us-ascii?Q?K6bCS6ZkL0jKL/VQsvdCqUgTSDHipRVff0FWooAFitNDwg7KVZM1BaHOTdR6?=
+ =?us-ascii?Q?eHcCml7fbGcCMkDygT3ZMN0A6rXqTVOzWG2O0DKy957y/1cWDNU8Yc11jZB1?=
+ =?us-ascii?Q?7FIfYmiFAgWfEBUbys8Z67Lm+xEXXhwGVtWGaQlovL0ZCQ4vEgflThL0lohj?=
+ =?us-ascii?Q?Jjz3+Dot1YFnHFo2OECymi/5fPhz6HCne6fw6POavr6jPjrw7qbzDBd/KW2C?=
+ =?us-ascii?Q?1Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8b47720-c842-4f13-3dca-08dc6de8b08f
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2024 16:22:14.4443
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F8/OaRi9PMbRFxb/r+4hLP1GUl8v/QuynQZKEHE5BF3++g947D1aCr5xb1BI0PhR7zTMXqqqIg68H4fed+H+O31qrxONBCcJPmGDth7zNuk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6324
+X-OriginatorOrg: intel.com
 
-Yes, the same error after patching, and the same error on the original
-24G image:
+Ira Weiny wrote:
+[..]
+> > > +	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
+> > > +		rc = dc_mode_to_region_index(mode);
+> > > +		if (rc < 0)
+> > > +			return rc;
+> > 
+> > Can't fail, so you could not bother checking..  Seems very unlikely
+> > that function will gain other error cases in the future.
+> 
+> Sure, done.
 
-B/btrfs-progs/btrfs-convert sda3.img
-btrfs-convert from btrfs-progs v6.8.1
-
-Source filesystem:
-  Type:           ext2
-  Label:
-  Blocksize:      4096
-  UUID:           b3a78a9f-37e7-4ccb-bedb-1f800a6a5a19
-Target filesystem:
-  Label:
-  Blocksize:      4096
-  Nodesize:       16384
-  UUID:           6595aa9c-415d-4ab0-bd9f-9a7f2ee8e3a9
-  Checksum:       crc32c
-  Features:       extref, skinny-metadata, no-holes, free-space-tree (defau=
-lt)
-    Data csum:    yes
-    Inline data:  yes
-    Copy xattr:   yes
-Reported stats:
-  Total space:     25769803776
-  Free space:       8655269888 (33.59%)
-  Inode count:         1572864
-  Free inodes:         1325061
-  Block count:         6291456
-Create initial btrfs filesystem
-Create ext2 image file
-Create btrfs metadata
-ERROR: inode 527126 index 2: identified unsupported merged block
-length 9 wanted 10
-ERROR: failed to copy ext2 inode 527126: -22
-ERROR: error during copy_inodes -22
-WARNING: error during conversion, the original filesystem is not modified
-
-On Mon, May 6, 2024 at 4:43=E2=80=AFPM Anand Jain <anand.jain@oracle.com> w=
-rote:
->
->
-> It is meant to be applied on latest devel branch.
->
->
-> With the v2 patches:
->
-> $ ./btrfs-convert ~/sda3.img
-> btrfs-convert from btrfs-progs v6.8
->
-> Source filesystem:
->    Type:           ext2
->    Label:
->    Blocksize:      4096
->    UUID:           b3a78a9f-37e7-4ccb-bedb-1f800a6a5a19
-> Target filesystem:
->    Label:
->    Blocksize:      4096
->    Nodesize:       16384
->    UUID:           d8c61c42-1b2c-478d-8ae6-bf45213e8df4
->    Checksum:       crc32c
->    Features:       extref, skinny-metadata, no-holes, free-space-tree
-> (default)
->      Data csum:    yes
->      Inline data:  yes
->      Copy xattr:   yes
-> Reported stats:
->    Total space:       536870912
->    Free space:        326238208 (60.77%)
->    Inode count:           32768
->    Free inodes:           32743
->    Block count:          131072
-> Create initial btrfs filesystem
-> Create ext2 image file
-> Create btrfs metadata
-> ERROR: inode 20 index 0: identified unsupported merged block length 1
-> wanted 12
-> ERROR: failed to copy ext2 inode 20: -22
-> ERROR: error during copy_inodes -22
-> WARNING: error during conversion, the original filesystem is not modified
->
->
->
->
->
-> On 5/6/24 21:35, Yordan wrote:
-> > NO, I have problems applying patch4, so its unpatchet
-> >
-> > error: patch failed: convert/source-fs.c:316
-> > error: convert/source-fs.c: patch does not apply
-> >
-> > I just sent you a small problematic image so you can test it yourself.
-> >
-> > On Mon, May 6, 2024 at 4:17=E2=80=AFPM Anand Jain <anand.jain@oracle.co=
-m> wrote:
-> >>
-> >>
-> >>
-> >> On 5/6/24 18:53, Yordan wrote:
-> >>> The attached file which is a reduced version of the problematic image=
-,
-> >>> produced by removing all files and directories, except 5 of the
-> >>> problematic files and their path. Then its filesystem filled with zer=
-o
-> >>> file, shrinked with "resize2fs" to 512M and compressed to 7M.
-> >>>
-> >>> md5sum sda3.img.zst
-> >>> 9eec41fee47e3db555edeaba5d8d2e9a  sda3.img.zst
-> >>>
-> >>> (chroot) livecd / # zstd -d sda3.img.zst -o sda3.img
-> >>> sda3.img.zst        : 536870912 bytes
-> >>> (chroot) livecd / # mount -o ro sda3.img k
-> >>> (chroot) livecd / # find k/ -type f | xargs md5sum >files.md5
-> >>> (chroot) livecd / # md5sum -c files.md5 | grep -v OK
-> >>>
-> >>> (chroot) livecd / # umount k
-> >>> (chroot) livecd / # B/btrfs-progs/btrfs-convert sda3.img
-> >>> btrfs-convert from btrfs-progs v6.8.1
-> >>>   > Source filesystem:
-> >>>     Type:           ext2
-> >>>     Label:
-> >>>     Blocksize:      4096
-> >>>     UUID:           b3a78a9f-37e7-4ccb-bedb-1f800a6a5a19
-> >>> Target filesystem:
-> >>>     Label:
-> >>>     Blocksize:      4096
-> >>>     Nodesize:       16384
-> >>>     UUID:           d7c77d2f-d470-450a-ba0e-b6567ad3f4b3
-> >>>     Checksum:       crc32c
-> >>>     Features:       extref, skinny-metadata, no-holes, free-space-tre=
-e (default)
-> >>>       Data csum:    yes
-> >>>       Inline data:  yes
-> >>>       Copy xattr:   yes
-> >>> Reported stats:
-> >>>     Total space:       536870912
-> >>>     Free space:        326238208 (60.77%)
-> >>>     Inode count:           32768
-> >>>     Free inodes:           32743
-> >>>     Block count:          131072
-> >>> Create initial btrfs filesystem
-> >>> Create ext2 image file
-> >>> Create btrfs metadata
-> >>> Copy inodes [o] [         1/        25]
-> >>> Free space cache cleared
-> >>> Conversion complete
-> >>>
-> >>> (chroot) livecd / # mount -o ro sda3.img k
-> >>> (chroot) livecd / # md5sum -c files.md5
-> >>> k/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/ch=
-rome/idb/3561288849sdhlie.sqlite:
-> >>> FAILED
-> >>> k/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/ch=
-rome/idb/1657114595AmcateirvtiSty.sqlite:
-> >>> FAILED
-> >>> k/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/ch=
-rome/idb/2823318777ntouromlalnodry--naod.sqlite:
-> >>> FAILED
-> >>> k/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/ch=
-rome/idb/2918063365piupsah.sqlite:
-> >>> FAILED
-> >>> k/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/ch=
-rome/idb/3870112724rsegmnoittet-es.sqlite:
-> >>> OK
-> >>> k/root/.mozilla/firefox/s554srh9.default-release/storage/permanent/ch=
-rome/idb/1451318868ntouromlalnodry--epcr.sqlite:
-> >>> FAILED
-> >>> md5sum: WARNING: 5 computed checksums did NOT match
-> >>>
-> >>
-> >>
-> >> Are these test results with the v2 patchset? Thanks, Anand.
-> >>
-> >>
-> >>> Regards, Jordan.
+Can dc_mode_to_region_index() be dropped altogether? Is there any
+scenario where dc_mode_to_region_index() is really handling an anonymous
+@mode argument? I.e. just replace all dc_mode_to_region_index() with
+"mode - CXL_DECODER_DC0"?
 
