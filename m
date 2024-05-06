@@ -1,75 +1,52 @@
-Return-Path: <linux-btrfs+bounces-4767-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4768-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF978BC73A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 07:59:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CBDB8BC9D1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 10:44:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53B961F211B1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 05:59:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C68FB2827D1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2024 08:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B88FB4AEE6;
-	Mon,  6 May 2024 05:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D17511422A2;
+	Mon,  6 May 2024 08:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KLgZe9t3"
+	dkim=pass (2048-bit key) header.d=1und1.de header.i=@1und1.de header.b="vBFLldP4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from moint.1and1.com (moint.1and1.com [212.227.15.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A817481D0
-	for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2024 05:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6796CDAC
+	for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2024 08:43:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714975173; cv=none; b=SKfonTNZIX4tarVjvivHeskykx0rpsReEIJqBAx19rVhROtBM5nD4yWpzEdWbdy6YeeU1M88f7K9zEeKVsniKv/1JsMpxGZ2lmDzhiMyj89JNx2sgOl13ovQ2d/bKLZ1ie9Rf5y1rGM5OpFki0zwkJrTiYs/gYgpNZh31JD2kBE=
+	t=1714985037; cv=none; b=Tbk+FQ7V3IgaRtoD01WSl30PE9s+ARF1QnwZ452cJ6KE1eUyv3qKelbP6zytom3A2p7QPxWJIS0ozDp44wmcJ0Ye3kkDkHwIRg8PRjLtbd/H/HADE3eDyRSXRJoeABGZznEgBn9vZlQwmaKFj+eGVXBYiXPpdGQUaKAYHrCUNmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714975173; c=relaxed/simple;
-	bh=xwlPk8NTGZCLMq3yAxdUSizxvN0TxMcy2LlvErP4tUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ud8KQ8Y/7mPmAaiEronzPjkhxqvTctp4ffTOCME520hLVwPoBIaAH9nA4pKfPIUiGfgGuQTqUjkG5tpoJ6c1pe/OGNqxZonIq8B5xWvniK5u9Cfh+i0E7UHTMIcltjRDX9kGH/yZKDuPKUfjaqVRTCWdkuG8ZrvEoLPogprOxuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KLgZe9t3; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2df83058d48so19512651fa.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 May 2024 22:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1714975168; x=1715579968; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+FJiWBQkwIj0St36qVFqOXjyyr0v824XVev1VQRdQ8g=;
-        b=KLgZe9t3yPQH/TjdwN4s4XWEKIyjaO1NBcvY2wFJF62wmpUSiDywWaLytvRUtBbgR5
-         KNR7nQMHD1oyej+InNUBS7gcI59xnRQ8Na68GhcI66X1x2VpMVLIf3zjAsEBHSXocXSE
-         noW3HXFQxFTBt2twQY9A+Me4RkTgAuYUzeSiktNthRRkdAxz/vCI25fZBm21eA+eIL3l
-         iN5D/EItKlRXJ6Ho+Bn7eyyJXWpgoPvi5Wwwgg29BfJp13kjpMBKCj84SdzG4ONH11q/
-         yjs/QKhaxqHuddvAXIGxQ4hdAYhvb2ycXxHoWyfyjL8m0AqrAQIaPOQ8S3d74ldMJ4+h
-         N9qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714975168; x=1715579968;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+FJiWBQkwIj0St36qVFqOXjyyr0v824XVev1VQRdQ8g=;
-        b=R7jAP72fc6mE0KvRDdJrRRCCzE8OuBySuNS7yi0dDhvQCYcHaZGC4F67Alr6MQPnE1
-         OQuY2SSOu5KVfXy2hd+raZkdAT7iOml4opnSpv4hAHU4Cwt6m5telgwlLdUrUNu+uGoR
-         5J/QxvJrPfdh1zwa1fzgkneNSaT5asT5XVydIG7Ydc7U0tYwyFZsL9iDiw+ZZ8rfqDAd
-         nkGdqpD5hRcw2HzSrM397MSXOv40o8+eCkYpW0yXcRYzO5GpHfIHS4coIe2SRaU+ssnM
-         E7evpbudA/XrsgTSZ1oUliKy9bbTh130VNs22vVIAqTPCtDVBekWVTwuXi5qO2+1A0VA
-         77Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCVoAlXczBbQWXUPzAj3tv8TfrVKihsVm2CF9FslrvU6B72HHrsctz954kRYE3YMnvQtLxTWnpRBcVnEklW3/OxdmqxWYro7gIusqF8=
-X-Gm-Message-State: AOJu0YytbvhiH8xBEm8KaPuGX7G9639/B/idJqDpLMFQg3DUcNfBaXrB
-	jQ87IZTBSIzi/sVdSWL3HiiDQYmA05ijZjF5z2KDkEM2AG65HpQng3R3de+PjDo=
-X-Google-Smtp-Source: AGHT+IEFrZCBMg7W0HlisVGHwuX6bpNXjdjActUPHXHjuKiYry1yPGFLpRkDPwLYWLExwyUAIxvJpA==
-X-Received: by 2002:a2e:a23a:0:b0:2e1:d34d:9b2c with SMTP id i26-20020a2ea23a000000b002e1d34d9b2cmr5246704ljm.9.1714975168478;
-        Sun, 05 May 2024 22:59:28 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id m5-20020a17090a71c500b002b436698285sm5569835pjs.43.2024.05.05.22.59.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 May 2024 22:59:27 -0700 (PDT)
-Message-ID: <fa9aa138-476d-413f-ac02-35156baacd66@suse.com>
-Date: Mon, 6 May 2024 15:29:22 +0930
+	s=arc-20240116; t=1714985037; c=relaxed/simple;
+	bh=3UgryAVMlVuSdwD/OOf/25G4mrwkXdn7wK0e5Me0RrY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UIyvmzHCKkLU1ckESZmnMu1/O/Ci4/p+ffi64W7PgKgnCuA5WOMJVn0wCdyGh7LyUY1t9CSVT1BAshVend+EJi3AJBNMoLWN0WfLiKeTfO8l4NIax6yYYSFWX+oR+HPbHT4/1jOlFzYXh82Z4FoPFTzmgnkLwQgyFCo8fBnlxO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=1und1.de; spf=pass smtp.mailfrom=1und1.de; dkim=pass (2048-bit key) header.d=1und1.de header.i=@1und1.de header.b=vBFLldP4; arc=none smtp.client-ip=212.227.15.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=1und1.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1und1.de
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=1und1.de;
+	s=corp1; h=From:CC:To:Subject:MIME-Version:Date:Message-ID:sender:reply-to;
+	bh=amoQOERo8lKrNeUC1EoBwdWmaCUeh2VoIDY32Z9IRt8=; b=vBFLldP49wnlKA9334jpHxoqKm
+	KxFmk2SRq5NASk9yOjmJPvdzx3E3K8SKOFsYpkAT59qA9LZIJ2nRt5Aq7AdIDW89NU+zHwXRVe4tD
+	YD+GN8WTM8ncBSjkBoQ4GJwlt7p55F9vPlezUY9wl0zJ/1aTD6th6C0U3rFioVvMHgJv8hmjb1ecH
+	pLEeRSB11g4seTSymOwlgw0JKftuf/3aVS+4JqLRwaioTx99nvUZcOrDYY7UlaNXC2UsebzQK7qU9
+	D4forkG5TzPmP4UCDvVtu5zZd0LclWaw4BCeL4Q0f5/B82sCeTdXvXH3taSNRzmFdkpRuANp26fwV
+	qpy9DKyQ==;
+Received: from [10.98.28.7] (helo=KAPPEX022.united.domain)
+	by mrint.1and1.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <julian.taylor@1und1.de>)
+	id 1s3tuN-006v5z-1R;
+	Mon, 06 May 2024 10:41:15 +0200
+Message-ID: <bdeef163-e099-4b70-953e-248bf44ee37f@1und1.de>
+Date: Mon, 6 May 2024 10:41:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,350 +54,229 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] btrfs-progs: convert: support ext2 unwritten file
- data extents
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Anand Jain <anand.jain@oracle.com>,
- linux-btrfs@vger.kernel.org
-Cc: dsterba@suse.com, y16267966@gmail.com, linux-ext4@vger.kernel.org
-References: <cover.1714963428.git.anand.jain@oracle.com>
- <91f25251b1d57ee972179d707d13b453f43b5614.1714963428.git.anand.jain@oracle.com>
- <4c6ce351-e1fe-483a-8a9b-a1abb2324ea1@gmx.com>
+Subject: Re: FAILED: patch "[PATCH] btrfs: do not wait for short bulk
+ allocation" failed to apply to 6.6-stable tree
+To: <wqu@suse.com>
+CC: <linux-btrfs@vger.kernel.org>
+References: <2024041951-sports-hula-f2a5@gregkh>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <4c6ce351-e1fe-483a-8a9b-a1abb2324ea1@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Julian Taylor <julian.taylor@1und1.de>
+Autocrypt: addr=julian.taylor@1und1.de; keydata=
+ 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
+ 7oKCuVqh8kE3PYxoRHbuOnFcKDL7dV8w3Mak
+In-Reply-To: <2024041951-sports-hula-f2a5@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: KAPPEX025.united.domain (10.98.28.10) To
+ KAPPEX022.united.domain (10.98.28.7)
+X-Virus-Scanned: ClamAV@mvs-ha-bs
+
+Hello,
+
+thank you for swiftly fixing the issue.
+
+As the problem affects the stable releases 6.1 and 6.6 would it be 
+possible to backport the fix to these versions so it can make its way 
+into distributions?
+
+It is a reasonably simple backport though 6.1 has some differences in 
+the ENOMEM situation.
+
+This should apply to 6.6:
 
 
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -686,24 +686,14 @@ int btrfs_alloc_page_array(unsigned int nr_pages, 
+struct page **page_array)
+          unsigned int last = allocated;
 
-在 2024/5/6 15:11, Qu Wenruo 写道:
-> 
-> 
-> 在 2024/5/6 12:34, Anand Jain 写道:
->> This patch, along with the dependent patches below, adds support for
->> ext4 unmerged  unwritten file extents as preallocated file extent in 
->> btrfs.
->>
->>   btrfs-progs: convert: refactor ext2_create_file_extents add argument 
->> ext2_inode
->>   btrfs-progs: convert: struct blk_iterate_data, add ext2-specific 
->> file inode pointers
->>   btrfs-progs: convert: refactor __btrfs_record_file_extent to add a 
->> prealloc flag
->>
->> The patch is developed with POV of portability with the current
->> e2fsprogs library.
->>
->> This patch will handle independent unwritten extents by marking them 
->> with prealloc
->> flag and will identify merged unwritten extents, triggering a fail.
->>
->> Testcase:
->>
->>       $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=1 conv=fsync 
->> status=none
->>       $ dd if=/dev/urandom of=/mnt/test/foo bs=4K count=2 conv=fsync 
->> seek=1 status=none
->>       $ xfs_io -f -c 'falloc -k 12K 12K' /mnt/test/foo
->>       $ dd if=/dev/zero of=/mnt/test/foo bs=4K count=1 conv=fsync 
->> seek=6 status=none
->>
->>       $ filefrag -v /mnt/test/foo
->>       Filesystem type is: ef53
->>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
->>      ext:     logical_offset:        physical_offset: length:   
->> expected: flags:
->>        0:        0..       0:      33280..     33280:      1:
->>        1:        1..       2:      33792..     33793:      2:      33281:
->>        2:        3..       5:      33281..     33283:      3:      
->> 33794: unwritten
->>        3:        6..       6:      33794..     33794:      1:      
->> 33284: last,eof
->>
->>       $ sha256sum /mnt/test/foo
->>       
->> 18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  
->> /mnt/test/foo
->>
->>     Convert and compare the checksum
->>
->>     Before:
->>
->>       $ filefrag -v /mnt/test/foo
->>       Filesystem type is: 9123683e
->>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
->>        ext:     logical_offset:        physical_offset: length:   
->> expected: flags:
->>        0:        0..       0:      33280..     33280:      
->> 1:             shared
->>        1:        1..       2:      33792..     33793:      2:      
->> 33281: shared
->>        2:        3..       6:      33281..     33284:      4:      
->> 33794: last,shared,eof
->>       /mnt/test/foo: 3 extents found
->>
->>       $ sha256sum /mnt/test/foo
->>       
->> 6874a1733e5785682210d69c07f256f684cf5433c7235ed29848b4a4d52030e0  
->> /mnt/test/foo
->>
->>     After:
->>
->>       $ filefrag -v /mnt/test/foo
->>       Filesystem type is: 9123683e
->>       File size of /mnt/test/foo is 28672 (7 blocks of 4096 bytes)
->>      ext:     logical_offset:        physical_offset: length:   
->> expected: flags:
->>        0:        0..       0:      33280..     33280:      
->> 1:             shared
->>        1:        1..       2:      33792..     33793:      2:      
->> 33281: shared
->>        2:        3..       5:      33281..     33283:      3:      
->> 33794: unwritten,shared
->>        3:        6..       6:      33794..     33794:      1:      
->> 33284: last,shared,eof
->>       /mnt/test/foo: 4 extents found
->>
->>       $ sha256sum /mnt/test/foo
->>       
->> 18619b678a5c207a971a0aa931604f48162e307c57ecdec450d5f095fe9f32c7  
->> /mnt/test/foo
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->> v2:
->>
->> . Remove RFC
->> . Identify the block with a merged preallocated extent and call fail-safe
->> . Qu has an idea that it could be marked as a hole, which may be based on
->>    top of this patch.
-> 
-> Well, my idea of going holes other than preallocated extents is mostly
-> to avoid the extra @prealloc flag parameter.
-> 
-> But that's not a big deal for now, as I found the following way to
-> easily crack your v2 patchset:
-> 
->   # fallocate -l 1G test.img
->   # mkfs.ext4 -F test.img
->   # mount test.img $mnt
->   # xfs_io -f -c "falloc 0 16K" $mnt/file
->   # sync
->   # xfs_io -f -c "pwrite 0 4k" -c "pwrite 12k 4k" $mnt/file
->   # umount $mnt
->   # ./btrfs-convert test.img
-> btrfs-convert from btrfs-progs v6.8
-> 
-> Source filesystem:
->    Type:           ext2
->    Label:
->    Blocksize:      4096
->    UUID:           0f98aa2a-b1ee-4e91-8815-9b9a7b4af00a
-> Target filesystem:
->    Label:
->    Blocksize:      4096
->    Nodesize:       16384
->    UUID:           3b8db399-8e25-495b-a41c-47afcb672020
->    Checksum:       crc32c
->    Features:       extref, skinny-metadata, no-holes, free-space-tree
-> (default)
->      Data csum:    yes
->      Inline data:  yes
->      Copy xattr:   yes
-> Reported stats:
->    Total space:      1073741824
->    Free space:        872349696 (81.24%)
->    Inode count:           65536
->    Free inodes:           65523
->    Block count:          262144
-> Create initial btrfs filesystem
-> Create ext2 image file
-> Create btrfs metadata
-> ERROR: inode 13 index 0: identified unsupported merged block length 1
-> wanted 4
-> ERROR: failed to copy ext2 inode 13: -22
-> ERROR: error during copy_inodes -22
-> WARNING: error during conversion, the original filesystem is not modified
-> 
-> [...]
->> +
->> +    memset(&extent, 0, sizeof(struct ext2fs_extent));
->> +    if (ext2fs_extent_get(handle, EXT2_EXTENT_CURRENT, &extent)) {
->> +        error("ext2fs_extent_get EXT2_EXTENT_CURRENT failed inode %d",
->> +               src->ext2_ino);
->> +        ext2fs_extent_free(handle);
->> +        return -EINVAL;
->> +    }
->> +
->> +    if (extent.e_pblk != data->disk_block) {
->> +    error("inode %d index %d found wrong extent e_pblk %llu wanted 
->> disk_block %llu",
->> +               src->ext2_ino, index, extent.e_pblk, data->disk_block);
->> +        ext2fs_extent_free(handle);
->> +        return -EINVAL;
->> +    }
->> +
->> +    if (extent.e_len != data->num_blocks) {
->> +    error("inode %d index %d: identified unsupported merged block 
->> length %u wanted %llu",
->> +            src->ext2_ino, index, extent.e_len, data->num_blocks);
->> +        ext2fs_extent_free(handle);
->> +        return -EINVAL;
->> +    }
-> 
-> You have to split the extent in this case. As the example I gave, part
-> of the extent can have been written.
-> (And I'm not sure if the e_pblk check is also correct)
-> 
-> I believe the example I gave could be a pretty good test case.
-> (Or you can go one step further to interleave every 4K)
+          allocated = alloc_pages_bulk_array(GFP_NOFS, nr_pages, 
+page_array);
+-
+-        if (allocated == nr_pages)
+-            return 0;
+-
+-        /*
+-         * During this iteration, no page could be allocated, even
+-         * though alloc_pages_bulk_array() falls back to alloc_page()
+-         * if  it could not bulk-allocate. So we must be out of memory.
+-         */
+-        if (allocated == last) {
++        if (unlikely(allocated == last)) {
++            /* No progress, fail and do cleanup. */
+              for (int i = 0; i < allocated; i++) {
+                  __free_page(page_array[i]);
+                  page_array[i] = NULL;
+              }
+              return -ENOMEM;
+          }
+-
+-        memalloc_retry_wait(GFP_NOFS);
+      }
+      return 0;
+  }
 
-Furthermore, I have to consider what is the best way to iterate all data 
-extents of an ext2 inode.
 
-Instead of ext2fs_block_iterate2(), I'm wondering if 
-ext2fs_extent_goto() would be a better solution. (As long as if it can 
-handle holes).
-
-Another thing is, please Cc this series to ext4 mailing list if possible.
-I hope to get some feedback from the ext4 exports as they may have a 
-much better idea than us.
-
-Thanks,
-Qu
-> 
-> Thanks,
-> Qu
-> 
->> +
->> +    if (extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT)
->> +        *has_unwritten = true;
->> +
->> +    return 0;
->> +}
->> +
->>   static int ext2_dir_iterate_proc(ext2_ino_t dir, int entry,
->>                   struct ext2_dir_entry *dirent,
->>                   int offset, int blocksize,
->> diff --git a/convert/source-ext2.h b/convert/source-ext2.h
->> index 026a7cad8ac8..19014d3c25e6 100644
->> --- a/convert/source-ext2.h
->> +++ b/convert/source-ext2.h
->> @@ -82,6 +82,9 @@ struct ext2_source_fs {
->>       ext2_ino_t ext2_ino;
->>   };
->>
->> +int ext2_find_unwritten(struct blk_iterate_data *data, int index,
->> +            bool *has_unwritten);
->> +
->>   #define EXT2_ACL_VERSION    0x0001
->>
->>   #endif    /* BTRFSCONVERT_EXT2 */
->> diff --git a/convert/source-fs.c b/convert/source-fs.c
->> index df5ce66caf7f..88a6ceaf41f6 100644
->> --- a/convert/source-fs.c
->> +++ b/convert/source-fs.c
->> @@ -31,6 +31,7 @@
->>   #include "common/extent-tree-utils.h"
->>   #include "convert/common.h"
->>   #include "convert/source-fs.h"
->> +#include "convert/source-ext2.h"
->>
->>   const struct simple_range btrfs_reserved_ranges[3] = {
->>       { 0,                 SZ_1M },
->> @@ -239,6 +240,15 @@ fail:
->>       return ret;
->>   }
->>
->> +int find_prealloc(struct blk_iterate_data *data, int index,
->> +          bool *has_prealloc)
->> +{
->> +    if (data->source_fs)
->> +        return ext2_find_unwritten(data, index, has_prealloc);
->> +
->> +    return -EINVAL;
->> +}
->> +
->>   /*
->>    * Record a file extent in original filesystem into btrfs one.
->>    * The special point is, old disk_block can point to a reserved range.
->> @@ -257,6 +267,7 @@ int record_file_blocks(struct blk_iterate_data *data,
->>       u64 old_disk_bytenr = disk_block * sectorsize;
->>       u64 num_bytes = num_blocks * sectorsize;
->>       u64 cur_off = old_disk_bytenr;
->> +    int index = data->first_block;
->>
->>       /* Hole, pass it to record_file_extent directly */
->>       if (old_disk_bytenr == 0)
->> @@ -276,6 +287,16 @@ int record_file_blocks(struct blk_iterate_data 
->> *data,
->>           u64 extent_num_bytes;
->>           u64 real_disk_bytenr;
->>           u64 cur_len;
->> +        u64 flags = BTRFS_FILE_EXTENT_REG;
->> +        bool has_prealloc = false;
->> +
->> +        if (find_prealloc(data, index, &has_prealloc)) {
->> +            data->errcode = -1;
->> +            return -EINVAL;
->> +        }
->> +
->> +        if (has_prealloc)
->> +            flags = BTRFS_FILE_EXTENT_PREALLOC;
->>
->>           key.objectid = data->convert_ino;
->>           key.type = BTRFS_EXTENT_DATA_KEY;
->> @@ -316,12 +337,12 @@ int record_file_blocks(struct blk_iterate_data 
->> *data,
->>                     old_disk_bytenr + num_bytes) - cur_off;
->>           ret = btrfs_record_file_extent(data->trans, data->root,
->>                       data->objectid, data->inode, file_pos,
->> -                    real_disk_bytenr, cur_len,
->> -                    BTRFS_FILE_EXTENT_REG);
->> +                    real_disk_bytenr, cur_len, flags);
->>           if (ret < 0)
->>               break;
->>           cur_off += cur_len;
->>           file_pos += cur_len;
->> +        index++;
->>
->>           /*
->>            * No need to care about csum
->> diff --git a/convert/source-fs.h b/convert/source-fs.h
->> index 25916c65681b..db7ead422585 100644
->> --- a/convert/source-fs.h
->> +++ b/convert/source-fs.h
->> @@ -153,5 +153,6 @@ int read_disk_extent(struct btrfs_root *root, u64 
->> bytenr,
->>                       u32 num_bytes, char *buffer);
->>   int record_file_blocks(struct blk_iterate_data *data,
->>                     u64 file_block, u64 disk_block, u64 num_blocks);
->> +int find_prealloc(struct blk_iterate_data *data, int index, bool 
->> *has_prealloc);
->>
->>   #endif
+On 19.04.24 12:39, gregkh@linuxfoundation.org wrote:
+> The patch below does not apply to the 6.6-stable tree.
+> If someone wants it applied there, or to any other stable or longterm
+> tree, then please email the backport, including the original git commit
+> id to <stable@vger.kernel.org>.
+>
+> To reproduce the conflict and resubmit, you may use the following commands:
+>
+> git fetch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/ linux-6.6.y
+> git checkout FETCH_HEAD
+> git cherry-pick -x 1db7959aacd905e6487d0478ac01d89f86eb1e51
+> # <resolve conflicts, build, test, etc.>
+> git commit -s
+> git send-email --to '<stable@vger.kernel.org>' --in-reply-to '2024041951-sports-hula-f2a5@gregkh' --subject-prefix 'PATCH 6.6.y' HEAD^..
+>
+> Possible dependencies:
+>
+> 1db7959aacd9 ("btrfs: do not wait for short bulk allocation")
+> 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to allocate-then-attach method")
+> 397239ed6a6c ("btrfs: allow extent buffer helpers to skip cross-page handling")
+> 94dbf7c0871f ("btrfs: free the allocated memory if btrfs_alloc_page_array() fails")
+>
+> thanks,
+>
+> greg k-h
+>
+> ------------------ original commit in Linus's tree ------------------
+>
+>  From 1db7959aacd905e6487d0478ac01d89f86eb1e51 Mon Sep 17 00:00:00 2001
+> From: Qu Wenruo <wqu@suse.com>
+> Date: Tue, 26 Mar 2024 09:16:46 +1030
+> Subject: [PATCH] btrfs: do not wait for short bulk allocation
+>
+> [BUG]
+> There is a recent report that when memory pressure is high (including
+> cached pages), btrfs can spend most of its time on memory allocation in
+> btrfs_alloc_page_array() for compressed read/write.
+>
+> [CAUSE]
+> For btrfs_alloc_page_array() we always go alloc_pages_bulk_array(), and
+> even if the bulk allocation failed (fell back to single page
+> allocation) we still retry but with extra memalloc_retry_wait().
+>
+> If the bulk alloc only returned one page a time, we would spend a lot of
+> time on the retry wait.
+>
+> The behavior was introduced in commit 395cb57e8560 ("btrfs: wait between
+> incomplete batch memory allocations").
+>
+> [FIX]
+> Although the commit mentioned that other filesystems do the wait, it's
+> not the case at least nowadays.
+>
+> All the mainlined filesystems only call memalloc_retry_wait() if they
+> failed to allocate any page (not only for bulk allocation).
+> If there is any progress, they won't call memalloc_retry_wait() at all.
+>
+> For example, xfs_buf_alloc_pages() would only call memalloc_retry_wait()
+> if there is no allocation progress at all, and the call is not for
+> metadata readahead.
+>
+> So I don't believe we should call memalloc_retry_wait() unconditionally
+> for short allocation.
+>
+> Call memalloc_retry_wait() if it fails to allocate any page for tree
+> block allocation (which goes with __GFP_NOFAIL and may not need the
+> special handling anyway), and reduce the latency for
+> btrfs_alloc_page_array().
+>
+> Reported-by: Julian Taylor <julian.taylor@1und1.de>
+> Tested-by: Julian Taylor <julian.taylor@1und1.de>
+> Link: https://lore.kernel.org/all/8966c095-cbe7-4d22-9784-a647d1bf27c3@1und1.de/
+> Fixes: 395cb57e8560 ("btrfs: wait between incomplete batch memory allocations")
+> CC: stable@vger.kernel.org # 6.1+
+> Reviewed-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index b18034f2ab80..2776112dbdf8 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -681,31 +681,21 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
+>   int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+>   			   gfp_t extra_gfp)
+>   {
+> +	const gfp_t gfp = GFP_NOFS | extra_gfp;
+>   	unsigned int allocated;
+>   
+>   	for (allocated = 0; allocated < nr_pages;) {
+>   		unsigned int last = allocated;
+>   
+> -		allocated = alloc_pages_bulk_array(GFP_NOFS | extra_gfp,
+> -						   nr_pages, page_array);
+> -
+> -		if (allocated == nr_pages)
+> -			return 0;
+> -
+> -		/*
+> -		 * During this iteration, no page could be allocated, even
+> -		 * though alloc_pages_bulk_array() falls back to alloc_page()
+> -		 * if  it could not bulk-allocate. So we must be out of memory.
+> -		 */
+> -		if (allocated == last) {
+> +		allocated = alloc_pages_bulk_array(gfp, nr_pages, page_array);
+> +		if (unlikely(allocated == last)) {
+> +			/* No progress, fail and do cleanup. */
+>   			for (int i = 0; i < allocated; i++) {
+>   				__free_page(page_array[i]);
+>   				page_array[i] = NULL;
+>   			}
+>   			return -ENOMEM;
+>   		}
+> -
+> -		memalloc_retry_wait(GFP_NOFS);
+>   	}
+>   	return 0;
+>   }
+>
 
