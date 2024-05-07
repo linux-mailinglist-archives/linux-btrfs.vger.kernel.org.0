@@ -1,160 +1,328 @@
-Return-Path: <linux-btrfs+bounces-4820-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4821-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56AC18BEE5A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 May 2024 22:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4962A8BF17F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 01:26:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01FDF28675A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 May 2024 20:46:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C82C228647B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 May 2024 23:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E7558AB8;
-	Tue,  7 May 2024 20:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC73113DDB9;
+	Tue,  7 May 2024 23:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sIHXkkpl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMqG+1Mw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0785757319
-	for <linux-btrfs@vger.kernel.org>; Tue,  7 May 2024 20:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C2113DDA2;
+	Tue,  7 May 2024 23:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715114697; cv=none; b=hrHKBNoupToxBn68lEJjmzgdQtCcC7kHsm+8Zs8irEtd9vDqB/W8942wUnv7YX5/QzFT9s+XTDXWz4x3ocWZg8moy9xA3y8K6l0sZTUyT6JaGK8s3oZiyb4C8ElQ8UUa4BeD48F8MgHe8hJnzdWFXDUZ8OwafPUy1xGyGR1Ab9k=
+	t=1715123319; cv=none; b=pKwZZqqzPE4+n9492aR41i2o69VUP8NGd4Sgj7ANxr5GMG4NtGWmYvloILrI45rzlAFlxfv4k6e2ZMfB7cLvnMVRvmHgSQnygURRHnoxEMebCWsQrLG5Jx+JiD89HwiOz7+UU+Ks+aPLXhRXIPE3IsoaGjP6FGbrvHyvxZ+7WiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715114697; c=relaxed/simple;
-	bh=JbP+x2CZ/Ly40KJ8tOxxL9a5hrtjK3TH3XxMvS7na70=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fscSfOAwZ0FHJT/FGWVCqTzJ95ZmHlyAksWpyZDp4OQ+25NAFm58Fu3tUK+jIl2DuFSKp5NBtwROLODaRamLJ89l/DqtBM7v0HWuhg3H0vepo7dzZ2nPXYtn4qF0AUi53u+ElevAmeSuWJwVcMbvCKGwTsqafQiZ/Flwmm7/riU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sIHXkkpl; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715114692; x=1715719492; i=quwenruo.btrfs@gmx.com;
-	bh=yT01rthnW9XEL+Ip3kKgyouN7h906r/gRjlGirnQKCc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=sIHXkkplTWJHujCp15FDgKknFV0kPcOd7s3kxnc8Ln3ekSio/LpcHoXH9GY/7CUl
-	 N23y+M0gWlfKlKjgip92tkKjPjn5EBa86q1VtcqQ463bWFNGZiWax0eTbsS7cF4/8
-	 7Q1Bh29JWIyvOPc1dpQjuMqJhB3pkUj2FChrWEc0/DyWDdYipSkG3tmCLGHv/2tyx
-	 vVPxPXcLqyjbV/tbrGy0mEDFGbU5fxuRJvkDGcfZDefn3NXDUCBu14aW/WPiKSvBy
-	 aQWwg6QGXGfLC/u5x2vHZ+bhgV1fGhismrsMYvYzXhTn+L/ep5M0uvEsqH+v2DMEH
-	 mTLjkCgwXb9wlRYdSw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MKKZ3-1sKkXs2wYx-00JwNC; Tue, 07
- May 2024 22:44:52 +0200
-Message-ID: <9e7c4d26-81d7-4c11-b63d-33cd43b96bd6@gmx.com>
-Date: Wed, 8 May 2024 06:14:48 +0930
+	s=arc-20240116; t=1715123319; c=relaxed/simple;
+	bh=EWWYwbIVCZ66WJjawg5ySQK7sSXV/yL0Mpy1THGUOf8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jVd4TQczuK9uHgRfdTUA/u6vzzA9pslg6PkexYzQ4Fcy4bgj0plLm+bSpa0b8wyfVHglu4mSTY+nlIQ0CWgXrLKSdr2Q8fLo+Se9UVClSrjJhu3dUt8jufR0iNkh4zDU94oHRoKGRVxDwFCsi8pjT+4FwzU3KheTALRjbJDi7es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UMqG+1Mw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CCF7C3277B;
+	Tue,  7 May 2024 23:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715123319;
+	bh=EWWYwbIVCZ66WJjawg5ySQK7sSXV/yL0Mpy1THGUOf8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=UMqG+1Mwq6iUYyAujCYBH8JQSlWARViK1BBua8/rwZ+ordEV+FhmDSdb2WkMlAYxx
+	 AXpESyoq9tl0Ln9lRPFTHu/OdjJUtKzwEL/Ji9W4+dAMsaCoNARnJcVpG2l8FtgZrg
+	 vd3EDB2B28N3Bl4PFPd/Nt8fjE9S7dwLhNnohCq0IRPu2tdYxRtlj6snLm+qQBCNSU
+	 wV+UYpQKhITxme4up5ClrRjMrleXmwko78YaISv24aWUpP5iMPDO71Vzqs2xhVkv8Y
+	 t1omAtGshISHv3GXVaeYrjf90JKCybkor/Ib2LDMpSE605KFtLcEzi5tLbxtvZPdL4
+	 HvNG3SSyRhT7w==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	Filipe Manana <fdmanana@suse.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 20/52] btrfs: take the cleaner_mutex earlier in qgroup disable
+Date: Tue,  7 May 2024 19:06:46 -0400
+Message-ID: <20240507230800.392128-20-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240507230800.392128-1-sashal@kernel.org>
+References: <20240507230800.392128-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BTRFS w/ quotas hangs on read-write mount using all available RAM
- - rev2
-To: O'Brien Dave <odaiwai@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <65E2F681-67F5-4AC2-823B-3C6CBE22E891@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <65E2F681-67F5-4AC2-823B-3C6CBE22E891@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3Q54WJn0oFSji6aXMqn0MoAVx/9IWysDmM46uww5/JM1Zv4+TlZ
- 7ksSv6ak+54bISxp4aXZReCfYBbRSCr/Atj/akkZ7+O23/AVHK8MDHhbL9UNEt5ATS+sWJW
- EpBAkdp6A3gheUz4SM8l4n3EdwhNm8z7a4P847vGClKWeYaS0UQOCTFyZFEo8vybblhsBnt
- q2ijc2RG+0GExgVvHEK6A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mffM7xfo674=;6nKGzQPmWiS28QBlYb+EFkIcfRa
- lmgNevBwwlRjYRpiddRWODJVYUH5h5Rt9Nj9YUiAupZ+DQ5EThCHN+MVQwbg7vZO1MrasbwKU
- 8AJAggl/DrkUTEyVNJoUV6BtyKnna2ObRmXtqipTgnywKGif3UO+2uLbOfOFk0aIPNuuufBM+
- KHZMGhV1MLKjTf4RuPsHRAWM4hile+d0MZUMB4XwZoOjW7ieartkxlPNoRhda8yBLPA0ZlHXD
- WOgb19UDNVwGsKYBwRU5g7FtDhxidGKgQ/PzRUtmO9yqt1IcaHX/AtD8v8ItqyqUrSFGcK1pK
- AwLNTDnhmPQgoRH6jcM4t6rKUghCi1MSYVs8wrCnWUBTi9mYuMlJM2FSeG4T7lgNYbuVTze6R
- i/BS5h7WFsAy9J2o1CWkoE8JjnOo4m4HfHS/ojVo2+KjbV/8ktubQDg+qJDSDLhyKFIjOlthD
- wpDTafB42tb7k+/ofPcR4SRe11L6zACc2gwNeqqXaJ+uqhd5rjfeay/AuBBu2vBuMgeZHihpt
- Ww15ZQf4RkgwXIiqMNg9JbVb8Mqe9ZaNzBuPUY6CPFnbN5JjNp3ywG40mWYjIA1ur+JEW/HaR
- KuwMkv1KiUz7F/auuCrhbb9P3oxUWzLf91InMGrlSY3QWnrTbAy7Wc+Q1kQDvbeBz7644k6Fm
- 2RzPv+iR50IW3rk1SwlnVg4zC85Tj24fvJlI77y+3mtTLSUnZyXoLTdY9Q852TuyN+rWqGFfI
- nGtBdql2+tBMVFC/PuiM5YwHyiHRRST2u05tBRJdkNsj4/3o0c+VhQNynn0jHNV+px5pVmFjW
- XwkE7otO40zilbhcgBZAZbdkUgWzvrzlGZ7qZ03L4TqA8=
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.9
+Content-Transfer-Encoding: 8bit
 
+From: Josef Bacik <josef@toxicpanda.com>
 
+[ Upstream commit 0f2b8098d72a93890e69aa24ec549ef4bc34f4db ]
 
-=E5=9C=A8 2024/5/7 23:13, O'Brien Dave =E5=86=99=E9=81=93:
->> So the only way to get rid of the situation is using the newer sysfs
->> interface "/sys/fs/btrfs/<uuid>/qgroups/drop_subtree_treshold=E2=80=9D.
->>
->> Some lower value like 2 or 3 would be good enough to address the
->> situation, which would automatically change qgroup to inconsistent if a
->> larger enough subtree is dropped.
->
-> Setting the threshold to 2 or 3 didn't work - the machine ran until OOM =
-failure in both cases - but what did work was setting it to 1 or 0. (I=E2=
-=80=99m not sure which fixed it, as I set it to 1, then 0, there was a flu=
-rry of disk activity and the qgroups were immediately marked as inconsiste=
-nt.)
->
-> So, after rebooting into single user mode with /home in ro:
->
-> $ vim /etc/fstab # to change /home back to the defaults
-> $ mount /home
+One of my CI runs popped the following lockdep splat
 
-I guess there is some timing problem involved.
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc4+ #1 Not tainted
+------------------------------------------------------
+btrfs/471533 is trying to acquire lock:
+ffff92ba46980850 (&fs_info->cleaner_mutex){+.+.}-{3:3}, at: btrfs_quota_disable+0x54/0x4c0
 
-Normally a subtree with level 2 or 3 isn't that large (hundreds
-extents), and should not cause a huge problem.
+but task is already holding lock:
+ffff92ba46980bd0 (&fs_info->subvol_sem){++++}-{3:3}, at: btrfs_ioctl+0x1c8f/0x2600
 
-But it's possible that some huge subtree is already queued for scan,
-thus at the time of setting drop_subtree_threshold, it's too late.
+which lock already depends on the new lock.
 
-So I'd recommend to mount it RO first, setting the value, then remount
-it to RW, so that none of the huge subtree would be queued before
-setting the value.
+the existing dependency chain (in reverse order) is:
 
-Anyway glad to help, and I really believe we need a way to set the
-option in a more persistent way, so that we can avoid such inconvenience
-for all.
+-> #2 (&fs_info->subvol_sem){++++}-{3:3}:
+       down_read+0x42/0x170
+       btrfs_rename+0x607/0xb00
+       btrfs_rename2+0x2e/0x70
+       vfs_rename+0xaf8/0xfc0
+       do_renameat2+0x586/0x600
+       __x64_sys_rename+0x43/0x50
+       do_syscall_64+0x95/0x180
+       entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
-Thanks,
-Qu
+-> #1 (&sb->s_type->i_mutex_key#16){++++}-{3:3}:
+       down_write+0x3f/0xc0
+       btrfs_inode_lock+0x40/0x70
+       prealloc_file_extent_cluster+0x1b0/0x370
+       relocate_file_extent_cluster+0xb2/0x720
+       relocate_data_extent+0x107/0x160
+       relocate_block_group+0x442/0x550
+       btrfs_relocate_block_group+0x2cb/0x4b0
+       btrfs_relocate_chunk+0x50/0x1b0
+       btrfs_balance+0x92f/0x13d0
+       btrfs_ioctl+0x1abf/0x2600
+       __x64_sys_ioctl+0x97/0xd0
+       do_syscall_64+0x95/0x180
+       entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
-> $ echo "0" >/sys/fs/btrfs/<UUID>/qgroups/drop_subtree_threshold
-> $ cat/sys/fs/btrfs/<UUID>/qgroups/drop_subtree_threshold  # to check
-> $ btrfs qgroup show -pcre /home
-> $ btrfs quota disable /home
->
-> Thanks for your help!
+-> #0 (&fs_info->cleaner_mutex){+.+.}-{3:3}:
+       __lock_acquire+0x13e7/0x2180
+       lock_acquire+0xcb/0x2e0
+       __mutex_lock+0xbe/0xc00
+       btrfs_quota_disable+0x54/0x4c0
+       btrfs_ioctl+0x206b/0x2600
+       __x64_sys_ioctl+0x97/0xd0
+       do_syscall_64+0x95/0x180
+       entry_SYSCALL_64_after_hwframe+0x76/0x7e
+
+other info that might help us debug this:
+
+Chain exists of:
+  &fs_info->cleaner_mutex --> &sb->s_type->i_mutex_key#16 --> &fs_info->subvol_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&fs_info->subvol_sem);
+                               lock(&sb->s_type->i_mutex_key#16);
+                               lock(&fs_info->subvol_sem);
+  lock(&fs_info->cleaner_mutex);
+
+ *** DEADLOCK ***
+
+2 locks held by btrfs/471533:
+ #0: ffff92ba4319e420 (sb_writers#14){.+.+}-{0:0}, at: btrfs_ioctl+0x3b5/0x2600
+ #1: ffff92ba46980bd0 (&fs_info->subvol_sem){++++}-{3:3}, at: btrfs_ioctl+0x1c8f/0x2600
+
+stack backtrace:
+CPU: 1 PID: 471533 Comm: btrfs Kdump: loaded Not tainted 6.9.0-rc4+ #1
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x77/0xb0
+ check_noncircular+0x148/0x160
+ ? lock_acquire+0xcb/0x2e0
+ __lock_acquire+0x13e7/0x2180
+ lock_acquire+0xcb/0x2e0
+ ? btrfs_quota_disable+0x54/0x4c0
+ ? lock_is_held_type+0x9a/0x110
+ __mutex_lock+0xbe/0xc00
+ ? btrfs_quota_disable+0x54/0x4c0
+ ? srso_return_thunk+0x5/0x5f
+ ? lock_acquire+0xcb/0x2e0
+ ? btrfs_quota_disable+0x54/0x4c0
+ ? btrfs_quota_disable+0x54/0x4c0
+ btrfs_quota_disable+0x54/0x4c0
+ btrfs_ioctl+0x206b/0x2600
+ ? srso_return_thunk+0x5/0x5f
+ ? __do_sys_statfs+0x61/0x70
+ __x64_sys_ioctl+0x97/0xd0
+ do_syscall_64+0x95/0x180
+ ? srso_return_thunk+0x5/0x5f
+ ? reacquire_held_locks+0xd1/0x1f0
+ ? do_user_addr_fault+0x307/0x8a0
+ ? srso_return_thunk+0x5/0x5f
+ ? lock_acquire+0xcb/0x2e0
+ ? srso_return_thunk+0x5/0x5f
+ ? srso_return_thunk+0x5/0x5f
+ ? find_held_lock+0x2b/0x80
+ ? srso_return_thunk+0x5/0x5f
+ ? lock_release+0xca/0x2a0
+ ? srso_return_thunk+0x5/0x5f
+ ? do_user_addr_fault+0x35c/0x8a0
+ ? srso_return_thunk+0x5/0x5f
+ ? trace_hardirqs_off+0x4b/0xc0
+ ? srso_return_thunk+0x5/0x5f
+ ? lockdep_hardirqs_on_prepare+0xde/0x190
+ ? srso_return_thunk+0x5/0x5f
+
+This happens because when we call rename we already have the inode mutex
+held, and then we acquire the subvol_sem if we are a subvolume.  This
+makes the dependency
+
+inode lock -> subvol sem
+
+When we're running data relocation we will preallocate space for the
+data relocation inode, and we always run the relocation under the
+->cleaner_mutex.  This now creates the dependency of
+
+cleaner_mutex -> inode lock (from the prealloc) -> subvol_sem
+
+Qgroup delete is doing this in the opposite order, it is acquiring the
+subvol_sem and then it is acquiring the cleaner_mutex, which results in
+this lockdep splat.  This deadlock can't happen in reality, because we
+won't ever rename the data reloc inode, nor is the data reloc inode a
+subvolume.
+
+However this is fairly easy to fix, simply take the cleaner mutex in the
+case where we are disabling qgroups before we take the subvol_sem.  This
+resolves the lockdep splat.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/ioctl.c  | 33 ++++++++++++++++++++++++++++++---
+ fs/btrfs/qgroup.c | 21 ++++++++-------------
+ 2 files changed, 38 insertions(+), 16 deletions(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 6b93fae74403d..8851ba7a1e271 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3722,15 +3722,43 @@ static long btrfs_ioctl_quota_ctl(struct file *file, void __user *arg)
+ 		goto drop_write;
+ 	}
+ 
+-	down_write(&fs_info->subvol_sem);
+-
+ 	switch (sa->cmd) {
+ 	case BTRFS_QUOTA_CTL_ENABLE:
+ 	case BTRFS_QUOTA_CTL_ENABLE_SIMPLE_QUOTA:
++		down_write(&fs_info->subvol_sem);
+ 		ret = btrfs_quota_enable(fs_info, sa);
++		up_write(&fs_info->subvol_sem);
+ 		break;
+ 	case BTRFS_QUOTA_CTL_DISABLE:
++		/*
++		 * Lock the cleaner mutex to prevent races with concurrent
++		 * relocation, because relocation may be building backrefs for
++		 * blocks of the quota root while we are deleting the root. This
++		 * is like dropping fs roots of deleted snapshots/subvolumes, we
++		 * need the same protection.
++		 *
++		 * This also prevents races between concurrent tasks trying to
++		 * disable quotas, because we will unlock and relock
++		 * qgroup_ioctl_lock across BTRFS_FS_QUOTA_ENABLED changes.
++		 *
++		 * We take this here because we have the dependency of
++		 *
++		 * inode_lock -> subvol_sem
++		 *
++		 * because of rename.  With relocation we can prealloc extents,
++		 * so that makes the dependency chain
++		 *
++		 * cleaner_mutex -> inode_lock -> subvol_sem
++		 *
++		 * so we must take the cleaner_mutex here before we take the
++		 * subvol_sem.  The deadlock can't actually happen, but this
++		 * quiets lockdep.
++		 */
++		mutex_lock(&fs_info->cleaner_mutex);
++		down_write(&fs_info->subvol_sem);
+ 		ret = btrfs_quota_disable(fs_info);
++		up_write(&fs_info->subvol_sem);
++		mutex_unlock(&fs_info->cleaner_mutex);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -3738,7 +3766,6 @@ static long btrfs_ioctl_quota_ctl(struct file *file, void __user *arg)
+ 	}
+ 
+ 	kfree(sa);
+-	up_write(&fs_info->subvol_sem);
+ drop_write:
+ 	mnt_drop_write_file(file);
+ 	return ret;
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 132802bd80999..9b8a61aa390eb 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1342,16 +1342,10 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 	lockdep_assert_held_write(&fs_info->subvol_sem);
+ 
+ 	/*
+-	 * Lock the cleaner mutex to prevent races with concurrent relocation,
+-	 * because relocation may be building backrefs for blocks of the quota
+-	 * root while we are deleting the root. This is like dropping fs roots
+-	 * of deleted snapshots/subvolumes, we need the same protection.
+-	 *
+-	 * This also prevents races between concurrent tasks trying to disable
+-	 * quotas, because we will unlock and relock qgroup_ioctl_lock across
+-	 * BTRFS_FS_QUOTA_ENABLED changes.
++	 * Relocation will mess with backrefs, so make sure we have the
++	 * cleaner_mutex held to protect us from relocate.
+ 	 */
+-	mutex_lock(&fs_info->cleaner_mutex);
++	lockdep_assert_held(&fs_info->cleaner_mutex);
+ 
+ 	mutex_lock(&fs_info->qgroup_ioctl_lock);
+ 	if (!fs_info->quota_root)
+@@ -1373,9 +1367,13 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 	clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
+ 	btrfs_qgroup_wait_for_completion(fs_info, false);
+ 
++	/*
++	 * We have nothing held here and no trans handle, just return the error
++	 * if there is one.
++	 */
+ 	ret = flush_reservations(fs_info);
+ 	if (ret)
+-		goto out_unlock_cleaner;
++		return ret;
+ 
+ 	/*
+ 	 * 1 For the root item
+@@ -1439,9 +1437,6 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 		btrfs_end_transaction(trans);
+ 	else if (trans)
+ 		ret = btrfs_commit_transaction(trans);
+-out_unlock_cleaner:
+-	mutex_unlock(&fs_info->cleaner_mutex);
+-
+ 	return ret;
+ }
+ 
+-- 
+2.43.0
+
 
