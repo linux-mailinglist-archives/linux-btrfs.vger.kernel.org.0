@@ -1,93 +1,74 @@
-Return-Path: <linux-btrfs+bounces-4823-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4824-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49258BF909
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 10:51:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1215F8BF988
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 11:29:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76396286237
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 08:51:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8BCE281DDF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 09:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32497535DD;
-	Wed,  8 May 2024 08:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C963757E7;
+	Wed,  8 May 2024 09:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S6kqMn8D"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cQL80pga"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2032BB00
-	for <linux-btrfs@vger.kernel.org>; Wed,  8 May 2024 08:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB7F7D3FB;
+	Wed,  8 May 2024 09:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715158308; cv=none; b=IRJwi7nMZCCyLobRdfjYHcSZyKhMrF81CSS/JKvPs/3Na2T8sdljBl2a1aKXgTSJQnWSeZLw9KLdARb4Z3Na2hcXMuJymgcfBAXlhqZT89c/5AhFZtUb6SL07BHQx7WecuubxwJbhuqjBbYfgYkiZ6gjzM8Ddty8VmtP9VdeIAw=
+	t=1715160554; cv=none; b=VkKE6x23uVvw0PYzLVk92pfk5Gr2m8LFEDka6XRqkoxbLiCsosUTc/d4SVPywVY2wJwH0Srjj2Ea/sRZQfqWqzRcw3HwSaPD8UiOvKHbPtr5YhpREtxCfRwhYwV3G5eHULE23jJS4y3+/uOSV1twaDvOh9GuCTrNMF7Q7DDTQ8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715158308; c=relaxed/simple;
-	bh=a+OgEertKtvRCfL2e85wQyTcp7b8HXKhm8WcTIjS+VU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=scUPtw38DiKT1Q5CWMTP9VUJb7p7Du5+sQwa1o0I89nZmJg1/FIha4/VNKBENJoqXitmlYOBWm2uhJQvK54NbhP7ywKmddltx8h69Daa1tRhCRfVY8IvMy2IlXQERLBmQ2VT9iLQTWii97a4WjKKAsDjBnaXUV2UQ0badVThWYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S6kqMn8D; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715158305;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UjxdfJgLWjXggpnaSpLR36Zpyo7w5wqaq2uIAdWvqsg=;
-	b=S6kqMn8DienjsXTLJJSt4+ZQvJABLI3NDijrr3dpuhoy3wd0YHkH8t6M3DecVj21QUwUoY
-	n+0iyPHJ675PrtCX+xlARZE+yyn3Wj98I+mobiZoztg1UU/n3GfkVXtCWSsbAD0+RKLi3s
-	hhU1VRvaGJyyg3g++LefrIMULAZK0EI=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-489-Mat9_IobPZy-O-jSxlG7SA-1; Wed, 08 May 2024 04:51:44 -0400
-X-MC-Unique: Mat9_IobPZy-O-jSxlG7SA-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6f44ff14c17so1905269b3a.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 May 2024 01:51:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715158303; x=1715763103;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UjxdfJgLWjXggpnaSpLR36Zpyo7w5wqaq2uIAdWvqsg=;
-        b=R3zyEybhaxWH0o9ubSJtKQK8t2zpIbiHzO3tfHprPwp5MtDb6vVkdEYSkQNDGw85SU
-         Seg/r5KUwwNizcJFbLhoGfiDrrSX77nibHl0zCtU7ljw+C0RJCphp5Jzks9kmrZbEJjM
-         G3gD68pfxwYB8wT8oOkJKJfV0/tM54jWq5pzWpW5yWrXvNTeak0Aup73cm/QsE6mPjBc
-         jU52MvS9HQ8FW/uy9OItEcORAdt7Fe89npBDa6SujCN7xp7bu3tS58kJl15YAMJTvY9k
-         yaBQVQUYbhmfWnW7kNVC5D7jKkRW/iY3PA+/Pm6tbUYCNMOATyQZOsfmi51I9gXYRkDF
-         6kAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWOQe320Ho8Mw3N+DYwE+2D48baM0DB7yXEO1tx1TQH76mxAiNje9Col6jID4QVBBlNLg355opha2nh26BIhllCMvoXkdEA9H5Ty8c=
-X-Gm-Message-State: AOJu0YxC+TPwkCwYAwpjom+wpx7VvhFEj8DvX4suDGw7pBNhsmNKWUR/
-	q+0roV5ihxJKx6CFByCN0BiUbFFWOAuGOq1YV0Lu/3odiwMhAhs2KSJov2SPe28D/r9MuNcBLE+
-	iwIXYGaVR1IqZq5M830prvMeOKPtGPm0FVKoAL+1k+GugVcxXAdFT7MI1r9xw
-X-Received: by 2002:a05:6a00:6307:b0:6f4:714d:fb43 with SMTP id d2e1a72fcca58-6f49c2ad3b8mr1813469b3a.29.1715158302664;
-        Wed, 08 May 2024 01:51:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFZ7y0D6gyIQElSDjcfeE0ICr42/pSqo0oXmXWSqW603TLFmZCsAHLTsyfh8W9UGWLh6AeZjQ==
-X-Received: by 2002:a05:6a00:6307:b0:6f4:714d:fb43 with SMTP id d2e1a72fcca58-6f49c2ad3b8mr1813450b3a.29.1715158302021;
-        Wed, 08 May 2024 01:51:42 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id gp9-20020a056a003b8900b006ea8cc9250bsm10699127pfb.44.2024.05.08.01.51.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 01:51:41 -0700 (PDT)
-Date: Wed, 8 May 2024 16:51:35 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Hans Holmberg <Hans.Holmberg@wdc.com>
-Cc: Zorro Lang <zlang@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	Damien Le Moal <Damien.LeMoal@wdc.com>,
-	Matias =?utf-8?B?QmrDuHJsaW5n?= <Matias.Bjorling@wdc.com>,
-	Naohiro Aota <Naohiro.Aota@wdc.com>,
-	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-	"hch@lst.de" <hch@lst.de>,
-	"fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	"bvanassche@acm.org" <bvanassche@acm.org>,
-	"daeho43@gmail.com" <daeho43@gmail.com>
+	s=arc-20240116; t=1715160554; c=relaxed/simple;
+	bh=4KIdYjsFuhHonaoCrgUKLL5x0io8ZaPEXJi6Ow2CoA8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R8wEvUXygykK9KgoTbS/TzE9wkaL4xBxMrNXHLGoorQB/WhNHrrbvU0xEt/edIYPClTmyI/nK+K5gNykWIbnomrFYtp/MdTvLhrMItNoNBwdxJrXI+gfyC8apaB9Zku9Zq6yOJncjrbxoRLTPCgB6BcoLskYFNWTw1F9/MhEHII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cQL80pga; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1715160525; x=1715765325; i=quwenruo.btrfs@gmx.com;
+	bh=UON0bZ2qYVZI9xC70I2OhzL/SyRmiG781qZsT1wXwCQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=cQL80pgaK16J7AjGEuCgl7nOkUGykKy/FvNu7WyIk4KX1Vg+bOvktd3BycMFRxEJ
+	 LF6xY8T+9G/nJ2+utcLXOJ6qrDJblLPQaybLrkB8mM4LKQXBhE6ZjQ5pcEynxVptc
+	 A9g86HtKFTSCX5qSYCzpQHo9ig0pljLODN0x4ptaclxY8djkiCoiB7Sf+JtTJTXU/
+	 VlQsVb6aa3S3bWsrnvhYAvSbAmuySosjfW7Xn5jFl9fvn0908QNAEhdrmYfS8fioR
+	 pWF0gXVQ2TDdohGAjEAz+EAAa8nf6k5vSH42bnI7uzgMBBEltywnNiAM3QoY6rAqg
+	 hJ8xnQa0cgJPAMHwTQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MV67y-1sDwza1MXO-00S7Vn; Wed, 08
+ May 2024 11:28:45 +0200
+Message-ID: <fd188158-1959-4d91-be39-210a3b4dfcdf@gmx.com>
+Date: Wed, 8 May 2024 18:58:35 +0930
+Precedence: bulk
+X-Mailing-List: linux-btrfs@vger.kernel.org
+List-Id: <linux-btrfs.vger.kernel.org>
+List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] generic: add gc stress test
-Message-ID: <20240508085135.gwo3wiaqwhptdkju@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+To: Zorro Lang <zlang@redhat.com>, Hans Holmberg <Hans.Holmberg@wdc.com>
+Cc: Zorro Lang <zlang@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>,
+ =?UTF-8?Q?Matias_Bj=C3=B8rling?= <Matias.Bjorling@wdc.com>,
+ Naohiro Aota <Naohiro.Aota@wdc.com>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, "hch@lst.de" <hch@lst.de>,
+ "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, "bvanassche@acm.org" <bvanassche@acm.org>,
+ "daeho43@gmail.com" <daeho43@gmail.com>
 References: <20240415112259.21760-1-hans.holmberg@wdc.com>
  <e748ee35-e53e-475a-8f38-68522fb80bee@wdc.com>
  <20240416185437.GC11935@frogsfrogsfrogs>
@@ -96,189 +77,140 @@ References: <20240415112259.21760-1-hans.holmberg@wdc.com>
  <20240417140648.k3drgreciyiozkbq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
  <edcb31e0-cddb-4458-b45e-34518fbb828d@wdc.com>
  <20b38963-2994-401c-88f8-0a9d0729a101@wdc.com>
-Precedence: bulk
-X-Mailing-List: linux-btrfs@vger.kernel.org
-List-Id: <linux-btrfs.vger.kernel.org>
-List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20b38963-2994-401c-88f8-0a9d0729a101@wdc.com>
+ <20240508085135.gwo3wiaqwhptdkju@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240508085135.gwo3wiaqwhptdkju@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fnMeXrr3ROO4KOja3NDTw7lZP9qkwyI3MU00SGdyXa69wplbHUF
+ POVqcyxIS6NC7FhjPbCDHEIJCAY5Ay6DxyJx3LggiSawXaaoyk2t5vik3R7rlIC6CuOW82M
+ Z9LiVGK+Lse5crgnIIBzTlXKbIAll4s24tYWJmFv0UDFphjTLz9N/KzIlNy7pegwRdCNW6V
+ ZHFFv05W8ttIBcuq8LKWg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ieEJ3oDY0eM=;fB3OtO3l1UknZDKKx1BIQGPTs6n
+ /CeV1qykgYcxkRy2NMQMUm0YveIZRa83vFLF7ohWbhe/hyrCxGiPColYSe7/tq7xuK4dshg+Q
+ zy83tLh8qoARGd+q7PcKySDrkzQbSlIADLIBCvPz2ZspJLobnAlA/lZ/4CyXAwdXxwPjjzaIc
+ qd3TQ/xwkw3zSexFWP4ERWQWGqZHHGTVDZPVyIte724SO1ASBinHCP8Vo19YNvrr2m//QMO/J
+ e0syA831j55IodHOexbx5SPXfFNffjzjvszUYq0afFzcMeApXJ5i1fBheRL+8yXQ8BGdfSiwT
+ jNLSdsBFDtlTPUKPVouI6zJ3HM2npDuEz/VF0/j4BrQhR/Zr0zFApXNuudzmfYLDtIW9TsUKa
+ Uniryx1V/KjfiQaFbrYOVx1INoyYY40g8Z1Sj6pcVr1Pnaiy0jnPb+dW3pzNDVu7qKLw0/90P
+ WxzXjwAkLhZbtNsosSWRYGKP3uSGf2IoYjVro41IgjnTnF9gEWiWcfDmExCsI6XvxEEXrzdcL
+ lAV6Mf+b1U/5VQ05nw3jgPPwysKYyR5DSGfT5B+6kO8qAkKs3kWTNcHbjzhjNFVNtXmapN4Wx
+ lhg2fmxkemjrnh2Mr9OJTMkxw32Hsg0rzuySfeZ2zK7KWVW2e6GQjpxctjJxKHDqEGhqMyZYd
+ lHn5ds/vq3XrKcJ+nvQMBwNLIC3Kelqs6zJByCJ5H9WAQSbcNzEhYcJaog1mS9RHgLSgcGMDw
+ zvckKW0A+T4X8KedrQc8MsB0cIF/O3PmwOWQu93xYlO7J19hrCheRIm/FP6+jKcja6TV9FH2U
+ TABPi7M06hcwAsOg7OAGKk6ux3+RDwS0MjLxvvAAEWcsw=
 
-On Wed, May 08, 2024 at 07:08:01AM +0000, Hans Holmberg wrote:
-> On 2024-04-17 16:50, Hans Holmberg wrote:
-> > On 2024-04-17 16:07, Zorro Lang wrote:
-> >> On Wed, Apr 17, 2024 at 01:21:39PM +0000, Hans Holmberg wrote:
-> >>> On 2024-04-17 14:43, Zorro Lang wrote:
-> >>>> On Tue, Apr 16, 2024 at 11:54:37AM -0700, Darrick J. Wong wrote:
-> >>>>> On Tue, Apr 16, 2024 at 09:07:43AM +0000, Hans Holmberg wrote:
-> >>>>>> +Zorro (doh!)
-> >>>>>>
-> >>>>>> On 2024-04-15 13:23, Hans Holmberg wrote:
-> >>>>>>> This test stresses garbage collection for file systems by first filling
-> >>>>>>> up a scratch mount to a specific usage point with files of random size,
-> >>>>>>> then doing overwrites in parallel with deletes to fragment the backing
-> >>>>>>> storage, forcing reclaim.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Hans Holmberg <hans.holmberg@wdc.com>
-> >>>>>>> ---
-> >>>>>>>
-> >>>>>>> Test results in my setup (kernel 6.8.0-rc4+)
-> >>>>>>> 	f2fs on zoned nullblk: pass (77s)
-> >>>>>>> 	f2fs on conventional nvme ssd: pass (13s)
-> >>>>>>> 	btrfs on zoned nublk: fails (-ENOSPC)
-> >>>>>>> 	btrfs on conventional nvme ssd: fails (-ENOSPC)
-> >>>>>>> 	xfs on conventional nvme ssd: pass (8s)
-> >>>>>>>
-> >>>>>>> Johannes(cc) is working on the btrfs ENOSPC issue.
-> >>>>>>> 	
-> >>>>>>>      tests/generic/744     | 124 ++++++++++++++++++++++++++++++++++++++++++
-> >>>>>>>      tests/generic/744.out |   6 ++
-> >>>>>>>      2 files changed, 130 insertions(+)
-> >>>>>>>      create mode 100755 tests/generic/744
-> >>>>>>>      create mode 100644 tests/generic/744.out
-> >>>>>>>
-> >>>>>>> diff --git a/tests/generic/744 b/tests/generic/744
-> >>>>>>> new file mode 100755
-> >>>>>>> index 000000000000..2c7ab76bf8b1
-> >>>>>>> --- /dev/null
-> >>>>>>> +++ b/tests/generic/744
-> >>>>>>> @@ -0,0 +1,124 @@
-> >>>>>>> +#! /bin/bash
-> >>>>>>> +# SPDX-License-Identifier: GPL-2.0
-> >>>>>>> +# Copyright (c) 2024 Western Digital Corporation.  All Rights Reserved.
-> >>>>>>> +#
-> >>>>>>> +# FS QA Test No. 744
-> >>>>>>> +#
-> >>>>>>> +# Inspired by btrfs/273 and generic/015
-> >>>>>>> +#
-> >>>>>>> +# This test stresses garbage collection in file systems
-> >>>>>>> +# by first filling up a scratch mount to a specific usage point with
-> >>>>>>> +# files of random size, then doing overwrites in parallel with
-> >>>>>>> +# deletes to fragment the backing zones, forcing reclaim.
-> >>>>>>> +
-> >>>>>>> +. ./common/preamble
-> >>>>>>> +_begin_fstest auto
-> >>>>>>> +
-> >>>>>>> +# real QA test starts here
-> >>>>>>> +
-> >>>>>>> +_require_scratch
-> >>>>>>> +
-> >>>>>>> +# This test requires specific data space usage, skip if we have compression
-> >>>>>>> +# enabled.
-> >>>>>>> +_require_no_compress
-> >>>>>>> +
-> >>>>>>> +M=$((1024 * 1024))
-> >>>>>>> +min_fsz=$((1 * ${M}))
-> >>>>>>> +max_fsz=$((256 * ${M}))
-> >>>>>>> +bs=${M}
-> >>>>>>> +fill_percent=95
-> >>>>>>> +overwrite_percentage=20
-> >>>>>>> +seq=0
-> >>>>>>> +
-> >>>>>>> +_create_file() {
-> >>>>>>> +	local file_name=${SCRATCH_MNT}/data_$1
-> >>>>>>> +	local file_sz=$2
-> >>>>>>> +	local dd_extra=$3
-> >>>>>>> +
-> >>>>>>> +	POSIXLY_CORRECT=yes dd if=/dev/zero of=${file_name} \
-> >>>>>>> +		bs=${bs} count=$(( $file_sz / ${bs} )) \
-> >>>>>>> +		status=none $dd_extra  2>&1
-> >>>>>>> +
-> >>>>>>> +	status=$?
-> >>>>>>> +	if [ $status -ne 0 ]; then
-> >>>>>>> +		echo "Failed writing $file_name" >>$seqres.full
-> >>>>>>> +		exit
-> >>>>>>> +	fi
-> >>>>>>> +}
-> >>>>>
-> >>>>> I wonder, is there a particular reason for doing all these file
-> >>>>> operations with shell code instead of using fsstress to create and
-> >>>>> delete files to fill the fs and stress all the zone-gc code?  This test
-> >>>>> reminds me a lot of generic/476 but with more fork()ing.
-> >>>>
-> >>>> /me has the same confusion. Can this test cover more things than using
-> >>>> fsstress (to do reclaim test) ? Or does it uncover some known bugs which
-> >>>> other cases can't?
-> >>>
-> >>> ah, adding some more background is probably useful:
-> >>>
-> >>> I've been using this test to stress the crap out the zoned xfs garbage
-> >>> collection / write throttling implementation for zoned rt subvolumes
-> >>> support in xfs and it has found a number of issues during implementation
-> >>> that i did not reproduce by other means.
-> >>>
-> >>> I think it also has wider applicability as it triggers bugs in btrfs.
-> >>> f2fs passes without issues, but probably benefits from a quick smoke gc
-> >>> test as well. Discussed this with Bart and Daeho (now in cc) before
-> >>> submitting.
-> >>>
-> >>> Using fsstress would be cool, but as far as I can tell it cannot
-> >>> be told to operate at a specific file system usage point, which
-> >>> is a key thing for this test.
-> >>
-> >> As a random test case, if this case can be transformed to use fsstress to cover
-> >> same issues, that would be nice.
-> >>
-> >> But if as a regression test case, it has its particular test coverage, and the
-> >> issue it covered can't be reproduced by fsstress way, then let's work on this
-> >> bash script one.
-> >>
-> >> Any thoughts?
-> > 
-> > Yeah, I think bash is preferable for this particular test case.
-> > Bash also makes it easy to hack for people's private uses.
-> > 
-> > I use longer versions of this test (increasing overwrite_percentage)
-> > for weekly testing.
-> > 
-> > If we need fsstress for reproducing any future gc bug we can add
-> > whats missing to it then.
-> > 
-> > Does that make sense?
-> > 
-> 
-> Hey Zorro,
-> 
-> Any remaining concerns for adding this test? I could run it across
-> more file systems(bcachefs could be interesting) and share the results 
-> if needed be.
 
-Hi,
 
-I remembered you metioned btrfs fails on this test, and I can reproduce it
-on btrfs [1] with general disk. Have you figured out the reason? I don't
-want to give btrfs a test failure suddently without a proper explanation :)
-If it's a case issue, better to fix it for btrfs.
+=E5=9C=A8 2024/5/8 18:21, Zorro Lang =E5=86=99=E9=81=93:
+[...]
+>>>
+>>
+>> Hey Zorro,
+>>
+>> Any remaining concerns for adding this test? I could run it across
+>> more file systems(bcachefs could be interesting) and share the results
+>> if needed be.
+>
+> Hi,
+>
+> I remembered you metioned btrfs fails on this test, and I can reproduce =
+it
+> on btrfs [1] with general disk. Have you figured out the reason? I don't
+> want to give btrfs a test failure suddently without a proper explanation=
+ :)
+> If it's a case issue, better to fix it for btrfs.
+>
+> Thanks,
+> Zorro
+>
+> # ./check generic/744
+> FSTYP         -- btrfs
+> PLATFORM      -- Linux/x86_64 hp-dl380pg8-01 6.9.0-0.rc5.20240425gite88c=
+4cfcb7b8.47.fc41.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Apr 25 14:21:52 UTC 202=
+4
+> MKFS_OPTIONS  -- /dev/sda4
+> MOUNT_OPTIONS -- -o context=3Dsystem_u:object_r:root_t:s0 /dev/sda4 /mnt=
+/scratch
+>
+> generic/744 115s ... [failed, exit status 1]- output mismatch (see /root=
+/git/xfstests/results//generic/744.out.bad)
+>      --- tests/generic/744.out   2024-05-08 16:11:14.476635417 +0800
+>      +++ /root/git/xfstests/results//generic/744.out.bad 2024-05-08 16:4=
+6:03.617194377 +0800
+>      @@ -2,5 +2,4 @@
+>       Starting fillup using direct IO
+>       Starting mixed write/delete test using direct IO
+>       Starting mixed write/delete test using buffered IO
+>      -Syncing
+>      -Done, all good
+>      +dd: error writing '/mnt/scratch/data_82': No space left on device
+
+[POSSIBLE CAUSE]
+Not an expert on zoned support, but even with the 95% fill rate setup,
+the test case still go fully filled btrfs data, thus no more data can be
+written.
+
+My guess is, the available space has taken some metadata space into
+consideration, thus at the end of the final available bytes of data
+space, the `stat -f -c '%a'` still reports some value larger than 5%.
+
+But as long as the data space is full filled up, btrfs notice that there
+is no way to allocate more data, thus reports its available bytes as 0.
+
+This means, the available space report is always beyond 5%, then
+suddenly dropped to 0, causing the test script to fail.
+
+Unfortunately I do not have any good idea that can easily solve the
+problem. Due to the nature of dynamic block groups allocation, the
+available/free space reporting is always not that reliable.
+
+[WORKAROUND?]
+I'm just wondering if it's possible that, can we fill up the fs to 100%
+(hitting ENOSPC), then just remove 5% of all the files to emulate 95%
+filled up fs?
+
+By this, it can be a more accurate way to emulate 95% used data space,
+without relying on the fs specific available space reporting.
 
 Thanks,
-Zorro
-
-# ./check generic/744
-FSTYP         -- btrfs
-PLATFORM      -- Linux/x86_64 hp-dl380pg8-01 6.9.0-0.rc5.20240425gite88c4cfcb7b8.47.fc41.x86_64 #1 SMP PREEMPT_DYNAMIC Thu Apr 25 14:21:52 UTC 2024
-MKFS_OPTIONS  -- /dev/sda4
-MOUNT_OPTIONS -- -o context=system_u:object_r:root_t:s0 /dev/sda4 /mnt/scratch
-
-generic/744 115s ... [failed, exit status 1]- output mismatch (see /root/git/xfstests/results//generic/744.out.bad)
-    --- tests/generic/744.out   2024-05-08 16:11:14.476635417 +0800
-    +++ /root/git/xfstests/results//generic/744.out.bad 2024-05-08 16:46:03.617194377 +0800
-    @@ -2,5 +2,4 @@
-     Starting fillup using direct IO
-     Starting mixed write/delete test using direct IO
-     Starting mixed write/delete test using buffered IO
-    -Syncing
-    -Done, all good
-    +dd: error writing '/mnt/scratch/data_82': No space left on device
-    ...
-    (Run 'diff -u /root/git/xfstests/tests/generic/744.out /root/git/xfstests/results//generic/744.out.bad'  to see the entire diff)
-Ran: generic/744
-Failures: generic/744
-Failed 1 of 1 tests
-
-> 
-> Thanks,
-> Hans
-
+Qu
+>      ...
+>      (Run 'diff -u /root/git/xfstests/tests/generic/744.out /root/git/xf=
+stests/results//generic/744.out.bad'  to see the entire diff)
+> Ran: generic/744
+> Failures: generic/744
+> Failed 1 of 1 tests
+>
+>>
+>> Thanks,
+>> Hans
+>
+>
 
