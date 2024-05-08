@@ -1,163 +1,132 @@
-Return-Path: <linux-btrfs+bounces-4845-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4846-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E18348C0100
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 17:32:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B488C0120
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 17:35:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17E8E1C2479D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 15:32:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74442284520
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 15:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5ADE1272B4;
-	Wed,  8 May 2024 15:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514F21292D6;
+	Wed,  8 May 2024 15:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="o8Ku0X/S";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YgNA0I2N"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="A+azkakD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="W/QpmYuG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wfhigh7-smtp.messagingengine.com (wfhigh7-smtp.messagingengine.com [64.147.123.158])
+Received: from wfout4-smtp.messagingengine.com (wfout4-smtp.messagingengine.com [64.147.123.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264058664B
-	for <linux-btrfs@vger.kernel.org>; Wed,  8 May 2024 15:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF161272A0;
+	Wed,  8 May 2024 15:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715182365; cv=none; b=B9JYEFtS25QBkFpdlLblCg1QReJVgCOtstVaWgU2upOyPIxpTByETbl9P0vb0B4RctV6VVqBWQ2VH7BxKMvr/K94aIIFhjOLicHlDc2z6/5UMnhlfT9j59miz7Mp3PmL3VCRVVfxvFg5zPglh7XVBOhjsWMI/r7/+mwpvFkfhWI=
+	t=1715182521; cv=none; b=WPXUca58+9vcObuQF90KlcjGyex5gJ2oZkdXwumUEFQ7gorJtX2p7nCWK3UiyPKQWo3TXWKU6fAqVi0TuGcoxSy6bUDTJX6Y1T3MzvijceevZlfG5+qrc4VSbsy3STr2dhX9R0Qd/xfxvaFRYTrylzt4rWWEjg1J09Au5hemzLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715182365; c=relaxed/simple;
-	bh=4lzmXRHLwzjpW+eGkNDko2Atw38Wdr7y6FHMuyg9bOo=;
+	s=arc-20240116; t=1715182521; c=relaxed/simple;
+	bh=+dRTs8ZqtmxuGvGGQTyQR67DLee11cjjm+poaEq/vJ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hwBwEO5H1NhP6MMRgckIFY0Bg7U8R9i7u+9gbZqnFqWVdBGHp4xMZiOdeCuyznD0ku5QoOBloOeZWW5PFZDD/gaKnXcDei8NyJ3DyLEgoo1X1ZPF5Zjoh+oa/JH3GAghW3YqOhvcQC4KV0RB0zwhR2KGpQntYaU6Z1YMurkbW+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=o8Ku0X/S; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YgNA0I2N; arc=none smtp.client-ip=64.147.123.158
+	 Content-Type:Content-Disposition:In-Reply-To; b=ovKPTXap3Qsr2pUdVIwieNEVFJjU8LIYrIrgphjQCCs8OJAjKZMX62Ovqq9EsYQXvUs7M41jjqX3PpgkQEvzxgpaCd4k8vTo+Ulg58L8XNRxIIZsLocrkrlhdHm/JpQ8UvNMbAX5vXdGNDk3Hx/l7dfspRbPu03DQpGqdIz7/Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=A+azkakD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=W/QpmYuG; arc=none smtp.client-ip=64.147.123.147
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 174D518000C6;
-	Wed,  8 May 2024 11:32:42 -0400 (EDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.west.internal (Postfix) with ESMTP id 4249B1C00117;
+	Wed,  8 May 2024 11:35:18 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 08 May 2024 11:32:42 -0400
+  by compute7.internal (MEProxy); Wed, 08 May 2024 11:35:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1715182361; x=1715268761; bh=NOMZ7MYJ6q
-	QLroUeEInUlaCcWX+2X3H1eoUhLZneWBI=; b=o8Ku0X/SHXtc1fLMvyGlRBhLfc
-	pLT5FT4kUKiTVvAp+Dhcntt8Z/vtdQ4rJ3k328HOk6IxA9xA6T32l93C26Z4sy3b
-	C4NxvhrNWk6GqM2QayB2IwhHtd9SqiXtbZBZKihsat8jaJ7sQDjRqTdpfEYUp+g/
-	M5ezFwMcYJrehWpgcLs18lkw9MabQsHf+weTSpMWoobWBeOrDoNBe22RzNyP27OT
-	EM5BKSIAebw1xvAFVTdAW5IFEg6gWB+JzyzFcCrNjP9GRSiEBts/hQBN23Jy95Tk
-	8Dm8DbTKWaUCYnIrNcyQBE7B6Dvg+0BSGCYZ8ivVaIsBL8W6uqjYAQYvPV6w==
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1715182517;
+	 x=1715268917; bh=lm7blVN96AATC1Uf2yDMcFq6LkeeP8cygV+zg6qPXC4=; b=
+	A+azkakDnYGBO9BeCz/RXCX4GlmqJiq3dB0KkEEO/vXz9alEURN/UlczpnBtc48b
+	TgXCqAD/I61eNhZAVZSaYdSjep2CoDFdhB9guSN8HAwTkk6dNzynL0ichVEoebdY
+	xmgDGXpW3FX68/07UDwzT3KOcl9rb2KQWY5mf9P37Se5pdJ8YxTpUvjblnUT1LVZ
+	0Nx10hldSGgbmgTjVVQAMITP+98OeLzKF2SQC+IluzHwvW+sNCGn0xWo1hB9lp0M
+	f39D3V2x1E3LVZX9M1pUNcAUjEJUeS1EMZ3M76m2AN0IzMcUsvAi4F4TS/xrIU86
+	uPyAhbQ6qBl6tQeTYd2EcQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1715182361; x=1715268761; bh=NOMZ7MYJ6qQLroUeEInUlaCcWX+2
-	X3H1eoUhLZneWBI=; b=YgNA0I2NsGmUXMoYgT3DWS3TC2y6ZWCHr4D31yK+gJ33
-	XaS5f020R93oL1Amlq8cORIW1dZRKrFefqWPBqK4sT9G6HYu5ZuIHBhLmIqfsKCZ
-	MSY0mxLapmKVbQ0BaVld5qViiS3NzsDol8BNdWxAblk7kB03rvX/U198hsBA3wKr
-	QihMYLs3fR0jdhalKL2vGKnko2GA0NnmjXwEMqxbXnH7JvFasIcLEUpWaU5YSHAO
-	c4PpaImoHmPqwhtRGncX+huLdAA5t6sPq/AnvxTed1pKhU7YVtmZ4/6H8TxrAM/s
-	4HChea0LYwzc1BvGnxqvkJIbzx74Yurw+hOGR1fTgA==
-X-ME-Sender: <xms:GZs7ZhKMq4tx1J9IirCIKCtBBRlTF39vBF-9ZmTkSY0ieIu4uRzgow>
-    <xme:GZs7ZtLrcJyVa64yyFQ_UWipxkdLhDck88E1mx3hngRU1WJ1UcnnEwt3W3xrOJkuV
-    -qK4vkxpj86atJM5H8>
-X-ME-Received: <xmr:GZs7Zpts64glmRhIW35Y_Pch89dFwlwcwElaaqgIN20vTuNcjxxHNmbiA_xS_RX_jIa221s91d5uZIIJeVcqDdfZhDk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeftddgkeekucetufdoteggodetrfdotf
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1715182517; x=
+	1715268917; bh=lm7blVN96AATC1Uf2yDMcFq6LkeeP8cygV+zg6qPXC4=; b=W
+	/QpmYuGKDgvozx+qRfKTDGJUZyhHkcq0d7TGKvZvEfJGnFUi+b3YcQ6mlcmxA6zi
+	POG9hmTbs3W30JR8sqdyFZs2Lfqqt75ihM+PFsA6JRmMXcHJpxW2VNzLTrZC+rQ1
+	NZpPayYDIcUTkcJ5omYdPfzDb0i3r5eqlepUnfLaW76OGAS/lfsC3MzcLDre/JC6
+	eCG1tTOZmvDPtJfX097G8B6B2KtG/6LsKLLoDxOkylpGus8tD7S9DPbWYmuujo+5
+	pZh6oD/BbWdDBBoLbuh5RbF6xLvfR5SLzDE+8HJuY9vDOWllZtVOjchwkQAM7ngW
+	8MdymGtjmNJjBVwGFhIgg==
+X-ME-Sender: <xms:tZs7ZpXLaTsCH-QKeoe8fuc4qHMOJmrdJjp_OibxL5D6HoVE6xA2bg>
+    <xme:tZs7ZpmoRYT6ztO3Vl74ZYsMVtC0O2wLRVbIAys4kvF_HfNbxjf4LVPEp8N_VqLry
+    oDt53ed-EUl_tjbY1I>
+X-ME-Received: <xmr:tZs7ZlaXjvkMB35RgCVckGH6eTQSEOA2179PDhijyLe-eA5k1j28aZfTmo3jMbjJ_rbqDd6B7-i-8QpE_MYw116qCCw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeftddgkeelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:GZs7Zibsl50abmYrneT5Si-ioIoyjzMMbeZdZKBTW9RmPqbGUMABiQ>
-    <xmx:GZs7ZoZ0JXsSpFVYrZs-FZ3exfQfzDCph3G8-AuRm6JMllC0u5WBKw>
-    <xmx:GZs7ZmCdETYWyeDBEIXEppr5whgA_32iDvJiHaHVdhMVXK0CiI8QRQ>
-    <xmx:GZs7ZmbTAaBgPOmssZqamzeGjwIMPuU65xBP5-bRi-D3x7l1RB22Hw>
-    <xmx:GZs7ZnlMXPHwIu66RY6Tn4nSm4iIF4vrp2bAEAmLSKa-1D341NTno9Hz>
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhr
+    ihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnh
+    epudelhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhish
+    essghurhdrihho
+X-ME-Proxy: <xmx:tZs7ZsUf2blgOI_Y9RqZIQ-PoeGm65w0hjvj5IES6JNswdHUAU7UsA>
+    <xmx:tZs7ZjlJ3Y8cvEt8BkHWNMpKlS1tecVmFacH8D1Fi-ik-NceX2-QOg>
+    <xmx:tZs7Zpf_c4AMsBhOlOmwWR9Vx7RcxYu_DkDEFKIZRZshU90Tng_whA>
+    <xmx:tZs7ZtEO1-zybTS9VRjYDAC-2tFfCaYJsPesbEhje6uuJzYMfJrHbw>
+    <xmx:tZs7ZhZAZbQgLwX0-U2pxE0PPGXx3rqpLuGD_cN2faQBDMRetIKiBrio>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 May 2024 11:32:41 -0400 (EDT)
-Date: Wed, 8 May 2024 08:34:59 -0700
+ 8 May 2024 11:35:16 -0400 (EDT)
+Date: Wed, 8 May 2024 08:37:35 -0700
 From: Boris Burkov <boris@bur.io>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: qgroup: update rescan message levels and error
- codes
-Message-ID: <20240508153459.GA372255@zen.localdomain>
-References: <20240502204558.16824-1-dsterba@suse.com>
+To: Lu Yao <yaolu@kylinos.cn>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: scrub: fix a compilation warning
+Message-ID: <20240508153735.GB372255@zen.localdomain>
+References: <20240507023417.31796-1-yaolu@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240502204558.16824-1-dsterba@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240507023417.31796-1-yaolu@kylinos.cn>
 
-On Thu, May 02, 2024 at 10:45:58PM +0200, David Sterba wrote:
-> On filesystems without enabled quotas there's still a warning message in
-> the logs when rescan is called. In that case it's not a problem that
-> should be reported, rescan can be called unconditionally and leads.
-> Change the error code to ENOTCONN which is used for 'quotas not enabled'
-> elsewhere.
+On Tue, May 07, 2024 at 10:34:17AM +0800, Lu Yao wrote:
+> The following error message is displayed:
+>   ../fs/btrfs/scrub.c:2152:9: error: ‘ret’ may be used uninitialized
+>   in this function [-Werror=maybe-uninitialized]"
 > 
-> Remove message (also a warning) when rescan is called during an ongoing
-> rescan, this brings no useful information and the error code is
-> sufficient.
-> 
-> Change message levels to debug for now, they can be removed eventually.
-> 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-
+> Signed-off-by: Lu Yao <yaolu@kylinos.cn>
 Reviewed-by: Boris Burkov <boris@bur.io>
-
 > ---
->  fs/btrfs/qgroup.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
+> gcc version: (Debian 10.2.1-6) 10.2.1 20210110
+> ---
+>  fs/btrfs/scrub.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 1768fc6f232f..4714644daa78 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -3820,14 +3820,14 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
->  		/* we're resuming qgroup rescan at mount time */
->  		if (!(fs_info->qgroup_flags &
->  		      BTRFS_QGROUP_STATUS_FLAG_RESCAN)) {
-> -			btrfs_warn(fs_info,
-> +			btrfs_debug(fs_info,
->  			"qgroup rescan init failed, qgroup rescan is not queued");
->  			ret = -EINVAL;
->  		} else if (!(fs_info->qgroup_flags &
->  			     BTRFS_QGROUP_STATUS_FLAG_ON)) {
-> -			btrfs_warn(fs_info,
-> +			btrfs_debug(fs_info,
->  			"qgroup rescan init failed, qgroup is not enabled");
-> -			ret = -EINVAL;
-> +			ret = -ENOTCONN;
->  		}
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 4b22cfe9a98c..afd6932f5e89 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -2100,7 +2100,7 @@ static int scrub_simple_mirror(struct scrub_ctx *sctx,
+>  	struct btrfs_fs_info *fs_info = sctx->fs_info;
+>  	const u64 logical_end = logical_start + logical_length;
+>  	u64 cur_logical = logical_start;
+> -	int ret;
+> +	int ret = 0;
 >  
->  		if (ret)
-> @@ -3838,14 +3838,12 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
->  
->  	if (init_flags) {
->  		if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN) {
-> -			btrfs_warn(fs_info,
-> -				   "qgroup rescan is already in progress");
->  			ret = -EINPROGRESS;
->  		} else if (!(fs_info->qgroup_flags &
->  			     BTRFS_QGROUP_STATUS_FLAG_ON)) {
-> -			btrfs_warn(fs_info,
-> +			btrfs_debug(fs_info,
->  			"qgroup rescan init failed, qgroup is not enabled");
-> -			ret = -EINVAL;
-> +			ret = -ENOTCONN;
->  		} else if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_DISABLED) {
->  			/* Quota disable is in progress */
->  			ret = -EBUSY;
+>  	/* The range must be inside the bg */
+>  	ASSERT(logical_start >= bg->start && logical_end <= bg->start + bg->length);
 > -- 
-> 2.44.0
+> 2.25.1
 > 
 
