@@ -1,51 +1,64 @@
-Return-Path: <linux-btrfs+bounces-4827-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4828-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E0AE8BFBD8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 13:21:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 724088BFC53
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 13:40:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEF751C21DCB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 11:21:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CCA7B2419B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 11:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438D583A07;
-	Wed,  8 May 2024 11:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q6tayK/q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E3082D7C;
+	Wed,  8 May 2024 11:40:31 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED1383A18
-	for <linux-btrfs@vger.kernel.org>; Wed,  8 May 2024 11:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65B1823C3
+	for <linux-btrfs@vger.kernel.org>; Wed,  8 May 2024 11:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715167244; cv=none; b=MxCALQYQEM3db4wcRB0TAVbGoCXQy8uYABD76O8R4iQKopPWdG3JBexi/YX/+hA9Z0+SfRkwM5RMqCheAPtZdFledfQ8GOplDB8flqUbILT7ggtb4URmFWkpglDW0OzYstH+fkLIG7dOqzraEL6LtmOiwlXBmWAQ9zkoHX8RF+s=
+	t=1715168431; cv=none; b=rbPqoKy82BQfB8oWpjyfX4UoVxl3OdaRfHusY7yfPWoGZlzhBg40SaGjS5OcgfH35Wu5sWYBYKljKpMa97p/om96bSdcn8IpCJ8eI4A0w7C7XHnMr19ldr27gPZ5HK84Xx2s6CLIP58n+u+9VSsfmeTunQj2697oTxbG+Ovvr8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715167244; c=relaxed/simple;
-	bh=GUTs7K2WDJTG+eTefm7pzTtWbn2odWBiwEL2z9edGcw=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=obUFcIrQPuX09CbvspG7MHOlUdzu+kZiChdQXI0FjVNdf1xhpiGPjD41Ma3G+JQzhRsjdudNV4ZCZov02zLJ+WyJA5hmjX9nDEP7cyzQFN/QrWL9Q5iE1X/UKTKoU0Ez+EeCVpqhmetgSwW0WHmllqpmMKuz/FxXnUUiQ1rN6EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q6tayK/q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78C50C113CC
-	for <linux-btrfs@vger.kernel.org>; Wed,  8 May 2024 11:20:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715167244;
-	bh=GUTs7K2WDJTG+eTefm7pzTtWbn2odWBiwEL2z9edGcw=;
-	h=From:To:Subject:Date:From;
-	b=Q6tayK/qPpRIEwQKEro9eudQ1A2PCqwJr3BH+ExQoXu1oXnF5WXF61+VuxhEGtUz5
-	 T/1UbgCLAoZSStPwG1yZyDoghlF/v7v0UHsVUX9gkgCOw2QtXVj5XDQJXoEdvfTbu3
-	 aq+4ED2qZlbGPzH9mBuZFt9WuClWvOb7Fkq4U8obqoOUj/vAMkl4B2nTzUOoGP3o0u
-	 18pv4OgiA9KovhPIPb9HMSPSO9roSA1MH552ukMl1ZUtg4MO4ghWonTXCHmlQ5SJ61
-	 RsO2fP6d+b816J2oOrzfrM0Osr5R1LbU2OCfeoDDMdsgGILc20l2NwwrNVyPs44k5g
-	 DAe6v62eCeu8Q==
-From: fdmanana@kernel.org
+	s=arc-20240116; t=1715168431; c=relaxed/simple;
+	bh=QCRgHD23DaiUdNVGlGp+m3FTNUDZ/OGtfMsRmTHjfa4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pSNS7NL2JFeHRMxNdvw40zuac9nC1zdib0J+4yTBaA87Y3QHZdgycrBmN2Uu59gg0fUTMkcxsnZz1Y17u8E38B9Dr0uqcOwn0LTjYauc0tQUeFzXF9NF8WalmKKwy3uVn3+B2cn2ydc5j8oPkagZ7rtdDDEbx70oKULygm2beUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a59a17fcc6bso995370466b.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 May 2024 04:40:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715168428; x=1715773228;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=voAZA6+xS0EincowHjLOT5zTo22k5ziLtHt3Y/yNjjs=;
+        b=KZtrFzCzstRZa3UeWaxLL5NVRLNwopm+H6VizxPccJMGyI75ojjV8mm1b20jYOHfEd
+         DNy4fUImyPa+eCQIsdy/Xw+siEKhRfjtT6kZSqgO8Nc9aEZx9Aij5SQHEZiO9KGvxmqF
+         7wNopBO7nx2NIB5dfgdLkXjq0AWOkBIcger34BpmyrZPuf2kKa6R5xJPp0oCzkKDaASy
+         2y1wS0dFEZ5IfW2Scpg1i5ycnQDqzIVidaUycBgDjF2LQUTX74ujeNER0eVrl3JoC20i
+         flyXCOXcytdfAozq03dYz/2kYo5E7o1esb8sGt5h4ot66dYMddTPUHGrDvxTvi810o4p
+         G+nQ==
+X-Gm-Message-State: AOJu0YwkQWx1WxceqvNJHxJaiLqLvuoASiGXadrO4Cpi+nmUrCkoUwPm
+	gmMfkR4//TxRYO17o/nRgs6/bE7HFBP2uORjbHeBPd7ywnYQmGOSDG2O5g==
+X-Google-Smtp-Source: AGHT+IHmQzuCpDKYwyWE+bWjPra6J47aN2q42LY0flyJvebaj4b2ey5GMf5fNEiNYtF2v0PHmAHMpA==
+X-Received: by 2002:a17:906:81d4:b0:a58:ef89:d04c with SMTP id a640c23a62f3a-a59fb96a322mr146343966b.46.1715168427865;
+        Wed, 08 May 2024 04:40:27 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f718be00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f718:be00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id x2-20020a056402414200b00572cf08369asm6710380eda.23.2024.05.08.04.40.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 May 2024 04:40:27 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: zoned: fix use-after-free due to race with dev replace
-Date: Wed,  8 May 2024 12:20:40 +0100
-Message-Id: <ccab86c78fc2a1fd6dd320efa289863df7158ca9.1715167144.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+Cc: Filipe Manana <fdmanana@kernel.org>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 0/2] don't hold dev_replace rwsem over whole of btrfs_map_block
+Date: Wed,  8 May 2024 13:40:14 +0200
+Message-Id: <20240508114016.18119-1-jth@kernel.org>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,100 +67,29 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-While loading a zone's info during creation of a block group, we can race
-with a device replace operation and then trigger a use-after-free on the
-device that was just replaced (source device of the replace operation).
+This is the v2 of 'btrfs: don't hold dev_replace rwsem over whole of
+btrfs_map_block' sent as a series as I've added a 2nd patch, which
+I've came accross while looking at the code.
 
-This happens because at btrfs_load_zone_info() we extract a device from
-the chunk map into a local variable and then use the device while not
-under the protection of the device replace rwsem. So if there's a device
-replace operation happening when we extract the device and that device
-is the source of the replace operation, we will trigger a use-after-free
-if before we finish using the device the replace operaton finishes and
-frees the device.
+@Filipe, unfortunately I can't find the original report from the CI
+anymore, so I don't have the stacktrace handy.
 
-Fix this by enlarging the critical section under the protection of the
-device replace rwsem so that all uses of the device are done inside the
-critical section.
+Changes to RFC:
+- Incorporated Filipe's review
+- Added patch #2
+Link to RFC:
+https://lore.kernel.org/linux-btrfs/2454cd4eb1694d37056e492af32b23743c63202b.1714663442.git.jth@kernel.org/
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/zoned.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Johannes Thumshirn (2):
+  btrfs: don't hold dev_replace rwsem over whole of btrfs_map_block
+  btrfs: pass 'struct btrfs_io_geometry' into handle_ops_on_dev_replace
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index aeab33708702..eb70fd80dbc5 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1290,7 +1290,7 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 				struct btrfs_chunk_map *map)
- {
- 	struct btrfs_dev_replace *dev_replace = &fs_info->dev_replace;
--	struct btrfs_device *device = map->stripes[zone_idx].dev;
-+	struct btrfs_device *device;
- 	int dev_replace_is_ongoing = 0;
- 	unsigned int nofs_flag;
- 	struct blk_zone zone;
-@@ -1298,7 +1298,11 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 
- 	info->physical = map->stripes[zone_idx].physical;
- 
-+	down_read(&dev_replace->rwsem);
-+	device = map->stripes[zone_idx].dev;
-+
- 	if (!device->bdev) {
-+		up_read(&dev_replace->rwsem);
- 		info->alloc_offset = WP_MISSING_DEV;
- 		return 0;
- 	}
-@@ -1308,6 +1312,7 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 		__set_bit(zone_idx, active);
- 
- 	if (!btrfs_dev_is_sequential(device, info->physical)) {
-+		up_read(&dev_replace->rwsem);
- 		info->alloc_offset = WP_CONVENTIONAL;
- 		return 0;
- 	}
-@@ -1315,11 +1320,9 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 	/* This zone will be used for allocation, so mark this zone non-empty. */
- 	btrfs_dev_clear_zone_empty(device, info->physical);
- 
--	down_read(&dev_replace->rwsem);
- 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
- 	if (dev_replace_is_ongoing && dev_replace->tgtdev != NULL)
- 		btrfs_dev_clear_zone_empty(dev_replace->tgtdev, info->physical);
--	up_read(&dev_replace->rwsem);
- 
- 	/*
- 	 * The group is mapped to a sequential zone. Get the zone write pointer
-@@ -1330,6 +1333,7 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 	ret = btrfs_get_dev_zone(device, info->physical, &zone);
- 	memalloc_nofs_restore(nofs_flag);
- 	if (ret) {
-+		up_read(&dev_replace->rwsem);
- 		if (ret != -EIO && ret != -EOPNOTSUPP)
- 			return ret;
- 		info->alloc_offset = WP_MISSING_DEV;
-@@ -1341,6 +1345,7 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 		"zoned: unexpected conventional zone %llu on device %s (devid %llu)",
- 			zone.start << SECTOR_SHIFT, rcu_str_deref(device->name),
- 			device->devid);
-+		up_read(&dev_replace->rwsem);
- 		return -EIO;
- 	}
- 
-@@ -1368,6 +1373,8 @@ static int btrfs_load_zone_info(struct btrfs_fs_info *fs_info, int zone_idx,
- 		break;
- 	}
- 
-+	up_read(&dev_replace->rwsem);
-+
- 	return 0;
- }
- 
+ fs/btrfs/volumes.c | 52 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 29 insertions(+), 23 deletions(-)
+
 -- 
-2.43.0
+2.35.3
 
 
