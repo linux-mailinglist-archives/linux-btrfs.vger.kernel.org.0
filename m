@@ -1,338 +1,204 @@
-Return-Path: <linux-btrfs+bounces-4842-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4843-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43B9C8C005C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 16:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 600418C00CF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 17:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEC8B1F21E80
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 14:44:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBF321F272E7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2024 15:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB1886652;
-	Wed,  8 May 2024 14:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF08F1272B7;
+	Wed,  8 May 2024 15:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="SMFZH0NU";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="Bitj2wnT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BC186621;
-	Wed,  8 May 2024 14:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715179411; cv=none; b=rTCn2sAJUEaxqB/WjQ/Bnb88W8fGPGEvEPccr7BgnzY0+Uksd5j1t4AF2+AFvCPjxJPQwbaNw582C5r+fB/ImWG9aw8ehdNq2xMF7DPXPnxsb2Odbotl4b9SC7Qr5XzCFfGOzWH63xWk8mR+gxtLysLlyLFb0+xtRA6uMUeMCqs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715179411; c=relaxed/simple;
-	bh=5cvfBGfQ1cSzb6/XP5aipsaEXZK9rqKx7tJpGXt/ljM=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UNZwcJJZlhDqCs8LiIWxVVYSsH2/mInM6cHmhHR51pTwdTsgyXTCJ8yrfvyvFvZZ7C/o0DGftUTTL8iF+Q2Iqzsy7TqnjuGzI8mw9HbeVYhzZJN86k8tWb+81MOJ2UITRqlkzEdQqUm/OLujpzxWLndsGoLPeqI2bhvD+z93ce0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VZHqq6GpDz6JBD7;
-	Wed,  8 May 2024 22:40:23 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 962D3140A36;
-	Wed,  8 May 2024 22:43:23 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 8 May
- 2024 15:43:23 +0100
-Date: Wed, 8 May 2024 15:43:21 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
-	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-Message-ID: <20240508154321.00002073@Huawei.com>
-In-Reply-To: <66385b6eb5f54_25842129416@iweiny-mobl.notmuch>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240404184901.00002104@Huawei.com>
-	<6632d503f3ae5_e1f58294df@iweiny-mobl.notmuch>
-	<20240503102051.00004a99@Huawei.com>
-	<66385b6eb5f54_25842129416@iweiny-mobl.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38969126F3D
+	for <linux-btrfs@vger.kernel.org>; Wed,  8 May 2024 15:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715181613; cv=fail; b=aZeZyPrXuITZA5ZHxT7T+ETP2i/4C7WQOvVhO9sKnp3TZZ8xYhAmL0UeUZP4V5VQ5f1DM+xgEHD45uKmOInGWHHM4abr7i8Q45UmEzPIvhPYWQabokaiPo8xXSJwbzk/xqGWdDPPHB4l1ViHTocktl/A467yN4hf47VyLKepu0Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715181613; c=relaxed/simple;
+	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=upktDBZssuMl3hKjIirPuKJVPIyd0h8D2HrRRqUE/ybvt+TVWeWA/EiTBOGH4Oq0dj31HvOtu7AyL/F2IvjXwtZYJGmQ5e4omMNuXfSOkXYRJ/wIj+KHHv25Ka4W1k7g+aue7tTFi+6yawUQqH1PeUe6ExgyC7LQWLAgKf8+34w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=SMFZH0NU; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=Bitj2wnT; arc=fail smtp.client-ip=216.71.153.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1715181612; x=1746717612;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=SMFZH0NUb84ryeUWj5720l78SHVQROoTJ/TbZ8GMd9XxEaaY9bmAKhqs
+   eLDeuOqK/e9CzFaPAVE1GRF6WL24zMA+ReZd/9KKQQWZUynzlc8gReSeL
+   y3LToXhqjCr4Ye48YusohTF7U0T/32SgSu4JJJEnnMlHpwY99JcFIr53L
+   R8m+1Uw9ejupK75Vvd+JUCLqeFgb8CaOIRVAVpmc5qSWW/Gy3g5tADruy
+   ZuvtWyWYFIkzxTWYX7M/rGN1aKvMObwaHtiLdiJHw9pvXXlag6CczoZcV
+   nhqNWfJl+pZZAP7fRZvzI1Z+uyVr++HAgb/3WN7+RAiIUyVWzoShxze7P
+   g==;
+X-CSE-ConnectionGUID: LNI2O1PMQCizaSt7jWxzAg==
+X-CSE-MsgGUID: GaI8rfNWSTmZugG1YQlFKw==
+X-IronPort-AV: E=Sophos;i="6.08,145,1712592000"; 
+   d="scan'208";a="15629548"
+Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
+  by ob1.hgst.iphmx.com with ESMTP; 08 May 2024 23:20:05 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nyWWqmw5myoLSHlA8DA5jiJmxa+aDwSzMi4eQRW5akwqLCGpg0jACoA1674hYMnDfp/6e6DKKHymqKg7Bi8uTIubNS2HfMBXyDc7YLQ96o0oGMzqMfNBXHx0fz6otSjHtVPefmCTSEaC+j1+BId42NPvpsFrUdKVlQJ4SXjSp/JUq7qCNbRG6TsQZGDRl2r1f2qNrgUExYoixtE9+GWTWmLkI9OzCfMSdcFUg1bHpO9GeS7m31pl4cR8qEq6r5ciYXj3FnDeAb8JS87TiRtrH0GgBtpb1F7QpUxDmfOT1TZ4a8B5sk6ik1bDVwmbZCoRYHEYtejMjPLIXE4UZiNTHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=T6nhRTDog6t3zGfbhKRscqkjfOF2g6BxqWd5JJxBIVezmKiRUrmGB6HZmXHzleCIr9KKS+8+ttgKubSIhp72khQWM+Pn4uEgrssHj3GBR4BQK0uHpt0jSR7DrCdEdCxbwW8nRbTvNG8DzRqjWyj8ZmXl6gIydPZ9R3V757Ma/8C/5jb6W7R4BTmZ3VIKeezFqWcXIC64vpKv2uYjBNHXaKTjTbyrgBgoOmvzaM7OfB0jebK118Hzpj5OCTYH5dyIM5LY7p8m4xJcd1GnqNXbBeP3y/0M39Ia+Lyck5MgmyF2P/yV1KoDn1hbVbi5bp5346FctvdQGlGapF5N6pBf9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=Bitj2wnTmmXKgyQyDAjH1NJNjF4AZJe0HFkVpJHzuXBRUUu9AfqctpUqZmpl4wbOWqRQY2e7K0DdanxicuchGw4UUEFp7bMe7Wjka9iOp7qPJMb0B0oZWyxY6fHD/nnoAq7ebXlCw/M58lgTdVW09tNDRw6ZeDTI9/VHw5VwTis=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by IA3PR04MB9303.namprd04.prod.outlook.com (2603:10b6:208:528::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.45; Wed, 8 May
+ 2024 15:20:02 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969%4]) with mapi id 15.20.7544.041; Wed, 8 May 2024
+ 15:20:02 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: zoned: make btrfs_get_dev_zone() static
+Thread-Topic: [PATCH] btrfs: zoned: make btrfs_get_dev_zone() static
+Thread-Index: AQHaoTm+cimSKbnscUi6iYPHct+TBbGNc/CA
+Date: Wed, 8 May 2024 15:20:02 +0000
+Message-ID: <4ba7a6db-76e3-44b8-bf49-67e0836127ac@wdc.com>
+References:
+ <5609a1191a2bba44aef148a56b67c313b7713a41.1715167141.git.fdmanana@suse.com>
+In-Reply-To:
+ <5609a1191a2bba44aef148a56b67c313b7713a41.1715167141.git.fdmanana@suse.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|IA3PR04MB9303:EE_
+x-ms-office365-filtering-correlation-id: 94e24da8-b0b2-44cb-14a7-08dc6f7254f3
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|366007|1800799015|376005|38070700009;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?VUFjOG14TDFKdG92VlZjNVU3enlkUWwzVlY0cmxrdmNQWDNLS0NtZUJQc1NZ?=
+ =?utf-8?B?WHJUcmZUR05BRXBKTWJabVdBa0IvQm1RUDU3NVkwaXdCaG81SlhkRlBkSUJq?=
+ =?utf-8?B?Mmc5d291K2J5M0diNlQ2a2xNVDZuUnl2OHMwMTFxZXhhYnNsK20wdXlGODgw?=
+ =?utf-8?B?SHIybFl5V09tMjV4VXVCSXBka3lwU2hNT3k0cCtNYk5ERU95VDFrY2lBcXVs?=
+ =?utf-8?B?azRRWkdkNllieWRzczRDV0VISEJLNTFSdDBXYVZvOXkrZitYQi80anZEdHJ0?=
+ =?utf-8?B?Z0ozcnBHWXFkeFlOd2VhN1FhamJGSHJPQjJBaklOS2k4YzBobFVDM3l5T0hU?=
+ =?utf-8?B?NjJNWWpwYnhiWWtOQVp5M2lGZUlBNk1ZSjhIRXdoTnhKcCtXM29SOGF5alpv?=
+ =?utf-8?B?VzBRU0c3WlBIbXM1Q0JFYUZ4c0h3clNhaEx5aEl2NDEyRVJJNytzbEJvOXVK?=
+ =?utf-8?B?VVplazQzQ0VEd2k1aDRWSitXSTVPQ2ZYMG05YldyeTdPOGk5NFVUUTN5TG0z?=
+ =?utf-8?B?NGZQcVpocEVGT2dMLzNuUTFPc25XK1JaRkVUYklKVkV6YSs4UnFielZvSFJH?=
+ =?utf-8?B?MGhBOWhZUGZvMDNqQkZzdjNleGYzUkxaM1l5a21aRW9uNWlqSVhQU2gzNHQ0?=
+ =?utf-8?B?STJSK2lENGk3d0M3Qlo4QU1XbnNhS3dXOHJPc1N6TFE5SnE2V3FjM2FIWmVS?=
+ =?utf-8?B?VnAxbjJ2MEVyK2ZITmxUUWVheWZzcCswTWpVSGZYQXN6N290U2JNbzFUU1R3?=
+ =?utf-8?B?TzhtWWdGcmFIRTZmaVFCSklCcVdRb2FPRVFSMTZVMmFlMjV4dnA2cnRQNllp?=
+ =?utf-8?B?WkxjbWcycUNYSzkvK3dSTkJyTWJpQ2huVGlTOG5JaXcwdmJxYktieDNHUWhB?=
+ =?utf-8?B?VVRnWlkxZUl4ekdhOGx6bGsrbGVMQUlTblZTaU96K1ZWZmdJa1FZMjBLOFpL?=
+ =?utf-8?B?bU9oR0ExL09rZXBLZkY4NWtnM3pucm1iWWdleGcxa1o0dXhOYkdibHNyRlIv?=
+ =?utf-8?B?ZzBlTXd3VjBOOVNMZDY0Z2g5QkdPQ1VXMEc1WDFSRjR0WEwzR3hGNHZ4aDhM?=
+ =?utf-8?B?NnRlbnVHUXloVkNCdlRDdVBlSG1keUlYT1p0R2dJWnV6TWFwSlZmak1sd2hR?=
+ =?utf-8?B?dk5uaUF6TisrS1FrZ2FKSXFYU3dld2tJSkhBSklPRUhHK201Ulh4dlhqNFNO?=
+ =?utf-8?B?a2x4WGRQaDhVUXBZZnlIYVhmUTQ3Z0ErTFdjTWcrTm11S3JNZWtjVGY1d2R3?=
+ =?utf-8?B?ZkdGWmt3Vlg2V3pyMnk5VnhNSHFHMG9LM25jZDNGVGtKNkRZdW5Xd0wrUys3?=
+ =?utf-8?B?YmYwUlh0Y0UxQk9HeE9BUTMwYS9LeitnVlpycHpMbWtHM09wNVBOcmdDSnNE?=
+ =?utf-8?B?ZVBDWGJxT3RKTk5DVjI4QllUTENVMDYwVHRiV0Y3SEN1MWhqNFVRMW8xNEVZ?=
+ =?utf-8?B?YjdQUTc2VU1SZXBsMmtFdlZabzdPOUlpN1I4RWN6MEMwUmxwUWZKNlVCTEEz?=
+ =?utf-8?B?UlZKZk14bXdGcG0ram5heE1EYTRCanIxRVJrZ0sxdVRvcmNseXFub3FFVW1S?=
+ =?utf-8?B?WTJhdGdnWEZHT3hhYW9NZDdUVkJUWUh4MW50ZnN3NUcrRmpwZEk2VUhMZW1r?=
+ =?utf-8?B?M1kvRHMwOVVZZjZYUVF2bUUzbTYrekNMUVhGY3ptMU5QcVNqV0JrTzJrUnE0?=
+ =?utf-8?B?MFlGeDgxWHEzZS8vV1ZLUStPNXdkNi9MZ25uN1JYS21hRE9PSTJyeUJYYlBz?=
+ =?utf-8?B?UXd5MFgwbWZKQ0cxMTFuY1BvUlA2UE56bzg2UGFaRmZxSGdrYzVtUEFjallK?=
+ =?utf-8?B?MEt5Qm0vSVZiWUpudjhldz09?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?b2tsYllTVWhhVmtKQWwxK0wvQ2tMcDFlcWxtdkl5Q0NvOUxLZ0s0UDV1bUIr?=
+ =?utf-8?B?K0pKR0laeWdXS29MZXBoalozcm1XNVVseUh4TzhURkpROG42b1Ezck9hS1dE?=
+ =?utf-8?B?M1hDNHUvancvUG8veXVISTFjV0V6clh2TXpMWUZXMDI0amVIcXpteTlJZ3kz?=
+ =?utf-8?B?VFY5MzN6dDJDS2dOUjJPZWY5U3dEdVBkMkVYNFh4cFlnb1NYcEVhYkp0eXJV?=
+ =?utf-8?B?Q3VvZnZkbmVub1lybHlOdGt6UTExNEswQWhiVG5WRnlkTFZwVkpCdUFDL1hF?=
+ =?utf-8?B?Vnd4bDgxYmVHMHBPcDJwT0E1clBiZ0hZeDltakJIMGRiKzh3TG4wVlhmaGlv?=
+ =?utf-8?B?N0NWVVA4L3dHZ2IxMlJ0OFR3ZGc0MUo4MUF1V0E3SDd4RitHalFaUDdjQWx3?=
+ =?utf-8?B?M0pFdUlFU3d4RE5VM3l4WHhsbGdyS3p4SGc0RTNTd1NVclFpTEQ5L1AzM09q?=
+ =?utf-8?B?Qm1XWWZGdFhiRm0wUi83ODJUSVNvS1UrREFxT2hpeC9ISnc0SmNGZ091VHlL?=
+ =?utf-8?B?VGNqcEZQQTlDNE1HUkNDVmp1SS9GdDBYK0x4WjNFOXFjRG01SG5JUDdoMnZM?=
+ =?utf-8?B?WmZlK3JzZkxEZzRON2MwRG5KQVJMYmsyMThSS1R1RTlFbHBtT3ZjS1RTbTZE?=
+ =?utf-8?B?aVJ4b0dJdlZlVGZSSDNnQXpFREMyaWdTWnlBVlZmaTA1UTVEZ0tyM3VuY0Jz?=
+ =?utf-8?B?bjY4M1k3TTFFanZiWmpIamhHZ1AxVGxlOWxJeXpadVVqWDMrekIzRmp0VE5L?=
+ =?utf-8?B?bi92eWRONTBQRUZMK0NyZVZNM3hpUmllOEJHMjFyRTFBS25vRW5ZOW1WYnpK?=
+ =?utf-8?B?RzlQQzlBME4vSWloSzgzUDlxYk5ZczluVVV2cW9NWUYyMVJwWkZsVGRBSzE3?=
+ =?utf-8?B?RzFFajYvNStsVVZHY0VjWG5UOTgzMDJKaFA2OTNTK09xTjhsVU9LbjRPK3ZX?=
+ =?utf-8?B?ekQ2TTZoRUx4ZXdVdUlqN1NJZWtqeHdUSGU2ekdVRWxFSjB5REhiNGtxQnpH?=
+ =?utf-8?B?ZGRmeGorV1B6V1NHb04wSlMwbnZkNjg5QzFLNHNaVGFFMUtiNzBUNFprV0N5?=
+ =?utf-8?B?aVhuZTcvdlR6eTJnWU0vVHJvSW9TTlNjZm1uRmpaek1teHZSZ2dVODduamd3?=
+ =?utf-8?B?QUx1RVF2RGdycEs5WThZbWRiQkxLTHVOYy82Tjk0WFF3c3hpZkVtRnNmL2dO?=
+ =?utf-8?B?dXVkZmxTcXNuQTA1cnRpVG9XUnBNL2lYUnVCRkNYTDBkZUkvd202MkwzakZl?=
+ =?utf-8?B?TW8zaXhSREMyVWJFSi9QZkhGSDVYYWwvME9nMTExd2d0OXVOVFBacnBDd1Jt?=
+ =?utf-8?B?enBWSWhJWkpjakJCV1ZZZ2dpRmdWTEdkQ1kzOG94NWs2U1BPeGdhMGdUcS90?=
+ =?utf-8?B?RHN4WGZvZGZONWJ0N1IzNlFoaU9IZkJybjNtWWpUS0FRNjhYSldKNGs5RnpB?=
+ =?utf-8?B?dk91MW04Q240cEkwcG9tL0VwU09PNFV5ZURhNDV1aU9mTkZDNlkxU0dacUFE?=
+ =?utf-8?B?TXZ4QmRibkx3bXVWYnNCR0prR0V5RGtRK0RhNFBMTUNKU2RQRHkrYSs4a2kx?=
+ =?utf-8?B?YXhEQ0dqdWdNRXAvMkl1TndLRjJVZHB5N1FwYU1CNHJaVHQxUUpHL3c4Z0NB?=
+ =?utf-8?B?NklobXpqOXVmZ2Q3NjN1c1E2NlRab1pBTnNSUmVEWXJZMWZwUDRxaDlHeENq?=
+ =?utf-8?B?Uld3ODhuZWFBNmJKdkpBQjdxVXlQSkQ0N1lvaDBVd1EwYlFZVVJkcDhBNnpF?=
+ =?utf-8?B?WXpLVk9EK2ZPdmszaktnKzJlcXo3QnBjSHJHclRjY1hOV1BSUGl3K1pGNEJU?=
+ =?utf-8?B?VkowWXQ4RlNuM0NDazEwZ0piODZxaEk0T2c5VHpCdmhpa1RMRWNwWHY2dmpm?=
+ =?utf-8?B?OUhiSUpoZTdCL0lwZGRwczRLeE5GV2pKdFMzZGVMTEdjK0VWU2I4YmNlYzlj?=
+ =?utf-8?B?Q2tUVjQ5QWFzV0ZDWDRpcXZBOVVFL2VvK1U0T1RuYXVmeFY3TDNsTkxYUVRi?=
+ =?utf-8?B?S1JyNzZ4MElJdTl1MGE1NGh3YXczaHFETk5nZUxSOUVOK2JpOG1mcWdMcVIy?=
+ =?utf-8?B?dHcxNjV5QzVwdFpSTlVYR3lIWjMrNDkranFRQTRiZDJZWDBIUUVSQjJScnV0?=
+ =?utf-8?B?Nk1tMVZnVXhaMHBHQUhMQTNTelBreXJMeXZFeGZCcXIzNjlFQXhGdytGUC9X?=
+ =?utf-8?B?Mm9LcHN2VTF2SXVrQlZPVzFMczB1WWNpUkxDeTltN1pGTXhMczlHMEMrOTdX?=
+ =?utf-8?B?RndjaHR3aXZna0dhVktGR1ZrMzBRPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <78DE3F8E0B61B84B97BAE77F18DBB07E@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	zHPAfchC8YV5I2UZOrglvRfGwIQma/7DamRQX+N6T/lMVu9mX0W87x//f8F9jyB8yb4EX4bEUj2b+vLJkQC27uPgp56oqeMR8S4w1P5aQOGYqrI5XE5t7Wgb2/zd3YDMAzkM25M73kIW3zFER9HWKiJOBtx7Wdl/1aadEsM6KurI3JQ3ehFdwInmdmHevfcHOm7LkWJfEbpGab7EKiUB/PHXbAA4h2ChtpbP9Vcpb8sDdc4c4qivn56yZdq+Te5/Q8yCqhYu7GpMo08lww1G7bABlJHZQKO9PH9z1cuscRlBPha4Qpyu0x1bHJ5sa7YyG0lNUqOXxrU6h91TVhEjJeqNA8Rfdcn08R3zR37ENVpH7KTnBKQUrbWRbIrDgbTfwbOQ/TOxEPXGrCi3Ep9zwYHdkFps/GKapfZlSSTr2jwORr6eEYRmUSAsHjYIesddsc3ifOERfVL5eUcRYai0KnQeAt0z6wZrAXZ6Fj3YRdRNSN8M2oYwUhsAj5IcT6FO6YRRMSB+ceX1hqcnRIbIY1JwP81gO2BZykTGC7+jIaIFYbSqieYPbAswUPXpaQ8fQowtsG6/iEyvSHqbphDzXS8oowBfA90JqKzjoXOR48pNCB/pqZ8mun54YzFQsDCV
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94e24da8-b0b2-44cb-14a7-08dc6f7254f3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2024 15:20:02.1523
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lzffvEVz0JU5uP0IfehjYSI6CfD+G3Id4NJ0arNWJbj30pNXsqP2c6ovxAhtmXVnQHQSisjYBa48T2x/qI8Rj1/bNoPBtarHc/hPXK4G6Xc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA3PR04MB9303
 
-On Sun, 5 May 2024 21:24:14 -0700
-Ira Weiny <ira.weiny@intel.com> wrote:
-
-> Jonathan Cameron wrote:
-> > On Wed, 1 May 2024 16:49:24 -0700
-> > Ira Weiny <ira.weiny@intel.com> wrote:
-> >   
-> > > Jonathan Cameron wrote:  
-> > > >     
-> > > > > 
-> > > > > Fan Ni's latest v5 of Qemu DCD was used for testing.[2]    
-> > > > Hi Ira, Navneet.    
-> > > > > 
-> > > > > Remaining work:
-> > > > > 
-> > > > > 	1) Integrate the QoS work from Dave Jiang
-> > > > > 	2) Interleave support    
-> > > > 
-> > > > 
-> > > > More flag.  This one I think is potentially important and don't
-> > > > see any handling in here.    
-> > > 
-> > > Nope I admit I missed the spec requirement.
-> > >   
-> > > > 
-> > > > Whilst an FM could in theory be careful to avoid sending a
-> > > > sparse set of extents, if the device is managing the memory range
-> > > > (which is possible all it supports) and the FM issues an Initiate Dynamic
-> > > > Capacity Add with Free (again may be all device supports) then we
-> > > > can't stop the device issuing a bunch of sparse extents.
-> > > > 
-> > > > Now it won't be broken as such without this, but every time we
-> > > > accept the first extent that will implicitly reject the rest.
-> > > > That will look very ugly to an FM which has to poke potentially many
-> > > > times to successfully allocate memory to a host.    
-> > > 
-> > > This helps me to see see why the more bit is useful.
-> > >   
-> > > > 
-> > > > I also don't think it will be that hard to support, but maybe I'm
-> > > > missing something?     
-> > > 
-> > > Just a bunch of code and refactoring busy work.  ;-)  It's not rocket
-> > > science but does fundamentally change the arch again.
-> > >   
-> > > > 
-> > > > My first thought is it's just a loop in cxl_handle_dcd_add_extent()
-> > > > over a list of extents passed in then slightly more complex response
-> > > > generation.    
-> > > 
-> > > Not exactly 'just a loop'.  No matter how I work this out there is the
-> > > possibility that some extents get surfaced and then the kernel tries to
-> > > remove them because it should not have.  
-> > 
-> > Lets consider why it might need to back out.
-> > 1) Device sends an invalid set of extents - so maybe one in a later message
-> >    overlaps with an already allocated extent.   Device bug, handling can
-> >    be extremely inelegant - up to crashing the kernel.  Worst that happens
-> >    due to race is probably a poison storm / machine check fun?  Not our
-> >    responsibility to deal with something that broken (in my view!) Best effort
-> >    only.
-> > 
-> > 2) Host can't handle the extent for some reason and didn't know that until
-> >    later - can just reject the ones it can't handle.   
-> 
-> 3) Something in the host fails like ENOMEM on a later extent surface which
->    requires the host to back out of all of them.
-> 
-> 3 should be rare and I'm working toward it.  But it is possible this will
-> happen.
-> 
-> If you have a 'prepare' notify it should avoid most of these because the
-> extents will be mostly formed.  But there are some error paths on the actual
-> surface code path.
-
-True. If these are really small allocations then elegant handling feels like
-a nice to have rather than a requirement.
-
-> 
-> >   
-> > > 
-> > > To be most safe the cxl core is going to have to make 2 round trips to the
-> > > cxl region layer for each extent.  The first determines if the extent is
-> > > valid and creates the extent as much as possible.  The second actually
-> > > surfaces the extents.  However, if the surface fails then you might not
-> > > get the extents back.  So now we are in an invalid state.  :-/  WARN and
-> > > continue I guess?!??!  
-> > 
-> > Yes. Orchestrator can decide how to handle - probably reboot server in as
-> > gentle a fashion as possible.
-> >   
-> 
-> Ok
-> 
-> >   
-> > > 
-> > > I think the safest way to handle this is add a new kernel notify event
-> > > called 'extent create' which stops short of surfacing the extent.  [I'm
-> > > not 100% sure how this is going to affect interleave.]
-> > > 
-> > > I think the safest logic for add is something like:
-> > > 
-> > > 	cxl_handle_dcd_add_event()
-> > > 		add_extent(squirl_list, extent);
-> > > 
-> > > 		if (more bit) /* wait for more */
-> > > 			return;
-> > > 
-> > > 		/* Create extents to hedge the bets against failure */
-> > > 		for_each(squirl_list)
-> > > 			if (notify 'extent create' != ok)
-> > > 				send_response(fail);
-> > > 				return;
-> > > 		
-> > > 		for_each(squirl_list)
-> > > 			if (notify 'surface' != ok)
-> > > 				/*
-> > > 				 * If the more bit was set, some extents
-> > > 				 * have been surfaced and now need to be
-> > > 				 * removed...
-> > > 				 *
-> > > 				 * Try to remove them and hope...
-> > > 				 */  
-> > 
-> > If we failed to surface them all another option is just tell the device
-> > that.   Responds with the extents that successfully surfaced and reject
-> > all others (or all after the one that failed?)  So for the lower layers
-> > send the device a response that says "thanks but I only took these ones"
-> > and for the upper layers pretend "I was only offered these ones"
-> >   
-> 
-> But doesn't that basically break the more bit?  I'm willing to do that as it is
-> easier for the host.
-
-Don't think so.  We can always accept part of the offered extents in same
-way we can accept part of a single offered extent if we like.
-The more flag just means we only get to do that communication of what
-we accepted once. So we have to reply with what we want and don't set
-more flag in last message - thus indicating we don't want the rest.
-(making sure we also tidy up the log for the ones we rejected)
-
-> 
-> > > 				WARN_ON('surface extents failed');
-> > > 				for_each(squirl_list)
-> > > 					notify 'remove without response'
-> > > 				send_response(fail);
-> > > 				return;
-> > > 
-> > > 		send_response(squirl_list, accept);
-> > > 
-> > > The logic for remove is not changed AFAICS because the device must allow
-> > > for memory to be released at any time so the host is free to release each
-> > > of the extents individually despite the 'more' bit???  
-> > 
-> > Yes, but only after it accepted them - which needs to be done in one go.
-> > So you can't just send releases before that (the device will return an
-> > error and keep them in the pending list I think...)  
-> 
-> :-(  OK so this more bit is really more...  no pun intended.  Because this
-> breaks the entire model I have if I have to treat these as a huge atomic unit.
-> 
-> Let me think on that a bit more.  Obviously it is just tagging an iterating the
-> extents to find those associated with a more bit on accept.  But it will take
-> some time to code up.
-
-The ability to give up at any point (though you need to read and clear the extents
-that are left) should get around a lot of the complexity but sure it's
-not a trivial thing to support.
-
-I'd flip a 'something went wrong flag' on the the first failure, carry on the
-walk not surfacing anything else, but clearing the logs etc, then finally reply
-with what succeeded before that 'went wrong' flag was set.
-
-> 
-> >   
-> > >   
-> > > > 
-> > > > I don't want this to block getting initial DCD support in but it
-> > > > will be a bit ugly if we quickly support the more flag and then end
-> > > > up with just one kernel that an FM has to be careful with...    
-> > > 
-> > > I'm not sure which is worse.  Given your use case above it seems like the
-> > > more bit may be more important for 'dumb' devices which want to add
-> > > extents in blocks before responding to the FM.  Thus complicating the FM.
-> > > 
-> > > It seems 'smarter' devices which could figure this out (not requiring the
-> > > more bit) are the ones which will be developed later.  So it seems the use
-> > > case time line is the opposite of what we need right now.  
-> > 
-> > Once we hit shareable capacity (which the smarter devices will use) then
-> > this become the dominant approach to non contiguous allocations because
-> > you can't add extents with a given tag in multiple goes.  
-> 
-> Why not?  Sharing is going to require some synchronization with the
-> orchestrator and can't the user app just report it did not get all it's memory
-> and wait for more?  With the same tag?
-
-Hmm. I was sure the spec said sharing did not allow addition of capacity after
-first creation, but now can't find it.  If you did do it though, fun
-occurs when you then pass it on to the second device because you have
-to do that via tag alone.
-
-I believe this is about simplification on the device side because
-offers of extents to other hosts are done by tag. If you allow extra ones
-to turn up there are race conditions to potentially deal with.
-
-7.6.7.6.5 Initiate Dynamic Capacity add.
-
-"Enable shared Access" Enable access to extents previously added to another
-host in a DC region that reports the "sharable" flag, as designated by the
-specific tag value.
-
-Note it is up to the device to offer the same capacity to all hosts for
-which this is issued.  There is no extent list or length provided.
-
-
-> 
-> > 
-> > So I'd expect the more flag to be more common not less over time.  
-> > > 
-> > > For that reason I'm inclined to try and get this in.
-> > >   
-> > 
-> > Great - but I'd not worry too much about bad effects if you get invalid
-> > lists from the device.  If the only option is shout and panic, then fine
-> > though I'd imagine we can do slightly better than that, so maybe warn
-> > extensively and don't let the region be used.  
-> 
-> It is not just about invalid lists.  It is that setting up the extent devices
-> may fail and waiting for the devices to be set up means that they are user
-> visible.  So that is the chicken and the egg...
-> 
-> This is unlikely and perhaps the partials should just be surfaced and accept
-> whatever works.  Then let it all tear down later if it does not all go.
-> 
-> But I was trying to honor the accept 'all or nothing' as that is what has been
-> stated as the requirement of the more bit.
-
-That's not quite true - for shared it is all or nothing (after first host anyway) but
-for other capacity it is 'accept X and reject Y in one go'.  You don't need to
-take it all but you only get one go to say what you did accept.
-
-> 
-> But it seems that it does not __have__ to be atomic.  Or at least the partials
-> can be cleaned up and all tried again.
-
-With care you can accept up to a point, then give those back if you like - or
-carry on and use them.
-
-Jonathan
-
-> 
-> Ira
-> 
-> > 
-> > Jonathan
-> >   
-> > > Ira
-> > >   
-> >   
-> 
-> 
-> 
-
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
 
