@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4879-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4880-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44CA18C18C6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 23:55:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F0E88C1941
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2024 00:12:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE4A328332C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 21:55:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE3CA1F21F3F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 22:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6FF1292D8;
-	Thu,  9 May 2024 21:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D50129E76;
+	Thu,  9 May 2024 22:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="NFQCpsom"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="nqThWMBW"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7254231A66
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 21:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E0A129E6B
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 22:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715291722; cv=none; b=YU1XRIPcMqJ+E87LAkTlKQpI46grgWJE0X0yMxyRUzVPhJR/O55Qb6C9k5ue5vtSjsGfAV7mefiDy4lABFYcGyF2Rrh9DimL0/8iNQzcC6IEDTyjKVnM9/HX2uKTu1OsadIIbsBQPcqGKxGgjfayhwMF/HXMhxreEaCABo9Neq0=
+	t=1715292727; cv=none; b=EZOpABkb2JMIo2vJEedPrMvEuCIACr2/WY7VQ4r3zBNtZQnL5XKl+KiXgCZGU/BxU3uSUrum13AT6JPmLEsZOX6Cgk8HIjoNA9pSVXoBUcaUlC0+elWzqcyZGYtetTsxZ3JcJPkM7cxJXwlp6yD0A0Hdy8Xf07VuYgAxt65GTh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715291722; c=relaxed/simple;
-	bh=Vezs6ONckP26AGsCMcyTHDvEzKDUOAJNLDEwwHSQhEc=;
+	s=arc-20240116; t=1715292727; c=relaxed/simple;
+	bh=zUMjNhwIwzI1BZCjFsQdOpiz5BhKmPt3xpzd9Y8BcSA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BtmAeZJIPYOaa4d7plFN+j5GophVZhnbdfDrLg2W855WVT+fVRIrMhHIFsuDvGuQvY8Nfn6tPZNULidIyXviH7ENutM12TG1rrxbM8stlqom/fpS05OX3ipBsv/Y2OhQXLaqzU3ZC7mBhXF+NrCF7nQoUfCTYeKCHAn8AQnZIKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=NFQCpsom; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=OeQ/B4dJiSFw3NOC2LZ8YmKnpMFcMjbCqzeW8OriuSfdg0BrLNL9dmPfsQfHpPqNJWPBjLfOn1r/S+ZImbNygMoqYrbPkkVBrB9mOX63fQFJul9JJEMZ2u5VE7bB8XCBdABlwfZ4GDzZk3Fjo++Up0Pw48rhthv1Psp7jaZJi1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=nqThWMBW; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715291713; x=1715896513; i=quwenruo.btrfs@gmx.com;
-	bh=o5ENmP+8mftRGdef/8TVtJmi1bWcb1CragS6CfRTztY=;
+	s=s31663417; t=1715292715; x=1715897515; i=quwenruo.btrfs@gmx.com;
+	bh=uIvj1gpujVnjJ8Q7YZRRsvRZgpGMsGleE3VuJpTkhkU=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=NFQCpsomFYoDH7E4Upunx6q6UhltqaMfAQUaGdztp12rfqG4gCyZ6VXThXBg8Ghk
-	 Y57kWK8yRoYroVgiZDGioavOZoYwl3z8/IzlHurgeYR/SwhRPz0lDgYSYzIIltJah
-	 q//DtbDaLGSgG9pGjHezTIq72O0tz9969doicz8oTTodq1XHMx6dPbMv2CsqC1DUW
-	 v+eDfECh0WmtM5vL8Kw9AfzUk1QtTVqQx659eDnqQQ6GNXLAwaMedqhhgpY0NPrLk
-	 O6Sx85jcodbydwb6mm2zW2//2DGuRvl+g0NQev5QE5OrzGm3Vh2ZQx6UE75kIONgi
-	 Tm9hvSTi23gSK0xPZQ==
+	b=nqThWMBWKfhK9R1QPaFQ1LXrVB3tmTb1ozjviETN0B/5ba3kiMNxHFa59ORFkDaE
+	 k46mT24BNJ84kqzxkiQ/BqljZY2hu619pQQHp55JGWtBRFHYt16eegYa74Ip9s6e6
+	 Qx41g8uSbOU+8/3hMI+TAb6aqq162ZS49dvnPg/RLAhtoc9W7jlZgIysDYo5AMYl9
+	 AWEMHiDPzrri7HluMr7XHmUjscL2U9sQggNIZix/Eawyws4/4U57KJnqoWc+H4+dV
+	 ch1ujyI0PwjNM5s3Mx84Q0Ftr8Ea67SDbR17699Qh7ap69StHZGyvS/6Sz9lMpMDb
+	 qCS+quJHuaHtPBjlfg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0oBx-1sqIFB2DmH-00wpcw; Thu, 09
- May 2024 23:55:13 +0200
-Message-ID: <b8538fb0-e6bc-4dfd-addc-756048bbcad3@gmx.com>
-Date: Fri, 10 May 2024 07:25:07 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3KTy-1snqDR0Lli-010LwQ; Fri, 10
+ May 2024 00:11:55 +0200
+Message-ID: <1fe28d75-a4a3-4304-9998-a88a5fee4919@gmx.com>
+Date: Fri, 10 May 2024 07:41:50 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/11] btrfs: export the expected file extent through
- can_nocow_extent()
+Subject: Re: [PATCH v2 03/11] btrfs: introduce new members for extent_map
 To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
 References: <cover.1714707707.git.wqu@suse.com>
- <e351482ededb22c1fb81eeed217ae8e34e8e1427.1714707707.git.wqu@suse.com>
- <CAL3q7H4ruNd9xUvp7yY-CPEQAvM+6Kd+N2Nd6SDgXUpj=OhQAg@mail.gmail.com>
+ <f0be8547f0df8d8a4578c5e4d9b560c053dab8db.1714707707.git.wqu@suse.com>
+ <CAL3q7H7uWw=LnWYXZnZV+kYKho+F4iBcBgZ5GziWeTofVPLDYw@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,57 +90,204 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H4ruNd9xUvp7yY-CPEQAvM+6Kd+N2Nd6SDgXUpj=OhQAg@mail.gmail.com>
+In-Reply-To: <CAL3q7H7uWw=LnWYXZnZV+kYKho+F4iBcBgZ5GziWeTofVPLDYw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:E+hMUcBJTHa46mbntqz7lHxn/eSc6f8JPXw4Bn6+uHl+KBaGKqx
- oTmIy1zTrrtxOQIbIf/zJB2W0dRZiGm/QX+Jqbkh1cZqPVhmLl7g3vaDF6ZuOMtrs2HRU37
- qxPkzK4fSsdmIfJgjLbxAdMz+/TYFPtbFImC3bbJ+xW1NhVOK2Q7Gjjq9N3m+we17Zka54H
- GABN7LearKIk+zWl9EKUg==
+X-Provags-ID: V03:K1:DGpQt0AQ++BdpCMroYf0Y6RBz4doJBtiyUsKx0krzw0DWoqEDdB
+ 1I3jgyUFxye0aw+EQzmga3m7fsUDBwodjogGBlOjr0+s8SahRjWnFbn8yEO6hTvVy0hkkYw
+ YRLc+a25DfO1PDBvvD+xC8pu8ofgwYD4EFEsDKzcPZ+n7apSbYGo0bWgGgAsjxZE4nQjWYM
+ JdYHknyVFuw2FsrIQ0OfA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Wl+7K0RE4BM=;Hd9nKpOouG8H3rBOdcSS5D6kiay
- ANiEwqQi2GuOyE3EJtSML/3BEhCPP9e+FezF8k3vo66vnQtHAQRHxm0wZTkfeNoHAQMrLr+L8
- A9VieZODhxi6PwFl4C1T/0aBHjZ6/WoNE/Zpci6212AdS3IHYcfGK8/PbL2iZzw0WVJUEKMmA
- M8y+tyruKnGsYZaTjzR/j1vc+KO8oY4F6Uj/qujZw55AdZ/3pV5PBalLJ040anRoXLUPQIAH7
- 2OoALgdfhcSXCywVNT48A/edSjObuReIJz/mvy+/6mIVVrm89gYEZ5R/1NhFVmYrOoqHpcfsK
- GV2I73nBneaw8X2WQent5WBT75+3JSMJs5yCBTog28dPg9mM2jEkK3QmNjIp+wNjjC9GS45k3
- VPo0hl426NPnCLr+mZmllhn9oQq+oaUvEmlcb7YLK8x6AA8fThwUNUFDhT++qJHpiIFffJqmh
- YSEifc3QcBgAKPi55lQcEKdokmySKjf4mI0URwZO5L2bg7sTvwEcJFkJ+4AzQI7AWVz7fZShs
- TugYp1ZkbWMr6yQozggIxLnSb8OwP5JIbaFUuDK5xdedgvcQCRrXRkMUdCMYiPLeEpz6ED6ls
- Gdh8XvFt/YXiTUj/yjhJ2BegUAUZ9lHrwCU8Gjr1MmHQ9jDlw3Za4MXW0G8oOevjgP042sScG
- 0b2bqzmiamfvQYerkRpDB8NP9WKOoXVHKAhyV/NGZmWiKT925LJ+dvi7vXfzfvjru8NPZ37gF
- 3oqS8hfXjYI49b5ilI19s3RwMCpK2MmhErRk1lKCdOTqJo81h2rD71ZUaBN///dDYeQwREu6F
- mj19eztfnMQuHq4EYbYt5tZWPgXEaSYaB0F/b1dF9tjKk=
+UI-OutboundReport: notjunk:1;M01:P0:y3YS6IENeLc=;7CPWuFxL2tfjoFlVkHUqwrqZojt
+ RGnAf11zMk9F+TkxitvhfTS//ahTHs1x6FZbAXI7DyinKwgCyw8bKcg+4WfY6HK/YQd4OAYFM
+ GqYcYPZuNCakgm0EhNuNqTQAhsxCaQ9297KKkNZTGcfe2nnJlKloge+gLq8d9VQioy5QA/5C6
+ qo/OoqPxtOQudDtUzLfgklqPQYKanpuPgOx9dPr0bRxEdwty9eglDCdew6ouYQ7lB/SqCHkuv
+ GF3mWdCjsn/4PEAwedTvvTX+Gyfvok9iGZcPAlnSjWdLd1rC4nUqnG8kdPdOFkyWjrlAmUFDR
+ V+w8Mr8IvlRCzPMod8+7tGG8RBgERNh2Ck2dvPsrZ8YTi49upwVnc3elmJ0OPG0M+dCFzgN6a
+ EgMCrhA2QmSeA+dXEtRN7DlqASjV+eFlIjs01I6lqZHgZ0e2nN1KBKGusxi2X+Cqtc+AAbcaN
+ Ia46FSM3M66WpVm0B8VSAF+8bPTv6MZiRvZqECUiHp/NuoRKQjjbyR08C05Q3k1RRKykyAKTH
+ 42MNd5QUzfJ8WAltThDgAQhjUZpVaOXNzZcFTtxQnzA14R82AqnJfdsoCESUHD30fi7dNF1/J
+ 4MGVxgLcPfQjcWvqnmD3jmqiP9Tkx5K3aq+mCqohV1a/C9ACXbhSyeC+cgZPWMx85qxSNlFY+
+ +Fry/EEnYIY1Qnvqf3XBqpCReKrafOz13IUJnGlobqNMl0kdEmCeT4aDKspP/19VZhPMfhCpA
+ n+Gv57+1uaTYhLX2yV78+jpn0iKFQNXTwV3dfyAnteN1bx9tvX8qWHXnEtRld8pC0eIB4Q2aq
+ YSEq3Jjl/qaVOXaxTtOgy3hMgzKrocVHajXxQa0dIyZ1g=
 
 
 
-=E5=9C=A8 2024/5/10 01:52, Filipe Manana =E5=86=99=E9=81=93:
-[...]
->> + */
->> +struct btrfs_file_extent {
->> +       u64 disk_bytenr;
->> +       u64 disk_num_bytes;
->> +
->> +       u64 num_bytes;
->> +       u64 ram_bytes;
->> +       u64 offset;
->> +
->> +       u8 compression;
+=E5=9C=A8 2024/5/10 02:35, Filipe Manana =E5=86=99=E9=81=93:
+> On Fri, May 3, 2024 at 7:02=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> Introduce two new members for extent_map:
+>>
+>> - disk_bytenr
+>> - offset
+>>
+>> Both are matching the members with the same name inside
+>> btrfs_file_extent_items.
+>>
+>> For now this patch only touches those members when:
+>>
+>> - Reading btrfs_file_extent_items from disk
+>> - Inserting new holes
+>> - Merging two extent maps
+>>    With the new disk_bytenr and disk_num_bytes, doing merging would be =
+a
+>>    little complex, as we have 3 different cases:
+>>
+>>    * Both extent maps are referring to the same data extent
+>>    * Both extent maps are referring to different data extents, but
+>>      those data extents are adjacent, and extent maps are at head/tail
+>>      of each data extents
 >
-> The blank lines between the members seem kind of ad-hoc, redundant to
-> me - i.e. no logical grouping.
-> Maybe I missed something?
+> I have no idea what this last part of the sentence means:
+>
+> "and extent maps are at head/tail of each data extents"
 
-This is to separate the members so that, the disk_* ones are only
-referring to a data extent uniquely.
+For this case:
 
-The ram_bytes/num_bytes/offset are the ones to specify the referred
-range inside the uncompressed extent.
-Finally a u8 because it's not u64.
+         |<- data extent 1 ->|<- data extent 2 ->|
+	|          |////////|////////|          |
+                      FE A      FE B
 
-But for sure, I can remove all the new lines, because the grouping is
-not that strong.
+In above case, FE A is only referring the tailing part of data extent 1,
+and FE B is referring to the heading part of data extent 2.
+
+In that case, FE A and FE B can be merged into something like this:
+
+         |<------ merged extent 1 + 2 --------->|
+	|          |/////////////////|         |
+                        FE A + B
+
+In that case, merged file extent would have:
+
+- disk_bytenr =3D fe_a->disk_bytenr
+- disk_num_bytes =3D fe_a->disk_num_bytes + fe_b->disk_num_bytes
+- ram_bytes =3D fe_a->ram_bytes + fe_b->ram_bytes
+- offset =3D fe_a->offset
+- num_bytes =3D fe_a->num_bytes + fe_b->num_bytes
+
+>
+>>    * One of the extent map is referring to an merged and larger data
+>
+> map -> maps
+> an -> a
+>
+>>      extent that covers both extent maps
+>
+> Not sure if I can understand this. How can one of the extent maps
+> already cover the range of the other extent map?
+> This suggests some overlapping, or most likely I misunderstood what
+> this is trying to say.
+
+That's the for impossible test case 3, but as you mentioned, it's more
+sane just to remove it.
+
+[...]
+>
+>> +        *
+>> +        * The calculation here always merge the data extents first, th=
+en update
+>> +        * @offset using the new data extents.
+>> +        *
+>> +        * For case 1), the merged data extent would be the same.
+>> +        * For case 2), we just merge the two data extents into one.
+>> +        * For case 3), we just got the larger data extent.
+>> +        */
+>> +       new_disk_bytenr =3D min(prev->disk_bytenr, next->disk_bytenr);
+>> +       new_disk_num_bytes =3D max(prev->disk_bytenr + prev->disk_num_b=
+ytes,
+>> +                                next->disk_bytenr + next->disk_num_byt=
+es) -
+>> +                            new_disk_bytenr;
+>
+> So this is confusing, disk_num_bytes being a max between the two
+> extent maps and not their sum.
+
+Check case 1).
+
+Both file extents are referring to the same data extent.
+
+Like this:
+
+FE 1, file pos 0, num_bytes 4K, disk_bytenr X, disk_num_bytes 16K,
+offset 0, ram_bytes 16K, compression none
+
+FE 2, file pos 4k, num_bytes 4K, disk_bytenr X, disk_num_bytes 16K,
+offset 4k, ram_bytes 16K, compression none.
+
+In that case we should not just sum up the disk_num_bytes at all.
+Remember disk_num_bytes are for the data extent.
+
+> I gather this is modelled after what we already do at
+> btrfs_drop_extent_map_range() when splitting.
+>
+> But the truth is we never used the disk_num_bytes of an extent map
+> that was merged - we also didn't do it before this patch, for that
+> reason.
+> It's only used for logging new extents - which can't be merged - they
+> can be merged only after being logged.
+>
+> We can set this to the sum, or leave with some value to signal it's inva=
+lid.
+> Just leave a comment saying disk_num_bytes it's not used anywhere for
+> merged extent maps.
+>
+> In the splitting case at btrfs_drop_extent_map_range() it's what we
+> need since in the case the extent is new and not logged (in the
+> modified list), disk_num_bytes always represents the size of the
+> original, before split, extent.
+
+[...]
+
+>> +       file_extent.disk_bytenr =3D ins.objectid;
+>> +       file_extent.disk_num_bytes =3D ins.offset;
+>> +       file_extent.num_bytes =3D ins.offset;
+>> +       file_extent.ram_bytes =3D ins.offset;
+>> +       file_extent.offset =3D 0;
+>> +       file_extent.compression =3D BTRFS_COMPRESS_NONE;
+>
+> Same as before:
+>
+> "If we always have to initialize all the members of the structure,
+> it's pointless to have it initialized to zeros when we declared it."
+>
+[...]
+>> +       file_extent.disk_bytenr =3D ins.objectid;
+>> +       file_extent.disk_num_bytes =3D ins.offset;
+>> +       file_extent.num_bytes =3D num_bytes;
+>> +       file_extent.ram_bytes =3D ram_bytes;
+>> +       file_extent.offset =3D encoded->unencoded_offset;
+>> +       file_extent.compression =3D compression;
+>
+> Same as before:
+>
+> "If we always have to initialize all the members of the structure,
+> it's pointless to have it initialized to zeros when we declared it."
+
+Fair enough, and an uninitilized structure member can also make compiler
+to warn us.
 
 Thanks,
 Qu
+>
+> The rest I suppose seems fine, but I have to look at the rest of the pat=
+chset.
+>
+> Thanks.
+>
+>>          em =3D create_io_em(inode, start, num_bytes,
+>>                            start - encoded->unencoded_offset, ins.objec=
+tid,
+>>                            ins.offset, ins.offset, ram_bytes, compressi=
+on,
+>> -                         BTRFS_ORDERED_COMPRESSED);
+>> +                         &file_extent, BTRFS_ORDERED_COMPRESSED);
+>>          if (IS_ERR(em)) {
+>>                  ret =3D PTR_ERR(em);
+>>                  goto out_free_reserved;
+>> --
+>> 2.45.0
+>>
+>>
+>
 
