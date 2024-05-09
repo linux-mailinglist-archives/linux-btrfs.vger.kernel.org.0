@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-4862-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4863-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C788C0D45
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 11:13:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A3F8C0D46
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 11:13:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 789121C20F50
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 09:13:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18E7328312C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 09:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2168114A4EE;
-	Thu,  9 May 2024 09:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C3D14A604;
+	Thu,  9 May 2024 09:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pppTNo6Y";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pppTNo6Y"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gJKZxFKG";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gJKZxFKG"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A2B13C9B6
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 09:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B1214A4DB
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 09:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715245979; cv=none; b=tx/upG/I88I4+wph4lb74OtpwvguVIv0+kwVaSMf4kSLzr9/5R3UaVhVE1Zuw3DMTSVFxJ5soenCvJ9w7g6heKQJeRTVClIEfz1mm4Ij9VWKZjvmL/uR/yFwTuOk0pzSjpfFfjya8gZNwWz8Mhl8PLVmnXbPmhsBCKQconNV8xU=
+	t=1715245981; cv=none; b=Ktc6j3LNvylPjpVkS/8r7D7IC7bbAcbMkXXocdhPUFb7UG77yO3j1bkMfuQXd5K/BZ91ua2K1iEix5x0jYTlUhbtN3OKSCNdYudkwyP3pApGcDv9cQqnJ2sJf0loOpqLv2LitgsQAXE4qZmbUr8yBfk7riPTUrEPk2G980Bhero=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715245979; c=relaxed/simple;
-	bh=vc39rJyAcCIKJgZixZ9AoHHDoMlC18Wgn16qGlJGTvo=;
+	s=arc-20240116; t=1715245981; c=relaxed/simple;
+	bh=utIzCba/mEneP85bvrR0QrflpB8vXbJiIO2tSYwQ6N0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XObeYIF7Wz07HdMsxJumr71oE4LaaK0Virm3TczyM1j5EAgXtz42ka7S9D+CQSn3BE3VSehNa1H8aEq1rkBHLhZNXa+o8fSus8zCKfxeXRfXLJ4QqSswxqdTWojp3uA/5FS4vdlNEdXNKyEGH0KDOOzCNYGW0bq2WswB/njzt/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pppTNo6Y; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pppTNo6Y; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=IyiuWTR588HmtRzOR+FPODGo3kr1U+w8I46G/Ccybh4SH+q+UhsJI160YYGB3TVouuxgp7eaOr9YLLONEaxK2dvGzkBE6v3gDD6Yi5KTfsK+yEcXc0udh1alik9UyhoFtrjYB0oXwc74YyU40DEJjNfBJI+Um7jyMXIoa+POoYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gJKZxFKG; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gJKZxFKG; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BC4535FB79
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 09:12:55 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4E7205FB7C
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 09:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1715245975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1715245977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Hpk7qKBoSTCAT8jziOYN38RkbBLjS4HQjVw9B3XGUpw=;
-	b=pppTNo6Y/iqHSMk/jBE6EyrrjNdfAEHPXrjG+htOHLGboKMcaYB7h7d+4LDUy4ksaBdYzq
-	xbxhA3hVink5snZlWZOMT2ERgXo+NIs/iMpwhq++r9F/4gK4PT2LXi8qk7iuQeX/pp111q
-	5JZogiTaNxCTBd5HWLZjQZGo2Ud0HPU=
+	bh=ezWkQnw0RiPu5aODpPDmzInIckAKs4WS1Ye/E0uqyOA=;
+	b=gJKZxFKGYzoV9vjSVRTHVpPrWEJ/z679NYBdojldxRaCGxeQSHt1iV9IkeqJcHVCvIFYVt
+	m7rWVZB/Qg3b5KpUIA1Othaf4pywOK24EGZHgXcJ/UlKKcbK/QHfrGazdk00hnvzsEwcGR
+	TQ/FNtR7IkGtGBJJUKKnxO1PPSX4YPQ=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=pppTNo6Y
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1715245975; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1715245977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Hpk7qKBoSTCAT8jziOYN38RkbBLjS4HQjVw9B3XGUpw=;
-	b=pppTNo6Y/iqHSMk/jBE6EyrrjNdfAEHPXrjG+htOHLGboKMcaYB7h7d+4LDUy4ksaBdYzq
-	xbxhA3hVink5snZlWZOMT2ERgXo+NIs/iMpwhq++r9F/4gK4PT2LXi8qk7iuQeX/pp111q
-	5JZogiTaNxCTBd5HWLZjQZGo2Ud0HPU=
+	bh=ezWkQnw0RiPu5aODpPDmzInIckAKs4WS1Ye/E0uqyOA=;
+	b=gJKZxFKGYzoV9vjSVRTHVpPrWEJ/z679NYBdojldxRaCGxeQSHt1iV9IkeqJcHVCvIFYVt
+	m7rWVZB/Qg3b5KpUIA1Othaf4pywOK24EGZHgXcJ/UlKKcbK/QHfrGazdk00hnvzsEwcGR
+	TQ/FNtR7IkGtGBJJUKKnxO1PPSX4YPQ=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E1F8F13A24
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 09:12:54 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B55A13A24
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 09:12:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0GPXJpaTPGZ6KgAAD6G6ig
+	id GL4bBJiTPGZ6KgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 09 May 2024 09:12:54 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 09 May 2024 09:12:56 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/4] btrfs-progs: cmds/qgroup: add qgroup_lookup::flags member
-Date: Thu,  9 May 2024 18:42:31 +0930
-Message-ID: <4be206be0c707e60526f5de9edfa8ec9c435338b.1715245781.git.wqu@suse.com>
+Subject: [PATCH 3/4] btrfs-progs: cmds/qgroup: handle stale qgroup deleteion more accurately
+Date: Thu,  9 May 2024 18:42:32 +0930
+Message-ID: <d18afb13ac8bd8bf49ec7ad8294d5432c7a15eab.1715245781.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1715245781.git.wqu@suse.com>
 References: <cover.1715245781.git.wqu@suse.com>
@@ -85,66 +85,237 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
-X-Spamd-Result: default: False [-4.20 / 50.00];
-	BAYES_HAM(-2.19)[96.16%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
+	TO_DN_NONE(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
 	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: BC4535FB79
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -2.80
 X-Spam-Flag: NO
-X-Spam-Score: -4.20
 
-This allows the users to identify if the running qgroup mode and whether
-the numebrs are already inconsistent.
+The current stale qgroup delete is a mess, it doesn't handle the
+following cases at all:
+
+- It doesn't detect stale qgroups correctly
+  The current check is using the root backref, which means unlinked but
+  not yet fully dropped subvolumes would mark its corresponding qgroups
+  stale.
+
+  This is incorrect. The real stale check should be based on the root
+  item, not root backref.
+
+- Squota non-empty but stale qgroups
+  Such qgroups can not and should not be deleted, as future accounting
+  still require them.
+
+- Full accounting mode, stale qgroups but not empty
+  Since qgroup numbers are inconsistent already, it's common to have
+  such stale qgroups with non-zero numbers.
+
+  Now it's dependent on the kernel to determine whether such qgroup can
+  be deleted.
+
+The patch would address the above problems by:
+
+- Do root_item based detection
+  So that btrfs_qgroup::stale would properly indicate if there is a
+  subvolume root item for the qgroup.
+
+- Do not attempt to delete squota stale but non-empty qgroups
+
+- Attempt to delete stale but non-empty qgroups for full accounting mode
+  And deletion failure would not count as an error.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- cmds/qgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+ cmds/qgroup.c | 119 +++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 103 insertions(+), 16 deletions(-)
 
 diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-index 09eac0d2b36e..a023f0948180 100644
+index a023f0948180..70a306117ebd 100644
 --- a/cmds/qgroup.c
 +++ b/cmds/qgroup.c
-@@ -65,6 +65,8 @@ struct btrfs_qgroup_list {
+@@ -80,9 +80,24 @@ struct btrfs_qgroup {
+ 	struct rb_node all_parent_node;
+ 	u64 qgroupid;
+ 
+-	/* NULL for qgroups with level > 0 */
++	/*
++	 * NULL for qgroups with level > 0 or the subvolume is *unlinked*.
++	 *
++	 * Note that, an unlinked subvolume doesn't mean it has been fully
++	 * dropped, so callers should not rely on this to determine if
++	 * a qgroup is stale.
++	 *
++	 * This member is only to help locating the path of the corresponding
++	 * subvolume.
++	 */
+ 	const char *path;
+ 
++	/*
++	 * This is only true if the qgroup is level 0 qgroup, and there is
++	 * no subvolume tree for the qgroup at all.
++	 */
++	bool stale;
++
+ 	/*
+ 	 * info_item
+ 	 */
+@@ -229,6 +244,12 @@ static struct {
+ static btrfs_qgroup_filter_func all_filter_funcs[];
+ static btrfs_qgroup_comp_func all_comp_funcs[];
+ 
++static bool is_qgroup_empty(struct btrfs_qgroup *qg)
++{
++	return !(qg->info.referenced || qg->info.exclusive ||
++		 qg->info.referenced_compressed ||
++		 qg->info.exclusive_compressed);
++}
+ static void qgroup_setup_print_column(enum btrfs_qgroup_column_enum column)
+ {
+ 	int i;
+@@ -795,7 +816,6 @@ static struct btrfs_qgroup *get_or_add_qgroup(int fd,
+ 		uret = btrfs_util_subvolume_path_fd(fd, qgroupid, &path);
+ 		if (uret == BTRFS_UTIL_OK)
+ 			bq->path = path;
+-		/* Ignore stale qgroup items */
+ 		else if (uret != BTRFS_UTIL_ERROR_SUBVOLUME_NOT_FOUND) {
+ 			error("%s", btrfs_util_strerror(uret));
+ 			if (uret == BTRFS_UTIL_ERROR_NO_MEMORY)
+@@ -803,6 +823,24 @@ static struct btrfs_qgroup *get_or_add_qgroup(int fd,
+ 			else
+ 				return ERR_PTR(-EIO);
+ 		}
++		/*
++		 * Do a correct stale detection by searching for the ROOT_ITEM of
++		 * the subvolume.
++		 *
++		 * Passing @subvol as NULL will force the search to only search
++		 * for the ROOT_ITEM.
++		 */
++		uret = btrfs_util_subvolume_info_fd(fd, qgroupid, NULL);
++		if (uret == BTRFS_UTIL_OK) {
++			bq->stale = false;
++		} else if (uret == BTRFS_UTIL_ERROR_SUBVOLUME_NOT_FOUND) {
++			bq->stale = true;
++		} else {
++			warning("failed to search root item for qgroup %u/%llu, assuming it not stale",
++				btrfs_qgroup_level(qgroupid),
++				btrfs_qgroup_subvolid(qgroupid));
++			bq->stale = false;
++		}
+ 	}
+ 
+ 	ret = qgroup_tree_insert(qgroup_lookup, bq);
+@@ -2136,6 +2174,65 @@ static const char * const cmd_qgroup_clear_stale_usage[] = {
+ 	NULL
  };
  
- struct qgroup_lookup {
-+	/* This matches btrfs_qgroup_status_item::flags. */
-+	u64 flags;
- 	struct rb_root root;
- };
++/*
++ * Return >0 if the qgroup should or can not be deleted.
++ * Return 0 if the qgroup is deleted.
++ * Return <0 for critical error.
++ */
++static int delete_one_stale_qgroup(struct qgroup_lookup *lookup,
++				   struct btrfs_qgroup *qg, int fd)
++{
++	u16 level = btrfs_qgroup_level(qg->qgroupid);
++	struct btrfs_ioctl_qgroup_create_args args = { .create = false };
++	const bool inconsistent = lookup->flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
++	const bool squota = lookup->flags & BTRFS_QGROUP_STATUS_FLAG_SIMPLE_MODE;
++	const bool empty = is_qgroup_empty(qg);
++	bool attempt = false;
++	int ret;
++
++	if (level || !qg->stale)
++		return 1;
++
++	/*
++	 * By design, squota can have a subvolume fully dropped but its qgroup numbers
++	 * are not zero.
++	 * Such qgroup is still needed for future accounting, thus can not be deleted.
++	 */
++	if (squota && !empty)
++		return 1;
++
++	/*
++	 * We can have inconsistent qgroup numbers, in that case a really stale
++	 * qgroup can exist while its numbers are not zero.
++	 *
++	 * In this case we only attempt to delete the qgroup, depending on the
++	 * kernel implementation, we may or may not be able to delete it.
++	 */
++	if (inconsistent && !empty)
++		attempt = true;
++
++	if (attempt)
++		pr_verbose(LOG_DEFAULT,
++		"Attempt to delete stale but non-empty qgroup %u/%llu\n",
++			   level, btrfs_qgroup_subvolid(qg->qgroupid));
++	else
++		pr_verbose(LOG_DEFAULT, "Delete stale qgroup %u/%llu\n",
++			   level, btrfs_qgroup_subvolid(qg->qgroupid));
++	args.qgroupid = qg->qgroupid;
++	ret = ioctl(fd, BTRFS_IOC_QGROUP_CREATE, &args);
++	if (ret < 0) {
++		if (attempt) {
++			warning("not supported to delete non-empty stale qgroup %u/%llu",
++				level, btrfs_qgroup_subvolid(qg->qgroupid));
++			ret = 1;
++		} else {
++			error("failed to delete qgroup %u/%llu",
++				level, btrfs_qgroup_subvolid(qg->qgroupid));
++		}
++	}
++	return ret;
++}
++
+ static int cmd_qgroup_clear_stale(const struct cmd_struct *cmd, int argc, char **argv)
+ {
+ 	enum btrfs_util_error err;
+@@ -2172,22 +2269,12 @@ static int cmd_qgroup_clear_stale(const struct cmd_struct *cmd, int argc, char *
  
-@@ -1313,6 +1315,7 @@ static int __qgroups_search(int fd, struct btrfs_tree_search_args *args,
- 			case BTRFS_QGROUP_STATUS_KEY:
- 				si = btrfs_tree_search_data(args, off);
- 				flags = btrfs_stack_qgroup_status_flags(si);
-+				qgroup_lookup->flags = flags;
+ 	node = rb_first(&qgroup_lookup.root);
+ 	while (node) {
+-		u64 level;
+-		struct btrfs_ioctl_qgroup_create_args args = { .create = false };
++		int delete_ret;
  
- 				print_status_flag_warning(flags);
- 				break;
+ 		entry = rb_entry(node, struct btrfs_qgroup, rb_node);
+-		level = btrfs_qgroup_level(entry->qgroupid);
+-		if (!entry->path && level == 0) {
+-			pr_verbose(LOG_DEFAULT, "Delete stale qgroup %llu/%llu\n",
+-					level, btrfs_qgroup_subvolid(entry->qgroupid));
+-			args.qgroupid = entry->qgroupid;
+-			ret = ioctl(fd, BTRFS_IOC_QGROUP_CREATE, &args);
+-			if (ret < 0) {
+-				error("cannot delete qgroup %llu/%llu: %m",
+-					level,
+-					btrfs_qgroup_subvolid(entry->qgroupid));
+-			}
+-		}
++		delete_ret = delete_one_stale_qgroup(&qgroup_lookup, entry, fd);
++		if (delete_ret < 0 && !ret)
++			ret = delete_ret;
+ 		node = rb_next(node);
+ 	}
+ 
 -- 
 2.45.0
 
