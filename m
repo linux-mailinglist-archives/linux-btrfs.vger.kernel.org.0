@@ -1,298 +1,370 @@
-Return-Path: <linux-btrfs+bounces-4860-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4861-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC17B8C0CC2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 10:42:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C0B8C0CC3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 10:43:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6264D285CA4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 08:42:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEC32B22537
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 08:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5AD149C4F;
-	Thu,  9 May 2024 08:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D50B149C65;
+	Thu,  9 May 2024 08:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OZL8Bcxj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VlWR18W7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE0E13C915
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 08:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AC113C8E2
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 08:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715244149; cv=none; b=tGVP1tH/3fq8N6CXrRQVEzlFewkE8xj3lAf/jp+Omh+PJsKvR+RqRgLr9MmFdaVOU8tftmCE6MRxhVInse04C5/MU3C8OOJnAUmDtxiSlu7moDXloh6fsxgKkwqNOai4Zg95TW7dtgpqFDFRXb9nQvfnSV1wS+zHfA7jln+oUDw=
+	t=1715244171; cv=none; b=bmR/pyQ9KtKzKY4xCeokSh6Z+abBGwBm3DbsAudtFeqdC9dpmsDJH6g4teg5bUfQAfup7ZHu+HcxgyCfk+4NVn5Y9lwmtA5BForaGBVatuA5S4UtdFVaNCvsuhvtD5nvl9nIiUqy42ozvS6YjAFaFMnIK/lmXqljQ3LJkYSNZso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715244149; c=relaxed/simple;
-	bh=eSiEyi8WDy3Zu4ikI59of01PGfw/qHTyVixwbTL3Al8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CU0/J1MfYVR5EPN4Peq136V4R42S2DDLFeyymbEFIOlDAhuP7Vj1BAzJdkUacRaYeyPKp1YDZho/i2uWMJ1XawCV4LrgySUKzb/1tNTLYh5nl+/4e/7FBjJbVRcQj0pElm+YoktnXqs4rp//nEiQtWk9OAPvcixEa4gAx6n3Iy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OZL8Bcxj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C35FFC116B1
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 08:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715244148;
-	bh=eSiEyi8WDy3Zu4ikI59of01PGfw/qHTyVixwbTL3Al8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OZL8BcxjYgQpE4gxTPmARBxHuz/dKhDK88fTHWYBb44XZtU6KEGOMnuFlnoQgsHXl
-	 mElJG+g4+s2mJnOsg0re+NWoqkrMpAi0ByawFZ2S40g3pgf34E3MGEncCt/Wi4exVD
-	 Bt/pb1tYT+0sKaq7K1PWspfDX1XH8Rg5AIcgco0Lbt/TxJ9JXFbawcVOrCtlnhqLuF
-	 a2TEw+RyZnHUJpjv5lO+JXhtQPHkXv/dleg2ZqpTloMGO1R9Kee2JxHaec6PLU7bwf
-	 9jS+lK0FxUqi+Q7KYIP5S9IhJoY+rhowJYgmKB83Uyr2KY5Pgy5LrSmAZDl+e1uDb2
-	 HM2BsqUuB3pgg==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a599a298990so139635066b.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 09 May 2024 01:42:28 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yx4NVE2L9v+VJoxTG0vtWDyuIEO8JvFKW2rA24SHXpABIhtS3RZ
-	3wDPe9SOadGXK1lQ4RCwoZR2yNZNO1KD6CN/z9IjRZaJGdVJ/TxD0vmn5FtxgAKdCzjD5p63hH9
-	l+SuYIXeHI7DyfyKPjNlSiOScnVQ=
-X-Google-Smtp-Source: AGHT+IHCBlOUCDoXv4NkyupHwgBEWBgnSBBHF2/NBLpLqt+7CcjR8okhXXrvyBo41mx8ihI3R0/of1cDOSoQkEwPVZI=
-X-Received: by 2002:a17:906:5395:b0:a59:af54:1651 with SMTP id
- a640c23a62f3a-a59fb9c6ce3mr336644066b.57.1715244147312; Thu, 09 May 2024
- 01:42:27 -0700 (PDT)
+	s=arc-20240116; t=1715244171; c=relaxed/simple;
+	bh=DJi7X3cNdtC++SwT+BiIabbRvw1PrfZMAkFOa84BOD8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RooZsvQWqkiK5L6OttB7ECh7ad1ocjYo4JslM0KDIAnkzQ1mGAHsUuwXBAaz+N9ub6yBj2fLE0hwrKJkJSzWmcTlzHW4EiCYC2LPOerIv50alBQKEGH8w6DyH0yfh5AH+Em4PY5Onx3itaSZL2mw/arBcP9o6rNvafQg1iKLOpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VlWR18W7; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34e0d47bd98so932773f8f.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 May 2024 01:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1715244167; x=1715848967; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=xC0yd8mIzwdpy8hVP1DRoeQ57YKdb2Lc1kPVbuui+mQ=;
+        b=VlWR18W7v08QFUcs8XtLQdeBX4NH4MMTQuUQcTiFvCG4ENvy4jY/tbAr8q9ykLh24N
+         5KhI7AhUx0wzxuIhstJd3FV5WTMKgQj7KgXFHmeVXkPb8ZBG6XQ3LuQfHTjl3/y4rj4c
+         IddjsKhVrQDHoWjzdcbYX+Pbaf51LdYPf94rBrxS5P8+WkHV7R9Pf1UgQtMRZslxmnqM
+         VxyMKzpNiXqAmQLt4FkYsy8lWPtllX3qdKJeI7M6evt20keYVE/RG2Ie13ReLl2HUBHu
+         gmH8k1tAUsAdwCpPWso08/zuAKXIlfbi1aetKrWY2mK5pyG7esZDo/gDZ6jxeJnCoEnV
+         5/+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715244167; x=1715848967;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xC0yd8mIzwdpy8hVP1DRoeQ57YKdb2Lc1kPVbuui+mQ=;
+        b=Id5g8qUXHCcL2eILZTmrWAqEbI4A/gsH8mU+rKvpBL/vvvhNepAWnehkYbo9ANT5KO
+         uPwHsSVnGs5xUNmoIAeXCN2albIAJijAN1c4IQIJS6xEb/033huzZbTw8yv9gcCbOW2K
+         HaxmjvYpnk3kAPi+rGCSOQEAq22tRFXX0dhTFnv0qyuHBYjn1kzcvR0++qPR0mAIoWcl
+         2OxFw2O+YYcXqg57etfQ3k88X1TI072ZDmkzE2VJ+hZTyuls7+GOfxXI7gAi9FKUbDvT
+         PUcF4+gouTGUTs0SAp4e9OGRch96ObbX+N6upK0uCSMuPPfMP+4Pw2lfUsTmo+wQ2eh8
+         yVAA==
+X-Gm-Message-State: AOJu0YwyBbbYrtObz5wg03giPXO0dNQQc2/WaJnZvwxUGz+q8hDb4A0w
+	2yFs2yLmASdXwsODwWPW4R8Dtg9TjMxPkJOOS0e4iOByw3GVUokw0AOQwgr3U/0=
+X-Google-Smtp-Source: AGHT+IH6+j8vQOpi+y1O7Em2pQHWQLxRq9FKsOYd5bJMQhy1ZXDIi/Zqdhbx65EUhQd3ASxCT2Jv9g==
+X-Received: by 2002:adf:a589:0:b0:34f:8f7c:8fe2 with SMTP id ffacd0b85a97d-350181144edmr1840136f8f.10.1715244167597;
+        Thu, 09 May 2024 01:42:47 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2af2e69sm845833b3a.177.2024.05.09.01.42.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 May 2024 01:42:47 -0700 (PDT)
+Message-ID: <078144d9-775e-4125-9469-27ffb47fed1c@suse.com>
+Date: Thu, 9 May 2024 18:12:42 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1715169723.git.fdmanana@suse.com> <13d914be0518dc3f4a8086f96275c3b8bf113d63.1715169723.git.fdmanana@suse.com>
- <39f3094b-4e6a-4f72-8ba7-c013a33a05ad@gmx.com>
-In-Reply-To: <39f3094b-4e6a-4f72-8ba7-c013a33a05ad@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 9 May 2024 09:41:50 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H655KkXXTYutyReiJf41F61-qzveCJh9nmKfOH8f47Row@mail.gmail.com>
-Message-ID: <CAL3q7H655KkXXTYutyReiJf41F61-qzveCJh9nmKfOH8f47Row@mail.gmail.com>
-Subject: Re: [PATCH 6/8] btrfs: don't allocate file extent tree for non
- regular files
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/8] btrfs: remove inode_lock from struct btrfs_root and
+ use xarray locks
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <cover.1715169723.git.fdmanana@suse.com>
+ <51066985ea4e9ea16388854a1d48ee197f07219f.1715169723.git.fdmanana@suse.com>
+ <23310a98-c2dc-4a99-ac83-593da5e7d42f@gmx.com>
+ <CAL3q7H7xFxOYZ_rQnb9_qOXuGXGMHOCso2m1p23xe4dGFfd74Q@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <CAL3q7H7xFxOYZ_rQnb9_qOXuGXGMHOCso2m1p23xe4dGFfd74Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 9, 2024 at 1:39=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
-rote:
->
->
->
-> =E5=9C=A8 2024/5/8 21:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > When not using the NO_HOLES feature we always allocate an io tree for a=
-n
-> > inode's file_extent_tree.
->
-> I'm wondering can we discard non-NO_HOLES support directly so that we
-> can get rid of the file_extent_tree completely?
->
-> Initially I'm wondering why NO_HOLES makes a difference, especially as
-> NO_HOLES can be set halfway, thus we can still have explicit hole extents=
-.
->
-> But it turns out that the whole file_extent_tree() is only to handle
-> non-NO_HOLES case so that we always have a hole for the whole file range
-> until i_size.
->
-> Considering NO_HOLES is considered safe at 4.0 kernel, can we start
-> deprecating non-NO_HOLES?
 
-NO_HOLES is a mkfs default for only 2 or 3 years IIRC. It's not that long.
 
-And how do you know everyone is already using NO_HOLES?
-Last week I saw a user filesystem that doesn't use it.
+在 2024/5/9 18:08, Filipe Manana 写道:
+> On Thu, May 9, 2024 at 1:25 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>
+>>
+>>
+>> 在 2024/5/8 21:47, fdmanana@kernel.org 写道:
+>>> From: Filipe Manana <fdmanana@suse.com>
+>>>
+>>> Currently we use the spinlock inode_lock from struct btrfs_root to
+>>> serialize access to two different data structures:
+>>>
+>>> 1) The delayed inodes xarray (struct btrfs_root::delayed_nodes);
+>>> 2) The inodes xarray (struct btrfs_root::inodes).
+>>>
+>>> Instead of using our own lock, we can use the spinlock that is part of the
+>>> xarray implementation, by using the xa_lock() and xa_unlock() APIs and
+>>> using the xarray APIs with the double underscore prefix that don't take
+>>> the xarray locks and assume the caller is using xa_lock() and xa_unlock().
+>>>
+>>> So remove the spinlock inode_lock from struct btrfs_root and use the
+>>> corresponding xarray locks. This brings 2 benefits:
+>>>
+>>> 1) We reduce the size of struct btrfs_root, from 1336 bytes down to
+>>>      1328 bytes on a 64 bits release kernel config;
+>>>
+>>> 2) We reduce lock contention by not using anymore  the same lock for
+>>>      changing two different and unrelated xarrays.
+>>>
+>>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>>> ---
+>>>    fs/btrfs/ctree.h         |  1 -
+>>>    fs/btrfs/delayed-inode.c | 24 +++++++++++-------------
+>>>    fs/btrfs/disk-io.c       |  1 -
+>>>    fs/btrfs/inode.c         | 18 ++++++++----------
+>>>    4 files changed, 19 insertions(+), 25 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>>> index aa2568f86dc9..1004cb934b4a 100644
+>>> --- a/fs/btrfs/ctree.h
+>>> +++ b/fs/btrfs/ctree.h
+>>> @@ -221,7 +221,6 @@ struct btrfs_root {
+>>>
+>>>        struct list_head root_list;
+>>>
+>>> -     spinlock_t inode_lock;
+>>>        /*
+>>>         * Xarray that keeps track of in-memory inodes, protected by the lock
+>>>         * @inode_lock.
+>>> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+>>> index 95a0497fa866..1373f474c9b6 100644
+>>> --- a/fs/btrfs/delayed-inode.c
+>>> +++ b/fs/btrfs/delayed-inode.c
+>>> @@ -77,14 +77,14 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
+>>>                return node;
+>>>        }
+>>>
+>>> -     spin_lock(&root->inode_lock);
+>>> +     xa_lock(&root->delayed_nodes);
+>>>        node = xa_load(&root->delayed_nodes, ino);
+>>
+>> Do we need xa_lock() here?
+>>
+>> The doc shows xa_load() use RCU read lock already.
+>> Only xa_store()/xa_find() would take xa_lock internally, thus they need
+>> to be converted.
+>>
+>> Or did I miss something else?
+> 
+> The RCU is only for protection against concurrent xarray operations
+> that modify the xarray.
+> After xa_load() returns, the "node" might have been removed from the
+> xarray and freed by another task.
+> 
+> That's why this change is a straightforward switch from one lock to another.
+> 
+> It may be that our code is structured in a way that we can get away
+> with the lock.
+> But that needs to be properly analysed and given that it's a
+> non-trivial behavioural change, should have its own separate patch and
+> change log with the analysis.
 
-And probably there are many more.
+OK, got it.
 
->
-> > This is wasteful because that io tree is only
-> > used for regular files, so we allocate more memory than needed for inod=
-es
-> > that represent directories or symlinks for example, or for inodes that
-> > correspond to free space inodes.
-> >
-> > So improve on this by allocating the io tree only for inodes of regular
-> > files that are not free space inodes.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> Otherwise looks good to me.
->
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
->
-> Thanks,
-> Qu
->
-> > ---
-> >   fs/btrfs/file-item.c | 13 ++++++-----
-> >   fs/btrfs/inode.c     | 53 +++++++++++++++++++++++++++++--------------=
--
-> >   2 files changed, 42 insertions(+), 24 deletions(-)
-> >
-> > diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> > index bce95f871750..f3ed78e21fa4 100644
-> > --- a/fs/btrfs/file-item.c
-> > +++ b/fs/btrfs/file-item.c
-> > @@ -45,13 +45,12 @@
-> >    */
-> >   void btrfs_inode_safe_disk_i_size_write(struct btrfs_inode *inode, u6=
-4 new_i_size)
-> >   {
-> > -     struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> >       u64 start, end, i_size;
-> >       int ret;
-> >
-> >       spin_lock(&inode->lock);
-> >       i_size =3D new_i_size ?: i_size_read(&inode->vfs_inode);
-> > -     if (btrfs_fs_incompat(fs_info, NO_HOLES)) {
-> > +     if (!inode->file_extent_tree) {
-> >               inode->disk_i_size =3D i_size;
-> >               goto out_unlock;
-> >       }
-> > @@ -84,13 +83,14 @@ void btrfs_inode_safe_disk_i_size_write(struct btrf=
-s_inode *inode, u64 new_i_siz
-> >   int btrfs_inode_set_file_extent_range(struct btrfs_inode *inode, u64 =
-start,
-> >                                     u64 len)
-> >   {
-> > +     if (!inode->file_extent_tree)
-> > +             return 0;
-> > +
-> >       if (len =3D=3D 0)
-> >               return 0;
-> >
-> >       ASSERT(IS_ALIGNED(start + len, inode->root->fs_info->sectorsize))=
-;
-> >
-> > -     if (btrfs_fs_incompat(inode->root->fs_info, NO_HOLES))
-> > -             return 0;
-> >       return set_extent_bit(inode->file_extent_tree, start, start + len=
- - 1,
-> >                             EXTENT_DIRTY, NULL);
-> >   }
-> > @@ -112,14 +112,15 @@ int btrfs_inode_set_file_extent_range(struct btrf=
-s_inode *inode, u64 start,
-> >   int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u6=
-4 start,
-> >                                       u64 len)
-> >   {
-> > +     if (!inode->file_extent_tree)
-> > +             return 0;
-> > +
-> >       if (len =3D=3D 0)
-> >               return 0;
-> >
-> >       ASSERT(IS_ALIGNED(start + len, inode->root->fs_info->sectorsize) =
-||
-> >              len =3D=3D (u64)-1);
-> >
-> > -     if (btrfs_fs_incompat(inode->root->fs_info, NO_HOLES))
-> > -             return 0;
-> >       return clear_extent_bit(inode->file_extent_tree, start,
-> >                               start + len - 1, EXTENT_DIRTY, NULL);
-> >   }
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 9b98aa65cc63..175fd007f0ef 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -3781,6 +3781,30 @@ static noinline int acls_after_inode_item(struct=
- extent_buffer *leaf,
-> >       return 1;
-> >   }
-> >
-> > +static int btrfs_init_file_extent_tree(struct btrfs_inode *inode)
-> > +{
-> > +     struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> > +
-> > +     if (WARN_ON_ONCE(inode->file_extent_tree))
-> > +             return 0;
-> > +     if (btrfs_fs_incompat(fs_info, NO_HOLES))
-> > +             return 0;
-> > +     if (!S_ISREG(inode->vfs_inode.i_mode))
-> > +             return 0;
-> > +     if (btrfs_is_free_space_inode(inode))
-> > +             return 0;
-> > +
-> > +     inode->file_extent_tree =3D kmalloc(sizeof(struct extent_io_tree)=
-, GFP_KERNEL);
-> > +     if (!inode->file_extent_tree)
-> > +             return -ENOMEM;
-> > +
-> > +     extent_io_tree_init(fs_info, inode->file_extent_tree, IO_TREE_INO=
-DE_FILE_EXTENT);
-> > +     /* Lockdep class is set only for the file extent tree. */
-> > +     lockdep_set_class(&inode->file_extent_tree->lock, &file_extent_tr=
-ee_class);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >   /*
-> >    * read an inode from the btree into the in-memory inode
-> >    */
-> > @@ -3800,6 +3824,10 @@ static int btrfs_read_locked_inode(struct inode =
-*inode,
-> >       bool filled =3D false;
-> >       int first_xattr_slot;
-> >
-> > +     ret =3D btrfs_init_file_extent_tree(BTRFS_I(inode));
-> > +     if (ret)
-> > +             return ret;
-> > +
-> >       ret =3D btrfs_fill_inode(inode, &rdev);
-> >       if (!ret)
-> >               filled =3D true;
-> > @@ -6247,6 +6275,10 @@ int btrfs_create_new_inode(struct btrfs_trans_ha=
-ndle *trans,
-> >               BTRFS_I(inode)->root =3D btrfs_grab_root(BTRFS_I(dir)->ro=
-ot);
-> >       root =3D BTRFS_I(inode)->root;
-> >
-> > +     ret =3D btrfs_init_file_extent_tree(BTRFS_I(inode));
-> > +     if (ret)
-> > +             goto out;
-> > +
-> >       ret =3D btrfs_get_free_objectid(root, &objectid);
-> >       if (ret)
-> >               goto out;
-> > @@ -8413,20 +8445,10 @@ struct inode *btrfs_alloc_inode(struct super_bl=
-ock *sb)
-> >       struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);
-> >       struct btrfs_inode *ei;
-> >       struct inode *inode;
-> > -     struct extent_io_tree *file_extent_tree =3D NULL;
-> > -
-> > -     /* Self tests may pass a NULL fs_info. */
-> > -     if (fs_info && !btrfs_fs_incompat(fs_info, NO_HOLES)) {
-> > -             file_extent_tree =3D kmalloc(sizeof(struct extent_io_tree=
-), GFP_KERNEL);
-> > -             if (!file_extent_tree)
-> > -                     return NULL;
-> > -     }
-> >
-> >       ei =3D alloc_inode_sb(sb, btrfs_inode_cachep, GFP_KERNEL);
-> > -     if (!ei) {
-> > -             kfree(file_extent_tree);
-> > +     if (!ei)
-> >               return NULL;
-> > -     }
-> >
-> >       ei->root =3D NULL;
-> >       ei->generation =3D 0;
-> > @@ -8471,13 +8493,8 @@ struct inode *btrfs_alloc_inode(struct super_blo=
-ck *sb)
-> >       extent_io_tree_init(fs_info, &ei->io_tree, IO_TREE_INODE_IO);
-> >       ei->io_tree.inode =3D ei;
-> >
-> > -     ei->file_extent_tree =3D file_extent_tree;
-> > -     if (file_extent_tree) {
-> > -             extent_io_tree_init(fs_info, ei->file_extent_tree,
-> > -                                 IO_TREE_INODE_FILE_EXTENT);
-> > -             /* Lockdep class is set only for the file extent tree. */
-> > -             lockdep_set_class(&ei->file_extent_tree->lock, &file_exte=
-nt_tree_class);
-> > -     }
-> > +     ei->file_extent_tree =3D NULL;
-> > +
-> >       mutex_init(&ei->log_mutex);
-> >       spin_lock_init(&ei->ordered_tree_lock);
-> >       ei->ordered_tree =3D RB_ROOT;
+Then it looks fine to me.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> 
+> Thanks.
+> 
+> 
+>>
+>> Thanks,
+>> Qu
+>>>
+>>>        if (node) {
+>>>                if (btrfs_inode->delayed_node) {
+>>>                        refcount_inc(&node->refs);      /* can be accessed */
+>>>                        BUG_ON(btrfs_inode->delayed_node != node);
+>>> -                     spin_unlock(&root->inode_lock);
+>>> +                     xa_unlock(&root->delayed_nodes);
+>>>                        return node;
+>>>                }
+>>>
+>>> @@ -111,10 +111,10 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
+>>>                        node = NULL;
+>>>                }
+>>>
+>>> -             spin_unlock(&root->inode_lock);
+>>> +             xa_unlock(&root->delayed_nodes);
+>>>                return node;
+>>>        }
+>>> -     spin_unlock(&root->inode_lock);
+>>> +     xa_unlock(&root->delayed_nodes);
+>>>
+>>>        return NULL;
+>>>    }
+>>> @@ -148,21 +148,21 @@ static struct btrfs_delayed_node *btrfs_get_or_create_delayed_node(
+>>>                kmem_cache_free(delayed_node_cache, node);
+>>>                return ERR_PTR(-ENOMEM);
+>>>        }
+>>> -     spin_lock(&root->inode_lock);
+>>> +     xa_lock(&root->delayed_nodes);
+>>>        ptr = xa_load(&root->delayed_nodes, ino);
+>>>        if (ptr) {
+>>>                /* Somebody inserted it, go back and read it. */
+>>> -             spin_unlock(&root->inode_lock);
+>>> +             xa_unlock(&root->delayed_nodes);
+>>>                kmem_cache_free(delayed_node_cache, node);
+>>>                node = NULL;
+>>>                goto again;
+>>>        }
+>>> -     ptr = xa_store(&root->delayed_nodes, ino, node, GFP_ATOMIC);
+>>> +     ptr = __xa_store(&root->delayed_nodes, ino, node, GFP_ATOMIC);
+>>>        ASSERT(xa_err(ptr) != -EINVAL);
+>>>        ASSERT(xa_err(ptr) != -ENOMEM);
+>>>        ASSERT(ptr == NULL);
+>>>        btrfs_inode->delayed_node = node;
+>>> -     spin_unlock(&root->inode_lock);
+>>> +     xa_unlock(&root->delayed_nodes);
+>>>
+>>>        return node;
+>>>    }
+>>> @@ -275,14 +275,12 @@ static void __btrfs_release_delayed_node(
+>>>        if (refcount_dec_and_test(&delayed_node->refs)) {
+>>>                struct btrfs_root *root = delayed_node->root;
+>>>
+>>> -             spin_lock(&root->inode_lock);
+>>>                /*
+>>>                 * Once our refcount goes to zero, nobody is allowed to bump it
+>>>                 * back up.  We can delete it now.
+>>>                 */
+>>>                ASSERT(refcount_read(&delayed_node->refs) == 0);
+>>>                xa_erase(&root->delayed_nodes, delayed_node->inode_id);
+>>> -             spin_unlock(&root->inode_lock);
+>>>                kmem_cache_free(delayed_node_cache, delayed_node);
+>>>        }
+>>>    }
+>>> @@ -2057,9 +2055,9 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
+>>>                struct btrfs_delayed_node *node;
+>>>                int count;
+>>>
+>>> -             spin_lock(&root->inode_lock);
+>>> +             xa_lock(&root->delayed_nodes);
+>>>                if (xa_empty(&root->delayed_nodes)) {
+>>> -                     spin_unlock(&root->inode_lock);
+>>> +                     xa_unlock(&root->delayed_nodes);
+>>>                        return;
+>>>                }
+>>>
+>>> @@ -2076,7 +2074,7 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
+>>>                        if (count >= ARRAY_SIZE(delayed_nodes))
+>>>                                break;
+>>>                }
+>>> -             spin_unlock(&root->inode_lock);
+>>> +             xa_unlock(&root->delayed_nodes);
+>>>                index++;
+>>>
+>>>                for (int i = 0; i < count; i++) {
+>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>>> index ed40fe1db53e..d20e400a9ce3 100644
+>>> --- a/fs/btrfs/disk-io.c
+>>> +++ b/fs/btrfs/disk-io.c
+>>> @@ -674,7 +674,6 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
+>>>        INIT_LIST_HEAD(&root->ordered_extents);
+>>>        INIT_LIST_HEAD(&root->ordered_root);
+>>>        INIT_LIST_HEAD(&root->reloc_dirty_list);
+>>> -     spin_lock_init(&root->inode_lock);
+>>>        spin_lock_init(&root->delalloc_lock);
+>>>        spin_lock_init(&root->ordered_extent_lock);
+>>>        spin_lock_init(&root->accounting_lock);
+>>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>>> index 8ea9fd4c2b66..4fd41d6b377f 100644
+>>> --- a/fs/btrfs/inode.c
+>>> +++ b/fs/btrfs/inode.c
+>>> @@ -5509,9 +5509,7 @@ static int btrfs_add_inode_to_root(struct btrfs_inode *inode, bool prealloc)
+>>>                        return ret;
+>>>        }
+>>>
+>>> -     spin_lock(&root->inode_lock);
+>>>        existing = xa_store(&root->inodes, ino, inode, GFP_ATOMIC);
+>>> -     spin_unlock(&root->inode_lock);
+>>>
+>>>        if (xa_is_err(existing)) {
+>>>                ret = xa_err(existing);
+>>> @@ -5531,16 +5529,16 @@ static void btrfs_del_inode_from_root(struct btrfs_inode *inode)
+>>>        struct btrfs_inode *entry;
+>>>        bool empty = false;
+>>>
+>>> -     spin_lock(&root->inode_lock);
+>>> -     entry = xa_erase(&root->inodes, btrfs_ino(inode));
+>>> +     xa_lock(&root->inodes);
+>>> +     entry = __xa_erase(&root->inodes, btrfs_ino(inode));
+>>>        if (entry == inode)
+>>>                empty = xa_empty(&root->inodes);
+>>> -     spin_unlock(&root->inode_lock);
+>>> +     xa_unlock(&root->inodes);
+>>>
+>>>        if (empty && btrfs_root_refs(&root->root_item) == 0) {
+>>> -             spin_lock(&root->inode_lock);
+>>> +             xa_lock(&root->inodes);
+>>>                empty = xa_empty(&root->inodes);
+>>> -             spin_unlock(&root->inode_lock);
+>>> +             xa_unlock(&root->inodes);
+>>>                if (empty)
+>>>                        btrfs_add_dead_root(root);
+>>>        }
+>>> @@ -10871,7 +10869,7 @@ struct btrfs_inode *btrfs_find_first_inode(struct btrfs_root *root, u64 min_ino)
+>>>        struct btrfs_inode *inode;
+>>>        unsigned long from = min_ino;
+>>>
+>>> -     spin_lock(&root->inode_lock);
+>>> +     xa_lock(&root->inodes);
+>>>        while (true) {
+>>>                inode = xa_find(&root->inodes, &from, ULONG_MAX, XA_PRESENT);
+>>>                if (!inode)
+>>> @@ -10880,9 +10878,9 @@ struct btrfs_inode *btrfs_find_first_inode(struct btrfs_root *root, u64 min_ino)
+>>>                        break;
+>>>
+>>>                from = btrfs_ino(inode) + 1;
+>>> -             cond_resched_lock(&root->inode_lock);
+>>> +             cond_resched_lock(&root->inodes.xa_lock);
+>>>        }
+>>> -     spin_unlock(&root->inode_lock);
+>>> +     xa_unlock(&root->inodes);
+>>>
+>>>        return inode;
+>>>    }
+> 
 
