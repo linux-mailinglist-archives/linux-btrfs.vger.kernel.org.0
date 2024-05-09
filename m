@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4849-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4850-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C188C085C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 02:22:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C93B08C0860
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 02:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50D001C20E87
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 00:22:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0219E1C20F23
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 00:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966C01113;
-	Thu,  9 May 2024 00:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860F81843;
+	Thu,  9 May 2024 00:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="h+u5yhz8"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ohJB5n/e"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F98C38C
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 00:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8499964D
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 00:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715214118; cv=none; b=nrvfeII+dfXM8w/X0kl/9WVAIevB4YC4fB7vz2DRnzVLFir7mEpVxvpEiIrLMdRSy9RhmT4FRr8e+b4BAQtdEiQJjZfkg4Gb9ftgmliaGvwvsGcrY4BZzzQsYWAO/xedsL/I+TQNWBWKhfsPIM3ggGUVfsYTuTcjp6f28+FKxOs=
+	t=1715214202; cv=none; b=M54Pl1zfiR7LtlwTohEDnnPslDlpD80Pq9V6zW2HoxO/gIJ8C3upNl4GniK1Z3vnCEaoNoapryxBgeJolXhzYOXh52NORSKFtvLZ5YciWC3fqRPqpfNyA2o1j6+fJb2jHsib30mF19sH2aaHPA55mjinSaGd4BXkSlDEIQwz3Rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715214118; c=relaxed/simple;
-	bh=vBmA2fLV6JOzxuxhA+nzFcktnFvPPnkzVwfol8mDeWM=;
+	s=arc-20240116; t=1715214202; c=relaxed/simple;
+	bh=HDy436t21/KvO8BwpYX0KCi29cP6Sb5qsT5BnUWFwvs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=lXi6vHMOLwmwCobH/jIaSdHocNk7gHj3TsvJb8DVGb5pr87DiHahHlz/lzH1CDo1eOFlwFC1rbUnCqpwN+kP/i7X2bA6tzXM9u+CGRebAHVOVaABdbZHlTwVA7HBPZkMRkbwpYeALDIl27FazsOrk1JKLd6NJ1zjubBOzXDXrJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=h+u5yhz8; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=KPYFKwaAPymPlnL3jYnCRZLOeeItx22L1ybhZv4/jSu/T8gyaHkz5X7N+qYQNoYCBf6EOicviRqyICzXxs2H6HLO00UuQaPedj3dxCREy+eDDMaPrgsjudfqtQy709h3L6pWGgDzmSCqshK/qSm3MfvQY2qikUn2wZ9Y55t2I8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ohJB5n/e; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715214110; x=1715818910; i=quwenruo.btrfs@gmx.com;
-	bh=0CmryvhlTQNAkRgPTKbEiMbbU7seeaUeIxm0nG3KXlA=;
+	s=s31663417; t=1715214194; x=1715818994; i=quwenruo.btrfs@gmx.com;
+	bh=Z7dWDfQ3hmz1gBt9Rn655fl3D5f+Wu4RmIJFKm35crE=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=h+u5yhz8r6drXyj3RQ4y8UyoLXqipfR593VI85piLOo4i8xlHjxHRg6Rq122NXRP
-	 UBHx7ZYxKRg9TNAe5+ps5iTaOLDbuTXH2T963e1A8uXMpQDyUN9IeSG6vvFFTzrfu
-	 +mIra/rtek+r376QxvcAFqAtKpDyeeKKgTJoVSbgFqX06xw03FitITij+OBhn6xig
-	 KrJnN8WSwkNU5sqjGOLugv2T+Zcy5Rw9DvCVCR6+yPiRl3fXkxkICA1vMtZj5klOD
-	 NQaerxMwAMJiig2txm1MOs288h7BcpMfMf8dyidbO1ULxUrl1MOZBiAJDPz+h2nMr
-	 Kjwj/SWxIEma4o1QpQ==
+	b=ohJB5n/ekPD7UlJy08F/xwxSjuvk96Lk3xwNzbp9FziOc+jZzdRJaEU5utKp/dzV
+	 Nxj4g36+xQW+MQ/SF9ERu5Ld87kXM3NttOQ8MzPMvySdvmY1q8XAb75EiJDlr7afA
+	 1ZEhEkK1+xvkU/Ims2vFFIzxcT3L5Z6kYxjlTPWYmMa0stBnCCfnksmA2yc4dPnGH
+	 sIISnWD5hLNBHBKxG8aGhjmFCHut4/0wu5hMHf2Fct2fukf3rtjP3mpisOzF+EISN
+	 Yd8DHrsvrxHYhWz+4YgGWmFxpOV5Mc4scfCNdKUqdyZy2zVbnIF3dgNtmV6ppL2wC
+	 SHwPBNBICZMSR+o45g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7i8Y-1sjESN2mLi-018Kez; Thu, 09
- May 2024 02:21:50 +0200
-Message-ID: <a521fb0a-c2f5-49cf-b1b8-9a1ae67ee824@gmx.com>
-Date: Thu, 9 May 2024 09:51:46 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdebB-1seTMe1Rbd-00Ze6X; Thu, 09
+ May 2024 02:23:14 +0200
+Message-ID: <32e84f0f-a8d9-4b84-9a52-c0230d779de4@gmx.com>
+Date: Thu, 9 May 2024 09:53:09 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/8] btrfs: preallocate inodes xarray entry to avoid
- transaction abort
+Subject: Re: [PATCH 3/8] btrfs: reduce nesting and deduplicate error handling
+ at btrfs_iget_path()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1715169723.git.fdmanana@suse.com>
- <b9b409c79af85d0fe336ebec2800c36399c8f515.1715169723.git.fdmanana@suse.com>
+ <ca3427c0ca2b7984b0d074531cc31b0433b7eb56.1715169723.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,44 +89,36 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <b9b409c79af85d0fe336ebec2800c36399c8f515.1715169723.git.fdmanana@suse.com>
+In-Reply-To: <ca3427c0ca2b7984b0d074531cc31b0433b7eb56.1715169723.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:B2cSA3eJ5XJ/Aj4MQxZ0DqUcvfdJReCvqhTg0J1W3rS1pZkjIqr
- cAVDj2Wlny/wn9bIYiO85tCsdrkELD8bppW9VZHHY5X+esCexq0xCz1wGfnJ/tqzZbfTLCZ
- z23RvVNm5ymQfJhPHrFGXCBoTKthH0xKLh+ZzCgq5nyHMDYgyas10K9m8yRI7VvAaV5trOq
- ep/rpVKFZS1Pzz5TvW2AQ==
+X-Provags-ID: V03:K1:8d0th9kwrXnDDnaTgctHg5yofAEYJdf3XfSm28HvGCItcA/Dy4j
+ QdP3EcPePPqB8oJWWOKa6VC/7cJNPsGJxRMWeCnYirhLpKeJCS8p7FADDKsRXSYtTbm81mN
+ 6ynpkPS0bDXvuY/1l0zWg30bysEWlJ1NlRdS3M970nehf7OAik720Jt4mpUbMSEdjZmYd8P
+ GqN8RJ3hvgSCtFIAlwiDA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:U3yim41m8vY=;meeVD8F/jBR8k8HXKz8tOT234Wz
- Z90znkTOxrxByDYG1TlIicO+yUNrRhpBuzwS/fQgYnwNEFXsPe59xP7QTYj0lPiesnSV6ahB/
- C4DoEEwg3VeiZTQjV3UyNU3D1e8pwj/mS4GStJeIj8nHg9RTsGvE9rjW6Obemr75bWUSwqIM+
- nGpxCR54zSiUbTuRRaH2jjBTPfpz4V7I4WcRc8wjD3XeMik9VLCg8V3czC8znZPQUkaKdYJ28
- 8knNTnghuOJd8SvwD8MSDSg5na0nStB9QXWBnyb4HRmRRXhiA369FBqVLKnSadrWOgNNWtX5C
- g59leendNfHbSNqmUV00J15Zpp9kNChYuxSkJJu/YSjG9+Ki9OfZZzFPGc8bwhZ18RCaHK2Tt
- N1jn2H/ucfcDs7b2lfEuYMJjFWaOG321LZ1Mro6i+yIghO56pXXzfEO6lozb/ymAKx++x9/9w
- dPbfAMx5j0tMncIqmzPrfKjkCKDDfCvXKsNpDCsxYZWcZLoHPetdyqSiZpsRO5CEnEEX2FAvi
- J9L+0uP7QtGqBEHMpG8+pTqMWXHkAlIEhHwUhIiq8dcOQJmIpHrkqkLuZnIslf8A/GJJPJFQc
- gwWLwhvTl5oJ8gZS8BtB9BVR4tnGBsR4n8/euW50lFiv60tIOXz5llsVMS7Vv2sjvNDo9S+Q0
- yJwpgpuhErwZgDhbJ82wBioUKu9THpUbqmQWMwRa/WhtJ6ytuyjFKIbLLmKEdPK1fah8YYjgs
- Hd7jDpDX2uR4g/F4oyVCsVfg+6q5omg89zua5Xk1hrnqIqB0lgsv7boeZ/KNeYS+f3HYkxExd
- M29T9VmUKm0nftgTjkNaaW7DIvRtyFxwMsrNjjiutLp4k=
+UI-OutboundReport: notjunk:1;M01:P0:DPeDwjknzRI=;EnIfxV41TfJuf0CbV8rjYvqaXFm
+ ZozECHk5srEubCDWizqTtdCUGoIDqqRtu5u4FqcW00DRHDPRLc6lSWYLaY55RfgAdvfW+6WwQ
+ k2cCz7qs614rqj2dNTMbULbfVNDrEdekuMqleN3TeZygsbLJ+skfB7GqgInx9ju34NYG39awF
+ 21Afy3x5nEQ7W+0L6LizX5fAG8Zwd7k7dHHfcArJ99xXoVeBgA+/5xrwMaBGVg+JPK0i9KUUh
+ f35ywc8f3hdvp5NqO0rIbsXCMmZPU1QTgCicJZaPOfjHFC6s+NbHLxrItV67NInQj4T13/2r0
+ xdPKXT4HMD8eFrertImglU5iqI9AHUu1LGtitb3bzZS7U6KfTx7XKC1ZV8vekfSvyirGWbCYb
+ DUiz2vQYdaSI/N2hqxj1cwfqY0WfcJr0/JoV7dtg9zeax0440C8JvHShWZ9NspenMFmmGXIRl
+ Bol3CELSiJWO5+LcZb2WMgwTRv/gr3QF5W1MWD1/IXrd3EAlvbjzhjBkegmWqHEGw24bplWKd
+ tB/OK9mfs95VJUz/pWK23PfHXuZkpQhfvVJet9pVp0x3crC/12VKTuD8MR8zWxhcyF8q1ftvE
+ pmC4pcmurKrL197xLJa0pi0xVakLQHFcuwgrFAXgjI9qLuDfJpOQPdHdRnBLtu7x5ejKcPyWS
+ 6ucET2OMdqaAvpuiWf/Ig5nxGEtcdG2v79z/NkwZ0x5QG7Bv6ZaC/PtNct01aQTLeDt5QqIEo
+ Bhi+WTSgFenR56gLdzt+8XFSxDITKejKva4425nf1qTAxR6GIPX1+0wG4M6xDq4EX9sqx0GEP
+ 76rQeEpkqUB4SmZMgg6XCEoaX3HMWZwoOwwBHhzqoDAyY=
 
 
 
 =E5=9C=A8 2024/5/8 21:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> When creating a new inode, at btrfs_create_new_inode(), one of the very
-> last steps is to add the inode to the root's inodes xarray. This often
-> requires allocating memory which may fail (even though xarrays have a
-> dedicated kmem_cache which make it less likely to fail), and at that poi=
-nt
-> we are forced to abort the current transaction (as some, but not all, of
-> the inode metadata was added to its subvolume btree).
->
-> To avoid a transaction abort, preallocate memory for the xarray early at
-> btrfs_create_new_inode(), so that if we fail we don't need to abort the
-> transaction and the insertion into the xarray is guaranteed to succeed.
+> Make btrfs_iget_path() simpler and easier to read by avoiding nesting of
+> if-then-else statements and having an error label to do all the error
+> handling instead of repeating it a couple times.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -135,94 +127,72 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/inode.c | 26 +++++++++++++++++++-------
->   1 file changed, 19 insertions(+), 7 deletions(-)
+>   fs/btrfs/inode.c | 44 +++++++++++++++++++++-----------------------
+>   1 file changed, 21 insertions(+), 23 deletions(-)
 >
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 450fe1582f1d..85dbc19c2f6f 100644
+> index 85dbc19c2f6f..8ea9fd4c2b66 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -5493,7 +5493,7 @@ static int fixup_tree_root_location(struct btrfs_f=
-s_info *fs_info,
->   	return err;
->   }
->
-> -static int btrfs_add_inode_to_root(struct btrfs_inode *inode)
-> +static int btrfs_add_inode_to_root(struct btrfs_inode *inode, bool prea=
-lloc)
+> @@ -5598,37 +5598,35 @@ struct inode *btrfs_iget_path(struct super_block=
+ *s, u64 ino,
+>   			      struct btrfs_root *root, struct btrfs_path *path)
 >   {
->   	struct btrfs_root *root =3D inode->root;
->   	struct btrfs_inode *existing;
-> @@ -5503,9 +5503,11 @@ static int btrfs_add_inode_to_root(struct btrfs_i=
-node *inode)
->   	if (inode_unhashed(&inode->vfs_inode))
->   		return 0;
+>   	struct inode *inode;
+> +	int ret;
 >
-> -	ret =3D xa_reserve(&root->inodes, ino, GFP_NOFS);
-> -	if (ret)
-> -		return ret;
-> +	if (prealloc) {
-> +		ret =3D xa_reserve(&root->inodes, ino, GFP_NOFS);
-> +		if (ret)
-> +			return ret;
-> +	}
+>   	inode =3D btrfs_iget_locked(s, ino, root);
+>   	if (!inode)
+>   		return ERR_PTR(-ENOMEM);
 >
->   	spin_lock(&root->inode_lock);
->   	existing =3D xa_store(&root->inodes, ino, inode, GFP_ATOMIC);
-> @@ -5606,7 +5608,7 @@ struct inode *btrfs_iget_path(struct super_block *=
-s, u64 ino,
+> -	if (inode->i_state & I_NEW) {
+> -		int ret;
+> +	if (!(inode->i_state & I_NEW))
+> +		return inode;
 >
->   		ret =3D btrfs_read_locked_inode(inode, path);
->   		if (!ret) {
-> -			ret =3D btrfs_add_inode_to_root(BTRFS_I(inode));
-> +			ret =3D btrfs_add_inode_to_root(BTRFS_I(inode), true);
->   			if (ret) {
->   				iget_failed(inode);
->   				inode =3D ERR_PTR(ret);
-> @@ -6237,6 +6239,7 @@ int btrfs_create_new_inode(struct btrfs_trans_hand=
-le *trans,
->   	struct btrfs_item_batch batch;
->   	unsigned long ptr;
->   	int ret;
-> +	bool xa_reserved =3D false;
->
->   	path =3D btrfs_alloc_path();
->   	if (!path)
-> @@ -6251,6 +6254,11 @@ int btrfs_create_new_inode(struct btrfs_trans_han=
-dle *trans,
->   		goto out;
->   	inode->i_ino =3D objectid;
->
-> +	ret =3D xa_reserve(&root->inodes, objectid, GFP_NOFS);
-> +	if (ret)
-> +		goto out;
-> +	xa_reserved =3D true;
+> -		ret =3D btrfs_read_locked_inode(inode, path);
+> -		if (!ret) {
+> -			ret =3D btrfs_add_inode_to_root(BTRFS_I(inode), true);
+> -			if (ret) {
+> -				iget_failed(inode);
+> -				inode =3D ERR_PTR(ret);
+> -			} else {
+> -				unlock_new_inode(inode);
+> -			}
+> -		} else {
+> -			iget_failed(inode);
+> -			/*
+> -			 * ret > 0 can come from btrfs_search_slot called by
+> -			 * btrfs_read_locked_inode, this means the inode item
+> -			 * was not found.
+> -			 */
+> -			if (ret > 0)
+> -				ret =3D -ENOENT;
+> -			inode =3D ERR_PTR(ret);
+> -		}
+> -	}
+> +	ret =3D btrfs_read_locked_inode(inode, path);
+> +	/*
+> +	 * ret > 0 can come from btrfs_search_slot called by
+> +	 * btrfs_read_locked_inode(), this means the inode item was not found.
+> +	 */
+> +	if (ret > 0)
+> +		ret =3D -ENOENT;
+> +	if (ret < 0)
+> +		goto error;
 > +
->   	if (args->orphan) {
->   		/*
->   		 * O_TMPFILE, set link count to 0, so that after this point, we
-> @@ -6424,8 +6432,9 @@ int btrfs_create_new_inode(struct btrfs_trans_hand=
-le *trans,
->   		}
->   	}
->
-> -	ret =3D btrfs_add_inode_to_root(BTRFS_I(inode));
-> -	if (ret) {
-> +	ret =3D btrfs_add_inode_to_root(BTRFS_I(inode), false);
-> +	if (WARN_ON(ret)) {
-> +		/* Shouldn't happen, we used xa_reserve() before. */
->   		btrfs_abort_transaction(trans, ret);
->   		goto discard;
->   	}
-> @@ -6456,6 +6465,9 @@ int btrfs_create_new_inode(struct btrfs_trans_hand=
-le *trans,
->   	ihold(inode);
->   	discard_new_inode(inode);
->   out:
-> +	if (xa_reserved)
-> +		xa_release(&root->inodes, objectid);
+> +	ret =3D btrfs_add_inode_to_root(BTRFS_I(inode), true);
+> +	if (ret < 0)
+> +		goto error;
 > +
->   	btrfs_free_path(path);
->   	return ret;
+> +	unlock_new_inode(inode);
+>
+>   	return inode;
+> +error:
+> +	iget_failed(inode);
+> +	return ERR_PTR(ret);
 >   }
+>
+>   struct inode *btrfs_iget(struct super_block *s, u64 ino, struct btrfs_=
+root *root)
 
