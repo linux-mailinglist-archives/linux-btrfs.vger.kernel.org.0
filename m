@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4852-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4853-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B638C0878
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 02:30:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 625158C0888
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 02:40:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1217CB216C1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 00:30:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54DDC1C212CD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2024 00:40:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A65FBE62;
-	Thu,  9 May 2024 00:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85D4020DC5;
+	Thu,  9 May 2024 00:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ELuh/jRk"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ar9PdE08"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF481A2C38
-	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 00:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607FD9463
+	for <linux-btrfs@vger.kernel.org>; Thu,  9 May 2024 00:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715214643; cv=none; b=CVOwpJ5oSTK17IUa1SONByPkjeVj3EE3hchx/ANOCcutPMQ02Xzry/w//bOQTqiy5MTEfmDXsvMCEjJTCXS7exQFbeMSFCCAeUU3IYVujMxmPehYVqRVXoDF4JvgiQdZ45KGWfjtr6yMplvfxR95RF92HIt613a/yaeXI8hQ1mE=
+	t=1715215195; cv=none; b=pziQlyHNAk8Rvk7uKxfTVJAmD/snTwqCQI9EkkQ/AtmvTNWnOgtVpZJHucv4r21IGXYqS5oglGRFssESdWwUuQPR/NTG2kse0IzLSW80rWJyfvGINiCOb3v3doqm8AH7RglxZoKjGx+fB3i2VBofWerwW8/svmY+pUvD5nLcEmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715214643; c=relaxed/simple;
-	bh=d0lMrnqNIJRaztK871OKmQiE/nkqhs/s6AtMtw/eKHY=;
+	s=arc-20240116; t=1715215195; c=relaxed/simple;
+	bh=5m168/aHaWK66PPz2wFZqxLxMu/21B2IV92LYwyH6Qk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=niTkCFHcNaspZZQFh0VAyHanO/WVtEUN5ZOcykqNT9WK8zukplIlh1rr80QOZGAp0AsB9a6mtsO5RXCXFwq2pVSTaIJT9kn0ckqRov10tA7iGH5X4eD4eNOP0viWRj9BdzYXvgFLSP+OmTEKMMedXLmnX+AncY5VxOK5akvmd9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ELuh/jRk; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=tqw9qECeDDBq642Z8T+Ya+NELRjUHG5SIv2XO01WLpKVcjslJSb042oCs1ps4Uphx5d3Yd2CQfQMDlTzCgy/dnQX5h/OtzNt4vZQLz5ppd4XHB2nes0JIa1KipoUH5+me8NUwONFcFWm8DJFiCvI+3fHJQTmo38yAnYPfpS/rY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ar9PdE08; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715214634; x=1715819434; i=quwenruo.btrfs@gmx.com;
-	bh=Ehv7v9PUBFTaqe5JrZ+mLq7gwUdc+ccGUuvNbXzLL4k=;
+	s=s31663417; t=1715215186; x=1715819986; i=quwenruo.btrfs@gmx.com;
+	bh=fGVMJgsJVJmOKb61qCvo8KQiJFxl1b5o7EuPco87RYg=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=ELuh/jRkicZv2qK43t5sK9euDOtN4dPkyMHlXl/dP0WSCCGaEsSZ0qnoYFvHWFDs
-	 cv16GpWu9J6m34WrXf7F658/zxXKmOeN0C+N7aSjI7/2GMd5oENIswyz3SHCJYS+x
-	 W3zrxc+ANmQVgDsnv2zZ3Mf10+aKHHqh68B5ZRLNSGOwX8HPfZCTFHyid2oBHver5
-	 T9aIsuMdr7JJqCQc5BWclc+5CmudodmkppaCv2NNLJHZI3zcnQ12EsVWLgb6k7PWb
-	 KahEUl8uaIZT/qTT+3VfSqnFihPRxeiAeBdl7vnzLBJHwSU5tHqUBl7ae0UrJI4HK
-	 Nhgs0CCNbcM3MymvYQ==
+	b=ar9PdE08O1jn3JNxuK3RNVLdLypxMmwaTmmX3pX92+goj8R/F8OokMT7NH00s9f5
+	 6H8XgSvlGxdQ3ey2Swfv6nawDxWnqmOpNqMgT+qrG/MJ4haFM45mWoZ7KmhjZN8YO
+	 BfivefW88+xoeOiCc4xIRQpIgfrlUwVdI26agt/Dr0UMnSzEGHBFG763V0q82y9E8
+	 LM24XW+Y3/RlL6v88IZ6WKXS2X2E9VsoKZvdLRL6gJUICfSfpWq3h6dwmR+wjAKrO
+	 jZDs0UwvKo+oOQyFZveLESj/l56JCYyRwOJ38WwMnydTt056CuUlg3gLBrq/YifoN
+	 zix0NoLKr6HZgnOR5w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO24-1sOoHh3dLU-00nuVF; Thu, 09
- May 2024 02:30:34 +0200
-Message-ID: <cc2ecee5-5ef0-43d0-bd24-c0d538b34c97@gmx.com>
-Date: Thu, 9 May 2024 10:00:29 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MowGU-1sOGTf4AJS-00nMvV; Thu, 09
+ May 2024 02:39:46 +0200
+Message-ID: <39f3094b-4e6a-4f72-8ba7-c013a33a05ad@gmx.com>
+Date: Thu, 9 May 2024 10:09:42 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/8] btrfs: unify index_cnt and csum_bytes from struct
- btrfs_inode
+Subject: Re: [PATCH 6/8] btrfs: don't allocate file extent tree for non
+ regular files
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1715169723.git.fdmanana@suse.com>
- <a9cda79653d2aa3964dec05ec21b96ce8f8f8e4f.1715169723.git.fdmanana@suse.com>
+ <13d914be0518dc3f4a8086f96275c3b8bf113d63.1715169723.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,312 +89,234 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <a9cda79653d2aa3964dec05ec21b96ce8f8f8e4f.1715169723.git.fdmanana@suse.com>
+In-Reply-To: <13d914be0518dc3f4a8086f96275c3b8bf113d63.1715169723.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DHpNBeNUzMWVZ2sWG1yIQNSoCZnjfDnhxYInkQ1d3ZOYcO/bpKx
- rsglFWnLbiYze4BnmSQK0DDqBcS46T4+oplk8evIQEtolRTwGMPGxRxZXSJkJwLwmSHMnN8
- 2EwcRp74lFdzAVpyAukegw1miJdT02gsKk4AgCwMYNwLXlRIPhk15BahJJ2XATf+wUkk/pA
- Ho0kSBh+dYJXpW6ktugxA==
+X-Provags-ID: V03:K1:vrMQAnISV7H5pCW/RcDFT6cBl9dIgOSuZ6PXNIeiPTZZXNBs1Fs
+ Fqd5vINhzBnH855QseUH5vBdz/WqtkaCqbs/oZ/8fGuBDbcddaKwtWoafDpq6DM6aY7LMxw
+ h7dSbOd65fFVnJbB3tojAQ1AcXD5ipQh4lyDTiYDcPIOhE3ZsDB2iPGgaoXBnRh57YHVduW
+ ejuaPYnstKZUHb5tv25/g==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iPDV6LRi5QQ=;P1k32epvlynXyZhN341IsYwIvTo
- YekRRSp2HIv8f7y4cBCsIMIjZHq1Guq9qRLWOnv7EMyDLpKk2iQWIDf1SF+Ng7ondqY0zlfWv
- UbXjBrOh23Jq1P2Z9Czk045LDDI8VGzWf/CuwWbpgv8KQfmg8+Wi+dMPfMtZMhFeghq2bsA0Q
- HUHGafQyEucoNuKpSg06LlLzo4pIzujbtfD6wXR8tiNe6kK9yi0o+69AxLKj1XMyaFQHyzkmq
- pkqCPDkNYnoCUivEaA3xmqaoQr/x4Cnxjkc+Ksio7+q8KWgzgSv5DfbpdaPHxgFz5eQgAjoUw
- Gm+M7+mBAlktr/ORQZ8xPeO6YZXBjDxinyzzKDF7gQmZ/LtgPDCE7UUga6qE4wWJ4ShClD32a
- vbpGoBjq7+yV3OSx7gyCAKFtUX2lhy9Bb4lTT9xKPfZlWWvfmHX6H+swEkZPFf5Ly9+eKFfTi
- MuP7ObZG6vacH/u/yAoUtuGSFAmYOlQU2OOE8UKPzhW96wIEfmPbbdjy2E0xZeBMV/4y7wbwd
- 4qjSAGoPqEgcCdtSSti76U0rnrw2jzueEgy9ur51B9Y+6vmw2eFYR6Nzz8wrcWLVg8kYqs6Kl
- pARqP5wTLXmtXLj6BdCpM3UdCBeWztBrC6HDADXguzKBl6Pg8HRElZvOwp7CiTEvCNBgVqlzn
- FceBUxDBJsZsJM+Rd5V189eVu284zh+KjXQ2IP8DHJTgSzqhJiSNTnbENvsjWgiwpmMVpKt8W
- PeD+QhjUdBGVnrEPqG9AMC8k6f25AbnLSPn+8UYQLM4rjhDy1WZRr2moOmBHtKhxEivmJ067Z
- oWXxHtrIiyAMITz4raAzspZDXPYXEQ7l23J3kYPix/VV0=
+UI-OutboundReport: notjunk:1;M01:P0:PvlwrhaTv3k=;NifHThNi7Sf42q1dW2+MGsIeW/H
+ 9M6co8dryetY7XbXA4/gujptO2SF8g9bijF1gwqXanUJMyYFPfzKCdPJt7D70N+EqovigMkHB
+ dOMBakaXcPKspY5FyugaeOOB2cBVmlD0+eR5N9kCybGwH5cdsQCyeAkjEnQecLwNdNr3xSa/G
+ C5aeYmTc4k2CV9DYtHZhImFiWJKXwIXzZekvu9EfgMclxTdQyUImBLFbdDGpGGaQtui7nAC7X
+ tWr2a5tOiKCI542kR/D4LHUYdh+ksRMU9jQDNn4rJpYREI/U3Hhri3c3k/dO4OVIfnVrD+UH5
+ qwEYp6WnMxqD5uI1pd6I5eB/QtVkT3cBC/Zv80vM9EN0GwbALgdBuYCGPmDwYSA008nKcaWw2
+ ScZNGjX7OXPZVpC0jV/b+wEsvA0Ire8n4hxY+88qwSwrGd/xsdvVGM/SpQ7s/rDtelMWIULxT
+ pbqY/0NB2UAhcWroGUcj8DpEaQTDSdXt2C4kjnVda9TVxpoJBPi2O3Fjqwmiv0qotEMGVLOUx
+ RWCLFNsYGsdsuST0BRz71fpHMBxoJRnCM3iSZveKZAnjv+9m7fvcAqUGG1RJwpa9bXMlfnQJ6
+ 4iArgSgIVREKkzwYfUOckZYq6oI5PlB+SiQfU1gcmxQHo/aVcwikbGR5nTCY5/Snwa+0KsVLT
+ WGMiW9/l0FTYzmQdZmSCB+mgYegE8aRScXSR3KR8lSw6T0rCKiA3VeorFXKkDoawtYNFf7FMt
+ SLPqIXpw4KzILes40h5OsqaY64dP43Jwqu4kIB/Ew1qx1cf3bDhuvIcD971NeFiXqVCBs/sil
+ T5GPGqucEVqSWhjJUGEFFMbEKzgp0Zd41SMrmLrqmN+zo=
 
 
 
 =E5=9C=A8 2024/5/8 21:47, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> The index_cnt field of struct btrfs_inode is used only for two purposes:
+> When not using the NO_HOLES feature we always allocate an io tree for an
+> inode's file_extent_tree.
+
+I'm wondering can we discard non-NO_HOLES support directly so that we
+can get rid of the file_extent_tree completely?
+
+Initially I'm wondering why NO_HOLES makes a difference, especially as
+NO_HOLES can be set halfway, thus we can still have explicit hole extents.
+
+But it turns out that the whole file_extent_tree() is only to handle
+non-NO_HOLES case so that we always have a hole for the whole file range
+until i_size.
+
+Considering NO_HOLES is considered safe at 4.0 kernel, can we start
+deprecating non-NO_HOLES?
+
+> This is wasteful because that io tree is only
+> used for regular files, so we allocate more memory than needed for inode=
+s
+> that represent directories or symlinks for example, or for inodes that
+> correspond to free space inodes.
 >
-> 1) To store the index for the next entry added to a directory;
->
-> 2) For the data relocation inode to track the logical start address of t=
-he
->     block group currently being relocated.
->
-> For the relocation case we use index_cnt because it's not used for
-> anything else in the relocation use case - we could have used other fiel=
-ds
-> that are not used by relocation such as defrag_bytes, last_unlink_trans
-> or last_reflink_trans for example (amongs others).
->
-> Since the csum_bytes field is not used for directories, do the following
-> changes:
->
-> 1) Put index_cnt and csum_bytes in a union, and index_cnt is only
->     initialized when the inode is a directory. The csum_bytes is only
->     accessed in IO paths for regular files, so we're fine here;
->
-> 2) Use the defrag_bytes field for relocation, since the data relocation
->     inode is never used for defrag purposes. And to make the naming bett=
-er,
->     alias it to reloc_block_group_start by using a union.
->
-> This reduces the size of struct btrfs_inode by 8 bytes in a release
-> kernel, from 1040 bytes down to 1032 bytes.
+> So improve on this by allocating the io tree only for inodes of regular
+> files that are not free space inodes.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/btrfs_inode.h   | 46 +++++++++++++++++++++++++---------------
->   fs/btrfs/delayed-inode.c |  3 ++-
->   fs/btrfs/inode.c         | 21 ++++++++++++------
->   fs/btrfs/relocation.c    | 12 +++++------
->   fs/btrfs/tree-log.c      |  3 ++-
->   5 files changed, 54 insertions(+), 31 deletions(-)
->
-> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> index e577b9745884..19bb3d057414 100644
-> --- a/fs/btrfs/btrfs_inode.h
-> +++ b/fs/btrfs/btrfs_inode.h
-> @@ -215,11 +215,20 @@ struct btrfs_inode {
->   		u64 last_dir_index_offset;
->   	};
->
-> -	/*
-> -	 * Total number of bytes pending defrag, used by stat to check whether
-> -	 * it needs COW. Protected by 'lock'.
-> -	 */
-> -	u64 defrag_bytes;
-> +	union {
-> +		/*
-> +		 * Total number of bytes pending defrag, used by stat to check whethe=
-r
-> +		 * it needs COW. Protected by 'lock'.
-> +		 * Used by inodes other than the data relocation inode.
-> +		 */
-> +		u64 defrag_bytes;
-> +
-> +		/*
-> +		 * Logical address of the block group being relocated.
-> +		 * Used only by the data relocation inode.
-> +		 */
-> +		u64 reloc_block_group_start;
-> +	};
->
->   	/*
->   	 * The size of the file stored in the metadata on disk.  data=3Dorder=
-ed
-> @@ -228,12 +237,21 @@ struct btrfs_inode {
->   	 */
->   	u64 disk_i_size;
->
-> -	/*
-> -	 * If this is a directory then index_cnt is the counter for the index
-> -	 * number for new files that are created. For an empty directory, this
-> -	 * must be initialized to BTRFS_DIR_START_INDEX.
-> -	 */
-> -	u64 index_cnt;
-> +	union {
-> +		/*
-> +		 * If this is a directory then index_cnt is the counter for the
-> +		 * index number for new files that are created. For an empty
-> +		 * directory, this must be initialized to BTRFS_DIR_START_INDEX.
-> +		 */
-> +		u64 index_cnt;
-> +
-> +		/*
-> +		 * If this is not a directory, this is the number of bytes
-> +		 * outstanding that are going to need csums. This is used in
-> +		 * ENOSPC accounting. Protected by 'lock'.
-> +		 */
-> +		u64 csum_bytes;
-> +	};
->
->   	/* Cache the directory index number to speed the dir/file remove */
->   	u64 dir_index;
-> @@ -256,12 +274,6 @@ struct btrfs_inode {
->   	 */
->   	u64 last_reflink_trans;
->
-> -	/*
-> -	 * Number of bytes outstanding that are going to need csums.  This is
-> -	 * used in ENOSPC accounting. Protected by 'lock'.
-> -	 */
-> -	u64 csum_bytes;
-> -
->   	/* Backwards incompatible flags, lower half of inode_item::flags  */
->   	u32 flags;
->   	/* Read-only compatibility flags, upper half of inode_item::flags */
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index 1373f474c9b6..e298a44eaf69 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1914,7 +1914,8 @@ int btrfs_fill_inode(struct inode *inode, u32 *rde=
-v)
->   	BTRFS_I(inode)->i_otime_nsec =3D btrfs_stack_timespec_nsec(&inode_ite=
-m->otime);
->
->   	inode->i_generation =3D BTRFS_I(inode)->generation;
-> -	BTRFS_I(inode)->index_cnt =3D (u64)-1;
-> +	if (S_ISDIR(inode->i_mode))
-> +		BTRFS_I(inode)->index_cnt =3D (u64)-1;
->
->   	mutex_unlock(&delayed_node->mutex);
->   	btrfs_release_delayed_node(delayed_node);
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 4fd41d6b377f..9b98aa65cc63 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3856,7 +3856,9 @@ static int btrfs_read_locked_inode(struct inode *i=
-node,
->   	inode->i_rdev =3D 0;
->   	rdev =3D btrfs_inode_rdev(leaf, inode_item);
->
-> -	BTRFS_I(inode)->index_cnt =3D (u64)-1;
-> +	if (S_ISDIR(inode->i_mode))
-> +		BTRFS_I(inode)->index_cnt =3D (u64)-1;
-> +
->   	btrfs_inode_split_flags(btrfs_inode_flags(leaf, inode_item),
->   				&BTRFS_I(inode)->flags, &BTRFS_I(inode)->ro_flags);
->
-> @@ -6268,8 +6270,10 @@ int btrfs_create_new_inode(struct btrfs_trans_han=
-dle *trans,
->   		if (ret)
->   			goto out;
->   	}
-> -	/* index_cnt is ignored for everything but a dir. */
-> -	BTRFS_I(inode)->index_cnt =3D BTRFS_DIR_START_INDEX;
-> +
-> +	if (S_ISDIR(inode->i_mode))
-> +		BTRFS_I(inode)->index_cnt =3D BTRFS_DIR_START_INDEX;
-> +
->   	BTRFS_I(inode)->generation =3D trans->transid;
->   	inode->i_generation =3D BTRFS_I(inode)->generation;
->
-> @@ -8435,8 +8439,12 @@ struct inode *btrfs_alloc_inode(struct super_bloc=
-k *sb)
->   	ei->disk_i_size =3D 0;
->   	ei->flags =3D 0;
->   	ei->ro_flags =3D 0;
-> +	/*
-> +	 * ->index_cnt will be propertly initialized later when creating a new
-> +	 * inode (btrfs_create_new_inode()) or when reading an existing inode
-> +	 * from disk (btrfs_read_locked_inode()).
-> +	 */
-
-Would above comment be a little confusing?
-As the comment is for csum_bytes, without checking the definition it's
-not clear that csum_bytes and index_cnt is shared.
-
-Maybe just removing it would be good enough?
-
-Other wise looks good to me.
+Otherwise looks good to me.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
->   	ei->csum_bytes =3D 0;
-> -	ei->index_cnt =3D (u64)-1;
->   	ei->dir_index =3D 0;
->   	ei->last_unlink_trans =3D 0;
->   	ei->last_reflink_trans =3D 0;
-> @@ -8511,9 +8519,10 @@ void btrfs_destroy_inode(struct inode *vfs_inode)
->   	if (!S_ISDIR(vfs_inode->i_mode)) {
->   		WARN_ON(inode->delalloc_bytes);
->   		WARN_ON(inode->new_delalloc_bytes);
-> +		WARN_ON(inode->csum_bytes);
->   	}
-> -	WARN_ON(inode->csum_bytes);
-> -	WARN_ON(inode->defrag_bytes);
-> +	if (!root || !btrfs_is_data_reloc_root(root))
-> +		WARN_ON(inode->defrag_bytes);
+> ---
+>   fs/btrfs/file-item.c | 13 ++++++-----
+>   fs/btrfs/inode.c     | 53 +++++++++++++++++++++++++++++---------------
+>   2 files changed, 42 insertions(+), 24 deletions(-)
 >
->   	/*
->   	 * This can happen where we create an inode, but somebody else also
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 8b24bb5a0aa1..9f35524b6664 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -962,7 +962,7 @@ static int get_new_location(struct inode *reloc_inod=
-e, u64 *new_bytenr,
->   	if (!path)
->   		return -ENOMEM;
->
-> -	bytenr -=3D BTRFS_I(reloc_inode)->index_cnt;
-> +	bytenr -=3D BTRFS_I(reloc_inode)->reloc_block_group_start;
->   	ret =3D btrfs_lookup_file_extent(NULL, root, path,
->   			btrfs_ino(BTRFS_I(reloc_inode)), bytenr, 0);
->   	if (ret < 0)
-> @@ -2797,7 +2797,7 @@ static noinline_for_stack int prealloc_file_extent=
-_cluster(
->   	u64 alloc_hint =3D 0;
->   	u64 start;
->   	u64 end;
-> -	u64 offset =3D inode->index_cnt;
-> +	u64 offset =3D inode->reloc_block_group_start;
->   	u64 num_bytes;
->   	int nr;
->   	int ret =3D 0;
-> @@ -2951,7 +2951,7 @@ static int relocate_one_folio(struct inode *inode,=
- struct file_ra_state *ra,
->   			      int *cluster_nr, unsigned long index)
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index bce95f871750..f3ed78e21fa4 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -45,13 +45,12 @@
+>    */
+>   void btrfs_inode_safe_disk_i_size_write(struct btrfs_inode *inode, u64=
+ new_i_size)
 >   {
->   	struct btrfs_fs_info *fs_info =3D inode_to_fs_info(inode);
-> -	u64 offset =3D BTRFS_I(inode)->index_cnt;
-> +	u64 offset =3D BTRFS_I(inode)->reloc_block_group_start;
->   	const unsigned long last_index =3D (cluster->end - offset) >> PAGE_SH=
-IFT;
->   	gfp_t mask =3D btrfs_alloc_write_mask(inode->i_mapping);
->   	struct folio *folio;
-> @@ -3086,7 +3086,7 @@ static int relocate_one_folio(struct inode *inode,=
- struct file_ra_state *ra,
->   static int relocate_file_extent_cluster(struct inode *inode,
->   					const struct file_extent_cluster *cluster)
->   {
-> -	u64 offset =3D BTRFS_I(inode)->index_cnt;
-> +	u64 offset =3D BTRFS_I(inode)->reloc_block_group_start;
->   	unsigned long index;
->   	unsigned long last_index;
->   	struct file_ra_state *ra;
-> @@ -3915,7 +3915,7 @@ static noinline_for_stack struct inode *create_rel=
-oc_inode(
->   		inode =3D NULL;
->   		goto out;
->   	}
-> -	BTRFS_I(inode)->index_cnt =3D group->start;
-> +	BTRFS_I(inode)->reloc_block_group_start =3D group->start;
->
->   	ret =3D btrfs_orphan_add(trans, BTRFS_I(inode));
->   out:
-> @@ -4395,7 +4395,7 @@ int btrfs_reloc_clone_csums(struct btrfs_ordered_e=
-xtent *ordered)
->   {
->   	struct btrfs_inode *inode =3D BTRFS_I(ordered->inode);
->   	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> -	u64 disk_bytenr =3D ordered->file_offset + inode->index_cnt;
-> +	u64 disk_bytenr =3D ordered->file_offset + inode->reloc_block_group_st=
-art;
->   	struct btrfs_root *csum_root =3D btrfs_csum_root(fs_info, disk_bytenr=
-);
->   	LIST_HEAD(list);
+> -	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>   	u64 start, end, i_size;
 >   	int ret;
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 5146387b416b..0aee43466c52 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -1625,7 +1625,8 @@ static noinline int fixup_inode_link_count(struct =
-btrfs_trans_handle *trans,
->   		if (ret)
->   			goto out;
->   	}
-> -	BTRFS_I(inode)->index_cnt =3D (u64)-1;
-> +	if (S_ISDIR(inode->i_mode))
-> +		BTRFS_I(inode)->index_cnt =3D (u64)-1;
 >
->   	if (inode->i_nlink =3D=3D 0) {
->   		if (S_ISDIR(inode->i_mode)) {
+>   	spin_lock(&inode->lock);
+>   	i_size =3D new_i_size ?: i_size_read(&inode->vfs_inode);
+> -	if (btrfs_fs_incompat(fs_info, NO_HOLES)) {
+> +	if (!inode->file_extent_tree) {
+>   		inode->disk_i_size =3D i_size;
+>   		goto out_unlock;
+>   	}
+> @@ -84,13 +83,14 @@ void btrfs_inode_safe_disk_i_size_write(struct btrfs=
+_inode *inode, u64 new_i_siz
+>   int btrfs_inode_set_file_extent_range(struct btrfs_inode *inode, u64 s=
+tart,
+>   				      u64 len)
+>   {
+> +	if (!inode->file_extent_tree)
+> +		return 0;
+> +
+>   	if (len =3D=3D 0)
+>   		return 0;
+>
+>   	ASSERT(IS_ALIGNED(start + len, inode->root->fs_info->sectorsize));
+>
+> -	if (btrfs_fs_incompat(inode->root->fs_info, NO_HOLES))
+> -		return 0;
+>   	return set_extent_bit(inode->file_extent_tree, start, start + len - 1=
+,
+>   			      EXTENT_DIRTY, NULL);
+>   }
+> @@ -112,14 +112,15 @@ int btrfs_inode_set_file_extent_range(struct btrfs=
+_inode *inode, u64 start,
+>   int btrfs_inode_clear_file_extent_range(struct btrfs_inode *inode, u64=
+ start,
+>   					u64 len)
+>   {
+> +	if (!inode->file_extent_tree)
+> +		return 0;
+> +
+>   	if (len =3D=3D 0)
+>   		return 0;
+>
+>   	ASSERT(IS_ALIGNED(start + len, inode->root->fs_info->sectorsize) ||
+>   	       len =3D=3D (u64)-1);
+>
+> -	if (btrfs_fs_incompat(inode->root->fs_info, NO_HOLES))
+> -		return 0;
+>   	return clear_extent_bit(inode->file_extent_tree, start,
+>   				start + len - 1, EXTENT_DIRTY, NULL);
+>   }
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 9b98aa65cc63..175fd007f0ef 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3781,6 +3781,30 @@ static noinline int acls_after_inode_item(struct =
+extent_buffer *leaf,
+>   	return 1;
+>   }
+>
+> +static int btrfs_init_file_extent_tree(struct btrfs_inode *inode)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+> +
+> +	if (WARN_ON_ONCE(inode->file_extent_tree))
+> +		return 0;
+> +	if (btrfs_fs_incompat(fs_info, NO_HOLES))
+> +		return 0;
+> +	if (!S_ISREG(inode->vfs_inode.i_mode))
+> +		return 0;
+> +	if (btrfs_is_free_space_inode(inode))
+> +		return 0;
+> +
+> +	inode->file_extent_tree =3D kmalloc(sizeof(struct extent_io_tree), GFP=
+_KERNEL);
+> +	if (!inode->file_extent_tree)
+> +		return -ENOMEM;
+> +
+> +	extent_io_tree_init(fs_info, inode->file_extent_tree, IO_TREE_INODE_FI=
+LE_EXTENT);
+> +	/* Lockdep class is set only for the file extent tree. */
+> +	lockdep_set_class(&inode->file_extent_tree->lock, &file_extent_tree_cl=
+ass);
+> +
+> +	return 0;
+> +}
+> +
+>   /*
+>    * read an inode from the btree into the in-memory inode
+>    */
+> @@ -3800,6 +3824,10 @@ static int btrfs_read_locked_inode(struct inode *=
+inode,
+>   	bool filled =3D false;
+>   	int first_xattr_slot;
+>
+> +	ret =3D btrfs_init_file_extent_tree(BTRFS_I(inode));
+> +	if (ret)
+> +		return ret;
+> +
+>   	ret =3D btrfs_fill_inode(inode, &rdev);
+>   	if (!ret)
+>   		filled =3D true;
+> @@ -6247,6 +6275,10 @@ int btrfs_create_new_inode(struct btrfs_trans_han=
+dle *trans,
+>   		BTRFS_I(inode)->root =3D btrfs_grab_root(BTRFS_I(dir)->root);
+>   	root =3D BTRFS_I(inode)->root;
+>
+> +	ret =3D btrfs_init_file_extent_tree(BTRFS_I(inode));
+> +	if (ret)
+> +		goto out;
+> +
+>   	ret =3D btrfs_get_free_objectid(root, &objectid);
+>   	if (ret)
+>   		goto out;
+> @@ -8413,20 +8445,10 @@ struct inode *btrfs_alloc_inode(struct super_blo=
+ck *sb)
+>   	struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);
+>   	struct btrfs_inode *ei;
+>   	struct inode *inode;
+> -	struct extent_io_tree *file_extent_tree =3D NULL;
+> -
+> -	/* Self tests may pass a NULL fs_info. */
+> -	if (fs_info && !btrfs_fs_incompat(fs_info, NO_HOLES)) {
+> -		file_extent_tree =3D kmalloc(sizeof(struct extent_io_tree), GFP_KERNE=
+L);
+> -		if (!file_extent_tree)
+> -			return NULL;
+> -	}
+>
+>   	ei =3D alloc_inode_sb(sb, btrfs_inode_cachep, GFP_KERNEL);
+> -	if (!ei) {
+> -		kfree(file_extent_tree);
+> +	if (!ei)
+>   		return NULL;
+> -	}
+>
+>   	ei->root =3D NULL;
+>   	ei->generation =3D 0;
+> @@ -8471,13 +8493,8 @@ struct inode *btrfs_alloc_inode(struct super_bloc=
+k *sb)
+>   	extent_io_tree_init(fs_info, &ei->io_tree, IO_TREE_INODE_IO);
+>   	ei->io_tree.inode =3D ei;
+>
+> -	ei->file_extent_tree =3D file_extent_tree;
+> -	if (file_extent_tree) {
+> -		extent_io_tree_init(fs_info, ei->file_extent_tree,
+> -				    IO_TREE_INODE_FILE_EXTENT);
+> -		/* Lockdep class is set only for the file extent tree. */
+> -		lockdep_set_class(&ei->file_extent_tree->lock, &file_extent_tree_clas=
+s);
+> -	}
+> +	ei->file_extent_tree =3D NULL;
+> +
+>   	mutex_init(&ei->log_mutex);
+>   	spin_lock_init(&ei->ordered_tree_lock);
+>   	ei->ordered_tree =3D RB_ROOT;
 
