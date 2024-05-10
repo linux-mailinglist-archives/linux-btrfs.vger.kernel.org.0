@@ -1,103 +1,104 @@
-Return-Path: <linux-btrfs+bounces-4893-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4894-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A775A8C26C8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2024 16:25:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D30D28C2950
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2024 19:33:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35DDA2812C7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2024 14:25:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D0322879E4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2024 17:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F34168AFC;
-	Fri, 10 May 2024 14:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7832518637;
+	Fri, 10 May 2024 17:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="n87+sEMa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTVJVtwA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD950168BE
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 14:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A8D17C7F
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 17:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715351147; cv=none; b=hgopngAajhi8tBnn8zJNpDt4Qyxg748AyXcF1cTTt+Ghzo8oSJx+7SeuiRyedjFXFUglLMjPietMEZAEOc+CTzO1GgJqTXyWxnl6317FqPNYraEiV5gWdqHGX8t9QrTMnripefYOLhiyBdANS76MhImFzRjSmlpxX2zG+1Ax64w=
+	t=1715362381; cv=none; b=F8TmQTciRE7TqrtltLnIJh4B+f4h4D7qZ3YgRT7X23/+qCIJsEWkyFPlIGwz9/3YJ7xxRLtSUlBjYa4Z27qdM/0QYJxxOlmZpvuEnhZ+cRGxlw8t4T0+gj5dGe0d14kySNhlAHmPOppkQPc3zA0LnFmbUWFawziUz7m/1Ny8Q3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715351147; c=relaxed/simple;
-	bh=664EPzv/DlYUVC2JhU1f0SGVFTP0xfCkFEk030jqigA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OVTByTZ3NBH5nkQUN2+0x0B84suzf0nqwhItT+eyL4qAgeQ5BGfVI/s92Qil+6VYLxnVNIY6QGZzQN9yS5T0/fOyMEDdRSKphJk4Pen7hGUhrpv9WvIFjPrMVjeNgPorzBdoYaKTClGblU3E+lgrCtuFS8lvAi2MBlL+klND7g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=n87+sEMa; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-62026f59233so15779067b3.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 07:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1715351144; x=1715955944; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=x5Qncz6Ah2X1NKCRR43VviudJRO2DRuhT5CUQ2tlXUE=;
-        b=n87+sEMa+YvUoKV3GlWHyDAqGjtTFf92vllGVCS1wVzQtez71nCmKtVvlUPv1eYKUd
-         IU7gc9ttv8HVzaivKuPQS3uxnMwM+ULTrH2f0Ngw93qkuQkH9Rro5Hd5v36i0i+RHOZ9
-         G1kLi9j4J0fcf/edH+TE/YO2GXLa7ViaT7bTrhlMt7ApyybcgptiTQkn71uzEUCR/A4G
-         i79lu5UD4HZCb/omxM6LmhIpzlPu6kh7jPXVuwCKDhYPQvapZQQ1I4bP94jKndLj4kxQ
-         VTKuXheEf7lPEeIkYsZD+SUuM9nsTeW/E/ST9AHyUJU8TzesxXdcSxUOZGBJ9baAhFEG
-         hElA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715351144; x=1715955944;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x5Qncz6Ah2X1NKCRR43VviudJRO2DRuhT5CUQ2tlXUE=;
-        b=xQFVPSgPyuJx12COzIP9NeFm4tPcozb3ByI70Zfqq7p5H9T47aPWwFH5cMSdgmsHWY
-         OEVOwVlyZXOcXsSfMLX4ueg1EKE9Palu+ROhcSOaOjUy0Fys11ZO+wbNwGxl46sr89yz
-         lf/I4G9WEY1Y9k/vaQZLd9naVUit9OqHO9+qX7LTT2IpVVo1HXBzS2LYdmrJrPyXydbE
-         hxB+l1HO4kPpkPzYPXgeTrg1kAVePdGqyFV7Wt+gIVtgETYbCsNfPCklGaA+3QPQLRkA
-         DgMBTJ8KkO4/+07Mxd358yMYl81F9aOC+odekjHsHoSwhp41dG3ZrEgPenM3IcrdKlG8
-         0Z7w==
-X-Gm-Message-State: AOJu0Yw92Rs4X5RrPdQDIkK++eaJVDdkQlThOXsVszXrFjrffPXf1VrD
-	0VFxpU6h1ljxE8V5Yn/X7P4BaY9xHjKh6hqcC4AK9kTQtcOdWMz6Nywrx8w35ki+VmqcbKrBOr+
-	i
-X-Google-Smtp-Source: AGHT+IHtzxj9LMxiN/4OblloCu7vCo94voF/mOWa6Y1S0g+gxMiq7xSEBqOoyrQu3RIQAaT44T3tUw==
-X-Received: by 2002:a0d:d8d0:0:b0:615:1be5:6d33 with SMTP id 00721157ae682-622af89b673mr24985377b3.22.1715351144496;
-        Fri, 10 May 2024 07:25:44 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e2347d2sm7534967b3.12.2024.05.10.07.25.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 May 2024 07:25:44 -0700 (PDT)
-Date: Fri, 10 May 2024 10:25:43 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: make extent_write_locked_range() to handle
- subpage writeback correctly
-Message-ID: <20240510142543.GB90506@perftesting>
-References: <cover.1709677986.git.wqu@suse.com>
- <dfe1e2ef77292b160806eec23cac575a62ebdbca.1709677986.git.wqu@suse.com>
+	s=arc-20240116; t=1715362381; c=relaxed/simple;
+	bh=jtinGbYEX01wiRZ9EZbkcGxq5Cm5DmTwR8xHmzBWgbU=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dZ3UVk8LJgk6FaCSlnVG03DfUPrA9vgpwFB1byNDlC9t5hCaYhH929rfGlgFKb8CL9kd95B5VYtQDxb1lc9U9HG4toTh0yxByip2w9cWb8YY87gE8TuzLDrr1H5ZeilJQWktN8ePBwRWvYkrUuYX0qbxaPz13ZuqAghrIRFIex8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTVJVtwA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07AEFC113CC
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 17:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715362381;
+	bh=jtinGbYEX01wiRZ9EZbkcGxq5Cm5DmTwR8xHmzBWgbU=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=CTVJVtwARJayrpoKZXL65zPY8kaQZIM6v0Sm1BB+Fxcsa3hTCAFkchvmGkxE0tWd+
+	 uNZIvb4WMGyPu6OQPP65PH8OSgJjDWGEdFMeWvvTqYhjJGBf7jbyFXqaS7tl4K+daQ
+	 Nai/gRWzWdaXtCuXzLSt5snzG05OeYAODJmftu1Z8KvoA1psseaEACYVdfb0F12FQQ
+	 nKzJMMtYbgTLwgM+igsdhpP41Mhr2HZJ9vm9/9sn/ORUcv0l4mUZHjxuuqBEzfy841
+	 YSgDPSJLQOqIGtvIzYfGSbGJ85uBIOJlmB4Ngm8PMDAlSVTubQNR2SOQFvID7vi2t+
+	 2KxLOZfrAWqkQ==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/10] btrfs: inode management and memory consumption improvements
+Date: Fri, 10 May 2024 18:32:48 +0100
+Message-Id: <cover.1715362104.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1715169723.git.fdmanana@suse.com>
+References: <cover.1715169723.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dfe1e2ef77292b160806eec23cac575a62ebdbca.1709677986.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 06, 2024 at 09:05:34AM +1030, Qu Wenruo wrote:
-> When extent_write_locked_range() generated an inline extent, it would
-> set and finish the writeback for the whole page.
-> 
-> Although currently it's safe since subpage disables inline creation,
-> for the sake of consistency, let it go with subpage helpers to set and
-> clear the writeback flags.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Some inode related improvements, to use an xarray to track open inodes per
+root instead of a red black tree, reduce lock contention and use less memory
+per btrfs inode, so now we can fit 4 inodes per 4K page instead of 3.
+More details in the change logs.
 
-Thanks,
+V2: Added two more patches (9/10 and 10/10) to make sure btrfs_inode size
+    is reduced to 1024 bytes when CONFIG_FS_ENCRYPTION and CONFIG_FS_VERITY
+    are set. I wasn't using these configs before, and with them the final
+    size for btrfs_inode was 1032 bytes and not 1016 bytes as I initially
+    had - now the final size is 1024 bytes with those configs enabled.
 
-Josef
+Filipe Manana (10):
+  btrfs: use an xarray to track open inodes in a root
+  btrfs: preallocate inodes xarray entry to avoid transaction abort
+  btrfs: reduce nesting and deduplicate error handling at btrfs_iget_path()
+  btrfs: remove inode_lock from struct btrfs_root and use xarray locks
+  btrfs: unify index_cnt and csum_bytes from struct btrfs_inode
+  btrfs: don't allocate file extent tree for non regular files
+  btrfs: remove location key from struct btrfs_inode
+  btrfs: remove objectid from struct btrfs_inode on 64 bits platforms
+  btrfs: rename rb_root member of extent_map_tree from map to root
+  btrfs: use a regular rb_root instead of cached rb_root for extent_map_tree
+
+ fs/btrfs/btrfs_inode.h            | 130 ++++++++++----
+ fs/btrfs/ctree.h                  |   8 +-
+ fs/btrfs/delayed-inode.c          |  29 ++-
+ fs/btrfs/disk-io.c                |  12 +-
+ fs/btrfs/export.c                 |   2 +-
+ fs/btrfs/extent_map.c             |  50 +++---
+ fs/btrfs/extent_map.h             |   2 +-
+ fs/btrfs/file-item.c              |  13 +-
+ fs/btrfs/inode.c                  | 286 +++++++++++++++---------------
+ fs/btrfs/ioctl.c                  |   8 +-
+ fs/btrfs/relocation.c             |  12 +-
+ fs/btrfs/tests/btrfs-tests.c      |   5 +-
+ fs/btrfs/tests/extent-map-tests.c |   6 +-
+ fs/btrfs/tree-log.c               |   9 +-
+ 14 files changed, 317 insertions(+), 255 deletions(-)
+
+-- 
+2.43.0
+
 
