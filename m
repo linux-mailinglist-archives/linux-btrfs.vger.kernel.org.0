@@ -1,74 +1,75 @@
-Return-Path: <linux-btrfs+bounces-4905-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4906-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4588C2C9A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 May 2024 00:27:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE1C8C2CCE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 May 2024 01:04:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F139B23C04
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2024 22:27:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F67A1F22884
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2024 23:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC9E13D254;
-	Fri, 10 May 2024 22:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB0A171E4B;
+	Fri, 10 May 2024 23:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HHM4WQa1"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gINHt1eZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447464F897
-	for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 22:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CCC28F3
+	for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 23:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715380028; cv=none; b=M0UWCWxsB49zqOjkjhYLaa2mbuMEHPaZAdPAMcBDUX+RJjMznKt6mLhnhv1C14hcC125kCoiT2jHir/NCIUrxhV0kjtDCj9f3c+XucjDqxA9O1LS7v+LBH41UzvJ70jDsvgYEg+6yK9kn0TxoEBhemyeLWfQo3zn1ihgcVxi8e4=
+	t=1715382278; cv=none; b=kk/CMTVVzoGOCc0cp6wP5uVj+j3xwAxcgQfGNdmrG0yBG08IjdVJpHLuz6NI7t7N4Y4Y2OS/MznR+0aTsv9fGW9AhwSjYcSQ5G4+z5H25T6EVrM7hHIf55y9K3Nb6vZXqF0sCmdJDEVWFIbrhOFlt0uwZyS28MWdn7vyj3Mmry8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715380028; c=relaxed/simple;
-	bh=HqBe3I9gvLAajUCJaYZF4k8kJr4ujtRq7xpcsoBfglM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W90p5Z7MUzmSnxKvF99PD7C6CfbT/AlOsQwzLBUo+m+kSXk/WHJdnrVtXCVnttLYeTfW9RpYl/dfpN7a2UQ0ZtCvi0aPV2v64CUvhn+6BMuuzqdpuNOxHXy+FtpeEFTcI/B/O79mFear9ZRnXlY4quojN/Id4BZaBfQBFmbR2mU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HHM4WQa1; arc=none smtp.client-ip=209.85.208.181
+	s=arc-20240116; t=1715382278; c=relaxed/simple;
+	bh=z5rCc/aIzkqFsotWOWN/SURVxMkTkK/f1H04Bu4wrFI=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=fUa5/s53zLrMcSdq8iSMCHf8KhCs/x5gSQ9UtRQlMPOZIgMEJVy9CntwbCEYgTtjdJPWAUQ4b0WCtCOzOfQscRMMwvR4EtbB81yjUcgb7X4rw6bg8mM1gd1glnm1c3N5LKyDlSopo/lW3HLoDrO9XeG2iNbeMh/vNOLFuC3s6SQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gINHt1eZ; arc=none smtp.client-ip=209.85.208.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2e09138a2b1so30356011fa.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 15:27:05 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2e0a34b2899so37287111fa.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2024 16:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1715380024; x=1715984824; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qa1A4+tUxT75LFZiThMg56cRmvo2br33B2iviRFrASY=;
-        b=HHM4WQa1ecYwzyp1HulX9sJIc8mCFCarDrRf2K3h8yK/NteYkC3eaVXMIPNg2gSE4b
-         l6m45h05dO6Ez7DVSP2fJk0Bt7oPMEfy0vLnYsuCizHycTaVnMAOWcQoW9xGcgHU22ze
-         IDZP5l2jegI3KwMLZelzIclxOsIRZxEFsTQ3XmcB+4VMGgS4kElCycYSj/oO8mkX7NTf
-         saW+4Gy6zdLZkF6MoE3p3UYGb5QpBWv1fJ7QfC8Fcyj6mlqxwbxer5hhh+0VTiyCwA/w
-         wOn3mVEjBjgzckBLJtJmyjpickr5yiK32mMuLX+Vf/q0s0tywYojOdzNlmkcK4aOgF3z
-         DukQ==
+        d=suse.com; s=google; t=1715382274; x=1715987074; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A+xP81moS9Oj60n9vJ+/4pIr40pLyvsRq9LpJMwcx34=;
+        b=gINHt1eZWkb3/Uuy+IRsdVD4BDUI6poNt92w+QoX2f6K4repWsJc5e8yRBCsgMBcB8
+         0wHHBYPdp0pMOaIpF2q24gHglYUSl4ZZoHPDVpKAkmq2WfezSHNki1qT97XmpuBjIQ1D
+         01uF/gfXpe05n+3MJ1b8/aPZPnIrB76e0PeGN0qCYs4Kn+/env9KYdaMAuHN0UHl5zIY
+         6ZcaIEyLQW+m5SzG15Beepqm5MrrAbi/YsN7hTRVvPdLf8EqMzt0IqMY5Q449S9XjvqJ
+         omf7r+fV6XwBDWVcAP5OAzGRDX9wKUR/ZZwxDajM/mQp6RaHXqs6dgmhcC2xvYWAv0lq
+         pzkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715380024; x=1715984824;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qa1A4+tUxT75LFZiThMg56cRmvo2br33B2iviRFrASY=;
-        b=IhOHlGhhGIgMJ0MrVBiJZm6Gnfh2tVOtCVHSm+tRvqgdrQqhHMKRF65WvskJG5Am6D
-         eTrBRCH19zSjGtlmLPLb85yS4247ZAf3gJcWE7TZEa9QQkxLssJMIuUCdL6BHnbgLZ73
-         HKBOig1SCwMq/pZ1Gq3NJcQIXlZrS5bP/OHccXSiF96ty01sDGxpIBN3vFQfEujLa0lE
-         JJTE98iBaqQlQfdL8QV4/SAvwMVcFbCKLf8HmX+tWHrr6e4jXCe3sdLq9zk7G1XmjGST
-         JSitcSyaqr++MUi0EhsLcvnPrAH8BYJFiQV5NBLqVr7CwWVGW6e0MzdZ/bm3ADZxObd8
-         i1+g==
-X-Gm-Message-State: AOJu0YywNnyaka5bWNer/cc09w3j48bf8m2eoZSi2DqiyQP5HYXB7FJU
-	ypXnvNXrJsLGf00x3+KkJk1h+pwfk5QL5QripDXl5ZLAhzNUmSA/XBOpJaldvTM=
-X-Google-Smtp-Source: AGHT+IEm7eqrZscm8GSkZRqT/EokQlOv6x7WGuqhZCDJuU5doRIStpCzmTilWl0GjQodYhdE70xhGg==
-X-Received: by 2002:a2e:7a0b:0:b0:2e2:72a7:843c with SMTP id 38308e7fff4ca-2e5204ccdc2mr25291881fa.36.1715380024298;
-        Fri, 10 May 2024 15:27:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715382274; x=1715987074;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A+xP81moS9Oj60n9vJ+/4pIr40pLyvsRq9LpJMwcx34=;
+        b=kEWwg375jyhYH62Jgb/KG/4YIOPpzhTjULE02+y3q9q3DYFY625xG7Hir0bAeurYUa
+         R8Mr7a1w79uCBljUlQNTT4WZcRr92IQKzuSzqnt9W+X58ke3r4wudD5puxmUmOhwBu3l
+         FXiPn0Ux/o5cqNnuLtDXW+8W23DC4Mi6oH7iM+Zp/S2dFyTIn0MzQg4nOk2X9Kor51KY
+         w29cwSls00clV80WfeH/dASq+TjMIMgTVhgEyKt2QA06hDiwr0zLypDilNI1RNlCOl1C
+         zVqPGk82ggQ4woLFrK5efJyoYKQKCP4XXaG5Al+wwvMTEsBrDFzXRJ5J6o9RyxORsU8b
+         s8lA==
+X-Gm-Message-State: AOJu0Yx+Y2509UOGFHIAVRWAQDEFOE8BDAxvYKCNl+YYcHv6+vdo4B/R
+	m+Lw/xiN0osWW/We4ObM25hgKEU6YfkrSpmyxt3HMqzMTj1L0EJA5DBhSe2crj8W+SOq/tHaegP
+	U
+X-Google-Smtp-Source: AGHT+IEOjYOiRkLDJCM9You9gnlT6BRQiMPYi/aCy9ZmwYWx1ucaNILv7AtcfgcKBqnlu3jQh3NoSg==
+X-Received: by 2002:a2e:8096:0:b0:2dd:d3a0:e096 with SMTP id 38308e7fff4ca-2e52005f693mr31500701fa.31.1715382273625;
+        Fri, 10 May 2024 16:04:33 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6340a449f4csm3566039a12.4.2024.05.10.15.27.01
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6340a449f4csm3592702a12.4.2024.05.10.16.04.31
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 May 2024 15:27:03 -0700 (PDT)
-Message-ID: <f545d678-3494-4185-a8b1-384df1b9b8ae@suse.com>
-Date: Sat, 11 May 2024 07:56:57 +0930
+        Fri, 10 May 2024 16:04:33 -0700 (PDT)
+Message-ID: <b3315737-894a-4de3-8979-28ce2ee698f8@suse.com>
+Date: Sat, 11 May 2024 08:34:28 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -76,16 +77,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/11] btrfs: introduce new members for extent_map
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <cover.1714707707.git.wqu@suse.com>
- <f0be8547f0df8d8a4578c5e4d9b560c053dab8db.1714707707.git.wqu@suse.com>
- <CAL3q7H7uWw=LnWYXZnZV+kYKho+F4iBcBgZ5GziWeTofVPLDYw@mail.gmail.com>
- <1fe28d75-a4a3-4304-9998-a88a5fee4919@gmx.com>
- <CAL3q7H6rz9Z8xCbsjvqaEQC34m7uiM_FH1ecW+PQC5kARWKxrA@mail.gmail.com>
-Content-Language: en-US
+Subject: Re: [PATCH v3 0/2] btrfs: fix data corruption/rsv leak in subpage
+ zoned cases
 From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <cover.1709781158.git.wqu@suse.com>
+Content-Language: en-US
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -110,70 +107,60 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <CAL3q7H6rz9Z8xCbsjvqaEQC34m7uiM_FH1ecW+PQC5kARWKxrA@mail.gmail.com>
+In-Reply-To: <cover.1709781158.git.wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/5/10 20:56, Filipe Manana 写道:
-[...]
->>
->> Check case 1).
->>
->> Both file extents are referring to the same data extent.
->>
->> Like this:
->>
->> FE 1, file pos 0, num_bytes 4K, disk_bytenr X, disk_num_bytes 16K,
->> offset 0, ram_bytes 16K, compression none
->>
->> FE 2, file pos 4k, num_bytes 4K, disk_bytenr X, disk_num_bytes 16K,
->> offset 4k, ram_bytes 16K, compression none.
->>
->> In that case we should not just sum up the disk_num_bytes at all.
->> Remember disk_num_bytes are for the data extent.
+在 2024/3/7 13:46, Qu Wenruo 写道:
+> [CHANGELOG]
+> v3:
+> - Use the minimal fsstress workload with trace_printk() output to
+>    explain the bug better
 > 
-> Yes, but for cases where they refer to different file extent items
-> that are contiguous on disk, the max is confusing, and a sum is what
-> makes sense. Example:
+> v2:
+> - Update the commit message for the first patch
+>    As there is something wrong with the ASCII art of the memory layout.
 > 
-> FE 1, file pos 0, num_bytes 4K, disk_bytenr X, disk_num_bytes 4K,
-> offset 0, ram_bytes 4K, no compression
-> 
-> FE 2, file pos 4K, num_bytes 4K, disk_bytenr X + 4K, disk_num_bytes
-> 4K, offset 0, ram_bytes 4K, no compression
-> 
-> When merging the corresponding extent maps it's natural to think
-> disk_num_bytes is 8K and not 4K.
+> [REPO]
+> https://github.com/adam900710/linux/tree/subpage_delalloc
 
-The max based solution is based on their end bytenr, not disk_num_bytes.
+Wait, it looks like there are more preparation patches not yet merged.
 
-So the merged one would have:
-
-disk_bytenr = min(X, X + 4K) = X
-disk_num_bytes = max(X + 4K, X + 4K + 4K) - disk_bytenr = 8K.
-
-So I didn't see why it's not natural.
-
-Furthermore, the max/min based solution can handle both case 1) (same 
-data extent, different parts) and case 2) (different data extents) well.
-
-> 
-> But as I mentioned before, after merging we really don't use
-> disk_num_bytes anywhere.
-> It's only used during extent logging, which only happens for extents
-> maps that were not merged and can not be before they are logged.
-> 
-> Before this patchset, when disk_num_bytes was named orig_block_len,
-> that was never updated during merging, exactly because we don't use
-> cases for it.
-
-But since we want everything to match the definition of the same-named 
-member, no matter if they get merged or not, we need to change the values.
-
-If they do not get used, that's still fine.
+I'll rebase with all needed patches in one go.
+Otherwise it looks like it's causing a lot of more problems reviewing.
 
 Thanks,
 Qu
+> 
+> The repo includes the subpage delalloc rework, or subpage zoned won't
+> work at all.
+> 
+> 
+> Although my previous subpage delalloc rework fixes quite a lot of
+> crashes of subpage + zoned support, it's still pretty easy to cause rsv
+> leak using single thread fsstress.
+> 
+> It turns out that, it's not a simple problem of some rsv leak, but
+> certain dirty data ranges never got written back and just skipped with
+> its dirty flags cleared, no wonder that would lead to rsv leak.
+> 
+> The root cause is again in the extent_write_locked_range() function
+> doing weird subpage incompatible behaviors, especially when it clears
+> the page dirty flag for the whole page, causing __extent_writepage_io()
+> unable to locate further dirty ranges to be submitted.
+> 
+> The first patch would solve the problem, meanwhile for the 2nd patch
+> it's a cleanup, as we will never hit the error for current subpage +
+> zoned cases.
+> 
+> Qu Wenruo (2):
+>    btrfs: do not clear page dirty inside extent_write_locked_range()
+>    btrfs: make extent_write_locked_range() to handle subpage writeback
+>      correctly
+> 
+>   fs/btrfs/extent_io.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
 
