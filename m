@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-4930-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4931-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B9C18C409E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 14:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 451038C40FC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 14:49:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DBED1C21E98
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 12:22:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C95C1C22C7A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 12:49:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F6F14F130;
-	Mon, 13 May 2024 12:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E7D14F9D7;
+	Mon, 13 May 2024 12:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WwZgpFXc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xs+bHWo9"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B61214EC5E
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 12:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F15BB1465A7
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 12:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715602916; cv=none; b=PfA9YF6xl6/5nkvjkMGhZKcqSz8uj0iGqNikLtVkB/iMJFMfwJgIYBa16S53w9BwKttNJ7FJ8/Pv3D1ZVKF3O17KWP0HGN2nsm/U0+A3bepqnWG95eLDSNRaBEGHoeWoLrInoggyN6s2vDnTWpJtS0uUGLUFItMg3ZSQc4uGEaQ=
+	t=1715604556; cv=none; b=gYZg/s5up7qSF6Lx9QvfxMwKp3cFeSs8dxLJ1pnlcviAGz1J8HijR6nP9+t0Uo5FPB9AtBe/at5ZHEcMdVDVdHYwhg9z0cSJwO0Ul96if4t8cwlnPrDkY7S+RyWNilCngkJHRzJNneARqsd9Gm9y3OLKC1xCyZjPyzdQqfWXBTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715602916; c=relaxed/simple;
-	bh=SxPROpFVYHcq9Q9tdjCzFeOu6oXZMbDetxXf2mDv0E4=;
+	s=arc-20240116; t=1715604556; c=relaxed/simple;
+	bh=jDsHQ5vOBUsyM1fO8WctkVvuswEP/dgyRFZdRTVN4Uk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aXABWyVGu68Xudio4vyT/bn4xoSUkkC2N64dpaP76izIREgP+hxiUUNor95YX63QrIIKwbEUinAv2UKVDY+G5KSaFjKjtTe6goyuGJjDXNArEQ7T3umpl9cpyIaqJc134fmfL4p92iizvHNrfNJxPt8zTcVPzCoru1F3ZTkJQQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WwZgpFXc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2ADCC113CC
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 12:21:55 +0000 (UTC)
+	 To:Cc:Content-Type; b=Q75l1/5LDvlNpcNMtZ10fp7s0ODpYOry9SMXdFiKCe71pCgcMdzVHO4R7LHDUcyuswMiQrJVk+N3h1KWZ9334IMq7Ijie6zOZ5V0YheoZyo+xJPOx9vsE+JrOLQRl7vGrnq9JId9Z5dJdwc/vhjRAv/b4QvvPZVP6Ml4elCkIiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xs+bHWo9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78139C113CC
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 12:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715602915;
-	bh=SxPROpFVYHcq9Q9tdjCzFeOu6oXZMbDetxXf2mDv0E4=;
+	s=k20201202; t=1715604555;
+	bh=jDsHQ5vOBUsyM1fO8WctkVvuswEP/dgyRFZdRTVN4Uk=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WwZgpFXcxXiKgtkZBONCn6SjQRbAAr0mRyY8EEn70b1zQX5TXq3XS6lAJ+GUnAvXX
-	 OxjFy7GsIQO/tOigeWeM8FGKRsZifirKqEnX1vTt1x9a7IrsTvKTLCne026qUU53vj
-	 B47Pc7Dns8dEItVfeBsC7QLALJzzYfFjZEXPm4WvgrmP70kXCVmMIgjKRfB51ewRPz
-	 mMHVd47PM9uQAtAqdU/H+UgyGSFCy5jmR/+2Nop0reUgTXELXqQC+2UtVBxw2aWyI8
-	 yONfmISPA36GaaaNutxmz8XIg5WBhwTUcpgcXaLj1q6hItt/e6napeW6FUhCajtWW2
-	 +uI5KhN7k+4BQ==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a59cf8140d0so978764466b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 05:21:55 -0700 (PDT)
-X-Gm-Message-State: AOJu0Ywu/460CbUR1aIcizzwp4eVTtKHxaMRH3GAS/nOopbutDv+3als
-	t0PqakA3hAnFK084eGdeD6d8VYf11ZrHyNj+bE+SF5GZLpkdoYr22ji7X5pU9/AM4GLf0DMnhY6
-	7kbDMXacbbJPgEyQ+XZKhrTFnvMY=
-X-Google-Smtp-Source: AGHT+IF53GVMrnzkEZxMj4pUFQ+TKvNjiHQs3y+bxPZO5Akl+O+dqeUTMIi7Lac7rb4Cy+AU3V7APRewz6LN6ceyDnQ=
-X-Received: by 2002:a17:906:8314:b0:a59:a0eb:aeb0 with SMTP id
- a640c23a62f3a-a5a2d5d0a48mr581067266b.36.1715602914077; Mon, 13 May 2024
- 05:21:54 -0700 (PDT)
+	b=Xs+bHWo9/VHAnVIXaCfVgdCbkXjwg8jZ1QGEN/T7T6FpjqXVAM3jTh1HqWR9tXoIy
+	 pI36ejGLhnpUWuCBX3JraEAXYTP/IvR2BU2zv8v04+mdTzJVyenVwI1y11buxLKDex
+	 S35iNcQ5NUHBPGFvGAq7hCOMCmiJPKOn+Egh+s3dNEUB+W+BT61oFE+h7af5jJ7jyf
+	 yRqs8+AEHJsI32070GCs6iu7GWLvyYGLNOcnLFBOO5h/G/feZiFOlLdN9hBMp1gO8x
+	 wkKdS8rc+ApaWeR9312qfIrL5PILJoAaM5EWrBp9pQ4CBblhX301n0TGsk5jMi7QlR
+	 7Yud7TWXmU7Dg==
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a59a0168c75so1117942866b.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 05:49:15 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxF8v8GvZGO9zD+UZHcglMlRv3p7fgEL6fkQ5YGDn0iclG5djnI
+	/9wZfExTcxsAxyuXmoB8U9ZVC9d1L0TtONmjHp4g2NSyhr1eKx43YXRfxKGg5WwqRLIckCkay7Y
+	sFDEcCRzfgrhZxf/KRd4RfHcOUv8=
+X-Google-Smtp-Source: AGHT+IHahvHim8W9xuJLVCOexGPdHRBC+VfEyebJvh1qH+wdR1fYWtGnKKH7D3nDViYsgOzWl4KgNa6kxsHOShgyU+s=
+X-Received: by 2002:a17:907:1c26:b0:a59:aa3a:e6b6 with SMTP id
+ a640c23a62f3a-a5a2d55eb33mr824025066b.18.1715604553867; Mon, 13 May 2024
+ 05:49:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1714707707.git.wqu@suse.com> <23eef0d1cc8c482121d6958b3c131ba51648cde6.1714707707.git.wqu@suse.com>
-In-Reply-To: <23eef0d1cc8c482121d6958b3c131ba51648cde6.1714707707.git.wqu@suse.com>
+References: <cover.1714707707.git.wqu@suse.com> <f0be8547f0df8d8a4578c5e4d9b560c053dab8db.1714707707.git.wqu@suse.com>
+In-Reply-To: <f0be8547f0df8d8a4578c5e4d9b560c053dab8db.1714707707.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 13 May 2024 13:21:16 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7BPGFcAaqhcAO2vNax8ShhbFm=HcXbvODa-GJshuSs2A@mail.gmail.com>
-Message-ID: <CAL3q7H7BPGFcAaqhcAO2vNax8ShhbFm=HcXbvODa-GJshuSs2A@mail.gmail.com>
-Subject: Re: [PATCH v2 04/11] btrfs: introduce extra sanity checks for extent maps
+Date: Mon, 13 May 2024 13:48:36 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7NdMixjcdXK_K8aphjxzUpr84WYUBO4EMysi3HhnCgNQ@mail.gmail.com>
+Message-ID: <CAL3q7H7NdMixjcdXK_K8aphjxzUpr84WYUBO4EMysi3HhnCgNQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/11] btrfs: introduce new members for extent_map
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -70,510 +70,645 @@ Content-Transfer-Encoding: quoted-printable
 
 On Fri, May 3, 2024 at 7:02=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
-> Since extent_map structure has the all the needed members to represent a
-> file extent directly, we can apply all the file extent sanity checks to a=
-n extent
-> map.
+> Introduce two new members for extent_map:
 >
-> The new sanity checks would cross check both the old members
-> (block_start/block_len/orig_start) and the new members
-> (disk_bytenr/disk_num_bytes/offset).
+> - disk_bytenr
+> - offset
 >
-> There is a special case for offset/orig_start/start cross check, we only
-> do such sanity check for compressed extent:
+> Both are matching the members with the same name inside
+> btrfs_file_extent_items.
 >
-> - Only compressed read/encoded write really utilize orig_start
->   This can be proved by the cleanup patch of orig_start.
+> For now this patch only touches those members when:
 >
-> - Merged data extents can lead to false alerts
->   The problem is, with disk_bytenr/disk_num_bytes, if we're merging
->   two extent maps like this:
+> - Reading btrfs_file_extent_items from disk
+> - Inserting new holes
+> - Merging two extent maps
+>   With the new disk_bytenr and disk_num_bytes, doing merging would be a
+>   little complex, as we have 3 different cases:
 >
->     |<- data extent A -->|<-- data extent B -->|
->               |<- em 1 ->|<- em 2 ->|
+>   * Both extent maps are referring to the same data extent
+>   * Both extent maps are referring to different data extents, but
+>     those data extents are adjacent, and extent maps are at head/tail
+>     of each data extents
+>   * One of the extent map is referring to an merged and larger data
+>     extent that covers both extent maps
 >
->   Let's assume em2 has orig_offset of 0 and start of 0, and obvisouly
->   offset 0.
-
-obvisouly -> obviously
-
-I'm confused. How can em2 have a "start" of 0?
-By "start" you mean file offset I suppose, since that's what it is
-before this patchset. That would mean em 1 would have a negative
-"start".
-
-And by "offset" you mean extent offset?
-
+>   The 3rd case seems only valid in selftest (test_case_3()), but
+>   a new helper merge_ondisk_extents() should be able to handle all of
+>   them.
 >
->   But after merging, the merged em would have offset of em1, screwing up
-
-But this suggests that by "offset" you mean file offset and not the
-offset within an extent's range.
-So did you mean "start" here?
-
->   whatever the @orig_start cross check against @start.
+> To properly assign values for those new members, a new btrfs_file_extent
+> parameter is introduced to all the involved call sites.
 >
-> The checks happens at the following timing:
+> - For NOCOW writes the btrfs_file_extent would be exposed from
+>   can_nocow_file_extent().
 >
-> - add_extent_mapping()
->   This is for newly added extent map
+> - For other writes, the members can be easily calculated
+>   As most of them have 0 offset and utilizing the whole on-disk data
+>   extent.
+>   The exception is encoded write, but thankfully that interface provided
+>   offset directly and all other needed info.
 >
-> - replace_extent_mapping()
->   This is for btrfs_drop_extent_map_range() and split_extent_map()
+> For now, both the old members (block_start/block_len/orig_start) are
+> co-existing with the new members (disk_bytenr/offset), meanwhile all the
+> critical code is still using the old members only.
 >
-> - try_merge_map()
->
-> Since the check is way more strict than before, the following code has
-> to be modified to pass the check:
->
-> - extent-map-tests
->   Previously the test case never populate ram_bytes, not to mention the
->   newly introduced disk_bytenr/disk_num_bytes.
->   Populate the involved numbers mostly to follow the existing
->   block_start/block_len values.
->
->   There are two special cases worth mentioning:
->   - test_case_3()
->     The test case is already way too invalid that tree-checker will
->     reject almost all extents.
->
->     And there is a special unaligned regular extent which has mismatch
->     disk_num_bytes (4096) and ram_bytes (4096 - 1).
->     Fix it by all assigned the disk_num_bytes and ram_bytes to 4096 - 1.
-
-Looking at the diff for test_case_3(), I don't see any assignment of
-4096 - 1 anywhere.
-All the assignments I see have a value of SZ_4K or SZ_16K.
-
->
->   - test_case_7()
->     An extent is inserted with 16K length, but on-disk extent size is
->     only 4K.
->     This means it must be a compressed extent, so set the compressed flag
->     for it.
->
-> - setup_relocation_extent_mapping()
->   This is mostly utilized by relocation code to read the chunk like an
->   inode.
-
-Not "mostly" - it's exclusively used by the relocation code.
-
->   So populate the extent map using a regular non-compressed extent.
-
-Isn't that what we already do? I'm confused.
-We are already creating a regular non-compressed extent, and all the
-diff does is to initialize some fields unrelated to that.
-
->
-> In fact, the new cross checks already exposed a bug in
-> btrfs_drop_extent_map_range(), and caught tons of bugs in the new
-> members assignment.
-
-I remember one bug in btrfs_drop_extent_map_range(), which fortunately
-didn't have any consequences.
-Those tons of bugs you mention are only in the code added by the
-patchset if I understand you correctly.
-
+> The cleanup would happen later after all the older and newer members are
+> properly validated.
 >
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
->  fs/btrfs/extent_map.c             | 66 +++++++++++++++++++++++++++++++
->  fs/btrfs/relocation.c             |  4 ++
->  fs/btrfs/tests/extent-map-tests.c | 56 +++++++++++++++++++++++++-
->  fs/btrfs/tests/inode-tests.c      |  2 +-
->  4 files changed, 126 insertions(+), 2 deletions(-)
+>  fs/btrfs/defrag.c     |  4 +++
+>  fs/btrfs/extent_map.c | 75 +++++++++++++++++++++++++++++++++++++++++--
+>  fs/btrfs/extent_map.h | 17 ++++++++++
+>  fs/btrfs/file-item.c  |  9 +++++-
+>  fs/btrfs/file.c       |  1 +
+>  fs/btrfs/inode.c      | 60 ++++++++++++++++++++++++++++++----
+>  6 files changed, 155 insertions(+), 11 deletions(-)
 >
+> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+> index 407ccec3e57e..242c5469f4ba 100644
+> --- a/fs/btrfs/defrag.c
+> +++ b/fs/btrfs/defrag.c
+> @@ -709,6 +709,10 @@ static struct extent_map *defrag_get_extent(struct b=
+trfs_inode *inode,
+>                         em->start =3D start;
+>                         em->orig_start =3D start;
+>                         em->block_start =3D EXTENT_MAP_HOLE;
+> +                       em->disk_bytenr =3D EXTENT_MAP_HOLE;
+> +                       em->disk_num_bytes =3D 0;
+> +                       em->ram_bytes =3D 0;
+> +                       em->offset =3D 0;
+>                         em->len =3D key.offset - start;
+>                         break;
+>                 }
 > diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> index 4d4ac9fc43e2..8d0e257fc113 100644
+> index 4230dd0f34cc..4d4ac9fc43e2 100644
 > --- a/fs/btrfs/extent_map.c
 > +++ b/fs/btrfs/extent_map.c
-> @@ -284,6 +284,66 @@ static void merge_ondisk_extents(struct extent_map *=
-prev, struct extent_map *nex
->         next->offset =3D new_offset;
+> @@ -232,6 +232,58 @@ static bool mergeable_maps(const struct extent_map *=
+prev, const struct extent_ma
+>         return next->block_start =3D=3D prev->block_start;
 >  }
 >
-> +static void dump_extent_map(const char *prefix, struct extent_map *em)
+> +/*
+> + * Handle the ondisk data extents merge for @prev and @next.
+> + *
+> + * Only touches disk_bytenr/disk_num_bytes/offset/ram_bytes.
+> + * For now only uncompressed regular extent can be merged.
+> + *
+> + * @prev and @next will be both updated to point to the new merged range=
+.
+> + * Thus one of them should be removed by the caller.
+> + */
+> +static void merge_ondisk_extents(struct extent_map *prev, struct extent_=
+map *next)
 > +{
-> +       if (!IS_ENABLED(CONFIG_BTRFS_DEBUG))
-> +               return;
-> +       pr_crit("%s, start=3D%llu len=3D%llu disk_bytenr=3D%llu disk_num_=
-bytes=3D%llu ram_bytes=3D%llu offset=3D%llu orig_start=3D%llu block_start=
-=3D%llu block_len=3D%llu flags=3D0x%x\n",
-> +               prefix, em->start, em->len, em->disk_bytenr, em->disk_num=
-_bytes,
-> +               em->ram_bytes, em->offset, em->orig_start, em->block_star=
-t,
-> +               em->block_len, em->flags);
-
-Instead of pr_crit() please use btrfs_crit(), in the call chain we
-have access to the fs_info at try_merge_map().
-
-> +       ASSERT(0);
-> +}
+> +       u64 new_disk_bytenr;
+> +       u64 new_disk_num_bytes;
+> +       u64 new_offset;
 > +
-> +/* Internal sanity checks for btrfs debug builds. */
-> +static void validate_extent_map(struct extent_map *em)
-> +{
-> +       if (!IS_ENABLED(CONFIG_BTRFS_DEBUG))
-> +               return;
-> +       if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE) {
-> +               if (em->disk_num_bytes =3D=3D 0)
-> +                       dump_extent_map("zero disk_num_bytes", em);
-> +               if (em->offset + em->len > em->ram_bytes)
-> +                       dump_extent_map("ram_bytes too small", em);
-> +               if (em->offset + em->len > em->disk_num_bytes &&
-> +                   !extent_map_is_compressed(em))
-> +                       dump_extent_map("disk_num_bytes too small", em);
+> +       /* @prev and @next should not be compressed. */
+> +       ASSERT(!extent_map_is_compressed(prev));
+> +       ASSERT(!extent_map_is_compressed(next));
 > +
-> +               if (extent_map_is_compressed(em)) {
-> +                       if (em->block_start !=3D em->disk_bytenr)
-> +                               dump_extent_map(
-> +                               "mismatch block_start/disk_bytenr/offset"=
-, em);
-> +                       if (em->disk_num_bytes !=3D em->block_len)
-> +                               dump_extent_map(
-> +                               "mismatch disk_num_bytes/block_len", em);
-> +                       /*
-> +                        * Here we only check the start/orig_start/offset=
- for
-> +                        * compressed extents.
-> +                        * This is because em::offset is always based on =
-the
-> +                        * referred data extent, which can be merged.
-> +                        *
-> +                        * In that case, @offset would no longer match
-> +                        * em::start - em::orig_start, and cause false al=
-ert.
-> +                        *
-> +                        * Thankfully only compressed extent read/encoded=
- write
-> +                        * really bothers @orig_start, so we can skip
-
-really bothers -> care about
-
-> +                        * the check for non-compressed extents.
-> +                        */
-> +                       if (em->orig_start !=3D em->start - em->offset)
-> +                               dump_extent_map(
-> +                               "mismatch orig_start/offset/start", em);
+> +       /*
+> +        * There are several different cases that @prev and @next can be =
+merged.
+> +        *
+> +        * 1) They are referring to the same data extent
+> +        * 2) Their ondisk data extents are adjacent and @prev is the tai=
+l
+> +        *    and @next is the head of their data extents
+> +        * 3) One of @prev/@next is referrring to a larger merged data ex=
+tent.
+> +        *    (test_case_3 of extent maps tests).
+> +        *
+> +        * The calculation here always merge the data extents first, then=
+ update
+> +        * @offset using the new data extents.
+> +        *
+> +        * For case 1), the merged data extent would be the same.
+> +        * For case 2), we just merge the two data extents into one.
+> +        * For case 3), we just got the larger data extent.
+> +        */
+> +       new_disk_bytenr =3D min(prev->disk_bytenr, next->disk_bytenr);
+> +       new_disk_num_bytes =3D max(prev->disk_bytenr + prev->disk_num_byt=
+es,
+> +                                next->disk_bytenr + next->disk_num_bytes=
+) -
+> +                            new_disk_bytenr;
+> +       new_offset =3D prev->disk_bytenr + prev->offset - new_disk_bytenr=
+;
 > +
-> +               } else {
-> +                       if (em->block_start !=3D em->disk_bytenr + em->of=
-fset)
-
-You can combine this as:
-
-} else if (em->block_start !=3D em->disk_bytenr + em->offset) {
-
-Which is clear and helps reduce indentation.
-
-> +                               dump_extent_map(
-> +                               "mismatch block_start/disk_bytenr/offset"=
-, em);
-> +               }
-> +       } else {
-> +               if (em->offset)
-
-Same here, can be combined.
-
-> +                       dump_extent_map("non-zero offset for hole/inline"=
-, em);
-> +       }
+> +       prev->disk_bytenr =3D new_disk_bytenr;
+> +       prev->disk_num_bytes =3D new_disk_num_bytes;
+> +       prev->ram_bytes =3D new_disk_num_bytes;
+> +       prev->offset =3D new_offset;
+> +
+> +       next->disk_bytenr =3D new_disk_bytenr;
+> +       next->disk_num_bytes =3D new_disk_num_bytes;
+> +       next->ram_bytes =3D new_disk_num_bytes;
+> +       next->offset =3D new_offset;
 > +}
 > +
 >  static void try_merge_map(struct btrfs_inode *inode, struct extent_map *=
 em)
 >  {
 >         struct extent_map_tree *tree =3D &inode->extent_tree;
-> @@ -320,6 +380,7 @@ static void try_merge_map(struct btrfs_inode *inode, =
+> @@ -263,6 +315,9 @@ static void try_merge_map(struct btrfs_inode *inode, =
 struct extent_map *em)
->                                 merge_ondisk_extents(merge, em);
+>                         em->block_len +=3D merge->block_len;
+>                         em->block_start =3D merge->block_start;
+>                         em->generation =3D max(em->generation, merge->gen=
+eration);
+> +
+> +                       if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+> +                               merge_ondisk_extents(merge, em);
 >                         em->flags |=3D EXTENT_FLAG_MERGED;
 >
-> +                       validate_extent_map(em);
 >                         rb_erase_cached(&merge->rb_node, &tree->map);
->                         RB_CLEAR_NODE(&merge->rb_node);
->                         free_extent_map(merge);
-> @@ -335,6 +396,7 @@ static void try_merge_map(struct btrfs_inode *inode, =
+> @@ -278,6 +333,8 @@ static void try_merge_map(struct btrfs_inode *inode, =
 struct extent_map *em)
+>         if (rb && can_merge_extent_map(merge) && mergeable_maps(em, merge=
+)) {
+>                 em->len +=3D merge->len;
 >                 em->block_len +=3D merge->block_len;
->                 if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
->                         merge_ondisk_extents(em, merge);
-> +               validate_extent_map(em);
+> +               if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+> +                       merge_ondisk_extents(em, merge);
 >                 rb_erase_cached(&merge->rb_node, &tree->map);
 >                 RB_CLEAR_NODE(&merge->rb_node);
 >                 em->generation =3D max(em->generation, merge->generation)=
 ;
-> @@ -446,6 +508,7 @@ static int add_extent_mapping(struct btrfs_inode *ino=
-de,
+> @@ -565,6 +622,7 @@ static noinline int merge_extent_mapping(struct btrfs=
+_inode *inode,
+>             !extent_map_is_compressed(em)) {
+>                 em->block_start +=3D start_diff;
+>                 em->block_len =3D em->len;
+> +               em->offset +=3D start_diff;
+>         }
+>         return add_extent_mapping(inode, em, 0);
+>  }
+> @@ -783,14 +841,18 @@ void btrfs_drop_extent_map_range(struct btrfs_inode=
+ *inode, u64 start, u64 end,
+>                                         split->block_len =3D em->block_le=
+n;
+>                                 else
+>                                         split->block_len =3D split->len;
+> +                               split->disk_bytenr =3D em->disk_bytenr;
+>                                 split->disk_num_bytes =3D max(split->bloc=
+k_len,
+>                                                             em->disk_num_=
+bytes);
+> +                               split->offset =3D em->offset;
+>                                 split->ram_bytes =3D em->ram_bytes;
+>                         } else {
+>                                 split->orig_start =3D split->start;
+>                                 split->block_len =3D 0;
+>                                 split->block_start =3D em->block_start;
+> +                               split->disk_bytenr =3D em->disk_bytenr;
+>                                 split->disk_num_bytes =3D 0;
+> +                               split->offset =3D 0;
+>                                 split->ram_bytes =3D split->len;
+>                         }
 >
->         lockdep_assert_held_write(&tree->lock);
+> @@ -811,13 +873,14 @@ void btrfs_drop_extent_map_range(struct btrfs_inode=
+ *inode, u64 start, u64 end,
+>                         split->start =3D end;
+>                         split->len =3D em_end - end;
+>                         split->block_start =3D em->block_start;
+> +                       split->disk_bytenr =3D em->disk_bytenr;
+>                         split->flags =3D flags;
+>                         split->generation =3D gen;
 >
-> +       validate_extent_map(em);
->         ret =3D tree_insert(&tree->map, em);
->         if (ret)
->                 return ret;
-> @@ -553,6 +616,9 @@ static void replace_extent_mapping(struct btrfs_inode=
- *inode,
+>                         if (em->block_start < EXTENT_MAP_LAST_BYTE) {
+>                                 split->disk_num_bytes =3D max(em->block_l=
+en,
+>                                                             em->disk_num_=
+bytes);
+> -
+> +                               split->offset =3D em->offset + end - em->=
+start;
+>                                 split->ram_bytes =3D em->ram_bytes;
+>                                 if (compressed) {
+>                                         split->block_len =3D em->block_le=
+n;
+> @@ -830,10 +893,11 @@ void btrfs_drop_extent_map_range(struct btrfs_inode=
+ *inode, u64 start, u64 end,
+>                                         split->orig_start =3D em->orig_st=
+art;
+>                                 }
+>                         } else {
+> +                               split->disk_num_bytes =3D 0;
+> +                               split->offset =3D 0;
+>                                 split->ram_bytes =3D split->len;
+>                                 split->orig_start =3D split->start;
+>                                 split->block_len =3D 0;
+> -                               split->disk_num_bytes =3D 0;
+>                         }
 >
->         lockdep_assert_held_write(&tree->lock);
+>                         if (extent_map_in_tree(em)) {
+> @@ -987,6 +1051,9 @@ int split_extent_map(struct btrfs_inode *inode, u64 =
+start, u64 len, u64 pre,
+>         /* First, replace the em with a new extent_map starting from * em=
+->start */
+>         split_pre->start =3D em->start;
+>         split_pre->len =3D pre;
+> +       split_pre->disk_bytenr =3D new_logical;
+> +       split_pre->disk_num_bytes =3D split_pre->len;
+> +       split_pre->offset =3D 0;
+>         split_pre->orig_start =3D split_pre->start;
+>         split_pre->block_start =3D new_logical;
+>         split_pre->block_len =3D split_pre->len;
+> @@ -1005,10 +1072,12 @@ int split_extent_map(struct btrfs_inode *inode, u=
+64 start, u64 len, u64 pre,
+>         /* Insert the middle extent_map. */
+>         split_mid->start =3D em->start + pre;
+>         split_mid->len =3D em->len - pre;
+> +       split_mid->disk_bytenr =3D em->block_start + pre;
+> +       split_mid->disk_num_bytes =3D split_mid->len;
+> +       split_mid->offset =3D 0;
+>         split_mid->orig_start =3D split_mid->start;
+>         split_mid->block_start =3D em->block_start + pre;
+>         split_mid->block_len =3D split_mid->len;
+> -       split_mid->disk_num_bytes =3D split_mid->block_len;
+>         split_mid->ram_bytes =3D split_mid->len;
+>         split_mid->flags =3D flags;
+>         split_mid->generation =3D em->generation;
+> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+> index 6ea0287b0d61..cc9c8092b704 100644
+> --- a/fs/btrfs/extent_map.h
+> +++ b/fs/btrfs/extent_map.h
+> @@ -70,12 +70,29 @@ struct extent_map {
+>          */
+>         u64 orig_start;
 >
-> +       validate_extent_map(cur);
-
-Why validate the extent map we are throwing away?
-We have already validated it when we inserted it or after we merged it.
-
-Thanks.
-
-> +       validate_extent_map(new);
+> +       /*
+> +        * The bytenr for of the full on-disk extent.
+> +        *
+> +        * For regular extents it's btrfs_file_extent_item::disk_bytenr.
+> +        * For holes it's EXTENT_MAP_HOLE and for inline extents it's
+> +        * EXTENT_MAP_INLINE.
+> +        */
+> +       u64 disk_bytenr;
 > +
->         WARN_ON(cur->flags & EXTENT_FLAG_PINNED);
->         ASSERT(extent_map_in_tree(cur));
->         if (!(cur->flags & EXTENT_FLAG_LOGGING))
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 8b24bb5a0aa1..0eb737507d12 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -2911,9 +2911,13 @@ static noinline_for_stack int setup_relocation_ext=
-ent_mapping(struct inode *inod
->                 return -ENOMEM;
+>         /*
+>          * The full on-disk extent length, matching
+>          * btrfs_file_extent_item::disk_num_bytes.
+>          */
+>         u64 disk_num_bytes;
 >
->         em->start =3D start;
-> +       em->orig_start =3D start;
->         em->len =3D end + 1 - start;
->         em->block_len =3D em->len;
+> +       /*
+> +        * Offset inside the decompressed extent.
+> +        *
+> +        * For regular extents it's btrfs_file_extent_item::offset.
+> +        * For holes and inline extents it's 0.
+> +        */
+> +       u64 offset;
+> +
+>         /*
+>          * The decompressed size of the whole on-disk extent, matching
+>          * btrfs_file_extent_item::ram_bytes.
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 2197cfe5443b..47bd4fe0a44b 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -1294,12 +1294,17 @@ void btrfs_extent_item_to_extent_map(struct btrfs=
+_inode *inode,
+>                 em->len =3D btrfs_file_extent_end(path) - extent_start;
+>                 em->orig_start =3D extent_start -
+>                         btrfs_file_extent_offset(leaf, fi);
+> -               em->disk_num_bytes =3D btrfs_file_extent_disk_num_bytes(l=
+eaf, fi);
+>                 bytenr =3D btrfs_file_extent_disk_bytenr(leaf, fi);
+>                 if (bytenr =3D=3D 0) {
+>                         em->block_start =3D EXTENT_MAP_HOLE;
+> +                       em->disk_bytenr =3D EXTENT_MAP_HOLE;
+> +                       em->disk_num_bytes =3D 0;
+> +                       em->offset =3D 0;
+>                         return;
+>                 }
+> +               em->disk_bytenr =3D btrfs_file_extent_disk_bytenr(leaf, f=
+i);
+> +               em->disk_num_bytes =3D btrfs_file_extent_disk_num_bytes(l=
+eaf, fi);
+> +               em->offset =3D btrfs_file_extent_offset(leaf, fi);
+>                 if (compress_type !=3D BTRFS_COMPRESS_NONE) {
+>                         extent_map_set_compression(em, compress_type);
+>                         em->block_start =3D bytenr;
+> @@ -1316,8 +1321,10 @@ void btrfs_extent_item_to_extent_map(struct btrfs_=
+inode *inode,
+>                 ASSERT(extent_start =3D=3D 0);
+>
+>                 em->block_start =3D EXTENT_MAP_INLINE;
+> +               em->disk_bytenr =3D EXTENT_MAP_INLINE;
+>                 em->start =3D 0;
+>                 em->len =3D fs_info->sectorsize;
+> +               em->offset =3D 0;
+>                 /*
+>                  * Initialize orig_start and block_len with the same valu=
+es
+>                  * as in inode.c:btrfs_get_extent().
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 63a13a4cace0..8931eeee199d 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -2337,6 +2337,7 @@ static int fill_holes(struct btrfs_trans_handle *tr=
+ans,
+>                 hole_em->orig_start =3D offset;
+>
+>                 hole_em->block_start =3D EXTENT_MAP_HOLE;
+> +               hole_em->disk_bytenr =3D EXTENT_MAP_HOLE;
+>                 hole_em->block_len =3D 0;
+>                 hole_em->disk_num_bytes =3D 0;
+>                 hole_em->generation =3D trans->transid;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 2815b72f2d85..42fea12d509f 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -139,8 +139,9 @@ static noinline int run_delalloc_cow(struct btrfs_ino=
+de *inode,
+>                                      bool pages_dirty);
+>  static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 st=
+art,
+>                                        u64 len, u64 orig_start, u64 block=
+_start,
+> -                                      u64 block_len, u64 orig_block_len,
+> +                                      u64 block_len, u64 disk_num_bytes,
+
+This hunk should have been in the previous patch, which renames
+orig_block_len to disk_num_bytes everywhere, including the prototype
+declaration of this function.
+
+>                                        u64 ram_bytes, int compress_type,
+> +                                      struct btrfs_file_extent *file_ext=
+ent,
+>                                        int type);
+>
+>  static int data_reloc_print_warning_inode(u64 inum, u64 offset, u64 num_=
+bytes,
+> @@ -1152,6 +1153,7 @@ static void submit_one_async_extent(struct async_ch=
+unk *async_chunk,
+>         struct btrfs_root *root =3D inode->root;
+>         struct btrfs_fs_info *fs_info =3D root->fs_info;
+>         struct btrfs_ordered_extent *ordered;
+> +       struct btrfs_file_extent file_extent =3D { 0 };
+>         struct btrfs_key ins;
+>         struct page *locked_page =3D NULL;
+>         struct extent_state *cached =3D NULL;
+> @@ -1198,6 +1200,13 @@ static void submit_one_async_extent(struct async_c=
+hunk *async_chunk,
+>         lock_extent(io_tree, start, end, &cached);
+>
+>         /* Here we're doing allocation and writeback of the compressed pa=
+ges */
+> +       file_extent.disk_bytenr =3D ins.objectid;
+> +       file_extent.disk_num_bytes =3D ins.offset;
+> +       file_extent.ram_bytes =3D async_extent->ram_size;
+> +       file_extent.num_bytes =3D async_extent->ram_size;
+> +       file_extent.offset =3D 0;
+> +       file_extent.compression =3D async_extent->compress_type;
+> +
+>         em =3D create_io_em(inode, start,
+>                           async_extent->ram_size,       /* len */
+>                           start,                        /* orig_start */
+> @@ -1206,6 +1215,7 @@ static void submit_one_async_extent(struct async_ch=
+unk *async_chunk,
+>                           ins.offset,                   /* orig_block_len=
+ */
+>                           async_extent->ram_size,       /* ram_bytes */
+>                           async_extent->compress_type,
+> +                         &file_extent,
+>                           BTRFS_ORDERED_COMPRESSED);
+>         if (IS_ERR(em)) {
+>                 ret =3D PTR_ERR(em);
+> @@ -1395,6 +1405,7 @@ static noinline int cow_file_range(struct btrfs_ino=
+de *inode,
+>
+>         while (num_bytes > 0) {
+>                 struct btrfs_ordered_extent *ordered;
+> +               struct btrfs_file_extent file_extent =3D { 0 };
+>
+>                 cur_alloc_size =3D num_bytes;
+>                 ret =3D btrfs_reserve_extent(root, cur_alloc_size, cur_al=
+loc_size,
+> @@ -1431,6 +1442,12 @@ static noinline int cow_file_range(struct btrfs_in=
+ode *inode,
+>                 extent_reserved =3D true;
+>
+>                 ram_size =3D ins.offset;
+> +               file_extent.disk_bytenr =3D ins.objectid;
+> +               file_extent.disk_num_bytes =3D ins.offset;
+> +               file_extent.num_bytes =3D ins.offset;
+> +               file_extent.ram_bytes =3D ins.offset;
+> +               file_extent.offset =3D 0;
+> +               file_extent.compression =3D BTRFS_COMPRESS_NONE;
+>
+>                 lock_extent(&inode->io_tree, start, start + ram_size - 1,
+>                             &cached);
+> @@ -1442,6 +1459,7 @@ static noinline int cow_file_range(struct btrfs_ino=
+de *inode,
+>                                   ins.offset, /* orig_block_len */
+>                                   ram_size, /* ram_bytes */
+>                                   BTRFS_COMPRESS_NONE, /* compress_type *=
+/
+> +                                 &file_extent,
+>                                   BTRFS_ORDERED_REGULAR /* type */);
+>                 if (IS_ERR(em)) {
+>                         unlock_extent(&inode->io_tree, start,
+> @@ -1855,6 +1873,7 @@ struct can_nocow_file_extent_args {
+>         u64 disk_bytenr;
+>         u64 disk_num_bytes;
+>         u64 extent_offset;
+> +
+>         /* Number of bytes that can be written to in NOCOW mode. */
+>         u64 num_bytes;
+>
+> @@ -2182,6 +2201,7 @@ static noinline int run_delalloc_nocow(struct btrfs=
+_inode *inode,
+>                                           nocow_args.num_bytes, /* block_=
+len */
+>                                           nocow_args.disk_num_bytes, /* o=
+rig_block_len */
+>                                           ram_bytes, BTRFS_COMPRESS_NONE,
+> +                                         &nocow_args.file_extent,
+>                                           BTRFS_ORDERED_PREALLOC);
+>                         if (IS_ERR(em)) {
+>                                 unlock_extent(&inode->io_tree, cur_offset=
+,
+> @@ -4982,6 +5002,7 @@ int btrfs_cont_expand(struct btrfs_inode *inode, lo=
+ff_t oldsize, loff_t size)
+>                         hole_em->orig_start =3D cur_offset;
+>
+>                         hole_em->block_start =3D EXTENT_MAP_HOLE;
+> +                       hole_em->disk_bytenr =3D EXTENT_MAP_HOLE;
+>                         hole_em->block_len =3D 0;
+>                         hole_em->disk_num_bytes =3D 0;
+>                         hole_em->ram_bytes =3D hole_size;
+> @@ -6842,6 +6863,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_in=
+ode *inode,
+>         }
+>         em->start =3D EXTENT_MAP_HOLE;
+>         em->orig_start =3D EXTENT_MAP_HOLE;
+> +       em->disk_bytenr =3D EXTENT_MAP_HOLE;
+>         em->len =3D (u64)-1;
+>         em->block_len =3D (u64)-1;
+>
+> @@ -7007,7 +7029,8 @@ static struct extent_map *btrfs_create_dio_extent(s=
+truct btrfs_inode *inode,
+>                                                   const u64 block_len,
+>                                                   const u64 orig_block_le=
+n,
+>                                                   const u64 ram_bytes,
+> -                                                 const int type)
+> +                                                 const int type,
+> +                                                 struct btrfs_file_exten=
+t *file_extent)
+>  {
+>         struct extent_map *em =3D NULL;
+>         struct btrfs_ordered_extent *ordered;
+> @@ -7016,7 +7039,7 @@ static struct extent_map *btrfs_create_dio_extent(s=
+truct btrfs_inode *inode,
+>                 em =3D create_io_em(inode, start, len, orig_start, block_=
+start,
+>                                   block_len, orig_block_len, ram_bytes,
+>                                   BTRFS_COMPRESS_NONE, /* compress_type *=
+/
+> -                                 type);
+> +                                 file_extent, type);
+>                 if (IS_ERR(em))
+>                         goto out;
+>         }
+> @@ -7047,6 +7070,7 @@ static struct extent_map *btrfs_new_extent_direct(s=
+truct btrfs_inode *inode,
+>  {
+>         struct btrfs_root *root =3D inode->root;
+>         struct btrfs_fs_info *fs_info =3D root->fs_info;
+> +       struct btrfs_file_extent file_extent =3D { 0 };
+>         struct extent_map *em;
+>         struct btrfs_key ins;
+>         u64 alloc_hint;
+> @@ -7065,9 +7089,16 @@ static struct extent_map *btrfs_new_extent_direct(=
+struct btrfs_inode *inode,
+>         if (ret)
+>                 return ERR_PTR(ret);
+>
+> +       file_extent.disk_bytenr =3D ins.objectid;
+> +       file_extent.disk_num_bytes =3D ins.offset;
+> +       file_extent.num_bytes =3D ins.offset;
+> +       file_extent.ram_bytes =3D ins.offset;
+> +       file_extent.offset =3D 0;
+> +       file_extent.compression =3D BTRFS_COMPRESS_NONE;
+>         em =3D btrfs_create_dio_extent(inode, dio_data, start, ins.offset=
+, start,
+>                                      ins.objectid, ins.offset, ins.offset=
+,
+> -                                    ins.offset, BTRFS_ORDERED_REGULAR);
+> +                                    ins.offset, BTRFS_ORDERED_REGULAR,
+> +                                    &file_extent);
+>         btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+>         if (IS_ERR(em))
+>                 btrfs_free_reserved_extent(fs_info, ins.objectid, ins.off=
+set,
+> @@ -7310,6 +7341,7 @@ static struct extent_map *create_io_em(struct btrfs=
+_inode *inode, u64 start,
+>                                        u64 len, u64 orig_start, u64 block=
+_start,
+>                                        u64 block_len, u64 disk_num_bytes,
+>                                        u64 ram_bytes, int compress_type,
+> +                                      struct btrfs_file_extent *file_ext=
+ent,
+>                                        int type)
+>  {
+>         struct extent_map *em;
+> @@ -7367,9 +7399,11 @@ static struct extent_map *create_io_em(struct btrf=
+s_inode *inode, u64 start,
+>         em->len =3D len;
+>         em->block_len =3D block_len;
 >         em->block_start =3D block_start;
-> +       em->disk_bytenr =3D block_start;
-> +       em->disk_num_bytes =3D em->len;
-> +       em->ram_bytes =3D em->len;
+> +       em->disk_bytenr =3D file_extent->disk_bytenr;
+>         em->disk_num_bytes =3D disk_num_bytes;
+>         em->ram_bytes =3D ram_bytes;
+>         em->generation =3D -1;
+> +       em->offset =3D file_extent->offset;
 >         em->flags |=3D EXTENT_FLAG_PINNED;
+>         if (type =3D=3D BTRFS_ORDERED_COMPRESSED)
+>                 extent_map_set_compression(em, compress_type);
+> @@ -7393,6 +7427,7 @@ static int btrfs_get_blocks_direct_write(struct ext=
+ent_map **map,
+>  {
+>         const bool nowait =3D (iomap_flags & IOMAP_NOWAIT);
+>         struct btrfs_fs_info *fs_info =3D inode_to_fs_info(inode);
+> +       struct btrfs_file_extent file_extent =3D { 0 };
+>         struct extent_map *em =3D *map;
+>         int type;
+>         u64 block_start, orig_start, orig_block_len, ram_bytes;
+> @@ -7423,7 +7458,8 @@ static int btrfs_get_blocks_direct_write(struct ext=
+ent_map **map,
+>                 block_start =3D em->block_start + (start - em->start);
 >
->         lock_extent(&BTRFS_I(inode)->io_tree, start, end, &cached_state);
-> diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-ma=
-p-tests.c
-> index ba36794ba2d5..8c683eed9f27 100644
-> --- a/fs/btrfs/tests/extent-map-tests.c
-> +++ b/fs/btrfs/tests/extent-map-tests.c
-> @@ -78,6 +78,9 @@ static int test_case_1(struct btrfs_fs_info *fs_info, s=
-truct btrfs_inode *inode)
->         em->len =3D SZ_16K;
->         em->block_start =3D 0;
->         em->block_len =3D SZ_16K;
-> +       em->disk_bytenr =3D 0;
-> +       em->disk_num_bytes =3D SZ_16K;
-> +       em->ram_bytes =3D SZ_16K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -96,9 +99,13 @@ static int test_case_1(struct btrfs_fs_info *fs_info, =
-struct btrfs_inode *inode)
->         }
+>                 if (can_nocow_extent(inode, start, &len, &orig_start,
+> -                                    &orig_block_len, &ram_bytes, NULL, f=
+alse, false) =3D=3D 1) {
+> +                                    &orig_block_len, &ram_bytes,
+> +                                    &file_extent, false, false) =3D=3D 1=
+) {
+>                         bg =3D btrfs_inc_nocow_writers(fs_info, block_sta=
+rt);
+>                         if (bg)
+>                                 can_nocow =3D true;
+> @@ -7451,7 +7487,8 @@ static int btrfs_get_blocks_direct_write(struct ext=
+ent_map **map,
+>                 em2 =3D btrfs_create_dio_extent(BTRFS_I(inode), dio_data,=
+ start, len,
+>                                               orig_start, block_start,
+>                                               len, orig_block_len,
+> -                                             ram_bytes, type);
+> +                                             ram_bytes, type,
+> +                                             &file_extent);
+>                 btrfs_dec_nocow_writers(bg);
+>                 if (type =3D=3D BTRFS_ORDERED_PREALLOC) {
+>                         free_extent_map(em);
+> @@ -9602,6 +9639,8 @@ static int __btrfs_prealloc_file_range(struct inode=
+ *inode, int mode,
+>                 em->orig_start =3D cur_offset;
+>                 em->len =3D ins.offset;
+>                 em->block_start =3D ins.objectid;
+> +               em->disk_bytenr =3D ins.objectid;
+> +               em->offset =3D 0;
+>                 em->block_len =3D ins.offset;
+>                 em->disk_num_bytes =3D ins.offset;
+>                 em->ram_bytes =3D ins.offset;
+> @@ -10168,6 +10207,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb=
+, struct iov_iter *from,
+>         struct extent_changeset *data_reserved =3D NULL;
+>         struct extent_state *cached_state =3D NULL;
+>         struct btrfs_ordered_extent *ordered;
+> +       struct btrfs_file_extent file_extent =3D { 0 };
+>         int compression;
+>         size_t orig_count;
+>         u64 start, end;
+> @@ -10343,10 +10383,16 @@ ssize_t btrfs_do_encoded_write(struct kiocb *io=
+cb, struct iov_iter *from,
+>                 goto out_delalloc_release;
+>         extent_reserved =3D true;
 >
->         em->start =3D SZ_16K;
-> +       em->orig_start =3D SZ_16K;
->         em->len =3D SZ_4K;
->         em->block_start =3D SZ_32K; /* avoid merging */
->         em->block_len =3D SZ_4K;
-> +       em->disk_bytenr =3D SZ_32K; /* avoid merging */
-> +       em->disk_num_bytes =3D SZ_4K;
-> +       em->ram_bytes =3D SZ_4K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -117,9 +124,13 @@ static int test_case_1(struct btrfs_fs_info *fs_info=
-, struct btrfs_inode *inode)
->
->         /* Add [0, 8K), should return [0, 16K) instead. */
->         em->start =3D start;
-> +       em->orig_start =3D start;
->         em->len =3D len;
->         em->block_start =3D start;
->         em->block_len =3D len;
-> +       em->disk_bytenr =3D start;
-> +       em->disk_num_bytes =3D len;
-> +       em->ram_bytes =3D len;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -174,6 +185,9 @@ static int test_case_2(struct btrfs_fs_info *fs_info,=
- struct btrfs_inode *inode)
->         em->len =3D SZ_1K;
->         em->block_start =3D EXTENT_MAP_INLINE;
->         em->block_len =3D (u64)-1;
-> +       em->disk_bytenr =3D EXTENT_MAP_INLINE;
-> +       em->disk_num_bytes =3D 0;
-> +       em->ram_bytes =3D SZ_1K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -192,9 +206,13 @@ static int test_case_2(struct btrfs_fs_info *fs_info=
-, struct btrfs_inode *inode)
->         }
->
->         em->start =3D SZ_4K;
-> +       em->orig_start =3D SZ_4K;
->         em->len =3D SZ_4K;
->         em->block_start =3D SZ_4K;
->         em->block_len =3D SZ_4K;
-> +       em->disk_bytenr =3D SZ_4K;
-> +       em->disk_num_bytes =3D SZ_4K;
-> +       em->ram_bytes =3D SZ_4K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -216,6 +234,9 @@ static int test_case_2(struct btrfs_fs_info *fs_info,=
- struct btrfs_inode *inode)
->         em->len =3D SZ_1K;
->         em->block_start =3D EXTENT_MAP_INLINE;
->         em->block_len =3D (u64)-1;
-> +       em->disk_bytenr =3D EXTENT_MAP_INLINE;
-> +       em->disk_num_bytes =3D 0;
-> +       em->ram_bytes =3D SZ_1K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -262,9 +283,13 @@ static int __test_case_3(struct btrfs_fs_info *fs_in=
-fo,
->
->         /* Add [4K, 8K) */
->         em->start =3D SZ_4K;
-> +       em->orig_start =3D SZ_4K;
->         em->len =3D SZ_4K;
->         em->block_start =3D SZ_4K;
->         em->block_len =3D SZ_4K;
-> +       em->disk_bytenr =3D SZ_4K;
-> +       em->disk_num_bytes =3D SZ_4K;
-> +       em->ram_bytes =3D SZ_4K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -286,6 +311,9 @@ static int __test_case_3(struct btrfs_fs_info *fs_inf=
-o,
->         em->len =3D SZ_16K;
->         em->block_start =3D 0;
->         em->block_len =3D SZ_16K;
-> +       em->disk_bytenr =3D 0;
-> +       em->disk_num_bytes =3D SZ_16K;
-> +       em->ram_bytes =3D SZ_16K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, start, len);
->         write_unlock(&em_tree->lock);
-> @@ -372,6 +400,9 @@ static int __test_case_4(struct btrfs_fs_info *fs_inf=
-o,
->         em->len =3D SZ_8K;
->         em->block_start =3D 0;
->         em->block_len =3D SZ_8K;
-> +       em->disk_bytenr =3D 0;
-> +       em->disk_num_bytes =3D SZ_8K;
-> +       em->ram_bytes =3D SZ_8K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -390,9 +421,13 @@ static int __test_case_4(struct btrfs_fs_info *fs_in=
-fo,
->
->         /* Add [8K, 32K) */
->         em->start =3D SZ_8K;
-> +       em->orig_start =3D SZ_8K;
->         em->len =3D 24 * SZ_1K;
->         em->block_start =3D SZ_16K; /* avoid merging */
->         em->block_len =3D 24 * SZ_1K;
-> +       em->disk_bytenr =3D SZ_16K; /* avoid merging */
-> +       em->disk_num_bytes =3D 24 * SZ_1K;
-> +       em->ram_bytes =3D 24 * SZ_1K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -410,9 +445,13 @@ static int __test_case_4(struct btrfs_fs_info *fs_in=
-fo,
->         }
->         /* Add [0K, 32K) */
->         em->start =3D 0;
-> +       em->orig_start =3D 0;
->         em->len =3D SZ_32K;
->         em->block_start =3D 0;
->         em->block_len =3D SZ_32K;
-> +       em->disk_bytenr =3D 0;
-> +       em->disk_num_bytes =3D SZ_32K;
-> +       em->ram_bytes =3D SZ_32K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, start, len);
->         write_unlock(&em_tree->lock);
-> @@ -494,9 +533,13 @@ static int add_compressed_extent(struct btrfs_inode =
-*inode,
->         }
->
->         em->start =3D start;
-> +       em->orig_start =3D start;
->         em->len =3D len;
->         em->block_start =3D block_start;
->         em->block_len =3D SZ_4K;
-> +       em->disk_bytenr =3D block_start;
-> +       em->disk_num_bytes =3D SZ_4K;
-> +       em->ram_bytes =3D len;
->         em->flags |=3D EXTENT_FLAG_COMPRESS_ZLIB;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
-> @@ -715,9 +758,13 @@ static int test_case_6(struct btrfs_fs_info *fs_info=
-, struct btrfs_inode *inode)
->         }
->
->         em->start =3D SZ_4K;
-> +       em->orig_start =3D SZ_4K;
->         em->len =3D SZ_4K;
->         em->block_start =3D SZ_16K;
->         em->block_len =3D SZ_16K;
-> +       em->disk_bytenr =3D SZ_16K;
-> +       em->disk_num_bytes =3D SZ_16K;
-> +       em->ram_bytes =3D SZ_16K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, 0, SZ_8K);
->         write_unlock(&em_tree->lock);
-> @@ -771,7 +818,10 @@ static int test_case_7(struct btrfs_fs_info *fs_info=
-, struct btrfs_inode *inode)
->         em->len =3D SZ_16K;
->         em->block_start =3D 0;
->         em->block_len =3D SZ_4K;
-> -       em->flags |=3D EXTENT_FLAG_PINNED;
-> +       em->disk_bytenr =3D 0;
-> +       em->disk_num_bytes =3D SZ_4K;
-> +       em->ram_bytes =3D SZ_16K;
-> +       em->flags |=3D (EXTENT_FLAG_PINNED | EXTENT_FLAG_COMPRESS_ZLIB);
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> @@ -790,9 +840,13 @@ static int test_case_7(struct btrfs_fs_info *fs_info=
-, struct btrfs_inode *inode)
->
->         /* [32K, 48K), not pinned */
->         em->start =3D SZ_32K;
-> +       em->orig_start =3D SZ_32K;
->         em->len =3D SZ_16K;
->         em->block_start =3D SZ_32K;
->         em->block_len =3D SZ_16K;
-> +       em->disk_bytenr =3D SZ_32K;
-> +       em->disk_num_bytes =3D SZ_16K;
-> +       em->ram_bytes =3D SZ_16K;
->         write_lock(&em_tree->lock);
->         ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
->         write_unlock(&em_tree->lock);
-> diff --git a/fs/btrfs/tests/inode-tests.c b/fs/btrfs/tests/inode-tests.c
-> index 99da9d34b77a..0895c6e06812 100644
-> --- a/fs/btrfs/tests/inode-tests.c
-> +++ b/fs/btrfs/tests/inode-tests.c
-> @@ -117,7 +117,7 @@ static void setup_file_extents(struct btrfs_root *roo=
-t, u32 sectorsize)
->
->         /* Now for a regular extent */
->         insert_extent(root, offset, sectorsize - 1, sectorsize - 1, 0,
-> -                     disk_bytenr, sectorsize, BTRFS_FILE_EXTENT_REG, 0, =
-slot);
-> +                     disk_bytenr, sectorsize - 1, BTRFS_FILE_EXTENT_REG,=
- 0, slot);
->         slot++;
->         disk_bytenr +=3D sectorsize;
->         offset +=3D sectorsize - 1;
+> +       file_extent.disk_bytenr =3D ins.objectid;
+> +       file_extent.disk_num_bytes =3D ins.offset;
+> +       file_extent.num_bytes =3D num_bytes;
+> +       file_extent.ram_bytes =3D ram_bytes;
+> +       file_extent.offset =3D encoded->unencoded_offset;
+> +       file_extent.compression =3D compression;
+>         em =3D create_io_em(inode, start, num_bytes,
+>                           start - encoded->unencoded_offset, ins.objectid=
+,
+>                           ins.offset, ins.offset, ram_bytes, compression,
+> -                         BTRFS_ORDERED_COMPRESSED);
+> +                         &file_extent, BTRFS_ORDERED_COMPRESSED);
+>         if (IS_ERR(em)) {
+>                 ret =3D PTR_ERR(em);
+>                 goto out_free_reserved;
 > --
 > 2.45.0
 >
