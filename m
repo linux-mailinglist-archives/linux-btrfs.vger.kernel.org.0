@@ -1,56 +1,60 @@
-Return-Path: <linux-btrfs+bounces-4928-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4929-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E17EE8C3C22
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 09:34:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F7C38C3D1D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 10:27:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3B7B1C2108C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 07:34:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 612C6B213CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 08:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81407146A9B;
-	Mon, 13 May 2024 07:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A071474AE;
+	Mon, 13 May 2024 08:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="YLzScyHF"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="jb9Uz5pl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.67.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79F3652F9B;
-	Mon, 13 May 2024 07:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F231EA8F
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 08:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.67.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715585663; cv=none; b=Yfat1+vwzQlPQS3wpFIcH536QgmQ4wYZwx382HAsOtK/IfAxn8MSGdyRDWTh547ZOntCKbxmv0EFYlq/eOLfM5CswO4bYCp6lyadASpUoUfmFgYaqNKOFTVaMIq7mTkMj91hPVfXheqwVJ+23mx31hS6Tm+x79fMyiFGHoz17B0=
+	t=1715588868; cv=none; b=apGgzb1ZduXsMuZVRys5qRtwr8cSqMHcgj6sD6Hj8OCu1hhdFFxk9V7Pv8+uNESRKZUZ/hsBoiTCQJYKXRqDCOkOxyFRuTIqV5XY3zShPYpPrtvg8TUQXiBLqVhxGLvrP+bEfBYM0cJ6lM6FD3X/zfdP8OwPOkN39okFsQNPNaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715585663; c=relaxed/simple;
-	bh=RUQh6UMIifz7eJvxoMe2rjb6m9G8jkWQaEVWG2hEeoQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z2GNTa4J2jmnE/0rZHr7uCc+0qSGQuUGg5Pe/3OzdnZUuco742NtRNkQjpPqto+IpAMT3Pae8ZGf82WH1R+SMAuVVUfPfwjaIpqgiKKOSmwy3tBFh7oQ09clfaezxTr83BQN8EA2GLkNxcZnHEk/iu6oo8p3ruVjPWfSP/ChkYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=YLzScyHF; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715585631; x=1716190431; i=quwenruo.btrfs@gmx.com;
-	bh=0OQIum97qAAe9o2eYF/Jg6gIBZbPIw+VDnqstE3MBlQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=YLzScyHFJ330Bjg+JV5nlO++GcOd3JFdfr95hDQ4WqmA+fW9ZdegdPy0J53RsauP
-	 ST76J3fLvmyKgQzPy1Ea0B2aqdmp144PPm7hV19GBAT0tM9T8+iUs/sdlvJcPPnwr
-	 tgMumdxPqC+UCI2i6UhC/XgtsJWhpfyx4CGNepBZ5tHwkN/2jkkhskffpmAJ+pFyO
-	 VXGF8sZLNe+r/o3da1lU0iPoZyVGsdAxcl+lOuzYcMz3uRoxM1V+kqcnS1Mgfttsw
-	 9mKKyeIAYndei1XuQIYpB10QQaVz1s5T2RfZqPMu5NR1+NMbKWCGEs2kQEZTKIn+6
-	 HFKmVPgE4zYWI9bxUQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDhlf-1sGdL70xTr-00BZOf; Mon, 13
- May 2024 09:33:51 +0200
-Message-ID: <b8723562-d154-4171-836c-6194cfd708a5@gmx.com>
-Date: Mon, 13 May 2024 17:03:40 +0930
+	s=arc-20240116; t=1715588868; c=relaxed/simple;
+	bh=+7ozgd0Vj0vDk0GEio6sEL62fuQZvFxQG2W+sRRjG0E=;
+	h=Message-ID:Date:MIME-Version:Subject:References:To:From:
+	 In-Reply-To:Content-Type; b=ExCENLlL8WyjQlxntO/n+62plPRL322pUbA9kUtFVtal3ZcDjMT/gVlr3VSHPi/pdUAzUUl7qvqjuHqS9GUFwWBzxb7/7Y4TyPI4UG5QYRN7Xy0Hbi+FfsdsbYiZ7aXo6dARWjU1OYaUbE4cMLKtcUKMrNmIoyKs3au2ERUNinA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=jb9Uz5pl; arc=none smtp.client-ip=114.132.67.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1715588847;
+	bh=+Oc9iBAWKUiKqEdatqlZ3W6gpq1ELkih6wtpBiW4/Rw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=jb9Uz5pl0pmurltt3VK5Xxw0QAEKmGxLkHDqwgDnNMgGizIhAI7Kc7rH9VqSYRRb3
+	 V3eppSR5RVb30J5JHwNvK+JkIpOjQspsObUKUvyVpQObP0C0KU56cVn+2prJiSJR8f
+	 CQxD6NXL102e3RuaRHQS1NgightxQfIbkSae8Ar0=
+X-QQ-mid: bizesmtpsz9t1715588845t404jv2
+X-QQ-Originating-IP: s/URqTmCNRl0kfKhF3vri6vwqK+lqj/vSdTgx/KftQQ=
+Received: from [192.168.1.5] ( [223.150.233.37])
+	by bizesmtp.qq.com (ESMTP) with SMTP id 0
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 16:27:23 +0800 (CST)
+X-QQ-SSF: 00100000000000E0Z000000A0000000
+X-QQ-FEAT: DQ0OCu3gog2Gyogx3bb93uegRi8u9GLSNvyOCabjlI7iY0HSCKIe705UcYNJj
+	tbN5HDND24He82Mnhz3uX8uwSCSf+jaCjVFud9fi7LwjC3yyKCnPUEf/1JJD7KWsS5FVYSR
+	qKJMM1gHRXA4zz8nkL3s60biXuw0ej4N1Re368mxHgR9Dt4ydFVV8wdiZsCmyeXkk0cko/5
+	rfgUeQBJ0j9prjBUQhjFe9uFg66vbDfi7ZGDsLjhQoOJ3NxKvfwsMrxTZNWoDin2ezewcyt
+	kIbtRGIXs/WfgZgCAbek0h3BrZoAIWpd8Vy4Oyd3FaDOAXMRW8L4xBygf+nB1nXDOTLdQYZ
+	AMs8d4rbU4LiC3fh10f/VDx90Zs5sAl/DeR0aqMtg27Lfza8si94PHSotYHKMeCSdJfZrxz
+	9mTwG9EuLM0=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 12241758347879848162
+Message-ID: <4177B1D395584346+0c96848e-da45-489b-b349-6fbc5befcefe@bupt.moe>
+Date: Mon, 13 May 2024 16:27:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,127 +62,141 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] generic: add gc stress test
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- Hans Holmberg <Hans.Holmberg@wdc.com>, Zorro Lang <zlang@redhat.com>
-Cc: Zorro Lang <zlang@kernel.org>, "Darrick J. Wong" <djwong@kernel.org>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>,
- =?UTF-8?Q?Matias_Bj=C3=B8rling?= <Matias.Bjorling@wdc.com>,
- Naohiro Aota <Naohiro.Aota@wdc.com>, "hch@lst.de" <hch@lst.de>,
- "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
- Jaegeuk Kim <jaegeuk@kernel.org>, "bvanassche@acm.org" <bvanassche@acm.org>,
- "daeho43@gmail.com" <daeho43@gmail.com>, Boris Burkov <boris@bur.io>
-References: <20240415112259.21760-1-hans.holmberg@wdc.com>
- <e748ee35-e53e-475a-8f38-68522fb80bee@wdc.com>
- <20240416185437.GC11935@frogsfrogsfrogs>
- <20240417124317.lje5w5hgawy4drkr@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <eddca2b5-0c15-4060-ba7b-89552de4a45d@wdc.com>
- <20240417140648.k3drgreciyiozkbq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <edcb31e0-cddb-4458-b45e-34518fbb828d@wdc.com>
- <20b38963-2994-401c-88f8-0a9d0729a101@wdc.com>
- <20240508085135.gwo3wiaqwhptdkju@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <9c38fffc-72e9-4766-a9d0-ef90411df6f2@wdc.com>
- <299bf8a4-b71e-4a05-8210-d52ea45d5329@wdc.com>
+Subject: Fwd: snapshots of subvolumes recursivly?
+References: <20240513075016.GC94789@tik.uni-stuttgart.de>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <299bf8a4-b71e-4a05-8210-d52ea45d5329@wdc.com>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: HAN Yuwei <hrx@bupt.moe>
+In-Reply-To: <20240513075016.GC94789@tik.uni-stuttgart.de>
+X-Forwarded-Message-Id: <20240513075016.GC94789@tik.uni-stuttgart.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------lGaS0cwrKg70y2X0bn1jwICS"
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------lGaS0cwrKg70y2X0bn1jwICS
+Content-Type: multipart/mixed; boundary="------------NXspK7kfNcRHH7lqQ7YVq9AN";
+ protected-headers="v1"
+From: HAN Yuwei <hrx@bupt.moe>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Message-ID: <0c96848e-da45-489b-b349-6fbc5befcefe@bupt.moe>
+Subject: Fwd: snapshots of subvolumes recursivly?
+References: <20240513075016.GC94789@tik.uni-stuttgart.de>
+In-Reply-To: <20240513075016.GC94789@tik.uni-stuttgart.de>
+
+--------------NXspK7kfNcRHH7lqQ7YVq9AN
+Content-Type: multipart/mixed; boundary="------------FJYV4FlvN6Tte7vxd1f0JXCu"
+
+--------------FJYV4FlvN6Tte7vxd1f0JXCu
 Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+
+Rm9yd2FyZCB0aGlzIG1lc3NhZ2UgdG8gbWFpbGluZy1saXN0DQoNCi0tLS0tLS0tIOi9rOWP
+keeahOa2iOaBryAtLS0tLS0tLQ0K5Li76aKYOiAJUmU6IHNuYXBzaG90cyBvZiBzdWJ2b2x1
+bWVzIHJlY3Vyc2l2bHk/DQrml6XmnJ86IAlNb24sIDEzIE1heSAyMDI0IDA5OjUwOjE2ICsw
+MjAwDQpGcm9tOiAJVWxsaSBIb3JsYWNoZXIgPGZyYW1zdGFnQHJ1cy51bmktc3R1dHRnYXJ0
+LmRlPg0K5pS25Lu25Lq6OiAJSEFOIFl1d2VpIDxocnhAYnVwdC5tb2U+DQoNCg0KDQoNCkkg
+YW0gbm90IGFibGUgYW55IG1vcmUgdG8gcmVwbHkgdG8gdGhlIG1haWxpbmcgbGlzdDoNCg0K
+PGxpbnV4LWJ0cmZzQHZnZXIua2VybmVsLm9yZz46IGhvc3Qgc210cC5zdWJzcGFjZS5rZXJu
+ZWwub3JnWzQ0LjIzOC4yMzQuNzhdDQpzYWlkOiA1NTAgNS43LjEgWW91ciBtZXNzYWdlIGxv
+b2tlZCBzcGFtbXkgdG8gdXMuIFBsZWFzZSBjaGVjaw0KaHR0cHM6Ly9zdWJzcGFjZS5rZXJu
+ZWwub3JnL2V0aXF1ZXR0ZS5odG1sIGFuZCByZXNlbmQuIChpbiByZXBseSB0byBlbmQgb2YN
+CkRBVEEgY29tbWFuZCkNCg0KLS0gDQpVbGxyaWNoIEhvcmxhY2hlciAgICAgICAgICAgICAg
+U2VydmVyIHVuZCBWaXJ0dWFsaXNpZXJ1bmcNClJlY2hlbnplbnRydW0gVElLDQpVbml2ZXJz
+aXRhZXQgU3R1dHRnYXJ0ICAgICAgICAgRS1NYWlsOiBob3JsYWNoZXJAdGlrLnVuaS1zdHV0
+dGdhcnQuZGUNCkFsbG1hbmRyaW5nIDMwYSAgICAgICAgICAgICAgICBUZWw6ICAgICsrNDkt
+NzExLTY4NTY1ODY4DQo3MDU2OSBTdHV0dGdhcnQgKEdlcm1hbnkpICAgICAgV1dXOiAgICBo
+dHRwczovL3d3dy50aWsudW5pLXN0dXR0Z2FydC5kZS8NCg0K
+--------------FJYV4FlvN6Tte7vxd1f0JXCu
+Content-Type: message/rfc822; name="ForwardedMessage.eml"
+Content-Disposition: attachment; filename="ForwardedMessage.eml"
+Content-Transfer-Encoding: 7bit
+
+Date: Mon, 13 May 2024 09:37:29 +0200
+From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+To: linux-btrfs@vger.kernel.org
+Subject: Re: snapshots of subvolumes recursivly?
+Message-ID: <20240513073729.GA94789@tik.uni-stuttgart.de>
+Mail-Followup-To: linux-btrfs@vger.kernel.org
+References: <20240512203921.GA83909@tik.uni-stuttgart.de>
+ <6B5555BE532EFFBF+03c904d1-3111-40d6-9266-8c02c35b6cd4@bupt.moe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <6B5555BE532EFFBF+03c904d1-3111-40d6-9266-8c02c35b6cd4@bupt.moe>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QysdlSAtgCj0emzrDG1M1CrF0EN8uw2aHXb3/u3U5A6apXcV4gQ
- 6v7jvcuoMhTaTVtsT68gPWubQikck0WaEYA/uZU9F8nZ0dH6+W2CzR/1dOa+adJsLYl5TLN
- klJpKqVHm+hBhryO800AotQWNOBZtyzuFOnOoyGjmhdmZp3DWdYLf8Z/L5MEYtPwuzePxIm
- vL6SofSf9yMEDdTJVgg3A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:UVJsvnMtPEE=;XDQOWHHvCrrJ4Lj0xEXChMP2Xh6
- 2fZ8AIZ3mc8EGzemKE/hENdyYCQEbNLS+oro/u7qvV6V9NwHq5LbYDtpg6SUkPS+ZeNmLuh2i
- 3lt/WXQCDGYfvC4yBg/ssjSWEdHFBp4lgeDU/nP+n0lCYTqlYObHpEPrmFxgRgnZOdpTCl899
- GQO/AFXNW7ToKvhQxzdkNN8KACoaJjF762JMKIfgZxM1Wtn8Y2lX/reHq65zAWGUh7xQhT09Y
- AS38VJeePTkyYpBxjgLd/VGCrLJbtbTMBN30Tjte26iqVUjiq/9EiE7UX8i4nHEFGUE76TbX4
- pCYLcbKsLMdGyVlkJ2QscxJqjVRfTGaHv3B1PP0JnmhTMH1cW9GFZRxVHSl0zauOzY0ISHD1l
- vYGVPegzq+g3vF/EEOTN7HRL61hdMxtJBpsBKsBBmBOpGhZcx5Dqc6GDGG6P9mpOos7DLgTyj
- Kgu5VqPaiJMFz9CI7wWmrYJrKZx5mSxA+RkkZb7PXmmnFRjCAPnv6nZMdKAMH8rB1JC3VQTTA
- E5d0aGWc4g8bS0cf24KsQBuX0BmxSs5rtgCpWRntP45VWkm9Kyhnlwbg6p/h7iDrYv1Q/tKmZ
- hTssNJC+X5jszVM0Fy/nc+nav2upJK4sms+RA1DCmpC6tWNafWKFzIK8cPNrHovpRrrzylUuV
- izLM9RVwRuwGYnt4+bCX+jO7U+qSvo4GluiPN71I2qcZkbSXOg35yg5v8pxuno1TXYSgbz1lA
- rSGRFOKSC8D0V1DXbRgnitkifGZlVdolHl2p4Vx64jr1VP6FmBcEC9Dv7EWvpds/kI5s3UVEA
- D0a12y0KOgtU5IpmvBxKbOrhYrO+wCve2Ul+cv3fAxaGg=
+
+On Mon 2024-05-13 (12:19), HAN Yuwei wrote:
+> =E5=9C=A8 2024/5/13 4:39, Ulli Horlacher =E5=86=99=E9=81":
+>=20
+> > I have asked a similar question 2019-07-05, but maybe meanwhile there=
+ is a
+> > solution...
+> >
+> > I want to backup btrfs filesystems with IBM Spectrum Protect and rest=
+ic,
+> > both are file based.
+> >
+> > Copying files which are in write-open state will lead to file corrupt=
+ion.
+> > Therefore my idea is: create a snapshot and run the backup on the sna=
+pshot.
+>=20
+> You could use "btrfs send" to send whole snapshot instead of file.
+
+I MUST use IBM Spectrum Protect or restic, because the backup
+storage is a (multi-million dollar) tape library.
 
 
+> > I could write a script which creates snapshots of the subvolumes
+> > (recursivly), but maybe there is already such a program?
+> > Or another solution for this problem?
+>=20
+>  From what I understand, subvolume created a way to split your "snapsho=
+t
+> zone" for better data management(e.g. you can snapshot / without
+> including /home or /var). This is intented.
+>=20
+> So if you want to backup sv1 sv2, why you created subvolume in the firs=
+t
+> place?
 
-=E5=9C=A8 2024/5/13 02:26, Johannes Thumshirn =E5=86=99=E9=81=93:
-> [ +CC Boris ]
-[...]
->> I was surprised to see the failure for brtrfs on a conventional block
->> device, but have not dug into it. I suspect/assume it's the same root
->> cause as the issue Johannes is looking into when using a zoned block
->> device as backing storage.
->>
->> I debugged that a bit with Johannes, and noticed that if I manually
->> kick btrfs rebalancing after each write via sysfs, the test progresses
->> further (but super slow).
->>
->> So *I think* that btrfs needs to:
->>
->> * tune the triggering of gc to kick in way before available free space
->>      runs out
->> * start slowing down / blocking writes when reclaim pressure is high to
->>      avoid premature -ENOSPC:es.
->
-> Yes both Boris and I are working on different solutions to the GC
-> problem. But apart from that, I have the feeling that using stat to
-> check on the available space is not the best idea.
+This is only a simple example to explain the problem.
+I have hundreds of hosts which use btrfs subvolumes intensivly.
+For example SLES splits the / filesystem in a dozen subvolumes.
+I cannot change this setup.
+And users may create (sub-)subvolumes, too. I cannot stop them in doing s=
+o.=20
+But I must organize the backup. It's up to me :-}
 
-Although my previous workaround (fill to 100% then deleting 5%) is not
-going to be feasible for zoned devices, what about two-run solution below?
+--=20
+Ullrich Horlacher              Server und Virtualisierung
+Rechenzentrum TIK
+Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
+Allmandring 30a                Tel:    ++49-711-68565868
+70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
+REF:<6B5555BE532EFFBF+03c904d1-3111-40d6-9266-8c02c35b6cd4@bupt.moe>
 
-- The first run to fill the whole fs until ENOSPC
-   Then calculate how many bytes we have really written. (du?)
 
-- Recreate the fs and fill to 95% of above number and start the test
+--------------FJYV4FlvN6Tte7vxd1f0JXCu--
 
-But with this workaround, I'm not 100% if this is a good idea for all
-filesystems.
+--------------NXspK7kfNcRHH7lqQ7YVq9AN--
 
-AFAIK ext4/xfs sometimes can under-report the available space (aka,
-reporting no available bytes, but can still write new data).
+--------------lGaS0cwrKg70y2X0bn1jwICS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-If we always go ENOSPC to calculate the real available space, it may
-cause too much pressure.
+-----BEGIN PGP SIGNATURE-----
 
-And it may be a good idea for us btrfs guys to implement a similar
-under-reporting available space behavior?
+iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZkHO6gAKCRBLkKfpYfpB
+U0mfAQC3rGEFYrmesWikM+obwTl36/C1nqVGSJoTAmje4iymMQD/V0buZx5XpXxK
+/ZuKQYJ+A48pJ3QT5V6uCAhKO2liuw4=
+=LKW4
+-----END PGP SIGNATURE-----
 
-Thanks,
-Qu
->
->> It's a pretty nasty problem, as potentially any write could -ENOSPC
->> long before the reported available space runs out when a workload
->> ends up fragmenting the disk and write pressure is high..
->
->
+--------------lGaS0cwrKg70y2X0bn1jwICS--
 
