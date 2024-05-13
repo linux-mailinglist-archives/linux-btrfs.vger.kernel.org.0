@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-4935-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4936-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 190288C45B5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 19:09:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 260F78C45D4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 19:16:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B98E1C20A94
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 17:09:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6A20282BFA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2024 17:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9D61CD26;
-	Mon, 13 May 2024 17:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E6020335;
+	Mon, 13 May 2024 17:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ODj1sSWB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W8GJ6U06"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4911CAAE
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 17:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41702233E
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 17:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715620180; cv=none; b=SykrUh5ogJ50bexKCvUVOFJLU9Yza3Jul42kHo6OslRHWuEnC2GjgN90p3A+/LbpyAx9moDHrM0cjzQUL4/wfmOq0Coam92cnRLsv0uAd7r1iMefJuYYcMRFxEmss/DpQOnvzWtKoByyut6v7N2w90S9bC/7UGOItR5c8WN/oRE=
+	t=1715620569; cv=none; b=E4tt5eMpvSTbKmy1qs49xpN0IIvcCnqVWQG2HB64LvzgLGgwMyfdCvdSJsxiMM78Ok8kZW2Rp+wsy/cUwCuNLaBwEV5T5+dvYZ3i/2OamA0r98hXQGQKlcYQRCb8G7AwPfy25qgcgeqOK5p5rQhMIGznCuSkgoxtBgjaMYOzx0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715620180; c=relaxed/simple;
-	bh=2yyzoZ4kQn1Ypmys/saiB4n2i2R8prujUWXRPluRApI=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=D6iuxQPNyOIVClCKRAL/kd8p8pvHhdKdIUl1D2sbpe6roocDN+5k+OQVt8jjoy+WQC2JWiK0I2w/2gU0idAgByrQggOPjHGVwN0/QJSu4yjv8+z8Sph+qe6/gfU9Kcfw8baKFB7eSYnEpGtuHDRaxphUxRFmJJUzfYiWrecTKxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ODj1sSWB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37537C113CC
-	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 17:09:39 +0000 (UTC)
+	s=arc-20240116; t=1715620569; c=relaxed/simple;
+	bh=17XRsaGa/rEZNDJ56lkAHmqPi5iZMqy+5sS/KP+GGOA=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=LgJvoAD91T5DHYh9g2LrKOcgnnuPLG2R6ejaBix61lu+Ewr6WhaQiu5DkcpSUKBQ/+2yQmYBf68UOyKX9C8MtKAxTErJOsrgI9OhsscYLxZxR3ghqAHePrwXA30RRmDZT3quRTTykle+5+Kg/qaoYx0UXD4QzZJcGg/QQsizKyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W8GJ6U06; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2CECC113CC
+	for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2024 17:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715620179;
-	bh=2yyzoZ4kQn1Ypmys/saiB4n2i2R8prujUWXRPluRApI=;
+	s=k20201202; t=1715620569;
+	bh=17XRsaGa/rEZNDJ56lkAHmqPi5iZMqy+5sS/KP+GGOA=;
 	h=From:To:Subject:Date:From;
-	b=ODj1sSWBdRu9p3YLXOnO9bwxZZmRTQJg17S8I1yPH069ntB/jUjyZOVAlXBLpzgaU
-	 aRdTE0Gh/+RGtNW2rpy52LKEaNnK5XOby+zAcCXT3rAGBiqgZLC9sC0rISXgI1x2YF
-	 qkx0WeO/mSH/aCZsRftLam0fhh1MI1WBnWDkBge35N+DrFXVnWyhCgzTtOqm8c/AKv
-	 VZhm1OcXEDdaPoAEFASModbB+LOj8tEMWa0LSc8EqQ/nen3YV/IZhusC8E3NXaVBZS
-	 W/TjyvmyLzwtx9436LcKZsf1EH44dBtSucC2nKBK2Kb4ikH3PRtMTvy3GHynlGHeI3
-	 jspOnzpLRy94g==
+	b=W8GJ6U06T0ZRAFJzbppdHu04xg8tgq7bz6FIvGJt+vazKvSI9VIAA63G5WycKdcd6
+	 Na5kaBe3vfnvJeDLuOzIUcfNx56PtnHzOWGseH1tAy5MYM2E/U0FbHm/K/nPNXsPh2
+	 JFtrAnFKGGm8fVTCFcetIL536e4UMLzxJ6haQA8TgB90QWoO5ym+pQ/P5/iZo7GNf7
+	 F24Oh5l/9fnM7m6hZVA51BPlX88twiaIlRXg2hLy0XDD9+j9ssw5AJ4PIhyfDAAzRx
+	 XH9jGdDXMeAuEOh/DTR6XxbaGkOykwOnA315grE+TZ3QgfaLqNknTl/wfhGphrsWGZ
+	 M7ftVPg9FhuNQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove no longer used btrfs_migrate_to_delayed_refs_rsv()
-Date: Mon, 13 May 2024 18:09:36 +0100
-Message-Id: <7a6704f8877c76f07ea3fc2e995b0bceea9ef602.1715620125.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: fix misspelled end IO compression callbacks
+Date: Mon, 13 May 2024 18:16:06 +0100
+Message-Id: <4a9ef85f3ad20b4a423a695dc90c9fb028135faf.1715620538.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -56,83 +56,54 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The function btrfs_migrate_to_delayed_refs_rsv() is no longer used.
-Its last use was removed in commit 2f6397e448e6 ("btrfs: don't refill
-whole delayed refs block reserve when starting transaction").
-So remove the function.
+Fix typo in the end IO compression callbacks, from "comprssed" to
+"compression".
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-ref.c | 42 ------------------------------------------
- fs/btrfs/delayed-ref.h |  2 --
- 2 files changed, 44 deletions(-)
+ fs/btrfs/compression.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 6cc80fb10da2..6b4296ab651f 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -194,48 +194,6 @@ void btrfs_dec_delayed_refs_rsv_bg_updates(struct btrfs_fs_info *fs_info)
- 					      0, released, 0);
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 6441e47d8a5e..7b4843df0752 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -261,7 +261,7 @@ void btrfs_free_compr_folio(struct folio *folio)
+ 	folio_put(folio);
  }
  
--/*
-- * Transfer bytes to our delayed refs rsv.
-- *
-- * @fs_info:   the filesystem
-- * @num_bytes: number of bytes to transfer
-- *
-- * This transfers up to the num_bytes amount, previously reserved, to the
-- * delayed_refs_rsv.  Any extra bytes are returned to the space info.
-- */
--void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
--				       u64 num_bytes)
--{
--	struct btrfs_block_rsv *delayed_refs_rsv = &fs_info->delayed_refs_rsv;
--	u64 to_free = 0;
--
--	spin_lock(&delayed_refs_rsv->lock);
--	if (delayed_refs_rsv->size > delayed_refs_rsv->reserved) {
--		u64 delta = delayed_refs_rsv->size -
--			delayed_refs_rsv->reserved;
--		if (num_bytes > delta) {
--			to_free = num_bytes - delta;
--			num_bytes = delta;
--		}
--	} else {
--		to_free = num_bytes;
--		num_bytes = 0;
--	}
--
--	if (num_bytes)
--		delayed_refs_rsv->reserved += num_bytes;
--	if (delayed_refs_rsv->reserved >= delayed_refs_rsv->size)
--		delayed_refs_rsv->full = true;
--	spin_unlock(&delayed_refs_rsv->lock);
--
--	if (num_bytes)
--		trace_btrfs_space_reservation(fs_info, "delayed_refs_rsv",
--					      0, num_bytes, 1);
--	if (to_free)
--		btrfs_space_info_free_bytes_may_use(fs_info,
--				delayed_refs_rsv->space_info, to_free);
--}
--
- /*
-  * Refill based on our delayed refs usage.
-  *
-diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
-index 04b180ebe1fe..405be46c420f 100644
---- a/fs/btrfs/delayed-ref.h
-+++ b/fs/btrfs/delayed-ref.h
-@@ -386,8 +386,6 @@ void btrfs_inc_delayed_refs_rsv_bg_updates(struct btrfs_fs_info *fs_info);
- void btrfs_dec_delayed_refs_rsv_bg_updates(struct btrfs_fs_info *fs_info);
- int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
- 				  enum btrfs_reserve_flush_enum flush);
--void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
--				       u64 num_bytes);
- bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info);
+-static void end_bbio_comprssed_read(struct btrfs_bio *bbio)
++static void end_bbio_compressed_read(struct btrfs_bio *bbio)
+ {
+ 	struct compressed_bio *cb = to_compressed_bio(bbio);
+ 	blk_status_t status = bbio->bio.bi_status;
+@@ -334,7 +334,7 @@ static void btrfs_finish_compressed_write_work(struct work_struct *work)
+  * This also calls the writeback end hooks for the file pages so that metadata
+  * and checksums can be updated in the file.
+  */
+-static void end_bbio_comprssed_write(struct btrfs_bio *bbio)
++static void end_bbio_compressed_write(struct btrfs_bio *bbio)
+ {
+ 	struct compressed_bio *cb = to_compressed_bio(bbio);
+ 	struct btrfs_fs_info *fs_info = bbio->inode->root->fs_info;
+@@ -383,7 +383,7 @@ void btrfs_submit_compressed_write(struct btrfs_ordered_extent *ordered,
  
- static inline u64 btrfs_delayed_ref_owner(struct btrfs_delayed_ref_node *node)
+ 	cb = alloc_compressed_bio(inode, ordered->file_offset,
+ 				  REQ_OP_WRITE | write_flags,
+-				  end_bbio_comprssed_write);
++				  end_bbio_compressed_write);
+ 	cb->start = ordered->file_offset;
+ 	cb->len = ordered->num_bytes;
+ 	cb->compressed_folios = compressed_folios;
+@@ -588,7 +588,7 @@ void btrfs_submit_compressed_read(struct btrfs_bio *bbio)
+ 	compressed_len = em->block_len;
+ 
+ 	cb = alloc_compressed_bio(inode, file_offset, REQ_OP_READ,
+-				  end_bbio_comprssed_read);
++				  end_bbio_compressed_read);
+ 
+ 	cb->start = em->orig_start;
+ 	em_len = em->len;
 -- 
 2.43.0
 
