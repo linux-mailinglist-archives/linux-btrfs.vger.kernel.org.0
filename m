@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4996-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 166E88C5D8A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 00:15:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA81B8C5D9C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 00:21:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A95961F2231E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 22:15:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73677283CAC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 22:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9179F181D12;
-	Tue, 14 May 2024 22:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72949181D0C;
+	Tue, 14 May 2024 22:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hcDkuliU"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="AJaByG/x"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8AB181BAC
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 22:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE3A181CE9
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 22:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715724942; cv=none; b=gkbwrrp+X4QHK7S2Gy7uKSGONK9fo/CywfPk5BsKllN1y/JNTkh9oHtSAgY5GFtHfZBOrph8X6WFjup2qC25ZU+330sZ6T52qBD4H6a3fSqwMevc+TA9QqIKyHx70up1QWgUTQsVhxX78051b8Y0zo9edXUL9acWoQKZILRpXuU=
+	t=1715725261; cv=none; b=AElfo9irsil9EaY82EV1uTtCowv7vM5s/h38l5ggFob+lDOqxV1Mj8Oh7/ssuCd62UDbGcN4K5/bI+bFwYgUHUwNHopnmXkbv6U9JZDmtDgGI6movkBOySRclsk2gff0pc3Co7wqYax8eGgKLlkVF9ZRfALuclrnjqbqZfhqIJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715724942; c=relaxed/simple;
-	bh=A2spy/b3bAB68b6V/I7PA/LSITWJz29RPrbuTB6ox00=;
+	s=arc-20240116; t=1715725261; c=relaxed/simple;
+	bh=9QONpUmRmtO3THjFb5Zbxc6LF2F4s2LvT9KuW3C30fo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZOBJn4yBkPTG+dXYI5sVRbZ0bfB5VqUcVQDP9fqsCVUmhziNpc0A3lGbsAHZoUavdKUeYi3snSP1Nuvu9HBhJotFDRZTVvwA/1LfdyKc0ImpWL1vtUolUt4Ur1s16xfTa1y4kaniY/O8jFJSGxZh9PVgG4nSRDSyV5133T/+LfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hcDkuliU; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=cUowNOyo61hvEmAcfQbQeIrW385jyUqrZzA1PMzZvFmXsaj30K4HGhu/DhzzrbinDtxfPG2MfXU75ASyocrJ2evWgt/kmko6azpagq2UYzipPfeGGVChsr5q+U5I77ebOWDiUvlvqR2Wz4jZTem/3Rw5CJ9jNSJ6sERxkKz2Izs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=AJaByG/x; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715724934; x=1716329734; i=quwenruo.btrfs@gmx.com;
-	bh=oteQ0t0siRf+unwjwK04ZptcGejMYutnTLELTHxHS1o=;
+	s=s31663417; t=1715725253; x=1716330053; i=quwenruo.btrfs@gmx.com;
+	bh=FWyC9o5WbCfdqGejHThW+KSZpM7DzZMGlJ0xl4tKVVg=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=hcDkuliUEUSY6AfYd5/U0okunPyEsxg7Le5MUhDdgK4E7nqv2URfEQ9k12UPL99F
-	 XAstMYsoxJJsoid9+/VclGcuXk+tYMePifjh1KqvV3QGTAjXKj6VgYZhzpdJOYqRS
-	 MSovq+TrSYKR51VJoruNxRAkpDr+WNeQJpvr3yMyhLJQnRRkzOLDuQSaUQGnyrpbu
-	 nt2TyiStTdC3tcrYAMP06WCEzX0YqELw+UUCS9E4KWyuZkZk2XlRfInLXSAvOwg1V
-	 q7Vc09zZblaUb9z45w9fnH1skq61KUEvcA5ZyWduP2/3PD3z3hs9YfATpjwQotWl8
-	 zYVnMq4kz77da0yvZA==
+	b=AJaByG/xO4e41fyqKFtJlQ1/4BO5lp7DM/ij9MigJkYx90K768lxhrKqYjzTmAm8
+	 ddZq+ahfYBBX/Y7aE+T6CwwukctBF/mePQTqXcrQsWGiaoQA8C+67J/aj/QKXeZAO
+	 GZd9jKK5bjSrKAuS39eeHyuRvQa3AoNP5MOQzJV0P7ACtKXQ+EcPlWXD0/S13WjbH
+	 Hz+H/llLvOrh8CsQoY8I/Mg1DUyVB+QjN34TJQoxmLCpzxoikhdMnEroOvfuRUi5s
+	 dQnDqrvkplXNP6nm3PeAdt3N0A7caCMkadM+KZpqGUSgdqjFNBR3S0DNeV4A8PMw4
+	 cG0j3uMx3m4RGzTSWA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MxUs7-1sUkYO3oPR-00wiBy; Wed, 15
- May 2024 00:15:34 +0200
-Message-ID: <67e9e462-b6d4-4c6d-b409-ae13ab9714a8@gmx.com>
-Date: Wed, 15 May 2024 07:45:30 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mk0Ne-1sr2aK2HQe-00kLI5; Wed, 15
+ May 2024 00:20:53 +0200
+Message-ID: <551fca0e-b599-4c25-82a7-bd06ed64184f@gmx.com>
+Date: Wed, 15 May 2024 07:50:49 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: drop extent maps after failed COW dio write
+Subject: Re: [PATCH] btrfs: fix end of tree detection when searching for data
+ extent ref
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1715688057.git.fdmanana@suse.com>
- <affef2b4ccd4d0f9a0272cd5883a5922d36bac31.1715688057.git.fdmanana@suse.com>
+References: <d025098ef2c013545df5f37ef85128805a104571.1715699835.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,107 +88,75 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <affef2b4ccd4d0f9a0272cd5883a5922d36bac31.1715688057.git.fdmanana@suse.com>
+In-Reply-To: <d025098ef2c013545df5f37ef85128805a104571.1715699835.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:llVTBaDrjCslgvrP9rS6JcybYzWJG1vURgM5dqcXNCK7spvcguC
- HFEYqczSDEuDBpxanf8YCUfTJft6zVJXlJjmSybEJVSalKKIUdgdkB7U9GOuMUK+H8wfRl4
- wGc0MCZeXAcX+UiUUKlZk5OBS0/g0dnR+vz4TKJs3zbUzq8/acHaSuKNVBLoEg+NT5MW/QZ
- 4795syob84d0rUEwtrj7A==
+X-Provags-ID: V03:K1:EmUYfz/qaXi9501aLF9W+asOdqyqnplv/xU24k7WstAXATKULUg
+ 6Jv8ESbSPmgxmiblyt2PUb6clzfl9tpG8N/gDL+hMnLZ5uZe+fo8TVwEFBIE5QJChqn74Dt
+ s3Jqe1/HJ1hCKazcBXQCeCtlZViS+Sy8ue+KjhpDpkcjQgT6+3z53TbJAi9J/y6RiSC1H7R
+ Cv0F6K0H2t5h9JhEIrhZA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:txSDqzOxO/s=;WHIABZwDQNM+4S2Fink3JNyetXH
- rJksj7PXByQFGoRTJei0azkkagtKysj0LX4JRM2KOch5gM0iW6KSCRUMdJYYkBWtKhJrWRRDu
- 0YkU0VqvBHFCqppO6+3QuNU91DoUll/yU6nPpzxf7y77UPPNqrLHLRnLk9bxua2Q4BUSCf7iq
- sXQYWt9yNqDKJAwru+1+wgSiGcRmwFIXEh8hFgv5Ar7ZbT9D4DczZeX9cDrkdiwfy82Nr/qdo
- FYn/IOCUbM/yBESFRzgvGZc/sW8HVodP2zOIKZfnQwv7b/BQ0FOHbrTa+Y5mPrxp35rcR/bua
- vmZPYmuSfQECnfyGlC0KU1uTKho63E8GFAnsV9hz0QqRNh8TlZ3OcUsl6YuR0ofww1f0MR5wV
- d7n01cI/cnrncWP49qJYePJuDNZQc3yGHgsR0OY16EV9/4ql0YyzOy58js4xQ2RLtfJy8P4Fv
- 1URBP7Z3Jago1iVEQGv9Q5+h71C0FbIzfe+Ad0x30gRj2rArl14Fz3ps1rDniUi3ARkgdcSfC
- 0B8ci4i9EzGUWyEo5KT8cLpsq7l4Q2Qt6Vp5IG//R20V4+DMfj6M1vK6wzLcs9tSGLSGBBHZk
- 6YWfWh7hoakO9j7+zIca2t2NvX3mXk4LSot8N2XnuXPkvqKkF4vYQmFGP9c+RWPpnkTJJpd2B
- WnQKmjG9NCZb1GYlUW2PH/3TJTXHCZ4aPXXDz4JJ219+0e/DvbnBt4b/fSMzdDjY+frGeBjDW
- lJiEJZD0CIxQgRLSjBdRZcSxLGoUiMSnZwgVpLjYoAvOmv0ZXKBgUwDhLATdyH9yUFKkVQ+6d
- uqHbK9FUoXa1OuiyDwOZrG7FvzSZdSO17ssTYpY1PtLJY=
+UI-OutboundReport: notjunk:1;M01:P0:lnLBcJHa3No=;47MTO3MeE5IS3+VsEz1AjH8hpJu
+ BXeGx6EyqVLtGoEbsIdFBFjyJyMYxrXaaCeIfhCMUAIjLGGROTOX6XeVqhZn+f73/00o1jDP6
+ VHuh4qr/+p29st7g2UcxDjwioO6t+ROXVme2LhBtmqNcawoeXZRt2Cqr0/zy0si5nNXp+cs4Q
+ OMAIy9VZk/qgpI6uCv5/7K7jRTogByfHaQ2Bqhdpau+QkDG/WQyaJgfUEXARLPVez0XAtllQr
+ IReECgn24dJ1xhG46XldYCxBvYkaRShnygrD5m6SpWW3hGCNjaTOMKOdqTUmBORTOkePFwuNL
+ P9d2n43RV9H0ekvk1zZ0VSB0rKk2SsbJmfXHPXnYlde8RHj5JVhdANOKVir5b+31OiKpg9M3o
+ Lm39pztBCXjcu7mhjpLBaj1ZSapFGk+wkIqb6FbGp4wrSZiqr1d6FFZ7KqvKqgYdmAo24PXtj
+ aCujVj510z3Spy+eo2pDmOY15CibOeNBgFHRsrNdeu2YtS5tD0djdJq3u0L0afBaPXyldzIOS
+ 829gIx/EpSz847ycvX9isRS6RkUhhZo3leuzimX7Q8RXPfuDRXPeuhsLtPGTMaJtXSpK3Gjow
+ PLnX1acmi5C/ApBaNFOM6F+TX5Tj0OTyJ1ksNMxkk8yc8pgZWnkZ8pi6MvaP6MRN9VDD5OlRe
+ cKcjCPIQ6B7GaGjvaFTs6nqnDnRmR3HGBeQq4cG/t3LMeEgI/TBZe5rr9h780e5Lov18vrAgz
+ EPj60j1tTyH8zd4FTV0akJHozfifF6c2AjlB3/wIZcVim68keU79hLmhFHRP69aVH4zpEAJFs
+ wwVPxxlVfrvlFh6+Ugcgif/EB9tdxTKm/5WTBzWpR0Afg=
 
 
 
-=E5=9C=A8 2024/5/14 23:53, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/5/15 00:56, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> During a COW direct IO write if the call to btrfs_extract_ordered_extent=
+> At lookup_extent_data_ref() we are incorrectly checking if we are at the
+> last slot of the last leaf in the extent tree. We are returning -ENOENT
+> if btrfs_next_leaf() returns a value greater than 1, but btrfs_next_leaf=
 ()
-> fails, we don't submit any bios, cleanup the ordered extent but we leave
-> the extent maps we created for the write around.
+> never returns anything greater than 1:
 >
-> These extent maps point to locations on disk that were not written to,
-> since we haven't submitted a bio for them, and they are new an in the li=
-st
-> of modified extents.
+> 1) It returns < 0 on error;
 >
-> This means that if we fsync the file after, we log file extent items bas=
-ed
-> on those extent maps, which are invalid since they point to unwritten
-> locations. If a power failure happens after the fsync, on log replay we
-> get a corrupted file range.
+> 2) 0 if there is a next leaf (or a new item was added to the end of the
+>     current leaf after releasing the path);
 >
-> Fix this by dropping the extent maps if btrfs_extract_ordered_extent()
-> failed.
+> 3) 1 if there are no more leaves (and no new items were added to the las=
+t
+>     leaf after releasing the path).
 >
-> Fixes: b73a6fd1b1ef ("btrfs: split partial dio bios before submit")
+> So fix this by checking if the return value is greater than zero instead
+> of being greater than one.
+>
+> Fixes: 1618aa3c2e01 ("btrfs: simplify return variables in lookup_extent_=
+data_ref()")
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Just a small question inlined below.
-> ---
->   fs/btrfs/inode.c | 21 +++++++++++++++++++--
->   1 file changed, 19 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 5a1014122088..f04852e44123 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7888,11 +7888,28 @@ static void btrfs_dio_submit_io(const struct iom=
-ap_iter *iter, struct bio *bio,
->   	 * remaining pages is blocked on the outstanding ordered extent.
->   	 */
->   	if (iter->flags & IOMAP_WRITE) {
-> +		struct btrfs_ordered_extent *oe =3D dio_data->ordered;
->   		int ret;
->
-> -		ret =3D btrfs_extract_ordered_extent(bbio, dio_data->ordered);
-> +		ret =3D btrfs_extract_ordered_extent(bbio, oe);
->   		if (ret) {
-> -			btrfs_finish_ordered_extent(dio_data->ordered, NULL,
-> +			/*
-> +			 * If this is a COW write it means we created new extent
-> +			 * maps for the range and they point to an unwritten
-> +			 * location since we got an error and we don't submit
-> +			 * a bio. We must drop any extent maps within the range,
-> +			 * otherwise a fast fsync would log them and after a
-> +			 * crash and log replay we would have file extent items
-> +			 * that point to unwritten locations (garbage).
-> +			 */
-
-Is regular read also being affected?
-
-Since the em is already inserted, and we're doing DIO, there should be
-no page cache for the whole dio range (as long as we didn't fallback to
-buffered IO).
-
-In that case, the problem is not only limited to fsync, but also any read.
-
 Thanks,
 Qu
-> +			if (!test_bit(BTRFS_ORDERED_NOCOW, &oe->flags)) {
-> +				const u64 start =3D oe->file_offset;
-> +				const u64 end =3D start + oe->num_bytes - 1;
-> +
-> +				btrfs_drop_extent_map_range(bbio->inode, start, end, false);
-> +			}
-> +
-> +			btrfs_finish_ordered_extent(oe, NULL,
->   						    file_offset, dip->bytes,
->   						    !ret);
->   			bio->bi_status =3D errno_to_blk_status(ret);
+> ---
+>   fs/btrfs/extent-tree.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 47d48233b592..3774c191e36d 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -477,7 +477,7 @@ static noinline int lookup_extent_data_ref(struct bt=
+rfs_trans_handle *trans,
+>   		if (path->slots[0] >=3D nritems) {
+>   			ret =3D btrfs_next_leaf(root, path);
+>   			if (ret) {
+> -				if (ret > 1)
+> +				if (ret > 0)
+>   					return -ENOENT;
+>   				return ret;
+>   			}
 
