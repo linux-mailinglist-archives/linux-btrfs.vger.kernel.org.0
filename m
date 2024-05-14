@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-4997-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4998-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F0198C5DA0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 00:23:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 493D78C5DEB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 00:55:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86257B219AD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 22:23:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F11EE2829EB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 22:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18322181D10;
-	Tue, 14 May 2024 22:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC18182C8C;
+	Tue, 14 May 2024 22:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="j3CJ+xHJ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="AqNwSVKu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE31F181CE9
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 22:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC14181CFB
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 22:54:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715725393; cv=none; b=IlhKxj2m0tcvtZEWN3iWSBVFyxx8ylV1J3lvHVtjM7MrmMt1hc5PHTdnPqeeqOrZNP8BIsUZ65ZOFuxWO3cRrg6Mv2AT0IHu7BBZMw5mLcxXwH4MKL6RiJVTM4uC9QM2D8TSRAgg6zqyaoXrXWMfdxFylK0XxPkJYZmDmjSqTFI=
+	t=1715727298; cv=none; b=sGCaWeMRR+r5sqyluSrWhuWxztrJ54wmRssGhU0N7Qe8plLOz9+XrhVdFRzTaNFLDPyhqWBR5BX4R+FclgPAHsDbWKFMz6cSJgqXDtD1sJ6WtPMqn34cP/Zkb0MuK7Z8qkRNnQCct4kYb/fFQRW7fykWRk2QS/4Hpe9P0ytxntw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715725393; c=relaxed/simple;
-	bh=ljJwIALoi8GtPJoNY7hd1bkWjqKNORRuOjdXXVaByQ4=;
+	s=arc-20240116; t=1715727298; c=relaxed/simple;
+	bh=DXVW/DrZMJD+VLMY4h/sw0gQY2huw/1TYS6FoAmvnCo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hjiqjfEIAA0kSDp48Uw8/6di2FyapncU32IisehsFuEcjJd841ADObnYHHLnuSSnq/bJE6ouq4wqFVGEvU0rs+ZZOOM8RrrD3HWoRnq0WjXuDsBq+MiSLTEWri7ehiR/RdN6q1fyH1U1Eb6pXRrTWrbbS3d2qATfR3xanMfdH6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=j3CJ+xHJ; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=OBqrpveJdDAc23ZZcUK9cWGQZ2U4B7XunFUtSCE0xFdKKTA6LthNlhERNAf2fDHmWs0Qf1qvx6du1KXq+6wEEYSsVnwfzbe0NPo5KNbPimBAjmmq1PoTb5DBe1Ofq+/8F0elC3ELoyLmtT02epDICzIhWYOK+W/GqfAw5Xwt65I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=AqNwSVKu; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715725384; x=1716330184; i=quwenruo.btrfs@gmx.com;
-	bh=mR612Ig75aDYN/JNyJNOeUFrr8r9KqG6REMpDNe0oHY=;
+	s=s31663417; t=1715727291; x=1716332091; i=quwenruo.btrfs@gmx.com;
+	bh=lWnSIGoHJ2uXDKJ6VlnUhbvOGQUAzBf6YmiKYzGo+ps=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=j3CJ+xHJFsv3i60OUcXbmCzhxESaGNkyeQn9OoK2ablEgvZ11kkGyOYq+HrdfqFA
-	 ZkBPjkrbTDMq4n61iV8glOKHiOhjuE3XuOS7dLVilT/6Yn7Wxlohf7VOzlHxesQIS
-	 ShDjbMNwClIyZYW4fkj7mXZBPZoYEdFiucca+IpTZEdsx1XTbshe9Lp5RLT2z0Syp
-	 miRgIc6+b2ylkHS0jpOcJIWxVozFq9YZZ47pM4/hrliHdTKB/coV9OK3WFIN6umaj
-	 CW7GI3LadEnbGvf6emPcFlYt7j2ca0dsvSJEU5ciqZQUiMGRIDgJ6zuW672Nd+lZa
-	 DfbEjPYGP6MDnGerlQ==
+	b=AqNwSVKu7VOcLzDHIYMFzHw/dcl5/wuywdUERXIoI1iWzCOPrlajDlVLe1Mu3Rl1
+	 G+lyCo5qYlgqLxJv0VoYAnKoa/KGbOZqbwVNM5B32oATfbFOgboSRkZRlqn1CBo22
+	 ylYHhdMu6+eHP4rnytEA33qmS5miIMIHrEHODG/+Ih8jO1x6vBvv1GW4CcTIKVxML
+	 DcAjlsSARAyg8HENbgp4lm5LDQZRv6kGYTrHC+XkB7cNe600tyRM4aSFP+dh0M4sA
+	 rx8tkkmIk3uPJ9EibuxvpVdgV2nir/i3LkuhNv78E9cj50w4CdUhWy5N4kxxcaoXk
+	 GrHr/6LKPCc9uVYS+g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Md6Qr-1sfFMy3rFb-00dYqx; Wed, 15
- May 2024 00:23:04 +0200
-Message-ID: <ff4c67c5-0163-4641-82c1-1ac36efdd9d7@gmx.com>
-Date: Wed, 15 May 2024 07:53:00 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MF3He-1sMOAc2lpo-00FQVJ; Wed, 15
+ May 2024 00:54:51 +0200
+Message-ID: <bc637e8e-de79-46d8-b13d-e80d49131b8f@gmx.com>
+Date: Wed, 15 May 2024 08:24:46 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] btrfs: refactor btrfs_dio_submit_io() for less
- nesting and indentation
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1715688057.git.fdmanana@suse.com>
- <69a34ba773dd14f59b6220587029a09dbba3e104.1715688057.git.fdmanana@suse.com>
+Subject: Re: [PATCH v2 4/8] btrfs-progs: mkfs: fix minimum size calculation
+ for zoned mode
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+References: <20240514182227.1197664-1-naohiro.aota@wdc.com>
+ <20240514182227.1197664-5-naohiro.aota@wdc.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,129 +89,140 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <69a34ba773dd14f59b6220587029a09dbba3e104.1715688057.git.fdmanana@suse.com>
+In-Reply-To: <20240514182227.1197664-5-naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fktLTItuv92qQPXbVGbUXJDVwOcCPBo2N1/3mF/bZT7o4UYIs/G
- wzVVSwGJRmBVAWm5OH3JuYTlB+liodE1tP86mvV6IUn6zrgjmzOUy+heBrWuRNWl0gcKNHe
- WVoHJ02HnsnLXiWso5o1CB6EG4iISlDYWlkI/69RHWaHDBFvDy9+2i2iHEawZNVO9mC7FVh
- /upqC66s0bqZR3c0YSv3w==
+X-Provags-ID: V03:K1:B7eQ/zN+T5FCwxPhPdsN/PTnzYmLSH39wt2pvB2ku7Kphc6EZAn
+ IHwyBS6maqiclBwrcYZSnzUvOme/8Jd/l240bgqC8QxZH4OA2fR/M8q+/4ktu6dP2LCqIjw
+ /oRhnGXvrntD1rMmQg+ILTOcvVD6gdYbT0dSo+78L39j4T+D+euolthCqQ4I9/preleVs7w
+ A43j5qzYxyqs55ExG3OKw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mR7++io8mp0=;kjlrvSLJSGX0ASKJXEmajqYh5U/
- ygLJLRLI5fgNx97HUcveDJS1M43X5xx46La2r/8jrHPCNtMeKb2dWrDRZU5WHjtvAiTo++Kj7
- FBDjJHP1cIFkmb39SA6whhGxa+OtE9XjtLLEMiaLzk2PKUDl50HCofT8ceZnhYmkB8s7hSgeH
- oi2D5heSwtQy7CtGz3VteLXLgX3v5vuAcVyC89pFq2TuBtdXxGT0BPHJPqUxQmp6ZImuWuwsD
- lO6cUjizLy4Q4JixF85AnDQ9jfVBrnETWVRTnIRdvBxZJpcugZnsoh0VRBETnhaUfw1D+OyzV
- ZKXBui1k5igsNjaKcO9DwhIxsE1XxZf+wJsl+bPmTCfD3jP2N765jkGjQ9JsSgpBz98hr1AS6
- UxpwAmEPAOvRzhfg5v0mIKnIH1GlpQq7clBepJyx/0v+O07ohakJRwQdPX71p2YfnVQsdRHg7
- LIziRAr2IFhI09zI18IKc1BsppXeTCUR+sjrGCSsc4Br1/rLeBZg3kuynffjzY9PPGqDUOPWM
- CMr98JRc9MoyFza7ix2uewYOtY/HMnYXnhIZzeEiQt134vX7ixY4nVXQrgD9MR/+bjzk7Act0
- v+7VgrhKJchxNeWZakrugmorCXRmpqR0ECqBMjCTLWcDjbGJkXuNrQQYJH/RW28eo3c15tBQt
- a0PZlbvKzxLlE6eCoLKUDqUoKgn/B+A+NlT0DOvwzgEcAYAbw5//6GAZupKRWG6A3Lj4MU9gR
- Xrvz4VVMDHzg/hn1bPPcI1o7B/NNgHFPxx9ROVMm9jf6ZFU/j6ij5uq9wIgH3769ewYp6w2P9
- UkaZaPfFSYptpixjaILcIV/ys0qf6CXHVXBOqSi8k6Gok=
+UI-OutboundReport: notjunk:1;M01:P0:KJxsInnbJgw=;LHieBQ6skdz72RwmtQdmpl++wXY
+ ioIAQmFrGSO1bZs67PcsSU6BIh3DhJXZ5X5bqvydyPZtIAICHEBgXpdakLBiSStkadrvacpiE
+ AK2tjOekc3ktwoESky2KYMvovSykFxLTK+V4yntptgUoyqYHlDK1CaRkbo5J/yq3vMKHwhwSp
+ mntVQmIbBlCZ6yWbtwnirs254RWCKGCQFQ8dHRM48L3xrzka4KNxh5P0u1T/re8beqCcv3kEZ
+ 5vLlpSIB2C/9aoRhsdV64YkUVs6qezSoZ7P7VUFfNeSsitUevAIgYxX5WiHlVOAtqlQMdazvH
+ o+OUELlQk28V+nwMsu6KuGHHqDIzyet3q2nKnH6s/mcIeYEovTLmioHZpI9WVomOXDALZ3qMS
+ qB/fmWZ/Up1HO2/Bfxpl6/5PokDRzgpqqv/YLC+jG24L+Q5ZfyZ6iXqGIDATLpEkv2Sn28hl7
+ CXjjatH5b4aNXNmCM3q+F3MhJ2S2bhwkR0hIPu8I9ZXqiERqW2G8nS+PO32W99fRNi0PKmge0
+ jnZWSQEaxBK1FyLPG0ZhPAolgOtUYaq+1N9Cd5bVpuP3N7O0AL24MyY8CoRxbKep6Uojv9oLE
+ T2NWa0yhW8c3XoZpxMqfsizmvWCY5vLQvl3Pg5AobU4lsO9xs4GojYg+pkkMSsvaDy2bXgWq2
+ z8GIjM1GwcOMnRXHpRZQT6dnbnslf4OtAeHxX20KPD8HGGsOJIu2Z3ATqvuCAFH9blo2Cgt7d
+ /RLrjgwXVnn8l4EQUwhFcNuoFo735D9mVtdBObICOXx2cA8noFIpq/EjGFyOJfgs8qIWRc7yp
+ L3+rr2C+wsob3xfDuWFAS4uK019wseblcXNg87zZOK4O4=
 
 
 
-=E5=9C=A8 2024/5/14 23:53, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
+=E5=9C=A8 2024/5/15 03:52, Naohiro Aota =E5=86=99=E9=81=93:
+> Currently, we check if a device is larger than 5 zones to determine we c=
+an
+> create btrfs on the device or not. Actually, we need more zones to creat=
+e
+> DUP block groups, so it fails with "ERROR: not enough free space to
+> allocate chunk". Implement proper support for non-SINGLE profile.
 >
-> Refactor btrfs_dio_submit_io() to avoid so much nesting and the need to
-> split long lines, making it a bit easier to read.
+> Also, current code does not ensure we can create tree-log BG and data
+> relocation BG, which are essential for the real usage. Count them as
+> requirement too.
 >
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>   mkfs/common.c | 53 +++++++++++++++++++++++++++++++++++++++++++--------
+>   1 file changed, 45 insertions(+), 8 deletions(-)
+>
+> diff --git a/mkfs/common.c b/mkfs/common.c
+> index af54089654a0..a5100b296f65 100644
+> --- a/mkfs/common.c
+> +++ b/mkfs/common.c
+> @@ -818,14 +818,51 @@ u64 btrfs_min_dev_size(u32 nodesize, bool mixed, u=
+64 zone_size, u64 meta_profile
+>   	u64 meta_size;
+>   	u64 data_size;
+>
+> -	/*
+> -	 * 2 zones for the primary superblock
+> -	 * 1 zone for the system block group
+> -	 * 1 zone for a metadata block group
+> -	 * 1 zone for a data block group
+> -	 */
+> -	if (zone_size)
+> -		return 5 * zone_size;
+> +	if (zone_size) {
+> +		/* 2 zones for the primary superblock. */
+> +		reserved +=3D 2 * zone_size;
+> +
+> +		/*
+> +		 * 1 zone each for the initial system, metadata, and data block
+> +		 * group
+> +		 */
+> +		reserved +=3D 3 * zone_size;
+> +
+> +		/*
+> +		 * non-SINGLE profile needs:
+> +		 * 1 zone for system block group
+> +		 * 1 zone for normal metadata block group
+> +		 * 1 zone for tree-log block group
+> +		 *
+> +		 * SINGLE profile only need to add tree-log block group
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+This comments looks a little confusing to me.
+
+As (for now) the non-SINGLE profiles for metadata is only DUP, thus they
+needs at least 2 zones for each bg.
+
+It's only explained later in the "meta_size *=3D 2;" line.
+
+Would the following ones be a little better?
+
+/*
+  * non-SINGLE profile needs:
+  * 1 extra system block group
+  * 1 extra normal metadata block group
+  * 1 extra tree-log block group
+  *
+  * SINGLE profiles needs:
+  * 1 extra tree-log block group
+  */
+  if (meta_profiles & BTRFS_BLOCK_GROUP_DUP)
+      factor =3D 2;
+  if (meta_profiles & BTRFS_BLOCK_GROUP_PROFILE_MASK)
+      meta_size =3D 3 * zone_size * factor;
+  else
+      meta_size =3D 1 * zone_size * factor;
+
+Otherwise looks reasonable to me.
 
 Thanks,
 Qu
-> ---
->   fs/btrfs/inode.c | 52 +++++++++++++++++++++++-------------------------
->   1 file changed, 25 insertions(+), 27 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index f04852e44123..c7f0239c3b68 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7869,6 +7869,8 @@ static void btrfs_dio_submit_io(const struct iomap=
-_iter *iter, struct bio *bio,
->   	struct btrfs_dio_private *dip =3D
->   		container_of(bbio, struct btrfs_dio_private, bbio);
->   	struct btrfs_dio_data *dio_data =3D iter->private;
-> +	struct btrfs_ordered_extent *oe =3D dio_data->ordered;
-> +	int ret;
->
->   	btrfs_bio_init(bbio, BTRFS_I(iter->inode)->root->fs_info,
->   		       btrfs_dio_end_io, bio->bi_private);
-> @@ -7880,6 +7882,8 @@ static void btrfs_dio_submit_io(const struct iomap=
-_iter *iter, struct bio *bio,
->
->   	dio_data->submitted +=3D bio->bi_iter.bi_size;
->
-> +	if (!(iter->flags & IOMAP_WRITE))
-> +		goto submit_bio;
->   	/*
->   	 * Check if we are doing a partial write.  If we are, we need to spli=
-t
->   	 * the ordered extent to match the submitted bio.  Hang on to the
-> @@ -7887,37 +7891,31 @@ static void btrfs_dio_submit_io(const struct iom=
-ap_iter *iter, struct bio *bio,
->   	 * cancelled in iomap_end to avoid a deadlock wherein faulting the
->   	 * remaining pages is blocked on the outstanding ordered extent.
->   	 */
-> -	if (iter->flags & IOMAP_WRITE) {
-> -		struct btrfs_ordered_extent *oe =3D dio_data->ordered;
-> -		int ret;
-> -
-> -		ret =3D btrfs_extract_ordered_extent(bbio, oe);
-> -		if (ret) {
-> -			/*
-> -			 * If this is a COW write it means we created new extent
-> -			 * maps for the range and they point to an unwritten
-> -			 * location since we got an error and we don't submit
-> -			 * a bio. We must drop any extent maps within the range,
-> -			 * otherwise a fast fsync would log them and after a
-> -			 * crash and log replay we would have file extent items
-> -			 * that point to unwritten locations (garbage).
-> -			 */
-> -			if (!test_bit(BTRFS_ORDERED_NOCOW, &oe->flags)) {
-> -				const u64 start =3D oe->file_offset;
-> -				const u64 end =3D start + oe->num_bytes - 1;
-> +	ret =3D btrfs_extract_ordered_extent(bbio, oe);
-> +	if (!ret)
-> +		goto submit_bio;
->
-> -				btrfs_drop_extent_map_range(bbio->inode, start, end, false);
-> -			}
-> +	/*
-> +	 * If this is a COW write it means we created new extent maps for the
-> +	 * range and they point to an unwritten location since we got an error
-> +	 * and we don't submit a bio. We must drop any extent maps within the
-> +	 * range, otherwise a fast fsync would log them and after a crash and
-> +	 * log replay we would have file extent items that point to unwritten
-> +	 * locations (garbage).
-> +	 */
-> +	if (!test_bit(BTRFS_ORDERED_NOCOW, &oe->flags)) {
-> +		const u64 start =3D oe->file_offset;
-> +		const u64 end =3D start + oe->num_bytes - 1;
->
-> -			btrfs_finish_ordered_extent(oe, NULL,
-> -						    file_offset, dip->bytes,
-> -						    !ret);
-> -			bio->bi_status =3D errno_to_blk_status(ret);
-> -			iomap_dio_bio_end_io(bio);
-> -			return;
-> -		}
-> +		btrfs_drop_extent_map_range(bbio->inode, start, end, false);
->   	}
->
-> +	btrfs_finish_ordered_extent(oe, NULL, file_offset, dip->bytes, false);
-> +	bio->bi_status =3D errno_to_blk_status(ret);
-> +	iomap_dio_bio_end_io(bio);
-> +	return;
+> +		 */
+> +		if (meta_profile & BTRFS_BLOCK_GROUP_PROFILE_MASK)
+> +			meta_size =3D 3 * zone_size;
+> +		else
+> +			meta_size =3D zone_size;
+> +		/* DUP profile needs two zones for each block group. */
+> +		if (meta_profile & BTRFS_BLOCK_GROUP_DUP)
+> +			meta_size *=3D 2;
+> +		reserved +=3D meta_size;
 > +
-> +submit_bio:
->   	btrfs_submit_bio(bbio, 0);
->   }
+> +		/*
+> +		 * non-SINGLE profile needs:
+> +		 * 1 zone for data block group
+> +		 * 1 zone for data relocation block group
+> +		 *
+> +		 * SINGLE profile only need to add data relocationblock group
+> +		 */
+> +		if (data_profile & BTRFS_BLOCK_GROUP_PROFILE_MASK)
+> +			data_size =3D 2 * zone_size;
+> +		else
+> +			data_size =3D zone_size;
+> +		/* DUP profile needs two zones for each block group. */
+> +		if (data_profile & BTRFS_BLOCK_GROUP_DUP)
+> +			data_size *=3D 2;
+> +		reserved +=3D data_size;
+> +
+> +		return reserved;
+> +	}
 >
+>   	if (mixed)
+>   		return 2 * (BTRFS_MKFS_SYSTEM_GROUP_SIZE +
 
