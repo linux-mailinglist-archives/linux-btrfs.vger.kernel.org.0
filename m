@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-4985-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8DB8C5B08
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 20:25:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B7B8C5B0A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 20:25:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF12D2829D6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 18:25:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8172B1C21D1B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 18:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CF0181301;
-	Tue, 14 May 2024 18:24:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6FC181310;
+	Tue, 14 May 2024 18:24:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="HS08gQZF"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Uq6IjmAg"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFD6180A6D
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 18:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496AC180A71
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 18:24:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715711095; cv=none; b=El/K6y92xUJgI00MqxVKgIQikEAXAxW5kQPyCzBaZ/NZcP1j+x6zUtR+F8WKjZ2SeZAzstjZXdjzi2wPzNzJDcDGVqZBwCwMlYL5jVD6+0hJAyO7m7+owFQBrOwIhcdWbNcUbR/lumE6O8kBwh78cPkjR7XoHlZ80AoOoOv7k64=
+	t=1715711096; cv=none; b=Oy3UCeyMKAQnkLxLaqWVkpVO5QuClhqQhAqm3VKKogzHDCx1+O7qLImlVbEut/6enr9rNcrEcY6Tf6xaWpQ9XzBLfgof3wVPmfhHrmvkTzB0+mzSK2cNZbIgCZVl5FT6qwhe5I6laL3yvvjW3xHDlLhJ53IdhrYaGpLOIVc14gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715711095; c=relaxed/simple;
-	bh=HHFvQPD4YAmAebDuRTdtW6wNl8XhmAP67kIb8IGY+QE=;
+	s=arc-20240116; t=1715711096; c=relaxed/simple;
+	bh=291spckHOc/OndRzbUKt1knBk+0K4i7rEvJSmzcNZQA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ua1DCyI5AnwFQwzdgi2djSIp+nwMie2z9tywBDxpCcATRms0+jTJ6R85H1BjKDbQYgYDU5VZJuvUvQX1BuMnymrPrng4/9yVMDAq+HXZBJTdjojHSnROq8JbsfQEDlEnvKfVjwLAsMOKrYm0O0dqCxphvVE9ZdioMvAWJdRPbPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=HS08gQZF; arc=none smtp.client-ip=216.71.153.144
+	 MIME-Version; b=HjgmTAa2xnadlKKpSn3EomqviF4p37e9xtQXotfPl+M6QXIF35Nj1C2g36fEKMZnE+s7xqj5ovu+/ZfA0BzhsyPw/1q/8E3W9kCz5PDOeGpLcTAVlpdUQtCptm/XcZQq1MnjNQpqCqgSfl6ipxYDKtoHrPRG4ePHcjkvlsSxskA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Uq6IjmAg; arc=none smtp.client-ip=216.71.153.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,33 +36,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1715711094; x=1747247094;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=HHFvQPD4YAmAebDuRTdtW6wNl8XhmAP67kIb8IGY+QE=;
-  b=HS08gQZFqSaMXi93gElS5KFHIrnbr7qde+NprO7U+zevIDPhuoa3PBb8
-   0jt/hxGqY0zM+U7GJFxH3WNJGPSEJEnpKTd7sQWOctsLGZXB1l/zaA97k
-   jHaiOUuy8oXZKnEN7hXnsjYeP8LpQ4VJDkmp6SEW6tEPiMUa6eR7cJ+75
-   gkZYiY4b1CpGEsk/njXEqwc37pzcTMN12LObRknPHn9N4UBaWy8T/s69v
-   dCu89G3ALy8KooAAkKqp9yXEof7yE8QtDZwdeC8OuqHrlxdzhwBIWFWzR
-   amDrOszxPapjDNCgxRlEoajCsAGWgWPJzA0EtdD4Y73chIjoB8wOX1+gG
-   A==;
-X-CSE-ConnectionGUID: C8wrS42aSb6waInLzb6bpQ==
-X-CSE-MsgGUID: NJvcnx8dSQeqfraIbueWdw==
+  bh=291spckHOc/OndRzbUKt1knBk+0K4i7rEvJSmzcNZQA=;
+  b=Uq6IjmAgVonU6uxI+llOz6iOwwX1Uxfi5s3fzUH4wiqmWh2w9ejz1UMw
+   yNoZM9Z+bjXDM65cZIi5Cdhr7QQ8e6C0UMP7rNb1k1g9giZPXZFc9NkmU
+   WbIzvJEgdr0DxTMXsPjmesIZjiK/dbklRQflgakXb+l5z5FT1uCizT9yb
+   Amw7V9XY1im0idUykTlVGzP9cYtpiq0IgLGydg/DuLfWF8JkTT8LuhqQE
+   JpCSbPAG/KLzToYOAL3z0vZ18H/xbPv90nfC3dMa28ZGLx2z8lcZyjgiO
+   hRKfJVbYpT51OhSTdjCBGruiJBvaYCHc0Ot6keMi/TCmRZRj8rQ+c7cr4
+   w==;
+X-CSE-ConnectionGUID: zLSrvCZ2ROGurz9/Mou+qg==
+X-CSE-MsgGUID: aB6k4ZvmS3OFCvadVhwr0Q==
 X-IronPort-AV: E=Sophos;i="6.08,159,1712592000"; 
-   d="scan'208";a="17162661"
+   d="scan'208";a="17162686"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 May 2024 02:24:50 +0800
-IronPort-SDR: 6643a034_hUUeVc0wb7GL8+ZOO7o64jRA0x0pA+g2zHC1EyEDjLou7gG
- 436NBb1FgjeLvFnSZMJ1U84OsERXnbPrmVlReLQ==
+  by ob1.hgst.iphmx.com with ESMTP; 15 May 2024 02:24:52 +0800
+IronPort-SDR: 6643a036_VkJ7vvCtC5ObYWvSidRRSKn5GxykuIyoVOU/eio87RbXmjV
+ wHF631DnlPCEoQ9jgWSvjBDskPiKTG0+jRg3PrA==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 May 2024 10:32:37 -0700
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 May 2024 10:32:39 -0700
 WDCIronportException: Internal
 Received: from unknown (HELO naota-x1.wdc.com) ([10.225.163.56])
-  by uls-op-cesaip02.wdc.com with ESMTP; 14 May 2024 11:24:49 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 14 May 2024 11:24:51 -0700
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 4/8] btrfs-progs: mkfs: fix minimum size calculation for zoned mode
-Date: Tue, 14 May 2024 12:22:23 -0600
-Message-ID: <20240514182227.1197664-5-naohiro.aota@wdc.com>
+Subject: [PATCH v2 5/8] btrfs-progs: mkfs: check if byte_count is zone size aligned
+Date: Tue, 14 May 2024 12:22:24 -0600
+Message-ID: <20240514182227.1197664-6-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240514182227.1197664-1-naohiro.aota@wdc.com>
 References: <20240514182227.1197664-1-naohiro.aota@wdc.com>
@@ -74,84 +74,30 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, we check if a device is larger than 5 zones to determine we can
-create btrfs on the device or not. Actually, we need more zones to create
-DUP block groups, so it fails with "ERROR: not enough free space to
-allocate chunk". Implement proper support for non-SINGLE profile.
-
-Also, current code does not ensure we can create tree-log BG and data
-relocation BG, which are essential for the real usage. Count them as
-requirement too.
+Creating a btrfs whose size is not aligned to the zone boundary is
+meaningless and allowing it can confuse users. Disallow creating it.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- mkfs/common.c | 53 +++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 45 insertions(+), 8 deletions(-)
+ mkfs/main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/mkfs/common.c b/mkfs/common.c
-index af54089654a0..a5100b296f65 100644
---- a/mkfs/common.c
-+++ b/mkfs/common.c
-@@ -818,14 +818,51 @@ u64 btrfs_min_dev_size(u32 nodesize, bool mixed, u64 zone_size, u64 meta_profile
- 	u64 meta_size;
- 	u64 data_size;
- 
--	/*
--	 * 2 zones for the primary superblock
--	 * 1 zone for the system block group
--	 * 1 zone for a metadata block group
--	 * 1 zone for a data block group
--	 */
--	if (zone_size)
--		return 5 * zone_size;
-+	if (zone_size) {
-+		/* 2 zones for the primary superblock. */
-+		reserved += 2 * zone_size;
-+
-+		/*
-+		 * 1 zone each for the initial system, metadata, and data block
-+		 * group
-+		 */
-+		reserved += 3 * zone_size;
-+
-+		/*
-+		 * non-SINGLE profile needs:
-+		 * 1 zone for system block group
-+		 * 1 zone for normal metadata block group
-+		 * 1 zone for tree-log block group
-+		 *
-+		 * SINGLE profile only need to add tree-log block group
-+		 */
-+		if (meta_profile & BTRFS_BLOCK_GROUP_PROFILE_MASK)
-+			meta_size = 3 * zone_size;
-+		else
-+			meta_size = zone_size;
-+		/* DUP profile needs two zones for each block group. */
-+		if (meta_profile & BTRFS_BLOCK_GROUP_DUP)
-+			meta_size *= 2;
-+		reserved += meta_size;
-+
-+		/*
-+		 * non-SINGLE profile needs:
-+		 * 1 zone for data block group
-+		 * 1 zone for data relocation block group
-+		 *
-+		 * SINGLE profile only need to add data relocationblock group
-+		 */
-+		if (data_profile & BTRFS_BLOCK_GROUP_PROFILE_MASK)
-+			data_size = 2 * zone_size;
-+		else
-+			data_size = zone_size;
-+		/* DUP profile needs two zones for each block group. */
-+		if (data_profile & BTRFS_BLOCK_GROUP_DUP)
-+			data_size *= 2;
-+		reserved += data_size;
-+
-+		return reserved;
+diff --git a/mkfs/main.c b/mkfs/main.c
+index a437ecc40c7f..faf397848cc4 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -1655,6 +1655,11 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		      opt_zoned ? "zoned mode " : "", min_dev_size);
+ 		goto error;
+ 	}
++	if (byte_count && opt_zoned && !IS_ALIGNED(byte_count, zone_size(file))) {
++		error("size %llu is not aligned to zone size %llu", byte_count,
++		      zone_size(file));
++		goto error;
 +	}
  
- 	if (mixed)
- 		return 2 * (BTRFS_MKFS_SYSTEM_GROUP_SIZE +
+ 	for (i = saved_optind; i < saved_optind + device_count; i++) {
+ 		char *path;
 -- 
 2.45.0
 
