@@ -1,68 +1,68 @@
-Return-Path: <linux-btrfs+bounces-4951-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4952-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1E68C4AA6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 02:52:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5751E8C4AA7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 02:52:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFF201C230AD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 00:52:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11889284670
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 00:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7A3A93A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDC2A94B;
 	Tue, 14 May 2024 00:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="FrZwbZJG"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="SLlAldhy"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4FD17C2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F4F4687
 	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 00:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715647932; cv=none; b=V1x5WppEUWKogqiqvXXj9PLu/fSAef7PKLt6nlL7NLJ0ZMSwaZcuxDZLRSsJMq6Iv1xUCe20hRedT9SQvK0MfPRgvJEA3MS4WkLx7O0Sebrb8sBHdbgJTqm6OBQlHQckOCX0QGHu8X4jr8beoTdmig0Dih2cTLE8y03/GpoBBMM=
+	t=1715647932; cv=none; b=GVMA/cstA8CgCC2f/jPTJ57AJeENw4KQOUr66uj74wc3LMf/94RTgRPTcBLnYFW6/ScUhUihnzKUY6a4xW+I16bopeQUelA3e/S3/f0+NhBxMZRTNm/BcSNBxWm1jmJqwercCok2ajmkt14ImrjfeSY4ZOLurElv3P8wA3dgNJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715647932; c=relaxed/simple;
-	bh=lS/za6YRAtKHJKFODuWu5J4pzptbO4u+AJ15KGasgh4=;
+	bh=mO5apShsF+TsSW1yIfO/kU2e6vCLLScBuhwJP12j/uo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PWLIWGGcLCmPnooi3LnFLgc3x4qzcq4AUoDQhE4C2Mc/nGFmuUNWmsEUPdb41pPbBSBJ7JxvpZLG1mko2KiQrpFEjjhNenE358kRPyMi7yYG0QqnVNjv62OTi+xuWZHVl9/2II/5Xkfj8byfwK3njFQqhGxVViDLvMl6URuCIhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=FrZwbZJG; arc=none smtp.client-ip=216.71.154.45
+	 MIME-Version; b=cix/44aUgYD5/LS4vAw4Jx1+YefyiWW3/y7WBG1ZWa6/FvJ2DJpXaw4Dzy7yjC1AZXzNA1vF47JNCCgL9CWLG/0UbqNRIjsp5sNc8CH9Fvrnl09HSinOmnc5f+xrf4d7pOAZUH3w6fMU6j82PuPMNOEg35ScNm00iKN9u4Q1V4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=SLlAldhy; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1715647930; x=1747183930;
+  t=1715647931; x=1747183931;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lS/za6YRAtKHJKFODuWu5J4pzptbO4u+AJ15KGasgh4=;
-  b=FrZwbZJGxYWP+pH37S5gx6+iYOls880FyYfYnjcUPQEsM1wexVZhW9ja
-   pzuuPo+M7j8H5D23nubaFAbkGQggsHXvnF3OxoNlWTFoNfmR6C+q4KhLU
-   Kq8np9nNARcYm/s1UYcImlI7Z4kTrkTSlMhy+ZOpGYMBeiLHI3N9xBQes
-   0JkmSi5kdq5roxALkHywY/SxafapxzLwOmzobaz+pBsOPqZM8UP7fsGlg
-   UJX6DesJ01GSbaPCBqEG8g2qUriygIT8Qg6ky5zi54ilpafeg/68ShJW/
-   7E/9la8i2BG0YpnkR6SW7k180q9s1OMPIiRjvUeV6aoiSWHwmPGuDsjFe
+  bh=mO5apShsF+TsSW1yIfO/kU2e6vCLLScBuhwJP12j/uo=;
+  b=SLlAldhy+nEeTKMUxYgZR2gOCbrMIoAGnck87zZZ0R3qZXHzy2KAwkN5
+   sUHHsFA13S8opehLR9dJEKJZS94V+RLWiNIEZaPZ87ZWsIXO+E4+4P50a
+   xRuHS4H80JgsNDvaFDIZ0+2Zo8xCIdCfmWRM5Yd2YcY7E2lJ3fPUhbQKD
+   KCX3c0wVbNoZrBF+vxTLazscYvvlofrlo8dVbI8qcLzgdOj2nNzRsMSFH
+   kxX9K6Q9sgpYGrpatoySui+/GBu+xxOmQc1NqVRg6uzeQPrxm+x6MbFPg
+   mhufE5bXq4HtqlJAoZ9RQvx/jzMpR6r2/v+tksKNms+FLdOA62+PkPJDx
    g==;
-X-CSE-ConnectionGUID: HSCIEpMzTBqFEyL70KvPCg==
-X-CSE-MsgGUID: QpfbInihSAejf2aSYUZNIA==
+X-CSE-ConnectionGUID: iJ/iE7wISn+2EbZb+tKtTQ==
+X-CSE-MsgGUID: W2X7obgSTayrdc+H8nQbQg==
 X-IronPort-AV: E=Sophos;i="6.08,159,1712592000"; 
-   d="scan'208";a="16252239"
+   d="scan'208";a="16252245"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 14 May 2024 08:52:08 +0800
-IronPort-SDR: 6642a827_/7XSvVrprHluTNDzWohjJc4ClHN+t39VA2QaR5PDIYASh3X
- uyv2c2x/oax8EQ1h/2v49MOAPJbyp0gbyFp506w==
+  by ob1.hgst.iphmx.com with ESMTP; 14 May 2024 08:52:10 +0800
+IronPort-SDR: 6642a829_WXyykLXvn82YpOS3ani38TBc7ALN4KFsmZM9cUSQQPghEZQ
+ WIz25tuhj5qr3asGkrPoPgP3fJuOf9TSd/keczA==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 May 2024 16:54:15 -0700
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 May 2024 16:54:17 -0700
 WDCIronportException: Internal
 Received: from unknown (HELO naota-x1.wdc.com) ([10.225.163.55])
-  by uls-op-cesaip02.wdc.com with ESMTP; 13 May 2024 17:52:07 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 May 2024 17:52:09 -0700
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 6/7] btrfs-progs: support byte length for zone resetting
-Date: Mon, 13 May 2024 18:51:32 -0600
-Message-ID: <20240514005133.44786-7-naohiro.aota@wdc.com>
+Subject: [PATCH 7/7] btrfs-progs: add test for zone resetting
+Date: Mon, 13 May 2024 18:51:33 -0600
+Message-ID: <20240514005133.44786-8-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240514005133.44786-1-naohiro.aota@wdc.com>
 References: <20240514005133.44786-1-naohiro.aota@wdc.com>
@@ -74,117 +74,87 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Even with "mkfs.btrfs -b", mkfs.btrfs resets all the zones on the device.
-Limit the reset target within the specified length.
+Add test for mkfs.btrfs's zone reset behavior to check if
 
-Also, we need to check that there is no active zone outside of the FS
-range. If there is one, btrfs fails to meet the active zone limit properly.
+- it resets all the zones without "-b" option
+- it detects an active zone outside of the FS range
+- it does not reset a zone outside of the range
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- common/device-utils.c | 17 ++++++++++++-----
- kernel-shared/zoned.c | 23 ++++++++++++++++++++++-
- kernel-shared/zoned.h |  2 +-
- 3 files changed, 35 insertions(+), 7 deletions(-)
+ tests/mkfs-tests/032-zoned-reset/test.sh | 62 ++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100755 tests/mkfs-tests/032-zoned-reset/test.sh
 
-diff --git a/common/device-utils.c b/common/device-utils.c
-index 86942e0c7041..7df7d9ce39d8 100644
---- a/common/device-utils.c
-+++ b/common/device-utils.c
-@@ -254,16 +254,23 @@ int btrfs_prepare_device(int fd, const char *file, u64 *byte_count_ret,
- 
- 		if (!zinfo->emulated) {
- 			if (opflags & PREP_DEVICE_VERBOSE)
--				printf("Resetting device zones %s (%u zones) ...\n",
--				       file, zinfo->nr_zones);
-+				printf("Resetting device zones %s (%llu zones) ...\n",
-+				       file, byte_count / zinfo->zone_size);
- 			/*
- 			 * We cannot ignore zone reset errors for a zoned block
- 			 * device as this could result in the inability to write
- 			 * to non-empty sequential zones of the device.
- 			 */
--			if (btrfs_reset_all_zones(fd, zinfo)) {
--				error("zoned: failed to reset device '%s' zones: %m",
--				      file);
-+			ret = btrfs_reset_zones(fd, zinfo, byte_count);
-+			if (ret) {
-+				if (ret == EBUSY) {
-+					error("zoned: device '%s' contains an active zone outside of the FS range",
-+					      file);
-+					error("zoned: btrfs needs full control of active zones");
-+				} else {
-+					error("zoned: failed to reset device '%s' zones: %m",
-+					      file);
-+				}
- 				goto err;
- 			}
- 		}
-diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-index fb1e1388804e..b4244966ca36 100644
---- a/kernel-shared/zoned.c
-+++ b/kernel-shared/zoned.c
-@@ -395,16 +395,24 @@ static int report_zones(int fd, const char *file,
-  * Discard blocks in the zones of a zoned block device. Process this with zone
-  * size granularity so that blocks in conventional zones are discarded using
-  * discard_range and blocks in sequential zones are reset though a zone reset.
-+ *
-+ * We need to ensure that zones outside of the FS is not active, so that
-+ * the FS can use all the active zones. Return EBUSY if there is an active
-+ * zone.
-  */
--int btrfs_reset_all_zones(int fd, struct btrfs_zoned_device_info *zinfo)
-+int btrfs_reset_zones(int fd, struct btrfs_zoned_device_info *zinfo, u64 byte_count)
- {
- 	unsigned int i;
- 	int ret = 0;
- 
- 	ASSERT(zinfo);
-+	ASSERT(IS_ALIGNED(byte_count, zinfo->zone_size));
- 
- 	/* Zone size granularity */
- 	for (i = 0; i < zinfo->nr_zones; i++) {
-+		if (byte_count == 0)
-+			break;
+diff --git a/tests/mkfs-tests/032-zoned-reset/test.sh b/tests/mkfs-tests/032-zoned-reset/test.sh
+new file mode 100755
+index 000000000000..6a599dd2874f
+--- /dev/null
++++ b/tests/mkfs-tests/032-zoned-reset/test.sh
+@@ -0,0 +1,62 @@
++#!/bin/bash
++# Verify mkfs for zoned devices support block-group-tree feature
 +
- 		if (zinfo->zones[i].type == BLK_ZONE_TYPE_CONVENTIONAL) {
- 			ret = device_discard_blocks(fd,
- 					     zinfo->zones[i].start << SECTOR_SHIFT,
-@@ -419,7 +427,20 @@ int btrfs_reset_all_zones(int fd, struct btrfs_zoned_device_info *zinfo)
- 
- 		if (ret)
- 			return ret;
++source "$TEST_TOP/common" || exit
 +
-+		byte_count -= zinfo->zone_size;
- 	}
-+	for (; i < zinfo->nr_zones; i++) {
-+		const enum blk_zone_cond cond = zinfo->zones[i].cond;
++setup_root_helper
++prepare_test_dev
 +
-+		if (zinfo->zones[i].type == BLK_ZONE_TYPE_CONVENTIONAL)
-+			continue;
-+		if (cond == BLK_ZONE_COND_IMP_OPEN ||
-+		    cond == BLK_ZONE_COND_EXP_OPEN ||
-+		    cond == BLK_ZONE_COND_CLOSED)
-+			return EBUSY;
-+	}
++nullb="$TEST_TOP/nullb"
++# Create one 128M device with 4M zones, 32 of them
++size=128
++zone=4
 +
- 	return fsync(fd);
- }
- 
-diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
-index 6eba86d266bf..104fb7b19490 100644
---- a/kernel-shared/zoned.h
-+++ b/kernel-shared/zoned.h
-@@ -149,7 +149,7 @@ bool btrfs_redirty_extent_buffer_for_zoned(struct btrfs_fs_info *fs_info,
- 					   u64 start, u64 end);
- int btrfs_reset_chunk_zones(struct btrfs_fs_info *fs_info, u64 devid,
- 			    u64 offset, u64 length);
--int btrfs_reset_all_zones(int fd, struct btrfs_zoned_device_info *zinfo);
-+int btrfs_reset_zones(int fd, struct btrfs_zoned_device_info *zinfo, u64 byte_count);
- int zero_zone_blocks(int fd, struct btrfs_zoned_device_info *zinfo, off_t start,
- 		     size_t len);
- int btrfs_wipe_temporary_sb(struct btrfs_fs_devices *fs_devices);
--- 
++run_mayfail $SUDO_HELPER "$nullb" setup
++if [ $? != 0 ]; then
++	_not_run "cannot setup nullb environment for zoned devices"
++fi
++
++# Record any other pre-existing devices in case creation fails
++run_check $SUDO_HELPER "$nullb" ls
++
++# Last line has the name of the device node path
++out=$(run_check_stdout $SUDO_HELPER "$nullb" create -s "$size" -z "$zone")
++if [ $? != 0 ]; then
++	_fail "cannot create nullb zoned device $i"
++fi
++dev=$(echo "$out" | tail -n 1)
++name=$(basename "${dev}")
++
++run_check $SUDO_HELPER "$nullb" ls
++
++TEST_DEV="${dev}"
++last_zone_sector=$(( 4 * 31 * 1024 * 1024 / 512 ))
++# Write some data to the last zone
++run_check $SUDO_HELPER dd if=/dev/urandom of="${dev}" bs=1M count=4 seek=$(( 4 * 31 ))
++# Use single as it's supported on more kernels
++run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -m single -d single "${dev}"
++# Check if the lat zone is empty
++$SUDO_HELPER blkzone report -o ${last_zone_sector} -c 1 "${dev}" | grep -Fq '(em)'
++if [ $? != 0 ]; then
++	_fail "last zone is not empty"
++fi
++
++# Write some data to the last zone
++run_check $SUDO_HELPER dd if=/dev/urandom of="${dev}" bs=1M count=1 seek=$(( 4 * 31 ))
++# Create a FS excluding the last zone
++run_mayfail $SUDO_HELPER "$TOP/mkfs.btrfs" -f -b $(( 4 * 31 ))M -m single -d single "${dev}"
++if [ $? == 0 ]; then
++	_fail "mkfs.btrfs should detect active zone outside of FS range"
++fi
++
++# Fill the last zone to finish it
++run_check $SUDO_HELPER dd if=/dev/urandom of="${dev}" bs=1M count=3 seek=$(( 4 * 31 + 1 ))
++# Create a FS excluding the last zone
++run_mayfail $SUDO_HELPER "$TOP/mkfs.btrfs" -f -b $(( 4 * 31 ))M -m single -d single "${dev}"
++# Check if the lat zone is not empty
++$SUDO_HELPER blkzone report -o ${last_zone_sector} -c 1 "${dev}" | grep -Fq '(em)'
++if [ $? == 0 ]; then
++	_fail "last zone is empty"
++fi
++
++run_check $SUDO_HELPER "$nullb" rm "${name}"
+--
 2.45.0
 
 
