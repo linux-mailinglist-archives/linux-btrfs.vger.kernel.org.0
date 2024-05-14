@@ -1,162 +1,199 @@
-Return-Path: <linux-btrfs+bounces-4989-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4990-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB1328C5B0C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 20:25:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F22C98C5C3F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 22:23:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2DCB1C21CF1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 18:25:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A934328457F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 20:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604A7180A6E;
-	Tue, 14 May 2024 18:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="T1qwFK/j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A53181B8D;
+	Tue, 14 May 2024 20:23:35 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0F3180A71
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 18:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3940B180A97
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 20:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715711099; cv=none; b=T2eM/Nu8AFCZ3dgfIXlMbhCSL1Gmmaebq/8Zh81ySfagxfMCxrVGlERnL4/oAT0z/pW8L03WvMOYhenT3wjv5GvLOF5Z2JxD2hxoabI2pCVS0Ol4VLQg7YL/F1++bb1in+dVYrCm2wt6m+KxWXLmWcrvekogyMn0rH1BMrRE2UM=
+	t=1715718214; cv=none; b=up9wpmIpvtjsFQ6xbOOoiNfrVQ6lN79mQPGPa9ru04eTesu9/d+AdSmQx1V4dJ0i/d2DiSTtS84yY9QqZCE/zYzGmuHVv5GihjWmZUFC8KYPQWFGA+NSFFrLRvX9cMfpckZvRUse/+fY3pYxAQxGfZrABKyw80yCLpFEK3s4208=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715711099; c=relaxed/simple;
-	bh=08v2xyBmdJ3XAG4ZotMl4yNKbz9h2IXrSbM6HIDWuH0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J6mUxmb5hyO7+gD4pTL6vM2xb49olJV6zFreK2VRDgxf2whVMPRk95b1NVJKB9XLYEg2Q1p5bX4l7afuHxGG5s/AGdwq7xL2LrYeHB1Jm1c0a3Gxq7wWiZ7KgUfi8/XD86NQk9PSp8YuIBT8STatOBYuaMsOw6YZHJM79aSMRtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=T1qwFK/j; arc=none smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1715711098; x=1747247098;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=08v2xyBmdJ3XAG4ZotMl4yNKbz9h2IXrSbM6HIDWuH0=;
-  b=T1qwFK/j3ttBV8uxc83eBIIYw1Jnu3mZbbu6bNWG4mZPJD7SBiYXDvd5
-   3ZFVvWxo5Pj3/57Ux95NXPDlSm/Xcrm+prU4qhkLL/jPLbqBv/GcSIchF
-   3XekVuJTa5jV+Gtu6YV4lEOs5VYwbI0rFYI9oI+SK67++E9smyRJCdQ91
-   BEOBim9Z2HR3cSjFFS2SlcG2VsH+QsUzjQWAKLNycpSJIL9zFcQ6Iw80F
-   5h4EgOxfDTn53rohip982pRdi3uyMZjN0qX9teJJlj4o5hIPaPLM5nxna
-   wROSla6mxTr1aUqcy+mLBNjTFVxTZ8RWRxIc2Y3QYouhT3pJws16Szmkw
-   Q==;
-X-CSE-ConnectionGUID: dBMPWFYVQIuuUDVsPptmlw==
-X-CSE-MsgGUID: 58oCQ5SkQSqZJG0/5c4PKA==
-X-IronPort-AV: E=Sophos;i="6.08,159,1712592000"; 
-   d="scan'208";a="17162695"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 May 2024 02:24:57 +0800
-IronPort-SDR: 6643a03b_Qy9gvtO+gIVlUtilw4ygphvOrtxA6EoQhY9m9f1AGv9DDJM
- X6Ag8zN4qsnyefpEy/0kCPzj3nciTgPpjESpNgA==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 14 May 2024 10:32:44 -0700
-WDCIronportException: Internal
-Received: from unknown (HELO naota-x1.wdc.com) ([10.225.163.56])
-  by uls-op-cesaip02.wdc.com with ESMTP; 14 May 2024 11:24:56 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 8/8] btrfs-progs: test: use smaller emulated zone size
-Date: Tue, 14 May 2024 12:22:27 -0600
-Message-ID: <20240514182227.1197664-9-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.45.0
-In-Reply-To: <20240514182227.1197664-1-naohiro.aota@wdc.com>
-References: <20240514182227.1197664-1-naohiro.aota@wdc.com>
+	s=arc-20240116; t=1715718214; c=relaxed/simple;
+	bh=VTIB/7/r0A+xbsKG6d6v06OLFByjsDiqG8BqgoHWkcE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WDOlXyjaxIA57vrBN6NVBnd/hOey0iNn/UOZfzmkKNmWPoGYJhQp8ZgJzRZnNU1YETI/368VwDlQUHdsjmp7P+yAAW4RX4+0LYHCN9mi2J8K0F8wm0rgs7UEqnadoSjwrff49Q9/toCC4tJVbMdsqnIPJ/KOGtB1e/RkVhgGJpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7da4360bbacso743166439f.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 13:23:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715718212; x=1716323012;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rq9iUgKR4TDRB9grFF21zTQBEC+sDHsGn0+DR4a1KJ8=;
+        b=uppwvaM6aupq9LCrAuOF7I1C0sT5V4EMozGbnPNPn453ykpUOaScfcT71BNo43/I23
+         9sfH6B5R89NauqtpupypPXH1fYNAHhXIkIMjxwJLARZSvYceivGlkS9iwfEgfgswZkk7
+         r0yT3bRhmEIYdIFlpJrOtjspj245jOE/3Ig75aST8bHmewahUrqo0vzBRZvw5zdU4Jk8
+         kS3JdEiAGU2sHLydYfVgAfJXYaPIdzYmpXh0d+eovug3yv099SnuL9dXgNEIs8TCy7gz
+         aZU04Zz4kJqe+P/55TFTDxAZEuwlGPcxXUzk/hnvgZUd4QHyaNVvcVeEYm4xqeo66fOP
+         k/rw==
+X-Forwarded-Encrypted: i=1; AJvYcCVsmFlu3+oW4jgpePpL/KEron3iHqdcISvEphbmIt6ba8JbhOfA7Z2iZbpEYdjgm2ogT6KkPpTOMTcXgtkXqBXDJTGeNI0GdqK7Xkw=
+X-Gm-Message-State: AOJu0YzImQkQj4l9FbjLDFIqyXjtwqL0VsY5yiZa7prAdVcJw5X3Bg7t
+	NDFQoBiwQeRRWMJejkFuNf/xuRTGtEXOugWDApYLzxbuVjdByTl84gsPVFC73BMD+uFOK+naNT1
+	HTRRKV3eUS4gGovzC/AlVAz89SlfupmMIAVOYCkgyJjLa9EqGrobbxek=
+X-Google-Smtp-Source: AGHT+IHzyAjAze8ucBFpJ9ILU+skjgB+zENaWw3sMcBXYuE7KUnc9o3EAvaN8ewmpanBaAW+I9fbDxZJPHxkhwJT2Wrr5lMtKMdy
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:248e:b0:488:7f72:b3ac with SMTP id
+ 8926c6da1cb9f-489585764d4mr831595173.2.1715718212415; Tue, 14 May 2024
+ 13:23:32 -0700 (PDT)
+Date: Tue, 14 May 2024 13:23:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000096049806186fc6f9@google.com>
+Subject: [syzbot] [btrfs?] general protection fault in btrfs_stop_all_workers (2)
+From: syzbot <syzbot+05fd41caa517e957851d@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-With the change of minimal number of zones, mkfs-tests/030-zoned-rst now
-fails because the loopback device is 2GB and can contain 8x 256MB zones.
-Use "--param zone-size=4M" to use 4MB zone size as same other nullb case.
+Hello,
 
-We also need to enable "--enable-experimental" configure option in the CI
-scripts to use that mkfs.btrfs option. Currently, it is limited to the place
-mkfs test is running, but it would be nice to have it in general, as we
-need to test development code anyway.
+syzbot found the following issue on:
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+HEAD commit:    f03359bca01b Merge tag 'for-6.9-rc6-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17a0fbc4980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3310e643b6ef5d69
+dashboard link: https://syzkaller.appspot.com/bug?extid=05fd41caa517e957851d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1b4deeb2639b/disk-f03359bc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f3c3d98db8ef/vmlinux-f03359bc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6f79ee1ae20f/bzImage-f03359bc.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+05fd41caa517e957851d@syzkaller.appspotmail.com
+
+BTRFS info (device loop2): last unmount of filesystem c9fe44da-de57-406a-8241-57ec7d4412cf
+general protection fault, probably for non-canonical address 0xe01ffbf11002a143: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: maybe wild-memory-access in range [0x00ffff8880150a18-0x00ffff8880150a1f]
+CPU: 1 PID: 5087 Comm: syz-executor.2 Not tainted 6.9.0-rc6-syzkaller-00131-gf03359bca01b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:__lock_acquire+0xe3e/0x3b30 kernel/locking/lockdep.c:5005
+Code: 11 00 00 39 05 f3 80 de 11 0f 82 be 05 00 00 ba 01 00 00 00 e9 e4 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 1f 00 00 49 81 3c 24 a0 2c a1 92 0f 84 98 f2
+RSP: 0018:ffffc9000327f938 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 001ffff11002a143 RSI: ffff888029405a00 RDI: 00ffff8880150a18
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8f9f4fd7 R11: 0000000000000001 R12: 00ffff8880150a18
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  000055556dc0c480(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c002bb5000 CR3: 00000000668d6000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
+ _raw_spin_lock_irq+0x36/0x50 kernel/locking/spinlock.c:170
+ put_pwq_unlocked kernel/workqueue.c:1671 [inline]
+ put_pwq_unlocked kernel/workqueue.c:1664 [inline]
+ destroy_workqueue+0x5df/0xaa0 kernel/workqueue.c:5739
+ btrfs_stop_all_workers+0x29f/0x370 fs/btrfs/disk-io.c:1800
+ close_ctree+0x4e3/0xfd0 fs/btrfs/disk-io.c:4371
+ generic_shutdown_super+0x159/0x3d0 fs/super.c:641
+ kill_anon_super+0x3a/0x60 fs/super.c:1225
+ btrfs_kill_super+0x3b/0x50 fs/btrfs/super.c:2091
+ deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
+ deactivate_super+0xde/0x100 fs/super.c:505
+ cleanup_mnt+0x222/0x450 fs/namespace.c:1267
+ task_work_run+0x14e/0x250 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
+ do_syscall_64+0xdc/0x260 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f53b047f057
+Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
+RSP: 002b:00007ffdaeab7cf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f53b047f057
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007ffdaeab7db0
+RBP: 00007ffdaeab7db0 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffdaeab8e70
+R13: 00007f53b04c93b9 R14: 000000000001ac84 R15: 0000000000000007
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__lock_acquire+0xe3e/0x3b30 kernel/locking/lockdep.c:5005
+Code: 11 00 00 39 05 f3 80 de 11 0f 82 be 05 00 00 ba 01 00 00 00 e9 e4 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 1f 00 00 49 81 3c 24 a0 2c a1 92 0f 84 98 f2
+RSP: 0018:ffffc9000327f938 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 001ffff11002a143 RSI: ffff888029405a00 RDI: 00ffff8880150a18
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8f9f4fd7 R11: 0000000000000001 R12: 00ffff8880150a18
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  000055556dc0c480(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c002bb5000 CR3: 00000000668d6000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	11 00                	adc    %eax,(%rax)
+   2:	00 39                	add    %bh,(%rcx)
+   4:	05 f3 80 de 11       	add    $0x11de80f3,%eax
+   9:	0f 82 be 05 00 00    	jb     0x5cd
+   f:	ba 01 00 00 00       	mov    $0x1,%edx
+  14:	e9 e4 00 00 00       	jmp    0xfd
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	4c 89 e2             	mov    %r12,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 82 1f 00 00    	jne    0x1fb6
+  34:	49 81 3c 24 a0 2c a1 	cmpq   $0xffffffff92a12ca0,(%r12)
+  3b:	92
+  3c:	0f                   	.byte 0xf
+  3d:	84                   	.byte 0x84
+  3e:	98                   	cwtl
+  3f:	f2                   	repnz
+
+
 ---
- .github/workflows/coverage.yml         | 2 +-
- .github/workflows/devel.yml            | 2 +-
- .github/workflows/pull-request.yml     | 2 +-
- tests/mkfs-tests/030-zoned-rst/test.sh | 7 ++++---
- 4 files changed, 7 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/.github/workflows/coverage.yml b/.github/workflows/coverage.yml
-index 3aea8cd5f56b..b7f209b3fc51 100644
---- a/.github/workflows/coverage.yml
-+++ b/.github/workflows/coverage.yml
-@@ -16,7 +16,7 @@ jobs:
-       - run: sudo modprobe btrfs
-       - run: sudo apt-get install -y pkg-config gcc liblzo2-dev libzstd-dev libblkid-dev uuid-dev zlib1g-dev libext2fs-dev e2fsprogs libudev-dev python3-sphinx libaio-dev liburing-dev attr jq lcov
-       - name: Configure
--        run: ./autogen.sh && ./configure --disable-documentation
-+        run: ./autogen.sh && ./configure --disable-documentation --enable-experimental
-       - name: Make
-         run: make V=1 D=gcov
-       - name: Tests cli
-diff --git a/.github/workflows/devel.yml b/.github/workflows/devel.yml
-index aca6ed975563..3ac85b0b32e4 100644
---- a/.github/workflows/devel.yml
-+++ b/.github/workflows/devel.yml
-@@ -71,7 +71,7 @@ jobs:
-       - run: sudo modprobe btrfs
-       - run: sudo apt-get install -y pkg-config gcc liblzo2-dev libzstd-dev libblkid-dev uuid-dev zlib1g-dev libext2fs-dev e2fsprogs libudev-dev libaio-dev liburing-dev attr jq
-       - name: Configure
--        run: ./autogen.sh && ./configure --disable-documentation
-+        run: ./autogen.sh && ./configure --disable-documentation --enable-experimental
-       - name: Make
-         run: make V=1
-       - name: Tests mkfs
-diff --git a/.github/workflows/pull-request.yml b/.github/workflows/pull-request.yml
-index 954e1ee5ffb0..9765ea24a2e4 100644
---- a/.github/workflows/pull-request.yml
-+++ b/.github/workflows/pull-request.yml
-@@ -20,7 +20,7 @@ jobs:
-       - run: sudo modprobe btrfs
-       - run: sudo apt-get install -y pkg-config gcc liblzo2-dev libzstd-dev libblkid-dev uuid-dev zlib1g-dev libext2fs-dev e2fsprogs libudev-dev python3-sphinx libaio-dev liburing-dev attr jq
-       - name: Configure
--        run: ./autogen.sh && ./configure --disable-documentation
-+        run: ./autogen.sh && ./configure --disable-documentation --enable-experimental
-       - name: Make
-         run: make V=1
- #      - name: Musl build
-diff --git a/tests/mkfs-tests/030-zoned-rst/test.sh b/tests/mkfs-tests/030-zoned-rst/test.sh
-index 2e048cf79f20..9fa9c8c0d30b 100755
---- a/tests/mkfs-tests/030-zoned-rst/test.sh
-+++ b/tests/mkfs-tests/030-zoned-rst/test.sh
-@@ -9,17 +9,18 @@ prepare_loopdevs
- TEST_DEV=${loopdevs[1]}
- 
- profiles="single dup raid1 raid1c3 raid1c4 raid10"
-+zoned_param="-O zoned --param zone-size=4M"
- 
- for dprofile in $profiles; do
- 	for mprofile in $profiles; do
- 		# It's sufficient to specify only 'zoned', the rst will be enabled
--		run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d "$dprofile" -m "$mprofile" "${loopdevs[@]}"
-+		run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f ${zoned_param} -d "$dprofile" -m "$mprofile" "${loopdevs[@]}"
- 	done
- done
- 
- run_mustfail "unsupported profile raid56 created" \
--	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid5 -m raid5 "${loopdevs[@]}"
-+	$SUDO_HELPER "$TOP/mkfs.btrfs" -f ${zoned_param} -d raid5 -m raid5 "${loopdevs[@]}"
- run_mustfail "unsupported profile raid56 created" \
--	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid6 -m raid6 "${loopdevs[@]}"
-+	$SUDO_HELPER "$TOP/mkfs.btrfs" -f ${zoned_param} -d raid6 -m raid6 "${loopdevs[@]}"
- 
- cleanup_loopdevs
--- 
-2.45.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
