@@ -1,182 +1,109 @@
-Return-Path: <linux-btrfs+bounces-4979-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4980-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA0E8C5A4E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 19:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 460148C5AAD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 19:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8213A1C21A70
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 17:29:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76F361C21CE3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 17:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468EF17F39E;
-	Tue, 14 May 2024 17:29:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDB8180A77;
+	Tue, 14 May 2024 17:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vqAKHvu3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WZFK3LzX";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vqAKHvu3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WZFK3LzX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmcjRQy6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991AE17F378
-	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 17:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0396A1802B1
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 17:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715707747; cv=none; b=QalkXiC7iU7X+3nTho2XOm9GW5G/juI7zB1vQBdGBO9wSg6GoNu6JN/xs0ecixqmuTFEiIvNNfmTgauWSbq4Y0RV8nvR1z35st79OOk7DvOqeGP2mgE0YBnFBACkqJLMZu08Q6b2TxDHovm3afQo9VByI4FqXr4Gtpz3K1zgrAY=
+	t=1715709263; cv=none; b=l+0aeaTi5chq2OHddCthrVIF07Hryn4aJ8sHSlizkRzNPhHfNQ1AyX2C8R3nbq5RV5HDuVZqR7jD1EHJC+vjuKpCdzcz/rmbZCSHz+ZG7lHW3hvZQtSXAI+BYWd9puIAnfQ5Q8gecsLCRFST3G+3ZDAHOCUv4TzZ+Tlsg+g6nss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715707747; c=relaxed/simple;
-	bh=Co3klte+qf7cdqf+5JfvOGSdrvkvMCkDgAE+Fntcclc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C5ziqB8/hhYBbHzBbg0XfUlEkZ4uRimjlyFsDX8ntEkHMukHDnux1A6duR3wK4/xg6I7K4NQ910zNWsATAC0mTXtWSX2+Aq6Nsz806Z+8qtUd07WjTYbnKg1HPU4AOnh/CHl0vUdu1rStwollkAlqFPoDX9cP+seX3yqvGXT5wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vqAKHvu3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WZFK3LzX; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vqAKHvu3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WZFK3LzX; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BF15133690;
-	Tue, 14 May 2024 17:29:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715707743;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BhFxqSph2Kpc8dlFIVs9yDYV0b1uK/DFQ8YJYTOnKik=;
-	b=vqAKHvu3Ql6uZvaCLoCAzy3m0eZF7SWJ50iic37H1BEZi6Q40iVjQakRRUwqnsTTRw0vFg
-	xUpyEBFFaJJGmyzSZ2LasKIdHIJ+sjv+XyHW0WBJkKKhlOG59BA60MCj9Jx0XkurrxqHMh
-	JqplkbWWR8v9+Ib9lFINIeifPb94+a4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715707743;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BhFxqSph2Kpc8dlFIVs9yDYV0b1uK/DFQ8YJYTOnKik=;
-	b=WZFK3LzXuvrFESn0YFCs1M4GR5a+6OO33FcR6v9xfw88p6on1YJHqVnOuL1ig1G82FI37u
-	XGGAOllxHGHrhRBw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vqAKHvu3;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WZFK3LzX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715707743;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BhFxqSph2Kpc8dlFIVs9yDYV0b1uK/DFQ8YJYTOnKik=;
-	b=vqAKHvu3Ql6uZvaCLoCAzy3m0eZF7SWJ50iic37H1BEZi6Q40iVjQakRRUwqnsTTRw0vFg
-	xUpyEBFFaJJGmyzSZ2LasKIdHIJ+sjv+XyHW0WBJkKKhlOG59BA60MCj9Jx0XkurrxqHMh
-	JqplkbWWR8v9+Ib9lFINIeifPb94+a4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715707743;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BhFxqSph2Kpc8dlFIVs9yDYV0b1uK/DFQ8YJYTOnKik=;
-	b=WZFK3LzXuvrFESn0YFCs1M4GR5a+6OO33FcR6v9xfw88p6on1YJHqVnOuL1ig1G82FI37u
-	XGGAOllxHGHrhRBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A5D57137C3;
-	Tue, 14 May 2024 17:29:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tZ9UKF+fQ2Z0cQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 14 May 2024 17:29:03 +0000
-Date: Tue, 14 May 2024 19:21:42 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: David Sterba <dsterba@suse.cz>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 0/7] btrfs-progs: zoned: proper "mkfs.btrfs -b" support
-Message-ID: <20240514172142.GL4449@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240514005133.44786-1-naohiro.aota@wdc.com>
- <20240514153938.GE4449@twin.jikos.cz>
- <xbrkuvkwzzwufyiqgxve67zwhwf2pxqkiiqsorbnfb3jgdug35@cs32x5a5jkv2>
+	s=arc-20240116; t=1715709263; c=relaxed/simple;
+	bh=2dlUxuEK3lcHDYIe8ofm/sj97QtYY5Zus/jd/IJjKk4=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Sud/l6b4blTMGSOVfgfv2l6bvuu4eHupsjjLwrPIArs3aJDT03bq0Hl6XhslTRvLMFHJyeAssKVJutkm0/JXV/rTl2hb0V+OPnReeKEDsxSL9wL28GOMU0ryjPWNY40Mnbx8yWVr0Se0aneB4YWK8dMEWODinsQqQWaNEBTSShw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmcjRQy6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09AA7C2BD10
+	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 17:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715709262;
+	bh=2dlUxuEK3lcHDYIe8ofm/sj97QtYY5Zus/jd/IJjKk4=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=AmcjRQy6NZHzF2HWJT64VBZOkgdilDG7tyZIia/YBFt0z3OMe6p0sCcBJ93HITmAT
+	 A1s09f463/4XL9cCKzQYwQSUx6C1riSLCSwv9MwN44ZvgFukegYziHyuuSaTRSHxex
+	 hsYAbRCvrJwiWBsTDowXNP/qalIrPMcQ2Kn5+b+fA82H/gfKuH+X/OOh1QAG+yeyHf
+	 WqQMFEeGb4qg1ntJ3nLhwCtR2BbO0Eh5IQRq8RgULK6fzHERS6DYPDi5OWzeUxQHz4
+	 KHloqFsM1x1tNMTEtCbfDc9aXY8i8dA/Ad73XtIcDHFWi/3FCK0LGNCtyYnITw+0LA
+	 6sYNOpIdFuPGg==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: reduce ordered_extent_lock section at btrfs_split_ordered_extent()
+Date: Tue, 14 May 2024 18:54:18 +0100
+Message-Id: <6bd1663678f119791c1e2b6071f4973f35dcf049.1715708811.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <719ec85c5bda1d711067e5b1c20a2de336240140.1715688262.git.fdmanana@suse.com>
+References: <719ec85c5bda1d711067e5b1c20a2de336240140.1715688262.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xbrkuvkwzzwufyiqgxve67zwhwf2pxqkiiqsorbnfb3jgdug35@cs32x5a5jkv2>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: BF15133690
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCPT_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[suse.cz:+]
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 14, 2024 at 05:14:39PM +0000, Naohiro Aota wrote:
-> On Tue, May 14, 2024 at 05:39:38PM +0200, David Sterba wrote:
-> > On Mon, May 13, 2024 at 06:51:26PM -0600, Naohiro Aota wrote:
-> > > mkfs.btrfs -b <byte_count> on a zoned device has several issues listed
-> > > below.
-> > > 
-> > > - The FS size needs to be larger than minimal size that can host a btrfs,
-> > >   but its calculation does not consider non-SINGLE profile
-> > > - The calculation also does not ensure tree-log BG and data relocation BG
-> > > - It allows creating a FS not aligned to the zone boundary
-> > > - It resets all device zones beyond the specified length
-> > > 
-> > > This series fixes the issues with some cleanups.
-> > > 
-> > > Patches 1 to 3 are clean up patches, so they should not change the behavior.
-> > > 
-> > > Patches 4 to 6 address the issues and the last patch adds a test case.
-> > > 
-> > > Naohiro Aota (7):
-> > >   btrfs-progs: rename block_count to byte_count
-> > >   btrfs-progs: mkfs: remove duplicated device size check
-> > >   btrfs-progs: mkfs: unify zoned mode minimum size calc into
-> > >     btrfs_min_dev_size()
-> > >   btrfs-progs: mkfs: fix minimum size calculation for zoned
-> > >   btrfs-progs: mkfs: check if byte_count is zone size aligned
-> > >   btrfs-progs: support byte length for zone resetting
-> > >   btrfs-progs: add test for zone resetting
-> > 
-> > I did a quick CI check, the mkfs tests fails. You can open a pull
-> > request to get your changes tested (it can be just for the testing
-> > purpose, if you note that I'll skip it until the final version).
-> > 
-> > https://github.com/kdave/btrfs-progs/actions/runs/9081685951
-> 
-> Thank you. I just noticed some workflows are running on my btrfs-progs
-> repository too.
+From: Filipe Manana <fdmanana@suse.com>
 
-Yes, the jobs are matched by the branch names and will start if you have
-Actions enabled in the repository.
+There's no need to hold the root's ordered_extent_lock for so long at
+btrfs_split_ordered_extent(). We don't need to hold it in order to modify
+the inode's rb tree of ordered extents, to modify the trimmed ordered
+extent and move checksums between the trimmed and the new ordered extent.
+That's only increasing contention of the root's ordered_extent_lock for
+other writes that are starting or completing.
+
+So lock the root's ordered_extent_lock only before we add the new ordered
+extent to the root's ordered list and increment the root's counter for the
+number of ordered extents.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ordered-data.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+V2: Fix a bug where we woudn't disable irqs when taking the inode's
+    ordered tree lock. Often triggered with generic/208.
+
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index c5bdd674f55c..e6025d9645f5 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -1181,8 +1181,7 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
+ 	/* One ref for the tree. */
+ 	refcount_inc(&new->refs);
+ 
+-	spin_lock_irq(&root->ordered_extent_lock);
+-	spin_lock(&inode->ordered_tree_lock);
++	spin_lock_irq(&inode->ordered_tree_lock);
+ 	/* Remove from tree once */
+ 	node = &ordered->rb_node;
+ 	rb_erase(node, &inode->ordered_tree);
+@@ -1232,8 +1231,9 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
+ 		btrfs_panic(fs_info, -EEXIST,
+ 			"zoned: inconsistency in ordered tree at offset %llu",
+ 			new->file_offset);
+-	spin_unlock(&inode->ordered_tree_lock);
++	spin_unlock_irq(&inode->ordered_tree_lock);
+ 
++	spin_lock_irq(&root->ordered_extent_lock);
+ 	list_add_tail(&new->root_extent_list, &root->ordered_extents);
+ 	root->nr_ordered_extents++;
+ 	spin_unlock_irq(&root->ordered_extent_lock);
+-- 
+2.43.0
+
 
