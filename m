@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-4950-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-4949-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B37A98C4AA5
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D0C8C4AA4
 	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 02:52:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E48871C23218
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B702286316
 	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2024 00:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D26563D0;
-	Tue, 14 May 2024 00:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5D163AE;
+	Tue, 14 May 2024 00:52:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="GIrBi8ON"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="QApmqN4q"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47E617F7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABED417CD
 	for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2024 00:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715647931; cv=none; b=kiM2t62wmCJbFZnVf3puzZRQ/U/rCLFH59LBtRuaSBnFz1YtPMgpYIu5dcQ9FgybLBIr0Ii4Fx4cHuNg+MTSKQ9bY6NqHOnwuiNh9j/JmW+vKW5X+NJKzHlIxMTV6jyvEwQyY+suq4T00zg1U1vQ+k2nz4DCAxxyanbmRl3oiuI=
+	t=1715647931; cv=none; b=ZIu/mlAnqU69ThLfMCLvXBN4E07ULhPf7D2UdNPnNd1sntVpRu9TopnULGI66AB8bLnKODIArricDUWbR3us0Zz6rdSoaMcvhcGC1CyJIH/oy1gg0eYDtqUkubXmjyw+bk6C18aPju9fPNrt/q4Aij4ox4wk9Ta17UcceFw5l6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715647931; c=relaxed/simple;
-	bh=H7MQbFgVBsa/41MrMi9xW8AJFk6zCjEkOzRcEVn0po4=;
+	bh=291spckHOc/OndRzbUKt1knBk+0K4i7rEvJSmzcNZQA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iDYxs8U5PVPYFbczcRV1N1TgN0r4C4dSs4Xk6KkmWoN/MkV2Q52MU6RhsppWtmp6/k17dNSxI8qv8jnLKB6e2GcBmnkAFf478zGLjxQd1p5cubPE/LWGMfwFBqTAx+0CKniCMs+sUJHz0M5LJhArn59pzZwXv1sNtQoG71SmCcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=GIrBi8ON; arc=none smtp.client-ip=216.71.154.45
+	 MIME-Version; b=VT4hhgyn06EaMDDPOF5dQsNbruCsaOmRseLnUVkSbaN2OLUkjOs6nj7p50aIC2BBfz7xXH7CP13tNFuJ6Eff0O/R95wMwr0PsZ7DsVibNIH6Xd1R+OWHYPlI1QeDk6JF/JqJLWuIe5GYTQFwzJhUG6XlNNtNljNI6MQD3YSvknk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=QApmqN4q; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -36,33 +36,33 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1715647929; x=1747183929;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=H7MQbFgVBsa/41MrMi9xW8AJFk6zCjEkOzRcEVn0po4=;
-  b=GIrBi8ONtqwUYX8jnnx/V9IMB1WB+T443DsJMeGxnTKeWy/xKuud8LOp
-   eDgj0g2QmbEavhybQxCytCFeM9jnKJxcRoOtUAabZXA/foqBuDlcUUwq1
-   Ys2JTt/NDTzr6qVAPjQZdB5JIIG8Crv97XwMDIQ7UG1GX4NaokFiJecLl
-   qVoY4n0gf0elmvWFd/oPWlaGgwCEiiFMNj76UsEM6GSleE6s+kTy3BjoR
-   lDc9pc8u/amSvnyIqx2gmTLL9QmR0O12MjxGEyNASqKUjLxYCZRhgGy+H
-   pRo5RRmUBCP3uRB1z+tA+IZ4LsiMlJhfpjMwr+hJKFwgyNI02AtvYvKsh
-   w==;
-X-CSE-ConnectionGUID: wwM/fWyuQJGRfsa/trV5Kg==
-X-CSE-MsgGUID: OJ6gJLq2Thqw4l4Z6Yi14w==
+  bh=291spckHOc/OndRzbUKt1knBk+0K4i7rEvJSmzcNZQA=;
+  b=QApmqN4qhHiOxT81n9/CppPwRiz+rmAYC1z+7CC4mNQ+LzcsUmcbauSH
+   eYlw7Z7SSsRDme1/cwEVS9RKwdoznRq+BC815I9EcW/skiSwAP52HYqV6
+   AetdjMn9WjAvePgzrAEO05kv1KzJIFs2G5RwbWOJVyK2m5SoRNmGTqee1
+   d/wcvSJyB1G3+jPkmYHrEeVb2ysEBLk5piiQR5Ow2EPATTQdYjiOkIFhl
+   98kJaUSXYdL7Bb8EKRe/m2e0ku6l9tmxuKn3uAh0V4ZnvhCL3QmWSWAgw
+   dKpKfXD+EoI8+n9gQxeZ7rhsjfY++LPzmzmUTsCbwGz2HjCMNVXjS8eRv
+   Q==;
+X-CSE-ConnectionGUID: tSkwSaFORDCr1AS+b4NM1Q==
+X-CSE-MsgGUID: FFR+3gVqTmemFVTFfe885A==
 X-IronPort-AV: E=Sophos;i="6.08,159,1712592000"; 
-   d="scan'208";a="16252234"
+   d="scan'208";a="16252237"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 14 May 2024 08:52:05 +0800
-IronPort-SDR: 6642a823_2/apwzdE8OWJfxVfG5KDZYYlQF381Ch1UDGUYxQkK5vpmCg
- R8vFBzEmmW77seS2dXNfzmh96YcaDbxzD1gOAyg==
+  by ob1.hgst.iphmx.com with ESMTP; 14 May 2024 08:52:07 +0800
+IronPort-SDR: 6642a825_nJwafmNaZYl1BIJnCkTUfoaFg/7GrAteDUpMlYHSXy9DE3y
+ t5bQIilhJYdUrFIHRciWZdKKVAz2Jnh274xppOA==
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 May 2024 16:54:12 -0700
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 13 May 2024 16:54:13 -0700
 WDCIronportException: Internal
 Received: from unknown (HELO naota-x1.wdc.com) ([10.225.163.55])
-  by uls-op-cesaip02.wdc.com with ESMTP; 13 May 2024 17:52:04 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 13 May 2024 17:52:05 -0700
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 4/7] btrfs-progs: mkfs: fix minimum size calculation for zoned
-Date: Mon, 13 May 2024 18:51:30 -0600
-Message-ID: <20240514005133.44786-5-naohiro.aota@wdc.com>
+Subject: [PATCH 5/7] btrfs-progs: mkfs: check if byte_count is zone size aligned
+Date: Mon, 13 May 2024 18:51:31 -0600
+Message-ID: <20240514005133.44786-6-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240514005133.44786-1-naohiro.aota@wdc.com>
 References: <20240514005133.44786-1-naohiro.aota@wdc.com>
@@ -74,85 +74,31 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, we check if a device is larger than 5 zones to determine we can
-create btrfs on the device or not. Actually, we need more zones to create
-DUP block groups, so it fails with "ERROR: not enough free space to
-allocate chunk". Implement proper support for non-SINGLE profile.
-
-Also, current code does not ensure we can create tree-log BG and data
-relocaiton BG, which are essential for the real usage. Count them as
-requirement too.
+Creating a btrfs whose size is not aligned to the zone boundary is
+meaningless and allowing it can confuse users. Disallow creating it.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- mkfs/common.c | 53 +++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 45 insertions(+), 8 deletions(-)
+ mkfs/main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/mkfs/common.c b/mkfs/common.c
-index af54089654a0..a5100b296f65 100644
---- a/mkfs/common.c
-+++ b/mkfs/common.c
-@@ -818,14 +818,51 @@ u64 btrfs_min_dev_size(u32 nodesize, bool mixed, u64 zone_size, u64 meta_profile
- 	u64 meta_size;
- 	u64 data_size;
-
--	/*
--	 * 2 zones for the primary superblock
--	 * 1 zone for the system block group
--	 * 1 zone for a metadata block group
--	 * 1 zone for a data block group
--	 */
--	if (zone_size)
--		return 5 * zone_size;
-+	if (zone_size) {
-+		/* 2 zones for the primary superblock. */
-+		reserved += 2 * zone_size;
-+
-+		/*
-+		 * 1 zone each for the initial system, metadata, and data block
-+		 * group
-+		 */
-+		reserved += 3 * zone_size;
-+
-+		/*
-+		 * non-SINGLE profile needs:
-+		 * 1 zone for system block group
-+		 * 1 zone for normal metadata block group
-+		 * 1 zone for tree-log block group
-+		 *
-+		 * SINGLE profile only need to add tree-log block group
-+		 */
-+		if (meta_profile & BTRFS_BLOCK_GROUP_PROFILE_MASK)
-+			meta_size = 3 * zone_size;
-+		else
-+			meta_size = zone_size;
-+		/* DUP profile needs two zones for each block group. */
-+		if (meta_profile & BTRFS_BLOCK_GROUP_DUP)
-+			meta_size *= 2;
-+		reserved += meta_size;
-+
-+		/*
-+		 * non-SINGLE profile needs:
-+		 * 1 zone for data block group
-+		 * 1 zone for data relocation block group
-+		 *
-+		 * SINGLE profile only need to add data relocationblock group
-+		 */
-+		if (data_profile & BTRFS_BLOCK_GROUP_PROFILE_MASK)
-+			data_size = 2 * zone_size;
-+		else
-+			data_size = zone_size;
-+		/* DUP profile needs two zones for each block group. */
-+		if (data_profile & BTRFS_BLOCK_GROUP_DUP)
-+			data_size *= 2;
-+		reserved += data_size;
-+
-+		return reserved;
+diff --git a/mkfs/main.c b/mkfs/main.c
+index a437ecc40c7f..faf397848cc4 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -1655,6 +1655,11 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		      opt_zoned ? "zoned mode " : "", min_dev_size);
+ 		goto error;
+ 	}
++	if (byte_count && opt_zoned && !IS_ALIGNED(byte_count, zone_size(file))) {
++		error("size %llu is not aligned to zone size %llu", byte_count,
++		      zone_size(file));
++		goto error;
 +	}
-
- 	if (mixed)
- 		return 2 * (BTRFS_MKFS_SYSTEM_GROUP_SIZE +
---
+ 
+ 	for (i = saved_optind; i < saved_optind + device_count; i++) {
+ 		char *path;
+-- 
 2.45.0
 
 
