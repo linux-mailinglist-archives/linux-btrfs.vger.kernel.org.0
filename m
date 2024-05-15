@@ -1,331 +1,215 @@
-Return-Path: <linux-btrfs+bounces-5003-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5004-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E8348C5F78
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 05:44:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D6D98C6418
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 11:48:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2378C1C21A1C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 03:44:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FD37B23477
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2024 09:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E01381B9;
-	Wed, 15 May 2024 03:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C19D5915C;
+	Wed, 15 May 2024 09:48:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IMU7ZhZL";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IMU7ZhZL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dxEujjA8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B963F37142
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2024 03:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3370558AC3
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2024 09:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715744665; cv=none; b=lWHV51elVIFZzXTAutpmxp2HoT8nFgycTglT0jNe+ww86ZphCEkMMF6345Ai/yUC6E5jMsckYlKtJRw3k5sQzIVLtbNnho3aN79Vhx6Qu3ulyA00CxOsBvYGUMP+fCPKG145K21DJutzQ/3VpPQTxRvuYQ7n8Wl9IWOhDmnrW8g=
+	t=1715766491; cv=none; b=GFB+ZdheXxc+9mn232tZ88HfwydRkzUAunte+bd44GSkuBT6FX6heT3SX4QF+Ce7IF42C+n6iQXv4hwiyGiqK7WFdxZK4qMy+kxG0l0t4ZkIDzlMfna2wu6pgqnKQjQuNwVeoz6ZLJjT5uYBPy58rdLZpzhs7zOmF4Vx1Kh35Gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715744665; c=relaxed/simple;
-	bh=WrdgArUFR2WnBtqdu9C2HxTVu+rL9iXNcCak4ccyytw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=lpDkudAwC1eiz5QvlIPQHuy/k8BlmCW+02ecULVv97Kt4BAjlRZkpeeXujHi64fZaIVJ4IxwVDhYPlyq0Dzqr7IC2LAdDEkoBQK72VHSRIfozTACaFOMA/h00iIJZQ7ct9XhIqOn22u5FAugAclXhsmRJRFjeIQCpP8S6P3rGw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IMU7ZhZL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IMU7ZhZL; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9F28633792
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2024 03:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1715744660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dwVIdh8IFf2P5e/3A2/rMKaLq9qx3DklddGOLQvBgTM=;
-	b=IMU7ZhZLfLOVfBn3aeEP1BnBH7WsciRUly3pNsTPsLsTh0hDtWaPtH2a/ykGpKC6y0kgVI
-	kVJUKRMJO3ABdnF0Nz/g9GmYXG5wIpkcW6JtGSAP5JUAYUqdc0O2moqzDf+bFTimBRsysO
-	k3P6IACLmkwIP8//AlvdlQugvAlbT1w=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=IMU7ZhZL
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1715744660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dwVIdh8IFf2P5e/3A2/rMKaLq9qx3DklddGOLQvBgTM=;
-	b=IMU7ZhZLfLOVfBn3aeEP1BnBH7WsciRUly3pNsTPsLsTh0hDtWaPtH2a/ykGpKC6y0kgVI
-	kVJUKRMJO3ABdnF0Nz/g9GmYXG5wIpkcW6JtGSAP5JUAYUqdc0O2moqzDf+bFTimBRsysO
-	k3P6IACLmkwIP8//AlvdlQugvAlbT1w=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BFF5413A56
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2024 03:44:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qXGbG5MvRGYrDgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2024 03:44:19 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: raid56: do extra dumping for CONFIG_BTRFS_ASSERT
-Date: Wed, 15 May 2024 13:14:01 +0930
-Message-ID: <9841445a77c4721b7f5c92e642f7e1abf8689d8a.1715744555.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1715766491; c=relaxed/simple;
+	bh=u4dgNlu3h1WsQZNfrPjmRmb9zHEqhlSbvorvtN9JibM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GwUEcb1B9HgJ6aa3mUOP+ZrobvzqqsxIH8MVt2MTpdfwagk332auDWPpWqzIXUHoVAvutOrYzPUY8A42DSpDOYaH5AowRLQm29OtnICVksJ3LgGHhrOnELYisgiDfgJbjNTsBZn72VoZ1uwrHmJ7WK6AKf+I2KSogbHbfN2gxj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dxEujjA8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C02A4C32781
+	for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2024 09:48:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715766490;
+	bh=u4dgNlu3h1WsQZNfrPjmRmb9zHEqhlSbvorvtN9JibM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dxEujjA8sZw+pkAyo+uj9iISQcfN6Le/NTt3YUKoX3OFr4bud09rWz5UozCqGzglK
+	 e4q2BoXnJhqGxtDoEOVdKZCsZuZKVBDiMAQUkuUY1Og2RRbswwXeZ/a4o+AzLbAM5m
+	 iuXV6omu84Hs6jqZd1fXInXT316BZhR92V0HjEdUSjoix62yKMUzWmzhyMEHy9c20M
+	 5ty40P1/mUqnhkVi/BRdfTrsrECSgf4cOGnIA0uG9nLC1LSXnqEV5zl17ECChjlHS7
+	 OEYeaA8MqGM84W/LVI24PFj5Ci8Kzl1uOpk+ylr5HYpX02sIboqoeu0t0plWlwe9J9
+	 XVoI22fXHRnWw==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a59a609dd3fso182263066b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2024 02:48:10 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzjRYAOFjrgGIBTp73r31GmLLGYVHrPJqZ2iBL4UMo+n3Z6Xslf
+	KJqveqTSMdH/2JZnmsHO24SwTUaG3UiNh5IBmZLo6lqUAfljyj7jYP/U79SPYJt+C0sJHblIcwP
+	biaHWDzYsbGIBstz0cqzrtjUm37E=
+X-Google-Smtp-Source: AGHT+IGiiLEmdPlE6CDkcmWBoP+BmHD97xvDK7572sKJ/ZD3gAmISgAqlo7h3Kbkr1ZikCkZ/amRpsH8C9FrC7uVYkE=
+X-Received: by 2002:a17:906:da8d:b0:a5a:7a1:5da3 with SMTP id
+ a640c23a62f3a-a5a2d09e4b4mr1518239266b.0.1715766489336; Wed, 15 May 2024
+ 02:48:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 9F28633792
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
+References: <cover.1715688057.git.fdmanana@suse.com> <affef2b4ccd4d0f9a0272cd5883a5922d36bac31.1715688057.git.fdmanana@suse.com>
+ <67e9e462-b6d4-4c6d-b409-ae13ab9714a8@gmx.com>
+In-Reply-To: <67e9e462-b6d4-4c6d-b409-ae13ab9714a8@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 15 May 2024 10:47:31 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5zBQYB76O9eLNCWpYrfYuD3VEqX4Cu67SgVdBTU6qz2g@mail.gmail.com>
+Message-ID: <CAL3q7H5zBQYB76O9eLNCWpYrfYuD3VEqX4Cu67SgVdBTU6qz2g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btrfs: drop extent maps after failed COW dio write
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There are several hard-to-hit ASSERT()s hit inside raid56.
-Unfortunately the ASSERT() expression is a little complex, and except
-the ASSERT(), there is nothing to provide any clue.
+On Tue, May 14, 2024 at 11:15=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com>=
+ wrote:
+>
+>
+>
+> =E5=9C=A8 2024/5/14 23:53, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > During a COW direct IO write if the call to btrfs_extract_ordered_exten=
+t()
+> > fails, we don't submit any bios, cleanup the ordered extent but we leav=
+e
+> > the extent maps we created for the write around.
+> >
+> > These extent maps point to locations on disk that were not written to,
+> > since we haven't submitted a bio for them, and they are new an in the l=
+ist
+> > of modified extents.
+> >
+> > This means that if we fsync the file after, we log file extent items ba=
+sed
+> > on those extent maps, which are invalid since they point to unwritten
+> > locations. If a power failure happens after the fsync, on log replay we
+> > get a corrupted file range.
+> >
+> > Fix this by dropping the extent maps if btrfs_extract_ordered_extent()
+> > failed.
+> >
+> > Fixes: b73a6fd1b1ef ("btrfs: split partial dio bios before submit")
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>
+> Just a small question inlined below.
+> > ---
+> >   fs/btrfs/inode.c | 21 +++++++++++++++++++--
+> >   1 file changed, 19 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > index 5a1014122088..f04852e44123 100644
+> > --- a/fs/btrfs/inode.c
+> > +++ b/fs/btrfs/inode.c
+> > @@ -7888,11 +7888,28 @@ static void btrfs_dio_submit_io(const struct io=
+map_iter *iter, struct bio *bio,
+> >        * remaining pages is blocked on the outstanding ordered extent.
+> >        */
+> >       if (iter->flags & IOMAP_WRITE) {
+> > +             struct btrfs_ordered_extent *oe =3D dio_data->ordered;
+> >               int ret;
+> >
+> > -             ret =3D btrfs_extract_ordered_extent(bbio, dio_data->orde=
+red);
+> > +             ret =3D btrfs_extract_ordered_extent(bbio, oe);
+> >               if (ret) {
+> > -                     btrfs_finish_ordered_extent(dio_data->ordered, NU=
+LL,
+> > +                     /*
+> > +                      * If this is a COW write it means we created new=
+ extent
+> > +                      * maps for the range and they point to an unwrit=
+ten
+> > +                      * location since we got an error and we don't su=
+bmit
+> > +                      * a bio. We must drop any extent maps within the=
+ range,
+> > +                      * otherwise a fast fsync would log them and afte=
+r a
+> > +                      * crash and log replay we would have file extent=
+ items
+> > +                      * that point to unwritten locations (garbage).
+> > +                      */
+>
+> Is regular read also being affected?
 
-Considering if race is involved, it's pretty hard to reproduce.
-Meanwhile sometimes the dump of the rbio structure can provide some
-pretty good clues, it's worthy to do the extra multi-line dump for
-btrfs raid56 related code.
+No, it isn't, I'll explain below.
 
-The dump looks like this:
+>
+> Since the em is already inserted, and we're doing DIO, there should be
+> no page cache for the whole dio range (as long as we didn't fallback to
+> buffered IO).
+>
+> In that case, the problem is not only limited to fsync, but also any read=
+.
 
- BTRFS critical (device dm-3): bioc logical=4598530048 full_stripe=4598530048 size=0 map_type=0x81 mirror=0 replace_nr_stripes=0 replace_stripe_src=-1 num_stripes=5
- BTRFS critical (device dm-3):     nr=0 devid=1 physical=1166147584
- BTRFS critical (device dm-3):     nr=1 devid=2 physical=1145176064
- BTRFS critical (device dm-3):     nr=2 devid=4 physical=1145176064
- BTRFS critical (device dm-3):     nr=3 devid=5 physical=1145176064
- BTRFS critical (device dm-3):     nr=4 devid=3 physical=1145176064
- BTRFS critical (device dm-3): rbio flags=0x0 nr_sectors=80 nr_data=4 real_stripes=5 stripe_nsectors=16 scrubp=0 dbitmap=0x0
- BTRFS critical (device dm-3): logical=4598530048
- assertion failed: orig_logical >= full_stripe_start && orig_logical + orig_len <= full_stripe_start + rbio->nr_data * BTRFS_STRIPE_LEN, in fs/btrfs/raid56.c:1702
- ------------[ cut here ]------------
+Nop, it has nothing to do with not being buffered IO.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/raid56.c | 113 ++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 100 insertions(+), 13 deletions(-)
----
-Changelog:
-v2:
-- Move btrfs_dump_bioc() to raid56.c and remove the "btrfs_" prefix.
-- Use parentheses to protect macro parameters
-- Add back the accidentally removed assert on @sector_nr inside
-  rbio_add_io_sector()
-- Use btrfs_crit() to output the error messages
-  For the rare case where rbio->bioc is not yet set, use NULL for
-  fs_info which is supported for a long time.
+So what happens in this particular error path is that on error we call
+btrfs_finish_ordered_extent() with "uptodate" false.
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 6f4a9cfeea44..7444faa4b165 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -40,6 +40,88 @@
- 
- #define BTRFS_STRIPE_HASH_TABLE_BITS				11
- 
-+static void dump_bioc(struct btrfs_fs_info *fs_info,
-+		      const struct btrfs_io_context *bioc)
-+{
-+	if (unlikely(!bioc)) {
-+		btrfs_crit(fs_info, "bioc=NULL");
-+		return;
-+	}
-+	btrfs_crit(fs_info,
-+		"bioc logical=%llu full_stripe=%llu size=%llu map_type=0x%llx mirror=%u replace_nr_stripes=%u replace_stripe_src=%d num_stripes=%u",
-+		bioc->logical, bioc->full_stripe_logical, bioc->size,
-+		bioc->map_type, bioc->mirror_num, bioc->replace_nr_stripes,
-+		bioc->replace_stripe_src, bioc->num_stripes);
-+	for (int i = 0; i < bioc->num_stripes; i++) {
-+		btrfs_crit(fs_info,
-+			"    nr=%d devid=%llu physical=%llu",
-+			i, bioc->stripes[i].dev->devid,
-+			bioc->stripes[i].physical);
-+	}
-+}
-+
-+static void btrfs_dump_rbio(struct btrfs_fs_info *fs_info,
-+			    const struct btrfs_raid_bio *rbio)
-+{
-+	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
-+		return;
-+
-+	dump_bioc(fs_info, rbio->bioc);
-+	btrfs_crit(fs_info,
-+"rbio flags=0x%lx nr_sectors=%u nr_data=%u real_stripes=%u stripe_nsectors=%u scrubp=%u dbitmap=0x%lx",
-+		rbio->flags, rbio->nr_sectors, rbio->nr_data,
-+		rbio->real_stripes, rbio->stripe_nsectors,
-+		rbio->scrubp, rbio->dbitmap);
-+}
-+
-+#define ASSERT_RBIO(expr, rbio)						\
-+({									\
-+	if (IS_ENABLED(CONFIG_BTRFS_ASSERT) && unlikely(!(expr))) {	\
-+		struct btrfs_fs_info *fs_info = (rbio)->bioc ?		\
-+					(rbio)->bioc->fs_info : NULL;	\
-+									\
-+		btrfs_dump_rbio(fs_info, (rbio));			\
-+	}								\
-+	ASSERT((expr));							\
-+})
-+
-+#define ASSERT_RBIO_STRIPE(expr, rbio, stripe_nr)			\
-+({									\
-+	if (IS_ENABLED(CONFIG_BTRFS_ASSERT) && unlikely(!(expr))) {	\
-+		struct btrfs_fs_info *fs_info = (rbio)->bioc ?		\
-+					(rbio)->bioc->fs_info : NULL;	\
-+									\
-+		btrfs_dump_rbio(fs_info, (rbio));			\
-+		btrfs_crit(fs_info, "stripe_nr=%d", (stripe_nr));	\
-+	}								\
-+	ASSERT((expr));							\
-+})
-+
-+#define ASSERT_RBIO_SECTOR(expr, rbio, sector_nr)			\
-+({									\
-+	if (IS_ENABLED(CONFIG_BTRFS_ASSERT) && unlikely(!(expr))) {	\
-+		struct btrfs_fs_info *fs_info = (rbio)->bioc ?		\
-+					(rbio)->bioc->fs_info : NULL;	\
-+									\
-+		btrfs_dump_rbio(fs_info, (rbio));			\
-+		btrfs_crit(fs_info, "sector_nr=%d", (sector_nr));	\
-+	}								\
-+	ASSERT((expr));							\
-+})
-+
-+#define ASSERT_RBIO_LOGICAL(expr, rbio, logical)			\
-+({									\
-+	if (IS_ENABLED(CONFIG_BTRFS_ASSERT) && unlikely(!(expr))) {	\
-+		struct btrfs_fs_info *fs_info = (rbio)->bioc ?		\
-+					(rbio)->bioc->fs_info : NULL;	\
-+									\
-+		btrfs_dump_rbio(fs_info, (rbio));			\
-+		btrfs_crit(fs_info, "logical=%llu", (logical));		\
-+	}								\
-+	ASSERT((expr));							\
-+})
-+
-+
- /* Used by the raid56 code to lock stripes for read/modify/write */
- struct btrfs_stripe_hash {
- 	struct list_head hash_list;
-@@ -593,8 +675,8 @@ static unsigned int rbio_stripe_sector_index(const struct btrfs_raid_bio *rbio,
- 					     unsigned int stripe_nr,
- 					     unsigned int sector_nr)
- {
--	ASSERT(stripe_nr < rbio->real_stripes);
--	ASSERT(sector_nr < rbio->stripe_nsectors);
-+	ASSERT_RBIO_STRIPE(stripe_nr < rbio->real_stripes, rbio, stripe_nr);
-+	ASSERT_RBIO_SECTOR(sector_nr < rbio->stripe_nsectors, rbio, sector_nr);
- 
- 	return stripe_nr * rbio->stripe_nsectors + sector_nr;
- }
-@@ -874,8 +956,10 @@ static struct sector_ptr *sector_in_rbio(struct btrfs_raid_bio *rbio,
- 	struct sector_ptr *sector;
- 	int index;
- 
--	ASSERT(stripe_nr >= 0 && stripe_nr < rbio->real_stripes);
--	ASSERT(sector_nr >= 0 && sector_nr < rbio->stripe_nsectors);
-+	ASSERT_RBIO_STRIPE(stripe_nr >= 0 && stripe_nr < rbio->real_stripes,
-+			   rbio, stripe_nr);
-+	ASSERT_RBIO_SECTOR(sector_nr >= 0 && sector_nr < rbio->stripe_nsectors,
-+			   rbio, sector_nr);
- 
- 	index = stripe_nr * rbio->stripe_nsectors + sector_nr;
- 	ASSERT(index >= 0 && index < rbio->nr_sectors);
-@@ -1058,8 +1142,10 @@ static int rbio_add_io_sector(struct btrfs_raid_bio *rbio,
- 	 * thus it can be larger than rbio->real_stripe.
- 	 * So here we check against bioc->num_stripes, not rbio->real_stripes.
- 	 */
--	ASSERT(stripe_nr >= 0 && stripe_nr < rbio->bioc->num_stripes);
--	ASSERT(sector_nr >= 0 && sector_nr < rbio->stripe_nsectors);
-+	ASSERT_RBIO_STRIPE(stripe_nr >= 0 && stripe_nr < rbio->bioc->num_stripes,
-+			   rbio, stripe_nr);
-+	ASSERT_RBIO_SECTOR(sector_nr >= 0 && sector_nr < rbio->stripe_nsectors,
-+			   rbio, sector_nr);
- 	ASSERT(sector->page);
- 
- 	stripe = &rbio->bioc->stripes[stripe_nr];
-@@ -1198,14 +1284,14 @@ static void assert_rbio(struct btrfs_raid_bio *rbio)
- 	 * At least two stripes (2 disks RAID5), and since real_stripes is U8,
- 	 * we won't go beyond 256 disks anyway.
- 	 */
--	ASSERT(rbio->real_stripes >= 2);
--	ASSERT(rbio->nr_data > 0);
-+	ASSERT_RBIO(rbio->real_stripes >= 2, rbio);
-+	ASSERT_RBIO(rbio->nr_data > 0, rbio);
- 
- 	/*
- 	 * This is another check to make sure nr data stripes is smaller
- 	 * than total stripes.
- 	 */
--	ASSERT(rbio->nr_data < rbio->real_stripes);
-+	ASSERT_RBIO(rbio->nr_data < rbio->real_stripes, rbio);
- }
- 
- /* Generate PQ for one vertical stripe. */
-@@ -1642,9 +1728,10 @@ static void rbio_add_bio(struct btrfs_raid_bio *rbio, struct bio *orig_bio)
- 	const u32 sectorsize = fs_info->sectorsize;
- 	u64 cur_logical;
- 
--	ASSERT(orig_logical >= full_stripe_start &&
-+	ASSERT_RBIO_LOGICAL(orig_logical >= full_stripe_start &&
- 	       orig_logical + orig_len <= full_stripe_start +
--	       rbio->nr_data * BTRFS_STRIPE_LEN);
-+	       rbio->nr_data * BTRFS_STRIPE_LEN,
-+	       rbio, orig_logical);
- 
- 	bio_list_add(&rbio->bio_list, orig_bio);
- 	rbio->bio_list_bytes += orig_bio->bi_iter.bi_size;
-@@ -2390,7 +2477,7 @@ struct btrfs_raid_bio *raid56_parity_alloc_scrub_rbio(struct bio *bio,
- 			break;
- 		}
- 	}
--	ASSERT(i < rbio->real_stripes);
-+	ASSERT_RBIO_STRIPE(i < rbio->real_stripes, rbio, i);
- 
- 	bitmap_copy(&rbio->dbitmap, dbitmap, stripe_nsectors);
- 	return rbio;
-@@ -2556,7 +2643,7 @@ static int finish_parity_scrub(struct btrfs_raid_bio *rbio)
- 	 * Replace is running and our parity stripe needs to be duplicated to
- 	 * the target device.  Check we have a valid source stripe number.
- 	 */
--	ASSERT(rbio->bioc->replace_stripe_src >= 0);
-+	ASSERT_RBIO(rbio->bioc->replace_stripe_src >= 0, rbio);
- 	for_each_set_bit(sectornr, pbitmap, rbio->stripe_nsectors) {
- 		struct sector_ptr *sector;
- 
--- 
-2.45.0
+This sets the IO_ERR flag on the ordered extent and then queues the
+ordered extent completion,
+which results in executing btrfs_finish_one_ordered() in a work queue.
 
+There we check the error flag on the ordered extent, and in fact we
+drop extent maps in range - exactly what this patch is doing.
+
+The problem is that once we unlock the inode in the dio write path,
+another task can call fsync.
+
+If the fsync is a "fast fsync", it does not wait for ordered extents
+to complete before going over new extent maps.
+So if the work queue job only finishes after the fsync logs extent
+maps, we get the corruption - a log tree with file extent items
+pointing to unwritten extents.
+
+For the read path this doesn't happen.
+
+Because for reads, when they start we lock the extent range and wait
+for any ordered extents in the range to complete (we call
+btrfs_lock_and_flush_ordered_range()),
+which will result in dropping the extent maps in the range when the
+ordered extents complete.
+
+These are probably a lot of non-obvious details.
+So I'll send a v2 with these details in the changelog and comment.
+
+I also noticed there's at least one more error path with the same
+problem, so I'll move the call to drop extent maps to
+btrfs_finish_ordered_extent().
+
+I'm giving a full fstests run with that updated version and sending it
+out later.
+
+Thanks.
+
+
+>
+> Thanks,
+> Qu
+> > +                     if (!test_bit(BTRFS_ORDERED_NOCOW, &oe->flags)) {
+> > +                             const u64 start =3D oe->file_offset;
+> > +                             const u64 end =3D start + oe->num_bytes -=
+ 1;
+> > +
+> > +                             btrfs_drop_extent_map_range(bbio->inode, =
+start, end, false);
+> > +                     }
+> > +
+> > +                     btrfs_finish_ordered_extent(oe, NULL,
+> >                                                   file_offset, dip->byt=
+es,
+> >                                                   !ret);
+> >                       bio->bi_status =3D errno_to_blk_status(ret);
 
