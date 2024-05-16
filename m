@@ -1,110 +1,175 @@
-Return-Path: <linux-btrfs+bounces-5047-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5048-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B6F28C797E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2024 17:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3C3E8C798B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2024 17:32:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1D7F1F21E11
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2024 15:29:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DCF51F23BFC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2024 15:32:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B51F14E2DF;
-	Thu, 16 May 2024 15:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6E114D6FC;
+	Thu, 16 May 2024 15:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DyYHz0JY"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LkWEIgTn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3mQ5IpWH";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LkWEIgTn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3mQ5IpWH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771E014E2CB
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2024 15:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8840814884E;
+	Thu, 16 May 2024 15:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715873319; cv=none; b=rs7e3MbYPa0PXqC6P1jlHSjxaVkSdaHMIrXiZfrBLKdoFr44WIwVTWNDRGZQCCb9S5hdyYMGgEOZbvwXhBwVZ1jaUOWN/YVX724uBrCi6pTJHuTFpOzDpITg3jF7ttTyDmqH17j2Py/wjFO+f89wA4FPcOR/Vg5Qbmkb3xIG850=
+	t=1715873530; cv=none; b=pXV/hlSu08W3WR+ruuon4MSSti91oC62T3JsuixOFOLTyQKgil1Or8mO1YTwgXyX/j90HOqOUmgZCLlfn57sH0EuvbCAGs0qOJ7Ks3TfWZEdTnQUy3NToU2UdkwmLMUQaSVn26Svne8dWn5L8evd+UUBKVfDnUS9foZ37TyrkbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715873319; c=relaxed/simple;
-	bh=/pVNjv5or8dDAQgrN2LommAl5yCHdzkdpk299J3kpdk=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=kNgrsQSECT7tfAqLwObWq+1ONDGKa8m8NkTP0DwOxfd7hBIcUZ+H0PyZ7fD9CmVuM7+tbRB1vX5x2slThX0RVj7Q23sAdceRNrvD0g5tj2sXNxbU3UjWys2FHiSNgBmTd3lbzGe0bDSfpjBGP03U9TBa3t4c9Guez7DQS/jEfB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DyYHz0JY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0640C113CC
-	for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2024 15:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715873319;
-	bh=/pVNjv5or8dDAQgrN2LommAl5yCHdzkdpk299J3kpdk=;
-	h=From:To:Subject:Date:From;
-	b=DyYHz0JYu711UqLmlxrQOrt1ONCB+sVHGRNVJP3nwk3r9lqPfv+b3Ul9DI5QmNoob
-	 uhozZqcVPEi1jxfQ6QAvNi8+Pjdjiocw8T11MGwmgyrGlQz6cAoliL0RFWXXDpN47n
-	 NNxRBJiNEx+UOZs+F8w6MHB/LACYXyZxi/J+L88OuRwtTcou2XvYk+yDOzVPvt1xJM
-	 1naP+4MmMC2xdwgEfpH5btY/pFdtOZ/vQqeWRBTUbjm9jVmlWzfszAjvQcX3iCkbLl
-	 6HiD+B0Efk/2+JNRCoYM5vH8UE7e6A1SgLCn7L62I2rTb1wYod0oQXYW7wPgiPRiuG
-	 70GYGIfkt4CPg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: always set an inode's delayed_inode with WRITE_ONCE()
-Date: Thu, 16 May 2024 16:28:35 +0100
-Message-Id: <a4dfaf8ca94754560f4d9196b04ba763256124ce.1715873248.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1715873530; c=relaxed/simple;
+	bh=kQyRGHwFV9EB0D1MNdKQ04WmVe+yF6Troh3WRIVi2SI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yf0KqRfqLgtVxGfa/syxHDLsXLXJKFTU9fHnh80c8AkzZMzDXCfEzrcBtuHNX16QFebGmqTzqPvs9zE5H8rbEJXBbWsumrsm2LW3wRRoH9qjqTWJk8mxtarki3K1l2pIsHiOiR4dRbCMv2j/jEBafD2SrLqtwkRLaIzfVU4isMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LkWEIgTn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3mQ5IpWH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LkWEIgTn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3mQ5IpWH; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 754BE34439;
+	Thu, 16 May 2024 15:32:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1715873526;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VhU2JclVgo+abpYV6ZYar66kfkQ1msvfEKBsfACUK8U=;
+	b=LkWEIgTn3sbChPgzra2zO5CrjIi+VzynFj6Zalv2SuHU+hzv3lwkc8UP0d8YplIYOLsNz2
+	7ad0LRVeC8oi8qTz44QIs8uI6uUPezeN56lOW/tw96NEa0qQnm9/TKnc3QicHYfDw/2Zeu
+	QCN52+ps0a7b4ZlzyXwTxydMntpIb5k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1715873526;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VhU2JclVgo+abpYV6ZYar66kfkQ1msvfEKBsfACUK8U=;
+	b=3mQ5IpWHXcw6nlwPUiEaCt22wAv7aMRElj3peGAsu9JDBEo8CXRJvMGSgRJ4Pxyb5mypRW
+	v4Gw2dBBeX4FeMAQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LkWEIgTn;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=3mQ5IpWH
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1715873526;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VhU2JclVgo+abpYV6ZYar66kfkQ1msvfEKBsfACUK8U=;
+	b=LkWEIgTn3sbChPgzra2zO5CrjIi+VzynFj6Zalv2SuHU+hzv3lwkc8UP0d8YplIYOLsNz2
+	7ad0LRVeC8oi8qTz44QIs8uI6uUPezeN56lOW/tw96NEa0qQnm9/TKnc3QicHYfDw/2Zeu
+	QCN52+ps0a7b4ZlzyXwTxydMntpIb5k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1715873526;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VhU2JclVgo+abpYV6ZYar66kfkQ1msvfEKBsfACUK8U=;
+	b=3mQ5IpWHXcw6nlwPUiEaCt22wAv7aMRElj3peGAsu9JDBEo8CXRJvMGSgRJ4Pxyb5mypRW
+	v4Gw2dBBeX4FeMAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5850613991;
+	Thu, 16 May 2024 15:32:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 35pgFfYmRma0BgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 16 May 2024 15:32:06 +0000
+Date: Thu, 16 May 2024 17:32:00 +0200
+From: David Sterba <dsterba@suse.cz>
+To: syzbot <syzbot+d56e0d33caf7d1a02821@syzkaller.appspotmail.com>
+Cc: clm@fb.com, dsterba@suse.com, fdmanana@suse.com,
+	johannes.thumshirn@wdc.com, josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] kernel BUG in create_pending_snapshot
+Message-ID: <20240516153200.GD4449@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <0000000000006cb13705ee3184f9@google.com>
+ <000000000000a8f4b30608b0be9c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000a8f4b30608b0be9c@google.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.51 / 50.00];
+	BAYES_HAM(-1.80)[93.83%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=5ea620bd01d9130d];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[d56e0d33caf7d1a02821];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Queue-Id: 754BE34439
+X-Spam-Flag: NO
+X-Spam-Score: -0.51
+X-Spamd-Bar: /
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Oct 27, 2023 at 04:11:06AM -0700, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit df9f278239046719c91aeb59ec0afb1a99ee8b2b
+> Author: Filipe Manana <fdmanana@suse.com>
+> Date:   Tue Jun 13 15:42:16 2023 +0000
+> 
+>     btrfs: do not BUG_ON on failure to get dir index for new snapshot
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1584c385680000
+> start commit:   0136d86b7852 Merge tag 'block-6.2-2023-02-03' of git://git..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5ea620bd01d9130d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d56e0d33caf7d1a02821
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14657573480000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16dd145d480000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+> 
+> #syz fix: btrfs: do not BUG_ON on failure to get dir index for new snapshot
 
-Currently we have a couple places using READ_ONCE() to access an inode's
-delayed_inode without taking the lock that protects the xarray for delayed
-inodes, while all the other places access it while holding the lock.
+Yes, that's correct.
 
-However we never update the delayed_inode pointer of an inode with
-WRITE_ONCE(), making the use of READ_ONCE() pointless since it should
-always be paired with a WRITE_ONCE() in order to protect against issues
-such as write tearing for example.
-
-So change all the places that update struct btrfs_inode::delayed_inode to
-use WRITE_ONCE() instead of simple assignments.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/delayed-inode.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 483c141dc488..6df7e44d9d31 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -106,7 +106,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
- 		 */
- 		if (refcount_inc_not_zero(&node->refs)) {
- 			refcount_inc(&node->refs);
--			btrfs_inode->delayed_node = node;
-+			WRITE_ONCE(btrfs_inode->delayed_node, node);
- 		} else {
- 			node = NULL;
- 		}
-@@ -161,7 +161,7 @@ static struct btrfs_delayed_node *btrfs_get_or_create_delayed_node(
- 	ASSERT(xa_err(ptr) != -EINVAL);
- 	ASSERT(xa_err(ptr) != -ENOMEM);
- 	ASSERT(ptr == NULL);
--	btrfs_inode->delayed_node = node;
-+	WRITE_ONCE(btrfs_inode->delayed_node, node);
- 	xa_unlock(&root->delayed_nodes);
- 
- 	return node;
-@@ -1312,7 +1312,7 @@ void btrfs_remove_delayed_node(struct btrfs_inode *inode)
- 	if (!delayed_node)
- 		return;
- 
--	inode->delayed_node = NULL;
-+	WRITE_ONCE(inode->delayed_node, NULL);
- 	btrfs_release_delayed_node(delayed_node);
- }
- 
--- 
-2.43.0
-
+#syz fix: btrfs: do not BUG_ON on failure to get dir index for new snapshot
 
