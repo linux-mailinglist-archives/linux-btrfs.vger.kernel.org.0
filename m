@@ -1,111 +1,102 @@
-Return-Path: <linux-btrfs+bounces-5076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5077-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B02988C8A5C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 18:52:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 711948C8A61
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 18:55:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 675091F233B2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 16:52:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A219D1C208CF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 16:55:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B07513DB8D;
-	Fri, 17 May 2024 16:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEEE13D8B0;
+	Fri, 17 May 2024 16:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uGgQiiLI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f3Du8hWR"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D3813D8B6
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 16:52:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B1A13D888
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 16:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715964763; cv=none; b=UCOdmVLj4CuGTLxqH2pHVoceeT/cqJE57PIFUOrWSF+8aBUKpDm+w0Ru4XqKO7C9JXhofJwa5J8wfyj7mMdhnT82UAcrYmxWJBXjBY3xrnKyoIprkWhNaRNd0ZRsPUIfayLizMgnnTKFY0RdI3ks0el38AG+gmMpnNR7Talnk0g=
+	t=1715964923; cv=none; b=NVVUPN4o0wmM2ki92KpwJym4zcDjDS4pEVScm8y/xxQLBwAOj8EMrTpsfbJgiW3cPNxP7ELesDh4CayQ8KICwYLqtwEmPsFJsqZ9oAwPX9KiUx8z3INr0waihzqomeJSd8P0jLANiOKFj856Eye/ehQmjRA/RrVH2ARaQEpVAnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715964763; c=relaxed/simple;
-	bh=giaF07HsS/o92Sx8QlESt03wiFeVuvpcaqG+P8qleA0=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JH8/6JYamzmarIUY7gzPbHg8pc6U9NnimRpdhV8vORfakaXlnK1XZ9/Wc17IPDDFWL8b6aAspvtwZEGdH4I2C6WRPhM6xDhDJFEMZ/BKfYbLHzxsnjog+3JSntEo1b7diDtVgdolB5DRAFSLSZCwAWRd37bDTT5Gg/RxIZHQRGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uGgQiiLI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90361C32781
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 16:52:42 +0000 (UTC)
+	s=arc-20240116; t=1715964923; c=relaxed/simple;
+	bh=/Woq4x3iShveBG5I3XnQFkikS15oN02vrdObi6hmow8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LvGdDwGj8qoj+KBjev5CkxTLU4G942axqTQ2qCbAtd3BtkoV492ByevRjAgu2WX6sNWkZLoBI+t3F3XZlPPSmtINJNOV48T1UTtLjqFuiXReasv58fJ7+jIL+hZukzG1aoNwtafPwjodS4hq1R5TTkVdHBV/dlkU/2PlqA4MGQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f3Du8hWR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D75C2BD10
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 16:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715964763;
-	bh=giaF07HsS/o92Sx8QlESt03wiFeVuvpcaqG+P8qleA0=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=uGgQiiLIV3KWqLtdaH1g1GuDcEokLU1l25DvaMiIucsyJHbCLqAX25GxobxIKagTk
-	 FQHYV3J2bSSanFtBGduC43wsBn1jjMYjx6GoPGxJYIiH68cawCEVt/tlRIAFJdkhxZ
-	 ispbjJrRIOCjLvdoZiQFS1vzIgVS52r0exCSGGTWlBDERm5utBPco3J+eznBY1frz1
-	 y95oXbsFzlKt3GFbK/o2+AuDEYmqWQaYjOFE0cDhKovO6tHYmpfalAF/0SbaHDHkJn
-	 TV9o8a5si4pSL3mAZKwynaL9n7+LVtU/XaMrUtpwOgf49H8hNspvlYFGhyoMWUbhv9
-	 kI4nwXujuPldg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 2/2] btrfs: make btrfs_finish_ordered_extent() return void
-Date: Fri, 17 May 2024 17:52:38 +0100
-Message-Id: <c0f00d4779410f4f4096fcc006beec8b23d15fa2.1715964570.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1715964570.git.fdmanana@suse.com>
-References: <cover.1715964570.git.fdmanana@suse.com>
+	s=k20201202; t=1715964922;
+	bh=/Woq4x3iShveBG5I3XnQFkikS15oN02vrdObi6hmow8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=f3Du8hWRQ3kqWD+ZJYpMs+EYJ4fbMKjHWc8BxbSdsfgsq4voB/CHvb4OMZT8FB4kz
+	 VXlNA2h4UuxSgbsQ8EsI9a/IZQZHk0Y5ImCqxld9r7vRxMgXufX73hPMKGRuvuXdRY
+	 GGJPKkojpprC5CmmIyKXx54K6ra3YiQWiguv0Q5TOchFPnZoZS70ow37A2a4skbcCx
+	 nosQ7HCNew35TElq7s5SLGp49y54/NmFSBsOjnbdtgmP4o5/61MnskyEzXtH0wsba+
+	 7Gjz2r7prJklYDfNKo1vHLXZsvv0mRighJW7j8U4j1e6P6GAGyfBQzVMHefKI1GmIr
+	 zg+68M3nEG5zw==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5210684cee6so1131237e87.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 09:55:22 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwVxRKtVfAjtJmAipP+ANMXOnQBjmrZtTVD1TR66DoOxWasy7ne
+	dUd+njiJLTsVYlORg+A5vi1wtrc1Hg7UH0cBtJqTGoGxOTMXKgAi07EjaMEDr6pUIu+ot+mcx/H
+	RmzunLXA+iuD5KnB9HyiQ4UcIPPU=
+X-Google-Smtp-Source: AGHT+IF5Q3XGgwfZYdPEFcRRzVvQI7bHTg1wesmShFrnRElWwXyXKr0zAtLBNrRkz/BzkjFvHE45AbjlrBGMJvGd3fU=
+X-Received: by 2002:a05:6512:ac9:b0:51d:a78e:9036 with SMTP id
+ 2adb3069b0e04-522100691e3mr16580088e87.69.1715964920773; Fri, 17 May 2024
+ 09:55:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1715798440.git.fdmanana@suse.com> <20240517162854.GE17126@twin.jikos.cz>
+In-Reply-To: <20240517162854.GE17126@twin.jikos.cz>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 17 May 2024 17:54:43 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4zmyxwdXTEz5iWHxC+RSZQng+8TtazbdvYj9odbq2vcg@mail.gmail.com>
+Message-ID: <CAL3q7H4zmyxwdXTEz5iWHxC+RSZQng+8TtazbdvYj9odbq2vcg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] btrfs: fix a bug in the direct IO write path for
+ COW writes
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, May 17, 2024 at 5:29=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Wed, May 15, 2024 at 07:51:45PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Fix a bug in an error path for direct IO writes in COW mode, which can =
+make
+> > a subsequent fsync log invalid extent items (pointing to unwritten data=
+).
+> > The second patch is just a cleanup. Details in the change logs.
+> >
+> > V2: Rework solution since other error paths caused the same problem, ma=
+ke
+> >     it more generic.
+> >     Added more details to change log and comment about what's going on,
+> >     and why reads aren't affected.
+> >
+> > Filipe Manana (2):
+> >   btrfs: immediately drop extent maps after failed COW write
+> >   btrfs: make btrfs_finish_ordered_extent() return void
+>
+> For the record, patches have been removed from for-next as the new code
+> does NOFS allocation in irq context (reproduced by btrfs/146 and
+> btrfs/160).
 
-Currently btrfs_finish_ordered_extent() returns a boolean indicating if
-the ordered extent was added to the work queue for completion, but none
-of its callers cares about it, so make it return void.
+Superseded by:
+https://lore.kernel.org/linux-btrfs/cover.1715964570.git.fdmanana@suse.com/
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ordered-data.c | 3 +--
- fs/btrfs/ordered-data.h | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 55a9aeed7344..adc274605776 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -374,7 +374,7 @@ static void btrfs_queue_ordered_fn(struct btrfs_ordered_extent *ordered)
- 	btrfs_queue_work(wq, &ordered->work);
- }
- 
--bool btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
-+void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- 				 struct page *page, u64 file_offset, u64 len,
- 				 bool uptodate)
- {
-@@ -421,7 +421,6 @@ bool btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- 
- 	if (ret)
- 		btrfs_queue_ordered_fn(ordered);
--	return ret;
- }
- 
- /*
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index b6f6c6b91732..bef22179e7c5 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -162,7 +162,7 @@ int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered_extent);
- void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry);
- void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 				struct btrfs_ordered_extent *entry);
--bool btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
-+void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- 				 struct page *page, u64 file_offset, u64 len,
- 				 bool uptodate);
- void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
--- 
-2.43.0
-
+>
 
