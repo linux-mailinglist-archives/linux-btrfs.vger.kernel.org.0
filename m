@@ -1,174 +1,157 @@
-Return-Path: <linux-btrfs+bounces-5066-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5067-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC3D8C8700
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 15:13:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39E3B8C8707
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 15:15:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D83A1C222FD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 13:13:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD2DF1F21C5E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 13:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9395D548F7;
-	Fri, 17 May 2024 13:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D5052F6D;
+	Fri, 17 May 2024 13:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yb82baev"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P0V6wftd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C4C5467E
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 13:13:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C4D51004
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 13:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715951612; cv=none; b=j6ZZz1/78DorSdcqGuYTHgdZ+LYNgks961rQ2NEeHM7QZuiUMZItdnRWDBN9evdmedMxbfEcUvoVtolJZGOke4cu8BHssQETgyv3PVlNjK1AiRWKi2S+Xae/7jE0tzWyaL6a9oaM2U4Y91wZst0BXMlBJE2Y+vVfCpk/VTP/aPc=
+	t=1715951713; cv=none; b=rwzSedZzLQ2cisLpfE27c/XZQSd/LcAV/AVjaGgNw2qH/Yp1Arjvia/YoJfL/iq7IcCQ2CIo4VvMItoiiXcInV7J4wB/danKzwvBD9RWIQmSZ3Sw1dt5tbqHQvY+65TNw9ZOVbRsjTpFOMmJFxvKxwud024MswQToOKxDR30wdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715951612; c=relaxed/simple;
-	bh=5Y/XJGuWUZ3ffvanv4EPqlrl0qsYWAepHNmCuqQq+2U=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JNhEmCM77jBP/yIDeyyrNXATtYk+4YIGL0PaNWE6VXL1dQkLpuHO8Te6HhZONQjh94hnfmaHnuqhXCnB//u4EcKzgQou61RGLymXHNaL2ovkTIqnFC6xM1lhOo+R4tftYmCJbmcGu3GQp5J3ZADXNX33ZN5yZbEoPa/vSMSJ85Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yb82baev; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7D6C32789
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 13:13:31 +0000 (UTC)
+	s=arc-20240116; t=1715951713; c=relaxed/simple;
+	bh=pdrOV5ljP0tTJUMHqAnxcHj46EyqxdwHcfFrRy9CAvo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QK173sg1/v3MteSrdKubdwWR4T3DQ9LMKhg7f9uWFN/KcUQBRDSYZgwaQbszdJ8O9qGhKJBBOeSngJXYUe1TMMsFfdAqb0RIzgAKT0jUxHHoKudkF/GMEezjX12dYIsI6qKH3iOWnOQ3+Oo4T5u5ssb1XTycg4du1G8j0r3cuMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P0V6wftd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E0D8C2BD11
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 13:15:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715951612;
-	bh=5Y/XJGuWUZ3ffvanv4EPqlrl0qsYWAepHNmCuqQq+2U=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Yb82baevlqCSfHVg0aKbvhVR37TwuMP0E3ViWXZAzWkdt+U/mowLi8qgFsdu+l8rC
-	 hM3wQvJIHq+eq/6mtnQNR8Ip7j0Uc3sK0wrvnIpykOaF3TENzneBT/K1U3Lz1TOnZW
-	 4BxWn8gwgk3kXtLzWm/6dO2dE8hCIhEMxImWSgaQTr+TGYRhVbaVWzRIUbjZfHq6Xd
-	 qVmaB3PDGgwubQeaLHtrXPY3dN5yGaMpZk3D8jySxdTQqvUyMvu8VIQY8NbHua8luc
-	 Q1L3qNen7norcjuN1VlRANcr3kxr7NHV1Id06g3h4fdgeq4uGnZFhTk9KguiouLuGo
-	 ydIjb17sXhWJw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: add and use helpers to get and set an inode's delayed_node
-Date: Fri, 17 May 2024 14:13:26 +0100
-Message-Id: <48ccb776f018f79730fb9b9139623960401f9505.1715951291.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1715951291.git.fdmanana@suse.com>
-References: <cover.1715951291.git.fdmanana@suse.com>
+	s=k20201202; t=1715951713;
+	bh=pdrOV5ljP0tTJUMHqAnxcHj46EyqxdwHcfFrRy9CAvo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=P0V6wftdmCY+U0yASRYqYOb0lZjanKyAs3zoQEK4o5JIp96tU6Xm9zy1U3WvhpXSd
+	 M1CEAsO+aeQ25caXK548LkaXPU/seR5CFWmfevumv3hzb5ptQ1R97oAhlLJ8DiwIdu
+	 IltW7+/7tFyieLeoDR9+66hOP36kq8FsxtQquTB5qWQPe92fwfdHnIdkZLlP9vm7r2
+	 A0lGbRiRK5aFLIynIQFoL9RjV/6PVPDtsQKDnIojpowaVRwQXo/69T6GEU/VZFJWBo
+	 nZ+spVwIhCrlu3T1Yn5ryk+FMQRupc+74705AyszPXwQDtijZZrag1eSQJLwBjvAVs
+	 k5/ZTpbO/dxAA==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-574f7c0bab4so5447474a12.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 06:15:13 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yxkid/7eVDW/f3sHdeOJPjcMfHl/UkDNqzW1YYpL1vmnEMDW9oU
+	e4QV7Q6XuxvWHAG77BuFM42ynuHzZcjEPLvlrBsI4K21oLCzjYgtjGhnKnoxHU+8dHM+7wnm0A/
+	JZVDkZ6VoivndLeRtacR8cf4ODuw=
+X-Google-Smtp-Source: AGHT+IH2XZqT7zEura0MgI6eCW8jJ0c7BScVCJs2Q51/yqWHzK24/S/7aiSCVNIaC8FPynvHk2XSFdJw01309sNC2pM=
+X-Received: by 2002:a17:906:8315:b0:a59:c807:72d3 with SMTP id
+ a640c23a62f3a-a5a2d1ddfebmr1903302166b.17.1715951711968; Fri, 17 May 2024
+ 06:15:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <a4dfaf8ca94754560f4d9196b04ba763256124ce.1715873248.git.fdmanana@suse.com>
+ <dd41526a-c594-4a1f-b535-d7869882fe4d@gmx.com>
+In-Reply-To: <dd41526a-c594-4a1f-b535-d7869882fe4d@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 17 May 2024 14:14:34 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5JHmTsj8Go6x9u=KXR21qsbgh07TBAcc6zGRZv4S=rEQ@mail.gmail.com>
+Message-ID: <CAL3q7H5JHmTsj8Go6x9u=KXR21qsbgh07TBAcc6zGRZv4S=rEQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: always set an inode's delayed_inode with WRITE_ONCE()
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, May 17, 2024 at 12:17=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com>=
+ wrote:
+>
+>
+>
+> =E5=9C=A8 2024/5/17 00:58, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Currently we have a couple places using READ_ONCE() to access an inode'=
+s
+> > delayed_inode without taking the lock that protects the xarray for dela=
+yed
+> > inodes, while all the other places access it while holding the lock.
+> >
+> > However we never update the delayed_inode pointer of an inode with
+> > WRITE_ONCE(), making the use of READ_ONCE() pointless since it should
+> > always be paired with a WRITE_ONCE() in order to protect against issues
+> > such as write tearing for example.
+> >
+> > So change all the places that update struct btrfs_inode::delayed_inode =
+to
+> > use WRITE_ONCE() instead of simple assignments.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>
+> A quick search shows that we still have one call site not using READ_ONCE=
+():
+>
+> Inside btrfs_dirty_inode() of inode.c we have
+>
+>         btrfs_end_transaction(trans);
+>         if (inode->delayed_inode)
+>                 btrfs_balance_delayed_items(fs_info);
+>
+> I guess we should also use READ_ONCE() for it?
 
-When reading the delayed_node of an inode without taking the lock of the
-root->delayed_nodes we are using READ_ONCE(), and when updating it we are
-using WRITE_ONCE().
+Yep, however it may be harmless in that case I think, but still things
+like KCSAN are likely to detect and report a data race there.
+Just sent a patchset to cover that as well:
+https://lore.kernel.org/linux-btrfs/cover.1715951291.git.fdmanana@suse.com/
 
-Add and use helpers that hide the usage of READ_ONCE() and WRITE_ONCE(),
-like we do for other inode fields such as first_dir_index_to_log or the
-log_transid field of struct btrfs_root for example.
+Thanks.
 
-Also make use of the setter helper at btrfs_alloc_inode() for consistency
-only - it shouldn't be needed since when allocating an inode no one else
-can access it concurrently.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/btrfs_inode.h   | 12 ++++++++++++
- fs/btrfs/delayed-inode.c | 10 +++++-----
- fs/btrfs/inode.c         |  4 ++--
- 3 files changed, 19 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 4d9299789a03..3c8bc7a8ebdd 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -330,6 +330,18 @@ struct btrfs_inode {
- 	struct inode vfs_inode;
- };
- 
-+static inline struct btrfs_delayed_node *btrfs_get_inode_delayed_node(
-+					      const struct btrfs_inode *inode)
-+{
-+	return READ_ONCE(inode->delayed_node);
-+}
-+
-+static inline void btrfs_set_inode_delayed_node(struct btrfs_inode *inode,
-+						struct btrfs_delayed_node *node)
-+{
-+	WRITE_ONCE(inode->delayed_node, node);
-+}
-+
- static inline u64 btrfs_get_first_dir_index_to_log(const struct btrfs_inode *inode)
- {
- 	return READ_ONCE(inode->first_dir_index_to_log);
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 6df7e44d9d31..f2fe488665e8 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -71,7 +71,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
- 	u64 ino = btrfs_ino(btrfs_inode);
- 	struct btrfs_delayed_node *node;
- 
--	node = READ_ONCE(btrfs_inode->delayed_node);
-+	node = btrfs_get_inode_delayed_node(btrfs_inode);
- 	if (node) {
- 		refcount_inc(&node->refs);
- 		return node;
-@@ -106,7 +106,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed_node(
- 		 */
- 		if (refcount_inc_not_zero(&node->refs)) {
- 			refcount_inc(&node->refs);
--			WRITE_ONCE(btrfs_inode->delayed_node, node);
-+			btrfs_set_inode_delayed_node(btrfs_inode, node);
- 		} else {
- 			node = NULL;
- 		}
-@@ -161,7 +161,7 @@ static struct btrfs_delayed_node *btrfs_get_or_create_delayed_node(
- 	ASSERT(xa_err(ptr) != -EINVAL);
- 	ASSERT(xa_err(ptr) != -ENOMEM);
- 	ASSERT(ptr == NULL);
--	WRITE_ONCE(btrfs_inode->delayed_node, node);
-+	btrfs_set_inode_delayed_node(btrfs_inode, node);
- 	xa_unlock(&root->delayed_nodes);
- 
- 	return node;
-@@ -1308,11 +1308,11 @@ void btrfs_remove_delayed_node(struct btrfs_inode *inode)
- {
- 	struct btrfs_delayed_node *delayed_node;
- 
--	delayed_node = READ_ONCE(inode->delayed_node);
-+	delayed_node = btrfs_get_inode_delayed_node(inode);
- 	if (!delayed_node)
- 		return;
- 
--	WRITE_ONCE(inode->delayed_node, NULL);
-+	btrfs_set_inode_delayed_node(inode, NULL);
- 	btrfs_release_delayed_node(delayed_node);
- }
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 11cad22d7b4c..2f3129fe0e58 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6100,7 +6100,7 @@ static int btrfs_dirty_inode(struct btrfs_inode *inode)
- 		ret = btrfs_update_inode(trans, inode);
- 	}
- 	btrfs_end_transaction(trans);
--	if (READ_ONCE(inode->delayed_node))
-+	if (btrfs_get_inode_delayed_node(inode))
- 		btrfs_balance_delayed_items(fs_info);
- 
- 	return ret;
-@@ -8475,7 +8475,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	ei->prop_compress = BTRFS_COMPRESS_NONE;
- 	ei->defrag_compress = BTRFS_COMPRESS_NONE;
- 
--	ei->delayed_node = NULL;
-+	btrfs_set_inode_delayed_node(ei, NULL);
- 
- 	ei->i_otime_sec = 0;
- 	ei->i_otime_nsec = 0;
--- 
-2.43.0
-
+>
+> Thanks,
+> Qu
+>
+> > ---
+> >   fs/btrfs/delayed-inode.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> > index 483c141dc488..6df7e44d9d31 100644
+> > --- a/fs/btrfs/delayed-inode.c
+> > +++ b/fs/btrfs/delayed-inode.c
+> > @@ -106,7 +106,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed=
+_node(
+> >                */
+> >               if (refcount_inc_not_zero(&node->refs)) {
+> >                       refcount_inc(&node->refs);
+> > -                     btrfs_inode->delayed_node =3D node;
+> > +                     WRITE_ONCE(btrfs_inode->delayed_node, node);
+> >               } else {
+> >                       node =3D NULL;
+> >               }
+> > @@ -161,7 +161,7 @@ static struct btrfs_delayed_node *btrfs_get_or_crea=
+te_delayed_node(
+> >       ASSERT(xa_err(ptr) !=3D -EINVAL);
+> >       ASSERT(xa_err(ptr) !=3D -ENOMEM);
+> >       ASSERT(ptr =3D=3D NULL);
+> > -     btrfs_inode->delayed_node =3D node;
+> > +     WRITE_ONCE(btrfs_inode->delayed_node, node);
+> >       xa_unlock(&root->delayed_nodes);
+> >
+> >       return node;
+> > @@ -1312,7 +1312,7 @@ void btrfs_remove_delayed_node(struct btrfs_inode=
+ *inode)
+> >       if (!delayed_node)
+> >               return;
+> >
+> > -     inode->delayed_node =3D NULL;
+> > +     WRITE_ONCE(inode->delayed_node, NULL);
+> >       btrfs_release_delayed_node(delayed_node);
+> >   }
+> >
 
