@@ -1,101 +1,81 @@
-Return-Path: <linux-btrfs+bounces-5070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C848C89DD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 18:15:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFCA8C8A12
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 18:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03CC31C21767
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 16:15:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFF8F1F24C73
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 16:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B61D12FB07;
-	Fri, 17 May 2024 16:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7F2130A7C;
+	Fri, 17 May 2024 16:23:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Roh0k7Nx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="237GUIOl";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Roh0k7Nx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="237GUIOl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8J6rGhR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA92127471
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 16:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0225D3D9E;
+	Fri, 17 May 2024 16:23:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715962547; cv=none; b=lGHI/UzAH0g842B3MMhqTZKNZ4KIL1aestOspXHFXG6BEZBatG/MV7lQQ4ohakjzDUBAx0ebBJfFrxq9SVo9h750oGpQ/AQitY1GVLl+ITbhcQw6GA9mTpdeLHWfJ/pDK2QJ9YmO4dr8zsyldUfPjutLqknkV0drH2Rew0CSZPk=
+	t=1715962994; cv=none; b=JbzhVl9QqOrGn5aI3Lp2QNl3nFNFVGz2U9XaYDDV5FovgM5gKKZAXRXy1/SmO9pdi7wgxYf4Ybf2RQI7LH29HkUaLiMIMdWi2pliMj4nIRJ4+c9q0QjMzoq0sWfXOJpcHg7fErYP1NBGlj//ZNX4xSSk6r7glY0UKNAc0GOIo/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715962547; c=relaxed/simple;
-	bh=DUqJd5ccM8sqxUoLHguz4IP2qpUw7hDz2sSApKddb+c=;
+	s=arc-20240116; t=1715962994; c=relaxed/simple;
+	bh=uNwlZVn0k6bBYrUn2NOTbtyZjAe9hAwPUWGNLiaSzKs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RmwwxzR7m6qVDg4MMZsZt+M5QpUyhJdfvWLpYVIzS+ukfipvc/KxQo9G4TzpbiSSuQY4Hr9KQAsU+XaBSKL0GKJpeiFaM/wZIPzEbXvu2y/uSceCdrrdQ/5uLgNIUcusnLvehUMH/0lyto+56yCQPfMAeWKYGl1PDJVOK7u8Ddc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Roh0k7Nx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=237GUIOl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Roh0k7Nx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=237GUIOl; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A5F0D5D564;
-	Fri, 17 May 2024 16:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715962543;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UMizo+ZzAq43Bjs6XpV4EI8OzaQFSL5tQPvBmbHDlhk=;
-	b=Roh0k7NxKAvRpKS2bC43w3YM7/vfFXf/HZXOEBvQgjLytt61YsPyuiysmXuZurRi7YDGzF
-	iJjlcFoSA/PjkoORtVUM9zqXscLJ3pMiG0Tl3rd0cgQAkeAXiMED8mrMkqqL4NXaOJiJgp
-	SysYASBsg6i+Oi3ON/PcNuhA8ya/51Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715962543;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UMizo+ZzAq43Bjs6XpV4EI8OzaQFSL5tQPvBmbHDlhk=;
-	b=237GUIOlSO3JWK5n84nk9rB2NJJvKF8+jS2X9eiAvnivCNdL1wKyTOH9CUdKowcdpa/1t+
-	mWDE28m5X/cALlAw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Roh0k7Nx;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=237GUIOl
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715962543;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UMizo+ZzAq43Bjs6XpV4EI8OzaQFSL5tQPvBmbHDlhk=;
-	b=Roh0k7NxKAvRpKS2bC43w3YM7/vfFXf/HZXOEBvQgjLytt61YsPyuiysmXuZurRi7YDGzF
-	iJjlcFoSA/PjkoORtVUM9zqXscLJ3pMiG0Tl3rd0cgQAkeAXiMED8mrMkqqL4NXaOJiJgp
-	SysYASBsg6i+Oi3ON/PcNuhA8ya/51Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715962543;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UMizo+ZzAq43Bjs6XpV4EI8OzaQFSL5tQPvBmbHDlhk=;
-	b=237GUIOlSO3JWK5n84nk9rB2NJJvKF8+jS2X9eiAvnivCNdL1wKyTOH9CUdKowcdpa/1t+
-	mWDE28m5X/cALlAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 959D913942;
-	Fri, 17 May 2024 16:15:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id c01bJK+CR2a+dgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 17 May 2024 16:15:43 +0000
-Date: Fri, 17 May 2024 18:15:38 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs-progs: cmds/qgroup: enhance stale qgroups
- handling
-Message-ID: <20240517161538.GC17126@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1715245781.git.wqu@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MlIAnJvXoclx91HzV3KHgMAmzFsWWX7APIuqQKg6D8rdDfiO2lBWN8hNUnta8MkPvLMjbRrCzno9d+ey7uKWaxOu5yWMAIKuIS4yXd50yO6+ba4Jn3R+4XC21rSS0pTUnL9jV4xzW+y5gexohMQGsr+7nf1x4bn2gL2/M+fleQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8J6rGhR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70342C2BD10;
+	Fri, 17 May 2024 16:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715962993;
+	bh=uNwlZVn0k6bBYrUn2NOTbtyZjAe9hAwPUWGNLiaSzKs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F8J6rGhR6abMw+H3e0sNsBE3c0HR9drUMq7zelYKMTQHa0vv/MIG2W8+/hD/7XTI+
+	 9VkRoCKMyZzVY3LjQAv7zTKPKrfWjp+PaYpWL+HZIXKwJ9PpfHkWCOm8/AnprKJTiS
+	 x71fH3FEiRuBcJ7Snaffb4mCRWAYWAV32gCoEeO44TUBKDap7ZLHPJJXjD0QMTmCNO
+	 ZUj+MK/eDva4zMj4VegTwZ0y/H/lyuO2Nk/KqN8YnLbubwD8YFqugReL9OgeiAJUxc
+	 u0pTJlCPPo4/7T1+KTMYWfO14b9TwwHb+K7KeD4YmO6RNA3DpP+PsNxwbeXmOHuVhd
+	 +qE7xoo2PLRTA==
+Date: Fri, 17 May 2024 09:23:12 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+	freedreno@lists.freedesktop.org, virtualization@lists.linux.dev,
+	linux-rdma@vger.kernel.org, linux-pm@vger.kernel.org,
+	iommu@lists.linux.dev, linux-tegra@vger.kernel.org,
+	netdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+	ath11k@lists.infradead.org, ath12k@lists.infradead.org,
+	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+	linux-usb@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+	linux-cifs@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-edac@vger.kernel.org, selinux@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-hwmon@vger.kernel.org,
+	io-uring@vger.kernel.org, linux-sound@vger.kernel.org,
+	bpf@vger.kernel.org, linux-wpan@vger.kernel.org,
+	dev@openvswitch.org, linux-s390@vger.kernel.org,
+	tipc-discussion@lists.sourceforge.net,
+	Julia Lawall <Julia.Lawall@inria.fr>
+Subject: Re: [PATCH] tracing/treewide: Remove second parameter of
+ __assign_str()
+Message-ID: <20240517162312.GZ360919@frogsfrogsfrogs>
+References: <20240516133454.681ba6a0@rorschach.local.home>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -104,59 +84,61 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1715245781.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A5F0D5D564
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
+In-Reply-To: <20240516133454.681ba6a0@rorschach.local.home>
 
-On Thu, May 09, 2024 at 06:42:29PM +0930, Qu Wenruo wrote:
-> Currently the `<stale>` label is give incorrectly for a lot of qgroups
-> that can not and should not be deleted.
+On Thu, May 16, 2024 at 01:34:54PM -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> The patchset would address the problem for `btrfs qgroup show` and
-> `btrfs qgroup clear-stale` commands, so that:
+> [
+>    This is a treewide change. I will likely re-create this patch again in
+>    the second week of the merge window of v6.10 and submit it then. Hoping
+>    to keep the conflicts that it will cause to a minimum.
+> ]
 > 
-> - `clear-stale` would not try to delete incorrect qgroups
->   Thus it should not return false errors.
+> With the rework of how the __string() handles dynamic strings where it
+> saves off the source string in field in the helper structure[1], the
+> assignment of that value to the trace event field is stored in the helper
+> value and does not need to be passed in again.
 > 
-> - `show` would show extra types of qgroups
->   Including `<under deletion>` and `<squota space holder>`
+> This means that with:
 > 
-> Qu Wenruo (4):
->   btrfs-progs: cmds/qgroup: sync the fs before doing qgroup search
->   btrfs-progs: cmds/qgroup: add qgroup_lookup::flags member
->   btrfs-progs: cmds/qgroup: handle stale qgroup deleteion more
->     accurately
->   btrfs-progs: cmds/qgroup: add more special status for qgroups
+>   __string(field, mystring)
+> 
+> Which use to be assigned with __assign_str(field, mystring), no longer
+> needs the second parameter and it is unused. With this, __assign_str()
+> will now only get a single parameter.
+> 
+> There's over 700 users of __assign_str() and because coccinelle does not
+> handle the TRACE_EVENT() macro I ended up using the following sed script:
+> 
+>   git grep -l __assign_str | while read a ; do
+>       sed -e 's/\(__assign_str([^,]*[^ ,]\) *,[^;]*/\1)/' $a > /tmp/test-file;
+>       mv /tmp/test-file $a;
+>   done
+> 
+> I then searched for __assign_str() that did not end with ';' as those
+> were multi line assignments that the sed script above would fail to catch.
+> 
+> Note, the same updates will need to be done for:
+> 
+>   __assign_str_len()
+>   __assign_rel_str()
+>   __assign_rel_str_len()
+> 
+> I tested this with both an allmodconfig and an allyesconfig (build only for both).
+> 
+> [1] https://lore.kernel.org/linux-trace-kernel/20240222211442.634192653@goodmis.org/
+> 
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Julia Lawall <Julia.Lawall@inria.fr>
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Added to devel, thanks. Please use the subjects that match the style
-used in progs, ie. no 'cmds/' prefix.
+/me finds this pretty magical, but such is the way of macros.
+Thanks for being much smarter about them than me. :)
+
+Acked-by: Darrick J. Wong <djwong@kernel.org>	# xfs
+
+--D
 
