@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-5082-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5083-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 837D98C8E57
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2024 00:51:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 685948C8E59
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2024 00:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D44B283A13
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 22:51:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BBF01C21AD0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2024 22:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE18D2E84A;
-	Fri, 17 May 2024 22:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF15383B1;
+	Fri, 17 May 2024 22:52:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dXwoUc5M"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mi0LcwWM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E296A94A
-	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 22:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C27C38F86
+	for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2024 22:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715986308; cv=none; b=Rm72kiAxvXEpugtUgbADA9OXxLv6cvU3BtrFYvpSbY+qCwonHhJ3i082unuMnP1ab9N7OXRCpFXGIhGI4sLbSbbVahh7pV4nUJHV+Y+TgZI8YEgpcbKKpuGUdmiXUS6l413r+9pruQcK02eHzClhuEwNfw8CiDl9nbzF28+DL3A=
+	t=1715986326; cv=none; b=bje1VfWc38ddtLtrQYKsYXhdOdjfMJa+Uev9oWZ2iPtl+ycvTF1YJ5LhorxLhoAxOA+YLlZYzZorKO6Ke1/6asGh4BAsBo8XtRIsQRIeIjpwdhrqTsjwH3lw6LU0tGQ3Fgvcja/gRLulj7H5SORBcuKCAbOY0pQi9Uhj+H4bD7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715986308; c=relaxed/simple;
-	bh=6khChXR+w/AgtrK9O/n9k96mHD/XAGz28yl/+eZXEPg=;
+	s=arc-20240116; t=1715986326; c=relaxed/simple;
+	bh=JDvzQTiw86r0aHcfxIYNUzwGjmTLkoqZl+NP/318E2M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=aWoedsVo1IFJYKusXbEa9paLs75ouOgKRp/uN1Pz8vjsPLbIaj1BMM0SIVap6p7U+cCY5FkFFebf7QkoQaHzxuSTRVIGNJWXFnLwK8U6qnt/8WD39ukQeziDfZsZX5GYeG9duyLd+oqC4yUjfbZGHiJJVlj9I7T0332HDaOSxao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=dXwoUc5M; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=NoTs0xQR8cpqNnOmU3DIQn6HqMkXfFjHMRSbIfORL3xZYVmGr11tapAUfmbLJxIQobmnZjb8sPW8vbFSC+IDZBGQyKvSEoCeul39duuVaP6Qx5YzBogMp3CDJGK8zOoL7TsHBsKqRULaytDd9DMid3GzpOu7l3XYifFTj8LzXVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=mi0LcwWM; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1715986300; x=1716591100; i=quwenruo.btrfs@gmx.com;
-	bh=HSnzVZoptpCvxKb9H4WIZtw9qqXqktUfE9lsu9Neros=;
+	s=s31663417; t=1715986317; x=1716591117; i=quwenruo.btrfs@gmx.com;
+	bh=1Z6gF26ay5/SvKREW82qE2NOEftnKM5xzJ9JHhAep+U=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=dXwoUc5MmijqzxurnUW17wLgGTQE1mLCcdG5Vks50BEVb+UylXgIrdzfj0RiLl4U
-	 nZu3N1MxZZK74/fPZRB64REz1Wz22F23Utv3nGpXepa2XdUZ4wqC/LMF/GifBUKks
-	 VAsbdJJoqeDfgnzkWxaJxz/gkbn5wCzFIV3WrtyF0bcyr1VSIDMq5mZ5AfeBGbcYP
-	 xaKYw32jiscYx7abzC3h9x/QOAh6IRu4Unf+sIsxx6pw3hqSnavKYVWw6a0XATy3I
-	 lubDI61B76YfMhKd51o1TDQL+U0ab9vIZDZe22sfiSDXvYTFSzcs8HriRSt4qoDo1
-	 CPJKlwMEwFhAQDQgWw==
+	b=mi0LcwWMJckrur+y6I21ToHwSg1cQwFsNDFrrpbBD3rK2GqSksFStiFrLT7+P3ke
+	 Sej4MPJr3nKsfrdfgONg181IkI9nY9PPBChKa4AGWU0O1iQIC9z8RZoP7bBxex9W8
+	 Xmf/pidmigGeSC4U8CVhXvvtJOExgoA3bplNnWozX4DzvZVs9Mm4Y+fiueN0UxTEi
+	 s0gk8khFM6No9iI0wU146rrchGxb+df/iYKxWkWRIyE6p6hxzc/rt6e/yrKuSCMxL
+	 DhbfT6fW34EHYkSdcHAe9G81jgaBjUgSNmr2hvIWUgcuw14N+P8Y54I9JuvUck8QC
+	 GpG9EOFCR7/OoTwEwQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDnC-1sHTHB2Peg-00Cemw; Sat, 18
- May 2024 00:51:40 +0200
-Message-ID: <bdb528e7-8c1d-43bc-8236-a47d9c612983@gmx.com>
-Date: Sat, 18 May 2024 08:21:36 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEFzx-1sFYYS050H-00B22o; Sat, 18
+ May 2024 00:51:57 +0200
+Message-ID: <038f89d6-3576-46c7-9336-5fde0bbc084c@gmx.com>
+Date: Sat, 18 May 2024 08:21:52 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs: use READ_ONCE() when accessing delayed_node at
- btrfs_dirty_node()
+Subject: Re: [PATCH 3/3] btrfs: add and use helpers to get and set an inode's
+ delayed_node
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1715951291.git.fdmanana@suse.com>
- <68f8da7780333faba472e44689f977abd7222ffc.1715951291.git.fdmanana@suse.com>
+ <48ccb776f018f79730fb9b9139623960401f9505.1715951291.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,41 +89,46 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <68f8da7780333faba472e44689f977abd7222ffc.1715951291.git.fdmanana@suse.com>
+In-Reply-To: <48ccb776f018f79730fb9b9139623960401f9505.1715951291.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:w9teGsgpzSp6ZkFIhECN+EJNBTvhEjDiUdI21UHSygaBHALtfCu
- ld93Ef8Uphbw7hStmg0jnp534Cdiy1T5mIgfEDSFEKPd/KKUd8BFjwL90FsbEa7L9NM+g/Z
- y3Nzk92x7UvS0qbIiEdRYmoziwSwPtapb8Ji2DtDOXoGqjR+AMADgyBQjkIG9QrenFEdDU7
- oH6jdy30vOnmH0LeiIybA==
+X-Provags-ID: V03:K1:c2MZ8dpWK/HWp7YrZZM1HUzyPwPfGKAqw61YYaZ2/2FCAeKVTKK
+ 1Djg0tNQ0HOF3qW5/DP5mKFsAM3PXa7hNLuqEUgjLACQNT2Pzz6U2uCd0dzAUJSxGMQrAM8
+ DKIUvXK9ScNBnUke7MmDfhhvT88Ik8VixFW/6rvCFtiBaOE4FFfncyx2WtEbUFXemHBxGqn
+ mGl2NffHgzDGNdkRfGt9Q==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:HjWcJCTpNOI=;g38DGURTQHx0peILdddzsVbrCSx
- m7cUebWPZfaXBqMcYIAqv1AznzEMrOtS00QoEbJs05jGpB3kEGlGijVAoA0GKER6SgneGAa8b
- 6bYuBGbWnMlYpYtH00Mbi0zLs4ZPlrbThtI7HMuBgdg80Khr0X9+K7ib948y5kfooekfg5Tev
- ohiNtGNjTYXRZ1jc4eqLHGG6s5QTGdA4CjvHLkDsynP2Fk8X/WK6Ph5h92guIzIq4NHs0B3tG
- 43R1O2HiTBFmN8njPc+ULCRGO9wS5Tv4qfbclhTLkkqsHLS/S8+KfaoD5OwWJhTawK/TbQqid
- UCg+hvqtKJEQzmqSuwERN+238tzMJ+QH9e2JHqK67wAmn0VnQAw6h3mGIOzgvx95t7DJE55t3
- eerrdWznSuxMxNmhuMMav/vSOfmgXL9NuIOLmf/ja+fyzVqegMylVIFm/vBcGOGps7U1RzWQe
- wJG9xLoQbUpWvdPFzkEv6OasLCf9aeHWXMgVX+wcFkMA7/DJxeDQR9L5dmS6gnJqD3AbzindJ
- Zh8gLEYkZj1igq9vGHyHupajfsJBzSmrRe31vfDDTrka6Fj9lTF4gtmzT6tSHISgE987NYVj8
- 5GzdzMiHjA5GV4WUP58awo6HKqaiktFTlEZKV3x9KEi/YyMSZiYSYqzzPzl9Tt7oNCrjeUBxE
- CZ38ZyBMwpxtVv8WZkMiL78G7E/QyjRmOgCJn17JodkGONfRfTmbGG+XkEweaJfZyGDlRBMEC
- smsuzYu2QW/EdZjj/BpldwLd7SY1+OynAHBe6KRHSynmV1yHlUQN5KHeuXUovs884wy/Q62mX
- srD/sktNZFIuSxqm029xlCdodzhDh+tUsAXAd888pqJpY=
+UI-OutboundReport: notjunk:1;M01:P0:hUWeknKpmz8=;nNYFleaZnMoHkeMNKS9g1FV1CZG
+ +4aYLCwrWxQzVLZDncS2nJG3y5RiNk3AheERFX68BzyNPM3qqkrikLZ0fbcHoo7ctd9cJCRpp
+ DDtOGVR8zr9fybjGYEv273PTKx2ZSr/tE2TNmEiyxj/7jVDp1MTkrUl8uMVqOkzmZ7U/ZTxkJ
+ Tt3vox5txdt7nG6D1YQWyMMHVT4T9dsmdUykU2ws/2t0MfxC++ePwpgwHUuy1pFkCPZdm24Fb
+ GhUIx3CkIBlULhG8nqlOa6Dc2wjsn/JIZaN6CsvGV8Beb9aEFkINxa1cp0RzZssEtNfhrL59R
+ x70wS5dDCj8T/uMxFSmaaE1Cm1ZZMzoxXAleV79PVYUG63hsBDr+5mkfINJN+ffu6YLhLcp9m
+ PxIcqN+c6EQvGhsbXBbrkorvSEPOo4aKxHm0oF6pMJsFE5JGeF5YnzZqKwsYDo1+FHoE0oGrb
+ n7EO9q2iR8vZAsjtM332gqzYgJvHzLYlz2lEkCtYgBQY/AFOm5hIBAOaKhBAavzXkD5w//rkf
+ Rut3JRsx31aZ9jkAg1hTB4RD1GR41NHPOjJgfQZRgHkHb8l7gj801gxQg7bgafBxuATgTw9xZ
+ fbgD8i8/b9DdVnpdX/hdzlQyG5PrcPkgR9HFpfm8LlWePk/G//6QIpb2s0cqMGgkmoHFaxxFk
+ p7n3FO2kyrkd5FzdeG2SE2AS+HHTYA8x8e/co9jooUxOuOcKsOWyCo58L8l+nSqwXmPI/6y2P
+ psDOgQRr8pTpCiqR2m+DJiLARZFpd8qE/3w0Piur8DvRZAq591r/CijNiTteLro5MrbfM73Fm
+ LW5+F8YdOY4uWr0YnpDLTiJPCAckD/kZQe3g37Jf/5Vck=
 
 
 
 =E5=9C=A8 2024/5/17 22:43, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> An inode's delayed_node is set while holding the root->delayed_nodes
-> xarray's lock, so accessing it without holding the lock at
-> btrfs_dirty_node() is racy and will likely trigger warnings from tools
-> like KCSAN.
+> When reading the delayed_node of an inode without taking the lock of the
+> root->delayed_nodes we are using READ_ONCE(), and when updating it we ar=
+e
+> using WRITE_ONCE().
 >
-> Since we update the inode's delayed_node with WRITE_ONCE(), we can use
-> READ_ONCE() without taking the lock, as we do in several other places
-> at delayed-inode.c. So change btrfs_dirty_node() to use READ_ONCE().
+> Add and use helpers that hide the usage of READ_ONCE() and WRITE_ONCE(),
+> like we do for other inode fields such as first_dir_index_to_log or the
+> log_transid field of struct btrfs_root for example.
+>
+> Also make use of the setter helper at btrfs_alloc_inode() for consistenc=
+y
+> only - it shouldn't be needed since when allocating an inode no one else
+> can access it concurrently.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -133,11 +138,87 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/inode.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   fs/btrfs/btrfs_inode.h   | 12 ++++++++++++
+>   fs/btrfs/delayed-inode.c | 10 +++++-----
+>   fs/btrfs/inode.c         |  4 ++--
+>   3 files changed, 19 insertions(+), 7 deletions(-)
+>
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index 4d9299789a03..3c8bc7a8ebdd 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -330,6 +330,18 @@ struct btrfs_inode {
+>   	struct inode vfs_inode;
+>   };
+>
+> +static inline struct btrfs_delayed_node *btrfs_get_inode_delayed_node(
+> +					      const struct btrfs_inode *inode)
+> +{
+> +	return READ_ONCE(inode->delayed_node);
+> +}
+> +
+> +static inline void btrfs_set_inode_delayed_node(struct btrfs_inode *ino=
+de,
+> +						struct btrfs_delayed_node *node)
+> +{
+> +	WRITE_ONCE(inode->delayed_node, node);
+> +}
+> +
+>   static inline u64 btrfs_get_first_dir_index_to_log(const struct btrfs_=
+inode *inode)
+>   {
+>   	return READ_ONCE(inode->first_dir_index_to_log);
+> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> index 6df7e44d9d31..f2fe488665e8 100644
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -71,7 +71,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed_no=
+de(
+>   	u64 ino =3D btrfs_ino(btrfs_inode);
+>   	struct btrfs_delayed_node *node;
+>
+> -	node =3D READ_ONCE(btrfs_inode->delayed_node);
+> +	node =3D btrfs_get_inode_delayed_node(btrfs_inode);
+>   	if (node) {
+>   		refcount_inc(&node->refs);
+>   		return node;
+> @@ -106,7 +106,7 @@ static struct btrfs_delayed_node *btrfs_get_delayed_=
+node(
+>   		 */
+>   		if (refcount_inc_not_zero(&node->refs)) {
+>   			refcount_inc(&node->refs);
+> -			WRITE_ONCE(btrfs_inode->delayed_node, node);
+> +			btrfs_set_inode_delayed_node(btrfs_inode, node);
+>   		} else {
+>   			node =3D NULL;
+>   		}
+> @@ -161,7 +161,7 @@ static struct btrfs_delayed_node *btrfs_get_or_creat=
+e_delayed_node(
+>   	ASSERT(xa_err(ptr) !=3D -EINVAL);
+>   	ASSERT(xa_err(ptr) !=3D -ENOMEM);
+>   	ASSERT(ptr =3D=3D NULL);
+> -	WRITE_ONCE(btrfs_inode->delayed_node, node);
+> +	btrfs_set_inode_delayed_node(btrfs_inode, node);
+>   	xa_unlock(&root->delayed_nodes);
+>
+>   	return node;
+> @@ -1308,11 +1308,11 @@ void btrfs_remove_delayed_node(struct btrfs_inod=
+e *inode)
+>   {
+>   	struct btrfs_delayed_node *delayed_node;
+>
+> -	delayed_node =3D READ_ONCE(inode->delayed_node);
+> +	delayed_node =3D btrfs_get_inode_delayed_node(inode);
+>   	if (!delayed_node)
+>   		return;
+>
+> -	WRITE_ONCE(inode->delayed_node, NULL);
+> +	btrfs_set_inode_delayed_node(inode, NULL);
+>   	btrfs_release_delayed_node(delayed_node);
+>   }
 >
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 000809e16aba..11cad22d7b4c 100644
+> index 11cad22d7b4c..2f3129fe0e58 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
 > @@ -6100,7 +6100,7 @@ static int btrfs_dirty_inode(struct btrfs_inode *i=
@@ -145,9 +226,19 @@ node)
 >   		ret =3D btrfs_update_inode(trans, inode);
 >   	}
 >   	btrfs_end_transaction(trans);
-> -	if (inode->delayed_node)
-> +	if (READ_ONCE(inode->delayed_node))
+> -	if (READ_ONCE(inode->delayed_node))
+> +	if (btrfs_get_inode_delayed_node(inode))
 >   		btrfs_balance_delayed_items(fs_info);
 >
 >   	return ret;
+> @@ -8475,7 +8475,7 @@ struct inode *btrfs_alloc_inode(struct super_block=
+ *sb)
+>   	ei->prop_compress =3D BTRFS_COMPRESS_NONE;
+>   	ei->defrag_compress =3D BTRFS_COMPRESS_NONE;
+>
+> -	ei->delayed_node =3D NULL;
+> +	btrfs_set_inode_delayed_node(ei, NULL);
+>
+>   	ei->i_otime_sec =3D 0;
+>   	ei->i_otime_nsec =3D 0;
 
