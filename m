@@ -1,246 +1,701 @@
-Return-Path: <linux-btrfs+bounces-5092-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5976D8C931E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 May 2024 02:21:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87D538C934E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 May 2024 04:17:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75AA31C20CF9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 19 May 2024 00:21:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9C191F212AB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 19 May 2024 02:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08C9442C;
-	Sun, 19 May 2024 00:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C359450;
+	Sun, 19 May 2024 02:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="AqKM3iiZ";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Ow9wMLjC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dd+73z4z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26742376
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 00:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716078090; cv=fail; b=JkpbPtFL2vEJpHJAaLVYAobAVT7JqVAhpHD/tXor0WZYUWFs+wvhLw9NIXMJf1BKxbdrdZtUJaoaHZFW+cJJxkZ7n/Wt+ab4sUUMtQljLzDBKkh+hbYr7A6vxOBaXxHUio4i7ndkfDczvrKRjIamwvLH3ebsEBUT1NBlpEZdJbs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716078090; c=relaxed/simple;
-	bh=/a7yR8AF9aNEeZdDUZabc3fcI6zEd4cR74YNSH18GTk=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=qtXwvK8KOc8LP471uGk1fUlPXpv8FrAYzdtj3mPnBQ12Sdw0/Azdg9I0ThGdhD5MTjCWzMMogsl/WTvMFukgZ2PvZrjKLWkHKu7w2G6vR7DjQ1QD1SV7T8xWNpRuK8HUBUyLVFfKqYPUzFGxJzahN3+pL6qp3VVrN/sG/iyANYU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=AqKM3iiZ; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Ow9wMLjC; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44INMfdA001336
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 00:21:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-11-20;
- bh=V0qGYtjlfp5eYr19hU81S62xF2jIFsohGgfSPLntVzY=;
- b=AqKM3iiZwOKvBYb2XTUfMnvaUW2hjEHIHxQzrrBvOBw4CEtj8kUxWm2y3oTxoOFHp325
- qfVMjjzbz8KuYVQ4Bn+WKot7Eo1DIJuErDE9nB3rOf+UdGugiy+W68YD+DelNfHyk3ax
- bBbj+G+9pDB6SK83ZUIuYes9W0i1JM5ZoXxmHzdbxpeL180iTBAv/TOsSa+SxpmFfkR8
- tX85nHLrGqxC77csM6AyuTzeVIVxY9UZ0Hv0qg7pXZ73OE/VG5NCq99BIN5rMNUk6Odw
- lKlnahlCAcaGtbnLEK01SYnYu91hB69RYlAcAxYY4b+d7ZudsTsY3GxT2ZCn3Bskw5zI 2A== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y6kxv0q4e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 00:21:27 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44IN0wXx005063
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 00:21:26 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3y6js4wx43-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 00:21:26 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m0+0IxZYTvCElWgoiexEGHjvVzLLXWJY2fzQsx7MD+PYPxUM6Z1tO1ultpb+y47PMw+ZJ0lUEFFQ7IVAIWVLzSZ+yyUHB27AUAwKwsmi6xRI1jZsloLoWxtpOhue/W4UodyrZmULX3tvqVKO9cebO9MZL+1DAk0N/BZ9DzP/LVWukgRwZymBpH5JLURy9WcK5nW13A8Cc2eM+G09KBfjNW1BrDKzwT2t6JuwYdd4jV1OqEoMS9RKd/4tHkxUd2UHfEUy9UcFWFs+Be4ZA2rZPqC3Lj9AkOB+dCfo2eQ2kIV4lqL5lZKReMfa75WEjYStDAeXMmzDqbBOvNVrwBNIjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=V0qGYtjlfp5eYr19hU81S62xF2jIFsohGgfSPLntVzY=;
- b=N4xrxugxJcQqCYMswrEQnOrKxaIsE/ts0u/KE7abeRRiibGiqFyWPQt50T6Si85QYYg/if/g59PcTtymrW+kqc3IvNhCG867X2p1ruJ5kE9dKEW65mACk0Iz0WsNVoH+Yqeq24gCmgOy3eNP6O1y/l/bHJej8tx1b33+/BvmBnTXHDm2hT0ChOAT6MxyaXev6nN/N7HQr3J5dF+ouDfOf0LG7pacNnYfAzeRsihHGu4QA06KAzDQgjsq917J/ZN/rPor7V5W/XX2nRYhmGfz/GJWL5C2yEu8VP9MJEKKRtxrLsWB6MpZpLjFz0P9v9ANi0mu6mNNxAcE30ssgmN+ww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CF52114
+	for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 02:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716085029; cv=none; b=hj8sId9DU60NtFtUxgmSCr2dB5IsmqxgnRjWujgTGQpS5sj30oIStFTl2NXm/4lCafBAOaj1O5c49vaSyCT6wlwe2jiHG7FE3bTcgSbnZwuxiK+IlvSw94x43U40pDUa/hVJuQjyUTM7XjKdP7aBvJu6rtFwWpv7dULvWf6Qoxg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716085029; c=relaxed/simple;
+	bh=YiT9+W7zoFjQ2/Ty/al8tbTg1uR4OF1tcOOhU/4aWUw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cv7xiaEFCmkOYXglcOwIyMTY2hdg4rsZ1F7GY+2y50+zYBajmWDbTOXrgMo6PahqAy1Szlzv32Ysbud0bm3r91uEJQSSCdQSXMK/MnNGCTOsU6JzQKe6o41/2gY0jK1pHvkW1PatUwmkhXjAol7oPgh8cjLYnxeus7QU/vC+Hf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dd+73z4z; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-792c7704e09so160768485a.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 May 2024 19:17:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V0qGYtjlfp5eYr19hU81S62xF2jIFsohGgfSPLntVzY=;
- b=Ow9wMLjC4Yt9TsZU/J6EtXKm+hqeR89WxoBwUCpVK9iQb4yozMb7aDTNeu5IBsOGvSykcB4A3y1BQiPZYE6hIRFJEEk8Eeyzw4ztHZ0Mg6Iaj27nj6UXyLyTs04b5TbFIC1pNt2LmP+kNIV45olmnedKGJN2to1TTVGOfYAbCic=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by LV8PR10MB7726.namprd10.prod.outlook.com (2603:10b6:408:1e8::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7587.34; Sun, 19 May
- 2024 00:21:24 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65%6]) with mapi id 15.20.7587.028; Sun, 19 May 2024
- 00:21:24 +0000
-From: Anand Jain <anand.jain@oracle.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH] btrfs: move btrfs_block_group_root to block-group.c
-Date: Sun, 19 May 2024 08:20:41 +0800
-Message-ID: <cab027dd541768375585dc32f14b160abba476c9.1716077975.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0138.apcprd02.prod.outlook.com
- (2603:1096:4:188::12) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+        d=gmail.com; s=20230601; t=1716085026; x=1716689826; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YiT9+W7zoFjQ2/Ty/al8tbTg1uR4OF1tcOOhU/4aWUw=;
+        b=dd+73z4zBsoLDARVHnXRsUKiQWjKmsRIeYwoIBERkmiQBUdkFjhUndWACoAHUUd1Qq
+         RjV5GHeGEjBrffu4l6wLVGbP/sKTmFziTY9t1pVd2CCo213l7WhMLndgQUEBz+WZn2w4
+         +cwYLKQk5ZLolhT8nKacNdRv1zy82aY99nBwsOheYNRjQc70uloDWHSVsNWUa+NJp47f
+         OgqEqN0A2IA5qEUmIzAgW5Tp7Xv0GGNvg/9FzWvFCaO6azCkxjxJbHhBfGlnLLeElL7b
+         IRD6Detq0+XJ+CNUw0+EJ0RB6qJudYaQwRkLMHcNb80j9ofNCbFf63VGvwB29W1sTEcH
+         SVZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716085026; x=1716689826;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YiT9+W7zoFjQ2/Ty/al8tbTg1uR4OF1tcOOhU/4aWUw=;
+        b=xACciZ/9c4CyUsoXdKXDisf5Y0TPjRh2n5UzH8DcPnjag1LGd2Dgi2m0vfUbRdaVRJ
+         f7E7i++R5Bbghzqeua7CX1LkL75gMyL160a2PX4h56hvJOsW/sQz5nYNT9QaZH+qW0L9
+         yuV6Igi1yIq/m8Ra0laXnb/VhYUmZh22NfU1n7bmik7vpr/I8PNm36vbESwJWrjwI93j
+         xnumtBP1l6AHToK7sYzCqJtfYd4Rak1hhn1mMOYGeSbJZePkG/NPvkKr2nlkg41yco3A
+         2byCwRW8a7IoIYxou0se5Nl0Co+cXbLhpOvkb2wTdY7GLa4LhrVLEfAGueaYcqVngqg0
+         U1sQ==
+X-Gm-Message-State: AOJu0YzSV3bdDbK2XNJZoo0ovuTdlb1xpQeqdLU0kI8tfngyqD/5/c6i
+	Wuy+VcG8NHFbJmwIam6yB6Zkdcu6wZlbcLRsF876utfy4HWsK4Z1z9G8y47M
+X-Google-Smtp-Source: AGHT+IFE2LNfJr1SlEJc4qP+E17kKl4WDvkm34hbNpmqS7QgYYpchUV1gcoUHGiyKof0prOQZIIRGw==
+X-Received: by 2002:a05:620a:2708:b0:792:8df3:8be6 with SMTP id af79cd13be357-79470f2febdmr544010685a.33.1716085026071;
+        Sat, 18 May 2024 19:17:06 -0700 (PDT)
+Received: from ?IPv6:2600:4041:5b0d:f100:fec2:7085:7ce5:711c? ([2600:4041:5b0d:f100:fec2:7085:7ce5:711c])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7930f124416sm243684585a.119.2024.05.18.19.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 May 2024 19:17:05 -0700 (PDT)
+Message-ID: <053ca275b81228acf1259047d6d8bac67efc256f.camel@gmail.com>
+Subject: Re: system drive corruption, btrfs check failure
+From: Jared Van Bortel <jared.e.vb@gmail.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date: Sat, 18 May 2024 22:17:05 -0400
+In-Reply-To: <32ca8678-d0fd-44e4-b0a0-9b25383dc866@gmx.com>
+References: 
+	<CALsQ4_x-5+W_7NQR68nTiCM9aptigGf6+HD=jLftrxgXTOLyRA@mail.gmail.com>
+	 <32ca8678-d0fd-44e4-b0a0-9b25383dc866@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|LV8PR10MB7726:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1cb1c2fc-35a5-4384-00c4-08dc77999de5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?cqUXaVVpxG61zmhjgPn+vaMO6ijDG3+LXBwJDLGX5BYcoxuM+EoaQe88olLS?=
- =?us-ascii?Q?qjEGMiVA5YfMEJKzOpMvH8NIeBXASlWP2OhjoUbM4VqBCuYJLD8GcvKobQ29?=
- =?us-ascii?Q?n31c/Su04tM7dUai/j8A9KpOPXwE9CppT61zL1RhowI6WEXmJbuusQ/y5UVD?=
- =?us-ascii?Q?8eESojhvLdfFTUAuI+JRhdSnOwtm8X/zaYQD4XyJFOS08CqfLyH7hcJu/nTI?=
- =?us-ascii?Q?s0bhhxKhFXRmuvo2l08aRBT8+XLJbfHLaRxIOIIDlx1yuECJDQoGA+5Ns73K?=
- =?us-ascii?Q?tgMvNwpxCRk9EP3kPNyfXSsThsQvpne/qc+XCj04VKgkiTl46niVIrjb97wK?=
- =?us-ascii?Q?F+7Ow6w7imyeAMgcBoelHoj5JMHog9iLsaxl0pxfa48187tk3PSAZuM+gy0/?=
- =?us-ascii?Q?4+3qJwwTE4EUQf1xI8MHBHR7PVHf9VGo9dMXiq1GcV4qzQnUq47PJKWltudZ?=
- =?us-ascii?Q?VA5Qau/xKfNLAPaBHJRG2H2qSKood43bgPghe97F6RhYSdco6T98GGo5ULph?=
- =?us-ascii?Q?XDrQ1eGdqKs2cZYMKqeA3eCVV9+R5uslQyPwGR9aSjcxaL03cMTou5i3R+Er?=
- =?us-ascii?Q?9aHPi3Cw7jzdAaMhjOBU80AcGfvgNHaQTD0RJst2bLvV2Ru/t1FvONml4TNC?=
- =?us-ascii?Q?/bKc6jRyeXDTT8Nu33pz0cyBt3npHI5xOThsF52Pw4qgksNS5E/hg4Y8Q2FZ?=
- =?us-ascii?Q?yoXM3V8t1r1d7FzBNuhVZMBVSvBCU5RriIrzpM4OPPyhwhQbmQ9regv7bG5U?=
- =?us-ascii?Q?qmppdVrYGl1hQF7mhUPpcm6eRKGPFzaR7sf6wHtCMr6sVb+tXIVZpXRgoamz?=
- =?us-ascii?Q?BosWDqmBY0LxAr+jlbLjZ+6c8DN0+3dFwqhKDN2z+42G4LBSdDT0y3TJhhOj?=
- =?us-ascii?Q?V4jTOodUbgTGFgjQSeo6SweG6gTEwS2dZAzyZPpjAvX3YbwypJe6fZ44Si1G?=
- =?us-ascii?Q?6mpBOaTpIT333aK9tgkLgAyKAhhZOTq4XklNkLhKJh4XA83Qxvii6ooaM3Gq?=
- =?us-ascii?Q?otXQe6PVzChJlIU7DT134X8y6z4GS8+G9HG8YBJgnLOrf52inm8peVxFDui7?=
- =?us-ascii?Q?XlNHwbJxVkfOScoRwrIaZJvOrU8iYy5Sq+8goLwCrJH5I8fJ2uEkpNMITtB5?=
- =?us-ascii?Q?Z9G72wcS8Z+JPXZeGRoOCSjOoUboZKEDj7MJeYOfLwBgwN2ELZRmkMe7xfT6?=
- =?us-ascii?Q?pfwzExsLn26iRkR5V7X/dEP6pNKuDupkopsKjdxzz6cCwYVRK+Sv7EpXHqia?=
- =?us-ascii?Q?dvJNREvDMGKQhS/Jiz4idAZ0KofyLak5XglOFyMTdQ=3D=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?UVC15epOBf5WnDMRgNRzEwXxAglegGlS1tT8QzRErtGK8NbpjBbqK1WUs9WA?=
- =?us-ascii?Q?pF/1ZnNETMDnZn3RtHCO/DwQ+PchY/wRAlnwC9JXYrYFqjzjcEzFpN+CX1q5?=
- =?us-ascii?Q?2UjgzKLM1OeoheWQNwKGLGgkxjRna1oRz7Oj8aQBMSEkoVW5XMukz0HFqvUq?=
- =?us-ascii?Q?7T6JqIYkDm0gZngrTlrq8AI1CZuBhX3I2/UDksRuAaflCiO4Bz0ApxGvFPG9?=
- =?us-ascii?Q?NAK2OaFhnrzeRZY7QiszVbhG5uooi9eKmAaRjXT7evYIvT0Dufrwx114KKIN?=
- =?us-ascii?Q?ZHehnSk/LA1+/iPAqCnaul4V5XV7sk/Gq7iOIV1goleTrFgJGBbeQN8IeL0G?=
- =?us-ascii?Q?18/jcA3TOhEoC7LMPp8so5aQnzMVlXiqJao6K3/FBunVvCQC9kOD6N8GuoA8?=
- =?us-ascii?Q?ddNZjzcIvMw3gXFBui+yLg3R1GYuNlFL/m9IvQNoTdRN3APYdtXLjzKlpfEk?=
- =?us-ascii?Q?DQxIhDdnJEEwZyaVFo0eIYyZUJs4ca/3OZmQvyWxElBSmknVAxSTtLr9qh51?=
- =?us-ascii?Q?R/vwrPKDcU+t6Dgij17K1WjzvnwReK3vY3cxYmwkMcMLeIBAeT0Lu1WxGBSd?=
- =?us-ascii?Q?foMdsW+9IpT5Ndkg4RHmCr5LJ+cs706SVKI9wztWUTz3NaFxUF0/ANFlZmwm?=
- =?us-ascii?Q?UeydEtfTdvq7+LFr5oIQG9JJ68gplTxHXLKsjZ+PtufwtRTKKNmbf0m6Bcav?=
- =?us-ascii?Q?LCfB1HJir5HxkYJIvhtGiMVQVksnaT3iiXbUxkooyI4vVNQ111FXVFhq9oJB?=
- =?us-ascii?Q?KxKKW2bnN3/HmVgjbs25Sj+BcDQz29X9aFrQ2dlakbIWduxaTJAam3zulGiX?=
- =?us-ascii?Q?/yJxg0f5mJqIa8mdWyYo6TGFrdtcpEHDUFhSMFTNM80YabUjvOiYX6/2PcCv?=
- =?us-ascii?Q?5eE7nU/EpQxFV5k8zHOIhr8rUaH8AmryO7dotirAYj1559IOAheFOOLoN17K?=
- =?us-ascii?Q?YicVu0sebTiWrU5QScbKFMJbCCN+FPt+SR8cu92Vz9DQFUSkcIn0JAY7ggJ+?=
- =?us-ascii?Q?Z5AGuDsocNSmvhdD73DkQt0gUynEb12Tjj8aGmlWg7Z7J4/zYiSsUWGs0G6k?=
- =?us-ascii?Q?DFGdMUDs/o4urTjNmiM+G+IjOY4ZIoKr92LaxFX0XCdeKiWK3XijFb8qFa6U?=
- =?us-ascii?Q?sXeZChMQtMj3LPJ0vUNM6s/kpXTt3tfnYLcJ+bNnpak0Pt6L9CiYI8gM8KyA?=
- =?us-ascii?Q?h0J3PXGB4TD+1wAxsbANZ9oIs7F6uH78q7JgGUbgAiyZuw4YjeuoJJHmJ74P?=
- =?us-ascii?Q?tTlkwtDCKzy/V5P1cTb1bPPPlNnBDtgYEWwgrTu3bG+pwlLUrS5JRULfNs0s?=
- =?us-ascii?Q?1TwcJglZEEJ+v4a54JASHW1NFMAE3dihvFqWMtwWAyff42PoiL7VFPN4MgmG?=
- =?us-ascii?Q?rGpP4XT52P1ZQr8uSvnafUygzSL47214qXFhdPZSKjoTGho1q15jddWpre/q?=
- =?us-ascii?Q?K5ZvjRNm7+Hgwt2X7wZgAD/erf5yZYZu9byXwOrs2SBS0KnXxe/1eEtqSJKH?=
- =?us-ascii?Q?1kXIAamGZT2ToBgpq7WcCt9DYfxbSoSVFdKZ4j7OrbPdoJIa1sCugiSN+VXG?=
- =?us-ascii?Q?SyUjedrETJF1udx92PHoK0VF1Z2ERcet89Rd1oRlVnsoYFa+fqw+asdddds/?=
- =?us-ascii?Q?/Q=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	bnn3ezG6qGLsKOoasprQ/j7KQhmprifI/PJNTIi16g03t7GtaKllliLDzL2n2bdDg6hTZWAniqfUhRT26LvLholcwYaK5F8xHVThalqJYd3Q+lkoTHDCRrX8K62kOB/VuzJaO6Gb9jNya2HDVGSYLQvLjGv7xZFM+oklAPGJ7mksGl/9SbM8PUvQZaBAXc23pfa/59qI8PUZfWIEXpzWoLyN3lmlBlRFdmZhYLYkgQISK6156sh8SwxtQus/QxiZKNpBHhXSlDuOWZwNOM+fcwiolZh36rrGY64mTbtGNp7pH05wmYiBVCmeHUiFYOWGxYBrAFagvJHOQUS9MslmE4aO0TMXeb4qJn7MfQcp9xwzLho6A2UFmfGi5kl4Jllk8trUJalZNNRtWouYcpCB+HkkNN4ZSdwS/kXSg1xwTzCpd8va7uYPU9We2zH5ZNz9rHYiGhoufJXS0yLiZAi6eE3XDwlsfhAWrPXWOB46Gf54LXQnf69FynGVPotK6vOheycfDlvLien62v7eVft2VYGdYLzHqk9V/jwpuv/UEvahYl+OiiwPMQO4FE1kY002/NXoJgpESG8RGOFb2NkRggoxALh1n5habsK0uU4trNE=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cb1c2fc-35a5-4384-00c4-08dc77999de5
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2024 00:21:24.3485
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AtAKR4FkpQ4PBaYsy7qNrPvLwzLKDmCOr/vdcCRK5bF1FiLi8MRxY9ipw3teukbbES00gP4C4iiF+avriMPCZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR10MB7726
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-18_14,2024-05-17_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
- suspectscore=0 mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2405010000 definitions=main-2405190001
-X-Proofpoint-GUID: 0q7CziL8PR7FGPE4bVRrUbgDtL3Wkea0
-X-Proofpoint-ORIG-GUID: 0q7CziL8PR7FGPE4bVRrUbgDtL3Wkea0
 
-The function btrfs_block_group_root() is declared in disk-io.c; however,
-all its callers are in block-group.c. Move it to the latter file and
-declare it static.
+On Sat, 2024-03-30 at 10:12 +1030, Qu Wenruo wrote:
+>=20
+>=20
+> =E5=9C=A8 2024/3/30 04:00, Jared Van Bortel =E5=86=99=E9=81=93:
+> > Hi,
+> >=20
+> > Yesterday I ran `pacman -Syu` to update my Arch Linux installation.
+> > I
+> > saw a lot of complaints from ldconfig, and programs started
+> > crashing.
+> > Thinking it was related to having only 7GiB of free space available,
+> > I
+> > tried deleting some large files and reinstalling the affected
+> > packages. I saw no clear improvement from this, and eventually
+> > decided
+> > to shut my computer down.
+>=20
+> Do you have any dmesg of that incident?
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/block-group.c | 7 +++++++
- fs/btrfs/disk-io.c     | 7 -------
- fs/btrfs/disk-io.h     | 1 -
- 3 files changed, 7 insertions(+), 8 deletions(-)
+Hi, sorry for the delay. I finally got around to running the lowmem
+check on the old drives.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 1e09aeea69c2..9910bae89966 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1022,6 +1022,13 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
- 	}
- }
- 
-+static struct btrfs_root *btrfs_block_group_root(struct btrfs_fs_info *fs_info)
-+{
-+	if (btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE))
-+		return fs_info->block_group_root;
-+	return btrfs_extent_root(fs_info, 0);
-+}
-+
- static int remove_block_group_item(struct btrfs_trans_handle *trans,
- 				   struct btrfs_path *path,
- 				   struct btrfs_block_group *block_group)
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index e6bf895b3547..94b95836f61f 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -846,13 +846,6 @@ struct btrfs_root *btrfs_extent_root(struct btrfs_fs_info *fs_info, u64 bytenr)
- 	return btrfs_global_root(fs_info, &key);
- }
- 
--struct btrfs_root *btrfs_block_group_root(struct btrfs_fs_info *fs_info)
--{
--	if (btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE))
--		return fs_info->block_group_root;
--	return btrfs_extent_root(fs_info, 0);
--}
--
- struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
- 				     u64 objectid)
- {
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 76eb53fe7a11..1f93feae1872 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -83,7 +83,6 @@ struct btrfs_root *btrfs_global_root(struct btrfs_fs_info *fs_info,
- 				     struct btrfs_key *key);
- struct btrfs_root *btrfs_csum_root(struct btrfs_fs_info *fs_info, u64 bytenr);
- struct btrfs_root *btrfs_extent_root(struct btrfs_fs_info *fs_info, u64 bytenr);
--struct btrfs_root *btrfs_block_group_root(struct btrfs_fs_info *fs_info);
- 
- void btrfs_free_fs_info(struct btrfs_fs_info *fs_info);
- void btrfs_btree_balance_dirty(struct btrfs_fs_info *fs_info);
--- 
-2.41.0
+Firstly, there was nothing relevant in dmesg. When I first saw your
+reply, I checked the system journal from the time of the incident and
+there was nothing disk-related from the kernel between mount and
+shutdown - medium errors, btrfs I/O errors, or anything like that.
+
+>=20
+> >=20
+> > I booted memtest, and it completed a full pass without errors. I
+> > then
+> > booted a live USB and ran `btrfs check --readonly /dev/nvme0n1p2`,
+> > and
+> > saw a long list of errors, realizing my filesystem is most likely
+> > beyond repair.
+> >=20
+> > Basic information (RAID1 metadata, single data):
+> > ```
+> > Label: 'System'=C2=A0 uuid: 76721faa-8c32-4e70-8a9e-859dece0aec1
+> > Total devices 2 FS bytes used 2.18TiB
+> > devid=C2=A0=C2=A0=C2=A0 1 size 422.63GiB used 422.63GiB path /dev/nvme0=
+n1p2
+> > devid=C2=A0=C2=A0=C2=A0 2 size 1.82TiB used 1.82TiB path /dev/nvme1n1
+> > ```
+> > The installed kernel is linux-zen 6.6.10 with a few patches. The
+> > live
+> > USB I'm using has the Arch Linux 6.4.7-arch1-1 kernel. Full `btrfs
+> > check` log and smartctl information is attached.
+> >=20
+> > There are three main errors. One:
+> > ```
+> > ref mismatch on [1248293634048 16384] extent item 1, found 0
+> > tree extent[1248293634048, 16384] parent 2368656916480 has no tree
+> > block found
+> > incorrect global backref count on 1248293634048 found 1 wanted 0
+> > backpointer mismatch on [1248293634048 16384]
+> > owner ref check failed [1248293634048 16384]
+> > ```
+> >=20
+> > Two:
+> > ```
+> > ref mismatch on [1261902016512 4096] extent item 2, found 1
+> > data extent[1261902016512, 4096] bytenr mimsmatch, extent item
+> > bytenr
+> > 1261902016512 file item bytenr 0
+> > data extent[1261902016512, 4096] referencer count mismatch (parent
+> > 2369673248768) wanted 1 have 0
+> > backpointer mismatch on [1261902016512 4096]
+> > ```
+>=20
+> Corrupted extent tree, this can lead to fs falling back to read-only
+> halfway.
+
+This fs actually still mounts writable without any issue, FWIW. Although
+the error counters are not zeroed:
+
+bdev /dev/nvme0n1p2 errs: wr 51, rd 0, flush 0, corrupt 0, gen 5
+
+It's not clear to me when these errors occurred - wouldn't they have
+been logged to dmesg at the time?
+
+> >=20
+> > Three:
+> > ```
+> > block group 1342751899648 has wrong amount of free space, free space
+> > cache has 34193408 block group has 42893312
+> > failed to load free space cache for block group 1342751899648
+> > ```
+>=20
+> This is not that uncommon if extent=C2=A0 tree is already corrupted.
+>=20
+> But unfortunately, this may not be the direct/root cause of the
+> corruption.
+>=20
+> Thus I'd prefer to have the initial dmesg.
+>=20
+> >=20
+> > And this warning:
+> > ```
+> > [4/7] checking fs roots
+> > warning line 3916
+> > ```
+> >=20
+> > I bought some replacement disks that I can install alongside the old
+> > ones, but I don't have a recent backup of the full FS. It seems to
+> > mount readonly without issue.
+>=20
+> The fs tree is mostly fine, so you can mount it RO and grab your data.
+>=20
+> >=20
+> > What's the best way to recover the data that's left? And is there
+> > any
+> > clue here as to what went wrong? I'm really not sure. If this is a
+> > drive failure, it seems premature.
+>=20
+> It's hard to say. The old original mode check output is not that
+> helpful
+> to locate the root cause.
+>=20
+> Mind to run "btrfs check --mode=3Dlowmem" on that fs, and save both
+> stderr
+> and stdout?
+
+Here is the output:
+
+$ sudo btrfs check --mode=3Dlowmem /dev/nvme0n1p2
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p2
+UUID: 76721faa-8c32-4e70-8a9e-859dece0aec1
+[1/7] checking root items
+[2/7] checking extents
+ERROR: shared extent[1248293634048 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248304054272 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248304807936 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248315129856 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248324468736 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248588103680 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248685195264 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248901791744 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248939687936 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248953860096 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248962543616 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248966279168 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248966934528 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1248978468864 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249032519680 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249075806208 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249310851072 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249319256064 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249401454592 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249661976576 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249796259840 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1249802420224 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1250339143680 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1250870542336 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1250975170560 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1251038543872 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1251216883712 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1251319889920 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1251321462784 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1251324887040 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1251325100032 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1253394546688 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1254622068736 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1255368310784 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1255986282496 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1255986331648 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1256068186112 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1256145797120 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1256190967808 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1256305262592 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1256650244096 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1256696086528 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258225631232 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258967351296 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258967367680 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258967400448 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258967482368 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258967515136 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258967531520 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1258967564288 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1259028234240 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1259345543168 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1259767791616 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260607963136 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260611665920 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260611862528 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260617236480 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260620627968 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260707020800 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260716212224 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260718686208 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260725223424 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260836290560 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260837158912 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260838322176 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260840239104 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260841402368 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260841910272 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260842811392 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260843696128 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260848300032 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260850085888 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260851412992 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260852494336 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260854067200 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260856000512 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260856590336 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260857556992 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260859555840 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260861636608 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260861898752 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260863062016 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[1260863815680 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent 1284548759552 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1287628115968 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1287628156928 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1291874332672 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1291892744192 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1291893682176 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1302641364992 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1302646538240 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1302646906880 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1302725738496 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1307336536064 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1307421573120 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1318061346816 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1321886617600 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1548210819072 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1564826959872 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1609847508992 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1609915379712 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1611724808192 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1611749105664 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1611749363712 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1620880302080 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1620899688448 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1620944224256 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1623958888448 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1624013213696 referencer lost (parent: 1252056268800)
+ERROR: shared extent 1624013307904 referencer lost (parent: 1252056268800)
+ERROR: shared extent[2368230686720 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2368279707648 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2368409845760 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2368417906688 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2368656982016 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369673248768 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369795997696 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369801355264 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369801568256 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369801666560 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369807466496 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369807548416 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369808187392 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369808678912 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369808990208 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369809530880 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369809661952 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369809743872 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369811316736 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369811365888 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369811562496 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369811906560 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369811972096 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369812234240 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369812365312 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369813331968 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369813610496 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369814020096 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369816100864 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369816231936 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369816788992 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817116672 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817182208 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817247744 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817296896 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817395200 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817509888 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817542656 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369817853952 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369818001408 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369818116096 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369818148864 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369818263552 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369818492928 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369818640384 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369818869760 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369819623424 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369819869184 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369821540352 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369821622272 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369821949952 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369822572544 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369823145984 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369823195136 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369823621120 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369824112640 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2369863860224 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2370334277632 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[2370373042176 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949035106304 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949037793280 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949039235072 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949053538304 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949401337856 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949457502208 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949804662784 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949804761088 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949804777472 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949804793856 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: shared extent[4949849210880 16384] lost its parent (parent: 23686569=
+16480, level: 0)
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space cache
+block group 1342751899648 has wrong amount of free space, free space cache =
+has 34193408 block group has 42893312
+failed to load free space cache for block group 1342751899648
+block group 1343825641472 has wrong amount of free space, free space cache =
+has 23257088 block group has 25903104
+failed to load free space cache for block group 1343825641472
+block group 1351341834240 has wrong amount of free space, free space cache =
+has 22396928 block group has 42348544
+failed to load free space cache for block group 1351341834240
+block group 1566090199040 has wrong amount of free space, free space cache =
+has 48562176 block group has 50651136
+failed to load free space cache for block group 1566090199040
+block group 1572532649984 has wrong amount of free space, free space cache =
+has 12173312 block group has 15945728
+failed to load free space cache for block group 1572532649984
+block group 1580048842752 has wrong amount of free space, free space cache =
+has 29745152 block group has 33087488
+failed to load free space cache for block group 1580048842752
+block group 1584343810048 has wrong amount of free space, free space cache =
+has 56512512 block group has 58601472
+failed to load free space cache for block group 1584343810048
+block group 1602597421056 has wrong amount of free space, free space cache =
+has 87953408 block group has 90349568
+failed to load free space cache for block group 1602597421056
+block group 1744331341824 has wrong amount of free space, free space cache =
+has 339968 block group has 393216
+failed to load free space cache for block group 1744331341824
+block group 2666675568640 has wrong amount of free space, free space cache =
+has 602112 block group has 782336
+failed to load free space cache for block group 2666675568640
+block group 2909341220864 has wrong amount of free space, free space cache =
+has 65536 block group has 151552
+failed to load free space cache for block group 2909341220864
+block group 3904699891712 has wrong amount of free space, free space cache =
+has 172032 block group has 221184
+failed to load free space cache for block group 3904699891712
+block group 3941207113728 has wrong amount of free space, free space cache =
+has 1728512 block group has 1826816
+failed to load free space cache for block group 3941207113728
+block group 4085088518144 has wrong amount of free space, free space cache =
+has 5697536 block group has 5754880
+failed to load free space cache for block group 4085088518144
+block group 4241854824448 has wrong amount of free space, free space cache =
+has 23293952 block group has 28966912
+failed to load free space cache for block group 4241854824448
+block group 4838855278592 has wrong amount of free space, free space cache =
+has 86016 block group has 118784
+failed to load free space cache for block group 4838855278592
+block group 4847445213184 has wrong amount of free space, free space cache =
+has 49152 block group has 110592
+failed to load free space cache for block group 4847445213184
+block group 4897911078912 has wrong amount of free space, free space cache =
+has 7475200 block group has 7577600
+failed to load free space cache for block group 4897911078912
+block group 5010008178688 has wrong amount of free space, free space cache =
+has 69632 block group has 106496
+failed to load free space cache for block group 5010008178688
+block group 5062655082496 has wrong amount of free space, free space cache =
+has 5836800 block group has 5890048
+failed to load free space cache for block group 5062655082496
+block group 5268813512704 has wrong amount of free space, free space cache =
+has 135168 block group has 221184
+failed to load free space cache for block group 5268813512704
+[4/7] checking fs roots
+ERROR: root 259 EXTENT_DATA[1522634 4096] gap exists, expected: EXTENT_DATA=
+[1522634 128]
+ERROR: root 259 EXTENT_DATA[1522636 4096] gap exists, expected: EXTENT_DATA=
+[1522636 128]
+ERROR: root 407 EXTENT_DATA[398831 4096] gap exists, expected: EXTENT_DATA[=
+398831 25]
+ERROR: root 407 EXTENT_DATA[398973 4096] gap exists, expected: EXTENT_DATA[=
+398973 25]
+ERROR: root 407 EXTENT_DATA[398975 4096] gap exists, expected: EXTENT_DATA[=
+398975 25]
+ERROR: root 407 EXTENT_DATA[398976 4096] gap exists, expected: EXTENT_DATA[=
+398976 25]
+ERROR: root 407 EXTENT_DATA[418307 4096] gap exists, expected: EXTENT_DATA[=
+418307 25]
+ERROR: root 407 EXTENT_DATA[418316 4096] gap exists, expected: EXTENT_DATA[=
+418316 25]
+ERROR: root 407 EXTENT_DATA[418317 4096] gap exists, expected: EXTENT_DATA[=
+418317 25]
+ERROR: root 407 EXTENT_DATA[420660 4096] gap exists, expected: EXTENT_DATA[=
+420660 25]
+ERROR: root 407 EXTENT_DATA[420673 4096] gap exists, expected: EXTENT_DATA[=
+420673 25]
+ERROR: root 407 EXTENT_DATA[439382 4096] gap exists, expected: EXTENT_DATA[=
+439382 25]
+ERROR: root 407 EXTENT_DATA[439383 4096] gap exists, expected: EXTENT_DATA[=
+439383 25]
+ERROR: root 407 EXTENT_DATA[451252 4096] gap exists, expected: EXTENT_DATA[=
+451252 25]
+ERROR: root 407 EXTENT_DATA[451264 4096] gap exists, expected: EXTENT_DATA[=
+451264 25]
+ERROR: root 407 EXTENT_DATA[451265 4096] gap exists, expected: EXTENT_DATA[=
+451265 25]
+ERROR: root 407 EXTENT_DATA[452326 4096] gap exists, expected: EXTENT_DATA[=
+452326 25]
+ERROR: root 407 EXTENT_DATA[452332 4096] gap exists, expected: EXTENT_DATA[=
+452332 25]
+ERROR: root 407 EXTENT_DATA[452339 4096] gap exists, expected: EXTENT_DATA[=
+452339 25]
+ERROR: root 407 EXTENT_DATA[4293157 4096] gap exists, expected: EXTENT_DATA=
+[4293157 25]
+ERROR: root 407 EXTENT_DATA[4293570 4096] gap exists, expected: EXTENT_DATA=
+[4293570 25]
+ERROR: root 407 EXTENT_DATA[4293571 4096] gap exists, expected: EXTENT_DATA=
+[4293571 25]
+ERROR: root 407 EXTENT_DATA[4293572 4096] gap exists, expected: EXTENT_DATA=
+[4293572 25]
+ERROR: root 407 EXTENT_DATA[4302136 4096] gap exists, expected: EXTENT_DATA=
+[4302136 25]
+ERROR: root 407 EXTENT_DATA[4302148 4096] gap exists, expected: EXTENT_DATA=
+[4302148 25]
+ERROR: root 407 EXTENT_DATA[4302149 4096] gap exists, expected: EXTENT_DATA=
+[4302149 25]
+ERROR: root 407 EXTENT_DATA[4302150 4096] gap exists, expected: EXTENT_DATA=
+[4302150 25]
+ERROR: root 407 EXTENT_DATA[5970391 4096] gap exists, expected: EXTENT_DATA=
+[5970391 25]
+ERROR: errors found in fs roots
+found 2397613547520 bytes used, error(s) found
+total csum bytes: 1840478932
+total tree bytes: 13337329664
+total fs tree bytes: 10208378880
+total extent tree bytes: 874070016
+btree space waste bytes: 2240708820
+file data blocks allocated: 24819271946240
+ referenced 2695187488768
+
+
+Hopefully that means something to you. I'm still curious to know to what
+degree I should still trust these drives if I were to wipe the fs and
+start over. I suppose I could run a SMART test or something, right?
+
+Thanks,
+Jared
+
+>=20
+> Thanks,
+> Qu
+>=20
+> >=20
+> > Thanks,
+> > Jared
 
 
