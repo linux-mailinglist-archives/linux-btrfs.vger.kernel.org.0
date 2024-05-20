@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-5103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5104-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE8B8C9AA7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 11:47:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8D2A8C9AA8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 11:47:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39F65B221BC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 09:47:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA6F1F21FDE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 09:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B834C635;
-	Mon, 20 May 2024 09:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDD44D9EA;
+	Mon, 20 May 2024 09:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezL1Q+Yk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h8gitZcU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588DA495E5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB114CE04
 	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 09:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716198417; cv=none; b=XUCLtTu1NMiHJ2lne2Zi+ATXM+b0eDFz9pcSmjJcAxTDXfHARBn7BjUUbNRDeYSS8rAipj1VJdiCvXQcevEEUK8jBPZQq1PRsqmx8Mpj9rzVOCQUj7WqraS2URpH5EtNS3VQ7YddpwkCNdpzf6gem683eI/nxT/8jX78Qcm2TOk=
+	t=1716198418; cv=none; b=V4ansy0t7thaYsj8h/yuZ65Br/yllsNPGaXQnmplHsOezdWzw3uXR6pQWHPmOZnamfxsMbJKr1DTFPj+nZlGUAEYfZe19BgV46WLX3dmDOXORvKrHAe92hLzFIphM25aIiIDrP7EstL66p9jDgJqSvRWqXHVpoKJDiVJjZgKE9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716198417; c=relaxed/simple;
-	bh=+z234Z8najshoAT+qi5q9wi413uNu1bbahMvaMJnnRI=;
+	s=arc-20240116; t=1716198418; c=relaxed/simple;
+	bh=mgky5zTtotect6ZZDoVAkRWFzTUGpvE2sHz+d2SH7Xw=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JdhVqEmx0AfNhuS+yxYGmzg3wWp+TswK12zZeXzDcta7U1U7inRPlS3KPgR4mhL8cmhoOgBYpOKdh7SggMJV3H2kfu6CVFrqU+VGUVfDrhtFzsibawskr5fvn578kP2enWo2mv7PMxlLTWtxRE44xwUp1F/zyoS21SzcqHoVa0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezL1Q+Yk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68F66C4AF07
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 09:46:56 +0000 (UTC)
+	 MIME-Version; b=fmX2ILAceEdpVchFcDFncwuWf/AzIUlu3saPI3DigMMS2j6VfbQ6bTneWLSAm+S/x291A2k2nwsN5c1gd0FAt8NjCapYlG6lRFHa9m6p8WZhTsWFmmbX7Yhu8QXiKkqsvpUgFDu4cUY6A82/6R9LOyKas5LjB3AJDGsiUGGimRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h8gitZcU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A695C4AF08
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 09:46:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716198416;
-	bh=+z234Z8najshoAT+qi5q9wi413uNu1bbahMvaMJnnRI=;
+	s=k20201202; t=1716198417;
+	bh=mgky5zTtotect6ZZDoVAkRWFzTUGpvE2sHz+d2SH7Xw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=ezL1Q+Ykydf2rYmHq/iC3QHUcSyV5XBzNiTD8ZHylxZ/DdcyVUe5i46VlFPvNGjzD
-	 AC44G8LVAvjL+UBUiCiJxXxG/TaGQqVuKLPdBp8Ygkt3/hM7U2Q1BVa6qwxbA2L5aF
-	 ocl+FI5T7h7I/1nXEXmgSoQB7xclGs5Pam3SvyQy/moIqzaowrrB8w4x4Ofvl7jXxm
-	 9L1SrhL/hMKs9b32p9P3+20kckdZu7Ixio+Qhk24R07Ft0Zc8T7anFHlDxdgn/bN4M
-	 bhB+OvYPYaBryhvdjAoZtQJcxF3YcIWdzoWu0+1Zkite8Kf6JTzLeOl2l2roDXPJwJ
-	 zoDV7hg7Q1ePQ==
+	b=h8gitZcUPYGcoHEXQo0vatkMoBlmHkxyRY2aL9cIUPv6FmNAe3vK9D80JOCrOQE5r
+	 VwjHTW/HhbRR/+zWNEh8FrE53H4452nyggk+IQDB0xuw4Zy0C4VXZDu4e7WkhpJc5E
+	 VBiO4suZI9XZOka8goHF4MtIr3Y1qFwDIi0BdE+FRIpb3bioQS3kdnGo1YWk1DjzjB
+	 ijyue4DTSSCZPjgMM3q9PRe4zN6+HbOfo6SVsBdOepRtwyT+07dCayxTDGy/xwwfnT
+	 JoCuuuGAlvfXk0oONUvDN5yveJf4sEbddpeP7wBEQvmuhPTDVS9tqbADRojhpS0YfQ
+	 1x5bQOb/fqqMQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 2/6] btrfs: make btrfs_finish_ordered_extent() return void
-Date: Mon, 20 May 2024 10:46:47 +0100
-Message-Id: <a3bb4237ce22fcc7d56b4eb9d22d077df566eed3.1716053516.git.fdmanana@suse.com>
+Subject: [PATCH v4 3/6] btrfs: use a btrfs_inode in the log context (struct btrfs_log_ctx)
+Date: Mon, 20 May 2024 10:46:48 +0100
+Message-Id: <a59a51642e36e70a7d05aeaf7f2ee15d51d2077b.1716053516.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1716053516.git.fdmanana@suse.com>
 References: <cover.1716053516.git.fdmanana@suse.com>
@@ -59,52 +59,112 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Currently btrfs_finish_ordered_extent() returns a boolean indicating if
-the ordered extent was added to the work queue for completion, but none
-of its callers cares about it, so make it return void.
+Instead of using a inode pointer, use a btrfs_inode pointer in the log
+context structure, as this is generally what we need and allows for some
+internal APIs to take a btrfs_inode instead, making them more consistent
+with most of the code base. This will later allow to help to remove a lot
+of BTRFS_I() calls in btrfs_sync_file().
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/ordered-data.c | 3 +--
- fs/btrfs/ordered-data.h | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ fs/btrfs/file.c     |  4 ++--
+ fs/btrfs/tree-log.c | 10 +++++-----
+ fs/btrfs/tree-log.h |  4 ++--
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 7d175d10a6d0..16f9ddd2831c 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -374,7 +374,7 @@ static void btrfs_queue_ordered_fn(struct btrfs_ordered_extent *ordered)
- 	btrfs_queue_work(wq, &ordered->work);
- }
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 00670596bf06..506eabcd809d 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1758,7 +1758,7 @@ static int start_ordered_ops(struct inode *inode, loff_t start, loff_t end)
  
--bool btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
-+void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- 				 struct page *page, u64 file_offset, u64 len,
- 				 bool uptodate)
+ static inline bool skip_inode_logging(const struct btrfs_log_ctx *ctx)
  {
-@@ -421,7 +421,6 @@ bool btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
+-	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
++	struct btrfs_inode *inode = ctx->inode;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
  
- 	if (ret)
- 		btrfs_queue_ordered_fn(ordered);
--	return ret;
+ 	if (btrfs_inode_in_log(inode, btrfs_get_fs_generation(fs_info)) &&
+@@ -1805,7 +1805,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 
+ 	trace_btrfs_sync_file(file, datasync);
+ 
+-	btrfs_init_log_ctx(&ctx, inode);
++	btrfs_init_log_ctx(&ctx, BTRFS_I(inode));
+ 
+ 	/*
+ 	 * Always set the range to a full range, otherwise we can get into
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 2e762b89d4a2..51a167559ae8 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2821,7 +2821,7 @@ static void wait_for_writer(struct btrfs_root *root)
+ 	finish_wait(&root->log_writer_wait, &wait);
  }
  
- /*
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index b6f6c6b91732..bef22179e7c5 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -162,7 +162,7 @@ int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered_extent);
- void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry);
- void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 				struct btrfs_ordered_extent *entry);
--bool btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
-+void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- 				 struct page *page, u64 file_offset, u64 len,
- 				 bool uptodate);
- void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+-void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct inode *inode)
++void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct btrfs_inode *inode)
+ {
+ 	ctx->log_ret = 0;
+ 	ctx->log_transid = 0;
+@@ -2840,7 +2840,7 @@ void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct inode *inode)
+ 
+ void btrfs_init_log_ctx_scratch_eb(struct btrfs_log_ctx *ctx)
+ {
+-	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
++	struct btrfs_inode *inode = ctx->inode;
+ 
+ 	if (!test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) &&
+ 	    !test_bit(BTRFS_INODE_COPY_EVERYTHING, &inode->runtime_flags))
+@@ -2858,7 +2858,7 @@ void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx)
+ 	struct btrfs_ordered_extent *ordered;
+ 	struct btrfs_ordered_extent *tmp;
+ 
+-	ASSERT(inode_is_locked(ctx->inode));
++	ASSERT(inode_is_locked(&ctx->inode->vfs_inode));
+ 
+ 	list_for_each_entry_safe(ordered, tmp, &ctx->ordered_extents, log_list) {
+ 		list_del_init(&ordered->log_list);
+@@ -5908,7 +5908,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 			if (ret < 0) {
+ 				return ret;
+ 			} else if (ret > 0 &&
+-				   other_ino != btrfs_ino(BTRFS_I(ctx->inode))) {
++				   other_ino != btrfs_ino(ctx->inode)) {
+ 				if (ins_nr > 0) {
+ 					ins_nr++;
+ 				} else {
+@@ -7570,7 +7570,7 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 			goto out;
+ 	}
+ 
+-	btrfs_init_log_ctx(&ctx, &inode->vfs_inode);
++	btrfs_init_log_ctx(&ctx, inode);
+ 	ctx.logging_new_name = true;
+ 	btrfs_init_log_ctx_scratch_eb(&ctx);
+ 	/*
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index 22e9cbc81577..fa0a689259b1 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -37,7 +37,7 @@ struct btrfs_log_ctx {
+ 	bool logging_new_delayed_dentries;
+ 	/* Indicate if the inode being logged was logged before. */
+ 	bool logged_before;
+-	struct inode *inode;
++	struct btrfs_inode *inode;
+ 	struct list_head list;
+ 	/* Only used for fast fsyncs. */
+ 	struct list_head ordered_extents;
+@@ -55,7 +55,7 @@ struct btrfs_log_ctx {
+ 	struct extent_buffer *scratch_eb;
+ };
+ 
+-void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct inode *inode);
++void btrfs_init_log_ctx(struct btrfs_log_ctx *ctx, struct btrfs_inode *inode);
+ void btrfs_init_log_ctx_scratch_eb(struct btrfs_log_ctx *ctx);
+ void btrfs_release_log_ctx_extents(struct btrfs_log_ctx *ctx);
+ 
 -- 
 2.43.0
 
