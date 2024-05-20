@@ -1,205 +1,107 @@
-Return-Path: <linux-btrfs+bounces-5118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C4E8CA0F1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 18:56:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AD0E8CA0F4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 18:59:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ED0CB211E8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 16:56:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 033771F21D5E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 16:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0CC137C20;
-	Mon, 20 May 2024 16:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA29137C21;
+	Mon, 20 May 2024 16:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JOvjc/5l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYqF4qgz"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D287879EF
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 16:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13EFE79EF
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 16:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716224166; cv=none; b=Td0827eXiTzcTZ7+hiKBe6+FZqzNqi/zmmq2gR7faqvClb2jYTgms8EYe5Jmhm1LTWgyRTcMVhqKUHnFseFLxVyQyQCfYjG9pASxNZ7c9G2/q8iCSbK3rYbhNAIjlIyYAV7YxQ6qFA6ZHNI1Hb8UGhg95ylDZQXi/gtTpOSyUR8=
+	t=1716224356; cv=none; b=bguSjC2iu3gzKcLg1iebQnnX7R8nmFszcL9LhfaFIJLFo99K+w31pGdyQu7a4YdNwZHX5t8vxXW5LpjWGRMeORYazUDzBGhUcR6KVyX4JGWABe+cTiNY+KdVBJScE22qLWwmjEpPC8v+0D0L2PCpT9C9PY4tE99VWy7Vw4SuC0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716224166; c=relaxed/simple;
-	bh=bzKf8r7a3uOF9WkMqefu6IbkmVWHG13QDGN6uE+orYw=;
+	s=arc-20240116; t=1716224356; c=relaxed/simple;
+	bh=nB6UJ7AYhPbXrHql0oRfqaRGAhsGH2AlMWPaljHd6JU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qNZf4KTkaBeqGXc/2RS0qqHHvkSIUDbEsbGZbf4rrrXSaqwPKEZjNMqks6ZjWRM6ngrfCBWXPlUXyncvGzG8AJ7WdzJOXsUDyGE/9l0wfJckAXl4Ur5VibNGmBYFdinjC0nIcrWjOF4UxzanpCOztwNaZp1DdPX2gQsPF/9ypes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JOvjc/5l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51CD6C2BD10
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 16:56:06 +0000 (UTC)
+	 To:Cc:Content-Type; b=LrrH+lMLUZnSRXr+OHVG1KM7Mb3ismu37n3Fqc0mFHHKh/NNeLqKrMr0reF+CQn4b5ZW+yb2E4lkh+WDhIn4VPh3Tisf8ms/wkg2Pw7tAk6rfhCaJTQOE1zhYuTMfEBZ86zwJnWlEZ/K3Abg69o+rxwiMJnsZ86WBn6my3Dx59I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYqF4qgz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 939B2C2BD10
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 16:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716224166;
-	bh=bzKf8r7a3uOF9WkMqefu6IbkmVWHG13QDGN6uE+orYw=;
+	s=k20201202; t=1716224355;
+	bh=nB6UJ7AYhPbXrHql0oRfqaRGAhsGH2AlMWPaljHd6JU=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JOvjc/5lgVmr1GCtGmSNvjyodqOOXWLebLF9yaiu0XDYsz0TLGrxhalqwC8c4qfID
-	 Rfb2cC9E1L4BZgrg1VZC/UAQH2DvGsA54X550AK/JfmT1V7NwlSpHHN7LioyDkHcG/
-	 iRlho2mdnf6QRfsW8bq/HKCBPNjjfELCFuG/INPM4QL5paMDPYNVVop1NcnEoxivuu
-	 4yJqMPGtlgcpKeLJHUPhgdT0EqDwhoCCBh9zryej9dj48qpnKPNu3wQX9E9r51GKbq
-	 E4IWCszIhZVLMEV6EkfHLX9U4ohZpmHKChsCg6pvdSsTIG2TtGWwCbLp1Wyi/7KXlr
-	 L4pJufRxRRY4A==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2e428242a38so61546651fa.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 09:56:06 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz2w+B7Y0y2Ya8PNALxgNUW2dT9YSFOBatpVy/Q11nMA6kR1KZs
-	8+UcXI/YVAw/oNZ+JuBR6+neDkeBSGM6rSRCjE9LCd7x1mChhqnyGCym9SSK6Mv5ogJJ+PLlGJh
-	RMixm3WedjPyavVNDF2ZMSx1VwUM=
-X-Google-Smtp-Source: AGHT+IHvP55z90jLin2N7F1E3j9ScljDexM8ALxD1CqZKVyVai3jzFPJALIa6YFgEodrqLJ+5wMe/svihHxgOaLocaA=
-X-Received: by 2002:a2e:9695:0:b0:2e0:5d7:a3a6 with SMTP id
- 38308e7fff4ca-2e51fc3442emr229111701fa.9.1716224164679; Mon, 20 May 2024
- 09:56:04 -0700 (PDT)
+	b=dYqF4qgzLf4zMAr/YcrhOAmXVDI5dL/G9kUtxf24VRSswfulhSWkKl/MVBHO3KWcl
+	 9i2XRBagW94acYIOsdu5pYTpV09YkyAbBLipsRm5WdKE4V/kPIBya0yY/dxIXrWEEP
+	 fcx04zFHvPI3dMMzbazX9udFSJII6DeWGCMoaolhJ1EfUHMyNJNiV8GiZskGIAZqCc
+	 oUAk9CcfjvifLHEiGskA925rFgDKo4Dgkd3HGrh3IGBdpxk9wyLALkM9pfVa0nPZMl
+	 /t7FqJo3EYJ6d3itMvJZbQnSOo1gD0Ezgval36lTECejtTlhUCf5PxGtrlNPsbJCCZ
+	 GwWvKf8+ozj7Q==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-572baf393ddso10578446a12.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 09:59:15 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy4CNFibVAC9E7PcQ9yBKBFcpb0xN9g45zE/IIqtHg0iJusUxY2
+	8f59lpZLH2xBvP2euZNQHRhemK+pknvL/0dVOER8l5lI2EMInICc7Su+aft9EOZcwtMEA99L9+Y
+	z9INsciMYbv3hJXvedVEfBIvfZ08=
+X-Google-Smtp-Source: AGHT+IHfAC2o8QwmyNfmu8tYaDJfMPQ8UF/wv0aHvo0aYV6DslguaDefUnKdfZ2gRWtD4Szo9WE1dkEn33iFv7ejiaw=
+X-Received: by 2002:a17:906:ac5:b0:a5c:dd2c:d95b with SMTP id
+ a640c23a62f3a-a5d5ecdc3e0mr578112866b.25.1716224354122; Mon, 20 May 2024
+ 09:59:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1714707707.git.wqu@suse.com>
-In-Reply-To: <cover.1714707707.git.wqu@suse.com>
+References: <cover.1715951291.git.fdmanana@suse.com> <20240520154844.GF17126@twin.jikos.cz>
+In-Reply-To: <20240520154844.GF17126@twin.jikos.cz>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 20 May 2024 17:55:28 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H59-6saCXaFtsGisT1Yvn21PS+oJhhbNH8yg4nDNnAYvA@mail.gmail.com>
-Message-ID: <CAL3q7H59-6saCXaFtsGisT1Yvn21PS+oJhhbNH8yg4nDNnAYvA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] btrfs: extent-map: unify the members with btrfs_ordered_extent
-To: Qu Wenruo <wqu@suse.com>
+Date: Mon, 20 May 2024 17:58:37 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5LhdkQq7aeU+yD_6RS9mYeBa5=5doB7OQ4xj0M4xuhFg@mail.gmail.com>
+Message-ID: <CAL3q7H5LhdkQq7aeU+yD_6RS9mYeBa5=5doB7OQ4xj0M4xuhFg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] btrfs: avoid data races when accessing an inode's delayed_node
+To: dsterba@suse.cz
 Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 3, 2024 at 7:02=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+On Mon, May 20, 2024 at 4:48=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
 >
-> [CHANGELOG]
-> v2:
-> - Rebased to the latest for-next
->   There is a conflicts with extent locking, and maybe some other
->   hidden conflicts for NOCOW/PREALLOC?
->   As previously the patchset passes fstests auto group, but after
->   the merging with other patches, it always crashes as btrfs/060.
+> On Fri, May 17, 2024 at 02:13:23PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > We do have some data races when accessing an inode's delayed_node, name=
+ly
+> > we use READ_ONCE() in a couple places while there's no pairing WRITE_ON=
+CE()
+> > anywhere, and in one place (btrfs_dirty_inode()) we neither user READ_O=
+NCE()
+> > nor take the lock that protects the delayed_node. So fix these and add
+> > helpers to access and update an inode's delayed_node.
+> >
+> > Filipe Manana (3):
+> >   btrfs: always set an inode's delayed_inode with WRITE_ONCE()
+> >   btrfs: use READ_ONCE() when accessing delayed_node at btrfs_dirty_nod=
+e()
+> >   btrfs: add and use helpers to get and set an inode's delayed_node
 >
-> - Fix an error in the final cleanup patch
->   It's the NOCOW/PREALLOC shenanigans again, in the buffered NOCOW path,
->   that we have to use the old inaccurate numbers for NOCOW/PREALLOC OEs.
+> The READ_ONCE for delayed nodes has been there historically but I don't
+> think it's needed everywhere. The legitimate case is in
+> btrfs_get_delayed_node() where first use is without lock and then again
+> recheck under the lock so we do want to read fresh value. This is to
+> prevent compiler optimization to coalesce the reads.
 >
-> - Split the final cleanup into 4 patches
->   Most cleanups are very straightforward, but the cleanup for
->   btrfs_alloc_ordered_extent() needs extra special handling for
->   NOCOW/PREALLOC.
+> Writing to delayed node under lock also does not need WRITE_ONCE.
 >
-> v1:
-> - Rebased to the latest for-next
->   To resolve the conflicts with the recently introduced extent map
->   shrinker
->
-> - A new cleanup patch to remove the recursive header inclusion
->
-> - Use a new structure to pass the file extent item related members
->   around
->
-> - Add a new comment on why we're intentionally passing incorrect
->   numbers for NOCOW/PREALLOC ordered extents inside
->   btrfs_create_dio_extent()
->
-> [REPO]
-> https://github.com/adam900710/linux/tree/em_cleanup
->
-> This series introduce two new members (disk_bytenr/offset) to
-> extent_map, and removes three old members
-> (block_start/block_len/offset), finally rename one member
-> (orig_block_len -> disk_num_bytes).
->
-> This should save us one u64 for extent_map, although with the recent
-> extent map shrinker, the saving is not that useful.
+> IOW, I would rather remove use of the _ONCE helpers and not add more as
+> it is not the pattern where it's supposed to be used. You say it's to
+> prevent load tearing but for a pointer type this does not happen and is
+> an assumption of the hardware.
 
-The shrinker doesn't invalidate or make this patchset less useful.
-
-It's always good to reduce the size of a structure like this for which
-we can easily have millions of instances, it reduces the number of
-pages we consume.
-
-Things are a bit hard to review here, because a lot of code is added
-and then removed later and fields at a time, so a lot of cross
-reference checks are needed.
-Changing the approach here would be a lot of work, and probably would
-be more bike shedding than anything else.
-
-But it looks fine, and all the comments on the individual patches are
-minor, except for a bug in patch 8/11.
-
-Thanks!
-
->
-> But to make things safe to migrate, I introduce extra sanity checks for
-> extent_map, and do cross check for both old and new members.
->
-> The extra sanity checks already exposed one bug (thankfully harmless)
-> causing em::block_start to be incorrect.
->
-> But so far, the patchset is fine for default fstests run.
->
-> Furthermore, since we're already having too long parameter lists for
-> extent_map/ordered_extent/can_nocow_extent, here is a new structure,
-> btrfs_file_extent, a memory-access-friendly structure to represent a
-> btrfs_file_extent_item.
->
-> With the help of that structure, we can use that to represent a file
-> extent item without a super long parameter list.
->
-> The patchset would rename orig_block_len to disk_num_bytes first.
-> Then introduce the new member, the extra sanity checks, and introduce the
-> new btrfs_file_extent structure and use that to remove the older 3 member=
-s
-> from extent_map.
->
-> After all above works done, use btrfs_file_extent to further cleanup
-> can_nocow_file_extent_args()/btrfs_alloc_ordered_extent()/create_io_em()/
-> btrfs_create_dio_extent().
->
-> The cleanup is in fact pretty tricky, the current code base never
-> expects correct numbers for NOCOW/PREALLOC OEs, thus we have to keep the
-> old but incorrect numbers just for NOCOW/PREALLOC.
->
-> I will address the NOCOW/PREALLOC shenanigans the future, but
-> after the huge cleanup across multiple core structures.
->
-> Qu Wenruo (11):
->   btrfs: rename extent_map::orig_block_len to disk_num_bytes
->   btrfs: export the expected file extent through can_nocow_extent()
->   btrfs: introduce new members for extent_map
->   btrfs: introduce extra sanity checks for extent maps
->   btrfs: remove extent_map::orig_start member
->   btrfs: remove extent_map::block_len member
->   btrfs: remove extent_map::block_start member
->   btrfs: cleanup duplicated parameters related to
->     can_nocow_file_extent_args
->   btrfs: cleanup duplicated parameters related to
->     btrfs_alloc_ordered_extent
->   btrfs: cleanup duplicated parameters related to create_io_em()
->   btrfs: cleanup duplicated parameters related to
->     btrfs_create_dio_extent()
->
->  fs/btrfs/btrfs_inode.h            |   4 +-
->  fs/btrfs/compression.c            |   7 +-
->  fs/btrfs/defrag.c                 |  14 +-
->  fs/btrfs/extent_io.c              |  10 +-
->  fs/btrfs/extent_map.c             | 187 ++++++++++++------
->  fs/btrfs/extent_map.h             |  51 +++--
->  fs/btrfs/file-item.c              |  23 +--
->  fs/btrfs/file.c                   |  18 +-
->  fs/btrfs/inode.c                  | 308 +++++++++++++-----------------
->  fs/btrfs/ordered-data.c           |  36 +++-
->  fs/btrfs/ordered-data.h           |  22 ++-
->  fs/btrfs/relocation.c             |   5 +-
->  fs/btrfs/tests/extent-map-tests.c | 114 ++++++-----
->  fs/btrfs/tests/inode-tests.c      | 177 ++++++++---------
->  fs/btrfs/tree-log.c               |  25 +--
->  fs/btrfs/zoned.c                  |   4 +-
->  include/trace/events/btrfs.h      |  26 +--
->  17 files changed, 548 insertions(+), 483 deletions(-)
->
-> --
-> 2.45.0
->
->
+If you are sure that pointers aren't subject to load/store tearing
+issues, then I'm fine with dropping the patchset.
 
