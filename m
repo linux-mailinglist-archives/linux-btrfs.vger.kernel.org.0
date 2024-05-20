@@ -1,75 +1,75 @@
-Return-Path: <linux-btrfs+bounces-5099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5100-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4B098C98E5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 08:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D90058C98F3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 08:28:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EF4F281A02
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 06:04:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BAA0281333
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 06:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E313171A4;
-	Mon, 20 May 2024 06:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514A417571;
+	Mon, 20 May 2024 06:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MrXdDd8s"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SEDBd0iW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E8E18EA1
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 06:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00168C06
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 06:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716185068; cv=none; b=GlsonZM29BcyAxTJCFJmEVr2X+Nu9OHUM+YKWeA8wvrU4XagMqOarPGlJbHAICmUUy1DEuud7nZJbUtvJP4nGt0ZQcoQ2NxzcxJUNJuXOB+N+RfdN+1HVI72M3mErWT1yXQ53kFjX+uaaBO/ENGuGyt8IrydL7utmpnnorMYteQ=
+	t=1716186494; cv=none; b=lSQr6WUy0hWmxWDN62f/OThfBl/saiTKeaXZxSrr34ulAFnNN8uTXlBJ1rkfbKU9vpj/eI6XsZtWlylIrpXydz8q87EzhJPmf75sTtMbsniz/11NyJhGBlxPYqUPlZLhCaz1gwuANVjwGRDDVpkuxhJDHdZ/NjbYw/LbZoOZQU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716185068; c=relaxed/simple;
-	bh=L35S21I6EOL0wIhF+JvwKnmJ6JvyvauHJhTgX+dL/po=;
+	s=arc-20240116; t=1716186494; c=relaxed/simple;
+	bh=3q2AIriNCxi852ZGILFpR2Zm5a2v5wnU2R9CT7hKYsU=;
 	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=EzCpcn81IxFsOW9mxyWei4oYbdMODFRVOO6wBWPeXGmUaXCMqnpb7tUMpNcPBvCy5r/9Xe80lIxkn9o1G1nCZppF44FG2o0W5lMLar4NZ3NTbQYeUKztepqj0MH6NeH6zgActXXC8tFt/w4LTTjlneKIPsuLqyHs061cKqtaJJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MrXdDd8s; arc=none smtp.client-ip=209.85.208.170
+	 In-Reply-To:Content-Type; b=tWCciW7KjHyt0goDKssukCZBvJvOf9MIPyZqFvD9en3FzZondicJstYQ/tmuRjL0Bna/JGSkPXTErRlF7NtNbP7zVEcmfDgAXnYeWJM+tO+s7EaM/CP5Pimj7l7UAuyNuAXBFwxoZkR1ICXgbCOBtzwD+8IobGlxQsFbfK5/h7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SEDBd0iW; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2e576057c06so29267601fa.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 23:04:25 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-34d7b0dac54so1097280f8f.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 May 2024 23:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1716185064; x=1716789864; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1716186490; x=1716791290; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :references:to:from:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=B1vEFC63p7M7OH+mqrvOAcLgWp67Tv2RDimsxgXVjRU=;
-        b=MrXdDd8smJy9fbcxsspr1Av3yidVLTro/Z8SP9PbJfMxuDgDqKP7WBvT0qN97Gg4nP
-         Gf6j8Dt5RpswCdEhBjPwg1WvdCWLao2Iab7U4FS1TiwQEftowydbarqV9kQlawwqzLvQ
-         kvdqZ29h6ccWPRH9fC9vmt9KB2Cbk5Uw8Xa0gllKVZFnelYR5yYWSZ5kEpFkrZIkl3MA
-         90lUswjFejS4xnw5EVEnc+ZNeTgyzIAJRkI8hdAMtOZw95s18H2riGgNlTzDx5LPTmCc
-         cccXykS0fwUwFB1QI1U8ksNIQqXT/uXqSJw3BMWLKYbjMzQB7kiOZ23epydPH+aRoFdA
-         XeCQ==
+        bh=Fv+XFOJ77il9YF4hp2aiEgnWz+/P8aeqPTnMMLKW1Vs=;
+        b=SEDBd0iWX1bmxVwcEnTYuHf44s/hMnQ53Ts6XVpmjcbUPXBvGiwUiQ91ej/8bKXlSw
+         y89ESV+4jiuhWW0F4UWIBl46vzMsVdrOOHOzm7ZaRgi7l93O+6TC89VDLTiO1xBVUuIc
+         HgI4dQteEphx1svuM1bpRJeXz0cV1LqQUoP1hHnG58r5v2QTX0RkK5a488Gp8vcAL8AI
+         tnCveP9aD5UtGkUZtZwmQNplKrIIUGi6VqUaYouPHzlQVWX6Fcp7blbuV4aTJZJi/wqT
+         ZjM+GEG+1L4DJMruwrEsS5AMaDi1wKwi6nJcA/U3gQ+0Yw7jqDoHLcvh8Cu1iV9E9KdU
+         CxPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716185064; x=1716789864;
+        d=1e100.net; s=20230601; t=1716186490; x=1716791290;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :references:to:from:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B1vEFC63p7M7OH+mqrvOAcLgWp67Tv2RDimsxgXVjRU=;
-        b=BTBm+QD4leiaM/4S+4aaRaAovExuZWKXhMYh1z/uPTGhtPSEfPXvfXvKgHU9+m3hdk
-         0/stlLj+aiDv4UQRWqYwniub/xBkiwok1cBZnKGzJTt7yvDcp3/B8HKq6KoAsNafHMv5
-         FqljkhuTGGdnk3fPw/aRNKzhV0zkza3lRexjIIzZF/Iw/u7I7hoyuvIU8/XoVw+mIUs6
-         nQpAb3lr5AVlpOOHVsJGHoY5SsdBF+o0XVGCRz87KXml3jglVkqTAJDNaaizhwM/wejZ
-         GY4T4Pi49CIaRvwEC2O3aA6vNSQS8PaS0lL8kfc8R2UirlMeUxxXZ9Kx8QhyaRJryK0h
-         LdZA==
-X-Gm-Message-State: AOJu0YwZnljx9EIuKXq9mJSEqBixmVWOwNI0/WQ9gTndjK4PsE/h3tVl
-	apzj2IVMD+cR1ooeyFOvmeKizkwXPi+SJqSKnL0LxLoB+EclKruHWJcXAz6rPl/d5GSmJP/txPj
-	j
-X-Google-Smtp-Source: AGHT+IGb2r8lcf1gXg8/0bLT3EPFFoY3QMdo50W76kmICun2PTDP/cRR79wHxrKp16ZRXbcEwGCZ8g==
-X-Received: by 2002:a2e:91ce:0:b0:2df:1e3e:327f with SMTP id 38308e7fff4ca-2e52039bcb3mr190996281fa.38.1716185063827;
-        Sun, 19 May 2024 23:04:23 -0700 (PDT)
+        bh=Fv+XFOJ77il9YF4hp2aiEgnWz+/P8aeqPTnMMLKW1Vs=;
+        b=r6zCpsPAluYxJMlj9ywACBJztnxQNHV3VCCRGur5FDlHh2NKKCP+lApoqL1ZNJWOqq
+         NWgy4STMBSSw5yA4ETSvXOCURYsABceZQIOKUi91i/Iw0ki1xl085PQTOBIRMQKjwoIb
+         pade7r2hbTL2rv5cuBAUnZ5Ht34R0372dHz2NJPMfbn5T6HsucykT5UsW2KYIz1BaciZ
+         qZyFvgy6VA+mKUy2u1q+8UNQhKze7zka/lIzByto6ihu9iulgs+pGKQA4brHyi93Ov85
+         sLv4cJqu5UOWyDnlHEcLFunpCMNs5FGjQ5SX6+UrG/x6FMB63jD2YCONaWM9YOBX6mDe
+         id7w==
+X-Gm-Message-State: AOJu0Ywrg0Mn8+VDyQhuKC4DKNLwptX1EOoJz3uG4Dh43xvQCGkQlZRO
+	xMt70NZs5xYkrOzvlaRrEJvXwEUYFYmQy9moN06YzEOEN9f6ZQ1s6Y5tH2u2jxmzw4lQuAazdNN
+	8
+X-Google-Smtp-Source: AGHT+IF0fE1Yw9r68x+2vWjezxkfDUXlByCWW49R46HePxDSz1OB6RLOKp3GxuRaauP9B5ABpHoq5g==
+X-Received: by 2002:adf:ebc8:0:b0:351:d9a1:4f1 with SMTP id ffacd0b85a97d-354b9068e46mr4206123f8f.32.1716186490125;
+        Sun, 19 May 2024 23:28:10 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2af2ab5sm18419859b3a.155.2024.05.19.23.04.22
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f2fce9680csm15800775ad.222.2024.05.19.23.28.08
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 May 2024 23:04:23 -0700 (PDT)
-Message-ID: <d1e442ad-ca7d-46e6-a68b-34908d25b44e@suse.com>
-Date: Mon, 20 May 2024 15:34:19 +0930
+        Sun, 19 May 2024 23:28:09 -0700 (PDT)
+Message-ID: <e50756fa-f062-4786-9eaf-402c9f263b08@suse.com>
+Date: Mon, 20 May 2024 15:58:05 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,6 +82,7 @@ Subject: Re: [PATCH] btrfs: do not clear page dirty at
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
 References: <868d6dec9ccac2f7cb320668b5bf4d53887a4eb6.1716175411.git.wqu@suse.com>
+ <d1e442ad-ca7d-46e6-a68b-34908d25b44e@suse.com>
 Content-Language: en-US
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -107,60 +108,67 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <868d6dec9ccac2f7cb320668b5bf4d53887a4eb6.1716175411.git.wqu@suse.com>
+In-Reply-To: <d1e442ad-ca7d-46e6-a68b-34908d25b44e@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/5/20 13:00, Qu Wenruo 写道:
-> [PROBLEM]
-> Currently we call folio_clear_dirty_for_io() for the locked dirty folio
-> inside extent_write_cache_pages().
+在 2024/5/20 15:34, Qu Wenruo 写道:
 > 
-> However this call is not really subpage aware, it's from the older days
-> where one page can only have one sector.
 > 
-> But with nowadays subpage support, we can have multiple sectors inside
-> one page, thus if we clear the whole page dirty flag, it would make the
-> subpage and page dirty flags desynchronize.
+> 在 2024/5/20 13:00, Qu Wenruo 写道:
+>> [PROBLEM]
+>> Currently we call folio_clear_dirty_for_io() for the locked dirty folio
+>> inside extent_write_cache_pages().
+>>
+>> However this call is not really subpage aware, it's from the older days
+>> where one page can only have one sector.
+>>
+>> But with nowadays subpage support, we can have multiple sectors inside
+>> one page, thus if we clear the whole page dirty flag, it would make the
+>> subpage and page dirty flags desynchronize.
+>>
+>> Thankfully this is not a big deal as our current subpage routine always
+>> call __extent_writepage_io() for all the subpage dirty ranges, thus it
+>> would ensure there is no subpage range dirty left.
+>>
+>> [FIX]
+>> So here we just drop the folio_clear_dirty_for_io() call, and let
+>> __extent_writepage_io() and extent_clear_unlock_delalloc() (which is for
+>> compression path) to handle the dirty page and subapge clearing.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > 
-> Thankfully this is not a big deal as our current subpage routine always
-> call __extent_writepage_io() for all the subpage dirty ranges, thus it
-> would ensure there is no subpage range dirty left.
+> Please drop the patch.
 > 
-> [FIX]
-> So here we just drop the folio_clear_dirty_for_io() call, and let
-> __extent_writepage_io() and extent_clear_unlock_delalloc() (which is for
-> compression path) to handle the dirty page and subapge clearing.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Weirdly with this one, generic/027 would hang on locking the page...
 
-Please drop the patch.
+More weirdly, this only happens for aarch64 subpage cases...
 
-Weirdly with this one, generic/027 would hang on locking the page...
-
-Thanks,
-Qu
-> ---
-> This patch is independent from the subpage zoned fixes, thus it can be
-> applied either before or after the subpage zoned fixes.
-> ---
->   fs/btrfs/extent_io.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 7275bd919a3e..a8fc0fcfa69f 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2231,8 +2231,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
->   				folio_wait_writeback(folio);
->   			}
->   
-> -			if (folio_test_writeback(folio) ||
-> -			    !folio_clear_dirty_for_io(folio)) {
-> +			if (folio_test_writeback(folio)) {
->   				folio_unlock(folio);
->   				continue;
->   			}
+> Thanks,
+> Qu
+>> ---
+>> This patch is independent from the subpage zoned fixes, thus it can be
+>> applied either before or after the subpage zoned fixes.
+>> ---
+>>   fs/btrfs/extent_io.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 7275bd919a3e..a8fc0fcfa69f 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -2231,8 +2231,7 @@ static int extent_write_cache_pages(struct 
+>> address_space *mapping,
+>>                   folio_wait_writeback(folio);
+>>               }
+>> -            if (folio_test_writeback(folio) ||
+>> -                !folio_clear_dirty_for_io(folio)) {
+>> +            if (folio_test_writeback(folio)) {
+>>                   folio_unlock(folio);
+>>                   continue;
+>>               }
+> 
 
