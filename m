@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-5122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488C48CA2ED
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 21:52:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE9F8CA2EF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 21:52:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF6AB216EC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 19:52:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 072DF1F2208E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 19:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E80313957B;
-	Mon, 20 May 2024 19:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7482F139593;
+	Mon, 20 May 2024 19:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mYcEH79u";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mYcEH79u"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SUdv9cp6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SUdv9cp6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5E9114A8B
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 19:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A5813956C
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 19:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716234748; cv=none; b=hvg/ZSYZnazmdvAIRue24t8AlE/SLY0RBXuL3E8ApcKYG8ldHxeCYM0NlHBP9ZloZ0rIz3jHIogyNplq/ao1ibd3ddfA4DVhGEMKofKzZ+EL1J0J6llydMRX5ee+6vPke4rJQhow1Sch3tHjtwwmBB0bL3KoFtkAGi0CVBwa4qc=
+	t=1716234750; cv=none; b=MmYX7Veuhxy/ir+EA4fTUBtDv5n0pN9e2vdPFtU1O9TIinZZ/YnCxr7AMBLQ13QiNwg6usdMua7FK/PR5OCmExE3vQcw1LvkSe7BMorsXuMopMiKGLKc/cPKY8cFiia9VCF9pcEkOozmkCLmKqPK6ypcLFOtrK75NsMDFaEbk5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716234748; c=relaxed/simple;
-	bh=1fG3QvwBNmfSaEdj/CcVR+aFzLhT8Q08M0BncEmFccw=;
+	s=arc-20240116; t=1716234750; c=relaxed/simple;
+	bh=xSFP6HTsslEGyni0bUYIXAJZP7yKVCHiZXgrbFVX088=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ab6bqsEstza1gmqrY668bjfOQVzwBVoLZ+keAoRcdqFuvFcXJN2XR2gOLH4fyrD4Pcuohoye0UORnbUqSy677h/P+kTnZ79UnNgWcbkDZSGpVVhiTd6ugiH1o84fpMyPdB1XTyprFOkl8o0Vc+mVWiYXHODtVk3qFFCpQpXf1Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mYcEH79u; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mYcEH79u; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=tl4xYguQC4W+QD5fZuGosc6jzK2vJeBrDm/vZGN1JhMZHctHnMLMPhNgAOXBzHPvMVkB921tsOktw4lJmqsopso6CH8kbxrBz0eo/gKCM7q/CPDcZveR9S+r+SncH161NUGVIpvkWRReblyIvBBhJRk0KDONIJeWRR4T4X06Cpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SUdv9cp6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SUdv9cp6; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9E3C520F86;
-	Mon, 20 May 2024 19:52:24 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 13DDB33EBE;
+	Mon, 20 May 2024 19:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716234744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1716234747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nnXCaL96VqCxOhtNnS6KlQGDyBm9uUYC2J7bh4iPKGY=;
-	b=mYcEH79urJXjNwe+6l0WXTHuY8MnlNWjT6zPxEBa+4TEV704lbjIKqBdzfA50Fj31P9TKU
-	DUZaIBtt4MhvFqlG+Uv/+Qn+QYR6UDgyM7Ic1INzzB/33nDGIZlVsbdKRWbUHh6w2haJtZ
-	uM0gwp8aZzmTcPF86ThFBt33fA0dMHs=
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=qwy7b2KcUtkk739VeI7Ogwt7F2F7UMfsxgSe2LrbMaw=;
+	b=SUdv9cp6IY+Kg9Ln1/1zEmD03SqLwVF7CPYwoSeHMVNf1cx976wgsWoPTu5C0laNtd1elE
+	kAyR6FrTG+bw0EGUBf3L6vrDgawuVsm1mIwdfEMrKJn4T5BVb+mA/Mzfx2K0bg3D9loHA4
+	Z2R3QpCPqa5cajWhyhTpO8yBJ0E+zi8=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=SUdv9cp6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716234744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1716234747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nnXCaL96VqCxOhtNnS6KlQGDyBm9uUYC2J7bh4iPKGY=;
-	b=mYcEH79urJXjNwe+6l0WXTHuY8MnlNWjT6zPxEBa+4TEV704lbjIKqBdzfA50Fj31P9TKU
-	DUZaIBtt4MhvFqlG+Uv/+Qn+QYR6UDgyM7Ic1INzzB/33nDGIZlVsbdKRWbUHh6w2haJtZ
-	uM0gwp8aZzmTcPF86ThFBt33fA0dMHs=
+	bh=qwy7b2KcUtkk739VeI7Ogwt7F2F7UMfsxgSe2LrbMaw=;
+	b=SUdv9cp6IY+Kg9Ln1/1zEmD03SqLwVF7CPYwoSeHMVNf1cx976wgsWoPTu5C0laNtd1elE
+	kAyR6FrTG+bw0EGUBf3L6vrDgawuVsm1mIwdfEMrKJn4T5BVb+mA/Mzfx2K0bg3D9loHA4
+	Z2R3QpCPqa5cajWhyhTpO8yBJ0E+zi8=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 980A513A6B;
-	Mon, 20 May 2024 19:52:24 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0DA5113A6B;
+	Mon, 20 May 2024 19:52:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id S2cbJfipS2Y3RQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Mon, 20 May 2024 19:52:24 +0000
+	id y7VVA/upS2bvRQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 20 May 2024 19:52:27 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/6] btrfs: rename macro local variables that clash with other variables
-Date: Mon, 20 May 2024 21:52:20 +0200
-Message-ID: <816e099dd10923724c6ead6661542987c2f6de52.1716234472.git.dsterba@suse.com>
+Subject: [PATCH 3/6] btrfs: use for-local variabls that shadow function variables
+Date: Mon, 20 May 2024 21:52:26 +0200
+Message-ID: <6cebc0c327002303ed351b262396aefbf68cff1b.1716234472.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1716234472.git.dsterba@suse.com>
 References: <cover.1716234472.git.dsterba@suse.com>
@@ -84,89 +84,181 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -0.21
 X-Spam-Level: 
-X-Spamd-Result: default: False [-0.21 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	BAYES_HAM(-0.41)[77.89%];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
+	MX_GOOD(-0.01)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
 	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	RCVD_TLS_ALL(0.00)[]
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 13DDB33EBE
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
 
-Fix variable names in two macros where there's a local function variable
-of the same name.  In subpage_calc_start_bit() it's in several callers,
-in btrfs_abort_transaction() it's only in replace_file_extents().
-Found by 'make W=2'.
+We've started to use for-loop local variables and in a few places this
+shadows a function variable. Convert a few cases reported by 'make W=2'.
+If applicable also change the style to post-increment, that's the
+preferred one.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/subpage.c     | 8 ++++----
- fs/btrfs/transaction.h | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/qgroup.c  | 11 +++++------
+ fs/btrfs/volumes.c |  9 +++------
+ fs/btrfs/zoned.c   |  8 +++-----
+ 3 files changed, 11 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 54736f6238e6..9127704236ab 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -242,12 +242,12 @@ static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index fc2a7ea26354..a94a5b87b042 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3216,7 +3216,6 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 			 struct btrfs_qgroup_inherit *inherit)
+ {
+ 	int ret = 0;
+-	int i;
+ 	u64 *i_qgroups;
+ 	bool committing = false;
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+@@ -3273,7 +3272,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		i_qgroups = (u64 *)(inherit + 1);
+ 		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
+ 		       2 * inherit->num_excl_copies;
+-		for (i = 0; i < nums; ++i) {
++		for (int i = 0; i < nums; i++) {
+ 			srcgroup = find_qgroup_rb(fs_info, *i_qgroups);
  
- #define subpage_calc_start_bit(fs_info, folio, name, start, len)	\
- ({									\
--	unsigned int start_bit;						\
-+	unsigned int __start_bit;						\
- 									\
- 	btrfs_subpage_assert(fs_info, folio, start, len);		\
--	start_bit = offset_in_page(start) >> fs_info->sectorsize_bits;	\
--	start_bit += fs_info->subpage_info->name##_offset;		\
--	start_bit;							\
-+	__start_bit = offset_in_page(start) >> fs_info->sectorsize_bits;	\
-+	__start_bit += fs_info->subpage_info->name##_offset;		\
-+	__start_bit;							\
- })
+ 			/*
+@@ -3300,7 +3299,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	 */
+ 	if (inherit) {
+ 		i_qgroups = (u64 *)(inherit + 1);
+-		for (i = 0; i < inherit->num_qgroups; ++i, ++i_qgroups) {
++		for (int i = 0; i < inherit->num_qgroups; i++, i_qgroups++) {
+ 			if (*i_qgroups == 0)
+ 				continue;
+ 			ret = add_qgroup_relation_item(trans, objectid,
+@@ -3386,7 +3385,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		goto unlock;
  
- void btrfs_subpage_start_reader(const struct btrfs_fs_info *fs_info,
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 4e451ab173b1..90b987941dd1 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -229,11 +229,11 @@ bool __cold abort_should_print_stack(int error);
-  */
- #define btrfs_abort_transaction(trans, error)		\
- do {								\
--	bool first = false;					\
-+	bool __first = false;					\
- 	/* Report first abort since mount */			\
- 	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,	\
- 			&((trans)->fs_info->fs_state))) {	\
--		first = true;					\
-+		__first = true;					\
- 		if (WARN(abort_should_print_stack(error),	\
- 			KERN_ERR				\
- 			"BTRFS: Transaction aborted (error %d)\n",	\
-@@ -246,7 +246,7 @@ do {								\
- 		}						\
- 	}							\
- 	__btrfs_abort_transaction((trans), __func__,		\
--				  __LINE__, (error), first);	\
-+				  __LINE__, (error), __first);	\
- } while (0)
+ 	i_qgroups = (u64 *)(inherit + 1);
+-	for (i = 0; i < inherit->num_qgroups; ++i) {
++	for (int i = 0; i < inherit->num_qgroups; i++) {
+ 		if (*i_qgroups) {
+ 			ret = add_relation_rb(fs_info, qlist_prealloc[i], objectid,
+ 					      *i_qgroups);
+@@ -3406,7 +3405,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		++i_qgroups;
+ 	}
  
- int btrfs_end_transaction(struct btrfs_trans_handle *trans);
+-	for (i = 0; i <  inherit->num_ref_copies; ++i, i_qgroups += 2) {
++	for (int i = 0; i < inherit->num_ref_copies; i++, i_qgroups += 2) {
+ 		struct btrfs_qgroup *src;
+ 		struct btrfs_qgroup *dst;
+ 
+@@ -3427,7 +3426,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 		/* Manually tweaking numbers certainly needs a rescan */
+ 		need_rescan = true;
+ 	}
+-	for (i = 0; i <  inherit->num_excl_copies; ++i, i_qgroups += 2) {
++	for (int i = 0; i <  inherit->num_excl_copies; i++, i_qgroups += 2) {
+ 		struct btrfs_qgroup *src;
+ 		struct btrfs_qgroup *dst;
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 7c9d68b1ba69..3f70f727dacf 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5623,8 +5623,6 @@ static struct btrfs_block_group *create_chunk(struct btrfs_trans_handle *trans,
+ 	u64 start = ctl->start;
+ 	u64 type = ctl->type;
+ 	int ret;
+-	int i;
+-	int j;
+ 
+ 	map = btrfs_alloc_chunk_map(ctl->num_stripes, GFP_NOFS);
+ 	if (!map)
+@@ -5639,8 +5637,8 @@ static struct btrfs_block_group *create_chunk(struct btrfs_trans_handle *trans,
+ 	map->sub_stripes = ctl->sub_stripes;
+ 	map->num_stripes = ctl->num_stripes;
+ 
+-	for (i = 0; i < ctl->ndevs; ++i) {
+-		for (j = 0; j < ctl->dev_stripes; ++j) {
++	for (int i = 0; i < ctl->ndevs; i++) {
++		for (int j = 0; j < ctl->dev_stripes; j++) {
+ 			int s = i * ctl->dev_stripes + j;
+ 			map->stripes[s].dev = devices_info[i].dev;
+ 			map->stripes[s].physical = devices_info[i].dev_offset +
+@@ -6618,7 +6616,6 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	struct btrfs_chunk_map *map;
+ 	struct btrfs_io_geometry io_geom = { 0 };
+ 	u64 map_offset;
+-	int i;
+ 	int ret = 0;
+ 	int num_copies;
+ 	struct btrfs_io_context *bioc = NULL;
+@@ -6764,7 +6761,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		 * For all other non-RAID56 profiles, just copy the target
+ 		 * stripe into the bioc.
+ 		 */
+-		for (i = 0; i < io_geom.num_stripes; i++) {
++		for (int i = 0; i < io_geom.num_stripes; i++) {
+ 			ret = set_io_stripe(fs_info, logical, length,
+ 					    &bioc->stripes[i], map, &io_geom);
+ 			if (ret < 0)
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index dde4a0a34037..e9087264f3e3 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -87,9 +87,8 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
+ 	bool empty[BTRFS_NR_SB_LOG_ZONES];
+ 	bool full[BTRFS_NR_SB_LOG_ZONES];
+ 	sector_t sector;
+-	int i;
+ 
+-	for (i = 0; i < BTRFS_NR_SB_LOG_ZONES; i++) {
++	for (int i = 0; i < BTRFS_NR_SB_LOG_ZONES; i++) {
+ 		ASSERT(zones[i].type != BLK_ZONE_TYPE_CONVENTIONAL);
+ 		empty[i] = (zones[i].cond == BLK_ZONE_COND_EMPTY);
+ 		full[i] = sb_zone_is_full(&zones[i]);
+@@ -121,9 +120,8 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
+ 		struct address_space *mapping = bdev->bd_inode->i_mapping;
+ 		struct page *page[BTRFS_NR_SB_LOG_ZONES];
+ 		struct btrfs_super_block *super[BTRFS_NR_SB_LOG_ZONES];
+-		int i;
+ 
+-		for (i = 0; i < BTRFS_NR_SB_LOG_ZONES; i++) {
++		for (int i = 0; i < BTRFS_NR_SB_LOG_ZONES; i++) {
+ 			u64 zone_end = (zones[i].start + zones[i].capacity) << SECTOR_SHIFT;
+ 			u64 bytenr = ALIGN_DOWN(zone_end, BTRFS_SUPER_INFO_SIZE) -
+ 						BTRFS_SUPER_INFO_SIZE;
+@@ -144,7 +142,7 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
+ 		else
+ 			sector = zones[0].start;
+ 
+-		for (i = 0; i < BTRFS_NR_SB_LOG_ZONES; i++)
++		for (int i = 0; i < BTRFS_NR_SB_LOG_ZONES; i++)
+ 			btrfs_release_disk_super(super[i]);
+ 	} else if (!full[0] && (empty[1] || full[1])) {
+ 		sector = zones[0].wp;
 -- 
 2.45.0
 
