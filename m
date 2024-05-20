@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-5109-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5110-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68698C9B1D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 12:20:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B80BA8C9B26
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 12:23:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E453280CE7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 10:20:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CF871F21A3F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 10:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF31E4DA10;
-	Mon, 20 May 2024 10:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3304F1F9;
+	Mon, 20 May 2024 10:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="O6DdkQL+"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Ht51+dQ1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C2514285
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 10:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CBD225AF
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 10:23:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716200446; cv=none; b=mCi9WGX1Mtp2wMYFFEOtZZsORxhr2sp+rnKk1b+J0vS89bXKLDVilPrSkmQvLo2/5FmJtIaZ+/eJAPm8X9dxdOGXs8cOobwFL4r/53e+pNbGkYbZVfC8r048COJpHiKSr4oMV3TC3Vr7thbVeoXrnoKH3xeKYkoPVO61moyE/RE=
+	t=1716200613; cv=none; b=o5YFhmeh31OWcyJcForxCH1INTn+BASAlrf1fEBYABdVdnavT89HBxrgdX4iVQhHrLHuPVzzRIDd9p1rvkmD/LdnxrHMoqT/a2ES8FGIYMGIxfpnXtmNhkgYme1C/qPPh+O9EdfjRL9OsKPCvC7Vwdxzug0a3Ku7FxF5FB547dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716200446; c=relaxed/simple;
-	bh=7sbg6l/oMi8rly8YZP8sofmVh6vwF7pauXwSmDDG9Rs=;
+	s=arc-20240116; t=1716200613; c=relaxed/simple;
+	bh=CnDlYKUsSc1Pn48rR9N0/TMUlxESY0nSTDqlau+B9WU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Rt9FNtB2oiWaYxjNCmbhwg151Uxzcvyue5NEB0WmT3etb8H7GRfdLe53Kn9ZQdkLUR7iw0aajwGWiVQB8u25tbpI7kQ3ikOKOUkZ9BFS0PZjhIjmxdI3Fn38TWZ6+st6lXWAibi9bY71LqqrrpVffMcL4ExM/m3MzOwC9xU6LCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=O6DdkQL+; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=TIqVxLTzW5rMrnWty86hBp/ZH+vpYVeoF3xY0/Yv5+iD7350LOS37LS3aqx35SFP2KsXc6xPNyR7kgwBWy0MhSHd65L4vDnbEn+KC/IO0TxIj02tKilt3WVRRG+9K5ZoyBEft/hrDiJ6ZxavnaWZUHE7eR6S73zMxj3B/SXSjQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Ht51+dQ1; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1716200435; x=1716805235; i=quwenruo.btrfs@gmx.com;
-	bh=vjZMO4YouaN3nKQmuGjexdHIJ621I3XkZSIz+IP9pVg=;
+	s=s31663417; t=1716200604; x=1716805404; i=quwenruo.btrfs@gmx.com;
+	bh=TG3mVu0S+txaRxDMiy34D1/vTiX2nKL6o/Vvgj2Gw4M=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=O6DdkQL+Mvud9N3XivqNZxcC2kzu8vXc429n2SCmnBItafhdPVaUo8sgTcr8sw2z
-	 k/G3JysM5tdm38DMj2venp4JPVF+ojaw11iqDm0y6/CeSO1zbUaqWtdB4DB2xhLGz
-	 ZvIslCbtxPeWKb0P++U4ccifItNvd8WPP6HMuOyT6pShYADl6u3Mb88PexEDizoyt
-	 KHOwzPccKC5YPLeNZVEF3oNHddrS6JWWwK3jTm5/vSK3ne089AySwQt5jTqDvl5QP
-	 b72GtgMIy/iukaipbAqcIX8swW8kzgcslD6MaXqo8wj423B2IDD0P4b0OpYTxQOSw
-	 IpwjltHab7qwaKFcxA==
+	b=Ht51+dQ1hHsrMsDu/o9ow53LnUYeqskjD+1Kmk5T0qEYHE5vYSmkqQ0KyT823yBE
+	 8WehexbcizucI9hNtMHh35T1uXXTTyNaapgXAws4vvJekmTOs/969jsl/4RYd26Sg
+	 cadl0pRsiLrIhMy6dx8EQgeRu2Yq1jXdeXvGgYWrtQnteFHf3jxaGFTcgVjQ8jGgV
+	 fyPudaqemVcbYGqjQlkX0reGTiNpBVpreJQGZiHGhrURCwfzDvfUZ735nriSjndbZ
+	 zzBlm7c7wTxiRPdA9BI2ct9B5ONv6A2CxsQ0fonM66/qGDQZW16xHt/cSqQW7aWR1
+	 1CaYJEe/Xj9Narza/Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAfUe-1sFZhS3MKG-00ACbn; Mon, 20
- May 2024 12:20:35 +0200
-Message-ID: <e50e7918-373c-4349-a81d-e8b0dd0c0a88@gmx.com>
-Date: Mon, 20 May 2024 19:50:30 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHnm-1sO4FV1RIA-00szeD; Mon, 20
+ May 2024 12:23:24 +0200
+Message-ID: <375277e1-f1db-4a23-965f-2f04638a2a83@gmx.com>
+Date: Mon, 20 May 2024 19:53:19 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/6] btrfs: ensure fast fsync waits for ordered extents
- after a write failure
+Subject: Re: [PATCH v4 0/6] btrfs: fix logging unwritten extents after failure
+ in write paths
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1716053516.git.fdmanana@suse.com>
- <3aac8d8b6e6caab81b3726ff857684c08fb2346d.1716053516.git.fdmanana@suse.com>
+References: <cover.1715964570.git.fdmanana@suse.com>
+ <cover.1716053516.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,239 +89,93 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <3aac8d8b6e6caab81b3726ff857684c08fb2346d.1716053516.git.fdmanana@suse.com>
+In-Reply-To: <cover.1716053516.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3UenVKs7/GCpTSYrhFTLb2JIzAULpvfgKjOWXc1jv0pA6ScqM82
- 0EvKqX4PUmObCWh+9g6RJajK9o5oR1DUKQPUsB8XPYHw6/XgnkH5wkldv6T88YCHVBMXemW
- ULsxpXmQWOZnHW0L2dF0RDI3E1NIi6RKNTT7d2fVe8oMU9uZpszBvsXrZ4e9F7MhTHThjz5
- RAWkgZM4M45iDI6gP/H5w==
+X-Provags-ID: V03:K1:x4jiv70G6IyHYs34W6cbMZ5iMnbWJ3AbQbOkO0PH2Ksn7wroRaJ
+ 7EaZXVZxcpLj2kP/615xJQt7+R26dG2hFk8qxGjCmzCj9iGB5Cr3rIsrujGREqqYG4vv4ax
+ KFyPXWu3EwwTNdzhQbs2XddOJoDP3Tc6PimojrV/l4mNoIkVfN6pF6m0VYi77gtnnkxnQE7
+ PPJEBIkjzoo4klxi6V/SQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:bh3Dd4Dd1+c=;35DTrkwnuVsdgDa9ZlgCXd0GMPG
- K8OV6g7EZZNul5RaHy+vg88zIgRfUBZb341RBPH+W4kISIMnAA1Qi9OTyTnfS3FJsIDRkM+LF
- ovNiZe71MxarImtYw3nU/oYN1XJFJB82XhbZd/j1U04bGYkfq+xUdTCzkm5OduwojfGBboTMu
- Av5Cxl4L66ggAwnt6f0Fl4mbqm3qrrE60eOYZ/VIHZ53526h8V079PKh4fEpuX7x1+sgFM4Hm
- sEX03LQrfpMNxQ0VDak5Gc6QslTyb5YsvepKiCW1ChzFLc+kX/8WFk0uDC+LYcYoJY4dFPPkO
- ZvIOGDPSnVz4i3ZLkdY2nUEs6Gy9re969aaqrbwzaSd596wRG1Mq8PA1Kw0Nit9f54d41Ot3P
- QLPvvxRgKquYxzSb9HAbQ7QHGaVPJtnP5i0xISs8P6GapNrfgkUDfZMqMKluGhi7nGJ/hmuGQ
- RpcEzUCIxC+LO71+4ZUeZfKUaxhl0zFto0XW9tJmrbia+vRkzwYj7voSe7zv1Ie0QMSbWc9M2
- pJMoDf8H6+7o7pgObo/KEjFpYPQlyvNrXq6OrC7GZJALxP4x00FOJmBkqZK/+ZmLoSxo+bVUR
- J8ZYEoYGYP4/Q1BTvn8kDTs++I7seI3S4MTOvGPMgFMIg5vksAN8CmzoZO4zNzk38prwPx0FR
- sdpmwJy5zVpiBb1TdvXqqCSGClJu3lMXdNAhEbrrpRZ+ooS9bWRg9iZlGGNh4YxNOygs02CFb
- 75cPqjQIgCZMsxMetJM+cnBMQ6Iw7KPTb0ZYVbFLKBMHExn/czfts4RPuQRTu+Tf5+bMoPtDI
- U0zkI4Hs1wWR14elZN95XjcBDe8DfocJ89wCRNPW7LjrU=
+UI-OutboundReport: notjunk:1;M01:P0:gywdOkr6gnA=;8wHcZndhVPuBmRkrKIxLTwKLVkO
+ s5luAtVAtL7j4dzksjZN3RuxbwPoznH2zKbPWAd8kT2aEKG/L4hWc2QtyF6u4vc0tqetIdisr
+ zcNGc/1ZIJe70NIB7pI7kRmFQC7J0sNZh5Z9YN/T+7bia7eCvuptqMvmzCJzx5mVZi8I12ups
+ 9ylIOpkycyuxC6TViSst8rZqRVUzOExIlWEdSuWAI+oihrmawvw0HojBBZn+AIL0FJKhEILfi
+ RYOPNuzEtNZeZyyPHBr5WcNd6PXaFDcUP/yjLQeiabqxDSPL2FqxD9sXDp7S5p24qgWX59uqq
+ 5MmJqGmV6bgJxVzXKd0YshKrDjOw0BeBAsuybajggzjf6sVcoEOj4EKw4qDzDZdCfDNIEfDs3
+ BWoqJQPSqeHOVmdnduc9IF6OUUbzVtX+vC0h0ltu2/lVwIEMusml16AOtnAuABMhX11160TNR
+ PN9s34eBfbGicf8N1SjLkJT35jN7a2AD7Jz+P1Xa9ERYlldDrLudllriXvT+uBtCq6B0pagS+
+ 0zNHTrBjXhQk8kwPEgEUfnydFglIpA2wZOYVFbfgmb49b+no4W+heEL2D+bQYsPZkZZbMeghN
+ Yi0JWt0vqq63MaYe76Y8wQbnxMYzXge0YDeDEiVTdL0zlTxWpcdkE9Tx5d0REzC7+oaTfCJ7a
+ ZdWhoLTiysJYSBr+BKfSXH7NMB33UlJGxCqWXKYMrODjc440Vglbm8q2/OWVQoeeJiZH0F5ZH
+ O+QOfOJHF8o2FHRZZAiNK+ZI8uR9KTbBXCF7vtsllm6pMZkZ4Uwyel9dmIRoSiV3JtQ0FzB6x
+ ztWcRzGUJ5Vo6ejDTO2NEprVcqHL2tYLRSr4qmJGflEB0=
 
 
 
 =E5=9C=A8 2024/5/20 19:16, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> If a write path in COW mode fails, either before submitting a bio for th=
-e
-> new extents or an actual IO error happens, we can end up allowing a fast
-> fsync to log file extent items that point to unwritten extents.
+> There's a bug where a fast fsync can log extent maps that were not writt=
+en
+> due to an error in a write path or during writeback. This affects both
+> direct IO writes and buffered writes, and besides the failure depends on
+> a race due to the fact that ordered extent completion happens in a work
+> queue and a fast fsync doesn't wait for ordered extent completion before
+> logging. The details are in the change log of the first patch.
 >
-> This is because dropping the extent maps happens when completing ordered
-> extents, at btrfs_finish_one_ordered(), and the completion of an ordered
-> extent is executed in a work queue.
->
-> This can result in a fast fsync to start logging file extent items based
-> on existing extent maps before the ordered extents complete, therefore
-> resulting in a log that has file extent items that point to unwritten
-> extents, resulting in a corrupt file if a crash happens after and the lo=
-g
-> tree is replayed the next time the fs is mounted.
->
-> This can happen for both direct IO writes and buffered writes.
->
-> For example consider a direct IO write, in COW mode, that fails at
-> btrfs_dio_submit_io() because btrfs_extract_ordered_extent() returned an
-> error:
->
-> 1) We call btrfs_finish_ordered_extent() with the 'uptodate' parameter
->     set to false, meaning an error happened;
->
-> 2) That results in marking the ordered extent with the BTRFS_ORDERED_IOE=
-RR
->     flag;
->
-> 3) btrfs_finish_ordered_extent() queues the completion of the ordered
->     extent - so that btrfs_finish_one_ordered() will be executed later i=
-n
->     a work queue. That function will drop extent maps in the range when
->     it's executed, since the extent maps point to unwritten locations
->     (signaled by the BTRFS_ORDERED_IOERR flag);
->
-> 4) After calling btrfs_finish_ordered_extent() we keep going down the
->     write path and unlock the inode;
->
-> 5) After that a fast fsync starts and locks the inode;
->
-> 6) Before the work queue executes btrfs_finish_one_ordered(), the fsync
->     task sees the extent maps that point to the unwritten locations and
->     logs file extent items based on them - it does not know they are
->     unwritten, and the fast fsync path does not wait for ordered extents
->     to complete, which is an intentional behaviour in order to reduce
->     latency.
->
-> For the buffered write case, here's one example:
->
-> 1) A fast fsync begins, and it starts by flushing delalloc and waiting f=
-or
->     the writeback to complete by calling filemap_fdatawait_range();
->
-> 2) Flushing the dellaloc created a new extent map X;
->
-> 3) During the writeback some IO error happened, and at the end io callba=
-ck
->     (end_bbio_data_write()) we call btrfs_finish_ordered_extent(), which
->     sets the BTRFS_ORDERED_IOERR flag in the ordered extent and queues i=
-ts
->     completion;
->
-> 4) After queuing the ordered extent completion, the end io callback clea=
-rs
->     the writeback flag from all pages (or folios), and from that moment =
-the
->     fast fsync can proceed;
->
-> 5) The fast fsync proceeds sees extent map X and logs a file extent item
->     based on extent map X, resulting in a log that points to an unwritte=
-n
->     data extent - because the ordered extent completion hasn't run yet, =
-it
->     happens only after the logging.
->
-> To fix this make btrfs_finish_ordered_extent() set the inode flag
-> BTRFS_INODE_NEEDS_FULL_SYNC in case an error happened for a COW write,
-> so that a fast fsync will wait for ordered extent completion.
->
-> Note that this issues of using extent maps that point to unwritten
-> locations can not happen for reads, because in read paths we start by
-> locking the extent range and wait for any ordered extents in the range
-> to complete before looking for extent maps.
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> V4: Use a slightly different approach to avoid a deadlock on the inode's
+>      spinlock due to it being used both in irq and non-irq context, poin=
+ted
+>      out by Qu.
+>      Added some cleanup patches (patches 3, 4, 5 and 6).
+
+The whole series looks good to me.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-So a new inode flag without touching the spinlock, that's a solid solution=
-.
-
 Thanks,
 Qu
-> ---
->   fs/btrfs/btrfs_inode.h  | 10 ++++++++++
->   fs/btrfs/file.c         | 16 ++++++++++++++++
->   fs/btrfs/ordered-data.c | 31 +++++++++++++++++++++++++++++++
->   3 files changed, 57 insertions(+)
 >
-> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> index 3c8bc7a8ebdd..46db4027bf15 100644
-> --- a/fs/btrfs/btrfs_inode.h
-> +++ b/fs/btrfs/btrfs_inode.h
-> @@ -112,6 +112,16 @@ enum {
->   	 * done at new_simple_dir(), called from btrfs_lookup_dentry().
->   	 */
->   	BTRFS_INODE_ROOT_STUB,
-> +	/*
-> +	 * Set if an error happened when doing a COW write before submitting a
-> +	 * bio or during writeback. Used for both buffered writes and direct I=
-O
-> +	 * writes. This is to signal a fast fsync that it has to wait for
-> +	 * ordered extents to complete and therefore not log extent maps that
-> +	 * point to unwritten extents (when an ordered extent completes and it
-> +	 * has the BTRFS_ORDERED_IOERR flag set, it drops extent maps in its
-> +	 * range).
-> +	 */
-> +	BTRFS_INODE_COW_WRITE_ERROR,
->   };
+> V3: Change the approach of patch 1/2 to not drop extent maps at
+>      btrfs_finish_ordered_extent() since that runs in irq context and
+>      dropping an extent map range triggers NOFS extent map allocations,
+>      which can trigger a reclaim and that can't run in irq context.
+>      Updated comments and changelog to distinguish differences between
+>      failures for direct IO writes and buffered writes.
 >
->   /* in memory btrfs inode */
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 0c7c1b42028e..00670596bf06 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1885,6 +1885,7 @@ int btrfs_sync_file(struct file *file, loff_t star=
-t, loff_t end, int datasync)
->   	 */
->   	if (full_sync || btrfs_is_zoned(fs_info)) {
->   		ret =3D btrfs_wait_ordered_range(inode, start, len);
-> +		clear_bit(BTRFS_INODE_COW_WRITE_ERROR, &BTRFS_I(inode)->runtime_flags=
-);
->   	} else {
->   		/*
->   		 * Get our ordered extents as soon as possible to avoid doing
-> @@ -1894,6 +1895,21 @@ int btrfs_sync_file(struct file *file, loff_t sta=
-rt, loff_t end, int datasync)
->   		btrfs_get_ordered_extents_for_logging(BTRFS_I(inode),
->   						      &ctx.ordered_extents);
->   		ret =3D filemap_fdatawait_range(inode->i_mapping, start, end);
-> +		if (ret)
-> +			goto out_release_extents;
-> +
-> +		/*
-> +		 * Check and clear the BTRFS_INODE_COW_WRITE_ERROR now after
-> +		 * starting and waiting for writeback, because for buffered IO
-> +		 * it may have been set during the end IO callback
-> +		 * (end_bbio_data_write() -> btrfs_finish_ordered_extent()) in
-> +		 * case an error happened and we need to wait for ordered
-> +		 * extents to complete so that any extent maps that point to
-> +		 * unwritten locations are dropped and we don't log them.
-> +		 */
-> +		if (test_and_clear_bit(BTRFS_INODE_COW_WRITE_ERROR,
-> +				       &BTRFS_I(inode)->runtime_flags))
-> +			ret =3D btrfs_wait_ordered_range(inode, start, len);
->   	}
+> V2: Rework solution since other error paths caused the same problem, mak=
+e
+>      it more generic.
+>      Added more details to change log and comment about what's going on,
+>      and why reads aren't affected.
 >
->   	if (ret)
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 44157e43fd2a..7d175d10a6d0 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -388,6 +388,37 @@ bool btrfs_finish_ordered_extent(struct btrfs_order=
-ed_extent *ordered,
->   	ret =3D can_finish_ordered_extent(ordered, page, file_offset, len, up=
-todate);
->   	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
+>      https://lore.kernel.org/linux-btrfs/cover.1715798440.git.fdmanana@s=
+use.com/
 >
-> +	/*
-> +	 * If this is a COW write it means we created new extent maps for the
-> +	 * range and they point to unwritten locations if we got an error eith=
-er
-> +	 * before submitting a bio or during IO.
-> +	 *
-> +	 * We have marked the ordered extent with BTRFS_ORDERED_IOERR, and we
-> +	 * are queuing its completion below. During completion, at
-> +	 * btrfs_finish_one_ordered(), we will drop the extent maps for the
-> +	 * unwritten extents.
-> +	 *
-> +	 * However because completion runs in a work queue we can end up havin=
-g
-> +	 * a fast fsync running before that. In the case of direct IO, once we
-> +	 * unlock the inode the fsync might start, and we queue the completion
-> +	 * before unlocking the inode. In the case of buffered IO when writeba=
-ck
-> +	 * finishes (end_bbio_data_write()) we queue the completion, so if the
-> +	 * writeback was triggered by a fast fsync, the fsync might start
-> +	 * logging before ordered extent completion runs in the work queue.
-> +	 *
-> +	 * The fast fsync will log file extent items based on the extent maps =
-it
-> +	 * finds, so if by the time it collects extent maps the ordered extent
-> +	 * completion didn't happen yet, it will log file extent items that
-> +	 * point to unwritten extents, resulting in a corruption if a crash
-> +	 * happens and the log tree is replayed. Note that a fast fsync does n=
-ot
-> +	 * wait for completion of ordered extents in order to reduce latency.
-> +	 *
-> +	 * Set a flag in the inode so that the next fast fsync will wait for
-> +	 * ordered extents to complete before starting to log.
-> +	 */
-> +	if (!uptodate && !test_bit(BTRFS_ORDERED_NOCOW, &ordered->flags))
-> +		set_bit(BTRFS_INODE_COW_WRITE_ERROR, &inode->runtime_flags);
-> +
->   	if (ret)
->   		btrfs_queue_ordered_fn(ordered);
->   	return ret;
+> V1: https://lore.kernel.org/linux-btrfs/cover.1715688057.git.fdmanana@su=
+se.com/
+>
+> Filipe Manana (6):
+>    btrfs: ensure fast fsync waits for ordered extents after a write fail=
+ure
+>    btrfs: make btrfs_finish_ordered_extent() return void
+>    btrfs: use a btrfs_inode in the log context (struct btrfs_log_ctx)
+>    btrfs: pass a btrfs_inode to btrfs_fdatawrite_range()
+>    btrfs: pass a btrfs_inode to btrfs_wait_ordered_range()
+>    btrfs: use a btrfs_inode local variable at btrfs_sync_file()
+>
+>   fs/btrfs/btrfs_inode.h      | 10 ++++++
+>   fs/btrfs/file.c             | 63 ++++++++++++++++++++++---------------
+>   fs/btrfs/file.h             |  2 +-
+>   fs/btrfs/free-space-cache.c |  4 +--
+>   fs/btrfs/inode.c            | 16 +++++-----
+>   fs/btrfs/ordered-data.c     | 40 ++++++++++++++++++++---
+>   fs/btrfs/ordered-data.h     |  4 +--
+>   fs/btrfs/reflink.c          |  8 ++---
+>   fs/btrfs/relocation.c       |  2 +-
+>   fs/btrfs/tree-log.c         | 10 +++---
+>   fs/btrfs/tree-log.h         |  4 +--
+>   11 files changed, 108 insertions(+), 55 deletions(-)
+>
 
