@@ -1,221 +1,175 @@
-Return-Path: <linux-btrfs+bounces-5111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 764958C9BA7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 12:51:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF8A78C9BFA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 13:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 965A5B21D07
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 10:51:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 767B828231C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 11:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BBB524B4;
-	Mon, 20 May 2024 10:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CFC1535B5;
+	Mon, 20 May 2024 11:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WtrrRrEP"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fwQMy7DD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B061A2032B
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 10:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C194DA09
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 11:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716202304; cv=none; b=XTDOYU1bsvh+tMKTSkAgVE+qUJpb/zJJcTcDtKVOa1cL4mNnunUeM6vSle03H+TR4VYBwbohDkw7MxUXbB5KA7uleKZhOeKw3V30NxCwKPF7RMPN0mJfkji3jLiUz2goPlehf8cJgFgk4k7cg2voxz5ozzbxsePOaFBXxHUfpLY=
+	t=1716203226; cv=none; b=Zn9PTcSPqwn6Jpo5Ncu+Wyic/Jj71E2YOHnbPkBl5pYrNXStAmzKg22oaM+rR16z+r6iFhplREG83Q7vvTOaoP98AGn90welIu9kxFGNkbYgpk73VXpfo9d+UgFepDEnUsdX1IFvFEMFnU9QH5lBwRRqlzJCXLgp7dhv+WIOUAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716202304; c=relaxed/simple;
-	bh=BqXEDBr/X6CV0bWobJEyUoivAHn+/Uo2K38O4GOpx4Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kp6kXjHWIpyeVK3xM410ozFsucbDkMl9i1fiCJM2sBPGZ2eAHT75SdpR/npnVsXatqDyyNw5azCMXiS3XwEsEhAOlLURij9rD/0ua7C2cvwM5Gaw5sAYLn35k7VWYyqz3s/WuUfY0DhbYus0m6bTZXQVB4y4yOHDQFg/2T0ueNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WtrrRrEP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48722C2BD10
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 10:51:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716202304;
-	bh=BqXEDBr/X6CV0bWobJEyUoivAHn+/Uo2K38O4GOpx4Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WtrrRrEPN9xUalvIfZ84cAvRkft9EVO/OVcyP267ycamwhVRC9L0u+eCP8JnSEOnc
-	 Bzm70A29gACTa2YLu4u3oc2BajqpEON7eK9eazi37goL6h0YJh+dsWD88+gQTTWZNS
-	 hLyJwleTdplMqjaL8drWKGXK+pR8xIDU56pGG7NSJ1KRavXpnI84qOij039pZWd4sd
-	 Ot9TzereQxtnBAUZIZKlDyk0403ykVMpD3+iFV10/1g8mHzQ/ZTdKDCeg3o0ItpuMy
-	 U6mvEuKR5ZPglFVoG1M4mepSJLTHI4wwt20Vj65nTFvG8e/lGtF6J9Da8CMzwzxDMx
-	 dZIZWS+U0zF4g==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-572e48f91e9so8017518a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 03:51:44 -0700 (PDT)
-X-Gm-Message-State: AOJu0YysCdW3ewjcvQwC7ghQnLFbqRUJAa+Pi3XJytRZGJU/R53pH3N+
-	4okFo2ouyr4k/NxgC29GVoXsg4GCVnOorVRmkiQvg/iolRUMvOaC+OJR+QkutCaEmID2ZUcOeO1
-	+f3N5lTitnmuJk1eBWHrIbTtIixM=
-X-Google-Smtp-Source: AGHT+IGbvj84qywyyBAGCewwq9CN71sQlpnTD9FNJ4UsWhThXN/KFr/8B7FNTLiRIN0SpOgKc0G+H0Ll43nj7T0ZtoU=
-X-Received: by 2002:a17:906:3546:b0:a59:9ef3:f6df with SMTP id
- a640c23a62f3a-a5a2d581e6emr1957509566b.22.1716202302894; Mon, 20 May 2024
- 03:51:42 -0700 (PDT)
+	s=arc-20240116; t=1716203226; c=relaxed/simple;
+	bh=HUYQkGw6laUBNCCMHBBqBEtdcBYpec31TCDeX+lD0iA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cSHmayuGwbmloKkkM6GBHlXN8jckVp+qedrJ7Bf4KJyFr7CXFBHX2QomD/ATkcBqkP7Ye+W7VC5tSJLN//9/aXsdpiHz0RB9nNF1O+OTHqHbW8MQcO03hdivLK+Am5tZIrp1L3qNyruPZV3HgvFe9kidEVTOXGIagpFNmjUGLdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fwQMy7DD; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51f40b5e059so3634608e87.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 04:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1716203222; x=1716808022; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=jsGtT/zt+SOrLBCRlAYITwhB/NC+pktw4F5AgoBGaFs=;
+        b=fwQMy7DDfEalUFNZ3S2KPiX9H7XhvvAPdrIJvH1BsqAFy54/Y4YaYZyspiZECz7R6y
+         KwmtnwLmAhZAnjnRowQYRhQ6Q/ZFQJLj4O3YCLJ5rdAq9hY5y7l8BMv890fMoy/XvJtD
+         4tzhWq/Flc2gWwl7rgvepC/29EXni6ggArLoIIM1GT8XebYJvS0510tUAjvRL5ZE0zBR
+         iT+1nqFsZlygd1YvIAwchB09vT0ePazOPtc2wgcPcvfTLE5CocUmBdjOb/od7//g6Tim
+         0afgRLuO0ENOsWsMHUtGdmgHAzuWuy6UCnk0Fr1C7tdZV3jJEk5qEsJ5+/T63a7U06uf
+         dCvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716203222; x=1716808022;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jsGtT/zt+SOrLBCRlAYITwhB/NC+pktw4F5AgoBGaFs=;
+        b=bMDIWnpbr/+cCXaC3h+Y7wU1JRZJ1IwsR0aNYcIesJ9uDhSJ2MFx3jo8Ls1MfKG2ky
+         6WrO27fUHzDGoVhkmVau1uJFoHR1s5zXc4UXe/a9fzi8/vVZ0CQ9Vm9yCj0RHCcpt/o6
+         Va4+1GU8LeKnsNPFzLYBmRSMvBv54YyNZTGexRZlKi6OZH6UerKf++4Rt5BvXbX7B7pP
+         rpLXR194cUueTB4Z/I5b/KMK0h+Q3NsJWj5GNZhBSnewciKytB/rID1QY5Zh9IRemsSJ
+         8k1rxdaxNzMg97zmVkM8x2T54pw1FjhYf9ADIcVi8Tk2G5wJJU7HyRNxQJNX9DNDffjW
+         juyA==
+X-Gm-Message-State: AOJu0YwwufB6SW84eFDiCnU8LAjIMJ+zmYPM8lEe9krpK4OXl+lr7c6D
+	yGg+tQ5WkG1FTaIHzpI0vFO4WzCTV8r8VBy+cMCTTMiW+BowGEMwXF4GALJr0B8=
+X-Google-Smtp-Source: AGHT+IFh46cRQt9sZSLPE/Bd4hk1ZcMDo78VB23SwRQMqbR1HQimvZA0akBGYYS7A3Sel3tjC2okDA==
+X-Received: by 2002:ac2:5970:0:b0:523:481e:9f32 with SMTP id 2adb3069b0e04-523481ea355mr12046883e87.69.1716203222253;
+        Mon, 20 May 2024 04:07:02 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f2f46c28desm32850425ad.221.2024.05.20.04.07.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 May 2024 04:07:01 -0700 (PDT)
+Message-ID: <48ed0d56-7a14-4216-9f85-cd2a48e592aa@suse.com>
+Date: Mon, 20 May 2024 20:36:57 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <31b95191f9f1c8aa600370b70a77d69ebfd30bd3.1716177342.git.wqu@suse.com>
-In-Reply-To: <31b95191f9f1c8aa600370b70a77d69ebfd30bd3.1716177342.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 20 May 2024 11:51:04 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7RxYhiTTMZU_qQ9yZKRm7Qo_YdhDq1zNxz=g_gVALhcw@mail.gmail.com>
-Message-ID: <CAL3q7H7RxYhiTTMZU_qQ9yZKRm7Qo_YdhDq1zNxz=g_gVALhcw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: enhance function extent_range_clear_dirty_for_io()
-To: Qu Wenruo <wqu@suse.com>
+To: Filipe Manana <fdmanana@kernel.org>
 Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <31b95191f9f1c8aa600370b70a77d69ebfd30bd3.1716177342.git.wqu@suse.com>
+ <CAL3q7H7RxYhiTTMZU_qQ9yZKRm7Qo_YdhDq1zNxz=g_gVALhcw@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <CAL3q7H7RxYhiTTMZU_qQ9yZKRm7Qo_YdhDq1zNxz=g_gVALhcw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 20, 2024 at 4:56=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> Enhance that function by:
->
-> - Moving it to inode.c
->   As there is only one user inside compress_file_range(), there is no
->   need to export it through extent_io.h.
->
-> - Add extra error handling
->   Previously we go BUG_ON() if we can not find a page inside the range.
->   Now we downgrade it to ASSERT(), as this really means some logic
->   error since we should have all the pages locked already.
->
-> - Make it subpage compatible
->   Although currently compression only happens in a full page basis even
->   for subpage routine, there is no harm to make it subpage compatible
->   now.
 
-The changes seem ok and reasonable to me.
 
-However I think these are really 3 separate changes that should be in
-3 different patches.
-It makes it easier to review and to revert in case there's a need to do so.
+在 2024/5/20 20:21, Filipe Manana 写道:
+> On Mon, May 20, 2024 at 4:56 AM Qu Wenruo <wqu@suse.com> wrote:
+[...]
+>> - Make it subpage compatible
+>>    Although currently compression only happens in a full page basis even
+>>    for subpage routine, there is no harm to make it subpage compatible
+>>    now.
+> 
+> The changes seem ok and reasonable to me.
+> 
+> However I think these are really 3 separate changes that should be in
+> 3 different patches.
+> It makes it easier to review and to revert in case there's a need to do so.
+> 
+> So I would make the move to inode.c first, and then the other changes.
+> Or the move last in case we need to backport the other changes.
 
-So I would make the move to inode.c first, and then the other changes.
-Or the move last in case we need to backport the other changes.
+Sure, that indeed sounds better
 
-Some comments inlined below.
+[...]
+>> +       if (missing_folio)
+>> +               return -ENOENT;
+> 
+> Why not return the error from filemap_get_folio()? We could keep it
+> and then return it after finishing the loop.
+> Currently it can only return -ENOENT, according to the function's
+> comment, but it would be better future proof and return whatever error
+> it returns.
 
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 15 ---------------
->  fs/btrfs/extent_io.h |  1 -
->  fs/btrfs/inode.c     | 31 ++++++++++++++++++++++++++++++-
->  3 files changed, 30 insertions(+), 17 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index a8fc0fcfa69f..9a6f369945c6 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -164,21 +164,6 @@ void __cold extent_buffer_free_cachep(void)
->         kmem_cache_destroy(extent_buffer_cache);
->  }
->
-> -void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64=
- end)
-> -{
-> -       unsigned long index =3D start >> PAGE_SHIFT;
-> -       unsigned long end_index =3D end >> PAGE_SHIFT;
-> -       struct page *page;
-> -
-> -       while (index <=3D end_index) {
-> -               page =3D find_get_page(inode->i_mapping, index);
-> -               BUG_ON(!page); /* Pages should be in the extent_io_tree *=
-/
-> -               clear_page_dirty_for_io(page);
-> -               put_page(page);
-> -               index++;
-> -       }
-> -}
-> -
->  static void process_one_page(struct btrfs_fs_info *fs_info,
->                              struct page *page, struct page *locked_page,
->                              unsigned long page_ops, u64 start, u64 end)
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index dca6b12769ec..7c2f1bbc6b67 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -350,7 +350,6 @@ void extent_buffer_bitmap_clear(const struct extent_b=
-uffer *eb,
->  void set_extent_buffer_dirty(struct extent_buffer *eb);
->  void set_extent_buffer_uptodate(struct extent_buffer *eb);
->  void clear_extent_buffer_uptodate(struct extent_buffer *eb);
-> -void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64=
- end);
->  void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, =
-u64 end,
->                                   struct page *locked_page,
->                                   struct extent_state **cached,
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 000809e16aba..541a719284a9 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -890,6 +890,32 @@ static inline void inode_should_defrag(struct btrfs_=
-inode *inode,
->                 btrfs_add_inode_defrag(NULL, inode, small_write);
->  }
->
-> +static int extent_range_clear_dirty_for_io(struct inode *inode, u64 star=
-t, u64 end)
-> +{
-> +       struct btrfs_fs_info *fs_info =3D inode_to_fs_info(inode);
-> +       const u64 len =3D end + 1 - start;
-> +       unsigned long end_index =3D end >> PAGE_SHIFT;
-> +       bool missing_folio =3D false;
-> +
-> +       /* We should not have such large range. */
-> +       ASSERT(len < U32_MAX);
-> +       for (unsigned long index =3D start >> PAGE_SHIFT;
-> +            index <=3D end_index; index++) {
-> +               struct folio *folio;
-> +
-> +               folio =3D filemap_get_folio(inode->i_mapping, index);
-> +               if (IS_ERR(folio)) {
-> +                       missing_folio =3D true;
-> +                       continue;
-> +               }
-> +               btrfs_folio_clamp_clear_dirty(fs_info, folio, start, len)=
-;
-> +               folio_put(folio);
-> +       }
-> +       if (missing_folio)
-> +               return -ENOENT;
+Sure, although we can only either keep the first or the last error.
 
-Why not return the error from filemap_get_folio()? We could keep it
-and then return it after finishing the loop.
-Currently it can only return -ENOENT, according to the function's
-comment, but it would be better future proof and return whatever error
-it returns.
+Thanks,
+Qu
 
-Thanks.
-
-> +       return 0;
-> +}
-> +
->  /*
->   * Work queue call back to started compression on a file and pages.
->   *
-> @@ -931,7 +957,10 @@ static void compress_file_range(struct btrfs_work *w=
-ork)
->          * Otherwise applications with the file mmap'd can wander in and =
-change
->          * the page contents while we are compressing them.
->          */
-> -       extent_range_clear_dirty_for_io(&inode->vfs_inode, start, end);
-> +       ret =3D extent_range_clear_dirty_for_io(&inode->vfs_inode, start,=
- end);
-> +
-> +       /* We have locked all the involved pagse, shouldn't hit a missing=
- page. */
-> +       ASSERT(ret =3D=3D 0);
->
->         /*
->          * We need to save i_size before now because it could change in b=
-etween
-> --
-> 2.45.1
->
->
+> 
+> Thanks.
+> 
+>> +       return 0;
+>> +}
+>> +
+>>   /*
+>>    * Work queue call back to started compression on a file and pages.
+>>    *
+>> @@ -931,7 +957,10 @@ static void compress_file_range(struct btrfs_work *work)
+>>           * Otherwise applications with the file mmap'd can wander in and change
+>>           * the page contents while we are compressing them.
+>>           */
+>> -       extent_range_clear_dirty_for_io(&inode->vfs_inode, start, end);
+>> +       ret = extent_range_clear_dirty_for_io(&inode->vfs_inode, start, end);
+>> +
+>> +       /* We have locked all the involved pagse, shouldn't hit a missing page. */
+>> +       ASSERT(ret == 0);
+>>
+>>          /*
+>>           * We need to save i_size before now because it could change in between
+>> --
+>> 2.45.1
+>>
+>>
 
