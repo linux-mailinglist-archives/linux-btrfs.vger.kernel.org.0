@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-5120-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5121-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 716F18CA2EA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 21:52:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E15028CA2EB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 21:52:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 129BBB22376
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 19:52:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B421281383
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2024 19:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9F51386CC;
-	Mon, 20 May 2024 19:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B40F139562;
+	Mon, 20 May 2024 19:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="f9cEp7XX";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qr9U7grp"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BRWQy/mP";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BRWQy/mP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0935F12E6A
-	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 19:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B16B1E4BE
+	for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2024 19:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716234741; cv=none; b=A5Mte5AnTjv07tswsgU2nEM33EuYG4S9QQ6XKQb4d7ENv+EIWI8+8USLRUNBwHhjyL4pjMPcqs3Eh0VxUYF7vIq4MJwhyvZAyhcC5I0pSRq8Sk37YVKKCmAqgAkXvjuagVrj24LxhK1hbxINOXziuetVdQAy3lvh3sNsmL3XZ/Y=
+	t=1716234742; cv=none; b=dxrapLiracDeFsQ7vpfpyNxayiGAfZmdAcYejXWrFo0bvYIpx41WkmaWsbLm9I4bUWiI4+GmrCuoYnODTCQn5iY+m2PfjppJ8mo7aHmPur+1DD+GEobqj75g8q7mbq8SDnw6Pfv0/8bwgHsQryhLp/x7gjCh9xbSd++/WEdi+Po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716234741; c=relaxed/simple;
-	bh=+juwOG7Ydzsd485RnPMfZfMNcwt7WUzVRTla84lb5RU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d/vNdshhaKGrpd+JfuVRDmffafh0JKAZ1NGNb5KZQNcDRz8CZx4Nn0BO/YR2Bod8nmBRkAAIMjIH//AeQVh90nFQ2b+uO9M5d7xiTCbUx0PlTKjKVesemTi3LaKYGpQizU33q9WukTxBXDcHLrdFJ3PBg4JS2MiNmpHUSsESS3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=f9cEp7XX; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qr9U7grp; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1716234742; c=relaxed/simple;
+	bh=BHqHM6O583ntJDViuLapf2uAL5IZYl2xQNXyRqYybdg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=EPVF0670S6cb0sAJ7NMBNd/mI61VbqA1FDB7prXLUerch32HHtiCT00/JLv++Cv8nEj9ZGQqYf8j3KJLi/llEphORNgbNc5G+LElauCjheEL7fZYHh+LzGtvlqWCgYMN3l+LU1/3XSI64ypNLMbOk+falfmbQBmoOlbbMtAy5RU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BRWQy/mP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BRWQy/mP; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DFFC020F86;
-	Mon, 20 May 2024 19:52:15 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4578333EBC;
+	Mon, 20 May 2024 19:52:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716234736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xhaj7sbTTG/H4zOm3nxivBBUTuadKBInMsSL7DI8ByQ=;
-	b=f9cEp7XX9BQRMrgUTDLoM0oyfB7PGuvhedrwAXXXBXvR0127IXM7r6DxPFeOQgCiBXm6ZQ
-	KRR3Y6vB+QCAmI06aBsl+mpkFxEt05hnfIzsbZPnG5Gd0daT8GdQtq5QhgzBXpr0rU6SnO
-	L6oSYOFJ9gvF4FJs1sV9kcTsuAMiw10=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=qr9U7grp
+	t=1716234738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F0jmwnkLrpgjaU/INnBheCGd0ypxeuoa31ATUkpqDII=;
+	b=BRWQy/mPViKaul2l/W6vxOmUnU0PPfDq9EwbEf/a1jQ1fEQd6h550oY52u8io3cP2PHuVy
+	CBWYJ+bUcfg8kfqo+zluHsSPV1Ig4FL1FKxQQBGKK3K9N2bqa56OOT8GS0XC7iEMvBOCZn
+	wvjaz8ELgwpUOI/4AZGGGLRrS6UlQ8o=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="BRWQy/mP"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716234735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xhaj7sbTTG/H4zOm3nxivBBUTuadKBInMsSL7DI8ByQ=;
-	b=qr9U7grpVczaT1MxJZ5glxygSbE7eQzuBD6DFiH3hlzX60FOudvheQEOm2Xr8ZxSCnZsVH
-	cPcYltW4CNSydmmdaF+500VqPMbB50Ys2X3RD/M1eblbEJqguhSMqgf1KMmOa78VpA9Xjq
-	UJ9SA4O9Dipx+Tl0QctqDQQJbWamix8=
+	t=1716234738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F0jmwnkLrpgjaU/INnBheCGd0ypxeuoa31ATUkpqDII=;
+	b=BRWQy/mPViKaul2l/W6vxOmUnU0PPfDq9EwbEf/a1jQ1fEQd6h550oY52u8io3cP2PHuVy
+	CBWYJ+bUcfg8kfqo+zluHsSPV1Ig4FL1FKxQQBGKK3K9N2bqa56OOT8GS0XC7iEMvBOCZn
+	wvjaz8ELgwpUOI/4AZGGGLRrS6UlQ8o=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D752C13A6B;
-	Mon, 20 May 2024 19:52:15 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EBE213A6B;
+	Mon, 20 May 2024 19:52:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id s7X9M++pS2ZeQgAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Mon, 20 May 2024 19:52:15 +0000
+	id V3VMD/KpS2YZQwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 20 May 2024 19:52:18 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 0/6] Cleanups and W=2 warning fixes
-Date: Mon, 20 May 2024 21:52:08 +0200
-Message-ID: <cover.1716234472.git.dsterba@suse.com>
+Subject: [PATCH 1/6] btrfs: remove duplicate name variable declarations
+Date: Mon, 20 May 2024 21:52:18 +0200
+Message-ID: <092a8b338d6d5560b1cef1291c6e779a27e17366.1716234472.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.45.0
+In-Reply-To: <cover.1716234472.git.dsterba@suse.com>
+References: <cover.1716234472.git.dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,17 +85,17 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
-X-Spamd-Result: default: False [-0.27 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	BAYES_HAM(-0.26)[73.78%];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
 	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -101,40 +108,59 @@ X-Spamd-Result: default: False [-0.27 / 50.00];
 	RCPT_COUNT_TWO(0.00)[2];
 	TO_DN_SOME(0.00)[];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Flag: NO
-X-Spam-Score: -0.27
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: DFFC020F86
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4578333EBC
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
 
-We have a clean run of 'make W='1 with gcc 13, there are some
-interesting warnings to fix with level 2 and even 3. We can't enable the
-warning flags by defualt due to reports from generic code.
+When running 'make W=2' there are a few reports where a variable of the
+same name is declared in a nested block. In all the cases we can use the
+one declared in the parent block, no problematic cases were found.
 
-This short series removes shadowed variables, adds const and removes
-an unused macro. There are still some shadow variables to fix but the
-remaining cases are with 'ret' variables so I skipped it for now.
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/extent_io.c | 4 +---
+ fs/btrfs/inode.c     | 2 --
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-David Sterba (6):
-  btrfs: remove duplicate name variable declarations
-  btrfs: rename macro local variables that clash with other variables
-  btrfs: use for-local variabls that shadow function variables
-  btrfs: remove unused define EXTENT_SIZE_PER_ITEM
-  btrfs: keep const whene returnin value from get_unaligned_le8()
-  btrfs: constify parameters of write_eb_member() and its users
-
- fs/btrfs/accessors.h   | 12 ++++++------
- fs/btrfs/extent_io.c   |  6 ++----
- fs/btrfs/inode.c       |  2 --
- fs/btrfs/qgroup.c      | 11 +++++------
- fs/btrfs/space-info.c  |  2 --
- fs/btrfs/subpage.c     |  8 ++++----
- fs/btrfs/transaction.h |  6 +++---
- fs/btrfs/volumes.c     |  9 +++------
- fs/btrfs/zoned.c       |  8 +++-----
- 9 files changed, 26 insertions(+), 38 deletions(-)
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 597387e9f040..2d773c1cbaa7 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3507,7 +3507,6 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+ 
+ 	for (int i = 0; i < num_folios; i++) {
+ 		struct folio *folio = new->folios[i];
+-		int ret;
+ 
+ 		ret = attach_extent_buffer_folio(new, folio, NULL);
+ 		if (ret < 0) {
+@@ -4587,8 +4586,7 @@ static void assert_eb_folio_uptodate(const struct extent_buffer *eb, int i)
+ 		return;
+ 
+ 	if (fs_info->nodesize < PAGE_SIZE) {
+-		struct folio *folio = eb->folios[0];
+-
++		folio = eb->folios[0];
+ 		ASSERT(i == 0);
+ 		if (WARN_ON(!btrfs_subpage_test_uptodate(fs_info, folio,
+ 							 eb->start, eb->len)))
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 3cf32bc721d2..87278d2f8447 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1617,10 +1617,8 @@ static noinline void submit_compressed_extents(struct btrfs_work *work, bool do_
+ 	u64 alloc_hint = 0;
+ 
+ 	if (do_free) {
+-		struct async_chunk *async_chunk;
+ 		struct async_cow *async_cow;
+ 
+-		async_chunk = container_of(work, struct async_chunk, work);
+ 		btrfs_add_delayed_iput(async_chunk->inode);
+ 		if (async_chunk->blkcg_css)
+ 			css_put(async_chunk->blkcg_css);
 -- 
 2.45.0
 
