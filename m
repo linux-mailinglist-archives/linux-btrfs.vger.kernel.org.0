@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-5138-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5139-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02B898CA69F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 05:03:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16B938CA6A0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 05:03:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2601D1C214D1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 03:03:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81C441F217B9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 03:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652BC1BF31;
-	Tue, 21 May 2024 03:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD25F17545;
+	Tue, 21 May 2024 03:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Bmt3kSPm";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iwO6qwe6"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bxJ0kymN";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bxJ0kymN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F101F13AD8
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 03:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F891B948
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 03:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716260611; cv=none; b=aPRqa17/nLMnMCx2Zm9abvAqtQyO18VLnKKsTCHtlEi8eIRJReuJTUKfAW7BsIrg4GLubg7C22YWBiriJQuBq4CcMjaPCHEalWFxOdPlxv//DgzzfNDiv4/vmgq5BqGQFIZxmA8/kS6TXzkvzUbEqT+0+XcVzK8cj1XtVQ9Z59M=
+	t=1716260613; cv=none; b=mQ+6Oe/DCeXW1VLKIO9P1WT1ZeyHHsqTT3084aGxLQ0l4esR6xp5t76OHE/v/gvRnYYdPK/eT2GvXXkImGZ2WX/FXzj5COZEuFKWE4knd+4m+wZ9/iLr88mEgkM6eCxgtaXAVCQoHei67mnB5mK5V0Vn3+OTA/l0JDaLQNc2X3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716260611; c=relaxed/simple;
-	bh=PDCd+5Z9mrbFfmxUgmjB2ADWXu0H2LAq/+ZOx4Dv6o0=;
+	s=arc-20240116; t=1716260613; c=relaxed/simple;
+	bh=iEEOAIsQ/jv97ufZDncSy6/4PyeRjPhq390LcG3x5Ng=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CGrshrkIRnhDceULb2SHibQdzPOGtNn5cY1rOX9V0n296awyjrZE3wA175IvTEtayQUZh6SOEh4kEItiwS4SfNyNnYwZBh9BqJiMGaI/Xn41HLMKGFDA5pB9n/UlbUXYAVY5lmQfW9GguQr/nAXOcWxa0SK4z4krPMBuRWMEe5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Bmt3kSPm; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iwO6qwe6; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=ELE4Y07KuQ4nzhJnmc/IIs/trXQczzrTDqUmCmXZWweWGjrliZUJuC6IdtNEubS7bw6wU4tNzceB5Dr++pwgsxT2zStpznj+hQsTnoZvfOPrFghboPSVa+Aa+KDrHa0A/IfZgqZYk/IGbyoLb8tcrNIDb/E2YSVOcARsX6O4mPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bxJ0kymN; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bxJ0kymN; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DBEAE20CA7;
-	Tue, 21 May 2024 03:03:26 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4AB015BE03;
+	Tue, 21 May 2024 03:03:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716260607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1716260609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/dYQbiZdlg0/GwkdBWXLzZz6aisvAnh5yzFmWvAccNw=;
-	b=Bmt3kSPm1Jsd7h+qS2YwzBLewRBjjuNEv8arExCrJmMJXBE8Hlqnj4bJovh2ii8Dm+AAr+
-	PpitgdeRKKFyLugFrw9aUeIoPKyA1cCVUsyoBrA/fCJws49VdSkI0V+ct6aRSLMSWu3KWZ
-	cox8/v9QLuGyRzzJg/oE/4pLTHqIWs4=
+	bh=58qXQpTHwTmu8DQjDhJ839Cv0awGPGtjZ7E9OfkU50w=;
+	b=bxJ0kymNgjUfS0rN+X8SFf1tS1GDcPQptjWO5W0kAxWduA5g79dU2QXsGb2Ujt66XREWaZ
+	z9zg3c48tNbOOH1c8om9gEu6qYaKhakbQxYkFePRHtv3QG+eaUI1IQKkPCjgOdTphs3fXs
+	ESXp0g2YLiRMCemxN3vQBgr9UGjP8nM=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716260606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1716260609; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/dYQbiZdlg0/GwkdBWXLzZz6aisvAnh5yzFmWvAccNw=;
-	b=iwO6qwe6J/KtVE07tlOA5vlP2sJ+lOPyR2hLfTYaam2LN33cEF/d4KuZ+m4Ge2nmuZaCDo
-	j3mvRqDQdO2fetBaOndhN8e7bgCaaUZx7YRWeyTxCz85M+Nhg7kQAcq87Qhxnl8mv5DcWV
-	z3GK+78uSx8eeX+IwVitbBbxIXdwKHQ=
+	bh=58qXQpTHwTmu8DQjDhJ839Cv0awGPGtjZ7E9OfkU50w=;
+	b=bxJ0kymNgjUfS0rN+X8SFf1tS1GDcPQptjWO5W0kAxWduA5g79dU2QXsGb2Ujt66XREWaZ
+	z9zg3c48tNbOOH1c8om9gEu6qYaKhakbQxYkFePRHtv3QG+eaUI1IQKkPCjgOdTphs3fXs
+	ESXp0g2YLiRMCemxN3vQBgr9UGjP8nM=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D8FD13A1E;
-	Tue, 21 May 2024 03:03:24 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9ABD313A1E;
+	Tue, 21 May 2024 03:03:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yJk9LvwOTGYcKwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Tue, 21 May 2024 03:03:24 +0000
+	id 0IaCDf8OTGYcKwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Tue, 21 May 2024 03:03:27 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Boris Burkov <boris@bur.io>
-Subject: [PATCH v4 1/2] btrfs: slightly loose the requirement for qgroup removal
-Date: Tue, 21 May 2024 12:33:16 +0930
-Message-ID: <1887f99e2848cf6a1981ad23b909adcb21c3c183.1716260404.git.wqu@suse.com>
+Subject: [PATCH v4 2/2] btrfs: automatically remove the subvolume qgroup
+Date: Tue, 21 May 2024 12:33:17 +0930
+Message-ID: <a87417408c6ad5d552e165b2781f11e601198bd5.1716260404.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <cover.1716260404.git.wqu@suse.com>
 References: <cover.1716260404.git.wqu@suse.com>
@@ -103,187 +103,135 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:url,suse.com:email];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Score: -2.80
 X-Spam-Flag: NO
 
-[BUG]
-Currently if one is utilizing "qgroups/drop_subtree_threshold" sysfs,
-and a snapshot with level higher than that value is dropped, btrfs will
-not be able to delete the qgroup until next qgroup rescan:
+Currently if we fully removed a subvolume (not only unlinked, but fully
+dropped its root item), its qgroup would not be removed.
 
-  uuid=ffffffff-eeee-dddd-cccc-000000000000
+Thus we have "btrfs qgroup clear-stale" to handle such 0 level qgroups.
 
-  wipefs -fa $dev
-  mkfs.btrfs -f $dev -O quota -s 4k -n 4k -U $uuid
-  mount $dev $mnt
+This patch changes the behavior by automatically removing the qgroup of
+a fully dropped subvolume when possible:
 
-  btrfs subvolume create $mnt/subv1/
-  for (( i = 0; i < 1024; i++ )); do
-  	xfs_io -f -c "pwrite 0 2k" $mnt/subv1/file_$i > /dev/null
-  done
-  sync
-  btrfs subv snapshot $mnt/subv1 $mnt/snapshot
-  btrfs quota enable $mnt
-  btrfs quota rescan -w $mnt
-  sync
-  echo 1 > /sys/fs/btrfs/$uuid/qgroups/drop_subtree_threshold
-  btrfs subvolume delete $mnt/snapshot
-  btrfs subv sync $mnt
-  btrfs qgroup show -prce --sync $mnt
-  btrfs qgroup destroy 0/257 $mnt
-  umount $mnt
+- Full qgroup but still consistent
+  We can and should remove the qgroup.
+  The qgroup numbers should be 0, without any rsv.
 
-The final qgroup removal would fail with the following error:
+- Full qgroup but inconsistent
+  Can happen with drop_subtree_threshold feature (skip accounting
+  and mark qgroup inconsistent).
 
-  ERROR: unable to destroy quota group: Device or resource busy
+  We can and should remove the qgroup.
+  Higher level qgroup numbers will be incorrect, but since qgroup
+  is already inconsistent, it should not be a problem.
 
-[CAUSE]
-The above script would generate a subvolume of level 2, then snapshot
-it, enable qgroup, set the drop_subtree_threshold, then drop the
-snapshot.
+- Squota mode
+  This is the special case, we can only drop the qgroup if its numbers
+  are all 0.
 
-Since the subvolume drop would meet the threshold, qgroup would be
-marked inconsistent and skip accounting to avoid hanging the system at
-transaction commit.
-
-But currently we do not allow a qgroup with any rfer/excl numbers to be
-dropped, and this is not really compatible with the new
-drop_subtree_threshold behavior.
-
-[FIX]
-Only require the strong zero rfer/excl/rfer_cmpr/excl_cmpr for squota
-mode.
-This is due to the fact that squota can never go inconsistent, and it
-can have dropped subvolume but with non-zero qgroup numbers for future
-accounting.
-
-For full qgroup mode, we only check if there is a subvolume for it.
+  This would be handled by can_delete_qgroup(), so we only need to check
+  the return value and ignore the -EBUSY error.
 
 Reviewed-by: Boris Burkov <boris@bur.io>
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1222847
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 91 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 84 insertions(+), 7 deletions(-)
+ fs/btrfs/extent-tree.c |  8 ++++++++
+ fs/btrfs/qgroup.c      | 38 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/qgroup.h      |  2 ++
+ 3 files changed, 48 insertions(+)
 
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 3774c191e36d..32f03c0a7b9e 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5833,6 +5833,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+ 	struct btrfs_root_item *root_item = &root->root_item;
+ 	struct walk_control *wc;
+ 	struct btrfs_key key;
++	const u64 rootid = btrfs_root_id(root);
+ 	int err = 0;
+ 	int ret;
+ 	int level;
+@@ -6063,6 +6064,13 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+ 	kfree(wc);
+ 	btrfs_free_path(path);
+ out:
++	if (!err && root_dropped) {
++		ret = btrfs_qgroup_cleanup_dropped_subvolume(fs_info, rootid);
++		if (ret < 0)
++			btrfs_warn_rl(fs_info,
++				      "failed to cleanup qgroup 0/%llu: %d",
++				      rootid, ret);
++	}
+ 	/*
+ 	 * We were an unfinished drop root, check to see if there are any
+ 	 * pending, and if not clear and wake up any waiters.
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index fc2a7ea26354..9b4de1b43298 100644
+index 9b4de1b43298..826d972a7c75 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -1748,13 +1748,57 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+@@ -1893,6 +1893,44 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
  	return ret;
  }
  
--static bool qgroup_has_usage(struct btrfs_qgroup *qgroup)
-+/*
-+ * Return 0 if we can not delete the qgroup (not empty or has children etc).
-+ * Return >0 if we can delete the qgroup.
-+ * Return <0 for other errors during tree search.
-+ */
-+static int can_delete_qgroup(struct btrfs_fs_info *fs_info,
-+			     struct btrfs_qgroup *qgroup)
- {
--	return (qgroup->rfer > 0 || qgroup->rfer_cmpr > 0 ||
--		qgroup->excl > 0 || qgroup->excl_cmpr > 0 ||
--		qgroup->rsv.values[BTRFS_QGROUP_RSV_DATA] > 0 ||
--		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PREALLOC] > 0 ||
--		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PERTRANS] > 0);
-+	struct btrfs_key key;
-+	struct btrfs_path *path;
++int btrfs_qgroup_cleanup_dropped_subvolume(struct btrfs_fs_info *fs_info,
++					   u64 subvolid)
++{
++	struct btrfs_trans_handle *trans;
 +	int ret;
 +
-+	/*
-+	 * Squota would never be inconsistent, but there can still be
-+	 * case where a dropped subvolume still has qgroup numbers, and
-+	 * squota relies on such qgroup for future accounting.
-+	 *
-+	 * So for squota, do not allow dropping any non-zero qgroup.
-+	 */
-+	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE &&
-+	    (qgroup->rfer || qgroup->excl || qgroup->excl_cmpr ||
-+	     qgroup->rfer_cmpr))
++	if (!is_fstree(subvolid) || !btrfs_qgroup_enabled(fs_info) ||
++	    !fs_info->quota_root)
 +		return 0;
 +
-+	/* For higher level qgroup, we can only delete it if it has no child. */
-+	if (btrfs_qgroup_level(qgroup->qgroupid)) {
-+		if (!list_empty(&qgroup->members))
-+			return 0;
-+		return 1;
-+	}
-+
 +	/*
-+	 * For level-0 qgroups, we can only delete it if it has no subvolume
-+	 * for it.
-+	 * This means even a subvolume is unlinked but not yet fully dropped,
-+	 * we can not delete the qgroup.
++	 * Commit current transaction to make sure all the rfer/excl numbers
++	 * get updated.
 +	 */
-+	key.objectid = qgroup->qgroupid;
-+	key.type = BTRFS_ROOT_ITEM_KEY;
-+	key.offset = -1ULL;
-+	path = btrfs_alloc_path();
-+	if (!path)
-+		return -ENOMEM;
++	trans = btrfs_start_transaction(fs_info->quota_root, 0);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
 +
-+	ret = btrfs_find_root(fs_info->tree_root, &key, path, NULL, NULL);
-+	btrfs_free_path(path);
-+	/*
-+	 * The @ret from btrfs_find_root() exactly matches our definition for
-+	 * the return value, thus can be returned directly.
-+	 */
-+	return ret;
- }
- 
- int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
-@@ -1776,7 +1820,10 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
- 		goto out;
- 	}
- 
--	if (is_fstree(qgroupid) && qgroup_has_usage(qgroup)) {
-+	ret = can_delete_qgroup(fs_info, qgroup);
++	ret = btrfs_commit_transaction(trans);
 +	if (ret < 0)
-+		goto out;
-+	if (ret == 0) {
- 		ret = -EBUSY;
- 		goto out;
- 	}
-@@ -1801,6 +1848,36 @@ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
- 	}
- 
- 	spin_lock(&fs_info->qgroup_lock);
++		return ret;
++
++	/* Start new trans to delete the qgroup info and limit items. */
++	trans = btrfs_start_transaction(fs_info->quota_root, 2);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
++	ret = btrfs_remove_qgroup(trans, subvolid);
++	btrfs_end_transaction(trans);
 +	/*
-+	 * Warn on reserved space. The subvolume should has no child nor
-+	 * corresponding subvolume.
-+	 * Thus its reserved space should all be zero, no matter if qgroup
-+	 * is consistent or the mode.
++	 * It's squota and the subvolume still has numbers needed
++	 * for future accounting, in this case we can not delete.
++	 * Just skip it.
 +	 */
-+	WARN_ON(qgroup->rsv.values[BTRFS_QGROUP_RSV_DATA] ||
-+		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PREALLOC] ||
-+		qgroup->rsv.values[BTRFS_QGROUP_RSV_META_PERTRANS]);
-+	/*
-+	 * The same for rfer/excl numbers, but that's only if our qgroup is
-+	 * consistent and if it's in regular qgroup mode.
-+	 * For simple mode it's not as accurate thus we can hit non-zero values
-+	 * very frequently.
-+	 */
-+	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_FULL &&
-+	    !(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT)) {
-+		if (WARN_ON(qgroup->rfer || qgroup->excl ||
-+			    qgroup->rfer_cmpr || qgroup->excl_cmpr)) {
-+			btrfs_warn_rl(fs_info,
-+"to be deleted qgroup %u/%llu has non-zero numbers, rfer %llu rfer_cmpr %llu excl %llu excl_cmpr %llu",
-+				      btrfs_qgroup_level(qgroup->qgroupid),
-+				      btrfs_qgroup_subvolid(qgroup->qgroupid),
-+				      qgroup->rfer,
-+				      qgroup->rfer_cmpr,
-+				      qgroup->excl,
-+				      qgroup->excl_cmpr);
-+			qgroup_mark_inconsistent(fs_info);
-+		}
-+	}
- 	del_qgroup_rb(fs_info, qgroupid);
- 	spin_unlock(&fs_info->qgroup_lock);
- 
++	if (ret == -EBUSY)
++		ret = 0;
++	return ret;
++}
++
+ int btrfs_limit_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid,
+ 		       struct btrfs_qgroup_limit *limit)
+ {
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 706640be0ec2..3f93856a02e1 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -327,6 +327,8 @@ int btrfs_del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 			      u64 dst);
+ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid);
+ int btrfs_remove_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid);
++int btrfs_qgroup_cleanup_dropped_subvolume(struct btrfs_fs_info *fs_info,
++					   u64 subvolid);
+ int btrfs_limit_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid,
+ 		       struct btrfs_qgroup_limit *limit);
+ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info);
 -- 
 2.45.1
 
