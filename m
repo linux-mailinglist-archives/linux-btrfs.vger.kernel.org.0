@@ -1,161 +1,199 @@
-Return-Path: <linux-btrfs+bounces-5180-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5181-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FC468CB350
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 20:10:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99EE48CB5E8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 00:17:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2F221F2279F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 18:10:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5044A282DAF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 22:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228B77C6C0;
-	Tue, 21 May 2024 18:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A500149DE5;
+	Tue, 21 May 2024 22:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HkZN//Oj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OFHtO5BC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HkZN//Oj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OFHtO5BC"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="kHSrn6/m"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADF023775
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 18:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2EE71865A
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 22:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716315008; cv=none; b=EdHzO7N64fh9RV+7ffu6qv2inZSfNzqZld+pYKOOlV4BbiBU7H+oGrUeGTpMgdjx18nuhU1pcP+iftBpFTC3D4P7i1AC/xVf0lAJESfb+eVKc+GfNZCuSg00a7x+Y5EWgqYneQ3V2OaOmExCN4HEZkUOoNhKfienw53MGIKYU9Q=
+	t=1716329820; cv=none; b=r6AI/IoL0SW5uptREUvVt3KGjufhoEBbiC+ommYgjkWdevxISo1J3DhUuT/GKZvCQvYMSSZROU8NvtmA3T6nAw1VZtUouY8DtPO+J9zdqT24P85I+d3iYDPZM3hzNu/ukLaRNFyYOwB4cxFIfQ7SGHpQtgKXbIUGWu+acW8Ykno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716315008; c=relaxed/simple;
-	bh=FKsp5eBrcI6dk+0TBvliJEtkf0ObCnyuLM7Hx6dk7ac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SfMmuU/LJmMBb7kSLkppH0rgTPRs2dY+MKGJ6mZ/gh461+KDJNNi6rVqAysfbNz6W0wsEs65aMZVPrmvOu59uCA0jBT5szED/zde85vqdjif0B9TWwboPttQh4FUTX0Dyebr4+4SdNEcm9Z+4TCI8ZF7bjDD9+aTbBhYmpT4hBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HkZN//Oj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OFHtO5BC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HkZN//Oj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OFHtO5BC; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8CB525C33D;
-	Tue, 21 May 2024 18:10:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1716315004;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HVTicdw0DumwJjyWKQaWYv4nfaPDANqcGgMtQFKkNQ8=;
-	b=HkZN//OjwDBrnB5DT9v/AnOHFOm0qYrnaObns3cJk+z4FggJ+t9MvBnOqqE4MR2ZAbrck6
-	iF/DpnR+PyL0wHVzBrii5E2GyHnGjFPWXLJJNxAPtFY9mNql2LQMf6T9oZHjgBPXz9Qvre
-	4Lx5pK0oyj2WiFUZqzFCx8JBvKo0MkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1716315004;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HVTicdw0DumwJjyWKQaWYv4nfaPDANqcGgMtQFKkNQ8=;
-	b=OFHtO5BC3LZOFvoi0CDhOscR308QYWIrV9tVxGTO1z/hESxnz71++NWBNrKoRl4SyInT9L
-	rRFYbFXzPN8qIZBw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="HkZN//Oj";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OFHtO5BC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1716315004;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HVTicdw0DumwJjyWKQaWYv4nfaPDANqcGgMtQFKkNQ8=;
-	b=HkZN//OjwDBrnB5DT9v/AnOHFOm0qYrnaObns3cJk+z4FggJ+t9MvBnOqqE4MR2ZAbrck6
-	iF/DpnR+PyL0wHVzBrii5E2GyHnGjFPWXLJJNxAPtFY9mNql2LQMf6T9oZHjgBPXz9Qvre
-	4Lx5pK0oyj2WiFUZqzFCx8JBvKo0MkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1716315004;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HVTicdw0DumwJjyWKQaWYv4nfaPDANqcGgMtQFKkNQ8=;
-	b=OFHtO5BC3LZOFvoi0CDhOscR308QYWIrV9tVxGTO1z/hESxnz71++NWBNrKoRl4SyInT9L
-	rRFYbFXzPN8qIZBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 77B3E13A1E;
-	Tue, 21 May 2024 18:10:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id d4IXHXzjTGYxagAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 21 May 2024 18:10:04 +0000
-Date: Tue, 21 May 2024 20:10:03 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/6] part3 trivial adjustments for return variable
- coding style
-Message-ID: <20240521181003.GT17126@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1716310365.git.anand.jain@oracle.com>
+	s=arc-20240116; t=1716329820; c=relaxed/simple;
+	bh=HJvQW79g9fDpodE9D/cPypz3aHJEALosbGYmgiuGZl4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ird9qk4ntRxuNGo6KwVU9mnWSUMRbgw6xnIcehAFCxDqLVv4GWi3B0rPham2R6zaS7cw7wHZyfZaAhDC9fz2O53lJxZ8qKx0sjfC2FZBCL0GmrJKzUaKXiioLQ85Kb2rRHzqj5gwF6re2Mmp06EvDBzr7Q4MD+RyVcjCftV/6Kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=kHSrn6/m; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1716329812; x=1716934612; i=quwenruo.btrfs@gmx.com;
+	bh=x3Nr+FtTF9aV6ykpd48yVExP3CsuNItQ0tBZMIJxUpE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=kHSrn6/mTN5RynNGXWOmpBHDkyqnaX8a6VVu/97R6bn563PHoiMN0yiOJWS7eh7q
+	 03VLZT7DR6KUawXZ2hb+c6FVC4xJztcUk5Mc6/okdaprRVCD4kKfz9/S5qESpCxHA
+	 odiRgahX+vhGAziO/5jAhZ038cAiHXHv5+uiFuf+tLhJ+fP7ObJAxU3bB25V2SKOm
+	 igGED9xD2y8DEXzp35F9aADqydVocS3PWN7TkOT0tax0Xs83QQoo8XOC/5Taa4qff
+	 579UxXeKUHfgUaPOKgjhMaUAniWq5GkwWKx94EPteZGrULVfIHCkCoQJ7e9tdJRi1
+	 Bg8UymiBKgoaHtGveQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N17YY-1sYWjZ3o54-012Yt6; Wed, 22
+ May 2024 00:16:52 +0200
+Message-ID: <2b26245e-7602-4a00-b79a-eac481708ab3@gmx.com>
+Date: Wed, 22 May 2024 07:46:46 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1716310365.git.anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/5] btrfs: lock subpage ranges in one go for
+ writepage_delalloc()
+To: Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>
+Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>
+References: <cover.1716008374.git.wqu@suse.com>
+ <b067a8a2c97f58f569991987ad8c3e9a2018cf06.1716008374.git.wqu@suse.com>
+ <7oxv5xm6n4yg5r523pzm7hxql5pihrfylrducrsiwlk5k4jl7a@wxvlrl6w6cbu>
+ <30371f39-18b1-4c3f-af31-b4927eab99a5@suse.com>
+ <tdxf76yhloruo4pubudlhr2p4xf4spvmhrfsf56jfzxh544id3@fcaaplcp6vwp>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <tdxf76yhloruo4pubudlhr2p4xf4spvmhrfsf56jfzxh544id3@fcaaplcp6vwp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0azIaVDyMdFlrBPa84fHiHF3LRioIjprfrDFpeif4/9Md6WPPns
+ WmbRkWI0y0lD8uwd6EGyNFBH4kb5iCatDTStV4UNjaMUqw796aOqsO369cXG34s78D67Y+H
+ DohvtbwdxprR2GFGYW8KOT2yrvnSGDHEEVXMsEo14fzY+3+q9rPeankmEOIvhVAq8rn6k6L
+ akjQU0EGpfYTutZhcRGqA==
 X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 8CB525C33D
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
+UI-OutboundReport: notjunk:1;M01:P0:ejY7m/958kI=;Xd/BWD3nLQSol15xDw5Ii+/7wCV
+ gMU1UeI95FuOT5L/K7xVcbTp3HRIXRix1i9/k/GeSH7+cAdm5ObiMlwJEvUnqUPb9AOwYFa9u
+ y1N1fLbFUvltfzf1B7jZW1fYQ4Q3Sz7AlBzJfgLy3SEWwDGq5GnyVE9Ih+KJgcRL8ydWcqkeo
+ cXTKtcGpQ2D2ViVp2+iVlV6id5aNcU+BZFHnS6IQCh9oslxUp9gQG5guyW/qseicc9SPr2Q1H
+ x/KKy6FHbQ57I+7ET/2/l7YHcEwclqeF5ZRToUcrX+O4B089llX6OSK3aKl8B/0CDbvXkWmdV
+ o7QyZ21FbyNFp5juaE2SSQus3fhuGG3Aq5VUq15ylmcqNfpMmuGT79q3qbnN64UDm9MG5HMdH
+ byCduoH7UbThHBY3DRXEfbQcDqoJdjrp0UaFyPbKonPqkUSwLqM3a2FJk/JFIDWtCi8Q3rbmU
+ 9z1XLY+6WhaTCrVAF8rE/ah2XblKAfZ7m2t934id20D+8kpFm9Tf81AQ5PilWvbXd3fyVoXGv
+ /LaNdUS+lRi9ZazYkEEMPIELD1ac30lGcV3Vj4Sur4XNTQrt6EaAtzmXWxp6ZM8S6BXYqwMop
+ hyVzjBWlWghhQf8JvVIWmtbHYR2zap0pUmrxb/SVzLiEL2GUobgoR2wakShTxomOV8mr40D9c
+ Fzf8ptEceSuClVTQqwHOZJvtuKq7SIyc5AtgM7hsGzWqOCzl4ZxDClFZkoOxB36YK3WiRAKdz
+ CdoX1QizEoU7Rrh5AzJspGR3FG4YehBfCtUn8ippJOOI2GoWOYWW6F5KqWAGxI9XOpJcyTQTG
+ A6GyzSiHuYceHyGojryj2Knz2UoX92C9Kqc82NEeo0Dh0=
 
-On Wed, May 22, 2024 at 01:11:06AM +0800, Anand Jain wrote:
-> This is v4 of part 3 of the series, containing renaming with optimization of the
-> return variable.
-> 
-> v3 part3:
->   https://lore.kernel.org/linux-btrfs/cover.1715783315.git.anand.jain@oracle.com/
-> v2 part2:
->   https://lore.kernel.org/linux-btrfs/cover.1713370756.git.anand.jain@oracle.com/
-> v1:
->   https://lore.kernel.org/linux-btrfs/cover.1710857863.git.anand.jain@oracle.com/
-> 
-> Anand Jain (6):
->   btrfs: rename err to ret in btrfs_cleanup_fs_roots()
->   btrfs: rename ret to err in btrfs_recover_relocation()
->   btrfs: rename ret to ret2 in btrfs_recover_relocation()
->   btrfs: rename err to ret in btrfs_recover_relocation()
->   btrfs: rename err to ret in btrfs_drop_snapshot()
->   btrfs: rename err to ret in btrfs_find_orphan_roots()
 
-1-5 look ok to me, for patch 6 there's the ret = 0 reset question sent
-to v3.
+
+=E5=9C=A8 2024/5/21 21:24, Naohiro Aota =E5=86=99=E9=81=93:
+> On Tue, May 21, 2024 at 06:15:32PM GMT, Qu Wenruo wrote:
+>>
+>>
+>> =E5=9C=A8 2024/5/21 17:41, Naohiro Aota =E5=86=99=E9=81=93:
+>> [...]
+>>> Same here.
+>>>
+>>>>    	while (delalloc_start < page_end) {
+>>>>    		delalloc_end =3D page_end;
+>>>>    		if (!find_lock_delalloc_range(&inode->vfs_inode, page,
+>>>> @@ -1240,15 +1249,68 @@ static noinline_for_stack int writepage_delal=
+loc(struct btrfs_inode *inode,
+>>>>    			delalloc_start =3D delalloc_end + 1;
+>>>>    			continue;
+>>>>    		}
+>>>> -
+>>>> -		ret =3D btrfs_run_delalloc_range(inode, page, delalloc_start,
+>>>> -					       delalloc_end, wbc);
+>>>> -		if (ret < 0)
+>>>> -			return ret;
+>>>> -
+>>>> +		btrfs_folio_set_writer_lock(fs_info, folio, delalloc_start,
+>>>> +					    min(delalloc_end, page_end) + 1 -
+>>>> +					    delalloc_start);
+>>>> +		last_delalloc_end =3D delalloc_end;
+>>>>    		delalloc_start =3D delalloc_end + 1;
+>>>>    	}
+>>>
+>>> Can we bail out on the "if (!last_delalloc_end)" case? It would make t=
+he
+>>> following code simpler.
+>>
+>> Mind to explain it a little more?
+>>
+>> Did you mean something like this:
+>>
+>> 	while (delalloc_start < page_end) {
+>> 		/* lock all subpage delalloc range code */
+>> 	}
+>> 	if (!last_delalloc_end)
+>> 		goto finish;
+>> 	while (delalloc_start < page_end) {
+>> 		/* run the delalloc ranges code* /
+>> 	}
+>>
+>> If so, I can definitely go that way.
+>
+> Yes, I meant that way. Apparently, "!last_delalloc_end" means it get no
+> delalloc region. So, we can just return 0 in that case without touching
+> "wbc->nr_to_write" as the current code does.
+>
+> BTW, is this actually an overlooked error case? Is it OK to progress in
+> __extent_writepage() even if we don't run run_delalloc_range() ?
+
+That's totally expected, and it would even be more common in fact.
+
+Consider a very ordinary case like this:
+
+    0             4K              8K            12K
+    |/////////////|///////////////|/////////////|
+
+When running extent_writepage() for page 0, we run delalloc range for
+the whole [0, 12K) range, and created an OE for it.
+Then __extent_writepage_io() add page range [0, 4k) for bio.
+
+Then extent_writepage() for page 4K, find_lock_delalloc() would not find
+any range, as previous iteration at page 0 has already created OE for
+the whole [0, 12K) range.
+
+Although we would still run __extent_writepage_io() to add page range
+[4k, 8K) to the bio.
+
+The same for page 8K.
+
+Thanks,
+Qu
 
