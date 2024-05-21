@@ -1,155 +1,165 @@
-Return-Path: <linux-btrfs+bounces-5149-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5150-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EE68CAA64
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 10:55:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99F548CAB55
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 11:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E437280FC1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 08:55:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD4AC1C218A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 09:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F45356757;
-	Tue, 21 May 2024 08:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55A16BB54;
+	Tue, 21 May 2024 09:57:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Gu+taHP5"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rUU7PaPC";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rUU7PaPC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D57254917
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 08:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3814561664;
+	Tue, 21 May 2024 09:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716281728; cv=none; b=T0NlrpchBCPfXXrthbD/HFBlJhuM9hImWwnwroP3P7jCYmm4J94VRnMJrwUentiiytpgzFyMLJs/2RMAhlxDslgKi3oTC+zdmUMnYGbnyGTW3gCs65fqcTPPqATMIcsPhYSxdxgH6z1D+EqiKzudMprR5esU9q+LwDYqgW6i+nI=
+	t=1716285461; cv=none; b=pUyrBfk5EKlBv63RMQLoEHJAtq9mNT3W5xKS6qQ95fOZx1J7BW0R5S4l4Kifwm3GLjr6yRasFMSMoWWH1428JJ9++QzZP8ACsuZOMHSsGFzRlfaGz3hf7auOcbJRo+DNdjV4xS2Ru+kgmV5/6osPshnoXKM5fOH62cWb8yP4bDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716281728; c=relaxed/simple;
-	bh=9xhm+Sy8WwGTi8NfCHmoXxSOxCqzYzgpjEWHiu5RdAw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hAaRXZR8vWY7Rm4YY2czVI0KjlMLR6aLKCtZpVsFuyH4eFCfXShNay02Oz2/OFFswXTIPIYTMOr+M4xz2oW6+xWM6q+qpHvKCl7EljWABd9unGKr8CNVEh1JRBRsuW09IMQeO/9Jdy6kXhr8ShrGAVrnGPfeQODxfifeEx1cMEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Gu+taHP5; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1716281721; x=1716886521; i=quwenruo.btrfs@gmx.com;
-	bh=9xhm+Sy8WwGTi8NfCHmoXxSOxCqzYzgpjEWHiu5RdAw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Gu+taHP5h8CDbb5RYsKXo1pqSMAeKqVM+TBhHY+T6nGYdxuf53leVxukLjSS2IAr
-	 1EueOSCtFDXI0C3g909SBWW8aUXD6nRC1KBKIwOL8aKJoNziNMQz4D9YSQa1z+Ra8
-	 w1g5LmmkXZmR7bQ52z3LrsKQB6AcJCV+YV1xY60qPtBsVYAhld2JpnTOwwJSE+Co/
-	 4oyAN6Sr8qckdivNOGM0RFejqNrrioejrq9eUFx4LIYFjXdRq8Gb8f4utAxGtzeXk
-	 PsvjV3Z239yG06eLAzrIy6TlJ8xdj+J0fHllr8xx7HaKXIQJUI40ioJxn9DS0PEPu
-	 UPdfhccgD+hfBzNLQA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3UUy-1s9tVb0B7a-003xDV; Tue, 21
- May 2024 10:55:21 +0200
-Message-ID: <3c492c05-bab3-46be-861b-f658d6c6a095@gmx.com>
-Date: Tue, 21 May 2024 18:25:16 +0930
+	s=arc-20240116; t=1716285461; c=relaxed/simple;
+	bh=Bas5WRjn0dclZkkBNUogHr028J1KhD4M8KnWvB9UP14=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=siqbsyta1J2xy6HCo40+YwA+i7VEVkTFVMYDJFhcMBJRlwOuWGSmgAGM1CYYFITV7WD8lYM0fkRbnXS8z+Yvi4XSwUWgGouqcqipBZy/lPEc3aCIstq7BvWn2nmLP3RrdlkZoWYXu0hB6KrRIDVa2vDrUkFmsqgYBPKx4bBBXg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rUU7PaPC; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rUU7PaPC; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 461E45C01F;
+	Tue, 21 May 2024 09:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716285457; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nuLERO3cjCptDjETD65Hh/zsf1Qdit+nFyKeEqzY0YQ=;
+	b=rUU7PaPCtVT6pruL/exnhNmJGYpHjApziGeOugdGqJ4oZJ1ALW5JTV5zrf7AAI95le9rF6
+	k+hUYvK/3zGnhXIR4muMoi9+F0ZOYVcLFBPxmAJPWhxTnP2wEkxEQukyGdax06yKkJSemp
+	iE9vc3ab6dL9T0kzQDYqlY5aFSOMIzU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716285457; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=nuLERO3cjCptDjETD65Hh/zsf1Qdit+nFyKeEqzY0YQ=;
+	b=rUU7PaPCtVT6pruL/exnhNmJGYpHjApziGeOugdGqJ4oZJ1ALW5JTV5zrf7AAI95le9rF6
+	k+hUYvK/3zGnhXIR4muMoi9+F0ZOYVcLFBPxmAJPWhxTnP2wEkxEQukyGdax06yKkJSemp
+	iE9vc3ab6dL9T0kzQDYqlY5aFSOMIzU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 66BD513A21;
+	Tue, 21 May 2024 09:57:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XF/wBg9wTGYiEgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Tue, 21 May 2024 09:57:35 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Lennart Poettering <lennart@poettering.net>,
+	Jiri Slaby <jslaby@suse.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] btrfs: re-introduce 'norecovery' mount option
+Date: Tue, 21 May 2024 19:27:31 +0930
+Message-ID: <44c367eab0f3fbac9567f40da7b274f2125346f3.1716285322.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs: please undo removal of "norecovery" (userspace breakage)
-To: Lennart Poettering <lennart@poettering.net>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <ZkxZT0J-z0GYvfy8@gardel-login>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZkxZT0J-z0GYvfy8@gardel-login>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4gXQR3vHEBsqNlBAOhPrjGMyATrBDyHARFtxLXCjCWdplMN/KSA
- J7Lzq7gylowGT2uRrtlqgCe+luGuh5mfjYmBlNSSmss1uQs7AjvlLCSIFFyBg76OACavRZO
- KsNab1pKapDvy+i+NAYS0Qp6J4kC7GU7d9tUWSxNg4qiX3+VdljV6OpjVlpYOVghCoo3mfd
- St/KSIJ09dlLz7ZowpENA==
+Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:zMsnY1ETfGE=;OXzS6vMu5pGeMoTgFdsX3pYislC
- 5nlaPEASl8Ll7lkYg2AXzv+vCussQ8dw0g9v8+37xl0vXm2dKp+L0ig25UeRtfpRYmvZSePzj
- uLfZGe2v6gZbf3J40QRjWZAJeIdAMfkICm1OISGX3WEqopMnj+QIa/8XyCyBNZEsMBNVCZg+k
- XTxuv2ir5BzNhyJDRvZVteoMirZDBEuPJij4laBOl0HTWU9yRQSm14dLqTGgGMzUoyV0kLUMI
- Ils5wnWii7+zV7w9rbJp1qtGi6NKqsUUxwWcLXBcJzXjeyWKaSt3Plp+dBwvLJr3nGJbE3W8+
- UXN40bIA9MNC8+qu6A3p2UuOfTY3l/sHOoQRrvK3YE/Tuw0cSnFGJZ/5sNjt6UwqW9ciZBCbh
- IS6miqcxmohfA9Ahhh08jguoF5G3sn0fAFtRkJ7EEpqVjh5yIpU+G34ieOptlMScs9MrwlOgz
- BtB4m8pfpCpX7KAPmQAu2RxKcTUL4KIfe82f0kB6H1wxGOVtuoUCZ2tvi03BYlkNURiq+vau2
- 9GFYgN8xpKgxbtY9l3r00OtcO4wbJ6CHisEDE6WwMqGfx2dbZbQopQbXGc0lp3/9MpuCQ4KEo
- r96JosltRqK5DKbgDp+6WW+kzOjz0Zc5zFWJyNYeSsOqa4prs6pyawCrxgpBlnWvDYIQePu+K
- hW2inJCdg9Wl6rt3VzmLKL8bmywUEli+4+oC4Q8dwCyH7R87yUCwPhMlvGPs9lXVjsTSBYb44
- NEt4a92WssLiyALoXMmqpx5QsR3/RYNO4ka1KSgyXDhUwQ8R0gHNt4p77ojGBoC4cWLNAWDq1
- GbHf1JP9LH5ODcKCWN6VLes7Np6NdCE9dZsqDIUfpNjlk=
+X-Spam-Score: -0.58
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.58 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	BAYES_HAM(-0.78)[84.53%];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url,suse.com:email];
+	RCVD_TLS_ALL(0.00)[]
 
+Although 'norecovery' mount option is marked deprecated for a long time
+and a warning message is introduced during the deprecation window, it's
+still actively utilized by several projects that need a safely way to
+mount a btrfs without any writes.
 
+Furthermore this 'norecovery' mount option is supported by most major
+filesystems, which makes it harder to validate our motivation.
 
-=E5=9C=A8 2024/5/21 17:50, Lennart Poettering =E5=86=99=E9=81=93:
-[...]
->
-> It's fine to hide stuff in docs and so on you think is redundant, but
-> if you take the kernel developers mantra of "we never break userspace"
-> seriously, you should still keep the option around to be parsed,
-> because this *did* break userspace, quite massively. And there's so
-> little effort necessary to keep compat here, just treat "norecovery"
-> as an alias "rescue=3Dnologreplay".
+This patch would re-introduce the 'norecovery' mount option, and output
+a message to recommend 'rescue=nologreplay' option.
 
-OK, I would add such alias back as a regression fix soon. (hopefully can
-be merged in this release circle)
+Link: https://lore.kernel.org/linux-btrfs/ZkxZT0J-z0GYvfy8@gardel-login/#t
+Link: https://github.com/systemd/systemd/pull/32892
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1222429
+Reported-by: Lennart Poettering <lennart@poettering.net>
+Reported-by: Jiri Slaby <jslaby@suse.com>
+Fixes: a1912f712188 ("btrfs: remove code for inode_cache and recovery mount options")
+Cc: stable@vger.kernel.org # 6.8+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/super.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-At the time of the deprecation, I didn't even notice other fses also
-support the same "norecovery" option.
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 2dbc930a20f7..f05cce7c8b8d 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -119,6 +119,7 @@ enum {
+ 	Opt_thread_pool,
+ 	Opt_treelog,
+ 	Opt_user_subvol_rm_allowed,
++	Opt_norecovery,
+ 
+ 	/* Rescue options */
+ 	Opt_rescue,
+@@ -245,6 +246,8 @@ static const struct fs_parameter_spec btrfs_fs_parameters[] = {
+ 	__fsparam(NULL, "nologreplay", Opt_nologreplay, fs_param_deprecated, NULL),
+ 	/* Deprecated, with alias rescue=usebackuproot */
+ 	__fsparam(NULL, "usebackuproot", Opt_usebackuproot, fs_param_deprecated, NULL),
++	/* For compatibility only, alias for "rescue=nologreplay". */
++	fsparam_flag("norecovery", Opt_norecovery),
+ 
+ 	/* Debugging options. */
+ 	fsparam_flag_no("enospc_debug", Opt_enospc_debug),
+@@ -438,6 +441,11 @@ static int btrfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		"'nologreplay' is deprecated, use 'rescue=nologreplay' instead");
+ 		btrfs_set_opt(ctx->mount_opt, NOLOGREPLAY);
+ 		break;
++	case Opt_norecovery:
++		btrfs_info(NULL,
++"'norecovery' is for compatibility only, recommended to use 'rescue=nologreplay'");
++		btrfs_set_opt(ctx->mount_opt, NOLOGREPLAY);
++		break;
+ 	case Opt_flushoncommit:
+ 		if (result.negated)
+ 			btrfs_clear_opt(ctx->mount_opt, FLUSHONCOMMIT);
+-- 
+2.45.1
 
-The original problem of "norecovery" is that it doesn't follow the
-regular "no*" mount option which always has a corresponding enabling one.
-E.g. btrfs has "datacow" and "nodatacow" mount options, so are
-"datasum"/"nodatasum", "datacow"/"nodatacow", "ssd"/"nossd",
-"acl"/"noacl", "barrier"/"nobarrier".
-
-(The last 2 pairs are not even btrfs specific).
-
-Furthermore the name "recovery" is not really clear what it is doing,
-log replay is hardly a "recover" procedure.
-
-But as you said, no matter how unreasonable the original mount option
-is, if there are users relying on it and it is consistent among other
-major filesystems, we should just follow it then.
-
-Thanks,
-Qu
-
->
-> Thank you,
->
-> Lennart
->
 
