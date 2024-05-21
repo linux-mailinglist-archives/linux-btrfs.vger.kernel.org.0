@@ -1,97 +1,97 @@
-Return-Path: <linux-btrfs+bounces-5143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F137D8CA8DD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 09:24:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA5588CA957
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 09:50:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B000028212A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 07:24:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A2BF1C21301
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 07:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDB74E1CB;
-	Tue, 21 May 2024 07:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D70AC5381B;
+	Tue, 21 May 2024 07:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="Y9V/d2e0";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="iOs3sePd"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="OId7RAG3";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="jHp2KUPJ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B665029D
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 07:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135D253E3B
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 07:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716276233; cv=fail; b=awjnTALdq2NN4cbcRgLQwhGrApFpPqJjftsfKRp/rkmLVBcGT1pTIKvvnGRLzOIK+YlDdMy9M8ydArrbdpbMI0QTuiBco/17FGQ6p2KHGqQSCxKyWPp7nDtFER7vaOBuYy50cDokw1e8+9GO/alvOTZ5w4/X9PmUFimUkWCnwhs=
+	t=1716277824; cv=fail; b=kNaHO1TWkTOiL5W+EQbcE0zHG0lZ1Dianq9O38otG9OCX0L7Aw0lLjWf6xBkGh51eh1dhXirexlQzeZStWhKwOtjTj9eNjc143oxHVj3RnpUO5/H8ZtCVIVvnICiyMQqdAZS+LOBhk4RkQygraCueSEAbxmOSfDeX48y/AeZMMI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716276233; c=relaxed/simple;
-	bh=4vvrTF4PxVTY3ZHp/13O2B3/2hP/EqS0M01iRInjE1k=;
+	s=arc-20240116; t=1716277824; c=relaxed/simple;
+	bh=7bRAbVe/l6Uw8PCvihToLPfjJX7xhqfRXNAe4M33dtI=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZehsqzmuDEgK/8g97yXxIfun/jwPb10D3xkQozix49TGnIpOFsyIYMd9oEEubWBdgdgIcWs9XGF5+cL7X9py8Lcnch5ccsTqXskCxFLgKi4YT7WgCIrLqqe9gE54Srtr3rZVxtLbqW5ghksF+JZuKCrO4k5TiuIiLMjOJ+ERwtc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=Y9V/d2e0; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=iOs3sePd; arc=fail smtp.client-ip=216.71.153.141
+	 Content-Type:MIME-Version; b=VyNcopMdPELKfQyvxYMZHcYrn7vLbn1zjAPkbQPBbvzvCsmaRY/g4viQcVa+TmmIvcUIIZQ5P0Z/cNR5M9iwKbLNfjZMQ1jH9xL4h/uQOAVoUYdzcWuPMteJK/Ql4r8HcSMbC73M4nqMo9ak80/0qpz4fsYEOzLqAinuuuj6+7c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=OId7RAG3; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=jHp2KUPJ; arc=fail smtp.client-ip=216.71.153.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1716276232; x=1747812232;
+  t=1716277823; x=1747813823;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-id:content-transfer-encoding:
    mime-version;
-  bh=4vvrTF4PxVTY3ZHp/13O2B3/2hP/EqS0M01iRInjE1k=;
-  b=Y9V/d2e08tqQBlTrNA3+x5DIEPL7O24WyPxv6v2ojahbtwYnwh0wVtRG
-   al1PencQK0wAQInabz/M+6XwDITFrbSaNL5zOOIF4CBIIwR/vnLWvH6gG
-   XpxHg9CQ3jzBKoRG8t1kXe9FKoZ/7Ira+xwJGA1FhvgpVoKDQTBcu1kwr
-   /uDNi6zIDGb+MPHl7EjqM7uA+69Cqvo0NWCEjwVs7Hmy02RQEEBnetMms
-   w1ZVQTQ5k8rACXCQAc3rPljViYsytrprIsgndgygBM7pCKtfJ32QHMeTQ
-   ZUZgKX77VUXqK/xku1VuGBu68I5lcEQea8Rzv8zX+yfzRnC184yEUPe0P
-   w==;
-X-CSE-ConnectionGUID: BOWbxYuUTEua9gqpOuIFWQ==
-X-CSE-MsgGUID: vsXZ/g92TZOWFbHr+0gIzg==
+  bh=7bRAbVe/l6Uw8PCvihToLPfjJX7xhqfRXNAe4M33dtI=;
+  b=OId7RAG3ZTIuJaXSzZFNP8BVlJxYhUdu8fhO3PYH6/MOJAhpzca2pDcZ
+   +GHVMPk1Vq0Em7/9oM7Q/oEMz9Y7nyhTf9rqCwbq9X37+ktR3x9m38nsa
+   XACvNxvZjjptejI0uHQRqClCAP3uq/SX5YOkOGDetrxaji7s+ADDG+c0r
+   4SGSmomOEhgeW8cst1k6hXUdEhRrHFiwcD5og/Bc1mU4upP5YSp1SGbVX
+   XymHjtCfo+3nTy4uhxrx0BI3IAY94d2S1JN2EsSttmp9wTcV9EAksNzD8
+   6ey/5tOLpmSX3mBxZGL49v4Y03EHYwfHUI8UH1GlSRFay9PlVDwy0/jBe
+   A==;
+X-CSE-ConnectionGUID: NZ4b28SZT9eVPvE6RyWDGQ==
+X-CSE-MsgGUID: 5JUK8oTEQ5uNDVXxQRygxQ==
 X-IronPort-AV: E=Sophos;i="6.08,177,1712592000"; 
-   d="scan'208";a="16565348"
-Received: from mail-dm3nam02lp2041.outbound.protection.outlook.com (HELO NAM02-DM3-obe.outbound.protection.outlook.com) ([104.47.56.41])
-  by ob1.hgst.iphmx.com with ESMTP; 21 May 2024 15:23:51 +0800
+   d="scan'208";a="16569321"
+Received: from mail-sn1nam02lp2040.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.40])
+  by ob1.hgst.iphmx.com with ESMTP; 21 May 2024 15:50:22 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QwOhuJgAZWrRLNXHF3EakPZzlsKai9XnMdmmdGB1edi3bnWeBGBlsBzfRWPOXXj9WZnUnDNohTCjdDMSqz0EZ8PqF87RJ2JqYsfX692Tr0AUAM8gOr5wtBtG0naQJP3sHz1/3J3a07U/5dzQGM5atTTZ2JQk9+H7fD/sXDYzUxcZ11MQzmj+WodbfqFIsqCOUW+lHBrVOWQVKka6X3shOKwxo2qjku7epU7lcD4pq68Mh0E0ub1hBBJ3eoxpUXbwvas8TIYbxwj9YllDhJGAQwzGigxuuj0MDLF+wECCE1nRUL9sYvEiMO2RDnYn7SmjTwSAqj4kzmtugPvldV4iCA==
+ b=IcPpu1p+tyNjdijhzw9hkPqokNURMbR5bFLxyVLGcRFfNlQ9IHWxAZWAjn7orwSDTxgNep0Z2v9uwKmoqP9LX2CpQy36PB9osN6k4Ycxt8mMMLZbUX5OFAn+7AsqE88PF4h4uwyHNsPKq1kvc6FGEAQ2fnEe9JeVhKzQzTcNIEAbGaKZXusw1sCVAFCySp2KjzHl6sBe4tfZbg4zZBbMAOgN2zj+hMi5pbDD9qMr2pcxzHHSK6/QvF7izZqW1z0sXvwAmAQpY4MSo9Nu729ydJyfDg5IScmi/6c9bPQzaheGc178t47ltgbQz1zNjcHWW7dti6guvfjhyrCZg2xvfg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+YTwVeZ4w1ytWSlDtBg6P4bl5rRHnWqph+l3UUXlvaM=;
- b=hXmS6AarKZQmsu/rwOg/9LwiuPGNYfBD04+gh86MZcN6K/mwFI8mFUUjNQgyptLOL3++gmTytoM58O7zRNEfT3VBQkMdhXnrKgG4zp32GW1NOGWJnd+awVhbtnJ7d55KP+XNVEe1cMx+4T5hvlJm11sxXi6hzkXfVMg0mSBt8Ccq21Vsj4lkCEgLYrvKkLBjczL2FRMiNQSEeW3h6c5hnekJ6GvSxj0kdrsVYLhjQcvdwaUsmTpXRMqXuMmzHF7DVhxmQ5VP0+QftmKwtTo8EjWRfffBHgpgx0zHYSqH9SY5q/Ggp38OpWU4CQSDJLb0E/8xDCtIXLpf8QgvJYppPQ==
+ bh=TkEPehAA/MsK4nQ3FdYSQk6YMcvGruQ3qIf8/8O376Y=;
+ b=HEguMgENK7C2H+E+5XShv/kiDHnksq8iMhqW7QY+JjeSF0ITK0JRd4O7dydvJP8V91TFw5XEbbgpowVYMHnuL45SZIbRwcKLt2CtkwB9jmWK0cm0L2lq8NTesnWqCxpbea90v7gvdjzsQZIdU3t4KzxE56Ppro6//sruFYpENqW0lq0jpYGRR2ndbRiPHM5rpsNxz5N5kMZnOru5pbV3tGPE6Ror5N/bVQNDTLeHJ8Skh9gfAOVpiaqtQkx90YQeY5QqlzCpj2k2PQue/e4kLNPrNlBvInsU9rLmrFNIf7CO3NwY6PqeyzjRx8TcCaGT4YDpDKqc7SEt26eLY2Us+w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+YTwVeZ4w1ytWSlDtBg6P4bl5rRHnWqph+l3UUXlvaM=;
- b=iOs3sePdADtWNW6nkIItqOhYwYHH5LRBz8HgJxarpNmeWZVhlDwJLw5zcvG93Us81f31v1jw7LhZpCYApKLb/WQ0V8yEaoPCGqUvrKB9YMd54yeP7LV+oYnx84VpyTFfIrwsC6lOIyBvPxAfWPzZlJ1Jg+FRe1Xi6CdiBJqdRmg=
+ bh=TkEPehAA/MsK4nQ3FdYSQk6YMcvGruQ3qIf8/8O376Y=;
+ b=jHp2KUPJwoGxkPYJxFXfL9ve+zETGi2fMaDMDhrPg9DEPqVHqpI+mDgGU0ywYgo0C1eLv5dWZnIzgGxOTTVJhnb8lcCraM28fBlhjeDZHrvHrI25Wz6qTghHgsEiiGe7h54DBRMUuMCGsXNF4EdIhdQjlLm4VKfCjVOox/0b4hg=
 Received: from DM8PR04MB7765.namprd04.prod.outlook.com (2603:10b6:8:36::14) by
- BY5PR04MB6438.namprd04.prod.outlook.com (2603:10b6:a03:1f2::12) with
+ BL3PR04MB8139.namprd04.prod.outlook.com (2603:10b6:208:34a::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7587.36; Tue, 21 May
- 2024 07:23:48 +0000
+ 2024 07:50:20 +0000
 Received: from DM8PR04MB7765.namprd04.prod.outlook.com
  ([fe80::8bb1:648b:dc0a:8540]) by DM8PR04MB7765.namprd04.prod.outlook.com
  ([fe80::8bb1:648b:dc0a:8540%3]) with mapi id 15.20.7587.035; Tue, 21 May 2024
- 07:23:48 +0000
+ 07:50:20 +0000
 From: Naohiro Aota <Naohiro.Aota@wdc.com>
 To: Qu Wenruo <wqu@suse.com>
 CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Johannes
  Thumshirn <Johannes.Thumshirn@wdc.com>, "josef@toxicpanda.com"
 	<josef@toxicpanda.com>
-Subject: Re: [PATCH v5 1/5] btrfs: make __extent_writepage_io() to write
- specified range only
-Thread-Topic: [PATCH v5 1/5] btrfs: make __extent_writepage_io() to write
- specified range only
-Thread-Index: AQHaqOFn97WHXhMkSUS1U4wfkz0rS7GhTeEA
-Date: Tue, 21 May 2024 07:23:48 +0000
-Message-ID: <s6f4rs7boxkfnqpf3wggzchktcizhcwjedwtuw4rkup7qdz7rm@3rbp4l3eok2h>
+Subject: Re: [PATCH v5 2/5] btrfs: subpage: introduce helpers to handle
+ subpage delalloc locking
+Thread-Topic: [PATCH v5 2/5] btrfs: subpage: introduce helpers to handle
+ subpage delalloc locking
+Thread-Index: AQHaqOFrc0NFEt+V9UK0P8ViuQm777GhVUqA
+Date: Tue, 21 May 2024 07:50:20 +0000
+Message-ID: <5faun6sbhn3x37b2kwudtnuumquuiyi4oyferavknmxgoofwgk@tubvkvthpwog>
 References: <cover.1716008374.git.wqu@suse.com>
- <3505552899f398a1d8959baa8245efac7a2070b6.1716008374.git.wqu@suse.com>
+ <996c0c3b0807f46f7ae722541e6a90c87b7d3e58.1716008374.git.wqu@suse.com>
 In-Reply-To:
- <3505552899f398a1d8959baa8245efac7a2070b6.1716008374.git.wqu@suse.com>
+ <996c0c3b0807f46f7ae722541e6a90c87b7d3e58.1716008374.git.wqu@suse.com>
 Accept-Language: ja-JP, en-US
 Content-Language: en-US
 X-MS-Has-Attach:
@@ -99,70 +99,70 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wdc.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB7765:EE_|BY5PR04MB6438:EE_
-x-ms-office365-filtering-correlation-id: 1402b954-c466-4213-6f3b-08dc7966f533
+x-ms-traffictypediagnostic: DM8PR04MB7765:EE_|BL3PR04MB8139:EE_
+x-ms-office365-filtering-correlation-id: cf1b94fe-300c-4619-fbd1-08dc796aa9bc
 wdcipoutbound: EOP-TRUE
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|366007|376005|1800799015|38070700009;
+x-microsoft-antispam: BCL:0;ARA:13230031|376005|1800799015|366007|38070700009;
 x-microsoft-antispam-message-info:
- =?us-ascii?Q?2q0t0XNCV27m5xf/HNFdjeV64HZu9tDW/ob53ZFLiln3XPVLB+3KL0/pMWV0?=
- =?us-ascii?Q?Ev6lXbG4w+eYAX5IKv/K3mBv2i5NKPtHOmIL23FF9T+IFuEcvjuDNZ2C5FvQ?=
- =?us-ascii?Q?P7gKKiHlVWPJdpRt5sskAPvvsYXcQ76hMAiq+RvPFMaOP8t/5Chw0N5mzU/W?=
- =?us-ascii?Q?sRA5Dac0KlFuOmlaiEj3bAaNw5P+MHf7oNT6gUjShCPv+gM5Tszr/BLUHmjD?=
- =?us-ascii?Q?mRYxZwgr+HwaUh3tDx5yQgY8QkejQnDmVTrrWEgVA1E+klnwrfvCrqLcPu94?=
- =?us-ascii?Q?/JJz7S5N2n4BsIL5Ctyu+odQIU87X2wQZ3Lcqp1VjZGiH1BD8sHqo9vi6Kfe?=
- =?us-ascii?Q?HRWlYx3indBUhvbzSCwPfO/rr7Mx/2QfMBjq0yJVgaxuaw5gPaz4dOUa5iVy?=
- =?us-ascii?Q?cv8smdN1HrNqpD7AMQLu4sOSuNvx+1empPSaiB4nKd2hNR4pfUp45OFHFC/a?=
- =?us-ascii?Q?gSQW0xhtgMYz63lz4cK1Bn5OCuw9kh1E4lePCRnRwejaPmYO/zLzjV4/0lme?=
- =?us-ascii?Q?zIpMRImx48RBp73xUaSfrRe8u3l55G1T8vemAWY9mTwXK9uuGFHpN/b4PPS7?=
- =?us-ascii?Q?RSvgv6tYPOhvgjRe4TpK6G1vBzmRa97ZRrzulvMO8faHpirarappYbebpMhm?=
- =?us-ascii?Q?D8Uygln7S0Sj6qJ8kManhuykB44QGeMmgJLBgg2JjMUq3S7jPIevSXHmYABX?=
- =?us-ascii?Q?rQnw2PPRfX0uNUiNWB2UkLYcaK7dZrTM+s9A3cdm9pVU2+njpmk4Kmk5juUV?=
- =?us-ascii?Q?9ttba2Z7B8mB2NuW8aaFtv6Yl8d6TplBRHzL7AR+ffpri8aujdQ7SDMYdQM6?=
- =?us-ascii?Q?1c9VGRBTcsJT4QqPIF440wTy21svSn24XheRm7cKev1jH6TTsNyqIN6F6l2i?=
- =?us-ascii?Q?Lz9T5c06E66nLQZ5iw3elaKjXGQFHJp7Um1aOESDajJqzeoj2iD1vKkNtOxd?=
- =?us-ascii?Q?FmrXCMtX4bzmBqvFnKUSnSSPpXSX6nBDnJB/TpUGnQBsNC/tpLdeknRi59D4?=
- =?us-ascii?Q?2CC64gPOmWlNOhBkz1fAM2IO3ZRGe8SIGCos45WFIwWUKHZAIgoNDOx9cMEa?=
- =?us-ascii?Q?M2bbA2M1UemKoKujMBV9pwZzsGHO5Il+LWVEmlKb8D8nBT/jSRjJSqyihsAn?=
- =?us-ascii?Q?TRk621gBbahMHkHZJEVhHQPam6xr7jV8Mn2ZS2y1cHyq84XHOAKGzBGMLA8b?=
- =?us-ascii?Q?fnMkPAuUeCzBPk2qJZMxZEJ2PSLhhE73BeYeqJLPpIYcLs6Aki8pqPYw0Xx0?=
- =?us-ascii?Q?DRrOZfJEwndolduXuhrdprxj3qptYgYzd1te34wZvAIlGNiYtTMrD/RIZDXq?=
- =?us-ascii?Q?+SDC9xanXNzLaZ0705sWegCFncbxOzWn4KKaGgM8VPv2Cw=3D=3D?=
+ =?us-ascii?Q?GNiHsqXsBCEtI1/VqFg2OTNl6iTRX7yLRMdTyK6RqfmrLoufolzbyjmsZM07?=
+ =?us-ascii?Q?QeDDCLIfTrSiPahJD4yFVGd4bkAmeaJzV+XcVGoxo4zdbVXgZtP8GX/Poqrq?=
+ =?us-ascii?Q?pkgfoeHmWj9GbDTAK3yz+c5LpkZCnmrDdGCrChOfyTZRfZz/cAzzJvX6ks/K?=
+ =?us-ascii?Q?02ZuY1u5u1ywoAELPyiPmU/dBaQaWZhBYgto9kq1yqBSdZamVMVlaQl/maUW?=
+ =?us-ascii?Q?TBR6veQoU/K+025xq0GJ3G/9hwxHrYB4ZsYRNnJCwWd5fFq46syt7Iv4JZ14?=
+ =?us-ascii?Q?mf3gtyP86mUMPuAha5PyXRgdJhuneIfWOqqdCTbFC/DJZYwHoZYRqv9szPFM?=
+ =?us-ascii?Q?vZze/tYrVwtLzcsn78RSrUZR9ZsuPR9sYvQ+EHyOs3m6sjfqu6dklA714foJ?=
+ =?us-ascii?Q?aWLvfs0AcWlH3slg9ReIMhbUhRUmTqXYy/wNAGiZTQMP+WZ6XqZ8zTS7PF0s?=
+ =?us-ascii?Q?gXimkAc6zr75NU40MKIYVRYnczuOq9ELtIET/+wKsIpZGjJ43LYNG/S/BP//?=
+ =?us-ascii?Q?ZQSZIkOHHkmcQgQPz1KordDdXcCMwq80TxqXQ/L2+kjZMMafOQb3IeWoYdv8?=
+ =?us-ascii?Q?irke82uts4UVhzuAZZfKLXz65QsjzqATW1FViqIh6ds7zl2T+3f21ZO8VQuu?=
+ =?us-ascii?Q?0LKMjfb0baTQlB2cum0eQy4D+xQALTGYIy32ZEETHuQ3RQNSfgvsBypcVwq4?=
+ =?us-ascii?Q?9eeEHkBBxsPcIg/jB+YTWnZcNgnoeBM1oKmpZs9MrUpi0SwbhzO8R+/rBcSX?=
+ =?us-ascii?Q?kMeWvUpzFzAC1Qn+pmTwLIW9yhtCE7mPfEKIbyxOnDF2TkR8bStzlxd6JkMG?=
+ =?us-ascii?Q?kBMo+LKqa4Yz4JkHCR7/0hTiyT2kJpib4oEWmt7fa+En/9IoQbpQ9+L0nVYt?=
+ =?us-ascii?Q?PZAywtnRNkkWcWT9oWev0jZ2bu+jbX/XZGAfwjAsGXEnW5d659GIqDNDcINO?=
+ =?us-ascii?Q?WmGfcqVvEWF6IN2o7SlFThWcdCWzX9Uk0b6HP2SiUKmstugB2ZemArg6uWAd?=
+ =?us-ascii?Q?P+msFzkQxXc6WfunWyK4w8aXeTy3/R6hkzK6k4gsZ2uhDuwPm4tHc7Y/QitC?=
+ =?us-ascii?Q?amTxv00lSiwk1kHZMwLPUjeN36V+MNcyQiZAT8l6XEjgU8l8vCNwkjZha4JN?=
+ =?us-ascii?Q?FnfL1nivK0eB2q2IU3BFKMXPfDEDepU8Xqct8aFCqWnvt3zd6OKpJehpfq6B?=
+ =?us-ascii?Q?sssC4KqKHJ3dfG8SVXiHFC/UJP5WZyOzVACq0Gui3bkd1DMAjODliFoIH7+7?=
+ =?us-ascii?Q?ar6Wwk1r5vhPqzNw7miM0Zb0ZbUlbC9smOFlE9LjwFKrjjBd3dyGTa24ZTcV?=
+ =?us-ascii?Q?mSPmerCvu/kxO6ldYAdmaYfR4+HG6bppxs5zn/2EvKTCkA=3D=3D?=
 x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB7765.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB7765.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?BCt1GDppkfDX0RXdTv2j+Y9vjVDTTla0svTXOo66jvhddFqEaeQTNdQ3Tbhl?=
- =?us-ascii?Q?B3x/WO/wkzIWjEDwPg00uvFreTX5rLsHeWx1OuYV2NBCLhyMHqsttvsv1+w0?=
- =?us-ascii?Q?CuLGGc6HgEodo2Qrh8ERMon2/B7FfWlZqlDZLn2pzzZqu4xAtq6BYSAtfkul?=
- =?us-ascii?Q?1UKEa7gpPdsDeeGq1+hwjwiGCTtDDk9TCV+7xtPw6SY+Q50YxNHjvoUoIKdE?=
- =?us-ascii?Q?SofbwozxGfEVBDT4c82HbWvv7jMHYB3I5AnwNUdWUJ3RRXimKzqz0B4CBsJ6?=
- =?us-ascii?Q?UldoDoYmWi6rUAp80A0ZHEMV/Y3dNnb9VxsJ9+cSS/oXACB8lBPpdksqLJye?=
- =?us-ascii?Q?3U72RP3nWgWg4HqEyHPB0VCKNaD/rsT/sZIYL6B4ijPzZxv6N3pGFEl7wymI?=
- =?us-ascii?Q?i0Q6Bmg0Dy0/N3k4mrOEZ5ZIUnG2K9iGH29JbHDe8fSS/bMCBvnfP2Q+SoUt?=
- =?us-ascii?Q?pR4PYwjPjNMx7tftp0RCQCtvAs0/CI5MrqANxWVHUdk1c1fLwAKK0ODGxqI1?=
- =?us-ascii?Q?jbYvDLsrm67E/yMdF3Ys2G8JET1bbx6RGTBSCm4goDMznvgDW3wFPSuuWdCd?=
- =?us-ascii?Q?2VQy3XqYwhj7k+4GpJtuTnZOwAwfz3xVwGB56b1LlnufFamEwJnp84YjArPj?=
- =?us-ascii?Q?qySzND2txRc+npHTfkrELqK0GtnSg0cCyChRVnn2FYiH/pi2s5VE+AqspWAS?=
- =?us-ascii?Q?yLib63APLzYBJhUNVSVtIDH6Q5A7mIFVfd8Q99fZoo3kKrlgcsdyw4dNnrEq?=
- =?us-ascii?Q?IpYCm7iixPQOnVj1ydhDGKkyfa+vRQU6JdQvo7pd1klQ8mlfLV5uWqtidcZ/?=
- =?us-ascii?Q?lzsFklsHin08ysLvgAvIJHKZdM3zlqtUAZaRyCHLCpnGrwUdQiFF3lTlEoGy?=
- =?us-ascii?Q?QdZxUlAel7TQCAk061v2cZwD6KYEJTEyO70HfgmnpFlqSCqtXAPkBeivuzyB?=
- =?us-ascii?Q?BzgK+wcsaGbVztdd/0bVQRqwpXNmyPFpfrYc5t8+jxWEHSP7zqNJQvw9WkXz?=
- =?us-ascii?Q?8lJ9VSZU/tRwZVly+lITeptNJLjfiNLX7tWdoKsqgQsFVl8hwHeXRt+8KaXl?=
- =?us-ascii?Q?RxQj957pAAqwrjkVtp1JHYnuhXOAU8sANbGMUnyweoUVhR3GNJgjpDaGuuZy?=
- =?us-ascii?Q?sfVlOLXmm/1lZABvPdmPcewhn0Q0AeJttac67MojZEP2CSssMs5aqep+Ml9g?=
- =?us-ascii?Q?PCau2UvUudSO+9PCxsq2+YyJk/aGqbdYFf4G4fqNqRLkPSXHLFMd+Mamr5sl?=
- =?us-ascii?Q?kcMMF9iL68zyaoKzg2OgBthAoUQ2XYUr4i0WUrFbcKIXoEf4U5HePBHME7Oj?=
- =?us-ascii?Q?MFkmQsTdXlyx71Up04cW6oBq1JL/L+msIaUrTqbCh6rvfP4YVWb9amj6+rFJ?=
- =?us-ascii?Q?cCl3jACCV9jLXZjoFZJelEzlZBhO79HFcp5VEjeSd6QEcFNEKr8BOtqn43nu?=
- =?us-ascii?Q?rq05XIqzMxXrTqdk2IRcO/uxGYCrYoSXRD1m2n1KlD1NcrhIaPHtn4dK/kYX?=
- =?us-ascii?Q?+cp/JsoitaVbwAe16zn6iQ3J9hS/bc9wz4QwqQ88CP4A04SFuV02/jRu4qZr?=
- =?us-ascii?Q?3OvFGSbDaeHQ+e+Z6YbAP7y+tMa8Fj2+3isySsRTReTelkz7eLNgcaoVmhok?=
- =?us-ascii?Q?EA=3D=3D?=
+ =?us-ascii?Q?3tbi0ne0b0VYSFtI3RG0ZXVOA27Ok2dv9tykCx02OVUK8snlXiAq+UH9riVa?=
+ =?us-ascii?Q?fzYISluQFOAAf/7h6qfV6hJuw5RjXA8sON65N/EvBAXoPftA6Q4AWqdZ3TdW?=
+ =?us-ascii?Q?JiCIeTE8t7hOY6KDSb1RzLOPgP3yZaJLPmlbgGhN92DKnvIkDp6jpTXXCI3S?=
+ =?us-ascii?Q?XVU5klrmZRakXWH/gM8ZASY2g58OuHI8x+7n6xRo9Vw79Dd23njw3gHxoa6B?=
+ =?us-ascii?Q?NutpIpz+KEZpQd77warU75crgSvrRAmivdcS9NZgToEmWtvIVN4KScWLgvQa?=
+ =?us-ascii?Q?ukZliyufIZ6mO4SSi6GvGnM7fSLB+addOlKmn3XZ9wwctw3YUilDhTwjN4SW?=
+ =?us-ascii?Q?H274q8CIRb2wOiBFys87jVlv4+na9gdiVKoVBANS+XjYsANbHw91SHuvoN6i?=
+ =?us-ascii?Q?0ubkK8UTjSLiqqBn7ehXV8lTgSDCPVjcnmdsTHYVvpeHYaiVNKhBnxsmu4EH?=
+ =?us-ascii?Q?maIR0WadRSp9vsv32emQYrOghMDDyTBwd7nlpdnzSPE87K5Mq+Omt19H6f9U?=
+ =?us-ascii?Q?rpoiwXTZu7zX/HMa0bXZf21Ba7xZaoOoZo1SN5BMyfCnAgJ60EzuJ/K90/Sd?=
+ =?us-ascii?Q?CzEVOuXS6noYn3TYAwNuWQDjyewHkBWLZfpsungWLhQDeGuzIGsTQlVCV3i7?=
+ =?us-ascii?Q?zWi+XVkNt1QUX+niopKoAM5rTAMwoLdQI2fze1JYGIyoX90hMEbvBLe5HmXk?=
+ =?us-ascii?Q?KH+H1FTyRFTJfSp38MWGHAbttAXo+DHobqgD07+YH2GHruke+1SXmUBwLSLr?=
+ =?us-ascii?Q?S04rCVRcrdygHU2LSCT7/M2Oe2RBuAUX71R9itEfJp7Q7R/xJ9pJynG4eoUj?=
+ =?us-ascii?Q?BXWe2P6Ce4fqrUr6rahXMXAcTL5PrLCkG2riuJjGAbY9tB/fD5nX0Noy0XoW?=
+ =?us-ascii?Q?0QDQ+DcQHnbmgfOjiSUsswQOqnysRZrItUVtu/puHwVT9ISPJWar/GIVgOSe?=
+ =?us-ascii?Q?Yf+BNVbvTh2sNkOladwYdVkJDDLbrgmbz0x74/8hvU/bYWEKzNfzOMOd+wCh?=
+ =?us-ascii?Q?qNY0q3Vq+CRUp8w1PZyixTVpCgFeGp8NCfIWVdnb4IFKJtVOF7vlb1QgOa1A?=
+ =?us-ascii?Q?0zKAquZ+c40p6RGaWpCBbfxvsAnlfBzeWUgHMdmMjv9oCg2sWhrq1myJFwMR?=
+ =?us-ascii?Q?itBGh/rHI2PKWyeWWGSEnBPCHoSRx1avGtZHW8AIiARtzClUnSorM2EsuB4e?=
+ =?us-ascii?Q?S4HSSCZ66hN58zmJKvbxyWGzB6R2dYIDgTiN9yjVmfVu/gaNDpVhr79MSy0e?=
+ =?us-ascii?Q?ivAjz+eDnGcyFmJIZM+pc4etRRm9xSHz3BBp+3Bo7C+ldDCZlCUp0WbAKbmK?=
+ =?us-ascii?Q?pUhoeqLeku2AbTzam6EFPT9bCaxV649YWlFMKT8QrB6e7GonbsQCrVJXMoLK?=
+ =?us-ascii?Q?GkUFHTcdCrG/zZUU2Bte1XKk4LOJ/NPLbG0OusxqBMK/6rt1akF0zINNEvtT?=
+ =?us-ascii?Q?PLjveRE0EOq+xakqj+4CkzfRQBF7iWEYT0k0sZqrpXsgJONa9QlvURiLuH93?=
+ =?us-ascii?Q?a/HMegzxiGYPsxH2fJGaa6JFUXgDqkC+C0MSit1q4UAEa5FHpj5IRPN7HXsv?=
+ =?us-ascii?Q?NVvLYvtYcln5nTsWbXYkQvDbCFJDE+ZFpd/BlI4I30mUFbXvNzlwLdn3cLBa?=
+ =?us-ascii?Q?9Q=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <F3E6CA1EF8532848AF5EC31DE34CA0AA@namprd04.prod.outlook.com>
+Content-ID: <882CE325A4393E43B5A2831346C2C44E@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -172,205 +172,215 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	eicql3OMiNz046HifPMGB0PwN1qXz9X1x+KX7XWL5Hw9Lj1OzcaRgpadXP4Fjqv01P+OLMzmWFUsBOj9YnwgEYaA7laIjBmfJcO/jO3/AWlGOhP0tpztru7jS9K7vRjbLM8C8Xmupib6YGjjZrVs/p8BYLQXLNv/T9rldvUAX32R0iZtwjY1/BnKHEkkTKb9KPqLlayy8sIgRvpcBDEpyYUqY/ckZsawqq504/EgqBfpuGg1phS0j0Go25XSEdKlSutjPIdyzsW4kW6UX0nzXDz2oY12QRs8zzC1Ta8ZdtrLOL5rGM1jF0JQEnwAMGPRii+trTfxudEvkrOkzMZIOV+lkc5hRK01j7JlOI1otBwivTl0WHaXJxTtHlTxnHwhS78OtXgWOdn3XzLCorrUneAhx+KY2f8EGxuQuu2JtrEcswWyD+TBne1NkFbQGr2J+WJo5V86FJYGrs39phi9ICPjxQDsvaGOYJEVdAFLCtk+BDwBonPz4/3Y+lK3fLuTTsUMPSYl9mbjOD7UXsMvOaqEbwv6QWNZnFOsD/Uk6PvVGc2HyUBpDKa0Gjx0aLN/rQLlHiWfUBoQVxeB1OjeQS4qmR6853wyMJa6YaehDcTU7rvbRecgB3+TIDCcouA7
+	E9z7tdD1FSIK3ynpvrGf7vOS8QebI0Pm8RY/jkvsUhlaQno7cQ1zspWoufTbec2p2aZjobZAnWD+eN3ti6e7nfs0JJ+94XnM/sTSZajs/stT5WXS/ZfOmgxt+zrGmcdREQkP6PUZszFR5iymWI8uwEP7paSw+aonB05XrpSrRGDjYi4fWPoj6N5yElqgmJfcQrsed9UHB2/0h6derV/dz6tpRkYXZPPH1mBDkhU2Ixzwuca2q7YAnWj/NiYJR4C7RlWc8UEQ/sQ1x6WIMdNiETR92zaJtavNs+wP7KFH8MQKLPMgICGl1ouWHOTIPIlkRaE/ju1Tyyl02Thg5BkTAJihQVteIDb43NiEVwzrP6H0/ohGKdNe7EWPtLNGv8VjilQYwP7Eb9T/MmKUNUyubN3GzXVj5/PGWNWOUNVXNk5KSQ3+IS8fqEaiQpF3CWLQ0yNdVGx+JOhmrP/5xtCmvYDXEDm8U67DUpG6+SW3SEJTy9ichCgMsupSB4Yoe//diWNDFlGECQ1VZD6FcSWFnntAArIivBAPLesRbFKI+vCZJU9Z+yoh+1s6tytc+ph3FAGw2nBbCpDJCmdejQMEuqCKCfKlqul9dmWPMLWHBGwA/5LjrjAXXc+7Qug71b3L
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB7765.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1402b954-c466-4213-6f3b-08dc7966f533
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2024 07:23:48.6745
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf1b94fe-300c-4619-fbd1-08dc796aa9bc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2024 07:50:20.0977
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 57lsDAIUHDldV6vk2WeCcITu4bSYXsyIjSkHg3ETqQUN9Pp1mBD3HFLW+DvCTEJ31QaAR4tkWw5G4UY2FAKjeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6438
+X-MS-Exchange-CrossTenant-userprincipalname: g82W/S7CvHvuVUyvgl7KYpjlfEZhUE/wU76oP630tlUGJAFB+ai2H/Gy6Enuzfl2vheIcHoI+/IhyDZRWYUOZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR04MB8139
 
-On Sat, May 18, 2024 at 02:37:39PM GMT, Qu Wenruo wrote:
-> Function __extent_writepage_io() is designed to find all dirty range of
-> a page, and add that dirty range into the bio_ctrl for submission.
-> It requires all the dirtied range to be covered by an ordered extent.
+On Sat, May 18, 2024 at 02:37:40PM GMT, Qu Wenruo wrote:
+> Three new helpers are introduced for the incoming subpage delalloc lockin=
+g
+> change.
 >=20
-> It get called in two locations, but one call site is not subpage aware:
+> - btrfs_folio_set_writer_lock()
+>   This is to mark specified range with subpage specific writer lock.
+>   After calling this, the subpage range can be proper unlocked by
+>   btrfs_folio_end_writer_lock()
 >=20
-> - __extent_writepage()
->   It get called when writepage_delalloc() returned 0, which means
->   writepage_delalloc() has handled dellalloc for all subpage sectors
->   inside the page.
+> - btrfs_subpage_find_writer_locked()
+>   This is to find the writer locked subpage range in a page.
+>   With the help of btrfs_folio_set_writer_lock(), it can allow us to
+>   record and find previously locked subpage range without extra memory
+>   allocation.
 >=20
->   So this call site is OK.
->=20
-> - extent_write_locked_range()
->   This call site is utilized by zoned support, and in this case, we may
->   only run delalloc range for a subset of the page, like this: (64K page
->   size)
->=20
->   0     16K     32K     48K     64K
->   |/////|       |///////|       |
->=20
->   In above case, if extent_write_locked_range() is only triggered for
->   range [0, 16K), __extent_writepage_io() would still try to submit
->   the dirty range of [32K, 48K), then it would not find any ordered
->   extent for it and trigger various ASSERT()s.
->=20
-> Fix this problem by:
->=20
-> - Introducing @start and @len parameters to specify the range
->=20
->   For the first call site, we just pass the whole page, and the behavior
->   is not touched, since run_delalloc_range() for the page should have
->   created all ordered extents for the page.
->=20
->   For the second call site, we would avoid touching anything beyond the
->   range, thus avoid the dirty range which is not yet covered by any
->   delalloc range.
->=20
-> - Making btrfs_folio_assert_not_dirty() subpage aware
->   The only caller is inside __extent_writepage_io(), and since that
->   caller now accepts a subpage range, we should also check the subpage
->   range other than the whole page.
+> - btrfs_folio_end_all_writers()
+>   This is for the locked_page of __extent_writepage(), as there may be
+>   multiple subpage delalloc ranges locked.
 >=20
 > Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/extent_io.c | 18 +++++++++++-------
->  fs/btrfs/subpage.c   | 22 ++++++++++++++++------
->  fs/btrfs/subpage.h   |  3 ++-
->  3 files changed, 29 insertions(+), 14 deletions(-)
->=20
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 597387e9f040..8a4a7d00795f 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1339,20 +1339,23 @@ static void find_next_dirty_byte(struct btrfs_fs_=
-info *fs_info,
->   * < 0 if there were errors (page still locked)
->   */
->  static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *=
-inode,
-> -				 struct page *page,
-> +				 struct page *page, u64 start, u32 len,
->  				 struct btrfs_bio_ctrl *bio_ctrl,
->  				 loff_t i_size,
->  				 int *nr_ret)
->  {
->  	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> -	u64 cur =3D page_offset(page);
-> -	u64 end =3D cur + PAGE_SIZE - 1;
-> +	u64 cur =3D start;
-> +	u64 end =3D start + len - 1;
->  	u64 extent_offset;
->  	u64 block_start;
->  	struct extent_map *em;
->  	int ret =3D 0;
->  	int nr =3D 0;
-> =20
-> +	ASSERT(start >=3D page_offset(page) &&
-> +	       start + len <=3D page_offset(page) + PAGE_SIZE);
-> +
->  	ret =3D btrfs_writepage_cow_fixup(page);
->  	if (ret) {
->  		/* Fixup worker will requeue */
-> @@ -1441,7 +1444,7 @@ static noinline_for_stack int __extent_writepage_io=
-(struct btrfs_inode *inode,
->  		nr++;
->  	}
-> =20
-> -	btrfs_folio_assert_not_dirty(fs_info, page_folio(page));
-> +	btrfs_folio_assert_not_dirty(fs_info, page_folio(page), start, len);
->  	*nr_ret =3D nr;
->  	return 0;
-> =20
-> @@ -1499,7 +1502,8 @@ static int __extent_writepage(struct page *page, st=
-ruct btrfs_bio_ctrl *bio_ctrl
->  	if (ret)
->  		goto done;
-> =20
-> -	ret =3D __extent_writepage_io(BTRFS_I(inode), page, bio_ctrl, i_size, &=
-nr);
-> +	ret =3D __extent_writepage_io(BTRFS_I(inode), page, page_offset(page),
-> +				    PAGE_SIZE, bio_ctrl, i_size, &nr);
->  	if (ret =3D=3D 1)
->  		return 0;
-> =20
-> @@ -2251,8 +2255,8 @@ void extent_write_locked_range(struct inode *inode,=
- struct page *locked_page,
->  			clear_page_dirty_for_io(page);
->  		}
-> =20
-> -		ret =3D __extent_writepage_io(BTRFS_I(inode), page, &bio_ctrl,
-> -					    i_size, &nr);
-> +		ret =3D __extent_writepage_io(BTRFS_I(inode), page, cur, cur_len,
-> +					    &bio_ctrl, i_size, &nr);
->  		if (ret =3D=3D 1)
->  			goto next_page;
-> =20
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index 54736f6238e6..183b32f51f51 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -703,19 +703,29 @@ IMPLEMENT_BTRFS_PAGE_OPS(checked, folio_set_checked=
-, folio_clear_checked,
->   * Make sure not only the page dirty bit is cleared, but also subpage di=
-rty bit
->   * is cleared.
->   */
-> -void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info, s=
-truct folio *folio)
-> +void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
-> +				  struct folio *folio, u64 start, u32 len)
->  {
-> -	struct btrfs_subpage *subpage =3D folio_get_private(folio);
-> +	struct btrfs_subpage *subpage;
-> +	int start_bit;
-> +	int nbits;
 
-Can we have these as "unsigned int" to be consistent with the function
-interface? But, it's not a big deal so
+There are some nits inlined below, basically it looks good.
 
 Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-> +	unsigned long flags;
-> =20
->  	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
->  		return;
-> =20
-> -	ASSERT(!folio_test_dirty(folio));
-> -	if (!btrfs_is_subpage(fs_info, folio->mapping))
-> +	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
-> +		ASSERT(!folio_test_dirty(folio));
->  		return;
-> +	}
-> =20
-> -	ASSERT(folio_test_private(folio) && folio_get_private(folio));
-> -	ASSERT(subpage_test_bitmap_all_zero(fs_info, subpage, dirty));
-> +	start_bit =3D subpage_calc_start_bit(fs_info, folio, dirty, start, len)=
-;
-> +	nbits =3D len >> fs_info->sectorsize_bits;
-> +	subpage =3D folio_get_private(folio);
-> +	ASSERT(subpage);
-> +	spin_lock_irqsave(&subpage->lock, flags);
-> +	ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
-> +	spin_unlock_irqrestore(&subpage->lock, flags);
+>  fs/btrfs/subpage.c | 116 +++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/subpage.h |   7 +++
+>  2 files changed, 123 insertions(+)
+>=20
+> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+> index 183b32f51f51..3c957d03324e 100644
+> --- a/fs/btrfs/subpage.c
+> +++ b/fs/btrfs/subpage.c
+> @@ -775,6 +775,122 @@ void btrfs_folio_unlock_writer(struct btrfs_fs_info=
+ *fs_info,
+>  	btrfs_folio_end_writer_lock(fs_info, folio, start, len);
 >  }
 > =20
->  /*
+> +/*
+> + * This is for folio already locked by plain lock_page()/folio_lock(), w=
+hich
+> + * doesn't have any subpage awareness.
+> + *
+> + * This would populate the involved subpage ranges so that subpage helpe=
+rs can
+> + * properly unlock them.
+> + */
+> +void btrfs_folio_set_writer_lock(const struct btrfs_fs_info *fs_info,
+> +				 struct folio *folio, u64 start, u32 len)
+> +{
+> +	struct btrfs_subpage *subpage;
+> +	unsigned long flags;
+> +	int start_bit;
+> +	int nbits;
+
+May want to use unsigned int for a consistency...
+
+> +	int ret;
+> +
+> +	ASSERT(folio_test_locked(folio));
+> +	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio->mapping))
+> +		return;
+> +
+> +	subpage =3D folio_get_private(folio);
+> +	start_bit =3D subpage_calc_start_bit(fs_info, folio, locked, start, len=
+);
+> +	nbits =3D len >> fs_info->sectorsize_bits;
+> +	spin_lock_irqsave(&subpage->lock, flags);
+> +	/* Target range should not yet be locked. */
+> +	ASSERT(bitmap_test_range_all_zero(subpage->bitmaps, start_bit, nbits));
+> +	bitmap_set(subpage->bitmaps, start_bit, nbits);
+> +	ret =3D atomic_add_return(nbits, &subpage->writers);
+> +	ASSERT(ret <=3D fs_info->subpage_info->bitmap_nr_bits);
+> +	spin_unlock_irqrestore(&subpage->lock, flags);
+> +}
+> +
+> +/*
+> + * Find any subpage writer locked range inside @folio, starting at file =
+offset
+> + * @search_start.
+> + * The caller should ensure the folio is locked.
+> + *
+> + * Return true and update @found_start_ret and @found_len_ret to the fir=
+st
+> + * writer locked range.
+> + * Return false if there is no writer locked range.
+> + */
+> +bool btrfs_subpage_find_writer_locked(const struct btrfs_fs_info *fs_inf=
+o,
+> +				      struct folio *folio, u64 search_start,
+> +				      u64 *found_start_ret, u32 *found_len_ret)
+> +{
+> +	struct btrfs_subpage_info *subpage_info =3D fs_info->subpage_info;
+> +	struct btrfs_subpage *subpage =3D folio_get_private(folio);
+> +	const int len =3D PAGE_SIZE - offset_in_page(search_start);
+> +	const int start_bit =3D subpage_calc_start_bit(fs_info, folio, locked,
+> +						     search_start, len);
+> +	const int locked_bitmap_start =3D subpage_info->locked_offset;
+> +	const int locked_bitmap_end =3D locked_bitmap_start +
+> +				      subpage_info->bitmap_nr_bits;
+> +	unsigned long flags;
+> +	int first_zero;
+> +	int first_set;
+> +	bool found =3D false;
+> +
+> +	ASSERT(folio_test_locked(folio));
+> +	spin_lock_irqsave(&subpage->lock, flags);
+> +	first_set =3D find_next_bit(subpage->bitmaps, locked_bitmap_end,
+> +				  start_bit);
+> +	if (first_set >=3D locked_bitmap_end)
+> +		goto out;
+> +
+> +	found =3D true;
+> +	*found_start_ret =3D folio_pos(folio) +
+> +		((first_set - locked_bitmap_start) << fs_info->sectorsize_bits);
+
+It's a bit fearful to see an "int" value is shifted and added into u64
+value. But, I guess sectorsize is within 32-bit range, right?
+
+> +
+> +	first_zero =3D find_next_zero_bit(subpage->bitmaps,
+> +					locked_bitmap_end, first_set);
+> +	*found_len_ret =3D (first_zero - first_set) << fs_info->sectorsize_bits=
+;
+> +out:
+> +	spin_unlock_irqrestore(&subpage->lock, flags);
+> +	return found;
+> +}
+> +
+> +/*
+> + * Unlike btrfs_folio_end_writer_lock() which unlock a specified subpage=
+ range,
+> + * this would end all writer locked ranges of a page.
+> + *
+> + * This is for the locked page of __extent_writepage(), as the locked pa=
+ge
+> + * can contain several locked subpage ranges.
+> + */
+> +void btrfs_folio_end_all_writers(const struct btrfs_fs_info *fs_info,
+> +				 struct folio *folio)
+> +{
+> +	u64 folio_start =3D folio_pos(folio);
+> +	u64 cur =3D folio_start;
+> +
+> +	ASSERT(folio_test_locked(folio));
+> +	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
+> +		folio_unlock(folio);
+> +		return;
+> +	}
+> +
+> +	while (cur < folio_start + PAGE_SIZE) {
+> +		u64 found_start;
+> +		u32 found_len;
+> +		bool found;
+> +		bool last;
+> +
+> +		found =3D btrfs_subpage_find_writer_locked(fs_info, folio, cur,
+> +							 &found_start, &found_len);
+> +		if (!found)
+> +			break;
+> +		last =3D btrfs_subpage_end_and_test_writer(fs_info, folio,
+> +							 found_start, found_len);
+> +		if (last) {
+> +			folio_unlock(folio);
+> +			break;
+> +		}
+> +		cur =3D found_start + found_len;
+> +	}
+> +}
+> +
+>  #define GET_SUBPAGE_BITMAP(subpage, subpage_info, name, dst)		\
+>  	bitmap_cut(dst, subpage->bitmaps, 0,				\
+>  		   subpage_info->name##_offset, subpage_info->bitmap_nr_bits)
 > diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-> index b6dc013b0fdc..4b363d9453af 100644
+> index 4b363d9453af..9f19850d59f2 100644
 > --- a/fs/btrfs/subpage.h
 > +++ b/fs/btrfs/subpage.h
-> @@ -156,7 +156,8 @@ DECLARE_BTRFS_SUBPAGE_OPS(checked);
->  bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_i=
-nfo,
->  					struct folio *folio, u64 start, u32 len);
-> =20
-> -void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info, s=
-truct folio *folio);
-> +void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
-> +				  struct folio *folio, u64 start, u32 len);
->  void btrfs_folio_unlock_writer(struct btrfs_fs_info *fs_info,
->  			       struct folio *folio, u64 start, u32 len);
->  void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_inf=
+> @@ -112,6 +112,13 @@ int btrfs_folio_start_writer_lock(const struct btrfs=
+_fs_info *fs_info,
+>  				  struct folio *folio, u64 start, u32 len);
+>  void btrfs_folio_end_writer_lock(const struct btrfs_fs_info *fs_info,
+>  				 struct folio *folio, u64 start, u32 len);
+> +void btrfs_folio_set_writer_lock(const struct btrfs_fs_info *fs_info,
+> +				 struct folio *folio, u64 start, u32 len);
+> +bool btrfs_subpage_find_writer_locked(const struct btrfs_fs_info *fs_inf=
 o,
+> +				      struct folio *folio, u64 search_start,
+> +				      u64 *found_start_ret, u32 *found_len_ret);
+> +void btrfs_folio_end_all_writers(const struct btrfs_fs_info *fs_info,
+> +				 struct folio *folio);
+> =20
+>  /*
+>   * Template for subpage related operations.
 > --=20
 > 2.45.0
 > =
