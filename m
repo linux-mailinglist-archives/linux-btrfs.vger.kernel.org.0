@@ -1,149 +1,201 @@
-Return-Path: <linux-btrfs+bounces-5160-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5161-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 521588CAFDA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 16:01:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C5F88CB0B4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 16:47:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C93A0B220B4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 14:01:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BEE628210A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 14:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AD5E7EF0C;
-	Tue, 21 May 2024 14:01:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872707EF06;
+	Tue, 21 May 2024 14:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g97+lkVg"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qIvMeSa0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F2M9IlbR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qIvMeSa0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="F2M9IlbR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DA91E502
-	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 14:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9966C1CD32
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 14:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716300105; cv=none; b=ohu1gzn7AaS3USKfsl1wOKglLBx/5PeJ7iWBx1MOk4QkteOtA8DI7XbvwcGNcqfTJnhtALMmffr6lqB01O5ySDFbeO5ZMpj6YQvWZwPTUsQPhfitig+wxbC3daGRIppk/qmlMlTbV9BsklsJkRN3EvF8ps0g2OicLvhg15Mw5KU=
+	t=1716302859; cv=none; b=aDxBVDqU76Z8JAWI5+xGHfWNrmtxz1gPp6Xk9y5bzxaS72lYN4ZZqwSlChLrK/Oku9vExWSnGewZStjtYWaiLx5Qg/b6RF+UtC0rDiTdg9oUCfasN/6quBHOQlB9dIbypmh+r4Z8g7U4meZI0NxAzi/vcZRpmDtBFPtN7Dmn01c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716300105; c=relaxed/simple;
-	bh=EYqKcCI3tv2tT6clHDjGD3Z92vug3Et1dPHP3EkvB1s=;
+	s=arc-20240116; t=1716302859; c=relaxed/simple;
+	bh=H5B//WKh6IXhzRAMv0T61jIGvFZh49lWL996s0HuhC8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nCcmHKOD6FIPlHphPhcQGih83sZC9n4YOE+62vVIN78xZTsZGWLgVbSWHacj4oP6wBF4q1+/KyZ/PDqPqPxPZajxxsiPMYxyjJ2bxAu3oTqLm7Vo/040EX8WAVm483G+Mz/DcLjy+mF9u60VkMNJBsUzwSKxTQtuGXY75fK+aHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=g97+lkVg; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1716300103;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEYqqQY+4OZAslC+0bZZMWqMlCQamwdUqF+3U+KZfLIvSlDKDqERgWSX8NFQqHx8M6ZHmx4sMsD1XL+/2yJM0Eq83bcjsNmSS7ew+qk64ppGq2DlBpEy2LdQdi/PBypSFndcw1VNsyvW7RPB+ZAkjRUQoIGuwC7dPfUVegIcGd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qIvMeSa0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F2M9IlbR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qIvMeSa0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=F2M9IlbR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BD6A9347F3;
+	Tue, 21 May 2024 14:47:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716302855;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=L9UZBaBm0Gs/lAN/t3Z/bR3D6w1BaSGi3sD1JXjc9P0=;
-	b=g97+lkVg32zcW6Byk4X17UkgYyIDoMezmlbMt2fuxp6oAvOrU/b4YBn492HlZAbjPivNXN
-	v8KFV9WnEhFhRE5eWLSrmUa1LqmA4zAM/6mq2WaAOB+zlFzLaM9J6NhiJR3msicq33eOrZ
-	5/kJHTJ9YSnddmLsP//3uuzG0s9+mAE=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-483-j8j7LBPCOPG3UOPmJ26bQw-1; Tue, 21 May 2024 10:01:41 -0400
-X-MC-Unique: j8j7LBPCOPG3UOPmJ26bQw-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1e54e6ba9a1so118935985ad.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 07:01:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716300100; x=1716904900;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L9UZBaBm0Gs/lAN/t3Z/bR3D6w1BaSGi3sD1JXjc9P0=;
-        b=USmBsmcNgpnEsLsyyaxp/h3axvLBMmWDZ1EUdrVCyAIv0Xtgw2DAyiXWZ+3PTQ0kt9
-         tmc8KaUgXM1VtwxAYTEUo7EI873cIl4TP8e6BBAIDF+LmasZYn8cvNK1iZ9T2J52vG7N
-         GW653/yZufZ/Y1eRjX7YamxMqUUs9KSLQeFJsPj8doRHqvlyX17ce1s0C3Zo6xz4RO1u
-         mDA/7r6/QdHg22muf8Sf6nfLOrO9E03nhTnLMvQzpjNEUEgDw0XtbjsyPVLEUwTpoOOw
-         xNPzfrZGuZEORipYzim3A+RxK1HP02gVxVPDl4NINLjC2IOv35M+zRHB+Z4p/G73hH6g
-         Thsw==
-X-Forwarded-Encrypted: i=1; AJvYcCU2EZE6r6yjOGKB28XaNQnLrkCG5twEaB38/p6qOQ4APaNdwa6ffJ7hVHQmf8+YVHSp1YKsPIRhcYyPc3VcDgQS+/LzDT6ErHi8Q/w=
-X-Gm-Message-State: AOJu0Yxq5I4ZxdrE82dd3XoeAkksjdn6Cn1fYcWrnjezcvrxe0zj6cRf
-	mAbmgg8ux4PVwobpJpYpV+Fr0yxhQ+HxMOG2oWfjw1WacccBt/FARraaQ3/f8uTPMqYHNOdAP6J
-	ttv3fnVsTD1b8TQEFj/qXv7gRNXHRSmqEF4BQ/SG8UIE29rP+a4LU+7Baq/3q
-X-Received: by 2002:a17:902:e546:b0:1f2:f107:5a71 with SMTP id d9443c01a7336-1f2f107618fmr102622465ad.44.1716300099070;
-        Tue, 21 May 2024 07:01:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IECtVoYVSuGzI2BlB2iJoT8bqImwLA9462R5K2Fv1nNwba64aKryGPgjWXLKArNybXPfq7WiQ==
-X-Received: by 2002:a17:902:e546:b0:1f2:f107:5a71 with SMTP id d9443c01a7336-1f2f107618fmr102621755ad.44.1716300098211;
-        Tue, 21 May 2024 07:01:38 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0badadacsm222621585ad.111.2024.05.21.07.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 May 2024 07:01:37 -0700 (PDT)
-Date: Tue, 21 May 2024 22:01:34 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic/733: add commit ID for btrfs
-Message-ID: <20240521140134.gicbq65cksob5yno@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <dd6b7b2fad05501bead1b786babcb825548b9566.1716292871.git.fdmanana@suse.com>
+	bh=j/Uqe1S6/gVXJkpxytBqiStzCbq2Oyue3lyFoM5TgjU=;
+	b=qIvMeSa06Evbox4GLQG+lKEFZberLxNkuaulPp4lqLKuDOgHQ9dD7je5NC8KpQCO8MRybZ
+	exCzIzyYX+srt79Ys/2s1Fm3AD5f3wDmEJq9ng/Y0+aj9yCQ40gMVMemI3fmtlM2fyJD04
+	8cXF3KQ5ofUWw5RAIxV+u94LGAhoAgM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716302855;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j/Uqe1S6/gVXJkpxytBqiStzCbq2Oyue3lyFoM5TgjU=;
+	b=F2M9IlbRagPwH24ap2DXEQZhk3SckAUhdDBnp5v+nf4zsRQe9l7FtYo3hesIjLbtsVaEgE
+	XgeJ+XJ0gzgNm6CQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716302855;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j/Uqe1S6/gVXJkpxytBqiStzCbq2Oyue3lyFoM5TgjU=;
+	b=qIvMeSa06Evbox4GLQG+lKEFZberLxNkuaulPp4lqLKuDOgHQ9dD7je5NC8KpQCO8MRybZ
+	exCzIzyYX+srt79Ys/2s1Fm3AD5f3wDmEJq9ng/Y0+aj9yCQ40gMVMemI3fmtlM2fyJD04
+	8cXF3KQ5ofUWw5RAIxV+u94LGAhoAgM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716302855;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j/Uqe1S6/gVXJkpxytBqiStzCbq2Oyue3lyFoM5TgjU=;
+	b=F2M9IlbRagPwH24ap2DXEQZhk3SckAUhdDBnp5v+nf4zsRQe9l7FtYo3hesIjLbtsVaEgE
+	XgeJ+XJ0gzgNm6CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E35613A1E;
+	Tue, 21 May 2024 14:47:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id LmdyJge0TGZYAwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 21 May 2024 14:47:35 +0000
+Date: Tue, 21 May 2024 16:47:34 +0200
+From: David Sterba <dsterba@suse.cz>
+To: David Sterba <dsterba@suse.cz>
+Cc: Filipe Manana <fdmanana@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: avoid data races when accessing an inode's
+ delayed_node
+Message-ID: <20240521144734.GN17126@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1715951291.git.fdmanana@suse.com>
+ <20240520154844.GF17126@twin.jikos.cz>
+ <CAL3q7H5LhdkQq7aeU+yD_6RS9mYeBa5=5doB7OQ4xj0M4xuhFg@mail.gmail.com>
+ <20240520202026.GI17126@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <dd6b7b2fad05501bead1b786babcb825548b9566.1716292871.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240520202026.GI17126@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[3]
 
-On Tue, May 21, 2024 at 01:01:29PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, May 20, 2024 at 10:20:26PM +0200, David Sterba wrote:
+> On Mon, May 20, 2024 at 05:58:37PM +0100, Filipe Manana wrote:
+> > On Mon, May 20, 2024 at 4:48 PM David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Fri, May 17, 2024 at 02:13:23PM +0100, fdmanana@kernel.org wrote:
+> > > > From: Filipe Manana <fdmanana@suse.com>
+> > > >
+> > > > We do have some data races when accessing an inode's delayed_node, namely
+> > > > we use READ_ONCE() in a couple places while there's no pairing WRITE_ONCE()
+> > > > anywhere, and in one place (btrfs_dirty_inode()) we neither user READ_ONCE()
+> > > > nor take the lock that protects the delayed_node. So fix these and add
+> > > > helpers to access and update an inode's delayed_node.
+> > > >
+> > > > Filipe Manana (3):
+> > > >   btrfs: always set an inode's delayed_inode with WRITE_ONCE()
+> > > >   btrfs: use READ_ONCE() when accessing delayed_node at btrfs_dirty_node()
+> > > >   btrfs: add and use helpers to get and set an inode's delayed_node
+> > >
+> > > The READ_ONCE for delayed nodes has been there historically but I don't
+> > > think it's needed everywhere. The legitimate case is in
+> > > btrfs_get_delayed_node() where first use is without lock and then again
+> > > recheck under the lock so we do want to read fresh value. This is to
+> > > prevent compiler optimization to coalesce the reads.
+> > >
+> > > Writing to delayed node under lock also does not need WRITE_ONCE.
+> > >
+> > > IOW, I would rather remove use of the _ONCE helpers and not add more as
+> > > it is not the pattern where it's supposed to be used. You say it's to
+> > > prevent load tearing but for a pointer type this does not happen and is
+> > > an assumption of the hardware.
+> > 
+> > If you are sure that pointers aren't subject to load/store tearing
+> > issues, then I'm fine with dropping the patchset.
 > 
-> As of commit 5d6f0e9890ed ("btrfs: stop locking the source extent range
-> during reflink"), btrfs now does reflink operations without locking the
-> source file's range, allowing concurrent reads in the whole source file.
-> So update the test to annotate that commit.
+> This will be in some CPU manual, the thread on LWN
+> https://lwn.net/Articles/793895/
+> mentions that. I base my claim on reading about that in various other
+> discussions on LKML over time. Pointers match the unsigned long type
+> that is the machine word and register size, assignment from register to
+> register/memory happens in one go. What could be problematic is constant
+> (immediate) assigned to register on architectures like SPARC that have
+> fixed size instructions and the constatnt has to be written in two
+> steps.
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
+> The need for READ_ONCE/WRITE_ONCE is to prevent compiler optimizations
+> and also the load tearing, but for native types up to unsigned long this
+> seems to be true.
+> 
+> https://elixir.bootlin.com/linux/latest/source/include/asm-generic/rwonce.h#L29
+> 
+> The only requirement that can possibly cause the tearing even for
+> pointer is if it's not aligned and could be split over two cachelines.
+> This should be the case for structures defined in a normal way (ie. no
+> forced mis-alignment or __packed).
 
-Make sense to me, Thanks!
+For future reference: documented for example in Intel 64 and IA-32
+Architectures, Software Developer's Manual, volume 3A, 9.2 Memory
+ordering.
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
->  tests/generic/733 | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tests/generic/733 b/tests/generic/733
-> index d88d92a4..f6ee7f71 100755
-> --- a/tests/generic/733
-> +++ b/tests/generic/733
-> @@ -7,7 +7,8 @@
->  # Race file reads with a very slow reflink operation to see if the reads
->  # actually complete while the reflink is ongoing.  This is a functionality
->  # test for XFS commit 14a537983b22 "xfs: allow read IO and FICLONE to run
-> -# concurrently".
-> +# concurrently" and for BTRFS commit 5d6f0e9890ed "btrfs: stop locking the
-> +# source extent range during reflink".
->  #
->  . ./common/preamble
->  _begin_fstest auto clone punch
-> @@ -26,8 +27,16 @@ _require_test_program "punch-alternating"
->  _require_test_program "t_reflink_read_race"
->  _require_command "$TIMEOUT_PROG" timeout
->  
-> -[ "$FSTYP" = "xfs" ] && _fixed_by_kernel_commit 14a537983b22 \
-> -        "xfs: allow read IO and FICLONE to run concurrently"
-> +case "$FSTYP" in
-> +"btrfs")
-> +	_fixed_by_kernel_commit 5d6f0e9890ed \
-> +		"btrfs: stop locking the source extent range during reflink"
-> +	;;
-> +"xfs")
-> +	_fixed_by_kernel_commit 14a537983b22 \
-> +		"xfs: allow read IO and FICLONE to run concurrently"
-> +	;;
-> +esac
->  
->  rm -f "$seqres.full"
->  
-> -- 
-> 2.43.0
-> 
-> 
-
+From section 9.2.3.1: "[...] Instructions that read or write a quadword
+(8 bytes) whose address is aligned on an 8 byte boundary."
 
