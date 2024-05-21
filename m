@@ -1,154 +1,194 @@
-Return-Path: <linux-btrfs+bounces-5136-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5137-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A66D38CA5AA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 03:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C9AC8CA69C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 05:03:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616FC281F9D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 01:17:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32D61282958
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2024 03:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D598C1A;
-	Tue, 21 May 2024 01:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 950401798F;
+	Tue, 21 May 2024 03:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="m2a/uHaD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oIGN/IMp"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VVSFFX0R";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VVSFFX0R"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7FE4A09;
-	Tue, 21 May 2024 01:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE011FDA
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 03:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716254237; cv=none; b=r9QjWLpB9VRCwE1lKHOpI07+FwaBODbepqUxpueLlcGTSpOZMZTpLyRF+8iccHVBeELI04rE2qcimA7E8+S0WOTAKZrJ+GtpiD5TrnVod2tykbTDfJ94QAF3AhnYglRxyDY8UN9cf0VaPkrMzzuC3dXv3cqQIryr2y4mRM51vV8=
+	t=1716260608; cv=none; b=iGg/5M6Yamvc3iQZpZfK9eXwuEUuF2YU7DuKp2l/S1doMiEJvNXE1lMdIoYa2dWYC/CoImvqf7g0FGxCiIcNog1YuBU34QsmRhvaKT17uhTrOMtM+jbx8zkd2KpNyWgsGDFofEvpsZCihjJqIn8PaHK0ZEElFB9yyaC9APfDUBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716254237; c=relaxed/simple;
-	bh=4+Vh0ysn4OLjzpyY20xVlQbJAvMB9VCACx6lyWAFEIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jjQve1E4Fpr1EeHJqq2oUII/JA9dqqWs7bW8GAs00s27VZNaXHs4omMB57sNCpGHxeL7U6xIuZiIKu3VSBlgBanc4JskNf/WnYvyRbhk+WmZvNcG25dLZIXLW7ye0yCTOWSSlxc6bsoS9jMUH9dwBFh8x5BZ7uhXG/cACgmON7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=m2a/uHaD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oIGN/IMp; arc=none smtp.client-ip=64.147.123.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.west.internal (Postfix) with ESMTP id 3417A1C0009A;
-	Mon, 20 May 2024 21:17:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 20 May 2024 21:17:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1716254233; x=1716340633; bh=Wh+Rt4kDp1
-	vWoSPUJJ1Pj7uBJFi66PlqEsO+fjH/VbQ=; b=m2a/uHaDINC2fSlYC5Pxmy3Qkf
-	zByoGhIZAbt1VYsUG66FVYm6RI4e/ub2SEj4h0N1m9bikGeg4haTfd5Y4Fzgg8bL
-	Y8ZwKnZF2rLRKd9wlBeDihrAB47U4FjUJhjwuN6cpRx53SrIjgnXu5Rt/8cio6te
-	5tO83pG9eY2p+3scbz5SsJDza/wxNNxZNdcpPC3Rf9b9SyWYz/HlB8PAHB83QGnH
-	bgZin8WmlD3/VjVlq8HKk4LSIxuIAFBfTQGIO98lzfZn3ABQ+dLos9CNHTxSOQnT
-	lW3Zcl0yd9hMC8gJ2YVvQ4Ggnto1/2Z0ZKfLgCkLbbcHLJTY6CwBrfMVwYpQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1716254233; x=1716340633; bh=Wh+Rt4kDp1vWoSPUJJ1Pj7uBJFi6
-	6PlqEsO+fjH/VbQ=; b=oIGN/IMpAHWZXLxjXGy7p46JAslsasE+mcass5HjSjPh
-	OLI6VcOhSN74HTZMUpsEz27eVM6++C2B9Wx768sScOsmTO1KBJOtj8rnodguQ1jH
-	p9cL0HLUMQayEJXBfOyB69NI2rVlBcSQ7gJIEWqZJJjlOZmO202UEp+FLclJq9Gv
-	AFCylAvm1yo+76e6UyMe7Vahdopt7Cs8OQ2jdwG4of/U5iOzYqdMNCWKpX+qDicV
-	WYlDwSehWcn+zlzoHOmNRm/aCP/SxAvVCKpJA03alD011j9vYhMjKrmO87YJY/wf
-	UrqdSG+OyG/XqmSf44HSJXGCU8p5jwpArlT8ZPtmlg==
-X-ME-Sender: <xms:GfZLZpeXxOsiI30R9bVVpeKI3-VjNuoHYIxVxi4IxDuQz3eDDnSUmg>
-    <xme:GfZLZnNREPxjpvY2sVq4RyS3fKVPtvmj-U7r6XTkpqFmnC5pFsJcmCnFf9guBAXm7
-    tVlnBjjVPlc-dKSQu0>
-X-ME-Received: <xmr:GfZLZihYhMPkxl7exCAKgA1XYLC4XFqXiej3xzeqiq7swVCOmevJw2n0GnQYDSyKfBLBgnOXYghK4zU18IKj-UMJMy4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeiuddggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:GfZLZi_lUGD8BBlD1tiHddnWcwF0c7nxMWxnjqv2rsro_UX-BJSZEA>
-    <xmx:GfZLZluT8fVYM8lALtaAXTRw4XeK7-hnJsFYMU2fwtSfCrB_0MM_fA>
-    <xmx:GfZLZhEcCgUIbQ_AVfEFovZQIjiAkeX2proZUCDLZELUR1vDwqZC9g>
-    <xmx:GfZLZsPKzko89Q_pEHglllTrfrybeNgF4ybGD5MJ84_dfsaYarlFhw>
-    <xmx:GfZLZtKS2XCcQxAD9z4JzspHFEWbPepC6xZODMVYfca97uVRNDdn-ZHq>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 20 May 2024 21:17:13 -0400 (EDT)
-Date: Mon, 20 May 2024 18:19:11 -0700
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH] fstests: btrfs/301: handle auto-removed qgroups
-Message-ID: <20240521011911.GA1837452@zen.localdomain>
-References: <20240507070606.64126-1-wqu@suse.com>
+	s=arc-20240116; t=1716260608; c=relaxed/simple;
+	bh=RGejLSgjGGyVGaG+TT4jywiLRNgrLFW83SLSqGOnxu0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=W54AcJWCxlu1WFLngcMRh/BrAZGLQn38Qvx5Fnra/MMGpLx7PB17ss6YvLddlqiRdOA4NIQKlJ0UGGGyUu6gcV9enAF5/8aLFGolbvz4EYIj9b/irn8CHm34feKtaZ+FuVqc9lPyGklQ51vnbs3oimeUJD2msWnXL9/4ZgSXAnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VVSFFX0R; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VVSFFX0R; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6426F2218F
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 03:03:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716260604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eom7Bl+AAD0zCWy+pQRM2xTgGVXDfdrUOA6Voe6AgTA=;
+	b=VVSFFX0RRL2smUO+4iCHI/0pxmfy4YAwCf9M5l9QpOglnn8t6pP3ZFpP+0QmZF/e75OAfN
+	792FFsedibav7d10r5x4PxGJjLd8vFFh+ZxdLS71Vvm8QezDgzB4wEAdPuV5qe4fXrJX4t
+	Gpusrv3hf/J0gsWtjafKcqDI0B3Lyus=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=VVSFFX0R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716260604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eom7Bl+AAD0zCWy+pQRM2xTgGVXDfdrUOA6Voe6AgTA=;
+	b=VVSFFX0RRL2smUO+4iCHI/0pxmfy4YAwCf9M5l9QpOglnn8t6pP3ZFpP+0QmZF/e75OAfN
+	792FFsedibav7d10r5x4PxGJjLd8vFFh+ZxdLS71Vvm8QezDgzB4wEAdPuV5qe4fXrJX4t
+	Gpusrv3hf/J0gsWtjafKcqDI0B3Lyus=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3BA7713A1E
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 03:03:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iojIMfoOTGYcKwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 03:03:22 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v4 0/2] btrfs: qgroup: stale qgroups related impromvents
+Date: Tue, 21 May 2024 12:33:15 +0930
+Message-ID: <cover.1716260404.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240507070606.64126-1-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -5.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 6426F2218F
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.com:+]
 
-On Tue, May 07, 2024 at 04:36:06PM +0930, Qu Wenruo wrote:
-> There are always attempts to auto-remove empty qgroups after dropping a
-> subvolume.
-> 
-> For squota mode, not all qgroups can or should be dropped, as there are
-> common cases where the dropped subvolume are still referred by other
-> snapshots.
-> In that case, the numbers can only be freed when the last referencer
-> got dropped.
-> 
-> The latest kernel attempt would only try to drop empty qgroups for
-> squota mode.
-> But even with such safe change, the test case still needs to handle
-> auto-removed qgroups, by explicitly echoing "0", or later calculation
-> would break bash grammar.
-> 
-> This patch would add extra handling for such removed qgroups, to be
-> future proof for qgroup auto-removal behavior change.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+[CHANGELOG]
+v4:
+- Slight code style changes
+  Move one nested if into a single line one.
 
-Looks good, thanks!
-Reviewed-by: Boris Burkov <boris@bur.io>
+- Make can_delete_qgroup() return int to indicate error during tree
+  search
 
-> ---
->  tests/btrfs/301 | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tests/btrfs/301 b/tests/btrfs/301
-> index db469724..bb18ab04 100755
-> --- a/tests/btrfs/301
-> +++ b/tests/btrfs/301
-> @@ -51,9 +51,17 @@ _require_fio $fio_config
->  get_qgroup_usage()
->  {
->  	local qgroupid=$1
-> +	local output
->  
-> -	$BTRFS_UTIL_PROG qgroup show --sync --raw $SCRATCH_MNT | \
-> -				grep "$qgroupid" | $AWK_PROG '{print $3}'
-> +	output=$($BTRFS_UTIL_PROG qgroup show --sync --raw $SCRATCH_MNT | \
-> +		 grep "$qgroupid" | $AWK_PROG '{print $3}')
-> +	# The qgroup is auto-removed, this can only happen if its numbers are
-> +	# already all zeros, so here we only need to explicitly echo "0".
-> +	if [ -z "$output" ]; then
-> +		echo "0"
-> +	else
-> +		echo "$output"
-> +	fi
->  }
->  
->  get_subvol_usage()
-> -- 
-> 2.44.0
-> 
+v3:
+- Do not allow dropping non-zero qgroups for squota
+  Due to the design of squota, a fully dropped subvolume can still have
+  non-zero qgroups, as in the extent tree the delta is still using the
+  original owner (the dropped subvolume).
+
+  So we can not drop any non-zero squota qgroups
+
+- Slight change on the can_delete_qgroup() condition
+  To co-operate with above change.
+
+v2:
+- Do more sanity checks before deleting a qgroup
+
+- Make squota to handle auto deleted qgroup more gracefully
+  Unfortunately the behavior change would affect btrfs/301, as the
+  fully deleted subvolume would make the test case to cause bash grammar
+  error (since the qgroup is gone with the subvolume).
+
+  Cc Boris for extra comments on squota compatibility and future
+  btrfs/311 updates ideas.
+
+
+We have two problems in recent qgroup code:
+
+- One can not delete a fully removed qgroup if the drop hits
+  drop_subtree_threshold
+  As hitting drop_subtree_threshold would mark qgroup inconsistent and
+  skip all accounting, this would leave qgroup number untouched (thus
+  non-zero), and btrfs refuses to delete qgroup with non-zero rfer/excl
+  numbers.
+
+  This would be addressed by the first patch, allowing qgroup
+  deletion as long as it doesn't have any child nor a corresponding
+  subvolume.
+
+- Deleted snapshot would leave a stale qgroup
+  This is a long existing problem.
+
+  Although previous pushes all failed, just let me try it again.
+
+  The idea is commit current transaction if needed (full accounting mode
+  and qgroup numbers are consistent), then try to remove the subvolume
+  qgroup after it is fully dropped.
+
+  For full qgroup mode, no matter if qgroup is inconsistent, we will
+  auto remove the dropped 0 level qgroup.
+  (If consistent, the qgroup numbers should all be 0, and a safe
+   removal. If inconsistent, we still remove the qgroup, leaving
+   higher level qgroup incorrect, but since it's already inconsistent,
+   we need a rescan anyway).
+
+  For squota mode, we only do the auto reap if the qgroup numbers are
+  already 0.
+  Otherwise the qgroup numbers would be needed for future accounting.
+
+The behavior change would only affect btrfs/301, which still expects the
+dropped subvolume would still leave its qgroup untouched.
+But that can be easily fixed by explicitly echoing "0" for dropped
+subvolume.
+
+
+Qu Wenruo (2):
+  btrfs: slightly loose the requirement for qgroup removal
+  btrfs: automatically remove the subvolume qgroup
+
+ fs/btrfs/extent-tree.c |   8 +++
+ fs/btrfs/qgroup.c      | 129 ++++++++++++++++++++++++++++++++++++++---
+ fs/btrfs/qgroup.h      |   2 +
+ 3 files changed, 132 insertions(+), 7 deletions(-)
+
+-- 
+2.45.1
+
 
