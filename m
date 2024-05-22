@@ -1,169 +1,137 @@
-Return-Path: <linux-btrfs+bounces-5184-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5190-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D8418CB93B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 04:55:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073A98CBAED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 08:04:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2E36B229F6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 02:55:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DD081F224B3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 06:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45FE626CB;
-	Wed, 22 May 2024 02:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B0478C93;
+	Wed, 22 May 2024 06:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="oYyTtfnK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA301DFD0
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 02:55:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53B478C66
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 06:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716346534; cv=none; b=pSvqZf6qJVSi4IICUBoAWH2KSKFrm5cmmG2a34bFgrr0kFNWefsEGE5eyQMFM7zbgd25ZuLKBZCacslU+LwSChSsl6stvwEXaYpXhyEb96UwUqG5L8nlWw7ne2Yd64tYrqVAP7w22pVmLuxkHOV4U9PAIuZMqFRhHbWEOB4S4no=
+	t=1716357831; cv=none; b=iSCdA4HEttq0SuJS4Z/BC435ENDMsRYYDmQRfHPGPhJZU547Uj/0ioVYNRAXQydlEQfNDiFhk7AFsN3KmtYhHWT1J48VTTxvD31CtIo2nw9XC+YAlKBNe00abCMCsd/0TuEl0CcjV4ieGWH88dioSBOdwp2at6BSL9vCLk17SrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716346534; c=relaxed/simple;
-	bh=Fmq4cfmTdTx1iUl4iK3aruK2b4BklXedhpLLjn/V3gg=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ifo9Yfc3fpPq5NSrVfN9ALMY9QUZrE6Cd0yOOuAoyzBvNoChsck25kfgUGqc/fyq0sZvCTxacCcaSHR2uHrwnDomiNrU9Zrzf3X2bTx+eN+VQxQ9hcNbh31UEG5mp0Uzoc2zp0tJldPOKKMwnDjKku0RVf4fkaWbRt4IapTFyg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3705289d46fso3018255ab.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2024 19:55:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716346532; x=1716951332;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+Ry/8RZHi+cirGva08ioXvtiJ6dGry8jsjjnUdJmvrA=;
-        b=knOUvlI1v1+kUXo+qGohHRvmRtrDLyFbNWpuRO5oU7fyAiSVrhFFzorBZ+czrNzoTt
-         kqgj/OVBtEphSGo+eMr4ngn+hdGtAYHyVMsFxjuT9uk8e3N+2uPGepwwJsV0W7VOhDTT
-         61apxfPBPf73O6Jdnycx0g5U8iCMsDnFc6rXAI3mY2i90x/qlgyb1Tp16Pd1TuFEeO9k
-         9fzzFxG548ZyJ3M3iaCHnyiOHxo6CxlFgwkdyxPbOSOH2n/Jn19sNYdp9XTDRIBrvlFt
-         e5vc8GcIqYkbD2778unNaBWLJsZdDIyBz0ly/4C+dCIzggNw17ExzzCmkoAJFNYHuN7d
-         +eYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVGye4Yu6HWy7iuUj6qlC2ZRI5jgGwlzsV8QdjU8vI6Hoz87IHXpJXuLQAY/xgGjtZ6t3/rOkr35itkhIBLO1je9NcPudcHTj5+PAs=
-X-Gm-Message-State: AOJu0Ywsc4Rcb2/ma27vlNSCqyQH7p9UEbrayvv5QZgZDMWJ1+gvseWp
-	Op5cZc6FXmJM69OGUt+U4erZeKeMPmfShdxiJrmSjojB1gOWgVsMxOFJ8S/sqmkdCWqVibPO71D
-	sMPp/0lIDSV0wZqIuQQAVqCjCtNx22HhW2u4Z3iwsIAPFsoL174ZNEDY=
-X-Google-Smtp-Source: AGHT+IE8dA3Y436YSv7w4/IDzm52Ag7PNo4+j3PLSkNAq1wZDNdZDmA0MipCEBB/rcPn+CkVUest9bxdsZlwz9iQbnABinemAg3b
+	s=arc-20240116; t=1716357831; c=relaxed/simple;
+	bh=dW7lOL7wecZdTD3IUotrAWa9AX2ylG88Igrkf1x+r+4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FpvoNBFcLx+cZBBszMdOsdC9qogN44qLHBKVI2+5VHTOsrRrHgUhy3hr16ldCBNDhEBUmpye7oIzwA8+SY0j+7yXpcLePPC3/fmXfshKLcOnYMC24te414H2ia6AGKJqdNDWkIU9o+GtIFbf2UlGzBwpg6zuDy/l++hBPcZp/4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=oYyTtfnK; arc=none smtp.client-ip=68.232.141.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1716357829; x=1747893829;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dW7lOL7wecZdTD3IUotrAWa9AX2ylG88Igrkf1x+r+4=;
+  b=oYyTtfnKYucAj/3FwRk8W01uwYmUPhzwoQlYztZtOVP4FPqyfcRayh2a
+   exXEB9vuf9xFtQFq9MRtiAfkVI2vzpyUKg/ndL7gRaIYuWnkqkBqf3EU1
+   j50EGzzuAwnCvPSkcTD4K0kP2l9HlSRCMN6R/UWgsQ/Dqw5LWe0HtV7ld
+   SJva3tRYKR1F6hm5acqXlZvk2LHGYCAaYZW78oeR6uWn0XgHaa5Sdzwtm
+   AtHbZ51/N4pMxjeGRx+jyiEe3no7XXaK73XR0jSj9G/o6CInkJI7WGVBv
+   0GLq/gWKcvKU56sheGp5AXY5BR1IpkVAMuFz9kd69GoE/LoLfGeQ+QAS/
+   w==;
+X-CSE-ConnectionGUID: k9cMDFBSQ5OeDMKplAXn5w==
+X-CSE-MsgGUID: Iisazmb2T7u/fB1cgjmSOQ==
+X-IronPort-AV: E=Sophos;i="6.08,179,1712592000"; 
+   d="scan'208";a="17170965"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 22 May 2024 14:03:40 +0800
+IronPort-SDR: 664d7d1e_fdfe2IxDowai5mvCWqMHjv9GKuxfBxqj9bxbQ6nXQVNJRLj
+ Mk6QBqhQfnlZWeDtc/V7mSZLBZCrRD4NR2VECJw==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 May 2024 22:05:35 -0700
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.60])
+  by uls-op-cesaip02.wdc.com with ESMTP; 21 May 2024 23:03:38 -0700
+From: Naohiro Aota <naohiro.aota@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v3 00/10] btrfs-progs: zoned: proper "mkfs.btrfs -b" support
+Date: Wed, 22 May 2024 15:02:22 +0900
+Message-ID: <20240522060232.3569226-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a26:b0:36c:2ed4:8d4c with SMTP id
- e9e14a558f8ab-371f96ed3aemr617085ab.4.1716346532155; Tue, 21 May 2024
- 19:55:32 -0700 (PDT)
-Date: Tue, 21 May 2024 19:55:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005c66ec061902110a@google.com>
-Subject: [syzbot] [nilfs?] [btrfs?] WARNING in filemap_unaccount_folio
-From: syzbot <syzbot+026119922c20a8915631@syzkaller.appspotmail.com>
-To: brauner@kernel.org, clm@fb.com, dsterba@suse.com, jack@suse.cz, 
-	josef@toxicpanda.com, konishi.ryusuke@gmail.com, linux-btrfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+mkfs.btrfs -b <byte_count> on a zoned device has several issues listed
+below.
 
-syzbot found the following issue on:
+- The FS size needs to be larger than minimal size that can host a btrfs,
+  but its calculation does not consider non-SINGLE profile
+- The calculation also does not ensure tree-log BG and data relocation BG
+- It allows creating a FS not aligned to the zone boundary
+- It resets all device zones beyond the specified length
 
-HEAD commit:    b6394d6f7159 Merge tag 'pull-misc' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=142a7cb2980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=713476114e57eef3
-dashboard link: https://syzkaller.appspot.com/bug?extid=026119922c20a8915631
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d43f84980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11d4fadc980000
+This series fixes the issues with some cleanups.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e8e1377d4772/disk-b6394d6f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/19fbbb3b6dd5/vmlinux-b6394d6f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4dcce16af95d/bzImage-b6394d6f.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/e197bb1019a1/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/1c62d475ecf4/mount_2.gz
+This one passed CI workflow here:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+026119922c20a8915631@syzkaller.appspotmail.com
+Patches 1 to 3 are clean up patches, so they should not change the behavior.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5096 at mm/filemap.c:217 filemap_unaccount_folio+0x6be/0xe40 mm/filemap.c:216
-Modules linked in:
-CPU: 1 PID: 5096 Comm: syz-executor306 Not tainted 6.9.0-syzkaller-10729-gb6394d6f7159 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-RIP: 0010:filemap_unaccount_folio+0x6be/0xe40 mm/filemap.c:216
-Code: 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df 0f b6 04 08 84 c0 0f 85 e5 00 00 00 8b 6d 00 ff c5 e9 45 fa ff ff e8 c3 66 ca ff 90 <0f> 0b 90 48 b8 00 00 00 00 00 fc ff df 41 80 3c 06 00 74 0a 48 8b
-RSP: 0018:ffffc9000382f1f8 EFLAGS: 00010093
-RAX: ffffffff81cbd3ad RBX: ffff888079ef0380 RCX: ffff88802d4f5a00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000003 R08: ffffffff81cbd2c9 R09: 1ffffd40000c1ec8
-R10: dffffc0000000000 R11: fffff940000c1ec9 R12: 1ffffd40000c1ec8
-R13: ffffea000060f640 R14: 1ffff1100f3de070 R15: ffffea000060f648
-FS:  00007f13ab0c76c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000002ca92000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- delete_from_page_cache_batch+0x173/0xc70 mm/filemap.c:341
- truncate_inode_pages_range+0x364/0xfc0 mm/truncate.c:359
- truncate_inode_pages mm/truncate.c:439 [inline]
- truncate_pagecache mm/truncate.c:732 [inline]
- truncate_setsize+0xcf/0xf0 mm/truncate.c:757
- simple_setattr+0xbe/0x110 fs/libfs.c:886
- notify_change+0xbb4/0xe70 fs/attr.c:499
- do_truncate+0x220/0x310 fs/open.c:65
- handle_truncate fs/namei.c:3308 [inline]
- do_open fs/namei.c:3654 [inline]
- path_openat+0x2a3d/0x3280 fs/namei.c:3807
- do_filp_open+0x235/0x490 fs/namei.c:3834
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1405
- do_sys_open fs/open.c:1420 [inline]
- __do_sys_creat fs/open.c:1496 [inline]
- __se_sys_creat fs/open.c:1490 [inline]
- __x64_sys_creat+0x123/0x170 fs/open.c:1490
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f13ab131c99
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f13ab0c7198 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-RAX: ffffffffffffffda RBX: 00007f13ab1bf6d8 RCX: 00007f13ab131c99
-RDX: 00007f13ab131c99 RSI: 0000000000000000 RDI: 00000000200001c0
-RBP: 00007f13ab1bf6d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f13ab18c160
-R13: 000000000000006e R14: 0030656c69662f2e R15: 00007f13ab186bc0
- </TASK>
+Patches 4 to 6 address the issues.
 
+Patches 7 to 10 add/modify the test cases. First, patch 7 adds nullb
+functions to use in later patches. Patch 8 adds a new test for
+zone resetting. And, patches 9 and 10 rewrites existing tests with the
+nullb helper.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changes:
+- v3:
+  - Tweak minimum FS size calculation style.
+  - Round down the specified byte_count towards sectorsize and zone
+    size, instead of banning unaligned byte_count.
+  - Add active zone description in the commit log of patch 6.
+  - Add nullb test functions and use them in tests.
+- v2: https://lore.kernel.org/linux-btrfs/20240514182227.1197664-1-naohiro.aota@wdc.com/T/#t
+  - fix function declaration on older distro (non-ZONED setup)
+  - fix mkfs test failure
+- v1: https://lore.kernel.org/linux-btrfs/20240514005133.44786-1-naohiro.aota@wdc.com/
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Naohiro Aota (10):
+  btrfs-progs: rename block_count to byte_count
+  btrfs-progs: mkfs: remove duplicated device size check
+  btrfs-progs: mkfs: unify zoned mode minimum size calc into
+    btrfs_min_dev_size()
+  btrfs-progs: mkfs: fix minimum size calculation for zoned mode
+  btrfs-progs: mkfs: align byte_count with sectorsize and zone size
+  btrfs-progs: support byte length for zone resetting
+  btrfs-progs: test: add nullb setup functions
+  btrfs-progs: test: add test for zone resetting
+  btrfs-progs: test: use nullb helper and smaller zone size
+  btrfs-progs: test: use nullb helpers in 031-zoned-bgt
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+ common/device-utils.c                    | 45 +++++++-----
+ kernel-shared/zoned.c                    | 23 ++++++-
+ kernel-shared/zoned.h                    |  7 +-
+ mkfs/common.c                            | 62 ++++++++++++++---
+ mkfs/common.h                            |  2 +-
+ mkfs/main.c                              | 88 ++++++++++--------------
+ tests/common                             | 63 +++++++++++++++++
+ tests/mkfs-tests/030-zoned-rst/test.sh   | 14 ++--
+ tests/mkfs-tests/031-zoned-bgt/test.sh   | 30 ++------
+ tests/mkfs-tests/032-zoned-reset/test.sh | 43 ++++++++++++
+ 10 files changed, 259 insertions(+), 118 deletions(-)
+ create mode 100755 tests/mkfs-tests/032-zoned-reset/test.sh
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+--
+2.45.1
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
