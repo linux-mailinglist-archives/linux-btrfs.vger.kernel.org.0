@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-5204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8BBE8CC34E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 16:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4793D8CC34F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 16:37:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AD6A1F243C6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 14:37:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA0E01F2452A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 14:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E914521362;
-	Wed, 22 May 2024 14:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FA122EEF;
+	Wed, 22 May 2024 14:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7u41+zW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ozavy6C4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237C720DE8
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374F522331
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716388602; cv=none; b=fYmxpQfGI4EgU0FbUuD02gBujTeLGoGBNwz3w8HOVaRbaoHAHpfeU2n6+41EwzGcKsvBzojsDKZIbBmcLXqZ2AGUGiEz40Vtjp9k2sjW6BGSKOteIflM98ErVuetfTF/1m1mkRBggS6c9TYZK0z/lbcbqUEQeDc+uSR8X4O84N8=
+	t=1716388603; cv=none; b=lEJeSAGiEbqXdtnkkxhVAbmK9ZIz1zR+HKac2EI+m2K++U2QCrGvkGsciEya+iIcm8QgS0f30oSCwamcTwvpjdsFnqNA4httD48XlTIUg+QFzWBxYtGaloyM4+a9RfpkzyQe9rZSbL2GQWLxbOVrT67EJVg4T+v5wJTIZXkCaM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716388602; c=relaxed/simple;
-	bh=AlaVMhrGenbjgIxhogKFEKh3SPgAjYjsyy9wZ077veE=;
+	s=arc-20240116; t=1716388603; c=relaxed/simple;
+	bh=I+YKT2VcljiROW1ywzaPYu1sfaKwDF3M7uCRXO4vlNU=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oqOVpSGDcuLTa6qp57llyg9L5lUdj0ypYythEInYNCxQ3eFcMNoy9HYluX60bDPqCWZ5Y+fH8tTaLQmyE5qEwmFhTc9d31jq1E0D0dvES3l7p4hLGtUh+sftc1VZ207ErsQVtXue8A2ep02vpFkLn5KlW5K3f4uVtQyP60G5kdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7u41+zW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CD4DC2BBFC
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:40 +0000 (UTC)
+	 MIME-Version; b=rP4Y6THkHQgSK3LFNsxKKxiPl/VxTvLSltZVSGTONensg67/Gk2j97Uo0Flgjp7up4Ccs6LcY/2k2V/7SkFQ0e7RTXNctzrI9tkIREWnCxZoH88v5kaTpLIw2iJRiiswpE9+JtjTpbUdAR6Yv1IujUR5l95J8zY6QOcjKVgBfYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ozavy6C4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 314C5C32782
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716388601;
-	bh=AlaVMhrGenbjgIxhogKFEKh3SPgAjYjsyy9wZ077veE=;
+	s=k20201202; t=1716388602;
+	bh=I+YKT2VcljiROW1ywzaPYu1sfaKwDF3M7uCRXO4vlNU=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=e7u41+zWnwvIjF+FGb4xQuYEpNg9dPSYNsyu8mzSCpPGL/hlEiwiNLzYDNg/84c1G
-	 OLzG65hVxDgcfQssWuQ2af5iJdrrqlrdDufDyApwgGjtCFZCzEgYTTFQ4IuEotz0Uy
-	 r6xF4TBVtPUAvNpkj0L3NGwKz1LixnBJ33PGN57ZX+hKxaoWC9oqjM6IptIr0xESXF
-	 toAfO+K36Pg064pi/zbsPkJ3kilEScoRRHgeU3sF/PbZpkIF9vcod1TAJjeVJwvLwT
-	 oDdmp2H2Rt4tVCkcBkEXrXDx+4I4gB36J+nRHGxPcmUZprfpIcFmWBGtIXV5zOELdB
-	 kqsgev4LUC99w==
+	b=Ozavy6C41qL3nipg2vCqyNoR5wUhwp4LMV6CGjixIUbygXk4LuZ5sUbUOvjaisvCX
+	 zugYWJ3T/9AJM8DmIUm1ck+LcwA3LdBuJLVNfswfsPQTXDOzndfzGrCjx6BRHZ9OZL
+	 gCbjEE34m0lMaYnYFG/WV/vCCae98JlJr+JPfTB6yO5qgFbhbWuI1Gt+o5aNnRdSST
+	 AwVSyAbmbrFbZcuAcO93RCpS5khAXWb+ww6Hz8k2QS3boVI3hFCKP7wXX6qS+anIU3
+	 DsSy/B6R6wQ4XZvckm0cgyMrR9B3AkJNUGX0S9dLuQxOvF8iNLGXOYUWGt2VbAfqyW
+	 0wZekkgz2EfeQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/7] btrfs: avoid create and commit empty transaction when committing super
-Date: Wed, 22 May 2024 15:36:30 +0100
-Message-Id: <89d1791f11c327236ff63ae24327b5e58522ce3d.1716386100.git.fdmanana@suse.com>
+Subject: [PATCH 3/7] btrfs: send: make ensure_commit_roots_uptodate() simpler and more efficient
+Date: Wed, 22 May 2024 15:36:31 +0100
+Message-Id: <e48d8d6c882b992c69c1cc471b01e53c715486ff.1716386100.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1716386100.git.fdmanana@suse.com>
 References: <cover.1716386100.git.fdmanana@suse.com>
@@ -59,68 +59,87 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_commit_super(), called in a few contextes such as when unmounting
-a filesystem, we use btrfs_join_transaction() to catch any running
-transaction and then commit it. This will however create a new and empty
-transaction in case there's no running transaction or there's a running
-transaction with a state >= TRANS_STATE_UNBLOCKED.
+Before starting a send operation we have to make sure that every root has
+its commit root matching the regular root, to that send doesn't find stale
+inodes in the commit root (inodes that were deleted in the regular root)
+and fails the inode lookups with -ESTALE.
 
-As we just want to be sure that any existing transaction is fully
-committed, we can use btrfs_attach_transaction_barrier() instead of
-btrfs_join_transaction(), therefore avoiding the creation and commit of
-empty transactions, which only waste IO and causes rotation of the
-precious backup roots.
+Currently we keep looking for roots used by the send operation and as soon
+as we find one we commit the current transaction (or a new one since
+btrfs_join_transaction() creates one if there isn't any running or the
+running one is in a state >= TRANS_STATE_UNBLOCKED). It's pointless to
+keep looking until we don't find any, because after the first transaction
+commit all the other roots are updated too, as they were already tagged in
+the fs_info->fs_roots_radix radix tree when they were modified in order to
+have a commit root different from the regular root.
 
-Example where we create and commit a pointless empty transaction:
+Currently we are also always passing the main send root into
+btrfs_join_transaction(), which despite not having any functional issue,
+it is not optimal because in case the root wasn't modified we end up
+adding it to fs_info->fs_roots_radix and then update its root item in the
+root tree when comitting the transaction, causing unnecessary work.
 
-  $ mkfs.btrfs -f /dev/sdj
-  $ btrfs inspect-internal dump-super /dev/sdj | grep -e '^generation'
-  generation            6
-
-  $ mount /dev/sdj /mnt/sdj
-  $ touch /mnt/sdj/foo
-
-  # Commit the currently open transaction. Just 'sync' or wait ~30
-  # seconds for the transaction kthread to commit it.
-  $ sync
-
-  $ btrfs inspect-internal dump-super /dev/sdj | grep -e '^generation'
-  generation            7
-
-  $ umount /mnt/sdj
-
-  $ btrfs inspect-internal dump-super /dev/sdj | grep -e '^generation'
-  generation            8
-
-The transaction with id 8 was pointless, an empty transaction that did
-not achieve anything.
+So simplify and make this more efficient by removing the looping and by
+passing the first root we found that is modified as the argument to
+btrfs_join_transaction().
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ fs/btrfs/send.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index eec5bb392b8e..2f56f967beb8 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4156,9 +4156,13 @@ int btrfs_commit_super(struct btrfs_fs_info *fs_info)
- 	down_write(&fs_info->cleanup_work_sem);
- 	up_write(&fs_info->cleanup_work_sem);
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index c69743233be5..2c46bd1c90d3 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -7998,32 +7998,29 @@ static int send_subvol(struct send_ctx *sctx)
+  */
+ static int ensure_commit_roots_uptodate(struct send_ctx *sctx)
+ {
+-	int i;
+-	struct btrfs_trans_handle *trans = NULL;
++	struct btrfs_trans_handle *trans;
++	struct btrfs_root *root = sctx->parent_root;
  
--	trans = btrfs_join_transaction(root);
--	if (IS_ERR(trans))
--		return PTR_ERR(trans);
-+	trans = btrfs_attach_transaction_barrier(root);
-+	if (IS_ERR(trans)) {
-+		int ret = PTR_ERR(trans);
-+
-+		return (ret == -ENOENT) ? 0 : ret;
+-again:
+-	if (sctx->parent_root &&
+-	    sctx->parent_root->node != sctx->parent_root->commit_root)
++	if (root && root->node != root->commit_root)
+ 		goto commit_trans;
+ 
+-	for (i = 0; i < sctx->clone_roots_cnt; i++)
+-		if (sctx->clone_roots[i].root->node !=
+-		    sctx->clone_roots[i].root->commit_root)
++	for (int i = 0; i < sctx->clone_roots_cnt; i++) {
++		root = sctx->clone_roots[i].root;
++		if (root->node != root->commit_root)
+ 			goto commit_trans;
+-
+-	if (trans)
+-		return btrfs_end_transaction(trans);
 +	}
-+
+ 
+ 	return 0;
+ 
+ commit_trans:
+-	/* Use any root, all fs roots will get their commit roots updated. */
+-	if (!trans) {
+-		trans = btrfs_join_transaction(sctx->send_root);
+-		if (IS_ERR(trans))
+-			return PTR_ERR(trans);
+-		goto again;
+-	}
++	/*
++	 * Use the first root we found. We could use any but that would cause
++	 * an unnecessary update of the root's item in the root tree when
++	 * committing the transaction if that root wasn't changed before.
++	 */
++	trans = btrfs_join_transaction(root);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
+ 
  	return btrfs_commit_transaction(trans);
  }
- 
 -- 
 2.43.0
 
