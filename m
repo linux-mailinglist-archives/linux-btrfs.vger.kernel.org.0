@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-5206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5207-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41F1C8CC350
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 16:37:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D33DB8CC351
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 16:37:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A37B1B239E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 14:37:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E7E928184B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 14:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA0A26AD8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F812942F;
 	Wed, 22 May 2024 14:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3qZIQx3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RIcJrzP9"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FC52374C
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7AF25753
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716388604; cv=none; b=B1YRb8RPi8Js9yyl0LMreyzOLgs5UbEw+PF6e5Sfd2bFLrVBC9y1d/Pa1ulbPvRSxwOR2bvv7kzmsfoA7OGzssnJnB/x/zrvFpcgJJT5YTEsFfq+FgoInVUt64gUap2Oj/YNqVGzlOPQ8aP5F/GshuoVFLTUDK+/rT0KgFR9LMk=
+	t=1716388604; cv=none; b=AiRxzqVKvlM8YBfzlBe/z2p2TSXVLeN7DZBPt0r3mxu8vhSBUnbiQzvy6Oej3mkZRAUFw4xqCEJpTAQzDDDWkRHfF2LxrXUI/fr5aN3SpJW3qgnTCiU8sdWLkOpNQGj92KT4STGZ+VsBIANksfW/4halbdCMwDS6Z0pYrG3VJSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1716388604; c=relaxed/simple;
-	bh=6IRuYllH1yzVZnG8MNZ9EDWBPfbdUX234D3tFclU5oc=;
+	bh=Jk2pLpQ4kQ62gRmVrx9XMVZ2M/g3S6QHiJjx6Mmh/B0=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JYfGv/UAdQ8AV7nEg4+wBSdIsHk0IMFsASgpMhXjoO9sDksDPBWnOBxmAOsC7PBQGuUJtJiSquw+vLZZHn8dzjbB3GYNdvP6P7wYAOx632jGdgoyJv0xp/wkL2veyglWt4TJqYr/5i9xY9c85NcojhoFpmc4WZkEa5z/w/piifA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l3qZIQx3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 356C4C2BBFC
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:43 +0000 (UTC)
+	 MIME-Version; b=i0qOXJ21HXDSjGhhrTcBvVd55E1Etzj657ffqVkL8zRWfn7OkNWF/8UHFol7KcnkPME41dqETNvRa6p8jhGvPXIn7AKA9cQqnxufxqHsyvPGwajvA3ZhTvRFq011Q8juojyvmi27ck2lYIFx3s390S1f9lmc438lGlnWeFO5Xt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RIcJrzP9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38696C32782
+	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 14:36:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716388603;
-	bh=6IRuYllH1yzVZnG8MNZ9EDWBPfbdUX234D3tFclU5oc=;
+	s=k20201202; t=1716388604;
+	bh=Jk2pLpQ4kQ62gRmVrx9XMVZ2M/g3S6QHiJjx6Mmh/B0=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=l3qZIQx3bcOGwojSrwahf/3mH5rWxTu4Ro9UUoQIN0Rt4qCJyrc96D5MoZq+ZOiqz
-	 OtFLaHlOvcpwWkjNMBkxEFU9o6M76VnGliGIyEX8nN+/BxNFDCWaSkd+/HADRfWc9L
-	 QoO4fRk1qkmA5KDjrbqGCS7pJdmbRLiIH/e4xsV2S04PApsRyQJm41sOro370Pu1m8
-	 1MpWqZOD45TUkKSvX+26M4cTK4Oc7UM+jUPoJQ70EZZvZzZHhteXJealOJecxYK0Tg
-	 50B4En2vqWGoQFjnwODfpAsPHu+jqiLQVSHPhgcmSlxqoXpAtBvm/nEHDXH64fMcOK
-	 BMD1/Hz6Rzogw==
+	b=RIcJrzP9tq8UcQbVl+drSybzXYKdP9ZqbcSRBFhRoavR5m5e36FiCYYV+f2rMzOsK
+	 GSGNkDHVdEJxvQUIWWd52C6THDsEEt1XJWcUrqpaozX3GORYUnHr/lb93zv8dwsN6T
+	 VGgk8y+bXNZ82QCNZFMsXM8kaVRHCu3faAFXEDHMqYeH6BU1a03mTqQCB1lfjkI2Du
+	 67rC8T86AXr0pEveJ8agx52hfLZGm6Bipv0k+qqYMO3nBAkCPaUwFAxX6GjfzKlfK0
+	 v6E82R2ZnJiuQgm4gISml/94UYSVEM01hQesxPUPciPIeIqTsJmmMRMSxkLKvPn3bw
+	 cRit327FuAlBg==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/7] btrfs: send: avoid create/commit empty transaction at ensure_commit_roots_uptodate()
-Date: Wed, 22 May 2024 15:36:32 +0100
-Message-Id: <a2695c7c931501cce57045455749f83f457f9f22.1716386100.git.fdmanana@suse.com>
+Subject: [PATCH 5/7] btrfs: scrub: avoid create/commit empty transaction at finish_extent_writes_for_zoned()
+Date: Wed, 22 May 2024 15:36:33 +0100
+Message-Id: <ee253f2941587230ad04dcb5386cfcd04e20066a.1716386100.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1716386100.git.fdmanana@suse.com>
 References: <cover.1716386100.git.fdmanana@suse.com>
@@ -59,7 +59,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At ensure_commit_roots_uptodate() we use btrfs_join_transaction() to
+At finish_extent_writes_for_zoned() we use btrfs_join_transaction() to
 catch any running transaction and then commit it. This will however create
 a new and empty transaction in case there's no running transaction anymore
 (got committed by the transaction kthread or other task for example) or
@@ -77,17 +77,17 @@ the backup roots in the super block.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/scrub.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 2c46bd1c90d3..289e5e6a6c56 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -8018,9 +8018,12 @@ static int ensure_commit_roots_uptodate(struct send_ctx *sctx)
- 	 * an unnecessary update of the root's item in the root tree when
- 	 * committing the transaction if that root wasn't changed before.
- 	 */
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 376c5c2e9aed..6c7b5d52591e 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -2446,9 +2446,13 @@ static int finish_extent_writes_for_zoned(struct btrfs_root *root,
+ 	btrfs_wait_nocow_writers(cache);
+ 	btrfs_wait_ordered_roots(fs_info, U64_MAX, cache);
+ 
 -	trans = btrfs_join_transaction(root);
 -	if (IS_ERR(trans))
 -		return PTR_ERR(trans);
@@ -97,9 +97,10 @@ index 2c46bd1c90d3..289e5e6a6c56 100644
 +
 +		return (ret == -ENOENT) ? 0 : ret;
 +	}
- 
++
  	return btrfs_commit_transaction(trans);
  }
+ 
 -- 
 2.43.0
 
