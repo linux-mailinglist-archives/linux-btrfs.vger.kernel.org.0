@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-5236-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5237-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E428CCB9C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 07:04:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEE808CCB9D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 07:04:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCF271F22EBA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 05:04:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB4501C21658
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 05:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773AC13B299;
-	Thu, 23 May 2024 05:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85F313B5BB;
+	Thu, 23 May 2024 05:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sTRyximz";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sTRyximz"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TXetqVaA";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TXetqVaA"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045B013B582
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5118413B5A6
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716440650; cv=none; b=g3GVlw5aH/bCfuXIuPTaaRrs02sc9Ea/6I+5MVU9a/kZPLz9iDerWlWJKWZlfPru9QGdvHYddbyHgAkrALJ6TLOkIdPyPPRjRvwXM8iMarXG8zHujIp4fnCa52I4V+rfVRwDDHe7bUmWqanEvM1I7xlJ900mrLNrcqkdlEjKcAs=
+	t=1716440651; cv=none; b=Z3QXmRh6p4nw3KXpN5zkQ63JdcCcCU/A66Q2EMmQoVE4wS08smJyEDBjidU7E3KxSheADye6j/VyC0kvyhYgUai6NBlWH9XXT039QtarBUTzMoNIIKA22RSGvbCxNHuHpXYahxKhv2xAFmIAxUms0CKMRHFkGJqc0QJSuLP6x/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716440650; c=relaxed/simple;
-	bh=rp1BTGeZUey9B9FTqgFZYGKRRfIwBNrvcRBiXAC484E=;
+	s=arc-20240116; t=1716440651; c=relaxed/simple;
+	bh=pvPpfQGk9yUdE8HMCQRsUC6rOXIbKOPlO/neIIvwLuU=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OJ+mbZikv35VQsnK2r7d8GDporMzRykqix2ObNZKzqPcszh+i83nuGl+9PdyEaoulej9+qYw1z+95FMJu4DY9tMc4cxnsjL3QFMcCww3EZ7ZtBnTdKdu7FUa4Ia8fGWSY3aJLR9hfqqumelFdGp6sq5205xI6KtkzPHljj1kvV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sTRyximz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sTRyximz; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=DJ1hg3EiExSz5r7aHcThqb9yQNRt8FO6ejmXehnIFAO5Ga0HqGdsjpqU3fo/sF5tNOH1b0fT4whl5pjCwWAj3nS7Zp38tk4fqNMrm854ysZAJ6DWdCZEYOjcW88r740aUQPJw4T9IJRzcvin3TlKez4pqO9wsfRrj6cc63hnk5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TXetqVaA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TXetqVaA; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 346B9220E4
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:07 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BE803220E3
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716440647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1716440648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A5E8OMD7AHJTU9SX0vJ5yTFwYclps6zJkCJePiOeZcI=;
-	b=sTRyximzYggMYWq9iCJtX9AgMRn8829g2jShS63pqO51dc/QRiY/ioq9ynJ9biw3rOVTJt
-	uAHt6CUDPpVDcNrraQg/dD5T6A9BQzDm0TQgbMAic/m+gVGf7qy0EcQfyKpBwElG8FniBl
-	rTlQBTRliN9HnKILWs2n6JATdDUy9fc=
+	bh=Tm/gKVhsPor6uKEojjfj1gmdWHvp4N6qUkzBoNMM8uc=;
+	b=TXetqVaAayM7bkPJK8v7DQfjd9tFLuyWKpIHxZsd/CxTaSZyLSfro+8jmlPCfx0Ab/Uj14
+	PVi5jw8SKsL53i99RhXVnh3vwDOFADGYlQ0/pwmic3X6SRTXw+55NphNOBq1l8gkhgT5Ou
+	PGh/Hho1EG6Vza5YdiBfxo21GsCGF6E=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=sTRyximz
+	dkim=pass header.d=suse.com header.s=susede1 header.b=TXetqVaA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716440647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1716440648; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A5E8OMD7AHJTU9SX0vJ5yTFwYclps6zJkCJePiOeZcI=;
-	b=sTRyximzYggMYWq9iCJtX9AgMRn8829g2jShS63pqO51dc/QRiY/ioq9ynJ9biw3rOVTJt
-	uAHt6CUDPpVDcNrraQg/dD5T6A9BQzDm0TQgbMAic/m+gVGf7qy0EcQfyKpBwElG8FniBl
-	rTlQBTRliN9HnKILWs2n6JATdDUy9fc=
+	bh=Tm/gKVhsPor6uKEojjfj1gmdWHvp4N6qUkzBoNMM8uc=;
+	b=TXetqVaAayM7bkPJK8v7DQfjd9tFLuyWKpIHxZsd/CxTaSZyLSfro+8jmlPCfx0Ab/Uj14
+	PVi5jw8SKsL53i99RhXVnh3vwDOFADGYlQ0/pwmic3X6SRTXw+55NphNOBq1l8gkhgT5Ou
+	PGh/Hho1EG6Vza5YdiBfxo21GsCGF6E=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 49E5413A6B
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:05 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C570713A6B
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gExmO0XOTmZPegAAD6G6ig
+	id 8FCpH0fOTmZPegAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:05 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:04:07 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 10/11] btrfs: cleanup duplicated parameters related to create_io_em()
-Date: Thu, 23 May 2024 14:33:29 +0930
-Message-ID: <42f1829b1246d7a5f19fc6964acea928efdd829d.1716440169.git.wqu@suse.com>
+Subject: [PATCH v3 11/11] btrfs: cleanup duplicated parameters related to btrfs_create_dio_extent()
+Date: Thu, 23 May 2024 14:33:30 +0930
+Message-ID: <e5bcf2efbd816ce551b5b02bff341ccf7440770a.1716440169.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <cover.1716440169.git.wqu@suse.com>
 References: <cover.1716440169.git.wqu@suse.com>
@@ -87,7 +87,7 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
 X-Spam-Score: -3.01
 X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 346B9220E4
+X-Rspamd-Queue-Id: BE803220E3
 X-Spam-Level: 
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00];
@@ -119,157 +119,76 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email]
 
-Most parameters of create_io_em() can be replaced by the members with
-the same name inside btrfs_file_extent.
+The following 3 parameters can be cleaned up using btrfs_file_extent
+structure:
 
-Do a straight parameters cleanup here.
+- len
+  btrfs_file_extent::num_bytes
+
+- orig_block_len
+  btrfs_file_extent::disk_num_bytes
+
+- ram_bytes
+  btrfs_file_extent::ram_bytes
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 55 ++++++++++++------------------------------------
- 1 file changed, 14 insertions(+), 41 deletions(-)
+ fs/btrfs/inode.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 35f03149b777..ecafaa181201 100644
+index ecafaa181201..0ec275b24adc 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -138,9 +138,6 @@ static noinline int run_delalloc_cow(struct btrfs_inode *inode,
- 				     u64 end, struct writeback_control *wbc,
- 				     bool pages_dirty);
- static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
--				       u64 len,
--				       u64 disk_num_bytes,
--				       u64 ram_bytes, int compress_type,
- 				       struct btrfs_file_extent *file_extent,
- 				       int type);
- 
-@@ -1207,13 +1204,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 	file_extent.offset = 0;
- 	file_extent.compression = async_extent->compress_type;
- 
--	em = create_io_em(inode, start,
--			  async_extent->ram_size,	/* len */
--			  ins.offset,			/* orig_block_len */
--			  async_extent->ram_size,	/* ram_bytes */
--			  async_extent->compress_type,
--			  &file_extent,
--			  BTRFS_ORDERED_COMPRESSED);
-+	em = create_io_em(inode, start, &file_extent, BTRFS_ORDERED_COMPRESSED);
- 	if (IS_ERR(em)) {
- 		ret = PTR_ERR(em);
- 		goto out_free_reserve;
-@@ -1443,12 +1434,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		lock_extent(&inode->io_tree, start, start + ram_size - 1,
- 			    &cached);
- 
--		em = create_io_em(inode, start, ins.offset, /* len */
--				  ins.offset, /* orig_block_len */
--				  ram_size, /* ram_bytes */
--				  BTRFS_COMPRESS_NONE, /* compress_type */
--				  &file_extent,
--				  BTRFS_ORDERED_REGULAR /* type */);
-+		em = create_io_em(inode, start, &file_extent, BTRFS_ORDERED_REGULAR);
- 		if (IS_ERR(em)) {
- 			unlock_extent(&inode->io_tree, start,
- 				      start + ram_size - 1, &cached);
-@@ -2165,12 +2151,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		if (is_prealloc) {
- 			struct extent_map *em;
- 
--			em = create_io_em(inode, cur_offset,
--					  nocow_args.file_extent.num_bytes,
--					  nocow_args.file_extent.disk_num_bytes,
--					  nocow_args.file_extent.ram_bytes,
--					  BTRFS_COMPRESS_NONE,
--					  &nocow_args.file_extent,
-+			em = create_io_em(inode, cur_offset, &nocow_args.file_extent,
- 					  BTRFS_ORDERED_PREALLOC);
- 			if (IS_ERR(em)) {
- 				unlock_extent(&inode->io_tree, cur_offset,
-@@ -7033,10 +7014,7 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
- 	struct btrfs_ordered_extent *ordered;
- 
- 	if (type != BTRFS_ORDERED_NOCOW) {
--		em = create_io_em(inode, start, len,
--				  orig_block_len, ram_bytes,
--				  BTRFS_COMPRESS_NONE, /* compress_type */
--				  file_extent, type);
-+		em = create_io_em(inode, start, file_extent, type);
- 		if (IS_ERR(em))
- 			goto out;
- 	}
-@@ -7328,9 +7306,6 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
- 
- /* The callers of this must take lock_extent() */
- static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
--				       u64 len,
--				       u64 disk_num_bytes,
--				       u64 ram_bytes, int compress_type,
- 				       struct btrfs_file_extent *file_extent,
- 				       int type)
+@@ -7004,11 +7004,8 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+ 						  struct btrfs_dio_data *dio_data,
+ 						  const u64 start,
+-						  const u64 len,
+-						  const u64 orig_block_len,
+-						  const u64 ram_bytes,
+-						  const int type,
+-						  struct btrfs_file_extent *file_extent)
++						  struct btrfs_file_extent *file_extent,
++						  const int type)
  {
-@@ -7352,25 +7327,25 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- 	switch (type) {
- 	case BTRFS_ORDERED_PREALLOC:
- 		/* We're only referring part of a larger preallocated extent. */
--		ASSERT(len <= ram_bytes);
-+		ASSERT(file_extent->num_bytes <= file_extent->ram_bytes);
- 		break;
- 	case BTRFS_ORDERED_REGULAR:
- 		/* COW results a new extent matching our file extent size. */
--		ASSERT(disk_num_bytes == len);
--		ASSERT(ram_bytes == len);
-+		ASSERT(file_extent->disk_num_bytes == file_extent->num_bytes);
-+		ASSERT(file_extent->ram_bytes == file_extent->num_bytes);
+ 	struct extent_map *em = NULL;
+ 	struct btrfs_ordered_extent *ordered;
+@@ -7026,7 +7023,7 @@ static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode *inode,
+ 		if (em) {
+ 			free_extent_map(em);
+ 			btrfs_drop_extent_map_range(inode, start,
+-						    start + len - 1, false);
++					start + file_extent->num_bytes - 1, false);
+ 		}
+ 		em = ERR_CAST(ordered);
+ 	} else {
+@@ -7069,10 +7066,8 @@ static struct extent_map *btrfs_new_extent_direct(struct btrfs_inode *inode,
+ 	file_extent.ram_bytes = ins.offset;
+ 	file_extent.offset = 0;
+ 	file_extent.compression = BTRFS_COMPRESS_NONE;
+-	em = btrfs_create_dio_extent(inode, dio_data, start, ins.offset,
+-				     ins.offset,
+-				     ins.offset, BTRFS_ORDERED_REGULAR,
+-				     &file_extent);
++	em = btrfs_create_dio_extent(inode, dio_data, start, &file_extent,
++				     BTRFS_ORDERED_REGULAR);
+ 	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+ 	if (IS_ERR(em))
+ 		btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset,
+@@ -7439,10 +7434,8 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 		}
+ 		space_reserved = true;
  
- 		/* Since it's a new extent, we should not have any offset. */
- 		ASSERT(file_extent->offset == 0);
- 		break;
- 	case BTRFS_ORDERED_COMPRESSED:
- 		/* Must be compressed. */
--		ASSERT(compress_type != BTRFS_COMPRESS_NONE);
-+		ASSERT(file_extent->compression != BTRFS_COMPRESS_NONE);
- 
- 		/*
- 		 * Encoded write can make us to refer to part of the
- 		 * uncompressed extent.
- 		 */
--		ASSERT(len <= ram_bytes);
-+		ASSERT(file_extent->num_bytes <= file_extent->ram_bytes);
- 		break;
- 	}
- 
-@@ -7379,15 +7354,15 @@ static struct extent_map *create_io_em(struct btrfs_inode *inode, u64 start,
- 		return ERR_PTR(-ENOMEM);
- 
- 	em->start = start;
--	em->len = len;
-+	em->len = file_extent->num_bytes;
- 	em->disk_bytenr = file_extent->disk_bytenr;
--	em->disk_num_bytes = disk_num_bytes;
--	em->ram_bytes = ram_bytes;
-+	em->disk_num_bytes = file_extent->disk_num_bytes;
-+	em->ram_bytes = file_extent->ram_bytes;
- 	em->generation = -1;
- 	em->offset = file_extent->offset;
- 	em->flags |= EXTENT_FLAG_PINNED;
- 	if (type == BTRFS_ORDERED_COMPRESSED)
--		extent_map_set_compression(em, compress_type);
-+		extent_map_set_compression(em, file_extent->compression);
- 
- 	ret = btrfs_replace_extent_map_range(inode, em, true);
- 	if (ret) {
-@@ -10354,9 +10329,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
- 	file_extent.ram_bytes = ram_bytes;
- 	file_extent.offset = encoded->unencoded_offset;
- 	file_extent.compression = compression;
--	em = create_io_em(inode, start, num_bytes,
--			  ins.offset, ram_bytes, compression,
--			  &file_extent, BTRFS_ORDERED_COMPRESSED);
-+	em = create_io_em(inode, start, &file_extent, BTRFS_ORDERED_COMPRESSED);
- 	if (IS_ERR(em)) {
- 		ret = PTR_ERR(em);
- 		goto out_free_reserved;
+-		em2 = btrfs_create_dio_extent(BTRFS_I(inode), dio_data, start, len,
+-					      file_extent.disk_num_bytes,
+-					      file_extent.ram_bytes, type,
+-					      &file_extent);
++		em2 = btrfs_create_dio_extent(BTRFS_I(inode), dio_data, start,
++					      &file_extent, type);
+ 		btrfs_dec_nocow_writers(bg);
+ 		if (type == BTRFS_ORDERED_PREALLOC) {
+ 			free_extent_map(em);
 -- 
 2.45.1
 
