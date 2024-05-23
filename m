@@ -1,234 +1,232 @@
-Return-Path: <linux-btrfs+bounces-5225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E68878CCB49
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 06:04:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC18A8CCB91
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 07:04:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED22B1C20C54
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 04:04:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E09421C21539
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 05:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E12142A87;
-	Thu, 23 May 2024 04:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21347CF39;
+	Thu, 23 May 2024 05:03:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HROu4NPd"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NGgrrNC+";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NGgrrNC+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479801CFA0
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 04:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB1D17F6
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716437048; cv=none; b=mR/Zfa2kLaQ8V2UN6/bVRUMqeCCkjgL7ozeYh2IO1Ms8bZkkfO6RVMSJg5qgEZ702RAjTlEElrmCDdMV8pllS6S1MyVytaiLVYSS+Xj6fvBBXSmWh+oM6UVk4swJorseR/4tnxCLD5kYe2Y8yw1Z83q1Xsm7mldJO95Ad0ApLKE=
+	t=1716440635; cv=none; b=uz2fjPLyiNgMWbB9dF2PlB9U0KRttMjlfsgE1E9UV6eQF9khfatQpyRqlRgunj8qEyOw3nLa3seKnUAeyZdUQNhEX5PrGLkpTDpds+/oRYhzH6vuqN/JeAmr00v5eiS1XdJ1CTZ6RO9SQS0zGcQtvn2ilDwa08saw2TCXCz6hms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716437048; c=relaxed/simple;
-	bh=eoA/8gQlVTGpQpArofAfZr67/BPzJktEhOjSLxvWjPw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Llx1mCkbRvbMwDdf+RMmZtzfIS2AcAIOyN1UlQG6+TH4it8VEGuIt9kVm7Pxpuuk/rPB3ejHeivX0ZfY7JShRklhHJFAlIu5ZNC0+rGL2PB/bNB+fwUz7LEqZzgQBFg4VCk9RsIIHttXalLlL4mzFZ2HAlSzHVHP6OvoDkh5WdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HROu4NPd; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1716437038; x=1717041838; i=quwenruo.btrfs@gmx.com;
-	bh=6Znrw/arToJVpsYDtlMG6FmnslWR6tUGbAasnfdLORU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=HROu4NPdnwtxvs8AhXUCPsUPzcYDzKPGEB16Jz5Oezxh6h0v267uS7r24p58eb4k
-	 jj/w+N9a54BK+EosQndb0ZRfnUpzIMV6W+Ha9fytZ9/HnO3sUMpzPQTwdfW0QjM96
-	 Tq6+kXPNK4yKdHhIaOmXD4WEOmmJCZUrZqtH1SS3rfeXMpeNdA4UDOfmkZuoU2dJJ
-	 VGzoS6KIwlQ91LYMcz1HyspIS18c4bcNB44QlZUtLvlcGJxV0QQRtqkmA1N73duYR
-	 0eyD75PFLvpxW5AFzBaTVFDLLyHJhELcwvUXVkbsshdHKOP6PFrSUjuld5zm4t8FI
-	 mRPM3MUgm4IQff1Q7g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6Daq-1sCDfp2HKC-006f1i; Thu, 23
- May 2024 06:03:58 +0200
-Message-ID: <23438f67-ed4e-4c79-8b25-0e015c347bc6@gmx.com>
-Date: Thu, 23 May 2024 13:33:53 +0930
+	s=arc-20240116; t=1716440635; c=relaxed/simple;
+	bh=P7l5/GKCzPzvsX/DWHuBR/uSYblXfXGNdQekpLDznvY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=bcGqtco8sLM6sOSmhUyioXRSmKfHYOXHg3GRX0iNcGgIwDPu6HpRT0AMkqFZP2fNI4/IyZnqeW3/6FcUHmwmCYiWykg1h4iAG73cJlUd83eulXRH0Zy8vGc60OZCRuWQugJsqCaMa2oZwNxv/gdoSKuEo1L8xFVkbp1M4OovoX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NGgrrNC+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NGgrrNC+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D0CED220E3
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716440629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=vvdB2o6eF4r15ygcgH9EwBUPgIyYaUKzZ3967oP0xWQ=;
+	b=NGgrrNC+BEbYADxQXQ+n1iGNnYMV9IXVMZTN2D5N+1E1yINOs/QqDb+x5Mo8FLiXSFrJVK
+	+3YIYCsyqU9NOXe8KI13OmGuE1ceBbDuKa5WOzKpRAU71q1AWmGZCZEzWzh5iZBTu6n8fa
+	iK1yPOMFtnDTOaVSdl5Df/7c1uOj7c0=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716440629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=vvdB2o6eF4r15ygcgH9EwBUPgIyYaUKzZ3967oP0xWQ=;
+	b=NGgrrNC+BEbYADxQXQ+n1iGNnYMV9IXVMZTN2D5N+1E1yINOs/QqDb+x5Mo8FLiXSFrJVK
+	+3YIYCsyqU9NOXe8KI13OmGuE1ceBbDuKa5WOzKpRAU71q1AWmGZCZEzWzh5iZBTu6n8fa
+	iK1yPOMFtnDTOaVSdl5Df/7c1uOj7c0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DC8C413A6B
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:03:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZGyRIzTOTmZPegAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 05:03:48 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 00/11] btrfs: extent-map: unify the members with btrfs_ordered_extent
+Date: Thu, 23 May 2024 14:33:19 +0930
+Message-ID: <cover.1716440169.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/11] btrfs: cleanup duplicated parameters related to
- btrfs_create_dio_extent()
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1714707707.git.wqu@suse.com>
- <8bdb1c42be16e32919b5e3e80aa6576c3a688d0d.1714707707.git.wqu@suse.com>
- <CAL3q7H4UV7amCcXmxN-=FvW-gLHmm-T51qCnPUNbSDb_h1nF5Q@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H4UV7amCcXmxN-=FvW-gLHmm-T51qCnPUNbSDb_h1nF5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oaOMwSbE4Obye82Nj8cRWpWaGasfjwJKPIsbzCP5DCh/y9XiDpO
- ESe1zz5y+wnpalPSXd1t61C0tJXseH1RQ/qxe/uu3bTSiMHb6aDGM/Ztfd6SuLzuUVLEUEL
- 6hZ1TWS8Jl/QiibXpSGe1/YZRBFxdHd2ZTGhfMgnSLF3vom/+Gy2rRTKBR0Opxt/PS+D/yX
- zk+E+iwX0vdFVh3q8gmyg==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:OPhoRiAlTRA=;Gxqc+CtUxqT3EZu4N7Ow1aWRrr8
- Qg9NqtnIX7fiqOmS8bzpZcpgsoA9IyycC8IAYct3o4WpGJdQeJmEY3Qtkx6GQk+mM4rkUHcSf
- tReFIOetMVb8Jm5avpja18rHEnc9HxSRzBRWlmKx1sWPqkp+OJ+AMA5s++eE0RalD0AEXtWcd
- vUPHub1ptRj+GrMAGY0B6ImLiTnEwakRP/k7dl9bHtVieh3DS7nVfrETGDSe8AjnftXjtYRDF
- nPyCH53Ubs1DPd2gmJIIawhO2esBiBBKB+mhY1KOMPldPkaHuqXiVwfMmpxOWfriSEXsq4VD0
- n5RWD/bYGBMNl3OT/kgSB0+PhResCX/4F+KrraeaEJ3sJwCKv4iKo3a/N3EH0A/Gzy3cZdzct
- w3L0tqqp5Ah2e4K8vMzGw696CpNvzp68ON2FIxfEVy++vzlVcFEfq7uTsBxuQioK+YoPhQr5c
- zJc9iTXBPQcEEcSSNH0BmdMMO3TPViKMPxXvJ60afuVZUuNDTw4/hNIWm688orMZnf+LkEOPx
- umPSbIztzaxdMhJKgjPG6DYGhxU75NU1G7Nme377GRmIavgEJ0c/M5VKlpTWWV/1l9vXEoJ6e
- eSfyxiW0Va3NHxINaFNWTFNGBVil/6iDIdUfbFefOmHdlfmLj6+icUOcb9Jtx7S0IW6ef64SF
- OiD7IO8dJe5ACX532zJZNXOvKEy1RgN3PnwGQLHNqXhpE6mZ8f6GJfNV0AnM1cwecDpMAeyOz
- Lp8vvKI7VsnR6UvfNlcvjgeMWQTOtbB6JzQQWFcUCG9hL6qkCuQHVw49xf989y5Xf7R23oW5e
- RBtHQ9q41prVnjzjSKuJJqQZXnNCTPK5iVAE5t+v40Bbo=
 
+[CHANGELOG]
+v3:
+- Rebased to the latest for-next
+  There is a small conflicts with the extent map tree members changes,
+  no big deal.
 
+- Fix an error where original code is checking
+  btrfs_file_extent_disk_bytenr()
+  The newer code is checking disk_num_bytes, which is wrong.
 
-=E5=9C=A8 2024/5/21 02:18, Filipe Manana =E5=86=99=E9=81=93:
-> On Fri, May 3, 2024 at 7:03=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->>
->> The following 3 parameters can be cleaned up using btrfs_file_extent
->> structure:
->>
->> - len
->>    btrfs_file_extent::num_bytes
->>
->> - orig_block_len
->>    btrfs_file_extent::disk_num_bytes
->>
->> - ram_bytes
->>    btrfs_file_extent::ram_bytes
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/inode.c | 22 ++++++++--------------
->>   1 file changed, 8 insertions(+), 14 deletions(-)
->>
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index a95dc2333972..09974c86d3d1 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -6969,11 +6969,8 @@ struct extent_map *btrfs_get_extent(struct btrfs=
-_inode *inode,
->>   static struct extent_map *btrfs_create_dio_extent(struct btrfs_inode =
-*inode,
->>                                                    struct btrfs_dio_dat=
-a *dio_data,
->>                                                    const u64 start,
->> -                                                 const u64 len,
->> -                                                 const u64 orig_block_=
-len,
->> -                                                 const u64 ram_bytes,
->> -                                                 const int type,
->> -                                                 struct btrfs_file_ext=
-ent *file_extent)
->> +                                                 struct btrfs_file_ext=
-ent *file_extent,
->> +                                                 const int type)
->>   {
->>          struct extent_map *em =3D NULL;
->>          struct btrfs_ordered_extent *ordered;
->> @@ -6991,7 +6988,7 @@ static struct extent_map *btrfs_create_dio_extent=
-(struct btrfs_inode *inode,
->>                  if (em) {
->>                          free_extent_map(em);
->>                          btrfs_drop_extent_map_range(inode, start,
->> -                                                   start + len - 1, fa=
-lse);
->> +                                       start + file_extent->num_bytes =
-- 1, false);
->>                  }
->>                  em =3D ERR_CAST(ordered);
->>          } else {
->> @@ -7034,10 +7031,9 @@ static struct extent_map *btrfs_new_extent_direc=
-t(struct btrfs_inode *inode,
->>          file_extent.ram_bytes =3D ins.offset;
->>          file_extent.offset =3D 0;
->>          file_extent.compression =3D BTRFS_COMPRESS_NONE;
->> -       em =3D btrfs_create_dio_extent(inode, dio_data, start, ins.offs=
-et,
->> -                                    ins.offset,
->> -                                    ins.offset, BTRFS_ORDERED_REGULAR,
->> -                                    &file_extent);
->> +       em =3D btrfs_create_dio_extent(inode, dio_data, start,
->> +                                    &file_extent,
->> +                                    BTRFS_ORDERED_REGULAR);
->
-> As we're changing this, we can leave this in a single line as it fits.
->
->>          btrfs_dec_block_group_reservations(fs_info, ins.objectid);
->>          if (IS_ERR(em))
->>                  btrfs_free_reserved_extent(fs_info, ins.objectid, ins.=
-offset,
->> @@ -7404,10 +7400,8 @@ static int btrfs_get_blocks_direct_write(struct =
-extent_map **map,
->>                  }
->>                  space_reserved =3D true;
->>
->> -               em2 =3D btrfs_create_dio_extent(BTRFS_I(inode), dio_dat=
-a, start, len,
->> -                                             file_extent.disk_num_byte=
-s,
->> -                                             file_extent.ram_bytes, ty=
-pe,
->> -                                             &file_extent);
->> +               em2 =3D btrfs_create_dio_extent(BTRFS_I(inode), dio_dat=
-a, start,
->> +                                             &file_extent, type);
->
-> Same here.
+- Various commit messages/comments update
+  Mostly some grammar fixes and removal of rants on the btrfs_file_extent
+  member mismatches for btrfs_alloc_ordered_extent().
+  However a comment is still left inside btrfs_alloc_ordered_extent()
+  for NOCOW/PREALLOC as a reminder for further cleanup.
 
-Just a small question related to the single line one.
+v2:
+- Rebased to the latest for-next
+  There is a conflicts with extent locking, and maybe some other
+  hidden conflicts for NOCOW/PREALLOC?
+  As previously the patchset passes fstests auto group, but after
+  the merging with other patches, it always crashes as btrfs/060.
 
-The parameter @start with its tailing ',' is already at 80 chars,
-do we still need to follow the old 80 chars width recommendation?
+- Fix an error in the final cleanup patch
+  It's the NOCOW/PREALLOC shenanigans again, in the buffered NOCOW path,
+  that we have to use the old inaccurate numbers for NOCOW/PREALLOC OEs.
 
-With previous several patches, I re-checked the lines, some can indeed
-be improved a little, but some BTRFS_ORDERED_* flags can not be merged
-without exceeding the 80 chars limits.
+- Split the final cleanup into 4 patches
+  Most cleanups are very straightforward, but the cleanup for
+  btrfs_alloc_ordered_extent() needs extra special handling for
+  NOCOW/PREALLOC.
 
-Thanks,
-Qu
->
-> The rest looks good, thanks.
->
->>                  btrfs_dec_nocow_writers(bg);
->>                  if (type =3D=3D BTRFS_ORDERED_PREALLOC) {
->>                          free_extent_map(em);
->> --
->> 2.45.0
->>
->>
->
+v1:
+- Rebased to the latest for-next
+  To resolve the conflicts with the recently introduced extent map
+  shrinker
+
+- A new cleanup patch to remove the recursive header inclusion
+
+- Use a new structure to pass the file extent item related members
+  around
+
+- Add a new comment on why we're intentionally passing incorrect
+  numbers for NOCOW/PREALLOC ordered extents inside
+  btrfs_create_dio_extent()
+
+[REPO]
+https://github.com/adam900710/linux/tree/em_cleanup
+
+This series introduce two new members (disk_bytenr/offset) to
+extent_map, and removes three old members
+(block_start/block_len/offset), finally rename one member
+(orig_block_len -> disk_num_bytes).
+
+This should save us one u64 for extent_map, although with the recent
+extent map shrinker, the saving is not that useful.
+
+But to make things safe to migrate, I introduce extra sanity checks for
+extent_map, and do cross check for both old and new members.
+
+The extra sanity checks already exposed one bug (thankfully harmless)
+causing em::block_start to be incorrect.
+
+But so far, the patchset is fine for default fstests run.
+
+Furthermore, since we're already having too long parameter lists for
+extent_map/ordered_extent/can_nocow_extent, here is a new structure,
+btrfs_file_extent, a memory-access-friendly structure to represent a
+btrfs_file_extent_item.
+
+With the help of that structure, we can use that to represent a file
+extent item without a super long parameter list.
+
+The patchset would rename orig_block_len to disk_num_bytes first.
+Then introduce the new member, the extra sanity checks, and introduce the
+new btrfs_file_extent structure and use that to remove the older 3 members
+from extent_map.
+
+After all above works done, use btrfs_file_extent to further cleanup
+can_nocow_file_extent_args()/btrfs_alloc_ordered_extent()/create_io_em()/
+btrfs_create_dio_extent().
+
+The cleanup is in fact pretty tricky, the current code base never
+expects correct numbers for NOCOW/PREALLOC OEs, thus we have to keep the
+old but incorrect numbers just for NOCOW/PREALLOC.
+
+I will address the NOCOW/PREALLOC shenanigans the future, but
+after the huge cleanup across multiple core structures.
+
+Qu Wenruo (11):
+  btrfs: rename extent_map::orig_block_len to disk_num_bytes
+  btrfs: export the expected file extent through can_nocow_extent()
+  btrfs: introduce new members for extent_map
+  btrfs: introduce extra sanity checks for extent maps
+  btrfs: remove extent_map::orig_start member
+  btrfs: remove extent_map::block_len member
+  btrfs: remove extent_map::block_start member
+  btrfs: cleanup duplicated parameters related to
+    can_nocow_file_extent_args
+  btrfs: cleanup duplicated parameters related to
+    btrfs_alloc_ordered_extent
+  btrfs: cleanup duplicated parameters related to create_io_em()
+  btrfs: cleanup duplicated parameters related to
+    btrfs_create_dio_extent()
+
+ fs/btrfs/btrfs_inode.h            |   4 +-
+ fs/btrfs/compression.c            |   7 +-
+ fs/btrfs/defrag.c                 |  14 +-
+ fs/btrfs/extent_io.c              |  10 +-
+ fs/btrfs/extent_map.c             | 192 +++++++++++++------
+ fs/btrfs/extent_map.h             |  51 +++--
+ fs/btrfs/file-item.c              |  23 +--
+ fs/btrfs/file.c                   |  18 +-
+ fs/btrfs/inode.c                  | 308 +++++++++++++-----------------
+ fs/btrfs/ordered-data.c           |  34 +++-
+ fs/btrfs/ordered-data.h           |  19 +-
+ fs/btrfs/relocation.c             |   5 +-
+ fs/btrfs/tests/extent-map-tests.c | 114 ++++++-----
+ fs/btrfs/tests/inode-tests.c      | 177 ++++++++---------
+ fs/btrfs/tree-log.c               |  23 ++-
+ fs/btrfs/zoned.c                  |   4 +-
+ include/trace/events/btrfs.h      |  18 +-
+ 17 files changed, 541 insertions(+), 480 deletions(-)
+
+-- 
+2.45.1
+
 
