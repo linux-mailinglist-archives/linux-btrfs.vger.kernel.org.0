@@ -1,200 +1,167 @@
-Return-Path: <linux-btrfs+bounces-5220-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5221-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AAB18CC9D8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 01:48:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F50E8CCA29
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 02:49:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E4EE283187
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2024 23:48:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5A01B21BE0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 00:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A3C14D2AC;
-	Wed, 22 May 2024 23:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D65217EF;
+	Thu, 23 May 2024 00:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="U3n6rpT+";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="U3n6rpT+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cFsWnotc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD7014C5BF
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 23:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99664A19
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 00:49:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716421698; cv=none; b=olpobGvi2MaBUwm4mTFCS6IRnt6HRV7a4iMHkrGjEuo/pjduf4ua7qZYNe5HQ1h+f6q3QjYGBjtXuvu6VR1Fh4lPuTS3aVHznwU586gGgSJpm/gnb2SnSzgc0xfhdFeqbe9fCL/wVCstKJysl1Jc92eqZfSxtQlduPYduHCkL90=
+	t=1716425367; cv=none; b=GZA8oWEgLmqx/qnS8El+nlhI+07sgfPrlAbo6zei6h/oxp+Lk1/Sj/jSWGJrlNlPz1g56NvQCpbinOOXdslefT59kCK0b3/pFHWoKmZE9m5MBPzuIFo3eHJuc3eZFsdGVWva8fEEHm/OfcEirazmgUaSsFXYpfDTtwHLbtzLucs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716421698; c=relaxed/simple;
-	bh=HRgYvZg+6n6aYzXHV4jo8tLCY5yWQaJNyTy543B4I7Y=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S71881jxDFUyhHPWzHYu6WEuhaK+jGzqbssAhzsiFFbQo3DmDnPgDlMD6BKHMtCZSwQj5ES6giPkKYUQ5em8bXRhBCh3vaAM4a7FT5Lh4XUY3p6UnkgMvpIi6urMUq+kMefN/zMPzDoSWfQfa9+h/XBRFeVQJy0M8iLA0NbBv30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=U3n6rpT+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=U3n6rpT+; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1716425367; c=relaxed/simple;
+	bh=BURBtzYHEgDdb+uYi8Docccj0D1+McwW+VQHs8pnDRw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=pBAPnRcg1r6f0CUyMImNDwlJeC0uWSt9XmaGaiaHVS5AjLfzD4nwR2WzmsYkStzAJSg583nhqJeMU6/EvDkAqVVrvEiSJ930w1Di2ofvkGXO1JJD5AWvsPPZuNh0xZ78b0UnMznxJbHzstQEey9XYqEwtPZbQEFT+3MK+98tai8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cFsWnotc; arc=none smtp.client-ip=209.85.208.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0128221A2F
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 23:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716421695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KVDf8PK66sR9MaDx73uAjx1lTiyvLJgIc+eHfxXT5CI=;
-	b=U3n6rpT+0yBN5MJe9LVoCkVW++QfnLXzSad++rx3bpEpRKvPn4uEovi/Y796lgE7rd/2XX
-	ZweYUkdeGLXWI14qQNoxlAlOkY9PlUkXcqI3S5E92gl7poUVUB5LAmB5sK1iJejotFU41v
-	AeeOr+PEsuRxbxY+/EjoJo01lvLBvV4=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=U3n6rpT+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716421695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KVDf8PK66sR9MaDx73uAjx1lTiyvLJgIc+eHfxXT5CI=;
-	b=U3n6rpT+0yBN5MJe9LVoCkVW++QfnLXzSad++rx3bpEpRKvPn4uEovi/Y796lgE7rd/2XX
-	ZweYUkdeGLXWI14qQNoxlAlOkY9PlUkXcqI3S5E92gl7poUVUB5LAmB5sK1iJejotFU41v
-	AeeOr+PEsuRxbxY+/EjoJo01lvLBvV4=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E3B913A1E
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 23:48:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2AO5KT2ETmb6aQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 23:48:13 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: remove the BUG_ON() inside extent_range_clear_dirty_for_io()
-Date: Thu, 23 May 2024 09:17:47 +0930
-Message-ID: <167cb36269f6f08bf0e14d8a564ad75a62c102a8.1716421534.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <cover.1716421534.git.wqu@suse.com>
-References: <cover.1716421534.git.wqu@suse.com>
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2e45c0a8360so61816241fa.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 22 May 2024 17:49:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1716425362; x=1717030162; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aoxn1yBv5vtWJnooYVaJvK14MNpRokw5s1d+kEt0ktI=;
+        b=cFsWnotc0A1U4NGW4HyixbQJp4pbIwjn6O/i+K9PwLM23SC9A5UA4QrXQeOCyjhoGR
+         g/OwsuNGYsbHp1AMufleiabOwiYLS0yMPWbCgcWZ+c9F/DjIULl3ZbyWAfvzW7jQsWuA
+         1JL5kikoMD5mNYBgAevLglsO1n5tqPNDqyHzUTqDSgsf3PAk73ia7viptwbR7wf4DRYU
+         wkPMkJx8CEvIBrU4oR9XjwOz6/wM3NjCibh8X6tyKDP8S67QMskULAFo036RdTAXrSZs
+         tLmAYcCzA0tbnt15WONTtj+J+r98UcH7WUo5forI8WLDvQzhsDy/DQNWp4tEIkdVGMVT
+         WwsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716425362; x=1717030162;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aoxn1yBv5vtWJnooYVaJvK14MNpRokw5s1d+kEt0ktI=;
+        b=tjhE3ECUQvRuK++Jp0oE2+4NrOASnf2q5XxY8nDWM4H61dkdBz79exLOaPeQUS1a4C
+         XyehhS2y3CBTiZgrZW24YWs/pW1MFaxpGAkwWfdvtBA+T12rObNGczBaNKVaCphJ7vYi
+         Y+xeIVOmvk/fA2KE51u1TaNQ8eyTCZ2oc48m9hRnOKEZkiqqa8HIzK7w3Vh9d/HM6Yu7
+         7oWxPW7hhDSNUtow3NmMJRNAbJBUf8hje8hcpM3Wl1KWVAPAJzNYv5h3q+TP7LQuUlpa
+         kwJWIOLadANSeFJeiPbWha15F5YaflhaLDFZL/GqUyVkLmMX562GtrWyOcJBxK/5UNbu
+         L1WA==
+X-Gm-Message-State: AOJu0YzcNxvD+9bBcufsmjQekTqKwwg9mBvxJrFdYt1xNp7SSHxUlzhy
+	8r6my0/KKQ5F9/JXD8W1SzaoMcPkJH8Zsekt3blNE2HXI5KgO1dgPJnv20++yNiBJWYJKrm2RzM
+	/
+X-Google-Smtp-Source: AGHT+IHhAN0LY8PiY8npUSStlO6uO3420Mqr6kBwYOSIMvuABlCOaN5t48ORDnHCIX7YTv+3LxxmpA==
+X-Received: by 2002:a05:651c:106b:b0:2e7:1b8:7b77 with SMTP id 38308e7fff4ca-2e94947dbd3mr20252351fa.22.1716425362491;
+        Wed, 22 May 2024 17:49:22 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6340a449ffbsm23424607a12.2.2024.05.22.17.49.20
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 May 2024 17:49:21 -0700 (PDT)
+Message-ID: <f64d771c-b47b-4db1-9bba-1790fbf91aa3@suse.com>
+Date: Thu, 23 May 2024 10:19:17 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] btrfs: make extent_range_clear_dirty_for_io()
+ subpage compatible
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <cover.1716421534.git.wqu@suse.com>
+ <015a4a2c7afb8ed894f4fb734cb886f01b9feb0c.1716421534.git.wqu@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <015a4a2c7afb8ed894f4fb734cb886f01b9feb0c.1716421534.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 0128221A2F
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
 
-Previously we have BUG_ON() inside extent_range_clear_dirty_for_io(), as
-we expect all involved folios are still locked, thus no folio should be
-missing.
 
-However for extent_range_clear_dirty_for_io() itself, we can skip the
-missing folio and handling the remaining ones, and return an error if
-there is anything wrong.
 
-So this patch would remove the BUG_ON() and let the caller to handle the
-error.
-In the caller we do not have a quick way to cleanup the error, but all
-the compression routines would handle the missing folio as an error and
-properly error out, so we only need to do an ASSERT() for developers,
-meanwhile for non-debug build the compression routine would handle the
-error correctly.
+在 2024/5/23 09:17, Qu Wenruo 写道:
+> Although the function is never called for subpage ranges, there is no
+> harm to make it subpage compatible for the future sector perfect subpage
+> compression support.
+> 
+> And since we're here, also change it to use folio APIs as the subpage
+> helper is already folio based.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+This patch is causing hangs for fstests with compression involved.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index dda47a273813..18b833e58d19 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -890,24 +890,29 @@ static inline void inode_should_defrag(struct btrfs_inode *inode,
- 		btrfs_add_inode_defrag(NULL, inode, small_write);
- }
- 
--static void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end)
-+static int extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end)
- {
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
- 	const u64 len = end + 1 - start;
--	unsigned long index = start >> PAGE_SHIFT;
- 	unsigned long end_index = end >> PAGE_SHIFT;
-+	int ret = 0;
- 
- 	/* We should not have such large range. */
- 	ASSERT(len < U32_MAX);
--	while (index <= end_index) {
-+	for (unsigned long index = start >> PAGE_SHIFT;
-+	     index <= end_index; index++) {
- 		struct folio *folio;
- 
- 		folio = filemap_get_folio(inode->i_mapping, index);
--		BUG_ON(IS_ERR(folio)); /* Pages should have been locked. */
-+		if (IS_ERR(folio)) {
-+			if (!ret)
-+				ret = PTR_ERR(folio);
-+			continue;
-+		}
- 		btrfs_folio_clamp_clear_dirty(fs_info, folio, start, len);
- 		folio_put(folio);
--		index++;
- 	}
-+	return ret;
- }
- 
- /*
-@@ -951,7 +956,16 @@ static void compress_file_range(struct btrfs_work *work)
- 	 * Otherwise applications with the file mmap'd can wander in and change
- 	 * the page contents while we are compressing them.
- 	 */
--	extent_range_clear_dirty_for_io(&inode->vfs_inode, start, end);
-+	ret = extent_range_clear_dirty_for_io(&inode->vfs_inode, start, end);
-+
-+	/*
-+	 * All the folios should have been locked thus no failure.
-+	 *
-+	 * And even some folios are missing, btrfs_compress_folios()
-+	 * would handle them correctly, so here just do an ASSERT() check for
-+	 * early logic errors.
-+	 */
-+	ASSERT(ret == 0);
- 
- 	/*
- 	 * We need to save i_size before now because it could change in between
--- 
-2.45.1
+Please drop the series for now.
 
+Thanks,
+Qu
+> ---
+>   fs/btrfs/inode.c | 15 ++++++++++-----
+>   1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 99be256f4f0e..dda47a273813 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -892,15 +892,20 @@ static inline void inode_should_defrag(struct btrfs_inode *inode,
+>   
+>   static void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end)
+>   {
+> +	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+> +	const u64 len = end + 1 - start;
+>   	unsigned long index = start >> PAGE_SHIFT;
+>   	unsigned long end_index = end >> PAGE_SHIFT;
+> -	struct page *page;
+>   
+> +	/* We should not have such large range. */
+> +	ASSERT(len < U32_MAX);
+>   	while (index <= end_index) {
+> -		page = find_get_page(inode->i_mapping, index);
+> -		BUG_ON(!page); /* Pages should be in the extent_io_tree */
+> -		clear_page_dirty_for_io(page);
+> -		put_page(page);
+> +		struct folio *folio;
+> +
+> +		folio = filemap_get_folio(inode->i_mapping, index);
+> +		BUG_ON(IS_ERR(folio)); /* Pages should have been locked. */
+> +		btrfs_folio_clamp_clear_dirty(fs_info, folio, start, len);
+> +		folio_put(folio);
+>   		index++;
+>   	}
+>   }
 
