@@ -1,146 +1,278 @@
-Return-Path: <linux-btrfs+bounces-5248-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80778CD545
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 16:02:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AADE58CD5E6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 16:35:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 436151F2436A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 14:02:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 625AD28280D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2024 14:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662EE14AD35;
-	Thu, 23 May 2024 14:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A225213E032;
+	Thu, 23 May 2024 14:35:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZXwDSxcn"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ebfdPQ/u";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="tLjEZeTO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E991DFF8
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 14:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716472968; cv=none; b=K3cZ1DoIeWIC6i6aILdh9ZX7SaPUIPEz+xTMSFMgIJDl3BETLaTUPciJenaCVBpi9htLVTXVYsrF/Lsfeho5yAKjQl/TN+WfsJ1Z8BC1AkZJtFP3PTkQLwZdHWzwpu9fTQW7CgX/db4dqZTZZyPOtppGwjP78WXBMKf/WQh9Tks=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716472968; c=relaxed/simple;
-	bh=BvEMDcv5L/qVBT1615ZFBCvIVZ1jfx3h89ehKEp6sKE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S2CInW5oz1KKvWCTxCcp3psNmofPSaSiXTht4dFNN6uXjszfYWPNkQNgAXzCwpgD4zwAK3HNcHSufusTqprt+vr4lTKIp1WPj9O+kEN6t+TogQPFcoEYqkEkpp2PHHel4fsNZRvTerV1JJjKCNrt2aB6IbP+VTIlaOhHmZDS2mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZXwDSxcn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35DD8C3277B
-	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 14:02:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716472968;
-	bh=BvEMDcv5L/qVBT1615ZFBCvIVZ1jfx3h89ehKEp6sKE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ZXwDSxcntP4DEg5OxKf7Lt0epzdv/TF/VpHszEeyUPxZVHsNHxEW6IOOGUzr3fLLY
-	 xFmHubqcUGgBu94nibFk08sis+pxJZ7Um8GWTNFdHI1c6g7c2H4u5lDDTxcpbl4TVA
-	 oOnfVtrJKYGEX6gC48fUbZ0sgDScueCftV9g4qRNCZpnlPPbOzHbS/xr1EWO0HtTZ/
-	 fr75hM49d+tMPyFe5kap6j9MRvvM4AhNrXDsd1omXibRJ3I5qy/4SsZaLtX+yP3Dik
-	 ab7BPyQcPWEXXBL8vrDHkn4DXvtcGDkSJ5boL/MGya4nWLk8S8fZ6YpzIeWsry57ad
-	 YcrDxGhmvHYgA==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a59b49162aeso1103486466b.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 07:02:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0Ywm137Or+MPJDtX+mmpfNwZqifbCFMW3S95bBgQUIprrgQ25HLg
-	46XgKB8cAWC81P5uxlCklLiTYcO2zein3nli6Chf2SB6fdWyFBYih1RtYvHJ/iGPdMMFNleKAZs
-	qk/Y/TRJNT12nADfHfrueLkcFiaU=
-X-Google-Smtp-Source: AGHT+IGaMnjj4eVENC+evmERKHDk6BDb1HA8FFbbRbVbmdL+Rf76gKtfyB1vy1SRZDTBocH7wAPUJEGg3JfdFuHY2ms=
-X-Received: by 2002:a17:906:dce:b0:a59:b543:c9f9 with SMTP id
- a640c23a62f3a-a622806b570mr379034866b.7.1716472966763; Thu, 23 May 2024
- 07:02:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDABD12B16E
+	for <linux-btrfs@vger.kernel.org>; Thu, 23 May 2024 14:35:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716474944; cv=fail; b=suKxFKJhUqINfYPFdr6jOwUD2bQTsJbNrmyNDpEYb27fvz9fj4awVo7Fh74HWMIIPx8WiDktiibvjgK6BpND5zmeDIHKPKRIQNgC2lOr/go0nvR2UOIQU1aa+z8oK/E0AXLAxgu8VndijldcGlLDImXvYelMV9q+qlhPzO64TIs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716474944; c=relaxed/simple;
+	bh=jfbsYPeTOH48D0gAEq/X0IWO1ynjf2XjPLV33BAp7zM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=WLdxDTwkWxA1YWy/+99OC+ZzdQZHuRpKyyteF//JI6H0oIvGujGxQfF9q54+KSANzOtWhHSB2hOEWkTF58AxDUF4mtQrwn7ZnGDwgd6AgF/oev4iqPmIaISyphaht/IOowThyLPFcjOX12or+4jrSTq5SBBaCbQQR0VSAca9yw8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ebfdPQ/u; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=tLjEZeTO; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44NEYlsu010765;
+	Thu, 23 May 2024 14:35:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=hTBniN27HAUqNO0+cehdMi4Zcym7A0x9yr5JJcfD+B8=;
+ b=ebfdPQ/uGPpoNBDTqkW7xjXFzkhA+FNJFF+rrCisZmRs/LjOnfEMl9jtTSuZJQf0xbOc
+ VSuJmVAD3w1oxWknPdLVo6sYbh/NYiDEIBxJNuIQW3btDWuaWbxV4VLHcLKL8ZaI/GSS
+ DMrDVdRn+hq4Ng4+0oRRHRlAPrVvLMQAyJrPJomTWV97vVXRu3S0lmkZVDh1OvawAJ3O
+ rNEFiJsM0cBcSE8rNxP77yvLstSIbzWttGDEdDzzNCbSy7EYGHyN9fy2XbOv67N/jlDx
+ vIT3BbyqKVD1OIi2JONYugOJOpcZx03Zd+AVjKdaWTvkEoDpzImyunjH+YhqEPuVEM6Y nw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y6m7b9xeu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 23 May 2024 14:35:33 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44NDjfPv002667;
+	Thu, 23 May 2024 14:35:31 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2040.outbound.protection.outlook.com [104.47.74.40])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3y6jsamws6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 23 May 2024 14:35:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eHlwzzRwKTcQNng+rfwbI74b1snFqZ+7t5p+mQtggUvhn43AEaNm8VyqxoqWZtjG0tp47E1WU1ulD6yo4vanKcctq6EQKtW6fYuICIkCCb9XC+CjPJ1wndofa89Qz19FUQt+aA4ellPN8NLwE9ichuvSxPihmMhI0GsDhFIw8/3A5h72f4ejUhIreZhJXGHyc6mWHasar/bS6u0lh1YLAWU85xkU+CcG5iQKfqvNvPA05pW6S5Lk4SBhMvtm3BpY2T0i+rMILdlu0L3egz8efLKD1BO/uDVLGODGesaeiOdX7eVUbU6xvgNZlpMq5/m9eOXjfl5UX8QPPbx9OkazJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hTBniN27HAUqNO0+cehdMi4Zcym7A0x9yr5JJcfD+B8=;
+ b=I8/QkEILoK1j6FhV5tNtwtwth2JBPn2OKPnROQ+fWaFRkE/RWlor/L09lqFrk6Jo48AQtPhYnpSpYIjo1DTFpLxVHD+MAUzlY+K4/bED4SB2Oo0NyC4vRnxhlAy5qJt+DQ2n4blk5BfX/3JNVwCQuOHYh9XsfLCM5Yr3fWG46x5CLj34VkUhxGTTbLLU+evtEtthtIEkgbVWnKv4xPc33g9zHXbDZ0qd+WjDByl7Hea4WN9OcjQWInkiQJIm2acNjf6AcXsP5D9B2F21xBrL8srMY+i3hacbAUbx+X6leDho9SY1y7dPcIlI+KAFnLQy2ISK6+87v82tw5cAR2uRgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hTBniN27HAUqNO0+cehdMi4Zcym7A0x9yr5JJcfD+B8=;
+ b=tLjEZeTOZkzNdH2CVcgRoTlJbqZeR+ZW+HqJ7ZggWns2XWcJ0qNYY7IYwQ2Ae4akbPuVzABd0k0uXBgzzwR13b9VBJ8mkTUWHkuSZw8q/AUFtCo5WfaHIu3BeLtMkKmFqH7IEGGDnMEG6knwMl4AbEVFMzuCrVQOpPRZUI6Wj+g=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by BL3PR10MB6113.namprd10.prod.outlook.com (2603:10b6:208:3b8::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.22; Thu, 23 May
+ 2024 14:35:30 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::fea:df00:2d94:cb65%6]) with mapi id 15.20.7611.016; Thu, 23 May 2024
+ 14:35:29 +0000
+Message-ID: <0ea513f9-bfcd-4b31-91c6-810b59a8ecca@oracle.com>
+Date: Thu, 23 May 2024 22:35:23 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 6/6] btrfs: rename and optimize return variable in
+ btrfs_find_orphan_roots
+Content-Language: en-GB
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1715783315.git.anand.jain@oracle.com>
+ <7b9f87e3ca3368648e9df1d124161a6d4b8e1e9a.1715783315.git.anand.jain@oracle.com>
+ <20240521151820.GP17126@twin.jikos.cz>
+ <3c9cdd87-87ce-444e-a576-7e9626df04ca@oracle.com>
+ <20240521175949.GS17126@twin.jikos.cz>
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20240521175949.GS17126@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0062.apcprd02.prod.outlook.com
+ (2603:1096:4:54::26) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1716386100.git.fdmanana@suse.com> <0452200a-1285-4f34-bd15-3ffb6b49c688@gmx.com>
-In-Reply-To: <0452200a-1285-4f34-bd15-3ffb6b49c688@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 23 May 2024 15:02:08 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4bHDt6BG4q8Oizc0vHd_FTM6j+aPjSUVcj5OxHiBv3XQ@mail.gmail.com>
-Message-ID: <CAL3q7H4bHDt6BG4q8Oizc0vHd_FTM6j+aPjSUVcj5OxHiBv3XQ@mail.gmail.com>
-Subject: Re: [PATCH 0/7] btrfs: avoid some unnecessary commit of empty transactions
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BL3PR10MB6113:EE_
+X-MS-Office365-Filtering-Correlation-Id: d9c533a4-3867-4420-77e3-08dc7b359820
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|1800799015;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?L0I4b2tGUFcvU3cyekVJZzJsWElnalMxbkRMbjYzSjYzTVpVckUzbnpxMFZW?=
+ =?utf-8?B?amthOUlVR1kwWmMrMk53K1lEMGxpRG9saGVmMFNSRitzblB4K2h4d003RTdp?=
+ =?utf-8?B?N3krZkRxaGlvaGJESjIzbENmTUtIMUNLS1FBL3R5VEd1TTFlL2IwTEhGTXZC?=
+ =?utf-8?B?bWF4Ynl6bkEyUlc3SmlFdWZlemRvOGlUbHBqbXVyUVBieFpUVHREU0lQaDlt?=
+ =?utf-8?B?TjJKRkR3bmVBK0Z6eGRweTltL01XZjYrVXl1S1krMHpaZEg5SmNyd3R4N0Nj?=
+ =?utf-8?B?RGUrbE1PZ1paekhidFdENzF1UU9DayswRFFKTW4vWVdvM0IrckFzLzlENmsv?=
+ =?utf-8?B?cWVWSEgyRXB4bWNsQWZ0M0gyRDBzS21ucjZLMHVYamhDbWRQMFVray9sTm1v?=
+ =?utf-8?B?cHJLamdZbHZVc1NkKyt0UU80MzFIZWxyNjUwVnRndmRKUGhJZTdXZFdTL0Vv?=
+ =?utf-8?B?Nnl2WGI0a200N3VOS2hnRlR4UU1kejZaYnFUYVZ3RHBOK1hqQzJGK2IzN0x3?=
+ =?utf-8?B?MnFIcGZGUjczd0ZSZFlBT3E4bGN1S0o5UU55VlRseEMrd0pZN3BCdXIwNkdS?=
+ =?utf-8?B?QlY0KzRLbitYVGVjREk3dWhIdnIyRStOYmg1NDVuZmxFUWZ2M2szS0pyR2JR?=
+ =?utf-8?B?L0pWOVpwTm45TzF2LzhQRFA2SU53V2E3ZkFaU2ttT25jbTNlazAxQ3FMVHhH?=
+ =?utf-8?B?dFNlb1oyemlqZmlKU0RlNXpEOWV0ZEZpQjFWRGQ3U1R0czVsVmdreEZTTUpP?=
+ =?utf-8?B?b2doQXJuaE9Bcmp5UHY5RmpMdHVDNVNFdWZhUnYxL1pIYUQ5M09tRzBiSjNU?=
+ =?utf-8?B?TWxLaDFNU2xUcjRPekwvT2RHemtBTnU1YVUweVZHZW5xN2QrZ1dLT1JhdXRT?=
+ =?utf-8?B?dUVRaUtVc1AzTnhqNzBDbW5vSUxkMXJlVHU2eDBVN1NzeW5iQWFwZ0pGYnFY?=
+ =?utf-8?B?R0lVbmhEckNtS2laREZzb3ZRc1o5SWw4cDNIKzlIVVlSUzR2WHZtd0Q0RGFu?=
+ =?utf-8?B?MEZ1bk1IUHJ0UUN2V0VSd0lqSXQ4OGRjMnBBMTNhQ0FCSHVzSFlYc1dCZDc2?=
+ =?utf-8?B?REdTZ3dXZXJGd2hRU3hqMDVVbVdmc3FWUk9zbzkzM0t0TkVkTXdLaHRmUXJr?=
+ =?utf-8?B?OVl2YTlmeEZXY29xRFVaeHkzQUttTlMvbXJnV1p0VE5ieFdjbmhVMFNMSzNR?=
+ =?utf-8?B?dDY1U0NjZUNKL1NiNC95d3lOTXRHT2tvcXBjTXh4MU1vM1VjK3FvWGNUeFRE?=
+ =?utf-8?B?MVc1ck5XQ2NvRmRUMitvRmxDWWNRM0lIU05FRlhKRm9KSDBJRHpFSkowdUNr?=
+ =?utf-8?B?RFM1UnlPNWJGZzNiOEFXaDlDMG4vTGYwU2Z4UzZMT09OM3RWbVRJdDVDTU9y?=
+ =?utf-8?B?UUsvTDNQM1Z6QWRqeE1MeXpVeU0zZXp1VGFLaFJNOC93TzFTTE9GUWIrZXVL?=
+ =?utf-8?B?cHFzVHV6c2l1blhkZGJtaGZCSmpXczk1Rjd6T1ZFSDR3S1lBN2lQTDlwdjJ1?=
+ =?utf-8?B?dVNHbnIrbEQ4TFJWSmRXMG1HMTVWblBZbE9STW1STlR3bThtOFROS2dzdWhZ?=
+ =?utf-8?B?eHVkQWozbXpkbDkyc2tuOUMrdUV3VHI5d2FwaFBjTytxbTBvck9pd0hYbGlD?=
+ =?utf-8?B?ZFlWK29sajNHSWJjSXZxWWxDekdYTkcyWHovb3NJd1MyMkpUUStIeHd0M3Bp?=
+ =?utf-8?B?Y3ZOaDR6MWUvNUJjK0dvM3ZHK244V3NvM2dCdk82MGVzcVRTMldmTlB3PT0=?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?THkrUzgxbUpZeFRYeGtCdFJHUDZzcEQ2Y1Fqdmk1WUtJTjlWdEN5MnU2cFcr?=
+ =?utf-8?B?TXQyeFRlYk9lUFRuZGNuS1g1bG5jeFgwUDlTalpFdlkvUW9JU09VcTZHcjJY?=
+ =?utf-8?B?OTgzdmIzMEV5WlQzYzhlVCs4YVVmVm80K0JGM2R5cXVDd0cwSXVjUjFUbVRw?=
+ =?utf-8?B?cDJPQVRNalV2bE1yYmQ3dkFlNnhSa0dmOVNybXpKZ21ya3N3a0tqVkJWbVpS?=
+ =?utf-8?B?MXM2OGNQMTJNVDUrSXZwWEhTSEIzT3g0M0VtQjlWR215akNwOHRvS09KYTRH?=
+ =?utf-8?B?SVRnUDY5dk92REJ2aHZVK3cvcVpDVHE0YlBnWkk2Y25tcU5lNFVUWVAxUHhW?=
+ =?utf-8?B?THNnRlMrSW5UdHlVQlRleDhoUFdraDA2SVJXOXJUSElLMUIxSlZtR05wT09F?=
+ =?utf-8?B?ZWxEeVVhR1hXek9WRzlyTU9mWjBrVEExN0t4VWdGajZPODAxZGFYb2lFQjY2?=
+ =?utf-8?B?Y2NyNFVQOEVNMXdOQmowWXZCeHBNVURwVkE1ckJGZWVodnJzbnk1YXhnZGQw?=
+ =?utf-8?B?enk4Q3hWL2lwOVZmOEVyUkpBR1NhR091N0RrNnRjUU1mT2NhdHN2U0dQYjhx?=
+ =?utf-8?B?T2dFOGhrb215SVhrcG83ZGp5S3V6dUs2MDN4VXc2YnhEVFFJWFh4T2luVU9L?=
+ =?utf-8?B?bEYrZnBBeHBsSklnSjhud2U5WEcyVG1iVXFKT1lnK0F4dkJlN3Rybi9uUGlO?=
+ =?utf-8?B?cTg3dkdQcS95WGovSHlmOWJCNWlxdWNGMFR1T2hrVXRnVWNrc0RSMlRKcHYr?=
+ =?utf-8?B?d2lVUnpXa2JjTjVuQ2Jla1JpSTBsNjJWSjVYbjNqdDhxdndHck44S2hSK2dL?=
+ =?utf-8?B?MlVDYW1ZQW5KdWVxSFcyZnE0ZHBzamh3ZTN0N0d4SEI3cDErUGVsalQvNFcr?=
+ =?utf-8?B?Q2NEVDJ4L2lCUVg3VkoxdmxHdmQwTDNYUTdUU01oVFduS1FJcnJhbDVjb25v?=
+ =?utf-8?B?WDI5R1RKa0tISDE0OEdiaUhqcnNseGw2bGx6MVZVR0l6UE9rTndoTDlyOGRW?=
+ =?utf-8?B?V2FvU1VXRGVySFZXWjlnb2U0WTZKVWRURUp2K1U2dHJlQXZwcXlJUTdDM0pI?=
+ =?utf-8?B?aGw5S2gzSFRhWVprOHV0SXVZR2VOTTBqaXIxZ2pRek9QOC9ETi9SNGJ3YnQ0?=
+ =?utf-8?B?aFdQc0tZeXBuamRJT2NpTFhqdHRrRGFBQy9iQXhCZnFrNTFJY3BuR2F5ZHV4?=
+ =?utf-8?B?SHhNMmdENDFKSWlGOXliV1JXdms3bWpEQSt3VW1vNUVnL1NhNnkwZEtDdlRU?=
+ =?utf-8?B?N1hFUmpOaERRK1lPME9kUnZPaEYvNHcyU21qWkovT2RMenhBbEtLRnNQR20v?=
+ =?utf-8?B?YUUwcDIzSytIL0UwTEQ3TWJCcGNTVFM5M001bXNKVXlLY2R6Qk9SSUtXTmFl?=
+ =?utf-8?B?OUM3ZnZVWkdla3ZoMHdZZ291enVLYVNIZnM3WTlBbnlUSEw4dzFIaDYrWCtu?=
+ =?utf-8?B?dDQyTEhKTDRsbXBaRW9YV25Qc29EWFcrYTYvWGtFZC9QQXkyL2I4VmYvTEZo?=
+ =?utf-8?B?djNwZERxVXBEdUo4QldrZEc5RFN2KzhEMWJucW1EZVprR3pxbjJIczR6TW80?=
+ =?utf-8?B?OE84N2RwRXVjRlhMN0U0R0NrRklQakR4WmxsNTI0L1VzajNaanQ5cVlzUnpa?=
+ =?utf-8?B?UjZOeFdLczJ5YWVZY2pJQWgzVzgxWi8zUFZ5L3BKcmlmaC9CTlkxZ1FKOHVz?=
+ =?utf-8?B?SEdMcDgwS2cyc3BFYUhTeFJocDdCcEpGNnAydTlyVEFPZjZEVnJJcXB4VnBB?=
+ =?utf-8?B?N0E2MnAxTWhWcXh6NVlHVXRxZkJUK0x6eUdZK25IbEF3OS9keXB0YzlhK1pX?=
+ =?utf-8?B?bUV0TmRMdHVrV1FmenpML1hLRlJmMFdyTDNsVmpGaUdXd2JOOFRBR2ZCenhI?=
+ =?utf-8?B?NGlsRTFaeGsvS3lrOGZCM2ozcVJLem9sbTNlbDBhNlNjWFdnb1o2SWEzNkdk?=
+ =?utf-8?B?ZVVnc1lwYTU4Sm15VXhzdjFjdmszaE84SmNaNm01Ulp2U0t0ekVac1FqVDIr?=
+ =?utf-8?B?c3BtakVqKy9yRnNLdFVaeGt2U1JmanQ1REtsV3ZKZlh3WjFkZVAvRC9HbmFq?=
+ =?utf-8?B?a3BYdjFPVVV3eTlOWS9VNXJJRFYrSncwcFYwQ0RWODNVZ2xOK1B6cDU2dWNF?=
+ =?utf-8?B?OTlJK0h5V2Z5bWxZbjk4ck1ZYWc4RE9ORzlza0JsTUtDQzdXUEhrRkVEZnNz?=
+ =?utf-8?B?S2c9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	8IYm5cYQ53U/+fbZ1pvnOdzdPHE92wZEOoGNwn9Onu08qo3UZr6JKCL8td8AWOUnso2BW0uLc++hZjGuWTZR+M9osZcIqtxcUZ3COQi3IfEEFDykvBmgY1EHyswSx8x0IP/yWp2yUj7I0QnPODnKbVRfd4rU2E7gxIAkFSxVqxfS574auwV9GRjb7Z+a4BvpN7BbAaKsVUG3Ij362XeNnMfUtin2mCiCCte03t6Ui0F5XA24utlxlkm7UbbFp8WKinjq+CBrrNvMWRXXy2kViX9MGPgSpIJ9YFa0ncTsz0h0/m69IJELOdE//VKSCR/JTKBMZH6E3TybqTx6aYpeucU1HznZNYpej4pkV0rci38qeKqOfsgannSyYIsgWz5dZI9gbADxJzcBHVCQcpQZLdYAuR/1mEEmqNZp1NU5lXD18r/qfIY+BJ9fMYYm7hchgrdSq9u1bwHmRqkkRwaT8AQlBLZS9ki5StctZ1QtwtL/3n9XnmtTn6BhRaZjgbE72Rt7KDKpsGzu8N7gC+Y1g7Lj6ZX7gZY50+6MSxw7q2miMEQW8xjppUPHfhki9LnNfEpEs0Eic2gvaeYy9bA+49UJJjSaZjnPNSjgLjeHqhc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9c533a4-3867-4420-77e3-08dc7b359820
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2024 14:35:29.8843
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9fHPQG+OLvFb326n4NHjRePZKaL4eIe+PV4eNQCnKp0YmaCZO1Qi5E2hleyFEALCLn/ajBNPyrYrKl5W8h3APA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6113
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-23_09,2024-05-23_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2405010000 definitions=main-2405230100
+X-Proofpoint-ORIG-GUID: -wbEkpltYzwKgeY7TRsz0VJhGn6OgpYh
+X-Proofpoint-GUID: -wbEkpltYzwKgeY7TRsz0VJhGn6OgpYh
 
-On Wed, May 22, 2024 at 11:21=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com>=
- wrote:
->
->
->
-> =E5=9C=A8 2024/5/23 00:06, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > A few places can unnecessarily create an empty transaction and then com=
-mit
-> > it, when the goal is just to catch the current transaction and wait for
-> > its commit to complete. This results in wasting IO, time and rotation o=
-f
-> > the precious backup roots in the super block. Details in the change log=
-s.
-> > The patches are all independent, except patch 4 that applies on top of
-> > patch 3 (but could have been done in any order really, they are indepen=
-dent).
->
-> Looks good to me.
->
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
->
-> Have you considered outputting a warning if we're committing an empty
-> transaction (for debug build)?
->
-> That would prevent such problem from happening again.
+On 22/05/2024 01:59, David Sterba wrote:
+> On Wed, May 22, 2024 at 01:10:08AM +0800, Anand Jain wrote:
+>>
+>>
+>> On 5/21/24 23:18, David Sterba wrote:
+>>> On Thu, May 16, 2024 at 07:12:15PM +0800, Anand Jain wrote:
+>>>> The variable err is the actual return value of this function, and the
+>>>> variable ret is a helper variable for err, which actually is not
+>>>> needed and can be handled just by err, which is renamed to ret.
+>>>>
+>>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>>>> ---
+>>>> v3: drop ret2 as there is no need for it.
+>>>> v2: n/a
+>>>>    fs/btrfs/root-tree.c | 32 ++++++++++++++++----------------
+>>>>    1 file changed, 16 insertions(+), 16 deletions(-)
+>>>>
+>>>> diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+>>>> index 33962671a96c..c11b0bccf513 100644
+>>>> --- a/fs/btrfs/root-tree.c
+>>>> +++ b/fs/btrfs/root-tree.c
+>>>> @@ -220,8 +220,7 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
+>>>>    	struct btrfs_path *path;
+>>>>    	struct btrfs_key key;
+>>>>    	struct btrfs_root *root;
+>>>> -	int err = 0;
+>>>> -	int ret;
+>>>> +	int ret = 0;
+>>>>    
+>>>>    	path = btrfs_alloc_path();
+>>>>    	if (!path)
+>>>> @@ -235,18 +234,19 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
+>>>>    		u64 root_objectid;
+>>>>    
+>>>>    		ret = btrfs_search_slot(NULL, tree_root, &key, path, 0, 0);
+>>>> -		if (ret < 0) {
+>>>> -			err = ret;
+>>>> +		if (ret < 0)
+>>>>    			break;
+>>>> -		}
+>>>> +		ret = 0;
+>>>
+>>> Should this be handled when ret > 0? This would be unexpected and
+>>> probably means a corruption but simply overwriting the value does not
+>>> seem right.
+>>>
+>>
+>> Agreed.
+>>
+>> +               if (ret > 0)
+>> +                       ret = 0;
+>>
+>> is much neater.
+> 
+> That's not what I meant. When btrfs_search_slot() returns 1 then the key
+> was not found and could be inserted, path points to the slot. This is
+> done in many other places, so in the orphan root lookup it should be
+> also handled.
 
-It's not really a bug, just inefficient behaviour with side effects
-for this particular type of use case.
+For the scenario where ret > 0 is good, we generally do varied tasks.
+However, here we need to reassign ret = 0. Originally, err remained 0
+and returned 0.
 
-An empty transaction can happen in other in other scenarios too like:
+Or, my bad, I didn't understand which usual error handling pattern you 
+are referring to.
 
-btrfs_start_transaction()
+Thanks, Anand
 
-do something that fails, call btrfs_end_transaction() and return error
-to user space
 
-In that case no transaction abort happens since we haven't modified
-anything, and if no one else uses that transaction until it's
-committed, it's an "empty" transaction.
-
-So the warning is not feasible.
-
-Thanks.
-
->
-> Thanks,
-> Qu
-> >
-> > Filipe Manana (7):
-> >    btrfs: qgroup: avoid start/commit empty transaction when flushing re=
-servations
-> >    btrfs: avoid create and commit empty transaction when committing sup=
-er
-> >    btrfs: send: make ensure_commit_roots_uptodate() simpler and more ef=
-ficient
-> >    btrfs: send: avoid create/commit empty transaction at ensure_commit_=
-roots_uptodate()
-> >    btrfs: scrub: avoid create/commit empty transaction at finish_extent=
-_writes_for_zoned()
-> >    btrfs: add and use helper to commit the current transaction
-> >    btrfs: send: get rid of the label and gotos at ensure_commit_roots_u=
-ptodate()
-> >
-> >   fs/btrfs/disk-io.c     |  8 +-------
-> >   fs/btrfs/qgroup.c      | 31 +++++--------------------------
-> >   fs/btrfs/scrub.c       |  6 +-----
-> >   fs/btrfs/send.c        | 32 ++++++++------------------------
-> >   fs/btrfs/space-info.c  |  9 +--------
-> >   fs/btrfs/super.c       | 11 +----------
-> >   fs/btrfs/transaction.c | 19 +++++++++++++++++++
-> >   fs/btrfs/transaction.h |  1 +
-> >   8 files changed, 37 insertions(+), 80 deletions(-)
-> >
 
