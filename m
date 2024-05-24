@@ -1,285 +1,130 @@
-Return-Path: <linux-btrfs+bounces-5280-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5281-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 697BC8CE6AA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 16:08:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DEF8CE8A6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 18:29:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19F76283089
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 14:08:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 477261C20BD4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 16:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF3712C554;
-	Fri, 24 May 2024 14:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YfqRC24l"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D8412EBE2;
+	Fri, 24 May 2024 16:29:21 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD82B12C466;
-	Fri, 24 May 2024 14:08:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA347126F06;
+	Fri, 24 May 2024 16:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716559706; cv=none; b=S6cw/BTn0iGX35LJ0vYLiqZURJVAv1iqQfcAUrDT0ngVOf0oC7Zpc7rNsSsQApXr6OpFnfSb4kNP5RZ4FeUy+zk1FZKMvA/rACz7lO7y/S/vKfGfHd+dckPqyS6KeStPEaDoD4gHmfsxrdShFymsT3k0sbVt4n4I3tWjlsSgQHk=
+	t=1716568161; cv=none; b=a9Jb8MSK3h1kjqvziE7VXfBOLQSlTRNLZivOfViooyMMcAgksyX5qAraIem5t2Tl+2V0di5//a4SsJF/sHw7w7otEGhrPXtsCQB5koQnMcRKGTZQZaDIUgYTqsahsX9rC+N7Zrp6CxXVIiy8gUgW1hyjX+mJcLYGomIx9VZbBts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716559706; c=relaxed/simple;
-	bh=jOLD+B0VxmIWv7LTxar6ty0Ee1Adzi/qqB67hBzJ79o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mTccwpfmyPpcGtWokXKzKM8jWnzk5QfI/G/hXN7Qz8GbJiMzyT9DC+urMlje5JytgIacxh9E3rBsQuYqnA/5j0E5fni4qgaLXSOKagH78gk158jXS8JiFt763GHHgiz1KtYm2vbDfCNtBTPbTIt153SnYKypoOHfxOMl6+/2I5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YfqRC24l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5879FC4AF09;
-	Fri, 24 May 2024 14:08:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716559705;
-	bh=jOLD+B0VxmIWv7LTxar6ty0Ee1Adzi/qqB67hBzJ79o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YfqRC24lOVeF+pf1yk7zDQkLmL2cfEyOfdyx8jvuexMd6HY3NyQOycMysksr57tI4
-	 mx8B4I4FNwv+tjerVNSyj/9PbxLxViwzXX+3m/LGIDcKMlOaDvPFBMRdNhyGl0d55u
-	 73nBoIYF2Saou6bBVRCxuvtTfjn4kbsKzlXp6hQCqGT7zsaWxlkoYQb1veKUzxjlf+
-	 /TMHMsGxLxDHCC+Poa5IdJf+mfd268M/JNYUdCFUE9HteEoBWlj0ISroETLR/C6ftF
-	 /u8YG/Wf9h0eT6XiKN1eM1gzjQA809XXOoy0HRWO4HeUTtHF5xGnIcx56w3y9X1BbF
-	 Dm6B2H7tZlUZQ==
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2e576057c2bso131794371fa.1;
-        Fri, 24 May 2024 07:08:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV6glINaGGALLEW5lzqKO+KsLsSAd4jz0INwUD3HfwCqdx8eVVIAPUlFs7Q3cFapA8LBg6OAFNiDkpahzgMJ74RbMyyBZn6W34E1I54eBTop5WNqGF+y4yIqXYK9zy3495REo4ip6lfTYQ=
-X-Gm-Message-State: AOJu0YyATlrvkYimn5aZJaIbnhHfER8LQDrFzTIDmucV9/s0hHGBoPlX
-	nYd9WTjC9AiOsbGDL2pUTUC8yMr0Lig29d4lPBq6SRXNN0CwHu5KvXWTDwnDuDLVfLohirsTM74
-	s6E5+R2fQLWbY4xshlqImmBR0Iak=
-X-Google-Smtp-Source: AGHT+IETr1rNL9PKRy/0zYi5XSFyiRAy5xWNxvtpD5IaKTyo1br2sWEu3Y0Lv7DzjYnbVUIr54kYrJ56YKzjSu5D88w=
-X-Received: by 2002:a2e:9899:0:b0:2e5:685a:85b5 with SMTP id
- 38308e7fff4ca-2e95b041622mr21195781fa.1.1716559703630; Fri, 24 May 2024
- 07:08:23 -0700 (PDT)
+	s=arc-20240116; t=1716568161; c=relaxed/simple;
+	bh=gXyxBWibeXUwqcMk4+uZivGUqGgkuPH86sT5M7vg9lw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=GIc5/0Ly1Riq2aU4NkDEaKMSekazQmzBz8Ng2cdXnGy1yWRLHBHPp+pyv7SoXuEtCUd/V/9XukR7EwNIc0o/pU3lfCVgUEKxnhpSR+EwVoMJuNHyPn4E+AMquwB3N+trMyWofGdZaXl5wLhAeB25y855oZfTykz1y1YOwQWs+N8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a5a7d28555bso1343660866b.1;
+        Fri, 24 May 2024 09:29:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716568158; x=1717172958;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B+YAuHdOZVCtb+ZmWIiRbLMqGayfxaS/iCjW3hjDnCw=;
+        b=i5f9Jk952XhiTqHVTkQKT1TC/HPMbM++RiLdbTKvihcPajQxeYGAPTF1iEx7HwwuMq
+         uiOq7qENUOuRdchdjpTFwMRvEPt/V7/EPn38RHm83AaeWfEeHRIJW2xtkXp65rnAT0pt
+         034Lafc8CDRpQa1kpkx8wRBhGH1DzBIk+zTa5uDS9JqpTSLHdNX70csTGWhUFonmBt4n
+         XA7Pnw63rfWiLPUIuEpeSZ5O525sihe/+FYkfS1cN8xpVSnJNplFVJjg6vs0QMO6VSe7
+         lPqGJjjxPrkU4IdJzGjXC+obG7pshgMx7AXFLK5sFq1FBWYM/MRXT4mGC3In/IiGbF0g
+         Uoeg==
+X-Forwarded-Encrypted: i=1; AJvYcCUdfdYk9AE7hSpZKLDnp3LwLF7xWEkj+/npyRLB8FtZRBzr/8uqjCdh/aeXa7+33ygryfCT/PBktugJVNhEnvhgoUaQOVz8m/atyMipy3gK5Ew68Ku+OiRLJxImT0LWimhCLJZm4my4Pk0=
+X-Gm-Message-State: AOJu0YxPtL69x02SgYa1KOGXBQzMJ0/oaCcByHesoVYBSBpzlkddCOY+
+	EQj2MqYv4eHBsMEa/9cwsZV31E3GgGUm/7E67EFb5Hsl1bEMj89d
+X-Google-Smtp-Source: AGHT+IFEYEIkAL41P2xHZ5ahUJbQKypTmQHKStTHVyJKBNsRaKOORgXztWudtth5IXRZUpNrcNsYmQ==
+X-Received: by 2002:a17:906:12d8:b0:a5c:df6b:a9b5 with SMTP id a640c23a62f3a-a6265128c6dmr186503166b.59.1716568157869;
+        Fri, 24 May 2024 09:29:17 -0700 (PDT)
+Received: from [127.0.0.1] (p200300f6f7253800fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f725:3800:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a626cc8dcb2sm154137066b.173.2024.05.24.09.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 May 2024 09:29:17 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH v5 0/3] btrfs: zoned: always set aside a zone for
+ relocation
+Date: Fri, 24 May 2024 18:29:08 +0200
+Message-Id: <20240524-zoned-gc-v5-0-872907c7cff4@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240523-zoned-gc-v4-0-23ed9f61afa0@kernel.org> <20240523-zoned-gc-v4-1-23ed9f61afa0@kernel.org>
-In-Reply-To: <20240523-zoned-gc-v4-1-23ed9f61afa0@kernel.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 24 May 2024 15:07:46 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6s=3avNUCCQK9W7AH+U_82eq0LaQ5XEL28m9X8k+rHkQ@mail.gmail.com>
-Message-ID: <CAL3q7H6s=3avNUCCQK9W7AH+U_82eq0LaQ5XEL28m9X8k+rHkQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] btrfs: zoned: reserve relocation block-group on mount
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Hans Holmberg <Hans.Holmberg@wdc.com>, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>, 
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFTAUGYC/23NTQ7CIBAF4Ks0rMXwM5TgynsYFy1MW6JpDRiiN
+ r27tCtMXb7JfO/NJGLwGMmpmknA5KOfxhzUoSJ2aMYeqXc5E8EEMMWBfqYRHe0tFRa1kaAMtpr
+ k90fAzr+2qss158HH5xTeW3Pi6/VPSeKUUc5Mx5vaagB9vmEY8X6cQk/WliRKqQopshTMatsaX
+ UvrdlIWUvBCyiy1ywwEKLD7TSilLCSsmxKd6WredA37kcuyfAGi4l0lTwEAAA==
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: Hans Holmberg <Hans.Holmberg@wdc.com>, linux-btrfs@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>, 
+ Filipe Manana <fdmanana@suse.com>, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.4
 
-On Thu, May 23, 2024 at 4:32=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
- wrote:
->
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Reserve one zone as a data relocation target on each mount. If we already
-> find one empty block group, there's no need to force a chunk allocation,
-> but we can use this empty data block group as our relocation target.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/block-group.c | 17 +++++++++++++
->  fs/btrfs/disk-io.c     |  2 ++
->  fs/btrfs/zoned.c       | 67 ++++++++++++++++++++++++++++++++++++++++++++=
-++++++
->  fs/btrfs/zoned.h       |  3 +++
->  4 files changed, 89 insertions(+)
->
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 9910bae89966..1195f6721c90 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1500,6 +1500,15 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info =
-*fs_info)
->                         btrfs_put_block_group(block_group);
->                         continue;
->                 }
-> +
-> +               spin_lock(&fs_info->relocation_bg_lock);
-> +               if (block_group->start =3D=3D fs_info->data_reloc_bg) {
-> +                       btrfs_put_block_group(block_group);
-> +                       spin_unlock(&fs_info->relocation_bg_lock);
-> +                       continue;
-> +               }
-> +               spin_unlock(&fs_info->relocation_bg_lock);
-> +
->                 spin_unlock(&fs_info->unused_bgs_lock);
->
->                 btrfs_discard_cancel_work(&fs_info->discard_ctl, block_gr=
-oup);
-> @@ -1835,6 +1844,14 @@ void btrfs_reclaim_bgs_work(struct work_struct *wo=
-rk)
->                                       bg_list);
->                 list_del_init(&bg->bg_list);
->
-> +               spin_lock(&fs_info->relocation_bg_lock);
-> +               if (bg->start =3D=3D fs_info->data_reloc_bg) {
-> +                       btrfs_put_block_group(bg);
-> +                       spin_unlock(&fs_info->relocation_bg_lock);
-> +                       continue;
-> +               }
-> +               spin_unlock(&fs_info->relocation_bg_lock);
+For zoned filesytsems we heavily rely on relocation for garbage collecting
+as we cannot do any in-place updates of disk blocks.
 
-Ok, so the reclaim task and cleaner kthread will not remove the
-reserved block group.
+But there can be situations where we're running out of space for doing the
+relocation.
 
-But there's nothing preventing someone running balance manually, which
-will delete the block group.
+To solve this, always have a zone reserved for relocation.
 
-E.g. block group X is empty and reserved as the data relocation bg.
-The balance ioctl is invoked, it goes through all block groups for relocati=
-on.
-It happens that it first finds bg X. Deletes bg X.
+This is a subset of another approach to this problem I've submitted in
+https://lore.kernel.org/r/20240328-hans-v1-0-4cd558959407@kernel.org
 
-Now there's no more reserved bg for data relocation, and other tasks
-can come in and use the freed space and fill all of it or most of it.
+---
+Changes in v5:
+- Split out one patch to skip relocation of the data relocation bg
+- Link to v4: https://lore.kernel.org/r/20240523-zoned-gc-v4-0-23ed9f61afa0@kernel.org
 
-Shouldn't we prevent the data reloc bg from being a target of a manual
-relocation too?
-E.g. have btrfs_relocate_chunk() do nothing if the bg is the data reloc bg.
+Changes in v4:
+- Skip data_reloc_bg in delete_unused_bgs() and reclaim_bgs_work()
+- Link to v3: https://lore.kernel.org/r/20240521-zoned-gc-v3-0-7db9742454c7@kernel.org
 
-Thanks.
+Changes in v3:
+- Rename btrfs_reserve_relocation_zone -> btrfs_reserve_relocation_bg
+- Bail out if we already have a relocation bg set
+- Link to v2: https://lore.kernel.org/r/20240515-zoned-gc-v2-0-20c7cb9763cd@kernel.org
 
-> +
->                 space_info =3D bg->space_info;
->                 spin_unlock(&fs_info->unused_bgs_lock);
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 78d3966232ae..16bb52bcb69e 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3547,6 +3547,8 @@ int __cold open_ctree(struct super_block *sb, struc=
-t btrfs_fs_devices *fs_device
->         }
->         btrfs_discard_resume(fs_info);
->
-> +       btrfs_reserve_relocation_bg(fs_info);
-> +
->         if (fs_info->uuid_root &&
->             (btrfs_test_opt(fs_info, RESCAN_UUID_TREE) ||
->              fs_info->generation !=3D btrfs_super_uuid_tree_generation(di=
-sk_super))) {
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index c52a0063f7db..d291cf4f565e 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -17,6 +17,7 @@
->  #include "fs.h"
->  #include "accessors.h"
->  #include "bio.h"
-> +#include "transaction.h"
->
->  /* Maximum number of zones to report per blkdev_report_zones() call */
->  #define BTRFS_REPORT_NR_ZONES   4096
-> @@ -2637,3 +2638,69 @@ void btrfs_check_active_zone_reservation(struct bt=
-rfs_fs_info *fs_info)
->         }
->         spin_unlock(&fs_info->zone_active_bgs_lock);
->  }
-> +
-> +static u64 find_empty_block_group(struct btrfs_space_info *sinfo, u64 fl=
-ags)
-> +{
-> +       struct btrfs_block_group *bg;
-> +
-> +       for (int i =3D 0; i < BTRFS_NR_RAID_TYPES; i++) {
-> +               list_for_each_entry(bg, &sinfo->block_groups[i], list) {
-> +                       if (bg->flags !=3D flags)
-> +                               continue;
-> +                       if (bg->used =3D=3D 0)
-> +                               return bg->start;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +void btrfs_reserve_relocation_bg(struct btrfs_fs_info *fs_info)
-> +{
-> +       struct btrfs_root *tree_root =3D fs_info->tree_root;
-> +       struct btrfs_space_info *sinfo =3D fs_info->data_sinfo;
-> +       struct btrfs_trans_handle *trans;
-> +       struct btrfs_block_group *bg;
-> +       u64 flags =3D btrfs_get_alloc_profile(fs_info, sinfo->flags);
-> +       u64 bytenr =3D 0;
-> +
-> +       lockdep_assert_not_held(&fs_info->relocation_bg_lock);
-> +
-> +       if (!btrfs_is_zoned(fs_info))
-> +               return;
-> +
-> +       if (fs_info->data_reloc_bg)
-> +               return;
-> +
-> +       bytenr =3D find_empty_block_group(sinfo, flags);
-> +       if (!bytenr) {
-> +               int ret;
-> +
-> +               trans =3D btrfs_join_transaction(tree_root);
-> +               if (IS_ERR(trans))
-> +                       return;
-> +
-> +               ret =3D btrfs_chunk_alloc(trans, flags, CHUNK_ALLOC_FORCE=
-);
-> +               btrfs_end_transaction(trans);
-> +               if (ret)
-> +                       return;
-> +
-> +               bytenr =3D find_empty_block_group(sinfo, flags);
-> +               if (!bytenr)
-> +                       return;
-> +
-> +       }
-> +
-> +       bg =3D btrfs_lookup_block_group(fs_info, bytenr);
-> +       if (!bg)
-> +               return;
-> +
-> +       if (!btrfs_zone_activate(bg))
-> +               bytenr =3D 0;
-> +
-> +       btrfs_put_block_group(bg);
-> +
-> +       spin_lock(&fs_info->relocation_bg_lock);
-> +       fs_info->data_reloc_bg =3D bytenr;
-> +       spin_unlock(&fs_info->relocation_bg_lock);
-> +}
-> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-> index ff605beb84ef..56c1c19d52bc 100644
-> --- a/fs/btrfs/zoned.h
-> +++ b/fs/btrfs/zoned.h
-> @@ -95,6 +95,7 @@ int btrfs_zone_finish_one_bg(struct btrfs_fs_info *fs_i=
-nfo);
->  int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
->                                 struct btrfs_space_info *space_info, bool=
- do_finish);
->  void btrfs_check_active_zone_reservation(struct btrfs_fs_info *fs_info);
-> +void btrfs_reserve_relocation_bg(struct btrfs_fs_info *fs_info);
->  #else /* CONFIG_BLK_DEV_ZONED */
->
->  static inline int btrfs_get_dev_zone_info_all_devices(struct btrfs_fs_in=
-fo *fs_info)
-> @@ -264,6 +265,8 @@ static inline int btrfs_zoned_activate_one_bg(struct =
-btrfs_fs_info *fs_info,
->
->  static inline void btrfs_check_active_zone_reservation(struct btrfs_fs_i=
-nfo *fs_info) { }
->
-> +static inline void btrfs_reserve_relocation_bg(struct btrfs_fs_info *fs_=
-info) { }
-> +
->  #endif
->
->  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, =
-u64 pos)
->
-> --
-> 2.43.0
->
->
+Changes in v2:
+- Incorporate Naohiro's review
+- Link to v1: https://lore.kernel.org/r/20240514-zoned-gc-v1-0-109f1a6c7447@kernel.org
+
+---
+Johannes Thumshirn (3):
+      btrfs: don't try to relocate the data relocation block-group
+      btrfs: zoned: reserve relocation block-group on mount
+      btrfs: reserve new relocation block-group after successful relocation
+
+ fs/btrfs/block-group.c | 11 ++++++++
+ fs/btrfs/disk-io.c     |  2 ++
+ fs/btrfs/relocation.c  | 14 +++++++++++
+ fs/btrfs/volumes.c     |  2 ++
+ fs/btrfs/zoned.c       | 68 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/zoned.h       |  3 +++
+ 6 files changed, 100 insertions(+)
+---
+base-commit: 2aabf192868a0f6d9ee3e35f9b0a8d97c77a46da
+change-id: 20240514-zoned-gc-2ce793459eb7
+
+Best regards,
+-- 
+Johannes Thumshirn <jth@kernel.org>
+
 
