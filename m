@@ -1,374 +1,138 @@
-Return-Path: <linux-btrfs+bounces-5276-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15C138CE5B6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 15:06:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59B228CE5DE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 15:17:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FD57B20CC5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 13:06:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15947282CA1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 13:17:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1B086653;
-	Fri, 24 May 2024 13:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA3286653;
+	Fri, 24 May 2024 13:17:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MhGjDmgP"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qQgmsZB/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zFgnCcia";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qQgmsZB/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zFgnCcia"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D783A8663A
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 May 2024 13:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFB586244;
+	Fri, 24 May 2024 13:17:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716555988; cv=none; b=JdlHjFQTig2y+eT7Hgmkpay22bmV9gp/ncUxcTVLuSm3MYG0vUlEOwClQNUqDzXbDk6+4wp7R1FhCNoZeT08FbaGomJbsLD7HPIEUpS3A3oTaNh6mOCkHDiSrd5V9XahEf807gmrlbTJVUDVAR+XZ+FPj6y4vlB0lNeef1XeKSE=
+	t=1716556647; cv=none; b=Nn03cuakvRlq8Nz+jZE117MXwwcz2tw6/kUay5Ne/mKTPb9BAx8lRScaql8+lbqpqESfHYGiwEnvo3UZbHOD0S1PhdL5GTzeEwPXTxxuY2Az1D83EHnmU4z5tt9OGlyF/W1oWWTDdbARdNluZ/QGIVk6LAl+NMI1gmbE7iQB/xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716555988; c=relaxed/simple;
-	bh=m3D7wXJqWd0hAq6OHn7pJoAzOCcAuyflvEO0/R+ocv8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=accwVHJ+A3/mH2SJppxY8i8wtvMEu3f9pWHJ86oHlXvJQ8LuhJVY1rlxfCBY5pduYb/yTksLAyacRamsJ7ygOI4CJoiPeKdYA6NildJh+ktW0KUCZXl7yhTqhaKa7nfzL7yIpXvoeKyWVdNUMTVVFA/mRWXQQPWAgEEfbcKit7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MhGjDmgP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B15C2BBFC
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 May 2024 13:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716555988;
-	bh=m3D7wXJqWd0hAq6OHn7pJoAzOCcAuyflvEO0/R+ocv8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MhGjDmgPR8y/XUcK9ov+0BdJknTk2zbMeuoUt5YlfpdUKAse/G9WtAKCl54rDFMk0
-	 UElFka9EmYLdQEkubLKWi7dOwMkpUlXrGpn/ageb6kadQcckPHidjTzS7OvHtIYQOF
-	 gHhSk9SIkvEuhqsJXBTZGSYGp3stvhH/GUY8cxRfMrlxvRrNJJ5PeuXsd/tQhlCHYk
-	 7tctG8t93GYR+3JHvutzyyxPBY7LFPaXUWkNzclJ5/zV5v62N9ZNreeYKy9Z/xYR0P
-	 tqlw7mhRU9wZxeAjQjf21euZYo7VNsqjsiXYTObOopw8RZASRbo9OZXWDDLuRRA78Z
-	 b+BuGWwYYjHCA==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a626776cc50so107906066b.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 May 2024 06:06:28 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyZ2EftC0wG1Ju7xKCiSHlSHkj18xhTKqzJx3BdDgFvTeUV9zcb
-	r5kIUhzTWy4ztC+q+enSDvDdPD163kKyU2EniuHGodADJTcbkP2adIdJOEY5gJ45iVnDA4sNdrr
-	FKkzX5Bq6WyMysXQGuhvGK1yodeA=
-X-Google-Smtp-Source: AGHT+IENc5v1Z0TgYoPNwjdsxInvy/zOqLNkULazsi3MXNSK12ZZtzOF+cWquO/WfAPf2EV9dRbk6On46CAGbK0qTjw=
-X-Received: by 2002:a17:906:c088:b0:a59:db0f:6bd7 with SMTP id
- a640c23a62f3a-a6265116365mr145640466b.71.1716555986958; Fri, 24 May 2024
- 06:06:26 -0700 (PDT)
+	s=arc-20240116; t=1716556647; c=relaxed/simple;
+	bh=w1LplXt5/wwVym29hab3Ep1sdjD4gzGLr0YOFrBl+tI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V8izrYbPf8Lg0Asy7EpSKpNDkMn/+iqOB1QeJ+yM/UkuESfNvyX7oDXHswSjtV6zef+VbmZcLJmHhO2ntO3pMm8s8fKxekit0OjcZSo6TYt+613iY06aaD+3ot/Hbsga3hcuneDD6xWh/ras4REOIk0dc6O4n0eZIdBJy/W/s8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qQgmsZB/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zFgnCcia; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qQgmsZB/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zFgnCcia; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5796F33B10;
+	Fri, 24 May 2024 13:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716556643;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eFNuBkWYv8NttJ9gQsgvZWInMRuqHrxj0Iy7J9akBxY=;
+	b=qQgmsZB/sQrnkWEaL76ugHXKmywDEy1N4+I0wONG9Kaov7wmRjF94jSEG6jMD3CY85zveU
+	ylhu6i481Z6Rpzneo5HyMBi6Ho978Zw/PY3TkHh7Q5FLK/ZOzT+2dI0UI7vj8hLmoKG7eX
+	X5yaHXPV5xgyITPhF5t1dm/eRErSb2A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716556643;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eFNuBkWYv8NttJ9gQsgvZWInMRuqHrxj0Iy7J9akBxY=;
+	b=zFgnCciaglXjV+GSXLP6/9hF1HxHI581itx6pM08nGFvdsD8Gh5eZZE6FGd31eV9vHj5Ba
+	M3bq9FiZRmxtkrBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716556643;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eFNuBkWYv8NttJ9gQsgvZWInMRuqHrxj0Iy7J9akBxY=;
+	b=qQgmsZB/sQrnkWEaL76ugHXKmywDEy1N4+I0wONG9Kaov7wmRjF94jSEG6jMD3CY85zveU
+	ylhu6i481Z6Rpzneo5HyMBi6Ho978Zw/PY3TkHh7Q5FLK/ZOzT+2dI0UI7vj8hLmoKG7eX
+	X5yaHXPV5xgyITPhF5t1dm/eRErSb2A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716556643;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eFNuBkWYv8NttJ9gQsgvZWInMRuqHrxj0Iy7J9akBxY=;
+	b=zFgnCciaglXjV+GSXLP6/9hF1HxHI581itx6pM08nGFvdsD8Gh5eZZE6FGd31eV9vHj5Ba
+	M3bq9FiZRmxtkrBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B53713A3D;
+	Fri, 24 May 2024 13:17:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mME+EmOTUGbZMgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 24 May 2024 13:17:23 +0000
+Date: Fri, 24 May 2024 15:17:22 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs/741: add commit ID in _fixed_by_kernel_commit
+Message-ID: <20240524131722.GH17126@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <5cc75a8832418894235ad69d0c6e349e899f0c6b.1716524713.git.anand.jain@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <101430650a35b55b7a32d895fd292226d13346eb.1716486455.git.osandov@fb.com>
-In-Reply-To: <101430650a35b55b7a32d895fd292226d13346eb.1716486455.git.osandov@fb.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 24 May 2024 14:05:49 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5Qb4y6M1MxEM8c6cmVG82w3dSxvWbAVXAe+5pORR0hEQ@mail.gmail.com>
-Message-ID: <CAL3q7H5Qb4y6M1MxEM8c6cmVG82w3dSxvWbAVXAe+5pORR0hEQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix crash on racing fsync and size-extending
- direct I/O into prealloc
-To: Omar Sandoval <osandov@osandov.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5cc75a8832418894235ad69d0c6e349e899f0c6b.1716524713.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[3]
 
-On Thu, May 23, 2024 at 8:34=E2=80=AFPM Omar Sandoval <osandov@osandov.com>=
- wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> We have been seeing crashes on duplicate keys in
-> btrfs_set_item_key_safe():
->
->   BTRFS critical (device vdb): slot 4 key (450 108 8192) new key (450 108=
- 8192)
->   ------------[ cut here ]------------
->   kernel BUG at fs/btrfs/ctree.c:2620!
->   invalid opcode: 0000 [#1] PREEMPT SMP PTI
->   CPU: 0 PID: 3139 Comm: xfs_io Kdump: loaded Not tainted 6.9.0 #6
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-2.fc=
-40 04/01/2014
->   RIP: 0010:btrfs_set_item_key_safe+0x11f/0x290 [btrfs]
->
-> With the following stack trace:
->
->   #0  btrfs_set_item_key_safe (fs/btrfs/ctree.c:2620:4)
->   #1  btrfs_drop_extents (fs/btrfs/file.c:411:4)
->   #2  log_one_extent (fs/btrfs/tree-log.c:4732:9)
->   #3  btrfs_log_changed_extents (fs/btrfs/tree-log.c:4955:9)
->   #4  btrfs_log_inode (fs/btrfs/tree-log.c:6626:9)
->   #5  btrfs_log_inode_parent (fs/btrfs/tree-log.c:7070:8)
->   #6  btrfs_log_dentry_safe (fs/btrfs/tree-log.c:7171:8)
->   #7  btrfs_sync_file (fs/btrfs/file.c:1933:8)
->   #8  vfs_fsync_range (fs/sync.c:188:9)
->   #9  vfs_fsync (fs/sync.c:202:9)
->   #10 do_fsync (fs/sync.c:212:9)
->   #11 __do_sys_fdatasync (fs/sync.c:225:9)
->   #12 __se_sys_fdatasync (fs/sync.c:223:1)
->   #13 __x64_sys_fdatasync (fs/sync.c:223:1)
->   #14 do_syscall_x64 (arch/x86/entry/common.c:52:14)
->   #15 do_syscall_64 (arch/x86/entry/common.c:83:7)
->   #16 entry_SYSCALL_64+0xaf/0x14c (arch/x86/entry/entry_64.S:121)
->
-> So we're logging a changed extent from fsync, which is splitting an
-> extent in the log tree. But this split part already exists in the tree,
-> triggering the BUG().
->
-> This is the state of the log tree at the time of the crash, dumped with
-> drgn (https://github.com/osandov/drgn/blob/main/contrib/btrfs_tree.py)
-> to get more details than btrfs_print_leaf() gives us:
->
->   >>> print_extent_buffer(prog.crashed_thread().stack_trace()[0]["eb"])
->   leaf 33439744 level 0 items 72 generation 9 owner 18446744073709551610
->   leaf 33439744 flags 0x100000000000000
->   fs uuid e5bd3946-400c-4223-8923-190ef1f18677
->   chunk uuid d58cb17e-6d02-494a-829a-18b7d8a399da
->           item 0 key (450 INODE_ITEM 0) itemoff 16123 itemsize 160
->                   generation 7 transid 9 size 8192 nbytes 847356388960686=
-2198
->                   block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
->                   sequence 204 flags 0x10(PREALLOC)
->                   atime 1716417703.220000000 (2024-05-22 15:41:43)
->                   ctime 1716417704.983333333 (2024-05-22 15:41:44)
->                   mtime 1716417704.983333333 (2024-05-22 15:41:44)
->                   otime 17592186044416.000000000 (559444-03-08 01:40:16)
->           item 1 key (450 INODE_REF 256) itemoff 16110 itemsize 13
->                   index 195 namelen 3 name: 193
->           item 2 key (450 XATTR_ITEM 1640047104) itemoff 16073 itemsize 3=
-7
->                   location key (0 UNKNOWN.0 0) type XATTR
->                   transid 7 data_len 1 name_len 6
->                   name: user.a
->                   data a
->           item 3 key (450 EXTENT_DATA 0) itemoff 16020 itemsize 53
->                   generation 9 type 1 (regular)
->                   extent data disk byte 303144960 nr 12288
->                   extent data offset 0 nr 4096 ram 12288
->                   extent compression 0 (none)
->           item 4 key (450 EXTENT_DATA 4096) itemoff 15967 itemsize 53
->                   generation 9 type 2 (prealloc)
->                   prealloc data disk byte 303144960 nr 12288
->                   prealloc data offset 4096 nr 8192
->           item 5 key (450 EXTENT_DATA 8192) itemoff 15914 itemsize 53
->                   generation 9 type 2 (prealloc)
->                   prealloc data disk byte 303144960 nr 12288
->                   prealloc data offset 8192 nr 4096
->   ...
->
-> So the real problem happened earlier: notice that items 4 (4k-12k) and 5
-> (8k-12k) overlap. Both are prealloc extents. Item 4 straddles i_size and
-> item 5 starts at i_size.
->
-> Here is the state of the filesystem tree at the time of the crash:
->
->   >>> root =3D prog.crashed_thread().stack_trace()[2]["inode"].root
->   >>> ret, nodes, slots =3D btrfs_search_slot(root, BtrfsKey(450, 0, 0))
->   >>> print_extent_buffer(nodes[0])
->   leaf 30425088 level 0 items 184 generation 9 owner 5
->   leaf 30425088 flags 0x100000000000000
->   fs uuid e5bd3946-400c-4223-8923-190ef1f18677
->   chunk uuid d58cb17e-6d02-494a-829a-18b7d8a399da
->         ...
->           item 179 key (450 INODE_ITEM 0) itemoff 4907 itemsize 160
->                   generation 7 transid 7 size 4096 nbytes 12288
->                   block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
->                   sequence 6 flags 0x10(PREALLOC)
->                   atime 1716417703.220000000 (2024-05-22 15:41:43)
->                   ctime 1716417703.220000000 (2024-05-22 15:41:43)
->                   mtime 1716417703.220000000 (2024-05-22 15:41:43)
->                   otime 1716417703.220000000 (2024-05-22 15:41:43)
->           item 180 key (450 INODE_REF 256) itemoff 4894 itemsize 13
->                   index 195 namelen 3 name: 193
->           item 181 key (450 XATTR_ITEM 1640047104) itemoff 4857 itemsize =
-37
->                   location key (0 UNKNOWN.0 0) type XATTR
->                   transid 7 data_len 1 name_len 6
->                   name: user.a
->                   data a
->           item 182 key (450 EXTENT_DATA 0) itemoff 4804 itemsize 53
->                   generation 9 type 1 (regular)
->                   extent data disk byte 303144960 nr 12288
->                   extent data offset 0 nr 8192 ram 12288
->                   extent compression 0 (none)
->           item 183 key (450 EXTENT_DATA 8192) itemoff 4751 itemsize 53
->                   generation 9 type 2 (prealloc)
->                   prealloc data disk byte 303144960 nr 12288
->                   prealloc data offset 8192 nr 4096
->
-> Item 5 in the log tree corresponds to item 183 in the filesystem tree,
-> but nothing matches item 4. Furthermore, item 183 is the last item in
-> the leaf.
->
-> btrfs_log_prealloc_extents() is responsible for logging prealloc extents
-> beyond i_size. It first truncates any previously logged prealloc extents
-> that start beyond i_size. Then, it walks the filesystem tree and copies
-> the prealloc extent items to the log tree.
->
-> If it hits the end of a leaf, then it calls btrfs_next_leaf(), which
-> unlocks the tree and does another search. However, while the filesystem
-> tree is unlocked, an ordered extent completion may modify the tree. In
-> particular, it may insert an extent item that overlaps with an extent
-> item that was already copied to the log tree.
->
-> This may manifest in several ways depending on the exact scenario,
-> including an EEXIST error that is silently translated to a full sync,
-> overlapping items in the log tree, or this crash. This particular crash
-> is triggered by the following sequence of events:
->
-> - Initially, the file has i_size=3D4k, a regular extent from 0-4k, and a
->   prealloc extent beyond i_size from 4k-12k. The prealloc extent item is
->   the last item in its B-tree leaf.
-> - The file is fsync'd, which copies its inode item and both extent items
->   to the log tree.
-> - An xattr is set on the file, which sets the
->   BTRFS_INODE_COPY_EVERYTHING flag.
-> - The range 4k-8k in the file is written using direct I/O. i_size is
->   extended to 8k, but the ordered extent is still in flight.
-> - The file is fsync'd. Since BTRFS_INODE_COPY_EVERYTHING is set, this
->   calls copy_inode_items_to_log(), which calls
->   btrfs_log_prealloc_extents().
-> - btrfs_log_prealloc_extents() finds the 4k-12k prealloc extent in the
->   filesystem tree. Since it starts before i_size, it skips it. Since it
->   is the last item in its B-tree leaf, it calls btrfs_next_leaf().
-> - btrfs_next_leaf() unlocks the path.
-> - The ordered extent completion runs, which converts the 4k-8k part of
->   the prealloc extent to written and inserts the remaining prealloc part
->   from 8k-12k.
-> - btrfs_next_leaf() does a search and finds the new prealloc extent
->   8k-12k.
-> - btrfs_log_prealloc_extents() copies the 8k-12k prealloc extent into
->   the log tree. Note that it overlaps with the 4k-12k prealloc extent
->   that was copied to the log tree by the first fsync.
-> - fsync calls btrfs_log_changed_extents(), which tries to log the 4k-8k
->   extent that was written.
-> - This tries to drop the range 4k-8k in the log tree, which requires
->   adjusting the start of the 4k-12k prealloc extent in the log tree to
->   8k.
-> - btrfs_set_item_key_safe() sees that there is already an extent
->   starting at 8k in the log tree and calls BUG().
+On Fri, May 24, 2024 at 12:26:59PM +0800, Anand Jain wrote:
+> Now that the kernel patch is merged in v6.9, replace the placeholder with
+> the actual commit ID.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-This is all correct. Thanks for the detailed explanation, this is one
-more instance of tricky cases involving the last item and
-btrfs_next_leaf().
-
-So you mention direct IO but that's only because the issue happened to
-be triggered with direct IO, but there's really nothing specific to
-direct IO here, can happen with buffered IO too.
-So I suggest dropping the "direct IO" part in the subject and just say
-something like "... size extending write into prealloc".
-
-Then don't forget to update the subject in the test case for the
-_fixed_by_kernel_commit call.
-
->
-> Fix this by detecting when we're about to insert an overlapping file
-> extent item in the log tree and truncating the part that would overlap.
->
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
-> Hi,
->
-> I'm not sure if this is the best way to fix the problem, but hopefully
-> the commit message has enough detail to brainstorm a better solution if
-> not. I've also included an fstest that reproduces the issue.
-
-That seems reasonable, and I would fix it myself in a very similar way.
-
->
-> Based on misc-next.
-
-Btw, nowadays we use the "for-next" branch at
-https://github.com/btrfs/linux/commits/for-next/
-However this applies just fine in that for-next branch.
-
-A few comments belows.
-
->
-> Thanks,
-> Omar
->
->
->  fs/btrfs/tree-log.c | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 51a167559ae8..a7efd23acf50 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -4783,6 +4783,7 @@ static int btrfs_log_prealloc_extents(struct btrfs_=
-trans_handle *trans,
->         bool dropped_extents =3D false;
->         u64 truncate_offset =3D i_size;
->         struct extent_buffer *leaf;
-> +       struct btrfs_file_extent_item *ei;
->         int slot;
->         int ins_nr =3D 0;
->         int start_slot =3D 0;
-> @@ -4811,8 +4812,6 @@ static int btrfs_log_prealloc_extents(struct btrfs_=
-trans_handle *trans,
->                 goto out;
->
->         if (ret =3D=3D 0) {
-> -               struct btrfs_file_extent_item *ei;
-> -
->                 leaf =3D path->nodes[0];
->                 slot =3D path->slots[0];
->                 ei =3D btrfs_item_ptr(leaf, slot, struct btrfs_file_exten=
-t_item);
-> @@ -4863,18 +4862,26 @@ static int btrfs_log_prealloc_extents(struct btrf=
-s_trans_handle *trans,
->                         path->slots[0]++;
->                         continue;
->                 }
-> -               if (!dropped_extents) {
-> -                       /*
-> -                        * Avoid logging extent items logged in past fsyn=
-c calls
-> -                        * and leading to duplicate keys in the log tree.
-> -                        */
-> +               /*
-> +                * Avoid overlapping items in the log tree. The first tim=
-e we
-> +                * get here, get rid of everything from a past fsync. Aft=
-er
-> +                * that, if the current extent starts before the end of t=
-he last
-> +                * extent we copied, truncate the last one. This can happ=
-en if
-> +                * an ordered extent completion modifies the subvolume tr=
-ee
-> +                * while btrfs_next_leaf() has the tree unlocked.
-> +                */
-> +               if (!dropped_extents || key.offset < truncate_offset) {
->                         ret =3D truncate_inode_items(trans, root->log_roo=
-t, inode,
-> -                                                  truncate_offset,
-> +                                                  min(key.offset,
-> +                                                      truncate_offset),
-
-For readability you can keep the min() expression in a single line.
-That would result in a 84 characters wide line, which is tolerated nowadays=
-.
-
->                                                    BTRFS_EXTENT_DATA_KEY)=
-;
->                         if (ret)
->                                 goto out;
->                         dropped_extents =3D true;
->                 }
-> +               ei =3D btrfs_item_ptr(leaf, slot, struct btrfs_file_exten=
-t_item);
-> +               truncate_offset =3D (key.offset +
-> +                                  btrfs_file_extent_num_bytes(leaf, ei))=
-;
-
-The parentheses here are a bit odd and unnecessary.
-You can also use btrfs_file_extent_end(path) instead of the expression.
-
-Thanks.
-
->                 if (ins_nr =3D=3D 0)
->                         start_slot =3D slot;
->                 ins_nr++;
-> --
-> 2.45.1
->
->
+Reviewed-by: David Sterba <dsterba@suse.com>
 
