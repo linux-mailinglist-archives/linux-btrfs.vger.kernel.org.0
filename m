@@ -1,83 +1,71 @@
-Return-Path: <linux-btrfs+bounces-5287-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5288-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C598CEB96
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 22:58:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36C958CEE86
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 12:31:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FDA91F218B8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2024 20:58:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 653221C20AC5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 10:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4AF83A14;
-	Fri, 24 May 2024 20:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="BvHdfz9F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D430E2AF18;
+	Sat, 25 May 2024 10:31:38 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5717322334
-	for <linux-btrfs@vger.kernel.org>; Fri, 24 May 2024 20:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3482B644
+	for <linux-btrfs@vger.kernel.org>; Sat, 25 May 2024 10:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716584321; cv=none; b=Wscbfdj5cV/NQXHGbDuWutrEDIVll5UvugVdr+pCkFQMaWpUw/+ziY131Huz5EQyYgbOBP4rACrGsgrjTsq0SjZUNm5tC1D/Qi2jHgEVBS/d7TP6XqqOZkKWfIhmbISiQyXNqGaKoGTdKKvgyiw4NkHbYSQttNvaG8N0biW/nC8=
+	t=1716633098; cv=none; b=k5GMewu8RWXND9C4HWau997805+N61dxyZO0WsHfR7w+VZMXC0yvmCGVWi5yfb4420PD7UleG0syr58+RO1HLTrWb/DHKEJqt+p5BwdNuKZExL5rpi2Lr3aQh6QSl09Y0Nb5+qkp8TLsGJuH5bW9UMj+l6EP7a7TXmTxqZZvODI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716584321; c=relaxed/simple;
-	bh=ECQm2GVEkuxakTj0yWho2TKp1LuuyzIjDK0PEt/XSds=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t1kxJsCn0OJyDOt2QANztHhey2ge03nulDh8ggvcbFEY2e7bdUsCNMeIB9eWZu8tYHs3VSajxNxN4HqdzCas9FE3ZVG0VGEf4Rqh433HbNhg09HngSvt/QuR/cUQuBJ7/kQDUNzJWyuIJN/V5d45f0dhzkHVbrwX9KWuXNotMT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=BvHdfz9F; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1f44b45d6abso11655595ad.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 May 2024 13:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1716584319; x=1717189119; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=euAfIUewsrHV6jYyHDKNLiq1F5HukPN8Ycx3flKpibM=;
-        b=BvHdfz9F70ff14zu10opS+lZ4JH22yPCci/NI8u5Oo+z0SP4/HBJx174GiFcp4eEwO
-         YkJ+J1/DDZV7c4WjzCpLaxuogvP0fV9M2I++X/3/KlyaNUW4teWMTizpBTyAkSBPMAt+
-         KG04wqy78SLPIUJGvRGYpxozIXt118Fd4a5TDu308s1szBoT0N8OptVGXTo5rGV3B/Gc
-         1kvFI0e9RyXYux24g1CNOlnZF/xvayHFdhu5bmoGtW6anw4YVk7lH+ocS9+AaQLpc7l6
-         pIJ1tpujTHmO4jmW1z92sVaJ1jiY06ePjERlcS8idKU794oKU6nqtQgp34TjmTR55RkY
-         8BqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716584319; x=1717189119;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=euAfIUewsrHV6jYyHDKNLiq1F5HukPN8Ycx3flKpibM=;
-        b=k/TkCYK17+5Hy4MozuNtI/hiII7gZ+oaYvCoZxCbJS2PbWf+EvrPt0doNhTBaLkXtG
-         hxDwIj3THU73hFbbAhp6v22/umlW8Iv4/P97W0HBbG7q11hUGzV77gLaQaYyRZPdk5ou
-         VI2LLsbtWZjl8T91bzJIq9G7ONG/KBUiHV6E19RRZ26+rt444SMRsKqs29E2dZ+vue0W
-         Zx7/iTDz4RkeD5YNPtwR9IHI0+YS4jXVoEWXUUC16ucgfrnjezKZEQmcXqgBDHLRXu3D
-         GByx4PNMIyt/1Z/LonjyYjonvQp7kD6E9i8GPlnW96VvX6o7ZTz3ciOLoxVMKZb2+c1V
-         hU7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUziIpU6sXr7wsjODMbgTtQQMimjHX7VyMiFouGCtOlHymtBYFJmLm+MqbstJWqwUvrZCosVLbca1TFzbc8HylGebGZu44mnTGp5ZY=
-X-Gm-Message-State: AOJu0YzREAWRstD8qowOeqsr+b8J6SC5kxJ+85k4T322t80MfdNKew5x
-	WBHjwMncOxPhnlLAQaONK16Fl1UjDtnan0NXfFwpVENFaVw9TJPREwkvMCZoXDESFkd1tet/vA7
-	x2AQ=
-X-Google-Smtp-Source: AGHT+IHHNK7YpmI5ZCGM+7NDB82gP/JWDoTp6hIJnNyvgbbLFl5k7ZAnRcj+NHfB2W3SiiJ3BQOWIw==
-X-Received: by 2002:a17:902:e84f:b0:1f3:11ec:cbbd with SMTP id d9443c01a7336-1f4486bd9b4mr36831695ad.5.1716584319381;
-        Fri, 24 May 2024 13:58:39 -0700 (PDT)
-Received: from telecaster.thefacebook.com ([2620:10d:c090:500::7:763e])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c9a9dabsm18166175ad.236.2024.05.24.13.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 May 2024 13:58:38 -0700 (PDT)
-From: Omar Sandoval <osandov@osandov.com>
-To: fstests@vger.kernel.org,
-	linux-btrfs@vger.kernel.org
-Cc: kernel-team@fb.com
-Subject: [PATCH fstests v2] generic: test Btrfs fsync vs. size-extending prealloc write crash
-Date: Fri, 24 May 2024 13:58:33 -0700
-Message-ID: <d032e0b964f163229b684c0ac72b656ec9bf7b48.1716584019.git.osandov@osandov.com>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <29a4df3b9a36eb17a958e92e375e03daf9312fa5.1716583705.git.osandov@fb.com>
-References: <29a4df3b9a36eb17a958e92e375e03daf9312fa5.1716583705.git.osandov@fb.com>
+	s=arc-20240116; t=1716633098; c=relaxed/simple;
+	bh=R4MIrKJ7oX6LBiNxSxZiUXy3x1sDTPG6KgKLM+z85xc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r5h/CuM2k8yBx5VhgJz8H1aWsnE4EiS2SZ+lllMJ6vcCWG1PiT4i/QYepjIH7/WHFupUwHfuhD6rumJen//4CVkGyk8gqOEGrgWHXVQwMDS94hPSiOP+0X71IZof8vhStwYfl9xkOZgMjUdxSTeTqozd/Stsr6ujSMfSt5+OWnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44P9cSPH013047;
+	Sat, 25 May 2024 10:31:32 GMT
+DKIM-Signature: =?UTF-8?Q?v=3D1;_a=3Drsa-sha256;_c=3Drelaxed/relaxed;_d=3Doracle.com;_h?=
+ =?UTF-8?Q?=3Dcc:content-transfer-encoding:date:from:message-id:mime-versi?=
+ =?UTF-8?Q?on:subject:to;_s=3Dcorp-2023-11-20;_bh=3DeXfu4M3d8qn+vUVDB/zHAh?=
+ =?UTF-8?Q?oQiqkI/9w42oulx8O5gdY=3D;_b=3DbIq+2UWOw5qnOB38xOcf6JTJZtx3ntRVh?=
+ =?UTF-8?Q?xEMbVFATwZfJB1P1wxj5vVfDIGaXPaFd9T8_JMH3T5glGgky0kabQOqzYLX+3Ry?=
+ =?UTF-8?Q?FRIFgDZXxUa3dv5Ez6aF56H+B6yOvA43a+92+RjYG_x70gsXoLpU3Pt5/+FGr7/?=
+ =?UTF-8?Q?QXRsPGOFYB8cPrGxSFvLyM3L/GOkX8KnvdipNzLnaLNrszU_UY2LAh9kUdiUZMY?=
+ =?UTF-8?Q?eK2uXnX6QauiUjylaDjCu8gyqEXhgqnIwrH56BB+NPeuz2VMpUxaJ_xbgAlm1ge?=
+ =?UTF-8?Q?vdeHZjFD04kepgGqmIpF38CpqyrFOjk12+mzaBbhclCy6KlZLHZ9y66pbSo_4Q?=
+ =?UTF-8?Q?=3D=3D_?=
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yb8p7g7tc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 25 May 2024 10:31:32 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44P8ZQhq038682;
+	Sat, 25 May 2024 10:31:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3yb6e4833k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 25 May 2024 10:31:31 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44PAVVEu037814;
+	Sat, 25 May 2024 10:31:31 GMT
+Received: from sridara-s.osdevelopmeniad.oraclevcn.com (sridara-s.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.75])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3yb6e4833b-1;
+	Sat, 25 May 2024 10:31:30 +0000
+From: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+To: linux-btrfs@vger.kernel.org
+Cc: rajesh.sivaramasubramaniom@oracle.com, junxiao.bi@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com
+Subject: [PATCH] btrfs-progs: convert: Add 64 bit block numbers support
+Date: Sat, 25 May 2024 10:31:13 +0000
+Message-Id: <20240525103113.2623372-1-srivathsa.d.dara@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -85,93 +73,66 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-25_05,2024-05-24_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
+ definitions=main-2405250083
+X-Proofpoint-ORIG-GUID: hqY29RyIEI4E5ffeCuT3ipfQgMf8YCFg
+X-Proofpoint-GUID: hqY29RyIEI4E5ffeCuT3ipfQgMf8YCFg
 
-From: Omar Sandoval <osandov@fb.com>
+In ext4, number of blocks can be greater than 2^32. Therefore, if
+btrfs-convert is used on filesystems greater than 16TiB (Staring from
+16TiB, number of blocks overflow 32 bits), it fails to convert.
 
-This is a regression test for a Btrfs bug, but there's nothing
-Btrfs-specific about it. Since it's a race, we just try to make the race
-happen in a loop and pass if it doesn't crash after all of our attempts.
+Fix it by considering 64 bit block numbers.
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
+Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
 ---
-Changes from v1 [1]:
+ convert/source-ext2.c | 6 +++---
+ convert/source-ext2.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-- Added missing groups and requires.
-- Simplified $XFS_IO_PROG calls.
-- Removed -i flag from $XFS_IO_PROG to make race reproduce more
-  reliably.
-- Removed all of the file creation and dump-tree parsing since the only
-  file on a fresh filesystem is guaranteed to be at the end of a leaf
-  anyways.
-- Rewrote to be a generic test.
-
-1: https://lore.kernel.org/linux-btrfs/297da2b53ce9b697d82d89afd322b2cc0d0f392d.1716492850.git.osandov@osandov.com/
-
- tests/generic/745     | 44 +++++++++++++++++++++++++++++++++++++++++++
- tests/generic/745.out |  2 ++
- 2 files changed, 46 insertions(+)
- create mode 100755 tests/generic/745
- create mode 100644 tests/generic/745.out
-
-diff --git a/tests/generic/745 b/tests/generic/745
-new file mode 100755
-index 00000000..925adba9
---- /dev/null
-+++ b/tests/generic/745
-@@ -0,0 +1,44 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) Meta Platforms, Inc. and affiliates.
-+#
-+# FS QA Test 745
-+#
-+# Repeatedly prealloc beyond i_size, set an xattr, direct write into the
-+# prealloc while extending i_size, then fdatasync. This is a regression test
-+# for a Btrfs crash.
-+#
-+. ./common/preamble
-+. ./common/attr
-+_begin_fstest auto quick log preallocrw dangerous
-+
-+_supported_fs generic
-+_require_scratch
-+_require_attrs
-+_require_xfs_io_command falloc -k
-+_fixed_by_kernel_commit XXXXXXXXXXXX \
-+	"btrfs: fix crash on racing fsync and size-extending write into prealloc"
-+
-+# -i slows down xfs_io startup and makes the race much less reliable.
-+export XFS_IO_PROG="$(echo "$XFS_IO_PROG" | sed 's/ -i\b//')"
-+
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-+_scratch_mount
-+
-+blksz=$(_get_block_size "$SCRATCH_MNT")
-+
-+# On Btrfs, since this is the only file on the filesystem, its metadata is at
-+# the end of a B-tree leaf. We want an ordered extent completion to add an
-+# extent item at the end of the leaf while we're logging prealloc extents
-+# beyond i_size after an xattr was set.
-+for ((i = 0; i < 5000; i++)); do
-+	$XFS_IO_PROG -ftd -c "falloc -k 0 $((blksz * 3))" -c "pwrite -q -w 0 $blksz" "$SCRATCH_MNT/file"
-+	$SETFATTR_PROG -n user.a -v a "$SCRATCH_MNT/file"
-+	$XFS_IO_PROG -d -c "pwrite -q -w $blksz $blksz" "$SCRATCH_MNT/file"
-+done
-+
-+# If it didn't crash, we're good.
-+
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/generic/745.out b/tests/generic/745.out
-new file mode 100644
-index 00000000..fce6b7f5
---- /dev/null
-+++ b/tests/generic/745.out
-@@ -0,0 +1,2 @@
-+QA output created by 745
-+Silence is golden
+diff --git a/convert/source-ext2.c b/convert/source-ext2.c
+index 2186b252..afa48606 100644
+--- a/convert/source-ext2.c
++++ b/convert/source-ext2.c
+@@ -288,8 +288,8 @@ error:
+ 	return -1;
+ }
+ 
+-static int ext2_block_iterate_proc(ext2_filsys fs, blk_t *blocknr,
+-			        e2_blkcnt_t blockcnt, blk_t ref_block,
++static int ext2_block_iterate_proc(ext2_filsys fs, blk64_t *blocknr,
++			        e2_blkcnt_t blockcnt, blk64_t ref_block,
+ 			        int ref_offset, void *priv_data)
+ {
+ 	int ret;
+@@ -323,7 +323,7 @@ static int ext2_create_file_extents(struct btrfs_trans_handle *trans,
+ 	init_blk_iterate_data(&data, trans, root, btrfs_inode, objectid,
+ 			convert_flags & CONVERT_FLAG_DATACSUM);
+ 
+-	err = ext2fs_block_iterate2(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY,
++	err = ext2fs_block_iterate3(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY,
+ 				    NULL, ext2_block_iterate_proc, &data);
+ 	if (err)
+ 		goto error;
+diff --git a/convert/source-ext2.h b/convert/source-ext2.h
+index d204aac5..73c39e23 100644
+--- a/convert/source-ext2.h
++++ b/convert/source-ext2.h
+@@ -46,7 +46,7 @@ struct btrfs_trans_handle;
+ #define ext2fs_get_block_bitmap_range2 ext2fs_get_block_bitmap_range
+ #define ext2fs_inode_data_blocks2 ext2fs_inode_data_blocks
+ #define ext2fs_read_ext_attr2 ext2fs_read_ext_attr
+-#define ext2fs_blocks_count(s)		((s)->s_blocks_count)
++#define ext2fs_blocks_count(s)		((s)->s_blocks_count_hi << 32) | (s)->s_blocks_count
+ #define EXT2FS_CLUSTER_RATIO(fs)	(1)
+ #define EXT2_CLUSTERS_PER_GROUP(s)	(EXT2_BLOCKS_PER_GROUP(s))
+ #define EXT2FS_B2C(fs, blk)		(blk)
 -- 
-2.45.1
+2.39.3
 
 
