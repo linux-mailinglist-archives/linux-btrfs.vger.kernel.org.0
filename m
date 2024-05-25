@@ -1,138 +1,188 @@
-Return-Path: <linux-btrfs+bounces-5288-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5289-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36C958CEE86
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 12:31:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA3DE8CF012
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 18:18:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 653221C20AC5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 10:31:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BEDC1F2180F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 16:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D430E2AF18;
-	Sat, 25 May 2024 10:31:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8E586120;
+	Sat, 25 May 2024 16:18:29 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3482B644
-	for <linux-btrfs@vger.kernel.org>; Sat, 25 May 2024 10:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4AAF5A7A0
+	for <linux-btrfs@vger.kernel.org>; Sat, 25 May 2024 16:18:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716633098; cv=none; b=k5GMewu8RWXND9C4HWau997805+N61dxyZO0WsHfR7w+VZMXC0yvmCGVWi5yfb4420PD7UleG0syr58+RO1HLTrWb/DHKEJqt+p5BwdNuKZExL5rpi2Lr3aQh6QSl09Y0Nb5+qkp8TLsGJuH5bW9UMj+l6EP7a7TXmTxqZZvODI=
+	t=1716653909; cv=none; b=q3zoeksrrP498fZAfSR84aA8+i2QojfkmuI42UuPHRr21YEhF9ldqsTS793H2pC4WYRQcS530SAtHdZjAt/nR8OC9zWloUoSUYV0W/PN3sfzbTbT2jpFATQ/VuzZb3zUz+vo/IYRlANCICY4I71vdkrCWxpKtuC6k/i9yDGiu6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716633098; c=relaxed/simple;
-	bh=R4MIrKJ7oX6LBiNxSxZiUXy3x1sDTPG6KgKLM+z85xc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r5h/CuM2k8yBx5VhgJz8H1aWsnE4EiS2SZ+lllMJ6vcCWG1PiT4i/QYepjIH7/WHFupUwHfuhD6rumJen//4CVkGyk8gqOEGrgWHXVQwMDS94hPSiOP+0X71IZof8vhStwYfl9xkOZgMjUdxSTeTqozd/Stsr6ujSMfSt5+OWnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44P9cSPH013047;
-	Sat, 25 May 2024 10:31:32 GMT
-DKIM-Signature: =?UTF-8?Q?v=3D1;_a=3Drsa-sha256;_c=3Drelaxed/relaxed;_d=3Doracle.com;_h?=
- =?UTF-8?Q?=3Dcc:content-transfer-encoding:date:from:message-id:mime-versi?=
- =?UTF-8?Q?on:subject:to;_s=3Dcorp-2023-11-20;_bh=3DeXfu4M3d8qn+vUVDB/zHAh?=
- =?UTF-8?Q?oQiqkI/9w42oulx8O5gdY=3D;_b=3DbIq+2UWOw5qnOB38xOcf6JTJZtx3ntRVh?=
- =?UTF-8?Q?xEMbVFATwZfJB1P1wxj5vVfDIGaXPaFd9T8_JMH3T5glGgky0kabQOqzYLX+3Ry?=
- =?UTF-8?Q?FRIFgDZXxUa3dv5Ez6aF56H+B6yOvA43a+92+RjYG_x70gsXoLpU3Pt5/+FGr7/?=
- =?UTF-8?Q?QXRsPGOFYB8cPrGxSFvLyM3L/GOkX8KnvdipNzLnaLNrszU_UY2LAh9kUdiUZMY?=
- =?UTF-8?Q?eK2uXnX6QauiUjylaDjCu8gyqEXhgqnIwrH56BB+NPeuz2VMpUxaJ_xbgAlm1ge?=
- =?UTF-8?Q?vdeHZjFD04kepgGqmIpF38CpqyrFOjk12+mzaBbhclCy6KlZLHZ9y66pbSo_4Q?=
- =?UTF-8?Q?=3D=3D_?=
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yb8p7g7tc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 25 May 2024 10:31:32 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44P8ZQhq038682;
-	Sat, 25 May 2024 10:31:31 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3yb6e4833k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 25 May 2024 10:31:31 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44PAVVEu037814;
-	Sat, 25 May 2024 10:31:31 GMT
-Received: from sridara-s.osdevelopmeniad.oraclevcn.com (sridara-s.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.75])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3yb6e4833b-1;
-	Sat, 25 May 2024 10:31:30 +0000
-From: Srivathsa Dara <srivathsa.d.dara@oracle.com>
-To: linux-btrfs@vger.kernel.org
-Cc: rajesh.sivaramasubramaniom@oracle.com, junxiao.bi@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Subject: [PATCH] btrfs-progs: convert: Add 64 bit block numbers support
-Date: Sat, 25 May 2024 10:31:13 +0000
-Message-Id: <20240525103113.2623372-1-srivathsa.d.dara@oracle.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1716653909; c=relaxed/simple;
+	bh=4OCnw8Bvf07pSAyfkhIFFHLt7ZShqpSiEV3Jcfq2As0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=aVVzxEwdN58bAlW+U0sVmjEJZeHEbeF6BB7Z1jPNoORbT3j8tjiNJL25IxYnJRMSb9phIoTCUb3O60F+ll+5ceidHh2gqVSxBxB//hXbptFzZ9IkbagSS+v+SWB66vIxzHsYtjY7iRFy5Q8dG2ShItEPSmVp5JTLMMGnGGVizbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3737b3c496fso18512485ab.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 25 May 2024 09:18:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716653907; x=1717258707;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hGhclLxPRc2hmnd8jh+QXBmXgT9UCucDU/l2yKi8jNo=;
+        b=fMBbi8XXoyVSHlB70WUjjJLhcp06IuwVAIfLlNDxI3z51Uu2SScyAYfLFK8sXpCNIO
+         eC/Ycm9tFRF7lAn0WthPBmMAhuiEe6mnJff3RLzsCFBb1yLA+57qrtazHlb3y7PcWiyk
+         7qVwb8Fdyjn+CnTe49aO+R8ApPeguDTde27pCIMJXmNx7/6LQgniJCJ6mTqidXKtBAQJ
+         0bgWLVJ0cP5Qi7YeoDC59quqAeajSQc8cX9tSDmvGMf6GQxYr+lJu0hchHyzSxadT6yy
+         pCeWwMdyxzL1X48oV8My+NAoDAaM8vzzOKP5XxoBpnDwLG5wXJmvPcDOyvC2kgceDvmM
+         ygSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXzL3fAeA5C1fj0lUNh+knOF17vx7BrPy5AMeCzDpSvhpNsHeF7o9LdPYutMRcto9mxAHax9Sl1U8+wQ5b+NtEdN5r1ErWfn3mTTe8=
+X-Gm-Message-State: AOJu0YwiA17ylj1l0CjP2nNW/sq6p0bX38bU4mkoiOpzBTCvYCcgsdpK
+	v4WKhHl3VMDQisyWtFWdJQKDhlVZYeCocUXrsdR2/HzT5xGjJCuC/PeW4UFqQaaGi07+dkjAotG
+	5OvZmtW/EmsXKSLEaR3Oi8hmosFYREHDrCVO/zB9BfHEgU7FYNBHVduM=
+X-Google-Smtp-Source: AGHT+IHTkdnIbe6Vtip3C9C5b4fJl7805ZRSyuXdMrXv9OPekfioMmAS5QlAiDVRHCbvMlwzhPUbGXHQvJlVjhYU4aGqAFRHfVTb
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-05-25_05,2024-05-24_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
- mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2405250083
-X-Proofpoint-ORIG-GUID: hqY29RyIEI4E5ffeCuT3ipfQgMf8YCFg
-X-Proofpoint-GUID: hqY29RyIEI4E5ffeCuT3ipfQgMf8YCFg
+X-Received: by 2002:a05:6e02:148e:b0:36d:cccb:6842 with SMTP id
+ e9e14a558f8ab-3737b1f362bmr3798785ab.0.1716653907082; Sat, 25 May 2024
+ 09:18:27 -0700 (PDT)
+Date: Sat, 25 May 2024 09:18:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000558cea061949a2d6@google.com>
+Subject: [syzbot] [btrfs?] general protection fault in btrfs_simple_end_io
+From: syzbot <syzbot+8cfa88c4efc731f03e7e@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-In ext4, number of blocks can be greater than 2^32. Therefore, if
-btrfs-convert is used on filesystems greater than 16TiB (Staring from
-16TiB, number of blocks overflow 32 bits), it fails to convert.
+Hello,
 
-Fix it by considering 64 bit block numbers.
+syzbot found the following issue on:
 
-Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+HEAD commit:    56fb6f92854f Merge tag 'drm-next-2024-05-25' of https://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16bfdae8980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8d1faad9ceb620
+dashboard link: https://syzkaller.appspot.com/bug?extid=8cfa88c4efc731f03e7e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-56fb6f92.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/65ffe3ca9bb3/vmlinux-56fb6f92.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/354ef77a71b6/bzImage-56fb6f92.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8cfa88c4efc731f03e7e@syzkaller.appspotmail.com
+
+Oops: general protection fault, probably for non-canonical address 0xe01ffbf11002a963: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: maybe wild-memory-access in range [0x00ffff8880154b18-0x00ffff8880154b1f]
+CPU: 1 PID: 29 Comm: ksoftirqd/1 Not tainted 6.9.0-syzkaller-12277-g56fb6f92854f #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:__lock_acquire+0xe3e/0x3b30 kernel/locking/lockdep.c:5005
+Code: 11 00 00 39 05 93 86 1f 12 0f 82 be 05 00 00 ba 01 00 00 00 e9 e4 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 1f 00 00 49 81 3c 24 e0 ed e2 92 0f 84 98 f2
+RSP: 0018:ffffc9000056f938 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 001ffff11002a963 RSI: ffff8880163d0000 RDI: 00ffff8880154b18
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8fe2add7 R11: 0000000000000000 R12: 00ffff8880154b18
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88802c100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000f74a20c4 CR3: 000000002ba66000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ __queue_work+0x39e/0x1020 kernel/workqueue.c:2319
+ queue_work_on+0x11a/0x140 kernel/workqueue.c:2410
+ queue_work include/linux/workqueue.h:621 [inline]
+ btrfs_simple_end_io+0x2d5/0x390 fs/btrfs/bio.c:379
+ bio_endio+0x644/0x760 block/bio.c:1636
+ blk_update_request+0x704/0x1850 block/blk-mq.c:929
+ blk_mq_end_request+0x5b/0x620 block/blk-mq.c:1057
+ lo_complete_rq+0x232/0x2f0 drivers/block/loop.c:366
+ blk_complete_reqs+0xae/0xf0 block/blk-mq.c:1132
+ handle_softirqs+0x216/0x8f0 kernel/softirq.c:554
+ run_ksoftirqd kernel/softirq.c:928 [inline]
+ run_ksoftirqd+0x3a/0x60 kernel/softirq.c:920
+ smpboot_thread_fn+0x661/0xa10 kernel/smpboot.c:164
+ kthread+0x2c1/0x3a0 kernel/kthread.c:389
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__lock_acquire+0xe3e/0x3b30 kernel/locking/lockdep.c:5005
+Code: 11 00 00 39 05 93 86 1f 12 0f 82 be 05 00 00 ba 01 00 00 00 e9 e4 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 1f 00 00 49 81 3c 24 e0 ed e2 92 0f 84 98 f2
+RSP: 0018:ffffc9000056f938 EFLAGS: 00010006
+RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 001ffff11002a963 RSI: ffff8880163d0000 RDI: 00ffff8880154b18
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff8fe2add7 R11: 0000000000000000 R12: 00ffff8880154b18
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88802c100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000f74a20c4 CR3: 000000002ba66000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	11 00                	adc    %eax,(%rax)
+   2:	00 39                	add    %bh,(%rcx)
+   4:	05 93 86 1f 12       	add    $0x121f8693,%eax
+   9:	0f 82 be 05 00 00    	jb     0x5cd
+   f:	ba 01 00 00 00       	mov    $0x1,%edx
+  14:	e9 e4 00 00 00       	jmp    0xfd
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	4c 89 e2             	mov    %r12,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 82 1f 00 00    	jne    0x1fb6
+  34:	49 81 3c 24 e0 ed e2 	cmpq   $0xffffffff92e2ede0,(%r12)
+  3b:	92
+  3c:	0f                   	.byte 0xf
+  3d:	84                   	.byte 0x84
+  3e:	98                   	cwtl
+  3f:	f2                   	repnz
+
+
 ---
- convert/source-ext2.c | 6 +++---
- convert/source-ext2.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/convert/source-ext2.c b/convert/source-ext2.c
-index 2186b252..afa48606 100644
---- a/convert/source-ext2.c
-+++ b/convert/source-ext2.c
-@@ -288,8 +288,8 @@ error:
- 	return -1;
- }
- 
--static int ext2_block_iterate_proc(ext2_filsys fs, blk_t *blocknr,
--			        e2_blkcnt_t blockcnt, blk_t ref_block,
-+static int ext2_block_iterate_proc(ext2_filsys fs, blk64_t *blocknr,
-+			        e2_blkcnt_t blockcnt, blk64_t ref_block,
- 			        int ref_offset, void *priv_data)
- {
- 	int ret;
-@@ -323,7 +323,7 @@ static int ext2_create_file_extents(struct btrfs_trans_handle *trans,
- 	init_blk_iterate_data(&data, trans, root, btrfs_inode, objectid,
- 			convert_flags & CONVERT_FLAG_DATACSUM);
- 
--	err = ext2fs_block_iterate2(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY,
-+	err = ext2fs_block_iterate3(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY,
- 				    NULL, ext2_block_iterate_proc, &data);
- 	if (err)
- 		goto error;
-diff --git a/convert/source-ext2.h b/convert/source-ext2.h
-index d204aac5..73c39e23 100644
---- a/convert/source-ext2.h
-+++ b/convert/source-ext2.h
-@@ -46,7 +46,7 @@ struct btrfs_trans_handle;
- #define ext2fs_get_block_bitmap_range2 ext2fs_get_block_bitmap_range
- #define ext2fs_inode_data_blocks2 ext2fs_inode_data_blocks
- #define ext2fs_read_ext_attr2 ext2fs_read_ext_attr
--#define ext2fs_blocks_count(s)		((s)->s_blocks_count)
-+#define ext2fs_blocks_count(s)		((s)->s_blocks_count_hi << 32) | (s)->s_blocks_count
- #define EXT2FS_CLUSTER_RATIO(fs)	(1)
- #define EXT2_CLUSTERS_PER_GROUP(s)	(EXT2_BLOCKS_PER_GROUP(s))
- #define EXT2FS_B2C(fs, blk)		(blk)
--- 
-2.39.3
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
