@@ -1,188 +1,147 @@
-Return-Path: <linux-btrfs+bounces-5289-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5290-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA3DE8CF012
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 18:18:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50AC88CF2F2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 May 2024 11:08:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BEDC1F2180F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2024 16:18:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 061F8281977
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 May 2024 09:08:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8E586120;
-	Sat, 25 May 2024 16:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E56944E;
+	Sun, 26 May 2024 09:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=toralf.foerster@gmx.de header.b="WL+o5N0R"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4AAF5A7A0
-	for <linux-btrfs@vger.kernel.org>; Sat, 25 May 2024 16:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DDB66FD3;
+	Sun, 26 May 2024 09:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716653909; cv=none; b=q3zoeksrrP498fZAfSR84aA8+i2QojfkmuI42UuPHRr21YEhF9ldqsTS793H2pC4WYRQcS530SAtHdZjAt/nR8OC9zWloUoSUYV0W/PN3sfzbTbT2jpFATQ/VuzZb3zUz+vo/IYRlANCICY4I71vdkrCWxpKtuC6k/i9yDGiu6s=
+	t=1716714486; cv=none; b=Kuv9obpduTNOBknwOcZjhvb0Ee1sQF3dqOMCiu9ck+3vvkZiIs7d6AHpumYnotElcAoEKEac+t7wA0fZ3c2FbvfAzGb20sUkactMhCIIsaMgiSwE0xM6XWTPaoSphAefqEqpvVpBaf+5jD1gJfU+KIluU/17J8EfSpUsM/KIEFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716653909; c=relaxed/simple;
-	bh=4OCnw8Bvf07pSAyfkhIFFHLt7ZShqpSiEV3Jcfq2As0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=aVVzxEwdN58bAlW+U0sVmjEJZeHEbeF6BB7Z1jPNoORbT3j8tjiNJL25IxYnJRMSb9phIoTCUb3O60F+ll+5ceidHh2gqVSxBxB//hXbptFzZ9IkbagSS+v+SWB66vIxzHsYtjY7iRFy5Q8dG2ShItEPSmVp5JTLMMGnGGVizbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3737b3c496fso18512485ab.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 25 May 2024 09:18:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716653907; x=1717258707;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hGhclLxPRc2hmnd8jh+QXBmXgT9UCucDU/l2yKi8jNo=;
-        b=fMBbi8XXoyVSHlB70WUjjJLhcp06IuwVAIfLlNDxI3z51Uu2SScyAYfLFK8sXpCNIO
-         eC/Ycm9tFRF7lAn0WthPBmMAhuiEe6mnJff3RLzsCFBb1yLA+57qrtazHlb3y7PcWiyk
-         7qVwb8Fdyjn+CnTe49aO+R8ApPeguDTde27pCIMJXmNx7/6LQgniJCJ6mTqidXKtBAQJ
-         0bgWLVJ0cP5Qi7YeoDC59quqAeajSQc8cX9tSDmvGMf6GQxYr+lJu0hchHyzSxadT6yy
-         pCeWwMdyxzL1X48oV8My+NAoDAaM8vzzOKP5XxoBpnDwLG5wXJmvPcDOyvC2kgceDvmM
-         ygSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXzL3fAeA5C1fj0lUNh+knOF17vx7BrPy5AMeCzDpSvhpNsHeF7o9LdPYutMRcto9mxAHax9Sl1U8+wQ5b+NtEdN5r1ErWfn3mTTe8=
-X-Gm-Message-State: AOJu0YwiA17ylj1l0CjP2nNW/sq6p0bX38bU4mkoiOpzBTCvYCcgsdpK
-	v4WKhHl3VMDQisyWtFWdJQKDhlVZYeCocUXrsdR2/HzT5xGjJCuC/PeW4UFqQaaGi07+dkjAotG
-	5OvZmtW/EmsXKSLEaR3Oi8hmosFYREHDrCVO/zB9BfHEgU7FYNBHVduM=
-X-Google-Smtp-Source: AGHT+IHTkdnIbe6Vtip3C9C5b4fJl7805ZRSyuXdMrXv9OPekfioMmAS5QlAiDVRHCbvMlwzhPUbGXHQvJlVjhYU4aGqAFRHfVTb
+	s=arc-20240116; t=1716714486; c=relaxed/simple;
+	bh=qChTYHdKiktPVHGBGd4i1Bcb/tITVD4DvQJ8LX0W9K0=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=Qd58s7SP42oTngGzo4TYx3T1w7PjdJawr0n7rXzo36BI5bjgNlMY36sI+gmNOdBmF/Vnj8J1TsqBNhlRp5wH4pUSJgGtkENQ5dqAVEku9gH+9nkMbmh7A5W4LhVh3jLpTrhoMkbazKzbyi01XgdsgvZymBWVsFLjkSHwKzO+GCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=toralf.foerster@gmx.de header.b=WL+o5N0R; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1716714482; x=1717319282; i=toralf.foerster@gmx.de;
+	bh=qChTYHdKiktPVHGBGd4i1Bcb/tITVD4DvQJ8LX0W9K0=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=WL+o5N0ReIi7MoIMPUAeM+ab1A3QJ9/ycuneL9BpWwH94twUV1WNhL1HUdoNEhwR
+	 WNhVpVxcS+mv6JT/LMVUR4GuVFkyMMyV/S2PNbSqXU5QPYPnD8cZL1F75XUrKZbmM
+	 wqlIAUpAE1gJlg9WONBDnCeyAnMET7+vRq60y0cpehZlRZybvAgjwFmTuf1GNfx3Y
+	 4XW35CS5114fUhOO/R0TYCxT7eDEfaTFa6SaaO3hLb6b56usSmlSSjF4iKmsbkTyc
+	 qijhuskl89yJFHEMs5DPoPuECT2VQUwOk5yq1SFO/v8ZcPFQ9CyD/HuSu7kE1444p
+	 DgTaGF8AC2OOFNPeIQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.178.33] ([77.6.29.73]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MxUs7-1sQb8t2MVF-00wljU; Sun, 26
+ May 2024 11:08:02 +0200
+Message-ID: <e8b3311c-9a75-4903-907f-fc0f7a3fe423@gmx.de>
+Date: Sun, 26 May 2024 11:08:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:148e:b0:36d:cccb:6842 with SMTP id
- e9e14a558f8ab-3737b1f362bmr3798785ab.0.1716653907082; Sat, 25 May 2024
- 09:18:27 -0700 (PDT)
-Date: Sat, 25 May 2024 09:18:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000558cea061949a2d6@google.com>
-Subject: [syzbot] [btrfs?] general protection fault in btrfs_simple_end_io
-From: syzbot <syzbot+8cfa88c4efc731f03e7e@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Linux Kernel <linux-kernel@vger.kernel.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
+Subject: RIP: + BUG: with 6.8.11 and BTRFS
+Autocrypt: addr=toralf.foerster@gmx.de; keydata=
+ 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
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:G4/xikM3HbpDuUgFj5qYgY6lckIC2xop/1caifcUeUxeJ9e+om8
+ fFrBsXYmuipLYLRi9FEE6pS/f9CHsG+nxt9H6qyKFxLPBz1BDukAUFCOa7pDHnhqC1msYnD
+ 81AS4DyhapDtsUvuO+NEGYO3gh/8/6rbytHHAxeXSyCvZ8P2Kj9k/GmLL4SHzfFYVBeR9xg
+ 45i193/aT0vuhPgsA7c7w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:X9AFn0fGzas=;9tYEb/mp874/6ml+Gj6VFntftjI
+ dSAVc1Lb56jYKqcFC9t4wJcz8MjEnGV+Z/LFIzcHNq1lk5i+jWKjA1kNK0t1tyX+W52Oh+GL5
+ W5ZsBYKIgWlQs4xUeIcGHMNN95xP303jRbZWHF95XAw5rDXPOqkjJSPbqVeTA9vaTU75raM2G
+ ZuAxwbd//bhBLx0YJ1eEW6zrfF4hT0C7bL5vVGOj/m8UeDWCCQgUdXW5+NAwuVvDt8w0J7OW/
+ iMcMkTnO/bQDD18lkJ0M/bSPIz16EIpS7mAEZh0D7c2rkcyBhrBYJvaIi4QF5ZG6tKZdkqy9p
+ blLu+Mbc7R7PUjlbgCIZu4mKsj/Ybpg/dJc+stFMeKdPqH0KqniX2hAipV1zfUgInGooiyOeM
+ EIKGCIa+UOKabFIE19F473O22TmLjbU4469OZeIxi9uXXi9p4XLyQ+8tv6Nb7qGo9XVhrurIn
+ 38BHFd9zyiU1N+iaCVe7hPIupSFB0kDSEPR713nLoMeIjsulGOWIYUmiBWgnK4lCU8lTKmuB1
+ YTlqOVdXeVLqbMngC4M+oba9y94tSnN3CcjZ93yUoBj/LDjcyV6bDsviYdrn1Qd7KAhks83Nh
+ FxEwz34UHURcSgfGJ6K8AJVypkNRclPYE5LCbf+1ecd1OCrjZV0W+3gc5g/Cu57Jk8KDRbMgz
+ zVpSyCykom04a6t4eMYd2gTlLuruYfWJWBeezXAXcD5ovPTHICM5PQuLlcfiSvDxVORabQWVo
+ GFVSmH7/HEudZ84NYjrBz9/bbtk42GtO13Fb3bVbJxja+c8HPIANlRViP7Rbb7vNYpB7Ib/pw
+ zV3o5BQgdxs+6KNfMy0lQMCyhWCTr/ubpkoiMPP+KDMGY=
 
-Hello,
+Attached is the output of
 
-syzbot found the following issue on:
+grep -A 200 -e BUG: -e RIP: messages > splats.txt
 
-HEAD commit:    56fb6f92854f Merge tag 'drm-next-2024-05-25' of https://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16bfdae8980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8d1faad9ceb620
-dashboard link: https://syzkaller.appspot.com/bug?extid=8cfa88c4efc731f03e7e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+from a Gentoo hardened Linux server running at a bare metal server since
+3 yrs. The system contained 2x 3.84 TiB NVMe drives, / was a raid1,
+/data was configured as raid0.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I upgraded yesterday from kernel 6.8.10 to 6.8.11.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-56fb6f92.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/65ffe3ca9bb3/vmlinux-56fb6f92.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/354ef77a71b6/bzImage-56fb6f92.xz
+The system does not recover from reboot in moment.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8cfa88c4efc731f03e7e@syzkaller.appspotmail.com
-
-Oops: general protection fault, probably for non-canonical address 0xe01ffbf11002a963: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: maybe wild-memory-access in range [0x00ffff8880154b18-0x00ffff8880154b1f]
-CPU: 1 PID: 29 Comm: ksoftirqd/1 Not tainted 6.9.0-syzkaller-12277-g56fb6f92854f #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:__lock_acquire+0xe3e/0x3b30 kernel/locking/lockdep.c:5005
-Code: 11 00 00 39 05 93 86 1f 12 0f 82 be 05 00 00 ba 01 00 00 00 e9 e4 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 1f 00 00 49 81 3c 24 e0 ed e2 92 0f 84 98 f2
-RSP: 0018:ffffc9000056f938 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: 001ffff11002a963 RSI: ffff8880163d0000 RDI: 00ffff8880154b18
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8fe2add7 R11: 0000000000000000 R12: 00ffff8880154b18
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff88802c100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000f74a20c4 CR3: 000000002ba66000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
- __queue_work+0x39e/0x1020 kernel/workqueue.c:2319
- queue_work_on+0x11a/0x140 kernel/workqueue.c:2410
- queue_work include/linux/workqueue.h:621 [inline]
- btrfs_simple_end_io+0x2d5/0x390 fs/btrfs/bio.c:379
- bio_endio+0x644/0x760 block/bio.c:1636
- blk_update_request+0x704/0x1850 block/blk-mq.c:929
- blk_mq_end_request+0x5b/0x620 block/blk-mq.c:1057
- lo_complete_rq+0x232/0x2f0 drivers/block/loop.c:366
- blk_complete_reqs+0xae/0xf0 block/blk-mq.c:1132
- handle_softirqs+0x216/0x8f0 kernel/softirq.c:554
- run_ksoftirqd kernel/softirq.c:928 [inline]
- run_ksoftirqd+0x3a/0x60 kernel/softirq.c:920
- smpboot_thread_fn+0x661/0xa10 kernel/smpboot.c:164
- kthread+0x2c1/0x3a0 kernel/kthread.c:389
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__lock_acquire+0xe3e/0x3b30 kernel/locking/lockdep.c:5005
-Code: 11 00 00 39 05 93 86 1f 12 0f 82 be 05 00 00 ba 01 00 00 00 e9 e4 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 1f 00 00 49 81 3c 24 e0 ed e2 92 0f 84 98 f2
-RSP: 0018:ffffc9000056f938 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: 001ffff11002a963 RSI: ffff8880163d0000 RDI: 00ffff8880154b18
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8fe2add7 R11: 0000000000000000 R12: 00ffff8880154b18
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff88802c100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000f74a20c4 CR3: 000000002ba66000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	11 00                	adc    %eax,(%rax)
-   2:	00 39                	add    %bh,(%rcx)
-   4:	05 93 86 1f 12       	add    $0x121f8693,%eax
-   9:	0f 82 be 05 00 00    	jb     0x5cd
-   f:	ba 01 00 00 00       	mov    $0x1,%edx
-  14:	e9 e4 00 00 00       	jmp    0xfd
-  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  20:	fc ff df
-  23:	4c 89 e2             	mov    %r12,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 82 1f 00 00    	jne    0x1fb6
-  34:	49 81 3c 24 e0 ed e2 	cmpq   $0xffffffff92e2ede0,(%r12)
-  3b:	92
-  3c:	0f                   	.byte 0xf
-  3d:	84                   	.byte 0x84
-  3e:	98                   	cwtl
-  3f:	f2                   	repnz
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+=2D-
+Toralf
 
