@@ -1,157 +1,150 @@
-Return-Path: <linux-btrfs+bounces-5332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5333-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D7F28D27C6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 00:11:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D808D27FA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 00:24:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F6C81C23851
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 22:11:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63342B22039
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 22:24:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53BF13DDC9;
-	Tue, 28 May 2024 22:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869E113E8B8;
+	Tue, 28 May 2024 22:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="GM8b6H/N"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HpZa3XTx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1SVFrL6G";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="L4fd7sLx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="l73W0QGh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9D013DBBC
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 22:11:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA7E313E029
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 22:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716934296; cv=none; b=IC002Lty1CmkHtGXX2fRaFQTcNxL61711YOfHxUmiWYSKSXYvByUaUip5TfkdvL/Ng6a38VQxIlEFmtZFjEBNfh+Q5syiA2aCgNdZCDN3wfg2HzOjMJm+6QDnkKWAfn3uvBO9Lf+e2l2MTPaZzbREk5EAl1T/bYz9vqZIbHMr2g=
+	t=1716934977; cv=none; b=WXBMnk7KcrksGcygiooLXDqzgJ0TuPPi3sIaLHOdvdTDHTrdFtJhncKx/SmGx1F+r3qh7T5hwYVjuczRf5bMjdfNZdw2zr1dKGPMhSy3w288c1XvIopLs/cDWYYMfTEZbusX1gBwYTkavQkAr/zzivfIhUkiktdRmKgavakX0i4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716934296; c=relaxed/simple;
-	bh=s6gGGoGa28fqfAB8/9ayz7igSKloxSfHhA3lG6vLIng=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=uryCYJ+8pBChyJensoQp+XG7dF2g+77zaFSfVWta56POOPVNU8Dipr9XGrLP/dgHlu53YGtem6p7slu6aw69TgZ6fJT0FAw+Rf7GrL5chiNwQY5eWq5DU50GPn5jVlBaYaBYidG26lIrooDgJFvjECHBoheDU9ORNrypmi8gefo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=GM8b6H/N; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1f44b42d1caso10686215ad.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 15:11:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1716934294; x=1717539094; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
-        b=GM8b6H/NI/J4Qf9kM2wuhid9bqfPp8E5toF/bXilsxb6fd1ucDnvHhFIG6rlrXHKHj
-         7lSWnUYoIoBYChzDyl1SOPrh2aEUFSyLGGjn8keuFlHwG8xNe2Z/HJyIC9pBvkCw9DR4
-         ExDIJuoVDAt2FwfYKLgXzh8Jg2RqrKxDwy0iQED8OUTYJ7YGH9CZP/tyspDgDNNfDKNx
-         jj12Tio7nhH7DbmtucCRpea3IjT6KZ6mQEdAZIimzILqwGkC1pjTaUoY9k6WgZ9VgUNs
-         qjg0/+PA13xi3YFTNgzMUj4C/nmI28WUyreMQ24epQw8GWORAnga+LrAcF5bxk98HjyF
-         zLDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716934294; x=1717539094;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
-        b=SP2puBlirNLeDls6e3bzcVo59217s1el3WgtBiVlKCMpX5o3Rm1HiaVyDTBbJQDVy6
-         O0z1fDbLbhGjAzKrP7inLHJoTMIGUNuhv73v7okc1uBoGDouqJmOnyF+d2KwP5HHCVF4
-         iGOf4y6GzC9DdYgBDMJo2DQvRqMKxo84Afbb1r6wu3HEKQV8Ep0zOF2GxWJMWc9IXHZB
-         RjZzFILaKuiL11bIfQKpWrldnO+Tke1dD2sVG9UgII0bPaQ7Bu0xt2sy+wLg0jXPoZ3I
-         g6aowhCk8vR33ky7sHFKVjP9Deoco9ZGDnr3Es1VsIttTgpeDIs6j1ONVmkj6Loj/ufc
-         M6dw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYAqsR3Us56pp7cINwEGvCv6F2WngDG/+/FZ/k7Qh69/IY472PK66tLF4maOErvLA7jxCbqxHEbpuwcttchffCqFpYH0Ox5AAsSVU=
-X-Gm-Message-State: AOJu0Yw/w5eSFiC2dhugZxz8qeoGPLfq5YuFYxD4A7HijWnUKA/0kXfG
-	Eymc+iErsVzl+CRJZMBzo8pqxQHv87SC7QiBr65ZgMy7dgPqsqAxtfccqQ0vPxA=
-X-Google-Smtp-Source: AGHT+IHTQU8PmmECMD1h64ue4/AGFuh/+UzLJOnETMdIzBo20vXZf/4EqQUrQxxJsMIbVfq9H8iR4w==
-X-Received: by 2002:a17:903:186:b0:1f3:3a05:1adf with SMTP id d9443c01a7336-1f4499092d7mr162326705ad.66.1716934293612;
-        Tue, 28 May 2024 15:11:33 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6822198909bsm8028841a12.25.2024.05.28.15.11.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 May 2024 15:11:32 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <24829B5A-5F68-4B3A-AD4E-1AD9EFDE1D0E@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1716934977; c=relaxed/simple;
+	bh=tsq6vYSRFQPMlGTggrtGpdES4OjVm7Ow+zDdp+i4s28=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RVgjfXhmKMavGiBznVDlJuLSj07MG9NyxEukK1d48pNw772S+NWKIyC2XC8I30U1veiY5K/hkBadvqq8x1Y9l1zgZbXMRLaG7dXV9NdWtgbZNDeXGArKxEXYM7pTcj1Em4Do3BJxWVgYpbzN0pB/LrIieiKv60ZnGuke4lQGZec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HpZa3XTx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1SVFrL6G; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=L4fd7sLx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=l73W0QGh; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D8B3F22BB7;
+	Tue, 28 May 2024 22:22:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716934974;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U4hdSZfk9q5KtuAodn+pAS03mykcq1tkaDi730Ke67A=;
+	b=HpZa3XTxLUMTpiCip18t2Pgw5qBHeV+v3o0uT3jBjzbtw4sZ0OaH9JVGd1sKT33QSfmuXM
+	PiiD8E2rqU6sQdJtvB1OGYBb/KiXZJrorf4ZKyklfY/yWZ76aIfVzs5MhUsIUknysnpnJX
+	jufLBPX2I0JHpOlVRAgEyQo4togncOE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716934974;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U4hdSZfk9q5KtuAodn+pAS03mykcq1tkaDi730Ke67A=;
+	b=1SVFrL6GXK43CSAhPoNEs8LQ8zRfYUWziAIBaCJlSNtfHsvApDTxAOd1RJarq5gqH+kD4f
+	cdtq/lx27S7bZKDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716934973;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U4hdSZfk9q5KtuAodn+pAS03mykcq1tkaDi730Ke67A=;
+	b=L4fd7sLx47nMcbTTe05D6WPGPs16fNf/Ie6ff/mYjYA6oKDFnWckPEkrleSUA+s4pEzkox
+	sblbrBBsvsTWF8I75A+vcWuxwFw3rXT4/xqh9VgrZkm8UBb9pgewTsMot1to3ihR4peCyx
+	QiDcbHSvt462Vv7tAHPG0pbDXNEkNRs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716934973;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U4hdSZfk9q5KtuAodn+pAS03mykcq1tkaDi730Ke67A=;
+	b=l73W0QGh3snGInLrwmzzRHz82ZHqPFSgdtTNOCAaWdWjYkhK8SJI2b1KgxcRWKgnPPRn3k
+	WvOd4QGtis6yk3BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C0E2513A6B;
+	Tue, 28 May 2024 22:22:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VNHvLj1ZVmbGdAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 28 May 2024 22:22:53 +0000
+Date: Wed, 29 May 2024 00:22:52 +0200
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: reduce ordered_extent_lock section at
+ btrfs_split_ordered_extent()
+Message-ID: <20240528222252.GJ8631@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <719ec85c5bda1d711067e5b1c20a2de336240140.1715688262.git.fdmanana@suse.com>
+ <6bd1663678f119791c1e2b6071f4973f35dcf049.1715708811.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] statx: stx_subvol
-Date: Tue, 28 May 2024 16:11:28 -0600
-In-Reply-To: <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
-Cc: Eric Biggers <ebiggers@kernel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-bcachefs@vger.kernel.org,
- linux-btrfs <linux-btrfs@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Josef Bacik <josef@toxicpanda.com>,
- Miklos Szeredi <mszeredi@redhat.com>,
- Christian Brauner <brauner@kernel.org>,
- David Howells <dhowells@redhat.com>
-To: John Garry <john.g.garry@oracle.com>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <20240312021308.GA1182@sol.localdomain>
- <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6bd1663678f119791c1e2b6071f4973f35dcf049.1715708811.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 
-
---Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-> On May 28, 2024, at 6:46 AM, John Garry <john.g.garry@oracle.com> wrote:
+On Tue, May 14, 2024 at 06:54:18PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> On 12/03/2024 02:13, Eric Biggers wrote:
->> On Thu, Mar 07, 2024 at 09:29:12PM -0500, Kent Overstreet wrote:
->>>  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
->>>  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
->>> +	__u64	stx_subvol;	/* Subvolume identifier */
->>>  	/* 0xa0 */
->>> -	__u64	__spare3[12];	/* Spare space for future expansion */
->>> +	__u64	__spare3[11];	/* Spare space for future expansion */
->>>  	/* 0x100 */
->> The /* 0xa0 */ comment needs to be updated (or deleted).
+> There's no need to hold the root's ordered_extent_lock for so long at
+> btrfs_split_ordered_extent(). We don't need to hold it in order to modify
+> the inode's rb tree of ordered extents, to modify the trimmed ordered
+> extent and move checksums between the trimmed and the new ordered extent.
+> That's only increasing contention of the root's ordered_extent_lock for
+> other writes that are starting or completing.
 > 
-> I would tend to agree. Was this intentionally not updated (or deleted)?
+> So lock the root's ordered_extent_lock only before we add the new ordered
+> extent to the root's ordered list and increment the root's counter for the
+> number of ordered extents.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-More correct would be to add the new stx_subvol field after the "0xa0"
-comment so that it is clear at what offset in the struct this field is.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmZWVpAACgkQcqXauRfM
-H+A4QQ/+IFC+ipn32WPm2mM14CNmiYmrhv5RCNPU8Ectk5pHJQGow3HzwXGSGKRv
-M4tj97Xw5Au3K9qP9s3QSNLpDrc3+KumXrr8vzg33XpnRXcSzNMxtcXdht3/DGYO
-zqltGBq7u+Wm2S1yoRZwORU1YS/dq90ec0m6IBhszI3FAvLCH/tMj7dlTrTE3gSu
-xWen9XZBYiTbj3m81J5nlppuqEsr3tF7LtJRyHUw5xqgpe47kv0GFohyCp3pv8et
-r5fbv5I8uCNx6iSBk/o5ORLr8VVZJ4K5/0t96u0sPDLN9wOCV8NpYPXLeSUqPVr7
-KGxIcTSFAUkUMQXi2NGkpkHm5aAGmpXH2QQSdKbQbXrKXEbo4rAe+4jJjNtiYMK4
-vU7R0/6YGT+KBmL9J0/yvfshZNNb5l7ghzAq3x2Wt3TCPFGg0N6em1QKSb67IdbS
-nCmsQ38n589juroHPFs4yEq2Lad+g05CT5Lml7UNVCj5Fg4Wq+2sL0/6tnrx9/Xu
-Sh/knYTEPZy3Yevg0t4eol4TzLVzKm5PlKIVzctm4pAm5mNMXsS0OygEgpV57LXY
-84UCpWL80GT7PHpeo8KzNuN14oYS2BW1aZdBgfSnyxhhSuKGbFDCLcr/N+leNeZr
-M3rRe35/SHqXbzs2kpSz/mlf1m98bHjjsyRMKmPj2/a1tevPQg0=
-=vnHt
------END PGP SIGNATURE-----
-
---Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D--
+Reviewed-by: David Sterba <dsterba@suse.com>
 
