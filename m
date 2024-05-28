@@ -1,152 +1,157 @@
-Return-Path: <linux-btrfs+bounces-5331-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5332-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 359C98D27AF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 00:03:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D7F28D27C6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 00:11:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CE97B215EE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 22:03:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F6C81C23851
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 22:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C99C13DB96;
-	Tue, 28 May 2024 22:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53BF13DDC9;
+	Tue, 28 May 2024 22:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SbC2duol"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="GM8b6H/N"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6772B4D11B
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 22:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9D013DBBC
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 22:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716933788; cv=none; b=hqgLk6sj2FZ+0ydwzAS9YszQVW8oaq2ZIa28xTr0lPMOnHO4/1r/6CgYY7RAL/UrP1Ej+b72UzwMx0k6aMvinfq3b3OFDMjh+OZ45Imk7YXtF4u13VEVdZHIz2kfia1wzUt9LUAu+cIiYy31RyYn/TeXhf801VCOJ/IDq2gGzuw=
+	t=1716934296; cv=none; b=IC002Lty1CmkHtGXX2fRaFQTcNxL61711YOfHxUmiWYSKSXYvByUaUip5TfkdvL/Ng6a38VQxIlEFmtZFjEBNfh+Q5syiA2aCgNdZCDN3wfg2HzOjMJm+6QDnkKWAfn3uvBO9Lf+e2l2MTPaZzbREk5EAl1T/bYz9vqZIbHMr2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716933788; c=relaxed/simple;
-	bh=6dR0TVFfyiSaynxrc8HqYHuyfp8lRjhMTghZIQUKmZ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s/pDGd21REVeIDlpWamhJXyYN5LTL2mjOQGUI1GwZGVlDY4Zuq9/FYAWdpicLjDZbzByJURnpGbrvM7EyFkksCABSgT5plrNmjDakrI4ckdsKf2ZlQSfSGfF2VFyIYkIMtTJNPgHU6QNsPED7cGhfbup8XvhrMlVAa19Lwwvs2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SbC2duol; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2e95a60dfcdso15128751fa.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 15:03:06 -0700 (PDT)
+	s=arc-20240116; t=1716934296; c=relaxed/simple;
+	bh=s6gGGoGa28fqfAB8/9ayz7igSKloxSfHhA3lG6vLIng=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=uryCYJ+8pBChyJensoQp+XG7dF2g+77zaFSfVWta56POOPVNU8Dipr9XGrLP/dgHlu53YGtem6p7slu6aw69TgZ6fJT0FAw+Rf7GrL5chiNwQY5eWq5DU50GPn5jVlBaYaBYidG26lIrooDgJFvjECHBoheDU9ORNrypmi8gefo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=GM8b6H/N; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1f44b42d1caso10686215ad.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 15:11:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1716933784; x=1717538584; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ozLHkJmijyEcijsJIlg7rU3H7zvIY0vd9gob+uXPOsY=;
-        b=SbC2duolOW0qbnc9HwlM6DVvpQFjY9hGl7Auu2aHWxrGqozx3EAUv49i6pZMUgC+RJ
-         MEuT2lQW2lPUkojezPTrXGt8pACiob+8l8cjwtEBBtjSWK1u+5RA0hJIjqz4RPdHUzJh
-         5aYdYMe5U/Kh+cyWX+gZ3MFT7RuMrhD2fTrcSBWRlS0m8E52/TCG+DGldpp9D7r9kdPm
-         rIwFELgXGA+LB9islnRJvNwTIF1ZcKopHe7Luy2pCv6avS/nxoZBzc4wuWrYq1sveXcc
-         xI0GPy/vc6i8lKZYGubRC5eiwI/XqdNu2DCghrFdUVF/6Fw3vY0bpSlNROx1C0JqRLDt
-         5Jdg==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1716934294; x=1717539094; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
+        b=GM8b6H/NI/J4Qf9kM2wuhid9bqfPp8E5toF/bXilsxb6fd1ucDnvHhFIG6rlrXHKHj
+         7lSWnUYoIoBYChzDyl1SOPrh2aEUFSyLGGjn8keuFlHwG8xNe2Z/HJyIC9pBvkCw9DR4
+         ExDIJuoVDAt2FwfYKLgXzh8Jg2RqrKxDwy0iQED8OUTYJ7YGH9CZP/tyspDgDNNfDKNx
+         jj12Tio7nhH7DbmtucCRpea3IjT6KZ6mQEdAZIimzILqwGkC1pjTaUoY9k6WgZ9VgUNs
+         qjg0/+PA13xi3YFTNgzMUj4C/nmI28WUyreMQ24epQw8GWORAnga+LrAcF5bxk98HjyF
+         zLDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716933784; x=1717538584;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ozLHkJmijyEcijsJIlg7rU3H7zvIY0vd9gob+uXPOsY=;
-        b=bXO5lUX8ZOHdfkThe+al0rwIy1FTQzYSz08C80amIvgeNyVL2/XUey3PK4Ja7eySaB
-         SKXATpdA9ASwNHAagvMNS1C4NkrweZ+Akld+UQExNLhp7q8IjwqrV2bDp8ivTr4M2x9X
-         izClYP+eZtVG2yXMJ/rX+OlMv6bcJx7hhAEkh/g8virpSr11AqUr/xM02X1Wm1SmlO4N
-         G7qtdnGmkK2t423buEFj2iSH9+5jZxSKEt7dVJz6tsTal1rsDkMQQVxINHzek/bBWEuG
-         malcZT+YCOX5r9BXyeNjJBoaBINlERJESun1NcuweLXTcSeGvFhWEC8eK6tlQQs8h4gR
-         XvSw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3NJp0WmzZbigepY0eLUeIypDQnP26exbWGWog8Jrk461Ixft0XTQp0PjUDQrPhWiRfwSamjbj8iKswxGXNVRSXSBcjITpqTfSeyE=
-X-Gm-Message-State: AOJu0Yxo5Ya7pDsj3FN2EpxMkonhAo5W+2UEfTMFVfzNSBDbALbAg/pw
-	5VpPHV5DR6dDCZaOMTDMpHsG1V+DFMm0edu42Zxz9CgPBPoDplh4xIW25h5wsHpAxIZsQl/5O7L
-	n
-X-Google-Smtp-Source: AGHT+IFSlWFNVUOxV4lr95h/gJfRtfKsaiT4upArCCJB+M0+D4CCLz8QxF33KW+4hi3B8pAS8MMlpQ==
-X-Received: by 2002:a2e:bc08:0:b0:2e9:570e:1cf with SMTP id 38308e7fff4ca-2e95b3089d9mr100629691fa.52.1716933784476;
-        Tue, 28 May 2024 15:03:04 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f8fcbeb199sm6855027b3a.105.2024.05.28.15.03.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 May 2024 15:03:04 -0700 (PDT)
-Message-ID: <4c012b7d-52f9-469d-b272-bd93f3e73854@suse.com>
-Date: Wed, 29 May 2024 07:32:58 +0930
+        d=1e100.net; s=20230601; t=1716934294; x=1717539094;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y/EZSjBSMpKdz0TS6eS7VGV2URZV9D9zcT9BZtnUab0=;
+        b=SP2puBlirNLeDls6e3bzcVo59217s1el3WgtBiVlKCMpX5o3Rm1HiaVyDTBbJQDVy6
+         O0z1fDbLbhGjAzKrP7inLHJoTMIGUNuhv73v7okc1uBoGDouqJmOnyF+d2KwP5HHCVF4
+         iGOf4y6GzC9DdYgBDMJo2DQvRqMKxo84Afbb1r6wu3HEKQV8Ep0zOF2GxWJMWc9IXHZB
+         RjZzFILaKuiL11bIfQKpWrldnO+Tke1dD2sVG9UgII0bPaQ7Bu0xt2sy+wLg0jXPoZ3I
+         g6aowhCk8vR33ky7sHFKVjP9Deoco9ZGDnr3Es1VsIttTgpeDIs6j1ONVmkj6Loj/ufc
+         M6dw==
+X-Forwarded-Encrypted: i=1; AJvYcCXYAqsR3Us56pp7cINwEGvCv6F2WngDG/+/FZ/k7Qh69/IY472PK66tLF4maOErvLA7jxCbqxHEbpuwcttchffCqFpYH0Ox5AAsSVU=
+X-Gm-Message-State: AOJu0Yw/w5eSFiC2dhugZxz8qeoGPLfq5YuFYxD4A7HijWnUKA/0kXfG
+	Eymc+iErsVzl+CRJZMBzo8pqxQHv87SC7QiBr65ZgMy7dgPqsqAxtfccqQ0vPxA=
+X-Google-Smtp-Source: AGHT+IHTQU8PmmECMD1h64ue4/AGFuh/+UzLJOnETMdIzBo20vXZf/4EqQUrQxxJsMIbVfq9H8iR4w==
+X-Received: by 2002:a17:903:186:b0:1f3:3a05:1adf with SMTP id d9443c01a7336-1f4499092d7mr162326705ad.66.1716934293612;
+        Tue, 28 May 2024 15:11:33 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6822198909bsm8028841a12.25.2024.05.28.15.11.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 May 2024 15:11:32 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <24829B5A-5F68-4B3A-AD4E-1AD9EFDE1D0E@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: zlib: do not do unnecessary page copying for
- compression
-To: dsterba@suse.cz, Zaslonko Mikhail <zaslonko@linux.ibm.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
- linux-s390@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>
-References: <0a24cc8a48821e8cf3bd01263b453c4cbc22d832.1716801849.git.wqu@suse.com>
- <08aca5cf-f259-4963-bb2a-356847317d94@linux.ibm.com>
- <a24ef846-95f9-413d-abfa-54b06281047a@gmx.com>
- <2db8bc9a-5ff0-40ec-92ba-29c90b6976c7@linux.ibm.com>
- <20240528214350.GI8631@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <20240528214350.GI8631@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] statx: stx_subvol
+Date: Tue, 28 May 2024 16:11:28 -0600
+In-Reply-To: <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
+Cc: Eric Biggers <ebiggers@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ linux-bcachefs@vger.kernel.org,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Josef Bacik <josef@toxicpanda.com>,
+ Miklos Szeredi <mszeredi@redhat.com>,
+ Christian Brauner <brauner@kernel.org>,
+ David Howells <dhowells@redhat.com>
+To: John Garry <john.g.garry@oracle.com>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <20240312021308.GA1182@sol.localdomain>
+ <b3b02658-ffc4-4bd9-b77a-af65ae359474@oracle.com>
+X-Mailer: Apple Mail (2.3273)
 
 
+--Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-在 2024/5/29 07:13, David Sterba 写道:
-> On Tue, May 28, 2024 at 12:44:19PM +0200, Zaslonko Mikhail wrote:
->>> But I'm still wondering if we do not go 4 pages as buffer, how much
->>> performance penalty would there be?
->>>
->>> One of the objective is to prepare for the incoming sector perfect
->>> subpage compression support, thus I'm re-checking the existing
->>> compression code, preparing to change them to be subpage compatible.
->>>
->>> If we can simplify the behavior without too large performance penalty,
->>> can we consider just using one single page as buffer?
->>
->> Based on my earlier estimates, bigger buffer provided up to 60% performance for inflate and up to 30% for
->> deflate on s390 with dfltcc support.
->> I don't think giving it away for simplification would be a good idea.
+
+> On May 28, 2024, at 6:46 AM, John Garry <john.g.garry@oracle.com> wrote:
 > 
-> 60% and 30% sound like significant gain, I agree this takes precedence
-> over code simplification. Eventually the s390 optimized case can be
-> moved to a separate function if the conditions are satisfied so it's not
-> mixed with the page-by-page code.
+> On 12/03/2024 02:13, Eric Biggers wrote:
+>> On Thu, Mar 07, 2024 at 09:29:12PM -0500, Kent Overstreet wrote:
+>>>  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+>>>  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
+>>> +	__u64	stx_subvol;	/* Subvolume identifier */
+>>>  	/* 0xa0 */
+>>> -	__u64	__spare3[12];	/* Spare space for future expansion */
+>>> +	__u64	__spare3[11];	/* Spare space for future expansion */
+>>>  	/* 0x100 */
+>> The /* 0xa0 */ comment needs to be updated (or deleted).
+> 
+> I would tend to agree. Was this intentionally not updated (or deleted)?
 
-Thanks a lot for the numbers, the number is indeed impressive.
+More correct would be to add the new stx_subvol field after the "0xa0"
+comment so that it is clear at what offset in the struct this field is.
 
-I'll definitely leave the larger buffer support untouched.
-And thankfully since S390 only supports 4K page size, we won't need to 
-bother too much for that routine.
+Cheers, Andreas
 
-Thanks,
-Qu
+
+
+
+
+
+--Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmZWVpAACgkQcqXauRfM
+H+A4QQ/+IFC+ipn32WPm2mM14CNmiYmrhv5RCNPU8Ectk5pHJQGow3HzwXGSGKRv
+M4tj97Xw5Au3K9qP9s3QSNLpDrc3+KumXrr8vzg33XpnRXcSzNMxtcXdht3/DGYO
+zqltGBq7u+Wm2S1yoRZwORU1YS/dq90ec0m6IBhszI3FAvLCH/tMj7dlTrTE3gSu
+xWen9XZBYiTbj3m81J5nlppuqEsr3tF7LtJRyHUw5xqgpe47kv0GFohyCp3pv8et
+r5fbv5I8uCNx6iSBk/o5ORLr8VVZJ4K5/0t96u0sPDLN9wOCV8NpYPXLeSUqPVr7
+KGxIcTSFAUkUMQXi2NGkpkHm5aAGmpXH2QQSdKbQbXrKXEbo4rAe+4jJjNtiYMK4
+vU7R0/6YGT+KBmL9J0/yvfshZNNb5l7ghzAq3x2Wt3TCPFGg0N6em1QKSb67IdbS
+nCmsQ38n589juroHPFs4yEq2Lad+g05CT5Lml7UNVCj5Fg4Wq+2sL0/6tnrx9/Xu
+Sh/knYTEPZy3Yevg0t4eol4TzLVzKm5PlKIVzctm4pAm5mNMXsS0OygEgpV57LXY
+84UCpWL80GT7PHpeo8KzNuN14oYS2BW1aZdBgfSnyxhhSuKGbFDCLcr/N+leNeZr
+M3rRe35/SHqXbzs2kpSz/mlf1m98bHjjsyRMKmPj2/a1tevPQg0=
+=vnHt
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_5446AB5F-C01D-4F26-BF4D-BD52D8E1B75D--
 
