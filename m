@@ -1,108 +1,109 @@
-Return-Path: <linux-btrfs+bounces-5313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 477C98D1444
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 08:17:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 035058D145D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 08:24:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7D93B21247
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 06:17:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 975F51F21F39
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 06:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBA14F207;
-	Tue, 28 May 2024 06:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2324753368;
+	Tue, 28 May 2024 06:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kkE6UCCe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CqNEbIHE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B6B1361
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 06:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2161E58AB4
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 06:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716877043; cv=none; b=eJLlVi0Ubj2MMZHp4dFeTc8MRpGOQi9mo1ewEGn4IMyzNCdp5PeQYKBmNIv581Ie78KPXvvO5HwT6bKaY5noENjr7ES5Z7bFD9PvJO45QZC/JyzrYLUdf9vnJe9JJa+7E6bHahLT0wM0/YztfCv6VGdQJbVl9O50feuw9etCoks=
+	t=1716877435; cv=none; b=tO0sN/F1n+EkfgPT6LqGFMXt8gAsksfnXHrPbdKK/qsiU/csZWvP1xkUODmqFKQJVUdaUVXGvjcdsMWQt+lYA3604nh6nTtd6TQBujqBq1f6+NTIupjLQ6cbc0SsWJMbK9qyZdrCzMh9YH8fEq7THFDUa5Oy4iC0UzZ1QSlflrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716877043; c=relaxed/simple;
-	bh=LwHaGWHm8ws61deTkYQTxs5OmzoFLMBMOIZ9l285zWY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nxoW9MiVzbwdn1gHiU5Wk3BlImWz/iwnQLz35lWAonU4exx7VAHbraeVo+mrc4Q7BlPue7uhpHVrl7HF7R7vSKiy1x6BFENptOiFEgA+ZuXTcK4kJ0z2bIaniYFnfe0qMtp9/LtIjA86VD7Ljb4kYJXv7hgl8qJaHUV/PEghYYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kkE6UCCe; arc=none smtp.client-ip=209.85.167.53
+	s=arc-20240116; t=1716877435; c=relaxed/simple;
+	bh=L94y9wZPWtq6f1KYot/Mjg15L2qp0aGxJFTCcchw9Ys=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FMEBEsVqJe7VAPed9/UUek4bLm/uQYdRwnSKbNMRNgBoDZpxWH7jy1KSrvIRB+LYfIYc78oR6HGx52QJEBFlJ2YCt1wESKECJl0eIEzgdJWDIO17gveegThuk/S+ou+j4zeIlq6lt7ri6+Tdd8pkeo1/W2asT5MUItfuQ/+4PKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CqNEbIHE; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-523b20e2615so499733e87.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 May 2024 23:17:21 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1f4a52d2688so4050925ad.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 May 2024 23:23:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716877040; x=1717481840; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LwHaGWHm8ws61deTkYQTxs5OmzoFLMBMOIZ9l285zWY=;
-        b=kkE6UCCe30We4etojD84Ii7y6WU53DO7AOthNV8crPtnN2gjw/xp0h6aKeqvnENfev
-         fR2lblEpxZ6biEmEGRAn3hWb1ttzk3p8+X/iRBLtJ/kIj1bju/aZAVAREM++3GFgXlHS
-         PkGf2rBLK6ohMMhSiAN+q+cvOZVMb3z0gHbfKjGJ6vFTm8glP6p9hWG94EC8CxgmbOHS
-         pSennBnN8Ox8zrfr5vYqz95bbMZxidfrr/YsDvkbp6ynP66V3lYOQuuIVypdSQqp0x5k
-         Z1+e+2vm+FvDrg74wFe9lGThqgkGGF6EE20AdnICe8GFP6JhP8CvYLpHbrXxGcLI0Lui
-         DTiA==
+        d=gmail.com; s=20230601; t=1716877433; x=1717482233; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VKS2Yzc+m2iZeWrB2/8OdHfYeS12n5AB4nziMpwt0O0=;
+        b=CqNEbIHE6VcIhJ3GpfOJdEbGgMRtFAesDBHw4OdWrboejvUnkxfJw5XV9LX2M9pVs9
+         luemaDu1wSHyXpucHxxz9BU9LgOQiDFN/YMvy+zNPbkwhvxUeFqQ3LuTyvLQbcheOIbZ
+         SoEegzc1UkPE6E0be4d3GagWIyhAkgF4LGz+XwZCTtUlWudKVkNh12lrmkouERwPoAmg
+         gVblWg19IMvkZmC1Tk0fll9U8uhw7WXDSWjkksSfKPYi5NPvE2L3OnhnhbIy4EMuhd1b
+         loDqCfK/ukw5YkE66re2A6Yn7gvr3zpk9aEsKWRc/EeSRNOCPDWLKWHiEQpY4h+g/PMM
+         CTQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716877040; x=1717481840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LwHaGWHm8ws61deTkYQTxs5OmzoFLMBMOIZ9l285zWY=;
-        b=HRqugn/YqPRhgYnRh+KGVQmHLPEXwmlwBOYk+YQvW8zueQYBGRMYsrqyC2OqQChddy
-         gMKNJeYIPBlaI68q6vR5qnZ5jhG9/pI1wrcdR2gBXAItsxpzUhrTPgoLpGA9Cuak5Ek6
-         RB7kOXCfMmG0ZrAEAwKUY0E47LGzfJr2VUAyCyEnrH2YulvpPm3nRSbY+cRfNmKgjIL5
-         V6dARKAyii+bWkpkssN/aFX1/1LT8N/GSinXBoEGjz3Esk0ui1xLUpPzkfZqWEEkUEit
-         50Ld4BbxZdruPVu/zDoQ+ALf2mLBWmrMIfUCPqcaDUxNG/KLhh9CTHGCjnMt1P/1OJPI
-         IuFg==
-X-Gm-Message-State: AOJu0YzfRRhAGb49gQsG7dDa56V9scfwFlOEpUlJoGTZWu9LUEGif77E
-	6kSk6IwdJUrbbPhTqvPMdqy1lPxUfNvN2Qrk49XTQTwVZ9bECUmvmIMUCbZtL17xGQfRuUn2ANR
-	WLCsn2MyJIzjuAX9ricoZFhS+p1s=
-X-Google-Smtp-Source: AGHT+IG2jqaEubXLA2nNJk+sSa6EyMiUidp1ftSl2HEry2eQuP/z5lPs7o5Hx+BnQZDk+WY1L6Jxl9WEmqwLbg8bSDU=
-X-Received: by 2002:a05:6512:3ca0:b0:523:8c7a:5f7 with SMTP id
- 2adb3069b0e04-5296410a4abmr8364023e87.6.1716877039643; Mon, 27 May 2024
- 23:17:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716877433; x=1717482233;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VKS2Yzc+m2iZeWrB2/8OdHfYeS12n5AB4nziMpwt0O0=;
+        b=gJDGwlYJWjvLvpaJT65ivhVzJK0U9vIlzoxvXmcG6g1Rg4JBeA42SdL6Rmx6xRA4q4
+         t/aRU2z/j2QmGu8BcrnyuXItTZApHYLzWKHBapinVQsAq/3pYCmSnWH6TgNpDerfkrjR
+         oXlQD9FPMYCCFWxK307HKXx1xQbbDuHx7Z6ER1235aCr7k5WBPJrBFZe9ur+OIUU0/+N
+         ze2zTDpOE4bsplVQ2vA/9GGg4qJw7Wx+Gx2AhgjH6G/Diy2Gz6lQXn0+2Qz44i7gbIMt
+         CTDvMeGBvDQlEpr+La6Jvf5xL2PP3QeHi2JvosRBIiFwdHG3N/3V+P2lncYdrm3JrGcq
+         zBSA==
+X-Gm-Message-State: AOJu0YzB4mYuwBNmA1BEk5LNh13jougg6KGNZjNiCYrFEX31djqU0v4E
+	rcJks6ZL28c6t1jMVj+t2Y58zPcvfYWq+NBhSggl4EtL/INttppgRGaRzfZi
+X-Google-Smtp-Source: AGHT+IHXFgq9ncQOT/eotSXZXaphbDjUG6u/MXYQAb/QhgdWqqmE1wruaVs+MpKysCHv0MHMoEGQHA==
+X-Received: by 2002:a17:903:238d:b0:1f3:35d9:6750 with SMTP id d9443c01a7336-1f4497df763mr120758755ad.51.1716877432800;
+        Mon, 27 May 2024 23:23:52 -0700 (PDT)
+Received: from localhost ([114.242.33.243])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c9a8db7sm72091675ad.222.2024.05.27.23.23.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 May 2024 23:23:52 -0700 (PDT)
+From: Junchao Sun <sunjunchao2870@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	Junchao Sun <sunjunchao2870@gmail.com>
+Subject: [PATCH] btrfs: qgroup: delete a todo about using kmem cache to alloc structure
+Date: Tue, 28 May 2024 14:23:43 +0800
+Message-Id: <20240528062343.795139-1-sunjunchao2870@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240527101334.207228-1-sunjunchao2870@gmail.com> <20240527152707.GA8631@twin.jikos.cz>
-In-Reply-To: <20240527152707.GA8631@twin.jikos.cz>
-From: JunChao Sun <sunjunchao2870@gmail.com>
-Date: Tue, 28 May 2024 14:17:07 +0800
-Message-ID: <CAHB1NagHxAfoJ5h7-HgcQUkHib1sefafNb6n-_Pm5v=c3aJQMA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: qgroup: use kmem cache to alloc struct btrfs_qgroup_extent_record
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, 
-	dsterba@suse.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-David Sterba <dsterba@suse.cz> =E4=BA=8E2024=E5=B9=B45=E6=9C=8827=E6=97=A5=
-=E5=91=A8=E4=B8=80 23:27=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, May 27, 2024 at 06:13:34PM +0800, Junchao Sun wrote:
-> > Fixes a todo in qgroup code by utilizing kmem cache to accelerate
-> > the allocation of struct btrfs_qgroup_extent_record.
->
-> The TODO is almost 9 years old so it should be evaluated if it's
-> applicable.
->
-> > This patch has passed the check -g qgroup tests using xfstests.
->
->
-> > Changing kmalloc to kmem_cache should be justified and explained why
-> > it's done. I'm not sure we need it given that it's been working fine so
-> > far. Also the quotas can be enabled or disabled during a single mount
-> > it's not necessary to create the dedicated kmem cache and leave it
-> > unused if quotas are disabled. Here using the generic slab is
-> > convenient.
-It's reasonable. I will send a patch to delete the todo line.
->
-> If you think there is a reason to use kmem cache please let us know.
-> Otherwise it would be better to delete the TODO line.
+Generic slub works fine so far. And it's not necessary to create a
+dedicated kmem cache and leave it unused if quotas are disabled.
+So let's delete the todo line.
+
+Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
+---
+ fs/btrfs/qgroup.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 706640be0ec2..7874c972029c 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -123,7 +123,6 @@ struct btrfs_inode;
+ 
+ /*
+  * Record a dirty extent, and info qgroup to update quota on it
+- * TODO: Use kmem cache to alloc it.
+  */
+ struct btrfs_qgroup_extent_record {
+ 	struct rb_node node;
+-- 
+2.39.2
+
 
