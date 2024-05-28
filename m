@@ -1,195 +1,129 @@
-Return-Path: <linux-btrfs+bounces-5308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5311-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F01F8D118A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 03:44:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ABC28D13F4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 07:34:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53C411C21709
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 01:44:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C609C1F23401
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 05:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114399479;
-	Tue, 28 May 2024 01:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1834EB38;
+	Tue, 28 May 2024 05:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g0T4vl2g"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rXRGd35V";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rXRGd35V"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94EE52907
-	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 01:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C1717E8FF
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 05:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716860653; cv=none; b=GoS03J9KsAhBTYqrn/KtOnEmfffoL3WdgCTlCFEmAqx/FHpCNOCZXRxKu68oXgrSE1fOd4c7+hnNnbsvTt4kfNhqqjELMl5DGgFm/xMPPL+EdddWW9p2DUuSx7A4iRYjwikVTmCrgL6WcWS9TeEndIXVyB9ZnSJEJnKcZyCiffw=
+	t=1716874460; cv=none; b=EqJ9D+CRf7ELngH7j9PB+ehnz6VYybZnUsm9lq2/ZvfXsCdphSa/dFu81ClzTtiAFTr6kq8REESNpTYIlBazQL0FLTJ+rrV3ip+cBkBnhNu+rTNHHyCNLivI8RcZdFT+bGdwAKNUGTg5wDafq8expODXoHRZAEPGB0ipAFDR/Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716860653; c=relaxed/simple;
-	bh=eZ3W8RIxUJ9Zjw1kg7xXyYBW8dEkyePwyWZzF9fdbp4=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=co9kyLmoGHX9S5gPdT6h8qXJb2fMOg3TD5XJx6yT1gjhcJlZfsm2NUVzDx3iD/YNwbLeTTU14X5HdANjDOLdKqa9NWXc7cj5ER0SYGa2gqhA+0u1bxQj1wLng0q23nEQfJo1vHQLbW+xUOkV1AZhxwU8K09K52ZI+6iGrzg7Mtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g0T4vl2g; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5295a576702so402233e87.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 May 2024 18:44:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716860649; x=1717465449; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q9GR5XizDz9cTZGah0tFPV1TAict9c40o8yG0kUkfLc=;
-        b=g0T4vl2gRWT07lJDKCmVU7Vi6IrREeHo24pdi2mP/hiDs85wXfoiTqhwRD9FtSPK1M
-         hkf9nNldbzWBZDMuRvSnWiYV/Jio9UKEuxEKBtjmarBwBrHMjE4Gjon5mpHIjEw7D5Y0
-         cxvhsf79TApU/sR9hjt7BCjtC4E4dtULwL/3e59vdKDoC+RovdFlaWBYHoWM+YD8CSxe
-         ZhGM3Q57/IXL1Gz4SpyLrT5XOpUJPJQBpmZYkG7oeaf2lDpyA//HMLb1Drt+/E9g5lF5
-         1LreoK/A0B6w4x8CADwjJHss1Iye0A08olKXO3+w18fEXpOJ8JYNXx9GkvAeIfBd94ON
-         qDcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716860649; x=1717465449;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q9GR5XizDz9cTZGah0tFPV1TAict9c40o8yG0kUkfLc=;
-        b=jS/9so6O+wWlrZOvnBxbF5TMMXTwQVqColufWVeSIuEfUSzbpsLrg4qNf3owaLUqqF
-         IDbe7IF+7F7b2ElBJPoxTORJsbrlbfrgil8TBghNskujrSbUnSS+EvM13Cn73QSKfO0s
-         YT8PXOcEMbGaWcm206AD6MLnNXERNLen4rj45OkEJhOwzOq0KvLtwDJEW+fVlP9yvmFW
-         SkJX86Rhpti+bdMWpxcqHVkC5zxy2kRE0SxvGyFbzOQMPglao19AM8BObZhb/jLhcOwc
-         qmLQ3sDX/B2sCR1OiWiAkUP3m9ldzLEbyKoyAbUE5srJnfjrdCivhlbPt+BI2M0H2xbq
-         /peg==
-X-Gm-Message-State: AOJu0YztsXci71eVkFz5pGRX5t3bcywh4UO736l6+wkwqQ/UvliQWKyA
-	NHVa9W4xJUTGLawTM5jnDvZpCVYgedRv5Dth8vIUppwDFmBD2cM3IRJYr0iN
-X-Google-Smtp-Source: AGHT+IFELpaXraapA0Ut6FXMYynaXyh+LCdNHGJG5ru9WrUNs/qUzpW57X25hTvgweMIKt76eTosPQ==
-X-Received: by 2002:ac2:4e10:0:b0:51b:e0f0:e4f8 with SMTP id 2adb3069b0e04-52964bb0ea4mr8700631e87.31.1716860648838;
-        Mon, 27 May 2024 18:44:08 -0700 (PDT)
-Received: from ?IPV6:2a02:a311:5d:7a00:d57a:f406:f986:3c3b? ([2a02:a311:5d:7a00:d57a:f406:f986:3c3b])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a626cc8a742sm547231966b.153.2024.05.27.18.44.07
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 May 2024 18:44:08 -0700 (PDT)
-Message-ID: <e6dc5d0b-1f43-4aad-9189-3ba6e9031a5b@gmail.com>
-Date: Tue, 28 May 2024 03:42:39 +0200
+	s=arc-20240116; t=1716874460; c=relaxed/simple;
+	bh=Phral+2mWpODDPchxiPWqfa4IyEGxWoewPKg8jumETY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=tTCK8aC3Ngt7m8UsPS8gdbvDMgvMNTIJp5gEmXIflE6Poa7pPJTA6qcZ6bdSozWdSouW3FFR9eH4r5u9Zygl5YcHtA+YTyCibHuL837e1S50DLqaQIOW0DZqYjXmnbVEGGyihC+rdlbJ0OOvGHbOqzLgAydX4Tnf/ZHl1VP8WmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rXRGd35V; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rXRGd35V; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 95CC520132
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 05:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716874451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gGnAhGcNOMauuc8b9URddU4RwJl9g/FbOqBti5P/Jzw=;
+	b=rXRGd35V5r9nMaILoTuFgjP6WLKJJQ75QNJiwyZqEqtGbKFgux402SbPP+FguXXF9oZHPF
+	YoB5WCxihDy9ruuEyTQD2c7fdpl/ePj2YMyYbyiLqJXsVXO+3CGaxRnXPBfls1rR6rHEsA
+	fIm7T00GheKkyWRtydtYG7wzv3oPhok=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1716874451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gGnAhGcNOMauuc8b9URddU4RwJl9g/FbOqBti5P/Jzw=;
+	b=rXRGd35V5r9nMaILoTuFgjP6WLKJJQ75QNJiwyZqEqtGbKFgux402SbPP+FguXXF9oZHPF
+	YoB5WCxihDy9ruuEyTQD2c7fdpl/ePj2YMyYbyiLqJXsVXO+3CGaxRnXPBfls1rR6rHEsA
+	fIm7T00GheKkyWRtydtYG7wzv3oPhok=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A10B313A55
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 05:34:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id X/XDFtJsVWYpdAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 05:34:10 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: basic header cleanups
+Date: Tue, 28 May 2024 15:03:46 +0930
+Message-ID: <cover.1716874214.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: pl
-To: linux-btrfs@vger.kernel.org
-From: wojtasjd <wojtasjd@gmail.com>
-Subject: btrfs check --repair - hangs in infinite loop
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.75 / 50.00];
+	BAYES_HAM(-2.95)[99.80%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.75
+X-Spam-Flag: NO
 
-I have damaged btrfs file system (root partition for GNU/Linux LMDE 4 
-with 4.19.x kernel which boots and mounts "/" read only, some files with 
-0 size, damaged timestamps and cannot be deleted because of I/O error).
+While reading headers, clangd would do a lot of extra checks, from the
+very basic like including the header itself, to missing type definition
+inside the header's include chain.
 
-"btrfs check ..." (provided with LMDE 4) crashes with SegFault so I've 
-booted to LMDE 6 live session and did some checks:
+There are 2 very basic fixes can be done immediately:
 
-root@mint:~# uname -a
-Linux mint 6.1.0-12-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.52-1 
-(2023-09-07) x86_64 GNU/Linux
+- Do not do recursive include
 
-root@mint:~# btrfs --version
-btrfs-progs v6.2
+- Do not include rwlock_types.h
+  As it already mentioned to include spinlock_types.h instead.
 
-root@mint:~# mount /dev/sdb2 /mnt
+Qu Wenruo (2):
+  btrfs: cleanup recursive include of the same header
+  btrfs: do not directly rwlock_types.h
 
-root@mint:~# btrfs fi show
-Label: none  uuid: 3a40ba85-56c2-4d26-a126-70839983f4a2
-     Total devices 1 FS bytes used 9.05GiB
-     devid    1 size 15.02GiB used 12.57GiB path /dev/sdb2
+ fs/btrfs/btrfs_inode.h | 1 -
+ fs/btrfs/extent_map.h  | 3 +--
+ fs/btrfs/fs.h          | 1 -
+ fs/btrfs/locking.h     | 1 -
+ fs/btrfs/lru_cache.h   | 1 -
+ 5 files changed, 1 insertion(+), 6 deletions(-)
 
-root@mint:~# btrfs fi df /mnt
-Data, single: total=10.01GiB, used=8.62GiB
-System, DUP: total=32.00MiB, used=16.00KiB
-Metadata, DUP: total=1.25GiB, used=434.23MiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-
-root@mint:~# dmesg | tail -n 7
-[  404.266242] BTRFS info (device sdb2): using crc32c (crc32c-intel) 
-checksum algorithm
-[  404.266264] BTRFS info (device sdb2): disk space caching is enabled
-[  404.558136] BTRFS critical (device sdb2): corrupt leaf: root=5 
-block=29589504 slot=30 ino=1378764, invalid mode: has 00 expect valid 
-S_IF* bit(s)
-[  404.558157] BTRFS error (device sdb2): read time tree block 
-corruption detected on logical 29589504 mirror 1
-[  404.565225] BTRFS critical (device sdb2): corrupt leaf: root=5 
-block=29589504 slot=30 ino=1378764, invalid mode: has 00 expect valid 
-S_IF* bit(s)
-[  404.565244] BTRFS error (device sdb2): read time tree block 
-corruption detected on logical 29589504 mirror 2
-[  404.565328] BTRFS error (device sdb2): could not do orphan cleanup -5
-root@mint:~#
-
-root@mint:~# btrfs inspect-internal logical-resolve 29589504 /mnt
-ERROR: logical ino ioctl: No such file or directory
-
-root@mint:~# umount /mnt
-root@mint:~# btrfs check --repair /dev/sdb2
-enabling repair mode
-WARNING:
-
-     Do not use --repair unless you are advised to do so by a developer
-     or an experienced user, and then only after having accepted that no
-     fsck can successfully repair all types of filesystem corruption. Eg.
-     some software or hardware bugs can fatally damage a volume.
-     The operation will start in 10 seconds.
-     Use Ctrl-C to stop it.
-10 9 8 7 6 5 4 3 2 1
-Starting repair.
-Opening filesystem to check...
-Checking filesystem on /dev/sdb2
-UUID: 3a40ba85-56c2-4d26-a126-70839983f4a2
-[1/7] checking root items
-Fixed 0 roots.
-[2/7] checking extents
-corrupt leaf: root=5 block=29589504 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29589504 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29589504 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29589504 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=32129024 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29540352 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=32129024 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29540352 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=32129024 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29540352 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=32129024 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29540352 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=32129024 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29540352 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=32129024 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=29540352 slot=31, unexpected item end, have 
-4294979450 expect 12154
-corrupt leaf: root=5 block=32129024 slot=31, unexpected item end, have 
-4294979450 expect 12154
-^C
-root@mint:~#
-
-btrfs in repair mode hangs in infinite loop and spits out info about 
-corrupt leaf and two blocks like you can see above.
-
-I have image of disk.
-
-Can I repair this somehow?
+-- 
+2.45.1
 
 
