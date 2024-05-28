@@ -1,191 +1,117 @@
-Return-Path: <linux-btrfs+bounces-5324-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5325-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0638D2256
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 19:22:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03CF58D2264
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 19:24:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46C3C281B5C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 17:22:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34E0A1C2298A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2024 17:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4601A17335E;
-	Tue, 28 May 2024 17:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A825174EC6;
+	Tue, 28 May 2024 17:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l6c/WKEg"
+	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="BHn3oYID"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ABA37D07D;
-	Tue, 28 May 2024 17:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17307172791
+	for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 17:24:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716916922; cv=none; b=R5i0nFOQHPKnN3uQpSgXzf5faMwBCLPghUEoJUrGdi0CsPg1+LJMFPsXfJkTjQMoSOAEDYpLoO84dYtNSFlNCYx4rvL+/dEzg2zXgA3xgHldXDsio/OB2vfMRoXkpnnFjF2B85bXOa2kbFjLpxMnmOkQhyxki8TEhV+QZIJhu7g=
+	t=1716917055; cv=none; b=XcWKFwCKaeH6Wi2InSVOPcsmxp2ALKqWkAb9m/M882LblaXWjorRwARaNAQK6XK37/e7aW1Zf/SXoecgpyOeqcA8Z0X7D2fmJy18C11Xj/9fYDbGWyMurefqE1SUuHtcfsZElnZFwAZVEDA4SiNRnSLQY4927u3ls0YKmEPiVL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716916922; c=relaxed/simple;
-	bh=qKmedDqluaE4ygpuEoF9FlpLgpXTGkZnUG60dxwFlcA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m88DNctbi/x1YOjw///RVM3USZC4mCyw+cCDH99c5QVpJmma6mQtNO/s3ZlWVPyuhf8FEvH1PVlINUc26eKbBDVlrbdSkBLu57wZCb5eNIQgFtWIhv20WFUKAATAiW0/9hD2Qy3rilZ8Td4suY5+vWoyCkdOdHFxRNeJ0PFdIrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l6c/WKEg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1778C32786;
-	Tue, 28 May 2024 17:22:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716916922;
-	bh=qKmedDqluaE4ygpuEoF9FlpLgpXTGkZnUG60dxwFlcA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=l6c/WKEgdhDQTJDZiCdmVlvGzLztwULvFWEJ0dqA5imbr1ANnKix7fAS/IkalpyIM
-	 cw6zc1u2cqsssKDo5X+qkZzpV/pZ3Zuin67alI5Gy7l6f8k5GWEPWkdPMgDtKd5QOk
-	 SHPqeiUBSS31yuxxmUFLsE/iGqZf47IYBFZ+ONaZf9fp+idteGB7GGQTh4g1cyY1ow
-	 oNZWV4Mw4m90ah2PwZ1YmiNYDqm88tKhF05fWpgCRx08Wew2PSc1Kn4EJRPiS05HtM
-	 aCAE1nPxIWK643H5guoe05nG44T7rz4JbENGrgyd29URt6wiRFX+9nWCIWUGovYlEG
-	 WGF5RinJouGNg==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-52961b77655so1323285e87.2;
-        Tue, 28 May 2024 10:22:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXtPmHbyyxMEAV7FADBf8+LuyNITMOcPtis0aWD6y7NXvz7g9ju0/NCtombTHdciCO1zLbYysGYEN6dgTEXtBmdA32tRpoSeV+vbbM=
-X-Gm-Message-State: AOJu0Yz9IzncH4LPOkv6+xyzqXHYO6B/5vBr/exu7GDSvyaNIf+LClby
-	NqzuW6Cw3+jiE3FZ3CuxOkHFmJ7ICF8ooPqOXjEPnl1Hnlo3JRdaF70NdgBTFnWNWfh3790s4pg
-	M0SxoT5IjX87rrvfjKaggvP8YbU4=
-X-Google-Smtp-Source: AGHT+IH52bzs3FxLI/zk8WNK+yQnpQ99P0kdRJ8yHgyOaDPTH9BcFrgHiWYiHj/MJNTr1svvXu3s5EnQIBx+7GAdKf4=
-X-Received: by 2002:a05:6512:2350:b0:529:b6b4:7e3c with SMTP id
- 2adb3069b0e04-529b6b48032mr3089620e87.45.1716916920355; Tue, 28 May 2024
- 10:22:00 -0700 (PDT)
+	s=arc-20240116; t=1716917055; c=relaxed/simple;
+	bh=s/PO+zPQrBVJU44eI8Wd69/XIh0qb8qT2DXF1mPyW40=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gUuHELgQNQzUcqMUXg1PcUp4yx94ILK2ZEV+LdrqQs0EN7BHdeQuJ7D5YeO0q8fIC7Fgwr99YlktPvwgnkBzmDdSY5ezhOdTWW4oKTWmYYfR6UMCWA9NNvEjiJ5Ooi2Fnm+odNcAw2h42ScZym5NTBoFeCRTLzqhRQVIJkfE2oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=BHn3oYID; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1f4a6a54416so261995ad.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 10:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1716917053; x=1717521853; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CZjqJQ/Mb7o64C5tkt8/Op/QX1fV/25kjWf0uv6TYNw=;
+        b=BHn3oYIDrd05WMy5d6cIUTDpBrcriLpW03pGsvOl3ZPK8xBnHTUp0UiweZiR7d5Ryu
+         M7Xl/Fx5kQ5U9RvJ/8yup91wG/9vyy4KpfEIY6wK21cZ3h8vhq1kkNlVFDMLzrXd7tDC
+         TxZQhaQUKs61pLFzERsy7HftGHMc079PB2iTAdFBzXi+Egx4eavJZc5grriQbqOJATyx
+         rONKoX6jugWzWtVAInPcgKDJ9/XdluxAfc3o0hh/3OW3tdGc8pF3FI9VIIjBlXE16OM9
+         5qgSS3LXXnu16H62zfHfh6LTjFc7wH6RWTEw0LV+NKNySEwDZvYdVHmUyQ1ihMHWPFt0
+         YNRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716917053; x=1717521853;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CZjqJQ/Mb7o64C5tkt8/Op/QX1fV/25kjWf0uv6TYNw=;
+        b=FZVWrCmy3u02ivP2qB3JALV1d5hee8DnXJaINoYkMeW0FI8lPYeCSMWs1kdmE2e603
+         XY4rTxkcR8B9n0xjMH4TluztNhjvGqDqBfkeXJfeRfquIzySE5XmjVe3IYeCPSbPizLE
+         8BFnAcYBxcToexCWj4fhJreTOlil6c1pQedgZ5bxdTS1UL4rJAon9gXNKHW7ZlL2IcrS
+         O6XX6zh11WsstgnGFjyqHVUBK+sH6sudEOubmVC9UEjgRNyMPbPjtH8fNybqQJ2FP35s
+         9fZAbMClWK+9Ir5kkcaewtef+BjQNQnHBWydgrS/1nHUtiqdbPF2hvRb4fUt5grPfcRk
+         WxvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXqbzK5I/WuPZinCnfJBx0LTeI3u0EEKskxSh2Eif7z/SrDteGjUOG5HfOtt/VW4s58Sose3dhz9K/YnMBFqPWpHIOfstFv41YbGg4=
+X-Gm-Message-State: AOJu0YwwB3Yf7LiyN4TtOjLwlMePeXUz76HlBRTlU0dRmxAe2YbFHYzh
+	fOHIO1SIuUzTYB2odqvx/N+7V+RRKRyS0FVJemqdLnEonzUKFqXALlnt/hqQ+2k=
+X-Google-Smtp-Source: AGHT+IGm/4zE9ucOze0cttuV/3FeHI4wbEtq8NQ5UCQN9s/mpX3oTHooKqYx1emrgqk09Us6AG7IRw==
+X-Received: by 2002:a17:903:41c6:b0:1eb:6cfe:7423 with SMTP id d9443c01a7336-1f4481794e1mr186893675ad.19.1716917053351;
+        Tue, 28 May 2024 10:24:13 -0700 (PDT)
+Received: from telecaster.dhcp.thefacebook.com ([2620:10d:c090:400::5:4121])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f4d6fe4775sm12252195ad.257.2024.05.28.10.24.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 May 2024 10:24:12 -0700 (PDT)
+Date: Tue, 28 May 2024 10:24:11 -0700
+From: Omar Sandoval <osandov@osandov.com>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: Re: [PATCH fstests v3] generic: test Btrfs fsync vs. size-extending
+ prealloc write crash
+Message-ID: <ZlYTO9FNeYjsFTr6@telecaster.dhcp.thefacebook.com>
+References: <8c91247dd109bb94e8df36f2812274b5de2a7183.1716916346.git.osandov@osandov.com>
+ <CAL3q7H5z_eYpx8e-J7xPzZMqCxv2xwq9H7ga=8EZdLk7gnT-jQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8c91247dd109bb94e8df36f2812274b5de2a7183.1716916346.git.osandov@osandov.com>
-In-Reply-To: <8c91247dd109bb94e8df36f2812274b5de2a7183.1716916346.git.osandov@osandov.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 28 May 2024 18:21:23 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5z_eYpx8e-J7xPzZMqCxv2xwq9H7ga=8EZdLk7gnT-jQ@mail.gmail.com>
-Message-ID: <CAL3q7H5z_eYpx8e-J7xPzZMqCxv2xwq9H7ga=8EZdLk7gnT-jQ@mail.gmail.com>
-Subject: Re: [PATCH fstests v3] generic: test Btrfs fsync vs. size-extending
- prealloc write crash
-To: Omar Sandoval <osandov@osandov.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H5z_eYpx8e-J7xPzZMqCxv2xwq9H7ga=8EZdLk7gnT-jQ@mail.gmail.com>
 
-On Tue, May 28, 2024 at 6:13=E2=80=AFPM Omar Sandoval <osandov@osandov.com>=
- wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> This is a regression test for a Btrfs bug, but there's nothing
-> Btrfs-specific about it. Since it's a race, we just try to make the race
-> happen in a loop and pass if it doesn't crash after all of our attempts.
->
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+On Tue, May 28, 2024 at 06:21:23PM +0100, Filipe Manana wrote:
+> On Tue, May 28, 2024 at 6:13 PM Omar Sandoval <osandov@osandov.com> wrote:
+> >
+> > From: Omar Sandoval <osandov@fb.com>
+> >
+> > This is a regression test for a Btrfs bug, but there's nothing
+> > Btrfs-specific about it. Since it's a race, we just try to make the race
+> > happen in a loop and pass if it doesn't crash after all of our attempts.
+> >
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> > ---
+> > Changes from v2 [1]:
+> >
+> > - Rebased on for-next.
+> > - Added _require_odirect.
+> > - Added FSTYP check to _fixed_by_kernel_commit.
+> > - Added Filipe's Reviewed-by.
+> 
+> It's missing actually, so I replied with it :)
+> 
+> Thanks.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-> ---
-> Changes from v2 [1]:
->
-> - Rebased on for-next.
-> - Added _require_odirect.
-> - Added FSTYP check to _fixed_by_kernel_commit.
-> - Added Filipe's Reviewed-by.
-
-It's missing actually, so I replied with it :)
-
-Thanks.
-
->
-> Changes from v1 [2]:
->
-> - Added missing groups and requires.
-> - Simplified $XFS_IO_PROG calls.
-> - Removed -i flag from $XFS_IO_PROG to make race reproduce more
->   reliably.
-> - Removed all of the file creation and dump-tree parsing since the only
->   file on a fresh filesystem is guaranteed to be at the end of a leaf
->   anyways.
-> - Rewrote to be a generic test.
->
-> 1: https://lore.kernel.org/linux-btrfs/d032e0b964f163229b684c0ac72b656ec9=
-bf7b48.1716584019.git.osandov@osandov.com/
-> 2: https://lore.kernel.org/linux-btrfs/297da2b53ce9b697d82d89afd322b2cc0d=
-0f392d.1716492850.git.osandov@osandov.com/
->
->  tests/generic/748     | 45 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/748.out |  2 ++
->  2 files changed, 47 insertions(+)
->  create mode 100755 tests/generic/748
->  create mode 100644 tests/generic/748.out
->
-> diff --git a/tests/generic/748 b/tests/generic/748
-> new file mode 100755
-> index 00000000..2ec33694
-> --- /dev/null
-> +++ b/tests/generic/748
-> @@ -0,0 +1,45 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) Meta Platforms, Inc. and affiliates.
-> +#
-> +# FS QA Test 748
-> +#
-> +# Repeatedly prealloc beyond i_size, set an xattr, direct write into the
-> +# prealloc while extending i_size, then fdatasync. This is a regression =
-test
-> +# for a Btrfs crash.
-> +#
-> +. ./common/preamble
-> +. ./common/attr
-> +_begin_fstest auto quick log preallocrw dangerous
-> +
-> +_supported_fs generic
-> +_require_scratch
-> +_require_attrs
-> +_require_odirect
-> +_require_xfs_io_command falloc -k
-> +[ "$FSTYP" =3D btrfs ] && _fixed_by_kernel_commit XXXXXXXXXXXX \
-> +       "btrfs: fix crash on racing fsync and size-extending write into p=
-realloc"
-> +
-> +# -i slows down xfs_io startup and makes the race much less reliable.
-> +export XFS_IO_PROG=3D"$(echo "$XFS_IO_PROG" | sed 's/ -i\b//')"
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> +_scratch_mount
-> +
-> +blksz=3D$(_get_block_size "$SCRATCH_MNT")
-> +
-> +# On Btrfs, since this is the only file on the filesystem, its metadata =
-is at
-> +# the end of a B-tree leaf. We want an ordered extent completion to add =
-an
-> +# extent item at the end of the leaf while we're logging prealloc extent=
-s
-> +# beyond i_size after an xattr was set.
-> +for ((i =3D 0; i < 5000; i++)); do
-> +       $XFS_IO_PROG -ftd -c "falloc -k 0 $((blksz * 3))" -c "pwrite -q -=
-w 0 $blksz" "$SCRATCH_MNT/file"
-> +       $SETFATTR_PROG -n user.a -v a "$SCRATCH_MNT/file"
-> +       $XFS_IO_PROG -d -c "pwrite -q -w $blksz $blksz" "$SCRATCH_MNT/fil=
-e"
-> +done
-> +
-> +# If it didn't crash, we're good.
-> +
-> +echo "Silence is golden"
-> +status=3D0
-> +exit
-> diff --git a/tests/generic/748.out b/tests/generic/748.out
-> new file mode 100644
-> index 00000000..dc050a96
-> --- /dev/null
-> +++ b/tests/generic/748.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 748
-> +Silence is golden
-> --
-> 2.45.1
->
->
+Oops, I missed a git command somewhere :) thanks!
 
