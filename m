@@ -1,193 +1,197 @@
-Return-Path: <linux-btrfs+bounces-5355-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5356-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445B78D3AC0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 17:24:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 262618D3EB9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 21:01:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC8B91F24552
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 15:24:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DB55B23994
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 19:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED99C1802C5;
-	Wed, 29 May 2024 15:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF88E181324;
+	Wed, 29 May 2024 19:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p7pfhp7K";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Eg3uY0Bk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KJzs4WlY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k7rsWAh5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F226954670
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 15:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211B31B949;
+	Wed, 29 May 2024 19:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716996274; cv=none; b=c5cvoIkhO4bCCp4J3Q3ppc/kT0PvHr8ifoEpSGKV3VN+CzwNwdX4yRUFtmsWj0DOecQuVVgkdhldwHQOXTs7WHEwDJGt+3NQ3Y1QTXGUYKM8a0yxi6hZgouZIeogpUR+PBbghokb8wu4CRf6vbcVPnGpLCkIxyHFVmdUSGnwSxE=
+	t=1717009270; cv=none; b=FMdQQ5fiXjt7gmzNfFRNMQzTIcUXFNwW5oYxF5qMS8DZHWoFBSSknfwhjFmwOmZniff4Mzqn4DUMal+L7MAB0HPpvxTOdtx24xDMbxtazJOOxOt2kgCWgIT3PK0uJ19Vmyy2/8TvxEEQnT5CSoYSGgHf04qTF8+3wrFg330gMuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716996274; c=relaxed/simple;
-	bh=gR0NR/W1POMlud6zuz0vhVTDnOnvRmP3UrY+oEDtI3g=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ChtqjM1DBrVqmQATACGTnOoblWp+Iq76ub5h52Woh9raYjQ4+4NC6VH1isQBJXBmEt8lXiOuRGCHvPbyG8HYeWE62Klk/afImxrUihU9iCp+j5pxAWQ9REZGC+8lBVDl+NL4MlcNGdo3UYoB12+mm/ycMI6FEtVHHdIZSZkAzPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7eaccb5a928so246125339f.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 08:24:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716996272; x=1717601072;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S7PgD150ZW6PXwRjk11mPZpnSNlflnT2YoZOVl9KBTE=;
-        b=LESMzgoKfxwI6de/6CHvRgCzsnOziFxiDTga6zwkIyemRYyHRjPChzp4AbUCeiRqHm
-         NxdfcD48Xvf9KzNhbcSlBV9BjjPHia+jp3Cm1FOJl10LkaUqIvrTKcn1BmeIRUxLYBUH
-         uzfdFtP+hBq5cBJwxP4hTj0vaBeTkGKSClPsrejfIAeVHNh1ykGClUrX7zvJQ5Gj7aZE
-         tvUowMuQAhsh5jXb21Dj3if7zLfffy6z5pnwtWZujP/45BGhRnIA4cGWd+v58PHCvVx4
-         1+/CWM/KaEeY/VBDMmfCyJ57+gUxPr1ocpju+ER4yPQVn9y1xV0EuWFVyrTDz2oV4FfA
-         QVkw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVTBXmpbirb15IhzWXUuh2qlXn5pW3utiYqgo9E0t8IN2cP9nzevqltx9qUlM5pgQvFNXAgnucmhvQOcTRfI9DZD1l6mDtq4DJqLQ=
-X-Gm-Message-State: AOJu0Yyuwb9mbJwK213OsOsNtET4t00LfMNsP/pzyngQvKvK0Znzxf43
-	4Tp6dNglJRxRs/ZXAeBLenxpjZS8k2uwLQrUYvkILJtQBF1ANDSazCTndMni4tbzJFzW9eRrch6
-	1tv1ZpXG6GYl9OUHd5RliA7FRgDpKrfT02dzSHUH8epL/9WWPE6uSr3U=
-X-Google-Smtp-Source: AGHT+IFlKz8QNaJRUpPZQhyOOBuMXKZXEXbuQQNrR24eq0OlB/Cr+M+JD+pmsFrLUnjVmmMNq+KGZt+/psZN+CS0dYUNcW+r5hRx
+	s=arc-20240116; t=1717009270; c=relaxed/simple;
+	bh=+jnnZTUq6/BwkwWF5eJnUty9lyNMM5PD17zS14+zCfs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sApgm3SbNikhcVQzwDmJk+kr1yd/DuWa7fBfsgnQK0U1KY6frnbnDxs1JaDuelZtbThL1FNUwN8BaCjR7wr2Xfri2sk+kafDdFw/b7btQi7tgYqjhIi2CaBmNOyCVBVcHJhe6EyS7t76+jeNiI+b7UMfAbgcb41HFhO+aDWFbms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p7pfhp7K; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Eg3uY0Bk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KJzs4WlY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k7rsWAh5; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E2187205F7;
+	Wed, 29 May 2024 19:01:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717009265;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iVHStC3cHDYoUi4IFL9yxFoo6Ze7RvNnT7yV6Vs3l1k=;
+	b=p7pfhp7KON88hEEUVxjiwW0/T4tVa6HXAVcZK+5aapYPR9A7J5cMUo2GLdAxx5QaXxIKO3
+	HFp8JcQY3bfEBLlYFIo/TjbBBP0nyjSsrvCJd2BBL+VWRg0cmloyUr+dCOl0Um34sy6SRQ
+	LBm6sQWGKEtEmwdNRUTLGTgoIQitMwQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717009265;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iVHStC3cHDYoUi4IFL9yxFoo6Ze7RvNnT7yV6Vs3l1k=;
+	b=Eg3uY0Bkveqcm7j9TLET/Ba0FSmBScwEvz2tW/D6I1tk/Bx4KvOPeI3SpQ5QrBtaOEZgIo
+	JVWLsuw2uF/2JhAw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KJzs4WlY;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=k7rsWAh5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717009264;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iVHStC3cHDYoUi4IFL9yxFoo6Ze7RvNnT7yV6Vs3l1k=;
+	b=KJzs4WlY22W7gZ61jZo/UAJz9efmNyoKI9cKQQ9CajuivVV3DDv1+JtdKjRJvlb4SCde3c
+	3XHBAt/9OePpqsHyIi/a2Irtb0gzmiVtgsHHa6oBeZIUZbzHy3rfyVvZbDAHrABNY/cGOs
+	UBmsRhhS8Mq4TCTV452N54x0MyZpWfc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717009264;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iVHStC3cHDYoUi4IFL9yxFoo6Ze7RvNnT7yV6Vs3l1k=;
+	b=k7rsWAh5im9Nq6lEscR9Fj003HuhJbCX74kPWK+PDG0UBlw+OrMdWiEYM5x8409AZllUIw
+	k8veQoeQFIJZuGCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6AC013A6B;
+	Wed, 29 May 2024 19:01:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CSZXMHB7V2ZeMgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 29 May 2024 19:01:04 +0000
+Date: Wed, 29 May 2024 21:00:59 +0200
+From: David Sterba <dsterba@suse.cz>
+To: David Hildenbrand <david@redhat.com>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: 6.9/BUG: Bad page state in process kswapd0 pfn:d6e840
+Message-ID: <20240529190059.GM8631@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <CABXGCsPktcHQOvKTbPaTwegMExije=Gpgci5NW=hqORo-s7diA@mail.gmail.com>
+ <CABXGCsOC2Ji7y5Qfsa33QXQ37T3vzdNPsivGoMHcVnCGFi5vKg@mail.gmail.com>
+ <0672f0b7-36f5-4322-80e6-2da0f24c101b@redhat.com>
+ <CABXGCsN7LBynNk_XzaFm2eVkryVQ26BSzFkrxC2Zb5GEwTvc1g@mail.gmail.com>
+ <6b42ad9a-1f15-439a-8a42-34052fec017e@redhat.com>
+ <CABXGCsP46xvu3C3Ntd=k5ARrYScAea1gj+YmKYqO+Yj7u3xu1Q@mail.gmail.com>
+ <CABXGCsP3Yf2g6e7pSi71pbKpm+r1LdGyF5V7KaXbQjNyR9C_Rw@mail.gmail.com>
+ <162cb2a8-1b53-4e86-8d49-f4e09b3255a4@redhat.com>
+ <209ff705-fe6e-4d6d-9d08-201afba7d74b@redhat.com>
+ <ff29f723-32de-421b-a65e-7b7d2e03162d@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4c86:b0:488:75e3:f3c1 with SMTP id
- 8926c6da1cb9f-4b03f171269mr329972173.0.1716996272152; Wed, 29 May 2024
- 08:24:32 -0700 (PDT)
-Date: Wed, 29 May 2024 08:24:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e1f2bd0619995892@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in btrfs_free_fs_info
-From: syzbot <syzbot+2f3cc5860d147a83eb3d@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff29f723-32de-421b-a65e-7b7d2e03162d@redhat.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -2.71
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: E2187205F7
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,fb.com,toxicpanda.com,suse.com,vger.kernel.org,kvack.org,infradead.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto]
 
-Hello,
+On Wed, May 29, 2024 at 08:57:48AM +0200, David Hildenbrand wrote:
+> On 28.05.24 16:24, David Hildenbrand wrote:
+> > Hmm, your original report mentions kswapd, so I'm getting the feeling someone
+> > does one folio_put() too much and we are freeing a pageache folio that is still
+> > in the pageache and, therefore, has folio->mapping set ... bisecting would
+> > really help.
+> 
+> A little bird just told me that I missed an important piece in the dmesg 
+> output: "aops:btree_aops ino:1" from dump_mapping():
+> 
+> This is btrfs, i_ino is 1, and we don't have a dentry. Is that 
+> BTRFS_BTREE_INODE_OBJECTID?
 
-syzbot found the following issue on:
+Yes, that's right, inode with number 1 is representing metadata.
 
-HEAD commit:    56fb6f92854f Merge tag 'drm-next-2024-05-25' of https://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15874672980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8d1faad9ceb620
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f3cc5860d147a83eb3d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+> Summarizing what we know so far:
+> (1) Freeing an order-0 btrfs folio where folio->mapping
+>      is still set
+> (2) Triggered by kswapd and kcompactd; not triggered by other means of
+>      page freeing so far
+> 
+> Possible theories:
+> (A) folio->mapping not cleared when freeing the folio. But shouldn't
+>      this also happen on other freeing paths? Or are we simply lucky to
+>      never trigger that for that folio?
+> (B) Messed-up refcounting: freeing a folio that is still in use (and
+>      therefore has folio-> mapping still set)
+> 
+> I was briefly wondering if large folio splitting could be involved.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+We do not have large folios enabled for btrfs, the conversion from pages
+to folios is still ongoing.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-56fb6f92.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/65ffe3ca9bb3/vmlinux-56fb6f92.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/354ef77a71b6/bzImage-56fb6f92.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2f3cc5860d147a83eb3d@syzkaller.appspotmail.com
-
-assertion failed: percpu_counter_sum_positive(em_counter) == 0, in fs/btrfs/disk-io.c:1274
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/disk-io.c:1274!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 PID: 5236 Comm: syz-executor.3 Not tainted 6.9.0-syzkaller-12277-g56fb6f92854f #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:btrfs_free_fs_info+0x3c6/0x470 fs/btrfs/disk-io.c:1274
-Code: e9 df 19 42 fe e8 0a b0 03 fe b9 fa 04 00 00 48 c7 c2 80 99 76 8b 48 c7 c6 20 ab 76 8b 48 c7 c7 00 9a 76 8b e8 fb 4d e4 fd 90 <0f> 0b e8 23 e2 60 fe e9 60 fd ff ff e8 19 e2 60 fe e9 02 fd ff ff
-RSP: 0018:ffffc90002bdfda8 EFLAGS: 00010286
-RAX: 000000000000005a RBX: 0000000000000001 RCX: ffffffff816f3159
-RDX: 0000000000000000 RSI: ffffffff816fbd56 RDI: 0000000000000005
-RBP: ffff88805a888000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000000 R12: ffff88805a8890f0
-R13: ffff888057ba1a40 R14: ffffed1003fcaa3d R15: ffff888057ba1a80
-FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:0000000057e98400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00000000f7384414 CR3: 0000000057b96000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
- deactivate_super+0xde/0x100 fs/super.c:506
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- __do_fast_syscall_32+0x80/0x120 arch/x86/entry/common.c:389
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-RIP: 0023:0xf731f579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000ff9328c8 EFLAGS: 00000292 ORIG_RAX: 0000000000000034
-RAX: 0000000000000000 RBX: 00000000ff932970 RCX: 0000000000000009
-RDX: 00000000f7475ff4 RSI: 00000000f73c6361 RDI: 00000000ff933a14
-RBP: 00000000ff932970 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_free_fs_info+0x3c6/0x470 fs/btrfs/disk-io.c:1274
-Code: e9 df 19 42 fe e8 0a b0 03 fe b9 fa 04 00 00 48 c7 c2 80 99 76 8b 48 c7 c6 20 ab 76 8b 48 c7 c7 00 9a 76 8b e8 fb 4d e4 fd 90 <0f> 0b e8 23 e2 60 fe e9 60 fd ff ff e8 19 e2 60 fe e9 02 fd ff ff
-RSP: 0018:ffffc90002bdfda8 EFLAGS: 00010286
-RAX: 000000000000005a RBX: 0000000000000001 RCX: ffffffff816f3159
-RDX: 0000000000000000 RSI: ffffffff816fbd56 RDI: 0000000000000005
-RBP: ffff88805a888000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000000 R12: ffff88805a8890f0
-R13: ffff888057ba1a40 R14: ffffed1003fcaa3d R15: ffff888057ba1a80
-FS:  0000000000000000(0000) GS:ffff88802c100000(0063) knlGS:0000000057e98400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000055bc24d74268 CR3: 0000000057b96000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+With increased number of strange reports either from syzbot or others,
+it seems that something got wrong in the 6.10-rc update or maybe
+earlier.
 
