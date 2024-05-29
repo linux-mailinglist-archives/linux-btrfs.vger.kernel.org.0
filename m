@@ -1,181 +1,205 @@
-Return-Path: <linux-btrfs+bounces-5349-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5350-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E09C8D2EBF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 09:45:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CA6D8D35AB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 13:38:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 711071C20CBF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 07:45:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 583391C236BE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 11:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB53167D8B;
-	Wed, 29 May 2024 07:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lvJSR43P"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCAE180A67;
+	Wed, 29 May 2024 11:37:23 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01DD86D1A8
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 07:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217381802D6
+	for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 11:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716968749; cv=none; b=fQbuNOOaojkn60eMDpfuq0QJBT6ayZjpBSg7hgk9Ud8ZHaSGhot2jeXTe81KKnyW+o6yRL9GRVppACusghX/mcgMxoUyU6fDtuB0cfM/k5Kn94t04H8QNpF8NIvAwQT0gxkSZskTnT1CY46wcXOt1txkWgirK9FDDyQKZFKo3Hs=
+	t=1716982642; cv=none; b=f3aI78nIf1k7UJLHsue1pTZP1SDVcWEvMZwB8OVaRvU/N/MCYuNzWxVJnTHP3lvrAuXpfmvwSSKZMy7wLBvzuxTkBU42o3GkFfJvLosF0KAPZXaA0ZLHFo7z90GLDaYIfgfPKzTTSr7Z7FU0WQKGuwcjO2B/xq50/SaffEgeOOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716968749; c=relaxed/simple;
-	bh=7NzpEX4F6lt6xVhLzcnOdRxSEf+YUCUp/4p1Xc3XAVw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BIkoTQw7cnfeHYBpZk5AV0lCdIeV+BDXTlwjQTpNMQbsyeeY4yqRXkXY1tKwUIPnFViQmKrA9OGuhxaOLKrkFex1hSctTFce1/zDA3yqhodIODT4wnvL11Tm+kvunm8+6SRq3zCrdJ8ExbOJdGRMgn1hg3Eh6Qo29NVNfx93bJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lvJSR43P; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1716968742; x=1717573542; i=quwenruo.btrfs@gmx.com;
-	bh=+qHbpv2nwFWxAnI3GDWzf8+HA09Mj/CYGK7rrT4RR4k=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=lvJSR43PmLrb8uCaAbV2LAllkOF0mF3wY+CkbRDGxBwL3s4bXNtE/Iy0JFfMycpI
-	 ZdaJiObqkrMPx6xRabKLQ//KAe3sbi0GQvHy8iUYFQCNQoULpwpm1Ta7bWuySIyMV
-	 c/yX/15Y1t5S1XsMq6FGeNNFKd7d8Ke01PkzYZG7EXlMK0lRwI5Nj+uCcM5PoCJmT
-	 IHaOx3kKBUJjXlUpxlDILh6uiAq+4SqWkS89r22Tk1z5aFzAIyPkmBjLxIOQwf5ih
-	 9EfmAOOTa4xW9FWM2Y/MTNJ1/u20pVfXl77EpEOd4gg1JInVl3TBeTF77YcMKSzlM
-	 t2K1pX57gfiyv+yM5Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPXhK-1rpaop3ZK6-00Mfdk; Wed, 29
- May 2024 09:45:42 +0200
-Message-ID: <63ce80fe-879e-469a-8d93-49aeb8659191@gmx.com>
-Date: Wed, 29 May 2024 17:15:37 +0930
+	s=arc-20240116; t=1716982642; c=relaxed/simple;
+	bh=oAG1h0r+hnSIGhHxm+D/VLfwSXAZLi5hh6ALXv7pu/Q=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=qGZ/2a/acUlG7AAiyxyAPoYYAGzbcRLsq6E11eKWlGMuu9vUqgu5UdNWTYkEldR/7zd/ByUBnqr7zRxKP1Gigg3SMoogt94UhwbaU+XFURTZ2u9Xq+3Z32qDwc1P7FxbKMKPhwOo19i1HWK+c1bBc6ZXpoz4GatDNNu0XulLBTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-7e92491e750so80286939f.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 04:37:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716982640; x=1717587440;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=guInrQclf5fwu1l7pfAp9j5yGk+WubFjiJRZ6ShZ0ww=;
+        b=qNopnidxuFz74yW5Ye4PxkDZFisXc+QCiYnxQjfr+j2eUFYAaRKtrCNeA47VlOFaQ6
+         QNmpJqwPZ/z3mGBe/eSL/ycVy4+dy22Be9ANbR2O/nkmklyA2Zo6teu6ztg+em6W/ZIM
+         b78pj1hjlXX0KsfvC7nWswAOPgdiE7wAxDJnsiXXgNDQamhJXnE/7pvCNByC6QPAEXGM
+         qukqwE203BzEodidz/XuA2xRPr8WG6tBYof5ZbjfHlq3GyKscbRJJangj04cCJSJX7cs
+         aTFdEt03QqNS0bGDnPPfdAycJT6ND9m+LT2NDgHv/vItV++Ja6vpCQhRzFJ1yRsAdx8g
+         sjXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXx9RVC6bGqqCIN47vC+DhtikaRjbo5rWgFijeg4BVpmaDxNBfDvYK8INKEmAm0wDdo0KTaXP6qmnCIwYktd0BZJx+hkOAfnCCPgI8=
+X-Gm-Message-State: AOJu0YzuVrc8p/EZw8oUSR6sLyJOXrb5K077tgO1G0BaTKBGH+cYfQLy
+	sFAL5lpVKPsy9WQNEDSoUAyu9s/CvR80eriCYAoz/CT+44RgZUUd3kjn/IZjMbIKovDiYkzJstj
+	aoIKCFJUtgWdQAxqs7hdpg3WH9d8kxZyNyqll7labM9+ln+MMstgqpeE=
+X-Google-Smtp-Source: AGHT+IE6cbWOqYPtOGW353usc29WtMxEid9kOPAacp74u7Zl3dHWClyaCxJW0IjKFfqr+2fmDSW9KzL+jyf20Bhex7ZRzqBGoqi/
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 05/10] btrfs-progs: mkfs: align byte_count with
- sectorsize and zone size
-To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
- David Sterba <dsterba@suse.com>
-References: <20240529071325.940910-1-naohiro.aota@wdc.com>
- <20240529071325.940910-6-naohiro.aota@wdc.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240529071325.940910-6-naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YvpSMyWeTEOeOFqV68NfBrr9LbjsDCh9wXBeN5uMXS0HkUDDd7n
- IjFU+gh4Ln/5kd1L0tnn+YHmGPa2sN51vod7Ky+umzWXs88ISQ42KCQZsunBQhgXLJmXIdr
- N6gZqyFLCU15VgegCJGGUfWaII/O2pzFwzBRrAmnB8utxWnLjVigftveHAhU+S6D4tMaa32
- 9lojGu1szJza2a33mE0WA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Gy2DA9UP9UM=;OpWauj9zM8wPSGCk8Rb6rNn5V/B
- +21wDRj8ESGOkfPjKNcLr2gXaRiejhAVkM22xnK4Jx+a1Re8w+y/66tkAnxwxo0UUGLh7NFbf
- iSK2KRvmSrIRgcdEpgKA4ePQKgGMboL4VsUxuhsYw6Rtil3Z2G6FiqhIGT2e7PqlaFOKOvanc
- k02ewXIrScoqOXwbsivfNbJdGUbNEo0IZirOK6qhXyC90DkadVumIp1A8ia3P6HX2h59bWFsY
- w+gkPjNuL8coh5XicfeSeTfJvHzKBlwFEPWwkS4m5u1Zbu0S7Df2SCo0PMrbOaRsc8yBRr8qJ
- H3timt3EnOoHMJS5IzrDr45M8KKvUrgBHVN8hW/azgpV4xZmmtCFhs6Ibezd5h2i+ZvT14yBU
- +fJzfLK1b1giWpjHshU5X2gLSXArtcyG21jB9fqWiDavPv/Hjv6lAN6SekLEsszBU4azkH1Yl
- n4q1Yb4m6x7k17oTQweQ3TgDEH8KRdP0PhWz611uuy9Of9eWaEltqYKAuCAZg0Cwoa2LkQAu+
- zKwoB1JvBtX6swVdT9+RTtqXiFWkqRSEIgszmg0FGAtHYcOJv49RggFAtwHTy3zPPE5yPFBWW
- 1Iu9CBlJEedjLnmgH5gFJB29SUPSWJwZ1n0/u6A0G9frZKsEBJsAswUFpjDYHPFsFCd0ANOZz
- jabFBVl3sNcGvzOpnqveIkyKowDw70YYF6caI3CnDaLPmArRrAJz6THKbdAbZ2fcMg1A2rFgv
- rpFW2q6pLHRGoztj03wUThMJevmWqYF4uHM+4vJ5sRIz4+R+bUHeYpYsElARxLpDHZFL/o7aB
- vKdhely9BQMDd1DZSvThYLkn507FB3NO5jMphn5pXdWLk=
+X-Received: by 2002:a05:6638:808c:b0:4af:ed6c:d8d7 with SMTP id
+ 8926c6da1cb9f-4b11cd84d43mr33605173.0.1716982640304; Wed, 29 May 2024
+ 04:37:20 -0700 (PDT)
+Date: Wed, 29 May 2024 04:37:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005c792d0619962ca1@google.com>
+Subject: [syzbot] [btrfs?] KMSAN: uninit-value in btrfs_compress_heuristic
+From: syzbot <syzbot+ca895d3f00092ebf1408@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14573014980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
+dashboard link: https://syzkaller.appspot.com/bug?extid=ca895d3f00092ebf1408
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ca895d3f00092ebf1408@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in btrfs_compress_heuristic+0xb34/0x31f0 fs/btrfs/compression.c:1507
+ btrfs_compress_heuristic+0xb34/0x31f0 fs/btrfs/compression.c:1507
+ inode_need_compress fs/btrfs/inode.c:812 [inline]
+ btrfs_run_delalloc_range+0x158f/0x16e0 fs/btrfs/inode.c:2281
+ writepage_delalloc+0x244/0x6b0 fs/btrfs/extent_io.c:1213
+ __extent_writepage fs/btrfs/extent_io.c:1465 [inline]
+ extent_write_cache_pages fs/btrfs/extent_io.c:2142 [inline]
+ extent_writepages+0x1c01/0x3850 fs/btrfs/extent_io.c:2264
+ btrfs_writepages+0x35/0x40 fs/btrfs/inode.c:7929
+ do_writepages+0x427/0xc30 mm/page-writeback.c:2613
+ filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:397
+ start_delalloc_inodes+0xb02/0x17c0 fs/btrfs/inode.c:9404
+ btrfs_start_delalloc_roots+0x89e/0x1030 fs/btrfs/inode.c:9481
+ shrink_delalloc fs/btrfs/space-info.c:648 [inline]
+ flush_space+0xbd6/0x16d0 fs/btrfs/space-info.c:758
+ btrfs_async_reclaim_metadata_space+0x76d/0x9c0 fs/btrfs/space-info.c:1088
+ process_one_work kernel/workqueue.c:3267 [inline]
+ process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3348
+ worker_thread+0xea5/0x1560 kernel/workqueue.c:3429
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was stored to memory at:
+ heuristic_collect_sample fs/btrfs/compression.c:1461 [inline]
+ btrfs_compress_heuristic+0x303/0x31f0 fs/btrfs/compression.c:1496
+ inode_need_compress fs/btrfs/inode.c:812 [inline]
+ btrfs_run_delalloc_range+0x158f/0x16e0 fs/btrfs/inode.c:2281
+ writepage_delalloc+0x244/0x6b0 fs/btrfs/extent_io.c:1213
+ __extent_writepage fs/btrfs/extent_io.c:1465 [inline]
+ extent_write_cache_pages fs/btrfs/extent_io.c:2142 [inline]
+ extent_writepages+0x1c01/0x3850 fs/btrfs/extent_io.c:2264
+ btrfs_writepages+0x35/0x40 fs/btrfs/inode.c:7929
+ do_writepages+0x427/0xc30 mm/page-writeback.c:2613
+ filemap_fdatawrite_wbc+0x1d8/0x270 mm/filemap.c:397
+ start_delalloc_inodes+0xb02/0x17c0 fs/btrfs/inode.c:9404
+ btrfs_start_delalloc_roots+0x89e/0x1030 fs/btrfs/inode.c:9481
+ shrink_delalloc fs/btrfs/space-info.c:648 [inline]
+ flush_space+0xbd6/0x16d0 fs/btrfs/space-info.c:758
+ btrfs_async_reclaim_metadata_space+0x76d/0x9c0 fs/btrfs/space-info.c:1088
+ process_one_work kernel/workqueue.c:3267 [inline]
+ process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3348
+ worker_thread+0xea5/0x1560 kernel/workqueue.c:3429
+ kthread+0x3e2/0x540 kernel/kthread.c:389
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+Uninit was stored to memory at:
+ memcpy_from_iter lib/iov_iter.c:73 [inline]
+ iterate_bvec include/linux/iov_iter.h:122 [inline]
+ iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
+ iterate_and_advance include/linux/iov_iter.h:271 [inline]
+ __copy_from_iter lib/iov_iter.c:249 [inline]
+ copy_page_from_iter_atomic+0x12b7/0x2ae0 lib/iov_iter.c:481
+ btrfs_copy_from_user+0x176/0x4c0 fs/btrfs/file.c:59
+ btrfs_buffered_write+0x119a/0x2ab0 fs/btrfs/file.c:1339
+ btrfs_do_write_iter+0x395/0x2270 fs/btrfs/file.c:1688
+ btrfs_file_write_iter+0x38/0x50 fs/btrfs/file.c:1705
+ __kernel_write_iter+0x64d/0xc80 fs/read_write.c:523
+ dump_emit_page fs/coredump.c:895 [inline]
+ dump_user_range+0x8dc/0xee0 fs/coredump.c:956
+ elf_core_dump+0x57c7/0x5ae0 fs/binfmt_elf.c:2083
+ do_coredump+0x32d5/0x4920 fs/coredump.c:769
+ get_signal+0x267e/0x2d00 kernel/signal.c:2896
+ arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
+ do_syscall_64+0xdc/0x1e0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Uninit was created at:
+ __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+ alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
+ alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
+ dump_user_range+0x4a/0xee0 fs/coredump.c:940
+ elf_core_dump+0x57c7/0x5ae0 fs/binfmt_elf.c:2083
+ do_coredump+0x32d5/0x4920 fs/coredump.c:769
+ get_signal+0x267e/0x2d00 kernel/signal.c:2896
+ arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
+ do_syscall_64+0xdc/0x1e0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 1 PID: 3751 Comm: kworker/u8:28 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+Workqueue: events_unbound btrfs_async_reclaim_metadata_space
+=====================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-=E5=9C=A8 2024/5/29 16:43, Naohiro Aota =E5=86=99=E9=81=93:
-> While "byte_count" is eventually rounded down to sectorsize at make_btrf=
-s()
-> or btrfs_add_to_fs_id(), it would be better round it down first and do t=
-he
-> size checks not to confuse the things.
->
-> Also, on a zoned device, creating a btrfs whose size is not aligned to t=
-he
-> zone boundary can be confusing. Round it down further to the zone bounda=
-ry.
->
-> The size calculation with a source directory is also tweaked to be align=
-ed.
-> device_get_partition_size_fd_stat() must be aligned down not to exceed t=
-he
-> device size. And, btrfs_mkfs_size_dir() should have return sectorsize al=
-igned
-> size. So, add an UASSERT for it.
->
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-To David, since I have the write permission to btrfs-progs and reviewed
-the series, can I push it to devel branch now?
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Thanks,
-Qu
-> ---
->   mkfs/main.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index a437ecc40c7f..3446a5b1222f 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -1591,6 +1591,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   	min_dev_size =3D btrfs_min_dev_size(nodesize, mixed,
->   					  opt_zoned ? zone_size(file) : 0,
->   					  metadata_profile, data_profile);
-> +	if (byte_count) {
-> +		byte_count =3D round_down(byte_count, sectorsize);
-> +		if (opt_zoned)
-> +			byte_count =3D round_down(byte_count,  zone_size(file));
-> +	}
-> +
->   	/*
->   	 * Enlarge the destination file or create a new one, using the size
->   	 * calculated from source dir.
-> @@ -1624,9 +1630,11 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->   		 * Or we will always use source_dir_size calculated for mkfs.
->   		 */
->   		if (!byte_count)
-> -			byte_count =3D device_get_partition_size_fd_stat(fd, &statbuf);
-> +			byte_count =3D round_down(device_get_partition_size_fd_stat(fd, &sta=
-tbuf),
-> +						sectorsize);
->   		source_dir_size =3D btrfs_mkfs_size_dir(source_dir, sectorsize,
->   				min_dev_size, metadata_profile, data_profile);
-> +		UASSERT(IS_ALIGNED(source_dir_size, sectorsize));
->   		if (byte_count < source_dir_size) {
->   			if (S_ISREG(statbuf.st_mode)) {
->   				byte_count =3D source_dir_size;
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
