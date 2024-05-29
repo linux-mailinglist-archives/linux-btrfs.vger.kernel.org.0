@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-5346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5347-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B26B98D2DEA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 09:14:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BEC88D2DEB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 09:14:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3284BB251CB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 07:14:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8FB91F21889
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 07:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED07A167DBA;
-	Wed, 29 May 2024 07:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13F6168C11;
+	Wed, 29 May 2024 07:13:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="aM5bB/3k"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="o3n2ErrB"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC2FD16729F
-	for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 07:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73EC0167D94
+	for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 07:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716966825; cv=none; b=nLg0cuervX19xSRMwmr6H9AUciOoK8lva5gumFqV4aDBkl05KmpV0PWe02gBX92WZxRh8MTu8JJEQsnWzMZIzpzwmzyDihf4y/Wc1TiUPksBJMBFZDovZ36kTqA+wJyZT97GBfgrSabIS88XEzvKjC1TE3jfBmasp5FpLUVZxE0=
+	t=1716966825; cv=none; b=qvBJ1FjhXuUPPZXKoaMp0hpVQJkjHrs1SBEB2UyeQ4gYHecocNL1PNklGnUjWxlFvkeQtNOt4YZ6Rb0ppr11FWpvKB655zeCCx9xEoo5apGxhXARZoKwbIHo4X06gfdEjqwPAs42NskjO/4iDsV5z+kWj8cpo2SlGiFVT9UuvHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1716966825; c=relaxed/simple;
-	bh=uZcIG1Z05gbvssV/KG6a10C2OPcE+6aIE5uZvc3mnGY=;
+	bh=ZhIrO75nhRZjU15nUgPpUwToGimb0hwXNBSUt61BJpk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iEuEY8QTFIYD7nssyvzWsTuyHaqCCILSQcYhd6f8mNINOSWoVQ+h1rp1uSLpUNti3wdkK3GATMzcbkX/UdKRmMHFcp22XKQOFoReSZbdqy7fq2WHA71mDkLIPOzJIvFu33sF1VNqGrcDalhtC7TS1PH/zr8bja73GktzivyUtGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=aM5bB/3k; arc=none smtp.client-ip=216.71.154.42
+	 MIME-Version; b=pdmJq3OK3lbgDbByQX7INZcbmLNvxhz1+OJ4TYaueMwK3m8h/Akgtoe1IOWU6L9obk/17ABzsXXX2PNyiX9vnfFhtQ8d7nKElJldAcvYYqLevo0OL1hsb7IzdJYqi+AIF6pk169MG3eWpHUjm464xnJpj9ZcLLfFb/y+zIlCXho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=o3n2ErrB; arc=none smtp.client-ip=216.71.154.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1716966823; x=1748502823;
+  t=1716966824; x=1748502824;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=uZcIG1Z05gbvssV/KG6a10C2OPcE+6aIE5uZvc3mnGY=;
-  b=aM5bB/3kKkhU5fUwTHEyKHhCHhGQTZA2ahPdV6ZfKTERWgITwTZ9lj8G
-   AFO8PcoqSt308bImdbZ/U8X7pd182V9qF0HyebzQsGS3zxLkXmVdcKErC
-   p24NKe1udRK2IQT4/W3yP+0at+Om07fkrl2H4QXhVfIVentT8mxrGktzW
-   UTqP3Jy8kFHQASWK0i7D1v4BqfP/EWGSeBYQqVoVDjfikxEDq/DeXAXvH
-   uPeCqkNgORM/XQtHG9c2Npa3TNvkVKtHTNcqCMVni2b76EMI7ldnKruuP
-   Hslrzxl9K7GeH1ebShGYlboLchclpWatms828dMlDmkTooWCkPzRGUCSC
-   Q==;
-X-CSE-ConnectionGUID: ahUM2zLdRlWNMxw47Sfc0Q==
-X-CSE-MsgGUID: 5NPn5GBSQOi0bvujzDZdwA==
+  bh=ZhIrO75nhRZjU15nUgPpUwToGimb0hwXNBSUt61BJpk=;
+  b=o3n2ErrBCnSIpC3IVKcvDoWWuNYxW/VD941QXTMyxc2ICcYXSG5VETe3
+   u1Ft7d5b2v49csJmKO2a6ECYEAZ7oqXDDldEbISqusLX7KTNBueY0XgMG
+   TKBYi1wWGK0mi46/0wpQhyzHa4GKP57/wu0pELgG547XM8MWKjtfcrOkV
+   0HXxhOViGR+w/2oQDmEdqXsZqVkSwp7RF4ITeq7lEJ0oRuD+VhWVc9iJN
+   gFSE7iIZzKIKJnBErI8PfVBj87ysN8Sp5JwiZ20k2LC5c93ZarGuM9sEg
+   jb/hjZAXfQzBrJeY2P4RAac9OATkzLMANvXNf+MKc8BhWewMjhHNe2lAQ
+   g==;
+X-CSE-ConnectionGUID: NQcxbT/jQhS9/Ij/khGxFA==
+X-CSE-MsgGUID: DnIjC7I8Qo206Q2xTlkQ8Q==
 X-IronPort-AV: E=Sophos;i="6.08,197,1712592000"; 
-   d="scan'208";a="16865351"
+   d="scan'208";a="16865353"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 29 May 2024 15:13:38 +0800
-IronPort-SDR: 6656c952_GzzN2FM2OO8jaRR1+7DZns/qLpcLiEBleJsOnwlGhE+dp2I
- nyQaGEy5FrF9FMYDAsHj5/BjaaiNo0wY9Wu4ucA==
+  by ob1.hgst.iphmx.com with ESMTP; 29 May 2024 15:13:39 +0800
+IronPort-SDR: 6656c953_rZ9onBDbuUeILI1KN+6vxxfMXt2XtdvgcVMnQ6B0m/P82/x
+ wRWhJJjoSWbB81DHNmMLiU6C8iGVHjuXZ3s2KDA==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 May 2024 23:21:06 -0700
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 May 2024 23:21:07 -0700
 WDCIronportException: Internal
 Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.62])
-  by uls-op-cesaip01.wdc.com with ESMTP; 29 May 2024 00:13:37 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 29 May 2024 00:13:38 -0700
 From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Naohiro Aota <naohiro.aota@wdc.com>,
 	Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v4 09/10] btrfs-progs: test: use nullb helper and smaller zone size
-Date: Wed, 29 May 2024 16:13:24 +0900
-Message-ID: <20240529071325.940910-10-naohiro.aota@wdc.com>
+Subject: [PATCH v4 10/10] btrfs-progs: test: use nullb helpers in 031-zoned-bgt
+Date: Wed, 29 May 2024 16:13:25 +0900
+Message-ID: <20240529071325.940910-11-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240529071325.940910-1-naohiro.aota@wdc.com>
 References: <20240529071325.940910-1-naohiro.aota@wdc.com>
@@ -75,50 +75,60 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With the change of minimal number of zones, mkfs-tests/030-zoned-rst now
-fails because the loopback device is 2GB and can contain 8x 256MB zones.
-
-Use the nullb helpers to choose a smaller zone size.
+Rewrite 031-zoned-bgt with the nullb helpers.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/mkfs-tests/030-zoned-rst/test.sh | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ tests/mkfs-tests/031-zoned-bgt/test.sh | 30 +++++---------------------
+ 1 file changed, 5 insertions(+), 25 deletions(-)
 
-diff --git a/tests/mkfs-tests/030-zoned-rst/test.sh b/tests/mkfs-tests/030-zoned-rst/test.sh
-index 2e048cf79f20..b1c696c96eb7 100755
---- a/tests/mkfs-tests/030-zoned-rst/test.sh
-+++ b/tests/mkfs-tests/030-zoned-rst/test.sh
-@@ -4,22 +4,22 @@
+diff --git a/tests/mkfs-tests/031-zoned-bgt/test.sh b/tests/mkfs-tests/031-zoned-bgt/test.sh
+index 91c107cd5a3b..e296c29b9238 100755
+--- a/tests/mkfs-tests/031-zoned-bgt/test.sh
++++ b/tests/mkfs-tests/031-zoned-bgt/test.sh
+@@ -4,37 +4,17 @@
  source "$TEST_TOP/common" || exit
  
  setup_root_helper
--setup_loopdevs 4
--prepare_loopdevs
--TEST_DEV=${loopdevs[1]}
-+setup_nullbdevs 4 128 4
+-prepare_test_dev
+-
+-nullb="$TEST_TOP/nullb"
+ # Create one 128M device with 4M zones, 32 of them
+-size=128
+-zone=4
+-
+-run_mayfail $SUDO_HELPER "$nullb" setup
+-if [ $? != 0 ]; then
+-	_not_run "cannot setup nullb environment for zoned devices"
+-fi
+-
+-# Record any other pre-existing devices in case creation fails
+-run_check $SUDO_HELPER "$nullb" ls
+-
+-# Last line has the name of the device node path
+-out=$(run_check_stdout $SUDO_HELPER "$nullb" create -s "$size" -z "$zone")
+-if [ $? != 0 ]; then
+-	_fail "cannot create nullb zoned device $i"
+-fi
+-dev=$(echo "$out" | tail -n 1)
+-name=$(basename "${dev}")
++setup_nullbdevs 1 128 4
+ 
+-run_check $SUDO_HELPER "$nullb" ls
 +prepare_nullbdevs
-+TEST_DEV=${nullb_devs[1]}
  
- profiles="single dup raid1 raid1c3 raid1c4 raid10"
+-TEST_DEV="${dev}"
++TEST_DEV="${nullb_devs[1]}"
+ # Use single as it's supported on more kernels
+-run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -m single -d single -O block-group-tree "${dev}"
++run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -m single -d single -O block-group-tree "${TEST_DEV}"
+ run_check_mount_test_dev
+ run_check $SUDO_HELPER dd if=/dev/zero of="$TEST_MNT"/file bs=1M count=1
+ run_check $SUDO_HELPER "$TOP/btrfs" filesystem usage -T "$TEST_MNT"
+ run_check_umount_test_dev
  
- for dprofile in $profiles; do
- 	for mprofile in $profiles; do
- 		# It's sufficient to specify only 'zoned', the rst will be enabled
--		run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d "$dprofile" -m "$mprofile" "${loopdevs[@]}"
-+		run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d "$dprofile" -m "$mprofile" "${nullb_devs[@]}"
- 	done
- done
- 
- run_mustfail "unsupported profile raid56 created" \
--	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid5 -m raid5 "${loopdevs[@]}"
-+	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid5 -m raid5 "${nullb_devs[@]}"
- run_mustfail "unsupported profile raid56 created" \
--	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid6 -m raid6 "${loopdevs[@]}"
-+	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid6 -m raid6 "${nullb_devs[@]}"
- 
--cleanup_loopdevs
+-run_check $SUDO_HELPER "$nullb" rm "${name}"
 +cleanup_nullbdevs
 -- 
 2.45.1
