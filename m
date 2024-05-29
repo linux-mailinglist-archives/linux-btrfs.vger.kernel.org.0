@@ -1,279 +1,286 @@
-Return-Path: <linux-btrfs+bounces-5335-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5336-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D3AA8D2BD0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 06:48:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E70408D2DB4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 08:58:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6D431F23811
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 04:48:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16F441C22AF5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 06:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11F715B540;
-	Wed, 29 May 2024 04:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE24161307;
+	Wed, 29 May 2024 06:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="mMRdQEWr";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="qqGLa4hT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MdaFL/tM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145CE10A35;
-	Wed, 29 May 2024 04:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716958098; cv=fail; b=KezzggBR5m3WsRFrbOpAbsgTY+5nK/yB7vpf4HQ80xD0VlaTBwx9LWlvMeuLIYT0c2jSk6LAcDdNECyTjAg6zgBvNZfdqivZhLLHJgm3qi9mejfqZyHR9eRTsM4jbRYyfaC/rni3TfPHmzD/4iNuAvZIiCnCRwzKjcuGEVRJezI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716958098; c=relaxed/simple;
-	bh=C233omRX883+VXWfbMLu7SdoFIXyG5kZhUJHVudKk14=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Fm7/hjl8YU1oqfiN5w2yTY3ysQcQn9oMc/PlWheMg7YshlgkdEDEditUVvSEsI6U+rxXz4JgzfT5Jzs6ixQD4jbS2+5RYKxwKIqbTwgaF3pEl9KsmcZb52LTalzVBzGmaST16dsa671+/jqNmZS2cdTGGj9wyuaSsTfOg7sfTV0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=mMRdQEWr; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=qqGLa4hT; arc=fail smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1716958096; x=1748494096;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=C233omRX883+VXWfbMLu7SdoFIXyG5kZhUJHVudKk14=;
-  b=mMRdQEWrqBqOlpyMdL/6n6Iw/T/zh1HzhXHZCyAFjLY/Q5RVW99H/W+U
-   Bu8s+Fp/YCL8Mgmr2IF3CBrvpZiqg+21TqDZIeBqvMTmIOQ+d8hf8yw5p
-   yxA6d3sbMpgPRaZBVPHfqyh9GufXKUvEWJC6cqHudcpNz2QEpCuBQYuTX
-   BR8KXpuTeJ5SJwjc8Meu0xLXHEt6wVZt+/KRlpTGyJbWQECUC28BPNOaW
-   kWLNBnS3SSJmYrnF6oAaruaFpZxTnfeTanpAHXzk+Z/3gKr70qRnD07Nk
-   5XfE4x6jN+LdSQPyg7jqHTZiJw2XtBn/Amvof4iSxuzO3gjqMKHW870qL
-   g==;
-X-CSE-ConnectionGUID: exhDu6UJTx+zTbKcA9/KFw==
-X-CSE-MsgGUID: R8x7lsipQouLSNE6WVd0eA==
-X-IronPort-AV: E=Sophos;i="6.08,197,1712592000"; 
-   d="scan'208";a="17261554"
-Received: from mail-northcentralusazlp17010000.outbound.protection.outlook.com (HELO CH1PR05CU001.outbound.protection.outlook.com) ([40.93.20.0])
-  by ob1.hgst.iphmx.com with ESMTP; 29 May 2024 12:48:08 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YinLGfM13eAIDenom3CFk2V32gZXE3LJVqkJer9r+FVbgw6Yi7td4XXm6z+3GpnDSkK2OI9NeyC0/xYyUG/GF6bH7ZGWAK1FG0DtqygrI9u8eLKsdRkdG6VG7hQo6c3CdG8XadnXgFsio1fgXrySmQ1RJA6wNAaS4SVZ3+/D/PpRc5G+zdVCE2BtVckbWA7MJBBHEZjXd9AYfmp6aVZ06m0ZvD+lptc8dCjLuCPpXWCX0MEjjkfcuaQLnuCgICI+Vw4NfOUU8v20Co055tkrihqfduZ3UlvWQUEc7NY63zmx0fncQ+N7rscY6GwpMTEzNas1J9+ftwGxH36gk8n6fA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f59481KNz7OrMTITb69IO1djmGs1kDGco2d0sslG7i8=;
- b=dEKzyRH8jQAY/X0hMV7pPQkggGYjKFYt7XMIIK0ix8PVhAda8eBzUDaS3Eily/bcq9Y1ybAzW29Xpt00NmmfFMqMtOQJw7FkUmJqMx3Eqig4zlCU5gu+ZmWw46gVxUBoETAhKDyBjpUcW/MyvrCCgkCRza61m47MYrFPZG/EYEI3QN5y2zWYRi/fPckJoM6bkeHJvT6AIWAvAKmqVj1TkH2vD0gUP0Q7Id9qhbvunI4TYIztRMg4ltOnKkFhnr2ZrUaOO3zABIdoo3Sp/75/58GSJeFEe/qeQnQV9ZPFX4I+MRRf6OpR/ofD7ibU9rxnRKofeE07nQ7rv2i5BAwtTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f59481KNz7OrMTITb69IO1djmGs1kDGco2d0sslG7i8=;
- b=qqGLa4hTtLHWi0AycwnztNP3OpWGk+Ul/IN1SllufMNALJleLEsYO45gIfHpAhj23rd6Kng5Do3YKtWE/RD99+CHVjsBRJ/2RpkF8jYgkvIUMf2gTqKsW1IYHKn/eDuLlcp+VymJzIOXHoq0Ze20TZs/N3Amw4KoljvxSpIO1Ok=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by IA3PR04MB9330.namprd04.prod.outlook.com (2603:10b6:208:510::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.30; Wed, 29 May
- 2024 04:48:05 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2%7]) with mapi id 15.20.7633.018; Wed, 29 May 2024
- 04:48:05 +0000
-From: Naohiro Aota <Naohiro.Aota@wdc.com>
-To: Johannes Thumshirn <jth@kernel.org>
-CC: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
-	<dsterba@suse.com>, Hans Holmberg <Hans.Holmberg@wdc.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Filipe Manana
-	<fdmanana@suse.com>, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Subject: Re: [PATCH v5 1/3] btrfs: don't try to relocate the data relocation
- block-group
-Thread-Topic: [PATCH v5 1/3] btrfs: don't try to relocate the data relocation
- block-group
-Thread-Index: AQHarfeLkjGaZXQgG0yC44Z1ASpAlrGtqtkA
-Date: Wed, 29 May 2024 04:48:05 +0000
-Message-ID: <kiiun4v7wp7ioo6rj7wiafmx3m7f3s6llfp2qa5hcahf7p4o5f@xrrd3swmgal3>
-References: <20240524-zoned-gc-v5-0-872907c7cff4@kernel.org>
- <20240524-zoned-gc-v5-1-872907c7cff4@kernel.org>
-In-Reply-To: <20240524-zoned-gc-v5-1-872907c7cff4@kernel.org>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|IA3PR04MB9330:EE_
-x-ms-office365-filtering-correlation-id: 206846c0-0af2-4bb5-90d3-08dc7f9a877e
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|366007|1800799015|376005|38070700009;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?bCuMtHZng5ewgoVFJZ4OwLNcmvC7r4vCsD8lDwOaaD5vR+P1WWQJrTMjurBo?=
- =?us-ascii?Q?QfYsWQyTFxpugpF+cqvKZXjSTZvvxU2H2OFzQ6oFjDVx7P4AwmvGQlOdaJaC?=
- =?us-ascii?Q?gEJe7eFz3UFGpw+8dz1Ky2UtmrslhFAV7VD/SBvnRhxOEPrq93prmSoeO7l/?=
- =?us-ascii?Q?iU5FCuVYQljVozDbbmtTv0dDFzTQTSTlgPrhLIHCZybPiV5bk3ZWAohkyf9o?=
- =?us-ascii?Q?avFhdqG1m+LXATl8LNLxK9jycAY00ZfbedhQTjGbM3qsgcSxU4oI4QXx87k7?=
- =?us-ascii?Q?oe5mGJtNfjrk69TiaOmVCGqLpi6i36rzd03G/jcg6pSh8D4/lBqDh18FHRWI?=
- =?us-ascii?Q?cqRL1dwciJqv7oPi5jA+aVYZEeIN8AyZ0S5jQsi+iMjDd1lDAcf/tHOXXGFR?=
- =?us-ascii?Q?80J0tUjwcSMtC7VY3gn+NsiO95Nar/Tj2hNsGSJJbvAMz7X7HNyU7Mc6qlPl?=
- =?us-ascii?Q?t/AAGFZ+8TOz+gjcWjemHlgWLI+f47+WQI2YkqTAutSAnZ9BXkGYdEXbFH91?=
- =?us-ascii?Q?kasxWy9uHRyvqxYAqUOSC2/gNS/W1otjMTYjRlqxtnav7hsNCOlyc3qYt6/N?=
- =?us-ascii?Q?MY+HUAV8PLJ6NPmImqJMfW3lzqHJaROpnKOr6jteS+cg08P0WFsR4zu4TbwM?=
- =?us-ascii?Q?zekxYjvH3nb/whHaNvGZOCWwER0t/V8C14xxB3ClVQU146fw+713GEA2KFL7?=
- =?us-ascii?Q?Onth3ttmAjDV2INUdCS8G9wSq3pAU6IpkHM9ag6YfBMuqOK4SFCoOiIBpOnq?=
- =?us-ascii?Q?5wT99LOA9KW7ZqetLQo6cMCb8I289vtk2PIJzptCa/YlVodba9wAT2cqzW5d?=
- =?us-ascii?Q?WODfcHTI+RYzZyv4vtpqhF/2dlj4VfYNIeL7UkLkKwSSIAsgXxblyNm+GWEX?=
- =?us-ascii?Q?ANDETHS2GR2z28jtY99QUuDKVwfY9GvAvc9f3SMi57doQJ1DOvSJvKHiwzCW?=
- =?us-ascii?Q?ShzP2mLVylVlswHIwuAvCVPBvZ5rYiRE2aS7msh8aw788nnSimqqLUkb5RrP?=
- =?us-ascii?Q?3uiICdtvXPeVzGRbiQ0qJCI496+oeWhKIUzrvgxMj9DJHlZPaVZbtg8l9Rfv?=
- =?us-ascii?Q?A7X/v0kgYrtIfS3Nc0fgyA+rx77LnAKpoKbEU8hZbn7XRSOnZyxQQNv0lWba?=
- =?us-ascii?Q?PMhLIdGrzV2eJUkNGasgl+R1BA0kfjKlsB4zhn3/CbS8PYM1bFD12xH2GePu?=
- =?us-ascii?Q?A17xtWNZbDBVNBkbgfaq+vYUXilx4xouYRYQw4qpNBAQHxfPw1q+oOtJLETq?=
- =?us-ascii?Q?PRQfvoKlfd0lzi5AdN1YEOlr9Ip2SU27MD5skKKYqKwmMWZrQmD1EMgEbsfv?=
- =?us-ascii?Q?Y571U1DhHQDXZQHEbzSEeT5BJ/4mHR5LnP7gF9Z0SXyS+A=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?rfJbjpfXAMM2r7ucCyFEUnfrP7ztWBkKs7l12iNUmroKspoBp82HRK6UFYT5?=
- =?us-ascii?Q?5Abl2JBXFDd/+CoP00QwxUeGBmGd7wVHL5CT6MIdpD78jIwLuPkxiuThvfRB?=
- =?us-ascii?Q?FvOu+bKbV9ss080r9koSNy/mv1lUG6veJzUPhX1/UHUKas/fpEvrObDGPLo3?=
- =?us-ascii?Q?LPT3zkp3nnTFpFy4qgQTDoY29CFzAVil4RnfBAPsMycQAT3mRS2EcpZAg4FA?=
- =?us-ascii?Q?vFSy+dECcLpQlsRPfglc/oZRwAd+XizkVLdpGnj+oBwfduCqLV5x0b/k2BWy?=
- =?us-ascii?Q?QT2hkby9sb8cn8bW0zTBhQtsww8RcI1NRkrbOzPti3WRe8kbRRGXMf7gh32A?=
- =?us-ascii?Q?QiJED+qnonMXx/65s3uAWy4v1EPh4KYlKhGSEfySyM/3VISA3TYndqVlU1ZY?=
- =?us-ascii?Q?2xGmPAzNpCn8Lf49+ilId0zHqBnxDLUzqfda9NH8QTTPVsrBJsclrfFI0c4f?=
- =?us-ascii?Q?TBuLbg1CF0bVCp5Zb3aPhIHhn2l0yKjVPZ3VrNuUA5YKU6keMpVGtOMGEdBM?=
- =?us-ascii?Q?aCtaGeWc3fRY0ND55rWNB3ZdqSI2yIFElncbWpPw2ml3x3H/0/zEwG5+pqGD?=
- =?us-ascii?Q?mdrMXMVdQuyvYVE0Vrzof8J9pNLdPcqUQSdhrccYe3lYTPxtdJLXhTJO4H5J?=
- =?us-ascii?Q?5tks0Po7e8Q+YNKYTv3aqk97PeMP/KJjUwr7jHG7QqK91+X3s4lXnMMfOyr8?=
- =?us-ascii?Q?nb/S/HXwavpmXDxYim1H+PdT/NkIBBkvBRsDgpviRGOkYKEOXfi3ggh78VPY?=
- =?us-ascii?Q?epCifkNHNg4BfDAe9zDD6hMNmwHvOuWVyEoasEY4cdzuAscVj9Jf0ldJqktM?=
- =?us-ascii?Q?PVSUJ5mn32WfobCoJzzuXCf7qDwBOAWrSZUvCYTzR3wFizenlahF432WmEQy?=
- =?us-ascii?Q?qDkN/cCWEx2hjhsaGEFMLD3X2Fo0KhmQopEo2cWWCz5LOIRG2Za4EXJL68eR?=
- =?us-ascii?Q?IZuDPNGAZv75oP5+nyOf9CqTFCiiWOExpVkq05Q6p+CnnsmsaFpXua+yhXf9?=
- =?us-ascii?Q?SIR4EJSKS+hnH8Thg/Rbqr3NUSxprUZaB0L5a0vFi7+FdFz93pPXqgZQYTFh?=
- =?us-ascii?Q?xK82HHKvvWK1eW8Vniz63leBJ6CV2CmEkCF1TUBMxS/8ilhMJ8adgX1TgqRz?=
- =?us-ascii?Q?ZodiKFDnypZdN4vwe03hwZnuUbvKs//9WGOA1B90gBPoDPY+XoKxJVxOazS+?=
- =?us-ascii?Q?ogTJzzxVFJGpzYNEqljN8o1H8X6Ik/4XgLLhAdICP09vzoCdCoEHbosj2YZg?=
- =?us-ascii?Q?fbq0+SniOUdbOPwCCw10l6MZmeb4rPEc/eks29Itv1XJ8YauExEVmzywG70t?=
- =?us-ascii?Q?qpICzOjvz4e0zdUwDT0+0KSFpBe/6rwNDGbdHTp/aPMAMri7He+T6QtmOcow?=
- =?us-ascii?Q?yW+bnUOKWjTz1mSoefyOy678MZuskRGOhMVdXknO2obZWemUNN5gWciDTNoe?=
- =?us-ascii?Q?mhRAqsI4VcxOUz7sI6M2Ak5Z0qaaXm7WdAkfkBG9s8xZkF4UIr5m2qKtCHdz?=
- =?us-ascii?Q?M3vLPt4wE33zAgkXhf5/AfQT5wHopYFd62bsm/xkIZlmQxIdNBPHvyfic9yo?=
- =?us-ascii?Q?jEJt883Z4ceeC3VdHhC9848fByM45WJXFJKs7jZb5G8do0yyDZNqBAo2O/to?=
- =?us-ascii?Q?EQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3E0F55C654AFDF43AA942475F914E67E@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7691DDC3
+	for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 06:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716965876; cv=none; b=kIrvp4vKjqM0e3TGMqkdOeevpWPLZpJGzGy4wQIKTj2BvN+ul/jBphTvRnsP+dCbgW979XHpewp/wayqhOASvTU416+yCnmisvNVW/UkjrjPg77WAcuwFzlPwjvE5TRy2pttpz6VHHnEU6RxkhRxLUVA95g0CBeYQaN1/WbyFJs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716965876; c=relaxed/simple;
+	bh=l/V05A/Kr9pMR3eklw9K8MKRqnjCwDmp2OTE5UqpVjQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=SymLWDacP95Z3tkPC2UUFEXfxyOcZswwc/OP4b34mOrDeK+Aq9RDgUQCvmeC2smVIqG4du1SppKCgu0Brwp4slJEavZZs1mmFx4aYVMhsBvKCvjFnVCLSLGu6pKYiH19dlC/EtC1RHy7RJjkeQSVNwutooyMIA2QEpfi7U0ZBmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MdaFL/tM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1716965873;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=X1jNL5AKCTqKVJJWMUcLi/+HsxHmghC2E1+CScAu2FQ=;
+	b=MdaFL/tMe3OnpC8azQuftqv0/BBVMx4UOvkjcnwIgLH31T3SaIeJVSBPsbMOZe4nL4x0Kg
+	IU5gGTRs2OUkNF6VSKSu0opQGymnnTclt2ACXz2BxOCXOV27Yka3Urz/Y6kKITAwjRjYsD
+	Zc21FLpjpNL7cfNBSWN2cLV7U8BdnFw=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-297-k_WfJDtvNJWdGxj5HPIKIw-1; Wed, 29 May 2024 02:57:52 -0400
+X-MC-Unique: k_WfJDtvNJWdGxj5HPIKIw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4210d151c5bso12956965e9.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2024 23:57:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716965871; x=1717570671;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:from:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=X1jNL5AKCTqKVJJWMUcLi/+HsxHmghC2E1+CScAu2FQ=;
+        b=KZprNmn1Q3zTqALituGBAENWvvhZNQ/LMeaHrzsQi4DoVOgxDWkKaWFyaGG4/xaGHe
+         MN//eBkgdjaOsnpuqJXNx4P4lOCFRCrGBwN92Wm3cEloHWPfbUa1zWDtaSEqtQgoyIC5
+         yixv5tkRXfaWvVnAstjJ792z9Ix7zReZJxbduvXnvBmbSKMbsnUtsneRJDnAGpkG0jb3
+         bjgflOS0l8gLV9rHzqqCKkd//LbWvhd6uMXuZODinMMfDsnQhdMTuTLYO1BwWV6YYtsV
+         DibvD7U4Chq1LzF7p8oGXczsuqVdZBXPrkf/mvgt1XsWKeNqrpPWFiq+xLYZ0Caz1JYu
+         NRvg==
+X-Forwarded-Encrypted: i=1; AJvYcCV6518s4EEkwci3sCiB5+Zgf4BnS2Cm33eM1Lbpkzj7RzpcqlkU6h8R1p7AIhgKVo4aiTcM4dgu8y0f+n9AbIxrGM8PxqBjd6FAqgQ=
+X-Gm-Message-State: AOJu0YxX3VXWmuznQ3v/ySmJVwtKxbtSsW3s3q59iIx6k1n1sm7YXPXC
+	AxKiOfvvLXTsNHWbNUHAPNj4XcMKFxTHwf7HDr0YzhJr7/CwwndxybFY7ABB0JvydipH3OgCFet
+	K1VUleofET2WerDIT3N0nr61NxD52ePfNQzZnqUavm8FV/uLXu/JH183m3wyP
+X-Received: by 2002:a05:600c:198e:b0:420:fe60:c387 with SMTP id 5b1f17b1804b1-42108a12ab4mr117555445e9.38.1716965870815;
+        Tue, 28 May 2024 23:57:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE0CejlWqPuXFqZN2EXRjw1Ccc4Nzq8rTsvDWbC57PrZ0GsEmBQvVcERgWRL1Bwkx7iEvBtug==
+X-Received: by 2002:a05:600c:198e:b0:420:fe60:c387 with SMTP id 5b1f17b1804b1-42108a12ab4mr117555135e9.38.1716965870249;
+        Tue, 28 May 2024 23:57:50 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70c:3c00:686e:317c:3ed4:d7b8? (p200300cbc70c3c00686e317c3ed4d7b8.dip0.t-ipconnect.de. [2003:cb:c70c:3c00:686e:317c:3ed4:d7b8])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42100ee7f1dsm201788225e9.7.2024.05.28.23.57.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 May 2024 23:57:49 -0700 (PDT)
+Message-ID: <ff29f723-32de-421b-a65e-7b7d2e03162d@redhat.com>
+Date: Wed, 29 May 2024 08:57:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Nl96DWfGKz9/s7QQL4z++d7YATXIYYLMG9rT/gY3GbWD9gNEcXnKNNv/fAPq7h9/tZQsZRSxz24yYUHgYTVVmHapPl0u1Bgg7DUG9LhSXnN3Te8GgNw5yiiyJlIZxORlcuy2+ezuthydvL6vtUwx0/wbQd6mhe+ve9u/1ouyVDEzS+cWKWFlCZOm7wVslp6KuCrs/f4fhndykvA1CnMddPsGBKPn+k10kbzCY9bSk0D2LZtmN/iTPuAQtk+d/7JJJaOCqr27S58I3ln1FyG2HmNfJ7Gxj6KpOcDEP76i7ZQKhz1MiSEecpOvkvE2phoP/nJ6VLhsoh0Xn29uR6rAPUWXDltv6Wx9MEnll2p2bBciK3xbJ6Ek/q0PV2G10m6pYyr+hlOLQ0hb3a9oXrip159a2+EOQv5Mzo0PmaF6FQKDCh8CwM+sUsuXixFmsxUyQ5nvBEwy8EWby/8g/NtbxA6ll9ux5wEoLqIixaovFa3yy63vXzFlGfcLkgC3bGdjpfyr0zFhj36mMs8X+DzraVU0TcLEOmdWq3thheRFM2D830Q7NnMhXPm1svRiOXeachs/RRZJX5s3tWds/SNA/e4UuK+KyqyviQmen/9incp3eLyF4Q1JT036h5SZ0kpQ
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 206846c0-0af2-4bb5-90d3-08dc7f9a877e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 May 2024 04:48:05.4301
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LLXNQef3YMSmtqOiKgcjnaliuA0AdCcqqIuMxpIwUK1t/J9MWkqBRckCQ8i1YW1sXNrFGBYhl6yJIF2RfYZhHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA3PR04MB9330
+User-Agent: Mozilla Thunderbird
+Subject: Re: 6.9/BUG: Bad page state in process kswapd0 pfn:d6e840
+From: David Hildenbrand <david@redhat.com>
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, Chris Mason
+ <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>
+Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ Matthew Wilcox <willy@infradead.org>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CABXGCsPktcHQOvKTbPaTwegMExije=Gpgci5NW=hqORo-s7diA@mail.gmail.com>
+ <CABXGCsOC2Ji7y5Qfsa33QXQ37T3vzdNPsivGoMHcVnCGFi5vKg@mail.gmail.com>
+ <0672f0b7-36f5-4322-80e6-2da0f24c101b@redhat.com>
+ <CABXGCsN7LBynNk_XzaFm2eVkryVQ26BSzFkrxC2Zb5GEwTvc1g@mail.gmail.com>
+ <6b42ad9a-1f15-439a-8a42-34052fec017e@redhat.com>
+ <CABXGCsP46xvu3C3Ntd=k5ARrYScAea1gj+YmKYqO+Yj7u3xu1Q@mail.gmail.com>
+ <CABXGCsP3Yf2g6e7pSi71pbKpm+r1LdGyF5V7KaXbQjNyR9C_Rw@mail.gmail.com>
+ <162cb2a8-1b53-4e86-8d49-f4e09b3255a4@redhat.com>
+ <209ff705-fe6e-4d6d-9d08-201afba7d74b@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <209ff705-fe6e-4d6d-9d08-201afba7d74b@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 24, 2024 at 06:29:09PM GMT, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->=20
-> When relocating block-groups, either via auto reclaim or manual
-> balance, skip the data relocation block-group.
->=20
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
+On 28.05.24 16:24, David Hildenbrand wrote:
+> Am 28.05.24 um 15:57 schrieb David Hildenbrand:
+>> Am 28.05.24 um 08:05 schrieb Mikhail Gavrilov:
+>>> On Thu, May 23, 2024 at 12:05 PM Mikhail Gavrilov
+>>> <mikhail.v.gavrilov@gmail.com> wrote:
+>>>>
+>>>> On Thu, May 9, 2024 at 10:50 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>
+>>>> The only known workload that causes this is updating a large
+>>>> container. Unfortunately, not every container update reproduces the
+>>>> problem.
+>>>
+>>> Is it possible to add more debugging information to make it clearer
+>>> what's going on?
+>>
+>> If we knew who originally allocated that problematic page, that might help.
+>> Maybe page_owner could give some hints?
+>>
+>>>
+>>> BUG: Bad page state in process kcompactd0  pfn:605811
+>>> page: refcount:0 mapcount:0 mapping:0000000082d91e3e index:0x1045efc4f
+>>> pfn:0x605811
+>>> aops:btree_aops ino:1
+>>> flags:
+>>> 0x17ffffc600020c(referenced|uptodate|workingset|node=0|zone=2|lastcpupid=0x1fffff)
+>>> raw: 0017ffffc600020c dead000000000100 dead000000000122 ffff888159075220
+>>> raw: 00000001045efc4f 0000000000000000 00000000ffffffff 0000000000000000
+>>> page dumped because: non-NULL mapping
+>>
+>> Seems to be an order-0 page, otherwise we would have another "head: ..." report.
+>>
+>> It's not an anon/ksm/non-lru migration folio, because we clear the page->mapping
+>> field for them manually on the page freeing path. Likely it's a pagecache folio.
+>>
+>> So one option is that something seems to not properly set folio->mapping to
+>> NULL. But that problem would then also show up without page migration? Hmm.
+>>
+>>> Hardware name: ASUS System Product Name/ROG STRIX B650E-I GAMING WIFI,
+>>> BIOS 2611 04/07/2024
+>>> Call Trace:
+>>>    <TASK>
+>>>    dump_stack_lvl+0x84/0xd0
+>>>    bad_page.cold+0xbe/0xe0
+>>>    ? __pfx_bad_page+0x10/0x10
+>>>    ? page_bad_reason+0x9d/0x1f0
+>>>    free_unref_page+0x838/0x10e0
+>>>    __folio_put+0x1ba/0x2b0
+>>>    ? __pfx___folio_put+0x10/0x10
+>>>    ? __pfx___might_resched+0x10/0x10
+>>
+>> I suspect we come via
+>>       migrate_pages_batch()->migrate_folio_unmap()->migrate_folio_done().
+>>
+>> Maybe this is the "Folio was freed from under us. So we are done." path
+>> when "folio_ref_count(src) == 1".
+>>
+>> Alternatively, we might come via
+>>       migrate_pages_batch()->migrate_folio_move()->migrate_folio_done().
+>>
+>> For ordinary migration, move_to_new_folio() will clear src->mapping if
+>> the folio was migrated successfully. That's the very first thing that
+>> migrate_folio_move() does, so I doubt that is the problem.
+>>
+>> So I suspect we are in the migrate_folio_unmap() path. But for
+>> a !anon folio, who should be freeing the folio concurrently (and not clearing
+>> folio->mapping?)? After all, we have to hold the folio lock while migrating.
+>>
+>> In khugepaged:collapse_file() we manually set folio->mapping = NULL, before
+>> dropping the reference.
+>>
+>> Something to try might be (to see if the problem goes away).
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index dd04f578c19c..45e92e14c904 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -1124,6 +1124,13 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+>>                   /* Folio was freed from under us. So we are done. */
+>>                   folio_clear_active(src);
+>>                   folio_clear_unevictable(src);
+>> +               /*
+>> +                * Anonymous and movable src->mapping will be cleared by
+>> +                * free_pages_prepare so don't reset it here for keeping
+>> +                * the type to work PageAnon, for example.
+>> +                */
+>> +               if (!folio_mapping_flags(src))
+>> +                       src->mapping = NULL;
+>>                   /* free_pages_prepare() will clear PG_isolated. */
+>>                   list_del(&src->lru);
+>>                   migrate_folio_done(src, reason);
+>>
+>> But it does feel weird: who freed the page concurrently and didn't clear
+>> folio->mapping ...
+>>
+>> We don't hold the folio lock of src, though, but have the only reference. So
+>> another possible thing might be folio refcount mis-counting: folio_ref_count()
+>> == 1 but there are other references (e.g., from the pagecache).
+> 
+> Hmm, your original report mentions kswapd, so I'm getting the feeling someone
+> does one folio_put() too much and we are freeing a pageache folio that is still
+> in the pageache and, therefore, has folio->mapping set ... bisecting would
+> really help.
+> 
 
-Thinking of this patch gave me one question. What happens when we manually
-relocate a data relocation block group with a RAID-type conversion?
+A little bird just told me that I missed an important piece in the dmesg 
+output: "aops:btree_aops ino:1" from dump_mapping():
 
-prepare_allocation_zoned() give the data_reloc_bg hint which points to
-pre-conversion RAID level. That block group is rejected because of
-ffe_ctl->flags mismatch. And, find_free_extent() begins its loop with
-ffe_ctl->index =3D (post-conversion RAID index). All the BGs with that RAID
-level are rejected because they are not fs_info->data_reloc_bg.
+This is btrfs, i_ino is 1, and we don't have a dentry. Is that 
+BTRFS_BTREE_INODE_OBJECTID?
 
-When ffe_ctl->index goes to the pre-conversion RAID index, the data
-relocation BG could be selected. But, as we reject a SINGLE BG for RAID
-(DUP) allocation, that won't work for SINGLE to RAID conversion.
+Summarizing what we know so far:
+(1) Freeing an order-0 btrfs folio where folio->mapping
+     is still set
+(2) Triggered by kswapd and kcompactd; not triggered by other means of
+     page freeing so far
 
-The loop will eventually end up allocating a new chunk with a
-post-conversion RAID level. However, it is still not eligible for an
-allocation because it is not fs_info->data_reloc_bg.
+Possible theories:
+(A) folio->mapping not cleared when freeing the folio. But shouldn't
+     this also happen on other freeing paths? Or are we simply lucky to
+     never trigger that for that folio?
+(B) Messed-up refcounting: freeing a folio that is still in use (and
+     therefore has folio-> mapping still set)
 
-This question may be out of the scope of this patch. But, that scenario
-should be addressed in this series or another series.
+I was briefly wondering if large folio splitting could be involved.
 
-Considering this scenario, I'm not sure just skipping a data relocation BG
-is a good solution. It will make it impossible to convert a data relocation
-BG.
+CCing btrfs maintainers.
 
->  fs/btrfs/block-group.c | 2 ++
->  fs/btrfs/relocation.c  | 7 +++++++
->  fs/btrfs/volumes.c     | 2 ++
->  3 files changed, 11 insertions(+)
->=20
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 9910bae89966..9a01bbad45f6 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1921,6 +1921,8 @@ void btrfs_reclaim_bgs_work(struct work_struct *wor=
-k)
->  				div64_u64(zone_unusable * 100, bg->length));
->  		trace_btrfs_reclaim_block_group(bg);
->  		ret =3D btrfs_relocate_chunk(fs_info, bg->start);
-> +		if (ret =3D=3D -EBUSY)
-> +			ret =3D 0;
->  		if (ret) {
->  			btrfs_dec_block_group_ro(bg);
->  			btrfs_err(fs_info, "error relocating chunk %llu",
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 5f1a909a1d91..39e2db9af64f 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -4037,6 +4037,13 @@ int btrfs_relocate_block_group(struct btrfs_fs_inf=
-o *fs_info, u64 group_start)
->  	int rw =3D 0;
->  	int err =3D 0;
-> =20
-> +	spin_lock(&fs_info->relocation_bg_lock);
-> +	if (group_start =3D=3D fs_info->data_reloc_bg) {
-> +		spin_unlock(&fs_info->relocation_bg_lock);
-> +		return -EBUSY;
-> +	}
-> +	spin_unlock(&fs_info->relocation_bg_lock);
-> +
->  	/*
->  	 * This only gets set if we had a half-deleted snapshot on mount.  We
->  	 * cannot allow relocation to start while we're still trying to clean u=
-p
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 3f70f727dacf..75da3a32885b 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -3367,6 +3367,8 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_i=
-nfo, u64 chunk_offset)
->  	btrfs_scrub_pause(fs_info);
->  	ret =3D btrfs_relocate_block_group(fs_info, chunk_offset);
->  	btrfs_scrub_continue(fs_info);
-> +	if (ret =3D=3D -EBUSY)
-> +		return 0;
->  	if (ret) {
->  		/*
->  		 * If we had a transaction abort, stop all running scrubs.
->=20
-> --=20
-> 2.43.0
-> =
+-- 
+Cheers,
+
+David / dhildenb
+
 
