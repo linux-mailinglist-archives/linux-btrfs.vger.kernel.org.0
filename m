@@ -1,205 +1,149 @@
-Return-Path: <linux-btrfs+bounces-5358-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5359-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 674E98D4176
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 00:39:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34BCC8D445E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 05:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EF841C23028
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 May 2024 22:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8BD12838DE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 03:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B93178361;
-	Wed, 29 May 2024 22:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D06142E71;
+	Thu, 30 May 2024 03:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="oQShsQ+r"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M2ud51y4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F36169ADC;
-	Wed, 29 May 2024 22:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECAAA142E6B
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2024 03:51:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717022335; cv=none; b=GqueN9IgUxYXvt/XoNLncgKiaf3+wA4oqge0w5BSeGqERGtpqYpBFrA6rBmvqJ51x6qRj1ug69GS8/VHPXhrGEB77zk4KR0DAIEiUq2y/M07qoV9rUKe7TQSENItExuAcO7TBCa5/fF5lykV66j3JeWpZRYBvQihU7YwgcxiB0g=
+	t=1717041119; cv=none; b=SrQs8ttxUhF5Xw0M0ohBOWYMvo8oIBioUrlxB+SGZnaGRREHPL8yrDbOfmPJm8Q2jl0oWs8NslPVc5JnIaq9tXNM5I6xtZljUGDpWSn8B7+frb2B2ZMbJuzG0mq8UZV9WUwrRfidqmxD4wFGLi5Kv2FibIWMmlBXPvgDLUZueNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717022335; c=relaxed/simple;
-	bh=JFiZ/vr1rm7cLa4a2ftkIuJ6oF1Zj3SgMk+NCrYSJq4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iTThiWiRbxY3AS0rXbvLw6FEk90OuqyCIBbXYFuYkF/GdX2U7AaOkSYYe57B3ecdil8KNdkkd/dcU0IP8OD2kGnR7Ybkv8R2ybnPVhv0A9s5wYqANv4N9av8ekPk8S6C4T4ewEcjKi9HofzlfKHlHLg/NGto2q5XiT32Ka6d3yM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=oQShsQ+r; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1717022247; x=1717627047; i=quwenruo.btrfs@gmx.com;
-	bh=sh0xK1DLoCdr3LhWiQ/YVo7atV5IjlZ+EcoRVqczCOQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=oQShsQ+rj5nwkhzsmzkqMVSX+TW2yeqrdGhYH1mnHMhpaMZx7vdPUJx5ZrIL9EYW
-	 zMX7adwELr2XI84L0MIcVWw/U6uuxWm1I2sB41oxmHtOnAp8PTgMnPRE/iDKmLiVH
-	 WIukUj0rEvLmbOYO5lzGRNd+StpvjMGheQ2hNbND76vMdDTR98eimMcLTZiKHr+gI
-	 qRgY5t9XDEDxbJTJtdnrPAihkJGDQhVtbi2rZUnwLzC0m3U1r+Fvno+Gh7BrWbX7k
-	 FrHH60urumA4Bdo+r+hYrjcnyN6lAcc396LsyEpncX3q9+Y+hGpwSGkFoNi390nr9
-	 CSlmhL6Z3djUqvPzjA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7zBb-1sXXL33ect-0152kW; Thu, 30
- May 2024 00:37:27 +0200
-Message-ID: <d67dde35-0c14-4da2-8628-f4a27c32417a@gmx.com>
-Date: Thu, 30 May 2024 08:07:19 +0930
+	s=arc-20240116; t=1717041119; c=relaxed/simple;
+	bh=0VA1gl8TIpMoLBk0w1BVpi1wdfkjOtO6Y8etGq9qzYY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wu5hCPJ584yEkpK2Tbrt8f1s9dLg3cWaFIBWwTI4fMCw3ezl3hqJNiKnXmw/PiiZ2lSlsuz2zkdkhaG0i6zdZIN9eTJoHN3itkVFTyvunoa9s6blOYGKi+dDVlipgUyJk7qjIW0ma3BZ9P6LB6x6tovKF9MmKEbehi5nR8XUyD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M2ud51y4; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5785199f7d1so164924a12.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 20:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717041115; x=1717645915; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0VA1gl8TIpMoLBk0w1BVpi1wdfkjOtO6Y8etGq9qzYY=;
+        b=M2ud51y4DqXWbXBivYjDosBa8t1P3r08cC502JLXYUnUDRNYcFn4Q8FXLkQtMdz+6z
+         3JsJHO7KDZ2vP0Z9T+MzsdmK4S0LV/tdB4a+2isRTXwMS/Z9zTGi27QFu+aM1X/5o66V
+         cQGZQcRnRMbJDERNz+B0qPhIBWNnOFiYEv0EE3lIreK0neR2S9TrzbQKsA5JSlUKjpvy
+         T0/g74zT81+1AZwVCfBSvpVBinytcgp0kf6GOw74l+riqFMrDnvFfNndiDLSQzrSt6IB
+         Tdene97olenuZOGqDenoEQGvDzGrLrFfgVMgJvCB9O1FhHYniOwRqTbKd3Txxk8Z1asL
+         IG2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717041115; x=1717645915;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0VA1gl8TIpMoLBk0w1BVpi1wdfkjOtO6Y8etGq9qzYY=;
+        b=p631IFZTiOHw1tMQAPS55hvodYJRjSK7hFYfkhIlMFKYL1ePWr7eePU76xHN2pB74t
+         It4qzqpXv+0Zps6yA8MOcszRYFF9rDVU6QtLf3CfjlFtoi/QOJZaN9dPJhyJ9LpPvHt/
+         n1D+Yja0s9N2oiwAEtFa25gqEjdjXDI0SuoSTAfyKFoztZDkCYnWUA0h05griqln6GU+
+         +ov30zXht/BTnIXDgqeOj6gRceGTllO/WOwF4QgWqV7tuS1xMXpkrC46CPt5XhM/cFiI
+         /v/UR5w9qoOoI6bXTMykcgnl3RzGhW4nUcd7rbiPoNJYyRIQuKtbjwES8/zonosOO/q5
+         mMXA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2GYkOCMosHx9XGh/cXRwzA55TwWCyXBNi05HnWTiWgjRUK/TQUdIjLrfebMfoCZ0kFOfupIW3bu7DUJkqsVIRm6bR4GmQ78aP+74=
+X-Gm-Message-State: AOJu0YxuTTtcXByMx/KY9oCyzXVavdceNXT6AtuZCdbFQbX38ODAcb1g
+	TvvtZVQPmZqjbk0Cis4WXyXikFVmqUt5vvt0Ya9rS/PnNUahPCxnvTBAZLC6L6cDoMQPAKtRzCa
+	TbJHP67Krn+WXy5mWEPwbAr5e/6Q=
+X-Google-Smtp-Source: AGHT+IFsSBhuSAW4rjhLz2a4p5B7rn2wRo1TZ+eIoEiRCwVUXV+YFQRirlfO3WWSrGWiqC0bekqMi/NcQFVRNwgffUw=
+X-Received: by 2002:a50:aa96:0:b0:572:6af5:1b61 with SMTP id
+ 4fb4d7f45d1cf-57a177e5139mr625911a12.6.1717041114991; Wed, 29 May 2024
+ 20:51:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 6.9/BUG: Bad page state in process kswapd0 pfn:d6e840
-To: David Hildenbrand <david@redhat.com>,
- Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
- Linux Memory Management List <linux-mm@kvack.org>,
- Matthew Wilcox <willy@infradead.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CABXGCsPktcHQOvKTbPaTwegMExije=Gpgci5NW=hqORo-s7diA@mail.gmail.com>
- <CABXGCsOC2Ji7y5Qfsa33QXQ37T3vzdNPsivGoMHcVnCGFi5vKg@mail.gmail.com>
- <0672f0b7-36f5-4322-80e6-2da0f24c101b@redhat.com>
- <CABXGCsN7LBynNk_XzaFm2eVkryVQ26BSzFkrxC2Zb5GEwTvc1g@mail.gmail.com>
- <6b42ad9a-1f15-439a-8a42-34052fec017e@redhat.com>
- <CABXGCsP46xvu3C3Ntd=k5ARrYScAea1gj+YmKYqO+Yj7u3xu1Q@mail.gmail.com>
- <CABXGCsP3Yf2g6e7pSi71pbKpm+r1LdGyF5V7KaXbQjNyR9C_Rw@mail.gmail.com>
- <162cb2a8-1b53-4e86-8d49-f4e09b3255a4@redhat.com>
- <209ff705-fe6e-4d6d-9d08-201afba7d74b@redhat.com>
- <ff29f723-32de-421b-a65e-7b7d2e03162d@redhat.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ff29f723-32de-421b-a65e-7b7d2e03162d@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20240528062343.795139-1-sunjunchao2870@gmail.com>
+ <42631f4d-97ca-4f7b-a851-c06383b35065@gmx.com> <CAHB1NaidZ1WjkpshMC3zWwX1_3nL3AULG46fc4gmygb9TAa82A@mail.gmail.com>
+ <20240529151207.GK8631@twin.jikos.cz>
+In-Reply-To: <20240529151207.GK8631@twin.jikos.cz>
+From: JunChao Sun <sunjunchao2870@gmail.com>
+Date: Thu, 30 May 2024 11:51:43 +0800
+Message-ID: <CAHB1NajXE07g1zi3wJR8GCuHyB9--EK8e1v7uXSAV8Lt2VxZyQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: qgroup: delete a todo about using kmem cache to
+ alloc structure
+To: dsterba@suse.cz
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org, clm@fb.com, 
+	josef@toxicpanda.com, dsterba@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:A7Nm64HO8281pK1tOLI4ApY7qFkfLtxwwHP6+vDGV/auwm1+t8Z
- mLbds0rwyq+7KKzpJVNjO84EclwUhiJg/PnjSJ8J/n7F+smIlOCxWvBnAgu+E3n375O1GIM
- ecARfq5mq74F/VusyYP7p7OwW8Mxz/tPYjAWGH1jgGmQ8EW6ZTdu+fmjocQbfcvsLh7rrob
- f9HrdkgJZm7sEgDQQOINg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XPtvCe11CWI=;5zcsxHF7mU3S4ErU4fNM26tBw8h
- MrZ0XCLn80CzuNHBiJ8AMAOdNQ71dgvhY2GtdG9yfgeCk1N9tTSRvQl8IsFb3OwnzxK1UUQEI
- PPYg+wv4hXcJfVuXRZakWjDBo7RbbZLAfOjROV1imwLRYyqQtHlaMvkd4PcG+9ggRH4GTeHwh
- ceIclglt8vOhkh1k/KwbEbrNdlYFGYQhNqgrq6x0udfngTzVhDpL72Qaw1bxkoz2nXYDBODZc
- 55FU8aw2PWCTGsakTxQfRvShq/oQYg7Hs3QWjyow1HZb2BZOCi4UNVghYNPpOdoDRcoqWx9NE
- jLHwDVx7NHqrhUsEpa6K6zxDCsNnMLllePbqZPn5144czxO4jKbeC6PD0/LyQ9P+5m6maWJKP
- vJaO3oPobs7xTF3zA7zNRRVKYXztalay75lMsw5Q4zyIX0CBJ/c9bBHZJ4B3+q7a0jS3QDv98
- ThYC0+BNKYg0azuJpudst670HpZO3oNWIAr+CY46erNZy14g5agvvnqZnb8moPnGfVX59CYzm
- godMFRUufaaipaBDBKSXRm67jxT8U+JEijiUsw2l399P37pOO08niwCW1b5W3M0fhWvT5aFma
- NBBLHGffuLDgN93p8vIf8Hz0qcEvY/U54xsd6oX8kfTKLgc7XKX14aOZOAKUQiVwxYdDNUTJP
- 6v9G3lpQEno5Ac/WaCQ2eyD4tCViCe0GeQG/pi2upmH3ATlNw9OAYg02Mck/cma7icV3HelKF
- MlaTS8HOufokb+QD62h45EQekY1/WAkR9ULtvestrgOyW3x2UiCRdfr78k8OxzkzDI3dwwWXZ
- ZuR+7kbdvSH+Pc0oXGEyd7Faym+X9N3TPdDWFxpbymcq8=
 
-
-
-=E5=9C=A8 2024/5/29 16:27, David Hildenbrand =E5=86=99=E9=81=93:
-> On 28.05.24 16:24, David Hildenbrand wrote:
-[...]
->> Hmm, your original report mentions kswapd, so I'm getting the feeling
->> someone
->> does one folio_put() too much and we are freeing a pageache folio that
->> is still
->> in the pageache and, therefore, has folio->mapping set ... bisecting
->> would
->> really help.
->>
+David Sterba <dsterba@suse.cz> =E4=BA=8E2024=E5=B9=B45=E6=9C=8829=E6=97=A5=
+=E5=91=A8=E4=B8=89 23:12=E5=86=99=E9=81=93=EF=BC=9A
 >
-> A little bird just told me that I missed an important piece in the dmesg
-> output: "aops:btree_aops ino:1" from dump_mapping():
+> On Wed, May 29, 2024 at 09:11:05PM +0800, JunChao Sun wrote:
+> > Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2024=E5=B9=B45=E6=9C=8828=
+=E6=97=A5=E5=91=A8=E4=BA=8C 14:42=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > >
+> > >
+> > > =E5=9C=A8 2024/5/28 15:53, Junchao Sun =E5=86=99=E9=81=93:
+> > > > Generic slub works fine so far. And it's not necessary to create a
+> > > > dedicated kmem cache and leave it unused if quotas are disabled.
+> > > > So let's delete the todo line.
+> > > >
+> > > > Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
+> > >
+> > > Reviewed-by: Qu Wenruo <wqu@suse.com>
+> > >
+> > > My bad, at the time of writing I didn't notice that qgroup is not alw=
+ays
+> > > enabled.
+> > >
+> > > > Furthermore nowadays squota won't utilize that structure either, ma=
+king
+> > > > it less meaningful to go kmemcache.
+> > Thank you for your further explanation. By the way, is there anything
+> > meaningful todo? I saw some in code, but I can't ensure if they are
+> > still meaningful. I'd like to try contributing to btrfs and improve my
+> > understanding of it.
 >
-> This is btrfs, i_ino is 1, and we don't have a dentry. Is that
-> BTRFS_BTREE_INODE_OBJECTID?
+> You could find TODO or XXX marks in the sources but I'm against tracking
+> todos like that and the one you saw and all the others are from old
+> times. All are to be removed, though with evaluation if they apply and
+> are still worth to be tracked by other means.
 >
-> Summarizing what we know so far:
-> (1) Freeing an order-0 btrfs folio where folio->mapping
->  =C2=A0=C2=A0=C2=A0 is still set
-> (2) Triggered by kswapd and kcompactd; not triggered by other means of
->  =C2=A0=C2=A0=C2=A0 page freeing so far
-
- From the implementation of filemap_migrate_folio() (and previous
-migrate_page_moving_mapping()), it looks like the migration only involves:
-
-- Migrate the mapping
-- Copy the page private value
-- Copy the contents (if needed)
-- Copy all the page flags
-
-The most recent touch on migration is from v6.0, which I do not believe
-is the cause at all.
-
 >
-> Possible theories:
-> (A) folio->mapping not cleared when freeing the folio. But shouldn't
->  =C2=A0=C2=A0=C2=A0 this also happen on other freeing paths? Or are we s=
-imply lucky to
->  =C2=A0=C2=A0=C2=A0 never trigger that for that folio?
-
-Yeah, in fact we never manually clean folio->mapping inside btrfs, thus
-I'm not sure if it's the case.
-
-> (B) Messed-up refcounting: freeing a folio that is still in use (and
->  =C2=A0=C2=A0=C2=A0 therefore has folio-> mapping still set)
+> > We don't have one place to track todos also things are more like an ide=
+a
+> > than a full fledged task with specification and agreement that this is
+> > what we want to do. This means it's better to talk to us first if you'd
+> > like to implement something, either privately by mail or you can join
+> > slack.
+> >
+> > Otherwise generic contributions are always welcome, with perhaps a
+> > friendly warning that the code base is old and there are several people
+> > working on it so the style and coding patterns are kind of alwyas
+> > standing in the way. Reading code first to get the idea is recommended.
+I see. Thanks for your detailed explanation.
 >
-> I was briefly wondering if large folio splitting could be involved.
-
-Although we have all the metadata support for larger folios, we do not
-yet enable it.
-
-My current guess is, could it be some race with this commit?
-
-09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to
-allocate-then-attach method")
-
-For example, when we're allocating an extent buffer (btrfs' metadata
-structure), and one page is already attached to the page cache, then the
-page is being migrated meanwhile the remaining pages are not yet attached?
-
-It's first introduced in v6.8, matching the earliest report.
-But that patch is not easy to revert.
-
-
-Do you have any extra reproducibility or extra way to debug the lifespan
-of that specific patch?
-
-Or is there any way to temporarily disable migration?
-
-Thanks,
-Qu
+> > Also, is it a meaningful to view the contents of snapshots without
+> > rolling them back? The company I work for is considering implementing
+> > it recently...
 >
-> CCing btrfs maintainers.
 >
+> > This sounds like a use case that's above the filesystem, eg. rollback o=
+f
+> > snapshot I know of is done by snapper, what btrfs does is just to
+> > provide the capability of snapshots. Viewing snapshots is possible,
+> > either going to its directory or mounting it to some path and examining
+> > it.
 
