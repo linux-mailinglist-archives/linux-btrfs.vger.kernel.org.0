@@ -1,243 +1,1088 @@
-Return-Path: <linux-btrfs+bounces-5365-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5366-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C81448D4D4F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 15:56:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E00E8D50B9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 19:14:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC4121C22B87
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 13:56:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E08F281BF6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 17:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29CC9186E39;
-	Thu, 30 May 2024 13:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BEB4596F;
+	Thu, 30 May 2024 17:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gwB01mVZ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="m0wg4wqP";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="m0wg4wqP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA50186E2C
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2024 13:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37CD405FB
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2024 17:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717077387; cv=none; b=KdVsEAYx3DlCf9VZt8eQ1CX8MGNvw7xdGjHEY2NNJGSMMglJHNJBQOWXarf9xyyLFJicqjJowURfogsJGihxYx/ZxHLGlLIxNZkH0TIoQ0ehpFXcfV/0rWSBZij/q4aHSwrFQtrrnDZYwqiyCDSb3ToWme41WCgXTRrxCUtFyXo=
+	t=1717089267; cv=none; b=CGXZ4Qwiy2YGKEeB0I06YalUiNbmEQgwyBHln7Fb+citkf8KxjT1DEnk/JccYDkuPwap2wV+tR0WKottG5KZt+W1YHiTvnGc1H6QNh0lo3mY4sBTyjUKZkckavyj1qfYe4gU2HdlgRWDjWh9quW8cDLujp4xJE4Mh5BhzYmt8lE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717077387; c=relaxed/simple;
-	bh=FGBSQOuAb0NlB6ZQthzXYAirwmMW8u3SD2gpZJepyxc=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=ZZmrl5DVVoOU/lmg+T6+SbisGVzNzIh7VQ+4FV0UCeaNtFHmV9GQAErtUJnrL/6ZLD2jZFceX9YGqM90SLPbnKfGiil1Jb223aePNu2kld8Mmr5dGFzQUAKJucVFmbEQhoCmowkMZczd3n1uHWgFIPtaDDuhgLnrKwhI3VKLUBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gwB01mVZ; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4e4f004bd17so188696e0c.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2024 06:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1717077384; x=1717682184; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EXUCNy99zkbik9zLqKW1CEH6iQfLDGzfWLNIvH5uY+0=;
-        b=gwB01mVZcr7JkwK/+Cu5gtOt+gyDgQ6wQUvNEaL1//euAn58VwbBmF4cKoCTRBCmBz
-         IiGapOLjJPNyvU+sp+qCIuoX0x4obuxy+fiXL78DZlhcTE+wTQV2SPS9zowxxdFsYc0F
-         n5WKgXTv+yT0fYufXs7PxG2EvqNdIbPWEggbIqPeeBI4KICBKoLgsxqk2aphzHZm3oSX
-         2z7v+Cq9QvLPHjEtKel6Hi0ZkTAZu8SDJhIYpGeiShG7ZdBlscDFtwCmF/W1j39K6akT
-         r1qif0zJIC/uj3Od9e2Ut1zuExIUfSXLBE+QMXMQZEHVE+RZ5QsR9SA0QozOYWlypQWl
-         cbfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717077384; x=1717682184;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EXUCNy99zkbik9zLqKW1CEH6iQfLDGzfWLNIvH5uY+0=;
-        b=J/2188NUo1UC6vcIwUUW4BqVRof2ct4YKwDKBENJnA3FORTPr6O8cGiiKRkzSVYePm
-         /etCuoNpR1Jf5eKxFtqxBvjB4i5q9r8HQ1CNRV9pJVURytl72qFD++iqgLjbL8bp17x/
-         HTmYhAy2LVsDcR7tz9xbI3N4Tv1FIiBu9k/12mpboZ3P73v2J7Z4WBHPf72tbdUk8gWE
-         Ol6Lv3reNpnySn5sx93RBkal6S6FmmfKhHOuyvlskLIQzvuqtme0LKIB8jsGunaQBcVt
-         kTHTg6+Cnx/ijV/MeOrV7TaVBWECoRysu8TSqLk0pJI90LR5ayhXn2dd2ZBFoslw2cXb
-         PSOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXE1STB2ieOyWRur0islnvqXsJifJBOgaNkaLunpT/sXXF9RyF1w0i78f4ozBCgXzvAeLBW4/aT5OLMWUZ/rIOr4jXSsBIoMGQqUDY=
-X-Gm-Message-State: AOJu0YwJrJlRVanym6kRlD9Y5ySjNHX6pBxa97y1+C9ttG6dgXXCIg3y
-	NczrRPgYiC/WizMntWEYQHdgHOaidraN/o2iwrZRPh/9owVZJjb1hNhlHj+Zj1cLdRlhWkD324d
-	1n8Hdvm4FK9NSbpOtqJEprv4DZv/1EdPMnelicQ==
-X-Google-Smtp-Source: AGHT+IHtMCQyGfRZVl+J4B/Ueb8+BlAQuJC8en+4dH/bryuo8aki4OV0HUSb9FEfVVIkSlPkZD7ersSE7iRVsS8Zn9A=
-X-Received: by 2002:a05:6122:319c:b0:4d4:1ec7:76e5 with SMTP id
- 71dfb90a1353d-4eaf248dd21mr2295414e0c.16.1717077384478; Thu, 30 May 2024
- 06:56:24 -0700 (PDT)
+	s=arc-20240116; t=1717089267; c=relaxed/simple;
+	bh=4ww74grZMHWR1qk7cUjQtAa3POH59yCGgaCv6h0j4Fg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fj3HGjYIASpfFhgGZULMvJJf3TzKG2muEiKDU9c2/LNFwb/9fKhBwcTp6o8NP9Vs1iezSCUnElWB+PdH3ghRwXxXvoGwJz1JBTi1FSz64fB/4uIGdZxxlUKq1VQNQYpzj1cXqS4lcpWWqCIVlG4fNEAHZZo9V3PQzbKVFNCjfos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=m0wg4wqP; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=m0wg4wqP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B203A219FF;
+	Thu, 30 May 2024 17:14:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1717089261; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=cydmoieO1pg7RkrQmUohx6NHPbxqAupJajvZtgoq+XE=;
+	b=m0wg4wqPPrMPyMEHlANvgmDAKnYwf4OnwjyFJBeYpouwRKiWQ6UjiFWQo2B/BzS/D9F4B/
+	ewJxuwnRPVNZGhXs1SyAhQOS2V5J6UtyO1BohB6+xtz5HvOH3W1ZMOsj0TK4NdYYCgzlWN
+	M/b8Q5R7UtheLL6PaiHZca1ULUsEKUI=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1717089261; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=cydmoieO1pg7RkrQmUohx6NHPbxqAupJajvZtgoq+XE=;
+	b=m0wg4wqPPrMPyMEHlANvgmDAKnYwf4OnwjyFJBeYpouwRKiWQ6UjiFWQo2B/BzS/D9F4B/
+	ewJxuwnRPVNZGhXs1SyAhQOS2V5J6UtyO1BohB6+xtz5HvOH3W1ZMOsj0TK4NdYYCgzlWN
+	M/b8Q5R7UtheLL6PaiHZca1ULUsEKUI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A6FCC13A42;
+	Thu, 30 May 2024 17:14:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id M394KO2zWGYRGQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Thu, 30 May 2024 17:14:21 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: constify pointer parameters where applicable
+Date: Thu, 30 May 2024 19:14:12 +0200
+Message-ID: <20240530171413.25866-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Thu, 30 May 2024 19:26:12 +0530
-Message-ID: <CA+G9fYvJjAqf1pxMZpsm6rO_UVqhKOpB=0SUpBec8UhQBOXSrA@mail.gmail.com>
-Subject: BUG: kernel NULL pointer dereference, address: 000000000000002c -
- RIP: 0010:alloc_extent_buffer
-To: open list <linux-kernel@vger.kernel.org>, Linux btrfs <linux-btrfs@vger.kernel.org>, 
-	lkft-triage@lists.linaro.org, Linux Regressions <regressions@lists.linux.dev>
-Cc: Arnd Bergmann <arnd@arndb.de>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
-	Josef Bacik <josef@toxicpanda.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-The following kernel BUG: and kernel crash noticed while running xfstests btfs
-filesystem testing on qemu-x86_64 with loop back.
+We can add const to many parameters, this is for clarity and minor
+addition to safety. There are some minor effects, in the assembly
+code and .ko measured on release config. This patch does not cover all
+possible conversions.
 
-Steps to reproduce link provided.
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/btrfs_inode.h    |  4 ++--
+ fs/btrfs/delalloc-space.c |  2 +-
+ fs/btrfs/delalloc-space.h |  2 +-
+ fs/btrfs/delayed-inode.c  |  6 +++---
+ fs/btrfs/delayed-inode.h  |  6 +++---
+ fs/btrfs/dir-item.c       |  8 ++++----
+ fs/btrfs/dir-item.h       |  6 +++---
+ fs/btrfs/disk-io.c        | 18 +++++++++---------
+ fs/btrfs/disk-io.h        | 17 ++++++++---------
+ fs/btrfs/extent_io.c      | 26 +++++++++++++-------------
+ fs/btrfs/extent_io.h      |  6 +++---
+ fs/btrfs/fs.h             | 10 +++++-----
+ fs/btrfs/ioctl.c          |  2 +-
+ fs/btrfs/ioctl.h          |  2 +-
+ fs/btrfs/misc.h           |  4 ++--
+ fs/btrfs/props.c          |  6 +++---
+ fs/btrfs/props.h          |  2 +-
+ fs/btrfs/qgroup.c         | 22 +++++++++++-----------
+ fs/btrfs/qgroup.h         | 12 ++++++------
+ fs/btrfs/send.c           |  2 +-
+ fs/btrfs/send.h           |  2 +-
+ fs/btrfs/super.c          |  4 ++--
+ fs/btrfs/super.h          |  2 +-
+ fs/btrfs/uuid-tree.c      | 10 +++++-----
+ fs/btrfs/uuid-tree.h      |  4 ++--
+ fs/btrfs/volumes.c        |  2 +-
+ fs/btrfs/volumes.h        |  2 +-
+ fs/btrfs/xattr.c          |  2 +-
+ fs/btrfs/xattr.h          |  2 +-
+ fs/btrfs/zoned.c          |  2 +-
+ fs/btrfs/zoned.h          |  4 ++--
+ 31 files changed, 99 insertions(+), 100 deletions(-)
 
-Test details:
-----
-  Tests:  xfstests-btrfs  btrfs/232
-  SKIP_INSTALL='true'
-  TEST_DEV='/dev/loop0'
-  SCRATCH_DEV='/dev/loop1'
-  TEST_DIR='/mnt/test'
-  SCRATCH_DIR='/mnt/scratch'
-  FILESYSTEM='btrfs'
-  T_SIZE='5G'
-  S_SIZE='8G'
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 156384a28904..e0deab2cde7f 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -413,12 +413,12 @@ static inline void btrfs_i_size_write(struct btrfs_inode *inode, u64 size)
+ 	inode->disk_i_size = size;
+ }
+ 
+-static inline bool btrfs_is_free_space_inode(struct btrfs_inode *inode)
++static inline bool btrfs_is_free_space_inode(const struct btrfs_inode *inode)
+ {
+ 	return test_bit(BTRFS_INODE_FREE_SPACE_INODE, &inode->runtime_flags);
+ }
+ 
+-static inline bool is_data_inode(struct inode *inode)
++static inline bool is_data_inode(const struct inode *inode)
+ {
+ 	return btrfs_ino(BTRFS_I(inode)) != BTRFS_BTREE_INODE_OBJECTID;
+ }
+diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+index b3527efd0b4b..7aa8a395d838 100644
+--- a/fs/btrfs/delalloc-space.c
++++ b/fs/btrfs/delalloc-space.c
+@@ -111,7 +111,7 @@
+  *  making error handling and cleanup easier.
+  */
+ 
+-int btrfs_alloc_data_chunk_ondemand(struct btrfs_inode *inode, u64 bytes)
++int btrfs_alloc_data_chunk_ondemand(const struct btrfs_inode *inode, u64 bytes)
+ {
+ 	struct btrfs_root *root = inode->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+diff --git a/fs/btrfs/delalloc-space.h b/fs/btrfs/delalloc-space.h
+index ce4f889e4f17..3f32953c0a80 100644
+--- a/fs/btrfs/delalloc-space.h
++++ b/fs/btrfs/delalloc-space.h
+@@ -9,7 +9,7 @@ struct extent_changeset;
+ struct btrfs_inode;
+ struct btrfs_fs_info;
+ 
+-int btrfs_alloc_data_chunk_ondemand(struct btrfs_inode *inode, u64 bytes);
++int btrfs_alloc_data_chunk_ondemand(const struct btrfs_inode *inode, u64 bytes);
+ int btrfs_check_data_free_space(struct btrfs_inode *inode,
+ 			struct extent_changeset **reserved, u64 start, u64 len,
+ 			bool noflush);
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 483c141dc488..7b8b1bd0ca39 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1469,7 +1469,7 @@ static void btrfs_release_dir_index_item_space(struct btrfs_trans_handle *trans)
+ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 				   const char *name, int name_len,
+ 				   struct btrfs_inode *dir,
+-				   struct btrfs_disk_key *disk_key, u8 flags,
++				   const struct btrfs_disk_key *disk_key, u8 flags,
+ 				   u64 index)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+@@ -1755,7 +1755,7 @@ void btrfs_readdir_put_delayed_items(struct inode *inode,
+ 	downgrade_write(&inode->i_rwsem);
+ }
+ 
+-int btrfs_should_delete_dir_index(struct list_head *del_list,
++int btrfs_should_delete_dir_index(const struct list_head *del_list,
+ 				  u64 index)
+ {
+ 	struct btrfs_delayed_item *curr;
+@@ -1776,7 +1776,7 @@ int btrfs_should_delete_dir_index(struct list_head *del_list,
+  * Read dir info stored in the delayed tree.
+  */
+ int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
+-				    struct list_head *ins_list)
++				    const struct list_head *ins_list)
+ {
+ 	struct btrfs_dir_item *di;
+ 	struct btrfs_delayed_item *curr, *next;
+diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
+index 64e115d97499..654c04d38fb3 100644
+--- a/fs/btrfs/delayed-inode.h
++++ b/fs/btrfs/delayed-inode.h
+@@ -110,7 +110,7 @@ void btrfs_init_delayed_root(struct btrfs_delayed_root *delayed_root);
+ int btrfs_insert_delayed_dir_index(struct btrfs_trans_handle *trans,
+ 				   const char *name, int name_len,
+ 				   struct btrfs_inode *dir,
+-				   struct btrfs_disk_key *disk_key, u8 flags,
++				   const struct btrfs_disk_key *disk_key, u8 flags,
+ 				   u64 index);
+ 
+ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
+@@ -150,10 +150,10 @@ bool btrfs_readdir_get_delayed_items(struct inode *inode,
+ void btrfs_readdir_put_delayed_items(struct inode *inode,
+ 				     struct list_head *ins_list,
+ 				     struct list_head *del_list);
+-int btrfs_should_delete_dir_index(struct list_head *del_list,
++int btrfs_should_delete_dir_index(const struct list_head *del_list,
+ 				  u64 index);
+ int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
+-				    struct list_head *ins_list);
++				    const struct list_head *ins_list);
+ 
+ /* Used during directory logging. */
+ void btrfs_log_get_delayed_items(struct btrfs_inode *inode,
+diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
+index 9c07d5c3e5ad..001c0c2f872c 100644
+--- a/fs/btrfs/dir-item.c
++++ b/fs/btrfs/dir-item.c
+@@ -22,7 +22,7 @@ static struct btrfs_dir_item *insert_with_overflow(struct btrfs_trans_handle
+ 						   *trans,
+ 						   struct btrfs_root *root,
+ 						   struct btrfs_path *path,
+-						   struct btrfs_key *cpu_key,
++						   const struct btrfs_key *cpu_key,
+ 						   u32 data_size,
+ 						   const char *name,
+ 						   int name_len)
+@@ -108,7 +108,7 @@ int btrfs_insert_xattr_item(struct btrfs_trans_handle *trans,
+  */
+ int btrfs_insert_dir_item(struct btrfs_trans_handle *trans,
+ 			  const struct fscrypt_str *name, struct btrfs_inode *dir,
+-			  struct btrfs_key *location, u8 type, u64 index)
++			  const struct btrfs_key *location, u8 type, u64 index)
+ {
+ 	int ret = 0;
+ 	int ret2 = 0;
+@@ -379,7 +379,7 @@ struct btrfs_dir_item *btrfs_lookup_xattr(struct btrfs_trans_handle *trans,
+  * for a specific name.
+  */
+ struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
+-						 struct btrfs_path *path,
++						 const struct btrfs_path *path,
+ 						 const char *name, int name_len)
+ {
+ 	struct btrfs_dir_item *dir_item;
+@@ -417,7 +417,7 @@ struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
+ int btrfs_delete_one_dir_name(struct btrfs_trans_handle *trans,
+ 			      struct btrfs_root *root,
+ 			      struct btrfs_path *path,
+-			      struct btrfs_dir_item *di)
++			      const struct btrfs_dir_item *di)
+ {
+ 
+ 	struct extent_buffer *leaf;
+diff --git a/fs/btrfs/dir-item.h b/fs/btrfs/dir-item.h
+index 00b3d83d7569..5f6dfafc91f1 100644
+--- a/fs/btrfs/dir-item.h
++++ b/fs/btrfs/dir-item.h
+@@ -17,7 +17,7 @@ int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
+ 			  const struct fscrypt_str *name);
+ int btrfs_insert_dir_item(struct btrfs_trans_handle *trans,
+ 			  const struct fscrypt_str *name, struct btrfs_inode *dir,
+-			  struct btrfs_key *location, u8 type, u64 index);
++			  const struct btrfs_key *location, u8 type, u64 index);
+ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+ 					     struct btrfs_root *root,
+ 					     struct btrfs_path *path, u64 dir,
+@@ -33,7 +33,7 @@ struct btrfs_dir_item *btrfs_search_dir_index_item(struct btrfs_root *root,
+ int btrfs_delete_one_dir_name(struct btrfs_trans_handle *trans,
+ 			      struct btrfs_root *root,
+ 			      struct btrfs_path *path,
+-			      struct btrfs_dir_item *di);
++			      const struct btrfs_dir_item *di);
+ int btrfs_insert_xattr_item(struct btrfs_trans_handle *trans,
+ 			    struct btrfs_root *root,
+ 			    struct btrfs_path *path, u64 objectid,
+@@ -45,7 +45,7 @@ struct btrfs_dir_item *btrfs_lookup_xattr(struct btrfs_trans_handle *trans,
+ 					  const char *name, u16 name_len,
+ 					  int mod);
+ struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
+-						 struct btrfs_path *path,
++						 const struct btrfs_path *path,
+ 						 const char *name,
+ 						 int name_len);
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index ef94dca7a7f1..e7ec8a9fdd98 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -213,7 +213,7 @@ static int btrfs_repair_eb_io_failure(const struct extent_buffer *eb,
+  *			structure for details.
+  */
+ int btrfs_read_extent_buffer(struct extent_buffer *eb,
+-			     struct btrfs_tree_parent_check *check)
++			     const struct btrfs_tree_parent_check *check)
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	int failed = 0;
+@@ -358,7 +358,7 @@ static bool check_tree_block_fsid(struct extent_buffer *eb)
+ 
+ /* Do basic extent buffer checks at read time */
+ int btrfs_validate_extent_buffer(struct extent_buffer *eb,
+-				 struct btrfs_tree_parent_check *check)
++				 const struct btrfs_tree_parent_check *check)
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	u64 found_start;
+@@ -425,7 +425,7 @@ int btrfs_validate_extent_buffer(struct extent_buffer *eb,
+ 		goto out;
+ 	}
+ 	if (check->has_first_key) {
+-		struct btrfs_key *expect_key = &check->first_key;
++		const struct btrfs_key *expect_key = &check->first_key;
+ 		struct btrfs_key found_key;
+ 
+ 		if (found_level)
+@@ -1021,7 +1021,7 @@ int btrfs_add_log_tree(struct btrfs_trans_handle *trans,
+ 
+ static struct btrfs_root *read_tree_root_path(struct btrfs_root *tree_root,
+ 					      struct btrfs_path *path,
+-					      struct btrfs_key *key)
++					      const struct btrfs_key *key)
+ {
+ 	struct btrfs_root *root;
+ 	struct btrfs_tree_parent_check check = { 0 };
+@@ -1083,7 +1083,7 @@ static struct btrfs_root *read_tree_root_path(struct btrfs_root *tree_root,
+ }
+ 
+ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+-					struct btrfs_key *key)
++					const struct btrfs_key *key)
+ {
+ 	struct btrfs_root *root;
+ 	struct btrfs_path *path;
+@@ -1218,7 +1218,7 @@ int btrfs_insert_fs_root(struct btrfs_fs_info *fs_info,
+ 	return ret;
+ }
+ 
+-void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info)
++void btrfs_check_leaked_roots(const struct btrfs_fs_info *fs_info)
+ {
+ #ifdef CONFIG_BTRFS_DEBUG
+ 	struct btrfs_root *root;
+@@ -2335,8 +2335,8 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+  * 		1, 2	2nd and 3rd backup copy
+  * 	       -1	skip bytenr check
+  */
+-int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+-			 struct btrfs_super_block *sb, int mirror_num)
++int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
++			 const struct btrfs_super_block *sb, int mirror_num)
+ {
+ 	u64 nodesize = btrfs_super_nodesize(sb);
+ 	u64 sectorsize = btrfs_super_sectorsize(sb);
+@@ -3188,7 +3188,7 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
+ }
+ 
+ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_devices,
+-		      char *options)
++		      const char *options)
+ {
+ 	u32 sectorsize;
+ 	u32 nodesize;
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 1f93feae1872..99af64d3f277 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -41,7 +41,7 @@ static inline u64 btrfs_sb_offset(int mirror)
+ 	return BTRFS_SUPER_INFO_OFFSET;
+ }
+ 
+-void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info);
++void btrfs_check_leaked_roots(const struct btrfs_fs_info *fs_info);
+ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info);
+ struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 				      struct btrfs_tree_parent_check *check);
+@@ -52,12 +52,11 @@ struct extent_buffer *btrfs_find_create_tree_block(
+ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info);
+ int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
+ 			   const struct btrfs_super_block *disk_sb);
+-int __cold open_ctree(struct super_block *sb,
+-	       struct btrfs_fs_devices *fs_devices,
+-	       char *options);
++int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_devices,
++		      const char *options);
+ void __cold close_ctree(struct btrfs_fs_info *fs_info);
+-int btrfs_validate_super(struct btrfs_fs_info *fs_info,
+-			 struct btrfs_super_block *sb, int mirror_num);
++int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
++			 const struct btrfs_super_block *sb, int mirror_num);
+ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount);
+ int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
+ struct btrfs_super_block *btrfs_read_dev_super(struct block_device *bdev);
+@@ -65,7 +64,7 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+ 						   int copy_num, bool drop_cache);
+ int btrfs_commit_super(struct btrfs_fs_info *fs_info);
+ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+-					struct btrfs_key *key);
++					const struct btrfs_key *key);
+ int btrfs_insert_fs_root(struct btrfs_fs_info *fs_info,
+ 			 struct btrfs_root *root);
+ void btrfs_free_fs_roots(struct btrfs_fs_info *fs_info);
+@@ -90,7 +89,7 @@ void btrfs_btree_balance_dirty_nodelay(struct btrfs_fs_info *fs_info);
+ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+ 				 struct btrfs_root *root);
+ int btrfs_validate_extent_buffer(struct extent_buffer *eb,
+-				 struct btrfs_tree_parent_check *check);
++				 const struct btrfs_tree_parent_check *check);
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info);
+ #endif
+@@ -117,7 +116,7 @@ void btrfs_mark_buffer_dirty(struct btrfs_trans_handle *trans,
+ int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
+ 			  int atomic);
+ int btrfs_read_extent_buffer(struct extent_buffer *buf,
+-			     struct btrfs_tree_parent_check *check);
++			     const struct btrfs_tree_parent_check *check);
+ 
+ blk_status_t btree_csum_one_bio(struct btrfs_bio *bbio);
+ int btrfs_alloc_log_tree_node(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 0c74f7df2e8b..ea9a96f1e001 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -180,7 +180,7 @@ void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end)
+ }
+ 
+ static void process_one_page(struct btrfs_fs_info *fs_info,
+-			     struct page *page, struct page *locked_page,
++			     struct page *page, const struct page *locked_page,
+ 			     unsigned long page_ops, u64 start, u64 end)
+ {
+ 	struct folio *folio = page_folio(page);
+@@ -203,7 +203,7 @@ static void process_one_page(struct btrfs_fs_info *fs_info,
+ }
+ 
+ static void __process_pages_contig(struct address_space *mapping,
+-				   struct page *locked_page, u64 start, u64 end,
++				   const struct page *locked_page, u64 start, u64 end,
+ 				   unsigned long page_ops)
+ {
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(mapping->host);
+@@ -230,8 +230,8 @@ static void __process_pages_contig(struct address_space *mapping,
+ 	}
+ }
+ 
+-static noinline void __unlock_for_delalloc(struct inode *inode,
+-					   struct page *locked_page,
++static noinline void __unlock_for_delalloc(const struct inode *inode,
++					   const struct page *locked_page,
+ 					   u64 start, u64 end)
+ {
+ 	unsigned long index = start >> PAGE_SHIFT;
+@@ -246,7 +246,7 @@ static noinline void __unlock_for_delalloc(struct inode *inode,
+ }
+ 
+ static noinline int lock_delalloc_pages(struct inode *inode,
+-					struct page *locked_page,
++					const struct page *locked_page,
+ 					u64 start,
+ 					u64 end)
+ {
+@@ -411,7 +411,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+ }
+ 
+ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+-				  struct page *locked_page,
++				  const struct page *locked_page,
+ 				  struct extent_state **cached,
+ 				  u32 clear_bits, unsigned long page_ops)
+ {
+@@ -1382,7 +1382,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+  * Return the next dirty range in [@start, @end).
+  * If no dirty range is found, @start will be page_offset(page) + PAGE_SIZE.
+  */
+-static void find_next_dirty_byte(struct btrfs_fs_info *fs_info,
++static void find_next_dirty_byte(const struct btrfs_fs_info *fs_info,
+ 				 struct page *page, u64 *start, u64 *end)
+ {
+ 	struct folio *folio = page_folio(page);
+@@ -1743,7 +1743,7 @@ static void set_btree_ioerr(struct extent_buffer *eb)
+  * context.
+  */
+ static struct extent_buffer *find_extent_buffer_nolock(
+-		struct btrfs_fs_info *fs_info, u64 start)
++		const struct btrfs_fs_info *fs_info, u64 start)
+ {
+ 	struct extent_buffer *eb;
+ 
+@@ -2312,7 +2312,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
+  * already been ran (aka, ordered extent inserted) and all pages are still
+  * locked.
+  */
+-void extent_write_locked_range(struct inode *inode, struct page *locked_page,
++void extent_write_locked_range(struct inode *inode, const struct page *locked_page,
+ 			       u64 start, u64 end, struct writeback_control *wbc,
+ 			       bool pages_dirty)
+ {
+@@ -2597,7 +2597,7 @@ static bool folio_range_has_eb(struct btrfs_fs_info *fs_info, struct folio *foli
+ 	return false;
+ }
+ 
+-static void detach_extent_buffer_folio(struct extent_buffer *eb, struct folio *folio)
++static void detach_extent_buffer_folio(const struct extent_buffer *eb, struct folio *folio)
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
+ 	const bool mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
+@@ -2658,7 +2658,7 @@ static void detach_extent_buffer_folio(struct extent_buffer *eb, struct folio *f
+ }
+ 
+ /* Release all pages attached to the extent buffer */
+-static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
++static void btrfs_release_extent_buffer_pages(const struct extent_buffer *eb)
+ {
+ 	ASSERT(!extent_buffer_under_io(eb));
+ 
+@@ -3573,7 +3573,7 @@ static void end_bbio_meta_read(struct btrfs_bio *bbio)
+ }
+ 
+ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
+-			     struct btrfs_tree_parent_check *check)
++			     const struct btrfs_tree_parent_check *check)
+ {
+ 	struct btrfs_bio *bbio;
+ 	bool ret;
+@@ -4186,7 +4186,7 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
+ 
+ #define GANG_LOOKUP_SIZE	16
+ static struct extent_buffer *get_next_extent_buffer(
+-		struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
++		const struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
+ {
+ 	struct extent_buffer *gang[GANG_LOOKUP_SIZE];
+ 	struct extent_buffer *found = NULL;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index ecf89424502e..96c6bbdcd5d6 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -235,7 +235,7 @@ bool try_release_extent_mapping(struct page *page, gfp_t mask);
+ int try_release_extent_buffer(struct page *page);
+ 
+ int btrfs_read_folio(struct file *file, struct folio *folio);
+-void extent_write_locked_range(struct inode *inode, struct page *locked_page,
++void extent_write_locked_range(struct inode *inode, const struct page *locked_page,
+ 			       u64 start, u64 end, struct writeback_control *wbc,
+ 			       bool pages_dirty);
+ int btrfs_writepages(struct address_space *mapping, struct writeback_control *wbc);
+@@ -261,7 +261,7 @@ void free_extent_buffer_stale(struct extent_buffer *eb);
+ #define WAIT_COMPLETE	1
+ #define WAIT_PAGE_LOCK	2
+ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
+-			     struct btrfs_tree_parent_check *parent_check);
++			     const struct btrfs_tree_parent_check *parent_check);
+ void wait_on_extent_buffer_writeback(struct extent_buffer *eb);
+ void btrfs_readahead_tree_block(struct btrfs_fs_info *fs_info,
+ 				u64 bytenr, u64 owner_root, u64 gen, int level);
+@@ -350,7 +350,7 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb);
+ void clear_extent_buffer_uptodate(struct extent_buffer *eb);
+ void extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 end);
+ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+-				  struct page *locked_page,
++				  const struct page *locked_page,
+ 				  struct extent_state **cached,
+ 				  u32 bits_to_clear, unsigned long page_ops);
+ int extent_invalidate_folio(struct extent_io_tree *tree,
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index e6b1903f6c32..18e0d3539496 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -956,7 +956,7 @@ static inline bool btrfs_is_zoned(const struct btrfs_fs_info *fs_info)
+ /*
+  * Count how many fs_info->max_extent_size cover the @size
+  */
+-static inline u32 count_max_extents(struct btrfs_fs_info *fs_info, u64 size)
++static inline u32 count_max_extents(const struct btrfs_fs_info *fs_info, u64 size)
+ {
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ 	if (!fs_info)
+@@ -1017,7 +1017,7 @@ void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
+ #define btrfs_test_opt(fs_info, opt)	((fs_info)->mount_opt & \
+ 					 BTRFS_MOUNT_##opt)
+ 
+-static inline int btrfs_fs_closing(struct btrfs_fs_info *fs_info)
++static inline int btrfs_fs_closing(const struct btrfs_fs_info *fs_info)
+ {
+ 	/* Do it this way so we only ever do one test_bit in the normal case. */
+ 	if (test_bit(BTRFS_FS_CLOSING_START, &fs_info->flags)) {
+@@ -1036,7 +1036,7 @@ static inline int btrfs_fs_closing(struct btrfs_fs_info *fs_info)
+  * since setting and checking for SB_RDONLY in the superblock's flags is not
+  * atomic.
+  */
+-static inline int btrfs_need_cleaner_sleep(struct btrfs_fs_info *fs_info)
++static inline int btrfs_need_cleaner_sleep(const struct btrfs_fs_info *fs_info)
+ {
+ 	return test_bit(BTRFS_FS_STATE_RO, &fs_info->fs_state) ||
+ 		btrfs_fs_closing(fs_info);
+@@ -1057,7 +1057,7 @@ static inline void btrfs_wake_unfinished_drop(struct btrfs_fs_info *fs_info)
+ 
+ #define EXPORT_FOR_TESTS
+ 
+-static inline int btrfs_is_testing(struct btrfs_fs_info *fs_info)
++static inline int btrfs_is_testing(const struct btrfs_fs_info *fs_info)
+ {
+ 	return test_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &fs_info->fs_state);
+ }
+@@ -1068,7 +1068,7 @@ void btrfs_test_destroy_inode(struct inode *inode);
+ 
+ #define EXPORT_FOR_TESTS static
+ 
+-static inline int btrfs_is_testing(struct btrfs_fs_info *fs_info)
++static inline int btrfs_is_testing(const struct btrfs_fs_info *fs_info)
+ {
+ 	return 0;
+ }
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 6e24cced6f0d..5e3cb0210869 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -552,7 +552,7 @@ static noinline int btrfs_ioctl_fitrim(struct btrfs_fs_info *fs_info,
+ 	return 0;
+ }
+ 
+-int __pure btrfs_is_empty_uuid(u8 *uuid)
++int __pure btrfs_is_empty_uuid(const u8 *uuid)
+ {
+ 	int i;
+ 
+diff --git a/fs/btrfs/ioctl.h b/fs/btrfs/ioctl.h
+index 2c5dc25ec670..19cd26b0244a 100644
+--- a/fs/btrfs/ioctl.h
++++ b/fs/btrfs/ioctl.h
+@@ -19,7 +19,7 @@ int btrfs_fileattr_set(struct mnt_idmap *idmap,
+ 		       struct dentry *dentry, struct fileattr *fa);
+ int btrfs_ioctl_get_supported_features(void __user *arg);
+ void btrfs_sync_inode_flags_to_i_flags(struct inode *inode);
+-int __pure btrfs_is_empty_uuid(u8 *uuid);
++int __pure btrfs_is_empty_uuid(const u8 *uuid);
+ void btrfs_update_ioctl_balance_args(struct btrfs_fs_info *fs_info,
+ 				     struct btrfs_ioctl_balance_args *bargs);
+ 
+diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
+index dde4904aead9..0d599fd847c9 100644
+--- a/fs/btrfs/misc.h
++++ b/fs/btrfs/misc.h
+@@ -66,7 +66,7 @@ struct rb_simple_node {
+ 	u64 bytenr;
+ };
+ 
+-static inline struct rb_node *rb_simple_search(struct rb_root *root, u64 bytenr)
++static inline struct rb_node *rb_simple_search(const struct rb_root *root, u64 bytenr)
+ {
+ 	struct rb_node *node = root->rb_node;
+ 	struct rb_simple_node *entry;
+@@ -93,7 +93,7 @@ static inline struct rb_node *rb_simple_search(struct rb_root *root, u64 bytenr)
+  * Return the rb_node that start at or after @bytenr.  If there is no entry at
+  * or after @bytner return NULL.
+  */
+-static inline struct rb_node *rb_simple_search_first(struct rb_root *root,
++static inline struct rb_node *rb_simple_search_first(const struct rb_root *root,
+ 						     u64 bytenr)
+ {
+ 	struct rb_node *node = root->rb_node, *ret = NULL;
+diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+index 155570e20f45..5c8e64eaf48b 100644
+--- a/fs/btrfs/props.c
++++ b/fs/btrfs/props.c
+@@ -27,7 +27,7 @@ struct prop_handler {
+ 	int (*validate)(const struct btrfs_inode *inode, const char *value,
+ 			size_t len);
+ 	int (*apply)(struct inode *inode, const char *value, size_t len);
+-	const char *(*extract)(struct inode *inode);
++	const char *(*extract)(const struct inode *inode);
+ 	bool (*ignore)(const struct btrfs_inode *inode);
+ 	int inheritable;
+ };
+@@ -359,7 +359,7 @@ static bool prop_compression_ignore(const struct btrfs_inode *inode)
+ 	return false;
+ }
+ 
+-static const char *prop_compression_extract(struct inode *inode)
++static const char *prop_compression_extract(const struct inode *inode)
+ {
+ 	switch (BTRFS_I(inode)->prop_compress) {
+ 	case BTRFS_COMPRESS_ZLIB:
+@@ -385,7 +385,7 @@ static struct prop_handler prop_handlers[] = {
+ };
+ 
+ int btrfs_inode_inherit_props(struct btrfs_trans_handle *trans,
+-			      struct inode *inode, struct inode *parent)
++			      struct inode *inode, const struct inode *parent)
+ {
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+diff --git a/fs/btrfs/props.h b/fs/btrfs/props.h
+index f60cd89feb29..24131b29d842 100644
+--- a/fs/btrfs/props.h
++++ b/fs/btrfs/props.h
+@@ -26,6 +26,6 @@ int btrfs_load_inode_props(struct inode *inode, struct btrfs_path *path);
+ 
+ int btrfs_inode_inherit_props(struct btrfs_trans_handle *trans,
+ 			      struct inode *inode,
+-			      struct inode *dir);
++			      const struct inode *dir);
+ 
+ #endif
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 7dac4028e3ba..dfe79534139e 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -30,7 +30,7 @@
+ #include "root-tree.h"
+ #include "tree-checker.h"
+ 
+-enum btrfs_qgroup_mode btrfs_qgroup_mode(struct btrfs_fs_info *fs_info)
++enum btrfs_qgroup_mode btrfs_qgroup_mode(const struct btrfs_fs_info *fs_info)
+ {
+ 	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
+ 		return BTRFS_QGROUP_MODE_DISABLED;
+@@ -39,12 +39,12 @@ enum btrfs_qgroup_mode btrfs_qgroup_mode(struct btrfs_fs_info *fs_info)
+ 	return BTRFS_QGROUP_MODE_FULL;
+ }
+ 
+-bool btrfs_qgroup_enabled(struct btrfs_fs_info *fs_info)
++bool btrfs_qgroup_enabled(const struct btrfs_fs_info *fs_info)
+ {
+ 	return btrfs_qgroup_mode(fs_info) != BTRFS_QGROUP_MODE_DISABLED;
+ }
+ 
+-bool btrfs_qgroup_full_accounting(struct btrfs_fs_info *fs_info)
++bool btrfs_qgroup_full_accounting(const struct btrfs_fs_info *fs_info)
+ {
+ 	return btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_FULL;
+ }
+@@ -107,7 +107,7 @@ static void qgroup_rsv_release(struct btrfs_fs_info *fs_info,
+ 
+ static void qgroup_rsv_add_by_qgroup(struct btrfs_fs_info *fs_info,
+ 				     struct btrfs_qgroup *dest,
+-				     struct btrfs_qgroup *src)
++				     const struct btrfs_qgroup *src)
+ {
+ 	int i;
+ 
+@@ -117,7 +117,7 @@ static void qgroup_rsv_add_by_qgroup(struct btrfs_fs_info *fs_info,
+ 
+ static void qgroup_rsv_release_by_qgroup(struct btrfs_fs_info *fs_info,
+ 					 struct btrfs_qgroup *dest,
+-					  struct btrfs_qgroup *src)
++					 const struct btrfs_qgroup *src)
+ {
+ 	int i;
+ 
+@@ -141,14 +141,14 @@ static void btrfs_qgroup_update_new_refcnt(struct btrfs_qgroup *qg, u64 seq,
+ 	qg->new_refcnt += mod;
+ }
+ 
+-static inline u64 btrfs_qgroup_get_old_refcnt(struct btrfs_qgroup *qg, u64 seq)
++static inline u64 btrfs_qgroup_get_old_refcnt(const struct btrfs_qgroup *qg, u64 seq)
+ {
+ 	if (qg->old_refcnt < seq)
+ 		return 0;
+ 	return qg->old_refcnt - seq;
+ }
+ 
+-static inline u64 btrfs_qgroup_get_new_refcnt(struct btrfs_qgroup *qg, u64 seq)
++static inline u64 btrfs_qgroup_get_new_refcnt(const struct btrfs_qgroup *qg, u64 seq)
+ {
+ 	if (qg->new_refcnt < seq)
+ 		return 0;
+@@ -171,7 +171,7 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
+ static void qgroup_rescan_zero_tracking(struct btrfs_fs_info *fs_info);
+ 
+ /* must be called with qgroup_ioctl_lock held */
+-static struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
++static struct btrfs_qgroup *find_qgroup_rb(const struct btrfs_fs_info *fs_info,
+ 					   u64 qgroupid)
+ {
+ 	struct rb_node *n = fs_info->qgroup_tree.rb_node;
+@@ -346,7 +346,7 @@ static int del_relation_rb(struct btrfs_fs_info *fs_info,
+ }
+ 
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+-int btrfs_verify_qgroup_counts(struct btrfs_fs_info *fs_info, u64 qgroupid,
++int btrfs_verify_qgroup_counts(const struct btrfs_fs_info *fs_info, u64 qgroupid,
+ 			       u64 rfer, u64 excl)
+ {
+ 	struct btrfs_qgroup *qgroup;
+@@ -608,7 +608,7 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+  * Return false if no reserved space is left.
+  * Return true if some reserved space is leaked.
+  */
+-bool btrfs_check_quota_leak(struct btrfs_fs_info *fs_info)
++bool btrfs_check_quota_leak(const struct btrfs_fs_info *fs_info)
+ {
+ 	struct rb_node *node;
+ 	bool ret = false;
+@@ -4897,7 +4897,7 @@ void btrfs_free_squota_rsv(struct btrfs_fs_info *fs_info, u64 root, u64 rsv_byte
+ }
+ 
+ int btrfs_record_squota_delta(struct btrfs_fs_info *fs_info,
+-			      struct btrfs_squota_delta *delta)
++			      const struct btrfs_squota_delta *delta)
+ {
+ 	int ret;
+ 	struct btrfs_qgroup *qgroup;
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 7c535710efa5..95881dcab684 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -311,9 +311,9 @@ enum btrfs_qgroup_mode {
+ 	BTRFS_QGROUP_MODE_SIMPLE
+ };
+ 
+-enum btrfs_qgroup_mode btrfs_qgroup_mode(struct btrfs_fs_info *fs_info);
+-bool btrfs_qgroup_enabled(struct btrfs_fs_info *fs_info);
+-bool btrfs_qgroup_full_accounting(struct btrfs_fs_info *fs_info);
++enum btrfs_qgroup_mode btrfs_qgroup_mode(const struct btrfs_fs_info *fs_info);
++bool btrfs_qgroup_enabled(const struct btrfs_fs_info *fs_info);
++bool btrfs_qgroup_full_accounting(const struct btrfs_fs_info *fs_info);
+ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
+ 		       struct btrfs_ioctl_quota_ctl_args *quota_ctl_args);
+ int btrfs_quota_disable(struct btrfs_fs_info *fs_info);
+@@ -361,7 +361,7 @@ void btrfs_qgroup_free_refroot(struct btrfs_fs_info *fs_info,
+ 			       enum btrfs_qgroup_rsv_type type);
+ 
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+-int btrfs_verify_qgroup_counts(struct btrfs_fs_info *fs_info, u64 qgroupid,
++int btrfs_verify_qgroup_counts(const struct btrfs_fs_info *fs_info, u64 qgroupid,
+ 			       u64 rfer, u64 excl);
+ #endif
+ 
+@@ -431,9 +431,9 @@ int btrfs_qgroup_add_swapped_blocks(struct btrfs_trans_handle *trans,
+ int btrfs_qgroup_trace_subtree_after_cow(struct btrfs_trans_handle *trans,
+ 		struct btrfs_root *root, struct extent_buffer *eb);
+ void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *trans);
+-bool btrfs_check_quota_leak(struct btrfs_fs_info *fs_info);
++bool btrfs_check_quota_leak(const struct btrfs_fs_info *fs_info);
+ void btrfs_free_squota_rsv(struct btrfs_fs_info *fs_info, u64 root, u64 rsv_bytes);
+ int btrfs_record_squota_delta(struct btrfs_fs_info *fs_info,
+-			      struct btrfs_squota_delta *delta);
++			      const struct btrfs_squota_delta *delta);
+ 
+ #endif
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 2099b5f8c022..8159695ef69c 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -8066,7 +8066,7 @@ static void dedupe_in_progress_warn(const struct btrfs_root *root)
+ 		      btrfs_root_id(root), root->dedupe_in_progress);
+ }
+ 
+-long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg)
++long btrfs_ioctl_send(struct inode *inode, const struct btrfs_ioctl_send_args *arg)
+ {
+ 	int ret = 0;
+ 	struct btrfs_root *send_root = BTRFS_I(inode)->root;
+diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
+index dd1c9f02b011..8bd5aeafb6f5 100644
+--- a/fs/btrfs/send.h
++++ b/fs/btrfs/send.h
+@@ -182,6 +182,6 @@ enum {
+ 	__BTRFS_SEND_A_MAX		= 35,
+ };
+ 
+-long btrfs_ioctl_send(struct inode *inode, struct btrfs_ioctl_send_args *arg);
++long btrfs_ioctl_send(struct inode *inode, const struct btrfs_ioctl_send_args *arg);
+ 
+ #endif
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 70274a438049..549ad700e49e 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -629,7 +629,7 @@ static void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
+ 	btrfs_clear_opt(fs_info->mount_opt, NOSPACECACHE);
+ }
+ 
+-static bool check_ro_option(struct btrfs_fs_info *fs_info,
++static bool check_ro_option(const struct btrfs_fs_info *fs_info,
+ 			    unsigned long mount_opt, unsigned long opt,
+ 			    const char *opt_name)
+ {
+@@ -641,7 +641,7 @@ static bool check_ro_option(struct btrfs_fs_info *fs_info,
+ 	return false;
+ }
+ 
+-bool btrfs_check_options(struct btrfs_fs_info *info, unsigned long *mount_opt,
++bool btrfs_check_options(const struct btrfs_fs_info *info, unsigned long *mount_opt,
+ 			 unsigned long flags)
+ {
+ 	bool ret = true;
+diff --git a/fs/btrfs/super.h b/fs/btrfs/super.h
+index cbcab434b5ec..d2b8ebb46bc6 100644
+--- a/fs/btrfs/super.h
++++ b/fs/btrfs/super.h
+@@ -10,7 +10,7 @@
+ struct super_block;
+ struct btrfs_fs_info;
+ 
+-bool btrfs_check_options(struct btrfs_fs_info *info, unsigned long *mount_opt,
++bool btrfs_check_options(const struct btrfs_fs_info *info, unsigned long *mount_opt,
+ 			 unsigned long flags);
+ int btrfs_sync_fs(struct super_block *sb, int wait);
+ char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
+index b0aff297d67d..eae75bb572b9 100644
+--- a/fs/btrfs/uuid-tree.c
++++ b/fs/btrfs/uuid-tree.c
+@@ -13,7 +13,7 @@
+ #include "accessors.h"
+ #include "uuid-tree.h"
+ 
+-static void btrfs_uuid_to_key(u8 *uuid, u8 type, struct btrfs_key *key)
++static void btrfs_uuid_to_key(const u8 *uuid, u8 type, struct btrfs_key *key)
+ {
+ 	key->type = type;
+ 	key->objectid = get_unaligned_le64(uuid);
+@@ -21,7 +21,7 @@ static void btrfs_uuid_to_key(u8 *uuid, u8 type, struct btrfs_key *key)
+ }
+ 
+ /* return -ENOENT for !found, < 0 for errors, or 0 if an item was found */
+-static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, u8 *uuid,
++static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, const u8 *uuid,
+ 				  u8 type, u64 subid)
+ {
+ 	int ret;
+@@ -81,7 +81,7 @@ static int btrfs_uuid_tree_lookup(struct btrfs_root *uuid_root, u8 *uuid,
+ 	return ret;
+ }
+ 
+-int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
++int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, const u8 *uuid, u8 type,
+ 			u64 subid_cpu)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+@@ -145,7 +145,7 @@ int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
+ 	return ret;
+ }
+ 
+-int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
++int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, const u8 *uuid, u8 type,
+ 			u64 subid)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+@@ -256,7 +256,7 @@ static int btrfs_uuid_iter_rem(struct btrfs_root *uuid_root, u8 *uuid, u8 type,
+  * < 0	if an error occurred
+  */
+ static int btrfs_check_uuid_tree_entry(struct btrfs_fs_info *fs_info,
+-				       u8 *uuid, u8 type, u64 subvolid)
++				       const u8 *uuid, u8 type, u64 subvolid)
+ {
+ 	int ret = 0;
+ 	struct btrfs_root *subvol_root;
+diff --git a/fs/btrfs/uuid-tree.h b/fs/btrfs/uuid-tree.h
+index 080ede0227ae..a3f5757cc7cf 100644
+--- a/fs/btrfs/uuid-tree.h
++++ b/fs/btrfs/uuid-tree.h
+@@ -8,9 +8,9 @@
+ struct btrfs_trans_handle;
+ struct btrfs_fs_info;
+ 
+-int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
++int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, const u8 *uuid, u8 type,
+ 			u64 subid);
+-int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
++int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, const u8 *uuid, u8 type,
+ 			u64 subid);
+ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info);
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index f11ceaeace37..5640038e9b61 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -722,7 +722,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+ 	return -EINVAL;
+ }
+ 
+-u8 *btrfs_sb_fsid_ptr(struct btrfs_super_block *sb)
++const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb)
+ {
+ 	bool has_metadata_uuid = (btrfs_super_incompat_flags(sb) &
+ 				  BTRFS_FEATURE_INCOMPAT_METADATA_UUID);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 66e6fc481ecd..37a09ebb34dd 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -834,6 +834,6 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
+ bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical);
+ 
+ bool btrfs_pinned_by_swapfile(struct btrfs_fs_info *fs_info, void *ptr);
+-u8 *btrfs_sb_fsid_ptr(struct btrfs_super_block *sb);
++const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb);
+ 
+ #endif
+diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
+index 15d0999e340e..0288fe541dca 100644
+--- a/fs/btrfs/xattr.c
++++ b/fs/btrfs/xattr.c
+@@ -24,7 +24,7 @@
+ #include "accessors.h"
+ #include "dir-item.h"
+ 
+-int btrfs_getxattr(struct inode *inode, const char *name,
++int btrfs_getxattr(const struct inode *inode, const char *name,
+ 				void *buffer, size_t size)
+ {
+ 	struct btrfs_dir_item *di;
+diff --git a/fs/btrfs/xattr.h b/fs/btrfs/xattr.h
+index b9376ea258ff..8dc4cf49f6f0 100644
+--- a/fs/btrfs/xattr.h
++++ b/fs/btrfs/xattr.h
+@@ -14,7 +14,7 @@ struct btrfs_trans_handle;
+ 
+ extern const struct xattr_handler * const btrfs_xattr_handlers[];
+ 
+-int btrfs_getxattr(struct inode *inode, const char *name,
++int btrfs_getxattr(const struct inode *inode, const char *name,
+ 		void *buffer, size_t size);
+ int btrfs_setxattr(struct btrfs_trans_handle *trans, struct inode *inode,
+ 		   const char *name, const void *value, size_t size, int flags);
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index c8b5f51e94cc..59e4546caf84 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -767,7 +767,7 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+ 	return 0;
+ }
+ 
+-int btrfs_check_mountopts_zoned(struct btrfs_fs_info *info, unsigned long *mount_opt)
++int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, unsigned long *mount_opt)
+ {
+ 	if (!btrfs_is_zoned(info))
+ 		return 0;
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index ff605beb84ef..d66d00c08001 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -58,7 +58,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache);
+ void btrfs_destroy_dev_zone_info(struct btrfs_device *device);
+ struct btrfs_zoned_device_info *btrfs_clone_dev_zone_info(struct btrfs_device *orig_dev);
+ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info);
+-int btrfs_check_mountopts_zoned(struct btrfs_fs_info *info, unsigned long *mount_opt);
++int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, unsigned long *mount_opt);
+ int btrfs_sb_log_location_bdev(struct block_device *bdev, int mirror, int rw,
+ 			       u64 *bytenr_ret);
+ int btrfs_sb_log_location(struct btrfs_device *device, int mirror, int rw,
+@@ -129,7 +129,7 @@ static inline int btrfs_check_zoned_mode(const struct btrfs_fs_info *fs_info)
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static inline int btrfs_check_mountopts_zoned(struct btrfs_fs_info *info,
++static inline int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info,
+ 					      unsigned long *mount_opt)
+ {
+ 	return 0;
+-- 
+2.45.0
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Test log:
--------
- <12>[ 6457.571628] run fstests btrfs/232 at 2024-05-29 16:31:29
-
-<6>[ 6464.685165] BTRFS: device fsid
-50147eec-0761-4d75-8e77-df9c50ac385e devid 1 transid 6 /dev/loop1
-(7:1) scanned by mount (152729)
-<6>[ 6464.715051] BTRFS info (device loop1): first mount of filesystem
-50147eec-0761-4d75-8e77-df9c50ac385e
-<6>[ 6464.719266] BTRFS info (device loop1): using crc32c
-(crc32c-generic) checksum algorithm
-<6>[ 6464.724996] BTRFS info (device loop1): using free-space-tree
-<6>[ 6464.789867] BTRFS info (device loop1): checking UUID tree
-<6>[ 6499.694309] BTRFS info (device loop1): qgroup scan completed
-(inconsistency flag cleared)
-<6>[ 6499.766172] BTRFS info (device loop1): qgroup scan completed
-(inconsistency flag cleared)
-<1>[ 6572.421678] BUG: kernel NULL pointer dereference, address:
-000000000000002c
-<1>[ 6572.423036] #PF: supervisor read access in kernel mode
-<1>[ 6572.423070] #PF: error_code(0x0000) - not-present page
-<6>[ 6572.423143] PGD 0 P4D 0
-<4>[ 6572.424555] Oops: Oops: 0000 [#1] PREEMPT SMP PTI
-<4>[ 6572.424814] CPU: 0 PID: 152772 Comm: fsstress Not tainted
-6.10.0-rc1-next-20240529 #1
-<4>[ 6572.424946] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-<4>[ 6572.425062] RIP: 0010:alloc_extent_buffer+0x253/0x820
-<4>[ 6572.427387] Code: 00 49 8b 7d 08 4c 89 e9 40 f6 c7 01 0f 85 dc
-03 00 00 0f 1f 44 00 00 4c 89 ef 48 8b 07 f6 c4 40 0f 84 f7 00 00 00
-48 8b 57 28 <8b> 42 2c 85 c0 0f 84 ac 00 00 00 8d 70 01 f0 0f b1 72 2c
-75 ee 48
-<4>[ 6572.427577] RSP: 0018:ffffae9403eaf700 EFLAGS: 00000202
-<4>[ 6572.427613] RAX: 010000000000412d RBX: ffff9eb00d8c5000 RCX:
-ffffec4001110700
-<4>[ 6572.427663] RDX: 0000000000000000 RSI: ffff9eaf3ad5b918 RDI:
-ffffec4001110700
-<4>[ 6572.427705] RBP: 000000000000dec8 R08: ffff9eaf3ad5b918 R09:
-0000000000000001
-<4>[ 6572.427730] R10: 0000000000000001 R11: 0000000000000001 R12:
-ffff9eaf0c92b318
-<4>[ 6572.427752] R13: ffffec4001110700 R14: 0000000000000000 R15:
-ffff9eb00f1f82e8
-<4>[ 6572.428675] FS:  00007f6ad5d8f740(0000)
-GS:ffff9eb07bc00000(0000) knlGS:0000000000000000
-<4>[ 6572.428756] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[ 6572.428772] CR2: 000000000000002c CR3: 00000001013ba000 CR4:
-00000000000006f0
-<4>[ 6572.428905] Call Trace:
-<4>[ 6572.430288]  <TASK>
-<4>[ 6572.430561]  ? __die+0x1e/0x60
-<4>[ 6572.433138]  ? page_fault_oops+0x17b/0x4b0
-<4>[ 6572.433156]  ? search_extable+0x26/0x30
-<4>[ 6572.434025]  ? alloc_extent_buffer+0x253/0x820
-<4>[ 6572.434035]  ? search_module_extables+0x14/0x50
-<4>[ 6572.435608]  ? exc_page_fault+0x6b/0x150
-<4>[ 6572.436133]  ? asm_exc_page_fault+0x26/0x30
-<4>[ 6572.436889]  ? alloc_extent_buffer+0x253/0x820
-<4>[ 6572.436917]  read_tree_block+0x1a/0x80
-<4>[ 6572.438475]  read_block_for_search+0x211/0x320
-<4>[ 6572.439418]  btrfs_search_slot+0x2db/0xe20
-<4>[ 6572.439905]  ? kmem_cache_alloc_noprof+0x1cb/0x240
-<4>[ 6572.439928]  find_parent_nodes+0xee/0x1f20
-<4>[ 6572.441382]  btrfs_find_all_roots_safe+0x97/0x170
-<4>[ 6572.441397]  btrfs_qgroup_trace_extent_post+0x70/0xf0
-<4>[ 6572.441881]  add_delayed_ref+0x514/0x750
-<4>[ 6572.442757]  btrfs_free_tree_block+0xcd/0x290
-<4>[ 6572.442783]  btrfs_force_cow_block+0x329/0x7e0
-<4>[ 6572.442800]  btrfs_cow_block+0xd7/0x280
-<4>[ 6572.442814]  btrfs_search_slot+0x523/0xe20
-<4>[ 6572.442832]  btrfs_insert_empty_items+0x35/0x70
-<4>[ 6572.442845]  btrfs_insert_orphan_item+0x7a/0xb0
-<4>[ 6572.443343]  btrfs_orphan_add+0x18/0xa0
-<4>[ 6572.443863]  btrfs_unlink+0x166/0x180
-<4>[ 6572.443887]  vfs_unlink+0x10d/0x2a0
-<4>[ 6572.444369]  do_unlinkat+0x28c/0x310
-<4>[ 6572.444390]  __x64_sys_unlink+0x3c/0x70
-<4>[ 6572.444433]  do_syscall_64+0x9e/0x1a0
-<4>[ 6572.444924]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-<4>[ 6572.447843] RIP: 0033:0x7f6ad5e8ba07
-<4>[ 6572.448529] Code: f0 ff ff 73 01 c3 48 8b 0d f6 83 0d 00 f7 d8
-64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 57 00
-00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c9 83 0d 00 f7 d8 64
-89 01 48
-<4>[ 6572.448541] RSP: 002b:00007ffd8a455818 EFLAGS: 00000202
-ORIG_RAX: 0000000000000057
-<4>[ 6572.448693] RAX: ffffffffffffffda RBX: 00000000000003ae RCX:
-00007f6ad5e8ba07
-<4>[ 6572.448723] RDX: 0000000000353166 RSI: 0000000000000000 RDI:
-0000558cb0972bf0
-<4>[ 6572.448735] RBP: 00007ffd8a455970 R08: 00007f6ad5f64c60 R09:
-00007ffd8a45595c
-<4>[ 6572.448744] R10: 00007ffd8a455586 R11: 0000000000000202 R12:
-0000558c873925c0
-<4>[ 6572.448750] R13: 028f5c28f5c28f5c R14: 8f5c28f5c28f5c29 R15:
-0000558c87388cc0
-<4>[ 6572.448797]  </TASK>
-<4>[ 6572.448863] Modules linked in:
-<4>[ 6572.449908] CR2: 000000000000002c
-<4>[ 6572.450833] ---[ end trace 0000000000000000 ]---
-<4>[ 6572.485615] RIP: 0010:alloc_extent_buffer+0x253/0x820
-<4>[ 6572.488121] Code: 00 49 8b 7d 08 4c 89 e9 40 f6 c7 01 0f 85 dc
-03 00 00 0f 1f 44 00 00 4c 89 ef 48 8b 7 f6 c4 40 0f 84 f7 00 00 00 48
-8b 57 28 <8b> 42 2c 85 c0 0f 84 ac 00 00 00 8d 70 01 f0 0f b1 72 2c 75
-ee 48
-<4>[ 6572.489657] RSP: 0018:ffffae9403eaf700 EFLAGS: 00000202
-<4>[ 6572.490176] RAX: 010000000000412d RBX: ffff9eb00d8c5000 RCX:
-ffffec4001110700
-<4>[ 6572.490823] RDX: 0000000000000000 RSI: ffff9eaf3ad5b918 RDI:
-ffffec4001110700
-<4>[ 6572.491363] RBP: 000000000000dec8 R08: ffff9eaf3ad5b918 R09:
-0000000000000001
-<4>[ 6572.491951] R10: 0000000000000001 R11: 0000000000000001 R12:
-ffff9eaf0c92b318
-<4>[ 6572.492404] R13: ffffec4001110700 R14: 0000000000000000 R15:
-ffff9eb00f1f82e8
-<4>[ 6572.493249] FS:  00007f6ad5d8f740(0000)
-GS:ffff9eb07bc00000(0000) knlGS:0000000000000000
-<4>[ 6572.493710] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-<4>[ 6572.494410] CR2: 000000000000002c CR3: 00000001013ba000 CR4:
-00000000000006f0
-
-metadata:
-----
-  git_describe: next-20240529
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git_short_log: 9d99040b1bc8 ("Add linux-next specific files for 20240529")
-
-Steps to reproduce:
--------
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2h94944uxKleGblX7rjXwtV0PBv/reproducer
-
-Links:
------
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240529/testrun/24131454/suite/log-parser-test/test/check-kernel-bug/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240529/testrun/24131454/suite/log-parser-test/tests/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2h945RbifdV6peYDNNBeBffjQtu/
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2h94944uxKleGblX7rjXwtV0PBv
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
