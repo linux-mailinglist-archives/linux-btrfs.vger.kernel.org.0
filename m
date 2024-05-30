@@ -1,70 +1,69 @@
-Return-Path: <linux-btrfs+bounces-5359-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5360-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34BCC8D445E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 05:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E6438D4461
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 05:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8BD12838DE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 03:52:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C66F62856AF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2024 03:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D06142E71;
-	Thu, 30 May 2024 03:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D171D142E70;
+	Thu, 30 May 2024 03:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M2ud51y4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YYSdVtw/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECAAA142E6B
-	for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2024 03:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F45926AF3
+	for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2024 03:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717041119; cv=none; b=SrQs8ttxUhF5Xw0M0ohBOWYMvo8oIBioUrlxB+SGZnaGRREHPL8yrDbOfmPJm8Q2jl0oWs8NslPVc5JnIaq9tXNM5I6xtZljUGDpWSn8B7+frb2B2ZMbJuzG0mq8UZV9WUwrRfidqmxD4wFGLi5Kv2FibIWMmlBXPvgDLUZueNY=
+	t=1717041379; cv=none; b=Wjv677NZhHtKnzABM7v5w+7d1Tfp0TN1V76toi5MabdaKrEkZsd5Ree0wi5qToQKziQp2yxXNdhc/QvgEfUKfjwCXVXDiskPcR9UhHmb91gwDJzt34CnXpkwP5z5NzeISCKfZTD7QDVg9vsYnhhvZ3Fltg6zvETmXyL+8Qf2ITQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717041119; c=relaxed/simple;
-	bh=0VA1gl8TIpMoLBk0w1BVpi1wdfkjOtO6Y8etGq9qzYY=;
+	s=arc-20240116; t=1717041379; c=relaxed/simple;
+	bh=DRqM24DPS2CEQLq0AsMI/64rRD2hwW5OWAZVVoGdqBM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Wu5hCPJ584yEkpK2Tbrt8f1s9dLg3cWaFIBWwTI4fMCw3ezl3hqJNiKnXmw/PiiZ2lSlsuz2zkdkhaG0i6zdZIN9eTJoHN3itkVFTyvunoa9s6blOYGKi+dDVlipgUyJk7qjIW0ma3BZ9P6LB6x6tovKF9MmKEbehi5nR8XUyD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M2ud51y4; arc=none smtp.client-ip=209.85.208.54
+	 To:Cc:Content-Type; b=hMyfNhIGZy07zOMDQtlJ4XYDWPd1XcNi99sjW8rIjj1WP4MM6Gp10gQEHklRaYsheKAjA/ZIMlvtjiomMgZxjZlXnGAKRYRTAAiECHB2NV21z1ldQWv/Xz2GMa1fF62HDYFjPJgPjOcsBLmW0joEopLsz4kUw3kiKvpC+NKyk7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YYSdVtw/; arc=none smtp.client-ip=209.85.208.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5785199f7d1so164924a12.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 20:51:56 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57a183ad429so340321a12.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 May 2024 20:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717041115; x=1717645915; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717041376; x=1717646176; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0VA1gl8TIpMoLBk0w1BVpi1wdfkjOtO6Y8etGq9qzYY=;
-        b=M2ud51y4DqXWbXBivYjDosBa8t1P3r08cC502JLXYUnUDRNYcFn4Q8FXLkQtMdz+6z
-         3JsJHO7KDZ2vP0Z9T+MzsdmK4S0LV/tdB4a+2isRTXwMS/Z9zTGi27QFu+aM1X/5o66V
-         cQGZQcRnRMbJDERNz+B0qPhIBWNnOFiYEv0EE3lIreK0neR2S9TrzbQKsA5JSlUKjpvy
-         T0/g74zT81+1AZwVCfBSvpVBinytcgp0kf6GOw74l+riqFMrDnvFfNndiDLSQzrSt6IB
-         Tdene97olenuZOGqDenoEQGvDzGrLrFfgVMgJvCB9O1FhHYniOwRqTbKd3Txxk8Z1asL
-         IG2A==
+        bh=4KidVi8YArQCn6EjuNNDOTiMAu76Fq3UCDQIOzjDJLk=;
+        b=YYSdVtw/j1JtBBDFlemV11Lli65bm1TSmcKcEV/OkjRObnJeCH8vKHzw55k6GZh78H
+         oc3TE2TxS41X0/ZQfP2PEr9+m7eMmRZZDXJq2FiNeM0HWBDVozuxCblvewagMVJXZWnX
+         mupuDHkBNtV410gTF3I+SSt/IVhudn/q9ShHJ+UZzBqWxU1hpogXFD6s9NXes2O9Z5EK
+         cpDQvcj/lfO6P6QkgAIIFMIdUN7Pd7V28I4FJm5dF3KeVYSfXjIvp7a+66twXpF6r9KP
+         whWUgJfU/fIkzzkw5FeTuc/4e/5ja1C217O2zuBTEDgFp4/sydOb8mD9nzH4lwbhJUaS
+         841w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717041115; x=1717645915;
+        d=1e100.net; s=20230601; t=1717041376; x=1717646176;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0VA1gl8TIpMoLBk0w1BVpi1wdfkjOtO6Y8etGq9qzYY=;
-        b=p631IFZTiOHw1tMQAPS55hvodYJRjSK7hFYfkhIlMFKYL1ePWr7eePU76xHN2pB74t
-         It4qzqpXv+0Zps6yA8MOcszRYFF9rDVU6QtLf3CfjlFtoi/QOJZaN9dPJhyJ9LpPvHt/
-         n1D+Yja0s9N2oiwAEtFa25gqEjdjXDI0SuoSTAfyKFoztZDkCYnWUA0h05griqln6GU+
-         +ov30zXht/BTnIXDgqeOj6gRceGTllO/WOwF4QgWqV7tuS1xMXpkrC46CPt5XhM/cFiI
-         /v/UR5w9qoOoI6bXTMykcgnl3RzGhW4nUcd7rbiPoNJYyRIQuKtbjwES8/zonosOO/q5
-         mMXA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2GYkOCMosHx9XGh/cXRwzA55TwWCyXBNi05HnWTiWgjRUK/TQUdIjLrfebMfoCZ0kFOfupIW3bu7DUJkqsVIRm6bR4GmQ78aP+74=
-X-Gm-Message-State: AOJu0YxuTTtcXByMx/KY9oCyzXVavdceNXT6AtuZCdbFQbX38ODAcb1g
-	TvvtZVQPmZqjbk0Cis4WXyXikFVmqUt5vvt0Ya9rS/PnNUahPCxnvTBAZLC6L6cDoMQPAKtRzCa
-	TbJHP67Krn+WXy5mWEPwbAr5e/6Q=
-X-Google-Smtp-Source: AGHT+IFsSBhuSAW4rjhLz2a4p5B7rn2wRo1TZ+eIoEiRCwVUXV+YFQRirlfO3WWSrGWiqC0bekqMi/NcQFVRNwgffUw=
-X-Received: by 2002:a50:aa96:0:b0:572:6af5:1b61 with SMTP id
- 4fb4d7f45d1cf-57a177e5139mr625911a12.6.1717041114991; Wed, 29 May 2024
- 20:51:54 -0700 (PDT)
+        bh=4KidVi8YArQCn6EjuNNDOTiMAu76Fq3UCDQIOzjDJLk=;
+        b=ANDNNoRBqqUOwBRg3nTc6nUROhZSQ01PO6zIOcDuyDdqqVMGCBjMnfvqbJngcrQYzX
+         H3vABbX2qdiYu4Dlq5POuHpfamH6LYFCGL0MUoLXHczl9T7alEukWSmOfBszqmz5BmIF
+         3DvWe4IRUKQbgXxfvsDs4YljBHwuHm1CzTKdpucgHuG1LoyPQsDc2wcsb2JCbrbMZ9tF
+         og4jPSarOueAyEZs0wcO9KOC332cNUGNCF9RayLeGZWT65Sq4OvkN3IbIkCK2MqFStxv
+         gfxe5gw40Wg3hp212QsyWrghW5TnNxjWsU8NNs5aLrTcDi3zjCLP3C8IFxC9+wVP6zSe
+         yIZQ==
+X-Gm-Message-State: AOJu0YxvQlUBoQy43wK8v3a0Y4BBMVnjOYU2bODqZlwCNpPmZj/lg9r2
+	0vEq/pUYtA5dfdRAYw28J3S/n7uBDNosBiTifX/dWAjmrm4WCLWNskjF9z6KsciQ/L0qLQ2HBWb
+	nanUX7gR6fQMOlaHfMPgTwOwOPaCH6qwEmek=
+X-Google-Smtp-Source: AGHT+IGb/5pe3ng4Ep0QxNrz8xYkn/uM5v0Gzlz8xWAvS49EV2yWPpvm/PuhhdveGEDLX3N2CR5JlLTMZSeMYLhHOQU=
+X-Received: by 2002:a50:cdce:0:b0:578:6322:234a with SMTP id
+ 4fb4d7f45d1cf-57a1780e638mr513469a12.10.1717041375480; Wed, 29 May 2024
+ 20:56:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -73,77 +72,85 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240528062343.795139-1-sunjunchao2870@gmail.com>
  <42631f4d-97ca-4f7b-a851-c06383b35065@gmx.com> <CAHB1NaidZ1WjkpshMC3zWwX1_3nL3AULG46fc4gmygb9TAa82A@mail.gmail.com>
- <20240529151207.GK8631@twin.jikos.cz>
-In-Reply-To: <20240529151207.GK8631@twin.jikos.cz>
+ <932eb368-ce1c-4301-87a6-325458c29541@gmx.com>
+In-Reply-To: <932eb368-ce1c-4301-87a6-325458c29541@gmx.com>
 From: JunChao Sun <sunjunchao2870@gmail.com>
-Date: Thu, 30 May 2024 11:51:43 +0800
-Message-ID: <CAHB1NajXE07g1zi3wJR8GCuHyB9--EK8e1v7uXSAV8Lt2VxZyQ@mail.gmail.com>
+Date: Thu, 30 May 2024 11:56:04 +0800
+Message-ID: <CAHB1Naho4uw3S=PKB=c2eA0Fs-WgTS5sxpZKx+u2PjLNfHQw5Q@mail.gmail.com>
 Subject: Re: [PATCH] btrfs: qgroup: delete a todo about using kmem cache to
  alloc structure
-To: dsterba@suse.cz
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org, clm@fb.com, 
-	josef@toxicpanda.com, dsterba@suse.com
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, 
+	dsterba@suse.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-David Sterba <dsterba@suse.cz> =E4=BA=8E2024=E5=B9=B45=E6=9C=8829=E6=97=A5=
-=E5=91=A8=E4=B8=89 23:12=E5=86=99=E9=81=93=EF=BC=9A
+Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2024=E5=B9=B45=E6=9C=8830=E6=97=
+=A5=E5=91=A8=E5=9B=9B 05:55=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Wed, May 29, 2024 at 09:11:05PM +0800, JunChao Sun wrote:
+>
+>
+> =E5=9C=A8 2024/5/29 22:41, JunChao Sun =E5=86=99=E9=81=93:
 > > Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2024=E5=B9=B45=E6=9C=8828=
 =E6=97=A5=E5=91=A8=E4=BA=8C 14:42=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > >
-> > >
-> > > =E5=9C=A8 2024/5/28 15:53, Junchao Sun =E5=86=99=E9=81=93:
-> > > > Generic slub works fine so far. And it's not necessary to create a
-> > > > dedicated kmem cache and leave it unused if quotas are disabled.
-> > > > So let's delete the todo line.
-> > > >
-> > > > Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
-> > >
-> > > Reviewed-by: Qu Wenruo <wqu@suse.com>
-> > >
-> > > My bad, at the time of writing I didn't notice that qgroup is not alw=
-ays
-> > > enabled.
-> > >
-> > > > Furthermore nowadays squota won't utilize that structure either, ma=
-king
-> > > > it less meaningful to go kmemcache.
+> [...]
+> >>
+> >> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> >>
+> >> My bad, at the time of writing I didn't notice that qgroup is not alwa=
+ys
+> >> enabled.
+> >>
+> >>> Furthermore nowadays squota won't utilize that structure either, maki=
+ng
+> >>> it less meaningful to go kmemcache.
 > > Thank you for your further explanation. By the way, is there anything
 > > meaningful todo? I saw some in code, but I can't ensure if they are
 > > still meaningful. I'd like to try contributing to btrfs and improve my
 > > understanding of it.
 >
-> You could find TODO or XXX marks in the sources but I'm against tracking
-> todos like that and the one you saw and all the others are from old
-> times. All are to be removed, though with evaluation if they apply and
-> are still worth to be tracked by other means.
 >
->
-> > We don't have one place to track todos also things are more like an ide=
-a
-> > than a full fledged task with specification and agreement that this is
-> > what we want to do. This means it's better to talk to us first if you'd
-> > like to implement something, either privately by mail or you can join
-> > slack.
+> > In fact I'm considering converting btrfs_qgroup_extent_record::node to
+> > XArray, inspired by the recent conversion by Filipe for btrfs_root::ino=
+des.
 > >
-> > Otherwise generic contributions are always welcome, with perhaps a
-> > friendly warning that the code base is old and there are several people
-> > working on it so the style and coding patterns are kind of alwyas
-> > standing in the way. Reading code first to get the idea is recommended.
-I see. Thanks for your detailed explanation.
+> > Which should reduce the memory usage for btrfs_qgroup_extent_record.
+Thanks for your suggestion. I saw the patch, it's really great. Maybe
+I can try to do same thing for btrfs_qgroup_extent_record::node.
+>
 >
 > > Also, is it a meaningful to view the contents of snapshots without
 > > rolling them back? The company I work for is considering implementing
 > > it recently...
 >
+> What do you mean by rolling back?
 >
-> > This sounds like a use case that's above the filesystem, eg. rollback o=
-f
-> > snapshot I know of is done by snapper, what btrfs does is just to
-> > provide the capability of snapshots. Viewing snapshots is possible,
-> > either going to its directory or mounting it to some path and examining
-> > it.
+>
+> > IIRC one can always access the snapshot from parent subvolume, or just
+> > mount the snapshot.
+yeh, I realized it now.
+>
+> Thanks,
+> Qu
+>
+> >>
+> >> Thanks,
+> >> Qu
+> >>> ---
+> >>>    fs/btrfs/qgroup.h | 1 -
+> >>>    1 file changed, 1 deletion(-)
+> >>>
+> >>> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+> >>> index 706640be0ec2..7874c972029c 100644
+> >>> --- a/fs/btrfs/qgroup.h
+> >>> +++ b/fs/btrfs/qgroup.h
+> >>> @@ -123,7 +123,6 @@ struct btrfs_inode;
+> >>>
+> >>>    /*
+> >>>     * Record a dirty extent, and info qgroup to update quota on it
+> >>> - * TODO: Use kmem cache to alloc it.
+> >>>     */
+> >>>    struct btrfs_qgroup_extent_record {
+> >>>        struct rb_node node;
+> >
 
