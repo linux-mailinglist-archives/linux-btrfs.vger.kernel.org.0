@@ -1,280 +1,316 @@
-Return-Path: <linux-btrfs+bounces-5375-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5376-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 394648D5DA5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2024 11:07:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E4308D5FE2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2024 12:45:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D09E1C2486B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2024 09:07:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFC601F258D9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2024 10:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C83156641;
-	Fri, 31 May 2024 09:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4373156C7F;
+	Fri, 31 May 2024 10:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDoHN5V+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C035E153BE8
-	for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2024 09:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717146267; cv=fail; b=t76Vr62CDZTnZL4FEdGD+mRWt6SOhaI4/twvLXASnBDp7xBWTZNrbcivMjRNLdQJs+hlnDHVzV8pm6yFUuZvmO10r8QBj7RM8197kARjvnih6Vbo/P+F3v7RHQGKFhbyjVbSZVlLUlj0GXYtteGdAhVgC+t2Xl38HRBct6hYmZk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717146267; c=relaxed/simple;
-	bh=Ae/pRXg380Y0YJW2FxTbLJIvs3JPGqeydIe2xzlHwGg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jqIMmMNTQHPnD+i5Qv7g8oZzA/h6l+xJ0ihyT+kGrW3jKMQ2I5+t7fV6Bb/vhNfhbD95pP4jsHccqP49BflmnThljM1s6SI59d28aAnWWJtErRMK/U91lUgwz1t6Lr8+5Xl/sLZbEkAyNw8tM5RDjro/ag7a0fFC8l86C8joSXw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44V93u1F027642;
-	Fri, 31 May 2024 09:04:16 GMT
-DKIM-Signature: =?UTF-8?Q?v=3D1;_a=3Drsa-sha256;_c=3Drelaxed/relaxed;_d=3Doracle.com;_h?=
- =?UTF-8?Q?=3Dcc:content-transfer-encoding:content-type:date:from:in-reply?=
- =?UTF-8?Q?-to:message-id:mime-version:references:subject:to;_s=3Dcorp-202?=
- =?UTF-8?Q?3-11-20;_bh=3DlZAnHgqUdk4EaHdZzrLUpxR3x6I6BDKyzBn/W9JWj6k=3D;_b?=
- =?UTF-8?Q?=3DOgrrMBcfgITlQVrnxqVlGHJwVObUFhw5Ci7smfbqTP4M2zKa8T9TdhKS8Iki?=
- =?UTF-8?Q?Z3Z7feVd_XDQMyamkhnVsRxYavyPdUk834Pylj14LG8qPDy79Sc4dMkXx9RatQB?=
- =?UTF-8?Q?hopkfhZL/e8vTb_XEYj4/iimRQL/dpoY2cqA21P42hhKMga/a78tHlVXPvF3/cE?=
- =?UTF-8?Q?y/KftjwN8Py4FZw8mn/B_XZAEAr1j4pu9Ho6JDcy1FIe1jW212mxKHg5SBsUkIn?=
- =?UTF-8?Q?yMHkFu9JuaApWqv2z0Pttv4tAb_Dccla+w3SkZJC3pmkFk23BYr29+0zGkQw8P5?=
- =?UTF-8?Q?AwM0TOIP94MufSN/FLtEtzVApxfuc3q1_7A=3D=3D_?=
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yb8j8amen-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 31 May 2024 09:04:16 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44V76mO7020282;
-	Fri, 31 May 2024 09:04:15 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3yf7r27jk6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 31 May 2024 09:04:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MBHTGkzan8SKCXqCB5ZUANNQHTGQ+EfbaA8z1tEV5A5wmayJL1BkR6vT6mvNPVS9X/ynUu/H74s9SsH+xW8TdzRNAOzhw14tpg6mcC/Huxtlknnk8c9U/MVu1guODizRP6DtYIWR7cPIOQPbJr7CcUguiVK/31mkq8HC5Nj092WeqRIO+o8wMQ+6hL53CFWJwL61KionDuJ38XJqfSIuNCLBwohEEFEqa+KJJIYCDCd2ddPrapLSUvFNdLafwL8H1AywLuWCQ7+ZY027F/XcesO64rvkvWJXXXXvC88W1pgLntG9SMszzZBzZnweGBucIJD5SnyfXGzrat0CmyZ9SQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lZAnHgqUdk4EaHdZzrLUpxR3x6I6BDKyzBn/W9JWj6k=;
- b=nwvcccRgy16h7vbnf/EkhSkNF8obSl1eMuzNgjjK3Re9pLUVFvsPIyytRVnTxG0v7+3INkh9+UHsEpl4ZcbpllDXk5u+ufYNi9FS7c5hEqCC7ksZVxqB5206jXBliJ8HTRQLZN1FRDYW7KD6yTL2p3Ekw1t2d/MR7aX9WS4t4Y5LjWMdNxEnbf7azSNOJemWEM5YDCeQkeuD3YsxpnlxdOpL1x+MwWrFCuRSOJ+p2vvN5EDoDTd2PblDS+MdhgrWlVYa+nHSyqQ6SfBqamel1iTMFC9PEA4YHY4v0gnu6ebTtPal/2VJ12x4mi+0mgAYYhfDn4YkP+ZDQ/9IS3SYLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lZAnHgqUdk4EaHdZzrLUpxR3x6I6BDKyzBn/W9JWj6k=;
- b=FPMHXcSXoYdsKZAKxjawmAAFXJjaRZ70J8BVR61kef7g1+oLnOWxh8satgrP9gdsugH552Nd5qkppBa8X+BNtLT9kiTN8I4jNQB2aoUbmPhNLhJ5Y1yTbdWcvMi96r4BQGpmcAR/DX4xDKqKgMf38yL/CPbZCIXES9o/IGEPVWU=
-Received: from DM6PR10MB4347.namprd10.prod.outlook.com (2603:10b6:5:211::11)
- by MW6PR10MB7614.namprd10.prod.outlook.com (2603:10b6:303:242::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.21; Fri, 31 May
- 2024 09:04:13 +0000
-Received: from DM6PR10MB4347.namprd10.prod.outlook.com
- ([fe80::1e9d:8ed8:77a6:f31f]) by DM6PR10MB4347.namprd10.prod.outlook.com
- ([fe80::1e9d:8ed8:77a6:f31f%5]) with mapi id 15.20.7633.021; Fri, 31 May 2024
- 09:04:13 +0000
-From: Srivathsa Dara <srivathsa.d.dara@oracle.com>
-To: "dsterba@suse.cz" <dsterba@suse.cz>
-CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Rajesh
- Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>,
-        Junxiao Bi
-	<junxiao.bi@oracle.com>, "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com"
-	<josef@toxicpanda.com>,
-        "dsterba@suse.com" <dsterba@suse.com>
-Subject: RE: [RESEND PATCH] btrfs-progs: convert: Add 64 bit block numbers
- support
-Thread-Topic: [RESEND PATCH] btrfs-progs: convert: Add 64 bit block numbers
- support
-Thread-Index: AQHasrblbLlLTky0U0i/yX28Adrz+bGxC/mA
-Date: Fri, 31 May 2024 09:04:13 +0000
-Message-ID: 
- <DM6PR10MB43476059C588E8136707F28DA0FC2@DM6PR10MB4347.namprd10.prod.outlook.com>
-References: <20240530053754.4115449-1-srivathsa.d.dara@oracle.com>
- <20240530172916.GB25460@twin.jikos.cz>
-In-Reply-To: <20240530172916.GB25460@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR10MB4347:EE_|MW6PR10MB7614:EE_
-x-ms-office365-filtering-correlation-id: 15d90741-a8fc-40c3-4030-08dc8150a435
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|376005|366007|1800799015|38070700009;
-x-microsoft-antispam-message-info: 
- =?us-ascii?Q?A5BQbKsWPoAR2G5eW/UCtocOmp3950FjHT3FF/GiMvti4+1M7gJrzSh0GIUL?=
- =?us-ascii?Q?wrnoc1T/LbN/mh3/qnv5XGxEu/pOGeERUej81tZxw8KNeQihq8igmSkUQnkx?=
- =?us-ascii?Q?XChpMIjoLqwuWWg1Uce81ubBYVXqtJAMrpzn2fOCrJXN4D1Omdjb8m0PFSl8?=
- =?us-ascii?Q?gDBtS95r8Xi7z/SO4lDHDGEZBEmNQZN2RzN8cbulS2AQ4S0r7uEw7sswJs/H?=
- =?us-ascii?Q?hovZXXj8jpQQC/jd8pMTuwun1LI60bEoLgtrTq4S3EzH4v07bFXpJFFeJxcT?=
- =?us-ascii?Q?QihMHXIFtWJ+6+zMODy1cBszqQKpf+8/Xbk8ecNqzvhGiZo6GRZwD6c5iCoQ?=
- =?us-ascii?Q?4x8it/KQq8TUHJM2eLd7lygs/eH0A/lpnmKu3+QFTrUnbi1gOT/b8e3sZAew?=
- =?us-ascii?Q?iUCnncqt/axLF3e4v7rKcDhgIWsC2zQ1LkmkjCyLbOVvqtJ6WtWUeqI1sdw+?=
- =?us-ascii?Q?3oEa4oH/nYprH/UpDSiKV0Khi7xBnXjUAjz9W69bh/AWyQy+cye6vxXRdyMu?=
- =?us-ascii?Q?la61Qj+If+aSGouGrsDQJcGLT43e8hYdoIQJz37v+2Q6u9UB3dpxf9RNkmje?=
- =?us-ascii?Q?yrl9GTfmW1OfYIvPLDmLmnnBfcAn58A5P1geDI3MheM8+Z4q/5A8Opeyab8V?=
- =?us-ascii?Q?X6iPQ1WREYDWCH/l3ysC/+j4GEEjdItSWScUSUCYcKfXPVeptghQYozX6XSQ?=
- =?us-ascii?Q?5qJN1VQ+GYtgyyaWdddRJDAvMBiExD0q+DywuywqVPn8dldQ4g4udJ93M7nl?=
- =?us-ascii?Q?HxnHtBWJljG1crCAjbukf+C2e8/DG/HsSI9RTEwLrQikKnohEb6rFn5NpSkk?=
- =?us-ascii?Q?eru77FZKKashZicgIj5k6L6m85GmFFhsshk3kXs1Vm3hUrgPs+WmeTEok40Y?=
- =?us-ascii?Q?CFCcnraRIyHCqc4b/gP/Auw+r5bRn3zeC5HLCM9ZAh63L+RacV/ZVHEbkUqG?=
- =?us-ascii?Q?kMup+IJLe1ha6I1rv/0aTRE0OFzoE9aRRapHufZp8sDuH4Srwy5VVhA/tjQ5?=
- =?us-ascii?Q?P9J6NjQE5o0a2A/qbZl9hpgFzik2t9Uqo0ZBtvWIJbCh3Wq3ymmp/GhnhpVy?=
- =?us-ascii?Q?UGrhAqwlhryRp6o6VgNcyGHN7agw8d16/DThFOhS4zg49LgWrKgqtWqoQnmC?=
- =?us-ascii?Q?ldnhwyp8UgTpoIxOIExtH3erRv5G/5GPnW8Qt6Su7u5FCFaKjW5nDp30qZCe?=
- =?us-ascii?Q?4mBVoGhMFvdV55PTSfuDKlM/bJHrPivniNZ3FNB3vbF5P9owgUsRpLRNCzzg?=
- =?us-ascii?Q?5BnCX/8rqsgUQkCN0k22CTyL2x2qIIJtnuy/HjTQK6yxPm61nAixUdRncP+2?=
- =?us-ascii?Q?My6WUzDZeL2+kvdPfTV76yM4pgrMvCE79FQsM9QcHBKLtw=3D=3D?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4347.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?GlvJTzC9tgIunQuxAYQmxD1ZtTugCCwmGQJfabJfQ5cxcgR0hu1gf60WJcsg?=
- =?us-ascii?Q?DI6RRJqzESbzOOZ+augkCZqSV+cfNZnZPyIMIiUGP0W9HYNubN2tL+ZIoLiG?=
- =?us-ascii?Q?4hTENWa0vSs+OctSdcMlacLABrHZiem7oYzsOtLCOaCAONblaAUgc1hpBF/J?=
- =?us-ascii?Q?7J4CW2ZDJpsonl8ksbbFy8h/JtEemh4HK3JffrK5C+I+Hc5sVF/eq7qPf1HW?=
- =?us-ascii?Q?bKFamkttZKAQbL06DadOekpKhxElYDfizVs7nQ2w9106x2TYhcGwlLWrhTpm?=
- =?us-ascii?Q?kHlxVtKgsAx/KrFmxSQiDY78qKUUZwejO/tmTy84/tueCcs22l6Tp3N6mY//?=
- =?us-ascii?Q?c/7PtmYRPnhQXTT0DeAhYMhwEPDTb/Bbg9nUVeHupB8I+XAWdaJDokl2xWvy?=
- =?us-ascii?Q?rZr7RvqZ9dZsqPlD5DSBPk3gZNKiK9wVs6Nw+NdrPvHHl6CHOijOzrKQhS6b?=
- =?us-ascii?Q?t6/8agGdq5MNaNOOswD6xgDDE9eS8fE7nmHUrvznvef77Dlb/JLvwLDCYyaY?=
- =?us-ascii?Q?2ftx1tIqWTlWjck2kSPAxbO3/MV7ObCf0HNCHZxnRmEVTaXFhgoSE8lH3ZiU?=
- =?us-ascii?Q?T+VyIHsrWr8RDC5gNXOqKSCYdljlFHuL2T1KMWqP8w5cvpBgeJqX+5XIIp0D?=
- =?us-ascii?Q?gPSfbNheFlSW2lUYK1RU73U24U9k5SDWVCKoDZhCH8OpW4bIRReYHVJf1TkU?=
- =?us-ascii?Q?Ml6+WVkKr4CH1z2aX1D1Pd3gEhg33iTKkdpzai+eUdb05Af9fJYA0SOmxFT1?=
- =?us-ascii?Q?V/iLRr8tH7n3JTR5uucb4fwUMyvmpJGJwuLmuvgMoqa+uHfCHKJMvECza3Oq?=
- =?us-ascii?Q?BJLLFDbVplMZVyWXf5LO8eEpOiFqzNyhMj8jdX+oe103jfFyBjMmZK5Ovf6y?=
- =?us-ascii?Q?gWKXq1lzs9/7Rlffj7AdQBL1dBWuiHTblRUFY3a8mzBo9G2mz3SLoSmShpBy?=
- =?us-ascii?Q?zAdQXD7iLY1/HSo74Q017ztx7O/CHWV2Ee3ZjF+EUolB/CKT7xtlTuHC1R6w?=
- =?us-ascii?Q?NDfWCuA+pKQ/Tnsd1kmnXX3TSq+yzjNlOwaig9Livx0ZaH6WpCGZzDiti64m?=
- =?us-ascii?Q?10wiFLnPVZLmmXIbXybmfNdTcqnRZ62piT1UDACulRvHJRomcMwnHQ9EzLF8?=
- =?us-ascii?Q?cT3cRrRXvS/8pt59kadiMjHutbzRzuT/5A0O882659EfSZIZcDFZJxvZEhX7?=
- =?us-ascii?Q?+fDf1sEpHmTkv9HxFTf4NHW1Ow9pAGjig5HQNTVPL6u7g6/8piuWf9OFmNve?=
- =?us-ascii?Q?Lek8EwK0lLFUKiThsA+8YCSPjoo4ShALxmhQu5VTJUg6v0AVpymKVe/LTOOr?=
- =?us-ascii?Q?yv1BAW5QiXwn+Ss0tzNSH+AngeZV74rXbhsoq6aUjlWGA+dyAnW9DupSMjm7?=
- =?us-ascii?Q?8fnmByC6joy9tYlTQZ9d93TRM6xBttM5wEqPdAkq0uNKHigmG5JSf7PIB/Ye?=
- =?us-ascii?Q?AjyTWt4X/TSe7bJ4C2xUqMbw/u+6ctwcvhjf+rb2WAAzQQbLCt+itp28IiAA?=
- =?us-ascii?Q?bUne1fkbvKA7nzqGEi4/YCwCXAR2ppqWOm3wOYZhVt0oPkFCdHlBWmFCZ0Oc?=
- =?us-ascii?Q?g+lDkQHd27WDwIjJ1uVDM+F4OrAaH9yBPESHqp7h?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E07E156253
+	for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2024 10:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717152321; cv=none; b=MXBeTI6GUvJgnLSN0nMULJdd2SqX8uTXpUhx4RpGKzCQENtzHgZHpExWvly2NBZWkF/j2e7glRwKAJrlPCdp/Yk6VTnMYSgzI7h4NIZ0rjiscVQxVv1D+YSxX8f1yJ6rY3Po78Nry7VtqSxSQ5tpLM0q863HnggQCqvs1rxDyjo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717152321; c=relaxed/simple;
+	bh=F8tjdjLQLgq6vlNZHTTYfX504JPDEjMrHFAzUZaSPAw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iwIvqRdfYN5viXGDBsXKazbiCCTxsQcDonJt4eEaoOhvkZR5ouqaa6P42vHGOK9OuGbozvhAI7SOgPCeVsD8KzprVFczEk2IH8/l7WDGxjnXOv9x0j1E30zt31BOPfX1OXQOWF1XXTdkcM+WqRvOXCsD0LrRu6IBMLOSbXWctj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qDoHN5V+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFD89C32789
+	for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2024 10:45:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717152320;
+	bh=F8tjdjLQLgq6vlNZHTTYfX504JPDEjMrHFAzUZaSPAw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=qDoHN5V+N7UhqomJzxNE6Lh0uI9RsgawlYRVCpNi5djUvIWbpigEdpiFFeWc8L4Qy
+	 2z012wHl6B5sYN8FyK5XlIL6xK4zKW0hDASObSMpVZLNIxQXmxyD+YW/MUJRL3/KYY
+	 R2Puti0P7R5R3ZWzdV5FjRVxBA9jvvWgEvhBMO8adNTsOjA2t5g6CUsRPekwft4On0
+	 4Tq4/8FrWIHS+SctoNGeTkuAl5Du0LPHGxoL14JpBZHJCoNJ8/hlqjnqkuf+ExqrrW
+	 0HY1VEu3pLScnnixzYW5XaxD8GKAjrhfPYGFXcNFLZyXVf58/qjQlaZot5QcRmEH+k
+	 ZAShGscy1U+eA==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a59a352bbd9so301263666b.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2024 03:45:20 -0700 (PDT)
+X-Gm-Message-State: AOJu0Ywu073rIJPfjceBsVDWF1K0nWNGTh21gI8qZgEoPhmlzZ2Sxx/a
+	kfOu/b2ZnxT5AsUCIeR2pFM2R67+Dkaz8u0rvE+/x+Y7sVeMxBYMQRExx0oIrEx/c88H3hZaubN
+	RvQvUGyY5Lajv18Gg3qBjr9YboWg=
+X-Google-Smtp-Source: AGHT+IG7K62Hd5jG1lYa8CcQ5F0ujE+n9btjvFTnVcAzXvIe2moTKmMJ7naE44Ry50oupXJ1vFyp2CScID0n2bVkImo=
+X-Received: by 2002:a17:906:da07:b0:a68:8ade:689b with SMTP id
+ a640c23a62f3a-a688ade6942mr60175966b.7.1717152319174; Fri, 31 May 2024
+ 03:45:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	w0Ws2HOmFotREECYs7BsG683xRf62V/Rx5ZSC55Jp/fuuPUE85mvjEBZqZuY181aX9QyqvqWyPEZqVak1an9fg1qCesUXmJdIjE0At+3ivCtMHWlXWuynPCKaJu1qYLLelNuxP2gOznvcUOY2cwaKaZbhyBx2prRpaFTlU2x2AXjBU1XmojDgslC9tiCZgvkglW9aNt6hcpn976MV8RL2Xf4bbBzQtySR+sOO8lZTYCSJCvfZxmh/2Ik3xIVw3hOUtLQZBnkfskf5c6tzBqbKeqiASCw+DQBwx2CND2P4MiEKpj+WVlndd2RdzHtbgSsDjjM+G0yQWmGeXxHOOEvysyts209hSQE0g7YunBzg0cy1mmNcYkugAXh8erCcfN/7//lTlTTbdyJD42eOAQK0VZ2T+ZO5YVt3SwFGVPFhDYTqIvmo61wVllzbUqUQ9lvpNqa6edOVZQRne1SXj8n0iMisfxEKOY0TwDsY7fXZK6YIiNvbAXKCHDbicU8cjIP6hROez0j6+5NI8AC9B5rIHAKYWNPhrmRM2iegC3fad2OgrtXna4/33wKEp0BT3z7nEy9lBXBB5VJSc8rcKPRUkflnwhQzNgqbOndy4vCRjc=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4347.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15d90741-a8fc-40c3-4030-08dc8150a435
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 May 2024 09:04:13.1943
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UyFUQQkD84wgMY4rcozXlqDFwjLoL+ttFvnr8t1kgHvbs2INjMotGtaabpbSdVdA3Q1eNGWMRlEJfr4378DfGHak0pCwrnDUHaWBii7BjWs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR10MB7614
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-05-31_05,2024-05-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 phishscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2405310066
-X-Proofpoint-ORIG-GUID: JUyIcN7ckhg5_oHAXULffIRy-iRuA2ti
-X-Proofpoint-GUID: JUyIcN7ckhg5_oHAXULffIRy-iRuA2ti
+References: <b2192936067ea7e82e7d5958c0aa6baf8c29b5d9.1717130599.git.wqu@suse.com>
+In-Reply-To: <b2192936067ea7e82e7d5958c0aa6baf8c29b5d9.1717130599.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 31 May 2024 11:44:42 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6BBU9s40MwhrVtJt-=XJHceKMS0vrh6Hey3Nre15ONNA@mail.gmail.com>
+Message-ID: <CAL3q7H6BBU9s40MwhrVtJt-=XJHceKMS0vrh6Hey3Nre15ONNA@mail.gmail.com>
+Subject: Re: [PATCH RFC] btrfs: fix a possible race window when allocating new
+ extent buffers
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, May 31, 2024 at 5:44=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [POSSIBLE RACE]
+> Commit 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to
+> allocate-then-attach method") changes the sequence when allocating a new
+> extent buffer.
+>
+> Previously we always call grab_extent_buffer() under
+> mapping->i_private_lock, thus there is no chance for race to happen
+> between extent buffer releasing and allocating.
+>
+> However that commit changed the behavior to call grab_extent_buffer()
+> without holding that lock, making the following race possible:
+>
+>             Thread A            |          Thread B
+>  -------------------------------+----------------------------------
+>                                 | btree_release_folio()
+>                                 | |- btrfs_release_extent_buffer_pages()
+>  attach_eb_folio_to_filemap()   | |  |- detach_extent_buffer_folio()
+>  |                              | \- return 1 so that this folio would be
+>  |                              |    released from page cache
+>  |-grab_extent_buffer()         |
+>  | Now it returns no eb, we can |
+>  | reuse the folio              |
+
+So I don't understand this, there's something missing.
+
+btrfs_release_extent_buffer_pages(), when called in the
+btree_release_folio() path (by release_extent_buffer()), is only
+called under an:
+
+if (atomic_dec_and_test(&eb->refs)) {
+
+So the extent buffer's ref count is 0 when
+btrfs_release_extent_buffer_pages() is called.
+
+And then at grab_extent_buffer() we have:
+
+if (atomic_inc_not_zero(&exists->refs)) {
+
+So we can never pick up an extent buffer with a ref count of 0.
+
+Did I miss something?
+
+Thanks.
 
 
-
------Original Message-----
-From: David Sterba <dsterba@suse.cz>=20
-Sent: Thursday, May 30, 2024 10:59 PM
-To: Srivathsa Dara <srivathsa.d.dara@oracle.com>
-Cc: linux-btrfs@vger.kernel.org; Rajesh Sivaramasubramaniom <rajesh.sivaram=
-asubramaniom@oracle.com>; Junxiao Bi <junxiao.bi@oracle.com>; clm@fb.com; j=
-osef@toxicpanda.com; dsterba@suse.com
-Subject: Re: [RESEND PATCH] btrfs-progs: convert: Add 64 bit block numbers =
-support
-
-> On Thu, May 30, 2024 at 05:37:54AM +0000, Srivathsa Dara wrote:
-> > In ext4, number of blocks can be greater than 2^32. Therefore, if=20
-> > btrfs-convert is used on filesystems greater than or equal to 16TiB=20
-> > (Staring from 16TiB, number of blocks overflow 32 bits), it fails to=20
-> > convert.
-> >=20
-> > Example:
-> >=20
-> > Here, /dev/sdc1 is 16TiB partition intitialized with an ext4 filesystem=
-.
-> >=20
-> > [root@rasivara-arm2 opc]# btrfs-convert -d -p /dev/sdc1 btrfs-convert=20
-> > from btrfs-progs v5.15.1
-> >=20
-> > convert/main.c:1164: do_convert: Assertion `cctx.total_bytes !=3D 0`=20
-> > failed, value 0 btrfs-convert(+0xfd04)[0xaaaaba44fd04]
-> > btrfs-convert(main+0x258)[0xaaaaba44d278]
-> > /lib64/libc.so.6(__libc_start_main+0xdc)[0xffffb962777c]
-> > btrfs-convert(+0xd4fc)[0xaaaaba44d4fc]
-> > Aborted (core dumped)
-> >=20
-> > Fix it by considering 64 bit block numbers.
-> >=20
-> > Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
-> > ---
-> >  convert/source-ext2.c | 6 +++---
-> >  convert/source-ext2.h | 2 +-
-> >  2 files changed, 4 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/convert/source-ext2.c b/convert/source-ext2.c index=20
-> > 2186b252..afa48606 100644
-> > --- a/convert/source-ext2.c
-> > +++ b/convert/source-ext2.c
-> > @@ -288,8 +288,8 @@ error:
-> >  	return -1;
-> >  }
-> > =20
-> > -static int ext2_block_iterate_proc(ext2_filsys fs, blk_t *blocknr,
-> > -			        e2_blkcnt_t blockcnt, blk_t ref_block,
-> > +static int ext2_block_iterate_proc(ext2_filsys fs, blk64_t *blocknr,
-> > +			        e2_blkcnt_t blockcnt, blk64_t ref_block,
-> >  			        int ref_offset, void *priv_data)  {
-> >  	int ret;
-> > @@ -323,7 +323,7 @@ static int ext2_create_file_extents(struct btrfs_tr=
-ans_handle *trans,
-> >  	init_blk_iterate_data(&data, trans, root, btrfs_inode, objectid,
-> >  			convert_flags & CONVERT_FLAG_DATACSUM);
-> > =20
-> > -	err =3D ext2fs_block_iterate2(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY=
-,
-> > +	err =3D ext2fs_block_iterate3(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY=
-,
-> >  				    NULL, ext2_block_iterate_proc, &data);
-> >  	if (err)
-> >  		goto error;
-> > diff --git a/convert/source-ext2.h b/convert/source-ext2.h index=20
-> > d204aac5..73c39e23 100644
-> > --- a/convert/source-ext2.h
-> > +++ b/convert/source-ext2.h
-> > @@ -46,7 +46,7 @@ struct btrfs_trans_handle;  #define=20
-> > ext2fs_get_block_bitmap_range2 ext2fs_get_block_bitmap_range  #define=20
-> > ext2fs_inode_data_blocks2 ext2fs_inode_data_blocks  #define=20
-> > ext2fs_read_ext_attr2 ext2fs_read_ext_attr
-> > -#define ext2fs_blocks_count(s)		((s)->s_blocks_count)
-> > +#define ext2fs_blocks_count(s)		((s)->s_blocks_count_hi << 32) | (s)->=
-s_blocks_count
->=20
-> Looks like there's missing closing )
-
-No, all parenthesis are balanced.
+>
+> This would make the newly allocated extent buffer to point to a soon to
+> be freed folio.
+> The problem is not immediately triggered, as the we still hold one extra
+> folio refcount from thread A.
+>
+> But later mostly at extent buffer release, if we put the last refcount
+> of the folio (only hold by ourselves), then we can hit various problems.
+>
+> The most common one is the bad folio status:
+>
+>  BUG: Bad page state in process kswapd0  pfn:d6e840
+>  page: refcount:0 mapcount:0 mapping:000000007512f4f2 index:0x2796c2c7c
+>  pfn:0xd6e840
+>  aops:btree_aops ino:1
+>  flags: 0x17ffffe0000008(uptodate|node=3D0|zone=3D2|lastcpupid=3D0x3fffff=
+)
+>  page_type: 0xffffffff()
+>  raw: 0017ffffe0000008 dead000000000100 dead000000000122 ffff88826d0be4c0
+>  raw: 00000002796c2c7c 0000000000000000 00000000ffffffff 0000000000000000
+>  page dumped because: non-NULL mapping
+>
+> [FIX]
+> Move all the code requiring i_private_lock into
+> attach_eb_folio_to_filemap(), so that everything is done with proper
+> lock protection.
+>
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Link: https://lore.kernel.org/linux-btrfs/CAHk-=3Dwgt362nGfScVOOii8cgKn2L=
+VVHeOvOA7OBwg1OwbuJQcw@mail.gmail.com/
+> Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+> Link: https://lore.kernel.org/lkml/CABXGCsPktcHQOvKTbPaTwegMExije=3DGpgci=
+5NW=3DhqORo-s7diA@mail.gmail.com/
+> Fixes: 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to allocate-t=
+hen-attach method")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Reason for RFC:
+>
+> I do not have a reliable enough way to reproduce the bug, nor enough
+> confidence on the btree_release_folio() race.
+>
+> But so far this is the most sounding possibility, any extra testing
+> would be appreciated.
+> ---
+>  fs/btrfs/extent_io.c | 53 ++++++++++++++++++++++----------------------
+>  1 file changed, 27 insertions(+), 26 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 0c74f7df2e8b..86d2714018a4 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2980,13 +2980,14 @@ static int check_eb_alignment(struct btrfs_fs_inf=
+o *fs_info, u64 start)
+>   * The caller needs to free the existing folios and retry using the same=
+ order.
+>   */
+>  static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+> +                                     struct btrfs_subpage *prealloc,
+>                                       struct extent_buffer **found_eb_ret=
+)
+>  {
+>
+>         struct btrfs_fs_info *fs_info =3D eb->fs_info;
+>         struct address_space *mapping =3D fs_info->btree_inode->i_mapping=
+;
+>         const unsigned long index =3D eb->start >> PAGE_SHIFT;
+> -       struct folio *existing_folio;
+> +       struct folio *existing_folio =3D NULL;
+>         int ret;
+>
+>         ASSERT(found_eb_ret);
+> @@ -2998,7 +2999,7 @@ static int attach_eb_folio_to_filemap(struct extent=
+_buffer *eb, int i,
+>         ret =3D filemap_add_folio(mapping, eb->folios[i], index + i,
+>                                 GFP_NOFS | __GFP_NOFAIL);
+>         if (!ret)
+> -               return 0;
+> +               goto finish;
+>
+>         existing_folio =3D filemap_lock_folio(mapping, index + i);
+>         /* The page cache only exists for a very short time, just retry. =
+*/
+> @@ -3014,14 +3015,16 @@ static int attach_eb_folio_to_filemap(struct exte=
+nt_buffer *eb, int i,
+>                 return -EAGAIN;
+>         }
+>
+> -       if (fs_info->nodesize < PAGE_SIZE) {
+> +finish:
+> +       spin_lock(&mapping->i_private_lock);
+> +       if (existing_folio && fs_info->nodesize < PAGE_SIZE) {
+>                 /*
+> -                * We're going to reuse the existing page, can drop our p=
+age
+> -                * and subpage structure now.
+> +                * We're going to reuse the existing page, can drop our f=
+olio
+> +                * now.
+>                  */
+>                 __free_page(folio_page(eb->folios[i], 0));
+>                 eb->folios[i] =3D existing_folio;
+> -       } else {
+> +       } else if (existing_folio) {
+>                 struct extent_buffer *existing_eb;
+>
+>                 existing_eb =3D grab_extent_buffer(fs_info,
+> @@ -3029,6 +3032,7 @@ static int attach_eb_folio_to_filemap(struct extent=
+_buffer *eb, int i,
+>                 if (existing_eb) {
+>                         /* The extent buffer still exists, we can use it =
+directly. */
+>                         *found_eb_ret =3D existing_eb;
+> +                       spin_unlock(&mapping->i_private_lock);
+>                         folio_unlock(existing_folio);
+>                         folio_put(existing_folio);
+>                         return 1;
+> @@ -3037,6 +3041,22 @@ static int attach_eb_folio_to_filemap(struct exten=
+t_buffer *eb, int i,
+>                 __free_page(folio_page(eb->folios[i], 0));
+>                 eb->folios[i] =3D existing_folio;
+>         }
+> +       eb->folio_size =3D folio_size(eb->folios[i]);
+> +       eb->folio_shift =3D folio_shift(eb->folios[i]);
+> +       /* Should not fail, as we have preallocated the memory */
+> +       ret =3D attach_extent_buffer_folio(eb, eb->folios[i], prealloc);
+> +       ASSERT(!ret);
+> +       /*
+> +        * To inform we have extra eb under allocation, so that
+> +        * detach_extent_buffer_page() won't release the folio private
+> +        * when the eb hasn't yet been inserted into radix tree.
+> +        *
+> +        * The ref will be decreased when the eb released the page, in
+> +        * detach_extent_buffer_page().
+> +        * Thus needs no special handling in error path.
+> +        */
+> +       btrfs_folio_inc_eb_refs(fs_info, eb->folios[i]);
+> +       spin_unlock(&mapping->i_private_lock);
+>         return 0;
+>  }
+>
+> @@ -3048,7 +3068,6 @@ struct extent_buffer *alloc_extent_buffer(struct bt=
+rfs_fs_info *fs_info,
+>         int attached =3D 0;
+>         struct extent_buffer *eb;
+>         struct extent_buffer *existing_eb =3D NULL;
+> -       struct address_space *mapping =3D fs_info->btree_inode->i_mapping=
+;
+>         struct btrfs_subpage *prealloc =3D NULL;
+>         u64 lockdep_owner =3D owner_root;
+>         bool page_contig =3D true;
+> @@ -3114,7 +3133,7 @@ struct extent_buffer *alloc_extent_buffer(struct bt=
+rfs_fs_info *fs_info,
+>         for (int i =3D 0; i < num_folios; i++) {
+>                 struct folio *folio;
+>
+> -               ret =3D attach_eb_folio_to_filemap(eb, i, &existing_eb);
+> +               ret =3D attach_eb_folio_to_filemap(eb, i, prealloc, &exis=
+ting_eb);
+>                 if (ret > 0) {
+>                         ASSERT(existing_eb);
+>                         goto out;
+> @@ -3151,24 +3170,6 @@ struct extent_buffer *alloc_extent_buffer(struct b=
+trfs_fs_info *fs_info,
+>                  * and free the allocated page.
+>                  */
+>                 folio =3D eb->folios[i];
+> -               eb->folio_size =3D folio_size(folio);
+> -               eb->folio_shift =3D folio_shift(folio);
+> -               spin_lock(&mapping->i_private_lock);
+> -               /* Should not fail, as we have preallocated the memory */
+> -               ret =3D attach_extent_buffer_folio(eb, folio, prealloc);
+> -               ASSERT(!ret);
+> -               /*
+> -                * To inform we have extra eb under allocation, so that
+> -                * detach_extent_buffer_page() won't release the folio pr=
+ivate
+> -                * when the eb hasn't yet been inserted into radix tree.
+> -                *
+> -                * The ref will be decreased when the eb released the pag=
+e, in
+> -                * detach_extent_buffer_page().
+> -                * Thus needs no special handling in error path.
+> -                */
+> -               btrfs_folio_inc_eb_refs(fs_info, folio);
+> -               spin_unlock(&mapping->i_private_lock);
+> -
+>                 WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start,=
+ eb->len));
+>
+>                 /*
+> --
+> 2.45.1
+>
+>
 
