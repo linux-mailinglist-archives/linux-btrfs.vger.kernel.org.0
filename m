@@ -1,199 +1,198 @@
-Return-Path: <linux-btrfs+bounces-5381-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5382-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43D5D8D6948
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2024 20:56:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE0368D6DAE
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jun 2024 05:25:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F9EDB21969
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2024 18:56:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 065601C21668
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 Jun 2024 03:25:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A057F7DA;
-	Fri, 31 May 2024 18:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE7AAD4B;
+	Sat,  1 Jun 2024 03:24:59 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6A17E563
-	for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2024 18:56:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEAE2594
+	for <linux-btrfs@vger.kernel.org>; Sat,  1 Jun 2024 03:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=174.142.148.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717181782; cv=none; b=nns6kKojregepvo+E9Je325Lqk2S9ETTB9J961azOGWejjTMjRKxRRZIxHXlDgHNi6zGJn+d+jK9pljhXjGahYPE1gDsAiyo/KtDRfSR9LCWbuPkIKTtAYirbO/5lqJlq/QD+guY9QQM2UOByo2dGTjyNDQL+Esc00SszdLdgFo=
+	t=1717212299; cv=none; b=fkgkGHDXlOVMIg6l6MgVXJ5GQoFE2Mr8O1QfS+DelESdahdRdJKx6MTvOhQCdcoaugfIfW25uBi+7VJrlW8BWcQ+X9pZIjusqu7hAexZokxZF/iUNM6xBDaiPGG4zdTzLTnx3KXmO+Wml2u5iGL2rWKu12muQi6K2g0DTRebNAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717181782; c=relaxed/simple;
-	bh=qN4vlgIgphPICeA4Q6mNaG+fMmSzRaQqb7ipUQbietE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=D2yiE332nmiVASQDpsPiYxgHKPWTYAqhYm3XOuKPvEGQnIEYFyXH0Ru9ChjWHtuHAdB+nCLitwLM62AoYMagTXs3y/0bBkLAK5zgrR7/ghhvR4EfGZU6KHYuTEXex7MOGkk0eOczEstHZPGhdZKXpTRIuDdLCtnmGbWzplLjmYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-7ea8fc6bd4dso286980339f.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2024 11:56:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717181780; x=1717786580;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BGMeTtLYeIHVSkGLYngSRR4aJEt/tcf+WEvx9z803x4=;
-        b=TfZHr0nBn+1mYsBe4FPR3KrRN+IP/mVc3rinSR6ent6g/jXnlm4OAHlbrCOw8QkJj3
-         YYspwj2WGdoxmx/VxlR1ay4Kz6+NYdKagIomK50TK0Af6mW8XV5n229dyOqD0OSziECz
-         8zQgyD9laLxDnp0hnTW39LSzuCjtPowHYkzE7vlvc6zM09xlfG7r+oY5sVPBopqYn64C
-         K6HH7sBsRsacMzGcy91bAzueqWtrQWa+VLeKHVqxUnU2JPEuKb75hRHY7TJxGTQ+zcnV
-         XkgiGoZc9g59VUb5r16YyzjEsOTVlLGFFqXvTczkrPBKF5yDITRT/yNnuinL2oxYbdas
-         0t8w==
-X-Forwarded-Encrypted: i=1; AJvYcCVqBO9Ozrnu0vNLHX63mEKyvGyXCyr9iF8Tr/5O+9SsymRuMrDKYyWt8Oc27iRqiHbgGRqcC2uKSoSdXD7AhUEYHnbdxREKuTfoj0g=
-X-Gm-Message-State: AOJu0Yz/6b/fmtvGk9YtcJRcDGGtRuzLhxALJ8YXZtDCVhrZj8nExbmm
-	/32SJHxCa3YPQ+fwmO24ayPagHOipwfGdcrjLUyGPuKDKRZsCF9rvopUmuSxtIMDnquNndRMfNJ
-	ObaYhdKzyL7Ys7cAQLaaDssbqc6jfIfXSiXJ0Bk89YH2PMI8CC1PgXsA=
-X-Google-Smtp-Source: AGHT+IFZFsUgCMXhoAwOpoDKxRo2bK70F662gaHR/g6Wz1Cj3I10qnqYXoAAtI8r+mfs20sgrXxlYOYPO22iWPcCYmq4PjE/A9fV
+	s=arc-20240116; t=1717212299; c=relaxed/simple;
+	bh=KxQX8+chqnJyNi+oHgYz6/pOP/TsXsaLs5rcocmg5tY=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=uk1Pjux2F5N7m45sJAh/hDR3hpLKIh1l/WrHA2DNkR9C4EWQiMqbEfUr2mplidnIJvuId60HiZ0tqgfT6hzhvU1Bjj4nY1UM0SkQ2daydMxqz8FCzTHn53BNv3fIIDtUNaC5jbDYXS8oPqZJadDsFBeNUFyny7EDWeqp5Bliy/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org; spf=pass smtp.mailfrom=drax.hungrycats.org; arc=none smtp.client-ip=174.142.148.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=drax.hungrycats.org
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+	id 50B1BE236F2; Fri, 31 May 2024 23:24:43 -0400 (EDT)
+Date: Fri, 31 May 2024 23:24:43 -0400
+From: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To: linux-btrfs@vger.kernel.org
+Subject: raid5 silent data loss in 6.2 and later, after "7a3150723061 btrfs:
+ raid56: do data csum verification during RMW cycle"
+Message-ID: <ZlqUe+U9hJ87jJiq@hungrycats.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1650:b0:7ea:fa78:1568 with SMTP id
- ca18e2360f4ac-7eaffdd3600mr21086839f.0.1717181778406; Fri, 31 May 2024
- 11:56:18 -0700 (PDT)
-Date: Fri, 31 May 2024 11:56:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eabe1d0619c48986@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in clear_inode
-From: syzbot <syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+There is a new silent data loss bug in kernel 6.2 and later.
+The requirements for the bug are:
 
-syzbot found the following issue on:
+	1.  6.2 or later kernel
+	2.  raid5 data in the filesystem
+	3.  one device severely corrupted
+	4.  some free space fragmentation to trigger a lot of rmw cycles
 
-HEAD commit:    2bfcfd584ff5 Merge tag 'pmdomain-v6.10-rc1' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=128ea8b4980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=733cc7a95171d8e7
-dashboard link: https://syzkaller.appspot.com/bug?extid=67ba3c42bcbb4665d3ad
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+I first discovered this bug after a `pvmove` went badly wrong and wiped
+out 70% of one data LV of a btrfs raid5 filesystem.  I figured out a
+recipe for reproducing the bug on a test VM (below), and a possible
+approach for a fix.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Bug insertion
+-------------
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-2bfcfd58.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c7ed3bb80bed/vmlinux-2bfcfd58.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/93acc5bfbaef/bzImage-2bfcfd58.xz
+The bug is introduced in this commit:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
+	7a3150723061 btrfs: raid56: do data csum verification during RMW cycle
 
-------------[ cut here ]------------
-kernel BUG at fs/inode.c:626!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 PID: 7700 Comm: syz-executor.2 Not tainted 6.10.0-rc1-syzkaller-00013-g2bfcfd584ff5 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:clear_inode+0x15b/0x190 fs/inode.c:626
-Code: 00 00 00 5b 5d 41 5c c3 cc cc cc cc e8 1e 7e 8b ff 90 0f 0b e8 16 7e 8b ff 90 0f 0b e8 0e 7e 8b ff 90 0f 0b e8 06 7e 8b ff 90 <0f> 0b e8 fe 7d 8b ff 90 0f 0b e8 b6 b0 e8 ff e9 d2 fe ff ff e8 ac
-RSP: 0018:ffffc90003a2fab0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888028014230 RCX: ffffffff82030100
-RDX: ffff88801e1fa440 RSI: ffffffff8203016a RDI: 0000000000000007
-RBP: 0000000000000040 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000040 R11: 0000000000000001 R12: 0000000000000020
-R13: ffff88802855c000 R14: 0000000000000000 R15: ffff888028014230
-FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:0000000056b5e400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00007f58c1d30980 CR3: 000000006b300000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000001000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_evict_inode+0x529/0xe80 fs/btrfs/inode.c:5262
- evict+0x2ed/0x6c0 fs/inode.c:667
- dispose_list+0x117/0x1e0 fs/inode.c:700
- evict_inodes+0x34e/0x450 fs/inode.c:750
- generic_shutdown_super+0xb5/0x3d0 fs/super.c:627
- kill_anon_super+0x3a/0x60 fs/super.c:1226
- btrfs_kill_super+0x3b/0x50 fs/btrfs/super.c:2096
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
- deactivate_super+0xde/0x100 fs/super.c:506
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- __do_fast_syscall_32+0x80/0x120 arch/x86/entry/common.c:389
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-RIP: 0023:0xf72c7579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000ff99b808 EFLAGS: 00000292 ORIG_RAX: 0000000000000034
-RAX: 0000000000000000 RBX: 00000000ff99b8b0 RCX: 0000000000000009
-RDX: 00000000f741dff4 RSI: 00000000f736e361 RDI: 00000000ff99c954
-RBP: 00000000ff99b8b0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:clear_inode+0x15b/0x190 fs/inode.c:626
-Code: 00 00 00 5b 5d 41 5c c3 cc cc cc cc e8 1e 7e 8b ff 90 0f 0b e8 16 7e 8b ff 90 0f 0b e8 0e 7e 8b ff 90 0f 0b e8 06 7e 8b ff 90 <0f> 0b e8 fe 7d 8b ff 90 0f 0b e8 b6 b0 e8 ff e9 d2 fe ff ff e8 ac
-RSP: 0018:ffffc90003a2fab0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888028014230 RCX: ffffffff82030100
-RDX: ffff88801e1fa440 RSI: ffffffff8203016a RDI: 0000000000000007
-RBP: 0000000000000040 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000040 R11: 0000000000000001 R12: 0000000000000020
-R13: ffff88802855c000 R14: 0000000000000000 R15: ffff888028014230
-FS:  0000000000000000(0000) GS:ffff88802c000000(0063) knlGS:0000000056b5e400
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000c000f9c4e0 CR3: 000000006b300000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000001000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+This commit fixes a long-standing btrfs raid5 bug which mishandled cases
+where a raid5 stripe contains corrupted data in some blocks while new data
+is written to other blocks in the same stripe.  This older bug resulted
+in existing correct data becoming corrupted when new data is written to
+the filesystem.  EIO and csum failures would occur later when reading
+affected blocks, i.e. the errors were detectable.
+
+Bug effect
+----------
+
+The change fixes the old bug, but also introduces two new behaviors that
+are potentially worse:
+
+1.  New writes are now silently dropped.  After `sync` and `sysctl
+vm.drop_caches=3`, recently written extents are missing from the files,
+as if they were never written by the application.  Instead, there is a
+hole in the file, or a truncated file.  There is no indication that this
+has occurred other than the missing data:  no dmesg messages, no errors
+reported to applications at write time.  The data can be read back from
+the filesystem while it is still in page cache, which can delay detection
+of the failure until after the data is evicted from cache.
+
+2.  `fsync` (system call) and `sync -f` (shell command) sometimes
+return EIO.  In this situation, devices are online, metadata is intact,
+all corruption is located on a single device and is recoverable, so no
+writes should ever be failing, but they apparently do.  This also affects
+internal btrfs maintenance operations like balance, which aborts with
+an IO failure when triggering the bug.
+
+Reverting the commit 7a3150723061 on 6.2.16 restores the old behavior:
+no silent data loss on new writes, only the old detectable data corruption
+on existing data occurs.  It seems we can't have nice things.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Analysis
+--------
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+In the commit, I notice that when reading the rmw stripe, any blocks with
+csum errors are flagged in rbio->error_bitmap, but nothing ever clears
+those error bits once they are set.  Contrast with the scrub repair code,
+which clears out the entire rbio->error_bitmap vector after repairing
+the stripe.  The old code didn't set any error_bitmap bits during rmw,
+and not much else has changed in this commit, which makes the new set_bit
+calls a good candidate for root cause.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+I tried some experiments:
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+	- clear the error_bits individually after setting uptodate = 1
+	  (still has problems: after verifying the recovered csum,
+	   failed reconstruction would leave error bits set, so writes
+	   to the stripe that should not fail will fail)
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+	- clear the entire error_bits vector after successful repair_sectors
+	  (might cause corruption if some reconstruction fails and later
+	   reads use data from the stripe without verifying the csum again)
 
-If you want to undo deduplication, reply with:
-#syz undup
+	- remove the new set_bit() call added in the above commit
+	  (breaks repair but fixes EIO and dropped writes)
+
+For the first two I didn't have much success.  I'm pretty sure I don't
+know how to calculate the error_bit index correctly, so my first attempt
+didn't have any effect on the test.  I get a lot of UAF crashes if I clear
+the entire vector in the second test--I suspect it needs some protection
+from concurrent access that I'm missing.
+
+My third experiment breaks the error recovery code, but it does prevent
+the sync failures and missing extent holes, so it shows that the error
+recovery code itself is not what is causing the dropped writes--it's
+the bits left set in error_bitmap after recovery is done.
+
+
+Test Case
+---------
+
+My test case uses three loops running in parallel on a 500 GiB test filesystem:
+
+		    Data      Metadata System
+	Id Path     RAID5     RAID1    RAID1    Unallocated Total     Slack
+	-- -------- --------- -------- -------- ----------- --------- --------
+	 1 /dev/vdb  71.00GiB  1.00GiB  8.00MiB   647.99GiB 720.00GiB 19.59GiB
+	 2 /dev/vdc  71.00GiB  1.00GiB  8.00MiB   647.99GiB 720.00GiB  3.71GiB
+	 3 /dev/vdd  71.00GiB  2.00GiB        -   647.00GiB 720.00GiB  3.71GiB
+	 4 /dev/vde  71.00GiB  2.00GiB        -   647.00GiB 720.00GiB 11.00GiB
+	 5 /dev/vdf  71.00GiB  2.00GiB        -   647.00GiB 720.00GiB 11.00GiB
+	-- -------- --------- -------- -------- ----------- --------- --------
+	   Total    284.00GiB  4.00GiB  8.00MiB     3.16TiB   3.52TiB 49.02GiB
+	   Used     262.97GiB  2.61GiB 64.00KiB
+
+The data is a random collection of small files, half of which have been deleted
+to make lots of small free space holes for rmw.
+
+Loop 1 alternates between corrupting device 3 and repairing it with scrub:
+
+	while true; do
+		# Any big file will do, usually faster than /dev/random
+		# Skipping the first 1M leaves the superblock intact
+		while cat vmlinux; do :; done | dd of=/dev/vdd bs=1024k seek=1
+		# This should fix all the corruption as long as there are no
+		# reads or writes anywhere on the filesystem
+		btrfs scrub start -Bd /dev/vdd
+	done
+
+Loop 2 runs `sync -f` to detect sync errors and drops caches:
+
+	while true; do
+		# Sometimes throws EIO
+		sync -f /testfs
+		sysctl vm.drop_caches=3
+		sleep 9
+	done
+
+Loop 3 does some random git activity on a clone of the 'btrfs-progs'
+repo to detect lost writes at the application level:
+
+	while true; do
+		cd /testfs/btrfs-progs
+		# Sometimes fails complaining about various files being corrupted
+		find * -type f -print | unsort -r | while read -r x; do
+			date >> "$x"
+			git commit -am"Modifying $x"
+		done
+		git repack -a
+	done
+
+The errors occur on the sync -f and various git commands, e.g.:
+
+	sync: error syncing '/media/testfs/': Input/output error
+	vm.drop_caches = 3
+
+	error: object file .git/objects/39/c876ad9b9af9f5410246d9a3d6bbc331677ee5 is empty
+	fatal: loose object 39c876ad9b9af9f5410246d9a3d6bbc331677ee5 (stored in .git/objects/39/c876ad9b9af9f5410246d9a3d6bbc331677ee5) is corrupt
 
