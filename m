@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-5389-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5390-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2418D7383
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jun 2024 05:46:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ADA38D7385
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jun 2024 05:46:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EA6F1F23612
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jun 2024 03:46:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C5651C225C8
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 Jun 2024 03:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0120F18622;
-	Sun,  2 Jun 2024 03:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44C61BF53;
+	Sun,  2 Jun 2024 03:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qQSqAMI4";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qQSqAMI4"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JBUnA0Yt";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JBUnA0Yt"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37223A94C
-	for <linux-btrfs@vger.kernel.org>; Sun,  2 Jun 2024 03:46:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F562BE78
+	for <linux-btrfs@vger.kernel.org>; Sun,  2 Jun 2024 03:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717299968; cv=none; b=NoY+DFR3BsPt7iuG7HzlyjVNm+Am9OkZDzTDBMUFYP/c8d/rIQXuBWj1iVB3FJxCDclfwRu1Gaqhk1JOKSKVaVWl/bcnRGSrnHx3nMCXp/8eV2YC39qFQDluukJGUqyf+81IdhnKjKvTomyVIcjn4i72qIoTDEpKdAz18Vl54a4=
+	t=1717299970; cv=none; b=m2FroZFOPochoN+ZYb6PgzqiPtGWEIBJobikUuc2wsjY5AP1T2ibdxQESsT57silociUpjoJc2AhrPDdZCE+sl0Kk48VD4K/r4Z03qJ9qk7GBahnvHir8kYgmC0AHTCrHTtssja/NTc5gbI/VIWRX8zECkZr0mPuIM2NJEseFSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717299968; c=relaxed/simple;
-	bh=5HlY4oh1qCVFW530XvISSnenRt6Glk2+VlWN4vlNHJ0=;
+	s=arc-20240116; t=1717299970; c=relaxed/simple;
+	bh=hN0iZ53KLyPbBVQczw20sabPb4OllUIadR6knD5QovA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aHmlhNZjpORc67FBt8eHIfQjlxjH9Ag0Nxb7ZF+ALzQg+P2WF3B4rKuPoLzBF0TamaQKkYjKwSLCtEAjMTAZaXOwmr1a/qaMNlU/leQt5OQpk9k6jtkbFyUvM+j8TaOZ1RTbRxlYGuk0rDQOx9fr94oH4TGRE0t6UunUSgek2Yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qQSqAMI4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qQSqAMI4; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=EYrqNq64HCyAfkTyzqy/3DxCqzbzdz2SUUbK87Y5lQwABrgZVYhIBIwe8Ry/yDaQe0nnp/ZN8mmLtt2P11JrVHsHoD7CTkUuX/gCEfNRViUT+VnZ/KRCqgMXEHbuvgUJmKgcXWXkLqUQYdrpI9CfeKxn/BMxgjpI9K4N2fOL41o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JBUnA0Yt; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JBUnA0Yt; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 46750220DC
-	for <linux-btrfs@vger.kernel.org>; Sun,  2 Jun 2024 03:45:58 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C9046220DD
+	for <linux-btrfs@vger.kernel.org>; Sun,  2 Jun 2024 03:45:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717299958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1717299959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rz7QKazTArIXWRByw10UZtCyaz2fqLpjF8LAk3b4PqA=;
-	b=qQSqAMI4qeckYjtj78DYjX4opVVyv7oxpY/aBdXXCXpUeEdIjvkn8cevOty43LFMBFj34n
-	Ropv0atsL1v9oqELycSaNNw26bKe+CQbd0qz/z0vhI4g8CoDbY1HQlOK0wGpqmaPyLY4bD
-	FjhMBAUW3AWj4W4CT+LeCLWor4YVilI=
+	bh=k6ljnJspzZHW4E4racpWtAaHpHlHRPbvh3a0oSS44zs=;
+	b=JBUnA0YtTWU1KjneG6A/+Z6Z5vibv0K0lBjq4/UGcfonoNQBogGhyYWvYeV17fwlVHpBw3
+	8JFfX14Lz7Yah8lUzc6XvzPT4ssk7QXbz/NxoqmOcSMURAVVloGz/m9WogNwx7xqRrZaNA
+	feLIvUMd7qwoPRCcZwa5flG+m947Mnw=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=qQSqAMI4
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717299958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1717299959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rz7QKazTArIXWRByw10UZtCyaz2fqLpjF8LAk3b4PqA=;
-	b=qQSqAMI4qeckYjtj78DYjX4opVVyv7oxpY/aBdXXCXpUeEdIjvkn8cevOty43LFMBFj34n
-	Ropv0atsL1v9oqELycSaNNw26bKe+CQbd0qz/z0vhI4g8CoDbY1HQlOK0wGpqmaPyLY4bD
-	FjhMBAUW3AWj4W4CT+LeCLWor4YVilI=
+	bh=k6ljnJspzZHW4E4racpWtAaHpHlHRPbvh3a0oSS44zs=;
+	b=JBUnA0YtTWU1KjneG6A/+Z6Z5vibv0K0lBjq4/UGcfonoNQBogGhyYWvYeV17fwlVHpBw3
+	8JFfX14Lz7Yah8lUzc6XvzPT4ssk7QXbz/NxoqmOcSMURAVVloGz/m9WogNwx7xqRrZaNA
+	feLIvUMd7qwoPRCcZwa5flG+m947Mnw=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 531971399C
-	for <linux-btrfs@vger.kernel.org>; Sun,  2 Jun 2024 03:45:57 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D64601399C
+	for <linux-btrfs@vger.kernel.org>; Sun,  2 Jun 2024 03:45:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KN5JAPXqW2bnOAAAD6G6ig
+	id +Fz8IfbqW2bnOAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 02 Jun 2024 03:45:57 +0000
+	for <linux-btrfs@vger.kernel.org>; Sun, 02 Jun 2024 03:45:58 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: print-tree: add support for dev-replace item
-Date: Sun,  2 Jun 2024 13:15:32 +0930
-Message-ID: <3eaa8778997bbdeca22105303586caeba4ab414c.1717299366.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: change-csum: handle finished dev-replace correctly
+Date: Sun,  2 Jun 2024 13:15:33 +0930
+Message-ID: <9de738a44fa38169541ca97ab9994585b5104fe1.1717299366.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <cover.1717299366.git.wqu@suse.com>
 References: <cover.1717299366.git.wqu@suse.com>
@@ -84,165 +84,94 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -5.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 46750220DC
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [0.17 / 50.00];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
+	BAYES_HAM(-0.03)[55.77%];
 	ARC_NA(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RCPT_COUNT_ONE(0.00)[1];
-	TO_DN_NONE(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
+	TO_DN_NONE(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Score: 0.17
+X-Spam-Flag: NO
 
-This is inspired by a recent bug that csum change doesn't detect
-finished dev-replace.
+[BUG]
+If a btrfs experienced dev-replace, even it's already finished,
+btrfstune would refuse to change its csum:
 
-At the time of that csum change patch, there is no print-tree to
-show the content of btrfs_dev_replace_item thus contributes to the bug.
+  WARNING: Experimental build with unstable or unfinished features
+  WARNING: Switching checksums is experimental, do not use for valuable data!
 
-This patch adds the new output for btrfs_dev_replace_item, and the
-example looks like this:
+  Proceed to switch checksums
+  ERROR: running dev-replace detected, please finish or cancel it.
+  ERROR: btrfstune failed
 
-	item 1 key (0 DEV_REPLACE 0) itemoff 16171 itemsize 72
-		src devid -1 cursor left 1179648000 cursor right 1179648000 mode ALWAYS
-		state FINISHED write errors 0 uncorrectable read errors 0
-		start time 1717282771 (2024-06-02 08:29:31)
-		stop time 1717282771 (2024-06-02 08:29:31)
+[CAUSE]
+The current dev-replace detection is only checking if we have
+DEV_REPLACE item in device tree.
+However DEV_REPLACE item will also exist even if a dev-replace finished,
+so the existing check can not handle such case at all.
 
+[FIX]
+If an dev-replace item is found, further check the state of the item to
+prevent false alerts.
+
+Fixes: #798
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/print-tree.c | 79 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+ tune/change-csum.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index a4ddbb2ae9cb..a9a4abaa2456 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -36,6 +36,7 @@
- #include "common/defs.h"
- #include "common/internal.h"
- #include "common/messages.h"
-+#include "uapi/btrfs.h"
- 
- static void print_dir_item_type(struct extent_buffer *eb,
-                                 struct btrfs_dir_item *di)
-@@ -1389,6 +1390,81 @@ static void print_header_info(struct extent_buffer *eb, unsigned int mode)
- 	fflush(stdout);
- }
- 
-+#define DEV_REPLACE_STRING_LEN		64
-+#define DEV_REPLACE_MODE_ENTRY(dest, name)				\
-+	case BTRFS_DEV_REPLACE_ITEM_CONT_READING_FROM_SRCDEV_MODE_##name: \
-+		strncpy((dest), #name, DEV_REPLACE_STRING_LEN);		\
-+		break;
-+
-+static void replace_mode_to_str(u64 flags, char *ret)
-+{
-+	ret[0] = '\0';
-+	switch(flags) {
-+	DEV_REPLACE_MODE_ENTRY(ret, ALWAYS);
-+	DEV_REPLACE_MODE_ENTRY(ret, AVOID);
-+	default:
-+		snprintf(ret, DEV_REPLACE_STRING_LEN, "unknown value(%llu)",
-+			 flags);
-+	}
-+}
-+#undef DEV_REPLACE_MODE_ENTRY
-+
-+#define DEV_REPLACE_STATE_ENTRY(dest, name)				\
-+	case BTRFS_IOCTL_DEV_REPLACE_STATE_##name:			\
-+		strncpy((dest), #name, DEV_REPLACE_STRING_LEN);		\
-+		break;
-+
-+static void replace_state_to_str(u64 flags, char *ret)
-+{
-+	ret[0] = '\0';
-+	switch(flags) {
-+	DEV_REPLACE_STATE_ENTRY(ret, NEVER_STARTED);
-+	DEV_REPLACE_STATE_ENTRY(ret, FINISHED);
-+	DEV_REPLACE_STATE_ENTRY(ret, CANCELED);
-+	DEV_REPLACE_STATE_ENTRY(ret, STARTED);
-+	DEV_REPLACE_STATE_ENTRY(ret, SUSPENDED);
-+	default:
-+		snprintf(ret, DEV_REPLACE_STRING_LEN, "unknown value(%llu)",
-+			 flags);
-+	}
-+}
-+#undef DEV_REPLACE_STATE_ENTRY
-+
-+static void print_u64_timespec(u64 timespec, const char *prefix)
-+{
-+	char time_str[256];
-+	struct tm tm;
-+	time_t time = timespec;
-+
-+	localtime_r(&time, &tm);
-+	strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", &tm);
-+	printf("%s%llu (%s)\n", prefix, timespec, time_str);
-+}
-+
-+static void print_dev_replace_item(struct extent_buffer *eb,
-+				   struct btrfs_dev_replace_item *ptr)
-+{
-+	char mode_str[DEV_REPLACE_STRING_LEN] = { 0 };
-+	char state_str[DEV_REPLACE_STRING_LEN] = { 0 };
-+
-+	replace_mode_to_str(
-+			btrfs_dev_replace_cont_reading_from_srcdev_mode(eb, ptr),
-+			mode_str);
-+	replace_state_to_str(
-+			btrfs_dev_replace_replace_state(eb, ptr),
-+			state_str);
-+	printf("\t\tsrc devid %lld cursor left %llu cursor right %llu mode %s\n",
-+		btrfs_dev_replace_src_devid(eb, ptr),
-+		btrfs_dev_replace_cursor_left(eb, ptr),
-+		btrfs_dev_replace_cursor_right(eb, ptr),
-+		mode_str);
-+	printf("\t\tstate %s write errors %llu uncorrectable read errors %llu\n",
-+		state_str, btrfs_dev_replace_num_write_errors(eb, ptr),
-+		btrfs_dev_replace_num_uncorrectable_read_errors(eb, ptr));
-+	print_u64_timespec(btrfs_dev_replace_time_started(eb, ptr), "\t\tstart time ");
-+	print_u64_timespec(btrfs_dev_replace_time_started(eb, ptr), "\t\tstop time ");
-+}
-+
- void __btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
- {
- 	struct btrfs_disk_key disk_key;
-@@ -1563,6 +1639,9 @@ void __btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode)
- 		case BTRFS_RAID_STRIPE_KEY:
- 			print_raid_stripe_key(eb, item_size, ptr);
- 			break;
-+		case BTRFS_DEV_REPLACE_KEY:
-+			print_dev_replace_item(eb, ptr);
-+			break;
- 		};
- 		fflush(stdout);
+diff --git a/tune/change-csum.c b/tune/change-csum.c
+index 0780a18b090b..c2972a509914 100644
+--- a/tune/change-csum.c
++++ b/tune/change-csum.c
+@@ -73,16 +73,28 @@ static int check_csum_change_requreiment(struct btrfs_fs_info *fs_info, u16 new_
+ 	key.type = BTRFS_DEV_REPLACE_KEY;
+ 	key.offset = 0;
+ 	ret = btrfs_search_slot(NULL, dev_root, &key, &path, 0, 0);
+-	btrfs_release_path(&path);
+ 	if (ret < 0) {
++		btrfs_release_path(&path);
+ 		errno = -ret;
+ 		error("failed to check the dev-reaplce status: %m");
+ 		return ret;
  	}
+ 	if (ret == 0) {
+-		error("running dev-replace detected, please finish or cancel it.");
+-		return -EINVAL;
++		struct btrfs_dev_replace_item *ptr;
++		u64 state;
++
++		ptr = btrfs_item_ptr(path.nodes[0], path.slots[0],
++				     struct btrfs_dev_replace_item);
++		state = btrfs_dev_replace_replace_state(path.nodes[0], ptr);
++		if (state == BTRFS_IOCTL_DEV_REPLACE_STATE_STARTED ||
++		    state == BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED) {
++			btrfs_release_path(&path);
++			error(
++	"running/suspended dev-replace detected, please finish or cancel it");
++			return -EINVAL;
++		}
+ 	}
++	btrfs_release_path(&path);
+ 
+ 	if (fs_info->csum_type == new_csum_type) {
+ 		error("the fs is already using csum type %s (%u)",
 -- 
 2.45.1
 
