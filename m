@@ -1,299 +1,178 @@
-Return-Path: <linux-btrfs+bounces-5425-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5426-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C43708FA609
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 00:50:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5F028FA61A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 00:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E80828CC90
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2024 22:50:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B1271F23A95
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2024 22:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FF013CF8A;
-	Mon,  3 Jun 2024 22:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE0513CF8D;
+	Mon,  3 Jun 2024 22:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uoSxPPmi";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uoSxPPmi"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="U9q3Kkv6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B11135A46
-	for <linux-btrfs@vger.kernel.org>; Mon,  3 Jun 2024 22:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E7413CF8E
+	for <linux-btrfs@vger.kernel.org>; Mon,  3 Jun 2024 22:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717455042; cv=none; b=nuhwGfJETH9lqpPWeQJc0gMZkc6fCuNvxaxyO9d0FgkiOE1dI+59KQt/jPsvombvYdlLiArjTC9hG3qTEE8GX/JJDTEEddQqLbAOA2+3j6VlTCgEmzSWuRsXET8dIHbhPG3wUTAmjyTRQyZ+B7zsc9W2cOzAp0ts/7JsU8ZeCbc=
+	t=1717455501; cv=none; b=oUI+JtXNVTirrSwhvv0ccfDPnNAcdwMhC4D3ZvMSqTWg3Qk6/FS8lACP7VbGZMavfJeFvwJ+FioKsSRUiwbGiACT6UdEsUoIHTYxlOMwUPw5gNENJPkyNQqK86+F91q6p1jqM1GGPfGJLibpWYnAQUpUjtALR1x3BLUHxEVFBOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717455042; c=relaxed/simple;
-	bh=B13dUtWMR5LB4K+9Ay0xkcsPewkOEb+69xR9N3UWfm8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WZHM1hV/G3NIdOpH1624D87S+Rh0Bnb2XMtw1fBH9HoJn9hmmN5R2s5dmDuDRC+xgpyzMogmILOvIDdQvNPzyDei5IL3v29DSjbuzQJoveROX1DXRKUwsTY2GV/f8GUDVbneO/iKqt0HMpdHwbrWkNtFU4F2gM3cLFkpNqqTCrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uoSxPPmi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uoSxPPmi; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 524B81F78F;
-	Mon,  3 Jun 2024 22:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717455038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=R9aT6ALuLZBZ9hTGElKPTUpu4oKBpRP36WYBosEWoG0=;
-	b=uoSxPPmi5iVFQzkTKTXBsa8+ZDbQW7zUBiaP2evmTTS39shoAv9X278/JHcndiQMjoLY4d
-	cjswWMV2rX4prmuexK0LacjGlZMUSHTgQEbvPnjDdmo2CXhf7vYyNI27U/q+XFvEfBLL/l
-	zWuq5aPxvRa78rAwfl6jDVmvPa0LMCQ=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717455038; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=R9aT6ALuLZBZ9hTGElKPTUpu4oKBpRP36WYBosEWoG0=;
-	b=uoSxPPmi5iVFQzkTKTXBsa8+ZDbQW7zUBiaP2evmTTS39shoAv9X278/JHcndiQMjoLY4d
-	cjswWMV2rX4prmuexK0LacjGlZMUSHTgQEbvPnjDdmo2CXhf7vYyNI27U/q+XFvEfBLL/l
-	zWuq5aPxvRa78rAwfl6jDVmvPa0LMCQ=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2FFA213A93;
-	Mon,  3 Jun 2024 22:50:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kl83NbtIXmZVdgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 03 Jun 2024 22:50:35 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: fix a possible race window when allocating new extent buffers
-Date: Tue,  4 Jun 2024 08:20:13 +0930
-Message-ID: <a295bc71b7fc652e40d9993913a941b78dc46fde.1717454979.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1717455501; c=relaxed/simple;
+	bh=7JDZSyjhmu8MQ3wjQd2RsA9tSgCC88e6PzPnDDS2ShQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=qbahurA6HYiX6cOW/Ffn+OoN8HV/qgMd7V+a46A868i5h2rW/LtPMz/HvY8CrJVLbJfbxyNu0bwuDrh7t9LVrfJG0vszJHgDhvbJwT9FJImjML2z9RKWSdWjPc4oRsnMpJaUlO12INHDSbL8vyzd/NNoXXqeQJTSNrr7YI6zI5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=U9q3Kkv6; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1717455492; x=1718060292; i=quwenruo.btrfs@gmx.com;
+	bh=919IVG+LZiSjnIwx/9+brBz2dTt6eXZrAzGUCYcKdHI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=U9q3Kkv6Heps83JC5uHPzO6A8ZlRr2HBGCfvLJsmDdCE5v4OL2+W8bOBY743HZHF
+	 ZSWMqf7UDl6mbe/bBbeh7VHYbirb5PICpmZK6yCyFDq9XIFHdvQPXQygEJbZ3ncpk
+	 MmnwQCrnuIF15wnECsbu6ExsXdQvswDUrM1ZxrpKbNjoBOcVvtC0Jz/X5mBMMydFN
+	 +DHRM7C7Ts5wfPKjnGNeenLqsQiqV5eVDn2kxCe8kY3MFpLf4vxGse2vWFogpXX7S
+	 mKZ3AXiBV/HPRu9XxDLH80LGPn2bhGasL83wdc3TbA999fP6zSBVH+B2ezNJLVeLz
+	 hwzo+hJHSMnh8CsHeA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3KTy-1seDTd273S-010Pwn; Tue, 04
+ Jun 2024 00:58:12 +0200
+Message-ID: <c445c0fb-7a61-4127-9281-13a7c84494a7@gmx.com>
+Date: Tue, 4 Jun 2024 08:28:07 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix leak of qgroup extent records after
+ transaction abort
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <0a4d66f6922f5219c7c8c37d88a919304abdbb55.1717416325.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <0a4d66f6922f5219c7c8c37d88a919304abdbb55.1717416325.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:00AjCiV2EbqcRaVYbnobGLrtCqVRShhaSfhVNJI6fcjbh2MKWww
+ P4lQtcKv+0nk4DNCHmzEso0rRu57NQA3SYc0f4cxIeSbX3N+EwfE8m65o58qIHJp7JZ77pk
+ B84yubQ5tYhKrngS+vqobWlLviRj6GAabWZsXT/qXm8G0HLAva8qUY6qYOQGwVNPF/4Hy+s
+ v1VnSbJEx8PjzebanTWNQ==
 X-Spam-Flag: NO
-X-Spam-Score: -1.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,toxicpanda.com,suse.com];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+UI-OutboundReport: notjunk:1;M01:P0:+UECf9GpeEs=;cXzX2z8TMQybKp5HsWyAtZJfK8G
+ joErNYUV0OMavtKmAiPZ4E9O/gck8ULB8YzOh6v2zGcAVDpil+9DdtZD83GfC78J0mPBZBXZj
+ 4uVKq4VAOSm2QXmJ+7DTWYdyf/QK5TM0jci6pSOUMSrdGQsIwseUxq5A8ewD0lN051bPU83So
+ b5+1V0n/cyCZ9VLnbfMgKO4BS2xl5lrv3yn6FjCSYfALurl5EoG8vWCZXtGKsSvqyneyZKMim
+ wZMStJ2s6lyE/1j+P+yQYXgq9M5pXtgdmC44acF4xHYTsbgdcjRZh6yxqo+CPvYeZykCO6wHr
+ T8vsHfHCRfFS+JtWzcoUJwBygH7GqXYbYP1V7PKvSNU5BQsSQrAEffEZ8tncN7jbJ7i/toFx9
+ JeFUg2VpwPA9+7IcdV63EtYQKTSEtbkBHUuAKtFRnAP2MXttbrkQwm65jxTjb9ahrluUT5Ye5
+ pvS9VcBApLTv+dNn/o0nmu7EgCuNPUGY7x77H0PAVu3GmelaVLswEWwQNsjXSnVnMvZ/bMTJh
+ 3gfWeSO1HZuxX7qIkDbel4DfkczjDKqaJBaJ54pf/qvXfdkl/yl3ZaKVgHfZWEH/1+ZxAVzcw
+ mvcSEbqX64WUsjzHh93qt85xhlSHC8FYWALT2Tt8k0rbeyPCPX3RYKgrzbymLtvDCoCwoqM44
+ eYXJncaS68OSGe22L/tebwbUVyLVVFEqtKJ5TOe/i6LqbBjmofulES1yJ3IatXAhfaWUF0/UL
+ /H2SpKi4MRZ+8It/hhVEnzgl06RY1L77YBivVXtqG8qoZDEYvhQpmpu572QVQzryE0Xxs5FTT
+ 9sAEadBK0BsioccwFX0JuUNsiTEtGM7aCzJ5Lc0/KJV5Q=
 
-[POSSIBLE RACE]
-Commit 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to
-allocate-then-attach method") changes the sequence when allocating a new
-extent buffer.
 
-Previously we always call grab_extent_buffer() under
-mapping->i_private_lock, to ensure the safety on modification on
-folio::private (which is a pointer to extent buffer for regular
-sectorsize)
 
-This may be related to the following calltrace, which indicates btrfs is
-underflowing the folio refcount.
+=E5=9C=A8 2024/6/3 21:36, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> Qgroup extent records are created when delayed ref heads are created and
+> then released after accounting extents at btrfs_qgroup_account_extents()=
+,
+> called during the transaction commit path.
+>
+> If a transaction is aborted we free the qgroup records by calling
+> btrfs_qgroup_destroy_extent_records() at btrfs_destroy_delayed_refs(),
+> unless we don't have delayed references. We are incorrectly assuming
+> that no delayed references means we don't have qgroup extents records.
+>
+> We can currently have no delayed references because we ran them all
+> during a transaction commit and the transaction was aborted after that
+> due to some error in the commit path.
+>
+> So fix this by ensuring we btrfs_qgroup_destroy_extent_records() at
+> btrfs_destroy_delayed_refs() even if we don't have any delayed reference=
+s.
 
- BUG: Bad page state in process kswapd0  pfn:d6e840
- page: refcount:0 mapcount:0 mapping:000000007512f4f2 index:0x2796c2c7c
- pfn:0xd6e840
- aops:btree_aops ino:1
- flags: 0x17ffffe0000008(uptodate|node=0|zone=2|lastcpupid=0x3fffff)
- page_type: 0xffffffff()
- raw: 0017ffffe0000008 dead000000000100 dead000000000122 ffff88826d0be4c0
- raw: 00000002796c2c7c 0000000000000000 00000000ffffffff 0000000000000000
- page dumped because: non-NULL mapping
+Will it cause some underflow for delayed_refs->num_entries?
 
-[FIX]
-Move all the code requiring i_private_lock into
-attach_eb_folio_to_filemap(), so that everything is done with proper
-lock protection.
+As in the rb tree iteration code, we would try to decrease
+delayed_refs->num_entries again.
 
-Furthermore to prevent future problems, add an extra lockdep_assert() to
-ensure we're holding proper lock.
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/linux-btrfs/CAHk-=wgt362nGfScVOOii8cgKn2LVVHeOvOA7OBwg1OwbuJQcw@mail.gmail.com/
-Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Link: https://lore.kernel.org/lkml/CABXGCsPktcHQOvKTbPaTwegMExije=Gpgci5NW=hqORo-s7diA@mail.gmail.com/
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Fixes: 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to allocate-then-attach method")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v1:
-- Remove the analyze on the race window
-  It turns out all that the allocation part (filemap_lock_folio() in
-  alloc_extent_buffer()) and the folio release part
-  (filemap_release_folio()) all require the folio to be locked.
-  Thus it's impossible to race between eb allocation and release.
-
-- Add extra lockdep_assert_hold() for grab_extent_buffer()
----
- fs/btrfs/extent_io.c | 55 +++++++++++++++++++++++---------------------
- 1 file changed, 29 insertions(+), 26 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 0c74f7df2e8b..6e164ac435de 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2913,6 +2913,8 @@ static struct extent_buffer *grab_extent_buffer(
- 	struct folio *folio = page_folio(page);
- 	struct extent_buffer *exists;
- 
-+	lockdep_assert_held(&page->mapping->i_private_lock);
-+
- 	/*
- 	 * For subpage case, we completely rely on radix tree to ensure we
- 	 * don't try to insert two ebs for the same bytenr.  So here we always
-@@ -2980,13 +2982,14 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
-  * The caller needs to free the existing folios and retry using the same order.
-  */
- static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
-+				      struct btrfs_subpage *prealloc,
- 				      struct extent_buffer **found_eb_ret)
- {
- 
- 	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	const unsigned long index = eb->start >> PAGE_SHIFT;
--	struct folio *existing_folio;
-+	struct folio *existing_folio = NULL;
- 	int ret;
- 
- 	ASSERT(found_eb_ret);
-@@ -2998,7 +3001,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 	ret = filemap_add_folio(mapping, eb->folios[i], index + i,
- 				GFP_NOFS | __GFP_NOFAIL);
- 	if (!ret)
--		return 0;
-+		goto finish;
- 
- 	existing_folio = filemap_lock_folio(mapping, index + i);
- 	/* The page cache only exists for a very short time, just retry. */
-@@ -3014,14 +3017,16 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 		return -EAGAIN;
- 	}
- 
--	if (fs_info->nodesize < PAGE_SIZE) {
-+finish:
-+	spin_lock(&mapping->i_private_lock);
-+	if (existing_folio && fs_info->nodesize < PAGE_SIZE) {
- 		/*
--		 * We're going to reuse the existing page, can drop our page
--		 * and subpage structure now.
-+		 * We're going to reuse the existing page, can drop our folio
-+		 * now.
- 		 */
- 		__free_page(folio_page(eb->folios[i], 0));
- 		eb->folios[i] = existing_folio;
--	} else {
-+	} else if (existing_folio) {
- 		struct extent_buffer *existing_eb;
- 
- 		existing_eb = grab_extent_buffer(fs_info,
-@@ -3029,6 +3034,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 		if (existing_eb) {
- 			/* The extent buffer still exists, we can use it directly. */
- 			*found_eb_ret = existing_eb;
-+			spin_unlock(&mapping->i_private_lock);
- 			folio_unlock(existing_folio);
- 			folio_put(existing_folio);
- 			return 1;
-@@ -3037,6 +3043,22 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 		__free_page(folio_page(eb->folios[i], 0));
- 		eb->folios[i] = existing_folio;
- 	}
-+	eb->folio_size = folio_size(eb->folios[i]);
-+	eb->folio_shift = folio_shift(eb->folios[i]);
-+	/* Should not fail, as we have preallocated the memory */
-+	ret = attach_extent_buffer_folio(eb, eb->folios[i], prealloc);
-+	ASSERT(!ret);
-+	/*
-+	 * To inform we have extra eb under allocation, so that
-+	 * detach_extent_buffer_page() won't release the folio private
-+	 * when the eb hasn't yet been inserted into radix tree.
-+	 *
-+	 * The ref will be decreased when the eb released the page, in
-+	 * detach_extent_buffer_page().
-+	 * Thus needs no special handling in error path.
-+	 */
-+	btrfs_folio_inc_eb_refs(fs_info, eb->folios[i]);
-+	spin_unlock(&mapping->i_private_lock);
- 	return 0;
- }
- 
-@@ -3048,7 +3070,6 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	int attached = 0;
- 	struct extent_buffer *eb;
- 	struct extent_buffer *existing_eb = NULL;
--	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	struct btrfs_subpage *prealloc = NULL;
- 	u64 lockdep_owner = owner_root;
- 	bool page_contig = true;
-@@ -3114,7 +3135,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	for (int i = 0; i < num_folios; i++) {
- 		struct folio *folio;
- 
--		ret = attach_eb_folio_to_filemap(eb, i, &existing_eb);
-+		ret = attach_eb_folio_to_filemap(eb, i, prealloc, &existing_eb);
- 		if (ret > 0) {
- 			ASSERT(existing_eb);
- 			goto out;
-@@ -3151,24 +3172,6 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * and free the allocated page.
- 		 */
- 		folio = eb->folios[i];
--		eb->folio_size = folio_size(folio);
--		eb->folio_shift = folio_shift(folio);
--		spin_lock(&mapping->i_private_lock);
--		/* Should not fail, as we have preallocated the memory */
--		ret = attach_extent_buffer_folio(eb, folio, prealloc);
--		ASSERT(!ret);
--		/*
--		 * To inform we have extra eb under allocation, so that
--		 * detach_extent_buffer_page() won't release the folio private
--		 * when the eb hasn't yet been inserted into radix tree.
--		 *
--		 * The ref will be decreased when the eb released the page, in
--		 * detach_extent_buffer_page().
--		 * Thus needs no special handling in error path.
--		 */
--		btrfs_folio_inc_eb_refs(fs_info, folio);
--		spin_unlock(&mapping->i_private_lock);
--
- 		WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start, eb->len));
- 
- 		/*
--- 
-2.45.2
-
+Thanks,
+Qu
+>
+> Reported-by: syzbot+0fecc032fa134afd49df@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/linux-btrfs/0000000000004e7f980619f91835@g=
+oogle.com/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/disk-io.c | 10 +---------
+>   1 file changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 8693893744a0..b1daaaec0614 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4522,18 +4522,10 @@ static void btrfs_destroy_delayed_refs(struct bt=
+rfs_transaction *trans,
+>   				       struct btrfs_fs_info *fs_info)
+>   {
+>   	struct rb_node *node;
+> -	struct btrfs_delayed_ref_root *delayed_refs;
+> +	struct btrfs_delayed_ref_root *delayed_refs =3D &trans->delayed_refs;
+>   	struct btrfs_delayed_ref_node *ref;
+>
+> -	delayed_refs =3D &trans->delayed_refs;
+> -
+>   	spin_lock(&delayed_refs->lock);
+> -	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
+> -		spin_unlock(&delayed_refs->lock);
+> -		btrfs_debug(fs_info, "delayed_refs has NO entry");
+> -		return;
+> -	}
+> -
+>   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
+) {
+>   		struct btrfs_delayed_ref_head *head;
+>   		struct rb_node *n;
 
