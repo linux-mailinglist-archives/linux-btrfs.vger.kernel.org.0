@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-5440-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5441-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADEB48FB0C0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 13:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F31888FB0C1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 13:09:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6365A1F22F28
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 11:09:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA1551F22AA0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 11:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9832C145A16;
-	Tue,  4 Jun 2024 11:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9267145A1E;
+	Tue,  4 Jun 2024 11:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knX/2PwJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bi3jP1cu"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE58D145A0A
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F85B145A0A
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717499340; cv=none; b=TuKiPrOEizW3m2KTnHvG8r7W7uaJW2wswVEPYN7DgWj9KZwaHJnR1qQ/V7MEYCEGXMO9BRLyA+aHttw96XDq4M9XvMy2u8NectW2ROgk0bUZFzo4N2qu2wXtrXfcrhgERe3bi2We6f56u7/O6OsoB8PGMNZ0ifnTPrvg4VZMVds=
+	t=1717499342; cv=none; b=SqGLhoVGYeoj+oVwtyo7OvAREDFOx/eQkFZbTYVyP3Vb27nJl3ryCRpyLFhKB4ksVAXMc5vv0E8S2G5hoOzw01BHcdfieurTPjojZJ/z0rmIuyclwgCCUUmT3yRnrRLb+9vRXUGfQb7oE6m5JO7cyf0lSJckhyn/8ch1Gzt0Z4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717499340; c=relaxed/simple;
-	bh=tWZ0MS0YS6KSsam3joOdeBOaK+riZkc7r/Qh1cW8Rk8=;
+	s=arc-20240116; t=1717499342; c=relaxed/simple;
+	bh=WDlbdXQB+rtsAS1b5TyHDWvhrGK9LV0h3drAnw4p8P4=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=btNFuwytVm8/KT/UshiMRAvQ6bBsvou1If++1Qv39jMPXDaDQVXKqq1xR6y+d0fFmO2GM+qQ3OYDbr54abjSgvd3+TtCVpVADCAN3oE7MR4wT3S4OZjCkiIi9rjtUj1a3JlMuFMiTpRVS9CP2VG006kJYCv29i6de1oG785hVzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knX/2PwJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20BF9C2BBFC
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:08:59 +0000 (UTC)
+	 MIME-Version; b=PfAu8Rt7+PgXJGFQxbufzwyaStaIZ+KaLlXpxgYJ+2GcjQezZ52Lq8lKWwCGirax4Z43h0+6rcEGyhxXGnaQ5gbVPJFbKNhtZvrCA6ci5t9Wcm/5j6Mhx4JPc2DvB/KOnrlNPVAE5gWon7HexK4zF3dBvmyXhf0CPtYVDQmIEww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bi3jP1cu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ED39C2BBFC
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717499340;
-	bh=tWZ0MS0YS6KSsam3joOdeBOaK+riZkc7r/Qh1cW8Rk8=;
+	s=k20201202; t=1717499341;
+	bh=WDlbdXQB+rtsAS1b5TyHDWvhrGK9LV0h3drAnw4p8P4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=knX/2PwJsmB5IbZ1TpnYYr4Wq9qjHxGtqtc/PyavcZIfvyD6i/ENC4ip81gR/h+ck
-	 bM7U+nFCsw0h1wxRbfFiKnvt/5nkAxJX8ogje3/bHQn3uGVsgNpS5WPShaoWXHTag8
-	 yNzrF/fbIF3I8YooafGRXppTI5cHwF5m6AbbMm2i2M0/YlzudV+cXQmWIlTn18hufy
-	 ZVeLzRf3BBg5G7Il5cXiuNmvaeJRnu/CQwwvcK8DaHwlL6U7Gj8GH23VO3XooqRnx6
-	 RMUnZ2WytpU6jYRc6RPOtuDnuiSJLyHKpSNmXjhI2611lftTI2rJFKwt/ReyhNa+Xr
-	 nZFDkB0FppzzQ==
+	b=bi3jP1cunylitEhKWpsK6qGsFansD05pz28v2cdOlNXfdCz2Zir6l2kEoO20VUcvN
+	 3vAiZtH95HEy756VHudtITdkqq8gzxcZ7J+FnHuxCtG9copo0O4f5XQTRYX2tI2Ilx
+	 Hc6ex4hZyg6a0P9IINu5jJdG3BGADNlVW0z9WPdBAuYuDhPkCMouTme7RvRoXtxQqZ
+	 RVzfMF8GqPDMsq/eLbAeOOjl6tKrC4d3wfo6+1fTZghQCtZuEJFJ026i4y/EMrM4ME
+	 Cys0a58pPatTZmKuhgcwLd/DhIZOgYzQmz5rzY8Togsq2UaNAodg9Z2yhaTQPFafUx
+	 9k6ycsNwEZVPA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/6] btrfs: mark ordered extent insertion failure checks as unlikely
-Date: Tue,  4 Jun 2024 12:08:51 +0100
-Message-Id: <1d0c219fe64db06e3c8ffa7b28299fca959473e7.1717495660.git.fdmanana@suse.com>
+Subject: [PATCH 6/6] btrfs: update panic message when splitting ordered extent
+Date: Tue,  4 Jun 2024 12:08:52 +0100
+Message-Id: <d65806df6d41acb1e90eb04cc849723eef13ff57.1717495660.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1717495660.git.fdmanana@suse.com>
 References: <cover.1717495660.git.fdmanana@suse.com>
@@ -59,41 +59,33 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-We never expect an ordered extent insertion to fail due to already having
-another ordered extent in the tree for the same file offset, since we
-always wait for existing ordered extents in a range to complete before
-writing into the range again. So mark the failure checks for the results
-of tree_insert() as unlikely, to make it clear it's never expected (save
-exceptional causes like bugs or memory corruptions) and to serve as a hint
-for the compiler to possibly generate better code.
+During ordered extent splitting if we find a duplicated ordered extent
+when attempting to insert the new ordered extent we panic but with a
+message that has the "zoned:" prefix. This is because the splitting used
+to be exclusive for zoned filesystems, but as of commit b73a6fd1b1ef
+("btrfs: split partial dio bios before submit") it can also be done for
+non zoned filesystems during direct IO writes. So remove the "zoned:"
+prefix from the message and mention the split to make it more specific
+and different from the panic message at insert_ordered_extent().
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ordered-data.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/ordered-data.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 1d7707948833..c98c8fdc14a1 100644
+index c98c8fdc14a1..a3343656e0a7 100644
 --- a/fs/btrfs/ordered-data.c
 +++ b/fs/btrfs/ordered-data.c
-@@ -224,7 +224,7 @@ static void insert_ordered_extent(struct btrfs_ordered_extent *entry)
- 	spin_lock_irq(&inode->ordered_tree_lock);
- 	node = tree_insert(&inode->ordered_tree, entry->file_offset,
- 			   &entry->rb_node);
--	if (node)
-+	if (unlikely(node))
- 		btrfs_panic(fs_info, -EEXIST,
- 				"inconsistency in ordered tree at offset %llu",
- 				entry->file_offset);
-@@ -1303,7 +1303,7 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
- 	}
- 
+@@ -1305,7 +1305,7 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
  	node = tree_insert(&inode->ordered_tree, new->file_offset, &new->rb_node);
--	if (node)
-+	if (unlikely(node))
+ 	if (unlikely(node))
  		btrfs_panic(fs_info, -EEXIST,
- 			"zoned: inconsistency in ordered tree at offset %llu",
+-			"zoned: inconsistency in ordered tree at offset %llu",
++			"inconsistency in ordered tree at offset %llu after split",
  			new->file_offset);
+ 	spin_unlock(&inode->ordered_tree_lock);
+ 
 -- 
 2.43.0
 
