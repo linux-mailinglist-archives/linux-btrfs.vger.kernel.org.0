@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-5452-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5453-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E4178FBEB4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 00:17:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FAAC8FBF14
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 00:38:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AADD1F25C47
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 22:17:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04B291F21650
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 22:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BA414B092;
-	Tue,  4 Jun 2024 22:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A82B14B09F;
+	Tue,  4 Jun 2024 22:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hrB4SN9J"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="QePTCk+I"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03FE2AEEC
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 22:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C89618651
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 22:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717539419; cv=none; b=gZHcWRH2lM0rW+LiQpPXwFpj/IMQUlompgANnTVKjqgsfU/BZ8HuXuGiMKk1P9psvK4UAAFXKBtsZocOXGgjT7LOTtfcoJivzpa49K/9aIiyn98gCHvgK20+D0nLCuuwKfuFxJuq5+gsQt+WW+/YT5t+gTBnyUNTOH67Fd0oWcw=
+	t=1717540702; cv=none; b=Fv9VC5WZXsfVhXklFLpGwDnnSwT8qnuFumXnLPNR8Beyqfir5VdmNmUD3upQRRIAKJuG4Zar49CRVFzk/pcf8dOleRMq5crqn9+m14EYoHj0eYnTQ7o0WbeiXLNEWt74d5rf7TbAWdDMO5ajhMgz6tFkIAO/kl/aSvDpNnhLP6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717539419; c=relaxed/simple;
-	bh=WxqhxVV+Qziz2Thhe+S1GVP0obdMXC1Ff8U974uuNgA=;
+	s=arc-20240116; t=1717540702; c=relaxed/simple;
+	bh=bE8KMgQ+C/zuVbmGH4LMsABAlRDjFZGwRQ3hDrGIqhU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aJO/7mcMlaOrddYgDq8IQt6vvBigKVPz6X7EGdO7Lpb/grroNMQHbK3XK834LmqfpVGun41W0x0L2KEFzZKWYRUgpCs6/p7oOpbT0z+wF+wv+uSfmTgLA5c2X0R6hL6x8o0+L/Noj7PNm4Aa5JnUJ8YOPVHr8tH72gc2pp8pZrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hrB4SN9J; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=lExNAV+hrk++Zo1d8PLZK5bIsU8Nd6iBcH7rH5X/SJnujITg3xamIcXr4R683b4nJwn0WkiT7fOm2knXDjxkj9t6z/ucmtZ7XUvTbLWrb/MOXIeC1uNs1G44DlBdn8bHZm8v6dW29nNgcIKB/qaD9AxsHJU0JGHu9nbLUZ4YVcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=QePTCk+I; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1717539414; x=1718144214; i=quwenruo.btrfs@gmx.com;
-	bh=tnaWmrdJvaLJzYrFjmDlf3Ot735RnoqZJlCcSrUl9xM=;
+	s=s31663417; t=1717540694; x=1718145494; i=quwenruo.btrfs@gmx.com;
+	bh=cD/ZMHxBfsuDYtLL+rNxd2hUNfjqyrFLjOEW0KkuwM8=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=hrB4SN9JrU4qR1c60ITF9xrpvk0ZRmmY9TDQ3H6qL1rNH0XnpgAXBkZ67eZsNtc5
-	 C5Wo33fNUuujjjdQy8KOWA8kKHcRWWy+wBxU4l0ssVrgN2ZdwdACH04ju3K1qSV4A
-	 G7v4LjeCjCKglbvzd0lOxD32a9cM7zJffnJ/IlxP0Z3ftaN/LQOjmhFyWEWyrIepe
-	 WImCMnpa9HYlY/Ntr3T/Yw9D5rHKNLfNxk2EI12P9QTGPAcoSaKO+fo5DU44IwRc9
-	 JmoxxQpYGGaY6sJ3n4CyfMxVVemoVIQal19BJ4jk/NP8+tbAy0vA7/7r/K47maOmc
-	 8PUZfqF56T44n3T5UQ==
+	b=QePTCk+Ifb5GDO/HLZLXkTzB55s49hKqg2Oa9/pdF/q43I71blYEm22Ip/A8Sn9m
+	 Ip8dlZl/a2gA3kxvXJIWpnSfZaY+uWVqcK5HWBaZ4WQxjCMW/cf6G+MqK202OdHtK
+	 HV2kdVLNduSYqhv8SBoRBA1aGm0rWs1U/GW2KYrMYEEVCCxMJasOKpGGnUlixNjqG
+	 YUX53g8x3vM7sIA+qxahePHUSrAcSxVYR/8x6w4wpNC74L0yc0QeTqPJ68eHveJCf
+	 HQHleNp19PV+ZNg5SspGzobusn9+aTB2fGUpqHaPH0Nc08+aOPn80YmkkZNA5wItP
+	 wfT05y3EwsfWfadUlw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOA3F-1rqCsu18sj-00NDCW; Wed, 05
- Jun 2024 00:16:53 +0200
-Message-ID: <c53aad22-ed68-433b-9dcc-c52f1c2fc73f@gmx.com>
-Date: Wed, 5 Jun 2024 07:46:49 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mo6qp-1sp5DC2nX9-00paLE; Wed, 05
+ Jun 2024 00:38:14 +0200
+Message-ID: <2cb94cd9-2f37-4d93-8b76-8f41f6d8674e@gmx.com>
+Date: Wed, 5 Jun 2024 08:08:09 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,15 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: print-tree: do sanity checks for dir items
-To: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH] btrfs: fix leak of qgroup extent records after
+ transaction abort
+To: Filipe Manana <fdmanana@kernel.org>
 Cc: linux-btrfs@vger.kernel.org
-References: <0279bccaf02bbc09d6ac685b37e36aacb60bf9b0.1717476533.git.wqu@suse.com>
- <20240604155813.GC3413@localhost.localdomain>
+References: <0a4d66f6922f5219c7c8c37d88a919304abdbb55.1717416325.git.fdmanana@suse.com>
+ <c445c0fb-7a61-4127-9281-13a7c84494a7@gmx.com>
+ <CAL3q7H651tkJgzOOO3VU46oPs3N1x21kDww-V5xWH3URP6buaw@mail.gmail.com>
+ <03ec8f07-12b4-420c-8153-e8c9cd288d79@gmx.com>
+ <CAL3q7H5uKab2k+894+2sJmR2aZH-JsZ3pOE3WT2-anNg4qkqgA@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,73 +93,121 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240604155813.GC3413@localhost.localdomain>
+In-Reply-To: <CAL3q7H5uKab2k+894+2sJmR2aZH-JsZ3pOE3WT2-anNg4qkqgA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sjdgt5V/tvVxzW+HqThfEEC0+O+SJYlv5BLHntb/vaI5y6ZS+5i
- uxsj4XdJipFpBduOx5n91jzRFW4n6Y0yh8PxH6BSGV+XRNsbJ25FAFPqrPTuMZ79qjmnWEO
- iGdHgDRDIJtHpLG0EtsjJX0d91z5I4KTXfP8exO9vxBQJZYpX1HlpVf/MrLw/vkNxvW1vP6
- XeIU8yBtVv6o+G8LHI1Tw==
+X-Provags-ID: V03:K1:4M6YJ3rtje0e3FwlMMUWRN0OPevz80fYbogcUlSg6YlKGeTuZsM
+ Syr9Gow/lymypg+7ZZF6Zij4LOOL8TApyXDR07i3LEI/5uXB65gadCY7sMZOLqouh+rE+fQ
+ 9VoxIxrNZK+r5dO1ghXdJozsdCZLwXelbZgYiztasqkYAYhsIH1fwofz7Zrn5+ueTsxfih2
+ zoexRhkRM6E7Qwg48Rthg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:79ATUGJmvKM=;O3U9cVwQ8Fg7hU/e5Jt9vg8C9KG
- R0toa5I761XwH+E4DDKzvPvXOD1rczwqPAGzYMLxtLLZzORD8VJIpEnWaskEPCddM3TTDDOum
- 4iOE4HPBY1LeAB8Fz2n0hJIag4Un+LkbXiv5offPp6WN3cmr0VuWC5LpNo+MVwaOjyEeWnb16
- rjw7fMv5cAUrI3yHLFa7FPQruAGB1VslnFC2S6SM4kYiQ/Ce5yXems4kXMwPeNw7DaDVJHYBl
- 6uaeNP3vOMm2y8l2tr3j9t4wPvXasSgkpr+1Iw2g+/g9m+dhC7fMuELD0hIqg5KsKnRYJwrC+
- X5teF0Ee8Mm1oosgiOmmdJdKzgXR10fWNmerlAhDk9bUs6Z0OJBNCYqfWQqekWSvI/q2uvRyz
- SclvWbwNRLEbbCJHq3W5HTGd6lVe8aQYW39bPpaBJgdp70FRPhQ6guISu7skAF7sg1Gnx7KC+
- yHdGE4w3qH9hNuDN1jvSZ4HZ/AsBiqhwnJXh5897Ntjy7WBe0dMApk5cHvXoKRS6rPYrva8gB
- Xs8/6byxBi6LpeUBXD0qLPzTp5To4J7y02ayVLNQ5thPouF1AiAjCrmbKYniOAP69EO3WiWdw
- 5M2xMs7z8NnxX1tumSFMM9B4S4JKH/wIVn5zARw2fEX+69i1V+Si7C4iegpt0QAa6l8K2K4yc
- OZt0Ez0FBN/SQqO1uEGBqb7QknROSFwEX6Qny0zOp1vWcVyfbe135eUa53nNdgUeiaa6K01nJ
- BIj15xTVwT3UZ8iTtLRd14SSJjqgr5Y+BIMjblNUS1YhgvBhqWzvg2ZvszjMdA4YAiCRDjKYT
- BTfTYEAummTUvXMLY/WWOg6r3C8a2q8MKLvN98ezBiS2Q=
+UI-OutboundReport: notjunk:1;M01:P0:kERf6MaBA8E=;2HTsxjqkOWUGYRX7HylSHB5mfmn
+ OY21N8rqYT55ylcAdFLcUwtjXoAX3TgB6nfQDdi2/7T5loH9t33s42ui9SwwuLoPj+x72LiNa
+ L3U4lSqeArPDOue8fAoIf8aKaA3eCGGLktTzKI0uXHKijyNJjenPUkAcwFeOuxst4ApN+8fKi
+ hjAETMbGnAYbef/WhV58/OmOLKp+vtGkI0IHb8HqAKEviHVKpgAon8T9xij6CO6+2yrIJwfwt
+ iPW5lnYAtt+hHnir/0oDL+8QC1imVwz3W2i/np959Dr7tG/S/QaKOiPbSbCD+1JWAbbvScco1
+ AeBOBsgghJi66m4c4l0P41KlifLmOchgEe5vmYK/RqLO337/j4l8KDLKkkb87OZbN/0WOuzdK
+ YXVGCKyi4DCmyut6tqnrXXwaE718XR3WKM/oh6rhZAlXpKxqDPqzVzxzNF3TB7nmwYq9TLJfp
+ IPkWVmrYOSDGsjJGEztddtoJO6SarYqFne4BvFIieMFufdBQdVi9Nd2ZzaZ4BHd/zNgTL3kte
+ xSIV2ghZaBoDmIyjvC9GfgdDpFOdMfqr+JHJlmOCkRPDny1QCbbTopXK2GxjU2FiSdk7vYBAF
+ RP+iwgRX7ewdTAdqaCHW6K4NB0YhE86DCvai9ZMc5J65p1hdp9xluJ/DHtPDg9KemDP7YYok0
+ dKU8YSYb0Y+NP6lfJPzXBjS6pvJOvLOXrgthDArXxP3b4nH1iPw6i1orz99u1JwvbxCNBJ4AF
+ UPRx/M9a99l4KQyLz8GrWbAE9qxUFLbFre4a+FAx36E2HaWvCkxN5OgbqFN2WpP8o85ZMFVIt
+ jsFVGwtyxcaNKVpyoQkGHUMxciX2vhMSaMF22P/i9jNh0=
 
 
 
-=E5=9C=A8 2024/6/5 01:28, Josef Bacik =E5=86=99=E9=81=93:
-> On Tue, Jun 04, 2024 at 02:19:08PM +0930, Qu Wenruo wrote:
->> There is a bug report that with UBSAN enabled, fuzz/006 test case would
->> crash.
+=E5=9C=A8 2024/6/4 08:58, Filipe Manana =E5=86=99=E9=81=93:
+> On Tue, Jun 4, 2024 at 12:21=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.co=
+m> wrote:
+[...]
 >>
->> It turns out that the image bko-154021-invalid-drop-level.raw has
->> invalid dir items, that the name/data len is beyond the item.
->>
->> And if we try to read beyond the eb boundary, UBSAN got triggered.
->>
->> Normally in kernel tree-checker would reject such metadata in the first
->> place, but in btrfs-progs we can not go that strict or we can not do a
->> lot of repair.
->>
->> So here just enhance print_dir_item() to do extra sanity checks for
->> data/name len before reading the contents.
->>
->> Issue: #805
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> I'd prefer to call btrfs_qgroup_destory_extent_records() inside the "if
+>> (atomic_read() =3D=3D 0)" branch to be a little more easier to read.
+>> But it's only a preference.
 >
-> I'd rather not duplicate this check.
+> Maybe it makes the diff more immediate to understand.
+> But the final code is certainly less verbose and clear enough:
 >
-> Is the print-tree coming from repair?
+> while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL) {
+>      (...)
+> }
+> btrfs_qgroup_destroy_extent_records(trans);
+>
+> As opposed to:
+>
+> if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
+>      btrfs_qgroup_destroy_extent_records(trans);
+>      spin_unlock(&delayed_refs->lock);
+>      return;
+> }
+>
+> while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL) {
+>      (...)
+> }
+> btrfs_qgroup_destroy_extent_records(trans);
+>
+>
+> More code for absolutely nothing, not even better readability.
 
-Nope, it's "inspect tree-stats" subcommand, it's just really printing
-the root of each tree.
+It looks like I'm still tending to do empty check, other than let the
+loop to  handle empty cases.
 
-Remember we still need to call "btrfs ins dump-tree" to analyze fuzzed
-images, if the print-tree is as strict as tree-checker, just image how
-miserable the life would be.
+And indeed the extra empty check is only going to bloat the code without
+much need, and I should change my tendency.
+
+Forgot to give a reviewed by tag:
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
->  If that's the case then I'd manually call
-> check_leaf to make sure the pointers are all correct before calling prin=
-t tree,
-> otherwise if it's from a different tool we need to make sure the strict =
-checking
-> is happening for that tool, we should only be bypassing the strict check=
-ing for
-> repair.  Thanks,
 >
-> Josef
+>
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>>>
+>>>>> Reported-by: syzbot+0fecc032fa134afd49df@syzkaller.appspotmail.com
+>>>>> Link: https://lore.kernel.org/linux-btrfs/0000000000004e7f980619f918=
+35@google.com/
+>>>>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>>>>> ---
+>>>>>     fs/btrfs/disk-io.c | 10 +---------
+>>>>>     1 file changed, 1 insertion(+), 9 deletions(-)
+>>>>>
+>>>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>>>>> index 8693893744a0..b1daaaec0614 100644
+>>>>> --- a/fs/btrfs/disk-io.c
+>>>>> +++ b/fs/btrfs/disk-io.c
+>>>>> @@ -4522,18 +4522,10 @@ static void btrfs_destroy_delayed_refs(struc=
+t btrfs_transaction *trans,
+>>>>>                                        struct btrfs_fs_info *fs_info=
+)
+>>>>>     {
+>>>>>         struct rb_node *node;
+>>>>> -     struct btrfs_delayed_ref_root *delayed_refs;
+>>>>> +     struct btrfs_delayed_ref_root *delayed_refs =3D &trans->delaye=
+d_refs;
+>>>>>         struct btrfs_delayed_ref_node *ref;
+>>>>>
+>>>>> -     delayed_refs =3D &trans->delayed_refs;
+>>>>> -
+>>>>>         spin_lock(&delayed_refs->lock);
+>>>>> -     if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
+>>>>> -             spin_unlock(&delayed_refs->lock);
+>>>>> -             btrfs_debug(fs_info, "delayed_refs has NO entry");
+>>>>> -             return;
+>>>>> -     }
+>>>>> -
+>>>>>         while ((node =3D rb_first_cached(&delayed_refs->href_root)) =
+!=3D NULL) {
+>>>>>                 struct btrfs_delayed_ref_head *head;
+>>>>>                 struct rb_node *n;
 >
 
