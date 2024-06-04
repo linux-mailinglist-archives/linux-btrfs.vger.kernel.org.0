@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-5451-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5452-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2F7F8FBE82
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 00:08:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E4178FBEB4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 00:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46160B2299D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 22:08:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AADD1F25C47
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 22:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8465C143744;
-	Tue,  4 Jun 2024 22:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3BA414B092;
+	Tue,  4 Jun 2024 22:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bTSs5Ogq"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hrB4SN9J"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388C413791C
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 22:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03FE2AEEC
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 22:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717538929; cv=none; b=VOKxBiZN3Z7vUwB6wMUyxpqHd6/kXKItocBtRNSvApp7dJkoasQDUzfoFwn2kx2PD9gciFnnGA7aPEKawSlkQxS6i5ySJs2uV+y5yfWB7Zy+1dR/iyllLbVnE1j4CSjxzwRBZmIXFuDOegBgTFLMZCN5JvHPIYGLkhhBSvzytyQ=
+	t=1717539419; cv=none; b=gZHcWRH2lM0rW+LiQpPXwFpj/IMQUlompgANnTVKjqgsfU/BZ8HuXuGiMKk1P9psvK4UAAFXKBtsZocOXGgjT7LOTtfcoJivzpa49K/9aIiyn98gCHvgK20+D0nLCuuwKfuFxJuq5+gsQt+WW+/YT5t+gTBnyUNTOH67Fd0oWcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717538929; c=relaxed/simple;
-	bh=kLTMUWVREZNMwhdoc87kmjPP4THZuro38gt+8atssi4=;
+	s=arc-20240116; t=1717539419; c=relaxed/simple;
+	bh=WxqhxVV+Qziz2Thhe+S1GVP0obdMXC1Ff8U974uuNgA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CbiG0Cpnl6Jud6LUiSqx68SEgS9D93VU9ffQKiGBg0B9wEaVb99dZaEVcav+2HbAjvlbSOAgBe3laQkKT+kEBs2zPs8k1kUZCDyVr96zz5zXpu08Ue/nbnY+hQBooTuWr7vwmH2U+f8Ym9wjoT940hiUktDgFv6J9EE05jAqLtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bTSs5Ogq; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=aJO/7mcMlaOrddYgDq8IQt6vvBigKVPz6X7EGdO7Lpb/grroNMQHbK3XK834LmqfpVGun41W0x0L2KEFzZKWYRUgpCs6/p7oOpbT0z+wF+wv+uSfmTgLA5c2X0R6hL6x8o0+L/Noj7PNm4Aa5JnUJ8YOPVHr8tH72gc2pp8pZrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hrB4SN9J; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1717538924; x=1718143724; i=quwenruo.btrfs@gmx.com;
-	bh=8ZYsI09KaUKKJjf8Q6Lc5Fyx7OgUAtx66z8IsjXzr54=;
+	s=s31663417; t=1717539414; x=1718144214; i=quwenruo.btrfs@gmx.com;
+	bh=tnaWmrdJvaLJzYrFjmDlf3Ot735RnoqZJlCcSrUl9xM=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=bTSs5OgqfEXn8NJ28Wmtl9izQ/sADDgkv3QNzx6fQZesDUQU0qm6Bb3AxW03m68p
-	 N0PuzaodYFkT/eVJ3w9/MmezRQTVbQjWLjuXMuFTyp2l1YrZLuilWJMqyiNeqscDv
-	 FPRd7S84Cslt6hVb6TiaFoNArVK+8lmBtPumSKAnRKjSeHvonF36dnVWBbDgdB0Xx
-	 u416UUHrzNw9JLT6W0+9j+iNuRkCMeasxtZ/37409X4GK1iwsrYEHYAjjcSg9Duz5
-	 ukF7ih91/QhGXRmg/LMhCSR3CgzhskJKvXj1nsDCcRtHEt3mPIKuBMNTYWGmrSLk0
-	 cMmmufrNyC74UrpzCg==
+	b=hrB4SN9JrU4qR1c60ITF9xrpvk0ZRmmY9TDQ3H6qL1rNH0XnpgAXBkZ67eZsNtc5
+	 C5Wo33fNUuujjjdQy8KOWA8kKHcRWWy+wBxU4l0ssVrgN2ZdwdACH04ju3K1qSV4A
+	 G7v4LjeCjCKglbvzd0lOxD32a9cM7zJffnJ/IlxP0Z3ftaN/LQOjmhFyWEWyrIepe
+	 WImCMnpa9HYlY/Ntr3T/Yw9D5rHKNLfNxk2EI12P9QTGPAcoSaKO+fo5DU44IwRc9
+	 JmoxxQpYGGaY6sJ3n4CyfMxVVemoVIQal19BJ4jk/NP8+tbAy0vA7/7r/K47maOmc
+	 8PUZfqF56T44n3T5UQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1ML9yc-1rwXU11Rn0-00IFcm; Wed, 05
- Jun 2024 00:08:44 +0200
-Message-ID: <b06a8ffc-f45b-4bf3-a5b3-64877771a549@gmx.com>
-Date: Wed, 5 Jun 2024 07:38:39 +0930
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MOA3F-1rqCsu18sj-00NDCW; Wed, 05
+ Jun 2024 00:16:53 +0200
+Message-ID: <c53aad22-ed68-433b-9dcc-c52f1c2fc73f@gmx.com>
+Date: Wed, 5 Jun 2024 07:46:49 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: fix a check condition in misc/038
+Subject: Re: [PATCH] btrfs-progs: print-tree: do sanity checks for dir items
 To: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <a49e6b43e3c140995567fea035017309b4bcd53c.1717480797.git.wqu@suse.com>
- <20240604155454.GA3413@localhost.localdomain>
+References: <0279bccaf02bbc09d6ac685b37e36aacb60bf9b0.1717476533.git.wqu@suse.com>
+ <20240604155813.GC3413@localhost.localdomain>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,109 +89,72 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240604155454.GA3413@localhost.localdomain>
+In-Reply-To: <20240604155813.GC3413@localhost.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mc8IbCbRHK8nxj09P9K6L0doh9hxxHMF4ZB1sU+mLVGvegpGOu7
- 0HcJVDNYWNCwnjUIkbsFILTBCq0Q/OIshhv0Mn0s9eBnv9aa2Fod6gjseh49b8RgpM1yc76
- 0M/9EWdJgNkBdpZ5a5ZB3ZlYHCVaA9ZPNMA59E1gnzA76H6FnVeFmM4JiiJMtuTNDEbvvXv
- KRN+2shL2Qq/2TLOftzBg==
+X-Provags-ID: V03:K1:sjdgt5V/tvVxzW+HqThfEEC0+O+SJYlv5BLHntb/vaI5y6ZS+5i
+ uxsj4XdJipFpBduOx5n91jzRFW4n6Y0yh8PxH6BSGV+XRNsbJ25FAFPqrPTuMZ79qjmnWEO
+ iGdHgDRDIJtHpLG0EtsjJX0d91z5I4KTXfP8exO9vxBQJZYpX1HlpVf/MrLw/vkNxvW1vP6
+ XeIU8yBtVv6o+G8LHI1Tw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SnHCCpRZRvg=;FP6TF+oi/XYE2I0FwnYmOOwR10T
- W1E8cikoVNcv9mRvZDwEHlRiVYviQOwqdOBh/eCXMuBY9XZ114GskkxGxf4PiXF+zYSyAEyxc
- ErecL+VK6oTcCEw5vRQRycKAJCWnmRtDfbkAksPQ14TNZo0lghhIaJyHipuUh7m8EzOsZra3S
- xYv1/+IePSGu4K/Qb3VTbwLqimQ1+/GO2L8A6eaFePo68ZiDqxJxAfoSctVqGqjPwRG6qAuzw
- Y1xcKW2cYvToDQdDJP1RditZhJgNCiWPrcsTzZOKKJ6UHHX81FKfxT6T/SRatnr6Bmy3IDl81
- DQfmnbC01IhIYf98qwGMMNYe2z+WACjbIU6nFgxINEKus5kpgTqOGxKZNazqAUfcEopG19nW3
- QDH5Big6FNQ7yBoKAET/rpSantQ+mM4o30IGSw2Tu9FUH6/XVHSgkMCTa+f8eq7MKfRwZJRP6
- v9ljM5OaHccVID10QbUm12sZnpXbfJB1obOnKl+IFssOMx64t0UcuVclJZiI4SCsAWIhlSMB4
- 02UBw42bj8jq/BWSPDyWP96fwUR9LDmp8UvTIGIyz9RlNMab8XFfD2K6yMg8nH1tZQ+h76YWy
- KBFw+E6YECe6pSnd845YWd0IgxEysf+NSKUJ7bmUBzEMOkgqik+l3t5opn2r4nhyB8EAhfMYn
- 3MrLfttvACmThP/yJ8NMuL+uL6SFEP/bq15dUsrzEYP+WsVnO/89+5wGdfPlapThCf2Xgya3w
- 9bxuA8/m+XwIE3WDkKH3HpjpI0N9m3xVsecPNPzGD+/rojl9VONA7EWYzHAts5JRNW/IHSpuj
- cgFQ/wpWg6NSMEQLb/+F3szAETsWfCfXyKUFZlzOT2l64=
+UI-OutboundReport: notjunk:1;M01:P0:79ATUGJmvKM=;O3U9cVwQ8Fg7hU/e5Jt9vg8C9KG
+ R0toa5I761XwH+E4DDKzvPvXOD1rczwqPAGzYMLxtLLZzORD8VJIpEnWaskEPCddM3TTDDOum
+ 4iOE4HPBY1LeAB8Fz2n0hJIag4Un+LkbXiv5offPp6WN3cmr0VuWC5LpNo+MVwaOjyEeWnb16
+ rjw7fMv5cAUrI3yHLFa7FPQruAGB1VslnFC2S6SM4kYiQ/Ce5yXems4kXMwPeNw7DaDVJHYBl
+ 6uaeNP3vOMm2y8l2tr3j9t4wPvXasSgkpr+1Iw2g+/g9m+dhC7fMuELD0hIqg5KsKnRYJwrC+
+ X5teF0Ee8Mm1oosgiOmmdJdKzgXR10fWNmerlAhDk9bUs6Z0OJBNCYqfWQqekWSvI/q2uvRyz
+ SclvWbwNRLEbbCJHq3W5HTGd6lVe8aQYW39bPpaBJgdp70FRPhQ6guISu7skAF7sg1Gnx7KC+
+ yHdGE4w3qH9hNuDN1jvSZ4HZ/AsBiqhwnJXh5897Ntjy7WBe0dMApk5cHvXoKRS6rPYrva8gB
+ Xs8/6byxBi6LpeUBXD0qLPzTp5To4J7y02ayVLNQ5thPouF1AiAjCrmbKYniOAP69EO3WiWdw
+ 5M2xMs7z8NnxX1tumSFMM9B4S4JKH/wIVn5zARw2fEX+69i1V+Si7C4iegpt0QAa6l8K2K4yc
+ OZt0Ez0FBN/SQqO1uEGBqb7QknROSFwEX6Qny0zOp1vWcVyfbe135eUa53nNdgUeiaa6K01nJ
+ BIj15xTVwT3UZ8iTtLRd14SSJjqgr5Y+BIMjblNUS1YhgvBhqWzvg2ZvszjMdA4YAiCRDjKYT
+ BTfTYEAummTUvXMLY/WWOg6r3C8a2q8MKLvN98ezBiS2Q=
 
 
 
-=E5=9C=A8 2024/6/5 01:24, Josef Bacik =E5=86=99=E9=81=93:
-> On Tue, Jun 04, 2024 at 03:30:00PM +0930, Qu Wenruo wrote:
->> The test case always fail in my VM, with the following error:
+=E5=9C=A8 2024/6/5 01:28, Josef Bacik =E5=86=99=E9=81=93:
+> On Tue, Jun 04, 2024 at 02:19:08PM +0930, Qu Wenruo wrote:
+>> There is a bug report that with UBSAN enabled, fuzz/006 test case would
+>> crash.
 >>
->>   $ sudo TEST=3D038\* make test-misc
->>      [TEST]   misc-tests.sh
->>      [TEST/misc]   038-backup-root-corruption
->>   Backup 2 not overwritten
->>   test failed for case 038-backup-root-corruption
+>> It turns out that the image bko-154021-invalid-drop-level.raw has
+>> invalid dir items, that the name/data len is beyond the item.
 >>
->> After more debugging, the it turns out that there is nothing wrong
->> except the final check:
+>> And if we try to read beyond the eb boundary, UBSAN got triggered.
 >>
->>   [ "$main_root_ptr" -ne "$backup_new_root_ptr" ] || _fail "Backup 2 no=
-t overwritten"
+>> Normally in kernel tree-checker would reject such metadata in the first
+>> place, but in btrfs-progs we can not go that strict or we can not do a
+>> lot of repair.
 >>
->> The _fail() is only triggered if the previous check returns false, whic=
-h
->> is completely the opposite.
+>> So here just enhance print_dir_item() to do extra sanity checks for
+>> data/name len before reading the contents.
 >>
->> In fact the "[ check ] || _fail" pattern is the worst thing in the bash
->> world, super easy to cause the opposite check condition.
->>
->
-> Except we do this all of the time, we should be used to it by now.
-
-Well that's true, but at the same time when one see such line, it will
-takes more time to fully understand the check.
-
-Thus that's why I hate such line, it takes me over 15 min to find out
-that everything is fine, except the last line.
-
-So I really hope no new comers would spend their time to fall into the
-same hole.
-
->
->> Fix it by use a proper "if []; then fi" block, and since we're here als=
-o
->> update the error message to use the newest slot number instead.
->>
+>> Issue: #805
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   tests/misc-tests/038-backup-root-corruption/test.sh | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/tests/misc-tests/038-backup-root-corruption/test.sh b/test=
-s/misc-tests/038-backup-root-corruption/test.sh
->> index 9be0cee36239..0f97577849cc 100755
->> --- a/tests/misc-tests/038-backup-root-corruption/test.sh
->> +++ b/tests/misc-tests/038-backup-root-corruption/test.sh
->> @@ -61,4 +61,6 @@ main_root_ptr=3D$(dump_super | awk '/^root\t/{print $=
-2}')
->>   slot_num=3D$(( ($slot_num + 1) % 4 ))
->>   backup_new_root_ptr=3D$(dump_super | grep -A1 "backup $slot_num" | gr=
-ep backup_tree_root | awk '{print $2}')
->>
->> -[ "$main_root_ptr" -ne "$backup_new_root_ptr" ] || _fail "Backup 2 not=
- overwritten"
->> +if [ "$main_root_ptr" -ne "$backup_new_root_ptr" ]; then
->> +	_fail "Backup ${slot_num} not overwritten"
 >
-> Don't we prefer just "$slot_num"?  I feel like I've gotten yelld at for =
-this
-> before.  Just change the existing thing to be correct
+> I'd rather not duplicate this check.
+>
+> Is the print-tree coming from repair?
 
-I thought we prefer ${} to be more safe, but since it's followed by a
-space, it should be no difference.
+Nope, it's "inspect tree-stats" subcommand, it's just really printing
+the root of each tree.
 
-I'll update the patch for more debugging, since on CI it fails (not sure
-if it's kernel or something else), but I'm afraid the "if [] then; fi"
-would be kept.
+Remember we still need to call "btrfs ins dump-tree" to analyze fuzzed
+images, if the print-tree is as strict as tree-checker, just image how
+miserable the life would be.
 
 Thanks,
 Qu
->
-> [ "$main_root_ptr" -eq "$backup_new_root_ptr" ] || _fail "Backup $slot_n=
-um not overwritten"
->
-> Thanks,
+
+>  If that's the case then I'd manually call
+> check_leaf to make sure the pointers are all correct before calling prin=
+t tree,
+> otherwise if it's from a different tool we need to make sure the strict =
+checking
+> is happening for that tool, we should only be bypassing the strict check=
+ing for
+> repair.  Thanks,
 >
 > Josef
 >
