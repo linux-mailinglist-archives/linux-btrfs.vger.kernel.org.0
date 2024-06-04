@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-5437-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5438-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C12B8FB0BD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 13:09:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7EBF8FB0BE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 13:09:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBF731F2308B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 11:09:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 242B51C210FD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 Jun 2024 11:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ADBD1459EC;
-	Tue,  4 Jun 2024 11:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64601459F8;
+	Tue,  4 Jun 2024 11:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VE9peky4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PXZ6Ncrv"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5D6B1459E2
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5501459E2
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:08:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717499337; cv=none; b=tLQaBde9xVbOSszkZ7Q6mEz5Vl5JIEX3H3U4BzTwz/SL4wCIwBwHeRmlM3qWWRT07Z55EbQD0eMg6kfGqZ76R0Ys46yA+iJlyIdC+LuGZ7DpE/vRsSvnOKat4dRDUybXOW4vq7N4P6jyJ7F6+TpaZgJ1ydtPdsFDArBmpAGugqY=
+	t=1717499339; cv=none; b=G45Bu86p6gMNJ/FwhmNhNvhPhd1Ix850/0CZBjHwrAzIc/4bM9bOPztjXUPpQaImHCg0uO098sNZfSxnfOqmczJhrumzrQY4lBGVu0aicJlu2h/i58HTzKamf3n2zT8zpL2DlxcwjrN/PtWCOtx/46GZp+xNhOLtx7fH7+9YoxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717499337; c=relaxed/simple;
-	bh=6jz57W78XV1MgsYGo0FhySrNR3MbmsWFHlFwlT9oRsw=;
+	s=arc-20240116; t=1717499339; c=relaxed/simple;
+	bh=Chjy3SkgdSQsHUK2iMkDTS2biXS0HdkaxBm+CGH7rE4=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AuoRxeei/V7ylL9j/u5uLx2nMm6001pnzItdX45Y2FW/sVORQUDqGqICznN8h9Q82kVdN02VrIl5RFu8N30nrljpgUm3yRVRzEZrQQ0yap39cg6yl0e9c65Q09aQoC3G6QUbmRMoS9x8Mu3KJ+4f8GDr/y0c7VzBQP2IJkELZxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VE9peky4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24134C2BBFC
-	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:08:56 +0000 (UTC)
+	 MIME-Version; b=FWAf6lPLRnmDWMrWQQKl2/C2wFUHFS04v0gNXIIuuGFJz0ZZwEhve3mb11PKRxQ/GzVlWHYlECqPJMpaoKJsAGElvO3L53znM+poUs/Ky/PdgesTszNYU3nT5EOWB0nr9qd7yjZCHUYWRgjOju+JfptKZLxfUFwyXW6ik421GrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PXZ6Ncrv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22791C32782
+	for <linux-btrfs@vger.kernel.org>; Tue,  4 Jun 2024 11:08:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717499337;
-	bh=6jz57W78XV1MgsYGo0FhySrNR3MbmsWFHlFwlT9oRsw=;
+	s=k20201202; t=1717499338;
+	bh=Chjy3SkgdSQsHUK2iMkDTS2biXS0HdkaxBm+CGH7rE4=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=VE9peky4BKDNuiXjfjB9wBIy9peN/0OZwnaCIA5t9c1XvI8p/lS+Sk0nRUG6G2Xe+
-	 GSYb8/ClPlhcrT9ALkcNY+D6TyB4s+lvLk8yKtl6JnDO908Pk9orx7VwBwI6GftFVk
-	 6Oyb478+6mFfJR1kgsaOmqxfJJAaOxck/uKrjX6hobec2cIRZaNIxGpKWgaGxeXRLC
-	 x31tsJBoQ8JDgGJpjEn0AYBbeGlcqhUef18gU9Flz2JQqVhV18+16VmdxoRWHc7mSF
-	 3RXL0EdM3GpfEzYY2hn42zeqQ40iLg8P/70rKZKNyMESWwVF7rax19aLL4xunHhdcr
-	 z+lSjFUQv+9sA==
+	b=PXZ6Ncrvg4OA2GPHkWWMSAgKRhxaY8vBry5tXH9C2B2Ut0griQpUDBRcQDGUwc+/b
+	 Zi7+Sp7WZqAWiZiqVLNzQ7gm5LLhPPuxYLaFDboxU+X2JbVriLViDQryBgvawOp25E
+	 fi05HYQU9oHwpHfUhy7uLl4dok/OnCv2wEEEQOqe3rGjN9PK97zDedikYksykP83SR
+	 zjXSbokMbrveBGEkYjR1Xc5dVYM/yiAxRZefYyNrCto2vw6VNy9fbhu91OZ+SO8Scw
+	 /YGx84Tj3yOsnA6/AtE39mAkAnn7Ce7eFZEDzGG38XiqCY1bUgJ9PB9+9A5X4czNLg
+	 Jpo3p3xi40I2w==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/6] btrfs: reduce critical section at btrfs_wait_ordered_extents()
-Date: Tue,  4 Jun 2024 12:08:48 +0100
-Message-Id: <f0b57ef2d2bff5ce085483a7ef0f0f34f578240a.1717495660.git.fdmanana@suse.com>
+Subject: [PATCH 3/6] btrfs: add comment about locking to btrfs_split_ordered_extent()
+Date: Tue,  4 Jun 2024 12:08:49 +0100
+Message-Id: <cffe79bcb3e39dba73e6119945e1ca58a56c5cc0.1717495660.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1717495660.git.fdmanana@suse.com>
 References: <cover.1717495660.git.fdmanana@suse.com>
@@ -59,31 +59,42 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_wait_ordered_extents(), there's no point in updating the counters
-after locking the root's ordered extent lock, as the counters are local.
-So change this to update the counters before taking the lock.
+There are subtle details about why the root's ordered_extent_lock is held,
+so add a comment mentioning them.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ordered-data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/ordered-data.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 15428a8d4886..1cabcfa85e7c 100644
+index 1cabcfa85e7c..1f7f6720b2ea 100644
 --- a/fs/btrfs/ordered-data.c
 +++ b/fs/btrfs/ordered-data.c
-@@ -783,10 +783,10 @@ u64 btrfs_wait_ordered_extents(struct btrfs_root *root, u64 nr,
- 		btrfs_queue_work(fs_info->flush_workers, &ordered->flush_work);
+@@ -1247,6 +1247,23 @@ struct btrfs_ordered_extent *btrfs_split_ordered_extent(
+ 	/* One ref for the tree. */
+ 	refcount_inc(&new->refs);
  
- 		cond_resched();
--		spin_lock(&root->ordered_extent_lock);
- 		if (nr != U64_MAX)
- 			nr--;
- 		count++;
-+		spin_lock(&root->ordered_extent_lock);
- 	}
- 	list_splice_tail(&skipped, &root->ordered_extents);
- 	list_splice_tail(&splice, &root->ordered_extents);
++	/*
++	 * Take the root's ordered_extent_lock to avoid a race with
++	 * btrfs_wait_ordered_extents() when updating the disk_bytenr and
++	 * disk_num_bytes fields of the ordered extent below. And we disable
++	 * IRQs because the inode's ordered_tree_lock is used in IRQ context
++	 * elsewhere.
++	 *
++	 * There's no concern about a previous caller of
++	 * btrfs_wait_ordered_extents() getting the trimmed ordered extent
++	 * before we insert the new one, because even if it gets the ordered
++	 * extent before it's trimmed and the new one inserted, right before it
++	 * uses it or during its use, the ordered extent might have been
++	 * trimmed in the meanwhile, and it missed the new ordered extent.
++	 * There's no way around this and it's harmless for current use cases,
++	 * so we take the root's ordered_extent_lock to fix that race during
++	 * trimming and silence tools like KCSAN.
++	 */
+ 	spin_lock_irq(&root->ordered_extent_lock);
+ 	spin_lock(&inode->ordered_tree_lock);
+ 	/* Remove from tree once */
 -- 
 2.43.0
 
