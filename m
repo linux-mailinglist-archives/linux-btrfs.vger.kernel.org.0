@@ -1,158 +1,79 @@
-Return-Path: <linux-btrfs+bounces-5481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5482-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7446B8FD565
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 20:11:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 180268FD5CA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 20:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1271628779D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 18:11:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F21AE1C238EE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2024 18:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E877347A;
-	Wed,  5 Jun 2024 18:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A1713AA2F;
+	Wed,  5 Jun 2024 18:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OsJT28Pd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LoeGAhX/";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zZIXDOGc";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PP9aUR4i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="reHdWzIG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0753A224D6;
-	Wed,  5 Jun 2024 18:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF937345D;
+	Wed,  5 Jun 2024 18:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717610696; cv=none; b=Ugo3X8VhiaklWw+Cq1xXLfmcIDXlIm2vCtnEdKM1QtukGozJ6G2gKCi40fnXybK+6Z2d1ur085fWEO9DoRlO/D3PtE+a2ftdoQcoU9jSBwqab9dcVzLpAYPSqTDTLbhCWq8FTuiyYE/+YQQoAym1+1q4vY/KNJSsCnOiSWK4u8Q=
+	t=1717612320; cv=none; b=W7766H9/auzq6xHZFuYNx6yPgT6NAdyXeOe/8geNKmynCeDwJF77ZyH2XKOt/SWBDUM8l/TSRy9Hx7JihH8goo5rIblZnEYapCnlMYUBx6BxF3sPWkEH5GuyBaREEBIiuLTo0Zf59CVe3lwndWVWs0BwGLhlrgfQQSgstbMm7Ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717610696; c=relaxed/simple;
-	bh=kAZnQpDfGBLr/hv5kBKen/wUM1vO4PpdyH0MaGPkuks=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q44fmcPm1Z1MI3G9czEjSylUKfWX5lxOIK/kTHbihxwHhkfMgGPO0OmvVs3VRg3p4SNtTqDK3hL6w17+JmlczwSDKs6ye0Ml9qBu6ln6Xac4puSGVcQEV2jIcRvZIYv7rkRJV+LsGQEdMA0jWiB5zZ+OYz11gTRr/fhgoikuML4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OsJT28Pd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LoeGAhX/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zZIXDOGc; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PP9aUR4i; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EA65E21A9F;
-	Wed,  5 Jun 2024 18:04:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1717610693;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cCLmp5LMr/Q4r7oEA9biEivh7X/2CnsTC+6PiNZPOlQ=;
-	b=OsJT28PdeUY86FzCFJMeKYR0xsN7C4sUjl1pyHMp5TDUBCIuU4rJVAxkWyQXymmVh+qjL0
-	eMJ2U8Dg6z+co0DKCr07b8kWKc9QCzgftaJImTwqpelGLa16hXBEiFOtQulQg3CNVLe0c3
-	/RMKZQTIi8NT2t2LYrnsSFxS8e/DyCk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1717610693;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cCLmp5LMr/Q4r7oEA9biEivh7X/2CnsTC+6PiNZPOlQ=;
-	b=LoeGAhX/yFkcOW57XkkhxYlJGgN/WdGigqJSpviIdYyflsa6dtEqN3A7GWpeaVcVlhNnsO
-	AdmxR3PzG2SO+IBQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=zZIXDOGc;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PP9aUR4i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1717610692;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cCLmp5LMr/Q4r7oEA9biEivh7X/2CnsTC+6PiNZPOlQ=;
-	b=zZIXDOGcaAd5T/ThfMvGOPXLvkXLFj/fxXtNOfohk6oZBpj+nTshqG79F2HlBvbOAFTzKl
-	NvcOFEl9uN19mszmat0yoaDNagw++chXoPWAs1SCk+Tc7BQ4wBtw6VkTdfF3rkfPDwDzZn
-	BIrebS9yU6h9sRdcoeXMED37gJx1tHM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1717610692;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cCLmp5LMr/Q4r7oEA9biEivh7X/2CnsTC+6PiNZPOlQ=;
-	b=PP9aUR4iDZCfhcUBtslekk5mQRV5tIMAasUwPvW2EkcYffahPp4sBx/LNMYVKdsO9N8kRQ
-	d4yHaSsEu80lUICQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC52613A24;
-	Wed,  5 Jun 2024 18:04:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id K+VwMcSoYGaqeAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 05 Jun 2024 18:04:52 +0000
-Date: Wed, 5 Jun 2024 20:04:47 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH 0/4] btrfs: small cleanups for relocation code
-Message-ID: <20240605180447.GE18508@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240605-reloc-cleanups-v1-0-9e4a4c47e067@kernel.org>
+	s=arc-20240116; t=1717612320; c=relaxed/simple;
+	bh=vB5OVbRhLJjfXRhaC/805KYIfiR4qXFZuXHoLY/xIq4=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=kmOYSOZ7YuCwviIoCQFHUdJhbFYCUUhcmwSDk68he/F3vMTFed2TIGiHF1OC9CE0AzslauuRdgAtdSFZoyQG05RdrnRaLzmTQnYwPbUJZLnamdOlIpYugaEdRiWcJUiLqjLM109gNlmgTAyfmZrsLGAIJdv+h16et+ApAEy7R9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=reHdWzIG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A433C2BD11;
+	Wed,  5 Jun 2024 18:32:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717612320;
+	bh=vB5OVbRhLJjfXRhaC/805KYIfiR4qXFZuXHoLY/xIq4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=reHdWzIGoneUFq4hpDLg7LwMzN7YXlnTC3m8u01dh9AS04jk1Z3IMfeyRABDE2QOZ
+	 LYCMaPMJ2EfZXRXkqQ0008BjSVgr5D61iO66eMWUZApMYtQtNVsYsiDuoelhmM6Fz7
+	 Ym7X+tJ0EkPAYgwPk8mMUaNMH1DuhV5cELvWKshEGxekamnxNglQvKPhvIR6ZtuA4e
+	 HrvCjA8t1p1CauMowPckJU56zNgEIMeBwUe1jj+e4fW+SoPTrO9XHEnacqtoNVEyl9
+	 iaukN4ZuwWssmkRoXj1xV9bWAx8oEIDk7cP8NBMmCdcIck7Tmhzd5REm8zW6c/TCpR
+	 n53IiKrSsh6nA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5FA2ED3E996;
+	Wed,  5 Jun 2024 18:32:00 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fix for 6.10-rc3
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1717600881.git.dsterba@suse.com>
+References: <cover.1717600881.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1717600881.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.10-rc2-tag
+X-PR-Tracked-Commit-Id: f13e01b89daf42330a4a722f451e48c3e2edfc8d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 19ca0d8a433ff37018f9429f7e7739e9f3d3d2b4
+Message-Id: <171761232038.20262.14497278528007459609.pr-tracker-bot@kernel.org>
+Date: Wed, 05 Jun 2024 18:32:00 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240605-reloc-cleanups-v1-0-9e4a4c47e067@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: EA65E21A9F
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
 
-On Wed, Jun 05, 2024 at 03:17:48PM +0200, Johannes Thumshirn wrote:
-> Here is a small series of cleanups I came across when debugging
-> relocation related problems on RAID stripe tree.
-> 
-> None of them imposes a functional change.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
-> Johannes Thumshirn (4):
->       btrfs: pass reloc_control to relocate_data_extent
->       btrfs: pass a reloc_control to relocate_file_extent_cluster
->       btrfs: pass a reloc_control to relocate_one_folio
->       btrfs: don't pass fs_info to describe_relocation
+The pull request you sent on Wed,  5 Jun 2024 17:26:14 +0200:
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.10-rc2-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/19ca0d8a433ff37018f9429f7e7739e9f3d3d2b4
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
