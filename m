@@ -1,91 +1,103 @@
-Return-Path: <linux-btrfs+bounces-5507-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5508-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1639A8FF523
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 21:06:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DA7E8FF542
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 21:27:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58464B229A1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 19:06:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33B47282151
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 19:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2584F1F2;
-	Thu,  6 Jun 2024 19:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9046761FE6;
+	Thu,  6 Jun 2024 19:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="hGlWeTOf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="TPO10sQL"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JqegeA+I";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hlxu7w4h";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JqegeA+I";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hlxu7w4h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80034376E1
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2024 19:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE5D1446DB
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2024 19:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717700799; cv=none; b=K5NrqtQRm8qveNWpkDJnawuuO6wdN3mkPJQx954HWqNnhKGcAHzjS6DCXcWEByPxbww7OidhlJUb427xJwQxphqVXXUm/OjmPgqG5DNUSAzzysgsYTuTH7ayPa6iwOpXWOOnEY2HB1h5EZjwCD5pLDjkP8su3LDF9Cp+geRA/E0=
+	t=1717702052; cv=none; b=KymF1zU4ezNaTHwMuXy5rkahw/YFZLvEgfbPQNo5Qwf9nPQ8XX1JHlIrAiA+GlOATtkaBPWR4MM98AzvdEKpyJujR7SbZR4C7KR9S4bbAu0v4oBLxiPx/pcKkIJRL4wsCQa2BWzx+9vYKOECTAbb9h9aFebl6oa+64KoMD30+1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717700799; c=relaxed/simple;
-	bh=xrpWa24KiIq6A8tEJdE4O9vMCuIJhRmc366SkACpRc8=;
+	s=arc-20240116; t=1717702052; c=relaxed/simple;
+	bh=XnEtJw4NamTfKrMGA1kB2CXxpPFNxYUTQFbbA8iDkHQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ClBoZCGNRNTHmUg1BxmZGbADPQwUCeCS+I4P419U/8HirVQPDXCaup2a6TJCj39U71OogWLUu5BpPLepsC2otPDNPiFMyZ8Aq34rkcMYS0e3qzGSHB9eUo6t8S+k/G9NIwTbtuXVNHn+ToUrNkO95IAOL6hcsf4jbYUudHcr2H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=hGlWeTOf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=TPO10sQL; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 7B4AB114014F;
-	Thu,  6 Jun 2024 15:06:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 06 Jun 2024 15:06:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1717700796; x=1717787196; bh=hDi6aX8/FH
-	W/yfiXWhgmroW5RXBKLCiZnIbg8PV/VJQ=; b=hGlWeTOfk9dNzkoZBLJxRtw7Tb
-	+U2SfDLXklinq5ETgmKG/BmAjmnZDg63JMwKHp6xvsh/AKNljYHAyyFhmQ84h/cN
-	r5jBxa1aS7D5DO65HkeFbyoyX86jt3hqQZ8TSZosx66P04AnM/b1py2K+LKS3rwE
-	xfv8osvUgJw3fHdtCWALyutgWEBrPld9cZMJHU4829L6yOPfBXlOhtFvJgzynfXC
-	eyrZkCYU903khfQpCGFUZD9zSgM/COQRfD+4HWcNSM1F+ucf7WXMTkmFLmjsGRcM
-	JdWqhRLPUljPTch5t59u4SbPGzGGr6C0Wnmu6+aJFxrzYnKjpfma4568Vrfw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1717700796; x=1717787196; bh=hDi6aX8/FHW/yfiXWhgmroW5RXBK
-	LCiZnIbg8PV/VJQ=; b=TPO10sQLNw7n++3WvL83F9OFEqaPaI1zgs2CF9HUE+KJ
-	Gc0cXrfvSkkP0bo+xYxbFQzynvG+EGYxhuOtfMsBDZKK+IGxHk5cgiic9+68FH6p
-	vJMaw5/HvoUOPcf85vCaPYb7Dnb7CBg79AghVt9pgefVY6jpn7jxk2K72ou+H2vY
-	mYLVgP75udEULSnsrnwedXR1+RM3HCWx0weA3Z+kyknXoE0hqxaatZnV43aOCrmS
-	QFwW9PdKQIh900dKRc9DGp0cfpe3+Nu002cWRXDnTY1tj0yGPI20DT4bp0JsdfUt
-	ULYyx3Zd6woDV+v3oAEIBqqT25ZMVgNvhCf76u6nJw==
-X-ME-Sender: <xms:vAhiZp0th-gWIyHCiw69mkG71xO6owMIPgBvlEH5ZsDlG8yzJr8ALA>
-    <xme:vAhiZgGWO-_PYLT1pR17yYcv76LierCuSWuHC-lgoFV0Qn0O7t1r41I61kmXYjaYM
-    Uzi6f964VaK5wsnjkM>
-X-ME-Received: <xmr:vAhiZp4ccINJF5QdTQ_h2N0Xvoho6JaDSD99_SpMBL9Da4jp7a7nY8Zza4-Rk6iLvd-cFZ3pFCDxdJ0aX_XKToMoDqA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdelkedgudefvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesth
-    dtredttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghu
-    rhdrihhoqeenucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvd
-    evieeiiedugfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
-    mhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:vAhiZm2P_VrurHpOVpw5LEEqDCe316AViEep-81VV0Ty4CKOJ3WUow>
-    <xmx:vAhiZsHDkYfoVe35_LcozpNyVMwPbzASk3llrTxSgUk1YnpRzG6nBg>
-    <xmx:vAhiZn9bwgPrKbmNwB7IBG9FB776_kFk76pMSqDn14QbVGahzeOLzw>
-    <xmx:vAhiZpmgpiVkGlyZD1aHDxUnQiMMYXhM4wG8_MjTaoKK7qQicW5cBw>
-    <xmx:vAhiZhQoD-npBC8QgB9MV7TawnfX86QIETLCeldOmVrvbEeQmptY9Amf>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 6 Jun 2024 15:06:35 -0400 (EDT)
-Date: Thu, 6 Jun 2024 12:06:33 -0700
-From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove pointless code when creating and deleting
- a subvolume
-Message-ID: <20240606190633.GA11027@zen.localdomain>
-References: <292b2e90e9a64cd3156b0545f6e62b253ea17b9e.1717662443.git.fdmanana@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AtB5NADV1nrseFpgRkhNFSj1OkIGBuf3ud4V/pZ3aBafl2lOggB3DaftHY+QqEk9CRpiaC3Ve+6MF4RNou2rdgNpPVtZuq1HK+UUGqJPT4+SaKOetym1F9MntTUECfHuDaJHV1CyPJdcsOHsdGaEvNZ0DuJv6MoIdmLsTTf+BAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JqegeA+I; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hlxu7w4h; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JqegeA+I; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hlxu7w4h; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8D36D1FB50;
+	Thu,  6 Jun 2024 19:27:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717702048;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9M9HmeSMn6Z9aAzsQuvZjFMFTvamzbWeg81p1QDmNE=;
+	b=JqegeA+IVoBLc7kL8XBJNPLPWC5v2nTlxkMVtEIs92bWgki8OlE5jVLoZ7Lq0xJ+f4Fb0L
+	ITgzKKy5FReBnR19xF6QOY917GEeaLe5u0NPhYrQ92QJI020zlStngezmAg7qfpgWYmW/V
+	o6TxgTKO1MCM9NB7h+1xsWsdy00EuQM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717702048;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9M9HmeSMn6Z9aAzsQuvZjFMFTvamzbWeg81p1QDmNE=;
+	b=hlxu7w4hU5X7kfW0mwCsbUjE8IJiig5s+i76YjYOrYwbAf/yZLxsNnM/cafM72mLJl0OjU
+	4Mie2jsU1+hr2tBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717702048;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9M9HmeSMn6Z9aAzsQuvZjFMFTvamzbWeg81p1QDmNE=;
+	b=JqegeA+IVoBLc7kL8XBJNPLPWC5v2nTlxkMVtEIs92bWgki8OlE5jVLoZ7Lq0xJ+f4Fb0L
+	ITgzKKy5FReBnR19xF6QOY917GEeaLe5u0NPhYrQ92QJI020zlStngezmAg7qfpgWYmW/V
+	o6TxgTKO1MCM9NB7h+1xsWsdy00EuQM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717702048;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9M9HmeSMn6Z9aAzsQuvZjFMFTvamzbWeg81p1QDmNE=;
+	b=hlxu7w4hU5X7kfW0mwCsbUjE8IJiig5s+i76YjYOrYwbAf/yZLxsNnM/cafM72mLJl0OjU
+	4Mie2jsU1+hr2tBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6353413A79;
+	Thu,  6 Jun 2024 19:27:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CpISGKANYmY5NwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 06 Jun 2024 19:27:28 +0000
+Date: Thu, 6 Jun 2024 21:27:22 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+	Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v2] btrfs: fix a possible race window when allocating new
+ extent buffers
+Message-ID: <20240606192722.GF18508@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <0f003d96bcb54c9c1afd5512739645bbdddb701b.1717637062.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -94,78 +106,132 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <292b2e90e9a64cd3156b0545f6e62b253ea17b9e.1717662443.git.fdmanana@suse.com>
+In-Reply-To: <0f003d96bcb54c9c1afd5512739645bbdddb701b.1717637062.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -2.50
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,linux-foundation.org,gmail.com,fb.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_FIVE(0.00)[5]
 
-On Thu, Jun 06, 2024 at 09:30:07AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu, Jun 06, 2024 at 11:01:51AM +0930, Qu Wenruo wrote:
+> [BUG]
+> Since v6.8 there are rare kernel crashes hitting by different reporters,
+> and most of them share the same bad page status error messages like
+> this:
 > 
-> When creating and deleting a subvolume, after starting a transaction we
-> are explicitly calling btrfs_record_root_in_trans() for the root which we
-> passed to btrfs_start_transaction(). This is pointless because at
-> transaction.c:start_transaction() we end up doing that call, regardless
-> of whether we actually start a new transaction or join an existing one,
-> and if we were not it would mean the root item of that root would not
-> be updated in the root tree when committing the transaction, leading to
-> problems easy to spot with fstests for example.
+>  BUG: Bad page state in process kswapd0  pfn:d6e840
+>  page: refcount:0 mapcount:0 mapping:000000007512f4f2 index:0x2796c2c7c
+>  pfn:0xd6e840
+>  aops:btree_aops ino:1
+>  flags: 0x17ffffe0000008(uptodate|node=0|zone=2|lastcpupid=0x3fffff)
+>  page_type: 0xffffffff()
+>  raw: 0017ffffe0000008 dead000000000100 dead000000000122 ffff88826d0be4c0
+>  raw: 00000002796c2c7c 0000000000000000 00000000ffffffff 0000000000000000
+>  page dumped because: non-NULL mapping
 > 
-> Remove these redundant calls. They were introduced with commit
-> 74e97958121a ("btrfs: qgroup: fix qgroup prealloc rsv leak in subvolume
-> operations").
-
-Re-reading it now, I agree that start_transaction will ensure what we need,
-and if it fails we go to paths that result in freeing the reserved space
-here in the subvolume code.
-
-With that said, I spent like two weeks on this battling generic/269 so
-there might be something subtle that I'm forgetting and didn't explain
-well enough in the patch. Reading it now, I do think it's most likely
-that the fixes to the release path were sufficient to fix the bug.
-
-Just to be safe, can you run generic/269 with squotas turned on via mkfs
-~10 times? It usually reproduced for me in 5-10 runs, so if it's not too
-much bother, maybe 20 to be really safe.
-
-Thanks,
-Boris
-
+> [CAUSE]
+> Commit 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to
+> allocate-then-attach method") changes the sequence when allocating a new
+> extent buffer.
 > 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  fs/btrfs/inode.c | 5 -----
->  fs/btrfs/ioctl.c | 3 ---
->  2 files changed, 8 deletions(-)
+> Previously we always call grab_extent_buffer() under
+> mapping->i_private_lock, to ensure the safety on modification on
+> folio::private (which is a pointer to extent buffer for regular
+> sectorsize)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 0610b9fa6fae..ddf96c4cc858 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -4552,11 +4552,6 @@ int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *dentry)
->  		ret = PTR_ERR(trans);
->  		goto out_release;
->  	}
-> -	ret = btrfs_record_root_in_trans(trans, root);
-> -	if (ret) {
-> -		btrfs_abort_transaction(trans, ret);
-> -		goto out_end_trans;
-> -	}
->  	btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
->  	qgroup_reserved = 0;
->  	trans->block_rsv = &block_rsv;
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 5e3cb0210869..d00d49338ecb 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -658,9 +658,6 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
->  		ret = PTR_ERR(trans);
->  		goto out_release_rsv;
->  	}
-> -	ret = btrfs_record_root_in_trans(trans, BTRFS_I(dir)->root);
-> -	if (ret)
-> -		goto out;
->  	btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
->  	qgroup_reserved = 0;
->  	trans->block_rsv = &block_rsv;
-> -- 
-> 2.43.0
+> This can lead to the following race:
 > 
+> Thread A is trying to allocate an extent buffer at bytenr X, with 4
+> 4K pages, meanwhile thread B is trying to release the page at X + 4K
+> (the second page of the extent buffer at X).
+> 
+>            Thread A                |                 Thread B
+> -----------------------------------+-------------------------------------
+>                                    | btree_release_folio()
+> 				   | | This is for the page at X + 4K,
+> 				   | | Not page X.
+> 				   | |
+> alloc_extent_buffer()              | |- release_extent_buffer()
+> |- filemap_add_folio() for the     | |  |- atomic_dec_and_test(eb->refs)
+> |  page at bytenr X (the first     | |  |
+> |  page).                          | |  |
+> |  Which returned -EEXIST.         | |  |
+> |                                  | |  |
+> |- filemap_lock_folio()            | |  |
+> |  Returned the first page locked. | |  |
+> |                                  | |  |
+> |- grab_extent_buffer()            | |  |
+> |  |- atomic_inc_not_zero()        | |  |
+> |  |  Returned false               | |  |
+> |  |- folio_detach_private()       | |  |- folio_detach_private() for X
+> |     |- folio_test_private()      | |     |- folio_test_private()
+>       |  Returned true             | |     |  Returned true
+>       |- folio_put()               |       |- folio_put()
+> 
+> Now this double puts on the same folio at folio X, leads to the
+> refcount underflow of the folio X, and eventually causing the BUG_ON()
+> on the page->mapping.
+> 
+> The condition is not that easy to hit:
+> 
+> - The release must be triggered for the middle page of an eb
+>   If the release is on the same first page of an eb, page lock would kick
+>   in and prevent the race.
+> 
+> - folio_detach_private() has a very small race window
+>   It's only between folio_test_private() and folio_clear_private().
+> 
+> That's exactly what mapping->i_private_lock is used to prevent such race,
+> and commit 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to
+> allocate-then-attach method") totally screwed this up.
+> 
+> At that time, I thought the page lock would kick in as
+> filemap_release_folio() also requires the page to be locked, but forgot
+> the filemap_release_folio() only locks one page, not all pages of an
+> extent buffer.
+> 
+> [FIX]
+> Move all the code requiring i_private_lock into
+> attach_eb_folio_to_filemap(), so that everything is done with proper
+> lock protection.
+> 
+> Furthermore to prevent future problems, add an extra
+> lockdep_assert_locked() to ensure we're holding the proper lock.
+> 
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Link: https://lore.kernel.org/linux-btrfs/CAHk-=wgt362nGfScVOOii8cgKn2LVVHeOvOA7OBwg1OwbuJQcw@mail.gmail.com/
+> Reported-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+> Link: https://lore.kernel.org/lkml/CABXGCsPktcHQOvKTbPaTwegMExije=Gpgci5NW=hqORo-s7diA@mail.gmail.com/
+> Fixes: 09e6cef19c9f ("btrfs: refactor alloc_extent_buffer() to allocate-then-attach method")
+> Cc: Chris Mason <clm@fb.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Thanks. I'll pick the patch to branch for the next pull request, the fix has
+survived enough testing and we should get it to stable without further delays.
+I've edited the subject and changelog a bit, the problem is really the folio
+private protection, it is a race window fix but that does not tell much what is
+the cause. I've also added the reproducer script from Chris.
 
