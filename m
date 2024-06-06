@@ -1,223 +1,134 @@
-Return-Path: <linux-btrfs+bounces-5510-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5511-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2A68FF612
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 22:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D5E7E8FF77D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 00:05:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 483BF284E28
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 20:50:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82B8D284C1D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 22:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96F812BE9F;
-	Thu,  6 Jun 2024 20:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F2913C812;
+	Thu,  6 Jun 2024 22:04:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="1L7RQcaL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hF6+1B9O"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q/r2hCdM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783813A8CB
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2024 20:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F9F4F5EC
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2024 22:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717707050; cv=none; b=ocKLu/7qnAkh1TIf9cGNYJouCm1zcMb1llwyjNU4XCh4SdxWGXE6T699j8XP+OVSE+OX2jsvt38k8kvAR2mzRQuw8INIfYVH8w5yJseOPm88IgKs+pSOXShLnptRk+lF0KusDGoKiYVKT7uivDCENL+Uqfa5utd7lVMwnad8htg=
+	t=1717711497; cv=none; b=dNNs4LB1NoUi0Tq4FEVMeQXBFHSXqJLlLHRVIFqMSwL3ZYK2xRuumeFmp9K6TC+B2axF3tqUaU7K8mHZsDq6fJwNwBWTXy7BTmBdsGitCAl9BaFpFcqR2Y9twYl95u7kGSwfIlq3RPdJpk7JNiEY15IZycPrUe56R8i9avu7eeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717707050; c=relaxed/simple;
-	bh=RQt9DRN0ddqGqHijo63w+gHqUq0Prh+dDpZLdfSwYgk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OE9L88+n5uUZIThcTfzFm6VYhREjW5u8uUmIsvljb45DNvh479xxmpqPYxoeecXIy6ASTh1lTudULKE2Ow/vBsVZ3U2mVqprQtupEXgt4jt9wGIDGvmyY1od/SwK26CwPdi8r3uk9UoxOrZTdTrUp+MgaenRz90kx9uJn6hMOUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=1L7RQcaL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hF6+1B9O; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 8D46C11401C9;
-	Thu,  6 Jun 2024 16:50:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 06 Jun 2024 16:50:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1717707047;
-	 x=1717793447; bh=xVYpqhmbD+3afCKWxxMnbiL7OM8b2q9NgvwYF2w/u3M=; b=
-	1L7RQcaLLZLEU/B0EQJzqhXR1EBD031n4+nUephVgmnAHbc6cv7duwBF22vu3oFH
-	gbiM0VGKqaUzhkyLmwLJV7GVt4r77mWNnSHbm34EImZ6wXnjUs7nmo/VZ+IkIQyN
-	igVo+njiR61Kk2Y0UhRtzdwgaNLJ1V4mt7dXrakZm3cp7oTn9Roh6M6wi8SQHUQx
-	tXgSrwqSO/X1Vf8oELK2V1W4JDyaUZQeeE3yirqMbAV4bwM8Tf52woqGVSqrpnNm
-	KFiHLBrld5vtFlDCJgWWn9/9o+WiPGlbFWIIBJh0vM3tcGdudM2DYujZ5+7Bews0
-	cIt3ttU4QdrFw11+2hYF4w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1717707047; x=
-	1717793447; bh=xVYpqhmbD+3afCKWxxMnbiL7OM8b2q9NgvwYF2w/u3M=; b=h
-	F6+1B9OMlT8i/7meh/Lf8C/KcD4o4k9Lk7qlMY+5oMjf1AxLpSGeYPb0i49UoTSD
-	ElbKctHNmPzaqtzDRQ2CeeYKRXEJUg1I1OouceUwmg5xPYydgruQDPtbLxvVTPxO
-	nykb+C41O7SIf2trByMg8C47pybg+dzP6v0YwVTBmOcxrWSJb+QqKQPq2v5ctpUa
-	ScZWsQq83km9yFkY7aUKX8UxkgJT5a7G35IdZNmVyOIg0vUXgHSTnHrUqVeerZn3
-	zgHaoRKpxZ7Ys75rxf0O7iXoUIBSbu3NR7oO0/BRfh9Y/N2JEslYlwUuebiPAQFT
-	+L3qzK1O9xBdbh34I8aRg==
-X-ME-Sender: <xms:JyFiZsQsptEwoVK2Qz81eevHF1_X9sGMTXIH5YOpE_r47tXHxc6JJg>
-    <xme:JyFiZpxDnxRNrzejH6CVqj6AoEu2cI5iWEZnqB4a0RfCmGMnxmwHziCVmYPELMwog
-    2HOMmczPrIRK-BxTW8>
-X-ME-Received: <xmr:JyFiZp1JvnGvvTFoVGJP4O9A0FcFmkqDRuTJv6x3B2xMBNY1gc1fS_Nt8modeP7LRsUCVX98-Wq6NJX8bC52OrDzVzQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdelkedgudehvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
-    rhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrh
-    hnpedulefhtdfhteduvdethfeftdeitdethedvtdekvdeltddvveegtdeuuddtiedtieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrih
-    hssegsuhhrrdhioh
-X-ME-Proxy: <xmx:JyFiZgDSx6sJsYGrB4v-vU8ELJUwJhntChpl7E9eoWE9457udrx71g>
-    <xmx:JyFiZlguBH8h774opudlSN_nB5YToIRsT617BKGSxzrhxgUYymNGDA>
-    <xmx:JyFiZspncWBXra3Zu7OomL88D866nq4Ig8C7UUrImZj-rX38_d9mcA>
-    <xmx:JyFiZog-XkAqYVBeEI4kiWFK1huGWB5KEzpIXh_rLffRYNelCYGdSQ>
-    <xmx:JyFiZouu1Q8KMS_I9qG03A0GCQR32QyfDmruMEITQzJZzLUSUuTcrNkf>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 6 Jun 2024 16:50:46 -0400 (EDT)
-Date: Thu, 6 Jun 2024 13:50:45 -0700
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove pointless code when creating and deleting
- a subvolume
-Message-ID: <20240606205045.GA32373@zen.localdomain>
-References: <292b2e90e9a64cd3156b0545f6e62b253ea17b9e.1717662443.git.fdmanana@suse.com>
- <20240606190633.GA11027@zen.localdomain>
- <CAL3q7H6JQG510-c3YZUBpAra8kww1bi3_yqH+NbbFJCAvG84sA@mail.gmail.com>
+	s=arc-20240116; t=1717711497; c=relaxed/simple;
+	bh=1M34sIClIxdXbDQ0ZJ2WD7svtjBqwm1E5JAaMGjuJnY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=moplGS3S41JsVH7tTnkRdWEApwWVLOrnlg0U22Z7fR8HI44mDTX3On3pbL0pCc1biGjxrLSvjvBas/d8vcsIvipkn9qMLRyDaDdC+Cmak4+gVpGG2Rr2rKwVjwlsZeInBlOZt5F3bJ8Mi5Orwil3P4C5wOSM5jeW7bOQqgKZ2Rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q/r2hCdM; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2ea9386cde0so18257291fa.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Jun 2024 15:04:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1717711493; x=1718316293; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3fnNMIUsewHwTGsj+FdtgF4zM+V+zyraBxlCPQlCvc=;
+        b=Q/r2hCdMgRp2uz64diViufjLB+1HhJhxk0w+fhaxnMv7s/erJ3R0sNNBcHUgZ/Uxiq
+         fDXPsKj980bYCPeR44ew0tAYGs5gYhks2t7dURvHa18RzM77ia1shCPkJh+Mr5IxXCjs
+         Cfvooa0MOyFsgN0VhmFZt4ZHufpHAxZrHEmB2JKD0rNuSfoBFVFybBcc2LCmBr843e6S
+         LCz/E+am7xXMvh7WHHEgyl4Rlsu6N6fIzAcA1qLKg9DGJWuoM5TMN07GEd8WY9OIbXVv
+         8fB+sCsjMPd271QzZahYS8aKTxEvK4oDH+saXGOmpVuePG7EGZHf2J82m3WyP0+9r5en
+         K6wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717711493; x=1718316293;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V3fnNMIUsewHwTGsj+FdtgF4zM+V+zyraBxlCPQlCvc=;
+        b=KnsvprQqRbzQB9m02OYBOf1Cx6c2sEso7dzPC3LhnXoxTkv6thjIV/OHUGKAWrXBiq
+         sa1bcyBu++6PDoXbEw01GZ2r7wmYfgWh21lRa1uFBrnhaM2Rbblb7lJ+jnICovX/O1Rx
+         H3mTTU0x8M9udGMUrYrxi8jYwfenu6eWmyUuOXXYqeFi8ot+bvzNsX1GSaWaad7f6N7i
+         9klqm0G1Z5K1YBwer7hUCjoBTF9z5MMT87OaiKvlqy/srsz3H92kssz1Oat4/I0YxiPJ
+         XGQ7BFwYtn/0KZIA2n4IqNUavu4bEeVh7msczx2dEY+cV95P6PmERL93HQe7PzhSqvBx
+         +6zg==
+X-Gm-Message-State: AOJu0YyHx9GXZ8TsWJPQanmfmyWcRGGH1Kwa4ytNGqvqY/VWNcUb6nzL
+	WMhEb1a0xW24vVoh5ET0mZARB9RiIWwQYfSfU7n4M5W8jbEc9Nd5plCJbE05NE0=
+X-Google-Smtp-Source: AGHT+IE2JHwy//As4OKCrvH+aUbUA3wqpKEZwq1KE+tKy/t17AW7cjvcg6CbCC4xlKBEuAM6sPLx8w==
+X-Received: by 2002:a2e:8e32:0:b0:2e3:93c2:4239 with SMTP id 38308e7fff4ca-2eadce32bd6mr5268261fa.21.1717711493012;
+        Thu, 06 Jun 2024 15:04:53 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c2806ccf77sm4216154a91.51.2024.06.06.15.04.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Jun 2024 15:04:52 -0700 (PDT)
+Message-ID: <b0d99324-0e1f-453a-800d-e1967a87a997@suse.com>
+Date: Fri, 7 Jun 2024 07:34:45 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs: qgroup: use xarray to track dirty extents in
+ transaction.
+To: JunChao Sun <sunjunchao2870@gmail.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+ dsterba@suse.com
+References: <20240603113650.279782-1-sunjunchao2870@gmail.com>
+ <0610a1b0-78a6-4c1f-9188-69b587c8146f@gmx.com>
+ <CAHB1NajCcMA_VeBndEd2HMB=wbrX4iLYZGpb_jyw7mcd0Pyhwg@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <CAHB1NajCcMA_VeBndEd2HMB=wbrX4iLYZGpb_jyw7mcd0Pyhwg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H6JQG510-c3YZUBpAra8kww1bi3_yqH+NbbFJCAvG84sA@mail.gmail.com>
 
-On Thu, Jun 06, 2024 at 08:56:31PM +0100, Filipe Manana wrote:
-> On Thu, Jun 6, 2024 at 8:06 PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > On Thu, Jun 06, 2024 at 09:30:07AM +0100, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > When creating and deleting a subvolume, after starting a transaction we
-> > > are explicitly calling btrfs_record_root_in_trans() for the root which we
-> > > passed to btrfs_start_transaction(). This is pointless because at
-> > > transaction.c:start_transaction() we end up doing that call, regardless
-> > > of whether we actually start a new transaction or join an existing one,
-> > > and if we were not it would mean the root item of that root would not
-> > > be updated in the root tree when committing the transaction, leading to
-> > > problems easy to spot with fstests for example.
-> > >
-> > > Remove these redundant calls. They were introduced with commit
-> > > 74e97958121a ("btrfs: qgroup: fix qgroup prealloc rsv leak in subvolume
-> > > operations").
-> >
-> > Re-reading it now, I agree that start_transaction will ensure what we need,
-> > and if it fails we go to paths that result in freeing the reserved space
-> > here in the subvolume code.
-> >
-> > With that said, I spent like two weeks on this battling generic/269 so
-> > there might be something subtle that I'm forgetting and didn't explain
-> > well enough in the patch. Reading it now, I do think it's most likely
-> > that the fixes to the release path were sufficient to fix the bug.
-> 
-> I think it's obvious these calls are redundant.
-> Things would be seriously broken if start_transaction() didn't call
-> btrfs_record_root_in_trans().
-> 
 
-+1
 
-> >
-> > Just to be safe, can you run generic/269 with squotas turned on via mkfs
-> > ~10 times? It usually reproduced for me in 5-10 runs, so if it's not too
-> > much bother, maybe 20 to be really safe.
+在 2024/6/6 21:32, JunChao Sun 写道:
+[...]
+>>> We have qgroup_mark_inconsistent(), which would skip future accounting.
 > 
-> I tried that, yes, but the test sometimes fails qgroup cleanups with
-> -ENOSPC, both before and after this patch.
-> The failure is reported as a warning message in dmesg, it doesn't make
-> the test case fail:
-> 
-> [99872.487855] run fstests generic/269 at 2024-06-06 20:53:33
-> [99872.771632] BTRFS: device fsid 7a9e9120-5656-486a-8ea2-e0f7e12648b7
-> devid 1 transid 10 /dev/sdc (8:32) scanned by mount (2754727)
-> [99872.772502] BTRFS info (device sdc): first mount of filesystem
-> 7a9e9120-5656-486a-8ea2-e0f7e12648b7
-> [99872.772515] BTRFS info (device sdc): using crc32c (crc32c-intel)
-> checksum algorithm
-> [99872.772519] BTRFS info (device sdc): using free-space-tree
-> [99872.774615] BTRFS info (device sdc): checking UUID tree
-> [99877.835179] btrfs_drop_snapshot: 10 callbacks suppressed
-> [99877.835191] BTRFS warning (device sdc): failed to cleanup qgroup 0/342: -28
-> [99901.986789] BTRFS info (device sdc): last unmount of filesystem
-> 7a9e9120-5656-486a-8ea2-e0f7e12648b7
-> [99902.004561] BTRFS info (device sda): last unmount of filesystem
-> 4dea6050-7fd2-4823-a0c6-23a321b9f183
+> Yeh. I saw this function. But it sets the
+> BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING flag, which will skip some
+> accounting.
+> Do you mean that there's no need to account for this inconsistent state?
 
-No the patch fixed space reservation leaks that showed up as test
-failures from the unmount reservation checking. I'll keep an eye out for
-the ENOSPC errors, haven't seen that before.
+Yes, since the numbers are no longer correct, there is no more need to 
+do the accounting.
+That would save a lot of CPU and IO.
 
-> 
-> If that's what the commit tried to fix, then it wasn't not enough or
-> some change after it introduced a regression.
-> 
-> Thanks.
-> 
-> >
-> > Thanks,
-> > Boris
-> >
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-Reviewed-by: Boris Burkov <boris@bur.io>
-
-> > > ---
-> > >  fs/btrfs/inode.c | 5 -----
-> > >  fs/btrfs/ioctl.c | 3 ---
-> > >  2 files changed, 8 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > > index 0610b9fa6fae..ddf96c4cc858 100644
-> > > --- a/fs/btrfs/inode.c
-> > > +++ b/fs/btrfs/inode.c
-> > > @@ -4552,11 +4552,6 @@ int btrfs_delete_subvolume(struct btrfs_inode *dir, struct dentry *dentry)
-> > >               ret = PTR_ERR(trans);
-> > >               goto out_release;
-> > >       }
-> > > -     ret = btrfs_record_root_in_trans(trans, root);
-> > > -     if (ret) {
-> > > -             btrfs_abort_transaction(trans, ret);
-> > > -             goto out_end_trans;
-> > > -     }
-> > >       btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
-> > >       qgroup_reserved = 0;
-> > >       trans->block_rsv = &block_rsv;
-> > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > > index 5e3cb0210869..d00d49338ecb 100644
-> > > --- a/fs/btrfs/ioctl.c
-> > > +++ b/fs/btrfs/ioctl.c
-> > > @@ -658,9 +658,6 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
-> > >               ret = PTR_ERR(trans);
-> > >               goto out_release_rsv;
-> > >       }
-> > > -     ret = btrfs_record_root_in_trans(trans, BTRFS_I(dir)->root);
-> > > -     if (ret)
-> > > -             goto out;
-> > >       btrfs_qgroup_convert_reserved_meta(root, qgroup_reserved);
-> > >       qgroup_reserved = 0;
-> > >       trans->block_rsv = &block_rsv;
-> > > --
-> > > 2.43.0
-> > >
+Thanks,
+Qu
 
