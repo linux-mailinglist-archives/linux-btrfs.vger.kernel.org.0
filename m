@@ -1,56 +1,75 @@
-Return-Path: <linux-btrfs+bounces-5512-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5513-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00D298FF7A5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 00:28:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 440618FF7B0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 00:33:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CE2B1F22E60
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 22:28:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCBA8287183
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2024 22:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BECB13C9AF;
-	Thu,  6 Jun 2024 22:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E570B13E035;
+	Thu,  6 Jun 2024 22:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mNRp0vZw"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gdXEZtMP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B716EB4D
-	for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2024 22:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD62E770E0
+	for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2024 22:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717712925; cv=none; b=Yft+E5Zo84UZV2MW7D5exQEqPYje0lXVO46iAj9wonr/XkXAwcBJtHtqT2itq2D4AVF3hcmUuoaPhMBeK1GPRoBv2XXIQVY7Ro0VB2KB3B+yDVbXx51saURw2VKorDPhjvcP1X/rZRHmslpB2zNlTJQ/GLIJKmex/8AK0E/nJvc=
+	t=1717713184; cv=none; b=AlT51Cpo3wdvnZVeY5Zzf7KgC7Ftfwdg+a7GODfWBkx0mty5HnTWmCieXMzxUo7cac8Vhf0i0AgH30qgqmNZ/vHrfQQ8eZknSj5pYToPBl0GTUpF1ysKj9l64LfLmZi/YTRdppsQKl2I54g0E7FUwWVdjH7y5nw3GswP2FcZ7iI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717712925; c=relaxed/simple;
-	bh=nVvFvHa0GLSCOYuuCnTul/VCQlBiA4LKkPg7cOzLb34=;
+	s=arc-20240116; t=1717713184; c=relaxed/simple;
+	bh=PZ8pqYrf41IxEI59MGOVNnLhCnuLGXjQZCx3DcFggQ4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZP3bR2I7Dm+z9Zu8nfhIjfs2Pbk9HbuPD18eWyIW9rBFe7XLBltAHs29ybHzKjqDaxa52MCuNNhNsTtbe57mSO+WLEjNXVU2v1Fk15pZKiH15izUu9/ZSevK8JxJHeIn0z7T1SR0uSFiJY0MXx6YaWgc+mMzupPTk0hHSQrHVnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=mNRp0vZw; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1717712913; x=1718317713; i=quwenruo.btrfs@gmx.com;
-	bh=18fKoc0KtrhCnmDq6VWPH0MiVT7G5v0MZjNUCq2c98w=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=mNRp0vZwl1iRcUCv3VBMAKapnQVDb0ZV9j3NhounqTQt9TWXMFDwBBcQtspiskp4
-	 OY82l8xij3jIFASo0puw5sqdMzv/sUOt0+TeNI5omU6qSvKn2B25nb/aTamtlgczE
-	 HdypoVkVAjBLHt8si/EYktjYDM9x5TJ8sERCJsYayu3v+KWAsJFsWMofS92JyhDsL
-	 2hsTFZBbsX9lIUY6vYl38gJQdEG0uaiQ3wmHeT7QnFMU1lU78tp5OTm9k//KnQUel
-	 f97pJ7Voagv5To1JwIfLtHaGQg6kjqpw2RLAU5/ZCewgOa6hyMXS7v57kTpwcpOhQ
-	 xq9lZ/Nt0juDKejmCg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0oG5-1scuqz192z-00z3we; Fri, 07
- Jun 2024 00:28:33 +0200
-Message-ID: <c3060faf-f0e8-4bd2-865b-332e423a8801@gmx.com>
-Date: Fri, 7 Jun 2024 07:58:25 +0930
+	 In-Reply-To:Content-Type; b=dXOjGKGdSWjWgGlOZek940Mxg33IVfLPgZQsl2gdXlAnAN6Rxy08q24/HZBmhgLUe77mYnjeB+6muVW9x6NhBgt+TfQ7e41j0ffsjvTGkFJzhxtAw+e/6nDhdKTQKZxkDriALA8q1TMgVuVPv5giAOa1y7Bmcx640YBsQNP6iP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gdXEZtMP; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2eaa794eb9fso18120161fa.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Jun 2024 15:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1717713180; x=1718317980; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=WOVbyxPUODh/uCyzRwI1jU2j4bN1ysCvxrJp+GdHOOc=;
+        b=gdXEZtMPrpIwluv47/boYSM1Fjp0oAG/xNz/VzpBH5uApGuTmzdrS+08X8F6UgrtDB
+         UbRxeJCcbd1oLDWHdnA/ph6IKjy76lt+aBnkztaOk7SLi17R7ewOCCqVYzCDr/DIKxxH
+         AOII4QhYia5pMk92dNEexlzOyCwqcYZ7Fnii2e3xYqMTITnkcvZsieBCRG5RX3L/iPWY
+         jWNCboIQyZcjHP2GJwYk13jng5bhOchxspEbBi8i6PL5Kic+ZWQ92xHMsoMwKmKNLZva
+         nX5wHaWA3U7mdkSnmzaeaMeOGWOUzOcD12AdXMvY1oH4ekY5WJ0n2o4+64tbvNBozrly
+         LJ2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717713180; x=1718317980;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WOVbyxPUODh/uCyzRwI1jU2j4bN1ysCvxrJp+GdHOOc=;
+        b=EUuwd5qt3sONwAosklsF1J3G6DZ4D+nN1Mt04pugYPHf62tmwdIhayKlFoKUiyyEax
+         rHB+b5jZuLEvZA1F3BIJYt8cz/YyGvNPLS94q2k4fjvehsVrevIa1sBZVe0pYx3k7jrN
+         vp/CdaXk9j5Q7ASRTnH7dmxiq+O2Briznmgq48RTpudDwriHCJzpnkGhuYKmMR6qDo9H
+         VA77vCwGAnNadZeIczpfStg41aQiTCqJyBZCX1EdA3Sl9VhXKQ5+JKNCyN+/JHsXsgDp
+         FnslENTUxcV1xSo9b+PHI8sPQ0jnPESZ/l4lGSjsDWCBV9+Q0AlbMjO2g23ygfxnbzat
+         bA5g==
+X-Forwarded-Encrypted: i=1; AJvYcCWKdEQrqarHwBkhQKwVVusCfuiAd1VbjmD4MTvCQ1M1JyJ/I12+T4Zty+uG1XofmCPmY6fhXLH4+oe5QmTF4Pzh9OrvpsKoJwO/ikM=
+X-Gm-Message-State: AOJu0Yy/jcL356xXHL0SEdPtSkAEGsy2tyIVKZ/ksBpC7vfkWtB3Weh8
+	Kj3iYtW51yf09X1/mYMP8OHSIQ/dZEuKAILBE5TLrMuUc26GudVsJCbP8qUjN2c=
+X-Google-Smtp-Source: AGHT+IFG7emifbodI767E8bxeZHgaF+GaidFZYKGiljacXK40O2Tviki1y1aknFxWIvWdRHGWpEOJQ==
+X-Received: by 2002:a2e:a40f:0:b0:2ea:80a1:b8f7 with SMTP id 38308e7fff4ca-2eadce9d3efmr5874821fa.46.1717713179893;
+        Thu, 06 Jun 2024 15:32:59 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c29c22060bsm2247966a91.17.2024.06.06.15.32.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Jun 2024 15:32:59 -0700 (PDT)
+Message-ID: <fa840aab-365e-4eb8-b80a-08e2a58306f3@suse.com>
+Date: Fri, 7 Jun 2024 08:02:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,150 +77,91 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs-progs: convert: Add 64 bit block numbers support
+Subject: Re: [PATCH] btrfs-progs: tests: add convert test case for block
+ number overflow
 To: Srivathsa Dara <srivathsa.d.dara@oracle.com>, linux-btrfs@vger.kernel.org
 Cc: rajesh.sivaramasubramaniom@oracle.com, junxiao.bi@oracle.com, clm@fb.com,
  josef@toxicpanda.com, dsterba@suse.com
-References: <20240606102215.3695032-1-srivathsa.d.dara@oracle.com>
+References: <20240606103228.3697282-1-srivathsa.d.dara@oracle.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240606102215.3695032-1-srivathsa.d.dara@oracle.com>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20240606103228.3697282-1-srivathsa.d.dara@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vLftRxXbfABc+uDSQ/5sjUM7GXjdcN41OKIgFUgQBRIvNYTKMB7
- pVefJL/2EnAAp83DvdTGjxO58Fff1mtnmij1aRRDPrKqtMA5UC9kjBvs46HMMJQ3QY6Np+e
- ZuYE75/Wx/zzNl8aESNwL52iEKIjU1TGtPvbz01BEmpp73uDVufDh+x8NQabTVGV2VCwcoC
- 9bLtYlhpOSHSijrdIVm4A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:mSiUBUp8MpU=;sQdNGi52JFmYLwqRG0cOYM54Whh
- 27RtCZfmUBKNCc1+gvJwdSxGqWnHlo03QaFDmtwyDWcoUqen7+r7p11qFwAdyTXkZFXCB3vf0
- nM8NGHuOwcnnilSCWdLMte3jGe+7EmhbX6ZbqtKh1cFaMkuZT7WjPz3hypVxo05ZXESxYVHFw
- R7iX5pcgLi5RhHX62HsYHfjs7vtjkYEn33If3F1eikRjUrkHpj89dbeSPPRJlWMcPmrkUaeSO
- DQjS/GFljueDV3D3ptebUpi7EDmO/C7rt91z192SfPRrfM43To57RXGoYMZ+3luH1Ydxhyqge
- xNua3JT1ft8Is5wxVn9G2frqkx21J8RwuznA12P+5k+BQQaR1jz+UFD47cY4GeGwuiDavhSnr
- mpfqGhPIeN6W8QZs8vtiElpxaC2NuQz5XnZKmCVf35FRQcfsrY9BSUV3cVjhnAP8fpYGkCPGj
- gkKOAARX5mQ/ISi0Mxc+iGZ2+ivAZfifSiS84FTNPggGEM31S0R5YzpECkzYZ/HvVGreTdDFQ
- TbSH4cghISiR5XVAKaMLCL+29f+yv74EKCjbCTyQLXvSiVpE37cYDwMZ4+qmdf/gYlZhYd/Nk
- XPIZFxTgXLlvkr55rapsYTZd9zy1UBVwR1ziG8n6kGK4TfvoUP6q7yhhkvU6kV5cCB+20BsKA
- /KojXkLk1g+/eCpqBQmdf4DmVmdebTCOn1BcXbW9Lyw3UkZLsTn8Vn1BO001tweLb4F8wxDnZ
- zQpOGPCg3Vrlyn3+6IWEq1UD5WORgq8Zt7NcVsP62YkJGnnJBeoNoooDcUpamVhgqjW2aq7Mm
- 0q6GQefmieRIGaRX+vUXYz0sOIbWtOMXksVuuKotm5cHM=
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2024/6/6 19:52, Srivathsa Dara =E5=86=99=E9=81=93:
-> In ext4, number of blocks can be greater than 2^32. Therefore, if
-> btrfs-convert is used on filesystems greater than 16TiB (Staring from
-> 16TiB, number of blocks overflow 32 bits), it fails to convert.
->
-> Example:
->
-> Here, /dev/sdc1 is 16TiB partition intitialized with an ext4 filesystem.
->
-> [root@rasivara-arm2 opc]# btrfs-convert -d -p /dev/sdc1
-> btrfs-convert from btrfs-progs v5.15.1
->
-> convert/main.c:1164: do_convert: Assertion `cctx.total_bytes !=3D 0` fai=
-led, value 0
-> btrfs-convert(+0xfd04)[0xaaaaba44fd04]
-> btrfs-convert(main+0x258)[0xaaaaba44d278]
-> /lib64/libc.so.6(__libc_start_main+0xdc)[0xffffb962777c]
-> btrfs-convert(+0xd4fc)[0xaaaaba44d4fc]
-> Aborted (core dumped)
->
-> Fix it by considering 64 bit block numbers.
->
-> Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
-> ---
->   convert/source-ext2.c | 6 +++---
->   convert/source-ext2.h | 2 +-
->   2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/convert/source-ext2.c b/convert/source-ext2.c
-> index 2186b252..afa48606 100644
-> --- a/convert/source-ext2.c
-> +++ b/convert/source-ext2.c
-> @@ -288,8 +288,8 @@ error:
->   	return -1;
->   }
->
-> -static int ext2_block_iterate_proc(ext2_filsys fs, blk_t *blocknr,
-> -			        e2_blkcnt_t blockcnt, blk_t ref_block,
-> +static int ext2_block_iterate_proc(ext2_filsys fs, blk64_t *blocknr,
-> +			        e2_blkcnt_t blockcnt, blk64_t ref_block,
->   			        int ref_offset, void *priv_data)
->   {
->   	int ret;
-> @@ -323,7 +323,7 @@ static int ext2_create_file_extents(struct btrfs_tra=
-ns_handle *trans,
->   	init_blk_iterate_data(&data, trans, root, btrfs_inode, objectid,
->   			convert_flags & CONVERT_FLAG_DATACSUM);
->
-> -	err =3D ext2fs_block_iterate2(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY,
-> +	err =3D ext2fs_block_iterate3(ext2_fs, ext2_ino, BLOCK_FLAG_DATA_ONLY,
->   				    NULL, ext2_block_iterate_proc, &data);
+在 2024/6/6 20:02, Srivathsa Dara 写道:
+> This test cases will test whether btrfs-convert can handle ext4
+> filesystems that are largerthan 16TiB.
+> 
+> At 16TiB block numbers overflow 32 bits, btrfs-convert either fails or
+> corrupts fs if 64 bit block numbers are not supported.
 
-I'm wondering does ext2 really supports 64bit block number.
+You may want to merge this one into the existing overflow tests, check 
+convert-tests/018-fs-size-overflow, which is doing the 64g overflow test 
+already.
 
-For ext* fs with extent support (3 and 4), we're no longer utilizing
-ext2fs_block_iterate2(), instead we go with iterate_file_extents()
-instead, and that function is already using blk64_t for both file offset
-and the block number.
-
-I'm guessing the code base doesn't have the latest c23e068aaf91
-("btrfs-progs: convert: rework file extent iteration to handle unwritten
-extents") commit yet?
-
-
->   	if (err)
->   		goto error;
-> diff --git a/convert/source-ext2.h b/convert/source-ext2.h
-> index d204aac5..62c9b1fa 100644
-> --- a/convert/source-ext2.h
-> +++ b/convert/source-ext2.h
-> @@ -46,7 +46,7 @@ struct btrfs_trans_handle;
->   #define ext2fs_get_block_bitmap_range2 ext2fs_get_block_bitmap_range
->   #define ext2fs_inode_data_blocks2 ext2fs_inode_data_blocks
->   #define ext2fs_read_ext_attr2 ext2fs_read_ext_attr
-> -#define ext2fs_blocks_count(s)		((s)->s_blocks_count)
-> +#define ext2fs_blocks_count(s)		(((s)->s_blocks_count_hi << 32) | (s)->=
-s_blocks_count)
-
-This is definitely needed, or it would trigger the ASSERT().
-
-But again, the newer btrfs-progs no longer go with internally defined
-ext2fs_blocks_count(), but using the one from e2fsprogs headers, and the
-library version is already returning blk64_t.
-
-So I'm afraid you're testing an older version of btrfs-progs.
+Otherwise it looks good.
 
 Thanks,
 Qu
->   #define EXT2FS_CLUSTER_RATIO(fs)	(1)
->   #define EXT2_CLUSTERS_PER_GROUP(s)	(EXT2_BLOCKS_PER_GROUP(s))
->   #define EXT2FS_B2C(fs, blk)		(blk)
+> 
+> Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+> ---
+>   .../025-64-bit-block-numbers/test.sh          | 21 +++++++++++++++++++
+>   1 file changed, 21 insertions(+)
+>   create mode 100755 tests/convert-tests/025-64-bit-block-numbers/test.sh
+> 
+> diff --git a/tests/convert-tests/025-64-bit-block-numbers/test.sh b/tests/convert-tests/025-64-bit-block-numbers/test.sh
+> new file mode 100755
+> index 00000000..0eb6bb49
+> --- /dev/null
+> +++ b/tests/convert-tests/025-64-bit-block-numbers/test.sh
+> @@ -0,0 +1,21 @@
+> +#!/bin/bash
+> +# Check if btrfs-convert can handle 64 bit block numbers in an ext4 fs.
+> +# At 16TiB block numbers overflow 32 bits and screw up total size and used
+> +# space calculation
+> +
+> +
+> +source "$TEST_TOP/common" || exit
+> +source "$TEST_TOP/common.convert" || exit
+> +
+> +check_prereq btrfs-convert
+> +check_global_prereq mke2fs
+> +
+> +setup_root_helper
+> +prepare_test_dev 16t
+> +
+> +convert_test_prep_fs ext4 mke2fs -t ext4 -b 4096
+> +run_check_umount_test_dev
+> +
+> +convert_test_do_convert
+> +run_check_mount_test_dev
+> +run_check_umount_test_dev
 
