@@ -1,75 +1,69 @@
-Return-Path: <linux-btrfs+bounces-5530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B725D9000D2
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 12:31:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A77B900293
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 13:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAECB1C2278E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 10:31:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D780EB2575B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 11:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E6015B991;
-	Fri,  7 Jun 2024 10:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A01tmRVC";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A01tmRVC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F76219066C;
+	Fri,  7 Jun 2024 11:46:48 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E1D15D5C4
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 10:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D8E18FC87
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 11:46:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717756269; cv=none; b=AEYC+3kG9k845yUghi5J18u/LPpGGCdP81IscvQCZ+VwFJyoYbXGVtnUfcJ3Q05mQP/fpipAkXMQxuqKx89KDd/QUVM8Fg92t2Ern1j9jv/mVgVTCWfTRWApXUqEyn+jyHQ4ZAZQkT4lPorqqXVlGskAQSVkD3pbSt+dpECZDdk=
+	t=1717760808; cv=none; b=iE4noPw4FWJYXaNI92hQiOk5LqPsZDcf5sZ26h4s7Ws9ToMaJmvGk03yIO5lenx46hkCeDaCFIeuR6Lox6pHvy9b8fKdAy2ikwVlEq9zG/WYbkPetqU5WKR7LS2aKZBvKkPVSvb65NulIvBgJwQC6KHXcSYHUyFLnsDfbekjJc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717756269; c=relaxed/simple;
-	bh=qG7PiUBwIAtJmyK30tazXFBgFhOOvnfZGr2LXmUaAkU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WwE4Viri1O7D6mFyYzinVxeNjXwMQKCXuhHn3CnEvZSsOXNMKKQU5r2XTALLAXtksUEpJKt+Q7MZDEN+ePqQwwJ4jm1UkzX4wS0T4Eu/qQripwcDBaVxnHTBorV4dEW+fZb6pweH4/kbHUb9JZhVYhFoK9loCBvkRCewq6+UXxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A01tmRVC; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A01tmRVC; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1C62D21B68
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 10:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717756265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=8RoRO7EGzJuTrEpgvbh5DBVlpbll8S4HYvWeNrqu1nM=;
-	b=A01tmRVCTbZq5u0F+tRyQHgeCydqRIMLpRInv4LrbYkPo4JusZJUknWG0YF3OQdo8ih6KD
-	CiIETZjFbK+Ip+VmTIMwUXHNWq5TwgKSsERPz990PM6dWFMp4yP0LgCQiNO64Qe1HZXhOa
-	JdamTkf0b3BaNpOUwEztTL22RNfTLiI=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717756265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=8RoRO7EGzJuTrEpgvbh5DBVlpbll8S4HYvWeNrqu1nM=;
-	b=A01tmRVCTbZq5u0F+tRyQHgeCydqRIMLpRInv4LrbYkPo4JusZJUknWG0YF3OQdo8ih6KD
-	CiIETZjFbK+Ip+VmTIMwUXHNWq5TwgKSsERPz990PM6dWFMp4yP0LgCQiNO64Qe1HZXhOa
-	JdamTkf0b3BaNpOUwEztTL22RNfTLiI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 303C1133F3
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 10:31:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HlgtM2fhYmbtNQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 07 Jun 2024 10:31:03 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1717760808; c=relaxed/simple;
+	bh=IKv1Riy61ZJBdS8JOhL11JDO7WMArJzMpkeZgF9D+UU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ObHlTf9Id7eJJki3JvHkHYOwSOnMWfUhVyeGvI+sVkMwwva1PFTlSiB7FmOHjFYap1N51osx4FnvCe/XzPaoTeoCLd05Vdh68iMWE3SXnSDhLws3VsU7H1faeS6+E9RfbGg+vo5c6PRPGVXlL/xawl5YtXPFf0sAY4htC95BsUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a68b54577aaso261677666b.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jun 2024 04:46:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717760804; x=1718365604;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f0f/N5uUdEF1m/ht38ES/rfa9fQqXzF4DY0+9F7YfA8=;
+        b=cuwXAPu25kFGoIg8bKBLQ+YR8VoTLLu/zDgoGfiUWWiswG+LOor3fBKjDBU2lwSb4n
+         IGEkDCAT6irA8PwoayDiaDxzO4sZl6B3w64ONzF8ONJe9wgkwflOmXvuJskfhbVwj2Tl
+         64MuUK3vClU54UdWdplBmJUHAvhnUzwbxhFCw1H285xfI1lYsKaSvmZan7AaN8B/SPZh
+         UpogoxYthTFYbkxZ/4M2YfVex0KxQ35pO5xEjmbHbkrcCxxekBUAPzS0p7lvMHFnBWHJ
+         jKbDBYsU0ivonfrRUp+XFYhDjm9Y/scctRRq2X6HS/Jj6Y/ZZXDEbAc5Yo95/ZOa2Ex9
+         iyuw==
+X-Gm-Message-State: AOJu0YxIYt2bDDU3P1zW2hZaABih6Y6SFk+4NBB+or7o7kTjf4A5cEsO
+	lRClj809gjbAc5KcECU33IrOxLraDmeopIjwLE/Fn/aNsfEg9XKL4LUFsA==
+X-Google-Smtp-Source: AGHT+IEDUr5Ifn+GY5O72ON2W4xr/v6TQMC15neXfwG8qxK+X1M09nOuoZo7GVz55YqD0DLTHqzxyw==
+X-Received: by 2002:a17:906:a850:b0:a69:1219:2e2d with SMTP id a640c23a62f3a-a6cd76a939dmr158801166b.35.1717760804211;
+        Fri, 07 Jun 2024 04:46:44 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f7253800fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f725:3800:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6eb5f04dbbsm37466966b.169.2024.06.07.04.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jun 2024 04:46:43 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: do not use async discard for misc/004
-Date: Fri,  7 Jun 2024 20:00:45 +0930
-Message-ID: <5a292583be11ae383e79aaca0fa79be2141ef6ca.1717732459.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+Cc: David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Naohiro Aota <Naohiro.Aota@wdc.com>,
+	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH] btrfs: zoned: allocate dummy checksums for zoned NODATASUM writes
+Date: Fri,  7 Jun 2024 13:46:28 +0200
+Message-ID: <20240607114628.5471-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,76 +71,115 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
 
-[BUG]
-There is a long long existing failure in my local VM that with any newer
-kernel (6.x) the test case misc/004 would fail with ENOSPC during
-balance:
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-    [TEST]   misc-tests.sh
-    [TEST/misc]   004-shrink-fs
- failed: /home/adam/btrfs-progs/btrfs balance start -mconvert=single -sconvert=single -f /home/adam/btrfs-progs/tests/mnt
- test failed for case 004-shrink-fs
- make: *** [Makefile:547: test-misc] Error 1
+Shin'ichiro reported that when he's running fstests' test-case
+btrfs/167 on emulated zoned devices, he's seeing the following NULL
+pointer dereference in 'btrfs_zone_finish_endio()':
 
-[CAUSE]
-With more testing, it turns out that just before the balance, the
-filesystem still have several empty data block groups.
+ Oops: general protection fault, probably for non-canonical address 0xdffffc0000000011: 0000 [#1] PREEMPT SMP KASAN NOPTI
+ KASAN: null-ptr-deref in range [0x0000000000000088-0x000000000000008f]
+ CPU: 4 PID: 2332440 Comm: kworker/u80:15 Tainted: G        W          6.10.0-rc2-kts+ #4
+ Hardware name: Supermicro Super Server/X11SPi-TF, BIOS 3.3 02/21/2020
+ Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
+ RIP: 0010:btrfs_zone_finish_endio.part.0+0x34/0x160 [btrfs]
 
-The reason is the new default discard=async behavior, as it also changes
-the empty block groups to be async, this leave the empty block groups
-there, resulting no extra space for the convert balance.
+ RSP: 0018:ffff88867f107a90 EFLAGS: 00010206
+ RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff893e5534
+ RDX: 0000000000000011 RSI: 0000000000000004 RDI: 0000000000000088
+ RBP: 0000000000000002 R08: 0000000000000001 R09: ffffed1081696028
+ R10: ffff88840b4b0143 R11: ffff88834dfff600 R12: ffff88840b4b0000
+ R13: 0000000000020000 R14: 0000000000000000 R15: ffff888530ad5210
+ FS:  0000000000000000(0000) GS:ffff888e3f800000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f87223fff38 CR3: 00000007a7c6a002 CR4: 00000000007706f0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ PKRU: 55555554
+ Call Trace:
+  <TASK>
+  ? __die_body.cold+0x19/0x27
+  ? die_addr+0x46/0x70
+  ? exc_general_protection+0x14f/0x250
+  ? asm_exc_general_protection+0x26/0x30
+  ? do_raw_read_unlock+0x44/0x70
+  ? btrfs_zone_finish_endio.part.0+0x34/0x160 [btrfs]
+  btrfs_finish_one_ordered+0x5d9/0x19a0 [btrfs]
+  ? __pfx_lock_release+0x10/0x10
+  ? do_raw_write_lock+0x90/0x260
+  ? __pfx_do_raw_write_lock+0x10/0x10
+  ? __pfx_btrfs_finish_one_ordered+0x10/0x10 [btrfs]
+  ? _raw_write_unlock+0x23/0x40
+  ? btrfs_finish_ordered_zoned+0x5a9/0x850 [btrfs]
+  ? lock_acquire+0x435/0x500
+  btrfs_work_helper+0x1b1/0xa70 [btrfs]
+  ? __schedule+0x10a8/0x60b0
+  ? __pfx___might_resched+0x10/0x10
+  process_one_work+0x862/0x1410
+  ? __pfx_lock_acquire+0x10/0x10
+  ? __pfx_process_one_work+0x10/0x10
+  ? assign_work+0x16c/0x240
+  worker_thread+0x5e6/0x1010
+  ? __pfx_worker_thread+0x10/0x10
+  kthread+0x2c3/0x3a0
+  ? trace_irq_enable.constprop.0+0xce/0x110
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork+0x31/0x70
+  ? __pfx_kthread+0x10/0x10
+  ret_from_fork_asm+0x1a/0x30
+  </TASK>
 
-[FIX]
-I do not understand why for loopback block devices we also enable
-discard, but at least disable discard for the test case so that we can
-ensure the empty block groups get cleaned up properly.
+ ---[ end trace 0000000000000000 ]---
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Enabling CONFIG_BTRFS_ASSERT revealed the following assertion to
+trigger:
+
+ assertion failed: !list_empty(&ordered->list), in fs/btrfs/zoned.c:1815
+
+This indicates, that we're missing the checksums list on the
+ordered_extent. As btrfs/167 is doing a NOCOW write this is to be
+expected.
+
+Further analysis with drgn confirmed the assumption:
+
+ >>> inode = prog.crashed_thread().stack_trace()[11]['ordered'].inode
+ >>> btrfs_inode = drgn.container_of(inode, "struct btrfs_inode", \
+					"vfs_inode")
+ >>> print(btrfs_inode.flags)
+ (u32)1
+
+As zoned emulation mode simulates conventional zones on regular
+devices, we cannot use zone-append for writing. But we're only
+attaching dummy checksums if we're doing a zone-append write.
+
+So for NOCOW zoned data writes on conventional zones, also attach a
+dummy checksum.
+
+Fixes: cbfce4c7fbde ("btrfs: optimize the logical to physical mapping for zoned writes")
+Cc: Naohiro Aota <Naohiro.Aota@wdc.com>
+Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- tests/misc-tests/004-shrink-fs/test.sh | 4 +++-
+ fs/btrfs/bio.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tests/misc-tests/004-shrink-fs/test.sh b/tests/misc-tests/004-shrink-fs/test.sh
-index c7473649020e..4fb42a024b81 100755
---- a/tests/misc-tests/004-shrink-fs/test.sh
-+++ b/tests/misc-tests/004-shrink-fs/test.sh
-@@ -32,7 +32,9 @@ shrink_test()
- 
- run_check truncate -s 20G "$IMAGE"
- run_check "$TOP/mkfs.btrfs" -f "$IMAGE"
--run_check $SUDO_HELPER mount "$IMAGE" "$TEST_MNT"
-+# Disable the new default async discard, which makes empty block group cleanup
-+# async.
-+run_check $SUDO_HELPER mount -o nodiscard "$IMAGE" "$TEST_MNT"
- run_check $SUDO_HELPER chmod a+rw "$TEST_MNT"
- 
- # Create 7 data block groups, each with a size of 1Gb.
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 477f350a8bd0..e3a57196b0ee 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -741,7 +741,9 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 			ret = btrfs_bio_csum(bbio);
+ 			if (ret)
+ 				goto fail_put_bio;
+-		} else if (use_append) {
++		} else if (use_append ||
++			   (btrfs_is_zoned(fs_info) && inode &&
++			    inode->flags & BTRFS_INODE_NODATASUM)) {
+ 			ret = btrfs_alloc_dummy_sum(bbio);
+ 			if (ret)
+ 				goto fail_put_bio;
 -- 
-2.45.2
+2.43.0
 
 
