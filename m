@@ -1,205 +1,142 @@
-Return-Path: <linux-btrfs+bounces-5519-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5520-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D66EC8FFA39
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 05:40:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2A528FFAD3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 06:49:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60072286328
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 03:40:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBCEE1C21859
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 04:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536C018C3B;
-	Fri,  7 Jun 2024 03:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A040916079D;
+	Fri,  7 Jun 2024 04:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="f80zWARC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8CF79DC
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 03:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A90168C02
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 04:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717731629; cv=none; b=CVlv/Dw61eWmGFx7ocNNN06C6tn8zphYAHrMzsnQwg8900GR8BfJDBRPazNKSx6tMS4asfO+opHvxHdxVW51wg1GlGrKPUhiwnPq0SEh4ws3aCHNUqvBXFColgHIxSdQQPaugV/4SgFI4BGUNqGiytitIi348l7Tm9J1fk1rYTU=
+	t=1717734476; cv=none; b=ENzv7pVrhG0JLCzPngVcvoLFoM0q8m2v5TrZ2IMWMsZqq9cywsbTcTTNVP1wyBZzj2p7o4QDvv0JB0VtKJK1N2q/JD/PdKRY2oz6YRSN62yGJc3exgErifwJodj70cC8EdT9FEkhnypQyPJ75ZTUcRxznqGiJngiSNsfjjiMyxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717731629; c=relaxed/simple;
-	bh=ATrdjV99vrwXnwpb8CC00otkfBEA3CF2mfwankEHGpw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mAdEHIfudQLDheVfK+TZIzIXXgKSK1V+GtksWX3xOYBivyTnnGG7z0vleWLSZs5bjkWex4oW0OkwnGzv86f/jOPsODEdNiD66zso1Wzpr7Qe9QFxvlIXd1yhj3krUlgh4QkYh89Fhi2+CIFcvByf+6yup3uda1RUDlIoJLSutF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7eb5cbe815dso11539139f.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Jun 2024 20:40:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717731627; x=1718336427;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5A0+kn72RG0NgBZDk5mNh7EkiTRFr9f/55CydiNHQa4=;
-        b=osddxkRjFQ2sC6dLDVs+RYxEJrKgrDNndauWxMISBtPd5ZkKXYhma1DpXXWj6rTElK
-         ZBtTqlD+zVHqSUi5G98FNGEISS+IUdKTHnP5eGnSUA7SUIXtwwG4NGoBvDCHHTgP+JpM
-         10oDZ2zil/3X7WVFlDvnZyLp2eofiyL2Yu7Mc9EVB+acl0KSov3f7suxy9Mc0kagH5ud
-         VhJo37HJ+LSDaj5iGykOqb8u4VVTs7/wfqpQKWBcFardaOxIN0iFUz2AiQCxUYqXYkjs
-         oL9YeE3EFH5P9QBo5leR8x73tKRjOS5sCbbSfi5eJkr1wFFTDMcxLg/yWG9shX9tkM84
-         FatA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXCNh9L7QyVHpC2eZetNXFTm+BgisMj3cxzXLAx0ApZTfcSAYq8MNE3mfzgJ12HpkxVLPW/5KCY4pnufpIeHIBiUY/KoQqXNnVDdE=
-X-Gm-Message-State: AOJu0Ywc4QRrls+RXFDxQel8ahXBc4btCe1H62+dkiXw4tOMhw0oaNGG
-	tdTqz4zIhKv6zFKW0f3/5as/jLE8OfkDGf/EA60CKRrK+LY82c8oiK+lud0gIMQzOB5riSRNgZx
-	5csAmIOs93X5fYhrkQcUhbuhHOyC7nwqzy2rNaCCtqjyHPpYnoTgr3wI=
-X-Google-Smtp-Source: AGHT+IFEURiAsd73ZKaNCjv7mYXrXLr0nBqA1jHA5dci2Hby/ZpuEZlQAQxOYukcU459onYbAu4gwc3VlopXFFUfxNCSBLUQ+Pjv
+	s=arc-20240116; t=1717734476; c=relaxed/simple;
+	bh=0Sgfs3qaBd+0VSLTreZyz9MmHSzCp+OCrGQfEKrJ+qg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=esSmWXwX3vRSkqFZzi+LdsHHD1/kNoGU9LfjoWRewzyDJ9SCVhKUNhByF1HN6tZIZY5yBU8pYvntKHx8haWosAHsilKUZzEYNqm9Gyspc0T9ep2uLpWDHhIF0vdTo2cZ5lpuqC9JHDfQTaVYjxfVW+M7oMLWzrZdo9bTa27iORk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=f80zWARC; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1717734465; x=1718339265; i=quwenruo.btrfs@gmx.com;
+	bh=0Sgfs3qaBd+0VSLTreZyz9MmHSzCp+OCrGQfEKrJ+qg=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=f80zWARCXGzMNYq7Iy1JmReoFIB8PCZur8VTPvIUw3rSZcQlznuBGe0HpiLdhbCt
+	 bmOAsdU32rlmmTtKfXoPDI+zIqYavtV75xeWjEcfkuD9wAwHkIM/sCS59v+Db/g27
+	 xjheUNfZ+IyvdbZYWqEDwR8SL4ZFCnES71U27Bs4tuGr3wy1IHJhINWxUke/6fYgh
+	 u6q3cok6qK9HAo009NO0OXgAbuvBmQ/hS+6CTCdkBZGHVjBW4P7YU3ov1//0PbUhZ
+	 CDoOw2QLo2afcFoszClmw3KqQBJkS6vNUJexW8lU5jb3TYR2Z0g/Yn1F9+PCoLsst
+	 UfWtnBZbdmWJeqEOFQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MGyxN-1sAomR0Y2l-002Us8; Fri, 07
+ Jun 2024 06:27:44 +0200
+Message-ID: <c3197ead-6393-4a80-9e7b-ed8eb9b8a298@gmx.com>
+Date: Fri, 7 Jun 2024 13:57:38 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2053:b0:488:59cc:eb4c with SMTP id
- 8926c6da1cb9f-4b7b16db4c1mr35511173.3.1717731627449; Thu, 06 Jun 2024
- 20:40:27 -0700 (PDT)
-Date: Thu, 06 Jun 2024 20:40:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000794dc0061a448fc0@google.com>
-Subject: [syzbot] [btrfs?] KMSAN: uninit-value in ZSTD_compressBlock_doubleFast
-From: syzbot <syzbot+c86c7974966b98aab23d@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, terrelln@fb.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=164aa5f2980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
-dashboard link: https://syzkaller.appspot.com/bug?extid=c86c7974966b98aab23d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c86c7974966b98aab23d@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ZSTD_count lib/zstd/compress/zstd_compress_internal.h:752 [inline]
-BUG: KMSAN: uninit-value in ZSTD_compressBlock_doubleFast_noDict_generic lib/zstd/compress/zstd_double_fast.c:143 [inline]
-BUG: KMSAN: uninit-value in ZSTD_compressBlock_doubleFast_noDict_4 lib/zstd/compress/zstd_double_fast.c:479 [inline]
-BUG: KMSAN: uninit-value in ZSTD_compressBlock_doubleFast+0xf04d/0x19160 lib/zstd/compress/zstd_double_fast.c:499
- ZSTD_count lib/zstd/compress/zstd_compress_internal.h:752 [inline]
- ZSTD_compressBlock_doubleFast_noDict_generic lib/zstd/compress/zstd_double_fast.c:143 [inline]
- ZSTD_compressBlock_doubleFast_noDict_4 lib/zstd/compress/zstd_double_fast.c:479 [inline]
- ZSTD_compressBlock_doubleFast+0xf04d/0x19160 lib/zstd/compress/zstd_double_fast.c:499
- ZSTD_buildSeqStore+0xc68/0xe00 lib/zstd/compress/zstd_compress.c:2796
- ZSTD_compressBlock_internal+0x5c/0x8c0 lib/zstd/compress/zstd_compress.c:3688
- ZSTD_compress_frameChunk lib/zstd/compress/zstd_compress.c:3887 [inline]
- ZSTD_compressContinue_internal+0x1ff3/0x5560 lib/zstd/compress/zstd_compress.c:4062
- ZSTD_compressEnd+0x69/0x960 lib/zstd/compress/zstd_compress.c:4545
- ZSTD_compressStream_generic lib/zstd/compress/zstd_compress.c:5294 [inline]
- ZSTD_compressStream2+0x1380/0x2770 lib/zstd/compress/zstd_compress.c:5501
- ZSTD_endStream+0x6e/0x270 lib/zstd/compress/zstd_compress.c:5970
- zstd_end_stream+0x36/0x50 lib/zstd/zstd_compress_module.c:159
- zstd_compress_pages+0x1381/0x1ef0 fs/btrfs/zstd.c:494
- compression_compress_pages fs/btrfs/compression.c:105 [inline]
- btrfs_compress_pages+0x34e/0x460 fs/btrfs/compression.c:1010
- compress_file_range+0xf50/0x25d0 fs/btrfs/inode.c:948
- btrfs_work_helper+0x52f/0x18d0 fs/btrfs/async-thread.c:314
- process_one_work kernel/workqueue.c:3267 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3348
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3429
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Uninit was stored to memory at:
- ZSTD_limitCopy lib/zstd/compress/../common/zstd_internal.h:251 [inline]
- ZSTD_compressStream_generic lib/zstd/compress/zstd_compress.c:5261 [inline]
- ZSTD_compressStream2+0xd3f/0x2770 lib/zstd/compress/zstd_compress.c:5501
- ZSTD_compressStream+0x42/0x180 lib/zstd/compress/zstd_compress.c:5384
- zstd_compress_stream+0x3e/0x50 lib/zstd/zstd_compress_module.c:147
- zstd_compress_pages+0xed6/0x1ef0 fs/btrfs/zstd.c:428
- compression_compress_pages fs/btrfs/compression.c:105 [inline]
- btrfs_compress_pages+0x34e/0x460 fs/btrfs/compression.c:1010
- compress_file_range+0xf50/0x25d0 fs/btrfs/inode.c:948
- btrfs_work_helper+0x52f/0x18d0 fs/btrfs/async-thread.c:314
- process_one_work kernel/workqueue.c:3267 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3348
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3429
- kthread+0x3e2/0x540 kernel/kthread.c:389
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Uninit was stored to memory at:
- memcpy_from_iter lib/iov_iter.c:73 [inline]
- iterate_bvec include/linux/iov_iter.h:122 [inline]
- iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
- iterate_and_advance include/linux/iov_iter.h:271 [inline]
- __copy_from_iter lib/iov_iter.c:249 [inline]
- copy_page_from_iter_atomic+0x12b7/0x2ae0 lib/iov_iter.c:481
- btrfs_copy_from_user+0x176/0x4c0 fs/btrfs/file.c:59
- btrfs_buffered_write+0x119a/0x2ab0 fs/btrfs/file.c:1339
- btrfs_do_write_iter+0x395/0x2270 fs/btrfs/file.c:1688
- btrfs_file_write_iter+0x38/0x50 fs/btrfs/file.c:1705
- __kernel_write_iter+0x64d/0xc80 fs/read_write.c:523
- dump_emit_page fs/coredump.c:895 [inline]
- dump_user_range+0x8dc/0xee0 fs/coredump.c:956
- elf_core_dump+0x57c7/0x5ae0 fs/binfmt_elf.c:2083
- do_coredump+0x32d5/0x4920 fs/coredump.c:769
- get_signal+0x267e/0x2d00 kernel/signal.c:2896
- arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
- do_syscall_64+0xdc/0x1e0 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
- alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
- dump_user_range+0x4a/0xee0 fs/coredump.c:940
- elf_core_dump+0x57c7/0x5ae0 fs/binfmt_elf.c:2083
- do_coredump+0x32d5/0x4920 fs/coredump.c:769
- get_signal+0x267e/0x2d00 kernel/signal.c:2896
- arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
- do_syscall_64+0xdc/0x1e0 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-CPU: 0 PID: 3475 Comm: kworker/u8:18 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-Workqueue: btrfs-delalloc btrfs_work_helper
-=====================================================
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs: fix a possible race window when allocating new
+ extent buffers
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, Chris Mason <clm@fb.com>
+References: <0f003d96bcb54c9c1afd5512739645bbdddb701b.1717637062.git.wqu@suse.com>
+ <20240606192722.GF18508@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240606192722.GF18508@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nVPVzKfxvztkJXmC4GJZqUL6DITAjSk+8o3E9No2zpRnV5l7H7A
+ KZZ0izus62CnnKrHw7K0MvFcZZGG7vc+Z8iJdZAn3pM00itH4KpMx2uR5IAsOm/UVSYkJAe
+ 2xUIAPtWOLnz3WWkH+UJCtPJu1Mu5cGkxqUTZcfnZhjih1Bv6sZ6yX5FYTv8s3sQFZfl30X
+ d8gKRGRg/Etce3Y+O13Sg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MlnFTae6+RI=;v2vFcNXT6RHiDkZ/rY5m1h6YIff
+ EnLHVffhKk7z4tdfg33dt2/lmBnZ0Tm0bHNoao77QW4DkP94XiAeEQSm8tOh+qdasW+OEW8Yy
+ QXO1UvNXsd0JQ4bZZlsHEefBJxYV/VA/WeJSqEr3FVZOlM8WzKN8594OKRJNkwRMW5ai2OsMz
+ bEBtNTXs2uUsEOtfRUWCIEampeT2itF5eZt3KtihowR7RH7l693TDV8is0MYxQmpyoI52jF6w
+ NkBQI4rDq+fRH6HuTsKUe1dzuETHpGCu074N74lr5HT09i/W+hUuIre2jzXeRcve4nLvgYmzI
+ 2HQUVxmqD4pbL6PlaCdj2p5XeaYYiIFKVB1+KHMuqWUUTTvEcIgVXWEN81D7X6edo2vgiAi+c
+ jwMTfSCuuXFlSye8kn9h7jO50VTOHCzud9fg2dCCgneEZauQFIlHg14uKyUkZ1AreCZayMOnm
+ r2Wp4f7MTNaMQrwszbwkouxkIxCTPUE39Podice924T3Ibs1EQw78aQ3IIVZwEUJyeQeM4YC9
+ xDeKeTzKPu0cM5XF6Nyq5D/G4XwFDZQqvibKkXvKZapCJpFNls88w6eOGOIIXuhg8q55nSA7i
+ zry96L5ohYdIdN1AISi5OI/dMJkwERMqxKI9ss3OE+Jx6GEbELw8PiorQCbU5Duf6AMQkAUYp
+ HlF4kcv7I148mWiIcZMvnxYNhsPxoixCSiZqW3G2NyMoXTAYpKimYK5nb8F3zipfJlOu65/Zf
+ TryecXMsQOUOEO40M4hOxApxhTy1IH9VuOD14LQFWAyAzryi9kQpDxFz8kGfSlUNjPxmmH/mX
+ tuQWK7PrLxhUd93aetwfRa19rZHhMCWA8oxsYPQUHyeq8=
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+=E5=9C=A8 2024/6/7 04:57, David Sterba =E5=86=99=E9=81=93:
+[...]
+>
+> Thanks. I'll pick the patch to branch for the next pull request, the fix=
+ has
+> survived enough testing and we should get it to stable without further d=
+elays.
+> I've edited the subject and changelog a bit, the problem is really the f=
+olio
+> private protection, it is a race window fix but that does not tell much =
+what is
+> the cause. I've also added the reproducer script from Chris.
+>
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Mind to push the updated version to for-next?
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+I'd like to restart the test of larger metadata folios.
+Ironically if we force larger metadata folios (one folio one metadata),
+the race can also be solved, as now folio lock would kick in to prevent
+the race.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+Qu
 
