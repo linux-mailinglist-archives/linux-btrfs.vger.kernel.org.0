@@ -1,159 +1,220 @@
-Return-Path: <linux-btrfs+bounces-5522-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5523-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B298FFB25
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 07:05:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F9D8FFB3E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 07:12:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 812301F26C3E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 05:05:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97AB6B2377A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2024 05:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50CB11B810;
-	Fri,  7 Jun 2024 05:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBF71BC57;
+	Fri,  7 Jun 2024 05:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UaMDQOuc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AD919D883
-	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 05:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B3B1805A
+	for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2024 05:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717736731; cv=none; b=m3qRI4xEhuR/xBjU0leDGtcMTZkCFKHHgq84oy++4vNmEoDULidjYh9mZmUC8E8i3M9/qEJjXfyTt+S56CRqZ5TueH8BX13BT9ESZuzD45o7zuTK6P1W4V8EsR/+3LcgvcTZyy4gEPrhkubfkoe/Yeb/fl8S58JJjyLFYV4OQOQ=
+	t=1717737139; cv=none; b=eswIpKhb761elQIXtDoPhcQnPqXp9vqBwAc6IiPoT/5qjOwilGT8XypNuBWk0qFXQ2dnBUGG2eCGSpZbY2t/PbMXX33t+Uvg3ACpOwi4fvHCmIY83sCheZa9oXE8bA3eYWiDeAqxmZaWGTdBJVNHC3Cm1cehlniHzvFe4uL1kLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717736731; c=relaxed/simple;
-	bh=GBrfTYKLXssvFGONI8vGBOOKuB+PqsQCbSPm4p6qEHA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=j4RR8jpXocJzKT0SO8Kl7+Q27xO/+bjp3CXepPFacontr2Y0gKLr70LKTE9sJWW58eYu4eIjTvHSXxRyetvcIlCipFdPRKfrK4UcQ2iPz98l6W0BcKecXzEpldYqxGbNO21PoG+o1Pip4gApzNUn2x0cDPX1IxrjLVgLzNV4Xgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7eb413e6caeso198285739f.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 06 Jun 2024 22:05:30 -0700 (PDT)
+	s=arc-20240116; t=1717737139; c=relaxed/simple;
+	bh=3SasVotL65io6uI7nMzbdDXNOu6jy8RgTynsQOR3UL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C3qNKrbvRmrmaHSRpOot6wOpbwyxinSugNdmSBFysyPKjAFXR5kREH/mriCrxN0q7Iu2JFFWDwo7pMuQ5LnynFb+eLdBO0OUYGeThJeTxIxr1UBUV+4CbiZPdgYYh/uchYeahYK9Q+RQJaCH+wwxjrtYvjN7Vq/t7dItKwfbss8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UaMDQOuc; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717737136;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BPEPQEShKUN+FEA3EreDIyeanqmPf4X97UtQry/w8Yo=;
+	b=UaMDQOucPQr7AkRLWp2jSrA3/JuPBqrUGyrCd55JLCcFgeso+HRvNpZ0uNncRI/FOdEiFE
+	PyEaENfHozRojJH2JbANW6plT0oQw++N28IwEVZLOXeaYm4zDyKq9hnHG5iiWbGb3WwMyi
+	RtrdV+S6eT/Vufsj97ymgo+JuOTR+qw=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-570-RZEi0_AeNrSOMPgObaFFkQ-1; Fri, 07 Jun 2024 01:12:13 -0400
+X-MC-Unique: RZEi0_AeNrSOMPgObaFFkQ-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2c2a64145c8so1100470a91.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 06 Jun 2024 22:12:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717736729; x=1718341529;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1717737133; x=1718341933;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uS8YStOSM+DHa4enbnMdyhZPkLjkUCnAEZNL/nSaHGQ=;
-        b=mBFbx7K5XO9N9YrxWR9GJojn99Lnaqi+oppSlqkJ85nFrdhRX6KEl0vFqkbgKiZ3Di
-         dOqXCUPcKTRtm9DXOQH2GeAyC6Ptkofjp9LMVyaRcevHQU5OsU2GFSuaUfyRSXtAc3uc
-         iuj5IP/U6jOIqUPSUtGwxYMGUF/MmYT/cn0gRRYtqOAKRvkoHaPlm4173G0p0YR0V6DT
-         R/BYljcUdA9GxeTBFoPQVOlqJBBhpkmNu0maZ6oBsV4va5cEFsL4DPJqf/aDAqx+XkQe
-         D/xdeoP9/03VNxotIwrgz47zlFFM1BgWFV/TANs56fXMUptA/EenUHxvX2M45enRXsZ2
-         T8Rg==
-X-Forwarded-Encrypted: i=1; AJvYcCUXssfGdqcI/s+FWivlgXvDfgP223CRFnkgPwXvXhBvLFGMu76cVA/oPb9ajIaVMGOUZD0OwjPiIntDWKqdtmZGZvesigBzMbApAt0=
-X-Gm-Message-State: AOJu0YwP2rf+IEokT3k9/uRiVdF8N7TzeWsOrD6ziLOVS7a0BWMx5Lfm
-	wBRuZJubkIxssDqkmOK7CVMdE0HaCcJyyFhnuK4ulP0J4X6yjjOuPN9gUCxp7cCjdbwjolRQ6Oy
-	cmX3BAk90Pnq90dfYhW8TaI4HONx5XvbkXTiQiMZLX2AX1CcVrIeVOhQ=
-X-Google-Smtp-Source: AGHT+IFuorXcgGYGy5yyFr4JYBxqv+bH6kgczzpeAsUQwr9Tv5KlSX1N2BjY/s8qGOudU5bUs8CF50nv01ZOUZ4qWXW22KuXW+MY
+        bh=BPEPQEShKUN+FEA3EreDIyeanqmPf4X97UtQry/w8Yo=;
+        b=jLwHpfvw/M2zC8cZEBTy7boc0cLrmBjeUZOtvb18l+4LJe0vitt/Eg71mcUm83+yij
+         vASV1PrUenSsIvyxxCt3ZLyJk63UeF3ppcPjoKd8eINsGi7uBU14TcaxbHyn5IYOv24Y
+         9YQucE1/Ub4JZ4jRTE+Uw6GnzTzk6u+2r+nbXJZygKJlJ1s5UmQaWZh276GAr2wppxUs
+         kGcAYAPMvbcwyzwxYbIkFDX6wlt2IB2lcoJMAvSvHAkP6S0EWngjs4XKuP52nCdxRTgN
+         5gYj74r/VxgOp9FiuL4EuI4QKJGKEJ+P2N7s8gA2rTlV9Jh0J4YFObkcQ550+nTT1CSX
+         m+uA==
+X-Forwarded-Encrypted: i=1; AJvYcCWFXQzjYCE7iEGtKLTKDgsisUz3v/7+9QjErSHhUH9EO73YIyXj/tb2NstAhu3stcQyA436bwH3d+wRTZNhZtY0mQvIgyo/fKoxQso=
+X-Gm-Message-State: AOJu0Ywzhg7z7ehui+gnacvWcx1rt0sC+R3argPwJ1gpFFuKftZ1JyF3
+	nWVOU71XTvm6SF5aP2oOl8m5uJHDwUvnEj1zXUoDG6V171sPRiLvqjoVN4Gfxta07Qc/M9vWQQ3
+	+yFMD9JsHRh1Zx6h5GrDuPzN4Hqgv8bLefqdL9YJkFYIR1fHXx8Qp6bb8ryi5
+X-Received: by 2002:a17:90a:df0d:b0:2c2:e22:787e with SMTP id 98e67ed59e1d1-2c2bcc6b302mr1473551a91.33.1717737132526;
+        Thu, 06 Jun 2024 22:12:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH4rLHzdkdz9xZ7yysa4ldbujDYaCD9ERGYpr3ddUQeAHTghrU6rxTpd9275bsjRsSJcVe6CA==
+X-Received: by 2002:a17:90a:df0d:b0:2c2:e22:787e with SMTP id 98e67ed59e1d1-2c2bcc6b302mr1473531a91.33.1717737131818;
+        Thu, 06 Jun 2024 22:12:11 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c29c495093sm2620723a91.53.2024.06.06.22.12.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jun 2024 22:12:11 -0700 (PDT)
+Date: Fri, 7 Jun 2024 13:12:07 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Omar Sandoval <osandov@osandov.com>, fstests@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH fstests v2] generic: test Btrfs fsync vs. size-extending
+ prealloc write crash
+Message-ID: <20240607051207.6qa3mlxfaqiwv2ww@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <29a4df3b9a36eb17a958e92e375e03daf9312fa5.1716583705.git.osandov@fb.com>
+ <d032e0b964f163229b684c0ac72b656ec9bf7b48.1716584019.git.osandov@osandov.com>
+ <CAL3q7H7X8PuXp-P2vUhz4xbhvTGr4cRyLvwQiTLcmV=LWyBKYw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1525:b0:373:874e:93be with SMTP id
- e9e14a558f8ab-37580380f1cmr1065635ab.3.1717736729726; Thu, 06 Jun 2024
- 22:05:29 -0700 (PDT)
-Date: Thu, 06 Jun 2024 22:05:29 -0700
-In-Reply-To: <000000000000eabe1d0619c48986@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000097e583061a45bfcf@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in clear_inode
-From: syzbot <syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H7X8PuXp-P2vUhz4xbhvTGr4cRyLvwQiTLcmV=LWyBKYw@mail.gmail.com>
 
-syzbot has found a reproducer for the following issue on:
+On Sun, May 26, 2024 at 12:47:49PM +0100, Filipe Manana wrote:
+> On Fri, May 24, 2024 at 9:58 PM Omar Sandoval <osandov@osandov.com> wrote:
+> >
+> > From: Omar Sandoval <osandov@fb.com>
+> >
+> > This is a regression test for a Btrfs bug, but there's nothing
+> > Btrfs-specific about it. Since it's a race, we just try to make the race
+> > happen in a loop and pass if it doesn't crash after all of our attempts.
+> >
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> > ---
+> > Changes from v1 [1]:
+> >
+> > - Added missing groups and requires.
+> > - Simplified $XFS_IO_PROG calls.
+> > - Removed -i flag from $XFS_IO_PROG to make race reproduce more
+> >   reliably.
+> > - Removed all of the file creation and dump-tree parsing since the only
+> >   file on a fresh filesystem is guaranteed to be at the end of a leaf
+> >   anyways.
+> > - Rewrote to be a generic test.
+> >
+> > 1: https://lore.kernel.org/linux-btrfs/297da2b53ce9b697d82d89afd322b2cc0d0f392d.1716492850.git.osandov@osandov.com/
+> >
+> >  tests/generic/745     | 44 +++++++++++++++++++++++++++++++++++++++++++
+> >  tests/generic/745.out |  2 ++
+> >  2 files changed, 46 insertions(+)
+> >  create mode 100755 tests/generic/745
+> >  create mode 100644 tests/generic/745.out
+> >
+> > diff --git a/tests/generic/745 b/tests/generic/745
+> > new file mode 100755
+> > index 00000000..925adba9
+> > --- /dev/null
+> > +++ b/tests/generic/745
+> 
+> Btw, generic/745 already exists in the for-next branch (development is
+> based against that branch nowadays).
+> 
+> > @@ -0,0 +1,44 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) Meta Platforms, Inc. and affiliates.
+> > +#
+> > +# FS QA Test 745
+> > +#
+> > +# Repeatedly prealloc beyond i_size, set an xattr, direct write into the
+> > +# prealloc while extending i_size, then fdatasync. This is a regression test
+> > +# for a Btrfs crash.
+> > +#
+> > +. ./common/preamble
+> > +. ./common/attr
+> > +_begin_fstest auto quick log preallocrw dangerous
+> > +
+> > +_supported_fs generic
+> > +_require_scratch
+> > +_require_attrs
+> > +_require_xfs_io_command falloc -k
+> 
+> Since this is now a generic test and we're using direct IO, also:
+> 
+> _require_odirect
+> 
+> > +_fixed_by_kernel_commit XXXXXXXXXXXX \
+> > +       "btrfs: fix crash on racing fsync and size-extending write into prealloc"
+> 
+> Because it's now a generic test, it should be:
+> 
+> [ "$FSTYP" = "btrfs" ] && _fixed_by_kernel_commit ....
+> 
+> Otherwise it looks good to me, so with that:
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-HEAD commit:    d30d0e49da71 Merge tag 'net-6.10-rc3' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1736820a980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=399230c250e8119c
-dashboard link: https://syzkaller.appspot.com/bug?extid=67ba3c42bcbb4665d3ad
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a9aa22980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c57f16980000
+Thanks Filipe, merged this patch with above review points, more details refer to
+"patches-in-queue" branch. Feel free to have more review points before I push
+to for-next :)
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-d30d0e49.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f1276023ed77/vmlinux-d30d0e49.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a33f372d4fb8/bzImage-d30d0e49.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/7fc863ff127d/mount_0.gz
+Thanks,
+Zorro
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
+> 
+> Thanks.
+> 
+> > +
+> > +# -i slows down xfs_io startup and makes the race much less reliable.
+> > +export XFS_IO_PROG="$(echo "$XFS_IO_PROG" | sed 's/ -i\b//')"
+> > +
+> > +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
+> > +_scratch_mount
+> > +
+> > +blksz=$(_get_block_size "$SCRATCH_MNT")
+> > +
+> > +# On Btrfs, since this is the only file on the filesystem, its metadata is at
+> > +# the end of a B-tree leaf. We want an ordered extent completion to add an
+> > +# extent item at the end of the leaf while we're logging prealloc extents
+> > +# beyond i_size after an xattr was set.
+> > +for ((i = 0; i < 5000; i++)); do
+> > +       $XFS_IO_PROG -ftd -c "falloc -k 0 $((blksz * 3))" -c "pwrite -q -w 0 $blksz" "$SCRATCH_MNT/file"
+> > +       $SETFATTR_PROG -n user.a -v a "$SCRATCH_MNT/file"
+> > +       $XFS_IO_PROG -d -c "pwrite -q -w $blksz $blksz" "$SCRATCH_MNT/file"
+> > +done
+> > +
+> > +# If it didn't crash, we're good.
+> > +
+> > +echo "Silence is golden"
+> > +status=0
+> > +exit
+> > diff --git a/tests/generic/745.out b/tests/generic/745.out
+> > new file mode 100644
+> > index 00000000..fce6b7f5
+> > --- /dev/null
+> > +++ b/tests/generic/745.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 745
+> > +Silence is golden
+> > --
+> > 2.45.1
+> >
+> >
+> 
 
-------------[ cut here ]------------
-kernel BUG at fs/inode.c:626!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 1 PID: 5273 Comm: syz-executor331 Not tainted 6.10.0-rc2-syzkaller-00222-gd30d0e49da71 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:clear_inode+0x15b/0x190 fs/inode.c:626
-Code: 00 00 00 5b 5d 41 5c c3 cc cc cc cc e8 5e c1 8c ff 90 0f 0b e8 56 c1 8c ff 90 0f 0b e8 4e c1 8c ff 90 0f 0b e8 46 c1 8c ff 90 <0f> 0b e8 3e c1 8c ff 90 0f 0b e8 e6 92 e8 ff e9 d2 fe ff ff e8 dc
-RSP: 0018:ffffc900036f7ac0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888030369e90 RCX: ffffffff82012340
-RDX: ffff888024190000 RSI: ffffffff820123aa RDI: 0000000000000007
-RBP: 0000000000000040 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000040 R11: 0000000000000001 R12: 0000000000000020
-R13: ffff88802f942000 R14: 0000000000000000 R15: ffff888030369e90
-FS:  000055556268d380(0000) GS:ffff88806b100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555562697708 CR3: 000000001e888000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_evict_inode+0x529/0xe80 fs/btrfs/inode.c:5262
- evict+0x2ed/0x6c0 fs/inode.c:667
- dispose_list+0x117/0x1e0 fs/inode.c:700
- evict_inodes+0x34e/0x450 fs/inode.c:750
- generic_shutdown_super+0xb5/0x3d0 fs/super.c:627
- kill_anon_super+0x3a/0x60 fs/super.c:1226
- btrfs_kill_super+0x3b/0x50 fs/btrfs/super.c:2096
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
- deactivate_super+0xde/0x100 fs/super.c:506
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xda/0x250 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f2ba3059777
-Code: 07 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007fff42f9ee78 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f2ba3059777
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff42f9ef30
-RBP: 00007fff42f9ef30 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007fff42f9ffa0
-R13: 000055556268f6d0 R14: 431bde82d7b634db R15: 00007fff42f9ffc0
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:clear_inode+0x15b/0x190 fs/inode.c:626
-Code: 00 00 00 5b 5d 41 5c c3 cc cc cc cc e8 5e c1 8c ff 90 0f 0b e8 56 c1 8c ff 90 0f 0b e8 4e c1 8c ff 90 0f 0b e8 46 c1 8c ff 90 <0f> 0b e8 3e c1 8c ff 90 0f 0b e8 e6 92 e8 ff e9 d2 fe ff ff e8 dc
-RSP: 0018:ffffc900036f7ac0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888030369e90 RCX: ffffffff82012340
-RDX: ffff888024190000 RSI: ffffffff820123aa RDI: 0000000000000007
-RBP: 0000000000000040 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000040 R11: 0000000000000001 R12: 0000000000000020
-R13: ffff88802f942000 R14: 0000000000000000 R15: ffff888030369e90
-FS:  000055556268d380(0000) GS:ffff88806b100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555562697708 CR3: 000000001e888000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
