@@ -1,207 +1,464 @@
-Return-Path: <linux-btrfs+bounces-5571-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5572-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACC74900F9C
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 07:08:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E1A5900FAC
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 07:22:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 528F4B239E8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 05:08:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2059D28369F
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 05:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775A317625B;
-	Sat,  8 Jun 2024 05:08:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7146D17625E;
+	Sat,  8 Jun 2024 05:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UNuiNeAP"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HyJJO/WV";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HyJJO/WV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBCF1FDA
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 05:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B41D610C
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 05:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717823286; cv=none; b=tVRtulgckR0Ql2Z1Bw80AGTWrX+4npr9b3/8pX1aO8wV8vh/+zzbttMFdJe3twTNRyVAApBjlB1nfLl3v4uRvl/qXzrpTqFqtUBjUmuYsjt5lQOvvIpQXQp2XpNkTAiLMclPV4HGceu44buYgMs3rA78pcoebEWTVpFYihBz1PE=
+	t=1717824131; cv=none; b=dHFuXIcesomfn0C6e0UaTA7yTdCu59SrHH/1wYR1HAbyMSWXWa+fwSNu0iPVXMkPPS9ZRRJOQ0U5xx33iS3ip1kKgucu0mXBXgBAMvZoetaHQf1ZRa1+LLKv7stw9jaaX7lviubRe4639rN/f8fk6+zE0eRclreuZbOIp2pVRoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717823286; c=relaxed/simple;
-	bh=fUvSxh4FruHJz74K3Z8sWXXvNuIhgCvucOfQwkZLt3E=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=bKeNmOUW3bEgcwNO6D/8DcTTAMxAVU/IMHYrFzQWDTqhZCiT0RG4vuUP4XZmtQDM6N1AmP+I7CpjaPDciKETQInJcnv/OYaOZ+5+F946DQ1cMqlquUYHOj6OqJfizXF/WQxwEJb1V2whV7EPid8FqTK7kV8bFfWN2yfQkRslOdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UNuiNeAP; arc=none smtp.client-ip=209.85.208.172
+	s=arc-20240116; t=1717824131; c=relaxed/simple;
+	bh=ER3sFVQNI3yX97yd5smaT45UsaR2YkHSrDWWi6Og2xk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=XIC/AK11UMUoBz8tePg/YMcCACd1YvKGRKpZmpFs8FuDv80/etOomvOZGQwJkB+Q7tStSHpzOvkCoPTcqU9FAicJZKQe1d77HLFecyHrYrqpN+5um6Yd6HGCFWXsAq6gMwrMaQZAYdCgjRQ/Yw7cXdw7pE1Xw/CZ2Woap9CrfZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HyJJO/WV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HyJJO/WV; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2e72b8931caso28180171fa.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 07 Jun 2024 22:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1717823281; x=1718428081; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WwPsDWpYlzQVhXHIfxqlyS0xPlA1CjbbFKTUefdgfdE=;
-        b=UNuiNeAPhfCOuKjQRtFmUrOUqyNVEgaoQv8J3A2Qa1XoiRG63Qx5i41IKjqz6bixw0
-         GMPMsvIEZiEI9s3GZrQMsQXfUDJLuRC2WdPI27wmz5Hiyjfe784yAxEphueVt+QCSi0B
-         54IGHLQUDzITYVEpnRgr+LtI0/ByaZISUBSHW8nJraPxoTqEuOLcFAz5oUNDbFFo0iUi
-         4v/SM+exW9HA/tE7aCxu/FfrXH21IBS1UKgsMaVvOB62+oSJ286OHnyoFenAOZVxFV2R
-         VNXnJyH1In1hOeou3KbvbQp5UNT3blbsu890MqSJ84zdpv6ijwJmLh1B6VikXtJ5GC7C
-         pUQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717823281; x=1718428081;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WwPsDWpYlzQVhXHIfxqlyS0xPlA1CjbbFKTUefdgfdE=;
-        b=hcY3jjXeOIiwVFWI7BtGpgD5rO/riTM/tO+/weviX6+G7+WCCMdiwAM4NutC0lRYQE
-         7CQqZIOGqvfsSIjZ6vGgUr9ZeWAoR4zfKi2COoi+0dhTlZ0GfFpJi2gcTTmSBU2B99gh
-         sSfWz4OFenhWGIg6obpa1VN4O/OlZMCTnCtFhWohJ2ARV1LffDttu9zSuatxX9t7iDV9
-         Hbb9xRxqhO9CJPLlHzfLCiOulNdWbTWwuGEvit/NknFdsKRyeuZDvj5345AcXMkWFuYu
-         bll4Qua1mqWvEPZP//li9A7eLTfzEFVTGOfrTrtOSYa5dbd33Jbs2Aa8c1jVs4SLC/he
-         JHAg==
-X-Gm-Message-State: AOJu0YyVaZnsqRE/ayds/3iReZxAm4hSRxAtkdgQ7bsATtU+L+a8W22m
-	UNyaTpjkW4L5mbAadLLYUlXa5dYefTvcyInKMLv+qPb07gvDTFVHEeMBz98vxczgZS7e3IPkaTa
-	q
-X-Google-Smtp-Source: AGHT+IG6kWWIVOp+TlzyIdP1ZJdFaZWNCu8KXvLkx0R9GtjqZolB8F0fj1tPkwNCvWHjvaF80Fu+pQ==
-X-Received: by 2002:a2e:804e:0:b0:2e0:14bd:18f2 with SMTP id 38308e7fff4ca-2eadce91456mr25278231fa.47.1717823281086;
-        Fri, 07 Jun 2024 22:08:01 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c28067d066sm6665052a91.33.2024.06.07.22.07.59
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Jun 2024 22:08:00 -0700 (PDT)
-Message-ID: <4af5f2ab-8c9d-4303-b663-840d2dbb31eb@suse.com>
-Date: Sat, 8 Jun 2024 14:37:56 +0930
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 216B01FC9E
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 05:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1717824127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=WDpZ7cIIZ3WWs7hW4UZ7upwG3KserHMJh5+kLczrqak=;
+	b=HyJJO/WVq8GMoGdn/FCC7XVCD1M0Ion6+EPzFysfiBkscJRzMg0V0W2IicSdfA4Y9Sm9uQ
+	gjcs5M1wDD4wuv0cnaZh729XBIT4aLWSn/Mr2f7lGKY7HzGndinP2zG6o+8Lv+7q+1aojT
+	m22rCV/804XSzqzvmgmTRCxs1ceIB5s=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1717824127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=WDpZ7cIIZ3WWs7hW4UZ7upwG3KserHMJh5+kLczrqak=;
+	b=HyJJO/WVq8GMoGdn/FCC7XVCD1M0Ion6+EPzFysfiBkscJRzMg0V0W2IicSdfA4Y9Sm9uQ
+	gjcs5M1wDD4wuv0cnaZh729XBIT4aLWSn/Mr2f7lGKY7HzGndinP2zG6o+8Lv+7q+1aojT
+	m22rCV/804XSzqzvmgmTRCxs1ceIB5s=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31E071398F
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 05:22:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id s2d3NH3qY2b3AQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Sat, 08 Jun 2024 05:22:05 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: tune: introduce progress support for csum change
+Date: Sat,  8 Jun 2024 14:51:47 +0930
+Message-ID: <472afce90c729d1935df5c164a0147ceb355b4e9.1717824105.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] btrfs-progs: print-tree: handle all supported flags
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <cover.1717819918.git.wqu@suse.com>
- <9a1201c209c72e332ab9d25f5036edc847547550.1717819918.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <9a1201c209c72e332ab9d25f5036edc847547550.1717819918.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	FROM_HAS_DN(0.00)[]
 
+Considering how slow the csum conversion is, it's much better to output
+the progress of the conversion.
 
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tune/change-csum.c | 111 +++++++++++++++++++++++++++++++++++++++++++--
+ tune/main.c        |  10 +++-
+ tune/tune.h        |   3 +-
+ 3 files changed, 117 insertions(+), 7 deletions(-)
 
-在 2024/6/8 13:43, Qu Wenruo 写道:
-> Although we already have a pretty good array defined for all
-> super/compat_ro/incompat flags, we still rely on hand defined mask to do
-> the print.
-> 
-> This can lead to easy de-sync between the definition and the flags.
-> 
-> Change it to automatically iterate through the array to calculate the
-> flags, and add the remaining super flags.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   kernel-shared/print-tree.c | 35 +++++++++++++++++++----------------
->   1 file changed, 19 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-> index a7018cb724fd..23cd225a9a50 100644
-> --- a/kernel-shared/print-tree.c
-> +++ b/kernel-shared/print-tree.c
-> @@ -1950,18 +1950,13 @@ static struct readable_flag_entry super_flags_array[] = {
->   	DEF_SUPER_FLAG_ENTRY(CHANGING_FSID_V2),
->   	DEF_SUPER_FLAG_ENTRY(SEEDING),
->   	DEF_SUPER_FLAG_ENTRY(METADUMP),
-> -	DEF_SUPER_FLAG_ENTRY(METADUMP_V2)
-> +	DEF_SUPER_FLAG_ENTRY(METADUMP_V2),
-> +	DEF_SUPER_FLAG_ENTRY(CHANGING_BG_TREE),
-> +	DEF_SUPER_FLAG_ENTRY(CHANGING_DATA_CSUM),
-> +	DEF_SUPER_FLAG_ENTRY(CHANGING_META_CSUM),
->   };
->   static const int super_flags_num = ARRAY_SIZE(super_flags_array);
->   
-> -#define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
-> -				 BTRFS_HEADER_FLAG_RELOC |\
-> -				 BTRFS_SUPER_FLAG_CHANGING_FSID |\
-> -				 BTRFS_SUPER_FLAG_CHANGING_FSID_V2 |\
-> -				 BTRFS_SUPER_FLAG_SEEDING |\
-> -				 BTRFS_SUPER_FLAG_METADUMP |\
-> -				 BTRFS_SUPER_FLAG_METADUMP_V2)
-> -
->   static void __print_readable_flag(u64 flag, struct readable_flag_entry *array,
->   				  int array_size, u64 supported_flags)
->   {
-> @@ -1995,26 +1990,34 @@ static void __print_readable_flag(u64 flag, struct readable_flag_entry *array,
->   
->   static void print_readable_compat_ro_flag(u64 flag)
->   {
-> -	/*
-> -	 * We know about the FREE_SPACE_TREE{,_VALID} bits, but we don't
-> -	 * actually support them yet.
-> -	 */
-> +	u64 print_flags = 0;
-> +
-> +	for (int i = 0; i < compat_ro_flags_num; i++)
-> +		print_flags |= compat_ro_flags_array[i].bit;
->   	return __print_readable_flag(flag, compat_ro_flags_array,
->   				     compat_ro_flags_num,
-> -				     BTRFS_FEATURE_COMPAT_RO_SUPP);
-> +				     print_flags);
->   }
->   
->   static void print_readable_incompat_flag(u64 flag)
->   {
-> +	u64 print_flags = 0;
-> +
-> +	for (int i = 0; i < incompat_flags_num; i++)
-> +		print_flags |= incompat_flags_array[i].bit;
->   	return __print_readable_flag(flag, incompat_flags_array,
->   				     incompat_flags_num,
-> -				     BTRFS_FEATURE_INCOMPAT_SUPP);
-> +				     print_flags);
->   }
->   
->   static void print_readable_super_flag(u64 flag)
->   {
-> +	int print_flags = 0;
+diff --git a/tune/change-csum.c b/tune/change-csum.c
+index f5fc3c7f32cb..2f9415a66a3d 100644
+--- a/tune/change-csum.c
++++ b/tune/change-csum.c
+@@ -33,10 +33,74 @@
+ #include "kernel-shared/tree-checker.h"
+ #include "common/messages.h"
+ #include "common/utils.h"
++#include "common/task-utils.h"
+ #include "common/inject-error.h"
+ #include "common/extent-tree-utils.h"
+ #include "tune/tune.h"
+ 
++struct csum_task {
++	struct task_info *info;
++	time_t start_time;
++	char *stage;
++	u64 cur;
++	u64 last;
++	bool enabled;
++};
++
++struct csum_task g_task = { 0 };
++
++static void print_one_line(struct csum_task *task)
++{
++	time_t elapsed;
++	int hours;
++	int minutes;
++	int seconds;
++	bool print_last = (task->last != 0);
++
++	if (!task->stage)
++		return;
++
++	elapsed = time(NULL) - task->start_time;
++	hours   = elapsed  / 3600;
++	elapsed -= hours   * 3600;
++	minutes = elapsed  / 60;
++	elapsed -= minutes * 60;
++	seconds = elapsed;
++
++	if (print_last)
++		printf("%s %llu/%llu (%d:%02d:%02d elapsed)\r",
++		       task->stage, task->cur, task->last, hours, minutes,
++		       seconds);
++	else
++		printf("%s %llu (%d:%02d:%02d elapsed)\r",
++		       task->stage, task->cur, hours, minutes, seconds);
++
++	fflush(stdout);
++}
++
++static void *print_convert_progress(void *p)
++{
++	struct csum_task *task = p;
++
++	/* 1 second. */
++	task_period_start(task->info, 1000);
++	while (true) {
++		print_one_line(task);
++		task_period_wait(task->info);
++	}
++	return NULL;
++}
++
++static int print_convert_finish(void *p)
++{
++	struct csum_task *task = p;
++
++	print_one_line(task);
++	printf("\n");
++	fflush(stdout);
++	return 0;
++}
++
+ static int check_csum_change_requreiment(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ {
+ 	struct btrfs_root *tree_root = fs_info->tree_root;
+@@ -248,6 +312,10 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 	if (!csum_buffer)
+ 		return -ENOMEM;
+ 
++	g_task.stage = "generating new data csum";
++	g_task.cur = start;
++	g_task.last = last_csum;
++
+ 	trans = btrfs_start_transaction(csum_root,
+ 			CSUM_CHANGE_BYTES_THRESHOLD / fs_info->sectorsize *
+ 			new_csum_size);
+@@ -258,6 +326,7 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 		return ret;
+ 	}
+ 
++	task_start(g_task.info, &g_task.start_time, NULL);
+ 	while (cur < last_csum) {
+ 		u64 csum_start;
+ 		u64 len;
+@@ -266,6 +335,7 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 		key.objectid = BTRFS_EXTENT_CSUM_OBJECTID;
+ 		key.type = BTRFS_EXTENT_CSUM_KEY;
+ 		key.offset = cur;
++		g_task.cur = start;
+ 
+ 		ret = btrfs_search_slot(NULL, csum_root, &key, &path, 0, 0);
+ 		if (ret < 0)
+@@ -288,6 +358,7 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 		item_size = btrfs_item_size(path.nodes[0], path.slots[0]);
+ 
+ 		csum_start = key.offset;
++		g_task.cur = key.offset;
+ 		len = item_size / fs_info->csum_size * fs_info->sectorsize;
+ 		read_extent_buffer(path.nodes[0], csum_buffer,
+ 				btrfs_item_ptr_offset(path.nodes[0], path.slots[0]),
+@@ -318,8 +389,9 @@ static int generate_new_data_csums_range(struct btrfs_fs_info *fs_info, u64 star
+ 	}
+ 	ret = btrfs_commit_transaction(trans, csum_root);
+ 	if (inject_error(0x4de02239))
+-		return -EUCLEAN;
++		ret = -EUCLEAN;
+ out:
++	task_stop(g_task.info);
+ 	free(csum_buffer);
+ 	return ret;
+ }
+@@ -376,6 +448,10 @@ static int delete_old_data_csums(struct btrfs_fs_info *fs_info)
+ 	last_key.type = BTRFS_EXTENT_CSUM_KEY;
+ 	last_key.offset = (u64)-1;
+ 
++	g_task.stage = "deleting old data csum";
++	g_task.cur = 0;
++	g_task.last = 0;
++
+ 	trans = btrfs_start_transaction(csum_root, 1);
+ 	if (IS_ERR(trans)) {
+ 		ret = PTR_ERR(trans);
+@@ -383,6 +459,7 @@ static int delete_old_data_csums(struct btrfs_fs_info *fs_info)
+ 		error("failed to start transaction to delete old data csums: %m");
+ 		return ret;
+ 	}
++	task_start(g_task.info, &g_task.start_time, NULL);
+ 	while (true) {
+ 		int start_slot;
+ 		int nr;
+@@ -400,6 +477,7 @@ static int delete_old_data_csums(struct btrfs_fs_info *fs_info)
+ 			/* Break from the for loop, we found the first old csum. */
+ 			if (found_key.objectid == BTRFS_EXTENT_CSUM_OBJECTID)
+ 				break;
++			g_task.cur = found_key.offset;
+ 		}
+ 		/* No more old csum item detected, exit. */
+ 		if (start_slot == nr)
+@@ -415,6 +493,7 @@ static int delete_old_data_csums(struct btrfs_fs_info *fs_info)
+ 		}
+ 		btrfs_release_path(&path);
+ 	}
++	task_stop(g_task.info);
+ 	btrfs_release_path(&path);
+ 	if (ret < 0)
+ 		btrfs_abort_transaction(trans, ret);
+@@ -441,6 +520,10 @@ static int change_csum_objectids(struct btrfs_fs_info *fs_info)
+ 	last_key.type = BTRFS_EXTENT_CSUM_KEY;
+ 	last_key.offset = (u64)-1;
+ 
++	g_task.stage = "renaming data csum objectids";
++	g_task.cur = 0;
++	g_task.last = 0;
++
+ 	trans = btrfs_start_transaction(csum_root, 1);
+ 	if (IS_ERR(trans)) {
+ 		ret = PTR_ERR(trans);
+@@ -448,6 +531,7 @@ static int change_csum_objectids(struct btrfs_fs_info *fs_info)
+ 		error("failed to start transaction to change csum objectids: %m");
+ 		return ret;
+ 	}
++	task_start(g_task.info, &g_task.start_time, NULL);
+ 	while (true) {
+ 		struct btrfs_key found_key;
+ 		int nr;
+@@ -468,6 +552,7 @@ static int change_csum_objectids(struct btrfs_fs_info *fs_info)
+ 		/* All csum items should be new csums. */
+ 		btrfs_item_key_to_cpu(path.nodes[0], &found_key, 0);
+ 		assert(found_key.objectid == BTRFS_CSUM_CHANGE_OBJECTID);
++		g_task.cur = found_key.offset;
+ 
+ 		/*
+ 		 * Start changing the objectids, since EXTENT_CSUM (-10) is
+@@ -482,6 +567,7 @@ static int change_csum_objectids(struct btrfs_fs_info *fs_info)
+ 		btrfs_release_path(&path);
+ 	}
+ out:
++	task_stop(g_task.info);
+ 	btrfs_release_path(&path);
+ 	if (ret < 0) {
+ 		btrfs_abort_transaction(trans, ret);
+@@ -578,6 +664,10 @@ static int change_meta_csums(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 		error("failed to update super flags: %m");
+ 	}
+ 
++	g_task.stage = "rewriting metadata csum";
++	g_task.cur = 0;
++	g_task.last = 0;
++
+ 	/*
+ 	 * Disable metadata csum checks first, as we may hit tree blocks with
+ 	 * either old or new csums.
+@@ -596,6 +686,7 @@ static int change_meta_csums(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 		return ret;
+ 	}
+ 	assert(ret > 0);
++	task_start(g_task.info, &g_task.start_time, NULL);
+ 	while (true) {
+ 		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
+ 		if (key.type != BTRFS_EXTENT_ITEM_KEY &&
+@@ -610,6 +701,8 @@ static int change_meta_csums(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 			    BTRFS_EXTENT_FLAG_DATA)
+ 				goto next;
+ 		}
++		g_task.cur = key.objectid;
++
+ 		ret = rewrite_tree_block_csum(fs_info, key.objectid, new_csum_type);
+ 		if (ret < 0) {
+ 			errno = -ret;
+@@ -629,6 +722,7 @@ next:
+ 		}
+ 	}
+ out:
++	task_stop(g_task.info);
+ 	btrfs_release_path(&path);
+ 
+ 	/*
+@@ -1028,7 +1122,8 @@ static int resume_csum_change(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 	return ret;
+ }
+ 
+-int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
++int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type,
++			   bool show_progress)
+ {
+ 	u16 old_csum_type = fs_info->csum_type;
+ 	int ret;
+@@ -1038,6 +1133,11 @@ int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	g_task.enabled = show_progress;
++	if (show_progress)
++		g_task.info = task_init(print_convert_progress,
++					print_convert_finish, &g_task);
++
+ 	if (btrfs_super_flags(fs_info->super_copy) &
+ 	    (BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM |
+ 	     BTRFS_SUPER_FLAG_CHANGING_META_CSUM)) {
+@@ -1045,12 +1145,12 @@ int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 		if (ret < 0) {
+ 			errno = -ret;
+ 			error("failed to resume unfinished csum change: %m");
+-			return ret;
++			goto out;
+ 		}
+ 		printf("converted csum type from %s (%u) to %s (%u)\n",
+ 		       btrfs_super_csum_name(old_csum_type), old_csum_type,
+ 		       btrfs_super_csum_name(new_csum_type), new_csum_type);
+-		return ret;
++		goto out;
+ 	}
+ 	/*
+ 	 * Phase 1, generate new data csums.
+@@ -1088,5 +1188,8 @@ int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type)
+ 		printf("converted csum type from %s (%u) to %s (%u)\n",
+ 		       btrfs_super_csum_name(old_csum_type), old_csum_type,
+ 		       btrfs_super_csum_name(new_csum_type), new_csum_type);
++out:
++	if (show_progress)
++		task_deinit(g_task.info);
+ 	return ret;
+ }
+diff --git a/tune/main.c b/tune/main.c
+index bec896907119..6fe8baf749f3 100644
+--- a/tune/main.c
++++ b/tune/main.c
+@@ -127,6 +127,7 @@ static const char * const tune_usage[] = {
+ 	"",
+ 	"EXPERIMENTAL FEATURES:",
+ 	OPTLINE("--csum CSUM", "switch checksum for data and metadata to CSUM"),
++	OPTLINE("--progress", "show progress for csum conversion" ),
+ #endif
+ 	NULL
+ };
+@@ -193,6 +194,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 	bool to_extent_tree = false;
+ 	bool to_bg_tree = false;
+ 	bool to_fst = false;
++	bool show_progress = false;
+ 	int csum_type = -1;
+ 	char *new_fsid_str = NULL;
+ 	int ret;
+@@ -209,7 +211,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		       GETOPT_VAL_DISABLE_BLOCK_GROUP_TREE,
+ 		       GETOPT_VAL_ENABLE_FREE_SPACE_TREE,
+ 		       GETOPT_VAL_ENABLE_SIMPLE_QUOTA,
+-
++		       GETOPT_VAL_PROGRESS,
+ 		};
+ 		static const struct option long_options[] = {
+ 			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
+@@ -223,6 +225,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 				GETOPT_VAL_ENABLE_SIMPLE_QUOTA },
+ #if EXPERIMENTAL
+ 			{ "csum", required_argument, NULL, GETOPT_VAL_CSUM },
++			{ "progress", no_argument, NULL, GETOPT_VAL_PROGRESS},
+ #endif
+ 			{ NULL, 0, NULL, 0 }
+ 		};
+@@ -296,6 +299,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 			csum_type = parse_csum_type(optarg);
+ 			btrfstune_cmd_groups[CSUM_CHANGE] = true;
+ 			break;
++		case GETOPT_VAL_PROGRESS:
++			show_progress = true;
++			break;
+ #endif
+ 		case GETOPT_VAL_HELP:
+ 		default:
+@@ -484,7 +490,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 
+ 	if (csum_type != -1) {
+ 		pr_verbose(LOG_DEFAULT, "Proceed to switch checksums\n");
+-		ret = btrfs_change_csum_type(fs_info, csum_type);
++		ret = btrfs_change_csum_type(fs_info, csum_type, show_progress);
+ 		goto out;
+ 	}
+ 
+diff --git a/tune/tune.h b/tune/tune.h
+index 397cfe4f344b..4f384983882e 100644
+--- a/tune/tune.h
++++ b/tune/tune.h
+@@ -30,7 +30,8 @@ int set_metadata_uuid(struct btrfs_root *root, const char *uuid_string);
+ int convert_to_bg_tree(struct btrfs_fs_info *fs_info);
+ int convert_to_extent_tree(struct btrfs_fs_info *fs_info);
+ 
+-int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type);
++int btrfs_change_csum_type(struct btrfs_fs_info *fs_info, u16 new_csum_type,
++			   bool show_progress);
+ 
+ int enable_quota(struct btrfs_fs_info *fs_info, bool simple);
+ 
+-- 
+2.45.2
 
-This line should be using u64, or it can not handle flags beyond u32.
-
-Fixed in github.
-
-Thanks,
-Qu
-> +
-> +	for (int i = 0; i < super_flags_num; i++)
-> +		print_flags |= super_flags_array[i].bit;
->   	return __print_readable_flag(flag, super_flags_array,
-> -				     super_flags_num, BTRFS_SUPER_FLAG_SUPP);
-> +				     super_flags_num, print_flags);
->   }
->   
->   static void print_sys_chunk_array(struct btrfs_super_block *sb)
 
