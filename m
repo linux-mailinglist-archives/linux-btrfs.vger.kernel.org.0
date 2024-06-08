@@ -1,259 +1,251 @@
-Return-Path: <linux-btrfs+bounces-5576-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5577-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B0F89013B2
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 23:42:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A80929013EA
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 00:48:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB4A81C20C62
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 21:42:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DF1F281FF5
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 22:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7389C25634;
-	Sat,  8 Jun 2024 21:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4470C38DC3;
+	Sat,  8 Jun 2024 22:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hNzb0j8s"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0691CA9C
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 21:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBBC7D520
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 22:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717882948; cv=none; b=ElBwhZ0XGKkbBiKdhR14jJbncaNNJCsSH/PFJtxZjWP0ILYNezlycwy8fjdtjQnqjlsuJo/e7YnumPv5owSWbxhbcw0ELOdVT8OPk0ifQBi6fBnwF43baa//xwx6h2FSf0tz2g8ZekjsxdkjZ72MFVAz5Ab7QJSmA7IL+boQ8d0=
+	t=1717886920; cv=none; b=Nyr97kh+vUlWWSKlj74x2VX7m9CcONGziR/n7OThY7H4lhZ3Q3XglsxwMYb9iu2Kd4C+5ZL9J6wsYbh/3UeAr70a3mlp72VQn+esFm0nNnS4MsoVwfzGe86pNjUZbMm/JW0acR87G0FOa0XHcz8L8A6Tn/BYF2jdib7SlNNxe0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717882948; c=relaxed/simple;
-	bh=QrRoVn362RvLOnu1Jm5SrPMmamaUXY3DA+GQfPgAPI0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GgoMaa30AVV1fYnfa6L6UYtPyAQuNjfHDUejYRmoLzeqKfI6D7cp2WWyds9eBZE+UHmx3FZNrpqwBAYXtpnDnj57iUL/NE1pnSxRRry5LK03UkxcamiF7KZU0FIxVaCn+35mIvwczEqAnG5+O50yc+ortEq4T7HY6e+zDP4TiWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-36db3bbf931so36988475ab.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 08 Jun 2024 14:42:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717882945; x=1718487745;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k7y31Q2sjs6Z5BHxHAW2On4bfxC5J5GXH1wgyOHzTDU=;
-        b=NE1zHeGLDK7sQyKYye1ui4wWd//tW2n/lZeXvmrdw2zOaDqqL5kJCfHeSwaKQWarCy
-         1jT9ILNF4JCV654seEbv98cEQoItEDIXSh1ESfL7GVKoKJczu2szMIkJGXKxCN6bsJXq
-         O1HCzd0cGES/8rVj17onnHo4bjO9JItIqhlbh3yJR4eiPMnUqFv2vPC0qy+NHMn9x+68
-         7QDqpGCc4jo2Q+xuhRtv0PUe4xbGmhCEbj2MmWkyFRtxBcrOu4mCzm9qTdLjG9I19WDg
-         5t+p3NkkSyVzhbxwG0CzdMSeaQ0CBTD/NdpTHQGhInKKbdHxzh7DWBs/MZccl66TgIxP
-         Qgzg==
-X-Forwarded-Encrypted: i=1; AJvYcCXRZYvH9XtrL7skYJShQlThO/erlKM7wTIh+IRonaY/MeR4o+6mTPjhdmrICHe19xupWyTOqikdsuPHAIKHS3ppVoeZulbGw/XZqts=
-X-Gm-Message-State: AOJu0YyxlwTRZVKlYCpu8lMn+Hh2RRd6+y/mYvhagSCvdtfQlFGQQ543
-	ssr1JNnbWE94lUS3KaJVLjdWnIGv4wJST2vuErxQvCaKSHtlyLOu+i9pn3UgZ2FXcpmKLajg/T2
-	EYDajWlkWViyl74LfqkeD6acgS0ZpB3A5A8DbjroCtftf/SX8OpvEeu4=
-X-Google-Smtp-Source: AGHT+IF2FmiI87GbAPaGWrGIgbfWbNs8XdumyRKjkl+bSgTXfML4q8Unn9B3OtqCt8WQF5Ze6XBt3bTT/uTF+pu+bCgahwPG4Tn2
+	s=arc-20240116; t=1717886920; c=relaxed/simple;
+	bh=6nqN5+E9ov3Yunb2n0YU1IraHTptTiGAfe8vxoW3pQc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uVCOokR0WzZUfZolUAxg51Q2Jja4cHvl0Kus0G+yEbeZkjYluYe85MWtciBKsXxub2FxocVil6G9bEW47nEgIsEcnqobUw3UKoHjIYOvUxY3KJ4nsmSdECzvexSCUrWpMtXlbS5lJd/CzA+PZylx7BVtdt0jRlvLN0rAgLyMgm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hNzb0j8s; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1717886915; x=1718491715; i=quwenruo.btrfs@gmx.com;
+	bh=6jirEihU1HRuaqYV84Ol5AXr18ibC9Uo3SaRK2mldho=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=hNzb0j8s8+wQysvrvmMcp0wWLbW1qQEYk007HfGXravnVXAAUmYoHITngtQzJ78D
+	 lq8K+Pwki/GW4OuwqqyBF/JigF/PnhgiLMeYmfTvjCz+7HFjrNgPvNn7flGpPE6lU
+	 nhnYXFS3WMIPDRJF4dgYqjwJR57ZuTN4xlAOA8Hj+Nkk9h5ioRQG4vUFOxjIYNIOF
+	 B10PWHNtojtaZf5VcBao+WKT3dvyGmzU4jNJm98yBsYN/w1oSMoFBEBF/QdHKycXU
+	 lRYNJ2bFTgJz/T3QtnkAyS4VvKE8gcjFYu9C+58DX+UNWHA3QVCkLQuPr/QsbxwpI
+	 8zD1PcZAxaf7uWtlIQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MF3DM-1sDt181CfY-00EIK4; Sun, 09
+ Jun 2024 00:48:35 +0200
+Message-ID: <41a2a18f-6937-400a-b34b-c89b946535e1@gmx.com>
+Date: Sun, 9 Jun 2024 08:18:30 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca48:0:b0:374:a76b:2c76 with SMTP id
- e9e14a558f8ab-37580404e3emr4992815ab.5.1717882945537; Sat, 08 Jun 2024
- 14:42:25 -0700 (PDT)
-Date: Sat, 08 Jun 2024 14:42:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc19ba061a67ca77@google.com>
-Subject: [syzbot] [btrfs?] KASAN: slab-out-of-bounds Read in btrfs_qgroup_inherit
-From: syzbot <syzbot+a0d1f7e26910be4dc171@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, fdmanana@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, wqu@suse.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    2ab795141095 Merge tag 'cxl-fixes-6.10-rc3' of git://git.k..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10a189ba980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eb72437243175f22
-dashboard link: https://syzkaller.appspot.com/bug?extid=a0d1f7e26910be4dc171
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d4179a980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e69a16980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ee6757748831/disk-2ab79514.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8169be68b124/vmlinux-2ab79514.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/023da2bf5a00/bzImage-2ab79514.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/ef7a34a3b3e5/mount_0.gz
-
-The issue was bisected to:
-
-commit b5357cb268c41b4e2b7383d2759fc562f5b58c33
-Author: Qu Wenruo <wqu@suse.com>
-Date:   Sat Apr 20 07:50:27 2024 +0000
-
-    btrfs: qgroup: do not check qgroup inherit if qgroup is disabled
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12e282ce980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11e282ce980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16e282ce980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a0d1f7e26910be4dc171@syzkaller.appspotmail.com
-Fixes: b5357cb268c4 ("btrfs: qgroup: do not check qgroup inherit if qgroup is disabled")
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in btrfs_qgroup_inherit+0x42e/0x2e20 fs/btrfs/qgroup.c:3277
-Read of size 8 at addr ffff88814628ca50 by task syz-executor318/5171
-
-CPU: 0 PID: 5171 Comm: syz-executor318 Not tainted 6.10.0-rc2-syzkaller-00010-g2ab795141095 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- btrfs_qgroup_inherit+0x42e/0x2e20 fs/btrfs/qgroup.c:3277
- create_pending_snapshot+0x1359/0x29b0 fs/btrfs/transaction.c:1854
- create_pending_snapshots+0x195/0x1d0 fs/btrfs/transaction.c:1922
- btrfs_commit_transaction+0xf20/0x3740 fs/btrfs/transaction.c:2382
- create_snapshot+0x6a1/0x9e0 fs/btrfs/ioctl.c:875
- btrfs_mksubvol+0x58f/0x710 fs/btrfs/ioctl.c:1029
- btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1075
- __btrfs_ioctl_snap_create+0x387/0x4b0 fs/btrfs/ioctl.c:1340
- btrfs_ioctl_snap_create_v2+0x1f2/0x3a0 fs/btrfs/ioctl.c:1422
- btrfs_ioctl+0x99e/0xc60
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:907 [inline]
- __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fcbf1992509
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fcbf1928218 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fcbf1a1f618 RCX: 00007fcbf1992509
-RDX: 0000000020000280 RSI: 0000000050009417 RDI: 0000000000000003
-RBP: 00007fcbf1a1f610 R08: 00007ffea1298e97 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fcbf19eb660
-R13: 00000000200002b8 R14: 00007fcbf19e60c0 R15: 0030656c69662f2e
- </TASK>
-
-Allocated by task 5171:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- __do_kmalloc_node mm/slub.c:4121 [inline]
- kmalloc_node_track_caller_noprof+0x225/0x440 mm/slub.c:4141
- memdup_user+0x2b/0xc0 mm/util.c:214
- btrfs_ioctl_snap_create_v2+0x2fd/0x3a0 fs/btrfs/ioctl.c:1411
- btrfs_ioctl+0x99e/0xc60
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:907 [inline]
- __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-The buggy address belongs to the object at ffff88814628ca00
- which belongs to the cache kmalloc-96 of size 96
-The buggy address is located 0 bytes to the right of
- allocated 80-byte region [ffff88814628ca00, ffff88814628ca50)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14628c
-flags: 0x57ff00000000000(node=1|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffefff(slab)
-raw: 057ff00000000000 ffff888015041280 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000080200020 00000001ffffefff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x252800(GFP_NOWAIT|__GFP_NORETRY|__GFP_COMP|__GFP_THISNODE), pid 1, tgid 1 (swapper/0), ts 7530129564, free_ts 7138110092
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1468
- prep_new_page mm/page_alloc.c:1476 [inline]
- get_page_from_freelist+0x2e2d/0x2ee0 mm/page_alloc.c:3402
- __alloc_pages_noprof+0x256/0x6c0 mm/page_alloc.c:4660
- __alloc_pages_node_noprof include/linux/gfp.h:269 [inline]
- alloc_pages_node_noprof include/linux/gfp.h:296 [inline]
- alloc_slab_page+0x5f/0x120 mm/slub.c:2264
- allocate_slab+0x5a/0x2e0 mm/slub.c:2427
- new_slab mm/slub.c:2480 [inline]
- ___slab_alloc+0xcd1/0x14b0 mm/slub.c:3666
- __slab_alloc+0x58/0xa0 mm/slub.c:3756
- __slab_alloc_node mm/slub.c:3809 [inline]
- slab_alloc_node mm/slub.c:3988 [inline]
- kmalloc_node_trace_noprof+0x20c/0x300 mm/slub.c:4160
- kmalloc_node_noprof include/linux/slab.h:677 [inline]
- alloc_node_nr_active kernel/workqueue.c:4833 [inline]
- alloc_workqueue+0x847/0x2060 kernel/workqueue.c:5713
- nvmet_init+0x8d/0x150 drivers/nvme/target/core.c:1698
- do_one_initcall+0x248/0x880 init/main.c:1267
- do_initcall_level+0x157/0x210 init/main.c:1329
- do_initcalls+0x3f/0x80 init/main.c:1345
- kernel_init_freeable+0x435/0x5d0 init/main.c:1578
- kernel_init+0x1d/0x2b0 init/main.c:1467
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-page last free pid 1 tgid 1 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1088 [inline]
- free_unref_page+0xd19/0xea0 mm/page_alloc.c:2565
- vfree+0x186/0x2e0 mm/vmalloc.c:3346
- free_partitions block/partitions/core.c:110 [inline]
- check_partition block/partitions/core.c:169 [inline]
- blk_add_partitions block/partitions/core.c:579 [inline]
- bdev_disk_changed+0x80e/0x13d0 block/partitions/core.c:683
- blkdev_get_whole+0x315/0x470 block/bdev.c:700
- bdev_open+0x2e9/0xc60 block/bdev.c:909
- bdev_file_open_by_dev+0x1b0/0x230 block/bdev.c:1011
- disk_scan_partitions+0x1be/0x2b0 block/genhd.c:367
- device_add_disk+0xca0/0xf90 block/genhd.c:510
- add_disk include/linux/blkdev.h:715 [inline]
- brd_alloc+0x503/0x770 drivers/block/brd.c:373
- brd_init+0xfd/0x1d0 drivers/block/brd.c:435
- do_one_initcall+0x248/0x880 init/main.c:1267
- do_initcall_level+0x157/0x210 init/main.c:1329
- do_initcalls+0x3f/0x80 init/main.c:1345
- kernel_init_freeable+0x435/0x5d0 init/main.c:1578
- kernel_init+0x1d/0x2b0 init/main.c:1467
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-
-Memory state around the buggy address:
- ffff88814628c900: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
- ffff88814628c980: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
->ffff88814628ca00: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
-                                                 ^
- ffff88814628ca80: fa fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
- ffff88814628cb00: 00 00 00 00 00 00 00 00 00 00 fc fc fc fc fc fc
-==================================================================
+User-Agent: Mozilla Thunderbird
+Subject: Re: BUG: scrub reports uncorrectable csum errors linked to readable
+ file (data: single)
+To: Lionel Bouton <lionel-subscription@bouton.name>,
+ linux-btrfs@vger.kernel.org
+References: <c2fa6c37-d2a8-4d77-b095-e04e3db35ef0@bouton.name>
+ <4525e502-c209-4672-ae32-68296436d204@gmx.com>
+ <1df4ce53-8cf9-40b1-aa43-bf443947c833@bouton.name>
+ <80456d11-9859-402c-a77c-5c3b98b755a5@gmx.com>
+ <abe791bd-0e3e-4a07-a1ff-923231e145ad@bouton.name>
+ <a75a1a98-b150-470d-acf5-6e504a2202fc@bouton.name>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <a75a1a98-b150-470d-acf5-6e504a2202fc@bouton.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aYAGOYPkncKJiNbgFoEx97nYhp8mtygvKgw2pehaEgdEjTTobO1
+ g1OkocwgEsj+bdas5R0GVy+WHB7ujQ4nMpY0vBlc5lx3NQuKFOesD8ascAJBtxEmTFHITZ2
+ aB2ApBgwcE5hqDRPupvZvo1GKiDzAa85ZILplSJlUe8UhKQoILfDpJtpRLiyP6YvyP7qE+c
+ NYFmm4NUOsjuKv/+HdoQw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:lg2UDaptcGU=;TMcT0hgYUqwST2MrXIbX8rUCRPW
+ RHi+pVDaPBzIS/nDPuAZKL2NDBxAG4vx3igsyhTItg6epBv4kFGRU9nLkJBkdROhXmXKRpW+E
+ 56N2AjaHeJrawteURt1/pdTv16R7e3LNKCT5CDLBQJJVntXGkxijaUv0FTzhZHTks3W0vS9Hi
+ rM25m9JzTevYKow/EQWz8PVBZIF/LUsffbBn4i0OLAAueXRR8XjqJMZnj8QFwWcFKSZOVBi6E
+ YVigdpF37EqPdgKlfKKImk7PsIeq4hu6REjWMN+NJcdRSfjp78NGlwj3IHKO5k1e2pmppBzz6
+ tXHfZY277FQuS6/AKtN9OTmTIIZiwgQ9N6wigQz+5kC4Tv+NfAGZPDaSaVx1dmDWdbphqsiD8
+ aZN5WUQ2+2gQr6phFq9m89tQ6PeCZLeDdAvkUivAmVYtmbL2xU44lnabsF3NgtdtIE2TCSMmh
+ mGCsaR7XlPQkKzpqd8h07dYDX5slxH+OpI5DSLrMraRbam5KaYIGR4y4KD/eCNJ71wlKoLUwG
+ wUwF1cFwc2eqaWeYvmYYMLuYZj6IwFwDEPgFMG7Z6oNyjDbaKQ2Zl0otVDMTM+Ie5+HSRhaB0
+ bo1CpZjN4gxbhrRVRRWXV8ej3+A7EIu95rVYHOl69xa+YsRbyU9ma6GxH3Si1IG7VTKB6jjeO
+ 2vHGT1sn7g0A3K5lnBItwudGOKw90DIG4+8UrPm+oz6aSJLikXg1AF0pDA/xE8+ya5/dwvrwy
+ Czvqfss92a7jpzA4h08+btpyDAAR40lJRL63B3p+9zarO/X0Jj1C+RgoYydaLbPCmFM94pn51
+ YrdMCr0CqKfe21WHEBPriK66AP+EtYxEvv1hi6uMhJCHQ=
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+=E5=9C=A8 2024/6/9 01:45, Lionel Bouton =E5=86=99=E9=81=93:
+> Hi,
+>
+> To keep this short I've removed most of past exchanges as this is just
+> to keep people following this thread informed on my progress.
+>
+> Le 07/06/2024 =C3=A0 01:46, Lionel Bouton a =C3=A9crit=C2=A0:
+>>
+>> [...]
+>>>> I briefly considered doing just that... but then I found out that the
+>>>> scrub errors were themselves in error and the on disk data was matchi=
+ng
+>>>> the checksums. When I tried to read the file not only didn't the
+>>>> filesystem report an IO error (if I'm not mistaken it should if the
+>>>> csum
+>>>> doesn't match) but the file content matched the original file fetched
+>>>> from its source.
+>>>
+>>> Got it, this is really weird now.
+>>>
+>>> What scrub doing is read the data from disk (without bothering page
+>>> cache), and verify against checksums.
+>>>
+>>> Would it be possible to run "btrfs check --check-data-csum" on the
+>>> unmounted/RO mounted fs?
+>>
+>> Yes with some caveats as the scrub takes approximately a week to
+>> complete and I can't easily stop the services on this system for a week=
+.
+>> The block device is RBD on Ceph, so what I can do is take a block
+>> level snapshot, map this snapshot to another system and run btrfs
+>> check --check-data-csum there. If the IO is the same than btrfs scrub
+>> this will probably take between 3 to 5 days to complete. I'll have to
+>> run this on another VM with the same kernel and btrfs-progs versions,
+>> BTRFS doesn't like having 2 devices showing up with the same internal
+>> identifiers...
+>>
+>>>
+>>> That would output the error for each corrupted sector (without
+>>> ratelimit), so that you can record them all.
+>>> And try to do logical-resolve to find each corrupted location?
+>>>
+>>> If btrfs check reports no error, it's 100% sure scrub is to blamce.
+>>>
+>>> If btrfs check reports error, and logical-resolve failed to locate the
+>>> file and its position, it means the corruption is in bookend exntets.
+>>>
+>>> If btrfs check reports error and logical-resolve can locate the file a=
+nd
+>>> position, it's a different problem then.
+>>
+>> OK. I understand. This is time for me to go to sleep, but I'll work on
+>> this tomorrow. I'll report as soon as check-data-sum finds something
+>> or at the end in several days if it didn't.
+>
+> There is a bit of a slowdown. btrfs check was killed a couple hours ago
+> (after running more than a day) by the OOM killer. I anticipated that it
+> would need large amounts of memory (see below for the number of
+> files/dirs/subvolumes) and started it on a VM with 32GB but it wasn't
+> enough. It stopped after printing: "[4/7] checking fs roots".
+>
+> I restarted btrfs check --check-data-csum after giving 64GB of RAM to
+> the VM hoping this will be enough.
+> If it doesn't work and the oom-killer still is triggered I'll have to
+> move other VMs around and the realistic maximum I can give the VM used
+> for runing the btrfs check is ~200GB.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+That's why we have --mode=3Dlowmem exactly for that reason.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+But please be aware that, the low memory usage is traded off by doing a
+lot of more IO.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+Qu
+>
+> If someone familiar with btrfs check can estimate how much RAM is
+> needed, here is some information that might be relevant:
+> - according to the latest estimations there should be a total of around
+> 50M files and 2.5M directories in the 3 main subvolumes on this filesyst=
+em.
+> - for each of these 3 subvolumes there should be approximately 30
+> snapshots.
+>
+> Here is the filesystem usage output:
+> Overall:
+>  =C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 40.00TiB
+>  =C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 31.62TiB
+>  =C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.38TiB
+>  =C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
+>  =C2=A0=C2=A0=C2=A0 Device slack:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 12.00TiB
+>  =C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 18.72TiB
+>  =C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20.32TiB=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 (min: 16.13TiB)
+>  =C2=A0=C2=A0=C2=A0 Free (statfs, df):=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 20.32TiB
+>  =C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 1.00
+>  =C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2=
+.00
+>  =C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 512.00MiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 (used: 0.00B)
+>  =C2=A0=C2=A0=C2=A0 Multiple profiles:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
+>
+> Data,single: Size:30.51TiB, Used:18.57TiB (60.87%)
+>  =C2=A0=C2=A0 /dev/sdb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 30.51TiB
+>
+> Metadata,DUP: Size:565.50GiB, Used:75.40GiB (13.33%)
+>  =C2=A0=C2=A0 /dev/sdb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.10TiB
+>
+> System,DUP: Size:8.00MiB, Used:3.53MiB (44.14%)
+>  =C2=A0=C2=A0 /dev/sdb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16.00MiB
+>
+> Unallocated:
+>  =C2=A0=C2=A0 /dev/sdb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.38TiB
+>
+>
+> Best regards,
+> Lionel
 
