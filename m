@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-5568-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5569-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A484A900F6D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 06:14:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB559900F6E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 06:14:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA5EEB24C0E
-	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 04:14:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9701E281E3A
+	for <lists+linux-btrfs@lfdr.de>; Sat,  8 Jun 2024 04:14:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C6A14A8E;
-	Sat,  8 Jun 2024 04:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837B0168BD;
+	Sat,  8 Jun 2024 04:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KqtqWAcj";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KqtqWAcj"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DRqyxYmc";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DRqyxYmc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515C16AB8
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 04:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F189EDDDA
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 04:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717820039; cv=none; b=kKxTI0qG4ddQu+W3jsFL1CuP37T6+xOR0FxvoAFCUh2hWyjPVF5q1FjpCATGrWszCOfBqzHr1NViqAgau2XcIAnEv+sRy3jQ7kWaKiLWlMXFHuVb4EgwOv0i3tn0n68W8C6wI/nvhTPiAH43fagXF9K1zrD4HNRQqtukrq4HvlM=
+	t=1717820040; cv=none; b=ql01Tivbs28Sex7/FYkpBoCkH8ohxPPEDAZ6T560C7f1HM1D1sml59Yhgs4ulyFBsxIkyWRyx6bTfTZ/GHR4r/clITGzlP64LGurpPxoKx6v4Jt0MqEMkPSHnTX7whleaKKwOVk4DRgP+wm7mCWJKdv5d+ukMMbCUDu1ZWCZAC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717820039; c=relaxed/simple;
-	bh=f2VCpudyVMa1Q45vn0VKihzBvoOLgEZIYMYTHRKjNUA=;
+	s=arc-20240116; t=1717820040; c=relaxed/simple;
+	bh=FTJN2H+sDZM3XB3sfhe3hastPM5faVZxcYDaB9Chzw4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oOe2KM71jbUzQZo2AHz45RlGRXih4P149Fjz4P27mZAUS8jV4YY2ti3P0zcbhnrF4y9wJr+ct0vIoPvPLpemOqMLoP2Vo9HNv6pu827V6mvbEHNQHb/h+IGat7sOVjOGbAEOQGttVxCWwEQQevPNSoDdOsNEeAdpFONKgXInfa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KqtqWAcj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KqtqWAcj; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=CgSEt4nB5mIuN5BZP9tSDiNGtA/HudS/eSi9fRLVbCnE3KTdN9gaHJssQn60W/xBLlXMNZlqnuycuTRnRG3b1adw1mVx7NLSliXnd6ghKR/aqF0A32hsSOvP+2nkWJ/Fl8vOnkwwMUgvMm78JmAWnzXYETghhJRf8ltEXGSKcxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DRqyxYmc; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DRqyxYmc; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 513BC21BA3
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 04:13:55 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 06EC01FC84
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 04:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717820035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1717820037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bpcpLeGCpC7I18JUuFhDGYpE4TZQqKnn5RLq6SJO/yQ=;
-	b=KqtqWAcjGXDXTIUeZJ1S0LHBKy91QCR8hTvghQVeqRd1iaolxdZqRts3Ufc6iuoiP7m1kK
-	X9B+qAvcwSzvrfuc8RJiEuHvVw5UnOTMtrF2loIW7TffucprGwPySRbZ8aSqtPN9NhfoQJ
-	whUaP8z3FswUqVudZIehImqc1G60TkU=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=KqtqWAcj
+	bh=i2sv3nCMEzeD9mkumg5brYfRpauLvfVgMlFeHyndhFQ=;
+	b=DRqyxYmcQ42cyg1RxQMR+pXfVxca7/j36LFn0BD1XBlgJr9G5Ch5JbBuY9i8lEENNDjX/l
+	BNAF7i/n+laRuTzChV1t+aNpgzo4LdawhlWHm+oB0NlBJWT5tRgueNnAUSzfeeDPqRWkro
+	hGQdErw7tQ+0EcwYQF+qVAAMtWgwgzs=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717820035; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1717820037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bpcpLeGCpC7I18JUuFhDGYpE4TZQqKnn5RLq6SJO/yQ=;
-	b=KqtqWAcjGXDXTIUeZJ1S0LHBKy91QCR8hTvghQVeqRd1iaolxdZqRts3Ufc6iuoiP7m1kK
-	X9B+qAvcwSzvrfuc8RJiEuHvVw5UnOTMtrF2loIW7TffucprGwPySRbZ8aSqtPN9NhfoQJ
-	whUaP8z3FswUqVudZIehImqc1G60TkU=
+	bh=i2sv3nCMEzeD9mkumg5brYfRpauLvfVgMlFeHyndhFQ=;
+	b=DRqyxYmcQ42cyg1RxQMR+pXfVxca7/j36LFn0BD1XBlgJr9G5Ch5JbBuY9i8lEENNDjX/l
+	BNAF7i/n+laRuTzChV1t+aNpgzo4LdawhlWHm+oB0NlBJWT5tRgueNnAUSzfeeDPqRWkro
+	hGQdErw7tQ+0EcwYQF+qVAAMtWgwgzs=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E60D13A1E
-	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 04:13:53 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D55DE13A1E
+	for <linux-btrfs@vger.kernel.org>; Sat,  8 Jun 2024 04:13:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mHJ3N4HaY2Z6cAAAD6G6ig
+	id MPkYIoPaY2Z6cAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 08 Jun 2024 04:13:53 +0000
+	for <linux-btrfs@vger.kernel.org>; Sat, 08 Jun 2024 04:13:55 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: fix the conflicting super flags
-Date: Sat,  8 Jun 2024 13:43:24 +0930
-Message-ID: <bd2df0d12b09a29ea39d7a6b1692b0523592002d.1717819918.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: print-tree: handle all supported flags
+Date: Sat,  8 Jun 2024 13:43:25 +0930
+Message-ID: <9a1201c209c72e332ab9d25f5036edc847547550.1717819918.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1717819918.git.wqu@suse.com>
 References: <cover.1717819918.git.wqu@suse.com>
@@ -84,121 +84,114 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 513BC21BA3
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [-0.28 / 50.00];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	BAYES_HAM(-0.48)[79.47%];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_TWO(0.00)[2];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email]
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -0.28
+X-Spam-Flag: NO
 
-[BUG]
-There is a bug report that a canceled csum conversion (still
-experimental feature) resulted unexpected super flags:
+Although we already have a pretty good array defined for all
+super/compat_ro/incompat flags, we still rely on hand defined mask to do
+the print.
 
-csum_type		0 (crc32c)
-csum_size		4
-csum			0x14973811 [match]
-bytenr			65536
-flags			0x1000000001
-			( WRITTEN |
-			  CHANGING_FSID_V2 )
-magic			_BHRfS_M [match]
+This can lead to easy de-sync between the definition and the flags.
 
-Meanwhile for a fs under csum conversion it should have either
-CHANGING_DATA_CSUM or CHANGING_META_CSUM.
-
-[CAUSE]
-It turns out that, due to btrfs-progs keeps its own extra flags inside
-its own ctree.h headers, not the shared uapi headers, we have
-conflicting super flags:
-
-kernel-shared/uapi/btrfs_tree.h:#define BTRFS_SUPER_FLAG_METADUMP_V2	(1ULL << 34)
-kernel-shared/uapi/btrfs_tree.h:#define BTRFS_SUPER_FLAG_CHANGING_FSID	(1ULL << 35)
-kernel-shared/uapi/btrfs_tree.h:#define BTRFS_SUPER_FLAG_CHANGING_FSID_V2 (1ULL << 36)
-kernel-shared/ctree.h:#define BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM	(1ULL << 36)
-kernel-shared/ctree.h:#define BTRFS_SUPER_FLAG_CHANGING_META_CSUM	(1ULL << 37)
-
-Note that CHANGING_FSID_V2 is conflicting with CHANGING_DATA_CSUM.
-
-[FIX]
-Cross port the proper updated uapi headers into btrfs-progs, and remove
-the definition from ctree.h.
-
-This would change the value for CHANGING_DATA_CSUM and
-CHANGING_META_CSUM, but considering they are experimental features, and
-kernel would reject them anyway, the damage is not that huge and we can
-accept such change before exposing it to end users.
+Change it to automatically iterate through the array to calculate the
+flags, and add the remaining super flags.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/ctree.h           | 10 ----------
- kernel-shared/uapi/btrfs_tree.h |  8 ++++++++
- 2 files changed, 8 insertions(+), 10 deletions(-)
+ kernel-shared/print-tree.c | 35 +++++++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 16 deletions(-)
 
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 444d206e0a2c..1341a418726b 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -59,16 +59,6 @@ static inline unsigned long btrfs_chunk_item_size(int num_stripes)
- 		sizeof(struct btrfs_stripe) * (num_stripes - 1);
+diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+index a7018cb724fd..23cd225a9a50 100644
+--- a/kernel-shared/print-tree.c
++++ b/kernel-shared/print-tree.c
+@@ -1950,18 +1950,13 @@ static struct readable_flag_entry super_flags_array[] = {
+ 	DEF_SUPER_FLAG_ENTRY(CHANGING_FSID_V2),
+ 	DEF_SUPER_FLAG_ENTRY(SEEDING),
+ 	DEF_SUPER_FLAG_ENTRY(METADUMP),
+-	DEF_SUPER_FLAG_ENTRY(METADUMP_V2)
++	DEF_SUPER_FLAG_ENTRY(METADUMP_V2),
++	DEF_SUPER_FLAG_ENTRY(CHANGING_BG_TREE),
++	DEF_SUPER_FLAG_ENTRY(CHANGING_DATA_CSUM),
++	DEF_SUPER_FLAG_ENTRY(CHANGING_META_CSUM),
+ };
+ static const int super_flags_num = ARRAY_SIZE(super_flags_array);
+ 
+-#define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
+-				 BTRFS_HEADER_FLAG_RELOC |\
+-				 BTRFS_SUPER_FLAG_CHANGING_FSID |\
+-				 BTRFS_SUPER_FLAG_CHANGING_FSID_V2 |\
+-				 BTRFS_SUPER_FLAG_SEEDING |\
+-				 BTRFS_SUPER_FLAG_METADUMP |\
+-				 BTRFS_SUPER_FLAG_METADUMP_V2)
+-
+ static void __print_readable_flag(u64 flag, struct readable_flag_entry *array,
+ 				  int array_size, u64 supported_flags)
+ {
+@@ -1995,26 +1990,34 @@ static void __print_readable_flag(u64 flag, struct readable_flag_entry *array,
+ 
+ static void print_readable_compat_ro_flag(u64 flag)
+ {
+-	/*
+-	 * We know about the FREE_SPACE_TREE{,_VALID} bits, but we don't
+-	 * actually support them yet.
+-	 */
++	u64 print_flags = 0;
++
++	for (int i = 0; i < compat_ro_flags_num; i++)
++		print_flags |= compat_ro_flags_array[i].bit;
+ 	return __print_readable_flag(flag, compat_ro_flags_array,
+ 				     compat_ro_flags_num,
+-				     BTRFS_FEATURE_COMPAT_RO_SUPP);
++				     print_flags);
  }
  
--#define BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM	(1ULL << 36)
--#define BTRFS_SUPER_FLAG_CHANGING_META_CSUM	(1ULL << 37)
--
--/*
-- * The fs is undergoing block group tree feature change.
-- * If no BLOCK_GROUP_TREE compat ro flag, it's changing from regular
-- * bg item in extent tree to new bg tree.
-- */
--#define BTRFS_SUPER_FLAG_CHANGING_BG_TREE	(1ULL << 38)
--
- static inline u32 __BTRFS_LEAF_DATA_SIZE(u32 nodesize)
+ static void print_readable_incompat_flag(u64 flag)
  {
- 	return nodesize - sizeof(struct btrfs_header);
-diff --git a/kernel-shared/uapi/btrfs_tree.h b/kernel-shared/uapi/btrfs_tree.h
-index e2ac228bcccc..23e18e735959 100644
---- a/kernel-shared/uapi/btrfs_tree.h
-+++ b/kernel-shared/uapi/btrfs_tree.h
-@@ -758,6 +758,14 @@ struct btrfs_free_space_header {
- #define BTRFS_SUPER_FLAG_CHANGING_FSID	(1ULL << 35)
- #define BTRFS_SUPER_FLAG_CHANGING_FSID_V2 (1ULL << 36)
++	u64 print_flags = 0;
++
++	for (int i = 0; i < incompat_flags_num; i++)
++		print_flags |= incompat_flags_array[i].bit;
+ 	return __print_readable_flag(flag, incompat_flags_array,
+ 				     incompat_flags_num,
+-				     BTRFS_FEATURE_INCOMPAT_SUPP);
++				     print_flags);
+ }
  
-+/*
-+ * Those are temporaray flags utilized by btrfs-progs to do offline conversion.
-+ * They are rejected by kernel.
-+ * But still keep them all here to avoid conflicts.
-+ */
-+#define BTRFS_SUPER_FLAG_CHANGING_BG_TREE	(1ULL << 38)
-+#define BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM	(1ULL << 39)
-+#define BTRFS_SUPER_FLAG_CHANGING_META_CSUM	(1ULL << 40)
+ static void print_readable_super_flag(u64 flag)
+ {
++	int print_flags = 0;
++
++	for (int i = 0; i < super_flags_num; i++)
++		print_flags |= super_flags_array[i].bit;
+ 	return __print_readable_flag(flag, super_flags_array,
+-				     super_flags_num, BTRFS_SUPER_FLAG_SUPP);
++				     super_flags_num, print_flags);
+ }
  
- /*
-  * items in the extent btree are used to record the objectid of the
+ static void print_sys_chunk_array(struct btrfs_super_block *sb)
 -- 
 2.45.2
 
