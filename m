@@ -1,192 +1,185 @@
-Return-Path: <linux-btrfs+bounces-5580-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5581-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DC36901589
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 12:33:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA81090182B
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 22:53:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20217B210F0
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 10:33:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9DEE1C20CE7
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 20:53:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F48225AF;
-	Sun,  9 Jun 2024 10:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33DA4D8BD;
+	Sun,  9 Jun 2024 20:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sicgutx2"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YF8wfPiM";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YF8wfPiM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D15B65E
-	for <linux-btrfs@vger.kernel.org>; Sun,  9 Jun 2024 10:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2A71F951
+	for <linux-btrfs@vger.kernel.org>; Sun,  9 Jun 2024 20:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717929213; cv=none; b=o5SIHsWKA7RgOe1CQbDZ2Vs7wC/qXFx5eznZjROWygQrQzN+ZdGc8CSVVxfse+JG7GJNs61YerDQZK92vCSYYZOPwUsUWs2UK3poNprHCnBjR1Fy+di7k+TbjSYCji6/ff7GOxEzQZbrjgcL/DMe++nO5qpnzOKhZMWGx4A2kGA=
+	t=1717966406; cv=none; b=o79TOhqpOnHbxiiTaX1V+l1OzIYr1AvWRxo695ofGZFPRh0Bu2ScrYDj4yhiHgYijFEgiDfals+RYplBsiYCDFlYKa2Hlf6sgs+BhUL28BhWC58yWwAp5GL0HvhE8Poo1l9qnOJAQLya/4nGobBKa1S0ko8nDYS4NbtUdKh5Vag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717929213; c=relaxed/simple;
-	bh=8Qsv1dXGNFzOvmi46EwJaVY6oZaJLasmsv9JYGVtr3Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=UiUW5NH7Zs771kZxQVR8VX9/+gCUPklKegUjAI5En5UVx20DC86OgG+GsFAA0Q9zjVxdbYbrRev/ThpAy3pTdlH8tM4eRwl8CFtXt0jX+b51WymKij5SAioghTELeNWrwp+bDv6hjbtyxC3rWT8YlEAKJ8QTUzeAMw6WzOopMW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sicgutx2; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1717929202; x=1718534002; i=quwenruo.btrfs@gmx.com;
-	bh=8Qsv1dXGNFzOvmi46EwJaVY6oZaJLasmsv9JYGVtr3Y=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=sicgutx2uLSfHrJxVgwQH4A6BTU9YUYPwi128K1csN08RAFjW7bGAmQ+JSRbCicb
-	 FiAAzQSX317TwHRNItFEi6GTptcGRR1MFgd0yJIa96yxh8D6KmpXFQsPM5TuZEWdO
-	 toBsIfXVF7ju0gineNMwCl4hkHFel8/jgIlORFinYl7vur+O5jC7JynbLqcrLO0Ly
-	 S8Dr2Bdle8uKpKNASNIf/aIjpac5f02BtNH2t2Gvjt0OWpFlt3RKkOpvXxItH3D6W
-	 IXxE4D7HRHfxPun3/fSK5AWztGBmxTLj1e3aKK/EBx34nwBge7VDOfbua/ySvRosI
-	 R+dkMUfRBxFNSzXyEQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MdvmY-1solKp2j7m-00cqCH; Sun, 09
- Jun 2024 12:33:22 +0200
-Message-ID: <d32e99bd-e83e-4449-a8f9-8eeefb813400@gmx.com>
-Date: Sun, 9 Jun 2024 20:03:17 +0930
+	s=arc-20240116; t=1717966406; c=relaxed/simple;
+	bh=thbqx14356mfUiWbtxjvFGsHfOoDHT0OLkzIR/u4aDg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=brZUxiTgeAZKSqWGQzGRo2Q8iRduiMDhfr0P2S7XAVtg7fVRzwj5f14bXTPHF8QX236CQ7Xk1mVcRLILtpue/81Zrpywskgr+Hk3ZNziPilE8zQtXzApu2f2lMyUMlR0gW9ANRfAKX+4IklcC6B3/0HWYXZ/tnYz4rA+lP5Uq28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YF8wfPiM; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YF8wfPiM; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 221DB1F747
+	for <linux-btrfs@vger.kernel.org>; Sun,  9 Jun 2024 20:53:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1717966396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=pu/BQa+TdYMOklqvp5fWYB1Spd28R7rxE1RfRdRRo58=;
+	b=YF8wfPiMmuLXJyUO7GhxtvUWaJ3wJAuaZuEXWXsEZp6v5XsB9fs5AgSHqJ/jocX9lbdSm/
+	q2iZzQuFM6uNgbwcQowRSPljVEpMbSlbuL3zYBLgd71U0+eQWcTZZRBVTPqDC0soVSsUfF
+	V5Dmi28Iqrcip4cBR2UCq/9ez0F/q1U=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=YF8wfPiM
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1717966396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=pu/BQa+TdYMOklqvp5fWYB1Spd28R7rxE1RfRdRRo58=;
+	b=YF8wfPiMmuLXJyUO7GhxtvUWaJ3wJAuaZuEXWXsEZp6v5XsB9fs5AgSHqJ/jocX9lbdSm/
+	q2iZzQuFM6uNgbwcQowRSPljVEpMbSlbuL3zYBLgd71U0+eQWcTZZRBVTPqDC0soVSsUfF
+	V5Dmi28Iqrcip4cBR2UCq/9ez0F/q1U=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3208913A55
+	for <linux-btrfs@vger.kernel.org>; Sun,  9 Jun 2024 20:53:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id cNSzNToWZmY2MgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Sun, 09 Jun 2024 20:53:14 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: uapi: record temporary super flags utilized by btrfstune
+Date: Mon, 10 Jun 2024 06:22:56 +0930
+Message-ID: <4b9edf48c6071085f376e9861faf4dd6ecdac95b.1717966255.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] unable to mount zoned volume after force shutdown
-To: HAN Yuwei <hrx@bupt.moe>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>,
- Naohiro Aota <naohiro.aota@wdc.com>
-References: <CD222A40B0129641+992beaf5-2aa9-4ad4-bb3f-ee915393bab1@bupt.moe>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CD222A40B0129641+992beaf5-2aa9-4ad4-bb3f-ee915393bab1@bupt.moe>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:/mz4B1EGrKh/VRa9ZYIal1ggtQ1rFNKsRnGYWAh0l7uNzRtnu9o
- laq8j8Ej0f2Z8mD55JlzT7fXNRMU1kusuUjAvb4+aAQhGAVEsstN1+3ObRbT9Wk5A6YPQBx
- obxWnGMniRG+a3wTyO2ubM3NHA5vqH6N41gZQTQTuJHs1URPEzUc04YA2PpRg/fKW3jD42h
- QWZuXyblJ4+6ySvmnSd0g==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.33 / 50.00];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	BAYES_HAM(-0.32)[75.47%];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:IW71Mv5O62M=;uEHk/On3QnjHyRdCAnIJYdNI8v5
- QZRC+SWoSHb73tpP/H16ij+yL06r/4+Ot33USIAlM2O2d8RvmJstg9IkyUPoTTSA9hkQeVh45
- DAJYxsBuSMEq8sfDJm84UU5w+EogD6q6c6UHeJr+cof4ZIIJOAag7O3nXeX8TEk2Vmigg05Dd
- IOb2IbLawiTPIu8ucUrKZNztwYQSRmPRLih180sAfM91m+lH1ssBnQ9EBtJhvTaczwj1XFOI4
- 2Tz92IjG5qNp36eiexZk3N1nwOeBXKtVV6xIu/evFJzNH0182iYeUZaFZDeOr31NEjPpEJMzb
- TFsdBocL7ucUHhG0A8T5d1L+dDzjqctf//grlhRQLDXknnDJZE+zGIGygBL98uv7P+Lw0H0iW
- U+02wQQaqSNmzqPEoe9AAMwvQXcmL5j2FbOlfqbKslUhXNlOxPSKf90268nEZ1hRRIXccMcwv
- MnMke7VnF0UEEGImkCNSzHpgCzfCr3FXcJmrgxFUoLfdlxXsvn+grLXks69LakFpgjPUd1v9V
- 5KAoKGYFIMHa+u2P3S+GkvLN+rw/CDQWVKhIAMT3V6zulm8O/Kzwb8Xdl7chf6viZf0xUa89u
- PAizJ9Btecq+tQkMtqI7EOwmgPUfPp1lXfpyenDnTO8XfxJix9i1QHlca7HDEEGqYLdOR52qP
- H1vMujYOnsYzl1ANYWXXyoot1xWDER1tJ62UOh/lG6TNUn7COmsLqzQTWNOmw2N5nSXe3JtWa
- WJWK8unwkogzOHnD5aa8gAgmyFsq8N2e6NvCYO0XybQaWwr+KswjI7xyYs3VBFYWB5EK34u2g
- ldc5XSbjJxHNdalqQPY6A0yalWJjgvNBdV8s1Jmbx4r4s=
+X-Spam-Score: -0.33
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: 221DB1F747
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 
-DQoNCuWcqCAyMDI0LzYvOSAxMTo1MywgSEFOIFl1d2VpIOWGmemBkzoNCj4gSSBjYW4ndCBtb3Vu
-dCB2b2x1bWUgb24gbXVsdGlwbGUgem9uZWQgZGV2aWNlIHdoaWNoIGRhdGEgcHJvZmlsZSBpcyAN
-Cj4gc2luZ2xlICYgbWV0YWRhdGEgcHJvZmlsZSBpcyByYWlkMS4NCj4gSXQgZXhwZXJpZW5jZWQg
-bXVsdGlwbGUgZm9yY2VkIHNodXRkb3duIGR1ZSB0byBrZXJuZWwgNi4xMCBjYW4ndCANCj4gcHJv
-cGVybHkgc2h1dGRvd24gb24gbG9vbmdhcmNoLg0KPiANCj4gIyBkbWVzZw0KPiANCj4gWyAxOTYz
-LjY5ODc5M10gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYik6IGZpcnN0IG1vdW50IG9mIGZpbGVzeXN0
-ZW0gDQo+IGI1YjJkN2Q5LTlmMjctNDkwNy1hNTU4LTc3ZThlODZkZjkzMw0KPiBbIDE5NjMuNzA3
-ODAxXSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogdXNpbmcgY3JjMzJjIChjcmMzMmMtZ2VuZXJp
-YykgDQo+IGNoZWNrc3VtIGFsZ29yaXRobQ0KPiBbIDE5NjMuNzE1NTk3XSBCVFJGUyBpbmZvIChk
-ZXZpY2Ugc2RiKTogdXNpbmcgZnJlZS1zcGFjZS10cmVlDQo+IFsgMTk2NS40OTIwNjZdIEJUUkZT
-IGluZm8gKGRldmljZSBzZGIpOiBob3N0LW1hbmFnZWQgem9uZWQgYmxvY2sgZGV2aWNlIA0KPiAv
-ZGV2L3NkYiwgNTIxNTYgem9uZXMgb2YgMjY4NDM1NDU2IGJ5dGVzDQo+IFsgMTk2Ni45NTM1OTBd
-IEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiBob3N0LW1hbmFnZWQgem9uZWQgYmxvY2sgZGV2aWNl
-IA0KPiAvZGV2L3NkYywgNTIxNTYgem9uZXMgb2YgMjY4NDM1NDU2IGJ5dGVzDQo+IFsgMTk2Ny4z
-NDY3NThdIEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiB6b25lZCBtb2RlIGVuYWJsZWQgd2l0aCB6
-b25lIA0KPiBzaXplIDI2ODQzNTQ1Ng0KPiBbIDIwMjYuMjg3MzU2XSBCVFJGUyBlcnJvciAoZGV2
-aWNlIHNkYik6IHpvbmVkOiB3cml0ZSBwb2ludGVyIG9mZnNldCANCj4gbWlzbWF0Y2ggb2Ygem9u
-ZXMgaW4gcmFpZDEgcHJvZmlsZQ0KPiBbIDIwMjYuMjk2NDQ1XSBCVFJGUyBlcnJvciAoZGV2aWNl
-IHNkYik6IHpvbmVkOiBmYWlsZWQgdG8gbG9hZCB6b25lIGluZm8gDQo+IG9mIGJnIDUzOTk4NDc2
-MzI4OTYNCg0KTXkgZ3Vlc3MgaXMsIGR1ZSB0byB0aGUgZm9yY2VkIHNodXRkb3duLCBidHJmcycg
-d3JpdGVyIHBvaW50ZXIgaXMgbGF0ZXIgDQp0aGFuIHRoZSB6b25lIHdyaXRlIHBvaW50ZXIuDQoN
-CklNSE8sIHdlIHNob3VsZCBub3QgZXJyb3Igb3V0IGJ1dCBtYXJrIHRoaXMgem9uZSBhcyByZWFk
-LW9ubHkgYW5kIGxldCANCmJhbGFuY2UgdG8ga2ljayBpbi4NCg0KQEpvaGFubmVzIGFuZCBAbmFv
-aGlybywgbWluZCB0byBlbmhhbmNlIHRoZSBlcnJvciBoYW5kbGluZyB0aGVyZT8NCg0KVGhhbmtz
-LA0KUXUNCj4gWyAyMDI2LjMwNDU3Nl0gQlRSRlMgZXJyb3IgKGRldmljZSBzZGIpOiBmYWlsZWQg
-dG8gcmVhZCBibG9jayBncm91cHM6IC01DQo+IFsgMjAyNi4zNTI1NDddIEJUUkZTIGVycm9yIChk
-ZXZpY2Ugc2RiKTogb3Blbl9jdHJlZSBmYWlsZWQNCj4gDQo+ICMgYnRyZnMgaW5zcGVjdC1pbnRl
-cm5hbCBkdW1wLXN1cGVyIC9kZXYvc2RiDQo+IHN1cGVyYmxvY2s6IGJ5dGVucj02NTUzNiwgZGV2
-aWNlPS9kZXYvc2RiDQo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLQ0KPiBjc3VtX3R5cGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IDAgKGNyYzMyYykNCj4gY3N1bV9zaXplwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA0DQo+
-IGNzdW3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAweGIyN2Q4MDMyIFtt
-YXRjaF0NCj4gYnl0ZW5ywqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA2NTUzNg0K
-PiBmbGFnc8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAweDENCj4gIMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKCBXUklUVEVOICkNCj4g
-bWFnaWPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgX0JIUmZTX00gW21hdGNo
-XQ0KPiBmc2lkwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYjViMmQ3ZDkt
-OWYyNy00OTA3LWE1NTgtNzdlOGU4NmRmOTMzDQo+IG1ldGFkYXRhX3V1aWTCoMKgwqDCoMKgwqDC
-oMKgwqDCoCAwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDANCj4gbGFiZWzCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgSFlXREFUQV9aT05FRF9URVNUDQo+IGdl
-bmVyYXRpb27CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA4MDM3Mg0KPiByb290wqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNTQwMDAxMzE2MDQ0OA0KPiBzeXNfYXJyYXlf
-c2l6ZcKgwqDCoMKgwqDCoMKgwqDCoCAyNTgNCj4gY2h1bmtfcm9vdF9nZW5lcmF0aW9uwqDCoCA4
-MDM2OA0KPiByb290X2xldmVswqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMA0KPiBjaHVua19y
-b290wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNDg1Mjk0MTYwMjgxNg0KPiBjaHVua19yb290
-X2xldmVswqDCoMKgwqDCoMKgwqAgMQ0KPiBsb2dfcm9vdMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCAwDQo+IGxvZ19yb290X3RyYW5zaWQgKGRlcHJlY2F0ZWQpwqDCoCAwDQo+IGxvZ19y
-b290X2xldmVswqDCoMKgwqDCoMKgwqDCoMKgIDANCj4gdG90YWxfYnl0ZXPCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgMjgwMDEwMzkyODYyNzINCj4gYnl0ZXNfdXNlZMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIDMzMDY5Mzc5NzQ3ODQNCj4gc2VjdG9yc2l6ZcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIDE2Mzg0DQo+IG5vZGVzaXplwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDE2
-Mzg0DQo+IGxlYWZzaXplIChkZXByZWNhdGVkKcKgwqAgMTYzODQNCj4gc3RyaXBlc2l6ZcKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIDE2Mzg0DQo+IHJvb3RfZGlywqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIDYNCj4gbnVtX2RldmljZXPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMg0K
-PiBjb21wYXRfZmxhZ3PCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDB4MA0KPiBjb21wYXRfcm9fZmxh
-Z3PCoMKgwqDCoMKgwqDCoMKgIDB4Mw0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAoIEZSRUVfU1BBQ0VfVFJFRSB8DQo+ICDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBGUkVFX1NQQUNFX1RSRUVfVkFMSUQg
-KQ0KPiBpbmNvbXBhdF9mbGFnc8KgwqDCoMKgwqDCoMKgwqDCoCAweDEzNDENCj4gIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKCBNSVhFRF9CQUNLUkVGIHwN
-Cj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEVY
-VEVOREVEX0lSRUYgfA0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgU0tJTk5ZX01FVEFEQVRBIHwNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIE5PX0hPTEVTIHwNCj4gIMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFpPTkVEICkNCj4gY2FjaGVfZ2Vu
-ZXJhdGlvbsKgwqDCoMKgwqDCoMKgIDANCj4gdXVpZF90cmVlX2dlbmVyYXRpb27CoMKgwqAgODAz
-NzINCj4gZGV2X2l0ZW0udXVpZMKgwqDCoMKgwqDCoMKgwqDCoMKgIDc1NGYyOTMyLTM4ZTUtNDZi
-NC05M2QyLWRkNjk5MDc2ODc5ZQ0KPiBkZXZfaXRlbS5mc2lkwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-YjViMmQ3ZDktOWYyNy00OTA3LWE1NTgtNzdlOGU4NmRmOTMzIFttYXRjaF0NCj4gZGV2X2l0ZW0u
-dHlwZcKgwqDCoMKgwqDCoMKgwqDCoMKgIDANCj4gZGV2X2l0ZW0udG90YWxfYnl0ZXPCoMKgwqAg
-MTQwMDA1MTk2NDMxMzYNCj4gZGV2X2l0ZW0uYnl0ZXNfdXNlZMKgwqDCoMKgIDE4MjM3NTA0ODgw
-NjQNCj4gZGV2X2l0ZW0uaW9fYWxpZ27CoMKgwqDCoMKgwqAgMTYzODQNCj4gZGV2X2l0ZW0uaW9f
-d2lkdGjCoMKgwqDCoMKgwqAgMTYzODQNCj4gZGV2X2l0ZW0uc2VjdG9yX3NpemXCoMKgwqAgMTYz
-ODQNCj4gZGV2X2l0ZW0uZGV2aWTCoMKgwqDCoMKgwqDCoMKgwqAgMQ0KPiBkZXZfaXRlbS5kZXZf
-Z3JvdXDCoMKgwqDCoMKgIDANCj4gZGV2X2l0ZW0uc2Vla19zcGVlZMKgwqDCoMKgIDANCj4gZGV2
-X2l0ZW0uYmFuZHdpZHRowqDCoMKgwqDCoCAwDQo+IGRldl9pdGVtLmdlbmVyYXRpb27CoMKgwqDC
-oCAwDQo+IA0K
+[BUG]
+There is a bug report that a canceled csum conversion (still
+experimental feature) resulted unexpected super flags:
+
+csum_type		0 (crc32c)
+csum_size		4
+csum			0x14973811 [match]
+bytenr			65536
+flags			0x1000000001
+			( WRITTEN |
+			  CHANGING_FSID_V2 )
+magic			_BHRfS_M [match]
+
+Meanwhile for a fs under csum conversion it should have either
+CHANGING_DATA_CSUM or CHANGING_META_CSUM.
+
+[CAUSE]
+It turns out that, due to btrfs-progs keeps its own extra flags inside
+its own ctree.h headers, not the shared uapi headers, we have
+conflicting super flags:
+
+kernel-shared/uapi/btrfs_tree.h:#define BTRFS_SUPER_FLAG_METADUMP_V2	(1ULL << 34)
+kernel-shared/uapi/btrfs_tree.h:#define BTRFS_SUPER_FLAG_CHANGING_FSID	(1ULL << 35)
+kernel-shared/uapi/btrfs_tree.h:#define BTRFS_SUPER_FLAG_CHANGING_FSID_V2 (1ULL << 36)
+kernel-shared/ctree.h:#define BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM	(1ULL << 36)
+kernel-shared/ctree.h:#define BTRFS_SUPER_FLAG_CHANGING_META_CSUM	(1ULL << 37)
+
+Note that CHANGING_FSID_V2 is conflicting with CHANGING_DATA_CSUM.
+
+[FIX]
+The proper fix would be done inside btrfs-progs, but to keep everything
+properly recorded, we should have everything inside the same uapi
+header.
+
+This patch would copy all the new flags into uapi header, and change the
+value for CHANGING_DATA_CSUM and CHANGING_META_CSUM, while keep the
+value of CHANGING_BG_TREE untouched.
+
+Thankfully csum change is still only experimental and all those
+CHANGING_* flags are transient (only for btrfs-progs to resume the
+conversion, and kernel will reject them all), the damage is still minor.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Keep the number consistent between kernel and btrfs-progs
+---
+ include/uapi/linux/btrfs_tree.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index d24e8e121507..c7636331e566 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -777,6 +777,14 @@ struct btrfs_stripe_extent {
+ #define BTRFS_SUPER_FLAG_CHANGING_FSID	(1ULL << 35)
+ #define BTRFS_SUPER_FLAG_CHANGING_FSID_V2 (1ULL << 36)
+ 
++/*
++ * Those are temporaray flags utilized by btrfs-progs to do offline conversion.
++ * They are rejected by kernel.
++ * But still keep them all here to avoid conflicts.
++ */
++#define BTRFS_SUPER_FLAG_CHANGING_BG_TREE	(1ULL << 38)
++#define BTRFS_SUPER_FLAG_CHANGING_DATA_CSUM	(1ULL << 39)
++#define BTRFS_SUPER_FLAG_CHANGING_META_CSUM	(1ULL << 40)
+ 
+ /*
+  * items in the extent btree are used to record the objectid of the
+-- 
+2.45.2
+
 
