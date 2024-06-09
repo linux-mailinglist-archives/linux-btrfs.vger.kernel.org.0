@@ -1,154 +1,132 @@
-Return-Path: <linux-btrfs+bounces-5582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5583-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 700CB901832
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 23:02:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 329E2901845
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 23:20:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDC6EB20F67
-	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 21:02:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D09601F212A2
+	for <lists+linux-btrfs@lfdr.de>; Sun,  9 Jun 2024 21:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1613F1CAB9;
-	Sun,  9 Jun 2024 21:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D674F5FA;
+	Sun,  9 Jun 2024 21:20:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LgsgMB3y";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="biaBwvN2"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cOC6iF44"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7D914295
-	for <linux-btrfs@vger.kernel.org>; Sun,  9 Jun 2024 21:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8610718C22;
+	Sun,  9 Jun 2024 21:20:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717966957; cv=none; b=P3LPbqplqF7rbUGwq0n67iYoVRaoOB8Lq3dnEFy5N4TUB1Gl1B6sZmFqAovqs0gknGQkz723/VYo971DTgINKi0cx7Md2H9V/a/HylfWLaOE/65SfFUBfdwqVOFszWnNOQK91sAlQ5ioDWfCoMHrBlyRdKmvHv9BWrx4lS2W9Wg=
+	t=1717968024; cv=none; b=pnXrps0RUyu206PEU8R/putQ4nrnXV5XNJrP/nV91VxqeNKK5lnWUHhCWLiiaI5jfg8nffvg8lVg3ghOw4rLsZvEkcAqSG3QPbUnmK8/wkGOln57zj/oHeYdRb8nLevYBGdBQMeGMfEk3yBMqzf+M3BAWpsDaCPp4n+A9DP7tmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717966957; c=relaxed/simple;
-	bh=Li5UtRw8T4tfVDapexh6oQTEJavrzESTniuR8CV55i0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=GV1X25FAnKp/T2reKQUwXVKwp8y9UcO9CtnfBib8eNBoXg7v06ZS/JpC3Xi6aJeOs+XU9ipEqPtMLip8strXO6eoHhI0i5W0sB2DmMpoeXvw2FlqwOEww8Jj8+nDsmwjrCdwRs+M9b3FXL3RvbVyTyWOJyKpKemlOFzUFH6xFRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LgsgMB3y; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=biaBwvN2; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BB1B221A4A
-	for <linux-btrfs@vger.kernel.org>; Sun,  9 Jun 2024 21:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717966948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Udc7tOpeReATE1SY74mI1yr92hiKhRmOB7ucuNkF1sM=;
-	b=LgsgMB3yYPxrO7nfCcDBzZJl7yQYY7AquoRdew3lFx44+uSNgx+z47opjUFrz2ywqTvvxK
-	Es+PVPuCRY643HvMGSEybnIQFHd8YfVW84flhizDaOAe+nU1rfgojtLuvC+UMlB213+a5u
-	cLF3UZJ9MCkL3UB4Qwlle3XmFCOrtGg=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=biaBwvN2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1717966946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Udc7tOpeReATE1SY74mI1yr92hiKhRmOB7ucuNkF1sM=;
-	b=biaBwvN2giSaqU2YitTzDpo2fp0QrYjfLxfpFGK3qCLH3xCeuS4LDv2ZJnXW4DclId+rXY
-	130ty2EEswjbQLZ1oFSitifLPcRK0pTWR/J4404pNGlqrvr9H4LYhdKFBDtrYlLGFRdqwm
-	KOwr9T65RwvDYDxOBqu3bcTERJEiCSo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C746C13A97
-	for <linux-btrfs@vger.kernel.org>; Sun,  9 Jun 2024 21:02:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Y5JnHWEYZmaFNAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 09 Jun 2024 21:02:25 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: subpage: remove the unused error bitmap dumpping
-Date: Mon, 10 Jun 2024 06:32:07 +0930
-Message-ID: <b965322f7a4825bc5f4a094f3138e1369534f8bb.1717966923.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1717968024; c=relaxed/simple;
+	bh=BuBxWK6zUA+6c3zugRmfDYEDY4Qkmac/nkrzIbKU8ZY=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=bTsQYRCo++p+1YTimVriKLIjFp5RXRTXeQjw5mig2crbw3pAq6L1FcR2rvSzaFOEZ1xXyUb8eKR3mJBaUQLTRViTLLeJOGwL0bX3/u5UHKGADjaXVNBs/++Jpbx5wzGsPkxEjLokxJAFPOGkc0q9mpBkgvXKwNFe9EAJ67QnK+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cOC6iF44; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1717968016; x=1718572816; i=quwenruo.btrfs@gmx.com;
+	bh=BuBxWK6zUA+6c3zugRmfDYEDY4Qkmac/nkrzIbKU8ZY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=cOC6iF44Sg14vS0PtNPqR/GoNAZuyDTJ0hdDUFiNfdat9jtYtTBb6oJDEqojb7Wm
+	 qPux8PKmB/NhjHJUDQd6hVMliUQ89NFsWOOMtk9Ssy59FCxgYfYw37Rv6hfrXDgFd
+	 e69rm487cCb32gRRKHIgZSjxpIBm1Gt5otrclsTCfgIAPfPrLTXK2UOX111G0tKBT
+	 R/Za8Btt/WseMx/3FF1i0Gi7brwT+UeizCCkbXXj12qODovaZMFljDRvCQij5jPjp
+	 AwB9SHYCM+zzEAIMdt79Bf0T0oU/jj006rpEUPHKX4wwdiebw2MIa1NLLL4t5Xd+6
+	 BxgHqjdI1Iy3l1rQjw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MStCY-1rqf6v1imc-00MGxT; Sun, 09
+ Jun 2024 23:20:16 +0200
+Message-ID: <960aa841-8d7c-413f-9a1b-0364ae3b9493@gmx.com>
+Date: Mon, 10 Jun 2024 06:50:11 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.24 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	BAYES_HAM(-0.23)[72.39%];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email]
-X-Rspamd-Queue-Id: BB1B221A4A
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-fsdevel@vger.kernel.org,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: The proper handling of failed IO error?
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WQvn05ZDkwcI1DIt7MwycALGo25CsUb79JLfOSucQTxG19MNLF5
+ 1rqjDrrolzNg3fYUxsclZidg5YEhPfm47Zf4kaH0USzLlJs2w9MzqNiZEIhyP/+eA/phaBe
+ Z/G6drGUEayBSCOWDY3iew3T8ni72terxPuwutZQkz9awz3qp/vIi4BdKU6wWVokYOaheId
+ dPId93kG42UxY/PpjSeVw==
 X-Spam-Flag: NO
-X-Spam-Score: -0.24
-X-Spamd-Bar: /
+UI-OutboundReport: notjunk:1;M01:P0:g3LRJgwpr88=;NcJSxFNN8Qu+cz/qeR6Ox2TQy2L
+ 2PTX9Z7maYQ1kc42tTLfVczL/bS/t7J23FRXmzWt9AwuFn9loWFKEaZM3RC6wwRU86raseDg3
+ iB8G9UAVTExayG1PKvxf+pkKdPBiWWqJHFrs5lTfqvY45t6bYbY7p132b5PStOJZMHw+mId81
+ aqQcuifnrnj49zyqrb3gsODCc2YFzFw/cQ2wzYCh7rceaTJRKxPhgnaLCq3HUyIMcMh+gCDLH
+ Zgk/p2kJ/v0zGEwJnONkFuP52pKJETM6RAV1gMaG5grsQodL7SWKkU/+7YC09yzzysYOEgZTu
+ pVbjX8XdZcY2vdZR9Nfdf8khdVCDw5y1VdJS6PHx/GHsDYx+wu/5Dw49yTWMENAl9el/XWtrB
+ TVUB1UypFPYbWCemseIampB3sS/teudZQKtTgXyRZKwowfgaz9SABc+2deSz+JpQO3J1R2noz
+ EPkgQXWKM0Bfv9mt10qIHEeGW4eJxk29o0WXsFs89cpMrXg9/QisIj2OfGUXUVjlMypZtoJ/u
+ KX22Q24K/scLaOcQR3R8vjWATy+GPn+FHwMYbkkl8VzttWsj98PrvqjOZ+6MgeZcqps7Ll1VW
+ jUYeIUDemOvtjuT52OPGPrX2uZO0r7eWbEOOorVJDzwnbjqD3Xby6/qOxoYD7t9jVYRBOvLYl
+ l/6iWku4AUQOQnMyAYC2QVlreDqXWXLlz8D8H1LU7zmiNnQzuO1tMHuYwOEYmykOIZkHqt6MH
+ UOHfAA55qt+sK50EqYVqKdofLB//jBUDmMPtHUafpFr2BPkFKoiim9giE4lqAnoXep512SJxp
+ ANCw/vMbtFirWxdEa5M96hRfpNIGJuA59OTQsbIP5KXn4=
 
-Since commit 2b2553f12355 ("btrfs: stop setting PageError in the data I/O
-path") btrfs no longer utilize subpage error bitmaps anymore, but the
-commit forgot to remove the error bitmap in btrfs_subpage_dump_bitmap(),
-resulting possible meaningless result for the error bitmap.
+Hi,
 
-Fix it by just removing the error bitmap dumping.
+There is a recent (well a year ago) change in btrfs to remove the usage
+of page/folio error, which gets me wondering what would happen if we got
+a lot of write errors and high memory pressure?
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/subpage.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Yes, all file systems calls mapping_set_error() so that fsync call would
+return error, but I'm wondering what would happen to those folios that
+failed to be written?
 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index fc7db52e8f58..1a4717bcce23 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -909,7 +909,6 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
- 	struct btrfs_subpage_info *subpage_info = fs_info->subpage_info;
- 	struct btrfs_subpage *subpage;
- 	unsigned long uptodate_bitmap;
--	unsigned long error_bitmap;
- 	unsigned long dirty_bitmap;
- 	unsigned long writeback_bitmap;
- 	unsigned long ordered_bitmap;
-@@ -931,10 +930,9 @@ void __cold btrfs_subpage_dump_bitmap(const struct btrfs_fs_info *fs_info,
- 
- 	dump_page(folio_page(folio, 0), "btrfs subpage dump");
- 	btrfs_warn(fs_info,
--"start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl error=%*pbl dirty=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
-+"start=%llu len=%u page=%llu, bitmaps uptodate=%*pbl dirty=%*pbl writeback=%*pbl ordered=%*pbl checked=%*pbl",
- 		    start, len, folio_pos(folio),
- 		    subpage_info->bitmap_nr_bits, &uptodate_bitmap,
--		    subpage_info->bitmap_nr_bits, &error_bitmap,
- 		    subpage_info->bitmap_nr_bits, &dirty_bitmap,
- 		    subpage_info->bitmap_nr_bits, &writeback_bitmap,
- 		    subpage_info->bitmap_nr_bits, &ordered_bitmap,
--- 
-2.45.2
+Those folios has their DIRTY flag cleared before submission, and and
+their endio functions, the WRITEBACK flags is also cleared.
 
+Meaning after such write failure, the page/folio has UPTODATE flag, and
+no DIRTY/ERROR/WRITEBACK flags (at least for btrfs and ext4, meanwhile
+iomap still set the ERROR flag).
+
+Would any memory pressure just reclaim those pages/folios without them
+really reaching the disk?
+
+Thanks,
+Qu
 
