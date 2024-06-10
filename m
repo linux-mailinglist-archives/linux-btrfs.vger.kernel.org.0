@@ -1,53 +1,51 @@
-Return-Path: <linux-btrfs+bounces-5608-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5609-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF8B69021E4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 14:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59A3190220A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 14:53:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 860BE1C20EB7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 12:48:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D3121C21E8E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 12:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B4680BFF;
-	Mon, 10 Jun 2024 12:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B898121F;
+	Mon, 10 Jun 2024 12:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="iP1q9R1Z"
+	dkim=pass (1024-bit key) header.d=bouton.name header.i=@bouton.name header.b="FLxaG3hi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
+Received: from mail.bouton.name (ns.bouton.name [109.74.195.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A0E80BFC
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 12:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA5A8811E6
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 12:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.74.195.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718023677; cv=none; b=fGu1enbhYPo9wwwtLdYgxPqns7Tw5MBpFF/+GvWTqKt6g9DGmXuUF905IPDgNkrmZ1wKWLu+P1d6tG9wPZpUxMDofvANoiGmd2jZ2qsNtXqe1XpRrELhOPUl+zL94HHZ2KoriP5bYtZGDRJ4s3zzDXjTBj1PkIbf7B7SAqedIi0=
+	t=1718023970; cv=none; b=R4PpbNhNoiATYv9ZKjG/sAWebMDWxhIpYaMfMmwIH0MC801I4JYnIUu8CsqXwejGDl2ciHZXhtF44dw/vkMycLlDO47Om1o2ENQCUwKcYHywbLB3fKF3vmnF118OKo+RlSSIVU20v/NRSaEHoBHQRn8cORaq33B3jXTmHeWtBXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718023677; c=relaxed/simple;
-	bh=ir7LfmZOtObJs0LizOl0RE1krowLaW1Jn5pgNrW7+dc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eskhEvBibWMLOkcQMIbNQutXkDs55JqzQXcwUHAr2v45+COqglToaR3eFKvGug2riUmw6mdYoJeIKr4dD/Q6zhH1GRoefK7OtKs35qTM0RbpQnHjHvtpk/ZefQ4MHIhsJVPE6XjbeLLzgUh6xz2NCPdojBZtgHHUgZyToR7gs4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=iP1q9R1Z; arc=none smtp.client-ip=54.207.19.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1718023663;
-	bh=ir7LfmZOtObJs0LizOl0RE1krowLaW1Jn5pgNrW7+dc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=iP1q9R1Zx/jKfwkAiFYLuuJ3qwn8Szmg8sO0RMn4aD3lb2xmxXBdDJEMOhw+6dFxS
-	 Q+57it+zdKLC2caR2ZG8sV63NCxOYhnFUSRiiJXsnAdzCwjjaVlYn08bfiX1Gl/JoR
-	 Icd6sY+VwQNT3EzvG4/r0VKT02CeDoN0gpBsBjzY=
-X-QQ-mid: bizesmtp86t1718023661tbkihy3b
-X-QQ-Originating-IP: H+3K2vM1/8es7nDZ/oCwv12I3fUFYC7NZThpD7EjqUE=
-Received: from [192.168.1.5] ( [223.150.220.201])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 10 Jun 2024 20:47:40 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 12239958338360141999
-Message-ID: <2112398B543F8373+1a8c3746-b3f1-436a-97b1-debe2682cbf1@bupt.moe>
-Date: Mon, 10 Jun 2024 20:47:37 +0800
+	s=arc-20240116; t=1718023970; c=relaxed/simple;
+	bh=FVHctO2xRGS1q36X7yLdnRSswy/HEY4xYI/jdt+tEf4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=h2xdOlWODMT/9caRQkMBON7aHYt1pZKi1sW0yZPm+VL7z4KEmo6ju3m2ArWeekr6IhdFQyAf3SIlZNUCYx4F1ToVIgOkcOJfxVRpOnYw59q7x2jVGwwJPmkyO+PD8Mle4ynR4d2zaj+AHzSTEaXfeUWQW8xC6wmA9Wc5eyloTCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bouton.name; spf=pass smtp.mailfrom=bouton.name; dkim=pass (1024-bit key) header.d=bouton.name header.i=@bouton.name header.b=FLxaG3hi; arc=none smtp.client-ip=109.74.195.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bouton.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bouton.name
+Received: from [192.168.10.100] (052559474.box.freepro.com [82.96.130.55])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.bouton.name (Postfix) with ESMTPSA id 4FF70C48D;
+	Mon, 10 Jun 2024 14:52:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bouton.name;
+	s=default; t=1718023956;
+	bh=SABmZeSRH7Ws0ahdWmIaXMQuVj6r7i/H8tVk/SMtuc4=;
+	h=Date:Subject:From:To:References:In-Reply-To;
+	b=FLxaG3hiMUAe1HvFA2o8qjdnWkCavNx9NC4Hhw4JqYkstDZb0YY7pwjQXZ8KGDYkR
+	 ghpDD2FoLvsCixJQMLbcgXA+yBEw9NDOngqihj32iE/o9wQwG6lMbI8r9VzFdV3zXP
+	 UPi3Q3wx/VoPAThqmxrP5P+ImePuzktLci+ZE1mI=
+Message-ID: <9636d822-91de-432f-9073-8ce93aad26d3@bouton.name>
+Date: Mon, 10 Jun 2024 14:52:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,124 +53,184 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] unable to mount zoned volume after force shutdown
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Cc: Naohiro Aota <Naohiro.Aota@wdc.com>
-References: <CD222A40B0129641+992beaf5-2aa9-4ad4-bb3f-ee915393bab1@bupt.moe>
- <ab92f3bd-c1ca-496f-bcf7-d806459d9ce7@wdc.com>
+Subject: Re: BUG: scrub reports uncorrectable csum errors linked to readable
+ file (data: single)
+From: Lionel Bouton <lionel-subscription@bouton.name>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <c2fa6c37-d2a8-4d77-b095-e04e3db35ef0@bouton.name>
+ <4525e502-c209-4672-ae32-68296436d204@gmx.com>
+ <1df4ce53-8cf9-40b1-aa43-bf443947c833@bouton.name>
+ <80456d11-9859-402c-a77c-5c3b98b755a5@gmx.com>
+ <abe791bd-0e3e-4a07-a1ff-923231e145ad@bouton.name>
+ <a75a1a98-b150-470d-acf5-6e504a2202fc@bouton.name>
+ <41a2a18f-6937-400a-b34b-c89b946535e1@gmx.com>
+ <e6bfb0b9-dd9f-46d5-ae77-c90047a4cb04@bouton.name>
 Content-Language: en-US
-From: HAN Yuwei <hrx@bupt.moe>
-In-Reply-To: <ab92f3bd-c1ca-496f-bcf7-d806459d9ce7@wdc.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------4ba9l15bXR0sGYjxTKb7bxDM"
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------4ba9l15bXR0sGYjxTKb7bxDM
-Content-Type: multipart/mixed; boundary="------------PyweOBrsOjXoAPFFFtpaor0f";
- protected-headers="v1"
-From: HAN Yuwei <hrx@bupt.moe>
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Cc: Naohiro Aota <Naohiro.Aota@wdc.com>
-Message-ID: <1a8c3746-b3f1-436a-97b1-debe2682cbf1@bupt.moe>
-Subject: Re: [BUG] unable to mount zoned volume after force shutdown
-References: <CD222A40B0129641+992beaf5-2aa9-4ad4-bb3f-ee915393bab1@bupt.moe>
- <ab92f3bd-c1ca-496f-bcf7-d806459d9ce7@wdc.com>
-In-Reply-To: <ab92f3bd-c1ca-496f-bcf7-d806459d9ce7@wdc.com>
-
---------------PyweOBrsOjXoAPFFFtpaor0f
+In-Reply-To: <e6bfb0b9-dd9f-46d5-ae77-c90047a4cb04@bouton.name>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 
-DQrlnKggMjAyNC82LzEwIDE2OjUzLCBKb2hhbm5lcyBUaHVtc2hpcm4g5YaZ6YGTOg0KPiBP
-biAwOS4wNi4yNCAwNDoyNCwgSEFOIFl1d2VpIHdyb3RlOg0KPj4gSSBjYW4ndCBtb3VudCB2
-b2x1bWUgb24gbXVsdGlwbGUgem9uZWQgZGV2aWNlIHdoaWNoIGRhdGEgcHJvZmlsZSBpcw0K
-Pj4gc2luZ2xlICYgbWV0YWRhdGEgcHJvZmlsZSBpcyByYWlkMS4NCj4+IEl0IGV4cGVyaWVu
-Y2VkIG11bHRpcGxlIGZvcmNlZCBzaHV0ZG93biBkdWUgdG8ga2VybmVsIDYuMTAgY2FuJ3QN
-Cj4+IHByb3Blcmx5IHNodXRkb3duIG9uIGxvb25nYXJjaC4NCj4+DQo+PiAjIGRtZXNnDQo+
-Pg0KPj4gWyAxOTYzLjY5ODc5M10gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYik6IGZpcnN0IG1v
-dW50IG9mIGZpbGVzeXN0ZW0NCj4+IGI1YjJkN2Q5LTlmMjctNDkwNy1hNTU4LTc3ZThlODZk
-ZjkzMw0KPj4gWyAxOTYzLjcwNzgwMV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYik6IHVzaW5n
-IGNyYzMyYyAoY3JjMzJjLWdlbmVyaWMpDQo+PiBjaGVja3N1bSBhbGdvcml0aG0NCj4+IFsg
-MTk2My43MTU1OTddIEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiB1c2luZyBmcmVlLXNwYWNl
-LXRyZWUNCj4+IFsgMTk2NS40OTIwNjZdIEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiBob3N0
-LW1hbmFnZWQgem9uZWQgYmxvY2sgZGV2aWNlDQo+PiAvZGV2L3NkYiwgNTIxNTYgem9uZXMg
-b2YgMjY4NDM1NDU2IGJ5dGVzDQo+PiBbIDE5NjYuOTUzNTkwXSBCVFJGUyBpbmZvIChkZXZp
-Y2Ugc2RiKTogaG9zdC1tYW5hZ2VkIHpvbmVkIGJsb2NrIGRldmljZQ0KPj4gL2Rldi9zZGMs
-IDUyMTU2IHpvbmVzIG9mIDI2ODQzNTQ1NiBieXRlcw0KPj4gWyAxOTY3LjM0Njc1OF0gQlRS
-RlMgaW5mbyAoZGV2aWNlIHNkYik6IHpvbmVkIG1vZGUgZW5hYmxlZCB3aXRoIHpvbmUNCj4+
-IHNpemUgMjY4NDM1NDU2DQo+PiBbIDIwMjYuMjg3MzU2XSBCVFJGUyBlcnJvciAoZGV2aWNl
-IHNkYik6IHpvbmVkOiB3cml0ZSBwb2ludGVyIG9mZnNldA0KPj4gbWlzbWF0Y2ggb2Ygem9u
-ZXMgaW4gcmFpZDEgcHJvZmlsZQ0KPj4gWyAyMDI2LjI5NjQ0NV0gQlRSRlMgZXJyb3IgKGRl
-dmljZSBzZGIpOiB6b25lZDogZmFpbGVkIHRvIGxvYWQgem9uZSBpbmZvDQo+PiBvZiBiZyA1
-Mzk5ODQ3NjMyODk2DQo+PiBbIDIwMjYuMzA0NTc2XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNk
-Yik6IGZhaWxlZCB0byByZWFkIGJsb2NrIGdyb3VwczogLTUNCj4+IFsgMjAyNi4zNTI1NDdd
-IEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiKTogb3Blbl9jdHJlZSBmYWlsZWQNCj4+DQo+IENh
-biB5b3UgY2hlY2sgdGhlIHdyaXRlIHBvaW50ZXJzIGZvciB0aGUgem9uZXMgbWFwcGluZyB0
-byB0aGlzIGJsb2NrIGdyb3VwPw0KPg0KPiB0aGF0IHNob3VsZCBiZQ0KPiBibGt6b25lIHJl
-cG9ydCAtYyAxIC1vIDB4Mjc0QTAwMDAwIC9kZXYvc2RiDQojIGJsa3pvbmUgcmVwb3J0IC1j
-IDEgLW8gMHgyNzRBMDAwMDAgL2Rldi9zZGINCnN0YXJ0OiAweDI3NGEwMDAwMCwgbGVuIDB4
-MDgwMDAwLCBjYXAgMHgwODAwMDAsIHdwdHIgMHgwMDAwMDAgcmVzZXQ6MCANCm5vbi1zZXE6
-MCwgemNvbmQ6IDEoZW0pIFt0eXBlOiAyKFNFUV9XUklURV9SRVFVSVJFRCldDQojIGJsa3pv
-bmUgcmVwb3J0IC1jIDEgLW8gMHgyNzRBMDAwMDAgL2Rldi9zZGMNCnN0YXJ0OiAweDI3NGEw
-MDAwMCwgbGVuIDB4MDgwMDAwLCBjYXAgMHgwODAwMDAsIHdwdHIgMHgwMDAwMDAgcmVzZXQ6
-MCANCm5vbi1zZXE6MCwgemNvbmQ6IDEoZW0pIFt0eXBlOiAyKFNFUV9XUklURV9SRVFVSVJF
-RCldDQoNCkZZSSwNCiMgYnRyZnMgaW5zcGVjdC1pbnRlcm5hbCBkdW1wLXRyZWUgL2Rldi9z
-ZGJ8Z3JlcCAtQSAxMCAtQiAxMCA1Mzk5ODQ3NjMyODk2DQogwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGlvX2FsaWduIDY1NTM2IGlvX3dpZHRoIDY1NTM2IHNlY3Rvcl9zaXpl
-IDE2Mzg0DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG51bV9zdHJpcGVzIDEg
-c3ViX3N0cmlwZXMgMQ0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgc3RyaXBlIDAgZGV2aWQgMSBvZmZzZXQgMTgxOTE4NzA4NTMxMg0KIMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2X3V1aWQgNzU0
-ZjI5MzItMzhlNS00NmI0LTkzZDItZGQ2OTkwNzY4NzllDQogwqDCoMKgwqDCoMKgwqAgaXRl
-bSAxMDQga2V5IChGSVJTVF9DSFVOS19UUkVFIENIVU5LX0lURU0gNTM5OTU3OTE5NzQ0MCkg
-DQppdGVtb2ZmIDc4NTEgaXRlbXNpemUgODANCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgbGVuZ3RoIDI2ODQzNTQ1NiBvd25lciAyIHN0cmlwZV9sZW4gNjU1MzYgdHlwZSBE
-QVRBfHNpbmdsZQ0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpb19hbGlnbiA2
-NTUzNiBpb193aWR0aCA2NTUzNiBzZWN0b3Jfc2l6ZSAxNjM4NA0KIMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBudW1fc3RyaXBlcyAxIHN1Yl9zdHJpcGVzIDENCiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cmlwZSAwIGRldmlk
-IDIgb2Zmc2V0IDE4MTk0NTU1MjA3NjgNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIGRldl91dWlkIGVlNjY5Yjg1LWY2NDEtNGQ2YS05YTY2LWRh
-MTM5MDdkNTViMg0KIMKgwqDCoMKgwqDCoMKgIGl0ZW0gMTA1IGtleSAoRklSU1RfQ0hVTktf
-VFJFRSBDSFVOS19JVEVNIDUzOTk4NDc2MzI4OTYpIA0KaXRlbW9mZiA3NzM5IGl0ZW1zaXpl
-IDExMg0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsZW5ndGggMjY4NDM1NDU2
-IG93bmVyIDIgc3RyaXBlX2xlbiA2NTUzNiB0eXBlIA0KTUVUQURBVEF8UkFJRDENCiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW9fYWxpZ24gNjU1MzYgaW9fd2lkdGggNjU1
-MzYgc2VjdG9yX3NpemUgMTYzODQNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-bnVtX3N0cmlwZXMgMiBzdWJfc3RyaXBlcyAxDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJpcGUgMCBkZXZpZCAxIG9mZnNldCAxODE5NDU1
-NTIwNzY4DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBkZXZfdXVpZCA3NTRmMjkzMi0zOGU1LTQ2YjQtOTNkMi1kZDY5OTA3Njg3OWUNCiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cmlwZSAxIGRl
-dmlkIDIgb2Zmc2V0IDE4MTk3MjM5NTYyMjQNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRldl91dWlkIGVlNjY5Yjg1LWY2NDEtNGQ2YS05YTY2
-LWRhMTM5MDdkNTViMg0KIMKgwqDCoMKgwqDCoMKgIGl0ZW0gMTA2IGtleSAoRklSU1RfQ0hV
-TktfVFJFRSBDSFVOS19JVEVNIDU0MDAxMTYwNjgzNTIpIA0KaXRlbW9mZiA3NjU5IGl0ZW1z
-aXplIDgwDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGxlbmd0aCAyNjg0MzU0
-NTYgb3duZXIgMiBzdHJpcGVfbGVuIDY1NTM2IHR5cGUgREFUQXxzaW5nbGUNCiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW9fYWxpZ24gNjU1MzYgaW9fd2lkdGggNjU1MzYg
-c2VjdG9yX3NpemUgMTYzODQNCg0KPiBhbmQgZm9yIHRoZSBvdGhlciBkZXZpY2UgYXMgd2Vs
-bA0KPg0KPiBUaGFua3MsDQo+IAlKb2hhbm5lcw0K
+Hi,
 
---------------PyweOBrsOjXoAPFFFtpaor0f--
+Here is a quick progress update and information about total process size 
+that could be useful to others. See below.
 
---------------4ba9l15bXR0sGYjxTKb7bxDM
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+Le 09/06/2024 à 02:16, Lionel Bouton a écrit :
+> Le 09/06/2024 à 00:48, Qu Wenruo a écrit :
+>>
+>>
+>> 在 2024/6/9 01:45, Lionel Bouton 写道:
+>>> Hi,
+>>>
+>>> To keep this short I've removed most of past exchanges as this is just
+>>> to keep people following this thread informed on my progress.
+>>>
+>>> Le 07/06/2024 à 01:46, Lionel Bouton a écrit :
+>>>>
+>>>> [...]
+>>>>>> I briefly considered doing just that... but then I found out that 
+>>>>>> the
+>>>>>> scrub errors were themselves in error and the on disk data was 
+>>>>>> matching
+>>>>>> the checksums. When I tried to read the file not only didn't the
+>>>>>> filesystem report an IO error (if I'm not mistaken it should if the
+>>>>>> csum
+>>>>>> doesn't match) but the file content matched the original file 
+>>>>>> fetched
+>>>>>> from its source.
+>>>>>
+>>>>> Got it, this is really weird now.
+>>>>>
+>>>>> What scrub doing is read the data from disk (without bothering page
+>>>>> cache), and verify against checksums.
+>>>>>
+>>>>> Would it be possible to run "btrfs check --check-data-csum" on the
+>>>>> unmounted/RO mounted fs?
+>>>>
+>>>> Yes with some caveats as the scrub takes approximately a week to
+>>>> complete and I can't easily stop the services on this system for a 
+>>>> week.
+>>>> The block device is RBD on Ceph, so what I can do is take a block
+>>>> level snapshot, map this snapshot to another system and run btrfs
+>>>> check --check-data-csum there. If the IO is the same than btrfs scrub
+>>>> this will probably take between 3 to 5 days to complete. I'll have to
+>>>> run this on another VM with the same kernel and btrfs-progs versions,
+>>>> BTRFS doesn't like having 2 devices showing up with the same internal
+>>>> identifiers...
+>>>>
+>>>>>
+>>>>> That would output the error for each corrupted sector (without
+>>>>> ratelimit), so that you can record them all.
+>>>>> And try to do logical-resolve to find each corrupted location?
+>>>>>
+>>>>> If btrfs check reports no error, it's 100% sure scrub is to blamce.
+>>>>>
+>>>>> If btrfs check reports error, and logical-resolve failed to locate 
+>>>>> the
+>>>>> file and its position, it means the corruption is in bookend exntets.
+>>>>>
+>>>>> If btrfs check reports error and logical-resolve can locate the 
+>>>>> file and
+>>>>> position, it's a different problem then.
+>>>>
+>>>> OK. I understand. This is time for me to go to sleep, but I'll work on
+>>>> this tomorrow. I'll report as soon as check-data-sum finds something
+>>>> or at the end in several days if it didn't.
+>>>
+>>> There is a bit of a slowdown. btrfs check was killed a couple hours ago
+>>> (after running more than a day) by the OOM killer. I anticipated 
+>>> that it
+>>> would need large amounts of memory (see below for the number of
+>>> files/dirs/subvolumes) and started it on a VM with 32GB but it wasn't
+>>> enough. It stopped after printing: "[4/7] checking fs roots".
+>>>
+>>> I restarted btrfs check --check-data-csum after giving 64GB of RAM to
+>>> the VM hoping this will be enough.
+>>> If it doesn't work and the oom-killer still is triggered I'll have to
+>>> move other VMs around and the realistic maximum I can give the VM used
+>>> for runing the btrfs check is ~200GB.
+>>
+>> That's why we have --mode=lowmem exactly for that reason.
+>>
+>> But please be aware that, the low memory usage is traded off by doing a
+>> lot of more IO.
+>>
+>
+> After the OOM I remembered reading discussions about the lowmem mode 
+> but even then I wasn't sure how to know at which point it would be 
+> needed : on one hand 32GB seems like a lot for a <20TB filesystem but 
+> this filesystem has both many files and snapshots.
+>
+> The metadata uses 75.4GB and I assume it is for the 2 copies of the 
+> dup profile. If most of the RAM used by check is a copy of the 
+> metadata, 64GB should be enough this time.
+>
+> The process is using 35.4G at the "checking fs roots" step and it has 
+> been so for several hours now.
 
------BEGIN PGP SIGNATURE-----
+The process began to grow again later during the "[4/7] checking fs 
+roots" step. It reached 59.6G and it is now at the "[5/7] checking csums 
+against data" step. I hotplugged 16GB of RAM to the VM for a total of 
+80GB while the process grew to give it some headroom.
+I hope this can be of use for someone trying to guess if lowmem mode 
+will be needed in their case. See below for some additional details 
+about this filesystem. This is btrfs-progs 6.8.1 on kernel 6.6.30.
 
-iHUEARYKAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZmb16QAKCRBLkKfpYfpB
-U63RAP475CNGH77YqD8V41Zm8qO6TtApAvZDpcSHH3TX/Ji8pgD8CpLX0iWo1OPU
-znX2m2Sh21+fKJl/zTXbVaEgYerZkgQ=
-=1ONu
------END PGP SIGNATURE-----
+The check now reads at approximately 35-40MB/s (this is currently 
+limited by contention on old slow HDDs scheduled to be replaced at the 
+end of the week in the Ceph cluster). Given the size of the filesystem, 
+we should get the result in 5 or 6 days.
 
---------------4ba9l15bXR0sGYjxTKb7bxDM--
+Best regards,
+Lionel
+
+>
+> Thanks for your patience,
+> Lionel
+>
+>> Thanks,
+>> Qu
+>>>
+>>> If someone familiar with btrfs check can estimate how much RAM is
+>>> needed, here is some information that might be relevant:
+>>> - according to the latest estimations there should be a total of around
+>>> 50M files and 2.5M directories in the 3 main subvolumes on this 
+>>> filesystem.
+>>> - for each of these 3 subvolumes there should be approximately 30
+>>> snapshots.
+>>>
+>>> Here is the filesystem usage output:
+>>> Overall:
+>>>      Device size:                  40.00TiB
+>>>      Device allocated:             31.62TiB
+>>>      Device unallocated:            8.38TiB
+>>>      Device missing:                  0.00B
+>>>      Device slack:                 12.00TiB
+>>>      Used:                         18.72TiB
+>>>      Free (estimated):             20.32TiB      (min: 16.13TiB)
+>>>      Free (statfs, df):            20.32TiB
+>>>      Data ratio:                       1.00
+>>>      Metadata ratio:                   2.00
+>>>      Global reserve:              512.00MiB      (used: 0.00B)
+>>>      Multiple profiles:                  no
+>>>
+>>> Data,single: Size:30.51TiB, Used:18.57TiB (60.87%)
+>>>     /dev/sdb       30.51TiB
+>>>
+>>> Metadata,DUP: Size:565.50GiB, Used:75.40GiB (13.33%)
+>>>     /dev/sdb        1.10TiB
+>>>
+>>> System,DUP: Size:8.00MiB, Used:3.53MiB (44.14%)
+>>>     /dev/sdb       16.00MiB
+>>>
+>>> Unallocated:
+>>>     /dev/sdb        8.38TiB
+>>>
+>>>
+>>> Best regards,
+>>> Lionel
+>>
+>
+>
+
 
