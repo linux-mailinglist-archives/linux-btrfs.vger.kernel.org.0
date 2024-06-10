@@ -1,173 +1,124 @@
-Return-Path: <linux-btrfs+bounces-5611-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5612-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42B5690245D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 16:44:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00AE2902679
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 18:19:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BA50B26BA3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 14:44:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 976F0289984
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 16:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3490F132117;
-	Mon, 10 Jun 2024 14:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A261F142E97;
+	Mon, 10 Jun 2024 16:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F3tf6bev"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF5223B0
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 14:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503F2142E7F
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 16:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718030566; cv=none; b=Wv8m+ZGe86UIe7OZm3LMfA1zLWT/ELqPvb3P2rsE43lsCCnzHh8BrL0DfF+yfC+yXEGfwzCxzl+88hlcFGDEZHhvm8ON6DMsdFcV0CkRHbjkuG/Ru2TRy85NH89PUt8GytvrB6yw2dd4wBoaDIGw2uBLr7jo20EQDRcrOtftZxU=
+	t=1718036339; cv=none; b=M8P7W0d4NwMebagTHGtwDme5vZ8LmY7iqqM9lH/KzBGZ63uV3YlXDzgoHBsgAsm0hKBdTkLzCVIgRWb+tl92zrdx50poIGM+aGjs5qmPZ/syeQyJm+NVgmfdoTlimYyvpVRXxWCl8vcQXcFWxYy0UpVnzGygrLStC7xtIS5yu/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718030566; c=relaxed/simple;
-	bh=9qrf3xygiMNOBNWHR3SCyqSOru6Oc0mQCM+CmGU31rA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P9WqV7famZvZ1K6vQFL9M6MZPY58uMTZBxrkBAEeOd36/FT3YwNafmrrjw7KRJ3Ti6JflzMgJISQINJfWd4vlDKacd0ejMBp5Jx5XT2MZ8BgL6Yyt5LOMGDKubEFVPCMTvUo1lvI+MViG1Tz1aLSRjYoNXybE1mlx8Pw38fERX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1718036339; c=relaxed/simple;
+	bh=72j0j9nDOUu6+J6Dqt7PUQoinhdNr7PWzYGfZPODnf4=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=FjZL6JCh6nmxaKnm2kINNSLCZ4wh89//SHb0r2Hg8lNosa1E8b2hQqkllYdobhuSdPGWPPxKWR1vW/7Cy4tbldHgJk0JQYbLVcUfDQWZ9Grr+++kwJvOeu3HW4X7CNheRdSBn4swcPQNnRXNvuiLake3RUm8glfoNMbtdGjq/eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F3tf6bev; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a6ef46d25efso333491166b.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 07:42:44 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-57c778b5742so1936584a12.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 09:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718036336; x=1718641136; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PRoNLq8SpncBvYsmw9gJOBUvYP9xaX9eMIiGDEO2vB0=;
+        b=F3tf6bev38j8G0X8rKHpsyrabe0gJhFs/QzWDtpwmXbYCSxDKI+RXS1WsyEPMuHlX+
+         2nD1E+z1CArTC28FoI8f5MIP8ZvG5iNpVTJDEigIQJzBep2NT60GdSsH1Rcfjz2pKllL
+         zDtLphR2t3u1lSvVwO3uC4f+gkl60KMqC1KNqA1jYr7PjTT7/WMeSBUvmeB3FjYJJPJN
+         eCBsCFat81HQaQWwpbGS5D5ixZAJNUv0Upu+ZCfosVs7aPqFXCsq24BOvOfjisjt7b/5
+         ioeR+wtS0W3v3xs78i7UAQmO7+Xd9e6aawtk+HFFwU1yGMIbq2eSITHjH1ZErUMh9o9z
+         y5Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718030563; x=1718635363;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VKbIEFzy9XfRP7NxUolQBIpZZNsGaATJrKxWLokaeSY=;
-        b=cGrFQg/xE8vYyrppHF8Z3RAb4ij/FJKDmfQq4AilFuqeqkmit8oKLLgE8RI4TZ4Rkd
-         q6JGklefX/wQbdGmsSfoV7zjOc8li6WzlfwtOEf3iv4BNjdtbfEZbcve9mAqIwRuBZGU
-         zZbhnmc85ceXKgEj1XXl5c8kF2HA/kClZiYVROAiVu2eY6MLuoLdPU03JRzB2nAsLxEo
-         MFKk0Y6pQBTP0YV4M5ZNlIsObKGJxqN0j0BbHmyDY544CMTp356GhHM68Tx+BfgcMkkU
-         hOjDx3ODuyblBFBb6+GXbHz2npVlNVtH4FR299j660iVQ6TIhJT+9ghOx9QBsnOwTb1x
-         RsgA==
-X-Gm-Message-State: AOJu0Yz1ywtIyYsSFn5a6DoM81nNJ/HH7us3HHIdA9BRSHZGM0EuxFVj
-	MUwCdw4rQLDj4lLhsvX3R0xuRPliDfopI2jIYLLKoaGx2K9YW0puzO8td0ra
-X-Google-Smtp-Source: AGHT+IHa9j2nnLK+KFjJ/4k4s5ewzbQzMtS5GtXWV6HwN0OFTjXuISiSL/h1pY9RxYyuvMTiGmrX1g==
-X-Received: by 2002:a17:906:f198:b0:a6f:e36:aba8 with SMTP id a640c23a62f3a-a6f0e36acd5mr358679166b.33.1718030562958;
-        Mon, 10 Jun 2024 07:42:42 -0700 (PDT)
-Received: from nuc.fritz.box (p200300f6f7253800fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f725:3800:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57aae0c9f88sm7629415a12.21.2024.06.10.07.42.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jun 2024 07:42:42 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Qu Wenruo <wqu@suse.com>,
-	Johannes Thumshirn <jth@kernel.org>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [RFC PATCH] btrfs: scrub: don't call calc_sector_number on failed bios
-Date: Mon, 10 Jun 2024 16:42:29 +0200
-Message-ID: <20240610144229.26373-1-jth@kernel.org>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1718036336; x=1718641136;
+        h=content-transfer-encoding:content-language:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PRoNLq8SpncBvYsmw9gJOBUvYP9xaX9eMIiGDEO2vB0=;
+        b=f1+QxMplfwK6a9JbQlaRaTOthUKdQY2CKjvhcuQQpkOWztvyLsu5cd0hBx40aGP/3Z
+         8hepYnCo12uWEdRA0bhe8m51Zv4zQ1ucejbqpW55jM0vsVFsyPSQM4ANI6PY/DZWed7d
+         2E3qw2wuY+FA0TMUmoHEbD5n+8TZSePpRk1Cqy9lmVh5plFtIPnKastDLaER2qm3yslO
+         IXy6wJ3hanZweI4tMG9Zl5G31yKmgdQhxpVDFHdPZgxGp53AvywQBGOMvI3ittpNVJyV
+         1kEkTggPZeOuE5kfUan0ECzrYsErTNo/IL5bViPaEtibGMAFUKrPth7qFwff719b1XJ8
+         KgjQ==
+X-Gm-Message-State: AOJu0YwKC9ie4SWNejYVl84R3mUe6cf8VW+TbPe0TclgWv+gyvqvgi0T
+	TJGkxkxQ+hugqgLjl4ctEHoPtmr4XwkaYedI9OWfKwG5/8Qcn0m6QoCrSg==
+X-Google-Smtp-Source: AGHT+IGBPnL04cIK/RvzoMNXO8G7E3kgkqM6NGDCaxaMHURy/VOmzuPGdu/qPoe10LSb6pWcCX+XdQ==
+X-Received: by 2002:a50:9556:0:b0:57c:6953:2cac with SMTP id 4fb4d7f45d1cf-57c69532cbcmr3511945a12.22.1718036336278;
+        Mon, 10 Jun 2024 09:18:56 -0700 (PDT)
+Received: from [10.1.1.2] ([77.253.223.98])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57aae0ca9c9sm7676044a12.22.2024.06.10.09.18.55
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 Jun 2024 09:18:56 -0700 (PDT)
+Message-ID: <6ae187b3-7770-4b64-aa65-43fff3120213@gmail.com>
+Date: Mon, 10 Jun 2024 16:56:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: ein <ein.net@gmail.com>
+Subject: RAID1 two chunks of the same data on the same physical disk, one file
+ keeps being corrupted
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-When running fstests' test-case btrfs/060 with MKFS_OPTIONS="-O rst"
-to force the creation of a RAID stripe tree even on regular devices I
-hit the follwoing ASSERT() in calc_sector_number():
+Dear devs and users,
 
-    ASSERT(i < stripe->nr_sectors);
+I used BRTFS for few months in RAID1 mode on Debian 12 (6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 
+6.1.90-1 (2024-05-03) x86_64 GNU/Linux, btrfs-progs v6.2).
+I created my filesystem by issuing:
+mkfs.btrfs -d raid1 -m raid1 /dev/sda1 /dev/sde1 /dev/sdf1
 
-This ASSERT() is triggered, because we cannot find the page in the
-passed in bio_vec in the scrub_stripe's pages[] array.
+Those are 2TB WD Reds, mix of CMRs and SMRs with good S.M.A.R.T. stats.
+I am using on-die-ecc RAM memory modules.
+I never did balance or replace any device.
+I had couple of unexpected hangs because of nvme power management which made my root fs unavailable, 
+but hopefully it's been fixed by installing new firmware for WD black nvme.
 
-When having a closer look at the stripe using drgn on the vmcore dump
-and comparing the stripe's pages to the bio_vec's pages it is evident
-that we cannot find it as first_bvec's bv_page is NULL:
+How it's possible that btrfs kept same chunk of data on the same physical device?
 
-    >>> stripe = t.stack_trace()[13]['stripe']
-    >>> print(stripe.pages)
-    (struct page *[16]){ 0xffffea000418b280, 0xffffea00043051c0,
-    0xffffea000430ed00, 0xffffea00040fcc00, 0xffffea000441fc80,
-    0xffffea00040fc980, 0xffffea00040fc9c0, 0xffffea00040fc940,
-    0xffffea0004223040, 0xffffea00043a1940, 0xffffea00040fea80,
-    0xffffea00040a5740, 0xffffea0004490f40, 0xffffea00040f7dc0,
-    0xffffea00044985c0, 0xffffea00040f7d80 }
-    >>> bio = t.stack_trace()[12]['bbio'].bio
-    >>> print(bio.bi_io_vec)
-    *(struct bio_vec *)0xffff88810632bc00 = {
-            .bv_page = (struct page *)0x0,
-            .bv_len = (unsigned int)0,
-            .bv_offset = (unsigned int)0,
-    }
+Jun 02 23:27:54 node0 kernel: BTRFS warning (device sdf1): csum failed root 256 ino 259 off 
+140290392064 csum 0x1315675d expected csum 0x49271c1b mirror 2
+Jun02 23:27:54 node0 kernel: BTRFS warning (device sdf1): csum failed root 256 ino 259 off 
+140290392064 csum 0x1315675d expected csum 0x49271c1b mirror 1
 
-Upon closer inspection of the bio itself we see that bio->bi_status is
-10, which corresponds to BLK_STS_IOERR:
+The corrupted file is qocw2 image with Windows 7 on it and I think I am able to corrupt this file 
+and only this file on daily basis.
+I resorted my filesystem from backup, by:
+1. wipfs any singatires on my hdds,
+2. recreating fs from scratch,
+3. coping over new data, few days later I see the same issues:
 
-    >>> print(bio)
-    (struct bio){
-            .bi_next = (struct bio *)0x0,
-            .bi_bdev = (struct block_device *)0x0,
-            .bi_opf = (blk_opf_t)0,
-            .bi_flags = (unsigned short)0,
-            .bi_ioprio = (unsigned short)0,
-            .bi_write_hint = (enum rw_hint)WRITE_LIFE_NOT_SET,
-            .bi_status = (blk_status_t)10,
-            .__bi_remaining = (atomic_t){
-                    .counter = (int)1,
-            },
-            .bi_iter = (struct bvec_iter){
-            	 .bi_sector = (sector_t)2173056,
-                    .bi_size = (unsigned int)0,
-                    .bi_idx = (unsigned int)0,
-                    .bi_bvec_done = (unsigned int)0,
-            },
-            .bi_cookie = (blk_qc_t)4294967295,
-            .__bi_nr_segments = (unsigned int)4294967295,
-            .bi_end_io = (bio_end_io_t *)0x0,
-            .bi_private = (void *)0x0,
-            .bi_integrity = (struct bio_integrity_payload *)0x0,
-            .bi_vcnt = (unsigned short)0,
-            .bi_max_vecs = (unsigned short)16,
-            .__bi_cnt = (atomic_t){
-                    .counter = (int)1,
-            },
-            .bi_io_vec = (struct bio_vec *)0xffff88810632bc00,
-            .bi_pool = (struct bio_set *)btrfs_bioset+0x0 = 0xffffffff82c85620,
-            .bi_inline_vecs = (struct bio_vec []){},
-    }
+Jun10 07:22:14 node0 kernel: BTRFS info (device dm-10): read error corrected: ino 259 off 
+39193079808 (dev /dev/mapper/vg1-lv1 sector 670864280)
+Jun10 07:22:14 node0 kernel: BTRFS info (device dm-10): read error corrected: ino 259 off 
+33579532288 (dev /dev/mapper/vg1-lv1 sector 199031056)
 
-So only call calc_sector_number when we know the bio completed without error.
+I don't think that it's RAM related because,
+- HW is new, RAM is good quality and I did mem. check couple months ago,
+- it affects only one file, I have other much busier VMs, that one mostly stays idle,
+- other OS operations seems to be working perfect for months.
 
-Cc: Qu Wenru <wqu@suse.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/scrub.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 188a9c42c9eb..91590dc509de 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1099,12 +1099,17 @@ static void scrub_read_endio(struct btrfs_bio *bbio)
- {
- 	struct scrub_stripe *stripe = bbio->private;
- 	struct bio_vec *bvec;
--	int sector_nr = calc_sector_number(stripe, bio_first_bvec_all(&bbio->bio));
-+	int sector_nr = 0;
- 	int num_sectors;
- 	u32 bio_size = 0;
- 	int i;
- 
--	ASSERT(sector_nr < stripe->nr_sectors);
-+	if (bbio->bio.bi_status == BLK_STS_OK) {
-+		sector_nr = calc_sector_number(stripe,
-+					       bio_first_bvec_all(&bbio->bio));
-+		ASSERT(sector_nr < stripe->nr_sectors);
-+	}
-+
- 	bio_for_each_bvec_all(bvec, &bbio->bio, i)
- 		bio_size += bvec->bv_len;
- 	num_sectors = bio_size >> stripe->bg->fs_info->sectorsize_bits;
--- 
-2.43.0
-
+Sincerely,
 
