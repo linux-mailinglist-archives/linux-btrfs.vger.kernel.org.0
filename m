@@ -1,76 +1,74 @@
-Return-Path: <linux-btrfs+bounces-5587-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5588-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E548A901A2C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 07:24:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3F60901B92
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 09:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 693541F21790
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 05:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F8B5282E9E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 07:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191BEF9D4;
-	Mon, 10 Jun 2024 05:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F4025569;
+	Mon, 10 Jun 2024 07:12:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="d0uadF1z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jZgypMkj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36DCEA935
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 05:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 719A222EE5
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 07:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717997069; cv=none; b=NS6uRQCkjDyFauEE9ZsR5e6Ptd8WEH0Ao+FgBgwE6F24TRd+MWOScRuvgHxAvwu/k9w+ttg8dvEa3g86J9JWndeVA2K9kkOhy3FKRUcWUaFbclMF3gCRE19hCHUG5kcImHOEn4mtdo9F4l0XvYniz3BnVlqiNyod4WSirXZ3KnQ=
+	t=1718003547; cv=none; b=ScKSd9JgoEVmnDjcetLpEN9iMeusZ6CasSG3rra6dEnpOxk7xl4oCedFz18qqROT8LW5kaWpN9MWzvlEmuOPkV+gfpZP5PPITYGSyG+aM13KiehlOTFN55aM1pr6dta/CBm82M734k9988zl0Tqbalb1dMAFOKlhpBx+6WgnQS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717997069; c=relaxed/simple;
-	bh=/08UdSqDiirqDQ0U37m2J+5JugPJ/2LqVwytJseEDio=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BddnKW27UqkadKGh09wpZc6ROs/t5ANHCf4t+drYnYfV+/ZbXN0D1JwnnF22iuggoGuV0ztCa4V+XMyh/E4Vm9veSxwRIW64wATgApqdznA1Yo8ESaUqzt73tqHcSJnE8hYP6Y2Ey49YqmJoXmazOpWvz2uKZq8fte7xRlfOT1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=d0uadF1z; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2e724bc46c4so45486491fa.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 09 Jun 2024 22:24:26 -0700 (PDT)
+	s=arc-20240116; t=1718003547; c=relaxed/simple;
+	bh=D4d6iGiUj4fiI/3cHLEhuT7dQTIx1mbrF0lRq2eBHR8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uWHVUV+Dct1Jgp/WUfYzZg4uMfluDyjyMWYyh0iyCJVPbcbZqbABSyy4KkPQGEYBPrX/5khsPCaNb43qxJ6/Pt73WAjF8iH6x6WmWAON6jlkIvzLQsTc/sFZLan4oRSl5vWIrozA/Q7hPbIpfcyIEEJrTV3Kv51GC4MaxAD1vtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jZgypMkj; arc=none smtp.client-ip=209.85.160.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-24cbb884377so2208233fac.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 00:12:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1717997065; x=1718601865; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=oW9b+VUygdRE00bCao6UVImVeHEMfk0kPnTXTCvj270=;
-        b=d0uadF1zPSIE5O6EXRxFTLk4w7HwD3akGlcH9jrfwZNqLCmnUz+6m31M/rcgsGT2vd
-         1uGiY3iepSglynCfJffU/dPeH4Q2+WjArrpzjSo9FM7k0QM+uSzt4O0yeZOFW3R2z92E
-         gotd6etm/qbaZZ5C9hSZAprGbNL0/ZKvAOuX9vy8WXivXfYho5pFCKMyBuoatMvZjSss
-         RpIWV5eYREqDkWQVKwFRQekdD13hQmen2GkUgbum3vT3b3UWLlhAQxhgEBiPwbdMnpHO
-         DIJ3sQziYDzVBfSQzLsNvaAHvAIrOvJMafF5mZXSBsiaEtp4rwIdnVeJbPiqSqbHY9hn
-         1C/Q==
+        d=gmail.com; s=20230601; t=1718003545; x=1718608345; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ewI9TeYZM5C1SswOPCZZC8albz8K+Zlnj/YjQ4kfdAc=;
+        b=jZgypMkjQQVyTmQ0mPRcVC2HeQ71exnhJO9AUK8xpNwgs3zcGn9b7FOQPvrNKWEZaY
+         /8bg9MYkc/P5Lip7/u2fEcJIPypXg/erY+FGdRA+l4YrbBA3lk8nmPwuviXKtlqTCq0Q
+         CruVWrnzBVGM/TrnMSyBBmadnYq7kruWZreVzvSeJZjJ1Q3Yo/xoLFBvgP8MOAT7RpAt
+         RWRAn8h5/rPhUGl1Z89OJRAkRia3NMrmpUVPmty1iVFq27pFd0H1+MTnoTEh2LU9cUx2
+         Ou+58x3PGrEv2kONML0HmTxcwdbfGgSJXFSgauqgyKcRFahxERUQkqF7o9t8xkSZfo6D
+         KxmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717997065; x=1718601865;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oW9b+VUygdRE00bCao6UVImVeHEMfk0kPnTXTCvj270=;
-        b=Gl0CH05p2dnmwEj2CYqaFnUN5gt9u66SOeqkhDb2SYFp1THI1ADN/faza5ShSVc/J3
-         8XU6E2bnnd53rqW1t7LuV18V25tghUQIt9e1AT/R8+0bXnvhvPehMprSg1JXIfhrPo5G
-         u3rHxxv3CP8oWJf/nuHHmQm21KVW74SKG83ng8jJfo5JSvyWPXUoc/YRtoMQo4Q6XRiC
-         P4PB50I6+vLLUVBrCKmHPwm5M/s17xDYuxmBuhO2rkDasfMpTTvl0s03CXxWw77HQefN
-         afvhlf0CusYgHIwQViS14Px62iZovA1PByXtPH9wCOzjkhLzS0LUBKx8pCHnkFWH5wmt
-         pD8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWUQuX/CvfQKYw1+WTBxzdQbYMfZDMITfNujexJM+3EKTlgdeKUOjGaym97p+VRYrOwX3P8dFsAQ8fqCkK6Q3eCvQknbtm7iTXjxh8=
-X-Gm-Message-State: AOJu0YyrM99lSp2IjAoJyJC5DeymVLHR0AGeYHPbE7RD4q7K6veg5tAh
-	Zwn/89T8DohB/GtMU5yBdtLBoA9PdYoONSR0it0hdfLbzWMIqhkZo3BC5/8baNcEKz+jvPvc4Hs
-	R
-X-Google-Smtp-Source: AGHT+IEqmYAv3XOQHeUEC2l5iE0CU615IqlEBCjc2o6XozxPqzZx3unPxuPrXqchxLRyB+sM4lb58w==
-X-Received: by 2002:a2e:351a:0:b0:2eb:d620:88d9 with SMTP id 38308e7fff4ca-2ebd6208a5cmr22691461fa.30.1717997065387;
-        Sun, 09 Jun 2024 22:24:25 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70423a7f217sm3204875b3a.206.2024.06.09.22.24.22
+        d=1e100.net; s=20230601; t=1718003545; x=1718608345;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ewI9TeYZM5C1SswOPCZZC8albz8K+Zlnj/YjQ4kfdAc=;
+        b=uXn91FxlLS+EDcqFJ0D4anlP8FjNHcSNXnEIGAz8xTAyOD7jQz8MlcVRuVU324c708
+         9wzV4yf4dvAe3VwJC0jcf4wKCxaP0dk6LfLig+n1fS5QJF2mCmkepcrvoWExkT1n60b8
+         5l1meduBVkqyPil8JQsjE8S0o/2GyF7d/VTAFYSXct8fh4KaoalfLGaAoHxJ9h1nCN7A
+         AdN7P9OTf5jGNqEiA6jZr6+57pkXuYSR6VBWs3mmqfZrB923yQZfRPQh2qxeYcxRqRYg
+         N0NW8W8rLrQAtCTP1I6GlYXwfoiweMf1ob/+KC8IK5IzDVzMMJ0hgS7H5SprIdPJbjzu
+         hDCg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOdCnVMFCibtq2wcQwfTlkD76eRznYCz2oEOguTXOXC0hnkylkJIjJ0cYSqCx4ZqZbITivK+4OuVKg5FcB+iCDy99LIeGXvYgo72c=
+X-Gm-Message-State: AOJu0Yy9WPVbCPsmfzneFsnfwFKDgta4ImZrSteA4LnpSolVvvmcHrZX
+	wtidz/7p9MkwZ509jM6Cgprb36OXLd2h+rPtpD0DQXmL4T50v+qA
+X-Google-Smtp-Source: AGHT+IEx63uEnQgtrl8hBV53eMV3aoJNDlkobUv8ozFcr/iiEAVSjyqnB3yi/85SNesTR2gHTAXIJg==
+X-Received: by 2002:a05:6870:65a4:b0:254:bf41:de9d with SMTP id 586e51a60fabf-254bf41f028mr3079221fac.48.1718003545189;
+        Mon, 10 Jun 2024 00:12:25 -0700 (PDT)
+Received: from [192.168.0.92] (syn-070-123-236-219.res.spectrum.com. [70.123.236.219])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-25448138e4asm2167044fac.57.2024.06.10.00.12.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 09 Jun 2024 22:24:24 -0700 (PDT)
-Message-ID: <a2cb9afa-2810-43bb-a6f8-99b56669a304@suse.com>
-Date: Mon, 10 Jun 2024 14:54:19 +0930
+        Mon, 10 Jun 2024 00:12:24 -0700 (PDT)
+Message-ID: <d1770aa6-76f6-4292-ac60-1e69e1bdb016@gmail.com>
+Date: Mon, 10 Jun 2024 02:12:23 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,87 +76,133 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: The proper handling of failed IO error?
-To: Matthew Wilcox <willy@infradead.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-fsdevel@vger.kernel.org,
- Linux Memory Management List <linux-mm@kvack.org>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <960aa841-8d7c-413f-9a1b-0364ae3b9493@gmx.com>
- <ZmZ3001_gcjAryte@casper.infradead.org>
+Subject: Re: btrfs-6.9 regression tests fail
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <ZmZ3001_gcjAryte@casper.infradead.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <2f8d2b44-8958-4312-bea2-8c53c2312c7c@gmail.com>
+ <53eb0a7d-3ec5-4719-b508-b5f366e3b4e5@gmx.com>
+From: Bruce Dubbs <bruce.dubbs@gmail.com>
+In-Reply-To: <53eb0a7d-3ec5-4719-b508-b5f366e3b4e5@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-
-
-在 2024/6/10 13:19, Matthew Wilcox 写道:
-> On Mon, Jun 10, 2024 at 06:50:11AM +0930, Qu Wenruo wrote:
->> Hi,
->>
->> There is a recent (well a year ago) change in btrfs to remove the usage
->> of page/folio error, which gets me wondering what would happen if we got
->> a lot of write errors and high memory pressure?
->>
->> Yes, all file systems calls mapping_set_error() so that fsync call would
->> return error, but I'm wondering what would happen to those folios that
->> failed to be written?
->>
->> Those folios has their DIRTY flag cleared before submission, and and
->> their endio functions, the WRITEBACK flags is also cleared.
->>
->> Meaning after such write failure, the page/folio has UPTODATE flag, and
->> no DIRTY/ERROR/WRITEBACK flags (at least for btrfs and ext4, meanwhile
->> iomap still set the ERROR flag).
->>
->> Would any memory pressure just reclaim those pages/folios without them
->> really reaching the disk?
+On 6/9/24 19:53, Qu Wenruo wrote:
 > 
-> Yes.
 > 
-> Core code doesn't (and hasn't in some time) checked the page/folio
-> error flag.  That's why it's being removed.
+> 在 2024/6/10 09:23, Bruce Dubbs 写道:
+>> The convert and misc tests fail pretty early for me and I can't figure
+>> out why.
+>> The other btrfs tests complete normally.
+>>
+>> The significant output for convert-tests-results.txt is:
+>>
+>> ====== RUN CHECK mount -t btrfs -o loop
+>> /build/btrfs/btrfs-progs-v6.9/tests/test.img
+>> /build/btrfs/btrfs-progs-v6.9/tests/mnt
+>> mount: /build/btrfs/btrfs-progs-v6.9/tests/mnt: fsconfig system call
+>> failed: No such file or directory.
+>>         dmesg(1) may have more information after failed mount system call.
+>> failed: mount -t btrfs -o loop
+>> /build/btrfs/btrfs-progs-v6.9/tests/test.img
+>> /build/btrfs/btrfs-progs-v6.9/tests/mnt
+>> test failed for case 003-ext4-basic
+>>
+>> dmesg gives me:
+>>
+>> [ 3807.421836] loop0: detected capacity change from 0 to 4194304
+>> [ 3807.421933] BTRFS: device fsid 4f1a8440-1a8f-45d1-9789-72080ddd9917
+>> devid 1 transid 7 /dev/loop0 (7:0) scanned by mount (3326)
+>> [ 3807.423458] BTRFS info (device loop0): first mount of filesystem
+>> 4f1a8440-1a8f-45d1-9789-72080ddd9917
+>> [ 3807.423469] BTRFS info (device loop0): using crc32c (crc32c-generic)
+>> checksum algorithm
+>> [ 3807.423477] BTRFS info (device loop0): using free-space-tree
+>> [ 3807.423911] BTRFS warning (device loop0): failed to read root
+>> (objectid=12): -2
 > 
-> Also, btrfs was using it incorrectly to indicate a write error.
-> It was supposed to be used for read errors, not write errors.
-> Another good reason to remove it.
-> 
+> That's objectid is for RST, which shouldn't even be enabled unless you
+> have enabled experimental features for btrfs-progs.
 
-Then would it be a good idea to only clear the DIRTY flag when a 
-successful writeback happened?
+I have not.  I used:
 
-Or MM has some strong requirement to have DIRTY cleared before marking 
-WRITEBACK?
+./configure --prefix=/usr           \
+             --disable-static        \
+             --disable-documentation &&
+make
+make fssum
 
-And any idea of possible problems if we keep the DIRTY flag?
-(I guess if the writeback always fails, we can cause very high memory 
-pressure?)
+cd tests
+./convert-tests.sh
+...
 
-Thanks,
-Qu
+> Mind to dump the superblock of that test image?
+> ($BTRFS_PROGS_SOURCE/tests/test.img)
+
+I haven't done that before, but this is what I have:
+
+$ btrfs inspect-internal dump-super test.img
+superblock: bytenr=65536, device=test.img
+---------------------------------------------------------
+csum_type               0 (crc32c)
+csum_size               4
+csum                    0x3da36db9 [match]
+bytenr                  65536
+flags                   0x1
+                         ( WRITTEN )
+magic                   _BHRfS_M [match]
+fsid                    c90faada-13cd-4e77-bd4a-a32018ad3b93
+metadata_uuid           c90faada-13cd-4e77-bd4a-a32018ad3b93
+label
+generation              7
+root                    67416064
+sys_array_size          97
+chunk_root_generation   2
+root_level              0
+chunk_root              35852288
+chunk_root_level        0
+log_root                0
+log_root_transid (deprecated)   0
+log_root_level          0
+total_bytes             2147483648
+bytes_used              177639424
+sectorsize              4096
+nodesize                4096
+leafsize (deprecated)   4096
+stripesize              4096
+root_dir                6
+num_devices             1
+compat_flags            0x0
+compat_ro_flags         0x3
+                         ( FREE_SPACE_TREE |
+                           FREE_SPACE_TREE_VALID )
+incompat_flags          0x4341
+                         ( MIXED_BACKREF |
+                           EXTENDED_IREF |
+                           SKINNY_METADATA |
+                           NO_HOLES |
+                           RAID_STRIPE_TREE )
+cache_generation        0
+uuid_tree_generation    0
+dev_item.uuid           3cb58644-ed73-46ab-be03-68ebacc4a459
+dev_item.fsid           c90faada-13cd-4e77-bd4a-a32018ad3b93 [match]
+dev_item.type           0
+dev_item.total_bytes    2147483648
+dev_item.bytes_used     441581568
+dev_item.io_align       4096
+dev_item.io_width       4096
+dev_item.sector_size    4096
+dev_item.devid          1
+dev_item.dev_group      0
+dev_item.seek_speed     0
+dev_item.bandwidth      0
+dev_item.generation     0
+
+AFAICT test.img is generated by the tests.  I really do not know what any of that 
+output means.
+
+Other info: I am building with gcc-14.1.0.
+
+   -- Bruce
+
+
 
