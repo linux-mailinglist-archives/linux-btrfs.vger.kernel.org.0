@@ -1,323 +1,118 @@
-Return-Path: <linux-btrfs+bounces-5590-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5591-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD53C901D07
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 10:35:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42B8C901D1C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 10:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 450631F2198D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 08:35:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 550BE1C21132
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 08:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717303BBC5;
-	Mon, 10 Jun 2024 08:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eS+VtqVL";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eS+VtqVL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100136F30E;
+	Mon, 10 Jun 2024 08:40:36 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF08163C7
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3FC55C29;
+	Mon, 10 Jun 2024 08:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718008534; cv=none; b=oR1db+rV8nR5tHbU4C84Zs2hBAnMKEc3g5fzj23V3vhsOnGXyGayGlLXDjrrJv985brF/9OM0cUjP2JV6PZUu2BSmakoyPkwpr9EjYZQ52mDWkcCQyS8WhUyNSMJ0onKfToTfNl3BD/4Z5tnyKVptsBRObyGRdtebnQBopfrkZk=
+	t=1718008835; cv=none; b=AH6zgIliRWnsUQzynUTosIvm/ITnjwPFw2kBCcRdWJNZokQD+GmiYvFkRhDLiK64j93sDi7Y5+0cKNkZscBVWYiTxArChY80Qs0/PSewjPQx3YTo4J1ZPPdwwT30IiLkn8+qFR/b837F46YUx6d89hfjWjo6ltZALmBrlu7VDlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718008534; c=relaxed/simple;
-	bh=rFEptHr+8vPyKZDhABmMhjsQbntS2nfMkhgGjyCbAYk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=V96xjRczQz0cG3MKho+IGfYStbq8T06Nl6//jLk8ZtNxzxMqlHdHiNZg8eaqaDd58lIOy83bDRv3ty24igmY6XQJbiuXiW3BHzwHWD0fYhGEQtBocB7bEOX7FCg8jCm5NWQiLF1KmB0t/S3WSOqo6SFEKVK5luEsmF0SZobLo20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eS+VtqVL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eS+VtqVL; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 790661F7BA
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718008529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lVZNQ7VDxA0I4KPJ06v8/y5ws0dM2EwPTFZbvU8Zi3Q=;
-	b=eS+VtqVLzzFKLgaPoOK76kT0BckoTFvltKkFAUnZbgkxbXDnNXb8hk0YSs8RmEUhAVSsVI
-	vQvhCF72+pgTg3yqOEEOdaMlB08iBESGG7JBb29oc2gCHPqnnxa+DMkjBpjX9y6j7VDAcZ
-	FpgmXG4Imh4tp9mr0QLJ5173Z3fei84=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=eS+VtqVL
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718008529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=lVZNQ7VDxA0I4KPJ06v8/y5ws0dM2EwPTFZbvU8Zi3Q=;
-	b=eS+VtqVLzzFKLgaPoOK76kT0BckoTFvltKkFAUnZbgkxbXDnNXb8hk0YSs8RmEUhAVSsVI
-	vQvhCF72+pgTg3yqOEEOdaMlB08iBESGG7JBb29oc2gCHPqnnxa+DMkjBpjX9y6j7VDAcZ
-	FpgmXG4Imh4tp9mr0QLJ5173Z3fei84=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8725C13A51
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id skhPD9C6ZmZHWgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:28 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH RESEND] Revert "btrfs-progs: convert: add raid-stripe-tree to allowed features"
-Date: Mon, 10 Jun 2024 18:05:10 +0930
-Message-ID: <62b84fee8124d455689f8c2ab151eafb136a04d9.1718008470.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1718008835; c=relaxed/simple;
+	bh=Zmv114EE1FOd23A5JjLfzLhyrXS0dKcLrY2NVj3+FjI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=otiMwVPEKttJeFPXiWWrvCv+P+ug6eCs5PTkeL3WIh6d9R+TU8DFsD+0xDphqjWaQoJKTC1Mphxz8pCsbsY2R2aYDzN4dp70QmGjP8JF7tWXhTvAR7SJjdQhOQr5A3XDjs9xpI6GLarY+flZwtCv5egVPnL0NnLAElxP6cRSCDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2e72224c395so37818111fa.3;
+        Mon, 10 Jun 2024 01:40:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718008832; x=1718613632;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+NqjyfBj/3bEXpQj/CSZPCC3+9p3CaSBCTajT4uJgQU=;
+        b=Z2DcXleDHcgSV3IFyA+o2uJy8Omu7udwlBd3/5EAQW4Vv2fWflVtKU18V8nd4kR3tI
+         tYW+3BMgHine8HDu3V/HhoWCTvVaOqJlakxSSFCfRdSmZ1Bs7lc3Tqfx8acPyYdu5xU0
+         G/jOSXuXbyGmcm1hNRiFEUMAyGFqpDY2kojtYF7LqYPiKkvHSVh08I3SBs+t8ioq1cc6
+         Pzsy22JKFhiolTzyY00CpIIrO2RCRKM6GmoV9xief1ck92ZhbfMZTfVMfLq5EmCC0Gjh
+         3v9RoeiDPEeOqbQOIfjJkp07VtCI+rPixkVPZF9749u0rk2XB4HMbl3WTHVMq6EOn6TK
+         bjRg==
+X-Forwarded-Encrypted: i=1; AJvYcCVNEeU3qYs5SjQPk4OPUgdcGXKcS0xyqwfddi7lebqjVWnoiPQPohwSAit7k3nZ1KJcJV94w53qq2ZP6qWAj+WflkTAciNit7m2berD
+X-Gm-Message-State: AOJu0YxLXmeu5NAJSF6Wyx8ISCLspxSBzedlMr8PCyR7deiOqJb9uN7H
+	FXHZIvlsp8mIehkmDAjs3VWwVMc+LHjsW919gc8lD/z3HiYltCO/
+X-Google-Smtp-Source: AGHT+IFgRAFNKYxdwICh/5RazhsJFvZ9ZWh37SOr11W7BiO2P2u0P7+yfulVV9aGARHb7iB/ZewYfg==
+X-Received: by 2002:a2e:9e59:0:b0:2eb:ecbb:3ad9 with SMTP id 38308e7fff4ca-2ebecbb3c14mr4353881fa.52.1718008831855;
+        Mon, 10 Jun 2024 01:40:31 -0700 (PDT)
+Received: from [127.0.0.1] (p200300f6f7253800fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f725:3800:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57c72efe054sm3259581a12.66.2024.06.10.01.40.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Jun 2024 01:40:31 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH 0/3] btrfs: rst: updates for RAID stripe tree
+Date: Mon, 10 Jun 2024 10:40:24 +0200
+Message-Id: <20240610-b4-rst-updates-v1-0-179c1eec08f2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 790661F7BA
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPm7ZmYC/x3MMQqAMAxA0atIZgNVtKBXEYfURM2i0qgIxbtbH
+ N/wfwKTqGLQFwmi3Gq6bxlVWcC00rYIKmdD7erG+cphaDDaidfBdIohOyLf+dBxS5CjI8qszz8
+ cxvf9AMkA0OFgAAAA
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1181; i=jth@kernel.org;
+ h=from:subject:message-id; bh=Zmv114EE1FOd23A5JjLfzLhyrXS0dKcLrY2NVj3+FjI=;
+ b=owGbwMvMwCV2ad4npfVdsu8YT6slMaSl7f7Hx+irnhL7IXr20c7Taix9NdOvW4TKunFOYnsze
+ a2F1wPPjlIWBjEuBlkxRZbjobb7JUyPsE859NoMZg4rE8gQBi5OAZgIOx/D/7KobRG/udTdJGa/
+ rgm8tej2BEFV3STdidFHVetW8bW/5Wf4ZzXD6Wjcp0N7nLgyJpYud5zJelbjpe36jDVJjq+1RdI
+ K+AA=
+X-Developer-Key: i=jth@kernel.org; a=openpgp;
+ fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
 
-This reverts commit 346a3819237b319985ad6042d6302f67b040a803.
+Three independent updates for RAID stripe tree.
+The 1st one removes pointless space from the on-disk format. As the
+feature itself is still experimental I'd like to get rid of that as early
+as possible.
 
-The RST feature (at least for now) is mostly for zoned devices to
-support extra data profiles.
+Patch 2 replaces stripe extents in case we hit a EEXIST when inserting a
+stripe extent on a write. This can happen i.e. on device-replace.
 
-Thus btrfs-convert is never designed to handle RST, because there is no
-way an ext4/reiserfs can even be created on a zoned device, or it would
-create the correct RST tree root at all
+Patch 3 splits a stripe extent on partial delete of a stripe.
 
-Revert this unsupported feature to prevent false alerts.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-This was included in the btrfs-convert unwritten extent patchset/pull
-request but is not merged.
+Johannes Thumshirn (2):
+      btrfs: rst: remove encoding field from stripe_extent
+      btrfs: replace stripe extents
+
+JohnnesThumshirn (1):
+      btrfs: split RAID stripes on deletion
+
+ fs/btrfs/accessors.h            |   3 -
+ fs/btrfs/ctree.c                |   1 +
+ fs/btrfs/print-tree.c           |   5 --
+ fs/btrfs/raid-stripe-tree.c     | 148 ++++++++++++++++++++++++++++++----------
+ fs/btrfs/raid-stripe-tree.h     |   3 +-
+ fs/btrfs/tree-checker.c         |  19 ------
+ include/uapi/linux/btrfs_tree.h |  14 +---
+ 7 files changed, 114 insertions(+), 79 deletions(-)
 ---
- common/fsfeatures.h                           |  3 +-
- tests/common.convert                          | 44 ++++---------------
- tests/convert-tests/001-ext2-basic/test.sh    |  2 +-
- tests/convert-tests/003-ext4-basic/test.sh    |  2 +-
- .../005-delete-all-rollback/test.sh           |  6 +--
- .../convert-tests/010-reiserfs-basic/test.sh  |  2 +-
- .../011-reiserfs-delete-all-rollback/test.sh  |  6 +--
- tests/convert-tests/024-ntfs-basic/test.sh    |  2 +-
- 8 files changed, 15 insertions(+), 52 deletions(-)
+base-commit: e361635b966fca48f92263277ff38cd5a1971d39
+change-id: 20240610-b4-rst-updates-d0aa696b9d5a
 
-diff --git a/common/fsfeatures.h b/common/fsfeatures.h
-index 5b241bdf9122..f636171f6bd9 100644
---- a/common/fsfeatures.h
-+++ b/common/fsfeatures.h
-@@ -68,8 +68,7 @@ static const struct btrfs_mkfs_features btrfs_convert_allowed_features = {
- 			   BTRFS_FEATURE_INCOMPAT_BIG_METADATA |
- 			   BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |
- 			   BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |
--			   BTRFS_FEATURE_INCOMPAT_NO_HOLES |
--			   BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE,
-+			   BTRFS_FEATURE_INCOMPAT_NO_HOLES,
- 	.runtime_flags   = BTRFS_FEATURE_RUNTIME_QUOTA,
- };
-
-diff --git a/tests/common.convert b/tests/common.convert
-index 06eec9b2a853..50d49a0d32da 100644
---- a/tests/common.convert
-+++ b/tests/common.convert
-@@ -214,47 +214,19 @@ convert_test_post_check_checksums() {
- 		grep -q 'FAILED' && _fail "file validation failed"
- }
-
--# Check if convert can mount the image based on features
--# $1: name of the feature
--convert_can_mount() {
--	local features="$1"
--
--	if [ "$features" = 'block-group-tree' ]; then
--		if ! [ -f "/sys/fs/btrfs/features/block_group_tree" ]; then
--			_log "Skip mount checks due to missing support of block-group-tree"
--			return 1
--		fi
--	fi
--	if [ "$features" = 'raid-stripe-tree' ]; then
--		if ! [ -f "/sys/fs/btrfs/features/raid_stripe_tree" ]; then
--			_log "Skip mount checks due to missing support of raid-stripe-tree"
--			return 1
--		fi
--	fi
--
--	return 0
--}
--
- # post conversion checks, all three in one call, on an unmounted image
--# $1: features for mount compatibility checks
--# $2: file with checksums
--# $3: file with permissions.
--# $4: file with acl entries.
-+# $1: file with checksums
-+# $2: file with permissions.
-+# $3: file with acl entries.
- convert_test_post_checks_all() {
--	local features="$1"
--
-+	_assert_path "$1"
- 	_assert_path "$2"
- 	_assert_path "$3"
--	_assert_path "$4"
--
--	if ! convert_can_mount "$features"; then
--		return 0
--	fi
-
- 	run_check_mount_test_dev
--	convert_test_post_check_checksums "$2"
--	convert_test_post_check_permissions "$3"
--	convert_test_post_check_acl "$4"
-+	convert_test_post_check_checksums "$1"
-+	convert_test_post_check_permissions "$2"
-+	convert_test_post_check_acl "$3"
-
- 	# Create a large file to trigger data chunk allocation
- 	generate_dataset "large"
-@@ -313,7 +285,7 @@ convert_test() {
- 	run_check_umount_test_dev
-
- 	convert_test_do_convert "$features" "$nodesize" "$fstype"
--	convert_test_post_checks_all "$features" "$CHECKSUMTMP" "$EXT_PERMTMP" "$EXT_ACLTMP"
-+	convert_test_post_checks_all "$CHECKSUMTMP" "$EXT_PERMTMP" "$EXT_ACLTMP"
- 	rm -- "$CHECKSUMTMP"
- 	rm -- "$EXT_PERMTMP"
- 	rm -- "$EXT_ACLTMP"
-diff --git a/tests/convert-tests/001-ext2-basic/test.sh b/tests/convert-tests/001-ext2-basic/test.sh
-index 461ff4a5f1a9..6dc105b55e27 100755
---- a/tests/convert-tests/001-ext2-basic/test.sh
-+++ b/tests/convert-tests/001-ext2-basic/test.sh
-@@ -12,7 +12,7 @@ check_kernel_support_acl
-
- # Iterate over defaults and options that are not tied to hardware capabilities
- # or number of devices
--for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
-+for feature in '' 'block-group-tree' ; do
- 	convert_test ext2 "$feature" "ext2 4k nodesize" 4096 mke2fs -b 4096
- 	convert_test ext2 "$feature" "ext2 16k nodesize" 16384 mke2fs -b 4096
- 	convert_test ext2 "$feature" "ext2 64k nodesize" 65536 mke2fs -b 4096
-diff --git a/tests/convert-tests/003-ext4-basic/test.sh b/tests/convert-tests/003-ext4-basic/test.sh
-index 14637fc852db..8ae5264cb340 100755
---- a/tests/convert-tests/003-ext4-basic/test.sh
-+++ b/tests/convert-tests/003-ext4-basic/test.sh
-@@ -12,7 +12,7 @@ check_kernel_support_acl
-
- # Iterate over defaults and options that are not tied to hardware capabilities
- # or number of devices
--for feature in '' 'block-group-tree' 'raid-stripe-tree' ; do
-+for feature in '' 'block-group-tree' ; do
- 	convert_test ext4 "$feature" "ext4 4k nodesize" 4096 mke2fs -t ext4 -b 4096
- 	convert_test ext4 "$feature" "ext4 16k nodesize" 16384 mke2fs -t ext4 -b 4096
- 	convert_test ext4 "$feature" "ext4 64k nodesize" 65536 mke2fs -t ext4 -b 4096
-diff --git a/tests/convert-tests/005-delete-all-rollback/test.sh b/tests/convert-tests/005-delete-all-rollback/test.sh
-index 5603d3078bc8..fa56ca292bfc 100755
---- a/tests/convert-tests/005-delete-all-rollback/test.sh
-+++ b/tests/convert-tests/005-delete-all-rollback/test.sh
-@@ -38,10 +38,6 @@ do_test() {
-
- 	convert_test_do_convert "$features" "$nodesize"
-
--	if ! convert_can_mount "$features"; then
--		return 0
--	fi
--
- 	run_check_mount_test_dev
- 	convert_test_post_check_checksums "$CHECKSUMTMP"
-
-@@ -68,7 +64,7 @@ do_test() {
-
- # Iterate over defaults and options that are not tied to hardware capabilities
- # or number of devices
--for feature in '' 'block-group-tree' 'raid-stripe-tree' ; do
-+for feature in '' 'block-group-tree' ; do
- 	do_test "$feature" "ext4 4k nodesize" 4096 mke2fs -t ext4 -b 4096
- 	do_test "$feature" "ext4 16k nodesize" 16384 mke2fs -t ext4 -b 4096
- 	do_test "$feature" "ext4 64k nodesize" 65536 mke2fs -t ext4 -b 4096
-diff --git a/tests/convert-tests/010-reiserfs-basic/test.sh b/tests/convert-tests/010-reiserfs-basic/test.sh
-index 6ab02b31d176..86b1826783b3 100755
---- a/tests/convert-tests/010-reiserfs-basic/test.sh
-+++ b/tests/convert-tests/010-reiserfs-basic/test.sh
-@@ -15,7 +15,7 @@ prepare_test_dev
-
- # Iterate over defaults and options that are not tied to hardware capabilities
- # or number of devices
--for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
-+for feature in '' 'block-group-tree' ; do
- 	convert_test reiserfs "$feature" "reiserfs 4k nodesize" 4096 mkreiserfs -b 4096
- 	convert_test reiserfs "$feature" "reiserfs 16k nodesize" 16384 mkreiserfs -b 4096
- 	convert_test reiserfs "$feature" "reiserfs 64k nodesize" 65536 mkreiserfs -b 4096
-diff --git a/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh b/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh
-index 688613c2c6ad..e1c3e02eb7a0 100755
---- a/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh
-+++ b/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh
-@@ -40,10 +40,6 @@ do_test() {
-
- 	convert_test_do_convert "$features" "$nodesize"
-
--	if ! convert_can_mount "$features"; then
--		return 0
--	fi
--
- 	run_check_mount_test_dev
- 	convert_test_post_check_checksums "$CHECKSUMTMP"
-
-@@ -70,7 +66,7 @@ do_test() {
-
- # Iterate over defaults and options that are not tied to hardware capabilities
- # or number of devices
--for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
-+for feature in '' 'block-group-tree' ; do
- 	do_test "$feature" "reiserfs 4k nodesize" 4096 mkreiserfs -b 4096
- 	do_test "$feature" "reiserfs 16k nodesize" 16384 mkreiserfs -b 4096
- 	do_test "$feature" "reiserfs 64k nodesize" 65536 mkreiserfs -b 4096
-diff --git a/tests/convert-tests/024-ntfs-basic/test.sh b/tests/convert-tests/024-ntfs-basic/test.sh
-index a93f60070674..d2e1be79ef6b 100755
---- a/tests/convert-tests/024-ntfs-basic/test.sh
-+++ b/tests/convert-tests/024-ntfs-basic/test.sh
-@@ -17,6 +17,6 @@ prepare_test_dev
-
- # Iterate over defaults and options that are not tied to hardware capabilities
- # or number of devices. Test only 4K block size as minimum.
--for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
-+for feature in '' 'block-group-tree' ; do
- 	convert_test ntfs "$feature" "ntfs 4k nodesize" 4096 mkfs.ntfs -s 4096
- done
---
-2.45.2
+Best regards,
+-- 
+Johannes Thumshirn <jth@kernel.org>
 
 
