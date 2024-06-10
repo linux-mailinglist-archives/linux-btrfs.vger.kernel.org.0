@@ -1,206 +1,323 @@
-Return-Path: <linux-btrfs+bounces-5589-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5590-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22118901C15
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 09:49:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD53C901D07
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 10:35:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB0121F2263C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 07:49:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 450631F2198D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2024 08:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F62344374;
-	Mon, 10 Jun 2024 07:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717303BBC5;
+	Mon, 10 Jun 2024 08:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JQzZpPM0"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eS+VtqVL";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eS+VtqVL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E554E3FB3B
-	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 07:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF08163C7
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718005760; cv=none; b=FYlc4qyskG7AlJtuEDEGFeRmpWXhcn0zOSFNFZ3/ga28HAKIoQ/lJ1jRwiHUUdZkOsh6h/rpsuGjxXske+DGI+EY6Y30FcM9O8+7OiyeicP1L4JmV9G2LFEwMqqCZcl6oW6thNyFnQC6wzidfp1Ox/Ofc0TsRi+aSb4vZB7onYE=
+	t=1718008534; cv=none; b=oR1db+rV8nR5tHbU4C84Zs2hBAnMKEc3g5fzj23V3vhsOnGXyGayGlLXDjrrJv985brF/9OM0cUjP2JV6PZUu2BSmakoyPkwpr9EjYZQ52mDWkcCQyS8WhUyNSMJ0onKfToTfNl3BD/4Z5tnyKVptsBRObyGRdtebnQBopfrkZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718005760; c=relaxed/simple;
-	bh=KximrgKd5RxhR7foRItDoyHYgUsKCybYji7myX7+sA8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KsE66GJ9oeDUy/reaDiWrAjdFpoDBEcTXl85JpWGqOYKq+31GeRo/rsDhTLuqJKm0Ayi/45kDGYb8lQWwYi0sjISvTT6CR3fz7cxdWlmVxc3x5Dvae9g5mXcpcxE1ipusPPW6996lXZYaXOodVbPEeynRMy+JzOFVJ/l3/hznYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JQzZpPM0; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1718005754; x=1718610554; i=quwenruo.btrfs@gmx.com;
-	bh=KximrgKd5RxhR7foRItDoyHYgUsKCybYji7myX7+sA8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=JQzZpPM0oOxWBe7Gksa1431J4lRJIHwVsobfCsF85nnxNJnzn2AACrYVmGimQ1Uj
-	 VpUNI83rl1h3cHLYFwK0KRUclESCCCOE/Rp4Lzo+qWNzQ06ddyUUXNKuAC/4Qu/7j
-	 5PHQBgloiQBDVh6g2sEBLpRbzAsK+HnfoofHg98vYWuR2YY4yuozCwAbcwhQidD0M
-	 pBNvlS0MVtavl9Fe+bKIIjZAooxCdrnNSB1neOgFRTAMu0p/bWgNYoWcdIIf1Z6O2
-	 H8P9CgmmoO9zZmnYJlTVuon8c0Ix4ax3MTQLh7SpsloF6Dzr2B3lP2IrU4xHog3Qw
-	 +1VZawNOQHBhwwPnLQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5QJJ-1sFkIW2EFx-0043jd; Mon, 10
- Jun 2024 09:49:14 +0200
-Message-ID: <32eb378b-db76-40a7-aeeb-9d36784b548e@gmx.com>
-Date: Mon, 10 Jun 2024 17:19:09 +0930
+	s=arc-20240116; t=1718008534; c=relaxed/simple;
+	bh=rFEptHr+8vPyKZDhABmMhjsQbntS2nfMkhgGjyCbAYk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=V96xjRczQz0cG3MKho+IGfYStbq8T06Nl6//jLk8ZtNxzxMqlHdHiNZg8eaqaDd58lIOy83bDRv3ty24igmY6XQJbiuXiW3BHzwHWD0fYhGEQtBocB7bEOX7FCg8jCm5NWQiLF1KmB0t/S3WSOqo6SFEKVK5luEsmF0SZobLo20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eS+VtqVL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eS+VtqVL; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 790661F7BA
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1718008529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lVZNQ7VDxA0I4KPJ06v8/y5ws0dM2EwPTFZbvU8Zi3Q=;
+	b=eS+VtqVLzzFKLgaPoOK76kT0BckoTFvltKkFAUnZbgkxbXDnNXb8hk0YSs8RmEUhAVSsVI
+	vQvhCF72+pgTg3yqOEEOdaMlB08iBESGG7JBb29oc2gCHPqnnxa+DMkjBpjX9y6j7VDAcZ
+	FpgmXG4Imh4tp9mr0QLJ5173Z3fei84=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=eS+VtqVL
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1718008529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=lVZNQ7VDxA0I4KPJ06v8/y5ws0dM2EwPTFZbvU8Zi3Q=;
+	b=eS+VtqVLzzFKLgaPoOK76kT0BckoTFvltKkFAUnZbgkxbXDnNXb8hk0YSs8RmEUhAVSsVI
+	vQvhCF72+pgTg3yqOEEOdaMlB08iBESGG7JBb29oc2gCHPqnnxa+DMkjBpjX9y6j7VDAcZ
+	FpgmXG4Imh4tp9mr0QLJ5173Z3fei84=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8725C13A51
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id skhPD9C6ZmZHWgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2024 08:35:28 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH RESEND] Revert "btrfs-progs: convert: add raid-stripe-tree to allowed features"
+Date: Mon, 10 Jun 2024 18:05:10 +0930
+Message-ID: <62b84fee8124d455689f8c2ab151eafb136a04d9.1718008470.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs-6.9 regression tests fail
-To: Bruce Dubbs <bruce.dubbs@gmail.com>, linux-btrfs@vger.kernel.org,
- David Sterba <dsterba@suse.com>
-References: <2f8d2b44-8958-4312-bea2-8c53c2312c7c@gmail.com>
- <53eb0a7d-3ec5-4719-b508-b5f366e3b4e5@gmx.com>
- <d1770aa6-76f6-4292-ac60-1e69e1bdb016@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <d1770aa6-76f6-4292-ac60-1e69e1bdb016@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:h5JfsdJ9a40KH8vkA6HfMNUiHfLpWTtKQZNh6RLbtZfIulfFF+R
- Jx03IZs15kxQTHDjozzdGp1a2ZUndwQN694qFwWBQUrMbjujmiSjXfOrFVy99nT0IRldlr8
- gHw0FBltGSukQrKmUoU4xkH84bGfxldvmWch4RhjsADuY8rptlQ6Gu+RWMuc+b2PIFRpA2/
- NkWAx7lca39DVfLI5lNrA==
+Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Sr0jD60A4kA=;jO2SvKVaY+F+zu0EHsh99dfxMDo
- LGzpa/6R4/AeT3k0EY/o8uppHe18ywMbRCJJvlHg0gAQ52FVXWW0vMPAJYbjEQm3m9eZvEwGo
- 2OcMorlYyr5PejbtB+0VPT7pAvqhA28Rn+AGj/IKSQf/g4pWpgVlKvSgGAaMk8SGOvwdd2LKn
- WjV7pPkQojMGww3PccnlVo84hSYUiJMujvMl/WPVC2OsPgN/YEddwr6LIke/gYyXOGUkZqL62
- 95dsWbtglyw8meg8oN4r6YGAI+n6jbJpLT4crqhYQW+oYRVFhyvxPgtrQSrLYoQ+DJdL0XzFA
- fh57WT+4a35sO2QC8A85gE3v0SQ7MIklrvmgmK6i6KPLhT2YByDTiGhunioXHlEO1Xs890Iai
- v5f1rOlTl2fe9IpvukjA4fWSaXUhb2/CqjhJ2AFLeRZGK+HnihOFUPVl0FAstWoySaDXdTAeR
- ZGP2lljMtX7CPIgJnq1LbFum3WykaGxv0RMH32uHFKFqU4t9LXEVAXz+3VmvHc6TsOg5vSsLH
- Wkcb8VkFhtRkncF33wT2UEI3WivCO9oSGsRtPCbEmozInVy+ogSF14C4HMVG2lyDCarXk2CmQ
- X40W586bFfKSC4sR03RPg/8tRz8s8gqKPsrGgC6RsNUPhb0cODLqXxJUNSLxs4SzPPB1+Pkxp
- CZn36F9m5b/gxO27Bqohs+CI/O39e0qo73wZQJuVroTMDIw88CD+uZ4UX7lVwFdCHCTAUocgE
- OS89b02eLt+f/b4iie7J6QGQAiura9mXuR6w+aokyfIBIZmfr7bcz0gJtLz3kQXqfV2fsJyoa
- b7H6uUTbwRBS56HKoFWVFp0wJ6IK1GBTiPSE2KAD5Dgs4=
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 790661F7BA
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
 
-DQoNCuWcqCAyMDI0LzYvMTAgMTY6NDIsIEJydWNlIER1YmJzIOWGmemBkzoNCj4gT24gNi85LzI0
-IDE5OjUzLCBRdSBXZW5ydW8gd3JvdGU6DQo+Pg0KPj4NCj4+IOWcqCAyMDI0LzYvMTAgMDk6MjMs
-IEJydWNlIER1YmJzIOWGmemBkzoNCj4+PiBUaGUgY29udmVydCBhbmQgbWlzYyB0ZXN0cyBmYWls
-IHByZXR0eSBlYXJseSBmb3IgbWUgYW5kIEkgY2FuJ3QgZmlndXJlDQo+Pj4gb3V0IHdoeS4NCj4+
-PiBUaGUgb3RoZXIgYnRyZnMgdGVzdHMgY29tcGxldGUgbm9ybWFsbHkuDQo+Pj4NCj4+PiBUaGUg
-c2lnbmlmaWNhbnQgb3V0cHV0IGZvciBjb252ZXJ0LXRlc3RzLXJlc3VsdHMudHh0IGlzOg0KPj4+
-DQo+Pj4gPT09PT09IFJVTiBDSEVDSyBtb3VudCAtdCBidHJmcyAtbyBsb29wDQo+Pj4gL2J1aWxk
-L2J0cmZzL2J0cmZzLXByb2dzLXY2LjkvdGVzdHMvdGVzdC5pbWcNCj4+PiAvYnVpbGQvYnRyZnMv
-YnRyZnMtcHJvZ3MtdjYuOS90ZXN0cy9tbnQNCj4+PiBtb3VudDogL2J1aWxkL2J0cmZzL2J0cmZz
-LXByb2dzLXY2LjkvdGVzdHMvbW50OiBmc2NvbmZpZyBzeXN0ZW0gY2FsbA0KPj4+IGZhaWxlZDog
-Tm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeS4NCj4+PiDCoMKgwqDCoMKgwqDCoCBkbWVzZygxKSBt
-YXkgaGF2ZSBtb3JlIGluZm9ybWF0aW9uIGFmdGVyIGZhaWxlZCBtb3VudCBzeXN0ZW0gDQo+Pj4g
-Y2FsbC4NCj4+PiBmYWlsZWQ6IG1vdW50IC10IGJ0cmZzIC1vIGxvb3ANCj4+PiAvYnVpbGQvYnRy
-ZnMvYnRyZnMtcHJvZ3MtdjYuOS90ZXN0cy90ZXN0LmltZw0KPj4+IC9idWlsZC9idHJmcy9idHJm
-cy1wcm9ncy12Ni45L3Rlc3RzL21udA0KPj4+IHRlc3QgZmFpbGVkIGZvciBjYXNlIDAwMy1leHQ0
-LWJhc2ljDQo+Pj4NCj4+PiBkbWVzZyBnaXZlcyBtZToNCj4+Pg0KPj4+IFsgMzgwNy40MjE4MzZd
-IGxvb3AwOiBkZXRlY3RlZCBjYXBhY2l0eSBjaGFuZ2UgZnJvbSAwIHRvIDQxOTQzMDQNCj4+PiBb
-IDM4MDcuNDIxOTMzXSBCVFJGUzogZGV2aWNlIGZzaWQgNGYxYTg0NDAtMWE4Zi00NWQxLTk3ODkt
-NzIwODBkZGQ5OTE3DQo+Pj4gZGV2aWQgMSB0cmFuc2lkIDcgL2Rldi9sb29wMCAoNzowKSBzY2Fu
-bmVkIGJ5IG1vdW50ICgzMzI2KQ0KPj4+IFsgMzgwNy40MjM0NThdIEJUUkZTIGluZm8gKGRldmlj
-ZSBsb29wMCk6IGZpcnN0IG1vdW50IG9mIGZpbGVzeXN0ZW0NCj4+PiA0ZjFhODQ0MC0xYThmLTQ1
-ZDEtOTc4OS03MjA4MGRkZDk5MTcNCj4+PiBbIDM4MDcuNDIzNDY5XSBCVFJGUyBpbmZvIChkZXZp
-Y2UgbG9vcDApOiB1c2luZyBjcmMzMmMgKGNyYzMyYy1nZW5lcmljKQ0KPj4+IGNoZWNrc3VtIGFs
-Z29yaXRobQ0KPj4+IFsgMzgwNy40MjM0NzddIEJUUkZTIGluZm8gKGRldmljZSBsb29wMCk6IHVz
-aW5nIGZyZWUtc3BhY2UtdHJlZQ0KPj4+IFsgMzgwNy40MjM5MTFdIEJUUkZTIHdhcm5pbmcgKGRl
-dmljZSBsb29wMCk6IGZhaWxlZCB0byByZWFkIHJvb3QNCj4+PiAob2JqZWN0aWQ9MTIpOiAtMg0K
-Pj4NCj4+IFRoYXQncyBvYmplY3RpZCBpcyBmb3IgUlNULCB3aGljaCBzaG91bGRuJ3QgZXZlbiBi
-ZSBlbmFibGVkIHVubGVzcyB5b3UNCj4+IGhhdmUgZW5hYmxlZCBleHBlcmltZW50YWwgZmVhdHVy
-ZXMgZm9yIGJ0cmZzLXByb2dzLg0KPiANCj4gSSBoYXZlIG5vdC7CoCBJIHVzZWQ6DQo+IA0KPiAu
-L2NvbmZpZ3VyZSAtLXByZWZpeD0vdXNywqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPiAgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAtLWRpc2FibGUtc3RhdGljwqDCoMKgwqDCoMKgwqAgXA0KPiAgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCAtLWRpc2FibGUtZG9jdW1lbnRhdGlvbiAmJg0KPiBtYWtlDQo+
-IG1ha2UgZnNzdW0NCj4gDQo+IGNkIHRlc3RzDQo+IC4vY29udmVydC10ZXN0cy5zaA0KPiAuLi4N
-Cj4gDQo+PiBNaW5kIHRvIGR1bXAgdGhlIHN1cGVyYmxvY2sgb2YgdGhhdCB0ZXN0IGltYWdlPw0K
-Pj4gKCRCVFJGU19QUk9HU19TT1VSQ0UvdGVzdHMvdGVzdC5pbWcpDQo+IA0KPiBJIGhhdmVuJ3Qg
-ZG9uZSB0aGF0IGJlZm9yZSwgYnV0IHRoaXMgaXMgd2hhdCBJIGhhdmU6DQo+IA0KPiAkIGJ0cmZz
-IGluc3BlY3QtaW50ZXJuYWwgZHVtcC1zdXBlciB0ZXN0LmltZw0KPiBzdXBlcmJsb2NrOiBieXRl
-bnI9NjU1MzYsIGRldmljZT10ZXN0LmltZw0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gY3N1bV90eXBlwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAwIChjcmMzMmMpDQo+IGNzdW1fc2l6ZcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgNA0KPiBjc3VtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-MHgzZGEzNmRiOSBbbWF0Y2hdDQo+IGJ5dGVucsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgNjU1MzYNCj4gZmxhZ3PCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-MHgxDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICgg
-V1JJVFRFTiApDQo+IG1hZ2ljwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF9C
-SFJmU19NIFttYXRjaF0NCj4gZnNpZMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGM5MGZhYWRhLTEzY2QtNGU3Ny1iZDRhLWEzMjAxOGFkM2I5Mw0KPiBtZXRhZGF0YV91dWlk
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgYzkwZmFhZGEtMTNjZC00ZTc3LWJkNGEtYTMyMDE4YWQzYjkz
-DQo+IGxhYmVsDQo+IGdlbmVyYXRpb27CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA3DQo+IHJv
-b3TCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA2NzQxNjA2NA0KPiBzeXNf
-YXJyYXlfc2l6ZcKgwqDCoMKgwqDCoMKgwqDCoCA5Nw0KPiBjaHVua19yb290X2dlbmVyYXRpb27C
-oMKgIDINCj4gcm9vdF9sZXZlbMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDANCj4gY2h1bmtf
-cm9vdMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDM1ODUyMjg4DQo+IGNodW5rX3Jvb3RfbGV2
-ZWzCoMKgwqDCoMKgwqDCoCAwDQo+IGxvZ19yb290wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIDANCj4gbG9nX3Jvb3RfdHJhbnNpZCAoZGVwcmVjYXRlZCnCoMKgIDANCj4gbG9nX3Jvb3Rf
-bGV2ZWzCoMKgwqDCoMKgwqDCoMKgwqAgMA0KPiB0b3RhbF9ieXRlc8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCAyMTQ3NDgzNjQ4DQo+IGJ5dGVzX3VzZWTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCAxNzc2Mzk0MjQNCj4gc2VjdG9yc2l6ZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDQwOTYN
-Cj4gbm9kZXNpemXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNDA5Ng0KPiBsZWFmc2l6
-ZSAoZGVwcmVjYXRlZCnCoMKgIDQwOTYNCj4gc3RyaXBlc2l6ZcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIDQwOTYNCj4gcm9vdF9kaXLCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNg0K
-PiBudW1fZGV2aWNlc8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxDQo+IGNvbXBhdF9mbGFnc8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgMHgwDQo+IGNvbXBhdF9yb19mbGFnc8KgwqDCoMKgwqDCoMKg
-wqAgMHgzDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICggRlJFRV9TUEFDRV9UUkVFIHwNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIEZSRUVfU1BBQ0VfVFJFRV9WQUxJRCApDQo+IGluY29tcGF0X2Zs
-YWdzwqDCoMKgwqDCoMKgwqDCoMKgIDB4NDM0MQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoIE1JWEVEX0JBQ0tSRUYgfA0KPiAgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRVhURU5ERURfSVJFRiB8DQo+
-ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBTS0lO
-TllfTUVUQURBVEEgfA0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgTk9fSE9MRVMgfA0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgUkFJRF9TVFJJUEVfVFJFRSApDQoNCk9LLCBpdCdzIGEgZml4
-IHRoYXQgZGlkbid0IGdldCBtZXJnZWQgYnkgRGF2aWQ6DQoNCltQQVRDSCAxLzNdIFJldmVydCAi
-YnRyZnMtcHJvZ3M6IGNvbnZlcnQ6IGFkZCByYWlkLXN0cmlwZS10cmVlIHRvIA0KYWxsb3dlZCBm
-ZWF0dXJlcyINCg0KVG8gRGF2aWQ6IGFueSByZWFzb24gd2h5IHRoYXQgcmV2ZXJ0IGlzIG5vdCBt
-ZXJnZWQ/DQoNClRoYW5rcywNClF1DQpUDQo+IGNhY2hlX2dlbmVyYXRpb27CoMKgwqDCoMKgwqDC
-oCAwDQo+IHV1aWRfdHJlZV9nZW5lcmF0aW9uwqDCoMKgIDANCj4gZGV2X2l0ZW0udXVpZMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIDNjYjU4NjQ0LWVkNzMtNDZhYi1iZTAzLTY4ZWJhY2M0YTQ1OQ0KPiBk
-ZXZfaXRlbS5mc2lkwqDCoMKgwqDCoMKgwqDCoMKgwqAgYzkwZmFhZGEtMTNjZC00ZTc3LWJkNGEt
-YTMyMDE4YWQzYjkzIFttYXRjaF0NCj4gZGV2X2l0ZW0udHlwZcKgwqDCoMKgwqDCoMKgwqDCoMKg
-IDANCj4gZGV2X2l0ZW0udG90YWxfYnl0ZXPCoMKgwqAgMjE0NzQ4MzY0OA0KPiBkZXZfaXRlbS5i
-eXRlc191c2VkwqDCoMKgwqAgNDQxNTgxNTY4DQo+IGRldl9pdGVtLmlvX2FsaWduwqDCoMKgwqDC
-oMKgIDQwOTYNCj4gZGV2X2l0ZW0uaW9fd2lkdGjCoMKgwqDCoMKgwqAgNDA5Ng0KPiBkZXZfaXRl
-bS5zZWN0b3Jfc2l6ZcKgwqDCoCA0MDk2DQo+IGRldl9pdGVtLmRldmlkwqDCoMKgwqDCoMKgwqDC
-oMKgIDENCj4gZGV2X2l0ZW0uZGV2X2dyb3VwwqDCoMKgwqDCoCAwDQo+IGRldl9pdGVtLnNlZWtf
-c3BlZWTCoMKgwqDCoCAwDQo+IGRldl9pdGVtLmJhbmR3aWR0aMKgwqDCoMKgwqAgMA0KPiBkZXZf
-aXRlbS5nZW5lcmF0aW9uwqDCoMKgwqAgMA0KPiANCj4gQUZBSUNUIHRlc3QuaW1nIGlzIGdlbmVy
-YXRlZCBieSB0aGUgdGVzdHMuwqAgSSByZWFsbHkgZG8gbm90IGtub3cgd2hhdCANCj4gYW55IG9m
-IHRoYXQgb3V0cHV0IG1lYW5zLg0KPiANCj4gT3RoZXIgaW5mbzogSSBhbSBidWlsZGluZyB3aXRo
-IGdjYy0xNC4xLjAuDQo+IA0KPiAgwqAgLS0gQnJ1Y2UNCj4gDQo+IA0KPiANCg==
+This reverts commit 346a3819237b319985ad6042d6302f67b040a803.
+
+The RST feature (at least for now) is mostly for zoned devices to
+support extra data profiles.
+
+Thus btrfs-convert is never designed to handle RST, because there is no
+way an ext4/reiserfs can even be created on a zoned device, or it would
+create the correct RST tree root at all
+
+Revert this unsupported feature to prevent false alerts.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+This was included in the btrfs-convert unwritten extent patchset/pull
+request but is not merged.
+---
+ common/fsfeatures.h                           |  3 +-
+ tests/common.convert                          | 44 ++++---------------
+ tests/convert-tests/001-ext2-basic/test.sh    |  2 +-
+ tests/convert-tests/003-ext4-basic/test.sh    |  2 +-
+ .../005-delete-all-rollback/test.sh           |  6 +--
+ .../convert-tests/010-reiserfs-basic/test.sh  |  2 +-
+ .../011-reiserfs-delete-all-rollback/test.sh  |  6 +--
+ tests/convert-tests/024-ntfs-basic/test.sh    |  2 +-
+ 8 files changed, 15 insertions(+), 52 deletions(-)
+
+diff --git a/common/fsfeatures.h b/common/fsfeatures.h
+index 5b241bdf9122..f636171f6bd9 100644
+--- a/common/fsfeatures.h
++++ b/common/fsfeatures.h
+@@ -68,8 +68,7 @@ static const struct btrfs_mkfs_features btrfs_convert_allowed_features = {
+ 			   BTRFS_FEATURE_INCOMPAT_BIG_METADATA |
+ 			   BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |
+ 			   BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |
+-			   BTRFS_FEATURE_INCOMPAT_NO_HOLES |
+-			   BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE,
++			   BTRFS_FEATURE_INCOMPAT_NO_HOLES,
+ 	.runtime_flags   = BTRFS_FEATURE_RUNTIME_QUOTA,
+ };
+
+diff --git a/tests/common.convert b/tests/common.convert
+index 06eec9b2a853..50d49a0d32da 100644
+--- a/tests/common.convert
++++ b/tests/common.convert
+@@ -214,47 +214,19 @@ convert_test_post_check_checksums() {
+ 		grep -q 'FAILED' && _fail "file validation failed"
+ }
+
+-# Check if convert can mount the image based on features
+-# $1: name of the feature
+-convert_can_mount() {
+-	local features="$1"
+-
+-	if [ "$features" = 'block-group-tree' ]; then
+-		if ! [ -f "/sys/fs/btrfs/features/block_group_tree" ]; then
+-			_log "Skip mount checks due to missing support of block-group-tree"
+-			return 1
+-		fi
+-	fi
+-	if [ "$features" = 'raid-stripe-tree' ]; then
+-		if ! [ -f "/sys/fs/btrfs/features/raid_stripe_tree" ]; then
+-			_log "Skip mount checks due to missing support of raid-stripe-tree"
+-			return 1
+-		fi
+-	fi
+-
+-	return 0
+-}
+-
+ # post conversion checks, all three in one call, on an unmounted image
+-# $1: features for mount compatibility checks
+-# $2: file with checksums
+-# $3: file with permissions.
+-# $4: file with acl entries.
++# $1: file with checksums
++# $2: file with permissions.
++# $3: file with acl entries.
+ convert_test_post_checks_all() {
+-	local features="$1"
+-
++	_assert_path "$1"
+ 	_assert_path "$2"
+ 	_assert_path "$3"
+-	_assert_path "$4"
+-
+-	if ! convert_can_mount "$features"; then
+-		return 0
+-	fi
+
+ 	run_check_mount_test_dev
+-	convert_test_post_check_checksums "$2"
+-	convert_test_post_check_permissions "$3"
+-	convert_test_post_check_acl "$4"
++	convert_test_post_check_checksums "$1"
++	convert_test_post_check_permissions "$2"
++	convert_test_post_check_acl "$3"
+
+ 	# Create a large file to trigger data chunk allocation
+ 	generate_dataset "large"
+@@ -313,7 +285,7 @@ convert_test() {
+ 	run_check_umount_test_dev
+
+ 	convert_test_do_convert "$features" "$nodesize" "$fstype"
+-	convert_test_post_checks_all "$features" "$CHECKSUMTMP" "$EXT_PERMTMP" "$EXT_ACLTMP"
++	convert_test_post_checks_all "$CHECKSUMTMP" "$EXT_PERMTMP" "$EXT_ACLTMP"
+ 	rm -- "$CHECKSUMTMP"
+ 	rm -- "$EXT_PERMTMP"
+ 	rm -- "$EXT_ACLTMP"
+diff --git a/tests/convert-tests/001-ext2-basic/test.sh b/tests/convert-tests/001-ext2-basic/test.sh
+index 461ff4a5f1a9..6dc105b55e27 100755
+--- a/tests/convert-tests/001-ext2-basic/test.sh
++++ b/tests/convert-tests/001-ext2-basic/test.sh
+@@ -12,7 +12,7 @@ check_kernel_support_acl
+
+ # Iterate over defaults and options that are not tied to hardware capabilities
+ # or number of devices
+-for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
++for feature in '' 'block-group-tree' ; do
+ 	convert_test ext2 "$feature" "ext2 4k nodesize" 4096 mke2fs -b 4096
+ 	convert_test ext2 "$feature" "ext2 16k nodesize" 16384 mke2fs -b 4096
+ 	convert_test ext2 "$feature" "ext2 64k nodesize" 65536 mke2fs -b 4096
+diff --git a/tests/convert-tests/003-ext4-basic/test.sh b/tests/convert-tests/003-ext4-basic/test.sh
+index 14637fc852db..8ae5264cb340 100755
+--- a/tests/convert-tests/003-ext4-basic/test.sh
++++ b/tests/convert-tests/003-ext4-basic/test.sh
+@@ -12,7 +12,7 @@ check_kernel_support_acl
+
+ # Iterate over defaults and options that are not tied to hardware capabilities
+ # or number of devices
+-for feature in '' 'block-group-tree' 'raid-stripe-tree' ; do
++for feature in '' 'block-group-tree' ; do
+ 	convert_test ext4 "$feature" "ext4 4k nodesize" 4096 mke2fs -t ext4 -b 4096
+ 	convert_test ext4 "$feature" "ext4 16k nodesize" 16384 mke2fs -t ext4 -b 4096
+ 	convert_test ext4 "$feature" "ext4 64k nodesize" 65536 mke2fs -t ext4 -b 4096
+diff --git a/tests/convert-tests/005-delete-all-rollback/test.sh b/tests/convert-tests/005-delete-all-rollback/test.sh
+index 5603d3078bc8..fa56ca292bfc 100755
+--- a/tests/convert-tests/005-delete-all-rollback/test.sh
++++ b/tests/convert-tests/005-delete-all-rollback/test.sh
+@@ -38,10 +38,6 @@ do_test() {
+
+ 	convert_test_do_convert "$features" "$nodesize"
+
+-	if ! convert_can_mount "$features"; then
+-		return 0
+-	fi
+-
+ 	run_check_mount_test_dev
+ 	convert_test_post_check_checksums "$CHECKSUMTMP"
+
+@@ -68,7 +64,7 @@ do_test() {
+
+ # Iterate over defaults and options that are not tied to hardware capabilities
+ # or number of devices
+-for feature in '' 'block-group-tree' 'raid-stripe-tree' ; do
++for feature in '' 'block-group-tree' ; do
+ 	do_test "$feature" "ext4 4k nodesize" 4096 mke2fs -t ext4 -b 4096
+ 	do_test "$feature" "ext4 16k nodesize" 16384 mke2fs -t ext4 -b 4096
+ 	do_test "$feature" "ext4 64k nodesize" 65536 mke2fs -t ext4 -b 4096
+diff --git a/tests/convert-tests/010-reiserfs-basic/test.sh b/tests/convert-tests/010-reiserfs-basic/test.sh
+index 6ab02b31d176..86b1826783b3 100755
+--- a/tests/convert-tests/010-reiserfs-basic/test.sh
++++ b/tests/convert-tests/010-reiserfs-basic/test.sh
+@@ -15,7 +15,7 @@ prepare_test_dev
+
+ # Iterate over defaults and options that are not tied to hardware capabilities
+ # or number of devices
+-for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
++for feature in '' 'block-group-tree' ; do
+ 	convert_test reiserfs "$feature" "reiserfs 4k nodesize" 4096 mkreiserfs -b 4096
+ 	convert_test reiserfs "$feature" "reiserfs 16k nodesize" 16384 mkreiserfs -b 4096
+ 	convert_test reiserfs "$feature" "reiserfs 64k nodesize" 65536 mkreiserfs -b 4096
+diff --git a/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh b/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh
+index 688613c2c6ad..e1c3e02eb7a0 100755
+--- a/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh
++++ b/tests/convert-tests/011-reiserfs-delete-all-rollback/test.sh
+@@ -40,10 +40,6 @@ do_test() {
+
+ 	convert_test_do_convert "$features" "$nodesize"
+
+-	if ! convert_can_mount "$features"; then
+-		return 0
+-	fi
+-
+ 	run_check_mount_test_dev
+ 	convert_test_post_check_checksums "$CHECKSUMTMP"
+
+@@ -70,7 +66,7 @@ do_test() {
+
+ # Iterate over defaults and options that are not tied to hardware capabilities
+ # or number of devices
+-for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
++for feature in '' 'block-group-tree' ; do
+ 	do_test "$feature" "reiserfs 4k nodesize" 4096 mkreiserfs -b 4096
+ 	do_test "$feature" "reiserfs 16k nodesize" 16384 mkreiserfs -b 4096
+ 	do_test "$feature" "reiserfs 64k nodesize" 65536 mkreiserfs -b 4096
+diff --git a/tests/convert-tests/024-ntfs-basic/test.sh b/tests/convert-tests/024-ntfs-basic/test.sh
+index a93f60070674..d2e1be79ef6b 100755
+--- a/tests/convert-tests/024-ntfs-basic/test.sh
++++ b/tests/convert-tests/024-ntfs-basic/test.sh
+@@ -17,6 +17,6 @@ prepare_test_dev
+
+ # Iterate over defaults and options that are not tied to hardware capabilities
+ # or number of devices. Test only 4K block size as minimum.
+-for feature in '' 'block-group-tree' 'raid-stripe-tree'; do
++for feature in '' 'block-group-tree' ; do
+ 	convert_test ntfs "$feature" "ntfs 4k nodesize" 4096 mkfs.ntfs -s 4096
+ done
+--
+2.45.2
+
 
