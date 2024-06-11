@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-5658-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5659-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B85CC904184
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 18:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB4AC90418D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 18:49:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B93E21C2296C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 16:43:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C6D61C214E4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 16:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1084084C;
-	Tue, 11 Jun 2024 16:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE0442058;
+	Tue, 11 Jun 2024 16:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Uvd0tQn2"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ET/mTTOr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821CB1CFA9
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 16:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BB0517721
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 16:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718124192; cv=none; b=dZLdnBMFbuR6gc2w5S46vANic4igw+AqYl2xeX98DmUvnoA4VNKWxUt/2yQGVCx1sI2McLZPDTOPYK/thZQNdXeFKS5yNfocrifsjD4l4Dn2eMJRpGxyDQoVWPzVCezX11qpn8c2cWrha60UgUdc8GO9QkkXArUJONv93s6kV+M=
+	t=1718124539; cv=none; b=tKQIrhfu5hcjANL37p4+lv185VZW4wqjustyo9h809UEw2kTNHrHl8KunW7+cqoLbtFFm2knmKwbDzT1OATXsAqIfOBi4LHSHcNKcRPcIvhKkpX3shQvFt8TNrGxdc95QAzzqwe2yZ6KEhXxrw3gub1VEZhPOMqPbx/bYNtgshs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718124192; c=relaxed/simple;
-	bh=tMkXNzAjK9Hye703E/hnEoJtKeVOG3oxEA2FaCCFzxE=;
+	s=arc-20240116; t=1718124539; c=relaxed/simple;
+	bh=A+Q32bO8Msud9DAjE+w+cVey+b4YIQSDJUOeraFg05c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h6//zcX/Y3fWj9lFL0of2URGDR1PRuROKCkvD1X8EnTk2OC+7r/rgPWoZBesik5lOg2caJA+W3HFUTBwDtq4UAqvCExzGPCozh2aEgfcIeve91WCJUMowrVMwzwy57uRFa7foMW+LYFBE/NRgZqOj+HkVRkXSpgqNmXlit7MQlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Uvd0tQn2; arc=none smtp.client-ip=209.85.128.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=FC+xBbbg/sWuh9/hw0n6M0oFaDnrqUV7E8PBXBmEFWvf3odyeKp4KlbXRuUA4snHr1yWaf9wRS3PFxIjVX+2o/5wZ7dZeMJElzkSxljjVoY0qP4LT29UgtD2vLEoIdeLgZJG2QhXFFwB6DAbu3JPLUw1E/mH0PIKYLFN/cIUg4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=ET/mTTOr; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-62a0849f5a8so58323717b3.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 09:43:10 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-62f39fcb010so4360017b3.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 09:48:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1718124189; x=1718728989; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1718124534; x=1718729334; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IXGNL8jj6wdRW7QHJC0YjVu1Re5WwhnR5MPNpyTYf98=;
-        b=Uvd0tQn2Plq2bdZ93wqM+wdCl8HWY3WPUi/rzNZjeqvTlyG4T+SCVuVkALSkOTrSWa
-         8R8E+PBvCPJTTHsc4U0WJjZAUYvvdWfs9Ok8LflUpq/5z6uNreCq41ageGaBHjVDYaZt
-         2uPyT7OAU8+4B/kBj9ZTJFTwgzbehkhFMDNUZULsjch1CpUvtc6k+KjKBa0t+uD+ZH13
-         cQbmLkxXnYVmN+RNeCTRzKSl/w7A0v5wqGw6Cs38441VgWRUD+pJv0OJOqe6P+eR0d0z
-         200Pa5Ry20M2Fo6w9anpHcgT7tNwiKg+dR/iaYVJ/2MlmP4cumcIHi5U5vGxizylbgQM
-         UwzA==
+        bh=SU5Z0+qurQVNetB0YODM2Onz07NARR6ZkU4JeU+Drjo=;
+        b=ET/mTTOrpUxnpqirQReeXvwo/KFidNCtE/IGrMVKlKDFXnG8yjz6rEn0sBXD4+ODPA
+         FJmvXtJssqYm7YJfl5s62RAq/vbx63q1vSSKJ2EalwY4Ki1qcP/z14YyjLNqswyyRB4c
+         URBT9U1dqhHc2E6xWZNCVBPWYVRrCquK55PySauiFcYwlU79C8RnxF7yUMGblShzuEfy
+         PsktrwLDuvfTBMuQCuxg/8cQUI71LvN1IOWj071Z8P01cA4ix6U3ZPu6qJJG9R2ri9j7
+         a8RPnYrM/CyyK8Bl+ygVNh3AxMteiqhM8ZJ0LJBkN1JYthxMbbnyxEX6iI3yzmN3Aqa5
+         MGDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718124189; x=1718728989;
+        d=1e100.net; s=20230601; t=1718124534; x=1718729334;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IXGNL8jj6wdRW7QHJC0YjVu1Re5WwhnR5MPNpyTYf98=;
-        b=EUDWUFMEksFeOtK2B32fPK3x3u9DheDcFMNU5gPxrNxJQpO+RpPq6GiUFpsxbtzEb+
-         /qC6ZTGDS3DyKGnJmKIw/bOEfiDVpkKTpIlJM8IvF2ObP7hcG4PFZaQP3aMz6WWGgARv
-         DffPvoG5Wr5Ru+SQJEz6TzdK7fUODtq6iVKn/Dku/OSCRnX/1RLdnhtcBr7njVgCIdDB
-         XZ7aBNpqZqRM+jpA48AfToAhe0ZfL319ig8ILgRLa4T4EcPX3tdWCCdpECGuu+pFHjf2
-         QD2na6zvp0yZIVSjrTNeUE5pchvTL4Kdtz/jw2iNolcF6aD5TXVtPT7qDlELrkGmZDck
-         S5fg==
-X-Gm-Message-State: AOJu0YwrEWD2aDi980gcOa0zu09J4cNKffy1W16mkPJSlRe3mdPtHO2A
-	rOQJsgwazHN3wy3+ZsGZgEma3RaP1iF2SSNzhK15ogJqeWbpdBsKc6WNVM1Apo0=
-X-Google-Smtp-Source: AGHT+IGGX4MXrIOZWeYd9xs+ljsBZAlcF8mHqb63RwU5i2hullvSz1CxHV8tJwhEa0FUAO2GHgH+Yw==
-X-Received: by 2002:a0d:e444:0:b0:61b:d8:c5de with SMTP id 00721157ae682-62cd55c55c3mr117808697b3.19.1718124189255;
-        Tue, 11 Jun 2024 09:43:09 -0700 (PDT)
+        bh=SU5Z0+qurQVNetB0YODM2Onz07NARR6ZkU4JeU+Drjo=;
+        b=sfR9FdoIi+2b/g7Zw/IzFVQ4y3C9OHxaSW6OUnns+HvIPlCJH0EmFwkyhUOQsSarid
+         UMlOSguwc3QSHS3QWEjkI5igky7QB/NQBBWW+RDBGLBdohyZ3GhWGLLXjEGhiCJO+bV8
+         Vv/EvuFSaADz64XLUj2WKgmLvZCjf2r4Db81NCKrA/NxrYiqVLE+OtrnAi3jRJKcF/mn
+         7KombTxurr3xlC1cxUhFEJ9FD0CWLIRcsVMYbFusiYtCfSJL2vIYhCIv3HrrjiBkzwc/
+         XsrLq0z0xn2ljwJj8ZWpt22lciBGIYNcOtO5FsQbYsCOHOfzNYtunhpPLj1IwWs54G/9
+         J4fA==
+X-Gm-Message-State: AOJu0Yxqcayh4ZwyAXkzP+A1CcwuYd8ru7gKRxgCxHamshL71z5oQNko
+	69kCUHCFR3thy/Hmich+AR1l5Wp/4gmPEw7ljKPNWtBYx1fF8C17RFylweitoy4=
+X-Google-Smtp-Source: AGHT+IHY8+RcMMdeWyCdBwHaqhDFALrriPg+8bmVBGDsrgayNHMmCpBTMKukp4gfXCfLyX1AlwuxRw==
+X-Received: by 2002:a81:a14a:0:b0:61e:a36:8d85 with SMTP id 00721157ae682-62cd568c5a5mr120701507b3.50.1718124533921;
+        Tue, 11 Jun 2024 09:48:53 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-62cf576fb1csm12444247b3.128.2024.06.11.09.43.08
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-62d11fb1133sm7104407b3.116.2024.06.11.09.48.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jun 2024 09:43:08 -0700 (PDT)
-Date: Tue, 11 Jun 2024 12:43:08 -0400
+        Tue, 11 Jun 2024 09:48:53 -0700 (PDT)
+Date: Tue, 11 Jun 2024 12:48:52 -0400
 From: Josef Bacik <josef@toxicpanda.com>
-To: Qu Wenruo <wqu@suse.com>
+To: fdmanana@kernel.org
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/4] btrfs: rescue= mount options enhancement to support
- interrupted csum conversion
-Message-ID: <20240611164308.GA247672@perftesting>
-References: <cover.1718082585.git.wqu@suse.com>
+Subject: Re: [PATCH] btrfs: avoid transaction commit on any fsync after
+ subvolume creation
+Message-ID: <20240611164852.GB247672@perftesting>
+References: <65a8b2e10dc470b52858865906f36c80b77ce010.1718104115.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -81,69 +81,45 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1718082585.git.wqu@suse.com>
+In-Reply-To: <65a8b2e10dc470b52858865906f36c80b77ce010.1718104115.git.fdmanana@suse.com>
 
-On Tue, Jun 11, 2024 at 02:51:34PM +0930, Qu Wenruo wrote:
-> [REPO]
-> https://github.com/adam900710/linux/tree/rescue_changes
+On Tue, Jun 11, 2024 at 12:10:24PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> [BACKGROUND]
-> There is an adventurous user using btrfstune to convert a 32T btrfs
-> from crc32c to xxhash.
+> As of commit 1b53e51a4a8f ("btrfs: don't commit transaction for every
+> subvol create") we started to make any fsync after creating a subvolume
+> to fallback to a transaction commit if the fsync is performed in the
+> same transaction that was used to create the subvolume. This happens
+> with the following at ioctl.c:create_subvol():
 > 
-> However for such huge fs, it takes too long time and the reporter
-> canceled the conversion.
+>   $ cat fs/btrfs/ioctl.c
+>   (...)
+>       /* Tree log can't currently deal with an inode which is a new root. */
+>       btrfs_set_log_full_commit(trans);
+>   (...)
 > 
-> This makes the reporter unable to mount the fs at all.
+> Note that the comment is misleading as the problem is not that fsync can
+> not deal with the root inode of a new root, but that we can not log any
+> inode that belongs to a root that was not yet persisted because that would
+> make log replay fail since the root doesn't exist at log replay time.
 > 
-> [CAUSE]
-> First of all, for a half converted fs, we will never allow RW mount, so
-> everything must be done in rescue mode.
+> The above simply makes any fsync fallback to a full transaction commit if
+> it happens in the same transaction used to create the subvolume - even if
+> it's an inode that belongs to any other subvolume. This is a brute force
+> solution and it doesn't necessarily improve performance for every workload
+> out there - it just moves a full transaction commit from one place, the
+> subvolume creation, to another - an fsync for any inode.
 > 
-> There are several different stages of csum conversion, and at different
-> stage it requires different handling from kernel:
+> Just improve on this by making the fallback to a transacton commit only
+> for an fsync against an inode of the new subvolume, or for the directory
+> that contains the dentry that points to the new subvolume (in case anyone
+> attempts to fsync the directory in the same transaction).
 > 
-> - Generationg new data csums
->   At this stage only the super flags (CHANGING_DATA_CSUM flag) is
->   preventing the kernel from mounting.
-> 
->   Intrdoce "rescue=ignoresuperflags" to address this.
-> 
-> - Deleting old data cums
->   The same super flags problem, with possible missing data csums.
-> 
->   Despite the new "rescue=ignoresuperflags", end users will also need
->   the existing "rescue=ignoredatacsums" mount option.
-> 
-> - Renaming the objectid of new data cums
->   The new csums' objectid will be changed to the regular one.
-> 
->   During this we can hit data csum mismatch.
->   So the same "rescue=ignoresuperflags:ignoredatacsums" can handle it
->   already.
-> 
-> - Rewriting metadata csums
->   This part is done in-place (no COW), with a new super flags
->   (CHANGING_META_CSUM).
-> 
->   So here introduce a new "rescue=ignoremetacsums" to ignore the
->   metadata checksum verification (and rely on the remaining sanity
->   checks like tree-checkers).
-> 
-> The first 2 patches are just small cleanups, meanwhile the last two are
-> the new "rescue=" mount options to handle interrupted csum change.
-> 
-> Qu Wenruo (4):
->   btrfs: remove unused Opt enums
->   btrfs: output the unrecognized super flags as hex
->   btrfs: introduce new "rescue=ignoremetacsums" mount option
->   btrfs: introduce new "rescue=ignoresuperflags" mount option
-> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Could you update the docs in btrfs-progs/wherever we're keeping the readthedocs
-stuff so that these new flags are documented?  Thanks,
+Thanks,
 
 Josef
 
