@@ -1,236 +1,178 @@
-Return-Path: <linux-btrfs+bounces-5650-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5651-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C3F490393F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 12:50:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEC039039B6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 13:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25319284A41
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 10:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30A30283534
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 11:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74BE179954;
-	Tue, 11 Jun 2024 10:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C85817B408;
+	Tue, 11 Jun 2024 11:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JhZ1dL5x";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HqazwZue";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JhZ1dL5x";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HqazwZue"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2sJjHIf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F46854750;
-	Tue, 11 Jun 2024 10:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96C0179957
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 11:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718103016; cv=none; b=fMftUsxxHrj72Mj4MZFVzaIey1X3lr7XFojNpqvdH72zak4vK1x2YmvphKc7P5uD9gAL4v1siLVrFLe9XX+8xELOpDdtrzeicrFXS0h7g16IyH2pP9HB3hESJeQp7RfP9vQJp5U/4bDyJYOpsle7kVBlxOTBzmm+f5gVgmgwCZ0=
+	t=1718104227; cv=none; b=TksCpEgsl7dnGpj/TvDAxCnas8Yk1u593pSrtgxqAuX+jXtumPAYWQxtfp3ZCg50cbhTbK8pk5SSQtaX02sP6cHO/XK97hDNkporLfBRKWnFLJRzCQgy5d1BClEz4jC5f4gSYMTJTLZqNEa7KUha3Hd80+GhEu/9IPcLjOPlW+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718103016; c=relaxed/simple;
-	bh=4OQWurBLg6ITnbrw/kreyyF8cXe3Cg5VvJjLeU3dcqY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mkJFhehmoy/7TeCYzh8Z72xXtkfVs9R36LQfp0O6g87QT449NMYjEbe7gs2e1LI3o0RyvPJvEV9pcvEjZYZJ/Wlykzzr+ioilOwnBnV0/BucgKjatiMXo5/PFwd+TOpOkVvnLh0fMQt1LzYiw3qTxzyytQvDOn/0fS7kYKTvPL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JhZ1dL5x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HqazwZue; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JhZ1dL5x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HqazwZue; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6DBCC1F8B8;
-	Tue, 11 Jun 2024 10:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718103012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rlnbA2I4Hofv+rr3VVFY9IuMhH6n5TZ/ixyUmIprXfg=;
-	b=JhZ1dL5xsXf95CgEVnDnTCJCOvalFbuwIIZ0CyoDmBj6MilROt1CIF1jelCwueHMauOkec
-	nDH5tqIoKlnU3L3R3WMRGeFixPIb+/HHLVKqdlBfPXqL2pngxNbv3f+ziUSzsTpFhAt3Zd
-	k+5Ystkyi9fUZz29ca4v1OmmbSuajds=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718103012;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rlnbA2I4Hofv+rr3VVFY9IuMhH6n5TZ/ixyUmIprXfg=;
-	b=HqazwZuemOlc/Pg/B54V7341Ja7ecnd9F0XRL/HsSR39COZg9Rx2uCDhVprQNqSzkNqiBt
-	ibJ8HInMv5kCuPDQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JhZ1dL5x;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=HqazwZue
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718103012; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rlnbA2I4Hofv+rr3VVFY9IuMhH6n5TZ/ixyUmIprXfg=;
-	b=JhZ1dL5xsXf95CgEVnDnTCJCOvalFbuwIIZ0CyoDmBj6MilROt1CIF1jelCwueHMauOkec
-	nDH5tqIoKlnU3L3R3WMRGeFixPIb+/HHLVKqdlBfPXqL2pngxNbv3f+ziUSzsTpFhAt3Zd
-	k+5Ystkyi9fUZz29ca4v1OmmbSuajds=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718103012;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rlnbA2I4Hofv+rr3VVFY9IuMhH6n5TZ/ixyUmIprXfg=;
-	b=HqazwZuemOlc/Pg/B54V7341Ja7ecnd9F0XRL/HsSR39COZg9Rx2uCDhVprQNqSzkNqiBt
-	ibJ8HInMv5kCuPDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 56BD8137DF;
-	Tue, 11 Jun 2024 10:50:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id nSooFeQraGbzDQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 11 Jun 2024 10:50:12 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0A9C8A0880; Tue, 11 Jun 2024 12:50:12 +0200 (CEST)
-Date: Tue, 11 Jun 2024 12:50:11 +0200
-From: Jan Kara <jack@suse.cz>
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
-	hch@infradead.org
-Subject: Re: [PATCH v3 1/2] vfs: add rcu-based find_inode variants for iget
- ops
-Message-ID: <20240611105011.ofuqtmtdjddskbrt@quack3>
-References: <20240611101633.507101-1-mjguzik@gmail.com>
- <20240611101633.507101-2-mjguzik@gmail.com>
+	s=arc-20240116; t=1718104227; c=relaxed/simple;
+	bh=8xJU2d0Sk89Pf6tbW6sVZew4XvtkZ2Qjq5rMW4UHPqk=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=Lcpunu4vZDo5xBl4tPrz6cHyFPjfIOEknwK8mvCH1WB5Rm66hz97agBI4ObeQpbuSJNoV4Dvg1N5adzR+zARd8FZtR1nAy2KqB5U0six2qPmp3rN4k/cnPhFGSwdIXH/HjfGZWeEHUzvrxJqy0wEizPEac+2FyPxHSH5XfbZAUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N2sJjHIf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F6B8C2BD10
+	for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 11:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718104227;
+	bh=8xJU2d0Sk89Pf6tbW6sVZew4XvtkZ2Qjq5rMW4UHPqk=;
+	h=From:To:Subject:Date:From;
+	b=N2sJjHIfSFPkoh4sgNAZZoDenVQgLRk64z8xqRDi8TRO6uKIDI8oO2wvdHnfwnQqb
+	 b5h6WGn89FVvljVpUQkwTxVRAdIetpQvo+Z+TaQ0btWkhZL0A//eHzmACJ0zc+wJv/
+	 r511oZYLER+ea3lw+St2e+4Zyzr4HJ1d99bdanWN9qjj7aGwazGszMs9INzaQtdcPB
+	 qz0KRI63sYGcD7BSuVEywaE9JVBUEhrApgb6KgrAl2mEc0Rq+ZwuAEfdNwa/RlDf6s
+	 zMsXwEd8LOxla0dIgHq7AArZY+zco2w7OucxKd785Z1Np1u4hkjnqrjFWeNG7m4wDl
+	 OyncIa60EhTrQ==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: avoid transaction commit on any fsync after subvolume creation
+Date: Tue, 11 Jun 2024 12:10:24 +0100
+Message-Id: <65a8b2e10dc470b52858865906f36c80b77ce010.1718104115.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240611101633.507101-2-mjguzik@gmail.com>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 6DBCC1F8B8
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+Content-Transfer-Encoding: 8bit
 
-On Tue 11-06-24 12:16:31, Mateusz Guzik wrote:
-> Instantiating a new inode normally takes the global inode hash lock
-> twice:
-> 1. once to check if it happens to already be present
-> 2. once to add it to the hash
-> 
-> The back-to-back lock/unlock pattern is known to degrade performance
-> significantly, which is further exacerbated if the hash is heavily
-> populated (long chains to walk, extending hold time). Arguably hash
-> sizing and hashing algo need to be revisited, but that's beyond the
-> scope of this patch.
-> 
-> A long term fix would introduce finer-grained locking. An attempt was
-> made several times, most recently in [1], but the effort appears
-> stalled.
-> 
-> A simpler idea which solves majority of the problem and which may be
-> good enough for the time being is to use RCU for the initial lookup.
-> Basic RCU support is already present in the hash. This being a temporary
-> measure I tried to keep the change as small as possible.
-> 
-> iget_locked consumers (notably ext4) get away without any changes
-> because inode comparison method is built-in.
-> 
-> iget5_locked and ilookup5_nowait consumers pass a custom callback. Since
-> removal of locking adds more problems (inode can be changing) it's not
-> safe to assume all filesystems happen to cope.  Thus iget5_locked_rcu,
-> ilookup5_rcu and ilookup5_nowait_rcu get added, requiring manual
-> conversion.
-> 
-> In order to reduce code duplication find_inode and find_inode_fast grow
-> an argument indicating whether inode hash lock is held, which is passed
-> down should sleeping be necessary. They always rcu_read_lock, which is
-> redundant but harmless. Doing it conditionally reduces readability for
-> no real gain that I can see. RCU-alike restrictions were already put on
-> callbacks due to the hash spinlock being held.
-> 
-> There is a real cache-busting workload scanning millions of files in
-> parallel (it's a backup server thing), where the initial lookup is
-> guaranteed to fail resulting in the 2 lock acquires.
-> 
-> Implemented below is a synthehic benchmark which provides the same
-> behavior. [I shall note the workload is not running on Linux, instead it
-> was causing trouble elsewhere. Benchmark below was used while addressing
-> said problems and was found to adequately represent the real workload.]
-> 
-> Total real time fluctuates by 1-2s.
-> 
-> With 20 threads each walking a dedicated 1000 dirs * 1000 files
-> directory tree to stat(2) on a 32 core + 24GB RAM vm:
-> 
-> ext4 (needed mkfs.ext4 -N 24000000):
-> before:	3.77s user 890.90s system 1939% cpu 46.118 total
-> after:  3.24s user 397.73s system 1858% cpu 21.581 total (-53%)
-> 
-> Benchmark can be found here: https://people.freebsd.org/~mjg/fstree.tgz
-> 
-> [1] https://lore.kernel.org/all/20231206060629.2827226-1-david@fromorbit.com/
-> 
-> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Nice speedups and the patch looks good to me. It would be lovely to get
-Dave's speedups finished but this is already nice. I've found just two nits:
+As of commit 1b53e51a4a8f ("btrfs: don't commit transaction for every
+subvol create") we started to make any fsync after creating a subvolume
+to fallback to a transaction commit if the fsync is performed in the
+same transaction that was used to create the subvolume. This happens
+with the following at ioctl.c:create_subvol():
 
-> +/**
-> + * ilookup5 - search for an inode in the inode cache
-      ^^^ ilookup5_rcu
+  $ cat fs/btrfs/ioctl.c
+  (...)
+      /* Tree log can't currently deal with an inode which is a new root. */
+      btrfs_set_log_full_commit(trans);
+  (...)
 
-> + * @sb:		super block of file system to search
-> + * @hashval:	hash value (usually inode number) to search for
-> + * @test:	callback used for comparisons between inodes
-> + * @data:	opaque data pointer to pass to @test
-> + *
-> + * This is equivalent to ilookup5, except the @test callback must
-> + * tolerate the inode not being stable, including being mid-teardown.
-> + */
-...
-> +struct inode *ilookup5_nowait_rcu(struct super_block *sb, unsigned long hashval,
-> +		int (*test)(struct inode *, void *), void *data);
+Note that the comment is misleading as the problem is not that fsync can
+not deal with the root inode of a new root, but that we can not log any
+inode that belongs to a root that was not yet persisted because that would
+make log replay fail since the root doesn't exist at log replay time.
 
-I'd prefer wrapping the above so that it fits into 80 columns.
+The above simply makes any fsync fallback to a full transaction commit if
+it happens in the same transaction used to create the subvolume - even if
+it's an inode that belongs to any other subvolume. This is a brute force
+solution and it doesn't necessarily improve performance for every workload
+out there - it just moves a full transaction commit from one place, the
+subvolume creation, to another - an fsync for any inode.
 
-Otherwise feel free to add:
+Just improve on this by making the fallback to a transacton commit only
+for an fsync against an inode of the new subvolume, or for the directory
+that contains the dentry that points to the new subvolume (in case anyone
+attempts to fsync the directory in the same transaction).
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/ioctl.c    |  4 ++--
+ fs/btrfs/tree-log.c | 27 +++++++++++++++++++++++++++
+ fs/btrfs/tree-log.h |  2 ++
+ 3 files changed, 31 insertions(+), 2 deletions(-)
 
-									Honza
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index d00d49338ecb..1dca986943f0 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -662,8 +662,6 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
+ 	qgroup_reserved = 0;
+ 	trans->block_rsv = &block_rsv;
+ 	trans->bytes_reserved = block_rsv.size;
+-	/* Tree log can't currently deal with an inode which is a new root. */
+-	btrfs_set_log_full_commit(trans);
+ 
+ 	ret = btrfs_qgroup_inherit(trans, 0, objectid, btrfs_root_id(root), inherit);
+ 	if (ret)
+@@ -764,6 +762,8 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
+ 		goto out;
+ 	}
+ 
++	btrfs_record_new_subvolume(trans, BTRFS_I(dir));
++
+ 	d_instantiate_new(dentry, new_inode_args.inode);
+ 	new_inode_args.inode = NULL;
+ 
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index d3142d55875a..cf384f32d5fe 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -7065,6 +7065,15 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+ 		goto end_no_trans;
+ 	}
+ 
++	/*
++	 * If we're logging an inode from a subvolume created in the current
++	 * transaction we must force a commit since the root is not persisted.
++	 */
++	if (btrfs_root_generation(&root->root_item) == trans->transid) {
++		ret = BTRFS_LOG_FORCE_COMMIT;
++		goto end_no_trans;
++	}
++
+ 	/*
+ 	 * Skip already logged inodes or inodes corresponding to tmpfiles
+ 	 * (since logging them is pointless, a link count of 0 means they
+@@ -7445,6 +7454,24 @@ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
+ 	mutex_unlock(&dir->log_mutex);
+ }
+ 
++/*
++ * Call this when creating a subvolume in a directory.
++ * Because we don't commit a transaction when creating a subvolume, we can't
++ * allow the directory pointing to the subvolume to be logged with an entry that
++ * points to an unpersisted root if we are still in the transaction used to
++ * create the subvolume, so make any attempt to log the directory to result in a
++ * full log sync.
++ * Also we don't need to worry with renames, since btrfs_rename() marks the log
++ * for full commit when renaming a subvolume.
++ */
++void btrfs_record_new_subvolume(struct btrfs_trans_handle *trans,
++				struct btrfs_inode *dir)
++{
++	mutex_lock(&dir->log_mutex);
++	dir->last_unlink_trans = trans->transid;
++	mutex_unlock(&dir->log_mutex);
++}
++
+ /*
+  * Update the log after adding a new name for an inode.
+  *
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index fa0a689259b1..ec99975a0fff 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -94,6 +94,8 @@ void btrfs_record_unlink_dir(struct btrfs_trans_handle *trans,
+ 			     bool for_rename);
+ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
+ 				   struct btrfs_inode *dir);
++void btrfs_record_new_subvolume(struct btrfs_trans_handle *trans,
++				struct btrfs_inode *dir);
+ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 			struct dentry *old_dentry, struct btrfs_inode *old_dir,
+ 			u64 old_dir_index, struct dentry *parent);
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.43.0
+
 
