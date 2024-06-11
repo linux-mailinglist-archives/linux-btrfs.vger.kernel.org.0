@@ -1,178 +1,135 @@
-Return-Path: <linux-btrfs+bounces-5651-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5652-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEC039039B6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 13:10:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD71E903A97
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 13:41:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30A30283534
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 11:10:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E30891C23A05
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2024 11:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C85817B408;
-	Tue, 11 Jun 2024 11:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDED117C207;
+	Tue, 11 Jun 2024 11:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2sJjHIf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jsDoxiZi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96C0179957
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 11:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C5117B43F;
+	Tue, 11 Jun 2024 11:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718104227; cv=none; b=TksCpEgsl7dnGpj/TvDAxCnas8Yk1u593pSrtgxqAuX+jXtumPAYWQxtfp3ZCg50cbhTbK8pk5SSQtaX02sP6cHO/XK97hDNkporLfBRKWnFLJRzCQgy5d1BClEz4jC5f4gSYMTJTLZqNEa7KUha3Hd80+GhEu/9IPcLjOPlW+k=
+	t=1718106051; cv=none; b=Eddlpwe7kKYCUJdYKqAYT7vg5c029XoxgFmgZRWfrIy66dIM4QR6w5G5T1XoRV6u8CUhSP7nGQ9fh8huxW1BE3v9pzGX8AJfbMT8rX6HjJXf9RCd3+z35YpuwBk0Ir8NIBBYPWK3O8A9/8og51QaqaHct389EyN0xjtbAcIPrpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718104227; c=relaxed/simple;
-	bh=8xJU2d0Sk89Pf6tbW6sVZew4XvtkZ2Qjq5rMW4UHPqk=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=Lcpunu4vZDo5xBl4tPrz6cHyFPjfIOEknwK8mvCH1WB5Rm66hz97agBI4ObeQpbuSJNoV4Dvg1N5adzR+zARd8FZtR1nAy2KqB5U0six2qPmp3rN4k/cnPhFGSwdIXH/HjfGZWeEHUzvrxJqy0wEizPEac+2FyPxHSH5XfbZAUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N2sJjHIf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F6B8C2BD10
-	for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2024 11:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718104227;
-	bh=8xJU2d0Sk89Pf6tbW6sVZew4XvtkZ2Qjq5rMW4UHPqk=;
-	h=From:To:Subject:Date:From;
-	b=N2sJjHIfSFPkoh4sgNAZZoDenVQgLRk64z8xqRDi8TRO6uKIDI8oO2wvdHnfwnQqb
-	 b5h6WGn89FVvljVpUQkwTxVRAdIetpQvo+Z+TaQ0btWkhZL0A//eHzmACJ0zc+wJv/
-	 r511oZYLER+ea3lw+St2e+4Zyzr4HJ1d99bdanWN9qjj7aGwazGszMs9INzaQtdcPB
-	 qz0KRI63sYGcD7BSuVEywaE9JVBUEhrApgb6KgrAl2mEc0Rq+ZwuAEfdNwa/RlDf6s
-	 zMsXwEd8LOxla0dIgHq7AArZY+zco2w7OucxKd785Z1Np1u4hkjnqrjFWeNG7m4wDl
-	 OyncIa60EhTrQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: avoid transaction commit on any fsync after subvolume creation
-Date: Tue, 11 Jun 2024 12:10:24 +0100
-Message-Id: <65a8b2e10dc470b52858865906f36c80b77ce010.1718104115.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1718106051; c=relaxed/simple;
+	bh=YeyXKtlCu8QG4qMRA8+2qFlxo89AdJ1zUyTJx043lfA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UGEWu02ytXTWruWY+lZ599d9bJP4AdWhenfU3sQMoYDLLi4aUkEQ+QabLAfxV6CkYEWlPjrS5asR2o6adtBqhaq8SIOMuKgX6dPMDgywAWuhy5rhxKuYNM6Kgcni23TL2fgtwcEc271r16RNeXRHS7a3cb81UYQJqCSQGY9j6AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jsDoxiZi; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52c8c0d73d3so2550834e87.1;
+        Tue, 11 Jun 2024 04:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718106047; x=1718710847; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L8XxjvcCgXk/Pl/HdvcUec+tIi9qW/w8D9MOpEhghSw=;
+        b=jsDoxiZiXVD7I9jTTFkj/QV89S34+p2HAotfp3i+luhUFz76XkVXTSYpliq/3YwL4Y
+         8LxtCgVboyHxg7pAjo1FNA71xeOh1JpLDyql/zn7uIHplBomZqA+s7BVRRPXbPmlsoOD
+         DIK6wWzKGQPmzS+9Zn1zUssrIla8BpJhWbEFadhiJDZVDInbJ0gb7mgTMTe7kwWa6aBh
+         jdoLY0mBHlk3OvXl+QE01MzGMvw/ZG/VlaCJ3sQCJZuO9b3sL7ExkMHe+Q8wNwzboo1u
+         +1TJVYMpkne6nAlbyaCc7FYigIAXaD/fN8KScLiUx4gKe28+WP2QXW0+hFOVW3iXPGCO
+         h9dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718106047; x=1718710847;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L8XxjvcCgXk/Pl/HdvcUec+tIi9qW/w8D9MOpEhghSw=;
+        b=N6j/OKnwZFs4U9lVxMJxrFB1W9mJEtBbzHsYq9SqXcf5g8ArRc6m7eCbsAm8a2UJV9
+         u42pHruSkGIZThh+dhz2xU5vVMEwhwN/8Rv4X2caTBWYzf9JWwEFylUa0INkJl5btBpa
+         E8FNRRDQYXelv0ZtyrFzKXllFXKaJe4x61dtG03JItegUJdfuBaY0PwpqTpyzrzP4WU7
+         tT3i0uxVBG7oCm21fnO10BB3qTvmK/o+K2MM4pAbmjJDkWqZ8V7ze6Hg0nyJrHRjz70Y
+         UFVfz6vr+XMV/NB1ERr1EeQw9tkQem1uVQAFmi2NAfZy201eqt37IFvSc46dDdPJoJMI
+         /vzA==
+X-Forwarded-Encrypted: i=1; AJvYcCVkkfAJXDQ95xTXQHx36n+jesaesZFv2qtPMp8sdWwmlk/uSuKfs33hVgWl6d48/DEjZgiQ14pIqn5qZJ95B46nxnb5P26C+iBvCqIX/zROE5oB11v/6CPzbbbQfCn6mNwRiUFaa6w/B1HBkjumI6YwlO3vVl7+Na0utWSlg3JG5SWpo3AL4dRy
+X-Gm-Message-State: AOJu0Yw0SxPw8rrJOhoilYayO7574NXgcHcdpSFIup2yf+90phB00avW
+	m5J4QF0MEpCRJR+ZAwrlG749WV1ls4tOjojsjBbhEmBWbA6fDHjx
+X-Google-Smtp-Source: AGHT+IERbDwVmhIESs931NWqqFELi2rg1koDN0thpr+FI0e//xVSCLH20AdXJ7EgJX3zslCQB9lLYA==
+X-Received: by 2002:a05:6512:3041:b0:52b:bdbd:2c43 with SMTP id 2adb3069b0e04-52bbdbd3144mr8397626e87.61.1718106047032;
+        Tue, 11 Jun 2024 04:40:47 -0700 (PDT)
+Received: from f (cst-prg-65-249.cust.vodafone.cz. [46.135.65.249])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35f0e49e898sm9819416f8f.22.2024.06.11.04.40.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jun 2024 04:40:46 -0700 (PDT)
+Date: Tue, 11 Jun 2024 13:40:37 +0200
+From: Mateusz Guzik <mjguzik@gmail.com>
+To: Jan Kara <jack@suse.cz>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	josef@toxicpanda.com, hch@infradead.org
+Subject: Re: [PATCH v3 1/2] vfs: add rcu-based find_inode variants for iget
+ ops
+Message-ID: <2aoxtcshqzrrqfvjs2xger5omq2fjkfifhkdjzvscrtybisca7@eoisrrcki2vw>
+References: <20240611101633.507101-1-mjguzik@gmail.com>
+ <20240611101633.507101-2-mjguzik@gmail.com>
+ <20240611105011.ofuqtmtdjddskbrt@quack3>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240611105011.ofuqtmtdjddskbrt@quack3>
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Jun 11, 2024 at 12:50:11PM +0200, Jan Kara wrote:
+> On Tue 11-06-24 12:16:31, Mateusz Guzik wrote:
+> > +/**
+> > + * ilookup5 - search for an inode in the inode cache
+>       ^^^ ilookup5_rcu
+> 
 
-As of commit 1b53e51a4a8f ("btrfs: don't commit transaction for every
-subvol create") we started to make any fsync after creating a subvolume
-to fallback to a transaction commit if the fsync is performed in the
-same transaction that was used to create the subvolume. This happens
-with the following at ioctl.c:create_subvol():
+fixed in my branch
 
-  $ cat fs/btrfs/ioctl.c
-  (...)
-      /* Tree log can't currently deal with an inode which is a new root. */
-      btrfs_set_log_full_commit(trans);
-  (...)
+> > + * @sb:		super block of file system to search
+> > + * @hashval:	hash value (usually inode number) to search for
+> > + * @test:	callback used for comparisons between inodes
+> > + * @data:	opaque data pointer to pass to @test
+> > + *
+> > + * This is equivalent to ilookup5, except the @test callback must
+> > + * tolerate the inode not being stable, including being mid-teardown.
+> > + */
+> ...
+> > +struct inode *ilookup5_nowait_rcu(struct super_block *sb, unsigned long hashval,
+> > +		int (*test)(struct inode *, void *), void *data);
+> 
+> I'd prefer wrapping the above so that it fits into 80 columns.
+> 
 
-Note that the comment is misleading as the problem is not that fsync can
-not deal with the root inode of a new root, but that we can not log any
-inode that belongs to a root that was not yet persisted because that would
-make log replay fail since the root doesn't exist at log replay time.
+the last comma is precisely at 80, but i can wrap it if you insist
 
-The above simply makes any fsync fallback to a full transaction commit if
-it happens in the same transaction used to create the subvolume - even if
-it's an inode that belongs to any other subvolume. This is a brute force
-solution and it doesn't necessarily improve performance for every workload
-out there - it just moves a full transaction commit from one place, the
-subvolume creation, to another - an fsync for any inode.
+> Otherwise feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
 
-Just improve on this by making the fallback to a transacton commit only
-for an fsync against an inode of the new subvolume, or for the directory
-that contains the dentry that points to the new subvolume (in case anyone
-attempts to fsync the directory in the same transaction).
+thanks
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ioctl.c    |  4 ++--
- fs/btrfs/tree-log.c | 27 +++++++++++++++++++++++++++
- fs/btrfs/tree-log.h |  2 ++
- 3 files changed, 31 insertions(+), 2 deletions(-)
+I'm going to wait for more feedback, tweak the commit message to stress
+that this goes from 2 hash lock acquires to 1, maybe fix some typos and
+submit a v4.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index d00d49338ecb..1dca986943f0 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -662,8 +662,6 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
- 	qgroup_reserved = 0;
- 	trans->block_rsv = &block_rsv;
- 	trans->bytes_reserved = block_rsv.size;
--	/* Tree log can't currently deal with an inode which is a new root. */
--	btrfs_set_log_full_commit(trans);
- 
- 	ret = btrfs_qgroup_inherit(trans, 0, objectid, btrfs_root_id(root), inherit);
- 	if (ret)
-@@ -764,6 +762,8 @@ static noinline int create_subvol(struct mnt_idmap *idmap,
- 		goto out;
- 	}
- 
-+	btrfs_record_new_subvolume(trans, BTRFS_I(dir));
-+
- 	d_instantiate_new(dentry, new_inode_args.inode);
- 	new_inode_args.inode = NULL;
- 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index d3142d55875a..cf384f32d5fe 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -7065,6 +7065,15 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
- 		goto end_no_trans;
- 	}
- 
-+	/*
-+	 * If we're logging an inode from a subvolume created in the current
-+	 * transaction we must force a commit since the root is not persisted.
-+	 */
-+	if (btrfs_root_generation(&root->root_item) == trans->transid) {
-+		ret = BTRFS_LOG_FORCE_COMMIT;
-+		goto end_no_trans;
-+	}
-+
- 	/*
- 	 * Skip already logged inodes or inodes corresponding to tmpfiles
- 	 * (since logging them is pointless, a link count of 0 means they
-@@ -7445,6 +7454,24 @@ void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
- 	mutex_unlock(&dir->log_mutex);
- }
- 
-+/*
-+ * Call this when creating a subvolume in a directory.
-+ * Because we don't commit a transaction when creating a subvolume, we can't
-+ * allow the directory pointing to the subvolume to be logged with an entry that
-+ * points to an unpersisted root if we are still in the transaction used to
-+ * create the subvolume, so make any attempt to log the directory to result in a
-+ * full log sync.
-+ * Also we don't need to worry with renames, since btrfs_rename() marks the log
-+ * for full commit when renaming a subvolume.
-+ */
-+void btrfs_record_new_subvolume(struct btrfs_trans_handle *trans,
-+				struct btrfs_inode *dir)
-+{
-+	mutex_lock(&dir->log_mutex);
-+	dir->last_unlink_trans = trans->transid;
-+	mutex_unlock(&dir->log_mutex);
-+}
-+
- /*
-  * Update the log after adding a new name for an inode.
-  *
-diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-index fa0a689259b1..ec99975a0fff 100644
---- a/fs/btrfs/tree-log.h
-+++ b/fs/btrfs/tree-log.h
-@@ -94,6 +94,8 @@ void btrfs_record_unlink_dir(struct btrfs_trans_handle *trans,
- 			     bool for_rename);
- void btrfs_record_snapshot_destroy(struct btrfs_trans_handle *trans,
- 				   struct btrfs_inode *dir);
-+void btrfs_record_new_subvolume(struct btrfs_trans_handle *trans,
-+				struct btrfs_inode *dir);
- void btrfs_log_new_name(struct btrfs_trans_handle *trans,
- 			struct dentry *old_dentry, struct btrfs_inode *old_dir,
- 			u64 old_dir_index, struct dentry *parent);
--- 
-2.43.0
+past that if people want something faster they are welcome to implement
+or carry it over the finish line themselves.
 
+> 									Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
