@@ -1,363 +1,380 @@
-Return-Path: <linux-btrfs+bounces-5697-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5698-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40EC0906172
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 03:59:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A1AC90652D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 09:33:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA49228373D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 01:59:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22D651F24C0F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 07:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78441A28B;
-	Thu, 13 Jun 2024 01:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE69013C90B;
+	Thu, 13 Jun 2024 07:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eGc+oDjI";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="b4b42uJW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EEB117597
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 01:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718243967; cv=none; b=ezRB4PZUtA4YVdchnVHDd/fHqg2we8H9aDZ2sxyel1MAbrG7/k9PVtbofb3AhEC+4aeTBvEnE/6V3JcgtQ6oylMEhvuumVw0WSqRfpkOx7FJ8bvBx1GSb27Y10pnT97dGYPh+p9dBKhsNER1N4fBeOCRYAHCoSZpd4Z5lu9eK9Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718243967; c=relaxed/simple;
-	bh=DhwdmDTYYdS/KgBMvVC3FESO/ezNcJYLdBLHBP5oquY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=umk1ClHh4jyDmECIWegLGYIqUhR7LSjSQAvLykVyrZmPWxPe1pOSIpZUpsTHyBqobklnbtC5XEmCD8h6SeH55u0fvK9cbimFde0AcmW25/fpiSJ5OCPhfw8gvLxbNE9jqw08KNJpZBCwYPegkClLMpTdahk/CJQ1vA7SGiZP+GE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3737b3ae019so4871155ab.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2024 18:59:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718243965; x=1718848765;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/LPamGuf5auMpJc0VNkSXfd3XFXO0t7m5Gs9owLkQwM=;
-        b=SyQChAKackzwohDUIyaacY6t+FRTvX60nmMuAOQmFZbIpI+83dMIUu1Atkce0I4+/C
-         T0pUx3LHXEM9tlrgO8IsQ3BStyOSEEWHGk0f2sAvUqa6IyLGAzK2JAewzgX5cidoxljD
-         5cf+0JJxhfgazAnrB8V3O+fBV0kIljnWkx7DeTSS6G59AHdE6eBGXEGsJbe9vhJqqPwJ
-         Li7Lc4SHQNe7UwyjVHL+18E2hbVJUYnH3ZkW01YqmG/PSzfhAV3+iM1AACnxU3eFO420
-         4ypMo+cTuv8ojngbWiMtzgtG3RZy0Y6UYmbMc80MR59tvdNgVH0EesPtEONpd3t/dYU5
-         yMqg==
-X-Forwarded-Encrypted: i=1; AJvYcCX4O6ssEbRE1yYtjpyJ09afQoyW38f7h/d0CFwoQVdXe04tkUvyDK2mEzQz9Bfy7ah0MWNZ9AFX25bK4E/uAbksumdHKUqFmp4YKg4=
-X-Gm-Message-State: AOJu0YyW29LS2+SzmbQRMB+Tn5JeJRZvQfeLSgDmh3Q78pbYX2QPPM/u
-	3BbYMhcUOprTKgOtziBG+sHeJR6Od0Um+e4is9miVKZLLT8nJdDehnYxurPwKs8BMd1AarNtjje
-	vrxMRTLkHQYMUxfBUPG/wNL6YB98oTpK+oc3AD6Z3Rs25fIYLkufgbMg=
-X-Google-Smtp-Source: AGHT+IELFhcMnbtKp/UxLs6gt5XUnBCHticu1wv7+7jR2HuEj4cHcI5w/+8OVw8l0/y/34WkAOeO9Io26xzQjJ+hVI7vdLoPPlj8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D3313C3EB;
+	Thu, 13 Jun 2024 07:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718263964; cv=fail; b=YeR13CDG6+W6YqMPwI8M9363RDj9cwl+hyUHtyo+frq4mXXr/gmKxlTdD9kmGO64hgrSRokn8Tds+oj2maYj6h7NYKUkwqsR/Ix+TilwHGPqvcsD44nGFyv0HXHWdkZgLPLPrNSGkuKMZ0m6sHCICpkD5CST2jR2zknTqKFDPjw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718263964; c=relaxed/simple;
+	bh=SVtAzsu3YuQSLA32KHDvGywoiTNToCCuXODHARNld5c=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=lfHwd3yBaLZAWF8fJsviqJ/p4bVcF6jHfDsA/8OBTEDOrrJQ/IOXfX+2qL3ZMp/lPitNmJeXH9VYsW7vmDLLMsr5aCFH5vKwjOsDduV/WcKYPBXQu6WA4YDT12nNjgHHIdjRkF5FcVnzx3xC9LWvvvrTSjzbfG/Xk5qdm04co+g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eGc+oDjI; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=b4b42uJW; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45D2WxZr019554;
+	Thu, 13 Jun 2024 07:25:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	message-id:date:subject:to:cc:references:from:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=
+	corp-2023-11-20; bh=znIGhPlAdIagKv0m7Olcz3MPgGbhryzKWS2pfJgFNuM=; b=
+	eGc+oDjIuKZ4FVK/M12u2/Mz33lz7T988e0YFqIuPpcD6SNY6lGj55+iYOAVPjNq
+	oL9Ic4Uz/QWxs28WTTTBcG+J7HJ7RQQE1V3yThF1qN0Hxgwf+TIDY7KbAFDuB26G
+	3LcILxPhWsVodoietAGOoW/ex3v8qBYmDJJMfB9EnNjhgNlqKDfK1QT9whrwoK8O
+	eXPZNMH60BE/eccKVSywEH6Om9RQDUAfDX+MhSzQ61PF50xSC1t2j711rOPU8EWR
+	L5cGdX0bKNi55+lOqqg33aw+VmQmssRtwXu+8knvxOoANzA8549c+oMPkBwKqKPk
+	vbCbOIAxK2o9YvX/iIQ1Eg==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ymh1mgxbe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 13 Jun 2024 07:25:32 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45D5tdee036756;
+	Thu, 13 Jun 2024 07:25:31 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3yncdyv99r-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 13 Jun 2024 07:25:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dHJD266DpeKcel3uufR2J+HEbPMipkjim9e7n0pgushSs4FoOj0MJlbHfopae5plOdyjoSmRLwCLPhJfwGKsTT/dvsACaitxf6OfnMaXDAY1z3FWQgltZDeQpfqvqAtt24FfWl+E2TjTRxDY4AYc5D5HVUIxk1WM0VkBXwQKopdMnJaYeEIbccoR3W7tT3V71ooC7HKz6y3alesTHAFXtN2wInFEptavXcyiSn6F3bSHpuI3mgcn6ntAny/X4usjNkXQTp6FQWshqEF27AoYwW1gBB8NK8zVz7X98bU3pefudNYydrqHT4O+G3PeQMLnhJkpKWNy0hhFwUJSSv6j+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=znIGhPlAdIagKv0m7Olcz3MPgGbhryzKWS2pfJgFNuM=;
+ b=lyraEzb17u5R/T++UF/+gy6E5cbWQsFK/Dqx8hsKb+gFYdOMk2AkG6MI5l9dcDnHXVaMaO7pZlZC9lTUeuCpeqYbok2oHnKtFFRMg9DoGX3LM+w5XCrHPxCAFWNkDoxriENXU5JG9yObp4x3TINlpZyirNlCZLz4b5+CDvCihS9b8hlMlTBWOesL4WUDoH5daAKXrln1VNGsO0PkGvd1OBBw3JvTZnO/X0HvvQ8taifs4pgptB7wPDcd3BVeJIO4ONXOkmmqDuVH8hgjMAaWAWrKRL5JfbSQFRa15giKi/syzQIXzQ9tbSXISqzOW2bqk1ptBZHvdrM9/oUyuQmI+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=znIGhPlAdIagKv0m7Olcz3MPgGbhryzKWS2pfJgFNuM=;
+ b=b4b42uJWrcM9ptA3QhZcaUoFtsi/nc26zSTOJBY1E52sVP9SXlJfjdupTbNd89AC/T04l5GVvhRJoJf0SIxFSkcrkWWQNIQIMa1+oZxgmIcmYgfGasIFEjSLIiOXH0IWYRvcYyiS+icx7R5x22c+n+816BOxjelzHBplGRmwEVo=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by BN0PR10MB5029.namprd10.prod.outlook.com (2603:10b6:408:115::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.23; Thu, 13 Jun
+ 2024 07:25:29 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::4f45:f4ab:121:e088%6]) with mapi id 15.20.7633.036; Thu, 13 Jun 2024
+ 07:25:29 +0000
+Message-ID: <db998b4e-8bd8-4c8e-b165-069288588ed2@oracle.com>
+Date: Thu, 13 Jun 2024 08:25:21 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 04/10] fs: Add initial atomic write support info to
+ statx
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
+        nilay@linux.ibm.com, ritesh.list@gmail.com, willy@infradead.org,
+        agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
+        dm-devel@lists.linux.dev, hare@suse.de,
+        Prasad Singamsetty <prasad.singamsetty@oracle.com>
+References: <20240610104329.3555488-1-john.g.garry@oracle.com>
+ <20240610104329.3555488-5-john.g.garry@oracle.com>
+ <20240612205433.GC2764780@frogsfrogsfrogs>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20240612205433.GC2764780@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P265CA0183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:311::6) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d8b:b0:375:9deb:ceb8 with SMTP id
- e9e14a558f8ab-375cd13c005mr1906045ab.3.1718243964697; Wed, 12 Jun 2024
- 18:59:24 -0700 (PDT)
-Date: Wed, 12 Jun 2024 18:59:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000274a3a061abbd928@google.com>
-Subject: [syzbot] [btrfs?] possible deadlock in btrfs_log_inode
-From: syzbot <syzbot+8576cfa84070dce4d59b@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|BN0PR10MB5029:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0cbc7f29-f9b6-45a0-7e6f-08dc8b7a00a7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230034|7416008|1800799018|366010|376008;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?UzFqZG8wZjBWenZoSnprUzcrRHU3Q0VIemRHRDhNb0RNOS9JV2FJdjNTVFRk?=
+ =?utf-8?B?dFBGNW83cEZpZFhRdG5xemduQ3lNVlZNbStOUHArOFluemNYcXJGRFRaYnFv?=
+ =?utf-8?B?QW1WbUF2SSs4aXorckFZdFRzVXNSdnc1VHdBS0VzSHREOXFrRzBWaXdROFYv?=
+ =?utf-8?B?Q0tTNDhYTHQ5OEtLL05uak1NUURGY2JKZ0FzSm84RlZhd1RDQ2lkR1JidzI3?=
+ =?utf-8?B?ZkY1SVpCTjFtcjNDNnhpTlFxUC92MlQxaEltRlFtVlJPaUFNSFMzekVKUVRK?=
+ =?utf-8?B?elEvdEtrOFFpZnEvcExYVXRMa25PSWRnaHc2UHZReDJTZG9FUDdDdzZ3WXpY?=
+ =?utf-8?B?c3BZaXFudjBaRUJOOHVraXJkTWZpSUVGN213b0lwV3VRTlovazhCZ3VpY3lt?=
+ =?utf-8?B?ZHVFY0JYRFl1T082UU1aQ05MTVkrU0g2UURsclBPZlNaaXc0RWozTmFucDFM?=
+ =?utf-8?B?TEVGZ2NyQkIzRmYxVWRTZUVJc2tCWDVQVWMvbkYvanJPbWV0ck5JV1VJb1Y5?=
+ =?utf-8?B?bm5tenR0UEhoZFRyd1RoNFk2eG13Nlpwbm5nclErNEFCR3lyazhJV1RLTW1w?=
+ =?utf-8?B?S2JnL1JmeStFSzV0SWdqOCtHQy9zcnY5dHNNZjRwd2dvN1k5eDIwVmV4cXBU?=
+ =?utf-8?B?TnFxcENhV2ZnbzFncHF0bmNOK2pybEh1S24wQ3dXb0ZWSEIvMnJFRG5XS09k?=
+ =?utf-8?B?T0xaanNhWnRHL2hpVWpIUmpqeFovNURZaVZvaEc2bDRaajNWTGJaKzZONThj?=
+ =?utf-8?B?QWNlcllXd2tlOUtEQmlRYVRxb3A0NzVyVTk1NGJaUGtzVytRUW5KV0sxVVdt?=
+ =?utf-8?B?NE12bGtaTUM5Ym5qVEZ5dldqZ0pkdWtrYnhxaEc1Smx2MVJnV202ZWlRcGxO?=
+ =?utf-8?B?UnNNeURaQThhUzFQK1BqaXdRNVdiaWNqbGdXMVdEd2l6eW5sUmZLTng1ZnZz?=
+ =?utf-8?B?NkZIVTlCSEhhTmNlUldpb2lYZUVQS2lSRXFKK2VFb3BNWk9IaVEvVGlJR0s3?=
+ =?utf-8?B?WHNTZ2VER1RFSytnd3o5clE2NCtmcVVzcEp3cU9jMkU2cHZMNGFZb3NHOUtY?=
+ =?utf-8?B?M09yMHlxL2dWS3RTZ3ErYmhhKzZYTEtwSkVOQnNnN0lwUjIvSUhsS0tuUVdj?=
+ =?utf-8?B?djJtL2JkTGJwWlFVOWpYNTdQMU5WVmE0TWluTTFMdFhRVTR2Z09DOU44bG1w?=
+ =?utf-8?B?eEhXMW1qS1RnVzB6V2dhdFdkRjZmeitoeXE4L2pRWm9IVUZBSXVvNGxrWXVv?=
+ =?utf-8?B?bzNNVU45Y0xDWDR6MDJJeHZyZ3U0Q1pSQ3JrbTBnMHh2SS83bUdSWnBjcnF2?=
+ =?utf-8?B?UzRWNHYzK29NVngzTnVWM0pEaWxKL1FEdnVLaXg2WjJNc0orWXFjbmtneStH?=
+ =?utf-8?B?SGtqaHRRYlZEMFdRQnJCMWJIdDNGMnhLL3FkdXJYazdJelU1dmR1YUc1QVoz?=
+ =?utf-8?B?V0kxQWpYMnRTK0c2OFJ2bCtkbGFMdStQYnZ5dmJQbVpQQ2gwWFU3d3JPQXVL?=
+ =?utf-8?B?M1k3bGRld1h6cEhSSVIwSkFXdUF1a1J3RkpzUXQ4amt3QldqbCtkOVUvc2s3?=
+ =?utf-8?B?UHV6VjFUVjQ1cjVOYVNMOTlqZXl4QVJIWVFsRnRmaE5MeU9NU2Fva0FHRjdS?=
+ =?utf-8?B?Z0VOc1NSc29JODFKQUhHNlZXZDdVOXZhNUVjaUlwMXFvNUcxa2FvQWJnd3kr?=
+ =?utf-8?Q?4abx+qH2dHLkD6R+KMV5?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230034)(7416008)(1800799018)(366010)(376008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?NXJMYnB0ZzU4TzJMdkI1UWZvaTZpL2hScXNkdE5Sa2dEUlRkVnhNQzh3SS9v?=
+ =?utf-8?B?Umk2M2wyU3RnNVJDa3pKQUtxQUdpbExUL3h0cDBxM1pHTXFhVU1OblkyOXRL?=
+ =?utf-8?B?RjhHazNCSFZLaWtSMTNaQVF1OWs3ZmsvZTd2L1dqNldCNlhnbUZsYkV6MStY?=
+ =?utf-8?B?N0Q1cGdQNkExczlnMkFoV1U2TnhmdnVvQWY0dTNvNkRyWmxnMUk2UWs1RTlY?=
+ =?utf-8?B?aW5lVVJwVHNKRXEydVE4VmtOM2gzM1VoVnBtZkNTenZ3dDFVRENXdm1BVUI1?=
+ =?utf-8?B?a28rdVhlaEkvVjZvWE41TzJ3OTA5SXZVTVVOTWFpczk5aS9JTG5FdXVJU2FB?=
+ =?utf-8?B?VW8ybGRySG1hT29aZTAwc3I1aEszUWpEYXBwRDhtOE1SRHYrWUZ4R0JlenRE?=
+ =?utf-8?B?MTJaTUxuMlR3aFdITDRYdTJJNmZscS85cFEwbG16T25iSGtrZ0lxY1p3V2I4?=
+ =?utf-8?B?aUNPeGsxa2xZT2pQbEVOVVBPRjR6aW5rc29xMjljbC8xVkxYWi9LcjdDWHly?=
+ =?utf-8?B?VVltOGhEdTNlNjhBaEN6Z0FVVTFDZjE0UHJpZ3BlU3RhTTNnYytJaGlhb2My?=
+ =?utf-8?B?N3NlQUljVTVVSkNaVmJzbTdjb1RreXBvdENQZVVSK1dOYVlGdXZERHB6L0Ew?=
+ =?utf-8?B?L2sweitrcUs5N25qV2lvNlU0R2pQVExIeFFOcWk2c3JYaEYvdHlNaERGbEJa?=
+ =?utf-8?B?aTdLbm5IT2F5Y2NNUW9PREFmTnoyQ1VWSFhqbmUrcXZ3bnhwTklCRVMvZW1D?=
+ =?utf-8?B?dGZ6dVFQeURadkJVVGFBMzhEMGg1RVlaS1ViNzQ1QXpvSldQL2pXSEhUOHVu?=
+ =?utf-8?B?N3hjZmYvdVpGTkV2cGhZUWlic2dsQVZwNXc1R290OXJJVzRIWEIzRFgxRG9U?=
+ =?utf-8?B?S0ZaZzM5cE0vOXNIWEtKU1hNdlVtSlZzKzN2eGpMMmlGTmFHRWNOMWp0TlRl?=
+ =?utf-8?B?QlhkLzNUMHhJbDh3U25LeWptekE2UXh6LzdjSTFOMGNHZHpPSjk1ZHY1UC9G?=
+ =?utf-8?B?QlpmakdjNTRNYmJScG9mVFEzNitaTU9zVVRoOWVWTTF3dE42QUw3Y0NxV2FF?=
+ =?utf-8?B?dmxEbklDdFFqTjZ0SzlIMXdiVHk2bEtyZXhiSEZTTEZPOHIrNzlkQWdiL1Z0?=
+ =?utf-8?B?ejd2S1lpbUlTcDJROUxlKzZCSExDTXlXWW94Wm42TFU3ekpiM28vNjZqeTdi?=
+ =?utf-8?B?Q3pFempLSytLanZsT1gzODlwWkpPZzRhZzE4MVp6dzUrUlFHdHhKeUo1bW9V?=
+ =?utf-8?B?OFgzcms1VFlnckEyNzFUNmNTSXo5WFJod25DUGNaMi9OTkl1QlNtSTg0Wmhr?=
+ =?utf-8?B?dWI5VHpqSU1RWS9sM0k3ekNLMUphWHRxVXJnYmpwNmttTUVpc09jVTBDcWdD?=
+ =?utf-8?B?MnhlaFhRNUM0dHJnNTZsbFgvTzRvSmltL1Z4SkJCek9nREpZK2tUelIydjQw?=
+ =?utf-8?B?NlRZVUJzKzI4SkRCSW1samplUTRVSEI0SHlvd3RCN1JSK243dTRhVlhvdUZk?=
+ =?utf-8?B?ZWVCdWpOSEkyNnJBdStGSGNUcHlWMDFxZ1pPOGdoZDFkY09iTlA4ZG1ja1RU?=
+ =?utf-8?B?c3cxZmdiVDRSa05oSnh5WVA0QURIRnlnZ3VCZmxZa0hzOVZnL2VOZWJUZEpX?=
+ =?utf-8?B?WnVRcE4rSU9IU0RueXFrNlZaUmRob0Y1WG1aMTZrVU1jeEFaWnF2bFlSZEFl?=
+ =?utf-8?B?bGlEZHJEVitWRXZmaUd3YUg5UWNxWGpFREpVUytmUHZEQW1VLzRVZ1V4Sksw?=
+ =?utf-8?B?RnUvd202M3N6L1JGdjlodFNDZHdXaUZzQTgvZDdYbjJZaEFtczBNMkh6REpZ?=
+ =?utf-8?B?YVdpaXU1L1NNVGdKSEp5V0x5dHlZZmdHcjBnclRxWHd0QW9hYjI1MGpDN2NT?=
+ =?utf-8?B?REY1NmNORTNhei9BdFdScWdmL0djR2VFcG9TWHR3WDdLOUhVSU5tZ0RWSHIw?=
+ =?utf-8?B?RkU0aGJGT1lYVlpyRjVSdHJWNzFWdGN6OFljb1BEck91cnlpdXdFeDlPWkIr?=
+ =?utf-8?B?MnR6UU5aZ1lHaFpmTjJWNlN6eWZsdGNoUERyWU9RMXlmajgwOVNZS0duRFFT?=
+ =?utf-8?B?QzJFTnEzckN5dHNqbU9pUEZhOW9oWnB5WkhOMGt3ZTdNMGJ1UjhGVlR1Q2Z3?=
+ =?utf-8?Q?9/rxQndoIs8w6FiFvZMWIDd+D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	fq2ly7abU6DP3W8BJBABwjx2MKlhVs9dtHRzMUZZSfX0m/R+zzhtnmo72Nhlnm6KDGdE2yu00RMN2TTu2vZ4dv/yQdlQHB/MI7/3MpFNe1eijgV5yImFOtGedX/MaNAr/pzZK27aTtPFb/THAx6/kjVNskZZQjLHHNP3XuybjTjrsVCw8pZRqoZy7+BokLr7nSZXoLwPpDf9EECjFSnSNh7qDfjbv5b9WhE07iP9Tu4B98RogtOBPfctmQo3KUAIlLIF3XqiN1bNt3HJzgrpGUjOfOclHYO45IWYGuoGJNXzP/7/hgH+R4HO0DaezS9G6nMNjTzdEGTuMsF33SPZ/Jaa/i5o4nX6R0vzuWLY8hpsrZZZQY0kG4Uu+UklxeU5LL7xYcJ3viLSuY2WtTALUmw7+mz+K78TRApB8Mq5v9Pb/zbyJKR9OZKhvl0mkLrhqF1zhHqoccQsvI4bQdC79gbj5P3+wtBlSbB/NwMeMh/ZUJJ5shXnXb1E67SSB8o+u4ZR6EfCqbxPmvo/2X1Ymcpj+8g6urWsIuv7L42hUdhqyLEKHG3aJSyrGBjeNDtn18oM+qTVNSYh44/hR+O7gsbbieG75alZHg51N1RRCfk=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cbc7f29-f9b6-45a0-7e6f-08dc8b7a00a7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2024 07:25:29.5198
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AJcu3KnIaxHkL0iBF7g8oUzk8Q6COI32MboM3cbZ6Bo3FdxNfGEcBh4crODiDB4LAphD036IkFr2aI0gNpE0xQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5029
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-12_12,2024-06-13_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 adultscore=0
+ mlxscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
+ definitions=main-2406130051
+X-Proofpoint-ORIG-GUID: qwz7SSgcCncKzMbKwZs8PwqqTidtz2IA
+X-Proofpoint-GUID: qwz7SSgcCncKzMbKwZs8PwqqTidtz2IA
 
-Hello,
+On 12/06/2024 21:54, Darrick J. Wong wrote:
+> On Mon, Jun 10, 2024 at 10:43:23AM +0000, John Garry wrote:
+>> From: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+>>
+>> Extend statx system call to return additional info for atomic write support
+>> support for a file.
+>>
+>> Helper function generic_fill_statx_atomic_writes() can be used by FSes to
+>> fill in the relevant statx fields. For now atomic_write_segments_max will
+>> always be 1, otherwise some rules would need to be imposed on iovec length
+>> and alignment, which we don't want now.
+>>
+>> Signed-off-by: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+>> jpg: relocate bdev support to another patch
+>> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> 
+> Looks fine to me, assuming there's a manpage update lurking somewhere?
 
-syzbot found the following issue on:
+Sure, see 
+https://lore.kernel.org/lkml/20240124112731.28579-1-john.g.garry@oracle.com/T/#m520dca97a9748de352b5a723d3155a4bb1e46456
 
-HEAD commit:    061d1af7b030 Merge tag 'for-linus-2024060801' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=170743fc980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=96fd46a1ee1615e0
-dashboard link: https://syzkaller.appspot.com/bug?extid=8576cfa84070dce4d59b
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+I'll post a rebase, but the API is still the same.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-061d1af7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/91e6b5bb0acf/vmlinux-061d1af7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3cc757eadf33/bzImage-061d1af7.xz
+Thanks,
+John
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8576cfa84070dce4d59b@syzkaller.appspotmail.com
+> 
+> --D
+> 
+>> ---
+>>   fs/stat.c                 | 34 ++++++++++++++++++++++++++++++++++
+>>   include/linux/fs.h        |  3 +++
+>>   include/linux/stat.h      |  3 +++
+>>   include/uapi/linux/stat.h | 12 ++++++++++--
+>>   4 files changed, 50 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/stat.c b/fs/stat.c
+>> index 70bd3e888cfa..72d0e6357b91 100644
+>> --- a/fs/stat.c
+>> +++ b/fs/stat.c
+>> @@ -89,6 +89,37 @@ void generic_fill_statx_attr(struct inode *inode, struct kstat *stat)
+>>   }
+>>   EXPORT_SYMBOL(generic_fill_statx_attr);
+>>   
+>> +/**
+>> + * generic_fill_statx_atomic_writes - Fill in atomic writes statx attributes
+>> + * @stat:	Where to fill in the attribute flags
+>> + * @unit_min:	Minimum supported atomic write length in bytes
+>> + * @unit_max:	Maximum supported atomic write length in bytes
+>> + *
+>> + * Fill in the STATX{_ATTR}_WRITE_ATOMIC flags in the kstat structure from
+>> + * atomic write unit_min and unit_max values.
+>> + */
+>> +void generic_fill_statx_atomic_writes(struct kstat *stat,
+>> +				      unsigned int unit_min,
+>> +				      unsigned int unit_max)
+>> +{
+>> +	/* Confirm that the request type is known */
+>> +	stat->result_mask |= STATX_WRITE_ATOMIC;
+>> +
+>> +	/* Confirm that the file attribute type is known */
+>> +	stat->attributes_mask |= STATX_ATTR_WRITE_ATOMIC;
+>> +
+>> +	if (unit_min) {
+>> +		stat->atomic_write_unit_min = unit_min;
+>> +		stat->atomic_write_unit_max = unit_max;
+>> +		/* Initially only allow 1x segment */
+>> +		stat->atomic_write_segments_max = 1;
+>> +
+>> +		/* Confirm atomic writes are actually supported */
+>> +		stat->attributes |= STATX_ATTR_WRITE_ATOMIC;
+>> +	}
+>> +}
+>> +EXPORT_SYMBOL_GPL(generic_fill_statx_atomic_writes);
+>> +
+>>   /**
+>>    * vfs_getattr_nosec - getattr without security checks
+>>    * @path: file to get attributes from
+>> @@ -659,6 +690,9 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+>>   	tmp.stx_dio_mem_align = stat->dio_mem_align;
+>>   	tmp.stx_dio_offset_align = stat->dio_offset_align;
+>>   	tmp.stx_subvol = stat->subvol;
+>> +	tmp.stx_atomic_write_unit_min = stat->atomic_write_unit_min;
+>> +	tmp.stx_atomic_write_unit_max = stat->atomic_write_unit_max;
+>> +	tmp.stx_atomic_write_segments_max = stat->atomic_write_segments_max;
+>>   
+>>   	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+>>   }
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index e049414bef7d..db26b4a70c62 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -3235,6 +3235,9 @@ extern const struct inode_operations page_symlink_inode_operations;
+>>   extern void kfree_link(void *);
+>>   void generic_fillattr(struct mnt_idmap *, u32, struct inode *, struct kstat *);
+>>   void generic_fill_statx_attr(struct inode *inode, struct kstat *stat);
+>> +void generic_fill_statx_atomic_writes(struct kstat *stat,
+>> +				      unsigned int unit_min,
+>> +				      unsigned int unit_max);
+>>   extern int vfs_getattr_nosec(const struct path *, struct kstat *, u32, unsigned int);
+>>   extern int vfs_getattr(const struct path *, struct kstat *, u32, unsigned int);
+>>   void __inode_add_bytes(struct inode *inode, loff_t bytes);
+>> diff --git a/include/linux/stat.h b/include/linux/stat.h
+>> index bf92441dbad2..3d900c86981c 100644
+>> --- a/include/linux/stat.h
+>> +++ b/include/linux/stat.h
+>> @@ -54,6 +54,9 @@ struct kstat {
+>>   	u32		dio_offset_align;
+>>   	u64		change_cookie;
+>>   	u64		subvol;
+>> +	u32		atomic_write_unit_min;
+>> +	u32		atomic_write_unit_max;
+>> +	u32		atomic_write_segments_max;
+>>   };
+>>   
+>>   /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+>> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+>> index 67626d535316..887a25286441 100644
+>> --- a/include/uapi/linux/stat.h
+>> +++ b/include/uapi/linux/stat.h
+>> @@ -126,9 +126,15 @@ struct statx {
+>>   	__u64	stx_mnt_id;
+>>   	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+>>   	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
+>> -	__u64	stx_subvol;	/* Subvolume identifier */
+>>   	/* 0xa0 */
+>> -	__u64	__spare3[11];	/* Spare space for future expansion */
+>> +	__u64	stx_subvol;	/* Subvolume identifier */
+>> +	__u32	stx_atomic_write_unit_min;	/* Min atomic write unit in bytes */
+>> +	__u32	stx_atomic_write_unit_max;	/* Max atomic write unit in bytes */
+>> +	/* 0xb0 */
+>> +	__u32   stx_atomic_write_segments_max;	/* Max atomic write segment count */
+>> +	__u32   __spare1[1];
+>> +	/* 0xb8 */
+>> +	__u64	__spare3[9];	/* Spare space for future expansion */
+>>   	/* 0x100 */
+>>   };
+>>   
+>> @@ -157,6 +163,7 @@ struct statx {
+>>   #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
+>>   #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
+>>   #define STATX_SUBVOL		0x00008000U	/* Want/got stx_subvol */
+>> +#define STATX_WRITE_ATOMIC	0x00010000U	/* Want/got atomic_write_* fields */
+>>   
+>>   #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+>>   
+>> @@ -192,6 +199,7 @@ struct statx {
+>>   #define STATX_ATTR_MOUNT_ROOT		0x00002000 /* Root of a mount */
+>>   #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
+>>   #define STATX_ATTR_DAX			0x00200000 /* File is currently in DAX state */
+>> +#define STATX_ATTR_WRITE_ATOMIC		0x00400000 /* File supports atomic write operations */
+>>   
+>>   
+>>   #endif /* _UAPI_LINUX_STAT_H */
+>> -- 
+>> 2.31.1
+>>
+>>
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.10.0-rc2-syzkaller-00361-g061d1af7b030 #0 Not tainted
-------------------------------------------------------
-syz-executor.1/9919 is trying to acquire lock:
-ffffffff8dd3aac0 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:334 [inline]
-ffffffff8dd3aac0 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3891 [inline]
-ffffffff8dd3aac0 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3981 [inline]
-ffffffff8dd3aac0 (fs_reclaim){+.+.}-{0:0}, at: kmem_cache_alloc_lru_noprof+0x58/0x2f0 mm/slub.c:4020
-
-but task is already holding lock:
-ffff88804b569358 (&ei->log_mutex){+.+.}-{3:3}, at: btrfs_log_inode+0x39c/0x4660 fs/btrfs/tree-log.c:6481
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&ei->log_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
-       btrfs_log_inode+0x39c/0x4660 fs/btrfs/tree-log.c:6481
-       btrfs_log_inode_parent+0x8cb/0x2a90 fs/btrfs/tree-log.c:7079
-       btrfs_log_dentry_safe+0x59/0x80 fs/btrfs/tree-log.c:7180
-       btrfs_sync_file+0x9c1/0xe10 fs/btrfs/file.c:1959
-       vfs_fsync_range+0x141/0x230 fs/sync.c:188
-       generic_write_sync include/linux/fs.h:2794 [inline]
-       btrfs_do_write_iter+0x584/0x10c0 fs/btrfs/file.c:1705
-       new_sync_write fs/read_write.c:497 [inline]
-       vfs_write+0x6b6/0x1140 fs/read_write.c:590
-       ksys_write+0x12f/0x260 fs/read_write.c:643
-       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
-       __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
-       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
-       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-
--> #2 (btrfs_trans_num_extwriters){++++}-{0:0}:
-       join_transaction+0x164/0xf40 fs/btrfs/transaction.c:315
-       start_transaction+0x427/0x1a70 fs/btrfs/transaction.c:700
-       btrfs_commit_super+0xa1/0x110 fs/btrfs/disk-io.c:4170
-       close_ctree+0xcb0/0xf90 fs/btrfs/disk-io.c:4324
-       generic_shutdown_super+0x159/0x3d0 fs/super.c:642
-       kill_anon_super+0x3a/0x60 fs/super.c:1226
-       btrfs_kill_super+0x3b/0x50 fs/btrfs/super.c:2096
-       deactivate_locked_super+0xbe/0x1a0 fs/super.c:473
-       deactivate_super+0xde/0x100 fs/super.c:506
-       cleanup_mnt+0x222/0x450 fs/namespace.c:1267
-       task_work_run+0x14e/0x250 kernel/task_work.c:180
-       resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
-       exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
-       exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
-       __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
-       syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
-       __do_fast_syscall_32+0x80/0x120 arch/x86/entry/common.c:389
-       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
-       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-
--> #1 (btrfs_trans_num_writers){++++}-{0:0}:
-       __lock_release kernel/locking/lockdep.c:5468 [inline]
-       lock_release+0x33e/0x6c0 kernel/locking/lockdep.c:5774
-       percpu_up_read include/linux/percpu-rwsem.h:99 [inline]
-       __sb_end_write include/linux/fs.h:1650 [inline]
-       sb_end_intwrite include/linux/fs.h:1767 [inline]
-       __btrfs_end_transaction+0x5ca/0x920 fs/btrfs/transaction.c:1071
-       btrfs_commit_inode_delayed_inode+0x228/0x330 fs/btrfs/delayed-inode.c:1301
-       btrfs_evict_inode+0x960/0xe80 fs/btrfs/inode.c:5291
-       evict+0x2ed/0x6c0 fs/inode.c:667
-       iput_final fs/inode.c:1741 [inline]
-       iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
-       iput+0x5c/0x80 fs/inode.c:1757
-       dentry_unlink_inode+0x295/0x480 fs/dcache.c:400
-       __dentry_kill+0x1d0/0x600 fs/dcache.c:603
-       dput.part.0+0x4b1/0x9b0 fs/dcache.c:845
-       dput+0x1f/0x30 fs/dcache.c:835
-       ovl_stack_put+0x60/0x90 fs/overlayfs/util.c:132
-       ovl_destroy_inode+0xc6/0x190 fs/overlayfs/super.c:182
-       destroy_inode+0xc4/0x1b0 fs/inode.c:311
-       iput_final fs/inode.c:1741 [inline]
-       iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
-       iput+0x5c/0x80 fs/inode.c:1757
-       dentry_unlink_inode+0x295/0x480 fs/dcache.c:400
-       __dentry_kill+0x1d0/0x600 fs/dcache.c:603
-       shrink_kill fs/dcache.c:1048 [inline]
-       shrink_dentry_list+0x140/0x5d0 fs/dcache.c:1075
-       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1156
-       super_cache_scan+0x32a/0x550 fs/super.c:221
-       do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
-       shrink_slab_memcg mm/shrinker.c:548 [inline]
-       shrink_slab+0xa87/0x1310 mm/shrinker.c:626
-       shrink_one+0x493/0x7c0 mm/vmscan.c:4790
-       shrink_many mm/vmscan.c:4851 [inline]
-       lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4951
-       shrink_node mm/vmscan.c:5910 [inline]
-       kswapd_shrink_node mm/vmscan.c:6720 [inline]
-       balance_pgdat+0x1105/0x1970 mm/vmscan.c:6911
-       kswapd+0x5ea/0xbf0 mm/vmscan.c:7180
-       kthread+0x2c1/0x3a0 kernel/kthread.c:389
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-       __fs_reclaim_acquire mm/page_alloc.c:3801 [inline]
-       fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3815
-       might_alloc include/linux/sched/mm.h:334 [inline]
-       slab_pre_alloc_hook mm/slub.c:3891 [inline]
-       slab_alloc_node mm/slub.c:3981 [inline]
-       kmem_cache_alloc_lru_noprof+0x58/0x2f0 mm/slub.c:4020
-       btrfs_alloc_inode+0x118/0xb20 fs/btrfs/inode.c:8411
-       alloc_inode+0x5d/0x230 fs/inode.c:261
-       iget5_locked fs/inode.c:1235 [inline]
-       iget5_locked+0x1c9/0x2c0 fs/inode.c:1228
-       btrfs_iget_locked fs/btrfs/inode.c:5590 [inline]
-       btrfs_iget_path fs/btrfs/inode.c:5607 [inline]
-       btrfs_iget+0xfb/0x230 fs/btrfs/inode.c:5636
-       add_conflicting_inode fs/btrfs/tree-log.c:5657 [inline]
-       copy_inode_items_to_log+0x1039/0x1e30 fs/btrfs/tree-log.c:5928
-       btrfs_log_inode+0xa48/0x4660 fs/btrfs/tree-log.c:6592
-       log_new_delayed_dentries fs/btrfs/tree-log.c:6363 [inline]
-       btrfs_log_inode+0x27dd/0x4660 fs/btrfs/tree-log.c:6718
-       btrfs_log_all_parents fs/btrfs/tree-log.c:6833 [inline]
-       btrfs_log_inode_parent+0x22ba/0x2a90 fs/btrfs/tree-log.c:7141
-       btrfs_log_dentry_safe+0x59/0x80 fs/btrfs/tree-log.c:7180
-       btrfs_sync_file+0x9c1/0xe10 fs/btrfs/file.c:1959
-       vfs_fsync_range+0x141/0x230 fs/sync.c:188
-       generic_write_sync include/linux/fs.h:2794 [inline]
-       btrfs_do_write_iter+0x584/0x10c0 fs/btrfs/file.c:1705
-       do_iter_readv_writev+0x504/0x780 fs/read_write.c:741
-       vfs_writev+0x36f/0xde0 fs/read_write.c:971
-       do_pwritev+0x1b2/0x260 fs/read_write.c:1072
-       __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
-       __se_compat_sys_pwritev2 fs/read_write.c:1210 [inline]
-       __ia32_compat_sys_pwritev2+0x121/0x1b0 fs/read_write.c:1210
-       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
-       __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
-       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
-       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-
-other info that might help us debug this:
-
-Chain exists of:
-  fs_reclaim --> btrfs_trans_num_extwriters --> &ei->log_mutex
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&ei->log_mutex);
-                               lock(btrfs_trans_num_extwriters);
-                               lock(&ei->log_mutex);
-  lock(fs_reclaim);
-
- *** DEADLOCK ***
-
-7 locks held by syz-executor.1/9919:
- #0: ffff88802be20420 (sb_writers#23){.+.+}-{0:0}, at: do_pwritev+0x1b2/0x260 fs/read_write.c:1072
- #1: ffff888065c0f8f0 (&sb->s_type->i_mutex_key#33){++++}-{3:3}, at: inode_lock include/linux/fs.h:791 [inline]
- #1: ffff888065c0f8f0 (&sb->s_type->i_mutex_key#33){++++}-{3:3}, at: btrfs_inode_lock+0xc8/0x110 fs/btrfs/inode.c:385
- #2: ffff888065c0f778 (&ei->i_mmap_lock){++++}-{3:3}, at: btrfs_inode_lock+0xee/0x110 fs/btrfs/inode.c:388
- #3: ffff88802be20610 (sb_internal#4){.+.+}-{0:0}, at: btrfs_sync_file+0x95b/0xe10 fs/btrfs/file.c:1952
- #4: ffff8880546323f0 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0x430/0xf40 fs/btrfs/transaction.c:290
- #5: ffff888054632418 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0x430/0xf40 fs/btrfs/transaction.c:290
- #6: ffff88804b569358 (&ei->log_mutex){+.+.}-{3:3}, at: btrfs_log_inode+0x39c/0x4660 fs/btrfs/tree-log.c:6481
-
-stack backtrace:
-CPU: 2 PID: 9919 Comm: syz-executor.1 Not tainted 6.10.0-rc2-syzkaller-00361-g061d1af7b030 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- __fs_reclaim_acquire mm/page_alloc.c:3801 [inline]
- fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3815
- might_alloc include/linux/sched/mm.h:334 [inline]
- slab_pre_alloc_hook mm/slub.c:3891 [inline]
- slab_alloc_node mm/slub.c:3981 [inline]
- kmem_cache_alloc_lru_noprof+0x58/0x2f0 mm/slub.c:4020
- btrfs_alloc_inode+0x118/0xb20 fs/btrfs/inode.c:8411
- alloc_inode+0x5d/0x230 fs/inode.c:261
- iget5_locked fs/inode.c:1235 [inline]
- iget5_locked+0x1c9/0x2c0 fs/inode.c:1228
- btrfs_iget_locked fs/btrfs/inode.c:5590 [inline]
- btrfs_iget_path fs/btrfs/inode.c:5607 [inline]
- btrfs_iget+0xfb/0x230 fs/btrfs/inode.c:5636
- add_conflicting_inode fs/btrfs/tree-log.c:5657 [inline]
- copy_inode_items_to_log+0x1039/0x1e30 fs/btrfs/tree-log.c:5928
- btrfs_log_inode+0xa48/0x4660 fs/btrfs/tree-log.c:6592
- log_new_delayed_dentries fs/btrfs/tree-log.c:6363 [inline]
- btrfs_log_inode+0x27dd/0x4660 fs/btrfs/tree-log.c:6718
- btrfs_log_all_parents fs/btrfs/tree-log.c:6833 [inline]
- btrfs_log_inode_parent+0x22ba/0x2a90 fs/btrfs/tree-log.c:7141
- btrfs_log_dentry_safe+0x59/0x80 fs/btrfs/tree-log.c:7180
- btrfs_sync_file+0x9c1/0xe10 fs/btrfs/file.c:1959
- vfs_fsync_range+0x141/0x230 fs/sync.c:188
- generic_write_sync include/linux/fs.h:2794 [inline]
- btrfs_do_write_iter+0x584/0x10c0 fs/btrfs/file.c:1705
- do_iter_readv_writev+0x504/0x780 fs/read_write.c:741
- vfs_writev+0x36f/0xde0 fs/read_write.c:971
- do_pwritev+0x1b2/0x260 fs/read_write.c:1072
- __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
- __se_compat_sys_pwritev2 fs/read_write.c:1210 [inline]
- __ia32_compat_sys_pwritev2+0x121/0x1b0 fs/read_write.c:1210
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-RIP: 0023:0xf7334579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f5f265ac EFLAGS: 00000292 ORIG_RAX: 000000000000017b
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000200002c0
-RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
