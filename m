@@ -1,241 +1,208 @@
-Return-Path: <linux-btrfs+bounces-5687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71867905FA5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 02:19:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2852F905FAA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 02:23:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CB442835DE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 00:19:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BD55283FCE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 00:23:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A7C4C69;
-	Thu, 13 Jun 2024 00:18:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD04D848E;
+	Thu, 13 Jun 2024 00:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="CNgmh/dH";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="OHAsI6vu"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fm3uGj5v";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0ZaLQVS9";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fm3uGj5v";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0ZaLQVS9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A4D54404
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 00:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718237933; cv=fail; b=PDsjE5sf9VngRRJrQPnZfwmMolA2V6xplpeOHw27oS+ynJDpkg9SzNMuBNhYRJPzAht0RrqdODmbLuBJxJTu0R/HSdmEL4eayfRaEXLktTZJfqv9Y3u/ivKmB5UkBoc9qmMKRBXMibXfNIoyUsrKegEwn6F+yuwlOFJNCl4RWOw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718237933; c=relaxed/simple;
-	bh=VaAePzZzZtlzjTBTrdIwdrFRFaeCxYY4sXFtrJDf/PE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=YIS2h0Y/GZHfkSS6XVGz91yvXc27eKj8uWxYB3gTM2MzCS8sDIuyNVMdQ9I4xlN6qs5hBMAzf9b1bT/fVQNE3HIPTqYUAIOc7zGAFDzYN1AsosYPL/RZrgP8ei0MLLcuxdkTDfRan74vU6Sq4ijLfCPu0wic0KzRRBrqouSFl5E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=CNgmh/dH; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=OHAsI6vu; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1718237931; x=1749773931;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=VaAePzZzZtlzjTBTrdIwdrFRFaeCxYY4sXFtrJDf/PE=;
-  b=CNgmh/dHHqWEjMCOCs03S6rYQpjN81oXGDkSri+tRR79dYopoj+HrMoK
-   JUBPyNjQ8HyiASUv1J6zjk4jUsoqe+6AJwHH6mZu2DAAoS06TE9O3WoMM
-   9WY5iDb05BMSOV3iY6f7LIz4zovJGj1KeuAesaBmdtFlzK+7P7Brk8rDZ
-   JTFsSB+F3jNSqeQkJJnXUuaEVc4X3JB2HrHj9u6E28YkH6QMduG4f21Pl
-   NQxLY9dUD94N8wP5bKUdStnrZeWtvgyiQxhzVPDKJt39T5wF1TMuj6ZKM
-   brKZs54THrU9z7Mqs/63IUm5wkpw8nG5/XYuxnRQwOqRjAnKcmlazSJyT
-   g==;
-X-CSE-ConnectionGUID: R5ooECBsRuqb5tnY2fWiCg==
-X-CSE-MsgGUID: DWzdSIPwSJaTwXQjevGO2A==
-X-IronPort-AV: E=Sophos;i="6.08,234,1712592000"; 
-   d="scan'208";a="19286079"
-Received: from mail-dm6nam11lp2169.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.169])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2024 08:18:50 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J7+miMtFVjIf3CbIqj9NSeiKMy1WnA4GaeZckuKaHWVAe9dKU/SU2hVEKycCFWIRpO2ytk9/JqYGo/IQBMqCKoaCO/w1HTWzhx6LuXgTzFPFmXSw5uogVUMGIOkwMzw9dZMt5RhkLy/zva+XJcORfPMryIWC9xaY8vP1ACKaL5HMnMczx9L8Y4qlMEfudKsjJDur3PWAu7dAZ31lFaQVXAh4BZXA4nltkZKS7ZO8q/NjV3d0LzwlrcZ7rpEHzdNo0cAcuW1Wc5UpMgSFvOTgWskW6uJwtue4PV0WaIxsqp21wZlDfAYKIYS2P9uRU4gYmRw6htCnU+9DRj8AEcRWxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FAjoR1DG4kiu/n2kjjyjRcgiAtIwsPXPSUv/EAOwOpY=;
- b=BNGzcUHAWOC9EuybFc/brWydB4Dsd1Ds+sVFvalnCcF1tA9Fri6yLjJ5jXz1SZ4TBLHM+LapsAsnCkLp9SIKweCFSpfgcC0ElYA23/aKzSrLMMz/vvXRjvA3ipv34Y5lXgilGf2f4W2uSgTNeFmYbOGbnp5u1AW4lwcxCM17HNtgIrJf5epBLq5ppfQZg4Y49utKSoiIdBkoCoiNmhfwMKCYLsstVPkQCTNIwARNnXSZf6TsI9sXzQDGV70729vMVw3MCRnvqLCNvUjr3FJPXSEVf6I8Td0afh/tLZAYfCP1/kaxBfWqG7kUXO2tee920hK4IPg5l4+Fho4x62YG7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FAjoR1DG4kiu/n2kjjyjRcgiAtIwsPXPSUv/EAOwOpY=;
- b=OHAsI6vuXYEbmqBzmGvbjMOgmSi1/0Ky7N+6/KBuf1ZUBIE3zWn+Kt/lnq4WL3T3VBvC8alkN/FcldHWm6b09siTa0cT03rsRtV4Qzvd8nX5m8PMr11bpj1G1T+fllmmhCwtiPze4PCRFTSuy7Kl3Izv9L5Aa07NsUwgFpkC1FI=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by SJ0PR04MB8357.namprd04.prod.outlook.com (2603:10b6:a03:3d1::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.37; Thu, 13 Jun
- 2024 00:18:49 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::5266:472:a4e5:a9c2%7]) with mapi id 15.20.7633.036; Thu, 13 Jun 2024
- 00:18:49 +0000
-From: Naohiro Aota <Naohiro.Aota@wdc.com>
-To: David Sterba <dsterba@suse.cz>
-CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: zoned: fix initial free space detection
-Thread-Topic: [PATCH] btrfs: zoned: fix initial free space detection
-Thread-Index: AQHau96tCqk6XbWvhEuhJmWeVSCHbbHEjBeAgABKsAA=
-Date: Thu, 13 Jun 2024 00:18:48 +0000
-Message-ID: <lxk6knivzysx6wag5ijotku3pw4agtfeytxyvqhvakfup42u77@khmgt7vbxpwp>
-References:
- <ec2aafb75c235d9c37aef52068992dca0d060d5f.1718096605.git.naohiro.aota@wdc.com>
- <20240612195129.GN18508@twin.jikos.cz>
-In-Reply-To: <20240612195129.GN18508@twin.jikos.cz>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|SJ0PR04MB8357:EE_
-x-ms-office365-filtering-correlation-id: 1d51a0db-1b70-4a37-6dd2-08dc8b3e65ad
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230034|376008|1800799018|366010|38070700012;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?ukTwKurn1d6HfMdS2jbhPFXCkTI0RVCce1WlZAAFlgotTcNlE73b8M57Zv1Q?=
- =?us-ascii?Q?DQ/hiO+7IoQe6HYMIep+Um0+i2tzaL7qeP1J+TzvpYP18z5m9tbwgnU27I2W?=
- =?us-ascii?Q?6xeX2kO+fTiimA6UOB4xcHYVcIcE6QG7nTokBkl4d7446kmueJQpAxtPAc0j?=
- =?us-ascii?Q?+d7RuzShiVQDJxemQpP1owKWku2t71obAgKVNhP5GDHCoYwWqoqbKH5wqXV3?=
- =?us-ascii?Q?4+sf/DBvcCTU7AqSjAQWUu22hlA0sFFKoPs+9gXxZRvTpo9QKNEA5t5h2dMj?=
- =?us-ascii?Q?6AdDUXj0soDiT03eawDX4YkorXDowofySXYFdzaUjN58X8+7mlAwBsRaYyAq?=
- =?us-ascii?Q?rRe9DK8hJGl6cXCR15WPmGsin3USTqlPBZUUT/MV60UARfsJD7mmAIXjU3Rj?=
- =?us-ascii?Q?DUcVnt72ET9JJev4Sfk6Dgl3IXPJETNukG8F/eYIrYcy4sNu+xqpiz4HTy+v?=
- =?us-ascii?Q?5f6Ir3o4VTk/mJPCVznpfOKuvIaykVXSBjUQPbDGTyNqQHQlU6ZtWr4n78G0?=
- =?us-ascii?Q?ba2G4iy5Re1I1lnrZQSX3J29S6U9131K3rKkQfEy2ErCI6Za2EzKWMV3zeyH?=
- =?us-ascii?Q?5bDrwu8/owHnuyG2XpBaLrIHYm5hGp50ZGLCPgaZnTcjsDZcvAZtiDpj/yx8?=
- =?us-ascii?Q?hoqebucAv2DaP4aZuOicxSnIB8mqCBbSaOlaslIjwpBV+RVSvAGtXlIuuGSM?=
- =?us-ascii?Q?NSQkepo90YRxghz7mrnCLc41QKMWkkH4jKInQlNMKttssplPTCVhonFdiA2x?=
- =?us-ascii?Q?EgVKGbQaLlcnIVeHNIgyrrjyy2XqfVq0GMc1su3bWRjJv21vwY/4J4RUrjki?=
- =?us-ascii?Q?UMS+IxZcyUbfnZZ6gNW199yZARS5OFCh9Rg3AMsLZ9Foq7TyK3HgEUX2Im/x?=
- =?us-ascii?Q?KxSN17GfDYHT7X4IR1MHwtCuC/GHNPHTtFnzLzCq9Im9WbEYHLSHP1+zhYeR?=
- =?us-ascii?Q?GrsitJPCszZ3hrk1ZfZ4DrLa68bpZejt4I4gWYnZU8MPDNUGmv+0Ty2lYmzR?=
- =?us-ascii?Q?aB2YzYslf1m7N+SA7kgq++uTBvQJNn6U/1RzFmMLvEjuaTopZgJzT1PLPbHd?=
- =?us-ascii?Q?zsyFrrT0pMWrkOvDi7suuBLOWczVVReXhLijNPEPiT2hsDAzZJMjNE/q546Z?=
- =?us-ascii?Q?bka4oRMCN9udn0czt78IhZpzlsON2YtPSYlyc6oUcz0T8BBk0lwdPmetF4PH?=
- =?us-ascii?Q?Bq9JBOGKdiOmqjYvWhKdZl0HRplQI4tjmX+THjVTfXUMdWcI047MBwDv0sp5?=
- =?us-ascii?Q?kVpM5GFDebAoSrDpSaqiSdUsarRktr9oVMFJnTtacWISUDkGVfJgJ7NQyJK3?=
- =?us-ascii?Q?zMfOOBvT9y8fNTggrza2MSgMJnMVPWBkhkPu0udTNFUZSJayg3oDGncZS6PE?=
- =?us-ascii?Q?MPXk9tU=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230034)(376008)(1800799018)(366010)(38070700012);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?nMytMKl4MZNWfArk+nkJ7dzQ8B0LP9ZbX5HgTxOuN3zAozfKYKGaWg7V1i6c?=
- =?us-ascii?Q?mXiiybWLb33CkSRgWKQbpehBczCx/guY68Sj8/XcXSu+Ba+YWGsBKVmryhqh?=
- =?us-ascii?Q?DmzSKpsV7PutP6NFkGp2xFQOPuagMOwNvrcR/BlGlWm2XifF1raXd2FzW51d?=
- =?us-ascii?Q?sBUvt3zQCLyOdkXlTqH/I+fes8jnZAYJBYBgjf269Mm/EqXENqhw0Xb+Qx1L?=
- =?us-ascii?Q?pO3MxTnddUN23PW9p5FuTRGWdc3a/5Eozwo6ZVtX3nQUyuKL10Qmld3AeqBw?=
- =?us-ascii?Q?Pr61rOBg5aH2fwhRZFyw1f4xMwZDlkStsX7dND8Mdp9LyRrp0Cdw1q4T9mA6?=
- =?us-ascii?Q?3m5cIc4xhaTNTEroaGy+OsKTwP3UowNnAEe0nGTQ2Zt/LI1d2iEBOiP62sUn?=
- =?us-ascii?Q?v4G4NgpYTslEBjU4CaTPTpeFdN8sP6YhHK8Md50w5q9h7VrkfGWREoSSMopU?=
- =?us-ascii?Q?z7lKQKRAvWlSuGLcBqe+WS6XyjqhHoYkXaJUHzNJ6Xg6XrhqTYMURhsU/Sas?=
- =?us-ascii?Q?oRr9vr4+gBMs3aGm676qxIPe8PfRyhCYK1gl8cVkcfdC29cfENzvI1yDGMK0?=
- =?us-ascii?Q?WPfaLj68YHBqmilzqt5tjqYxmpoY3+KhEFm+vkI+zIF/qN8jSpImkc5Aigm7?=
- =?us-ascii?Q?K5qtRZ3/9IMEkbSKb0HlOcgPm/8kvrdwnsfV83klXWUP67uWyvnSn+HLWD16?=
- =?us-ascii?Q?UV/9PYqckrUrbeeXPuEISYS/R4qakg4rtmqaIVNCqXNua3jU6k/8BxC7ldJX?=
- =?us-ascii?Q?62Qf8QVOkeLHj/NWdqxujWVXGgyJVvcCSL6rmVCsurAGUTisyk9ZNbqxc0/B?=
- =?us-ascii?Q?nUSAuX0oLRwwaET1g+Y08oMfbx4ZgJKy0+NjjtNvlEvcXo1JRjHhaSYmuWUN?=
- =?us-ascii?Q?Y5Gtz3VFK3bnH5XZx0mlWJsDsppmynnnLOPp++WhqD6R3dNsZHoUv+wVbFFS?=
- =?us-ascii?Q?SN5wZihkR8RWzIe8uenA+yM4+kKT0UAebKXbozfBsabpk+Km7njndlUj/4/Y?=
- =?us-ascii?Q?FRFDBn1AV+Do5ygIolz2qg/5Op3ZKDTRIP2Agc/V3HPV1JWEcksrpi9OThU+?=
- =?us-ascii?Q?X7mtK+OXB8WtRWhH17nRH8JQlVwMiOqXx97jnozsnjoQmL5We/rBaNVjDrDO?=
- =?us-ascii?Q?QkjiFMd4c6alyTgi0AxsDUhFD48CPSfmXPxXHLl76/ofqKtIPS79ph/yyvFM?=
- =?us-ascii?Q?kfB7dLxoTjk3s/ihIzWKs8BVGWpb7REXIHfG+btugAUdNdS3svEd9i0sdz+P?=
- =?us-ascii?Q?eIa48wivP5E+/xA7rjIBCou4QH0AMVN9YeI6nW9nHEPnDpKrHViqv9Xq2Pj5?=
- =?us-ascii?Q?uCTGP9fV+g0CjVzgt/IYkob8ef9UpNgOuyESC+qvIUe4iFA1JF1mtI1c9Lfw?=
- =?us-ascii?Q?Vo4wJhqIrYZTEn4LgwBQkbZZy3UpMXtC+UWk/vJA0kUxuj35ROcA+V7Hz1Gp?=
- =?us-ascii?Q?larude26mtsSe61YkpCZTtIJeiWpADxxoimtskonQJSAlDFDlKEszljgulPq?=
- =?us-ascii?Q?PUDbozLLcIlcf/o4f6xy0kBigvx5D+wDB2kIxKFYmsCQrDMuLlRPbgaGqF9j?=
- =?us-ascii?Q?gG0BSR2kgcvyfS5JlwN8hoAqj681pf3QOc+nRz1VEmuwutXZOgrMvADMxrR3?=
- =?us-ascii?Q?jw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8392F466C631E247B6D3736220BE5220@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407E44A2C
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 00:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718238187; cv=none; b=LwV40Q0Cx5OuYwqa0b2dxMQbMNlWHh5F2ptn6Gw3L60kEp2EDmlibf+iNXVDVsaG4Mq6VL0GZjQ5r2LkmrU1k44zq0RX/SREoSAz4Nw+qxL821IEIzgqkbnMXKv/PBCY8BCExkuRMFYY2z+z8kA4xOlhJeIlX4CfewsyzPghmfs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718238187; c=relaxed/simple;
+	bh=H8kFIC+rqXfIYPrkWEl7Bm985BaMBhJkcrDHleKwohA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i92X4QRcZ+kr23hD0N93s5d4he4tufSccEWfi3c/CkBvl6Koo5jThPDtqVg/xrq/0ESDsjs6zLRZMsz/Tp2knlh02mA+UpUoUOsWqBmelQ2MD4OyLmHlscBUVycSc0fTHXmzNMndAzisafWYhoWeS/DzUbhxvSL53WCBP8wbwog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fm3uGj5v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0ZaLQVS9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fm3uGj5v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0ZaLQVS9; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0818834B7B;
+	Thu, 13 Jun 2024 00:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718238183;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZEp5pCtc3myPa7WqSeigqxczuVYsHImQGEtW4cU3R8=;
+	b=fm3uGj5vbtCqfYAZThJkOTW2wrDywJ4jr8ArqJf8LmPd10P+ebce6lPGlDsq2XhTU9PsmR
+	iGwX4OdgbmczoNIulaBubzBrXmmywOiDQwhsaAngU+il6nFy0IG/spfd0hkw67JSJPZ7pU
+	d+w3ATrPYM32mFxd54LGHX2mahB8Sjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718238183;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZEp5pCtc3myPa7WqSeigqxczuVYsHImQGEtW4cU3R8=;
+	b=0ZaLQVS9+C6zmaxmi1SzbvUyWB/QngNNv28mPuSCjV4Yj2awWPQn4eKO5dUssPdC+Ekcdk
+	D+SwTZkmiFi48GDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fm3uGj5v;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0ZaLQVS9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718238183;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZEp5pCtc3myPa7WqSeigqxczuVYsHImQGEtW4cU3R8=;
+	b=fm3uGj5vbtCqfYAZThJkOTW2wrDywJ4jr8ArqJf8LmPd10P+ebce6lPGlDsq2XhTU9PsmR
+	iGwX4OdgbmczoNIulaBubzBrXmmywOiDQwhsaAngU+il6nFy0IG/spfd0hkw67JSJPZ7pU
+	d+w3ATrPYM32mFxd54LGHX2mahB8Sjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718238183;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZEp5pCtc3myPa7WqSeigqxczuVYsHImQGEtW4cU3R8=;
+	b=0ZaLQVS9+C6zmaxmi1SzbvUyWB/QngNNv28mPuSCjV4Yj2awWPQn4eKO5dUssPdC+Ekcdk
+	D+SwTZkmiFi48GDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D796F13A7F;
+	Thu, 13 Jun 2024 00:23:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tAp1NOY7amYMYQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 13 Jun 2024 00:23:02 +0000
+Date: Thu, 13 Jun 2024 02:23:01 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Srivathsa Dara <srivathsa.d.dara@oracle.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	Rajesh Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>,
+	Junxiao Bi <junxiao.bi@oracle.com>, "clm@fb.com" <clm@fb.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"dsterba@suse.com" <dsterba@suse.com>
+Subject: Re: [PATCH v2] btrfs-progs: convert: Add 64 bit block numbers support
+Message-ID: <20240613002301.GT18508@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240606102215.3695032-1-srivathsa.d.dara@oracle.com>
+ <c3060faf-f0e8-4bd2-865b-332e423a8801@gmx.com>
+ <DM6PR10MB4347A0EADF68B973447C5591A0C72@DM6PR10MB4347.namprd10.prod.outlook.com>
+ <20240612203743.GQ18508@twin.jikos.cz>
+ <20240613000200.GS18508@twin.jikos.cz>
+ <cd0fca3a-94bf-4913-882f-ee433a61e06f@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	sIZglHC60RneNAUMmVZe7CJD7e0Nt6MI0TttiLH5o8D5J09iWhWxN2E02O6w13dOR0ogQHA2cMDT+KtEwet8iM/VvKyyQudYrUask5DQnLUWCzWSmFS/kcyKT/cBOLa+qApwMXfNxt1avr9ob8bOuxOj5iE0MoFjC0QN9hKUld6HO896RWYof+n06X/BJ+a2Oxb8yLC9kodMV8wxTZmaxZU2AfYCHJigeIDKJdttmnzyusrjJ5kX90NLZ0DJyflsPTfmMVyxZVtD9qJawzh15btfJT/zKwkqtvexjrJ3wsi/3uk2z2PEAhU9jQ3A+UpqIElbptB9YWVm5B3Sna+duNoj1YWG5LsBhixj4rXRpNmrnk8iGUtc3mRHYrCcg2z8V+rwjtJ3pGwdZTAfPFJc2VibKuzIZlsPYKk9lyleGIGwJIebI+JIllSnLFRPkU/QQqUTXVmSYzVEa0+xBiE0bPv1pHmuQdO4kn/BNidapKrNTgsJY4mexhRez31a1edo13Deb2FbFqwqjnXT/RbYk+zoDrlmF/OsAsL3taUB3ZUFoPOjHbBlmcJyrKiykJZumL0Eb16eOGJey1ooZ9idYzf2Ee7OV5nBrjMKziR2ycParlFe+dm+MvZp3bxsqvOa
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d51a0db-1b70-4a37-6dd2-08dc8b3e65ad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jun 2024 00:18:48.9245
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SOTRen9++mm3rhhNAdsmjUHCBjqjhGL9R2uUQy/F7A6oXkGmU8Vj1NitSsZnJjsrm4O+YhLJ/5e74frbx7Aazg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB8357
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cd0fca3a-94bf-4913-882f-ee433a61e06f@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 0818834B7B
+X-Spam-Score: -4.21
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmx.com];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-On Wed, Jun 12, 2024 at 09:51:29PM GMT, David Sterba wrote:
-> On Tue, Jun 11, 2024 at 06:05:52PM +0900, Naohiro Aota wrote:
-> > When creating a new block group, it calls btrfs_fadd_new_free_space() t=
-o
-> > add the entire block group range into the free space
-> > accounting. __btrfs_add_free_space_zoned() checks if size =3D=3D
-> > block_group->length to detect the initial free space adding, and procee=
-d
-> > that case properly.
-> >=20
-> > However, if the zone_capacity =3D=3D zone_size and the over-write speed=
- is fast
-> > enough, the entire zone can be over-written within one transaction. Tha=
-t
-> > confuses __btrfs_add_free_space_zoned() to handle it as an initial free
-> > space accounting. As a result, that block group becomes a strange state=
-: 0
-> > used bytes, 0 zone_unusable bytes, but alloc_offset =3D=3D zone_capacit=
-y (no
-> > allocation anymore).
-> >=20
-> > The initial free space accounting can properly be checked by checking
-> > alloc_offset too.
-> >=20
-> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > Fixes: 98173255bddd ("btrfs: zoned: calculate free space from zone capa=
-city")
-> > CC: stable@vger.kernel.org # 6.1+
-> > ---
-> >  fs/btrfs/free-space-cache.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> > index fcfc1b62e762..72e60764d1ea 100644
-> > --- a/fs/btrfs/free-space-cache.c
-> > +++ b/fs/btrfs/free-space-cache.c
-> > @@ -2697,7 +2697,7 @@ static int __btrfs_add_free_space_zoned(struct bt=
-rfs_block_group *block_group,
-> >  	u64 offset =3D bytenr - block_group->start;
-> >  	u64 to_free, to_unusable;
-> >  	int bg_reclaim_threshold =3D 0;
-> > -	bool initial =3D (size =3D=3D block_group->length);
-> > +	bool initial =3D (size =3D=3D block_group->length) && block_group->al=
-loc_offset =3D=3D 0;
->=20
-> I'm not recommending to use compound conditions in the initializer block
-> as it can hide some important detail, but in this case it's both related
-> to the block group and still related to the variable name. Please put
-> the pair of ( ) to the whole expression.
->=20
-> Reviewed-by: David Sterba <dsterba@suse.com>
+On Thu, Jun 13, 2024 at 09:40:57AM +0930, Qu Wenruo wrote:
+> 在 2024/6/13 09:32, David Sterba 写道:
+> > On Wed, Jun 12, 2024 at 10:37:43PM +0200, David Sterba wrote:
+> >> On Tue, Jun 11, 2024 at 06:03:30AM +0000, Srivathsa Dara wrote:
+> >>>> 在 2024/6/6 19:52, Srivathsa Dara 写道:
+> >>>>>    	if (err)
+> >>>>>    		goto error;
+> >>>>> diff --git a/convert/source-ext2.h b/convert/source-ext2.h index
+> >>>>> d204aac5..62c9b1fa 100644
+> >>>>> --- a/convert/source-ext2.h
+> >>>>> +++ b/convert/source-ext2.h
+> >>>>> @@ -46,7 +46,7 @@ struct btrfs_trans_handle;
+> >>>>>    #define ext2fs_get_block_bitmap_range2 ext2fs_get_block_bitmap_range
+> >>>>>    #define ext2fs_inode_data_blocks2 ext2fs_inode_data_blocks
+> >>>>>    #define ext2fs_read_ext_attr2 ext2fs_read_ext_attr
+> >>>>> -#define ext2fs_blocks_count(s)		((s)->s_blocks_count)
+> >>>>> +#define ext2fs_blocks_count(s)		(((s)->s_blocks_count_hi << 32) | (s)->s_blocks_count)
+> >>>>
+> >>>> This is definitely needed, or it would trigger the ASSERT().
+> >>>>
+> >>>> But again, the newer btrfs-progs no longer go with internally defined ext2fs_blocks_count(), but using the one from e2fsprogs headers, and the library version is already returning blk64_t.
+> >>>
+> >>> Okay, got it.
+> >>>
+> >>> Tested the code base with the commit c23e068aaf91, it does handle 64 bit block numbers.
+> >>
+> >> So, is this patch still needed? I'm not sure after Qu fixed the
+> >> iteration, the tests pass without the patch too.
+> >
+> > Locally the test succeeds (e2fsprogs 1.47.0), however in the github CI
+> > it fails with:
+> >
+> > mke2fs -t ext4 -b 4096 -F /home/runner/work/btrfs-progs/btrfs-progs/tests/test.img
+> > mke2fs 1.46.5 (30-Dec-2021)
+> > mke2fs: Device size reported to be zero.  Invalid partition specified, or
+> > 	partition table wasn't reread after running fdisk, due to
+> > 	a modified partition being busy and in use.  You may need to reboot
+> > 	to re-read your partition table.
+> 
+> The error is from mke2fs, and considering how old the version is in CI,
+> it may be e2fsprogs itself unable to properly detect the 16T file.
+> 
+> If we begin to start add checks on e2fsprogs, it's going to end up ugly...
+> 
+> Any good idea to go forward?
+> Update CI (which seems impossible) or make the mke2fs part as mayfail
+> and skip it?
 
-Sure. You mean like this?
-
-bool initial =3D ((size =3D=3D block_group->length) && (block_group->alloc_=
-offset =3D=3D 0));=
+I think using mayfail for mke2fs is the best option, I don't want to
+check versions. The release of 1.46.5 is 2021-12-30, this is not that
+old and likely widely used. Skipping the particular case is not a big
+deal as it'll be covered on other testing instances.
 
