@@ -1,201 +1,145 @@
-Return-Path: <linux-btrfs+bounces-5693-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5694-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C388905FB0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 02:24:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83765905FB1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 02:26:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B10283FDC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 00:24:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A03D1F2270C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 00:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C074E8F4E;
-	Thu, 13 Jun 2024 00:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79B2522F;
+	Thu, 13 Jun 2024 00:26:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VHvwqRgk";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VHvwqRgk"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iM2KooYX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC70522E
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 00:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BBB4404
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 00:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718238239; cv=none; b=LPsqE6/acpOlDHrvT58YXk077mbmf8I1rl+qyXjNwCcYL2z6AwRF2w2Eb+ntT5zOgfy9Xc3AAPY5VSX/yubMOlausVBz+VlWbClGlBdtEqtRyeNMFsf1SZyAfCnNFVnKf/7XaNVFRcHPaogj0MzN1ExUDSvCF9vTm1aRmleLPWc=
+	t=1718238379; cv=none; b=l/cpQxfALiBH/DazTXaTDxbwJ4FSXAZZ6exj2nCFMr6pF/LB7Ev9o+TRAcxT2mRLacouUI2JXJIp4be5nPumGwaF6YJSkwggzCI9SpgtuWr7MWM3gRXra5NZzSO1qubC868fcBfiJgmV0cZwJa2aRe0FC0z88JHBkAGDzqkD0gA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718238239; c=relaxed/simple;
-	bh=CK9wyzaGIZJ/uZ1QepMOO4D/eiJTgBiFi2WvkW5NDx8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qI9Jw4vXN/Tu+Dawp9Q1uj8NePeuEByotVWUpWfphmumxcOawDVviXd+zA62RDhlKtUEiKqLHeggiBcuY2E9nwQefSgz2/nCmWBIUirz/1RO4yOgzo17eYnut3jC2zRMoBeMvLAGYu3AWTNW/ZRRD+B0BYSkRAhwn2Xla4/oxkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VHvwqRgk; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VHvwqRgk; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 558F75CA10
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 00:23:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718238235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6XEpMLnWFv1AluBDKGiBCSm1uarJDsx3gEpA+TyD13o=;
-	b=VHvwqRgkJi3pOZnsyw6qSmh7sYkUqgGxYdMhzRSMon1pbUIProp1jiSxRtXEtL3QoYLYfk
-	lH5BYWvS0vA9LleF1neZK4VUM0+JFRUFpaW9WR8it9HII+cXfgQ8tAeT24TdnY3yMulAF9
-	WLLgsaeVu3d4C3sUX9iU0kcCC3K1t8I=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=VHvwqRgk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718238235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6XEpMLnWFv1AluBDKGiBCSm1uarJDsx3gEpA+TyD13o=;
-	b=VHvwqRgkJi3pOZnsyw6qSmh7sYkUqgGxYdMhzRSMon1pbUIProp1jiSxRtXEtL3QoYLYfk
-	lH5BYWvS0vA9LleF1neZK4VUM0+JFRUFpaW9WR8it9HII+cXfgQ8tAeT24TdnY3yMulAF9
-	WLLgsaeVu3d4C3sUX9iU0kcCC3K1t8I=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 631B413A7F
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 00:23:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WO1vOxk8amY9YQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 00:23:53 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs-progs: mkfs-tests: ensure regular builds won't enable rst feature
-Date: Thu, 13 Jun 2024 09:53:25 +0930
-Message-ID: <48ce67476f6674725c5e87e25373d8e86df0cb46.1718238120.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1718238120.git.wqu@suse.com>
-References: <cover.1718238120.git.wqu@suse.com>
+	s=arc-20240116; t=1718238379; c=relaxed/simple;
+	bh=dEmEjk0S4aS8tatAwVPUBCuOjUdZnfHZFqvOfgJ0MaE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Dc/JeARabAzOvzr9fDXcWdg2ebTny2ggoxKSqgJ0vvl3woyiOOwic4TQInOxl9smCYDKJQmr3UmVKRHU/C34foqImjwfEsno+hjDxNkLUw03PznhbHkQEcMB+5ajRpprJUUKzkRp5DS+T+fUgBEPuUVRyc2TgA8DVbJtAhPAvqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iM2KooYX; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1718238366; x=1718843166; i=quwenruo.btrfs@gmx.com;
+	bh=dEmEjk0S4aS8tatAwVPUBCuOjUdZnfHZFqvOfgJ0MaE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=iM2KooYXjHzbSLRKE+xRmFKF7ZpLO4ogbQ+l5Gu28F5TKrGbL0Wvx2uXYxssBD7F
+	 QlhLeBXMdYAxMQUdPifwzomeumpgr3yUG/teIJQQBFobXSY9AEy9MlNNrpL7XDrbt
+	 PMHEDbb6hFhBH83qAXmHgUpjh/Jq1e4NCjQGnf4Uje28RTwiAqrn2oU1WEjMYxBMU
+	 3lN5EstOCbvTJygR98NoLiKppgXkVZPWKcdB/UhkJpOv89ty4qGVQ+btrkkVDsj0v
+	 KCh7xn5ji/yx0Bh5toy+YGgTqlPJX10JfduJotbbNmDdJQLSnyBA7S21Nh2qTuFN9
+	 J07oolInsvjOBNIzkQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMXUN-1s0qWA13Y7-00L2UP; Thu, 13
+ Jun 2024 02:26:05 +0200
+Message-ID: <2d1a8153-274b-481e-bb0a-63504d1cbe01@gmx.com>
+Date: Thu, 13 Jun 2024 09:55:56 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 558F75CA10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs-progs: convert: Add 64 bit block numbers support
+To: dsterba@suse.cz
+Cc: Srivathsa Dara <srivathsa.d.dara@oracle.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ Rajesh Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>,
+ Junxiao Bi <junxiao.bi@oracle.com>, "clm@fb.com" <clm@fb.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "dsterba@suse.com" <dsterba@suse.com>
+References: <20240606102215.3695032-1-srivathsa.d.dara@oracle.com>
+ <c3060faf-f0e8-4bd2-865b-332e423a8801@gmx.com>
+ <DM6PR10MB4347A0EADF68B973447C5591A0C72@DM6PR10MB4347.namprd10.prod.outlook.com>
+ <20240612203743.GQ18508@twin.jikos.cz> <20240613000200.GS18508@twin.jikos.cz>
+ <cd0fca3a-94bf-4913-882f-ee433a61e06f@gmx.com>
+ <20240613002301.GT18508@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240613002301.GT18508@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aY1VXlrFnfDQmMvwZkUQndgvoIca9elcb7ayaf30X+NgAPmXHkY
+ XN97bX0HTrIA/gL1mjd7wOIKBQ1kDK7Zg2nEmGE+fVoxxv1QYl6E85qO+WMImLrq7sEczQF
+ ee2+rQdKaRNMg9txBmKfiJsxZXZIvY9AGzMk2TldjIOmes/7N8T8n+F9DlZitENMhMPiFfM
+ xv/KI0U4pO9EtbcQlJ11A==
 X-Spam-Flag: NO
-X-Spam-Score: -5.01
-X-Spam-Level: 
+UI-OutboundReport: notjunk:1;M01:P0:N5TjtFXSUFM=;32reOTENS8qCehquZ99AfXPo0bx
+ atf/y8QuTgu7+nYc9MlztHv4hor4uS8XVX0k+w0oTOBilfuV4/WdWHucpMKOhVtojTLOrNL3n
+ RS94ib4c9bHW/MTsQ3mVGjSGxfX7cqW4pKLcKnD/I0W7EvRuSLZ/7cLlf5Ys0rLDzVMWKVZ8Y
+ CD9O9bv4BHo4XNCoChQQlrPFHu7Y3Wr15EoWOQntWsizYkUziYk7V1jJkYwi7w2p0sCiu+oie
+ ZkChrqrzP30oMYsOYc3CpgWwiNX0RULQJRAxpiLhBYjfr1Nzi5O2vHrFXc9nglhdrJZhljhBL
+ e1TEFwTRduxKmGbKtBoctZDedktD7G1CyN5z4ZanrNtx8htmjl+6RhX5wTxuNDBQ2mzLhiijR
+ vEbIJbgR04JU4p0LFoDDEgysLHCaDVn5u69ju7237fJdEw5+C3yq2l0xU1yY1gTUC4ck+Nmbm
+ +QJVr2vguGk/B0cnuasamT6P872Fpdemy6ay6EXGtacY8FsQYuyJB4G3BjDQL2iygB1JHyW0l
+ 9uAD3i/0yewtQb4l3v1IgeeI36kb44SbAiRphKejMak/gNViH7uvkbmeubNVm+9tZ9JtDJ10s
+ CMBcTigfVPOsBRgdSqcCYLoq0jpUEDi5jizllJjGT221f5iFDEEKXlCCFJZDIzxBlusXmLCub
+ UE4Kt9PfH31ffsjC82/n5qZTCiYzNv9bX9VlKl5etIbQjw7KlY21shr+GZkOGwV0Ea+9Jb8Sw
+ dhtj18SxusKG3K1uJdm0dSu8oXHvtHTmJaBdCDrfhhx/Ek9LLqLXMlU7veV1oAtSW2tAU8/9+
+ bQXyvRUeaDj5WAtirALSw/vWFgwcQG34N3ap0KLL8Bogo=
 
-This test case will check the following behaivors:
 
-- Regular zoned supported data/metadata profiles
-  Should success
 
-- RST with zoned feature
-  Should fail for non-experimental builds
+=E5=9C=A8 2024/6/13 09:53, David Sterba =E5=86=99=E9=81=93:
+[...]
+>>
+>> Any good idea to go forward?
+>> Update CI (which seems impossible) or make the mke2fs part as mayfail
+>> and skip it?
+>
+> I think using mayfail for mke2fs is the best option, I don't want to
+> check versions. The release of 1.46.5 is 2021-12-30, this is not that
+> old and likely widely used. Skipping the particular case is not a big
+> deal as it'll be covered on other testing instances.
 
-- zoned with data profiles that only RST supports
-  Should fail for non-experimental builds.
+Sounds good to me.
 
-  Meanwhile for experimental builds it should success and enable RST
-  feature automatically (verified in mkfs/030)
+Just add an extra comment on the situation.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/common                                  |  7 ++++
- tests/mkfs-tests/033-zoned-reject-rst/test.sh | 34 +++++++++++++++++++
- 2 files changed, 41 insertions(+)
- create mode 100755 tests/mkfs-tests/033-zoned-reject-rst/test.sh
+Although I really hope github CI can someday updates its infrastructures.
 
-diff --git a/tests/common b/tests/common
-index e9456c1d96b8..12ec1ad92b85 100644
---- a/tests/common
-+++ b/tests/common
-@@ -392,6 +392,13 @@ check_experimental_build()
- 	fi
- }
- 
-+check_regular_build()
-+{
-+	if _test_config "EXPERIMENTAL"; then
-+		_not_run "This test requires non-experimental build"
-+	fi
-+}
-+
- check_prereq()
- {
- 	# Internal tools for testing, not shipped with the package
-diff --git a/tests/mkfs-tests/033-zoned-reject-rst/test.sh b/tests/mkfs-tests/033-zoned-reject-rst/test.sh
-new file mode 100755
-index 000000000000..698551eccd59
---- /dev/null
-+++ b/tests/mkfs-tests/033-zoned-reject-rst/test.sh
-@@ -0,0 +1,34 @@
-+#!/bin/bash
-+# Verify mkfs for all currently supported profiles of zoned + raid-stripe-tree
-+
-+source "$TEST_TOP/common" || exit
-+
-+check_regular_build
-+setup_root_helper
-+setup_nullbdevs 4 128 4
-+prepare_nullbdevs
-+TEST_DEV=${nullb_devs[1]}
-+
-+profiles="dup raid1 raid1c3 raid1c4 raid10"
-+
-+# The existing supported profiles.
-+run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d single -m single "${nullb_devs[@]}"
-+run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d single -m DUP "${nullb_devs[@]}"
-+
-+# RST feature is rejected
-+run_mustfail "RST feature created" \
-+	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned,raid-stripe-tree -d single -m DUP "${nullb_devs[@]}"
-+
-+for dprofile in $profiles; do
-+	# make sure extra data profiles won't enable RST for non-experimental build
-+	run_mustfail "unsupported profile created" \
-+		$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d "$dprofile" -m DUP "${nullb_devs[@]}"
-+done
-+
-+# The old unsupported profiles should fail no matter experimental build or not.
-+run_mustfail "unsupported profile raid56 created" \
-+	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid5 -m raid5 "${nullb_devs[@]}"
-+run_mustfail "unsupported profile raid56 created" \
-+	$SUDO_HELPER "$TOP/mkfs.btrfs" -f -O zoned -d raid6 -m raid6 "${nullb_devs[@]}"
-+
-+cleanup_nullbdevs
--- 
-2.45.2
-
+Thanks,
+Qu
 
