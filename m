@@ -1,203 +1,511 @@
-Return-Path: <linux-btrfs+bounces-5711-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5712-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C290D90748E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 16:05:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6342907572
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 16:41:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31D11F217E3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 14:04:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23D8B282F38
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2024 14:41:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A02201DFFC;
-	Thu, 13 Jun 2024 14:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5F8146D75;
+	Thu, 13 Jun 2024 14:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="gAqSD2MI";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="hc3oLxem"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TgVNIKLo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FCpyFjpQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TgVNIKLo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FCpyFjpQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB7D9476
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2024 14:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718287491; cv=fail; b=FWYfFPUM8x7ASHuK+FIxAJe2hFsmIY2anlA8FD2GUUF66ipBNc3GDjvKu8nz/7VqrZDn55CuOmnKT0VB/u6BjG+dVsF0dXify524FPGYrZpk9pLzE4FzoAO5e5+E+pkqpAEK6Xy+A1mKPTtrHOWuMT6vaaHAdBFQ0uvzSisf500=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718287491; c=relaxed/simple;
-	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=deC7GGmmEsry+X7wStdLezlvU+mhGiK6QECeMUmpR/ch84q2nBYrmaIT3gcLnGcientP4fzZxiVXXvQ1nW1HMxzLmkj2sPgoKv973HCi3YbGCIrByTLtSMweWFQroY/+yGH6GsZ4oioZ7g0UGh0KuScGdZHrffFI8UkE0SJYomw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=gAqSD2MI; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=hc3oLxem; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1718287489; x=1749823489;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=gAqSD2MIzbQbHPebsog0wUU/U4n/OiDiIXlXunZ4XaqIRBrxFnEJ5tvc
-   7N36NW146EplYfz4bdJ63IYfji8f80EpG6RFXopMH671MDwSkas1qKSoO
-   ANHhjXkrZRsEqyyf0s5ieMidynvkGtQNq5Ho9LJXnEUM1tE5pJwFDF13m
-   tC7CLr9w+gyUHi9hb/KEez6VoQuM3KQtz1DnDVoZDisdIq//rfho81UXs
-   wREtrEJKBcl+wCJFA45dUFQK9l+3romZ6SQt08POddQesj8DoCJ+/g9bK
-   njBG2wNdldlmVPgQRo8u68V5VHzmtym4I3IqhsPziqKJNF1g/3zIBEcN4
-   Q==;
-X-CSE-ConnectionGUID: yy7Uxt0CSXmwYN27rOlX3A==
-X-CSE-MsgGUID: yf29378lQT+NRvjjYHXjdQ==
-X-IronPort-AV: E=Sophos;i="6.08,235,1712592000"; 
-   d="scan'208";a="19352670"
-Received: from mail-co1nam11lp2168.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.168])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2024 22:04:36 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Su/pn7LDtE/IW1/ZbZt2AodIM5yU5VzWcNo/A/ha0mlqlMsh8jECBaM1fue88L43JjlmgzPNoU4TKM+qF+jg+VP2s6jiRRdwkzh4fkDO+nWQRMKzSPPlxQUQYGdffTIpenShcEymAOyhJVB+If3GHoLJuf7tzPX9LauR4mbll6oHhNLdE3FjqLJ0t57QipB7nCgN4OHRa0gmYQ8z7pt9Ey+/x/Omaik0yFnkXXr+fmsJihj6dado7zyPtf3J0+8wx0Gqrgu5O17e/+3YBLL+tMB/X810sZBwIDhaVixSlh89y7u8C5R3CWtIRPqk1VCNN+5ipZSlQ4CIXDQMzYgxjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=CxDxqEEdJFVft+ia13BMvvgLKqIBXsiXAB4Mzhu03wJ9XJj+EsG6u8Ph3+0NlOJNZQ4yDEVsYndrpPSEzwvl13+yh9ldsV2tr4juuz7As70z8kWazX9A2jW/ywOGySofopOLLrszIF7VuNsvXufo65sYR5iK0DNjU/On9zwDHdMufMGzP0l1vNaMSHestMVNKaM2QV8fRvIjNN5zPsv3bvJACHiadt8S8w1yBUpcGDZ6ym4CHAQ5eygTnnO0fuUshD1+y8h2Nsqv8hdAKUQ0hNclH9Ild10gzrOk382D/X0ZOquKwFFGMbysqZrz1clT/jTDX5YzUXzD+vyoqQKSSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=hc3oLxemm3ZADytAf3ZCtMYRE267fNUvtOkLOXFB3E9vGegknvGyijLVLQe7+vjx/DzbSIWA68jpkihHW+gvyXt+lDN3narNXHKkxL3Z40RUfut4Es4u5YOI+20ViJkhOgrBvgXi+7t4ymf1drmiE0iSXa1tWZyPjBmcK2Xb6Nc=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by SJ2PR04MB9010.namprd04.prod.outlook.com (2603:10b6:a03:561::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.24; Thu, 13 Jun
- 2024 14:04:35 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%4]) with mapi id 15.20.7677.024; Thu, 13 Jun 2024
- 14:04:35 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 0/4] btrfs: fix a deadlock with reclaim during logging/log
- replay
-Thread-Topic: [PATCH 0/4] btrfs: fix a deadlock with reclaim during
- logging/log replay
-Thread-Index: AQHavYGgvgwfmsAq80CLQBCUZo+HJLHFujkA
-Date: Thu, 13 Jun 2024 14:04:35 +0000
-Message-ID: <eac1c097-aa37-4f13-aef1-5dd21bc81618@wdc.com>
-References: <cover.1718276261.git.fdmanana@suse.com>
-In-Reply-To: <cover.1718276261.git.fdmanana@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|SJ2PR04MB9010:EE_
-x-ms-office365-filtering-correlation-id: f777259f-4f2d-4d26-fe85-08dc8bb1c185
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230035|1800799019|366011|376009|38070700013;
-x-microsoft-antispam-message-info:
- =?utf-8?B?YTc2bmsvdU9FM09qUzlkNXN3Q3RacWRaWXVUSlM3RmFITmF6M1FYWWYvZmo4?=
- =?utf-8?B?aVEwSTg5UTVqTjhneTA0eGxmL0RsQ0ZEQjdmU21tTExYUmRGM0FteGt5ZFlh?=
- =?utf-8?B?bEJJV3hRUmxURDFNU0FWYmZ5ZXV2aURGRjk0aXREZEE0N0M1UXE2eWE0QWVy?=
- =?utf-8?B?R2VybHRidmN3RDgxRk0vZ01WUFZMbjYwQ3RMSzJ2OW5HY1BRWmRpNGdtQ3hz?=
- =?utf-8?B?MkR6SFJOeTlpbzh2YmdXek5BbWg1cVp0T0FKdnMvcEd1WDZ0L1g1SXBXbm9P?=
- =?utf-8?B?YmtKT2gyQW95eENoWkh0MlJMQkJKMkhKdkxDQnRSNHQ3aFg3RjFqdGpqK1NG?=
- =?utf-8?B?Yk01T1MyOG9laWl0OTdiNjkrRCtOdjQ1WU8yMUhkcmNsR3pXZEZROUpKbzNm?=
- =?utf-8?B?Y3hnTjNxWDc4RVQxSXpTRWthTWhySkpMQ3gzS2I1a3NFaTM0RmJvQjBWWi9t?=
- =?utf-8?B?RDdsbzh6cXYyWWJ2NmJiTFJHVUdHY0E0bThFVFgxdVdTOU1lM0IzZGcydGhJ?=
- =?utf-8?B?dVhUSlFuWGhVUU5TeDFwZ2dxTXJKRnBWOEdXaE8rNGlRellQbUVHeDloVmtj?=
- =?utf-8?B?dVNwUVR4MGYrZmlFTXZoQlYwc1hZZzJQbCsvVEJBV1B6cHZOVkNRQzhObWpK?=
- =?utf-8?B?dktRZFF6YXFOWGRJZlJ3dTlXSHp2U1M4VHdMWTNSUG54MzZXaWVGajJqb2hs?=
- =?utf-8?B?ZVdRTkNCNGdlYUFHdTNjb2ZVeFg5cmxqK01sbzAraEYvejhXUjdqNzJJQldI?=
- =?utf-8?B?bGFWRVdDbmt4VDVRd2JhS3A4QVVFTTQ4VWp1TWxCUWRCZEpEYWIvSlEwbVZr?=
- =?utf-8?B?YnZ3aHJ4R0JDZ0ZOWVgxZHZrWENuUGFMckNoSHFXYzZLZVU5VXBvcUZTbHFO?=
- =?utf-8?B?WW96bi9ERVk1N200Y292UEowNFQ0Y1ZOaHlFQ1NqNXYzRmpWUkRQVEZramU2?=
- =?utf-8?B?VU9ydkR6b1BiTzgwZFMzYzdEcTFxejNNOEt3dFZDdDFQa2xiaTdDc1BBNk14?=
- =?utf-8?B?RG0wMHhpeDQzaTNEcmZ1Q2JEOUUyTnpuWFVYdUxXWmhxT25lVUNTbjJ6dmdC?=
- =?utf-8?B?b0FIZ0N4VUtPWHlrT1hISjNoMHhJLytMVzM1VHVwN3R5eDFZUjd0UzlIcTFL?=
- =?utf-8?B?RzJ0cXF5L0VnNXFSK25nbEp2a1J2UnBrWC8zRTA3MHJxa0pVVzFmUUZuNEJL?=
- =?utf-8?B?NUNmVHp0N0E5SWVxVWNxclRHS3RCcDBkbm90elpmc3EyRkl1YmFyK01pMWJI?=
- =?utf-8?B?V0dhK3FNbzlrT2d0Uk0rdC9UM252N0N0RE1QKy9KR09zZEJsSzBMQU1SNUFN?=
- =?utf-8?B?VThOSjVhTFZxako4TkJSaUZpM2RtRXU4SWh5eERyd01sRnk2M2syaGZaRTVx?=
- =?utf-8?B?cjVOVzJGL0h0a2Q3ZngrVStRSDdPaWlEWkhTalcrQWxBMWxiVnk1dkNnL0pk?=
- =?utf-8?B?aWVXQjZkQ0FYTmxVMFlHRFdpbGxqYXV4WnBoNTVhU1FQQ3ZCU1BpRHVrMXhZ?=
- =?utf-8?B?MlJmV3o2NXp6MmxWUktSVTFjSjRSYlVFeXNKUXZLQVN4Y1NYK3FPakxqVnR3?=
- =?utf-8?B?Z0VIcndka3VYaVRFdlJRNzkzVnJHU0VLeEhsQkdMYXFoQXU5N2IwNVdHeU1B?=
- =?utf-8?B?YWVESmRBR3AzbUcvS3RxWXFxLzVvS2o5TGpvZGNOSG5vZjJQaDZ3R0U2R2tm?=
- =?utf-8?B?aWxFTkR4bE13YkxKTThFS1YzQXVjRnlYS2pyeFJJUHZuMlRDcU1HWGJMMzZu?=
- =?utf-8?B?MUhhbmJDMXhXQ09ORWt4ODZzS3A2MExCcWJEMUgxR2VBVWdMK0NPS01YTDl1?=
- =?utf-8?Q?HLk2ffGHBVhvvwbTgh6GkCha8apvJoArKrMOA=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230035)(1800799019)(366011)(376009)(38070700013);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?WHN0ZkNjSDFFYnh3SWwzNFFTbnNNVXZaSHFwL2t1cjBWSXRpRnV1K3RLNytw?=
- =?utf-8?B?VTB5Y1NZNmtZYVp5RHJPOEFVQis5YThoYkNPdEh0WVNmQnNjR0RWUHJUb3ZX?=
- =?utf-8?B?YWRIYzhUamRpRXVaSmhxMURqN3FSbEFRSXZGZk9xLzd5b1hyVHBXcWVJUm5C?=
- =?utf-8?B?WVBqNFMrTFUvd0pjOHRFeDQzWENGS0xuUTZkb2Z6YVFOQ2ZIVjNmWkhsQVNU?=
- =?utf-8?B?U2lMeTc0alM4V0NNRFlHa1pEVWYyWDlUYUIrcFBTRG1XWVVHUGM1YnpwMVN0?=
- =?utf-8?B?R0NhM0NGRTMydXV5WHpCUFVtSUNURkU1cFloSHJtVWdPUjdWbzhTaEp1TVIv?=
- =?utf-8?B?RkRSeGxKZjdERTFUVHdRZDJHMFFSMzJDZ3ptODUxcVVUVXlWaTZ2ckNaa2V3?=
- =?utf-8?B?dFZuMUpmV3VYK3ZvRWJna1g1Ri9UNDJoRUxGdjJGZitsenhqeUVvZE5zWHZD?=
- =?utf-8?B?Y3hiWmIrZ3Fidk9qdDRvbWlBZy9hTlNEQnRzWG9hWWdSV0ROejViWlFKUURs?=
- =?utf-8?B?LzYyN3RQRllvdVg0U2l6ZFU0ZHdTVFhTeEVzcnpCVjlVVXZITVc3LzhFZ0lT?=
- =?utf-8?B?NDZoWWFFaWR0TFBJZ1FFUHY5S2cwZDYyMVFVVDdJZklUTzhVdTRXcnJlRVFY?=
- =?utf-8?B?M0pxUEorR1lvRFFGODdvaitjaWhUVHpQRnFQZmY3QTRFVmNvSm9mRjNNSGZm?=
- =?utf-8?B?YlluV3UzNzN4aGEzbHV0Z0NBNXpQYWN3SUYwQ1NlaEkwRnl0T25Oci9qYk02?=
- =?utf-8?B?bFJLUFNRQ2RkUm5KYWRMUnM3U3NONFV4UTdCTVUwWGJJVytsWlF5MzB5Y0c1?=
- =?utf-8?B?ZXQ0M2p5eDVoamxHSDMwb0JnaFBQeFpQMVVkRVhubCtpWVgwRHdSRTE1T2pB?=
- =?utf-8?B?ZExRKzUrMVVraEZKS1FpVlN3NXd4Y05EMmZtL1ZNNFNrc0NpTW5aRytRd3ZN?=
- =?utf-8?B?WUJNRXo5SlJoQWxzMlZkanUvbCtJV1Y2czJCZDlaeWZwSmM1QXZQU0JZWGVN?=
- =?utf-8?B?WVZXR1l3bjdzakt4SlRmMmRMdy8xV092OVZwcVRvdE1Nb3hNRW9FWStrRUdp?=
- =?utf-8?B?TjMxbnNHbThmQ2tPOG9WTjU2bWI2OGFESlAvWCtibGx3L3Q2bFcwTnZwL1l5?=
- =?utf-8?B?NHFBSnJzTE42dVVyNUVIQllEQTJIOW1paloyOXRjSHRQdFFrK0Q5ZUQ0Q0d1?=
- =?utf-8?B?UGpGVUQ0cXd2MXJyQkszRzQzdHRkY1czazNaaXRMbEtGZ3Z0Z1prOWhFOG1W?=
- =?utf-8?B?Z1Q2a09waVdSVWU5VjJlMHFacjJwbVcvczZoZHJIQm5jRks4b3BxdE5kTU9D?=
- =?utf-8?B?ZTNyejlHWmFvWmQ1bjd1a2RCK1FYK3dOVmFSUll4cWw5MWhHVFU4cExNQTVp?=
- =?utf-8?B?bUhGSjlRM3NBTEtCQ1pTL0Z5MzB0cDRBRk5QVXNhOTR6d2NQMnprekhreTZl?=
- =?utf-8?B?d1Y5Nk5vbExoTG1iUU1UTUtZR1R5Rm1LOEs3cjhiOEtxNkxwSFI1WFhrUW8z?=
- =?utf-8?B?UE81WDltRVErMnRYNnlwTldrSVk1eENicnd6ZjhLZkxwRjVOM0NHRUFyUkN4?=
- =?utf-8?B?ZTduUmkxSVY3NUFOZGl4ekJDdmEwTExKNW5pbnU1T2hEd1pkcDZFR052WVJF?=
- =?utf-8?B?K01PSmM0SFJhY0FpcTBqdlBUREJqc0Y0eFpKMWlMTDhMT1FZSHVYZUUrT3E1?=
- =?utf-8?B?Mm53eXdVZlZ4YzNtTVczWmdxOStrUE92NDRwZUl3MzE3NnBqZVM1T3NNdDNk?=
- =?utf-8?B?SWVEaHBWb3RUb2NKdUNCRWU1OVN0aWJlZXBXRDBLbm82bUl4NnVkZy9HSVVw?=
- =?utf-8?B?bEpaMWZZK1BBVTZhMkJnMzk5YlU0NlNoaHpYNmZtNC90SVh5L012S2lVenF4?=
- =?utf-8?B?T1VLeG41VUNwdU52ZEtpNXBmeFVmMGZ4UXBWNzJsWTJxaVJuYXVzR2NjbE1r?=
- =?utf-8?B?YlRkMDdtYVFEVU5NTUcyYzZlMmhaRWRYeEFLakEwT1hWYWFrdkkvUXorM1RI?=
- =?utf-8?B?c1FyU0wyOG00cUpkbURNMytQbDJ5L0lTc3JJQnFTKzBiRVhSNVRsS2JGaWdD?=
- =?utf-8?B?c01ZSEI5QXZIQkFsRGJ1eWt6N2t6bEZ3cEhwMGNvQzZNdFoxMENHcENWK2xO?=
- =?utf-8?B?RE92K2NaVzhXcFk4YW5lUjhseG1rTGRJenRGVUxseVNCcmUxb0g0cVgxRUZx?=
- =?utf-8?B?dFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <151074F66FA58C41A5890A4D5A7630A4@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D191448D7;
+	Thu, 13 Jun 2024 14:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718289646; cv=none; b=ZI3j67Y0lBJvqTp1mVWDUhSnE68XTnBAcjW0F3Mw6MNN8dVlXPWxdUPmWicPEU1HZOtdCL9hs/IoYBQngvWxRqaWULbkn/7/tPCQY3miHnsjPBOLHu0GtUI8wt6h/XlPzZ53Z3b0x+36nzXg9P+tymr5JGcPcgVpyiwLWO9DuL8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718289646; c=relaxed/simple;
+	bh=Vylgub80OOZhxp8G4oXJk2kSySofV8Qa0quu2RB96gg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CNL2mMXrAJdE2IuL04NTgxM7QJeNoTBJJVM2x8fY9zspDRWf+IUGnKMt9CEqKIi0n/6wlqsVqMrqaww9m+3Nahpmtfawf6mfCUETPZ0/4MbURzUi9r2Lk+V9aIfk9krcSOdtNtLIeGTBFNkPWNL3FciNgcCPX0RnvKuVmG67Tt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TgVNIKLo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FCpyFjpQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TgVNIKLo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FCpyFjpQ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4C8D85D4A7;
+	Thu, 13 Jun 2024 14:40:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718289641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=14D2XLC6LZpKUlBb4mIQXL+Nt4wTJ5RbiQAvrS7h1Wg=;
+	b=TgVNIKLoraOgX+W+DOkjo5JslHRtiDrJ3sLkQ1+EqSwZpn6HNEWqQWaeGCKkHER5iStxDZ
+	W+AvSP0qoxTyXdsaS4RZDTNTGT3Ep9hCaUY402s4FQFxzzVudZfPaFY1dy1le3wGdyZHj6
+	xKT58JdfOxcU7o4Px8nTjEMaSJMB7KA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718289641;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=14D2XLC6LZpKUlBb4mIQXL+Nt4wTJ5RbiQAvrS7h1Wg=;
+	b=FCpyFjpQ7gMaSQ0n6q7APghKlcSLnA06D/rQgCRHCLYMjmntaPBowsAvPGM6O7kZzYjWMz
+	/Vf3SSwaqIZfaHDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718289641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=14D2XLC6LZpKUlBb4mIQXL+Nt4wTJ5RbiQAvrS7h1Wg=;
+	b=TgVNIKLoraOgX+W+DOkjo5JslHRtiDrJ3sLkQ1+EqSwZpn6HNEWqQWaeGCKkHER5iStxDZ
+	W+AvSP0qoxTyXdsaS4RZDTNTGT3Ep9hCaUY402s4FQFxzzVudZfPaFY1dy1le3wGdyZHj6
+	xKT58JdfOxcU7o4Px8nTjEMaSJMB7KA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718289641;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=14D2XLC6LZpKUlBb4mIQXL+Nt4wTJ5RbiQAvrS7h1Wg=;
+	b=FCpyFjpQ7gMaSQ0n6q7APghKlcSLnA06D/rQgCRHCLYMjmntaPBowsAvPGM6O7kZzYjWMz
+	/Vf3SSwaqIZfaHDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 380B713A7F;
+	Thu, 13 Jun 2024 14:40:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id IfBmDekEa2YYUwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 13 Jun 2024 14:40:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 75161A0889; Thu, 13 Jun 2024 16:40:40 +0200 (CEST)
+Date: Thu, 13 Jun 2024 16:40:40 +0200
+From: Jan Kara <jack@suse.cz>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, josef@toxicpanda.com,
+	hch@infradead.org
+Subject: Re: [PATCH v4 1/2] vfs: add rcu-based find_inode variants for iget
+ ops
+Message-ID: <20240613144040.zkd7ojl7nf2ksoxb@quack3>
+References: <20240611173824.535995-1-mjguzik@gmail.com>
+ <20240611173824.535995-2-mjguzik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	tuha7rEVv5ZVgpsmHYuaY0c/QEozmdGRAlFG1ovww2x1vgDM3QziE25YQzU6jqpdNU4WBlFtNvniE1thGwsTqy+AnHoATU3PmP7DU5PGhMxQaaj+gQMZ9ttYe4qzsjS41oek3iFLuxa+Cc0ZmWhitqS86j7E2fRSaYR8EGDTRyIn4RB8Ht9yxeH7wbXFHwaZglBAwXgcdFsjYu/H6FZU2VQ8DuZPhezIk261I9NU20emwMGkV/mLrYD+nyhtwL5q9U5d6+maBc43Xh4DiC0zxRUDMBapi4N6FeZLA5ucjZnBI1ekYl+mMo1/qc8NjZwRJYrMfZJ6uPUplSURpQ51F//m4ikK+hj/AE4mSG2A8YljsQ86Dz1mVaPRUP9nh+8wPVHZuFTF4YqBQBGK+XqP1hlx/zQSxsfXm3bbO3cNCPjTpMaBAX2DCueMTijMhP/VWWeXs0zYlHFd4hp4P+YoZd0B/2uJUeTLPjRQPX4E4zxs90FGnpXZ4x4kaVJQ4bLr+wMN6LgBrzMV8gHoUfOhdtzpo8R6knTbbKsz8srtjAT50/W1xj4RgUKy5JLVmKohkZ6Ch8vgi7VrYA7Hue6KTau+sRXZ5yn6BXhUvcRWxNQh/SU+SOu1aIK+9DduPQL4
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f777259f-4f2d-4d26-fe85-08dc8bb1c185
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jun 2024 14:04:35.1743
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oujjyneHi9ebWJbEWMc5yjMevoTgRhmsX0GE5mAiuG1u4l2rTJX9o1tXdtZGLesLMcHPGxL32nexdNVvJCfRWQDzZkB9YmkANZPMga7vsJI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR04MB9010
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240611173824.535995-2-mjguzik@gmail.com>
+X-Spam-Score: -3.80
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Tue 11-06-24 19:38:22, Mateusz Guzik wrote:
+> This avoids one inode hash lock acquire in the common case on inode
+> creation, in effect significantly reducing contention.
+> 
+> On the stock kernel said lock is typically taken twice:
+> 1. once to check if the inode happens to already be present
+> 2. once to add it to the hash
+> 
+> The back-to-back lock/unlock pattern is known to degrade performance
+> significantly, which is further exacerbated if the hash is heavily
+> populated (long chains to walk, extending hold time). Arguably hash
+> sizing and hashing algo need to be revisited, but that's beyond the
+> scope of this patch.
+> 
+> With the acquire from step 1 eliminated with RCU lookup throughput
+> increases significantly at the scale of 20 cores (benchmark results at
+> the bottom).
+> 
+> So happens the hash already supports RCU-based operation, but lookups on
+> inode insertions didn't take advantage of it.
+> 
+> This of course has its limits as the global lock is still a bottleneck.
+> There was a patchset posted which introduced fine-grained locking[1] but
+> it appears staled. Apart from that doubt was expressed whether a
+> handrolled hash implementation is appropriate to begin with, suggesting
+> replacement with rhashtables. Nobody committed to carrying [1] across
+> the finish line or implementing anything better, thus the bandaid below.
+> 
+> iget_locked consumers (notably ext4) get away without any changes
+> because inode comparison method is built-in.
+> 
+> iget5_locked consumers pass a custom callback. Since removal of locking
+> adds more problems (inode can be changing) it's not safe to assume all
+> filesystems happen to cope.  Thus iget5_locked_rcu gets added, requiring
+> manual conversion of interested filesystems.
+> 
+> In order to reduce code duplication find_inode and find_inode_fast grow
+> an argument indicating whether inode hash lock is held, which is passed
+> down in case sleeping is necessary. They always rcu_read_lock, which is
+> redundant but harmless. Doing it conditionally reduces readability for
+> no real gain that I can see. RCU-alike restrictions were already put on
+> callbacks due to the hash spinlock being held.
+> 
+> Benchmarking:
+> There is a real cache-busting workload scanning millions of files in
+> parallel (it's a backup appliance), where the initial lookup is
+> guaranteed to fail resulting in the two lock acquires on stock kernel
+> (and one with the patch at hand).
+> 
+> Implemented below is a synthetic benchmark providing the same behavior.
+> [I shall note the workload is not running on Linux, instead it was
+> causing trouble elsewhere. Benchmark below was used while addressing
+> said problems and was found to adequately represent the real workload.]
+> 
+> Total real time fluctuates by 1-2s.
+> 
+> With 20 threads each walking a dedicated 1000 dirs * 1000 files
+> directory tree to stat(2) on a 32 core + 24GB RAM vm:
+> 
+> ext4 (needed mkfs.ext4 -N 24000000):
+> before: 3.77s user 890.90s system 1939% cpu 46.118 total
+> after:  3.24s user 397.73s system 1858% cpu 21.581 total (-53%)
+> 
+> That's 20 million files to visit, while the machine can only cache about
+> 15 million at a time (obtained from ext4_inode_cache object count in
+> /proc/slabinfo). Since each terminal inode is only visited once per run
+> this amounts to 0% hit ratio for the dentry cache and the hash table
+> (there are however hits for the intermediate directories).
+> 
+> On repeated runs the kernel caches the last ~15 mln, meaning there is ~5
+> mln of uncached inodes which are going to be visited first, evicting the
+> previously cached state as it happens.
+> 
+> Lack of hits can be trivially verified with bpftrace, like so:
+> bpftrace -e 'kretprobe:find_inode_fast { @[kstack(), retval != 0] = count(); }'\
+> -c "/bin/sh walktrees /testfs 20"
+> 
+> Best ran more than once.
+> 
+> Expected results after "warmup":
+> [snip]
+> @[
+>     __ext4_iget+275
+>     ext4_lookup+224
+>     __lookup_slow+130
+>     walk_component+219
+>     link_path_walk.part.0.constprop.0+614
+>     path_lookupat+62
+>     filename_lookup+204
+>     vfs_statx+128
+>     vfs_fstatat+131
+>     __do_sys_newfstatat+38
+>     do_syscall_64+87
+>     entry_SYSCALL_64_after_hwframe+118
+> , 1]: 20000
+> @[
+>     __ext4_iget+275
+>     ext4_lookup+224
+>     __lookup_slow+130
+>     walk_component+219
+>     path_lookupat+106
+>     filename_lookup+204
+>     vfs_statx+128
+>     vfs_fstatat+131
+>     __do_sys_newfstatat+38
+>     do_syscall_64+87
+>     entry_SYSCALL_64_after_hwframe+118
+> , 1]: 20000000
+> 
+> That is 20 million calls for the initial lookup and 20 million after
+> allocating a new inode, all of them failing to return a value != 0
+> (i.e., they are returning NULL -- no match found).
+> 
+> Of course aborting the benchmark in the middle and starting it again (or
+> messing with the state in other ways) is going to alter these results.
+> 
+> Benchmark can be found here: https://people.freebsd.org/~mjg/fstree.tgz
+> 
+> [1] https://lore.kernel.org/all/20231206060629.2827226-1-david@fromorbit.com/
+> 
+> Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+
+Looks good to me. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/inode.c         | 97 ++++++++++++++++++++++++++++++++++++++--------
+>  include/linux/fs.h |  7 +++-
+>  2 files changed, 86 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 3a41f83a4ba5..8c57cea7bbbb 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -886,36 +886,45 @@ long prune_icache_sb(struct super_block *sb, struct shrink_control *sc)
+>  	return freed;
+>  }
+>  
+> -static void __wait_on_freeing_inode(struct inode *inode);
+> +static void __wait_on_freeing_inode(struct inode *inode, bool locked);
+>  /*
+>   * Called with the inode lock held.
+>   */
+>  static struct inode *find_inode(struct super_block *sb,
+>  				struct hlist_head *head,
+>  				int (*test)(struct inode *, void *),
+> -				void *data)
+> +				void *data, bool locked)
+>  {
+>  	struct inode *inode = NULL;
+>  
+> +	if (locked)
+> +		lockdep_assert_held(&inode_hash_lock);
+> +	else
+> +		lockdep_assert_not_held(&inode_hash_lock);
+> +
+> +	rcu_read_lock();
+>  repeat:
+> -	hlist_for_each_entry(inode, head, i_hash) {
+> +	hlist_for_each_entry_rcu(inode, head, i_hash) {
+>  		if (inode->i_sb != sb)
+>  			continue;
+>  		if (!test(inode, data))
+>  			continue;
+>  		spin_lock(&inode->i_lock);
+>  		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
+> -			__wait_on_freeing_inode(inode);
+> +			__wait_on_freeing_inode(inode, locked);
+>  			goto repeat;
+>  		}
+>  		if (unlikely(inode->i_state & I_CREATING)) {
+>  			spin_unlock(&inode->i_lock);
+> +			rcu_read_unlock();
+>  			return ERR_PTR(-ESTALE);
+>  		}
+>  		__iget(inode);
+>  		spin_unlock(&inode->i_lock);
+> +		rcu_read_unlock();
+>  		return inode;
+>  	}
+> +	rcu_read_unlock();
+>  	return NULL;
+>  }
+>  
+> @@ -924,29 +933,39 @@ static struct inode *find_inode(struct super_block *sb,
+>   * iget_locked for details.
+>   */
+>  static struct inode *find_inode_fast(struct super_block *sb,
+> -				struct hlist_head *head, unsigned long ino)
+> +				struct hlist_head *head, unsigned long ino,
+> +				bool locked)
+>  {
+>  	struct inode *inode = NULL;
+>  
+> +	if (locked)
+> +		lockdep_assert_held(&inode_hash_lock);
+> +	else
+> +		lockdep_assert_not_held(&inode_hash_lock);
+> +
+> +	rcu_read_lock();
+>  repeat:
+> -	hlist_for_each_entry(inode, head, i_hash) {
+> +	hlist_for_each_entry_rcu(inode, head, i_hash) {
+>  		if (inode->i_ino != ino)
+>  			continue;
+>  		if (inode->i_sb != sb)
+>  			continue;
+>  		spin_lock(&inode->i_lock);
+>  		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
+> -			__wait_on_freeing_inode(inode);
+> +			__wait_on_freeing_inode(inode, locked);
+>  			goto repeat;
+>  		}
+>  		if (unlikely(inode->i_state & I_CREATING)) {
+>  			spin_unlock(&inode->i_lock);
+> +			rcu_read_unlock();
+>  			return ERR_PTR(-ESTALE);
+>  		}
+>  		__iget(inode);
+>  		spin_unlock(&inode->i_lock);
+> +		rcu_read_unlock();
+>  		return inode;
+>  	}
+> +	rcu_read_unlock();
+>  	return NULL;
+>  }
+>  
+> @@ -1161,7 +1180,7 @@ struct inode *inode_insert5(struct inode *inode, unsigned long hashval,
+>  
+>  again:
+>  	spin_lock(&inode_hash_lock);
+> -	old = find_inode(inode->i_sb, head, test, data);
+> +	old = find_inode(inode->i_sb, head, test, data, true);
+>  	if (unlikely(old)) {
+>  		/*
+>  		 * Uhhuh, somebody else created the same inode under us.
+> @@ -1245,6 +1264,48 @@ struct inode *iget5_locked(struct super_block *sb, unsigned long hashval,
+>  }
+>  EXPORT_SYMBOL(iget5_locked);
+>  
+> +/**
+> + * iget5_locked_rcu - obtain an inode from a mounted file system
+> + * @sb:		super block of file system
+> + * @hashval:	hash value (usually inode number) to get
+> + * @test:	callback used for comparisons between inodes
+> + * @set:	callback used to initialize a new struct inode
+> + * @data:	opaque data pointer to pass to @test and @set
+> + *
+> + * This is equivalent to iget5_locked, except the @test callback must
+> + * tolerate the inode not being stable, including being mid-teardown.
+> + */
+> +struct inode *iget5_locked_rcu(struct super_block *sb, unsigned long hashval,
+> +		int (*test)(struct inode *, void *),
+> +		int (*set)(struct inode *, void *), void *data)
+> +{
+> +	struct hlist_head *head = inode_hashtable + hash(sb, hashval);
+> +	struct inode *inode, *new;
+> +
+> +again:
+> +	inode = find_inode(sb, head, test, data, false);
+> +	if (inode) {
+> +		if (IS_ERR(inode))
+> +			return NULL;
+> +		wait_on_inode(inode);
+> +		if (unlikely(inode_unhashed(inode))) {
+> +			iput(inode);
+> +			goto again;
+> +		}
+> +		return inode;
+> +	}
+> +
+> +	new = alloc_inode(sb);
+> +	if (new) {
+> +		new->i_state = 0;
+> +		inode = inode_insert5(new, hashval, test, set, data);
+> +		if (unlikely(inode != new))
+> +			destroy_inode(new);
+> +	}
+> +	return inode;
+> +}
+> +EXPORT_SYMBOL_GPL(iget5_locked_rcu);
+> +
+>  /**
+>   * iget_locked - obtain an inode from a mounted file system
+>   * @sb:		super block of file system
+> @@ -1263,9 +1324,7 @@ struct inode *iget_locked(struct super_block *sb, unsigned long ino)
+>  	struct hlist_head *head = inode_hashtable + hash(sb, ino);
+>  	struct inode *inode;
+>  again:
+> -	spin_lock(&inode_hash_lock);
+> -	inode = find_inode_fast(sb, head, ino);
+> -	spin_unlock(&inode_hash_lock);
+> +	inode = find_inode_fast(sb, head, ino, false);
+>  	if (inode) {
+>  		if (IS_ERR(inode))
+>  			return NULL;
+> @@ -1283,7 +1342,7 @@ struct inode *iget_locked(struct super_block *sb, unsigned long ino)
+>  
+>  		spin_lock(&inode_hash_lock);
+>  		/* We released the lock, so.. */
+> -		old = find_inode_fast(sb, head, ino);
+> +		old = find_inode_fast(sb, head, ino, true);
+>  		if (!old) {
+>  			inode->i_ino = ino;
+>  			spin_lock(&inode->i_lock);
+> @@ -1419,7 +1478,7 @@ struct inode *ilookup5_nowait(struct super_block *sb, unsigned long hashval,
+>  	struct inode *inode;
+>  
+>  	spin_lock(&inode_hash_lock);
+> -	inode = find_inode(sb, head, test, data);
+> +	inode = find_inode(sb, head, test, data, true);
+>  	spin_unlock(&inode_hash_lock);
+>  
+>  	return IS_ERR(inode) ? NULL : inode;
+> @@ -1474,7 +1533,7 @@ struct inode *ilookup(struct super_block *sb, unsigned long ino)
+>  	struct inode *inode;
+>  again:
+>  	spin_lock(&inode_hash_lock);
+> -	inode = find_inode_fast(sb, head, ino);
+> +	inode = find_inode_fast(sb, head, ino, true);
+>  	spin_unlock(&inode_hash_lock);
+>  
+>  	if (inode) {
+> @@ -2235,17 +2294,21 @@ EXPORT_SYMBOL(inode_needs_sync);
+>   * wake_up_bit(&inode->i_state, __I_NEW) after removing from the hash list
+>   * will DTRT.
+>   */
+> -static void __wait_on_freeing_inode(struct inode *inode)
+> +static void __wait_on_freeing_inode(struct inode *inode, bool locked)
+>  {
+>  	wait_queue_head_t *wq;
+>  	DEFINE_WAIT_BIT(wait, &inode->i_state, __I_NEW);
+>  	wq = bit_waitqueue(&inode->i_state, __I_NEW);
+>  	prepare_to_wait(wq, &wait.wq_entry, TASK_UNINTERRUPTIBLE);
+>  	spin_unlock(&inode->i_lock);
+> -	spin_unlock(&inode_hash_lock);
+> +	rcu_read_unlock();
+> +	if (locked)
+> +		spin_unlock(&inode_hash_lock);
+>  	schedule();
+>  	finish_wait(wq, &wait.wq_entry);
+> -	spin_lock(&inode_hash_lock);
+> +	if (locked)
+> +		spin_lock(&inode_hash_lock);
+> +	rcu_read_lock();
+>  }
+>  
+>  static __initdata unsigned long ihash_entries;
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index bfc1e6407bf6..3eb88cb3c1e6 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3045,7 +3045,12 @@ extern struct inode *inode_insert5(struct inode *inode, unsigned long hashval,
+>  		int (*test)(struct inode *, void *),
+>  		int (*set)(struct inode *, void *),
+>  		void *data);
+> -extern struct inode * iget5_locked(struct super_block *, unsigned long, int (*test)(struct inode *, void *), int (*set)(struct inode *, void *), void *);
+> +struct inode *iget5_locked(struct super_block *, unsigned long,
+> +			   int (*test)(struct inode *, void *),
+> +			   int (*set)(struct inode *, void *), void *);
+> +struct inode *iget5_locked_rcu(struct super_block *, unsigned long,
+> +			       int (*test)(struct inode *, void *),
+> +			       int (*set)(struct inode *, void *), void *);
+>  extern struct inode * iget_locked(struct super_block *, unsigned long);
+>  extern struct inode *find_inode_nowait(struct super_block *,
+>  				       unsigned long,
+> -- 
+> 2.43.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
