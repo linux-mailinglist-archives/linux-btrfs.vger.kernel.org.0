@@ -1,114 +1,187 @@
-Return-Path: <linux-btrfs+bounces-5736-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5737-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB4C69085E9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2024 10:15:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B2BA908670
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2024 10:37:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C4561C21F55
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2024 08:15:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FDF61F23EFD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2024 08:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1184184132;
-	Fri, 14 Jun 2024 08:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F2D19006F;
+	Fri, 14 Jun 2024 08:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b="Yc1iEpQN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E232C14D29B
-	for <linux-btrfs@vger.kernel.org>; Fri, 14 Jun 2024 08:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09D1148318
+	for <linux-btrfs@vger.kernel.org>; Fri, 14 Jun 2024 08:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718352862; cv=none; b=j0l69iTSE2zxUpX+B8f01BMcARlbBuig5+xhASkfr/rAyRD1GzD/yaJuMyOZBgqnS7T8Xx1i6iRl3uky7ZLxIdxx62meRft4pYL4cdwrLfm/9EacxIQtLRur9m2I12/eEGtiX+XvoXqtpGpHFOy5s2ng8v3EY5s+kt7pIMx+qmQ=
+	t=1718354238; cv=none; b=bVp423iahnZCulHiQHz70kTyNuOf7eXB206//Uaj+QtGdf5R7SXnH0c+6C2yasMhcyakncfQ5njMzOF117wEUP14AcId74VU7Iz81+WkKr/23Ag/l7qnyxUfSaWaYCm/D0M1UvMHgNCcO1gCxygBAIniVNNeUl5kWuOkwrHqHkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718352862; c=relaxed/simple;
-	bh=jhpWYrJNConC9KnrC72RhUqyqYd+IViilg+I2fFGSS8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kDkr6HgTwbnN0ZKIRPpjoVV378AY1RbnlK5Z6bKrlkdEmGSOoZa8aTW+Es+070bf4w41cKOzkUjvjnTWWldUNvMpPGWisfrrcjCZdM4ohn/Jk5W5fRDDqlFqnJ5C733xJgQsuLUYTf02bJd8ipxnn5Z3LXvzKg+yM9eNCsQmOhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-375cbe701a7so19508035ab.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Jun 2024 01:14:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718352860; x=1718957660;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Dl5c4gLKxIfqfWO11ZrXKYy6JlfOap8HlXYhdcou/Mw=;
-        b=BkgdehuR2GLwnoR4Cwjew7cWVLH060bm0p/IVBP08turmkXVXgnvJN+VIoABthwZfQ
-         JzPf9siat5KGGcDRVtH1HhSRoiP0LwBmwU1Yrk4Z+zA11Gg16feoFxbGPWysX0x13cy9
-         ArpBUZKU01qeCp6rH7zU4oEIxjD+aIvCCAaw6O0xUNV6xf2tnbR58DzubB/tc3JYNtYu
-         esbcgevWVqKlza2RpXplmtQfF+pahWj8SkSFRBVRv72wfYUlktzBxggd4WkoWMM8soCV
-         dyqJ4Z1h+Bwfifz7EzfnttdEpETxI3C38ap7ej6OvtxIzUT4sES0sFspm6XbMoV0Ryxu
-         rMSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVv+146jPXSAxSloEBdop2AOeQslS1DRmq7ydT6/FIDfTEsIjBSN3j1L/Vhgil1Rikhlxiy97sdwRNWpQ+6sRzA9DEQ8Ytq5tZunIo=
-X-Gm-Message-State: AOJu0YyE75IkbqUcyCUAPA2IZM+56LeBVtUAjGoS6FuRl8ioKAuR/OEV
-	yjCAJKdhxPrbwnYx4RJSdPNZ6fxsKj5b2mgZSaH0ZWZ1LMO3jJUoniYVhwn4LCck4wKvv3d1kLQ
-	GOaRdzlJPOGyBOwzzqsNCaZmSJm9At9dSN96KgiN1CA14dzKVfu9KFzo=
-X-Google-Smtp-Source: AGHT+IHE9h+cvJMGbDicq40xjzx80lY23g8esKCauhch5MZ+3jumizawZyeADaC4+rjOLbxtKME+ycd6jQQ33BbnPUdmUX71owNF
+	s=arc-20240116; t=1718354238; c=relaxed/simple;
+	bh=liS2PvDO+aOpCoeKpzub0ZtFMu9xnxqgDuiy1eJe9Gw=;
+	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:MIME-Version; b=Kl3pOveYfJuJOORRm7VgfkwkxS40/w4qhKwm2QxDBN4OuTeNhCEfS7NooZqdLRkCgHiii78sstLbv/M7NtqGmLw/BQUHZ59XnpQJD9TEls6deLvuF6h7Nc7buzLpZ4nPSDtdLqDG7kg0jw1aSBLWXDSfa3u6zCgjjll9iZ7cVoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=massimo.b@gmx.net header.b=Yc1iEpQN; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1718354233; x=1718959033; i=massimo.b@gmx.net;
+	bh=QL1TfoAavyBX1IkTYZUbnPa2yrNVpzjNT9IZJfkwhEo=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:In-Reply-To:
+	 References:Content-Type:Content-Transfer-Encoding:Date:
+	 MIME-Version:cc:content-transfer-encoding:content-type:date:from:
+	 message-id:mime-version:reply-to:subject:to;
+	b=Yc1iEpQNzjdZg6wdt38082fNF+zFBkg6JzGWcuC7cjr44n6NnyMTyBjqD7pZLaeS
+	 Pf7AJVkNKTGQXup8SnTgRyhr03xZk9m/fNvHIWFVu2R0Xwn2w+YpdxwPvYkAAHF8g
+	 C++Jo26RkRVd0lhCwsFyAmgZUjwJOhlCjJsSVydrINvDFhsXvKdlCfZxoS7NVQsSQ
+	 tTt+omAI6kaCIksBV1fGM27ZAiPBM56GP45eujfqJKqq2LXysjNHUoMgDP/U9z1Ce
+	 9pAEGlk2T7khpaYZIrPhuV0KU8H5vqq0dasm90HwzfxmfqWRb9H0AUgHV5rlmVdm4
+	 kbMoC+knz7DuTjPIYA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from gmb ([176.0.151.7]) by mail.gmx.net (mrgmx005 [212.227.17.190])
+ with ESMTPSA (Nemesis) id 1MlNpH-1sfb081HtV-00ffyC; Fri, 14 Jun 2024 10:37:13
+ +0200
+Message-ID: <2ee4cfef0e51d32420e66ef5ae6e1d731a88e4eb.camel@gmx.net>
+Subject: Re: I/O blocked after booting
+From: "Massimo B." <massimo.b@gmx.net>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <874a2dc5-191f-4e20-9f18-998a107b09a5@gmx.com>
+References: <238dc2b36f27838baf02425b364705c58fcc5de5.camel@gmx.net>
+	 <22650868-6777-41ae-a068-37821929be7c@gmx.com>
+	 <47440995279bdba442678e807499fff05ee49302.camel@gmx.net>
+	 <94addf02f0eac5e5f402f48f41d16cb80d17470b.camel@gmx.net>
+	 <874a2dc5-191f-4e20-9f18-998a107b09a5@gmx.com>
+Face:
+ iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 14 Jun 2024 10:32:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aab:b0:375:ae47:ba62 with SMTP id
- e9e14a558f8ab-375e0e2db33mr1009415ab.1.1718352859969; Fri, 14 Jun 2024
- 01:14:19 -0700 (PDT)
-Date: Fri, 14 Jun 2024 01:14:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d15551061ad53378@google.com>
-Subject: [syzbot] Monthly btrfs report (Jun 2024)
-From: syzbot <syzbot+list6fcd25ac4d21d8f673e0@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.50.2 
+X-Provags-ID: V03:K1:nshoPnkG4hUlRWPWStbf0e7XhN7z18xJV5sSc6FfS5YfJ/hiqvC
+ y9rPQ9HEnegF19SqKDKvbOeMW4pITXT2ifWRONEEP9oKhUrP1WvowiR6cA3b6xu/aAnfPD3
+ utmJhOcexDOKbu0wXLlM7ncfGPQTa5PNczVoTK0VOMZfOvAhaxIsHPptSp7u2eJqpkA14qB
+ 3LoWp1tJdZPgFziCW06SA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:k+ggSOnISyo=;ZekohLuAqql3RBF6C22Tk0T4ocl
+ nEhUEDdzKwcO1JF/iyL1WEifsYJsnZj97ozHzjhMkjkPuDoogoBmPziHx8HvHd9PUxdMznbt7
+ piVBDGnOjLMf7rF4hyaqCEKTF0HGoTJ/ACR/kgFGdLch9q/5kbu3h2aJRXpN+Klsv2mkdAB84
+ K7N41HKd14a/SAdpU+wRcOuxYxP2kCmcbiOrMAX0az7ckT8Y4EeOn77BxC0UNe5+G0dTV+Ua/
+ W7EVGB9p7m2EvLDOr1sBHaY/zqDeKkSMcQ81BYMSWXTDspZaKTw2uExGHs0Fohs2J4iqI2p1j
+ 9CEu1Ad4EV+cpBj9u2JEugsHRzlAa5rRayliUCzpUKowFwttzL0y2QeB6MhpziUux3OiXXPnv
+ kE5fwzquogFD7jCrpfnih5nbrp2Pl4/uTFUsL2aEeAdlYRk9QWinn1AJb1Q+9SjGK4rEYdyFR
+ 9RyvUKZX4YL0IH5Y/jUpWZo6eugJDIjN7OnNoA5PkmA2AkGtKVx6pdpmzOcxLHDpHF9kVTw5K
+ c6LJmOQaI4QJ3rAm0MlDBnqYtFWzIFzYEW85JaWG1xpHzH55fI4mV+YA4+a4Ih/h5uJliI6pt
+ JGiSUQJpHG01yR5A2nzHoJIUyboyvnZVHpO8nGQKGax58xx45nxzuehkC3fOQus5L/XtOtwq0
+ YscHrZeW1UXovPk6TGxGB+oMaId/GuoBy33KHg5T/1q4tpzEAn23Yy5DZw73tI3Udp+EjQkMc
+ Cu7gvhZWPV5zC2jyzROO92fJLdiLef0uSXM4Enwj6ITrxMQhqcR2Iub9m6wfiNwi01VUwxPYD
+ ydmUaNPcPLmqkPNv5HoAOhVjVly5a85Ri0lmAZLP03rWs=
 
-Hello btrfs maintainers/developers,
+On Fri, 2024-03-29 at 06:53 +1030, Qu Wenruo wrote:
+> I mean you should not do any fstrim/discard to see if everything works
+> fine first.
+>=20
+> This is to make sure the problem is really from the trim/discard part.
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+I'm still facing this issue, sometimes after boot and sometimes also after
+longer uptimes...
 
-During the period, 13 new issues were detected and 2 were fixed.
-In total, 40 issues are still open and 64 have been fixed so far.
+Meanwhile I switched from mount option discard=3Dasync to nodiscard.
+I also disabled my weekly cronjob doing fstrim -av.
 
-Some of the still happening issues:
+btrfsmaintenance currently looks like this:
 
-Ref  Crashes Repro Title
-<1>  6014    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<2>  2994    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<3>  526     Yes   KMSAN: uninit-value in __crc32c_le_base (4)
-                   https://syzkaller.appspot.com/bug?extid=549710bad9c798e25b15
-<4>  301     Yes   WARNING in lookup_inline_extent_backref
-                   https://syzkaller.appspot.com/bug?extid=d6f9ff86c1d804ba2bc6
-<5>  252     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<6>  230     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<7>  217     No    general protection fault in btrfs_stop_all_workers (2)
-                   https://syzkaller.appspot.com/bug?extid=05fd41caa517e957851d
-<8>  211     Yes   WARNING in btrfs_commit_transaction (2)
-                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
-<9>  145     Yes   kernel BUG in insert_state_fast
-                   https://syzkaller.appspot.com/bug?extid=9ce4a36127ca92b59677
-<10> 114     Yes   kernel BUG in btrfs_free_tree_block
-                   https://syzkaller.appspot.com/bug?extid=a306f914b4d01b3958fe
+# grep PERIOD /etc/default/btrfsmaintenance=20
+BTRFS_DEFRAG_PERIOD=3D"none"
+BTRFS_BALANCE_PERIOD=3D"none"
+BTRFS_SCRUB_PERIOD=3D"monthly"
+BTRFS_TRIM_PERIOD=3D"none"
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+So there should be no trim or discard happen anymore in the background.
+I'm going to also disable the SCRUB now, though I doubt it's related to tha=
+t.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+But I still run into blocked IO sometimes. It's weird, some commands and ap=
+ps I
+still can run, some others are blocked, maybe due to cached IO. I'm able to
+continue doing builds and system updates by the package manager (Gentoo, em=
+erge)
+in the background but at the same time it fails to start or stop some
+applications. I can't even shutdown the window manager or the system proper=
+ly.
+All data, root and home are on the same btrfs on luks on NVMe or SSD, just
+different subvolumes.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+In that situation (kernel 6.6.13, rebooting into 6.6.30) there is nothing t=
+o see
+in dmesg. Looking at the syslog, the last line always is from last night
+midnight before the hard reboot via SysRq is done:
 
-You may send multiple commands in a single email message.
+Jun 14 00:00:00 [fcron] Job 'run-parts /etc/cron.daily' started for user sy=
+stab (pid 29389)
+Jun 14 07:51:49 [kernel] Linux version 6.6.30-gentoo (root@gentoo-m) (gcc (=
+Gentoo 13.2.1_p20240210 p14) 13.2.1 20240210, GNU ld (Gentoo 2.42 p3) 2.42.=
+0) #1 SMP PREEMPT_DYNAMIC Fri Jun 14 07:43:15 CEST 2024
+
+In cron.daily there is nothing special:
+# ls /etc/cron.daily/
+1metalog_flush*  disabled/  logrotate*  makewhatis*  man-db*  mlocate*  rkh=
+unter*  systemd-tmpfiles-clean*
+
+1metalog_flush only does...
+kill -USR1 $metalog_pid	# Set metalog to sync...
+kill -USR2 $metalog_pid	# Set metalog to async...
+... in order to flush the metalog cached logs.
+
+Again after the shutdown doesn't do anything I start using the SysRq series=
+ R E
+I S U B and again after the E (SIGTERM to all processes) I see some errors =
+about
+trim popping on the virtual console followed by a call trace:
+
+
+BTRFS warning (device dm-0): failed to trim 361 block group(s), last error =
+-512
+BTRFS warning (device dm-0): failed to trim 1 block device(s), last error -=
+512
+----------------------------[ cut here ]----------------------------------
+WARNING: CPU: 0:PID: 4783 at 0xffffffffffffffa025fed3
+Modules linked in: af_alg md5 ....
+Hardware name:...
+RIP:...
+Code:...
+...
+Call Trace:
+<TASK>
+...
+</TASK>
+---[ end trace 000000000000 ]---
+acpid: exiting
+BTRFS info (device dm-2): last umount of filesystem 1d5.....
+INIT: Switching to runlevel: 6
+...
+
+
+Could it be that something else could still trigger a trim in the backgroun=
+d?
+If trim is really the cause of failure, then I wonder that I have that issu=
+e on
+all my machines with different hardwares, NVMe but also SATA SSDs. Just the
+Gentoo Linux installation is almost identical.
+
+Best regards,
+Massimo
 
