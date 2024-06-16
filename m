@@ -1,206 +1,196 @@
-Return-Path: <linux-btrfs+bounces-5742-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5743-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFF49909F0D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 20:17:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD45D909F10
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 20:19:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B78B233A5
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 18:17:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AD19284114
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 18:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E276B3B7A8;
-	Sun, 16 Jun 2024 18:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1052E44C7B;
+	Sun, 16 Jun 2024 18:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jd9V+IE3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B0HSqIWW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jd9V+IE3";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B0HSqIWW"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iEp+plr5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RWqzTIOy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iEp+plr5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RWqzTIOy"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE74512B93
-	for <linux-btrfs@vger.kernel.org>; Sun, 16 Jun 2024 18:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E16E1C68E;
+	Sun, 16 Jun 2024 18:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718561864; cv=none; b=dgKqsfnwQM0l/wWEUIxwjWEKB0Go4Rvz3ar+HNKmkkJdx3iLv3lfWss4UiMDMtjjZZJcg+w7mr7lrW7dHRWY6vAkEBgu2QsBloFYzN0Vk7H5E6hEa+l3cSre25YsVLr57VZBbOtmQoo/rMuZAI+yIMtRTFEclfQOzl3B/MhtREQ=
+	t=1718561953; cv=none; b=u9uMl/KqaOYI9mlAODhaG9qp9ivI2yrBdJ3p6Z7vpHqh+BhHflGTqFDDaFJHYkDQkMdgk6M96HKziEvmb4Iq0TFdTjivE0egYAV0QDt8s4RZhthfIddkbE3nLigXmoBWuI0GJhh9fA7Vjf4BBRByfJpEAjmm4h1DDVsB7YOyuIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718561864; c=relaxed/simple;
-	bh=oQvCBMPTLA+nsgW4Ghhk9Z2fHngkVaVPMgE0tmfF9Ro=;
+	s=arc-20240116; t=1718561953; c=relaxed/simple;
+	bh=t7PPzXp8kO9lRno4T4TpBEn9E1lbqcDyf7XGltaz7jk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A+SqeeGVkowAukb2zwFg5Y3nc4fspqCLbyAPX0hg5MP5St6MVZjuVPzqC86DPVrCWOF1ZqmchmQb+R4dKtbjQIjjRHPHtdcksf38djhe2Wrp06W+HT56/DHRGbV0vZUsK2WYJNKNxEEjmVdi+jOpPTBw9OQlaUigALGt1U6JrT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jd9V+IE3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B0HSqIWW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jd9V+IE3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B0HSqIWW; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=bwF/wWn7Z93CROSwBYF9DutGwsxc8Yq8vzdqAc84XS1nzD60QpRO3/sQra/5n/MvOXk1bEmPcR4zNwKg4jmLc6ce2mSqOZeA56/AFbRT+BCn1zsgzTkOTLFfEJfbreVNvgp+t4D2cWxe4F2D57n8E+F2/0ry3pXNpXRjJ5/QnEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iEp+plr5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RWqzTIOy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iEp+plr5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RWqzTIOy; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 358EF5D54D;
-	Sun, 16 Jun 2024 18:17:34 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F7A35D555;
+	Sun, 16 Jun 2024 18:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718561854;
+	t=1718561949;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VdUuTHcMjmft0Pt7VUOGgfPyiJiaoGIyAJLGepQYgMk=;
-	b=Jd9V+IE3rdg7CVlLyUeruR4qQIub8I1u4/JdA+PG6afceObNyA/mvj6i3xEgTYuINt22hp
-	fGHiW/bApGVU1e2S0AczdHiWZyEDUNBFXG+2rkrDSy7yAfNz8Nf8Upd5FT5dib1rc886Os
-	GzP7hJrEzU5RfUtJQekt8wFW6V208iE=
+	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
+	b=iEp+plr5qkw3krsIfCOho0Vpi2qryyRjG/eU3QQAM/u4GGrVOhbhX7QF5ioET4IXQXG2cg
+	KctWIog0iVkGw8GE4VmE4g4zIaeobmgJRcLH/en3Q7F1gFxFLplJ5Pfd22pDMSO6MB98Wp
+	luR61QTleUXQKveoA65J2ANJFBrGNXs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718561854;
+	s=susede2_ed25519; t=1718561949;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VdUuTHcMjmft0Pt7VUOGgfPyiJiaoGIyAJLGepQYgMk=;
-	b=B0HSqIWW0rGjFgWyimlsm2/bJXg/Co8m36S1U9PtotvRhsp+gzzh9SSTbAyKX/RARf5qS8
-	951Epklnvl1lUhDw==
+	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
+	b=RWqzTIOy95gccufQioICNvXS0Ji9BWY4UX5g6HOD5PtpRv87aW2fz8osfX2wH1C+bhD8YC
+	tAEx8Rm30jm9I8Bg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Jd9V+IE3;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=B0HSqIWW
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iEp+plr5;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RWqzTIOy
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718561854;
+	t=1718561949;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VdUuTHcMjmft0Pt7VUOGgfPyiJiaoGIyAJLGepQYgMk=;
-	b=Jd9V+IE3rdg7CVlLyUeruR4qQIub8I1u4/JdA+PG6afceObNyA/mvj6i3xEgTYuINt22hp
-	fGHiW/bApGVU1e2S0AczdHiWZyEDUNBFXG+2rkrDSy7yAfNz8Nf8Upd5FT5dib1rc886Os
-	GzP7hJrEzU5RfUtJQekt8wFW6V208iE=
+	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
+	b=iEp+plr5qkw3krsIfCOho0Vpi2qryyRjG/eU3QQAM/u4GGrVOhbhX7QF5ioET4IXQXG2cg
+	KctWIog0iVkGw8GE4VmE4g4zIaeobmgJRcLH/en3Q7F1gFxFLplJ5Pfd22pDMSO6MB98Wp
+	luR61QTleUXQKveoA65J2ANJFBrGNXs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718561854;
+	s=susede2_ed25519; t=1718561949;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VdUuTHcMjmft0Pt7VUOGgfPyiJiaoGIyAJLGepQYgMk=;
-	b=B0HSqIWW0rGjFgWyimlsm2/bJXg/Co8m36S1U9PtotvRhsp+gzzh9SSTbAyKX/RARf5qS8
-	951Epklnvl1lUhDw==
+	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
+	b=RWqzTIOy95gccufQioICNvXS0Ji9BWY4UX5g6HOD5PtpRv87aW2fz8osfX2wH1C+bhD8YC
+	tAEx8Rm30jm9I8Bg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D02413AA0;
-	Sun, 16 Jun 2024 18:17:34 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5923813AA0;
+	Sun, 16 Jun 2024 18:19:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NfGAAj4sb2YvGgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Sun, 16 Jun 2024 18:17:34 +0000
-Date: Sun, 16 Jun 2024 20:17:24 +0200
+	id ERSJFZ0sb2aLGgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Sun, 16 Jun 2024 18:19:09 +0000
+Date: Sun, 16 Jun 2024 20:19:08 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/4] btrfs: introduce new "rescue=ignoremetacsums" mount
- option
-Message-ID: <20240616181724.GD25756@suse.cz>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] btrfs: rst: remove encoding field from stripe_extent
+Message-ID: <20240616181908.GE25756@suse.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1718082585.git.wqu@suse.com>
- <f6b9b9037ee7912ed2081da9c4b05fd367c9e8f8.1718082585.git.wqu@suse.com>
- <20240612193821.GK18508@twin.jikos.cz>
- <ffa354b9-4315-4e29-af2a-124a697d0eef@gmx.com>
+References: <20240610-b4-rst-updates-v1-0-179c1eec08f2@kernel.org>
+ <20240610-b4-rst-updates-v1-1-179c1eec08f2@kernel.org>
+ <20240611143651.GH18508@suse.cz>
+ <c7246728-aadb-4699-8fdf-060502c1092a@wdc.com>
+ <20240613212347.GB25756@twin.jikos.cz>
+ <d6cf3e45-aaf0-4256-92c1-bb8780c76da2@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ffa354b9-4315-4e29-af2a-124a697d0eef@gmx.com>
+In-Reply-To: <d6cf3e45-aaf0-4256-92c1-bb8780c76da2@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 358EF5D54D
-X-Spam-Score: -4.21
-X-Spam-Level: 
-X-Spam-Flag: NO
 X-Spamd-Result: default: False [-4.21 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+	DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 7F7A35D555
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
+X-Spam-Level: 
 
-On Fri, Jun 14, 2024 at 06:58:20AM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/6/13 05:08, David Sterba 写道:
-> > On Tue, Jun 11, 2024 at 02:51:37PM +0930, Qu Wenruo wrote:
-> >> This patch introduces "rescue=ignoremetacsums" to ignore metadata csums,
-> >> meanwhile all the other metadata sanity checks are still kept as is.
+On Fri, Jun 14, 2024 at 09:36:34AM +0000, Johannes Thumshirn wrote:
+> On 13.06.24 23:23, David Sterba wrote:
+> > On Tue, Jun 11, 2024 at 04:33:19PM +0000, Johannes Thumshirn wrote:
+> >> On 11.06.24 16:37, David Sterba wrote:
+> >>> On Mon, Jun 10, 2024 at 10:40:25AM +0200, Johannes Thumshirn wrote:
+> >>>> -#define BTRFS_STRIPE_RAID5	5
+> >>>> -#define BTRFS_STRIPE_RAID6	6
+> >>>> -#define BTRFS_STRIPE_RAID1C3	7
+> >>>> -#define BTRFS_STRIPE_RAID1C4	8
+> >>>> -
+> >>>>    struct btrfs_stripe_extent {
+> >>>> -	__u8 encoding;
+> >>>> -	__u8 reserved[7];
+> >>>>    	/* An array of raid strides this stripe is composed of. */
+> >>>> -	struct btrfs_raid_stride strides[];
+> >>>> +	__DECLARE_FLEX_ARRAY(struct btrfs_raid_stride, strides);
+> >>>
+> >>> Is there a reason to use the __ underscore macro? I see no difference
+> >>> between that and DECLARE_FLEX_ARRAY and underscore usually means that
+> >>> it's special in some way.
+> >>>
 > >>
-> >> This new mount option is mostly to allow the kernel to mount an
-> >> interrupted checksum conversion (at the metadata csum overwrite stage).
-> >>
-> >> And since the main part of metadata sanity checks is inside
-> >> tree-checker, we shouldn't lose much safety, and the new mount option is
-> >> rescue mount option it requires full read-only mount.
-> >>
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >
-> >> --- a/fs/btrfs/disk-io.c
-> >> +++ b/fs/btrfs/disk-io.c
-> >> @@ -367,6 +367,7 @@ int btrfs_validate_extent_buffer(struct extent_buffer *eb,
-> >>   	u8 result[BTRFS_CSUM_SIZE];
-> >>   	const u8 *header_csum;
-> >>   	int ret = 0;
-> >> +	bool ignore_csum = btrfs_test_opt(fs_info, IGNOREMETACSUMS);
-> >
-> > const
-> >
-> >> --- a/fs/btrfs/messages.c
-> >> +++ b/fs/btrfs/messages.c
-> >> @@ -20,7 +20,7 @@ static const char fs_state_chars[] = {
-> >>   	[BTRFS_FS_STATE_TRANS_ABORTED]		= 'A',
-> >>   	[BTRFS_FS_STATE_DEV_REPLACING]		= 'R',
-> >>   	[BTRFS_FS_STATE_DUMMY_FS_INFO]		= 0,
-> >> -	[BTRFS_FS_STATE_NO_CSUMS]		= 'C',
-> >> +	[BTRFS_FS_STATE_NO_DATA_CSUMS]		= 'C',
-> >
-> > There should be the status also when the metadata checksums are not
-> > validated, the letters are arbitrary but should reflect the state if
-> > possible, I'd suggest to use 'S' here.
+> >> Yes, the __ version is for UAPI, like __u8 or __le32 and so on.
+> > 
+> > I see, though I'd rather keep the on-disk definitions free of wrappers
+> > that hide the types. We use the __ int types but that's all and quite
+> > clear what it means.
+> > 
+> > There already are flexible members (btrfs_leaf, btrfs_node,
+> > btrfs_inode_extref), using the empty[] syntax. The macro wraps the
+> > distinction that c++ needs but so far the existing declarations have't
+> > been problematic.  So I'd rather keep the declarations consistent.
+> > 
 > 
-> I'd prefer to change the NO_DATA_CSUMS one to use 'D' or 'd' (for data),
-> meanwhile for metadata we go 'M' or 'm'.
-
-Changing would break backward compatibility, now it's part of user
-visible interface. It's not an ABI or API but at least we should do such
-changes without considering the consequences.
-
-> But on the other hand, I do not think data/meta csum ignoring really
-> deserves a dedicated state char.
+> Yes but all these examples have other members as well. After this patch, 
+> btrfs_stripe_extent is a container for btrfs_raid_stride, and C doesn't 
+> allow a flexmember only struct:
 > 
-> It's not really that special compared to trans aborted or dummy fs.
-> (The same for dev-replacing)
+> In file included from fs/btrfs/ctree.h:18,
+>                   from fs/btrfs/delayed-inode.h:19,
+>                   from fs/btrfs/super.c:32:
+> ./include/uapi/linux/btrfs_tree.h:753:34: error: flexible array member 
+> in a struct with no named members
+>    753 |         struct btrfs_raid_stride strides[];
+>        |                                  ^~~~~~~
 
-The idea of the descriptors is to make it visible that the filesystem is
-in some unusual state, skipping checksum verification can make a
-difference when reading blocks that would normally not pass the check.
+To fix that __DECLARE_FLEX_ARRAY adds the layer of an anonymous struct
+and an empty other member. We'd have to duplicate that so let's use the
+macro.
 
