@@ -1,192 +1,195 @@
-Return-Path: <linux-btrfs+bounces-5744-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5745-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BB04909F44
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 20:40:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C7A3909FE8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 23:24:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97510282A03
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 18:40:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F37AB20FDF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 21:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106F144C9E;
-	Sun, 16 Jun 2024 18:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D16BB6A33D;
+	Sun, 16 Jun 2024 21:24:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nwvrSp49";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kij6vkFs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iiI03uXx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fckqIxtu"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sivR/Y3R"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB2D1CA85
-	for <linux-btrfs@vger.kernel.org>; Sun, 16 Jun 2024 18:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6C72575A
+	for <linux-btrfs@vger.kernel.org>; Sun, 16 Jun 2024 21:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718563228; cv=none; b=u1a4cxNe6BrkzG3NtN3naH4UpK0OLcen0ba0lzDqo0dMxrIM+qKc/wrkAn1dgGisejdxCVzfwZI/LaR/Ib2Acqy2PTIxA0Ux4837yEkjH38DQwcvt70H+MUJ2maUAjXRi27RT9XGN3l2+x8zU9Td0ceYYlIScivH06F96eq7ts8=
+	t=1718573070; cv=none; b=cO3eW7iyPzTdps3e/W6Gc7uPLosJtEGkAfcC81mkWEZBtFPURF4oWF/mr/QxYVSIHXQz2Ph9CSxdNOkPIQMxL31oiR5HeEN/YUp55Sgq/5d9O9EEoxnt7BGcm3XEaObtchJ0IvHIP20tT7Xh5AwEpUXXu52XtgvsiB2ty8E3qfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718563228; c=relaxed/simple;
-	bh=IDCitr2RN70gOivuq5hr2j7d4SpCWN7e1x1OIJ4uiCc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K75LMnYIlmDa4ledcyEDvG0NxwUxz/sJIySH0a9yaz2u14JemQ0tREa5wrdvdQttcr0zzSggHMmRr0iPp5pTtPqsjpYfochDgQV6M4N8z5Bm1rwwPB7xEMjcmPbrgvBHRIs8niwxXimkQTEBCMkBS8CestZhdsXU+tGiCil9wuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nwvrSp49; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kij6vkFs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iiI03uXx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fckqIxtu; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E2A335D5A5;
-	Sun, 16 Jun 2024 18:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718563224;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
-	b=nwvrSp49e06g76dT50WiVCqS6Pt2VWod5oxTakl7qfyUordLMXIS3jS2Z/Lx06VPjJOihP
-	RdAWxNHCwo8X11RJgR8qeWdRg+5rDWT9FGjo8CzLM+mJhUbyIxhD24PcU3e7A498v1U5Mu
-	bLhPwnYtl5JgsVkNYfLfjHzsoHwok2k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718563224;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
-	b=kij6vkFsaAGbV2E33DnUvnu1BEToQKSyaLxpcPhb+ARSEkXyXBhBdNndlWdjUWar0O55OU
-	rqClaH1X+BbTc/Cw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718563222;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
-	b=iiI03uXxXQQtwjXE2qjGpKD9jHDmsZGx4GXWQUOYmZA77bSfg+G1rrzoFbrMUd7xSGhAhz
-	ZUeY3M3odZCn/nC+iWGUAFRBj5usBV9nVsCsp/TOePolar2HoJawD4Ayk8aNZ8btsBM4iB
-	vU7U1bZmkcTmraEO/U4Z7/xRzyGpr/k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718563222;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
-	b=fckqIxtuaPM1D+QiDNL7AE1ZG8msKblufF0Xi0+WLfh1hRc406QlXEBOFrXdRwTEI69WOP
-	KmsHDmmzHAhoGTAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD92613AA0;
-	Sun, 16 Jun 2024 18:40:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id meIcLpYxb2ZVHwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Sun, 16 Jun 2024 18:40:22 +0000
-Date: Sun, 16 Jun 2024 20:40:21 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Filipe Manana <fdmanana@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/4] btrfs: use NOFS context when getting inodes during
- logging and log replay
-Message-ID: <20240616184021.GF25756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1718276261.git.fdmanana@suse.com>
- <818b41faf6260be972ffa3bd436dda518963384b.1718276261.git.fdmanana@suse.com>
- <04f49180-cdb0-4665-abe4-136dbc85fbb3@gmx.com>
- <CAL3q7H6CPShWF0ik8bgFu42dNySrnq=ZMdg07jUXdgRttHMqiQ@mail.gmail.com>
- <82aea39f-f895-469c-b973-9556980d7732@gmx.com>
+	s=arc-20240116; t=1718573070; c=relaxed/simple;
+	bh=pBShJzDJr3tLN+W0zYkyU+/WoFpvGqRYa/2CH3MDdxI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WLzP6F8LaGDyoRIVJ3PVeyrwBn4h8o4bqo5P3yNHj/A6EeOSuZcdOujnCyeZFzSTPkss62Qf8/sydpowWkfQsb2tML3do1lAHGBUma+T5t+ig7X5Uw00qQeWWnV/5BUS7s0FyGkVal3GvRXl7ypIhRMLB97aDThf1vTbhX1QLMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sivR/Y3R; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1718573063; x=1719177863; i=quwenruo.btrfs@gmx.com;
+	bh=MTEudpEiLkOdxnPPQ4w4MHAsyEgBxDeNc11IeNRFUjM=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=sivR/Y3RsU05l9wZO1ZioBBCZngSawjFFNwvKoNcLlj2LNQnmzIoTf5hqv6Z2CdX
+	 e1GBCOv6CI2Kfrw6plIvo3X1U3clnHhZiaebpkze3LH+E9NV9ZrxeENyAyZSL/mIv
+	 2vi4730k3r160ZG3RnWy8YTi/hNpgu89O/Af76HUHvWXx4w8AzTWZ2iR7iDzR7V1N
+	 4WEFJeaN3w319uQcaTGlTyzTKPjNPusXWX2kbtTkbmB3xim0sMj8MVSODnvu1WVqG
+	 L1CMCsT1FnRrLP9G8+vsUFLRbBIVfmevtsh3a048gW981ELcjYpfCXxigw0Ne4JHt
+	 rQqcuz1hBeK/a2VXgw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGhuU-1sE1gq1sgs-00Fvql; Sun, 16
+ Jun 2024 23:24:23 +0200
+Message-ID: <d203bdcb-606f-4505-8250-f47646157404@gmx.com>
+Date: Mon, 17 Jun 2024 06:54:18 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <82aea39f-f895-469c-b973-9556980d7732@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmx.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,appspotmail.com:email,suse.cz:replyto];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] btrfs: introduce new "rescue=ignoremetacsums" mount
+ option
+To: dsterba@suse.cz
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1718082585.git.wqu@suse.com>
+ <f6b9b9037ee7912ed2081da9c4b05fd367c9e8f8.1718082585.git.wqu@suse.com>
+ <20240612193821.GK18508@twin.jikos.cz>
+ <ffa354b9-4315-4e29-af2a-124a697d0eef@gmx.com>
+ <20240616181724.GD25756@suse.cz>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240616181724.GD25756@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:adn9+9qG8Qe6bz+oAt44OIYKJKlqSkH0hb9vcOV8bL1IH1K1cHc
+ Fq8pEb6TQygKAw4VPw7Bi64yE/WDAeb3o0I1zAsV/SQ1VxAnKbCdzb7FGEADSWzQ/KUz+rk
+ nzGIB0hXqTnN90BA2+XwPfTyv9CRswlBHFSiJtAJVnhCpDVYyIFB51cIXBeBBVFMlWfrlhX
+ QJJBJE8LTto21XKR7jyvw==
 X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Spam-Level: 
+UI-OutboundReport: notjunk:1;M01:P0:4OjBXqlThrY=;YJy7UwsCeJoiKgVheSWp5ad4WZJ
+ YpN5g3mtXEvVa5T19PYjxVODoxSwdeV6pP8La91RBvsLc+EE2DxCBGAVBTpJr0AWhQpxBegOl
+ xUmrIt+BgBaQxiGQpLr8CB+tWjUw0JzNpkWZFWcUXyabU+Xf/XG3kaTExTpCnt4CjoZP/8YnC
+ wj98sZDsTbQ6LX1I18aSFJhnyhCB8N3JrJW8vi00Hq5hh2V2Rb42avmEjA5QJC1a5pLLY5kOV
+ 9kw7tg4j72eD0k1bIFGR/ETtI66VFQmxNfCQGDEgij5FtmcYgOtQ3G0wzaU9HGf9giPYGg4Zc
+ KtrOkiOB9GyVjKDsQebFrXY0Lix7UMt/ChOkrH32ZQ6pJMIqmLgDw8K82nNKm2/BfDNpxHY9w
+ xTNDMJ2VfhTPHSjYFKlodz8TJ2Z6ct1E2w6VSkSo5Ns1Z79p4ocs1v5TOb0Ox0dHWq98TtDfL
+ 2oKXKbt1HMVqqz40uRyr3l3V8RrvcsNhcAFEIuBnF5TAja2slHSpsJoG/3fkMAiNzzs1hR1sI
+ SZFzDbqJxtdTAwXm0ikE4h4szKLOw1ThElT26KFF70mId16NKLvx/Ts2xspSt9Dg+bTxTR8St
+ 7Ht7tkvjdIRPdNLN4u0ugfntcpvGotw+IqxRNOSfYz+/slF9vtb85JcBLROA0kGtbEmQdQCnz
+ oKXBi4ODXencFYWPfztKeX7sfgMheTJUhMC/lOYxLs0fca66tMdY9LhHTzsEQkeSwV1mIU6Ha
+ g+uMjJpTnCdlEfDuN8ih1UZiurILd3jzM8WF+yhLLxHjHIuUxjrv9oo6WG+nYfaPf4oz0FhlD
+ 8LcK1jAQ2njphmgcFEtYxoyySojFacG2seRlRKWRaIsts=
 
-On Fri, Jun 14, 2024 at 07:51:44AM +0930, Qu Wenruo wrote:
-> >>>       do_iter_readv_writev+0x504/0x780 fs/read_write.c:741
-> >>>       vfs_writev+0x36f/0xde0 fs/read_write.c:971
-> >>>       do_pwritev+0x1b2/0x260 fs/read_write.c:1072
-> >>>       __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
-> >>>       __se_compat_sys_pwritev2 fs/read_write.c:1210 [inline]
-> >>>       __ia32_compat_sys_pwritev2+0x121/0x1b0 fs/read_write.c:1210
-> >>>       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
-> >>>       __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
-> >>>       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
-> >>>       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-> >>>      RIP: 0023:0xf7334579
-> >>>      Code: b8 01 10 06 03 (...)
-> >>>      RSP: 002b:00000000f5f265ac EFLAGS: 00000292 ORIG_RAX: 000000000000017b
-> >>>      RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000200002c0
-> >>>      RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000000
-> >>>      RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> >>>      R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-> >>>      R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> >>>       </TASK>
-> >>>
-> >>> Fix this by ensuring we are under a NOFS scope whenever we call
-> >>> btrfs_iget() during inode logging and log replay.
-> >>>
-> >>> Reported-by: syzbot+8576cfa84070dce4d59b@syzkaller.appspotmail.com
-> >>> Link: https://lore.kernel.org/linux-btrfs/000000000000274a3a061abbd928@google.com/
-> >>> Fixes: 712e36c5f2a7 ("btrfs: use GFP_KERNEL in btrfs_alloc_inode")
-> >>
-> >> I'm wondering if logging is the only location where we can trigger the
-> >> deadlock.
-> >>
-> >> Would regular inode_get() causing such deadlock?
-> >
-> > What is inode_get()? I can't find anything with that exact name.
-> 
-> My bad, I mean iget().
-> 
-> >
-> > If it's some path with a transaction handle open that can trigger
-> > btrfs_alloc_inode() then yes, otherwise it depends on what locks are
-> > held if any.
-> >
-> 
-> Then would it be safer to revert the offending commit, aka make
-> btrfs_alloc_inode() to use the old GFP_NOFS?
-> 
-> I just checked ext4_alloc_inode() and f2fs_alloc_inode(), both are still
-> using NOFS instead.
-> 
-> Thus I'm wondering if it's really a good idea to go GFP_KERNEL in the
-> first place.
 
-In the long run we want to use the scoped NOFS and GFP_KERNEL. All easy
-cases have been done (with occasional bugs like this patch fixes).
+
+=E5=9C=A8 2024/6/17 03:47, David Sterba =E5=86=99=E9=81=93:
+> On Fri, Jun 14, 2024 at 06:58:20AM +0930, Qu Wenruo wrote:
+>>
+>>
+>> =E5=9C=A8 2024/6/13 05:08, David Sterba =E5=86=99=E9=81=93:
+>>> On Tue, Jun 11, 2024 at 02:51:37PM +0930, Qu Wenruo wrote:
+>>>> This patch introduces "rescue=3Dignoremetacsums" to ignore metadata c=
+sums,
+>>>> meanwhile all the other metadata sanity checks are still kept as is.
+>>>>
+>>>> This new mount option is mostly to allow the kernel to mount an
+>>>> interrupted checksum conversion (at the metadata csum overwrite stage=
+).
+>>>>
+>>>> And since the main part of metadata sanity checks is inside
+>>>> tree-checker, we shouldn't lose much safety, and the new mount option=
+ is
+>>>> rescue mount option it requires full read-only mount.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>
+>>>> --- a/fs/btrfs/disk-io.c
+>>>> +++ b/fs/btrfs/disk-io.c
+>>>> @@ -367,6 +367,7 @@ int btrfs_validate_extent_buffer(struct extent_bu=
+ffer *eb,
+>>>>    	u8 result[BTRFS_CSUM_SIZE];
+>>>>    	const u8 *header_csum;
+>>>>    	int ret =3D 0;
+>>>> +	bool ignore_csum =3D btrfs_test_opt(fs_info, IGNOREMETACSUMS);
+>>>
+>>> const
+>>>
+>>>> --- a/fs/btrfs/messages.c
+>>>> +++ b/fs/btrfs/messages.c
+>>>> @@ -20,7 +20,7 @@ static const char fs_state_chars[] =3D {
+>>>>    	[BTRFS_FS_STATE_TRANS_ABORTED]		=3D 'A',
+>>>>    	[BTRFS_FS_STATE_DEV_REPLACING]		=3D 'R',
+>>>>    	[BTRFS_FS_STATE_DUMMY_FS_INFO]		=3D 0,
+>>>> -	[BTRFS_FS_STATE_NO_CSUMS]		=3D 'C',
+>>>> +	[BTRFS_FS_STATE_NO_DATA_CSUMS]		=3D 'C',
+>>>
+>>> There should be the status also when the metadata checksums are not
+>>> validated, the letters are arbitrary but should reflect the state if
+>>> possible, I'd suggest to use 'S' here.
+>>
+>> I'd prefer to change the NO_DATA_CSUMS one to use 'D' or 'd' (for data)=
+,
+>> meanwhile for metadata we go 'M' or 'm'.
+>
+> Changing would break backward compatibility, now it's part of user
+> visible interface. It's not an ABI or API but at least we should do such
+> changes without considering the consequences.
+>
+>> But on the other hand, I do not think data/meta csum ignoring really
+>> deserves a dedicated state char.
+>>
+>> It's not really that special compared to trans aborted or dummy fs.
+>> (The same for dev-replacing)
+>
+> The idea of the descriptors is to make it visible that the filesystem is
+> in some unusual state, skipping checksum verification can make a
+> difference when reading blocks that would normally not pass the check.
+
+On the other hand, I have already changed the metadata csum mismatch outpu=
+t.
+It should be enough to know if we're in a skipping-metadata-csum state.
+
+Furthermore, all of these are in rescue mode with forced RO, which
+should already be a thing to mention during report/debugging.
+
+That's why I do not think skipping data/metadata csums really needs such
+dedicated handling.
+
+Thanks,
+Qu
 
