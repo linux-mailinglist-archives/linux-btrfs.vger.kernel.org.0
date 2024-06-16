@@ -1,108 +1,104 @@
-Return-Path: <linux-btrfs+bounces-5743-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5744-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD45D909F10
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 20:19:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BB04909F44
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 20:40:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AD19284114
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 18:19:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97510282A03
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2024 18:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1052E44C7B;
-	Sun, 16 Jun 2024 18:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106F144C9E;
+	Sun, 16 Jun 2024 18:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iEp+plr5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RWqzTIOy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iEp+plr5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RWqzTIOy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nwvrSp49";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kij6vkFs";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iiI03uXx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fckqIxtu"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E16E1C68E;
-	Sun, 16 Jun 2024 18:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB2D1CA85
+	for <linux-btrfs@vger.kernel.org>; Sun, 16 Jun 2024 18:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718561953; cv=none; b=u9uMl/KqaOYI9mlAODhaG9qp9ivI2yrBdJ3p6Z7vpHqh+BhHflGTqFDDaFJHYkDQkMdgk6M96HKziEvmb4Iq0TFdTjivE0egYAV0QDt8s4RZhthfIddkbE3nLigXmoBWuI0GJhh9fA7Vjf4BBRByfJpEAjmm4h1DDVsB7YOyuIU=
+	t=1718563228; cv=none; b=u1a4cxNe6BrkzG3NtN3naH4UpK0OLcen0ba0lzDqo0dMxrIM+qKc/wrkAn1dgGisejdxCVzfwZI/LaR/Ib2Acqy2PTIxA0Ux4837yEkjH38DQwcvt70H+MUJ2maUAjXRi27RT9XGN3l2+x8zU9Td0ceYYlIScivH06F96eq7ts8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718561953; c=relaxed/simple;
-	bh=t7PPzXp8kO9lRno4T4TpBEn9E1lbqcDyf7XGltaz7jk=;
+	s=arc-20240116; t=1718563228; c=relaxed/simple;
+	bh=IDCitr2RN70gOivuq5hr2j7d4SpCWN7e1x1OIJ4uiCc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bwF/wWn7Z93CROSwBYF9DutGwsxc8Yq8vzdqAc84XS1nzD60QpRO3/sQra/5n/MvOXk1bEmPcR4zNwKg4jmLc6ce2mSqOZeA56/AFbRT+BCn1zsgzTkOTLFfEJfbreVNvgp+t4D2cWxe4F2D57n8E+F2/0ry3pXNpXRjJ5/QnEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iEp+plr5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RWqzTIOy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iEp+plr5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RWqzTIOy; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=K75LMnYIlmDa4ledcyEDvG0NxwUxz/sJIySH0a9yaz2u14JemQ0tREa5wrdvdQttcr0zzSggHMmRr0iPp5pTtPqsjpYfochDgQV6M4N8z5Bm1rwwPB7xEMjcmPbrgvBHRIs8niwxXimkQTEBCMkBS8CestZhdsXU+tGiCil9wuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nwvrSp49; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kij6vkFs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iiI03uXx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fckqIxtu; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F7A35D555;
-	Sun, 16 Jun 2024 18:19:09 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E2A335D5A5;
+	Sun, 16 Jun 2024 18:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718561949;
+	t=1718563224;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
-	b=iEp+plr5qkw3krsIfCOho0Vpi2qryyRjG/eU3QQAM/u4GGrVOhbhX7QF5ioET4IXQXG2cg
-	KctWIog0iVkGw8GE4VmE4g4zIaeobmgJRcLH/en3Q7F1gFxFLplJ5Pfd22pDMSO6MB98Wp
-	luR61QTleUXQKveoA65J2ANJFBrGNXs=
+	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
+	b=nwvrSp49e06g76dT50WiVCqS6Pt2VWod5oxTakl7qfyUordLMXIS3jS2Z/Lx06VPjJOihP
+	RdAWxNHCwo8X11RJgR8qeWdRg+5rDWT9FGjo8CzLM+mJhUbyIxhD24PcU3e7A498v1U5Mu
+	bLhPwnYtl5JgsVkNYfLfjHzsoHwok2k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718561949;
+	s=susede2_ed25519; t=1718563224;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
-	b=RWqzTIOy95gccufQioICNvXS0Ji9BWY4UX5g6HOD5PtpRv87aW2fz8osfX2wH1C+bhD8YC
-	tAEx8Rm30jm9I8Bg==
+	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
+	b=kij6vkFsaAGbV2E33DnUvnu1BEToQKSyaLxpcPhb+ARSEkXyXBhBdNndlWdjUWar0O55OU
+	rqClaH1X+BbTc/Cw==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=iEp+plr5;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RWqzTIOy
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718561949;
+	t=1718563222;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
-	b=iEp+plr5qkw3krsIfCOho0Vpi2qryyRjG/eU3QQAM/u4GGrVOhbhX7QF5ioET4IXQXG2cg
-	KctWIog0iVkGw8GE4VmE4g4zIaeobmgJRcLH/en3Q7F1gFxFLplJ5Pfd22pDMSO6MB98Wp
-	luR61QTleUXQKveoA65J2ANJFBrGNXs=
+	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
+	b=iiI03uXxXQQtwjXE2qjGpKD9jHDmsZGx4GXWQUOYmZA77bSfg+G1rrzoFbrMUd7xSGhAhz
+	ZUeY3M3odZCn/nC+iWGUAFRBj5usBV9nVsCsp/TOePolar2HoJawD4Ayk8aNZ8btsBM4iB
+	vU7U1bZmkcTmraEO/U4Z7/xRzyGpr/k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718561949;
+	s=susede2_ed25519; t=1718563222;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=utgc9yx0ZBDXDPEB9diVuwP8I1o/um7SJHnQ09SdfKg=;
-	b=RWqzTIOy95gccufQioICNvXS0Ji9BWY4UX5g6HOD5PtpRv87aW2fz8osfX2wH1C+bhD8YC
-	tAEx8Rm30jm9I8Bg==
+	bh=1MPqJDY98z5ox+NPVjv2UznErXIsjzTMEXpW54Yqmsc=;
+	b=fckqIxtuaPM1D+QiDNL7AE1ZG8msKblufF0Xi0+WLfh1hRc406QlXEBOFrXdRwTEI69WOP
+	KmsHDmmzHAhoGTAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5923813AA0;
-	Sun, 16 Jun 2024 18:19:09 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD92613AA0;
+	Sun, 16 Jun 2024 18:40:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ERSJFZ0sb2aLGgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Sun, 16 Jun 2024 18:19:09 +0000
-Date: Sun, 16 Jun 2024 20:19:08 +0200
+	id meIcLpYxb2ZVHwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Sun, 16 Jun 2024 18:40:22 +0000
+Date: Sun, 16 Jun 2024 20:40:21 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] btrfs: rst: remove encoding field from stripe_extent
-Message-ID: <20240616181908.GE25756@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Filipe Manana <fdmanana@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/4] btrfs: use NOFS context when getting inodes during
+ logging and log replay
+Message-ID: <20240616184021.GF25756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20240610-b4-rst-updates-v1-0-179c1eec08f2@kernel.org>
- <20240610-b4-rst-updates-v1-1-179c1eec08f2@kernel.org>
- <20240611143651.GH18508@suse.cz>
- <c7246728-aadb-4699-8fdf-060502c1092a@wdc.com>
- <20240613212347.GB25756@twin.jikos.cz>
- <d6cf3e45-aaf0-4256-92c1-bb8780c76da2@wdc.com>
+References: <cover.1718276261.git.fdmanana@suse.com>
+ <818b41faf6260be972ffa3bd436dda518963384b.1718276261.git.fdmanana@suse.com>
+ <04f49180-cdb0-4665-abe4-136dbc85fbb3@gmx.com>
+ <CAL3q7H6CPShWF0ik8bgFu42dNySrnq=ZMdg07jUXdgRttHMqiQ@mail.gmail.com>
+ <82aea39f-f895-469c-b973-9556980d7732@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -111,86 +107,86 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d6cf3e45-aaf0-4256-92c1-bb8780c76da2@wdc.com>
+In-Reply-To: <82aea39f-f895-469c-b973-9556980d7732@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.21 / 50.00];
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmx.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
 	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,appspotmail.com:email,suse.cz:replyto];
 	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7F7A35D555
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3]
 X-Spam-Flag: NO
-X-Spam-Score: -4.21
+X-Spam-Score: -4.00
 X-Spam-Level: 
 
-On Fri, Jun 14, 2024 at 09:36:34AM +0000, Johannes Thumshirn wrote:
-> On 13.06.24 23:23, David Sterba wrote:
-> > On Tue, Jun 11, 2024 at 04:33:19PM +0000, Johannes Thumshirn wrote:
-> >> On 11.06.24 16:37, David Sterba wrote:
-> >>> On Mon, Jun 10, 2024 at 10:40:25AM +0200, Johannes Thumshirn wrote:
-> >>>> -#define BTRFS_STRIPE_RAID5	5
-> >>>> -#define BTRFS_STRIPE_RAID6	6
-> >>>> -#define BTRFS_STRIPE_RAID1C3	7
-> >>>> -#define BTRFS_STRIPE_RAID1C4	8
-> >>>> -
-> >>>>    struct btrfs_stripe_extent {
-> >>>> -	__u8 encoding;
-> >>>> -	__u8 reserved[7];
-> >>>>    	/* An array of raid strides this stripe is composed of. */
-> >>>> -	struct btrfs_raid_stride strides[];
-> >>>> +	__DECLARE_FLEX_ARRAY(struct btrfs_raid_stride, strides);
+On Fri, Jun 14, 2024 at 07:51:44AM +0930, Qu Wenruo wrote:
+> >>>       do_iter_readv_writev+0x504/0x780 fs/read_write.c:741
+> >>>       vfs_writev+0x36f/0xde0 fs/read_write.c:971
+> >>>       do_pwritev+0x1b2/0x260 fs/read_write.c:1072
+> >>>       __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
+> >>>       __se_compat_sys_pwritev2 fs/read_write.c:1210 [inline]
+> >>>       __ia32_compat_sys_pwritev2+0x121/0x1b0 fs/read_write.c:1210
+> >>>       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+> >>>       __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
+> >>>       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+> >>>       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+> >>>      RIP: 0023:0xf7334579
+> >>>      Code: b8 01 10 06 03 (...)
+> >>>      RSP: 002b:00000000f5f265ac EFLAGS: 00000292 ORIG_RAX: 000000000000017b
+> >>>      RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000200002c0
+> >>>      RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000000
+> >>>      RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> >>>      R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+> >>>      R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> >>>       </TASK>
 > >>>
-> >>> Is there a reason to use the __ underscore macro? I see no difference
-> >>> between that and DECLARE_FLEX_ARRAY and underscore usually means that
-> >>> it's special in some way.
+> >>> Fix this by ensuring we are under a NOFS scope whenever we call
+> >>> btrfs_iget() during inode logging and log replay.
 > >>>
+> >>> Reported-by: syzbot+8576cfa84070dce4d59b@syzkaller.appspotmail.com
+> >>> Link: https://lore.kernel.org/linux-btrfs/000000000000274a3a061abbd928@google.com/
+> >>> Fixes: 712e36c5f2a7 ("btrfs: use GFP_KERNEL in btrfs_alloc_inode")
 > >>
-> >> Yes, the __ version is for UAPI, like __u8 or __le32 and so on.
-> > 
-> > I see, though I'd rather keep the on-disk definitions free of wrappers
-> > that hide the types. We use the __ int types but that's all and quite
-> > clear what it means.
-> > 
-> > There already are flexible members (btrfs_leaf, btrfs_node,
-> > btrfs_inode_extref), using the empty[] syntax. The macro wraps the
-> > distinction that c++ needs but so far the existing declarations have't
-> > been problematic.  So I'd rather keep the declarations consistent.
-> > 
+> >> I'm wondering if logging is the only location where we can trigger the
+> >> deadlock.
+> >>
+> >> Would regular inode_get() causing such deadlock?
+> >
+> > What is inode_get()? I can't find anything with that exact name.
 > 
-> Yes but all these examples have other members as well. After this patch, 
-> btrfs_stripe_extent is a container for btrfs_raid_stride, and C doesn't 
-> allow a flexmember only struct:
+> My bad, I mean iget().
 > 
-> In file included from fs/btrfs/ctree.h:18,
->                   from fs/btrfs/delayed-inode.h:19,
->                   from fs/btrfs/super.c:32:
-> ./include/uapi/linux/btrfs_tree.h:753:34: error: flexible array member 
-> in a struct with no named members
->    753 |         struct btrfs_raid_stride strides[];
->        |                                  ^~~~~~~
+> >
+> > If it's some path with a transaction handle open that can trigger
+> > btrfs_alloc_inode() then yes, otherwise it depends on what locks are
+> > held if any.
+> >
+> 
+> Then would it be safer to revert the offending commit, aka make
+> btrfs_alloc_inode() to use the old GFP_NOFS?
+> 
+> I just checked ext4_alloc_inode() and f2fs_alloc_inode(), both are still
+> using NOFS instead.
+> 
+> Thus I'm wondering if it's really a good idea to go GFP_KERNEL in the
+> first place.
 
-To fix that __DECLARE_FLEX_ARRAY adds the layer of an anonymous struct
-and an empty other member. We'd have to duplicate that so let's use the
-macro.
+In the long run we want to use the scoped NOFS and GFP_KERNEL. All easy
+cases have been done (with occasional bugs like this patch fixes).
 
