@@ -1,223 +1,149 @@
-Return-Path: <linux-btrfs+bounces-5748-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB04D90A18A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 03:06:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4804390A24E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 04:08:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BAFF1F21D29
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 01:06:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72F551C21527
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 02:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343ED4C6F;
-	Mon, 17 Jun 2024 01:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1255C167DB9;
+	Mon, 17 Jun 2024 02:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Huo82bO9";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Huo82bO9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IVKw3BuB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7E133233
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2024 01:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C241581E3
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2024 02:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718586181; cv=none; b=SadFR1GEnA8FrLLtiKbjJhLYYpAGd6/A30pfmBmjCFl2pg3vJRPqeDA/7glCCYpggiMvHgW+qrvcSCnS1Ze2MsmUqoDeJhFVEUMFHw60/+qe9/PGXjh5mViidOqTU26MZBbwLtUZmDkOF7hbJi0MENUnZZ9DftsoBhFAwV534xs=
+	t=1718590107; cv=none; b=ReOwwzpFlHP7o3/Zw0GamqFruQtw6ZROOK9BlFsIOPvy4vmLrjbYRsF9W9b4DQ9HnpyAtufBJ9HatHm2smGMOcYsf2bF1s+VNets0O3cFjs0v6W7wD4T/HrD+a0Yh1sO/9lI/5E+QXg3myQ40Jj9npO1a0lPjzE6qdYl4uyDIOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718586181; c=relaxed/simple;
-	bh=Ju/Rlpyr/YMJaAJ1/yBGgSyFDUVREH3hOI40rw+SvqA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KtguNpxOP7dbUGS4Ki0jJZscyS3lZM3v9/2Dx0We5LGCVJfuwleLeUrtnTvWc0ta4Th4ZJMwvHag9YZWioRt6ovjC8ChREx/Mi0hZZeJhD/Rxlz2ZdYDXAFZ/4YdZ0Du8poF23SFdSOQN2IAJ1VHEVPvd94dww7JhOkAvRq2Gxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Huo82bO9; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Huo82bO9; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9EB3D379D4;
-	Mon, 17 Jun 2024 01:02:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718586175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=0dEv9IgFvnh1SgkWkFeMUwtHO2KTCSFyJ4BxvPdzShA=;
-	b=Huo82bO970HEP/PHqNDJ5BkC0PlIepfKlOfvyN5aqo84uZPkesEuAij1UWnIUyWlJsCcBq
-	IWCnqC9ezdoZO0cMlgAASIav0k6gX9NyDVteWqKcqnledbRcSHxgYBOnEQdXW5jaQgXiVd
-	8uQjHLXVJQ2qygUKvVVwGnDiqj2R8J4=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Huo82bO9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718586175; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=0dEv9IgFvnh1SgkWkFeMUwtHO2KTCSFyJ4BxvPdzShA=;
-	b=Huo82bO970HEP/PHqNDJ5BkC0PlIepfKlOfvyN5aqo84uZPkesEuAij1UWnIUyWlJsCcBq
-	IWCnqC9ezdoZO0cMlgAASIav0k6gX9NyDVteWqKcqnledbRcSHxgYBOnEQdXW5jaQgXiVd
-	8uQjHLXVJQ2qygUKvVVwGnDiqj2R8J4=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F60C13AAA;
-	Mon, 17 Jun 2024 01:02:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7XzCCT6Lb2YtdQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 17 Jun 2024 01:02:54 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Johannes.Thumshirn@wdc.com
-Subject: [PATCH RFC] btrfs: scrub: handle RST lookup error correctly
-Date: Mon, 17 Jun 2024 10:32:28 +0930
-Message-ID: <8f5cb1da3e9bea64b133870d1d91e7818b6f2217.1718586112.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1718590107; c=relaxed/simple;
+	bh=HJN8jFWAlsIPcpShP6WoQgNINEkUP8+n6VBBOco9PvI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RhECXSrvHTsiaAQwbMitQRF+1UDHYy7gq2Sn+5W92zNVjRC+cA3sxasJy4QbbqHs1Bj1LZgnE3R3CjVh1GdNgwOhRiGzkUJo951J1P4t9E10k9jaDZydmQ+pMuGrKLY+bvTlJQMI1NBSwhD2uTS1n+MwINDwu729e8YiRlh29HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IVKw3BuB; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57c5c51cb89so4488544a12.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Jun 2024 19:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718590104; x=1719194904; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lv46x6sUx13AjNrjYxrx6KLvsu68AiLVnTKfcu6E6Iw=;
+        b=IVKw3BuB5DrMARR5F8TLkRjn90uV6CPjF5qR0CplEqYDr7/cBOMWFwKLtWuuaaDimq
+         Xr8zhLH2xwchk/aLBAcij54SeXgiHyWKBVLSptoDxfccRKyW/Vsf4zeRWEqmvZSsiegg
+         6uCr5Gc2rB+YpcQTacjuA2+evGQyjQMvTeTd+5m9zJR7sRePKhw73JKk7q4SaE34Q/BV
+         VNK9WmrET9SNXeaCT1QlGRIfHW3w25VUx9PQPJWpVVOjoZVb9NWezHXS87eWfrX2SfNj
+         fbBSr1frntYfC32+IuMVVHH8ZBH8/ZDNEH1uLEUZvnM7FHdRcjtAiZaQkPsHOUHh59zq
+         /uwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718590104; x=1719194904;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lv46x6sUx13AjNrjYxrx6KLvsu68AiLVnTKfcu6E6Iw=;
+        b=UuCgHs2NkG1I+onvq0OWh4/Z6Eb622HJINzYUZPjc0wxf8LwFyFJt5ujRpxZrn6lEU
+         R+pcdcJFXvRQ2wrl5F0k9ul7DcJur2CugAbKxaBaRwYRo7AunqDZ0aGflgdbbdpVLpkN
+         NnerRgZuhvfdgX4CyWz0Sng6XhGryoQlKdyQt722R8QUjixVpBkxeY0IFf4Zszk6+3aj
+         iq87BuCipRpfJ0qtP/sgUeoWfzjmeFShVclTYTbn00eCgC5essQ3ngbuVJhG2MkWTlln
+         0wA3LcRW9Uj3gIRBlA8LSOajEpfOEYj5/+XPhZRbPjntyFJy71EupKYdeM9m7hW3AsmD
+         41wA==
+X-Gm-Message-State: AOJu0Yw+KkJeqCyQLgVFMITPi7HuST9BITCzh2yyBUwKb3weIhX5Ec9S
+	sn48N1BEhNQwkgmAmf57yjNAwmogHeQFdsEuYajp08R/LZlpWBm8BItxogRV/8LHgtc5odyryfx
+	8CCVqtMnj3wFWv2ml5EFnS2MnXhlMZQ==
+X-Google-Smtp-Source: AGHT+IEqxUzOabZ1DucyY45KQzSyCgTjf5JZN6pbuMgeyHva2bjR0b9AgLPBMwAygS42U+rbrSawwL8sMveWbBsIvns=
+X-Received: by 2002:a50:a6db:0:b0:57c:6004:4375 with SMTP id
+ 4fb4d7f45d1cf-57cbd66dec9mr7486750a12.15.1718590103252; Sun, 16 Jun 2024
+ 19:08:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-0.988];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 9EB3D379D4
-X-Spam-Flag: NO
-X-Spam-Score: -5.01
-X-Spam-Level: 
+References: <20240607143021.122220-1-sunjunchao2870@gmail.com>
+In-Reply-To: <20240607143021.122220-1-sunjunchao2870@gmail.com>
+From: JunChao Sun <sunjunchao2870@gmail.com>
+Date: Mon, 17 Jun 2024 10:08:12 +0800
+Message-ID: <CAHB1NajLsZPbUJUYwvPuK=ogKkunfJauTmszzfc9VO2w+OD2Og@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] btrfs: qgroup: use goto style to handle error in add_delayed_ref().
+To: linux-btrfs@vger.kernel.org
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[BUG]
-When running btrfs/060 with forced RST feature, it would crash the
-following ASSERT() inside scrub_read_endio():
+Friendly ping...
 
-	ASSERT(sector_nr < stripe->nr_sectors);
+Junchao Sun <sunjunchao2870@gmail.com> =E4=BA=8E2024=E5=B9=B46=E6=9C=887=E6=
+=97=A5=E5=91=A8=E4=BA=94 22:30=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Clean up resources using goto to get rid of repeated code.
+>
+> Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
+> ---
+>  fs/btrfs/delayed-ref.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index 6cc80fb10da2..1a41ab991738 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -1041,18 +1041,13 @@ static int add_delayed_ref(struct btrfs_trans_han=
+dle *trans,
+>                 return -ENOMEM;
+>
+>         head_ref =3D kmem_cache_alloc(btrfs_delayed_ref_head_cachep, GFP_=
+NOFS);
+> -       if (!head_ref) {
+> -               kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
+> -               return -ENOMEM;
+> -       }
+> +       if (!head_ref)
+> +               goto free_node;
+>
+>         if (btrfs_qgroup_full_accounting(fs_info) && !generic_ref->skip_q=
+group) {
+>                 record =3D kzalloc(sizeof(*record), GFP_NOFS);
+> -               if (!record) {
+> -                       kmem_cache_free(btrfs_delayed_ref_node_cachep, no=
+de);
+> -                       kmem_cache_free(btrfs_delayed_ref_head_cachep, he=
+ad_ref);
+> -                       return -ENOMEM;
+> -               }
+> +               if (!record)
+> +                       goto free_head_ref;
+>         }
+>
+>         init_delayed_ref_common(fs_info, node, generic_ref);
+> @@ -1088,6 +1083,12 @@ static int add_delayed_ref(struct btrfs_trans_hand=
+le *trans,
+>         if (qrecord_inserted)
+>                 return btrfs_qgroup_trace_extent_post(trans, record);
+>         return 0;
+> +
+> +free_head_ref:
+> +       kmem_cache_free(btrfs_delayed_ref_head_cachep, head_ref);
+> +free_node:
+> +       kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
+> +       return -ENOMEM;
+>  }
+>
+>  /*
+> --
+> 2.39.2
+>
 
-Before that, we would have tree dump from
-btrfs_get_raid_extent_offset(), as we failed to find the RST entry for
-the range.
 
-[CAUSE]
-Inside scrub_submit_extent_sector_read() every time we allocated a new
-bbio we immediate call btrfs_map_block() to make sure there is some RST
-range covering the scrub target.
-
-But if btrfs_map_block() failed, we immediately call endio for the bbio,
-meanwhile since the bbio is newly allocated, it's completely empty.
-
-Then inside scrub_read_endio(), we go through the bvecs to find
-the sector number (as bi_sector is no longer reliable if the bio is
-submitted to lower layers).
-
-And since the bio is empty, such bvecs iteration would not find any
-sector matching the sector, and return sector_nr == stripe->nr_sectors,
-triggering the ASSERT().
-
-[FIX]
-Instead of going calc_sector_number() directly which expects a non-empty
-bio, do an early bio length check first.
-
-If the bio is empty, just grab the sector_nr using bi_sector, as the
-bio never really got submitted bi_sector is untouched and reliable.
-Then mark all the sectors until the stripe end as error.
-Otherwise go the regular routine.
-
-By this we have an extra safenet for possible RST related errors.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-REASON FOR RFC:
-
-This is only a fix for the direct cause, that we do not have proper
-error handling for rst related errors.
-
-But to be honest, I'm not that confident with the manual
-btrfs_map_block() call inside scrub.
-
-We may want to do the call before we allocate a new bbio, so that we can
-avoid such empty bbio.
-
-Furthermore we're still not sure why the RST lookup failed.
-During the scrub we should have prevented a new transaction to be
-committed, thus the RST lookup should match with extent_sector_bitmap,
-but that's not the case.
-
-Anyway for now just add a safenet until we pin down the root cause of
-the RST error, then determine if we need to btrfs_map_block() at the
-current location.
----
- fs/btrfs/scrub.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 188a9c42c9eb..fdfbd71c8682 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -1099,15 +1099,35 @@ static void scrub_read_endio(struct btrfs_bio *bbio)
- {
- 	struct scrub_stripe *stripe = bbio->private;
- 	struct bio_vec *bvec;
--	int sector_nr = calc_sector_number(stripe, bio_first_bvec_all(&bbio->bio));
-+	int sector_nr;
- 	int num_sectors;
- 	u32 bio_size = 0;
- 	int i;
- 
--	ASSERT(sector_nr < stripe->nr_sectors);
- 	bio_for_each_bvec_all(bvec, &bbio->bio, i)
- 		bio_size += bvec->bv_len;
--	num_sectors = bio_size >> stripe->bg->fs_info->sectorsize_bits;
-+	/*
-+	 * For RST scrub we can error out with empty bbio. In that case mark
-+	 * the range until the end as error.
-+	 */
-+	if (unlikely(bio_size == 0)) {
-+		/*
-+		 * Since the bbio didn't really get submitted, the logical
-+		 * (bi_sector) should be untouched.
-+		 */
-+		u64 logical = bbio->bio.bi_iter.bi_sector << SECTOR_SHIFT;
-+
-+		ASSERT(logical >= stripe->logical &&
-+		       logical < stripe->logical + BTRFS_STRIPE_LEN);
-+		ASSERT(bbio->bio.bi_status);
-+		sector_nr = (logical - stripe->logical) >>
-+			    bbio->fs_info->sectorsize_bits;
-+		num_sectors = stripe->nr_sectors - sector_nr;
-+	} else {
-+		sector_nr = calc_sector_number(stripe, bio_first_bvec_all(&bbio->bio));
-+		ASSERT(sector_nr < stripe->nr_sectors);
-+		num_sectors = bio_size >> stripe->bg->fs_info->sectorsize_bits;
-+	}
- 
- 	if (bbio->bio.bi_status) {
- 		bitmap_set(&stripe->io_error_bitmap, sector_nr, num_sectors);
--- 
-2.45.2
-
+--=20
+Junchao Sun <sunjunchao2870@gmail.com>
 
