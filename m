@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-5750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5751-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77F7A90A2C5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 05:09:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F0490A2C8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 05:12:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F13EF281312
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 03:09:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0A241C214A7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 03:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871F917B51E;
-	Mon, 17 Jun 2024 03:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BAA417BB38;
+	Mon, 17 Jun 2024 03:11:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TiVmIgaF"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="soe1PrBw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08995367
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2024 03:08:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8314D176AB2
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2024 03:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718593741; cv=none; b=Tjje6XRCvhRD0O3iK3yh9oOTZNtZ/8UjRdapzXQNfzKH/MkHW6Qv2OOlU5oCpX3Qy5Lpm/Gki7j2SsTRKZVycvOZHX7gNAszRRdXl99IS2Z7O94t6hc3+eRVNRmwz68/bgMJr0Tg+0PUKUuq7sqs6kg6iITu9TpGdssXJyNmJ2k=
+	t=1718593916; cv=none; b=mIBiuya5kYbKjSh9OA2uM7C6XmeI0pdouS8syqSt+nv0JW9KSzYQHTnGXKYhp2grOw5zCvtECadGd5HWcGvhHSt14rDR2l5yRhf0n37RpGGBe6hhSJJGgJZaKOyDldROQ2iUxmpfNxefpG6shHxo5MyIWuGbaWXpliC/vX6JNr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718593741; c=relaxed/simple;
-	bh=5jRjtw576nDZv7F211Bt8zjuGPtP58UeXI13Cl9dvCA=;
+	s=arc-20240116; t=1718593916; c=relaxed/simple;
+	bh=vkrz68kj6brN6q09zgkgrnDtDwIG1Tcr5fV2Mh68BkM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mE9npxqqnJHb52FBuZSibIh/IuZ7TIUK3nGaxw/b5y0uHHqLiJMjtCXfEZdYHO9NEiV8fQL6Kj098UORk4ofxVjieJyJIY3qvVRXB70iDdvxmSatnXA7nikr0yeZlJdd1JVbzm0pd0QeWKuFNbNNbgcmBFG5coIMPKH7m+GHl08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TiVmIgaF; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=Qx/VONSFpOMbpagbhP38pRsTUOQ39jT1U2lxnZKcitpOWGytUfBL8WJKr6dbEU24KipUnGqDqEO1cE6GT4M153LiPPAivtvEp9pNDA9mlelxozRoxxkbWXXiuSnDrND/qKkbRxZYKOG2GdmPQy5pyQLrr3RecDbC014QOCYzSJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=soe1PrBw; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1718593729; x=1719198529; i=quwenruo.btrfs@gmx.com;
-	bh=AIxDn07Pn6duVL8HMrq0eOt+rHN0aEiLD9n68NYBbDM=;
+	s=s31663417; t=1718593906; x=1719198706; i=quwenruo.btrfs@gmx.com;
+	bh=IOD2NWuELU/tTvDrKO18UsucHc5E99e7LoHzzPoN9Yw=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=TiVmIgaFyGY02W+vljRU9d1O9VpDLlFcbFNs0S4++u7c1Rb0nfqPv8c6P/iPMpVw
-	 Q7Q87WgLxCdEviR/5LaFxOiBD9aeZu5PXTn3cWzR422I07QNt2QuBnQUITStV/Ivj
-	 2r7LLxUmtMBO0eLLp3+lrkaIoX39rqZddS5wBL/Uk1PuORsctIiCxAxcnNnuNg6gg
-	 brBJKGxigj9R+GHjWhYaI1l/TMU8PidwRs0WzET+KjJ9oZhOqU6LF10GA0TvUMH7S
-	 FC+XwWvs5JWjNgnum48+4BHGRoDm9DiEWzCdJ/YpUtNppCHC35ydfDFUYoIv5vBOl
-	 Ak9Yap9uIo1lvpSIcw==
+	b=soe1PrBwCXW3rOWHHbywrAk0FxWJuo9r9XuO348rWa6JMoaGfrlVzTmRUxLpvS9o
+	 hfqJI4SmsgBRVayyEOAOF6b74ryuiQBhDe7RBbjcV7nLusC4Zflvbd7ZhRyTNhksM
+	 QVKAjEEM+T+yVUCLVHGriX3RO3i4h4ppRsYz3qd4+a4rOW95EQxCGH1yHUkxLNkji
+	 matLjKOXhA2YBgjNK0UixvLRDoQtYv5eQOdMDWKKgzIhaXz7LGRHN9z3geKa0bcRO
+	 Bs8zsORVxZ7+yzh8mU+dndsrpNdpNWXVp821kxxNo4d843mz9QtrH1nnaoDmKLeWU
+	 OxUrFxkMjnoIr4r8Lw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzQgC-1sezPE1q8O-00yF4D; Mon, 17
- Jun 2024 05:08:49 +0200
-Message-ID: <7b732d3a-e893-427b-bc88-24c30a5a4702@gmx.com>
-Date: Mon, 17 Jun 2024 12:38:43 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mof57-1slCeW0k8H-00bAOj; Mon, 17
+ Jun 2024 05:11:46 +0200
+Message-ID: <b02d6f61-65d6-42f5-a89d-c43f7eccbbe6@gmx.com>
+Date: Mon, 17 Jun 2024 12:41:40 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] btrfs: qgroup: use goto style to handle error in
- add_delayed_ref().
+Subject: Re: [PATCH v3 2/2] btrfs: qgroup: use xarray to track dirty extents
+ in transaction.
 To: Junchao Sun <sunjunchao2870@gmail.com>, linux-btrfs@vger.kernel.org
 Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, wqu@suse.com
 References: <20240607143021.122220-1-sunjunchao2870@gmail.com>
+ <20240607143021.122220-2-sunjunchao2870@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,85 +90,311 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240607143021.122220-1-sunjunchao2870@gmail.com>
+In-Reply-To: <20240607143021.122220-2-sunjunchao2870@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:N2SB0144BvHcyYoEhdZ68K3JRfKR2fgFApWH7yesRmjJcOVaIdN
- PTsHPYPsDggPzGixgzlBtRgkFFfLFnDREHlPnz1ElGHP221+23WdFlYYeobyxA80kaUYeKz
- qgr8QTUso5Sn6oRUqAwRaGTXmudLV/rS6hDRxcMXdoIjjQSXLzdyVudwKbguJ1W2XKtSRd8
- KqOzDZXIW2Bx4Mo83uEGA==
+X-Provags-ID: V03:K1:xb/dbz7BY2kewRzvpZEaZV8bEQew+lfw9M3KhVjABmjVc+itrtB
+ 47a358LSSsf/grmeH0RO+a5Xfza2cOOl+oDmQa+2H2PpoWe/lmRIlFwJ0KlZcfZpHWiGmed
+ kkxE1JZeTe1MU1dtf85rvDzhX5HMG9mOJUPS2Zu2l1IodQBw+At5qdxdWZ/onowM98nhtI+
+ VBJBllpBhtI6Ay8TD/KiA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:9JVkWZnYRcA=;Mf/dlUdyId9SSJhXONeM8rpH/w2
- 5RNBLxFg031lQpTTxfnhKFVLb8U8hxBLqMPPMM56OPnDZwSWWyABiZY8FNLMfOtry9DvJ7n9t
- kEVb2zzH+0zuT1XySl+61voDt/AXJSMFGVnKiT2luhvwk0Kgr4JFuopXWVu4LxOM3tvZADnLD
- GgiqBc1PnbQf7LK3p5KFDjwoQJDrOYgzMaRiyEXDLetKjBcpvTDcic34Vv8RYVLB0DW/XDz8Q
- dpzW7mSUz500rCtZIuHRmkl7RTb6lMFRfEoSIoGS5g1joD6DR0cwJN61dCYZYjEz2tgOvoPg4
- JFgZI+Yj6YTf2Bu757nRbtL/KzOMmCQzqbNhnDJy4oe/IF8uIR/W1nrztAuKdWP/M1T5TLkOH
- vzUvupO+j+cXdDFkx9QE+nFfXhtbQYSitSgePnq0TzJnXEvr+xTRLCT/062LPYZsakVedUqcv
- v2GPF8wYtWgLzGWT8JzXqI/7tz2PHP/YR4U7F0E9lpLETj6FGGKmIkao6c2nweEHx5hbv7WfJ
- L21H4/C8kieuW9p+5xmIL9na/089+HHWa9ASgbjMnoFB9EOxPI/8Z0t+u6j7VFmDKAgCy6TER
- FTiWX85nuqGNf1s/tbywT68kOszv+UO6MRveWH5P/fVMNEgUO1CgXFGEC4+/+h3Q6ik4toVKK
- F1YHrJXer/3vVEyzFbO4e53nuxscaOyOuJfPN5VDvL4v69+Muq/o0vqZ5TnfyM5etYebXdoBr
- jtlMEQzn+lTV5jOWz1FaW+giKcCNWZNbnJTPRL9YcVrfXcj33D0zbDxtBvn8mCulY3Iw9vgsS
- vUi6ATvBB2YsiuJNDAyVU6w33DMwAyVDB1gyRMJmXa/hs=
+UI-OutboundReport: notjunk:1;M01:P0:aB5j8iBkFj0=;v5v9KAkrpkkrCVWiMn9ykjW6tQ7
+ +8vXcNqK6p8HVpRTTjRTuRA0/bYkKddhrOVl5prIABttT+v74MioCEhHhwNSqWzyop/nyz9z4
+ bTptk66aPl2NzA8k7aW4866APbeq/GqBKgvQHpIXnJFzI7lV8TshqP9SgUzWcGaHt5a8yIuWn
+ SgpqjLE14bC23qvC0e/jiYIsppNt2Pgak2hsZTtOoKZyt0g65aDFLpN2RQx2iEceLYQq3fhRx
+ nAMkbFNjJ4u9HRgOciaZ0B8AlEJNiC4lQKoy37sApm9bDTBxwFg6PEIHyLCoRIKUuS51W0SF1
+ uO5PXNuyATPyCwODvUicPFT4kB2YdkjUi8/WWQXR5ouAFgF440zinGIHyvRmUOWD1TpRf+XQR
+ iT3ROfluHITcceHQMldd/kwrLY9gtOtd0nKuJMHKAutfHppep128UdYKXIjNygcANxDoMXXte
+ wsqjvu53Hd3UzYDCrZ3n5m8bx3DOXdmrgZY8TdCgURuuYHfV+gczWNudjuBWQsH1/5gDg4BcX
+ bVfK0FbKPpthRcPzT5Jlt3KU3YNYkgXFJaY7XCzwBVNYb80/OL7ga3XsXnra0jcZwZPw8eiwg
+ Dn+8DtZKDUz9qdAyHknqOcj/5SAr4nok4Ro4AJZg3x4DWKrTnJbhWigIVYa9m1aQ+FCMKMPHP
+ v8NIb85GPBBT/UZ3Bt0nsfRFryqJyrewMzlRn1SL5xLRceiyVN7q9DxpjZs5fBNBKlLuGZsf0
+ yF7bO27/LlfSKDoQlaJXdC9H7/5g4AXhz2KkKMMqkc4FFM9eu7e9eDeJzkXe8IxOgNgo+/wjL
+ mdiNOJT2U4il3E3RTU2IfKhyKADcJPUiFoL1am/kbUUd0=
 
 
 
 =E5=9C=A8 2024/6/8 00:00, Junchao Sun =E5=86=99=E9=81=93:
-> Clean up resources using goto to get rid of repeated code.
+> Changes since v2:
+>    - Separate the cleanup code into a single patch.
+>    - Call qgroup_mark_inconsistent() when record insertion failed.
+>    - Return negative value when record insertion failed.
 >
+> Changes since v1:
+>    - Use xa_load() to update existing entry instead of double
+>      xa_store().
+>    - Rename goto lables.
+>    - Remove unnecessary calls to xa_init().
+
+Forgot to mention, you should not put changelog into the commit message.
+
+You do not need to resent, I'll remove them when pushing into for-next
+branch.
+(Along with extra testing etc).
+
+
+>
+> Using xarray to track dirty extents can reduce the size of the
+> struct btrfs_qgroup_extent_record from 64 bytes to 40 bytes.
+> And xarray is more cache line friendly, it also reduces the
+> complexity of insertion and search code compared to rb tree.
+>
+> Another change introduced is about error handling.
+> Before this patch, the result of btrfs_qgroup_trace_extent_nolock()
+> is always a success. In this patch, because of this function calls
+> the function xa_store() which has the possibility to fail, so mark
+> qgroup as inconsistent if error happened and then free preallocated
+> memory. Also we preallocate memory before spin_lock(), if memory
+> preallcation failed, error handling is the same the existing code.
+>
+> This patch passed the check -g qgroup tests using xfstests and
+> checkpatch tests.
+>
+> Suggested-by: Qu Wenruo <wqu@suse.com>
 > Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+
 > ---
->   fs/btrfs/delayed-ref.c | 19 ++++++++++---------
->   1 file changed, 10 insertions(+), 9 deletions(-)
+>   fs/btrfs/delayed-ref.c | 14 +++++++--
+>   fs/btrfs/delayed-ref.h |  2 +-
+>   fs/btrfs/qgroup.c      | 66 ++++++++++++++++++++----------------------
+>   fs/btrfs/transaction.c |  5 ++--
+>   4 files changed, 46 insertions(+), 41 deletions(-)
 >
 > diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> index 6cc80fb10da2..1a41ab991738 100644
+> index 1a41ab991738..ec78d4c7581c 100644
 > --- a/fs/btrfs/delayed-ref.c
 > +++ b/fs/btrfs/delayed-ref.c
-> @@ -1041,18 +1041,13 @@ static int add_delayed_ref(struct btrfs_trans_ha=
-ndle *trans,
->   		return -ENOMEM;
+> @@ -891,10 +891,13 @@ add_delayed_ref_head(struct btrfs_trans_handle *tr=
+ans,
 >
->   	head_ref =3D kmem_cache_alloc(btrfs_delayed_ref_head_cachep, GFP_NOFS=
-);
-> -	if (!head_ref) {
-> -		kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
-> -		return -ENOMEM;
-> -	}
-> +	if (!head_ref)
-> +		goto free_node;
+>   	/* Record qgroup extent info if provided */
+>   	if (qrecord) {
+> -		if (btrfs_qgroup_trace_extent_nolock(trans->fs_info,
+> -					delayed_refs, qrecord))
+> +		int ret =3D btrfs_qgroup_trace_extent_nolock(trans->fs_info,
+> +					delayed_refs, qrecord);
+> +		if (ret) {
+> +			/* Clean up if insertion fails or item exists. */
+> +			xa_release(&delayed_refs->dirty_extents, qrecord->bytenr);
+>   			kfree(qrecord);
+> -		else
+> +		} else
+>   			qrecord_inserted =3D true;
+>   	}
 >
->   	if (btrfs_qgroup_full_accounting(fs_info) && !generic_ref->skip_qgrou=
-p) {
+> @@ -1048,6 +1051,9 @@ static int add_delayed_ref(struct btrfs_trans_hand=
+le *trans,
 >   		record =3D kzalloc(sizeof(*record), GFP_NOFS);
-> -		if (!record) {
-> -			kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
-> -			kmem_cache_free(btrfs_delayed_ref_head_cachep, head_ref);
-> -			return -ENOMEM;
-> -		}
-> +		if (!record)
-> +			goto free_head_ref;
+>   		if (!record)
+>   			goto free_head_ref;
+> +		if (xa_reserve(&trans->transaction->delayed_refs.dirty_extents,
+> +			       generic_ref->bytenr, GFP_NOFS))
+> +			goto free_record;
 >   	}
 >
 >   	init_delayed_ref_common(fs_info, node, generic_ref);
-> @@ -1088,6 +1083,12 @@ static int add_delayed_ref(struct btrfs_trans_han=
-dle *trans,
->   	if (qrecord_inserted)
+> @@ -1084,6 +1090,8 @@ static int add_delayed_ref(struct btrfs_trans_hand=
+le *trans,
 >   		return btrfs_qgroup_trace_extent_post(trans, record);
 >   	return 0;
+>
+> +free_record:
+> +	kfree(record);
+>   free_head_ref:
+>   	kmem_cache_free(btrfs_delayed_ref_head_cachep, head_ref);
+>   free_node:
+> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+> index 04b180ebe1fe..a81d6f2aa799 100644
+> --- a/fs/btrfs/delayed-ref.h
+> +++ b/fs/btrfs/delayed-ref.h
+> @@ -201,7 +201,7 @@ struct btrfs_delayed_ref_root {
+>   	struct rb_root_cached href_root;
+>
+>   	/* dirty extent records */
+> -	struct rb_root dirty_extent_root;
+> +	struct xarray dirty_extents;
+>
+>   	/* this spin lock protects the rbtree and the entries inside */
+>   	spinlock_t lock;
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index fc2a7ea26354..f75ed67a8edf 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -1902,16 +1902,14 @@ int btrfs_limit_qgroup(struct btrfs_trans_handle=
+ *trans, u64 qgroupid,
+>    *
+>    * Return 0 for success insert
+>    * Return >0 for existing record, caller can free @record safely.
+> - * Error is not possible
+> + * Return <0 for insertion failed, caller can free @record safely.
+>    */
+>   int btrfs_qgroup_trace_extent_nolock(struct btrfs_fs_info *fs_info,
+>   				struct btrfs_delayed_ref_root *delayed_refs,
+>   				struct btrfs_qgroup_extent_record *record)
+>   {
+> -	struct rb_node **p =3D &delayed_refs->dirty_extent_root.rb_node;
+> -	struct rb_node *parent_node =3D NULL;
+> -	struct btrfs_qgroup_extent_record *entry;
+> -	u64 bytenr =3D record->bytenr;
+> +	struct btrfs_qgroup_extent_record *existing, *ret;
+> +	unsigned long bytenr =3D record->bytenr;
+>
+>   	if (!btrfs_qgroup_full_accounting(fs_info))
+>   		return 1;
+> @@ -1919,26 +1917,24 @@ int btrfs_qgroup_trace_extent_nolock(struct btrf=
+s_fs_info *fs_info,
+>   	lockdep_assert_held(&delayed_refs->lock);
+>   	trace_btrfs_qgroup_trace_extent(fs_info, record);
+>
+> -	while (*p) {
+> -		parent_node =3D *p;
+> -		entry =3D rb_entry(parent_node, struct btrfs_qgroup_extent_record,
+> -				 node);
+> -		if (bytenr < entry->bytenr) {
+> -			p =3D &(*p)->rb_left;
+> -		} else if (bytenr > entry->bytenr) {
+> -			p =3D &(*p)->rb_right;
+> -		} else {
+> -			if (record->data_rsv && !entry->data_rsv) {
+> -				entry->data_rsv =3D record->data_rsv;
+> -				entry->data_rsv_refroot =3D
+> -					record->data_rsv_refroot;
+> -			}
+> -			return 1;
+> +	xa_lock(&delayed_refs->dirty_extents);
+> +	existing =3D xa_load(&delayed_refs->dirty_extents, bytenr);
+> +	if (existing) {
+> +		if (record->data_rsv && !existing->data_rsv) {
+> +			existing->data_rsv =3D record->data_rsv;
+> +			existing->data_rsv_refroot =3D record->data_rsv_refroot;
+>   		}
+> +		xa_unlock(&delayed_refs->dirty_extents);
+> +		return 1;
+> +	}
 > +
-> +free_head_ref:
-> +	kmem_cache_free(btrfs_delayed_ref_head_cachep, head_ref);
-> +free_node:
-> +	kmem_cache_free(btrfs_delayed_ref_node_cachep, node);
-> +	return -ENOMEM;
+> +	ret =3D __xa_store(&delayed_refs->dirty_extents, record->bytenr, recor=
+d, GFP_ATOMIC);
+> +	xa_unlock(&delayed_refs->dirty_extents);
+> +	if (xa_is_err(ret)) {
+> +		qgroup_mark_inconsistent(fs_info);
+> +		return xa_err(ret);
+>   	}
+>
+> -	rb_link_node(&record->node, parent_node, p);
+> -	rb_insert_color(&record->node, &delayed_refs->dirty_extent_root);
+>   	return 0;
 >   }
 >
->   /*
+> @@ -2045,6 +2041,11 @@ int btrfs_qgroup_trace_extent(struct btrfs_trans_=
+handle *trans, u64 bytenr,
+>   	if (!record)
+>   		return -ENOMEM;
+>
+> +	if (xa_reserve(&trans->transaction->delayed_refs.dirty_extents, bytenr=
+, GFP_NOFS)) {
+> +		kfree(record);
+> +		return -ENOMEM;
+> +	}
+> +
+>   	delayed_refs =3D &trans->transaction->delayed_refs;
+>   	record->bytenr =3D bytenr;
+>   	record->num_bytes =3D num_bytes;
+> @@ -2053,7 +2054,9 @@ int btrfs_qgroup_trace_extent(struct btrfs_trans_h=
+andle *trans, u64 bytenr,
+>   	spin_lock(&delayed_refs->lock);
+>   	ret =3D btrfs_qgroup_trace_extent_nolock(fs_info, delayed_refs, recor=
+d);
+>   	spin_unlock(&delayed_refs->lock);
+> -	if (ret > 0) {
+> +	if (ret) {
+> +		/* Clean up if insertion fails or item exists. */
+> +		xa_release(&delayed_refs->dirty_extents, record->bytenr);
+>   		kfree(record);
+>   		return 0;
+>   	}
+> @@ -2922,7 +2925,7 @@ int btrfs_qgroup_account_extents(struct btrfs_tran=
+s_handle *trans)
+>   	struct btrfs_qgroup_extent_record *record;
+>   	struct btrfs_delayed_ref_root *delayed_refs;
+>   	struct ulist *new_roots =3D NULL;
+> -	struct rb_node *node;
+> +	unsigned long index;
+>   	u64 num_dirty_extents =3D 0;
+>   	u64 qgroup_to_skip;
+>   	int ret =3D 0;
+> @@ -2932,10 +2935,7 @@ int btrfs_qgroup_account_extents(struct btrfs_tra=
+ns_handle *trans)
+>
+>   	delayed_refs =3D &trans->transaction->delayed_refs;
+>   	qgroup_to_skip =3D delayed_refs->qgroup_to_skip;
+> -	while ((node =3D rb_first(&delayed_refs->dirty_extent_root))) {
+> -		record =3D rb_entry(node, struct btrfs_qgroup_extent_record,
+> -				  node);
+> -
+> +	xa_for_each(&delayed_refs->dirty_extents, index, record) {
+>   		num_dirty_extents++;
+>   		trace_btrfs_qgroup_account_extents(fs_info, record);
+>
+> @@ -3001,7 +3001,7 @@ int btrfs_qgroup_account_extents(struct btrfs_tran=
+s_handle *trans)
+>   		ulist_free(record->old_roots);
+>   		ulist_free(new_roots);
+>   		new_roots =3D NULL;
+> -		rb_erase(node, &delayed_refs->dirty_extent_root);
+> +		xa_erase(&delayed_refs->dirty_extents, index);
+>   		kfree(record);
+>
+>   	}
+> @@ -4788,15 +4788,13 @@ int btrfs_qgroup_trace_subtree_after_cow(struct =
+btrfs_trans_handle *trans,
+>   void btrfs_qgroup_destroy_extent_records(struct btrfs_transaction *tra=
+ns)
+>   {
+>   	struct btrfs_qgroup_extent_record *entry;
+> -	struct btrfs_qgroup_extent_record *next;
+> -	struct rb_root *root;
+> +	unsigned long index;
+>
+> -	root =3D &trans->delayed_refs.dirty_extent_root;
+> -	rbtree_postorder_for_each_entry_safe(entry, next, root, node) {
+> +	xa_for_each(&trans->delayed_refs.dirty_extents, index, entry) {
+>   		ulist_free(entry->old_roots);
+>   		kfree(entry);
+>   	}
+> -	*root =3D RB_ROOT;
+> +	xa_destroy(&trans->delayed_refs.dirty_extents);
+>   }
+>
+>   void btrfs_free_squota_rsv(struct btrfs_fs_info *fs_info, u64 root, u6=
+4 rsv_bytes)
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 3388c836b9a5..c473c049d37f 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -143,8 +143,7 @@ void btrfs_put_transaction(struct btrfs_transaction =
+*transaction)
+>   		BUG_ON(!list_empty(&transaction->list));
+>   		WARN_ON(!RB_EMPTY_ROOT(
+>   				&transaction->delayed_refs.href_root.rb_root));
+> -		WARN_ON(!RB_EMPTY_ROOT(
+> -				&transaction->delayed_refs.dirty_extent_root));
+> +		WARN_ON(!xa_empty(&transaction->delayed_refs.dirty_extents));
+>   		if (transaction->delayed_refs.pending_csums)
+>   			btrfs_err(transaction->fs_info,
+>   				  "pending csums is %llu",
+> @@ -351,7 +350,7 @@ static noinline int join_transaction(struct btrfs_fs=
+_info *fs_info,
+>   	memset(&cur_trans->delayed_refs, 0, sizeof(cur_trans->delayed_refs));
+>
+>   	cur_trans->delayed_refs.href_root =3D RB_ROOT_CACHED;
+> -	cur_trans->delayed_refs.dirty_extent_root =3D RB_ROOT;
+> +	xa_init(&cur_trans->delayed_refs.dirty_extents);
+>   	atomic_set(&cur_trans->delayed_refs.num_entries, 0);
+>
+>   	/*
 
