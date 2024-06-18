@@ -1,99 +1,94 @@
-Return-Path: <linux-btrfs+bounces-5794-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5795-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DDA690D706
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2024 17:21:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57F6F90DA90
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2024 19:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA78C2841B2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2024 15:21:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30A6C281C93
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2024 17:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942CB3D0D5;
-	Tue, 18 Jun 2024 15:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6438145B34;
+	Tue, 18 Jun 2024 17:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b994Nl/q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L/glrhDY"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B5439AEC
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2024 15:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEC92139DD;
+	Tue, 18 Jun 2024 17:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718723683; cv=none; b=iWSKLPUIzdiDQ15Z+9Sft/Jrna2H9p4gDjY8YJGrKeU2pCEb5MDCRl8NMXiHXa4hRP6a3LEgSr2z4r3Vt9BnSJv26aSP1fSv0jYyf1Y8QuXuwmPbMoJZerY+DUpmjEh0qZZSQGjoxxvRPANykkHxYTmF8h2HCMCSJY7Mwuz2hS0=
+	t=1718731534; cv=none; b=LFZLaEpcbdOynF2a4T2bY7xrgAwdXy/yQtXph5bWT2VwhlVeuAQn/5cOVcB2v/EE39RixHlav5lr/gDxi1CFUxu55kcnHbnh2Pqlcyekzxt3UaHAeRs8q0M9a6VyseLpEpz9L4AFuQZnq02H72IuO/MM1aaWHa4UO3F7zDC2vSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718723683; c=relaxed/simple;
-	bh=EYQS0aS3FdVuFwhy3xw+vkGECb9lF8NVP2j9JsWVc9k=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gIYESsLXI8QmotAyUrUmRX/0iefqXVkUzkiD6nvV8LLA0nfEloVigvKKMmBxmfvmwHmeeM3dPhey0kbxDahXtTm8lRgx8L873OwwP9WVgcEueAyTi9d/BokaXlWhFZXgmNj7u+efoOJ64IWJKHmXxD0QhiMyrm2fiXNN7T9wkro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b994Nl/q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A354C4AF50
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2024 15:14:42 +0000 (UTC)
+	s=arc-20240116; t=1718731534; c=relaxed/simple;
+	bh=9WtmB9Bn0bftxKxvR8395pd356hshFubR0WI4s7a7NQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dbTxXiAhiy1mt+13cWbSEofpHoU1BTJi4zMLCiPJWBS/SzDNAJPPjxUMCsRn45iFYacSKU2IE99ehUjfO3AeVTMrXA/hBEy7HAOVPX+uFj9HfGXaGqHbkccLVFVVPoiidh0lxGwkw2eJN911DfySQzd0oUOGxIkRBn/WC+q0Ylk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L/glrhDY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FC4AC3277B;
+	Tue, 18 Jun 2024 17:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718723683;
-	bh=EYQS0aS3FdVuFwhy3xw+vkGECb9lF8NVP2j9JsWVc9k=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=b994Nl/qQGI6yAWvsCOjTQy//wFytokfj9iiQ0e5kWMyBk6MKA5qRI9AxQMZMo4Bh
-	 dpmG5wiQRBLTzB/SRJjgw0P4KGSzJc72EGYH3u1YISk30aNCaMkcbAFB0PPY6pUqIE
-	 0Yxku0XlkBF7Nff6MlrkSpkEcOzqFurQ96sivx1CkIqmZw62IWlxoFAbCEg8R1NfMr
-	 c5bCfJdadEg/E3xa/4Ui82Y+szm3yqlxCk3kdrXmzYP1nuMkC6sNZQ7mLwdgi5tzaX
-	 QdFOTf23KzMcJko1FtZN4mcPDSI5dHLCuRawNiT6weDC9Wy9mAgdo7tpCjSarpMsZD
-	 hD2LkEDRg2LIQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: replace BUG_ON() with error handling at update_ref_for_cow()
-Date: Tue, 18 Jun 2024 16:14:38 +0100
-Message-Id: <0b85a09a22d9a36c6f1b0a93d84c7cc31e041adb.1718723053.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1718723053.git.fdmanana@suse.com>
-References: <cover.1718723053.git.fdmanana@suse.com>
+	s=k20201202; t=1718731533;
+	bh=9WtmB9Bn0bftxKxvR8395pd356hshFubR0WI4s7a7NQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L/glrhDYm4sY+aW6Z7pWsticv8PewU9RhtaYYM2XXCXyQ7dJn+bapDjh1iVAIjRrm
+	 piW4D1gKTzDt5/l4zvkKQZd0ituyOTiYFBFUrZj3cl3kj9qCzTOuKdBYTrjdfDqvHf
+	 nw2tYUPmW/v+qurual1veLYcOf4R5ngMB1OFAzv5aGGzHXY83G9L75JQT5CeaVBtod
+	 2vadkoi5t1N78i5jAUnEDEN/yOnXJn4a4rZtBDP63+dfj4QXWar7NBEGVqaB3yJ/I/
+	 UbiWMjl6sosNLYMm1qGpqwcWgkWXMfAe7m8B6h7YzteDo5W9fG1kRjVrdUPgtl0jbw
+	 nYq5nfgtQA4zA==
+Date: Tue, 18 Jun 2024 11:25:29 -0600
+From: Keith Busch <kbusch@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Christoph Hellwig <hch@lst.de>, axboe@kernel.dk, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, djwong@kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, willy@infradead.org, agk@redhat.com,
+	snitzer@kernel.org, mpatocka@redhat.com, dm-devel@lists.linux.dev,
+	hare@suse.de, Himanshu Madhani <himanshu.madhani@oracle.com>
+Subject: Re: [PATCH v8 05/10] block: Add core atomic write support
+Message-ID: <ZnHDCYiRA9EvuLTc@kbusch-mbp.dhcp.thefacebook.com>
+References: <20240610104329.3555488-1-john.g.garry@oracle.com>
+ <20240610104329.3555488-6-john.g.garry@oracle.com>
+ <ZnCGwYomCC9kKIBY@kbusch-mbp.dhcp.thefacebook.com>
+ <20240618065112.GB29009@lst.de>
+ <91e9bbe3-75cf-4874-9d64-0785f7ea21d9@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <91e9bbe3-75cf-4874-9d64-0785f7ea21d9@oracle.com>
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Jun 18, 2024 at 08:46:31AM +0100, John Garry wrote:
+> 
+> About NVMe, the spec says that NABSN and NOIOB may not be related to one
+> another (command set spec 1.0d 5.8.2.1), but I am wondering if people really
+> build HW which would have different NABSN/NABSPF and NOIOB. I don't know.
 
-Instead of a BUG_ON() just return an error, log an error message and
-abort the transaction in case we find an extent buffer belonging to the
-relocation tree that doesn't have the full backref flag set. This is
-unexpected and should never happen (save for bugs or a potential bad
-memory).
+The history of NOIOB is from an nvme drive that had two back-end
+controllers with their own isolated storage, and then striped together
+on the front end for the host to see. A command crossing the stripe
+boundary takes a slow path to split it for each backend controller's
+portion and merge the results. Subsequent implementations may have
+different reasons for advertising this boundary, but that was the
+original.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 7b2f1de845e7..e33f9f5a228d 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -461,8 +461,16 @@ static noinline int update_ref_for_cow(struct btrfs_trans_handle *trans,
- 	}
- 
- 	owner = btrfs_header_owner(buf);
--	BUG_ON(owner == BTRFS_TREE_RELOC_OBJECTID &&
--	       !(flags & BTRFS_BLOCK_FLAG_FULL_BACKREF));
-+	if (unlikely(owner == BTRFS_TREE_RELOC_OBJECTID &&
-+		     !(flags & BTRFS_BLOCK_FLAG_FULL_BACKREF))) {
-+		btrfs_crit(fs_info,
-+"found tree block at bytenr %llu level %d root %llu refs %llu flags %llx without full backref flag set",
-+			   buf->start, btrfs_header_level(buf),
-+			   btrfs_root_id(root), refs, flags);
-+		ret = -EUCLEAN;
-+		btrfs_abort_transaction(trans, ret);
-+		return ret;
-+	}
- 
- 	if (refs > 1) {
- 		if ((owner == btrfs_root_id(root) ||
--- 
-2.43.0
-
+Anyway, there was an idea that the stripe size could be user
+configurable, though that never shipped as far as I know. If it had,
+then the optimal NOIOB could be made larger, but the atomic write size
+doesn't change.
 
