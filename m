@@ -1,188 +1,111 @@
-Return-Path: <linux-btrfs+bounces-5774-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5775-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0856290BFAD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2024 01:12:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03AE390C09C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2024 02:42:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D2AB1C22AAC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2024 23:12:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8914CB23580
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2024 00:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49B819AD80;
-	Mon, 17 Jun 2024 23:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34BBE28DC3;
+	Tue, 18 Jun 2024 00:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="DIuDPh5W";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="p5YgUgDK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T7bu8uEx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D21919AD65
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2024 23:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5795322EF4;
+	Tue, 18 Jun 2024 00:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718665920; cv=none; b=W4ZTaWgqd65LWlmqPa69B8iBea1KiwWukN3ZhdFQmvcOD4vSbcaq7OTcN3cLROaGV0iRiQaQTn3oB3woFxWmClB4X/KJ28bz4VxBYBLEc5ipSGgW6IY3tgFPYZUhGFw/WgU8Uf5HSnTV4f+qr13Vk44oHVRTra0o5HvfCjFxlgY=
+	t=1718671155; cv=none; b=BjO4KI/HDZSVE8QTm+cVySkeAeXEYOfo3kk3NPstqbZ1z4k/oQZOWxsDjVhrQfSBuGsa19tU3vXUCKaGJhiL0rAbreMqoeEtuxdC6Dc930hoDnt/h7m/8I1uJEa02z+AAcb/rVQt7Xq+rBw+V+pl1jyIA9dQ+0RjlwZVFNoUC+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718665920; c=relaxed/simple;
-	bh=hzhoGO92xl8LPbFjODE5N7gGSveoLFVMK34FF/OXWV4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hl9rvsKcjZ91TbABzkE1oQxJX+pt6ZxfP6DqLRtUzH4E2k0QAZBKSQ6tJu7bRqK5C1pQxN7Vub49ofF593zeNnCBCHg30fQaPgG1bo7utOCMfgHgxqVudU8DXcaIoEWwmxtWmZ/2wNyPbbM1QFQDRhmqT/05hBtvWjRMOrdW+jE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=DIuDPh5W; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=p5YgUgDK; arc=none smtp.client-ip=64.147.123.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 3A9661800070;
-	Mon, 17 Jun 2024 19:11:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 17 Jun 2024 19:11:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1718665917; x=
-	1718752317; bh=PsTNSV15U4LIhwToEqb9sR3MJ90lJ2kczFDkVNsdOqE=; b=D
-	IuDPh5WTDSrfGV4pNEMEm+hFSjrcql5AitXC93IBy3Hjs7+Hx5tTDCMMmtt5LYo0
-	SdP9hPTbFgG7pMz1Pnt7nthecAxBkHFgKfNwO/26u63aKOTUWVkSfUidlJWFsXoZ
-	FrdAfrsEJAXwCkwGHglhExDlWedcVvHB3el/nOnRCkrwUabCChmgSNKb22Z3gWBZ
-	dgd6Az1zlrkteNzMJKsphPqjJs1iuvKbC8lyikrNM9Jvs80pLZ0QfaEQ/8B8Qw6J
-	RTqxZNDNo7exvG9tkfpCgeZ0XbUUEwEugZ8GkwOpRZN1KcjGhWywOdD2URe1eSk5
-	qHjCBjdsPyefApVGOrotg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1718665917; x=1718752317; bh=PsTNSV15U4LIh
-	wToEqb9sR3MJ90lJ2kczFDkVNsdOqE=; b=p5YgUgDKwFyGNeiXAs+iloc456zmg
-	IVUTpEJDAWYvdCRt0Tru4rRqfRVhuViXD2w715ly4DuXkjHKiyqRK5XhWTFHNPhH
-	IHuV07OKBnrJvJSpVd3UGwOaC9qg5STtvEWzPnYjyxcW+0p796emzofXYeu6+YDV
-	cvjsqskyTgpanC7qE1+ol//CYciBtV6RpMrrfFniclgPcPMdZKaep4OLTgy244SY
-	W8mjzpXU4aiwverp+M8/TYKXIUXO81AP7wxX62UEO2c0uoN42ggS5/VVIGA24gEs
-	FqF4abttv9UmnLXHkJq5kThhKsASJkVEKcrXqvf9tFsTuurPC//bDKGOA==
-X-ME-Sender: <xms:vcJwZr-51mBdBH2gVmj69BVmn4WrbYQZK8NqGM-M7gpkiUQBMskb1Q>
-    <xme:vcJwZnvMWEw5__C4tmDa0OdFZUFMrg1906y6DainwC0Sic9eO9Y254fqA4G-GCApA
-    pOQ5TYlGuRSddZ03Kg>
-X-ME-Received: <xmr:vcJwZpDqSWyZ5v8LqoO5cSmvidYnd00sJVgZ6kdeH4r7SRX1bA4G28hS7pbrR8HEFjsbsSQDj-c0DLt9Mk094pMUspI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedviedgudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
-    dvhedtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpeefnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:vcJwZner2eWQyWubfLQb_F6rTggFp3DjZKspeRRqkOq-kCq-7HFdpg>
-    <xmx:vcJwZgOwsu0v4ayOdzL7ggTHrRpto2nof9HfslvsVGDpqu1S5fREdw>
-    <xmx:vcJwZpk_4hxih0bBBmpaZT9h3FCVCFr2-LBoC3AL-Ce_hc-OMeEKFg>
-    <xmx:vcJwZqsbIlOsZXgBZLAfXHof4etmcLPjYYzQMxrL02x-UJcATIkLAA>
-    <xmx:vcJwZpaalKlKG1-fVzg_tRtQLdmjkqM5UbFnsOD3kYfx2MW0wzLXe0fU>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 17 Jun 2024 19:11:57 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v2 6/6] btrfs: urgent periodic reclaim pass
-Date: Mon, 17 Jun 2024 16:11:18 -0700
-Message-ID: <6bf9d464d1a1b73853cc4fa82e233ff5e007a14a.1718665689.git.boris@bur.io>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1718665689.git.boris@bur.io>
-References: <cover.1718665689.git.boris@bur.io>
+	s=arc-20240116; t=1718671155; c=relaxed/simple;
+	bh=tla7hD2q3QkjVFoo1z5dsVV7obX+8eTVEfRWgmMaRck=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oXXyBg6QujW936rVq7Nb+/PFICrDO+Z+MsP4fTmsBxiLL1jeVMUSAexltIYXdLag+LFWCXEYTtt139OIDHsON0v9J4rw4WwUVKG0qwhsKFx/a0t9ti0O+mBoFp5+RodAQAFxp9Bgbtr7YRynDXpLWo/3X9T9ldhSZKSuuA0e+GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T7bu8uEx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8FBCC2BD10;
+	Tue, 18 Jun 2024 00:39:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718671154;
+	bh=tla7hD2q3QkjVFoo1z5dsVV7obX+8eTVEfRWgmMaRck=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T7bu8uExGbL99sJabceZF5ZJZnwZGB8hp0G7EtrYMdO5eoI687ltDtaQ38Xnn1St+
+	 xhjF5CfEcbuYuBg2rb/BLYdR04BFi984albm+AS7L6VFQZ1gZZguE3hFbR6scKcTuV
+	 7CSXrvO+YufNbmX4efPhZG8d1mDa+cTn7j4V/qCD4XcGOzRN+Km2E36LF4alnFK+Ws
+	 3dAPF/r8L82WQ2GEckfRcH1XjlgHQp6yQFJcA6xH2L0z/I4p6dHu3uEeBAz8fJuxE8
+	 QopM97ffd+nX7dCxtTF0IKKezJOVrDcnOBcW77flJL/gYrq4igTf5YO8E8BqBxoTwD
+	 6Hm74QHhTIK5Q==
+Date: Mon, 17 Jun 2024 17:39:14 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] generic/74[3,8]: add git commit ID for the fixes
+Message-ID: <20240618003914.GA103020@frogsfrogsfrogs>
+References: <85c32250ac781bf925d1f26b0c6933dace05b3d1.1718643112.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85c32250ac781bf925d1f26b0c6933dace05b3d1.1718643112.git.fdmanana@suse.com>
 
-Periodic reclaim attempts to avoid block_groups seeing active use with a
-sweep mark that gets cleared on allocation and set on a sweep. In urgent
-conditions where we have very little unallocated space (less than one
-chunk used by the threshold calculation for the unallocated target), we
-want to be able to override this mechanism.
+On Mon, Jun 17, 2024 at 05:52:14PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> The corresponding fixes landed in kernels 6.10-rc1 and 6.10-rc3, so update
+> the tests to point the commit IDs.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Introduce a second pass that only happens if we fail to find a reclaim
-candidate and reclaim is urgent. In that case, do a second pass where
-all block groups are eligible.
+Thanks for for the update!
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/space-info.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index e7a2aa751f8f..95e65d5163ab 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -1956,17 +1956,35 @@ int btrfs_calc_reclaim_threshold(struct btrfs_space_info *space_info)
- 	return READ_ONCE(space_info->bg_reclaim_threshold);
- }
- 
-+/*
-+ * Under "urgent" reclaim, we will reclaim even fresh block groups that have
-+ * recently seen successful allocations, as we are desperate to reclaim
-+ * whatever we can to avoid ENOSPC in a transaction leading to a readonly fs.
-+ */
-+static bool is_reclaim_urgent(struct btrfs_space_info *space_info)
-+{
-+	struct btrfs_fs_info *fs_info = space_info->fs_info;
-+	u64 unalloc = atomic64_read(&fs_info->free_chunk_space);
-+	u64 data_chunk_size = calc_effective_data_chunk_size(fs_info);
-+
-+	return unalloc < data_chunk_size;
-+}
-+
- static int do_reclaim_sweep(struct btrfs_fs_info *fs_info,
- 			    struct btrfs_space_info *space_info, int raid)
- {
- 	struct btrfs_block_group *bg;
- 	int thresh_pct;
-+	bool try_again = true;
-+	bool urgent;
- 
- 	spin_lock(&space_info->lock);
-+	urgent = is_reclaim_urgent(space_info);
- 	thresh_pct = btrfs_calc_reclaim_threshold(space_info);
- 	spin_unlock(&space_info->lock);
- 
- 	down_read(&space_info->groups_sem);
-+again:
- 	list_for_each_entry(bg, &space_info->block_groups[raid], list) {
- 		u64 thresh;
- 		bool reclaim = false;
-@@ -1974,14 +1992,29 @@ static int do_reclaim_sweep(struct btrfs_fs_info *fs_info,
- 		btrfs_get_block_group(bg);
- 		spin_lock(&bg->lock);
- 		thresh = mult_perc(bg->length, thresh_pct);
--		if (bg->used < thresh && bg->reclaim_mark)
-+		if (bg->used < thresh && bg->reclaim_mark) {
-+			try_again = false;
- 			reclaim = true;
-+		}
- 		bg->reclaim_mark++;
- 		spin_unlock(&bg->lock);
- 		if (reclaim)
- 			btrfs_mark_bg_to_reclaim(bg);
- 		btrfs_put_block_group(bg);
- 	}
-+
-+	/*
-+	 * In situations where we are very motivated to reclaim (low unalloc)
-+	 * use two passes to make the reclaim mark check best effort.
-+	 *
-+	 * If we have any staler groups, we don't touch the fresher ones, but if we
-+	 * really need a block group, do take a fresh one.
-+	 */
-+	if (try_again && urgent) {
-+		try_again = false;
-+		goto again;
-+	}
-+
- 	up_read(&space_info->groups_sem);
- 	return 0;
- }
--- 
-2.45.2
+--D
 
+> ---
+>  tests/generic/743 | 2 +-
+>  tests/generic/748 | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tests/generic/743 b/tests/generic/743
+> index ad37d32f..769ce706 100755
+> --- a/tests/generic/743
+> +++ b/tests/generic/743
+> @@ -23,7 +23,7 @@ _cleanup()
+>  # Import common functions.
+>  . ./common/dmerror
+>  
+> -_fixed_by_kernel_commit XXXXXXXXXXXX \
+> +_fixed_by_kernel_commit 631426ba1d45 \
+>  	"mm/madvise: make MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY properly"
+>  
+>  # real QA test starts here
+> diff --git a/tests/generic/748 b/tests/generic/748
+> index 71b74166..428d4a33 100755
+> --- a/tests/generic/748
+> +++ b/tests/generic/748
+> @@ -17,7 +17,7 @@ _require_scratch
+>  _require_attrs
+>  _require_odirect
+>  _require_xfs_io_command falloc -k
+> -[ "$FSTYP" = btrfs ] && _fixed_by_kernel_commit XXXXXXXXXXXX \
+> +[ "$FSTYP" = btrfs ] && _fixed_by_kernel_commit 9d274c19a71b \
+>  	"btrfs: fix crash on racing fsync and size-extending write into prealloc"
+>  
+>  # -i slows down xfs_io startup and makes the race much less reliable.
+> -- 
+> 2.43.0
+> 
+> 
 
