@@ -1,76 +1,76 @@
-Return-Path: <linux-btrfs+bounces-5829-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5830-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8725890F9B8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 01:22:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C685F90F9C1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 01:25:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6D5F282878
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2024 23:22:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48339B21EFF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2024 23:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69A815B158;
-	Wed, 19 Jun 2024 23:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6319015B553;
+	Wed, 19 Jun 2024 23:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EWDJhDP0"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="V/7tPmkB"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1EC15ADA4
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 23:21:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626D7762C1
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 23:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718839314; cv=none; b=UjS/2sUtDqW/26ORWbWylkXGgWDfimbwMJiE8ytgp/j/mvHGq4WsWOqH0sNTuHyIoJozEQVEpiK6ix6BzfyzIYMSIFf3QuX9BwilfcuwBLkG/XDT3/BQnnW6mwpI6+Vk6GBWMeJJ3qN+1HZ1pYE8sHTtU1TMw/goqdD+gm+7ijw=
+	t=1718839502; cv=none; b=ajnVOVk4n+HfNMOcbOQC6dz9rytCUUV8yCbdTcVOGwmjBKGG2IXyZnwix9GE1dqfaC+n9Ea6miqeeG9YswhYNQSDB1Tm0wKG4TT5sFvNgJVscVOfaAMhM9vdw3bxizGOAXCzcw4w1KLFE/yPoLi/Zl0wisYkUDvUcFvpjtJghGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718839314; c=relaxed/simple;
-	bh=pDyiXasF9mQwUYbbCwf/coPWRh83vGOk2WxDSaiShBY=;
+	s=arc-20240116; t=1718839502; c=relaxed/simple;
+	bh=zyeeDuCpHhuqJ8rFh9Gqyl3Cfzs/eTjgYwi+9ZC7Wmk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ri/LVuu+UwirZYI3iv22AQSFQXNTCFPa+xmpLpz6jgC24xFOU0Kr8Ljpic9q3b0FLNoxzznNK752FDu1aAX0iiexkOBto8ccGTh3/8+7mUMv6kqdTyyrLV4NrgyNuuyKFGWfk17E5JCd7c9AibXITWvWuGSFyQr/PGruRJ8WYcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EWDJhDP0; arc=none smtp.client-ip=209.85.208.169
+	 In-Reply-To:Content-Type; b=lK+0qWOOGwXX3khEU1lFN7FHjk0ZDIL2LQE/+sAEHdxN8QdtsM2dkeE6VFoDdkhPVTGL1d2b0+shF/n1QFntFQduV5XEGxFygBCLrNJXN/mfgqdWmJcNiuWuzkkmxX9ES00v13v+vea4zKlz8kGwiDLKAEZb5AnXKZ04JP/SyUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=V/7tPmkB; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ebe3bac6c6so2968991fa.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 16:21:49 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ec408c6d94so2985031fa.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 16:25:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1718839307; x=1719444107; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1718839498; x=1719444298; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=e0wnflayjimDOr+oVJ6Pp3H8NuBoX6Pw8Ez5tW3IngE=;
-        b=EWDJhDP0oDoeUlLZwpCviAdmB3a4KgyVmUtZ2dpyGbq8VS7gimTG31wUXwEo1ptgY4
-         QV3mmeANvj/ycuxZelie9c6LYDuy5/gEdqdIg+OPw7XgJMcqIp/1nLC0dGAw2xUJOzkG
-         z3oojm48rhlP5Cu8gZY1iElScss0XQzv0Hv2rJt8+InU3mkIhS3F04d8Z8cieCEbWF5T
-         eq7Mc65KaI/Auyp39wWCImRaPTmh+XEbiIPjgxJIkwvCntC383da/QMZ+5Q5q6R/uojz
-         /cKf8he7EMKotBz0PduLE92DTLACfzGAK9B9qds+XCa8Bte2UezJ4Q250KfL1rU0KXy2
-         +QMQ==
+        bh=hhTHlVVDHiZG4jZZuCq3Q7IMoXY53eIHTvJn3Jz/vD8=;
+        b=V/7tPmkBRI1u0I6JleCdNL+9T2K3w3JP5ttZ/sGx0esK+iIzfszQlrKTWl3uLdMM2C
+         r/iN7pYXHFF4nhDfmaJ7wSu71MOSfn9tH6jJixgX/JYn2fl0ZlzN+rCg3DSZ+EXZ/Unb
+         Qkq1v2IWraebHZu28z3t18tVU6Wq+dgLhcYCe52rDtUXp2tSDnS84hRJLVtX/8b4hgYm
+         fJ1v7to4ct0yyWsW6vE8bOfX7A2gH51ccnAYbzzS/bwDwGs3NgQE1KLJyBc1dvZfhl/v
+         GqFdvhY+ZoKFnsnSkKOAR0t1y3GK3WcY603SjC6TZinO+WAmpeHgB65dKoHxCg0IANVP
+         8bTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718839307; x=1719444107;
+        d=1e100.net; s=20230601; t=1718839498; x=1719444298;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=e0wnflayjimDOr+oVJ6Pp3H8NuBoX6Pw8Ez5tW3IngE=;
-        b=A+XW7OWLVv7gBiRaUnHe6uEGv1kII85XGlaF5tA5ldtdnIy6BlSuNbG39Qyts4cPNu
-         yNzdAHLNPeSDB4bw9GFX7YEQYi+pSzguRHvNkW1CwODpYWmasHx7h3Wsgwc/FZssG39a
-         x/l4NpcNI15Bs1/n7mj+xslkaElhVVPBVGEggpelAc/A+TRqMR1Codwsk0QOYhuV2mZc
-         2TXYwquseaCnEeB0ywt9HycXDjfEb3e/gAs8/RoEru1Jcmewinh8kqQaZ5amljSdgc70
-         7qEWE9v40/t1l67A85c6VNdzeeER24bIXKdKfshxAbL9juUGvgK2Vjg7EGyMADJVNBbO
-         1Dzw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFk3NF0p9QuCC9K+A3Gy4Jjk8Y+LdsaS+03zFPlgSytJjrnOVd1wx7Nd3El8iuVUP5rVzkPOMDbxIeD6hKYeap+dIIK/UIduS+uoA=
-X-Gm-Message-State: AOJu0YxzSq00eFHeIigtrktLCr+NfwqnMk9KN/dDwYnwn9GPJp2HUUoW
-	IwIoUcxwUZ0HnWXTpsah3peVrRsvrLKiiR+l8bcXG2GECwlSIHfi1ieDZOLf7ypMm93BNgkqPgg
-	q
-X-Google-Smtp-Source: AGHT+IHiffoNE+xJGc1eZzDTnSg52pN1rSy5I+zNxaorFHUuMDasqGSkUbyCMKYUlpQiXPbwcpWQfQ==
-X-Received: by 2002:a2e:3109:0:b0:2eb:e01e:3699 with SMTP id 38308e7fff4ca-2ec3ce940admr27341501fa.17.1718839307267;
-        Wed, 19 Jun 2024 16:21:47 -0700 (PDT)
+        bh=hhTHlVVDHiZG4jZZuCq3Q7IMoXY53eIHTvJn3Jz/vD8=;
+        b=sWv4/ucSmJuJX286XWNY/WKoE5z+YRmSXsoDCIffs36CjZqw7E8E88D64EmlI0QkKe
+         +dw4hYWIXQNBRS2myYejXoeFnf75zjojRaMUJ5cIisyjcBCFpdUGGQWhFt0XI6YOlfjK
+         ofZpkFZMJHBm8ECFA8QETXaJapSmKN3tsQwekEtjjmX1DIdFq638KEf6IG7JAZ859agK
+         1vBg+h21okUtBRmOMR4nyrzmP/e8JFwUumCzmVYtaG++osXEsGOiAVODTDcr5PHOBDeQ
+         YTUPhbfWVc3Q5znfKI0PD8strWLXbtJqFi4tweOF77rRjv9nmkAulG6F9A2bQDiID08n
+         xlGA==
+X-Forwarded-Encrypted: i=1; AJvYcCWUAZa7A3xG5rJActdrr+EAaUqpaDKV7+3mYxbnJ3gx3Us8QAnzfONBcDowyHKshEWbcq1ie52eI+ejOy752QoFRdczV1HfVNT4lMQ=
+X-Gm-Message-State: AOJu0Yx6XlCmW/T/KI4uBb+G5Ek05IXKIq921On0JMoCO0/Tw9sOUb2D
+	+8Nq3694uYaNwISrLiStZL8b8udLhjhcwpqUvwl9VNkRA5y0oKN3Xd8sB52oVisWuTfqCGbFZ4Y
+	6
+X-Google-Smtp-Source: AGHT+IHKiyK/tMRRfgWwGEFS/vU1HaDYE2GpJ6Q6J9gUJ6hjUDwuIeYI5DUhsw7XOo5ItSocYtmQNw==
+X-Received: by 2002:a2e:9085:0:b0:2ec:30ee:6972 with SMTP id 38308e7fff4ca-2ec3ced0e89mr24428071fa.24.1718839497618;
+        Wed, 19 Jun 2024 16:24:57 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705cc96750esm11197922b3a.53.2024.06.19.16.21.45
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f998e34324sm38638385ad.45.2024.06.19.16.24.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jun 2024 16:21:46 -0700 (PDT)
-Message-ID: <1801114a-715d-4c54-bb8f-08fe0c317946@suse.com>
-Date: Thu, 20 Jun 2024 08:51:42 +0930
+        Wed, 19 Jun 2024 16:24:57 -0700 (PDT)
+Message-ID: <e6bddf4c-6817-409b-ba36-3844dc8b8c65@suse.com>
+Date: Thu, 20 Jun 2024 08:54:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,9 +78,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] Error handling fixes
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1718816796.git.dsterba@suse.com>
+Subject: Re: [PATCH 0/3] btrfs: some cleanups for btrfs_lookup_extent_info()
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1718794792.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -107,39 +107,28 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <cover.1718816796.git.dsterba@suse.com>
+In-Reply-To: <cover.1718794792.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2024/6/20 02:38, David Sterba 写道:
-> A few replacements of btrfs_handle_fs_error() with transaction abort or
-> other means.
+在 2024/6/19 20:36, fdmanana@kernel.org 写道:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> David Sterba (5):
->    btrfs: abort transaction if we don't find extref in
->      btrfs_del_inode_extref()
->    btrfs: only print error message when checking item size in
->      print_extent_item()
+> Details in the change logs. Trivial changes.
 
-I guess it's the usual mailing list problem, but I didn't see the first 
-two patches, only 3~5 are in the list.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
->    btrfs: abort transaction on errors in btrfs_free_chunk()
->    btrfs: qgroup: preallocate memory before adding a relation
->    btrfs: qgroup: warn about inconsistent qgroups when relation update
->      fails
 > 
->   fs/btrfs/inode-item.c |  4 ++--
->   fs/btrfs/ioctl.c      | 25 +++++++++++++++++++------
->   fs/btrfs/print-tree.c |  2 +-
->   fs/btrfs/qgroup.c     | 25 ++++++++-----------------
->   fs/btrfs/qgroup.h     | 11 ++++++++++-
->   fs/btrfs/volumes.c    | 15 +++++++++------
->   6 files changed, 49 insertions(+), 33 deletions(-)
+> Filipe Manana (3):
+>    btrfs: remove superfluous metadata check at btrfs_lookup_extent_info()
+>    btrfs: reduce nesting for extent processing at btrfs_lookup_extent_info()
+>    btrfs: don't BUG_ON() when 0 reference count at btrfs_lookup_extent_info()
+> 
+>   fs/btrfs/extent-tree.c | 48 ++++++++++++++++++++++++++----------------
+>   1 file changed, 30 insertions(+), 18 deletions(-)
 > 
 
