@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-5803-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5804-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D407B90E296
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2024 07:16:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E52C90E2B1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2024 07:31:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60F82B20C4E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2024 05:16:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B8401C22472
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2024 05:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E33A25466B;
-	Wed, 19 Jun 2024 05:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D2355898;
+	Wed, 19 Jun 2024 05:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bi9lO9V2";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u6piKDfn"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="prKYzdM8";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="prKYzdM8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D93736AFE
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:16:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001902139C9
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718774204; cv=none; b=cAjaJdnhHI0Nk7Z5PRxm8Z9n1t45GSve5nJhAP7xSpbVhRcLqKwL+6gARmTTTWH2LaNG8nNeYPOWMACdmP43FNKb4ZDwqEhgt99J/D97Q/1NbR8IrWEpHBSbmdSotNiZJWukTtbm9rBOgXwnWqVo7epzFJGtvtvzN2OkPYpiikc=
+	t=1718775055; cv=none; b=BjZdZrEjbeVpnavI8BF1hNrSZPOn50pCMQZnZD1BncCa7v6Ah744h5CF6gc123F+laXjC57R681eeQ/LEFzzRFApyck3qQkapp0FLmISfrV+Hui+F08lhvNNi2/SlryIdgLvK4m13HZQnOCA4BnXosyLjIAGwoY1Na23cG4rDWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718774204; c=relaxed/simple;
-	bh=yjH1O/UcGJnIlQi888Ei3kbwQ54AmCQdP/3WPorQOF8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=AC9NlU6E3KltigVtnnvABQGRC/5+axAXBES3GRBwekT33ZTV3FK2eRw69E+IyWE688kRNvcPjV4M0WiZItWLHGv6KhDRzlK4qpjIzQoI+dpvWbZuELJQJDZD7bMRQa3bq2REtNLuhY+z5LDyt8ap1g3H89t6IMDxLHHf7nYYlO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bi9lO9V2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u6piKDfn; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1718775055; c=relaxed/simple;
+	bh=PSrHXDI7mviHniCQKfiLBsAAFBaat3z8LtEeFS8MoiI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=lVYdY8EaUxzcQ3HYBddHGt/HhJtmR1UUCa7yCe7jYEzVubp6VZWKHCUWSNzjl3Y3L3r/vEv+3irJlYppSSXhNTk23VXhRO5iKV1ec9KuwuQOHxNG1W2cuCX2Cg9O0YRvDzvWIwj70SPE4fuWhtKuQUBeppFHsJD+qpvLPuYItPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=prKYzdM8; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=prKYzdM8; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2CEFA21A1C
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:16:39 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 53DB01F7DB
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:30:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718774200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1718775052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=3Heu9/a2zzTAiZw8XNdv7OBG0hxTEEut8Vuqs6RkQ8g=;
-	b=bi9lO9V2cN92Cr4EDTghMHtxaLSSqyb3AU37OhvQbENJNJkOw2v45x4Bf3IBHaePXAv7to
-	2NbVezyJJ5HAoz0bOOjtN2OP0aEfvxFf/LUPs6ixXnj/2as7jmVptMcpJwFUzrBrJptHVH
-	HAgQivKegskccYFUIuuGHszKxU2wQ48=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=u6piKDfn
+	bh=qLLCSKoS/IuYEpjmC0UOWSZ8EOSfUquCqa2PbQ98q7o=;
+	b=prKYzdM8uLDOK2bzsu7KTCtL983sf5KaY8+V4caAl4Ag5m/wDFw75xCoSrz3R2eWz3CqF+
+	QvmjHr9vJP3TSMNXsBzG9Ia16dlrr4IU9fsjmeol66FACpZgIsgFu/4bL4v010rShJBh0U
+	ZihshL6ha4pOe1+RKGItaHzymFDEf9o=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718774199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1718775052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=3Heu9/a2zzTAiZw8XNdv7OBG0hxTEEut8Vuqs6RkQ8g=;
-	b=u6piKDfnEqJSWmOnbH7T4vzC8GRUNkeaCezCqwCQgrRLvA4gySk54hHR73q3u81DFlI5ri
-	MdSXslvcWHnknsFfp4T+g1gXEOHl83fuvTJrImP97R/dyNSgKA3238zOtuLhXQ5Z0RDUgv
-	jHW7hzfdzWHcOUtg+2MQCPYOXsxNrBg=
+	bh=qLLCSKoS/IuYEpjmC0UOWSZ8EOSfUquCqa2PbQ98q7o=;
+	b=prKYzdM8uLDOK2bzsu7KTCtL983sf5KaY8+V4caAl4Ag5m/wDFw75xCoSrz3R2eWz3CqF+
+	QvmjHr9vJP3TSMNXsBzG9Ia16dlrr4IU9fsjmeol66FACpZgIsgFu/4bL4v010rShJBh0U
+	ZihshL6ha4pOe1+RKGItaHzymFDEf9o=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B99513AAF
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:16:37 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6634513AAF
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:30:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FpqiNrVpcma+ZAAAD6G6ig
+	id aV65BgttcmYwaAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:16:37 +0000
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2024 05:30:51 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: docs: update the rescue mount options
-Date: Wed, 19 Jun 2024 14:46:15 +0930
-Message-ID: <159585b6c0089cc35237e14b2f56089c9114fdf8.1718774167.git.wqu@suse.com>
+Subject: [PATCH] btrfs-progs: tests: fix the mount failure detection
+Date: Wed, 19 Jun 2024 15:00:29 +0930
+Message-ID: <1990108ecf9965436246978a88474607d3814060.1718775020.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -77,95 +77,73 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.96 / 50.00];
-	BAYES_HAM(-2.95)[99.80%];
+X-Spamd-Result: default: False [-2.43 / 50.00];
+	BAYES_HAM(-2.63)[98.37%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	TO_DN_NONE(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:dkim]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 2CEFA21A1C
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
-X-Spam-Score: -2.96
+X-Spam-Score: -2.43
 X-Spam-Level: 
 
-Enhance the rescue mount option group by:
+[BUG]
+After commit "btrfs-progs: tests: dump dmesg if a mount fails", test
+case misc/041 would output the following error:
 
-- Add a simple explanation on each rescue option
+    [TEST/misc]   041-subvolume-delete-during-send
+ cat: invalid option -- 'f'
+ Try 'cat --help' for more information.
+ failed: /home/adam/btrfs-progs/btrfs send -f stream19752.out /home/adam/btrfs-progs/tests/mnt/snap1
 
-- Add the new 'ignoremetacsums' option
+[CAUSE]
+The send command would fail anyway, but the error message is from the
+mount detection, which goes like this:
+
+		if cat "${cmd_array[@]}" | grep -q mount; then
+
+Obviously cat is not the correct animal to print cmd_array to
+stdout.
+
+[FIX]
+I should go "echo" no matter how I enjoy petting a cat.
+
+It's better to fold this into commit "btrfs-progs: tests: dump dmesg if a
+mount fails".
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- Documentation/ch-mount-options.rst | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ tests/common | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/ch-mount-options.rst b/Documentation/ch-mount-options.rst
-index 2961837e9e71..1d968f37c14a 100644
---- a/Documentation/ch-mount-options.rst
-+++ b/Documentation/ch-mount-options.rst
-@@ -335,14 +335,35 @@ rescan_uuid_tree
- rescue
-         (since: 5.9)
+diff --git a/tests/common b/tests/common
+index e9b973e4480b..e996b35af787 100644
+--- a/tests/common
++++ b/tests/common
+@@ -238,7 +238,7 @@ run_check()
  
--        Modes allowing mount with damaged filesystem structures.
-+        Modes allowing mount with damaged filesystem structures, all requires
-+	the filesystem to be mounted read-only and doesn't allow remount to read-write.
-+
-+        * *usebackuproot* (since 5.9)
-+
-+	  Try to use backup root slots inside super block.
-+	  Replaces standalone option *usebackuproot*
-+
-+        * *nologreplay* (since 5.9)
-+
-+	  Do not replay any dirty logs.
-+	  Replaces standalone option *nologreplay*
- 
--        * *usebackuproot* (since: 5.9, replaces standalone option *usebackuproot*)
--        * *nologreplay* (since: 5.9, replaces standalone option *nologreplay*)
-         * *ignorebadroots*, *ibadroots* (since: 5.11)
-+
-+	  Ignore bad tree roots, greatly improve the chance for data salvage.
-+
-         * *ignoredatacsums*, *idatacsums* (since: 5.11)
-+
-+	  Ignore data checksum verification.
-+
-+	* *ignoremetacsums*, *imetacsums* (since 6.12)
-+
-+	  Ignore metadata checksum verification, useful for interrupted checksum conversion.
-+
-         * *all* (since: 5.9)
- 
-+	  Enable all supported rescue options.
-+
- skip_balance
-         (since: 3.3, default: off)
- 
+ 	"${cmd_array[@]}" >> "$RESULTS" 2>&1
+ 	if [ "$?" -ne 0 ]; then
+-		if cat "${cmd_array[@]}" | grep -q mount; then
++		if echo "${cmd_array[@]}" | grep -q mount; then
+ 			dmesg | tail -n 15 >> "$RESULTS"
+ 		fi
+ 		_fail "failed: ${cmd_array[@]}"
 -- 
 2.45.2
 
