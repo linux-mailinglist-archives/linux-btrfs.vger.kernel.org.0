@@ -1,64 +1,51 @@
-Return-Path: <linux-btrfs+bounces-5832-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5833-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3891F90FE10
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 09:55:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76163910339
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 13:41:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEBE01F2362D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 07:55:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B3B41F2395E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 11:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714E2548FD;
-	Thu, 20 Jun 2024 07:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 567D61ABCC0;
+	Thu, 20 Jun 2024 11:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6rmdR4P"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38EB443AD5
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 07:55:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7953CF6A
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 11:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718870112; cv=none; b=eUD6RDcF1kREopypm9Q6drwE5Jfcoavmjo1UCsvE2Eg4ITYaRAxGYRRbqvyDdPLdTYyRIiKzfvbsccvtB5+hiuptS1KB4jMp9O7tHkrJY1ekkh1t9ZdmsvZiQPejhyUMALS8V3YoYfmFxRVQp203GFKA3UVIah+PdeIUPCOTMNI=
+	t=1718883673; cv=none; b=V0KNhmrXHdM0D2EcQpSMNWR/mlfWi1Oaz50pA5AizXvoMDDWMcrZRCxTaaHlY+vul7HOmixjFA1VelQSddPh12dCjddOLZZe9q/aOK0CW0xD/CK17BMftNgS0nCtyW0p2INnlqEKHo42B6EFukEAoJWGOwJLXXnn9WnXBsUo6/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718870112; c=relaxed/simple;
-	bh=tZBrkUc/vqrs0SO+nbyAWmBk9RybawwskVWFTNfvpOY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SOKIsGErAhkkcFR5d+IWzZTJhTqZdyFRHUuuioaCnO9In/I4U9H+4rS/P6UNYuVbmLQ9hUwblLyiVgiTpOEzBG8r7U50oIPECwNEVMR6M2DE31hqyhGMY8hyoCIUPQhzhatJN0JX4+GRSfG4XtBV8Y3WIBLLZe/Uhtj3ppaJzrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57d20d89748so417842a12.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 00:55:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718870108; x=1719474908;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=elmAi07NQZVRqEFdQYvwWbKsYTPBsw2x+SNJ+OioMtI=;
-        b=pMcHBBEtmWNXULLp2oleEYd4rH7/nqMJwP4VszP02ASvvUvvx3VYt4oajZcccX9JB4
-         iBD2sjQEc2QVyiDnhRbMfR6UO+Jh3G4N9f/rWgUn+aOw4g1348PkltQ6hwey64KNsb9T
-         k5mrrkLRCAax992AWS+qCpFWDBRCVu6AXVuxJDHYFeNETLi/OtBIhe6WGW5sEmtFc8Fe
-         wB8f/HK/Vpn+yKAtNSdjeYkJhdrDr/QVD6lGDPOL3hOkDu5o5pu6TDpT/FXydIo7T5e7
-         H5biI1QlW86hghIL7mSLA099WJsHqciTRuBOr3+TVDymPLE3S8TDR579Ee1F5baQ2adw
-         8TBA==
-X-Gm-Message-State: AOJu0YyakOCOFZyIUWuWxFxevgVMFEuqAS0PBzvrlbdPGC05acQe4DfY
-	M0EFNqq8jAndLoe/hdxH6RZPJuUzJTGgQvZ+mq0u9rHnZCHygtjR
-X-Google-Smtp-Source: AGHT+IHJxCjMNKz3rcEV5nTLCWd64uANP85BYzt76zzDwsy5iEMyNq+fFOLxCOuxO9j8a7xsmK9TCA==
-X-Received: by 2002:a50:c2c9:0:b0:57c:749f:f5ef with SMTP id 4fb4d7f45d1cf-57d07ed4f92mr2715925a12.34.1718870107330;
-        Thu, 20 Jun 2024 00:55:07 -0700 (PDT)
-Received: from nuc.fritz.box (p200300f6f71f4100fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71f:4100:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57d16160c18sm1151177a12.26.2024.06.20.00.55.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 00:55:06 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH] btrfs-progs: remove raid stripe encoding
-Date: Thu, 20 Jun 2024 09:54:55 +0200
-Message-ID: <20240620075455.20074-1-jth@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1718883673; c=relaxed/simple;
+	bh=mlGHpv7PLMGMHR92PBFFMFzYB0lrDq/D6wmDg5n91Hk=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=TYtR0JiGyhpKyVrV2i0vn+ln7r+Hk2M+qVdsFIQ2wYJTapZlK3me5RSzNCH+iTAX7/l7fmcBH1vFrf3RuhN868rz3WgKEyr2nO+4LBr/J4S3T/USpv9kpWI2ooMnUElMSaGqfyN1Ex+kuloR3PTPX8Me+KFNkz43FrjHQj4Gg4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6rmdR4P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87ABBC2BD10
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 11:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718883673;
+	bh=mlGHpv7PLMGMHR92PBFFMFzYB0lrDq/D6wmDg5n91Hk=;
+	h=From:To:Subject:Date:From;
+	b=n6rmdR4PnH5UtfwnZEZAyeEUKFv7xZPmN+bC3uIcdjqSOoKU+z4H4YlONUQWG2l4u
+	 tE/OzDg48R6F2Vt/XqkRYXXm9jaDsHYeZZuHywGq+/63+BFn2/kcvJ5g9JgvLOOeDY
+	 F+l5rY8IMHj2w5jnJ2K1YnDwp6OoHGrdB/QjprHGvYWMpG17HRaW3LpX+8DcEtFlaQ
+	 fjCanarCgBCAA0kS88ixWDdVsSOByIQnF+oCpE/eXj0MC59tqzdteXkeBoy1TjS2ZG
+	 KQZ4mq1kXq7//Wpv4swg0aYzpAxCKU5k/b/P6BirlWAX7/x/EenGH15SqTFzKkmOpx
+	 NX4fAnb4Kmf3A==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: qgroup: fix quota root leak after quota disable failure
+Date: Thu, 20 Jun 2024 12:41:09 +0100
+Message-Id: <d4186215561658577a9622bf111c79909f0521c6.1718883560.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -67,111 +54,50 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Remove the not needed encoding and reserved fields in struct
-raid_stripe_extent.
+If during the quota disable we fail when cleaning the quota tree or when
+deleting the root from the root tree, we jump to the 'out' label without
+ever dropping the reference on the quota root, resulting in a leak of the
+root since fs_info->quota_root is no longer pointing to the root (we have
+set it to NULL just before those steps).
 
-This saves 8 bytes per stripe extent.
+Fix this by always doing a btrfs_put_root() call under the 'out' label.
+This is a problem that exists since qgroups were first added in 2012 by
+commit bed92eae26cc ("Btrfs: qgroup implementation and prototypes"), but
+back then we missed a kfree on the quota root and free_extent_buffer()
+calls on its root and commit root nodes, since back then roots were not
+yet reference counted.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- kernel-shared/accessors.h       |  3 ---
- kernel-shared/print-tree.c      | 33 +--------------------------------
- kernel-shared/uapi/btrfs_tree.h | 14 +-------------
- 3 files changed, 2 insertions(+), 48 deletions(-)
+ fs/btrfs/qgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel-shared/accessors.h b/kernel-shared/accessors.h
-index b17c675c1807..c2681698b3cc 100644
---- a/kernel-shared/accessors.h
-+++ b/kernel-shared/accessors.h
-@@ -322,11 +322,8 @@ BTRFS_SETGET_FUNCS(timespec_nsec, struct btrfs_timespec, nsec, 32);
- BTRFS_SETGET_STACK_FUNCS(stack_timespec_sec, struct btrfs_timespec, sec, 64);
- BTRFS_SETGET_STACK_FUNCS(stack_timespec_nsec, struct btrfs_timespec, nsec, 32);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 3edbe5bb19c6..d89240512796 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1346,7 +1346,7 @@ static int flush_reservations(struct btrfs_fs_info *fs_info)
  
--BTRFS_SETGET_FUNCS(stripe_extent_encoding, struct btrfs_stripe_extent, encoding, 8);
- BTRFS_SETGET_FUNCS(raid_stride_devid, struct btrfs_raid_stride, devid, 64);
- BTRFS_SETGET_FUNCS(raid_stride_offset, struct btrfs_raid_stride, offset, 64);
--BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_encoding,
--			 struct btrfs_stripe_extent, encoding, 8);
- BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_devid, struct btrfs_raid_stride, devid, 64);
- 
- static inline struct btrfs_raid_stride *btrfs_raid_stride_nr(
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 6f78ec3512de..1692e6475865 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -669,42 +669,11 @@ static void print_free_space_header(struct extent_buffer *leaf, int slot)
- 	       (unsigned long long)btrfs_free_space_bitmaps(leaf, header));
- }
- 
--struct raid_encoding_map {
--	u8 encoding;
--	char name[16];
--};
--
--static const struct raid_encoding_map raid_map[] = {
--	{ BTRFS_STRIPE_DUP,	"DUP" },
--	{ BTRFS_STRIPE_RAID0,	"RAID0" },
--	{ BTRFS_STRIPE_RAID1,	"RAID1" },
--	{ BTRFS_STRIPE_RAID1C3,	"RAID1C3" },
--	{ BTRFS_STRIPE_RAID1C4, "RAID1C4" },
--	{ BTRFS_STRIPE_RAID5,	"RAID5" },
--	{ BTRFS_STRIPE_RAID6,	"RAID6" },
--	{ BTRFS_STRIPE_RAID10,	"RAID10" }
--};
--
--static const char *stripe_encoding_name(u8 encoding)
--{
--	for (int i = 0; i < ARRAY_SIZE(raid_map); i++) {
--		if (raid_map[i].encoding == encoding)
--			return raid_map[i].name;
--	}
--
--	return "UNKNOWN";
--}
--
- static void print_raid_stripe_key(struct extent_buffer *eb,
- 				  u32 item_size, struct btrfs_stripe_extent *stripe)
+ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
  {
--	int num_stripes;
--	u8 encoding = btrfs_stripe_extent_encoding(eb, stripe);
--
--	num_stripes = (item_size - offsetof(struct btrfs_stripe_extent, strides)) /
--		      sizeof(struct btrfs_raid_stride);
-+	int num_stripes = item_size / sizeof(struct btrfs_raid_stride);
+-	struct btrfs_root *quota_root;
++	struct btrfs_root *quota_root = NULL;
+ 	struct btrfs_trans_handle *trans = NULL;
+ 	int ret = 0;
  
--	printf("\t\t\tencoding: %s\n", stripe_encoding_name(encoding));
- 	for (int i = 0; i < num_stripes; i++)
- 		printf("\t\t\tstripe %d devid %llu physical %llu\n", i,
- 		       (unsigned long long)btrfs_raid_stride_devid_nr(eb, stripe, i),
-diff --git a/kernel-shared/uapi/btrfs_tree.h b/kernel-shared/uapi/btrfs_tree.h
-index 271346258d1d..5720a03c939b 100644
---- a/kernel-shared/uapi/btrfs_tree.h
-+++ b/kernel-shared/uapi/btrfs_tree.h
-@@ -712,21 +712,9 @@ struct btrfs_raid_stride {
- 	__le64 offset;
- } __attribute__ ((__packed__));
+@@ -1445,9 +1445,9 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
+ 				    quota_root->node, 0, 1);
+ 	if (ret < 0)
+ 		btrfs_abort_transaction(trans, ret);
+-	btrfs_put_root(quota_root);
  
--/* The stripe_extent::encoding, 1:1 mapping of enum btrfs_raid_types */
--#define BTRFS_STRIPE_RAID0	1
--#define BTRFS_STRIPE_RAID1	2
--#define BTRFS_STRIPE_DUP	3
--#define BTRFS_STRIPE_RAID10	4
--#define BTRFS_STRIPE_RAID5	5
--#define BTRFS_STRIPE_RAID6	6
--#define BTRFS_STRIPE_RAID1C3	7
--#define BTRFS_STRIPE_RAID1C4	8
--
- struct btrfs_stripe_extent {
--	u8 encoding;
--	u8 reserved[7];
- 	/* Array of raid strides this stripe is comprised of. */
--	struct btrfs_raid_stride strides;
-+	__DECLARE_FLEX_ARRAY(struct btrfs_raid_stride, strides);
- } __attribute__ ((__packed__));
- 
- #define BTRFS_FREE_SPACE_EXTENT	1
+ out:
++	btrfs_put_root(quota_root);
+ 	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+ 	if (ret && trans)
+ 		btrfs_end_transaction(trans);
 -- 
 2.43.0
 
