@@ -1,79 +1,89 @@
-Return-Path: <linux-btrfs+bounces-5855-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5856-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D886491129D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 21:56:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2216911358
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 22:36:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23081B281D7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 19:50:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40DA1B22246
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 20:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A254F1BB690;
-	Thu, 20 Jun 2024 19:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F2F5FB9C;
+	Thu, 20 Jun 2024 20:36:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GnGq4sO4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GwXh+FaK"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88A01BA879;
-	Thu, 20 Jun 2024 19:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C1D3C6AC;
+	Thu, 20 Jun 2024 20:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718913010; cv=none; b=r6s5baJ9Qw5RCfyQRtb0MEa5pkSaG/ziICAmcnEbz5yqs+NVSLSZpcXSqqEoQBJiLtmnEKfYPTuwcuAnhxxQ7R3o0vy4Nd+w+8h+bWOJW5UpeZ4Umkt5ZMe2ewMdvR2AOFxussJZTA/0hzzyieZU125ObLn+77pVGnF58rbnP4k=
+	t=1718915798; cv=none; b=SYBcY5TiivWe+vFFJDlTjdyBKxLVwHed1XduTeKW4EmBDkH52UrNKIEOR5NxlmUjOW/OKfOj16ZGbn3T9R8WwPbY0mOM20gQXRfros4f74xLKw3f2yr5IsCX0eRdN6AKRClVXhFu29Ne2wDzNh24I89hKMzGHc9j3V8idN0neW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718913010; c=relaxed/simple;
-	bh=DB+5RCr3s8v4D+FayRQCF7wo39GtTFNlsOvUSTzGYzQ=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=s64VlijPbir8LcZZWf6KxBt3NTXNEcIp22aJgLjDT1jheHajlWXJnWRTXHuE1hkJg+H0bMIPfKMfZx7WlbDd1ggIyCJaHxHiH0OvjNFOsCWfreZqG/XeTkjBKe4o/uMJLVPtM3eN5mnuCDeIPy5oDzuIc0xhjSCuj+0D3UzEfSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GnGq4sO4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5BEBFC4AF0A;
-	Thu, 20 Jun 2024 19:50:10 +0000 (UTC)
+	s=arc-20240116; t=1718915798; c=relaxed/simple;
+	bh=vEA8X/MKc0gI6uWmJH+jA33Ug9fWGn6Gnff22ONubZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dj2BA8bZMxtLU488g8JTbgrtlrNc79M6jvibov9xfjYy+TAvLfdUr3quX3YVq3yyBWife7qT7vlN7VuNUBykMj8LnDZO1FwQdaCwagBorH+DcxREGTsC3N6jeVxlhagAyxnBeupgheLsU2jcHEPR/IGDC3MZyXPK3/03Mr4gx+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GwXh+FaK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4AB2C2BD10;
+	Thu, 20 Jun 2024 20:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718913010;
-	bh=DB+5RCr3s8v4D+FayRQCF7wo39GtTFNlsOvUSTzGYzQ=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=GnGq4sO420I3Ec62Nr2AlB2V/+MDaG2jWKJfYwLuvIB+asVBhTd6UTH9myA5RBFuj
-	 x3HO6jHdzi/1BfJfex0sugcskDKh/RVexvB/sQGhU2AqYDwjX4Gf6I7xV7zEwReL/t
-	 BliKofcJj8R5hMBzes6zdguwdUOmnsJMcT+V+inrb4AS/QMIs91PZlIvOmOkHSftiX
-	 x+4nlXyl1OjRsdlhEdja8+dLRi4If2v4g8FtbR127ZUa2fRx25mtHCyrp77h6PmU3k
-	 tsNZBq/adOs9jofOgOdxcj16YUqcZJoCUYP0WoI1/+opCemAcUJ6xzuHORNv0BQO+4
-	 QQkBaocChAaJg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4F039CF3B97;
-	Thu, 20 Jun 2024 19:50:10 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.10-rc5
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1718903445.git.dsterba@suse.com>
-References: <cover.1718903445.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1718903445.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.10-rc4-tag
-X-PR-Tracked-Commit-Id: cebae292e0c32a228e8f2219c270a7237be24a6a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 50736169ecc8387247fe6a00932852ce7b057083
-Message-Id: <171891301031.2247.18207739518937749630.pr-tracker-bot@kernel.org>
-Date: Thu, 20 Jun 2024 19:50:10 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=k20201202; t=1718915797;
+	bh=vEA8X/MKc0gI6uWmJH+jA33Ug9fWGn6Gnff22ONubZk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GwXh+FaKDmL85CDPsH8udBqfeZC1mmF+n15sIcBNDwsFbFBRZMyb+xpna0zMD2PLM
+	 pqf/pNSj8Xn9DuVLbM7jilwFcIE7roNMHVfaWpDYYRGRC4SG8fpLBeRYVrM+hyP0Bi
+	 y36HAxmaieWyUEy7hWc5dTmInhBIN8woKOjinukAIvnzW+3QeIiNEpPs7813h50kTT
+	 wyzF9XYqpjMdjwns7vRDcPVOhVos9O5OcqNcwQdEk9vs5KXzSxgZieOpkG1j2x6M+v
+	 qRfkGvv4gsSMGTF47/LK1UoUzDl3zNk0K2bgfrIAMyVSEfKdZjCEH6/TKbjw7ONHqD
+	 JsWaPADEUONyA==
+Date: Thu, 20 Jun 2024 14:36:33 -0600
+From: Keith Busch <kbusch@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
+	djwong@kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, willy@infradead.org, agk@redhat.com,
+	snitzer@kernel.org, mpatocka@redhat.com, dm-devel@lists.linux.dev,
+	hare@suse.de, Alan Adamson <alan.adamson@oracle.com>
+Subject: Re: [Patch v9 10/10] nvme: Atomic write support
+Message-ID: <ZnSS0Y0AFqQg-7lm@kbusch-mbp.dhcp.thefacebook.com>
+References: <20240620125359.2684798-1-john.g.garry@oracle.com>
+ <20240620125359.2684798-11-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240620125359.2684798-11-john.g.garry@oracle.com>
 
-The pull request you sent on Thu, 20 Jun 2024 19:20:51 +0200:
+On Thu, Jun 20, 2024 at 12:53:59PM +0000, John Garry wrote:
+> From: Alan Adamson <alan.adamson@oracle.com>
+> 
+> Add support to set block layer request_queue atomic write limits. The
+> limits will be derived from either the namespace or controller atomic
+> parameters.
+> 
+> NVMe atomic-related parameters are grouped into "normal" and "power-fail"
+> (or PF) class of parameter. For atomic write support, only PF parameters
+> are of interest. The "normal" parameters are concerned with racing reads
+> and writes (which also applies to PF). See NVM Command Set Specification
+> Revision 1.0d section 2.1.4 for reference.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.10-rc4-tag
+Looks good.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/50736169ecc8387247fe6a00932852ce7b057083
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Reviewed-by: Keith Busch <kbusch@kernel.org>
 
