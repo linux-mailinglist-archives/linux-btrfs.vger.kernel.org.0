@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-5861-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5862-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A969115AD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 00:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE779115BA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 00:27:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 507F61C212F8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 22:23:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 187391C22758
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 22:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539C0143746;
-	Thu, 20 Jun 2024 22:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF791422D6;
+	Thu, 20 Jun 2024 22:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RarrqDAl"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="SKvnTdJ4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D946479949
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 22:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D772A13E022
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 22:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718922179; cv=none; b=P151XuBj1bTvfblbb6WiAvmwUfXK6Eg5An2d6WuoqkQphYG+/PeK/rovdzE7QF9J2vEJ2aLzkJQ5EH3OoesDEyw8AmSHJhglm6SLQ6FDmqMhP82Nj27TFwp0k6WnvZl10zLN4oS/aXUAne4Iw7Yuyqq3BeB9xh7q0kVCYVFaA70=
+	t=1718922439; cv=none; b=PXf7Zuo4firbyrmNR0tHnoCt9FDQUL9Q7c5lTnDkXE4Y/e0wSIJQ30vMeLW8MwZLkA18Z6uBxItOHbU7ZtJi8VCIUgguJCEzBjM040Svtm55KPWK5HpCu5QHjvMH5+tdFYZsgK7rktimUuNoug4hHgGG1kKWmMn6vzOnl2qVasg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718922179; c=relaxed/simple;
-	bh=1w6820zTJrUWarvnWLZzEERyzPjGdRGApJuOTqggVsE=;
+	s=arc-20240116; t=1718922439; c=relaxed/simple;
+	bh=4cjFGLvLL0W3VgkFXjs8FEYY6XIQ9/i56JqSzZYBkNM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=gwJfwve/0FIE/2j6Cqi/2aOqsJdV61DRj+/y38pCEmodmIZfcDsdZbQE4iipxXGhW/VkIRNWCM7UpzIt5mDWPPmpJQp1jNOFPHfgeJzIPKG832qGrY2CsZ7ILUC0HrpVdGWSgscEAd28s5bMSpd9zS0zUcYRDnRUTSJnDRXVFos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RarrqDAl; arc=none smtp.client-ip=212.227.15.18
+	 In-Reply-To:Content-Type; b=F+5Vh2giz9fhUgjdJ1wN7yhGVv0pFBTGTcp5c9bomdH3zpwsQPINxZn9n+yfR5iRRxCqcRxcTg6ER3XrncHGSMjgl4KVr5Ab14tJ08tttrjj8ZTjLEU0KY4vTzi9R2YWGNZf5QYp/MoUYc8hStkmkwjcgRrb/0EIzH/5CLxoDuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=SKvnTdJ4; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1718922174; x=1719526974; i=quwenruo.btrfs@gmx.com;
-	bh=3kmL7Qmd9yf5x1C9pVFW2+WwrxJpmkg2Qb2PwGEJ+qw=;
+	s=s31663417; t=1718922431; x=1719527231; i=quwenruo.btrfs@gmx.com;
+	bh=1UMwi+DWCqUieJcnY81xtWWPL3zXinSzaX3OD/Wj6hs=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=RarrqDAlzYixAkxa5UtdC7D1eWvAJixQROAVNwTs+lTNuTdytyiQzcVWtCkptxEH
-	 zKm6cs7dKbw4sufJ5Fbesh6yFe/aNlNchoDE2teqanPILDjE99mVj0WRQUebkjlgH
-	 g4TAuX2lRmsbEs8QhMg3oayWrdSQT1lTxC5jG6FuMSNBQlKKyK9pPDgxZrJ1GRg/O
-	 dLgUrEhZvpj2NRzGxy/uPuQopMg6Lvlo4pHYi8hEAOKaiLPpgw24rQsE6JDK5q2eU
-	 v3H7qi6KnK46bBSohHAf/8wtf9BT/XyeH4XrR+X53m52K3cOOvhZ68ufajPpz8HEp
-	 70uImhxD2tcQZu5tcQ==
+	b=SKvnTdJ4Q2egkMsFXg/zJDtCn8oTUcBR6RNyz+GvA1S8FZ2za33anrD6lDwxLrWx
+	 LhwQX6NCZBWMbkwQiJe4WWlqS4SNmU9DZ0tXHqUDRurpmi7kHmmb5+wUwwqikCquz
+	 SbDqHcl2JIvsRi9TmMRfEnIl6Jb6g6gsKVhJX2BJSDpkfO+XG/BzaUINNGGmK2rIt
+	 D1b7xWU5Eub3ddvSkMK9zKPmTPTw0B2V+LRUpuz9O3fEKXZkdikF9r7msxmUSnMIH
+	 KfDiEqAWP28+lhE/aZqqDUQVg2Zq0iKXX1RJYVTOuqIvZ8zNTJ2OX26Thy+M/OWbW
+	 6P40yK058+a2+Z8obw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMXUD-1s2cLS3UG7-00I39c; Fri, 21
- Jun 2024 00:22:54 +0200
-Message-ID: <f2d4251f-4389-4fd2-bd7c-cf228fbe76f7@gmx.com>
-Date: Fri, 21 Jun 2024 07:52:50 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8ofE-1sOBRI1MuM-00uKXj; Fri, 21
+ Jun 2024 00:27:11 +0200
+Message-ID: <3bb274d5-a859-4571-8358-730515b34f73@gmx.com>
+Date: Fri, 21 Jun 2024 07:57:07 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: qgroup: preallocate memory before adding a
- relation
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <5e580529-ca09-4ede-930e-d8ae5622c0cf@gmx.com>
- <20240620174618.4704-1-dsterba@suse.com>
+Subject: Re: [PATCH] btrfs: qgroup: fix quota root leak after quota disable
+ failure
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <d4186215561658577a9622bf111c79909f0521c6.1718883560.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,203 +88,82 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240620174618.4704-1-dsterba@suse.com>
+In-Reply-To: <d4186215561658577a9622bf111c79909f0521c6.1718883560.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:354dWGBPQngDol2kTDSUIKjQz9s3qtPsIgDjjRrSyXaTwLEyT3s
- WbF1mD455bLGpN8pu9oWb4eBdPspT3iNHai29yzz/NN9spg/j/kCwGpM9oB8dbvWZCoaARM
- LP5Tq5lZ1TViy6rEC3zy4xoaZV94/6JTZx41bAWiDympF6gcPZR3HPhWBlCssqlapqVPVgE
- /PoNn+bL6pxL0Bbm/nk+Q==
+X-Provags-ID: V03:K1:6HAGNnLeDO/brz0vuTALAYkua1l3IzKuISetHEtUPxh6Zm2zOcF
+ 0ksqSYX1fbIx7Ty/E7srcncFJILASuRtRvJ1Y4Gzu0ZQaHiSNii9w5InA8eWGY6JmBqTylB
+ UBii19XtvmZXDIO8VtbsOOtjdOi0t7JZBuWm2jxw7EbIU1zKnLkcwAHs7yCxp/aTQnIEa/t
+ 3F17n6vdwc6UXb278kcCA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TcXD0eTa9IE=;52M6zGxnHqoDZtFuCmqPJStC4FU
- 2mqSuyEqzJiXtHDSkpu0zLrMGWyqI4BrvlcfrziFIyGD8wvUs1d6q9T0WlGdMsjmmqRbiahhI
- PI/Na6GezbGa8taH6PISTaYG9KLwRKJbhkmMAjyi/FHK7ULkHc9rJXIXJ8m61Ytb3u9HFQK92
- c0YqhIjWmzas3kMRVM9Pl1ehqOrqAVMgJhowVw0GaI8QLNmm7+9GPiyVctT8PcLgKgVt4q1bS
- 5qrQHGQTMRnuCDtN+N0mGoFY54qX3Ke8+Vvo1nyfQ/3LKU6SqZboqFwMJTThwxeN/jWEUBxQX
- 0AQvPx68CA9kxrSwNxSsA6e5i1kug0IgH9lQhjwlfs3q8vUY8CNp/xLF5trw2A+wX4tEgkHqZ
- tzCImLHeWEsn7Q0WIXDV518h6FB09FBg8AmTm99ymyQVMfbcNRs7Xhe7IoiYdwLCjhO3gr8la
- f1kQclvFryI5Y7AVcAklDkS7poTU6fSaVNcX45oHIAB09wS73PrTQCIC1jWBCQSAfqfGBfQX1
- 4NGBOsc7VBY+OoL1ahowgcbQQigGyuKYufU3ZpEdttuhKub6UpxHZWN2R1ZCTP48n/jQfD+s6
- FJNSajdU0rPdC0Mb0EZ+Nhzkv/iFj/mntKoDwKy3RVfsJ63dolkqL7v2YDNuProEdj0d7e2sH
- sQfdrax1tgHh0y0qXmqHVCd4PNGdVydJNHeU0vdLFwEhrq2EFGkhRDyT1jJzTutWIP0zkGmOk
- /mGRR8zsrWHxffcN07dR1n35jySqz+gq/iojHnlrxGVkNjvGkKdxGv/QGlJMBFfh0JjSAB2h4
- c4Nk8Dcvd3bqHb0TlMhVO7HjoWOt1Kh3U0Yl8FHpGDF0M=
+UI-OutboundReport: notjunk:1;M01:P0:j34UyugRRRM=;0qnIccjE+Bmue9D/EotuqJL4xqO
+ R6XWTy+Hd/WV3e6f76I15bObTmzs4cV2QBpFEKw/6gnlKoxvacSOB+YlOVqPX4usWS3fy+UmS
+ FwKMWzovYArPTGwUYPOWZGQf9BrgnzRVQfmd1QtAFVO9DSEx+ttbIFSaG09gPI6f5HH54EIzW
+ mjdsCltv+/v7S3JhylnvYLYmxzRzUp2+hskneHfZzURTHNd5jmTTzR431ufkVczJRyBE1wzVx
+ HIHSYeqafDwFt2V+shTe75Qj7AdGZfEkM13MWmy2QGFU0rLBXrDDrjafDbqRKw1eNCKTyJV3+
+ 1+3+FHxN4iFr0cLiHqeIgX/cd2L1zp4pGhQ5HCKjVN9P+xX9UTNxYvvTcmyhAsZbHwKL7Ix8U
+ 89nle6N/Auyo7ryQFETLq1wO8ChOj8w02Tc74Nw9ngvRT+P3jhk8nzBWPpuFVhKLlVBxE6Sjy
+ ffGIwa1YtOIxjVEYQH5qENEI8Z6EGDOxrnlQLV2LqWWXLevC1Kc24eJcJLeT0v/f2NRLHqZiI
+ LuKWUc/5Bzvbi1aF3YgzojsyLsuiCyVRqmnQKYIiXwW0J9begs4qqmzMe9WOv1N2ZNbhjvhLz
+ 7SS1gW9WLIQ3+EbDO8o9W+ULK0XzbKqsrTi1gfGuSn+2Z7/Dx0ICWH200/JWmuwdV4vrAkxqA
+ 9u7ANy04SWlE7831uwbrh0z/mDvbrpMZjEnIX0OkK8UBaetffC/hVgcJ+Rna/NSDQ52BnlLLS
+ kHJ3GW8j+PFaK9OU67nyXKsi0AYo5DMuvXUEYUSwgl7jhCObS4sTzvKvdNLc5fn58souoYbOO
+ 1KQVAcBUm49ZTkD5kLRSqbTNoENgbPOaFio5+ZH6tTMho=
 
 
 
-=E5=9C=A8 2024/6/21 03:16, David Sterba =E5=86=99=E9=81=93:
-> There's a transaction joined in the qgroup relation add/remove ioctl and
-> any error will lead to abort/error. We could lift the allocation from
-> btrfs_add_qgroup_relation() and move it outside of the transaction
-> context. The relation deletion does not need that.
+=E5=9C=A8 2024/6/20 21:11, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> The ownership of the structure is moved to the add relation handler.
+> If during the quota disable we fail when cleaning the quota tree or when
+> deleting the root from the root tree, we jump to the 'out' label without
+> ever dropping the reference on the quota root, resulting in a leak of th=
+e
+> root since fs_info->quota_root is no longer pointing to the root (we hav=
+e
+> set it to NULL just before those steps).
 >
-> Signed-off-by: David Sterba <dsterba@suse.com>
+> Fix this by always doing a btrfs_put_root() call under the 'out' label.
+> This is a problem that exists since qgroups were first added in 2012 by
+> commit bed92eae26cc ("Btrfs: qgroup implementation and prototypes"), but
+> back then we missed a kfree on the quota root and free_extent_buffer()
+> calls on its root and commit root nodes, since back then roots were not
+> yet reference counted.
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 > ---
+>   fs/btrfs/qgroup.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> v2:
-> - preallocate only when adding the relation
->
->   fs/btrfs/ioctl.c  | 17 ++++++++++++++++-
->   fs/btrfs/qgroup.c | 25 ++++++++-----------------
->   fs/btrfs/qgroup.h | 11 ++++++++++-
->   3 files changed, 34 insertions(+), 19 deletions(-)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index d28ebabe3720..dc7300f2815f 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -3829,6 +3829,7 @@ static long btrfs_ioctl_qgroup_assign(struct file =
-*file, void __user *arg)
->   	struct btrfs_fs_info *fs_info =3D inode_to_fs_info(inode);
->   	struct btrfs_root *root =3D BTRFS_I(inode)->root;
->   	struct btrfs_ioctl_qgroup_assign_args *sa;
-> +	struct btrfs_qgroup_list *prealloc =3D NULL;
->   	struct btrfs_trans_handle *trans;
->   	int ret;
->   	int err;
-> @@ -3849,14 +3850,27 @@ static long btrfs_ioctl_qgroup_assign(struct fil=
-e *file, void __user *arg)
->   		goto drop_write;
->   	}
->
-> +	if (sa->assign) {
-> +		prealloc =3D kzalloc(sizeof(*prealloc), GFP_KERNEL);
-> +		if (!prealloc) {
-> +			ret =3D -ENOMEM;
-> +			goto drop_write;
-> +		}
-> +	}
-> +
->   	trans =3D btrfs_join_transaction(root);
->   	if (IS_ERR(trans)) {
->   		ret =3D PTR_ERR(trans);
->   		goto out;
->   	}
->
-> +	/*
-> +	 * Prealloc ownership is moved to the relation handler, there it's use=
-d
-> +	 * or freed on error.
-> +	 */
->   	if (sa->assign) {
-> -		ret =3D btrfs_add_qgroup_relation(trans, sa->src, sa->dst);
-> +		ret =3D btrfs_add_qgroup_relation(trans, sa->src, sa->dst, prealloc);
-> +		prealloc =3D NULL;
->   	} else {
->   		ret =3D btrfs_del_qgroup_relation(trans, sa->src, sa->dst);
->   	}
-> @@ -3873,6 +3887,7 @@ static long btrfs_ioctl_qgroup_assign(struct file =
-*file, void __user *arg)
->   		ret =3D err;
->
->   out:
-> +	kfree(prealloc);
->   	kfree(sa);
->   drop_write:
->   	mnt_drop_write_file(file);
 > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 3edbe5bb19c6..4ae01c87e418 100644
+> index 3edbe5bb19c6..d89240512796 100644
 > --- a/fs/btrfs/qgroup.c
 > +++ b/fs/btrfs/qgroup.c
-> @@ -155,16 +155,6 @@ static inline u64 btrfs_qgroup_get_new_refcnt(const=
- struct btrfs_qgroup *qg, u64
->   	return qg->new_refcnt - seq;
->   }
+> @@ -1346,7 +1346,7 @@ static int flush_reservations(struct btrfs_fs_info=
+ *fs_info)
 >
-> -/*
-> - * glue structure to represent the relations between qgroups.
-> - */
-> -struct btrfs_qgroup_list {
-> -	struct list_head next_group;
-> -	struct list_head next_member;
-> -	struct btrfs_qgroup *group;
-> -	struct btrfs_qgroup *member;
-> -};
-> -
->   static int
->   qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objecti=
-d,
->   		   int init_flags);
-> @@ -1568,15 +1558,21 @@ static int quick_update_accounting(struct btrfs_=
-fs_info *fs_info,
->   	return ret;
->   }
->
-> -int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src=
-, u64 dst)
-> +/*
-> + * Add relation between @src and @dst qgroup. The @prealloc is allocate=
-d by the
-> + * callers and transferred here (either used or freed on error).
-> + */
-> +int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src=
-, u64 dst,
-> +			      struct btrfs_qgroup_list *prealloc)
+>   int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
 >   {
->   	struct btrfs_fs_info *fs_info =3D trans->fs_info;
->   	struct btrfs_qgroup *parent;
->   	struct btrfs_qgroup *member;
->   	struct btrfs_qgroup_list *list;
-> -	struct btrfs_qgroup_list *prealloc =3D NULL;
+> -	struct btrfs_root *quota_root;
+> +	struct btrfs_root *quota_root =3D NULL;
+>   	struct btrfs_trans_handle *trans =3D NULL;
 >   	int ret =3D 0;
 >
-> +	ASSERT(prealloc);
-> +
->   	/* Check the level of src and dst first */
->   	if (btrfs_qgroup_level(src) >=3D btrfs_qgroup_level(dst))
->   		return -EINVAL;
-> @@ -1601,11 +1597,6 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_=
-handle *trans, u64 src, u64 dst
->   		}
->   	}
+> @@ -1445,9 +1445,9 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_i=
+nfo)
+>   				    quota_root->node, 0, 1);
+>   	if (ret < 0)
+>   		btrfs_abort_transaction(trans, ret);
+> -	btrfs_put_root(quota_root);
 >
-> -	prealloc =3D kzalloc(sizeof(*list), GFP_NOFS);
-> -	if (!prealloc) {
-> -		ret =3D -ENOMEM;
-> -		goto out;
-> -	}
->   	ret =3D add_qgroup_relation_item(trans, src, dst);
->   	if (ret)
->   		goto out;
-> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-> index 95881dcab684..deb479d176a9 100644
-> --- a/fs/btrfs/qgroup.h
-> +++ b/fs/btrfs/qgroup.h
-> @@ -278,6 +278,14 @@ struct btrfs_qgroup {
->   	struct kobject kobj;
->   };
->
-> +/* Glue structure to represent the relations between qgroups. */
-> +struct btrfs_qgroup_list {
-> +	struct list_head next_group;
-> +	struct list_head next_member;
-> +	struct btrfs_qgroup *group;
-> +	struct btrfs_qgroup *member;
-> +};
-> +
->   struct btrfs_squota_delta {
->   	/* The fstree root this delta counts against. */
->   	u64 root;
-> @@ -321,7 +329,8 @@ int btrfs_qgroup_rescan(struct btrfs_fs_info *fs_inf=
-o);
->   void btrfs_qgroup_rescan_resume(struct btrfs_fs_info *fs_info);
->   int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
->   				     bool interruptible);
-> -int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src=
-, u64 dst);
-> +int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src=
-, u64 dst,
-> +			      struct btrfs_qgroup_list *prealloc);
->   int btrfs_del_qgroup_relation(struct btrfs_trans_handle *trans, u64 sr=
-c,
->   			      u64 dst);
->   int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid=
-);
+>   out:
+> +	btrfs_put_root(quota_root);
+>   	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+>   	if (ret && trans)
+>   		btrfs_end_transaction(trans);
 
