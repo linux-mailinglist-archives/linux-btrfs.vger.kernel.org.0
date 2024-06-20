@@ -1,187 +1,97 @@
-Return-Path: <linux-btrfs+bounces-5847-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5848-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A359107BE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 16:14:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E4A691093E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 17:05:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1003D1F257B6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 14:14:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F5CB1C20CB6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2024 15:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4111AE087;
-	Thu, 20 Jun 2024 14:14:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B981AED4A;
+	Thu, 20 Jun 2024 15:05:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="TYieyEJp";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ql8zx4GC";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="TYieyEJp";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ql8zx4GC"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="CEsEn+Mb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCDA1AB91B;
-	Thu, 20 Jun 2024 14:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3571ACE94
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 15:05:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718892856; cv=none; b=Ja2zydANi4O/u9TIOaPjk4rUHRiF1QFTHcHyUJqNGj8AfN/b4puP/zFEsAujbJLbvUGw7ZzXj+OaCtq2joV0DDs0Tl04I9JYU/fFtMa/LkQUWAha0mL5/nR0SE3ekCJw0yh1pMK/rFBcpZVzam5eu/EB9vNm9AQU9tRCkzUE+XM=
+	t=1718895923; cv=none; b=AXQ0coRaiJOAIFSvdqQs7v346JtROPttoAPPFo9Vwrf77kzyo/BazLb/OJNk7faYctK9/P7TuLs5GPLRYJnwkFF4bXWkJZnBFfuL4PBIELpu03OBgrv3i+mNUQAR2ybP1NS0wPjjS1lQSEpZ3ZkRhQ/ZADkAVkr649WsHvOyNME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718892856; c=relaxed/simple;
-	bh=DPp863t6Iv2CN9gXF2rMAItgxwljmraSFPCSsQe+Yfc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tGei7yl4H10INxe2Y9p6b+BUml7wZJk/PTlnd73CxU9EUOskd7y1MZ8PZrEE1Y1f+lsiLa8Kz+p1h4xyB8RVCZkfv/tyCn5/eNHjE7hiLOJUs/NOjn/EHCQWYBshk7baOWzSNZ8ablDvIvwp2oXz0yLCDW8uREPZdy56HX6VHU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=TYieyEJp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ql8zx4GC; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=TYieyEJp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ql8zx4GC; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 227FE1F8AA;
-	Thu, 20 Jun 2024 14:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1718892852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W/VduWasdKCSLgKbJulCui0AKbISjLYU9oRgLacKJWk=;
-	b=TYieyEJpcEliHFGUMOjVwd2MsHeTEJpl64iglSHvfZ5OZA0NbvyZ5bFjw3sVu98BxMeLfo
-	X+4Y/mvXnRL7U8eOaEoMw2oDdybBRz0U2tIyZ8EGVJgmPZng6sdYCyAYKNvWXizhZPbPOC
-	Q5/ZDx3q9VA6KEoS3xlzjy5Mj2BdhRo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1718892852;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W/VduWasdKCSLgKbJulCui0AKbISjLYU9oRgLacKJWk=;
-	b=ql8zx4GCDwPNmZBIEXu9VK0shr3zENQYJCB5gUg+QsV3semzmKkRj0Hq9/W7ouLeCyoCRO
-	gCf4QDU3fx0VO9Bw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=TYieyEJp;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ql8zx4GC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1718892852; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W/VduWasdKCSLgKbJulCui0AKbISjLYU9oRgLacKJWk=;
-	b=TYieyEJpcEliHFGUMOjVwd2MsHeTEJpl64iglSHvfZ5OZA0NbvyZ5bFjw3sVu98BxMeLfo
-	X+4Y/mvXnRL7U8eOaEoMw2oDdybBRz0U2tIyZ8EGVJgmPZng6sdYCyAYKNvWXizhZPbPOC
-	Q5/ZDx3q9VA6KEoS3xlzjy5Mj2BdhRo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1718892852;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W/VduWasdKCSLgKbJulCui0AKbISjLYU9oRgLacKJWk=;
-	b=ql8zx4GCDwPNmZBIEXu9VK0shr3zENQYJCB5gUg+QsV3semzmKkRj0Hq9/W7ouLeCyoCRO
-	gCf4QDU3fx0VO9Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 35EA113AC1;
-	Thu, 20 Jun 2024 14:14:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MI3SBjI5dGZwWgAAD6G6ig
-	(envelope-from <hare@suse.de>); Thu, 20 Jun 2024 14:14:10 +0000
-Message-ID: <4be6fe89-c972-4bf9-9d5f-84614c1c5792@suse.de>
-Date: Thu, 20 Jun 2024 16:14:09 +0200
+	s=arc-20240116; t=1718895923; c=relaxed/simple;
+	bh=RynoVHaHR3fhi+5EGp/ShOJVeujoS8ovOdDH2DNVym0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EP68I32HDHcMuCEbR+9Iw2mRaOHeTs8k+BpzhZBhJw0/plHYJREhSolwGLSAMwTmPYLthg0RBXBR1I49R17rK7RfY5qHs51hFZd3lmkQPqt/Bd6c469R5fSL3qRLfpSRI97xuEsPKnaxJ3Br+uPD4cYEBSGPwiI8XrCxIhh8OW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=CEsEn+Mb; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 45KBNZSD018063
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 08:05:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc :
+ content-transfer-encoding : content-type : date : from : message-id :
+ mime-version : subject : to; s=facebook;
+ bh=wFHSlTqHV8oxfmQQDSLzrLOoxpZsIiUngD/NcLELQXU=;
+ b=CEsEn+MbN8ItPSEfp6JRZHf9nk753zVvta+EKxtic9HJtFKSXk1pEwgS+mGiBIONRoXV
+ /jN0FS/q+a+oBV1s/jBF2RoXViyVOtF2Zj+qx+71Vuq06SxDzsCpG4cSYK+/WgZpBZpi
+ +G6SQkVZYrfftOXlzfbJbFGgJD4tlluwtu8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 3yvkg9s930-7
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2024 08:05:20 -0700
+Received: from twshared6102.02.ash9.facebook.com (2620:10d:c0a8:fe::f072) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Thu, 20 Jun 2024 15:05:14 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 637A736708BA; Thu, 20 Jun 2024 16:05:11 +0100 (BST)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH] btrfs: Fix typo in error message
+Date: Thu, 20 Jun 2024 16:04:51 +0100
+Message-ID: <20240620150503.2330637-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v9 02/10] block: Generalize chunk_sectors support as
- boundary support
-Content-Language: en-US
-To: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk, kbusch@kernel.org,
- hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
- martin.petersen@oracle.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- dchinner@redhat.com, jack@suse.cz
-Cc: djwong@kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
- linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org,
- linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, nilay@linux.ibm.com,
- ritesh.list@gmail.com, willy@infradead.org, agk@redhat.com,
- snitzer@kernel.org, mpatocka@redhat.com, dm-devel@lists.linux.dev
-References: <20240620125359.2684798-1-john.g.garry@oracle.com>
- <20240620125359.2684798-3-john.g.garry@oracle.com>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240620125359.2684798-3-john.g.garry@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,lists.infradead.org,mit.edu,google.com,linux.ibm.com,kvack.org,gmail.com,infradead.org,redhat.com,lists.linux.dev];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+];
-	R_RATELIMIT(0.00)[to_ip_from(RL7q43nzpr7is614unuocxbefr)];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email,suse.de:dkim]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 227FE1F8AA
-X-Spam-Flag: NO
-X-Spam-Score: -3.00
-X-Spam-Level: 
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: ZEOhgPkzpGk9434pdqMxzyEEh0M8ZJpT
+X-Proofpoint-ORIG-GUID: ZEOhgPkzpGk9434pdqMxzyEEh0M8ZJpT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-20_07,2024-06-20_04,2024-05-17_01
 
-On 6/20/24 14:53, John Garry wrote:
-> The purpose of the chunk_sectors limit is to ensure that a mergeble request
-> fits within the boundary of the chunck_sector value.
-> 
-> Such a feature will be useful for other request_queue boundary limits, so
-> generalize the chunk_sectors merge code.
-> 
-> This idea was proposed by Hannes Reinecke.
-> 
-> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->   block/blk-merge.c      | 20 ++++++++++++++------
->   drivers/md/dm.c        |  2 +-
->   include/linux/blkdev.h | 13 +++++++------
->   3 files changed, 22 insertions(+), 13 deletions(-)
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+---
+ fs/btrfs/disk-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index d0882536b923..9b1ac0e2cdf3 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2467,7 +2467,7 @@ int btrfs_validate_super(struct btrfs_fs_info *fs_i=
+nfo,
+ 	    (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID) ||
+ 	     !btrfs_fs_incompat(fs_info, NO_HOLES))) {
+ 		btrfs_err(fs_info,
+-		"block-group-tree feature requires fres-space-tree and no-holes");
++		"block-group-tree feature requires free-space-tree and no-holes");
+ 		ret =3D -EINVAL;
+ 	}
+=20
+--=20
+2.43.0
 
 
