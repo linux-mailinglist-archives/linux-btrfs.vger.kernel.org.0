@@ -1,168 +1,229 @@
-Return-Path: <linux-btrfs+bounces-5898-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5899-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00A51912F73
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 23:23:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60972913056
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Jun 2024 00:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B11EA2877E4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 21:23:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8D081F2448B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 22:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C534217C23A;
-	Fri, 21 Jun 2024 21:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0943816F0EC;
+	Fri, 21 Jun 2024 22:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KIjoAo9d"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ZyAh5Wsx";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JAcd3TV2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD52D4A3F;
-	Fri, 21 Jun 2024 21:23:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A96208C4
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 22:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719005002; cv=none; b=YU+BxoZn1K6sxyI/7Ma29Z9wo0h2PJQVq1+0W2dqeWUajwVvXrpSU+TZCJTL9RkxhXbiatqiEWmgyCXmiUhBhGZJR8nfsBpgkOYfk3x2a00j7TsEu1uXDO3NdrqQivAq5t65WP/oyOzDKNTQ3CMJ5ltAABg4yTU3io7dCyiewbY=
+	t=1719009135; cv=none; b=kR9/h2IMJ/qmIe8nFa6/B6S/9gBelXvqj1n/GQ6/Zv2xtyLZ5cy6EfAtEwkBwiVCkb4rc3/VZj9bmH/bVuWNe8FPfApsFvpi5vnnhmAKmSaX2uVd8o//03C0N9Frwm03WWBG1DY72tKY/LZ9sho+4RZmYlrTPAuaxauFZQ0qsJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719005002; c=relaxed/simple;
-	bh=N4ivVfcXJIy+QZ0gUdEeSMav33R3fT7xLRRwMgFHS5Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tLfjNcD60yOIApyoRlTz4LMauwUZqmDE3f0q09H33ae+0p7Y+6vN6dHS4BrJ9QyJCgxeTRaArtQQzDqz5P1JPYRKHcr4ytLeqGNMvUsob/cjTkLvOdDDN7f3/LQ12LHrezBXSJ+p/TzP4lykAjrqHDiWFryOpn3Zy9tOnJpEUSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KIjoAo9d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D506C2BBFC;
-	Fri, 21 Jun 2024 21:23:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719005001;
-	bh=N4ivVfcXJIy+QZ0gUdEeSMav33R3fT7xLRRwMgFHS5Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KIjoAo9dVPq/wWSw7vIa+LUCdLv/cy0F+UpK0V0o6GG4XtJGpPyWD7XS6VYSOCLbE
-	 96RxruHq6fyaGWj3Fcup4m2H2zjHCiaQsk2cwLejwCGTDk1h+CDL9GsEpDBeR+358D
-	 eVikhWol4HvrtRbxIVuPnG8/eXP7DgKHQJuJc+DHT3QbmE/Ug77DxemimyxG+bwVLd
-	 ayCRr4u6b+0c/fvSbv7PmeG3MeTeJovAWkBSk4O562mzy8+vpo9vIy6eLQV2Tb8vex
-	 6s75hABhrSF177DZx/ED7ySzT1gVAEo80N7qgJFHW46uWn0nuJwTC9rbYIeMvVkLYN
-	 /Y3Eol8tZh44w==
-Date: Fri, 21 Jun 2024 14:23:20 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Hannes Reinecke <hare@suse.de>, axboe@kernel.dk, kbusch@kernel.org,
-	hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-	ojaswin@linux.ibm.com, linux-aio@kvack.org,
-	linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
-	nilay@linux.ibm.com, ritesh.list@gmail.com, willy@infradead.org,
-	agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
-	dm-devel@lists.linux.dev
-Subject: Re: [Patch v9 07/10] block: Add fops atomic write support
-Message-ID: <20240621212320.GE103020@frogsfrogsfrogs>
-References: <20240620125359.2684798-1-john.g.garry@oracle.com>
- <20240620125359.2684798-8-john.g.garry@oracle.com>
- <680ce641-729b-4150-b875-531a98657682@suse.de>
- <d3332752-52b1-4d24-88cf-3b5e7aa4b74a@oracle.com>
+	s=arc-20240116; t=1719009135; c=relaxed/simple;
+	bh=K/xZySVu2adRLtjLU3p+plTj8cnT8KLq0XlRkjwZFE4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=hMrIYWwngSR72sn6QylJtFyYRGHG/hDIbXOdA7+K+kWVtQS1iyVzwIbm8g9YP3bqweDUX3tnKH9yhmpHCJTINwDcPg9QdjGOYlLE0u+rsLckOe8yB5j9g4xf7AJ4dZvdb/+iOCooxtB8Vq+7JBIMuJ1nnAR4xngXr0nkVYz2Kho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ZyAh5Wsx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JAcd3TV2; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 07B1013800B8;
+	Fri, 21 Jun 2024 18:32:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 21 Jun 2024 18:32:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1719009132; x=1719095532; bh=QZWdeEHl1EpJ9XALOoMK1
+	3KgiEhQ7bfsxfIHoNyFW5c=; b=ZyAh5WsxBbsLcnxmo9+v4MPHqEcAb/co4kj58
+	0lt1D9J51F/pQv7X+VPWcwCU/79TzecSnNtMALaR2Be7nvBdE2GHab8Y2kPfazGF
+	2T+5FhPjbTuyzs3VYYcXbMZTOzZDnAeYZuZ8ZRkhns03JvEhfDMWq98XOz05fIBc
+	Iz82IwVCxLOEED5KWPThlvMCPqliJAOucWfqXhnlVDAQBtcxprQs+Qx5xtrgWdO6
+	zKjyx49HXvhE6kfz+cEydrgKK4x9vYFJQnefiv3CTAjn6GD4M1wdx6M1hvjKBnZN
+	RdeN5Q4EYTR+xA8MUdgGyQWT22EpvrJee3QryFns3IFkDqS4Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1719009132; x=1719095532; bh=QZWdeEHl1EpJ9XALOoMK13KgiEhQ
+	7bfsxfIHoNyFW5c=; b=JAcd3TV2cItd3FeoXlvfZB51csMohNqvw2CamLZDNA0C
+	CyqXYcjXbusp+zFs2cysdPN7v48ix+3UvKTBBvXXNhWqTjY03ZjenVHC7qpeHsAU
+	IqLMqIaPTVyVub+NI4nQLb8nqZOhhu8qYUta6zWs9s7+Y/RrkmOOAHRzHbpsUPtm
+	6vO1Km6OxQpP/6lHBBLWjGMAyIE+3Nb9Tx7sQpnMv3y3amFBgZdnMCbqxlc61ntM
+	QbbRKjY7E2PUd0iBF61ygDq56AfaOEa8Ev+AOWKeKutx8PTZgYvOf/kD0fIEOmar
+	1Hoaw8s7T2QNCnDSSDDtpl+SaG0sOHmIHfd8IMvhSw==
+X-ME-Sender: <xms:a_91ZvcwHAgVfGKX6rYC6gCICmOEN_DO_a1Tyn8OJgyeafVX_b4rPw>
+    <xme:a_91ZlPfqGUnF-An1z5TZPGyvyIhBtNggUKnTaFDoZxwJVLDIkNa10ftrBL2JJBwN
+    S1W485ZN1EUABHM-4c>
+X-ME-Received: <xmr:a_91ZogAcNMUFVzESLJ71KXotVuf9jI6-SoGxxSuUl472LvLJiHM04DjxuissH5WpeA6liDs0dNym-Af9BIrCuIesWU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeefhedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
+    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:a_91Zg_WbVn4fUs66Rf04NNcGuLdGroeY6fn8VhZ_4Auu6fTGgsyYg>
+    <xmx:a_91ZrtiLVa7oBnVBgypMFdm2tAcZVa0Rv-CPr_CL5b_Btfh8OE25Q>
+    <xmx:a_91ZvGnUScckbSihHsIysABbJsiQqiCxyZQqvbhUq-Gt-pO_00aLg>
+    <xmx:a_91ZiOZcF1tGZDwnkpm0Lf_eSHqZWItKOJEkof49l1T-9RJvIRnPQ>
+    <xmx:a_91Zk7s_XKuOkJ96SpaKeakVGhjeem5FITiPq1bNVBGpymSs1y_hlKL>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 21 Jun 2024 18:32:11 -0400 (EDT)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: preallocate ulist memory for qgroup rsv
+Date: Fri, 21 Jun 2024 15:31:36 -0700
+Message-ID: <353894f3538d150605f0f28636249c332c1bd84a.1719009048.git.boris@bur.io>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3332752-52b1-4d24-88cf-3b5e7aa4b74a@oracle.com>
 
-On Fri, Jun 21, 2024 at 01:02:34PM +0100, John Garry wrote:
-> On 21/06/2024 07:13, Hannes Reinecke wrote:
-> > On 6/20/24 14:53, John Garry wrote:
-> > > Support atomic writes by submitting a single BIO with the REQ_ATOMIC set.
-> > > 
-> > > It must be ensured that the atomic write adheres to its rules, like
-> > > naturally aligned offset, so call blkdev_dio_invalid() ->
-> > > blkdev_atomic_write_valid() [with renaming blkdev_dio_unaligned() to
-> > > blkdev_dio_invalid()] for this purpose. The BIO submission path currently
-> > > checks for atomic writes which are too large, so no need to check here.
-> > > 
-> > > In blkdev_direct_IO(), if the nr_pages exceeds BIO_MAX_VECS, then we
-> > > cannot
-> > > produce a single BIO, so error in this case.
-> > > 
-> > > Finally set FMODE_CAN_ATOMIC_WRITE when the bdev can support atomic
-> > > writes
-> > > and the associated file flag is for O_DIRECT.
-> > > 
-> > > Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > ---
-> > >   block/fops.c | 20 +++++++++++++++++---
-> > >   1 file changed, 17 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/block/fops.c b/block/fops.c
-> > > index 376265935714..be36c9fbd500 100644
-> > > --- a/block/fops.c
-> > > +++ b/block/fops.c
-> > > @@ -34,9 +34,12 @@ static blk_opf_t dio_bio_write_op(struct kiocb *iocb)
-> > >       return opf;
-> > >   }
-> > > -static bool blkdev_dio_unaligned(struct block_device *bdev, loff_t pos,
-> > > -                  struct iov_iter *iter)
-> > > +static bool blkdev_dio_invalid(struct block_device *bdev, loff_t pos,
-> > > +                struct iov_iter *iter, bool is_atomic)
-> > >   {
-> > > +    if (is_atomic && !generic_atomic_write_valid(iter, pos))
-> > > +        return true;
-> > > +
-> > >       return pos & (bdev_logical_block_size(bdev) - 1) ||
-> > >           !bdev_iter_is_aligned(bdev, iter);
-> > >   }
-> > > @@ -72,6 +75,8 @@ static ssize_t __blkdev_direct_IO_simple(struct
-> > > kiocb *iocb,
-> > >       bio.bi_iter.bi_sector = pos >> SECTOR_SHIFT;
-> > >       bio.bi_write_hint = file_inode(iocb->ki_filp)->i_write_hint;
-> > >       bio.bi_ioprio = iocb->ki_ioprio;
-> > > +    if (iocb->ki_flags & IOCB_ATOMIC)
-> > > +        bio.bi_opf |= REQ_ATOMIC;
-> > >       ret = bio_iov_iter_get_pages(&bio, iter);
-> > >       if (unlikely(ret))
-> > > @@ -343,6 +348,9 @@ static ssize_t __blkdev_direct_IO_async(struct
-> > > kiocb *iocb,
-> > >           task_io_account_write(bio->bi_iter.bi_size);
-> > >       }
-> > > +    if (iocb->ki_flags & IOCB_ATOMIC)
-> > > +        bio->bi_opf |= REQ_ATOMIC;
-> > > +
-> > >       if (iocb->ki_flags & IOCB_NOWAIT)
-> > >           bio->bi_opf |= REQ_NOWAIT;
-> > > @@ -359,12 +367,13 @@ static ssize_t __blkdev_direct_IO_async(struct
-> > > kiocb *iocb,
-> > >   static ssize_t blkdev_direct_IO(struct kiocb *iocb, struct
-> > > iov_iter *iter)
-> > >   {
-> > >       struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
-> > > +    bool is_atomic = iocb->ki_flags & IOCB_ATOMIC;
-> > >       unsigned int nr_pages;
-> > >       if (!iov_iter_count(iter))
-> > >           return 0;
-> > > -    if (blkdev_dio_unaligned(bdev, iocb->ki_pos, iter))
-> > > +    if (blkdev_dio_invalid(bdev, iocb->ki_pos, iter, is_atomic))
-> > 
-> > Why not passing in iocb->ki_flags here?
-> > Or, indeed, the entire iocb?
-> 
-> We could (pass the iocb), but we only need to look up one thing - ki_pos. We
-> already have is_atomic local. I am just trying to make things as efficient
-> as possible. If you really think it's better (to pass iocb), then it can be
-> changed.
+When qgroups are enabled, during data reservation, we allocate the
+ulist_nodes that track the exact reserved extents with GFP_ATOMIC
+unconditionally. This is unnecessary, and we can follow the model
+already employed by the struct extent_state we preallocate in the non
+qgroups case, which should reduce the risk of allocation failures with
+GFP_ATOMIC.
 
-I certainly do. ;)
+Add a prealloc node to struct ulist which ulist_add will grab when it is
+present, and try to allocate it before taking the tree lock while we can
+still take advantage of a less strict gfp mask. The lifetime of that
+node belongs to the new prealloc field, until it is used, at which point
+it belongs to the ulist linked list.
 
-https://lore.kernel.org/linux-xfs/20240620212401.GA3058325@frogsfrogsfrogs/
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/extent-io-tree.c |  4 ++++
+ fs/btrfs/extent_io.h      |  5 +++++
+ fs/btrfs/ulist.c          | 21 ++++++++++++++++++---
+ fs/btrfs/ulist.h          |  2 ++
+ 4 files changed, 29 insertions(+), 3 deletions(-)
 
---D
+diff --git a/fs/btrfs/extent-io-tree.c b/fs/btrfs/extent-io-tree.c
+index ed2cfc3d5d8a..c54c5d7a5cd5 100644
+--- a/fs/btrfs/extent-io-tree.c
++++ b/fs/btrfs/extent-io-tree.c
+@@ -4,6 +4,7 @@
+ #include <trace/events/btrfs.h>
+ #include "messages.h"
+ #include "ctree.h"
++#include "extent_io.h"
+ #include "extent-io-tree.h"
+ #include "btrfs_inode.h"
+ 
+@@ -1084,6 +1085,9 @@ static int __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+ 		 */
+ 		prealloc = alloc_extent_state(mask);
+ 	}
++	/* Optimistically preallocate the extent changeset ulist node. */
++	if (changeset)
++		extent_changeset_prealloc(changeset, mask);
+ 
+ 	spin_lock(&tree->lock);
+ 	if (cached_state && *cached_state) {
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 96c6bbdcd5d6..8b33cfea6b75 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -215,6 +215,11 @@ static inline struct extent_changeset *extent_changeset_alloc(void)
+ 	return ret;
+ }
+ 
++static inline void extent_changeset_prealloc(struct extent_changeset *changeset, gfp_t gfp_mask)
++{
++	ulist_prealloc(&changeset->range_changed, gfp_mask);
++}
++
+ static inline void extent_changeset_release(struct extent_changeset *changeset)
+ {
+ 	if (!changeset)
+diff --git a/fs/btrfs/ulist.c b/fs/btrfs/ulist.c
+index 183863f4bfa4..f35d3e93996b 100644
+--- a/fs/btrfs/ulist.c
++++ b/fs/btrfs/ulist.c
+@@ -50,6 +50,7 @@ void ulist_init(struct ulist *ulist)
+ 	INIT_LIST_HEAD(&ulist->nodes);
+ 	ulist->root = RB_ROOT;
+ 	ulist->nnodes = 0;
++	ulist->prealloc = NULL;
+ }
+ 
+ /*
+@@ -68,6 +69,8 @@ void ulist_release(struct ulist *ulist)
+ 	list_for_each_entry_safe(node, next, &ulist->nodes, list) {
+ 		kfree(node);
+ 	}
++	kfree(ulist->prealloc);
++	ulist->prealloc = NULL;
+ 	ulist->root = RB_ROOT;
+ 	INIT_LIST_HEAD(&ulist->nodes);
+ }
+@@ -105,6 +108,12 @@ struct ulist *ulist_alloc(gfp_t gfp_mask)
+ 	return ulist;
+ }
+ 
++void ulist_prealloc(struct ulist *ulist, gfp_t gfp_mask)
++{
++	if (ulist && !ulist->prealloc)
++		ulist->prealloc = kzalloc(sizeof(*ulist->prealloc), gfp_mask);
++}
++
+ /*
+  * Free dynamically allocated ulist.
+  *
+@@ -206,9 +215,15 @@ int ulist_add_merge(struct ulist *ulist, u64 val, u64 aux,
+ 			*old_aux = node->aux;
+ 		return 0;
+ 	}
+-	node = kmalloc(sizeof(*node), gfp_mask);
+-	if (!node)
+-		return -ENOMEM;
++
++	if (ulist->prealloc) {
++		node = ulist->prealloc;
++		ulist->prealloc = NULL;
++	} else {
++		node = kmalloc(sizeof(*node), gfp_mask);
++		if (!node)
++			return -ENOMEM;
++	}
+ 
+ 	node->val = val;
+ 	node->aux = aux;
+diff --git a/fs/btrfs/ulist.h b/fs/btrfs/ulist.h
+index 8e200fe1a2dd..c62a372f1462 100644
+--- a/fs/btrfs/ulist.h
++++ b/fs/btrfs/ulist.h
+@@ -41,12 +41,14 @@ struct ulist {
+ 
+ 	struct list_head nodes;
+ 	struct rb_root root;
++	struct ulist_node *prealloc;
+ };
+ 
+ void ulist_init(struct ulist *ulist);
+ void ulist_release(struct ulist *ulist);
+ void ulist_reinit(struct ulist *ulist);
+ struct ulist *ulist_alloc(gfp_t gfp_mask);
++void ulist_prealloc(struct ulist *ulist, gfp_t mask);
+ void ulist_free(struct ulist *ulist);
+ int ulist_add(struct ulist *ulist, u64 val, u64 aux, gfp_t gfp_mask);
+ int ulist_add_merge(struct ulist *ulist, u64 val, u64 aux,
+-- 
+2.45.2
 
-> Thanks,
-> John
-> 
-> 
 
