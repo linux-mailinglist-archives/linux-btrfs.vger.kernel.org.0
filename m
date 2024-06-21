@@ -1,382 +1,319 @@
-Return-Path: <linux-btrfs+bounces-5895-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5897-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEFE5912D98
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 20:54:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A35CD912F56
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 23:19:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7597128A4EE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 18:54:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6A451C20A1A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 21:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0449917C210;
-	Fri, 21 Jun 2024 18:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F7317C22E;
+	Fri, 21 Jun 2024 21:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="2AJIZM5f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C2j0J7XY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEAA917B509
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 18:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819C882488;
+	Fri, 21 Jun 2024 21:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718996042; cv=none; b=QHO706tdzapGuJZos/EIhw8ZQpVs44NKPu7v/B2Qcqy0kbkL0XAGNFBUv8EwUFOIBp/l62qg5GWCzjYIvOCU6Jf9J+WhqGR/pb0DWKUNlURvEENqpKu2Qu385RuxpuAQGQ4L8zcKRX6Ol6pMjmeZR73g4+PmV/bKAyrYn53971g=
+	t=1719004736; cv=none; b=XLxc8hf/fiEXdPzWiNgf939xviOEmWTQC4r07IiubiyqMp1GFvz+bqy9we1iACGmC6IrHUur7iSFISk51E1TsdfzNGxZrX/yj6lfZ7teDj0hC8OtisJ9GIN66sjhH4FyLRYcCzcHWVe+2UxM9w/+Gixrtwo7q5CR87daQKjAYys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718996042; c=relaxed/simple;
-	bh=nc4eReYEnK9FxSD8Vr8UZctZG7mrd8qchTZ2vyvEvxU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=snHoTGqG7OavBCNxSU0JnLxdhvYKzAwNy1KkoT3sX6cuQhhWMO+GZ1V5t4BDb+W5q11KNFtN0d4e/OL6GwMeFbIlUd2vtip8KCHwtSfNvtOMzkO9Ibj+DpzZP0AZVn/py5+gDY4/M2dXIjVxQgQylJiasb9hjzLtBQoHpCXcNio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=2AJIZM5f; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-71816f36d4dso433406a12.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 11:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1718996040; x=1719600840; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t/V5hL5Wvz5/EkwK3eEVEu+zgQlQLp61GSiylGiYTHo=;
-        b=2AJIZM5fylObGUTUzwK1nEmAOhdlGRe1ZtvUzph/a3rgsx3mgDtJ4WpP2IUqbZ6ow6
-         NLkCxEHr/uIstMOI6MA5T2D5Hv7M4vhnrbj/r8EpL4ZM58Rahsxf//hDwDQsWylyT4qK
-         Hk6Sw8ACuKJGvwKvZ4ju6dN3Nd9Ewgv5WgrE/mTDKJykMSwiLrS/w/k8JpNp60FBf0UI
-         dDaIAeRF+kox5Gavs5BDTlaonEykun+UV4I9SNJMQ5+18jd4uiENTvxFrlw20FPATv7d
-         bXUQws+jOneFPoIJbzn6WI2l1/KzZMDzoAgOF1zZChL++O6dWKvJeHlZKKu/j9zJcJDH
-         9Stg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718996040; x=1719600840;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t/V5hL5Wvz5/EkwK3eEVEu+zgQlQLp61GSiylGiYTHo=;
-        b=FMbkUdIUze2xgl3qd/OYvFhH7GWJh4Vjxb9dP0gz32heYhcln9QabxaV6kR8UCM+gs
-         23fFmlB8yvVhYJcHbQEHak7k6D43m6m/S+fwRI92k6kAZA5sZCy22UhvHQcSrFWHWLiB
-         4fbjSa3n09mlE/TTT6JS1wpsaL71uD806OGhq/EbkBNwgdoQVpElk7+cOQNj50CcvRWP
-         h06pPbnv3MMqrjXLyhOBD4KnihsLVp3NIIGcJ62j5sPUTrGRi9OjIX71tRB86Kw+DzyM
-         /omyXNfd7n30K3F3MFbfASxZpaz+LIbCCT4dZ1XfqTJeAz9gsu90clpJKyXy+YREffVo
-         Oeeg==
-X-Gm-Message-State: AOJu0Yxy568rkDeqx0Y8N2ruFoxcFpq+QwwzufLiOgz5AQfXuEP6shKN
-	IG5kcUtuqrdDZnVQhSPCl+fHwzREzvkO26jmXJwGbVmAxwEeUfB7RmqnAgHANrYUTwGKrUDVPeE
-	s
-X-Google-Smtp-Source: AGHT+IE8HMhbihMLkiujCyo6bwns2EzJFrXeKCOdSywQIHmeeKjXwyCjMo22tBY/RBb+uKZT/h5SWA==
-X-Received: by 2002:a17:90a:d905:b0:2c7:a907:b6bd with SMTP id 98e67ed59e1d1-2c7b5dbf636mr8708243a91.49.1718996039731;
-        Fri, 21 Jun 2024 11:53:59 -0700 (PDT)
-Received: from telecaster.thefacebook.com ([2620:10d:c090:500::6:1ec7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c7e53e06e7sm3957366a91.21.2024.06.21.11.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jun 2024 11:53:59 -0700 (PDT)
-From: Omar Sandoval <osandov@osandov.com>
-To: linux-btrfs@vger.kernel.org
-Cc: kernel-team@fb.com
-Subject: [PATCH 8/8] btrfs-progs: subvol list: add sane -O and -A options
-Date: Fri, 21 Jun 2024 11:53:37 -0700
-Message-ID: <a7ac630a985c28ae5936a11e6e229a228ecc052a.1718995160.git.osandov@fb.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1718995160.git.osandov@fb.com>
-References: <cover.1718995160.git.osandov@fb.com>
+	s=arc-20240116; t=1719004736; c=relaxed/simple;
+	bh=sdtBjsr+XiHzFFwJkoRXFeC0FXv2NWldnm0I6mueIIk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WR5z5blMHzJtoxXcpisM5wY8e8yCZiOClBwBsipqyax4iP6z2LpVOGzazDL8mB5Jl0GLs/wFpGV41k0YENOPKd6Gem6cmSFxLB7EdlgZ1HSomhFffSSWm0IqM0j7QYwLkFLfdAY9jUNq3MLFLu2UH2XAHxP/LhDaOy5LAD/SDWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C2j0J7XY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7A1AC2BBFC;
+	Fri, 21 Jun 2024 21:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719004736;
+	bh=sdtBjsr+XiHzFFwJkoRXFeC0FXv2NWldnm0I6mueIIk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C2j0J7XYnglGPEiEziaR5oJH2YSHKc+/x1SlIkP213F7Ne1JnvVZgZz9tuky+Aasy
+	 6MZy17hsxxBt4Ba+DYJAqIhtz2nV+WGetvSA99yPiipqs9cjZNMOxbYaCNY3YcsAG0
+	 HiAHxsFtoKEI2Y+6IAExVu2LiF4RYYYqYVlTUskJEAe4ESUa+1W9M2nNkrGtq8huU5
+	 KngZUgVIh3zUgw0al2QnLAYMhYAn5jMED5Q0x25hq0a8LUy6zpZhsowQHWaCrSTxOb
+	 cM3OxhmkgUB0Xa8k/tYmqM7nB8FdZQtkPANImh5zh6pzmGKxfm6QB5LJGB/XggKl0D
+	 ynjuqanOQhjkg==
+Date: Fri, 21 Jun 2024 14:18:55 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, tytso@mit.edu, dchinner@redhat.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.com,
+	chandan.babu@oracle.com, hch@lst.de, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-xfs@vger.kernel.org, catherine.hoang@oracle.com,
+	ritesh.list@gmail.com, mcgrof@kernel.org,
+	mikulas@artax.karlin.mff.cuni.cz, agruenba@redhat.com,
+	miklos@szeredi.hu, martin.petersen@oracle.com
+Subject: Re: [PATCH v4 02/22] iomap: Allow filesystems set IO block zeroing
+ size
+Message-ID: <20240621211855.GY3058325@frogsfrogsfrogs>
+References: <20240607143919.2622319-1-john.g.garry@oracle.com>
+ <20240607143919.2622319-3-john.g.garry@oracle.com>
+ <20240612213235.GK2764752@frogsfrogsfrogs>
+ <59255aa1-a769-437b-8fbb-71f53fd7920f@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59255aa1-a769-437b-8fbb-71f53fd7920f@oracle.com>
 
-From: Omar Sandoval <osandov@fb.com>
+On Thu, Jun 13, 2024 at 11:31:35AM +0100, John Garry wrote:
+> On 12/06/2024 22:32, Darrick J. Wong wrote:
+> > > unsigned int fs_block_size = i_blocksize(inode), pad;
+> > > +	u64 io_block_size = iomap->io_block_size;
+> > I wonder, should iomap be nice and not require filesystems to set
+> > io_block_size themselves unless they really need it?
+> 
+> That's what I had in v3, like:
+> 
+> if (iomap->io_block_size)
+> 	io_block_size = iomap->io_block_size;
+> else
+> 	io_block_size = i_block_size(inode)
+> 
+> but it was suggested to change that (to like what I have here).
 
-Now that we've documented the current nonsensical behavior, add a couple
-of options that actually make sense: -O lists all subvolumes below a
-path (which is what people think -o does), and -A lists all subvolumes
-with no path munging (which is what people think the default or -a do).
--O can even be used by unprivileged users.
+oh, ok.  Ignore that comment, then. :)
 
--O and -A also renames the "top level" in the default output to what it
-actually is now: the "parent".
+> > Anyone working on
+> > an iomap port while this patchset is in progress may or may not remember
+> > to add this bit if they get their port merged after atomicwrites is
+> > merged; and you might not remember to prevent the bitrot if the reverse
+> > order happens.
+> 
+> Sure, I get your point.
+> 
+> However, OTOH, if we check xfs_bmbt_to_iomap(), it does set all or close to
+> all members of struct iomap, so we are just continuing that trend, i.e. it
+> is the job of the FS callback to set all these members.
+> 
+> > 
+> > 	u64 io_block_size = iomap->io_block_size ?: i_blocksize(inode);
+> > 
+> > >   	loff_t length = iomap_length(iter);
+> > >   	loff_t pos = iter->pos;
+> > >   	blk_opf_t bio_opf;
+> > > @@ -287,6 +287,7 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+> > >   	int nr_pages, ret = 0;
+> > >   	size_t copied = 0;
+> > >   	size_t orig_count;
+> > > +	unsigned int pad;
+> > >   	if ((pos | length) & (bdev_logical_block_size(iomap->bdev) - 1) ||
+> > >   	    !bdev_iter_is_aligned(iomap->bdev, dio->submit.iter))
+> > > @@ -355,7 +356,14 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+> > >   	if (need_zeroout) {
+> > >   		/* zero out from the start of the block to the write offset */
+> > > -		pad = pos & (fs_block_size - 1);
+> > > +		if (is_power_of_2(io_block_size)) {
+> > > +			pad = pos & (io_block_size - 1);
+> > > +		} else {
+> > > +			loff_t _pos = pos;
+> > > +
+> > > +			pad = do_div(_pos, io_block_size);
+> > > +		}
+> > Please don't opencode this twice.
+> > 
+> > static unsigned int offset_in_block(loff_t pos, u64 blocksize)
+> > {
+> > 	if (likely(is_power_of_2(blocksize)))
+> > 		return pos & (blocksize - 1);
+> > 	return do_div(pos, blocksize);
+> > }
+> 
+> ok, fine
+> 
+> > 
+> > 		pad = offset_in_block(pos, io_block_size);
+> > 		if (pad)
+> > 			...
+> > 
+> > Also, what happens if pos-pad points to a byte before the mapping?
+> 
+> It's the job of the FS to map in something aligned to io_block_size. Having
+> said that, I don't think we are doing that for XFS (which sets io_block_size
+> > i_block_size(inode)), so I need to check that.
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- Documentation/btrfs-subvolume.rst             | 17 ++++
- cmds/subvolume-list.c                         | 77 +++++++++++++++----
- .../026-subvolume-list-path-filtering/test.sh | 38 +++++++++
- 3 files changed, 117 insertions(+), 15 deletions(-)
+<nod>  You can only play with the mapping that the fs gave you.
+If xfs doesn't give you a big enough mapping, then that's a programming
+bug to WARN_ON_ONCE about and return EIO.
 
-diff --git a/Documentation/btrfs-subvolume.rst b/Documentation/btrfs-subvolume.rst
-index fe84ab1c..f76c1302 100644
---- a/Documentation/btrfs-subvolume.rst
-+++ b/Documentation/btrfs-subvolume.rst
-@@ -136,6 +136,9 @@ list [options] [-G [\+|-]<value>] [-C [+|-]<value>] [--sort=rootid,gen,ogen,path
-         updated every transaction, *parent_ID* is the same as the parent subvolume's id,
-         and *path* is the path of the subvolume. The exact meaning of *path*
-         depends on the **Path filtering** option used.
-+
-+        If -O or -A is given, "top level" is replaced by "parent".
-+
-         The subvolume's ID may be used by the subvolume set-default command,
-         or at mount time via the *subvolid=* option.
- 
-@@ -143,6 +146,20 @@ list [options] [-G [\+|-]<value>] [-C [+|-]<value>] [--sort=rootid,gen,ogen,path
- 
-         Path filtering:
- 
-+        -O
-+                Print <path> and all subvolumes below it, recursively. <path>
-+                must be a subvolume. Paths are printed relative to <path>.
-+
-+                This may be used by unprivileged users, in which case this only
-+                lists subvolumes that the user has access to.
-+        -A
-+                Print all subvolumes in the filesystem. Paths are printed
-+                relative to the root of the filesystem.
-+
-+        You likely always want either -O or -A. The -o and -a options and the
-+        default if no path filtering options are given have very confusing,
-+        accidental behavior that is only kept for backwards compatibility.
-+
-         -o
-                 Print only the immediate children subvolumes of the subvolume
-                 containing <path>. Paths are printed relative to the root of
-diff --git a/cmds/subvolume-list.c b/cmds/subvolume-list.c
-index fa5082af..4dde9fbe 100644
---- a/cmds/subvolume-list.c
-+++ b/cmds/subvolume-list.c
-@@ -59,6 +59,13 @@ static const char * const cmd_subvolume_list_usage[] = {
- 	"List subvolumes and snapshots in the filesystem.",
- 	"",
- 	"Path filtering:",
-+	OPTLINE("-O", "print all subvolumes below <path> relative to <path>"),
-+	OPTLINE("-A", "print all subvolumes in the filesystem relative to the "
-+		"root of the filesystem"),
-+	"",
-+	"You likely always want either -O or -A. The -o and -a options and the",
-+	"default are confusing and only kept for backwards compatibility.",
-+	"",
- 	OPTLINE("-o", "print only the immediate children subvolumes of the "
- 		"subvolume containing <path>"),
- 	OPTLINE("-a", "print all subvolumes in the filesystem other than the "
-@@ -866,9 +873,11 @@ out:
- 	return subvols;
- }
- 
--static struct subvol_list *btrfs_list_subvols(int fd,
-+static struct subvol_list *btrfs_list_subvols(int fd, bool include_top,
-+				bool below,
- 				struct btrfs_list_filter_set *filter_set)
- {
-+	u64 top_id = below ? 0 : BTRFS_FS_TREE_OBJECTID;
- 	struct subvol_list *subvols;
- 	size_t capacity = 4;
- 	struct btrfs_util_subvolume_iterator *iter;
-@@ -883,15 +892,28 @@ static struct subvol_list *btrfs_list_subvols(int fd,
- 	}
- 	subvols->num = 0;
- 
--	err = btrfs_util_create_subvolume_iterator_fd(fd,
--						      BTRFS_FS_TREE_OBJECTID, 0,
--						      &iter);
-+	err = btrfs_util_create_subvolume_iterator_fd(fd, top_id, 0, &iter);
- 	if (err) {
- 		iter = NULL;
- 		error_btrfs_util(err);
- 		goto out;
- 	}
- 
-+	if (include_top) {
-+		err = btrfs_util_subvolume_info_fd(fd, top_id,
-+						   &subvols->subvols[0].info);
-+		if (err) {
-+			error_btrfs_util(err);
-+			goto out;
-+		}
-+		subvols->subvols[0].path = strdup("");
-+		if (!subvols->subvols[0].path) {
-+			error("out of memory");
-+			goto out;
-+		}
-+		subvols->num++;
-+	}
-+
- 	for (;;) {
- 		struct root_info subvol;
- 
-@@ -945,14 +967,15 @@ out:
- 
- static int btrfs_list_subvols_print(int fd, struct btrfs_list_filter_set *filter_set,
- 		       struct btrfs_list_comparer_set *comp_set,
--		       enum btrfs_list_layout layout)
-+		       enum btrfs_list_layout layout, bool include_top,
-+		       bool below)
- {
- 	struct subvol_list *subvols;
- 
- 	if (filter_set->only_deleted)
- 		subvols = btrfs_list_deleted_subvols(fd, filter_set);
- 	else
--		subvols = btrfs_list_subvols(fd, filter_set);
-+		subvols = btrfs_list_subvols(fd, include_top, below, filter_set);
- 	if (!subvols)
- 		return -1;
- 
-@@ -1097,8 +1120,10 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 	char *top_path = NULL;
- 	int ret = -1, uerr = 0;
- 	char *subvol;
-+	bool is_list_below = false;
- 	bool is_list_all = false;
--	bool is_only_in_path = false;
-+	bool is_old_a_option = false;
-+	bool is_old_o_option = false;
- 	enum btrfs_list_layout layout = BTRFS_LIST_LAYOUT_DEFAULT;
- 
- 	filter_set = btrfs_list_alloc_filter_set();
-@@ -1113,7 +1138,7 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 		};
- 
- 		c = getopt_long(argc, argv,
--				    "acdgopqsurRG:C:t", long_options, NULL);
-+				    "acdgopqsurRG:C:tOA", long_options, NULL);
- 		if (c < 0)
- 			break;
- 
-@@ -1122,7 +1147,7 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 			btrfs_list_setup_print_column(BTRFS_LIST_PARENT);
- 			break;
- 		case 'a':
--			is_list_all = true;
-+			is_old_a_option = true;
- 			break;
- 		case 'c':
- 			btrfs_list_setup_print_column(BTRFS_LIST_OGENERATION);
-@@ -1134,7 +1159,7 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 			btrfs_list_setup_print_column(BTRFS_LIST_GENERATION);
- 			break;
- 		case 'o':
--			is_only_in_path = true;
-+			is_old_o_option = true;
- 			break;
- 		case 't':
- 			layout = BTRFS_LIST_LAYOUT_TABLE;
-@@ -1187,6 +1212,12 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 				goto out;
- 			}
- 			break;
-+		case 'O':
-+			is_list_below = true;
-+			break;
-+		case 'A':
-+			is_list_all = true;
-+			break;
- 
- 		default:
- 			uerr = 1;
-@@ -1197,6 +1228,19 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 	if (check_argc_exact(argc - optind, 1))
- 		goto out;
- 
-+	/*
-+	 * The path filtering options and -d don't make sense together. For -O
-+	 * and -A, we're strict about not combining them with each other or with
-+	 * -o, -a, or -d. The -o, -a, and -d options are older and have never
-+	 * been restricted, so although they produce dubious results when
-+	 * combined, we allow it for backwards compatibility.
-+	 */
-+	if (is_list_below + is_list_all +
-+	    (is_old_a_option || is_old_o_option || filter_set->only_deleted) > 1) {
-+		error("-O, -A, -o, -a, and -d are mutually exclusive");
-+		goto out;
-+	}
-+
- 	subvol = argv[optind];
- 	fd = btrfs_open_dir(subvol);
- 	if (fd < 0) {
-@@ -1216,15 +1260,15 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 		goto out;
- 	}
- 
--	if (is_list_all)
-+	if (is_old_a_option)
- 		btrfs_list_setup_filter(&filter_set,
- 					BTRFS_LIST_FILTER_FULL_PATH,
- 					top_id);
--	else if (is_only_in_path)
-+	else if (is_old_o_option)
- 		btrfs_list_setup_filter(&filter_set,
- 					BTRFS_LIST_FILTER_TOPID_EQUAL,
- 					top_id);
--	else if (!filter_set->only_deleted) {
-+	else if (!is_list_below && !is_list_all && !filter_set->only_deleted) {
- 		enum btrfs_util_error err;
- 
- 		err = btrfs_util_subvolume_get_path_fd(fd, top_id, &top_path);
-@@ -1241,13 +1285,16 @@ static int cmd_subvolume_list(const struct cmd_struct *cmd, int argc, char **arg
- 	/* by default we shall print the following columns*/
- 	btrfs_list_setup_print_column(BTRFS_LIST_OBJECTID);
- 	btrfs_list_setup_print_column(BTRFS_LIST_GENERATION);
--	btrfs_list_setup_print_column(BTRFS_LIST_TOP_LEVEL);
-+	btrfs_list_setup_print_column(is_list_below || is_list_all ?
-+				      BTRFS_LIST_PARENT : BTRFS_LIST_TOP_LEVEL);
- 	btrfs_list_setup_print_column(BTRFS_LIST_PATH);
- 
- 	if (bconf.output_format == CMD_FORMAT_JSON)
- 		layout = BTRFS_LIST_LAYOUT_JSON;
- 
--	ret = btrfs_list_subvols_print(fd, filter_set, comparer_set, layout);
-+	ret = btrfs_list_subvols_print(fd, filter_set, comparer_set, layout,
-+				       is_list_below || is_list_all,
-+				       is_list_below);
- 
- out:
- 	free(top_path);
-diff --git a/tests/cli-tests/026-subvolume-list-path-filtering/test.sh b/tests/cli-tests/026-subvolume-list-path-filtering/test.sh
-index 1b272ddc..a65ba91f 100755
---- a/tests/cli-tests/026-subvolume-list-path-filtering/test.sh
-+++ b/tests/cli-tests/026-subvolume-list-path-filtering/test.sh
-@@ -114,5 +114,43 @@ EOF
- expect_subvol_list_paths -o a/b/c/d << EOF
- EOF
- 
-+### -A ###
-+
-+# Paths are always relative to the root of the filesystem.
-+for path in . a/b a/b/c; do
-+	expect_subvol_list_paths -A "$path" << EOF
-+
-+a
-+a/b/c
-+a/b/c/d
-+a/e
-+EOF
-+done
-+
-+### -O ###
-+
-+# Paths are relative to the given path.
-+expect_subvol_list_paths -O . << EOF
-+
-+a
-+a/b/c
-+a/b/c/d
-+a/e
-+EOF
-+
-+expect_subvol_list_paths -O a << EOF
-+
-+b/c
-+b/c/d
-+e
-+EOF
-+
-+expect_subvol_list_paths -O a/e << EOF
-+
-+EOF
-+
-+run_mustfail "btrfs subvol list -O allowed non-subvolume" \
-+	$SUDO_HELPER "$TOP/btrfs" subvolume list -O a/b
-+
- cd ..
- run_check_umount_test_dev
--- 
-2.45.2
+I hadn't realized that the ->iomap_begin function is required to
+provide mappings that are aligned to io_block_size.
 
+> 
+> > 
+> > > +
+> > >   		if (pad)
+> > >   			iomap_dio_zero(iter, dio, pos - pad, pad);
+> > >   	}
+> > > @@ -429,9 +437,16 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+> > >   	if (need_zeroout ||
+> > >   	    ((dio->flags & IOMAP_DIO_WRITE) && pos >= i_size_read(inode))) {
+> > >   		/* zero out from the end of the write to the end of the block */
+> > > -		pad = pos & (fs_block_size - 1);
+> > > +		if (is_power_of_2(io_block_size)) {
+> > > +			pad = pos & (io_block_size - 1);
+> > > +		} else {
+> > > +			loff_t _pos = pos;
+> > > +
+> > > +			pad = do_div(_pos, io_block_size);
+> > > +		}
+> > > +
+> > >   		if (pad)
+> > > -			iomap_dio_zero(iter, dio, pos, fs_block_size - pad);
+> > > +			iomap_dio_zero(iter, dio, pos, io_block_size - pad);
+> > What if pos + io_block_size - pad points to a byte after the end of the
+> > mapping?
+> 
+> as above, we expect this to be mapped in (so ok to zero)
+> 
+> > 
+> > >   	}
+> > >   out:
+> > >   	/* Undo iter limitation to current extent */
+> > > diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> > > index 378342673925..ecb4cae88248 100644
+> > > --- a/fs/xfs/xfs_iomap.c
+> > > +++ b/fs/xfs/xfs_iomap.c
+> > > @@ -127,6 +127,7 @@ xfs_bmbt_to_iomap(
+> > >   	}
+> > >   	iomap->offset = XFS_FSB_TO_B(mp, imap->br_startoff);
+> > >   	iomap->length = XFS_FSB_TO_B(mp, imap->br_blockcount);
+> > > +	iomap->io_block_size = i_blocksize(VFS_I(ip));
+> > >   	if (mapping_flags & IOMAP_DAX)
+> > >   		iomap->dax_dev = target->bt_daxdev;
+> > >   	else
+> > > diff --git a/fs/zonefs/file.c b/fs/zonefs/file.c
+> > > index 3b103715acc9..bf2cc4bee309 100644
+> > > --- a/fs/zonefs/file.c
+> > > +++ b/fs/zonefs/file.c
+> > > @@ -50,6 +50,7 @@ static int zonefs_read_iomap_begin(struct inode *inode, loff_t offset,
+> > >   		iomap->addr = (z->z_sector << SECTOR_SHIFT) + iomap->offset;
+> > >   		iomap->length = isize - iomap->offset;
+> > >   	}
+> > > +	iomap->io_block_size = i_blocksize(inode);
+> > >   	mutex_unlock(&zi->i_truncate_mutex);
+> > >   	trace_zonefs_iomap_begin(inode, iomap);
+> > > @@ -99,6 +100,7 @@ static int zonefs_write_iomap_begin(struct inode *inode, loff_t offset,
+> > >   		iomap->type = IOMAP_MAPPED;
+> > >   		iomap->length = isize - iomap->offset;
+> > >   	}
+> > > +	iomap->io_block_size = i_blocksize(inode);
+> > >   	mutex_unlock(&zi->i_truncate_mutex);
+> > >   	trace_zonefs_iomap_begin(inode, iomap);
+> > > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> > > index 6fc1c858013d..d63a35b77907 100644
+> > > --- a/include/linux/iomap.h
+> > > +++ b/include/linux/iomap.h
+> > > @@ -103,6 +103,8 @@ struct iomap {
+> > >   	void			*private; /* filesystem private */
+> > >   	const struct iomap_folio_ops *folio_ops;
+> > >   	u64			validity_cookie; /* used with .iomap_valid() */
+> > > +	/* io block zeroing size, not necessarily a power-of-2  */
+> > size in bytes?
+> > 
+> > I'm not sure what "io block zeroing" means.
+> 
+> Naming is hard. Essentally we are trying to reuse the sub-fs block zeroing
+> code for sub-extent granule writes. More below.
+
+Yeah.  For sub-fsblock zeroing we issue (chained) bios to write zeroes
+to the sectors surrounding the part we're actually writing, then we're
+issuing the write itself, and finally the ioend converts the mapping to
+unwritten.
+
+For untorn writes we're doing the same thing, but now on the level of
+multiple fsblocks.  I guess this is all going to support a 
+
+
+<nod> "IO granularity" ?  For untorn writes I guess you want mappings
+that are aligned to a supported untorn write granularity; for bs > ps
+filesystems I guess the IO granularity is 
+
+> > What are you trying to
+> > accomplish here?  Let's say the fsblock size is 4k and the allocation
+> > unit (aka the atomic write size) is 16k.
+> 
+> ok, so I say here that the extent granule is 16k
+> 
+> > Userspace wants a direct write
+> > to file offset 8192-12287, and that space is unwritten:
+> > 
+> > uuuu
+> >    ^
+> > 
+> > Currently we'd just write the 4k and run the io completion handler, so
+> > the final state is:
+> > 
+> > uuWu
+> > 
+> > Instead, if the fs sets io_block_size to 16384, does this direct write
+> > now amplify into a full 16k write?
+> 
+> Yes, but only when the extent is newly allocated and we require zeroing.
+> 
+> > With the end result being:
+> > ZZWZ
+> 
+> Yes
+> 
+> > 
+> > only.... I don't see the unwritten areas being converted to written?
+> 
+> See xfs_iomap_write_unwritten() change in the next patch
+> 
+> > I guess for an atomic write you'd require the user to write 0-16383?
+> 
+> Not exactly
+> 
+> > 
+> > <still confused about why we need to do this, maybe i'll figure it out
+> > as I go along>
+> 
+> This zeroing is just really required for atomic writes. The purpose is to
+> zero the extent granule for any write within a newly allocated granule.
+> 
+> Consider we have uuWu, above. If the user then attempts to write the full
+> 16K as an atomic write, the iomap iter code would generate writes for sizes
+> 8k, 4k, and 4k, i.e. not a single 16K write. This is not acceptable. So the
+> idea is to zero the full extent granule when allocated, so we have ZZWZ
+> after the 4k write at offset 8192, above. As such, if we then attempt this
+> 16K atomic write, we get a single 16K BIO, i.e. there is no unwritten extent
+> conversion.
+
+Wait, are we issuing zeroing writes for 0-8191 and 12288-16383, then
+issuing a single atomic write for 0-16383?  That won't work, because all
+the bios attached to an iomap_dio are submitted and execute
+asynchronously.  I think you need ->iomap_begin to do XFS_BMAPI_ZERO
+allocations if the writes aren't aligned to the minimum untorn write
+granularity.
+
+> I am not sure if we should be doing this only for atomic writes inodes, or
+> also forcealign only or RT.
+
+I think it only applies to untorn writes because the default behavior
+everywhere is is that writes can tear.
+
+--D
+
+> Thanks,
+> John
+> 
+> 
+> 
 
