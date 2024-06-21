@@ -1,200 +1,216 @@
-Return-Path: <linux-btrfs+bounces-5867-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5868-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C92911A38
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 07:17:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CFC5911AB5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 07:56:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6CC41F2249B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 05:17:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FBE81C21D4F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 05:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F52613C68C;
-	Fri, 21 Jun 2024 05:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DDE14D70E;
+	Fri, 21 Jun 2024 05:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qNm4jRyS";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qNm4jRyS"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EMMK1RfI";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4L8kd9sl";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EMMK1RfI";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4L8kd9sl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD441369BB
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 05:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1771369BB;
+	Fri, 21 Jun 2024 05:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718947047; cv=none; b=mIAHrDdne6taSPyIHKHZegd3PRcCjiWW2lDb5UU3kFs1JAwSpWqeg1+7Ghkd2rR59BVAugcWiH+jMGVt/S8AZ9mGFmH2EQRRaFzFdU8X8MJcgltDoiZoqJifTuX2pploY7b5idFNxMaamCZR/1vA5kdaUEGD1bjOMc+5VoCXeug=
+	t=1718949372; cv=none; b=uzbqjmvR/BzYAzMyY98JJ3ofXrBLF/FgRBJnecteLLydzRWgvZG5kZK+7RpSUQjj72Vy4uUZiPjhvfoNSZ4fAKQj5XpKWDO1f/A5Yt/kKaeJ18yEFRvKcXaKkpHYPVJNzBhETgrnRxhry4Ra0cvUp2YscmahZ5BidYNV7aIh+RU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718947047; c=relaxed/simple;
-	bh=B45wM2FHxNLZE4fj6/kBPOgy7k1pLQ3vtxvY4CpVidk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=msCkw6E4ktfv/0G6FjZsPBGFPmEGPNi1+Aa8CVLD6G8ed6LjJu7LxYvmCrFMbEl63yTQ7Wp7AYfLGLK2s5SYU5BBHcQ4tlBm0Yptsr3H2jsTLBgvAYFjRwb20QDWkLR8GDoz/rZV3SunsrSH/gWr7sGdSIrhtgWnjIVAG3u7mY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qNm4jRyS; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qNm4jRyS; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1718949372; c=relaxed/simple;
+	bh=nunYsAPT5u4+SY+dfKlBWpXTDzBTFLCRvlpMwJeKB7g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T4jTrScW8gD6hCB62jF+ZR524HxcCjyljyx8C+Y3+3utDpLh9VNiWLIycSq8Uq9uICopQnC0IkaFaPiI5VW9fZCBinoB4/ysb8I96ErMpAyA7/0bx5GCnZre3FbZpU+R1PSKqyL8yy2jUjnk+rv6BvJGQWD2vnCkHJY0D17mtF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EMMK1RfI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4L8kd9sl; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EMMK1RfI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4L8kd9sl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BDA5921AB6
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 05:17:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718947043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4A40D1FB51;
+	Fri, 21 Jun 2024 05:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1718949369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6jw5xUZeGYpfF999dczFDMP5KGW6iKevnYsK3DhBF2g=;
-	b=qNm4jRyS9YuAArxyDBOXr+RsWpeldn1NLQnFBFgWzPtWAD9xUL4hV7RGIA0FXKPxPEcl5y
-	XbrOHco2u71yDJv8N0OR6mnukofokITEV+16gCINA5SUOS25sHLrVZNsLN3uhKth1MI3KI
-	l86NOEnjy3wx25YPu8McJJIVUKzFBgM=
-Authentication-Results: smtp-out1.suse.de;
+	bh=Tzs1uWbqYDjrVbt6j5jc0RX32zWwNTB/IuFKdea3/lk=;
+	b=EMMK1RfIvC+AAjKvN1vCekL0/GtGFJ+n0cCaP9DBuqSREh5h4pZ8Pp5zcJ/qkSGksAgMuw
+	IOVQFo+6fRYrIIGuyWvIpNS8Ye5+HZJGpqXQukgSZ05IErTyMGxjjsVO4k7262Yaj/sTxb
+	/ij1hVOSvcg8Zl5iMR7yBRwyTf9OtLU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1718949369;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tzs1uWbqYDjrVbt6j5jc0RX32zWwNTB/IuFKdea3/lk=;
+	b=4L8kd9sl/Mdr03kr3F069mHEXM+zT1r18vc5GDFIUc6ljiV4C8m1g1wQ9mPmGswpS+0bd5
+	GFjdp5bcTK7hu8BQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1718947043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1718949369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6jw5xUZeGYpfF999dczFDMP5KGW6iKevnYsK3DhBF2g=;
-	b=qNm4jRyS9YuAArxyDBOXr+RsWpeldn1NLQnFBFgWzPtWAD9xUL4hV7RGIA0FXKPxPEcl5y
-	XbrOHco2u71yDJv8N0OR6mnukofokITEV+16gCINA5SUOS25sHLrVZNsLN3uhKth1MI3KI
-	l86NOEnjy3wx25YPu8McJJIVUKzFBgM=
+	bh=Tzs1uWbqYDjrVbt6j5jc0RX32zWwNTB/IuFKdea3/lk=;
+	b=EMMK1RfIvC+AAjKvN1vCekL0/GtGFJ+n0cCaP9DBuqSREh5h4pZ8Pp5zcJ/qkSGksAgMuw
+	IOVQFo+6fRYrIIGuyWvIpNS8Ye5+HZJGpqXQukgSZ05IErTyMGxjjsVO4k7262Yaj/sTxb
+	/ij1hVOSvcg8Zl5iMR7yBRwyTf9OtLU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1718949369;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tzs1uWbqYDjrVbt6j5jc0RX32zWwNTB/IuFKdea3/lk=;
+	b=4L8kd9sl/Mdr03kr3F069mHEXM+zT1r18vc5GDFIUc6ljiV4C8m1g1wQ9mPmGswpS+0bd5
+	GFjdp5bcTK7hu8BQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C988713AAA
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 05:17:22 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A86413ABD;
+	Fri, 21 Jun 2024 05:56:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4JaCH+IMdWavbAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 05:17:22 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs-progs: misc-tests: add a basic resume test using error injection
-Date: Fri, 21 Jun 2024 14:46:56 +0930
-Message-ID: <470dda58291481fe01e53d904be3db6141ff93fb.1718946934.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1718946934.git.wqu@suse.com>
-References: <cover.1718946934.git.wqu@suse.com>
+	id rKd1O/cVdWbQdwAAD6G6ig
+	(envelope-from <hare@suse.de>); Fri, 21 Jun 2024 05:56:07 +0000
+Message-ID: <373ec4bc-0919-47b1-bac1-55914c369e13@suse.de>
+Date: Fri, 21 Jun 2024 07:56:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Patch v9 03/10] fs: Initial atomic write support
+Content-Language: en-US
+To: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk, kbusch@kernel.org,
+ hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+ martin.petersen@oracle.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ dchinner@redhat.com, jack@suse.cz
+Cc: djwong@kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+ linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org,
+ linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org, nilay@linux.ibm.com,
+ ritesh.list@gmail.com, willy@infradead.org, agk@redhat.com,
+ snitzer@kernel.org, mpatocka@redhat.com, dm-devel@lists.linux.dev,
+ Prasad Singamsetty <prasad.singamsetty@oracle.com>
+References: <20240620125359.2684798-1-john.g.garry@oracle.com>
+ <20240620125359.2684798-4-john.g.garry@oracle.com>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20240620125359.2684798-4-john.g.garry@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Score: -2.79
 X-Spam-Level: 
 X-Spam-Flag: NO
 X-Spamd-Result: default: False [-2.79 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.19)[-0.972];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	XM_UA_NO_VERSION(0.01)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	TAGGED_RCPT(0.00)[];
 	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	R_RATELIMIT(0.00)[to_ip_from(RLusjj3u5c53i6g8q6enupwtij)];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
+	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,lists.infradead.org,mit.edu,google.com,linux.ibm.com,kvack.org,gmail.com,infradead.org,redhat.com,lists.linux.dev,oracle.com];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email]
 
-The new test case does:
+On 6/20/24 14:53, John Garry wrote:
+> From: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+> 
+> An atomic write is a write issued with torn-write protection, meaning
+> that for a power failure or any other hardware failure, all or none of the
+> data from the write will be stored, but never a mix of old and new data.
+> 
+> Userspace may add flag RWF_ATOMIC to pwritev2() to indicate that the
+> write is to be issued with torn-write prevention, according to special
+> alignment and length rules.
+> 
+> For any syscall interface utilizing struct iocb, add IOCB_ATOMIC for
+> iocb->ki_flags field to indicate the same.
+> 
+> A call to statx will give the relevant atomic write info for a file:
+> - atomic_write_unit_min
+> - atomic_write_unit_max
+> - atomic_write_segments_max
+> 
+> Both min and max values must be a power-of-2.
+> 
+> Applications can avail of atomic write feature by ensuring that the total
+> length of a write is a power-of-2 in size and also sized between
+> atomic_write_unit_min and atomic_write_unit_max, inclusive. Applications
+> must ensure that the write is at a naturally-aligned offset in the file
+> wrt the total write length. The value in atomic_write_segments_max
+> indicates the upper limit for IOV_ITER iovcnt.
+> 
+> Add file mode flag FMODE_CAN_ATOMIC_WRITE, so files which do not have the
+> flag set will have RWF_ATOMIC rejected and not just ignored.
+> 
+> Add a type argument to kiocb_set_rw_flags() to allows reads which have
+> RWF_ATOMIC set to be rejected.
+> 
+> Helper function generic_atomic_write_valid() can be used by FSes to verify
+> compliant writes. There we check for iov_iter type is for ubuf, which
+> implies iovcnt==1 for pwritev2(), which is an initial restriction for
+> atomic_write_segments_max. Initially the only user will be bdev file
+> operations write handler. We will rely on the block BIO submission path to
+> ensure write sizes are compliant for the bdev, so we don't need to check
+> atomic writes sizes yet.
+> 
+> Signed-off-by: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+> jpg: merge into single patch and much rewrite
+> Acked-by: "Darrick J. Wong" <djwong@kernel.org>
+> Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>   fs/aio.c                |  8 ++++----
+>   fs/btrfs/ioctl.c        |  2 +-
+>   fs/read_write.c         | 18 +++++++++++++++++-
+>   include/linux/fs.h      | 17 +++++++++++++++--
+>   include/uapi/linux/fs.h |  5 ++++-
+>   io_uring/rw.c           |  9 ++++-----
+>   6 files changed, 45 insertions(+), 14 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-- Inject error at the very first commit transaction to make sure the
-  injection is compiled in
-  Furthermore check the stdout/stderr to make sure the failure is really
-  caued by the error injection.
+Cheers,
 
-- Inject error at the last commit transaction of new data csum
-  generation
-
-- Resume the csum conversion and make sure it works
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- .../065-csum-conversion-inject/test.sh        | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100755 tests/misc-tests/065-csum-conversion-inject/test.sh
-
-diff --git a/tests/misc-tests/065-csum-conversion-inject/test.sh b/tests/misc-tests/065-csum-conversion-inject/test.sh
-new file mode 100755
-index 000000000000..c213232ec545
---- /dev/null
-+++ b/tests/misc-tests/065-csum-conversion-inject/test.sh
-@@ -0,0 +1,61 @@
-+#!/bin/bash
-+# Verify the csum conversion can still resume after an interruption
-+
-+source "$TEST_TOP/common" || exit
-+source "$TEST_TOP/common.convert" || exit
-+
-+check_experimental_build
-+setup_root_helper
-+prepare_test_dev
-+
-+check_injection()
-+{
-+	local tmp_output=$(mktemp --tmpdir btrfs-progs-check-injection.XXXXXX)
-+	local ret
-+
-+	run_check_mkfs_test_dev --csum crc32c
-+
-+	# This is for the very first transaction commit.
-+	export INJECT="0x3964edd9"
-+	"$TOP/btrfstune" --csum xxhash "$TEST_DEV" &> "$tmp_output"
-+	ret=$?
-+	cat "$tmp_output" >> "$RESULTS"
-+	if [ "$ret" -eq 0 ]; then
-+		_not_run "this test requires debug build with error injection"
-+	fi
-+	if ! grep -q "$INJECT" "$tmp_output"; then
-+		rm "$tmp_output"
-+		unset INJECT
-+		_fail "csum conversion failed for unexpected reasons."
-+	fi
-+	rm "$tmp_output"
-+	unset INJECT
-+}
-+
-+test_resume_data_csum_generation()
-+{
-+	local new_csum="$1"
-+
-+	# Error at the end of the data csum generation.
-+	export INJECT="0x4de02239"
-+	run_mustfail "error injection not working" "$TOP/btrfstune" \
-+		--csum "$new_csum" "$TEST_DEV"
-+	unset INJECT
-+	run_check "$TOP/btrfstune" --csum "$new_csum" "$TEST_DEV"
-+	run_check "$TOP/btrfs" check --check-data-csum "$TEST_DEV"
-+}
-+
-+check_injection
-+
-+run_check_mkfs_test_dev --csum crc32c
-+
-+# We only mount the filesystem once to populate its contents, later one we
-+# would never mount the fs (to reduce the dependency on kernel features).
-+run_check_mount_test_dev
-+populate_fs
-+run_check_umount_test_dev
-+
-+test_resume_data_csum_generation xxhash
-+test_resume_data_csum_generation blake2
-+test_resume_data_csum_generation sha256
-+test_resume_data_csum_generation crc32c
+Hannes
 -- 
-2.45.2
+Dr. Hannes Reinecke                  Kernel Storage Architect
+hare@suse.de                                +49 911 74053 688
+SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
+HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
 
 
