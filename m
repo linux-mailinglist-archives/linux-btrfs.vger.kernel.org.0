@@ -1,238 +1,350 @@
-Return-Path: <linux-btrfs+bounces-5886-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5887-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCBC6912833
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 16:43:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FA0B912C95
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 19:44:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09EB2B23401
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 14:43:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3E621F25F73
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2024 17:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FF53AC1F;
-	Fri, 21 Jun 2024 14:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010371684AC;
+	Fri, 21 Jun 2024 17:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jh+o1wGc";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="LLuqG0uj"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="KVygj/3u";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="muXdg4EO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672B928DD1;
-	Fri, 21 Jun 2024 14:42:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718980962; cv=fail; b=u4dK88lP+tlu3vTu7i2TuxTlnuVWayuEeMU932hz/D7FYEUm82BEfk4KBGiXUvbhVht1sKULUA0Z4rSJri8MlhLZAu/AaBMzmyweX3CBOtOLXbvqSDmceRQEbj9bhTBZLsSJBxPG91YTdrrhT7WYgy2qd+L11Cbd4o2c32lAyls=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718980962; c=relaxed/simple;
-	bh=+J4SqbO1h3HVl1Pd3I39b25kMH+mm13+sgUOwB6w6W0=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Ce3MakZBYPWQvDnmTEo+1AnTGtIQlVrwlj/iXBnoJw8rTa5MoO3cdpXFyWL9hPJYpGcC8cpv215mYCEHOs7WVGEFLUF5hSO8Ha1aUqm/wROOCk7yRDbRllxw0eVFB3quTIT8ACviu75osuX/lJrlEE+K0JT73pSJoToRAK7Ji6w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jh+o1wGc; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=LLuqG0uj; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45LEXPaq026149;
-	Fri, 21 Jun 2024 14:42:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	message-id:date:subject:to:cc:references:from:in-reply-to
-	:content-type:content-transfer-encoding:mime-version; s=
-	corp-2023-11-20; bh=+J4SqbO1h3HVl1Pd3I39b25kMH+mm13+sgUOwB6w6W0=; b=
-	jh+o1wGc4G93Sf3B8sgLtFZxJ0ExFSN7VImu+cIt6Yz/58ukVosIuJBCQveQ3uOt
-	oMsSoIBuIIOjPWNnPlOAcGU6hECPmAspljsqGCaZ6nciHE+uvJ97EqhXpJXb67C1
-	muePBglfGLCxJMCKHliP/vpH5UgifBnmY93A5h1qQV285dhWZA16FXsMCc8SygE1
-	jbbbFAgQFoUub8EBU4CN10Rlu0dXYZp6TH/Tzj7eQHJCiBkzJBvw7eQOkSuJWQJW
-	y9S324h9snzEdtmdGX3tl2HLYNNonm6ShjTDHuY5DsmB0bE71UgE08jtgxSTfLGv
-	6ObUIzXYySbDtfL8BDe47w==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yvrkfsw2n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 21 Jun 2024 14:42:00 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45LDNaFl023654;
-	Fri, 21 Jun 2024 14:42:00 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3yvrn8pj04-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 21 Jun 2024 14:42:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hrstjfB3ZWTnxgyLiPXPPs7PE3o7qDti+1DuW8MeI/PJNYiVvZtN9yESdjQ5laUXfvBAfa0ZH616au56Gh5Za07KOhl//5R7XnirXspjw30agp/lpDaFbdSRAO4wBFKsRKE4YdCaBmAOzi/EEww2+69XxXNz97VDXPDj4TMxDbNi9U2SyXjI4o9Ohk1MiqfJT3H8zAigi5btgB6Rbx3n6T/Z+PClsM02SyeoXGIeYuiMp1YyoxR2VabzjqMWFFPxfkYYK8/4LgKOyz1lWDywgncc9c7yAFtCAcoiXBQezlfIEn+717SABHpe1G0w/f3TIqKNIjGfcCfvtMHaYzla5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+J4SqbO1h3HVl1Pd3I39b25kMH+mm13+sgUOwB6w6W0=;
- b=hgTiZ92Yp/bEZrJ9Ctd+jmm+6iCIyf8WJljyErMYrae3RD39G66fa6TCq/SUuP/Oa/0eGSwINBtIbEgZX9PDC+lP3fwiYa+Lr/8KR5ykOQCvKa/i+kmIixQpKtMgCjScCpWe97Sj5LMC101RPdcdV4ljbjewasatQBBJBcQrkFFDDG4DdcWm5qCk+GknfGkn1c6wQqz0E8PT2QYRfh4KjVLAM3CFjJ+mo12eIWM060VjU/xujDhwyYzLzumF3ztmfQSZUwVZTHbHRWR1BGJdg13aKeI/mv0PjWFWo3SPeF3uENdluJ/DJAmfV9KVSVjDp9D/Mx9Ajici1D9b9YZAAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+J4SqbO1h3HVl1Pd3I39b25kMH+mm13+sgUOwB6w6W0=;
- b=LLuqG0ujtId51IRrQ6mRllTbffzPyQMZcC7RxUsLPV1khHL1thvINw2N1ZpItbdsCD/h/A3KhGYslG4GN3vok1PGlkfB8rDEiQFomfsPft6s7zqnXlPR8QOZ+o17YpOWspdN+KEuaEDCgAfHtgzhk/G1DkNMI/0ZTUkbBrkpikM=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DM4PR10MB6791.namprd10.prod.outlook.com (2603:10b6:8:109::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.21; Fri, 21 Jun
- 2024 14:41:57 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088%6]) with mapi id 15.20.7698.020; Fri, 21 Jun 2024
- 14:41:57 +0000
-Message-ID: <351e602c-6af3-4d86-9c07-4a715f34cea4@oracle.com>
-Date: Fri, 21 Jun 2024 15:41:49 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v9 00/10] block atomic writes
-To: Jens Axboe <axboe@kernel.dk>, kbusch@kernel.org, hch@lst.de,
-        sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-        jack@suse.cz
-Cc: djwong@kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
-        nilay@linux.ibm.com, ritesh.list@gmail.com, willy@infradead.org,
-        agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
-        dm-devel@lists.linux.dev, hare@suse.de
-References: <20240620125359.2684798-1-john.g.garry@oracle.com>
- <171891858790.154563.14863944476258774433.b4-ty@kernel.dk>
- <674559cc-4ecf-43f0-9b76-94fa24a2cf72@oracle.com>
- <2159f1ad-98c0-4a71-acb9-5e0360e28bfc@kernel.dk>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <2159f1ad-98c0-4a71-acb9-5e0360e28bfc@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR02CA0158.eurprd02.prod.outlook.com
- (2603:10a6:20b:28d::25) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D038BFD
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2024 17:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718991891; cv=none; b=qx57zEpFH12DKUTbsFsz7Qt8MZmevT8NEcthE3s6ZnWeqBLXjjKBO5/81wDTLdOOiI6qGfIlUizcQN+AAdQV0fo+J7axwzPXbSokohpGva4aZj87Fu3TnoqwQ96lF9DM2iTcLUeLcsyg2HY0Dg+GtgC4KpNN8jFFt24ZrV8Q4us=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718991891; c=relaxed/simple;
+	bh=yIK5p54R9nmDa94C+jR5A9K6ztTO56LqbY9OnnssMng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YPMmzMRQTL1OJAgpNCDShGtPeDnAaG39fDNm3eW7QWEP8biDyC3Lw0WmOU4gdFg5MC0Vszh3MlAxBAl549lYvb0RoqHi6HKWk29t8ds2E69+Nw+ZmcFfT/IKy14jxogPhFGfTu/k9Gz0WvPUuROCAMwXtM7FZC/5Dza8XSjrrH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=KVygj/3u; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=muXdg4EO; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 340D411400DD;
+	Fri, 21 Jun 2024 13:44:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 21 Jun 2024 13:44:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1718991888; x=1719078288; bh=8nS1QDOf1K
+	JBX1KooERZh9yvgYZ3PGFUN4ctoVUmeRg=; b=KVygj/3ul9hm0QXkO0suBtCgZC
+	UlQNqfluYTeVxrLx+1YT0pBxlvnxcQjgzWYEsyENCDdaBt+RcoI46Z0NGvhs0u5u
+	49U9eS4juaftoshGURl5NTRkMdA+O7jDNZrpeQvV/R08ePilvDaRH3DFKdbuEp0/
+	uXdCPCZBq75GI4I34NdsVtMQZigiYtcQJ55aVEyg+AQjP2aUqRebGwrlaSkcS1AI
+	tzfTFF2lsqV3T6VFWgZMJVlo0S6fd2ZK/ZySzgM48zdnMzR1XpWo0bY2Z0yk86NT
+	1Txl2ws6vntiZ8Bne6p7LDT2+9QBbutzky+CqaKUWoAu4Kb1meshqmuvhxXA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1718991888; x=1719078288; bh=8nS1QDOf1KJBX1KooERZh9yvgYZ3
+	PGFUN4ctoVUmeRg=; b=muXdg4EO7y4ZOSD5O3Zz1QQaj8xA0fHW2nxygB8afKA5
+	Yo/gLggxV4dhstRBJ3RyLoZSGrHojD+8JoX2cuJTS7wF4qkXe1E71WtiuQx4fbmn
+	xOklRjVrckfBePbOK9ZjKU6SjT+o1srl8flhUi8sAJlQuLwd6Ctdo1KOoamgUOCW
+	55vUL9Pe4qPVEX+smhKun8LM7JLGdj3FqymumrrtsqosOhT5+UGRP06mrW9Fg5mh
+	YVG8bb2BYleFMrgzFS9tMYjCHJL/uWUnhuqo28iRX2+QXkauO/IZPDkvzUeEJEHb
+	ekOwmdz6bn2W4HrvW4520AnnPtkSPfTn/fJ+aeY7Qg==
+X-ME-Sender: <xms:D7x1ZjlRknWBcMv4xf-6lwD4Qbl5Ua89S_sZ31RchgWMe9b1R5JQ6A>
+    <xme:D7x1Zm3nxxr1u3Wh6SKY_YsdCpbfBQsqAUlvNpkfhZgEkOHse5_8Wm6TO_FXoCStf
+    y24NyY2oIfDXyEfaQw>
+X-ME-Received: <xmr:D7x1ZprP5dZ75OljmXBlIncJyaJMpjDX8wz9NvJiF1O4gTd_G67hJqeKkue9iuev5iPeUVteB_WzQqYLTdbF4G1ZTSM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeefgedguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkfhggtggujgesth
+    dtredttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghu
+    rhdrihhoqeenucggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvd
+    evieeiiedugfeugfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:ELx1ZrksOSuXalFKm7y3JWD-x1CWgytF_DfWH-6eZIi1fzvj33Zv6Q>
+    <xmx:ELx1Zh0FVqoSJo9CYA5IeMiy042XyxXzrbYQ17KGza79Mvc55AB8zQ>
+    <xmx:ELx1ZqvX2iwmpGTxEW9-46eJCQrLmwUEhWwXQMr5yLJ5Meg2ZdPcFw>
+    <xmx:ELx1ZlUHM0ULNZq5hkz5w6xaC7UsUyAM8VoZLHYXCKtyHX8gZfehBQ>
+    <xmx:ELx1ZvC4P99TFtPtcbgXglR0fnsQrNl4kay6k3K6GMRiF7A5ZhgpK8kH>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 21 Jun 2024 13:44:47 -0400 (EDT)
+Date: Fri, 21 Jun 2024 10:44:24 -0700
+From: Boris Burkov <boris@bur.io>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: avoid allocating and running pointless delayed
+ extent operations
+Message-ID: <20240621174424.GA2757239@zen.localdomain>
+References: <87618653fb07d2f6307babd128b626da36dd33e8.1718964587.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DM4PR10MB6791:EE_
-X-MS-Office365-Filtering-Correlation-Id: 71178e87-cd49-46be-93fe-08dc92004d52
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: 
-	BCL:0;ARA:13230037|7416011|376011|1800799021|366013|921017;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?V2c5aHJOcXZpNHlibkRQQ0hHMm5Sd2h6cm55cGhFYzM1Sk9lUTFKM0pJK05U?=
- =?utf-8?B?S093WloxYTBLdXloUUk3OFVxZGh6YWhqaTZPcnVaeVA5VGQ5UG5SOVAvdXUy?=
- =?utf-8?B?S0w1NytDbStKaUR5aWRMK3pqWWRVN05JVVlmSGMxVzNtSDhNSUMzelVoSlo0?=
- =?utf-8?B?d2VlblNVK3ovQmN0WHVRMUpIUTZyellibnBDV3laUnRrWVBjSEFYNy9VN1VS?=
- =?utf-8?B?YVhNZzZEaFJ1MjZWcGF6bmJkZ2ZZYWcvUEhKbWNsektpVlBBQ1pNaWJzcUc2?=
- =?utf-8?B?dTl6a3JCNm5SSnpYaDFBKzZwdDJyWkQ2YThYMEd0dVNHY1FodkhRaUV6c0Y0?=
- =?utf-8?B?M1ZnTStGS3cwYjJFcnJmVUQ3cFE1N015Z0RWektxZlFXTlRKS1U4K3d5a2hT?=
- =?utf-8?B?Sm52MWsyajd2dnFZdTlaK2ZGSUhTYjQ1QWoyem1ZZVVadFFvYXd5Zk9hQ1c4?=
- =?utf-8?B?aU5vOVpIK0ZORktUcTJ3a2EvMDZSclJoeUorNXBPRjhxaTd2VEJZcHRnYlQz?=
- =?utf-8?B?ZC9zaU5jZU9ld1R6WHB2QXVXZHZVWk5UZ21JRXdFcGlYMDUxdzJBTUNqZW9n?=
- =?utf-8?B?Vy9RWFpKUXZnVk5PMWh3RWtYMU5JRU4vN2xxUFdmUlBnNTg1U3c4SWMxWFBP?=
- =?utf-8?B?Kzc5OFpxUDFwRnFJQ2FMcjYweEpHbFR3blVxci9UdnhLUDR6UW50a2ZxUTZS?=
- =?utf-8?B?WWVyTGFaQXlOb3FKSzNaeUVNN3NaR1FqTjNkVG9HYVllWXA2dkpDMGF0V1ox?=
- =?utf-8?B?N1kvZlQrQVRwZ1ZneEdVbHIrL21HWTd0UzVZbk94TlN0SmxmSy81cENONFlF?=
- =?utf-8?B?aGxvbUNmbGpocHVMRkdib1VGaTF4NXJZWUM1aXdLRGU5VTFqOFBrODVTQkc4?=
- =?utf-8?B?aWZXak5DMzNzeTQ1dC9VaEU4SUNqT29nbXdPdkpoRTlJOGdycy84T0NCRTk1?=
- =?utf-8?B?TFAySm96d1F6SVBQY2RpSnlxRmtCM3ozWnhVQXFtb0JvajdMVmdtVWJLcUFy?=
- =?utf-8?B?Q2NQVkt1eUN0cWVpb1F6ZmUxV2lQRHM4K25LTEpNS0pFTTF0UkVhaFdVNEh3?=
- =?utf-8?B?NHlzWXkvb0xHajZHN1ZvY1gzWXM5T085R1dCSHFkNUdrUEttd0Y5WlRXb2w2?=
- =?utf-8?B?MG1mbk5IczQ5aUtiM0w5QXRxckJyWm9qclYzOHIwdTdSdy9SL3BydThUbTBm?=
- =?utf-8?B?MWp0RlpRdUhMZEo0MzVzYS92NzZ0TkI0dWcvQkJJalBqdVowSGtxZkRzMjI3?=
- =?utf-8?B?WUR2WFNMaW44M2Y5aW05M2RZeE56Mi9KS1psdHJ6aHluVSs3U0xFK1FuYkpv?=
- =?utf-8?B?SGd2a3N3YVc0dkZRL2RuQXJrdnVXaFFabmVabGJEdExXM1hSdVl1YTBhbENO?=
- =?utf-8?B?bjdjdlJ6RjNOUThrNFFQTWc4VzFxYld3U3RGdmE0MC9uYU9sL1VPK2diZHpM?=
- =?utf-8?B?TDhJMlZST2pNU0F1Njgwak9IY0pPSUc3b2h3SFBsd1VEdzYwYTRNSXdjc215?=
- =?utf-8?B?T0RlR25ZVmhab045OWMyRVI5NWxsaWlhRE9KTkxqQ2pzN0NMNlg1N3VQNEdC?=
- =?utf-8?B?WnVBdDVVUmlncG5FUnM2b1Ftc1prTlQrMEE5a3cyaXE0SnBBakhuUTZpUTdC?=
- =?utf-8?B?elhhU2cza3pQWTRteTlkTW1RSG1VbU9FTmJFZjlLdWRzaUY0aVorV2piQTgv?=
- =?utf-8?B?NWI1MUZJYnVUVnRFWUl6T3labDlCSGovTTE3akk5WHhaSEY1NE42bk85RkIz?=
- =?utf-8?B?OERmdEp1WjZhMS9tVFYzQ015NVBZSFRqckRJZXFuSndXbXV5Z2ZoaU1LMUJF?=
- =?utf-8?Q?laaCUkJETAeGQmOVraU7w/oyDLRpHIAYGcDd4=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(7416011)(376011)(1800799021)(366013)(921017);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?blFZeGl6dERZbkVHSGZMTmdZblRMOERReWhZbTFlOEcxRVhSZDYyU2w5WUFw?=
- =?utf-8?B?ZytpQTN4c01QYzJhSWVQakxwU2MrampNKzk1c1Y2YmZhSmRMa0RIVEJXZHRJ?=
- =?utf-8?B?SldXN01KbEE3VU9HSHpxTURvM0NFZm1OYjhTWkNnMkhyZHoxd1ZTbXJLWTJG?=
- =?utf-8?B?TkRPU09yTitWSjhEMjFGWjE0eFZXajYyQmNtbEJWVk93NWJETGg4ZXBNWEtL?=
- =?utf-8?B?akJIclgramRZemptcmF2UmM5OTd5aGtweXIyWk12YVF4MlM3TTdqSXhRUzcw?=
- =?utf-8?B?SGRQdUlBTklPc0RhWldQeWFqWVZjNFpnV3VsYWxNVzN5UFYvUWYxZFFVUEVF?=
- =?utf-8?B?c3Rla1JZTFRkbUh6cVowQlJUWEJGcXYyNEd2NFZXc2x3aXkzTVpSanNXR21l?=
- =?utf-8?B?eURBYlNlTHlHNG1oRldVdlNQai9PZDlwWG9PQmZGdXd0ZkpmdE50NHlyQzlz?=
- =?utf-8?B?cmY1MEZIeFoxdUFva0V0TW1YL2VkVEpFU3pYc28xRDY4RTBlZzJIOUlWR2Rr?=
- =?utf-8?B?OUdVdWJCK29SVGVVeDVMUW1Na0cyVzlFZzFDSzNhYWQyc1NXM1dwWWRoZjh0?=
- =?utf-8?B?NEdsK0ZUZVAxTHhwVTJ2UVpWVzl5WnZFaWhYNTJCbzhPTi9YSTVzMkNpM1JT?=
- =?utf-8?B?ZldXL1RZSi9yQlNkYlhaS3lobmdDUysvU3k2aVB1blpDekJML2J5elIzS2FV?=
- =?utf-8?B?WGhJSUVJRG5aTEdNTW9KQnN2MlZzbmYyeFIzNkptV1hiK3lKdktsZzJGbzNB?=
- =?utf-8?B?eHY0aTB4MDJGUEdWdHljOG82QWdvbkxQa1dMNVZZcEl4Uk1IWUxjOXhteFdl?=
- =?utf-8?B?MmlYeUtMT0NUV1BLZTB6dC83d3pGc25FK1hBczBGb0R6VGpCMHppa2Y4aTVi?=
- =?utf-8?B?Q2FPZ29WZjBLNEt4TzFPRGdGU2JqQ0NETUVaNUdZRGtIOTIySnRzRkgySjhr?=
- =?utf-8?B?VlJpYXdzNWVQbFZUWDZOVUE4UFplSEpPVlZUSlQ1QXl3aFdqanFFVWE4Zjkr?=
- =?utf-8?B?aCtVVXFwZVByQzJVNVJEU0lpazhYQzNobTBHaTQ2WGFqUW1zV0k0VkUvU2xY?=
- =?utf-8?B?M2dPdml5MHk4a01mQ1FSU1NGUEgxb3V5ZkpNL015c2R4MG1iQ2ozeWx0Y2xG?=
- =?utf-8?B?T0RESjZlUS9SVEhiUGloSDg3RjVCbjQ0YW54TVc5NnkxbGZjNHNranlUb1VV?=
- =?utf-8?B?VWxQNXdCREExLzZRYndiNWlseFByQm9MZFRyOVcvSlRXNjJMVTIvc0dzRWZI?=
- =?utf-8?B?Q2dIU1l4QnBzcHkrRWJoMEVyd0VtVnZlN0RneXlzUXBqQnpsVXFJODhNQWl1?=
- =?utf-8?B?RWh4NGVNVGt4bHY3KzEyU3ZOck5qSFI0b241cEVQZytjMjhITVlCOWh5RVNr?=
- =?utf-8?B?NlQ2ZElJVFNXS3lHMUlXaFlUU2NDa3JBOHkyek9PMEpvbW9JYTRaSDdrb2p4?=
- =?utf-8?B?dGpsU2h6WERxYkoxS0dnNnl4NWIxNW5CVDNZWHVUcUJHZ3duTWpGekEyM2FY?=
- =?utf-8?B?S3luc3BoOEJIZmpkRC9NWlZkWmkrdzBQQWdsbnUrOHpVTFZFclkvcEFSWFVo?=
- =?utf-8?B?UDlPbkJxeWUxZEZsZVZuY2plZmsxQnMyTWxacnRBOVhkdVdSc0E0dGxreTN2?=
- =?utf-8?B?SExCSFd6MG9KaTF6OXdabTdPay9nYmh1VXVHalVXZENkTy96dUlDN3lMVm9k?=
- =?utf-8?B?OS9qa0NaZTFHLzdmcnFuM3FKRlgzU2ZETkZLRFNKaHo3MXkxR3FxRVZ0bS9v?=
- =?utf-8?B?cUFmaWFTbGx2RHcyYnJPeDN5UGMvRXFaaHZMN25peW5qVU93eXRSRkdFdk1E?=
- =?utf-8?B?Rkh4bEdHZUR6NC85VmJZMG90UjBXMXkxRFVhUFlyKzRSSTlrQUNjQSt3Q211?=
- =?utf-8?B?RFFzRE5hQndDOTRaRUxraGxkaDdKWDRUbmFZU2Z2S29nVG41UDZJQUYwbXpk?=
- =?utf-8?B?dithRklSZDBocmJUMitXdnFVVHcvZ2hJZlJDSHgydGR2YmkzUzNsNkVLSC95?=
- =?utf-8?B?cFMzYlZDVldtTyticU41T3B0ZW9FTmNoalVYbFhiZjJGZWZCbkNGZ1ZKMGhj?=
- =?utf-8?B?RjJUS3ZVZTJ3d3pwdUVDUFdRR0xFN21YMjFFa251QWt0TEJXcXlyK3htOXEz?=
- =?utf-8?B?bkFWSG02dFppR1VzbDNwRHdOeHlTY2Q3WmhNNjBia3JNRS9Nb3RyaWt3K0dz?=
- =?utf-8?B?Vnc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	EERYT36ryfIyLcS84zJI4pVL/y5AlQ52cEHVgXzjhuf4HDSV/gRNRsBpcBjatbsmrwdl8uDAonugUKwKR3ROdjUcfji/D9uUXDTUgdQhMI2cybM0RHSwXSw9HvsvyBm3dOrkvW1PiS5nbC0K2fLdVMdm1NHYEOKY2FuZ+oeB8KX0IdEATko8sAZDc42y+F1sOgDvdgZiqkB+liw+/EjgTyM15t/8F+7FAPx02JklNWi4CmGnr1pqkPjgdNJiiGLUYtJ65d9slX7ICV/ww0X7WNKJyheImyZUcmy6Ng7kOeD9v/px/b45sQ9gQLW4brn50cPJeR2t6qVWB9C/9jPXqFRJpaCfwbrjKraofyk9WQkH5c9tpjMOWcTPyK11sHCGOkNXS8gxkou1NqxEyn6+5ypSGhTsoDivC5k6RTbRDDFbnPi+eoI2FH8ka/WgO2lmpM3ZRnOHhAkwe6X1/I99WtxU04IGKQq9bhb1tDepc94zt8nJKp6+3m/+53L1kt4G/XAig4DuIgUb9yC0MM7gLXwCNt0kZuTpXbF7ya2bj1Afi7nP1rDLi5wmRYgDuJV/gOpvzbV6JM9u29ui4FwG5kwbQdymi58CgZWVA1Yd4Zg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71178e87-cd49-46be-93fe-08dc92004d52
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2024 14:41:57.6949
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: X+DH1ugDypdCOWNSeOseOBaYIJvQdiQlyEBnS/IKzlQXPM1pY4moNa+KsOLWeV1gG1ATJxAlu7y7T4P1QPlEyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6791
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-21_06,2024-06-21_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 bulkscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
- definitions=main-2406210107
-X-Proofpoint-GUID: 4x1RdYhdJdj3lGWXTu-la4sgBhzp2Whe
-X-Proofpoint-ORIG-GUID: 4x1RdYhdJdj3lGWXTu-la4sgBhzp2Whe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87618653fb07d2f6307babd128b626da36dd33e8.1718964587.git.fdmanana@suse.com>
 
-On 21/06/2024 15:28, Jens Axboe wrote:
->> JFYI, we will probably notice a trivial conflict in
->> include/uapi/linux/stat.h when merging, as I fixed a comment there
->> which went into v6.10-rc4 . To resolve, the version in this series can
->> be used, as it also fixes that comment.
-> I did notice and resolved it when I merged it into my for-next branch.
-> And then was kind of annoyed when I noticed it was caused by a patch
-> from yourself as well, surely that should either have been part of the
-> series, just ignored for -git, or done after the fact. Kind of pointless
-> to cause conflicts with your own series right when it needs ready to go
-> into the for-next tree.
+On Fri, Jun 21, 2024 at 11:16:29AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> We always allocate a delayed extent op structure when allocating a tree
+> block (except for log trees), but most of the time we don't need it as
+> we only need to set the BTRFS_BLOCK_FLAG_FULL_BACKREF if we're dealing
+> with a relocation tree and we only need to set the key of a tree block
+> in a btrfs_tree_block_info structure if we are not using skinny metadata
+> (feature enabled by default since btrfs-progs 3.18 and available as of
+> kernel 3.10).
+> 
+> In these cases, where we don't need neither to update flags nor to set
+> the key, we only use the delayed extent op structure to set the tree
+> block's level. This is a waste of memory and besides that, the memory
+> allocation can fail and can add additional latency.
+> 
+> Instead of using a delayed extent op structure to store the level of
+> the tree block, use the delayed ref head to store it. This doesn't
+> change the size of neither structure and helps us avoid allocating
+> delayed extent ops structures when using the skinny metadata feature
+> and there's no relocation going on. This also gets rid of a BUG_ON().
+> 
+> For example, for a fs_mark run, with 5 iterations, 8 threads and 100K
+> files per iteration, before this patch there were 118109 allocations
+> of delayed extent op structures and after it there were none.
+> 
 
-ok, I will co-ordinate things better in future.
+Reviewed-by: Boris Burkov <boris@bur.io>
 
-Thanks again,
-John
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/delayed-ref.c |  9 +++++-
+>  fs/btrfs/delayed-ref.h |  6 ++--
+>  fs/btrfs/extent-tree.c | 63 ++++++++++++++++++------------------------
+>  3 files changed, 39 insertions(+), 39 deletions(-)
+> 
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index 6b4296ab651f..2ac9296edccb 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -819,6 +819,12 @@ static void init_delayed_ref_head(struct btrfs_delayed_ref_head *head_ref,
+>  	spin_lock_init(&head_ref->lock);
+>  	mutex_init(&head_ref->mutex);
+>  
+> +	/* If not metadata set an impossible level to help debugging. */
+> +	if (generic_ref->type == BTRFS_REF_METADATA)
+> +		head_ref->level = generic_ref->tree_ref.level;
+> +	else
+> +		head_ref->level = U8_MAX;
+> +
+>  	if (qrecord) {
+>  		if (generic_ref->ref_root && reserved) {
+>  			qrecord->data_rsv = reserved;
+> @@ -1072,7 +1078,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+>  }
+>  
+>  int btrfs_add_delayed_extent_op(struct btrfs_trans_handle *trans,
+> -				u64 bytenr, u64 num_bytes,
+> +				u64 bytenr, u64 num_bytes, u8 level,
+>  				struct btrfs_delayed_extent_op *extent_op)
+>  {
+>  	struct btrfs_delayed_ref_head *head_ref;
+> @@ -1082,6 +1088,7 @@ int btrfs_add_delayed_extent_op(struct btrfs_trans_handle *trans,
+>  		.action = BTRFS_UPDATE_DELAYED_HEAD,
+>  		.bytenr = bytenr,
+>  		.num_bytes = num_bytes,
+> +		.tree_ref.level = level,
+>  	};
+>  
+>  	head_ref = kmem_cache_alloc(btrfs_delayed_ref_head_cachep, GFP_NOFS);
+> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+> index 405be46c420f..ef15e998be03 100644
+> --- a/fs/btrfs/delayed-ref.h
+> +++ b/fs/btrfs/delayed-ref.h
+> @@ -108,7 +108,6 @@ struct btrfs_delayed_ref_node {
+>  
+>  struct btrfs_delayed_extent_op {
+>  	struct btrfs_disk_key key;
+> -	u8 level;
+>  	bool update_key;
+>  	bool update_flags;
+>  	u64 flags_to_set;
+> @@ -172,6 +171,9 @@ struct btrfs_delayed_ref_head {
+>  	 */
+>  	u64 reserved_bytes;
+>  
+> +	/* Tree block level, for metadata only. */
+> +	u8 level;
+> +
+>  	/*
+>  	 * when a new extent is allocated, it is just reserved in memory
+>  	 * The actual extent isn't inserted into the extent allocation tree
+> @@ -355,7 +357,7 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+>  			       struct btrfs_ref *generic_ref,
+>  			       u64 reserved);
+>  int btrfs_add_delayed_extent_op(struct btrfs_trans_handle *trans,
+> -				u64 bytenr, u64 num_bytes,
+> +				u64 bytenr, u64 num_bytes, u8 level,
+>  				struct btrfs_delayed_extent_op *extent_op);
+>  void btrfs_merge_delayed_refs(struct btrfs_fs_info *fs_info,
+>  			      struct btrfs_delayed_ref_root *delayed_refs,
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 23a7cac108eb..250623f3b094 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -200,19 +200,8 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
+>  			goto search_again;
+>  		}
+>  		spin_lock(&head->lock);
+> -		if (head->extent_op && head->extent_op->update_flags) {
+> +		if (head->extent_op && head->extent_op->update_flags)
+>  			extent_flags |= head->extent_op->flags_to_set;
+> -		} else if (unlikely(num_refs == 0)) {
+> -			spin_unlock(&head->lock);
+> -			mutex_unlock(&head->mutex);
+> -			spin_unlock(&delayed_refs->lock);
+> -			ret = -EUCLEAN;
+> -			btrfs_err(fs_info,
+> -			  "unexpected zero reference count for extent %llu (%s)",
+> -				  bytenr, metadata ? "metadata" : "data");
+> -			btrfs_abort_transaction(trans, ret);
+> -			goto out_free;
+> -		}
+>  
+>  		num_refs += head->ref_mod;
+>  		spin_unlock(&head->lock);
+> @@ -1632,7 +1621,7 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+>  
+>  	if (metadata) {
+>  		key.type = BTRFS_METADATA_ITEM_KEY;
+> -		key.offset = extent_op->level;
+> +		key.offset = head->level;
+>  	} else {
+>  		key.type = BTRFS_EXTENT_ITEM_KEY;
+>  		key.offset = head->num_bytes;
+> @@ -1667,7 +1656,7 @@ static int run_delayed_extent_op(struct btrfs_trans_handle *trans,
+>  			ret = -EUCLEAN;
+>  			btrfs_err(fs_info,
+>  		  "missing extent item for extent %llu num_bytes %llu level %d",
+> -				  head->bytenr, head->num_bytes, extent_op->level);
+> +				  head->bytenr, head->num_bytes, head->level);
+>  			goto out;
+>  		}
+>  	}
+> @@ -1726,7 +1715,6 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
+>  			.generation = trans->transid,
+>  		};
+>  
+> -		BUG_ON(!extent_op || !extent_op->update_flags);
+>  		ret = alloc_reserved_tree_block(trans, node, extent_op);
+>  		if (!ret)
+>  			btrfs_record_squota_delta(fs_info, &delta);
+> @@ -2233,7 +2221,6 @@ int btrfs_set_disk_extent_flags(struct btrfs_trans_handle *trans,
+>  				struct extent_buffer *eb, u64 flags)
+>  {
+>  	struct btrfs_delayed_extent_op *extent_op;
+> -	int level = btrfs_header_level(eb);
+>  	int ret;
+>  
+>  	extent_op = btrfs_alloc_delayed_extent_op();
+> @@ -2243,9 +2230,9 @@ int btrfs_set_disk_extent_flags(struct btrfs_trans_handle *trans,
+>  	extent_op->flags_to_set = flags;
+>  	extent_op->update_flags = true;
+>  	extent_op->update_key = false;
+> -	extent_op->level = level;
+>  
+> -	ret = btrfs_add_delayed_extent_op(trans, eb->start, eb->len, extent_op);
+> +	ret = btrfs_add_delayed_extent_op(trans, eb->start, eb->len,
+> +					  btrfs_header_level(eb), extent_op);
+>  	if (ret)
+>  		btrfs_free_delayed_extent_op(extent_op);
+>  	return ret;
+> @@ -4866,7 +4853,7 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+>  	struct btrfs_path *path;
+>  	struct extent_buffer *leaf;
+>  	u32 size = sizeof(*extent_item) + sizeof(*iref);
+> -	u64 flags = extent_op->flags_to_set;
+> +	const u64 flags = (extent_op ? extent_op->flags_to_set : 0);
+>  	/* The owner of a tree block is the level. */
+>  	int level = btrfs_delayed_ref_owner(node);
+>  	bool skinny_metadata = btrfs_fs_incompat(fs_info, SKINNY_METADATA);
+> @@ -5123,7 +5110,6 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+>  	struct btrfs_key ins;
+>  	struct btrfs_block_rsv *block_rsv;
+>  	struct extent_buffer *buf;
+> -	struct btrfs_delayed_extent_op *extent_op;
+>  	u64 flags = 0;
+>  	int ret;
+>  	u32 blocksize = fs_info->nodesize;
+> @@ -5166,6 +5152,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+>  		BUG_ON(parent > 0);
+>  
+>  	if (root_objectid != BTRFS_TREE_LOG_OBJECTID) {
+> +		struct btrfs_delayed_extent_op *extent_op;
+>  		struct btrfs_ref generic_ref = {
+>  			.action = BTRFS_ADD_DELAYED_EXTENT,
+>  			.bytenr = ins.objectid,
+> @@ -5174,30 +5161,34 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+>  			.owning_root = owning_root,
+>  			.ref_root = root_objectid,
+>  		};
+> -		extent_op = btrfs_alloc_delayed_extent_op();
+> -		if (!extent_op) {
+> -			ret = -ENOMEM;
+> -			goto out_free_buf;
+> +
+> +		if (!skinny_metadata || flags != 0) {
+> +			extent_op = btrfs_alloc_delayed_extent_op();
+> +			if (!extent_op) {
+> +				ret = -ENOMEM;
+> +				goto out_free_buf;
+> +			}
+> +			if (key)
+> +				memcpy(&extent_op->key, key, sizeof(extent_op->key));
+> +			else
+> +				memset(&extent_op->key, 0, sizeof(extent_op->key));
+> +			extent_op->flags_to_set = flags;
+> +			extent_op->update_key = skinny_metadata ? false : true;
+> +			extent_op->update_flags = (flags != 0);
+> +		} else {
+> +			extent_op = NULL;
+>  		}
+> -		if (key)
+> -			memcpy(&extent_op->key, key, sizeof(extent_op->key));
+> -		else
+> -			memset(&extent_op->key, 0, sizeof(extent_op->key));
+> -		extent_op->flags_to_set = flags;
+> -		extent_op->update_key = skinny_metadata ? false : true;
+> -		extent_op->update_flags = true;
+> -		extent_op->level = level;
+>  
+>  		btrfs_init_tree_ref(&generic_ref, level, btrfs_root_id(root), false);
+>  		btrfs_ref_tree_mod(fs_info, &generic_ref);
+>  		ret = btrfs_add_delayed_tree_ref(trans, &generic_ref, extent_op);
+> -		if (ret)
+> -			goto out_free_delayed;
+> +		if (ret) {
+> +			btrfs_free_delayed_extent_op(extent_op);
+> +			goto out_free_buf;
+> +		}
+>  	}
+>  	return buf;
+>  
+> -out_free_delayed:
+> -	btrfs_free_delayed_extent_op(extent_op);
+>  out_free_buf:
+>  	btrfs_tree_unlock(buf);
+>  	free_extent_buffer(buf);
+> -- 
+> 2.43.0
+> 
 
