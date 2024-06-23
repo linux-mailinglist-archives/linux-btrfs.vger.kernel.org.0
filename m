@@ -1,67 +1,67 @@
-Return-Path: <linux-btrfs+bounces-5907-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5908-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB580913C76
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2024 17:39:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECDA913E95
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2024 23:42:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7876A1C214AF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2024 15:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73BD6281729
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2024 21:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3581822D2;
-	Sun, 23 Jun 2024 15:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB6F1850A1;
+	Sun, 23 Jun 2024 21:42:22 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8A063D
-	for <linux-btrfs@vger.kernel.org>; Sun, 23 Jun 2024 15:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E435A11D
+	for <linux-btrfs@vger.kernel.org>; Sun, 23 Jun 2024 21:42:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719157165; cv=none; b=Y+ew8MtkFKlg0EA5hHSZ9nVMPb0htmj6tcP4k+xyfsjBkUXNodL+/IJu5K4AYCmiT4IT8yG2qUGfGLTWr0vVTJY0iILIrFxDKqwiUVn2P8gpihzpcdw71k2N7d2SvV1kXOKr7EjHRon2GmF8OsW7/5GWZdk0ACVHnhCIs2SUUU0=
+	t=1719178941; cv=none; b=UHzfumgDtNE3hVI+8PG/YzEOs1mAJyaWI0wMWocOuSbknTdiQIK2MhuVHN79z+Lwd+z971h8wPmE3MX/TbzAHGPrZgYrXGMnUWfqvmY8uPZd8BmWKgWFQLH8pz3Vs7klgU7TTuetrAcGhRRaHeZtija81M0YVGHbue5SJpbyfd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719157165; c=relaxed/simple;
-	bh=9yvW496ZCme6R+fZtQRf/kUwwW4daBGCaWiUQoZh6F0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gz9s2uhtpA5oJD2+3rjnFeS61caa6Fy+ZQk0kx51gTfggRDGL5TZ0x10Ld/FrTfGYlSg8/LoO/xJwmchkDoVQxkyNqBLTdrEZNENqxBbAvwB8FJKh3v/WYH0QFc1tILHavPOPyqCWhNFuzh4dT3bMavLlMVIvHfMakeN43ffB68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+	s=arc-20240116; t=1719178941; c=relaxed/simple;
+	bh=n8WkbQfKFP+Tm0660dvYTCTWhLFB0rtAaCFXjhVrdl8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OSPANxrMBFjdR7HqfM8LINnwGj86aTiS/kMrDrCA5m2ze4ceWZRn5vgW+SlKM7VnRSMv6TH1sTwjJ6lU2x8uf8OUc3VtCGuAPUX9QEf/dgISmY0rhpgqWCglVM/npC+wZ++iNwPOCGLSU/O1WLnlh97gIUdcSpfL7NHdONUCGcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7f3aaf60267so79862039f.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Jun 2024 08:39:24 -0700 (PDT)
+Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3762363a522so56779365ab.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 23 Jun 2024 14:42:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719157163; x=1719761963;
+        d=1e100.net; s=20230601; t=1719178939; x=1719783739;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8qX0mbmMVdwwRBSjq+pId2i9t9BOsQ2Jv1qsuM3/Mq0=;
-        b=JxxqCnoBbTqVKej5f4PJyaZ5io9XJ8fgc23kvUkW+ABbEoiAU8HOeyuMz9fnUa06cj
-         iXXPejq+14zuJULdcqcQNvNI5RPHjyElMD6IAzQ8wnlP1cAvML1wg4VRVXNtN1rs4FvV
-         nzjcR92EqHHo1k4zL2VY0FHEyLLtwbmhbjHyXrlW275iX83STtBRZrB/I88HiOBI8SAk
-         yEqljzwlf4V4bdG8kC6xoNPZb6w043re+sNrXUlEqaCrToi0RxtOBsJ8fuHaIBL/Hu6/
-         o48qnmWtIqAFgx5JPT5LbniuKc1dGKhLszdYT/cgh6oRCiy/zqVuzel4USfWZkAKUrfO
-         UrpA==
-X-Forwarded-Encrypted: i=1; AJvYcCU1TfxfgebLhiFYk81MerRWTustbbiv1eW375CEqLEY4uKQS9ZrPpHgafBbOjGVCR/dt7zQKUsUNTuYoiX1F4ys6eRwDY3xvWUZGHs=
-X-Gm-Message-State: AOJu0Yz3TnXT5nOEjfW03ivkspTXE/zEWBY5MbJY9YqOgyclXlQ0y/8c
-	XnHTAfyyVOHwzjYVhGfdADc3/wedV0A9axCtQRF1DHtbIVenWvef1OlF4VDG8YlA5pmW8biXN18
-	2gJE5tghvzbY6xBw0gpw5+lNcTnuWDOP96TaPcH1eoOxymPkua6qjddg=
-X-Google-Smtp-Source: AGHT+IFMhq+CUdJ2xePyAMUNdR+dlZhrqKJzPpu4IjU7l1KNu8636+sSjS03avDDykjemMlOxJCW1y+KGX00/zZ81FojbVxbtNCr
+        bh=3rhSUyTHpYnMAQ3Y600yeB/qOpsdPrjtPt6dT1YYdmA=;
+        b=SFJz+yegpqY+xO6sZ1QEP1rSSLCSlNUSHKd3XonCQjuIuMPmXiKitQUDl24nWFOq8d
+         fKdFZ42FmlzYekRiexy28Dsws31ia3a7OJxNIfmJ2kfm1iZ9RYNO4Y1p6AzqNrH4l/mH
+         oeCY15MpzUvwUvK74xHvSyIQ37fJ6PpI/tRiH4Z50CKbyJJA17L0DNyDYaSg2Kps2jp2
+         u+vgI9Qw+v/Joq+6riJgASGZww2XpWjmRlTD/WbXbkl5S4LDYRy9GAbjfSf29UctxgdG
+         Oli+B6yvXm7itQUVZNjxCHzehEz2PPd+ekupLsGUwK7+M/n0Q7EFf53RRMoFxA5NEehw
+         4IAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXCinnLoTcoPFknlK+VA4FAfO+Y9UU1hAALVsz0bu/wJ0SPtsuM6lhv0EnsSCy5yR8GuRQ5LQUii6zvZMXILhtqy/lu8P81oE1JPqI=
+X-Gm-Message-State: AOJu0YylHzjQjfElzyR19NDaa3p1InXOEDf8Vkp8xilpBY38QLCCFabt
+	NPzbHAY5yoSruQpVx3vX8DZ+xnbLrQrpcElnDjMsREMoaEA0ABKDlIpHTDgfcTMcFjA//9X93uJ
+	e9YHM2zbKaEpCWQHTNccUf/dIUJbXUcmjmSVXgW+jfVl+XkqxuXEqGrE=
+X-Google-Smtp-Source: AGHT+IFvACzKSZbwHs75b1ZIGtz45qBMKskOwvrlk3yXrhGsKDwc0qwBxd+g47iVzaSLbgHTKU9pOlzqp9rotLZreLtOGR+6twT6
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8711:b0:4b7:c9b5:675c with SMTP id
- 8926c6da1cb9f-4b9e7f27f5amr148607173.6.1719157163497; Sun, 23 Jun 2024
- 08:39:23 -0700 (PDT)
-Date: Sun, 23 Jun 2024 08:39:23 -0700
+X-Received: by 2002:a92:c268:0:b0:375:8a85:eacd with SMTP id
+ e9e14a558f8ab-3763f6c7aabmr2165935ab.3.1719178939023; Sun, 23 Jun 2024
+ 14:42:19 -0700 (PDT)
+Date: Sun, 23 Jun 2024 14:42:19 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000b2e35061b9078aa@google.com>
-Subject: [syzbot] [btrfs?] WARNING in __btrfs_free_extent (2)
-From: syzbot <syzbot+fe3566bcb509ae7764ef@syzkaller.appspotmail.com>
-To: boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+Message-ID: <000000000000f75434061b9589eb@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_free_reserved_data_space_noquota (2)
+From: syzbot <syzbot+9b4407a256ad8ed1d5c8@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
 	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
@@ -72,88 +72,95 @@ syzbot found the following issue on:
 
 HEAD commit:    2ccbdf43d5e7 Merge tag 'for-linus' of git://git.kernel.org..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10aed446980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c79815c08cc14227
-dashboard link: https://syzkaller.appspot.com/bug?extid=fe3566bcb509ae7764ef
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ebe941980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1374b3de980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=112f8c1e980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0d76ceef02b39
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b4407a256ad8ed1d5c8
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/35e32e9073a7/disk-2ccbdf43.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6c6e34658d16/vmlinux-2ccbdf43.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4417e7ef76ed/bzImage-2ccbdf43.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b1cd2f1f0c7e/mount_0.gz
-
-The issue was bisected to:
-
-commit cecbb533b5fcec4ff77e786b7f94457f6cacd9e7
-Author: Boris Burkov <boris@bur.io>
-Date:   Wed Jun 28 18:00:15 2023 +0000
-
-    btrfs: record simple quota deltas in delayed refs
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a47be2980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17a47be2980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13a47be2980000
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-2ccbdf43.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/13cdb5bfbafa/vmlinux-2ccbdf43.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7a14f5d07f81/bzImage-2ccbdf43.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fe3566bcb509ae7764ef@syzkaller.appspotmail.com
-Fixes: cecbb533b5fc ("btrfs: record simple quota deltas in delayed refs")
+Reported-by: syzbot+9b4407a256ad8ed1d5c8@syzkaller.appspotmail.com
 
-BTRFS: Transaction aborted (error -2)
-WARNING: CPU: 0 PID: 5085 at fs/btrfs/extent-tree.c:2984 do_free_extent_accounting fs/btrfs/extent-tree.c:2984 [inline]
-WARNING: CPU: 0 PID: 5085 at fs/btrfs/extent-tree.c:2984 __btrfs_free_extent+0x32d1/0x3a10 fs/btrfs/extent-tree.c:3358
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 7088 at fs/btrfs/space-info.h:208 btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:208 [inline]
+WARNING: CPU: 2 PID: 7088 at fs/btrfs/space-info.h:208 btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:240 [inline]
+WARNING: CPU: 2 PID: 7088 at fs/btrfs/space-info.h:208 btrfs_free_reserved_data_space_noquota+0x3de/0x550 fs/btrfs/delalloc-space.c:179
 Modules linked in:
-CPU: 0 PID: 5085 Comm: syz-executor845 Not tainted 6.10.0-rc3-syzkaller-00044-g2ccbdf43d5e7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-RIP: 0010:do_free_extent_accounting fs/btrfs/extent-tree.c:2984 [inline]
-RIP: 0010:__btrfs_free_extent+0x32d1/0x3a10 fs/btrfs/extent-tree.c:3358
-Code: e8 64 b0 b0 fd 90 0f 0b 90 90 e9 3c f3 ff ff e8 b5 81 ee fd 90 48 c7 c7 00 2e 0b 8c 44 8b 6c 24 18 44 89 ee e8 40 b0 b0 fd 90 <0f> 0b 90 90 4c 8b 24 24 e9 4f f3 ff ff e8 8d 81 ee fd 90 48 c7 c7
-RSP: 0018:ffffc9000352f220 EFLAGS: 00010246
-RAX: 7e1377ca92db5900 RBX: ffff888024e3c001 RCX: ffff88807c1f0000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc9000352f3f0 R08: ffffffff81585742 R09: fffffbfff1c39994
-R10: dffffc0000000000 R11: fffffbfff1c39994 R12: dffffc0000000000
-R13: 00000000fffffffe R14: 0000000000000000 R15: ffff888063a8b5c8
-FS:  000055556fa3c3c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005648b40a4798 CR3: 0000000023a7e000 CR4: 00000000003506f0
+CPU: 2 PID: 7088 Comm: syz-executor.2 Not tainted 6.10.0-rc3-syzkaller-00044-g2ccbdf43d5e7 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:208 [inline]
+RIP: 0010:btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:240 [inline]
+RIP: 0010:btrfs_free_reserved_data_space_noquota+0x3de/0x550 fs/btrfs/delalloc-space.c:179
+Code: ea 03 80 3c 02 00 0f 85 64 01 00 00 4c 8b 73 60 48 89 ef 4c 89 f6 e8 71 68 df fd 49 39 ee 0f 83 65 fe ff ff e8 f3 6d df fd 90 <0f> 0b 90 e9 62 fe ff ff e8 e5 6d df fd 48 8d 7b 18 be ff ff ff ff
+RSP: 0018:ffffc900042af5c8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801e0fb800 RCX: ffffffff83af21cf
+RDX: ffff88801d02c880 RSI: ffffffff83af21dd RDI: 0000000000000006
+RBP: 0000000000800000 R08: 0000000000000006 R09: 0000000000800000
+R10: 00000000005cd000 R11: 0000000000000003 R12: ffff888011fb8000
+R13: 0000000000000000 R14: 00000000005cd000 R15: ffffffffff800000
+FS:  0000000000000000(0000) GS:ffff88802c200000(0063) knlGS:00000000f5ed1b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000c0018a2000 CR3: 0000000000822000 CR4: 0000000000350ef0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- run_delayed_tree_ref fs/btrfs/extent-tree.c:1736 [inline]
- run_one_delayed_ref fs/btrfs/extent-tree.c:1762 [inline]
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2027 [inline]
- __btrfs_run_delayed_refs+0x117c/0x4670 fs/btrfs/extent-tree.c:2097
- btrfs_run_delayed_refs+0xe3/0x2c0 fs/btrfs/extent-tree.c:2209
- btrfs_commit_transaction+0xf5d/0x3740 fs/btrfs/transaction.c:2400
- sync_filesystem+0x1c8/0x230 fs/sync.c:66
- generic_shutdown_super+0x72/0x2d0 fs/super.c:621
- kill_anon_super+0x3b/0x70 fs/super.c:1226
- btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2096
- deactivate_locked_super+0xc4/0x130 fs/super.c:473
- cleanup_mnt+0x41f/0x4b0 fs/namespace.c:1267
- task_work_run+0x24f/0x310 kernel/task_work.c:180
- ptrace_notify+0x2d2/0x380 kernel/signal.c:2402
- ptrace_report_syscall include/linux/ptrace.h:415 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
- syscall_exit_work+0xc6/0x190 kernel/entry/common.c:173
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
- syscall_exit_to_user_mode+0x273/0x370 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fda22d8de67
-Code: 08 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007fffaba15888 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fda22d8de67
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffaba15940
-RBP: 00007fffaba15940 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007fffaba16a00
-R13: 000055556fa3d700 R14: 431bde82d7b634db R15: 00007fffaba169a4
+ btrfs_free_reserved_data_space+0xc1/0x100 fs/btrfs/delalloc-space.c:199
+ btrfs_dio_iomap_begin+0xbbc/0x1e40 fs/btrfs/inode.c:7752
+ iomap_iter+0x61f/0x1080 fs/iomap/iter.c:91
+ __iomap_dio_rw+0x6ba/0x1c70 fs/iomap/direct-io.c:659
+ btrfs_dio_write+0xb1/0xf0 fs/btrfs/inode.c:7890
+ btrfs_direct_write fs/btrfs/file.c:1554 [inline]
+ btrfs_do_write_iter+0x901/0x10c0 fs/btrfs/file.c:1695
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0x6b6/0x1140 fs/read_write.c:590
+ ksys_write+0x12f/0x260 fs/read_write.c:643
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+RIP: 0023:0xf72df579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f5ed15ac EFLAGS: 00000292 ORIG_RAX: 0000000000000004
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000000000
+RDX: 0000000000800000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
  </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
 
 
 ---
@@ -163,14 +170,9 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
