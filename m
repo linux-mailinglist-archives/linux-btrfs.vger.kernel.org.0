@@ -1,84 +1,75 @@
-Return-Path: <linux-btrfs+bounces-5909-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5910-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6449140C1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 05:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5216914193
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 06:59:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F90A1C21E29
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 03:07:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F9EB1C21C70
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 04:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CDC8BF0;
-	Mon, 24 Jun 2024 03:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192BE1401C;
+	Mon, 24 Jun 2024 04:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="muXNjzfI"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UeExf8ie";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UeExf8ie"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3578D515;
-	Mon, 24 Jun 2024 03:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDDB711713
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2024 04:59:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719198450; cv=none; b=QJA0QfVCbN2qSeN7JCia07UNvFA+o9O0Dy2zuhjbsxaBmiVa/j5EcaBs46DMjdOUFkRL6pI/iOHkoCVgzyAuGvbO4nLv7PVBXyh6KfZvU3OfH73EeOd5168+EXOwjpq54P4vzQs9530Dc5cPEhBQMUIZRER67SP45Q3KGIoQMgw=
+	t=1719205162; cv=none; b=Yqv8y8msKb0exsQguA3OPyU49KzxmUML3p8ljk37dYWU6dfS5ddC5i0xfHSQaSmsHDdtQwJP6CwMLnOZiX38ne6NRwxumUW8m1oFFXaITSZQRJeq3CMaH77PrjIu7ODRgjyq3vllhR9rbTvXZJvXnZWux6p+HVVSqm2msvgptmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719198450; c=relaxed/simple;
-	bh=yJOIut0szfEzOnJOmqfOvO5sdb+iCam29V3jupcmOas=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=thlzHa1CCWzCDIptMDBePW8f3KogXjqe15qFM8aO1i31EuoeNSaKByCEUXz5Zlqo6t0zoyhZw3EZJ1KyyxHIVFu/b8HBpabz+YZd2acdYzV1vP4csf6+EcIGHBjCwCFsjrJkjE25EvuUooWDE2PaWRKdr1DIL1leFX537a35s3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=muXNjzfI; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-70666aceb5bso1155630b3a.1;
-        Sun, 23 Jun 2024 20:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719198448; x=1719803248; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t2Ev2SnpvIc9PeMEYJ75DMX+rnT35qAdjQGrKk69Hf0=;
-        b=muXNjzfIMd7SLL9gJYAXHb9qs/5h4K7w0x4v6F2xbrb3pSfWz8GeqdPLUfSiNIq7CQ
-         O1AgZn2uF/kWO1ho+4gV8yegiQYIm6taj1pH0o8CtpeounhtWWFI3YCManGP5iWX7lxG
-         CjmT84aBt2C0XEw9TfXszSNwOQxpiAI5YF/gnOykdS63MyUZmxl6eAfKjafyd/GhH7cA
-         NwfSWxOayjDdbVK+Zgrti1hO6AjFO1kzvCS+PCQm4CC2gfTk3OtTWFvixbzN+XZGM4xm
-         ksnGDwvuQqs73kxf53mZ8IEk1urPHla1sxkZhebSjK/tuUUVs/kagxFYK2mW1fQMCsJa
-         gxOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719198448; x=1719803248;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t2Ev2SnpvIc9PeMEYJ75DMX+rnT35qAdjQGrKk69Hf0=;
-        b=RQn06oKH9Vv66tOS/VLLQsxRs22IuwadkyhDFb2olz7wxyQXNf5NsnPQEHrB999Zi8
-         xPtSQ+LIwSyyq/XBuUtJ+IkqRbavpPDtkxQUGWr+thWpLaLHSDXshjsA/YL298PASOyo
-         FuTLUSgKAVuiSnfMrHxY9qXGKSKV0Zyd8Lxudsvgk8VlnG3tNEqve55yA8X6f3/vh87Y
-         yYfu+K4uOKVN+LqI1PK+N5q9dUmhYY6yFCSvv7+N3Zo73gs9fd+a/ricNeQmmiWj/5xt
-         N+piH/Z7IOseUrpuelMpzS/Vf+e/DcKRe2xUVN3FKPnNQSsAfbkwSI1rUSJGckKqkoSL
-         q0QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmLsdTEKTjNwlBk+rpb7DM1kPWCFCqlM1EXCYQZCrT3ut4t4lff1zOpbLOIzMUuy7NmHq5ftgsevgK/s4KG0QS25bnb+9c5IbH9UIwId8MY3NawPMovIQ7Seu3f0Pru4CO/tRBP7wZOX4=
-X-Gm-Message-State: AOJu0YzmbMsKtM4PO7CgLOdMiQ8aP3ZgA+vapGESmZ+pgjQx7KT1TAFq
-	gRVmdOt64dJiDaHmdUtqDwaCP7IsqBpJEaJribH8bARR1WnJz2wv
-X-Google-Smtp-Source: AGHT+IGf1J9QbqM9KO5sJmtk53ZgT/H0K+Zsy4i9oBx7wjlAXwnsjFARyzYLWQPIvNoQGJDqHk8+zg==
-X-Received: by 2002:a05:6a20:6a9a:b0:1af:e3f1:9af7 with SMTP id adf61e73a8af0-1bcf7efdc24mr3286980637.36.1719198447927;
-        Sun, 23 Jun 2024 20:07:27 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c7e5af9ddesm7570599a91.38.2024.06.23.20.07.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jun 2024 20:07:27 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: clm@fb.com,
-	dsterba@suse.com,
-	josef@toxicpanda.com
-Cc: syzbot+a0d1f7e26910be4dc171@syzkaller.appspotmail.com,
-	fdmanana@suse.com,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH] btrfs: qgroup: fix slab-out-of-bounds in btrfs_qgroup_inherit
-Date: Mon, 24 Jun 2024 12:07:20 +0900
-Message-Id: <20240624030720.137753-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1719205162; c=relaxed/simple;
+	bh=D4A8ommd+UQwB7R+F2+OgXtwLGO5RqVbofTtG896/o4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=JR6dQXNIei/LJGdPgpHAvWvr4bm2ijYry6r2RrXoMPtuu28/1pS84mhQFBAJd34CywYPP0KIJ0xhGiqP8hweoDo7jxJD3Svo0rM4Dw8o1yrPPIaXqm7S/nymYVQhSYuSPGHFXdG2pWim2H/P3RGgSqJ47m/3h9AiOs3d9REuQRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UeExf8ie; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UeExf8ie; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CBA3C1F7A7
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2024 04:59:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719205157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=JaFb8TGs3akcIR6lrhSnVgmErMXa9SV+Gsea20rmDSw=;
+	b=UeExf8ie8zh8oCCwTjqKkZLqflQhbArGPxvc8/YXN0Dz+jEMrMUhzC9ObIL6VOApOSQO6L
+	/u63FqlJcpwTTZzy3Cwn1bHSr9DpCfJizI+wOjZsvv+p1AocxA5L3HyNG9Rr9TCSM5gIya
+	90DCqNiQo38c13Z3I2J0M2koo5PFYLw=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719205157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=JaFb8TGs3akcIR6lrhSnVgmErMXa9SV+Gsea20rmDSw=;
+	b=UeExf8ie8zh8oCCwTjqKkZLqflQhbArGPxvc8/YXN0Dz+jEMrMUhzC9ObIL6VOApOSQO6L
+	/u63FqlJcpwTTZzy3Cwn1bHSr9DpCfJizI+wOjZsvv+p1AocxA5L3HyNG9Rr9TCSM5gIya
+	90DCqNiQo38c13Z3I2J0M2koo5PFYLw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D51A113ACD
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2024 04:59:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7hDVIST9eGZNSgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2024 04:59:16 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: print-tree: add generation and type dump for EXTENT_DATA_KEY
+Date: Mon, 24 Jun 2024 14:28:54 +0930
+Message-ID: <0ff7d2afbab9518e677a725935c3f4e3224a4229.1719205115.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -86,37 +77,62 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.996];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
 
-If a value exists in inherit->num_ref_copies or inherit->num_excl_copies,
-an out-of-bounds vulnerability occurs.
+When debugging the recent ram_bytes mismatch bug, I can hit it with
+enhanced tree-checker for file extent items at write time.
 
-Therefore, you need to add code to check the presence or absence of 
-that value.
+But the bug is not that easy to trigger (mostly triggered with
+btrfs/06*, which uses 20 threads fsstress), and when I hit it, the only
+info is the kernel leaf dump, but it doesn't include things like the
+file extent type (REGULAR or PREALLOC).
 
-Regards.
-Jeongjun Park.
+Add the dump for generation and type (although only numeric output) to
+make debugging a little easier.
 
-Reported-by: syzbot+a0d1f7e26910be4dc171@syzkaller.appspotmail.com
-Fixes: 3f5e2d3b3877 ("Btrfs: fix missing check in the btrfs_qgroup_inherit()")
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/btrfs/print-tree.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/qgroup.c b /fs/btrfs/qgroup.c
-index fc2a7ea26354..23beac746637 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3270,6 +3270,10 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	}
- 
- 	if (inherit) {
-+		if (inherit->num_ref_copies > 0 || inherit->num_excl_copies > 0) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 		i_qgroups = (u64 *)(inherit + 1);
- 		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
- 		       2 * inherit->num_excl_copies;
---
+diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+index 7e46aa8a0444..bb2d497b421c 100644
+--- a/fs/btrfs/print-tree.c
++++ b/fs/btrfs/print-tree.c
+@@ -310,6 +310,9 @@ void btrfs_print_leaf(const struct extent_buffer *l)
+ 		case BTRFS_EXTENT_DATA_KEY:
+ 			fi = btrfs_item_ptr(l, i,
+ 					    struct btrfs_file_extent_item);
++			pr_info("\t\tgeneration %llu type %hhu\n",
++				btrfs_file_extent_generation(l, fi),
++				btrfs_file_extent_type(l, fi));
+ 			if (btrfs_file_extent_type(l, fi) ==
+ 			    BTRFS_FILE_EXTENT_INLINE) {
+ 				pr_info("\t\tinline extent data size %llu\n",
+-- 
+2.45.2
+
 
