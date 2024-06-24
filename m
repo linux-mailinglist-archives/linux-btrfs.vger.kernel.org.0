@@ -1,186 +1,122 @@
-Return-Path: <linux-btrfs+bounces-5908-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5909-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BECDA913E95
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2024 23:42:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D6449140C1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 05:07:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73BD6281729
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2024 21:42:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F90A1C21E29
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 03:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB6F1850A1;
-	Sun, 23 Jun 2024 21:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CDC8BF0;
+	Mon, 24 Jun 2024 03:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="muXNjzfI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01E435A11D
-	for <linux-btrfs@vger.kernel.org>; Sun, 23 Jun 2024 21:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3578D515;
+	Mon, 24 Jun 2024 03:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719178941; cv=none; b=UHzfumgDtNE3hVI+8PG/YzEOs1mAJyaWI0wMWocOuSbknTdiQIK2MhuVHN79z+Lwd+z971h8wPmE3MX/TbzAHGPrZgYrXGMnUWfqvmY8uPZd8BmWKgWFQLH8pz3Vs7klgU7TTuetrAcGhRRaHeZtija81M0YVGHbue5SJpbyfd8=
+	t=1719198450; cv=none; b=QJA0QfVCbN2qSeN7JCia07UNvFA+o9O0Dy2zuhjbsxaBmiVa/j5EcaBs46DMjdOUFkRL6pI/iOHkoCVgzyAuGvbO4nLv7PVBXyh6KfZvU3OfH73EeOd5168+EXOwjpq54P4vzQs9530Dc5cPEhBQMUIZRER67SP45Q3KGIoQMgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719178941; c=relaxed/simple;
-	bh=n8WkbQfKFP+Tm0660dvYTCTWhLFB0rtAaCFXjhVrdl8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OSPANxrMBFjdR7HqfM8LINnwGj86aTiS/kMrDrCA5m2ze4ceWZRn5vgW+SlKM7VnRSMv6TH1sTwjJ6lU2x8uf8OUc3VtCGuAPUX9QEf/dgISmY0rhpgqWCglVM/npC+wZ++iNwPOCGLSU/O1WLnlh97gIUdcSpfL7NHdONUCGcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-3762363a522so56779365ab.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 23 Jun 2024 14:42:19 -0700 (PDT)
+	s=arc-20240116; t=1719198450; c=relaxed/simple;
+	bh=yJOIut0szfEzOnJOmqfOvO5sdb+iCam29V3jupcmOas=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=thlzHa1CCWzCDIptMDBePW8f3KogXjqe15qFM8aO1i31EuoeNSaKByCEUXz5Zlqo6t0zoyhZw3EZJ1KyyxHIVFu/b8HBpabz+YZd2acdYzV1vP4csf6+EcIGHBjCwCFsjrJkjE25EvuUooWDE2PaWRKdr1DIL1leFX537a35s3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=muXNjzfI; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-70666aceb5bso1155630b3a.1;
+        Sun, 23 Jun 2024 20:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719198448; x=1719803248; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t2Ev2SnpvIc9PeMEYJ75DMX+rnT35qAdjQGrKk69Hf0=;
+        b=muXNjzfIMd7SLL9gJYAXHb9qs/5h4K7w0x4v6F2xbrb3pSfWz8GeqdPLUfSiNIq7CQ
+         O1AgZn2uF/kWO1ho+4gV8yegiQYIm6taj1pH0o8CtpeounhtWWFI3YCManGP5iWX7lxG
+         CjmT84aBt2C0XEw9TfXszSNwOQxpiAI5YF/gnOykdS63MyUZmxl6eAfKjafyd/GhH7cA
+         NwfSWxOayjDdbVK+Zgrti1hO6AjFO1kzvCS+PCQm4CC2gfTk3OtTWFvixbzN+XZGM4xm
+         ksnGDwvuQqs73kxf53mZ8IEk1urPHla1sxkZhebSjK/tuUUVs/kagxFYK2mW1fQMCsJa
+         gxOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719178939; x=1719783739;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3rhSUyTHpYnMAQ3Y600yeB/qOpsdPrjtPt6dT1YYdmA=;
-        b=SFJz+yegpqY+xO6sZ1QEP1rSSLCSlNUSHKd3XonCQjuIuMPmXiKitQUDl24nWFOq8d
-         fKdFZ42FmlzYekRiexy28Dsws31ia3a7OJxNIfmJ2kfm1iZ9RYNO4Y1p6AzqNrH4l/mH
-         oeCY15MpzUvwUvK74xHvSyIQ37fJ6PpI/tRiH4Z50CKbyJJA17L0DNyDYaSg2Kps2jp2
-         u+vgI9Qw+v/Joq+6riJgASGZww2XpWjmRlTD/WbXbkl5S4LDYRy9GAbjfSf29UctxgdG
-         Oli+B6yvXm7itQUVZNjxCHzehEz2PPd+ekupLsGUwK7+M/n0Q7EFf53RRMoFxA5NEehw
-         4IAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXCinnLoTcoPFknlK+VA4FAfO+Y9UU1hAALVsz0bu/wJ0SPtsuM6lhv0EnsSCy5yR8GuRQ5LQUii6zvZMXILhtqy/lu8P81oE1JPqI=
-X-Gm-Message-State: AOJu0YylHzjQjfElzyR19NDaa3p1InXOEDf8Vkp8xilpBY38QLCCFabt
-	NPzbHAY5yoSruQpVx3vX8DZ+xnbLrQrpcElnDjMsREMoaEA0ABKDlIpHTDgfcTMcFjA//9X93uJ
-	e9YHM2zbKaEpCWQHTNccUf/dIUJbXUcmjmSVXgW+jfVl+XkqxuXEqGrE=
-X-Google-Smtp-Source: AGHT+IFvACzKSZbwHs75b1ZIGtz45qBMKskOwvrlk3yXrhGsKDwc0qwBxd+g47iVzaSLbgHTKU9pOlzqp9rotLZreLtOGR+6twT6
+        d=1e100.net; s=20230601; t=1719198448; x=1719803248;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t2Ev2SnpvIc9PeMEYJ75DMX+rnT35qAdjQGrKk69Hf0=;
+        b=RQn06oKH9Vv66tOS/VLLQsxRs22IuwadkyhDFb2olz7wxyQXNf5NsnPQEHrB999Zi8
+         xPtSQ+LIwSyyq/XBuUtJ+IkqRbavpPDtkxQUGWr+thWpLaLHSDXshjsA/YL298PASOyo
+         FuTLUSgKAVuiSnfMrHxY9qXGKSKV0Zyd8Lxudsvgk8VlnG3tNEqve55yA8X6f3/vh87Y
+         yYfu+K4uOKVN+LqI1PK+N5q9dUmhYY6yFCSvv7+N3Zo73gs9fd+a/ricNeQmmiWj/5xt
+         N+piH/Z7IOseUrpuelMpzS/Vf+e/DcKRe2xUVN3FKPnNQSsAfbkwSI1rUSJGckKqkoSL
+         q0QQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVmLsdTEKTjNwlBk+rpb7DM1kPWCFCqlM1EXCYQZCrT3ut4t4lff1zOpbLOIzMUuy7NmHq5ftgsevgK/s4KG0QS25bnb+9c5IbH9UIwId8MY3NawPMovIQ7Seu3f0Pru4CO/tRBP7wZOX4=
+X-Gm-Message-State: AOJu0YzmbMsKtM4PO7CgLOdMiQ8aP3ZgA+vapGESmZ+pgjQx7KT1TAFq
+	gRVmdOt64dJiDaHmdUtqDwaCP7IsqBpJEaJribH8bARR1WnJz2wv
+X-Google-Smtp-Source: AGHT+IGf1J9QbqM9KO5sJmtk53ZgT/H0K+Zsy4i9oBx7wjlAXwnsjFARyzYLWQPIvNoQGJDqHk8+zg==
+X-Received: by 2002:a05:6a20:6a9a:b0:1af:e3f1:9af7 with SMTP id adf61e73a8af0-1bcf7efdc24mr3286980637.36.1719198447927;
+        Sun, 23 Jun 2024 20:07:27 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c7e5af9ddesm7570599a91.38.2024.06.23.20.07.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 Jun 2024 20:07:27 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: clm@fb.com,
+	dsterba@suse.com,
+	josef@toxicpanda.com
+Cc: syzbot+a0d1f7e26910be4dc171@syzkaller.appspotmail.com,
+	fdmanana@suse.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH] btrfs: qgroup: fix slab-out-of-bounds in btrfs_qgroup_inherit
+Date: Mon, 24 Jun 2024 12:07:20 +0900
+Message-Id: <20240624030720.137753-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c268:0:b0:375:8a85:eacd with SMTP id
- e9e14a558f8ab-3763f6c7aabmr2165935ab.3.1719178939023; Sun, 23 Jun 2024
- 14:42:19 -0700 (PDT)
-Date: Sun, 23 Jun 2024 14:42:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f75434061b9589eb@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_free_reserved_data_space_noquota (2)
-From: syzbot <syzbot+9b4407a256ad8ed1d5c8@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+If a value exists in inherit->num_ref_copies or inherit->num_excl_copies,
+an out-of-bounds vulnerability occurs.
 
-syzbot found the following issue on:
+Therefore, you need to add code to check the presence or absence of 
+that value.
 
-HEAD commit:    2ccbdf43d5e7 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=112f8c1e980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=81c0d76ceef02b39
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b4407a256ad8ed1d5c8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Regards.
+Jeongjun Park.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-2ccbdf43.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/13cdb5bfbafa/vmlinux-2ccbdf43.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7a14f5d07f81/bzImage-2ccbdf43.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9b4407a256ad8ed1d5c8@syzkaller.appspotmail.com
-
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 7088 at fs/btrfs/space-info.h:208 btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:208 [inline]
-WARNING: CPU: 2 PID: 7088 at fs/btrfs/space-info.h:208 btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:240 [inline]
-WARNING: CPU: 2 PID: 7088 at fs/btrfs/space-info.h:208 btrfs_free_reserved_data_space_noquota+0x3de/0x550 fs/btrfs/delalloc-space.c:179
-Modules linked in:
-CPU: 2 PID: 7088 Comm: syz-executor.2 Not tainted 6.10.0-rc3-syzkaller-00044-g2ccbdf43d5e7 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:btrfs_space_info_update_bytes_may_use fs/btrfs/space-info.h:208 [inline]
-RIP: 0010:btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:240 [inline]
-RIP: 0010:btrfs_free_reserved_data_space_noquota+0x3de/0x550 fs/btrfs/delalloc-space.c:179
-Code: ea 03 80 3c 02 00 0f 85 64 01 00 00 4c 8b 73 60 48 89 ef 4c 89 f6 e8 71 68 df fd 49 39 ee 0f 83 65 fe ff ff e8 f3 6d df fd 90 <0f> 0b 90 e9 62 fe ff ff e8 e5 6d df fd 48 8d 7b 18 be ff ff ff ff
-RSP: 0018:ffffc900042af5c8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88801e0fb800 RCX: ffffffff83af21cf
-RDX: ffff88801d02c880 RSI: ffffffff83af21dd RDI: 0000000000000006
-RBP: 0000000000800000 R08: 0000000000000006 R09: 0000000000800000
-R10: 00000000005cd000 R11: 0000000000000003 R12: ffff888011fb8000
-R13: 0000000000000000 R14: 00000000005cd000 R15: ffffffffff800000
-FS:  0000000000000000(0000) GS:ffff88802c200000(0063) knlGS:00000000f5ed1b40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000c0018a2000 CR3: 0000000000822000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_free_reserved_data_space+0xc1/0x100 fs/btrfs/delalloc-space.c:199
- btrfs_dio_iomap_begin+0xbbc/0x1e40 fs/btrfs/inode.c:7752
- iomap_iter+0x61f/0x1080 fs/iomap/iter.c:91
- __iomap_dio_rw+0x6ba/0x1c70 fs/iomap/direct-io.c:659
- btrfs_dio_write+0xb1/0xf0 fs/btrfs/inode.c:7890
- btrfs_direct_write fs/btrfs/file.c:1554 [inline]
- btrfs_do_write_iter+0x901/0x10c0 fs/btrfs/file.c:1695
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x6b6/0x1140 fs/read_write.c:590
- ksys_write+0x12f/0x260 fs/read_write.c:643
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-RIP: 0023:0xf72df579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f5ed15ac EFLAGS: 00000292 ORIG_RAX: 0000000000000004
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000000000
-RDX: 0000000000800000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-
+Reported-by: syzbot+a0d1f7e26910be4dc171@syzkaller.appspotmail.com
+Fixes: 3f5e2d3b3877 ("Btrfs: fix missing check in the btrfs_qgroup_inherit()")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/btrfs/qgroup.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+diff --git a/fs/btrfs/qgroup.c b /fs/btrfs/qgroup.c
+index fc2a7ea26354..23beac746637 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3270,6 +3270,10 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	}
+ 
+ 	if (inherit) {
++		if (inherit->num_ref_copies > 0 || inherit->num_excl_copies > 0) {
++			ret = -EINVAL;
++			goto out;
++		}
+ 		i_qgroups = (u64 *)(inherit + 1);
+ 		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
+ 		       2 * inherit->num_excl_copies;
+--
 
