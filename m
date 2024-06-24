@@ -1,31 +1,31 @@
-Return-Path: <linux-btrfs+bounces-5927-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5928-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58557915389
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 18:24:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6AEE91538A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 18:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89AB31C22C88
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 16:24:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 350262868E8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2024 16:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147AD19E7EF;
-	Mon, 24 Jun 2024 16:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC3B19DF74;
+	Mon, 24 Jun 2024 16:23:12 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07B819E7DD
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2024 16:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D150419E7EC
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2024 16:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719246189; cv=none; b=blbtQojMmVMHEvv3NFQcY7KyUyPDEHWWi/waYF5azB9bmbcwV7nFQQGzpaOmIbafyP0MBfW4pU02yXttHyi+YpM6eYdNBZb1+YDQgO6z3sp7bDVUA2dY0YI+vNrc2pJcvUJU+AxGUYuowZ1Jlz0EvNREZS2nWdoDsLrsbpXoztk=
+	t=1719246191; cv=none; b=PjVQzcUJLFDL7D27M+Cx1c5PNHWEyAEsy7OzSTLgLPIT3V0MUiWgxVH9OwerZXjcIqlQpIm1agrTAIldqX7FoxShXfg8h56aReqfV78bHArPfKhCbUh+1i4IAldmDli1lpbpwdTOMFmkGvZuO81ZglONVHMxDaI/o90RozDBZ0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719246189; c=relaxed/simple;
-	bh=+zvZw8mUYCqNmSENIa+Pw4xB0uRs2TGli2MHSD867xI=;
+	s=arc-20240116; t=1719246191; c=relaxed/simple;
+	bh=wt63rm3j0CrDy8DEwlr4ZwY01zZZ43Xz+NQ4JMo063g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e4JnEQi7zNzcnwBuko9HkYF3NiDh4J7onLkcTDYJFXDryPq48bpgrE/zGpjYxVdiukao9xAcmmv4yUMki7cF3LyBUu6gONUh6NYQpYpQNfKPHzarV9e5mbQMzfRahgNRII8LUuheB492X5nJ+ycwX67LspXsPEUkkmbafE/pnUA=
+	 MIME-Version; b=JaBq7lhTOF0rjsF/DfcBJRWa+qBucS/MBAfitDUL1kDZU84aCJ7mv20AJoDeRKL0ZYWV4Rke/lBsAmbqtSWAmFUL3d3KHqEKnKQWfxKgDdbU+lPO9MhG3XbxRFRyPM4/cKCwxLiUlLdXUuFhm0D1SeZXEkflTgcAv0AbjzXnqtw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
@@ -33,26 +33,26 @@ Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 005DF1F7DC;
-	Mon, 24 Jun 2024 16:23:06 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 56B931F7A4;
+	Mon, 24 Jun 2024 16:23:08 +0000 (UTC)
 Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EDE891384C;
-	Mon, 24 Jun 2024 16:23:05 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 504741384C;
+	Mon, 24 Jun 2024 16:23:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LQgTOmmdeWbYLQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Mon, 24 Jun 2024 16:23:05 +0000
+	id vP+WE2ydeWbcLQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 24 Jun 2024 16:23:08 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 02/11] btrfs: pass a btrfs_inode to btrfs_readdir_get_delayed_items()
-Date: Mon, 24 Jun 2024 18:23:05 +0200
-Message-ID: <1e1d4c3b9788db024c56b4ffc9622aa02988b103.1719246104.git.dsterba@suse.com>
+Subject: [PATCH 03/11] btrfs: pass a btrfs_inode to is_data_inode()
+Date: Mon, 24 Jun 2024 18:23:08 +0200
+Message-ID: <695069ce1c56709962da6cb0131553eb5b88a522.1719246104.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1719246104.git.dsterba@suse.com>
 References: <cover.1719246104.git.dsterba@suse.com>
@@ -66,87 +66,107 @@ Content-Transfer-Encoding: 8bit
 X-Rspamd-Pre-Result: action=no action;
 	module=replies;
 	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 005DF1F7DC
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
 X-Spam-Flag: NO
 X-Spam-Score: -4.00
 X-Spam-Level: 
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Queue-Id: 56B931F7A4
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-Pass a struct btrfs_inode to btrfs_readdir_get_delayed_items() as it's
-an internal interface, allowing to remove some use of BTRFS_I.
+Pass a struct btrfs_inode to is_data_inode() as it's an
+internal interface, allowing to remove some use of BTRFS_I.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 8 ++++----
- fs/btrfs/delayed-inode.h | 2 +-
- fs/btrfs/inode.c         | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ fs/btrfs/bio.c         | 2 +-
+ fs/btrfs/btrfs_inode.h | 4 ++--
+ fs/btrfs/extent_io.c   | 2 +-
+ fs/btrfs/subpage.c     | 4 ++--
+ fs/btrfs/zoned.c       | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 3a1b6e120959..508bdbae29a0 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1682,7 +1682,7 @@ int btrfs_inode_delayed_dir_index_count(struct btrfs_inode *inode)
- 	return 0;
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index e3a57196b0ee..f59b00be26f3 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -29,7 +29,7 @@ struct btrfs_failed_bio {
+ /* Is this a data path I/O that needs storage layer checksum and repair? */
+ static inline bool is_data_bbio(struct btrfs_bio *bbio)
+ {
+-	return bbio->inode && is_data_inode(&bbio->inode->vfs_inode);
++	return bbio->inode && is_data_inode(bbio->inode);
  }
  
--bool btrfs_readdir_get_delayed_items(struct inode *inode,
-+bool btrfs_readdir_get_delayed_items(struct btrfs_inode *inode,
- 				     u64 last_index,
- 				     struct list_head *ins_list,
- 				     struct list_head *del_list)
-@@ -1690,7 +1690,7 @@ bool btrfs_readdir_get_delayed_items(struct inode *inode,
- 	struct btrfs_delayed_node *delayed_node;
- 	struct btrfs_delayed_item *item;
+ static bool bbio_has_ordered_extent(struct btrfs_bio *bbio)
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index b0fe610d5940..8b45d7e85d86 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -418,9 +418,9 @@ static inline bool btrfs_is_free_space_inode(const struct btrfs_inode *inode)
+ 	return test_bit(BTRFS_INODE_FREE_SPACE_INODE, &inode->runtime_flags);
+ }
  
--	delayed_node = btrfs_get_delayed_node(BTRFS_I(inode));
-+	delayed_node = btrfs_get_delayed_node(inode);
- 	if (!delayed_node)
+-static inline bool is_data_inode(const struct inode *inode)
++static inline bool is_data_inode(const struct btrfs_inode *inode)
+ {
+-	return btrfs_ino(BTRFS_I(inode)) != BTRFS_BTREE_INODE_OBJECTID;
++	return btrfs_ino(inode) != BTRFS_BTREE_INODE_OBJECTID;
+ }
+ 
+ static inline void btrfs_mod_outstanding_extents(struct btrfs_inode *inode,
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 0ec87ccb372b..c7a9284e45e1 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -860,7 +860,7 @@ static void submit_extent_page(struct btrfs_bio_ctrl *bio_ctrl,
+ 		/* Cap to the current ordered extent boundary if there is one. */
+ 		if (len > bio_ctrl->len_to_oe_boundary) {
+ 			ASSERT(bio_ctrl->compress_type == BTRFS_COMPRESS_NONE);
+-			ASSERT(is_data_inode(&inode->vfs_inode));
++			ASSERT(is_data_inode(inode));
+ 			len = bio_ctrl->len_to_oe_boundary;
+ 		}
+ 
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 1a4717bcce23..8ddd5fcbeb93 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -74,7 +74,7 @@ bool btrfs_is_subpage(const struct btrfs_fs_info *fs_info, struct address_space
+ 	 * mapping. And if page->mapping->host is data inode, it's subpage.
+ 	 * As we have ruled our sectorsize >= PAGE_SIZE case already.
+ 	 */
+-	if (!mapping || !mapping->host || is_data_inode(mapping->host))
++	if (!mapping || !mapping->host || is_data_inode(BTRFS_I(mapping->host)))
+ 		return true;
+ 
+ 	/*
+@@ -283,7 +283,7 @@ void btrfs_subpage_end_reader(const struct btrfs_fs_info *fs_info,
+ 	bool last;
+ 
+ 	btrfs_subpage_assert(fs_info, folio, start, len);
+-	is_data = is_data_inode(folio->mapping->host);
++	is_data = is_data_inode(BTRFS_I(folio->mapping->host));
+ 
+ 	spin_lock_irqsave(&subpage->lock, flags);
+ 
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 992a5b7756ca..8a99f5187e30 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1723,7 +1723,7 @@ bool btrfs_use_zone_append(struct btrfs_bio *bbio)
+ 	if (!btrfs_is_zoned(fs_info))
  		return false;
  
-@@ -1698,8 +1698,8 @@ bool btrfs_readdir_get_delayed_items(struct inode *inode,
- 	 * We can only do one readdir with delayed items at a time because of
- 	 * item->readdir_list.
- 	 */
--	btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_SHARED);
--	btrfs_inode_lock(BTRFS_I(inode), 0);
-+	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-+	btrfs_inode_lock(inode, 0);
+-	if (!inode || !is_data_inode(&inode->vfs_inode))
++	if (!inode || !is_data_inode(inode))
+ 		return false;
  
- 	mutex_lock(&delayed_node->mutex);
- 	item = __btrfs_first_delayed_insertion_item(delayed_node);
-diff --git a/fs/btrfs/delayed-inode.h b/fs/btrfs/delayed-inode.h
-index e30ba7962d44..7cfefdfe54ea 100644
---- a/fs/btrfs/delayed-inode.h
-+++ b/fs/btrfs/delayed-inode.h
-@@ -143,7 +143,7 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root);
- void btrfs_destroy_delayed_inodes(struct btrfs_fs_info *fs_info);
- 
- /* Used for readdir() */
--bool btrfs_readdir_get_delayed_items(struct inode *inode,
-+bool btrfs_readdir_get_delayed_items(struct btrfs_inode *inode,
- 				     u64 last_index,
- 				     struct list_head *ins_list,
- 				     struct list_head *del_list);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6cddc7841238..cd3f1a9415c1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5947,7 +5947,7 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
- 	addr = private->filldir_buf;
- 	path->reada = READA_FORWARD;
- 
--	put = btrfs_readdir_get_delayed_items(inode, private->last_index,
-+	put = btrfs_readdir_get_delayed_items(BTRFS_I(inode), private->last_index,
- 					      &ins_list, &del_list);
- 
- again:
+ 	if (btrfs_op(&bbio->bio) != BTRFS_MAP_WRITE)
 -- 
 2.45.0
 
