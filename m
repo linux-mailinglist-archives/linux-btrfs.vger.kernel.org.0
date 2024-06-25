@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-5954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F34B916548
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 12:33:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCE38916559
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 12:38:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A49251F2344A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 10:33:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 980BE2826E9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 10:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9187214A4C9;
-	Tue, 25 Jun 2024 10:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83DB414AD20;
+	Tue, 25 Jun 2024 10:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5tK+QCW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSjnJNY2"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CDB2E3E4
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 10:33:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B6114A632
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 10:38:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719311596; cv=none; b=ay1TM08lvbqVKswjacQqMV5GJXfghzj9uE9d6sFw7C8g8jL0ejo861Dp1PMUVEEwwZHHZ9Y/IFQVsI5PqiFomgGKBK1KDc8GJ0lT+5/++IY8WsnW/G2ux6YHJbHDpXHF1diDmtMaUnXHgwk9PXrqxWVEX3l9IAcsiRrHD+Q/9TI=
+	t=1719311892; cv=none; b=I+ypb2jVy96+u933ypfqok7GcHfJyogN1ULcOlczQsQkIcUnSm4I49pZwW4K57LKNAGLrv1U0A95KlOzCRS16MmeJex3n09UO2yINLZT4MIn0zXtqB8IqTk90GZu1AuGE+n4QfyATns3Z4v1DsjUxRdsEguY6Fol/BZJ7xPJTHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719311596; c=relaxed/simple;
-	bh=6xf/xCinurmss6fXhC2RWp6dMCLrDOoQ/D5l2i/DNNg=;
+	s=arc-20240116; t=1719311892; c=relaxed/simple;
+	bh=uapIYEvq/QUcIN/YV/9PlOKB0euEcTNxB9jlTjeCGB4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fyq05pmUHhP6Qc+ShuXwsxYLztXdInyxaPHGQlX32vz6DXJxLGLWmO3ADEU8Mje83ASIYQon8nu/O+eZhhjAXr0a6hh8WVfMApLOTwUJeYnbYoi57tOj07f5TH9/PS2rzODycB5Van2ByhNTqIER2UFZ4LigbmKp7Vueps242zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r5tK+QCW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D7F9C32781
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 10:33:16 +0000 (UTC)
+	 To:Cc:Content-Type; b=anehv2q+LhIJLjHodqxN78/nb2cNJh3/lyUQj7Ddq3D/y+Ln/ygGbqQL0tqK4KDQDYD5BBICQ6fGtlgyD8IvHuykLLss1T17jBT+GdWgrOav+A+0+wpPx87HPIjeEuTBQebStUw4O91pKkv9u6mOLKAGFw6/cRoKtsjSeROHpBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSjnJNY2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 393D2C32781
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 10:38:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719311596;
-	bh=6xf/xCinurmss6fXhC2RWp6dMCLrDOoQ/D5l2i/DNNg=;
+	s=k20201202; t=1719311892;
+	bh=uapIYEvq/QUcIN/YV/9PlOKB0euEcTNxB9jlTjeCGB4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=r5tK+QCWs2QkJUMKd9fLKQpWEX4maSpiexS0LFQJsuvIxg3giQTBTFPiqmwZPjQz6
-	 YRSy389ZbxJzcJOe16C6s/CqyYle8ztPS5+MVKgKHV/UM3eCg8T05AqlOkMrrFISZ0
-	 YRMnVesy2GL8/Gf7Pe79vNEMYWPozT871Y2yj2XQfb4C2N/8UE12QblAQMU1El1XQX
-	 ciFKZrlqI4UGTf9xr3Acqw1qN8TG0r5wLUQT6gQw9JokdLL/z+q/aD5z+hggaPTMc0
-	 Keg0T9L2isOF3TDSjX/j4eYHxbOb4zl29lIl33FpWtdJZf5G254d4cxiA/LeS2BzkX
-	 DqEDPUhlXL9vA==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a7252bfe773so247983266b.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 03:33:16 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxIUW/CDvTwZQGDhBzyPJ71KGtdlhYqf4Bpssp5BfdPVvbnctIl
-	409xkrm5GALZTdP8vPSBdQLIZJ+LhzStxtQMbfEB2IOvi16Xd5i3WQWfMP42Rd9I9TJ+owdkGOr
-	mIrKc8dWR0UO1F/0uaBV4ZeEYmVQ=
-X-Google-Smtp-Source: AGHT+IHxfPHk6yHDJjXks5etdPuwBRRdvpmV7Z7DZOnKUvTMvu67P/U/vSd5LaTUv10KTbOqRNWj8GdGtgLuWtvby94=
-X-Received: by 2002:a17:906:3292:b0:a6f:b5ff:a6fd with SMTP id
- a640c23a62f3a-a7245c85a84mr450682966b.12.1719311594821; Tue, 25 Jun 2024
- 03:33:14 -0700 (PDT)
+	b=nSjnJNY2oset0IWfNQp6Kr/HTnhWJGCqDsu0Oc/28QMI/ohRuk3tm4yWccJXiqLsX
+	 O5PdsQhqlbYf8kzP2o+bB+yb1ncBr44lT4dKKXEZfFj1jqxUlRPZWJEhQoXqtxX/4S
+	 Yuxtpwxt7VLRf3O0Gfvqq+F3vD9VgKdV6EV9nfLmBWlWNubcor9O2EzmcSvwkXwnYG
+	 SJvWAHEvK3uvBszuPs9pnwlJbKSF3hr4G2OXR6Gltz3j+ScDnVMC5PLJYWQ6aj65yL
+	 4YnmiEET6ANz8AxUbRizdOBWf/BVyJc9P9ozi9DIpO/6uPyEWRXQl2An6HPcoJQ0xr
+	 lhUJe1qTChgQA==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a724b9b34b0so258375066b.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 03:38:12 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyPcTXZThhCH4jGNGZPYsOvHsISiUestiixOterY4EHKA1ZihgL
+	tDLA6bEgcTbhoNlfcnqIJh2Ugut5dBKF0IWGpxJPQq3WEOVKBI3PQUGl9rkBWoj3NmVheEIssWx
+	jxT7pWdch35zO+NgQ1X13pqzZFrA=
+X-Google-Smtp-Source: AGHT+IFUPYmfHX69UUrcOvVRVxKrce6NbD3S9C/VeXnzaXrrKDnI9DCdz43HZCBzRniiTZ6yBLKAd0jDRGLIzQpq+kU=
+X-Received: by 2002:a17:907:d402:b0:a72:6849:cb21 with SMTP id
+ a640c23a62f3a-a726849d851mr154077566b.54.1719311890849; Tue, 25 Jun 2024
+ 03:38:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1719291793.git.wqu@suse.com> <0bd7715ef04abbfca4b97137b5b197333f2eb227.1719291793.git.wqu@suse.com>
-In-Reply-To: <0bd7715ef04abbfca4b97137b5b197333f2eb227.1719291793.git.wqu@suse.com>
+References: <cover.1719291793.git.wqu@suse.com> <75a7f80c92184ced08a904dc3ce0d43518d399a5.1719291793.git.wqu@suse.com>
+In-Reply-To: <75a7f80c92184ced08a904dc3ce0d43518d399a5.1719291793.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 25 Jun 2024 11:32:38 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7b_RG+hR+HeOqa8BF-hsoM41QYbghoy104GxWs05M7kw@mail.gmail.com>
-Message-ID: <CAL3q7H7b_RG+hR+HeOqa8BF-hsoM41QYbghoy104GxWs05M7kw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] btrfs: fix the ram_bytes assignment for truncated
- ordered extents
+Date: Tue, 25 Jun 2024 11:37:34 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4hrGg3gkhWow1bRYonKZK=xeFWY8U-SGZUnfa26Ygk9w@mail.gmail.com>
+Message-ID: <CAL3q7H4hrGg3gkhWow1bRYonKZK=xeFWY8U-SGZUnfa26Ygk9w@mail.gmail.com>
+Subject: Re: [PATCH 4/4] btrfs: tree-checker: add extra ram_bytes and
+ disk_num_bytes check
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -71,74 +71,73 @@ Content-Transfer-Encoding: quoted-printable
 
 On Tue, Jun 25, 2024 at 6:08=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
-> [BUG]
-> After adding extra checks on btrfs_file_extent_item::ram_bytes to
-> tree-checker, running fsstress with multiple threads can lead to
-
-It's irrelevant to mention multiple threads, that's not necessary to
-cause the problem.
-
-> tree-checker warning at write time, as we created file extent items with
-> ram_bytes.
-
-This last part of the sentence makes no sense "we created file extent
-items with ram_bytes" - they must always have ram_bytes.
-I think you meant to say "with an invalid ram_bytes value".
-
+> This is to ensure non-compressed file extents (both regular and
+> prealloc) should have matching ram_bytes and disk_num_bytes.
 >
-> All those offending file extents have offset 0, and ram_bytes matching
-> num_bytes, and smaller than disk_num_bytes.
->
-> This would also trigger the recently enhanced btrfs-check, which would
-> catch such mismatch and report them as minor errors.
+> This is only for CONFIG_BTRFS_DEBUG and CONFIG_BTRFS_ASSERT case,
 
-mismatch -> mismatches
+I would leave just for DEBUG.
 
->
-> [CAUSE]
-> When a folio/page is invalidated and it is part of a submitted OE, we
-> mark the OE truncated just to the beginning of the folio/page.
->
-> And for truncated OE, we insert the file extent item with incorrect
-> value for ram_bytes (using num_bytes instead of the usual value).
->
-> This is not a big deal for end users, as we do not utilize the ram_bytes
-> field for regular non-compressed extents.
-> This mismatch is just a small violation against on-disk format.
->
-> [FIX]
-> Fix it by removing the override on btrfs_file_extent_item::ram_bytes.
+> furthermore this will not return error, but just a kernel warning to
+> inform developers.
 >
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/inode.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  fs/btrfs/tree-checker.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index d6c43120c5d3..45f77ae8963f 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3018,10 +3018,8 @@ static int insert_ordered_extent_file_extent(struc=
-t btrfs_trans_handle *trans,
->         btrfs_set_stack_file_extent_disk_num_bytes(&stack_fi,
->                                                    oe->disk_num_bytes);
->         btrfs_set_stack_file_extent_offset(&stack_fi, oe->offset);
-> -       if (test_bit(BTRFS_ORDERED_TRUNCATED, &oe->flags)) {
-> +       if (test_bit(BTRFS_ORDERED_TRUNCATED, &oe->flags))
->                 num_bytes =3D oe->truncated_len;
-> -               ram_bytes =3D num_bytes;
-> -       }
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index a2c3651a3d8f..cddabd9a0e37 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -340,6 +340,25 @@ static int check_extent_data_item(struct extent_buff=
+er *leaf,
+>                 }
+>         }
+>
+> +       /*
+> +        * For non-compressed data extents, ram_bytes should match its di=
+sk_bytenr.
+> +        * However we do not really utilize ram_bytes in this case, so th=
+is check
+> +        * is only optional for DEBUG+ASSERT builds for developers to cat=
+ch the
+> +        * unexpected behaviors.
+> +        */
+> +       if (IS_ENABLED(CONFIG_BTRFS_DEBUG) && IS_ENABLED(CONFIG_BTRFS_ASS=
+ERT) &&
+> +           btrfs_file_extent_compression(leaf, fi) =3D=3D BTRFS_COMPRESS=
+_NONE &&
+> +           btrfs_file_extent_disk_bytenr(leaf, fi)) {
+> +               if (unlikely(btrfs_file_extent_ram_bytes(leaf, fi) !=3D
+> +                            btrfs_file_extent_disk_num_bytes(leaf, fi)))=
+ {
+> +                       file_extent_err(leaf, slot,
+> +"mismatch ram_bytes (%llu) and disk_num_bytes (%llu) for non-compressed =
+extent",
+> +                                       btrfs_file_extent_ram_bytes(leaf,=
+ fi),
+> +                                       btrfs_file_extent_disk_num_bytes(=
+leaf, fi));
+> +                       WARN_ON(1);
 
-The code looks good, with those updates to the the changelog:
+Instead of adding here a WARN_ON(1) and unlikely in the if condition,
+just make the if condition use WARN_ON:
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+if (WARN_ON(btrfs_file_extent_ram_bytes(leaf, fi) !=3D
+btrfs_file_extent_disk_num_bytes(leaf, fi)))
+
+The WARN_ON includes the unlikely, and further this makes it conform
+to our preference of having error messages after stack traces.
 
 Thanks.
 
->         btrfs_set_stack_file_extent_num_bytes(&stack_fi, num_bytes);
->         btrfs_set_stack_file_extent_ram_bytes(&stack_fi, ram_bytes);
->         btrfs_set_stack_file_extent_compression(&stack_fi, oe->compress_t=
-ype);
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
+>
 > --
 > 2.45.2
 >
