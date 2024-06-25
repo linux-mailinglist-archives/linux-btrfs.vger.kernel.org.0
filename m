@@ -1,154 +1,150 @@
-Return-Path: <linux-btrfs+bounces-5958-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5959-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EDC8916B5C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 17:00:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30616916CBA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 17:21:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70C371C23750
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 15:00:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C3FCB27593
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2024 15:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FDE16EC07;
-	Tue, 25 Jun 2024 14:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4F417A92C;
+	Tue, 25 Jun 2024 15:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="lB4A+yb9"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jPsGzWAI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fbRHFM10";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jPsGzWAI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fbRHFM10"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13AB916E89E
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 14:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7AAC17107C
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2024 15:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719327587; cv=none; b=fKBnuZkKOLuzCrgWLFQ6PsK2/HSgGIzmfpavRvW0ZQSbuyWaDvkYLBw8uVDo13qoLk+vwXw3p4l74NaTak0rWsuSP+86zDRf6jWRKrRp9D5xQsmWj8YKs5UiarPDw2OT1095FB4iXnmPRYmjQLJM7U/kYRhohGO7hzwhCyoUhL0=
+	t=1719328396; cv=none; b=afufTkceMYjLOFVsKAkWEBfxEfzl9NJ/1EvwzTMR2JaQl2WudwWc8k5lvZ0AcRlR0GtpV9CiNzTmtE3BPJjtXmz8LWvhPVHq/vsheGcylNQs0PeN8Fav13S7+bHZQ9W+Ctwnhx8ExYH0myA876dmgDP179cdiHaDdCKpAiSdIYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719327587; c=relaxed/simple;
-	bh=v3bQ3Cxsxe/6+vf/GJ0zAWLC400y/unCNaM/qJo0fHQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uU7+cWI7zyFbNy7McRHuH2mP4VItFsjRV17c9VWcGsAfo3xYW48ADQVMxL/rIO5wFN18RE4cpyBXg0a5w+mVoce+cqyPsTTFzNCBtZvXtD+On2WBqnZUEOSuQpLtVb1MtGYWHQ2J2SJNvbt85mNTIgfZIRDVAbULoUnlQfP5uOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=lB4A+yb9; arc=none smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1719327584; x=1750863584;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=v3bQ3Cxsxe/6+vf/GJ0zAWLC400y/unCNaM/qJo0fHQ=;
-  b=lB4A+yb9jGNL8JZtnS1SU4AX58L5yD7wDwxMaem8cjTH8XO8uBp/xHoA
-   ORpwcHVpLf4mpYQsIkYnUT24ce/qnM/QvSasxje136mOipUs6fK6/5RVj
-   fMZqwddr/kWueCQsHXVVh9axtdWJX8wzItgtZHzBf/aJujGy1e0Ra1ihg
-   +XtXf+ssq3ou5UaqeZ4Rn/dO/1gEaDQwU9y194vNQwI3F2Ks/1c6DEJ2E
-   Kp/cgiShruMnuwiPKDvRuHKTJAcA1RZgds5Vm7skNwdkAHcVrJV4oRftW
-   Ktg3R2/XC2257OCEJgQqa2T6TjNBnywV/79F5b5vH+NAh88hrNXh/roKV
-   Q==;
-X-CSE-ConnectionGUID: VkAJ3Y7EQy6vgKBObAbJAA==
-X-CSE-MsgGUID: yNry8Zm3Seum/5umbe425A==
-X-IronPort-AV: E=Sophos;i="6.08,264,1712592000"; 
-   d="scan'208";a="19971388"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Jun 2024 22:59:38 +0800
-IronPort-SDR: 667acd94_wW4gAQHz9VqnEajE9Rma0ALtGEQ1auauHI6R9rrc1pI/yFi
- 0SvPPvMh8MfMp3OPXfBVF3ULz8+TEE+3Owbineg==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Jun 2024 07:00:52 -0700
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.83])
-  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jun 2024 07:59:38 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: boris@bur.io,
-	Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: fix calc_available_free_space for zoned mode
-Date: Tue, 25 Jun 2024 23:58:49 +0900
-Message-ID: <0803c4de21aac935169b8289de1cb71c695452be.1719326990.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1719328396; c=relaxed/simple;
+	bh=hE7oEkiJfQjNOUHTHv99RbqLVNkUOmNIrr7EWtsuNuU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vrn0E7GX3JjV/zMvCeDiwEiyqhFyUKarVQUP7ENY7St0Qg0o2y2FZVh7kBuFLHRVCropG9PSuNj+i2Uk1Ey9HpMHAoGuRY84Bc46O1RIc/Un5jb7algRZY5bHaMHYMAcRXPCFullvBDk6k+N5SVJdIjDe5AP97WF5xr9fQA67Hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jPsGzWAI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fbRHFM10; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jPsGzWAI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fbRHFM10; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0B3711F889;
+	Tue, 25 Jun 2024 15:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719328393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FvzNMbY5M7dMo3Q1Y6Y6VTBcoU/vcwY0cKw6lS0wero=;
+	b=jPsGzWAIcTSD2F8T0nxGUQF9Kj/PGv84D+IFSGL4ovFm7+h77jE0R0UtMy+MhwDV9KWryb
+	Tfsp4PcwUWCfV8o4OlPTdUlJjb+hlYiqTPx78M0Rwc2rRZ3yUtSFJMHlVs0EVcqsD1XoBP
+	LDsEqaz3Ci9OyKozJKMDf67y9Rx/PaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719328393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FvzNMbY5M7dMo3Q1Y6Y6VTBcoU/vcwY0cKw6lS0wero=;
+	b=fbRHFM10H7KdHgDHuWNKLK+N7d+6Ao6exiyVGY6LIycGZ1kEjBBZAdpmrNjUsl5gRViTK9
+	4xY8tvTHenDj9MCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719328393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FvzNMbY5M7dMo3Q1Y6Y6VTBcoU/vcwY0cKw6lS0wero=;
+	b=jPsGzWAIcTSD2F8T0nxGUQF9Kj/PGv84D+IFSGL4ovFm7+h77jE0R0UtMy+MhwDV9KWryb
+	Tfsp4PcwUWCfV8o4OlPTdUlJjb+hlYiqTPx78M0Rwc2rRZ3yUtSFJMHlVs0EVcqsD1XoBP
+	LDsEqaz3Ci9OyKozJKMDf67y9Rx/PaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719328393;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FvzNMbY5M7dMo3Q1Y6Y6VTBcoU/vcwY0cKw6lS0wero=;
+	b=fbRHFM10H7KdHgDHuWNKLK+N7d+6Ao6exiyVGY6LIycGZ1kEjBBZAdpmrNjUsl5gRViTK9
+	4xY8tvTHenDj9MCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF2881384C;
+	Tue, 25 Jun 2024 15:13:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MY01OojeembAOgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 25 Jun 2024 15:13:12 +0000
+Date: Tue, 25 Jun 2024 17:13:07 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: do not check ram_bytes for non-compressed
+ data extents
+Message-ID: <20240625151307.GV25756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <4ba45162892b90a9a7e9603df9705080e5292f47.1718965319.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ba45162892b90a9a7e9603df9705080e5292f47.1718965319.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -3.99
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.99 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.19)[-0.963];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]
 
-calc_available_free_space() returns the total size of metadata (or system)
-block groups, which can be allocated from unallocated disk space. The logic
-is wrong on zoned mode in two places.
+On Fri, Jun 21, 2024 at 07:52:06PM +0930, Qu Wenruo wrote:
+> This patch reverts the following 3 commits:
+> d0cc40d23aa0 ("btrfs-progs: tests: add test case for ram_bytes detection and repair")
+> 7313573c1942 ("btrfs-progs: check: original, detect and repair ram_bytes mismatch")
+> 97bf7a596900 ("btrfs-progs: check: lowmem, detect and repair mismatched ram_bytes")
+> 
+> The problem with the ram_bytes check is, kernel can handle it without
+> any problem, and the original objective for this is to detect such
+> problem as I immaturelly believe the problem is fixed.
+> 
+> But it turns out to be incorrect and this check is already causing
+> problems.
+> 
+> Fix it by doing a full revert for now.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-First, the calculation of data_chunk_size is wrong. We always allocate one
-zone as one chunk, and no partial allocation of a zone. So, we should use
-zone_size (= data_sinfo->chunk_size) as it is.
-
-Second, the result "avail" may not be zone aligned. Since we always
-allocate one zone as one chunk on zoned mode, returning non-zone size
-alingned bytes will result in less pressure on the async metadata reclaim
-process.
-
-This is serious for the nearly full state with a large zone size
-device. Allowing over-commit too much will result in less async reclaim
-work and end up in ENOSPC. We can align down to the zone size to avoid
-that.
-
-Fixes: cb6cbab79055 ("btrfs: adjust overcommit logic when very close to full")
-CC: stable@vger.kernel.org # 6.9
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
-As I mentioned in [1], I based this patch on for-next but before
-Boris's "dynamic block_group reclaim threshold" series, because it would
-be easier to backport this patch. I'll resend this patch basing on
-for-next, if you'd prefer that.
-
-[1] https://lore.kernel.org/linux-btrfs/avjakfevy3gtwcgxugnzwsfkld35tfgktd5ywpz3kac6gfraxh@uic6zl3jmgbl/
----
- fs/btrfs/space-info.c | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 0283ee9bf813..85ff44a74223 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -373,11 +373,18 @@ static u64 calc_available_free_space(struct btrfs_fs_info *fs_info,
- 	 * "optimal" chunk size based on the fs size.  However when we actually
- 	 * allocate the chunk we will strip this down further, making it no more
- 	 * than 10% of the disk or 1G, whichever is smaller.
-+	 *
-+	 * On the zoned mode, we need to use zone_size (=
-+	 * data_sinfo->chunk_size) as it is.
- 	 */
- 	data_sinfo = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_DATA);
--	data_chunk_size = min(data_sinfo->chunk_size,
--			      mult_perc(fs_info->fs_devices->total_rw_bytes, 10));
--	data_chunk_size = min_t(u64, data_chunk_size, SZ_1G);
-+	if (!btrfs_is_zoned(fs_info)) {
-+		data_chunk_size = min(data_sinfo->chunk_size,
-+				      mult_perc(fs_info->fs_devices->total_rw_bytes, 10));
-+		data_chunk_size = min_t(u64, data_chunk_size, SZ_1G);
-+	} else {
-+		data_chunk_size = data_sinfo->chunk_size;
-+	}
- 
- 	/*
- 	 * Since data allocations immediately use block groups as part of the
-@@ -405,6 +412,17 @@ static u64 calc_available_free_space(struct btrfs_fs_info *fs_info,
- 		avail >>= 3;
- 	else
- 		avail >>= 1;
-+
-+	/*
-+	 * On the zoned mode, we always allocate one zone as one chunk.
-+	 * Returning non-zone size alingned bytes here will result in
-+	 * less pressure for the async metadata reclaim process, and it
-+	 * will over-commit too much leading to ENOSPC. Align down to the
-+	 * zone size to avoid that.
-+	 */
-+	if (btrfs_is_zoned(fs_info))
-+		avail = ALIGN_DOWN(avail, fs_info->zone_size);
-+
- 	return avail;
- }
- 
--- 
-2.45.2
-
+Added to devel, thanks.
 
