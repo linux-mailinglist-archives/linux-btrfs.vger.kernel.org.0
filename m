@@ -1,128 +1,173 @@
-Return-Path: <linux-btrfs+bounces-5987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-5988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89D2917C4F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2024 11:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C1E1917EDB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2024 12:51:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA9B31C2283F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2024 09:18:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DB291C20B6D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2024 10:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2F416848B;
-	Wed, 26 Jun 2024 09:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3603181CF7;
+	Wed, 26 Jun 2024 10:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="bL6evVHg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGeb7LTR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2012.outbound.protection.outlook.com [40.92.45.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AC41662E3
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Jun 2024 09:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.45.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719393483; cv=fail; b=cFVtZoP+AFwS4YfjCU7y/43QtRyICqhFUGy/Lznh+cAIlWS8Q+kVkN1ZK0eM8bVWbbybXA4rX7O9+fg5WaJnYL7+JLdrJyR0ScdiS5cW7YD4ju9mdjvolQ2qc9zJK3u2MfAg17EgmH5m7oAF7YqOx7kVttXHuRq286gs8tZpIiQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719393483; c=relaxed/simple;
-	bh=hwdy5uZkXi0A5BCx1qNIbmuDm/HUayljMSiqg54oWyQ=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=EbycdXH9Gxr2PQEWU7Fk/J5yjWXdWM6LDxoEiChokTzSlBLzC++fj4TDp8VYvLbI0RuLyN/EF9VTfHixUFwNdJ1gAzVv7ciS6WHEZRpUZwqw4NbSLVutdWE9Uo2MrImhbRTC82huDGt1RkbkLTHgtWX/i/CUWM7Df1Cag1KLUF8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=bL6evVHg; arc=fail smtp.client-ip=40.92.45.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QvEFxgEolvStYHYFG7Hm8NPTIEz1pA2+fR8YVXt2/VsLWzVNF1GCbJzLWl0Z0XxX9dNg2inubaDMnUcqmu+NbKas/yVN8s4vS4u4157RbUhvzor1rn9nTTs17gyPpKSOMR0JHiKaBHv8nKpzxCRqdE/DZeIz47l4C61aDXAbsKGDUcDzvqqSfveoeoJ0aVLVd2GWqjEZjr7ul0GZNIewBk+zrvsc/v3Fwu1KgS0xPlorf3cwhJQGzKKqAOGI1WaM+Zunl7rbFCQms9kvBD6kcjnIbaI9zLAPtIsP8M2BHmZRsu2A+9PKZ5zIDZEjXCIwIAlF8WN8GEaungXSWLI1JQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hwdy5uZkXi0A5BCx1qNIbmuDm/HUayljMSiqg54oWyQ=;
- b=cWmS5S6gF7STg+1bDMsIZo70278mjM/qaH8V6Lk4MN0J/+PwgRIehcvv9pK91XGnP7xofuz7TC1wqj8oc5jWOXQOxxcsByQnlFcXzc4OxWm6bPRQEZynfayziCuffyq2lyQ0T0TZEYg+pwD4RqBa3eL20FueexTTeIbhweCA1OTjsTKKU9RiU6Je9LKHKCJrJGClkCgoez1vPFRkwmw0NWyPCvueNC2vo2qIzir+6OfCR1kKhSVFK/q53X241+XPvubd3dnp3NBc2WCZPjItf4e/q+UoQ6xhRATMy8tlZd3YCqgBmd/liOd3jbVXISSitOcRzMNqhflNrLpCHHzdfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hwdy5uZkXi0A5BCx1qNIbmuDm/HUayljMSiqg54oWyQ=;
- b=bL6evVHgqSOTTQvu5khUoy1cCRf2DwlycU8xR9ZILS0T9fZuu0N4QgSBq+r3B62mZNxzNfqY+oOED5krEtWl7CHhwH0iFj+ZUkD1sn3ZtTR/I0QLgYzC3HkYUSX48A/wzN3vwY7SCxZzwBm4ih5iPM5Hl+fl46G1uyOYfRqPkgg49uysKQhGQwSAWNHZ3i3p2Zx9KPsNOOH+j6zyyFFDBBHr4t9BZLbMGyQkJVzTLW57WtBEM5RS35XPOQ46NqkMQTZuCWmwuwjisudENEGZnVJHBQfnshIlvavc5D9lcUNgrrmFQNXFh0TwX6wVwnF5r24SQT4ZxD9fKBEPF69ebw==
-Received: from CY8PR12MB7193.namprd12.prod.outlook.com (2603:10b6:930:5b::16)
- by SA3PR12MB9090.namprd12.prod.outlook.com (2603:10b6:806:397::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.32; Wed, 26 Jun
- 2024 09:18:00 +0000
-Received: from CY8PR12MB7193.namprd12.prod.outlook.com
- ([fe80::aa62:af09:b5d7:2e45]) by CY8PR12MB7193.namprd12.prod.outlook.com
- ([fe80::aa62:af09:b5d7:2e45%5]) with mapi id 15.20.7698.017; Wed, 26 Jun 2024
- 09:17:59 +0000
-From: huang wolf <huang_wolf@hotmail.com>
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: hello
-Thread-Topic: hello
-Thread-Index: AQHax6m9vMUK3fSDG0uhIHMTJl9Ogw==
-Date: Wed, 26 Jun 2024 09:17:59 +0000
-Message-ID:
- <CY8PR12MB71935063A0EACE92D40E8895F7D62@CY8PR12MB7193.namprd12.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-x-tmn: [YfpgoxTvMQHOBocyjpWpyXTiMgc8YB6O]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY8PR12MB7193:EE_|SA3PR12MB9090:EE_
-x-ms-office365-filtering-correlation-id: 5e4017a0-e057-4ee5-940b-08dc95c0df95
-x-microsoft-antispam:
- BCL:0;ARA:14566002|461199026|440099026|3412199023|102099032;
-x-microsoft-antispam-message-info:
- bfaDI2Ol+sjZI6WA8GS/l3dDKDUoY+FrUL8FjFRCZG/y0KWKvjzKYDO76MIvNva9/AB6dUjty/sln1GEOHOtusrBdsS6RyGbF+m+gTmqJoEZER3w0oFVGmzCQ/XOqg0cZSIhd1Jz5I3xMRcBb4jsqBWrHoSVN051vaO2mdpELr+3Ij4gnncNKKIvqX5eRwd164t48eIogiWIRZ6kEW6oWKSHqjQa68DgT8S69D/QfF6+ErKs9rURA2JJDtfQR44NoRfaCFdOTlqBRv82rkZEji/2kYPcNQV0bTW8JI8mgr4CMaO7UaBjsmWfPcLcyEDnuq3hzxysUncd7t2r15sgB3UPEZpGioxDYfbS4jxoJUizcSSnlF44i0Tw/jQpRu0TuS3ZEYDMpTSslFzGcyaAyEYRXlEz8JFpbnzcr9Nsu4+ZePqZYhLIJWqItEEfUYCY
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?MEg4eVpQNGVoeEM3VTJOVEdkL0lTWWJ1VDRaMml6VWN6S0xxZTlGWkdqNFdO?=
- =?gb2312?B?VFBzRk9tblJGTys5NXJRNk1acWlNS1ErakVKaVFBZnAvaVdTVFZZM3J5c1J4?=
- =?gb2312?B?cFRUam5PYk5OeGpkZVZTT1FqRkMxZlJtdm50WHppR0FDSHhhWTBQVXZ3STFY?=
- =?gb2312?B?UHFHc1JxQ3Foc1RxYVg3N1ZxUTF5UWlZQW9YY0x5NVQyd1VEaitjeTRzU1Ar?=
- =?gb2312?B?TFNUZGlYLytxMjEyZjlhYkR1RnhoS2JtajZybVAvZDlFTVpuWTB3VGp0djIr?=
- =?gb2312?B?RG42aGxpVEZsL2FWSk0rdTI1dmF2dHhkVGUwMXl6L0gwbXhwYk5BUFZPSmlz?=
- =?gb2312?B?dmF4LzdrWitHblVvZW05NERKLzI3aUpTSVN5Q05QalQ0a1p1d2pBK0pZNm1S?=
- =?gb2312?B?Q3Eyd2hZRUxxUGI3S0ZYbUtJVWt0eXFxeGtqRnJtdytZU0JQM3ZkSXBkRXRj?=
- =?gb2312?B?ZU1hTksrbzM2ZlRpWklzR2FFZXFQRy83eVJGL1pSdG5VQkYwVHNWRTFxY3FR?=
- =?gb2312?B?ZXFPb3RoWHhwZDhIQ0NNemYzL3NOZWpqV1l5eXNUNlJOTDRJMWZnUmZoOS96?=
- =?gb2312?B?cWFYM2NrdmxXclJRZXJ0STk2KzVFbHYzeWpvbzZOVXEzQnZXN3J4a21LRXFH?=
- =?gb2312?B?WVlkSHhMTVJSblEzNHFjWVZBblZMOHpwK0xjdG5PSUxkcmQzUFJ3Rjc5bVJE?=
- =?gb2312?B?ZG5SQXdiQkF4Q0k2Z0RsR2xvbmgvcFhLQndqMDBabkRrYUxrRG1ZQmozOE9I?=
- =?gb2312?B?ejdrN2RTc2xjeVlHTmxQRHArOHZBS3JBZHBCWGpsRUxXY09uSDRzMFM3RGhO?=
- =?gb2312?B?aTVRRG5mSkZ5YklmZUxCQVVKR283UlJPZnVDV1huMDA2U2lQNHZzRkdSZUJQ?=
- =?gb2312?B?VHN4RVA3MzFkQ1hJd1V1clVqS3N5R25sTHFnNGx2R0o3dVpDWlowVGwrdUN5?=
- =?gb2312?B?Um9yNTc3L0Q3UnI2YXpxR1ZXbmFWUkhydUQweVUzVFZvbnpVUENHaEpBU3cx?=
- =?gb2312?B?cSthZVBUcXBlYjUzQ21JbnFHdWFncVNBQnFSTDZvbHdMTlV6dk41QzBrVW43?=
- =?gb2312?B?alVabGhweHNPSGE4QzZWOE40TXJNSm16YWsvRDZueHREZ01YdzE1Ym5iQ2tn?=
- =?gb2312?B?MUhkOUVOWE4ycDVMWklReWRlTFU1ejZOZGZVTHZhSmpQZEU3NEppQmNtTVFF?=
- =?gb2312?B?aUFoMjJzSmVhOWhuM2NKaEFRcU4vZy9MWm1vcyt0TURHejNWcld2TFkzd29M?=
- =?gb2312?B?UWtjSkZ1bGdtUkJBQVdCNE5JQldVRmRjNXQ5aFdhWmxuNzY3elFxbGNkRVpa?=
- =?gb2312?B?OXJXVnZMbmtJTllxNDFhVHlWWUovdCtiZ1UwYzJuRHZZblVrY1p3b1dyWWt2?=
- =?gb2312?B?OCtVYXk1bFdhRVpWcjZqV1NOODkyNFNYZ2hWdmh3aStOSEE5MG45M254RDFx?=
- =?gb2312?B?aGEvaDdMYmM4VDZCMDlFMGRTSXN6WEVLb2c3cUx3cmdvYU9XVzBQTG1icE9F?=
- =?gb2312?B?ejBENHNHN2wzVVFkUm85WXUyc0xUQ3NGMWdoRXE3WWtMaHZBZmF6RENjbHBl?=
- =?gb2312?B?RDhvTjJKRndDbzlDWjJZb3Z6dE56dDlQNzBxSmQxZnlGREZjNWM4ZVpmY3hz?=
- =?gb2312?Q?sRxKf7hQmFLgqRqi16OALBWhGzPoPnp+TC7Wx5I+Gkak=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E762F181BB8;
+	Wed, 26 Jun 2024 10:49:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1719398963; cv=none; b=dtwWUnL7yEinrtWrU702ODucY/I0hKwvA0eSnWvlL7r96CkXxlDEionj2jpfJ2EeZzIV0hFSvqk325zCi2i4azoV+whCXmMOg06dxosHRveOSIAtjEO0DI3S3iDS+8wcdVHzLNzQ9ZeEShbxZiM7Q3qg0LdZahKf1VWYC85iuns=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1719398963; c=relaxed/simple;
+	bh=LF+V/YGvNyhi6W1Q8K48YhxFw5P+05yaDiJQ3on2hCg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=drgTrY6OCMx0ZvFYNYuFz/0OKk3nHip5U2HngHz0l9CSvvxe+lPqGjzVj2TuMXa3YZ1h+pjY4QCnA3DUd/YV12+zQgEF2/Jm9L+zl92zGdlh0BaJxhViqI7g/r5N+giMWycRJJUtjdIGNMnjn4c6eUZ3YEA9fsOfMW7hUpxK8B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGeb7LTR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BF7EC32789;
+	Wed, 26 Jun 2024 10:49:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719398962;
+	bh=LF+V/YGvNyhi6W1Q8K48YhxFw5P+05yaDiJQ3on2hCg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=gGeb7LTRK+Sy61ygjpRWpFUJP3n3pd2vBAtVlkuGjoFbbVSRSsDcxA2+jGGB4jEwQ
+	 IRPx8KuGSG2mjC5GBG7ZkTxBAN840r9OxOnYrH2OJUMycsTD1u+/AxTO7jrRPT6VFQ
+	 IEOCdT77AgCF+WFgGjN3+xmeADz3xdwRt1abJ/PGamontinqsiKH+FxYh0e+cVV+Fa
+	 YMjQBCSYKhn5PCQaqf2Vir/qZ4j4PrYir3dLgWKjrBDUgnD7m/O63ol+QUViky9w1R
+	 9jh8hKSjUaGef8EGFLkQhDTMnUnfSOfKLlZq9KIFeO39YBTNy/9D6w27iUikhwzkWv
+	 ejub5egT4BadA==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-57d1679ee6eso70683a12.1;
+        Wed, 26 Jun 2024 03:49:22 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX4E3OzZchlKcbjZDTsIzQ4hthszCQlZ2ZVEW0o8xbm7x0pA9UJ4mIo1hsL3hsIcFgq5iGWnOcCQeh2FmR357lCDMLAD/creVtvIqc=
+X-Gm-Message-State: AOJu0YyUEPdSRUJozj8omqv3TJ0mU3IAQc2n1Yxwx5MIkCdnc7jScih9
+	IL/SO+mR/Wu8rtKqcMZQiinMNJRGST8FvFaXjnV6ENz7WA5wwQ1ZmQ8kUxO2qGhuFVW8qoE+qWg
+	vftDIAMBRYpffbFbYZxav4aTxrwE=
+X-Google-Smtp-Source: AGHT+IGf02sUk1R5VoUyhOJIJYA/N64Dho19OyqmfhLr+JY5KDzh6lEXiqS21ilAavBwhCqvfz+saZavIx6wmKimVkw=
+X-Received: by 2002:a17:907:c788:b0:a6f:996f:23ea with SMTP id
+ a640c23a62f3a-a727fbd5c81mr238458466b.15.1719398961026; Wed, 26 Jun 2024
+ 03:49:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-71ea3.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR12MB7193.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e4017a0-e057-4ee5-940b-08dc95c0df95
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2024 09:17:59.6645
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9090
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+In-Reply-To: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 26 Jun 2024 11:48:44 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+Message-ID: <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-bGludXgtYnRyZnNAdmdlci5rZXJuZWwub3Jn
+On Tue, Jun 25, 2024 at 10:04=E2=80=AFPM Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
+> Hi,
+> after f1d97e769152 I spotted increased execution time of the kswapd0
+> process and symptoms as if there is not enough memory.
+> Very often I see that kswapd0 consumes 100% CPU [1].
+> Before f1d97e769152 after an hour kswapd0 is working ~3:51 and after
+> three hours ~10:13 time.
+> After f1d97e769152 kswapd0 time increased to ~25:48 after the first
+> hour and three hours it hit 71:01 time.
+> So execution time has increased by 6-7 times.
+>
+> f1d97e76915285013037c487d9513ab763005286 is the first bad commit
+> commit f1d97e76915285013037c487d9513ab763005286 (HEAD)
+> Author: Filipe Manana <fdmanana@suse.com>
+> Date:   Fri Mar 22 18:02:59 2024 +0000
+>
+>     btrfs: add a global per cpu counter to track number of used extent ma=
+ps
+>
+>     Add a per cpu counter that tracks the total number of extent maps tha=
+t are
+>     in extent trees of inodes that belong to fs trees. This is going to b=
+e
+>     used in an upcoming change that adds a shrinker for extent maps. Only
+>     extent maps for fs trees are considered, because for special trees su=
+ch as
+>     the data relocation tree we don't want to evict their extent maps whi=
+ch
+>     are critical for the relocation to work, and since those are limited,=
+ it's
+>     not a concern to have them in memory during the relocation of a block
+>     group. Another case are extent maps for free space cache inodes, whic=
+h
+>     must always remain in memory, but those are limited (there's only one=
+ per
+>     free space cache inode, which means one per block group).
+>
+>     Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>     Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>     Reviewed-by: David Sterba <dsterba@suse.com>
+>     Signed-off-by: David Sterba <dsterba@suse.com>
+>
+>  fs/btrfs/disk-io.c    |  9 +++++++++
+>  fs/btrfs/extent_map.c | 17 +++++++++++++++++
+>  fs/btrfs/fs.h         |  2 ++
+>  3 files changed, 28 insertions(+)
+>
+> Unfortunately I can't check the revert commit f1d97e769152 because of con=
+flicts.
+
+Yes, because there are follow up commits that depend on it.
+
+I seriously doubt that this is correctly bisected, because that commit
+only adds a counter for tracking the number of extent maps.
+It's using a per cpu counter and I can't think of anything more
+efficient than that.
+
+The commit that adds the extent map shrinker, which is the next commit
+(956a17d9d050761e34ae6f2624e9c1ce456de204), that can
+explain what you are observing.
+
+Now the one you bisected doesn't make sense, not just because it's
+just a counter update but also because you are
+only seeing the kswapd0 slowdown, which is what triggers the shrinker.
+
+The shrinker itself can be improved, there's one place where I know it
+might loop too much, and I'll improve that.
+
+Thanks.
+
+>
+> > git reset --hard v6.10-rc1
+> HEAD is now at 1613e604df0c Linux 6.10-rc1
+>
+> > git revert -n f1d97e76915285013037c487d9513ab763005286
+> Auto-merging fs/btrfs/disk-io.c
+> Auto-merging fs/btrfs/extent_map.c
+> Auto-merging fs/btrfs/fs.h
+> CONFLICT (content): Merge conflict in fs/btrfs/fs.h
+> error: could not revert f1d97e769152... btrfs: add a global per cpu
+> counter to track number of used extent maps
+>
+> However I double checked every bisect step and I am confident in the
+> correctness of the result.
+>
+> I also attach here a full kernel log and build config.
+>
+> My hardware specs: https://linux-hardware.org/?probe=3Dd377acdb9e
+>
+> Filipe can you look into this please?
+>
+> [1] https://postimg.cc/Xrn6qfxh
+>
+> --
+> Best Regards,
+> Mike Gavrilov.
 
