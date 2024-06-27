@@ -1,117 +1,138 @@
-Return-Path: <linux-btrfs+bounces-6008-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6009-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D66A6919CCA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 03:04:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E38B919E2C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 06:32:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 145DC1C20F13
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 01:04:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D671B22B33
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 04:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FF576036;
-	Thu, 27 Jun 2024 01:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677301A29A;
+	Thu, 27 Jun 2024 04:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwfaFDJ/"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FVdWhEPo";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FVdWhEPo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2407A6FE21;
-	Thu, 27 Jun 2024 01:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3C079F0
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 04:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719450057; cv=none; b=FkgEJl656rQ7V6RkTpAYCqtS2ni91oII2zY4E02pdN9aqQ3RaYf6iZH80MvzfbZgl8q0R/yfFmNAVK0U54TBbWglW0fe1aS2WUMqHAhSivk1EnJfdkgyup1SGb17K1/nih5qaJX3Kk8VfvH0Kf+FF09trKuGk+Pf9j1oqVwUF+E=
+	t=1719462748; cv=none; b=AFDNw0Stb98xkcuRO1fP+nlDeirgELEKdgBfF+ZLYHk3oP5RC7nadwultPvOQmMGrXQhY/YzNurarnudsi/eViP8T5rbWDsg5gUpPKltVeYnqz+oWCTYWiEn6uJK4zQxl8xjw8Sc+nacQUkg+EuOQJQyJ5vDODHOQ0q0gz5TtKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719450057; c=relaxed/simple;
-	bh=cVjMReDf/y0/Eps4SzleHHnDCMnHwvcYHN7Dj4UkNNg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VeiNBurWdn0Ftj7D7500gdk+eyTCSdobeqUDrn+c63gazqNjf5TGDC1+HQ+ROtwXJ4fPvucUTCvP/qEtDgvTfvDYAf770DybC1kI0J4Zzdi+8V9bSYOGZc92ns6qTEo3rc/bUDNvYsKshMmc/ARiRy7BBNT7cV2upn+egNW73NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nwfaFDJ/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F045DC116B1;
-	Thu, 27 Jun 2024 01:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719450057;
-	bh=cVjMReDf/y0/Eps4SzleHHnDCMnHwvcYHN7Dj4UkNNg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=nwfaFDJ/c30GiYmVc82cD+AdVo7ASrnc05c022cx7CwFpW+ctla+QGAWhR7g1u/0N
-	 FYQFKuzWEbo7DOQHlPOPzqZ9JMeE0rDVK2Z9M4eU1oHAd2ynL1MMg1rhKgKBK5LXIA
-	 N57GBUcpsaC9GC0Vd33/hTbi+JuMNBPY7ftTa2coNIlhKyUl9lKFV375aDLvjgKRlh
-	 W34ZJnjvdQcAdBbpmX5o392KQ/rt6/HfqCiZTEzUsxfJdRLGhocUh1i3gvv/k3wsHo
-	 0HntC5Inb6+MF0og3whrwgsMnla76xGCkDZAFd7OXXdWHpqiiGu+SiRTccaF1IsHZd
-	 ziBcVX92FrFqw==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Wed, 26 Jun 2024 21:00:30 -0400
-Subject: [PATCH 10/10] tmpfs: add support for multigrain timestamps
+	s=arc-20240116; t=1719462748; c=relaxed/simple;
+	bh=WrJIQ0HM0j18DqxTe3aTlVevxKjB8XRSX9LbfsMpcuo=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=s3RKnAgyyxqkUQJiu79ZZFe7RECh5XW5CbCAoLOF9wHa+LNDV7lh83Xojo1UVrz/84u832g7bje61WJ/B9AsZN2kbk1eZl6bbIkEafNgONMNb12WhzSCwZV5enGHX3WGSnmqj+kpxuEVNJ+DWcyDA732KW/heHb+LQAmrBcaA2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FVdWhEPo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FVdWhEPo; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2634521B37
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 04:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719462744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Y9hJWKUzzOjCIDIDvMwSLfvbACKeWWi6uZu8Ta9X+8I=;
+	b=FVdWhEPo9uZfhyNN0CyhOxpWhctpULCobDiFDDnrjciVNxoPuL003oXPOI4aVnff5pTdAJ
+	xTIoFejorsr6Cf0TshY96muyBNNaMDXXjnQroivtqbpqLmjotrVcrnUM3SW4wIdF88pxhs
+	9HN/BCHnBtHQKTjwoDbrCj9llRrodVs=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=FVdWhEPo
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719462744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Y9hJWKUzzOjCIDIDvMwSLfvbACKeWWi6uZu8Ta9X+8I=;
+	b=FVdWhEPo9uZfhyNN0CyhOxpWhctpULCobDiFDDnrjciVNxoPuL003oXPOI4aVnff5pTdAJ
+	xTIoFejorsr6Cf0TshY96muyBNNaMDXXjnQroivtqbpqLmjotrVcrnUM3SW4wIdF88pxhs
+	9HN/BCHnBtHQKTjwoDbrCj9llRrodVs=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 38D8C1369A
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 04:32:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MjtaN1brfGarSgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 04:32:22 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: cleanup on the extra_gfp parameters
+Date: Thu, 27 Jun 2024 14:01:58 +0930
+Message-ID: <cover.1719462554.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240626-mgtime-v1-10-a189352d0f8f@kernel.org>
-References: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
-In-Reply-To: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Chandan Babu R <chandan.babu@oracle.com>, 
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-nfs@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=775; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=cVjMReDf/y0/Eps4SzleHHnDCMnHwvcYHN7Dj4UkNNg=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmfLmvmuG1qE25UPrDynn3xIhwH5hC1wcY+8bCj
- oncJyX2Q2OJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZny5rwAKCRAADmhBGVaC
- FZiQEADD/GWDUAnr+QPK/65D/8cdJ2MjbHRshcq6JjFg04ftIlKReTiXHUgZFibwslcU1/KJXqA
- AeCQYsajkGNfClYJdPooe+9fYkC/bZ9TuTbCx8vgEkdy5spW1PqMwKpcYnaOtz0rt+y7f+dDbvZ
- Il5HQomOyFFjic4OS56a9d3g7ZKHKrMT25Wr1E2xXYMp/1TFSnsZ6PzqJZC83R08MKAk9AiLN8W
- ATgs3TQWKeBloEOKCB49jcfGIHtirxKLivKHL04iaZImju21FOjEedEXy021mtUKZyS7/UIF7Vy
- 7tSTQr9F9vTxs93vtzmWUDC0cLFTtfaog4o/C9zuhVTW/mjZ4JmWIalSU6uBqnFqemiucQSCe45
- q9afVDCLHijyoaX+aX1D2/8vYg//+/oDAPzmt0VmULKwekM+f3ZtbPVKqSOI9HaVAhV769zRd9u
- MWeehoAPSlcJTBKBZrQVCIX5aX7q0CQnuN7+t/nESwmDBtRnwLzpAj//XiDM68TFxPn6wHMV+O3
- e0sUqEzWfynVDKhu9OXrLQb1Pq0wfWdW/G60LQlJCK1iST4tmUat5GbRh6rexvj9nTJXgdnyJ0R
- YLi8/dD1+0aE1S1yt8LtuIzPrKFhLnTNMcmcmi1DKRiDPpKRcRqI7FY3mFi18w9FfIKybfXInFJ
- Sm7/fCDwxamE4rw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 2634521B37
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Spam-Level: 
 
-Enable multigrain timestamps, which should ensure that there is an
-apparent change to the timestamp whenever it has been written after
-being actively observed via getattr.
+The @extra_gfp parameters for page/folio array allocation is only for
+extent buffer allocation to pass __GFP_NOFAIL.
 
-tmpfs only requires the FS_MGTIME flag.
+Meanwhile all the callers have to pay for the extra parameter.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patchset removes the parameter, and introduce an internal version
+of btrfs_alloc_page_array() to handle the __GFP_NOFAIL case.
+Furthermore, for that internal version, use a bool to indicate wheter
+it's a NOFAIL allocation or not.
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index ff7c756a7d02..d650f48444e0 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4653,7 +4653,7 @@ static struct file_system_type shmem_fs_type = {
- 	.parameters	= shmem_fs_parameters,
- #endif
- 	.kill_sb	= kill_litter_super,
--	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
- };
- 
- void __init shmem_init(void)
+Qu Wenruo (2):
+  btrfs: remove the extra_gfp parameter from btrfs_alloc_folio_array()
+  btrfs: remove the extra_gfp parameter from btrfs_alloc_page_array()
+
+ fs/btrfs/compression.c |  2 +-
+ fs/btrfs/extent_io.c   | 51 +++++++++++++++++++++---------------------
+ fs/btrfs/extent_io.h   |  6 ++---
+ fs/btrfs/inode.c       |  2 +-
+ fs/btrfs/raid56.c      |  6 ++---
+ fs/btrfs/scrub.c       |  2 +-
+ 6 files changed, 34 insertions(+), 35 deletions(-)
 
 -- 
 2.45.2
