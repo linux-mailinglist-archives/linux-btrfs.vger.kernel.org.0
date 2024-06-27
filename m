@@ -1,799 +1,371 @@
-Return-Path: <linux-btrfs+bounces-6015-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6016-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE3F791A331
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 11:56:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9EA91A39B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 12:15:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C33B2865C3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 09:56:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E0961C21D4D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2024 10:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF9113C906;
-	Thu, 27 Jun 2024 09:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDC913C90F;
+	Thu, 27 Jun 2024 10:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="IhXwwY1p"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="kACOQOrU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54ED113B587
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 09:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FB74C3C3
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 10:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719482113; cv=none; b=kG8zvzCw0PtUU8shqQjiBdyZ5BFQYRK6l5Tti1vKRb01PC6Xg++Qm5ntyBJiUber7SeP9XEEDxGFqg0Y3GuOaPKNoz3FgbL3GC4z1XqflxxEoXJNuHS08KVT6SXbGWm5pg1uLPXdyL41Y7l5Eu529OYD7XsecI+NctG+VbvfQSo=
+	t=1719483315; cv=none; b=OaV38sOx/MDaZ8g837zquFWuJ4PPvku7HJz7C/C2sUP7ZlY6AOYM6zRhHyycsTDty6pQroEOE1cyS/Hwp9b7amCeQ91PpXs/oDwdUQ6i3vep3YBMCSVzyGouHXCCHQsuINuMkmsQiQObQBQM3oWvbH1TswW2yTT4ECgcXh+Issw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719482113; c=relaxed/simple;
-	bh=DHCnl2RyY5kPrmNvDu9PopjiJAh0xtwA9FOH5bcDBYE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sY6+KZCz9fHKdxvZZFXWmG4Cw15mrysN7/8pQ1DF8O+9tPff04oQa82LCO1W/Jun1GxSCnmtald6P2KRQIZ1ygwoSDgbt8KgHHw+nYoAkaxi7dvGKP9Mwrg38EEZJllYM3iBHRRyEBaJsqXoAijIxk5cBCFycIH28TZO+vdj7Yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=IhXwwY1p; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-	by m0089730.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 45R2DeBH000882
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 02:55:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
-	:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=facebook; bh=crU5Hz4l
-	pQ8DsY8bMw0I59ZTAQ9Zo/2hfAk0Y9f2xps=; b=IhXwwY1p+Iu6o52miSEEA9GI
-	I8rPXJ41thVCu8wfpM55ezzPejgEUiIfRJYKAOFS9B+t1hfgUaCyc9VqGtpxhkAq
-	EVUG/0HpOwv+0wukJAkM7M09AJzuOKuy9ctSkNBJbfKqUGU31DA8Wcv+YMTXTGJv
-	LOoIZub+wZrHvwDvTFI=
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by m0089730.ppops.net (PPS) with ESMTPS id 400e7rg1n0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Jun 2024 02:55:10 -0700 (PDT)
-Received: from twshared25218.38.frc1.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Thu, 27 Jun 2024 09:55:07 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 660AE3A69D6C; Thu, 27 Jun 2024 10:55:00 +0100 (BST)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@meta.com>
-Subject: [PATCH] btrfs-progs: add --subvol option to mkfs.btrfs
-Date: Thu, 27 Jun 2024 10:54:42 +0100
-Message-ID: <20240627095455.315620-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1719483315; c=relaxed/simple;
+	bh=HmMFd5N282FR0s9jAGZx35N+76Ql+QVIdy0UTbdqAnI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HElwG+0l5rQGhtG5c+WGPHkU4AqUOsabKSF8P2aC0Sl4nsx5hoqbQQUiigl0pPfhmjLY4jOQmqxcHT4H60hiOtRdcE9w6XK4dybHXq4mEcXfpsSKo+igQIRjynylbCpbBFET5spuQuqYTDo4Iyw7C97Iv6/qRE9nUrOYYVETQGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=kACOQOrU; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1719483305; x=1720088105; i=quwenruo.btrfs@gmx.com;
+	bh=/YBnClv8uwtRyqk/jdbztJ3X4gxTd45epBOv5hYDuU8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=kACOQOrUFC2e1ulmnZjuRt2FuSa5CdMab8Vhjr8L+LX8NwX0a11KO54CZ6BxDr4b
+	 f9VvJQ2uPL8DK7lUcuNDQv7GbdUiZOxOMhHaP7msPVi1vJY/6piVBH/EySTKTz1pp
+	 DVnVLW4zGwC75jnrRGPHp/mB5T1jNfzc3tYOeopj+LrkLgDEKUErlkNep6JyCkryv
+	 8TSmnfUxwvl3IflM8beVyO+xO05m4HpFhdkXrLQpZPaTi96PRgl/7WMuBOzU1j7y3
+	 qNh1VIzM5mVoZVXibXB6dH+VSouoH9MXtzqiX1eMrQceIxzSqt+js+MlIAn29Vk7K
+	 W87WBhUjQls9A7peDw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MF3HU-1s7JgH0RJo-001qTb; Thu, 27
+ Jun 2024 12:15:05 +0200
+Message-ID: <a6238bf2-4560-47ab-9daf-769d12be05dd@gmx.com>
+Date: Thu, 27 Jun 2024 19:45:02 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] btrfs: remove the extra_gfp parameter from
+ btrfs_alloc_page_array()
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1719462554.git.wqu@suse.com>
+ <1b08b3f46e29dbb6c88a6f7cf038c2487386bdb0.1719462554.git.wqu@suse.com>
+ <CAL3q7H5OywgMv=BRRFwmNW5pEVLs7AfnuO+jDuz5hsV9CCGX5A@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAL3q7H5OywgMv=BRRFwmNW5pEVLs7AfnuO+jDuz5hsV9CCGX5A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8uF-qt1snPK0_CMdCbKwGqiU4u19GVMJ
-X-Proofpoint-GUID: 8uF-qt1snPK0_CMdCbKwGqiU4u19GVMJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-27_06,2024-06-25_01,2024-05-17_01
+X-Provags-ID: V03:K1:rU4MBEo2GC7u4Rn81oBsobkVQpBsCpJi8dWGc2pslMppLvN1nCu
+ sGGEgW47JKMZONk327dBlrl4qMLTSMdT9zdCPfRCjRHO3G8Oz00/F41K4LizV0QWPj1rFCi
+ mMhUnNUn6E5ebfz3IEMbXJn8P8uGqQwejgwC+LH05ngq4Jo6CtyNRHGDUDRcAVwVFs0PpJV
+ 6xZmH40Ia9bU0YAaWSg+A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:76V24SgCTHo=;kDM1SlGi1Mc32SqBmjsWv/R/CKP
+ UDdzBSysKtp1Q/vx5LGpOJbPYurekSpl45EOAvu6JpVNzp3xJxWvpSe+UR87cY6B563H3c3NT
+ UKlvtmsPuhpK0847cbCmNQ9ITWyP5YtBP//J+xWTWv632QZOhgsShbVnEPK8vE8z6n3AG/H7e
+ zUN4Lpr+lyrSmd0lGYuoOZo+S4NqVOMRegbo9T18ZX6RGzM4NngZq95R3Q1guAAx+69LpsLpW
+ AeUpSyWCSXHqZn2wh9I6MsrTyB+DuiacfXnpvqqrfCi3ZxPFOTqfxLfSnP/sB6Q73vrf9y0zY
+ 38bZoa0snvcpmX7Zmj32pfaIVrePmTw3d6Qm6fKr7fNGXXXcPXQNAm9aJReIiBnffOO7+O6vy
+ hLfsBWOsd/GOF4qgHDgpINYynjTpgs2stA84xv6JCO4SFsDpk8qkGMEMLpS01j1v5NbbCdPDH
+ 3YfUqaDByF7linsyWZyr6mLODAh8R1l3H0VJxHzTbCGivafqveHvUCODyhQInRIA44yLMtOy+
+ 5unKdsGKhn+CNzQbc+4qjIGcNiZ1HphDvEV3KR82CH8O2Om4UUnmAiRnAw7WOndQ4hPpLtlM8
+ QF3Qfh+OZu8Z4kDD92GNK4d2BgOEf6p40B/vKfdhoNFBki9NXirXuK+XZTstTrYq1KUXyoBKK
+ mkO2THAA/IF/bmJBCmTjcTFIg8psS9+8k+K9KShllX7KJWL+nNqtE4lYUxQD1plP8XI80GPq3
+ YHZxLzYW7J5sAq8J9HsR5m160YdD4+3s1jmQl9QQK6sqIU0cT69kpidyKSFzrcWtH7O+2AhQO
+ cKoUc1hjLTacIP6uPP0xdKY90QxqQKVRnE0gSDX0vQ/os=
 
-From: Mark Harmstone <maharmstone@meta.com>
 
-This patch adds a --subvol option, which tells mkfs.btrfs to create the
-specified directories as subvolumes.
 
-Given a populated directory img, the command
+=E5=9C=A8 2024/6/27 18:20, Filipe Manana =E5=86=99=E9=81=93:
+> On Thu, Jun 27, 2024 at 5:33=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> There is only one caller utilizing the @extra_gfp parameter,
+>> alloc_eb_folio_array(). All the other callers do not really bother the
+>> @extra_gfp at all.
+>>
+>> This patch removes the parameter from the public function, meanwhile
+>> implement an internal version with @nofail parameter just for
+>> alloc_eb_folio_array() to utilize.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/extent_io.c | 43 +++++++++++++++++++++++--------------------
+>>   fs/btrfs/extent_io.h |  3 +--
+>>   fs/btrfs/inode.c     |  2 +-
+>>   fs/btrfs/raid56.c    |  6 +++---
+>>   fs/btrfs/scrub.c     |  2 +-
+>>   5 files changed, 29 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index dc416bad9ad8..64f8e7b4d553 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -695,22 +695,10 @@ int btrfs_alloc_folio_array(unsigned int nr_folio=
+s, struct folio **folio_array)
+>>          return -ENOMEM;
+>>   }
+>>
+>> -/*
+>> - * Populate every free slot in a provided array with pages.
+>> - *
+>> - * @nr_pages:   number of pages to allocate
+>> - * @page_array: the array to fill with pages; any existing non-null en=
+tries in
+>> - *             the array will be skipped
+>> - * @extra_gfp: the extra GFP flags for the allocation.
+>> - *
+>> - * Return: 0        if all pages were able to be allocated;
+>> - *         -ENOMEM  otherwise, the partially allocated pages would be =
+freed and
+>> - *                  the array slots zeroed
+>> - */
+>> -int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_a=
+rray,
+>> -                          gfp_t extra_gfp)
+>> +static int __btrfs_alloc_page_array(unsigned int nr_pages,
+>> +                                   struct page **page_array, bool nofa=
+il)
+>
+> Please don't use functions prefixed with __, we have abandoned that
+> practice, it's against our preferred coding style.
+>
+> Also instead of adding a wrapper function, why not just change the
+> extra_gfp parameter of btrfs_alloc_page() to the "bool nofail" thing?
+>
+> You mentioned in the cover letter "callers have to pay for the extra
+> parameter", but really are you worried about performance?
+> On x86_64 the argument is passed in a register, which is super
+> efficient, almost certainly better than the overhead of an extra
+> function call.
 
-$ mkfs.btrfs --rootdir img --subvol usr --subvol home --subvol home/usern=
-ame /dev/loop0
+It's not about performance, but the burden on us reviewing/writing code
+using that function.
+As everytime we need to call that function, we have to check if we need
+to use any special value for the extra parameter.
 
-will create subvolumes usr and home within the FS root, and subvolume
-username within the home subvolume. It will fail if any of the
-directories do not yet exist.
+The basic idea is, to keep the most common call to be simple (aka, less
+parameters), and only for those special call sites to use the more
+complex one.
 
-Signed-off-by: Mark Harmstone <maharmstone@meta.com>
----
- convert/main.c                              |   4 +-
- kernel-shared/ctree.h                       |   3 +-
- kernel-shared/inode.c                       |  46 +--
- mkfs/main.c                                 | 357 +++++++++++++++++++-
- mkfs/rootdir.c                              |  31 +-
- mkfs/rootdir.h                              |  16 +-
- tests/mkfs-tests/034-rootdir-subvol/test.sh |  33 ++
- 7 files changed, 463 insertions(+), 27 deletions(-)
- create mode 100755 tests/mkfs-tests/034-rootdir-subvol/test.sh
+This is the only time I miss function overloading in C++.
 
-diff --git a/convert/main.c b/convert/main.c
-index 8e73aa25..7249c793 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -1314,7 +1314,9 @@ static int do_convert(const char *devname, u32 conv=
-ert_flags, u32 nodesize,
- 	}
-=20
- 	image_root =3D btrfs_mksubvol(root, subvol_name,
--				    CONV_IMAGE_SUBVOL_OBJECTID, true);
-+				    CONV_IMAGE_SUBVOL_OBJECTID, true,
-+				    btrfs_root_dirid(&root->root_item),
-+				    false);
- 	if (!image_root) {
- 		error("unable to link subvolume %s", subvol_name);
- 		goto fail;
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 1341a418..8a5ddcdb 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -1230,7 +1230,8 @@ int btrfs_add_orphan_item(struct btrfs_trans_handle=
- *trans,
- int btrfs_mkdir(struct btrfs_trans_handle *trans, struct btrfs_root *roo=
-t,
- 		char *name, int namelen, u64 parent_ino, u64 *ino, int mode);
- struct btrfs_root *btrfs_mksubvol(struct btrfs_root *root, const char *b=
-ase,
--				  u64 root_objectid, bool convert);
-+				  u64 root_objectid, bool convert, u64 dirid,
-+				  bool dont_change_size);
- int btrfs_find_free_objectid(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *fs_root,
- 			     u64 dirid, u64 *objectid);
-diff --git a/kernel-shared/inode.c b/kernel-shared/inode.c
-index 91b4f629..99965558 100644
---- a/kernel-shared/inode.c
-+++ b/kernel-shared/inode.c
-@@ -584,7 +584,8 @@ out:
-=20
- struct btrfs_root *btrfs_mksubvol(struct btrfs_root *root,
- 				  const char *base, u64 root_objectid,
--				  bool convert)
-+				  bool convert, u64 dirid,
-+				  bool dont_change_size)
- {
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_fs_info *fs_info =3D root->fs_info;
-@@ -594,7 +595,6 @@ struct btrfs_root *btrfs_mksubvol(struct btrfs_root *=
-root,
- 	struct btrfs_inode_item *inode_item;
- 	struct extent_buffer *leaf;
- 	struct btrfs_key key;
--	u64 dirid =3D btrfs_root_dirid(&root->root_item);
- 	u64 index =3D 2;
- 	char buf[BTRFS_NAME_LEN + 1]; /* for snprintf null */
- 	int len;
-@@ -632,20 +632,6 @@ struct btrfs_root *btrfs_mksubvol(struct btrfs_root =
-*root,
- 		goto fail;
- 	}
-=20
--	key.objectid =3D dirid;
--	key.type =3D  BTRFS_INODE_ITEM_KEY;
--	key.offset =3D 0;
--
--	ret =3D btrfs_lookup_inode(trans, root, &path, &key, 1);
--	if (ret) {
--		error("search for INODE_ITEM %llu failed: %d",
--				(unsigned long long)dirid, ret);
--		goto fail;
--	}
--	leaf =3D path.nodes[0];
--	inode_item =3D btrfs_item_ptr(leaf, path.slots[0],
--				    struct btrfs_inode_item);
--
- 	key.objectid =3D root_objectid;
- 	key.type =3D BTRFS_ROOT_ITEM_KEY;
- 	key.offset =3D (u64)-1;
-@@ -670,10 +656,26 @@ struct btrfs_root *btrfs_mksubvol(struct btrfs_root=
- *root,
- 	if (ret)
- 		goto fail;
-=20
--	btrfs_set_inode_size(leaf, inode_item, len * 2 +
--			     btrfs_inode_size(leaf, inode_item));
--	btrfs_mark_buffer_dirty(leaf);
--	btrfs_release_path(&path);
-+	if (!dont_change_size) {
-+		key.objectid =3D dirid;
-+		key.type =3D  BTRFS_INODE_ITEM_KEY;
-+		key.offset =3D 0;
-+
-+		ret =3D btrfs_lookup_inode(trans, root, &path, &key, 1);
-+		if (ret) {
-+			error("search for INODE_ITEM %llu failed: %d",
-+					(unsigned long long)dirid, ret);
-+			goto fail;
-+		}
-+		leaf =3D path.nodes[0];
-+		inode_item =3D btrfs_item_ptr(leaf, path.slots[0],
-+					struct btrfs_inode_item);
-+
-+		btrfs_set_inode_size(leaf, inode_item, len * 2 +
-+				btrfs_inode_size(leaf, inode_item));
-+		btrfs_mark_buffer_dirty(leaf);
-+		btrfs_release_path(&path);
-+	}
-=20
- 	/* add the backref first */
- 	ret =3D btrfs_add_root_ref(trans, tree_root, root_objectid,
-@@ -703,6 +705,10 @@ struct btrfs_root *btrfs_mksubvol(struct btrfs_root =
-*root,
- 		goto fail;
- 	}
-=20
-+	key.objectid =3D root_objectid;
-+	key.type =3D BTRFS_ROOT_ITEM_KEY;
-+	key.offset =3D (u64)-1;
-+
- 	new_root =3D btrfs_read_fs_root(fs_info, &key);
- 	if (IS_ERR(new_root)) {
- 		error("unable to fs read root: %lu", PTR_ERR(new_root));
-diff --git a/mkfs/main.c b/mkfs/main.c
-index b40f7432..63119fc3 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -440,6 +440,7 @@ static const char * const mkfs_usage[] =3D {
- 	"Creation:",
- 	OPTLINE("-b|--byte-count SIZE", "set size of each device to SIZE (files=
-ystem size is sum of all device sizes)"),
- 	OPTLINE("-r|--rootdir DIR", "copy files from DIR to the image root dire=
-ctory"),
-+	OPTLINE("-u|--subvol SUBDIR", "create SUBDIR as subvolume rather than n=
-ormal directory"),
- 	OPTLINE("--shrink", "(with --rootdir) shrink the filled filesystem to m=
-inimal size"),
- 	OPTLINE("-K|--nodiscard", "do not perform whole device TRIM"),
- 	OPTLINE("-f|--force", "force overwrite of existing filesystem"),
-@@ -1168,6 +1169,67 @@ static void *prepare_one_device(void *ctx)
- 	return NULL;
- }
-=20
-+static int create_subvol(struct btrfs_trans_handle *trans,
-+			 struct btrfs_root *root, u64 root_objectid)
-+{
-+	struct extent_buffer *tmp;
-+	struct btrfs_root *new_root;
-+	struct btrfs_key key;
-+	struct btrfs_root_item root_item;
-+	u8 uuid[BTRFS_UUID_SIZE];
-+	int ret;
-+
-+	ret =3D btrfs_copy_root(trans, root, root->node, &tmp,
-+			      root_objectid);
-+	if (ret)
-+		return ret;
-+
-+	uuid_generate(uuid);
-+
-+	memcpy(&root_item, &root->root_item, sizeof(root_item));
-+	btrfs_set_root_bytenr(&root_item, tmp->start);
-+	btrfs_set_root_level(&root_item, btrfs_header_level(tmp));
-+	btrfs_set_root_generation(&root_item, trans->transid);
-+	memcpy(&root_item.uuid, uuid, BTRFS_UUID_SIZE);
-+
-+	free_extent_buffer(tmp);
-+
-+	key.objectid =3D root_objectid;
-+	key.type =3D BTRFS_ROOT_ITEM_KEY;
-+	key.offset =3D trans->transid;
-+	ret =3D btrfs_insert_root(trans, root->fs_info->tree_root,
-+				&key, &root_item);
-+
-+	key.offset =3D (u64)-1;
-+	new_root =3D btrfs_read_fs_root(root->fs_info, &key);
-+	if (!new_root || IS_ERR(new_root)) {
-+		error("unable to fs read root: %lu", PTR_ERR(new_root));
-+		return PTR_ERR(new_root);
-+	}
-+
-+	ret =3D btrfs_uuid_tree_add(trans, uuid, BTRFS_UUID_KEY_SUBVOL,
-+				  root_objectid);
-+	if (ret < 0) {
-+		error("failed to add uuid entry");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int subvol_compar(const void *p1, const void *p2)
-+{
-+	const struct rootdir_subvol *s1 =3D *(const struct rootdir_subvol**)p1;
-+	const struct rootdir_subvol *s2 =3D *(const struct rootdir_subvol**)p2;
-+
-+	if (s1->depth < s2->depth)
-+		return 1;
-+	else if (s1->depth > s2->depth)
-+		return -1;
-+	else
-+		return 0;
-+}
-+
- int BOX_MAIN(mkfs)(int argc, char **argv)
- {
- 	char *file;
-@@ -1209,6 +1271,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	char *label =3D NULL;
- 	int nr_global_roots =3D sysconf(_SC_NPROCESSORS_ONLN);
- 	char *source_dir =3D NULL;
-+	LIST_HEAD(subvols);
-=20
- 	cpu_detect_flags();
- 	hash_init_accel();
-@@ -1239,6 +1302,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			{ "data", required_argument, NULL, 'd' },
- 			{ "version", no_argument, NULL, 'V' },
- 			{ "rootdir", required_argument, NULL, 'r' },
-+			{ "subvol", required_argument, NULL, 'u' },
- 			{ "nodiscard", no_argument, NULL, 'K' },
- 			{ "features", required_argument, NULL, 'O' },
- 			{ "runtime-features", required_argument, NULL, 'R' },
-@@ -1360,6 +1424,25 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 				free(source_dir);
- 				source_dir =3D strdup(optarg);
- 				break;
-+			case 'u': {
-+				struct rootdir_subvol *s;
-+
-+				s =3D malloc(sizeof(struct rootdir_subvol));
-+				if (!s) {
-+					error("out of memory");
-+					goto error;
-+				}
-+
-+				s->dir =3D strdup(optarg);
-+				s->fullpath =3D NULL;
-+				s->parent =3D NULL;
-+				s->parent_inum =3D 0;
-+				INIT_LIST_HEAD(&s->children);
-+				s->root =3D NULL;
-+
-+				list_add_tail(&s->list, &subvols);
-+				break;
-+				}
- 			case 'U':
- 				strncpy_null(fs_uuid, optarg, BTRFS_UUID_UNPARSED_SIZE);
- 				break;
-@@ -1420,6 +1503,159 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		error("the option --shrink must be used with --rootdir");
- 		goto error;
- 	}
-+	if (!list_empty(&subvols) && source_dir =3D=3D NULL) {
-+		error("the option --subvol must be used with --rootdir");
-+		goto error;
-+	}
-+
-+	if (source_dir) {
-+		char *canonical =3D realpath(source_dir, NULL);
-+
-+		if (!canonical) {
-+			error("could not get canonical path to %s", source_dir);
-+			goto error;
-+		}
-+
-+		free(source_dir);
-+		source_dir =3D canonical;
-+	}
-+
-+	if (!list_empty(&subvols)) {
-+		unsigned int num_subvols =3D 0;
-+		size_t source_dir_len =3D strlen(source_dir);
-+		struct rootdir_subvol **arr, **ptr, *s;
-+
-+		list_for_each_entry(s, &subvols, list) {
-+			size_t tmp_len;
-+			char *tmp, *path;
-+			struct rootdir_subvol *s2;
-+
-+			tmp_len =3D source_dir_len + 1 + strlen(s->dir) + 1;
-+
-+			tmp =3D malloc(tmp_len);
-+			if (!tmp) {
-+				error("out of memory");
-+				goto error;
-+			}
-+
-+			strcpy(tmp, source_dir);
-+			strcat(tmp, "/");
-+			strcat(tmp, s->dir);
-+
-+			if (!path_exists(tmp)) {
-+				error("subvol %s does not exist within rootdir",
-+				      s->dir);
-+				free(tmp);
-+				goto error;
-+			}
-+
-+			if (!path_is_dir(tmp)) {
-+				error("subvol %s is not a directory", s->dir);
-+				free(tmp);
-+				goto error;
-+			}
-+
-+			path =3D realpath(tmp, NULL);
-+
-+			free(tmp);
-+
-+			if (!path) {
-+				error("could not get canonical path to %s",
-+				      s->dir);
-+				goto error;
-+			}
-+
-+			if (strlen(path) < source_dir_len + 1 ||
-+			    memcmp(path, source_dir, source_dir_len) ||
-+			    path[source_dir_len] !=3D '/') {
-+				error("subvol %s is not a child of %s",
-+				      s->dir, source_dir);
-+				free(path);
-+				goto error;
-+			}
-+
-+			for (s2 =3D list_first_entry(&subvols, struct rootdir_subvol, list);
-+			     s2 !=3D s; s2 =3D list_next_entry(s2, list)) {
-+				if (!strcmp(s2->fullpath, path)) {
-+					error("subvol %s specified more than once",
-+					      s->dir);
-+					free(path);
-+					goto error;
-+				}
-+			}
-+
-+			s->fullpath =3D path;
-+
-+			s->depth =3D 0;
-+			for (i =3D source_dir_len + 1; i < strlen(s->fullpath); i++) {
-+				if (s->fullpath[i] =3D=3D '/')
-+					s->depth++;
-+			}
-+
-+			num_subvols++;
-+		}
-+
-+		/* Reorder subvol list by depth. */
-+
-+		arr =3D malloc(sizeof(struct rootdir_subvol*) * num_subvols);
-+		if (!arr) {
-+			error("out of memory");
-+			goto error;
-+		}
-+
-+		ptr =3D arr;
-+
-+		list_for_each_entry(s, &subvols, list) {
-+			*ptr =3D s;
-+			ptr++;
-+		}
-+
-+		qsort(arr, num_subvols, sizeof(struct rootdir_subvol*),
-+		      subvol_compar);
-+
-+		INIT_LIST_HEAD(&subvols);
-+		for (i =3D 0; i < num_subvols; i++) {
-+			list_add_tail(&arr[i]->list, &subvols);
-+		}
-+
-+		free(arr);
-+
-+		/* Assign subvols to parents. */
-+
-+		list_for_each_entry(s, &subvols, list) {
-+			size_t len1;
-+
-+			if (s->depth =3D=3D 0)
-+				break;
-+
-+			len1 =3D strlen(s->fullpath);
-+
-+			for (struct rootdir_subvol *s2 =3D list_next_entry(s, list);
-+			     !list_entry_is_head(s2, &subvols, list);
-+			     s2 =3D list_next_entry(s2, list)) {
-+				size_t len2;
-+
-+				if (s2->depth =3D=3D s->depth)
-+					continue;
-+
-+				len2 =3D strlen(s2->fullpath);
-+
-+				if (len1 <=3D len2 + 1)
-+					continue;
-+
-+				if (s->fullpath[len2] !=3D '/')
-+					continue;
-+
-+				if (memcmp(s->fullpath, s2->fullpath, len2))
-+					continue;
-+
-+				s->parent =3D s2;
-+				list_add_tail(&s->child_list, &s2->children);
-+
-+				break;
-+			}
-+		}
-+	}
-=20
- 	if (*fs_uuid) {
- 		uuid_t dummy_uuid;
-@@ -1964,9 +2200,68 @@ raid_groups:
- 		goto out;
- 	}
-=20
-+	if (!list_empty(&subvols)) {
-+		struct rootdir_subvol *s;
-+		u64 objectid =3D BTRFS_FIRST_FREE_OBJECTID;
-+
-+		list_for_each_entry_reverse(s, &subvols, list) {
-+			struct btrfs_key key;
-+
-+			s->objectid =3D objectid;
-+
-+			trans =3D btrfs_start_transaction(root, 1);
-+			if (IS_ERR(trans)) {
-+				errno =3D -PTR_ERR(trans);
-+				error_msg(ERROR_MSG_START_TRANS, "%m");
-+				goto error;
-+			}
-+
-+			ret =3D create_subvol(trans, root, objectid);
-+			if (ret < 0) {
-+				error("failed to create subvolume: %d", ret);
-+				goto out;
-+			}
-+
-+			ret =3D btrfs_commit_transaction(trans, root);
-+			if (ret) {
-+				errno =3D -ret;
-+				error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
-+				goto out;
-+			}
-+
-+			key.objectid =3D objectid;
-+			key.type =3D BTRFS_ROOT_ITEM_KEY;
-+			key.offset =3D (u64)-1;
-+
-+			s->root =3D btrfs_read_fs_root(fs_info, &key);
-+			if (IS_ERR(s->root)) {
-+				error("unable to fs read root: %lu", PTR_ERR(s->root));
-+				goto out;
-+			}
-+
-+			objectid++;
-+		}
-+	}
-+
- 	if (source_dir) {
-+		LIST_HEAD(subvol_children);
-+
- 		pr_verbose(LOG_DEFAULT, "Rootdir from:       %s\n", source_dir);
--		ret =3D btrfs_mkfs_fill_dir(source_dir, root);
-+
-+		if (!list_empty(&subvols)) {
-+			struct rootdir_subvol *s;
-+
-+			list_for_each_entry(s, &subvols, list) {
-+				if (s->parent)
-+					continue;
-+
-+				list_add_tail(&s->child_list,
-+					      &subvol_children);
-+			}
-+		}
-+
-+		ret =3D btrfs_mkfs_fill_dir(source_dir, root,
-+					  &subvol_children);
- 		if (ret) {
- 			error("error while filling filesystem: %d", ret);
- 			goto out;
-@@ -1983,6 +2278,41 @@ raid_groups:
- 		} else {
- 			pr_verbose(LOG_DEFAULT, "  Shrink:           no\n");
- 		}
-+
-+		if (!list_empty(&subvols)) {
-+			struct rootdir_subvol *s;
-+
-+			list_for_each_entry_reverse(s, &subvols, list) {
-+				pr_verbose(LOG_DEFAULT,
-+					   "  Subvol from:      %s\n",
-+					   s->fullpath);
-+			}
-+		}
-+	}
-+
-+	if (!list_empty(&subvols)) {
-+		struct rootdir_subvol *s;
-+
-+		list_for_each_entry(s, &subvols, list) {
-+			ret =3D btrfs_mkfs_fill_dir(s->fullpath, s->root,
-+						  &s->children);
-+			if (ret) {
-+				error("error while filling filesystem: %d",
-+				      ret);
-+				goto out;
-+			}
-+		}
-+
-+		list_for_each_entry_reverse(s, &subvols, list) {
-+			if (!btrfs_mksubvol(s->parent ? s->parent->root : root,
-+					    path_basename(s->dir), s->objectid,
-+					    false, s->parent_inum,
-+					    true)) {
-+				error("unable to link subvolume %s",
-+				      path_basename(s->dir));
-+				goto out;
-+			}
-+		}
- 	}
-=20
- 	if (features.runtime_flags & BTRFS_FEATURE_RUNTIME_QUOTA ||
-@@ -2076,6 +2406,18 @@ out:
- 	free(label);
- 	free(source_dir);
-=20
-+	while (!list_empty(&subvols)) {
-+		struct rootdir_subvol *head =3D list_entry(subvols.next,
-+					      struct rootdir_subvol,
-+					      list);
-+
-+		free(head->dir);
-+		free(head->fullpath);
-+
-+		list_del(&head->list);
-+		free(head);
-+	}
-+
- 	return !!ret;
-=20
- error:
-@@ -2087,6 +2429,19 @@ error:
- 	free(prepare_ctx);
- 	free(label);
- 	free(source_dir);
-+
-+	while (!list_empty(&subvols)) {
-+		struct rootdir_subvol *head =3D list_entry(subvols.next,
-+					      struct rootdir_subvol,
-+					      list);
-+
-+		free(head->dir);
-+		free(head->fullpath);
-+
-+		list_del(&head->list);
-+		free(head);
-+	}
-+
- 	exit(1);
- success:
- 	exit(0);
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index 617a7efd..3377bec5 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -493,7 +493,8 @@ error:
-=20
- static int traverse_directory(struct btrfs_trans_handle *trans,
- 			      struct btrfs_root *root, const char *dir_name,
--			      struct directory_name_entry *dir_head)
-+			      struct directory_name_entry *dir_head,
-+			      struct list_head *subvol_children)
- {
- 	int ret =3D 0;
-=20
-@@ -570,6 +571,28 @@ static int traverse_directory(struct btrfs_trans_han=
-dle *trans,
- 				pr_verbose(LOG_INFO, "ADD: %s\n", tmp);
- 			}
-=20
-+			/* Omit child if it is going to be a subvolume. */
-+			if (!list_empty(subvol_children) && S_ISDIR(st.st_mode)) {
-+				struct rootdir_subvol *s;
-+				bool skip =3D false;
-+
-+				if (bconf.verbose < LOG_INFO) {
-+					path_cat_out(tmp, parent_dir_entry->path,
-+						     cur_file->d_name);
-+				}
-+
-+				list_for_each_entry(s, subvol_children, child_list) {
-+					if (!strcmp(tmp, s->fullpath)) {
-+						s->parent_inum =3D parent_inum;
-+						skip =3D true;
-+						break;
-+					}
-+				}
-+
-+				if (skip)
-+					continue;
-+			}
-+
- 			/*
- 			 * We can not directly use the source ino number,
- 			 * as there is a chance that the ino is smaller than
-@@ -680,7 +703,8 @@ fail_no_dir:
- 	goto out;
- }
-=20
--int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)
-+int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root,
-+			struct list_head *subvol_children)
- {
- 	int ret;
- 	struct btrfs_trans_handle *trans;
-@@ -705,7 +729,8 @@ int btrfs_mkfs_fill_dir(const char *source_dir, struc=
-t btrfs_root *root)
- 		goto fail;
- }
-=20
--	ret =3D traverse_directory(trans, root, source_dir, &dir_head);
-+	ret =3D traverse_directory(trans, root, source_dir, &dir_head,
-+				 subvol_children);
- 	if (ret) {
- 		error("unable to traverse directory %s: %d", source_dir, ret);
- 		goto fail;
-diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
-index 8d5f6896..598eb1a7 100644
---- a/mkfs/rootdir.h
-+++ b/mkfs/rootdir.h
-@@ -36,7 +36,21 @@ struct directory_name_entry {
- 	struct list_head list;
- };
-=20
--int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)=
+Thanks,
+Qu
+
+>
+> Thanks.
+>
+>>   {
+>> -       const gfp_t gfp =3D GFP_NOFS | extra_gfp;
+>> +       const gfp_t gfp =3D nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NO=
+FS;
+>>          unsigned int allocated;
+>>
+>>          for (allocated =3D 0; allocated < nr_pages;) {
+>> @@ -728,19 +716,34 @@ int btrfs_alloc_page_array(unsigned int nr_pages,=
+ struct page **page_array,
+>>          }
+>>          return 0;
+>>   }
+>> +/*
+>> + * Populate every free slot in a provided array with pages, using GFP_=
+NOFS.
+>> + *
+>> + * @nr_pages:   number of pages to allocate
+>> + * @page_array: the array to fill with pages; any existing non-null en=
+tries in
+>> + *             the array will be skipped
+>> + *
+>> + * Return: 0        if all pages were able to be allocated;
+>> + *         -ENOMEM  otherwise, the partially allocated pages would be =
+freed and
+>> + *                  the array slots zeroed
+>> + */
+>> +int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_a=
+rray)
+>> +{
+>> +       return __btrfs_alloc_page_array(nr_pages, page_array, false);
+>> +}
+>>
+>>   /*
+>>    * Populate needed folios for the extent buffer.
+>>    *
+>>    * For now, the folios populated are always in order 0 (aka, single p=
+age).
+>>    */
+>> -static int alloc_eb_folio_array(struct extent_buffer *eb, gfp_t extra_=
+gfp)
+>> +static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
+>>   {
+>>          struct page *page_array[INLINE_EXTENT_BUFFER_PAGES] =3D { 0 };
+>>          int num_pages =3D num_extent_pages(eb);
+>>          int ret;
+>>
+>> -       ret =3D btrfs_alloc_page_array(num_pages, page_array, extra_gfp=
+);
+>> +       ret =3D __btrfs_alloc_page_array(num_pages, page_array, nofail)=
 ;
-+struct rootdir_subvol {
-+	struct list_head list;
-+	struct list_head child_list;
-+	char *dir;
-+	char *fullpath;
-+	struct rootdir_subvol *parent;
-+	u64 parent_inum;
-+	struct list_head children;
-+	unsigned int depth;
-+	u64 objectid;
-+	struct btrfs_root *root;
-+};
-+
-+int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root,
-+			struct list_head *subvol_children);
- u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_de=
-v_size,
- 			u64 meta_profile, u64 data_profile);
- int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_re=
-t,
-diff --git a/tests/mkfs-tests/034-rootdir-subvol/test.sh b/tests/mkfs-tes=
-ts/034-rootdir-subvol/test.sh
-new file mode 100755
-index 00000000..d8085659
---- /dev/null
-+++ b/tests/mkfs-tests/034-rootdir-subvol/test.sh
-@@ -0,0 +1,33 @@
-+#!/bin/bash
-+# smoke test for mkfs.btrfs --subvol option
-+
-+source "$TEST_TOP/common" || exit
-+
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+
-+setup_root_helper
-+prepare_test_dev
-+
-+tmp=3D$(_mktemp_dir mkfs-rootdir)
-+
-+touch $tmp/foo
-+mkdir $tmp/dir
-+mkdir $tmp/dir/subvol
-+touch $tmp/dir/subvol/bar
-+
-+run_check_mkfs_test_dev --rootdir "$tmp" --subvol dir/subvol
-+run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
-+
-+run_check_mount_test_dev
-+run_check_stdout $SUDO_HELPER "$TOP/btrfs" subvolume list "$TEST_MNT" | =
-\
-+	cut -d\  -f9 > "$tmp/output"
-+run_check_umount_test_dev
-+
-+result=3D$(cat "$tmp/output")
-+
-+if [ "$result" !=3D "dir/subvol" ]; then
-+	_fail "dir/subvol not in subvolume list"
-+fi
-+
-+rm -rf -- "$tmp"
---=20
-2.44.2
-
+>>          if (ret < 0)
+>>                  return ret;
+>>
+>> @@ -2722,7 +2725,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(c=
+onst struct extent_buffer *src)
+>>           */
+>>          set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+>>
+>> -       ret =3D alloc_eb_folio_array(new, 0);
+>> +       ret =3D alloc_eb_folio_array(new, false);
+>>          if (ret) {
+>>                  btrfs_release_extent_buffer(new);
+>>                  return NULL;
+>> @@ -2755,7 +2758,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer=
+(struct btrfs_fs_info *fs_info,
+>>          if (!eb)
+>>                  return NULL;
+>>
+>> -       ret =3D alloc_eb_folio_array(eb, 0);
+>> +       ret =3D alloc_eb_folio_array(eb, false);
+>>          if (ret)
+>>                  goto err;
+>>
+>> @@ -3121,7 +3124,7 @@ struct extent_buffer *alloc_extent_buffer(struct =
+btrfs_fs_info *fs_info,
+>>
+>>   reallocate:
+>>          /* Allocate all pages first. */
+>> -       ret =3D alloc_eb_folio_array(eb, __GFP_NOFAIL);
+>> +       ret =3D alloc_eb_folio_array(eb, true);
+>>          if (ret < 0) {
+>>                  btrfs_free_subpage(prealloc);
+>>                  goto out;
+>> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+>> index 8364dcb1ace3..0da5f1947a2b 100644
+>> --- a/fs/btrfs/extent_io.h
+>> +++ b/fs/btrfs/extent_io.h
+>> @@ -363,8 +363,7 @@ int extent_invalidate_folio(struct extent_io_tree *=
+tree,
+>>   void btrfs_clear_buffer_dirty(struct btrfs_trans_handle *trans,
+>>                                struct extent_buffer *buf);
+>>
+>> -int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_a=
+rray,
+>> -                          gfp_t extra_gfp);
+>> +int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_a=
+rray);
+>>   int btrfs_alloc_folio_array(unsigned int nr_folios, struct folio **fo=
+lio_array);
+>>
+>>   #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 92ef9b01cf5e..6dfcd27b88ac 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -9128,7 +9128,7 @@ static ssize_t btrfs_encoded_read_regular(struct =
+kiocb *iocb,
+>>          pages =3D kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
+>>          if (!pages)
+>>                  return -ENOMEM;
+>> -       ret =3D btrfs_alloc_page_array(nr_pages, pages, 0);
+>> +       ret =3D btrfs_alloc_page_array(nr_pages, pages);
+>>          if (ret) {
+>>                  ret =3D -ENOMEM;
+>>                  goto out;
+>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+>> index 3858c00936e8..294bf7349f96 100644
+>> --- a/fs/btrfs/raid56.c
+>> +++ b/fs/btrfs/raid56.c
+>> @@ -1051,7 +1051,7 @@ static int alloc_rbio_pages(struct btrfs_raid_bio=
+ *rbio)
+>>   {
+>>          int ret;
+>>
+>> -       ret =3D btrfs_alloc_page_array(rbio->nr_pages, rbio->stripe_pag=
+es, 0);
+>> +       ret =3D btrfs_alloc_page_array(rbio->nr_pages, rbio->stripe_pag=
+es);
+>>          if (ret < 0)
+>>                  return ret;
+>>          /* Mapping all sectors */
+>> @@ -1066,7 +1066,7 @@ static int alloc_rbio_parity_pages(struct btrfs_r=
+aid_bio *rbio)
+>>          int ret;
+>>
+>>          ret =3D btrfs_alloc_page_array(rbio->nr_pages - data_pages,
+>> -                                    rbio->stripe_pages + data_pages, 0=
+);
+>> +                                    rbio->stripe_pages + data_pages);
+>>          if (ret < 0)
+>>                  return ret;
+>>
+>> @@ -1640,7 +1640,7 @@ static int alloc_rbio_data_pages(struct btrfs_rai=
+d_bio *rbio)
+>>          const int data_pages =3D rbio->nr_data * rbio->stripe_npages;
+>>          int ret;
+>>
+>> -       ret =3D btrfs_alloc_page_array(data_pages, rbio->stripe_pages, =
+0);
+>> +       ret =3D btrfs_alloc_page_array(data_pages, rbio->stripe_pages);
+>>          if (ret < 0)
+>>                  return ret;
+>>
+>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+>> index 4677a4f55b6a..2d819b027321 100644
+>> --- a/fs/btrfs/scrub.c
+>> +++ b/fs/btrfs/scrub.c
+>> @@ -261,7 +261,7 @@ static int init_scrub_stripe(struct btrfs_fs_info *=
+fs_info,
+>>          atomic_set(&stripe->pending_io, 0);
+>>          spin_lock_init(&stripe->write_error_lock);
+>>
+>> -       ret =3D btrfs_alloc_page_array(SCRUB_STRIPE_PAGES, stripe->page=
+s, 0);
+>> +       ret =3D btrfs_alloc_page_array(SCRUB_STRIPE_PAGES, stripe->page=
+s);
+>>          if (ret < 0)
+>>                  goto error;
+>>
+>> --
+>> 2.45.2
+>>
+>>
+>
 
