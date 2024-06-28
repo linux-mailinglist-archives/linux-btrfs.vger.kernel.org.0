@@ -1,82 +1,70 @@
-Return-Path: <linux-btrfs+bounces-6031-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6032-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDFA391B5B0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 06:22:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8380891B5D3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 06:53:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AA421C21AA4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 04:22:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFCE9284615
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 04:53:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C50DF37143;
-	Fri, 28 Jun 2024 04:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F85325624;
+	Fri, 28 Jun 2024 04:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ahGcy54W";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ahGcy54W"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="QzXfDB2d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EBE208B8
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 04:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A0B62AF0D
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 04:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719548521; cv=none; b=EMUbJ41P7E3ENmvi7pkCs0dyTVUlKPs1n750qi1FEv+rRYIgQtFmx63esC6LPKhpXkzbcR0L0Q6lKNLEqTUTD/s3KSv1/srRw9X+PvDTauOq4QyzF1extbYKyRw85AmWZF6kGqAIGAjifS0Ad2Lxou3k+ZuIi9tastXWVe1bkF0=
+	t=1719550387; cv=none; b=uNchmd7yLILGNZHL7jO5T+MsTWg33kif5wIYzZDQmIwUo9plGLElRRuRgcognBPUovkj6nTh+41lEOGm5J7xLG5wccMOOMRgJ6ldUA2a4YOLzRQ5LXIP+SisbiCVU+42fnPj0pbS9xDci6JgZ548c73IVprM5BhoVtVl4JzwFCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719548521; c=relaxed/simple;
-	bh=/X3d5GuMboVCA2WTyThVD3MOnjMbgSembUO8wXTZwfg=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=msxAHBAjWMlAhxsjy2zHeGRhwvas/8z66noeX3Wgjm3a+FmUu+zLM0nUNKA4KVKM8YPgbxBOJi7zVtYAdn9tnBV7WyJFXvlJlWqQZkw4fg8cWTrd+sNsMbTmOPirmofa4g1RTfveh62t3XmCPKLfUtL9BuV31ePO8/VkrEllfa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ahGcy54W; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ahGcy54W; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0D06E21AC7
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 04:21:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719548516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kBQ4RePHYh9+2rE+LtEbvKzcEjKLvk/03GTwjR/FXBc=;
-	b=ahGcy54WYbhDQUW++CuacINnewGY4Mtdm7CbGY4xYN0bURQtmk8aAt8wxz+DxnWl76Az5I
-	bswlzBrpnDe+MNP6vJOEcIzTdf3sAbo2u2jVJQxV+QF8UYz0mru3k4qkdgndqNBa9FqPCQ
-	RboIfvWbC2M3zCzyEOKsKFR31SaRoPk=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=ahGcy54W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719548516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kBQ4RePHYh9+2rE+LtEbvKzcEjKLvk/03GTwjR/FXBc=;
-	b=ahGcy54WYbhDQUW++CuacINnewGY4Mtdm7CbGY4xYN0bURQtmk8aAt8wxz+DxnWl76Az5I
-	bswlzBrpnDe+MNP6vJOEcIzTdf3sAbo2u2jVJQxV+QF8UYz0mru3k4qkdgndqNBa9FqPCQ
-	RboIfvWbC2M3zCzyEOKsKFR31SaRoPk=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 316B21373E
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 04:21:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0JArN2I6fmZXWwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 04:21:54 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1719550387; c=relaxed/simple;
+	bh=IUO3uptGVsk/h7Cn2WpWA54jbVcg/GlkyqYyKlYP0jc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cdiiQ6KdiUxsTNrb24/E2f6MiID8XvKLWKIeADfmwSJShmvOw3iRUqXtfsMbKZ1CWOf6h3Bmr376oEBx/gDUA7umzOutYfIF9KB06Marpqc1Z+D6MTtL57ZF6RkSkhO6XanHyMQD3LZ9TsuuFyP2l/TItFkBNPDxpAOR7wa2afU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=QzXfDB2d; arc=none smtp.client-ip=216.71.154.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1719550385; x=1751086385;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IUO3uptGVsk/h7Cn2WpWA54jbVcg/GlkyqYyKlYP0jc=;
+  b=QzXfDB2d5eu/bSEUV829RQjeCh6uBdyxYkl8AE2yF4OBXNg2G06itSHy
+   GsLIkmNjbKslV8yeM6zrJUp1HDopXs9dT6ij4xR9if/sn0Oc/mq0YJt8c
+   vtg/DtR8aMp5my9NDbWtzlKQmdqCbrbxe7v4yOBw9/KjCA9g3rI0Pl+4f
+   +/AQ7jfa5sAU293mnGImFLx+7rSOtZr1yrRA0pr80GxrQHRbcB4KMe4JW
+   bKxSgdpPijXJRgDazgIE3zqEb2usxPoMOg66g+HNGsHZTSxtZQXXxfUle
+   oc9uCPVyOJ9OlMr9rx//FwZgVy3TJJ/qJmY7zih6OaAOZjqRcyw9VM6zq
+   Q==;
+X-CSE-ConnectionGUID: EeK+bzChT16yQIgMZYIXzw==
+X-CSE-MsgGUID: WVzEbAZmRv+lLdaqFFI0jw==
+X-IronPort-AV: E=Sophos;i="6.09,168,1716220800"; 
+   d="scan'208";a="20224159"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Jun 2024 12:48:42 +0800
+IronPort-SDR: 667e32e1_A6CvtN+4bGDBem3yeaMTKCAN/6HAjNErXZDzYyHIn6a5vra
+ WFnpBzH6ClbDR/cbd7R2vUqzldTM/WNs1S2rlrA==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Jun 2024 20:49:53 -0700
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.89])
+  by uls-op-cesaip02.wdc.com with ESMTP; 27 Jun 2024 21:48:42 -0700
+From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: rename the extra_gfp parameter of btrfs_alloc_page_array()
-Date: Fri, 28 Jun 2024 13:51:30 +0930
-Message-ID: <9533640304878bb57291dafc76ab0656892cf64a.1719548446.git.wqu@suse.com>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>,
+	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Subject: [PATCH] btrfs: avoid possible parallel list adding
+Date: Fri, 28 Jun 2024 13:32:24 +0900
+Message-ID: <58e8574ccd70645c613e6bc7d328e34c2f52421a.1719549099.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1719548446.git.wqu@suse.com>
-References: <cover.1719548446.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,199 +72,94 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:dkim]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 0D06E21AC7
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
 
-There is only one caller utilizing the @extra_gfp parameter,
-alloc_eb_folio_array().
-And in that case the extra_gfp is only assigned to __GFP_NOFAIL.
+There is a potential parallel list adding for retrying in
+btrfs_reclaim_bgs_work and adding to the unused list. Since the block
+group is removed from the reclaim list and it is on a relocation work,
+it can be added into the unused list in parallel. When that happens,
+adding it to the reclaim list will corrupt the list head and trigger
+list corruption like below.
 
-This patch would rename the @extra_gfp parameter to @nofail to indicate
-that.
+Fix it by taking fs_info->unused_bgs_lock.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+[27177.504101][T2585409] BTRFS error (device nullb1): error relocating ch= unk 2415919104
+[27177.514722][T2585409] list_del corruption. next->prev should be ff1100= 0344b119c0, but was ff11000377e87c70. (next=3Dff110002390cd9c0)
+[27177.529789][T2585409] ------------[ cut here ]------------
+[27177.537690][T2585409] kernel BUG at lib/list_debug.c:65!
+[27177.545548][T2585409] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+[27177.555466][T2585409] CPU: 9 PID: 2585409 Comm: kworker/u128:2 Tainted: G        W          6.10.0-rc5-kts #1
+[27177.568502][T2585409] Hardware name: Supermicro SYS-520P-WTR/X12SPW-TF, BIOS 1.2 02/14/2022
+[27177.579784][T2585409] Workqueue: events_unbound btrfs_reclaim_bgs_work[btrfs]
+[27177.589946][T2585409] RIP: 0010:__list_del_entry_valid_or_report.cold+0x70/0x72
+[27177.600088][T2585409] Code: fa ff 0f 0b 4c 89 e2 48 89 de 48 c7 c7 c0
+8c 3b 93 e8 ab 8e fa ff 0f 0b 4c 89 e1 48 89 de 48 c7 c7 00 8e 3b 93 e8
+97 8e fa ff <0f> 0b 48 63 d1 4c 89 f6 48 c7 c7 e0 56 67 94 89 4c 24 04
+e8 ff f2
+[27177.624173][T2585409] RSP: 0018:ff11000377e87a70 EFLAGS: 00010286
+[27177.633052][T2585409] RAX: 000000000000006d RBX: ff11000344b119c0 RCX:0000000000000000
+[27177.644059][T2585409] RDX: 000000000000006d RSI: 0000000000000008 RDI:ffe21c006efd0f40
+[27177.655030][T2585409] RBP: ff110002e0509f78 R08: 0000000000000001 R09:ffe21c006efd0f08
+[27177.665992][T2585409] R10: ff11000377e87847 R11: 0000000000000000 R12:ff110002390cd9c0
+[27177.676964][T2585409] R13: ff11000344b119c0 R14: ff110002e0508000 R15:dffffc0000000000
+[27177.687938][T2585409] FS:  0000000000000000(0000) GS:ff11000fec880000(0000) knlGS:0000000000000000
+[27177.700006][T2585409] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[27177.709431][T2585409] CR2: 00007f06bc7b1978 CR3: 0000001021e86005 CR4:0000000000771ef0
+[27177.720402][T2585409] DR0: 0000000000000000 DR1: 0000000000000000 DR2:0000000000000000
+[27177.731337][T2585409] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:0000000000000400
+[27177.742252][T2585409] PKRU: 55555554
+[27177.748207][T2585409] Call Trace:
+[27177.753850][T2585409]  <TASK>
+[27177.759103][T2585409]  ? __die_body.cold+0x19/0x27
+[27177.766405][T2585409]  ? die+0x2e/0x50
+[27177.772498][T2585409]  ? do_trap+0x1ea/0x2d0
+[27177.779139][T2585409]  ? __list_del_entry_valid_or_report.cold+0x70/0x72
+[27177.788518][T2585409]  ? do_error_trap+0xa3/0x160
+[27177.795649][T2585409]  ? __list_del_entry_valid_or_report.cold+0x70/0x72
+[27177.805045][T2585409]  ? handle_invalid_op+0x2c/0x40
+[27177.812022][T2585409]  ? __list_del_entry_valid_or_report.cold+0x70/0x72
+[27177.820947][T2585409]  ? exc_invalid_op+0x2d/0x40
+[27177.827608][T2585409]  ? asm_exc_invalid_op+0x1a/0x20
+[27177.834637][T2585409]  ? __list_del_entry_valid_or_report.cold+0x70/0x72
+[27177.843519][T2585409]  btrfs_delete_unused_bgs+0x3d9/0x14c0 [btrfs]
+
+There is a similar retry_list code in btrfs_delete_unused_bgs(), but it is
+safe, AFAIC. Since the block group was in the unused list, the used bytes
+should be 0 when it was added to the unused list. Then, it checks
+block_group->{used,resereved,pinned} are still 0 under the
+block_group->lock. So, they should be still eligible for the unused list,
+not the reclaim list.
+
+Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Suggested-by: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Fixes: 4eb4e85c4f81 ("btrfs: retry block group reclaim without infinite loop")
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/extent_io.c | 20 ++++++++++----------
- fs/btrfs/extent_io.h |  2 +-
- fs/btrfs/inode.c     |  2 +-
- fs/btrfs/raid56.c    |  6 +++---
- fs/btrfs/scrub.c     |  2 +-
- 5 files changed, 16 insertions(+), 16 deletions(-)
+ fs/btrfs/block-group.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index dc416bad9ad8..d3ce07ab9692 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -696,21 +696,21 @@ int btrfs_alloc_folio_array(unsigned int nr_folios, struct folio **folio_array)
- }
- 
- /*
-- * Populate every free slot in a provided array with pages.
-+ * Populate every free slot in a provided array with pages, using GFP_NOFS.
-  *
-  * @nr_pages:   number of pages to allocate
-  * @page_array: the array to fill with pages; any existing non-null entries in
-- * 		the array will be skipped
-- * @extra_gfp:	the extra GFP flags for the allocation.
-+ *		the array will be skipped
-+ * @nofail:	whether using __GFP_NOFAIL flag
-  *
-  * Return: 0        if all pages were able to be allocated;
-  *         -ENOMEM  otherwise, the partially allocated pages would be freed and
-  *                  the array slots zeroed
-  */
- int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
--			   gfp_t extra_gfp)
-+			   bool nofail)
- {
--	const gfp_t gfp = GFP_NOFS | extra_gfp;
-+	const gfp_t gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
- 	unsigned int allocated;
- 
- 	for (allocated = 0; allocated < nr_pages;) {
-@@ -734,13 +734,13 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
-  *
-  * For now, the folios populated are always in order 0 (aka, single page).
-  */
--static int alloc_eb_folio_array(struct extent_buffer *eb, gfp_t extra_gfp)
-+static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
- {
- 	struct page *page_array[INLINE_EXTENT_BUFFER_PAGES] = { 0 };
- 	int num_pages = num_extent_pages(eb);
- 	int ret;
- 
--	ret = btrfs_alloc_page_array(num_pages, page_array, extra_gfp);
-+	ret = btrfs_alloc_page_array(num_pages, page_array, nofail);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -2722,7 +2722,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
- 	 */
- 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
- 
--	ret = alloc_eb_folio_array(new, 0);
-+	ret = alloc_eb_folio_array(new, false);
- 	if (ret) {
- 		btrfs_release_extent_buffer(new);
- 		return NULL;
-@@ -2755,7 +2755,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
- 	if (!eb)
- 		return NULL;
- 
--	ret = alloc_eb_folio_array(eb, 0);
-+	ret = alloc_eb_folio_array(eb, false);
- 	if (ret)
- 		goto err;
- 
-@@ -3121,7 +3121,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 
- reallocate:
- 	/* Allocate all pages first. */
--	ret = alloc_eb_folio_array(eb, __GFP_NOFAIL);
-+	ret = alloc_eb_folio_array(eb, true);
- 	if (ret < 0) {
- 		btrfs_free_subpage(prealloc);
- 		goto out;
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 8364dcb1ace3..e0cf9a367373 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -364,7 +364,7 @@ void btrfs_clear_buffer_dirty(struct btrfs_trans_handle *trans,
- 			      struct extent_buffer *buf);
- 
- int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
--			   gfp_t extra_gfp);
-+			   bool nofail);
- int btrfs_alloc_folio_array(unsigned int nr_folios, struct folio **folio_array);
- 
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 92ef9b01cf5e..0a11d309ee89 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9128,7 +9128,7 @@ static ssize_t btrfs_encoded_read_regular(struct kiocb *iocb,
- 	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 	if (!pages)
- 		return -ENOMEM;
--	ret = btrfs_alloc_page_array(nr_pages, pages, 0);
-+	ret = btrfs_alloc_page_array(nr_pages, pages, false);
- 	if (ret) {
- 		ret = -ENOMEM;
- 		goto out;
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 3858c00936e8..39bec672df0c 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -1051,7 +1051,7 @@ static int alloc_rbio_pages(struct btrfs_raid_bio *rbio)
- {
- 	int ret;
- 
--	ret = btrfs_alloc_page_array(rbio->nr_pages, rbio->stripe_pages, 0);
-+	ret = btrfs_alloc_page_array(rbio->nr_pages, rbio->stripe_pages, false);
- 	if (ret < 0)
- 		return ret;
- 	/* Mapping all sectors */
-@@ -1066,7 +1066,7 @@ static int alloc_rbio_parity_pages(struct btrfs_raid_bio *rbio)
- 	int ret;
- 
- 	ret = btrfs_alloc_page_array(rbio->nr_pages - data_pages,
--				     rbio->stripe_pages + data_pages, 0);
-+				     rbio->stripe_pages + data_pages, false);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1640,7 +1640,7 @@ static int alloc_rbio_data_pages(struct btrfs_raid_bio *rbio)
- 	const int data_pages = rbio->nr_data * rbio->stripe_npages;
- 	int ret;
- 
--	ret = btrfs_alloc_page_array(data_pages, rbio->stripe_pages, 0);
-+	ret = btrfs_alloc_page_array(data_pages, rbio->stripe_pages, false);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 4677a4f55b6a..14a8d7100018 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -261,7 +261,7 @@ static int init_scrub_stripe(struct btrfs_fs_info *fs_info,
- 	atomic_set(&stripe->pending_io, 0);
- 	spin_lock_init(&stripe->write_error_lock);
- 
--	ret = btrfs_alloc_page_array(SCRUB_STRIPE_PAGES, stripe->pages, 0);
-+	ret = btrfs_alloc_page_array(SCRUB_STRIPE_PAGES, stripe->pages, false);
- 	if (ret < 0)
- 		goto error;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 7cde40fe6a50..498442d0c216 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1945,8 +1945,17 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ next:
+ 		if (ret && !READ_ONCE(space_info->periodic_reclaim)) {
+ 			/* Refcount held by the reclaim_bgs list after splice. */
+-			btrfs_get_block_group(bg);
+-			list_add_tail(&bg->bg_list, &retry_list);
++			spin_lock(&fs_info->unused_bgs_lock);
++			/*
++			 * This block group might be added to the unused list
++			 * during the above process. Move it back to the
++			 * reclaim list otherwise.
++			 */
++			if (list_empty(&bg->bg_list)) {
++				btrfs_get_block_group(bg);
++				list_add_tail(&bg->bg_list, &retry_list);
++			}
++			spin_unlock(&fs_info->unused_bgs_lock);
+ 		}
+ 		btrfs_put_block_group(bg);
  
 -- 
 2.45.2
