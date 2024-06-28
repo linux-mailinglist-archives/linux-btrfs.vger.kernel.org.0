@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-6042-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6040-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C926791C1F6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 17:01:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A31391C1F4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 17:01:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 587161F24DA4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 15:01:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D60AC281CAA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 15:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1931C68B5;
-	Fri, 28 Jun 2024 14:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9FB1CD5AB;
+	Fri, 28 Jun 2024 14:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="a48CjYxp"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="rlltqUmW"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE771C2310
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 14:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344CA1C230B
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 14:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719586709; cv=none; b=mYsm9owKfKPMiCYuHHDj7jlWR3fxLnp4CnmCLJzMWnuq6+OUPjxjeCiEUdPmAiVO2nfnTH3jHyGQKbjCK7nf0JpzSj6flvewQKeyexu8Pwo6ZJT/djgHCpd3uXe3RLb4lzI1hBqPr+uQfM9EK4iSWF6VG/rzXr/wsgZZqAHey5w=
+	t=1719586709; cv=none; b=UzimLiWd2nhUA0/j56lFZAi1xvPVzmXdsophH0IO8WQGhAIVFtHdeOVEvLEiWXIXWj0aHShAna+aaEljjSI75gwvMhjtYAJIOkHkDh/G7WS1FS1B9zjns57mAV6rAf2JRZpU/sNa0SgmHPkYc9As9f8/ad7PsEB44RS36MQcdkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719586709; c=relaxed/simple;
-	bh=V1v5Y1qvJsmErKP6eACPBZmmln2eDlfF8LdIb+V+BSA=;
+	bh=wdQuDgu+iO+37x2Jo53YT21oS0H+jAQCGV5WCPe1Csc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TDEnnZhbg9PtaIJSlwFT5ro3HJzyqo5gZuIlwXGGvLFzjI0sSCjQIdrGT9KsT2Erte0jKDYOPz83kz7H6QdF9xNZRZ2NdM3b0OVWmmumOQKJtMUR4rt2f53emeFOfkRu1qqTRpVLZNx8FLv7F7QSslZ+u8Hqk6TIChheM0NKEvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=a48CjYxp; arc=none smtp.client-ip=67.231.145.42
+	 MIME-Version:Content-Type; b=mc77EcvzN6wf0rL233ZlJUTF58VglLtYUuZJsyV1HgUsO9gvjZmbl9l6SELZAZtMFNQY8URhKu75+HPyVzXmZlnKvxXz69GiVY1si+kp6E+gqLDXOd0Md7ot3oB5uFlbh93iLz87akD06oBmpmuCgyJTWaebAMQQIPQzFlft0aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=rlltqUmW; arc=none smtp.client-ip=67.231.145.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45SA2YbG010220
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 07:58:27 -0700
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45SA2O65016820
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 07:58:25 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
 	:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	facebook; bh=RcgqlsiejS1+Zj59bYvDBllgmGWEMxCRDauiY4blxVE=; b=a48
-	CjYxpShEiMp8H5CjvNceaBvQRUFN5ZwonGalHlTRNKsqtLiNMfRC4P1KxzlvN2vf
-	9WP1Jx6AAQoZOTuPgPeMr38eZ0P45BQ22d4rvf6eK5SwuF3LAuKtqc9DAQiKCRLr
-	ehBo93c7Hi/D4nQLpkvK8X3H8obp73GDDQomNp8k=
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 401grkv7sp-2
+	facebook; bh=VmmW1bvPtWkXMhCe7v38iPKdKVdMmf01FrXriwWS5eo=; b=rll
+	tqUmWvHKEo/CSoYR/M+8g+VM1kXokfjvl6OQONE2uQYn2M7yP/9w17NiJq85A1gu
+	jbBmzkEgnOblDDuf5Aij77iIaWXI5SWaqC6ta0IXTBOMnL/emDdA/MAFT1M6KRjt
+	ociUQtkHDSf+SXH01bMTn6svEAjBmWEe25+/mUPI=
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 401j2g3qwq-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 07:58:27 -0700 (PDT)
-Received: from twshared13822.17.frc2.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 07:58:25 -0700 (PDT)
+Received: from twshared48820.07.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Fri, 28 Jun 2024 14:58:25 +0000
+ 15.2.1544.11; Fri, 28 Jun 2024 14:58:22 +0000
 Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id C72F33B2670E; Fri, 28 Jun 2024 15:58:17 +0100 (BST)
+	id 9C7273B26711; Fri, 28 Jun 2024 15:58:18 +0100 (BST)
 From: Mark Harmstone <maharmstone@fb.com>
 To: <linux-btrfs@vger.kernel.org>
 CC: Omar Sandoval <osandov@fb.com>, Mark Harmstone <maharmstone@meta.com>
-Subject: [PATCH 1/3] btrfs-progs: use libbtrfsutil for btrfs subvolume create
-Date: Fri, 28 Jun 2024 15:56:47 +0100
-Message-ID: <20240628145807.1800474-2-maharmstone@fb.com>
+Subject: [PATCH 2/3] btrfs-progs: use libbtrfsutil for btrfs subvolume snapshot
+Date: Fri, 28 Jun 2024 15:56:48 +0100
+Message-ID: <20240628145807.1800474-3-maharmstone@fb.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240628145807.1800474-1-maharmstone@fb.com>
 References: <20240628145807.1800474-1-maharmstone@fb.com>
@@ -69,233 +69,168 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: C7MKq1cQ4jj8Ent8vPdSEjGWd12B3KLI
-X-Proofpoint-ORIG-GUID: C7MKq1cQ4jj8Ent8vPdSEjGWd12B3KLI
+X-Proofpoint-ORIG-GUID: snsx-V09gjN4vaSbIRo4J0lJ0jtBrnIF
+X-Proofpoint-GUID: snsx-V09gjN4vaSbIRo4J0lJ0jtBrnIF
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-06-28_10,2024-06-28_01,2024-05-17_01
 
 From: Omar Sandoval <osandov@fb.com>
 
-Call btrfs_util_create_subvolume in create_one_subvolume rather than
+Call btrfs_util_create_snapshot in cmd_subvolume_snapshot rather than
 calling the ioctl directly.
 
 Signed-off-by: Mark Harmstone <maharmstone@meta.com>
 Co-authored-by: Mark Harmstone <maharmstone@meta.com>
 
 ---
- cmds/subvolume.c | 133 +++++++++++++++++++----------------------------
- 1 file changed, 53 insertions(+), 80 deletions(-)
+ cmds/subvolume.c | 94 +++++++++++++++++-------------------------------
+ 1 file changed, 33 insertions(+), 61 deletions(-)
 
 diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-index b4151af2..8fa0d407 100644
+index 8fa0d407..c668ae91 100644
 --- a/cmds/subvolume.c
 +++ b/cmds/subvolume.c
-@@ -46,6 +46,7 @@
- #include "common/units.h"
- #include "common/format-output.h"
- #include "common/tree-search.h"
-+#include "common/parse-utils.h"
- #include "cmds/commands.h"
- #include "cmds/qgroup.h"
-=20
-@@ -140,63 +141,27 @@ static const char * const cmd_subvolume_create_usag=
-e[] =3D {
- 	NULL
- };
-=20
--static int create_one_subvolume(const char *dst, struct btrfs_qgroup_inh=
-erit *inherit,
-+static int create_one_subvolume(const char *dst, struct btrfs_util_qgrou=
-p_inherit *inherit,
- 				bool create_parents)
+@@ -622,18 +622,11 @@ static int cmd_subvolume_snapshot(const struct cmd_=
+struct *cmd, int argc, char *
  {
- 	int ret;
--	int len;
--	int	fddst =3D -1;
+ 	char	*subvol, *dst;
+ 	int	res, retval;
+-	int	fd =3D -1, fddst =3D -1;
+-	int	len;
+-	bool readonly =3D false;
 -	char	*dupname =3D NULL;
 -	char	*dupdir =3D NULL;
 -	const char *newname;
 -	char	*dstdir;
--
--	ret =3D path_is_dir(dst);
--	if (ret < 0 && ret !=3D -ENOENT) {
--		errno =3D -ret;
--		error("cannot access %s: %m", dst);
--		goto out;
++	char	*dstdir =3D NULL;
+ 	enum btrfs_util_error err;
+-	struct btrfs_ioctl_vol_args_v2	args;
+-	struct btrfs_qgroup_inherit *inherit =3D NULL;
++	struct btrfs_util_qgroup_inherit *inherit =3D NULL;
++	int flags =3D 0;
+=20
+-	memset(&args, 0, sizeof(args));
+ 	optind =3D 0;
+ 	while (1) {
+ 		int c =3D getopt(argc, argv, "i:r");
+@@ -642,14 +635,14 @@ static int cmd_subvolume_snapshot(const struct cmd_=
+struct *cmd, int argc, char *
+=20
+ 		switch (c) {
+ 		case 'i':
+-			res =3D btrfs_qgroup_inherit_add_group(&inherit, optarg);
++			res =3D qgroup_inherit_add_group(&inherit, optarg);
+ 			if (res) {
+ 				retval =3D res;
+ 				goto out;
+ 			}
+ 			break;
+ 		case 'r':
+-			readonly =3D true;
++			flags |=3D BTRFS_UTIL_CREATE_SNAPSHOT_READ_ONLY;
+ 			break;
+ 		default:
+ 			usage_unknown_option(cmd, argv);
+@@ -683,72 +676,51 @@ static int cmd_subvolume_snapshot(const struct cmd_=
+struct *cmd, int argc, char *
+ 	}
+=20
+ 	if (res > 0) {
++		char *dupname;
++		const char *newname;
++
+ 		dupname =3D strdup(subvol);
+ 		newname =3D path_basename(dupname);
+-		dstdir =3D dst;
+-	} else {
+-		dupname =3D strdup(dst);
+-		newname =3D path_basename(dupname);
+-		dupdir =3D strdup(dst);
+-		dstdir =3D path_dirname(dupdir);
 -	}
--	if (ret >=3D 0) {
--		error("target path already exists: %s", dst);
--		ret =3D -EEXIST;
--		goto out;
--	}
--
--	dupname =3D strdup(dst);
--	if (!dupname) {
--		error_msg(ERROR_MSG_MEMORY, "duplicating %s", dst);
--		ret =3D -ENOMEM;
--		goto out;
--	}
--	newname =3D path_basename(dupname);
--
--	dupdir =3D strdup(dst);
--	if (!dupdir) {
--		error_msg(ERROR_MSG_MEMORY, "duplicating %s", dst);
--		ret =3D -ENOMEM;
--		goto out;
--	}
--	dstdir =3D path_dirname(dupdir);
 -
 -	if (!test_issubvolname(newname)) {
--		error("invalid subvolume name: %s", newname);
--		ret =3D -EINVAL;
+-		error("invalid snapshot name '%s'", newname);
 -		goto out;
 -	}
 -
 -	len =3D strlen(newname);
 -	if (len > BTRFS_VOL_NAME_MAX) {
--		error("subvolume name too long: %s", newname);
--		ret =3D -EINVAL;
+-		error("snapshot name too long '%s'", newname);
 -		goto out;
--	}
-+	enum btrfs_util_error err;
-=20
- 	if (create_parents) {
- 		char p[PATH_MAX] =3D { 0 };
- 		char dstdir_dup[PATH_MAX];
-+		char *dupdir =3D NULL;
-+		char *dstdir;
- 		char *token;
-=20
-+		dupdir =3D strdup(dst);
-+		if (!dupdir) {
-+			error_msg(ERROR_MSG_MEMORY, "duplicating %s", dst);
-+			free(dupdir);
-+			return -ENOMEM;
-+		}
-+		dstdir =3D path_dirname(dupdir);
-+
- 		strncpy_null(dstdir_dup, dstdir, sizeof(dstdir_dup));
- 		if (dstdir_dup[0] =3D=3D '/')
- 			strcat(p, "/");
-@@ -209,61 +174,68 @@ static int create_one_subvolume(const char *dst, st=
-ruct btrfs_qgroup_inherit *in
- 				ret =3D mkdir(p, 0777);
- 				if (ret < 0) {
- 					error("failed to create directory %s: %m", p);
--					goto out;
-+					free(dupdir);
-+					return ret;
- 				}
- 			} else if (ret <=3D 0) {
- 				if (ret =3D=3D 0)
- 					ret =3D -EEXIST;
- 				errno =3D ret ;
- 				error("failed to check directory %s before creation: %m", p);
--				goto out;
-+				free(dupdir);
-+				return ret;
- 			}
- 			strcat(p, "/");
- 			token =3D strtok(NULL, "/");
- 		}
 -	}
 =20
 -	fddst =3D btrfs_open_dir(dstdir);
--	if (fddst < 0) {
--		ret =3D fddst;
+-	if (fddst < 0)
 -		goto out;
-+		free(dupdir);
- 	}
+-
+-	fd =3D btrfs_open_dir(subvol);
+-	if (fd < 0)
+-		goto out;
++		dstdir =3D malloc(strlen(dst) + 1 + strlen(newname) + 1);
++		if (!dstdir) {
++			error("out of memory");
++			free(dupname);
++			goto out;
++		}
 =20
+-	if (readonly)
+-		args.flags |=3D BTRFS_SUBVOL_RDONLY;
++		dstdir[0] =3D 0;
++		strcpy(dstdir, dst);
++		strcat(dstdir, "/");
++		strcat(dstdir, newname);
+=20
+-	args.fd =3D fd;
 -	if (inherit) {
--		struct btrfs_ioctl_vol_args_v2	args;
-+	pr_verbose(LOG_DEFAULT, "Create subvolume '%s'\n", dst);
-=20
--		memset(&args, 0, sizeof(args));
--		strncpy_null(args.name, newname, sizeof(args.name));
 -		args.flags |=3D BTRFS_SUBVOL_QGROUP_INHERIT;
 -		args.size =3D btrfs_qgroup_inherit_size(inherit);
 -		args.qgroup_inherit =3D inherit;
-+	err =3D btrfs_util_create_subvolume(dst, 0, NULL, inherit);
++		free(dupname);
++	} else {
++		dstdir =3D strdup(dst);
+ 	}
+-	strncpy_null(args.name, newname, sizeof(args.name));
+=20
+-	res =3D ioctl(fddst, BTRFS_IOC_SNAP_CREATE_V2, &args);
+-	if (res < 0) {
+-		if (errno =3D=3D ETXTBSY)
+-			error("cannot snapshot '%s': source subvolume contains an active swap=
+file (%m)", subvol);
+-		else
+-			error("cannot snapshot '%s': %m", subvol);
++	err =3D btrfs_util_create_snapshot(subvol, dstdir, flags, NULL, inherit=
+);
 +	if (err) {
 +		error_btrfs_util(err);
-+		return 1;
-+	}
-=20
--		ret =3D ioctl(fddst, BTRFS_IOC_SUBVOL_CREATE_V2, &args);
--	} else {
--		struct btrfs_ioctl_vol_args	args;
-+	return 0;
-+}
-+
-+static int qgroup_inherit_add_group(struct btrfs_util_qgroup_inherit **i=
-nherit,
-+				    const char *arg)
-+{
-+	enum btrfs_util_error err;
-+	u64 qgroupid;
-=20
--		memset(&args, 0, sizeof(args));
--		strncpy_null(args.name, newname, sizeof(args.name));
--		ret =3D ioctl(fddst, BTRFS_IOC_SUBVOL_CREATE, &args);
-+	if (!*inherit) {
-+		err =3D btrfs_util_create_qgroup_inherit(0, inherit);
-+		if (err) {
-+			error_btrfs_util(err);
-+			return -1;
-+		}
+ 		goto out;
  	}
 =20
--	if (ret < 0) {
--		error("cannot create subvolume: %m");
--		goto out;
-+	qgroupid =3D parse_qgroupid_or_path(optarg);
-+	if (qgroupid =3D=3D 0) {
-+		error("invalid qgroup specification, qgroupid must not be 0");
-+		return -1;
- 	}
--	pr_verbose(LOG_DEFAULT, "Create subvolume '%s/%s'\n", dstdir, newname);
+ 	retval =3D 0;	/* success */
 =20
--out:
+-	if (readonly)
++	if (flags & BTRFS_UTIL_CREATE_SNAPSHOT_READ_ONLY)
+ 		pr_verbose(LOG_DEFAULT,
+-			   "Create readonly snapshot of '%s' in '%s/%s'\n",
+-			   subvol, dstdir, newname);
++			   "Create readonly snapshot of '%s' in '%s'\n",
++			   subvol, dstdir);
+ 	else
+ 		pr_verbose(LOG_DEFAULT,
+-			   "Create snapshot of '%s' in '%s/%s'\n",
+-			   subvol, dstdir, newname);
++			   "Create snapshot of '%s' in '%s'\n",
++			   subvol, dstdir);
+=20
+ out:
 -	close(fddst);
+-	close(fd);
+-	free(inherit);
 -	free(dupname);
 -	free(dupdir);
-+	err =3D btrfs_util_qgroup_inherit_add_group(inherit, qgroupid);
-+	if (err) {
-+		error_btrfs_util(err);
-+		return -1;
-+	}
-=20
--	return ret;
-+	return 0;
- }
++	free(dstdir);
 +
- static int cmd_subvolume_create(const struct cmd_struct *cmd, int argc, =
-char **argv)
- {
- 	int retval, ret;
--	struct btrfs_qgroup_inherit *inherit =3D NULL;
-+	struct btrfs_util_qgroup_inherit *inherit =3D NULL;
- 	bool has_error =3D false;
- 	bool create_parents =3D false;
-=20
-@@ -281,7 +253,7 @@ static int cmd_subvolume_create(const struct cmd_stru=
-ct *cmd, int argc, char **a
-=20
- 		switch (c) {
- 		case 'i':
--			ret =3D btrfs_qgroup_inherit_add_group(&inherit, optarg);
-+			ret =3D qgroup_inherit_add_group(&inherit, optarg);
- 			if (ret) {
- 				retval =3D ret;
- 				goto out;
-@@ -310,7 +282,8 @@ static int cmd_subvolume_create(const struct cmd_stru=
-ct *cmd, int argc, char **a
- 	if (!has_error)
- 		retval =3D 0;
- out:
--	free(inherit);
 +	if (inherit)
 +		btrfs_util_destroy_qgroup_inherit(inherit);
 =20
