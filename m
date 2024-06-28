@@ -1,102 +1,173 @@
-Return-Path: <linux-btrfs+bounces-6044-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6045-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 147B591C45F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 19:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F066E91C480
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 19:08:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1BDE1F22200
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 17:05:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 976021F22632
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2024 17:08:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE5571C2324;
-	Fri, 28 Jun 2024 17:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660281CB327;
+	Fri, 28 Jun 2024 17:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ghI23IKn"
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="JF7fsQaR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C541CB33B;
-	Fri, 28 Jun 2024 17:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AE551C9EBE
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Jun 2024 17:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719594300; cv=none; b=ozxWv23MujZs3J4i94Ay7AtljctZaC3SX0RwfbfOH8XX6RQ7Zj/s19M5aaoZOfL86104aoHoJ0Uggrn6ExUrEwjTvHoXy33SKw43qykkIvWDz+B2G8t4JoaEP5Z9CPTq/1ea4ZhB4VxyE8/2J5asCW925l3QJl55MCuF1BQoJzY=
+	t=1719594530; cv=none; b=JGWAbL8DIEIEzA/APEkiwGC+UDsZsixCUoMVnFEWZCBz37BHun8IESS57PrPdhKtkgVTkNI/58zKoiDnYiARYl5f1OBW0LBZ5/+zH82hH1JYa3o/xQwRbnrlxlyQjy+RXvfKBsefSzTIjTlihq4AnmubKPRxRtNcq+vlFVzZp/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719594300; c=relaxed/simple;
-	bh=xySLRgPVJEPnNBQNZieFU189xHYdEw/OjjEOCBhlQgk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RswLl1XtYODbvUGPGazxKWK73b2nn7dv+ShY5a+goyI3ygpEL+oApc8mbmAAISeHo+PF3RDx+mEaEE3IeHLZMtoX0o4csMFbDVbRket/HWWo68MF04FGcVsua9r4qiJEvQ7w/Gm5wPOvSYztL78OuJIx0/E/hdQYBuKaZBlY+IA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ghI23IKn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF243C32786;
-	Fri, 28 Jun 2024 17:04:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719594299;
-	bh=xySLRgPVJEPnNBQNZieFU189xHYdEw/OjjEOCBhlQgk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ghI23IKn5ZT8sQXGzWYwN/t7cWWFFulUpONhyRj/F6tyLHbzIrGnI49Gnr1qPfkQC
-	 myzeiR1to9FewmZqUhV5p0BTlWWA8Rz7in89AQTYtL1TrAb9PTAOKpbTMGOP8M8811
-	 sKv2wg0AWxhzOmR/B6R1mIgfzzrCviPt3jSdOd69oLKqRMLmDuIQzJO7kltSoj3/O5
-	 4wIShtIiu3tBbxQruMIDaDYtJ600a7eyG0Ty0h6YlvWL5vm0eNuETPkzW1w1j6252V
-	 FsP+SFJTtAefZB9h9AzkdvFsk1Ry2ji8amLoYajTXleVpFymaaYoOkJ2hHbA4Cwl6J
-	 7riKgk+XbkFfg==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs/081: wait for reader process to exit before cycle mounting
-Date: Fri, 28 Jun 2024 18:04:49 +0100
-Message-ID: <bdbff9712f32fe9458d9904f82bcc7cbf9892a4b.1719594258.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1719594530; c=relaxed/simple;
+	bh=2GgiU93DC7BYUxZeNoJSCwEtpwvuxtTmv8gOBon7854=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Oj5xHNBt0c1mGtHXrp4yGptYtoD5I0RTMhe/w4oZmoiUfUWkSpKafJnWDv5pKngtaN+wbQwdF+CtYd0sQxSmavjcIKasxCv77G5hmD1Nf62YiYKVpqVopRE0F2sPI6K4BWCbtcW3CCFk8dVXcRK01QH/NN4rzu+LNlTeSRscQMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=JF7fsQaR; arc=none smtp.client-ip=213.209.10.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-18.iol.local with ESMTPA
+	id NF32scyaXVxa0NF32sbfq2; Fri, 28 Jun 2024 19:06:08 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1719594368; bh=5rJpI4muRnR37cehTaZnWzz8aKuBkVf450uNIu7mzZw=;
+	h=From;
+	b=JF7fsQaRAg9WfySWJBhBKvzNJCLlInUJCmcJjnvW9IZkGguH4T9L9oUc7NJhADNE4
+	 6npfZGHRFy6LrM78M3gB88MJxxtbt6BghUWapM++bjc+TsS43B8RsGWAldBF/X9Ab8
+	 psYqavgWZRZcSYrpUXq5NaO5qQ3SSElWG5t6vj7gTbLjxNsPT0cKJNsdMAdMD1a4OS
+	 73zct53rMlDISFzdvQS65W6d+6xZsrSROAya34guN9aZQOkxpBim+gq3VqME8VEPk/
+	 gGFUFYUZbIiFlR/qESdxGulN3OZcNsGGxA41V7W2gVLkl7yoOAr6hO1wPV9+hsQxrw
+	 2y3MuIbmzsnyw==
+X-CNFS-Analysis: v=2.4 cv=c89gQg9l c=1 sm=1 tr=0 ts=667eed80 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=VabnemYjAAAA:8 a=kE-lTLQdLfSRi6_233AA:9 a=QEXdDO2ut3YA:10
+ a=gKebqoRLp9LExxC7YDUY:22
+Message-ID: <eb3642fd-963b-4a14-9cd2-8339adcb58b7@libero.it>
+Date: Fri, 28 Jun 2024 19:06:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs-progs: add --subvol option to mkfs.btrfs
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+Cc: Mark Harmstone <maharmstone@meta.com>
+References: <20240627095455.315620-1-maharmstone@fb.com>
+Content-Language: en-US
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <20240627095455.315620-1-maharmstone@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIASC3IC46gPsTYtcPU4hvAPCuUyrxIPyro06sun3UcOPAjrtCyqGMN5mmIL7e3kpCKY/pIo8DV/tk9gsm1fYlxxtGUpMrn9N14hwGHaY/EMmWNr6o+m
+ iHjpUu6IApWY6CupVaFXHG7ZrdRtWuApwx/z7txljiGcBU62DQO/u3mSuqkcdyDPYUFt7SnZVMvP4SpDT5SLJEDUHqBGlJAR5i7Jl+i6pz6nzgg05nDxZHs4
+ bd/mj/FJzCMnLlRlbzyRhg==
 
-From: Filipe Manana <fdmanana@suse.com>
+On 27/06/2024 11.54, Mark Harmstone wrote:
+> From: Mark Harmstone <maharmstone@meta.com>
+> 
+> This patch adds a --subvol option, which tells mkfs.btrfs to create the
+> specified directories as subvolumes.
+> 
+> Given a populated directory img, the command
+> 
+> $ mkfs.btrfs --rootdir img --subvol usr --subvol home --subvol home/username /dev/loop0
+> 
+> will create subvolumes usr and home within the FS root, and subvolume
+> username within the home subvolume. It will fail if any of the
+> directories do not yet exist.
+> 
 
-We send a kill signal to the reader process, check the md5sum of the
-files and then cycle mount the scratch device. Most of the time the
-reader process has already terminated before we attempt the cycle mount,
-but sometimes it may still be alive in which case the cat command
-executed by the reader process may fail because the scratch fs was
-unmounted and the target file doesn't exist. This makes the cat command
-print an error message and the test fail like this:
+Could be possible to decouple the "--rootdir" and the "--subvol" options ?
+I.e. doing a first iteration where only the subvolume/subdir are created and a second one where
+all the subvolume are populated.
 
-     Verifying file digests after cloning
-     14968c092c68e32fa35e776392d14523  SCRATCH_MNT/foo
-     14968c092c68e32fa35e776392d14523  SCRATCH_MNT/bar
-    +cat: /opt/scratch/bar: No such file or directory
-    +cat: /opt/scratch/bar: No such file or directory
-    +cat: /opt/scratch/bar: No such file or directory
-    +cat: /opt/scratch/bar: No such file or directory
-    ...
-    (Run diff -u /opt/xfstests/tests/btrfs/081.out
+The use case is creating only the subvol without --rootdir. My goal is to pupulate a btrfs
+filesystem with a"root" subvol, and make it default. This to simplify the next snapshots.
 
-Fix this by making the test wait for the reader to terminate after
-sending it the kill signal.
+Until now the subvol=0 is special because it can be snapshotted, but it cannot be deleted.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/081 | 1 +
- 1 file changed, 1 insertion(+)
+Having a / in a default subvol, could simplify the filesystem snapshot.
 
-diff --git a/tests/btrfs/081 b/tests/btrfs/081
-index c3f84c77..64544da3 100755
---- a/tests/btrfs/081
-+++ b/tests/btrfs/081
-@@ -82,6 +82,7 @@ $CLONER_PROG -s 0 -d 0 -l $(($num_extents * $extent_size)) \
- 	$SCRATCH_MNT/foo $SCRATCH_MNT/bar
- 
- kill $reader_pid > /dev/null 2>&1
-+wait $reader_pid
- 
- # Now both foo and bar should have exactly the same content.
- # This didn't use to be the case before the btrfs kernel fix mentioned
+Otherwise, mkfs.btrfs can create a (temporary) root-image with the minimal directories needed...
+but it seems a bit overkilling.
+
+
+> Signed-off-by: Mark Harmstone <maharmstone@meta.com>
+> ---
+>   convert/main.c                              |   4 +-
+>   kernel-shared/ctree.h                       |   3 +-
+[...]
+
+>   
+>   	if (features.runtime_flags & BTRFS_FEATURE_RUNTIME_QUOTA ||
+> @@ -2076,6 +2406,18 @@ out:
+>   	free(label);
+>   	free(source_dir);
+>   
+> +	while (!list_empty(&subvols)) {
+> +		struct rootdir_subvol *head = list_entry(subvols.next,
+> +					      struct rootdir_subvol,
+> +					      list);
+> +
+> +		free(head->dir);
+> +		free(head->fullpath);
+> +
+> +		list_del(&head->list);
+> +		free(head);
+> +	}
+> +
+
+Because it is called more than once, this part can be refactored in a dedicated function:
+
+void free_subvols_list(list_head *subvols) {
+	while (!list_empty(subvols)) {
+		struct rootdir_subvol *head = list_entry(subvols.next,
+					      struct rootdir_subvol,
+					      list);
+
+		free(head->dir);
+		free(head->fullpath);
+
+		list_del(&head->list);
+		free(head);
+}
+
+>   	return !!ret;
+>   
+>   error:
+> @@ -2087,6 +2429,19 @@ error:
+>   	free(prepare_ctx);
+>   	free(label);
+>   	free(source_dir);
+> +
+> +	while (!list_empty(&subvols)) {
+> +		struct rootdir_subvol *head = list_entry(subvols.next,
+> +					      struct rootdir_subvol,
+> +					      list);
+> +
+> +		free(head->dir);
+> +		free(head->fullpath);
+> +
+> +		list_del(&head->list);
+> +		free(head);
+> +	}
+> +
+
+Same as above
+
+[...]
+
 -- 
-2.43.0
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
 
