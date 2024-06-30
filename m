@@ -1,403 +1,293 @@
-Return-Path: <linux-btrfs+bounces-6053-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC34891D073
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jun 2024 09:57:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3070B91D15C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jun 2024 13:06:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24BA8B210EC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jun 2024 07:57:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AA9DB2144E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 Jun 2024 11:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933803D575;
-	Sun, 30 Jun 2024 07:57:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E9413BC30;
+	Sun, 30 Jun 2024 11:06:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G0W/cVRw";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G0W/cVRw"
+	dkim=pass (1024-bit key) header.d=bouton.name header.i=@bouton.name header.b="xAd9RcGL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.bouton.name (ns.bouton.name [109.74.195.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB4D98F72
-	for <linux-btrfs@vger.kernel.org>; Sun, 30 Jun 2024 07:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2933226AEA
+	for <linux-btrfs@vger.kernel.org>; Sun, 30 Jun 2024 11:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.74.195.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719734244; cv=none; b=VTDueqfr19Pnugy4cwORzNMt9cpSyKzbd5djmy8HodDe1dG7bomY4OfSKJ1GbDr3zlUbxgwPxeNZcyLBj+NONBdkSGhNZPDU+JnGQH1zb+lp0BP1LfOf0rFd2iiUyP/QYQJt3VP0Khu0FB+8AV8uy2fUijJuKaOKpUWWd5X0Jas=
+	t=1719745604; cv=none; b=Ijd2CStYtWtn2ioHX5zFsqSuyKKWr1dPTEJMoRgKUF92cuoWyhU70tzcg7im2mglMs6+fRQK/7uxjVxpt/8uDFcILNedF/heIf6NcAo1RokBCt5r/+x4A/5qxxhO9lObMzI3OEv5g7XYYblHpV7RUFEZWQA/10tl+Y0AFRdaZ4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719734244; c=relaxed/simple;
-	bh=HnKVVi0Co03GRcarJfA5WotiEo5YQn5W2xYOezV48Qs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=DQlgAFlp4EYjMrQUKV1KOsZ3t7vQSFebM7fRBJNTC5xhUhG6am0cwVc2aDao5W6/zTWncEBS+ftNSX0e+C4lTSWmAkGtucYFtkfyDCCcx0A/Wq6XH+IhP16+vVSP6JFaGhmerMU8XLb8WKUqg7XkI1EsXlvh8ijqDYxwTpPMYaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G0W/cVRw; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G0W/cVRw; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	s=arc-20240116; t=1719745604; c=relaxed/simple;
+	bh=8ujMUIMnz/fqEqMySXDTEhffrc4+Q0EJsStCtDKFYuU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=tP+DUQ4GsltL8scivLrdbcmDYY+dREXVC79kNhm7bCgC2a9XZExA6IyAbtslvVjB4TPKJu0WmNbXT59u81R/iM/+sQus70BVI5rbZ24nkR2IXuSqyKA/6QiqViZo4BCMB31VGRrAdjkjROv4wJbONIjJdCL4rC9tAKmpt6P/m1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bouton.name; spf=pass smtp.mailfrom=bouton.name; dkim=pass (1024-bit key) header.d=bouton.name header.i=@bouton.name header.b=xAd9RcGL; arc=none smtp.client-ip=109.74.195.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bouton.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bouton.name
+Received: from [192.168.10.101] (052559474.box.freepro.com [82.96.130.55])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C3490219F4
-	for <linux-btrfs@vger.kernel.org>; Sun, 30 Jun 2024 07:57:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719734238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=wRj0060d5rRR6LhS+2xUnoDA9lkLJE8HW+dbHz2hbOs=;
-	b=G0W/cVRw0/ASMO9w/R/wPHH7wLBx1fKXwyeSdKr3E0fbnQ09rM6pMVf+yiBqkBGoIFrDvJ
-	0mCOHIymwOGAGQqfXTBgxlB5zd+rc/k71kKAbNPM6IEJ8AUZ8zkp0FJBVPvXvOqxsu3APn
-	YF9TVbhElBIvQbE8QgWTHsiNklKp+mM=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719734238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=wRj0060d5rRR6LhS+2xUnoDA9lkLJE8HW+dbHz2hbOs=;
-	b=G0W/cVRw0/ASMO9w/R/wPHH7wLBx1fKXwyeSdKr3E0fbnQ09rM6pMVf+yiBqkBGoIFrDvJ
-	0mCOHIymwOGAGQqfXTBgxlB5zd+rc/k71kKAbNPM6IEJ8AUZ8zkp0FJBVPvXvOqxsu3APn
-	YF9TVbhElBIvQbE8QgWTHsiNklKp+mM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFF5D13A7F
-	for <linux-btrfs@vger.kernel.org>; Sun, 30 Jun 2024 07:57:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tN5uJd0PgWbuNAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 30 Jun 2024 07:57:17 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3] btrfs: prefer to allocate larger folio for metadata
-Date: Sun, 30 Jun 2024 17:26:59 +0930
-Message-ID: <96e9e2c1ac180a3b6c8c29a06c4a618c8d4dc2d9.1719734174.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+	by mail.bouton.name (Postfix) with ESMTPSA id CE70ACC5C;
+	Sun, 30 Jun 2024 12:59:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bouton.name;
+	s=default; t=1719745145;
+	bh=Fl4k+vCX+3XsVvP5EqC97rM3QJCRFe836CaN5gs7gm4=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=xAd9RcGLXCfZxaMcEJlpvFf/w9gtiZTwpn298hHs35RiMf5pzdk0Ba4yg2n98OE//
+	 MInHyfOxKFqZfQYxIZlOl0b6AFrIe0szmVjmDXB0dlJK4P233PBzhlPOsEP2ODQqIo
+	 vSx/sTNlALmpbVevVIDwic7ZU01OJjasqY9jLV/I=
+Message-ID: <c24180e5-b0dc-47e5-91b0-7935e85ccc4b@bouton.name>
+Date: Sun, 30 Jun 2024 12:59:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: BUG: scrub reports uncorrectable csum errors linked to readable
+ file (data: single)
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <c2fa6c37-d2a8-4d77-b095-e04e3db35ef0@bouton.name>
+ <4525e502-c209-4672-ae32-68296436d204@gmx.com>
+ <1df4ce53-8cf9-40b1-aa43-bf443947c833@bouton.name>
+ <80456d11-9859-402c-a77c-5c3b98b755a5@gmx.com>
+ <05fc8552-1b6f-4b6c-82b2-0cf716cc8e6b@bouton.name>
+ <ae6aab7d-029d-4e33-ace7-e8f0b0a2fa36@bouton.name>
+ <08774378-624a-4586-9f24-c108f1ffeebb@gmx.com>
+From: Lionel Bouton <lionel-subscription@bouton.name>
+Content-Language: en-US
+In-Reply-To: <08774378-624a-4586-9f24-c108f1ffeebb@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
 
-For btrfs metadata, the high order folios are only utilized when all the
-following conditions are met:
+Le 22/06/2024 à 11:41, Qu Wenruo a écrit :
+>
+>
+> 在 2024/6/22 18:21, Lionel Bouton 写道:
+> [...]
+>>>
+>>> I'll mount the filesystem and run a scrub again to see if I can
+>>> reproduce the problem. It should be noticeably quicker, we made
+>>> updates to the Ceph cluster and should get approximately 2x the I/O
+>>> bandwidth.
+>>> I plan to keep the disk snapshot for at least several weeks so if you
+>>> want to test something else just say so.
+>>
+>>
+>> The scrub is finished, here are the results :
+>>
+>> UUID: 61e86d80-d6e4-4f9e-a312-885194c5e690
+>> Scrub started:    Wed Jun 19 00:01:59 2024
+>> Status:           finished
+>> Duration:         81:04:21
+>> Total to scrub:   18.83TiB
+>> Rate:             67.67MiB/s
+>> Error summary:    no errors found
+>>
+>> So the scrub error isn't deterministic. I'll shut down the test VM for
+>> now and keep the disk snapshot it uses for at least a couple of week if
+>> it is needed for further tests.
+>> The original filesystem is scrubbed monthly, I'll reply to this message
+>> if another error shows up.
+>
+> I briefly remembered that there was a bug related to scrub that can
+> report false alerts:
+>
+> f546c4282673 ("btrfs: scrub: avoid use-after-free when chunk length is
+> not 64K aligned")
+>
+> But that should be automatically backported, and in that case it should
+> have some errors like "unable to find chunk map" error messages in the
+> kernel log.
+>
+> Otherwise, I have no extra clues.
+>
+> Have you tried kernels like v6.8/6.9 and can you reproduce the bug in
+> those newer kernels?
 
-- The extent buffer start is aligned to nodesize
-  This should be the common case for any btrfs in the last 5 years.
+I've just upgraded the kernel to 6.9.7 (and btrfs-progs to 6.9.2) and 
+monthly scrubs with it will start next week. That said the last 
+filesystem scrub with 6.6.30 ran without errors so it might be hard to 
+reproduce.
+One difference with the last scrub vs the previous one which reported 
+checksum errors is the underlying device speed : it is getting faster as 
+we replace HDDs with SSDs on the Ceph cluster (it might be a cause if 
+there's a race condition somewhere). Other than that there's nothing I 
+can think of.
 
-- The nodesize is larger than page size
-  Or there is no need to use larger folios at all.
+In fact the only 2 major changes before the scrub checksum errors where :
+- a noticeable increase in constant I/O load,
+- an upgrade to the 6.6 kernel.
 
-- MM layer can fulfill our folio allocation request
+As nobody else reported the same behavior I'm not ruling out an hardware 
+glitch either.
+I'll reply to this thread if a future scrub reports a non reproducible 
+checksum error again.
 
-- The larger folio must exactly cover the extent buffer
-  No longer no smaller, must be an exact fit.
+Lionel
 
-  This is to make extent buffer accessors much easier.
-  They only need to check the first slot in eb->folios[], to determine
-  their access unit (need per-page handling or a large folio covering
-  the whole eb).
-
-There is another small blockage, filemap APIs can not guarantee the
-folio size.
-For example, by default we go 16K nodesize on x86_64, meaning a larger
-folio we expect would be with order 2 (size 16K).
-We don't accept 2 order 1 (size 8K) folios, or we fall back to 4 order 0
-(page sized) folios.
-
-So here we go a different workaround, allocate a order 2 folio first,
-then attach them to the filemap of metadata.
-
-Thus here comes several results related to the attach attempt of eb
-folios:
-
-1) We can attach the pre-allocated eb folio to filemap
-   This is the most simple and hot path, we just continue our work
-   setting up the extent buffer.
-
-2) There is an existing folio in the filemap
-
-   2.0) Subpage case
-        We would reuse the folio no matter what, subpage is doing a
-	different way handling folio->private (a bitmap other than a
-	pointer to an existing eb).
-
-   2.1) There is already a live extent buffer attached to the filemap
-        folio
-	This should be more or less hot path, we grab the existing eb
-	and free the current one.
-
-   2.2) No live eb.
-   2.2.1) The filemap folio is larger than eb folio
-          This is a better case, we can reuse the filemap folio, but
-	  we need to cleanup all the pre-allocated folios of the
-	  new eb before reusing.
-	  Later code should take the folio size change into
-	  consideration.
-
-   2.2.2) The filemap folio is the same size of eb folio
-          We just free the current folio, and reuse the filemap one.
-	  No other special handling needed.
-
-   2.2.3) The filemap folio is smaller than eb folio
-          This is the most tricky corner case, we can not easily replace
-	  the folio in filemap using our eb folio.
-
-	  Thus here we return -EAGAIN, to inform our caller to re-try
-	  with order 0 (of course with our larger folio freed).
-
-Otherwise all the needed infrastructure is already here, we only need to
-try allocate larger folio as our first try in alloc_eb_folio_array().
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v3:
-- Rebased to the latest for-next branch
-- Use PAGE_ALLOC_COSTLY_ORDER to determine whether to use __GFP_NOFAIL
-- Add a dependency MM patch "mm/page_alloc: unify the warning on NOFAIL
-  and high order allocation"
-  This allows us to use NOFAIL up to 32K nodesize, and makes sure for
-  default 16K nodesize, all metadata would go 16K folios
-
-v2:
-- Rebased to handle the change in "btrfs: cache folio size and shift in extent_buffer"
----
- fs/btrfs/extent_io.c | 106 +++++++++++++++++++++++++++++--------------
- 1 file changed, 72 insertions(+), 34 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d3ce07ab9692..f849b890684f 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -734,12 +734,33 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
-  *
-  * For now, the folios populated are always in order 0 (aka, single page).
-  */
--static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
-+static int alloc_eb_folio_array(struct extent_buffer *eb, int order,
-+				bool nofail)
- {
- 	struct page *page_array[INLINE_EXTENT_BUFFER_PAGES] = { 0 };
- 	int num_pages = num_extent_pages(eb);
- 	int ret;
- 
-+	if (order) {
-+		gfp_t gfp;
-+
-+		/*
-+		 * For costly allocation, we want no retry nor warning.
-+		 * Otherwise we can just set the NOFAIL flag and let mm layer
-+		 * to do the heavylifting.
-+		 */
-+		if (order > PAGE_ALLOC_COSTLY_ORDER)
-+			gfp = GFP_NOFS | __GFP_NORETRY | __GFP_NOWARN;
-+		else
-+			gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
-+		eb->folios[0] = folio_alloc(gfp, order);
-+		if (likely(eb->folios[0])) {
-+			eb->folio_size = folio_size(eb->folios[0]);
-+			eb->folio_shift = folio_shift(eb->folios[0]);
-+			return 0;
-+		}
-+		/* Fallback to 0 order (single page) allocation. */
-+	}
- 	ret = btrfs_alloc_page_array(num_pages, page_array, nofail);
- 	if (ret < 0)
- 		return ret;
-@@ -2722,7 +2743,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
- 	 */
- 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
- 
--	ret = alloc_eb_folio_array(new, false);
-+	ret = alloc_eb_folio_array(new, 0, false);
- 	if (ret) {
- 		btrfs_release_extent_buffer(new);
- 		return NULL;
-@@ -2755,7 +2776,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
- 	if (!eb)
- 		return NULL;
- 
--	ret = alloc_eb_folio_array(eb, false);
-+	ret = alloc_eb_folio_array(eb, 0, false);
- 	if (ret)
- 		goto err;
- 
-@@ -2970,6 +2991,14 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
- 	return 0;
- }
- 
-+static void free_all_eb_folios(struct extent_buffer *eb)
-+{
-+	for (int i = 0; i < INLINE_EXTENT_BUFFER_PAGES; i++) {
-+		if (eb->folios[i])
-+			folio_put(eb->folios[i]);
-+		eb->folios[i] = NULL;
-+	}
-+}
- 
- /*
-  * Return 0 if eb->folios[i] is attached to btree inode successfully.
-@@ -2988,6 +3017,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
- 	const unsigned long index = eb->start >> PAGE_SHIFT;
- 	struct folio *existing_folio = NULL;
-+	const int eb_order = folio_order(eb->folios[0]);
- 	int ret;
- 
- 	ASSERT(found_eb_ret);
-@@ -3008,15 +3038,6 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 		goto retry;
- 	}
- 
--	/* For now, we should only have single-page folios for btree inode. */
--	ASSERT(folio_nr_pages(existing_folio) == 1);
--
--	if (folio_size(existing_folio) != eb->folio_size) {
--		folio_unlock(existing_folio);
--		folio_put(existing_folio);
--		return -EAGAIN;
--	}
--
- finish:
- 	spin_lock(&mapping->i_private_lock);
- 	if (existing_folio && fs_info->nodesize < PAGE_SIZE) {
-@@ -3025,6 +3046,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 		eb->folios[i] = existing_folio;
- 	} else if (existing_folio) {
- 		struct extent_buffer *existing_eb;
-+		int existing_order = folio_order(existing_folio);
- 
- 		existing_eb = grab_extent_buffer(fs_info,
- 						 folio_page(existing_folio, 0));
-@@ -3036,9 +3058,34 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 			folio_put(existing_folio);
- 			return 1;
- 		}
--		/* The extent buffer no longer exists, we can reuse the folio. */
--		__free_page(folio_page(eb->folios[i], 0));
--		eb->folios[i] = existing_folio;
-+		if (existing_order > eb_order) {
-+			/*
-+			 * The existing one has higher order, we need to drop
-+			 * all eb folios before resuing it.
-+			 * And this should only happen for the first folio.
-+			 */
-+			ASSERT(i == 0);
-+			free_all_eb_folios(eb);
-+			eb->folios[i] = existing_folio;
-+		} else if (existing_order == eb_order) {
-+			/*
-+			 * Can safely reuse the filemap folio, just
-+			 * release the eb one.
-+			 */
-+			folio_put(eb->folios[i]);
-+			eb->folios[i] = existing_folio;
-+		} else {
-+			/*
-+			 * The existing one has lower order.
-+			 *
-+			 * Just retry and fallback to order 0.
-+			 */
-+			ASSERT(i == 0);
-+			folio_unlock(existing_folio);
-+			folio_put(existing_folio);
-+			spin_unlock(&mapping->i_private_lock);
-+			return -EAGAIN;
-+		}
- 	}
- 	eb->folio_size = folio_size(eb->folios[i]);
- 	eb->folio_shift = folio_shift(eb->folios[i]);
-@@ -3071,6 +3118,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	u64 lockdep_owner = owner_root;
- 	bool page_contig = true;
- 	int uptodate = 1;
-+	int order = 0;
- 	int ret;
- 
- 	if (check_eb_alignment(fs_info, start))
-@@ -3087,6 +3135,9 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		btrfs_warn_32bit_limit(fs_info);
- #endif
- 
-+	if (fs_info->nodesize > PAGE_SIZE && IS_ALIGNED(start, fs_info->nodesize))
-+		order = ilog2(fs_info->nodesize >> PAGE_SHIFT);
-+
- 	eb = find_extent_buffer(fs_info, start);
- 	if (eb)
- 		return eb;
-@@ -3121,7 +3172,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 
- reallocate:
- 	/* Allocate all pages first. */
--	ret = alloc_eb_folio_array(eb, true);
-+	ret = alloc_eb_folio_array(eb, order, true);
- 	if (ret < 0) {
- 		btrfs_free_subpage(prealloc);
- 		goto out;
-@@ -3139,26 +3190,12 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		}
- 
- 		/*
--		 * TODO: Special handling for a corner case where the order of
--		 * folios mismatch between the new eb and filemap.
--		 *
--		 * This happens when:
--		 *
--		 * - the new eb is using higher order folio
--		 *
--		 * - the filemap is still using 0-order folios for the range
--		 *   This can happen at the previous eb allocation, and we don't
--		 *   have higher order folio for the call.
--		 *
--		 * - the existing eb has already been freed
--		 *
--		 * In this case, we have to free the existing folios first, and
--		 * re-allocate using the same order.
--		 * Thankfully this is not going to happen yet, as we're still
--		 * using 0-order folios.
-+		 * Got a corner case where the existing folio is lower order,
-+		 * fallback to 0 order and retry.
- 		 */
- 		if (unlikely(ret == -EAGAIN)) {
--			ASSERT(0);
-+			order = 0;
-+			free_all_eb_folios(eb);
- 			goto reallocate;
- 		}
- 		attached++;
-@@ -3169,6 +3206,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * and free the allocated page.
- 		 */
- 		folio = eb->folios[i];
-+		num_folios = num_extent_folios(eb);
- 		WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start, eb->len));
- 
- 		/*
--- 
-2.45.2
+>
+> Thanks,
+> Qu
+>>
+>>>
+>>> Best regards,
+>>> Lionel
+>>>
+>>>>
+>>>> If btrfs check reports error, and logical-resolve failed to locate the
+>>>> file and its position, it means the corruption is in bookend exntets.
+>>>>
+>>>> If btrfs check reports error and logical-resolve can locate the 
+>>>> file and
+>>>> position, it's a different problem then.
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>>
+>>>>>
+>>>>> The stats output show that this file was not modified since its
+>>>>> creation
+>>>>> more than 6 years ago. This is what led me to report a bug in scrub.
+>>>>>
+>>>>>
+>>>>>>
+>>>>>>> - Some including the original subvolume have only logged 2
+>>>>>>> warnings and
+>>>>>>> one (root 151335) logged only one warning.
+>>>>>>> - All of the snapshots reported a warning for offset 20480.
+>>>>>>> - When several offsets are logged their order seems random.
+>>>>>>
+>>>>>> One problem of scrub is, it may ratelimit the output, thus we can 
+>>>>>> not
+>>>>>> just rely on dmesg to know the damage.
+>>>>>
+>>>>> I wondered about this: I've read other threads where ratelimiting is
+>>>>> mentioned but I was not sure if it could apply here. Thanks for
+>>>>> clarifying.
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> I'm attaching kernel logs beginning with the scrub start and
+>>>>>>> ending with
+>>>>>>> the last error. As of now there are no new errors/warnings even
+>>>>>>> though
+>>>>>>> the scrub is still ongoing, 15 hours after the last error. I didn't
+>>>>>>> clean the log frombalance logs linked to the same filesystem.
+>>>>>>>
+>>>>>>> Side-note for the curious or in the unlikely case it could be
+>>>>>>> linked to
+>>>>>>> the problem:
+>>>>>>> Historically this filesystem was mounted with ssd_spread without 
+>>>>>>> any
+>>>>>>> issue (I guess several years ago it made sense to me reading the
+>>>>>>> documentation and given the IO latencies I saw on the Ceph
+>>>>>>> cluster). A
+>>>>>>> recent kernel filled the whole available space with nearly empty
+>>>>>>> block
+>>>>>>> groups which seemed to re-appear each time we mounted with
+>>>>>>> ssd_spread.
+>>>>>>> We switched to "ssd" since then and there is a mostly daily 90mn
+>>>>>>> balance
+>>>>>>> to reach back the previous stateprogressively (this is the reason
+>>>>>>> behind
+>>>>>>> the balance related logs). Having some space available for new 
+>>>>>>> block
+>>>>>>> groups seems to be a good idea but additionally as we use Ceph
+>>>>>>> RBD, we
+>>>>>>> want it to be able to deallocate unused space: having many nearly
+>>>>>>> empty
+>>>>>>> block groups could waste resources (especially if the used space in
+>>>>>>> these groups is in <4MB continuous chunks which is the default RBD
+>>>>>>> object size).
+>>>>>>>
+>>>>>>>
+>>>>>>> More information :
+>>>>>>> The scrub is run monthly. This is the first time an error was ever
+>>>>>>> reported. The previous scrub was run successfully at the 
+>>>>>>> beginning of
+>>>>>>> May with a 6.6.13 kernel.
+>>>>>>>
+>>>>>>> There is a continuous defragmentation process running (it
+>>>>>>> processes the
+>>>>>>> whole filesystem slowly ignoring snapshots and defragments file by
+>>>>>>> file
+>>>>>>> based on a fragmentation estimation using filefrag -v). All
+>>>>>>> defragmentations are logged and I can confirm the file for which 
+>>>>>>> this
+>>>>>>> error was reported was not defragmented for at least a year (I
+>>>>>>> checked
+>>>>>>> because I wanted to rule out a possible race condition between
+>>>>>>> defragmentation and scrub).
+>>>>>>
+>>>>>> I'm wondering if there is any direct IO conflicting with
+>>>>>> buffered/defrag IO.
+>>>>>>
+>>>>>> It's known that conflicting buffered/direct IO can lead to contents
+>>>>>> change halfway, and lead to btrfs csum mismatch.
+>>>>>> So far that's the only thing leading to known btrfs csum mismatch I
+>>>>>> can
+>>>>>> think of.
+>>>>>
+>>>>> But here it seems there isn't an actual mismatch as reading the 
+>>>>> file is
+>>>>> possible and gives the data which was written in it 6 years ago. 
+>>>>> Tthis
+>>>>> seems an error in scrub (or a neutrino flipping a bit somewhere 
+>>>>> during
+>>>>> the scrub). The VM runs on a server with ECC RAM so it is unlikely
+>>>>> to be
+>>>>> a simple bitflip but when everything likely has been ruled out...
+>>>>>
+>>>>> Thanks for your feedback,
+>>>>> Lionel
+>>>>>
+>>>>>>
+>>>>>> But 6.x kernel should all log a warning message for it.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Qu
+>>>>>>>
+>>>>>>> In addition to the above, among the notable IO are :
+>>>>>>> - a moderately IO intensive PostgreSQL replication subscriber,
+>>>>>>> - ponctual large synchronisations using Syncthing,
+>>>>>>> - snapshot creations/removals occur approximately every 80
+>>>>>>> minutes. The
+>>>>>>> last snapshot operation was logged 31 minutes before the errors
+>>>>>>> (removal
+>>>>>>> occur asynchronously but where was no unusual load at this time 
+>>>>>>> that
+>>>>>>> could point to a particularly long snapshot cleanup process).
+>>>>>>>
+>>>>>>> To sum up, there are many processes accessing the filesystem but
+>>>>>>> historically it saw far higher IO load during scrubs than what was
+>>>>>>> occurring here.
+>>>>>>>
+>>>>>>>
+>>>>>>> Reproducing this might be difficult: the whole scrub can take a 
+>>>>>>> week
+>>>>>>> depending on load. That said I can easily prepare a kernel 
+>>>>>>> and/or new
+>>>>>>> btrfs-progs binaries to launch scrubs or other non-destructive
+>>>>>>> tasks the
+>>>>>>> week-end or at the end of the day (UTC+2 timezone).
+>>>>>>>
+>>>>>>> Best regards,
+>>>>>>>
+>>>>>>> Lionel Bouton
+>>>>>>
+>>>>>
+>>>
+>>
+>>
 
 
