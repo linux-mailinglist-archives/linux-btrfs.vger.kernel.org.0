@@ -1,275 +1,137 @@
-Return-Path: <linux-btrfs+bounces-6067-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6068-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 899D991DBF4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 12:02:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EB3891DC60
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 12:25:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC0941C229EC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 10:02:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 879371C214FF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 10:25:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A31685956;
-	Mon,  1 Jul 2024 10:01:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RuxkB/4U"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725C613C679;
+	Mon,  1 Jul 2024 10:25:27 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C2646436
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 10:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0BC381D9;
+	Mon,  1 Jul 2024 10:25:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719828117; cv=none; b=GSbrG/TXACRzhnldiTlDyv0GI1cVQjjfdX4jKUFav6fuVW0GzaegkP9ZcHVrgKEGoeRsFcn0jWvIy0UmEeqf+TlKdQEUmh80Q9xy1ARJL1IZSi1EUjDVxSvvxam5GYcsioMKXMt577uPl+ibP4DaaF0mjLZWqIJkfz/+YcqMA7o=
+	t=1719829526; cv=none; b=pskZ0tc/Q7v3tj8TdiMD5wGm1Zi8tHIwkOMqDj/SgdhJUdyWDc+ERIcQPNjjoVMXMFCoghUyw5I11lsc2KfiLjIaWWe3htBh7VsMfrU4adrlWb4fuLtjhK4GlYBwsn5BU3v3JpIOwiQo7rk+4wEFNVz2aotW+ey9TVuf8/bUTKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719828117; c=relaxed/simple;
-	bh=FXU9IeiWu0y20dTG9XbxLZXW/gYnmKlHHgUd2R4+g+g=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=FD1U8mNK2TqOFfivGg8Q7Tnxk3q2FkXwlEkprWg168lw4+GyDeR8WgW4IWc+TDDjLXboeXxMADntB8F36xXcku10YEot27tu1s//AW99l2csFRTp9K3sA775F8yt7O2KqDVeuXOXnw3wu2tt5fA6196nP6kR33UlQYv1OFY+888=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RuxkB/4U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 497CCC116B1
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 10:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719828116;
-	bh=FXU9IeiWu0y20dTG9XbxLZXW/gYnmKlHHgUd2R4+g+g=;
-	h=From:To:Subject:Date:From;
-	b=RuxkB/4UNqIFtKPnPczsNVQVPkhgYcztTeDUoKlnH0HHpuwTfCpEHiOH5CSTntVfh
-	 shXGCbeonLrP8u3ThAFl4xgrVinzFwgiQu1DlqcIcqE7e7pKi2sQvZ0SFK+6vTXjIQ
-	 XvYqb10Puy9Lpv4oryxrwrsOsViHtxR20MayPXDv3x3tEvFwmobbllSOLP8Vi1hnIo
-	 nd4CnD4ePchFDy/C4sia7X3kSwGFj3bJ6M13bC0K5IYjy/z0VqNolYTZH1xJguq1U9
-	 69RJhWqFY7bjoYD1xEuqN1zfXi3cZX4z7gNxY/+rS8rH7r3CbQBUnGBDOeUx4DpfnF
-	 4nySo9COoqFBg==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix data race when accessing the last_trans field of a root
-Date: Mon,  1 Jul 2024 11:01:53 +0100
-Message-Id: <5152cead4acef28ac0dff3db80692a6e8852ddc4.1719828039.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1719829526; c=relaxed/simple;
+	bh=EME1nCS/Md7lYcSmoN4wi9HeeVcxdZSWp7ZsoQPOq7I=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=an1+rHqUzJNoz1HfQRgojP5VC+sZJd2PCyiGa8lY0nYo0nHAtAlKEbBy5nvAq4rfqHOnQ3X6oDjdHUkCmHw6GMgji9ku4zq2+LWVOk0Jn3XZP9XiQIWM8caCnLOLMTNJjGQmZiU37bzFWafCZ5oeMf2CCT9UKpD8ZYfD3gg7HwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57d1679ee83so63967a12.2;
+        Mon, 01 Jul 2024 03:25:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719829524; x=1720434324;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nsb+yJZfWamZNZnOAPUKUarYWy1uAoOpsOR2q1dfC6E=;
+        b=T340e0gzMp/74J7Z9jfjAv0FfuC8sdwHu+SNhZ1KJY3SF8+kiXo2gTznLI2/A0gjjI
+         Rh0dizZ9rfeWrdSKHq6C/z/hTUGg6xBujZGzJmSHW+g+ivmujP5NQrYCjGo5HCCQCXK3
+         lsZePH9/E3Urt01Imn0p+pGIklLo991Aw/mo6grpbqDpIX8M+N8BDkm7d2Eo9reDw5tf
+         s8fYnClkf6YAyfEzwHigzg0KACyGmSLEeMzqKM80k1P2j11wh6bSH15MrVon/Z6RuDOF
+         qDnbM0jDY6zgPYpaplJDlj3ESAEqEXJCPR5wB1I7duNYdFUSYa0pczBaDmyD+Id0lAh4
+         8UXA==
+X-Forwarded-Encrypted: i=1; AJvYcCUoPAl1hW5OVVUomE/yIPq8R9/o2mbaObtvWPK3NEeapOEM8fPFOj2sUN26q2JiggONLyQ7wJAAQzoBYpoCtdcV8EoppGEayQV5eXr7
+X-Gm-Message-State: AOJu0YxSHSgppFf8jWK2VRCkaA6m0FmPPhR6+sKMyF4YUL3XvgsqcF8g
+	Svpnq/KUEtOIj3b8C9CZsRrGs2ehXeoChdFf9dhWEzoNqYPimeonC0i/PA==
+X-Google-Smtp-Source: AGHT+IHdi3vMPdBI3JW9n8NHumteOVPLzSNivjsZdwhhqL0s5rwzElWV5XrS1QIy/N+fACF4jzdTaA==
+X-Received: by 2002:a05:6402:5203:b0:578:60a6:7c69 with SMTP id 4fb4d7f45d1cf-587a0635e4cmr4310424a12.30.1719829523577;
+        Mon, 01 Jul 2024 03:25:23 -0700 (PDT)
+Received: from [127.0.0.1] (p200300f6f72f3200fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f72f:3200:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-58612c83583sm4238901a12.5.2024.07.01.03.25.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jul 2024 03:25:23 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH v3 0/5] btrfs: rst: updates for RAID stripe tree
+Date: Mon, 01 Jul 2024 12:25:14 +0200
+Message-Id: <20240701-b4-rst-updates-v3-0-e0437e1e04a6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAqEgmYC/3XMyw6CMBCF4Vcxs3ZMWy5SV76HcVHaARoNkCk2G
+ sK7W1hpjMtzku+fIRB7CnDazcAUffBDn0a234HtTN8Sepc2KKFyUUqBdY4cJnyMzkwU0AljSl3
+ W2hUGEhqZGv/cgpdr2p0P08CvrR/l+v5NRYkC5VFbSWRF1ajzjbin+2HgFtZWVJ9e/3iVfKVtl
+ jvhCqWrL78syxsacyCO7QAAAA==
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1935; i=jth@kernel.org;
+ h=from:subject:message-id; bh=EME1nCS/Md7lYcSmoN4wi9HeeVcxdZSWp7ZsoQPOq7I=;
+ b=owGbwMvMwCV2ad4npfVdsu8YT6slMaQ1tQiu3K++9lUy+3Sh+NbeD6+W7X3w9HLfi+1PVsp/1
+ bv+WZ79UEcpC4MYF4OsmCLL8VDb/RKmR9inHHptBjOHlQlkCAMXpwBMRKCJ4Z+567HL0uUzdIPD
+ V5kX/tbOKu3Z0StUFMS7bue/WVx+VXoM/6zn/xeU2lhq9uyoavAE0curlc1z8z5eT+K+/DKvivP
+ GMnYA
+X-Developer-Key: i=jth@kernel.org; a=openpgp;
+ fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
 
-From: Filipe Manana <fdmanana@suse.com>
+Patch 1 replaces stripe extents in case we hit a EEXIST when inserting a
+stripe extent on a write. This can happen i.e. on device-replace.
 
-KCSAN complains about a data race when accessing the last_trans field of a
-root:
+Patch 2 splits a stripe extent on partial delete of a stripe.
 
-  [  199.553628] BUG: KCSAN: data-race in btrfs_record_root_in_trans [btrfs] / record_root_in_trans [btrfs]
+Patch 3 adds selftests for the stripe-tree delete code, these selftests
+can and will be extended to cover insert and get as well.
 
-  [  199.555186] read to 0x000000008801e308 of 8 bytes by task 2812 on cpu 1:
-  [  199.555210]  btrfs_record_root_in_trans+0x9a/0x128 [btrfs]
-  [  199.555999]  start_transaction+0x154/0xcd8 [btrfs]
-  [  199.556780]  btrfs_join_transaction+0x44/0x60 [btrfs]
-  [  199.557559]  btrfs_dirty_inode+0x9c/0x140 [btrfs]
-  [  199.558339]  btrfs_update_time+0x8c/0xb0 [btrfs]
-  [  199.559123]  touch_atime+0x16c/0x1e0
-  [  199.559151]  pipe_read+0x6a8/0x7d0
-  [  199.559179]  vfs_read+0x466/0x498
-  [  199.559204]  ksys_read+0x108/0x150
-  [  199.559230]  __s390x_sys_read+0x68/0x88
-  [  199.559257]  do_syscall+0x1c6/0x210
-  [  199.559286]  __do_syscall+0xc8/0xf0
-  [  199.559318]  system_call+0x70/0x98
+Patch 4 fixes a deadlock between scrub and device replace when RST is
+used.
 
-  [  199.559431] write to 0x000000008801e308 of 8 bytes by task 2808 on cpu 0:
-  [  199.559464]  record_root_in_trans+0x196/0x228 [btrfs]
-  [  199.560236]  btrfs_record_root_in_trans+0xfe/0x128 [btrfs]
-  [  199.561097]  start_transaction+0x154/0xcd8 [btrfs]
-  [  199.561927]  btrfs_join_transaction+0x44/0x60 [btrfs]
-  [  199.562700]  btrfs_dirty_inode+0x9c/0x140 [btrfs]
-  [  199.563493]  btrfs_update_time+0x8c/0xb0 [btrfs]
-  [  199.564277]  file_update_time+0xb8/0xf0
-  [  199.564301]  pipe_write+0x8ac/0xab8
-  [  199.564326]  vfs_write+0x33c/0x588
-  [  199.564349]  ksys_write+0x108/0x150
-  [  199.564372]  __s390x_sys_write+0x68/0x88
-  [  199.564397]  do_syscall+0x1c6/0x210
-  [  199.564424]  __do_syscall+0xc8/0xf0
-  [  199.564452]  system_call+0x70/0x98
+Patch 5 get's rid of the pointless tree dump in case we're not finding an
+RST entry.
 
-This is because we update and read last_trans concurrently without any
-type of synchronization. This should be generally harmless and in the
-worst case it can make us do extra locking (btrfs_record_root_in_trans())
-trigger some warnings at ctree.c or do extra work during relocation - this
-would probably only happen in case of load or store tearing.
+Note: There still is a known bug triggering a crash on btrfs/06[01]. I'm
+working on it, but I've not yet root caused it.
 
-So fix this by always reading and updating the field using READ_ONCE()
-and WRITE_ONCE(), this silences KCSAN and prevents load and store tearing.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c       |  4 ++--
- fs/btrfs/ctree.h       | 10 ++++++++++
- fs/btrfs/defrag.c      |  2 +-
- fs/btrfs/disk-io.c     |  4 ++--
- fs/btrfs/relocation.c  |  8 ++++----
- fs/btrfs/transaction.c |  8 ++++----
- 6 files changed, 23 insertions(+), 13 deletions(-)
+Changes in v3:
+- Drop on-disk format change as it's in for-next
+- Add patches 4 & 5
+- Link to v2: https://lore.kernel.org/r/20240619-b4-rst-updates-v2-0-89c34d0d5298@kernel.org
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index e33f9f5a228d..451203055bbf 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -321,7 +321,7 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
- 	WARN_ON(test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
- 		trans->transid != fs_info->running_transaction->transid);
- 	WARN_ON(test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
--		trans->transid != root->last_trans);
-+		trans->transid != btrfs_get_root_last_trans(root));
- 
- 	level = btrfs_header_level(buf);
- 	if (level == 0)
-@@ -556,7 +556,7 @@ int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
- 	WARN_ON(test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
- 		trans->transid != fs_info->running_transaction->transid);
- 	WARN_ON(test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
--		trans->transid != root->last_trans);
-+		trans->transid != btrfs_get_root_last_trans(root));
- 
- 	level = btrfs_header_level(buf);
- 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 1004cb934b4a..c8568b1a61c4 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -356,6 +356,16 @@ static inline void btrfs_set_root_last_log_commit(struct btrfs_root *root, int c
- 	WRITE_ONCE(root->last_log_commit, commit_id);
- }
- 
-+static inline u64 btrfs_get_root_last_trans(const struct btrfs_root *root)
-+{
-+	return READ_ONCE(root->last_trans);
-+}
-+
-+static inline void btrfs_set_root_last_trans(struct btrfs_root *root, u64 transid)
-+{
-+	WRITE_ONCE(root->last_trans, transid);
-+}
-+
- /*
-  * Structure that conveys information about an extent that is going to replace
-  * all the extents in a file range.
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index e7a24f096cb6..f6dbda37a361 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -139,7 +139,7 @@ int btrfs_add_inode_defrag(struct btrfs_trans_handle *trans,
- 	if (trans)
- 		transid = trans->transid;
- 	else
--		transid = inode->root->last_trans;
-+		transid = btrfs_get_root_last_trans(root);
- 
- 	defrag = kmem_cache_zalloc(btrfs_inode_defrag_cachep, GFP_NOFS);
- 	if (!defrag)
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 5870e76d20e2..4f5c1ff72a7d 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -654,7 +654,7 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 	root->state = 0;
- 	RB_CLEAR_NODE(&root->rb_node);
- 
--	root->last_trans = 0;
-+	btrfs_set_root_last_trans(root, 0);
- 	root->free_objectid = 0;
- 	root->nr_delalloc_inodes = 0;
- 	root->nr_ordered_extents = 0;
-@@ -998,7 +998,7 @@ int btrfs_add_log_tree(struct btrfs_trans_handle *trans,
- 		return ret;
- 	}
- 
--	log_root->last_trans = trans->transid;
-+	btrfs_set_root_last_trans(log_root, trans->transid);
- 	log_root->root_key.offset = btrfs_root_id(root);
- 
- 	inode_item = &log_root->root_item.inode;
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 6ea407255a30..865e37b5354f 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -817,7 +817,7 @@ static struct btrfs_root *create_reloc_root(struct btrfs_trans_handle *trans,
- 		goto abort;
- 	}
- 	set_bit(BTRFS_ROOT_SHAREABLE, &reloc_root->state);
--	reloc_root->last_trans = trans->transid;
-+	btrfs_set_root_last_trans(reloc_root, trans->transid);
- 	return reloc_root;
- fail:
- 	kfree(root_item);
-@@ -864,7 +864,7 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
- 	 */
- 	if (root->reloc_root) {
- 		reloc_root = root->reloc_root;
--		reloc_root->last_trans = trans->transid;
-+		btrfs_set_root_last_trans(reloc_root, trans->transid);
- 		return 0;
- 	}
- 
-@@ -1739,7 +1739,7 @@ static noinline_for_stack int merge_reloc_root(struct reloc_control *rc,
- 		 * btrfs_update_reloc_root() and update our root item
- 		 * appropriately.
- 		 */
--		reloc_root->last_trans = trans->transid;
-+		btrfs_set_root_last_trans(reloc_root, trans->transid);
- 		trans->block_rsv = rc->block_rsv;
- 
- 		replaced = 0;
-@@ -2082,7 +2082,7 @@ static int record_reloc_root_in_trans(struct btrfs_trans_handle *trans,
- 	struct btrfs_root *root;
- 	int ret;
- 
--	if (reloc_root->last_trans == trans->transid)
-+	if (btrfs_get_root_last_trans(reloc_root) == trans->transid)
- 		return 0;
- 
- 	root = btrfs_get_fs_root(fs_info, reloc_root->root_key.offset, false);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 9590a1899b9d..e0490a6f068e 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -405,7 +405,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
- 	int ret = 0;
- 
- 	if ((test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
--	    root->last_trans < trans->transid) || force) {
-+	    btrfs_get_root_last_trans(root) < trans->transid) || force) {
- 		WARN_ON(!force && root->commit_root != root->node);
- 
- 		/*
-@@ -421,7 +421,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
- 		smp_wmb();
- 
- 		spin_lock(&fs_info->fs_roots_radix_lock);
--		if (root->last_trans == trans->transid && !force) {
-+		if (btrfs_get_root_last_trans(root) == trans->transid && !force) {
- 			spin_unlock(&fs_info->fs_roots_radix_lock);
- 			return 0;
- 		}
-@@ -429,7 +429,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
- 				   (unsigned long)btrfs_root_id(root),
- 				   BTRFS_ROOT_TRANS_TAG);
- 		spin_unlock(&fs_info->fs_roots_radix_lock);
--		root->last_trans = trans->transid;
-+		btrfs_set_root_last_trans(root, trans->transid);
- 
- 		/* this is pretty tricky.  We don't want to
- 		 * take the relocation lock in btrfs_record_root_in_trans
-@@ -491,7 +491,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
- 	 * and barriers
- 	 */
- 	smp_rmb();
--	if (root->last_trans == trans->transid &&
-+	if (btrfs_get_root_last_trans(root) == trans->transid &&
- 	    !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
- 		return 0;
- 
+Changes in v2:
+- Added selftests for delete code
+- Link to v1: https://lore.kernel.org/r/20240610-b4-rst-updates-v1-0-179c1eec08f2@kernel.org
+
+---
+Johannes Thumshirn (5):
+      btrfs: replace stripe extents
+      btrfs: split RAID stripes on deletion
+      btrfs: stripe-tree: add selftests
+      btrfs: don't hold dev_replace rwsem over whole of btrfs_map_block
+      btrfs: rst: don't print tree dump in case lookup fails
+
+ fs/btrfs/Makefile                       |   3 +-
+ fs/btrfs/ctree.c                        |   1 +
+ fs/btrfs/raid-stripe-tree.c             | 143 ++++++++++++++----
+ fs/btrfs/raid-stripe-tree.h             |   5 +
+ fs/btrfs/tests/btrfs-tests.c            |   3 +
+ fs/btrfs/tests/btrfs-tests.h            |   1 +
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 258 ++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c                      |  28 ++--
+ 8 files changed, 401 insertions(+), 41 deletions(-)
+---
+base-commit: 9c681cca9c5f8e3bd5891f3944f7b9ce4d14f4ec
+change-id: 20240610-b4-rst-updates-d0aa696b9d5a
+
+Best regards,
 -- 
-2.43.0
+Johannes Thumshirn <jth@kernel.org>
 
 
