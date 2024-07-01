@@ -1,239 +1,375 @@
-Return-Path: <linux-btrfs+bounces-6058-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6059-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0901191DB3A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 11:15:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEADE91DB46
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 11:16:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F3128440E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 09:14:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DBEBB26C6F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 09:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE1584D13;
-	Mon,  1 Jul 2024 09:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415C58287D;
+	Mon,  1 Jul 2024 09:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dDiqgxaE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ai4adtgF"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B10943AD2
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 09:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F5825622;
+	Mon,  1 Jul 2024 09:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719825289; cv=none; b=h0UKql2YK/vXTrGftownK37zFn6NZ+9aV0j9sKTQXYOUaBA49no+ozOyIBGZhAGCPPOUTAEH1Xdfe54qiFxIXaK+r9IlYXJxrzzfrWCbv89XEJ57Z7om0WDrXmShFYc0WtA1Yz4cQ4pvJPB9QbKwROyk4FoL5YIoo5qklZglP5M=
+	t=1719825389; cv=none; b=STot3QGyK7CQUnB9NmLnmLl2oebYx9AKdzT1wIHuzYh2UhrurbMpM/Zbe5FUi4tx5j+4hMHWXUga03f6sOqsl2EgeCFrKijtgZKIfnsqZXlnbJtG5syMcipC6FAfOuitC4rlTNtp3zY1yswIsYJwpMHKwGnubkqI8a1MLdXFEQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719825289; c=relaxed/simple;
-	bh=toT+b33o5kkYFKBpb9Awypgll9Q1Z3NuxSGBaDAv8xw=;
+	s=arc-20240116; t=1719825389; c=relaxed/simple;
+	bh=JIWQbpwS5vsrNoQWpGLqPCDVQG0MUkC/rInBh/h5nZM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sOB+W3G7iWLDxXrgNAiyYPhA+BXJrEP5dSAGteqMBR/2dSKqTzXMqMm28+MKsOuNgjlDw2+/gAVrCbuYozfny+61knBqQwtbho9fixd+cp7GWRDFxXX5tPVT8oAcW2IAFdZk6lfoQsYHhDx72dYd4+hlm3JScTNY0nbSMkt4/O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dDiqgxaE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1CA0C116B1
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 09:14:48 +0000 (UTC)
+	 To:Cc:Content-Type; b=eCvJWvZy0M86noGl4hZCV+0GT3VYA7jpwDQM0GKUcvWusSLxuLxL8wqkWKH6sVp4vxgpCJnADiUbtOHDrUsUAQLhvxXnwgVTP/My8+qcjc6KxqlJzyUnvdBbZjeBaRVQZMwz1tcvSszy0ix5OVbLtd07rTqfzT7u96HcfBWLQVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ai4adtgF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC51AC4AF0A;
+	Mon,  1 Jul 2024 09:16:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719825288;
-	bh=toT+b33o5kkYFKBpb9Awypgll9Q1Z3NuxSGBaDAv8xw=;
+	s=k20201202; t=1719825388;
+	bh=JIWQbpwS5vsrNoQWpGLqPCDVQG0MUkC/rInBh/h5nZM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dDiqgxaEGBTnzAN6V/R4kkEzqVfJIXQqixz2lZmw2sEcxIxpVXNAKV85gDWigUPEy
-	 kM7FwQT0lP8vch1mzQf8cI6jmUAOvyUzXXqpT/fd9R6k69uHwOUkmMoxjRN+hyu8by
-	 BlpPtKvJYg3dNnr0p285Q8aE3v4FYyCnbDMiWEnnstot/TdJMS+UT5dAOQjlFze0HC
-	 UJMmB8Ew/kn1XiSykES6ppok/97qZl/k6BD54iVVbT1R3RrN3/YbYs6p4+OezqEdSu
-	 TO/tz23Gt01ZnAnUmDI2lmKBiGRy1qRn266MlaHWhDu+Wgn04pXIZMMFTGDj7Zu+jZ
-	 oLU3P3xNwyG2g==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a724440f597so323668166b.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 01 Jul 2024 02:14:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwB04FAwjhfrg0gjw4P6lGc1EM0vO5NCRGNj6zmJgTL+WrW65fk
-	1YCjK1eiTxGCvsWTazhi1Sy/t/i+mpjSMgA2MDWY8yQmTtqMiKJHbfM+Gar8VLwH6aApnIIXAnn
-	ieNfB6F70jdNgSb2JQ98i77cmbbE=
-X-Google-Smtp-Source: AGHT+IF0Mw0sAEUPLKrPfvYo4KPmdfoQzVYsKc6cXZa8RK6Pmbz6LvAuMAtW5Z/cmV3aainleF3kb06py2RvyWoCrmA=
-X-Received: by 2002:a17:906:6a15:b0:a72:5bb9:b13c with SMTP id
- a640c23a62f3a-a75144bae99mr424678266b.75.1719825287453; Mon, 01 Jul 2024
- 02:14:47 -0700 (PDT)
+	b=ai4adtgFf1MTVFcme57HftOB2BU36JPP46TxEuxe9pK6JmMfMJZWqWZUWC3Y0LW9/
+	 6H+hmpcMObGYVtD4ztJ9kH05EygmMK0d8LqmX658WJBx4Fi+1Ms1PUgcqw7nNmo/O8
+	 1KSaPWAmZ5ryzvrG3C3bjuosTTB+p2sYGOtEtNa26MmH6J9GCQ+5lJwNTJC5iThkWk
+	 beUPb2eX7ynl5PpyRiblp3W1nZycEalHQLB6pXofDCTwfxXsB0o9Dh37dtGS8LpAPY
+	 hne4Ove7FfnZvErQezliMG1U+SJFOSKv4AAujJ0AWyqxju7RZ9t1B7GsUBKNoZRBuY
+	 XCYYeFq3Wd3nw==
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a70c0349b64so345668566b.1;
+        Mon, 01 Jul 2024 02:16:28 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUm+XCkq2bmPckEsAak4fJZ8b+CtnTd5yfiwww7LbvkbyhAiqemuJka1DEtzlsbbYO++CpPCe/jSZizQ4IIEcfLA6RmNubTEA==
+X-Gm-Message-State: AOJu0Yww3DoTZOk3ZaGhlkYmBU9L0PH6Pod7r+OYDabShFBbYbmeDy9o
+	pMv3YjKIo3WlkfVCjC+BGDKFqWAFN77w3DDqF8JJHjZ7IdJaW8GXZpOX2N6t5Mr3fkH4Olfj6Pa
+	scnHfDVdzmm1F1DxAuHuK8gSIQqc=
+X-Google-Smtp-Source: AGHT+IH7+dfaFCA960jyaBrV6lj8dN5ksAsa92O+vBJ5MUHpTLvpsa619y/QIREsjikSZyCTO8eukpINjg4RSn6GU60=
+X-Received: by 2002:a17:906:3ac9:b0:a75:fb2:8b99 with SMTP id
+ a640c23a62f3a-a751441f023mr264106466b.31.1719825387388; Mon, 01 Jul 2024
+ 02:16:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <58e8574ccd70645c613e6bc7d328e34c2f52421a.1719549099.git.naohiro.aota@wdc.com>
- <CAL3q7H5jCHVhz1E4UgNdujtiX9FHhiWVhHsN3ow70WGHRTf94A@mail.gmail.com> <ikeovp477s5ittkv4tbr2ljzgaz34asc26kj6kwtoggvvfvc3r@qcls3233ff5f>
-In-Reply-To: <ikeovp477s5ittkv4tbr2ljzgaz34asc26kj6kwtoggvvfvc3r@qcls3233ff5f>
+References: <20240701080109.20673-1-jth@kernel.org>
+In-Reply-To: <20240701080109.20673-1-jth@kernel.org>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 1 Jul 2024 10:14:10 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4-DpS-YR4hW2kfj_zPKskGdze0mnwiSebMzchy3zVOTA@mail.gmail.com>
-Message-ID: <CAL3q7H4-DpS-YR4hW2kfj_zPKskGdze0mnwiSebMzchy3zVOTA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: avoid possible parallel list adding
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, 
-	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, 
-	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Date: Mon, 1 Jul 2024 10:15:50 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H77MhmqDo6VzQsYo7gMvN_KeGr1nKZR5aXi2OxRacDXrA@mail.gmail.com>
+Message-ID: <CAL3q7H77MhmqDo6VzQsYo7gMvN_KeGr1nKZR5aXi2OxRacDXrA@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: update golden output of RST test cases
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>, 
+	Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 1, 2024 at 8:14=E2=80=AFAM Naohiro Aota <Naohiro.Aota@wdc.com> =
+On Mon, Jul 1, 2024 at 9:01=E2=80=AFAM Johannes Thumshirn <jth@kernel.org> =
 wrote:
 >
-> On Fri, Jun 28, 2024 at 10:45:30AM GMT, Filipe Manana wrote:
-> > On Fri, Jun 28, 2024 at 5:54=E2=80=AFAM Naohiro Aota <naohiro.aota@wdc.=
-com> wrote:
-> > >
-> > > There is a potential parallel list adding for retrying in
-> > > btrfs_reclaim_bgs_work and adding to the unused list. Since the block
-> > > group is removed from the reclaim list and it is on a relocation work=
-,
-> > > it can be added into the unused list in parallel. When that happens,
-> > > adding it to the reclaim list will corrupt the list head and trigger
-> > > list corruption like below.
-> > >
-> > > Fix it by taking fs_info->unused_bgs_lock.
-> > >
-> > > [27177.504101][T2585409] BTRFS error (device nullb1): error relocatin=
-g ch=3D unk 2415919104
-> > > [27177.514722][T2585409] list_del corruption. next->prev should be ff=
-1100=3D 0344b119c0, but was ff11000377e87c70. (next=3D3Dff110002390cd9c0)
-> > > [27177.529789][T2585409] ------------[ cut here ]------------
-> > > [27177.537690][T2585409] kernel BUG at lib/list_debug.c:65!
-> > > [27177.545548][T2585409] Oops: invalid opcode: 0000 [#1] PREEMPT SMP =
-KASAN NOPTI
-> > > [27177.555466][T2585409] CPU: 9 PID: 2585409 Comm: kworker/u128:2 Tai=
-nted: G        W          6.10.0-rc5-kts #1
-> > > [27177.568502][T2585409] Hardware name: Supermicro SYS-520P-WTR/X12SP=
-W-TF, BIOS 1.2 02/14/2022
-> > > [27177.579784][T2585409] Workqueue: events_unbound btrfs_reclaim_bgs_=
-work[btrfs]
-> > > [27177.589946][T2585409] RIP: 0010:__list_del_entry_valid_or_report.c=
-old+0x70/0x72
-> > > [27177.600088][T2585409] Code: fa ff 0f 0b 4c 89 e2 48 89 de 48 c7 c7=
- c0
-> > > 8c 3b 93 e8 ab 8e fa ff 0f 0b 4c 89 e1 48 89 de 48 c7 c7 00 8e 3b 93 =
-e8
-> > > 97 8e fa ff <0f> 0b 48 63 d1 4c 89 f6 48 c7 c7 e0 56 67 94 89 4c 24 0=
-4
-> > > e8 ff f2
-> > > [27177.624173][T2585409] RSP: 0018:ff11000377e87a70 EFLAGS: 00010286
-> > > [27177.633052][T2585409] RAX: 000000000000006d RBX: ff11000344b119c0 =
-RCX:0000000000000000
-> > > [27177.644059][T2585409] RDX: 000000000000006d RSI: 0000000000000008 =
-RDI:ffe21c006efd0f40
-> > > [27177.655030][T2585409] RBP: ff110002e0509f78 R08: 0000000000000001 =
-R09:ffe21c006efd0f08
-> > > [27177.665992][T2585409] R10: ff11000377e87847 R11: 0000000000000000 =
-R12:ff110002390cd9c0
-> > > [27177.676964][T2585409] R13: ff11000344b119c0 R14: ff110002e0508000 =
-R15:dffffc0000000000
-> > > [27177.687938][T2585409] FS:  0000000000000000(0000) GS:ff11000fec880=
-000(0000) knlGS:0000000000000000
-> > > [27177.700006][T2585409] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800=
-50033
-> > > [27177.709431][T2585409] CR2: 00007f06bc7b1978 CR3: 0000001021e86005 =
-CR4:0000000000771ef0
-> > > [27177.720402][T2585409] DR0: 0000000000000000 DR1: 0000000000000000 =
-DR2:0000000000000000
-> > > [27177.731337][T2585409] DR3: 0000000000000000 DR6: 00000000fffe0ff0 =
-DR7:0000000000000400
-> > > [27177.742252][T2585409] PKRU: 55555554
-> > > [27177.748207][T2585409] Call Trace:
-> > > [27177.753850][T2585409]  <TASK>
-> > > [27177.759103][T2585409]  ? __die_body.cold+0x19/0x27
-> > > [27177.766405][T2585409]  ? die+0x2e/0x50
-> > > [27177.772498][T2585409]  ? do_trap+0x1ea/0x2d0
-> > > [27177.779139][T2585409]  ? __list_del_entry_valid_or_report.cold+0x7=
-0/0x72
-> > > [27177.788518][T2585409]  ? do_error_trap+0xa3/0x160
-> > > [27177.795649][T2585409]  ? __list_del_entry_valid_or_report.cold+0x7=
-0/0x72
-> > > [27177.805045][T2585409]  ? handle_invalid_op+0x2c/0x40
-> > > [27177.812022][T2585409]  ? __list_del_entry_valid_or_report.cold+0x7=
-0/0x72
-> > > [27177.820947][T2585409]  ? exc_invalid_op+0x2d/0x40
-> > > [27177.827608][T2585409]  ? asm_exc_invalid_op+0x1a/0x20
-> > > [27177.834637][T2585409]  ? __list_del_entry_valid_or_report.cold+0x7=
-0/0x72
-> > > [27177.843519][T2585409]  btrfs_delete_unused_bgs+0x3d9/0x14c0 [btrfs=
-]
-> > >
-> > > There is a similar retry_list code in btrfs_delete_unused_bgs(), but =
-it is
-> > > safe, AFAIC. Since the block group was in the unused list, the used b=
-ytes
-> > > should be 0 when it was added to the unused list. Then, it checks
-> > > block_group->{used,resereved,pinned} are still 0 under the
-> > > block_group->lock. So, they should be still eligible for the unused l=
-ist,
-> > > not the reclaim list.
-> >
-> > The reason it is safe there it's because because we're holding
-> > space_info->groups_sem in write mode.
-> >
-> > That means no other task can allocate from the block group, so while
-> > we are at deleted_unused_bgs()
-> > it's not possible for other tasks to allocate and deallocate extents
-> > from the block group,
-> > so it can't be added to the unused list or the reclaim list by anyone e=
-lse.
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 >
-> Thank you for the description. May I incorporate this to the commit log?
+> Starting with kernel patch "btrfs: remove raid-stripe-tree
+> encoding field from stripe_extent" and btrfs-progs commit
+> 7c549b5f7cc0 ("btrfs-progs: remove raid stripe encoding"), the on-disk
+> format of the raid stripe tree got changed.
+>
+> As the feature is still experimental and not to be used in production, it
+> is OK to do a on-disk format change.
+>
+> Update the golden output of the RAID stripe tree test cases after the
+> on-disk format and print format changes.
+>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Sure.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
 Thanks!
 
+> ---
 >
-> >
-> > >
-> > > Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-> > > Suggested-by: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-> > > Fixes: 4eb4e85c4f81 ("btrfs: retry block group reclaim without infini=
-te loop")
-> > > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> >
-> > The change looks good.
-> > I would however make the subject less generic, maybe something like:
-> >
-> > "btrfs: fix adding block group to a reclaim list and the unused list
-> > during reclaim"
+> Changes to v1:
+> - Mention the kernel and btrfs-progs changes mandating this change.
 >
-> Sure.
 >
-> >
-> > Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> >
-> > > ---
-> > >  fs/btrfs/block-group.c | 13 +++++++++++--
-> > >  1 file changed, 11 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> > > index 7cde40fe6a50..498442d0c216 100644
-> > > --- a/fs/btrfs/block-group.c
-> > > +++ b/fs/btrfs/block-group.c
-> > > @@ -1945,8 +1945,17 @@ void btrfs_reclaim_bgs_work(struct work_struct=
- *work)
-> > >  next:
-> > >                 if (ret && !READ_ONCE(space_info->periodic_reclaim)) =
-{
-> > >                         /* Refcount held by the reclaim_bgs list afte=
-r splice. */
-> > > -                       btrfs_get_block_group(bg);
-> > > -                       list_add_tail(&bg->bg_list, &retry_list);
-> > > +                       spin_lock(&fs_info->unused_bgs_lock);
-> > > +                       /*
-> > > +                        * This block group might be added to the unu=
-sed list
-> > > +                        * during the above process. Move it back to =
-the
-> > > +                        * reclaim list otherwise.
-> > > +                        */
-> > > +                       if (list_empty(&bg->bg_list)) {
-> > > +                               btrfs_get_block_group(bg);
-> > > +                               list_add_tail(&bg->bg_list, &retry_li=
-st);
-> > > +                       }
-> > > +                       spin_unlock(&fs_info->unused_bgs_lock);
-> > >                 }
-> > >                 btrfs_put_block_group(bg);
-> > >
-> > > --
-> > > 2.45.2
-> > >
-> > >
+>  tests/btrfs/304.out |  9 +++------
+>  tests/btrfs/305.out | 24 ++++++++----------------
+>  tests/btrfs/306.out | 18 ++++++------------
+>  tests/btrfs/307.out | 15 +++++----------
+>  tests/btrfs/308.out | 39 +++++++++++++--------------------------
+>  5 files changed, 35 insertions(+), 70 deletions(-)
+>
+> diff --git a/tests/btrfs/304.out b/tests/btrfs/304.out
+> index 39f56f32274d..97ec27455b01 100644
+> --- a/tests/btrfs/304.out
+> +++ b/tests/btrfs/304.out
+> @@ -12,8 +12,7 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+>  bytes used XXXXXX
+> @@ -30,8 +29,7 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> @@ -49,8 +47,7 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> diff --git a/tests/btrfs/305.out b/tests/btrfs/305.out
+> index 7090626c3036..02642c904b1e 100644
+> --- a/tests/btrfs/305.out
+> +++ b/tests/btrfs/305.out
+> @@ -14,14 +14,11 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+> -       item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+>  bytes used XXXXXX
+> @@ -40,12 +37,10 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 1 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> @@ -65,16 +60,13 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 3 physical XXXXXXXXX
+>                         stripe 1 devid 4 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> diff --git a/tests/btrfs/306.out b/tests/btrfs/306.out
+> index 25065674c77b..954567db7623 100644
+> --- a/tests/btrfs/306.out
+> +++ b/tests/btrfs/306.out
+> @@ -14,11 +14,9 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+>  bytes used XXXXXX
+> @@ -37,12 +35,10 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> @@ -62,12 +58,10 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 3 physical XXXXXXXXX
+>                         stripe 1 devid 4 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> diff --git a/tests/btrfs/307.out b/tests/btrfs/307.out
+> index 2815d17d7f03..e2f1d3d84a68 100644
+> --- a/tests/btrfs/307.out
+> +++ b/tests/btrfs/307.out
+> @@ -12,11 +12,9 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+>  bytes used XXXXXX
+> @@ -33,8 +31,7 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 0 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> @@ -52,12 +49,10 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 3 physical XXXXXXXXX
+>                         stripe 1 devid 4 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> diff --git a/tests/btrfs/308.out b/tests/btrfs/308.out
+> index 23b31dd32959..75e010d54252 100644
+> --- a/tests/btrfs/308.out
+> +++ b/tests/btrfs/308.out
+> @@ -16,20 +16,15 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+> -       item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 2 physical XXXXXXXXX
+> -       item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+> -       item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 24
+> -                       encoding: RAID0
+> +       item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 16
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+>  bytes used XXXXXX
+> @@ -50,16 +45,13 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 1 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 2 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
+> -                       encoding: RAID1
+> +       item 2 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> @@ -81,24 +73,19 @@ checksum stored <CHECKSUM>
+>  checksum calced <CHECKSUM>
+>  fs uuid <UUID>
+>  chunk uuid <UUID>
+> -       item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 3 physical XXXXXXXXX
+>                         stripe 1 devid 4 physical XXXXXXXXX
+> -       item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+> -       item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
+> -                       encoding: RAID10
+> +       item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 32
+>                         stripe 0 devid 1 physical XXXXXXXXX
+>                         stripe 1 devid 2 physical XXXXXXXXX
+>  total bytes XXXXXXXX
+> --
+> 2.43.0
+>
+>
 
