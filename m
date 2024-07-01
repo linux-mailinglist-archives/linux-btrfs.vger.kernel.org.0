@@ -1,236 +1,210 @@
-Return-Path: <linux-btrfs+bounces-6085-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6086-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D205C91DCC2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 12:34:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 593A691DE23
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 13:35:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 026431C21608
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 10:34:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B48A1C225DA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 11:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A8915B984;
-	Mon,  1 Jul 2024 10:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A996614B089;
+	Mon,  1 Jul 2024 11:34:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6GNnASo"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="RoeswgVL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F60915B14F;
-	Mon,  1 Jul 2024 10:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719829654; cv=none; b=lzHfx6+NyQPrrf/bGXf5xf5o8+Gco+mbVAuXLrX4KACh/PwuL7go8UdM9tfdEgUt3sdUAKasnlgeoinn97ZeyHAIYKaHtPHcSmu1cF2B+UyNIoTN1muAI3/F0b6hcDMi0OeW76B23LPDGue1rR+Zno35TYJ1yMasi+k3ZvaOpHQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719829654; c=relaxed/simple;
-	bh=yGbFoI0x64Criq5hVXpnf8cTDkEYS+drfXiF9/4UXTc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mTE37RnGBtfVOi9d+2VjpFajRZt2en2vR4FKluwaydpzfuNVpgK8vftEmLa6bAdf3Th0C79ldS11gG1+YL6jZ0a/9JtA1/k5o7H0YBCF7Z2vm8ErxqGc1lueCi1SfhX1hlpU8jm/b3jbsct7c+9ZJZxBYT4NmZSf5tAaWM6EfKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6GNnASo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 947F5C116B1;
-	Mon,  1 Jul 2024 10:27:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719829653;
-	bh=yGbFoI0x64Criq5hVXpnf8cTDkEYS+drfXiF9/4UXTc=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Z6GNnASo0fot0PtERrcGCWLqCNkhG+ti+9IgcG2z62xbIC1ym5I817maTy4fkKhbY
-	 R2soLnBsN9ntBuRXtGUYtbUxBrvdurk/E0KX7EbbDmjOFHzMmSyo90wX0FwClonR8X
-	 P4RBkhzh+f0YRGrqIUSoKG7uVfAoeaEL0Ss0NQOw6/1RUJIexOvqBArjV7Pm3HKK+T
-	 ELGB782hclQDbjeAOXe38I7SPtwUvE2y977540crj+h57ilap+jopmlWAGnCDy6jcC
-	 lu8QPn3FZYpTj4N486u8gYzuOufgDmx/UFNBSoDMzdpGwk8GFl1VmaMqBSCpZXUEsG
-	 h//393LSr0nGQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 01 Jul 2024 06:26:47 -0400
-Subject: [PATCH v2 11/11] Documentation: add a new file documenting
- multigrain timestamps
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D98713DBB3
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 11:34:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1719833650; cv=fail; b=L6QmtsoPF6ivlEXxr6ty4koMYk72uj+Q8pVvjE/NPukCbMxSQOmFtGRMYuJguhyFCVurHUZUdNRV8bBAgSJP3G9jGf9bPBbpmjM3Ox8XuUFp9LGks2gGc7epY4bmrCaWkS/AyFICu5wyQ73lxd646ASNp02oTPEamm34aor1gew=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1719833650; c=relaxed/simple;
+	bh=KXna09NlqfdRYP1L4zKHRzkBW3K+RK7smBlw6xSZpcw=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=uhEyF+oevvA6ixHmZUYyiiGPMtRcu4WdSRvZG4Sq+GTkebUSXqJJIxD70dhg/+lh9K0q2pOmJfogX7YdoC8n+mby/WG+ozrJQ4scF6b/e8RWIefIr8M8kC+HvW17YCO39pVrQh/BG3ucam+sDVEpUEghgnbJ1EF+FXaSU/SXXX0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=RoeswgVL; arc=fail smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45UMp3oc004562
+	for <linux-btrfs@vger.kernel.org>; Mon, 1 Jul 2024 04:34:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from
+	:to:subject:date:message-id:references:in-reply-to:content-type
+	:content-transfer-encoding:mime-version; s=s2048-2021-q4; bh=KXn
+	a09NlqfdRYP1L4zKHRzkBW3K+RK7smBlw6xSZpcw=; b=RoeswgVLNK8YCCKnOeg
+	e/QJK6LZHkOyk/gVyfCp9RU2K+zhp4+xBSSIhs5v/HBWro+rrP0WDrvmnVQ7Ne/9
+	7wi6h6icEfuKbJCHHEe25e52u0gWA5Y9yzgV2OI0oaPh4TU4RrQxZZRybSBHuoaf
+	nFogHKfDc4A9mbsGYLIXq3LmmrBrc7t7omA4s6jdLWt9DwypWZahJfgBHc8W9aGB
+	0VeoDj5r3dh5hkSD3htWkkjvW3qi1Ik9Ju5+tpsNJx9G7K+WfChqL9CCeWlF1jrA
+	h721TB79v9hr02wMc8ia0r62UicK/kLnFA9hoPSoyZ0+j8LhMhAGt3Iw8udFWxZM
+	r2g==
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 402hk20a8d-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Mon, 01 Jul 2024 04:34:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PvE/wKvFuHpRpwz/pclk/hPrzI6qHgn4TabDF2l4poinoQjP35nxwFB4rYFR/MPVcAMSjXRjJOfvjx/03aDaubV+bTyMtC+gVVmh3NmJBkUqQxQ6KCjOkUzr9ged5BntgV3c5aWmSvSlFdUPeM3SYwzLU7O9AboMQpzy9oQceIlrWKaqbR7fMThCaXIXN5J2eM3CMJvjqDRTOYAW9trp+CaXqcB4cGahOxnEDNtdaT9jUMKaxA0F70D4cNhD5MTPenzGSE9i2kfbIv9qXnUzXyAVdfunAJ8ClCCQPVSIJOU8n7prc6/6MCY+z6R0cyjuiCcRTtCUVGStW4Ts19aKVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KXna09NlqfdRYP1L4zKHRzkBW3K+RK7smBlw6xSZpcw=;
+ b=oaBErfnpKD0nhU4L913qhIAG9DwkAaNhq8FMvzO2UiNenCi5iut6y78PRU8q75ON3ze8zljG2f1YAwoJ3ejS41TQR+Ct+rLvIo4WYfAMF8ntRef/m7RVrIVdaj1daWceOrZJj3Nrb6ylqKxENNKeNg4BqlhyK4mkJLwCq/xbbdcMER7JC0QzEudiqAvEFUvTnzWK/05Q5j9yPoSOOatzSpmeuJyAlUtkRCNYCji/hMoy7q2PzUBkNEkEfDDwy5NdV3XoYHZbM4yLkm0h1aGo95dcsbwnN0t9/Cbq9JY7aZPbhOMUpX3RnCbRMFfsU60+INBMFJ9pZ3pi1qxHNkdbqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com (2603:10b6:a03:4c0::15)
+ by PH0PR15MB4366.namprd15.prod.outlook.com (2603:10b6:510:9c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7719.33; Mon, 1 Jul
+ 2024 11:34:05 +0000
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8]) by SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8%6]) with mapi id 15.20.7719.029; Mon, 1 Jul 2024
+ 11:34:05 +0000
+From: Mark Harmstone <maharmstone@meta.com>
+To: "kreijack@inwind.it" <kreijack@inwind.it>,
+        "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: RE: [PATCH] btrfs-progs: add --subvol option to mkfs.btrfs
+Thread-Topic: [PATCH] btrfs-progs: add --subvol option to mkfs.btrfs
+Thread-Index: AQHayHgUH+kou+8ibE2JS8l3fzZlt7Hdaf8AgARYPrA=
+Date: Mon, 1 Jul 2024 11:34:04 +0000
+Message-ID: 
+ <SJ2PR15MB56696C02FD4EC239A668A083D1D32@SJ2PR15MB5669.namprd15.prod.outlook.com>
+References: <20240627095455.315620-1-maharmstone@fb.com>
+ <eb3642fd-963b-4a14-9cd2-8339adcb58b7@libero.it>
+In-Reply-To: <eb3642fd-963b-4a14-9cd2-8339adcb58b7@libero.it>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ2PR15MB5669:EE_|PH0PR15MB4366:EE_
+x-ms-office365-filtering-correlation-id: 5a86f3c5-2817-4b53-713c-08dc99c1b691
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|1800799024|366016|38070700018;
+x-microsoft-antispam-message-info: 
+ =?utf-8?B?NXp1b1M5SDFqNWFxMmxGKzdDQy9IUU9Bd3BqRE5rT3h3T0t2dkZhdFRKSXRU?=
+ =?utf-8?B?UTNvNmpiZm1aa204QXhuOVordGhWdExiL2lBR3QrUzVqTWdDT3RGd01PVEts?=
+ =?utf-8?B?Yk80SG5VdWd5UHRaTzNEYzZrVXdkS0xRK29zNmcyNVNac3diOG9YdkNQdE5H?=
+ =?utf-8?B?ZVhjQ21iVWQvTDI2c2t5R2Q0S2h2V2l6L2xNVi9xeGIyQmR4allOdHgvd3Mv?=
+ =?utf-8?B?VHptY0d2VkNRcUJRZTZEdVFBVDBvcGZGK3pPbndvTS9qblFudDY0azlkclNz?=
+ =?utf-8?B?TFpoL0pXR0t0TlFCMHJ6QmJvUklwaGd5ellpUk5SWCtWOU1vQStnK0pXUDFz?=
+ =?utf-8?B?VXYybzBxUTkzN0lnYTA3S0FPZzQ1K3NuUURGenIxWHZaK3pnMnB2V1ZZUVZF?=
+ =?utf-8?B?S2g5UVdQM2JOOEdXRGV1NU4rR2NiaVRad1NGK2Y5MkJBMDNuSWN1eXRHbmtl?=
+ =?utf-8?B?aDRrZVV2UUpQTDJ3RUxkT29HWEFiTk4zQzU1Q3FpU3NjVTdNVE1McVhHdE5a?=
+ =?utf-8?B?RDhvVmlQQnQyMVJtRHpDeThvSERaanU0VGVqR0VOUmRoSHhObDRuYjMyeGR6?=
+ =?utf-8?B?RkNKOXBkOEdtbzJibEIreCtqMkRsY2lPSTFKdTlXeTRBeWJpcXQxT1VBSmp2?=
+ =?utf-8?B?OVdMdUY4bWhoMWhCeStjZEhEY2JnQ2FQRjJidEhyeGdGVk44TU1HVE95QVNN?=
+ =?utf-8?B?SVZJRllvOXV0SjZicXJhTm9LRElYb2UvS2ZJamxtRERsaHoxQmJOZ0tPYkl5?=
+ =?utf-8?B?SjVoMDdncnpmTGtQOEtyaytLdWFCTitPY0tvejBLVlZBVnhmWnFUa21iSWk3?=
+ =?utf-8?B?K1JFVTdYYkNBcVhzRDEwTzhybGh6ZHRZbkVuekFNc2s5SldyWk9rQkxobHZZ?=
+ =?utf-8?B?NzNzOVF1YUNId0NBUEFBalB1bTlwQ080WC9DUXk1MkdLZzAyV0ZqaldvNjJs?=
+ =?utf-8?B?cGlyWEJDOTNOcWlmUFFteEFwMzlLU2FHZDlOMFlIOGxQb25XSFpTZnAzS0Zk?=
+ =?utf-8?B?YU11U2ZvVWdkUy83MGhwb3NVc1JTbEIzYTZtSkdyeUZHWFlMa2doQldyMlZC?=
+ =?utf-8?B?RVlnNGlPME9DYkhIWEsvZG4zclIyWElqOVBCckZ4bHVSaWNySFB4Vk02aEt6?=
+ =?utf-8?B?anZsMThMUXUzVGNLNTZLR2M4aXpEbWUwN1MxRnNIeHFuRlBhYnc0dkl2VExV?=
+ =?utf-8?B?blFybGZPU2RIVGdkMklPWUpLUWFMU3RvSGtEbXI0UTFNUnRqYTR6T1pXd2Y2?=
+ =?utf-8?B?YlJkWFJQeXFRb1BWbWZxQjBJT2Y4RTRwc3kxa3BjaE5Id0ZFQW8wVWRoZFdw?=
+ =?utf-8?B?RXdCWlN2aW1YcFlKS1NJRUxzNll3dlFyUTRVeGlEMEt2eER6enlmT2pIUEtX?=
+ =?utf-8?B?bi9aRjFHWVR0dlBQWU1ianFKQTEwN0VJMzJsTnNrbkVmZzlYTkQyL0J2bHIw?=
+ =?utf-8?B?dklwWHcyUlE3NHp0R3NjaFFBb3VZeG15V1JYaFMwSkQyM2p5UmFVTFQ3TmYz?=
+ =?utf-8?B?Y04zSFc3M1lCOFhuNXcvRWJUdlRzZ1ZUdkRFV1g1c05YU0ZDSklndnl5eExu?=
+ =?utf-8?B?NittN0FjSkNlV3l5YmZGUnlDUXFnUjMzSFlJdks1ejBLVjJCdGRWK0Q3YXJa?=
+ =?utf-8?B?cUxuTkM2U2t6UlY0Skdwd2NXZnRzUHdwTjE3NllKUXhGTjZRZGl2SHd2WTFF?=
+ =?utf-8?B?SEJvYy9DWnFNQ01RSitRcE5tUGgyU3F1bVM1MGphSU1vL0gzQWoxOEdaMVAz?=
+ =?utf-8?B?eS9la2dGM3B5L2lFVk1FVEJPMGluOEp2dXVQbzNpYTNmcFVERTI2a2FFa0NZ?=
+ =?utf-8?B?cHBrR2doaG1SaGVYM0RtR3MyU0JzR200OE4xVmVjazRaUHQ5eUxISmQrSDVE?=
+ =?utf-8?B?Sm9UcXhBSW1iT2RMSGdNRG85a1RRTnZxRFN0bzZZU1dONlE9PQ==?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR15MB5669.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?U2c1OGN5ZjU4SG5xc3V6WC95NW9EVUNDenJuTCtZb05RVWo4UnphQzBaQ2xr?=
+ =?utf-8?B?VkVnYzhPS0tuUlZpZng0Tzh4ZVJzeEo3NDBwVWNJLytkdTB4QlBKWFRXUE40?=
+ =?utf-8?B?Ui9vT0d0MjdNTkV3dFZYWlhnVUVLZ0VMeUJJMi9iRXlZWjJxK0c0aGR5WWZB?=
+ =?utf-8?B?Vk0vVldkeDJpdVhmYVhzM1IvODl5eUc0eDhKWVN1MGRBYmNyc2RuMFpycmdz?=
+ =?utf-8?B?eXVOenNrckJUTGxoVUVXb1FpdG9jeWxDMmRGZHdnZGtxcWtBYTRYRnQ4eGFn?=
+ =?utf-8?B?K29BbEFhYUxSWStuZHg4YzJBc3V2ZGtqelNXdXZIY2dpcWVLdXY5UlZRUmJH?=
+ =?utf-8?B?QVgwNFc5V2lpS2tUNFZYNFdTLytpMk4wdHFXQVZBU2kzMXFjaEFXNWRSNXhs?=
+ =?utf-8?B?NVZMWWNDMGlQM0swWDBQSWdHNTFwL2p1QUZGK3BUZXdrRVN0M2p3OHVWeDlH?=
+ =?utf-8?B?dXRZeUhUOW5iTW5STGgvNmkwYzZlVDE0ZUFQUWYxY1lNcjR6bHFYbEx3SGlD?=
+ =?utf-8?B?YXM2SWxsVTlFa2wxS3poazhNaW9waWN1cklKaDJPclNlNzM2NVNNL211eDFS?=
+ =?utf-8?B?VzZoNXo2T2Y4VHprVWE4M1prV1hVT0Y3M3hvSUpMbExTTVdESUttZm9rWk9I?=
+ =?utf-8?B?SjRDRW5FK3BiQXBJb2kvblcrY2Y1YWd1MEc4NVYydVJ3NHFqUDBNSEJrV0lQ?=
+ =?utf-8?B?bHNpWCs1UE5oT2dWTlZTR3ZCOXZIQjJZcHk0MTlXdTZVK1pzQ3JQbVZkQS9h?=
+ =?utf-8?B?b00raEdVWU5ETU9COXdocHJ1UmtKQlppb0lBRU8wNzBYOVllLzFhWnJLeXh4?=
+ =?utf-8?B?M1NUWkJabDVEYnEyck91NUs2MFVCSWdsVTFmSGRJd2poVkJNRzN4cld2Uzgx?=
+ =?utf-8?B?UTZhYVpRRlhVS2ZLZW10VFEyUWg5VDA3RFRpaEs4Y2x3NVFJY0pOTGpnUGFT?=
+ =?utf-8?B?RG1JdXdmRTduVG91UFk4QzhCYmd0NTNEZ1BWdktlNkN5WGM0Yi9hOXljaXVl?=
+ =?utf-8?B?MGMzSVU5ckR2QUlMVCswOHg2Yk8vUklyMkYzTFlBOTVCVFdpaWxoYkhrYmNS?=
+ =?utf-8?B?S1EzWGhPbWpuR0htVnNCbFk2QTdGaG9GNTQ2dHNySW5mTnBJNnR4RnAwZWxI?=
+ =?utf-8?B?UDE1dSs3SW85bUExL2V2cEExVjJYVDhjeU5oaWlaaXRRcndyU201MGRBdDYv?=
+ =?utf-8?B?Y0UrZ3ZOa2NJMnpUMklSWFhIOGRPaGY0Qnd5VFY1OTJnT0lUVVpieDg5N1Vl?=
+ =?utf-8?B?RzdKTG85aEt0SUF5Znp3ZTdrNStXWkxBQVZYVWN6VGkwa2xIcTFWaldUOVJt?=
+ =?utf-8?B?bFNCNUg0T3pGcnp1T2lmaUN0T0s4ZHY4bXg5a1FURjlKalRwdjdkbzNtYXRw?=
+ =?utf-8?B?N1B6R1pZYW4vb3lKNTVVRnRmODMwSVg1ODdyZ1Flc3ZIWjdEY2xJNUNZM3Bk?=
+ =?utf-8?B?WUhlaElJKzU3MVNRdHp0TXd0by9CUEN2cmx5OWoyRmgvL1k4ZHJQNDFGZlRR?=
+ =?utf-8?B?VDI1ZUprWk1BamZoRHhDWlpwTWkyWXVtampteE1HUWE3SzZBTklEYTVmWmhw?=
+ =?utf-8?B?WmUzRmVsK3pRYUFUdGY1cmhuYm9GbmczWTJISWd3WWdjZjFMOTVoc1hKNWwv?=
+ =?utf-8?B?cnprTWY2TzFsWXNKUDFjOWpSbDRZSGJ5SCtaeXpaeUJLVXlFbS9hSHBTcU8x?=
+ =?utf-8?B?YVhqWjE5TGswVmtYRUVmUnFCbVUrRkxWZ3M1K0NlU24rRzZLRVNCY2RBTi9p?=
+ =?utf-8?B?NTcyTW51SkZ4R3JKWVlFNzZJSVZwVk1uenYvTktjd01JMHRRV0s5MjRxWm43?=
+ =?utf-8?B?T0JPTGIzOXNkUUtCQ0JwU29PM2RkTXAxSVVOdjhLQmVqdnRYakNRMWdMdzlk?=
+ =?utf-8?B?M0p1dDJwdTJwUmMxZzM5VDBzb25wRkVDQjFzN2xYOHNFM29CMm1OV09seEVt?=
+ =?utf-8?B?bFJGSHJLY05PbzlBVTBNRkpxeG5aYlhIT1YzTFduRjA2UXhVK2dpa2thU1VC?=
+ =?utf-8?B?Y3lDUjVLV3hxaVhvdExEclgxakp2SVdVbGNGYTFxbDBTMlIwVy9wdFNtY0xh?=
+ =?utf-8?B?UGZTWStOMWc0ajF2Y0ZEa2VKM0dVSEl4a2dVaHIvRTNuQ25nNnhDK25VVy9z?=
+ =?utf-8?B?bFRtMDlPeUdYMDl1WEV2MlJZc3dPTDdiZEJPNzJnOWd3TFB2UXYzRURiOXNh?=
+ =?utf-8?Q?B7/6KT/XPjHIXWP9WTYpwoovS7yMqoV8irVP17Mee1IF?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240701-mgtime-v2-11-19d412a940d9@kernel.org>
-References: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
-In-Reply-To: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Chandan Babu R <chandan.babu@oracle.com>, 
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andi Kleen <ak@linux.intel.com>, kernel-team@fb.com, 
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
- linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6401; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=yGbFoI0x64Criq5hVXpnf8cTDkEYS+drfXiF9/4UXTc=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmgoR51H+Vt+Exq9KPckzpWSJI72DyZw39g58HZ
- 6vgl2QTkO+JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZoKEeQAKCRAADmhBGVaC
- FUgRD/9lsIjZK2rTJJTMM0K7QsIaOP3fGuxn3FJzgS/8fA0BxnWEFHyOjfHbW7G8Pk2e7T3FUtF
- eRaFdjrKm58/m+Pri5Gimbl9u0L3k8bs3OwWdfEHjjd3vY8dBeCHDYsyOOU96h0C8YAeLXYKW7v
- awrdt160eBzPfrVCLR+PYf0Nr2R5N1w4tTp8UCEaSy8BhOhiWHE5yEU+0dILaoEVaKub1bwYVjV
- mPVEWbsALVgC3JDWdkI4JTid9yXq+2fKgyT8ZRN9DuQqtfhetl6akwSxiTy2ZhYjQWXn4MwseN+
- Sl42qLYCNzrpb+I3GsuPzd4w3YrijPaS2vDQ82BPfRbQqqj+64kR1zd/yjaqoWMcp0YB5VEUnGO
- l8uyRah0FF1rQNatV4c+a/SpXu1jdNXXtOG6rlSN+0Vih1+1Q/miYBQH6ApBVf+QJxDKzXW10YR
- ywIi+5WIwTwVnTTUoJdTzKDyW7vSlMCR/n50SSiuX9vYI7wm5/wi5HL/+KT5Idgv29ro6UPca5C
- tuQZld6B1HnPwUHD0E34Slj4q9H2YbmDz2UYLavQK9GWVOSWvyVApcHSF74iwlV6XMnozuLwVRs
- iOP1aC1GI5fBD0AJrcgAxYw/xjmU0slyWE7EPk6otXIYcdc4Qrgc4cWAu3TP2Cu6Kw7o6A269Hq
- VCQ37btdGTtuEEA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR15MB5669.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a86f3c5-2817-4b53-713c-08dc99c1b691
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2024 11:34:04.9905
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: U0KH4j8UGGngls3e2Om4kiijB9Nm6OUskBggxF7qmaTkqim6fOns7SbattIpLvqGKaxvRmg2ZGhSvChQWyiqgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4366
+X-Proofpoint-GUID: PsyJmRENtzcv1xFP48lYonjIYBQCA3fv
+X-Proofpoint-ORIG-GUID: PsyJmRENtzcv1xFP48lYonjIYBQCA3fv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-01_09,2024-06-28_01,2024-05-17_01
 
-Add a high-level document that describes how multigrain timestamps work,
-rationale for them, and some info about implementation and tradeoffs.
-
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- Documentation/filesystems/multigrain-ts.rst | 126 ++++++++++++++++++++++++++++
- 1 file changed, 126 insertions(+)
-
-diff --git a/Documentation/filesystems/multigrain-ts.rst b/Documentation/filesystems/multigrain-ts.rst
-new file mode 100644
-index 000000000000..beef7f79108c
---- /dev/null
-+++ b/Documentation/filesystems/multigrain-ts.rst
-@@ -0,0 +1,126 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Multigrain Timestamps
-+=====================
-+
-+Introduction
-+============
-+Historically, the kernel has always used a coarse time values to stamp
-+inodes. This value is updated on every jiffy, so any change that happens
-+within that jiffy will end up with the same timestamp.
-+
-+When the kernel goes to stamp an inode (due to a read or write), it first gets
-+the current time and then compares it to the existing timestamp(s) to see
-+whether anything will change. If nothing changed, then it can avoid updating
-+the inode's metadata.
-+
-+Coarse timestamps are therefore good from a performance standpoint, since they
-+reduce the need for metadata updates, but bad from the standpoint of
-+determining whether anything has changed, since a lot of things can happen in a
-+jiffy.
-+
-+They are particularly troublesome with NFSv3, where unchanging timestamps can
-+make it difficult to tell whether to invalidate caches. NFSv4 provides a
-+dedicated change attribute that should always show a visible change, but not
-+all filesystems implement this properly, and many just populating this with
-+the ctime.
-+
-+Multigrain timestamps aim to remedy this by selectively using fine-grained
-+timestamps when a file has had its timestamps queried recently, and the current
-+coarse-grained time does not cause a change.
-+
-+Inode Timestamps
-+================
-+There are currently 3 timestamps in the inode that are updated to the current
-+wallclock time on different activity:
-+
-+ctime:
-+  The inode change time. This is stamped with the current time whenever
-+  the inode's metadata is changed. Note that this value is not settable
-+  from userland.
-+
-+mtime:
-+  The inode modification time. This is stamped with the current time
-+  any time a file's contents change.
-+
-+atime:
-+  The inode access time. This is stamped whenever an inode's contents are
-+  read. Widely considered to be a terrible mistake. Usually avoided with
-+  options like noatime or relatime.
-+
-+Updating the mtime always implies a change to the ctime, but updating the
-+atime due to a read request does not.
-+
-+Multigrain timestamps are only tracked for the ctime and the mtime. atimes are
-+not affected and always use the coarse-grained value (subject to the floor).
-+
-+Inode Timestamp Ordering
-+========================
-+
-+In addition just providing info about changes to individual files, file
-+timestamps also serve an important purpose in applications like "make". These
-+programs measure timestamps in order to determine whether source files might be
-+newer than cached objects.
-+
-+Userland applications like make can only determine ordering based on
-+operational boundaries. For a syscall those are the syscall entry and exit
-+points. For io_uring or nfsd operations, that's the request submission and
-+response. In the case of concurrent operations, userland can make no
-+determination about the order in which things will occur.
-+
-+For instance, if a single thread modifies one file, and then another file in
-+sequence, the second file must show an equal or later mtime than the first. The
-+same is true if two threads are issuing similar operations that do not overlap
-+in time.
-+
-+If however, two threads have racing syscalls that overlap in time, then there
-+is no such guarantee, and the second file may appear to have been modified
-+before, after or at the same time as the first, regardless of which one was
-+submitted first.
-+
-+Multigrain Timestamps
-+=====================
-+Multigrain timestamps are aimed at ensuring that changes to a single file are
-+always recognizeable, without violating the ordering guarantees when multiple
-+different files are modified. This affects the mtime and the ctime, but the
-+atime will always use coarse-grained timestamps.
-+
-+It uses the lowest-order bit in the timestamp as a flag that indicates whether
-+the mtime or ctime have been queried. If either or both have, then the kernel
-+takes special care to ensure the next timestamp update will display a visible
-+change. This ensures tight cache coherency for use-cases like NFS, without
-+sacrificing the benefits of reduced metadata updates when files aren't being
-+watched.
-+
-+The ctime Floor Value
-+=====================
-+It's not sufficient to simply use fine or coarse-grained timestamps based on
-+whether the mtime or ctime has been queried. A file could get a fine grained
-+timestamp, and then a second file modified later could get a coarse-grained one
-+that appears earlier than the first, which would break the kernel's timestamp
-+ordering guarantees.
-+
-+To mitigate this problem, we maintain a per-time_namespace floor value that
-+ensures that this can't happen. The two files in the above example may appear
-+to have been modified at the same time in such a case, but they will never show
-+the reverse order.
-+
-+Implementation Notes
-+====================
-+Multigrain timestamps are intended for use by local filesystems that get
-+ctime values from the local clock. This is in contrast to network filesystems
-+and the like that just mirror timestamp values from a server.
-+
-+For most filesystems, it's sufficient to just set the FS_MGTIME flag in the
-+fstype->fs_flags in order to opt-in, providing the ctime is only ever set via
-+inode_set_ctime_current(). If the filesystem has a ->getattr routine that
-+doesn't call generic_fillattr, then you should have it call fill_mg_cmtime to
-+fill those values.
-+
-+Caveats
-+=======
-+The main sacrifice is the lowest bit in the ctime's field, since that's
-+where the flag is stored. Thus, timestamps presented by multigrain enabled
-+filesystems will always have an even tv_nsec value (since the lowest bit
-+is masked off).
-
--- 
-2.45.2
-
+PiBDb3VsZCBiZSBwb3NzaWJsZSB0byBkZWNvdXBsZSB0aGUgIi0tcm9vdGRpciIgYW5kIHRoZSAi
+LS1zdWJ2b2wiIG9wdGlvbnMgPw0KPiBJLmUuIGRvaW5nIGEgZmlyc3QgaXRlcmF0aW9uIHdoZXJl
+IG9ubHkgdGhlIHN1YnZvbHVtZS9zdWJkaXIgYXJlIGNyZWF0ZWQgYW5kDQo+IGEgc2Vjb25kIG9u
+ZSB3aGVyZQ0KPiBhbGwgdGhlIHN1YnZvbHVtZSBhcmUgcG9wdWxhdGVkLg0KPiANCj4gVGhlIHVz
+ZSBjYXNlIGlzIGNyZWF0aW5nIG9ubHkgdGhlIHN1YnZvbCB3aXRob3V0IC0tcm9vdGRpci4gTXkg
+Z29hbCBpcyB0bw0KPiBwdXB1bGF0ZSBhIGJ0cmZzDQo+IGZpbGVzeXN0ZW0gd2l0aCBhInJvb3Qi
+IHN1YnZvbCwgYW5kIG1ha2UgaXQgZGVmYXVsdC4gVGhpcyB0byBzaW1wbGlmeSB0aGUNCj4gbmV4
+dCBzbmFwc2hvdHMuDQo+IA0KPiBVbnRpbCBub3cgdGhlIHN1YnZvbD0wIGlzIHNwZWNpYWwgYmVj
+YXVzZSBpdCBjYW4gYmUgc25hcHNob3R0ZWQsIGJ1dCBpdA0KPiBjYW5ub3QgYmUgZGVsZXRlZC4N
+Cg0KSSBkbyBwbGFuIHRvIHN1Ym1pdCBhIGxhdGVyIHBhdGNoIHdoaWNoIGFsbG93cyB5b3UgdG8g
+bWFyayB0aGUgY3JlYXRlZCBzdWJ2b2wNCmFzIGRlZmF1bHQuDQoNCj4gQmVjYXVzZSBpdCBpcyBj
+YWxsZWQgbW9yZSB0aGFuIG9uY2UsIHRoaXMgcGFydCBjYW4gYmUgcmVmYWN0b3JlZCBpbiBhDQo+
+IGRlZGljYXRlZCBmdW5jdGlvbjoNCj4gDQo+IHZvaWQgZnJlZV9zdWJ2b2xzX2xpc3QobGlzdF9o
+ZWFkICpzdWJ2b2xzKSB7DQoNClllcywgeW91J3JlIHJpZ2h0IC0gb3IgdGhlIGVycm9yIGxhYmVs
+IGNvdWxkIGJlIGNvbnZlcnRlZCB0byBhbiBvdXQgbGFiZWwsDQphbmQgdGhlIGV4aXN0aW5nIGNv
+ZGUgYWxzbyBkZWR1cGxpY2F0ZWQuIEknbGwgc3VibWl0IGEgcGF0Y2ggZm9yIHRoaXMNCnJlZmFj
+dG9yaW5nIG9uY2UgdGhpcyBjb21taXQgaXMgaW4uDQoNClRoYW5rcw0KDQpNYXJrDQo=
 
