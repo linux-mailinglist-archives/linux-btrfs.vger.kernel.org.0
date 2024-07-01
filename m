@@ -1,147 +1,153 @@
-Return-Path: <linux-btrfs+bounces-6115-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6116-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1013491E9D7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 22:53:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C34591EA80
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 23:52:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7999282BAD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 20:53:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51943282984
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 21:52:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398EA16F8F0;
-	Mon,  1 Jul 2024 20:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97987171E5A;
+	Mon,  1 Jul 2024 21:52:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Nk55bVdI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="h4y032if"
+	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="stU33CKr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9BB1591E3
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 20:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B43A2C1BA
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 21:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719867203; cv=none; b=cAKEK95niE++dpI6gG6khnEy5fwWWZbtGkukPWH+wKGSpPU9AvPkFzKdwjGsq7TwXa8Q1bSfPLTFyGNAtCjITxpjy9WzEc4pBSSf8VQv/8rE8hvHi5GglWLD70f0cNfZRQxeNvQZpcOiz1T/C5B9cLX9GqsMpoFXnYbt9PRpZS8=
+	t=1719870726; cv=none; b=PdKVZDUlwFccWRyFoLbekblaT4VBmiF5Il3+dZcf092MxgcJZdFdav1hSGhtKJsdRQ9EqDSVfO1ZjRNW8bMQ+CMsOIJ3WpMc88RYG4PWEasbEaBAlnqNflJ4+DKOCLxhvqSlQVcOpkzqSOsHOHe3dgYXHfAuEXMH04PVFNFyHi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719867203; c=relaxed/simple;
-	bh=MqmsmNv9RIk6I2Wg5j2c1oTYP8hwrRxH9qpwRwQQyro=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ZN+SYGR98ZTszFCV/U4e243IpKTGOC4hb7P2qgbb5ANzzKnnc/cK0jP1O6tJtAhsBEkrtYJH0kgQkXAbwT1DBKRiN+28m3e0nRb/JRdBUzwao2oqphN9ZPvrNmVczWBun+Do43mcXijl/wClXyLK4ExRPVzGJYWVLryPzektY2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Nk55bVdI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=h4y032if; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id ADAA213804B9;
-	Mon,  1 Jul 2024 16:53:19 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 01 Jul 2024 16:53:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1719867199; x=1719953599; bh=BJ2++wckD7GH8XSCLkde/
-	2FPMUVQIxkERLU/2BtMtnc=; b=Nk55bVdI/RCfLafg03P6f3N2u0LPayEMG8YO3
-	CFXJizKfw1bGi2CJ7109jSgBxjCi6NV3YgXwE3fCLExfLQKBzam4rJlosy0anbio
-	cY6v4EgAztNQWtanzJMwUZ+sixHWu8Hudy9BNxgIYIMZUlxXcsblWv5RWzHICaWS
-	4LYNDvyRXlBHpS6t5qCdmFyXzplLJ5NtjesNtwhus0W6rrtQ+QhEzR6WNTAHLg6W
-	Q6+/td5MnQslRiTQkYIcRZIQJYEyGJaL7U52LtWUqMuGfmxx9eEULQqwVZnA26Tr
-	Mz2yM6m250/bUsZQp5YCu5dk3KP7d7swHciFxvQH7zocvJ81w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1719867199; x=1719953599; bh=BJ2++wckD7GH8XSCLkde/2FPMUVQ
-	IxkERLU/2BtMtnc=; b=h4y032if23KBy3mYYeI5wYpA6QuVcsLwoW1M85+JuHGX
-	OW6i2bjn3yKfvmeaeue6hcGNOOQAsrMwIG8UJ4P7QVxPlDxTlgTWKFtdSjjxEYCu
-	oWJKiz+KrqUvQVHbpTICLLqWfyuA8+bDbhInMw1OiT2pkD7PfEQ4De5G00RAIvdh
-	G0bW42JIC2NNIgLmgeBRTtroWaXw7Xz7gzTIjwOfruv8K4NbWAs/GKz8b5m0Fy3N
-	3kDgu/lYWhJoHjlc9ENCZUO7WvXf/8xeDk4qv9CS8mVo6mYhEbbsw7mJI+ZVc8GX
-	p2ASvF5sVEcn3gN4gxcV+scwVrReQ0w3hP9W70Jv1Q==
-X-ME-Sender: <xms:PxeDZobPml21TZaGnG9QZkQKQWNSnHMcEol-68E2HqUJMuWTf5NBuQ>
-    <xme:PxeDZjbc2rzAlzkEIWIMonEYwlb9rZYM3UmQ5dQoKBk2EigNGYwlWG7bo8UBO7aC9
-    cRxW36pfOPIga-tJ1o>
-X-ME-Received: <xmr:PxeDZi-fMNhmeNLfzNT7_UbcUmm_dvuH68AEgzvKSPl9Lva8LHlOX_yQBV_ljZN_OU9MD6wYLobtv6jbte18X8sSEds>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudefgdduheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
-    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:PxeDZipt74FL062-_3wd4num9jGMJ5swLD5bmjM1qDlI1ONwvY1E-Q>
-    <xmx:PxeDZjr7ALqwj16jptDoscEuAC9nw3I3SuC6H7qs6I1jv3Z9VZC8ZA>
-    <xmx:PxeDZgSwf3reTsFVceCCm7ddWzEkAD-neJBCAFmJpanfoZWtFHoh3w>
-    <xmx:PxeDZjobzw66ORxQaNZcO8osS9olcSzPpngt14mvyTohPSKummqIhg>
-    <xmx:PxeDZq11VqgDnJ9CqEaUTbZjKH7QvNNglVpFVFhGxCulzmKNvRtWv2y4>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 1 Jul 2024 16:53:19 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH] btrfs: fix __folio_put with no deref in btrfs_do_encoded_write
-Date: Mon,  1 Jul 2024 13:52:34 -0700
-Message-ID: <5d7a3eabf63e5c60a8ceb243221bc8778117a8e8.1719867140.git.boris@bur.io>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1719870726; c=relaxed/simple;
+	bh=n07fWRet4wuJ6yE2VkTSwmQg1VEzerZaMf4BvfSAEnQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EFIqvH82Nj9ieUYUxxGcAE1den4TGyJsEcnXrmSbEt8M1dJOdn5e+86efbo8BTttfilaBuO4CIC824Exuc1omk6TMWPnElJmt+Cs6vwgjkQXyB2wgYU3QiIu2GKsonvJ0IaStzDjsvnUZJKeu36fnyurBB+AJwm3D4ALRqPSfSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=stU33CKr; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1faad2f1967so34269225ad.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 01 Jul 2024 14:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1719870724; x=1720475524; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0wdy/3A2eaikN2kSbaou4irQf6vNopatZuG96Ka59Ac=;
+        b=stU33CKr22A+aEL+dKc6U5oOqT7MRKb+rNFvQTwO16wIFj+9DfdtXywuOfKtqtET+m
+         x8brJXAOvQ70TgEDigVHkC+ZrcJ+AQ+z08++8MKJfZU3BqqH+HnwDtv2pXQ9SKjLXjyN
+         SJL3k1OxJZYOll34uXkPV1EUHgxNVMO61N6LEEGR4x6Ik3W0RGtVVhYtPbT43fG5tPFS
+         zPOuw1kHVjrmyU04ZbXKwKls0708JFDzFOdrqp0uZrgel/MHj0dFmBL9YSg0krIq3eOm
+         YcYPcypdLH3yh7xS6E3YxBZET3BswNAWd74JsjbBgKIZBUO0xB/+lWNo5KqA0OS028cR
+         qnGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719870724; x=1720475524;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0wdy/3A2eaikN2kSbaou4irQf6vNopatZuG96Ka59Ac=;
+        b=nEDlbz/Zu2VRj/loDrMQe2Z7N/D8Bybmpjx7TQVQX3dHxuKx8cvrOinqNIH+hc4VOg
+         Lw+HJ2KMudF/dtFcA4xSaNIjOSRUGZwCa7X2xisaWrZLOZqwq/F8lKxaqnCU0MyGh5eH
+         3JVwKiFPIlCzwCT1aK8sjGGKMILN5KS4w5VoEc6GgY3CEcpRyaq2901fqsFcmozEXthv
+         XNPOAMu6hWDE/B5SvksT9gTbkjqxx93gXPkaPaImprcLxTtjSBA436KhMXd1gb5BAiPv
+         MzLaZM2tvTLd09ZsMYADj1xObKTRgyo16FZL93+GAnWAvCfIza8pjXFaFJhcsLRQbiOU
+         LbxQ==
+X-Gm-Message-State: AOJu0YwEk8agg/rfKy9Uxhfi8bM/H3DraVYqFxwtQIzSX16Aq1xJJmX1
+	RRhTCHZWZn6aZo2BDKmI3g5JYvQmMyeHiZUslcB9okFLF/7vC0jzmYU9a8vBuhXqAIcw38O8n9p
+	f
+X-Google-Smtp-Source: AGHT+IHfEWpVerpo3sRfB6s3YqaG5E+5V4QW9LG1BwwG5967+T8/gCOP1xgvPM43OdK+FhO+EeNSIw==
+X-Received: by 2002:a17:902:d4cd:b0:1f7:1d71:25aa with SMTP id d9443c01a7336-1fadb42d78bmr116200865ad.6.1719870724505;
+        Mon, 01 Jul 2024 14:52:04 -0700 (PDT)
+Received: from telecaster.dhcp.thefacebook.com ([2620:10d:c090:500::7:a5d])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac10d1bd8sm70137405ad.10.2024.07.01.14.52.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jul 2024 14:52:03 -0700 (PDT)
+Date: Mon, 1 Jul 2024 14:52:02 -0700
+From: Omar Sandoval <osandov@osandov.com>
+To: David Sterba <dsterba@suse.cz>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 0/8] btrfs-progs: add subvol list options for sane path
+ behavior
+Message-ID: <ZoMlAvDuVIikCuuW@telecaster.dhcp.thefacebook.com>
+References: <cover.1718995160.git.osandov@fb.com>
+ <20240625153438.GW25756@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240625153438.GW25756@twin.jikos.cz>
 
-The conversion to folios switched __free_page to __folio_put in the
-error path in btrfs_do_encoded_write.
+On Tue, Jun 25, 2024 at 05:34:38PM +0200, David Sterba wrote:
+> On Fri, Jun 21, 2024 at 11:53:29AM -0700, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> > 
+> > Hello,
+> > 
+> > btrfs subvol list's path handling has been a constant source of
+> > confusion for users. None of -o, -a, or the default do what users
+> > expect. This has been broken for a decade; see [1].
+> > 
+> > This series adds two new options, -O and -A, which do what users
+> > actually want: list subvolumes below a path, or list all subvolumes,
+> > with minimal path shenanigans. This approach is conservative and tries
+> > to maintain backwards compatibility, but it's worth discussing whether
+> > we should instead fix the existing options/default, or more noisily
+> > deprecate the existing options.
+> 
+> I'm working on a replacement command of 'subvolume list', there seems to
+> be no other sane way around that.
 
-However, this gets the page refcounting wrong. If we do hit that error
-path (I reproduced by modifying btrfs_do_encoded_write to pretend to
-always fail in a way that jumps to out_folios and running the xfstest
-btrfs/281), then we always hit the following BUG freeing the folio:
+I love this idea. Do you have a work in progress anywhere?
 
-BUG: Bad page state in process btrfs  pfn:40ab0b
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x61be5 pfn:0x40ab0b
- flags: 0x5ffff0000000000(node=0|zone=2|lastcpupid=0x1ffff)
-raw: 05ffff0000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000000061be5 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: nonzero _refcount
-Call Trace:
-<TASK>
-dump_stack_lvl+0x3d/0xe0
-bad_page+0xea/0xf0
-free_unref_page+0x8e1/0x900
-? __mem_cgroup_uncharge+0x69/0x90
-__folio_put+0xe6/0x190
-btrfs_do_encoded_write+0x445/0x780
-? current_time+0x25/0xd0
-btrfs_do_write_iter+0x2cc/0x4b0
-btrfs_ioctl_encoded_write+0x2b6/0x340
+> The command line options are indeed
+> confusing and the output is maybe easy to parse but not nice to read.
+> Changing meaning of the options would break too many things as everybody
+> got used to the bad UI and output.
+> 
+> We can add the two new options but I'd rather do that only in the new
+> command so we can let everybody migrate there.
+> 
+> > One additional benefit of this is that -O can be used by unprivileged
+> > users.
+> 
+> This should be the default (and is supposed to be in the new command).
+> 
+> > Patch 1 fixes a libbtrfsutil bug I encountered while testing this.
+> > Patches 2 and 3 fix libbtrfsutil's privilege checks to work in user
+> > namespaces. Patches 4 and 5 remove some unused subvol list code. Patch 6
+> > documents and tests the current, insane behavior. Patch 7 converts
+> > subvol list to use libbtrfsutil. This is a revival of one of my old
+> > patches [2], but is much easier now that libbtrfs has been pared down.
+> > Patch 8 adds the new options, including documentation and tests.
+> > 
+> > Thanks!
+> > Omar
+> > 
+> > 1: https://lore.kernel.org/all/bdd9af61-b408-c8d2-6697-84230b0bcf89@gmail.com/
+> > 2: https://lore.kernel.org/all/6492726d6e89bf792627e4431f7ba7691f09c3d2.1518720598.git.osandov@fb.com/
+> > 
+> > Omar Sandoval (8):
+> >   libbtrfsutil: fix accidentally closing fd passed to subvolume iterator
+> 
+> I've picked this patch now as it's a fix.
 
-It turns out __free_page dereferenced the page while __folio_put does
-not. Switch __folio_put to folio_put which does dereference the page
-first.
+Patches 2 and 3 are also fixes, so those would be nice to have, too, if
+you don't mind.
 
-Fixes: 400b172b8cdc ("btrfs: compression: migrate compression/decompression paths to folios")
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My real motivation for this series is so that some internal workloads in
+user namespaces can use subvol list. I'd love for the unprivileged use
+case to be unblocked in the short term. Would it be better to add just
+the -O option without -A and all of the big documentation changes? (This
+still requires the libbtrfsutil rework.)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0a11d309ee89..12fb7e8056a1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9558,7 +9558,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
- out_folios:
- 	for (i = 0; i < nr_folios; i++) {
- 		if (folios[i])
--			__folio_put(folios[i]);
-+			folio_put(folios[i]);
- 	}
- 	kvfree(folios);
- out:
--- 
-2.45.2
-
+Thanks,
+Omar
 
