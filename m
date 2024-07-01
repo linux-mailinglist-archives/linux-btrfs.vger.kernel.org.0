@@ -1,79 +1,185 @@
-Return-Path: <linux-btrfs+bounces-6111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D81391E967
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 22:17:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E38891E9A6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 22:33:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE59E1C2295C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 20:16:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12D76284444
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 20:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C82E171096;
-	Mon,  1 Jul 2024 20:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADEBA17166C;
+	Mon,  1 Jul 2024 20:33:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FfCSE4pN"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="skuZDf80"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E8D170855;
-	Mon,  1 Jul 2024 20:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2890D16F0E9
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 20:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719865009; cv=none; b=JMATKn0dWBoQ0NTThu8ii2k1a0rNKmqGYVUisQz0wnFJ1iEf7i6cLq8WEM2BextLVqicqZVg5Tj2T84W+sQDWqB6MujZhx26ZCls42FrxZkDCZWKEhvNghpG5l9jyO8za9xvfdp0iiGgdu6KtzB3jrchbnueevqVmTHPV2RjfVA=
+	t=1719866009; cv=none; b=QElE3EWgPoarjFSjScFlevVSwhdMwTvg/GzW7uP4b6OkesnsIBbmZlJ3pSTTKXmdnmCwHBI3qhAm8fRwnYJJWcTt+ig0B1fu9HzWKpGgTNcdlsRWwmz9dLFDGRV5LnRi7wBdOGa8X0IKfEqu0Lp6y09mqIWcNdyJJTLCTO6vfDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719865009; c=relaxed/simple;
-	bh=Gv4r8sx6Tu3wxrHS+75UjHv/KD00tiLjZTo4ckRgvdA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Y2yDsJBLCvY7u7iDzWxJ6vd27KNu6lKig3ysuhrRrMDoyTFLf3FRttrtnNH/iTcaNbBau2/mb8vKL4EFwkLTeGSvzFlHlBTMyyqA3/gB4PgAXUdLoRKRudXCjlUHZGQ+c9cPx52j5DKaegaPxDpNn8kC26HdPc8Mp+Bk3qj91WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FfCSE4pN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 81FBCC116B1;
-	Mon,  1 Jul 2024 20:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719865009;
-	bh=Gv4r8sx6Tu3wxrHS+75UjHv/KD00tiLjZTo4ckRgvdA=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=FfCSE4pNVKNeFiuC3o8BbXMgXkzujpAQMRlGFiJATRdCiNxF7CWkVUQBW+BZYAEuN
-	 dV6JinBzDs7zEW4l2cs3OF24p0DTEeb7rbyEo+BC1Hm8qR+7NYdaMjOW9iWF2Q5pJY
-	 QX8aBj0kbAyT/lc6w9f9HEZuPu8jbVBJQ1Cj/J6ZQGz0vU9NhxA5eNrUuX86MEzkD3
-	 cbaUS7U/qRxUrv7RZtP8n4Uc/NO9fmRpsxKcSjPQtSZPlAiIhPJsCRijJt8t05i/Gn
-	 GVIExsrqAIrkb99KIq9MmEB3y/MClivCWCIIff1DNk5Ht33xPrlCFe2qm6PHrgIYgW
-	 jCAQz6EAPqljA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 77519C43468;
-	Mon,  1 Jul 2024 20:16:49 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 6.10-rc7
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1719854274.git.dsterba@suse.com>
-References: <cover.1719854274.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1719854274.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.10-rc6-tag
-X-PR-Tracked-Commit-Id: 48f091fd50b2eb33ae5eaea9ed3c4f81603acf38
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cfbc0ffea88c764d23f69efe6ecb74918e0f588e
-Message-Id: <171986500948.16343.5915143754758462508.pr-tracker-bot@kernel.org>
-Date: Mon, 01 Jul 2024 20:16:49 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1719866009; c=relaxed/simple;
+	bh=jEinBn73kAQeiKA6biJBVZ0znaclnyoeCW0MFqYT2GY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VPfimHPUvMKo8Ju2tDvAaa3gKgzRCzy52ldMGxNiI4C8MH+0tlTNZBfFQ8gm/xej8yQqPEg4NSXOeEmv+ylJCJCZJtcad1eKU0SBmlfDE42pMrUAdxfluLjKCwTdsdjDaLzvHte97GDUu71EpcKInskahngI9rGGRNclLtQLBxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=skuZDf80; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-79c10f03a5dso230516485a.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 01 Jul 2024 13:33:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1719866006; x=1720470806; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eJWQ2aw4J/WLIAVkZzcuHyyU5owW6RRYm2ZeVPaEzB8=;
+        b=skuZDf80doiLymvCWsYlJ/cKG3vZ2Q9BukFjNM7u/x0SGqbYFJ011iPuV6oDCIO7a6
+         HUAoBzRGXal73sktZYyKb0TwR2e7wEfj1mHmDsGvKSDRTZW3SPFWOegfKl/PvbPs3Y6c
+         3wz454SIm87ualx41QjvPlxfSxP0yTzyv1CpudOk89UYSjfogovtFCroTYXD6qU7M01s
+         qhj3XU41S0ZDH2vWvyMoL9402IdEpdLodXOybK49lcjzyHN5w3aIQNh/uw0nIbNf5CoA
+         Lqz9fLshNXhhPAoOMmyrJJXb3fvP2HZOXILUWXKssSlHSvI9qXlkJvGxwrYSr9Rar0iS
+         GROQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719866006; x=1720470806;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eJWQ2aw4J/WLIAVkZzcuHyyU5owW6RRYm2ZeVPaEzB8=;
+        b=RW2ZHbTlrZHK7iTseB3HX6dbW5lOkxe1umZwI9CV+JiS+RNNZgECAciZtjiA0HqY9A
+         +dbIf3m1sw08Jt15MJfGu7wVVQ/voIf6Y3QjplVuxvaa+NNfZGRTqk/CIE2EyzAi5/5E
+         LY9aRoAtk/mYRS0IFwwHgPbAs8T6gKRlNc7CGC0wRp2acnLwlqC2FNoSHJNDLXb20KG6
+         GBaXjzeSPRTVraEkg5QHfd5f6gzbpU0fS9PA/K/DVjaoPWXo8chEmtwCs6bc1230AZwS
+         0KdI4xdnVmfn6mZuEfvze9hFjIFTDHaF3C8GpC7K7ISho9lLeZp3iq47Y4ElFLtuo7l6
+         JiZg==
+X-Forwarded-Encrypted: i=1; AJvYcCU5TA4SbvbxsSuGj+t053hjOuOthFq2gi0OyZC0lme6A/ipFENMMKcdob9CKzyadP1JZvocY/27ye7oN8tSxwP+3q8IvQmCxzKlHn0=
+X-Gm-Message-State: AOJu0Yz6bOjjJX5wBLzktLbYbhXm/eSfDiAn9ATKMYFEcqjrYyujruW+
+	W1jz4pqSXy3PzNsibVtV6/BOaWBlZjOzZjjN9C96zS/EiYmHMc0tcP/YO3au8Mk=
+X-Google-Smtp-Source: AGHT+IHquiezZuh7KYAcKV1s9Va0xkaeqQinyvX7/0dTMvr1KCMbQie9WJzy87YdgytxI01W/IdsjQ==
+X-Received: by 2002:a05:620a:2683:b0:79c:f0e:f793 with SMTP id af79cd13be357-79d7b99e142mr1064186885a.14.1719866006069;
+        Mon, 01 Jul 2024 13:33:26 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79d692600b6sm384373985a.20.2024.07.01.13.33.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jul 2024 13:33:25 -0700 (PDT)
+Date: Mon, 1 Jul 2024 16:33:24 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andi Kleen <ak@linux.intel.com>, kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH v2 09/11] btrfs: convert to multigrain timestamps
+Message-ID: <20240701203324.GA510298@perftesting>
+References: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
+ <20240701-mgtime-v2-9-19d412a940d9@kernel.org>
+ <20240701134936.GB504479@perftesting>
+ <ec952d79bbe19d80a7aff495e9784c60a1a1e668.camel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ec952d79bbe19d80a7aff495e9784c60a1a1e668.camel@kernel.org>
 
-The pull request you sent on Mon,  1 Jul 2024 19:36:54 +0200:
+On Mon, Jul 01, 2024 at 09:57:43AM -0400, Jeff Layton wrote:
+> On Mon, 2024-07-01 at 09:49 -0400, Josef Bacik wrote:
+> > On Mon, Jul 01, 2024 at 06:26:45AM -0400, Jeff Layton wrote:
+> > > Enable multigrain timestamps, which should ensure that there is an
+> > > apparent change to the timestamp whenever it has been written after
+> > > being actively observed via getattr.
+> > > 
+> > > Beyond enabling the FS_MGTIME flag, this patch eliminates
+> > > update_time_for_write, which goes to great pains to avoid in-memory
+> > > stores. Just have it overwrite the timestamps unconditionally.
+> > > 
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > ---
+> > >  fs/btrfs/file.c  | 25 ++++---------------------
+> > >  fs/btrfs/super.c |  3 ++-
+> > >  2 files changed, 6 insertions(+), 22 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > > index d90138683a0a..409628c0c3cc 100644
+> > > --- a/fs/btrfs/file.c
+> > > +++ b/fs/btrfs/file.c
+> > > @@ -1120,26 +1120,6 @@ void btrfs_check_nocow_unlock(struct
+> > > btrfs_inode *inode)
+> > >  	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
+> > >  }
+> > >  
+> > > -static void update_time_for_write(struct inode *inode)
+> > > -{
+> > > -	struct timespec64 now, ts;
+> > > -
+> > > -	if (IS_NOCMTIME(inode))
+> > > -		return;
+> > > -
+> > > -	now = current_time(inode);
+> > > -	ts = inode_get_mtime(inode);
+> > > -	if (!timespec64_equal(&ts, &now))
+> > > -		inode_set_mtime_to_ts(inode, now);
+> > > -
+> > > -	ts = inode_get_ctime(inode);
+> > > -	if (!timespec64_equal(&ts, &now))
+> > > -		inode_set_ctime_to_ts(inode, now);
+> > > -
+> > > -	if (IS_I_VERSION(inode))
+> > > -		inode_inc_iversion(inode);
+> > > -}
+> > > -
+> > >  static int btrfs_write_check(struct kiocb *iocb, struct iov_iter
+> > > *from,
+> > >  			     size_t count)
+> > >  {
+> > > @@ -1171,7 +1151,10 @@ static int btrfs_write_check(struct kiocb
+> > > *iocb, struct iov_iter *from,
+> > >  	 * need to start yet another transaction to update the
+> > > inode as we will
+> > >  	 * update the inode when we finish writing whatever data
+> > > we write.
+> > >  	 */
+> > > -	update_time_for_write(inode);
+> > > +	if (!IS_NOCMTIME(inode)) {
+> > > +		inode_set_mtime_to_ts(inode,
+> > > inode_set_ctime_current(inode));
+> > > +		inode_inc_iversion(inode);
+> > 
+> > You've dropped the
+> > 
+> > if (IS_I_VERSION(inode))
+> > 
+> > check here, and it doesn't appear to be in inode_inc_iversion.  Is
+> > there a
+> > reason for this?  Thanks,
+> > 
+> 
+> AFAICT, btrfs always sets SB_I_VERSION. Are there any cases where it
+> isn't? If so, then I can put this check back. I'll make a note about it
+> in the changelog if not.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.10-rc6-tag
+Ah ok I'm dumb, ignore me, thanks,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cfbc0ffea88c764d23f69efe6ecb74918e0f588e
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Josef
 
