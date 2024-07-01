@@ -1,105 +1,95 @@
-Return-Path: <linux-btrfs+bounces-6093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6094-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A0F091E13B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 15:50:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 719A791E14E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 15:53:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5591228633F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 13:50:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2376B22B8C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 13:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDED115ECE2;
-	Mon,  1 Jul 2024 13:50:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAF915EFA2;
+	Mon,  1 Jul 2024 13:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Pib83jjh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="f6+du5qN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="g9YMnrBH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hlcnxR+v"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="3W0Lp/0Q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88748158DA4
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 13:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC1D15DBD5
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 13:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719841842; cv=none; b=h1p01DwE7lqAsLJGA553G2ctL5HP4CXpz3NDJJdjdKPa8ZTeMOni+k4HDY/Lj+eaoLIb7hEGRbVn92fAC6ZAguF6vsF2qpd3fiqQWRCzFMIp9XvjQR4gP3LvXsVf8s11vYgXeZU8jleoVapFtj9acLgY8QTxpnp7S9wd1Klp9Xs=
+	t=1719841979; cv=none; b=MBZ2HVfz/HmWgVTxztxV03KklLGBQkgzrJx3aVJfrGJ9d9FnUPbBi1Yy7CLNcX4uL5VG2AtPrjFiWxGafB7w0om+vpiHHguU8ZUOfKzRX2h9bGn58k1faVB+Fg5QakHrurMEoz+LbFGxvDojlZyRqghOartveEJXfwmF8Mg8y2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719841842; c=relaxed/simple;
-	bh=cz4d0tXs+vCxC0dc3eAsXl+DF6FFDuVKg1U8O78++FY=;
+	s=arc-20240116; t=1719841979; c=relaxed/simple;
+	bh=+u+pc3mw7MNX9ssnTjjenF2CQwjyjcXJmawou8D+PRc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h7T95k2nNE8HNMghAhUGj9FM6ctYBJpZiJeUHDWUSl5d90jtd2+8T+XaKS3l9Kvjs4gvNeqinl7xwI+cmnhqaJVg1K+3hBFOdB1VaTp8VaEacVhBwW8gTlZK6FGUMKyIZgW6cuEr5tv4BPWZE7p7d50iuzIWXotLdxNGGTEl/h0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Pib83jjh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=f6+du5qN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=g9YMnrBH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hlcnxR+v; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7052021AEB;
-	Mon,  1 Jul 2024 13:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719841838;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
-	b=Pib83jjhmnzCN5e3xLxLanj5tBvsyuI03KLv7QSvBFl573LbnSxTBJqKXphr/DkqgNfwVI
-	IAus1abdFRb/USFjI2Kglma9s2Kkg4J+CC6OKylb3CcbMFWyElD5OjmqTDO0CIqQothTO8
-	I88FH7EXL8h57uPJ0gP19HUtvPmEHj0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719841838;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
-	b=f6+du5qNJEfgt7kgr7lU+DFvzrJMlisjPmHc9YqbEObbkpaZKT8gdxKTaAs5LCuiNE7xB+
-	LronM7YqzeaTOhBQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=g9YMnrBH;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hlcnxR+v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719841837;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
-	b=g9YMnrBHX81tQjI1dXJsT0Yq1+Grs1PxoZiZjAKVDH1APv2aFj5KTnrgnDqIT+vkxddG1/
-	8r8VlITrzbYWFdOufvfZ7ZKEDhqEEudrK4G9FnwpR6lDdw4KNwAnQ3Kml5bpWLDl2iIEWC
-	F33o1gIxzwP1eUJV3xOu77IU2vnAaxs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719841837;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
-	b=hlcnxR+v0X98TjOnhpHzi2WQsSpquBERZYNZ9Zf7gpy4u/X28VSN1PWi/uX7pV5NE7HHwi
-	tVqB/PIO9HkjjcDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55B8913800;
-	Mon,  1 Jul 2024 13:50:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id TJ6wFC20gmYhYwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 01 Jul 2024 13:50:37 +0000
-Date: Mon, 1 Jul 2024 15:50:36 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: David Sterba <dsterba@suse.cz>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Subject: Re: [PATCH] btrfs: avoid possible parallel list adding
-Message-ID: <20240701135036.GC21023@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <58e8574ccd70645c613e6bc7d328e34c2f52421a.1719549099.git.naohiro.aota@wdc.com>
- <20240701131244.GB21023@twin.jikos.cz>
- <oqcpk2hqam7jwhnpzvzgwj5bqcjyqxia65lx6pe5otfraqxx3e@62ean7ayzwt4>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nbfmGSiEaLJKJkh3uy+aWKyl58uzBzk4muV6xfYVPV6htQQfccCXxSrpF9PsJu/zSbePYKjVYE8QXMRPAqBjB9S65sI7hpA3oNkG+rr/DoNnKzjQFej/j9JWAP7Xybbqq1BukP6nJ77v043RKObjRuAOroQT+k6TR2o5UwuSF4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=3W0Lp/0Q; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-44642df9af1so16355721cf.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 01 Jul 2024 06:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1719841976; x=1720446776; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jKuw/nIkwEFc0H9vWonO0UW2rpxls958cLbHkMvMg2w=;
+        b=3W0Lp/0QyGZbV+4fF2oi7qRSJJMtIlvoI1Rab4qAbeCcwSNxwUVsMA8+UnR73QoF2w
+         9kRIIo35dmDI5wfqSPVjlHMmHP8TiSubCBr1cGqzk6GCXgsfJTi+lkNnHduxJxkGyDRT
+         W7J0D81D/+gSQp+wPPwwgrTlr2uwKaikQ5YqAQq/0kSWer0a7G7njsu5u0CkM1Icc6M6
+         Vv1brla3xbh604cKowMOPQ0mRNmu8MFHmf5v9MMyrYevi2Y5M2pqV0XfQ3/RLlA9swL5
+         OckPAx0TA2iOZ4TkklBk+rWD2pytZjONVH5aXzVmBpMOCP+9C7bRwYp9c6QxoDCAUAvG
+         43Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719841976; x=1720446776;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jKuw/nIkwEFc0H9vWonO0UW2rpxls958cLbHkMvMg2w=;
+        b=vTjvsiUQHOpeCUFogYZZdYvnksk9izWFV9gSmD6Im0YmqZzlU81ypm0D7WIn8qpPKH
+         6G8VbW8Ge8/iV6Nx4D0Ru217tkaFcq7Ln3UgPC8FccqxbnkpItUdNwb5Cr0RdnjST9Xw
+         IhjqFJIIFtD+tRD0gi24aRhe1rgytBFexELVfArL8VySs/m4wOpLo7r7JW/TtaH5+4ZK
+         mQt9rhmFctCiFt8W6C3suZlYhEJMhELHLRxmc6v1U5orSXuaBdNeXcayu+5ZHBbnZjIh
+         axPHcCR9rJ8cycT6Hpj6bGa4w0exKIxfVHXc3eKIBtLEFX0sMSeooA2jb7BZEQ3VQwGZ
+         E/hQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX/tPYQCppmwERblcOsOHxuEt9ngf6BMztizPGH8Fa6KuhUBCIWY+R9RXR5Rw1OXNfIYKbnXqem73Z20FZGkjT5ZhooUN99sSfYmwA=
+X-Gm-Message-State: AOJu0YwibJJwHOqbSFXyWUYjUIADA9yLOXFaxwGV2xEE165u3DfGbU4g
+	7QaS7A83L0zAaza6cxSiuiApdZlDJucePqVdZDB1AoohQ55J47YDijFOEj9bm6A=
+X-Google-Smtp-Source: AGHT+IG0odLHf0JhbhZb8Muk3vgjQvMvDZGGoTkntSJ6AQwPL3He86crHRASswudCYGbceV8muYfdQ==
+X-Received: by 2002:ac8:7f12:0:b0:441:55dd:b4f3 with SMTP id d75a77b69052e-44662eb927emr81392241cf.63.1719841976260;
+        Mon, 01 Jul 2024 06:52:56 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-446513dbccfsm31269871cf.19.2024.07.01.06.52.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jul 2024 06:52:55 -0700 (PDT)
+Date: Mon, 1 Jul 2024 09:52:55 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andi Kleen <ak@linux.intel.com>, kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH v2 11/11] Documentation: add a new file documenting
+ multigrain timestamps
+Message-ID: <20240701135255.GC504479@perftesting>
+References: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
+ <20240701-mgtime-v2-11-19d412a940d9@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -108,56 +98,133 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <oqcpk2hqam7jwhnpzvzgwj5bqcjyqxia65lx6pe5otfraqxx3e@62ean7ayzwt4>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 7052021AEB
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Spam-Level: 
+In-Reply-To: <20240701-mgtime-v2-11-19d412a940d9@kernel.org>
 
-On Mon, Jul 01, 2024 at 01:35:56PM +0000, Naohiro Aota wrote:
-> > This commit has landed in several stable trees so we need to get this
-> > fixup out quickly. How hard is to hit the problem? It's caught by list
-> > corruption detection but this is most likely not enabled on distro
-> > kernels so it might go unnoticed.
+On Mon, Jul 01, 2024 at 06:26:47AM -0400, Jeff Layton wrote:
+> Add a high-level document that describes how multigrain timestamps work,
+> rationale for them, and some info about implementation and tradeoffs.
 > 
-> It surely occurs when I run fstests generic/166 some (~5) times. I don't
-> think it's directly related to the workload, though. It always happens when
-> it fails to relocate a chunk due to near ENOSPC state. So, I believe it can
-> happen easily on such tight space filesystem.
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  Documentation/filesystems/multigrain-ts.rst | 126 ++++++++++++++++++++++++++++
+>  1 file changed, 126 insertions(+)
+> 
+> diff --git a/Documentation/filesystems/multigrain-ts.rst b/Documentation/filesystems/multigrain-ts.rst
+> new file mode 100644
+> index 000000000000..beef7f79108c
+> --- /dev/null
+> +++ b/Documentation/filesystems/multigrain-ts.rst
+> @@ -0,0 +1,126 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=====================
+> +Multigrain Timestamps
+> +=====================
+> +
+> +Introduction
+> +============
+> +Historically, the kernel has always used a coarse time values to stamp
+> +inodes. This value is updated on every jiffy, so any change that happens
+> +within that jiffy will end up with the same timestamp.
+> +
+> +When the kernel goes to stamp an inode (due to a read or write), it first gets
+> +the current time and then compares it to the existing timestamp(s) to see
+> +whether anything will change. If nothing changed, then it can avoid updating
+> +the inode's metadata.
+> +
+> +Coarse timestamps are therefore good from a performance standpoint, since they
+> +reduce the need for metadata updates, but bad from the standpoint of
+> +determining whether anything has changed, since a lot of things can happen in a
+> +jiffy.
+> +
+> +They are particularly troublesome with NFSv3, where unchanging timestamps can
+> +make it difficult to tell whether to invalidate caches. NFSv4 provides a
+> +dedicated change attribute that should always show a visible change, but not
+> +all filesystems implement this properly, and many just populating this with
+> +the ctime.
+> +
+> +Multigrain timestamps aim to remedy this by selectively using fine-grained
+> +timestamps when a file has had its timestamps queried recently, and the current
+> +coarse-grained time does not cause a change.
+> +
+> +Inode Timestamps
+> +================
+> +There are currently 3 timestamps in the inode that are updated to the current
+> +wallclock time on different activity:
+> +
+> +ctime:
+> +  The inode change time. This is stamped with the current time whenever
+> +  the inode's metadata is changed. Note that this value is not settable
+> +  from userland.
+> +
+> +mtime:
+> +  The inode modification time. This is stamped with the current time
+> +  any time a file's contents change.
+> +
+> +atime:
+> +  The inode access time. This is stamped whenever an inode's contents are
+> +  read. Widely considered to be a terrible mistake. Usually avoided with
+> +  options like noatime or relatime.
+> +
+> +Updating the mtime always implies a change to the ctime, but updating the
+> +atime due to a read request does not.
+> +
+> +Multigrain timestamps are only tracked for the ctime and the mtime. atimes are
+> +not affected and always use the coarse-grained value (subject to the floor).
+> +
+> +Inode Timestamp Ordering
+> +========================
+> +
+> +In addition just providing info about changes to individual files, file
+> +timestamps also serve an important purpose in applications like "make". These
+> +programs measure timestamps in order to determine whether source files might be
+> +newer than cached objects.
+> +
+> +Userland applications like make can only determine ordering based on
+> +operational boundaries. For a syscall those are the syscall entry and exit
+> +points. For io_uring or nfsd operations, that's the request submission and
+> +response. In the case of concurrent operations, userland can make no
+> +determination about the order in which things will occur.
+> +
+> +For instance, if a single thread modifies one file, and then another file in
+> +sequence, the second file must show an equal or later mtime than the first. The
+> +same is true if two threads are issuing similar operations that do not overlap
+> +in time.
+> +
+> +If however, two threads have racing syscalls that overlap in time, then there
+> +is no such guarantee, and the second file may appear to have been modified
+> +before, after or at the same time as the first, regardless of which one was
+> +submitted first.
+> +
+> +Multigrain Timestamps
+> +=====================
+> +Multigrain timestamps are aimed at ensuring that changes to a single file are
+> +always recognizeable, without violating the ordering guarantees when multiple
+> +different files are modified. This affects the mtime and the ctime, but the
+> +atime will always use coarse-grained timestamps.
+> +
+> +It uses the lowest-order bit in the timestamp as a flag that indicates whether
+> +the mtime or ctime have been queried. If either or both have, then the kernel
+> +takes special care to ensure the next timestamp update will display a visible
+> +change. This ensures tight cache coherency for use-cases like NFS, without
+> +sacrificing the benefits of reduced metadata updates when files aren't being
+> +watched.
+> +
+> +The ctime Floor Value
+> +=====================
+> +It's not sufficient to simply use fine or coarse-grained timestamps based on
+> +whether the mtime or ctime has been queried. A file could get a fine grained
+> +timestamp, and then a second file modified later could get a coarse-grained one
+> +that appears earlier than the first, which would break the kernel's timestamp
+> +ordering guarantees.
+> +
+> +To mitigate this problem, we maintain a per-time_namespace floor value that
 
-I see, thanks. This can also happen when profiles are converted and
-there's not enough chunk space (like with striped profile conversions).
-Sounds serious to me, I'll expedite the fix but it will still take like
-a week before it's released.  Unfortunatelly it affects kernels up to
-5.15.x.
+You dropped this bit in the series, so this isn't correct, should just be
+
+"we maintain a floor value"
+
+Thanks,
+
+Josef
 
