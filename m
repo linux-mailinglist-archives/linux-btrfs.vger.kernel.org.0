@@ -1,94 +1,105 @@
-Return-Path: <linux-btrfs+bounces-6092-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23F1191E133
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 15:49:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A0F091E13B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 15:50:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 777A6B21864
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 13:49:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5591228633F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2024 13:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C4615ECF5;
-	Mon,  1 Jul 2024 13:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDED115ECE2;
+	Mon,  1 Jul 2024 13:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="dj9VQCdG"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Pib83jjh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="f6+du5qN";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="g9YMnrBH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hlcnxR+v"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7DF15ECC4
-	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 13:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88748158DA4
+	for <linux-btrfs@vger.kernel.org>; Mon,  1 Jul 2024 13:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719841780; cv=none; b=TnQM57G4WzxZyQjDc7+yxvg42pEnsyuifKaKDTML18yTVPUmd9EGUM4obxNqvCmx3D4acAtViTux4RedB1M5miy8JFYYEi2fpIywtLU1+L495eA5IkSspadxZT3MjM1uYy4TqUoRouFuMaAGgadLqWqGeT61CcbON7adcMGdL54=
+	t=1719841842; cv=none; b=h1p01DwE7lqAsLJGA553G2ctL5HP4CXpz3NDJJdjdKPa8ZTeMOni+k4HDY/Lj+eaoLIb7hEGRbVn92fAC6ZAguF6vsF2qpd3fiqQWRCzFMIp9XvjQR4gP3LvXsVf8s11vYgXeZU8jleoVapFtj9acLgY8QTxpnp7S9wd1Klp9Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719841780; c=relaxed/simple;
-	bh=JRmjt6M1zrDefWhinxPjwL+BigzvExn5UQ3vGAyMhOU=;
+	s=arc-20240116; t=1719841842; c=relaxed/simple;
+	bh=cz4d0tXs+vCxC0dc3eAsXl+DF6FFDuVKg1U8O78++FY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ja9h11zQq8rNEdlIrTfYgSM1co3KyscQFnRsYfdAdALmpTW7MTOo9EvxjgDzZ+RW9H7lIozuf4JbsChJVC3Giu+epDKG+YhpHUcByldJKEkpkVSTtGhzd73O5Nfq0QH7Yn1iWZZD1A4x99TjsGWF4KncSjszLS9uIK5ShwQxkwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=dj9VQCdG; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6b2c6291038so23866126d6.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 01 Jul 2024 06:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1719841777; x=1720446577; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4/JXsQY1meprtTaQCBMH/rREZnhH9nYDIg327XZYrLM=;
-        b=dj9VQCdGjly1zcriAcksl99UgVyIMkjXTC3I5cIMHOmmR9vqMnOTl85tgmTbuEeiWz
-         OIOxthDp12zK9owBVARDxiJbsJfUsq8E7q8DvLR4MiviovimCZ5TK67F+KqeVA72ww/U
-         qsXXlHkoTkVWfsOzAu6S56edTIp6vFLLat6Mgy7uKfJApDsw8hAdmaw2vruVwvqQ4V63
-         0NgleIyzSSgQ+X07Qo5BgdArSt2FYwIPaHQMEhNUE0CEle3gN54vHQgq0E5sycuZpd1w
-         vO7xhAOjwJwMG58Az+D8LVw8KvcZP0j2Cm29+ij52gCmRUzqZ7DsLUzyOXoSWQJXmYJt
-         Mefw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719841777; x=1720446577;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4/JXsQY1meprtTaQCBMH/rREZnhH9nYDIg327XZYrLM=;
-        b=FcEBZcdNC9FPe1jc+ZUtjM+prwxyAKkXtQn3LvnWPg2rL3iAif/m//GsOqGISwOvH5
-         VWwWk/jaDMe/cCCb+EvxsrujbFl26Fd016WzDlxtwYlSPqNAPMsFznFr6/HpZKzhg1jP
-         xe0rj0gMsoDmyo6GkeFH4nwYxY+Jp0TRRuBg+lfvgypT/+S3KyOsSBb4YnddptWhkmlN
-         19NnP/VVaWJJI2NnX7uyRw/IBlhwYbkTgAuMZFZrYY2Q2Fw+BVWcPQDXOYdJclJjAzs+
-         fPC5CRv/LdKB1ma0yQ4lKKMep/i8Zi6GCal686m1A1sRwZ3+V6oGWiEG50/m24azcbVh
-         jxLg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLtK6a3jv0/htz3PO64IAbHW1wi1zoj+gylICnfpTbsBWgEEVllGA8haWfCnhQuGNMOIPZvF19E6J3ba1u2W/3JmTjrK6Ol793qzw=
-X-Gm-Message-State: AOJu0Yz02K9ELRT/fIEBhPRkVtxJGLo2FPJVof9ESVgLmFWmPhPewdk0
-	/dkuWfQsA6KxWdLF3rkCgREEpsxy/W/CiZZ5EUJuDdB2kxmjB6CjPbxTEMyXEkI=
-X-Google-Smtp-Source: AGHT+IF5Q8o3oVoprCBhbVVvWMvB1AzB5Fn65AX5L6dAkIaxIGZIh7YN74qptGSpJhUhQ3WfUDtBdQ==
-X-Received: by 2002:a05:6214:e6a:b0:6b5:198e:353d with SMTP id 6a1803df08f44-6b5a541bfcbmr122142846d6.10.1719841777433;
-        Mon, 01 Jul 2024 06:49:37 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b59e7436dcsm32788866d6.142.2024.07.01.06.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jul 2024 06:49:37 -0700 (PDT)
-Date: Mon, 1 Jul 2024 09:49:36 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andi Kleen <ak@linux.intel.com>, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v2 09/11] btrfs: convert to multigrain timestamps
-Message-ID: <20240701134936.GB504479@perftesting>
-References: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
- <20240701-mgtime-v2-9-19d412a940d9@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h7T95k2nNE8HNMghAhUGj9FM6ctYBJpZiJeUHDWUSl5d90jtd2+8T+XaKS3l9Kvjs4gvNeqinl7xwI+cmnhqaJVg1K+3hBFOdB1VaTp8VaEacVhBwW8gTlZK6FGUMKyIZgW6cuEr5tv4BPWZE7p7d50iuzIWXotLdxNGGTEl/h0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Pib83jjh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=f6+du5qN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=g9YMnrBH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hlcnxR+v; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7052021AEB;
+	Mon,  1 Jul 2024 13:50:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719841838;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
+	b=Pib83jjhmnzCN5e3xLxLanj5tBvsyuI03KLv7QSvBFl573LbnSxTBJqKXphr/DkqgNfwVI
+	IAus1abdFRb/USFjI2Kglma9s2Kkg4J+CC6OKylb3CcbMFWyElD5OjmqTDO0CIqQothTO8
+	I88FH7EXL8h57uPJ0gP19HUtvPmEHj0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719841838;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
+	b=f6+du5qNJEfgt7kgr7lU+DFvzrJMlisjPmHc9YqbEObbkpaZKT8gdxKTaAs5LCuiNE7xB+
+	LronM7YqzeaTOhBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=g9YMnrBH;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hlcnxR+v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719841837;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
+	b=g9YMnrBHX81tQjI1dXJsT0Yq1+Grs1PxoZiZjAKVDH1APv2aFj5KTnrgnDqIT+vkxddG1/
+	8r8VlITrzbYWFdOufvfZ7ZKEDhqEEudrK4G9FnwpR6lDdw4KNwAnQ3Kml5bpWLDl2iIEWC
+	F33o1gIxzwP1eUJV3xOu77IU2vnAaxs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719841837;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1a/fPudYRh27CCvUj6EdkAYQJ882TClWheeeFb3n0Yg=;
+	b=hlcnxR+v0X98TjOnhpHzi2WQsSpquBERZYNZ9Zf7gpy4u/X28VSN1PWi/uX7pV5NE7HHwi
+	tVqB/PIO9HkjjcDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55B8913800;
+	Mon,  1 Jul 2024 13:50:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TJ6wFC20gmYhYwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 01 Jul 2024 13:50:37 +0000
+Date: Mon, 1 Jul 2024 15:50:36 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc: David Sterba <dsterba@suse.cz>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+	Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Subject: Re: [PATCH] btrfs: avoid possible parallel list adding
+Message-ID: <20240701135036.GC21023@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <58e8574ccd70645c613e6bc7d328e34c2f52421a.1719549099.git.naohiro.aota@wdc.com>
+ <20240701131244.GB21023@twin.jikos.cz>
+ <oqcpk2hqam7jwhnpzvzgwj5bqcjyqxia65lx6pe5otfraqxx3e@62ean7ayzwt4>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,69 +108,56 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240701-mgtime-v2-9-19d412a940d9@kernel.org>
+In-Reply-To: <oqcpk2hqam7jwhnpzvzgwj5bqcjyqxia65lx6pe5otfraqxx3e@62ean7ayzwt4>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 7052021AEB
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
+X-Spam-Level: 
 
-On Mon, Jul 01, 2024 at 06:26:45AM -0400, Jeff Layton wrote:
-> Enable multigrain timestamps, which should ensure that there is an
-> apparent change to the timestamp whenever it has been written after
-> being actively observed via getattr.
+On Mon, Jul 01, 2024 at 01:35:56PM +0000, Naohiro Aota wrote:
+> > This commit has landed in several stable trees so we need to get this
+> > fixup out quickly. How hard is to hit the problem? It's caught by list
+> > corruption detection but this is most likely not enabled on distro
+> > kernels so it might go unnoticed.
 > 
-> Beyond enabling the FS_MGTIME flag, this patch eliminates
-> update_time_for_write, which goes to great pains to avoid in-memory
-> stores. Just have it overwrite the timestamps unconditionally.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/btrfs/file.c  | 25 ++++---------------------
->  fs/btrfs/super.c |  3 ++-
->  2 files changed, 6 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index d90138683a0a..409628c0c3cc 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1120,26 +1120,6 @@ void btrfs_check_nocow_unlock(struct btrfs_inode *inode)
->  	btrfs_drew_write_unlock(&inode->root->snapshot_lock);
->  }
->  
-> -static void update_time_for_write(struct inode *inode)
-> -{
-> -	struct timespec64 now, ts;
-> -
-> -	if (IS_NOCMTIME(inode))
-> -		return;
-> -
-> -	now = current_time(inode);
-> -	ts = inode_get_mtime(inode);
-> -	if (!timespec64_equal(&ts, &now))
-> -		inode_set_mtime_to_ts(inode, now);
-> -
-> -	ts = inode_get_ctime(inode);
-> -	if (!timespec64_equal(&ts, &now))
-> -		inode_set_ctime_to_ts(inode, now);
-> -
-> -	if (IS_I_VERSION(inode))
-> -		inode_inc_iversion(inode);
-> -}
-> -
->  static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
->  			     size_t count)
->  {
-> @@ -1171,7 +1151,10 @@ static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
->  	 * need to start yet another transaction to update the inode as we will
->  	 * update the inode when we finish writing whatever data we write.
->  	 */
-> -	update_time_for_write(inode);
-> +	if (!IS_NOCMTIME(inode)) {
-> +		inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
-> +		inode_inc_iversion(inode);
+> It surely occurs when I run fstests generic/166 some (~5) times. I don't
+> think it's directly related to the workload, though. It always happens when
+> it fails to relocate a chunk due to near ENOSPC state. So, I believe it can
+> happen easily on such tight space filesystem.
 
-You've dropped the
-
-if (IS_I_VERSION(inode))
-
-check here, and it doesn't appear to be in inode_inc_iversion.  Is there a
-reason for this?  Thanks,
-
-Josef
+I see, thanks. This can also happen when profiles are converted and
+there's not enough chunk space (like with striped profile conversions).
+Sounds serious to me, I'll expedite the fix but it will still take like
+a week before it's released.  Unfortunatelly it affects kernels up to
+5.15.x.
 
