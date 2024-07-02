@@ -1,149 +1,107 @@
-Return-Path: <linux-btrfs+bounces-6143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 859DD9241F1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 17:10:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C51DB924204
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 17:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6BE11C20DFF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 15:10:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82B902821A4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 15:12:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403F31BB6A0;
-	Tue,  2 Jul 2024 15:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE761BBBD4;
+	Tue,  2 Jul 2024 15:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lhosaMTD"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dCljCzJR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA3A1DFFC
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Jul 2024 15:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BED231DFFC;
+	Tue,  2 Jul 2024 15:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719933021; cv=none; b=VdVxG6/3OrxgUgU9Wy4GkBSXktuUmCsQAQgQOhBurNwbM+VLN00sgLQWNhLSy4pH741T2xRB45iGwXcXquREjGVMc/pYtPcDa8gOlBMw304duh9Eb/Y9kFVdjv/EYER7SegPM/+JBBazvIqdOxPHuk7/MwjtRNP0iXiCxe3tJa8=
+	t=1719933163; cv=none; b=Rq2t65owanOnDswCs4Mtc23lq5z/T371ks43KUHghXiUNwn9ooe/iXElS6eCjXW5K4Xblhy40GXegYpUxbfPq6UvldqrVby5m0Wwrjn4Jc4yJ32xwUNGU1S4CLhtok1GaRO0kzjVESvqa6mFLcTT3u8XBiSMCLpb3Rs3OqgBtM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719933021; c=relaxed/simple;
-	bh=ASB/owSHTfhmG+PjSyVrIw2gf/QyQP/JccrcGSRz/fE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mxSOjywgG4rKRbI8o1l+ivsnesNMFqrMFuSaTf4AN2ZAoqTIXW6ijweOCSohmoTJ7FHey8L2l0B3fk017FpkSM8kbV1bdELaajbFGy060c/XXp1K3eYEF1fSbeJ0wwNUIkKKzoxkZZVFPFpOCIHV2hm1Bsao7ihbbr30otQf6Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lhosaMTD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14D33C2BD10
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Jul 2024 15:10:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719933021;
-	bh=ASB/owSHTfhmG+PjSyVrIw2gf/QyQP/JccrcGSRz/fE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lhosaMTDYrlwY+PRjIhIur/A63FRbkpEQKTyrUcIH3gdwPF29USjJgLu27+45JNdk
-	 yZkqf6nNJtVBdBtMqxoQgtvO52s0K8oKVgcQ8S7BKiiQm4PpR+L+3u233RP2pjOImp
-	 UlInipgmMtvkutNLqjF0LLtyRXix8LnirWddVwll0fdQqV7fseqS5HGtwbL3AgsUAB
-	 G/n2xqsiNF1GERGlL5IA5f4J7lBX3nWdT9gDbTA8ph9REDOuS/27FVUEwDVmAYpUv+
-	 rijZCDBBghf97ldEABrv7ltOWfqV+OFLUdIgIA4M0FpwknKv1t5JxZlz1E3dmgztg8
-	 7TJeQBWrckzgA==
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-58ba3e37feeso1012239a12.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Jul 2024 08:10:21 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yx+vnJ2UptFBqvOe+8YbjcF6ujRTzFa8KMbfRXEhcD/JSX3jGO9
-	hNMwAGUtEmK9F5O1dsIK58814j2Z9RrW5RI/YJejeIZh/Ci547oZF5xzOO6O+dHbs+xwx5jskPy
-	/BvBopBshXRlGcLAvTtQ5NidzEF4=
-X-Google-Smtp-Source: AGHT+IEYH3wb7FDFs5tvAziQhzQOSlwaM92BwjXvBQptTMn35NNSDJZNXVRXOXKqjWehHLVlM3W345qVkWdTzapuLe8=
-X-Received: by 2002:a17:907:2d8e:b0:a72:840d:9ef3 with SMTP id
- a640c23a62f3a-a75148705eemr676038366b.48.1719933019629; Tue, 02 Jul 2024
- 08:10:19 -0700 (PDT)
+	s=arc-20240116; t=1719933163; c=relaxed/simple;
+	bh=ABYatGOHDvGjohsk6pDUWhV3e0zacUzLxB8sgh2L0Kk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dS03hnGJVjnp0+l26vMKQRu/W2PM/qVCp9D19ue3JZYQrhk3JP1b/ZzhL1YGX4ydCLkj5rVJn4efI/YoicjLYigOmT7NyVvbj1zRV0O5tBqSqNvrhPCrszRAou2VUyYcpUGrIOSUwGlS9K8e7G67P9uDCp6X41lz1DL8XzMkE6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=dCljCzJR; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=8aouOiHZz/CtkLH8RlphiC+CuL1fGX3TYjmQQVPOhZE=; b=dCljCzJRSfznNuYHX5KeHFLuWV
+	1bGB2/E0ElcUGou1naiVTb8GjiRYIwBvBWILQ6RLqqRbBdOIErpJ+SWkBWdjlw0iN1lSHfonwrj0h
+	wVdYu0AnkD5wOr6zpmOvc/VRJ7EyUE9eLSu3jJDW06TfZ4HwOGaTRkiCfriacF5Wo6FBnITHbgOe2
+	cUWZdK2jsEKUktlwltOfhcgJvoqG4q8eukNIK7KWBynHYywL5TPP8gs5jg82+w2Xyc2gd4deZhrue
+	H21CvG2clgGVczz798MUMmJhoWGmR3TMIxyr1HailAgCTaIgccNe/f1h4oVzV2bhQzXPmu4J40qQX
+	V4LqdFhA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sOfBK-000000079no-1zHc;
+	Tue, 02 Jul 2024 15:12:34 +0000
+Date: Tue, 2 Jul 2024 08:12:34 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 01/10] fs: turn inode ctime fields into a single ktime_t
+Message-ID: <ZoQY4jdTc5dHPGGG@infradead.org>
+References: <20240701224941.GE612460@frogsfrogsfrogs>
+ <3042db2f803fbc711575ec4f1c4a273912a50904.camel@kernel.org>
+ <ZoOuSxRlvEQ5rOqn@infradead.org>
+ <d91a29f0e600793917b73ac23175e02dafd56beb.camel@kernel.org>
+ <20240702101902.qcx73xgae2sqoso7@quack3>
+ <958080f6de517cf9d0a1994e3ca500f23599ca33.camel@kernel.org>
+ <ZoPs0TfTEktPaCHo@infradead.org>
+ <09ad82419eb78a2f81dda5dca9caae10663a2a19.camel@kernel.org>
+ <ZoPvR39vGeluD5T2@infradead.org>
+ <a11d84a3085c6a6920d086bf8fae1625ceff5764.camel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <5152cead4acef28ac0dff3db80692a6e8852ddc4.1719828039.git.fdmanana@suse.com>
- <20240702145200.GF21023@twin.jikos.cz>
-In-Reply-To: <20240702145200.GF21023@twin.jikos.cz>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 2 Jul 2024 16:09:42 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7X9zMZh-0ruaQV++mMY2q3oFTq6kW2BwOe=v+0OECGQQ@mail.gmail.com>
-Message-ID: <CAL3q7H7X9zMZh-0ruaQV++mMY2q3oFTq6kW2BwOe=v+0OECGQQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix data race when accessing the last_trans field
- of a root
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a11d84a3085c6a6920d086bf8fae1625ceff5764.camel@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, Jul 2, 2024 at 3:52=E2=80=AFPM David Sterba <dsterba@suse.cz> wrote=
-:
->
-> On Mon, Jul 01, 2024 at 11:01:53AM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > KCSAN complains about a data race when accessing the last_trans field o=
-f a
-> > root:
-> >
-> >   [  199.553628] BUG: KCSAN: data-race in btrfs_record_root_in_trans [b=
-trfs] / record_root_in_trans [btrfs]
-> >
-> >   [  199.555186] read to 0x000000008801e308 of 8 bytes by task 2812 on =
-cpu 1:
-> >   [  199.555210]  btrfs_record_root_in_trans+0x9a/0x128 [btrfs]
-> >   [  199.555999]  start_transaction+0x154/0xcd8 [btrfs]
-> >   [  199.556780]  btrfs_join_transaction+0x44/0x60 [btrfs]
-> >   [  199.557559]  btrfs_dirty_inode+0x9c/0x140 [btrfs]
-> >   [  199.558339]  btrfs_update_time+0x8c/0xb0 [btrfs]
-> >   [  199.559123]  touch_atime+0x16c/0x1e0
-> >   [  199.559151]  pipe_read+0x6a8/0x7d0
-> >   [  199.559179]  vfs_read+0x466/0x498
-> >   [  199.559204]  ksys_read+0x108/0x150
-> >   [  199.559230]  __s390x_sys_read+0x68/0x88
-> >   [  199.559257]  do_syscall+0x1c6/0x210
-> >   [  199.559286]  __do_syscall+0xc8/0xf0
-> >   [  199.559318]  system_call+0x70/0x98
-> >
-> >   [  199.559431] write to 0x000000008801e308 of 8 bytes by task 2808 on=
- cpu 0:
-> >   [  199.559464]  record_root_in_trans+0x196/0x228 [btrfs]
-> >   [  199.560236]  btrfs_record_root_in_trans+0xfe/0x128 [btrfs]
-> >   [  199.561097]  start_transaction+0x154/0xcd8 [btrfs]
-> >   [  199.561927]  btrfs_join_transaction+0x44/0x60 [btrfs]
-> >   [  199.562700]  btrfs_dirty_inode+0x9c/0x140 [btrfs]
-> >   [  199.563493]  btrfs_update_time+0x8c/0xb0 [btrfs]
-> >   [  199.564277]  file_update_time+0xb8/0xf0
-> >   [  199.564301]  pipe_write+0x8ac/0xab8
-> >   [  199.564326]  vfs_write+0x33c/0x588
-> >   [  199.564349]  ksys_write+0x108/0x150
-> >   [  199.564372]  __s390x_sys_write+0x68/0x88
-> >   [  199.564397]  do_syscall+0x1c6/0x210
-> >   [  199.564424]  __do_syscall+0xc8/0xf0
-> >   [  199.564452]  system_call+0x70/0x98
-> >
-> > This is because we update and read last_trans concurrently without any
-> > type of synchronization. This should be generally harmless and in the
-> > worst case it can make us do extra locking (btrfs_record_root_in_trans(=
-))
-> > trigger some warnings at ctree.c or do extra work during relocation - t=
-his
-> > would probably only happen in case of load or store tearing.
-> >
-> > So fix this by always reading and updating the field using READ_ONCE()
-> > and WRITE_ONCE(), this silences KCSAN and prevents load and store teari=
-ng.
->
-> I'm curious why you mention the load/store tearing, as we discussed this
-> last time under some READ_ONCE/WRITE_ONCE change it's not happening on
-> aligned addresses for any integer type, I provided links to intel manuals=
-.
+On Tue, Jul 02, 2024 at 08:21:42AM -0400, Jeff Layton wrote:
+> Many of the existing callers of inode_ctime_to_ts are in void return
+> functions. They're just copying data from an internal representation to
+> struct inode and assume it always succeeds. For those we'll probably
+> have to catch bad ctime values earlier.
+> 
+> So, I think I'll probably have to roll bespoke error handling in all of
+> the relevant filesystems if we go this route. There are also
+> differences between filesystems -- does it make sense to refuse to load
+> an inode with a bogus ctime on NFS or AFS? Probably not.
+> 
+> Hell, it may be simpler to just ditch this patch and reimplement
+> mgtimes using the nanosecond fields like the earlier versions did.
 
-Yes, I do remember that.
-But that was a different case, it was about a pointer type.
+Thatdoes for sure sound simpler.  What is the big advantage of the
+ktime_t?  Smaller size?
 
-This is a u64. Can't the load/store tearing happen at the very least
-on 32 bits systems?
-
-I believe that's the reason we use WRITE_ONCE/READ_ONCE in several
-places dealing with u64s.
-
->
-> I suggest using data_race as is more suitable in this case, it's more
-> specific than READ_ONCE/WRITE_ONCE that is for preventing certain
-> compiler optimizations.
 
