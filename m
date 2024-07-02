@@ -1,94 +1,131 @@
-Return-Path: <linux-btrfs+bounces-6123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6124-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9526F91F05C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 09:38:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8ACC923905
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 11:01:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFB11B266BE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 07:38:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 544671F2302E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 09:01:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CAF14A612;
-	Tue,  2 Jul 2024 07:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E816514EC7F;
+	Tue,  2 Jul 2024 09:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GCBLdFrj"
+	dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b="Yfp71bv2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mail.synology.com (mail.synology.com [211.23.38.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465744CB23;
-	Tue,  2 Jul 2024 07:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960B81A28B
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Jul 2024 09:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.23.38.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719905876; cv=none; b=W6wg9moEUN1R95TjERWcw/pXdnkLbfVI+EATzZV+auLbFu3aq6Xcx1zw0UeIET0bNfk7Sjm933pHv4a0o03lXs0umM4F7Yt052NVKvHV5CsUxCD2rp2J5Zej0KvIHkd7XQBDWc6YuU2l0Nq38u0hjzPhyfzGDvVxUsJnlwN0uIo=
+	t=1719910894; cv=none; b=akxCLMdTrrk9KaiiP2WDzzd5OetA4aBlCAxxG7hw6QUJ+9QWdv2vX5HuhC0+kh7NCygcgRW/jp5wo9O/VvY2C2TLd4LZtjMtqwTrr5gX/6I4safOCVj0WubD/KKBN38H38lxKb8ZnO5kOiCudA7cFhg77w0B0RtNmjxT1zQP+Lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719905876; c=relaxed/simple;
-	bh=2VYDxOt/ANNEhf8pUSMHmU8uQwhxTzHw4bbej7YnNQA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cpN4Tc6FSFKq2h40U5YAA1r5V8GZwxAVDMTK7k2suZ107bocAxi8yni0bg90brOZJ1T/4d8yMcGw+KnYZz8QRf5Rup7EqDynhW6/ApP8LD1eeifbwhQVlA0f9YzJzfyvNHTjePfFupm4/SFnjMmRiiDPdFIhhlBt3PopjO/YJLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GCBLdFrj; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=rxGl+63oN1WDMSTt3tuoEFowmTF6ElvlJY4+FmesakA=; b=GCBLdFrjfKQdOXAbJDYAUldMcU
-	DSmkwndO1FhRCRFEv30KICrnRNwrFf9kJcEYMqhwqQDtLGuTCsv/XKs1i4qYzbEK4bDB//29ZIl/Z
-	TyUMsccI/iUY5NQUTOrNNQZM0hhSV+5kkoK79H8Po0NcbQPcICCM3GQwh25NRLhmhXCICDRSuyiPq
-	wrFue8viWQOTqL+Fg5JPI4ghXP1YvSA80e3qc0eztth2PFfU/1m0gidDEYPN+n80rPsZURhP7EL1V
-	ZfShbVBnFGywltDR18+pzXwEuIrHk/UYIUMD5W1zc+qOJRqd8wAWe5dbAhyAv/2NL90AXPEqVJLQ0
-	Xb2L/HoA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOY5D-00000005sux-1EZd;
-	Tue, 02 Jul 2024 07:37:47 +0000
-Date: Tue, 2 Jul 2024 00:37:47 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 01/10] fs: turn inode ctime fields into a single ktime_t
-Message-ID: <ZoOuSxRlvEQ5rOqn@infradead.org>
-References: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
- <20240626-mgtime-v1-1-a189352d0f8f@kernel.org>
- <20240701224941.GE612460@frogsfrogsfrogs>
- <3042db2f803fbc711575ec4f1c4a273912a50904.camel@kernel.org>
+	s=arc-20240116; t=1719910894; c=relaxed/simple;
+	bh=SrRQlYbOTaBf3ZsRU0/DO8bcIACf1MejM6dCLEUOKRg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nc/cCh+02AD8jhmtrdWFzV/MO9BMaxE7PtI64Lpam8FHCFTLgmt3BLve6FyUzwdpCqaIVzQWBf5Ft8sy3WTyCMFFozK9fHLIcT+cyzUmCoeUzLY9fCIR1S2KXcvWJHwBMLlt/WDjZyMaOvjLL5Qg2P3eXbYglgca7YkNQkRjNvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com; spf=pass smtp.mailfrom=synology.com; dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b=Yfp71bv2; arc=none smtp.client-ip=211.23.38.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synology.com
+From: Chung-Chiang Cheng <cccheng@synology.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+	t=1719910504; bh=SrRQlYbOTaBf3ZsRU0/DO8bcIACf1MejM6dCLEUOKRg=;
+	h=From:To:Cc:Subject:Date;
+	b=Yfp71bv2gFjB/q82wzIVf2+9gpJmSe8di/l+Y968ZtceQAGKn1RfLSsdo+lKwojVQ
+	 NmQ0jWWyAT9aNILDbzKGTgojQu+DPZ8vZmh1YHl/DUSIWksz2oVBbtEM14ua6vXZtJ
+	 vxlxFZUE5Ao0GqBHKT7/lMQsNXO2WIqgd/t6WUD4=
+To: linux-btrfs@vger.kernel.org
+Cc: shepjeng@gmail.com,
+	btrfs@cccheng.net,
+	Chung-Chiang Cheng <cccheng@synology.com>
+Subject: [PATCH] btrfs-progs: inspect tree-stats: support to show a specified tree
+Date: Tue,  2 Jul 2024 16:55:02 +0800
+Message-Id: <cccf210bb40ff2455b03c8e6f77a9bef62d80cb3.1719910442.git.cccheng@synology.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3042db2f803fbc711575ec4f1c4a273912a50904.camel@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Synology-Virus-Status: no
+X-Synology-MCP-Status: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Spam-Flag: no
 
-On Mon, Jul 01, 2024 at 08:22:07PM -0400, Jeff Layton wrote:
-> 2) the filesystem has been altered (fuzzing? deliberate doctoring?).
-> 
-> None of these seem like legitimate use cases so I'm arguing that we
-> shouldn't worry about them.
+tree-stats currently displays only some global trees and fs-tree 5. Add
+support to show the stats of a specified tree.
 
-Not worry seems like the wrong answer here.  Either we decide they
-are legitimate enough and we preserve them, or we decide they are
-bogus and refuse reading the inode.  But we'll need to consciously
-deal with the case.
+Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+---
+ cmds/inspect-tree-stats.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/cmds/inspect-tree-stats.c b/cmds/inspect-tree-stats.c
+index 42dab804528a..82298cd04a28 100644
+--- a/cmds/inspect-tree-stats.c
++++ b/cmds/inspect-tree-stats.c
+@@ -35,6 +35,7 @@
+ #include "common/help.h"
+ #include "common/messages.h"
+ #include "common/open-utils.h"
++#include "common/string-utils.h"
+ #include "common/units.h"
+ #include "cmds/commands.h"
+ 
+@@ -441,6 +442,7 @@ static const char * const cmd_inspect_tree_stats_usage[] = {
+ 	"Print various stats for trees",
+ 	"",
+ 	OPTLINE("-b", "raw numbers in bytes"),
++	OPTLINE("-t <tree_id>", "print only tree with the given id"),
+ 	NULL
+ };
+ 
+@@ -451,9 +453,10 @@ static int cmd_inspect_tree_stats(const struct cmd_struct *cmd,
+ 	struct btrfs_root *root;
+ 	int opt;
+ 	int ret = 0;
++	u64 tree_id = 0;
+ 
+ 	optind = 0;
+-	while ((opt = getopt(argc, argv, "vb")) != -1) {
++	while ((opt = getopt(argc, argv, "vbt:")) != -1) {
+ 		switch (opt) {
+ 		case 'v':
+ 			verbose++;
+@@ -461,6 +464,13 @@ static int cmd_inspect_tree_stats(const struct cmd_struct *cmd,
+ 		case 'b':
+ 			no_pretty = true;
+ 			break;
++		case 't':
++			tree_id = arg_strtou64(optarg);
++			if (!tree_id) {
++				error("unrecognized tree id: %s", optarg);
++				exit(1);
++			}
++			break;
+ 		default:
+ 			usage_unknown_option(cmd, argv);
+ 		}
+@@ -485,6 +495,14 @@ static int cmd_inspect_tree_stats(const struct cmd_struct *cmd,
+ 		exit(1);
+ 	}
+ 
++	if (tree_id) {
++		pr_verbose(LOG_DEFAULT, "Calculating size of tree (%llu)\n", tree_id);
++		key.objectid = tree_id;
++		key.offset = (u64)-1;
++		ret = calc_root_size(root, &key, 1);
++		goto out;
++	}
++
+ 	pr_verbose(LOG_DEFAULT, "Calculating size of root tree\n");
+ 	key.objectid = BTRFS_ROOT_TREE_OBJECTID;
+ 	ret = calc_root_size(root, &key, 0);
+-- 
+2.34.1
 
 
