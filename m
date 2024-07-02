@@ -1,113 +1,178 @@
-Return-Path: <linux-btrfs+bounces-6148-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6149-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB5B924372
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 18:19:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44090924374
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 18:19:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBBA1284A31
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 16:19:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67D8A1C2243A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2024 16:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C501BD505;
-	Tue,  2 Jul 2024 16:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6D71BD038;
+	Tue,  2 Jul 2024 16:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oWe8+4vr"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Tpl1EOku";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1ZmWyYa+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Tpl1EOku";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1ZmWyYa+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4CB615B11D;
-	Tue,  2 Jul 2024 16:19:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E2C1BD009
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Jul 2024 16:19:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719937146; cv=none; b=cLayFQonFoT0r5aV3qNq25Enrs6c0UqngtzbWhg4qUmnEaNcOorJWP9CgyRRe3gpnNUDNooWGm4myuJs0dRAEeow/foi4gVhDyrYVDXrdz2Npzt2ykxIgiNrYi2NWqUvHs67+wFrlFAml3bCqP5T90kQmt9XIKwYDXg7Ss8Nchc=
+	t=1719937161; cv=none; b=WsCzwMSR83NgRvtS963a/FIjE9+Tnw7RtjDGtg9s6KLACj9lB5rpz7ZfHe5PDN5MoRhc/IjmLs5WmEjUZz4o7tptQVmxUqcE48KtyTF2x5ytN8jCRmZ/chgafwDxF0+Bs6L2u2xO+/k3MJa0vx6ie3C+XqmBZge6BLdq6vmo1fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719937146; c=relaxed/simple;
-	bh=f/Lt6TGAChQhJDo1d9S1C9KYvC+2NSkWdhgXVkkdLDw=;
+	s=arc-20240116; t=1719937161; c=relaxed/simple;
+	bh=L8y9exe+4WjhhPXrEkpQb0o+pm5XPqvJKEL6wpY4hiA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pEljVPxeReaao268QOPZbdgc3ZoiY1hmRDBA6GIKVJhDJq/lMLrmXbZaR7/iFna54t18AQrAsxcRybtuwExHGX+KYeFJXyNnaKsD/3lOnMNuDMAOk5BYKFPN71epdFWpnEXKNV/PbgHhGHvymCdygI6yZ4LW7eTwYTlmPE4A5ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oWe8+4vr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47053C116B1;
-	Tue,  2 Jul 2024 16:18:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719937146;
-	bh=f/Lt6TGAChQhJDo1d9S1C9KYvC+2NSkWdhgXVkkdLDw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oWe8+4vrZ82aLpFmQ/xxCaJvhq1zmz0VUCOjwx+pO4joEWaTNHfWjLRMGZoaPiVDt
-	 budCT+VnEcgyoSf2Ab8MdsbVsBFm77eny8iEcIwJQ8JyEGL4+bTuUEjbENlNcYIpp/
-	 gL3SnCOgO6dZZl8vgmgZ762DzwQodDtcRzBW6kItR6KjM163XwjU2Lgn7iM5pgI6/7
-	 XBsh3uDkaMZxoYbbDoDEcrrpMrlrSldQO/fACxHAu6ntHbLUVC4HHK5mhcmY/NpEBF
-	 XVA4ga3Rk7WIXoZ0aUPw+mEDsMkvhR1DhZmouNn2Tfi29hI2nY5C6cVQ0Pr5Mz7q2M
-	 Il08gNdV6QXbQ==
-Date: Tue, 2 Jul 2024 18:18:57 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Chandan Babu R <chandan.babu@oracle.com>, 
-	Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, Hugh Dickins <hughd@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 01/10] fs: turn inode ctime fields into a single ktime_t
-Message-ID: <20240702-inwiefern-beraten-cc4b5efce8ef@brauner>
-References: <20240701224941.GE612460@frogsfrogsfrogs>
- <3042db2f803fbc711575ec4f1c4a273912a50904.camel@kernel.org>
- <ZoOuSxRlvEQ5rOqn@infradead.org>
- <d91a29f0e600793917b73ac23175e02dafd56beb.camel@kernel.org>
- <20240702101902.qcx73xgae2sqoso7@quack3>
- <958080f6de517cf9d0a1994e3ca500f23599ca33.camel@kernel.org>
- <ZoPs0TfTEktPaCHo@infradead.org>
- <09ad82419eb78a2f81dda5dca9caae10663a2a19.camel@kernel.org>
- <ZoPvR39vGeluD5T2@infradead.org>
- <a11d84a3085c6a6920d086bf8fae1625ceff5764.camel@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=T7XriPv/6iAHvrKEGm3P7JTf4lKLhLy5YgZhGXT3fek1cs7G3ldefY/i8LuUZrLBy6g1W05NLlEyJ8NxoZtrwuzw36Kn9MmkX0r1JN9ZejacU9MXmVBioWTEeU0TwjKmFQGkYvQn80nO4myx8uiQ+mKvaLD9L2tya6Tib2KRLi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Tpl1EOku; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1ZmWyYa+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Tpl1EOku; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1ZmWyYa+; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 71D381FBAE;
+	Tue,  2 Jul 2024 16:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719937157;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uxsWOdsvnPLQUHJg0m6upmdDVYCZU4T3Ht8N+WC4Yww=;
+	b=Tpl1EOkuG+VZKH22UTmpe4GUwU3Oil9rZFxCrpgOvV8edgDUE7UwtMDt9T2Kx6RXVP4EpM
+	30r9SLKBYAgNQD37XDYM/wc1yxnOJeCFhAfl33JZQnQ4Qft12nH23Ej8cvqBE9OO0dn+eR
+	B5krTbK+1QCiYC6MEo3m4ZirfTB1GyM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719937157;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uxsWOdsvnPLQUHJg0m6upmdDVYCZU4T3Ht8N+WC4Yww=;
+	b=1ZmWyYa+D1BIzVPSRWVArXuvLkLYYcp3xN4nB63RQN8oR3WeRHVGRr6Rbp5IohmCOs9fMp
+	yibCVptmX6bYTECQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Tpl1EOku;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1ZmWyYa+
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719937157;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uxsWOdsvnPLQUHJg0m6upmdDVYCZU4T3Ht8N+WC4Yww=;
+	b=Tpl1EOkuG+VZKH22UTmpe4GUwU3Oil9rZFxCrpgOvV8edgDUE7UwtMDt9T2Kx6RXVP4EpM
+	30r9SLKBYAgNQD37XDYM/wc1yxnOJeCFhAfl33JZQnQ4Qft12nH23Ej8cvqBE9OO0dn+eR
+	B5krTbK+1QCiYC6MEo3m4ZirfTB1GyM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719937157;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uxsWOdsvnPLQUHJg0m6upmdDVYCZU4T3Ht8N+WC4Yww=;
+	b=1ZmWyYa+D1BIzVPSRWVArXuvLkLYYcp3xN4nB63RQN8oR3WeRHVGRr6Rbp5IohmCOs9fMp
+	yibCVptmX6bYTECQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 56FDE13A9A;
+	Tue,  2 Jul 2024 16:19:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QuvBFIUohGZqOAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 02 Jul 2024 16:19:17 +0000
+Date: Tue, 2 Jul 2024 18:19:16 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v3 1/2] btrfs: fix __folio_put refcount in
+ btrfs_do_encoded_write
+Message-ID: <20240702161916.GI21023@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1719930430.git.boris@bur.io>
+ <9e23e32fb945c3e1c43f8c0f8ca20552c48d5b65.1719930430.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a11d84a3085c6a6920d086bf8fae1625ceff5764.camel@kernel.org>
+In-Reply-To: <9e23e32fb945c3e1c43f8c0f8ca20552c48d5b65.1719930430.git.boris@bur.io>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:replyto,suse.cz:dkim]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 71D381FBAE
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
+X-Spam-Level: 
 
-On Tue, Jul 02, 2024 at 08:21:42AM GMT, Jeff Layton wrote:
-> On Tue, 2024-07-02 at 05:15 -0700, Christoph Hellwig wrote:
-> > On Tue, Jul 02, 2024 at 08:09:46AM -0400, Jeff Layton wrote:
-> > > > > corrupt timestamps like this?
-> > > > 
-> > > > inode_set_ctime_to_ts should return an error if things are out of
-> > > > range.
-> > > 
-> > > Currently it just returns the timespec64 we're setting it to (which
-> > > makes it easy to do several assignments), so we'd need to change
-> > > its
-> > > prototype to handle this case, and fix up the callers to recognize
-> > > the
-> > > error.
-> > > 
-> > > Alternately it may be easier to just add in a test for when
-> > > __i_ctime == KTIME_MAX in the appropriate callers and have them
-> > > error
-> > > out. I'll have a look and see what makes sense.
-> > 
-> > The seems like a more awkward interface vs one that explicitly
-> > checks.
-> > 
+On Tue, Jul 02, 2024 at 07:31:13AM -0700, Boris Burkov wrote:
+> The conversion to folios switched __free_page to __folio_put in the
+> error path in btrfs_do_encoded_write.
 > 
-> Many of the existing callers of inode_ctime_to_ts are in void return
-> functions. They're just copying data from an internal representation to
-> struct inode and assume it always succeeds. For those we'll probably
-> have to catch bad ctime values earlier.
+> However, this gets the page refcounting wrong. If we do hit that error
+> path (I reproduced by modifying btrfs_do_encoded_write to pretend to
+> always fail in a way that jumps to out_folios and running the xfstest
+> btrfs/281), then we always hit the following BUG freeing the folio:
 > 
-> So, I think I'll probably have to roll bespoke error handling in all of
-> the relevant filesystems if we go this route. There are also
+> BUG: Bad page state in process btrfs  pfn:40ab0b
+> page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x61be5 pfn:0x40ab0b
+>  flags: 0x5ffff0000000000(node=0|zone=2|lastcpupid=0x1ffff)
+> raw: 05ffff0000000000 0000000000000000 dead000000000122 0000000000000000
+> raw: 0000000000061be5 0000000000000000 00000001ffffffff 0000000000000000
+> page dumped because: nonzero _refcount
+> Call Trace:
+> <TASK>
+> dump_stack_lvl+0x3d/0xe0
+> bad_page+0xea/0xf0
+> free_unref_page+0x8e1/0x900
+> ? __mem_cgroup_uncharge+0x69/0x90
+> __folio_put+0xe6/0x190
+> btrfs_do_encoded_write+0x445/0x780
+> ? current_time+0x25/0xd0
+> btrfs_do_write_iter+0x2cc/0x4b0
+> btrfs_ioctl_encoded_write+0x2b6/0x340
+> 
+> It turns out __free_page dereferenced the page while __folio_put does
+> not. Switch __folio_put to folio_put which does dereference the folio
+> first.
 
-Shudder, let's try and avoid that.
+By 'dereferenced' you mean to decrease the reference count? Because
+dereference is usually said about pointers, it's confusing in this
+context.
 
