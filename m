@@ -1,149 +1,181 @@
-Return-Path: <linux-btrfs+bounces-6165-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6166-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0840925499
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 09:28:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA1E59258FF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 12:39:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5565C1F23B34
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 07:28:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7343DB2AFDA
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 10:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E66913699F;
-	Wed,  3 Jul 2024 07:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168B416DECF;
+	Wed,  3 Jul 2024 10:32:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="EHZA9Ljk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TJ0INMgy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96A3131BDD
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 07:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F00137911;
+	Wed,  3 Jul 2024 10:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719991699; cv=none; b=k65VJxjoq3J6YOYB5tdGH+hqfdf4xJSua+9t876o+oQmTtabZEp2V9wPdF8jlJvM23fesyIikkGipWYWPkHYoZHXdwH8fND8181DmqNbPQp8McwqcQZJNXS6+FgDS5KBOpv7ekFWMIzLTH+eMT6/A2LQNQ0LWNmdMpBpV7zxAfA=
+	t=1720002726; cv=none; b=bTlOAtm5ngq+gF9xer3qjg+sUUiA0H1zNZWj5uE/Jpo7EBt8kUa4dm0ofENGPHfQfZAPcli91U9vlgOoT/IMTBJbe2SmQcy+OQ8CQmaihXXYyjXxIkrloQEl3BfAZ55T4mn8QtjOwokATLev+ozB1faIN1rN8KlrcDI1u3HqDBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719991699; c=relaxed/simple;
-	bh=gm7hdx3PNXV/QfI9KphcFFX2lhl/K3/HmDmVxp7nOzs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=EEOb1mqF/juKep7TG5161URZFlSK2W+AcEgR7ZioUuXb5tAnpiyLAZtMA/ZNKNhA/nqhF8PIs/JYpTL0MgqDY2GmX0VkjFnsa/srTJ4a/BBl2f5KSaha5UsMPKukoel+k07z/+sZCTi4dgMwZjh1fE1Dl+q+KGU1RA5jy7t/be4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=EHZA9Ljk; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1719991688; x=1720596488; i=quwenruo.btrfs@gmx.com;
-	bh=ZimwR2VMicBO2RcvVGe5eNxwV1Uie7H8rY/UhiTF5+k=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=EHZA9Ljk19M4Jt1hD+NTOVmz/SgxicmW4nbgG9EC/UR1JCn/3Zcci9/6AJbeCkxM
-	 Vf8cTQCeckpiN00VErkPJiBADJTzRceNRICG1z9kr7TBY8EBkOgF13MEOf79aRwke
-	 YoQsQqH8hTFjE6JQfUBRPQBF6EAyEgtbdadcPwz+6k+w10KMBRc/gVFBEoRX21Kvx
-	 p0krbhxUJX5bWS4phXQgSXS69aUJFtP9ZtswBRanxnIWzjfuy5NWFhYrXO1/bJW+F
-	 Q8S9AcB1blPn+HCJqVYIXCRjJzG1z6BLpD66ULwuCbFrGwyCg3R8ZyozgKcH+BJ99
-	 43+l4NXZMBucYFWLog==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuUj2-1s7ehu0MQU-00rvZh; Wed, 03
- Jul 2024 09:28:08 +0200
-Message-ID: <6be34112-ee2b-4d4e-ab71-31d9c3897b1a@gmx.com>
-Date: Wed, 3 Jul 2024 16:58:04 +0930
+	s=arc-20240116; t=1720002726; c=relaxed/simple;
+	bh=BUNSlRMhsXsEjdrAtE/PYMno10A849bFR3slyOWBk3U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rqDS7qcdsTCvuCWXytIPlwJh1GZv2pRv6qZIKm6xRC859fWpjpwV2XLEwk3jVWabodCoddzfQSjIJZHh7VRs7JbgCK1mLgMgpg/ycIUX83EjD2pMPUGsUN3pa6jvjYTzSI2IVmvwO8BYmMRdxzb2RWuEMF9LRDd1mSfCjg8X/VU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TJ0INMgy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F8BC4AF0C;
+	Wed,  3 Jul 2024 10:32:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720002725;
+	bh=BUNSlRMhsXsEjdrAtE/PYMno10A849bFR3slyOWBk3U=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=TJ0INMgyD2BoRmYOHUOrTecvxiFkfVB66qsNgUKwo002D2jJU6GT/9qxyptfyzJ79
+	 VXr+mVCjVe54B7ugnpL7FCLJuFfNydWuLuylWtBav/JNdtmGOmJ3mO1BhTi3e9ztgn
+	 tZ0ClbLI9jdHjrWp1RU/wuvcTkca07AelHthOBNoJiTEnDDZKmLNBBu5ZCKfSoxQ85
+	 GI9TJVgUPMdPW8Cu+3M9lVAaEIeSWYdZ7NucC5czGksniKkWJ8UtwbbYVERa4EV8Yi
+	 0artv+v9ZApYBkgwe6wJRXA2mE7cUtf2k+sX3VsEh1/wavV357lmGjG99PYTLAZrNu
+	 UjJLpHLLKUzfw==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-52e9380add2so2127027e87.3;
+        Wed, 03 Jul 2024 03:32:05 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVX/Fi3wc71w7v5+IFQP29InKnvEGkpHMcto4uLdpAbmfKzW5oZ9PvDygY0g4wLW1itdaL/TN/cHg/FsS4rE8Mgyqeft1fTRIHKVhk=
+X-Gm-Message-State: AOJu0YxjaabzvLnciOkvaNixM8kR/KPxTzZBLtKtIu1B/z5OhXNBK+xf
+	8yTlJlZbNwtFzd8BLHDeW/SUbQmWVDEsnar6exJWUAvGandAWpJeuB9kuxu1w5s40JjJ3mfs6rs
+	ZSgjySGyEzdI2Q/OqjeYShN6UlNs=
+X-Google-Smtp-Source: AGHT+IGPM4Is6nxQwc56lNT3I/hYoefrXRTPEi/138EUSwH0uHYyo0NY+hUL96/N+jlwBdYXSK+Eau7G9dEFmyfawRY=
+X-Received: by 2002:a05:6512:b96:b0:52e:8071:e89d with SMTP id
+ 2adb3069b0e04-52e82688db8mr11844670e87.40.1720002724112; Wed, 03 Jul 2024
+ 03:32:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: receive: retry encoded_write on EPERM
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <8c2e537199608a446d5f97ea0dda319d2b9c0dad.1719937610.git.boris@bur.io>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <8c2e537199608a446d5f97ea0dda319d2b9c0dad.1719937610.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+ <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+ <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
+ <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
+ <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com> <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+In-Reply-To: <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 3 Jul 2024 11:31:27 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+Message-ID: <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iY3Ry0hfQTBmMyWm7dqnhdDt+xBPHzx7QaVuaHo1STa7WUIOEP9
- v1YJjuUE2m60/fIK+cms2Knp5gaUNT0Pz8a0nNghIdjZAsbKagXQ82QcttG4STb9pcBFLJO
- F684LLF2IyTjEqHT4sB1d8haRZQtC3imBfQzA3Ob4ZgOe+6floV6MckcX+7Y59ke25y+ez5
- +pOgCN6hE8/0x0tEhNp4g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:y81PQkM2W8I=;vZ8JEQIW7l257HBhVc/ujYaVCeT
- u6o7PDfs6uC0z5m79mj25N5RNNrpOZeMLZ8Yy7Jgw7H691KH4d54592/rw9vSvC5Ju1wpw0H+
- eCyd2DWElV2uDkhv46SByoGpN/Ctx5kG8GElzGgkmwgmT1xB78VTwWg4dXjqXd4X70KjIWyim
- H0ApKJvOvS+8QHPAsma1NOs0JlkFV4bSvRJD7hQIeAkr+A7PHC9blUxSDwbqPBTzlBlZ5UC6T
- edhQKK4cgRCljnfTAu2tUrPJ4HZtjBgS9uzOtnioh0uu9VBc9nEJQjM3iN0XdVGSU23hC97s1
- AC3r/Gses1Ibso0HPUx8B3qnmwUPhh4aTFuM4xcC1nMe/DPa28IzFeZ+ju36N6mZ/r4LShh4d
- AJ6Afl9KzveS8tn8XKZFHbJQmML/cMqKhkI5yCr9KwwEK9Od66f3JxpOhSaRDUm/H2OA57Fbf
- 1A6tqgH9sD79Y39g9sMOIScsogqazQWg6Ld160baHg2pNlMw3DPNdzvGe2dnLg7ku69SxmO82
- ojFBXeGA/YP98DyNqn0IHP2xeE5MZDqR/Oz+kXx8mDNolXzIUqXGLWrI673Nrk5c4DY39EMDf
- DpSj4tigBNVRhbzpeO05Wc6IQ9aQYIcup/B/yWt66Gi6Gr4COeoh8cYIjw+DMGCPNlun9pJCR
- tU8kzppyV8h+XXpFWZP37kDA1xbMHvxlJD4VwBfoqM/qPpJyWjyuU69GQIflqJSrU3EhfGRCJ
- lpkzD50EBDFgP9z2rkAnYfHhhBUyAa433GFbtPYJSRtqVcqayr2zFFHSxROuD5ru+ReZp6Vvj
- sAcLFOqD8cYBhzfMiFdMQhXETMqhHlvw/f+0MO8F6Nt1s=
 
-
-
-=E5=9C=A8 2024/7/3 01:57, Boris Burkov =E5=86=99=E9=81=93:
-> encoded_write fails if we run without CAP_SYS_ADMIN, but the decompress
-> and write fallback could succeed if we are running with write
-> permissions on the file. Therefore, it is helpful to fall back on EPERM
-> as well. While this will increase the "silent failure" rate of encoded
-> writes, we do have the verbose log in place to debug that while setting
-> up a receive workflow that expects encoded_write.
+On Tue, Jul 2, 2024 at 6:22=E2=80=AFPM Filipe Manana <fdmanana@kernel.org> =
+wrote:
 >
-> Signed-off-by: Boris Burkov <boris@bur.io>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
-> ---
->   cmds/receive.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> On Tue, Jul 2, 2024 at 3:13=E2=80=AFPM Mikhail Gavrilov
+> <mikhail.v.gavrilov@gmail.com> wrote:
+> >
+> > On Mon, Jul 1, 2024 at 2:31=E2=80=AFPM Filipe Manana <fdmanana@kernel.o=
+rg> wrote:
+> > >
+> > > Try this:
+> > >
+> > > https://lore.kernel.org/linux-btrfs/cb12212b9c599817507f3978c91027672=
+67625b2.1719825714.git.fdmanana@suse.com/
+> > >
+> > > That applies only to the "for-next", it will need conflict resolution
+> > > for 6.10-rc, as noted in the commnets.
+> > > For a version that cleanly applies to 6.10-rc:
+> > >
+> > > https://gist.githubusercontent.com/fdmanana/5262e608b3eecb9a3b2631f8d=
+ad49863/raw/1a82fe8eafbd5f6958dddf34d3c9648d7335018e/btrfs-don-t-loop-again=
+-over-pinned-extent-maps-when-.patch
+> >
+> > I tested this patch on top of v6.10-rc6
+> >
+> > > Btw, besides the longer kswapd execution times, what else do you obse=
+rve?
+> > > Is it impacting performance of any applications?
+> >
+> > I observe that the system freezes under load.
+> > Demonstration: https://youtu.be/1-gUrnEi2aU
+> > The GNOME shell stops responding, and even the clock in the GNOME
+> > status bar stops updating seconds.
+> > And this didn't happen when the v6.9 kernel was running. Second, I
+> > spotted high CPU usage by process kswapd0 when freezes occurred.
+> > Therefore, I decided to find the commit that led to high CPU
+> > consumption by the kswapd0 process.
+> > As we found out, this commit turned out to be 956a17d9d050.
+> >
+> > > I think no matter what we do, it's likely that kswapd will take more
+> > > time than before, because now there's extra work of going through
+> > > extent maps and dropping them.
+> > > We had to do it to prevent OOM situations because extent map creation
+> > > was unbounded.
+> >
+> > Unfortunately, the patch didn't improve anything.
+> > kswapd0 still consumes 100% CPU under load.
+> > And my system continues to freeze.
 >
-> diff --git a/cmds/receive.c b/cmds/receive.c
-> index 412bc8afe..9101e8ccf 100644
-> --- a/cmds/receive.c
-> +++ b/cmds/receive.c
-> @@ -1285,7 +1285,8 @@ static int process_encoded_write(const char *path,=
- const void *data, u64 offset,
->   		if (ret >=3D 0)
->   			return 0;
->   		/* Fall back for these errors, fail hard for anything else. */
-> -		if (errno !=3D ENOSPC && errno !=3D ENOTTY && errno !=3D EINVAL) {
-> +		if (errno !=3D ENOSPC && errno !=3D ENOTTY &&
-> +		    errno !=3D EINVAL && errno !=3D EPERM) {
->   			ret =3D -errno;
->   			error("encoded_write: writing to %s failed: %m", path);
->   			return ret;
+> Ok, the concerning part is the freezing and high cpu usage.
+>
+> So besides that patch, try 2 other patches on top of it:
+>
+> 1) https://gist.githubusercontent.com/fdmanana/5262e608b3eecb9a3b2631f8da=
+d49863/raw/aaf4c00fd40aaee0ee2788cd9fdfe2f083328c39/btrfs-don-t-loop-again-=
+over-pinned-extent-maps-when-.patch
+>     (this is the patch you tried before)
+>
+> 2) https://gist.githubusercontent.com/fdmanana/f2275050f04d1830adb811745b=
+fd99d4/raw/1001d8154133d862e305959ee9eedebf55941669/gistfile1.txt
+>
+> 3) https://gist.githubusercontent.com/fdmanana/0a71b9e0fe71f38f67a50b7b53=
+d520e6/raw/680cab70d2ef32337583bee6a4fb6519241b2faa/0003-btrfs-prevent-exte=
+nt-map-shrinker-from-monopolizing-.patch
+>
+> Apply those patches on top of 6.10-rc in that order and let me know how i=
+t goes.
+
+Also, a 4th one:
+
+https://gist.githubusercontent.com/fdmanana/638d90142e4db7cd462121d812075de=
+7/raw/acb90d92c1cab512414e0bd5461640c9015da4ec/0004-btrfs-use-delayed-iput-=
+during-extent-map-shrinking.patch
+
+This one should apply in any order. Try all those 4 together please.
+Thanks!
+
+> Thanks.
+>
+> >
+> > 6.10.0-0.rc6.51.fc41.x86_64+debug with patch
+> > up  1:00
+> > root         269 13.1  0.0      0     0 ?        S    12:24   7:53 [ksw=
+apd0]
+> > up  2:00
+> > root         269 29.9  0.0      0     0 ?        R    12:24  36:02 [ksw=
+apd0]
+> > up  3:00
+> > root         269 37.8  0.0      0     0 ?        S    12:24  68:19 [ksw=
+apd0]
+> > up  4:05
+> > root         269 39.3  0.0      0     0 ?        R    12:24  96:40 [ksw=
+apd0]
+> > up  5:01
+> > root         269 38.8  0.0      0     0 ?        R    12:24 117:00 [ksw=
+apd0]
+> > up  6:00
+> > root         269 40.3  0.0      0     0 ?        S    12:24 145:24 [ksw=
+apd0]
+> >
+> > --
+> > Best Regards,
+> > Mike Gavrilov.
 
