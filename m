@@ -1,204 +1,157 @@
-Return-Path: <linux-btrfs+bounces-6183-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6184-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 823DD926C5B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 01:14:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C850D926C60
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 01:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3651C284F0B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 23:14:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17637B2207A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 23:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43FD3194A63;
-	Wed,  3 Jul 2024 23:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDC419005D;
+	Wed,  3 Jul 2024 23:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LwgS5Q8l"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="P5BrAxiU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2e2J9wj0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="P5BrAxiU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2e2J9wj0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156AC1DA313
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 23:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04622136643
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 23:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720048469; cv=none; b=My91WyEIOf2byE6aFCfa39nV8l6mejTxMKxeB8aGuOalD7V/4YPVE7tA/TYd3lHTT+hlvSMabOKfs5MC7zNGeF1ru8MYvNPu08zkCTSlAGRmTYdegw//P+3fEW+dHW76TJzzc7YusRzHwoC819KyZSbELTqxZOtPNXdB/NVpFas=
+	t=1720048846; cv=none; b=ecLJl2MffcZQGmlQ0fAE1HeO0GCBXyqw2kvKz5/WDa4knkUU76DbpjaixgnJ5XGtyfehTpy95co63D0Y+EDJpUc1UGbWEKKmGwEK+HsURbaV15Q3l+Zt+h8XY6u+crZzXpxH1CKihtJyKEVh3v+UvfnQ6CaQ+dN+Hy25d6GwTrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720048469; c=relaxed/simple;
-	bh=XOqUXMDmmD9zTHmbDIlZ4CozuasZjK9EMwvs9R+ljZw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RYRXKp8KowL1BpjPT6KmN4FJOQaQvksvdNqv3/Hvtn2fMbIteVrYEJIFPhR3vH7vr4A1k/exZFI/wBHOmrJ7Vruv7rQHL/fvJRwipztLklEKmXd+eqIZY4U3gTyXdVJZN+vX1Gr/mxo4ZQNf6ReuL9fYyy/3z+gUTaCUfoWyKVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LwgS5Q8l; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1720048462; x=1720653262; i=quwenruo.btrfs@gmx.com;
-	bh=rnfPgx6u9C3criif+5IrZyu7po3v4TMc5a8hICiZIzk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=LwgS5Q8lxqW7K563fPNQWowcZZmgwSDPriutMrlhM3smzJGvTAdExaZOS5nuqaTc
-	 opQSuyRsPDgVgcklCHkg0v6lnwy8FJ90C7B8ErY14x2UN0WkbZnMZeqPCeHjeU7a4
-	 T+pMFgE4JBc2LiARRhxC7o9bz/X5O3+Ed2jJChEfEF6ytieefP/NfS/nsUE0IyfaI
-	 535uALIk2/QCrz2ToqjXUOZJA5rRe/GRDSAq5orqmSkzoJQxsrtuegbxb2h1um9uR
-	 MGHrvweYG3h6Y0GjLkNeEDMpP9leSJ6m6ZaCkux8sdWY8fbDrsk5EqwKFpQ7D1Yx1
-	 p+Uo+HVJzAgBPVSmCA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M2f5Z-1sQVxC3SZz-00Ec0R; Thu, 04
- Jul 2024 01:14:22 +0200
-Message-ID: <c3b8eb42-d557-40a9-97a4-f480dda0ac67@gmx.com>
-Date: Thu, 4 Jul 2024 08:44:18 +0930
+	s=arc-20240116; t=1720048846; c=relaxed/simple;
+	bh=XrggcPOsCMynOR+UcoWb2Pm+3bnXFSpPAg4+C/1ahuc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NaokxFfFWk+70xD05i9cTEgz44bDcOxdAr3KidKcJo3ha01FG26W1k4tpwFjw7Ea9j0vtauIpXDQioO8YXdvKWcQ8aLo71ga2FWqFKHd72jwRaGUs7jySmL9Wuf7aOl6E0cpHTegDieE2FI9I4y7S/VG1C61GQyHBBSVJ2FLCSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=P5BrAxiU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2e2J9wj0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=P5BrAxiU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2e2J9wj0; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2914C1F37E;
+	Wed,  3 Jul 2024 23:20:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720048843;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XrggcPOsCMynOR+UcoWb2Pm+3bnXFSpPAg4+C/1ahuc=;
+	b=P5BrAxiUsGyB1TZWyEqdVGFgtMUW9eBWLwEtcRFrUisNMN54A6y2UchQFN9n0/xBxx/yK7
+	pP9qtrbgLDhNDzkFYs1Dzo4fhjcctMUdCCm3Wh4hcEVyo+CCFEQJKRYQEsHAPRvlOWPwnv
+	V05GLqDX2aFhBaYd41sKsuM6aPqazpQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720048843;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XrggcPOsCMynOR+UcoWb2Pm+3bnXFSpPAg4+C/1ahuc=;
+	b=2e2J9wj0VG0RkXCRF93CgzZGX9HXrAMqn25KLO0nv0XiOlvQU+rZyUIWNfGMwb1XsbKJ7R
+	sYoTYKLqGiDgLSDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720048843;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XrggcPOsCMynOR+UcoWb2Pm+3bnXFSpPAg4+C/1ahuc=;
+	b=P5BrAxiUsGyB1TZWyEqdVGFgtMUW9eBWLwEtcRFrUisNMN54A6y2UchQFN9n0/xBxx/yK7
+	pP9qtrbgLDhNDzkFYs1Dzo4fhjcctMUdCCm3Wh4hcEVyo+CCFEQJKRYQEsHAPRvlOWPwnv
+	V05GLqDX2aFhBaYd41sKsuM6aPqazpQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720048843;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XrggcPOsCMynOR+UcoWb2Pm+3bnXFSpPAg4+C/1ahuc=;
+	b=2e2J9wj0VG0RkXCRF93CgzZGX9HXrAMqn25KLO0nv0XiOlvQU+rZyUIWNfGMwb1XsbKJ7R
+	sYoTYKLqGiDgLSDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 110AA13974;
+	Wed,  3 Jul 2024 23:20:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id x9tlA8vchWbrRwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 03 Jul 2024 23:20:43 +0000
+Date: Thu, 4 Jul 2024 01:20:33 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs-progs: receive: retry encoded_write on EPERM
+Message-ID: <20240703232033.GS21023@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <8c2e537199608a446d5f97ea0dda319d2b9c0dad.1719937610.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: add rudimentary log checking
-To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
-Cc: Mark Harmstone <maharmstone@meta.com>
-References: <20240703162925.493914-1-maharmstone@fb.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240703162925.493914-1-maharmstone@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+ofGeSkYf020lqVKC3aeKBYSSuZK9cue0VWQ4nBaBauxwsncGBN
- adhCX52UU5mp8UP+iQk0N4jnvc+D7pd6vtiprb6VzOEt7JLFkfJIUcHKN5+knI5t5IljFHX
- tngN84iow2Otmo4tb3wvNyV2bc/7ywWU3rZr7pqeoAMXHLAVTeCRF6Y9tsCddbMMWS/pJeo
- 4ziQDS4c1fLhiGPPg1Bkw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c2e537199608a446d5f97ea0dda319d2b9c0dad.1719937610.git.boris@bur.io>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-3.94 / 50.00];
+	BAYES_HAM(-2.94)[99.74%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.988];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[3]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:UpV2hGoLriE=;81qAVYSV4+xL4ydZeZNaY4YVlJj
- UtsegiFb/tc2Tpcgb5szGHgxkDxyEr78708v+jbqVLqVcaO0boLadL/jDRPK0i9L2xRBfCjEM
- r2v+SWu81x2CtOrA39I+mAVd+Dadai86xiQQporZNORt1/lQHArtcuYC88aHzF27HeFyf+X5t
- 1bz0Vk8caIcrhjKthP8838aMNmOY12yoTtxTZRTV2aJpos76rjWArZvZraeOcsTN4ehVOLpBp
- 0pr1JNCoVVQ8vsrWJNTHgyycBjbBGTPRZddj7sHAr0JnGFEv4qGDpsFM6SXuXpdewm26M6tHw
- pl58GGgsiud23PTK0s4ceRI0cNl4dEIAVKK43pPaP3M5oOdyyEQd3eEU73N7oSkdO2SxN0pmK
- W2nIrb+lz5UcSY41RDItMLCiXZ8Zo+CsBZRSVFuu+I20hqWZ77pJdcfGhoVjx2I6fqJiRu00T
- jDxdJG4RnZEsKWVGEOmu9o5KGna74EnKZhOsVfQ+z2d8yNJI8s6lCG9DUx+YY32YeYPxkfzg9
- CRNqVRaFegIQ942LqXA+AQ45PvxqoY29+vzn48jY+NkyaTopyj2/pA1zaR2+FdbgLec6PiGL5
- cFvqgP3dJRy8MBWgV41dCCfxRlxSE5QRS3wtXDwK+IYnwFcGDkg4PG17Mp5tTKfFzU5DxG+a4
- RnUQ09pvtJiKbJSylB/RdJR6DXNKhykaN1G5j1FbEVd08PLMUeXhuMoz+M7DzzPR+ykMuX5t9
- WZjNswNN1+OCVBVsQiPyf0SnqF5xbuV2/O908Nh5JrgHqTFeImrUZdA6qEdFMB/dVhJw51/wv
- 4pyKTNbDI+lq6PkWWwPAy6jM8IiE4DZ3CbFBLjU0mfQa0=
+X-Spam-Score: -3.94
+X-Spam-Level: 
 
+On Tue, Jul 02, 2024 at 09:27:49AM -0700, Boris Burkov wrote:
+> encoded_write fails if we run without CAP_SYS_ADMIN, but the decompress
+> and write fallback could succeed if we are running with write
+> permissions on the file. Therefore, it is helpful to fall back on EPERM
+> as well. While this will increase the "silent failure" rate of encoded
+> writes, we do have the verbose log in place to debug that while setting
+> up a receive workflow that expects encoded_write.
 
+I'm not sure this is good to have the fallback by default. There's
+option --force-decompress so it needs to be user's choice to avoid
+encoded writes. Otherwise if I have a stream with encoded data and
+receive it I expect to be as close to the original as possible.
 
-=E5=9C=A8 2024/7/4 01:58, Mark Harmstone =E5=86=99=E9=81=93:
-> From: Mark Harmstone <maharmstone@meta.com>
->
-> Currently the transaction log is more or less ignored by btrfs check,
+Once there's encryption implemented the fallback will interfere with
+availability of the key.
 
-By "transaction log" did you mean log tree?
+The problem with automatic fallback is that it cannot be disabled and it
+does not fail so user can't know that it's been silenly not encoded
+written.
 
-> meaning that it's possible for a FS with a corrupt log to pass btrfs
-> check, but be immediately corrupted by the kernel when it's mounted.
+Whether a steram contains an encoded write cannot be known upfront, I
+think we should add more options how to handle the encoded write.
+Modes like 'always', 'fallback'.
 
-Firstly, if kernel can really corrupt the fs with such corrupted log (I
-mean not just csum mismatch, but metadata level corruption), then it's a
-kernel bug and we need to first fix it.
-
-The expected behavior is, kernel itself should not generate such
-corrupted log tree.
-Also the kernel should reject such corrupted log tree.
-
-Did you hit such problem (missing csum or bad inodes etc) in real world?
-
-[...]> +		if (key.objectid =3D=3D BTRFS_TREE_LOG_OBJECTID &&
-> +		    key.type =3D=3D BTRFS_ROOT_ITEM_KEY &&
-> +		    fs_root_objectid(key.offset)) {
-> +			struct btrfs_root tmp_root;
-> +			struct extent_buffer *l;
-> +			struct btrfs_tree_parent_check check =3D { 0 };
-> +
-> +			memset(&tmp_root, 0, sizeof(tmp_root));
-> +
-> +			btrfs_setup_root(&tmp_root, gfs_info, key.offset);
-> +
-> +			l =3D path.nodes[0];
-> +			read_extent_buffer(l, &tmp_root.root_item,
-> +					btrfs_item_ptr_offset(l, path.slots[0]),
-> +					sizeof(tmp_root.root_item));
-> +
-> +			tmp_root.root_key.objectid =3D key.offset;
-> +			tmp_root.root_key.type =3D BTRFS_ROOT_ITEM_KEY;
-> +			tmp_root.root_key.offset =3D 0;
-> +
-> +			check.owner_root =3D btrfs_root_id(&tmp_root);
-> +			check.transid =3D btrfs_root_generation(&tmp_root.root_item);
-> +			check.level =3D btrfs_root_level(&tmp_root.root_item);
-> +
-> +			tmp_root.node =3D read_tree_block(gfs_info,
-> +							btrfs_root_bytenr(&tmp_root.root_item),
-> +							&check);
-
-This is mostly a hard-coded btrfs_read_fs_root().
-
-I know you did this because we do not have a good infrastructure to read
-out a log tree.
-But I really prefer to have a proper helper to do that.
-
-[...]
-> +	if (gfs_info->log_root_tree) {
-> +		fprintf(stderr, "[8/8] checking log\n");
-> +		ret =3D check_log(&root_cache);
-> +
-> +		if (ret)
-> +			error("errors found in log");
-> +		err |=3D !!ret;
-> +	} else {
-> +		fprintf(stderr,
-> +		"[8/8] checking log skipped (none written)\n");
-
-The timing may be problematic.
-
-Firstly btrfs-check can do write operations, and although we have checks
-to ensure we zero the log first, it only zeros the log in the super
-block, not clearing the fs_info->log_root_tree.
-
-So this means, for btrfs-check --repair runs, we can modify the base fs,
-then you do the log tree check based on the modified fs, which can cause
-various problems.
-
-At least we need to make zero_log_tree() to cleanup fs_info->log_tree_root=
-.
-
-
-Thus I'd really prefer to do the log tree check first, as in kernel log
-replay is the first thing to be done.
-
-Thanks,
-Qu
-
->   	}
->
->   	if (!list_empty(&gfs_info->recow_ebs)) {
+The code change itself is simple, this is about defining the expected
+use cases.
 
