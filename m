@@ -1,198 +1,227 @@
-Return-Path: <linux-btrfs+bounces-6181-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6182-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FD4926A14
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 23:16:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34DE2926C43
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 01:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F11F1C21B9B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 21:16:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEE6F284FC1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 23:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA33E18F2CC;
-	Wed,  3 Jul 2024 21:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDBA0194A56;
+	Wed,  3 Jul 2024 23:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Xa+iHhMl";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="r9TqvT6x"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KNHO0yl4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aTV9e9Iy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KNHO0yl4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aTV9e9Iy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E002BB13
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 21:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BFE34964E
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 23:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720041359; cv=none; b=EogR9jMrhF4b8Repf9YU7LhY9x67ZtfrxvDnUTt57KFW36dVhghXUPpvgf9biPVjffiHp3RU62bd4nci/GJLJVokTuDv6GFP6a4pHisIpgGxXOUkjxr6GU6tTL6UkOB4cY3RLs+DJiKmYOxzmi2bOew/XNvjzTI7e1AKqWRW5mE=
+	t=1720047956; cv=none; b=HEhl0T9C5xoTcamgUeXyndOmUgQtMtdxSQFeEVM9ysBnFuNRIUCY3w+iy/nCq0ojsh/rb+25kWQ6AAbqUkPijVg6OMESGIOlZScsNQhoMoJZGDinaTEUdVecUzB+4bdZ96tanublCX9gUJBdMmT3ASwpBanQxwsOlhkc35jyaY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720041359; c=relaxed/simple;
-	bh=VdraQQVoa8OdnxzyahOYP6Vk9EmoPhN9JeotrRQis48=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=sQhCh0bw421sXBXpYqmoSTnVNB6wRaoiD2o1G1VKSp5+W6EvZ/UW0ODlxzGVQIrQi069PYfkIC0/njd4Nzs82L/UfvF52NgKtKmd5IyJcEpd2BAkrzu0SR2KyqYOAZQMq4F9KZD4CHnBz+O9ywGh03pkJphQBfJ3rqhnFQxme7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Xa+iHhMl; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=r9TqvT6x; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 2F851138025F;
-	Wed,  3 Jul 2024 17:15:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 03 Jul 2024 17:15:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1720041356; x=1720127756; bh=hpk8yn1ysaaPv850ZJE89
-	MVKWA9Eifn2eWaJDB+jb/s=; b=Xa+iHhMl2rBwsvI86Dx50V9EUPG2Y/q0IRWqE
-	79klvGfyizKBNfEQQvsreVIKAcaRB9p4xToKY0cnO5y+ns0u/QpUpA/j2wlKDx9p
-	HMdz27WkVS03+gPBM4Z/Ut/xaw+Tv3WQqETXwIo9j3gYZC6kxE3Olu1r5u88XWKY
-	1MgBbdpnGQIarT3MOxBrgDguha1Aryz4fZKHV8g7XMGH5VOJHniNmZn9M34APJXd
-	b3/HKMyYj5AwJE48nSmZ409DrCJE2EY2gEZqDQTQyNh0HnJQF0rL+7fiz6Bkrmys
-	Ozj5sx+cKWxi7T8XUQeydyB/qgnlwAFIX8pJSKt++nsaSbA0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:date:date:feedback-id:feedback-id:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1720041356; x=1720127756; bh=hpk8yn1ysaaPv850ZJE89MVKWA9E
-	ifn2eWaJDB+jb/s=; b=r9TqvT6xp3ADSZJds/DyaOw0+NkStwS1BD/5Fnv0tAbC
-	nqw8tOJyTTROFGRx76yAjogNyMu++aqQmk3DSMiajrTUxgQcG08LO7N6lxrbEgQ8
-	pI+JFtHUo28mzRw0pUqVhBhdar4hgmzxcYc64p8Rg1Rt8NLe7oLkQmuVAJfJegBO
-	yWlDDRQWAzERqx60FoxTd5KAeH2uY5p/Qml1aj0canl87MOrNnb0Xrb8i4/ALpEL
-	aIrSq/JHQGGB619J+Kt5HrsEeDx4lg/kWSy0PiSbXzxFxWELHeqdiUWnNHEDJJ4G
-	L/XP0S75+FrO/lIrvbjf1euzEk4Cu1egAS883zQULA==
-X-ME-Sender: <xms:jL-FZt6x78lKxY1UiS1ev1u3gA-YQM8Jevx1cY5paQrBj_gI1qTnqg>
-    <xme:jL-FZq5LehlQEMr5hApfuFxsoHwV7iSHYLkP71vTtm-CNC81zMiHWgNoHxE-rLid3
-    SFDhVzqm5mx18_Gy8s>
-X-ME-Received: <xmr:jL-FZkfl2FjqHrNfZ2cWZGHta19bNDztQcHPmEf8aKeG-p_vp7JrIr5_IjuPAQo0QO5cdB5IksAlWBCzSENJEJ8U2WM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudejgdduheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
-    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:jL-FZmLVrubxtfucfFDXGC3mwgF9ElL_rFLA-5ChLqGwRc4otEMxag>
-    <xmx:jL-FZhKrwjrCWFdjIcjdnl7tk1nAbOycc_jrqNaZKMoQKZLY9SXPxg>
-    <xmx:jL-FZvyeE7ze4ZVz1Orj_a3ssiQwkWNLEH2vWdKlmdqUfe5ktS1C5Q>
-    <xmx:jL-FZtKqHkAiTyYdOBZWfCYm5q-8Ke0Lbl1vQr7vYcAXujVEbu2spw>
-    <xmx:jL-FZoVIvR_OXopJzltUlfAWuRIJe8P0lhkuoenH9E3-UMZeNpdgnnB_>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 3 Jul 2024 17:15:55 -0400 (EDT)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v2] btrfs-progs: receive: self-contained mode
-Date: Wed,  3 Jul 2024 14:15:12 -0700
-Message-ID: <f8ae1ad668a50d0b09c2f3e36e87b1ef9381f002.1720041219.git.boris@bur.io>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1720047956; c=relaxed/simple;
+	bh=h9S1e3ukkjOYXDdOlGaM8SBxA9G3f5UN1ib6Ogz0yh8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qMVRVCJqw1r6PCBNqsrYFIIOFAaHkJkkBEpdgTh63EGehl+VCwuUBA8hx9blpGw+gvyLaXo75ayFl5ZkXBPU9pX3UCUrY8BJQJfBubBKDgiPpOzUmkQ/8D8ylX2KWGa7ihlv+yWR8Bqo28LzesM9edtvq4+QljvBQM9SRELKp5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KNHO0yl4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aTV9e9Iy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KNHO0yl4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aTV9e9Iy; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2D69121AAD;
+	Wed,  3 Jul 2024 23:05:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720047952;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=juil22cwn4ypV8mvTP3Qw/nmy3HKAr3D3qO3FxYD3Es=;
+	b=KNHO0yl4spMcTdIojhWQFuYhAEGLo/1ZeMUYNRlUIw7WpliBWIYM4Xu5Kh/GcEKDw3jcay
+	Uu4cpCk7NtbFHksqijGf275ns/KlUpgZWuNLWpGgtLthEYPkcGqwfK7B5h5A3WyPkOCSj1
+	ZsUANe5iEzNF7kxSkVvV1rwJ6Vpm5Aw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720047952;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=juil22cwn4ypV8mvTP3Qw/nmy3HKAr3D3qO3FxYD3Es=;
+	b=aTV9e9IyjrFj4Xg0PFHfdKShwpRDF+dPZ8cUslcxHFv0PnR14w8wFKyfQfGSomD5paoa+B
+	+vlhwgaVP+qdcnAg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KNHO0yl4;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=aTV9e9Iy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1720047952;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=juil22cwn4ypV8mvTP3Qw/nmy3HKAr3D3qO3FxYD3Es=;
+	b=KNHO0yl4spMcTdIojhWQFuYhAEGLo/1ZeMUYNRlUIw7WpliBWIYM4Xu5Kh/GcEKDw3jcay
+	Uu4cpCk7NtbFHksqijGf275ns/KlUpgZWuNLWpGgtLthEYPkcGqwfK7B5h5A3WyPkOCSj1
+	ZsUANe5iEzNF7kxSkVvV1rwJ6Vpm5Aw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1720047952;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=juil22cwn4ypV8mvTP3Qw/nmy3HKAr3D3qO3FxYD3Es=;
+	b=aTV9e9IyjrFj4Xg0PFHfdKShwpRDF+dPZ8cUslcxHFv0PnR14w8wFKyfQfGSomD5paoa+B
+	+vlhwgaVP+qdcnAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 16F9013A7F;
+	Wed,  3 Jul 2024 23:05:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HoFhBVDZhWbDRAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 03 Jul 2024 23:05:52 +0000
+Date: Thu, 4 Jul 2024 01:05:46 +0200
+From: David Sterba <dsterba@suse.cz>
+To: David Sterba <dsterba@suse.cz>
+Cc: Filipe Manana <fdmanana@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix data race when accessing the last_trans field
+ of a root
+Message-ID: <20240703230546.GR21023@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <5152cead4acef28ac0dff3db80692a6e8852ddc4.1719828039.git.fdmanana@suse.com>
+ <20240702145200.GF21023@twin.jikos.cz>
+ <CAL3q7H7X9zMZh-0ruaQV++mMY2q3oFTq6kW2BwOe=v+0OECGQQ@mail.gmail.com>
+ <20240702154606.GG21023@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240702154606.GG21023@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 2D69121AAD
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
+X-Spam-Level: 
 
-Currently receive detects the case where it is mounted with -o subvolid
-and resolves the path to the mounted subvolume from the root subvolume.
-This path is then used to find the absolute paths for sources of
-data/metadata for snapshots and reflinks.
+On Tue, Jul 02, 2024 at 05:46:06PM +0200, David Sterba wrote:
+> On Tue, Jul 02, 2024 at 04:09:42PM +0100, Filipe Manana wrote:
+> > On Tue, Jul 2, 2024 at 3:52 PM David Sterba <dsterba@suse.cz> wrote:
+> > > On Mon, Jul 01, 2024 at 11:01:53AM +0100, fdmanana@kernel.org wrote:
+> > > >   [  199.564372]  __s390x_sys_write+0x68/0x88
+> > > >   [  199.564397]  do_syscall+0x1c6/0x210
+> > > >   [  199.564424]  __do_syscall+0xc8/0xf0
+> > > >   [  199.564452]  system_call+0x70/0x98
+> > > >
+> > > > This is because we update and read last_trans concurrently without any
+> > > > type of synchronization. This should be generally harmless and in the
+> > > > worst case it can make us do extra locking (btrfs_record_root_in_trans())
+> > > > trigger some warnings at ctree.c or do extra work during relocation - this
+> > > > would probably only happen in case of load or store tearing.
+> > > >
+> > > > So fix this by always reading and updating the field using READ_ONCE()
+> > > > and WRITE_ONCE(), this silences KCSAN and prevents load and store tearing.
+> > >
+> > > I'm curious why you mention the load/store tearing, as we discussed this
+> > > last time under some READ_ONCE/WRITE_ONCE change it's not happening on
+> > > aligned addresses for any integer type, I provided links to intel manuals.
+> > 
+> > Yes, I do remember that.
+> > But that was a different case, it was about a pointer type.
+> > 
+> > This is a u64. Can't the load/store tearing happen at the very least
+> > on 32 bits systems?
+> 
+> Right, it was for a pointer type. I'll continue searching for a
+> definitive answer regarding 64bit types on 32bit architectures.
 
-Another interpretation of a sendstream is more divorced from the source
-filesystem and aims to interpret it in a more self contained way, using
-the filesystem as visible to the user. Think usecases in a chroot, user
-namespace, mount namespace, etc. applying a generically crafted
-sendstream that will apply successfully in the local context.
+I have a counter example, but this is a weak "proof by compiler", yet at
+least something tangible:
 
-For such receives, the complexity of resolving this path is unhelpful.
-First of all, the backref resolution using inode->subvol resolution uses
-CAP_SYS_ADMIN, so it cannot be done in a user namespace. Even if you
-could overcome this technically, and the receiving user had permissions
-higher up the chain of dirs/subvols back to the root subvol, it's still
-unhelpful if you want to do reflinks/snapshots relative to the paths in
-the receiving subvolume, not the global paths.
+in space-info.c:
+void btrfs_update_space_info_chunk_size(struct btrfs_space_info *space_info,
+                                        u64 chunk_size)
+{
+        WRITE_ONCE(space_info->chunk_size, chunk_size);
+}
 
-Therefore, provide an option for such a self contained mode:
---self-contained
+This uses _ONCE for the sysfs use case but demonstrates that it does not
+prevent load tearing on 32bit:
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
-Changelog
-v2:
-- actually add the SELF_CONTAINED option to the enum; re-test
-  a non hacked up version for once.. Sorry!
+000012f4 <btrfs_update_space_info_chunk_size>:
+    12f4:       /-- e8 fc ff ff ff                      calll  12f5 <btrfs_update_space_info_chunk_size+0x1>
+                        12f5: R_386_PC32        __fentry__
+    12f9:           55                                  pushl  %ebp
+    12fa:           89 e5                               movl   %esp,%ebp
+    12fc:           53                                  pushl  %ebx
+    12fd:           5b                                  popl   %ebx
 
- cmds/receive.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+    12fe:           89 50 44                            movl   %edx,0x44(%eax)
+    1301:           89 48 48                            movl   %ecx,0x48(%eax)
 
-diff --git a/cmds/receive.c b/cmds/receive.c
-index 412bc8afe..d0862271c 100644
---- a/cmds/receive.c
-+++ b/cmds/receive.c
-@@ -82,6 +82,8 @@ struct btrfs_receive
- 
- 	bool force_decompress;
- 
-+	bool self_contained;
-+
- #if COMPRESSION_ZSTD
- 	/* Reuse stream objects for encoded_write decompression fallback */
- 	ZSTD_DStream *zstd_dstream;
-@@ -1518,11 +1520,13 @@ static int do_receive(struct btrfs_receive *rctx, const char *tomnt,
- 	}
- 
- 	root_subvol_path[0] = 0;
--	ret = btrfs_subvolid_resolve(rctx->mnt_fd, root_subvol_path,
--				     PATH_MAX, subvol_id);
--	if (ret) {
--		error("cannot resolve our subvol path");
--		goto out;
-+	if (!rctx->self_contained) {
-+		ret = btrfs_subvolid_resolve(rctx->mnt_fd, root_subvol_path,
-+					     PATH_MAX, subvol_id);
-+		if (ret) {
-+			error("cannot resolve our subvol path");
-+			goto out;
-+		}
- 	}
- 
- 	/*
-@@ -1645,6 +1649,9 @@ static const char * const cmd_receive_usage[] = {
- 		"this file system is mounted."),
- 	OPTLINE("--force-decompress", "if the stream contains compressed data, always "
- 		"decompress it instead of writing it with encoded I/O"),
-+	OPTLINE("--self-contained", "don't resolve snapshot and reflink sources "
-+		"relative to the true FS root, only use what is visible to the fs "
-+		"as mounted."),
- 	OPTLINE("--dump", "dump stream metadata, one line per operation, "
- 		"does not require the MOUNT parameter"),
- 	OPTLINE("-v", "deprecated, alias for global -v option"),
-@@ -1705,6 +1712,7 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
- 		enum {
- 			GETOPT_VAL_DUMP = GETOPT_VAL_FIRST,
- 			GETOPT_VAL_FORCE_DECOMPRESS,
-+			GETOPT_VAL_SELF_CONTAINED,
- 		};
- 		static const struct option long_opts[] = {
- 			{ "max-errors", required_argument, NULL, 'E' },
-@@ -1712,6 +1720,7 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
- 			{ "dump", no_argument, NULL, GETOPT_VAL_DUMP },
- 			{ "quiet", no_argument, NULL, 'q' },
- 			{ "force-decompress", no_argument, NULL, GETOPT_VAL_FORCE_DECOMPRESS },
-+			{ "self-contained", no_argument, NULL, GETOPT_VAL_SELF_CONTAINED },
- 			{ NULL, 0, NULL, 0 }
- 		};
- 
-@@ -1757,6 +1766,9 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
- 		case GETOPT_VAL_FORCE_DECOMPRESS:
- 			rctx.force_decompress = true;
- 			break;
-+		case GETOPT_VAL_SELF_CONTAINED:
-+			rctx.self_contained = true;
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
--- 
-2.45.2
+    1304:           5d                                  popl   %ebp
+    1305:       /-- e9 fc ff ff ff                      jmpl   1306 <btrfs_update_space_info_chunk_size+0x12>
+                        1306: R_386_PC32        __x86_return_thunk
+    130a:           66 90                               xchgw  %ax,%ax
 
+
+eax - first parameter, a pointer to struct
+edx - first half of the first parameter (u64)
+ecx - second half of the first parameter
+
+I found this example as it easy to identify, many other _ONCE uses are
+static inlines or mixed in other code.
+
+I've also tried various compilers on godbolt.org, on 32bit architectures
+like MIPS32, SPARC32 and maybe others, there are two (or more)
+instructions needed.
+
+The question that remains is if the 2 instruction load/store matters in
+case if the value is in one cache line as this depends on the MESI cache
+synchronization protocol. The only case I see where it could tear it is
+when the process gets rescheduled exactly between the instructions. An
+outer lock/mutex synchronization could prevent it so it depends.
 
