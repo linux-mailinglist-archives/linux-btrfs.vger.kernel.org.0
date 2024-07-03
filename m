@@ -1,254 +1,409 @@
-Return-Path: <linux-btrfs+bounces-6161-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6162-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889C192526D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 06:37:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC0C9252CE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 07:11:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D11BCB256F4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 04:33:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CA11B24FF4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 05:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CDE288D1;
-	Wed,  3 Jul 2024 04:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7164963C;
+	Wed,  3 Jul 2024 05:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="U4X2Feoj"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FVQ1ZuTQ";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FVQ1ZuTQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7371317996
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 04:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BDF3282FA
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 05:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719981203; cv=none; b=GdxWt2D2SdRuiHpBSrB3YTCpx44n0lGqSWcV5PaDVU4VSa5j+BDFGv7iYR0WZIiT9XI9cWszvuUvI83ehICZb9+CMmxF0w7+0rbQnp73k/QRC3yEfALEZZuzgGvmYcqTPVVwKNCqVdHUOxADvUECFnScoca+61nE7wYQNWjaCr8=
+	t=1719983470; cv=none; b=efVidfP1C6yC0xMJI5c0xoRmrAaTBa6s86Q+iwGzPSR/VoZj1dp6f6+tTXBkDTnO+Px1IhkZG3NAcdu2QKcwfaoCBGOm5beM1ES2TCgAGfSoc6NVJ7qIrye3P9uD821UDLyzW+hy0A1N9MQ2eelViB7nFwFEKSRWOFBkb8ZMCYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719981203; c=relaxed/simple;
-	bh=zWFSHEEdTrvtfUf8G3pnSRF5Xo39PpTrnHaVNvChQVE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ce16NMB9ODbiBH3A4KP0zUZqgZDYl50kgxNLk357j+/4JHpg8317xsBYaloJufl3369WE+qrSOq4xI99mJoQhcI3e8pR7yotjvBDhI/JC1zplyNnakkkmlVUFgm4oQRrLECpwDMBzCt0J85j9uQCdaAS5wzGfvGR+zqJU/Gxmow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=U4X2Feoj; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1719981197; x=1720585997; i=quwenruo.btrfs@gmx.com;
-	bh=zWFSHEEdTrvtfUf8G3pnSRF5Xo39PpTrnHaVNvChQVE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=U4X2FeojrEB44mWYkiBjzF/YWWZ/qoo5A0791ZpNNpbyjtaHAj3kr1NMh2yw4IMl
-	 6VdMMmintJzMU8LvTLKY3K0mRwz2hrkFbSsEJjIuMBf/Nly7l7ij1v3gCw/dcoi5r
-	 QK6a0WwOGjFa2E/dVfwzC41IR9m2W8ojOPIrXNYCfPsz/umPt4ulK5ZxaUAMaprJJ
-	 CFZZZNEs+7VCHnNokPlYvmRmdT5I1i1iLOZ3jImT1azTFqL0odUXOHMvFuHyi5YFb
-	 dJIxSc1LOGukk1qyxp3CAgy3f2r/yZ9194FKWOTMo3/M00g/70m/GzYHObKAxltZ/
-	 DtqzQcZRuN2BfDkSPg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRTRH-1sjwwC07HR-00N15n; Wed, 03
- Jul 2024 06:33:17 +0200
-Message-ID: <3bd15793-7a52-44ca-9e9f-e846563cb8ee@gmx.com>
-Date: Wed, 3 Jul 2024 14:03:14 +0930
+	s=arc-20240116; t=1719983470; c=relaxed/simple;
+	bh=jom0Zm90/7L5nbLqyDIqtUMP3U4z/3GjecDuIS3C61o=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=rjyr5gtATst7lfnb9qR92g/OJv4igVhMJQUpPL7HNGiT8ObxssPitkgz56Lyi5R/VPZ+Ou4x66XXsSMJsu2PQOp4+QADMuTxjt39Oxn/8F6DIzASFyFqU1sUOF72tu4YnUFU0Marc2mJbVIPjwDiXov4lLCsQ4AE2z6kKKAxFd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FVQ1ZuTQ; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FVQ1ZuTQ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8BCE41FC23
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 05:11:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719983463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=SdQU+FX5bFPllSFWESHbennDqWy9o/iPGrgXelcFnyc=;
+	b=FVQ1ZuTQ9i4aBLglZ7GclZrsN4RwkptG8V7Bg3bnC/0DL1QMh7cPAzrIU0I+CHrirNHEDP
+	L5k0HgGYIWuVlhsa4a2pmD0RfkidYg5FKtaFoR5SKRJWR0lH1OgEuihMsP/ob4F4kF2cKB
+	3GzEUQuwoCISNLDlDbuX4FFJRJD8ox4=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719983463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=SdQU+FX5bFPllSFWESHbennDqWy9o/iPGrgXelcFnyc=;
+	b=FVQ1ZuTQ9i4aBLglZ7GclZrsN4RwkptG8V7Bg3bnC/0DL1QMh7cPAzrIU0I+CHrirNHEDP
+	L5k0HgGYIWuVlhsa4a2pmD0RfkidYg5FKtaFoR5SKRJWR0lH1OgEuihMsP/ob4F4kF2cKB
+	3GzEUQuwoCISNLDlDbuX4FFJRJD8ox4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A33951395F
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 05:11:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iNImF2bdhGazBgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 03 Jul 2024 05:11:02 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v4] btrfs: prefer to allocate larger folio for metadata
+Date: Wed,  3 Jul 2024 14:40:40 +0930
+Message-ID: <bc648417fbf81fe84b3f0a8ce250304dff35ea21.1719983172.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] btrfs: prefer to allocate larger folio for metadata
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <96e9e2c1ac180a3b6c8c29a06c4a618c8d4dc2d9.1719734174.git.wqu@suse.com>
- <20240702161131.GH21023@twin.jikos.cz>
- <8a0251c7-b594-4992-bdeb-1064d04be3b4@gmx.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <8a0251c7-b594-4992-bdeb-1064d04be3b4@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GQ4UE2EWJi33e0RwI6xrsGgpCiO338yHpAOH+q/EBtG5VHdLmXG
- I2wHp9D7LMPVjZBkdMpbBUUcpIdid7eBF5lXAJOvrdPFZ3pbQ2qr7a+kzUAQmVvMklATKL1
- /1uph9Vd4ht0EYKh07LPGdl9VfSLSxgsZ/v6UqfmN2tNQ63InUvjkNeNSt45ulep55fNYh/
- Gic9McjPIL5Fa60K5AMtg==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:k21WdCyWbiA=;VEW/r2YxP14gBIhvYARoyCQ1ds9
- oDHRZBnoYmIM8Qqi+p/sfcfz1Z1wMv9NI/rMS1j8+bWAFiJL8M2RGxqLpCqkLqg3e3G3P2+kU
- B6cBpTqlzJ1eKu6kmO6l+lTHU7BPVoyHCEekizhkHgqA0/GFc7hnVJNH0Ffu6ZPFe2ZivsbJV
- UBIyniGTr8RXqBhgIqTBYnI1wUDtM08l1iPXkH1Clfq8y/o8CroxHn8yaQMcgf5HR0NpGXaUn
- zldqqP7PClP1IViIlEwkdmRBG3yR+pkJ0fwjXgIU8+s/RmSxurNBK2M/eqynSNIuVE6d52DD8
- HWYVs9runQDG7kTrYjmI4fhi/K/VEBf3MUijiJBVdI4WmyEk3anEAD7JR11Q+vFcywrb5Ks6I
- /1vsVmh7rYySOK0erS8QKMVOU0TVr510KOvPwBpgv4z8rU+l8Uz36mXA+inv9+Zxa1c4h5gJ0
- W8hqDlujQaRV/ooda9GrKPTar1LTG+f2X5jNeKbVCzEnwmm9ITq3rTRfGRlLXMGPvuM19mNbT
- WUV2DCwr1RDXjt1RuV77lRNhayFmoAkdUUbaiiworF3KWd5stxqNkuKwsXCvlNXNMCiKiHOxO
- WjyAJxH5IzQpgvwIkohsg/RJNZLmEQ7ntPv3SkGvFgQXHJqO9pkJigbwPtXx1FdvPvYOnCPby
- y4rUVLpGvHr6ji7Z4JaRP2kA+zRwUVPR7qt4cTtUeLOOsR3XMHXQVAovCNg0coNqB7OaACOdo
- KZFDQ/vBpBSIsyCaBB10TMgN1WB37KdpoqTP26kkQR7k9yRcd76BK++RGnUeYl4bERgM4Y4Fq
- 6+LX+AGLC8SfmHzNlNhMH2B7sTGlXdy9ZmM5aSe1Hd27w=
+X-Spam-Score: -2.80
+X-Spam-Level: 
 
+For btrfs metadata, the high order folios are only utilized when all the
+following conditions are met:
 
+- The extent buffer start is aligned to nodesize
+  This should be the common case for any btrfs in the last 5 years.
 
-=E5=9C=A8 2024/7/3 07:49, Qu Wenruo =E5=86=99=E9=81=93:
->
->
-> =E5=9C=A8 2024/7/3 01:41, David Sterba =E5=86=99=E9=81=93:
->> On Sun, Jun 30, 2024 at 05:26:59PM +0930, Qu Wenruo wrote:
->>> For btrfs metadata, the high order folios are only utilized when all t=
-he
->>> following conditions are met:
->>>
->>> - The extent buffer start is aligned to nodesize
->>> =C2=A0=C2=A0 This should be the common case for any btrfs in the last =
-5 years.
->>>
->>> - The nodesize is larger than page size
->>> =C2=A0=C2=A0 Or there is no need to use larger folios at all.
->>>
->>> - MM layer can fulfill our folio allocation request
->>>
->>> - The larger folio must exactly cover the extent buffer
->>> =C2=A0=C2=A0 No longer no smaller, must be an exact fit.
->>>
->>> =C2=A0=C2=A0 This is to make extent buffer accessors much easier.
->>> =C2=A0=C2=A0 They only need to check the first slot in eb->folios[], t=
-o determine
->>> =C2=A0=C2=A0 their access unit (need per-page handling or a large foli=
-o covering
->>> =C2=A0=C2=A0 the whole eb).
->>>
->>> There is another small blockage, filemap APIs can not guarantee the
->>> folio size.
->>> For example, by default we go 16K nodesize on x86_64, meaning a larger
->>> folio we expect would be with order 2 (size 16K).
->>> We don't accept 2 order 1 (size 8K) folios, or we fall back to 4 order=
- 0
->>> (page sized) folios.
->>>
->>> So here we go a different workaround, allocate a order 2 folio first,
->>> then attach them to the filemap of metadata.
->>>
->>> Thus here comes several results related to the attach attempt of eb
->>> folios:
->>>
->>> 1) We can attach the pre-allocated eb folio to filemap
->>> =C2=A0=C2=A0=C2=A0 This is the most simple and hot path, we just conti=
-nue our work
->>> =C2=A0=C2=A0=C2=A0 setting up the extent buffer.
->>>
->>> 2) There is an existing folio in the filemap
->>>
->>> =C2=A0=C2=A0=C2=A0 2.0) Subpage case
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 We would reuse the fo=
-lio no matter what, subpage is doing a
->>> =C2=A0=C2=A0=C2=A0=C2=A0different way handling folio->private (a bitma=
-p other than a
->>> =C2=A0=C2=A0=C2=A0=C2=A0pointer to an existing eb).
->>>
->>> =C2=A0=C2=A0=C2=A0 2.1) There is already a live extent buffer attached=
- to the filemap
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 folio
->>> =C2=A0=C2=A0=C2=A0=C2=A0This should be more or less hot path, we grab =
-the existing eb
->>> =C2=A0=C2=A0=C2=A0=C2=A0and free the current one.
->>>
->>> =C2=A0=C2=A0=C2=A0 2.2) No live eb.
->>> =C2=A0=C2=A0=C2=A0 2.2.1) The filemap folio is larger than eb folio
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This is a=
- better case, we can reuse the filemap folio, but
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 we need to cleanup all the pre-allocate=
-d folios of the
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 new eb before reusing.
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Later code should take the folio size c=
-hange into
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 consideration.
->>>
->>> =C2=A0=C2=A0=C2=A0 2.2.2) The filemap folio is the same size of eb fol=
-io
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 We just f=
-ree the current folio, and reuse the filemap one.
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 No other special handling needed.
->>>
->>> =C2=A0=C2=A0=C2=A0 2.2.3) The filemap folio is smaller than eb folio
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This is t=
-he most tricky corner case, we can not easily
->>> replace
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the folio in filemap using our eb folio=
-.
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Thus here we return -EAGAIN, to inform =
-our caller to re-try
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 with order 0 (of course with our larger=
- folio freed).
->>>
->>> Otherwise all the needed infrastructure is already here, we only need =
-to
->>> try allocate larger folio as our first try in alloc_eb_folio_array().
->>
->> How do you want to proceed with that? I think we need more time to
->> finish conversions to folios.
->
-> That's for data folios.
->
-> For metadata, the conversion is already finished for several releases.
->
->> There are still a few left and then we
->> need time to test it (to catch bugs like where fixed the two recent
->> __folio_put patches).
->>
->> Keeping this patch in for-next would give us mixed results or we could
->> miss bugs that would not happen without large folios.
->
-> I want it to be tested by the CI first.
->
-> It passes locally, but I only have aarch64 4K page size system available
-> for now.
->
->> For a 6.11 devel
->> cycle it's too late to merge, for 6.12 maybe but that would not give us
->> enough time for testing so 6.13 sounds like the first target. I don't
->> think we need to rush such change, debugging the recent extent buffer
->> bugs shows that they're are pretty hard and hinder everything else.
->>
-> Yes, that's totally true.
->
-> Thus I hope more CI runs can be excerised on this change.
-> And it needs the MM change in the first place, and I'm pretty sure the
-> MM change would take some time to be merged anyway.
+- The nodesize is larger than page size
+  Or there is no need to use larger folios at all.
 
-Another solution would be, hide it behind CONFIG_BTRFS_DEBUG, so that we
-can still push it for 6.12 release meanwhile keep our CI farms running
-for it.
+- MM layer can fulfill our folio allocation request
 
-Thanks,
-Qu
->
-> Thanks,
-> Qu
->
+- The larger folio must exactly cover the extent buffer
+  No longer no smaller, must be an exact fit.
+
+  This is to make extent buffer accessors much easier.
+  They only need to check the first slot in eb->folios[], to determine
+  their access unit (need per-page handling or a large folio covering
+  the whole eb).
+
+There is another small blockage, filemap APIs can not guarantee the
+folio size.
+For example, by default we go 16K nodesize on x86_64, meaning a larger
+folio we expect would be with order 2 (size 16K).
+We don't accept 2 order 1 (size 8K) folios, or we fall back to 4 order 0
+(page sized) folios.
+
+So here we go a different workaround, allocate a order 2 folio first,
+then attach them to the filemap of metadata.
+
+Thus here comes several results related to the attach attempt of eb
+folios:
+
+1) We can attach the pre-allocated eb folio to filemap
+   This is the most simple and hot path, we just continue our work
+   setting up the extent buffer.
+
+2) There is an existing folio in the filemap
+
+   2.0) Subpage case
+        We would reuse the folio no matter what, subpage is doing a
+	different way handling folio->private (a bitmap other than a
+	pointer to an existing eb).
+
+   2.1) There is already a live extent buffer attached to the filemap
+        folio
+	This should be more or less hot path, we grab the existing eb
+	and free the current one.
+
+   2.2) No live eb.
+   2.2.1) The filemap folio is larger than eb folio
+          This is a better case, we can reuse the filemap folio, but
+	  we need to cleanup all the pre-allocated folios of the
+	  new eb before reusing.
+	  Later code should take the folio size change into
+	  consideration.
+
+   2.2.2) The filemap folio is the same size of eb folio
+          We just free the current folio, and reuse the filemap one.
+	  No other special handling needed.
+
+   2.2.3) The filemap folio is smaller than eb folio
+          This is the most tricky corner case, we can not easily replace
+	  the folio in filemap using our eb folio.
+
+	  Thus here we return -EAGAIN, to inform our caller to re-try
+	  with order 0 (of course with our larger folio freed).
+
+Otherwise all the needed infrastructure is already here, we only need to
+try allocate larger folio as our first try in alloc_eb_folio_array().
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changlog:
+v4:
+- Hide the feature behind CONFIG_BTRFS_DEBUG
+  So that end users won't be affected (aka, still per-page based
+  allocation) meanwhile we can do more testing on this new behavior.
+
+v3:
+- Rebased to the latest for-next branch
+- Use PAGE_ALLOC_COSTLY_ORDER to determine whether to use __GFP_NOFAIL
+- Add a dependency MM patch "mm/page_alloc: unify the warning on NOFAIL
+  and high order allocation"
+  This allows us to use NOFAIL up to 32K nodesize, and makes sure for
+  default 16K nodesize, all metadata would go 16K folios
+
+v2:
+- Rebased to handle the change in "btrfs: cache folio size and shift in extent_buffer"
+---
+ fs/btrfs/extent_io.c | 107 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 73 insertions(+), 34 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index cb315779af30..a5f2ed8d7373 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -734,12 +734,33 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+  *
+  * For now, the folios populated are always in order 0 (aka, single page).
+  */
+-static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
++static int alloc_eb_folio_array(struct extent_buffer *eb, int order,
++				bool nofail)
+ {
+ 	struct page *page_array[INLINE_EXTENT_BUFFER_PAGES] = { 0 };
+ 	int num_pages = num_extent_pages(eb);
+ 	int ret;
+ 
++	if (order) {
++		gfp_t gfp;
++
++		/*
++		 * For costly allocation, we want no retry nor warning.
++		 * Otherwise we can just set the NOFAIL flag and let mm layer
++		 * to do the heavylifting.
++		 */
++		if (order > PAGE_ALLOC_COSTLY_ORDER)
++			gfp = GFP_NOFS | __GFP_NORETRY | __GFP_NOWARN;
++		else
++			gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
++		eb->folios[0] = folio_alloc(gfp, order);
++		if (likely(eb->folios[0])) {
++			eb->folio_size = folio_size(eb->folios[0]);
++			eb->folio_shift = folio_shift(eb->folios[0]);
++			return 0;
++		}
++		/* Fallback to 0 order (single page) allocation. */
++	}
+ 	ret = btrfs_alloc_page_array(num_pages, page_array, nofail);
+ 	if (ret < 0)
+ 		return ret;
+@@ -2722,7 +2743,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+ 	 */
+ 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+ 
+-	ret = alloc_eb_folio_array(new, false);
++	ret = alloc_eb_folio_array(new, 0, false);
+ 	if (ret) {
+ 		btrfs_release_extent_buffer(new);
+ 		return NULL;
+@@ -2755,7 +2776,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	if (!eb)
+ 		return NULL;
+ 
+-	ret = alloc_eb_folio_array(eb, false);
++	ret = alloc_eb_folio_array(eb, 0, false);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -2970,6 +2991,14 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
+ 	return 0;
+ }
+ 
++static void free_all_eb_folios(struct extent_buffer *eb)
++{
++	for (int i = 0; i < INLINE_EXTENT_BUFFER_PAGES; i++) {
++		if (eb->folios[i])
++			folio_put(eb->folios[i]);
++		eb->folios[i] = NULL;
++	}
++}
+ 
+ /*
+  * Return 0 if eb->folios[i] is attached to btree inode successfully.
+@@ -2988,6 +3017,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+ 	const unsigned long index = eb->start >> PAGE_SHIFT;
+ 	struct folio *existing_folio = NULL;
++	const int eb_order = folio_order(eb->folios[0]);
+ 	int ret;
+ 
+ 	ASSERT(found_eb_ret);
+@@ -3008,15 +3038,6 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 		goto retry;
+ 	}
+ 
+-	/* For now, we should only have single-page folios for btree inode. */
+-	ASSERT(folio_nr_pages(existing_folio) == 1);
+-
+-	if (folio_size(existing_folio) != eb->folio_size) {
+-		folio_unlock(existing_folio);
+-		folio_put(existing_folio);
+-		return -EAGAIN;
+-	}
+-
+ finish:
+ 	spin_lock(&mapping->i_private_lock);
+ 	if (existing_folio && fs_info->nodesize < PAGE_SIZE) {
+@@ -3025,6 +3046,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 		eb->folios[i] = existing_folio;
+ 	} else if (existing_folio) {
+ 		struct extent_buffer *existing_eb;
++		int existing_order = folio_order(existing_folio);
+ 
+ 		existing_eb = grab_extent_buffer(fs_info,
+ 						 folio_page(existing_folio, 0));
+@@ -3036,9 +3058,34 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 			folio_put(existing_folio);
+ 			return 1;
+ 		}
+-		/* The extent buffer no longer exists, we can reuse the folio. */
+-		__free_page(folio_page(eb->folios[i], 0));
+-		eb->folios[i] = existing_folio;
++		if (existing_order > eb_order) {
++			/*
++			 * The existing one has higher order, we need to drop
++			 * all eb folios before resuing it.
++			 * And this should only happen for the first folio.
++			 */
++			ASSERT(i == 0);
++			free_all_eb_folios(eb);
++			eb->folios[i] = existing_folio;
++		} else if (existing_order == eb_order) {
++			/*
++			 * Can safely reuse the filemap folio, just
++			 * release the eb one.
++			 */
++			folio_put(eb->folios[i]);
++			eb->folios[i] = existing_folio;
++		} else {
++			/*
++			 * The existing one has lower order.
++			 *
++			 * Just retry and fallback to order 0.
++			 */
++			ASSERT(i == 0);
++			folio_unlock(existing_folio);
++			folio_put(existing_folio);
++			spin_unlock(&mapping->i_private_lock);
++			return -EAGAIN;
++		}
+ 	}
+ 	eb->folio_size = folio_size(eb->folios[i]);
+ 	eb->folio_shift = folio_shift(eb->folios[i]);
+@@ -3071,6 +3118,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	u64 lockdep_owner = owner_root;
+ 	bool page_contig = true;
+ 	int uptodate = 1;
++	int order = 0;
+ 	int ret;
+ 
+ 	if (check_eb_alignment(fs_info, start))
+@@ -3087,6 +3135,10 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		btrfs_warn_32bit_limit(fs_info);
+ #endif
+ 
++	if (IS_ENABLED(CONFIG_BTRFS_DEBUG) && fs_info->nodesize > PAGE_SIZE &&
++	    IS_ALIGNED(start, fs_info->nodesize))
++		order = ilog2(fs_info->nodesize >> PAGE_SHIFT);
++
+ 	eb = find_extent_buffer(fs_info, start);
+ 	if (eb)
+ 		return eb;
+@@ -3121,7 +3173,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 
+ reallocate:
+ 	/* Allocate all pages first. */
+-	ret = alloc_eb_folio_array(eb, true);
++	ret = alloc_eb_folio_array(eb, order, true);
+ 	if (ret < 0) {
+ 		btrfs_free_subpage(prealloc);
+ 		goto out;
+@@ -3139,26 +3191,12 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		}
+ 
+ 		/*
+-		 * TODO: Special handling for a corner case where the order of
+-		 * folios mismatch between the new eb and filemap.
+-		 *
+-		 * This happens when:
+-		 *
+-		 * - the new eb is using higher order folio
+-		 *
+-		 * - the filemap is still using 0-order folios for the range
+-		 *   This can happen at the previous eb allocation, and we don't
+-		 *   have higher order folio for the call.
+-		 *
+-		 * - the existing eb has already been freed
+-		 *
+-		 * In this case, we have to free the existing folios first, and
+-		 * re-allocate using the same order.
+-		 * Thankfully this is not going to happen yet, as we're still
+-		 * using 0-order folios.
++		 * Got a corner case where the existing folio is lower order,
++		 * fallback to 0 order and retry.
+ 		 */
+ 		if (unlikely(ret == -EAGAIN)) {
+-			ASSERT(0);
++			order = 0;
++			free_all_eb_folios(eb);
+ 			goto reallocate;
+ 		}
+ 		attached++;
+@@ -3169,6 +3207,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		 * and free the allocated page.
+ 		 */
+ 		folio = eb->folios[i];
++		num_folios = num_extent_folios(eb);
+ 		WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start, eb->len));
+ 
+ 		/*
+-- 
+2.45.2
+
 
