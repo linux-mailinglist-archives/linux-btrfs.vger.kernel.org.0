@@ -1,143 +1,123 @@
-Return-Path: <linux-btrfs+bounces-6177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA65B926769
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 19:47:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D5BC92688E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 20:48:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 900041F248B2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 17:47:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDAA1C22CC2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2024 18:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFCE186E27;
-	Wed,  3 Jul 2024 17:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB514188CA5;
+	Wed,  3 Jul 2024 18:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="do8X6XjZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M0H0J71L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5684917F511
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 17:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E699E1862A4
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Jul 2024 18:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720028837; cv=none; b=RYICP/Ia1nexeYBdPBAqlMGa0C2HzPESrcH9xlqmFBCujrcwsNlwftofR0c71zuHt2LJhVPn91DG8DIQhqWvMxQa6FSVS3pJCxsBJaJBNN09+yIttt/9lrlL/DYNiRfmIkkcBwlsrO8LZ2zy4W0yMgm3TGhGyGQWrjX3dkuNrFs=
+	t=1720032482; cv=none; b=eeU5d7k+qN/v366pHCiedml8aywwHOXYKCGZjV1ghmtqEOnvUvhRlY44OiGG/1+25Spo8xGPkhVUUP/ZTvJPeYcPcPm6sT4ddT7IFnJzpm+8FN8hmV1f53qI3UFUoyi8kGtmPP4AWFN7qQMDj0vSaOj0A5rbL7V2QBVy/UVM0PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720028837; c=relaxed/simple;
-	bh=k0o9L3DWpGBDVP7QACrBbYv0aVYrL1PMNyK0CtV/Q4E=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=RantNSA/N+WeNWW3EE4ufIniE0/CKIenpG5baxnWM709zQPuLidTf+KQDFYO7z57LtM/RxAitxmPMVoBBAY89U/XCwmLAHex0CUfpDIPVi9B+wkeab8r50fD6a8aHceChlbQ30TS1ZPr6xgD4Cr/QgApQ2kXTRideg+1RwVFvzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=do8X6XjZ; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1720032482; c=relaxed/simple;
+	bh=EgWEh/gp9yblF4UU6p7rXjRAYUOLhM6UYZrU0sadLYk=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=llka2yKpADeNfHfrLUvT7A//Eqd2ga9ax7Pc/v94r8WObAcfZ+9ciCqvg9EUWdy5fk9arbBSRACmxd2R8CTok6J8ikNAiOib7Tl1MCt8095MqsUy0gdfyDfLPDwUP8zVK6nGoUu/AhPZVycAbKB2Jj56FjC5Bk/hvktxnknq56M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M0H0J71L; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1f4a5344ec7so7423045ad.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jul 2024 10:47:16 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-71884eda768so3386923a12.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Jul 2024 11:48:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720028835; x=1720633635; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2/NNO4TUrTRWF9We/bFIxpcH/SvOz8WFurHiKLHJfaw=;
-        b=do8X6XjZ7z0xJHbJ/rlNIUq2IAtsL0LFikRw0mV0usDDKGUE//ZkTjUQM0MnsFBUc8
-         donxpikk4nQvndX51ZmOS0XusI9hIQHq6D4eHqhVZfIehsM8eTep6JBCAvIFAu2rCkCS
-         CBMoRdVU30HKjEciovGs7HFMJtXTERQIGjTk+eaygdqkxXq3t9oBnDMTEnIZhmsotdPx
-         1i9jZcY7RG5lVjuewcUiWIj1aOBhwVZYXizQs7EtJ+VsidCYbOfkOI5xHvPFFNjnVieh
-         3FWrJ12haHstOlVGI5LZvFzCOnsdxQOc57sALZ2zDx6iesIeRVGugSAXjkfEpdwVIeoh
-         4rVQ==
+        d=gmail.com; s=20230601; t=1720032480; x=1720637280; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lULsH2LC27QaBvYzbeAvdlpOgz7hkDvBq5RMUg8Xb+M=;
+        b=M0H0J71LmOWJrfeOC3Bp/og1LwT4Wcyt1OWXz9pVd/cn51QrKmdxqqJ3TWBpUPRNDD
+         n8MAtp+iLl2+ZQrxW/ygXsyu4vv3OB1DlmMokXPvsQoXkhJpblNHXzXbsZJb+euvyPir
+         R7cvkhiUFnHvFDQYSHBRT74EySdV1fjaJ7mcrliQ974Wi5UdTccRrqbgUV2rRQqD29y3
+         yXN/LXF1DCp5nUkq5i4Hu3kdZE1uhhEfrOwLrPJlEVlDnhQXqNUR+90UlWHhv5mZROPh
+         mWFldluHT7KQj4rJPGbSEMQwNIYLowoF9y4Ta1YzCvM9PXt3EdYsMve6jWlqG07y35p9
+         24cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720028835; x=1720633635;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2/NNO4TUrTRWF9We/bFIxpcH/SvOz8WFurHiKLHJfaw=;
-        b=rltgDugvugOmicvR/c1yn6pe9b/0m06hd3BQiGcQf89QPC4odxmPFyIF/ZVCMbvoJa
-         rn1xhlVYy4XtBzsjSqxtNLk+3xpDaIT/+qLMvHjB/BBiMwWOGpa5gRGVdps2ScpGTtyx
-         HLXVEUVVBdYbmITI14/WUpIR8ClNsgLfioAhoyMfncgJh6NzNUls/l1xo0nZXxwZWNsQ
-         tRNaQZgxXHJJ/x2FF6MqThObxtKlPjd4vN5hmC72eBvRaBT1qomAFjitJjVxHlmfOk77
-         Iyj/6ya0BFJxNu+Rl9O4RbL6xDukF+vSedxIg+uHxhOaokarqDLAcI5ybBa7zk6IhmSv
-         Zq6A==
-X-Gm-Message-State: AOJu0YyywcpQY6+90cjZa408UboDR2w32MD7+NQbov38jBLbGqcWs/sY
-	FFj7yrVohamNeXS8TcbrMWXrh49gbjxVqyDyPJmFbjaBjoeKim5s8va+tQ+kNGYX0A==
-X-Google-Smtp-Source: AGHT+IGzAHydS4QV21GOE08Dj31GehHnPRIgBDFCviRPLQDphdLWHbOqU4pSuiromMGgOlwhoxtB8w==
-X-Received: by 2002:a17:902:d512:b0:1fa:fe30:fc16 with SMTP id d9443c01a7336-1fb1a0a7728mr37138685ad.25.1720028835063;
-        Wed, 03 Jul 2024 10:47:15 -0700 (PDT)
-Received: from zlke.localdomain ([14.145.8.124])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fb0bd80588sm25947515ad.7.2024.07.03.10.47.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Jul 2024 10:47:14 -0700 (PDT)
-From: Li Zhang <zhanglikernel@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Li Zhang <zhanglikernel@gmail.com>
-Subject: [PATCH] btrfs-prog: scrub: print message when scrubbing a read-only filesystem without r option
-Date: Thu,  4 Jul 2024 01:47:01 +0800
-Message-Id: <1720028821-3094-1-git-send-email-zhanglikernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        d=1e100.net; s=20230601; t=1720032480; x=1720637280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lULsH2LC27QaBvYzbeAvdlpOgz7hkDvBq5RMUg8Xb+M=;
+        b=Z0OptFmijXAj+ytp0/y9gQEermMzoYCUdi8jmGMYb45jQl7NQAUwl+4HDYj2u/oHeY
+         52ksRMLFR3Q3MzRe2cawi6q2F+sC630jyAGE4NTgbizu+L7Z1MmD3gjBaljRBSI02OAQ
+         f4wJ0joWYyOCM4QTeb+EcsXcV9JEoPwkAyn2bgGqiRT3AWYRgcqPl1whwqSSVVIZRK6b
+         LsWI1ywHSgr3cNzE3FZAvP8FHT34ObPsE02yyVPBJszi0XVY/0/w1wKpDpkV08P1dfce
+         DxO5Il7fB1lH/Tj+QhhPty4RohBMsELtMoIcckyO0PFwssC3K3a/7HjYR8Hp7c834xhf
+         G4UQ==
+X-Gm-Message-State: AOJu0YzJ+XnUWV/vKzVo4AR6hSG+tIjuoUF9G38fXrSUjI7MMw0psUur
+	XCmXxhnnLWwVDjA0h00ibuh+fN3YzrlpGFt6AX5aZbOVwDfJgcdO8tMxJoKxXSevHl1FVohb1Hw
+	+zkUDhjRkkbs5tdwID9kOkQDJvYupLpK+
+X-Google-Smtp-Source: AGHT+IFznNmqS9GsK+f8fqMTvbCJRJIwoHQgmdWMvua0LX9KI9aS5os0cfMwtBk0rat4X+pBGXbe3fIw1oHN70dflJc=
+X-Received: by 2002:a17:90b:4b4b:b0:2c1:9892:8fb with SMTP id
+ 98e67ed59e1d1-2c93d6d4a44mr8014095a91.5.1720032479975; Wed, 03 Jul 2024
+ 11:47:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: "Ed T." <edtoml@gmail.com>
+Date: Wed, 3 Jul 2024 14:47:23 -0400
+Message-ID: <CAPQz975+sBtZPfUQ6RUjkY-R85f+miMcd9mD_2d4zgFakMsezw@mail.gmail.com>
+Subject: [PATCH v3 0/2] btrfs: fix __folio_put refcount errors
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-issue:666
+From: Filipe Manana <fdmanana@kernel.org>
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v3 0/2] btrfs: fix __folio_put refcount errors
+Date: Tue, 2 Jul 2024 15:41:19 +0100 [thread overview]
+Message-ID: <CAL3q7H7Gu2SQV+V1WMuVsuMmffAyKVTC5miagZVeitVQps6YuA@mail.gmail=
+.com>
+(raw)
+In-Reply-To: <cover.1719930430.git.boris@bur.io>
 
-[enhancement]
-When scrubbing a filesystem mounted read-only and without r
-option, it aborts and there is no message associated with it.
-So we need to print an error message when scrubbing a read-only
-filesystem to tell the user what is going on here.
+On Tue, Jul 2, 2024 at 3:32=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> Switching from __free_page to __folio_put introduced a bug because
+> __free_page called put_page_testzero while __folio_put does not. Fix the
+> two affected callers by changing to folio_put which does call
+> put_folio_testzero.
+> --
+> Changelog:
+> v3:
+> - split up patches for backporting
+> v2:
+> - add second callsite
+>
+> Boris Burkov (2):
+>   btrfs: fix __folio_put refcount in btrfs_do_encoded_write
+>   btrfs: fix __folio_put refcount in __alloc_dummy_extent_buffer
+>
+>  fs/btrfs/extent_io.c | 2 +-
+>  fs/btrfs/inode.c     | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-[implementation]
-Move the error message from the main thread to each scrub thread,
-previously the message was printed after all scrub threads
-finished and without background mode.
+(resent as plaintext)
 
-[test]
-Mount dev in read-only mode, then scrub it without r option
+For both patches:
 
-$ sudo mount /dev/vdb -o ro /mnt/
-$ sudo btrfs scrub start  /mnt/
-scrub started on /mnt/, fsid f7c26803-a68d-4a96-91c4-a629b57b7f64 (pid=2892)
-Starting scrub on devid 1
-Starting scrub on devid 2
-Starting scrub on devid 3
-scrub on devid 1 failed ret=-1 errno=30 (Read-only file system)
-scrub on devid 2 failed ret=-1 errno=30 (Read-only file system)
-scrub on devid 3 failed ret=-1 errno=30 (Read-only file system)
+Tested-by: Ed Tomlinson <edtoml@gmail.com>
 
-Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
----
- cmds/scrub.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+In both 6.10-rc5 & rc6 I was seeing many 'bad page' errors in my logs
+during my backups, which create, send & delete snapshots.  With these
+patches applied to rc6 the logs are clean.
 
-diff --git a/cmds/scrub.c b/cmds/scrub.c
-index d54e11f..e0400dd 100644
---- a/cmds/scrub.c
-+++ b/cmds/scrub.c
-@@ -957,7 +957,10 @@ static void *scrub_one_dev(void *ctx)
- 		warning("setting ioprio failed: %m (ignored)");
- 
- 	ret = ioctl(sp->fd, BTRFS_IOC_SCRUB, &sp->scrub_args);
--        pr_verbose(LOG_DEFAULT, "scrub ioctl devid:%llu ret:%d errno:%d\n",sp->scrub_args.devid, ret, errno);
-+	if (ret){
-+		pr_verbose(LOG_DEFAULT, "scrub on devid %llu failed ret=%d errno=%d (%m)\n", 
-+			sp->scrub_args.devid, ret, errno);
-+	}
- 	gettimeofday(&tv, NULL);
- 	sp->ret = ret;
- 	sp->stats.duration = tv.tv_sec - sp->stats.t_start;
-@@ -1596,13 +1599,6 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 				++err;
- 				break;
- 			default:
--				if (do_print) {
--					errno = sp[i].ioctl_errno;
--					error(
--		"scrubbing %s failed for device id %lld: ret=%d, errno=%d (%m)",
--						path, devid, sp[i].ret,
--						sp[i].ioctl_errno);
--				}
- 				++err;
- 				continue;
- 			}
--- 
-1.8.3.1
-
+Thanks
+Ed Tomlinson
 
