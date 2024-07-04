@@ -1,318 +1,123 @@
-Return-Path: <linux-btrfs+bounces-6195-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6196-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 394769275D9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 14:22:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B7C927736
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 15:34:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBDCC285429
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 12:22:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1131EB227A9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 13:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAE21AE0BA;
-	Thu,  4 Jul 2024 12:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F0A1AED33;
+	Thu,  4 Jul 2024 13:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bouton.name header.i=@bouton.name header.b="vJLGv3Fi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iFLkUHj8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.bouton.name (ns.bouton.name [109.74.195.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E3CA25779
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2024 12:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.74.195.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FAE28373;
+	Thu,  4 Jul 2024 13:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720095684; cv=none; b=mlzR3Tj5yMp2j7O49sRFXT8xyiMPoXF9BWstn9x27OlYaTUL6Q+6s8DRBr3aQkP3sOWgC62RiaSm+75I6KXQK8+47D6vXzGMLRLsQkcziB2HOJJsm3F8MUXGPeMRr9UOaqYKmvgzlTzJ9thsGjjfscVyA3dLqgmpQDI62DPgFs0=
+	t=1720100029; cv=none; b=oI38M6VhfwpgsJVDf6l6zndPtglyUruWcd5+iOECExcuc7ykkhJUrqVPnfCJdNtUKityxZ0w9OhKqDtqySI3buExnnc7367jRCUdwQRHgKrbrIoK3UF4zC1W/DDAZ0qRhZX4BoxaEeGqLC45cEwiC7Rh/zr3VnJ9VM29/8/F+iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720095684; c=relaxed/simple;
-	bh=S1u4caR+BRuI2VAz+Ctn3qBDt4jFLZp0LbtgaSE8uVQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=fw8PGrDSdeaF6UBm5+JLMLdKaMp1ghK04rMTof+FO7zRPoMhss7RJODCqzAYvVDg9TXZYZ4jqUSlIAEtbKGCdWyeYW4uDG13a85/vx8gDI9sid+eiOonWQwx1dF1bNcoxjguupzrYne9Bfnk2/iOKcZNrak3iycStmZDfH9BPi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bouton.name; spf=pass smtp.mailfrom=bouton.name; dkim=pass (1024-bit key) header.d=bouton.name header.i=@bouton.name header.b=vJLGv3Fi; arc=none smtp.client-ip=109.74.195.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bouton.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bouton.name
-Received: from [192.168.10.101] (052559474.box.freepro.com [82.96.130.55])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.bouton.name (Postfix) with ESMTPSA id D2300CD8C;
-	Thu,  4 Jul 2024 14:21:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bouton.name;
-	s=default; t=1720095664;
-	bh=AT9pXNe5zWgnIUZm938/dd4C4b40Zyp2f3qtQ0S9Oh0=;
-	h=Date:Subject:From:To:References:In-Reply-To;
-	b=vJLGv3FiS/q9F6WIRU+limc36Gbr5tHotdGQFbq1JLYE7/JQ7BU0wsdDWs8+amKFH
-	 GKJ68xgCDWZQycVJ7pj849SisrwBIANX72tRY1kib+jCobJyfWJi9G8JbrrMCgCHhx
-	 fNGmrDmkxpfFRbNeBk0s9KvOKvZt2F4pRRVshfpg=
-Message-ID: <1fe1927e-356d-4181-8c5e-34f73b8b201d@bouton.name>
-Date: Thu, 4 Jul 2024 14:21:01 +0200
+	s=arc-20240116; t=1720100029; c=relaxed/simple;
+	bh=YTpdR8BWwbMhfLGFsScSQ+dfvCM1UcGB7JaHRWuCLtg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fDc28cwVvFems9+9f8O1kIcORmDDclOYoLA/LrunUGpskGSPCO60SNOjx37JbsEVulbn5cXhA72LmqFaPxD3pn/Zs9H5Xi/meNdIfCpFcKL6WYLMcXcnaF2KYPZMhEhSsU66MIyh/Mkzbu9TLmOHJnXw+S0hYsM1sdQHL9oZVfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iFLkUHj8; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-64e81cd12cdso5324877b3.0;
+        Thu, 04 Jul 2024 06:33:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720100027; x=1720704827; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YTpdR8BWwbMhfLGFsScSQ+dfvCM1UcGB7JaHRWuCLtg=;
+        b=iFLkUHj8kYHnbUUkvb9T7d3m5BYtIcclHHIpID1xMx98j7l9uKwpH0agcy/0awLYfX
+         xCOtmR+hnaD2lDUaZ1VR2dLWy3QUoY1EzwDyB4hSk8oHqbpOo7nFPEIqghkFZ9NGmor5
+         kwWStsIp8whvANAIYljtIl+lVlEvRZtYsqBmkJvtsbI3tVEL5zWo+odu0EjzR91SUuIM
+         jtpPB9y58FAlXbYGDwtk+Fo1Yjx9WsIm/c5TNaSzjQhCMu5ctOBlMa7ERym7lfLfSmXn
+         qkno/a6g3y3+qvf8jqecUyAt8phCKtC86tVoMyyzjuEkMDVYC6g0l/O9d7DCb1BRmARW
+         R1gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720100027; x=1720704827;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YTpdR8BWwbMhfLGFsScSQ+dfvCM1UcGB7JaHRWuCLtg=;
+        b=RbgKJ5GpvIsPFl3iGxC9Cc0axnb1RmYecTALYXxMupUIKu44Ww6KaHBvVD8ybEePzx
+         Bk5kSUv/9PYaRJ1MfzS8lwYMveZzXc5eslpdorRjKqLBzTOaIOCo7lsQrduUYULjEh/v
+         D+4/sYRo7Ygi9KaG9/PSpUixY6jZ0D2SExIu1EN0PI4bS0Ek1yvkB0ZHxibTm0PYcxM0
+         n0Txmc8U4LG4wFKWiSdf3HUffowAbYCXdEsDk+Ut1N8GsPrJXLH791lLvJ9FwJ+DoOSl
+         tarhN0H5AbPXFN4OAHvfprTS3tqhvGlAV5KrT30n6+1aqTN790Gr5gx/nojSL1hS2wHw
+         60uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWIwUJyGJBKaYo/c10brc1C8Q0Im4D1spUMlMDwzJt0Efn1zY1DSZwDvS56Nbha9NMostSTlSKrfJmUpvVulonCep3gOVWDt6TldvDWwGHPys5ra39NvPXU3R/jlOsPfIhYxom6qvPD1uY=
+X-Gm-Message-State: AOJu0YyirdbAXn+7ObyWx91UKrGVjgqqilxDeQB5E0hglkCVzV7XvMPp
+	bVdm0QYCYYQTTCAy/+sfC/X2qWdVu1UEkGLkRlJ05a4QORLdJ+d9eGeocABy7mKkV/drABPZO7W
+	jDITI/kSW8DpQSUl8RcMCrVG7FHk=
+X-Google-Smtp-Source: AGHT+IEnPiXYKGoZAEcWbV0vplxMesyCar7SVTa8AM31q8atEL/J3INWycW/KyiHzI5JnUxFQ7SXn4y6RT/9fhMRiCM=
+X-Received: by 2002:a05:690c:ec4:b0:651:4b29:403c with SMTP id
+ 00721157ae682-652f5778b8dmr10432037b3.2.1720100026775; Thu, 04 Jul 2024
+ 06:33:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: scrub reports uncorrectable csum errors linked to readable
- file (data: single)
-From: Lionel Bouton <lionel-subscription@bouton.name>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <c2fa6c37-d2a8-4d77-b095-e04e3db35ef0@bouton.name>
- <4525e502-c209-4672-ae32-68296436d204@gmx.com>
- <1df4ce53-8cf9-40b1-aa43-bf443947c833@bouton.name>
- <80456d11-9859-402c-a77c-5c3b98b755a5@gmx.com>
- <05fc8552-1b6f-4b6c-82b2-0cf716cc8e6b@bouton.name>
- <ae6aab7d-029d-4e33-ace7-e8f0b0a2fa36@bouton.name>
- <08774378-624a-4586-9f24-c108f1ffeebb@gmx.com>
- <c24180e5-b0dc-47e5-91b0-7935e85ccc4b@bouton.name>
-Content-Language: en-US
-In-Reply-To: <c24180e5-b0dc-47e5-91b0-7935e85ccc4b@bouton.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+ <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+ <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
+ <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
+ <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
+ <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+ <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+ <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
+ <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
+ <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com> <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
+From: Andrea Gelmini <andrea.gelmini@gmail.com>
+Date: Thu, 4 Jul 2024 15:33:30 +0200
+Message-ID: <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com
+Content-Type: text/plain; charset="UTF-8"
 
-Le 30/06/2024 à 12:59, Lionel Bouton a écrit :
-> Le 22/06/2024 à 11:41, Qu Wenruo a écrit :
->>
->>
->> 在 2024/6/22 18:21, Lionel Bouton 写道:
->> [...]
->>>>
->>>> I'll mount the filesystem and run a scrub again to see if I can
->>>> reproduce the problem. It should be noticeably quicker, we made
->>>> updates to the Ceph cluster and should get approximately 2x the I/O
->>>> bandwidth.
->>>> I plan to keep the disk snapshot for at least several weeks so if you
->>>> want to test something else just say so.
->>>
->>>
->>> The scrub is finished, here are the results :
->>>
->>> UUID: 61e86d80-d6e4-4f9e-a312-885194c5e690
->>> Scrub started:    Wed Jun 19 00:01:59 2024
->>> Status:           finished
->>> Duration:         81:04:21
->>> Total to scrub:   18.83TiB
->>> Rate:             67.67MiB/s
->>> Error summary:    no errors found
->>>
->>> So the scrub error isn't deterministic. I'll shut down the test VM for
->>> now and keep the disk snapshot it uses for at least a couple of week if
->>> it is needed for further tests.
->>> The original filesystem is scrubbed monthly, I'll reply to this message
->>> if another error shows up.
->>
->> I briefly remembered that there was a bug related to scrub that can
->> report false alerts:
->>
->> f546c4282673 ("btrfs: scrub: avoid use-after-free when chunk length is
->> not 64K aligned")
->>
->> But that should be automatically backported, and in that case it should
->> have some errors like "unable to find chunk map" error messages in the
->> kernel log.
->>
->> Otherwise, I have no extra clues.
->>
->> Have you tried kernels like v6.8/6.9 and can you reproduce the bug in
->> those newer kernels?
->
-> I've just upgraded the kernel to 6.9.7 (and btrfs-progs to 6.9.2) and 
-> monthly scrubs with it will start next week. That said the last 
-> filesystem scrub with 6.6.30 ran without errors so it might be hard to 
-> reproduce.
-> One difference with the last scrub vs the previous one which reported 
-> checksum errors is the underlying device speed : it is getting faster 
-> as we replace HDDs with SSDs on the Ceph cluster (it might be a cause 
-> if there's a race condition somewhere). Other than that there's 
-> nothing I can think of.
->
-> In fact the only 2 major changes before the scrub checksum errors where :
-> - a noticeable increase in constant I/O load,
-> - an upgrade to the 6.6 kernel.
->
-> As nobody else reported the same behavior I'm not ruling out an 
-> hardware glitch either.
-> I'll reply to this thread if a future scrub reports a non reproducible 
-> checksum error again.
+Il giorno gio 4 lug 2024 alle ore 11:57 Filipe Manana
+<fdmanana@kernel.org> ha scritto:
+> I wonder if you have bpftrace installed and can run the following
+> script while doing the test:
 
-I didn't expect to have something to report so soon...
-Another virtual machine running on another physical server but using the 
-same Ceph cluster just reported csum errors that aren't reproducible.
-This was with kernel 6.6.13 and btrfs-progs 6.8.2.
-Fortunately this filesystem is small and can be scrubbed in 2 minutes : 
-I just ran the scrub again (less than 5 hours after the one that 
-reported errors) and no error are reported this time.
+Yeap, no problem. It worked. I mean, recorded on external usb stick... But...
+On my laptop I have kernel 6.6.36 and rc6+branch...
+Uhm... Yesterday I switched back to 6.6.36 after wrote the email,
+well, not exactly, I usually work with 6.6.36 and yesterday rebooted
+with rc6 to test the branch patches (so the sluggish issue weeks ago,
+so I didn't move from 6.6.36).
+Anyway, after wrote you the report while watching the "live action", I
+rebooted 6.6.36.
 
-I'll upgrade this VM to 6.9.7+ too. If 6.6 has indeed a scrub bug and 
-not 6.9 it might be easier to verify than I anticipated : most of our 
-VMs have migrated or are in the process of migrating to 6.6 which is the 
-latest LTS. If the problem manifest itself on a small filesystem too I 
-expect other systems to fail scrubs sooner or later if 6.6 is affected 
-by a scrub bug.
+Anyway, tried right now with bpftrace and I can't replicate it. Kernel
+exactly the same. No recompilo or so on...
 
-Like I wrote last time I'll reply here if other scrubs report non 
-reproducible csum errors.
+I just can think about a few LibreOffice git subvolume deleted
+(~215000 files), and a few created.
+A few tens of giga deleted of files (mp4 and mkv). Uhm... dunno if it
+could be related or something changed on BTRFS layout.
 
->
-> Lionel
->
->>
->> Thanks,
->> Qu
->>>
->>>>
->>>> Best regards,
->>>> Lionel
->>>>
->>>>>
->>>>> If btrfs check reports error, and logical-resolve failed to locate 
->>>>> the
->>>>> file and its position, it means the corruption is in bookend exntets.
->>>>>
->>>>> If btrfs check reports error and logical-resolve can locate the 
->>>>> file and
->>>>> position, it's a different problem then.
->>>>>
->>>>> Thanks,
->>>>> Qu
->>>>>
->>>>>>
->>>>>> The stats output show that this file was not modified since its
->>>>>> creation
->>>>>> more than 6 years ago. This is what led me to report a bug in scrub.
->>>>>>
->>>>>>
->>>>>>>
->>>>>>>> - Some including the original subvolume have only logged 2
->>>>>>>> warnings and
->>>>>>>> one (root 151335) logged only one warning.
->>>>>>>> - All of the snapshots reported a warning for offset 20480.
->>>>>>>> - When several offsets are logged their order seems random.
->>>>>>>
->>>>>>> One problem of scrub is, it may ratelimit the output, thus we 
->>>>>>> can not
->>>>>>> just rely on dmesg to know the damage.
->>>>>>
->>>>>> I wondered about this: I've read other threads where ratelimiting is
->>>>>> mentioned but I was not sure if it could apply here. Thanks for
->>>>>> clarifying.
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> I'm attaching kernel logs beginning with the scrub start and
->>>>>>>> ending with
->>>>>>>> the last error. As of now there are no new errors/warnings even
->>>>>>>> though
->>>>>>>> the scrub is still ongoing, 15 hours after the last error. I 
->>>>>>>> didn't
->>>>>>>> clean the log frombalance logs linked to the same filesystem.
->>>>>>>>
->>>>>>>> Side-note for the curious or in the unlikely case it could be
->>>>>>>> linked to
->>>>>>>> the problem:
->>>>>>>> Historically this filesystem was mounted with ssd_spread 
->>>>>>>> without any
->>>>>>>> issue (I guess several years ago it made sense to me reading the
->>>>>>>> documentation and given the IO latencies I saw on the Ceph
->>>>>>>> cluster). A
->>>>>>>> recent kernel filled the whole available space with nearly empty
->>>>>>>> block
->>>>>>>> groups which seemed to re-appear each time we mounted with
->>>>>>>> ssd_spread.
->>>>>>>> We switched to "ssd" since then and there is a mostly daily 90mn
->>>>>>>> balance
->>>>>>>> to reach back the previous stateprogressively (this is the reason
->>>>>>>> behind
->>>>>>>> the balance related logs). Having some space available for new 
->>>>>>>> block
->>>>>>>> groups seems to be a good idea but additionally as we use Ceph
->>>>>>>> RBD, we
->>>>>>>> want it to be able to deallocate unused space: having many nearly
->>>>>>>> empty
->>>>>>>> block groups could waste resources (especially if the used 
->>>>>>>> space in
->>>>>>>> these groups is in <4MB continuous chunks which is the default RBD
->>>>>>>> object size).
->>>>>>>>
->>>>>>>>
->>>>>>>> More information :
->>>>>>>> The scrub is run monthly. This is the first time an error was ever
->>>>>>>> reported. The previous scrub was run successfully at the 
->>>>>>>> beginning of
->>>>>>>> May with a 6.6.13 kernel.
->>>>>>>>
->>>>>>>> There is a continuous defragmentation process running (it
->>>>>>>> processes the
->>>>>>>> whole filesystem slowly ignoring snapshots and defragments file by
->>>>>>>> file
->>>>>>>> based on a fragmentation estimation using filefrag -v). All
->>>>>>>> defragmentations are logged and I can confirm the file for 
->>>>>>>> which this
->>>>>>>> error was reported was not defragmented for at least a year (I
->>>>>>>> checked
->>>>>>>> because I wanted to rule out a possible race condition between
->>>>>>>> defragmentation and scrub).
->>>>>>>
->>>>>>> I'm wondering if there is any direct IO conflicting with
->>>>>>> buffered/defrag IO.
->>>>>>>
->>>>>>> It's known that conflicting buffered/direct IO can lead to contents
->>>>>>> change halfway, and lead to btrfs csum mismatch.
->>>>>>> So far that's the only thing leading to known btrfs csum mismatch I
->>>>>>> can
->>>>>>> think of.
->>>>>>
->>>>>> But here it seems there isn't an actual mismatch as reading the 
->>>>>> file is
->>>>>> possible and gives the data which was written in it 6 years ago. 
->>>>>> Tthis
->>>>>> seems an error in scrub (or a neutrino flipping a bit somewhere 
->>>>>> during
->>>>>> the scrub). The VM runs on a server with ECC RAM so it is unlikely
->>>>>> to be
->>>>>> a simple bitflip but when everything likely has been ruled out...
->>>>>>
->>>>>> Thanks for your feedback,
->>>>>> Lionel
->>>>>>
->>>>>>>
->>>>>>> But 6.x kernel should all log a warning message for it.
->>>>>>>
->>>>>>> Thanks,
->>>>>>> Qu
->>>>>>>>
->>>>>>>> In addition to the above, among the notable IO are :
->>>>>>>> - a moderately IO intensive PostgreSQL replication subscriber,
->>>>>>>> - ponctual large synchronisations using Syncthing,
->>>>>>>> - snapshot creations/removals occur approximately every 80
->>>>>>>> minutes. The
->>>>>>>> last snapshot operation was logged 31 minutes before the errors
->>>>>>>> (removal
->>>>>>>> occur asynchronously but where was no unusual load at this time 
->>>>>>>> that
->>>>>>>> could point to a particularly long snapshot cleanup process).
->>>>>>>>
->>>>>>>> To sum up, there are many processes accessing the filesystem but
->>>>>>>> historically it saw far higher IO load during scrubs than what was
->>>>>>>> occurring here.
->>>>>>>>
->>>>>>>>
->>>>>>>> Reproducing this might be difficult: the whole scrub can take a 
->>>>>>>> week
->>>>>>>> depending on load. That said I can easily prepare a kernel 
->>>>>>>> and/or new
->>>>>>>> btrfs-progs binaries to launch scrubs or other non-destructive
->>>>>>>> tasks the
->>>>>>>> week-end or at the end of the day (UTC+2 timezone).
->>>>>>>>
->>>>>>>> Best regards,
->>>>>>>>
->>>>>>>> Lionel Bouton
->>>>>>>
->>>>>>
->>>>
->>>
->>>
->
+Well, I have the nighlty snapshot (well, it's not on every subvolume
+of the fs). I ran tar on that, and we see.
 
+I tell you in a few hours. In the meanwhile I keep running rc6+ and
+see if something happens.
 
