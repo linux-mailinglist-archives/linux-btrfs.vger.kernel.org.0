@@ -1,359 +1,247 @@
-Return-Path: <linux-btrfs+bounces-6205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9FFD927BC2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 19:15:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB126927C2F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 19:30:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3801C1F2485F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 17:15:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24FBF1F220EA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 17:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C47E1B3751;
-	Thu,  4 Jul 2024 17:13:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354A46DD0D;
+	Thu,  4 Jul 2024 17:25:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OkamVgGg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oHAO7hw5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ceBZmRMU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CXIbC56T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MGR6Sz06"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3F2846F
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2024 17:13:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542A13308A;
+	Thu,  4 Jul 2024 17:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720113228; cv=none; b=F4qS/TwkfWPo6c7LIo9oREkgkGBW1Z4iLtMgDCg+rzPC1TORNXzxS1enoKwmcF7WriMP9JtHphQ2PYUI2HUdme2sOhO1Gyn9K+H1Qlg8Mfg6cHt9swwugOM9XH/DwXwhs9ObwQyVr7yCSqJTw8yWLgWdIu2qKl28XsZHYF3O+/I=
+	t=1720113956; cv=none; b=auIeOrwlhX7lIvW6IBfexyNrLc+SZuv815/cY70ylUSQZ3bpTvxA0xhE6uSAlM+lvVCKZwrG0AxEIYz3pqc3JTjfpz71+PUmiB8Lqq9ciTb8N31kXI0nCViFbNqKjWC69rKBGRDQfgQdG8neE1T7Xd6vVeb9ao3gIzoUNTXiuu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720113228; c=relaxed/simple;
-	bh=XR/LWpmUJsNuK9lQ3YbQeLvuL4P16QZKj0vrwJar55w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uXuTzfxTtmrGaR7ee4pGcqAiO4P4M9Xvbnfj9A6x2O5rNv5+yw96VX8YjDFi+YFX1IbmPd7KM0C1eDgIrK674KodLAk24sMfRPN2mzjvy3Uedm4MYDQQ+1kh5Iqn3Qqql7LXUk+fuEYpDsuecplfR6BXkXTOrDinGFz4rLeT1GE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OkamVgGg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oHAO7hw5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ceBZmRMU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CXIbC56T; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 46D7F21BAC;
-	Thu,  4 Jul 2024 17:13:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1720113224;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=natX8R5fTZ10QJhTPJ7udjmfePp3GOric7mt6lmTr0E=;
-	b=OkamVgGgGrBevR4tkvUNuGRsqERrsxEVReYUAvwbbXaKept1W7spohUoQNKPdYsYpXyVV0
-	CxYwi5FizAgHRvUDwY2/Tv0R45zYVQkVqNezlFset9wAl7aeLMHBVrVJE2TKLo9qhC3gKp
-	PovqMio51sQ1vWadnUEKScPjQg3uW5c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1720113224;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=natX8R5fTZ10QJhTPJ7udjmfePp3GOric7mt6lmTr0E=;
-	b=oHAO7hw5fg7pAZpe43qYmResSBnPiNC706u5u4xktBryEls6rKkiWiT1qBeDWZjHz7Nl3r
-	Iv9eoGMy16xcDxAA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ceBZmRMU;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=CXIbC56T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1720113223;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=natX8R5fTZ10QJhTPJ7udjmfePp3GOric7mt6lmTr0E=;
-	b=ceBZmRMU6pxqHW0pWZe+S5gYw4pFq25WO/YpvFQLRnoXMYKp+TxpiH+oG7/jnDpZ6NR7N+
-	9tOx1Gkt6z2CxpznMdLNL5CvzhakLJ0wDG+0jWG7tLBatYOWx+G18cHCOpy85tKrWK7xHR
-	o6BFlDM3WvN2l4pJPaIlpcskBsNwqqE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1720113223;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=natX8R5fTZ10QJhTPJ7udjmfePp3GOric7mt6lmTr0E=;
-	b=CXIbC56TNeUU41BqWNxZu8hGoNkenm/mPXicE/odU4FRMcNDOrwepgrr7RpEoGFnmKSP7n
-	IO5h3FWzzc5hESCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BAA513889;
-	Thu,  4 Jul 2024 17:13:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XOhGBkfYhmYzXgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 04 Jul 2024 17:13:43 +0000
-Date: Thu, 4 Jul 2024 19:13:33 +0200
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use delayed iput during extent map shrinking
-Message-ID: <20240704171333.GY21023@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <a13181cccb5b199b9127016bfcc29a2476aba891.1720106304.git.fdmanana@suse.com>
+	s=arc-20240116; t=1720113956; c=relaxed/simple;
+	bh=ivjABJQIZ/XjKkNr92Gnumgb4BuLwGJuayEUON94iIo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G31g3wpmFRBnABufGinK0CdvXYZCzF9N49Dbv/J0KiW2ogealUcEmmLpLnjA4cMZEwkghde0nUOxP0m9pcuOt8hlFFAUM/tjlBu1i84yF/yRW8a92vREDckPvut0cXrx9YRSdcEtCWQkbIp9RtUbTSGsYvAAACkXk+NUjbVTDWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MGR6Sz06; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10253C4AF0C;
+	Thu,  4 Jul 2024 17:25:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720113956;
+	bh=ivjABJQIZ/XjKkNr92Gnumgb4BuLwGJuayEUON94iIo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MGR6Sz06/uFgdzWis82KjYXYZx7aygIcldk0nNZ1ZTUYzL0UpQ9EiUAkyNHuNIoGp
+	 i5vBWqDjqPZt3ive3RD7OUc4W415x1hcrZmpUpIuGyYeXMbWbBQ/fRO5XQEkLzaZJV
+	 qh6cat5pxD3TOIy+8g1KwaKBkgO9tGEdKFIs3Ied+kyyo3xHbVK2db+VYydOeBL3aN
+	 iEePqdAwhs6C6RmF77IFV6egA0UhptiZIf2zIEJXYxu30B6nRCXaHRrfvZtyAe87jB
+	 ZN7Z0aBlGy91pQkpyYqdUJkfR8IPdfGXDeIoVl/e42N4T3vKdRLWa+YkT8LTLFmf7q
+	 5Djx6ZnMXo/kw==
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a724b3a32d2so90327466b.2;
+        Thu, 04 Jul 2024 10:25:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVy3k0nV6ZGk1BG5U9Hl3DA/f48/IXjqCdnxtiT2+a77tRc+k7aseHS9lAl10FNVS6opyY0mhOwUhf10JCzltWYbQF8z3wyrJkHCL/2vRPHE4h4Zt8oFL01U55cIM522+bdtvPoOxjLEwQ=
+X-Gm-Message-State: AOJu0Yz7T8JNtTGN3vLBp7Y86JTAkCqxlpESEfB3QqVR3BdFFmQFRiId
+	cqrNTlTqdbagK9PEK1o9JLMU6aJ6wnB9tkXBt9trEXUblKretDzdYpOh7HXnVeTLUE//nJ4NxJQ
+	MCrzUuuKOi+aHzuca3elQm3gmCoQ=
+X-Google-Smtp-Source: AGHT+IHCaoSwecixF8KG9KKvBxFl5NV3BQBYQCNzIjG/bYJzqUiPJlG5EdctlAZ6Hm67lBypQxg9Uf/fgDEdfZlK8N0=
+X-Received: by 2002:a17:907:97c8:b0:a72:8c15:c73e with SMTP id
+ a640c23a62f3a-a77ba7099dbmr162064966b.55.1720113954579; Thu, 04 Jul 2024
+ 10:25:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a13181cccb5b199b9127016bfcc29a2476aba891.1720106304.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 46D7F21BAC
-X-Spam-Score: -4.21
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+ <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+ <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
+ <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
+ <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
+ <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+ <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+ <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
+ <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
+ <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
+ <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
+ <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
+ <CAK-xaQb2OrgNOKKXp8d_43kqMNyuHxS1V8jSDL6PdNZPTv79+g@mail.gmail.com> <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com>
+In-Reply-To: <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 4 Jul 2024 18:25:17 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
+Message-ID: <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Andrea Gelmini <andrea.gelmini@gmail.com>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 04, 2024 at 04:18:42PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> When putting an inode during extent map shrinking we're doing a standard
-> iput() but that may take a long time in case the inode is dirty and we are
-> doing the final iput that triggers eviction - the VFS will have to wait
-> for writeback before calling the btrfs evict callback (see
-> fs/inode.c:evict()).
-> 
-> This slows down the task running the shrinker which may have been
-> triggered while updating some tree for example, meaning locks are held
-> as well as an open transaction handle.
-> 
-> Also if the iput() ends up triggering eviction and the inode has no links
-> anymore, then we trigger item truncation which requires flushing delayed
-> items, space reservation to start a transaction and that may trigger the
-> space reclaim task and wait for it, resulting in deadlocks in case the
-> reclaim task needs for example to commit a transaction and the shrinker
-> is being triggered from a path holding a transaction handle.
-> 
-> Syzbot reported such a case with the following stack traces:
-> 
->    ======================================================
->    WARNING: possible circular locking dependency detected
->    6.10.0-rc2-syzkaller-00010-g2ab795141095 #0 Not tainted
->    ------------------------------------------------------
->    kswapd0/111 is trying to acquire lock:
->    ffff88801eae4610 (sb_internal#3){.+.+}-{0:0}, at: btrfs_commit_inode_delayed_inode+0x110/0x330 fs/btrfs/delayed-inode.c:1275
-> 
->    but task is already holding lock:
->    ffffffff8dd3a9a0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xa88/0x1970 mm/vmscan.c:6924
-> 
->    which lock already depends on the new lock.
-> 
->    the existing dependency chain (in reverse order) is:
-> 
->    -> #3 (fs_reclaim){+.+.}-{0:0}:
->           __fs_reclaim_acquire mm/page_alloc.c:3783 [inline]
->           fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3797
->           might_alloc include/linux/sched/mm.h:334 [inline]
->           slab_pre_alloc_hook mm/slub.c:3890 [inline]
->           slab_alloc_node mm/slub.c:3980 [inline]
->           kmem_cache_alloc_lru_noprof+0x58/0x2f0 mm/slub.c:4019
->           btrfs_alloc_inode+0x118/0xb20 fs/btrfs/inode.c:8411
->           alloc_inode+0x5d/0x230 fs/inode.c:261
->           iget5_locked fs/inode.c:1235 [inline]
->           iget5_locked+0x1c9/0x2c0 fs/inode.c:1228
->           btrfs_iget_locked fs/btrfs/inode.c:5590 [inline]
->           btrfs_iget_path fs/btrfs/inode.c:5607 [inline]
->           btrfs_iget+0xfb/0x230 fs/btrfs/inode.c:5636
->           create_reloc_inode+0x403/0x820 fs/btrfs/relocation.c:3911
->           btrfs_relocate_block_group+0x471/0xe60 fs/btrfs/relocation.c:4114
->           btrfs_relocate_chunk+0x143/0x450 fs/btrfs/volumes.c:3373
->           __btrfs_balance fs/btrfs/volumes.c:4157 [inline]
->           btrfs_balance+0x211a/0x3f00 fs/btrfs/volumes.c:4534
->           btrfs_ioctl_balance fs/btrfs/ioctl.c:3675 [inline]
->           btrfs_ioctl+0x12ed/0x8290 fs/btrfs/ioctl.c:4742
->           __do_compat_sys_ioctl+0x2c3/0x330 fs/ioctl.c:1007
->           do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
->           __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
->           do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
->           entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-> 
->    -> #2 (btrfs_trans_num_extwriters){++++}-{0:0}:
->           join_transaction+0x164/0xf40 fs/btrfs/transaction.c:315
->           start_transaction+0x427/0x1a70 fs/btrfs/transaction.c:700
->           btrfs_rebuild_free_space_tree+0xaa/0x480 fs/btrfs/free-space-tree.c:1323
->           btrfs_start_pre_rw_mount+0x218/0xf60 fs/btrfs/disk-io.c:2999
->           open_ctree+0x41ab/0x52e0 fs/btrfs/disk-io.c:3554
->           btrfs_fill_super fs/btrfs/super.c:946 [inline]
->           btrfs_get_tree_super fs/btrfs/super.c:1863 [inline]
->           btrfs_get_tree+0x11e9/0x1b90 fs/btrfs/super.c:2089
->           vfs_get_tree+0x8f/0x380 fs/super.c:1780
->           fc_mount+0x16/0xc0 fs/namespace.c:1125
->           btrfs_get_tree_subvol fs/btrfs/super.c:2052 [inline]
->           btrfs_get_tree+0xa53/0x1b90 fs/btrfs/super.c:2090
->           vfs_get_tree+0x8f/0x380 fs/super.c:1780
->           do_new_mount fs/namespace.c:3352 [inline]
->           path_mount+0x6e1/0x1f10 fs/namespace.c:3679
->           do_mount fs/namespace.c:3692 [inline]
->           __do_sys_mount fs/namespace.c:3898 [inline]
->           __se_sys_mount fs/namespace.c:3875 [inline]
->           __ia32_sys_mount+0x295/0x320 fs/namespace.c:3875
->           do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
->           __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
->           do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
->           entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-> 
->    -> #1 (btrfs_trans_num_writers){++++}-{0:0}:
->           join_transaction+0x148/0xf40 fs/btrfs/transaction.c:314
->           start_transaction+0x427/0x1a70 fs/btrfs/transaction.c:700
->           btrfs_rebuild_free_space_tree+0xaa/0x480 fs/btrfs/free-space-tree.c:1323
->           btrfs_start_pre_rw_mount+0x218/0xf60 fs/btrfs/disk-io.c:2999
->           open_ctree+0x41ab/0x52e0 fs/btrfs/disk-io.c:3554
->           btrfs_fill_super fs/btrfs/super.c:946 [inline]
->           btrfs_get_tree_super fs/btrfs/super.c:1863 [inline]
->           btrfs_get_tree+0x11e9/0x1b90 fs/btrfs/super.c:2089
->           vfs_get_tree+0x8f/0x380 fs/super.c:1780
->           fc_mount+0x16/0xc0 fs/namespace.c:1125
->           btrfs_get_tree_subvol fs/btrfs/super.c:2052 [inline]
->           btrfs_get_tree+0xa53/0x1b90 fs/btrfs/super.c:2090
->           vfs_get_tree+0x8f/0x380 fs/super.c:1780
->           do_new_mount fs/namespace.c:3352 [inline]
->           path_mount+0x6e1/0x1f10 fs/namespace.c:3679
->           do_mount fs/namespace.c:3692 [inline]
->           __do_sys_mount fs/namespace.c:3898 [inline]
->           __se_sys_mount fs/namespace.c:3875 [inline]
->           __ia32_sys_mount+0x295/0x320 fs/namespace.c:3875
->           do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
->           __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
->           do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
->           entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-> 
->    -> #0 (sb_internal#3){.+.+}-{0:0}:
->           check_prev_add kernel/locking/lockdep.c:3134 [inline]
->           check_prevs_add kernel/locking/lockdep.c:3253 [inline]
->           validate_chain kernel/locking/lockdep.c:3869 [inline]
->           __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
->           lock_acquire kernel/locking/lockdep.c:5754 [inline]
->           lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
->           percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
->           __sb_start_write include/linux/fs.h:1655 [inline]
->           sb_start_intwrite include/linux/fs.h:1838 [inline]
->           start_transaction+0xbc1/0x1a70 fs/btrfs/transaction.c:694
->           btrfs_commit_inode_delayed_inode+0x110/0x330 fs/btrfs/delayed-inode.c:1275
->           btrfs_evict_inode+0x960/0xe80 fs/btrfs/inode.c:5291
->           evict+0x2ed/0x6c0 fs/inode.c:667
->           iput_final fs/inode.c:1741 [inline]
->           iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
->           iput+0x5c/0x80 fs/inode.c:1757
->           btrfs_scan_root fs/btrfs/extent_map.c:1118 [inline]
->           btrfs_free_extent_maps+0xbd3/0x1320 fs/btrfs/extent_map.c:1189
->           super_cache_scan+0x409/0x550 fs/super.c:227
->           do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
->           shrink_slab+0x18a/0x1310 mm/shrinker.c:662
->           shrink_one+0x493/0x7c0 mm/vmscan.c:4790
->           shrink_many mm/vmscan.c:4851 [inline]
->           lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4951
->           shrink_node mm/vmscan.c:5910 [inline]
->           kswapd_shrink_node mm/vmscan.c:6720 [inline]
->           balance_pgdat+0x1105/0x1970 mm/vmscan.c:6911
->           kswapd+0x5ea/0xbf0 mm/vmscan.c:7180
->           kthread+0x2c1/0x3a0 kernel/kthread.c:389
->           ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->           ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> 
->    other info that might help us debug this:
-> 
->    Chain exists of:
->      sb_internal#3 --> btrfs_trans_num_extwriters --> fs_reclaim
-> 
->     Possible unsafe locking scenario:
-> 
->           CPU0                    CPU1
->           ----                    ----
->      lock(fs_reclaim);
->                                   lock(btrfs_trans_num_extwriters);
->                                   lock(fs_reclaim);
->      rlock(sb_internal#3);
-> 
->     *** DEADLOCK ***
-> 
->    2 locks held by kswapd0/111:
->     #0: ffffffff8dd3a9a0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0xa88/0x1970 mm/vmscan.c:6924
->     #1: ffff88801eae40e0 (&type->s_umount_key#62){++++}-{3:3}, at: super_trylock_shared fs/super.c:562 [inline]
->     #1: ffff88801eae40e0 (&type->s_umount_key#62){++++}-{3:3}, at: super_cache_scan+0x96/0x550 fs/super.c:196
-> 
->    stack backtrace:
->    CPU: 0 PID: 111 Comm: kswapd0 Not tainted 6.10.0-rc2-syzkaller-00010-g2ab795141095 #0
->    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
->    Call Trace:
->     <TASK>
->     __dump_stack lib/dump_stack.c:88 [inline]
->     dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
->     check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
->     check_prev_add kernel/locking/lockdep.c:3134 [inline]
->     check_prevs_add kernel/locking/lockdep.c:3253 [inline]
->     validate_chain kernel/locking/lockdep.c:3869 [inline]
->     __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
->     lock_acquire kernel/locking/lockdep.c:5754 [inline]
->     lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
->     percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
->     __sb_start_write include/linux/fs.h:1655 [inline]
->     sb_start_intwrite include/linux/fs.h:1838 [inline]
->     start_transaction+0xbc1/0x1a70 fs/btrfs/transaction.c:694
->     btrfs_commit_inode_delayed_inode+0x110/0x330 fs/btrfs/delayed-inode.c:1275
->     btrfs_evict_inode+0x960/0xe80 fs/btrfs/inode.c:5291
->     evict+0x2ed/0x6c0 fs/inode.c:667
->     iput_final fs/inode.c:1741 [inline]
->     iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
->     iput+0x5c/0x80 fs/inode.c:1757
->     btrfs_scan_root fs/btrfs/extent_map.c:1118 [inline]
->     btrfs_free_extent_maps+0xbd3/0x1320 fs/btrfs/extent_map.c:1189
->     super_cache_scan+0x409/0x550 fs/super.c:227
->     do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
->     shrink_slab+0x18a/0x1310 mm/shrinker.c:662
->     shrink_one+0x493/0x7c0 mm/vmscan.c:4790
->     shrink_many mm/vmscan.c:4851 [inline]
->     lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4951
->     shrink_node mm/vmscan.c:5910 [inline]
->     kswapd_shrink_node mm/vmscan.c:6720 [inline]
->     balance_pgdat+0x1105/0x1970 mm/vmscan.c:6911
->     kswapd+0x5ea/0xbf0 mm/vmscan.c:7180
->     kthread+0x2c1/0x3a0 kernel/kthread.c:389
->     ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
->     ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->     </TASK>
-> 
-> So fix this by using btrfs_add_delayed_iput() so that the final iput is
-> delegated to the cleaner kthread.
-> 
-> Link: https://lore.kernel.org/linux-btrfs/000000000000892280061a344581@google.com/
-> Reported-by: syzbot+3dad89b3993a4b275e72@syzkaller.appspotmail.com
-> Fixes: 956a17d9d050 ("btrfs: add a shrinker for extent maps")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Thu, Jul 4, 2024 at 3:48=E2=80=AFPM Andrea Gelmini <andrea.gelmini@gmail=
+.com> wrote:
+>
+> Il giorno gio 4 lug 2024 alle ore 15:47 Andrea Gelmini
+> <andrea.gelmini@gmail.com> ha scritto:
+> > I send you everything when I collect enough data.
+>
+> Here we are.
+>
+> Kernel rc6+branch:
+>     Output of bfptrace:
+>     https://pastebin.com/P9RFp5mg
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+So a couple interesting things here, which we didn't get in the short
+capture from Mikhail:
+
+1) There's apparently multiple tasks entering the shrinker at the same time=
+:
+     kswapd0, Chrome_ChildIOT, Chrome_IOThread, chrome, Xorg.
+
+2) In some cases we get very large negative numbers for the number of
+extent maps to scan.
+    This shouldn't happen and either our own btrfs counter might have
+overflowed or some other bug,
+    or the super block's shrinker is being called with sc->nr_to_scan
+negative, and outside btrfs' control,
+    and it seems outside of control of the VFS's shrinker callback
+(see fs/super.c:super_cache_scan()).
+
+>
+>     Recording of tar session: (summary: start fast, then flipping super s=
+low)
+>     https://asciinema.org/a/BxYI83TkrlOhEe42IWXNY135D
+>
+>     Recording of htop session: (summary: PSI high and two threads at 100%=
+)
+>     https://asciinema.org/a/ZwGSepZZ8TSpFfPssACUUXcCB
+
+Ok, so maybe I missed it, but I haven't kswapd0 in there, or nothing
+taking 100% CPU.
+Maybe it was just Mikhail running into that?
+
+I was looking at the memory PSI and I never noticed it going over 60%.
+As for cpu and IO PSI, for cpu it was always low, under 3% from what
+I've seen and for IO even lower than that, very close to 0%.
+
+So I'm surprised that you get an unresponsive desktop.
+
+>
+>
+> Kernel 6.6.36:
+>     Recording of tar session: (summary: tar always fast)
+>     https://asciinema.org/a/a6dOkbjyPFkkQ5aNTaRiFD3H8
+>
+>     Recording of htop session: (summary: no threads and PSI load)
+>     https://asciinema.org/a/mFsypWzHfSdsjrIQf8zpzNpKo
+
+Interestingly, here the memory PSI stays at 0% or very close to that,
+it never reaches anything close to the 60%.
+
+>
+> If you need to run for longer time, I can do it in the weekend.
+> If you need dump of my BTRFS fs, no problem, but I need 'btrfs image
+> -s" working (point is: scrambling filenames).
+
+Ok, so I haven been delaying my reply because I kept accumulating
+things for you (or Mikhail) to try, and avoid sending several messages
+with very little.
+
+So first thing, I tried reproducing your scenario like you described
+in a previous message using tar:
+
+On a fresh btrfs filesystem, I cloned Linus' kernel tree into /mnt/git/linu=
+x
+Compiled a kernel.
+Then copied the tree 3 times like this:
+
+cd /mnt/git
+cp --reflink=3Dnever -r linux linux2
+cp --reflink=3Dnever -r linux linux3
+cp --reflink=3Dnever -r linux linux4
+
+The total size of /mnt/git was 62G (as reported by:  du -hs /mnt/git).
+
+Than I ran:
+
+cd /mnt/git
+tar cp git/ | pv > /dev/null
+
+With htop in parallel, the bpftrace script, and since my htop version
+doesn't show PSI information (probably an older version than yours), I
+kept monitoring PSI like this:
+
+watch -d -n 3 'echo "cpu:\n"; cat /proc/pressure/cpu ; echo
+"\nmemory:\n" ; cat /proc/pressure/memory ; echo "\nio:\n" ; cat
+/proc/pressure/io'
+
+Nothing went out of the roof, the machine was always responsive, never
+seen kswapd0 anywhere near the top, and the process using most CPU was
+tar (and always under 30%).
+PSI had all values low.
+
+The shrinker was being triggered very often, for small numbers (mostly
+under 1000, and most of the time much less than that), but I never had
+those large negative numbers nor apparently different tasks entering
+into it concurrently.
+It took a few seconds at most in each run.
+
+I also tried monitoring while doing the "cp --reflink=3Dnever -r"
+commands and while PSI often peaked to 92%, 93%, the system was always
+responsive (and such IO PSI seems reasonable since we are doing a lot
+of read and write IO).
+
+So several different things to try here:
+
+1) First let's check that the problem is really a consequence of the shrink=
+er.
+    Try this patch:
+
+    https://gist.githubusercontent.com/fdmanana/b44abaade0000d28ba0e1e1ae3a=
+c4fee/raw/5c9bf0beb5aa156b893be2837c9244d035962c74/gistfile1.txt
+
+    This disables the shrinker. This is just to confirm if I'm looking
+in the right direction, if your problem is the same as Mikhail's and
+double check his bisection.
+
+2) Then drop that patch that disables the shrinker.
+     With all the previous 4 patches applied, apply this one on top of them=
+:
+
+     https://gist.githubusercontent.com/fdmanana/9cea16ca56594f8c7e20b67dc6=
+6c6c94/raw/557bd5f6b37b65d210218f8da8987b74bfe5e515/gistfile1.txt
+
+     The goal here is to see if the extent map eviction done by the
+shrinker is making reads from other tasks too slow, and check if
+that's what0s making your system unresponsive.
+
+3) Then drop the patch from step 2), and on top of the previous 4
+patches from my git tree, apply this one:
+
+     https://gist.githubusercontent.com/fdmanana/a7c9c2abb69c978cf5b80c2f78=
+4243d5/raw/b4cca964904d3ec15c74e36ccf111a3a2f530520/gistfile1.txt
+
+     This is just to confirm if we do have concurrent calls to the
+shrinker, as the tracing seems to suggest, and where the negative
+numbers come from.
+     It also helps to check if not allowing concurrent calls to it, by
+skipping if it's already running, helps making the problems go away.
+
+>
+> Thanks a lot,
+
+Thanks a lot to you and Mikhail, not just for the reporting but also
+to apply patches, compile a kernel, run the tests and do all those
+valuable observations which are all very time consuming.
+
+Thanks!
+
+> Gelma
 
