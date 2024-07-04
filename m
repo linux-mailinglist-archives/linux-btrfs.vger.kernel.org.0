@@ -1,147 +1,153 @@
-Return-Path: <linux-btrfs+bounces-6190-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6191-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDC0B926CBB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 02:23:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 724A8927358
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 11:49:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E14221C21C27
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 00:23:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01853281947
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 09:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451AB4C70;
-	Thu,  4 Jul 2024 00:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D477F1AB90B;
+	Thu,  4 Jul 2024 09:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wwM58/I5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NScBxf6B";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wwM58/I5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NScBxf6B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q/YIfZe+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F1F23BB
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2024 00:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012A31AB8E6;
+	Thu,  4 Jul 2024 09:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720052582; cv=none; b=CrnhT1uuI0lOtAkgEOBb3gO2T0Oce4EbB82juq0djnwyB1Ykz4ODhYR6tjqFo+zIC4eyxHFmh287sOTeSwq9LO5szfy+t1gSFE+lcYyMZgGKWeDclTxUdtjzD0JWE93Ms49SNWDBL2fxfQKFcWgfe3mh6IBm6UBmEq0jhnsm498=
+	t=1720086570; cv=none; b=CMujw2bNlR7e6LNN+vowWHfHfZ54vBMpzh6VgIvmAyrGb9Hh2kOOhLWMWyNYCLtYykTHRxpc77cy+QDWrLIcBF0D1v/KBZ5D+0P11n9SPC1SoiZ9nk+zTP8cgFT77gQGzMR6DhoBH68SRXyPYyYVzP2Wi17mR+J1S56VHcRoDhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720052582; c=relaxed/simple;
-	bh=YmjXHHLa+rovXvHLIKiVwj+aigu9g5jKSIDRom9cjQk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EpSscoBzV1xeZA8XtAGiPe6WM4dh3remXnefFmk7WLG5NjHRTNlIunnelgJjeYN/ILJKPPpMzQ3Xavg4JqIFBgm/yKGVHc7784PSvi66Qe1Cy/TVTPSJG4nBWs9jDA+TwnOLSoDRGAPebfxWiXJIkWM+QwWmx7jXz9NCU+V7b+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wwM58/I5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NScBxf6B; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wwM58/I5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NScBxf6B; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B344D1F790;
-	Thu,  4 Jul 2024 00:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1720052578;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e7hy7u9lbaNbBldUV/7z86QZBQzV7oAskzMt2h34QSM=;
-	b=wwM58/I5mLsK4zW7BGfDr33bNVGeYqeAwWMobWLSM/kahqy/sY3xhJfUeGypSr11hd1/q7
-	JqFjBdjMN0PHxPTHekN7lsjvNXRGwUzxPwPqTxsQDfDCDe/cuBXr4UVJGYktv+V/luEmkA
-	iV9XOQWMFxff+X2z1VrWs2hFFrC9zeI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1720052578;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e7hy7u9lbaNbBldUV/7z86QZBQzV7oAskzMt2h34QSM=;
-	b=NScBxf6BjArP3j5AfdRp2xIxY+XnH3QDDnuy7AkoVZc6ilxybNyGpVQpiknlnGIzWldOW6
-	VOAjhtMwNsKZWFAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1720052578;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e7hy7u9lbaNbBldUV/7z86QZBQzV7oAskzMt2h34QSM=;
-	b=wwM58/I5mLsK4zW7BGfDr33bNVGeYqeAwWMobWLSM/kahqy/sY3xhJfUeGypSr11hd1/q7
-	JqFjBdjMN0PHxPTHekN7lsjvNXRGwUzxPwPqTxsQDfDCDe/cuBXr4UVJGYktv+V/luEmkA
-	iV9XOQWMFxff+X2z1VrWs2hFFrC9zeI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1720052578;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e7hy7u9lbaNbBldUV/7z86QZBQzV7oAskzMt2h34QSM=;
-	b=NScBxf6BjArP3j5AfdRp2xIxY+XnH3QDDnuy7AkoVZc6ilxybNyGpVQpiknlnGIzWldOW6
-	VOAjhtMwNsKZWFAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 96A1513889;
-	Thu,  4 Jul 2024 00:22:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /aeGJGLrhWatVQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 04 Jul 2024 00:22:58 +0000
-Date: Thu, 4 Jul 2024 02:22:53 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, Li Zhang <zhanglikernel@gmail.com>,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-prog: scrub: print message when scrubbing a
- read-only filesystem without r option
-Message-ID: <20240704002253.GW21023@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <1720028821-3094-1-git-send-email-zhanglikernel@gmail.com>
- <af92c238-a5d0-4023-8001-042f17085198@gmx.com>
- <20240704001309.GV21023@twin.jikos.cz>
- <d7e06214-0166-4db2-836c-36b2abde054b@gmx.com>
+	s=arc-20240116; t=1720086570; c=relaxed/simple;
+	bh=b00IxYDAeikWpgDJD4xLbTBlof/vNk7MI6sw5PDIdo0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KKQ4hmsWalZ1HMNSPNifnaBudf4sSlZwx74Kd/gjc3GC5vIti7VkQH2bQAd3vbM3qJwSFuTE9A3hckRa8hohWE1kFnkpM05xcBRn9ZbSY4mVdIfY6DpiJ8vpeZQl8mPBH81CCC72JHiPBy8Ewglpt6qlkXealiDxIzGoVVfkJrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/YIfZe+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B24A6C4AF11;
+	Thu,  4 Jul 2024 09:49:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720086569;
+	bh=b00IxYDAeikWpgDJD4xLbTBlof/vNk7MI6sw5PDIdo0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Q/YIfZe+HLRZsqTOXHUjVoT1YVMaopeFByadpWoLIC6Ae8PQc7HFk4jjwLH4TWjLw
+	 Fbb9MLU5qMzwcZdD8KhjopAHkmikyeMnmqYcnSHtTOCiB8hj5DSVacn5CU5uhtVl9E
+	 mdInJCl+QpiU8sukf0oXa9uFOj0Y7g+Cb2SFl9LyUd4WxQGDRbDD9LeDGywb5NNz1M
+	 g2IeRkfLbtakP5FXo9aHAtDpjU7aJiOHGGli1ABz1ffyOJRYUE/3ftS7VDBegjX91b
+	 cWvSg6/Gz/85Zf+/8mJAsvDeeP8Zj/W0zF8nuT7NmcuO5bnsnNN70QfANKGeb/ZEgP
+	 aU35l9UmFPfLA==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-57cc1c00ba6so619124a12.1;
+        Thu, 04 Jul 2024 02:49:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVjxsP2Dp8oa0cpe0OWMZG7vUTsFUZ1kHXXV+spD6qmyD76OeopGY16auaDUHqnNLTqsbleUX6xkVpPqv8rg+wx9YJG8evSSLjsBwtgo3QjX0mY+uYkV9yGyHMBHNw8ld2Qilu93w2RI7U=
+X-Gm-Message-State: AOJu0YzLD+8pKKEPd6Tij7U+ip98qyComrGSSzqFl50cj7BdbDryQFMD
+	HkRj7BYjh+CDWpziBSIUGtSJhng2hVh5SwMEVDUjW2g/vB0wgM1QbsP5tiPAfi9hNurPd6wlJrE
+	EjFOyK8K1Jt3E1vKKZOiu/OnZ9+Q=
+X-Google-Smtp-Source: AGHT+IHv4dV38PoUbX9m+h4A+7s5pTuFTanK6I1V7kPNHqAr4eytUG4G29nV3hhGsCAZN2J8p55FwDaJTvQx/PX/9j8=
+X-Received: by 2002:a17:906:4089:b0:a6f:c4d6:4874 with SMTP id
+ a640c23a62f3a-a77ba4c5901mr63594166b.34.1720086568232; Thu, 04 Jul 2024
+ 02:49:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7e06214-0166-4db2-836c-36b2abde054b@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmx.com];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,gmail.com,vger.kernel.org];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_THREE(0.00)[4]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Spam-Level: 
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+ <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+ <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
+ <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
+ <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
+ <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+ <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+ <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com> <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
+In-Reply-To: <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 4 Jul 2024 10:48:51 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
+Message-ID: <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Andrea Gelmini <andrea.gelmini@gmail.com>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 04, 2024 at 09:49:52AM +0930, Qu Wenruo wrote:
-> E.g, setmntent() and getmntent() used inside check_mounted_where()?
-> 
-> Since mntent structure provides mnt_opts, it should not be that hard to
-> find if the destination mount point is mounted ro?
+On Wed, Jul 3, 2024 at 10:07=E2=80=AFPM Andrea Gelmini <andrea.gelmini@gmai=
+l.com> wrote:
+>
+> Il giorno mer 3 lug 2024 alle ore 13:59 Filipe Manana
+> <fdmanana@kernel.org> ha scritto:
+> >
+> > I'm collecting all the patches in this branch:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/log/=
+?h=3Dem_shrinker_6.10
+> >
+> > They apply cleanly to 6.10-rc.
+>
+> Yeap, as I wrote before, same problem here.
+> I tried the branch over today Linus git (master), and nothing changed.
+> But, good news, I can provide a few more details.
+>
+> So, no need to use restic. On my laptop (nvme + ssd, 32GB RAM, Lenovo T48=
+0):
+> a) boot up;
+> b) just open Window Maker and two Konsole, one with htop (with a few
+> tricks to view PSI and so on);
+> c) on one terminal run: tar cp /home/ | pv > /dev/null
+> d) wait less than one minutes, and I see "PSI full memory" increase
+> more than 50, memory pressure on swap, and two CPU threads (out of
+> eight) busy at  100%;
 
-Oh right, it's in getmntent. I was looking there but expected a bit
-mask, the options are strings and the convenience helper for checking if
-they're set is hasmntopt().
+I'll try that soon and see if I can reproduce.
+
+In the meanwhile, just curious: are you using swapfiles on btrfs?
+
+Thanks.
+
+> e) system get sluggish (on htop I see no process eating CPU);
+> f) if I kill tar, PSI memory keeps going up and down, so the threads.
+> After lots of minutes, everything get back to no activity. In these
+> minutes I see by iotop there's no activity nor on ssd or nvme. Until
+> the end, the system is unresponsive, oh well, really slow.
+>
+> My / is BTRFS. Not many years of aging. Usually with daily snapshots
+> and forced compression.
+>
+> Less than 4.000.000 files on the system. Usually .git and source code.
+>
+> root@glen:/home/gelma# btrfs filesystem usage /
+> Overall:
+>    Device size:                   3.54TiB
+>    Device allocated:              2.14TiB
+>    Device unallocated:            1.40TiB
+>    Device missing:                  0.00B
+>    Device slack:                    0.00B
+>    Used:                          2.03TiB
+>    Free (estimated):              1.50TiB      (min: 1.50TiB)
+>    Free (statfs, df):             1.50TiB
+>    Data ratio:                       1.00
+>    Metadata ratio:                   1.00
+>    Global reserve:              512.00MiB      (used: 0.00B)
+>    Multiple profiles:                  no
+>
+> Data,single: Size:2.12TiB, Used:2.02TiB (95.09%)
+>   /dev/mapper/sda6_crypt          2.12TiB
+>
+> Metadata,single: Size:16.00GiB, Used:14.73GiB (92.04%)
+>   /dev/mapper/sda6_crypt         16.00GiB
+>
+> System,single: Size:32.00MiB, Used:320.00KiB (0.98%)
+>   /dev/mapper/sda6_crypt         32.00MiB
+>
+> Unallocated:
+>   /dev/mapper/sda6_crypt          1.40TiB
 
