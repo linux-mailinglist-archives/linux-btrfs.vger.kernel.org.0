@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-6196-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6197-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92B7C927736
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 15:34:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1829B927769
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 15:47:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1131EB227A9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 13:34:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6AE1C21806
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 13:47:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2F0A1AED33;
-	Thu,  4 Jul 2024 13:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7854C1AED3A;
+	Thu,  4 Jul 2024 13:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iFLkUHj8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jIYD2mAp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FAE28373;
-	Thu,  4 Jul 2024 13:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676C81822E2;
+	Thu,  4 Jul 2024 13:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720100029; cv=none; b=oI38M6VhfwpgsJVDf6l6zndPtglyUruWcd5+iOECExcuc7ykkhJUrqVPnfCJdNtUKityxZ0w9OhKqDtqySI3buExnnc7367jRCUdwQRHgKrbrIoK3UF4zC1W/DDAZ0qRhZX4BoxaEeGqLC45cEwiC7Rh/zr3VnJ9VM29/8/F+iw=
+	t=1720100844; cv=none; b=I5QJko6UdXL0mW2BPmxMtpLb4zr6YjP462oFZgbX+f+avcEkBBPF74sGyF0nnIJ+xMzcoOrVw84uy/moBdzSQFgl4GjNA6utDVUJFUWU49NOefcX1d9UJQkmNC6EKPQNcl3U5iEpA3wrU3XCfawmerawxn0jjZ0J+v4cC2wUIGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720100029; c=relaxed/simple;
-	bh=YTpdR8BWwbMhfLGFsScSQ+dfvCM1UcGB7JaHRWuCLtg=;
+	s=arc-20240116; t=1720100844; c=relaxed/simple;
+	bh=UI3dF8OYMSUWU9X9suKWJKp7BkGBDJB8qJBGh0o1NCQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fDc28cwVvFems9+9f8O1kIcORmDDclOYoLA/LrunUGpskGSPCO60SNOjx37JbsEVulbn5cXhA72LmqFaPxD3pn/Zs9H5Xi/meNdIfCpFcKL6WYLMcXcnaF2KYPZMhEhSsU66MIyh/Mkzbu9TLmOHJnXw+S0hYsM1sdQHL9oZVfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iFLkUHj8; arc=none smtp.client-ip=209.85.128.171
+	 To:Cc:Content-Type; b=H2EbjMRQfBqG/Acictv8BkKgGMER85/PNQbdDAZ7dX4lkq0E9oF1a3iPLOXyauOApipFExGJKMRBXI5KGubIsw6Qgya/WtMpdOYvgkr9sHaIr78lD9K8f66L//nwNhcWsZk7hfP9348LiPPGe5W1xG7+2ma357Zzp40YigpoBTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jIYD2mAp; arc=none smtp.client-ip=209.85.128.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-64e81cd12cdso5324877b3.0;
-        Thu, 04 Jul 2024 06:33:47 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-64b5617ba47so6238197b3.3;
+        Thu, 04 Jul 2024 06:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720100027; x=1720704827; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720100842; x=1720705642; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YTpdR8BWwbMhfLGFsScSQ+dfvCM1UcGB7JaHRWuCLtg=;
-        b=iFLkUHj8kYHnbUUkvb9T7d3m5BYtIcclHHIpID1xMx98j7l9uKwpH0agcy/0awLYfX
-         xCOtmR+hnaD2lDUaZ1VR2dLWy3QUoY1EzwDyB4hSk8oHqbpOo7nFPEIqghkFZ9NGmor5
-         kwWStsIp8whvANAIYljtIl+lVlEvRZtYsqBmkJvtsbI3tVEL5zWo+odu0EjzR91SUuIM
-         jtpPB9y58FAlXbYGDwtk+Fo1Yjx9WsIm/c5TNaSzjQhCMu5ctOBlMa7ERym7lfLfSmXn
-         qkno/a6g3y3+qvf8jqecUyAt8phCKtC86tVoMyyzjuEkMDVYC6g0l/O9d7DCb1BRmARW
-         R1gA==
+        bh=UI3dF8OYMSUWU9X9suKWJKp7BkGBDJB8qJBGh0o1NCQ=;
+        b=jIYD2mApLnki36+FRFCLpRPx1VHiiADPsjE4quJXRR2SDQPIza12/Hrp/A4t1bWIpN
+         UEGRTAdnT3oO+SsB9eaKzEtCp16fIIK930POvSTJVTCrfnYytQ3rUroAbMURcuyz+lru
+         g7GZSd0RziVPNYztI1iYh2RThuRv+4o10wppCMIQhj06SroO2mGsthhl6tawZZUBdVPW
+         3xx+2U3dfOk+ERLvFJvgGZ8D+FVB3l+fI6LH1f78zxwthPKYdgqxiDThHo05u3UIZczd
+         M31Dpzpq1IbKF9u4p5SDdTnpBf0fN4VCTtEW9qM10+GlOnuJ6UBZLXTRc22g5vna9SeY
+         efOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720100027; x=1720704827;
+        d=1e100.net; s=20230601; t=1720100842; x=1720705642;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YTpdR8BWwbMhfLGFsScSQ+dfvCM1UcGB7JaHRWuCLtg=;
-        b=RbgKJ5GpvIsPFl3iGxC9Cc0axnb1RmYecTALYXxMupUIKu44Ww6KaHBvVD8ybEePzx
-         Bk5kSUv/9PYaRJ1MfzS8lwYMveZzXc5eslpdorRjKqLBzTOaIOCo7lsQrduUYULjEh/v
-         D+4/sYRo7Ygi9KaG9/PSpUixY6jZ0D2SExIu1EN0PI4bS0Ek1yvkB0ZHxibTm0PYcxM0
-         n0Txmc8U4LG4wFKWiSdf3HUffowAbYCXdEsDk+Ut1N8GsPrJXLH791lLvJ9FwJ+DoOSl
-         tarhN0H5AbPXFN4OAHvfprTS3tqhvGlAV5KrT30n6+1aqTN790Gr5gx/nojSL1hS2wHw
-         60uQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWIwUJyGJBKaYo/c10brc1C8Q0Im4D1spUMlMDwzJt0Efn1zY1DSZwDvS56Nbha9NMostSTlSKrfJmUpvVulonCep3gOVWDt6TldvDWwGHPys5ra39NvPXU3R/jlOsPfIhYxom6qvPD1uY=
-X-Gm-Message-State: AOJu0YyirdbAXn+7ObyWx91UKrGVjgqqilxDeQB5E0hglkCVzV7XvMPp
-	bVdm0QYCYYQTTCAy/+sfC/X2qWdVu1UEkGLkRlJ05a4QORLdJ+d9eGeocABy7mKkV/drABPZO7W
-	jDITI/kSW8DpQSUl8RcMCrVG7FHk=
-X-Google-Smtp-Source: AGHT+IEnPiXYKGoZAEcWbV0vplxMesyCar7SVTa8AM31q8atEL/J3INWycW/KyiHzI5JnUxFQ7SXn4y6RT/9fhMRiCM=
-X-Received: by 2002:a05:690c:ec4:b0:651:4b29:403c with SMTP id
- 00721157ae682-652f5778b8dmr10432037b3.2.1720100026775; Thu, 04 Jul 2024
- 06:33:46 -0700 (PDT)
+        bh=UI3dF8OYMSUWU9X9suKWJKp7BkGBDJB8qJBGh0o1NCQ=;
+        b=fj6+T/rxdqJLaltx0v6u932HvWkN78HtN2K+GH9unqiCJE1nZdvjak+8ZW71JXWR6m
+         VZWa/KbtgICYER60BgjibjjUgbSObhStjzOex7f2ZIJZ4+Gvi9IJBJZWWBbxp965kCA5
+         dedU72hDswbLXE311arOZShVitfnl9XMhA0BFenq1gs6X6y0T/V6AGVrotdA0VN42/cI
+         9vtXjbTVpGt0KUqK6QTdxiStbjE8KjCN3xxpBFVMVlciklzzDmscpFW6fQqMHTvMMfHx
+         UFWcbXDTx6KF78JUkLrgqV+lwM8Yizf37eHh7BpdksKN8scs1Nb9RxbOL4qrBj7hoCuw
+         X9zw==
+X-Forwarded-Encrypted: i=1; AJvYcCXUxTLJibev4aH8gGJnFb2RpSeGVgemUqRe+oWUQO7i49pwYy5mhX95LP0TF4ilKySIMVMLdkVbXqAJHTq3KVl5251/c7NBSpSqd1U/RqrwEHd2ygYpaScg8CAb/eb+EFVNGjgaJiEjuLw=
+X-Gm-Message-State: AOJu0YweFxB8X7AG/1NdQQg0BVMGPRm8tQsPz+YVB8gythBs9znP8oAg
+	jQdrs9cAoFqzx6Nv0KQ0mw1RJhd8vlNXYXOhLexSLqOfpO4RSMohCMTt98O+cEfpLm3DsxMhjSU
+	Pvq9IcS6Ax9dBPceBuNo3r6f+X4Y=
+X-Google-Smtp-Source: AGHT+IH6YM6GLafKg9XBe0axWFXO3AhGkvxdQYhJOJum9ZzTHvtWe5dJcPzvzcyam1htB/hWj7nXRx0+wUWo96dItps=
+X-Received: by 2002:a81:ab52:0:b0:62c:c65d:8d1c with SMTP id
+ 00721157ae682-652d8636094mr15666627b3.52.1720100842308; Thu, 04 Jul 2024
+ 06:47:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,11 +79,12 @@ References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
  <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
  <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
  <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
- <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com> <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
+ <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
+ <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com> <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
+In-Reply-To: <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
 From: Andrea Gelmini <andrea.gelmini@gmail.com>
-Date: Thu, 4 Jul 2024 15:33:30 +0200
-Message-ID: <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
+Date: Thu, 4 Jul 2024 15:47:06 +0200
+Message-ID: <CAK-xaQb2OrgNOKKXp8d_43kqMNyuHxS1V8jSDL6PdNZPTv79+g@mail.gmail.com>
 Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
  execution time of the kswapd0 process and symptoms as if there is not enough memory
 To: Filipe Manana <fdmanana@kernel.org>
@@ -93,31 +94,14 @@ Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
 	dsterba@suse.com, josef@toxicpanda.com
 Content-Type: text/plain; charset="UTF-8"
 
-Il giorno gio 4 lug 2024 alle ore 11:57 Filipe Manana
-<fdmanana@kernel.org> ha scritto:
-> I wonder if you have bpftrace installed and can run the following
-> script while doing the test:
+Il giorno gio 4 lug 2024 alle ore 15:33 Andrea Gelmini
+<andrea.gelmini@gmail.com> ha scritto:
+> Well, I have the nighlty snapshot (well, it's not on every subvolume
+> of the fs). I ran tar on that, and we see.
 
-Yeap, no problem. It worked. I mean, recorded on external usb stick... But...
-On my laptop I have kernel 6.6.36 and rc6+branch...
-Uhm... Yesterday I switched back to 6.6.36 after wrote the email,
-well, not exactly, I usually work with 6.6.36 and yesterday rebooted
-with rc6 to test the branch patches (so the sluggish issue weeks ago,
-so I didn't move from 6.6.36).
-Anyway, after wrote you the report while watching the "live action", I
-rebooted 6.6.36.
+Well, using the laptop for daily work and running tar on snapshots,
+recreate the issue.
+I am collecting the htop output and bfptrace.
 
-Anyway, tried right now with bpftrace and I can't replicate it. Kernel
-exactly the same. No recompilo or so on...
-
-I just can think about a few LibreOffice git subvolume deleted
-(~215000 files), and a few created.
-A few tens of giga deleted of files (mp4 and mkv). Uhm... dunno if it
-could be related or something changed on BTRFS layout.
-
-Well, I have the nighlty snapshot (well, it's not on every subvolume
-of the fs). I ran tar on that, and we see.
-
-I tell you in a few hours. In the meanwhile I keep running rc6+ and
-see if something happens.
+I send you everything when I collect enough data.
 
