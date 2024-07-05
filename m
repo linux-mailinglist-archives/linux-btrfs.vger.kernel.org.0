@@ -1,151 +1,103 @@
-Return-Path: <linux-btrfs+bounces-6219-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6220-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C08219281C5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 08:16:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6AB79281CD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 08:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B9A81F23565
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 06:16:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 912AB284477
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 06:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02AE14388D;
-	Fri,  5 Jul 2024 06:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C6AD13F42D;
+	Fri,  5 Jul 2024 06:18:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nmj4VsOo";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nmj4VsOo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IrCk3/dy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB6E33C7
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 06:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7732BD52F;
+	Fri,  5 Jul 2024 06:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720160171; cv=none; b=Hi4ifCrNrxuSkFxu7prdZyaO7+/A9ExhjGtePgPp67tMJF6VnqaNX+PwbhFYna0CwQmxzpBZlfnbhwX7f7TRotMAumm/Jjg+xd9IOCWxoc2Zr+wnpw6tKRtIAbleRkmMYoYfq9qVmuf4lKsDNtY63zTsuWpgXP3qkhr1zX36hAI=
+	t=1720160338; cv=none; b=E3JbkSfyj49N+p9PebwGNJCatAAZNzCEHMJf+3OjfXcbgsSdcyWSvlzniCXkxCD2AgHJQJDp2/3Qig2MhdfVS7NeGPuVU/cNyphy6pg9QaOr+B80+RJbX+M3gITxZ7bu/VXa1nWcOpGchDSWqV1dRu+4SYm8vHBwvgdBrdw/ACo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720160171; c=relaxed/simple;
-	bh=Yzp9btGfihkzwR0iH8P8r8blHaOab0Zmiqeb63bw1C4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u5sAPNYxzQBO87zReeIEWHS+1LKMktlkwXGmkPCbToUbOWMX+TcjyUbZq7VCnEyPvrV1sCkiZIK1nG2ifkIH4C2m/KCoDlHmImam77rdkGoO7a/JY0wM3NyoK5IqLqlrEWUBJViUgUhBBFVv25mt3qzh8T+g759LwLhOI6nRhQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nmj4VsOo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nmj4VsOo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 807FA21AB1
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 06:16:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1720160167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L4/Qm9roayGD289nzKUC5BwVOPzbIhE/IfmpoTKCHhA=;
-	b=nmj4VsOoG+hGDJODBXXBhrL6QKXCHlbZ1pEA/g0Bmgi8mgkNj9fFOzre30VsIPc7zlsPFt
-	62J0rYXj9mpqZEp1oafoDwQLaj/zvD/UTw0PKTqQlfC6rlPpdGOxJW/d19X6DygLuVQhol
-	fIIE9vKt9SJCtcCIuXCGdBs82i0uokQ=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=nmj4VsOo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1720160167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L4/Qm9roayGD289nzKUC5BwVOPzbIhE/IfmpoTKCHhA=;
-	b=nmj4VsOoG+hGDJODBXXBhrL6QKXCHlbZ1pEA/g0Bmgi8mgkNj9fFOzre30VsIPc7zlsPFt
-	62J0rYXj9mpqZEp1oafoDwQLaj/zvD/UTw0PKTqQlfC6rlPpdGOxJW/d19X6DygLuVQhol
-	fIIE9vKt9SJCtcCIuXCGdBs82i0uokQ=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9F5F21396E
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 06:16:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qCsCFqaPh2YQFgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 05 Jul 2024 06:16:06 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: do not use __GFP_NOFAIL flag for btrfs_alloc_folio_array()
-Date: Fri,  5 Jul 2024 15:45:40 +0930
-Message-ID: <a7dd241092b862c9c7c297181dd4f13525af8dbe.1720159494.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1720159494.git.wqu@suse.com>
-References: <cover.1720159494.git.wqu@suse.com>
+	s=arc-20240116; t=1720160338; c=relaxed/simple;
+	bh=rEC7/EfU+RskXymDz781fmR1JStN/Y2YQhHYC6swu+4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PUF8muAK1qstrAuAn05pOreUyZNGgCakDkvJyqinTogtqeJPO2jmH7ZBQgNx8w55FI0ekmqyAsCHAzGkogpmakR6WpYcWe6vwtya17zEFBxfbz19hC4iAWgQwK4nFvtazbPbFlaMytr7qgg0SP6Mm1PKlYrFWyNjDcVtT38KE3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IrCk3/dy; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-64d408a5d01so11824227b3.1;
+        Thu, 04 Jul 2024 23:18:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720160336; x=1720765136; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rEC7/EfU+RskXymDz781fmR1JStN/Y2YQhHYC6swu+4=;
+        b=IrCk3/dyhAGxPShOGxnZ0wEidE+wIgmnxs33qHNa7qWCUi9TuOmuPqC6wnG954aX5B
+         9oOijaB/kUzW3M7EVstzVuajtLQfONZ4OT4dSllFJOa2XcUFkr/7pEjRWj8tdGKp1Jv8
+         wjAlkt4e3rhiq4AASXEl1qf1FWPdF0H5WVGGOoB7ccOqgPYWkXZsPbD0/yQugg9hJw1w
+         IJ0HaySFnjXiqhZGsxT3Pn3sWe6/YshkrEE79yz88iyR/ZDbXKHjjYBEO98GYprgT1RP
+         E3M/JO/ZGXup9a5iTtmA/dHUB6jDloTvMmDnPvjEJSdOpguCn9oBP2aKrsYvZwY5uYXM
+         v58g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720160336; x=1720765136;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rEC7/EfU+RskXymDz781fmR1JStN/Y2YQhHYC6swu+4=;
+        b=QaMjzrAVinefSpR6YdKsRCxGJYgqWgZugwgS77/gTTz5BAWdUVcFKOpmNDP2+Y06s8
+         sd6PVYz1nHo05fr/Xsy0PQBsGvMoEIzpyetXndvj5ky6UhcZdh+JkE2cwbF1F1Gv86h/
+         ciFPEQc3smVqjXmye5grmxZNKm8CL0G+afRp9zbtp/6j6k/1DPbsL1y1m9PPfvbGu61J
+         2OSRxFqegEvapQKmzOcwDc9cVCcjsuOatl/hJgBS2Kv/6Fbh4xhLu44vxNWkheCh8WI0
+         FREqgcclVyPzVweDwAf+0Wks3bTydxS7BTz4ueimSbUsbSYSihQWO/dsOxhOjw8pQRNN
+         tDvg==
+X-Forwarded-Encrypted: i=1; AJvYcCWXE6n/ATOTzye2Vo3jJo02ckJjLi8pK4l0UvMhhwsqSe0QCyftYKkqHMkf95iVTyz+/sT1cQUg36pjEb6qE1ESSUrTbOBz8VTvg+OKyVPrOt3t7SkX4YebYYZDIrSgTuhoPVISE9RvOlY=
+X-Gm-Message-State: AOJu0Yw+B7e9vASxOjqWcZM9ymWvCrkcnoe4NQWIvOGUPA8k0Eam/O8m
+	vGZ/YBCRvQ2oXZn/1kaEW02gCpayiYoMHw3rbK8a/QxT//BSY04hFRyeQjqs30tgXObaJYdP74w
+	lc7+EirUz5jmhb30KJ6/E+5Dts2U=
+X-Google-Smtp-Source: AGHT+IHdXrZVDzTWxHaN8cS/1STMHlHytdAWYoBRFLgeI+cxXO6RYGaMCDQ3SaHKeBbh76/jIajHq3wRoqMqamPesX8=
+X-Received: by 2002:a81:ad17:0:b0:630:fe1d:99cc with SMTP id
+ 00721157ae682-652d8536b22mr33191517b3.52.1720160336516; Thu, 04 Jul 2024
+ 23:18:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.97 / 50.00];
-	BAYES_HAM(-2.96)[99.84%];
-	MID_CONTAINS_FROM(1.00)[];
-	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 807FA21AB1
-X-Spam-Flag: NO
-X-Spam-Score: -3.97
-X-Spam-Level: 
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+ <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+ <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
+ <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
+ <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
+ <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+ <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+ <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
+ <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
+ <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
+ <CAK-xaQagqS0kePozkim7sB_Zi+8NrDRnbqFuLVQ3s4F+0WZ+DQ@mail.gmail.com>
+ <CAL3q7H5AFbSy0JC=u_MAfNR-J_kFQkaG6_pXJimD80tchFXytg@mail.gmail.com> <0246e506-db8b-47a8-94f0-943e7be92dcc@gmx.com>
+In-Reply-To: <0246e506-db8b-47a8-94f0-943e7be92dcc@gmx.com>
+From: Andrea Gelmini <andrea.gelmini@gmail.com>
+Date: Fri, 5 Jul 2024 08:18:39 +0200
+Message-ID: <CAK-xaQY5i0_SN94oEQQ+qsJgT5Uym-qa8eP+=G3S=je_+YotUg@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Filipe Manana <fdmanana@kernel.org>, Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com, Qu Wenruo <wqu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Since all callers of this function is already properly handling the
-allocation error, and for the worst case we're just going to abort the
-current transaction, I do no believe we need __GFP_NOFAIL here.
+Il giorno ven 5 lug 2024 alle ore 00:32 Qu Wenruo
+<quwenruo.btrfs@gmx.com> ha scritto:
+> I think it's a little overkilled for image dump, would fix it soon.
 
-So to enable more testing and hopefully to provide a smooth transaction,
-for CONFIG_BTRFS_DEBUG builds do not use __GFP_NOFAIL flag.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 97c3f272fcaa..dadf0da171bf 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -695,7 +695,8 @@ int btrfs_alloc_folio_array(unsigned int nr_folios, struct folio **folio_array)
- int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
- 			   bool nofail)
- {
--	const gfp_t gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
-+	const bool debug = IS_ENABLED(CONFIG_BTRFS_DEBUG);
-+	const gfp_t gfp = GFP_NOFS | ((!debug && nofail) ? __GFP_NOFAIL : 0);
- 	unsigned int allocated;
- 
- 	for (allocated = 0; allocated < nr_pages;) {
--- 
-2.45.2
-
+Thanks a lot Qu! You are always fast and smart!
 
