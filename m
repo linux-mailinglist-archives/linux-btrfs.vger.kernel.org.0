@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6252-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6253-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CA14928F80
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 01:20:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A13928F82
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 01:21:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 468BC1C2230B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 23:19:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 075481F237D3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 23:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3791482F8;
-	Fri,  5 Jul 2024 23:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD011482F8;
+	Fri,  5 Jul 2024 23:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RH18t34m"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cGfvqe4Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B239B3A8CB;
-	Fri,  5 Jul 2024 23:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15D93A8CB;
+	Fri,  5 Jul 2024 23:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720221588; cv=none; b=pASHStHbB5OcvQccbfkIMKxU66M8tGCKyaGWSByMu+8CWOVXHOnSvIXwSq8RjGriUuNtPCWtNDOnNoZQqAUINTIoKBfsKAaosfxmh6X4ZrMJkTWXGJr7azQN0zZ0Ov2xJjkd4ugxqLY02y2zX/CSoDdQi2Y/LKhey+1FnnDjIDA=
+	t=1720221691; cv=none; b=arGcJGOTNCd57+Q6/hd6+tBCohY4npNbnABfQ5b7Oiju+4ZO6gDYNeuY/l79hdFk+YgnFMICwOx3kOWRiXC5r/XTAZOKGc5GRSbLev+3v/ME/NfC4xwm2ib/imgdXsnxG8xd/4r14PTcRIdkDXvGDBR8ljvRbb03olGk5IRWDd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720221588; c=relaxed/simple;
-	bh=wd3o2UiFtRW0GhIK5ovjLNqt6QHxcm7lu6zWI/tTOsI=;
+	s=arc-20240116; t=1720221691; c=relaxed/simple;
+	bh=LOe2Z72EIm+tOb/pESk4k9MG4DYjxpMhFDahcxMThS0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h1O7mtW/ui534Jgaip4Hzr1FhrRSZdPJmMzW0kaGrNqIc+SdtwWjqosz4z506UtuzujAfjFjhGURxM9MJxj3Pvzekmlti8lm+ExN8SkfV/6eHUVWHG5UpY6r+BAEvDsk0voBqx/I4pbNL5tUmP0lq80zDB+MU1EUjAZJbEuvMME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RH18t34m; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=uVsFR3YsL/HPsbB5fdeScI0bhwZ5c/LqFYUXNwxXbVu2Khk+3IVxEQMp9KYOhiAcYbT6ljFijcnietYV0ZV5FTtNhFpNzqpxzU3fvt2B6eHxXwjUXSee+WPY5vYxF24/3cJc0jLcJYlL9C7otmG/ABiuo0XrzBHIsBl7UzlYKxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cGfvqe4Y; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1720221573; x=1720826373; i=quwenruo.btrfs@gmx.com;
-	bh=yXR7tbO7KPHj+ZgW/+Rr2FCRBXpUlZOIJVkAlRHid/A=;
+	s=s31663417; t=1720221664; x=1720826464; i=quwenruo.btrfs@gmx.com;
+	bh=WftoKQljMh0r3RHPf/O6mEfQD9oqFKHrIKyqr8HjFRI=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=RH18t34m8FE5c5glncFlphCffXNPgW6EUWdZbvA/nz1zSVxWWTilEuLF7maMgV31
-	 Xbg+kSdchZKofuSACX7ZDElk4q2VIx9F1RuY068pwiL9umcx/IMglMuvbPeKYaO09
-	 Ln1hjR08PPnMXFeyG1NS39yzHwHXKq1czqos4jASMnFbisjhogWB1ro3bPgMkqu0S
-	 uQrvFhH5iNjXe2tMtUo0m5Hg7wdT/oyocs8ommri3ZZWhVv4nHBdzeQfio2pVHYMT
-	 CWlE+mvZrdH2McpQkbopp8v1Z0usf43l4eSV4XolMfZ9FA9TjG4oiji7CIQEGZFj9
-	 EBGOVn1E+gt40FBxKA==
+	b=cGfvqe4YnXoGnDxxSRQ/QATsg85hrO3U+YjeJHgIED+MU2f/eV32ujSe7bVUxc0+
+	 p98uV66cvsM7LbQH8hoHI28Mb99Q8YL0ca3FCUGq9/dcjcI0v5BZ/4tVZhRU+m8Wt
+	 2mrJX/NfF6pZwioXYaQTpXgPnYmokl9AHIPn+xl3uKeQrfdCbm9fZY+13AOoxPCFY
+	 zXLq2MjCu0o8AZOg2NqmFZGWacIJWJbtX6jP5SZbsEZcxZ+N0/FAOqQQFKXp6PiZZ
+	 u8KwnhrXUe1TWhUrFWnLAJAzphfKWj17cUa7pMORQNX/iB4k2Q3PHBXZ3QRu36nJx
+	 6UvPVN/f3e0zJibPyQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3UV8-1sQQB50bYo-002gN6; Sat, 06
- Jul 2024 01:19:33 +0200
-Message-ID: <e51d0042-ec10-4a50-bd76-3d3d3cbc9bfc@gmx.com>
-Date: Sat, 6 Jul 2024 08:49:28 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1Ycl-1sOUFw2Kux-00EiOF; Sat, 06
+ Jul 2024 01:21:04 +0200
+Message-ID: <cbeec10c-bdee-4609-b796-db772fe1543c@gmx.com>
+Date: Sat, 6 Jul 2024 08:50:59 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/7] btrfs: replace stripe extents
+Subject: Re: [PATCH v4 2/7] btrfs: rst: don't print tree dump in case lookup
+ fails
 To: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
  Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
 Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
  Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
- <20240705-b4-rst-updates-v4-1-f3eed3f2cfad@kernel.org>
+ <20240705-b4-rst-updates-v4-2-f3eed3f2cfad@kernel.org>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,113 +92,73 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240705-b4-rst-updates-v4-1-f3eed3f2cfad@kernel.org>
+In-Reply-To: <20240705-b4-rst-updates-v4-2-f3eed3f2cfad@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:U7gqOFCiBOICmvU9aWrhgOX+lUid0sVZrzhKM17SG1YM3j3pAq6
- aXgxhLU2DSHuxsT+IqCN3MdgDRLQGg55xD1EdCbl+N0B/SAwWyBpUcYoG4Qu348ei1iUaIG
- 1LprDrUtANOahhxugequ5Io7krj7s4BFkWVj0H3aia1CqoCoz0T/xdgV6Mn97QQICk72rqV
- 0qTYq+eyTMXLiYAPXezHw==
+X-Provags-ID: V03:K1:8beNpm1LCQB/aQkrSTEsV54urb2O+PN7lBffXN/dV8RkVICQB5f
+ 5/5SqlIUZwFzDpu8v5cp1uU3Znj45y9K8y6n32QSBu20AOMrLA9eh0baNty0XLb37IEaoJi
+ BEk8ai98P063bScVBUJGeNfYFTgTQJY31gVm34DbPPZDqa9KtZlnTwQu/7LCIylbyWCc2mG
+ a8Q6F+MlPyCYlogMiMFVw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:I9BFu9wFrxY=;J7tjGf0Hcmoh0o4ccZmT1iTrOsz
- daXFRG/Wu6xdTFRQ2PNAqcvrYY3qasWwAvg+bFrFPfHbrNLQHtu9dwtmrlG4y+S9cVllRf+A6
- WaSdmmOUGi2xo8voh29meXiHYmjQumaWf4ylllvglG6/kV5OJ144DB0BkFhaHjHTPf6yBe1mn
- j99J0ty4XKpjzNG4jkbMZTRfN7d8gNNAnYKzShLy5IaSqCK8X5Rb2kxjkQw09bRuvvcIhCSCi
- Ino+BSNsw3TSP4D4L2oZtddtDDoeYQMM4uWTs6g/xunNVSuQ0RAJ7sI7WJWmx8N+cN7YyIdAd
- tWOo3omaioHJdB2MgrSB6Lid1FpwR1kxTp9EE7eg34Q2EQWdSkQJ5KYKWvrGRTQ6ZAD/2pDSn
- ScppUxad3Z0PJwcQaWWyvR62qLutdWWWQ/63Ceq6HCuuCYH09WmIMSPP7tSIPXHpuHHkvRUT+
- BuR6GQJSr8D8ozHwkrMkt4/L17u6Ej9vH2oK5XYMS3nyec8asCda4C8dXvtPHpA3kQ8Jns4+y
- AQLTf5sjNUz4vlAXBHC7wjVTSxZMzIgSivu6YFbaKlkUBBjdn3jnKIlRAARy7VDMxhseUIVTD
- hqfaUKUUViYxfOgjH00N52bS1CLmdtYWJ4/z0DWtGXimzngBG3kJgNxlrPzbGQSeQQUF/AScW
- mfukmcfRJgzgWb0Oj3Y1DstgApzTP7syzXKbBRgg5pRRP6YwmCB22tsCWY2wvOrILkaxlPGR8
- 6SxGUDGsVsA0uJNG9ekG8UCtJx2lUB3sGnm3mKUgEZ+RgoNTzknwTQjIBp0wbrvTN6vgavZ4X
- Iq/3cymsTC9KOsOCoQZzz1xwhXfPPHCZkYmrSUjSTksos=
+UI-OutboundReport: notjunk:1;M01:P0:IGmYIj+qv+E=;g8ip4M5I+jwGdnHBcu9Y8Iful/u
+ tuQS0OX0nsyX5WldXXa5Wlg1okJJ5sLzOEeuy/Tycb2Edz3QXoBoSbKperl/maLV7l6D4FIwn
+ IsX+YvZ72j0bkfLxFU+tgHQzAnei4QHhBPEfnIqYTe86GtzpHbxv1/33YUoySyfh/yag+3Sqc
+ /ENPE6PfimHcb6A5lPFAiYFp7+bd3iJ+EJKyXLrd7tivGhkK1TxJoq2usQQCk0yXv9wWKFCO9
+ 8JCPPvt1xb9Z0OVVNTgY7NcY18vktNmLg9HB45J49+wJHUox2NovMMgzxrs7NKFMRBUlzjguY
+ NRrp8Xn+N3lYWXuIxEaPMdLByYQCj73ufCqqu/TUT2jC0gb9TOpjVzSnM2EEUYHrOpg48Oy1k
+ Om769b/aRhEsM7d/QZlGC/MaI8wDmxXPo1q5pQBl0eW1u4GBAY0dkv36ciuW+6uFmndusTQhx
+ KdtLk0vFgYmEizyrAsSZJfIeUPEDLrqFa9VFDTccnHhylG1LlP2G7Xup/zaaW/dJ80jaoUD+B
+ 13gA0LaeCf6GsslfF6pFekCNRFg0j2L+Kpsc5D/WDXs2PjD2mNArvIcHkeseEzqqFoc52uSVw
+ 1b77A44zl0YoJWWd+egliih3ZGXyHQCxq0YPNVd+N6KVh120viH9NqpBEEuxgeIlMi5sxut3z
+ bxOyl8PeX3Jx99C6LZSGGJeYJNdETU38KHtTI5SYGlRiZFg5/AKfUuqQJWpscTYHEcGBJrgY9
+ tFajm5biPE+CM5ApTsz2sfN3zraPxm7aVkV743Wbs79FdnGyq8Z4SvX1KGerNPhiZRrEAzd1n
+ gd0Bwa6UkkJzviYoXE9k72WVBUgJhSV3np6RieSZRAA2A=
 
 
 
 =E5=9C=A8 2024/7/6 00:43, Johannes Thumshirn =E5=86=99=E9=81=93:
 > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 >
-> If we can't insert a stripe extent in the RAID stripe tree, because
-> the key that points to the specific position in the stripe tree is
-> already existing, we have to remove the item and then replace it by a
-> new item.
+> Don't print tree dump in case a raid-stripe-tree lookup fails.
 >
-> This can happen for example on device replace operations.
+> Dumping the stripe tree in case of a lookup failure was originally
+> intended to be a debug feature, but it turned out to be a problem, in ca=
+se
+> of i.e. readahead.
 
-In that case, can we just modify the targeted dev stripe?
+But why readahead is going to cause problem?
 
-Or do we have other call sites that can lead to such conflicts?
+IIRC the readahead is still based on file, in that case it still needs
+to go through the data extents, then rst mapping.
 
-As I'm not that confident if such replace behavior would mask some real
-problems.
+Thus mind you explain more on the readahead problem?
 
 Thanks,
 Qu
-
 >
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->   fs/btrfs/raid-stripe-tree.c | 36 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 36 insertions(+)
+>   fs/btrfs/raid-stripe-tree.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
 >
 > diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index e6f7a234b8f6..3b32e96c33fc 100644
+> index 3b32e96c33fc..84746c8886be 100644
 > --- a/fs/btrfs/raid-stripe-tree.c
 > +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -73,6 +73,39 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handl=
-e *trans, u64 start, u64 le
->   	return ret;
->   }
->
-> +static int replace_raid_extent_item(struct btrfs_trans_handle *trans,
-> +				    struct btrfs_key *key,
-> +				    struct btrfs_stripe_extent *stripe_extent,
-> +				    const size_t item_size)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> +	struct btrfs_root *stripe_root =3D fs_info->stripe_root;
-> +	struct btrfs_path *path;
-> +	int ret;
-> +
-> +	path =3D btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	ret =3D btrfs_search_slot(trans, stripe_root, key, path, -1, 1);
-> +	if (ret)
-> +		goto err;
-> +
-> +	ret =3D btrfs_del_item(trans, stripe_root, path);
-> +	if (ret) {
-> +		ret =3D (ret =3D=3D 1) ? -ENOENT : ret;
-> +		goto err;
-> +	}
-> +
-> +	btrfs_free_path(path);
-> +
-> +	return btrfs_insert_item(trans, stripe_root, key, stripe_extent,
-> +				 item_size);
-> + err:
-> +	btrfs_free_path(path);
-> +	return ret;
-> +}
-> +
->   static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *tra=
-ns,
->   					struct btrfs_io_context *bioc)
->   {
-> @@ -112,6 +145,9 @@ static int btrfs_insert_one_raid_extent(struct btrfs=
-_trans_handle *trans,
->
->   	ret =3D btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_ext=
-ent,
->   				item_size);
-> +	if (ret =3D=3D -EEXIST)
-> +		ret =3D replace_raid_extent_item(trans, &stripe_key,
-> +					       stripe_extent, item_size);
->   	if (ret)
->   		btrfs_abort_transaction(trans, ret);
->
+> @@ -281,10 +281,8 @@ int btrfs_get_raid_extent_offset(struct btrfs_fs_in=
+fo *fs_info,
+>   out:
+>   	if (ret > 0)
+>   		ret =3D -ENOENT;
+> -	if (ret && ret !=3D -EIO && !stripe->is_scrub) {
+> -		if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
+> -			btrfs_print_tree(leaf, 1);
+> -		btrfs_err(fs_info,
+> +	if (ret && ret !=3D -EIO) {
+> +		btrfs_debug(fs_info,
+>   		"cannot find raid-stripe for logical [%llu, %llu] devid %llu, profil=
+e %s",
+>   			  logical, logical + *length, stripe->dev->devid,
+>   			  btrfs_bg_type_to_raid_name(map_type));
 >
 
