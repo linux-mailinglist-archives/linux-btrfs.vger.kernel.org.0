@@ -1,52 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6250-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3473928E72
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 22:59:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29CA7928F5D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 00:40:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD2D81C24B6F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 20:59:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D5D01C21B16
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 22:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3189C16DEDE;
-	Fri,  5 Jul 2024 20:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852ED146003;
+	Fri,  5 Jul 2024 22:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="s1PZHYML"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="W+cMsy6Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B2B1459FE;
-	Fri,  5 Jul 2024 20:59:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FD2A955
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 22:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720213160; cv=none; b=X/zTGv0l+4SztZbgj8xC8lhF9SP5U965tiwgMy+ODP18p0U3FDxIEHB2MYNjz64+uq3zvJGQytOp6EKphXoKY4DlThfFK/Lkleye4Q0RXSobX7gOASh6iZbCWfCU2fujYmFN+fDL3bDBKSW9mIOEpkH/ERm2C82jWERTcJCYNUE=
+	t=1720219221; cv=none; b=uCkPbIIvJn4ukH3NzstX3k4tTRt1QHnK3Pn2IeKeedyMdrlg6QljIn5MuoNjkYD5Mfn1DrOLtH91KSYB/9XE5GB/20V160pIzVqwnxFGXfxFst20dTFszclAt0ebmQcbJjR97Gk4O7fWa/IybDrhgEAhODGq/ia0IntaEqw//0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720213160; c=relaxed/simple;
-	bh=DusGE1cbAr1wr2RiyF/fWaMqiaLUnByl1oNy227VTkw=;
+	s=arc-20240116; t=1720219221; c=relaxed/simple;
+	bh=LmWhiM8oFnIv0GctIUridyPbstsFJTA8bLnw9C52jv4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LvgBeYFRXHQQ6RjKN2l8KTo0px8zAVnSSgpybu5Y4GJzlGUwMLhr7hhooDDkKZJfQhJvsVvUbacgbtXPV4gJmBW+N9A0mXVXLMRsAtvcX9VMJD5isFQeHeELhB8prbByY2XYzyYvx0LVDm2PDaP8yXYtW3jhg/LsBxSdgNx2qxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=s1PZHYML; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=/Kb85RBByRKA+7u8OSLey5Gf4F7B6fkoI9PSqKXpd2Q=; b=s1PZHYMLbcx7leKxCoOb+zA0Fz
-	WIgyuKpHtDdcKqCLFMKJm8ZdS6QhpDzWXz3psaK/RrEFicjAvC9fRqL5HAT31ux5CfxQVeh4HKD0X
-	Dx24gnQRdn8NofoFKxzTI/jnLJmmwJH1h45FomlHuaYKmQ1yIASsbnk8eT7XGeIaOpr7pax7/9R9L
-	8mYcqfXnv1pbLDD9qjjTe0NbegNpKCrQ76+gi3XOO3yEIOPGi7NEb6y8eD/bv/s/jgiRHqnWvbz4C
-	lN6+iO5k1jTKZfqtpQ8SSiC4ZitAY/UPwKEm1V9UOzJ7gah70FkWDPocpHML7eJpZHIMqILz2A6iW
-	+Az7UDbg==;
-Received: from [50.53.4.147] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPq1N-0000000GpGP-3COr;
-	Fri, 05 Jul 2024 20:59:09 +0000
-Message-ID: <27400c92-632b-4f58-956a-eb2cbb0cfe26@infradead.org>
-Date: Fri, 5 Jul 2024 13:59:08 -0700
+	 In-Reply-To:Content-Type; b=PqRLgd7X//h4nksJmMrnwDPyLynUwzYdMeH/0xHxlG7S/aMg7sQUakiUFgtK9GcvDg7R6fB95yhMGL/hfb1lKBgEHoZWtVLRLbnRtzv9xdm1vBA3OVnsK+mNNqFzRY59/pfDjy71RigGOT+3EfBWek+OuYhcTjooyWKGdT+MBX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=W+cMsy6Y; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1720219215; x=1720824015; i=quwenruo.btrfs@gmx.com;
+	bh=9izavcIldFZmymjYfKR9ewnBv0ZTn10NsevQ7JWtHaQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=W+cMsy6YSCIIjvL6Xeg7jkAuQdPPxu77M4f5nBB5DFXKVXbOop+IhvaUFb4hU7YU
+	 apE0xgRkYyz/+PYmB6OEa/MfmxjnQ9e1nRzSNshLAoZixn4HzPfCnuX+l0spwB72B
+	 D7ja/AZOhAOV3ZF8ClGDnD7uzccA8zgzITuJ9WGNDbS5Xx9mCyKgAo9rvsT4AbYkl
+	 NDYYZ1KKUwW+VUrjtc6lLzbPKN2hsFLcJIIvpIjlEhUEdL937TKS61TLV8gZJDEpc
+	 ON0MNmF9dIPS3xEBhO1+w3XTpsIBm2EilKLPhfkfVfcZpHW4yg123Qzgpt2NK5F8e
+	 nytMy4wF1UmUwZ73xA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MsHru-1s6gqr0weo-015CFD; Sat, 06
+ Jul 2024 00:40:15 +0200
+Message-ID: <b954c65f-3344-47a0-a983-ec60f472f6f6@gmx.com>
+Date: Sat, 6 Jul 2024 08:10:12 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -54,179 +58,132 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/9] Documentation: add a new file documenting
- multigrain timestamps
-To: Jeff Layton <jlayton@kernel.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong"
- <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>,
- Christoph Hellwig <hch@infradead.org>, kernel-team@fb.com,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
- linux-nfs@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20240705-mgtime-v3-0-85b2daa9b335@kernel.org>
- <20240705-mgtime-v3-5-85b2daa9b335@kernel.org>
+Subject: Re: [PATCH 0/3] btrfs: remove __GFP_NOFAIL usage for debug builds
+To: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1720159494.git.wqu@suse.com>
+ <20240705145543.GB879955@perftesting>
 Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240705-mgtime-v3-5-85b2daa9b335@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240705145543.GB879955@perftesting>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HherBA9iqobJFFy115uiWzek4Con5FczajIaVmUXbt3VODMQaaN
+ SSi/QAWTfSTMk45Yz0RY+jZrGMrSH1OX1OwT+nSzHaEWDD2D3XY54NnwoSzZgZLzbUZGiaz
+ N9ayiEzAm7fTH3x9bNuV+4qE2Qibc34cfUghF9pvLfAlplBW9O9y8LGtoaiovp3ggX/i1Qy
+ 1bJLwmGLc0EL+HQ85Dxyg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Dx1SY7V4/Sc=;OpjX5wWETC/lziIRTbqH8xcZgc4
+ a+uKWXd14Pzj1aRtSqh36QJ8Gtndq1E0GRJu1h2T5nWqr9yBeAM9Op8f8J9dlqBHIPcgHPJl+
+ Ydn/HK1js4NGXZLKvttEcEcq9wn56MY6GyW3esY9ugoIdEKRq0oSocGXXUtc9c0n0eNwyTrQ8
+ 7/t9h/JBirYQtKrp69wL1Cc8mXGoUuqhjokyt/+RdKP8xy6BdeLkWoZAfuCVzk+Zpiw6oKIGB
+ vmUjUFw2qE8RjjgfE3u/Xi/LhTPmfKgwjWotj0Ev/3hzC6ewfNnOFsAFUTMm/4gtvVy7KDdGa
+ r4JQbt0iaxi5OyYsMmvMJdnMcoDI8PhwBs5hwD+aojyFU45CAHHJv44nbAInOik2CYdy/pDnp
+ YjuoclzwPrw/VNjSjG7NBOO72O/+XHwYHXiukiILzEaOAkBspGRVfw49lmFe3Oz2caiiObVWc
+ aV2ckckpCTuo/0Uxnx1N1IuDyOTK9a+gSsG7jnGZzCkbxCxWFA4BeGXraJ45YylnBt5uCmJcr
+ 3w06PZV/nCuIzJrZ0SxPpuJi8RnqvDRq7bFS6qQhJirSrRHHyXUlyGW/vPpxHkKGApnF+9ih8
+ jAuQ6lK8sAltoRMhgO5WemNNZWBR3bj/ne8fnJmzGUCGl+zSZdycQkdY0L0bVrz5LWKQJOIgm
+ XVHv4pSZz9J1buywocyO2TxhHM2z8J8v/MbL3Pv4k5riIYavjBta5TVli7srSw+g3/0roI3zQ
+ M/9g2k1EC9ScMrO8rKFt6mPHl6Zs4956VHyXoQewDbVghUyi7BvrHz7/VwzxRTOTCYEZEsnA2
+ PVWzLgAwjmAmqeSzi0IqeNK8bOXCsKPBFAbl40M8Kd478=
 
 
 
-On 7/5/24 10:02 AM, Jeff Layton wrote:
-> Add a high-level document that describes how multigrain timestamps work,
-> rationale for them, and some info about implementation and tradeoffs.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  Documentation/filesystems/multigrain-ts.rst | 120 ++++++++++++++++++++++++++++
->  1 file changed, 120 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/multigrain-ts.rst b/Documentation/filesystems/multigrain-ts.rst
-> new file mode 100644
-> index 000000000000..70d36955bb83
-> --- /dev/null
-> +++ b/Documentation/filesystems/multigrain-ts.rst
-> @@ -0,0 +1,120 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=====================
-> +Multigrain Timestamps
-> +=====================
-> +
-> +Introduction
-> +============
-> +Historically, the kernel has always used a coarse time values to stamp
+=E5=9C=A8 2024/7/6 00:25, Josef Bacik =E5=86=99=E9=81=93:
+> On Fri, Jul 05, 2024 at 03:45:37PM +0930, Qu Wenruo wrote:
+>> This patchset removes all __GFP_NOFAIL flags usage inside btrfs for
+>> DEBUG builds.
+>>
+>> There are 3 call sites utilizing __GFP_NOFAIL:
+>>
+>> - __alloc_extent_buffer()
+>>    It's for the extent_buffer structure allocation.
+>>    All callers are already handling the errors.
+>>
+>> - attach_eb_folio_to_filemap()
+>>    It's for the filemap_add_folio() call, the flag is also passed to me=
+m
+>>    cgroup, which I suspect is not handling larger folio and __GFP_NOFAI=
+L
+>>    correctly, as I'm hitting soft lockups when testing larger folios
+>>
+>>    New error handling is added.
+>>
+>> - btrfs_alloc_folio_array()
+>>    This is for page allocation for extent buffers.
+>>    All callers are already handling the errors.
+>>
+>> Furthermore, to enable more testing while not affecting end users, the
+>> change is only implemented for DEBUG builds.
+>>
+>> Qu Wenruo (3):
+>>    btrfs: do not use __GFP_NOFAIL flag for __alloc_extent_buffer()
+>>    btrfs: do not use __GFP_NOFAIL flag for attach_eb_folio_to_filemap()
+>>    btrfs: do not use __GFP_NOFAIL flag for btrfs_alloc_folio_array()
+>
+> The reason I want to leave NOFAIL is because in a cgroup memory constrai=
+ned
+> environment we could get an errant ENOMEM on some sort of metadata opera=
+tion,
+> which then gets turned into an aborted transaction.  I don't want a memo=
+ry
+> constrained cgroup flipping the whole file system read only because it g=
+ot an
+> ENOMEM in a place where we have no choice but to abort the transaction.
 
-                                       used coarse time values
+Well, I'm already seeing mem_cgroup_charge() soft locks up, possible due
+to the _NOFAIL flag and larger folios at filemap_add_folio().
 
-> +inodes. This value is updated on every jiffy, so any change that happens
-> +within that jiffy will end up with the same timestamp.
-> +
-> +When the kernel goes to stamp an inode (due to a read or write), it first gets
-> +the current time and then compares it to the existing timestamp(s) to see
-> +whether anything will change. If nothing changed, then it can avoid updating
-> +the inode's metadata.
-> +
-> +Coarse timestamps are therefore good from a performance standpoint, since they
-> +reduce the need for metadata updates, but bad from the standpoint of
-> +determining whether anything has changed, since a lot of things can happen in a
-> +jiffy.
-> +
-> +They are particularly troublesome with NFSv3, where unchanging timestamps can
-> +make it difficult to tell whether to invalidate caches. NFSv4 provides a
-> +dedicated change attribute that should always show a visible change, but not
-> +all filesystems implement this properly, causing the NFS server to substitute
-> +the ctime in many cases.
-> +
-> +Multigrain timestamps aim to remedy this by selectively using fine-grained
-> +timestamps when a file has had its timestamps queried recently, and the current
-> +coarse-grained time does not cause a change.
-> +
-> +Inode Timestamps
-> +================
-> +There are currently 3 timestamps in the inode that are updated to the current
-> +wallclock time on different activity:
-> +
-> +ctime:
-> +  The inode change time. This is stamped with the current time whenever
-> +  the inode's metadata is changed. Note that this value is not settable
-> +  from userland.
-> +
-> +mtime:
-> +  The inode modification time. This is stamped with the current time
-> +  any time a file's contents change.
-> +
-> +atime:
-> +  The inode access time. This is stamped whenever an inode's contents are
-> +  read. Widely considered to be a terrible mistake. Usually avoided with
-> +  options like noatime or relatime.
-> +
-> +Updating the mtime always implies a change to the ctime, but updating the
-> +atime due to a read request does not.
-> +
-> +Multigrain timestamps are only tracked for the ctime and the mtime. atimes are
-> +not affected and always use the coarse-grained value (subject to the floor).
-> +
-> +Inode Timestamp Ordering
-> +========================
-> +
-> +In addition just providing info about changes to individual files, file
-> +timestamps also serve an important purpose in applications like "make". These
-> +programs measure timestamps in order to determine whether source files might be
-> +newer than cached objects.
-> +
-> +Userland applications like make can only determine ordering based on
-> +operational boundaries. For a syscall those are the syscall entry and exit
-> +points. For io_uring or nfsd operations, that's the request submission and
-> +response. In the case of concurrent operations, userland can make no
-> +determination about the order in which things will occur.
-> +
-> +For instance, if a single thread modifies one file, and then another file in
-> +sequence, the second file must show an equal or later mtime than the first. The
-> +same is true if two threads are issuing similar operations that do not overlap
-> +in time.
-> +
-> +If however, two threads have racing syscalls that overlap in time, then there
-> +is no such guarantee, and the second file may appear to have been modified
-> +before, after or at the same time as the first, regardless of which one was
-> +submitted first.
-> +
-> +Multigrain Timestamps
-> +=====================
-> +Multigrain timestamps are aimed at ensuring that changes to a single file are
-> +always recognizeable, without violating the ordering guarantees when multiple
+Thus the _NOFAIL flag is not only affecting page allocation, but also
+passed to mem cgroup related code, and that can already be problematic.
 
-          recognizable
-according to what I can find on the web.
+>
+> If we could eliminate that possibility then hooray, but that's not actua=
+lly
+> possible, because any COW for a multi-modification case (think finish or=
+dered
+> io) could result in an ENOMEM and thus a transaction abort.  We need to =
+live
+> with NOFAIL for these cases.  Thanks,
 
-> +different files are modified. This affects the mtime and the ctime, but the
-> +atime will always use coarse-grained timestamps.
-> +
-> +It uses an unused bit in the i_ctime_nsec field to indicate whether the mtime
-> +or ctime has been queried. If either or both have, then the kernel takes
-> +special care to ensure the next timestamp update will display a visible change.
-> +This ensures tight cache coherency for use-cases like NFS, without sacrificing
-> +the benefits of reduced metadata updates when files aren't being watched.
-> +
-> +The Ctime Floor Value
-> +=====================
-> +It's not sufficient to simply use fine or coarse-grained timestamps based on
-> +whether the mtime or ctime has been queried. A file could get a fine grained
-> +timestamp, and then a second file modified later could get a coarse-grained one
-> +that appears earlier than the first, which would break the kernel's timestamp
-> +ordering guarantees.
-> +
-> +To mitigate this problem, we maintain a global floor value that ensures that
-> +this can't happen. The two files in the above example may appear to have been
-> +modified at the same time in such a case, but they will never show the reverse
-> +order. To avoid problems with realtime clock jumps, the floor is managed as a
-> +monotonic ktime_t, and the values are converted to realtime clock values as
-> +needed.
-> +
-> +Implementation Notes
-> +====================
-> +Multigrain timestamps are intended for use by local filesystems that get
-> +ctime values from the local clock. This is in contrast to network filesystems
-> +and the like that just mirror timestamp values from a server.
-> +
-> +For most filesystems, it's sufficient to just set the FS_MGTIME flag in the
-> +fstype->fs_flags in order to opt-in, providing the ctime is only ever set via
-> +inode_set_ctime_current(). If the filesystem has a ->getattr routine that
-> +doesn't call generic_fillattr, then you should have it call fill_mg_cmtime to
-> +fill those values.
-> 
+In that cgroup controlled case, I'm wondering how it would even handle
+btrfs extent buffer allocation.
 
--- 
-~Randy
+Wouldn't all the eb charged to certain cgroup meanwhile the eb pages are
+a shared resource for all btrfs operations?
+
+If so, I'd say the mem cgroup on btree inode is already problematic, and
+we should eliminate the behavior other than using _NOFAIL to workaround it=
+.
+
+Thanks,
+Qu
+
+>
+> Josef
+>
 
