@@ -1,235 +1,158 @@
-Return-Path: <linux-btrfs+bounces-6214-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6215-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 228BE927F18
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 00:49:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 828A0927F37
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 02:02:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E5D31C22133
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2024 22:49:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD191F23AFA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 00:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05771144306;
-	Thu,  4 Jul 2024 22:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F6438D;
+	Fri,  5 Jul 2024 00:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bMYIU5zb"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BYBP93c+";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BYBP93c+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93416143C53
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2024 22:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC21618D
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 00:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720133380; cv=none; b=Ix8Cp+6zkJ/KkuTkzYn+y7/Bfq9jFHrNoMqwFiPl8jv8k8PqOqftT4SRNT7CZeHDJEar9uk07CbU1wtfMwnQfk70XiFyL2qAg8mnlEDw1GMFzaP3OhMs4Xwc5SMFVsDZ1Qr5p2xjD+kyc9lC9cPZcHxiqdR80ouSb0ZmhTClcVY=
+	t=1720137747; cv=none; b=hGOHm9kMZ8lVHuWKEgoL8Y1CxvWBBsxMpQKsbEaRyy9N+qWOAAkRiEV8ooiGoWbXNp02/jG9ncpdPE1dQmJjLWXf6JYqKXsT3Wd78Gq74F5xV45cwy0VF4dNA1J+Gd43AzoLmuPkxDFQAKXzHwIEkEkEJ+kWS2w6/1kgIDig2KM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720133380; c=relaxed/simple;
-	bh=xk7BLqA513M7bLUsE2REATBQ3KUGYjfwGUT60kdp3wE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=YNHHLLL5nYeOw01ud8zBzUDf+b6xKsnQzbdt7HLDzJkEcu5ae+7DVIiTbpn2Ie8myam6Byyus8dApIFkaPACFfnWqhb11vCCcjAs/qpEMhCp8JRORhmq3KvhdCdXIKySFbHXmQV3byZwIsNk6SSUHlCB37jNIzX4VTrkYzhGqxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bMYIU5zb; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1720133375; x=1720738175; i=quwenruo.btrfs@gmx.com;
-	bh=xk7BLqA513M7bLUsE2REATBQ3KUGYjfwGUT60kdp3wE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
-	 References:In-Reply-To:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=bMYIU5zb2VLkmABhqivcWCocVgweAjkfJjlSxlzEBxZuiRmOXdlOmZjsad/qtEsk
-	 nlNZh5p/PuBG8Dt0xyZFEq1OCaXUc7KYPmle3iADGbsuzQwbI+TnV0t2QM7aRZbLK
-	 m2ySTWuswT2HjWeIaMvsPUvkcuSQsg/ip4lzPFdLEnj+fuXZ/SSHQl2MpcKee8Cyn
-	 hJseXbsyVIRBj955UZ174GN4NENKFvO3vnUq70G7inVnYuoJkJx3ZhZcpHWC75c5u
-	 yX/9/Mu9axzLY6k0nUic8gdHsMb25ArhTyE7NqPUwP+mLdYoZc7EIyME6KIO1nJkp
-	 s+/me933URqHi53m8A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mw9QC-1s70Pa26ui-00uvAX; Fri, 05
- Jul 2024 00:49:35 +0200
-Message-ID: <52ea9f1f-ff91-402c-b997-ec08200ff049@gmx.com>
-Date: Fri, 5 Jul 2024 08:19:31 +0930
+	s=arc-20240116; t=1720137747; c=relaxed/simple;
+	bh=l46Jsoh5LkvTqYdHKRp1lHs0Tyb51BmZpCpbGzsrMZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DMkmB7tzDyHEA6W8SQulTr61jtrisOtyM3W5RBzrPEM7s3KCigEAd8cStjYI5pSY9Aio4Pu7AdX1WSufxzPZQ4SYsIwoi2eNEdcgdpqsyrBJg+njCFmQsKmPAiZb4RnaIhRfZOfastaLIFfvtNZXexpZYNEq57OzQ9BwqJVO9pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BYBP93c+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BYBP93c+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1ABB921993;
+	Fri,  5 Jul 2024 00:02:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1720137742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ThLgff32k2uKTQIjT4E2UUc3rElcKyk0Fu7uFyxHcLM=;
+	b=BYBP93c+F66ZnvbSTokn9vlxoh+PXCMIhu44gQMlZas5U7tjYj97/MEJgFB0c0sxK6hc0v
+	snW9U3vI+ytDwEHaOJJnWjPKsuBxEimI9t50L/l+nLjayckOfAQUReh3kwy2/0YlBcxaqm
+	hBAtXot7hZukYT82FKHMmbQnYDS7vCw=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1720137742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ThLgff32k2uKTQIjT4E2UUc3rElcKyk0Fu7uFyxHcLM=;
+	b=BYBP93c+F66ZnvbSTokn9vlxoh+PXCMIhu44gQMlZas5U7tjYj97/MEJgFB0c0sxK6hc0v
+	snW9U3vI+ytDwEHaOJJnWjPKsuBxEimI9t50L/l+nLjayckOfAQUReh3kwy2/0YlBcxaqm
+	hBAtXot7hZukYT82FKHMmbQnYDS7vCw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E81451368F;
+	Fri,  5 Jul 2024 00:02:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Ey+cJww4h2YuPQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 05 Jul 2024 00:02:20 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Andrea Gelmini <andrea.gelmini@gmail.com>
+Subject: [PATCH] btrfs: tree-checker: skip name hash check for image dump
+Date: Fri,  5 Jul 2024 09:32:02 +0930
+Message-ID: <0163b37d7cdb31ed39e0eff2f61cdb4f3cd90272.1720137702.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: scrub reports uncorrectable csum errors linked to readable
- file (data: single)
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Lionel Bouton <lionel-subscription@bouton.name>,
- linux-btrfs@vger.kernel.org
-References: <c2fa6c37-d2a8-4d77-b095-e04e3db35ef0@bouton.name>
- <4525e502-c209-4672-ae32-68296436d204@gmx.com>
- <1df4ce53-8cf9-40b1-aa43-bf443947c833@bouton.name>
- <80456d11-9859-402c-a77c-5c3b98b755a5@gmx.com>
- <05fc8552-1b6f-4b6c-82b2-0cf716cc8e6b@bouton.name>
- <ae6aab7d-029d-4e33-ace7-e8f0b0a2fa36@bouton.name>
- <08774378-624a-4586-9f24-c108f1ffeebb@gmx.com>
- <c24180e5-b0dc-47e5-91b0-7935e85ccc4b@bouton.name>
- <1fe1927e-356d-4181-8c5e-34f73b8b201d@bouton.name>
- <2650d27a-5127-4ec9-b62f-ec1683d0cecf@gmx.com>
-Content-Language: en-US
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <2650d27a-5127-4ec9-b62f-ec1683d0cecf@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TOBazi3SlqBRCP+SXD1LMfreuCoJwQffmyB0Xefi1zbuBP++ZV4
- nORrENwrdoMFkd+wBlcERfl50Z/cPdFKzZWOZYw4dR4lqCle1OIjm60b+Wacm3Wp/ENGBBf
- EgXSvbZWqLJMKKl/qYS4RDGrBHrMdGMwlbSlizvsqo7Dfir8jYJv6kh5LEAaj0CttAhFCUh
- h71nBvBzEPDDwTgZlTvPQ==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[gmail.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:IpPJ6KtrxPM=;e6CsAQDI8mmAnFOXEdRb4Sdhebh
- GaxzJ1ptdyoynJzKguyziuN5zCI4XLHb7jPwi8DEQ0vlSlT6azVPYTtiS21bfHmY0FXiF8xnG
- I4qDQmGT1UUQ56OCpte6/q+BvEs16HOHbuZ8IjtsTSKfuPZMd4lRmdy8P48F3hhWAQH09qn02
- slqY7f/zxDuG/rdgJvwUIWy/G2DUhPmJ02OqlgDbistl1l0GPpkLwpyILJnbul2W8QzSaxgOB
- lTIJ6XiGzGqnR0FQoWweHJXnNd3x05iDQzm9jXMJvHrefD866s/HVWAK84erBhBYqjYncyILY
- rOstQBCo6GE+jcoa1Dq6gpCBbIWIu69cw0KpcLZsvlYPjXAk9fOzZevcdOfC/dTUgbAohWHeC
- gu+9wQYXzsUQfQ0avnjmhRZLEhDnHMVZXPs+oWwv5EXb1KCqd/orRsvoymxy9iCC1stfC4rJE
- N4HPVZ9d4qrEHHKL/umxZGeULaEWnY1sR3pmDQTtWmsTH/YJHWj7ERLq0hyiXcIodqARnSjrq
- 6o67i92IviiQPLLhZKxB+DgQIym4UADEOzpcul8yoLofqXlyajbCLblOxJLQh67nLJx0SGHhg
- fPm9UWpS5+yqzcLXVU7goEBXzYyzWvlfOr4sP09JXZ3/LuBcAUCYLnhhgZkh8zbzdgD4KER1N
- p4C4gq6FFIwe3jhZYJ2tTMeaRXm7mzFveTf+HVckN5vgW4Xny6uIa5Bpn154wDtPGQmzT0F1v
- aFUgbkMK2zOFzqHpb/dy1pShgorCajMUnyk+ikHhefS3Ki59eOsznPzw79VaHp4oTyzm2E6Mi
- feJ45C0UNbm0GXT5lRLK9Q0Ob8VDI4yTpYHkUbnI/yWck=
+X-Spam-Score: -2.80
+X-Spam-Level: 
 
+[BUG]
+For an image dumpped with "btrfs-image -s", the restored filesystem will
+not pass tree-checker:
 
+ BTRFS critical (device dm-5): corrupt leaf: root=1 block=32522240 slot=6 ino=6, name hash mismatch with key, have 0x0000000019e196de expect 0x000000008dbfc2d2
+ BTRFS error (device dm-5): read time tree block corruption detected on logical 32522240 mirror 1
 
-=E5=9C=A8 2024/7/5 08:08, Qu Wenruo =E5=86=99=E9=81=93:
->
->
-> =E5=9C=A8 2024/7/4 21:51, Lionel Bouton =E5=86=99=E9=81=93:
->> Le 30/06/2024 =C3=A0 12:59, Lionel Bouton a =C3=A9crit=C2=A0:
->>> Le 22/06/2024 =C3=A0 11:41, Qu Wenruo a =C3=A9crit=C2=A0:
->>>>
->>>>
->>>> =E5=9C=A8 2024/6/22 18:21, Lionel Bouton =E5=86=99=E9=81=93:
->>>> [...]
->>>>>>
->>>>>> I'll mount the filesystem and run a scrub again to see if I can
->>>>>> reproduce the problem. It should be noticeably quicker, we made
->>>>>> updates to the Ceph cluster and should get approximately 2x the I/O
->>>>>> bandwidth.
->>>>>> I plan to keep the disk snapshot for at least several weeks so if y=
-ou
->>>>>> want to test something else just say so.
->>>>>
->>>>>
->>>>> The scrub is finished, here are the results :
->>>>>
->>>>> UUID: 61e86d80-d6e4-4f9e-a312-885194c5e690
->>>>> Scrub started:=C2=A0=C2=A0=C2=A0 Wed Jun 19 00:01:59 2024
->>>>> Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-finished
->>>>> Duration:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 81:04:21
->>>>> Total to scrub:=C2=A0=C2=A0 18.83TiB
->>>>> Rate:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 67.67MiB/s
->>>>> Error summary:=C2=A0=C2=A0=C2=A0 no errors found
->>>>>
->>>>> So the scrub error isn't deterministic. I'll shut down the test VM f=
-or
->>>>> now and keep the disk snapshot it uses for at least a couple of
->>>>> week if
->>>>> it is needed for further tests.
->>>>> The original filesystem is scrubbed monthly, I'll reply to this
->>>>> message
->>>>> if another error shows up.
->>>>
->>>> I briefly remembered that there was a bug related to scrub that can
->>>> report false alerts:
->>>>
->>>> f546c4282673 ("btrfs: scrub: avoid use-after-free when chunk length i=
-s
->>>> not 64K aligned")
->>>>
->>>> But that should be automatically backported, and in that case it shou=
-ld
->>>> have some errors like "unable to find chunk map" error messages in th=
-e
->>>> kernel log.
->>>>
->>>> Otherwise, I have no extra clues.
->>>>
->>>> Have you tried kernels like v6.8/6.9 and can you reproduce the bug in
->>>> those newer kernels?
->>>
->>> I've just upgraded the kernel to 6.9.7 (and btrfs-progs to 6.9.2) and
->>> monthly scrubs with it will start next week. That said the last
->>> filesystem scrub with 6.6.30 ran without errors so it might be hard to
->>> reproduce.
->>> One difference with the last scrub vs the previous one which reported
->>> checksum errors is the underlying device speed : it is getting faster
->>> as we replace HDDs with SSDs on the Ceph cluster (it might be a cause
->>> if there's a race condition somewhere). Other than that there's
->>> nothing I can think of.
->>>
->>> In fact the only 2 major changes before the scrub checksum errors
->>> where :
->>> - a noticeable increase in constant I/O load,
->>> - an upgrade to the 6.6 kernel.
->>>
->>> As nobody else reported the same behavior I'm not ruling out an
->>> hardware glitch either.
->>> I'll reply to this thread if a future scrub reports a non reproducible
->>> checksum error again.
->>
->> I didn't expect to have something to report so soon...
->> Another virtual machine running on another physical server but using th=
-e
->> same Ceph cluster just reported csum errors that aren't reproducible.
->> This was with kernel 6.6.13 and btrfs-progs 6.8.2.
->> Fortunately this filesystem is small and can be scrubbed in 2 minutes :
->> I just ran the scrub again (less than 5 hours after the one that
->> reported errors) and no error are reported this time.
->>
->> I'll upgrade this VM to 6.9.7+ too. If 6.6 has indeed a scrub bug and
->> not 6.9 it might be easier to verify than I anticipated : most of our
->> VMs have migrated or are in the process of migrating to 6.6 which is th=
-e
->> latest LTS. If the problem manifest itself on a small filesystem too I
->> expect other systems to fail scrubs sooner or later if 6.6 is affected
->> by a scrub bug.
->
-> So far it looks like it's the commit f546c4282673 ("btrfs: scrub: avoid
-> use-after-free when chunk length is not 64K aligned") fixing the error.
->
-> In that case, it looks like 6.6 is EOL at that time thus didn't got
-> backports.
+[CAUSE]
+Btrfs-image with "-s" option would sanitize the filenames, thus it's
+ensured to cause file names to mismatch their hash.
 
-Nope, just as you mentioned 6.6 is LTS, and the last time I checked the
-stable tree.
+[FIX]
+Since btrfs-image is mostly for debug purposes, we can afford it to be
+an exception for tree-checker.
 
-And it's already merged into 6.6.15, so it is not the case.
+Just allow image dump to skip the name hash mismatch.
 
-Let me dig deeper to find out why.
+There will be a little more risk, as image dump can still be mounted RW,
+but the existing error handling is good enough to handle the mismatched
+hash.
 
-Thanks,
-Qu
+Reported-by: Andrea Gelmini <andrea.gelmini@gmail.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/tree-checker.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 6388786fd8b5..6fd7ed46812a 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -630,10 +630,14 @@ static int check_dir_item(struct extent_buffer *leaf,
+ 
+ 		/*
+ 		 * Special check for XATTR/DIR_ITEM, as key->offset is name
+-		 * hash, should match its name
++		 * hash, should match its name.
++		 * But if it's METADUMP (btrfs-image dump) then we allow hash
++		 * mismatch since "-s" can generaete different names.
+ 		 */
+-		if (key->type == BTRFS_DIR_ITEM_KEY ||
+-		    key->type == BTRFS_XATTR_ITEM_KEY) {
++		if ((key->type == BTRFS_DIR_ITEM_KEY ||
++		     key->type == BTRFS_XATTR_ITEM_KEY) &&
++		    !(btrfs_super_flags(leaf->fs_info->super_copy) &
++		      (BTRFS_SUPER_FLAG_METADUMP | BTRFS_SUPER_FLAG_METADUMP_V2))) {
+ 			char namebuf[max(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
+ 
+ 			read_extent_buffer(leaf, namebuf,
+-- 
+2.45.2
+
 
