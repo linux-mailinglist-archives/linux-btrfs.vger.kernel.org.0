@@ -1,227 +1,203 @@
-Return-Path: <linux-btrfs+bounces-6251-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6252-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FFC2928F77
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 01:10:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CA14928F80
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 01:20:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D7BEB22165
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 23:10:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 468BC1C2230B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 23:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD371487DA;
-	Fri,  5 Jul 2024 23:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3791482F8;
+	Fri,  5 Jul 2024 23:19:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HdJGOwVx"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RH18t34m"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6D113D608;
-	Fri,  5 Jul 2024 23:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B239B3A8CB;
+	Fri,  5 Jul 2024 23:19:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720220996; cv=none; b=pDmVyxjPjKb7hatTuYgJ7lLSVAWwiF6ZFSPoEgmYwJYU4jAWZHG6HzEDho3Lsr6WpaGtu2l7VPzKeUFjChOvbSv0bCiUcTlfoW3z3c1plsiU7ma/VHE++5JaA8Is1Khs+IWftYR+LbNHWeMo/gKBbk9RVjCifywbOZ7N1Pf9wGo=
+	t=1720221588; cv=none; b=pASHStHbB5OcvQccbfkIMKxU66M8tGCKyaGWSByMu+8CWOVXHOnSvIXwSq8RjGriUuNtPCWtNDOnNoZQqAUINTIoKBfsKAaosfxmh6X4ZrMJkTWXGJr7azQN0zZ0Ov2xJjkd4ugxqLY02y2zX/CSoDdQi2Y/LKhey+1FnnDjIDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720220996; c=relaxed/simple;
-	bh=/afWkT3diQaULeNGYyQ3tiVGSL/Fhl+aZ4/fZZDMk9c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qD6ekBvx48aK3ReAKW4N7ipWci5PEMk3KtEpAsi+rPrxiT6gB1U0HAykyWOB5Sng6fCxYZ9432dJ30IMTMGhIbjQd2sGiFYrjCBuAj8lA8JaitbHS9EsVco+6KlIC5APa8RYyAHGHdrmEBfYniBIvDpgmfJZx+v8yfpABasndjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HdJGOwVx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB3AC116B1;
-	Fri,  5 Jul 2024 23:09:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720220996;
-	bh=/afWkT3diQaULeNGYyQ3tiVGSL/Fhl+aZ4/fZZDMk9c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HdJGOwVxSjGJnLpZT/wO4eZ3FfhcNY2E9u6Qn0SzgN1CgKqiWCBSQBOaLwbkHbEeR
-	 2Br7yS0j05Ove5ZJFrUo//7W0oa7Vzlu5a6ETcyJs4zcJL8+jObK1qBLgU+jh+UtiI
-	 Bb2d0NPL53wkUBlaRa3/WcAsCWBfcEb7jhB6h52oEcXJF5/YqvCE20j+RTR9DS4aIB
-	 BR/2xEXdMcCxaD2SXDusvWeGC5B1SfJhLaOYk5gynDeW9zA3n/U3FfnKNI04OA3Bgo
-	 PnOoELIBvviWr0j05ICysSXR6VA44s9+M/xOTd+NC5wfXbzdchwzJUGxZHHzu8GdCh
-	 efs/Pl2R24KLw==
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a75131ce948so250042866b.2;
-        Fri, 05 Jul 2024 16:09:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUVdx5nvoFTt7AfCkp83ffUIWXMj1sl4VTx2e7xVGyaVPdl6y2ZgxeKC1YoLszzR3lgBhN+XzD7RF9bD1vnttXPgEGV1qnuZAnGehqU1SBtElXQwSlewaGY6oTUFyBwpb+HjfR8Tp9STh8=
-X-Gm-Message-State: AOJu0YzD5ZYqwxhdmxqU+1eUg8wUAjYFg2nQrg7SSTzdMqFc5rwK4+rs
-	1ELRuDqRAu+qEw69PVc9qWdl4Tf8LBGcYYnCQkRRvfrVEDsaqfFmGjYS/WWPFJ4F3lF78i9x02+
-	nfU/Ee50ZaZcovxgH5UrYdICMILE=
-X-Google-Smtp-Source: AGHT+IHBICGkT7g/ZDelEWQHHQyEaLSVOtC9as5w/GSZSbNdXWnpSIMaSqpBB+qOyOo9LHryGDCySfTPt2SETHlYLXI=
-X-Received: by 2002:a17:906:40d0:b0:a72:5bb9:b140 with SMTP id
- a640c23a62f3a-a77ba7123abmr363137466b.54.1720220994932; Fri, 05 Jul 2024
- 16:09:54 -0700 (PDT)
+	s=arc-20240116; t=1720221588; c=relaxed/simple;
+	bh=wd3o2UiFtRW0GhIK5ovjLNqt6QHxcm7lu6zWI/tTOsI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h1O7mtW/ui534Jgaip4Hzr1FhrRSZdPJmMzW0kaGrNqIc+SdtwWjqosz4z506UtuzujAfjFjhGURxM9MJxj3Pvzekmlti8lm+ExN8SkfV/6eHUVWHG5UpY6r+BAEvDsk0voBqx/I4pbNL5tUmP0lq80zDB+MU1EUjAZJbEuvMME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RH18t34m; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1720221573; x=1720826373; i=quwenruo.btrfs@gmx.com;
+	bh=yXR7tbO7KPHj+ZgW/+Rr2FCRBXpUlZOIJVkAlRHid/A=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=RH18t34m8FE5c5glncFlphCffXNPgW6EUWdZbvA/nz1zSVxWWTilEuLF7maMgV31
+	 Xbg+kSdchZKofuSACX7ZDElk4q2VIx9F1RuY068pwiL9umcx/IMglMuvbPeKYaO09
+	 Ln1hjR08PPnMXFeyG1NS39yzHwHXKq1czqos4jASMnFbisjhogWB1ro3bPgMkqu0S
+	 uQrvFhH5iNjXe2tMtUo0m5Hg7wdT/oyocs8ommri3ZZWhVv4nHBdzeQfio2pVHYMT
+	 CWlE+mvZrdH2McpQkbopp8v1Z0usf43l4eSV4XolMfZ9FA9TjG4oiji7CIQEGZFj9
+	 EBGOVn1E+gt40FBxKA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3UV8-1sQQB50bYo-002gN6; Sat, 06
+ Jul 2024 01:19:33 +0200
+Message-ID: <e51d0042-ec10-4a50-bd76-3d3d3cbc9bfc@gmx.com>
+Date: Sat, 6 Jul 2024 08:49:28 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
- <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
- <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
- <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
- <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
- <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
- <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
- <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
- <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
- <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
- <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
- <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
- <CAK-xaQb2OrgNOKKXp8d_43kqMNyuHxS1V8jSDL6PdNZPTv79+g@mail.gmail.com>
- <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com>
- <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com> <CABXGCsM4tCH1wHtH0awV8J4eXWL57daMEbbuq_a_vSCEgQDqUQ@mail.gmail.com>
-In-Reply-To: <CABXGCsM4tCH1wHtH0awV8J4eXWL57daMEbbuq_a_vSCEgQDqUQ@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sat, 6 Jul 2024 00:09:17 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H54-NXwzAenDde9djjqm30KkaqGdp6ABCZC57WTYpV_5A@mail.gmail.com>
-Message-ID: <CAL3q7H54-NXwzAenDde9djjqm30KkaqGdp6ABCZC57WTYpV_5A@mail.gmail.com>
-Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
- execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc: Andrea Gelmini <andrea.gelmini@gmail.com>, 
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
-	dsterba@suse.com, josef@toxicpanda.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/7] btrfs: replace stripe extents
+To: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
+ <20240705-b4-rst-updates-v4-1-f3eed3f2cfad@kernel.org>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240705-b4-rst-updates-v4-1-f3eed3f2cfad@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:U7gqOFCiBOICmvU9aWrhgOX+lUid0sVZrzhKM17SG1YM3j3pAq6
+ aXgxhLU2DSHuxsT+IqCN3MdgDRLQGg55xD1EdCbl+N0B/SAwWyBpUcYoG4Qu348ei1iUaIG
+ 1LprDrUtANOahhxugequ5Io7krj7s4BFkWVj0H3aia1CqoCoz0T/xdgV6Mn97QQICk72rqV
+ 0qTYq+eyTMXLiYAPXezHw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:I9BFu9wFrxY=;J7tjGf0Hcmoh0o4ccZmT1iTrOsz
+ daXFRG/Wu6xdTFRQ2PNAqcvrYY3qasWwAvg+bFrFPfHbrNLQHtu9dwtmrlG4y+S9cVllRf+A6
+ WaSdmmOUGi2xo8voh29meXiHYmjQumaWf4ylllvglG6/kV5OJ144DB0BkFhaHjHTPf6yBe1mn
+ j99J0ty4XKpjzNG4jkbMZTRfN7d8gNNAnYKzShLy5IaSqCK8X5Rb2kxjkQw09bRuvvcIhCSCi
+ Ino+BSNsw3TSP4D4L2oZtddtDDoeYQMM4uWTs6g/xunNVSuQ0RAJ7sI7WJWmx8N+cN7YyIdAd
+ tWOo3omaioHJdB2MgrSB6Lid1FpwR1kxTp9EE7eg34Q2EQWdSkQJ5KYKWvrGRTQ6ZAD/2pDSn
+ ScppUxad3Z0PJwcQaWWyvR62qLutdWWWQ/63Ceq6HCuuCYH09WmIMSPP7tSIPXHpuHHkvRUT+
+ BuR6GQJSr8D8ozHwkrMkt4/L17u6Ej9vH2oK5XYMS3nyec8asCda4C8dXvtPHpA3kQ8Jns4+y
+ AQLTf5sjNUz4vlAXBHC7wjVTSxZMzIgSivu6YFbaKlkUBBjdn3jnKIlRAARy7VDMxhseUIVTD
+ hqfaUKUUViYxfOgjH00N52bS1CLmdtYWJ4/z0DWtGXimzngBG3kJgNxlrPzbGQSeQQUF/AScW
+ mfukmcfRJgzgWb0Oj3Y1DstgApzTP7syzXKbBRgg5pRRP6YwmCB22tsCWY2wvOrILkaxlPGR8
+ 6SxGUDGsVsA0uJNG9ekG8UCtJx2lUB3sGnm3mKUgEZ+RgoNTzknwTQjIBp0wbrvTN6vgavZ4X
+ Iq/3cymsTC9KOsOCoQZzz1xwhXfPPHCZkYmrSUjSTksos=
 
-On Fri, Jul 5, 2024 at 7:36=E2=80=AFPM Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
->
-> On Thu, Jul 4, 2024 at 10:25=E2=80=AFPM Filipe Manana <fdmanana@kernel.or=
-g> wrote:
-> >
-> > So several different things to try here:
-> >
-> > 1) First let's check that the problem is really a consequence of the sh=
-rinker.
-> >     Try this patch:
-> >
-> >     https://gist.githubusercontent.com/fdmanana/b44abaade0000d28ba0e1e1=
-ae3ac4fee/raw/5c9bf0beb5aa156b893be2837c9244d035962c74/gistfile1.txt
-> >
-> >     This disables the shrinker. This is just to confirm if I'm looking
-> > in the right direction, if your problem is the same as Mikhail's and
-> > double check his bisection.
->
-> [1]
-> I can't check it because the patch is unapplyable on top of 661e504db04c.
-> > git apply debug-1.patch
-> error: patch failed: fs/btrfs/super.c:2410
-> error: fs/btrfs/super.c: patch does not apply
-> > cat debug-1.patch
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index f05cce7c8b8d..06c0db641d18 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -2410,8 +2410,10 @@ static const struct super_operations btrfs_super_o=
-ps =3D {
->         .statfs         =3D btrfs_statfs,
->         .freeze_fs      =3D btrfs_freeze,
->         .unfreeze_fs    =3D btrfs_unfreeze,
-> +       /*
->         .nr_cached_objects =3D btrfs_nr_cached_objects,
->         .free_cached_objects =3D btrfs_free_cached_objects,
-> +       */
->  };
->
->  static const struct file_operations btrfs_ctl_fops =3D {
->
->
->
-> > 2) Then drop that patch that disables the shrinker.
-> >      With all the previous 4 patches applied, apply this one on top of =
-them:
-> >
-> >      https://gist.githubusercontent.com/fdmanana/9cea16ca56594f8c7e20b6=
-7dc66c6c94/raw/557bd5f6b37b65d210218f8da8987b74bfe5e515/gistfile1.txt
-> >
-> >      The goal here is to see if the extent map eviction done by the
-> > shrinker is making reads from other tasks too slow, and check if
-> > that's what0s making your system unresponsive.
-> >
->
-> [2]
-> 6.10.0-rc6-661e504db04c-test2
-> up  1:00
-> root         269 15.5  0.0      0     0 ?        R    10:23   9:20 [kswap=
-d0]
-> up  2:02
-> root         269 21.6  0.0      0     0 ?        S    10:23  26:27 [kswap=
-d0]
-> up  3:10
-> root         269 25.2  0.0      0     0 ?        R    10:23  48:11 [kswap=
-d0]
-> up  4:04
-> root         269 29.0  0.0      0     0 ?        S    10:23  71:12 [kswap=
-d0]
-> up  5:04
-> root         269 26.8  0.0      0     0 ?        R    10:23  81:47 [kswap=
-d0]
-> up  6:07
-> root         269 27.9  0.0      0     0 ?        R    10:23 102:40 [kswap=
-d0]
-> dmesg attached below as 6.10.0-rc6-661e504db04c-test2.zip
->
-> > 3) Then drop the patch from step 2), and on top of the previous 4
-> > patches from my git tree, apply this one:
-> >
-> >      https://gist.githubusercontent.com/fdmanana/a7c9c2abb69c978cf5b80c=
-2f784243d5/raw/b4cca964904d3ec15c74e36ccf111a3a2f530520/gistfile1.txt
-> >
-> >      This is just to confirm if we do have concurrent calls to the
-> > shrinker, as the tracing seems to suggest, and where the negative
-> > numbers come from.
-> >      It also helps to check if not allowing concurrent calls to it, by
-> > skipping if it's already running, helps making the problems go away.
->
-> [3]
-> 6.10.0-rc6-661e504db04c-test3
-> up  1:00
-> root         269 18.6  0.0      0     0 ?        S    17:09  11:12 [kswap=
-d0]
-> up  2:00
-> root         269 23.7  0.0      0     0 ?        R    17:09  28:30 [kswap=
-d0]
-> up  3:00
-> root         269 27.0  0.0      0     0 ?        S    17:09  48:47 [kswap=
-d0]
-> up  4:00
-> root         269 28.8  0.0      0     0 ?        S    17:09  69:10 [kswap=
-d0]
-> up  5:00
-> root         269 32.0  0.0      0     0 ?        S    17:09  96:17 [kswap=
-d0]
-> up  6:00
-> root         269 29.7  0.0      0     0 ?        S    17:09 107:12 [kswap=
-d0]
-> dmesg attached below as 6.10.0-rc6-661e504db04c-test3.zip
->
-> As we can see, the time of kswapd0 has increased significantly. It was
-> 30 min in 6 hours it became 100 min. That is, it became three times
-> worse even with proposed patches (1-4).
 
-Can you try the following two branches based on 6.10-rc6?
 
-1)  https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/log/=
-?h=3Dtest1_em_shrinker_6.10
+=E5=9C=A8 2024/7/6 00:43, Johannes Thumshirn =E5=86=99=E9=81=93:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> If we can't insert a stripe extent in the RAID stripe tree, because
+> the key that points to the specific position in the stripe tree is
+> already existing, we have to remove the item and then replace it by a
+> new item.
+>
+> This can happen for example on device replace operations.
 
-2)  https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/log/=
-?h=3Dtest2_em_shrinker_6.10
+In that case, can we just modify the targeted dev stripe?
 
-Even if the first one makes things good, also try the second one please.
+Or do we have other call sites that can lead to such conflicts?
 
-The first just includes some changes for the next merge window (for
-6.11) that might help speedup things.
-The second just has a change that would be simple to add to 6.10 and
-we'll probably always want it or some variation of it.
+As I'm not that confident if such replace behavior would mask some real
+problems.
 
-Thanks!
+Thanks,
+Qu
 
 >
-> --
-> Best Regards,
-> Mike Gavrilov.
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>   fs/btrfs/raid-stripe-tree.c | 36 ++++++++++++++++++++++++++++++++++++
+>   1 file changed, 36 insertions(+)
+>
+> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+> index e6f7a234b8f6..3b32e96c33fc 100644
+> --- a/fs/btrfs/raid-stripe-tree.c
+> +++ b/fs/btrfs/raid-stripe-tree.c
+> @@ -73,6 +73,39 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handl=
+e *trans, u64 start, u64 le
+>   	return ret;
+>   }
+>
+> +static int replace_raid_extent_item(struct btrfs_trans_handle *trans,
+> +				    struct btrfs_key *key,
+> +				    struct btrfs_stripe_extent *stripe_extent,
+> +				    const size_t item_size)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> +	struct btrfs_root *stripe_root =3D fs_info->stripe_root;
+> +	struct btrfs_path *path;
+> +	int ret;
+> +
+> +	path =3D btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	ret =3D btrfs_search_slot(trans, stripe_root, key, path, -1, 1);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret =3D btrfs_del_item(trans, stripe_root, path);
+> +	if (ret) {
+> +		ret =3D (ret =3D=3D 1) ? -ENOENT : ret;
+> +		goto err;
+> +	}
+> +
+> +	btrfs_free_path(path);
+> +
+> +	return btrfs_insert_item(trans, stripe_root, key, stripe_extent,
+> +				 item_size);
+> + err:
+> +	btrfs_free_path(path);
+> +	return ret;
+> +}
+> +
+>   static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *tra=
+ns,
+>   					struct btrfs_io_context *bioc)
+>   {
+> @@ -112,6 +145,9 @@ static int btrfs_insert_one_raid_extent(struct btrfs=
+_trans_handle *trans,
+>
+>   	ret =3D btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_ext=
+ent,
+>   				item_size);
+> +	if (ret =3D=3D -EEXIST)
+> +		ret =3D replace_raid_extent_item(trans, &stripe_key,
+> +					       stripe_extent, item_size);
+>   	if (ret)
+>   		btrfs_abort_transaction(trans, ret);
+>
+>
 
