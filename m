@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-6215-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6216-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 828A0927F37
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 02:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 728D89281C2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 08:16:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD191F23AFA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 00:02:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28ABF1F23050
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 06:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F6438D;
-	Fri,  5 Jul 2024 00:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56081136E17;
+	Fri,  5 Jul 2024 06:16:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BYBP93c+";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BYBP93c+"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dBMTgmvD";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dBMTgmvD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC21618D
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 00:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C1433C7
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 06:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720137747; cv=none; b=hGOHm9kMZ8lVHuWKEgoL8Y1CxvWBBsxMpQKsbEaRyy9N+qWOAAkRiEV8ooiGoWbXNp02/jG9ncpdPE1dQmJjLWXf6JYqKXsT3Wd78Gq74F5xV45cwy0VF4dNA1J+Gd43AzoLmuPkxDFQAKXzHwIEkEkEJ+kWS2w6/1kgIDig2KM=
+	t=1720160167; cv=none; b=YVqZYzjK6iNy9diejaHYEBY3atBsH3+JiRnjCIdMqPjubBc+RUj2VFOe7ox2IBoxZzeOyGt4eDAJBVJHKlmO7lfXbrSDlJmnsjfQYQFHo2rIlR4eo00YEXNNf16TJbPFHjUlN8JOLwXwmUysIHdyH6Yvl0Vt2NhqRBwNQUxUMmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720137747; c=relaxed/simple;
-	bh=l46Jsoh5LkvTqYdHKRp1lHs0Tyb51BmZpCpbGzsrMZw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DMkmB7tzDyHEA6W8SQulTr61jtrisOtyM3W5RBzrPEM7s3KCigEAd8cStjYI5pSY9Aio4Pu7AdX1WSufxzPZQ4SYsIwoi2eNEdcgdpqsyrBJg+njCFmQsKmPAiZb4RnaIhRfZOfastaLIFfvtNZXexpZYNEq57OzQ9BwqJVO9pA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BYBP93c+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BYBP93c+; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1720160167; c=relaxed/simple;
+	bh=nQVogGhvG5sBfS2pqmkWdo/HBhEXLZPfxMz8TQRBDXg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Ew7A6/n7EcCqNO75GIBBHeP/gVQsnQrQI94lScyg+JOh5F/Jmxl+rSZI/Wvn+XipC4oqzhJF1rQPhvirGGbWK6WKQBJhn7JjDEzmPKPsKiiig5JaHk7p/+MIbvxXlgjJJkcKah8ZvXqIWqh+HK5eWUd9e8AabIaiFU1aTEbTrVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dBMTgmvD; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dBMTgmvD; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1ABB921993;
-	Fri,  5 Jul 2024 00:02:22 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3FC891F7E2
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 06:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1720137742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1720160163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ThLgff32k2uKTQIjT4E2UUc3rElcKyk0Fu7uFyxHcLM=;
-	b=BYBP93c+F66ZnvbSTokn9vlxoh+PXCMIhu44gQMlZas5U7tjYj97/MEJgFB0c0sxK6hc0v
-	snW9U3vI+ytDwEHaOJJnWjPKsuBxEimI9t50L/l+nLjayckOfAQUReh3kwy2/0YlBcxaqm
-	hBAtXot7hZukYT82FKHMmbQnYDS7vCw=
-Authentication-Results: smtp-out1.suse.de;
+	bh=LZ0mcyDZrYJu3/vo8CrS1Gtqi5svIjcyV7xa6560xZ0=;
+	b=dBMTgmvDFraspKD55ezkwSWyIhlWxCEVyBlBnIlgnzCxoaKN7Fcc/WZAlV1LDnta7WO2no
+	CdIjU2GfphmYCBnDqaD9pM9X3Q3C681aWp3hSPmvwPaIMTyZXobOeCB+SB5ycjj/TBko9n
+	yuHAyjnQd4J3jBQcmowSSC/ep+YTrHU=
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1720137742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1720160163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ThLgff32k2uKTQIjT4E2UUc3rElcKyk0Fu7uFyxHcLM=;
-	b=BYBP93c+F66ZnvbSTokn9vlxoh+PXCMIhu44gQMlZas5U7tjYj97/MEJgFB0c0sxK6hc0v
-	snW9U3vI+ytDwEHaOJJnWjPKsuBxEimI9t50L/l+nLjayckOfAQUReh3kwy2/0YlBcxaqm
-	hBAtXot7hZukYT82FKHMmbQnYDS7vCw=
+	bh=LZ0mcyDZrYJu3/vo8CrS1Gtqi5svIjcyV7xa6560xZ0=;
+	b=dBMTgmvDFraspKD55ezkwSWyIhlWxCEVyBlBnIlgnzCxoaKN7Fcc/WZAlV1LDnta7WO2no
+	CdIjU2GfphmYCBnDqaD9pM9X3Q3C681aWp3hSPmvwPaIMTyZXobOeCB+SB5ycjj/TBko9n
+	yuHAyjnQd4J3jBQcmowSSC/ep+YTrHU=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E81451368F;
-	Fri,  5 Jul 2024 00:02:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FD5C1396E
+	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 06:16:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Ey+cJww4h2YuPQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 05 Jul 2024 00:02:20 +0000
+	id +01zBqKPh2YQFgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 05 Jul 2024 06:16:02 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Andrea Gelmini <andrea.gelmini@gmail.com>
-Subject: [PATCH] btrfs: tree-checker: skip name hash check for image dump
-Date: Fri,  5 Jul 2024 09:32:02 +0930
-Message-ID: <0163b37d7cdb31ed39e0eff2f61cdb4f3cd90272.1720137702.git.wqu@suse.com>
+Subject: [PATCH 0/3] btrfs: remove __GFP_NOFAIL usage for debug builds
+Date: Fri,  5 Jul 2024 15:45:37 +0930
+Message-ID: <cover.1720159494.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -77,81 +77,62 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+X-Spam-Score: -2.19
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.19 / 50.00];
+	BAYES_HAM(-2.39)[97.19%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.991];
 	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[gmail.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TO_DN_NONE(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
 
-[BUG]
-For an image dumpped with "btrfs-image -s", the restored filesystem will
-not pass tree-checker:
+This patchset removes all __GFP_NOFAIL flags usage inside btrfs for
+DEBUG builds.
 
- BTRFS critical (device dm-5): corrupt leaf: root=1 block=32522240 slot=6 ino=6, name hash mismatch with key, have 0x0000000019e196de expect 0x000000008dbfc2d2
- BTRFS error (device dm-5): read time tree block corruption detected on logical 32522240 mirror 1
+There are 3 call sites utilizing __GFP_NOFAIL:
 
-[CAUSE]
-Btrfs-image with "-s" option would sanitize the filenames, thus it's
-ensured to cause file names to mismatch their hash.
+- __alloc_extent_buffer()
+  It's for the extent_buffer structure allocation.
+  All callers are already handling the errors.
 
-[FIX]
-Since btrfs-image is mostly for debug purposes, we can afford it to be
-an exception for tree-checker.
+- attach_eb_folio_to_filemap()
+  It's for the filemap_add_folio() call, the flag is also passed to mem
+  cgroup, which I suspect is not handling larger folio and __GFP_NOFAIL
+  correctly, as I'm hitting soft lockups when testing larger folios
 
-Just allow image dump to skip the name hash mismatch.
+  New error handling is added.
 
-There will be a little more risk, as image dump can still be mounted RW,
-but the existing error handling is good enough to handle the mismatched
-hash.
+- btrfs_alloc_folio_array()
+  This is for page allocation for extent buffers.
+  All callers are already handling the errors.
 
-Reported-by: Andrea Gelmini <andrea.gelmini@gmail.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/tree-checker.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+Furthermore, to enable more testing while not affecting end users, the
+change is only implemented for DEBUG builds.
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 6388786fd8b5..6fd7ed46812a 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -630,10 +630,14 @@ static int check_dir_item(struct extent_buffer *leaf,
- 
- 		/*
- 		 * Special check for XATTR/DIR_ITEM, as key->offset is name
--		 * hash, should match its name
-+		 * hash, should match its name.
-+		 * But if it's METADUMP (btrfs-image dump) then we allow hash
-+		 * mismatch since "-s" can generaete different names.
- 		 */
--		if (key->type == BTRFS_DIR_ITEM_KEY ||
--		    key->type == BTRFS_XATTR_ITEM_KEY) {
-+		if ((key->type == BTRFS_DIR_ITEM_KEY ||
-+		     key->type == BTRFS_XATTR_ITEM_KEY) &&
-+		    !(btrfs_super_flags(leaf->fs_info->super_copy) &
-+		      (BTRFS_SUPER_FLAG_METADUMP | BTRFS_SUPER_FLAG_METADUMP_V2))) {
- 			char namebuf[max(BTRFS_NAME_LEN, XATTR_NAME_MAX)];
- 
- 			read_extent_buffer(leaf, namebuf,
+Qu Wenruo (3):
+  btrfs: do not use __GFP_NOFAIL flag for __alloc_extent_buffer()
+  btrfs: do not use __GFP_NOFAIL flag for attach_eb_folio_to_filemap()
+  btrfs: do not use __GFP_NOFAIL flag for btrfs_alloc_folio_array()
+
+ fs/btrfs/extent_io.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
 -- 
 2.45.2
 
