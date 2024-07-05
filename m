@@ -1,127 +1,150 @@
-Return-Path: <linux-btrfs+bounces-6226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6227-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAEB0928B04
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 16:55:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C38C928B5A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 17:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BBD9B22BC2
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 14:55:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB95F1F22943
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 15:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0012D16A954;
-	Fri,  5 Jul 2024 14:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="OEjNKj/N"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A133D16C686;
+	Fri,  5 Jul 2024 15:13:59 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982D814A08B
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Jul 2024 14:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCC714AA0;
+	Fri,  5 Jul 2024 15:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720191349; cv=none; b=bq6S6R5nA970TPpY+cTpQoLdaViA3xz0tv2kyJTuCgkgn/49rSAxlLEvxj+oQ4K4NiYmaTxWQz23nzCmJ0ELaXmiwX2lxBA1pQCBxjeYiaKfC7Dw9L6eqdH72wL167ERnHcNQxMdmKRSk0O2jjBRbYKsCDE1I86EP4MMIIanEIk=
+	t=1720192439; cv=none; b=ErJVxQZRTkj47ejmxfM6h18ej7wCj5Tn0pfu7+Rql3XMGNo1O5KXAclrZZJPAR+y05BCRgVAN7Jh/qGbAna3/DzIo53p+FMkAS3cx9TgXkIArJZYWecGr2Vw1WhqTcpAkyh2jcxt75yEcRf+sccSQHfqF6GP/IMVFhvkrNvNmps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720191349; c=relaxed/simple;
-	bh=B/A6DpzSQzsx9/l4fsa+9q9oA5O1gtlTmy1LV9la+I8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QLIdDmkq8b48KLPuRCAMb1WqifKaWlsj1E8kUj12ax4Oz3lZ5HSIFACEI6fEtW5rqbOU6lkjCxTTUUokKtRvApZezcqKAOw/mrD05h14eIqtyhTeH++B0GyUAp9+kGSAgCV75aaQuY9w+vVIQYT11TRZ9fHO4f4Gpxy49NrCmNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=OEjNKj/N; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3d8a935badcso902090b6e.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Jul 2024 07:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1720191347; x=1720796147; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OW8z0cxg2uXcsMzQWDgYf24OAPRDrrp2T04lKwD1p3s=;
-        b=OEjNKj/NeAgYsJCptuDwi2enrIgBM4D6eWWX88H395uNOZioH25SDcEeSaMFymbluw
-         TWcFCG86fy/Fqdk5/2gpHcYD87uerjzXpeWtZ1g45QSKbE9s88K4yvobvhGvwkNgl80M
-         wIKlgrd3UTIHS2Tewd5sWnVHlPHW9qT2WR54+nOROgmRtZbwcAFe3RPY9P0iGo1z48IW
-         b4+/pSIr61MvnUQrZHFCqLo6RhIwbW9ECH/1gdanCNucX1A2rznJyo5QMQ+nvYzZEIA8
-         dXxEJuqt1XMqQyqyyrHdAoe/+GqiaGJ7zUoFfJTdW4EQvJesrHV4dVku6UGoGVTsFi3h
-         z+NA==
+	s=arc-20240116; t=1720192439; c=relaxed/simple;
+	bh=SV97Xb/fqEQbH1/9bAAwNoml0naexLZ53bLuyHb1Azs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=s19xPVQrwilOzQYt7U/hFo8E6ZqF6zNjG54gd+984Ub4VD7JACQcZNKC7YzzFR/BhnpVgzw3OUcf5povYH47PJbLv9xHBTDYoH4tagZF73ErKu6z+iqOSnDNhk/UCWHJQDB7dmmKyCU2cklZ9j23WBX9hZniPkcE7FgcBdYAJOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a728f74c23dso211721366b.1;
+        Fri, 05 Jul 2024 08:13:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720191347; x=1720796147;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OW8z0cxg2uXcsMzQWDgYf24OAPRDrrp2T04lKwD1p3s=;
-        b=GCV647EJZvUPsdR+k8HicbTHMrZGLdWgRi5LBW0m6wS/XFpUU+7bgAQ9rf0UQIB+Bh
-         dtB+wJZ0uWP4blGLmbaod4FjLanti2kg8H55duKViOzJj4SBw9OXXL5HpgTM/oQfLGYO
-         Hf/N+6INAvWMVqDQyd2Vw5zYuMiPFbrQKJ/8YlgjzsGt8ZZkWuSpGoas8ggAZYiRxEgb
-         SKvJbdiyWGoaQQn4S7aHPPF+OAR7EekXg6Pk8iBMICUrpElnvaFfG0mKSCJCyLW7EzPp
-         Aqnc5OCO+eMMW7Vqo6ZzT2zp8McXN9Je3T+3xrQ+Aorx2gc68mJxhVAXaD11JFpZLH1T
-         NgbQ==
-X-Gm-Message-State: AOJu0YxnlTmrTMwUL85iVaKgdF+m4xX3fNFdDwcmya1TvQdvUk1Y2BNc
-	uYQBKejxjm4/hGfGBuVgeP7s4i0UuV6I9SdJ4ycRNPHftIAO5zEbo/RbLBbxWxg639DICAJAlXp
-	J
-X-Google-Smtp-Source: AGHT+IFha+LVTaxfzJltso83BIgnhBUhZPtFjHz501RexXOG1xv8uKO95ZlcxQ78v7X2pJanMv3TrA==
-X-Received: by 2002:a05:6808:3c92:b0:3d9:22df:8e0d with SMTP id 5614622812f47-3d922df8f46mr292922b6e.18.1720191345184;
-        Fri, 05 Jul 2024 07:55:45 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79d69260004sm780735485a.27.2024.07.05.07.55.43
+        d=1e100.net; s=20230601; t=1720192436; x=1720797236;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sWGx7JeHTlRm/yHP532z9XZzsP28w+KU7c+2I/8iNZM=;
+        b=MXlk9zCLVzZWux4h3SX2Mhh648RjRGcxU/0BXqA2cqbviW9mqfhJswbT869L9bFNYy
+         8VAUvnMYMV3JVUtjBY4CfX94BPIZtqrqkpn3zF5JwfJVbIm+w7Ntmi4BF7LVI4pAO7w4
+         ZvC4fnqqCx+tvCSleOW3xN/bQykfmOcaNzRZvBNxiwA9vpkHFIJPDxTvWP+ewbNSf6ea
+         uv1JDJK+4nOPsM1qxi2pZUhcE8Fdz0SmzJE1Vab5iIoH3AIqq25JkW7jQJTYpfxVD5y9
+         G7Nyc2M9d9DSumq4uP9flA+Fg0qVkqgwA3d5YQZEuCQ7PgAi61okcP5kRJ1BSpnh7GQn
+         guRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqo637t/UQLCU4ssHiHLa+Y1VuTlaDUTGPOsHjrvdJ2VVaWpPQxRv1H8v134miUzrpoQK/JkijAHhFn3rlMCuPnnL5/ROcPpS00Asj
+X-Gm-Message-State: AOJu0YxXP0AhgjVquf1PEo1K6fFy4nJ+IBD4Js4UQt7saUCwR84A5zen
+	w23Y5FWvLsmxr0Zz0gSoixDP0mbrHpjSHJQbmp4V/zgh1GKForkTbSWXig==
+X-Google-Smtp-Source: AGHT+IFsJJ4hEYlTxobv9M3JSvcOv7dx9gY6HAu5pIhFB4f2CkS6Pi69pCPYJ29Y/iNztJzKdC6+Jg==
+X-Received: by 2002:a17:906:43d0:b0:a77:c26c:a56f with SMTP id a640c23a62f3a-a77c26cb3c8mr296141266b.3.1720192435704;
+        Fri, 05 Jul 2024 08:13:55 -0700 (PDT)
+Received: from [127.0.0.1] (p200300f6f72f3200fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f72f:3200:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72aaf6336csm686226566b.70.2024.07.05.08.13.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jul 2024 07:55:44 -0700 (PDT)
-Date: Fri, 5 Jul 2024 10:55:43 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: remove __GFP_NOFAIL usage for debug builds
-Message-ID: <20240705145543.GB879955@perftesting>
-References: <cover.1720159494.git.wqu@suse.com>
+        Fri, 05 Jul 2024 08:13:55 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+Subject: [PATCH v4 0/7] btrfs: rst: updates for RAID stripe tree
+Date: Fri, 05 Jul 2024 17:13:46 +0200
+Message-Id: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1720159494.git.wqu@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKoNiGYC/3XMyw6CMBCF4VchXVszvXCpK9/DuCjtAI0GSIuNh
+ vDuFjZqiKvJmeT7ZxLQOwzklM3EY3TBDX0a8pAR0+m+Reps2oQDl1AwoLWkPkz0MVo9YaAWtC5
+ UUSuba5LQ6LFxzy14uabduTAN/rX1I1u/f1ORUaCsVIYhGqgafr6h7/F+HHxL1lbk317tPE++U
+ kZICzbnqtp58fElsJ0XySNIUSJLRxc/flmWN3ATw2stAQAA
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2436; i=jth@kernel.org;
+ h=from:subject:message-id; bh=SV97Xb/fqEQbH1/9bAAwNoml0naexLZ53bLuyHb1Azs=;
+ b=owGbwMvMwCV2ad4npfVdsu8YT6slMaR18G7sV/t8YCurvhdHPPOMrY2Zs1du/Bojff2MzIm1j
+ i8+VIW0dZSyMIhxMciKKbIcD7XdL2F6hH3KoddmMHNYmUCGMHBxCsBErEMZGV7eutYk77JizQ07
+ y1SWc10boqrfn/p1ZunRk1Nm/n4js7aJ4SfjrfLpmlYvmz5Ui8mZzeE9s09gctrv42x1Eo1rWfR
+ XdvAAAA==
+X-Developer-Key: i=jth@kernel.org; a=openpgp;
+ fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
 
-On Fri, Jul 05, 2024 at 03:45:37PM +0930, Qu Wenruo wrote:
-> This patchset removes all __GFP_NOFAIL flags usage inside btrfs for
-> DEBUG builds.
-> 
-> There are 3 call sites utilizing __GFP_NOFAIL:
-> 
-> - __alloc_extent_buffer()
->   It's for the extent_buffer structure allocation.
->   All callers are already handling the errors.
-> 
-> - attach_eb_folio_to_filemap()
->   It's for the filemap_add_folio() call, the flag is also passed to mem
->   cgroup, which I suspect is not handling larger folio and __GFP_NOFAIL
->   correctly, as I'm hitting soft lockups when testing larger folios
-> 
->   New error handling is added.
-> 
-> - btrfs_alloc_folio_array()
->   This is for page allocation for extent buffers.
->   All callers are already handling the errors.
-> 
-> Furthermore, to enable more testing while not affecting end users, the
-> change is only implemented for DEBUG builds.
-> 
-> Qu Wenruo (3):
->   btrfs: do not use __GFP_NOFAIL flag for __alloc_extent_buffer()
->   btrfs: do not use __GFP_NOFAIL flag for attach_eb_folio_to_filemap()
->   btrfs: do not use __GFP_NOFAIL flag for btrfs_alloc_folio_array()
+Patch 1 replaces stripe extents in case we hit a EEXIST when inserting a
+stripe extent on a write. This can happen i.e. on device-replace.
 
-The reason I want to leave NOFAIL is because in a cgroup memory constrained
-environment we could get an errant ENOMEM on some sort of metadata operation,
-which then gets turned into an aborted transaction.  I don't want a memory
-constrained cgroup flipping the whole file system read only because it got an
-ENOMEM in a place where we have no choice but to abort the transaction.
+Patch 2 splits a stripe extent on partial delete of a stripe.
 
-If we could eliminate that possibility then hooray, but that's not actually
-possible, because any COW for a multi-modification case (think finish ordered
-io) could result in an ENOMEM and thus a transaction abort.  We need to live
-with NOFAIL for these cases.  Thanks,
+Patch 3 adds selftests for the stripe-tree delete code, these selftests
+can and will be extended to cover insert and get as well.
 
-Josef
+Patch 4 fixes a deadlock between scrub and device replace when RST is
+used.
+
+Patch 5 get's rid of the pointless tree dump in case we're not finding an
+RST entry.
+
+Patch 6 is a prep-patch form #7 and renames btrfs_io_stripe::is_scrub to
+commit_root.
+
+Patch 7 changes the read code so we're looking at the commit_root for
+relocation as well.
+
+---
+Changes in v4:
+- Addressed Josef's comments
+- Added patches 6 & 7
+- Link to v3: https://lore.kernel.org/r/20240701-b4-rst-updates-v3-0-e0437e1e04a6@kernel.org
+
+Changes in v3:
+- Drop on-disk format change as it's in for-next
+- Add patches 4 & 5
+- Link to v2: https://lore.kernel.org/r/20240619-b4-rst-updates-v2-0-89c34d0d5298@kernel.org
+
+Changes in v2:
+- Added selftests for delete code
+- Link to v1: https://lore.kernel.org/r/20240610-b4-rst-updates-v1-0-179c1eec08f2@kernel.org
+
+---
+Johannes Thumshirn (7):
+      btrfs: replace stripe extents
+      btrfs: rst: don't print tree dump in case lookup fails
+      btrfs: split RAID stripes on deletion
+      btrfs: stripe-tree: add selftests
+      btrfs: don't hold dev_replace rwsem over whole of btrfs_map_block
+      btrfs: rename brtfs_io_stripe::is_scrub to commit_root
+      btrfs: stripe-tree: also look at commit root on relocation
+
+ fs/btrfs/Makefile                       |   3 +-
+ fs/btrfs/bio.c                          |   3 +-
+ fs/btrfs/ctree.c                        |   1 +
+ fs/btrfs/raid-stripe-tree.c             | 145 +++++++++++---
+ fs/btrfs/raid-stripe-tree.h             |   5 +
+ fs/btrfs/scrub.c                        |   2 +-
+ fs/btrfs/tests/btrfs-tests.c            |   3 +
+ fs/btrfs/tests/btrfs-tests.h            |   1 +
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 322 ++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c                      |  28 +--
+ fs/btrfs/volumes.h                      |   2 +-
+ 11 files changed, 470 insertions(+), 45 deletions(-)
+---
+base-commit: 3caaac6559396d9e668deb10345b7f3bb45f6ba9
+change-id: 20240610-b4-rst-updates-d0aa696b9d5a
+
+Best regards,
+-- 
+Johannes Thumshirn <jth@kernel.org>
+
 
