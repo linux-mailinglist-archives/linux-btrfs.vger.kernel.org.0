@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6254-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6255-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8AD8928F88
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 01:27:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D396928F8A
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 01:29:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DFF6284ABD
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 23:27:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2C261F22F69
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 23:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9B11487DA;
-	Fri,  5 Jul 2024 23:27:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A3B1487E1;
+	Fri,  5 Jul 2024 23:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="I5nLK2zJ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="VxuyEC6Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932C279F3;
-	Fri,  5 Jul 2024 23:26:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B44145A0E;
+	Fri,  5 Jul 2024 23:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720222021; cv=none; b=G8aVi++ODCaSMP6dCidwv70Gk0T9uc8aU+l5Yv2tcqGR6RtMkbo5RRCDy/Gi0ZLTHVvx5Z3tp0CiwX76F19aZsbSbW3A2q/ASKPuSEZkqC0vs8y60nYLnDJ6I+BeDhquFAdOE4f5HhkirWbp71ylIMKvEUwDLq1aQFRVNjYeDcY=
+	t=1720222153; cv=none; b=PStr64Vv22fLUjSozmm9ijiabBYLl1G89YDOJLJueacyZHIkOBm/46ipbn0rQ3mx95M016iperfgdO546W4V+hFtvwx0Ori4SUAYz82r4G0ciRfTP5l5v5D5bEr7e0EkckGuAhTaQd1XRt/jbUmYi7/axTVt32vpq+ldgxv64QA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720222021; c=relaxed/simple;
-	bh=QG9tsPKrCwHTREIO+JZRihgm69nnEFFgSQG9hsoD+eM=;
+	s=arc-20240116; t=1720222153; c=relaxed/simple;
+	bh=B0D2OJ2RYoZ35gmbJ+It72kP6PlKoxma9WkmF6H1qmM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AKCdJB4toXyuqZ+H+KRRnF4EJZPENF69y9dRM2+N4ccMASL6gFJNvgCeGN4Nvxju96YtTnPTIWCiVoMsewpwv/00t+yuShYJdUA51IJCwBURaqQ/5cXNaGl8B9iKyeiUDgbUXc22ZOJiVtI127RwQD38Jaz+sGWO0dGnzf32KAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=I5nLK2zJ; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=prb9wkjZTx4BZwLhGBqVHg0qZNO4gbvr5e+6so2ckbbmjwyDpAOyERhLkdt9+PndPogjZWC0Q2fBLUhfgeOxoonFrrVUdjYh1ND01MjpQIQlcuekETDsxyoM8jGoP3a4WuaVK+s9czwrPS8+m0Qtdir/lbsRuJKXqfDLl7N7IEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=VxuyEC6Y; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1720222006; x=1720826806; i=quwenruo.btrfs@gmx.com;
-	bh=trWil2AEELW5FA2Sb345FRpIkcYRCEqf0afIA97L1oY=;
+	s=s31663417; t=1720222138; x=1720826938; i=quwenruo.btrfs@gmx.com;
+	bh=abKSkO0vfpGjY7lu92zfZV1FnQJk5DZDKam7BVpzvPY=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=I5nLK2zJrm3/sa5eocpa0NZeo8TzhnzjZb8XDyDI4h4X/CiNj74EROhnMYLU5brm
-	 d0/aIe9UcjnxQbeFEogl0LEqo9X6h9GParMPFJkbI3HqYh01Ij3wOMkqKrXatLpVf
-	 Oyd7OPO1iFTPIp9A2KmNyC9JPddmYKsL7PvJIFiTcM1lkugTw+YdyTqVVNNaHSJgc
-	 FC8JnHFUymhTg0j5DHKGRko7pkTtHkOvm3gB+Dal1S9M3YiPjpz2o6070mRVmsaHN
-	 Gh+z//cKK4qODZc1AUx3eY6TYKLE43dXnFss+qCjkUolQCMva3eAW3oKOs0VAQCgN
-	 bkRGfLh/AseBkZuhyA==
+	b=VxuyEC6YOS6WE+dvhtdQSXwAIAdvQnP6wkQ5NkyPyyx2Qe7QFh5TxPKZHOgaRRm9
+	 4qKKOCsaMHQ0JmvXvI3YTPTXrS8XxK8UenqrKVmqucMX7xfPh88CEkFLEVvAalKXh
+	 sw6e4lX9m4B4irBRQzsC6iKDzKmYw88b2wZaJ4Lo6XYsp3nl2eiL0gRqlDEFRFsGL
+	 rlFbqgZDd3EjP2QMr3NIT2bgYnXVNt8tpydm6+T4xPaI5DenExvlpUvLBAxi9quY/
+	 FOXychkBxOI2JUzwQSD9/f+IDVY5DxC55HdW/o0it2/iHQL15LF709Z/WBztqO4V/
+	 0aw8wE51CAL6z5n6YA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlf0U-1rzvUa09lS-00kZjh; Sat, 06
- Jul 2024 01:26:46 +0200
-Message-ID: <e0041c2d-f888-41cb-adb8-52c82ca0d03f@gmx.com>
-Date: Sat, 6 Jul 2024 08:56:42 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4s0t-1sRo2H0rHL-00Fp0k; Sat, 06
+ Jul 2024 01:28:58 +0200
+Message-ID: <29cd4e79-de21-41ea-8241-2706d37fe4ae@gmx.com>
+Date: Sat, 6 Jul 2024 08:58:54 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/7] btrfs: split RAID stripes on deletion
+Subject: Re: [PATCH v4 5/7] btrfs: don't hold dev_replace rwsem over whole of
+ btrfs_map_block
 To: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
  Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
 Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
  Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
- <20240705-b4-rst-updates-v4-3-f3eed3f2cfad@kernel.org>
+ <20240705-b4-rst-updates-v4-5-f3eed3f2cfad@kernel.org>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,201 +92,145 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240705-b4-rst-updates-v4-3-f3eed3f2cfad@kernel.org>
+In-Reply-To: <20240705-b4-rst-updates-v4-5-f3eed3f2cfad@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ioyNm9Rf0AjsIUmYoLTTbM31tcMJudroDMq9Ml6ROM0DPTBQ+3e
- 5KovG4bZQjp1iZ4iDexNS2KqLMOO4Ltn8AQG9dx1Bbh0z0NYeOkutVDDCcRIVYvcadjkQ35
- MCZVxqe3T4dF8ckS8uJ0dSiVbPtHaDtjFEzJX4lJjn9iGFBIfVIcXPXDGt/h3bj73sz7n4R
- c//uZAvZlPft4mR0jbXEw==
+X-Provags-ID: V03:K1:wmDCLOCHARycJNMJ4Yj6uwfpLNjh+SAtDDDWcEVsnC0aCzuMBO0
+ N7xjAJ7MTQkBP5xElYAENAC0YKkm3dWqbaGTbOUEG+HOW17UdWp4UiSwKggRKHIlSfepbW6
+ bIS7Lnbopy4RmYfjyh+y8Z7dvo6+tmovZnx9ow8TyTiOiDLA+e6wTXWE7H9xkUIEcddAkUk
+ todphm7dcWscmHyE9D0aA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:3psTyEEtIAk=;Q7Bd03s/6/ppPv3k7W/07NnRBtV
- xpwIOPPhE4vaa1BJ3jG7lp+mQDZZasZKgY5rspo7PttFYd1ETIjfbEJmevQem2Cbw86NnTtcj
- 802WRwQ+RJDogAV1B828SntgL5d6xyKgMH1yz+VcAUIKsAy0ng6g1piMKv+EeIFkjWhrAt7hL
- KwQPjXs4HHn6ckcsS5uGjXWRF0dUwuJq/JPP5AM3fD7gb/xq4pGAaGP8BMTtOnJiI+QNWmQ2T
- UN4MvAalzk+ChCgqc2veGJWFPIUiT4uClu1BlQ9BgvweqvwRqt9tSQdOWINEaIEED/ZQ0Pq48
- eV0JBD2rWE6lFgkXdwuloMHf0gN5cf3LjvaHLqG6uDC/2nSVnH65kL2cEx1iv7EaNqnuX9VdM
- 39GEYI6OMhMqzD9NtqQjP2X8uxh2KZhggkBQ2jxKae9hDYIRdLSexdVN47KdiMj7P22MdkCQS
- MIVufaDl7mcoI0xQaQAySWzQegjCsAV0JMwaFHKAjYNBWQ+C3ossu6jxTqQej5PAN/WiTElL9
- sjszjFwkrtQ5IcKb0uUr1iE4TSxgGADbPPO0dVX4Z1QaGqcJZUvWR7K12rjKhNNwn8Y5PKCm4
- 9xz6s2IVKTxqJCzmNvXOtJf0ktaxz5PnzOCKLzONmOQtWhXkiknsm4QnOKc89omjqsVuE8Amc
- uCAZ1TfHNR+EfGJYRmf8dua8qWa0E2N1MPvgz1hl8BYm+bNZ6i2CklMp0zQnznnrqnj5zHt4e
- suJnwsCxEOfKkHoEtrxQYbyX10RZhFN6VxPA9Dw9BfQhwx+FGsGaj7OxiwAVzqZGiOjxx2P+J
- Oql00kRl9jp7UsKvTT/rLSAQTmmnxSgDquw3/pVm3nqRI=
+UI-OutboundReport: notjunk:1;M01:P0:9CYoSiTcWXM=;1eaGSu7Xa1fc7wC9Fg+qpb28Qjs
+ wdeDX5gmXPGtsvvAHkNKcBrFUUTSt7qvrcbcHvN+hlcj1hrXnSbH52eKYA54MgvaB8NbzkyKp
+ S0SnPeZac5oqkR2B517L1qsIUfhA1MzDC/4Mu/u0pqKlogYM9Ybxw7x8wh2S0imbJWuTQVKNC
+ IYfHmN2W46mMGe6OjjBNnLkNGP1NKhzlknlgJVI7TK21yvqErXbX6ODIGAGv1i4994Y7WTDbO
+ D+brdXX2WwVl40GQOCqbxA91SrckFJc2Td0oQsZ8xGrcxnDnHOjJkfigS4SAnwi2wGVN4ExoM
+ TsurKtvt44r48IuqTpceoq/XCP3tDNLZRJzOwWG/ZWTNtIYuk8O1/UR0IGykA+hfRX7R9xQ1t
+ ovb6aSskH/0mnl3Sv+V6APnicQumWDcUX+qb7WhTSjqJjTJQmCjuHq4jjfkdAt+Ct2ah/bFEc
+ ZenWYNK74sSX0/8q08LRxfXn22nUq3FeeIfNlqy1+xlUUlEejNL6EUt/0dTsK2FN0Mhm4yNT/
+ 2D9bsi42vVTfj3GH3rcj8yMh+qvub0IPOkp6A2aA13srnCKqB7f/aixb0720T4sE2zlBZzCMm
+ Rsj7LUbBrUuAmRu+lclOa8eiXG4lGzTo/AHKLYBwhMzbc5mW5YBoedf5RTdOiS90HcpnVU1Y4
+ XP4r0jbHEKhOiJaSDqiseawj7Wz0DnO6HNVIbT8AXNE4GTDVKz23AC9qbv6H3wr1f4oM+H2wb
+ TDM3JZYM27JDOOxM7SzfuVmqyCrivH+Cned38XKkWYnjhfkYUK1g3OX0zU86p0kAvADqpGYIm
+ Tgw7mirspebZG/KXHyIualu9LLYRq6QW41I1uPIOR74RY=
 
 
 
 =E5=9C=A8 2024/7/6 00:43, Johannes Thumshirn =E5=86=99=E9=81=93:
 > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 >
-> The current RAID stripe code assumes, that we will always remove a
-> whole stripe entry.
+> Don't hold the dev_replace rwsem for the entirety of btrfs_map_block().
 >
-> But if we're only removing a part of a RAID stripe we're hitting the
-> ASSERT()ion checking for this condition.
+> It is only needed to protect
+> a) calls to find_live_mirror() and
+> b) calling into handle_ops_on_dev_replace().
 >
-> Instead of assuming the complete deletion of a RAID stripe, split the
-> stripe if we need to.
+> But there is no need to hold the rwsem for any kind of set_io_stripe()
+> calls.
+>
+> So relax taking the dev_replace rwsem to only protect both cases and che=
+ck
+> if the device replace status has changed in the meantime, for which we h=
+ave
+> to re-do the find_live_mirror() calls.
+>
+> This fixes a deadlock on raid-stripe-tree where device replace performs =
+a
+> scrub operation, which in turn calls into btrfs_map_block() to find the
+> physical location of the block.
+>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Sorry to be so critical, but if I understand correctly,
-btrfs_insert_one_raid_extent() does not do any merge of stripe extent.
-
-Thus one stripe extent always means part of a data extent.
-
-In that case a removal of a data extent should always remove all its
-stripe extents.
-
-Furthermore due to the COW nature on zoned/rst devices, the space of a
-deleted data extent should not be re-allocated until a transaction
-commitment.
-
-Thus I'm wonder if this split is masking some bigger problems.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->   fs/btrfs/ctree.c            |  1 +
->   fs/btrfs/raid-stripe-tree.c | 98 ++++++++++++++++++++++++++++++++++---=
---------
->   2 files changed, 75 insertions(+), 24 deletions(-)
+>   fs/btrfs/volumes.c | 28 +++++++++++++++++-----------
+>   1 file changed, 17 insertions(+), 11 deletions(-)
 >
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 451203055bbf..82278e54969e 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -3863,6 +3863,7 @@ static noinline int setup_leaf_for_split(struct bt=
-rfs_trans_handle *trans,
->   	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index fcedc43ef291..4209419244a1 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6650,14 +6650,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info=
+, enum btrfs_map_op op,
+>   	max_len =3D btrfs_max_io_len(map, map_offset, &io_geom);
+>   	*length =3D min_t(u64, map->chunk_len - map_offset, max_len);
 >
->   	BUG_ON(key.type !=3D BTRFS_EXTENT_DATA_KEY &&
-> +	       key.type !=3D BTRFS_RAID_STRIPE_KEY &&
->   	       key.type !=3D BTRFS_EXTENT_CSUM_KEY);
->
->   	if (btrfs_leaf_free_space(leaf) >=3D ins_len)
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index 84746c8886be..d2a6e409b3e8 100644
-> --- a/fs/btrfs/raid-stripe-tree.c
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -33,42 +33,92 @@ int btrfs_delete_raid_extent(struct btrfs_trans_hand=
-le *trans, u64 start, u64 le
->   	if (!path)
->   		return -ENOMEM;
->
-> -	while (1) {
-> -		key.objectid =3D start;
-> -		key.type =3D BTRFS_RAID_STRIPE_KEY;
-> -		key.offset =3D length;
 > +again:
-> +	key.objectid =3D start;
-> +	key.type =3D BTRFS_RAID_STRIPE_KEY;
-> +	key.offset =3D length;
+>   	down_read(&dev_replace->rwsem);
+>   	dev_replace_is_ongoing =3D btrfs_dev_replace_is_ongoing(dev_replace);
+> -	/*
+> -	 * Hold the semaphore for read during the whole operation, write is
+> -	 * requested at commit time but must wait.
+> -	 */
+> -	if (!dev_replace_is_ongoing)
+> -		up_read(&dev_replace->rwsem);
 >
-> -		ret =3D btrfs_search_slot(trans, stripe_root, &key, path, -1, 1);
-> -		if (ret < 0)
-> -			break;
-> -		if (ret > 0) {
-> -			ret =3D 0;
-> -			if (path->slots[0] =3D=3D 0)
-> -				break;
-> -			path->slots[0]--;
-> -		}
-> +	ret =3D btrfs_search_slot(trans, stripe_root, &key, path, -1, 1);
-> +	if (ret < 0)
-> +		goto out;
-> +	if (ret > 0) {
-> +		ret =3D 0;
-> +		if (path->slots[0] =3D=3D 0)
-> +			goto out;
-> +		path->slots[0]--;
-> +	}
-> +
-> +	leaf =3D path->nodes[0];
-> +	slot =3D path->slots[0];
-> +	btrfs_item_key_to_cpu(leaf, &key, slot);
-> +	found_start =3D key.objectid;
-> +	found_end =3D found_start + key.offset;
-> +
-> +	/* That stripe ends before we start, we're done. */
-> +	if (found_end <=3D start)
-> +		goto out;
-> +
-> +	trace_btrfs_raid_extent_delete(fs_info, start, end,
-> +				       found_start, found_end);
-> +
-> +	if (found_start < start) {
-> +		u64 diff =3D start - found_start;
-> +		struct btrfs_key new_key;
-> +		int num_stripes;
-> +		struct btrfs_stripe_extent *stripe_extent;
-> +
-> +		new_key.objectid =3D start;
-> +		new_key.type =3D BTRFS_RAID_STRIPE_KEY;
-> +		new_key.offset =3D length - diff;
-> +
-> +		ret =3D btrfs_duplicate_item(trans, stripe_root, path,
-> +					   &new_key);
-> +		if (ret)
-> +			goto out;
->
->   		leaf =3D path->nodes[0];
->   		slot =3D path->slots[0];
-> -		btrfs_item_key_to_cpu(leaf, &key, slot);
-> -		found_start =3D key.objectid;
-> -		found_end =3D found_start + key.offset;
->
-> -		/* That stripe ends before we start, we're done. */
-> -		if (found_end <=3D start)
-> -			break;
-> +		num_stripes =3D
-> +			btrfs_num_raid_stripes(btrfs_item_size(leaf, slot));
-> +		stripe_extent =3D
-> +			btrfs_item_ptr(leaf, slot, struct btrfs_stripe_extent);
-> +
-> +		for (int i =3D 0; i < num_stripes; i++) {
-> +			struct btrfs_raid_stride *raid_stride =3D
-> +				&stripe_extent->strides[i];
-> +			u64 physical =3D
-> +				btrfs_raid_stride_physical(leaf, raid_stride);
-> +
-> +			btrfs_set_raid_stride_physical(leaf, raid_stride,
-> +							     physical + diff);
-> +		}
-> +
-> +		btrfs_mark_buffer_dirty(trans, leaf);
-> +		btrfs_release_path(path);
-> +		goto again;
-> +	}
->
-> -		trace_btrfs_raid_extent_delete(fs_info, start, end,
-> -					       found_start, found_end);
-> +	if (found_end > end) {
-> +		u64 diff =3D found_end - end;
-> +		struct btrfs_key new_key;
->
-> -		ASSERT(found_start >=3D start && found_end <=3D end);
-> -		ret =3D btrfs_del_item(trans, stripe_root, path);
-> +		new_key.objectid =3D found_start;
-> +		new_key.type =3D BTRFS_RAID_STRIPE_KEY;
-> +		new_key.offset =3D length - diff;
-> +
-> +		ret =3D btrfs_duplicate_item(trans, stripe_root, path,
-> +					   &new_key);
->   		if (ret)
-> -			break;
-> +			goto out;
->
-> +		btrfs_mark_buffer_dirty(trans, leaf);
->   		btrfs_release_path(path);
+>   	switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+>   	case BTRFS_BLOCK_GROUP_RAID0:
+> @@ -6695,6 +6690,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info,=
+ enum btrfs_map_op op,
+>   			   "stripe index math went horribly wrong, got stripe_index=3D%u, n=
+um_stripes=3D%u",
+>   			   io_geom.stripe_index, map->num_stripes);
+>   		ret =3D -EINVAL;
+> +		up_read(&dev_replace->rwsem);
+>   		goto out;
 >   	}
 >
-> +	ret =3D btrfs_del_item(trans, stripe_root, path);
+> @@ -6710,6 +6706,8 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info,=
+ enum btrfs_map_op op,
+>   		 */
+>   		num_alloc_stripes +=3D 2;
+>
+> +	up_read(&dev_replace->rwsem);
 > +
-> + out:
->   	btrfs_free_path(path);
+>   	/*
+>   	 * If this I/O maps to a single device, try to return the device and
+>   	 * physical block information on the stack instead of allocating an
+> @@ -6782,6 +6780,18 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info=
+, enum btrfs_map_op op,
+>   		goto out;
+>   	}
+>
+> +	/*
+> +	 * Check if something changed the dev_replace state since
+> +	 * we've checked it for the last time and if redo the whole
+> +	 * mapping operation.
+> +	 */
+> +	down_read(&dev_replace->rwsem);
+> +	if (dev_replace_is_ongoing !=3D
+> +	    btrfs_dev_replace_is_ongoing(dev_replace)) {
+> +		up_read(&dev_replace->rwsem);
+> +		goto again;
+> +	}
+> +
+>   	if (op !=3D BTRFS_MAP_READ)
+>   		io_geom.max_errors =3D btrfs_chunk_max_errors(map);
+>
+> @@ -6789,6 +6799,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info,=
+ enum btrfs_map_op op,
+>   	    op !=3D BTRFS_MAP_READ) {
+>   		handle_ops_on_dev_replace(bioc, dev_replace, logical, &io_geom);
+>   	}
+> +	up_read(&dev_replace->rwsem);
+>
+>   	*bioc_ret =3D bioc;
+>   	bioc->num_stripes =3D io_geom.num_stripes;
+> @@ -6796,11 +6807,6 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info=
+, enum btrfs_map_op op,
+>   	bioc->mirror_num =3D io_geom.mirror_num;
+>
+>   out:
+> -	if (dev_replace_is_ongoing) {
+> -		lockdep_assert_held(&dev_replace->rwsem);
+> -		/* Unlock and let waiting writers proceed */
+> -		up_read(&dev_replace->rwsem);
+> -	}
+>   	btrfs_free_chunk_map(map);
 >   	return ret;
 >   }
 >
