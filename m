@@ -1,62 +1,62 @@
-Return-Path: <linux-btrfs+bounces-6232-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6233-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F1A5928B65
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 17:15:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D99A928B68
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 17:15:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8D98286F59
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 15:15:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 502F31C24C42
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 15:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 472D616EC10;
-	Fri,  5 Jul 2024 15:14:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A7316F8F1;
+	Fri,  5 Jul 2024 15:14:06 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3EA16E863;
-	Fri,  5 Jul 2024 15:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AEE16EB74;
+	Fri,  5 Jul 2024 15:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720192444; cv=none; b=HJfwSAXYaX3cazGwK+ddy/XfYVjjmBV58DbXiQlOAeO1Ou1ESQt91XcnuSaGTTXPHmJGH4DuN41uCpNEovcHkgACssTNGGf7V8mHx3abVnlG5GQJhG02BKYXTIv2Thcn36/bp5jdN10uvOLGfR/4IaPcZtYSAgFqsGP9CmwHrYI=
+	t=1720192445; cv=none; b=HNr+HnLV5rZutCltvu+00g89Kg2ls01yo3aAj5GRXmHp82cfj7VP5otWC0zURuVY5tf2RsRUFwUdmJzaSBVCsrjk8Fj95GMOzgeeOPj/dlE/l3x0IGLInMHdraGEsNCmhPDmGJV+X17YsQznka337E0Ha31JBKVqub6QES1iwvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720192444; c=relaxed/simple;
-	bh=3ENqzb97joBmtCY5X5PZSKhZQlDsXq21Lx8PuDDcIc4=;
+	s=arc-20240116; t=1720192445; c=relaxed/simple;
+	bh=QMnTCTtJiJrPH2JIySIPFKT86DVHKnbXKEgtE+He4bc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=u9mUaLLXoKiHEJ65mIbzFZ73TWepLdrRkiDrxAFVd7iN1Sf/DLgnrcKAy46VhEg/pIrfdO5264iKXzx8QcmPLgB5R+/cm3SBvcbEzgpct0I6Ym+tYQCWMHon7jU0j4ew9cxTx8LdlJ8nQ+vXSzijQ3x1nozxA3++uxplkzFabRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.54
+	 In-Reply-To:To:Cc; b=R/9Sacz/djI2Ivcg1FUY5ZreHqLsh7mfV3d2nGiojOLGNhFNt5/7/AQOksD03daTVP9XZRS7qyjQ6RVnTRQsoMagEvwtZoUMWkaEJwuFqy5GM/swkQoF/Jtegz3kQfE7s/qQaAWFE178Fq7JnaMjEetwLLcXMyEWwWCarN+idk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a77bf336171so255796266b.1;
-        Fri, 05 Jul 2024 08:14:02 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a77cb7c106dso99364766b.1;
+        Fri, 05 Jul 2024 08:14:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720192441; x=1720797241;
+        d=1e100.net; s=20230601; t=1720192442; x=1720797242;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T4fJBqRhN/ALwL+ec4EbLWnLhrO++xB8AGJ6zLwkd/8=;
-        b=ucRNPQ7oXfWPiYnLkea0+eiAU70soKhTaZ/OfO4CK2ZtcQ9jSuGjFNltKFduR6VAdw
-         mvdIi4YKzjvqrdXlLl7GhMl/VLCuSpya34XWWOeiJ/EJOGGOtbErw4CgA4ipKZgK1mkh
-         2VEkQ/r4LXuq6P7/feH3XFiKQw0gDWKTxO4EAQnvqdB9L/hfXX0qw9lrtUmPcK6EXX50
-         mu8xgiaNrxsgli/dVFHp7NcRRm5eFmkinOOQ0XXDKbMF+qt3JY1hng6+6K16Qcw9eo5T
-         BT5n33AzlxkRu2zSZlkAD6CQrOANGAiikWmJAHXSaimughrI77heh6lytvGv/JErgacJ
-         ScrA==
-X-Forwarded-Encrypted: i=1; AJvYcCXcOcotLP88Ag8kVHRAOkONARw7XrveVo+WRHZFNhRWpJXWSRK/+5d9IKKn2ZoFBj52iYwa7SjW5yPEFzhQzUwvv/cVd6brNbP5T2St
-X-Gm-Message-State: AOJu0YwbvTABi8is1QPQoAh7NSV1KdyQO5eINhORbqSfF6yzMgxCmwHQ
-	q2jdMO2o9yoTWej7AxzSj0LtB40InD5QUtcVi/z6E412D7MBbvO5Pu1GIQ==
-X-Google-Smtp-Source: AGHT+IERhMPGGhZZrLR1D1u7uiSii05k0mKMva35MIAJ7UCZLA/ge1PpSS9I612ZRZCQJPvhlqqRPQ==
-X-Received: by 2002:a17:906:4685:b0:a6f:20e0:1d1a with SMTP id a640c23a62f3a-a77bdadffb9mr397468366b.33.1720192441083;
-        Fri, 05 Jul 2024 08:14:01 -0700 (PDT)
+        bh=h7ntbhccgXALWpWLNHUmzWoIXG74udOWs1KUfAeRQqk=;
+        b=HTDZv8E7FioHlmJMnZuveOZbJPzEGglAu4VwtkeGjkIfZZLpCFgqXBSdA0D7S3y1lp
+         WRMRQa4hhL/+t6cPZDzUrK/srQEAAx1Rz4veDZwEJen3msPWVgQXEkrC4dGSea1IU167
+         N/T8qU6o2qXWH31XT0TedkxZywYWnbWgfXtQvinBqWTIS290jLmrTVtuOpvb0XwzjZh4
+         QGYRtWJgG5ZVpcHSEZxHOlT2v17QKLoaPV5bjFEPyPJqGWNxzcuRPXmXq+6U3BeNcAg6
+         0fV1hEiIeiOlGjwCmezpNbdgpYDcsph2ayUlvF0u2qoIcPv7+6kpnsNS5pGVgHT4aadV
+         NT7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWr6h5xXhkNsVQRiQFm/rSeyJTu74boIOLJJjgCVsiKCb06ONnc2fDN6XHCL4HmKNc1Ul775+DNnGOnqB2uIbocZUXxpl4fQDn0WEJx
+X-Gm-Message-State: AOJu0YzJUZRTPve8WKAPV+/uevA8KFembCEiNeCSFz+DNuo6OwswSYL4
+	YA/pxYCCmDQ57FJGl/IphNwzoOEtRLaM3JbTKn1+4H2rjVWpQjYK5o/LJQ==
+X-Google-Smtp-Source: AGHT+IHgG+iQF5DSzz32+NK65g5H7nR0U1CRekw5L64vzqWqFJRL1PUd1roZp9OHvKKy92DK1dTnMw==
+X-Received: by 2002:a17:907:6e8d:b0:a72:8d40:52b8 with SMTP id a640c23a62f3a-a77ba44cf6dmr367219966b.3.1720192442400;
+        Fri, 05 Jul 2024 08:14:02 -0700 (PDT)
 Received: from [127.0.0.1] (p200300f6f72f3200fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f72f:3200:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72aaf6336csm686226566b.70.2024.07.05.08.14.00
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a72aaf6336csm686226566b.70.2024.07.05.08.14.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jul 2024 08:14:00 -0700 (PDT)
+        Fri, 05 Jul 2024 08:14:01 -0700 (PDT)
 From: Johannes Thumshirn <jth@kernel.org>
-Date: Fri, 05 Jul 2024 17:13:51 +0200
-Subject: [PATCH v4 5/7] btrfs: don't hold dev_replace rwsem over whole of
- btrfs_map_block
+Date: Fri, 05 Jul 2024 17:13:52 +0200
+Subject: [PATCH v4 6/7] btrfs: rename brtfs_io_stripe::is_scrub to
+ commit_root
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240705-b4-rst-updates-v4-5-f3eed3f2cfad@kernel.org>
+Message-Id: <20240705-b4-rst-updates-v4-6-f3eed3f2cfad@kernel.org>
 References: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
 In-Reply-To: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
 To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
@@ -73,116 +73,81 @@ To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
 Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Johannes Thumshirn <johannes.thumshirn@wdc.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3501; i=jth@kernel.org;
- h=from:subject:message-id; bh=FSQfegSNF0R+Xzt230/PK3KBm1geIM/wZFBq+IyvNp8=;
- b=owGbwMvMwCV2ad4npfVdsu8YT6slMaR18G4Sjk8zeXlu4fvys18n7Nt7sczMZ17I9hlMgcHTT
- kvd8vk2s6OUhUGMi0FWTJHleKjtfgnTI+xTDr02g5nDygQyhIGLUwAm8mcOI8PSz83i9zomT6rO
- N//6e374vU8cK/d/0zg949a5uVHWHd8CGf7pbL+fFbvjUmGIzEk9bf0bM6z3/LjJ3dmf39EZkR/
- lwcYLAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2170; i=jth@kernel.org;
+ h=from:subject:message-id; bh=Fok4bTdJnN9CEf4tAvRVtqyQ7FJSvMwR/2K0tVu4Mso=;
+ b=owGbwMvMwCV2ad4npfVdsu8YT6slMaR18G4yVp3StJ9h4+M69Z75c6wn7PWbc+meIVeyss6WR
+ j891SVnO0pZGMS4GGTFFFmOh9rulzA9wj7l0GszmDmsTCBDGLg4BWAiywQYGQ7mSn86f+2CWH71
+ 3SjrY/t7vEU2uzdpdE1WFQ3YuSXTPoDhn+EeuTUn/554bVaqVbiU6++7xa5Gs+rCTiXVth0KT0t
+ cygwA
 X-Developer-Key: i=jth@kernel.org; a=openpgp;
  fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Don't hold the dev_replace rwsem for the entirety of btrfs_map_block().
-
-It is only needed to protect
-a) calls to find_live_mirror() and
-b) calling into handle_ops_on_dev_replace().
-
-But there is no need to hold the rwsem for any kind of set_io_stripe()
-calls.
-
-So relax taking the dev_replace rwsem to only protect both cases and check
-if the device replace status has changed in the meantime, for which we have
-to re-do the find_live_mirror() calls.
-
-This fixes a deadlock on raid-stripe-tree where device replace performs a
-scrub operation, which in turn calls into btrfs_map_block() to find the
-physical location of the block.
+Rename brtfs_io_stripe's is_scrub to commit_root, as this is what it
+actually does, instruct btrfs_get_raid_extent_offset() to look at the
+commit root.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/volumes.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ fs/btrfs/bio.c              | 2 +-
+ fs/btrfs/raid-stripe-tree.c | 2 +-
+ fs/btrfs/scrub.c            | 2 +-
+ fs/btrfs/volumes.h          | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index fcedc43ef291..4209419244a1 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6650,14 +6650,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	max_len = btrfs_max_io_len(map, map_offset, &io_geom);
- 	*length = min_t(u64, map->chunk_len - map_offset, max_len);
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index f04d93109960..5f36c75a2457 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -679,7 +679,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 	blk_status_t ret;
+ 	int error;
  
-+again:
- 	down_read(&dev_replace->rwsem);
- 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
--	/*
--	 * Hold the semaphore for read during the whole operation, write is
--	 * requested at commit time but must wait.
--	 */
--	if (!dev_replace_is_ongoing)
--		up_read(&dev_replace->rwsem);
+-	smap.is_scrub = !bbio->inode;
++	smap.commit_root = !bbio->inode;
  
- 	switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
- 	case BTRFS_BLOCK_GROUP_RAID0:
-@@ -6695,6 +6690,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 			   "stripe index math went horribly wrong, got stripe_index=%u, num_stripes=%u",
- 			   io_geom.stripe_index, map->num_stripes);
- 		ret = -EINVAL;
-+		up_read(&dev_replace->rwsem);
- 		goto out;
+ 	btrfs_bio_counter_inc_blocked(fs_info);
+ 	error = btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_length,
+diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+index ba0733c6be76..39085ff971c9 100644
+--- a/fs/btrfs/raid-stripe-tree.c
++++ b/fs/btrfs/raid-stripe-tree.c
+@@ -259,7 +259,7 @@ int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
+ 	if (!path)
+ 		return -ENOMEM;
+ 
+-	if (stripe->is_scrub) {
++	if (stripe->commit_root) {
+ 		path->skip_locking = 1;
+ 		path->search_commit_root = 1;
  	}
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 14a8d7100018..9c483b799cf1 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1688,7 +1688,7 @@ static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
+ 					    (i << fs_info->sectorsize_bits);
+ 			int err;
  
-@@ -6710,6 +6706,8 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		 */
- 		num_alloc_stripes += 2;
- 
-+	up_read(&dev_replace->rwsem);
-+
- 	/*
- 	 * If this I/O maps to a single device, try to return the device and
- 	 * physical block information on the stack instead of allocating an
-@@ -6782,6 +6780,18 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		goto out;
- 	}
- 
-+	/*
-+	 * Check if something changed the dev_replace state since
-+	 * we've checked it for the last time and if redo the whole
-+	 * mapping operation.
-+	 */
-+	down_read(&dev_replace->rwsem);
-+	if (dev_replace_is_ongoing !=
-+	    btrfs_dev_replace_is_ongoing(dev_replace)) {
-+		up_read(&dev_replace->rwsem);
-+		goto again;
-+	}
-+
- 	if (op != BTRFS_MAP_READ)
- 		io_geom.max_errors = btrfs_chunk_max_errors(map);
- 
-@@ -6789,6 +6799,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	    op != BTRFS_MAP_READ) {
- 		handle_ops_on_dev_replace(bioc, dev_replace, logical, &io_geom);
- 	}
-+	up_read(&dev_replace->rwsem);
- 
- 	*bioc_ret = bioc;
- 	bioc->num_stripes = io_geom.num_stripes;
-@@ -6796,11 +6807,6 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	bioc->mirror_num = io_geom.mirror_num;
- 
- out:
--	if (dev_replace_is_ongoing) {
--		lockdep_assert_held(&dev_replace->rwsem);
--		/* Unlock and let waiting writers proceed */
--		up_read(&dev_replace->rwsem);
--	}
- 	btrfs_free_chunk_map(map);
- 	return ret;
- }
+-			io_stripe.is_scrub = true;
++			io_stripe.commit_root = true;
+ 			stripe_len = (nr_sectors - i) << fs_info->sectorsize_bits;
+ 			/*
+ 			 * For RST cases, we need to manually split the bbio to
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 37a09ebb34dd..25bc68af0df8 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -444,7 +444,7 @@ struct btrfs_io_stripe {
+ 	/* Block mapping. */
+ 	u64 physical;
+ 	u64 length;
+-	bool is_scrub;
++	bool commit_root;
+ 	/* For the endio handler. */
+ 	struct btrfs_io_context *bioc;
+ };
 
 -- 
 2.43.0
