@@ -1,147 +1,138 @@
-Return-Path: <linux-btrfs+bounces-6257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6258-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31305928FAC
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 02:12:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9159D9291BD
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 10:11:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55EA81C21C69
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 00:12:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 454A21F23178
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 08:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6224A35;
-	Sat,  6 Jul 2024 00:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB6D45BF9;
+	Sat,  6 Jul 2024 08:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kEwHME6V"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lQCFq8Fd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA63A2D;
-	Sat,  6 Jul 2024 00:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50B86AC0
+	for <linux-btrfs@vger.kernel.org>; Sat,  6 Jul 2024 08:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720224729; cv=none; b=fojacH4EBTDbCngraohF1aztXHPfw36hS1TGbj4D/u97MOKLd41lRD75oFFgPOxl4Exk257qFNB4cHl6ALpHhRNE9ufN8EaMQlxvv4DnJlTZ0fcVrDgxt9b5l/wlCTD72Rit4eEd8gk0EDt3KbBB2vMCVoTsVTPQnjFdqlkqDiI=
+	t=1720253467; cv=none; b=h7vaHugZB6K08zOXbu2+JQVXYKRnDKHzSqXPwfVAbuzeACmr3KXrp1VpyKiQkaU4zur9zQKSYX/nviKuJh4iQK3tBnoo4nVCt6hIjGIRytJ2jutZvMc2twbGfZ2mvki09LPll9gFTVSFz0767PWCqS/sAGtLiMGG6esjXmCnnts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720224729; c=relaxed/simple;
-	bh=k/fo/4vLr7G1b5FnRs+xhoG2wyCli0F4i6F+itX6vlQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GXuMKd3wlRCwmWtTIzBdE7MWBq02sMmy70mfL55NAaJ6VcOS1lOgX920Q8KSdj7EI9z5i2kajye8OiOpzhJEDw+V5Fz9kUezgGZ9hg0Z3kq2IRHvt+PWgoW1lQ9nS2Tr14dOb8Ui0jKYmTNNyegY9c0o4Bn9l0p6DsJcqC5OBPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kEwHME6V; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-64f4fb6ce65so18505947b3.2;
-        Fri, 05 Jul 2024 17:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720224727; x=1720829527; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vBTT/deLqJ1bwFj4A2vyIjvPYow0/EdCovNSuo3+N+c=;
-        b=kEwHME6VB3/vdMWEgZUrz6DSpIYwta+xt07Gx8/vXPXdRbyOPaKQpLeDg2I1usdmW2
-         V9d9CKwUUYE1sAvqSEYbZYEzl3xmX3apw3Vd+uwBf2jsW5SFB3Yycn4+R+YNmQZAD0TA
-         pJ5Y2UexA53tz0JUQ2ohivC9iqrlg8WvaXkAtapVgmqrpqQWm2rJoRgsswxXd6Ifz6gR
-         u8T+SmyQmuqi2pnYS2S8KbKOVktmHKXsWB+5R94v10qtjubw5ktXyD1ln4/WJy7ypf7A
-         Tt7CDGneD1/DowwSef1hMz3BSCU4tUcaxs2ZgY3DTLMkisAsyyOgSlolCC5mSwiCmmLL
-         8i5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720224727; x=1720829527;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vBTT/deLqJ1bwFj4A2vyIjvPYow0/EdCovNSuo3+N+c=;
-        b=IRooKtud6NdcU/ryOSjPvzFkNgS5AR8BQZKemn1MY71XfR60HWUZQ/PmDUheGQQP1Y
-         pRZSd83kNHg7jU7AEl5CtJiFgmbztYzhn6uGe6OSn0c4hkKTY4zh3ZMH4sKz1QCbIb/b
-         y8NP73oYuFfKTNVfp6wz0vBYd51D18F+PrJwBglqw/5yexyujFjRI/Sh9JtuX9DH3idx
-         sEML7cN15q+4BLfY8Sj4w/cWa6VA/TZ97Msy+WPjRSdY2lUpGpReFspp0iwBl2URDY4x
-         c2riHfu5vqvzYe+vY0nUi0Kp4RUSXZsuwO8NX5Rd1Oyt7R9LVzfNg9Y7K+24vl31EyrK
-         pu3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXr3i8HAsicCE9DfkuZrGOOXhVRFz2Ix/MLkM+ZkABVBiCbZ8Vt9FjHSnwkpVQ+FXWedjP7/6GoJhyeE6T7NW6VCwNhN5pyOmJ230B+RvD7LYuuoXObMVTSac/y7ksFmoKtFTBpif54OUc=
-X-Gm-Message-State: AOJu0Yx43GDuJRY2aR1780LaOU4Is8Hpp/4fIDdzIXAn3niGqBzc5Kmd
-	0o2sGYcchQ9WbOtQmlgkGxShgopV602avCCSggUrOyThK4NRKTFNhEZQCMEgFwA0c/QXMvAM4Ot
-	2HDhb7emO9mlp8oqs311IwHZcB9w=
-X-Google-Smtp-Source: AGHT+IHl00DB5lXcnle5oez+bUlSAk/kaG3U9/6sbycSjRwDjbucmdsBlfppNjNxMo8MiIyhZDs9xcQeWqjD0WI54YY=
-X-Received: by 2002:a81:8303:0:b0:62c:c62e:e0db with SMTP id
- 00721157ae682-652da927280mr54086967b3.44.1720224727260; Fri, 05 Jul 2024
- 17:12:07 -0700 (PDT)
+	s=arc-20240116; t=1720253467; c=relaxed/simple;
+	bh=Bcvb3dk3MfFO4HllkAzX7ZgR0hdcdB4bU2VOhSAMuXk=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=SpW6CuQ36uXIP7z3w21HkBQVuV1idrlCxB8v+g144WuS+6Y9QTm+ujGaHVk/PMZoHlrH4S1+MF07r5YC3F7FQcdevxbekEai5MU/LCNlv594yB9CldKLh2ahQh/Q2C77BavxTW9cyc/8ckPaN8bhEj7yLscXF77GNz3u/d9BO3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lQCFq8Fd; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1720253459; x=1720858259; i=quwenruo.btrfs@gmx.com;
+	bh=DuPUGaP5333Y/q2ssh5McriHZfSiXSY17VOQfBcKCZs=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=lQCFq8Fd9yc6HuI7J/9KI6BXcJfXt+kA5dWVm0tzLw9qOh6kIDbQtrorFZaM80Qm
+	 5S6p7dD1Hf3cs71Axcu04VJKHBa5bTMeQhBnTmlmb8MoQbwAgJy4rIhDqyxLsuuVM
+	 FMk5jT69Oi8fU/TnzJExTjfsPxq/tE3ATMHZgQYa64XiJ9Yd16s3D1Zoo5fX9rB5l
+	 SJRWv7ai8JPn1iQcag89qX5I7nW2lsV6N6xzwNpc/KaocUu/VDOTe9cWM0FuPEGEX
+	 sabxMKrJW++yJpWLat4STmwBriUtqNl+aBF+hEgBREb1N2uNDIXUFQK2882gmbJEK
+	 VXJx234O5YEWTRVgDg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wll-1sF2HD35C5-00xEQ8; Sat, 06
+ Jul 2024 10:10:59 +0200
+Message-ID: <603269e5-f3d6-4c42-a2af-6287f5e0ceca@gmx.com>
+Date: Sat, 6 Jul 2024 17:40:55 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
- <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
- <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
- <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
- <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
- <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
- <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
- <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
- <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
- <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
- <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
- <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
- <CAK-xaQb2OrgNOKKXp8d_43kqMNyuHxS1V8jSDL6PdNZPTv79+g@mail.gmail.com>
- <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com> <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
-In-Reply-To: <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
-From: Andrea Gelmini <andrea.gelmini@gmail.com>
-Date: Sat, 6 Jul 2024 02:11:50 +0200
-Message-ID: <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com>
-Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
- execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
-	dsterba@suse.com, josef@toxicpanda.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Linux Memory Management List <linux-mm@kvack.org>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Memory cgroup and special hidden inodes
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5400uQ2riDUdO96ce+lv8SPaMc+5119tDE43wdFO10oC0EI7QCD
+ VpIOz8aOqwFxHb9O/kQdRkGBZOpuYwvul07MNY570mRYqkjJuQQz4IWmp+dGf0eKgzOKiVP
+ tzpZiTrTpB9A3qHn6EMnC8MWItag+h0O1ErC6TPzkpMvt7iuhdKhZtBebFlhIR9j4NFI8Qm
+ cf/lop2MR36ZWm77JmAEg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Bl9tXzdf3aU=;1Ho6lFkBn5g+4oGKJcPoAX9yq6p
+ sMivGkdPaHqzTLdac/OSLmJs+QiWqoZctJNYPiqhVuG09R0yAs0wXU5kYxO1D9qBvEbEY3NpE
+ Dx+w2YgsQtin/i8C6uQeDgrN7zdAUErNhjMNxaTJ5IfNykbsNfNgF2EcjVWmM920pFRUUJ8dj
+ GDyHmG/jM98quYkQuAQMJGNUU6eG7THWxdtsJEGvQU0R1Ph2I5UC+dMx3guZv4gm7jWo2PTFL
+ 3UGXphlqgK1TGVWD9GaCNAnOYsoqfj5yFOl9RcbfWCFJavcM0q2gdtCGghvVHybdNVksqKYFu
+ bhRR3469flTnsKWmzQfPaT67qNk+Z9MJOlqFCerVrVXYJoNik8cj+m60iKShwj0BGkFbehcot
+ CPg5/qxyyeuI364fRyPTdhe1Qumoh4nUSv+IB1eJP6rrcKSp8w0OV8kbQ5zw2srlVGcr0nb//
+ TaMdQ9GgZVPB8/RtOl/XAxGqZ0Rj3JAL0i5CzjY1JvvPbA2l/SbJfrELwo+UGcoxcI9XGapFT
+ 8oMm+UNc+izsGiATaZcIK/Occ3RbBqcMCMkHlXXz8yBc7GngbV+3vMRGK+zE4PCvoDztbw+NE
+ QlQ4yn+Qvd3HGTDYHzOo7VmI073VmCFYNNBdbCqhs4f+bS7TwqKy3moEx/23gYBhskb4WaKQC
+ ms0zIuKH+AR2wLDQ/k4JyUirB0h2M956GJOZ690JNjMMhdoec0aJ58PawOtra9Hm5qhrtqE0W
+ 50IATERtQgzqzRBOGGTMGOyGrttRfjD5sVQqF8efBep9IFWvekWTG4YLOOtyOTANKKFewpAyj
+ l6Kfge03kMDmrm9apYs16zVD75sotbkMJpI8kgWAfVL5Y=
 
-Il giorno gio 4 lug 2024 alle ore 19:25 Filipe Manana
-<fdmanana@kernel.org> ha scritto:
-> 2) Then drop that patch that disables the shrinker.
->      With all the previous 4 patches applied, apply this one on top of them:
->
->      https://gist.githubusercontent.com/fdmanana/9cea16ca56594f8c7e20b67dc66c6c94/raw/557bd5f6b37b65d210218f8da8987b74bfe5e515/gistfile1.txt
->
->      The goal here is to see if the extent map eviction done by the
-> shrinker is making reads from other tasks too slow, and check if
-> that's what0s making your system unresponsive.
->
-> 3) Then drop the patch from step 2), and on top of the previous 4
-> patches from my git tree, apply this one:
->
->      https://gist.githubusercontent.com/fdmanana/a7c9c2abb69c978cf5b80c2f784243d5/raw/b4cca964904d3ec15c74e36ccf111a3a2f530520/gistfile1.txt
->
->      This is just to confirm if we do have concurrent calls to the
-> shrinker, as the tracing seems to suggest, and where the negative
-> numbers come from.
->      It also helps to check if not allowing concurrent calls to it, by
-> skipping if it's already running, helps making the problems go away.
+Hi,
 
-Uhm... good news...
-To recap, here's this evening tests:
+I'm wondering how memory cgroup handles the special inodes, which are
+not exposed to end users and are only utilized by the filesystem itself.
 
-Kernel 6.6.36:
-   Fresh BTRFS: (tar cp . | pv -ta > /dev/null): 0:03:53 [ 231MiB/s]
-(time and average speed)
-   Aged snapshots: (tar cp /.snapshots/|pv -at -s 100G -S >
-/dev/null): 0:02:20 [ 726MiB/s]
+Btrfs has at least 3 usages of such hidden special inodes:
 
-Kernel rc6+branch+2nd patch:
-   Fresh BTRFS: 0:03:14 [ 278MiB/s]
-   Aged snapshots: I had to stop. PSI memory > 80%. Processes stucked
-for most time. i.e.: mplayer via nfs stops every few seconds for a
-while, switching virtual desktop takes >5 seconds. Also "echo 3 >
-drop_caches" takes more than 5 minutes to finish (on the other two
-kernels, it was quite immediate).
+- Btree (metadata) inode
+   All metadata are mapped in the page cache of btree inode.
+   This is the most critical usage, as btrfs has tons of metadata and
+   if mem cgroup is limiting the memory usage of btree inode page cache,
+   a lot of thing can go wrong pretty easily.
 
-Kernel rc6+branch+3rd patch:
-   Fresh BTRFS: 0:03:40 [ 245MiB/s]
-   Aged snapshots: 0:02:03 [ 826MiB/s]
-   N.b.: no skyrocket PSI memory, no swap pressure, no sluggish results!!!
+   And a lot of operation on this inode has no obvious task bound to.
+   E.g. a lot of delayed operations happens in workqueue context, I'm not
+   sure which cgroup those memory would be charged on.
 
-Now, that was just one run, I'm going to use this patch for a few
-days. Next week I can tell you for sure if everything is right!
-For the moment it seems we have a winner!
+- Data reloc inode
+   This is only utilized by relocation, and is only transient.
+
+- Free space cache inode(s)
+   They are already being phased out, and the new free space cache tree
+   is fully rely on the btree inode.
+
+So my question is, do these special inodes need to be managed by cgroup
+in the first place?
+
+Thanks,
+Qu
 
