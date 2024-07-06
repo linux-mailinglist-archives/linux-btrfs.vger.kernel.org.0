@@ -1,208 +1,147 @@
-Return-Path: <linux-btrfs+bounces-6256-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEAA2928F94
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 01:32:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31305928FAC
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 02:12:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAF66284F4D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2024 23:32:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55EA81C21C69
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 00:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30076148FE0;
-	Fri,  5 Jul 2024 23:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6224A35;
+	Sat,  6 Jul 2024 00:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Y7vTi1Il"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kEwHME6V"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E34F63A8CB;
-	Fri,  5 Jul 2024 23:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA63A2D;
+	Sat,  6 Jul 2024 00:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720222349; cv=none; b=TVoS+FKlqnQ+MqqDO3TPWoexIGBR1iSzUeejMpHtd8zA2wQPzHYbKLJSII81AG65QYT6EO3JjfEZMjQrqR/IH8dh8Cu09lP6DczxY2gALHWas10OyBNcPdxifZOyhK0dzgzwqPtbb0PhG/zRexo+8SBLLp0bIvb84sn1KIDKGI0=
+	t=1720224729; cv=none; b=fojacH4EBTDbCngraohF1aztXHPfw36hS1TGbj4D/u97MOKLd41lRD75oFFgPOxl4Exk257qFNB4cHl6ALpHhRNE9ufN8EaMQlxvv4DnJlTZ0fcVrDgxt9b5l/wlCTD72Rit4eEd8gk0EDt3KbBB2vMCVoTsVTPQnjFdqlkqDiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720222349; c=relaxed/simple;
-	bh=RlWuyUwXnpbKt5Aix7BPTFrQl+92BuIbeVNT14DQx6U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NNHKGTldVXBz0bGhYxfYtmduuUPfHF5RBfA1pgxEyPzaiIK77nnGdN7JGgEm5+iwkD3gSBnetknyOotiD5ZCKzj3+UNWH06YuprhCzrKsz4qz/1xG5Hgbc+Y9lzkcJrm9MpkRWPQUFArrg7o5VKszD4OuL8dZxsMvtMMk9+FG6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Y7vTi1Il; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1720222333; x=1720827133; i=quwenruo.btrfs@gmx.com;
-	bh=QEYn+d5m+RtO8e+9GjlC30TiJIYtcZ6lh+yFt5EGAJk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Y7vTi1Ilj1FcHUGQxu9HCCG0Fm1Kx956X3Kr/iPgRUfoWnQApXCNAxXztwX7qf/u
-	 sXUpD/yplQszUh73LMjLx3qS6mMVG4gyjlv1z8g9LUEME8blOZRnzRpLL9zUBDzw0
-	 QyXqENYpCf5eXT4k3r25oFjJq4nPMjZJBssoJcENX9JEX0j7NVRrKlWZlohZGH1Mf
-	 hFcO35nl79TaBzdrHQGGcGl77xl76CbiafRrhKooUHvgSmeSEF8O9wgvw5riRv2SO
-	 Y1e7XWwyUjnNYX4gqQMN44teB8QBnsmaBGfacmAQ7F8jEq5oaRQul5BCCg+NzLz1B
-	 LuZMP00si9Jnv2HOaA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mi2Jt-1rvEcP3S0v-00m9gc; Sat, 06
- Jul 2024 01:32:13 +0200
-Message-ID: <f184b3ac-7bf7-45cb-b126-3da7c52980ad@gmx.com>
-Date: Sat, 6 Jul 2024 09:02:08 +0930
+	s=arc-20240116; t=1720224729; c=relaxed/simple;
+	bh=k/fo/4vLr7G1b5FnRs+xhoG2wyCli0F4i6F+itX6vlQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GXuMKd3wlRCwmWtTIzBdE7MWBq02sMmy70mfL55NAaJ6VcOS1lOgX920Q8KSdj7EI9z5i2kajye8OiOpzhJEDw+V5Fz9kUezgGZ9hg0Z3kq2IRHvt+PWgoW1lQ9nS2Tr14dOb8Ui0jKYmTNNyegY9c0o4Bn9l0p6DsJcqC5OBPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kEwHME6V; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-64f4fb6ce65so18505947b3.2;
+        Fri, 05 Jul 2024 17:12:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720224727; x=1720829527; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vBTT/deLqJ1bwFj4A2vyIjvPYow0/EdCovNSuo3+N+c=;
+        b=kEwHME6VB3/vdMWEgZUrz6DSpIYwta+xt07Gx8/vXPXdRbyOPaKQpLeDg2I1usdmW2
+         V9d9CKwUUYE1sAvqSEYbZYEzl3xmX3apw3Vd+uwBf2jsW5SFB3Yycn4+R+YNmQZAD0TA
+         pJ5Y2UexA53tz0JUQ2ohivC9iqrlg8WvaXkAtapVgmqrpqQWm2rJoRgsswxXd6Ifz6gR
+         u8T+SmyQmuqi2pnYS2S8KbKOVktmHKXsWB+5R94v10qtjubw5ktXyD1ln4/WJy7ypf7A
+         Tt7CDGneD1/DowwSef1hMz3BSCU4tUcaxs2ZgY3DTLMkisAsyyOgSlolCC5mSwiCmmLL
+         8i5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720224727; x=1720829527;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vBTT/deLqJ1bwFj4A2vyIjvPYow0/EdCovNSuo3+N+c=;
+        b=IRooKtud6NdcU/ryOSjPvzFkNgS5AR8BQZKemn1MY71XfR60HWUZQ/PmDUheGQQP1Y
+         pRZSd83kNHg7jU7AEl5CtJiFgmbztYzhn6uGe6OSn0c4hkKTY4zh3ZMH4sKz1QCbIb/b
+         y8NP73oYuFfKTNVfp6wz0vBYd51D18F+PrJwBglqw/5yexyujFjRI/Sh9JtuX9DH3idx
+         sEML7cN15q+4BLfY8Sj4w/cWa6VA/TZ97Msy+WPjRSdY2lUpGpReFspp0iwBl2URDY4x
+         c2riHfu5vqvzYe+vY0nUi0Kp4RUSXZsuwO8NX5Rd1Oyt7R9LVzfNg9Y7K+24vl31EyrK
+         pu3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXr3i8HAsicCE9DfkuZrGOOXhVRFz2Ix/MLkM+ZkABVBiCbZ8Vt9FjHSnwkpVQ+FXWedjP7/6GoJhyeE6T7NW6VCwNhN5pyOmJ230B+RvD7LYuuoXObMVTSac/y7ksFmoKtFTBpif54OUc=
+X-Gm-Message-State: AOJu0Yx43GDuJRY2aR1780LaOU4Is8Hpp/4fIDdzIXAn3niGqBzc5Kmd
+	0o2sGYcchQ9WbOtQmlgkGxShgopV602avCCSggUrOyThK4NRKTFNhEZQCMEgFwA0c/QXMvAM4Ot
+	2HDhb7emO9mlp8oqs311IwHZcB9w=
+X-Google-Smtp-Source: AGHT+IHl00DB5lXcnle5oez+bUlSAk/kaG3U9/6sbycSjRwDjbucmdsBlfppNjNxMo8MiIyhZDs9xcQeWqjD0WI54YY=
+X-Received: by 2002:a81:8303:0:b0:62c:c62e:e0db with SMTP id
+ 00721157ae682-652da927280mr54086967b3.44.1720224727260; Fri, 05 Jul 2024
+ 17:12:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] btrfs: rename brtfs_io_stripe::is_scrub to
- commit_root
-To: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
- <20240705-b4-rst-updates-v4-6-f3eed3f2cfad@kernel.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240705-b4-rst-updates-v4-6-f3eed3f2cfad@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m/CFMkxkVQiOvk0TSPfgQYHWouBScs9dwAf4EADZAeemCskuRfU
- AslYXqxByQpvs3//s2UM3cIH22iAr1J3VlHWpI+XQh3TZFwQBHG7uX0miwQGIyfSYKkdhlV
- x0ywOfhcNsbOrP3avuatB/dZg7u4nWD2AFtP8jOfJ6rwx/FZsFtuTXxgJtfBBCpvtZI0uKX
- Qnhfla4NktwnGZKBj5j7A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:xtuuOTN5DDI=;j+eyS1u0xp2vs8h4bot1KTa/31a
- VCWmFJVVzQLFG/bdUJMgxqU94ugLTbK3R6+C/UULXIzuEUJk76I5mPc16u0d6UuzctrJwpHQY
- ENat3nbQxLRLTtWue53mLisFC7Sm6b5iPAzwTvoMhhD24OO6GLefmgQDqPf7a9E6BJd/a9hEQ
- RL9mhKnhRQfAIRwtzX6zvZoPNFpRZR4GHEhncL/ltaUrsramXp7jUHkRBPaD64eGhqX+qQch5
- +7EtH1kOexmnvzGztaCZ7qZKAWEPLqBIWhqvpO0/wSsVQ1I0eKEm2Hp9c1yNEROnj03HB5hrZ
- FVOVSdKw0Bmp9VVVJP6ZklubTmIELn83LubsiL17jtLKRW4dztlC1JOpz+4px3zV2R0I1l/is
- AtTXVhsP1xkQDvgQGJuyWh/KcL5OrvxTJ4fXBwZ2n1DbX3UDPfHIuMMmWmltGq2HlfQ7a9loU
- HljdllPr4REM9WIgmzFqEyYDeEUP/RNWJIvPXmRLOnIfXFE6eiGQfL+YhsG3zwS0eD6SfkbCD
- rEBQO3MGZAcFqLDrNGhH2zW+XjED4wqqCEbozWgCaINWiAREhVsfe+l9H8KNbAswzbrhPQrVk
- EhqkLpFE9E92gGB7H/msQtXDrV/nVrzAmOsBosfnD9mSazCTQ2IAXUZm9B/8bcPmyB9L1EgsO
- i+XPT8c1mwGqxNAEG7/wwslzx8FkVa91k04pJC+I7k+vLNzV6IzmwcqK9/h37crAapStNK8E5
- TueGZCYAFkeAKFciwaTF9Ahl2R14Ta3uBofrW6TgyRqgLg7UE8FXTxly9lBjMx4kSezhhZUkg
- fvTfwfK2LzYowRU9nL/jUJRryhDb3JuzuHBuGoTzWdJTg=
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+ <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+ <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
+ <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
+ <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
+ <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+ <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+ <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
+ <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
+ <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
+ <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
+ <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
+ <CAK-xaQb2OrgNOKKXp8d_43kqMNyuHxS1V8jSDL6PdNZPTv79+g@mail.gmail.com>
+ <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com> <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
+In-Reply-To: <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
+From: Andrea Gelmini <andrea.gelmini@gmail.com>
+Date: Sat, 6 Jul 2024 02:11:50 +0200
+Message-ID: <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com
+Content-Type: text/plain; charset="UTF-8"
 
+Il giorno gio 4 lug 2024 alle ore 19:25 Filipe Manana
+<fdmanana@kernel.org> ha scritto:
+> 2) Then drop that patch that disables the shrinker.
+>      With all the previous 4 patches applied, apply this one on top of them:
+>
+>      https://gist.githubusercontent.com/fdmanana/9cea16ca56594f8c7e20b67dc66c6c94/raw/557bd5f6b37b65d210218f8da8987b74bfe5e515/gistfile1.txt
+>
+>      The goal here is to see if the extent map eviction done by the
+> shrinker is making reads from other tasks too slow, and check if
+> that's what0s making your system unresponsive.
+>
+> 3) Then drop the patch from step 2), and on top of the previous 4
+> patches from my git tree, apply this one:
+>
+>      https://gist.githubusercontent.com/fdmanana/a7c9c2abb69c978cf5b80c2f784243d5/raw/b4cca964904d3ec15c74e36ccf111a3a2f530520/gistfile1.txt
+>
+>      This is just to confirm if we do have concurrent calls to the
+> shrinker, as the tracing seems to suggest, and where the negative
+> numbers come from.
+>      It also helps to check if not allowing concurrent calls to it, by
+> skipping if it's already running, helps making the problems go away.
 
+Uhm... good news...
+To recap, here's this evening tests:
 
-=E5=9C=A8 2024/7/6 00:43, Johannes Thumshirn =E5=86=99=E9=81=93:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Rename brtfs_io_stripe's is_scrub to commit_root, as this is what it
-> actually does, instruct btrfs_get_raid_extent_offset() to look at the
-> commit root.
+Kernel 6.6.36:
+   Fresh BTRFS: (tar cp . | pv -ta > /dev/null): 0:03:53 [ 231MiB/s]
+(time and average speed)
+   Aged snapshots: (tar cp /.snapshots/|pv -at -s 100G -S >
+/dev/null): 0:02:20 [ 726MiB/s]
 
-The commit_root name looks a little confusing to me.
+Kernel rc6+branch+2nd patch:
+   Fresh BTRFS: 0:03:14 [ 278MiB/s]
+   Aged snapshots: I had to stop. PSI memory > 80%. Processes stucked
+for most time. i.e.: mplayer via nfs stops every few seconds for a
+while, switching virtual desktop takes >5 seconds. Also "echo 3 >
+drop_caches" takes more than 5 minutes to finish (on the other two
+kernels, it was quite immediate).
 
-Yes, it is to indicate whether we should search commit root, but since
-only scrub (and dev-replace) is doing such behavior, it doesn't looks
-that odd.
+Kernel rc6+branch+3rd patch:
+   Fresh BTRFS: 0:03:40 [ 245MiB/s]
+   Aged snapshots: 0:02:03 [ 826MiB/s]
+   N.b.: no skyrocket PSI memory, no swap pressure, no sluggish results!!!
 
-Furthermore, commit_root is way more common in btrfs_root::commit_root,
-the same name can lead to different meaning
-(btrfs_io_stripe::commit_root means whether to search commit root, while
-btrfs_root::commit_root means commit root node).
-
-I'd prefer something like "search_commit_root" if we're really going to
-do a rename.
-
-Thanks,
-Qu
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/bio.c              | 2 +-
->   fs/btrfs/raid-stripe-tree.c | 2 +-
->   fs/btrfs/scrub.c            | 2 +-
->   fs/btrfs/volumes.h          | 2 +-
->   4 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index f04d93109960..5f36c75a2457 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -679,7 +679,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbi=
-o, int mirror_num)
->   	blk_status_t ret;
->   	int error;
->
-> -	smap.is_scrub =3D !bbio->inode;
-> +	smap.commit_root =3D !bbio->inode;
->
->   	btrfs_bio_counter_inc_blocked(fs_info);
->   	error =3D btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_lengt=
-h,
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index ba0733c6be76..39085ff971c9 100644
-> --- a/fs/btrfs/raid-stripe-tree.c
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -259,7 +259,7 @@ int btrfs_get_raid_extent_offset(struct btrfs_fs_inf=
-o *fs_info,
->   	if (!path)
->   		return -ENOMEM;
->
-> -	if (stripe->is_scrub) {
-> +	if (stripe->commit_root) {
->   		path->skip_locking =3D 1;
->   		path->search_commit_root =3D 1;
->   	}
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 14a8d7100018..9c483b799cf1 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1688,7 +1688,7 @@ static void scrub_submit_extent_sector_read(struct=
- scrub_ctx *sctx,
->   					    (i << fs_info->sectorsize_bits);
->   			int err;
->
-> -			io_stripe.is_scrub =3D true;
-> +			io_stripe.commit_root =3D true;
->   			stripe_len =3D (nr_sectors - i) << fs_info->sectorsize_bits;
->   			/*
->   			 * For RST cases, we need to manually split the bbio to
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 37a09ebb34dd..25bc68af0df8 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -444,7 +444,7 @@ struct btrfs_io_stripe {
->   	/* Block mapping. */
->   	u64 physical;
->   	u64 length;
-> -	bool is_scrub;
-> +	bool commit_root;
->   	/* For the endio handler. */
->   	struct btrfs_io_context *bioc;
->   };
->
+Now, that was just one run, I'm going to use this patch for a few
+days. Next week I can tell you for sure if everything is right!
+For the moment it seems we have a winner!
 
