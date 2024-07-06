@@ -1,106 +1,169 @@
-Return-Path: <linux-btrfs+bounces-6259-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6260-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CBED9292A1
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 12:48:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3104D929379
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 14:08:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B53282C06
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 10:48:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEED0B20E6D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 12:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5171954907;
-	Sat,  6 Jul 2024 10:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BE87D401;
+	Sat,  6 Jul 2024 12:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JgAaNn/0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f+3XmhCi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3413D4EB3F
-	for <linux-btrfs@vger.kernel.org>; Sat,  6 Jul 2024 10:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A6F50246;
+	Sat,  6 Jul 2024 12:07:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720262889; cv=none; b=ElNT/Zi2FbY0hS21qfAq0yAmLL0TsvLfDjvO3zp2WW+Qt+QHM4biaejbmXNJHcdn5KG4tFZlu0JDAECH11MKg0FoL4+g4Ic1hC8EEn6jxvk9bZAKlHsJYduxAVVq+IspqRYh0Y4HM2prRjkD7DexEw/xGlQO/6DByxVIvVAit34=
+	t=1720267672; cv=none; b=rg7WJMcdksfP7kkZI6fR4GKsMQRcEN4fNdgBjuY7QsZFjCAqIYcj2jqPBGnbmp1tHL19Om07q81MHWvHLYRuE3GYughnwrXGimEz6NkgmIa8YDckTQ+S8EDXUOkUFMP5vx5vW+otOGagKISW5ioJ6FT7Q03gZgN7OBR+MzX0esQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720262889; c=relaxed/simple;
-	bh=DxXvz2l/VR5ZPIy2tNju9iir3Q4LUF/whTn2fh/BA5E=;
+	s=arc-20240116; t=1720267672; c=relaxed/simple;
+	bh=g130VdJy4X5RQveGbr0aWPyXnw4vw6OGxH70BzO++x0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aYnoj9lFan/rW4g1QpXTg/YhNCbfTE8RsV6b3diJixpdsOmLhjdDcaVhaey0B8uiAKhG8hBJsC+e2XEuE37ZXqMmUNtl1Vo5DYK1IzyA6pT6kJCh6innY16Q6icjBxZC9clKPBYx4LgcZc5oZCOD+G/VhnjoIVoWLB2F2gkY76s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JgAaNn/0; arc=none smtp.client-ip=209.85.128.171
+	 To:Cc:Content-Type; b=Z1MdBGWNkL5pUlKRpUViJHQandiiY0MFa/4CgRSkPjzI4lgPxjtMCGoEQedDSXzOI9eHH49wGpVvFObKF2OIbwo/WPpfFcVehJFhH9kAPzUtdvgx93UPy12Xj/aCLbP+eoFr4PHeW8bR0UzEO/4nQwIfsFWvYbVybDiZi9D3+iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f+3XmhCi; arc=none smtp.client-ip=209.85.128.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-643efaf0786so19977467b3.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 06 Jul 2024 03:48:07 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-651815069f8so29234127b3.1;
+        Sat, 06 Jul 2024 05:07:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720262887; x=1720867687; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1720267670; x=1720872470; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DxXvz2l/VR5ZPIy2tNju9iir3Q4LUF/whTn2fh/BA5E=;
-        b=JgAaNn/0nKJoUijeOEM5GMhCQW6UTiY1Aps6KnTI4sfQZVkdCCJnL68271ClM9PBzt
-         1xxOeam4V9RPWuA4xG3r9Y7O5E33awI5gKSC/iI7oxB4AH7g8b6JYIVhGTHhU9Aw7psq
-         DHsSkGdUSNq8wbjFBnQyIeH8sQmMLDczWLzkHmBEsudvGRalK2XSczeiMb+pz1iz7QTL
-         E3TtyXEa3/sFxrkbR05MOe+rMbbtI0deEj5jT/P8VXw4T0Dr8kkhxuqfyAgRxWojS/B3
-         EWSKNgbh+UIU+rAPCSJlz++vGE3rDNUToA8XthCa+iJkQ3+YVuWwOrJo/2/RhPuZX6Y6
-         PnAw==
+        bh=UqjVGacvr99k3S0wau6SJoKWQts7Y2bmo2bsBuOmljA=;
+        b=f+3XmhCiaJkJs+q0npMTL4J8UvClVfUk9Ef0rKiJZXKETFjj2zuYjyj5SqJ2kfDlk7
+         ef7bUf+QAauC5aRnBqnz8Sflgp/rbDq6ahUiq4a3zPWaeLYBVcZllbwVcVroqax5aqh1
+         VGqCzjMDBT5n+HfJsSDmIUU0SsJmKcMEGb0JZ4nZXCAZBCcHLS74MvF2nqgVOQx8WCmd
+         OB/1F85sn6oMGzm4WK3yV/DstxwHQoTumTklprq2Xy1agv3d2hgzMwu0GDPZrXUetIHU
+         lcKzLxZ4BuTpmCPFssTGGk0lWDhprM4SaZFBfOKMQyc90zQEHMS9JhFQ1b55f0zbu6fO
+         iDHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720262887; x=1720867687;
+        d=1e100.net; s=20230601; t=1720267670; x=1720872470;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DxXvz2l/VR5ZPIy2tNju9iir3Q4LUF/whTn2fh/BA5E=;
-        b=XHqvGCXz3TPE1Ur1zZSwb0++EKKClrBhAIiThpC/vQx/3J2+dg7VNb8lAS4Vl9Qycz
-         zcFqipukact3uStZtew7NHvg5bi3dpir2Mc4QDAiWmjv1jd2iFO/67x6mJlYwQdYsPaV
-         LVDIYCZ9uyWkvGTcdil5MoJY1xC1YugYsOGg0udQpumelpgGzS2Du+GExKcOBdVHVp2R
-         xu6D8hx2vaNHTrVWBigwb7uF0GK13/GLs7wxA0dN7PEaLP2OZQ0/uS/ALimgwEyoM9BW
-         jgdKtrhGMWviMCbg8ifv74Q0Q+/RRoxnpUq4bQAJixI0zgOSES3G2x6/1xPvkc63KI8F
-         njiw==
-X-Gm-Message-State: AOJu0YynuJEuJ7SfRUR1IQe+4geHTmdulHtG9rsO2J2u/duXNMBsP0EB
-	55IN8fiGrbdmSDRKST6f4Z1zu2qHwEgRVJp22iK4eEu/6c/L/iIKWCub4iVjFOPjNb3FYtf0vFd
-	CoomG2g/HURGIxr61PSA6EsRYTIs=
-X-Google-Smtp-Source: AGHT+IGVPSYwZzGqpVw9M+3H9Sd4Ep5qwPwDfMaa4HqzQ9w1kt7pbDYDFTzJ9Dx1LQyZ59KetRvljg7EQlnxZvsnqec=
-X-Received: by 2002:a05:690c:700c:b0:647:e079:da73 with SMTP id
- 00721157ae682-652d53348e5mr75394967b3.10.1720262887051; Sat, 06 Jul 2024
- 03:48:07 -0700 (PDT)
+        bh=UqjVGacvr99k3S0wau6SJoKWQts7Y2bmo2bsBuOmljA=;
+        b=lpKFDGZsYLN75h9nInqEqaAXt+4BgJsO66MUd5Vg3RvtphhnpgpFzdBbK1xCPsBgum
+         yhSeNmBdd6VWEitNzMbrjlTFpjY+KUuhobFY70LsbPR0BXSlMNkO1FKLv6/avKh14Ehu
+         YTRYy0AJsJ+yw25//oX902N2IHQKwwprPbFErxAg9JnMsKTd7rzRQODzPXrj0hkaKEhK
+         VtWR7bZkqY6DDetRVn7bq+0RVSv/gX3HWeHtDYgcecckO+mGnPdXwKiFN0u0rZ1nAodY
+         gZq1yH2i/Hg/oW8AAf+7tQ95/Qio4ts1pUUaUCjzGiCe+IqPS1rWj7pxqPBRQvMU5yMQ
+         ou7g==
+X-Forwarded-Encrypted: i=1; AJvYcCVihZUALY2J3j8R+AiGeNdA8znzkjSJwZaD+x6LKAFUS6YfXc5wanxhBJlysTThMzs07Bx4T9Ifizce3OFLfDyaChVyhauXEOuVeSI3SQAybXhizkCOPLtEPpL9CZTcCsvJs4UihXK1y/o=
+X-Gm-Message-State: AOJu0Yy6EARObuezYu9OGPbn1aMWGJPoWGMFtpt51oU5ZNBnA4sSgtGz
+	5a+lO6r3wlhOpMHpHvpSkVNjYC6AhkDgSb4a84dx+RqsyKjf+T/TEW120bTL9MtUCACFUmsjwVe
+	/2CBn8aY7fW0aTXDh1bL2/odDuu6LC/KV
+X-Google-Smtp-Source: AGHT+IEBZ/FUz/DsO7jOLpOU0J6Jmcc/4QS4QIM895fzsXyrUnDATeRHsjxnAed8u+yDzbzNAiteUqr+agzXrZOR0OY=
+X-Received: by 2002:a05:690c:f02:b0:62f:206e:c056 with SMTP id
+ 00721157ae682-652f5778c41mr49833507b3.5.1720267670059; Sat, 06 Jul 2024
+ 05:07:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0163b37d7cdb31ed39e0eff2f61cdb4f3cd90272.1720137702.git.wqu@suse.com>
-In-Reply-To: <0163b37d7cdb31ed39e0eff2f61cdb4f3cd90272.1720137702.git.wqu@suse.com>
+References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
+ <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
+ <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
+ <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
+ <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
+ <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
+ <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
+ <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
+ <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
+ <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
+ <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
+ <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
+ <CAK-xaQb2OrgNOKKXp8d_43kqMNyuHxS1V8jSDL6PdNZPTv79+g@mail.gmail.com>
+ <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com>
+ <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com> <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com>
+In-Reply-To: <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com>
 From: Andrea Gelmini <andrea.gelmini@gmail.com>
-Date: Sat, 6 Jul 2024 12:47:50 +0200
-Message-ID: <CAK-xaQauuhnY0bM0ss6JdFS091bFPaK77HGnbp9qG-KCMtZFyA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: tree-checker: skip name hash check for image dump
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+Date: Sat, 6 Jul 2024 14:07:33 +0200
+Message-ID: <CAK-xaQbcpzvH1uGiDa04g1NrQsBMnyH2z-FPC4CdS=GDfRCsLg@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
+	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
+	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
+	dsterba@suse.com, josef@toxicpanda.com
 Content-Type: text/plain; charset="UTF-8"
 
-Il giorno ven 5 lug 2024 alle ore 02:02 Qu Wenruo <wqu@suse.com> ha scritto:
-> [FIX]
-> Since btrfs-image is mostly for debug purposes, we can afford it to be
-> an exception for tree-checker.
+Il giorno sab 6 lug 2024 alle ore 02:11 Andrea Gelmini
+<andrea.gelmini@gmail.com> ha scritto:
+> For the moment it seems we have a winner!
 
-Sorry Qu, but I'm so stupid. I didn't make it out.
+I confirm this, but I forgot to add this (a lot of these):
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm firefox-bin nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm firefox-bin nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
+[sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
+shrinker already running, comm cc1plus nr_to_scan 2
 
-I mean. Trying different combination, running:
-btrfs-image -s -c4 -t4 /dev/device dump.btrfs
+Just for the record, compiling LibreOffice.
 
-both with patched and not patched kernel, I was unable to mount it:
-a) not patched kernel complains about crc and so on;
-b) patched kernel doesn't recognize the dump as a BTRFS filesystem. No
-error, no complain, it doesn't mount.
-
-Also, doing a simple:
-string dump.btrfs
-
-I read filename in clear.
-
-If you want I can prepare images of what I used and data and so on.
-
-Thanks again,
-Gelma
+In the meanwhile running restic (full backup to force read
+everything), no sluggish at all.
 
