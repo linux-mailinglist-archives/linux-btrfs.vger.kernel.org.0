@@ -1,183 +1,167 @@
-Return-Path: <linux-btrfs+bounces-6261-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6262-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B56819294EA
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 19:38:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA3F92966A
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 05:16:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18162B21F27
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2024 17:38:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C943D1C20EF5
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 03:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9830013C681;
-	Sat,  6 Jul 2024 17:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD4B4C9F;
+	Sun,  7 Jul 2024 03:16:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D6W+Z9z7"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="uAHVf1xn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6062757FC;
-	Sat,  6 Jul 2024 17:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FAB81C3E
+	for <linux-btrfs@vger.kernel.org>; Sun,  7 Jul 2024 03:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720287481; cv=none; b=AP4etG4hqsA/KMeiDv69LinGnEXwGJ+7OwLzZ4B4zH1OIEnhDAfnlYJvdz8F0WWRec6LTBl03v12MLIOUVdbgRqtvNLAtelIH02tJUZRy/0wrhPiVbu8IqV43fGh9SjKlmsoNFR0ZQHBPQdPhOsZaimEoUeb3KppGzJKci6cjZc=
+	t=1720322201; cv=none; b=nWndtOC/YcaG9vjKuLUzI630FTikhLi5QIHASNYARomHtKs17J7ep5wMr1MdpZIgEyYwIJk9C2KVfzAHdyUMHXdzq8uQ7HR8JIEXiUEyYg99AaJWZldOhs82wkCYHbdgp0v5qffCO2YoPQQWguhaeJvW4WMxa/5F3VY5/o/r4kQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720287481; c=relaxed/simple;
-	bh=G8HAvOUQlBzu7G/UjupxOn5yO3GOMwZPT+ciOrnoizg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WEugX5Yvfdsk3SG+odjW1jvxE2VBexnsTR2Cas9rxFKJgQETJq8Z5j+okBQFBNCP+Xp/bTlfUFlYv2zqEc4+0ZZrZ2Bm6co8CBDAAGzOgt9N3w1raTxDLkMZ7hdlyq/51OOoE5rxojDTYZQGuvXzdhYaiCOCf1q/iy0sAiMDjSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D6W+Z9z7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50494C4AF0A;
-	Sat,  6 Jul 2024 17:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720287481;
-	bh=G8HAvOUQlBzu7G/UjupxOn5yO3GOMwZPT+ciOrnoizg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=D6W+Z9z7t5b1kMOTrKieOgN8eP330WS1YFeQOs3l9n2oxJLeRH4JxSEKJBIA5p/AS
-	 gixphbw2tD7EYiB+T6aTT2xd2ZgTEr4Tpgm39Q+UV+2fPP6LZvzLvkX7kfR69ZXyAM
-	 IAncBuIcT7mP7YJ+thvdiJINz255wtrX7tUaBbBJ1XiHDwNSrufLkYynWQxUGoNKTp
-	 1MPIQhXP230ksGQP4GZcZw1mXVdg/wsDpZHTMLYiYwYrbQKfY/aG0djIRSUETXUvJ1
-	 smay4fENmOsNdLACqj3D1TsCy5/eMSV0UafNUYp//hbu4wp9DBSOdujpqzlNuP0kZ6
-	 9v8IaJE3H2AvA==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a77e2f51496so72720166b.0;
-        Sat, 06 Jul 2024 10:38:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWeITYL2SJC0ueuTfwifXr9OIG2zbE9EN1FOEK3qsgftUKgOZINilJil4sLyuyl98+OVOq7S8uHZxxt337lRQKebNqTI9GQLUklbxCsSskpIiZ95pnDD53qIyaWfw7SuLeiFvFFqiUF240=
-X-Gm-Message-State: AOJu0Yx8xRsSeReTF9EwmWOHT6QJSwov+BOSg5WjuQ2XhdV4Am83ulEN
-	5joIUVCpBe+kMTM4IhZQQP8AalXHZ2Z8PUh4o8NfSx5cmWwcg0GxJMJgy0HSDQmLd2xT4g82zYC
-	YUUigb99lDsMDpHHEKInstOzJ0io=
-X-Google-Smtp-Source: AGHT+IFJnEIjQr2TMHx6R9QnPx1HaevVsaLMROke+LS5GWjcZlwwSzJKRYzqL7AWu3WJFj0TJ7SauUVWWPUfhZv4oyk=
-X-Received: by 2002:a17:907:72d0:b0:a77:c84b:5a60 with SMTP id
- a640c23a62f3a-a77c84b5b74mr467337266b.26.1720287479897; Sat, 06 Jul 2024
- 10:37:59 -0700 (PDT)
+	s=arc-20240116; t=1720322201; c=relaxed/simple;
+	bh=cK1kyEcAX9seBPtpm8R2Xxsfgl3ApVGrjM/goDftJ8U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kDFlT6qIhqwzeLdRHnvxzXBWxc4G5uIa75uL+ddCv+EOLxP9tjCOsu0WqT1fG7HndQ2rBGTP58x3kJhbB2LASvdXrKOLCmxXA0tizl2Kmyae4dIylPxKHpk4H+cFquDUV5ThulS2ZFafplx0wEDa9OtvPqFuh1TxPuoqgBB8mME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=uAHVf1xn; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1720322195; x=1720926995; i=quwenruo.btrfs@gmx.com;
+	bh=w4w3vAWYxqxGPp/0CnLlZcbTHWS5fsOaMFs+EcXVOUU=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=uAHVf1xnYD8G7oo5AEpUyYB3tMmUXaND/ALzaExwDHZRDE2IGY5COAcm213N8J7x
+	 2JJCAMhuSwDU49W3Be1tkppuPqd9rAhUWn8CvY8AoHVU5pZ6WsD1RLKzKJ1a6M335
+	 MPz23JKNHv+jDsFuAU00DOzdJI4rXBUQvM+C+jQnQB71NY1D65of58CjoHy65cGun
+	 XmyGZUeJn4iY09rksPL0hPKgpaj4nmi7yu2bbmjTsPihxuDO3fL2lNRF/3J2ErPFI
+	 g3pLw3qsNmljxpqlhgY4KfSrSxF42CphjmHlWhGKanYTyTugaJy2/8rCeb/jsiHMS
+	 bu5BeM57iQXg94NlKA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7i8Y-1sLbc018zK-016Wm7; Sun, 07
+ Jul 2024 05:16:34 +0200
+Message-ID: <9cbb163f-0b86-46bb-8d00-0a10e288fb59@gmx.com>
+Date: Sun, 7 Jul 2024 12:46:31 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
- <CAL3q7H4yBx7EAwTWWRboK78nhCbzy1YnXGYVsazWs+VxNYDBmA@mail.gmail.com>
- <CABXGCsMWYaxZry+VDCgP=UM7c9do+JYSKdHAbCcx5=xEwXjE6Q@mail.gmail.com>
- <CAL3q7H7Xb9FQx-5PMQtK_-reMq-cbfysCx6s-ZOWL1FUPSm8sA@mail.gmail.com>
- <CABXGCsP9tSwgR4dN-k97maqHB1KOtykakmHNz78SYbAuHydUTQ@mail.gmail.com>
- <CAL3q7H6vG6PEKjcsXtSuq=yks_g-MczAz_-V96QSZCs9ezRZpg@mail.gmail.com>
- <CAL3q7H5RC6dinsA2KLtus07jxDuY1PecPXbhYOWtW+nVyzXwuA@mail.gmail.com>
- <CAL3q7H4MiarsqxSMc0OzY2TNRk8J7Lg+89MaPHY2+NPO-EcDgQ@mail.gmail.com>
- <CAK-xaQYYx6SPQaOVwL+ardB0y5LzYJw9a_hfWWtVEZ=y1rXq5w@mail.gmail.com>
- <CAL3q7H74jpSoMvvkSvmrtB_VGiscz8zN5aHnApWuYU+hpKe+rA@mail.gmail.com>
- <CAL3q7H6V9M0B4jmW79keUtTdjWsabyWZeU5g4KEN5_-a+wEHVQ@mail.gmail.com>
- <CAK-xaQZ=c7aociwZ5YQreTmT+sBLGdH0rkTKmFzt4i_mrXBmgg@mail.gmail.com>
- <CAK-xaQb2OrgNOKKXp8d_43kqMNyuHxS1V8jSDL6PdNZPTv79+g@mail.gmail.com>
- <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com>
- <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
- <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com> <CAK-xaQbcpzvH1uGiDa04g1NrQsBMnyH2z-FPC4CdS=GDfRCsLg@mail.gmail.com>
-In-Reply-To: <CAK-xaQbcpzvH1uGiDa04g1NrQsBMnyH2z-FPC4CdS=GDfRCsLg@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sat, 6 Jul 2024 18:37:22 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com>
-Message-ID: <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com>
-Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
- execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: Andrea Gelmini <andrea.gelmini@gmail.com>
-Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
-	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
-	dsterba@suse.com, josef@toxicpanda.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: tree-checker: skip name hash check for image dump
+To: Andrea Gelmini <andrea.gelmini@gmail.com>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <0163b37d7cdb31ed39e0eff2f61cdb4f3cd90272.1720137702.git.wqu@suse.com>
+ <CAK-xaQauuhnY0bM0ss6JdFS091bFPaK77HGnbp9qG-KCMtZFyA@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAK-xaQauuhnY0bM0ss6JdFS091bFPaK77HGnbp9qG-KCMtZFyA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OAASauq82s/PHGkpH967i5aclQPLZsvS5v3PGpaeY6uMvlES0Ep
+ ZGU3vgvoCPhpWOEodiZvN1oeRdlVgx52u1BRbbQOggGgSbn6ySpupzYBPDRrtIDz+XDd9wz
+ EEQBHJng1RyAyYBVyFDVZUmQGcf/c9e2Rdp12/woElBuAHrM6lZ46qQhmU4dbcJj6TsEwAO
+ J5CrPe6ESXKmKAbIfbSLA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Eiui0MFM1dY=;jw50cJcGtciz1KNFJJ+ml0KAx4T
+ Oq/kdM+PNemlrHS6DVfirxwzdIVh5K0H40bV/SJPuud1XzFBaramOVpAKVFId9D/f5aMGWy9U
+ Pjsun+rds+IHJriYiXqDOMH0VxR9AxGyc4AgfwDO8ppQUB7m94qa1jJeeX23MMfPi+penjV9g
+ aZuXGyG6zs1vmAQ28amL4jqgBVbdH+96VKLw9TUrX18HjEnnb4xwqlPzJu252tPEz8F3iGcUw
+ dpW8xCOxCuShQl2DOX7sz+Akd4sWxmowc0qyP1sbTYKOxA/JIBqr1CXLHXl3V26NSg09+nLVr
+ kmY+SexnZVCKVsakTjdln8BcjYAitZ//eXqZMQFc98ONWyUiUyxXO4tca6gCm97ep9ka7oZRM
+ 3IrxN0UMtE8CYW9op3uSI2P1RBRw65IfRYTYrYl6+jHBfpxF7WF0gipCjSDiUQ6PMqE2EsnTl
+ Ev6rbMEBkX3hym4UlSBVfUp4qCvg3bjbEZWvj3AYek+lkj0YFHSkc/9GhkVtT7/nyVWu1mjuS
+ ns8zksBQ3YJHFvjinW+Hn0e5Rss45R9kcqgWp/8Ww8IXwcORAJFZQhO1skw1qv7vNWElLa8kt
+ Ypz9mo80VQkIsohy08MynAY9waovgKxm07I/Dtfb/z7iO8GiSWIjH/gA224qTc3Vyxb59ve5S
+ WKiFPvOXzZ+OTe/1wTtCLMRgIf7j1dD6Wu3XR1sRQhEvdgqIsxWlE4GxoyiPCKHnIGtng3Vho
+ hI1gzt5MdecDSOGJZwMKBscUXmPsodHw5CK4wpIaGDwjbttjYEQn88gj9m2z5u2EctD0978kY
+ TXeqdfU/CBMIfwEf0rSuQrR9uz9qPxoZtejoO2VmtzkZs=
 
-On Sat, Jul 6, 2024 at 1:07=E2=80=AFPM Andrea Gelmini <andrea.gelmini@gmail=
-.com> wrote:
+
+
+=E5=9C=A8 2024/7/6 20:17, Andrea Gelmini =E5=86=99=E9=81=93:
+> Il giorno ven 5 lug 2024 alle ore 02:02 Qu Wenruo <wqu@suse.com> ha scri=
+tto:
+>> [FIX]
+>> Since btrfs-image is mostly for debug purposes, we can afford it to be
+>> an exception for tree-checker.
 >
-> Il giorno sab 6 lug 2024 alle ore 02:11 Andrea Gelmini
-> <andrea.gelmini@gmail.com> ha scritto:
-> > For the moment it seems we have a winner!
+> Sorry Qu, but I'm so stupid. I didn't make it out.
 >
-> I confirm this, but I forgot to add this (a lot of these):
-
-Oh, those I added on purpose to confirm what the bpftrace logs
-suggested: concurrent calls into the shrinker.
-
-
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm firefox-bin nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm firefox-bin nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
-> [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> shrinker already running, comm cc1plus nr_to_scan 2
+> I mean. Trying different combination, running:
+> btrfs-image -s -c4 -t4 /dev/device dump.btrfs
 >
-> Just for the record, compiling LibreOffice.
+> both with patched and not patched kernel, I was unable to mount it:
+> a) not patched kernel complains about crc and so on;
+> b) patched kernel doesn't recognize the dump as a BTRFS filesystem. No
+> error, no complain, it doesn't mount.
+
+Mind to provide the dmesg of the failed mount?
+
+And just in case, "btrfs ins super dump" of that restored fs?
+
+Furthermore, how did you mount the fs?
+
+For "btrfs-image" dump, the result is not a mountable btrfs, you need to
+restore it first:
+
+  btrfs-image -r dump.btrfs btrfs.raw
+
+Then mount the restored image:
+
+  mount btrfs.raw <mnt>
+
 >
-> In the meanwhile running restic (full backup to force read
-> everything), no sluggish at all.
+> Also, doing a simple:
+> string dump.btrfs
+>
+> I read filename in clear.
 
-That's great!
+That's the problem though, as during my local tests, I also find that
+"btrfs-image -s" doesn't really fill garbage for the dump.
 
-So I've been working on a proper approach following all those test
-results from you and Mikhail, and I would like to ask you both to try
-this branch:
+That's indeed a bug and I'm still trying to fix it.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/log/?h=
-=3Dtest3_em_shrinker_6.10
-
-Again, this is based on 6.10-rc6 plus 3 fixes for this issue you're both ha=
-ving.
-
-Can you guys test that branch?
-
-Thank you a lot for all the time spent on this!
+Thanks,
+Qu
+>
+> If you want I can prepare images of what I used and data and so on.
+>
+> Thanks again,
+> Gelma
+>
 
