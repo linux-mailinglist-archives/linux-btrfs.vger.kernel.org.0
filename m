@@ -1,56 +1,69 @@
-Return-Path: <linux-btrfs+bounces-6265-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6266-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B346392976B
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 12:28:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52898929795
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 13:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CE782818D3
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 10:28:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1746B20FF0
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 11:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E6018E2A;
-	Sun,  7 Jul 2024 10:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9811C2A8;
+	Sun,  7 Jul 2024 11:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JGBsr0zW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cS0IKh1U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A27418028;
-	Sun,  7 Jul 2024 10:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19CD312B95;
+	Sun,  7 Jul 2024 11:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720348120; cv=none; b=badonVAsue3RMey7QuvFo3HM6lGFGRAyRVDp11IxnNaWWjGn6RYplXVc29K4D7ND1gd3hQl0nG3n6a/SxeI08bRgFHg0oFqZsgXPULIgrLtj3E7JGcx8tEYxAmOD08Vm+0LXKoSMa5UEXT89r3sjxtuh9qwE8YiB5jxOeBpJlAQ=
+	t=1720350919; cv=none; b=Vs+wSKTMq41GY65gyQ12QhaXwNpLYErv7quQR/QSB7rqdXZVYNm2e0BlTlfjzju75AnVJoRoWNjN00PJ80+BFlMxgCBQUzwpR93GjLlzdJw7EtU97sopyTGodO5lwnQTMl8MyOrrWo/45f9IgMhAjRZPq/Yzfz6Ug99UNmvDUKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720348120; c=relaxed/simple;
-	bh=3G0DFg9bvl3HPl8xx+gvWAqgjvemDx8liAboiamergg=;
+	s=arc-20240116; t=1720350919; c=relaxed/simple;
+	bh=GCiV83PkQGQBX0iCvr2E0PjQAzhoDidHblBBsoMp9Wk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KFL8JS+cCBfXLlodShTJkqOReHzooUirBLYfg1+0IgAbinFLAFTw9SeTSDNsi/j25o1Qbq64BOWf1iBXIWQVfq+knDXLNyTobB9OepYo96Z/oBZHAM3lU2FzEAcpiTOysLNbHAa0lRqXRBh2gIobxkwhGVuFdYeMjx3ViHt2aXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JGBsr0zW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9439BC3277B;
-	Sun,  7 Jul 2024 10:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720348119;
-	bh=3G0DFg9bvl3HPl8xx+gvWAqgjvemDx8liAboiamergg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=JGBsr0zWCerbyKhskkmOm1/C+QMvN+mnAHz3kLZxJzN69gUwfUOl+h7o83Fp6efSH
-	 BGive9uADXRMgzQE2rrOJNlh9J7g5N6tmAPN4uda/ImvGQ9N/on1mRvMIAl0nM38Dz
-	 /roKYZjlysTN18T2Bflpq/oA/1bhTLKtsEbvHKkbPUtaa4vqNoEU6cq71yyAWD7PLL
-	 SJCsSKGmBzOrSLP6fRAzRMnjWBcFbZlDqvDzJBfPLoi9gb9E5kxNNFVw9INngqs2rH
-	 vXgryKome95mxi7pNmeNP6stp2bMhvMgg9Ewl0+8upuxIW7+yGQOq6eApxLc7cGgFH
-	 Ya9b4N+UHKubg==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a77baa87743so320290766b.3;
-        Sun, 07 Jul 2024 03:28:39 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUwhKsJyKNx/AV+Oqvdr1uiRxzId70FtZp2f59zkH66AMDP7QgchplcoP+lmJlUteslSQUcYXjj951AWrEklYeTytzslBGiZdUCkm9mj8GphBBc00U9buQ5zjVIZTlu9ONnSJWmoMHuEL8=
-X-Gm-Message-State: AOJu0Yzcf+8lh6o6ExgS48QWU9HjuNxgS5DEyLE0z7Sbnv66WL+9iQ3y
-	Bu5gxb12ysG1/C732MwG8GlqBvUxLMYc+mg1vhg23hPtvzd527xFeWUskLuNC8IZn43O0pVZuVc
-	9Sa9AUQgpdU4kKzvC2v7nh3IFyZ4=
-X-Google-Smtp-Source: AGHT+IFvaXeDANtBu2YY9A4rHP+oiYP9PpC5L3P07om7XsV13YCPdbO9jKJdoq/5c0YiMUOGgQeWKZY7PU/Ibv285qI=
-X-Received: by 2002:a17:906:b858:b0:a77:d8c9:ae23 with SMTP id
- a640c23a62f3a-a77d8c9ae6amr387649366b.59.1720348118187; Sun, 07 Jul 2024
- 03:28:38 -0700 (PDT)
+	 To:Cc:Content-Type; b=Cos5hHeU0xMF5vGDjnnmtS12NGPB7tHOhQp1LRyy4+5bGWIBZrkg3pZZyUPuebdnZeR8LFJqhG4hbxW7I2iIAJen69xDxVOESAGWwcDGFV9dcJHq/Uzeku56SBMAeoc6Oi4CueVEvcsMYqAUR4oEWlSpke9WaB5TXN6kC3C7qAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cS0IKh1U; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-64b05fab14eso29322897b3.2;
+        Sun, 07 Jul 2024 04:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720350917; x=1720955717; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JEDaHctMDjTLUQmt8H4eKIsXIEH/NgBcNg9NnhklDGc=;
+        b=cS0IKh1UCD/XFCERftuDjiEhnSWPETQpQZ5ndDd3JiHu7fB+suhumbgxeVS1HeeAX3
+         zgnVdxeU8Vc+YRS8qJAoVu81WgDOr9rtxjPQtybimGrP8gmBrW6XSqbUKkkz/XK3Hxr6
+         jk8vLWxw6YUUhsFYId99bSDU0gKZt+VahWu2g0erDeX0a35cpaiaKHM1JixyDoEccD8/
+         UXUeqiy+DmiMys8aoznO+zjEUKIDuwMyVXjeApGp+4Pa+jkALVILS8lEmfazoJGsiCjq
+         6C1HVQpBWAkQUQv+sfNN+sR+KHiqmaY02Z/MD4Tj2oILW2bqCJx+qGiIIVJ/+D0pJxH0
+         kroQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720350917; x=1720955717;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JEDaHctMDjTLUQmt8H4eKIsXIEH/NgBcNg9NnhklDGc=;
+        b=F80/KyiZPs5diBDoFqogwRYyVtyneSczkcWeytig5N64mkpWdKhJ0YiCz6OpKU/70o
+         PVD7dm9pPPN0RnfPtOacgR76VUIC5VPizjWZ9x89qsxC07xb1k8Rg0lPru43y1vW6mU4
+         TWHZm2MWJVMQSKsmzkCq/LLBeHyFXawpbsE0KJo0//tHka4H1FGDdclJ/OCx2Ouy38VN
+         Cn+VP8QD22jirtZQviAIvI+uVaIAlOhWe6656kOQV8bMPz7RwXcRDv1wJGqhdHMb32Hf
+         OesLiM7IkeUBbaT3zRBX/JFsiQoCj99t13HNLvqPfis9cyb0RdX/vmqwyy2tD4bgEy50
+         9XoA==
+X-Forwarded-Encrypted: i=1; AJvYcCWSDkaDxXHHuUH5AaC87Z0WreBbKFtey2mkYH4gB1Ak/yOwyc017N/3ujCv6eDnri6x07XpeQWwOC57FE8C8Ti3Mii2OESb0HU0fEJHeRgiNGWgrf12j/eSSpAovw49Qx4kujuiV5KGwu4=
+X-Gm-Message-State: AOJu0YxIK1BFLySATvmb//fZVyQdM9SA+ryjn+ugjQRlQX8ICnq/T9ga
+	eRpVMdzzilUuzQFk7m4XlTUPm8xfnpMH8hIhMKuvnNm3S2J+SoK+HxeF7lab6mveuQYAK2aITZ9
+	L3Zdamv4pNdpFKqiBU3RSxgPbssk=
+X-Google-Smtp-Source: AGHT+IF+cw2g6r/QOlqBO2ajneYgMMcCF8mdTACxJgT8VoYFfD/U+McKqqzQTSTWgFZrYRQtFjG8cHAyRVVKR8uPHCQ=
+X-Received: by 2002:a05:690c:f0b:b0:64b:52e8:4ad0 with SMTP id
+ 00721157ae682-652d52266a8mr113145587b3.6.1720350917069; Sun, 07 Jul 2024
+ 04:15:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -75,57 +88,35 @@ References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
  <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com>
  <CAK-xaQbcpzvH1uGiDa04g1NrQsBMnyH2z-FPC4CdS=GDfRCsLg@mail.gmail.com>
  <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com>
- <CAL3q7H5fogJTfdkj_7y8upZj7+4dz65o-tKzyGf0WfLwm3nfUw@mail.gmail.com> <CAK-xaQaYDg60DizL3kJ3XKU5JD3kKVi3kecb2s18Po96T9tAHg@mail.gmail.com>
-In-Reply-To: <CAK-xaQaYDg60DizL3kJ3XKU5JD3kKVi3kecb2s18Po96T9tAHg@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 7 Jul 2024 11:28:01 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6rir8w6ge6zDPXYFaBoLyHsbcApr9WXb+A1Vc+8RP77w@mail.gmail.com>
-Message-ID: <CAL3q7H6rir8w6ge6zDPXYFaBoLyHsbcApr9WXb+A1Vc+8RP77w@mail.gmail.com>
+ <CAL3q7H5fogJTfdkj_7y8upZj7+4dz65o-tKzyGf0WfLwm3nfUw@mail.gmail.com>
+ <CAK-xaQaYDg60DizL3kJ3XKU5JD3kKVi3kecb2s18Po96T9tAHg@mail.gmail.com> <CAL3q7H6rir8w6ge6zDPXYFaBoLyHsbcApr9WXb+A1Vc+8RP77w@mail.gmail.com>
+In-Reply-To: <CAL3q7H6rir8w6ge6zDPXYFaBoLyHsbcApr9WXb+A1Vc+8RP77w@mail.gmail.com>
+From: Andrea Gelmini <andrea.gelmini@gmail.com>
+Date: Sun, 7 Jul 2024 13:15:00 +0200
+Message-ID: <CAK-xaQaDGR_x_HZ3CfTsguYQxWjUehKGSpapYLyF3wC=ofRB8g@mail.gmail.com>
 Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
  execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: Andrea Gelmini <andrea.gelmini@gmail.com>
+To: Filipe Manana <fdmanana@kernel.org>
 Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
 	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
 	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
 	dsterba@suse.com, josef@toxicpanda.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 7, 2024 at 11:15=E2=80=AFAM Andrea Gelmini <andrea.gelmini@gmai=
-l.com> wrote:
->
-> Il giorno dom 7 lug 2024 alle ore 11:41 Filipe Manana
-> <fdmanana@kernel.org> ha scritto:
-> > > Again, this is based on 6.10-rc6 plus 3 fixes for this issue you're b=
-oth having.
-> > >
-> > > Can you guys test that branch?
->
-> Used yesterday and today. Seems fine. Just in quick test, I see
-> sometimes PSI memory spike over 40, but - important thing - no effect
-> on interactivity. So I didn't investigated more.
+Il giorno dom 7 lug 2024 alle ore 12:28 Filipe Manana
+<fdmanana@kernel.org> ha scritto:
 
-Awesome!
-
+> > Ok, recompile now and test!
 >
-> Well, just to be sure. I compiled the latest git with -rc6 and
-> test3_em_shrinker_6.10. Nothing more about patches.
+> Thanks! Much appreciated!
 
-That's right, just that branch. It has all the necessary patches (3),
-no need to apply any other patches on top of it.
+So, usual benchmark:
+    fresh: 0:03:16 [ 275MiB/s]
+    aged: 0:02:30 [ 680MiB/s]
 
->
-> Anyway, just for the record:
-> kernel: test3
->        fresh: 0:03:44 [ 241MiB/s]
->        aged: 0:02:07 [ 801MiB/s]
->        funny thing: next runs of aged no more than  0:03:22 [
-> 504MiB/s] (but, as I wrote, no problem with interaction).
->
-> > I just updated the branch with a last minute change to avoid an
-> > unnecessary reschedule and re-lock, therefore helping reduce latency.
->
-> Ok, recompile now and test!
+I let you know in a few days.
+Well, does it make sense to add the option to disable shrinker via /proc?
 
-Thanks! Much appreciated!
+Thanks to you,
+Gelma
 
