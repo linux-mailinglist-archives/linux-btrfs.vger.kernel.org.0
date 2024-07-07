@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5409C9297C0
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 14:11:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E1A9297C5
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 14:16:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C11EAB20F77
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 12:11:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BCCB1C208ED
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 12:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D99C1CF8B;
-	Sun,  7 Jul 2024 12:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BDC1CF9A;
+	Sun,  7 Jul 2024 12:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WtZvQ319"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P4ZyUiHE"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE3D6FBE;
-	Sun,  7 Jul 2024 12:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CD71078B;
+	Sun,  7 Jul 2024 12:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720354256; cv=none; b=PlB6tK88VHh6HQY8vDMcQayHjUt7V6pNDN46G3CExG34x4ytbOYCFti2mDK+X2SgH41sD5OTzOsYn3w1nCa8uc1Y/gp+6sQ8PmbiHSoe2hITl76xD7Cwd/AKdB197irLJW/JYO7J5/TvyB5HabAiQyFgNm8JdOKZJUf7safrkRE=
+	t=1720354557; cv=none; b=Y9zJW04o01C4HStJnJa40qhMzVPuG6uolS0/up5DF6b2cp3zVr0QLMLND/cviIrS2Jhp/8C9rlqlSCMbUqwfgxjBlnuT78l6Zx9MyMNphCQ7vKNh8kpTVpfLdgV7IsWlY7cQFgSNQXlfrM7yDKpbWDCJQBP6elZRjowY8qTMV/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720354256; c=relaxed/simple;
-	bh=/479mnKxbNY0SUBJUbUY3ywJKrX3yXeedLVzkffqrBg=;
+	s=arc-20240116; t=1720354557; c=relaxed/simple;
+	bh=cFKTEh2qd2OkxQvLdlG7DvgFOUbWL6ynQqseB8Y1hSw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qUq+0v2A8vYZ0rXY7QR8RFccCp1r4hB711spB7rnUsCsfslFY3D+HDzYFUgZq8UdZ2933/9Bt+cMe//EwYPakScu9aZU0jLqBxtzzysRqeSwq/sR0FiT27aBlrMsiwgSpQSdfgp69ijnW8fS9VYIquBhAqMRo2XWdEYP01ZzbKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WtZvQ319; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3496C4AF0B;
-	Sun,  7 Jul 2024 12:10:55 +0000 (UTC)
+	 To:Cc:Content-Type; b=F/nNm/KrbdDxAbcRGASJFp1VITxavqv5TkqAETDrVLea5haYIWe6M8Sxiqm4lk4zjnS+qpStx5XZq9YbrlFFqO+kN9uRi6/10U2WalMJ+Lp8VU7zxYqtniHng2D4Kb67qC6zYvaqOIAt0pT6CmBFJrxmdyitAnco5/rwUk5b+ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P4ZyUiHE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32B52C4AF0D;
+	Sun,  7 Jul 2024 12:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720354255;
-	bh=/479mnKxbNY0SUBJUbUY3ywJKrX3yXeedLVzkffqrBg=;
+	s=k20201202; t=1720354557;
+	bh=cFKTEh2qd2OkxQvLdlG7DvgFOUbWL6ynQqseB8Y1hSw=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WtZvQ319wGp5k3a6GstJqEoT5MLhRlnGA+NgH3O1O6PtFkNoRJILLqpqfL0oSrNMi
-	 vkpI5a5eGAGNzVhJe4zZgdigNp8FfZ6NYDqpAi8XIBz2CM1ZWA5DMP/Dg6Sy7pixBD
-	 bVqxXYo4u2wiXUmTZAsOIhF1IU7tszY3WlH36osyQMFOxsE/b9ImYRJeM/7oj6RABE
-	 sKuNKcrV3insDtSHXL0uqZjlAl+bFibIYCJblHRDxi40yq/Ce60YJ81YwBNIglDByQ
-	 83Zn8PIrv7t9Mt/CRSRB0d5+waCuNU09leTVokKI32hYmkRwuFRnkMMTe4ekh6skih
-	 +Y1Mscle1ArWg==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a77c25beae1so304522966b.2;
-        Sun, 07 Jul 2024 05:10:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX9MxODdHoUYeF5T3CCGKa31EAoIq5o0MkY3RaTGAR9nbjmSh3BYIYD/xaGKaKIFKy7+aTyujoWpYNRaWDpaXFcsvy/2daBJdk49aq97TBWurUIlyXBJAwoiJ8x1qYZe+756O7+iqTRTtg=
-X-Gm-Message-State: AOJu0Yz+wi0gPOxwdQNHFW3jiWE16rywfrmYuVzuKt99zbedqUmvabkZ
-	SwKUQZD9eyn5do6zTSWWTMOw6apBqX/UoVX/4aKIqvdLZT/Cuj5JZEE6zjUKF6gr/Ok1zsZgTsp
-	zHkdrM2dWkW3NI7ANz1MHEHVxWjA=
-X-Google-Smtp-Source: AGHT+IElHiW5qA4DsvI0Di/BVmP5t3VP9VF2CQHRElQkg8UbgeCgRQED9vVcY8j7Gop0XNpWcrFAdutmMD0rnlNz7YQ=
-X-Received: by 2002:a17:906:594b:b0:a77:cf09:9c71 with SMTP id
- a640c23a62f3a-a77cf099da3mr354914266b.34.1720354254351; Sun, 07 Jul 2024
- 05:10:54 -0700 (PDT)
+	b=P4ZyUiHEvZafr1zT25Dglm8QEnK0QvijBIYAq2nJ+OUwstbEFjoOeNieHuQ2Gaz9s
+	 g0+TZUpjJt+YubHjtstMoXmAMMXv4N4t+WiHuP7/RJqZ+GCKzDEQwiaISJQoTlxNkI
+	 prI5S3wUcRlxYXwKuGdKzfNm+SxWm/H7NgyqsBX9kvmORNLqN0zphDNbFYnS0m7RoJ
+	 TZ835GkbPl2KFYgq8TE2QQbYOhLuxB0wDDDg+I9ZRiDbRjUkzqfzGiFJXGxVRWVW9l
+	 S05LKethWB4Eo5pTcpQCjLQ7ujhEkm2l8d9Mdig1dE5Q/0B8Ltltmcb25TtJkKsAqB
+	 U6HZm4hYTJKOA==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-52e9c55febcso3878090e87.2;
+        Sun, 07 Jul 2024 05:15:57 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVa2g7+dvQz+GdnFtfZXNL1GvCQ/X1YSRbL50UKrKIuQ6Y+tMnex9GKd2T32CbTB2MA2Aw2o95iwDSq0zQsIuJxlCtAt0EWy7NAWthN69DoAoxom5HYSf9yM+PlmzZfVxWNCJzGwdKx8uM=
+X-Gm-Message-State: AOJu0Yza1fQViJX63jAsV2e8NRzsDNOIVzze8kMcky6NNOpB16TtVY8P
+	w3zXtCSfZwCvUnzOvKBCpQC63goNWvm7zQsU9fIjDI9sMJKfJi+psTNWeQs0KOqxXq9T9CUq6S8
+	zT5jyaomtFkvhHorWuPIbNe5agwE=
+X-Google-Smtp-Source: AGHT+IFu7/fRbXxCQEqScaQZK0y/JZqv8wO8tL6UxI5Y7elizVotqtWelGeFXSSvAvpMkQtgKeKc5V98gw6KK56dGQ0=
+X-Received: by 2002:a19:5f5c:0:b0:52e:9ebe:7325 with SMTP id
+ 2adb3069b0e04-52ea065f06cmr6301234e87.31.1720354555481; Sun, 07 Jul 2024
+ 05:15:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -74,48 +74,128 @@ References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
  <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
  <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com>
  <CAK-xaQbcpzvH1uGiDa04g1NrQsBMnyH2z-FPC4CdS=GDfRCsLg@mail.gmail.com>
- <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com>
- <CAL3q7H5fogJTfdkj_7y8upZj7+4dz65o-tKzyGf0WfLwm3nfUw@mail.gmail.com>
- <CAK-xaQaYDg60DizL3kJ3XKU5JD3kKVi3kecb2s18Po96T9tAHg@mail.gmail.com>
- <CAL3q7H6rir8w6ge6zDPXYFaBoLyHsbcApr9WXb+A1Vc+8RP77w@mail.gmail.com> <CAK-xaQaDGR_x_HZ3CfTsguYQxWjUehKGSpapYLyF3wC=ofRB8g@mail.gmail.com>
-In-Reply-To: <CAK-xaQaDGR_x_HZ3CfTsguYQxWjUehKGSpapYLyF3wC=ofRB8g@mail.gmail.com>
+ <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com> <CABXGCsO_6cJruBxKdqXzEze_hDGVsPtN8DBCob=OWF5OpT4s7Q@mail.gmail.com>
+In-Reply-To: <CABXGCsO_6cJruBxKdqXzEze_hDGVsPtN8DBCob=OWF5OpT4s7Q@mail.gmail.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 7 Jul 2024 13:10:17 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5Q-LZkoXLbh8XiVCgJYgf4QUCnaS2ngr3LT=nrT4q+=Q@mail.gmail.com>
-Message-ID: <CAL3q7H5Q-LZkoXLbh8XiVCgJYgf4QUCnaS2ngr3LT=nrT4q+=Q@mail.gmail.com>
+Date: Sun, 7 Jul 2024 13:15:18 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H46BxXUnrZ8Q3WxYf=2Tx0taMt9-2wf0TCrwj_kOiC=Dg@mail.gmail.com>
+Message-ID: <CAL3q7H46BxXUnrZ8Q3WxYf=2Tx0taMt9-2wf0TCrwj_kOiC=Dg@mail.gmail.com>
 Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
  execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: Andrea Gelmini <andrea.gelmini@gmail.com>
-Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc: Andrea Gelmini <andrea.gelmini@gmail.com>, 
 	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
 	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
 	dsterba@suse.com, josef@toxicpanda.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jul 7, 2024 at 12:15=E2=80=AFPM Andrea Gelmini <andrea.gelmini@gmai=
-l.com> wrote:
+On Sun, Jul 7, 2024 at 12:35=E2=80=AFPM Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
 >
-> Il giorno dom 7 lug 2024 alle ore 12:28 Filipe Manana
-> <fdmanana@kernel.org> ha scritto:
->
-> > > Ok, recompile now and test!
+> On Sat, Jul 6, 2024 at 10:38=E2=80=AFPM Filipe Manana <fdmanana@kernel.or=
+g> wrote:
+> > So I've been working on a proper approach following all those test
+> > results from you and Mikhail, and I would like to ask you both to try
+> > this branch:
 > >
-> > Thanks! Much appreciated!
+> > https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/log/=
+?h=3Dtest3_em_shrinker_6.10
+> >
+> > Again, this is based on 6.10-rc6 plus 3 fixes for this issue you're bot=
+h having.
+> >
+> > Can you guys test that branch?
+> >
+> > Thank you a lot for all the time spent on this!
 >
-> So, usual benchmark:
->     fresh: 0:03:16 [ 275MiB/s]
->     aged: 0:02:30 [ 680MiB/s]
+> 6.10.0-rc6-test1_em_shrinker_6.10
+> up  1:01
+> root         269 25.8  0.0      0     0 ?        R    10:59  15:47 [kswap=
+d0]
+> up  2:00
+> root         269 25.5  0.0      0     0 ?        S    10:59  30:46 [kswap=
+d0]
+> up  3:00
+> root         269 27.9  0.0      0     0 ?        S    10:59  50:18 [kswap=
+d0]
+> up  4:00
+> root         269 27.8  0.0      0     0 ?        S    10:59  67:08 [kswap=
+d0]
+> up  5:00
+> root         269 27.5  0.0      0     0 ?        S    10:59  83:01 [kswap=
+d0]
+> up  6:00
+> root         269 27.5  0.0      0     0 ?        S    10:59  99:31 [kswap=
+d0]
+> kswapd0 on the test1 branch is bad as
+> https://gist.githubusercontent.com/fdmanana/9cea16ca56594f8c7e20b67dc66c6=
+c94/raw/557bd5f6b37b65d210218f8da8987b74bfe5e515/gistfile1.txt
 >
-> I let you know in a few days.
-> Well, does it make sense to add the option to disable shrinker via /proc?
+>
+> 6.10.0-rc6-test2_em_shrinker_6.10
+> up  1:00
+> root         269 11.7  0.0      0     0 ?        S    19:23   7:03 [kswap=
+d0]
+> up  2:02
+> root         269 11.9  0.0      0     0 ?        S    19:23  14:38 [kswap=
+d0]
+> up  3:00
+> root         269 11.9  0.0      0     0 ?        S    19:23  21:30 [kswap=
+d0]
+> up  4:01
+> root         269 11.2  0.0      0     0 ?        S    19:23  27:15 [kswap=
+d0]
+> up  5:00
+> root         269 11.4  0.0      0     0 ?        R    Jul06  34:25 [kswap=
+d0]
+> up  6:00
+> root         269 13.9  0.0      0     0 ?        S    Jul06  50:14 [kswap=
+d0]
+> On the test2 branch, kswapd0 is two times better.
+>
+>
+> 6.10.0-rc6-test3_em_shrinker_6.10 (d22fedf5058d)
+> up  1:02
+> root         269 11.0  0.0      0     0 ?        S    09:54   6:50 [kswap=
+d0]
+> up  2:00
+> root         269 10.7  0.0      0     0 ?        S    09:54  12:54 [kswap=
+d0]
+> up  3:00
+> root         269 10.1  0.0      0     0 ?        S    09:54  18:18 [kswap=
+d0]
+> up  4:00
+> root         269  9.5  0.0      0     0 ?        S    09:54  23:03 [kswap=
+d0]
+> up  5:01
+> root         269 10.0  0.0      0     0 ?        S    09:54  30:24 [kswap=
+d0]
+> up  6:00
+> root         269  9.9  0.0      0     0 ?        S    09:54  35:42 [kswap=
+d0]
+> On the test3 branch, kswapd0 is thee times better.
 
-Maybe (through sysfs), but  the shrinker is important to prevent OOM
-situations because otherwise we can create an unlimited number of
-extent maps.
-It can be triggered by a regular user, intentionally or not.
+That's good. And is the DE unresponsiveness gone too?
+
+I see you tested d22fedf5058d, but I updated the branch a couple hours
+ago, now the top commit is fa8b5dd7fa18.
+Can you test the updated branch? It may help further in your case.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/commit/?=
+h=3Dtest3_em_shrinker_6.10&id=3Dfa8b5dd7fa18a4dc2ea6bdeaf5525b1af348f383
 
 >
-> Thanks to you,
-> Gelma
+> To catch up with the 6.9 branch, the timing needs to be 4 times better.
+
+Hopefully it will be much closer to that with the updated branch.
+The upcoming changes for 6.11 would help there too, but anyway we can
+still further optimize on top of the 6.10-rc code.
+
+Thanks Mikhail!
+
+>
+> --
+> Best Regards,
+> Mike Gavrilov.
 
