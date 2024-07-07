@@ -1,56 +1,69 @@
-Return-Path: <linux-btrfs+bounces-6263-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6264-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AC46929751
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 11:41:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616D7929768
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 12:15:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D4251C20CF8
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 09:41:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9306F1C20A42
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Jul 2024 10:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CE017BD2;
-	Sun,  7 Jul 2024 09:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3658A1865A;
+	Sun,  7 Jul 2024 10:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GCz5xzgD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g6fA1lvp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8556C11CA9;
-	Sun,  7 Jul 2024 09:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124ACFC01;
+	Sun,  7 Jul 2024 10:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720345302; cv=none; b=WpxWkMKdPVImYhjA7QMhef50hwZ1wGC2sXKoMjdz/NWHeLZA1I3TuCEEAlmn1qrJPiCY7iMZvSv9y6lTEBmbLIpYDCtA3CT3gyYHD6WKxi/e+svAl7ihmsaTYYGOYl4iY32GX7WpgjDegya7aQ8lUh18IplWR/hdjoNhsJMicd0=
+	t=1720347341; cv=none; b=qLikwOvTtHNg/q7zh8rfcKq9AAH77/7jksNB92roEDtZvSATp6dlh1drDsUCkWQ/QNioHtcZ8SjgGjG2soqaeD1sfNZvTOGzNA2xnSOA5ljV4VCEG10xfUE1TtXdhwlYc1AziA4syrVo++mgpjKOHrkjg6FryRkiHQHaLh8u3Lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720345302; c=relaxed/simple;
-	bh=2bi+gBoUIyePjQNmV3oMEFozEHi+tWljkvNKMDbCNKM=;
+	s=arc-20240116; t=1720347341; c=relaxed/simple;
+	bh=eUaHBQkJAwD0CVBlzSy4TwHGZRVXF4np4gopUqWhSuk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=US5+eT/MKgOvNSIubhvGMHh0EDI91iS598dnlihCCSBVEwryfww66kNd+zP8rpWqEOc38WzaWUW15n9X9weM1bANz/di6hkMmVfmgohbQwcMwvbWF/tkEdV/BZHGw3bSDslyatrNkjPCwsCS5iOpq0dgICIvkL7k9beIbPNjCoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GCz5xzgD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F792C4AF0C;
-	Sun,  7 Jul 2024 09:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720345302;
-	bh=2bi+gBoUIyePjQNmV3oMEFozEHi+tWljkvNKMDbCNKM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GCz5xzgDtIuxMlDXqu23YwMYw85Qa+Wnx13bogly93GyXjydn2JqllMLKim/S1G2N
-	 wUqznKfACiO+slZzXmPPV/V57AgZzvLh8iccQY3ULqt3BKf0h+CEL08k6hlUx0sufq
-	 6OCGqNZgmI4mXZG7/DgS9w85XJxOb/NyMT6aIX5QhsBb+QZipHbiz5be0ArS2oNwcX
-	 Kwcu/6PCbxU8uWQHzM+KGuuYIu1IyWwvEXdnBFGs0lciyNmD4eOqAKU1/lsIZOBYvg
-	 DtdBi8UdZRbwDy3XH43GRZ/RfxHUeytH98pc8+sRg22Y+Jew+h4KKLR/QhnnHbtW18
-	 lszYXzqAdhrvw==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a6265d3ba8fso260715466b.0;
-        Sun, 07 Jul 2024 02:41:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUPfnXCgGUkdM2+6GgBNKAJH45ZTD5d67DcpFk/vGMt/NnYodCP9zLZM6pEzLao3NFgU9aNF3h4NX0Tpv5fh8o2Wlx8BZsVQIHogprrtvOsVeGgU9K1I+jk24h+2MhkEAqt/IvTnvgwgHU=
-X-Gm-Message-State: AOJu0YxA6sQiNDU/UeQtAPAQNiPAVLUo+IZfJvhjaQQVEUdDI/deDLTo
-	61WtCJB/0ak8fWasO1L90Q4X9urovK1OmiUnrrfhtNDAsk/vZ0vSJqWVqCMDUOtOYR+XJLrJ1rk
-	rOveiX0539jytxwuU4qy+dzRbw2w=
-X-Google-Smtp-Source: AGHT+IH1noGpdqiH/cDwVQT78zL9snwgWra8FrGjlWR7/FpRQhygswid+vuySB0yHKuQqphJKgNb2eS6WEfMIRLKfwM=
-X-Received: by 2002:a17:906:5ca:b0:a77:c26c:a571 with SMTP id
- a640c23a62f3a-a77c26cb495mr494257066b.54.1720345300648; Sun, 07 Jul 2024
- 02:41:40 -0700 (PDT)
+	 To:Cc:Content-Type; b=JbDHNM7XOEXukkpJLMvXjgrP3YTnG6a/XdNGbMJsUtXYbfMswz+nU+FcgwNsot8EvaVvyzxX0YFF6qwcNQdFiU5XlJKwbjSsBFTXzud2Sma13RmF3ubVwiZ/eAGHzvtO/0HwZmaQSr4uzg1oQMrNnD41lg8+IQX5VD9Gijf6Ohk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g6fA1lvp; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-654ce021660so12404467b3.1;
+        Sun, 07 Jul 2024 03:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720347339; x=1720952139; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=haYA8zCd232ReaEmRsfrizMCl2vTgyxLHZZOTrCvdDA=;
+        b=g6fA1lvpaHj1Hair9bhW+bdwG49pmcPxRMHs5U0v1wo9T+f+nwu673SKu1aXrcwr/v
+         f/e4QNnxqHjAMs7zRZnCxTptSPQnKTsvx82IeM+y5GpHVgtDSiVlRu/bZfYMrfVMnPFi
+         7LhRcwPiLZTKh8B6pO8IN+Ol35atGYpS2GcMMMYG+R6PD+UD6qdE3zl9iSZ0qJwqQtZF
+         jYcgYyQNHbfSGwJnXRVrVT7poBSU81TJ01uoFfdJx3CVcab1OQClbfoT2rA0oyuQQbwM
+         BCg6+wiVvThLWP6lDsQ13ZhpwZ17VxvWUdDRPWQYfprdttGPCmz13IlUB4L5CynUhblt
+         PO8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720347339; x=1720952139;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=haYA8zCd232ReaEmRsfrizMCl2vTgyxLHZZOTrCvdDA=;
+        b=AHfHvbf0A3QprN5TmoaXCHUtvnaoHwRxvaNvlrjpL5Gp+0j4dYh9+z45d/jB6D0vNI
+         9BsvocXxSLeaT9qEL6KNtkqbomZKI5kE/e30dz/64JcTcRCKTy7FiF01/0baB1DTD5Ik
+         XOB7jSAuDr2G5glRfkRy3qBZr7mXPYGrYUFfoM3zM/02QRRH1BdTdEKxHP/nDWYa/rbF
+         CkPotzTiZ8AHf94NPpZiGkqQuNE22rmnD1EBkIxNQvvIgIK6JCQp0DhoMQI4EsTm/Xi4
+         6/+8wabYSrwIAv1jjBmjZFVFnWoQ1YKQ07QArOmTYGyrlgc3z31BZqKOuTQ3MYwIOcWw
+         /Mtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBjdC5/wRL+6gghWu9nis3pOgn9DIw80PiGb1RTSvU5XHBdm9Jg/w7MMM9Ulyxwq54EItbd71Zl/mi92lYO2gLN9VmaV0rOnNAz1CXhQnAgAkQ9G+8XrycYQjodEfRjBgMToh/LpmGusk=
+X-Gm-Message-State: AOJu0Yx8L6g6KwO9XHQPemInEe2OcaShkj78w/wkoVa71JGl4o0Y1sDu
+	tTD5iFnJvKYNmh1FtwXWmdNUP+AhWg0aX3X6tIohV8i6tKBZo7Pt1sBP+LdM4ifZK53Nb8+Beb6
+	qRUkrE4I5Hpsah7Yz3UzY/qxKC0M=
+X-Google-Smtp-Source: AGHT+IGygwB884S1pzqF9++b1CZgCYr06CpDJl/pef6QW6OozNvwBcUFN8yyo0XtbETsezlH4Lp9o+7IuTv3x8oFx44=
+X-Received: by 2002:a81:8312:0:b0:648:6733:e855 with SMTP id
+ 00721157ae682-652d5344939mr85422567b3.15.1720347338936; Sun, 07 Jul 2024
+ 03:15:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -73,120 +86,43 @@ References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
  <CAK-xaQZ25nyCeOvMs0G31sL7R71dxQqZhx61cYzTK7rZD-JxeQ@mail.gmail.com>
  <CAL3q7H4D8Sq1-pbgZb8J_0VeNO=MZqDYPM7aauXqLHDM70UmAg@mail.gmail.com>
  <CAK-xaQaesuU-TjDQcXgbjoNbZa0Y2qLHtSu5efy99EUDVnuhUg@mail.gmail.com>
- <CAK-xaQbcpzvH1uGiDa04g1NrQsBMnyH2z-FPC4CdS=GDfRCsLg@mail.gmail.com> <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 7 Jul 2024 10:41:03 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5fogJTfdkj_7y8upZj7+4dz65o-tKzyGf0WfLwm3nfUw@mail.gmail.com>
-Message-ID: <CAL3q7H5fogJTfdkj_7y8upZj7+4dz65o-tKzyGf0WfLwm3nfUw@mail.gmail.com>
+ <CAK-xaQbcpzvH1uGiDa04g1NrQsBMnyH2z-FPC4CdS=GDfRCsLg@mail.gmail.com>
+ <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com> <CAL3q7H5fogJTfdkj_7y8upZj7+4dz65o-tKzyGf0WfLwm3nfUw@mail.gmail.com>
+In-Reply-To: <CAL3q7H5fogJTfdkj_7y8upZj7+4dz65o-tKzyGf0WfLwm3nfUw@mail.gmail.com>
+From: Andrea Gelmini <andrea.gelmini@gmail.com>
+Date: Sun, 7 Jul 2024 12:15:22 +0200
+Message-ID: <CAK-xaQaYDg60DizL3kJ3XKU5JD3kKVi3kecb2s18Po96T9tAHg@mail.gmail.com>
 Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
  execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: Andrea Gelmini <andrea.gelmini@gmail.com>
+To: Filipe Manana <fdmanana@kernel.org>
 Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>, 
 	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
 	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
 	dsterba@suse.com, josef@toxicpanda.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jul 6, 2024 at 6:37=E2=80=AFPM Filipe Manana <fdmanana@kernel.org> =
-wrote:
->
-> On Sat, Jul 6, 2024 at 1:07=E2=80=AFPM Andrea Gelmini <andrea.gelmini@gma=
-il.com> wrote:
+Il giorno dom 7 lug 2024 alle ore 11:41 Filipe Manana
+<fdmanana@kernel.org> ha scritto:
+> > Again, this is based on 6.10-rc6 plus 3 fixes for this issue you're both having.
 > >
-> > Il giorno sab 6 lug 2024 alle ore 02:11 Andrea Gelmini
-> > <andrea.gelmini@gmail.com> ha scritto:
-> > > For the moment it seems we have a winner!
-> >
-> > I confirm this, but I forgot to add this (a lot of these):
->
-> Oh, those I added on purpose to confirm what the bpftrace logs
-> suggested: concurrent calls into the shrinker.
->
->
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm firefox-bin nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm firefox-bin nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:06 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> > [sab lug  6 13:12:07 2024] BTRFS warning (device dm-0): extent
-> > shrinker already running, comm cc1plus nr_to_scan 2
-> >
-> > Just for the record, compiling LibreOffice.
-> >
-> > In the meanwhile running restic (full backup to force read
-> > everything), no sluggish at all.
->
-> That's great!
->
-> So I've been working on a proper approach following all those test
-> results from you and Mikhail, and I would like to ask you both to try
-> this branch:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/fdmanana/linux.git/log/?h=
-=3Dtest3_em_shrinker_6.10
->
-> Again, this is based on 6.10-rc6 plus 3 fixes for this issue you're both =
-having.
->
-> Can you guys test that branch?
+> > Can you guys test that branch?
 
-I just updated the branch with a last minute change to avoid an
-unnecessary reschedule and re-lock, therefore helping reduce latency.
-Thanks.
+Used yesterday and today. Seems fine. Just in quick test, I see
+sometimes PSI memory spike over 40, but - important thing - no effect
+on interactivity. So I didn't investigated more.
 
->
-> Thank you a lot for all the time spent on this!
+Well, just to be sure. I compiled the latest git with -rc6 and
+test3_em_shrinker_6.10. Nothing more about patches.
+
+Anyway, just for the record:
+kernel: test3
+       fresh: 0:03:44 [ 241MiB/s]
+       aged: 0:02:07 [ 801MiB/s]
+       funny thing: next runs of aged no more than  0:03:22 [
+504MiB/s] (but, as I wrote, no problem with interaction).
+
+> I just updated the branch with a last minute change to avoid an
+> unnecessary reschedule and re-lock, therefore helping reduce latency.
+
+Ok, recompile now and test!
 
