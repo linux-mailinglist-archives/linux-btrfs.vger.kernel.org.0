@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6310-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6311-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB6E92ABE6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jul 2024 00:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9096992AC55
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jul 2024 01:02:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 393591F22F92
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2024 22:16:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14B571F22867
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2024 23:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A859215216A;
-	Mon,  8 Jul 2024 22:15:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94E01514F6;
+	Mon,  8 Jul 2024 23:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="fOpUOtxc"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dJfOmawH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3898A146D40;
-	Mon,  8 Jul 2024 22:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3413C34545;
+	Mon,  8 Jul 2024 23:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720476900; cv=none; b=AoPHUP6IhSm9V3cnVd9AiQf7C0RRuSLv9059zUeAxos5RRGcSFvG699pK1IdFquFX2BIHgJhd5OrWd+h9Q9C00lexYCWP4R9opYUlJfeaR890UOwWyouaZBGh3UdR0Mu+vuF2bajzwN7uypqn7jPM4WvA6FlGZlxilcL1RgCDfI=
+	t=1720479761; cv=none; b=OGEjifBjNx2W9LxyfoQmm5Kavi3n7LGFsDxEkP6KJAB5GBW8PmEUlqgi6TFDZQUGD3QNCLAf//+ygcdTAB1U5xGLhlKtn/Z7PZKmwcGqEyJT2yTo+xG0YSjtviDP5f8aJ9TSpLxy0S9cNd5Bh0/WACZO48rEbEKA+yVfcdUru/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720476900; c=relaxed/simple;
-	bh=zjqI610N9pRC4EqJF11m9EzDbN8ZaWHPOimS03zeegI=;
+	s=arc-20240116; t=1720479761; c=relaxed/simple;
+	bh=uG/+aQClGwhtZo6k8lVP2S+kagDmKRqwdQVqP26DdII=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KPKbjBXRO5dUCAplE/WodTqsaGRmJlqs+C2mSPPCQ1yW4ecrP2mvqlPFxl3CqhVeoaGOnuY4kRqKYZ3RbAWFN3LrSIkzvdOqTlpMX0Rt/SbZt+WjkgOl3el8GIOkOvrdETIOlcZXtRmihVnzoW5W4/yxYZETpFM5euoldnoAZYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=fOpUOtxc; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=LY3LYeZMW3Q65SAOjyvj7LlGKj29jT8xq8lJuqckwLsnrbVupSmbyG+ssWu7n5gdXGL7XKaaZPfrnDeLd49TsFzG20i4P519bVxhAK4mhOSdraPwxcKN/uQSEBWaOUyz8bE5lkQ9Gay301758Y0ZlBD/HQzXU2919Pm529Wn4oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=dJfOmawH; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1720476883; x=1721081683; i=quwenruo.btrfs@gmx.com;
-	bh=uvtjxh9hgaU0yCTPP3uwX4bGR8q3uFMSBV8Qqx9BXR0=;
+	s=s31663417; t=1720479743; x=1721084543; i=quwenruo.btrfs@gmx.com;
+	bh=JEJwolu5fK69Vvc6LDyg/r9dmrw8ucbENq7HiOCxU78=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=fOpUOtxcBOaHyeQloPHyN2K/bWbvP/mgj1wC14EtRsbhbQq0P1cRC/0UxGXKDQgs
-	 EA+CX35fGnhQyZDsMpl7b3svpUg2+TMHC13U26oJH48niSZMZr7By3v9YXSA/1CpH
-	 008t3IWQWsB+CdOkNQsMCpeiYyAePyVDmZOnjoyDoWEfqQcmuYjSXp/CcPjYpXb+a
-	 lI9RW5dpWipHw6tjgph0K/Sc2F1g297ptFN++PX81phc1yd1B2G39g2j4+T1xxWfR
-	 1vce2BZZKzjwAGtN1o3ZYAV5/9uhxbRh70eY5RH2wCbwHTA8xcItSpg/Knlv7dWll
-	 VAZFK4NLh5ePIk4rcQ==
+	b=dJfOmawH5AYPRu4VGIBxKpdRvCAB6CEXR51sDfgk+Kb2B8/bbzxEr20EF45OQFnA
+	 b7/wz+REIvH+ToAqPsPP2ClCagq7x5u2pUJ/rnUMEis4A8DKWKc9RIVukKnnv+3GL
+	 a71W4xodTLVQ55bD64KoMycGv2TsivGun/CQ2dD3+XKqBE1hlpTnuKYdSpolOLQwK
+	 ylnLjJ7OKs/xKDIP05GDLJDbf2AletKh6RjlvOzidtVgpshJiGpgUg8Eu+1hKk6CD
+	 oFGUZi6RT3mw+uGhM3UGgNeYs8ycRRiwBAczgM0ZZhBlaDTyuNJrzeOOYy5nhvbMa
+	 IspySFh/TUY+riXBIQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRmjw-1spbIX1Tb8-00M4dd; Tue, 09
- Jul 2024 00:14:43 +0200
-Message-ID: <51eebc20-94f7-4e3d-8a44-741dad2e9900@gmx.com>
-Date: Tue, 9 Jul 2024 07:44:39 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N9MpS-1sLVGN0tfg-014ZF9; Tue, 09
+ Jul 2024 01:02:23 +0200
+Message-ID: <99cc2be0-ea62-430b-8395-a915be48e9bf@gmx.com>
+Date: Tue, 9 Jul 2024 08:32:19 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,16 +58,19 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/7] btrfs: replace stripe extents
+Subject: Re: [PATCH v4 3/7] btrfs: split RAID stripes on deletion
 To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
  Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
  Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
 Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 References: <20240705-b4-rst-updates-v4-0-f3eed3f2cfad@kernel.org>
- <20240705-b4-rst-updates-v4-1-f3eed3f2cfad@kernel.org>
- <e51d0042-ec10-4a50-bd76-3d3d3cbc9bfc@gmx.com>
- <9d7f7acf-8077-481c-926e-d29b4b90d46f@wdc.com>
+ <20240705-b4-rst-updates-v4-3-f3eed3f2cfad@kernel.org>
+ <e0041c2d-f888-41cb-adb8-52c82ca0d03f@gmx.com>
+ <e3927e86-d85e-4003-9ce5-e9e88741afa3@wdc.com>
+ <ecd368a8-2582-4d23-a89d-549abb8c4902@gmx.com>
+ <d0c28a38-23d4-44f3-9438-e374be1c33d0@wdc.com>
+ <50d64ebb-857b-45ad-9f98-70353dfef535@wdc.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -94,134 +97,140 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <9d7f7acf-8077-481c-926e-d29b4b90d46f@wdc.com>
+In-Reply-To: <50d64ebb-857b-45ad-9f98-70353dfef535@wdc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NNYgIL5doO/PSd9LmDlanHV7Gw8um2ZcHnj+kHMe2FX4fhuzJW+
- ylq/tlzaRt/gaVkaQohEg94ltKac2JSEJUDovj25QtfjgixkHWdTdUTlhfM8UGSy10Fray8
- q4d8a8z68IHkx7blY5ZQDOQwsnzRi3U54dfXk/dVQm2Pwhqd2PwNSuqjjXZ2c/6qMhCdXBI
- Y7qs3VWtXVwmulfvuSlfg==
+X-Provags-ID: V03:K1:4bhA1oX1As8EmfhO7gr6lO58tKXnsY96GYe1MrgcJyN4DcyeDxF
+ nzQRkpUk9ajNgLYYexwEwhoYqfrbRoNeuNz3GiK4jEyv1osmZbE6GQeItYM6124HOl44It0
+ Tw8Y76Gx7RdqKR05fc83E3wxNZBEFGfFR/AORZ5zOktmFqIrAMJOxpZUU2/KnGkXWGPRC+s
+ t7CGpwVV0fchM7kft0iag==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:6rbF/bWaBpw=;ncmFMcqiS6WuPSjb5M5vHqJh83T
- iwrbeA12a9VB7CFa5rUc8GtnYaiiVK3jCxIFpMLDfpM1GgnF49EVO0WiqjmqxCp09bTF/MMeN
- NGYC7XA7R1zFDWO5q4andsGHcmAUbochUjlnAmL3hHzanNbqEXWZX8Ktzi2zE1tZT/R/C1EOx
- Ykzl0pZJePHRlkHHs/NRA2EFENcE9tepWaQtHrLBe+oR8dQe3ZL0+8JlGdXRi6NVNa+NI/s4U
- o9j1HH+OZGjcM0Vlp3gBFed4XNQXOwcxU9tgwpHyTrh+9RLNqqoyBoeXKtPDgDEUIWb6JG2Kp
- BMn3rQl9tkFzb0N9Tqi7XjGx9mqZ8rCCCp3NZIoMeB2p2N16au2rK8SQh64Rgn0Z5N+Nm5Vsk
- nicEveHMdjgNdtEgiaFIZaOAVJ3/YE1i3RX2NTETJ3s/xTnqfxTPO1aeNgytU6yDf4LwVu2Xp
- OJ0ymIcv8KpsCk6hcsRgYxb0r4G+1QZBiv1vhekUJN3eZD7w9LGDRktwmBNqOsFBeE+POGtF2
- swe5PnFhgy3apsXMjNOVN+h+mokjN2xu0d58fFDwZYHP4k4/wn4SYyuzRJ/cjKCJjCx5JmdJP
- pBMcK2dUTTv8fGsE4GHgAwEzGqvnefxhRhiOJVKapsw7sWcEjclVUO6aSEAcpRM5msFYVbBdT
- Hhyae1vBvSxrK1sJvQxQb99J3hi97FMVLfZilKm+/FsulhZyslHO6whZ6MGpi0oN+m0oS2IXx
- gT0ubKVuW05pnXAic9ctBFWfouMot4sKImSI7a8jxF3jS6gY8Hc5lJxvwWm4BU1DdzgFzLj9R
- 7umrCCE0LgnP7LW+jSiO5LViiVptd+2oO2X0fEZ0oiWOk=
+UI-OutboundReport: notjunk:1;M01:P0:yJzpsUZ1pOY=;W03E9sWyf4BaNvGm8PiaYOBU52a
+ 60YV45BvINujuTl1TI6k+8k7qKJR8Zb1p+aZoJqOkFByy3LEU52GvTgQxGkHgLPaHCFf/lqDA
+ crBe4ptJ6e8pAEnS//FZaljZ9yydsm1JrZ1gUKr9iwivAxxnQktY6UhAdlCUJX8ECoEG0KXHF
+ EbDFNL9Nc0j20EUwQvO1jSz/UdO17zlzwFQvBwCLf5c6gtm8SvAg+t0d6BGnZ/6v76r+iQjhB
+ r2K4CR2QuNn6SquPsOsSl5/a9tC2PV1WBcouAyaT898PaMylBpW68TUiKnhkaUUzdGbEA333U
+ /SD2isFYk6RglEIpHfyrI0RpS5QKT3FpIab4HUCB6P/Otah/EoNCgbuz9dcCq9rPd8cc2PMYP
+ XhTFHndJyCQ4x7wHCuj5H9jmrV9q2m/S1NBU+lCUQcaKAVdsEGnTA8GsDHqhyuQoIi3whwb0k
+ 7koXx/sNViUTxfKNKWkjvLO0wJoh2S0w3MFxuPP6cyg/FmG+KAXaCygtXfcpi5HmUumzZt6sW
+ XroMljVNESYzls6abiC0b0q3x7paPeRdprwjcetUXqy+rOdxH5Vv1ElRwf74/LWMXqVrQiOli
+ hd1JKHjuJaVACmcQoRiwQWAvRVakfvHvAj/mvofwLRtee2PvW9nJVjOg3DJyOt47ml8qaK9QP
+ HvK977+SZDPJULfP0hQ1wHoaCGnA/RIX5YmQL04HbKuFPJQBSZNo7WMTbq/6pZOPJAho7EAaq
+ vH5hBNL2HdNYeOpfXk7+7gjuyLWxxKXroFJuAh0jkSZ47Q0tfeDHqARFRg801tZvd2BhUnVCR
+ 1FcOB21nATi5aFLBZWsmp3gv2gAhnKnCe4IZ8tCQzhODc=
 
 
 
-=E5=9C=A8 2024/7/8 21:13, Johannes Thumshirn =E5=86=99=E9=81=93:
-> On 06.07.24 01:19, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2024/7/6 00:43, Johannes Thumshirn =E5=86=99=E9=81=93:
->>> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+=E5=9C=A8 2024/7/8 20:22, Johannes Thumshirn =E5=86=99=E9=81=93:
+> On 08.07.24 07:26, Johannes Thumshirn wrote:
+>> On 08.07.24 07:20, Qu Wenruo wrote:
 >>>
->>> If we can't insert a stripe extent in the RAID stripe tree, because
->>> the key that points to the specific position in the stripe tree is
->>> already existing, we have to remove the item and then replace it by a
->>> new item.
+>>> Can the ASSERT() be reproduced without a zoned device? (I'm really not=
+ a
+>>> fan of the existing tcmu emulated solution, meanwhile libvirt still
+>>> doesn't support ZNS devices)
 >>>
->>> This can happen for example on device replace operations.
+>>> If it can be reproduced just with RST feature, I may provide some help
+>>> digging into the ASSERT().
 >>
->> In that case, can we just modify the targeted dev stripe?
+>> Let me check. It's very sporadic as well unfortunately.
 >>
->> Or do we have other call sites that can lead to such conflicts?
 >>
->> As I'm not that confident if such replace behavior would mask some real
->> problems.
 >
-> I've just tested the following patch and it looks like it's working:
->
->
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index e6f7a234b8f6..7bfd8654c110 100644
-> --- a/fs/btrfs/raid-stripe-tree.c
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -73,6 +73,53 @@ int btrfs_delete_raid_extent(struct
-> btrfs_trans_handle *trans, u64 start, u64 le
->           return ret;
->    }
->
-> +static int update_raid_extent_item(struct btrfs_trans_handle *trans,
-> +				   struct btrfs_key *key,
-> +				   struct btrfs_io_context *bioc)
-> +{
-> +	struct btrfs_path *path;
-> +	struct extent_buffer *leaf;
-> +	struct btrfs_stripe_extent *stripe_extent;
-> +	int num_stripes;
-> +	int ret;
-> +	int slot;
-> +
-> +	path =3D btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	ret =3D btrfs_search_slot(trans, trans->fs_info->stripe_root, key, pat=
-h,
-> +				0, 1);
-> +	if (ret)
-> +		return ret =3D=3D 1 ? ret : -EINVAL;
+> OK, I've managed to trigger the failure with btrfs/070 on a
+> SCRATCH_DEV_POOL with 5 non-zoned devices.
 
-Looks good to me overall.
+I'm hitting errors like this:
 
-Considering in this case the bioc should match the existing rst entry,
-can we add an extra ASSERT() to check the length of the entry against
-the bioc?
+[  227.898320] ------------[ cut here ]------------
+[  227.898817] BTRFS: Transaction aborted (error -17)
+[  227.899250] WARNING: CPU: 7 PID: 65 at
+fs/btrfs/raid-stripe-tree.c:116 btrfs_insert_raid_extent+0x337/0x3d0 [btrf=
+s]
+[  227.900122] Modules linked in: btrfs blake2b_generic xor
+zstd_compress vfat fat intel_rapl_msr intel_rapl_common crct10dif_pclmul
+crc32_pclmul ghash_clmulni_intel iTCO_wdt iTCO_vendor_support
+aesni_intel crypto_simd cryptd psmouse i2c_i801 pcspkr i2c_smbus lpc_ich
+intel_agp intel_gtt joydev agpgart mousedev raid6_pq libcrc32c loop drm
+fuse qemu_fw_cfg ext4 crc32c_generic crc16 mbcache jbd2 dm_mod
+virtio_rng virtio_net virtio_blk virtio_balloon net_failover
+virtio_console failover virtio_scsi rng_core dimlib usbhid virtio_pci
+virtio_pci_legacy_dev crc32c_intel virtio_pci_modern_dev serio_raw
+[  227.904452] CPU: 7 PID: 65 Comm: kworker/u40:0 Not tainted
+6.10.0-rc6-custom+ #167
+[  227.905220] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+unknown 2/2/2022
+[  227.905827] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
+[  227.906558] RIP: 0010:btrfs_insert_raid_extent+0x337/0x3d0 [btrfs]
+[  227.907246] Code: 89 6b 08 e8 4b 18 f7 ff 49 8b 84 24 50 02 00 00 4c
+39 f0 75 be 31 db e9 7d fe ff ff 89 de 48 c7 c7 f0 8d 9d a0 e8 29 a1 79
+e0 <0f> 0b e9 69 ff ff ff e8 bd 95 3e e1 49 8b 46 60 48 05 48 1a 00 00
+[  227.908277] BTRFS: error (device dm-3 state A) in
+btrfs_insert_one_raid_extent:116: errno=3D-17 Object already exists
+[  227.909356] RSP: 0018:ffffc9000026fca0 EFLAGS: 00010282
+[  227.909361] RAX: 0000000000000000 RBX: 00000000ffffffef RCX:
+0000000000000027
+[  227.911934] RDX: ffff88817bda1948 RSI: 0000000000000001 RDI:
+ffff88817bda1940
+[  227.912722] RBP: ffff8881029dcbe0 R08: 0000000000000000 R09:
+0000000000000003
+[  227.913095] BTRFS info (device dm-3 state EA): forced readonly
+[  227.913569] R10: ffffc9000026fb38 R11: ffffffff826d0508 R12:
+0000000000000010
+[  227.915182] R13: ffff8881029dcbe0 R14: ffff88812a5ff790 R15:
+ffff8881488f2780
+[  227.916130] FS:  0000000000000000(0000) GS:ffff88817bd80000(0000)
+knlGS:0000000000000000
+[  227.916912] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  227.917500] CR2: 0000561364dec000 CR3: 00000001583ca000 CR4:
+0000000000750ef0
+[  227.918210] PKRU: 55555554
+[  227.918484] Call Trace:
+[  227.918727]  <TASK>
+[  227.918940]  ? __warn+0x8c/0x180
+[  227.919299]  ? btrfs_insert_raid_extent+0x337/0x3d0 [btrfs]
+[  227.919891]  ? report_bug+0x164/0x190
+[  227.920272]  ? prb_read_valid+0x1b/0x30
+[  227.920666]  ? handle_bug+0x3c/0x80
+[  227.921013]  ? exc_invalid_op+0x17/0x70
+[  227.921397]  ? asm_exc_invalid_op+0x1a/0x20
+[  227.921835]  ? btrfs_insert_raid_extent+0x337/0x3d0 [btrfs]
+[  227.922440]  btrfs_finish_one_ordered+0x3c3/0xaa0 [btrfs]
+[  227.923055]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  227.923549]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  227.924062]  btrfs_work_helper+0x107/0x4c0 [btrfs]
+[  227.924612]  ? lock_is_held_type+0x9a/0x110
+[  227.925040]  process_one_work+0x212/0x720
+[  227.925454]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  227.926010]  worker_thread+0x1dc/0x3b0
+[  227.926411]  ? __pfx_worker_thread+0x10/0x10
+[  227.926918]  kthread+0xe0/0x110
+[  227.927377]  ? __pfx_kthread+0x10/0x10
+[  227.927776]  ret_from_fork+0x31/0x50
+[  227.928151]  ? __pfx_kthread+0x10/0x10
+[  227.928564]  ret_from_fork_asm+0x1a/0x30
+[  227.929035]  </TASK>
+[  227.929305] irq event stamp: 11077
+[  227.929710] hardirqs last  enabled at (11085): [<ffffffff8115daf5>]
+console_unlock+0x135/0x160
+[  227.930725] hardirqs last disabled at (11094): [<ffffffff8115dada>]
+console_unlock+0x11a/0x160
+[  227.931730] softirqs last  enabled at (10728): [<ffffffff810b4684>]
+__irq_exit_rcu+0x84/0xa0
+[  227.932568] softirqs last disabled at (10723): [<ffffffff810b4684>]
+__irq_exit_rcu+0x84/0xa0
+[  227.933494] ---[ end trace 0000000000000000 ]---
+[  227.933992] BTRFS: error (device dm-3 state EA) in
+btrfs_insert_one_raid_extent:116: errno=3D-17 Object already exists
+[  227.935193] BTRFS warning (device dm-3 state EA): Skipping commit of
+aborted transaction.
+[  227.936383] BTRFS: error (device dm-3 state EA) in
+cleanup_transaction:2018: errno=3D-17 Object already exists
+
+But not that ASSERT() yet.
+
+I guess I need the first patch to pass this first?
 
 Thanks,
 Qu
-> +
-> +	leaf =3D path->nodes[0];
-> +	slot =3D path->slots[0];
-> +
-> +	btrfs_item_key_to_cpu(leaf, key, slot);
-> +	num_stripes =3D btrfs_num_raid_stripes(btrfs_item_size(leaf, slot));
-> +	stripe_extent =3D btrfs_item_ptr(leaf, slot, struct btrfs_stripe_exten=
-t);
-> +
-> +	for (int i =3D 0; i < num_stripes; i++) {
-> +		u64 devid =3D bioc->stripes[i].dev->devid;
-> +		u64 physical =3D bioc->stripes[i].physical;
-> +		u64 length =3D bioc->stripes[i].length;
-> +		struct btrfs_raid_stride *raid_stride =3D
-> +			&stripe_extent->strides[i];
-> +
-> +		if (length =3D=3D 0)
-> +			length =3D bioc->size;
-> +
-> +		btrfs_set_raid_stride_devid(leaf, raid_stride, devid);
-> +		btrfs_set_raid_stride_physical(leaf, raid_stride, physical);
-> +	}
-> +
-> +	btrfs_mark_buffer_dirty(trans, leaf);
-> +	btrfs_free_path(path);
-> +
-> +	return ret;
-> +}
-> +
->    static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *tr=
-ans,
-> 					struct btrfs_io_context *bioc)
->    {
-> @@ -112,6 +159,8 @@ static int btrfs_insert_one_raid_extent(struct
-> btrfs_trans_handle *trans,
->
-> 	ret =3D btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_exten=
-t,
-> 				item_size);
-> +	if (ret =3D=3D -EEXIST)
-> +		ret =3D update_raid_extent_item(trans, &stripe_key, bioc);
-> 	if (ret)
-> 		btrfs_abort_transaction(trans, ret);
->
 
