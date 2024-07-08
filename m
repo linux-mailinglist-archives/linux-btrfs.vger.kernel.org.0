@@ -1,76 +1,49 @@
-Return-Path: <linux-btrfs+bounces-6308-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6309-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C50192A981
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2024 21:02:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F4F392AA7D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2024 22:22:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ED1F1C218CC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2024 19:02:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B812830E0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2024 20:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8434614D444;
-	Mon,  8 Jul 2024 19:01:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iqkkvI/h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2945214B963;
+	Mon,  8 Jul 2024 20:22:38 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B771474AF;
-	Mon,  8 Jul 2024 19:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from drax.kayaks.hungrycats.org (drax.kayaks.hungrycats.org [174.142.148.226])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF20146A98
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Jul 2024 20:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=174.142.148.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720465306; cv=none; b=rIq5L1ZV2cy4T18DPgNZuzQZ2KGQvyX419fQ71rb9z545n02NTw4Z+ZL1uWrIvG6nfoYb2WJeR5oLmui74mQF+gT69TkKPRWZPwpfrh57hVE0pPZxbWZ18wHbXhLJn1T2rk3S/iM3MMNe5IKRI9Mi/m1vBa6g2Yj/yS0V83x0Nk=
+	t=1720470157; cv=none; b=tS+DAT9sCanGW2AwN3qpVP/WwTPeH/OdH5fxHLGVKkf421gPk8jcj/bRXC/lYfoXM4jCYbjifW0hk7yvc1ORTsM/AZi/fH4F/yXybOXgNw2x+znIN9/ao2ebARoMqTqlzgnWffPr43StaUDgdR575i6G9TH9LAGYjP2h3UrXMk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720465306; c=relaxed/simple;
-	bh=1hW/kypdr+uaGZf3TpRDZkCzjeuosv/ANU6YTGTLXeI=;
+	s=arc-20240116; t=1720470157; c=relaxed/simple;
+	bh=PTeSXSiyqBS6JR5ylCjxnmoJMy4yYyZIB3Qw0XnZVDs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PfctVvaoVW7aGUJSAhUFAOfSdZd8cehcmigPdbCmBkIK5rkOjzsH82l2P5irM6r+6sOoV8NIgEHC86EyfydLwTTAKFCWqmVbchNwMXEksk13zF/LtcEeyQ5WJGJiu4/aIzXz/XMwULzwaAc53RoY2i6Ovf0qXmAaqhxcIunrb0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iqkkvI/h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14F6DC116B1;
-	Mon,  8 Jul 2024 19:01:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720465306;
-	bh=1hW/kypdr+uaGZf3TpRDZkCzjeuosv/ANU6YTGTLXeI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iqkkvI/hBM0I8W+ZlvH3nLQoPJO9QM8LmBrpuyAneOgy7NF+RSRTyrPIWVCAxl5OK
-	 Qj7h38Si0auCjMoYaBibCpq8aDetMl4COkWD0P6xktZmsKwRtdqJ2x55/O2ja9TXot
-	 SLWLacZcZ+Ayzt6msQoyxlKdrXzStPcaO4ML88Q1wl5xuA1dOmXa1k4i3ZjM9ak3fT
-	 Q4fOFD8pQY0YtIHBbyjIuL67+JTPJXsN6RpcsGvIOgkW1o/JtRgcMxa6vARj9gM0RD
-	 eGE9ck/XLn75yxhkgIqQ1RohuU0oxUUxLiizAAfuEVRq0M3xm29w8uUJ17fmIRfiEP
-	 EsVzG2aeV0ySQ==
-Date: Mon, 8 Jul 2024 12:01:45 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Uros Bizjak <ubizjak@gmail.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 6/9] xfs: switch to multigrain timestamps
-Message-ID: <20240708190145.GR612460@frogsfrogsfrogs>
-References: <20240708-mgtime-v4-0-a0f3c6fb57f3@kernel.org>
- <20240708-mgtime-v4-6-a0f3c6fb57f3@kernel.org>
- <20240708184739.GP612460@frogsfrogsfrogs>
- <28e7a6c193674f2aa41ab1eec9bb8747ddba1a4c.camel@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PSxhJhbTWseG16uckgzfUcaSjiVeJb4PYgHpXbE67erM0GxCsEdMgI/XzWLhjoCJoLmNuZ4PvxMxTWlUdFV+9kfyXwMYzI4toZtDU1+brxqd7JPZFWFfXlCpKXkY4piP0EcFEssRcK1JEbYfVTkvvbiViigYdXiKpZmHl9UWfxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org; spf=pass smtp.mailfrom=drax.hungrycats.org; arc=none smtp.client-ip=174.142.148.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=umail.furryterror.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=drax.hungrycats.org
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+	id 68DE3EB2CFF; Mon,  8 Jul 2024 16:22:34 -0400 (EDT)
+Date: Mon, 8 Jul 2024 16:22:34 -0400
+From: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To: Lukas Straub <lukasstraub2@web.de>
+Cc: Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Write error handling in btrfs (was: Re: raid5 silent data loss in
+ 6.2 and later, after "7a3150723061 btrfs: raid56: do data csum verification
+ during RMW cycle")
+Message-ID: <ZoxKitr-yaMAyVa7@hungrycats.org>
+References: <ZlqUe+U9hJ87jJiq@hungrycats.org>
+ <a9d16fd4-2fec-40c7-94cc-c53aa208c9b9@gmx.com>
+ <ZmO6IPV0aEirG5Vk@hungrycats.org>
+ <5a8c1fbf-3065-4cea-9cf9-48e49806707d@suse.com>
+ <ZouGYZWkKM_W4hby@hungrycats.org>
+ <20240708100927.652b2bc7@penguin>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,128 +52,203 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <28e7a6c193674f2aa41ab1eec9bb8747ddba1a4c.camel@kernel.org>
+In-Reply-To: <20240708100927.652b2bc7@penguin>
 
-On Mon, Jul 08, 2024 at 02:51:07PM -0400, Jeff Layton wrote:
-> On Mon, 2024-07-08 at 11:47 -0700, Darrick J. Wong wrote:
-> > On Mon, Jul 08, 2024 at 11:53:39AM -0400, Jeff Layton wrote:
-> > > Enable multigrain timestamps, which should ensure that there is an
-> > > apparent change to the timestamp whenever it has been written after
-> > > being actively observed via getattr.
-> > > 
-> > > Also, anytime the mtime changes, the ctime must also change, and those
-> > > are now the only two options for xfs_trans_ichgtime. Have that function
-> > > unconditionally bump the ctime, and ASSERT that XFS_ICHGTIME_CHG is
-> > > always set.
-> > > 
-> > > Finally, stop setting STATX_CHANGE_COOKIE in getattr, since the ctime
-> > > should give us better semantics now.
-> > > 
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > >  fs/xfs/libxfs/xfs_trans_inode.c |  6 +++---
-> > >  fs/xfs/xfs_iops.c               | 10 +++-------
-> > >  fs/xfs/xfs_super.c              |  2 +-
-> > >  3 files changed, 7 insertions(+), 11 deletions(-)
-> > > 
-> > > diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_inode.c
-> > > index 69fc5b981352..1f3639bbf5f0 100644
-> > > --- a/fs/xfs/libxfs/xfs_trans_inode.c
-> > > +++ b/fs/xfs/libxfs/xfs_trans_inode.c
-> > > @@ -62,12 +62,12 @@ xfs_trans_ichgtime(
-> > >  	ASSERT(tp);
-> > >  	xfs_assert_ilocked(ip, XFS_ILOCK_EXCL);
-> > >  
-> > > -	tv = current_time(inode);
-> > > +	/* If the mtime changes, then ctime must also change */
-> > > +	ASSERT(flags & XFS_ICHGTIME_CHG);
-> > >  
-> > > +	tv = inode_set_ctime_current(inode);
-> > >  	if (flags & XFS_ICHGTIME_MOD)
-> > >  		inode_set_mtime_to_ts(inode, tv);
-> > > -	if (flags & XFS_ICHGTIME_CHG)
-> > > -		inode_set_ctime_to_ts(inode, tv);
-> > >  	if (flags & XFS_ICHGTIME_CREATE)
-> > >  		ip->i_crtime = tv;
-> > >  }
-> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > > index a00dcbc77e12..d25872f818fa 100644
-> > > --- a/fs/xfs/xfs_iops.c
-> > > +++ b/fs/xfs/xfs_iops.c
-> > > @@ -592,8 +592,9 @@ xfs_vn_getattr(
-> > >  	stat->gid = vfsgid_into_kgid(vfsgid);
-> > >  	stat->ino = ip->i_ino;
-> > >  	stat->atime = inode_get_atime(inode);
-> > > -	stat->mtime = inode_get_mtime(inode);
-> > > -	stat->ctime = inode_get_ctime(inode);
-> > > +
-> > > +	fill_mg_cmtime(stat, request_mask, inode);
+On Mon, Jul 08, 2024 at 10:26:32AM +0200, Lukas Straub wrote:
+> > I found the code that does this.  It's more than 11 years old:
 > > 
-> > Sooo... for setting up a commit-range operation[1], XFS_IOC_START_COMMIT
-> > could populate its freshness data by calling:
+> > commit 0bec9ef525e33233d7739b71be83bb78746f6e94
+> > Author: Josef Bacik <jbacik@fusionio.com>
+> > Date:   Thu Jan 31 14:58:00 2013 -0500
 > > 
-> > 	struct kstat dummy;
+> >     Btrfs: unreserve space if our ordered extent fails to work
 > > 
-> > 	fill_mg_ctime(&dummy, STATX_CTIME | STATX_MTIME, inode);
+> >     When a transaction aborts or there's an EIO on an ordered extent or any
+> >     error really we will not free up the space we reserved for this ordered
+> >     extent.  This results in warnings from the block group cache cleanup in the
+> >     case of a transaction abort, or leaking space in the case of EIO on an
+> >     ordered extent.  Fix this up by free'ing the reserved space if we have an
+> >     error at all trying to complete an ordered extent.  Thanks,
 > > 
-> > and then using dummy.[cm]time to populate the freshness data that it
-> > gives to userspace, right?  Having set QUERIED, a write to the file
-> > immediately afterwards will cause a (tiny) increase in ctime_nsec which
-> > will cause the XFS_IOC_COMMIT_RANGE to reject the commit[2].  Right?
-> > 
+> > [...]
 > 
-> Yes. Once you call fill_mg_ctime, the first write after that point
-> should cause the kernel to ensure that there is a distinct change in
-> the ctime.
-> 
-> IOW, I think this should alleviate the concerns I had before with using
-> timestamps with the XFS_IOC_COMMIT_RANGE interface.
+> Before this escalates further in IMHO the wrong direction:
 
-Cool, thank you!  Apologies for roaring earlier.
+Now we're drifting away from raid56-specific issues, and into general
+btrfs write error handling theory.  OK, I'm up for that...
 
---D
+> I think the current btrfs behavior correct. See also this paper[1] that
+> examines write failure of buffered io in different filesystems.
+> Especially Table 2. Ext4 and xfs for example do not discard the page
+> cache on write failure, but this is worse since now you have a mismatch
+> of what is in the cache and what is on disk. They do not retry to write
+> back the page cache.
 
-> > --D
-> > 
-> > [1] https://lore.kernel.org/linux-xfs/20240227174649.GL6184@frogsfrogsfrogs/
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?h=atomic-file-commits&id=0520d89c2698874c1f56ddf52ec4b8a3595baa14
-> > 
-> > > +
-> > >  	stat->blocks = XFS_FSB_TO_BB(mp, ip->i_nblocks + ip->i_delayed_blks);
-> > >  
-> > >  	if (xfs_has_v3inodes(mp)) {
-> > > @@ -603,11 +604,6 @@ xfs_vn_getattr(
-> > >  		}
-> > >  	}
-> > >  
-> > > -	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
-> > > -		stat->change_cookie = inode_query_iversion(inode);
-> > > -		stat->result_mask |= STATX_CHANGE_COOKIE;
-> > > -	}
-> > > -
-> > >  	/*
-> > >  	 * Note: If you add another clause to set an attribute flag, please
-> > >  	 * update attributes_mask below.
-> > > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > > index 27e9f749c4c7..210481b03fdb 100644
-> > > --- a/fs/xfs/xfs_super.c
-> > > +++ b/fs/xfs/xfs_super.c
-> > > @@ -2052,7 +2052,7 @@ static struct file_system_type xfs_fs_type = {
-> > >  	.init_fs_context	= xfs_init_fs_context,
-> > >  	.parameters		= xfs_fs_parameters,
-> > >  	.kill_sb		= xfs_kill_sb,
-> > > -	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-> > > +	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
-> > >  };
-> > >  MODULE_ALIAS_FS("xfs");
-> > >  
-> > > 
-> > > -- 
-> > > 2.45.2
-> > > 
-> > > 
+ext4 and xfs don't retry the write, but they also don't deallocate the
+block from the filesystem, then try to use the same block immediately
+in a future allocation.  Of the filesystems in the paper, only btrfs
+does write-failure data loss in a rapidly cycling _loop_.
+
+xfs and ext4 (and btrfs on a nodatacow file) leave the failing extent
+allocated, so future reads return garbage, but future created or extended
+files pick different, hopefully error-free sectors on the disk.  ext4 and
+xfs thus avoid having a data loss loop, more or less accidentally.
+
+We could replicate that to break the loop on btrfs, by introducing an
+"IOERROR" extent type.  This would be like a PREALLOC extent, in the sense
+that it reserves space on disk without writing data to the space, but it
+would be always datacow for write, and always return EIO on read instead
+of zero-fill.  Scrub would not attempt reading such an extent, and would
+report it as a distinct failure type from the existing read/csum/write/etc
+failures.  Balance would make IOERROR extent references point to a
+zero bytenr when they are relocated (so they become IOERROR holes in
+files, with no physical extent behind them, and so that balance can
+dispose of the block group without tripping over an IO error itself).
+btrfs send would transmit them, btrfs receive would replicate them,
+btrfs qgroup would count their space if they have a physical extent
+(i.e. they're not a synthetic extent created by balance or receive).
+IOERROR extents would persist until they are deleted by a user action,
+like removing the file, or overwriting the entire extent.
+
+An IOERROR extent would be created by flipping a few bits in the extent
+item when the write failure is detected, then proceeding to write out
+the extent metadata for the lost extent data (instead of deleting it).
+This breaks the loop after btrfs writes to a broken sector (or at least
+pauses the loop until the user deletes the broken file and releases the
+broken sectors for another allocation).  IOERROR doesn't need additional
+space like retries do, since we're writing out the same number of extents
+to disk that we already have reserved, so an IO error can't cascade to
+an ENOSPC error.
+
+IOERROR extents break the rapid data loss loop and replicate the better
+behaviors of ext4 and xfs, without introducing their bad behaviors to
+btrfs.  Users can reliably detect lost data after the fact by reading
+the files or running scrub, so they don't need to rely on unreliable
+and invasive methods like fsync() or syncfs() for detection.
+
+It's an interesting idea for future enhancement, but it's no
+solution to the rmw regression.  It just breaks the loop and makes
+write-error-extent-drop detection easier, but the problem for rmw is
+that the write errors shouldn't happen in the first place.
+
+> The source of confusion here is rather that write errors do not happen
+> in the real world: Disks do not verify if they wrote data correctly and
+> neither does any layer (raid, etc.) above it.
+
+Disks do go offline in the real world, and that presents as write errors.
+I've had systems running raid1 where 2 disks go offline, but neither
+disk contains any metadata, so btrfs runs the write-delete-repeat data
+loss loop for many hours.  I didn't care much about that, because raid1
+isn't expected to work with 2 disks offline, but I do care about raid5
+not working with 0 disks offline.
+
+There are some small changes we can make to error handling that might
+quickly improve things for users.  While debugging the RMW issues,
+I have been using a patch that makes the extent drops visible in dmesg:
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 8f38eefc8acd..be3cda596bb8 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3214,6 +3214,22 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+                    clear_reserved_extent &&
+                    !test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags) &&
+                    !test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
++                       /*
++                        * Notify the user that some data has been lost due
++                        * to an error, unless we were already expected to
++                        * remove the data because of truncate.
++                        *
++                        * Put both logical and physical addresses here
++                        * because we're about to remove the mapping that
++                        * would have allowed the user to translate from
++                        * one to the other.
++                        */
++                       if (ret && !truncated)
++                               btrfs_err_rl(fs_info,
++"dropping unwritten extent at root %lld ino %llu offset [%llu,%llu] physical %llu length %llu",
++                                       btrfs_root_id(inode->root), btrfs_ino(inode),
++                                       unwritten_start, end, ordered_extent->disk_bytenr,
++                                       ordered_extent->disk_num_bytes);
+                        /*
+                         * Discard the range before returning it back to the
+                         * free space pool
+
+
+This has been useful when debugging the RMW issue, and valuable on
+production filesystems too.  It also lights up when some of the other
+recently fixed data loss bugs in btrfs are reproduced during bisection
+searches.  I'll submit that as a patch separately.
+
+That new 'if' statement could easily check a mount flag, and throw in
+a courtesy call to btrfs_abort_transaction or btrfs_panic if set.  That
+would be welcome for users who value data consistency over availability.
+I've seen several prospective btrfs users go back to ext4/xfs because
+btrfs doesn't support 'errors=remount-ro' or 'errors=panic' for data
+writes, and they absolutely prefer to crash instead running with known
+inconsistent data anywhere in the filesystem.
+
+btrfs could also do stats counting for dropped extents somewhere,
+but it can't use dev stats exactly as the event is happening above the
+individual device level.  We'd need a different stats item for that.
+
+> Thus handling of write failure is completely untested in all
+> applications (See the paper again) and it seems the problems you see
+> are due to wrongly handling of write errors. 
+
+Not quite.  It's a failure of expectations between two components of
+btrfs, and fixes can be implemented in either or both components.
+
+The new RMW code assumed that the ordered-data error-handling code would
+recover from RMW returning a synthetic write error and preserve the data,
+but that assumption is wrong:  the ordered-data error-handling code has
+never done that.  The data is lost in kernel 6.2 and later, because both
+of these subsystems now assume the other will work around the dependent
+read failures and get the data written somewhere.  In kernel 6.1 and
+earlier, the raid5 component was responsible for working around the
+read failures during writes, so there was no need for ordered data to
+handle them.
+
+> The data loss is not
+> silent it's just that many applications and scripts do not use fsync()
+> at all.
+
+fsync()'s return value is a terrible non-solution.  Diagnostic coverage
+is less than 100% and not all of the gaps can be eliminated (e.g. if
+you're running syncfs() in a continuous loop, you don't get notified if
+writebacks win races against you).  It's invasive, relying on the entire
+workload to be redesigned so that processes can stick around until writes
+finish without blocking everything on IO performance (try that with a
+parallel Makefile tree near you).  The engineering hours and runtime cost
+of application-level synchronous monitoring of every individual write
+isn't reasonable for an event that is extremely rare for a properly
+provisioned and monitored redundant RAID system, and generally considered
+catastrophic if it should occur.
+
+I guess I'm agreeing with you there.  Many applications have good reasons
+to never use fsync.
+
+> I think the proper way of resolving this is for btrfs to retry writing
+> the extent, but to another (possibly clean) stripe. Or perhaps a fresh
+> raid5 block group altogether.
+
+That's what I proposed as a long term solution, but I also propose
+shorter-term fixes to fix the specific rmw regression immediately.
+
+> I very much approve btrfs' current design of handling (and reporting)
+> write errors in the most correct way possible.
+
+I think btrfs's current handling of write errors is some distance away
+from the most correct way possible, or even from the most correct
+way currently implemented in a mainstream filesystem; however, it's
+good enough for now, and there are more important issues that need
+our attention.
+
+> Regards,
+> Lukas Straub
 > 
-> -- 
-> Jeff Layton <jlayton@kernel.org>
 > 
+> [1] https://www.usenix.org/system/files/atc20-rebello.pdf
+
+
 
