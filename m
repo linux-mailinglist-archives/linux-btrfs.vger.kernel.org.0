@@ -1,179 +1,187 @@
-Return-Path: <linux-btrfs+bounces-6342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6343-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEAF492D5FB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 18:14:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF7F092D68F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 18:34:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B924B261EB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 16:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7196E1F27132
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 16:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DDB71990B7;
-	Wed, 10 Jul 2024 16:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402A2197A87;
+	Wed, 10 Jul 2024 16:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AsUQEpVB"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="h+Q7VXqI";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q4HLDQqm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3750319754A
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2024 16:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66EEA3236
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2024 16:30:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720627893; cv=none; b=o7k/f6k9IiaWrKL8jcfzzF6fU+m593gx6o3+yPIeSgZBjozhCnNPFJDQf+0FLeO6B/rAA/uxyfzxWZluo681DXI3JSzv9G8ENKWkkU+FepfDbtVXlockLaA4kwEsMEElB0+WSKjtMB2Ao7RMXtc5nGAV6BBwxxybNMxAv/q0ULo=
+	t=1720629037; cv=none; b=gAV149l52wNCGmggeWDd7RxxHpzf/Zzna9ba7Cb6JkoLAmO659aWC3a7sFLZXZT4RPYS/YMiYml9uoiwqUY8yEOO8juX0WTJYyYhX08PTG3URJnTEPZowlRz/ANsC+CtSlxKX+OG2gqDdKmvi1XvSkNMXlvNDrWVOCFsDFlH+YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720627893; c=relaxed/simple;
-	bh=W+xC2mKfBPn97b9Wxsh+oaTKEQsB8EEqY2f1Mz2EcQo=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=HlnrgzvL0nZk8CB6eRuUkKpNg3R9+NScEGGhPcP+NCUZI+EuVT7ORwtZGntKRuttiD8Kubu+t3Q9BW3rS30FdiY4Te7F4FQzxjZVtUG0iY+RRZKqXte6j3Gzx+rhua4iqkyRKSw87VPI3HIPD1RDp8UwomYkMFhg/8HOqET6PhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AsUQEpVB; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1fb222a8eaeso45335805ad.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2024 09:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720627890; x=1721232690; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KQl2yHiVy+mPn7Waz0O9okAMLZNv3k/93SJ5oKHS4Iw=;
-        b=AsUQEpVByDBAwR37IA8/g4Zp/LTn73+xWHxelm9ugGlmOxlQa7AJH9dmON3iZy9Fq5
-         QsXkqVnMDHzGeTa15JmG9yg/NIbxlYxqpwpSjEt4wQUKotl3JMGdlAmbXHcNYXyDHePZ
-         pUwInVdDK43pGzy5cVaTKSu1XpKjSnL/Vxlde+/2l/lrLw7up/v1s9e2LZf2vePu9Xb9
-         7P7r5p2hnn1Z7IUv1ObADU/cYzypJxngNZ4d6m4FK9tWXkeapRhBG1Gpnbv0O/bR50rm
-         BotRCap2UC6LDYv84v2h+pXmhOpBCCxDOG05djF6SojzEkJ3Wr2BobqE57n9P2iFI2NP
-         dFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720627890; x=1721232690;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KQl2yHiVy+mPn7Waz0O9okAMLZNv3k/93SJ5oKHS4Iw=;
-        b=Hb8GAQU3B3zGg/RnK4JxD7BnQM5XNaoGzmyfO9odFnv3LFZ+B3ApI84huv0PpW5NNb
-         HRnCX2TTiY/7XXZsDAwkr3vqZ66iFThcJC9ltGJSTgFi2OTSboOyewwlLDx4o/URrp9j
-         57mrJeUEhMHLP1cad3IBbGBADj1pfvXLl9/DL0ZYJJ/9NAvVjpFn/lNbn0RJxgWyECxC
-         SazAdU/oSdVoU/Wf0yQg0c9JR9Beu6Cf9V0CaCQDBqE+vPNqdPhJNecna9xtRBw9eW11
-         FBES06H7jWTTksJj65tn72iSNHQU+Dcr0tu5acRKSkWNdor0No9L2XaZHUUImnaGRHPq
-         gYNA==
-X-Gm-Message-State: AOJu0YwEl4xTAsVqLzwVDU7F75hWA/0vd0dMv2JhwtPxZcEZ//25hawf
-	9ZhoPFGC72rUM8yIaXoYDZ0thFTSC9/QjfMgxUtNTPyZpzXwkij2JGZr4WYppVkLMQ==
-X-Google-Smtp-Source: AGHT+IHEbj+FNxF+2vKpBPpLku95wP8SK6G62IDREK90tREHUBG0pg6DsSHD6bkHxsqnK1coKiZOFw==
-X-Received: by 2002:a17:903:2445:b0:1fa:d3d:a68d with SMTP id d9443c01a7336-1fbb6d0457fmr56039375ad.22.1720627890119;
-        Wed, 10 Jul 2024 09:11:30 -0700 (PDT)
-Received: from zlke.localdomain ([14.145.7.212])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6a28e5csm35677955ad.79.2024.07.10.09.11.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Jul 2024 09:11:29 -0700 (PDT)
-From: Li Zhang <zhanglikernel@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Li Zhang <zhanglikernel@gmail.com>
-Subject: [PATCH V2] btrfs-prog: scrub: print message when scrubbing a  read-only  filesystem without r option
-Date: Sun,  7 Jul 2024 02:58:36 +0800
-Message-Id: <1720292316-24008-1-git-send-email-zhanglikernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1720629037; c=relaxed/simple;
+	bh=Af9vxgUV+ez6WPRIn3K0+MQA7ulwMORcnjlARfKQzFI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sf8ySfDZ/4jzfmgh1fmlVQ7R7huPkRWJIMw45So1bym30h05n/qOOUbBJsqIpKh5x1i1TEehXM5UjPo5kNgZ8187dA6eDaWVp2k1//fcES//+m/whD4xAoMvMQyIvyv1pWhX8od25Di7HXqctSV+3DgOAB2nitRsZXZcLnoiv7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=h+Q7VXqI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q4HLDQqm; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 692001142349;
+	Wed, 10 Jul 2024 12:30:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 10 Jul 2024 12:30:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1720629034; x=1720715434; bh=CwOaGcD88l
+	KZ7aCqDn0B5sDBeFkJ5MNLyIjh5SzOBmk=; b=h+Q7VXqILUFTaOQgDIgAHbhZKy
+	tSjG5GlYjf6CSnRSwTCGwcXISJ90rNRhXjB782Ct36RjXO9aPBbsfNFSBrYvlUh0
+	YyGEWAq+Lfv0q86FqVGxKQ1TAn03DIospyVw14lDKP9gTvTbceYMFhjlj3NEG58g
+	k8txm80IbGG+rBOtvFvlJb1nvmVMHJ0ukwhBY0mBaNLLTpo1xuBa5caKEqA3vew8
+	XxRuNUX3dZt0rRahx13XdDFDpgKTXtqroOalyGQbPNxr65KffSIfb0iFfGSbL5Pn
+	/hzONhuicCDqfBYtsdgb6c9lFEyj8tRMyAldb6g0y4f43wdCaZbSRld2et5A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1720629034; x=1720715434; bh=CwOaGcD88lKZ7aCqDn0B5sDBeFkJ
+	5MNLyIjh5SzOBmk=; b=Q4HLDQqmWin4X2jElVrLF8l+N4xZCUYXxhNrxac4/jx4
+	aS0CEnTjHYiSIDMM4OdnNhSoQI+Hd6rUJF0APhUa8NrsCTWUbuRWs3R059FOTwvS
+	fswR1t6T3o6zamcZ1v5pKn7gjypCvEpoXwHytyRHFYbqEzxeFaGDPwuSssv1oPrw
+	6tjmjUmqoqB2+XACq1S0KdsDdWE5xBncoeJJouT4JNSVB+ymN/m19fzbsPoFsSOJ
+	Jd9CroSlLHTQiRUupuV8lr6baboSnL5EBkDYTi3/jqLhahLZkwWecen0UhGdLDZj
+	mQbXwY2SJ+E7QC0KvPPgE/ySCMR2ATySubhJ/4Osaw==
+X-ME-Sender: <xms:KLeOZhwjfIkfaLT88XkHSRPDbHqwIRBspavy6_45uOUeEAcDO8tu8Q>
+    <xme:KLeOZhQ3LP-Le0Mklvxxe9b5C6DaxHhHxbPB2yYh9MU7ywiOwrRdD1oaBSlFNRUVX
+    kUG0CwD-eIFOzemVxw>
+X-ME-Received: <xmr:KLeOZrXDH3UEN0VlXnIQIiboOjzfapbnaxkXuVEIRmrF_ni4K3sikv_1gfW1NKZJYUMe2iYP99nkvAlJeychz7I78-o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrfedvgdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
+    dvkedttdfgkefgtdekfffgkeeludfgfeejfeetlefhueefteegfeffteehveefnecuffho
+    mhgrihhnpegtohhkvghrrdgtohhmrdgruhenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:KLeOZjheGg4s6nCS_rtpNgteVupDeZaCCv-3OsdO9TDYIruSDZmbRw>
+    <xmx:KLeOZjAyxFnLurJUPEpOBtQSUrYCvho2F8bxFH_p86Xaw1K1Aud40w>
+    <xmx:KLeOZsIax-KD-4nqkh0lnq3vLTylByDH5GEwsexZAaKHInb3N_eA4A>
+    <xmx:KLeOZiBCRsoG5Q4ddIRkT2xIV8uXrOADfJzwj7mTHvE9jv-TWotFnQ>
+    <xmx:KreOZmNVMTu8q4wdj926CUY_vKZ-_RYxTW0dLPGlljXBoA35LuhJ0lUo>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Jul 2024 12:30:32 -0400 (EDT)
+Date: Wed, 10 Jul 2024 09:29:38 -0700
+From: Boris Burkov <boris@bur.io>
+To: Russell Coker <russell@coker.com.au>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: btrfs-progs: btrfs dev usa as non-root is wrong and should just
+ abort
+Message-ID: <20240710162938.GA3394284@zen.localdomain>
+References: <2159193.PIDvDuAF1L@cupcakke>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2159193.PIDvDuAF1L@cupcakke>
 
-[enhancement]
-When scrubbing a filesystem mounted read-only and without r
-option, it aborts and there is no message associated with it.
-So we need to print an error message when scrubbing a read-only
-filesystem to tell the user what is going on here.
+On Wed, Jul 10, 2024 at 09:52:14PM +1000, Russell Coker wrote:
+> Below is the difference between running btrfs dev usa as root and non-root on 
+> a laptop with kernel 6.8.12-amd64.  When run as non-root it gets everything 
+> wrong and in my tests I have never been able to see it give nay accurate data 
+> as non-root.  I think it should just abort with an error in that situation, 
+> there's no point in giving a wrong answer.
+> 
+> # btrfs dev usa /
+> /dev/mapper/root, ID: 1
+>    Device size:           476.37GiB
+>    Device slack:            1.50KiB
+>    Data,single:           216.01GiB
+>    Metadata,DUP:            6.00GiB
+>    System,DUP:             64.00MiB
+>    Unallocated:           254.29GiB
+> 
+> $ btrfs dev usa /
+> WARNING: cannot read detailed chunk info, per-device usage will not be shown, 
+> run as root
+> /dev/mapper/root, ID: 1
+>    Device size:           952.73MiB
+Hmm..
+>    Device slack:           16.00EiB
+>    Unallocated:           476.37GiB
+Also wrong, but at least it's the "size" number?!
 
-[implementation]
-Move the error message from the main thread to each scrub thread,
-previously the message was printed after all scrub threads
-finished and without background mode.
+btrfs device usage (and btrfs filesystem usage) usually give
+pretty reasonable results without root on my systems, so this is sort of
+surprising to me, especially since it looks like we both have the same
+trivial raid/volume setup and you are on a relatively new kernel.
+e.g., on my system running 6.9:
 
-[test]
-Mount dev in read-only mode, then scrub it without r option
+$ sudo btrfs dev usage /home
+/dev/mapper/vol-home, ID: 1
+   Device size:           826.50GiB
+   Device slack:              0.00B
+   Data,single:           117.01GiB
+   Metadata,DUP:            2.00GiB
+   System,DUP:             16.00MiB
+   Unallocated:           707.47GiB
 
-$ sudo mount /dev/vdb -o ro /mnt/
-$ sudo btrfs scrub start /mnt/
-ERROR: this filesystem is mounted readonly, but scrub option without r option.
+$ btrfs dev usage /home
+WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
+/dev/mapper/vol-home, ID: 1
+   Device size:           826.50GiB
+   Device slack:              0.00B
+   Unallocated:                 N/A
 
-issue: #666
+I suppose my non-root output is lacking usage information, it at least
+gets the size right.
 
-V1:
-  Output directly within the thread.
+Does the same discrepancy happen for you when running
+'btrfs filesystem usage /' with and without root? That command gives me
+lots of useful, interesting output without root. e.g.,
 
-V2:
-  Use the getmntent() function to obtain a bitmask to check
-  whether the file system is mounted read-only.
+$ btrfs fi usage /home
+WARNING: cannot read detailed chunk info, per-device usage will not be shown, run as root
+Overall:
+    Device size:                 826.50GiB
+    Device allocated:            119.02GiB
+    Device unallocated:          707.47GiB
+    Device missing:                  0.00B
+    Device slack:                    0.00B
+    Used:                        109.38GiB
+    Free (estimated):            716.59GiB      (min: 362.85GiB)
+    Free (statfs, df):           716.59GiB
+    Data ratio:                       1.00
+    Metadata ratio:                   2.00
+    Global reserve:              168.02MiB      (used: 0.00B)
+    Multiple profiles:                  no
 
-Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
----
- cmds/scrub.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+Data,single: Size:117.01GiB, Used:107.89GiB (92.21%)
 
-diff --git a/cmds/scrub.c b/cmds/scrub.c
-index 202690d..79011a2 100644
---- a/cmds/scrub.c
-+++ b/cmds/scrub.c
-@@ -42,6 +42,7 @@
- #include <syscall.h>
- #include <time.h>
- #include <uuid/uuid.h>
-+#include <mntent.h>
- #include "kernel-lib/sizes.h"
- #include "kernel-shared/volumes.h"
- #include "common/defs.h"
-@@ -1224,6 +1225,34 @@ static u64 write_scrub_device_limit(int fd, u64 devid, u64 limit)
- 	return ret;
- }
- 
-+/*
-+ * Check if given path is a mount read only.
-+ *
-+ * Return: 1 if yes,
-+ *         0 if no,
-+ *        -1 for error
-+ */
-+static int path_is_mount_readonly(const char *path){
-+	FILE *f;
-+	struct mntent *mnt;
-+	int ret = -1;
-+	
-+	f = setmntent("/proc/self/mounts", "r");
-+	if (f == NULL)
-+		return -1;
-+	while ((mnt = getmntent(f)) != NULL) {
-+		if (strcmp(mnt->mnt_dir, path))
-+			continue;
-+		if (hasmntopt(mnt, MNTOPT_RO))
-+			ret = 1;
-+		else
-+			ret = 0;
-+		break;
-+	}
-+	endmntent(f);
-+	return ret;
-+}
-+
- static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 		       bool resume)
- {
-@@ -1320,11 +1349,17 @@ static int scrub_start(const struct cmd_struct *cmd, int argc, char **argv,
- 	}
- 
- 	path = argv[optind];
-+	if (strlen(path) > 1 && '/' == path[strlen(path)-1])
-+		path[strlen(path)-1] = 0;
- 
- 	fdmnt = btrfs_open_mnt(path);
- 	if (fdmnt < 0)
- 		return 1;
- 
-+	if (path_is_mount_readonly(path) && !readonly){
-+		error("The file system is mounted read-only, but the scrub options do not have an r option.");
-+		return 1;
-+	}
- 	ret = get_fs_info(path, &fi_args, &di_args);
- 	if (ret) {
- 		errno = -ret;
--- 
-1.8.3.1
+Metadata,DUP: Size:1.00GiB, Used:764.42MiB (74.65%)
 
+System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
+
+Thanks,
+Boris
+
+> 
+> -- 
+> My Main Blog         http://etbe.coker.com.au/
+> My Documents Blog    http://doc.coker.com.au/
+> 
+> 
+> 
 
