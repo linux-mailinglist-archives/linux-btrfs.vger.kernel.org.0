@@ -1,70 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6338-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6339-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72F7D92CE1F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 11:24:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68FDF92CFE3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 12:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 354D7284361
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 09:24:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B3031C23AA1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2024 10:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C835618FA0E;
-	Wed, 10 Jul 2024 09:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDFD18FC68;
+	Wed, 10 Jul 2024 10:53:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="beaT11/B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qLWt3CKt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DED984A5B;
-	Wed, 10 Jul 2024 09:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01160176AD5;
+	Wed, 10 Jul 2024 10:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720603480; cv=none; b=OcpOhUC7O0nt9g+TtIWYKc6y5m3Vos5TLcmOqCgYrfb3Ih1vufhrkr8XHEHXqdesZpevSjn1TumaqvkbN4ce0dHv5SmUs1zhllTXJRDqWF3REMtLzHa062aSo6G+5DN5CNF8Fo3o1B/N9DeTmfK8frFXYz3VjhNgiQHGGYXHW9U=
+	t=1720608839; cv=none; b=VT3fhP2mxTHZpbby1fTrsZNmCDV21JUA64z4Vp2xiEsI6xun5l13JOoGnhMJ2JT5zuP1BN8Sj6OXk8wsuEI6NpGrT+5pR59Al3CQR/mxRRcjZOg8VOuZsRzQIZ0Y7hH4U0fThcu2NJ7N8grCxOtS9qyRxb6C4s473jIFxHUKfFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720603480; c=relaxed/simple;
-	bh=mt5D8AY+7EO0szlXthTVjPtn1EMLtk1kIsZWF6D2fXY=;
+	s=arc-20240116; t=1720608839; c=relaxed/simple;
+	bh=OD3bqGvL2hPkyOSps3OHYrVBAjoKhSimI4RhpJ9k4mg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P1F001cHHgfuRatSkpuJSuRX1xHejVflbgZiEmMBAoVILnmfAA81ubpzlzg96dGNbuBVdfy+7MWeQD734c0vAoJE9I1EwTiOOMdk66AK3TO6vymO2a3QCIKQ2puY9u/eq8ONH5kh1INHIj5HIU+Znk2x0F0gX29UkZS9WtuN87M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=beaT11/B; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-6b605c48717so4225096d6.3;
-        Wed, 10 Jul 2024 02:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720603477; x=1721208277; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eWMHgpbIy0GnN29ystn44vJIYgOS+Ps6swBxJ3oTQT8=;
-        b=beaT11/BYLTJq2mxkUTyU7p0ENHx/y+SIcuQWvMnMuRHoDPkya9eNtpqFQtYL5acJN
-         VbVgJjjHcbMQ4Y+2xum9+/ng3dYPQB1WoGnYhW3sFKnKK4p/I6rP6pkdWyVlr43Ib/dV
-         iD0lPlrT0NSQ6p1Gsz/knBVnDwMVKVnXugaNuz++wF5f4piOlcFA03tJ0+lwnh8o1V2w
-         A3PhiEtskOwTVi5130AGeF7eJjUV+WzidB0dpqQR8LRenG5pkd3rdSERQS7N4Up3SCvL
-         4pzJBLkIEua+rZ/09fxXDKvf/vZKnoDx2DQhP6qNqwvtpOFR2ygyYuNL8ZHeYz3YtJhD
-         mp5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720603477; x=1721208277;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eWMHgpbIy0GnN29ystn44vJIYgOS+Ps6swBxJ3oTQT8=;
-        b=BxF6U0Pqcsv9LAQmiDA1J9w93DoDiU6EdM8IkjE08KD0yjGWG7TB3VtIQirCKLp2Er
-         mDyEevgkaruYUZ0zAwUBQK64cE6ujz711j8VTKxkT5kbqIn5Bm4CoKwwBHDELQ+K44Cq
-         6dH2YM4+446ra/vzSs8vuHpsm7SRP0yU9fOnQdCM6vI5OyZvpHDbGVbcTVzpM+IgHtM4
-         XwtckbwmR03l8E6NIT1EykV6y0MCeZAKN2/5hG5M0yBUkCbg4zBrSczPPz5B4EjppQJk
-         lCBFozIg74CF6XNYiDVmh0lDv/bGjz/NS3BKbVFN7zY8EXjaC6ngP4MVVc6EF3/AD6VK
-         pLdg==
-X-Forwarded-Encrypted: i=1; AJvYcCUtAAqKqU1x1W5HSNTMNsRwhMofiyv3WzVWPvJnlJOJ6BGShbkoX+AZyj/WUmI35zfWK5wCdwvlu7ywwkkY88P3UujPVaJDgeax2H/GkNMXjVwqgMeKV/NHwxmDr/8GWSu9vOdtuYJa5p0=
-X-Gm-Message-State: AOJu0YyYrQ6/YYvC1TF2bONOAbMmTFe3pRk7PeT36e020PqBz6U5TewV
-	RMb6uffQwKuKOyVEUSiHqwcJ6aMy2LhPq5WcATGcs3iKnaQ+Zf/wxlL6sYeEGdz/gZFWFt12wfK
-	JFSIxad1aR92QhYzwsnjBVjnZ6co=
-X-Google-Smtp-Source: AGHT+IF7E8zn61udfFE2MLrr5RfDLaBzXvM82WJiBjIRP1r9i+9UFnsbu3O6AeiGCBZSYyYR7HPPSUE7OQ7NYaQcYK8=
-X-Received: by 2002:ad4:5b8f:0:b0:6b5:ec9a:41ef with SMTP id
- 6a1803df08f44-6b61bca42a1mr53442686d6.2.1720603477379; Wed, 10 Jul 2024
- 02:24:37 -0700 (PDT)
+	 To:Cc:Content-Type; b=XEy0+ytK26TGMjROKlAoyf1qXxTUW0FRbG2RLfSNCSG4TnEBkpl+ReEwufQzVPGrjR7DZctlbTkzfQC2oMGI/9Rj+TSYla/c0vxpEOVRucd7H+OFyiE8BJwnfV+JlVi2yv/VkUCYZ/kg4NSQHPLezdTlYbCcViXwztV8u2nH/aY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qLWt3CKt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A080DC32786;
+	Wed, 10 Jul 2024 10:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720608838;
+	bh=OD3bqGvL2hPkyOSps3OHYrVBAjoKhSimI4RhpJ9k4mg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=qLWt3CKtxsB5Azz4cujIwWErXOQYbp8JczXL+F1U/0yEAsZEu/KP9OmUtRkJFmrRX
+	 jN0NiCKuyPF5qxXqA7Qc+OYiC2KQz1hjeTGn2sxGfmLBBwd3MMBw1UNpH3luwQJsdb
+	 7c02jBUpbWat6d2eTGiEZX9ZokiKeASqYeBsBfm3N42/egW2/7brA87idfJAcpfNpU
+	 CDX1w3Tyq1vuRFA/mC7kt6p8jPg7WuMXxO3oF0mJh3uxe+kosNn6KYeEXd4BuplK11
+	 l/jzs2F5ulTbH+bUedrOGoNGlHATR5gSufOJuEojPHsaeLg9s0IAwh779O2mxOTP20
+	 7ZsYWzwpx/gcA==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a77c9c5d68bso618426966b.2;
+        Wed, 10 Jul 2024 03:53:58 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVhhVqxvY3UoMvEVitWQtj1ancoix6vnBlNLy0VcaTMhKHFwL5TpS/BWf5BMLUZSRXaHPapT6D7GOmNjunaA3eQnRFayH387ewVIy7q/mQXTKv8OkCf0X/F9X6Jt1VyXsoXYzxK5RjRR6Y=
+X-Gm-Message-State: AOJu0YzpYMUAyNsR1SfP7jkZFYsAzcONTz5yQ5dtN2eNJw5mAcwORi80
+	k0szbrtYsrUgADENlWx81woYpLDELTqwRL8KeoctUs/xdzMLs3aa4BYnGtRNiYLK2yav6M6WblQ
+	chjIOc2+AdFLMBI6QVNasNYElWrk=
+X-Google-Smtp-Source: AGHT+IHpD80G3Seki3XvE5LyhZ4sCGFSCXxvHpad6cyq05UMHyp/ueL/EP8hXnuK/LcWCyN0vZycsZF3Iv0QNg7ooz8=
+X-Received: by 2002:a17:906:478f:b0:a74:914b:ffb2 with SMTP id
+ a640c23a62f3a-a780b89e8f0mr413161266b.72.1720608837248; Wed, 10 Jul 2024
+ 03:53:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -91,14 +77,16 @@ References: <CABXGCsMmmb36ym8hVNGTiU8yfUS_cGvoUmGCcBrGWq9OxTrs+A@mail.gmail.com>
  <CAL3q7H63GexJexkDxSz9Av_s=XyYotJqLqjUubZmuU7vynaQNQ@mail.gmail.com>
  <CABXGCsO_6cJruBxKdqXzEze_hDGVsPtN8DBCob=OWF5OpT4s7Q@mail.gmail.com>
  <CAL3q7H46BxXUnrZ8Q3WxYf=2Tx0taMt9-2wf0TCrwj_kOiC=Dg@mail.gmail.com>
- <CABXGCsOcpzy7QvRUuSDT-Ouvp_jJHDvuziPQbej4rHLh9te58g@mail.gmail.com> <CAL3q7H6FwUFKb5oODK8jcAbRbjTjsZ2=4usW1_4A6b-t5nF7ng@mail.gmail.com>
-In-Reply-To: <CAL3q7H6FwUFKb5oODK8jcAbRbjTjsZ2=4usW1_4A6b-t5nF7ng@mail.gmail.com>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Wed, 10 Jul 2024 14:24:25 +0500
-Message-ID: <CABXGCsP_V-Dh97SkLbYZvHSUdfhgXY_-RSqdRwv16hz+r3B3FQ@mail.gmail.com>
+ <CABXGCsOcpzy7QvRUuSDT-Ouvp_jJHDvuziPQbej4rHLh9te58g@mail.gmail.com>
+ <CAL3q7H6FwUFKb5oODK8jcAbRbjTjsZ2=4usW1_4A6b-t5nF7ng@mail.gmail.com> <CABXGCsP_V-Dh97SkLbYZvHSUdfhgXY_-RSqdRwv16hz+r3B3FQ@mail.gmail.com>
+In-Reply-To: <CABXGCsP_V-Dh97SkLbYZvHSUdfhgXY_-RSqdRwv16hz+r3B3FQ@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 10 Jul 2024 11:53:20 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5zfQNS1qy=jAAZa-7w088Q1K-R7+asj-f++6=N8skWzg@mail.gmail.com>
+Message-ID: <CAL3q7H5zfQNS1qy=jAAZa-7w088Q1K-R7+asj-f++6=N8skWzg@mail.gmail.com>
 Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
  execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: Filipe Manana <fdmanana@kernel.org>
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
 Cc: Andrea Gelmini <andrea.gelmini@gmail.com>, 
 	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
 	Linux regressions mailing list <regressions@lists.linux.dev>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>, 
@@ -106,43 +94,59 @@ Cc: Andrea Gelmini <andrea.gelmini@gmail.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 8, 2024 at 7:16=E2=80=AFPM Filipe Manana <fdmanana@kernel.org> =
-wrote:
+On Wed, Jul 10, 2024 at 10:24=E2=80=AFAM Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
 >
-> That's weird, I think you might be observing some variance.
-> I noticed that too for your reports of the test2 branch and the old
-> test3 branch, which were very identical, yet you got a very
-> significant difference between them.
+> On Mon, Jul 8, 2024 at 7:16=E2=80=AFPM Filipe Manana <fdmanana@kernel.org=
+> wrote:
+> >
+> > That's weird, I think you might be observing some variance.
+> > I noticed that too for your reports of the test2 branch and the old
+> > test3 branch, which were very identical, yet you got a very
+> > significant difference between them.
+> >
+> > Thanks.
+> >
 >
-> Thanks.
+> up  1:00
+> root         269 10.2  0.0      0     0 ?        S    10:06   6:13 [kswap=
+d0]
+> up  2:01
+> root         269  9.1  0.0      0     0 ?        S    10:06  11:07 [kswap=
+d0]
+> up  3:00
+> root         269  8.4  0.0      0     0 ?        R    10:06  15:18 [kswap=
+d0]
+> up  4:21
+> root         269 11.7  0.0      0     0 ?        S    10:06  30:33 [kswap=
+d0]
+> up  5:01
+> root         269 11.7  0.0      0     0 ?        S    10:06  35:19 [kswap=
+d0]
+> up  6:27
+> root         269 11.5  0.0      0     0 ?        S    10:06  44:39 [kswap=
+d0]
+> up  7:00
+> root         269 11.2  0.0      0     0 ?        R    10:06  47:18 [kswap=
+d0]
 >
+> The measurement error can reach =C2=B110 min.
+> Did you plan to merge the fix before the 6.10 release?
 
-up  1:00
-root         269 10.2  0.0      0     0 ?        S    10:06   6:13 [kswapd0=
-]
-up  2:01
-root         269  9.1  0.0      0     0 ?        S    10:06  11:07 [kswapd0=
-]
-up  3:00
-root         269  8.4  0.0      0     0 ?        R    10:06  15:18 [kswapd0=
-]
-up  4:21
-root         269 11.7  0.0      0     0 ?        S    10:06  30:33 [kswapd0=
-]
-up  5:01
-root         269 11.7  0.0      0     0 ?        S    10:06  35:19 [kswapd0=
-]
-up  6:27
-root         269 11.5  0.0      0     0 ?        S    10:06  44:39 [kswapd0=
-]
-up  7:00
-root         269 11.2  0.0      0     0 ?        R    10:06  47:18 [kswapd0=
-]
+I've submitted a patchset with the goal to apply against 6.10 (see the
+notes there in the cover letter):
 
-The measurement error can reach =C2=B110 min.
-Did you plan to merge the fix before the 6.10 release?
+https://lore.kernel.org/linux-btrfs/cover.1720448663.git.fdmanana@suse.com/
 
---=20
-Best Regards,
-Mike Gavrilov.
+But it's up to David to submit to Linus, as he's the maintainer.
+Though I haven't heard from him yet.
+
+I plan at least one more improvement for the shrinker, but I would
+like to know too if those patches go into 6.10 before it's released or
+not,
+because there are conflicts with the for-next branch.
+
+> --
+> Best Regards,
+> Mike Gavrilov.
 
