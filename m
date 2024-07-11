@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6404-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6405-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3388492F1FD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 00:32:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 824A192F210
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 00:35:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E04CA281408
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2024 22:32:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0CFD1C22166
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2024 22:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D184A1A0711;
-	Thu, 11 Jul 2024 22:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348A619E83C;
+	Thu, 11 Jul 2024 22:35:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="PVtnRsED"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GbHRGfJk"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78371155CB5
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2024 22:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F3685956
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2024 22:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720737154; cv=none; b=H9SGbM5H436jG/Hq6oEL9nqMfAlSTidQxrpejfSvMY0zX47R2P+85YGpjlcxeKxufMryQmPQiOV1bA5FjIKqitp9zpxpJhFDa9xfZWG4uvupJF0lh+dO6BWPsj78xqRpxPt9M+uGXkxY00CMuF5ZTlPdlttx6SQ2/DJnDoVx88s=
+	t=1720737310; cv=none; b=DraY/+0gcUIH8ZrJ0nabNEVm+v+hnu3eU1arvIb4HJveIpunktwCJilsrYE3i3sQYkA6ENoolN1TJO25TxD74TkpyNsHMmiMvjdarcVUHgMPp/hgKBhc4t17v0NppUDpjbPSzlJN8dLc0xuhwCcsJs9LQ+DhLrQNTKVxNoQ4QDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720737154; c=relaxed/simple;
-	bh=265CFC/qURizKrylhJO86hXLxOKSSyxnl6bjzyRnbFw=;
+	s=arc-20240116; t=1720737310; c=relaxed/simple;
+	bh=CAqJCKFMyypRAuKDkIh5eAqvfKxrNv7NCUxCOIYoZsQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fxEv5HpVLu4tEmFBh8g6MNAZBRalx4IpM29ILLZeI9Mrlfo74F/aQggSWuvF95AAS7oq6090j80mUUFFew22a7nR3GxYb5Cqa5Aw73U1L9hE8uNyxYHqFsbAnhGSLgHp04IXqzqoZEm+/cILLESnR2gMuCrhAdEy7T2lgV5oKJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=PVtnRsED; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=cIF68VYAhm6/PAfF0CU4BGsWQu6CfsINJh2xWtypveRW5pHK2hKoHHe9rfYGt9JbHwZAf8BjHC29EuyO7pkC3MsYil/mjLMc0oI2OqW2LD3rzp2D1NM/3RNN/+5wfOiqEyXDwlekCZdPlsMiOOkx2o0BcK8ghaEL35EqtBcBcB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GbHRGfJk; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1720737143; x=1721341943; i=quwenruo.btrfs@gmx.com;
-	bh=9oAPiSvUUkCbzRI5qEjNO7FaH4wl8FvFMhERCptNqY8=;
+	s=s31663417; t=1720737300; x=1721342100; i=quwenruo.btrfs@gmx.com;
+	bh=kM43eWfHeahJbKHPWYo3lVvl/OfEqVoudN9wWoQmye8=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=PVtnRsEDJONo6UcVQm//zvHT6HUmciVXTVaKbpfgwZRcq/UraaQR3akgsfU9J839
-	 L9rcoqnC5BUCh8ZXMQfm4I8sum9E6iLhcYsCi/J67/6fmFqCrQpHvKzNsZg43t0DC
-	 Ad3em6QFWPGrpOL7fC4DHTZjOF3SZ3v+qpTboQTcamClOOIh6MjeJLSQ1tBhFVcXr
-	 DcP3UbGQPpjxFROwAxXG4To02T9bgHbWjW1Vzz99cKVpxUdT5Y5lEum7pX9KXdEOq
-	 LB1p867Y33bcLCjSaM0+FH8OwtKHU2eBZI/liw1O0Cn6JUi/cLrcn4p/xmjM3A3Mb
-	 IGvqdgQenY0Eqboihg==
+	b=GbHRGfJkQZ9ldsdNI3FXXRy/d+oDczWQDdqoAAncYEpbUKRdEAS9WXwBK2KVmvEe
+	 RMf/gEbrpvm4oG8k/eQHgSqnAv6FHcbWBzNG2icn2K9J5Vuv2TMtL9fvPXDAakkFF
+	 Bh/7lUCUSVn/e5cS7enE9xwCSu5pxD8bxzTcJWCqCfzsrQXtNroDHp2cD8fvGvpHz
+	 MNj/fkU/s7bdammB83cJge6We5T0TcfK6f16Z77gluXxFZiH/FKq/t7p/kWyriNBE
+	 8Pd5Kgf6ICLpnrFrPeq/4SQW4ROZi896XRt95sJFqEbiDEvkvAn+1coLEcBxwkXgI
+	 K/ec7Ecz8q41003PVw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mz9Z5-1s6uqT3lD9-015YNj; Fri, 12
- Jul 2024 00:32:23 +0200
-Message-ID: <a9378265-ad2f-42a6-b506-a919fda20101@gmx.com>
-Date: Fri, 12 Jul 2024 08:02:19 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwfac-1s8pX40wnK-016ZOk; Fri, 12
+ Jul 2024 00:35:00 +0200
+Message-ID: <bdaadd92-ae3e-4502-aeda-c61bdac752aa@gmx.com>
+Date: Fri, 12 Jul 2024 08:04:57 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] btrfs-progs: add a helper for clearing all the items
- in a tree
+Subject: Re: [PATCH 2/3] btrfs-progs: btrfstune: fix documentation for
+ --enable-simple-quota
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
 References: <cover.1720732480.git.boris@bur.io>
- <628cc8e20d7cf460ffdf50f3916860556d6ce3e1.1720732480.git.boris@bur.io>
+ <e30318f3bd2579e9492d2e1e0fd4b408c2bd0fb9.1720732480.git.boris@bur.io>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,188 +90,69 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <628cc8e20d7cf460ffdf50f3916860556d6ce3e1.1720732480.git.boris@bur.io>
+In-Reply-To: <e30318f3bd2579e9492d2e1e0fd4b408c2bd0fb9.1720732480.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GkyWg2AkOFWUNUA3IbDg4/HvIKihYYIdNVjSIiaAHUsJCviQJuC
- ziyN2n9DYvKZsm1M3SkggNz9D53sA98d9BvMQczCy4tcwPfsqSds6KSWy5N0HO0oZIFiSVf
- RXDaSVyHYtMsvD7X1dl+A5ek3Vfq7r4tm4v1LccEv7oNxyZx2AMBm5LJHABHXcdGHjzptLT
- Lm1KxFXzMNMocce0MztFQ==
+X-Provags-ID: V03:K1:XIDJtHPNP9mr6Q9LU7A2RSkgJE1wpsQDf3pls5GWi0NjHKgjR6Y
+ BQubJLv7o6AeBEvQL/R1XgtHGpXBLo8yAAQGjiYC8oBfsMLsg3auTYTFd1EvXDe7d6TvDG2
+ smnQBAWyNNRQ3vSCLGCTYCj8tRD2gHpDtW/Zus16lTVSm6KY2k5xIYhTno9Hq34O9J3erhk
+ 4PXiI+l8njhpTjS6FkDzQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hxp2r1/CpUw=;P9x9eTAqTGL40z+Rcg1uiBhpU6X
- Tws1yUhiw2J85CdmouQT9ol+ed58wLNjurkhzUmobTcfmQE+0+buGG8I/1FCAi4wH+YuMCC37
- UAjQyRfaGQVpwSubLoueo9VhyatSZcsD6QFb8qIPeSkIFNnsbODlC7M3jAdatBumTTOtv+d+4
- znBxPaU5DpOjJ5Ldy9dY2v1Mb+yiX8Mdy2w6P1jmawiBlcn/uHb/3gSpyfUZ2sE77sXogE2S7
- A8duTapZXp0UWf5iz238f8wQchJQCt3xtvs7pbZSBKCcJAxmWABGnMxDaPdZWXXLR2bPBos6Z
- cW9Lt7R7YIpOV+W/g+QBOJuAfyzjXkLlB9npboanhwTvzHxqVFTOViYaKYybSvKj+oGDlByOq
- +WhhKcU0WvIh2b+HWarbfAt+PxemUhVqNcjvjg8HrhSfs+UruDbtGCKOMeqh8CZIXO6CNrAKC
- qos6jsLi/DDOAcUxYR8hNp9fO+JEMu9jEIBbr+JTwB0WD+quUrPpqquqrdAN4jKnl6komnByV
- xjznB09r2nfwK8rmwUV/01jGArxZ6Z4dv/cZ+elONS2rs/8EWV3pkQsblGe4vuuwghfPcpxo+
- 1kiacGiJ9yyamfcvghvnQekQci5e+i/dTCQXhCgplUIpv79Q0zObRqG8Hl/wBSfmWuF0beZl0
- n+PG5M1m8VN212qH4PJUDGbJvy7BV+kT5E/9CyBrQWzQmH5paklmuJ+3yVoopA2Cg06m7DVH8
- KIR5Ao8iKDLDYKTVjQWLygDzq619ZdBImCsBGu2CWOV3KkteQ5sQZS28+kLvt3fl4x78nkgU3
- ihrhjTFCszvBmANbFHnQcUww==
+UI-OutboundReport: notjunk:1;M01:P0:PYghORFxrms=;5C+3SC1mdotmKiERlP9CgKNcN5S
+ nXy2GP5/HfyAC+YzoPuOaB7HAqg0N7Jn7L5BVRu+qYnIyoLPc1g/eLwlAvqm39MxP4MbOmHB+
+ xqQ2atDKDOn44Ws5gvIkeeUQvFx5p08QlE11K41t2VIVfDyUV/nrSW+Yl7zCKanjbsUpdi6EW
+ lPZGH/xugQJa8Jj6HA7nMFsoGpMtMftIZAwnkSSzldEhUbz7wU8IhnCP+53s7JcdMlYSlbSpW
+ Da/mF6dDapYZuCVKeI1vTrUAMvtOd6F1xL1rLnOtHcKv4FlccvFXLTG1aoRs3WC5dnsrbbAVe
+ 4uoZfyBqfrQYaKibDA/dDBImYsFrQNFZG2GDY2nq/ULTwEnHJrfsQiVH6Qg3kyvwiIzsVQ+iw
+ J/WWePFfTSVhNRex7A6Md93xZRkZBumZ5YfrNtN1WDFoht29imtFihm6tQXTe3MssIE8dCnLc
+ EPSocTivgRh7uAGFPB7ca2B4HemtcN2E4vcIoZWMmdVfW2as5DN9BHeH/kfugIUTzwJxnGxED
+ F7Hs4tWWzY35LGtJZa5LYbBLLlHH6Ii4WWxRssKe/UzLslYSI6obwkce0QwOqXcVrlpp4yawK
+ xLJrrBx350O2hYDo8VxlsFlTMIqhsFAOtDB3ZmsML5D/xC11GnEylcMtJimnneKiDh3wGVL8+
+ 2xohepwTstC/q/4ZCGQFvRwxt/GGBxPZhKnj54oowtXMcBX8cQoZUgZDOpK7l9sDirXEV0cAo
+ pmvRjjvuMXLNs8UpB/wbKDzHGrgQ0atCGcdjhjXO8S8ODIc7QPPuT52PmUlSt1upry61SyRmN
+ U5N7ZaaELMh0Y2k1JjpMTnWR1KJdGygP6CLaMsUv0CtxI=
 
 
 
 =E5=9C=A8 2024/7/12 06:48, Boris Burkov =E5=86=99=E9=81=93:
-> Used in clear_free_space_tree, this is a totally generic operation.
-> It will also be used for clearing the qgroup tree from btrfstune.
+> The documentation lists -q as the flag for enabling simple quotas, but
+> the actual parsing only handles --enable-simple-quota. Update the
+> documentation string.
 >
 > Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->   kernel-shared/disk-io.c         | 39 ++++++++++++++++++++++++++++++
->   kernel-shared/disk-io.h         |  2 ++
->   kernel-shared/free-space-tree.c | 42 ++-------------------------------
->   3 files changed, 43 insertions(+), 40 deletions(-)
->
-> diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-> index 295bd50ad..1e4c46aa0 100644
-> --- a/kernel-shared/disk-io.c
-> +++ b/kernel-shared/disk-io.c
-> @@ -2342,6 +2342,45 @@ static bool is_global_root(struct btrfs_root *roo=
-t)
->   		return true;
->   	return false;
->   }
-> +
-> +int btrfs_clear_tree(struct btrfs_trans_handle *trans,
-> +		     struct btrfs_root *root)
 
-The original function name clear_free_space_tree() is also shared inside
-kernel.
+I didn't find the man page entry for simple quota in the latest devel
+branch.
 
-Maybe you can also do a cleanup for kernel?
+Is it missing or still experimental?
 
-Otherwise looks good to me.
+Otherwise the change itself is good.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> +{
-> +	struct btrfs_path *path;
-> +	struct btrfs_key key;
-> +	struct extent_buffer *leaf =3D NULL;
-> +	int ret;
-> +	int nr =3D 0;
-> +
-> +	path =3D btrfs_alloc_path();
-> +	if (!path)
-> +		return -ENOMEM;
-> +
-> +	key.objectid =3D 0;
-> +	key.offset =3D 0;
-> +	key.type =3D 0;
-> +
-> +	while (1) {
-> +		ret =3D btrfs_search_slot(trans, root, &key, path, -1, 1);
-> +		if (ret < 0)
-> +			goto out;
-> +		leaf =3D path->nodes[0];
-> +		nr =3D btrfs_header_nritems(leaf);
-> +		if (!nr)
-> +			break;
-> +		path->slots[0] =3D 0;
-> +		ret =3D btrfs_del_items(trans, root, path, 0, nr);
-> +		if (ret)
-> +			goto out;
-> +
-> +		btrfs_release_path(path);
-> +	}
-> +	ret =3D 0;
-> +out:
-> +	btrfs_free_path(path);
-> +	return ret;
-> +}
-> +
->   int btrfs_delete_and_free_root(struct btrfs_trans_handle *trans,
->   			       struct btrfs_root *root)
->   {
-> diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
-> index 9f848635f..702a5e274 100644
-> --- a/kernel-shared/disk-io.h
-> +++ b/kernel-shared/disk-io.h
-> @@ -241,6 +241,8 @@ int btrfs_fs_roots_compare_roots(const struct rb_nod=
-e *node1, const struct rb_no
->   struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
->   				     struct btrfs_fs_info *fs_info,
->   				     struct btrfs_key *key);
-> +int btrfs_clear_tree(struct btrfs_trans_handle *trans,
-> +		     struct btrfs_root *root);
->   int btrfs_delete_and_free_root(struct btrfs_trans_handle *trans,
->   			       struct btrfs_root *root);
->   struct btrfs_root *btrfs_csum_root(struct btrfs_fs_info *fs_info, u64 =
-bytenr);
-> diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-=
-tree.c
-> index 93806ca01..08b220740 100644
-> --- a/kernel-shared/free-space-tree.c
-> +++ b/kernel-shared/free-space-tree.c
-> @@ -1228,44 +1228,6 @@ out:
->   		btrfs_abort_transaction(trans, ret);
->   	return ret;
->   }
-> -static int clear_free_space_tree(struct btrfs_trans_handle *trans,
-> -				 struct btrfs_root *root)
-> -{
-> -	struct btrfs_path *path;
-> -	struct btrfs_key key;
-> -	int nr;
-> -	int ret;
-> -
-> -	path =3D btrfs_alloc_path();
-> -	if (!path)
-> -		return -ENOMEM;
-> -
-> -	key.objectid =3D 0;
-> -	key.type =3D 0;
-> -	key.offset =3D 0;
-> -
-> -	while (1) {
-> -		ret =3D btrfs_search_slot(trans, root, &key, path, -1, 1);
-> -		if (ret < 0)
-> -			goto out;
-> -
-> -		nr =3D btrfs_header_nritems(path->nodes[0]);
-> -		if (!nr)
-> -			break;
-> -
-> -		path->slots[0] =3D 0;
-> -		ret =3D btrfs_del_items(trans, root, path, 0, nr);
-> -		if (ret)
-> -			goto out;
-> -
-> -		btrfs_release_path(path);
-> -	}
-> -
-> -	ret =3D 0;
-> -out:
-> -	btrfs_free_path(path);
-> -	return ret;
-> -}
+> ---
+>   tune/main.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
->   int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
->   {
-> @@ -1288,7 +1250,7 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_in=
-fo *fs_info)
->
->   		while (key.offset < fs_info->nr_global_roots) {
->   			free_space_root =3D btrfs_global_root(fs_info, &key);
-> -			ret =3D clear_free_space_tree(trans, free_space_root);
-> +			ret =3D btrfs_clear_tree(trans, free_space_root);
->   			if (ret)
->   				goto abort;
->   			key.offset++;
-> @@ -1299,7 +1261,7 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_in=
-fo *fs_info)
->   			      BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE);
->   		btrfs_set_super_compat_ro_flags(fs_info->super_copy, features);
->
-> -		ret =3D clear_free_space_tree(trans, free_space_root);
-> +		ret =3D btrfs_clear_tree(trans, free_space_root);
->   		if (ret)
->   			goto abort;
->
+> diff --git a/tune/main.c b/tune/main.c
+> index bec896907..cb93d2cb3 100644
+> --- a/tune/main.c
+> +++ b/tune/main.c
+> @@ -103,7 +103,7 @@ static const char * const tune_usage[] =3D {
+>   	OPTLINE("-x", "enable skinny metadata extent refs (mkfs: skinny-metad=
+ata)"),
+>   	OPTLINE("-n", "enable no-holes feature (mkfs: no-holes, more efficien=
+t sparse file representation)"),
+>   	OPTLINE("-S <0|1>", "set/unset seeding status of a device"),
+> -	OPTLINE("-q", "enable simple quotas on the file system. (mkfs: squota)=
+"),
+> +	OPTLINE("--enable-simple-quota", "enable simple quotas on the file sys=
+tem. (mkfs: squota)"),
+>   	OPTLINE("--convert-to-block-group-tree", "convert filesystem to track=
+ block groups in "
+>   			"the separate block-group-tree instead of extent tree (sets the inc=
+ompat bit)"),
+>   	OPTLINE("--convert-from-block-group-tree",
 
