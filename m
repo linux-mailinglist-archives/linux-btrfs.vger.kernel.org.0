@@ -1,124 +1,159 @@
-Return-Path: <linux-btrfs+bounces-6361-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6362-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B5592E003
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2024 08:22:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D37FB92E041
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2024 08:39:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 351E9B213AE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2024 06:22:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1A0B1C21BC6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2024 06:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D420145B0D;
-	Thu, 11 Jul 2024 06:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4BD12E1CA;
+	Thu, 11 Jul 2024 06:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="czn1ovPu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EBB912F386;
-	Thu, 11 Jul 2024 06:21:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1AC8249A;
+	Thu, 11 Jul 2024 06:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720678905; cv=none; b=c/v1q+fmrEoUiMRGG9J6aD0vixXwO++8dxAaTlejlnUJDJ8pyH4d+090/tiXLLR3j9LAXUDGmlUaYAUJEDpR/QFww5k/4a5PHdJTWCOBQ+WCsGTgEi5TOd9uvnf72DEP29I9xfhSMVGX66zhI9O28dxZPeMjL8gHEGRROSkxTA4=
+	t=1720679959; cv=none; b=RmBWlSkdrFsHygi756Uz3tpj0V+fpETq9tBsd6AnVO01r1M96KaGSlNrvNww78GSMuIOr1s1vnGhuGwm4CMgxN69HNv+QzvJ6ckWRZgHE42iJfvvUSJhJrWuFp1boy3/5TOcerhFLXWUMBlwb/njfMqqmhY/Cnq5Rgmro0Aoy4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720678905; c=relaxed/simple;
-	bh=9ZfoQLUEkfJZeB5uHQoavrcYrJdIFjhKrR9D66YuQNk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hz5MsKt97ceP7MSXur+XN43usxJSuG1yfTisdAFz3xEpQpsxamAuthwxScpR9eR3ziIv7cniA7qIEriLq2EeW6XpxK2u+OV0FOdwcX6DhmeKIJRzTP0GHX/T9ACsYM7gwE89J0/5o0wzX3WWZCkwACmPgbjnfhavwmURbTQLEjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a77baa87743so55090466b.3;
-        Wed, 10 Jul 2024 23:21:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720678902; x=1721283702;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T9/IGYREW0Y/xsMMiSEi/qtroO70B9dqqK8GTXc5ZaQ=;
-        b=KcYfH8/xwUc1kSZq7gdt3r4y1D1YkMKIPc/cds946vmD7xPsbBf+jqm2UOQDVF0cwU
-         h57D/enyzOEM4gEjW5ESpzIhg9wcLguOZ+ff1peuvOqTB0PDgraEo/x/XKBevibfe62t
-         19SPHxYC/2kj+VBYl5hyZB4yqDs6WtuL1t9Gly8+L7m40OCjgdW3qW+UwR93Xe1eXNeV
-         3VC0RD4Kv2esYpQkUhTqumUWWcrX4P5rwciAgG2Tx0PMmKQetpmS7CxP+qUSh2XE+Nw7
-         TTL2bV6O3p5txv/D1ZS6EQ2lXL8aI9m34DScwobyLJfU2XMWYORf/njIWaJBdxyKH899
-         EbsA==
-X-Forwarded-Encrypted: i=1; AJvYcCVe8bxGh8tb0FaopU5AihGTFvBNEc6U4wNhGKQr75jA65NpakQiTovMd99jHNZR8bG6ZlCPKaMVsm7mdHWDpUsHL9Gf9HpYuxIWn37t
-X-Gm-Message-State: AOJu0YwJON6ZHUhnmspGXwzNImKWWRSngY5jGVbxvJNG5rS9lhbOSRW8
-	TdHgQ1zdpo3SV+mBBDaBEH0PXlkKiH0C8nsGR4PX91R6t/+2+onwbXMQiF7a
-X-Google-Smtp-Source: AGHT+IH42bY/0ZiYAXnh/QNDFpgVMSC5RWKOd6+mds2gtkswNxe/3+ESeyFvZron0W5A5+YupWYqVQ==
-X-Received: by 2002:a17:907:9711:b0:a77:b0a4:7d88 with SMTP id a640c23a62f3a-a780b689270mr798924566b.10.1720678902623;
-        Wed, 10 Jul 2024 23:21:42 -0700 (PDT)
-Received: from [127.0.0.1] (p200300f6f73ce200fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f73c:e200:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a780a7ff73bsm224815266b.101.2024.07.10.23.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jul 2024 23:21:42 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-Date: Thu, 11 Jul 2024 08:21:32 +0200
-Subject: [PATCH v2 3/3] btrfs: update stripe_extent delete loop assumptions
+	s=arc-20240116; t=1720679959; c=relaxed/simple;
+	bh=YYuzY+tLhiCKB0JfC01of+ILfufjHR1RA3FDo//2JiY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YrC7Q+xA2zRJLRYJKkTW2idnrNgxZXlKudwT85/KgcBjXGH8LtzzNPXLM9nz7FnZYm1QJSVZuhsZjo47yhSZGsljkFUkoSiy6SQV9OGtFUj4U/dKWUhMi+y7oLvKyVjX+tiMyHmwVzXZH/lVmpCt6BUJIkRvBKJnHf6cCiSxk0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=czn1ovPu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92263C4AF0F;
+	Thu, 11 Jul 2024 06:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720679958;
+	bh=YYuzY+tLhiCKB0JfC01of+ILfufjHR1RA3FDo//2JiY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=czn1ovPuwZRPwkEMEGJNLqZvmdEJkCTC8Q03rhl6F5FW2JhUQHz63FjvRcr0ezkOr
+	 bqISEZUFVnEVqmqnzxptnWxsXZyHc9JWJwMwnC+H12l41zNckcvZ5kDjCacyL8ovPs
+	 s0E4oDvTj/5aRzMR2WwGI/DTrWNTh8tpeLvPUXEG7REvEZv6hyX27xhDhSz1kFoTmt
+	 exJ1UpnnHMgR25/a+abQ4AOiijAjOmldne29PLalhniHo0rLQLtlzvlqyeOXhF+s7f
+	 Srg9BVyAUxsaXdcfzeVDnE0age9uTF1q2tfzRl/5MlOoBy8Gvs7ql+kT1hK4tTDlOJ
+	 1htJA36xFjXAw==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a77c9c5d68bso68738966b.2;
+        Wed, 10 Jul 2024 23:39:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUILdRMWBRq4WvReZrV4mXuT7aqOKRRhSYZrN5ZUCWAwFzEFtdN6avzDfVjpfCz1TJ5lVdx9DxEEUQFUfMdIZCKK49WIBYP9mx4CwidPNosZkaJTMW67ci8zU4BTD0ebbj4cU97CxqooOm2HaiacD5gqV/0XZNRdFp5efxqWvzEnl0=
+X-Gm-Message-State: AOJu0Yw1yb3mODtWqCkx5Iy0SxLdThN9OJDjjoWf+aD7KMs8DpMDuj0a
+	SdBCus15IIIYOyojaG6DT7hmdDU96NfWflyhA08sP+JwSJaqeFYneG+kKJEWlYxDZGz9gVoAc7V
+	mKEYG0jAFUmJ1UHHH9H122OpYOYw=
+X-Google-Smtp-Source: AGHT+IEdES9ra8lhHWoM6RznNhYmve7qzUYd0yRVQr+T7mh+ANEEX2mvwgKpXCmmQQzLCaxjyKbu0vIgnqH3wKUV+64=
+X-Received: by 2002:a17:907:da7:b0:a77:eb34:3b4b with SMTP id
+ a640c23a62f3a-a780b68a989mr646569166b.11.1720679957126; Wed, 10 Jul 2024
+ 23:39:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240711-b4-rst-updates-v2-3-d7b8113d88b7@kernel.org>
-References: <20240711-b4-rst-updates-v2-0-d7b8113d88b7@kernel.org>
-In-Reply-To: <20240711-b4-rst-updates-v2-0-d7b8113d88b7@kernel.org>
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
- David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Qu Wenru <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1121; i=jth@kernel.org;
- h=from:subject:message-id; bh=/hPivgzVrBaHts4c6z051kDKm5XB367suNlHH/JAm6g=;
- b=owGbwMvMwCV2ad4npfVdsu8YT6slMaT1V35KiC2+1WRSWi0yY535Uqvgwy/KXBxZzgdM/r1hs
- /VcDt8JHaUsDGJcDLJiiizHQ233S5geYZ9y6LUZzBxWJpAhDFycAjARh7sM/703aAtLZtT6nnjv
- 3Vjef3V9kNju2euv7Nj4k8lnE/8ZdT5GhjMNjTeTHlt/nbw2ZuasXmOH6lPOVwsn1JtX3lnP6RS
- +ixkA
-X-Developer-Key: i=jth@kernel.org; a=openpgp;
- fpr=EC389CABC2C4F25D8600D0D00393969D2D760850
+References: <20240710-bug11-v2-1-e7bc61f32e5d@gmail.com>
+In-Reply-To: <20240710-bug11-v2-1-e7bc61f32e5d@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 11 Jul 2024 07:38:40 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6NisGBRqccRv3CiTDMJS0M7ZnvSrEDDHSOUn2TaWBBDw@mail.gmail.com>
+Message-ID: <CAL3q7H6NisGBRqccRv3CiTDMJS0M7ZnvSrEDDHSOUn2TaWBBDw@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: Fix slab-use-after-free Read in add_ra_bio_pages
+To: Pei Li <peili.dev@gmail.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, skhan@linuxfoundation.org, 
+	syzkaller-bugs@googlegroups.com, 
+	linux-kernel-mentees@lists.linuxfoundation.org, 
+	syzbot+853d80cba98ce1157ae6@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Thu, Jul 11, 2024 at 5:29=E2=80=AFAM Pei Li <peili.dev@gmail.com> wrote:
+>
+> We are accessing the start and len field in em after it is free'd.
+>
+> This patch moves the line accessing the free'd values in em before
+> they were free'd so we won't access free'd memory.
+>
+> Reported-by: syzbot+853d80cba98ce1157ae6@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3D853d80cba98ce1157ae6
+> Signed-off-by: Pei Li <peili.dev@gmail.com>
+> ---
+> Syzbot reported the following error:
+> BUG: KASAN: slab-use-after-free in add_ra_bio_pages.constprop.0.isra.0+0x=
+f03/0xfb0 fs/btrfs/compression.c:529
+>
+> This is because we are reading the values from em right after freeing it
+> before through free_extent_map(em).
+>
+> This patch moves the line accessing the free'd values in em before
+> they were free'd so we won't access free'd memory.
+>
+> Fixes: 6a4049102055 ("btrfs: subpage: make add_ra_bio_pages() compatible"=
+)
 
-btrfs_delete_raid_extent() was written under the assumption, that it's
-call-chain always passes a start, length tuple that matches a single
-extent. But btrfs_delete_raid_extent() is called by
-do_free_extent_acounting() which in term is called by
-__btrfs_free_extent().
+This type of useful information should be in the changelog, not after the -=
+--
 
-But this call-chain passes in a start address and a length that can
-possibly match multiple on-disk extents.
+And btw, this was already fixed last week and it's in for-next:
 
-To make this possible, we have to adjust the start and length of each
-btree node lookup, to not delete beyond the requested range.
+https://github.com/btrfs/linux/commit/aaa2c8b3f54e7b4f31616fd03bb302cc17ccc=
+f39
+https://lore.kernel.org/linux-btrfs/20240704171031.GX21023@twin.jikos.cz/T/=
+#m9a92a5d980230323ec351a24adf9a3738cfbbc40
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/raid-stripe-tree.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Thanks.
 
-diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-index fd56535b2289..6f65be334637 100644
---- a/fs/btrfs/raid-stripe-tree.c
-+++ b/fs/btrfs/raid-stripe-tree.c
-@@ -66,6 +66,11 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 le
- 		if (ret)
- 			break;
- 
-+		start += key.offset;
-+		length -= key.offset;
-+		if (length == 0)
-+			break;
-+
- 		btrfs_release_path(path);
- 	}
- 
-
--- 
-2.43.0
-
+> ---
+> Changes in v2:
+> - Adapt Qu's suggestion to move the read-after-free line before freeing
+> - Cc stable kernel
+> - Link to v1: https://lore.kernel.org/r/20240710-bug11-v1-1-aa02297fbbc9@=
+gmail.com
+> ---
+>  fs/btrfs/compression.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 6441e47d8a5e..f271df10ef1c 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -514,6 +514,8 @@ static noinline int add_ra_bio_pages(struct inode *in=
+ode,
+>                         put_page(page);
+>                         break;
+>                 }
+> +               add_size =3D min(em->start + em->len, page_end + 1) - cur=
+;
+> +
+>                 free_extent_map(em);
+>
+>                 if (page->index =3D=3D end_index) {
+> @@ -526,7 +528,6 @@ static noinline int add_ra_bio_pages(struct inode *in=
+ode,
+>                         }
+>                 }
+>
+> -               add_size =3D min(em->start + em->len, page_end + 1) - cur=
+;
+>                 ret =3D bio_add_page(orig_bio, page, add_size, offset_in_=
+page(cur));
+>                 if (ret !=3D add_size) {
+>                         unlock_extent(tree, cur, page_end, NULL);
+>
+> ---
+> base-commit: 563a50672d8a86ec4b114a4a2f44d6e7ff855f5b
+> change-id: 20240710-bug11-a8ac18afb724
+>
+> Best regards,
+> --
+> Pei Li <peili.dev@gmail.com>
+>
+>
 
