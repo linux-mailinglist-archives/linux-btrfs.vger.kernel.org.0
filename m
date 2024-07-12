@@ -1,284 +1,166 @@
-Return-Path: <linux-btrfs+bounces-6429-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6430-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79BB6930062
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 20:20:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873C593008B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 20:48:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C64D1C226A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 18:20:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0254F1F239EE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 18:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5E3178378;
-	Fri, 12 Jul 2024 18:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0DE20B20;
+	Fri, 12 Jul 2024 18:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TkyXuhoP"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WWizCmdg";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TAkAf+wY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8B87176FC5;
-	Fri, 12 Jul 2024 18:14:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC55168DC;
+	Fri, 12 Jul 2024 18:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720808063; cv=none; b=HPKzxPDfs/KMJoq9V/zdiQKphFSB33JS/7YW4GqScYDogFg6eV3fU6cywCrpbCn90CpW/8zhVbsMm2W6OSghBRe9SoLLT5kz6BZhpKfLIRABDSXTJxzQVulX036ALypwVgj1HG95Y/Nk6L84pG/PWgdIC+OzZcraAQS1/UdaNa8=
+	t=1720810120; cv=none; b=fj9jNE5xfi5tfblnRmnG3Bwc4mUGOxWxZaiYJBOiTdJxfTgHuoL+1eI41IuQpje2XHMoqhMpMJykqwClMD6JEccMA3K8oAiD1ZS88bv0FtnWc4TWR8qcCtKOJfmb7siqljCcxDqQTT2LKw2IU8Rt4cILtffj7ByZczSKshwylmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720808063; c=relaxed/simple;
-	bh=higUfH+lRNr1o1/VeR3pllv4hyaBqtUag+nr8QJVj8w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aWQe6dBsbpAOSxgFFedELtzqS3VbRoPag4y6KtEVl38q3GxnfEKCCeou0Fn1MN2w3+7iViHQe92U76lf4NcO+5q/WU2RfEexCAGjD9jGsdDru4LnHn4D+M6V5+ftoPprwwH89RTZXv1Ft/S4D5g4DORW3osiCbLaU21CMEbhNVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TkyXuhoP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94044C4AF09;
-	Fri, 12 Jul 2024 18:14:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720808062;
-	bh=higUfH+lRNr1o1/VeR3pllv4hyaBqtUag+nr8QJVj8w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TkyXuhoPN3ZDYAFsAnHpxtJ0+441AD7yMavrVgt2NMAqGVQ1pmmTmU2qXht1gaFH/
-	 vGI8faiIkaKIheH38sjks8BGGOc4uwiYLfN0xfR20JPP6nzn/BMZ3enW1SfyKd28Vc
-	 BynZdi3p5lnT6Aj5yzzvEISeu2c51NQ/x65xsUhWP95ds1Kw7qTH2xLzeqPaBLL1LA
-	 QIu7GsFYDsIbKHdp6uo9So70nsPM7ujnvxRlXW0ODWj06/DyvBBtT4vQ/t1xG8AHQl
-	 kJVh+o4HmsEMQRXV4YNmGYxC/fKlqc/nOXlP1dntb2fKSYFqTrlOXDW0Hy9lX/LvaN
-	 Ko2atFY8h6Chg==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-52ea5765e75so2735438e87.0;
-        Fri, 12 Jul 2024 11:14:22 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW2eDeBH6egnVDrsL66VvHA1P2k/0oCMafYqamuZX9UrepN2il28dZN8+eWyB34F+BrYnCrajklk5thntT1KxY04kMYSMXQuQ==
-X-Gm-Message-State: AOJu0YxlgIrX2Bv29GcBSWZVHUSyZDRunjWv6MuC6xRP3Xq3b+ZmNtGC
-	THxBpVQo7GUzzepyXY7ZqggnY3QtGjfv1OAJ+85Ardsx4QXBBb1VYbOqEQenF7pnPHorNkgDQtQ
-	NwxTLps8vFtFWi21e7lTkCN3OFmM=
-X-Google-Smtp-Source: AGHT+IFIahKHwEr3b763wKGnlHvz4LQOxpS+JnV2N7SAFE6iKoecjOR/CITKHDDEB5a9PzCKgRvIQuOZBV5tc3rS4zw=
-X-Received: by 2002:a19:384d:0:b0:52c:825e:3b1c with SMTP id
- 2adb3069b0e04-52eb9997b71mr6091745e87.26.1720808060875; Fri, 12 Jul 2024
- 11:14:20 -0700 (PDT)
+	s=arc-20240116; t=1720810120; c=relaxed/simple;
+	bh=I90yjCY1Dvz00vWK492Gi5cmhk3nFxS7EaeeaQGnepM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OgTY0spe8kw94d1cUhj/DWrNHzzXoiQP1PfgtB6dPY0pH5wDT1P0c+PYa0T3yBaAvqtDXojn80Ez40CjZkbAG470HB/O79KbqhF1iIpB5rVp2s/7V+NLUIzPuKAnBbeX8d++RIeNyaWCdCMlXBi9Sj7TYd7pCv/VXh4+wm6+nks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WWizCmdg; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TAkAf+wY; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8F3BA1FB99;
+	Fri, 12 Jul 2024 18:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1720810117; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=SOeqvw5RUu5R2ECsxUvsHeLqr92Df8mof2vHJyYk8ck=;
+	b=WWizCmdgDwOZ3Li9l8i/6QvAaBbojwDhTOIiugL56EpkpCJFZeOvm52HquDCIVD09J6et0
+	bwzP+qIPCPvA2Z4wevoc2YGvihTc0jZgGuzJ5CG4g1tp/7Tuq1M/btM719t7Ch73qERz9N
+	jQudax/DocqsN1BIfLoz4EkKaTrYTfY=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=TAkAf+wY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1720810115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=SOeqvw5RUu5R2ECsxUvsHeLqr92Df8mof2vHJyYk8ck=;
+	b=TAkAf+wYqBmy+VnMlNudZu2fWqvIN9XcTYtzdlvXApedqp8DaN3wSE0xe5+Xox4tsv+AQW
+	K1cizEuft1QqKgtyXtIpKyIbsSOTOuLPFZA1Df3bD0sY1vEmqeMKKh76gP0U/JJj8oyEZ5
+	Wr6JPq6x/5B7UvLv429FDs8wnEBHkXw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84C5C1373E;
+	Fri, 12 Jul 2024 18:48:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Z64ZIIN6kWY3QwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Fri, 12 Jul 2024 18:48:35 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.10-rc8
+Date: Fri, 12 Jul 2024 20:48:27 +0200
+Message-ID: <cover.1720807949.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7339416633376271b21b1be844e1a34f8656f780.1720799383.git.boris@bur.io>
- <CAL3q7H6sDegx2d3336J70Nyri5oYSR6yn3KdZr+z1AqLMwaU4Q@mail.gmail.com>
- <20240712172534.GA3471480@zen.localdomain> <CAL3q7H6Z7HE5EZ+1gLz5NRYbG2UR0N1Edn+j1Mqu3eu=X2tVwg@mail.gmail.com>
- <20240712180106.GA3472046@zen.localdomain>
-In-Reply-To: <20240712180106.GA3472046@zen.localdomain>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 12 Jul 2024 19:13:43 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6hZcP-Bx=UCEqgX3qjPhPB1DS0=CohxC339ys0D-vm6w@mail.gmail.com>
-Message-ID: <CAL3q7H6hZcP-Bx=UCEqgX3qjPhPB1DS0=CohxC339ys0D-vm6w@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: add test for btrfstune squota enable/disable
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 8F3BA1FB99
+X-Spamd-Result: default: False [-1.01 / 50.00];
+	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Flag: NO
+X-Spam-Score: -1.01
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 
-On Fri, Jul 12, 2024 at 7:02=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> On Fri, Jul 12, 2024 at 06:33:59PM +0100, Filipe Manana wrote:
-> > On Fri, Jul 12, 2024 at 6:26=E2=80=AFPM Boris Burkov <boris@bur.io> wro=
-te:
-> > >
-> > > On Fri, Jul 12, 2024 at 05:56:15PM +0100, Filipe Manana wrote:
-> > > > On Fri, Jul 12, 2024 at 4:53=E2=80=AFPM Boris Burkov <boris@bur.io>=
- wrote:
-> > > > >
-> > > > > btrfstune supports enabling simple quotas on a fleshed out filesy=
-stem
-> > > > > (without adding owner refs) and clearing squotas entirely from a
-> > > > > filesystem that ran under squotas (clearing the incompat bit)
-> > > > >
-> > > > > Test that these operations work on a relatively complicated files=
-ystem
-> > > > > populated by fsstress while preserving fssum.
-> > > > >
-> > > > > Signed-off-by: Boris Burkov <boris@bur.io>
-> > > > > ---
-> > > > >  tests/btrfs/332     | 69 +++++++++++++++++++++++++++++++++++++++=
-++++++
-> > > > >  tests/btrfs/332.out |  2 ++
-> > > > >  2 files changed, 71 insertions(+)
-> > > > >  create mode 100755 tests/btrfs/332
-> > > > >  create mode 100644 tests/btrfs/332.out
-> > > > >
-> > > > > diff --git a/tests/btrfs/332 b/tests/btrfs/332
-> > > > > new file mode 100755
-> > > > > index 000000000..d5cf32664
-> > > > > --- /dev/null
-> > > > > +++ b/tests/btrfs/332
-> > > > > @@ -0,0 +1,69 @@
-> > > > > +#! /bin/bash
-> > > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > > +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> > > > > +#
-> > > > > +# FS QA Test No. btrfs/332
-> > > > > +#
-> > > > > +# Test tune enabling and removing squotas on a live filesystem
-> > > > > +#
-> > > > > +. ./common/preamble
-> > > > > +_begin_fstest auto quick qgroup
-> > > > > +
-> > > > > +# Import common functions.
-> > > > > +. ./common/filter.btrfs
-> > > > > +
-> > > > > +# real QA test starts here
-> > > > > +_supported_fs btrfs
-> > > > > +_require_scratch_enable_simple_quota
-> > > > > +_require_no_compress
-> > > > > +_require_command "$BTRFS_TUNE_PROG" btrfstune
-> > > > > +_require_fssum
-> > > > > +_require_btrfs_dump_super
-> > > > > +_require_btrfs_command inspect-internal dump-tree
-> > > > > +$BTRFS_TUNE_PROG --help 2>&1 | grep -wq -- '--enable-simple-quot=
-a' || \
-> > > > > +       _notrun "$BTRFS_TUNE_PROG too old (must support --enable-=
-simple-quota)"
-> > > > > +$BTRFS_TUNE_PROG --help 2>&1 | grep -wq -- '--remove-simple-quot=
-a' || \
-> > > > > +       _notrun "$BTRFS_TUNE_PROG too old (must support --remove-=
-simple-quota)"
-> > > > > +
-> > > > > +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> > > > > +_scratch_mount
-> > > > > +
-> > > > > +# do some stuff
-> > > > > +d1=3D$SCRATCH_MNT/d1
-> > > > > +d2=3D$SCRATCH_MNT/d2
-> > > > > +mkdir $d1
-> > > > > +mkdir $d2
-> > > > > +run_check $FSSTRESS_PROG -d $d1 -w -n 2000 $FSSTRESS_AVOID
-> > > > > +fssum_pre=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> > > > > +
-> > > > > +# enable squotas
-> > > > > +_scratch_unmount
-> > > > > +$BTRFS_TUNE_PROG --enable-simple-quota $SCRATCH_DEV >> $seqres.f=
-ull 2>&1 || \
-> > > > > +       _fail "enable simple quota failed"
-> > > >
-> > > > Instead of doing a "|| _fail ..." everywhere, can't we simply not
-> > > > redirect stderr to the .full file and instead have a golden output
-> > > > mismatch in case an error happens?
-> > > > Not only that makes the test shorter and easier to read, it goes al=
-ong
-> > > > with the most common practice in fstests.
-> > > >
-> > >
-> > > That's what I wanted to do, since you have given me that feedback in =
-the
-> > > past, but unfortunately --enable-simple-quota currently spits out a l=
-ine
-> > > for each qgroup it creates, which we can't predict in the output, sin=
-ce
-> > > I don't think the fsstress run is deterministic?
-> >
-> > But are those messages printed to stderr?
-> > As they aren't errors, I would expect them to be sent to stdout only.
-> >
-> > >
-> > > Options I considered where:
-> > > - grep -v or otherwise filter out those lines
-> > > - check the failure
-> > >
-> > > I am happy to switch to the grep.
-> >
-> > If those non-error messages are sent to stderr, then I would say just
-> > leave the test as it is.
->
-> They get sent to stdout, and adjusting the code to just grep them out
-> came out well enough, so I resent that as v3.
+Hi,
 
-I see, my idea was simple, no need to grep or do anything.
+please pull the following branch that fixes a regression in extent map
+shrinker behaviour.
 
-Instead of :
+In the past weeks we got reports from users that there are huge latency
+spikes or freezes. This was bisected to newly added shrinker of extent
+maps (it was added to fix a build up of the structures in memory).
 
-$BTRFS_TUNE_PROG --enable-simple-quota $SCRATCH_DEV >> $seqres.full
-2>&1 || _fail "enable simple quota failed"
+I'm assuming that the freezes would happen to many users after release
+so I'd like to get it merged now so it's in 6.10.  Although the diff
+size is not small the changes are relatively straightforward, the
+reporters verified the fixes and we did testing on our side.
 
-Just doing:
+Please pull, thanks.
 
-$BTRFS_TUNE_PROG --enable-simple-quota $SCRATCH_DEV >> $seqres.full
+The fixes:
 
-So those informative messages would be ignored, and in case an error
-happens, anything btrfstune prints to stderr makes the test
-automatically fail due to mismatch with the golden output.
+- adjust behaviour under memory pressure and check lock or scheduling
+  conditions, bail out if needed
 
-v3 does instead:
+- synchronize tracking of the scanning progress so inode ranges are not
+  skipped or work duplicated
 
-$BTRFS_TUNE_PROG --enable-simple-quota $SCRATCH_DEV | grep -v 'created
-qgroup for'
+- do a delayed iput when scanning a root so evicting an inode does not
+  slow things down in case of lots of dirty data, also fix lockdep
+  warning, a deadlock could happen when writing the dirty data would
+  need to start a transaction
 
+----------------------------------------------------------------
+The following changes since commit a56c85fa2d59ab0780514741550edf87989a66e9:
 
->
-> We crossed streams a little here, so hopefully I did a reasonable enough
-> thing and the v3 looks good to you :)
->
-> Thanks for your time, and sorry for the churn on this simple stuff.
+  btrfs: fix folio refcount in __alloc_dummy_extent_buffer() (2024-07-04 02:19:10 +0200)
 
-No worries, thank you.
+are available in the Git repository at:
 
->
-> >
-> > Thanks.
-> >
-> > >
-> > > > > +_check_btrfs_filesystem $SCRATCH_DEV
-> > > > > +_scratch_mount
-> > > > > +fssum_post=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> > > > > +[ "$fssum_pre" =3D=3D "$fssum_post" ] \
-> > > > > +       || echo "fssum $fssum_pre does not match $fssum_post afte=
-r enabling squota"
-> > > > > +
-> > > > > +# do some more stuff
-> > > > > +run_check $FSSTRESS_PROG -d $d2 -w -n 2000 $FSSTRESS_AVOID
-> > > > > +fssum_pre=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> > > > > +_scratch_unmount
-> > > > > +_check_btrfs_filesystem $SCRATCH_DEV
-> > > > > +
-> > > > > +$BTRFS_TUNE_PROG --remove-simple-quota $SCRATCH_DEV >> $seqres.f=
-ull 2>&1 || \
-> > > > > +       _fail "remove simple quota failed"
-> > > >
-> > > > Same here.
-> > > >
-> > > > With that fixed (if it can be done):
-> > >
-> > > I think here, the command does generally work how we want: silent on
-> > > success, spews on failure, but I wanted it to be consistent with the
-> > > enable, not have to look in different files (or stick in a tee) etc..
-> > >
-> > > I'll play around with it and re-send if the filtered version looks
-> > > better.
-> > >
-> > > >
-> > > > Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> > > >
-> > > > Thanks.
-> > > >
-> > > > > +_check_btrfs_filesystem $SCRATCH_DEV
-> > > > > +$BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep=
- 'SIMPLE_QUOTA'
-> > > > > +$BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV  | grep=
- -e 'QUOTA' -e 'QGROUP'
-> > > > > +
-> > > > > +_scratch_mount
-> > > > > +fssum_post=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> > > > > +_scratch_unmount
-> > > > > +[ "$fssum_pre" =3D=3D "$fssum_post" ] \
-> > > > > +       || echo "fssum $fssum_pre does not match $fssum_post afte=
-r disabling squota"
-> > > > > +
-> > > > > +echo Silence is golden
-> > > > > +status=3D0
-> > > > > +exit
-> > > > > diff --git a/tests/btrfs/332.out b/tests/btrfs/332.out
-> > > > > new file mode 100644
-> > > > > index 000000000..adb316136
-> > > > > --- /dev/null
-> > > > > +++ b/tests/btrfs/332.out
-> > > > > @@ -0,0 +1,2 @@
-> > > > > +QA output created by 332
-> > > > > +Silence is golden
-> > > > > --
-> > > > > 2.45.2
-> > > > >
-> > > > >
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.10-rc7-tag
+
+for you to fetch changes up to 4484940514295b75389f94787f8e179ba6255353:
+
+  btrfs: avoid races when tracking progress for extent map shrinking (2024-07-11 16:50:54 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (3):
+      btrfs: use delayed iput during extent map shrinking
+      btrfs: stop extent map shrinker if reschedule is needed
+      btrfs: avoid races when tracking progress for extent map shrinking
+
+ fs/btrfs/disk-io.c           |   2 +
+ fs/btrfs/extent_map.c        | 123 +++++++++++++++++++++++++++++++++----------
+ fs/btrfs/fs.h                |   1 +
+ include/trace/events/btrfs.h |  18 ++++---
+ 4 files changed, 107 insertions(+), 37 deletions(-)
 
