@@ -1,154 +1,200 @@
-Return-Path: <linux-btrfs+bounces-6423-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6424-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B7DD92FECC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 18:49:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A44D892FED9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 18:57:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 027FC1F223FF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 16:49:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57D3A1F21DE7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 16:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD4D176AAD;
-	Fri, 12 Jul 2024 16:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653EE176AB0;
+	Fri, 12 Jul 2024 16:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XofkUO8j"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FP8tsfQU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A673174EFC;
-	Fri, 12 Jul 2024 16:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F34ABE65;
+	Fri, 12 Jul 2024 16:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720802978; cv=none; b=givBwRiuyVt8aPtMQz5ZRwYb8iTWVJKf9tRDtfthQNuTHhEWcQy1najKK57wnZcFS8zrUwbYK5654k0qlKwRVmWCcq3a040gQhDsepWoQLiEpDHKlJjhk3cVI4iM+Ysf20BCKeFxELDsRAw0gAcF1HJ9j8T4JVRJM84cLkvRVp4=
+	t=1720803413; cv=none; b=LSbKwoEC1f8iwN0F5ki81G5N4FGmZ40O+E8IB9sX43gwejvgxpImuOikc28RG3RT6Cqe8Um9lIkiVwGjt739iprjUTxnOLBLmSjCEzDCT1z4hEKttAVc9ijnqE8aoiJJ/UuEEC2GRUGhmwVXbx7d/V9RqajXSLhubhXCBPASQwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720802978; c=relaxed/simple;
-	bh=x21D/sA1rh8LcY3pDjplM1ds6ds00E3KusoX2w2Ih2Q=;
+	s=arc-20240116; t=1720803413; c=relaxed/simple;
+	bh=AOvXGX/IMRI6uz1xJftJJ41BLvmJl8noqLEX8GGQPRQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rkKPeKCPnFKw2WvRY/IToSmKPJC+1Hp+WH85oq1bdYNYwMEVld1SmJGfx1fO/syDgYsG9WGQwBNfp5R2GEDfSFJZDpikAKe79m1N6tgUEIEf0zGpXZLNAvDWh+vPYtk385VLFyV2MtwlPsySrvJO67NfLKIN2A1Ngs0V6ZKxCyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XofkUO8j; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a77b60cafecso285745366b.1;
-        Fri, 12 Jul 2024 09:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720802976; x=1721407776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WwTvXgr7fqiy9kh1WxOxV8r5cXQ3vEOo5tKrn0G3W/Q=;
-        b=XofkUO8jK9FBZ0UARK8IN3ORotdMROqs6R7OZAyC4AgpCpOn+zCrNH4cY1u84Nodu4
-         JTSkrBmjG3vBLseXu19DhSMI0z8QQeukqJie2deX7J9mugP0JaacjXiWzukJ3h8llaPi
-         rFkrC8lTebFKV7HJ4o0BONsKTmuzkvpXLqNhloPduKXrp56qptqTOqths4ORLk0T3zkr
-         KZK6dl1dvzZm9t0fhysIEdxG8U2AAI/8m2IimDIa1KgALepGai4B9gTFrjEQjFIDT7zj
-         dVSg7CXTvJwmHCeIcJjsqBw+8oAGJ1VOa4hIvJ+YpncwqShjsWYrYsjWGeOmJYBgCYML
-         UTZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720802976; x=1721407776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WwTvXgr7fqiy9kh1WxOxV8r5cXQ3vEOo5tKrn0G3W/Q=;
-        b=EyHRSg1At4V0CdH42F+ehT8f31nuCNjJCYY5twQTdvoqAhzr4SPoFN2HbCzEovgTpg
-         sfk+DPP2MaWj4x1fQCiOkijUJZDXpQ48itEwhXgTWqpHqOWfu4I6+Un/5kwZdOGnFm0a
-         rCfcNLhtcWJRei4YzIhJ5J0Jj/ni9CkaaolKWv+YsdtjD2VFDAclJLjQ3mYjP8WI9f4V
-         PUMD/ksUIs9L7y0N7NJVVfa5Hqip/TxxvCqqRFCzxBAafRon15ndWHazhDNGXdVRz91C
-         UUQMYRjtBQnNg7y+i44Xzey33cyE2Lxiwb5rD3R/iNU7Gm3yCRDVDjmsK/o+TnZPv38C
-         Un5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWg15C+9ugpIsJt0cMUVRiz5Y7G3MFXSBZ+yZe37Lj13ak+8mCN7yX6MnMGXUBfXUVUBKXUXekx0+qZd99DoNx1ZYxgcnMIsrN1wylSseBjwLI2dl8cWx1tnYCGaBXbS4iuU5Gx
-X-Gm-Message-State: AOJu0YzpwSka2USyMZ6o3fBEaFH+tXe6hi94hL/+FwY4V/VGbD8N0c4Y
-	kpwn4vfi1YHbozYJJZmS9F4PAPXnZU5JAI7b2xQzhUjrKBsN13AokLmxlbcrBZFfRO89SG4TNj7
-	fZTnTq1RsfB01ue2rWvoNBttN4PvBhua2
-X-Google-Smtp-Source: AGHT+IHTQosaWxj1p+zSk5tAh7yvCMrsoQtFXycuCpia2daptmDRGOJ9RmB1qfEgZ2SFSCdNRxzJuwTVROTYJ8tpaYc=
-X-Received: by 2002:a17:906:2b57:b0:a77:cca9:b212 with SMTP id
- a640c23a62f3a-a780b7050dfmr878162766b.45.1720802975413; Fri, 12 Jul 2024
- 09:49:35 -0700 (PDT)
+	 To:Cc:Content-Type; b=Gu6D7g85Y35rjyNPpxMHT/Tkapjf5zgozwp2Y2Emo1zSuIX2lj9+K9vA69bi2LjOsqqCSO/mVYukC4o4hKUeZpAiYbARb+WA/3hKmNcxn5tFL7wDUSbcXWsVRKB+R16kSDLcQ830CfZEwjuq/EZ4jW32AKXf9LLY5iNzKrtCINo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FP8tsfQU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29B7DC4AF09;
+	Fri, 12 Jul 2024 16:56:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720803413;
+	bh=AOvXGX/IMRI6uz1xJftJJ41BLvmJl8noqLEX8GGQPRQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FP8tsfQU9qit7eoQKUi2eUCeLgrfq3/x4v8u+gJTp1LZyJ4tW+pozwW/Cfhdx9t62
+	 RIrDbjRASbmLRFJ5G1s+MO1OUZ2w/UeKQIDsq1QEoDVtbV4mXGZ2Q3x/skS/VY3N9S
+	 SW5c2lmT2SBKScnZ/d9tABhcdODelEh2OTzbn+/FMAje1jOtDWn7q/LHDXMsyZbGzn
+	 boCK0DPdUHfQmRECMpi8buzD5Noj0gUSLSZuPTopoIT+Ko7A8GBSpKMmXg4P3P1iaP
+	 J/8/ZmRut8XDxYCDwoQuZejEnaaDt9dBlWEHAp4l0cZpnQeF0STGnOCBAB4I1Tp+Bv
+	 CXFMbcbkPidpw==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a77b550128dso295234766b.0;
+        Fri, 12 Jul 2024 09:56:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX7wvV2RKQ8bLx6+yGsrR9ZNqapBJEwn5wmyrJjSjgodJjbwS9bzCi6UyBGpKMj3ZUNq252cxhp/SMLSflzNPk9VVoQIZbFLg==
+X-Gm-Message-State: AOJu0Yy7OUiykN+VPrGYG0sA6166hXrQLHdXHXgLq+aCSUtZ6VZPbZMk
+	MBqET8K+Sdbo5CQpBYUN9CjrVD8oW52CP3d8kVTAwKP8r9JR1kUXxCbeNis1tfWQV+djg3UprGY
+	QE5bGYexn+JYWDcv3UnyNcZTJWWs=
+X-Google-Smtp-Source: AGHT+IGeppHwWASu3TxIC7NZVzStKr3sbIOllX1HStHs5bQPdxnuqL1uohIjiQRljFsB29FbKqE+MdyG3a0JA1MRCiE=
+X-Received: by 2002:a17:906:5fc1:b0:a77:d7f1:42eb with SMTP id
+ a640c23a62f3a-a780b6b2034mr772961466b.23.1720803411736; Fri, 12 Jul 2024
+ 09:56:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240712164132.46225-1-anand.jain@oracle.com>
-In-Reply-To: <20240712164132.46225-1-anand.jain@oracle.com>
-Reply-To: fdmanana@gmail.com
-From: Filipe Manana <fdmanana@gmail.com>
-Date: Fri, 12 Jul 2024 17:48:58 +0100
-Message-ID: <CAL3q7H4cmHXmJJP8-DoRKF-nQe_L+1rwutZ0BHGk5GMzujGAXA@mail.gmail.com>
-Subject: Re: [GIT PULL] fstests: btrfs changes for for-next v2024.07.13
-To: Anand Jain <anand.jain@oracle.com>
-Cc: zlang@kernel.org, fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <7339416633376271b21b1be844e1a34f8656f780.1720799383.git.boris@bur.io>
+In-Reply-To: <7339416633376271b21b1be844e1a34f8656f780.1720799383.git.boris@bur.io>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 12 Jul 2024 17:56:15 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6sDegx2d3336J70Nyri5oYSR6yn3KdZr+z1AqLMwaU4Q@mail.gmail.com>
+Message-ID: <CAL3q7H6sDegx2d3336J70Nyri5oYSR6yn3KdZr+z1AqLMwaU4Q@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: add test for btrfstune squota enable/disable
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, fstests@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 12, 2024 at 5:41=E2=80=AFPM Anand Jain <anand.jain@oracle.com> =
-wrote:
+On Fri, Jul 12, 2024 at 4:53=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
 >
-> Zorro,
+> btrfstune supports enabling simple quotas on a fleshed out filesystem
+> (without adding owner refs) and clearing squotas entirely from a
+> filesystem that ran under squotas (clearing the incompat bit)
 >
-> Please pull this branch, which contains a small set of fixes and a new sq=
-uota testcase.
+> Test that these operations work on a relatively complicated filesystem
+> populated by fsstress while preserving fssum.
 >
-> Thank you.
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  tests/btrfs/332     | 69 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/332.out |  2 ++
+>  2 files changed, 71 insertions(+)
+>  create mode 100755 tests/btrfs/332
+>  create mode 100644 tests/btrfs/332.out
 >
-> The following changes since commit 98611b1acce44dca91c4654fcb339b6f95c2c8=
-2a:
->
->   generic: test creating and removing symlink xattrs (2024-06-23 23:04:36=
- +0800)
->
-> are available in the Git repository at:
->
->   https://github.com/asj/fstests.git staged-20240713
->
-> for you to fetch changes up to 8e0a68f2cbe9cc2698110ac85765a0c4681b290f:
->
->   btrfs: fix _require_btrfs_send_version to detect btrfs-progs support (2=
-024-07-12 21:59:22 +0530)
->
-> ----------------------------------------------------------------
-> Boris Burkov (1):
->       btrfs: add test for subvolid reuse with squota
->
-> Filipe Manana (1):
->       btrfs: fix _require_btrfs_send_version to detect btrfs-progs suppor=
-t
->
-> Johannes Thumshirn (1):
->       btrfs: update golden output of RST test cases
+> diff --git a/tests/btrfs/332 b/tests/btrfs/332
+> new file mode 100755
+> index 000000000..d5cf32664
+> --- /dev/null
+> +++ b/tests/btrfs/332
+> @@ -0,0 +1,69 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
+> +#
+> +# FS QA Test No. btrfs/332
+> +#
+> +# Test tune enabling and removing squotas on a live filesystem
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick qgroup
+> +
+> +# Import common functions.
+> +. ./common/filter.btrfs
+> +
+> +# real QA test starts here
+> +_supported_fs btrfs
+> +_require_scratch_enable_simple_quota
+> +_require_no_compress
+> +_require_command "$BTRFS_TUNE_PROG" btrfstune
+> +_require_fssum
+> +_require_btrfs_dump_super
+> +_require_btrfs_command inspect-internal dump-tree
+> +$BTRFS_TUNE_PROG --help 2>&1 | grep -wq -- '--enable-simple-quota' || \
+> +       _notrun "$BTRFS_TUNE_PROG too old (must support --enable-simple-q=
+uota)"
+> +$BTRFS_TUNE_PROG --help 2>&1 | grep -wq -- '--remove-simple-quota' || \
+> +       _notrun "$BTRFS_TUNE_PROG too old (must support --remove-simple-q=
+uota)"
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
+> +_scratch_mount
+> +
+> +# do some stuff
+> +d1=3D$SCRATCH_MNT/d1
+> +d2=3D$SCRATCH_MNT/d2
+> +mkdir $d1
+> +mkdir $d2
+> +run_check $FSSTRESS_PROG -d $d1 -w -n 2000 $FSSTRESS_AVOID
+> +fssum_pre=3D$($FSSUM_PROG -A $SCRATCH_MNT)
+> +
+> +# enable squotas
+> +_scratch_unmount
+> +$BTRFS_TUNE_PROG --enable-simple-quota $SCRATCH_DEV >> $seqres.full 2>&1=
+ || \
+> +       _fail "enable simple quota failed"
 
-Can you please include the following trivial and reviewed fixes too?
+Instead of doing a "|| _fail ..." everywhere, can't we simply not
+redirect stderr to the .full file and instead have a golden output
+mismatch in case an error happens?
+Not only that makes the test shorter and easier to read, it goes along
+with the most common practice in fstests.
 
-https://lore.kernel.org/fstests/6e7ee8ec1731b5d3d44f511b075fa2edb0b38661.17=
-20654947.git.wqu@suse.com/
+> +_check_btrfs_filesystem $SCRATCH_DEV
+> +_scratch_mount
+> +fssum_post=3D$($FSSUM_PROG -A $SCRATCH_MNT)
+> +[ "$fssum_pre" =3D=3D "$fssum_post" ] \
+> +       || echo "fssum $fssum_pre does not match $fssum_post after enabli=
+ng squota"
+> +
+> +# do some more stuff
+> +run_check $FSSTRESS_PROG -d $d2 -w -n 2000 $FSSTRESS_AVOID
+> +fssum_pre=3D$($FSSUM_PROG -A $SCRATCH_MNT)
+> +_scratch_unmount
+> +_check_btrfs_filesystem $SCRATCH_DEV
+> +
+> +$BTRFS_TUNE_PROG --remove-simple-quota $SCRATCH_DEV >> $seqres.full 2>&1=
+ || \
+> +       _fail "remove simple quota failed"
 
-https://lore.kernel.org/fstests/bdbff9712f32fe9458d9904f82bcc7cbf9892a4b.17=
-19594258.git.fdmanana@suse.com/
+Same here.
 
-You reviewed the last one, but you missed it.
+With that fixed (if it can be done):
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 Thanks.
 
+> +_check_btrfs_filesystem $SCRATCH_DEV
+> +$BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep 'SIMPLE=
+_QUOTA'
+> +$BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV  | grep -e 'QUO=
+TA' -e 'QGROUP'
+> +
+> +_scratch_mount
+> +fssum_post=3D$($FSSUM_PROG -A $SCRATCH_MNT)
+> +_scratch_unmount
+> +[ "$fssum_pre" =3D=3D "$fssum_post" ] \
+> +       || echo "fssum $fssum_pre does not match $fssum_post after disabl=
+ing squota"
+> +
+> +echo Silence is golden
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/332.out b/tests/btrfs/332.out
+> new file mode 100644
+> index 000000000..adb316136
+> --- /dev/null
+> +++ b/tests/btrfs/332.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 332
+> +Silence is golden
+> --
+> 2.45.2
 >
->  common/btrfs        | 20 ++++++++++++++++----
->  tests/btrfs/304.out |  9 +++------
->  tests/btrfs/305.out | 24 ++++++++----------------
->  tests/btrfs/306.out | 18 ++++++------------
->  tests/btrfs/307.out | 15 +++++----------
->  tests/btrfs/308.out | 39 +++++++++++++--------------------------
->  tests/btrfs/331     | 45 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/331.out |  2 ++
->  8 files changed, 98 insertions(+), 74 deletions(-)
->  create mode 100755 tests/btrfs/331
->  create mode 100644 tests/btrfs/331.out
 >
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
 
