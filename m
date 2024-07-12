@@ -1,99 +1,102 @@
-Return-Path: <linux-btrfs+bounces-6420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C7F92FE4B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 18:15:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0703292FE50
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 18:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DD171F23288
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 16:15:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF893284139
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 16:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46079175564;
-	Fri, 12 Jul 2024 16:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBEA16FF37;
+	Fri, 12 Jul 2024 16:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kXDqVO+T";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="o//omILz"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oLj+89Lh";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="ECkPenvU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F58A441D;
-	Fri, 12 Jul 2024 16:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1143C16F8F5;
+	Fri, 12 Jul 2024 16:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720800947; cv=fail; b=K6aYzLB6y5Gw5J1ccRA9FeDzrYYhuL5L7M/QqcF0rWIhcmN1SoPfKXZiwGayWmVwHwGOEwSkW74noSU/uHlhfSeTjLn+AjjBf+DHYG5A3IptiyeTxm+Y1LdiNBVYBHbi6EUbrWuiJt6gg5gufDGbUwDfUN+MMg22GubPxisZgkA=
+	t=1720800999; cv=fail; b=XWqe5N5Rgo3Mzps8QV4T0pqDfgy/FCtLZfijlTKHD+QUdsZ2xrnRDV9tJXZRCdAEUC8/NeaADtJLoE5kK8bWMDTogzNtCaJ9GX13PpLjC6cn80fUxi5MenCAWXpCORIyyBWkFu4iFM9xqmOjgNEKj783vMrNdsLCSZXIkm66L7g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720800947; c=relaxed/simple;
-	bh=kstdEJbreQhn6uvQCk1+rlD/TuScboFFv6DZbQDwmMY=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=gMC0VXMlKWKkZ3TUyXQntijSwW1nMJbVlAusD18TjEwp9uEaadhaU49klGZv+4LzE+J1Cv4QDpqrPy+0VBDomU43eWrE3ZymMb0bfzh0LORctt6dxGrhgCecoxlnLyIbg4VZjRyvszqwSMtUSlouLDmDalIfY7yaBQi1HJL6WXQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kXDqVO+T; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=o//omILz; arc=fail smtp.client-ip=205.220.165.32
+	s=arc-20240116; t=1720800999; c=relaxed/simple;
+	bh=yh3UKqfDw1qBXyuLxOopPYIeuAxlOE8LHymovgA9f/g=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=b9dzod0Na+vLIIcvtf1pFtby9Xew2KSR+rtaQkVH7zt/RWzTTHsqCqsgEhn96K9n27tJi0kE1MmIjBpBZlLULVzPp6pRABgEZVDTGdEux3nHBZ7FvlQrejWiIpzwLQLVmZMJ2i0x/ZnDviwEJieYg6JBY3NU3m0FYF0FpNZAUtU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oLj+89Lh; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=ECkPenvU; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46CDIOU5021654;
-	Fri, 12 Jul 2024 16:15:42 GMT
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46CDIc8L028154;
+	Fri, 12 Jul 2024 16:16:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	message-id:date:subject:to:references:from:in-reply-to
+	message-id:date:subject:to:cc:references:from:in-reply-to
 	:content-type:content-transfer-encoding:mime-version; s=
-	corp-2023-11-20; bh=3uGYoCvGfnZux45e4OFKZmDzV1jwS9JDlhfI6MoymLA=; b=
-	kXDqVO+TMDq7jmqp0p5eQmaL//e0dRtRI7A257W37afq/fRv/tVLrHdlv5axSWuZ
-	NUtfEtM4nKhY8/dx4X+nmMtnfC1pOVl134awS+3qOl2Z4ZwAJq+1Wh0ze27jB0KF
-	1xUQrpF01iAN50b/SK5ckWVdXyT3uDyR8JvNMb/5eQ4m+dNvyOI7luWnH3SjJ1YE
-	YTEuqqeaMCY2uXL1daieR6jLyfFmEa/1cG0Ode7Fhv8IX4xJ0Oxfeny9cBQFS4K6
-	OMFPTRdNpGAn8vampe6XBsraamxuiE8vKC8rfoMQsZpl9VztSTczE2s+/722EUaB
-	AxA3GO5MATm1w5gdCQnoBg==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 406wt8m6vy-1
+	corp-2023-11-20; bh=EeQ+QEZZiNanJ64fL3iDc6JSdR8YKbHPDHbzKfHK0J4=; b=
+	oLj+89LhmsSankk7P4gECRv8OAA4UDY9VW9Q7HFWCBvdoDvR2JE8mCMCAKKZeyro
+	TnzhkTUhv6unv/0ld5QrYaIHihIXMwC299iG5wVCO7Ngo6qqy+CckCY+GiYFSUhl
+	l7u7yyYGeUj5gVkdIFEqgJs6r2KqagY89dB+uQwHuT+f7hzll9b6Oy1ttYii6A2F
+	Y/tJV4s98+uuDJnpsYUWcb6FSZn/SfPc/qn+z94ichN1ncuFAjJV96oYiD7kMZJm
+	UmJVLlMpUf2dZD3WjYHPiLOAu9BMJ+3sHrsxMqF2VwZGywzuXUqD/PeFMySu2ysp
+	1VEXpxctAvK87oYe7UxZDg==
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 406wkycdv9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Jul 2024 16:15:41 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46CFHqn5028847;
-	Fri, 12 Jul 2024 16:15:40 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 409vv6ha95-1
+	Fri, 12 Jul 2024 16:16:25 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46CFSdQ3008705;
+	Fri, 12 Jul 2024 16:16:24 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 409vv65d80-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Jul 2024 16:15:40 +0000
+	Fri, 12 Jul 2024 16:16:24 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=AhaAsiKQhMa44WX8E6Fb11laIfmTFT6O8ddyf+Po1frfTWwHsYiWEh5vuftFw9OIMOY1xbYKaqL/4sOuo8fWYzH1XXd5IpQqiXQLY0gASwqac0owUY40UMPspaCsyH/9742Mr9SqpHpb5XX4xXMBl5kxIOsY/N+KR8SfWb2ir9/Ox+wwCUAHk6VPheg1BbhSnTLvplUq2h6HjQ8NhhpCRduXhCco4CCI9H1GLN4Y5X/v9Pcw1CBMBQDA9Bbd34ZrbcrRuMKCDGRbpyhuHRFWREb8qnDHlpr5Z20tWXpOpkt3HUAcrOU8d9ghdmrj+B3LZv6HpfcxqsuAxFUsrm/DwQ==
+ b=HJeGU9x1bXtZk6giR9q6mppOk0lbGTbYmPZX2B2wbaKF1qJwRCdtYCYn0PWYBHhdqqFiiuWBv+MqJrI8vSTw42EL40e6KuGVGIkMnfrYx1+PhFSB9WAMAcIJ0BN7stt6UwkHtUj2Mtj/Ggh1vmCFls0BGJellMW9UgfRCFjenr0O3sYbJX+c6qf4Th+heD7LgYYSu4JrPEiDQhG4x4TDsVJ4JuMQcggTmp0ZtNtyVqKmQ+7+DwxcHkpHG2Jnwswitd4VgiV8dZE8fCpMJ3HBJZZMNycwYR8CO7GZ8HSZnmpgzNkqSii1+l1khc9+u3B8f87377ZEE2eN0bdjhtdZpg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3uGYoCvGfnZux45e4OFKZmDzV1jwS9JDlhfI6MoymLA=;
- b=d6Y0NravdJmxiz296OkfbuyCuCZZm8DTaKh8K56lAa3py4OE2JJEoXSTWCsX5UZqY+QLHbAVmJD6OgUnTer52ClmpHBt5zCwwjYrQLtZKxpW5m8johiUK8BG6nnB6LoGeZ2nn7cgMolDvAGKo5Cj0VwIQJKcAjMO+F/ekHWJf6gmFpp3GpF0iKZ6AwhLh9HZRYVzRmkJk+KL1AF4J1FAggldiW7BZCcqHQKNT04xsfa/hdfWAfMqnAAIHo8pkR83V/jCDCY6evZv3W9tdxsUruULDUQlJ+SLrT643aVFAZZ0MWI3Y1Y7rdHB4aZNpR7Qdqtgmw0qTM5r5z9ujjYk6A==
+ bh=EeQ+QEZZiNanJ64fL3iDc6JSdR8YKbHPDHbzKfHK0J4=;
+ b=h7YibMz/+yxl9gejqD4TxFcvhrPQq9nsHu1R7lJceyXu0xtnMZSG+TxpoyUsEVPb3hs3BaZzQ0/dIj2m2S5dsFVGexewUSKQs7un92LqZIJxNE/ALQNH5dboMCyj2hkbP3MURFaO3BcSEYxowTU0POoQK7u1VsouvqhARz6KTFlK7rxOhcuXE7cuwwlfbAFYxHjTluwpdo0HLL13FFmiyl4TtRwjgHhqj6w6LTTQA3LFI/fKMVMjVyeCx6K3dkMD7MoXdieVWyuUB5hu08B+KifeY097tDpFQT+UlfkLdEW+ab2U1dxPfJHuNwm+Zxhskp3Lg81WNfa8LLoVhA4UyA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3uGYoCvGfnZux45e4OFKZmDzV1jwS9JDlhfI6MoymLA=;
- b=o//omILzgmEwLLoVg3ZDZ91O7i9hu13/GXbHPKJo9OOibIygfgviMJ83JtpzVsN6LKJV6MHg2cLuVJgNaCUbsH7EdDwjfvG8L24OZwznleoLtwSDIG3/8KdnDxOCR70W+DkgWQBNi42kIzFcwpLssWvIWU+STGzoTutKzs1OMac=
+ bh=EeQ+QEZZiNanJ64fL3iDc6JSdR8YKbHPDHbzKfHK0J4=;
+ b=ECkPenvU8C02Za17SaytQpLok2cnsi+4ObhR5+NZJ+rIUZWeJTj5a9oOsmPYlo/+9zVOEQUBdEPSNyspGCM+/r7pmhFdcMEsyg9zmnFasH4SiuC6Znx+IjTLKDrvgXyB+S7RK8MA2yCUix5lZFQk1Bkzksm9ogoZuZLV2Ed4qlk=
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by CO6PR10MB5540.namprd10.prod.outlook.com (2603:10b6:303:137::22) with
+ by MW4PR10MB5704.namprd10.prod.outlook.com (2603:10b6:303:18e::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7741.23; Fri, 12 Jul
- 2024 16:15:36 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7762.22; Fri, 12 Jul
+ 2024 16:16:20 +0000
 Received: from PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
  ([fe80::fea:df00:2d94:cb65%4]) with mapi id 15.20.7762.020; Fri, 12 Jul 2024
- 16:15:36 +0000
-Message-ID: <4c8a46f9-e104-44d9-9687-42429b9ac969@oracle.com>
-Date: Sat, 13 Jul 2024 00:15:30 +0800
+ 16:16:18 +0000
+Message-ID: <a3bedcc7-c8e6-4e83-816a-ba28fb883202@oracle.com>
+Date: Sat, 13 Jul 2024 00:16:13 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: add test for subvolid reuse with squota
+Subject: Re: [PATCH v2] btrfs: update golden output of RST test cases
 Content-Language: en-GB
-To: Boris Burkov <boris@bur.io>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-References: <53cdc0c4696655a0e7a5eb62612a7b87ff4d48cd.1720547422.git.boris@bur.io>
+To: Johannes Thumshirn <jth@kernel.org>, linux-btrfs@vger.kernel.org
+Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20240701080109.20673-1-jth@kernel.org>
 From: Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <53cdc0c4696655a0e7a5eb62612a7b87ff4d48cd.1720547422.git.boris@bur.io>
+In-Reply-To: <20240701080109.20673-1-jth@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR06CA0181.apcprd06.prod.outlook.com (2603:1096:4:1::13)
- To PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+X-ClientProxiedBy: SG2PR03CA0117.apcprd03.prod.outlook.com
+ (2603:1096:4:91::21) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -101,120 +104,128 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|CO6PR10MB5540:EE_
-X-MS-Office365-Filtering-Correlation-Id: e422b774-42a2-4ee3-6fd9-08dca28ddd06
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|MW4PR10MB5704:EE_
+X-MS-Office365-Filtering-Correlation-Id: e00bb96b-9219-4a75-b16c-08dca28df630
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|366016;
 X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?akpJVHpoWG9qODJEWk04R21zOThPWWJxSjkrQ3IyNU1jSVJVOTJ1RlpMalM5?=
- =?utf-8?B?NitzazNvLzBEeVBBK0E5bnBsenJZcXVQTThxaGxZK0xVUngvckQxdzlVcWJr?=
- =?utf-8?B?MGV4VFkwSHUyb1JVZFVyRGhVK0s3MlhGb3JMcVJJbGZDRXh3UUpUVWI5bG1q?=
- =?utf-8?B?SzFwTi9zaXpoMmQ4UEIvMkhEVkFFTE0wdkM1a0FGV1FmYzExcExCVW04YzNa?=
- =?utf-8?B?MWcwRWgrS3daZjZVaE4rODJPZjlGNGJ1UXZBZUhsdWpGV0VqQlVYUS8yOEls?=
- =?utf-8?B?azd3L3FMZksrTWRsV0FjZ0ZOVGxGT3pGcjgzSXJDellRUGlaNk52Y3pZM2sr?=
- =?utf-8?B?Rlk5aXJUZ2RnZUFzNkR6b1kxUDk3MTZUV2I3QzdNd3FZTTNsZnpKdFl6OTRq?=
- =?utf-8?B?TDJtYmtma3pDb0ZiY1JkdUt1Um1NU0pFZGs4dkZhK0twbmxISWZpeGVZaVVs?=
- =?utf-8?B?dUFBLzJlSHQzQXN1K0VHODlWZ0U5b1hTRWVFdXprSDlOVkVaTHRPQzc3aURv?=
- =?utf-8?B?ZEl6NElwUTNmblFIemJzUFQvakk5R05XNTMxSFRhaFVZdE5OS3Z0VCt0SlNY?=
- =?utf-8?B?R1g4bTY4dk9GeGRnZ0FhbXkrYStnbWd3VzZQMjQ1S3ltc0ljaHltVVBmUWlm?=
- =?utf-8?B?ZGl6b1FmeEVqTGlSbXZMN3JaZjJaQUVjdUtPWkFPZnhEQU5LT0hjMnRLRVdy?=
- =?utf-8?B?aHB5cE1uL2hGL0N0YUI0UFNkc0hSM1lBVTlEMTVnNmgvSHNsQy9DVlZOOW1B?=
- =?utf-8?B?THhFMXY0YTliVzBENkVPaS9jL3FuSnlja01oLzlCaHJxU1N0RmdDUnkrbFM0?=
- =?utf-8?B?dUlHeHdnWHY2REZKdHJ3SE4xVTlXRDNvMm9zWVc5R1hQSFlXS0grZlpTdWpx?=
- =?utf-8?B?L25xK1IvVzFMUTIxT3RBTldqd0cxTzYwcG5KY3EwRDVTVWhId3EvVm5JT0Fp?=
- =?utf-8?B?RDJFUU5LQTdQbWVuYldPOTUwOFdzS1hEelVMWEJGb0RBY1JlZXhsNW5zQ2Zj?=
- =?utf-8?B?dEVES25HRTZ1dlhnYnk4bFR1QStoTWdiZk1uQ20wQXFFd2djNGdTVmlqdU5J?=
- =?utf-8?B?T2ROd2dMU1FwUUorSmpEblplZDVwLzUxZjc1cGFhaU5kdmc4TFU3TnZGZ2Z3?=
- =?utf-8?B?WWxENWJ1SitQOFBBZ1lMSEhuandCZDA1L1MxZEtvWkRnZVYvRXY3Qm43KzNo?=
- =?utf-8?B?V2NMWjFqcUhhaE42NDVYelZnOEo0eUpITUV4bXBZdTVnR0pyZ0ZuMWYyMEh1?=
- =?utf-8?B?TkNBZW5hb2V3MFBwUUNsT3l4MTFmTXRKclBqV0wzT0ozZ3pEMmJpT1B6VGg4?=
- =?utf-8?B?YTk5VlJsSGxKRzlYTWdqQjI4b2VIcHlId3F0UFNjMHdsVTZpcndQWFhwaUdT?=
- =?utf-8?B?L1J0d3lxL3dwK3JJRjQ5clMvYUpBeDNiSUk4WEU3VnpRWVF3U1gyMnRrM0JB?=
- =?utf-8?B?NFhLRUtoY01EOTFQN2xmdWJyZFBLeU1BcU9XU21yaGpMNkRzSEFrckZRSnVz?=
- =?utf-8?B?dkRHMlN1NjdBKzRRamhRR2RJZzgrRzNWenVlMzAvNHhGNlNIMi9yMC81RHcy?=
- =?utf-8?B?NHA3SFMzeXdsbFZNQis3TmRzZHl4Vm9lZzFPbEkzem83UkJJdjg4Zmg1NVV4?=
- =?utf-8?B?Ti9qbFYwTmtUS1FVRW51UmJXeGJFcE1wak9lS25DSHVPREsvUGltcTlRZnZt?=
- =?utf-8?B?VEUyUVJhTW1XUXI4TnpacXNMeU9QVXFBK3NpSEEySzdaUUw4Z1oyUkx2WWNp?=
- =?utf-8?B?WGJaMTcwalN1YnJpbW5qTTJVZWM5ZGtBYzc1U1dYM3djZTFmcmhDVmNNc0dr?=
- =?utf-8?B?QlVEZG9yc1FCa3BtY09wQT09?=
+	=?utf-8?B?S1JVR3pyOW5OVDNOYlRKN1BkSTVoWGk2MDBGOEJMdjVkNW9CVjh4ZzRvQStm?=
+ =?utf-8?B?TVJ1eHBVVDVLalpwSTRzV0x4ZFlpQ3lvWG40aDVXNnhWMTdKV2hsUlUrYTVa?=
+ =?utf-8?B?d2FrZGEvT2RPMmpUS2VQRjVYaXVuUGZ1Z1BxSU1TNWZNU3UvT2FrV2xQaS9T?=
+ =?utf-8?B?Szl6VjNiQ05kU3dwSDE1SDVWZjdJQ3RINmpFK0pTaHR4dEs3WGFNRlhhWVZj?=
+ =?utf-8?B?ejlPSHRNdm5abkJpVnl6VXlpQmZsWGdkUW5acElGYWMrZDJTeURkSVlXL2wr?=
+ =?utf-8?B?NDJVVTR6Qkx0dTRPVmZxNm9SejlPaC81QlVqSElhWW1Ga0duT0I1TjkrTkt4?=
+ =?utf-8?B?V2w3aG5nZzNMRElrR24xWEJZMWk1TTdwK3RTVVZXTGttNUdCeFNzcE1sSjJO?=
+ =?utf-8?B?cWJsS2tBK2tlNVU2cTBBMHBsMTllaU5SYUtnUGRYNE1VdXFHU0J5dEdvbUl1?=
+ =?utf-8?B?YTdpQktRT1Q3bXhvM0JHYjFRTzEwTXVmdmFJdGt4bGN6WUdvUnRacHZNb0VL?=
+ =?utf-8?B?Zjg0Y1FDMHE4LzlHb0pIUUVNMDdPOVJQTXhiU29wQmdEV3FCeVcyeFd6MFlx?=
+ =?utf-8?B?YXpMb2lVM3lFbUFHbVltTi8zb3pzc0dyZDVLMHNWajlQamVSUEVHU0pCd1B1?=
+ =?utf-8?B?cFJtTEdDRHB6TmJ4T1dTUlNoaXpLalNOSVZZUWRQbDcraTV3clp1ZlR4dmVF?=
+ =?utf-8?B?bEtUQ0xOWWZvVXgvUU1acElDUUpwbFV6WER0SzI4OUt3RjdHZ0grMlhlelV2?=
+ =?utf-8?B?UVhZbGVxcUwrN1RiYlhrUjE3bTR6VUJWR1c3M1o1RTFtQVgwRFpBUGpzRDRo?=
+ =?utf-8?B?blUxZmdiUCtmcnN2T2RYY1FCanRXKzdsVkN1ZThITFVtM1pVWWxiZE5ueXpP?=
+ =?utf-8?B?R1d4TzRtR3FFa0d4RjhOQlMyWjlBRnF5WVU2S3BkelpSNHo1UWlOc0lzbE5O?=
+ =?utf-8?B?aEQ2Q3A0Sk9rMHJENlNFb2dsQmwxWlBkakFIWTVYREp6dmdUTEo5UjFVaHJq?=
+ =?utf-8?B?c0hxb3RDamZCTkxPN293Ri9QMHhWUWVpZHppenlHanIzS2QvUjdzTkp2SVNQ?=
+ =?utf-8?B?UEQrZU0wdCttQ2ROWkpnSDNSQ0hMWkxIY0wzUTcvOVd5MERMemN6bjh3RWhO?=
+ =?utf-8?B?QlhSUzR2azNKUFE3QXN4YnFXcldYUzJPSW8wazVwT3oxT25TQ0Era01oSGJo?=
+ =?utf-8?B?ODVRVGsyQkpCR3lpZng5NlhadzdCc2NiQTNzTzE0cFNETVo0OTIwbDhPNVk4?=
+ =?utf-8?B?dzBHbk5oZGF3cFlFK3UvNEZ0S3B1cUxCZWhWT2hOV3IydDlQNjBzbFRrbC90?=
+ =?utf-8?B?MFA2d0lGcGQyUDhSNTdpdDBLcy9ZT3dQQlRHQ3B6b3pLSm5PdWtGb2VFR0VG?=
+ =?utf-8?B?cndSLzRBNCtTa0l5V1J2Y0s3bU9RdHdTQms3em9HcXViYkk1VWVTeUFJSnln?=
+ =?utf-8?B?M0xxRlUyVjRDbEtlZm9Genp2VGNqYlVhRWwvenlIdUYwVTBDdFBMVmZUNG83?=
+ =?utf-8?B?Y0tVdTg1RHpsTDdrVWtoaXREa1l1YjlsTzE4eDJpQ0FWZElBWGZPNE8zNHBw?=
+ =?utf-8?B?OWc5S2N6VStNUW92cXpIZ0JubkN2ZXRMR1RTZXRtWXRORDV5QXgva1lHL21J?=
+ =?utf-8?B?WGJmZWlwUEZwTlhCRGl1TGdyb2w3dUJiNzd1SkFBc2ZhcmRaN3VIeHByWHpv?=
+ =?utf-8?B?VE42Z2VIVTJvR3dQV0NEYk5lZlo5WU9GNE1ZclFlcy92KzE1cDBDOUVPeFN6?=
+ =?utf-8?B?TVAybFdzM1UveGNDamtMeUJIZEM5RUdJM2I5WlkwUTVyQXBuNzdyNlRRLzNF?=
+ =?utf-8?B?bHh3djBGRHpxUzhwNnFHZz09?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?RFJzNlBxK0RScXhORUU0aTdKbk9vQ1ROTnNtL044eE0yeGZWbnB2dGkrdk1I?=
- =?utf-8?B?QzR1cXExbEpFVlpoZHpqSERpeUlZcTZ3Uk0zTUhPOVNYMThKZ1V4eUtVN2Vy?=
- =?utf-8?B?QURPa1lGSUFqMjNoc0xFb3F5eGN4NFlJL250RURCaXl0b2lNWTB1YVRYRnNu?=
- =?utf-8?B?dGhsT0ZuTHhEY0QwQTBCaWF2V3AybkRRcnJ4dEZHRmQ0VlRkNno1amN6dnVX?=
- =?utf-8?B?ck1yUDczc1I3MDVRVnBmaWFjNlRxTnpKUjRUNk9NSGh4NlRuZ2gweUJjRito?=
- =?utf-8?B?WVhnU1hZcjRwcGlFTlE3SDdZNjhveENpeDE2N0ZreStCaWF6K2Q1N1VrS1R4?=
- =?utf-8?B?SVhyTVR5NzZsVUJKRzk0bmZUOHEzSzR5eThZK0c3OUFDbDQ1WnhpQkFBWnU5?=
- =?utf-8?B?VTErc0RKQkFVcVQvTlVhMlc4VnJEOFhtRks3WVJkSEFSNi9neFRIQ3Z2dEtq?=
- =?utf-8?B?c3hPZlVKWUlSZS9YMy9aUFdoS2dzcEN3TDJ4TC95N1gxZmEyUHBndmpDNWhW?=
- =?utf-8?B?cEpUSEQ0ZDlpVjhxV1FNMXRLc0EvZXlzNUJKaTExZUM1TzJ3WVlwcEVCL2k5?=
- =?utf-8?B?VUdFY0x4STBpNG12cXg2L3M3WEs1QTBKSTBjWlZyVVloemM0VE1lYUVZUVZj?=
- =?utf-8?B?d2Q1THMvRS9BZE9POUNUU2NVT0hMRGtzRzFLTE9oWnFmSTdHejlvSC9VUXVt?=
- =?utf-8?B?MTU5NGJqZDlTR0ZqeDBIcFFicWhmOHl5eG15M092TTllZlNtL2hlME1vMzhO?=
- =?utf-8?B?bnhpU2d5TXRHSmkvMk16c1VseHYwV240TmlvNHVZZ1FHY0VaSnBIeXZmRm5n?=
- =?utf-8?B?S3BLRmcyS0w3V3pYeStNQ1VDSVJ4dG5aY05PTi9LbHlRMjNWTUw2SlhYdi9z?=
- =?utf-8?B?ZWg4NUhoNm4wVkJHc21NWWNJdkpxZnl5d2Ztd1RReWZoZXRsdUVqMTVna2xP?=
- =?utf-8?B?K1NBRytHenlxTENpcEE1UDk4UW5GWk5rRjVDays5TnQ5Lzk3TFp0NFFqeWc3?=
- =?utf-8?B?K3lXeGVlOVh5OGtrYktML0tIUThjdUw4NmIxOW5zc09DSmIyRXFndDFzemhE?=
- =?utf-8?B?RitqUmNIVHVlOHhGbk5uZnBBc2pyMFcvWkQ3ZmhKSnYrZGhoN2YraUgvVGU5?=
- =?utf-8?B?QWdMSG9uZzRzUDI5ODNDVk5sdXdqeHBOZFY5RGpMMFF1VEJ5cWdWRzR5Y0V6?=
- =?utf-8?B?MkIxaUhQY0J5YVVKUjExNlBFanFYcnF5U01VazRXSVpGT3ZuU1R3SGc4NFZY?=
- =?utf-8?B?dTZHeHlXaXdXRzR6bjVqTi9kL2MxblNKaFJDV3k3Z1FwQ2FkU3JkZHgrVjdv?=
- =?utf-8?B?SE81OW4rT21BSHdvZk1hWnlmS1FpRCtGUWU2YXhEYVEreWZLM1R6VE9TellW?=
- =?utf-8?B?MThETE1rTXRKZlloZzVYOWlyQnRJa2ZZN3pKMTc1QU1lWHp6cVJSNzhBQnB4?=
- =?utf-8?B?S0cvUUl5Y1VvVVRrN2IxdkIwZUFKNHhzY0dLS1U3Y0w1Z1lVS0Z4SFlCSFV5?=
- =?utf-8?B?LzV6MVduV1BYVEFUK3phbFA4dnExZ1BEdVUrME5qbUZ0QXcvVlVoT2NnRVg2?=
- =?utf-8?B?TDlsaXM5Z3RHZTRMWG95T0xJV2ZmaUJmYUtmQWdkejVmMTg5d3BUNG90OFZR?=
- =?utf-8?B?aDl5S0laMEdjV1ZlTkZOc054bWtNU1pnM1FiVmhuSU84TEtGVElvcmFEUklo?=
- =?utf-8?B?WExVVDdvek0vc2g1a1FjN0hjUVFoU21jbVdSNXI1OFpjY29NWXdER3pmTE9s?=
- =?utf-8?B?eDlwMTl3YzFmcG9oRmZuMXFvZ1lvTEliWFA5aCtaa3JaV0FWM01FRE1ka0l6?=
- =?utf-8?B?S0s4TTRTa3VYOCszQ2FaOTBYR3dGMnVLT0VTZXhvZDRMNTVFZzNMMituOUhy?=
- =?utf-8?B?b2VQT0xVbkpmY09ac3FzMTB6cHFHTUdWRWs4a1RnajdGemJnMzkwOXR5WEo0?=
- =?utf-8?B?WFljeUNBdUtobGZPM0Y4K1VzY0tockt5dm5IY2dRaS8vTVFRbUh3dFh4VDdr?=
- =?utf-8?B?SVd1WXBvM0JCaUlLbXVkVk9VOWFVWW81NFFwdGpBMktmQWVBbzNZdFd1RHFB?=
- =?utf-8?B?WEZla2pYaHhwbUhlTW56c2hCNDVQV0ptT2FreTNjbG5tcS84ZHZRM3BSWXhY?=
- =?utf-8?Q?GtQCSCbW/vNz99e64U46s2kfn?=
+	=?utf-8?B?NVJBWkNTcWlESEJFMkwzdUpLTmd5VExKaVBpWWtxbVJZcjZOSVFqbnB5TXM0?=
+ =?utf-8?B?clg5WDRwTk5yaXp0QVA4My9FcEpiNXhRUDlBRm4wNlJ6ZllQQ01mb21mYnN3?=
+ =?utf-8?B?eWUrUWdLOFJlaHFCZGMwQWZrc2FxVC9YNmdmM21ySHQ2Q0FnOXFiT0VLYnk1?=
+ =?utf-8?B?NUVuVmRzNjRuT1ZDWDJ1STRzV1FzS3diL01HUW9uT3R2OGRubDZjUC81L1BV?=
+ =?utf-8?B?bTVBYzBjTDllQzJIdnJSNFdOQVpFcWExT00xZ0RXbFdXRmFaeDJCS2lPd1Uv?=
+ =?utf-8?B?YVpDU0lYV1JzZExOZ0xIYlp5ck1aODJSUDZLcE1tYUNKbHl0WHBoYWc1c0hM?=
+ =?utf-8?B?S255eHl0b1ZybWFIeHpBQWlObnVVQ1IrdGdlVEdiaFRJVllhM0tlZkNUUWVC?=
+ =?utf-8?B?SVd0T2EzUzJkNWVOKzNjSnNLZ215QitDTFpOM2hIMVRCZ200TnZEWlp4VmFD?=
+ =?utf-8?B?RU11UGttUWxWSlNhVzF0SXN5OXBpRFpGbzBCbUZhejVpejJsamRweWsvdUll?=
+ =?utf-8?B?Tm9UZ3c5bG5HOFZha3dmeFJDVlBvWXFjQkNqYUdYWVJhYVdxMnM1RkVVTzJo?=
+ =?utf-8?B?QjU5QmFNbjk4M1ROUXZHZ1p3VFZNQlkwSkZIN1JZcDl2QWFsaitNOW9uWVl0?=
+ =?utf-8?B?TjVzaEwwZkExaFM1dC9tN3cxRDdieThDM0lMYndRdm1QNUxEOWFuS2FjVmhU?=
+ =?utf-8?B?S25OSkl4bFJzL1YrMGdUbFZ5MWdEd0R3TFRhYjFFdjZhbTV2eGo5a2NTSTNj?=
+ =?utf-8?B?a2V1OEx5ZnlBUndkOEV5Nk42THJRb2FMM2RLR1h5NVZ1TUtqUlJkMUNDVUFB?=
+ =?utf-8?B?L3lJOHRYSUNIZHJVT1BmZzRaU2NlbW1ZSTE5VVFHRC9jTGxnd1RVNlI0TGFW?=
+ =?utf-8?B?RWpBcXMyYm8vcGwzQWJKYk90Z1ZIclQ3S1c4d2sxNFJGMG1zNmFBc2Uza3JO?=
+ =?utf-8?B?ZkZDd3hpaFp4a1VBbW1vZjduSGN4SU5Qc2tSUjh0Mk4wRGdPVnNVYUMxT2tp?=
+ =?utf-8?B?WllWREo5OE1aZk5zWFJNZE1ySzdhc3VmQlkyMlhaL1h5YkYxNFhhU2dZb0d5?=
+ =?utf-8?B?SHEvOUpDcVcwWmhqSlZ1YUFvTTUxYThLVUxTenRoYVBpbVU2N2FCTTVGYTEy?=
+ =?utf-8?B?SmJFWm16c3VldzIwZEpkQkZFeUhtUWZnQTJuMmc3N3VnYkhaRDRhcXVtbFBp?=
+ =?utf-8?B?bVRhS2ttdmtJdjkzSDRBYUFyU0ZWV0Nnc2huRXB3VitSWXRHdVAyWVdqNUFW?=
+ =?utf-8?B?Wk1hNFhySXg4UHhSWGllUGZ3UjVLMFg2YU9tZlRCR1ZaMGJ4ZktRZG1nakgw?=
+ =?utf-8?B?cEp4R3EwVzNwckp6bTdhRms3c25GdlJDcDg2SjlXZGVNcitLUFNhczg2YW0w?=
+ =?utf-8?B?bjVrcEl5YmdpdndzUFF2QkpJWWxkYzFYMHJHZjlTdWVvalZaVTExWlpMZERF?=
+ =?utf-8?B?c1RjL2VycjQyU0tFaG83UWN1Y2d2MXZpK2JuUm9NRnRlMFNFcWEzcFcwTVBC?=
+ =?utf-8?B?RGJ3dHdEdmg5eVZFZ2IxOVdYVWs2Y05XY0NyeU80blFpRjVCSGpaYWtvbVJm?=
+ =?utf-8?B?aHNGcjhTVTVjb21MZWZuejlKME1SZkd6UVJ2Qkk0L0tML1M1b1JKNTVLbHRu?=
+ =?utf-8?B?SGd0UTIvVHRJSDZQVEFvcGR5dEFCcVVhclNJZXdTYUJROThzOFRzSXFHU2dH?=
+ =?utf-8?B?YWJFdWNNUXhZN1VEQmZsV3FmL2g1UUlGcm85aTJ4SVluMmxKM1FxaWNndEp2?=
+ =?utf-8?B?M1MxaVo2OXF3Q045T3pyd2lDUFgrcW5Cc2tBY3IvMUpzUWFTUVJIaFN5Q1J0?=
+ =?utf-8?B?dFpnSk1XT0xuaTdoOGxjSEJDZ3dQN3hDWVNrb1FINkp0S2N6czcxUkFnZTkx?=
+ =?utf-8?B?MGxGL0FYQ0Zic3ovSWFvSXV2ZmlSbUVFY2hRQXp0elh4S3pvb2FEeHZ6aW93?=
+ =?utf-8?B?OXRGRjhOaE1ON01FMEJPemhlZGg4MzJvaVJXMml4bzRhSXVHQTg5TTRhYXJS?=
+ =?utf-8?B?Ym1QTHZjbFNScDBSVWVsd1g1Vk1DeXBwcVh4N0VsK0hpVFFRNDdwQnV2dDY1?=
+ =?utf-8?B?aUE4RzUrczR5UDYrQWRxWk1PV1hWbkYwUHZ5ZVFVclBHNml1Ny9FOFBEeFBM?=
+ =?utf-8?Q?2B6uqxhEaXqW+UCqdJQvLFTaU?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	HYb+gBq0kxJsmw1+By0XrTSBofHqJ/MHFlVlQXqZ4/XKO3eqJqfOct3e090dtrN+oCNesbeKLc6Dx9jX6Rf0GSZBjxPi8d51T8x5OTtt39nTYBWfP3/nWvgCBa7QioBa+9zd4TunT+eHItgVfmVFx92CW+ks95DAsTKaetWp6tD5YHLWosS4mxSNZY4fSsQztjToBCQrQ1+/AR4hL8J7w/cyWKcEPiCAmXeEZ5wjDCG1WYqvZgtDZqLIUpyoD0Ex5ycOP7yykvjAxPuW3I6eO8Hp+KMFfIz9Chi5qPDS0iZ1pAgXaLMm8QyncdkjmapIgclgqkmrbR8xKl7dVUkmoJ7E8ngdioh56TXWh1kj0FpI/XgbRoFCf5JlkZ5G+Wa7EEGO2KCD9QLyAQiSG+b9d7t+Dgoritti9FzWH/BqaFNf7NCVsRplzaUlQr8B6J+Yh1R2V4dy94kON4ujeRDlTXDiLyzVKVLe5WjAUroSqVFToS2l6heOwf6JUBgfTsXMUato1KdZ2H1PxdR7tdP3iJmMNyOPfXvUXrdNoaU5lCjn38x1Op+srC6vN07xofRIun2awQjcNzCcxMvIJ1QGGAckj0Z0hRYVZ3JI7ZC0l9c=
+	9V6e9pfd0q+E/bnQ9MkOcFOpusurevtVMfqg32AUuBuDr96VQwaA8DCCjVIZc8GwaCmZTbHaH1lGKTHLJd39tVo2eCC84zv2z0fKIX9JVdly23GP4kOP2jvSG08R8C1+qqbtdDFbll6eDCg6gqhxGfakcdhbNsb2tG0IHkJ9jN/O0wUzgkRmcrnIExW4q/i4mYWY0V/uEp7cPaxRMB8oxU/fCCgrVTDBuq6MCDbmUYdgYbRtB5i5PLBO8yHDOj+JYIdNdI3hD7vZxyeNRaaMpMvNvuZLfagthFqw3pVCkAoh65YQMrOF3Bp4lHrqor1oF1Xbudxk8Ck/UIN3TqXkoXKez3VL+IcUtfGRD42JHG6HkiFM9htY7+876Vm/5D3nBYFDGKjnrockrMN6yknvpjP+16Kb0t1wJd7KZ8pcUZw60JXjh6ywo8BSXj5caJP5htoa1my7BG3FIV7Ibgd4mmkZlQjq1Smo7Q5UT2WhEBaolwJCvHoHMZGqFK4muKEqHtJ0SMrXrpbW/cIfWsAvDezKd9kmtYe7MQHkjP66D6EdfXMppsnJIyOXJBtfGmWhnBX1PFd2W8yNAWTNSwaRK34zhwmx6NyYJd6h58NDxMQ=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e422b774-42a2-4ee3-6fd9-08dca28ddd06
+X-MS-Exchange-CrossTenant-Network-Message-Id: e00bb96b-9219-4a75-b16c-08dca28df630
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2024 16:15:36.4731
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2024 16:16:18.7131
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wOoYeOB5UwRywIjaX3LJD4vELMcgJY4Sk1Knen3re1GXj+cW/SPjDdbN6ma6ummz4SFS7bS7gwAb7lya/B4+ww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5540
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6p4Fc6GX/0dN5w69H5MydKpRaqMdYSIwZsnKQC0LMVeuBcqQ9COb3DvBWVXcrNnQKpk1mDuYz7Ie5EszYN/hbw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB5704
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-07-12_12,2024-07-11_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 spamscore=0
- mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0 adultscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
  definitions=main-2407120111
-X-Proofpoint-GUID: XGbm_mzXu5wMVyak17NdS0qgA6rbCIGD
-X-Proofpoint-ORIG-GUID: XGbm_mzXu5wMVyak17NdS0qgA6rbCIGD
+X-Proofpoint-ORIG-GUID: eHfikF15mJCnOIS9qxLrRERsCk5RG0xC
+X-Proofpoint-GUID: eHfikF15mJCnOIS9qxLrRERsCk5RG0xC
 
-On 10/07/2024 01:51, Boris Burkov wrote:
-> Squotas are likely to leave qgroups that outlive deleted subvolids.
-> Before the kernel patch
-> 2b8aa78cf127 ("btrfs: qgroup: fix qgroup id collision across mounts")
-> this would lead to a repeated subvolid which would collide on an
-> existing qgroup id and error out with EEXIST. In snapshot creation, this
-> would lead to a read only fs.
+On 01/07/2024 16:01, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > 
-> Add a test which exercises the path that could create duplicate
-> subvolids but with squotas enabled, which should avoid the trap.
+> Starting with kernel patch "btrfs: remove raid-stripe-tree
+> encoding field from stripe_extent" and btrfs-progs commit
+> 7c549b5f7cc0 ("btrfs-progs: remove raid stripe encoding"), the on-disk
+> format of the raid stripe tree got changed.
 > 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-
+> As the feature is still experimental and not to be used in production, it
+> is OK to do a on-disk format change.
+> 
+> Update the golden output of the RAID stripe tree test cases after the
+> on-disk format and print format changes.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+> 
+> Changes to v1:
+> - Mention the kernel and btrfs-progs changes mandating this change.
+> 
+> 
 
 Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
@@ -222,71 +233,275 @@ Applied.
 
 Thanks, Anand
 
-> ---
->   tests/btrfs/331     | 45 +++++++++++++++++++++++++++++++++++++++++++++
->   tests/btrfs/331.out |  2 ++
->   2 files changed, 47 insertions(+)
->   create mode 100755 tests/btrfs/331
->   create mode 100644 tests/btrfs/331.out
+
+>   tests/btrfs/304.out |  9 +++------
+>   tests/btrfs/305.out | 24 ++++++++----------------
+>   tests/btrfs/306.out | 18 ++++++------------
+>   tests/btrfs/307.out | 15 +++++----------
+>   tests/btrfs/308.out | 39 +++++++++++++--------------------------
+>   5 files changed, 35 insertions(+), 70 deletions(-)
 > 
-> diff --git a/tests/btrfs/331 b/tests/btrfs/331
-> new file mode 100755
-> index 000000000..8a99d5527
-> --- /dev/null
-> +++ b/tests/btrfs/331
-> @@ -0,0 +1,45 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 331
-> +#
-> +# Test that btrfs does not recycle subvolume ids across remounts in a way that
-> +# breaks squotas.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick qgroup snapshot
-> +
-> +_fixed_by_kernel_commit 2b8aa78cf127 \
-> +	"btrfs: qgroup: fix qgroup id collision across mounts"
-> +
-> +. ./common/btrfs
-> +_supported_fs btrfs
-> +_require_scratch_enable_simple_quota
-> +
-> +_scratch_mkfs >> $seqres.full
-> +_scratch_mount
-> +$BTRFS_UTIL_PROG quota enable --simple $SCRATCH_MNT
-> +
-> +# Create a gap in the subvolume IDs
-> +sv=$SCRATCH_MNT/sv
-> +for i in $(seq 100); do
-> +	$BTRFS_UTIL_PROG subvolume create $sv.$i >> $seqres.full
-> +done
-> +for i in $(seq 50 100); do
-> +	$BTRFS_UTIL_PROG subvolume delete $sv.$i >> $seqres.full
-> +done
-> +
-> +# Cycle mount triggers reading the tree_root's free objectid.
-> +_scratch_cycle_mount
-> +
-> +# Create snapshots that could go into the used subvolid space.
-> +$BTRFS_UTIL_PROG subvolume create $sv.BOOM >> $seqres.full
-> +for i in $(seq 10); do
-> +	$BTRFS_UTIL_PROG subvolume snapshot $sv.BOOM $sv.BOOM.$i >> $seqres.full
-> +done
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/331.out b/tests/btrfs/331.out
-> new file mode 100644
-> index 000000000..0097e61d8
-> --- /dev/null
-> +++ b/tests/btrfs/331.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 331
-> +Silence is golden
+> diff --git a/tests/btrfs/304.out b/tests/btrfs/304.out
+> index 39f56f32274d..97ec27455b01 100644
+> --- a/tests/btrfs/304.out
+> +++ b/tests/btrfs/304.out
+> @@ -12,8 +12,7 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+>   bytes used XXXXXX
+> @@ -30,8 +29,7 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> @@ -49,8 +47,7 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 0 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> diff --git a/tests/btrfs/305.out b/tests/btrfs/305.out
+> index 7090626c3036..02642c904b1e 100644
+> --- a/tests/btrfs/305.out
+> +++ b/tests/btrfs/305.out
+> @@ -14,14 +14,11 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+> -	item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+>   bytes used XXXXXX
+> @@ -40,12 +37,10 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 1 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> @@ -65,16 +60,13 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 0 key (XXXXXX RAID_STRIPE 61440) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 2 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 3 physical XXXXXXXXX
+>   			stripe 1 devid 4 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> diff --git a/tests/btrfs/306.out b/tests/btrfs/306.out
+> index 25065674c77b..954567db7623 100644
+> --- a/tests/btrfs/306.out
+> +++ b/tests/btrfs/306.out
+> @@ -14,11 +14,9 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+>   bytes used XXXXXX
+> @@ -37,12 +35,10 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> @@ -62,12 +58,10 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 1 key (XXXXXX RAID_STRIPE 4096) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 3 physical XXXXXXXXX
+>   			stripe 1 devid 4 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> diff --git a/tests/btrfs/307.out b/tests/btrfs/307.out
+> index 2815d17d7f03..e2f1d3d84a68 100644
+> --- a/tests/btrfs/307.out
+> +++ b/tests/btrfs/307.out
+> @@ -12,11 +12,9 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+>   bytes used XXXXXX
+> @@ -33,8 +31,7 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 0 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> @@ -52,12 +49,10 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 0 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 1 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 3 physical XXXXXXXXX
+>   			stripe 1 devid 4 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> diff --git a/tests/btrfs/308.out b/tests/btrfs/308.out
+> index 23b31dd32959..75e010d54252 100644
+> --- a/tests/btrfs/308.out
+> +++ b/tests/btrfs/308.out
+> @@ -16,20 +16,15 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+> -	item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 2 physical XXXXXXXXX
+> -	item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+> -	item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 24
+> -			encoding: RAID0
+> +	item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 16
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+>   bytes used XXXXXX
+> @@ -50,16 +45,13 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 1 key (XXXXXX RAID_STRIPE 131072) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 2 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
+> -			encoding: RAID1
+> +	item 2 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
+> @@ -81,24 +73,19 @@ checksum stored <CHECKSUM>
+>   checksum calced <CHECKSUM>
+>   fs uuid <UUID>
+>   chunk uuid <UUID>
+> -	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 0 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 1 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 2 key (XXXXXX RAID_STRIPE 65536) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 3 physical XXXXXXXXX
+>   			stripe 1 devid 4 physical XXXXXXXXX
+> -	item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 3 key (XXXXXX RAID_STRIPE 32768) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+> -	item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 40
+> -			encoding: RAID10
+> +	item 4 key (XXXXXX RAID_STRIPE 8192) itemoff XXXXX itemsize 32
+>   			stripe 0 devid 1 physical XXXXXXXXX
+>   			stripe 1 devid 2 physical XXXXXXXXX
+>   total bytes XXXXXXXX
 
 
