@@ -1,201 +1,135 @@
-Return-Path: <linux-btrfs+bounces-6434-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6435-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E328F9300F3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 21:25:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E31A930134
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 22:12:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 132881C216A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 19:25:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 226711F222CD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2024 20:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26602E822;
-	Fri, 12 Jul 2024 19:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D840F3C488;
+	Fri, 12 Jul 2024 20:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PuIzF0vo"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="MFJCdQzg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PcPUg8Ta"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041E129402;
-	Fri, 12 Jul 2024 19:25:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8766CBE46
+	for <linux-btrfs@vger.kernel.org>; Fri, 12 Jul 2024 20:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720812312; cv=none; b=SM+bRvWO+3EDxngosUrHBGheCWsTabAB6rgQ8i3hYhwY0TB/reBD8N7ecXlxj5L1qG9GEpGpezUF+y3Ud3a7UhGcX0EDrin1llzuzcpYs0pHhjj7Ns6Pqc/IDg2AxO4QbbBg0oowY2S33JTGDQxZQvtch8uATyQ6WnGiu/Q1ETs=
+	t=1720815148; cv=none; b=OqRzOtctDyOSh9tKhKmxbO9U099wFilOhnlLzi1zobidJHJ7zqAEc+40WQ/fjm/yR5Y/QF0oL8dZ/kod6a80j55Nz+jUl4BQ/vVJcnuuyryLQBfXbeyynluxdXND0oX3uv+vL3H0yYOdp81j5QrkM9MgKGM77kiIcl41kZV2D1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720812312; c=relaxed/simple;
-	bh=bE7cJjlqpgOK2rfH9GtYvyVKSwBO+mD+zT2Iii6Mh+A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RwyOELr2vsVui58qbjh3m8amM0MIKoKhvyqDV05TNiP3aN8PzrNC/P7f4ZKeRgzoatyEVjaNhNZ7MqANCDgIR+BnIkPq4efE9+TUzntl/vqzvpYGu0au/rYyROd7HBMB47fy9QmQmtPh4Ibv65kmuZi8i120gu2MgkUN71YGBnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PuIzF0vo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CFFC32782;
-	Fri, 12 Jul 2024 19:25:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720812311;
-	bh=bE7cJjlqpgOK2rfH9GtYvyVKSwBO+mD+zT2Iii6Mh+A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PuIzF0vohRi/DQmjAfSkzvM9FOEV5vXVFDUx0g99gTXnCgOs+2Uv1WJT2xKrTZ4HY
-	 AiTVjvYW/k8rFIM6FNfP3ThxksllbXjaXa8cM9DtXYceO4sXfXqzTKkSScCqUFd4vb
-	 DEnkPXXT3M/XpjDLuFFRMEkpDgvAOzalawxn4FLMiL7kd6atqVAjEfilVleqndkNo/
-	 aZn8t5CY0HOhQ/pqeKBmINjotGfzj9kFICyatrHuwRTrICvuUDnIqsdtTsswLGwMg+
-	 RUh7D0t8/dRQzGyfJBAO/0owjF02NuksmX416YBHtv4w699eBk4JnLxR2O8zZKYAB0
-	 AInES6359bGeQ==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52ea2b6a9f5so2533817e87.0;
-        Fri, 12 Jul 2024 12:25:11 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXRjE3DzkCwwwvzt0Jo5/L3m0MUHA4l/3uJPdCk51nHnahrEHRE4ILG6k/KkEYyh5JmS1ERs6bLrj+VJohWTd3ueq72lpm73A==
-X-Gm-Message-State: AOJu0Yx/jwwa1JS22R3wOKEkyLuPC6Si4DjPuxMlxOyVvY3cNpoEePhG
-	MTh50v+x/PN7nKx1JYeNTxk6CaDCxGHI9G9Ex+3r1KZIRELjYvGQ+ECtmj0ZTouQ8FOkwVmLkQl
-	+8wgqqy+dl4wC9OnJWoAAq26xPFQ=
-X-Google-Smtp-Source: AGHT+IHCxKHkXYH0+S1MPD0UvkDQkKj2ycegdHC5H0cniYT/8DrCq+EU0x/5Axj2s1EDmPbw1GUdcvUEuBWF49fDejo=
-X-Received: by 2002:a05:6512:b1d:b0:52c:952a:67da with SMTP id
- 2adb3069b0e04-52eb99d4aeemr9595464e87.55.1720812309813; Fri, 12 Jul 2024
- 12:25:09 -0700 (PDT)
+	s=arc-20240116; t=1720815148; c=relaxed/simple;
+	bh=HZQFA8J1PorgoZjkiS6M63H333syDx7IaUDSHZQa43k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iug1dcOY9KSkFLWpidxb8slEuSuIjdVt1gbXvbsMGPXcweA2kxn5813s7tbNXwzVsIwituN5Xh0CGW/LuqC1pdqnY976SWMLdBaGb9Jv4J89du4YESgAOjtODwGVnYAHC0iq8/P5olTAakcHNC9srs8EHgbFkpbTdjaz5/Ji0qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=MFJCdQzg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PcPUg8Ta; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 72BA91140161;
+	Fri, 12 Jul 2024 16:12:25 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 12 Jul 2024 16:12:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1720815145; x=1720901545; bh=Y3YlymAiDA
+	wfElzLX1YLhFEIOIsBxY/LUh5niB7T/00=; b=MFJCdQzgZghQCPuj8Wh6anNgE7
+	8inZFAIy7uchg9LzG0TJKhmGqYrjNerOe/K0W0CFAm+XJ3VUecymvYVCZd8VVTUa
+	56O6VWx2FuuboI0gWmGs0Lv/MpGWuns3BUaTV7F8G7fw1jiNOCfRExu3OKQTqbH4
+	j7QOcAC+n4slMYuxm+pRy8T8rfiMXZxgsK3BhX6EFFClurVCKPKsGptWJSwh23xa
+	FVKpSXjzgf3hx59r/y4w/KPEUwOx3A1GM4JHy/VN8UHIF9zqnKiH6P1n2HJHX/X6
+	EVBYoi8xU+52NfcqdGPr+Jp8Drvpas77RGQqVSfpSFT/wy6C8rdBhk8fB7qw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1720815145; x=1720901545; bh=Y3YlymAiDAwfElzLX1YLhFEIOIsB
+	xY/LUh5niB7T/00=; b=PcPUg8TaKf7VNsx8npyB6lN6tVIBr06IuvPpsfS9XUgV
+	NV49nU8YHMe12VHtOUzlxXicaFRdlFMoKQlrWtybFzPicmM3aNU8swtFcmARjWl7
+	GzYujmfCnKr8B1G9bBuxhu6avJnLgERHddQUZxXt2NUar/C8BFc83AIhRCf/wGMW
+	BUxt07RmK9dUnAu8cTuOjJ3rqSlug34poimv9D1pBD2XwFA3xgddJ22F445rTuUz
+	UxrxgabDZIQh/MupA+3cf47/UJ5r6meINNiwcYVGz8DrFRuATaUEma61/3fklWsy
+	tOOapbZdhTvFN4xaKiFvp+AWXiOjtUa2SVBFvg4/ng==
+X-ME-Sender: <xms:KI6RZsNIDcyCxqTz3S-H4rg90mZhxa3esAnTUBz3zfC0PrWFQtadZQ>
+    <xme:KI6RZi9JwUas1SfGQAPHBda92MxdXWXS3bykVKZG5V0ACsD_nDe7R52nf50d_cZ-x
+    -wXEvui3C1trY89ssk>
+X-ME-Received: <xmr:KI6RZjS7wPiarOIXFGMHfmW-3pftr75Z_3XvV0c84bXwUK9Stm_38ks9BdVJPYjsMuUcODKKC1_S8lilJ76YNciBxsM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrfeeigddugedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
+    gsuhhrrdhioh
+X-ME-Proxy: <xmx:KI6RZkvZEwM68rY4QaZUT0EevHc4LavR8ZEYwqS5E3yCpIb1GmdFCg>
+    <xmx:KI6RZkerFLyKunn0WVyLFyxr7mNQIO4gihXyV01WdTwooOWFhjkVuA>
+    <xmx:KI6RZo1TCZ8zGsXVHdKJP5O6rCEG9IWPdo0PGb_t0uVnMhhisvCSOA>
+    <xmx:KI6RZo_SotaCqxSCzY_3ifqEIu5dt6gAWTJ59WT3cJLjXGomEBuuWg>
+    <xmx:KY6RZlo6GaxSHIy6euYbZq7TmJSMjmXm_w3fI9Ro06x1F-j1dbpKRtWT>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 12 Jul 2024 16:12:23 -0400 (EDT)
+Date: Fri, 12 Jul 2024 13:11:26 -0700
+From: Boris Burkov <boris@bur.io>
+To: Naohiro Aota <naohiro.aota@wdc.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: do not subtract delalloc from avail bytes
+Message-ID: <20240712201126.GA3474272@zen.localdomain>
+References: <5075b1ac071c767c182ddc87b228df6147ef7bc4.1720710227.git.naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <797a1ffab1bb76e65d278d9996abc72f423042ed.1720810205.git.boris@bur.io>
-In-Reply-To: <797a1ffab1bb76e65d278d9996abc72f423042ed.1720810205.git.boris@bur.io>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 12 Jul 2024 20:24:32 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5HheGCqn+gmCjcVqoLbag4pRA0f6a7+t80y+d2FOTMxw@mail.gmail.com>
-Message-ID: <CAL3q7H5HheGCqn+gmCjcVqoLbag4pRA0f6a7+t80y+d2FOTMxw@mail.gmail.com>
-Subject: Re: [PATCH v4] btrfs: add test for btrfstune squota enable/disable
-To: Boris Burkov <boris@bur.io>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5075b1ac071c767c182ddc87b228df6147ef7bc4.1720710227.git.naohiro.aota@wdc.com>
 
-On Fri, Jul 12, 2024 at 7:53=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> btrfstune supports enabling simple quotas on a fleshed out filesystem
-> (without adding owner refs) and clearing squotas entirely from a
-> filesystem that ran under squotas (clearing the incompat bit)
->
-> Test that these operations work on a relatively complicated filesystem
-> populated by fsstress while preserving fssum.
->
-> Signed-off-by: Boris Burkov <boris@bur.io>
+On Fri, Jul 12, 2024 at 12:05:32AM +0900, Naohiro Aota wrote:
+> The block group's avail bytes printed when dumping a space info subtract
+> the delalloc_bytes. However, as shown in btrfs_add_reserved_bytes() and
+> btrfs_free_reserved_bytes(), it is added or subtracted along with
+> "reserved" for the delalloc case, which means the "delalloc_bytes" is a
+> part of the "reserved" bytes. So, excluding it to calculate the avail space
+> counts delalloc_bytes twice, which can lead to an invalid result.
+> 
+> Fixes: e50b122b832b ("btrfs: print available space for a block group when dumping a space info")
+> CC: stable@vger.kernel.org # 6.6+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks Boris.
+Nice catch.
+Reviewed-by: Boris Burkov <boris@bur.io>
 
 > ---
-> Changelog:
-> v4:
-> - redirected stdout of both btrfstune commands to .full file. Re-tested
->   on 1. correct progs (passes) and 2a. buggy progs with a leaked eb and
->   2b. buggy progs that hits a uptodatebuffer error while committing the
->   txn. Everything behaved as expected.
-> v3:
-> - switched btrfstune commands from '|| _fail' to filtered golden output.
->   Got rid of redirecting stderr to .full because some aberrant output
->   (like eb leaks) shows up in stderr and I think it is helpful to treat
->   those as errors.
-> v2:
-> - added needed requires invocations
-> - made fsck and btrfstune command failures matter
->
->
->  tests/btrfs/332     | 67 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/332.out |  2 ++
->  2 files changed, 69 insertions(+)
->  create mode 100755 tests/btrfs/332
->  create mode 100644 tests/btrfs/332.out
->
-> diff --git a/tests/btrfs/332 b/tests/btrfs/332
-> new file mode 100755
-> index 000000000..7f2c2ff9c
-> --- /dev/null
-> +++ b/tests/btrfs/332
-> @@ -0,0 +1,67 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 Meta Platforms, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test No. btrfs/332
-> +#
-> +# Test tune enabling and removing squotas on a live filesystem
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick qgroup
-> +
-> +# Import common functions.
-> +. ./common/filter.btrfs
-> +
-> +# real QA test starts here
-> +_supported_fs btrfs
-> +_require_scratch_enable_simple_quota
-> +_require_no_compress
-> +_require_command "$BTRFS_TUNE_PROG" btrfstune
-> +_require_fssum
-> +_require_btrfs_dump_super
-> +_require_btrfs_command inspect-internal dump-tree
-> +$BTRFS_TUNE_PROG --help 2>&1 | grep -wq -- '--enable-simple-quota' || \
-> +       _notrun "$BTRFS_TUNE_PROG too old (must support --enable-simple-q=
-uota)"
-> +$BTRFS_TUNE_PROG --help 2>&1 | grep -wq -- '--remove-simple-quota' || \
-> +       _notrun "$BTRFS_TUNE_PROG too old (must support --remove-simple-q=
-uota)"
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> +_scratch_mount
-> +
-> +# do some stuff
-> +d1=3D$SCRATCH_MNT/d1
-> +d2=3D$SCRATCH_MNT/d2
-> +mkdir $d1
-> +mkdir $d2
-> +run_check $FSSTRESS_PROG -d $d1 -w -n 2000 $FSSTRESS_AVOID
-> +fssum_pre=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> +
-> +# enable squotas
-> +_scratch_unmount
-> +$BTRFS_TUNE_PROG --enable-simple-quota $SCRATCH_DEV >> $seqres.full
-> +_check_btrfs_filesystem $SCRATCH_DEV
-> +_scratch_mount
-> +fssum_post=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> +[ "$fssum_pre" =3D=3D "$fssum_post" ] \
-> +       || echo "fssum $fssum_pre does not match $fssum_post after enabli=
-ng squota"
-> +
-> +# do some more stuff
-> +run_check $FSSTRESS_PROG -d $d2 -w -n 2000 $FSSTRESS_AVOID
-> +fssum_pre=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> +_scratch_unmount
-> +_check_btrfs_filesystem $SCRATCH_DEV
-> +
-> +$BTRFS_TUNE_PROG --remove-simple-quota $SCRATCH_DEV >> $seqres.full
-> +_check_btrfs_filesystem $SCRATCH_DEV
-> +$BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep 'SIMPLE=
-_QUOTA'
-> +$BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV  | grep -e 'QUO=
-TA' -e 'QGROUP'
-> +
-> +_scratch_mount
-> +fssum_post=3D$($FSSUM_PROG -A $SCRATCH_MNT)
-> +_scratch_unmount
-> +[ "$fssum_pre" =3D=3D "$fssum_post" ] \
-> +       || echo "fssum $fssum_pre does not match $fssum_post after disabl=
-ing squota"
-> +
-> +echo Silence is golden
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/332.out b/tests/btrfs/332.out
-> new file mode 100644
-> index 000000000..adb316136
-> --- /dev/null
-> +++ b/tests/btrfs/332.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 332
-> +Silence is golden
-> --
+>  fs/btrfs/space-info.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 9ac94d3119e8..c1d9d3664400 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -583,8 +583,7 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+>  
+>  		spin_lock(&cache->lock);
+>  		avail = cache->length - cache->used - cache->pinned -
+> -			cache->reserved - cache->delalloc_bytes -
+> -			cache->bytes_super - cache->zone_unusable;
+> +			cache->reserved - cache->bytes_super - cache->zone_unusable;
+>  		btrfs_info(fs_info,
+>  "block group %llu has %llu bytes, %llu used %llu pinned %llu reserved %llu delalloc %llu super %llu zone_unusable (%llu bytes available) %s",
+>  			   cache->start, cache->length, cache->used, cache->pinned,
+> -- 
 > 2.45.2
->
->
+> 
 
