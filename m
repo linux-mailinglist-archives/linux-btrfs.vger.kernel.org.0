@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-6438-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6439-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 204CE9304A7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jul 2024 11:08:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D11BB9304EF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jul 2024 12:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A04B1C21558
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jul 2024 09:08:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43015B211B5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jul 2024 10:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BBB49628;
-	Sat, 13 Jul 2024 09:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8485FDA5;
+	Sat, 13 Jul 2024 10:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="N5xLU6+v";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="N5xLU6+v"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TeVCbyLE";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TeVCbyLE"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CB45339E
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 09:07:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9720D3B782
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 10:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720861681; cv=none; b=qMcxIow8TZlZUaVY/TiI8HZD6fQXIrPAArb825Mff5btjRt5+BX6K56nxzxY6OM7gm6ZRzhJebrJrhG7gmLWEhXw54I+Komq9V5oU/WQ0eiImO7l760x9HCuiXzkdrVPW4u8rdvxuHoPEM0YD+ojDTlf4x6DJWJNLEBKCdrIJ3A=
+	t=1720865721; cv=none; b=KU636OR0KRMozamxFhoznbD5Br/kIhFmmiwGteAje5jBhW1dorpBMJBsgzP+ui2YAQIGiF+mbPr1USClorVy8m/nOTSFv44SgGkE1MmM4WGnKTyfwtZ+0a6QoSPBK8UPVI11F2JvikKFh0JSzipbGcZKBt6QR55/JpwNSN0IEo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720861681; c=relaxed/simple;
-	bh=Sth9zZ8GZmJ1O4DdALBY0c+ZnOaa2T9MAORJi3NJMqI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=NsWeBqTUwYvp0fl47uL7DvPTvLyZUg6tUpRLGveOPZtTIOJpxqXcQebjGOWladHuUUp4XbDyuaT66TkrNOQ/c8ZFv858vMLx8CP7NVJDY8/qnF2JO4XiHWlwHPwdH/ALewfa2+tG0H4jSv3Dap6kGXrDZOJix3ni12XG7JQHnLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=N5xLU6+v; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=N5xLU6+v; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1720865721; c=relaxed/simple;
+	bh=lTJWqhI7jNHxq6kYkMa5uXCxPFtl3anld/PfrUCUGkk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=d0MVzhRpXAs6rHSntvuu1qFje8VchI6+Fkuwmzb9FTYVG54xdg44dlkfJSNRGSnTkKt/+GhcTJmmy9R+8zdCWtQiT7NAYTPgrs9kWC+gPN9+hSctbg1LFiXuMo6/hsHbXZeOk1QTinJEVfYIRAQff7bdPpt/5yusIXhJ6SUemy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TeVCbyLE; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TeVCbyLE; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9C04721AF2
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 09:07:56 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A2A9121AFE
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 10:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1720861676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1720865717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ThHry23pPjk5yHTUi505ngwfOTmVvqUFhNOIXPkTsko=;
-	b=N5xLU6+vWA11S6UH5oMTVoLMTNq5K/n+UPK58s4cSce/hcKwEQACrZPMVs3I7wP89Q0Wk1
-	fv6rcmp6fhQFAUv/zgQw5yhSzCik5zLDgRTGKiP+GWcXmScdAlOGD4EbEpaFaHvf1p92gV
-	geTnrJtluTWeCpcZVSb7p3sIY8xgLag=
+	bh=96ms7d2C0izBdkhmuWRueLF6+rm+FQkcWsZ1QKUUz3U=;
+	b=TeVCbyLEcRn5MwKrlM57N+qXQa0qksEJAyUpiqJyCJ8mKWkfsy+tYrz308QVV9tceJWOmv
+	8AZcjSWvJOFNzSO08zULcCG1ryZgWQNIDumkgk05YHNPbUHEDJc3d6/23NHQyLApsCrDoY
+	4P5ZMhiZq0XUxBBe0Q5P4M7UZ8G3IsA=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=N5xLU6+v
+	dkim=pass header.d=suse.com header.s=susede1 header.b=TeVCbyLE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1720861676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1720865717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ThHry23pPjk5yHTUi505ngwfOTmVvqUFhNOIXPkTsko=;
-	b=N5xLU6+vWA11S6UH5oMTVoLMTNq5K/n+UPK58s4cSce/hcKwEQACrZPMVs3I7wP89Q0Wk1
-	fv6rcmp6fhQFAUv/zgQw5yhSzCik5zLDgRTGKiP+GWcXmScdAlOGD4EbEpaFaHvf1p92gV
-	geTnrJtluTWeCpcZVSb7p3sIY8xgLag=
+	bh=96ms7d2C0izBdkhmuWRueLF6+rm+FQkcWsZ1QKUUz3U=;
+	b=TeVCbyLEcRn5MwKrlM57N+qXQa0qksEJAyUpiqJyCJ8mKWkfsy+tYrz308QVV9tceJWOmv
+	8AZcjSWvJOFNzSO08zULcCG1ryZgWQNIDumkgk05YHNPbUHEDJc3d6/23NHQyLApsCrDoY
+	4P5ZMhiZq0XUxBBe0Q5P4M7UZ8G3IsA=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEF301340C
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 09:07:55 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FDF6134AB
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 10:15:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id REcZHutDkmYgAwAAD6G6ig
+	id IVkuFrRTkmbXEQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 09:07:55 +0000
+	for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2024 10:15:16 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: change BTRFS_MOUNT_* flags to 64bits
-Date: Sat, 13 Jul 2024 18:37:48 +0930
-Message-ID: <2fb99f3c249d740925b833dd4b73191abefc9544.1720861661.git.wqu@suse.com>
+Subject: [PATCH v2] btrfs: change BTRFS_MOUNT_* flags to 64bits
+Date: Sat, 13 Jul 2024 19:45:08 +0930
+Message-ID: <0955d2c5675a7fe3146292aaa766755f22bcd94b.1720865683.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -77,7 +77,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9C04721AF2
+X-Rspamd-Queue-Id: A2A9121AFE
 X-Spam-Flag: NO
 X-Spam-Score: 0.99
 X-Rspamd-Action: no action
@@ -114,20 +114,38 @@ bits.
 This is going to cause problems as for quite some 32 bit systems,
 1ULL << 32 would overflow the width of unsigned long.
 
-Fix it by moving all the existing flags to 64 bit unsigned long long to
-prepare for the incoming new flags.
+Fix the problem by:
+
+- Migrate all existing BTRFS_MOUNT_* flags to unsigned long long
+- Migrate all mount option related variables to unsigned long long
+  * btrfs_fs_info::mount_opt
+  * btrfs_fs_context::mount_opt
+  * mount_opt parameter of btrfs_check_options()
+  * old_opts parameter of btrfs_remount_begin()
+  * old_opts parameter of btrfs_remount_cleanup()
+  * mount_opt parameter of btrfs_check_mountopts_zoned()
+  * mount_opt and opt parameters of check_ro_option()
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
 The current patch is still based on the latest for-next branch.
 
 But during merge time I will move this before the new rescue options.
+
+Changelog:
+v2:
+- Also fix the parameters of mount options
+  Or 32bit systems would still fail to compile.
 ---
- fs/btrfs/fs.h | 64 +++++++++++++++++++++++++--------------------------
- 1 file changed, 32 insertions(+), 32 deletions(-)
+ fs/btrfs/fs.h    | 66 ++++++++++++++++++++++++------------------------
+ fs/btrfs/super.c | 11 ++++----
+ fs/btrfs/super.h |  3 ++-
+ fs/btrfs/zoned.c |  3 ++-
+ fs/btrfs/zoned.h |  5 ++--
+ 5 files changed, 46 insertions(+), 42 deletions(-)
 
 diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index e911e0a838a2..770b9fa3cedc 100644
+index e911e0a838a2..103f0b3813b2 100644
 --- a/fs/btrfs/fs.h
 +++ b/fs/btrfs/fs.h
 @@ -195,38 +195,38 @@ enum {
@@ -201,6 +219,116 @@ index e911e0a838a2..770b9fa3cedc 100644
  	BTRFS_MOUNT_IGNORESUPERFLAGS		= (1ULL << 32),
  };
  
+@@ -481,7 +481,7 @@ struct btrfs_fs_info {
+ 	 * required instead of the faster short fsync log commits
+ 	 */
+ 	u64 last_trans_log_full_commit;
+-	unsigned long mount_opt;
++	unsigned long long mount_opt;
+ 
+ 	unsigned long compress_type:4;
+ 	unsigned int compress_level;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 0eda8c21d861..08d33cb372fb 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -82,7 +82,7 @@ struct btrfs_fs_context {
+ 	u32 commit_interval;
+ 	u32 metadata_ratio;
+ 	u32 thread_pool_size;
+-	unsigned long mount_opt;
++	unsigned long long mount_opt;
+ 	unsigned long compress_type:4;
+ 	unsigned int compress_level;
+ 	refcount_t refs;
+@@ -642,7 +642,7 @@ static void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
+ }
+ 
+ static bool check_ro_option(const struct btrfs_fs_info *fs_info,
+-			    unsigned long mount_opt, unsigned long opt,
++			    unsigned long long mount_opt, unsigned long long opt,
+ 			    const char *opt_name)
+ {
+ 	if (mount_opt & opt) {
+@@ -653,7 +653,8 @@ static bool check_ro_option(const struct btrfs_fs_info *fs_info,
+ 	return false;
+ }
+ 
+-bool btrfs_check_options(const struct btrfs_fs_info *info, unsigned long *mount_opt,
++bool btrfs_check_options(const struct btrfs_fs_info *info,
++			 unsigned long long *mount_opt,
+ 			 unsigned long flags)
+ {
+ 	bool ret = true;
+@@ -1231,7 +1232,7 @@ static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
+ }
+ 
+ static inline void btrfs_remount_begin(struct btrfs_fs_info *fs_info,
+-				       unsigned long old_opts, int flags)
++				       unsigned long long old_opts, int flags)
+ {
+ 	if (btrfs_raw_test_opt(old_opts, AUTO_DEFRAG) &&
+ 	    (!btrfs_raw_test_opt(fs_info->mount_opt, AUTO_DEFRAG) ||
+@@ -1245,7 +1246,7 @@ static inline void btrfs_remount_begin(struct btrfs_fs_info *fs_info,
+ }
+ 
+ static inline void btrfs_remount_cleanup(struct btrfs_fs_info *fs_info,
+-					 unsigned long old_opts)
++					 unsigned long long old_opts)
+ {
+ 	const bool cache_opt = btrfs_test_opt(fs_info, SPACE_CACHE);
+ 
+diff --git a/fs/btrfs/super.h b/fs/btrfs/super.h
+index d2b8ebb46bc6..d80a86acfbbe 100644
+--- a/fs/btrfs/super.h
++++ b/fs/btrfs/super.h
+@@ -10,7 +10,8 @@
+ struct super_block;
+ struct btrfs_fs_info;
+ 
+-bool btrfs_check_options(const struct btrfs_fs_info *info, unsigned long *mount_opt,
++bool btrfs_check_options(const struct btrfs_fs_info *info,
++			 unsigned long long *mount_opt,
+ 			 unsigned long flags);
+ int btrfs_sync_fs(struct super_block *sb, int wait);
+ char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index df7733044f7e..66f63e82af79 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -767,7 +767,8 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+ 	return 0;
+ }
+ 
+-int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, unsigned long *mount_opt)
++int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info,
++				unsigned long long *mount_opt)
+ {
+ 	if (!btrfs_is_zoned(info))
+ 		return 0;
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index d66d00c08001..30b2e48a1cec 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -58,7 +58,8 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache);
+ void btrfs_destroy_dev_zone_info(struct btrfs_device *device);
+ struct btrfs_zoned_device_info *btrfs_clone_dev_zone_info(struct btrfs_device *orig_dev);
+ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info);
+-int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, unsigned long *mount_opt);
++int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info,
++				unsigned long long *mount_opt);
+ int btrfs_sb_log_location_bdev(struct block_device *bdev, int mirror, int rw,
+ 			       u64 *bytenr_ret);
+ int btrfs_sb_log_location(struct btrfs_device *device, int mirror, int rw,
+@@ -130,7 +131,7 @@ static inline int btrfs_check_zoned_mode(const struct btrfs_fs_info *fs_info)
+ }
+ 
+ static inline int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info,
+-					      unsigned long *mount_opt)
++					      unsigned long long *mount_opt)
+ {
+ 	return 0;
+ }
 -- 
 2.45.2
 
