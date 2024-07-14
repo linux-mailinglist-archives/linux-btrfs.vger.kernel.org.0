@@ -1,160 +1,144 @@
-Return-Path: <linux-btrfs+bounces-6446-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6447-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F7F2930BED
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 00:09:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F182D930C30
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 01:35:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3CDD281C0D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jul 2024 22:09:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B4C1F216CF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jul 2024 23:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23ACF13BAE4;
-	Sun, 14 Jul 2024 22:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC159474;
+	Sun, 14 Jul 2024 23:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="e1LdE7kW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Nhnwb4Ty"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79D08495
-	for <linux-btrfs@vger.kernel.org>; Sun, 14 Jul 2024 22:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DFB53E23
+	for <linux-btrfs@vger.kernel.org>; Sun, 14 Jul 2024 23:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720994983; cv=none; b=WmrHiP370ki3hBFpfEdafCa2SHWF/2AJK6P893vEyUiPxF+SRtx8h82yfa66dWYTv6fzgZcrgJq27P4SMOY7hx57GpUZ78iaj3+YvkyfBBULfwzJdtVFTJ+ay2PgSDVF2Ipg7sw3wFwawNmYzGJVOlVTfNu0uhhXZUkybliSKRA=
+	t=1721000127; cv=none; b=j6/OhjoofMJ/b+F7JE59CUWuXLrFTXlCfzIcV1ANUMlok49sgIWgK9GK/wI0r/ccK/WTaCumqtELXOFSM7t0JdvJwcPcnW8s7gk88Ka0lngE6XEMDEFZowRtWx1YiakEJpjEeP9+UrDCXeisv7MYTYS8fqBeLnJJANZ2x/6dm9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720994983; c=relaxed/simple;
-	bh=8OZbHj2CJkDC78QCJSTzdU/F7BZKUJ/yGSRlvKJo5c0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=n/YuPxaER8Huaflxl8ex60U3BTRiRFIhHHYixedvMaZd68h+AlGOInAPi/OfxhgzAjLD5oApwvjIfqu3G+672LcxpRT+h8cjJyPFrx8CYD+IzdUfVONVq/RLUx+UFcxt9ERa+GXfuYknmFiTtw6LI04Hp0+a1KqR9IwMizhaM+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=e1LdE7kW; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2eaafda3b5cso38241981fa.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Jul 2024 15:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1720994979; x=1721599779; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dooBS+TWbQqQHSvejqX2Tgi0ucDZQh/brIsSaNBbZGo=;
-        b=e1LdE7kWDSQRv+FgCSVGy6H5mygmuKoFYKDC0dqJtO6PyUFYe8suUrlcpvI3ev2Qwo
-         pFMjeysQkDUBUwcJigxvLNRNrJBkFi5yku2FJtjza6/FoCPh6hTvofXULXbRko1yI6Om
-         vRV4CLrD45XkU21tj9sj7nysTr9efYxUSNlIAuUwUW1jnv9q05HBx6uaDDp6SlZBMgBk
-         pefbcl+nAP3IrOCwXwzEcUlC1KTwlaf2OYZlFpv9mamdn02tK3gXAVONPsckBNiLt6KY
-         TcJWwDFWAdn9l87vKxJzPtYPZvutC8XhPZP0+pM8oM3aWE2O9mEH51qmUeZmxRNCVARs
-         z2dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720994979; x=1721599779;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dooBS+TWbQqQHSvejqX2Tgi0ucDZQh/brIsSaNBbZGo=;
-        b=LkLn3eRzeZhV85kmdF+JYG4DMnQLIKfdOAjez+Bddy/mNZG8F93yw62c66nofCMvOP
-         8ql3OX+LO+LRDgh6CBiWqY5i3fJy9CB8eQ/QO+wsA8Z49MpXikGVSPJSXlK3WquJQPRQ
-         uayB+vChe+NTjewpHQh+q55r2OJTkmA4mI8mq7JfXrxUKOVroEIl2v33sjcHZ3mQWALj
-         2YQSZT2YYeiTEekoNNzEp92iG1elch+UcC07fXR2U+Fy10daqWJyTnS4BZKNKJhjAODC
-         Y1RapPHQFRcgjEpuJhRCur/yVQ/c96c8yUho30jroX4wq6MxOoAPObpO2ObeZE5Rxzla
-         K68A==
-X-Gm-Message-State: AOJu0YwqWwppZxlWdeuYzbF5uFgAjMzwO97ojyXNDRcvh2V9+E9b8fJA
-	FV9/3WhtEFPLR0DCvGg/f4FoKzh49J/n3AGi8hmRj78wy8vupmPWIVJto/PI8CaewkBq+oZQZyK
-	6
-X-Google-Smtp-Source: AGHT+IGmDMvwxihdKWiz+wQruDSC+7O070hT5kx/6lNdvw7wkeiks6LJpZcUCKhWSXoxOXLmu6Awrg==
-X-Received: by 2002:a2e:a582:0:b0:2ee:8b92:952f with SMTP id 38308e7fff4ca-2eeb304ea94mr154520061fa.0.1720994977995;
-        Sun, 14 Jul 2024 15:09:37 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-78e33cb6104sm2337508a12.35.2024.07.14.15.09.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Jul 2024 15:09:37 -0700 (PDT)
-Message-ID: <b92f8d33-ff5d-4aa1-93a8-97f26f466320@suse.com>
-Date: Mon, 15 Jul 2024 07:39:32 +0930
+	s=arc-20240116; t=1721000127; c=relaxed/simple;
+	bh=A8ExdULMTTEa/hIL0jxZHs1/eGFW6CgkIL183rgw7SU=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=q61DpwBbOCnnccft8qBzZ1kJXwLITeXeq48YXQSskIRn5W9Nd7aP1AdLKecPdiZuH0LVDLk3cGOPhCOelUHJgSoe+oyNWGS7KBpsNfdWpUYHYMvBnhr9A8o8tkUx0uXNx5OxpGiiKSgsKSIURQYULlB0nR9pimvy0Qahy9xBYhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Nhnwb4Ty; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: linux-fsdevel@vger.kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721000122;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=/deZcosMIiR4fSksbjwDZ5A1olvy8pXsietjMa6AtJs=;
+	b=Nhnwb4TyIcK6QZOf+zCWrH3gLbo1WcXLbr5I7NU7DBuAajSBH3ZMxHNB/oFOtEEgSnFvMA
+	LZ8/0rmdrDNGtUsl97MMYHD3UYcrdddc2lvt9bNQ86nFKn4lJY0RDjLZKZJzl7Gmb/ZBNL
+	Ph9sn9P7MmPLlMdyiOKCWHxWUSKMgRw=
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: fstests@vger.kernel.org
+X-Envelope-To: linux-btrfs@vger.kernel.org
+X-Envelope-To: linux-xfs@vger.kernel.org
+X-Envelope-To: linux-ext4@vger.kernel.org
+Date: Sun, 14 Jul 2024 19:35:18 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	linux-ext4@vger.kernel.org
+Subject: Shared test cluster for filesystem testing
+Message-ID: <o55vku65ruvtvst7ch4jalpiq4f5lbn3glmrlh7bwif6xh6hla@eajwg43srxoj>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] btrfs-progs: fix the filename sanitization of
- btrfs-image
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <cover.1720415116.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <cover.1720415116.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
-Ping?
+Those who know me have oft heard me complain about the state of testing
+automation and infrastructure, in filesystem land and the wider kernel.
+In short - it sucks.
 
-Any update on this?
+For some years I've been working, off and on, on my own system off and
+on, and I think I've got it to the point where I can start making it
+available to the wider filesystem community, and I hope it will be of
+some use to people.
 
-Thanks,
-Qu
+Here's my philosophy and requirements:
 
-在 2024/7/8 14:44, Qu Wenruo 写道:
-> There are several bugs in btrfs-image filename sanitization:
-> 
-> - Ensured kernel path resolution bug
->    Since during path resolution btrfs uses hash to find the child inode,
->    with garbage filled DIR_ITEMs, it's definitely unable to properly
->    resolve the path.
-> 
->    A warning is added to the man page by the first patch.
-> 
-> - Only the last item got properly sanitized
->    All the remaining INODE_REF/DIR_INDEX/DIR_ITEM are not sanitized at
->    all.
-> 
->    This is fixed by the second patch.
-> 
-> - Sanitized filename contains non-ASCII chars
->    This is fixed by the third patch.
-> 
-> 
-> Finally a new test case is introduced to verify the filename
-> sanitization behavior of btrfs-image.
-> 
-> Qu Wenruo (4):
->    btrfs-progs: add warning for -s option of btrfs-image
->    btrfs-progs: image: fix the bug that filename sanitization not working
->    btrfs-progs: fix rand_range()
->    btrfs-progs: misc-tests: add a test case for filename sanitization
-> 
->   Documentation/btrfs-image.rst               | 17 ++++++-----
->   common/utils.c                              | 10 +++----
->   image/sanitize.c                            |  8 ++++-
->   tests/misc-tests/065-image-filename/test.sh | 33 +++++++++++++++++++++
->   4 files changed, 55 insertions(+), 13 deletions(-)
->   create mode 100755 tests/misc-tests/065-image-filename/test.sh
-> 
-> --
-> 2.45.2
-> 
-> 
+- Tests should be done with results up in a dashboard _as quickly as
+  possible_
+
+Nothing's worse than having to wait hours, overnight, or days for test
+results - by which time you've context switched onto something else. I
+want full test results in 10 minutes.
+
+- Every commit gets tested, and the results are available in a git log
+  view.
+
+Manual bisection is a timesuck, and every commit should be tested
+anyways. I want to be able able to churn out code in nice clean simple
+commits, push it all out to the CI, and when one of them is broken, be
+able to see at a glance which one it is.
+
+- Simple and extensible, and able to do any kernel testing that can be
+  done in a VM.
+
+kdevops is right out - all the stateful ansible crap is not what I'm
+after. Simple and declarative tests that specify how the kernel, qemu
+etc. should be configured.
+
+- Available to all developers and maintainers
+
+Maintainers shouldn't be looking at patches that haven't been tested.
+Everyone doing filesystem development needs access to this
+system, on whatever branches they're working on.
+
+IOW: big cluster of machines watching git branches and uploading results
+to a dashboard, with sharding at subtest granularity so we can get
+results back _quick_.
+
+I've got 8 80 core arm machines for this so far. We _will_ need more
+machines than this, and I'll need funding to pay for those machines, but
+this is enough to get started.
+
+A shared cluster of dedicated machines with full sharding means that us
+individual developers can get results back _quick_. The CI tests each
+branch, newest to oldest, and since we're not all going to be pushing at
+the same time, or need the lockdep/kasan variants right away (those run
+at a lower priority) - we can all get the results we need (most recent
+commit, basic tests) pretty much immediately.
+
+I've got fstests tests wrappers for bcachefs, btrfs, ext2, ext4, f2fs,
+jfs, nfs, nilfs2 and xfs so far, with lockdep, kasan and ubsan variants
+for all of those.
+
+The tests the CI runs are easy to run locally, for reproducability -
+ktest was first written for local, interactive use. I suggest you try
+it, it's slick [0]:
+
+Send me an email with your ssh pubkey and the username you want, and
+I'll give you an account - this is how you'll configure your config file
+that specifies which tests to run and which branches to test.
+
+And please send me patches to ktest adding tests for more filesystems
+and subsystems. This isn't intended to be filesystem specific - the goal
+here is one single _quick_ dashboard for anything that can be tested in
+a VM.
+
+Results dashboard:
+https://evilpiepirate.org/~testdashboard/ci
+
+Results for Linus's tree:
+https://evilpiepirate.org/~testdashboard/ci?branch=master
+
+[0] Ktest: https://evilpiepirate.org/git/ktest.git/
 
