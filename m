@@ -1,569 +1,461 @@
-Return-Path: <linux-btrfs+bounces-6478-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6479-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F31289316F1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 16:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D480931A03
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 20:12:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB31C283039
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 14:38:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5795282086
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 18:12:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2A618EFC7;
-	Mon, 15 Jul 2024 14:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8E873440;
+	Mon, 15 Jul 2024 18:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="W4kmEULL"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UliV2yYS";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ffSVRwU/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F04C13D531
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 14:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0126CDB1;
+	Mon, 15 Jul 2024 18:12:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721054322; cv=none; b=VqW/+WxTeYLsvBWzS3WbZ7k9pZEQ7vcGOvKcBelAQ///LSd5oCZeiACf658A/oMmE9DJYZhzQTSnXUqhNmWP16/1H7omMnpIxZXGBKs0OxDgXxkc7BPOGGrEwnd15jWxHeOt/DY/ERrzRexbrH+mLCJ5qpr5ZcrtwOpZfwZgxtk=
+	t=1721067148; cv=none; b=inpA9mLKTw2Xk5qwaXl54u1gwfvnDHzjY4CSDkmK8T0HMlUwj499bGfpALJDXYBcDPQNLjJnYWqZ5C0kRoboJxrphdISftwYHynly6GuRU1ek7ofpErf9aHqG9uB0Ow9Qcpvgi8OCq8s313APNj0bvRxhCT35bNO7gFubB7fDZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721054322; c=relaxed/simple;
-	bh=4XdX5qeuAW5J7O+eUYdKrcRCVT+kaj+rCzAHLN0gkk4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Iizy2UkNZRrfXFsJFlqSgq9o72gbrK9wppqaIGKn5UJLR2IjJm+xMqQfQ4IZ7Eyh/Ps0/wUbCgbgXCTQcozhxVsfs35S81D8DzWY63JI1Uz2A1cfpTPuV8/DWJb948QXQjhoq9objAn9Wl1D1VS8RK6T40BwXOPC27I8+Xsr5b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=W4kmEULL; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46FDr1Qi014859
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 07:38:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
-	:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=facebook; bh=ASXeEIpG
-	yHm1t/nR9k6keTukao9yoS73dugF9aZ/lQ0=; b=W4kmEULL2g+eaSM6z0Ida33h
-	/msKdoqXqYI2ILhmUxE/BRSdEl9Sa/sPStjSRbgZXOJ8YyT4i+xxqj/zQV6F7f+s
-	k/Svh42ALz0AWGGdL2E2eiah0CPaUbx2zu5AdrKSKgYyjtvf/BMoiRCjU4rEF5JC
-	GIkxTnmLZa7Kqg1We7g=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40d51r08wv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 07:38:39 -0700 (PDT)
-Received: from twshared5319.37.frc1.facebook.com (2620:10d:c085:108::150d) by
- mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Mon, 15 Jul 2024 14:38:38 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 57E2F4503980; Mon, 15 Jul 2024 15:38:31 +0100 (BST)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH v3] btrfs-progs: add rudimentary log checking
-Date: Mon, 15 Jul 2024 15:38:24 +0100
-Message-ID: <20240715143830.2067478-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1721067148; c=relaxed/simple;
+	bh=rpvG0awgeLdWVDZqZxFXVl3Y47kwWfYV7M92CEq03Yw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pdlpD3MND1Ok6/dGsvu0GWb/itjbYhDaKumuNcLnbF0r+VV+l19/egIihy6aN0AocseQem97dbXWgi8ZdtwpUDTgJQ//isVFjHEXYtrxDkNpdUDkGF/QIqx6d+w4vFPJmLmyImSVkdLV4PkHfOO3UODseIxv2mBpjtOEbW9Ez/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UliV2yYS; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ffSVRwU/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A68951F833;
+	Mon, 15 Jul 2024 18:12:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721067143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=F5l9DkZojnB/nXR+sG9YqxBsXUPdh+wkC/bWR67H/0s=;
+	b=UliV2yYS2xL8SleZDZGqc3gfwEE77/sWea2Zx8y1J2jIVTAyf4M7WvciLrQjLTW/xKXfH1
+	GVgl1VwSNMK5+3I84iX2CiahuDzfdv/rTNn8IogTfFcN2NcBDiBcmMvpo4DZcdfcVTFfC8
+	pQ7mn2pxEQK9iJGcZiDDtCmupqVFdDU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721067142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=F5l9DkZojnB/nXR+sG9YqxBsXUPdh+wkC/bWR67H/0s=;
+	b=ffSVRwU/SEfPX/Ji6CkXw6HAA6v3XLsklqpyxGw+baNU8T+fTXWviYxvbVw4G5WUQI2TpL
+	rSfYORp/1VCskFWk5e4/IaCnR08UPquZbiroj2GOqoREqRITACjdKcxOzWeensnurp8pnT
+	k+zztxNQHwJVgtAdrjfJNVo5X8mCaug=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EF5C137EB;
+	Mon, 15 Jul 2024 18:12:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id EMTJJoZmlWYMMAAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 15 Jul 2024 18:12:22 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 6.11
+Date: Mon, 15 Jul 2024 20:12:20 +0200
+Message-ID: <cover.1721066206.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: EXmWYfj5J_7XAwVhkGNzhHhWLhdqivbd
-X-Proofpoint-ORIG-GUID: EXmWYfj5J_7XAwVhkGNzhHhWLhdqivbd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-15_09,2024-07-11_01,2024-05-17_01
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: 1.20
+X-Spamd-Result: default: False [1.20 / 50.00];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Level: *
 
-Currently the transaction log is more or less ignored by btrfs check,
-meaning that it's possible for a FS with a corrupt log to pass btrfs
-check, but be immediately corrupted by the kernel when it's mounted.
+Hi,
 
-This patch adds a check that if there's an inode in the log, any pending
-non-compressed writes also have corresponding csum entries.
+please pull the changes described below. The hilights are new logic
+behind background block group reclaim, automatic removal of qgroup
+after removing a subvolume and new 'rescue=' mount options. The rest is
+optimizations, cleanups and refactoring.
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
----
-Changes:
-v2:
-helper to load log root
-handle compressed extents
-loop logic improvements
-fix bug in check_log_csum
+There's a merge conflict caused by the latency fixes from last week in
+extent_map.c:btrfs_scan_inode(), related commits 4e660ca3a98d931809734
+and b3ebb9b7e92a928344a. Resolved in branch for-6.11-merged and that's
+been in linux-next for a few days.
 
-v3:
-added test
-added explanatory comment to check_log_csum
-changed length operation to -=3D
+User visible features:
 
- check/main.c                                  | 304 +++++++++++++++++-
- .../063-log-missing-csum/default.img.xz       | Bin 0 -> 1288 bytes
- tests/fsck-tests/063-log-missing-csum/test.sh |  14 +
- 3 files changed, 306 insertions(+), 12 deletions(-)
- create mode 100644 tests/fsck-tests/063-log-missing-csum/default.img.xz
- create mode 100755 tests/fsck-tests/063-log-missing-csum/test.sh
+- dynamic block group reclaim:
+  - tunable framework to avoid situations where eager data allocations
+    prevent creating new metadata chunks due to lack of unallocated
+    space
+  - reuse sysfs knob bg_reclaim_threshold (otherwise used only in zoned
+    mode) for a fixed value threshold
+  - new on/off sysfs knob "dynamic_reclaim" calculating the value based
+    on heuristics, aiming to keep spare working space for relocating
+    chunks but not to needlessly relocate partially utilized block
+    groups or reclaim newly allocated ones
+  - stats are exported in sysfs per block group type, files "reclaim_*"
+  - this may increase IO load at unexpected times but the corner case of
+    no allocatable block groups is known to be worse
 
-diff --git a/check/main.c b/check/main.c
-index 83c721d3..eaae3042 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -9787,6 +9787,274 @@ static int zero_log_tree(struct btrfs_root *root)
- 	return ret;
- }
-=20
-+/* Searches the given root for checksums in the range [addr, addr+length=
-].
-+ * Returns 1 if found, 0 if not found, and < 0 for an error. */
-+static int check_log_csum(struct btrfs_root *root, u64 addr, u64 length)
-+{
-+	struct btrfs_path path =3D { 0 };
-+	struct btrfs_key key;
-+	struct extent_buffer *leaf;
-+	u16 csum_size =3D gfs_info->csum_size;
-+	u16 num_entries;
-+	u64 data_len;
-+	int ret;
-+
-+	key.objectid =3D BTRFS_EXTENT_CSUM_OBJECTID;
-+	key.type =3D BTRFS_EXTENT_CSUM_KEY;
-+	key.offset =3D addr;
-+
-+	ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret > 0 && path.slots[0])
-+		path.slots[0]--;
-+
-+	ret =3D 0;
-+
-+	while (1) {
-+		leaf =3D path.nodes[0];
-+		if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
-+			ret =3D btrfs_next_leaf(root, &path);
-+			if (ret) {
-+				if (ret > 0)
-+					ret =3D 0;
-+
-+				break;
-+			}
-+			leaf =3D path.nodes[0];
-+		}
-+
-+		btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
-+
-+		if (key.objectid > BTRFS_EXTENT_CSUM_OBJECTID)
-+			break;
-+
-+		if (key.objectid !=3D BTRFS_EXTENT_CSUM_OBJECTID ||
-+		    key.type !=3D BTRFS_EXTENT_CSUM_KEY)
-+			goto next;
-+
-+		if (key.offset >=3D addr + length)
-+			break;
-+
-+		num_entries =3D btrfs_item_size(leaf, path.slots[0]) / csum_size;
-+		data_len =3D num_entries * gfs_info->sectorsize;
-+
-+		if (addr >=3D key.offset && addr <=3D key.offset + data_len) {
-+			u64 end =3D min(addr + length, key.offset + data_len);
-+
-+			length -=3D (end - addr);
-+			addr =3D end;
-+
-+			if (length =3D=3D 0)
-+				break;
-+		}
-+
-+next:
-+		path.slots[0]++;
-+	}
-+
-+	btrfs_release_path(&path);
-+
-+	if (ret >=3D 0)
-+		ret =3D length =3D=3D 0 ? 1 : 0;
-+
-+	return ret;
-+}
-+
-+static int check_log_root(struct btrfs_root *root, struct cache_tree *ro=
-ot_cache,
-+			  struct walk_control *wc)
-+{
-+	struct btrfs_path path =3D { 0 };
-+	struct btrfs_key key;
-+	struct extent_buffer *leaf;
-+	int ret, err =3D 0;
-+	u64 last_csum_inode =3D 0;
-+
-+	key.objectid =3D BTRFS_FIRST_FREE_OBJECTID;
-+	key.type =3D BTRFS_INODE_ITEM_KEY;
-+	key.offset =3D 0;
-+	ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
-+	if (ret < 0)
-+		return 1;
-+
-+	while (1) {
-+		leaf =3D path.nodes[0];
-+		if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
-+			ret =3D btrfs_next_leaf(root, &path);
-+			if (ret) {
-+				if (ret < 0)
-+					err =3D 1;
-+
-+				break;
-+			}
-+			leaf =3D path.nodes[0];
-+		}
-+		btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
-+
-+		if (key.objectid =3D=3D BTRFS_EXTENT_CSUM_OBJECTID)
-+			break;
-+
-+		if (key.type =3D=3D BTRFS_INODE_ITEM_KEY) {
-+			struct btrfs_inode_item *item;
-+
-+			item =3D btrfs_item_ptr(leaf, path.slots[0],
-+					      struct btrfs_inode_item);
-+
-+			if (!(btrfs_inode_flags(leaf, item) & BTRFS_INODE_NODATASUM))
-+				last_csum_inode =3D key.objectid;
-+		} else if (key.type =3D=3D BTRFS_EXTENT_DATA_KEY &&
-+			   key.objectid =3D=3D last_csum_inode) {
-+			struct btrfs_file_extent_item *fi;
-+			u64 addr, length;
-+
-+			fi =3D btrfs_item_ptr(leaf, path.slots[0],
-+					    struct btrfs_file_extent_item);
-+
-+			if (btrfs_file_extent_type(leaf, fi) !=3D BTRFS_FILE_EXTENT_REG)
-+				goto next;
-+
-+			addr =3D btrfs_file_extent_disk_bytenr(leaf, fi) +
-+				btrfs_file_extent_offset(leaf, fi);
-+			length =3D btrfs_file_extent_num_bytes(leaf, fi);
-+
-+			ret =3D check_log_csum(root, addr, length);
-+			if (ret < 0) {
-+				err =3D 1;
-+				break;
-+			}
-+
-+			if (!ret) {
-+				error("csum missing in log (root %llu, inode %llu, "
-+				      "offset %llu, address 0x%llx, length %llu)",
-+				      root->objectid, last_csum_inode, key.offset,
-+				      addr, length);
-+				err =3D 1;
-+			}
-+		}
-+
-+next:
-+		path.slots[0]++;
-+	}
-+
-+	btrfs_release_path(&path);
-+
-+	return err;
-+}
-+
-+static int load_log_root(u64 root_id, struct btrfs_path *path,
-+			 struct btrfs_root *tmp_root)
-+{
-+	struct extent_buffer *l;
-+	struct btrfs_tree_parent_check check =3D { 0 };
-+
-+	btrfs_setup_root(tmp_root, gfs_info, root_id);
-+
-+	l =3D path->nodes[0];
-+	read_extent_buffer(l, &tmp_root->root_item,
-+			btrfs_item_ptr_offset(l, path->slots[0]),
-+			sizeof(tmp_root->root_item));
-+
-+	tmp_root->root_key.objectid =3D root_id;
-+	tmp_root->root_key.type =3D BTRFS_ROOT_ITEM_KEY;
-+	tmp_root->root_key.offset =3D 0;
-+
-+	check.owner_root =3D btrfs_root_id(tmp_root);
-+	check.transid =3D btrfs_root_generation(&tmp_root->root_item);
-+	check.level =3D btrfs_root_level(&tmp_root->root_item);
-+
-+	tmp_root->node =3D read_tree_block(gfs_info,
-+					 btrfs_root_bytenr(&tmp_root->root_item),
-+					 &check);
-+	if (IS_ERR(tmp_root->node)) {
-+		tmp_root->node =3D NULL;
-+		return 1;
-+	}
-+
-+	if (btrfs_header_level(tmp_root->node) !=3D btrfs_root_level(&tmp_root-=
->root_item)) {
-+		error("root [%llu %llu] level %d does not match %d",
-+			tmp_root->root_key.objectid,
-+			tmp_root->root_key.offset,
-+			btrfs_header_level(tmp_root->node),
-+			btrfs_root_level(&tmp_root->root_item));
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int check_log(struct cache_tree *root_cache)
-+{
-+	struct btrfs_path path =3D { 0 };
-+	struct walk_control wc =3D { 0 };
-+	struct btrfs_key key;
-+	struct extent_buffer *leaf;
-+	struct btrfs_root *log_root =3D gfs_info->log_root_tree;
-+	int ret;
-+	int err =3D 0;
-+
-+	cache_tree_init(&wc.shared);
-+
-+	key.objectid =3D BTRFS_TREE_LOG_OBJECTID;
-+	key.type =3D BTRFS_ROOT_ITEM_KEY;
-+	key.offset =3D 0;
-+	ret =3D btrfs_search_slot(NULL, log_root, &key, &path, 0, 0);
-+	if (ret < 0) {
-+		err =3D 1;
-+		goto out;
-+	}
-+
-+	while (1) {
-+		leaf =3D path.nodes[0];
-+		if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
-+			ret =3D btrfs_next_leaf(log_root, &path);
-+			if (ret) {
-+				if (ret < 0)
-+					err =3D 1;
-+				break;
-+			}
-+			leaf =3D path.nodes[0];
-+		}
-+		btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
-+
-+		if (key.objectid > BTRFS_TREE_LOG_OBJECTID ||
-+		    key.type > BTRFS_ROOT_ITEM_KEY)
-+			break;
-+
-+		if (key.objectid =3D=3D BTRFS_TREE_LOG_OBJECTID &&
-+		    key.type =3D=3D BTRFS_ROOT_ITEM_KEY &&
-+		    fs_root_objectid(key.offset)) {
-+			struct btrfs_root tmp_root;
-+
-+			memset(&tmp_root, 0, sizeof(tmp_root));
-+
-+			ret =3D load_log_root(key.offset, &path, &tmp_root);
-+			if (ret) {
-+				err =3D 1;
-+				goto next;
-+			}
-+
-+			ret =3D check_log_root(&tmp_root, root_cache, &wc);
-+			if (ret)
-+				err =3D 1;
-+
-+next:
-+			if (tmp_root.node)
-+				free_extent_buffer(tmp_root.node);
-+		}
-+
-+		path.slots[0]++;
-+	}
-+out:
-+	btrfs_release_path(&path);
-+	if (err)
-+		free_extent_cache_tree(&wc.shared);
-+	if (!cache_tree_empty(&wc.shared))
-+		fprintf(stderr, "warning line %d\n", __LINE__);
-+
-+	return err;
-+}
-+
- static void free_roots_info_cache(void)
- {
- 	if (!roots_info_cache)
-@@ -10585,9 +10853,21 @@ static int cmd_check(const struct cmd_struct *cm=
-d, int argc, char **argv)
- 		goto close_out;
- 	}
-=20
-+	if (gfs_info->log_root_tree) {
-+		fprintf(stderr, "[1/8] checking log\n");
-+		ret =3D check_log(&root_cache);
-+
-+		if (ret)
-+			error("errors found in log");
-+		err |=3D !!ret;
-+	} else {
-+		fprintf(stderr,
-+		"[1/8] checking log skipped (none written)\n");
-+	}
-+
- 	if (!init_extent_tree) {
- 		if (!g_task_ctx.progress_enabled) {
--			fprintf(stderr, "[1/7] checking root items\n");
-+			fprintf(stderr, "[2/8] checking root items\n");
- 		} else {
- 			g_task_ctx.tp =3D TASK_ROOT_ITEMS;
- 			task_start(g_task_ctx.info, &g_task_ctx.start_time,
-@@ -10622,11 +10902,11 @@ static int cmd_check(const struct cmd_struct *c=
-md, int argc, char **argv)
- 			}
- 		}
- 	} else {
--		fprintf(stderr, "[1/7] checking root items... skipped\n");
-+		fprintf(stderr, "[2/8] checking root items... skipped\n");
- 	}
-=20
- 	if (!g_task_ctx.progress_enabled) {
--		fprintf(stderr, "[2/7] checking extents\n");
-+		fprintf(stderr, "[3/8] checking extents\n");
- 	} else {
- 		g_task_ctx.tp =3D TASK_EXTENTS;
- 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
-ount);
-@@ -10644,9 +10924,9 @@ static int cmd_check(const struct cmd_struct *cmd=
-, int argc, char **argv)
-=20
- 	if (!g_task_ctx.progress_enabled) {
- 		if (is_free_space_tree)
--			fprintf(stderr, "[3/7] checking free space tree\n");
-+			fprintf(stderr, "[4/8] checking free space tree\n");
- 		else
--			fprintf(stderr, "[3/7] checking free space cache\n");
-+			fprintf(stderr, "[4/8] checking free space cache\n");
- 	} else {
- 		g_task_ctx.tp =3D TASK_FREE_SPACE;
- 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
-ount);
-@@ -10664,7 +10944,7 @@ static int cmd_check(const struct cmd_struct *cmd=
-, int argc, char **argv)
- 	 */
- 	no_holes =3D btrfs_fs_incompat(gfs_info, NO_HOLES);
- 	if (!g_task_ctx.progress_enabled) {
--		fprintf(stderr, "[4/7] checking fs roots\n");
-+		fprintf(stderr, "[5/8] checking fs roots\n");
- 	} else {
- 		g_task_ctx.tp =3D TASK_FS_ROOTS;
- 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
-ount);
-@@ -10680,10 +10960,10 @@ static int cmd_check(const struct cmd_struct *c=
-md, int argc, char **argv)
-=20
- 	if (!g_task_ctx.progress_enabled) {
- 		if (check_data_csum)
--			fprintf(stderr, "[5/7] checking csums against data\n");
-+			fprintf(stderr, "[6/8] checking csums against data\n");
- 		else
- 			fprintf(stderr,
--		"[5/7] checking only csums items (without verifying data)\n");
-+		"[6/8] checking only csums items (without verifying data)\n");
- 	} else {
- 		g_task_ctx.tp =3D TASK_CSUMS;
- 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
-ount);
-@@ -10702,7 +10982,7 @@ static int cmd_check(const struct cmd_struct *cmd=
-, int argc, char **argv)
- 	/* For low memory mode, check_fs_roots_v2 handles root refs */
-         if (check_mode !=3D CHECK_MODE_LOWMEM) {
- 		if (!g_task_ctx.progress_enabled) {
--			fprintf(stderr, "[6/7] checking root refs\n");
-+			fprintf(stderr, "[7/8] checking root refs\n");
- 		} else {
- 			g_task_ctx.tp =3D TASK_ROOT_REFS;
- 			task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_=
-count);
-@@ -10717,7 +10997,7 @@ static int cmd_check(const struct cmd_struct *cmd=
-, int argc, char **argv)
- 		}
- 	} else {
- 		fprintf(stderr,
--	"[6/7] checking root refs done with fs roots in lowmem mode, skipping\n=
-");
-+	"[7/8] checking root refs done with fs roots in lowmem mode, skipping\n=
-");
- 	}
-=20
- 	while (opt_check_repair && !list_empty(&gfs_info->recow_ebs)) {
-@@ -10749,7 +11029,7 @@ static int cmd_check(const struct cmd_struct *cmd=
-, int argc, char **argv)
-=20
- 	if (gfs_info->quota_enabled) {
- 		if (!g_task_ctx.progress_enabled) {
--			fprintf(stderr, "[7/7] checking quota groups\n");
-+			fprintf(stderr, "[8/8] checking quota groups\n");
- 		} else {
- 			g_task_ctx.tp =3D TASK_QGROUPS;
- 			task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_=
-count);
-@@ -10772,7 +11052,7 @@ static int cmd_check(const struct cmd_struct *cmd=
-, int argc, char **argv)
- 		ret =3D 0;
- 	} else {
- 		fprintf(stderr,
--		"[7/7] checking quota groups skipped (not enabled on this FS)\n");
-+		"[8/8] checking quota groups skipped (not enabled on this FS)\n");
- 	}
-=20
- 	if (!list_empty(&gfs_info->recow_ebs)) {
-diff --git a/tests/fsck-tests/063-log-missing-csum/default.img.xz b/tests=
-/fsck-tests/063-log-missing-csum/default.img.xz
-new file mode 100644
-index 0000000000000000000000000000000000000000..c9b4f420ac23866cd142428da=
-f21739efda0762d
-GIT binary patch
-literal 1288
-zcmV+j1^4>>H+ooF000E$*0e?f03iVu0001VFXf}+)Bgm;T>wRyj;C3^v%$$4d1wo3
-zjjaF1$8Jv*pMMm%#Ch6IM%}7&=3D@^TvKIIdYjZ@t7T($M|Hz%Cr>ZwJ6sj_bRsY^a*
-zIr#q#U>$p<Go1bOhu5#Q<?@08{(UO6n<sqYIY$<RXz3}#&sBuS|AUrsgQ{%?z1>tr
-zW^k~hR~HJs$P?zuw_V+%>i2AU4x-C~^RmH%0#2o7VY;D>d@D<+CC=3DJ4l?Bs2d@5yC
-z&pKh_V}nG$A*f{hGHlfKeT*E3NA1Q(Nt;TxvV6m2A_RVpD=3D`*t<8b6_KTom1S=3D|eG
-z>OMhPCcl7*3tYx)YhtFm-3)~e_SPBasmqw|$jnE_-QZfatuNh^bkJ5yW{ZX7NmD)i
-zLKCQYs5y!To5G>tIYzSNigXu|<l&x%JzxMA5aW-t+nod|B!efqr+_#STUo@Xu>wY=3D
-z*;zh8-nLPC+GYq6HU^A<Qjkh41{(MMB=3Dp?8i7|;p<cL9o>Q7;56uclyq=3DuCMb1GmZ
-zuq5@iwv1^<TQdlj9#Xdq$Vj!1d~GO$P#HmKmPt*t2iPme{8~y6{{T++2nv+X7)Fnf
-z`$pgevh)w!LR&hx2a|{sW@ac43(Sl>??<SGJB`t-nDXvSDSY*87<ziAenKb9p4UlP
-z*(x(s)OBgD_f*R-*yBUaiD3U<uhy+{P{T&x@o^!9gXa@=3DKts_p@u`Tb)rQcu{)tzQ
-zhCXcu`CGkyKuQRy(M0c#fPDWJwyhC`w2mizWqVSf=3D=3DSk-nywG!nJzNT5aM0tVb}Va
-zK?^BQbY*CPLeJtG``VF4F@BVWBpSVWDFk`J!cOhagXH=3DGB1GApQ?zsg8%y=3DJ$Fgl1
-z)+=3DjFc)g}pALW^HG}wkoY7fOfbZ274b~+dEoA?l%Xzz`P-F)vb1^UziIz|no!02bS
-zWPfo?`TiKe8aIuiPilXte381GZ4tQc6=3DY*KS0rehLE^7!W+MOr0AEFmQgw<KSH}Ix
-ze4qlov3aIg5e(Oh1%CwTZN^`UI!7g(U;iDFt(>e4XDB-M)l0stJd3pf<XujqB2}MW
-z6EY1#$l>s;T1IYy#{A9ljl@Ba_*dh)Qfq@8Y1A#q%p|d;USrIAZ*n1`%ho*!-RYOY
-z4j%X?D?CoiaW8A*7aue82GA9jmMGg6Bv&mO#v6uKVw1V~Uu01wXbz(RJN_|xw{`8K
-zSfdyQCJOdIwdN%h+Jr{$9!6otgQ8^`lkU4u;5wJlsy#P<D{Nc39m@=3D*OHZ533tvD<
-zfb=3Dc>-IWOj%>%mQ@Ja!#!QIOVuluA}ecSFg;*v@<bR@g*YX>1-?kl9WGes{ulrRWq
-zTCW@Om{iybhK+m8SiS%n^)Kgk21T`IEW#){Czvz;Fix;5bdkB$BFXimx9iBaRZ9r=3D
-zV(H0OD8mK94(j^6gF8)|^i-78H`hR#ebBvFq}>vK6-ni7j1S>*viG^nA7<~Bn2KW0
-zw%D36qxTcpO;c2bYwf)K?p#^LFL4Ifq8?kP?#;(Jo8*(twFPRBj*u~h%Ej$X6JI2E
-z<L5)YZY#@aM-2sxodox#)=3DG1ycE6A6j?am&HLbKPv@FI{(HAJ#D*V@xG^U`bnRtH<
-y%w+Y9$G2sBKv@6)0000tuOhH&%TnS10pSUNs0#q29h=3DIr#Ao{g000001X)@}7Iu~Z
+- automatically remove qgroup of deleted subvolumes
+  - adjust qgroup removal conditions, make sure all related subvolume
+    data are already removed, or return EBUSY, also take into account
+    setting of sysfs drop_subtree_threshold
+  - also works in squota mode
 
-literal 0
-HcmV?d00001
+- mount option updates: new modes of 'rescue=' that allow to mount (as
+  read-only) images that could have been partially converted by
+  user space tools
+  - ignoremetacsums  - invalid metadata checksums are ignored
+  - ignoresuperflags - super block flags that track conversion in
+                       progress (like UUID or checksums)
 
-diff --git a/tests/fsck-tests/063-log-missing-csum/test.sh b/tests/fsck-t=
-ests/063-log-missing-csum/test.sh
-new file mode 100755
-index 00000000..40a48508
---- /dev/null
-+++ b/tests/fsck-tests/063-log-missing-csum/test.sh
-@@ -0,0 +1,14 @@
-+#!/bin/bash
-+#
-+# Verify that check can detect missing log csum items.
-+
-+source "$TEST_TOP/common" || exit
-+
-+check_prereq btrfs
-+
-+check_image() {
-+	run_mustfail "missing log csum items not detected" \
-+		"$TOP/btrfs" check "$1"
-+}
-+
-+check_all_images
---=20
-2.45.2
+Core:
 
+- size of struct btrfs_inode is now below 1024 (on a release config),
+  improved memory packing and other secondary effects
+
+- switch tracking of open inodes from rb-tree to xarray, minor
+  performance improvement
+
+- reduce number of empty transaction commits when there are no dirty
+  data/metadata
+
+- memory allocation optimizations (reduced numbers, reordering out of
+  critical sections)
+
+- extent map structure optimizations and refactoring, more sanity checks
+
+- more subpage in zoned mode preparations or fixes
+
+- general snapshot code cleanups, improvements and documentation
+
+- tree-checker updates: more file extent ram_bytes fixes, continued
+
+- raid-stripe-tree update (not backward compatible):
+  - remove extent encoding field from the structure, can be inferred
+    from other information
+  - requires btrfs-progs 6.9.1 or newer
+
+- cleanups and refactoring
+  - error message updates
+  - error handling improvements
+  - return type and parameter cleanups and improvements
+
+----------------------------------------------------------------
+The following changes since commit 256abd8e550ce977b728be79a74e1729438b4948:
+
+  Linux 6.10-rc7 (2024-07-07 14:23:46 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.11-tag
+
+for you to fetch changes up to 8e7860543a94784d744c7ce34b78a2e11beefa5c:
+
+  btrfs: fix extent map use-after-free when adding pages to compressed bio (2024-07-11 16:32:22 +0200)
+
+----------------------------------------------------------------
+Anand Jain (7):
+      btrfs: drop bytenr_orig and fix comment in btrfs_scan_one_device()
+      btrfs: move btrfs_block_group_root() to block-group.c
+      btrfs: rename err to ret in btrfs_cleanup_fs_roots()
+      btrfs: rename ret to err in btrfs_recover_relocation()
+      btrfs: rename ret to ret2 in btrfs_recover_relocation()
+      btrfs: rename err to ret in btrfs_recover_relocation()
+      btrfs: rename err to ret in btrfs_drop_snapshot()
+
+Boris Burkov (7):
+      btrfs: preallocate ulist memory for qgroup rsv
+      btrfs: report reclaim stats in sysfs
+      btrfs: store fs_info in space_info
+      btrfs: dynamic block_group reclaim threshold
+      btrfs: periodic block_group reclaim
+      btrfs: prevent pathological periodic reclaim loops
+      btrfs: urgent periodic reclaim pass
+
+David Sterba (24):
+      btrfs: qgroup: do quick checks if quotas are enabled before starting ioctls
+      btrfs: remove duplicate name variable declarations
+      btrfs: rename macro local variables that clash with other variables
+      btrfs: use for-local variables that shadow function variables
+      btrfs: remove unused define EXTENT_SIZE_PER_ITEM
+      btrfs: keep const when returning value from get_unaligned_le8()
+      btrfs: constify parameters of write_eb_member() and its users
+      btrfs: simplify range parameters of btrfs_wait_ordered_roots()
+      btrfs: constify pointer parameters where applicable
+      btrfs: abort transaction if we don't find extref in btrfs_del_inode_extref()
+      btrfs: only print error message when checking item size in print_extent_item()
+      btrfs: abort transaction on errors in btrfs_free_chunk()
+      btrfs: qgroup: preallocate memory before adding a relation
+      btrfs: qgroup: warn about inconsistent qgroups when relation update fails
+      btrfs: pass a btrfs_inode to btrfs_readdir_put_delayed_items()
+      btrfs: pass a btrfs_inode to btrfs_readdir_get_delayed_items()
+      btrfs: pass a btrfs_inode to is_data_inode()
+      btrfs: switch btrfs_block_group::inode to struct btrfs_inode
+      btrfs: pass a btrfs_inode to btrfs_ioctl_send()
+      btrfs: switch btrfs_pending_snapshot::dir to btrfs_inode
+      btrfs: switch btrfs_ordered_extent::inode to struct btrfs_inode
+      btrfs: pass a btrfs_inode to btrfs_compress_heuristic()
+      btrfs: pass a btrfs_inode to btrfs_set_prop()
+      btrfs: enhance compression error messages
+
+Filipe Manana (51):
+      btrfs: zoned: make btrfs_get_dev_zone() static
+      btrfs: remove no longer used btrfs_migrate_to_delayed_refs_rsv()
+      btrfs: fix misspelled end IO compression callbacks
+      btrfs: fix function name in comment for btrfs_remove_ordered_extent()
+      btrfs: use an xarray to track open inodes in a root
+      btrfs: preallocate inodes xarray entry to avoid transaction abort
+      btrfs: reduce nesting and deduplicate error handling at btrfs_iget_path()
+      btrfs: remove inode_lock from struct btrfs_root and use xarray locks
+      btrfs: unify index_cnt and csum_bytes from struct btrfs_inode
+      btrfs: don't allocate file extent tree for non regular files
+      btrfs: remove location key from struct btrfs_inode
+      btrfs: remove objectid from struct btrfs_inode on 64 bits platforms
+      btrfs: rename rb_root member of extent_map_tree from map to root
+      btrfs: use a regular rb_root instead of cached rb_root for extent_map_tree
+      btrfs: make btrfs_finish_ordered_extent() return void
+      btrfs: use a btrfs_inode in the log context (struct btrfs_log_ctx)
+      btrfs: pass a btrfs_inode to btrfs_fdatawrite_range()
+      btrfs: pass a btrfs_inode to btrfs_wait_ordered_range()
+      btrfs: use a btrfs_inode local variable at btrfs_sync_file()
+      btrfs: qgroup: avoid start/commit empty transaction when flushing reservations
+      btrfs: avoid create and commit empty transaction when committing super
+      btrfs: send: make ensure_commit_roots_uptodate() simpler and more efficient
+      btrfs: send: avoid create/commit empty transaction at ensure_commit_roots_uptodate()
+      btrfs: scrub: avoid create/commit empty transaction at finish_extent_writes_for_zoned()
+      btrfs: add and use helper to commit the current transaction
+      btrfs: send: get rid of the label and gotos at ensure_commit_roots_uptodate()
+      btrfs: move fiemap code into its own file
+      btrfs: reduce critical section at btrfs_wait_ordered_roots()
+      btrfs: reduce critical section at btrfs_wait_ordered_extents()
+      btrfs: add comment about locking to btrfs_split_ordered_extent()
+      btrfs: avoid removal and re-insertion of split ordered extent
+      btrfs: mark ordered extent insertion failure checks as unlikely
+      btrfs: update panic message when splitting ordered extent
+      btrfs: remove pointless code when creating and deleting a subvolume
+      btrfs: avoid transaction commit on any fsync after subvolume creation
+      btrfs: remove super block argument from btrfs_iget()
+      btrfs: remove super block argument from btrfs_iget_path()
+      btrfs: remove super block argument from btrfs_iget_locked()
+      btrfs: do not BUG_ON() when freeing tree block after error
+      btrfs: use label to deduplicate error path at btrfs_force_cow_block()
+      btrfs: remove NULL transaction support for btrfs_lookup_extent_info()
+      btrfs: simplify setting the full backref flag at update_ref_for_cow()
+      btrfs: replace BUG_ON() with error handling at update_ref_for_cow()
+      btrfs: remove superfluous metadata check at btrfs_lookup_extent_info()
+      btrfs: reduce nesting for extent processing at btrfs_lookup_extent_info()
+      btrfs: don't BUG_ON() when 0 reference count at btrfs_lookup_extent_info()
+      btrfs: avoid allocating and running pointless delayed extent operations
+      btrfs: move the direct IO code into its own file
+      btrfs: fix data race when accessing the last_trans field of a root
+      btrfs: fix bitmap leak when loading free space cache on duplicate entry
+      btrfs: fix extent map use-after-free when adding pages to compressed bio
+
+Jeff Johnson (1):
+      btrfs: add MODULE_DESCRIPTION()
+
+Johannes Thumshirn (8):
+      btrfs: pass struct btrfs_io_geometry into handle_ops_on_dev_replace()
+      btrfs: pass reloc_control to relocate_data_extent()
+      btrfs: pass a reloc_control to relocate_file_extent_cluster()
+      btrfs: pass a reloc_control to relocate_one_folio()
+      btrfs: don't pass fs_info to describe_relocation()
+      btrfs: pass a struct reloc_control to prealloc_file_extent_cluster()
+      btrfs: pass reloc_control to setup_relocation_extent_mapping()
+      btrfs: remove raid-stripe-tree encoding field from stripe_extent
+
+Josef Bacik (15):
+      btrfs: don't do extra find_extent_buffer() in do_walk_down()
+      btrfs: remove all extra btrfs_check_eb_owner() calls
+      btrfs: use btrfs_read_extent_buffer() in do_walk_down()
+      btrfs: push lookup_info into struct walk_control
+      btrfs: factor out eb uptodate check from do_walk_down()
+      btrfs: remove local variable need_account in do_walk_down()
+      btrfs: unify logic to decide if we need to walk down into a node during snapshot delete
+      btrfs: extract the reference dropping code into it's own helper
+      btrfs: don't BUG_ON on ENOMEM from btrfs_lookup_extent_info() in walk_down_proc()
+      btrfs: handle errors from ref mods during UPDATE_BACKREF in walk_down_proc()
+      btrfs: replace BUG_ON with ASSERT in walk_down_proc()
+      btrfs: clean up our handling of refs == 0 in snapshot delete
+      btrfs: convert correctness BUG_ON()'s to ASSERT()'s in walk_up_proc()
+      btrfs: handle errors from btrfs_dec_ref() properly
+      btrfs: add documentation around snapshot delete
+
+Junchao Sun (1):
+      btrfs: qgroup: delete a TODO about using kmem cache to allocate structures
+
+Mark Harmstone (1):
+      btrfs: fix typo in error message in btrfs_validate_super()
+
+Qu Wenruo (37):
+      btrfs: raid56: do extra dumping for CONFIG_BTRFS_ASSERT
+      btrfs: slightly loosen the requirement for qgroup removal
+      btrfs: automatically remove the subvolume qgroup
+      btrfs: rename extent_map::orig_block_len to disk_num_bytes
+      btrfs: export the expected file extent through can_nocow_extent()
+      btrfs: introduce new members for extent_map
+      btrfs: introduce extra sanity checks for extent maps
+      btrfs: remove extent_map::orig_start member
+      btrfs: remove extent_map::block_len member
+      btrfs: remove extent_map::block_start member
+      btrfs: cleanup duplicated parameters related to can_nocow_file_extent_args
+      btrfs: cleanup duplicated parameters related to btrfs_alloc_ordered_extent
+      btrfs: cleanup duplicated parameters related to create_io_em()
+      btrfs: cleanup duplicated parameters related to btrfs_create_dio_extent()
+      btrfs: make __extent_writepage_io() to write specified range only
+      btrfs: subpage: introduce helpers to handle subpage delalloc locking
+      btrfs: lock subpage ranges in one go for writepage_delalloc()
+      btrfs: do not clear page dirty inside extent_write_locked_range()
+      btrfs: make extent_write_locked_range() handle subpage writeback correctly
+      btrfs: cleanup recursive include of the same header
+      btrfs: do not directly include rwlock_types.h
+      btrfs: uapi: record temporary super flags used by btrfstune
+      btrfs: subpage: remove the unused error bitmap dumping
+      btrfs: print-tree: add generation and type dump for EXTENT_DATA_KEY
+      btrfs: cleanup the bytenr usage inside btrfs_extent_item_to_extent_map()
+      btrfs: ignore incorrect btrfs_file_extent_item::ram_bytes
+      btrfs: make validate_extent_map() catch ram_bytes mismatch
+      btrfs: fix the ram_bytes assignment for truncated ordered extents
+      btrfs: tree-checker: add extra ram_bytes and disk_num_bytes check
+      btrfs: remove unused Opt enums
+      btrfs: output the unrecognized super block flags as hex
+      btrfs: introduce new "rescue=ignoremetacsums" mount option
+      btrfs: introduce new "rescue=ignoresuperflags" mount option
+      btrfs: remove the extra_gfp parameter from btrfs_alloc_folio_array()
+      btrfs: rename the extra_gfp parameter of btrfs_alloc_page_array()
+      btrfs: move extent_range_clear_dirty_for_io() into inode.c
+      btrfs: remove the BUG_ON() inside extent_range_clear_dirty_for_io()
+
+ fs/btrfs/Makefile                 |    2 +-
+ fs/btrfs/accessors.h              |   15 +-
+ fs/btrfs/bio.c                    |    4 +-
+ fs/btrfs/block-group.c            |   53 +-
+ fs/btrfs/block-group.h            |    3 +-
+ fs/btrfs/btrfs_inode.h            |  156 ++--
+ fs/btrfs/compression.c            |   25 +-
+ fs/btrfs/compression.h            |    2 +-
+ fs/btrfs/ctree.c                  |  108 +--
+ fs/btrfs/ctree.h                  |   18 +-
+ fs/btrfs/defrag.c                 |   18 +-
+ fs/btrfs/delalloc-space.c         |    2 +-
+ fs/btrfs/delalloc-space.h         |    2 +-
+ fs/btrfs/delayed-inode.c          |   47 +-
+ fs/btrfs/delayed-inode.h          |   10 +-
+ fs/btrfs/delayed-ref.c            |   51 +-
+ fs/btrfs/delayed-ref.h            |    8 +-
+ fs/btrfs/dev-replace.c            |    4 +-
+ fs/btrfs/dir-item.c               |    8 +-
+ fs/btrfs/dir-item.h               |    6 +-
+ fs/btrfs/direct-io.c              | 1052 ++++++++++++++++++++++++++
+ fs/btrfs/direct-io.h              |   14 +
+ fs/btrfs/disk-io.c                |  128 ++--
+ fs/btrfs/disk-io.h                |   18 +-
+ fs/btrfs/export.c                 |    6 +-
+ fs/btrfs/extent-io-tree.c         |    4 +
+ fs/btrfs/extent-tree.c            |  685 ++++++++++-------
+ fs/btrfs/extent-tree.h            |    8 +-
+ fs/btrfs/extent_io.c              | 1092 ++++-----------------------
+ fs/btrfs/extent_io.h              |   19 +-
+ fs/btrfs/extent_map.c             |  246 +++++--
+ fs/btrfs/extent_map.h             |   56 +-
+ fs/btrfs/fiemap.c                 |  930 +++++++++++++++++++++++
+ fs/btrfs/fiemap.h                 |   11 +
+ fs/btrfs/file-item.c              |   52 +-
+ fs/btrfs/file.c                   |  355 +--------
+ fs/btrfs/file.h                   |    4 +-
+ fs/btrfs/free-space-cache.c       |   12 +-
+ fs/btrfs/free-space-tree.c        |   10 +-
+ fs/btrfs/fs.h                     |   17 +-
+ fs/btrfs/inode-item.c             |    4 +-
+ fs/btrfs/inode.c                  | 1475 ++++++++-----------------------------
+ fs/btrfs/ioctl.c                  |   94 ++-
+ fs/btrfs/ioctl.h                  |    2 +-
+ fs/btrfs/locking.h                |    1 -
+ fs/btrfs/lru_cache.h              |    1 -
+ fs/btrfs/lzo.c                    |   43 +-
+ fs/btrfs/messages.c               |    3 +-
+ fs/btrfs/misc.h                   |    4 +-
+ fs/btrfs/ordered-data.c           |  146 ++--
+ fs/btrfs/ordered-data.h           |   27 +-
+ fs/btrfs/print-tree.c             |   10 +-
+ fs/btrfs/props.c                  |   20 +-
+ fs/btrfs/props.h                  |    4 +-
+ fs/btrfs/qgroup.c                 |  221 ++++--
+ fs/btrfs/qgroup.h                 |   25 +-
+ fs/btrfs/raid-stripe-tree.c       |   13 -
+ fs/btrfs/raid-stripe-tree.h       |    3 +-
+ fs/btrfs/raid56.c                 |  118 ++-
+ fs/btrfs/reflink.c                |    8 +-
+ fs/btrfs/relocation.c             |  157 ++--
+ fs/btrfs/scrub.c                  |   13 +-
+ fs/btrfs/send.c                   |   49 +-
+ fs/btrfs/send.h                   |    4 +-
+ fs/btrfs/space-info.c             |  265 ++++++-
+ fs/btrfs/space-info.h             |   48 ++
+ fs/btrfs/subpage.c                |  162 +++-
+ fs/btrfs/subpage.h                |    9 +-
+ fs/btrfs/super.c                  |   51 +-
+ fs/btrfs/super.h                  |    2 +-
+ fs/btrfs/sysfs.c                  |   85 ++-
+ fs/btrfs/tests/btrfs-tests.c      |    5 +-
+ fs/btrfs/tests/extent-map-tests.c |  120 +--
+ fs/btrfs/tests/inode-tests.c      |  176 +++--
+ fs/btrfs/transaction.c            |   31 +-
+ fs/btrfs/transaction.h            |    9 +-
+ fs/btrfs/tree-checker.c           |   37 +-
+ fs/btrfs/tree-log.c               |   74 +-
+ fs/btrfs/tree-log.h               |    6 +-
+ fs/btrfs/ulist.c                  |   21 +-
+ fs/btrfs/ulist.h                  |    2 +
+ fs/btrfs/uuid-tree.c              |   10 +-
+ fs/btrfs/uuid-tree.h              |    4 +-
+ fs/btrfs/volumes.c                |   62 +-
+ fs/btrfs/volumes.h                |    2 +-
+ fs/btrfs/xattr.c                  |    4 +-
+ fs/btrfs/xattr.h                  |    2 +-
+ fs/btrfs/zlib.c                   |   56 +-
+ fs/btrfs/zoned.c                  |   30 +-
+ fs/btrfs/zoned.h                  |   11 +-
+ fs/btrfs/zstd.c                   |   70 +-
+ include/trace/events/btrfs.h      |   19 +-
+ include/uapi/linux/btrfs_tree.h   |   22 +-
+ 93 files changed, 5186 insertions(+), 3915 deletions(-)
+ create mode 100644 fs/btrfs/direct-io.c
+ create mode 100644 fs/btrfs/direct-io.h
+ create mode 100644 fs/btrfs/fiemap.c
+ create mode 100644 fs/btrfs/fiemap.h
 
