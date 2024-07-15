@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-6453-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6454-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5144930D86
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 07:22:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8260930D87
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 07:22:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91D1128146F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 05:22:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 189C21F213D7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 05:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5DC13AA39;
-	Mon, 15 Jul 2024 05:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD3313B59B;
+	Mon, 15 Jul 2024 05:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="I8cl8a3Z";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="I8cl8a3Z"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="edx5m8rn";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SgQo2mp7"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE3C28FA
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1214D2EE
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721020953; cv=none; b=I6GDpdMISr9gH6AXdNd6wKIGORCu3sVNnOumvbImqehbB6I3Go3fTi4jtR0HH/po333cxRxLSFn5lPOnaBoOgmRCpXoSHgedzF75/yRumpGsuf7iau2AXVUO3ftsJYzeMg8hs1Pr1tPdqUbv5TM+x1oer2ApWX4X7knZdGpSwmA=
+	t=1721020954; cv=none; b=GSQEzDKOjPWeYJB1TJiCRqP/el2qhVzJpl4ubHV7YOnIo3UJrVopPZ4jaVdCnvb/bbn35WkBe1CH4jQtYtT5twYZ3glns/SXnGvkWmWgyvKhnDAWNbf7N7nqI3g9EIPXo9Px94Piau1e1o30piqwfA6FnXaf9oOp+QUv3abBvN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721020953; c=relaxed/simple;
-	bh=OwU0iwJiEM3kggQ92LFsUmmQhs0VWA8yA5UZ9GvT9To=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=BjUqQgI9vvEqE2XJIPwRZEPOOauDyYzeNDafjkGx88ENEDX8LnU+ryYRZoXd+r+pHqTMmSXidVq04OOKAF6k5QXzsqQutcLZLxFUG2/ECrquxPIYVfdYloMHnnqTytJls38s4WUL5dA4rE9E6LRiFn2NpRE+XaK1E2Wej2pmn/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=I8cl8a3Z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=I8cl8a3Z; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1721020954; c=relaxed/simple;
+	bh=Xt+5vsUGB7qqkoS9oP/wmmQ3mTBd9ta5fG2frFtaAAU=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nwczw6tC94T9rRuWJ5lQwd5/8TO1S0sxwVHTPWBUKWcnd2seBZU6z++9cRBF5sFwmIqDKqZ2LL4l/mEb8ANrb6hVxOkjnVGL/+32PHNwnzILnDWiZa3p6jTtreKnvK9j8fJTx2bwhmx8SDTWh0l1Q/f93BXPQ9iT6IiLlWvaxZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=edx5m8rn; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SgQo2mp7; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9C05B219E2
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:29 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F171821A06
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721020949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=7VHILr9Di021v3cPfnfb5ZzyzRV0S/TyFVPayj9fPPg=;
-	b=I8cl8a3ZfVUYalDTs11do95Z+8pr7hHmm0MFSVxEKpkfrSWkOOmUuvGfCde/snJAi2hVkF
-	KyQSFJq6hnbktP/+K/bbLDEmPs2Z4LfrJseqQzWKHLzkNegB75C5IYEv+2/NrRr2VeMRbZ
-	a9xDB0/1FnB9f/BkjvojZZB5fN/Klio=
+	t=1721020951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TDGiqqcCtFhY93gfc3sAm8m8hpDyi7hXqY6AgZgscvQ=;
+	b=edx5m8rnuSOn+nc04aQZJCorBSQRdFSnNDXe7B2H/RHzk7Z1lq+cB8XlVCZk1FW/SJwNAQ
+	yBpLzzE1Zeh6smsHd8I0SB+EEg6uVQBfk96jkpJ2evpx5fWsaqbAasRSFKqv84rV13fOD0
+	KLF6nKdj39yh73Wtk1DvlEkshK13dTs=
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=SgQo2mp7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721020949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=7VHILr9Di021v3cPfnfb5ZzyzRV0S/TyFVPayj9fPPg=;
-	b=I8cl8a3ZfVUYalDTs11do95Z+8pr7hHmm0MFSVxEKpkfrSWkOOmUuvGfCde/snJAi2hVkF
-	KyQSFJq6hnbktP/+K/bbLDEmPs2Z4LfrJseqQzWKHLzkNegB75C5IYEv+2/NrRr2VeMRbZ
-	a9xDB0/1FnB9f/BkjvojZZB5fN/Klio=
+	t=1721020950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TDGiqqcCtFhY93gfc3sAm8m8hpDyi7hXqY6AgZgscvQ=;
+	b=SgQo2mp7walNqGBIwwzMn9L5VYfKEJQGaH4GFnucUIV0qrv6RDfTDaPRwdDtSqIgyZv/2S
+	3Zg4NaUE2OKAuvve+fIq4EmQZzfX6tIQji+hmOqHsEAUk+ZGfyeMpdqR/mxkLfv7mRAD3G
+	5k3QDfLWI2GD+bSB/UpSapJ1d4YvmuQ=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B64CE134AB
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:28 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 21605134AB
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1kruGxSylGZdRQAAD6G6ig
+	id 8Jc6MxWylGZdRQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:28 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 05:22:29 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/3] btrfs-progs: small cleanups related to subvolume creation
-Date: Mon, 15 Jul 2024 14:52:07 +0930
-Message-ID: <cover.1721020730.git.wqu@suse.com>
+Subject: [PATCH v2 1/3] btrfs-progs: remove fs_info parameter from btrfs_create_tree()
+Date: Mon, 15 Jul 2024 14:52:08 +0930
+Message-ID: <aeae4d992187732b91392ee565c3fcdf0e2f5389.1721020730.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <cover.1721020730.git.wqu@suse.com>
+References: <cover.1721020730.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,98 +84,135 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Rspamd-Queue-Id: F171821A06
+X-Spam-Flag: NO
+X-Spam-Score: 0.99
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.99 / 50.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
+	MX_GOOD(-0.01)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_ONE(0.00)[1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+	DKIM_TRACE(0.00)[suse.com:+]
 X-Spam-Level: 
+X-Spamd-Bar: /
 
-[CHANGELOG]
-v2:
-- A new patch to cleanup btrfs_mksubvol()
-  We have a kernel function with the same name, but those two are doing
-  completely different works.
+The @fs_info parameter can be easily extracted from @trans, and kernel
+has already remove the parameter.
 
-  The progs version is more like linking a subvolume to a destination.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/disk-io.c         | 4 ++--
+ kernel-shared/disk-io.h         | 1 -
+ kernel-shared/free-space-tree.c | 2 +-
+ mkfs/main.c                     | 8 ++++----
+ 4 files changed, 7 insertions(+), 8 deletions(-)
 
-  The new patch removes btrfs_mksubvol(), and move the convert specific
-  code to convert code basis.
-
-Thanks to Mark's new effort to introduce subvolume creation ability, the
-long existing duplicated subvolume creation problem is exposed again.
-
-The first patch to do a small cleanup for btrfs_create_tree() so that
-the parameter list matches the kernel one.
-
-The second one is the main dish to fully merge the different functions
-to create a subvolume.
-
-We have btrfs_create_tree() to properly create an empty tree, and
-btrfs_make_root_dir() to create the initial root dir.
-
-So use them to create btrfs_make_subvolume():
-
-- Calls btrfs_create_tree() to properly create an empty tree
-  Unlike btrfs_copy_root() used in create_subvol(), which can be unsafe
-  if the source subvolume is not empty.
-
-- Calls btrfs_read_fs_root() to setup the cache and tracking
-  Inside create_data_reloc_tree() we directly added the root to
-  fs_root_tree, which is only safe for data reloc tree.
-
-  As we didn't properly set the correct tracking flags.
-
-- Calls btrfs_make_root_dir() to setup the root directory
-
-And finally cleanup a confusing function, btrfs_mksubvol(), which is not
-really creating a subvolume, but linking a subvolume to a parent inode.
-
-Instead of the confusing name, create a new helper,
-btrfs_link_subvolume() to do the linkage, and move the convert specific
-retry behavior into convert code.
-
-Qu Wenruo (3):
-  btrfs-progs: remove fs_info parameter from btrfs_create_tree()
-  btrfs-progs: introduce btrfs_make_subvolume()
-  btrfs-progs: use btrfs_link_subvolume() to replace btrfs_mksubvol()
-
- Makefile                        |   1 +
- check/main.c                    |   9 +-
- common/root-tree-utils.c        | 215 ++++++++++++++++++++++++++++++++
- common/root-tree-utils.h        |  30 +++++
- convert/main.c                  | 107 +++++++++-------
- kernel-shared/ctree.h           |   8 +-
- kernel-shared/disk-io.c         |   4 +-
- kernel-shared/disk-io.h         |   1 -
- kernel-shared/free-space-tree.c |   2 +-
- kernel-shared/inode.c           | 140 +--------------------
- mkfs/common.c                   |  39 ------
- mkfs/common.h                   |   2 -
- mkfs/main.c                     |  78 +-----------
- 13 files changed, 331 insertions(+), 305 deletions(-)
- create mode 100644 common/root-tree-utils.c
- create mode 100644 common/root-tree-utils.h
-
---
+diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+index 295bd50ad063..3e8cab1187f0 100644
+--- a/kernel-shared/disk-io.c
++++ b/kernel-shared/disk-io.c
+@@ -2369,12 +2369,12 @@ int btrfs_delete_and_free_root(struct btrfs_trans_handle *trans,
+ }
+ 
+ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
+-				     struct btrfs_fs_info *fs_info,
+ 				     struct btrfs_key *key)
+ {
+-	struct extent_buffer *leaf;
++	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_root *tree_root = fs_info->tree_root;
+ 	struct btrfs_root *root;
++	struct extent_buffer *leaf;
+ 	int ret = 0;
+ 
+ 	root = kzalloc(sizeof(*root), GFP_KERNEL);
+diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
+index 9f848635fd69..0047db5e7c3e 100644
+--- a/kernel-shared/disk-io.h
++++ b/kernel-shared/disk-io.h
+@@ -239,7 +239,6 @@ int write_tree_block(struct btrfs_trans_handle *trans,
+ 		     struct extent_buffer *eb);
+ int btrfs_fs_roots_compare_roots(const struct rb_node *node1, const struct rb_node *node2);
+ struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
+-				     struct btrfs_fs_info *fs_info,
+ 				     struct btrfs_key *key);
+ int btrfs_delete_and_free_root(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_root *root);
+diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
+index 93806ca01162..81fd57b886d2 100644
+--- a/kernel-shared/free-space-tree.c
++++ b/kernel-shared/free-space-tree.c
+@@ -1516,7 +1516,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+ 	if (IS_ERR(trans))
+ 		return PTR_ERR(trans);
+ 
+-	free_space_root = btrfs_create_tree(trans, fs_info, &root_key);
++	free_space_root = btrfs_create_tree(trans, &root_key);
+ 	if (IS_ERR(free_space_root)) {
+ 		ret = PTR_ERR(free_space_root);
+ 		goto abort;
+diff --git a/mkfs/main.c b/mkfs/main.c
+index b40f7432bb74..077da1e33fc6 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -748,7 +748,7 @@ static int create_data_reloc_tree(struct btrfs_trans_handle *trans)
+ 	char *name = "..";
+ 	int ret;
+ 
+-	root = btrfs_create_tree(trans, fs_info, &key);
++	root = btrfs_create_tree(trans, &key);
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+ 		goto out;
+@@ -870,7 +870,7 @@ static int create_uuid_tree(struct btrfs_trans_handle *trans)
+ 	int ret = 0;
+ 
+ 	UASSERT(fs_info->uuid_root == NULL);
+-	root = btrfs_create_tree(trans, fs_info, &key);
++	root = btrfs_create_tree(trans, &key);
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+ 		goto out;
+@@ -900,7 +900,7 @@ static int create_global_root(struct btrfs_trans_handle *trans, u64 objectid,
+ 	};
+ 	int ret = 0;
+ 
+-	root = btrfs_create_tree(trans, fs_info, &key);
++	root = btrfs_create_tree(trans, &key);
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+ 		goto out;
+@@ -1127,7 +1127,7 @@ static int setup_raid_stripe_tree_root(struct btrfs_fs_info *fs_info)
+ 		return ret;
+ 	}
+ 
+-	stripe_root = btrfs_create_tree(trans, fs_info, &key);
++	stripe_root = btrfs_create_tree(trans, &key);
+ 	if (IS_ERR(stripe_root))  {
+ 		ret = PTR_ERR(stripe_root);
+ 		btrfs_abort_transaction(trans, ret);
+-- 
 2.45.2
 
 
