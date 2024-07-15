@@ -1,144 +1,212 @@
-Return-Path: <linux-btrfs+bounces-6447-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6448-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F182D930C30
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 01:35:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81ED7930D34
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 06:30:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B4C1F216CF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jul 2024 23:35:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03DA71F213E0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 04:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC159474;
-	Sun, 14 Jul 2024 23:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD6A183097;
+	Mon, 15 Jul 2024 04:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Nhnwb4Ty"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YTXh3gIp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DFB53E23
-	for <linux-btrfs@vger.kernel.org>; Sun, 14 Jul 2024 23:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F20D28FC
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 04:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721000127; cv=none; b=j6/OhjoofMJ/b+F7JE59CUWuXLrFTXlCfzIcV1ANUMlok49sgIWgK9GK/wI0r/ccK/WTaCumqtELXOFSM7t0JdvJwcPcnW8s7gk88Ka0lngE6XEMDEFZowRtWx1YiakEJpjEeP9+UrDCXeisv7MYTYS8fqBeLnJJANZ2x/6dm9g=
+	t=1721017793; cv=none; b=jv9k95YmPAr5mcdJ4wMo541oe5scPOGd+Vs+b3F4fYDHp7Ti56Ga500EJTAj9QdLSWJvznF3XpfFLEyGzAlO2B3rB9d8Ka7aYFW5D8kh9jOQShj2pSoSRpsl8EZ3RRLV0WMz8ePMsLqp2QwyAeKSNcAXq9KffOSt7U68w65hr0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721000127; c=relaxed/simple;
-	bh=A8ExdULMTTEa/hIL0jxZHs1/eGFW6CgkIL183rgw7SU=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=q61DpwBbOCnnccft8qBzZ1kJXwLITeXeq48YXQSskIRn5W9Nd7aP1AdLKecPdiZuH0LVDLk3cGOPhCOelUHJgSoe+oyNWGS7KBpsNfdWpUYHYMvBnhr9A8o8tkUx0uXNx5OxpGiiKSgsKSIURQYULlB0nR9pimvy0Qahy9xBYhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Nhnwb4Ty; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: linux-fsdevel@vger.kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721000122;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=/deZcosMIiR4fSksbjwDZ5A1olvy8pXsietjMa6AtJs=;
-	b=Nhnwb4TyIcK6QZOf+zCWrH3gLbo1WcXLbr5I7NU7DBuAajSBH3ZMxHNB/oFOtEEgSnFvMA
-	LZ8/0rmdrDNGtUsl97MMYHD3UYcrdddc2lvt9bNQ86nFKn4lJY0RDjLZKZJzl7Gmb/ZBNL
-	Ph9sn9P7MmPLlMdyiOKCWHxWUSKMgRw=
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: fstests@vger.kernel.org
-X-Envelope-To: linux-btrfs@vger.kernel.org
-X-Envelope-To: linux-xfs@vger.kernel.org
-X-Envelope-To: linux-ext4@vger.kernel.org
-Date: Sun, 14 Jul 2024 19:35:18 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-ext4@vger.kernel.org
-Subject: Shared test cluster for filesystem testing
-Message-ID: <o55vku65ruvtvst7ch4jalpiq4f5lbn3glmrlh7bwif6xh6hla@eajwg43srxoj>
+	s=arc-20240116; t=1721017793; c=relaxed/simple;
+	bh=V2KV9NKM96hL3KtuToZo6hgfsa7H82f6ANNiSw/pYXc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lj2yDYt+rdXTNQaf2ygliBW8DauAkGOaF4j2eYj5owOPDUSHvIJFovEHD6XUSFczX6V52gHtKqKjaU7TKvD8F7LgsIQmf/WA+FcysUsnt4sQob0FXc9EShS+NIXwLKltqt0FVxiaC7ZOeW2oZv+2GJ9Af8wzoKyCqG1TgodLG8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YTXh3gIp; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-79f08b01ba6so328452885a.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Jul 2024 21:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721017790; x=1721622590; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V2KV9NKM96hL3KtuToZo6hgfsa7H82f6ANNiSw/pYXc=;
+        b=YTXh3gIp4a5+j6owc6MPliFRnc65uPxqxDWQqrIcnD7jKz6UnoHR/pC423Tt1l724w
+         0ChfwxYL6e04i4hRcUuALVbWs0LAkbVyZ/qM/P3q4u7OfBiieorwOVxOubUSqeOFij0A
+         3T+mmZmnyJqoQy10LaNl03rlRRmW14lGGO7WhfORWEqrKB6AIoAyHaUr54ER4Z1aJkPM
+         7cgH+xVThawB2PmlYzGQmKukfEjh+s79LVRSJmxnon18mPJsPbejCS5Whz2t8wOb0yvz
+         nJZ/FR9CuY+NhmdkYuQV2Nutr+Zw+SKLVxZch2kqSMBNKmJxZ6hoyxAQ9YsjVMjc08PF
+         X8CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721017790; x=1721622590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V2KV9NKM96hL3KtuToZo6hgfsa7H82f6ANNiSw/pYXc=;
+        b=vH+fp34sD8IFdAyXQjQJxhc/Uoho63Y55a48Lx9ZjTz05x35YgNWMhvJxsK2nmMfZm
+         OlOqnFN+DTYhAFFWDw18zlEKaNTCmGmeusBpGRdW/cp2QgJz572Zt8n+x5t73PDJiHz6
+         Vt7BEyKk0pPeo8HriGulSTW2mzWAn86Ct/7aTLF+yyUirjRqUnYnEL47t0H+fFtgD5ru
+         leiInnhSGdkhLZ2dXDN3u3vbxR8gDy9tiwTUzC9Mxb3IzkLo0P1LjoOv4YjMbyhoNlQV
+         UT5qCX7a1GdWEht5fQUJ3vtr4cV+4M8dJuqd34Lzk+CFF06cY+xkdscXrc3XgZ47s2Hd
+         rWNQ==
+X-Gm-Message-State: AOJu0YxYOldgNCuFoERHHxDQnvbYiZcXkJ7m6klWWQRek8ks0thw5uuy
+	cWR/PcUnkKZLgWn+s3lXGzrvyyidTtCX1lPDYn3yjTBBDlfh3mfaD4+AcDjZIQ/WHr+I3BCIRoe
+	iNS0MVuQC6HsPIBgkdmUeb/koRp1jjx3ewf0=
+X-Google-Smtp-Source: AGHT+IGXAE7o/sVzpXqahwXrpDU77wkTMlXfbr/QOyGapABjy0fM7b8uoI4HtZR/BrGA9eliqIIjgoXyres5r28oWpI=
+X-Received: by 2002:a05:620a:2996:b0:79b:ee4e:8362 with SMTP id
+ af79cd13be357-7a152f2a92amr2055384385a.0.1721017790287; Sun, 14 Jul 2024
+ 21:29:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Migadu-Flow: FLOW_OUT
+References: <CAMthOuPjg5RDT-G_LXeBBUUtzt3cq=JywF+D1_h+JYxe=WKp-Q@mail.gmail.com>
+ <0bedfc5f-4658-4d01-98b3-34bc14f736f3@gmx.com>
+In-Reply-To: <0bedfc5f-4658-4d01-98b3-34bc14f736f3@gmx.com>
+From: Kai Krakow <hurikhan77@gmail.com>
+Date: Mon, 15 Jul 2024 06:29:24 +0200
+Message-ID: <CAMthOuNk273pZUSU1Npr-Zx7LscBxOsXeyWcQCgbYP=82TfreA@mail.gmail.com>
+Subject: Re: btrfs crashes during routine btrfs-balance-least-used
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>, Oliver Wien <ow@netactive.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Those who know me have oft heard me complain about the state of testing
-automation and infrastructure, in filesystem land and the wider kernel.
-In short - it sucks.
+Hello Qu!
 
-For some years I've been working, off and on, on my own system off and
-on, and I think I've got it to the point where I can start making it
-available to the wider filesystem community, and I hope it will be of
-some use to people.
+Thanks for looking into this. We already started the restore, so we no
+longer have any access to the corrupted disk images.
 
-Here's my philosophy and requirements:
+Am So., 14. Juli 2024 um 23:54 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gmx.co=
+m>:
+>
+>
+>
+> =E5=9C=A8 2024/7/15 01:43, Kai Krakow =E5=86=99=E9=81=93:
+> > Hello btrfs list!
+> >
+> > (also reported in irc)
+> >
+> > Our btrfs pool crashed during a routine btrfs-balance-least-used.
+> > Maybe of interest: bees is also running on this filesystem, snapper
+> > takes hourly snapshots with retention policy.
+> >
+> > I'm currently still collecting diagnostics, "btrfs check" log is
+> > already 3 GB and growing.
+> >
+> > The btrfs runs on three devices vd{c,e,f}1 with data=3Dsingle meta=3Dra=
+id1.
+> >
+> > Here's an excerpt from dmesg (full log https://gist.tnonline.net/TE):
+>
+> Unfortunately the full log is not really full.
+>
+> There should be extent leaf dump, and after that dump, showing the
+> reason why we believe it's a problem.
+>
+> Is there any true full dmesg dump?
 
-- Tests should be done with results up in a dashboard _as quickly as
-  possible_
+Yes, sorry. The gist has been truncated - mea culpa. I repasted it:
+https://gist.tnonline.net/6Q
 
-Nothing's worse than having to wait hours, overnight, or days for test
-results - by which time you've context switched onto something else. I
-want full test results in 10 minutes.
+> But overall, most of the errors inside __btrfs_free_extent() would be
+> extent tree corruption.
+>
+> > [...]
+> >
+> > "btrfs check" can only run in lowmem mode, it will crash with "out of
+> > memory" (the system has 74G of RAM). Here's the beginning of the log:
+> >
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > ERROR: shared extent 15929577472 referencer lost (parent: 1147747794944=
+)
+>
+> I believe that's the cause, some extent tree corruption.
+>
+> > ERROR: shared extent 15929577472 referencer lost (parent: 1148095201280=
+)
+> > ERROR: shared extent 15929577472 referencer lost (parent: 1175758274560=
+)
+> > (repeating thousands of similar lines)
+> >
+> > Last gist: https://gist.tnonline.net/Z4 (meanwhile, this log is over
+> > 3GB, I can upload it somewhere later).
+> >
+> > We have backups (daily backups stored inside borg on a remote host).
+> >
+> > Is there anything we can do? Restoring from backup will probably take
+> > more than 24h (3 TB). The system runs web and mail hosts for more than
+> > 100 customers.
+> >
+> > We did not try to run "btrfs check --repair" yet, nor
+> > "--init-extent-tree". I'd rather try a quick repair before restoring.
+> > But OTOH, I don't want to make it worse and waste time by trying.
+>
+> Considering the size of the metadata, I do not believe --repair nor
+> --init-extent-tree is going to fully fix the problem.
 
-- Every commit gets tested, and the results are available in a git log
-  view.
+Yes, I suspected that and cancelled the btrfs check. I still have the
+log (3.8GB) but it's probably not useful, and I cancelled at step 3/7
+after seeing it sitting there for hours without output but 100% CPU
+usage on one core.
 
-Manual bisection is a timesuck, and every commit should be tested
-anyways. I want to be able able to churn out code in nice clean simple
-commits, push it all out to the CI, and when one of them is broken, be
-able to see at a glance which one it is.
+> > Unfortunately, the btrfs has been mounted rw again after unmounting
+> > following the incident. This restarted the balance, and it seems it
+> > changed the first error "btrfs check" found. I'll try
+> > "ro,skip-balance" after btrfs-check finished. I think the file-system
+> > is still fully readable and we can take one last backup.
+> >
+> > Also, I happily provide the logs collected if a dev wanted to look into=
+ it.
+>
+> I guess there is no real full dmesg of that incident?
+>
+> The corrupted extent leaf has 260 items, but the dump only contains 36,
+> nor the final reason line.
 
-- Simple and extensible, and able to do any kernel testing that can be
-  done in a VM.
+See above, I repasted it.
 
-kdevops is right out - all the stateful ansible crap is not what I'm
-after. Simple and declarative tests that specify how the kernel, qemu
-etc. should be configured.
+> The other thing is, does the server has ECC memory?
+> It's not uncommon to see bitflips causing various problems (almost
+> monthly reports).
 
-- Available to all developers and maintainers
+I don't know the exact hosting environment, we are inside of a QEMU
+VM. But I'm pretty sure it is ECC.
 
-Maintainers shouldn't be looking at patches that haven't been tested.
-Everyone doing filesystem development needs access to this
-system, on whatever branches they're working on.
+The disk images are hosted on DRBD, with two redundant remote block
+devices on NVMe RAID. Our VM runs on KVM/QEMU. We are not seeing DRBD
+from within the VM. Because the lower storage layer is redundant, we
+are not running a data raid profile in btrfs but we use multiple block
+devices because we are seeing better latency behavior that way.
 
-IOW: big cluster of machines watching git branches and uploading results
-to a dashboard, with sharding at subtest granularity so we can get
-results back _quick_.
+> If the machine doesn't have ECC memory, then a memtest would be preferabl=
+e.
 
-I've got 8 80 core arm machines for this so far. We _will_ need more
-machines than this, and I'll need funding to pay for those machines, but
-this is enough to get started.
+I'll ask our data center operators about ECC but I'm pretty sure the
+answer will be: yes, it's ECC.
 
-A shared cluster of dedicated machines with full sharding means that us
-individual developers can get results back _quick_. The CI tests each
-branch, newest to oldest, and since we're not all going to be pushing at
-the same time, or need the lockdep/kasan variants right away (those run
-at a lower priority) - we can all get the results we need (most recent
-commit, basic tests) pretty much immediately.
+We have been using their data centers for 20+ years and have never
+seen a bit flip or storage failure.
 
-I've got fstests tests wrappers for bcachefs, btrfs, ext2, ext4, f2fs,
-jfs, nfs, nilfs2 and xfs so far, with lockdep, kasan and ubsan variants
-for all of those.
+I wonder if parallel use of snapper (hourly, with thinning after 24h),
+bees (we are seeing dedup rates of 2:1 - 3:1 for some datasets in the
+hosting services) and btrfs-balance-least-used somehow triggered this.
+I remember some old reports where bees could trigger corruption in
+balance or scrub, and evading that by pausing if it detected it. I
+don't know if this is an issue any longer (kernel 6.6.30 LTS).
 
-The tests the CI runs are easy to run locally, for reproducability -
-ktest was first written for local, interactive use. I suggest you try
-it, it's slick [0]:
 
-Send me an email with your ssh pubkey and the username you want, and
-I'll give you an account - this is how you'll configure your config file
-that specifies which tests to run and which branches to test.
-
-And please send me patches to ktest adding tests for more filesystems
-and subsystems. This isn't intended to be filesystem specific - the goal
-here is one single _quick_ dashboard for anything that can be tested in
-a VM.
-
-Results dashboard:
-https://evilpiepirate.org/~testdashboard/ci
-
-Results for Linus's tree:
-https://evilpiepirate.org/~testdashboard/ci?branch=master
-
-[0] Ktest: https://evilpiepirate.org/git/ktest.git/
+Thanks,
+Kai
 
