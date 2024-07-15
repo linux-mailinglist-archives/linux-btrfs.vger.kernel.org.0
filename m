@@ -1,114 +1,569 @@
-Return-Path: <linux-btrfs+bounces-6477-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6478-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCCFB931658
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 16:03:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F31289316F1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 16:38:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70CC21F2234B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 14:03:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB31C283039
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2024 14:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BD818EA6B;
-	Mon, 15 Jul 2024 14:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2A618EFC7;
+	Mon, 15 Jul 2024 14:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="W4kmEULL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A004918C166
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 14:03:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F04C13D531
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 14:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721052210; cv=none; b=AgV4Z4lx0zFHxAlubvL9zivDG5KHt38eI068zt4sybsWiGJdwj/r+agvEJZaVQR4Q7oiRaLYO/RONn7BhztrIVP0iyW8X9tpToXesKMgvt61JNPrlNbKWsLoFDVL7i8gma+d/CJcCvPcbZnJWMLZnvtgCbSztnaTtJIxN6199HE=
+	t=1721054322; cv=none; b=VqW/+WxTeYLsvBWzS3WbZ7k9pZEQ7vcGOvKcBelAQ///LSd5oCZeiACf658A/oMmE9DJYZhzQTSnXUqhNmWP16/1H7omMnpIxZXGBKs0OxDgXxkc7BPOGGrEwnd15jWxHeOt/DY/ERrzRexbrH+mLCJ5qpr5ZcrtwOpZfwZgxtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721052210; c=relaxed/simple;
-	bh=Cw4ETPNI4qvPqgQe3rXtZkOz7E1LaHcI0fTwbaCV2Hw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=VAubCj2Zn/zaiNpPLF3QB64og3VtYBB7C8MNLP4lSqGJsVceLPEUDxiEeCSFrB84/dAbBaGwGnvIhwH+KTm/6Q34xAKt/Xt06OI7b+QT2Jp9jVrIznh/17NXteUNBr/76gZKM3Msb7PtVMGGjcAF4dO1e4xJ+o26yLoT+gcE/B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-80ba1cbd94eso323363639f.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 07:03:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721052208; x=1721657008;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o4A4/V5MB5lcsaPREJ4SGYel+xnp/oU21Atqi3j4Xnc=;
-        b=v4WRqi5LM1wVcrFwbF2Kz3WrIFP0vZkWtQeqnvt1IgoYyYOD7L1N21x4BrTfMkOcrU
-         tGL/Sh8egK9sUJMqKBNm1K1nJyCEv3ZXW7tPLYMSNCHR2B5yaYzCNovHp1KFVTaS/t+q
-         vmMAiqBmCP86LLQ+uTewM2DOitazIw4uIjyE4P5f6zM1o1WtgYWKQnvnc8MlGnETAsz3
-         V40TxU/10jN4n1xJ3RI1LRp8qg3KJe2Nnj+U+NK8eL3A2X/Ek2iGGrlcUSTaKMCNUIjj
-         CHTEUf0YszqiU/azLWljzIYqTUqwkk59ccjmdOrUJ+kS3bYsXHwi9OAzy4vf12+Af5sk
-         vrRw==
-X-Forwarded-Encrypted: i=1; AJvYcCWT/ovKsw8YPQrBh/4D9twK1iyb/ufhaEG8xhn95n0vV5UiePpbX5POyKERpB9cyHlWlI76UHt7pwZe6WhTnBHeB0CeMKj1ufmnFis=
-X-Gm-Message-State: AOJu0Yx3V2LwWxK2EFVyZIRBW6nBUzSpTNMZklr915FdyOtgGq621X9A
-	ZD7Eou692LeOEsclZp/TYRldQqFAK+MPJ85Cqn2wRWdMK+VHqTIMOmNzgI5wb21y965dqO4nDUT
-	s6O10Xo+DGXQv3XDZdA8ikj/5dIZtPzUynZ594Lp8jdTm3wp3HbN52yw=
-X-Google-Smtp-Source: AGHT+IF8r5Ghwyiozmy+LCRlyVYQr9oqR9psrek31gn+C7LOYjle40LU0OaiUeR1azvf/PNHxjG9sje0wJCYsKxoWNHHnnZmzOyW
+	s=arc-20240116; t=1721054322; c=relaxed/simple;
+	bh=4XdX5qeuAW5J7O+eUYdKrcRCVT+kaj+rCzAHLN0gkk4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Iizy2UkNZRrfXFsJFlqSgq9o72gbrK9wppqaIGKn5UJLR2IjJm+xMqQfQ4IZ7Eyh/Ps0/wUbCgbgXCTQcozhxVsfs35S81D8DzWY63JI1Uz2A1cfpTPuV8/DWJb948QXQjhoq9objAn9Wl1D1VS8RK6T40BwXOPC27I8+Xsr5b4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=W4kmEULL; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46FDr1Qi014859
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 07:38:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=facebook; bh=ASXeEIpG
+	yHm1t/nR9k6keTukao9yoS73dugF9aZ/lQ0=; b=W4kmEULL2g+eaSM6z0Ida33h
+	/msKdoqXqYI2ILhmUxE/BRSdEl9Sa/sPStjSRbgZXOJ8YyT4i+xxqj/zQV6F7f+s
+	k/Svh42ALz0AWGGdL2E2eiah0CPaUbx2zu5AdrKSKgYyjtvf/BMoiRCjU4rEF5JC
+	GIkxTnmLZa7Kqg1We7g=
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40d51r08wv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2024 07:38:39 -0700 (PDT)
+Received: from twshared5319.37.frc1.facebook.com (2620:10d:c085:108::150d) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Mon, 15 Jul 2024 14:38:38 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 57E2F4503980; Mon, 15 Jul 2024 15:38:31 +0100 (BST)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH v3] btrfs-progs: add rudimentary log checking
+Date: Mon, 15 Jul 2024 15:38:24 +0100
+Message-ID: <20240715143830.2067478-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:831e:b0:4c0:73d0:3d77 with SMTP id
- 8926c6da1cb9f-4c0b2b6b9damr1732109173.5.1721052205512; Mon, 15 Jul 2024
- 07:03:25 -0700 (PDT)
-Date: Mon, 15 Jul 2024 07:03:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000059890d061d49b1df@google.com>
-Subject: [syzbot] Monthly btrfs report (Jul 2024)
-From: syzbot <syzbot+list74f90a642d75db43bd8a@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: EXmWYfj5J_7XAwVhkGNzhHhWLhdqivbd
+X-Proofpoint-ORIG-GUID: EXmWYfj5J_7XAwVhkGNzhHhWLhdqivbd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-15_09,2024-07-11_01,2024-05-17_01
 
-Hello btrfs maintainers/developers,
+Currently the transaction log is more or less ignored by btrfs check,
+meaning that it's possible for a FS with a corrupt log to pass btrfs
+check, but be immediately corrupted by the kernel when it's mounted.
 
-This is a 31-day syzbot report for the btrfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/btrfs
+This patch adds a check that if there's an inode in the log, any pending
+non-compressed writes also have corresponding csum entries.
 
-During the period, 1 new issues were detected and 2 were fixed.
-In total, 37 issues are still open and 67 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  6082    Yes   kernel BUG in close_ctree
-                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
-<2>  3027    Yes   WARNING in btrfs_space_info_update_bytes_may_use
-                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
-<3>  256     Yes   WARNING in btrfs_chunk_alloc
-                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
-<4>  252     Yes   WARNING in btrfs_commit_transaction (2)
-                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
-<5>  238     Yes   WARNING in btrfs_remove_chunk
-                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
-<6>  145     Yes   kernel BUG in insert_state_fast
-                   https://syzkaller.appspot.com/bug?extid=9ce4a36127ca92b59677
-<7>  114     Yes   WARNING in cleanup_transaction
-                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
-<8>  97      Yes   kernel BUG in set_state_bits
-                   https://syzkaller.appspot.com/bug?extid=b9d2e54d2301324657ed
-<9>  83      Yes   WARNING in btrfs_put_block_group
-                   https://syzkaller.appspot.com/bug?extid=e38c6fff39c0d7d6f121
-<10> 77      Yes   kernel BUG in folio_unlock (2)
-                   https://syzkaller.appspot.com/bug?extid=9e39ac154d8781441e60
-
+Signed-off-by: Mark Harmstone <maharmstone@fb.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changes:
+v2:
+helper to load log root
+handle compressed extents
+loop logic improvements
+fix bug in check_log_csum
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+v3:
+added test
+added explanatory comment to check_log_csum
+changed length operation to -=3D
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+ check/main.c                                  | 304 +++++++++++++++++-
+ .../063-log-missing-csum/default.img.xz       | Bin 0 -> 1288 bytes
+ tests/fsck-tests/063-log-missing-csum/test.sh |  14 +
+ 3 files changed, 306 insertions(+), 12 deletions(-)
+ create mode 100644 tests/fsck-tests/063-log-missing-csum/default.img.xz
+ create mode 100755 tests/fsck-tests/063-log-missing-csum/test.sh
 
-You may send multiple commands in a single email message.
+diff --git a/check/main.c b/check/main.c
+index 83c721d3..eaae3042 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -9787,6 +9787,274 @@ static int zero_log_tree(struct btrfs_root *root)
+ 	return ret;
+ }
+=20
++/* Searches the given root for checksums in the range [addr, addr+length=
+].
++ * Returns 1 if found, 0 if not found, and < 0 for an error. */
++static int check_log_csum(struct btrfs_root *root, u64 addr, u64 length)
++{
++	struct btrfs_path path =3D { 0 };
++	struct btrfs_key key;
++	struct extent_buffer *leaf;
++	u16 csum_size =3D gfs_info->csum_size;
++	u16 num_entries;
++	u64 data_len;
++	int ret;
++
++	key.objectid =3D BTRFS_EXTENT_CSUM_OBJECTID;
++	key.type =3D BTRFS_EXTENT_CSUM_KEY;
++	key.offset =3D addr;
++
++	ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
++	if (ret < 0)
++		return ret;
++
++	if (ret > 0 && path.slots[0])
++		path.slots[0]--;
++
++	ret =3D 0;
++
++	while (1) {
++		leaf =3D path.nodes[0];
++		if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
++			ret =3D btrfs_next_leaf(root, &path);
++			if (ret) {
++				if (ret > 0)
++					ret =3D 0;
++
++				break;
++			}
++			leaf =3D path.nodes[0];
++		}
++
++		btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
++
++		if (key.objectid > BTRFS_EXTENT_CSUM_OBJECTID)
++			break;
++
++		if (key.objectid !=3D BTRFS_EXTENT_CSUM_OBJECTID ||
++		    key.type !=3D BTRFS_EXTENT_CSUM_KEY)
++			goto next;
++
++		if (key.offset >=3D addr + length)
++			break;
++
++		num_entries =3D btrfs_item_size(leaf, path.slots[0]) / csum_size;
++		data_len =3D num_entries * gfs_info->sectorsize;
++
++		if (addr >=3D key.offset && addr <=3D key.offset + data_len) {
++			u64 end =3D min(addr + length, key.offset + data_len);
++
++			length -=3D (end - addr);
++			addr =3D end;
++
++			if (length =3D=3D 0)
++				break;
++		}
++
++next:
++		path.slots[0]++;
++	}
++
++	btrfs_release_path(&path);
++
++	if (ret >=3D 0)
++		ret =3D length =3D=3D 0 ? 1 : 0;
++
++	return ret;
++}
++
++static int check_log_root(struct btrfs_root *root, struct cache_tree *ro=
+ot_cache,
++			  struct walk_control *wc)
++{
++	struct btrfs_path path =3D { 0 };
++	struct btrfs_key key;
++	struct extent_buffer *leaf;
++	int ret, err =3D 0;
++	u64 last_csum_inode =3D 0;
++
++	key.objectid =3D BTRFS_FIRST_FREE_OBJECTID;
++	key.type =3D BTRFS_INODE_ITEM_KEY;
++	key.offset =3D 0;
++	ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
++	if (ret < 0)
++		return 1;
++
++	while (1) {
++		leaf =3D path.nodes[0];
++		if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
++			ret =3D btrfs_next_leaf(root, &path);
++			if (ret) {
++				if (ret < 0)
++					err =3D 1;
++
++				break;
++			}
++			leaf =3D path.nodes[0];
++		}
++		btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
++
++		if (key.objectid =3D=3D BTRFS_EXTENT_CSUM_OBJECTID)
++			break;
++
++		if (key.type =3D=3D BTRFS_INODE_ITEM_KEY) {
++			struct btrfs_inode_item *item;
++
++			item =3D btrfs_item_ptr(leaf, path.slots[0],
++					      struct btrfs_inode_item);
++
++			if (!(btrfs_inode_flags(leaf, item) & BTRFS_INODE_NODATASUM))
++				last_csum_inode =3D key.objectid;
++		} else if (key.type =3D=3D BTRFS_EXTENT_DATA_KEY &&
++			   key.objectid =3D=3D last_csum_inode) {
++			struct btrfs_file_extent_item *fi;
++			u64 addr, length;
++
++			fi =3D btrfs_item_ptr(leaf, path.slots[0],
++					    struct btrfs_file_extent_item);
++
++			if (btrfs_file_extent_type(leaf, fi) !=3D BTRFS_FILE_EXTENT_REG)
++				goto next;
++
++			addr =3D btrfs_file_extent_disk_bytenr(leaf, fi) +
++				btrfs_file_extent_offset(leaf, fi);
++			length =3D btrfs_file_extent_num_bytes(leaf, fi);
++
++			ret =3D check_log_csum(root, addr, length);
++			if (ret < 0) {
++				err =3D 1;
++				break;
++			}
++
++			if (!ret) {
++				error("csum missing in log (root %llu, inode %llu, "
++				      "offset %llu, address 0x%llx, length %llu)",
++				      root->objectid, last_csum_inode, key.offset,
++				      addr, length);
++				err =3D 1;
++			}
++		}
++
++next:
++		path.slots[0]++;
++	}
++
++	btrfs_release_path(&path);
++
++	return err;
++}
++
++static int load_log_root(u64 root_id, struct btrfs_path *path,
++			 struct btrfs_root *tmp_root)
++{
++	struct extent_buffer *l;
++	struct btrfs_tree_parent_check check =3D { 0 };
++
++	btrfs_setup_root(tmp_root, gfs_info, root_id);
++
++	l =3D path->nodes[0];
++	read_extent_buffer(l, &tmp_root->root_item,
++			btrfs_item_ptr_offset(l, path->slots[0]),
++			sizeof(tmp_root->root_item));
++
++	tmp_root->root_key.objectid =3D root_id;
++	tmp_root->root_key.type =3D BTRFS_ROOT_ITEM_KEY;
++	tmp_root->root_key.offset =3D 0;
++
++	check.owner_root =3D btrfs_root_id(tmp_root);
++	check.transid =3D btrfs_root_generation(&tmp_root->root_item);
++	check.level =3D btrfs_root_level(&tmp_root->root_item);
++
++	tmp_root->node =3D read_tree_block(gfs_info,
++					 btrfs_root_bytenr(&tmp_root->root_item),
++					 &check);
++	if (IS_ERR(tmp_root->node)) {
++		tmp_root->node =3D NULL;
++		return 1;
++	}
++
++	if (btrfs_header_level(tmp_root->node) !=3D btrfs_root_level(&tmp_root-=
+>root_item)) {
++		error("root [%llu %llu] level %d does not match %d",
++			tmp_root->root_key.objectid,
++			tmp_root->root_key.offset,
++			btrfs_header_level(tmp_root->node),
++			btrfs_root_level(&tmp_root->root_item));
++		return 1;
++	}
++
++	return 0;
++}
++
++static int check_log(struct cache_tree *root_cache)
++{
++	struct btrfs_path path =3D { 0 };
++	struct walk_control wc =3D { 0 };
++	struct btrfs_key key;
++	struct extent_buffer *leaf;
++	struct btrfs_root *log_root =3D gfs_info->log_root_tree;
++	int ret;
++	int err =3D 0;
++
++	cache_tree_init(&wc.shared);
++
++	key.objectid =3D BTRFS_TREE_LOG_OBJECTID;
++	key.type =3D BTRFS_ROOT_ITEM_KEY;
++	key.offset =3D 0;
++	ret =3D btrfs_search_slot(NULL, log_root, &key, &path, 0, 0);
++	if (ret < 0) {
++		err =3D 1;
++		goto out;
++	}
++
++	while (1) {
++		leaf =3D path.nodes[0];
++		if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
++			ret =3D btrfs_next_leaf(log_root, &path);
++			if (ret) {
++				if (ret < 0)
++					err =3D 1;
++				break;
++			}
++			leaf =3D path.nodes[0];
++		}
++		btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
++
++		if (key.objectid > BTRFS_TREE_LOG_OBJECTID ||
++		    key.type > BTRFS_ROOT_ITEM_KEY)
++			break;
++
++		if (key.objectid =3D=3D BTRFS_TREE_LOG_OBJECTID &&
++		    key.type =3D=3D BTRFS_ROOT_ITEM_KEY &&
++		    fs_root_objectid(key.offset)) {
++			struct btrfs_root tmp_root;
++
++			memset(&tmp_root, 0, sizeof(tmp_root));
++
++			ret =3D load_log_root(key.offset, &path, &tmp_root);
++			if (ret) {
++				err =3D 1;
++				goto next;
++			}
++
++			ret =3D check_log_root(&tmp_root, root_cache, &wc);
++			if (ret)
++				err =3D 1;
++
++next:
++			if (tmp_root.node)
++				free_extent_buffer(tmp_root.node);
++		}
++
++		path.slots[0]++;
++	}
++out:
++	btrfs_release_path(&path);
++	if (err)
++		free_extent_cache_tree(&wc.shared);
++	if (!cache_tree_empty(&wc.shared))
++		fprintf(stderr, "warning line %d\n", __LINE__);
++
++	return err;
++}
++
+ static void free_roots_info_cache(void)
+ {
+ 	if (!roots_info_cache)
+@@ -10585,9 +10853,21 @@ static int cmd_check(const struct cmd_struct *cm=
+d, int argc, char **argv)
+ 		goto close_out;
+ 	}
+=20
++	if (gfs_info->log_root_tree) {
++		fprintf(stderr, "[1/8] checking log\n");
++		ret =3D check_log(&root_cache);
++
++		if (ret)
++			error("errors found in log");
++		err |=3D !!ret;
++	} else {
++		fprintf(stderr,
++		"[1/8] checking log skipped (none written)\n");
++	}
++
+ 	if (!init_extent_tree) {
+ 		if (!g_task_ctx.progress_enabled) {
+-			fprintf(stderr, "[1/7] checking root items\n");
++			fprintf(stderr, "[2/8] checking root items\n");
+ 		} else {
+ 			g_task_ctx.tp =3D TASK_ROOT_ITEMS;
+ 			task_start(g_task_ctx.info, &g_task_ctx.start_time,
+@@ -10622,11 +10902,11 @@ static int cmd_check(const struct cmd_struct *c=
+md, int argc, char **argv)
+ 			}
+ 		}
+ 	} else {
+-		fprintf(stderr, "[1/7] checking root items... skipped\n");
++		fprintf(stderr, "[2/8] checking root items... skipped\n");
+ 	}
+=20
+ 	if (!g_task_ctx.progress_enabled) {
+-		fprintf(stderr, "[2/7] checking extents\n");
++		fprintf(stderr, "[3/8] checking extents\n");
+ 	} else {
+ 		g_task_ctx.tp =3D TASK_EXTENTS;
+ 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
+ount);
+@@ -10644,9 +10924,9 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+=20
+ 	if (!g_task_ctx.progress_enabled) {
+ 		if (is_free_space_tree)
+-			fprintf(stderr, "[3/7] checking free space tree\n");
++			fprintf(stderr, "[4/8] checking free space tree\n");
+ 		else
+-			fprintf(stderr, "[3/7] checking free space cache\n");
++			fprintf(stderr, "[4/8] checking free space cache\n");
+ 	} else {
+ 		g_task_ctx.tp =3D TASK_FREE_SPACE;
+ 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
+ount);
+@@ -10664,7 +10944,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+ 	 */
+ 	no_holes =3D btrfs_fs_incompat(gfs_info, NO_HOLES);
+ 	if (!g_task_ctx.progress_enabled) {
+-		fprintf(stderr, "[4/7] checking fs roots\n");
++		fprintf(stderr, "[5/8] checking fs roots\n");
+ 	} else {
+ 		g_task_ctx.tp =3D TASK_FS_ROOTS;
+ 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
+ount);
+@@ -10680,10 +10960,10 @@ static int cmd_check(const struct cmd_struct *c=
+md, int argc, char **argv)
+=20
+ 	if (!g_task_ctx.progress_enabled) {
+ 		if (check_data_csum)
+-			fprintf(stderr, "[5/7] checking csums against data\n");
++			fprintf(stderr, "[6/8] checking csums against data\n");
+ 		else
+ 			fprintf(stderr,
+-		"[5/7] checking only csums items (without verifying data)\n");
++		"[6/8] checking only csums items (without verifying data)\n");
+ 	} else {
+ 		g_task_ctx.tp =3D TASK_CSUMS;
+ 		task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_c=
+ount);
+@@ -10702,7 +10982,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+ 	/* For low memory mode, check_fs_roots_v2 handles root refs */
+         if (check_mode !=3D CHECK_MODE_LOWMEM) {
+ 		if (!g_task_ctx.progress_enabled) {
+-			fprintf(stderr, "[6/7] checking root refs\n");
++			fprintf(stderr, "[7/8] checking root refs\n");
+ 		} else {
+ 			g_task_ctx.tp =3D TASK_ROOT_REFS;
+ 			task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_=
+count);
+@@ -10717,7 +10997,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+ 		}
+ 	} else {
+ 		fprintf(stderr,
+-	"[6/7] checking root refs done with fs roots in lowmem mode, skipping\n=
+");
++	"[7/8] checking root refs done with fs roots in lowmem mode, skipping\n=
+");
+ 	}
+=20
+ 	while (opt_check_repair && !list_empty(&gfs_info->recow_ebs)) {
+@@ -10749,7 +11029,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+=20
+ 	if (gfs_info->quota_enabled) {
+ 		if (!g_task_ctx.progress_enabled) {
+-			fprintf(stderr, "[7/7] checking quota groups\n");
++			fprintf(stderr, "[8/8] checking quota groups\n");
+ 		} else {
+ 			g_task_ctx.tp =3D TASK_QGROUPS;
+ 			task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_task_ctx.item_=
+count);
+@@ -10772,7 +11052,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+ 		ret =3D 0;
+ 	} else {
+ 		fprintf(stderr,
+-		"[7/7] checking quota groups skipped (not enabled on this FS)\n");
++		"[8/8] checking quota groups skipped (not enabled on this FS)\n");
+ 	}
+=20
+ 	if (!list_empty(&gfs_info->recow_ebs)) {
+diff --git a/tests/fsck-tests/063-log-missing-csum/default.img.xz b/tests=
+/fsck-tests/063-log-missing-csum/default.img.xz
+new file mode 100644
+index 0000000000000000000000000000000000000000..c9b4f420ac23866cd142428da=
+f21739efda0762d
+GIT binary patch
+literal 1288
+zcmV+j1^4>>H+ooF000E$*0e?f03iVu0001VFXf}+)Bgm;T>wRyj;C3^v%$$4d1wo3
+zjjaF1$8Jv*pMMm%#Ch6IM%}7&=3D@^TvKIIdYjZ@t7T($M|Hz%Cr>ZwJ6sj_bRsY^a*
+zIr#q#U>$p<Go1bOhu5#Q<?@08{(UO6n<sqYIY$<RXz3}#&sBuS|AUrsgQ{%?z1>tr
+zW^k~hR~HJs$P?zuw_V+%>i2AU4x-C~^RmH%0#2o7VY;D>d@D<+CC=3DJ4l?Bs2d@5yC
+z&pKh_V}nG$A*f{hGHlfKeT*E3NA1Q(Nt;TxvV6m2A_RVpD=3D`*t<8b6_KTom1S=3D|eG
+z>OMhPCcl7*3tYx)YhtFm-3)~e_SPBasmqw|$jnE_-QZfatuNh^bkJ5yW{ZX7NmD)i
+zLKCQYs5y!To5G>tIYzSNigXu|<l&x%JzxMA5aW-t+nod|B!efqr+_#STUo@Xu>wY=3D
+z*;zh8-nLPC+GYq6HU^A<Qjkh41{(MMB=3Dp?8i7|;p<cL9o>Q7;56uclyq=3DuCMb1GmZ
+zuq5@iwv1^<TQdlj9#Xdq$Vj!1d~GO$P#HmKmPt*t2iPme{8~y6{{T++2nv+X7)Fnf
+z`$pgevh)w!LR&hx2a|{sW@ac43(Sl>??<SGJB`t-nDXvSDSY*87<ziAenKb9p4UlP
+z*(x(s)OBgD_f*R-*yBUaiD3U<uhy+{P{T&x@o^!9gXa@=3DKts_p@u`Tb)rQcu{)tzQ
+zhCXcu`CGkyKuQRy(M0c#fPDWJwyhC`w2mizWqVSf=3D=3DSk-nywG!nJzNT5aM0tVb}Va
+zK?^BQbY*CPLeJtG``VF4F@BVWBpSVWDFk`J!cOhagXH=3DGB1GApQ?zsg8%y=3DJ$Fgl1
+z)+=3DjFc)g}pALW^HG}wkoY7fOfbZ274b~+dEoA?l%Xzz`P-F)vb1^UziIz|no!02bS
+zWPfo?`TiKe8aIuiPilXte381GZ4tQc6=3DY*KS0rehLE^7!W+MOr0AEFmQgw<KSH}Ix
+ze4qlov3aIg5e(Oh1%CwTZN^`UI!7g(U;iDFt(>e4XDB-M)l0stJd3pf<XujqB2}MW
+z6EY1#$l>s;T1IYy#{A9ljl@Ba_*dh)Qfq@8Y1A#q%p|d;USrIAZ*n1`%ho*!-RYOY
+z4j%X?D?CoiaW8A*7aue82GA9jmMGg6Bv&mO#v6uKVw1V~Uu01wXbz(RJN_|xw{`8K
+zSfdyQCJOdIwdN%h+Jr{$9!6otgQ8^`lkU4u;5wJlsy#P<D{Nc39m@=3D*OHZ533tvD<
+zfb=3Dc>-IWOj%>%mQ@Ja!#!QIOVuluA}ecSFg;*v@<bR@g*YX>1-?kl9WGes{ulrRWq
+zTCW@Om{iybhK+m8SiS%n^)Kgk21T`IEW#){Czvz;Fix;5bdkB$BFXimx9iBaRZ9r=3D
+zV(H0OD8mK94(j^6gF8)|^i-78H`hR#ebBvFq}>vK6-ni7j1S>*viG^nA7<~Bn2KW0
+zw%D36qxTcpO;c2bYwf)K?p#^LFL4Ifq8?kP?#;(Jo8*(twFPRBj*u~h%Ej$X6JI2E
+z<L5)YZY#@aM-2sxodox#)=3DG1ycE6A6j?am&HLbKPv@FI{(HAJ#D*V@xG^U`bnRtH<
+y%w+Y9$G2sBKv@6)0000tuOhH&%TnS10pSUNs0#q29h=3DIr#Ao{g000001X)@}7Iu~Z
+
+literal 0
+HcmV?d00001
+
+diff --git a/tests/fsck-tests/063-log-missing-csum/test.sh b/tests/fsck-t=
+ests/063-log-missing-csum/test.sh
+new file mode 100755
+index 00000000..40a48508
+--- /dev/null
++++ b/tests/fsck-tests/063-log-missing-csum/test.sh
+@@ -0,0 +1,14 @@
++#!/bin/bash
++#
++# Verify that check can detect missing log csum items.
++
++source "$TEST_TOP/common" || exit
++
++check_prereq btrfs
++
++check_image() {
++	run_mustfail "missing log csum items not detected" \
++		"$TOP/btrfs" check "$1"
++}
++
++check_all_images
+--=20
+2.45.2
+
 
