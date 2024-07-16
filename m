@@ -1,383 +1,241 @@
-Return-Path: <linux-btrfs+bounces-6491-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6492-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B192932276
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 11:09:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7BBD932281
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 11:11:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84DF0B2251D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 09:09:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB06F1C20F93
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 09:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FBBC1957EA;
-	Tue, 16 Jul 2024 09:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CC2195807;
+	Tue, 16 Jul 2024 09:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ionjyNLJ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gcV4gX3B";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gcV4gX3B"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1624C74
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 09:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B11C4C74
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 09:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721120982; cv=none; b=hKZ8XGRXH4eO57ub01+p8NNiw0yMV5+ZDTXDvMWnTBXSWJ/l9TnEZ7DJXOcUve5d4g5HFM4ckjNqu5Y/zlrn9ENUwVKnVaCUcsnZBL9NU1nB14X9+fHWxsrYOlrLD9Oh6Y2nBgzgKnA+HxiA2wgxBSpUp6Vjm9nO67h/P8vB4zQ=
+	t=1721121107; cv=none; b=rRx6fRLbmsVBUyMOlJGPoQeMSPJloxQVuIpW2BYw0bdqEkcM7xjZUdis02tu8VYv/U5q/R1GdEABJMhS9a/+SchVAPaXsYtYCrMLmXAMtlAk9SL52k4CC/xykzHNeVzq3SYAPWqXRjCYH/Zi7rnCM1iP8jvAXN/17XJEW3Fm18Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721120982; c=relaxed/simple;
-	bh=4MpYmessLKEfuuxtMAxDKnYVvP8exTtvzEBsb13/0pM=;
-	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To; b=n4Y9On3FfEXPKbLjAQRldNczyLRU8tS5eg9a0Rkgrf+4PA9Frlfm3/n5mJWRfNyx0vzpONkK2PLtnKfoFGqXaWaUvJmJoJsZCt2vt9gUnsAl+3EZvP6N26X1kujw4X2SvjGIiqGrJToZOHUJru5bU5CTkthURF/o+o5xEo/91X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ionjyNLJ; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1721120976; x=1721725776; i=quwenruo.btrfs@gmx.com;
-	bh=4MpYmessLKEfuuxtMAxDKnYVvP8exTtvzEBsb13/0pM=;
-	h=X-UI-Sender-Class:Content-Type:Message-ID:Date:MIME-Version:
-	 Subject:To:Cc:References:From:In-Reply-To:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=ionjyNLJINJcM8g9nhyGDHBcjeOpYkM/rUxdVFLcks9ZeRRXFbtJ44m1B2kXcftW
-	 VWsXGuJswITe09XYoy1nlwAoh1f2iWt+y6JfcNYeFL27jILrxKre0Ro0PVlzJB2Cm
-	 TBBy0XHoRNcY3zvIR2KwEOebZzyIxDO6vsPmPfQb3Y4q6euzWtqB+nzOdWwM7iboE
-	 ZKZ6LUAjwMM99bGIMzI4xRkrwXctONbSRBPyKoSsIlc0aZw58keanU7OvJPzjW6ZN
-	 c3XFcYx5cykgsnxYTKH0LbkppWhUKT5u719g4inmTpFIKx0cqALiGxWr4H/dctrrq
-	 MCMxjkmGVHcQFdYcHA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MuDbx-1sDcpu0q8D-012oZl; Tue, 16
- Jul 2024 11:09:35 +0200
-Content-Type: multipart/mixed; boundary="------------4Dh7u5zf7CkZuV131edypvFz"
-Message-ID: <71256c6e-c584-48e8-bce6-c04aff0d0496@gmx.com>
-Date: Tue, 16 Jul 2024 18:39:32 +0930
+	s=arc-20240116; t=1721121107; c=relaxed/simple;
+	bh=kt+4RDVmtsmIN4+Aaxfv7pT8TvdfPGpV6BI0mxKU3cw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e5lE1Ym8HbUm49xvg48b4hcjzGKMU/CEmSYM9UZqEGBIoE7k3Tj1b3jYJCVoQK1jYJnlzfrwZtluCP3FWlrlRlbP2PPnwtHyoNYmcn22X050SRav/yORsbFJFh85PJKlpSqU9b5UQtTpRFJ1Jk5FjtIIjxL4llnUlfyPg0K8jL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gcV4gX3B; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gcV4gX3B; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2687E1F82D;
+	Tue, 16 Jul 2024 09:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721121103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0fX8/Fym8H7Bx9Mn0k/a5WuZlVyZyrXw7f8uF9fMtPM=;
+	b=gcV4gX3BVOGMeLJFvxroJi3Qv9aWAjj/X/Hs0XKkMok0aVrG1vWK4EOqGIO33WzN0jsZBg
+	iGrvq/b+qV7H6UhjfAiQSKpk/vyKtFuVwyiYnJBdT/+m9oLiW+tinJJHA0L3RQ5U2XXx8u
+	zd09/mtvlI2O/aQPE97vc+WhaMVVC8Q=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721121103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0fX8/Fym8H7Bx9Mn0k/a5WuZlVyZyrXw7f8uF9fMtPM=;
+	b=gcV4gX3BVOGMeLJFvxroJi3Qv9aWAjj/X/Hs0XKkMok0aVrG1vWK4EOqGIO33WzN0jsZBg
+	iGrvq/b+qV7H6UhjfAiQSKpk/vyKtFuVwyiYnJBdT/+m9oLiW+tinJJHA0L3RQ5U2XXx8u
+	zd09/mtvlI2O/aQPE97vc+WhaMVVC8Q=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5CD413795;
+	Tue, 16 Jul 2024 09:11:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id g3bBG005lmYtFwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Tue, 16 Jul 2024 09:11:41 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: tree-checker: add type and sequence check for inline backrefs
+Date: Tue, 16 Jul 2024 18:41:23 +0930
+Message-ID: <63189f5d922db2bc525f5251be46fe857e00a2d6.1721120987.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs crashes during routine btrfs-balance-least-used
-To: Kai Krakow <hurikhan77@gmail.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAMthOuPjg5RDT-G_LXeBBUUtzt3cq=JywF+D1_h+JYxe=WKp-Q@mail.gmail.com>
- <0bedfc5f-4658-4d01-98b3-34bc14f736f3@gmx.com>
- <CAMthOuNk273pZUSU1Npr-Zx7LscBxOsXeyWcQCgbYP=82TfreA@mail.gmail.com>
- <d30126ba-a9fc-44ea-bba8-1f42b242ca91@suse.com>
- <CAMthOuMWvFWNEJkOWQiP2eNwWap8H4z7Gb6qzS8M-WkTUk2=Mw@mail.gmail.com>
- <1728bb6e-9dd0-4a2c-be16-41cd01231484@gmx.com>
- <CAMthOuNqaKoJGYWNDdV33hWkG1oa77vuEt0gxxYVbW+KNrtnaw@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAMthOuNqaKoJGYWNDdV33hWkG1oa77vuEt0gxxYVbW+KNrtnaw@mail.gmail.com>
-X-Provags-ID: V03:K1:cP+tOvo1BcoD2dnx+lYWkfgxdrFnuSVRMepVmudqJYg0Yt3fem1
- emQUzz2pJVmWK0LqEbCta2FggExOzBbHnPBJCFAVa+tD+/tENw9jPq1B2oOvYYl8746Bh79
- RFsokMVGtPdHTwfK5nwbBF2Fj4iYvZ/nmfW2pfvUvYdJ/4QNXXXeyPUXaeojv++a2NKp+6v
- cT9Ahjoa3RteB8OyL4iGA==
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Vvhx8hV+4UI=;RK972bxbbJdoY0zwF0V/Ax1rySM
- umpqYlco/y1jo1RtUS71ddt7Yfk02dsI1k31MhSXHOHBbN2XMcb7P1qyWhrC5bfuNVLpUurSr
- Bx7xUYy/DOeW9U3ddV+Da4YFK6Mq/lYHth2sYcb8rhqO+3+gwWzeo/4oMl0nFKEaAyyc/OvD6
- qNlENozlnbsrZ6E8MnWvjHW/fqKl+K1UirSWQmTNpn3O0VSl3OZIo6WZ6hN6sgQD7m91plsbk
- Q6iAyRTngQ1TKhPMMycpFwir6f7Hwv02XBPmot8lzouV0V/0V/YbWk1/gbOUJwNZjkKeLZw89
- t3X+l91DWsV0+Vtt+LjWfofIXfxfBJugkEz1hftExWOOusuL29lnrG9xPzFLA7O/aju+SXW0o
- 9ll9PI/L7Pi9TlX4H5Ynvmg5y80nTdLxdQiyz3dLZZJQjTCp82RdwkHb7hFAQAXMRI1RmLLje
- q6Rl2/ywsda8nmz3Yq196R8nrJOZVEzTZE2jk2CmcTc8ouEw4/cgMxsbebdWjEB+NSCA5tfry
- rKBMPwqYnuCULn7on5UN3rmEiCKTl5MI/ty9RIAoUPhLB3j1YOaMUW4Z0FFti2vrWfj2CCjLX
- g2AFdRzYonQ/faPGQ7yo5tI1KLiFDRm5Rdgko9kv0WbqZqXeanygo2EzHXzUYRKT+MjbpFOpS
- +ENE0Q+e1BuAeiQed3BK9xSP71OR5h0dLPQVL4sCyXe4jZe3Bm6ciCSyv4bniwXMZC0o5SWzn
- qRMWF0vqLeZEEtOTeuvPWK5ysjirmtR3xzhVzcjAo8ky3DnvIrZxJvT6prvEJI3zfFM0JthRE
- 74OMOzqR9fdNf2tOTwu2Iyew==
+X-Spam-Score: -2.80
+X-Spam-Level: 
 
-This is a multi-part message in MIME format.
---------------4Dh7u5zf7CkZuV131edypvFz
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+commit 1645c283a87c61f84b2bffd81f50724df959b11a upstream.
 
+[BUG]
+There is a bug report that ntfs2btrfs had a bug that it can lead to
+transaction abort and the filesystem flips to read-only.
 
+[CAUSE]
+For inline backref items, kernel has a strict requirement for their
+ordered, they must follow the following rules:
 
-=E5=9C=A8 2024/7/16 16:21, Kai Krakow =E5=86=99=E9=81=93:
-> Hello Qu!
->
->[...]
->>
->> And we're also enhancing our handling on bad hardwares (except when the=
-y
->> cheat on FLUSH), the biggest example is tree-checker.
->>
->> But I really run out of ideas for such a huge corruption.
->> Your setup really rules out almost everything, from out-of-tree (Nv*dia
->> drivers) to bad hot memory migration implementation.
->>
->> I'll let you know when the new tree-checker patch come out, and
->> hopefully it can catch the root cause.
->
-> I've got your patch from linux-btrfs git (which you've sent to the
-> list yesterday). It looks like this cannot be applied to 6.6 LTS. Is
-> it part of a larger patch series and will be backported?
->
-> Is it safe to just cherry pick all patches saying "tree-checker" to
-> the 6.6 tree?
+- All btrfs_extent_inline_ref::type should be in an ascending order
 
-The conflicts are caused by the missing commit 1645c283a87c ("btrfs:
-tree-checker: add type and sequence check for inline backrefs") and a
-cleanup patch.
+- Within the same type, the items should follow a descending order by
+  their sequence number
 
-So I manually backported those two patches, just give them a try.
+  For EXTENT_DATA_REF type, the sequence number is result from
+  hash_extent_data_ref().
+  For other types, their sequence numbers are
+  btrfs_extent_inline_ref::offset.
 
-Meanwhile the missing commit looks like a good candidate for stable 6.6
-branch, I can definitely send it to stable later.
+Thus if there is any code not following above rules, the resulted
+inline backrefs can prevent the kernel to locate the needed inline
+backref and lead to transaction abort.
 
-Thanks,
-Qu
+[FIX]
+Ntrfs2btrfs has already fixed the problem, and btrfs-progs has added the
+ability to detect such problems.
 
->
-> Thanks,
-> Kai
+For kernel, let's be more noisy and be more specific about the order, so
+that the next time kernel hits such problem we would reject it in the
+first place, without leading to transaction abort.
 
---------------4Dh7u5zf7CkZuV131edypvFz
-Content-Type: text/x-patch; charset=UTF-8;
- name="0002-btrfs-tree-checker-validate-dref-root-and-objectid.patch"
-Content-Disposition: attachment;
- filename*0="0002-btrfs-tree-checker-validate-dref-root-and-objectid.patc";
- filename*1="h"
-Content-Transfer-Encoding: base64
+Link: https://github.com/kdave/btrfs-progs/pull/622
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+[ Fix a conflict due to header cleanup. ]
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/tree-checker.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-RnJvbSBkYmQ4ZjEyYTBmMzE0ODllZWQ0ZTA2MTExNjA0MTM3NmVmN2VjNjI3IE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpNZXNzYWdlLUlEOiA8ZGJkOGYxMmEwZjMxNDg5ZWVkNGUwNjEx
-MTYwNDEzNzZlZjdlYzYyNy4xNzIxMTIwODMyLmdpdC53cXVAc3VzZS5jb20+CkluLVJlcGx5
-LVRvOiA8Y292ZXIuMTcyMTEyMDgzMi5naXQud3F1QHN1c2UuY29tPgpSZWZlcmVuY2VzOiA8
-Y292ZXIuMTcyMTEyMDgzMi5naXQud3F1QHN1c2UuY29tPgpGcm9tOiBRdSBXZW5ydW8gPHdx
-dUBzdXNlLmNvbT4KRGF0ZTogTW9uLCAxNSBKdWwgMjAyNCAxNjowNzowNyArMDkzMApTdWJq
-ZWN0OiBbUEFUQ0ggMi8yXSBidHJmczogdHJlZS1jaGVja2VyOiB2YWxpZGF0ZSBkcmVmIHJv
-b3QgYW5kIG9iamVjdGlkCgpOb3QgeWV0IHVwc3RyZWFtZWQuCgpbQ09SUlVQVElPTl0KVGhl
-cmUgaXMgYSBidWcgcmVwb3J0IHRoYXQgYnRyZnMgZmxpcHMgUk8gZHVlIHRvIGEgY29ycnVw
-dGlvbiBpbiB0aGUKZXh0ZW50IHRyZWUsIHRoZSBpbnZvbHZlZCBkdW1wcyBsb29rcyBsaWtl
-IHRoaXM6CgogCWl0ZW0gMTg4IGtleSAoNDAyODExNTcyMjI0IDE2OCA0MDk2KSBpdGVtb2Zm
-IDE0NTk4IGl0ZW1zaXplIDc5CiAJCWV4dGVudCByZWZzIDMgZ2VuIDM2Nzg1NDQgZmxhZ3Mg
-MQogCQlyZWYjMDogZXh0ZW50IGRhdGEgYmFja3JlZiByb290IDEzODM1MDU4MDU1MjgyMTYz
-OTc3IG9iamVjdGlkIDI4MTQ3MzM4NDEyNTkyMyBvZmZzZXQgODE0MzI1NzYgY291bnQgMQog
-CQlyZWYjMTogc2hhcmVkIGRhdGEgYmFja3JlZiBwYXJlbnQgMTk0NzA3MzYyNjExMiBjb3Vu
-dCAxCiAJCXJlZiMyOiBzaGFyZWQgZGF0YSBiYWNrcmVmIHBhcmVudCAxMTU2MDMwMTAzNTUy
-IGNvdW50IDEKIEJUUkZTIGNyaXRpY2FsIChkZXZpY2UgdmRjMTogc3RhdGUgRUEpOiB1bmFi
-bGUgdG8gZmluZCByZWYgYnl0ZSBuciA0MDI4MTE1NzIyMjQgcGFyZW50IDAgcm9vdCAyNjUg
-b3duZXIgMjg3MDMwMjYgb2Zmc2V0IDgxNDMyNTc2IHNsb3QgMTg5CiBCVFJGUyBlcnJvciAo
-ZGV2aWNlIHZkYzE6IHN0YXRlIEVBKTogZmFpbGVkIHRvIHJ1biBkZWxheWVkIHJlZiBmb3Ig
-bG9naWNhbCA0MDI4MTE1NzIyMjQgbnVtX2J5dGVzIDQwOTYgdHlwZSAxNzggYWN0aW9uIDIg
-cmVmX21vZCAxOiAtMgoKW0NBVVNFXQpUaGUgY29ycnVwdGVkIGVudHJ5IGlzIHJlZiMwIG9m
-IGl0ZW0gMTg4LgpUaGUgcm9vdCBudW1iZXIgMTM4MzUwNTgwNTUyODIxNjM5NzcgaXMgYmV5
-b25kIHRoZSB1cHBlciBsaW1pdCBmb3Igcm9vdAppdGVtcyAodGhlIGN1cnJlbnQgbGltaXQg
-aXMgMSA8PCA0OCksIGFuZCB0aGUgb2JqZWN0aWQgYWxzbyBsb29rcwpzdXNwaWNpb3VzLgoK
-T25seSB0aGUgb2Zmc2V0IGFuZCBjb3VudCBpcyBjb3JyZWN0LgoKW0VOSEFOQ0VNRU5UXQpB
-bHRob3VnaCBpdCdzIHN0aWxsIHVua25vd24gd2h5IHdlIGhhdmUgc3VjaCBtYW55IGJ5dGVz
-IGNvcnJ1cHRlZApyYW5kb21seSwgd2UgY2FuIHN0aWxsIGVuaGFuY2UgdGhlIHRyZWUtY2hl
-Y2tlciBmb3IgZGF0YSBiYWNrcmVmcyBieToKCi0gVmFsaWRhdGUgdGhlIHJvb3QgdmFsdWUK
-ICBGb3Igbm93IHRoZXJlIHNob3VsZCBvbmx5IGJlIDMgdHlwZXMgb2Ygcm9vdHMgY2FuIGhh
-dmUgZGF0YSBiYWNrcmVmOgogICogc3Vidm9sdW1lIHRyZWVzCiAgKiBkYXRhIHJlbG9jIHRy
-ZWVzCiAgKiByb290IHRyZWUKICAgIE9ubHkgZm9yIHYxIHNwYWNlIGNhY2hlCgotIHZhbGlk
-YXRlIHRoZSBvYmplY3RpZCB2YWx1ZQogIFRoZSBvYmplY3RpZCBzaG91bGQgYmUgYSB2YWxp
-ZCBpbm9kZSBudW1iZXIuCgpIb3BlZnVsbHkgd2UgY2FuIGNhdGNoIHN1Y2ggcHJvYmxlbSBp
-biB0aGUgZnV0dXJlIHdpdGggdGhlIG5ldyBjaGVja2Vycy4KClJlcG9ydGVkLWJ5OiBLYWkg
-S3Jha293IDxodXJpa2hhbjc3QGdtYWlsLmNvbT4KTGluazogaHR0cHM6Ly9sb3JlLmtlcm5l
-bC5vcmcvbGludXgtYnRyZnMvQ0FNdGhPdVBqZzVSRFQtR19MWGVCQlVVdHp0M2NxPUp5d0Yr
-RDFfaCtKWXhlPVdLcC1RQG1haWwuZ21haWwuY29tLyN0ClJldmlld2VkLWJ5OiBGaWxpcGUg
-TWFuYW5hIDxmZG1hbmFuYUBzdXNlLmNvbT4KU2lnbmVkLW9mZi1ieTogUXUgV2VucnVvIDx3
-cXVAc3VzZS5jb20+Ci0tLQogZnMvYnRyZnMvdHJlZS1jaGVja2VyLmMgfCA0NyArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDQ3
-IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9mcy9idHJmcy90cmVlLWNoZWNrZXIuYyBi
-L2ZzL2J0cmZzL3RyZWUtY2hlY2tlci5jCmluZGV4IDVkNmNmYTYxOGRjNC4uZjE0ODI1ZjNk
-NGU4IDEwMDY0NAotLS0gYS9mcy9idHJmcy90cmVlLWNoZWNrZXIuYworKysgYi9mcy9idHJm
-cy90cmVlLWNoZWNrZXIuYwpAQCAtMTI2NSw2ICsxMjY1LDE5IEBAIHN0YXRpYyB2b2lkIGV4
-dGVudF9lcnIoY29uc3Qgc3RydWN0IGV4dGVudF9idWZmZXIgKmViLCBpbnQgc2xvdCwKIAl2
-YV9lbmQoYXJncyk7CiB9CiAKK3N0YXRpYyBib29sIGlzX3ZhbGlkX2RyZWZfcm9vdCh1NjQg
-cm9vdGlkKQoreworCS8qCisJICogVGhlIGZvbGxvd2luZyB0cmVlIHJvb3Qgb2JqZWN0aWRz
-IGFyZSBhbGxvd2VkIHRvIGhhdmUgYSBkYXRhIGJhY2tyZWY6CisJICogLSBzdWJ2b2x1bWUg
-dHJlZXMKKwkgKiAtIGRhdGEgcmVsb2MgdHJlZQorCSAqIC0gdHJlZSByb290CisJICogICBG
-b3IgdjEgc3BhY2UgY2FjaGUKKwkgKi8KKwlyZXR1cm4gaXNfZnN0cmVlKHJvb3RpZCkgfHwg
-cm9vdGlkID09IEJUUkZTX0RBVEFfUkVMT0NfVFJFRV9PQkpFQ1RJRCB8fAorCSAgICAgICBy
-b290aWQgPT0gQlRSRlNfUk9PVF9UUkVFX09CSkVDVElEOworfQorCiBzdGF0aWMgaW50IGNo
-ZWNrX2V4dGVudF9pdGVtKHN0cnVjdCBleHRlbnRfYnVmZmVyICpsZWFmLAogCQkJICAgICBz
-dHJ1Y3QgYnRyZnNfa2V5ICprZXksIGludCBzbG90LAogCQkJICAgICBzdHJ1Y3QgYnRyZnNf
-a2V5ICpwcmV2X2tleSkKQEAgLTE0MTcsNiArMTQzMCw4IEBAIHN0YXRpYyBpbnQgY2hlY2tf
-ZXh0ZW50X2l0ZW0oc3RydWN0IGV4dGVudF9idWZmZXIgKmxlYWYsCiAJCXN0cnVjdCBidHJm
-c19leHRlbnRfZGF0YV9yZWYgKmRyZWY7CiAJCXN0cnVjdCBidHJmc19zaGFyZWRfZGF0YV9y
-ZWYgKnNyZWY7CiAJCXU2NCBzZXE7CisJCXU2NCBkcmVmX3Jvb3Q7CisJCXU2NCBkcmVmX29i
-amVjdGlkOwogCQl1NjQgZHJlZl9vZmZzZXQ7CiAJCXU2NCBpbmxpbmVfb2Zmc2V0OwogCQl1
-OCBpbmxpbmVfdHlwZTsKQEAgLTE0NjAsMTEgKzE0NzUsMjYgQEAgc3RhdGljIGludCBjaGVj
-a19leHRlbnRfaXRlbShzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqbGVhZiwKIAkJICovCiAJCWNh
-c2UgQlRSRlNfRVhURU5UX0RBVEFfUkVGX0tFWToKIAkJCWRyZWYgPSAoc3RydWN0IGJ0cmZz
-X2V4dGVudF9kYXRhX3JlZiAqKSgmaXJlZi0+b2Zmc2V0KTsKKwkJCWRyZWZfcm9vdCA9IGJ0
-cmZzX2V4dGVudF9kYXRhX3JlZl9yb290KGxlYWYsIGRyZWYpOworCQkJZHJlZl9vYmplY3Rp
-ZCA9IGJ0cmZzX2V4dGVudF9kYXRhX3JlZl9vYmplY3RpZChsZWFmLCBkcmVmKTsKIAkJCWRy
-ZWZfb2Zmc2V0ID0gYnRyZnNfZXh0ZW50X2RhdGFfcmVmX29mZnNldChsZWFmLCBkcmVmKTsK
-IAkJCXNlcSA9IGhhc2hfZXh0ZW50X2RhdGFfcmVmKAogCQkJCQlidHJmc19leHRlbnRfZGF0
-YV9yZWZfcm9vdChsZWFmLCBkcmVmKSwKIAkJCQkJYnRyZnNfZXh0ZW50X2RhdGFfcmVmX29i
-amVjdGlkKGxlYWYsIGRyZWYpLAogCQkJCQlidHJmc19leHRlbnRfZGF0YV9yZWZfb2Zmc2V0
-KGxlYWYsIGRyZWYpKTsKKwkJCWlmICh1bmxpa2VseSghaXNfdmFsaWRfZHJlZl9yb290KGRy
-ZWZfcm9vdCkpKSB7CisJCQkJZXh0ZW50X2VycihsZWFmLCBzbG90LAorCQkJCQkgICAiaW52
-YWxpZCBkYXRhIHJlZiByb290IHZhbHVlICVsbHUiLAorCQkJCQkgICBkcmVmX3Jvb3QpOwor
-CQkJCXJldHVybiAtRVVDTEVBTjsKKwkJCX0KKwkJCWlmICh1bmxpa2VseShkcmVmX29iamVj
-dGlkIDwgQlRSRlNfRklSU1RfRlJFRV9PQkpFQ1RJRCB8fAorCQkJCSAgICAgZHJlZl9vYmpl
-Y3RpZCA+IEJUUkZTX0xBU1RfRlJFRV9PQkpFQ1RJRCkpIHsKKwkJCQlleHRlbnRfZXJyKGxl
-YWYsIHNsb3QsCisJCQkJCSAgICJpbnZhbGlkIGRhdGEgcmVmIG9iamVjdGlkIHZhbHVlICVs
-bHUiLAorCQkJCQkgICBkcmVmX3Jvb3QpOworCQkJCXJldHVybiAtRVVDTEVBTjsKKwkJCX0K
-IAkJCWlmICh1bmxpa2VseSghSVNfQUxJR05FRChkcmVmX29mZnNldCwKIAkJCQkJCSBmc19p
-bmZvLT5zZWN0b3JzaXplKSkpIHsKIAkJCQlleHRlbnRfZXJyKGxlYWYsIHNsb3QsCkBAIC0x
-NjAwLDYgKzE2MzAsOCBAQCBzdGF0aWMgaW50IGNoZWNrX2V4dGVudF9kYXRhX3JlZihzdHJ1
-Y3QgZXh0ZW50X2J1ZmZlciAqbGVhZiwKIAkJcmV0dXJuIC1FVUNMRUFOOwogCX0KIAlmb3Ig
-KDsgcHRyIDwgZW5kOyBwdHIgKz0gc2l6ZW9mKCpkcmVmKSkgeworCQl1NjQgcm9vdDsKKwkJ
-dTY0IG9iamVjdGlkOwogCQl1NjQgb2Zmc2V0OwogCiAJCS8qCkBAIC0xNjA3LDcgKzE2Mzks
-MjIgQEAgc3RhdGljIGludCBjaGVja19leHRlbnRfZGF0YV9yZWYoc3RydWN0IGV4dGVudF9i
-dWZmZXIgKmxlYWYsCiAJCSAqIG92ZXJmbG93IGZyb20gdGhlIGxlYWYgZHVlIHRvIGhhc2gg
-Y29sbGlzaW9ucy4KIAkJICovCiAJCWRyZWYgPSAoc3RydWN0IGJ0cmZzX2V4dGVudF9kYXRh
-X3JlZiAqKXB0cjsKKwkJcm9vdCA9IGJ0cmZzX2V4dGVudF9kYXRhX3JlZl9yb290KGxlYWYs
-IGRyZWYpOworCQlvYmplY3RpZCA9IGJ0cmZzX2V4dGVudF9kYXRhX3JlZl9vYmplY3RpZChs
-ZWFmLCBkcmVmKTsKIAkJb2Zmc2V0ID0gYnRyZnNfZXh0ZW50X2RhdGFfcmVmX29mZnNldChs
-ZWFmLCBkcmVmKTsKKwkJaWYgKHVubGlrZWx5KCFpc192YWxpZF9kcmVmX3Jvb3Qocm9vdCkp
-KSB7CisJCQlleHRlbnRfZXJyKGxlYWYsIHNsb3QsCisJCQkJICAgImludmFsaWQgZXh0ZW50
-IGRhdGEgYmFja3JlZiByb290IHZhbHVlICVsbHUiLAorCQkJCSAgIHJvb3QpOworCQkJcmV0
-dXJuIC1FVUNMRUFOOworCQl9CisJCWlmICh1bmxpa2VseShvYmplY3RpZCA8IEJUUkZTX0ZJ
-UlNUX0ZSRUVfT0JKRUNUSUQgfHwKKwkJCSAgICAgb2JqZWN0aWQgPiBCVFJGU19MQVNUX0ZS
-RUVfT0JKRUNUSUQpKSB7CisJCQlleHRlbnRfZXJyKGxlYWYsIHNsb3QsCisJCQkJICAgImlu
-dmFsaWQgZXh0ZW50IGRhdGEgYmFja3JlZiBvYmplY3RpZCB2YWx1ZSAlbGx1IiwKKwkJCQkg
-ICByb290KTsKKwkJCXJldHVybiAtRVVDTEVBTjsKKwkJfQogCQlpZiAodW5saWtlbHkoIUlT
-X0FMSUdORUQob2Zmc2V0LCBsZWFmLT5mc19pbmZvLT5zZWN0b3JzaXplKSkpIHsKIAkJCWV4
-dGVudF9lcnIobGVhZiwgc2xvdCwKIAkiaW52YWxpZCBleHRlbnQgZGF0YSBiYWNrcmVmIG9m
-ZnNldCwgaGF2ZSAlbGx1IGV4cGVjdCBhbGlnbmVkIHRvICV1IiwKLS0gCjIuNDUuMgoK
---------------4Dh7u5zf7CkZuV131edypvFz
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-btrfs-tree-checker-add-type-and-sequence-check-for-i.patch"
-Content-Disposition: attachment;
- filename*0="0001-btrfs-tree-checker-add-type-and-sequence-check-for-i.pa";
- filename*1="tch"
-Content-Transfer-Encoding: base64
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index cc6bc5985120..5d6cfa618dc4 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -29,6 +29,7 @@
+ #include "accessors.h"
+ #include "file-item.h"
+ #include "inode-item.h"
++#include "extent-tree.h"
+ 
+ /*
+  * Error message should follow the following format:
+@@ -1274,6 +1275,8 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 	unsigned long ptr;	/* Current pointer inside inline refs */
+ 	unsigned long end;	/* Extent item end */
+ 	const u32 item_size = btrfs_item_size(leaf, slot);
++	u8 last_type = 0;
++	u64 last_seq = U64_MAX;
+ 	u64 flags;
+ 	u64 generation;
+ 	u64 total_refs;		/* Total refs in btrfs_extent_item */
+@@ -1320,6 +1323,18 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 	 *    2.2) Ref type specific data
+ 	 *         Either using btrfs_extent_inline_ref::offset, or specific
+ 	 *         data structure.
++	 *
++	 *    All above inline items should follow the order:
++	 *
++	 *    - All btrfs_extent_inline_ref::type should be in an ascending
++	 *      order
++	 *
++	 *    - Within the same type, the items should follow a descending
++	 *      order by their sequence number. The sequence number is
++	 *      determined by:
++	 *      * btrfs_extent_inline_ref::offset for all types  other than
++	 *        EXTENT_DATA_REF
++	 *      * hash_extent_data_ref() for EXTENT_DATA_REF
+ 	 */
+ 	if (unlikely(item_size < sizeof(*ei))) {
+ 		extent_err(leaf, slot,
+@@ -1401,6 +1416,7 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 		struct btrfs_extent_inline_ref *iref;
+ 		struct btrfs_extent_data_ref *dref;
+ 		struct btrfs_shared_data_ref *sref;
++		u64 seq;
+ 		u64 dref_offset;
+ 		u64 inline_offset;
+ 		u8 inline_type;
+@@ -1414,6 +1430,7 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 		iref = (struct btrfs_extent_inline_ref *)ptr;
+ 		inline_type = btrfs_extent_inline_ref_type(leaf, iref);
+ 		inline_offset = btrfs_extent_inline_ref_offset(leaf, iref);
++		seq = inline_offset;
+ 		if (unlikely(ptr + btrfs_extent_inline_ref_size(inline_type) > end)) {
+ 			extent_err(leaf, slot,
+ "inline ref item overflows extent item, ptr %lu iref size %u end %lu",
+@@ -1444,6 +1461,10 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 		case BTRFS_EXTENT_DATA_REF_KEY:
+ 			dref = (struct btrfs_extent_data_ref *)(&iref->offset);
+ 			dref_offset = btrfs_extent_data_ref_offset(leaf, dref);
++			seq = hash_extent_data_ref(
++					btrfs_extent_data_ref_root(leaf, dref),
++					btrfs_extent_data_ref_objectid(leaf, dref),
++					btrfs_extent_data_ref_offset(leaf, dref));
+ 			if (unlikely(!IS_ALIGNED(dref_offset,
+ 						 fs_info->sectorsize))) {
+ 				extent_err(leaf, slot,
+@@ -1470,6 +1491,24 @@ static int check_extent_item(struct extent_buffer *leaf,
+ 				   inline_type);
+ 			return -EUCLEAN;
+ 		}
++		if (inline_type < last_type) {
++			extent_err(leaf, slot,
++				   "inline ref out-of-order: has type %u, prev type %u",
++				   inline_type, last_type);
++			return -EUCLEAN;
++		}
++		/* Type changed, allow the sequence starts from U64_MAX again. */
++		if (inline_type > last_type)
++			last_seq = U64_MAX;
++		if (seq > last_seq) {
++			extent_err(leaf, slot,
++"inline ref out-of-order: has type %u offset %llu seq 0x%llx, prev type %u seq 0x%llx",
++				   inline_type, inline_offset, seq,
++				   last_type, last_seq);
++			return -EUCLEAN;
++		}
++		last_type = inline_type;
++		last_seq = seq;
+ 		ptr += btrfs_extent_inline_ref_size(inline_type);
+ 	}
+ 	/* No padding is allowed */
+-- 
+2.45.2
 
-RnJvbSA2MzE4OWY1ZDkyMmRiMmJjNTI1ZjUyNTFiZTQ2ZmU4NTdlMDBhMmQ2IE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpNZXNzYWdlLUlEOiA8NjMxODlmNWQ5MjJkYjJiYzUyNWY1MjUx
-YmU0NmZlODU3ZTAwYTJkNi4xNzIxMTIwODMyLmdpdC53cXVAc3VzZS5jb20+CkluLVJlcGx5
-LVRvOiA8Y292ZXIuMTcyMTEyMDgzMi5naXQud3F1QHN1c2UuY29tPgpSZWZlcmVuY2VzOiA8
-Y292ZXIuMTcyMTEyMDgzMi5naXQud3F1QHN1c2UuY29tPgpGcm9tOiBRdSBXZW5ydW8gPHdx
-dUBzdXNlLmNvbT4KRGF0ZTogVHVlLCAyNCBPY3QgMjAyMyAxMjo0MToxMSArMTAzMApTdWJq
-ZWN0OiBbUEFUQ0ggMS8yXSBidHJmczogdHJlZS1jaGVja2VyOiBhZGQgdHlwZSBhbmQgc2Vx
-dWVuY2UgY2hlY2sgZm9yCiBpbmxpbmUgYmFja3JlZnMKCmNvbW1pdCAxNjQ1YzI4M2E4N2M2
-MWY4NGIyYmZmZDgxZjUwNzI0ZGY5NTliMTFhIHVwc3RyZWFtLgoKW0JVR10KVGhlcmUgaXMg
-YSBidWcgcmVwb3J0IHRoYXQgbnRmczJidHJmcyBoYWQgYSBidWcgdGhhdCBpdCBjYW4gbGVh
-ZCB0bwp0cmFuc2FjdGlvbiBhYm9ydCBhbmQgdGhlIGZpbGVzeXN0ZW0gZmxpcHMgdG8gcmVh
-ZC1vbmx5LgoKW0NBVVNFXQpGb3IgaW5saW5lIGJhY2tyZWYgaXRlbXMsIGtlcm5lbCBoYXMg
-YSBzdHJpY3QgcmVxdWlyZW1lbnQgZm9yIHRoZWlyCm9yZGVyZWQsIHRoZXkgbXVzdCBmb2xs
-b3cgdGhlIGZvbGxvd2luZyBydWxlczoKCi0gQWxsIGJ0cmZzX2V4dGVudF9pbmxpbmVfcmVm
-Ojp0eXBlIHNob3VsZCBiZSBpbiBhbiBhc2NlbmRpbmcgb3JkZXIKCi0gV2l0aGluIHRoZSBz
-YW1lIHR5cGUsIHRoZSBpdGVtcyBzaG91bGQgZm9sbG93IGEgZGVzY2VuZGluZyBvcmRlciBi
-eQogIHRoZWlyIHNlcXVlbmNlIG51bWJlcgoKICBGb3IgRVhURU5UX0RBVEFfUkVGIHR5cGUs
-IHRoZSBzZXF1ZW5jZSBudW1iZXIgaXMgcmVzdWx0IGZyb20KICBoYXNoX2V4dGVudF9kYXRh
-X3JlZigpLgogIEZvciBvdGhlciB0eXBlcywgdGhlaXIgc2VxdWVuY2UgbnVtYmVycyBhcmUK
-ICBidHJmc19leHRlbnRfaW5saW5lX3JlZjo6b2Zmc2V0LgoKVGh1cyBpZiB0aGVyZSBpcyBh
-bnkgY29kZSBub3QgZm9sbG93aW5nIGFib3ZlIHJ1bGVzLCB0aGUgcmVzdWx0ZWQKaW5saW5l
-IGJhY2tyZWZzIGNhbiBwcmV2ZW50IHRoZSBrZXJuZWwgdG8gbG9jYXRlIHRoZSBuZWVkZWQg
-aW5saW5lCmJhY2tyZWYgYW5kIGxlYWQgdG8gdHJhbnNhY3Rpb24gYWJvcnQuCgpbRklYXQpO
-dHJmczJidHJmcyBoYXMgYWxyZWFkeSBmaXhlZCB0aGUgcHJvYmxlbSwgYW5kIGJ0cmZzLXBy
-b2dzIGhhcyBhZGRlZCB0aGUKYWJpbGl0eSB0byBkZXRlY3Qgc3VjaCBwcm9ibGVtcy4KCkZv
-ciBrZXJuZWwsIGxldCdzIGJlIG1vcmUgbm9pc3kgYW5kIGJlIG1vcmUgc3BlY2lmaWMgYWJv
-dXQgdGhlIG9yZGVyLCBzbwp0aGF0IHRoZSBuZXh0IHRpbWUga2VybmVsIGhpdHMgc3VjaCBw
-cm9ibGVtIHdlIHdvdWxkIHJlamVjdCBpdCBpbiB0aGUKZmlyc3QgcGxhY2UsIHdpdGhvdXQg
-bGVhZGluZyB0byB0cmFuc2FjdGlvbiBhYm9ydC4KCkxpbms6IGh0dHBzOi8vZ2l0aHViLmNv
-bS9rZGF2ZS9idHJmcy1wcm9ncy9wdWxsLzYyMgpSZXZpZXdlZC1ieTogSm9zZWYgQmFjaWsg
-PGpvc2VmQHRveGljcGFuZGEuY29tPgpbIEZpeCBhIGNvbmZsaWN0IGR1ZSB0byBoZWFkZXIg
-Y2xlYW51cC4gXQpTaWduZWQtb2ZmLWJ5OiBRdSBXZW5ydW8gPHdxdUBzdXNlLmNvbT4KU2ln
-bmVkLW9mZi1ieTogRGF2aWQgU3RlcmJhIDxkc3RlcmJhQHN1c2UuY29tPgotLS0KIGZzL2J0
-cmZzL3RyZWUtY2hlY2tlci5jIHwgMzkgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgMzkgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdp
-dCBhL2ZzL2J0cmZzL3RyZWUtY2hlY2tlci5jIGIvZnMvYnRyZnMvdHJlZS1jaGVja2VyLmMK
-aW5kZXggY2M2YmM1OTg1MTIwLi41ZDZjZmE2MThkYzQgMTAwNjQ0Ci0tLSBhL2ZzL2J0cmZz
-L3RyZWUtY2hlY2tlci5jCisrKyBiL2ZzL2J0cmZzL3RyZWUtY2hlY2tlci5jCkBAIC0yOSw2
-ICsyOSw3IEBACiAjaW5jbHVkZSAiYWNjZXNzb3JzLmgiCiAjaW5jbHVkZSAiZmlsZS1pdGVt
-LmgiCiAjaW5jbHVkZSAiaW5vZGUtaXRlbS5oIgorI2luY2x1ZGUgImV4dGVudC10cmVlLmgi
-CiAKIC8qCiAgKiBFcnJvciBtZXNzYWdlIHNob3VsZCBmb2xsb3cgdGhlIGZvbGxvd2luZyBm
-b3JtYXQ6CkBAIC0xMjc0LDYgKzEyNzUsOCBAQCBzdGF0aWMgaW50IGNoZWNrX2V4dGVudF9p
-dGVtKHN0cnVjdCBleHRlbnRfYnVmZmVyICpsZWFmLAogCXVuc2lnbmVkIGxvbmcgcHRyOwkv
-KiBDdXJyZW50IHBvaW50ZXIgaW5zaWRlIGlubGluZSByZWZzICovCiAJdW5zaWduZWQgbG9u
-ZyBlbmQ7CS8qIEV4dGVudCBpdGVtIGVuZCAqLwogCWNvbnN0IHUzMiBpdGVtX3NpemUgPSBi
-dHJmc19pdGVtX3NpemUobGVhZiwgc2xvdCk7CisJdTggbGFzdF90eXBlID0gMDsKKwl1NjQg
-bGFzdF9zZXEgPSBVNjRfTUFYOwogCXU2NCBmbGFnczsKIAl1NjQgZ2VuZXJhdGlvbjsKIAl1
-NjQgdG90YWxfcmVmczsJCS8qIFRvdGFsIHJlZnMgaW4gYnRyZnNfZXh0ZW50X2l0ZW0gKi8K
-QEAgLTEzMjAsNiArMTMyMywxOCBAQCBzdGF0aWMgaW50IGNoZWNrX2V4dGVudF9pdGVtKHN0
-cnVjdCBleHRlbnRfYnVmZmVyICpsZWFmLAogCSAqICAgIDIuMikgUmVmIHR5cGUgc3BlY2lm
-aWMgZGF0YQogCSAqICAgICAgICAgRWl0aGVyIHVzaW5nIGJ0cmZzX2V4dGVudF9pbmxpbmVf
-cmVmOjpvZmZzZXQsIG9yIHNwZWNpZmljCiAJICogICAgICAgICBkYXRhIHN0cnVjdHVyZS4K
-KwkgKgorCSAqICAgIEFsbCBhYm92ZSBpbmxpbmUgaXRlbXMgc2hvdWxkIGZvbGxvdyB0aGUg
-b3JkZXI6CisJICoKKwkgKiAgICAtIEFsbCBidHJmc19leHRlbnRfaW5saW5lX3JlZjo6dHlw
-ZSBzaG91bGQgYmUgaW4gYW4gYXNjZW5kaW5nCisJICogICAgICBvcmRlcgorCSAqCisJICog
-ICAgLSBXaXRoaW4gdGhlIHNhbWUgdHlwZSwgdGhlIGl0ZW1zIHNob3VsZCBmb2xsb3cgYSBk
-ZXNjZW5kaW5nCisJICogICAgICBvcmRlciBieSB0aGVpciBzZXF1ZW5jZSBudW1iZXIuIFRo
-ZSBzZXF1ZW5jZSBudW1iZXIgaXMKKwkgKiAgICAgIGRldGVybWluZWQgYnk6CisJICogICAg
-ICAqIGJ0cmZzX2V4dGVudF9pbmxpbmVfcmVmOjpvZmZzZXQgZm9yIGFsbCB0eXBlcyAgb3Ro
-ZXIgdGhhbgorCSAqICAgICAgICBFWFRFTlRfREFUQV9SRUYKKwkgKiAgICAgICogaGFzaF9l
-eHRlbnRfZGF0YV9yZWYoKSBmb3IgRVhURU5UX0RBVEFfUkVGCiAJICovCiAJaWYgKHVubGlr
-ZWx5KGl0ZW1fc2l6ZSA8IHNpemVvZigqZWkpKSkgewogCQlleHRlbnRfZXJyKGxlYWYsIHNs
-b3QsCkBAIC0xNDAxLDYgKzE0MTYsNyBAQCBzdGF0aWMgaW50IGNoZWNrX2V4dGVudF9pdGVt
-KHN0cnVjdCBleHRlbnRfYnVmZmVyICpsZWFmLAogCQlzdHJ1Y3QgYnRyZnNfZXh0ZW50X2lu
-bGluZV9yZWYgKmlyZWY7CiAJCXN0cnVjdCBidHJmc19leHRlbnRfZGF0YV9yZWYgKmRyZWY7
-CiAJCXN0cnVjdCBidHJmc19zaGFyZWRfZGF0YV9yZWYgKnNyZWY7CisJCXU2NCBzZXE7CiAJ
-CXU2NCBkcmVmX29mZnNldDsKIAkJdTY0IGlubGluZV9vZmZzZXQ7CiAJCXU4IGlubGluZV90
-eXBlOwpAQCAtMTQxNCw2ICsxNDMwLDcgQEAgc3RhdGljIGludCBjaGVja19leHRlbnRfaXRl
-bShzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqbGVhZiwKIAkJaXJlZiA9IChzdHJ1Y3QgYnRyZnNf
-ZXh0ZW50X2lubGluZV9yZWYgKilwdHI7CiAJCWlubGluZV90eXBlID0gYnRyZnNfZXh0ZW50
-X2lubGluZV9yZWZfdHlwZShsZWFmLCBpcmVmKTsKIAkJaW5saW5lX29mZnNldCA9IGJ0cmZz
-X2V4dGVudF9pbmxpbmVfcmVmX29mZnNldChsZWFmLCBpcmVmKTsKKwkJc2VxID0gaW5saW5l
-X29mZnNldDsKIAkJaWYgKHVubGlrZWx5KHB0ciArIGJ0cmZzX2V4dGVudF9pbmxpbmVfcmVm
-X3NpemUoaW5saW5lX3R5cGUpID4gZW5kKSkgewogCQkJZXh0ZW50X2VycihsZWFmLCBzbG90
-LAogImlubGluZSByZWYgaXRlbSBvdmVyZmxvd3MgZXh0ZW50IGl0ZW0sIHB0ciAlbHUgaXJl
-ZiBzaXplICV1IGVuZCAlbHUiLApAQCAtMTQ0NCw2ICsxNDYxLDEwIEBAIHN0YXRpYyBpbnQg
-Y2hlY2tfZXh0ZW50X2l0ZW0oc3RydWN0IGV4dGVudF9idWZmZXIgKmxlYWYsCiAJCWNhc2Ug
-QlRSRlNfRVhURU5UX0RBVEFfUkVGX0tFWToKIAkJCWRyZWYgPSAoc3RydWN0IGJ0cmZzX2V4
-dGVudF9kYXRhX3JlZiAqKSgmaXJlZi0+b2Zmc2V0KTsKIAkJCWRyZWZfb2Zmc2V0ID0gYnRy
-ZnNfZXh0ZW50X2RhdGFfcmVmX29mZnNldChsZWFmLCBkcmVmKTsKKwkJCXNlcSA9IGhhc2hf
-ZXh0ZW50X2RhdGFfcmVmKAorCQkJCQlidHJmc19leHRlbnRfZGF0YV9yZWZfcm9vdChsZWFm
-LCBkcmVmKSwKKwkJCQkJYnRyZnNfZXh0ZW50X2RhdGFfcmVmX29iamVjdGlkKGxlYWYsIGRy
-ZWYpLAorCQkJCQlidHJmc19leHRlbnRfZGF0YV9yZWZfb2Zmc2V0KGxlYWYsIGRyZWYpKTsK
-IAkJCWlmICh1bmxpa2VseSghSVNfQUxJR05FRChkcmVmX29mZnNldCwKIAkJCQkJCSBmc19p
-bmZvLT5zZWN0b3JzaXplKSkpIHsKIAkJCQlleHRlbnRfZXJyKGxlYWYsIHNsb3QsCkBAIC0x
-NDcwLDYgKzE0OTEsMjQgQEAgc3RhdGljIGludCBjaGVja19leHRlbnRfaXRlbShzdHJ1Y3Qg
-ZXh0ZW50X2J1ZmZlciAqbGVhZiwKIAkJCQkgICBpbmxpbmVfdHlwZSk7CiAJCQlyZXR1cm4g
-LUVVQ0xFQU47CiAJCX0KKwkJaWYgKGlubGluZV90eXBlIDwgbGFzdF90eXBlKSB7CisJCQll
-eHRlbnRfZXJyKGxlYWYsIHNsb3QsCisJCQkJICAgImlubGluZSByZWYgb3V0LW9mLW9yZGVy
-OiBoYXMgdHlwZSAldSwgcHJldiB0eXBlICV1IiwKKwkJCQkgICBpbmxpbmVfdHlwZSwgbGFz
-dF90eXBlKTsKKwkJCXJldHVybiAtRVVDTEVBTjsKKwkJfQorCQkvKiBUeXBlIGNoYW5nZWQs
-IGFsbG93IHRoZSBzZXF1ZW5jZSBzdGFydHMgZnJvbSBVNjRfTUFYIGFnYWluLiAqLworCQlp
-ZiAoaW5saW5lX3R5cGUgPiBsYXN0X3R5cGUpCisJCQlsYXN0X3NlcSA9IFU2NF9NQVg7CisJ
-CWlmIChzZXEgPiBsYXN0X3NlcSkgeworCQkJZXh0ZW50X2VycihsZWFmLCBzbG90LAorImlu
-bGluZSByZWYgb3V0LW9mLW9yZGVyOiBoYXMgdHlwZSAldSBvZmZzZXQgJWxsdSBzZXEgMHgl
-bGx4LCBwcmV2IHR5cGUgJXUgc2VxIDB4JWxseCIsCisJCQkJICAgaW5saW5lX3R5cGUsIGlu
-bGluZV9vZmZzZXQsIHNlcSwKKwkJCQkgICBsYXN0X3R5cGUsIGxhc3Rfc2VxKTsKKwkJCXJl
-dHVybiAtRVVDTEVBTjsKKwkJfQorCQlsYXN0X3R5cGUgPSBpbmxpbmVfdHlwZTsKKwkJbGFz
-dF9zZXEgPSBzZXE7CiAJCXB0ciArPSBidHJmc19leHRlbnRfaW5saW5lX3JlZl9zaXplKGlu
-bGluZV90eXBlKTsKIAl9CiAJLyogTm8gcGFkZGluZyBpcyBhbGxvd2VkICovCi0tIAoyLjQ1
-LjIKCg==
-
---------------4Dh7u5zf7CkZuV131edypvFz--
 
