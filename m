@@ -1,147 +1,127 @@
-Return-Path: <linux-btrfs+bounces-6505-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6506-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EDF8932841
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 16:23:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C8619328A2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 16:29:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEB421F23B87
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 14:23:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16AE51F21A11
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 14:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4235119B591;
-	Tue, 16 Jul 2024 14:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0FE1A0B0E;
+	Tue, 16 Jul 2024 14:26:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="EU6uZLLL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X6KPMa7i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ncGpJLZ8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD6B19B595;
-	Tue, 16 Jul 2024 14:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5181A0AEF;
+	Tue, 16 Jul 2024 14:26:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721139800; cv=none; b=YpdHBgjUU9sx6n6j9U5vnUPZfGKwFtjCnoAEayzW6IOrtKEfohJ7X2Yhk6HEpMnJydlvEphjI+XPsHwNQpjpuUnvleKnN7WUA4J1Sxs1mXz+WqlWQHxjMhsipVx5AP0EsOMgiA/L1vjCjqcCtdgEygtWUMFhWXO4e4DL5UbKu3w=
+	t=1721139999; cv=none; b=Zr4XrofsPlahQylEgjQqsN/5/Q7vxRVQABjA9ypheQDvyQPSCzQ3JLaghOdYkDsPvPo3fR8BVN0Tk/vkZtxfcvH/EJKTXAZRhK05+SyCv9otyzFu/wcnpBNgHkno4cuEePJWmONt3BqQIpBvdkGY1Cv296Cf1wGh7qajQ22ak9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721139800; c=relaxed/simple;
-	bh=3j7UmV5Osm9gGYW64tfdXxw90byedZUmsDtrYUOjV80=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZyZpK40EbztMKjcjpYHuJrrH/Y+T8gEGv+0ZXmb/YZH7+VZSOu7Nn+D0yw8Y3yiJaasX+gSR7XzcvKLTt4Zfla5kV0GVXpMDRCa9fH6XaWdoHeLYZp6nTdCOVa/7+av05PTTG8MaawwpYE5tg1X1goYISUlPJi61mAkKxxx7hP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=EU6uZLLL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=X6KPMa7i; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 1F21C1388B5B;
-	Tue, 16 Jul 2024 10:23:16 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 16 Jul 2024 10:23:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1721139796; x=1721226196; bh=D1EqHmNIMe
-	5lNyHhuTa/bOsnQk18KfRt8q3WMidg1Mo=; b=EU6uZLLLHni0SF9+UIRQx/jcwv
-	aWexbLviX7O44UuNJpCif7tJmkP/pBlWgSZqSxQxmOJKIk7FwmwiNj4l7gpTmd0E
-	TnklrywKMNINl219ZbNwX99p8luiDZPPHZMZvgJESgxv1EPTzVdiHEtB/3YRcoRH
-	P0HrYfKKLh5w1KDywUZrCVgt7Nq5P+2IKIS6rk/eT4hGNdB1btT0oE90V4bB7un4
-	MiWZ1GLpULYn0/j6vuDUgwswronnlYWWFlM02YtWGusZk5PBZi6Toj9t/SDKx0Rj
-	RVslwe5MAmoEvJLRvS2SuGOJQsLn1IDV+BNBQIsR16rgblSnICuPZ3CGjp7A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1721139796; x=1721226196; bh=D1EqHmNIMe5lNyHhuTa/bOsnQk18
-	KfRt8q3WMidg1Mo=; b=X6KPMa7ip5dftf01GzT3ngOrLVf9jgqJ72bMwNfW+20s
-	pN52QbZJIMyVsFArcwk9BRneMt7c8wDqfmN+/6lOMKSu+nGApcqjqNEFL86HP3zM
-	UDZtLT9JHtJcNjIi/L7nUHLc7CBFQ/z4LqjsiiXyRCOlsBrPLywfKvQ5Q5J+zglo
-	Zo8y7CK9LMFz7eryy9Eth1GxmhfJ0F1+ZO5NZtRDkO8+YGmCs8e1sm1RwoxRsDIe
-	J4DzSs3d5HDtpnXgEOYBm4dfw2wLWbgWqXn6Bo0hm6ATUIpHm8XJaPMTY8sfGdUg
-	zNoorUxi4Z884zwxl6HNYsdBfiNZESjly4+ojCTAMA==
-X-ME-Sender: <xms:U4KWZgUuruuvdbeYaT05yQKtkfmUMZCQoSlUXFnUf0qpoQ2T3KaG5w>
-    <xme:U4KWZkkyFOHmD7t4warUQDwEm6_X5czLVurl5vBSVahq3jXbyZ0H1_rmpzWsfHtlg
-    w2wlbQn3cp1OA>
-X-ME-Received: <xmr:U4KWZkZXc5sLTvAUls1tAuRdX6Dac_tmjLjTyw4OCAd5LprbNVQsbc9jrXkd_B2OBF4REmRSGC4qtg3-CRfSrLPzb2x7bt7mImWOdw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrgeeggdejgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpedvjefhve
-    fhjeejfeefleejteegtedvgeeghfeuveevgfffueelhffhhedugffhkeenucffohhmrghi
-    nhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:U4KWZvV48D0e_yiW9kclqTjWGp4mza3mSxdeRV6MOVkGByMp8wpuzg>
-    <xmx:U4KWZqliL6AjQliqURiSrE8HGVkT-JmfER_EkuGngV8Snz8mYfCwdA>
-    <xmx:U4KWZkd0g8mPY9ZMWMJBYxlbKcF4sGsbKAoAmxVG93tDyEV85FbUAQ>
-    <xmx:U4KWZsHdgR0KBJKI78cLfYIEv5DZLA6sRIZeoSpqwraZAJmIvgjd9A>
-    <xmx:VIKWZjfxx6-9qHniPKQ5zOxwOybc5_eOiYOy8EPB1W9DZxjqimtjbx0t>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 16 Jul 2024 10:23:15 -0400 (EDT)
-Date: Tue, 16 Jul 2024 16:23:13 +0200
-From: Greg KH <greg@kroah.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 6.6] btrfs: tree-checker: add type and sequence check for
- inline backrefs
-Message-ID: <2024071606-countdown-tactful-e647@gregkh>
-References: <63189f5d922db2bc525f5251be46fe857e00a2d6.1721120987.git.wqu@suse.com>
+	s=arc-20240116; t=1721139999; c=relaxed/simple;
+	bh=o999yEuYcVA54k+5MUQHO5GFQI7Kd42PMS8cjrC3XsI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=QZhhTwxjE9JOF/kn3giGZivGPIvyVSGkjgPdVkOniQdH9BZmZLv8t6ZXTIXJ2JbIZGX5nxr198a2cruUguVqjzhWxEmvmsYuguKIxF6FfCU1LJBzLvt3ZOOneHZINCkIRBfg0qrvfTrl/blqpUQwhJluJuND6DYqN0ER4u7I/C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ncGpJLZ8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A24DFC116B1;
+	Tue, 16 Jul 2024 14:26:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721139998;
+	bh=o999yEuYcVA54k+5MUQHO5GFQI7Kd42PMS8cjrC3XsI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ncGpJLZ8JzaMIxwpI+C5eeOB2DNhjv0gjOG6y4Az6sksoMZynlevdMZ5iNy2luhv1
+	 V3quDO+9cdSQBMTtGHoYT44/Lwlfr8nHBIDNcJIBD+D9vJlX+CKvgTlfplkG9usBmk
+	 gMukRxPyqUmdIiV8lbh21GnwEVOyzCUOx+zDrE1pcvu/tTv4Lzdm1xSAmLpIOmsN9j
+	 9lyhAmHq76002/5CD27z48lQTW++tsUQNl9tCuN3wRVyhBfxjHdnGIHbTXQF1U0JQG
+	 0o1noOlEv8Auq3WA43u41AJAQbPLPumSvwVo9XD2zXFIayXt7CorcaeB2gdBF8c0t+
+	 IQrGdAn5t+SEQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Mirsad Todorovac <mtodorovac69@gmail.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.9 18/22] btrfs: fix uninitialized return value in the ref-verify tool
+Date: Tue, 16 Jul 2024 10:24:25 -0400
+Message-ID: <20240716142519.2712487-18-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240716142519.2712487-1-sashal@kernel.org>
+References: <20240716142519.2712487-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63189f5d922db2bc525f5251be46fe857e00a2d6.1721120987.git.wqu@suse.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.9.9
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 16, 2024 at 06:45:49PM +0930, Qu Wenruo wrote:
-> commit 1645c283a87c61f84b2bffd81f50724df959b11a upstream.
-> 
-> [BUG]
-> There is a bug report that ntfs2btrfs had a bug that it can lead to
-> transaction abort and the filesystem flips to read-only.
-> 
-> [CAUSE]
-> For inline backref items, kernel has a strict requirement for their
-> ordered, they must follow the following rules:
-> 
-> - All btrfs_extent_inline_ref::type should be in an ascending order
-> 
-> - Within the same type, the items should follow a descending order by
->   their sequence number
-> 
->   For EXTENT_DATA_REF type, the sequence number is result from
->   hash_extent_data_ref().
->   For other types, their sequence numbers are
->   btrfs_extent_inline_ref::offset.
-> 
-> Thus if there is any code not following above rules, the resulted
-> inline backrefs can prevent the kernel to locate the needed inline
-> backref and lead to transaction abort.
-> 
-> [FIX]
-> Ntrfs2btrfs has already fixed the problem, and btrfs-progs has added the
-> ability to detect such problems.
-> 
-> For kernel, let's be more noisy and be more specific about the order, so
-> that the next time kernel hits such problem we would reject it in the
-> first place, without leading to transaction abort.
-> 
-> Cc: stable@vger.kernel.org # 6.6
-> Link: https://github.com/kdave/btrfs-progs/pull/622
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> [ Fix a conflict due to header cleanup. ]
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  fs/btrfs/tree-checker.c | 39 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
+From: Filipe Manana <fdmanana@suse.com>
 
-Now queued up, thanks.
+[ Upstream commit 9da45c88e124f13a3c4d480b89b298e007fbb9e4 ]
 
-greg k-h
+In the ref-verify tool, when processing the inline references of an extent
+item, we may end up returning with uninitialized return value, because:
+
+1) The 'ret' variable is not initialized if there are no inline extent
+   references ('ptr' == 'end' before the while loop starts);
+
+2) If we find an extent owner inline reference we don't initialize 'ret'.
+
+So fix these cases by initializing 'ret' to 0 when declaring the variable
+and set it to -EINVAL if we find an extent owner inline references and
+simple quotas are not enabled (as well as print an error message).
+
+Reported-by: Mirsad Todorovac <mtodorovac69@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/59b40ebe-c824-457d-8b24-0bbca69d472b@gmail.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/ref-verify.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index 8c4fc98ca9ce7..aa7ddc09c55fa 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -441,7 +441,8 @@ static int process_extent_item(struct btrfs_fs_info *fs_info,
+ 	u32 item_size = btrfs_item_size(leaf, slot);
+ 	unsigned long end, ptr;
+ 	u64 offset, flags, count;
+-	int type, ret;
++	int type;
++	int ret = 0;
+ 
+ 	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
+ 	flags = btrfs_extent_flags(leaf, ei);
+@@ -486,7 +487,11 @@ static int process_extent_item(struct btrfs_fs_info *fs_info,
+ 						  key->objectid, key->offset);
+ 			break;
+ 		case BTRFS_EXTENT_OWNER_REF_KEY:
+-			WARN_ON(!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA));
++			if (!btrfs_fs_incompat(fs_info, SIMPLE_QUOTA)) {
++				btrfs_err(fs_info,
++			  "found extent owner ref without simple quotas enabled");
++				ret = -EINVAL;
++			}
+ 			break;
+ 		default:
+ 			btrfs_err(fs_info, "invalid key type in iref");
+-- 
+2.43.0
+
 
