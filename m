@@ -1,161 +1,151 @@
-Return-Path: <linux-btrfs+bounces-6508-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6509-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE63932E5F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 18:31:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1427932F61
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 19:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DD3A1F235C4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 16:31:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AB82B2350D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 17:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72B419E822;
-	Tue, 16 Jul 2024 16:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0571A00E7;
+	Tue, 16 Jul 2024 17:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U5usrvx7"
+	dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b="GTNhBYeE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from r07.out0.gmailify.com (r07.out0.gmailify.com [159.255.151.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E406819A86A
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 16:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBA119DF8D
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 17:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.255.151.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721147487; cv=none; b=b7yJ+0+F1cbmKxA/uTxLbGkEhHHt5gST6MyfagBE1TIL3YHyrHZ2shplQKkXsirtt0GvYg0s1C0GlEHwDY4D2JFgK21P+Pn76cJgHJldDvPLuq0D/qzRc+c10mc5Uz3Lxh64o+Bywq5hriaaCnfQuETqs1oXXQBx6cgVMoFbe7c=
+	t=1721152224; cv=none; b=XGhkhA9w/ahQB5WamXs975T6eKgP3hb2t4ttmNVDOiC26FzcE2iXrcWKKNnDNSmB+KT4YiMu1myzdy8azipygNsNH7aevyLQlsF0aQXvOTvZGtSKOu4yB91cVafEqtOfAOy7evReNICmdykHjxDYD0CvnK9VDmcjmBwMWJIH2uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721147487; c=relaxed/simple;
-	bh=SE3Ok4xCDagJHje8puInwxON/V1MiHf0m/Ktw0VYfGQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=srBCzs5wvA24hlYwHPnbGPmZreNw1D2Vwey+jINKNuyTtJ7SSvssxwSJ69pYADMSKdTQmvsmfsk/X63YyAdmFbX3tRn95U0IxT98IlYiRpyIGC9AZtbW0JrSZv1wvGdQM3tv1ewriCP3AAfxSbhtjGIq3g5wQOdnPyr7cDMJ/fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U5usrvx7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87275C4AF0D
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 16:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721147486;
-	bh=SE3Ok4xCDagJHje8puInwxON/V1MiHf0m/Ktw0VYfGQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=U5usrvx7XdESohSBwZM7zPniwKOnZyPGtcVctnN5j8NibqNMD2ay2AzrXe/kVMNtw
-	 BcBijrJ2fgAhC4WdiEYyIw5AjyEKV9CM+V7P2C/dqxUNY7TuxLKDoCNFtJlcOikJ/e
-	 p/iwtLqqU6MuZkO0cQgmIrhK8tzVWFHHNb3oHv9aCAmK8bEr3NVP0wiEXR5cjRHey6
-	 prDJ0i7/NsOQoFLWQm42+dkmxVR12Uix/CdGQshAxIlxnJWi9Y+I+NLWaPkAvk5JOa
-	 haxeR92c91DWsVLVYFXd3vVYf7T97Gl8m45qPs6ZX+7fVjsCG3YxzYBicfJmNpoylb
-	 BniI0P7/YE05g==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-52ea952ce70so6096231e87.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 09:31:26 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyUb2M1Sif7VgfJZBdQSQROhv8umNvYxlVWYw4Xkh1xI2qacW3O
-	qq+CjwtUrxxOOOrbSZBraEsh/Ig87NzozTDZDnhrLH2/tLMEJsjcnxfQ+vOGLxScnM6TkWbac1P
-	Ned0b8fYEIDZI8m6nKJyc3o8/6F0=
-X-Google-Smtp-Source: AGHT+IHrdQHQ5YLrIOUOfD1vFCzqm6CaUJluFoWnCTbZ3gCDMAAkaMVwrESyqOBgPkGZ28UDJohqRprYoJe5BixcMEw=
-X-Received: by 2002:a05:6512:b85:b0:52c:ab2c:19c4 with SMTP id
- 2adb3069b0e04-52edef1d180mr1982817e87.10.1721147484812; Tue, 16 Jul 2024
- 09:31:24 -0700 (PDT)
+	s=arc-20240116; t=1721152224; c=relaxed/simple;
+	bh=gy5Whe7XfeIzJCclAXl1F/89J1hEGv0JxHEHT58NRGw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=XTyNPtt+FDNf14F/4/9HpiKZraJbA7IHxUB9l/+9+vxUwpBRUwA7I7XLP+hZtq1N8QZ10pmZUbnSIwLzf+nBCYTbDVviX/xrSisZWGYrHLOWdDGaa63RSELyXxgk/s63UZP707AUeuKNgaT4fn4/r2l1okArwXTWNI9UiYDcTd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se; spf=pass smtp.mailfrom=sandnabba.se; dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b=GTNhBYeE; arc=none smtp.client-ip=159.255.151.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandnabba.se
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.gmailify.com (Postfix) with ESMTPSA id 0BCD011C119F
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 17:12:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandnabba.se;
+	s=gm0; t=1721149974;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=gy5Whe7XfeIzJCclAXl1F/89J1hEGv0JxHEHT58NRGw=;
+	b=GTNhBYeEWZGl5WTygfVaVq7Wmqpge/+w6rgssuh7sY07t63vjlYpmVv2NdNj0hjJyLIXO1
+	sK2gGTEt2wGSHXvinnQyon4gLKnTL4tdvy69tte/fPNk4JdbdtjmMFJN/kh68REEnFKGEY
+	JMWt+jmaHydacbPJ3YuYtg6FLP6chPuLlVtZ4saIyKRsRZYvw88t9XUnswJSkyi09vTsu5
+	Y62EfoIb/v/MQBixdkx7F+0zBJfhinFHzYk2ZwgUC7473Xrnh0uqUQ/Jm3v4Tqkh3D40l9
+	YHHNpz/aY7HKmUjZ6iDK0rZ6VcGXRbcKox9DTbcoD3KOV/XSFX6IGmY9vRtiAA==
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6b5daf5ea91so32852816d6.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 10:12:53 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy6adUJUQgiCjmlybOK/JVFPUL7qqrB6aTUVDCvR6mTdOSYmS66
+	gCk+Ttee5sEy/glNLPE5hxZa1V1CSlzzUCviaNZE2QrXMn2+ig1r/o4MafHei1sGm66SWX4iv7w
+	yp8zV0b75heduzBy421vLM3VCk00=
+X-Google-Smtp-Source: AGHT+IFhOw4+La3GnIe/QyFBtAZSMNB02dPQ2DSHfOk/qO2Jsi4euhCDiB6k2eUTd981/jYpLzhuYMVOf/50s7FYtAU=
+X-Received: by 2002:a05:6214:246c:b0:6b0:9347:e414 with SMTP id
+ 6a1803df08f44-6b77f4c898dmr30126556d6.36.1721149971812; Tue, 16 Jul 2024
+ 10:12:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1721147081-4813-1-git-send-email-zhanglikernel@gmail.com>
-In-Reply-To: <1721147081-4813-1-git-send-email-zhanglikernel@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 16 Jul 2024 17:30:47 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7KuH+hLS_wrzKfHymwo5xTVNXazAS=N6xAN9+2Wp5eWQ@mail.gmail.com>
-Message-ID: <CAL3q7H7KuH+hLS_wrzKfHymwo5xTVNXazAS=N6xAN9+2Wp5eWQ@mail.gmail.com>
-Subject: Re: [PATCH V2] btrfs: print warning message if bdev_file_open_by_path
- function fails during mount.
-To: Li Zhang <zhanglikernel@gmail.com>
-Cc: linux-btrfs@vger.kernel.org
+X-Report-Abuse: Please report any abuse attempt to abuse@gmailify.com and include these headers.
+From: "Emil.s" <emil@sandnabba.se>
+Date: Tue, 16 Jul 2024 19:12:40 +0200
+X-Gmail-Original-Message-ID: <CAEA9r7CotKGMkNh3-hgTbUL4A_pbOD39ZmdZO_ntSAVNwkOE=w@mail.gmail.com>
+Message-ID: <CAEA9r7CotKGMkNh3-hgTbUL4A_pbOD39ZmdZO_ntSAVNwkOE=w@mail.gmail.com>
+Subject: btrfsck repair on backpointer mismatch fails and get stuck in loop
+To: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Gmailify-Queue-Id: 0BCD011C119F
+X-Gmailify-Score: -0.10
 
-On Tue, Jul 16, 2024 at 5:25=E2=80=AFPM Li Zhang <zhanglikernel@gmail.com> =
-wrote:
->
-> [ENHANCEMENT]
-> When mounting a btrfs filesystem, the filesystem opens the
-> block device, and if this fails, there is no message about
-> it. Print a message about it to help debugging.
->
-> [IMPLEMENTATION]
-> Print warning message if bdev_file_open_by_path fails.
+Hello!
 
-It's no longer a warning message (it's an error message now), plus
-this section/phrase is redundant - you have already said the same
-right above.
+I got a somewhat corrupt btrfs filesystem, most likely caused by bad
+RAM on old hardware.
+I've moved the drives to a new system running Linux 6.9.9 and
+btrfs-progs 6.9.2 and I'm now attempting to repair the filesystem.
 
->
-> [TEST]
-> I have a btrfs filesystem on three block devices,
-> one of which is write-protected, so regular mounts fail,
-> but there is no message in dmesg.
->
-> /dev/vdb normal
-> /dev/vdc write protected
-> /dev/vdd normal
->
-> Before patch:
-> $ sudo mount /dev/vdb /mnt/
-> mount: mount(2) failed: no such file or directory
-> $ sudo dmesg # Show only messages about missing block devices
-> ....
-> [ 352.947196] BTRFS error (device vdb): devid 2 uuid 4ee2c625-a3b2-4fe0-b=
-411-756b23e08533 missing
-> ....
->
-> After patch:
-> $ sudo mount /dev/vdb /mnt/
-> mount: mount(2) failed: no such file or directory
-> $ sudo dmesg # Show bdev_file_open_by_path failed.
-> ....
-> [ 352.944328] BTRFS error: faled to open device for path /dev/vdc with fl=
-ags 0x3: -13
+Output of btrfsck:
+```
+root@ThinkStation: /home/emil #> btrfsck /dev/md127
+Opening filesystem to check...
+Checking filesystem on /dev/md127
+UUID: 9b00b378-d0f7-42a3-82c5-f70143e99184
+[1/7] checking root items
+[2/7] checking extents
+data extent[780333588480, 942080] size mimsmatch, extent item size
+925696 file item size 942080
+backpointer mismatch on [780333588480 925696]
+data extent[856274145280, 913408] size mimsmatch, extent item size
+897024 file item size 913408
+backpointer mismatch on [856274145280 897024]
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+there are no extents for csum range 780334514176-780334530560
+csum exists for 780130058240-780381552640 but there is no extent record
+there are no extents for csum range 856275042304-856275058688
+csum exists for 856273186816-856277803008 but there is no extent record
+ERROR: errors found in csum tree
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 3453332246528 bytes used, error(s) found
+total csum bytes: 3367901428
+total tree bytes: 4600954880
+total fs tree bytes: 877445120
+total extent tree bytes: 118177792
+btree space waste bytes: 377391721
+file data blocks allocated: 11156902174720
+referenced 8518851969024
+```
 
-typo:  faled -> failed
+But when trying to repair using just the `--repair` option, it seems
+to get stuck attempting to repair the same extent over and over again:
+```
+Starting repair.
+Opening filesystem to check...
+Checking filesystem on /dev/md127
+UUID: 9b00b378-d0f7-42a3-82c5-f70143e99184
+[1/7] checking root items
+Fixed 0 roots.
+[2/7] checking extents
+data extent[780333588480, 942080] size mimsmatch, extent item size
+925696 file item size 942080
+backpointer mismatch on [780333588480 925696]
+attempting to repair backref discrepancy for bytenr 780333588480
+data extent[780333588480, 942080] size mimsmatch, extent item size
+925696 file item size 942080
+backpointer mismatch on [780333588480 925696]
+attempting to repair backref discrepancy for bytenr 780333588480
+data extent[780333588480, 942080] size mimsmatch, extent item size
+925696 file item size 942080
+backpointer mismatch on [780333588480 925696]
+attempting to repair backref discrepancy for bytenr 780333588480
+....
+```
 
-> [ 352.947196] BTRFS error (device vdb): missing devid 2 uuid 4ee2c625-a3b=
-2-4fe0-b411-756b23e08533
-> ....
->
-> V1:
->   Use printk to print messages
->
-> V2:
->   Use btrfs_err to print messages and format output
+One suggestion from the #btrfs Libera.Chat channel was that "maybe it
+can't match a backref with the wrong size"?
 
-Details about what changed between patch versions goes under the line
-"---" below, so that it doesn't show up in the commit message after it
-gets committed.
+Is it possible to repair this filesystem in any way? Can I just delete
+these two broken extents in some way?
 
->
-> Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
-> ---
+Best regards
 
-Here.
-
->  fs/btrfs/volumes.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index c39145e..179419f 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -476,6 +476,7 @@ static noinline struct btrfs_fs_devices *find_fsid(
->
->         if (IS_ERR(*bdev_file)) {
->                 ret =3D PTR_ERR(*bdev_file);
-> +               btrfs_err(NULL, "faled to open device for path %s with fl=
-ags 0x%x: %d", device_path, flags, ret);
-
-typo: faled -> failed
-
-Thanks.
-
->                 goto error;
->         }
->         bdev =3D file_bdev(*bdev_file);
-> --
-> 1.8.3.1
->
->
+Emil Sandnabba
 
