@@ -1,219 +1,366 @@
-Return-Path: <linux-btrfs+bounces-6495-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AE7B9323B7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 12:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73857932482
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 12:59:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6E9A284C8E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 10:15:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A30028339B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2024 10:59:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCA6143875;
-	Tue, 16 Jul 2024 10:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB74198E75;
+	Tue, 16 Jul 2024 10:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X4RP/Y0P"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="tdh1MM0y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6E2198A2A;
-	Tue, 16 Jul 2024 10:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D3C13A416
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2024 10:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721124896; cv=none; b=pWq7uvPb6jAsCPEGXfKQb5s2VXqV2MMpu0DCevgErPGEwwlU5sXm3aVs4ibxXN/GP/xPrlqEN2BL4HAsKp26CQfL5TLO/qMcISUPz/XJPR+lrcJqb5VZVjmTkaGt6AbRjUradrrCLF7j6OLaxgAZ4GVbK9PSYRNwuw0wA95pTH4=
+	t=1721127576; cv=none; b=bP2L618uyoT+Dz4rFY1h6PYcH41K+3K/AchqluiM/kTzKqCAQiTJrxd3gWLJjalIi3YKlqG7/e6OELhtB8w42PJWZgPTEJh5Cv1dNWlGVdF+9DMDVTt+5l4+Ef7JQmTpURwuARbXAyqRF0zBe+Zxvv9LeC4Tw9Bkf+v5i5OYgm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721124896; c=relaxed/simple;
-	bh=nDqqj1+aCw1jnXe71wusn42aF3zZYCxbvthxWf3ko2w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t0qvSuVawb7lMxdNaG6KLe5faEfwsVH/Fal/TNN6KHEQePZct5/GdL+4xbm15r4r8PlLCSQpSw+/LfFWcgQx2RZfVFxA87gLcE3yWx/ffh25X+iQ1aTYbFfxbR48o7+b4nx+9gbpWcgT5mBfHJGlb6SWhoE6sXJ2OX/lpU1+1oI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X4RP/Y0P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8565C116B1;
-	Tue, 16 Jul 2024 10:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721124895;
-	bh=nDqqj1+aCw1jnXe71wusn42aF3zZYCxbvthxWf3ko2w=;
-	h=From:To:Cc:Subject:Date:From;
-	b=X4RP/Y0PlQQAwhWTYXUO144H1JUZQJZTfXG6u33dmkvQ8QmgQLORcuEU0BgoFYjr+
-	 B2KeAFZ42KbEULh3YyIg2umRfEsx6bdol9bAitGlN6AETRDC/e+ILnIh8CkW1v/W2Y
-	 g9F+CSqPgtZ063x0bYGoZQcVOMEpNbCbgbvqcwNbyeEjF7e1tWuBwHBpKiKvWkFKYi
-	 pDcgUUetgmhgaGH0MHNMMelVkA+gvlpsbHKIbgyiGbhO/+GOS8Arn8gnS0GAHxQuQp
-	 UwdfxEOJwsKboZXVGqXWn8ziaLWIpYwy7tytaGtbXiwkINQONtrdE57U4arsg8Lr5z
-	 /cItje6DzK78g==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: test a compressed send stream scenario that triggered a read corruption
-Date: Tue, 16 Jul 2024 11:14:45 +0100
-Message-ID: <330b0c61a77f01bd2aa57e9b500145178a2d751a.1721124764.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1721127576; c=relaxed/simple;
+	bh=svXj8AuyCm9hJD22Hc5bqpMP+EaWNGr8iYsy+ZZWXaA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mLTIQy+sFplLCz2CZO8A/6ySQz6T84jyg3wjUFPIKXl6WmgHP3BYg9AGAq0VIqcpTccH3fpF1VdkQEhX5PEX+yjthZ7Xe3E4FS4CaECJmF2UxfgWuMq8XtzXyTAM8rJ7/ghOwY9K2hQIq8PkwvCpyyzvKYXYNtTZ9SaqjzB5jXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=tdh1MM0y; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1721127567; x=1721732367; i=quwenruo.btrfs@gmx.com;
+	bh=w4P9tZCJmHaBJD/Oc/xCSMIobFCkLCxS68mBZ0koShM=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=tdh1MM0yoB0+WuHnMtvyNi8AAOE2SxfKnevdKILGOorFrBNr9z+BOlKS8qia8RJU
+	 Q66+i6qoUtTC5ALnP4Z9bIQ7gp8s7ydnqloi4non4ognNpbXeJ12yAcvvqzb8NAkM
+	 SiALLiOsips2nF8aSdog71vqBCQ+KB0Q7h7zUtXYXNcCSS5nQuue0Xe3VrrI9Tgwv
+	 21FuB7bglaOBfxnHpMfzwwaXKlbuPsziRKvv5SOGstdNoExtYwWhMeA/a0EOhlRrD
+	 B1/IGleEtZ6ShzMndtK2hp7AQFIcptINv7bnPZzx95B1KRcfpm+9CjZYFJ6Tcv4WE
+	 WbpdhCrg+NGB5pqfGw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKsnF-1smatX1BTZ-00TUBO; Tue, 16
+ Jul 2024 12:59:26 +0200
+Message-ID: <e3161618-5e9f-477c-9708-3428136d1fce@gmx.com>
+Date: Tue, 16 Jul 2024 20:29:23 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix corrupt read due to bad offset of a compressed
+ extent map
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <7e186f2d4892bf5bfa1a66dd859a38c981acf8ab.1721124786.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <7e186f2d4892bf5bfa1a66dd859a38c981acf8ab.1721124786.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:csDW9GRZodun9n6T+iexf0c2cw10tuRlETSkX1sT3Gk2UOEV1eO
+ BRp6yO3hBHFna/2mCjtwjjQanMlOo/wpildBGDzi2NiasxJLRKowV2xUdJufvVnQY9VZVHt
+ OFUx1d826wFTzUWHDaWpbyFq0VZNPlAQ8HWeMCMbj26wfl1SvIJ7fhedSnUTl+tCy/zSmsP
+ 4W5LOIRzQZ9TKm9+mVjOQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:if7My3gbW9w=;sj7CHEcSyxCKGmA+wPa+fO3oRiG
+ /uKMfV99jx3jBNFMpTseFztDJIszQiob9cENtmIE31zjpPj8Ipc1EvJG2ljgLvQPdajciml3Q
+ JlrGucSkPEuUUu0DFUxkvKdMqShV/CMyW5Ed0TEDGQ+Qlg5wVjAUAk6Ghu6ZAQWXmBwxMP+id
+ kigJYgYz2fJE5uZqsVuU7pRbol0OsCWXguXPyxMt+QIUpyfch6/jGcUQN1sipoqaKJMgl8hod
+ Aj6A6fRsBlzNzN5XsgOXW9pVa2DrYd6dQlVkmBA51nvkoY9WLIU8Q1FkHwE4BCgHx0dxUt3J2
+ xVgNhp58GyQSrBR+qqCSDzfbz0tOE3U8cRx77tqQ4ZC8ztVLSUB10+4thaLH6V8z277x3lz1j
+ Hcypf8LLfcVrsh36da/CCwouxsdkZ68SdV8yVI1v5uJF0n6LFhxfaHElGIGS38S2vrfOU0300
+ zGX3oN8uny4dCbZkozBveBOtgZ+PU50/e4eZv6ZpJ7jZu3azU692ffCAs/vtNo/6Z4BI8m+oE
+ FQHLHDAI9ex8woFDoQwOKIddHgz0T4A4rjFl+L/H4PVhJjy5/6BAXjUE92wDpEcSMaFXZIgbM
+ m7GaSZ4GeaTZw72it1LSHqBQSwg/zlnQ/ImuHcD+z/3G2K7PiiOQeiNgZSHgp/qau//ix+TEZ
+ qEaoeUblC8Dcc45+tRLOqPPvJYVzthxBQvdWW+9DCG2Y+zsU+omGirgRbcgMb4+cz/UQIGw/j
+ Y+KOM04yBxJiybZKqCsRXWE2H90k4Z/pzRpSOU4xG8cMC7eDmw00YQglONm1Y5/Nz+lBnYsb1
+ xZO4LN9VHLFZslJmU9QfFPng==
 
-From: Filipe Manana <fdmanana@suse.com>
 
-Test a scenario of a compressed send stream that triggered a bug in the
-extent map merging code introduced in the merge window for 6.11.
 
-The commit that introduced the bug is on its way to Linus' tree and its
-subject is:
+=E5=9C=A8 2024/7/16 19:44, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> If we attempt to insert a compressed extent map that has a range that
+> overlaps another extent map we have in the inode's extent map tree, we
+> can end up with an incorrect offset after adjusting the new extent map a=
+t
+> merge_extent_mapping() because we don't update the extent map's offset.
+>
+> For example consider the following scenario:
+>
+> 1) We have a file extent item for a compressed extent covering the file
+>     range [108K, 144K) and currently there's no corresponding extent map
+>     in the inode's extent map tree;
+>
+> 2) The inode's size is 141K;
+>
+> 3) We have an encoded write (compressed) into the file range [120K, 128K=
+),
+>     which overlaps the existing file extent item. The encoded write crea=
+tes
+>     a matching extent map, add's it to the inode's extent map tree and
+>     creates an ordered extent for it.
+>
+>     Note that the corresponding file extent item is added to the subvolu=
+me
+>     tree only when the ordered extent completes (when executing
+>     btrfs_finish_one_ordered());
+>
+> 4) We have a write into the file range [160K, 164K[.
+>
+>     This writes increases the i_size of the file, and there's a hole
+>     between the current i_size (141K) and the start offset of this write=
+,
+>     and since the old i_size is in the middle of the block [140K, 144K),
+>     we have to write zeroes to the range [141K, 144K) (3072 bytes) and
+>     therefore dirty that page.
+>
+>     We then call btrfs_set_extent_delalloc() with a start offset of 140K=
+.
+>     We then end up at btrfs_find_new_delalloc_bytes() which will call
+>     btrfs_get_extent() for the range [140K, 144K);
+>
+> 5) The btrfs_get_extent() doesn't find any extent map in the inode's
+>     extent map tree covering the range [140K, 144K), so it searches the
+>     subvolume tree for any file extent items covering that range.
+>
+>     There it finds the file extent item for the range [108K, 144K),
+>     creates a compressed extent map for that range and then calls
+>     btrfs_add_extent_mapping() with that extent map and passes the
+>     range [140K, 144K) via the "start" and "len" parameters;
+>
+> 6) The call to add_extent_mapping() done by btrfs_add_extent_mapping()
+>     fails with -EEXIST because there's an extent map, created at step 2
+>     for the [120K, 128K) range, that covers that overlaps with the range
+>     of the given extent map ([108K, 144K)).
+>
+>     Then it does a lookup for extent map from step 2 add calls
+>     merge_extent_mapping() to adjust the input extent map ([108K, 144K))=
+.
+>     That adjust the extent map to a start offset of 128K and a length
+>     of 16K (starting just after the extent map from step 2), but it does
+>     not update the offset field of the extent map, leaving it with a val=
+ue
+>     of zero instead of updating to a value of 20K (128K - 108K =3D 20K).
+>
+>     As a result any read for the range [128K, 144K) can return
+>     incorrect data since we read from a wrong section of the extent (unl=
+ess
+>     both the correct and incorrect ranges happen to have the same data).
+>
+> So fix this by changing merge_extent_mapping() to update the extent map'=
+s
+> offset even if it's compressed. Also add a test case to the self tests.
+>
+> A test case for fstests that triggered this problem using send/receive
+> with compressed writes will be added soon.
+>
+> Fixes: 3d2ac9922465 ("btrfs: introduce new members for extent_map")
 
-   "btrfs: introduce new members for extent_map"
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-The corresponding fix was submitted to the btrfs mailing list, with the
-subject:
 
-  "btrfs: fix corrupt read due to bad offset of a compressed extent map"
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/extent_map.c             |  2 +-
+>   fs/btrfs/tests/extent-map-tests.c | 99 +++++++++++++++++++++++++++++++
+>   2 files changed, 100 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+> index bacb76952fc4..f85f0172b58b 100644
+> --- a/fs/btrfs/extent_map.c
+> +++ b/fs/btrfs/extent_map.c
+> @@ -664,7 +664,7 @@ static noinline int merge_extent_mapping(struct btrf=
+s_inode *inode,
+>   	start_diff =3D start - em->start;
+>   	em->start =3D start;
+>   	em->len =3D end - start;
+> -	if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE && !extent_map_is_compresse=
+d(em))
+> +	if (em->disk_bytenr < EXTENT_MAP_LAST_BYTE)
+>   		em->offset +=3D start_diff;
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/312     | 115 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/312.out |   7 +++
- 2 files changed, 122 insertions(+)
- create mode 100755 tests/btrfs/312
- create mode 100644 tests/btrfs/312.out
+However I'm not sure if the fixes tag is correct.
 
-diff --git a/tests/btrfs/312 b/tests/btrfs/312
-new file mode 100755
-index 00000000..ebecadc6
---- /dev/null
-+++ b/tests/btrfs/312
-@@ -0,0 +1,115 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 312
-+#
-+# Test a scenario of a compressed send stream that triggered a bug in the extent
-+# map merging code introduced in the merge window for 6.11.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick send compress
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -fr $tmp.*
-+	rm -fr $send_files_dir
-+}
-+
-+. ./common/filter
-+
-+_require_btrfs_send_version 2
-+_require_test
-+_require_scratch
-+
-+_fixed_by_kernel_commit XXXXXXXXXXXX \
-+	"btrfs: fix corrupt read due to bad offset of a compressed extent map"
-+
-+send_files_dir=$TEST_DIR/btrfs-test-$seq
-+
-+rm -fr $send_files_dir
-+mkdir $send_files_dir
-+first_stream="$send_files_dir/1.send"
-+second_stream="$send_files_dir/2.send"
-+
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "first mkfs failed"
-+_scratch_mount -o compress
-+
-+# Create a compressed extent for the range [108K, 144K[. Since it's a
-+# non-aligned start offset, the first 3K of the extent are filled with zeroes.
-+# The i_size is set to 141K.
-+$XFS_IO_PROG -f -c "pwrite -S 0xab 111K 30K" $SCRATCH_MNT/foo >> $seqres.full
-+
-+$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1 >> $seqres.full
-+
-+# Overwrite a part of the extent we created before.
-+# This will make the send stream include an encoded write (compressed) for the
-+# file range [120K, 128K[.
-+$XFS_IO_PROG -c "pwrite -S 0xcd 120K 8K" $SCRATCH_MNT/foo >> $seqres.full
-+
-+# Now do write after those extents and leaving a hole in between.
-+# This results in expanding the last block of the extent we first created, that
-+# is, in filling with zeroes the file range [141K, 144K[ (3072 bytes), which
-+# belongs to the block in the range [140K, 144K[.
-+#
-+# When the destination filesystem receives from the send stream a write for that
-+# range ([140K, 144K[) it does a btrfs_get_extent() call to find the extent map
-+# containing the offset 140K. There's no loaded extent map covering that range
-+# so it will lookg at the subvolume tree to find a file extent item covering the
-+# range and then finds the file extent item covering the range [108K, 144K[ which
-+# corresponds to the first extent written to the file, before snapshoting.
-+#
-+# Note that at this point in time the destination filesystem processed an encoded
-+# write for the range [120K, 128K[, which created a compressed extent map for
-+# that range and a corresponding ordered extent, which has not yet completed when
-+# it received the write command for the [140K, 144K[ range, so the corresponding
-+# file extent item is not yet in the subvolume tree - that only happens when the
-+# ordered extent completes, at btrfs_finish_one_ordered().
-+#
-+# So having found a file extent item for the range [108K, 144K[ where 140K falls
-+# into, it tries to add a compressed extent map for that range to the inode's
-+# extent map tree with a call to btrfs_add_extent_mapping() done at
-+# btrfs_get_extent(). That finds there's a loaded overlapping extent map for the
-+# range [120K, 128K[ (the extent from the previous encoded write) and then calls
-+# into merge_extent_mapping().
-+#
-+# The merging ended adjusting the extent map we attempted to insert, covering
-+# the range [108K, 144K[, to cover instead the range [128K, 144K[ (length 16K)
-+# instead, since there's an existing extent map for the range [120K, 128K[ and
-+# we are looking for a range starting at 140K (and ending at 144K). However it
-+# didn't adjust the extent map's offset from 0 to 20K, resulting in future reads
-+# reading the incorrect range from the underlying extent (108K to 124K, 16K of
-+# length, instead of the 128K to 144K range).
-+#
-+# Note that for the incorrect extent map, and therefore read corruption, to
-+# happen, we depend on specific timings - the ordered extent for the encoded
-+# write for the range [120K, 128K[ must not complete before the destination
-+# of the send stream receives the write command for the range [140K, 144K[.
-+#
-+$XFS_IO_PROG -c "pwrite -S 0xef 160K 4K" $SCRATCH_MNT/foo >> $seqres.full
-+
-+$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2 >> $seqres.full
-+
-+echo "Checksums in the original filesystem:"
-+echo "$(md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch)"
-+echo "$(md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch)"
-+
-+$BTRFS_UTIL_PROG send --compressed-data -q -f $first_stream $SCRATCH_MNT/snap1
-+$BTRFS_UTIL_PROG send --compressed-data -q -f $second_stream \
-+		 -p $SCRATCH_MNT/snap1 $SCRATCH_MNT/snap2
-+
-+_scratch_unmount
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "second mkfs failed"
-+_scratch_mount
-+
-+$BTRFS_UTIL_PROG receive -q -f $first_stream $SCRATCH_MNT
-+$BTRFS_UTIL_PROG receive -q -f $second_stream $SCRATCH_MNT
-+
-+echo "Checksums in the new filesystem:"
-+echo "$(md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch)"
-+echo "$(md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch)"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/312.out b/tests/btrfs/312.out
-new file mode 100644
-index 00000000..75f1f4cc
---- /dev/null
-+++ b/tests/btrfs/312.out
-@@ -0,0 +1,7 @@
-+QA output created by 312
-+Checksums in the original filesystem:
-+e3ba4a9cbb38d921adc30d7e795d6626  SCRATCH_MNT/snap1/foo
-+4de09f7184f63aa64b481f3031138920  SCRATCH_MNT/snap2/foo
-+Checksums in the new filesystem:
-+e3ba4a9cbb38d921adc30d7e795d6626  SCRATCH_MNT/snap1/foo
-+4de09f7184f63aa64b481f3031138920  SCRATCH_MNT/snap2/foo
--- 
-2.43.0
+The fix is changing the condition so that even for compressed extents we
+can properly update the offset
 
+However the condition line is not from that commit.
+The condition is there way before the change, just the em member cleanup
+touched that line by removing the tailing '{' since eventually there is
+only one line.
+
+So it looks like the problem exists way before that fixes tag.
+
+Thanks,
+Qu
+
+>   	return add_extent_mapping(inode, em, 0);
+>   }
+> diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-m=
+ap-tests.c
+> index ebec4ab361b8..e4d019c8e8b9 100644
+> --- a/fs/btrfs/tests/extent-map-tests.c
+> +++ b/fs/btrfs/tests/extent-map-tests.c
+> @@ -900,6 +900,102 @@ static int test_case_7(struct btrfs_fs_info *fs_in=
+fo, struct btrfs_inode *inode)
+>   	return ret;
+>   }
+>
+> +/*
+> + * Test a regression for compressed extent map adjustment when we attem=
+pt to
+> + * add an extent map that is partially ovarlapped by another existing e=
+xtent
+> + * map. The resulting extent map offset was left unchanged despite havi=
+ng
+> + * incremented its start offset.
+> + */
+> +static int test_case_8(struct btrfs_fs_info *fs_info, struct btrfs_inod=
+e *inode)
+> +{
+> +	struct extent_map_tree *em_tree =3D &inode->extent_tree;
+> +	struct extent_map *em;
+> +	int ret;
+> +	int ret2;
+> +
+> +	em =3D alloc_extent_map();
+> +	if (!em) {
+> +		test_std_err(TEST_ALLOC_EXTENT_MAP);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* Compressed extent for the file range [120K, 128K). */
+> +	em->start =3D SZ_1K * 120;
+> +	em->len =3D SZ_8K;
+> +	em->disk_num_bytes =3D SZ_4K;
+> +	em->ram_bytes =3D SZ_8K;
+> +	em->flags |=3D EXTENT_FLAG_COMPRESS_ZLIB;
+> +	write_lock(&em_tree->lock);
+> +	ret =3D btrfs_add_extent_mapping(inode, &em, em->start, em->len);
+> +	write_unlock(&em_tree->lock);
+> +	free_extent_map(em);
+> +	if (ret < 0) {
+> +		test_err("couldn't add extent map for range [120K, 128K)");
+> +		goto out;
+> +	}
+> +
+> +	em =3D alloc_extent_map();
+> +	if (!em) {
+> +		test_std_err(TEST_ALLOC_EXTENT_MAP);
+> +		ret =3D -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	/*
+> +	 * Compressed extent for the file range [108K, 144K), which overlaps
+> +	 * with the [120K, 128K) we previously inserted.
+> +	 */
+> +	em->start =3D SZ_1K * 108;
+> +	em->len =3D SZ_1K * 36;
+> +	em->disk_num_bytes =3D SZ_4K;
+> +	em->ram_bytes =3D SZ_1K * 36;
+> +	em->flags |=3D EXTENT_FLAG_COMPRESS_ZLIB;
+> +
+> +	/*
+> +	 * Try to add the extent map but with a search range of [140K, 144K),
+> +	 * this should succeed and adjust the extent map to the range
+> +	 * [128K, 144K), with a length of 16K and an offset of 20K.
+> +	 *
+> +	 * This simulates a scenario where in the subvolume tree of an inode w=
+e
+> +	 * have a compressed file extent item for the range [108K, 144K) and w=
+e
+> +	 * have an overlapping compressed extent map for the range [120K, 128K=
+),
+> +	 * which was created by an encoded write, but its ordered extent was n=
+ot
+> +	 * yet completed, so the subvolume tree doesn't have yet the file exte=
+nt
+> +	 * item for that range - we only have the extent map in the inode's
+> +	 * extent map tree.
+> +	 */
+> +	write_lock(&em_tree->lock);
+> +	ret =3D btrfs_add_extent_mapping(inode, &em, SZ_1K * 140, SZ_4K);
+> +	write_unlock(&em_tree->lock);
+> +	free_extent_map(em);
+> +	if (ret < 0) {
+> +		test_err("couldn't add extent map for range [108K, 144K)");
+> +		goto out;
+> +	}
+> +
+> +	if (em->start !=3D SZ_128K) {
+> +		test_err("unexpected extent map start %llu (should be 128K)", em->sta=
+rt);
+> +		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +	if (em->len !=3D SZ_16K) {
+> +		test_err("unexpected extent map length %llu (should be 16K)", em->len=
+);
+> +		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +	if (em->offset !=3D SZ_1K * 20) {
+> +		test_err("unexpected extent map offset %llu (should be 20K)", em->off=
+set);
+> +		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +out:
+> +	ret2 =3D free_extent_map_tree(inode);
+> +	if (ret =3D=3D 0)
+> +		ret =3D ret2;
+> +
+> +	return ret;
+> +}
+> +
+>   struct rmap_test_vector {
+>   	u64 raid_type;
+>   	u64 physical_start;
+> @@ -1076,6 +1172,9 @@ int btrfs_test_extent_map(void)
+>   	if (ret)
+>   		goto out;
+>   	ret =3D test_case_7(fs_info, BTRFS_I(inode));
+> +	if (ret)
+> +		goto out;
+> +	ret =3D test_case_8(fs_info, BTRFS_I(inode));
+>   	if (ret)
+>   		goto out;
+>
 
