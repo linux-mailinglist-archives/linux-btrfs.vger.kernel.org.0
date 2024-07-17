@@ -1,241 +1,155 @@
-Return-Path: <linux-btrfs+bounces-6512-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6513-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D021C9337FB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 09:27:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABEB693382A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 09:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 521141F2249A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 07:27:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB680B23356
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 07:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30BD21BF3A;
-	Wed, 17 Jul 2024 07:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072CC1CD06;
+	Wed, 17 Jul 2024 07:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jAXdx7NK";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jAXdx7NK"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bKNhDQ1y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D420182B5;
-	Wed, 17 Jul 2024 07:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351581BF3F
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2024 07:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721201251; cv=none; b=evoGKSf6JBQ3m4auOMuxgspEgstqTc6iXrcSWX3QGJupD1Ger6dTCehYSPQfFu8HOlWGcIvybKJWrmenJeQH5ddYZVlkgO4TfxNGX4Vso8nTQ99sNkuhepsP7C0S1Zbqw+gA/ooddsc9/q+PMwSggPkKp51dKF9UZipZRltsHeY=
+	t=1721202154; cv=none; b=kFCbSY0RuAi23B5wxPA6Ej1UnV5+RY1lPsmUSIbx00akjrGxSM5ebgd0xoYrah9O9fjceoWipALe7paV8at1ARD+W9wf6olipocxT1Ti4/sv0mum9oya+UyLWJlM2OAK7GxhiFdPofTCtysLeK95az5xZpcvcw00jNeQUTUkrnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721201251; c=relaxed/simple;
-	bh=RTf69nJA+LYxKZljIKwgVqh9G9MtWHx3bUySq+f5tb4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PE8ZxLKuIjmzOPljAakSr21uq9zDzqCMu7rMW4QgoZU6Eo8/yGkrWPUYemZVMaxeTisauaP9bpJ6wBTk5C3/4sokFGcEOLveoi4Udlzf0CxU8JgoLJ63v2Lwt1utADIzvDfHk2BpoltbkQgAr7HKQ2WisQGyUPY4g4kNZbgnqSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jAXdx7NK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jAXdx7NK; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1721202154; c=relaxed/simple;
+	bh=lSLC07cWgDtQxlP0/I5aHy3V2kujSc6et2iDzwJlqi4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=QSHLfshTjnbrgHhwcmrTN2mFAgK8Q4j5oMLmiDIphW5pa7n1AuIVzyEbowJVsYnSvMWqid/dWII5NPqhO5o/JabaKy/JKb0Z/tsA97kCOnajVWxRQULbcRmF4Eo+HdJUG7nE2OYHsxULMPsAteFx2DU+t+mLuCVey8LMKqnM08k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bKNhDQ1y; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 92F811FB61;
-	Wed, 17 Jul 2024 07:27:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721201247; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=qPcLr1Ek6+T5z3/pqieAQ2BmsmHct7e+UyYfjIbpagQ=;
-	b=jAXdx7NKyPeKfHoOauTGtB8Oq947AuCp+j4vGqw6OWZS5oqKuTMySofHbxBE2XktQbPT3u
-	QSlXpWVr6OqCLGLvRcORGYudaWfEmWqRHyq0dlAnABoV8bFjD0KJ7o4/0FrVruURB03x9/
-	JjEpDBosXqwT6wFE+mqgwbwlr6/kP4A=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721201247; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=qPcLr1Ek6+T5z3/pqieAQ2BmsmHct7e+UyYfjIbpagQ=;
-	b=jAXdx7NKyPeKfHoOauTGtB8Oq947AuCp+j4vGqw6OWZS5oqKuTMySofHbxBE2XktQbPT3u
-	QSlXpWVr6OqCLGLvRcORGYudaWfEmWqRHyq0dlAnABoV8bFjD0KJ7o4/0FrVruURB03x9/
-	JjEpDBosXqwT6wFE+mqgwbwlr6/kP4A=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7224D136E5;
-	Wed, 17 Jul 2024 07:27:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9qtLC15yl2b3fQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 17 Jul 2024 07:27:26 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] fstests: btrfs/012: fix a false alert due to socket/pipe files
-Date: Wed, 17 Jul 2024 16:57:00 +0930
-Message-ID: <20240717072700.93025-1-wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2eede876fcbso44364061fa.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2024 00:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1721202150; x=1721806950; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ovwn3DW6TedKlvHEbgoQx/5Vd4igDUlWIvl8s9WQmRU=;
+        b=bKNhDQ1yjRmmYLayq3yw4+qDpdln2jjKus4BLXWvtS+ss4tLTy8zLkxeKw6V/XEn+b
+         dyBWm24daUS5fUMTr28YHowcS1ckqvR2cBVpDbnAmaHHZNC+4VGv9tJeKciiiXunOp5j
+         I1bfXRumxYshX+QHBnBijCVBMbMbxOZns09Rwa3ePsCE/ivo/dhEY9t2iS0lg0+/xHZL
+         krkDuH6VUkcYPjyC0nCPa2XGmb37AhAHgDUnmUvrHVxFE+1eeSh57KxL68aYrYlU3Yzg
+         vPyLFcANOjHxoXsHgWg8Ggtngm9LEuwAMIVYFHBTYBclh5I5N6w8vZU9RK4ZOOlqPlH4
+         Eqxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721202150; x=1721806950;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ovwn3DW6TedKlvHEbgoQx/5Vd4igDUlWIvl8s9WQmRU=;
+        b=muZyDS4vxFuqhGGBZKQjcyLsSR2yAmD5TryTJSLjrp2ivxJWxenmc/WExZZW2t1iF+
+         1chb9V35Wi6xom83DQ1kRaYKJ47HExmRnlipbC8hxbPzuP9uTUVRolVIza6A4OfVYbux
+         MyevmiupRtATUhgp/haRY4hCcq+fdFWGd+ffO3G/k1K/xbfmu262GG7oj9/pvmM4V50F
+         WfdM3oQObc9B6Pd7wkhZO5w2l295QqsF3wBaATkFGpLjZrl9+3dx8+CgDiz/Lkif9WQJ
+         kXyPgyC/yQrqEEEvA/KFY/JBO4uIqdlmGG552qJPhVQ5xTU+DPkpInPu9wohZYLxqFT8
+         pA2w==
+X-Gm-Message-State: AOJu0Ywcz9ZO/bxCM5ZffG4/FQBzCYh0hni6xAgwfL65RWsQ99xt9IiL
+	UktJgRcNR4n5VHce0PvjDmR9DQ2RX0/VeUhfOXsxskw+i4GPOd/bL5wDWrMUAOr65i1MEBGISiP
+	v
+X-Google-Smtp-Source: AGHT+IEbmvUx2Tku1m7n3VYmkCoOi72VBlj6R2Ay0fT/hCS949+rAMA+wRCub2dH2lx/PEDFiZ28Nw==
+X-Received: by 2002:a05:651c:14d:b0:2eb:f472:e7d3 with SMTP id 38308e7fff4ca-2eefd04fa1emr6949041fa.6.1721202150087;
+        Wed, 17 Jul 2024 00:42:30 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc38a81sm69966755ad.220.2024.07.17.00.42.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Jul 2024 00:42:28 -0700 (PDT)
+Message-ID: <ebdafb52-e538-49c2-89d1-5894dd5382a9@suse.com>
+Date: Wed, 17 Jul 2024 17:12:23 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+References: <cover.1720572937.git.wqu@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <cover.1720572937.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
 
-[BUG]
-On my Archlinux VM, the test btrfs/012 always fail with the following
-output diff:
+Ping?
 
-     QA output created by 012
-    +File /etc/pacman.d/gnupg/S.dirmngr is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.dirmngr is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent.browser is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent.browser is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent.extra is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent.extra is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent.ssh is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent.ssh is a socket
-    +File /etc/pacman.d/gnupg/S.keyboxd is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.keyboxd is a socket
-    ...
+Any feedback?
 
-[CAUSE]
-It's a false alerts.
+I guess in this case btrfs is really the only one can benefit from this 
+feature?
 
-When diff hits two files which are not directory/softlink/regular files
-(aka, socket/pipe/char/block files), they are all treated as
-non-comparable.
-In that case, diff would just do the above message.
+Thanks,
+Qu
 
-And with Archlinux, pacman (the package manager) maintains its gpg
-directory inside "/etc/pacman.d/gnupg", and the test case uses
-"/etc" as the source directory to populate the target ext4 fs.
-
-And the socket files inside "/etc/pacman.d/gnupg" is causing the false
-alerts.
-
-[FIX]
-- Use fsstress to populate the fs
-  That covers all kind of operations, including creating special files.
-  And fsstress is very reproducible, with the seed saved to the full
-  log, it's much easier to reproduce than using the distro dependent
-  "/etc/" directory.
-
-- Use fssum to save the digest and later verify the contents
-  It does not only verify the contents but also other things like
-  timestamps/xattrs/uid/gid/mode/etc.
-  And it's more comprehensive than the content oriented diff tool.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/012     | 29 +++++++++++++++++------------
- tests/btrfs/012.out |  6 ++++++
- 2 files changed, 23 insertions(+), 12 deletions(-)
-
-diff --git a/tests/btrfs/012 b/tests/btrfs/012
-index a96efeff..d172d93f 100755
---- a/tests/btrfs/012
-+++ b/tests/btrfs/012
-@@ -23,13 +23,13 @@ _require_scratch_nocheck
- _require_command "$BTRFS_CONVERT_PROG" btrfs-convert
- _require_command "$MKFS_EXT4_PROG" mkfs.ext4
- _require_command "$E2FSCK_PROG" e2fsck
-+_require_fssum
- # ext4 does not support zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
- _require_loop
- _require_extra_fs ext4
- 
--SOURCE_DIR=/etc
--BASENAME=$(basename $SOURCE_DIR)
-+BASENAME="stressdir"
- BLOCK_SIZE=`_get_block_size $TEST_DIR`
- 
- # Create & populate an ext4 filesystem
-@@ -38,17 +38,21 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
- # Manual mount so we don't use -t btrfs or selinux context
- mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
- 
--_require_fs_space $SCRATCH_MNT $(du -s $SOURCE_DIR | ${AWK_PROG} '{print $1}')
-+echo "populating the initial ext fs:" >> $seqres.full
-+mkdir "$SCRATCH_MNT/$BASENAME"
-+$FSSTRESS_PROG -w -d "$SCRATCH_MNT/$BASENAME" -n 20 -p 500 >> $seqres.full
- 
--$TIMEOUT_PROG 10 cp -aRP $SOURCE_DIR $SCRATCH_MNT
-+# Create the checksum to verify later.
-+$FSSUM_PROG -A -f -w $tmp.original "$SCRATCH_MNT/$BASENAME"
- _scratch_unmount
- 
- # Convert it to btrfs, mount it, verify the data
- $BTRFS_CONVERT_PROG $SCRATCH_DEV >> $seqres.full 2>&1 || \
- 	_fail "btrfs-convert failed"
- _try_scratch_mount || _fail "Could not mount new btrfs fs"
--# (Ignore the symlinks which may be broken/nonexistent)
--diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/$BASENAME/ 2>&1
-+
-+echo "Checking converted btrfs against the original one:"
-+$FSSUM_PROG -r $tmp.original $SCRATCH_MNT/$BASENAME
- 
- # Old ext4 image file should exist & be consistent
- $E2FSCK_PROG -fn $SCRATCH_MNT/ext2_saved/image >> $seqres.full 2>&1 || \
-@@ -58,13 +62,14 @@ $E2FSCK_PROG -fn $SCRATCH_MNT/ext2_saved/image >> $seqres.full 2>&1 || \
- mkdir -p $SCRATCH_MNT/mnt
- mount -o loop $SCRATCH_MNT/ext2_saved/image $SCRATCH_MNT/mnt || \
- 	_fail "could not loop mount saved ext4 image"
--# Ignore the symlinks which may be broken/nonexistent
--diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/mnt/$BASENAME/ 2>&1
-+
-+echo "Checking saved ext2 image against the original one:"
-+$FSSUM_PROG -r $tmp.original $SCRATCH_MNT/mnt/$BASENAME
- umount $SCRATCH_MNT/mnt
- 
--# Now put some fresh data on the btrfs fs
-+echo "genereating new data on the converted btrfs" >> $seqres.full
- mkdir -p $SCRATCH_MNT/new 
--$TIMEOUT_PROG 10 cp -aRP $SOURCE_DIR $SCRATCH_MNT/new
-+$FSSTRESS_PROG -w -d "$SCRATCH_MNT/new" -n 20 -p 500 >> $seqres.full
- 
- _scratch_unmount
- 
-@@ -78,8 +83,8 @@ $E2FSCK_PROG -fn $SCRATCH_DEV >> $seqres.full 2>&1 || \
- 
- # Mount the un-converted ext4 device & check the contents
- mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
--# (Ignore the symlinks which may be broken/nonexistent)
--diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/$BASENAME/ 2>&1
-+echo "Checking rolled back ext2 against the original one:"
-+$FSSUM_PROG -r $tmp.original $SCRATCH_MNT/$BASENAME
- 
- _scratch_unmount
- 
-diff --git a/tests/btrfs/012.out b/tests/btrfs/012.out
-index 7aa5ae94..8ea81fad 100644
---- a/tests/btrfs/012.out
-+++ b/tests/btrfs/012.out
-@@ -1 +1,7 @@
- QA output created by 012
-+Checking converted btrfs against the original one:
-+OK
-+Checking saved ext2 image against the original one:
-+OK
-+Checking rolled back ext2 against the original one:
-+OK
--- 
-2.45.2
-
+在 2024/7/10 10:37, Qu Wenruo 写道:
+> Recently I'm hitting soft lockup if adding an order 2 folio to a
+> filemap using GFP_NOFS | __GFP_NOFAIL. The softlockup happens at memcg
+> charge code, and I guess that's exactly what __GFP_NOFAIL is expected to
+> do, wait indefinitely until the request can be met.
+> 
+> On the other hand, if we do not use __GFP_NOFAIL, we can be limited by
+> memcg at a lot of critical location, and lead to unnecessary transaction
+> abort just due to memcg limit.
+> 
+> However for that specific btrfs call site, there is really no need charge
+> the memcg, as that address space belongs to btree inode, which is not
+> accessible to any end user, and that btree inode is a shared pool for
+> all metadata of a btrfs.
+> 
+> So this patchset introduces a new address space flag, AS_NO_MEMCG, so
+> that folios added to that address space will not trigger any memcg
+> charge.
+> 
+> This would be the basis for future btrfs changes, like removing
+> __GFP_NOFAIL completely and larger metadata folios.
+> 
+> Qu Wenruo (2):
+>    mm: make lru_gen_eviction() to handle folios without memcg info
+>    mm: allow certain address space to be not accounted by memcg
+> 
+>   fs/btrfs/disk-io.c      |  1 +
+>   include/linux/pagemap.h |  1 +
+>   mm/filemap.c            | 12 +++++++++---
+>   mm/workingset.c         |  2 +-
+>   4 files changed, 12 insertions(+), 4 deletions(-)
+> 
 
