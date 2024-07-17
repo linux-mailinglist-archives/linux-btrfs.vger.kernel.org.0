@@ -1,134 +1,143 @@
-Return-Path: <linux-btrfs+bounces-6525-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC75934037
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 18:14:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C06F9340E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 18:59:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E1931C2166C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 16:14:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A765284547
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 16:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D1F1E526;
-	Wed, 17 Jul 2024 16:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DD21822D6;
+	Wed, 17 Jul 2024 16:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q6M546F2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jb3evHh0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7DC181BA2
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2024 16:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0393A1E529
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2024 16:59:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721232861; cv=none; b=bQGVYOymr5secGp/pQLYeovIIoUl1CL2aFAWDJ5KAC/pKqEhKz0PsjGmQS5nn5Hq6TsS7oZMQY01q1f32JFXTggRYWgtBSCyBlH03sVe33mP7M061jR4twZ2l3mPCCMOoe0yIiFcyrnuI4lkDZ2flaMmZdmGk7EfNCYNROCRL10=
+	t=1721235548; cv=none; b=HPAC010EFDYcZmER/d4nUGefWkUKy2+PghyhR4k5c2+5KenTSdPICfd7rhpQvp5HT5FPk80KR9EhP3V0cPD9DAtTFx+dc2Mi4/VkFQpY6IMGmjP8HmjkW6rqxDsqWXTqZbYscw73HrvFeHOmPtCNne6n2jk7vtY/k/xO0unqO5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721232861; c=relaxed/simple;
-	bh=q8fVv0T5FVDBujEE/b4d3zMSxxuIbpFIDCgMVagifYc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G0kOJCEFmmeC9L8+IE7X2sFWg+L4ciDdH5uY+nf6+UIpx6QYhxWToo4JsTgi3cdHQXBSG5FNsVzTPxvNsEzwzOlvbvrYG/NsLt66FI0B8HYJfmCTFiy2WmBaIqJvWk9dj1kpzxs9BqpWQ33BRIOP5xiG4K1SDRWvU09SNJH4mS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q6M546F2; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5a15692b6f6so72471a12.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2024 09:14:19 -0700 (PDT)
+	s=arc-20240116; t=1721235548; c=relaxed/simple;
+	bh=kNO/PRokB7X1eSdfJhF+DhwZE7FmhFDdsJIrFudpB+s=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=DMx6Tn2Nh0rtl0D5/P/6b8J17Rme3dW9uIacH4CYghhYf1jewV1oUR/OD2wf9+n7lNx4w7GLqFsXojcls0plkdXNK/pDYqN7s7fDEGS121S/ye6zd8N3gavp2TlZcVPHoRPnaAVCqqMkyB6vBdM3MvUrnsOuCZk+atNmxblcFeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jb3evHh0; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3d91e390601so302752b6e.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2024 09:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721232858; x=1721837658; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LEwhtems285VRp+VcimErqgA9+/z6aK+6Ol/iXReRes=;
-        b=Q6M546F2sELtiBpjZj7tshnmLGplWsbXze3I4jCWtJdHg5FRfKONk8g8gqUYxQPl0J
-         aSb4d9WWgODb+mvzYf7znlI/EdO4u0yvWceQnNgY+13FAxbW36rDp9mcnfM4Ku7bdAUM
-         tdjM3ZfJym+lqyJC6Ip0c+pfuA+TZTzw+DI86L9DOFprp0ALKFOUXvNSmuZkjaImZsvZ
-         ORIsfJJfqceUt3e/Y52c9x/awsrh6+KQ/EjWpu2ShCwkMRZBE3xsDm0HQDYwT/HaCwWC
-         hqKroIHJH2EZtbGq2Dh5F6kJMpY63YaZf9/Tl+vYgoofj6rNG4WuNryPY8tskwfhb5TW
-         Gfxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721232858; x=1721837658;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1721235546; x=1721840346; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LEwhtems285VRp+VcimErqgA9+/z6aK+6Ol/iXReRes=;
-        b=D/C0rcGTrkfjH0Lp2ByBBlgyk1P0XyRcKKMCI2xdS+DFMBNs2aSCYEWL6mEImxajB9
-         YRzFA98jxK1F4a46+TpYqoZx5z8me/PSYRal4Ku8ycwsJFzAKg01DG5ks7czL9kvbQtP
-         Wbn5QY6RdTlg9TyNIZpnr2Up+JcE0Rz6OpfHKGRdrrNgFAz80j+made/jyYEo5/VHw79
-         pTKLYNxcSk/MjVfW8tNJIS1xq1ijNX61mLOlUEY3eW3JO5GzcilsiiI/uOFK+/hwTW0/
-         zdR1ovY9nJ7K3eq4gYlqLysfosdAAfZBMj4bwetEdb2BVtwZ4TK+gbGNkxI8cPEvi0Hl
-         9z2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX1UnRD32wUA9mx29zgtKbTRPixfh+offWgB0qN6u+037TKSip10UtU8q3XQzeEOjOx3Zh3UKQcBp8BVng3dwvWBLvJeHoHPMZGF5g=
-X-Gm-Message-State: AOJu0YxvokjfOre8RoGIGKuhm1NsYBByy6mysbZwdc/pPGgagOKFPJdi
-	LLZ3rFXKhwGbaL7Ls21Fg7aP0A2/IXrQl1i/nkUExipP8PZUkS7upev2U4SAO/0=
-X-Google-Smtp-Source: AGHT+IFvguqbwiQzSbD3S1ODpOLNKCNwaosZroB1gY+Xq6Ja1OO6D7EXUW+FPqr+DM5hB6DiiOcNoQ==
-X-Received: by 2002:a17:906:490d:b0:a77:c0f5:69cc with SMTP id a640c23a62f3a-a7a01352eb4mr151904066b.61.1721232857851;
-        Wed, 17 Jul 2024 09:14:17 -0700 (PDT)
-Received: from localhost (109-81-86-75.rct.o2.cz. [109.81.86.75])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a79bc7f21afsm456637366b.119.2024.07.17.09.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jul 2024 09:14:17 -0700 (PDT)
-Date: Wed, 17 Jul 2024 18:14:16 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
-Message-ID: <Zpft2A_gzfAYBFfZ@tiehlicka>
-References: <cover.1720572937.git.wqu@suse.com>
- <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+        bh=BNxhPxu/Mr2yMLOUb3a4Whm5eHrv71ldjsf7p9VXo2Q=;
+        b=Jb3evHh0kf6oZOgPJf4ugGLHRQIO/KEj+j+bL6kxeQZ+wxdpGXGdWW8ky2y1f3P1WN
+         e83Vyk068wOOiN3xw0PjtO3idHnJ3rmEgZAaschBiFg3RvoK2gBXxtY2aTteB8dRyhCn
+         q7zN4ijDwqV4wFf2HxescgXo6lh2O4f2Bv7aSa6NHkX/hVNFUfznPWHNz3B42dowpWng
+         +pieoKBQqkKv4quR/mgpissJAk94H5RRw5J9qiTkxLpRSvoFc3uQhYGMx22clHyMQlmB
+         VuroWzy99We7DcbBHpjZzUfPER37e9vbGk2g+yomVho+pCAVcFo4qxNhd1QvVjveeL8P
+         GiHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721235546; x=1721840346;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BNxhPxu/Mr2yMLOUb3a4Whm5eHrv71ldjsf7p9VXo2Q=;
+        b=XFtd2n/SyJDF6xSkJtpQbLPzJ4g9xbur1az/gdXddvE0KZxBKKYnUsOQ1kQ0WyspvE
+         kNvl46MPVbYiThNuofFiCv0P8uA1ucZYdnjoOwv9eBrwS7GwAwQE0VXPoB9ynPvR7VOl
+         rO9lvIs75qWiy8yi+Rrku3FMuZmUkH1WBTe89UdvauZWLNG20eKR0pkW9TLfU8eoRdRv
+         RFO82CxUVInm1FfaZZJ2jxnZ4zsPp4K3xSDAmtSjuTUj93v6tYUV3Hv+MzoegiVDmr+w
+         CM5PgtsVs9oM0ulgxDDbD4jtDqaIXIp7Dv8D6uq5CqSXz2hPKdOGYJ3irlgvoLyUo7xp
+         x16A==
+X-Gm-Message-State: AOJu0YwgY1XAWh5eMmbTh8sjKPw0Z6cXomRpbXZQoX01c5VSAuni3O3s
+	lx4j4Rg1T9v9wujW5hDnabLcJJSg8TizOrhtNsu8zdJ1tRXJr/cSPCo/ihEquuaEHA==
+X-Google-Smtp-Source: AGHT+IFNPj3HKX2RfdaoXfl6Bf3JmJQXftZ7QgKmimbuSRzXCNhmq9WiOQDlE4jfSwVRVcfo0W8Pyw==
+X-Received: by 2002:a05:6870:5253:b0:25e:4365:c5d6 with SMTP id 586e51a60fabf-260d919adf5mr1736619fac.20.1721235545941;
+        Wed, 17 Jul 2024 09:59:05 -0700 (PDT)
+Received: from zlke.localdomain ([14.145.46.36])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7ec7c5b9sm8421252b3a.120.2024.07.17.09.59.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Jul 2024 09:59:05 -0700 (PDT)
+From: Li Zhang <zhanglikernel@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Li Zhang <zhanglikernel@gmail.com>
+Subject: [PATCH V3] btrfs: print error message if bdev_file_open_by_path function fails during mount.
+Date: Thu, 18 Jul 2024 00:58:54 +0800
+Message-Id: <1721235534-2755-1-git-send-email-zhanglikernel@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
 
-On Wed 17-07-24 17:55:23, Vlastimil Babka (SUSE) wrote:
-> Hi,
-> 
-> you should have Ccd people according to get_maintainers script to get a
-> reply faster. Let me Cc the MEMCG section.
-> 
-> On 7/10/24 3:07 AM, Qu Wenruo wrote:
-> > Recently I'm hitting soft lockup if adding an order 2 folio to a
-> > filemap using GFP_NOFS | __GFP_NOFAIL. The softlockup happens at memcg
-> > charge code, and I guess that's exactly what __GFP_NOFAIL is expected to
-> > do, wait indefinitely until the request can be met.
-> 
-> Seems like a bug to me, as the charging of __GFP_NOFAIL in
-> try_charge_memcg() should proceed to the force: part AFAICS and just go over
-> the limit.
-> 
-> I was suspecting mem_cgroup_oom() a bit earlier return true, causing the
-> retry loop, due to GFP_NOFS. But it seems out_of_memory() should be
-> specifically proceeding for GFP_NOFS if it's memcg oom. But I might be
-> missing something else. Anyway we should know what exactly is going first.
+[ENHANCEMENT]
+When mounting a btrfs filesystem, the filesystem opens the
+block device, and if this fails, there is no message about
+it. print a message about it to help debugging.
 
-Correct. memcg oom code will invoke the memcg OOM killer for NOFS
-requests. See out_of_memory 
+[TEST]
+I have a btrfs filesystem on three block devices,
+one of which is write-protected, so regular mounts fail,
+but there is no message in dmesg.
 
-        /*
-         * The OOM killer does not compensate for IO-less reclaim.
-         * But mem_cgroup_oom() has to invoke the OOM killer even
-         * if it is a GFP_NOFS allocation.
-         */
-        if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
-                return true;
+/dev/vdb normal
+/dev/vdc write protected
+/dev/vdd normal
 
-That means that there will be a victim killed, charges reclaimed and
-forward progress made. If there is no victim then the charging path will
-bail out and overcharge.
+Before patch:
+$ sudo mount /dev/vdb /mnt/
+mount: mount(2) failed: no such file or directory
+$ sudo dmesg # Show only messages about missing block devices
+....
+[ 352.947196] BTRFS error (device vdb): devid 2 uuid 4ee2c625-a3b2-4fe0-b411-756b23e08533 missing
+....
 
-Also the reclaim should have cond_rescheds in the reclaim path. If that
-is not sufficient it should be fixed rather than workaround.
+After patch:
+$ sudo mount /dev/vdb /mnt/
+mount: mount(2) failed: no such file or directory
+$ sudo dmesg # Show bdev_file_open_by_path failed.
+....
+[ 352.944328] BTRFS error: failed to open device for path /dev/vdc with flags 0x3: -13
+[ 352.947196] BTRFS error (device vdb): missing devid 2 uuid 4ee2c625-a3b2-4fe0-b411-756b23e08533
+....
+
+Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
+---
+
+V1:
+  Use printk to print messages
+
+V2:
+  Use btrfs_err to print messages and format output
+
+
+V3:
+  Fix typo
+  Format description
+
+
+ fs/btrfs/volumes.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c39145e..315d35a 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -476,6 +476,7 @@ static noinline struct btrfs_fs_devices *find_fsid(
+ 
+ 	if (IS_ERR(*bdev_file)) {
+ 		ret = PTR_ERR(*bdev_file);
++		btrfs_err(NULL, "failed to open device for path %s with flags 0x%x: %d", device_path, flags, ret);
+ 		goto error;
+ 	}
+ 	bdev = file_bdev(*bdev_file);
 -- 
-Michal Hocko
-SUSE Labs
+1.8.3.1
+
 
