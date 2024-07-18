@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-6559-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6560-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A867C9370AE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 00:34:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3C99370B0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 00:34:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2EBE1C209E8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 22:34:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0ACE6B21018
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 22:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7635114659C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47371465A1;
 	Thu, 18 Jul 2024 22:33:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Du3F+J08";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Du3F+J08"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Z/CG/P5/";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Z/CG/P5/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7697145FFF
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D42B5B1FB
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721342029; cv=none; b=pKovv/j55UQeL+Jq6XdKgtNvw4Xmt3BlSPdmqMdFyCP4VkOAiBDTcO6sSMkvHzqkXzj5e3D0pD4OEu92WrT1GpP4cjf8BtsgK2Ss1+zwxJI/eRdvI0mjCC7SUkJsUOIhztnuUgP/mVADTY4BOTu9k35CjnqWhXaPnAUT9x11khY=
+	t=1721342029; cv=none; b=QlqT6+mSsboDvc8VKSFhjhyE7wXrM7NSa7rw/+ygVk8s3dkCC1Lc9Gxemst5ZTicbGQNw8+0tRWXUiIBPPtLmU9JF0jbkUKAsvTJYG/QJeUVVUvP9y2GpzbdIZlK5WTpNOYAh+Q/8TnICo/2KnFKYQRFBEIIAOIt5BmeGlU83Ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721342029; c=relaxed/simple;
-	bh=gC6Vv+CfFZJZn5DPeeaYpKHkfCkbVY46X9rAB6RqR4c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FhCfhkfOjKYKsl7YHFtsfcndIlKJ/heJGbv11cA7HxueB86z20wnlqxc8duUROBeAwhF4UtakZTGmPC83GpFSLvlFzlVeXmfosNVAKbv+AsgWImg3nfeGTEAnFluMyUXrW504HUPkJxSwbe1p5T6swnEdNj1eHPzX4qJF5vrWBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Du3F+J08; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Du3F+J08; arc=none smtp.client-ip=195.135.223.130
+	bh=BfQnu3di6PGWVRtLuEqzihLVxYiCM+NOF28X3fVonLs=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iHaYx5qU21lKWAJsnLRLTlhuXkILraFBd6lQkYcQJreiEdTOMSVobFe6WGM0IU9LAW93j+QVhjIvRlfYp0FIU8e3/cH/Rfodi6iyZOWU8D1B/DRW37qyuosnSzFlDl43oRZRCnNXp/htM+6b/Bn+0HjLqakr8ii/V00UqHxZeSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Z/CG/P5/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Z/CG/P5/; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 01AF821B08;
-	Thu, 18 Jul 2024 22:33:45 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 61A4A1F45E
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721342025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	t=1721342026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rGmR9WiQSYTeidQEcStvt/brLxl8HzWeYogUS42fGzA=;
-	b=Du3F+J08OmLAh0eKEDrjV1q/pzKVVFT0J/VmkzJXYyArnGdZ56SMHe4kmsaHjxdBWFHzN+
-	y7aCA6Lzfs2rxD7rPIv9Ey4sxuJphWroj971f05VC9Gwm5B2V567f6U9h40sa8xCdfoSR5
-	nEZe8AZ7GH3GfCEln7DXOe9JRKoR9Jk=
-Authentication-Results: smtp-out1.suse.de;
+	bh=fRDAzyTX8KAYEH4BQ5ek0XP72t2dsKdeXZOUuuSBCF8=;
+	b=Z/CG/P5/dqzLTyYRj6yikfk1GRCNtg+QCL/mIRURpqTmj1ji8/7R9jjCN2f0vbFfpl83ns
+	jLPNAqNr+ZXwjp/HpD2vmENGB+NM+8tnzFpWWQ38GZj9NM/VCgXLfB78aIULpyuYosp45u
+	SGC3y9jiPvxSZvO9Kg45N413bu3uxV0=
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721342025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	t=1721342026; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rGmR9WiQSYTeidQEcStvt/brLxl8HzWeYogUS42fGzA=;
-	b=Du3F+J08OmLAh0eKEDrjV1q/pzKVVFT0J/VmkzJXYyArnGdZ56SMHe4kmsaHjxdBWFHzN+
-	y7aCA6Lzfs2rxD7rPIv9Ey4sxuJphWroj971f05VC9Gwm5B2V567f6U9h40sa8xCdfoSR5
-	nEZe8AZ7GH3GfCEln7DXOe9JRKoR9Jk=
+	bh=fRDAzyTX8KAYEH4BQ5ek0XP72t2dsKdeXZOUuuSBCF8=;
+	b=Z/CG/P5/dqzLTyYRj6yikfk1GRCNtg+QCL/mIRURpqTmj1ji8/7R9jjCN2f0vbFfpl83ns
+	jLPNAqNr+ZXwjp/HpD2vmENGB+NM+8tnzFpWWQ38GZj9NM/VCgXLfB78aIULpyuYosp45u
+	SGC3y9jiPvxSZvO9Kg45N413bu3uxV0=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5E7C1379D;
-	Thu, 18 Jul 2024 22:33:43 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84F0F1379D
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:33:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MPe5I0eYmWb9HAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 18 Jul 2024 22:33:43 +0000
+	id IGPbD0mYmWb9HAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:33:45 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Andrea Gelmini <andrea.gelmini@gmail.com>
-Subject: [PATCH v2 2/4] btrfs-progs: image: fix the bug that filename sanitization not working
-Date: Fri, 19 Jul 2024 08:03:20 +0930
-Message-ID: <59cb418b8322f127b6f90584295b2bea606cfc14.1721341885.git.wqu@suse.com>
+Subject: [PATCH v2 3/4] btrfs-progs: misc-tests: add a basic resume test using error injection
+Date: Fri, 19 Jul 2024 08:03:21 +0930
+Message-ID: <07a66693a71f8dbaf8e8eb580bb922a3fc21745a.1721341885.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1721341885.git.wqu@suse.com>
 References: <cover.1721341885.git.wqu@suse.com>
@@ -83,158 +83,118 @@ List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: 0.70
-X-Spamd-Result: default: False [0.70 / 50.00];
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.997];
 	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
 	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 X-Spam-Level: 
 
-[BUG]
-There is a bug report that image dump taken by "btrfs-image -s" doesn't
-really sanitize the filenames:
+The new test case does:
 
- # truncates -s 1G source.raw
- # mkfs.btrfs -f source.raw
- # mount source.raw $mnt
- # touch $mnt/top_secret_filename
- # touch $mnt/secret_filename
- # umount $mnt
- # btrfs-image -s source.raw dump.img
- # string dump.img | grep filename
- top_secret_filename
- secret_filename
- top_secret_filename
- secret_filename
- top_secret_filename
+- Make sure the build has error injection support
+  This is done by checking "btrfs --version" output.
 
-[CAUSE]
-Using above image to store the fs, and we got the following result in fs
-tree:
+- Inject error at the last commit transaction of new data csum
+  generation
 
-	item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
-		generation 3 transid 7 size 68 nbytes 16384
-		block group 0 mode 40755 links 1 uid 0 gid 0 rdev 0
-		sequence 2 flags 0x0(none)
-	item 1 key (256 INODE_REF 256) itemoff 16111 itemsize 12
-		index 0 namelen 2 name: ..
-	item 2 key (256 DIR_ITEM 439756795) itemoff 16062 itemsize 49
-		location key (257 INODE_ITEM 0) type FILE
-		transid 7 data_len 0 name_len 19
-		name: top_secret_filename
-	item 3 key (256 DIR_ITEM 693462946) itemoff 16017 itemsize 45
-		location key (258 INODE_ITEM 0) type FILE
-		transid 7 data_len 0 name_len 15
-		name: secret_filename
-	item 4 key (256 DIR_INDEX 2) itemoff 15968 itemsize 49
-		location key (257 INODE_ITEM 0) type FILE
-		transid 7 data_len 0 name_len 19
-		name: top_secret_filename
-	item 5 key (256 DIR_INDEX 3) itemoff 15923 itemsize 45
-		location key (258 INODE_ITEM 0) type FILE
-		transid 7 data_len 0 name_len 15
-		name: secret_filename
-	item 6 key (257 INODE_ITEM 0) itemoff 15763 itemsize 160
-		generation 7 transid 7 size 0 nbytes 0
-		block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
-		sequence 1 flags 0x0(none)
-	item 7 key (257 INODE_REF 256) itemoff 15734 itemsize 29
-		index 2 namelen 19 name: top_secret_filename
-	item 8 key (258 INODE_ITEM 0) itemoff 15574 itemsize 160
-		generation 7 transid 7 size 0 nbytes 0
-		block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
-		sequence 1 flags 0x0(none)
-	item 9 key (258 INODE_REF 256) itemoff 15549 itemsize 25
-		index 3 namelen 15 name: 1���'�gc*&R
+- Resume the csum conversion and make sure it works
 
-The result shows, only the last INODE_REF got sanitized, all the
-remaining is not touched at all.
-
-This is cauesd by how we sanitize the filenames:
-
- copy_buffer()
- |- memcpy(dst, src->data, src->len);
- |  This means we copy the whole eb into our buffer already.
- |
- |- zero_items()
-    |- sanitize_name()
-       |- eb = alloc_dummy_eb();
-       |- memcpy(eb->data, src->data, src->len);
-       |  This means we generate a dummy eb with the same contents of
-       |  the source eb.
-       |
-       |- sanitize_dir_item();
-       |  We override the dir item of the given item (specified by the
-       |  slot number) inside our dummy eb.
-       |
-       |- memcpy(dst, eb->data, eb->lem);
-
-The last one copy the dummy eb into our buffer, with only the slot
-corrupted.
-
-But when the whole work flow hits the next slot, we only corrupt the
-next slot, but still copy the whole dummy eb back to buffer.
-
-This means the previous slot would be overwritten by the old unsanitized
-data.
-
-Resulting only the last slot is corrupted.
-
-[FIX]
-Fix the bug by only copying back the corrupted item to the buffer.
-So that other slots won't be overwritten by unsanitized data.
-
-Reported-by: Andrea Gelmini <andrea.gelmini@gmail.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/sanitize.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ tests/common                                  |  7 +++
+ .../065-csum-conversion-inject/test.sh        | 45 +++++++++++++++++++
+ 2 files changed, 52 insertions(+)
+ create mode 100755 tests/misc-tests/065-csum-conversion-inject/test.sh
 
-diff --git a/image/sanitize.c b/image/sanitize.c
-index 084da22e401e..ef4f6e515633 100644
---- a/image/sanitize.c
-+++ b/image/sanitize.c
-@@ -449,6 +449,8 @@ void sanitize_name(enum sanitize_mode sanitize, struct rb_root *name_tree,
- 		int slot)
- {
- 	struct extent_buffer *eb;
-+	u32 item_ptr_off = btrfs_item_ptr_offset(src, slot);
-+	u32 item_ptr_size = btrfs_item_size(src, slot);
- 
- 	eb = alloc_dummy_eb(src->start, src->len);
- 	if (!eb) {
-@@ -476,7 +478,11 @@ void sanitize_name(enum sanitize_mode sanitize, struct rb_root *name_tree,
- 		break;
- 	}
- 
--	memcpy(dst, eb->data, eb->len);
-+	/*
-+	 * Only overwrite the sanitized part, or we can overwrite previous
-+	 * sanitized value with the old values from @src.
-+	 */
-+	memcpy(dst + item_ptr_off, eb->data + item_ptr_off, item_ptr_size);
- 	free(eb);
+diff --git a/tests/common b/tests/common
+index 30857f153a22..4ff6addf20db 100644
+--- a/tests/common
++++ b/tests/common
+@@ -406,6 +406,13 @@ check_regular_build()
+ 	fi
  }
  
++check_injection()
++{
++	if ! _test_config "INJECT"; then
++		_not_run "This test requires error injection support (make D=1)"
++	fi
++}
++
+ check_prereq()
+ {
+ 	# Internal tools for testing, not shipped with the package
+diff --git a/tests/misc-tests/065-csum-conversion-inject/test.sh b/tests/misc-tests/065-csum-conversion-inject/test.sh
+new file mode 100755
+index 000000000000..715349c4d403
+--- /dev/null
++++ b/tests/misc-tests/065-csum-conversion-inject/test.sh
+@@ -0,0 +1,45 @@
++#!/bin/bash
++# Verify the csum conversion can still resume after an interruption
++
++source "$TEST_TOP/common" || exit
++source "$TEST_TOP/common.convert" || exit
++
++check_experimental_build
++check_injection
++setup_root_helper
++prepare_test_dev
++
++test_resume_data_csum_generation()
++{
++	local new_csum="$1"
++	local tmp=$(_mktemp "csum-convert")
++
++	# Error at the end of the data csum generation.
++	export INJECT="0x4de02239"
++	run_mustfail_stdout "error injection not working" \
++		"$TOP/btrfstune" --csum "$new_csum" "$TEST_DEV" &> $tmp
++	cat "$tmp" >> "$RESULTS"
++	if ! grep -q "$INJECT" "$tmp"; then
++		rm -f -- "$tmp"
++		_fail "csum conversion failed to unexpected reason"
++	fi
++	rm -f -- "$tmp"
++	unset INJECT
++	run_check "$TOP/btrfstune" --csum "$new_csum" "$TEST_DEV"
++	run_check "$TOP/btrfs" check --check-data-csum "$TEST_DEV"
++}
++
++check_injection
++
++run_check_mkfs_test_dev --csum crc32c
++
++# We only mount the filesystem once to populate its contents, later one we
++# would never mount the fs (to reduce the dependency on kernel features).
++run_check_mount_test_dev
++populate_fs
++run_check_umount_test_dev
++
++test_resume_data_csum_generation xxhash
++test_resume_data_csum_generation blake2
++test_resume_data_csum_generation sha256
++test_resume_data_csum_generation crc32c
 -- 
 2.45.2
 
