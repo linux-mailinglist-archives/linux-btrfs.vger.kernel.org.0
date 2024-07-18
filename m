@@ -1,76 +1,90 @@
-Return-Path: <linux-btrfs+bounces-6544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6545-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A00E3934E9C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 15:58:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C18F934EE6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 16:09:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D14331C22AF6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 13:58:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1A01F2158D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 14:09:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23EBE13F428;
-	Thu, 18 Jul 2024 13:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609751419A1;
+	Thu, 18 Jul 2024 14:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=jku.at header.i=@jku.at header.b="Idr4Bdgu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from shin.romanrm.net (shin.romanrm.net [146.185.199.61])
+Received: from emailsecure.uni-linz.ac.at (emailsecure.uni-linz.ac.at [140.78.3.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A070712B94
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 13:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=146.185.199.61
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721311078; cv=none; b=Cur6fiJ260feiHsy+azV1C6n5OL9BU1C9V+A4RnZSOQmnXFk+hnETJ2vosufPsCeKDphk/ukBbnIIg1Sj97eA5CHPEWaiYyXoe2KvgaobYCw8QWkQXYmLRfF+Wk7DpQJfebAJfgq1lZbsVKLMJ7Yhv4zhY4tjj6bSR+4tOnu1es=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721311078; c=relaxed/simple;
-	bh=4qHm9azHNSLFDbK5QvW02jKdSMdNDtsEvbiW2GOtwrY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=T9FxIhX5+1hfjotdGBE6SBn+Epl4GEkHp2DQ26iLgshs4RngQA27FQX3j6JkrcfoS6Uf7r4OyNM2/dTAHulKcIyFPulz0yQb6wBTfwzgnEazqUymfmoJKf25ho+XOMb/PvX8eK+RJy5uLhL8Zk5ynz0eDSqdKLmx1GPMtBnFH+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net; spf=pass smtp.mailfrom=romanrm.net; arc=none smtp.client-ip=146.185.199.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=romanrm.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=romanrm.net
-Received: from nvm (nvm2.home.romanrm.net [IPv6:fd39::4a:3cff:fe57:d6b5])
-	by shin.romanrm.net (Postfix) with SMTP id EE0A6400E2;
-	Thu, 18 Jul 2024 13:50:19 +0000 (UTC)
-Date: Thu, 18 Jul 2024 18:50:19 +0500
-From: Roman Mamedov <rm@romanrm.net>
-To: David Schiller <david.schiller@jku.at>
-Cc: linux-btrfs@vger.kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD99680BFC
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 14:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=140.78.3.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721311725; cv=pass; b=sTwdj+MePZtAN+nHtWfj341gJk9v0bV54ruFrHwpJu71oJECBSlTqy1JGYxGy6aP7tMxPGjOCEyN1K/4cAjMzXK1F+ZXrePSWbMMgT8sWoXIIlqrGohyyBJT4k+XGi/0OaeW6wGqFVJLXL+9rs5vSUgUhPtS2eOAjgid8eX+H1k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721311725; c=relaxed/simple;
+	bh=dT+NqHC23bn1xQ7jbffcfC+pckr4mV81djvC0Yv0XQM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gWKp3h1kCj6nwOYHN9hRVA0mQOS5WwdH2pj3t0EDr5ld7Au5sSGJQWjTc14M2I74DkqojhAJj48J/+32ut2nVSqz6D973vqYR5fQ1/wvfTutU6QWMIcFRwst0VFsc2o+iZRXXVdYjZePt1A/pUVg87ccgqY/cQjsWCqKRFTAYT8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jku.at; spf=pass smtp.mailfrom=jku.at; dkim=pass (2048-bit key) header.d=jku.at header.i=@jku.at header.b=Idr4Bdgu; arc=pass smtp.client-ip=140.78.3.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jku.at
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jku.at
+Received: from [140.78.146.150] (unknown [140.78.146.150])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by emailsecure.uni-linz.ac.at (Postfix) with ESMTPSA id 4WPvmS3QfVz4vyr;
+	Thu, 18 Jul 2024 16:08:40 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; d=jku.at; s=202311-arc; t=1721311720; cv=none;
+	b=QUJJuNlF9mdR7OmzoFP0go9cxdZFZH4pbiylV6lG0ztUySNnOvtIvAwq21ACZVH2n73BViER+cEQwkGQoYFwJQx6p3jijwgYsOpiYTGUzaC7JgOIFTjsji567OGrbhPeZ92iokcJv6dqd30+lxX8GFa1CaMkjYfEA3dsKMZ2XXa5GWrqVby+QdPnYU6tEScF26uWCX+2qdRmWytZQLEFjgmFZ0lF2t6peb3Jl1L7UuV8TPHhTPKA7GZgm90SSJQWQkbWuyO2sHIxC1b+HowiBTeYdhBBZOu6Ovp04o2l7jaIfvpLFnWkh5GuD/M5PQbQuvOivqvPAHYfXu/bMgr+WA==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=jku.at; s=202311-arc;
+	t=1721311720; c=relaxed/simple;
+	bh=dT+NqHC23bn1xQ7jbffcfC+pckr4mV81djvC0Yv0XQM=;
+	h=DKIM-Signature:Message-ID:Subject:From:To:Date:MIME-Version; b=T0dJ3E7o//eboz3pqopCBeFKQgasfu6AmMW6NqJYjlsKkz+OvR7RYy0tICbmBlM6KeAwXp5uDOrkUeUhccqjCUsBp5PWGDO8U95R0n+Xca/+LVtILpRyNQcPrHlC+9T4u2u0qU4FNymmt7EHc0XIB6rfCtawmRYaXcKZpWsALJFqOAQmJMsNpG9Ug8vLkFOVJxHL2cIt74qsKcBcbUQ62JFVFAllFCIjrJoQffEOHvyLcsCzKLx3Xfx30eQ4nGMwwU7ZqgjYR8dYl1YV5X09wcpUHE7USCvjmMuqLmA7d9PlOQpmDr6p81nia4zkdkf3auldj+5sxEAx6PBX3bZiMA==
+ARC-Authentication-Results: i=1; emailsecure.uni-linz.ac.at
+DKIM-Filter: OpenDKIM Filter v2.11.0 emailsecure.uni-linz.ac.at 4WPvmS3QfVz4vyr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jku.at;
+	s=202312-dkim-jkuat; t=1721311720;
+	bh=dT+NqHC23bn1xQ7jbffcfC+pckr4mV81djvC0Yv0XQM=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=Idr4BdguZMuCRhD44wMeC0KD6LPHmS9GrHtatDnEbWnjzqrZhE+UbtxUJhxCF0KoV
+	 a1kQNXDDhndBD7Wxovw6ro+V+Vu0oo+1whc9u2MapsRp43z4nImFAK/0An3qe7lOHO
+	 2ORMPEUC4WSDOrQbq4ljkigJ0PqJdpy15cbMv1axoeSwuz5dmgwiHnb9j5jXgrN+4g
+	 YMfK7MqZPelZvEFDOPAJ7/rFKWGrfSk0FIwA9JL0bWlAXa2gwLXrosqm4NX1e6YUM4
+	 D8T8Qwh0FU9gOt64PiGC6v/tpIP5t8JnEBp6IbmF8zaHJVg1rB/cJuLokey+CARk3h
+	 dhOREAQPhoB5A==
+Message-ID: <9be6318f0b91ed19789a0f58537da897a0602cb0.camel@jku.at>
 Subject: Re: Question about 32 bit limitations
-Message-ID: <20240718185019.74f76e5e@nvm>
-In-Reply-To: <4426d5d3202c37b9bc7cea5281c017f77521074b.camel@jku.at>
+From: David Schiller <david.schiller@jku.at>
+To: Roman Mamedov <rm@romanrm.net>
+Cc: linux-btrfs@vger.kernel.org
+Date: Thu, 18 Jul 2024 16:08:40 +0200
+In-Reply-To: <20240718185019.74f76e5e@nvm>
 References: <4426d5d3202c37b9bc7cea5281c017f77521074b.camel@jku.at>
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+	 <20240718185019.74f76e5e@nvm>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Thu, 18 Jul 2024 13:02:25 +0200
-David Schiller <david.schiller@jku.at> wrote:
+On Thu, 2024-07-18 at 18:50 +0500, Roman Mamedov wrote:
+> As an option, you can avoid mounting the disks on the box itself, and
+> instead export them via NBD, AoE or iSCSI to be mounted on another
+> box.
 
-> I don't want to decommission this box, so the alternative would be to
-> recreate the file system from scratch and restore from backup. This is a
-> very low priority system, that's why I ignored the warning initially.
-> This is by no means the fault of BTRFS.
+That's actually a good idea. Thank you!
+I initially considered block-level network protocols, when I ran out of
+memory, but concluded it was easier to just physically move the disks to
+the other machine.
+Never thought of it as a more permanent solution.
 
-As an option, you can avoid mounting the disks on the box itself, and instead
-export them via NBD, AoE or iSCSI to be mounted on another box.
-
-I run a very old DNS-323 armv5 NAS with just 64 MB of RAM, exporting a 6 TB
-disk over NBD. (qemu-nbd was the only NBD server that works well given the
-limitations). Every day my amd64 server temporarily mounts the NBD device,
-runs rsync to it, then unmounts and disconnects until the next backup.
-
-In your case it would be a bit more involved to export 4 devices and then
-ensure all are connected remotely on the other machine before mounting. But
-not impossible with a bit of scripting.
-
--- 
-With respect,
-Roman
+Still hoping that there is some internal debug "magic" to rewrite the
+offending logical addresses to be smaller than 2^32.
 
