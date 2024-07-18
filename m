@@ -1,169 +1,116 @@
-Return-Path: <linux-btrfs+bounces-6541-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6542-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB769934ADD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 11:26:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E82934C3B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 13:11:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FA32B23176
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 09:26:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 056941C219CE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 11:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674E884E04;
-	Thu, 18 Jul 2024 09:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0EB137903;
+	Thu, 18 Jul 2024 11:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NUEZD7rY"
+	dkim=pass (2048-bit key) header.d=jku.at header.i=@jku.at header.b="BxWEhoHy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from emailsecure.uni-linz.ac.at (emailsecure.uni-linz.ac.at [140.78.3.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643357E766
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 09:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721294751; cv=none; b=aIEdtFtCVY9VRsZl2uejpZN0/WC8x4E44auH/akJ2kMyt4ttx4vjQ/GDqABNTqcKSAIKMbB46pmpAD0ex84qJIbTxx5ojUlPxkNfen5TfCeXxAPZExbWqJWiF5CxGVl0UVV3zPvYMdrgN8VhF7ipiCwg/k4EW7d18+BeONuDlcc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721294751; c=relaxed/simple;
-	bh=XdUs22hWj4yPiEVcEpPwpByY3n2QmXcOM+pCzJhqQyQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JOarCT5JXy5GR51GDSWYRDGssTrxC6+T0gCrtUW9tXvTZc0QbjAicUKw6UQylJoS3xazZkZyfZAQtfOjH3eaES1+GRMbXUYFcK1UTNM1ackYFWc4aXXzi+CCatKz1qUhWIQV/ztVe1IauLc0KRe0fxa0Xp/SRiIgdmg7YLvaW7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NUEZD7rY; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a79a7d1a0dbso53329366b.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 02:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721294748; x=1721899548; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+AQXyp5zTd9VUi1GRGHEcdKdd16XlM0Bs2GIA+qkJx8=;
-        b=NUEZD7rYYhbHJvg00+12T6yI0Dhi6ebKjYapnfLYAVjXGXagq8C4R3u9/NiDAEPO5v
-         HQycH/h7tgielbUKpaoqELX1x6d6Foa5JNn+sQjnHShM9YNoyZtIgByNNpUEtmQd2C0c
-         vhdPlLxfHMRWt7X3Yqin4op/NhZxuFfJ3KLnV96uqbM4YTZayZmYKAk7CVzoXrE20p0X
-         +6OER3foYqBX3wnaH7zRVyqcNDuYoNjrkKDU8XyT1UvLt++Li1O56QFltslBPEtTqD5z
-         wgZKfXWPwZGvlKgBwIRKPv43oi8V97UBfjAMzOuYnaAq7AuPhJbmd2DIf02+IXElI5Nh
-         Xv/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721294748; x=1721899548;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+AQXyp5zTd9VUi1GRGHEcdKdd16XlM0Bs2GIA+qkJx8=;
-        b=ctAbw+FwDcaoSLWeRCawV7Fua06dn//emy9exjOE2ITmN41Hthiqc+bYdkB9hIhSeE
-         pE5X7niDKto0RCXal1GScI7r1z++uRlpu4aznD0FBx3Z16SeY43LG/ojKH1GuiWDoimV
-         6DWg1PGGDjQPCzglm7DloXM5kcSVO7xpchcDmnnfau7lIto0eQyVJb75d+9OFUoBfkcl
-         gnacVgT2mwvqW3HcfBQ7By3ij+DonVRPAGWQi0bUt2XXHsjHi/MUaHhViJPx7+M5Y3gH
-         mF0Eoxg30VdqhaRt9HlSgzFa+jpJLCt1KneaGmFu3sa/NsbVP9XKyCkDhw24MXeGAv3N
-         JOkg==
-X-Forwarded-Encrypted: i=1; AJvYcCUFwJ7/ZIoB769jJO/zCZATeWr3jhmkkNt6b9aG4yCZB+1HKkpFqLPzn+P/7lFl8oL+OjJz9eNyPwY7pzLhdYWolqZjgSvdyksvBfY=
-X-Gm-Message-State: AOJu0YzGbQ9oUehNzAYLY4zjsCl6VS5O1bTEnMMHglYHRKXELsxfyoDu
-	BAw1P61b3g0nbUiU5R+GKmX+41lwOfnfm4r5gwjn0o2d41SSobacD2Y1CUwndsQ=
-X-Google-Smtp-Source: AGHT+IFcIaqSCi+C+Us2/WOlLLOFk4vnRTB+ewPkaisAHCGngBiHg0I8w89X2OGpWh4lJCiAB53pmw==
-X-Received: by 2002:a17:906:3b87:b0:a6f:593f:d336 with SMTP id a640c23a62f3a-a7a01138dd4mr273782966b.11.1721294747674;
-        Thu, 18 Jul 2024 02:25:47 -0700 (PDT)
-Received: from localhost (109-81-94-157.rct.o2.cz. [109.81.94.157])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a79bc7ff61bsm544875666b.166.2024.07.18.02.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jul 2024 02:25:47 -0700 (PDT)
-Date: Thu, 18 Jul 2024 11:25:46 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
-	Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Cgroups <cgroups@vger.kernel.org>,
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
-Message-ID: <ZpjfmlsikKCKWqOb@tiehlicka>
-References: <cover.1720572937.git.wqu@suse.com>
- <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
- <Zpft2A_gzfAYBFfZ@tiehlicka>
- <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
- <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
- <ZpjDeSrZ40El5ALW@tiehlicka>
- <304fdaa9-81d8-40ae-adde-d1e91b47b4c0@suse.com>
- <ZpjNuWpzH9NC5ni6@tiehlicka>
- <da00aadb-e686-4c47-80fe-cb26f928cf32@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5816812F5B1
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 11:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=140.78.3.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721301050; cv=pass; b=UCqC5lQHlQ00QmnH9BLEdRd7mM4RIvW2UusCzmCs1g4ZIy4hIzIHfCasOmWFj4zl0byjdYGtdPcfhhiLvwjJ6GVppX74DboGqVVEMVB1iYLbngtLR7YtP/uHdISaLLubbgu6SFfmjvvFoR9YPHKiBJgmtOB+R+b2g1dGOABc6JA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721301050; c=relaxed/simple;
+	bh=+7Tcsz8PHvuGRgYQ15ifqxrG3sdCqY9CDuBFpfNmKGI=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=cv6MyUm4917zJ5fh/3WWUEasxL12xpYKltiAzabp45vfrbx2tIDDVdYkCRPaHlojjlXfp2QCqxdhwu1AvHdKcsak4cT/KXWbv3fuGCeEBNTGjoysw8j46mymFqAZG9G/p9h6d78mAjoV2pUlH1rwaHDRFiAtuWdKh+8F68LaiNw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jku.at; spf=pass smtp.mailfrom=jku.at; dkim=pass (2048-bit key) header.d=jku.at header.i=@jku.at header.b=BxWEhoHy; arc=pass smtp.client-ip=140.78.3.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jku.at
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jku.at
+Received: from [140.78.146.150] (unknown [140.78.146.150])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by emailsecure.uni-linz.ac.at (Postfix) with ESMTPSA id 4WPqdY3pkCz4vyr
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 13:02:25 +0200 (CEST)
+ARC-Seal: i=1; a=rsa-sha256; d=jku.at; s=202311-arc; t=1721300545; cv=none;
+	b=T+xjvDAcam3gPYMntqUKYqUmyIMYMbjYaxFQzM0kQIOoKTHfcA5Iywf4H6w2hIibIZYoOWDTfiFS69LEMlEi+FdjojycrB535LfcbD/EZ63LxPeBXPrWHZBqLlWC4zxd3SwFfI2pp8HsymVJXHdU1TzBQPOdbOzfTK0V73WT3vmNWAS69fYulPBXI0eIIc5jZRzq9GPpw5e/5b00CxGWYykXFYjLoUrrGxLDrdeQ98L8+x6UawJKu+aisWQWaTTh40K2dB6fL6EXhXMcBjr6REBeUOOr/4vqetLA58PWpvpH1XwTq6gVt33fPv+/M45NKUUCtmCc5NkMu+voB+r7Ew==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=jku.at; s=202311-arc;
+	t=1721300545; c=relaxed/simple;
+	bh=+7Tcsz8PHvuGRgYQ15ifqxrG3sdCqY9CDuBFpfNmKGI=;
+	h=DKIM-Signature:Message-ID:Subject:From:To:Date:MIME-Version; b=F4GXlDOOhVDXSz/KbIe6g8OTndKRlo8UFs9uZ7qT3NYzMGhpLCXnW+pkB2/Mz5WrlJgdBx21TkrRNMq/tCSvxG5eWkynqbMcGefeTBnMJ+IfsLhHO2bxqgHLUEu/D1CODe+tkueygVeTb4I1M1GFk+/BM21wUekiadT8WqZY1mem9Re5WO7HMTo2OPsQyyCRLwvuIWtOyrEeyDTL1ejAKxDvN3EOpixV94TgXW5y6pLgNRL8u7U65v0foB8xvT6h4Ps5T3bqRvcRrv3prtKfX0iaSqqwEJEJqkPH4AAsPoCq9vi3dXK2XttCuX06rDmJD6+TsPAhsZ5zx2S2RY0nUw==
+ARC-Authentication-Results: i=1; emailsecure.uni-linz.ac.at
+DKIM-Filter: OpenDKIM Filter v2.11.0 emailsecure.uni-linz.ac.at 4WPqdY3pkCz4vyr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jku.at;
+	s=202312-dkim-jkuat; t=1721300545;
+	bh=Wg74UcMH4GycQyLZpo9G/MAOHWrcDdjeXDrrRL73Zk0=;
+	h=Subject:From:To:Date:From;
+	b=BxWEhoHyZ1H1+X2gC1gSsG6kY09F0HGNuSA5bnOKHOV3F2bVNd0Obfgd328GbO6Rp
+	 NCFCzonVYHnU6Skq75adJ4vMemFbQJuWGcpkAvcmIEN4gwdn7yWNBAe4C7LgD0D9m+
+	 P+ZiIYw8aydI9PYUvV7JPkJatt1TD29MPz/Vxy9RNmMxiKU2p81ysLm+ZrZ60QUNke
+	 TB/JExCzlscMrRiVqhH9X0sN+p/LFTEv0zsWWG5Z4wJddrVLnOAvYKcoS9V3Yg6lxR
+	 dDzzbU3e+pwGkPAXRhwAEixSCdLyvMXWIhv1uR5SSwKtFrdshRHSsdniXU2Z87Ep8m
+	 Yia3N970o4ncA==
+Message-ID: <4426d5d3202c37b9bc7cea5281c017f77521074b.camel@jku.at>
+Subject: Question about 32 bit limitations
+From: David Schiller <david.schiller@jku.at>
+To: linux-btrfs@vger.kernel.org
+Date: Thu, 18 Jul 2024 13:02:25 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <da00aadb-e686-4c47-80fe-cb26f928cf32@suse.com>
 
-On Thu 18-07-24 18:22:11, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/7/18 17:39, Michal Hocko 写道:
-> > On Thu 18-07-24 17:27:05, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > 在 2024/7/18 16:55, Michal Hocko 写道:
-> > > > On Thu 18-07-24 09:17:42, Vlastimil Babka (SUSE) wrote:
-> > > > > On 7/18/24 12:38 AM, Qu Wenruo wrote:
-> > > > [...]
-> > > > > > Does the folio order has anything related to the problem or just a
-> > > > > > higher order makes it more possible?
-> > > > > 
-> > > > > I didn't spot anything in the memcg charge path that would depend on the
-> > > > > order directly, hm. Also what kernel version was showing these soft lockups?
-> > > > 
-> > > > Correct. Order just defines the number of charges to be reclaimed.
-> > > > Unlike the page allocator path we do not have any specific requirements
-> > > > on the memory to be released.
-> > > 
-> > > So I guess the higher folio order just brings more pressure to trigger the
-> > > problem?
-> > 
-> > It increases the reclaim target (in number of pages to reclaim). That
-> > might contribute but we are cond_resched-ing in shrink_node_memcgs and
-> > also down the path in shrink_lruvec etc. So higher target shouldn't
-> > cause soft lockups unless we have a bug there - e.g. not triggering any
-> > of those paths with empty LRUs and looping somewhere. Not sure about
-> > MGLRU state of things TBH.
-> > > > > > And finally, even without the hang problem, does it make any sense to
-> > > > > > skip all the possible memcg charge completely, either to reduce latency
-> > > > > > or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
-> > > > 
-> > > > Let me just add to the pile of questions. Who does own this memory?
-> > > 
-> > > A special inode inside btrfs, we call it btree_inode, which is not
-> > > accessible out of the btrfs module, and its lifespan is the same as the
-> > > mounted btrfs filesystem.
-> > 
-> > But the memory charge is attributed to the caller unless you tell
-> > otherwise.
-> 
-> By the caller, did you mean the user space program who triggered the
-> filesystem operations?
+Hi!
 
-Yes, the current task while these operations are done.
+I'm running a four disk "raid1" array on old Atom-based NAS hardware (no
+64 bit compatibility). It's a mixed set of disks (2x 4T, 2x 6T) and
+"btrfs filesystem usage" reports around 18 TiB under device size. I'm
+aware of the logical address limit and was regularly seeing the 5/8
+warning in the kernel log (the FS was created before this warning was
+introduced). The system is non-critical and only sees I/O once a day
+when an rsync job is running.
 
-[...]
-> > So if this is really an internal use and you use a shared
-> > infrastructure which expects the current task to be owner of the charged
-> > memory then you need to wrap the initialization into set_active_memcg
-> > scope.
-> > 
-> 
-> And for root cgroup I guess it means we will have no memory limits or
-> whatever, and filemap_add_folio() should always success (except real -ENOMEM
-> situations or -EEXIST error btrfs would handle)?
+Everything ran fine until the FS was remounted read-only during a scrub.
+The scrub finished without errors and a reboot got it back to read-write
+immediately. At this point I thought to delete a subvolume and resize
+the FS on the two larger disks to come in at under 16 TiB device size
+total. Unfortunately the delete and subsequent background clean task
+kept OOM'ing on this ancient machine and I had to temporarily move the
+disks to a different (64 bit) machine with more memory. There the
+deletion worked fine and I did a check, two resizes and a balance (in
+hindsight the last one was probably a mistake). Now device size is 15.99
+TiB, but when I move the disks back, I can't mount the FS anymore.
 
-Yes. try_charge will bypass charging altogether for root cgroup. You
-will likely need to ifdef root_mem_cgroup usage by CONFIG_MEMCG.
+[  604.404057] BTRFS error (device sdb1): reached 32bit limit for logical a=
+ddresses                    =20
+[  604.404110] BTRFS error (device sdb1): due to page cache limit on 32bit =
+systems, metadata beyond 16T can't be accessed
+[  604.404145] BTRFS error (device sdb1): please consider upgrading to 64bi=
+t kernel/hardware
+[  604.404175] BTRFS error (device sdb1): failed to read chunk tree: -75
+[  604.441574] BTRFS error (device sdb1): open_ctree failed
 
--- 
-Michal Hocko
-SUSE Labs
+I guess since it talks about "logical" addresses and not physical ones,
+the resize was pointless to begin with. Is there anything I can do to
+make this FS mountable on 32 bit again?
+
+I don't want to decommission this box, so the alternative would be to
+recreate the file system from scratch and restore from backup. This is a
+very low priority system, that's why I ignored the warning initially.
+This is by no means the fault of BTRFS.
+
+Best regards
+Dave
+
+
+
 
