@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-6552-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6553-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8459093708F
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A729A937090
 	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 00:11:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4E3E1F2297D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 22:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 341521F229D2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 22:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BD48146585;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE50146586;
 	Thu, 18 Jul 2024 22:11:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uUTcq9Df";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="B1KnQPAT"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dRq4ho/A";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dRq4ho/A"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDE5145FFB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F58145FFC
 	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721340674; cv=none; b=kPqN5XzmIn7Wx5NILyu4QurE/XBY27LmiDnel10QmBOPa+EkftCjbqGNPk3gXHaOFiXXH4K/rhyY/DFDsSyOXr4JaCDfCPJ1KUJYZ4gmamNLjPSsJjTgKUMNPdK86/2TK6S2puQdBz2p0SOBK+zpK/3RbQFvXih5zhMAoXzNUg0=
+	t=1721340674; cv=none; b=NlaA91FBMcJM+pOLxrtKI9P3WWm4Vj4TK9QxUREqJghQKnbiMtTf1kxKSNMaMcL33UCoK8dCYjKnUZ9tVf0rTzCCQcBFf6NmSbD4FhPEWFtIR1jeSArzc6XX+CAVk4+NA3Dxb+CWIY382y/miNJilLHTYqqMAZhNwM6GH+o3kKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721340674; c=relaxed/simple;
-	bh=LymfgG5mKRE8TExFKeu1Q8usftKhppOUEaB4awnr8mE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Z9B7U5ERt8wUdCXACTXx5yi5Q3qyiSO+aHBA5DvFHeDayB+P+k2AOKOgPLyC0Erqvj4oLSRj1BB5rMxoXN57uzVUwejqt+g8ruSWQngNxbNQbywrjM9voFMr2f+hjVK8bN9/dP18KWBW9maT87eVkneVQ7QpRcYtVduRFwmCDGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uUTcq9Df; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=B1KnQPAT; arc=none smtp.client-ip=195.135.223.130
+	bh=LWvNVaGthbYvI4yj3ghqWqZu/vYWrQ3wpV+A61DssWI=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=W2cQlZ65gV5yD3UbsskfpGlb6UF8GbXHOibTE88XsWsStxzdUU9oamRiB5eHNSjSZZrLoJ39OkJT1O8W5xzqkwcw2Tmt7+tb3FiBbUdIpeBcLNmqxQAc8ida8TNhEd922VNjRPnt/4XwGpz9n96/q8Y/HOX4cW/rqYkZWtX1Kmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dRq4ho/A; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dRq4ho/A; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A44AA216E8
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:08 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0A744216EA
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721340669; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=IWNWtLwaai0ldOmp5xhd4YoRXreg9dEloIykxpQtITs=;
-	b=uUTcq9Df+QjCzpUCUexsD50CTu5sZJ/V+gI0QaYG/qwLcSUHNR7i4DeWJE2Bt3kUbSgASg
-	BGzWyU825YonL5n6v4OYT9BcnMyaUeeEE6J69yYEZBfJ37FPmfHkGhCrGVs2V/cA+yxxVm
-	8MThnNe86+uRCPegcyh+2BehgQydEjo=
+	t=1721340670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OTpcAHvNRgz7hHOHyV971kpgK9P/XxuDK7599zOP8bk=;
+	b=dRq4ho/AlvVN+nvc4oCHIFpIc73c0GV00iv3TXa8ffq1iKcAuqFm0NrxZzApsOriQw7c54
+	liauDaAZBHsz50ThtFAHlD+AkihPiGA1u6guEY+5rPNUKHnO5C2BMOWiAxFtOo0QUVnNiE
+	OAgX4QMSwSIvUuf2nIF/XmXc/ipGcok=
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b="dRq4ho/A"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721340668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=IWNWtLwaai0ldOmp5xhd4YoRXreg9dEloIykxpQtITs=;
-	b=B1KnQPATo/d5uJYyiDxpi+jaowwVbJLUScGgkBezTSYN9v7wL3/LVKl/fYkvBpLCS5kpem
-	saFTk9Vk164TwPepOkJlOmKQaF1AdZjNT0bdzSv6n0m4qMfYQJkmu5SQ+aNu9gSNdq4NfX
-	uuqg66SMvuG/dM1E53HrpjRYMWFlWCc=
+	t=1721340670; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OTpcAHvNRgz7hHOHyV971kpgK9P/XxuDK7599zOP8bk=;
+	b=dRq4ho/AlvVN+nvc4oCHIFpIc73c0GV00iv3TXa8ffq1iKcAuqFm0NrxZzApsOriQw7c54
+	liauDaAZBHsz50ThtFAHlD+AkihPiGA1u6guEY+5rPNUKHnO5C2BMOWiAxFtOo0QUVnNiE
+	OAgX4QMSwSIvUuf2nIF/XmXc/ipGcok=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C600B1379D
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:07 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2FD7B137EB
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 670mH/uSmWZZFwAAD6G6ig
+	id 6KjTNvySmWZZFwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:07 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:08 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 0/3] btrfs-progs: btrfs-progs: csum-change enhancement
-Date: Fri, 19 Jul 2024 07:40:42 +0930
-Message-ID: <cover.1721340621.git.wqu@suse.com>
+Subject: [PATCH v3 1/3] btrfs-progs: csum-change: add leaf based threshold
+Date: Fri, 19 Jul 2024 07:40:43 +0930
+Message-ID: <7e8e75f50bb6b8d44a50bacfe803f7790e6a2a70.1721340621.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <cover.1721340621.git.wqu@suse.com>
+References: <cover.1721340621.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,70 +84,178 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
+X-Rspamd-Queue-Id: 0A744216EA
+X-Spam-Flag: NO
+X-Spam-Score: 0.99
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.99 / 50.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
+	MX_GOOD(-0.01)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
 	TO_DN_NONE(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
 X-Spam-Level: 
+X-Spamd-Bar: /
 
-[CHANGELOG]
-v3:
-- Rebased to the latest devel branch
-- Migrate to use "btrfs --version" to detect features
+For "btrfstune --csum", currently we do the following operations in just
+one transaction for each:
 
-v2:
-- Enhance the error injection detection
-  Now instead of plain run_mustfail, we do check both the failure and
-  the stderr.
-  Only when the csum-change failed and stderr includes the injection
-  cookie output, we know it's really the injection causing error.
+- Delete old data csums
+- Change new data csums objectid
 
-The first two patches are small enhancement and bugfix:
+Both opeartion can modify up to GiB or even TiB level of metadata, doing
+them in just one transaction is definitely going to cause problems.
 
-- Fix a missing error handling
-- Do multi-transaction csum deletion and rename
-  Or we can generate GiB or even TiB level of dirty metadata.
+This patch adds a leaf number based threshold (32 leaves), after
+modifying/deleteing this many leaves, we commit a transaction to avoid
+huge amount of dirty leaves piling up.
 
-Finally introduce a basic error injection based test case, which will:
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tune/change-csum.c | 68 +++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 52 insertions(+), 16 deletions(-)
 
-- Check if we have error injection first
-- Inject error at the end of data csum generation
-- Make sure resume from above situation is correct
-
-I'm not adding extra injections because I believe there would definitely
-be corner cases that need to be fixed.
-
-Qu Wenruo (3):
-  btrfs-progs: csum-change: add leaf based threshold
-  btrfs-progs: tests: use feature output from "btrfs --version"
-  btrfs-progs: misc-tests: add a basic resume test using error injection
-
- tests/common                                  | 13 ++--
- .../065-csum-conversion-inject/test.sh        | 45 ++++++++++++
- tune/change-csum.c                            | 68 ++++++++++++++-----
- 3 files changed, 105 insertions(+), 21 deletions(-)
- create mode 100755 tests/misc-tests/065-csum-conversion-inject/test.sh
-
---
+diff --git a/tune/change-csum.c b/tune/change-csum.c
+index 0f95cdb25533..66fdd207335c 100644
+--- a/tune/change-csum.c
++++ b/tune/change-csum.c
+@@ -371,29 +371,48 @@ static int generate_new_data_csums(struct btrfs_fs_info *fs_info, u16 new_csum_t
+ 	return generate_new_data_csums_range(fs_info, 0, new_csum_type);
+ }
+ 
++/* After deleting/modifying this many leaves, commit a transaction. */
++#define CSUM_CHANGE_LEAVES_THRESHOLD	32
++
+ static int delete_old_data_csums(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, 0);
+-	struct btrfs_trans_handle *trans;
++	struct btrfs_trans_handle *trans = 0;
+ 	struct btrfs_path path = { 0 };
+ 	struct btrfs_key last_key;
++	unsigned int deleted_leaves = 0;
+ 	int ret;
+ 
+ 	last_key.objectid = BTRFS_EXTENT_CSUM_OBJECTID;
+ 	last_key.type = BTRFS_EXTENT_CSUM_KEY;
+ 	last_key.offset = (u64)-1;
+ 
+-	trans = btrfs_start_transaction(csum_root, 1);
+-	if (IS_ERR(trans)) {
+-		ret = PTR_ERR(trans);
+-		errno = -ret;
+-		error("failed to start transaction to delete old data csums: %m");
+-		return ret;
+-	}
+ 	while (true) {
+ 		int start_slot;
+ 		int nr;
+ 
++		if (deleted_leaves >= CSUM_CHANGE_LEAVES_THRESHOLD) {
++			assert(trans);
++			ret = btrfs_commit_transaction(trans, csum_root);
++			if (ret < 0) {
++				errno = -ret;
++				error(
++		"failed to commit transaction to delete old data csums: %m");
++				return ret;
++			}
++			trans = NULL;
++			deleted_leaves = 0;
++		}
++		if (!trans) {
++			trans = btrfs_start_transaction(csum_root, 1);
++			if (IS_ERR(trans)) {
++				ret = PTR_ERR(trans);
++				errno = -ret;
++				error(
++		"failed to start transaction to delete old data csums: %m");
++				return ret;
++			}
++		}
+ 		ret = btrfs_search_slot(trans, csum_root, &last_key, &path, -1, 1);
+ 		if (ret < 0) {
+ 			errno = -ret;
+@@ -428,6 +447,7 @@ static int delete_old_data_csums(struct btrfs_fs_info *fs_info)
+ 			break;
+ 		}
+ 		btrfs_release_path(&path);
++		deleted_leaves++;
+ 	}
+ 	btrfs_release_path(&path);
+ 	if (ret < 0)
+@@ -445,9 +465,10 @@ static int delete_old_data_csums(struct btrfs_fs_info *fs_info)
+ static int change_csum_objectids(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_root *csum_root = btrfs_csum_root(fs_info, 0);
+-	struct btrfs_trans_handle *trans;
++	struct btrfs_trans_handle *trans = NULL;
+ 	struct btrfs_path path = { 0 };
+ 	struct btrfs_key last_key;
++	unsigned int changed_leaves = 0;
+ 	u64 super_flags;
+ 	int ret = 0;
+ 
+@@ -455,17 +476,32 @@ static int change_csum_objectids(struct btrfs_fs_info *fs_info)
+ 	last_key.type = BTRFS_EXTENT_CSUM_KEY;
+ 	last_key.offset = (u64)-1;
+ 
+-	trans = btrfs_start_transaction(csum_root, 1);
+-	if (IS_ERR(trans)) {
+-		ret = PTR_ERR(trans);
+-		errno = -ret;
+-		error("failed to start transaction to change csum objectids: %m");
+-		return ret;
+-	}
+ 	while (true) {
+ 		struct btrfs_key found_key;
+ 		int nr;
+ 
++		if (changed_leaves >= CSUM_CHANGE_LEAVES_THRESHOLD) {
++			assert(trans);
++			ret = btrfs_commit_transaction(trans, csum_root);
++			if (ret < 0) {
++				errno = -ret;
++				error(
++		"failed to commit transaction to change data csum objectid: %m");
++				return ret;
++			}
++			trans = NULL;
++			changed_leaves = 0;
++		}
++		if (!trans) {
++			trans = btrfs_start_transaction(csum_root, 1);
++			if (IS_ERR(trans)) {
++				ret = PTR_ERR(trans);
++				errno = -ret;
++				error(
++		"failed to start transaction to change csum objectids: %m");
++				return ret;
++			}
++		}
+ 		ret = btrfs_search_slot(trans, csum_root, &last_key, &path, 0, 1);
+ 		if (ret < 0)
+ 			goto out;
+-- 
 2.45.2
 
 
