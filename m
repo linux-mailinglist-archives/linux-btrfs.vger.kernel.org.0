@@ -1,208 +1,214 @@
-Return-Path: <linux-btrfs+bounces-6555-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6556-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2460E937092
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 00:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6BC0937098
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 00:26:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A25891F229D7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 22:11:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56ACA1F22817
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 22:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2901B146599;
-	Thu, 18 Jul 2024 22:11:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DAD145FFC;
+	Thu, 18 Jul 2024 22:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Sx/yAe0c";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Sx/yAe0c"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F+t7Q5j1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 827CE146016
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7802E8286A
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721340676; cv=none; b=IHJAegJSm6lYjpgVeV6LMa1StHFgQAHgNIFl9tPzGw9cHpnhxC8Ty+UCUvxgrSB5mZw3n/1tIgAhfhoOxnyIzAZZqdxIEYcvtuGaPYWJOvFX8E+G1C170DETLQO8kt4rQSUvS6Chi9AOAAD5YHOFhKRIDn6B6K+vNKdbxFSpJgY=
+	t=1721341607; cv=none; b=PSV23Xpi3xHSZUlYS5HXmIbmaZvIQsq4xoXHhXrut3EFEN5J9I/rpQD6fjrd+Y0eJRAjVIoyWWuhdjNNW+zpfoduJoatcfGoHuCb4WPuN+5RtwfGEiwZtALGBykfdVu/IVagO+vdXRoV8F2MaD5O97TPKunCJRrZquwv2uhyBaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721340676; c=relaxed/simple;
-	bh=YMNwuKHxrWOZIrVrNc73wXjzmTBEn2MSb89DH7ekUHM=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aWVzzc5WcoxzSx7eYi1VyXE+u1mcNyBocUa5NddvvZWMQeX4Bv0Rfqia55ouwh61I1xY1iI1rO4mWF5oAIN+2z97+1tFECm1kc+fG9u7FsAbTRhPpoNyW5t0nd5vzUh6mkqUFLlQ+yqD3YqhMOD5LxdbSxk/Si1Z5SXAdNKbyyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Sx/yAe0c; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Sx/yAe0c; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C697721AF5
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721340672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3hOOFTf0JQg/6KOxdrdzzjfFshogkW9/gE4fpxqBFcM=;
-	b=Sx/yAe0cZSpoMCk57gj4WRiHe7kkS8JA7guiMtLOsrOFgtAIdTdR1gX04jChHORvZU2IRx
-	zYbbOqnlCHOGrkXDtYw3+V/JHS3R8A00Z0fu+jhLf3guceV+ZNGGLHlBxj/MCj7aKwhW9y
-	Jz3GxL9NsRzOYOh9ro6p2hklvcEJ1kQ=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="Sx/yAe0c"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721340672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3hOOFTf0JQg/6KOxdrdzzjfFshogkW9/gE4fpxqBFcM=;
-	b=Sx/yAe0cZSpoMCk57gj4WRiHe7kkS8JA7guiMtLOsrOFgtAIdTdR1gX04jChHORvZU2IRx
-	zYbbOqnlCHOGrkXDtYw3+V/JHS3R8A00Z0fu+jhLf3guceV+ZNGGLHlBxj/MCj7aKwhW9y
-	Jz3GxL9NsRzOYOh9ro6p2hklvcEJ1kQ=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB49B1379D
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wAr9KP+SmWZZFwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Jul 2024 22:11:11 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 3/3] btrfs-progs: misc-tests: add a basic resume test using error injection
-Date: Fri, 19 Jul 2024 07:40:45 +0930
-Message-ID: <4556c3b266244552477186a27fb4b4a0c40c0310.1721340621.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1721340621.git.wqu@suse.com>
-References: <cover.1721340621.git.wqu@suse.com>
+	s=arc-20240116; t=1721341607; c=relaxed/simple;
+	bh=F6pfvz1eCTAJtZWMsvGSje8/gF/G/PUxhOGWqJ5Mj/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dzt5uErKhSP+6IEmZMAejthj9u7CjMk/C0gBS0RaHqLoPv5a4IS5x5s9RADN5O7UhtQ1Mf2UXXxz2e+wlYLKcWxsIQ/dX4GMRlpPXEaT+RGIMxw9Eri6US3CgoDNF424G3gOmlsaItlSYMtZH3v+V9svWpKwiA+kid2JgLgmvf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F+t7Q5j1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 542FFC116B1;
+	Thu, 18 Jul 2024 22:26:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721341607;
+	bh=F6pfvz1eCTAJtZWMsvGSje8/gF/G/PUxhOGWqJ5Mj/M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F+t7Q5j1J4JmnTNvU3kqX2o1A/lAOS48ZoRL6nfFXcQNJ0ktpJsoAmAsZ8dPvrehd
+	 YwOnghVF6dWUkjcB2+vjuC3PNzoCpjc6djEw1Hz0IGxSbkpzi88oU7kIXeo2Vvj6D/
+	 6xQ87jbEZqD7sY0dGkSMgpju0HYMTB6Wdoip5x39kmXorIzMOrKCR+xxqdbUgFgpiU
+	 d/sKhTvwCS4ItWumNh5gGODH/JP5W/CFbTquT3ExHUCyWXiky4dKmE6aYO+XFiFLiI
+	 MYJwUc6eQa4x+X2b2gmyDZ9uGKtV0BZd2f6R/ToQ3pt0wE4uCJClBvpVS1t3kxP+pB
+	 KSgmEBI2fQM/A==
+Date: Fri, 19 Jul 2024 00:26:44 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Sam James <sam@gentoo.org>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: Build failure with trunk GCC 15 in fs/btrfs/print-tree.c
+ (-Wunterminated-string-initialization)
+Message-ID: <5mnphkdvheudccjtiatrbjbkqtw54s2wkpeqevj3rqthdqlwyw@sjvn4wn52qki>
+References: <87ttgmz7q7.fsf@gentoo.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C697721AF5
-X-Spam-Flag: NO
-X-Spam-Score: 0.99
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.99 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	TO_DN_NONE(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Level: 
-X-Spamd-Bar: /
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rlynzdzr5pnebt4b"
+Content-Disposition: inline
+In-Reply-To: <87ttgmz7q7.fsf@gentoo.org>
 
-The new test case does:
 
-- Make sure the build has error injection support
-  This is done by checking "btrfs --version" output.
+--rlynzdzr5pnebt4b
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Sam James <sam@gentoo.org>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: Build failure with trunk GCC 15 in fs/btrfs/print-tree.c
+ (-Wunterminated-string-initialization)
+References: <87ttgmz7q7.fsf@gentoo.org>
+MIME-Version: 1.0
+In-Reply-To: <87ttgmz7q7.fsf@gentoo.org>
 
-- Inject error at the last commit transaction of new data csum
-  generation
+Hi Sam!
 
-- Resume the csum conversion and make sure it works
+On Thu, Jul 18, 2024 at 10:54:40PM GMT, Sam James wrote:
+> GCC 15 introduces a new warning -Wunterminated-string-initialization
+> which causes, with the kernel's -Werror=3D..., the following:
+> ```
+> /var/tmp/portage/sys-kernel/gentoo-kernel-6.6.41/work/linux-6.6/fs/btrfs/=
+print-tree.c:29:49: error: initializer-string for array of =E2=80=98char=E2=
+=80=99 is too long [-Werror=3Dunterminated-string-initialization]
+>    29 |         { BTRFS_BLOCK_GROUP_TREE_OBJECTID,      "BLOCK_GROUP_TREE=
+"      },
+>       |
+>       ^~~~~~~~~~~~~~~~~~
+> ```
+>=20
+> It was introduced in https://gcc.gnu.org/PR115185. I don't have time
+> today to check the case to see what the best fix is, but CCing Alex who
+> wrote the warning implementation in case he has a chance.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/common                                  |  7 +++
- .../065-csum-conversion-inject/test.sh        | 45 +++++++++++++++++++
- 2 files changed, 52 insertions(+)
- create mode 100755 tests/misc-tests/065-csum-conversion-inject/test.sh
+Thanks for forwarding the report.  It looks like a legit diagnostic.  It
+seems like a bug.
 
-diff --git a/tests/common b/tests/common
-index 4800ef8e77c9..f6b68a418087 100644
---- a/tests/common
-+++ b/tests/common
-@@ -402,6 +402,13 @@ check_regular_build()
- 	fi
- }
- 
-+check_injection()
-+{
-+	if ! _test_config "INJECT"; then
-+		_not_run "This test requires error injection support (make D=1)"
-+	fi
-+}
-+
- check_prereq()
- {
- 	# Internal tools for testing, not shipped with the package
-diff --git a/tests/misc-tests/065-csum-conversion-inject/test.sh b/tests/misc-tests/065-csum-conversion-inject/test.sh
-new file mode 100755
-index 000000000000..715349c4d403
---- /dev/null
-+++ b/tests/misc-tests/065-csum-conversion-inject/test.sh
-@@ -0,0 +1,45 @@
-+#!/bin/bash
-+# Verify the csum conversion can still resume after an interruption
-+
-+source "$TEST_TOP/common" || exit
-+source "$TEST_TOP/common.convert" || exit
-+
-+check_experimental_build
-+check_injection
-+setup_root_helper
-+prepare_test_dev
-+
-+test_resume_data_csum_generation()
-+{
-+	local new_csum="$1"
-+	local tmp=$(_mktemp "csum-convert")
-+
-+	# Error at the end of the data csum generation.
-+	export INJECT="0x4de02239"
-+	run_mustfail_stdout "error injection not working" \
-+		"$TOP/btrfstune" --csum "$new_csum" "$TEST_DEV" &> $tmp
-+	cat "$tmp" >> "$RESULTS"
-+	if ! grep -q "$INJECT" "$tmp"; then
-+		rm -f -- "$tmp"
-+		_fail "csum conversion failed to unexpected reason"
-+	fi
-+	rm -f -- "$tmp"
-+	unset INJECT
-+	run_check "$TOP/btrfstune" --csum "$new_csum" "$TEST_DEV"
-+	run_check "$TOP/btrfs" check --check-data-csum "$TEST_DEV"
-+}
-+
-+check_injection
-+
-+run_check_mkfs_test_dev --csum crc32c
-+
-+# We only mount the filesystem once to populate its contents, later one we
-+# would never mount the fs (to reduce the dependency on kernel features).
-+run_check_mount_test_dev
-+populate_fs
-+run_check_umount_test_dev
-+
-+test_resume_data_csum_generation xxhash
-+test_resume_data_csum_generation blake2
-+test_resume_data_csum_generation sha256
-+test_resume_data_csum_generation crc32c
--- 
-2.45.2
+	$ sed -n 15,34p fs/btrfs/print-tree.c;
+	struct root_name_map {
+		u64 id;
+		char name[16];
+	};
 
+	static const struct root_name_map root_map[] =3D {
+		{ BTRFS_ROOT_TREE_OBJECTID,		"ROOT_TREE"		},
+		{ BTRFS_EXTENT_TREE_OBJECTID,		"EXTENT_TREE"		},
+		{ BTRFS_CHUNK_TREE_OBJECTID,		"CHUNK_TREE"		},
+		{ BTRFS_DEV_TREE_OBJECTID,		"DEV_TREE"		},
+		{ BTRFS_FS_TREE_OBJECTID,		"FS_TREE"		},
+		{ BTRFS_CSUM_TREE_OBJECTID,		"CSUM_TREE"		},
+		{ BTRFS_TREE_LOG_OBJECTID,		"TREE_LOG"		},
+		{ BTRFS_QUOTA_TREE_OBJECTID,		"QUOTA_TREE"		},
+		{ BTRFS_UUID_TREE_OBJECTID,		"UUID_TREE"		},
+		{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
+		{ BTRFS_BLOCK_GROUP_TREE_OBJECTID,	"BLOCK_GROUP_TREE"	},
+		{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
+		{ BTRFS_RAID_STRIPE_TREE_OBJECTID,	"RAID_STRIPE_TREE"	},
+	};
+
+The non-string is stored in 'root_map'.  It seems only used in one
+function:
+
+	$ grepc -tu root_map fs/btrfs/print-tree.c;
+	fs/btrfs/print-tree.c:const char *btrfs_root_name(const struct btrfs_key *=
+key, char *buf)
+	{
+		int i;
+
+		if (key->objectid =3D=3D BTRFS_TREE_RELOC_OBJECTID) {
+			snprintf(buf, BTRFS_ROOT_NAME_BUF_LEN,
+				 "TREE_RELOC offset=3D%llu", key->offset);
+			return buf;
+		}
+
+		for (i =3D 0; i < ARRAY_SIZE(root_map); i++) {
+			if (root_map[i].id =3D=3D key->objectid)
+				return root_map[i].name;
+		}
+
+		snprintf(buf, BTRFS_ROOT_NAME_BUF_LEN, "%llu", key->objectid);
+		return buf;
+	}
+
+That function returns the non-string, and also seems to be used exactly
+in one place:
+
+	$ find * -type f \
+	| grep '\.[hc]$' \
+	| xargs grepc -tu btrfs_root_name;
+	fs/btrfs/disk-io.c:void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_=
+info)
+	{
+	#ifdef CONFIG_BTRFS_DEBUG
+		struct btrfs_root *root;
+
+		while (!list_empty(&fs_info->allocated_roots)) {
+			char buf[BTRFS_ROOT_NAME_BUF_LEN];
+
+			root =3D list_first_entry(&fs_info->allocated_roots,
+						struct btrfs_root, leak_list);
+			btrfs_err(fs_info, "leaked root %s refcount %d",
+				  btrfs_root_name(&root->root_key, buf),
+				  refcount_read(&root->refs));
+			WARN_ON_ONCE(1);
+			while (refcount_read(&root->refs) > 1)
+				btrfs_put_root(root);
+			btrfs_put_root(root);
+		}
+	#endif
+	}
+
+This caller is using the non-string in a "%s" in btrfs_err(), which
+itself is a wrapper around btrfs_printk(), which I won't follow too
+much, but I expect to treat "%s" the same as printf(3) does.
+
+The fix would be to add at least one byte to that array size.  Possibly
+make it 32 for alignment.  But I don't know if that array size is fixed
+by any ABI, so the maintainer will be better placed to find the suitable
+fix.
+
+The only alternatives I see are
+
+-  Use a larger number of elements for that array (1 would be enough).
+-  Use a shorter string so that it fits the 16 bytes.
+
+Have a lovely night!
+Alex
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--rlynzdzr5pnebt4b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmaZlp4ACgkQnowa+77/
+2zJjxA/+MQ15TIASCmW4qdwPV6EqrqwVo7X/SFeJGqlWilADGAXErrXXgHmtxClY
+bg0JTDycXsj924NMcVe4dZsj5kUenvehAsr2z6deBzUZZ5+wx1CYQzX+TR2wiNcV
+6Y+ubyWh4C4mmF016VJCTTOhNf2bvGJrFUZnrj/VlOBAoTpaJ6KPW0N2XebMorJc
+9qJrgz4A34nvJJukc/VvyhRHXkBa/kLW/Is1KnHwt4RloH0XpeX6uGKu3dAXNAdk
+DdowZiVXOwxxAsshUFLA/qQ1gBQ2wTjBTRNpdl0sBowNYLuca76zMcgfa/G5l1Py
+XKiS3sZkMNzYrGm55NowXSNRMYhMqLnzfIeqGZmuYPxJKFUflDcVBGLxgQwcUAuq
+J+jXiM/05bewnCydKokbRRKIvF4OmnlC5YGR3K5YUoP2WIMu0yqy0qyg489q5Xxs
+qHtx2SlSNuvodfDJwq9OK/mFK99dxi0f9JOSGcSrJpJ1WEcN4Ze2blUboFpAc1gt
+I7B07LzAb5ddpbecP1SNkPsZkzDwV8gSRxRt966GhlveR/T8RamQ8kxU38jDj/C9
+kqxXHApjaptxrqMAw/CI9dMNQagwF4mjraKf5y7X8NbjUGPocSAdMmAnE1Vkgtqs
+QCtqqWVnsi/DICVtMMAEloy4ZhEklrdKiXcZCvHhIQHfKxwd2Jk=
+=AnM0
+-----END PGP SIGNATURE-----
+
+--rlynzdzr5pnebt4b--
 
