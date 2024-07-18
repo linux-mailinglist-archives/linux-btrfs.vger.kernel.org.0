@@ -1,245 +1,137 @@
-Return-Path: <linux-btrfs+bounces-6530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB8D9344F2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 00:55:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB36C9348A3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 09:18:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D82251C21288
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2024 22:55:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2526282B84
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Jul 2024 07:17:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3EA65466B;
-	Wed, 17 Jul 2024 22:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18EC7605E;
+	Thu, 18 Jul 2024 07:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uvaNE9iA";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uvaNE9iA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nES1GApa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BA333CC4;
-	Wed, 17 Jul 2024 22:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF9E819E;
+	Thu, 18 Jul 2024 07:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721256917; cv=none; b=IF7bjHUv6HAQi2ovsiNiz+14/649v6Sa80rsFgaH3HEeeU/O0uIgA4QszGh6z5mW8G846TK7lMhpKWeOZZGqlderQYUkGHtxbXyMN3PUJNfHpf0i27kQEsEGd4C6ftP1zavS10Ci4WyRi8OdEtlJCDoUonzFkGuv93ZNES5HmDo=
+	t=1721287068; cv=none; b=F8F2TS31ho7OqQclFQ+PxEuB+RLVRNi+fjWkvma2jnETOX+FZ81jn4cPvvBP+V7+0jk0vjOWjFlIiH0/0lgt8PxJrcXYotRvi1vFtM+mj+t0tpb1kZsdSdEFleYwFm8JL/aTEUGjhPo71iXFjmcd7adKI9c5y4EGN+hTr40rqAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721256917; c=relaxed/simple;
-	bh=xJ7AtrcBou7kcHAwTBHYSKyu6/ylsoNEh9BO//fDGwk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EzZX80CdwzpUQlRkTgl5+allSLrqpeL8HYef4fNaCtU2/4/L30DbBGlsLZJjGskKBcGtOApfPHcStdr6MKApnZVug57WMeeIE/gLt6e4fPTOBNDqOU6Nw/sObf/Am6idlE2tVnAvrbj/W0QW8U821Sx5fsuAQl2fdczVLmvqpyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uvaNE9iA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uvaNE9iA; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 148A321A35;
-	Wed, 17 Jul 2024 22:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721256909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=VRCm0oKggHnJVH4KyAuwUVcxmal7BdO4nfQABXka5YY=;
-	b=uvaNE9iAeB9NZODt6KDWVzYP3jtr1meSIeE0c9EXIbCw5JH8/J4l5TOlajgntzhQY33Bp3
-	EvzRavP3yf2yoFko9yMKnKl+SPUkW+PFQ0v1DcpgPOSx44MnDYyunHS37cr4vAsEEAmdAQ
-	WJShNpuzT/T+bpU7T8Poso5paTTLmaU=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721256909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=VRCm0oKggHnJVH4KyAuwUVcxmal7BdO4nfQABXka5YY=;
-	b=uvaNE9iAeB9NZODt6KDWVzYP3jtr1meSIeE0c9EXIbCw5JH8/J4l5TOlajgntzhQY33Bp3
-	EvzRavP3yf2yoFko9yMKnKl+SPUkW+PFQ0v1DcpgPOSx44MnDYyunHS37cr4vAsEEAmdAQ
-	WJShNpuzT/T+bpU7T8Poso5paTTLmaU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 976D41368F;
-	Wed, 17 Jul 2024 22:55:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GfP6E8tLmGaGDwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 17 Jul 2024 22:55:07 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] fstests: btrfs/012: fix a false alert due to socket/pipe files
-Date: Thu, 18 Jul 2024 08:24:49 +0930
-Message-ID: <20240717225449.6535-1-wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1721287068; c=relaxed/simple;
+	bh=6geIF7vYh23EULIWqeZnsJ4uWp50DaQE9puxPgPkEPU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=igRabNQbF7hV+gH6wCu5MVczMLivKHduaUlasNradXdSPC6v7+6+ydx+et+Vt7dx3tb9vLjdAH99Wy7+Ed08k1eamH4pQpCn1hpLtRDPCpHcRlJFOPdiVo/XbzndWtHKsSL1p4kRJClGPaX+hj7WhnRnAK4JC6FZ0k5TNMcpzYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nES1GApa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1211CC116B1;
+	Thu, 18 Jul 2024 07:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721287067;
+	bh=6geIF7vYh23EULIWqeZnsJ4uWp50DaQE9puxPgPkEPU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nES1GApabH95lkwjPEerwfUV3d3HaWGeswuGNZvyXJaxVH+NDrSiEbHzElzDI/4/d
+	 OZV2a4VOE6KG0p/LyojZ8XoIMwDqTRwSdQluY6axPMDs97aN9c37U97HFJiiuJvyR3
+	 /GVKsoI1iJwjwO2xMOUBtF6AWodp4iyX6k6QSE66GTDKzg+crb9kt58cknByoeKkrn
+	 LMFa0ZuKrUZIGOXNef3kt07LKZCwlg8MebpXNGkDS9HP/w2s0Ym6Ng3675jBPWSOvm
+	 Wsy5kvel9o6w0HtxAyZoRE7Bo9dbtw3vEykC09U4DY95haJ6MbyKtUfSfFBdVrCm2A
+	 WGYhicI76sgxQ==
+Message-ID: <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+Date: Thu, 18 Jul 2024 09:17:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Michal Hocko <mhocko@suse.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Cgroups <cgroups@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+ <Zpft2A_gzfAYBFfZ@tiehlicka> <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+Content-Language: en-US
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: 1.20
-X-Spamd-Result: default: False [1.20 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: *
 
-[BUG]
-On my Archlinux VM, the test btrfs/012 always fail with the following
-output diff:
+On 7/18/24 12:38 AM, Qu Wenruo wrote:
+> 在 2024/7/18 01:44, Michal Hocko 写道:
+>> On Wed 17-07-24 17:55:23, Vlastimil Babka (SUSE) wrote:
+>>> Hi,
+>>>
+>>> you should have Ccd people according to get_maintainers script to get a
+>>> reply faster. Let me Cc the MEMCG section.
+>>>
+>>> On 7/10/24 3:07 AM, Qu Wenruo wrote:
+>>>> Recently I'm hitting soft lockup if adding an order 2 folio to a
+>>>> filemap using GFP_NOFS | __GFP_NOFAIL. The softlockup happens at memcg
+>>>> charge code, and I guess that's exactly what __GFP_NOFAIL is expected to
+>>>> do, wait indefinitely until the request can be met.
+>>>
+>>> Seems like a bug to me, as the charging of __GFP_NOFAIL in
+>>> try_charge_memcg() should proceed to the force: part AFAICS and just go over
+>>> the limit.
+>>>
+>>> I was suspecting mem_cgroup_oom() a bit earlier return true, causing the
+>>> retry loop, due to GFP_NOFS. But it seems out_of_memory() should be
+>>> specifically proceeding for GFP_NOFS if it's memcg oom. But I might be
+>>> missing something else. Anyway we should know what exactly is going first.
+>>
+>> Correct. memcg oom code will invoke the memcg OOM killer for NOFS
+>> requests. See out_of_memory
+>>
+>>          /*
+>>           * The OOM killer does not compensate for IO-less reclaim.
+>>           * But mem_cgroup_oom() has to invoke the OOM killer even
+>>           * if it is a GFP_NOFS allocation.
+>>           */
+>>          if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
+>>                  return true;
+>>
+>> That means that there will be a victim killed, charges reclaimed and
+>> forward progress made. If there is no victim then the charging path will
+>> bail out and overcharge.
+>>
+>> Also the reclaim should have cond_rescheds in the reclaim path. If that
+>> is not sufficient it should be fixed rather than workaround.
+> 
+> Another question is, I only see this hang with larger folio (order 2 vs
+> the old order 0) when adding to the same address space.
+> 
+> Does the folio order has anything related to the problem or just a
+> higher order makes it more possible?
 
-     QA output created by 012
-    +File /etc/pacman.d/gnupg/S.dirmngr is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.dirmngr is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent.browser is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent.browser is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent.extra is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent.extra is a socket
-    +File /etc/pacman.d/gnupg/S.gpg-agent.ssh is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.gpg-agent.ssh is a socket
-    +File /etc/pacman.d/gnupg/S.keyboxd is a socket while file /mnt/scratch/etc/pacman.d/gnupg/S.keyboxd is a socket
-    ...
+I didn't spot anything in the memcg charge path that would depend on the
+order directly, hm. Also what kernel version was showing these soft lockups?
 
-[CAUSE]
-It's a false alerts.
+> And finally, even without the hang problem, does it make any sense to
+> skip all the possible memcg charge completely, either to reduce latency
+> or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
 
-When diff hits two files which are not directory/softlink/regular files
-(aka, socket/pipe/char/block files), they are all treated as
-non-comparable.
-In that case, diff would just do the above message.
+Is it common to even use the filemap code for such metadata that can't be
+really mapped to userspace? How does it even interact with reclaim, do they
+become part of the page cache and are scanned by reclaim together with data
+that is mapped? How are the lru decisions handled if there are no references
+for PTE access bits. Or can they be even reclaimed, or because there may
+e.g. other open inodes pinning this metadata, the reclaim is impossible?
 
-And with Archlinux, pacman (the package manager) maintains its gpg
-directory inside "/etc/pacman.d/gnupg", and the test case uses
-"/etc" as the source directory to populate the target ext4 fs.
+(sorry if the questions seem noob, I'm not that much familiar with the page
+cache side of mm)
 
-And the socket files inside "/etc/pacman.d/gnupg" is causing the false
-alerts.
-
-[FIX]
-- Use fsstress to populate the fs
-  That covers all kind of operations, including creating special files.
-  And fsstress is very reproducible, with the seed saved to the full
-  log, it's much easier to reproduce than using the distro dependent
-  "/etc/" directory.
-
-- Use fssum to save the digest and later verify the contents
-  It does not only verify the contents but also other things like
-  timestamps/xattrs/uid/gid/mode/etc.
-  And it's more comprehensive than the content oriented diff tool.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changlog:
-v2:
-- Fix a typo in the full log output
----
- tests/btrfs/012     | 29 +++++++++++++++++------------
- tests/btrfs/012.out |  6 ++++++
- 2 files changed, 23 insertions(+), 12 deletions(-)
-
-diff --git a/tests/btrfs/012 b/tests/btrfs/012
-index a96efeff..b23e039f 100755
---- a/tests/btrfs/012
-+++ b/tests/btrfs/012
-@@ -23,13 +23,13 @@ _require_scratch_nocheck
- _require_command "$BTRFS_CONVERT_PROG" btrfs-convert
- _require_command "$MKFS_EXT4_PROG" mkfs.ext4
- _require_command "$E2FSCK_PROG" e2fsck
-+_require_fssum
- # ext4 does not support zoned block device
- _require_non_zoned_device "${SCRATCH_DEV}"
- _require_loop
- _require_extra_fs ext4
- 
--SOURCE_DIR=/etc
--BASENAME=$(basename $SOURCE_DIR)
-+BASENAME="stressdir"
- BLOCK_SIZE=`_get_block_size $TEST_DIR`
- 
- # Create & populate an ext4 filesystem
-@@ -38,17 +38,21 @@ $MKFS_EXT4_PROG -F -b $BLOCK_SIZE $SCRATCH_DEV > $seqres.full 2>&1 || \
- # Manual mount so we don't use -t btrfs or selinux context
- mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
- 
--_require_fs_space $SCRATCH_MNT $(du -s $SOURCE_DIR | ${AWK_PROG} '{print $1}')
-+echo "populating the initial ext fs:" >> $seqres.full
-+mkdir "$SCRATCH_MNT/$BASENAME"
-+$FSSTRESS_PROG -w -d "$SCRATCH_MNT/$BASENAME" -n 20 -p 500 >> $seqres.full
- 
--$TIMEOUT_PROG 10 cp -aRP $SOURCE_DIR $SCRATCH_MNT
-+# Create the checksum to verify later.
-+$FSSUM_PROG -A -f -w $tmp.original "$SCRATCH_MNT/$BASENAME"
- _scratch_unmount
- 
- # Convert it to btrfs, mount it, verify the data
- $BTRFS_CONVERT_PROG $SCRATCH_DEV >> $seqres.full 2>&1 || \
- 	_fail "btrfs-convert failed"
- _try_scratch_mount || _fail "Could not mount new btrfs fs"
--# (Ignore the symlinks which may be broken/nonexistent)
--diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/$BASENAME/ 2>&1
-+
-+echo "Checking converted btrfs against the original one:"
-+$FSSUM_PROG -r $tmp.original $SCRATCH_MNT/$BASENAME
- 
- # Old ext4 image file should exist & be consistent
- $E2FSCK_PROG -fn $SCRATCH_MNT/ext2_saved/image >> $seqres.full 2>&1 || \
-@@ -58,13 +62,14 @@ $E2FSCK_PROG -fn $SCRATCH_MNT/ext2_saved/image >> $seqres.full 2>&1 || \
- mkdir -p $SCRATCH_MNT/mnt
- mount -o loop $SCRATCH_MNT/ext2_saved/image $SCRATCH_MNT/mnt || \
- 	_fail "could not loop mount saved ext4 image"
--# Ignore the symlinks which may be broken/nonexistent
--diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/mnt/$BASENAME/ 2>&1
-+
-+echo "Checking saved ext2 image against the original one:"
-+$FSSUM_PROG -r $tmp.original $SCRATCH_MNT/mnt/$BASENAME
- umount $SCRATCH_MNT/mnt
- 
--# Now put some fresh data on the btrfs fs
-+echo "Generating new data on the converted btrfs" >> $seqres.full
- mkdir -p $SCRATCH_MNT/new 
--$TIMEOUT_PROG 10 cp -aRP $SOURCE_DIR $SCRATCH_MNT/new
-+$FSSTRESS_PROG -w -d "$SCRATCH_MNT/new" -n 20 -p 500 >> $seqres.full
- 
- _scratch_unmount
- 
-@@ -78,8 +83,8 @@ $E2FSCK_PROG -fn $SCRATCH_DEV >> $seqres.full 2>&1 || \
- 
- # Mount the un-converted ext4 device & check the contents
- mount -t ext4 $SCRATCH_DEV $SCRATCH_MNT
--# (Ignore the symlinks which may be broken/nonexistent)
--diff --no-dereference -r $SOURCE_DIR $SCRATCH_MNT/$BASENAME/ 2>&1
-+echo "Checking rolled back ext2 against the original one:"
-+$FSSUM_PROG -r $tmp.original $SCRATCH_MNT/$BASENAME
- 
- _scratch_unmount
- 
-diff --git a/tests/btrfs/012.out b/tests/btrfs/012.out
-index 7aa5ae94..8ea81fad 100644
---- a/tests/btrfs/012.out
-+++ b/tests/btrfs/012.out
-@@ -1 +1,7 @@
- QA output created by 012
-+Checking converted btrfs against the original one:
-+OK
-+Checking saved ext2 image against the original one:
-+OK
-+Checking rolled back ext2 against the original one:
-+OK
--- 
-2.45.2
+> Thanks,
+> Qu
 
 
