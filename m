@@ -1,171 +1,176 @@
-Return-Path: <linux-btrfs+bounces-6579-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6580-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F64C93755A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 10:49:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15228937592
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 11:17:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E37E81F213E4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 08:49:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA244281EFD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 09:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0BBD7CF30;
-	Fri, 19 Jul 2024 08:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A61280639;
+	Fri, 19 Jul 2024 09:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vPTpe+IQ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dEqB+J7v";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dEqB+J7v"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0513779B8E
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 08:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495235914C;
+	Fri, 19 Jul 2024 09:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721378960; cv=none; b=rpV2yLlMe7fbRVjXeaBzuffSuyuRIjbjCBtpoS3DbczbScPf80Ysgl6RFJoKE7jUvjqjtGdeAVHnmLHDsTYXMo7AEHllJ6NVgmgvhBYAIol4JNQgbQP3fMPEePtzEH9hW+wl9EBI7HGDDEU37KW4k/maEq+hzoznMgNwJGQIpdo=
+	t=1721380644; cv=none; b=i8vwntLsMpB0dLJCqej0ma0N0XezYA8OjnYSMbH1lbjpZ6JkMGXgy8sDhaGkcN2n6h17zzIRfiGNu6qoMDMUrQ2kve+Qqo0aHOBi0QQjt9Ref9XPOvx4CXBOQO3RHDl5uLT12DpYrXziyeinrugjbgEgyQOa3j/Y2nT2PYGo7l0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721378960; c=relaxed/simple;
-	bh=Mv9gbkAFZYNe7ClvBYihMOojPH1P/2hga9VNV3m+7Ts=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QFG+pcN+eTblNubU9lJqRVYuN7mNQ/+y+WkzjKhvslL1kVm/1cPG6pfSZRUgjS925ihsRpKsYzrCFhxNm/1/RpT3ixojDKva8qpwbqPRwk7aYgK5k39gOE9aagyh4H80a2qqLn1S4LbUW7/UohTVXZ6NKSQ9bovrK8aN1ihpqTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vPTpe+IQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D537EC32782;
-	Fri, 19 Jul 2024 08:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721378959;
-	bh=Mv9gbkAFZYNe7ClvBYihMOojPH1P/2hga9VNV3m+7Ts=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vPTpe+IQnFLpQ+KYVGooLdYf39KF6aF0OuIhcGuuhV8ldao8iRPmGRQiVm2xK1boj
-	 yVFQTK951CAnHIJaJItipql3bBpxCAr/nMssFjuqqHTOrw1C8UuE+tIl5Xb/G3luMa
-	 W9ZZYCKVgDOFMR2uJQ7SqveFQp2FilGysaAcTsJGHbnRfEh2Zjm+YlawFfb/AdOUFm
-	 irxHVwFtKWwEKL8I9OhHvep1d3H6ZtM/jRUruDeB0AcCHljpHgjk+nNpB4X+gjiTxp
-	 DhcRq5hz/AVI9+3Wmiuaxhi5xe0pzJgTMtCOZZz2oerB+l/MZTxO3kIfISU8oYcFd6
-	 ipzAM2T8vAmkA==
-Date: Fri, 19 Jul 2024 10:49:16 +0200
-From: Alejandro Colomar <alx@kernel.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Sam James <sam@gentoo.org>, linux-btrfs@vger.kernel.org
-Subject: Re: Build failure with trunk GCC 15 in fs/btrfs/print-tree.c
- (-Wunterminated-string-initialization)
-Message-ID: <ffhpeboqqle45mro5mcv5d5ciucnc2cjc3cvzjhy3bt7wkc3qw@doi2d7fx2nl5>
-References: <87ttgmz7q7.fsf@gentoo.org>
- <5mnphkdvheudccjtiatrbjbkqtw54s2wkpeqevj3rqthdqlwyw@sjvn4wn52qki>
- <8d7e4d19-bded-4a59-aeb9-cc7d93706ac8@gmx.com>
- <uhthjbiihonjjpqjkod7ao2kopeppbdgzhmdfuetu4c2tdzm6s@gevodksq2kku>
- <lwwiyeum2xhztlpwi4yuihz5rd4gyzf3k6c7zz5j6ynjq6ai6q@ior3lopynhdz>
+	s=arc-20240116; t=1721380644; c=relaxed/simple;
+	bh=FhwKcc2Ny1LY92UGSeJvP1jQzdeG+cs2LYy4paOmxd4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bsBYAEyoN3/t6mbE1QoYftkrQ2kWnVIEoTArEro0XsMLoYT9kyCD7KhwpfKYTOkZlisIqE+TBbMunEys92m610pdWSmUoZQyU6zuVOMc+NbLy4zTbsmzTm7XbKsHVxmR1SjhG5Vu+OCpj5ILTrl2qsRR+HjISoqvhbXECeYMSpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dEqB+J7v; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dEqB+J7v; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 51E5F2193C;
+	Fri, 19 Jul 2024 09:17:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721380640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=+9zOBKmiMiyox+b82YU9nto9KW7INaT88iuJAGyfj/I=;
+	b=dEqB+J7vOzvAb4vRwsmrn/rwpeizHUNnrNdgvMk0qN0650JFjH1loMuyU3XdnTkVfJl1Wt
+	J9OXjW3ndp9MyMQm9CLnIWBml8GpM5pjTiEQXwDNNf1fOZ96nCIk7UpmBleqPovQhEmUN8
+	Is9KGr5O4dFe0Cx4t8DdTbLeOjhLk5g=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=dEqB+J7v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721380640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=+9zOBKmiMiyox+b82YU9nto9KW7INaT88iuJAGyfj/I=;
+	b=dEqB+J7vOzvAb4vRwsmrn/rwpeizHUNnrNdgvMk0qN0650JFjH1loMuyU3XdnTkVfJl1Wt
+	J9OXjW3ndp9MyMQm9CLnIWBml8GpM5pjTiEQXwDNNf1fOZ96nCIk7UpmBleqPovQhEmUN8
+	Is9KGr5O4dFe0Cx4t8DdTbLeOjhLk5g=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84FAF136F7;
+	Fri, 19 Jul 2024 09:17:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zFj8Dx0vmmZPRAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 19 Jul 2024 09:17:17 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v6 0/3] btrfs: try to allocate larger folios for metadata
+Date: Fri, 19 Jul 2024 18:46:56 +0930
+Message-ID: <cover.1721380449.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="soqytzggnnsukwp4"
-Content-Disposition: inline
-In-Reply-To: <lwwiyeum2xhztlpwi4yuihz5rd4gyzf3k6c7zz5j6ynjq6ai6q@ior3lopynhdz>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 51E5F2193C
+X-Spam-Flag: NO
+X-Spam-Score: -0.01
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.01 / 50.00];
+	MID_CONTAINS_FROM(1.00)[];
+	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_NONE(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Level: 
+X-Spamd-Bar: /
+
+[CHANGELOG]
+v6:
+- Add a new root_mem_cgroup definition for CONFIG_MEMCG=n cases
+  So that users of root_mem_cgroup no longer needs to check
+  CONFIG_MEMCG.
+  This is to fix the compile error for CONFIG_MEMCG=n cases.
+
+- Slight rewording of the 2nd patch
+
+v5:
+- Use root memcgroup to attach folios to btree inode filemap
+- Only try higher order folio once without NOFAIL nor extra retry
+
+v4:
+- Hide the feature behind CONFIG_BTRFS_DEBUG
+  So that end users won't be affected (aka, still per-page based
+  allocation) meanwhile we can do more testing on this new behavior.
+
+v3:
+- Rebased to the latest for-next branch
+- Use PAGE_ALLOC_COSTLY_ORDER to determine whether to use __GFP_NOFAIL
+- Add a dependency MM patch "mm/page_alloc: unify the warning on NOFAIL
+  and high order allocation"
+  This allows us to use NOFAIL up to 32K nodesize, and makes sure for
+  default 16K nodesize, all metadata would go 16K folios
+
+v2:
+- Rebased to handle the change in "btrfs: cache folio size and shift in extent_buffer"
+
+This is the latest update on the attempt to utilize larger folios for
+btrfs metadata.
+
+The previous version exposed a reproducibe hang at btrfs/187, where we
+hang at filemap_add_folio() around its memcgroup charge code.
+
+Even without the problem, I still believe for btree inode we do not
+really need all the memcgroup charge, nor using __GFP_NOFAIL to work
+around the possible memcgroup limits.
+
+So in this update, suggested by the memcgroup people from SUSE, there is
+a new patch to make btree inode filemap folio attaching to use the root
+memcgroup, so that we won't be limited by the memcgroup.
+
+Then for the patch enabling the larger folio, I reverted back to the old
+behavior that we only try larger folio once without extra retry, just to
+be extra safe.
 
 
---soqytzggnnsukwp4
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-From: Alejandro Colomar <alx@kernel.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Sam James <sam@gentoo.org>, linux-btrfs@vger.kernel.org
-Subject: Re: Build failure with trunk GCC 15 in fs/btrfs/print-tree.c
- (-Wunterminated-string-initialization)
-References: <87ttgmz7q7.fsf@gentoo.org>
- <5mnphkdvheudccjtiatrbjbkqtw54s2wkpeqevj3rqthdqlwyw@sjvn4wn52qki>
- <8d7e4d19-bded-4a59-aeb9-cc7d93706ac8@gmx.com>
- <uhthjbiihonjjpqjkod7ao2kopeppbdgzhmdfuetu4c2tdzm6s@gevodksq2kku>
- <lwwiyeum2xhztlpwi4yuihz5rd4gyzf3k6c7zz5j6ynjq6ai6q@ior3lopynhdz>
-MIME-Version: 1.0
-In-Reply-To: <lwwiyeum2xhztlpwi4yuihz5rd4gyzf3k6c7zz5j6ynjq6ai6q@ior3lopynhdz>
+Qu Wenruo (3):
+  memcontrol: define root_mem_cgroup for CONFIG_MEMCG=n cases
+  btrfs: always uses root memcgroup for filemap_add_folio()
+  btrfs: prefer to allocate larger folio for metadata
 
-On Fri, Jul 19, 2024 at 10:47:52AM GMT, Alejandro Colomar wrote:
-> On Fri, Jul 19, 2024 at 10:39:06AM GMT, Alejandro Colomar wrote:
-> > Hi Qu,
-> >=20
-> > On Fri, Jul 19, 2024 at 10:49:09AM GMT, Qu Wenruo wrote:
-> > >=20
-> > >=20
-> > > =E5=9C=A8 2024/7/19 07:56, Alejandro Colomar =E5=86=99=E9=81=93:
-> > > > Hi Sam!
-> > > >=20
-> > > > On Thu, Jul 18, 2024 at 10:54:40PM GMT, Sam James wrote:
-> > > > > GCC 15 introduces a new warning -Wunterminated-string-initializat=
-ion
-> > > > > which causes, with the kernel's -Werror=3D..., the following:
-> > > > > ```
-> > > > > /var/tmp/portage/sys-kernel/gentoo-kernel-6.6.41/work/linux-6.6/f=
-s/btrfs/print-tree.c:29:49: error: initializer-string for array of =E2=80=
-=98char=E2=80=99 is too long [-Werror=3Dunterminated-string-initialization]
-> > > > >     29 |         { BTRFS_BLOCK_GROUP_TREE_OBJECTID,      "BLOCK_G=
-ROUP_TREE"      },
-> > > > >        |
-> > > > >        ^~~~~~~~~~~~~~~~~~
-> > > > > ```
-> > >=20
-> > > Great new GCC feature!
-> >=20
-> > Thanks!!  It's a pleasure to see it working.  :-)
-> >=20
-> > > And it's indeed too long, not only for the block group tree, but also
-> > > for the future RAID_STRIPE_TREE too.
-> >=20
-> > Yep, there are two entries too long.
-> >=20
-> > > I believe we can just enlarge the string to 32 bytes for now.
-> > > I'll send out a fix soon.
->=20
-> Please add:
->=20
-> Fixes: 9c54e80ddc6b ("btrfs: add code to support the block group root")
+ fs/btrfs/extent_io.c       | 112 ++++++++++++++++++++++++++-----------
+ include/linux/memcontrol.h |   8 ++-
+ 2 files changed, 84 insertions(+), 36 deletions(-)
 
-And also (I forgot)
+-- 
+2.45.2
 
-Fixes: edde81f1abf29 ("btrfs: add raid stripe tree pretty printer")
-
-> Reported-by: Sam James <sam@gentoo.org>
-> Reported-by: Alejandro Colomar <alx@kernel.org>
-> Suggested-by: Alejandro Colomar <alx@kernel.org>
->=20
-> And this will be useful:
->=20
-> $ git describe --contains 9c54e80ddc6bd89596a4046d451908700476fd14
-> v5.18-rc1~172^2~64
->=20
-> Cheers,
-> Alex
->=20
->=20
-> --=20
-> <https://www.alejandro-colomar.es/>
-
-
-
---=20
-<https://www.alejandro-colomar.es/>
-
---soqytzggnnsukwp4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmaaKIwACgkQnowa+77/
-2zIEsw//SK0E5LoSwrRNZooAvEXSPDNALwKoJn0n+Kpqfte3K+jDZ/55qDoiTA96
-i8OXP6jkk40Jxpg5CnR9iKE3TUkUnq0yx9dD/GmiG4zM3ifPt07HjWQ+g+cuwoH+
-2TtcOxFhmm0cmEQJGQGsj2pQ2iY2IaZuvmY10lBo8mWwjnlz+3Vfh7/9EuY8X/ci
-dcRWlaOYRD+V9PJm6IGuTDuLkl3bfns6e5r9EHbJ9pu20FSMV/s5PZwVtCUL4eFQ
-a4VNiPGSffqUhESaufa15+CSTnWOyIOLlEq3JTT09XXmebUmEiPZSAbQi/DTGOjN
-5Df2H/TucvOhVCzAhVRy+Uvod7GtIresD7+UTxBTEW5ALvpIbVpB/lglQuznAuRH
-iV8aJMNcFxXKC/IGg4YnjPZTZof3Q7XT0tmHSuZdSJs40NNH4WYenrDYkZQOabug
-6spQWRwLc2ZlBo+/l3IH9kDECtM//358dcyhEC+LcNbGYuvwp5SY5YUANZp7QTUg
-la8nUYdaPGXZqDfR7Dfd39em7suzeULt6GQmYOV6bdjzLRwomvESdsMLhkSaLtNd
-KBew5JUkA4g8gHujEM/WopAkyLMNpIkqwGQKvPdz5hLeQuSzfQctLiVY/N9Gu0fn
-P7HwFdyU+IOrNwb5kl1BpWhLKQD8Hzfdb/8SKWA/LKpEkoAhisQ=
-=dpFo
------END PGP SIGNATURE-----
-
---soqytzggnnsukwp4--
 
