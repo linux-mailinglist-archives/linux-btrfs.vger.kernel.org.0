@@ -1,121 +1,143 @@
-Return-Path: <linux-btrfs+bounces-6612-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6613-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B54937C8C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 20:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA0C937CDD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 21:08:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5644A281843
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 18:36:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79AD828236A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 19:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F59A14830C;
-	Fri, 19 Jul 2024 18:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BD4148316;
+	Fri, 19 Jul 2024 19:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="aQCtLvDX"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="o7L+COnL";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="o7L+COnL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584161474D9
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 18:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F538C06;
+	Fri, 19 Jul 2024 19:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721414201; cv=none; b=e2jUT6P2IpQ2mbf0NJG6bZcLQGv2V2Psb03zy/xg/p4X/V83OGUPsnM4/Gl2thk8Q99RQWsvuNUIP0UvXDmF1tQst8YMjyTcPtQjwDE75q75Ylu65wZ2gHB5I/Y7QQWNjw5p3dqrYQ/gVsbHFNIF8gN2dF09hny5T5mv5CukyWQ=
+	t=1721416116; cv=none; b=Cvt580NzZ9BapxtoFu96vIoxdJxLUz5/LJtz3k1da51oOpgOyfBFBkAf5f9A32uCXbqw/ihYoHfDy16Z3dts4q84YpkSFrPePAhvmJXhIFytzeKNZgBZbP9rHHE6LEpGVCoRhyS6cyg1zi2oh53mywlRAyaD/Ljs52DW/kNotVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721414201; c=relaxed/simple;
-	bh=QnBQUlX45ocD3jq8zF5iSrDFgN2TUKW8+EAVGhK8EcQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iaQ7IW72lqjasw5R/k3/D6Z6D5KRyakpfDoxhUb4temdPdzUCwZrVeNNrub8F18D53yFJWpSMSHkYupUZlQ8C57ytpBc1gAiUIH+xGWnQSPLI+heYN7dIWu9hBfgpfBxN3I3NUjExre+3FfQTJM4CxCM0m3NNfKwi7i4jMJ27cM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=aQCtLvDX; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-6c386a3ac43so302738a12.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 11:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1721414199; x=1722018999; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VgIIPiy59LqH51i7mlHEje4QzpR5GMIWcabgwztNVyk=;
-        b=aQCtLvDXQ1cF/j+d7IUFeZGhKRkc784w+YugNz+OJIXK3bUpXOprIDcTZIBl5KC1nc
-         J16nXJnjAQgLe4/CJbkQfaT8LymuK1+KO0VecLrTLBpg6DOTHeLuOycisSNXH9Y6R5LE
-         eCGE520OnlT0xc88gHFW7soyeNlCwvkkVraM6vrT3SPt0a+USUAre4BR8GpMOMm+aXw+
-         YvxBxLqixvTojmeU+ALqa732GuTC11PczOxha4YKV2xqWmGa3nLh3/YN9TZfFeNV5am4
-         i7eovmuAqjx7zR76fFnr1FwVSQZvecVNH/kTT8pl2mCEO9IhIqdnMEFa2f08taoks9oY
-         pDTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721414199; x=1722018999;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VgIIPiy59LqH51i7mlHEje4QzpR5GMIWcabgwztNVyk=;
-        b=KIAT0X4MU012OPy0QJKcHylpcA3WJXVefBEf+RBtqWHtmBM61wQ+GJDLFUZekbXfOT
-         ofUkMjYTCfXq2R/hXgD1zYweujaXJEcixdyufo0m6aZXzCKekyfRIMTF8tIOSqTejImh
-         Xxh6ryglDdcNMqj4X5q4YSJIxjnSE9f4Q5cir9wW5jygOit71Uoxae2eLG2VPi9yIpPH
-         RTJ4L0mPs1PaO/8oFb97BPVv7MyFEwENLg4IDxQdZqkHvJddfEVaGmlQYg0oJ4E7mFc5
-         Bk9Sjuw1TvCKRn7tm3uU8Eh4eZ8zqxpLQL7uqKAdufISg3gL2tloESMomw4F1ayI0zez
-         bjDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWxg7CNYMqvGLyHAtjnxYNAEQ2BPJigYCNCNjBzrh+D7mnkDh2wrQzqKSTg78vp+VJSW9j47H80JViO8sKq2HFIPsPmGTO0V34l34A=
-X-Gm-Message-State: AOJu0YzZGNrkTcJbSL22pofuNyF11Jwm6NPu+trSVvwWGNfd5aPxscfb
-	r0GjxypAP7b43CXXDrZOjdumimbwkEjxrzYkX71dsrDPq/BMHr0VYDqN4j0l8mo=
-X-Google-Smtp-Source: AGHT+IElkL/zBCFHHaWiQ9kI38/vtt00gS40YnBc/B370nhydxYj7oNbKI27NQ4SuuKDpOrOGcNOuA==
-X-Received: by 2002:a17:90b:20b:b0:2cb:4382:99f1 with SMTP id 98e67ed59e1d1-2cd16191fcdmr555838a91.6.1721414198645;
-        Fri, 19 Jul 2024 11:36:38 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ccf7b2f300sm2025155a91.10.2024.07.19.11.36.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jul 2024 11:36:38 -0700 (PDT)
-Message-ID: <a59b75dd-8e82-4508-a34e-230827557dcb@kernel.dk>
-Date: Fri, 19 Jul 2024 12:36:35 -0600
+	s=arc-20240116; t=1721416116; c=relaxed/simple;
+	bh=xTIlvS5tf9lU/MO/CsctBhaut0pdlrJe+GPKcfsW5iE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X/p676m3X+j/7dF56ONGJEE/0sFyeEkqdxs3bc/Opu042ihpZFHTQuxrJHR2m6L+lBtsNMGgnDsykoDp7btwJlI09RMXjDAqygwhVCUDeVcG8fpc5uPZw1DF9XNQi9ra5n/l6jAMVKJ/1y7VezHY+WKSZ//+N9+I+a51mLQNfKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=o7L+COnL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=o7L+COnL; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3AE8121B0A;
+	Fri, 19 Jul 2024 19:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721416112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=pDXcJFwiDkrbMBq5pF1V1sEkGtbK8k2qbp7MpOO9ZgE=;
+	b=o7L+COnL5Txpcz+foSoR/GHgm7zvTBa47o/m5T8hGYyAYS/Dnt/MguIkWV1UwZG7aJ8FEO
+	utHWLpv5V51UNylYTOXwKkO/DEcxDSDKnbFcxbn5b2rNrElN7cT0skxVIp8yk2NpxEVCM3
+	IxI/aQKi4ptM0s04+oP8vUEvXO10o/Q=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=o7L+COnL
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721416112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=pDXcJFwiDkrbMBq5pF1V1sEkGtbK8k2qbp7MpOO9ZgE=;
+	b=o7L+COnL5Txpcz+foSoR/GHgm7zvTBa47o/m5T8hGYyAYS/Dnt/MguIkWV1UwZG7aJ8FEO
+	utHWLpv5V51UNylYTOXwKkO/DEcxDSDKnbFcxbn5b2rNrElN7cT0skxVIp8yk2NpxEVCM3
+	IxI/aQKi4ptM0s04+oP8vUEvXO10o/Q=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34204132CB;
+	Fri, 19 Jul 2024 19:08:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id EmK0DLC5mmZ/OgAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Fri, 19 Jul 2024 19:08:32 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs build fix for 6.11
+Date: Fri, 19 Jul 2024 21:08:25 +0200
+Message-ID: <cover.1721414023.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] Slow down of LTP tests aiodio_sparse.c and dio_sparse.c in
- kernel 6.6
-To: Petr Vorel <pvorel@suse.cz>, ltp@lists.linux.it
-Cc: linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-xfs@vger.kernel.org, fstests@vger.kernel.org, Jan Kara <jack@suse.cz>,
- David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
- Amir Goldstein <amir73il@gmail.com>, Cyril Hrubis <chrubis@suse.cz>,
- Andrea Cervesato <andrea.cervesato@suse.com>, Avinesh Kumar <akumar@suse.de>
-References: <20240719174325.GA775414@pevik>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240719174325.GA775414@pevik>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.81 / 50.00];
+	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 3AE8121B0A
+X-Spam-Score: -0.81
+X-Spam-Flag: NO
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Bar: /
 
-On 7/19/24 11:43 AM, Petr Vorel wrote:
-> Hi all,
-> 
-> LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3]) slowed
-> down on kernel 6.6 on Btrfs and XFS, when run with default parameters. These
-> tests create 100 MB sparse file and write zeros (using libaio or O_DIRECT) while
-> 16 other processes reads the buffer and check only zero is there.
-> 
-> Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
-> same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
-> (Non default parameter creates much smaller file, thus the change is not that
-> obvious).
-> 
-> Because the slowdown has been here for few kernel releases I suppose nobody
-> complained and the test is somehow artificial (nobody uses this in a real world).
-> But still it'd be good to double check the problem. I can bisect a particular
-> commit.
-> 
-> Because 2 filesystems affected, could be "Improve asynchronous iomap DIO
-> performance" [4] block layer change somehow related?
+Hi,
 
-No, because that got disabled before release for unrelated reasons. Why
-don't you just bisect it, since you have a simple test case?
+please pull a fix for build breakage on 32bit platforms. I misjudged the
+severity of the fix, it first looked like a functional fix that could
+wait but failing subset of builds should not (-Werror=overflow). I'm not
+aware of any reports from linux-next build coverage before merge window.
 
--- 
-Jens Axboe
+Thanks.
 
+----------------------------------------------------------------
+The following changes since commit 8e7860543a94784d744c7ce34b78a2e11beefa5c:
+
+  btrfs: fix extent map use-after-free when adding pages to compressed bio (2024-07-11 16:32:22 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.11-tag
+
+for you to fetch changes up to c3ece6b7ffb4a7c00e8d53cbf4026a32b6127914:
+
+  btrfs: change BTRFS_MOUNT_* flags to 64bit type (2024-07-19 17:20:23 +0200)
+
+----------------------------------------------------------------
+Qu Wenruo (1):
+      btrfs: change BTRFS_MOUNT_* flags to 64bit type
+
+ fs/btrfs/fs.h    | 66 ++++++++++++++++++++++++++++----------------------------
+ fs/btrfs/super.c | 11 +++++-----
+ fs/btrfs/super.h |  3 ++-
+ fs/btrfs/zoned.c |  3 ++-
+ fs/btrfs/zoned.h |  5 +++--
+ 5 files changed, 46 insertions(+), 42 deletions(-)
 
