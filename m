@@ -1,118 +1,151 @@
-Return-Path: <linux-btrfs+bounces-6606-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6607-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 707A3937A27
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 17:47:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CC6937A59
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 18:08:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25ED51F22967
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 15:47:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 060BE1C21B46
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 16:08:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF69143723;
-	Fri, 19 Jul 2024 15:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4E4146585;
+	Fri, 19 Jul 2024 16:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="bffQjY2j"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MDvm3ZKM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w/10aWVd";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MDvm3ZKM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w/10aWVd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79C2B145A1B
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 15:47:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCB4146595;
+	Fri, 19 Jul 2024 16:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721404028; cv=none; b=IfqYzPmDPkUE/pbV/NcVYA5xFjNOSNar4FmFKKjZvB0GuXGVarm/sMjDjxRHr+N6aE8YKNRdgX6fZxxTxbuzyqNZJ8OfDO8hGyJh7qoYsmqOfkYyfPGehWlg+n5PfaeUqrJ4+/LmN/SYODlJRst6xgMwovo7/h7xOdc0lRnhR7Y=
+	t=1721405257; cv=none; b=P4KH38ZJqH+RC28VuhxOZ1Sz/v5iQDCW+9xN/ElYGtcdsCWuMVUguEpzTQ8/EykQ84hu5X8Y5LWwtgnBi6fVKuyiUwpGj6QsISsRs4f4pWvFjU8pK5TI2fkykDt4pKAtF8z2OmVjfUFiyU2U57ExDEQ6k21/bP7Q8z4ibSo69rE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721404028; c=relaxed/simple;
-	bh=go0XAremx1xkK/gtbr42WUxDxTrFJ/6lVQC72dmhRCU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qPmqK/BScvZKPPd1hCeJ2noJWFlGr0VViUv6T51NiDat6mDBrD/wU+qgZFEn+pIzSBPBs+dETjWAMTeoEC2rIbrGfyC037r5Ahw+/q4csrGYxAQxisBEaFtfmIjzybWvrs3eT2HWU7jVwCnPdWCA/jV+BqIbXTY0TKPUyE+iNp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=bffQjY2j; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46JE7tB9011002
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 08:47:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
-	:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=facebook; bh=lkkAl/mp
-	z1+S2/MdXh5xEE59KQ7blNLeW1QEyHzVA4o=; b=bffQjY2jJAGzZ1+474ZUWGog
-	G5M2RQaba1jMaHJ0BGFH48wAXhRohin8tfnh8lD7jPk3KNLrv0L+mPjUhGRIG6QG
-	Jj1rhjyCfDQLxKHXboJklwyvK9R6+QKRKo0PtCh7/M/KhgAI7B7Sp5AdvveJPeIm
-	5NFNpB2Bf5ukHWsmSoU=
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40f1pgsfqq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 08:47:05 -0700 (PDT)
-Received: from twshared16175.07.ash9.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Fri, 19 Jul 2024 15:47:04 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 31F8F4778D33; Fri, 19 Jul 2024 16:46:54 +0100 (BST)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH] btrfs-progs: simplify mkfs_main cleanup
-Date: Fri, 19 Jul 2024 16:46:43 +0100
-Message-ID: <20240719154649.4127040-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1721405257; c=relaxed/simple;
+	bh=d3u56dAkSLvTrB9lnDd2GBTT0GMZV9smwueD5L6qf0k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q9WFXHQd7yjgistJeK7NSTUYn2qqJstAq7hFnduUF++BMrqy9vl1LOBFGWTwmZr7aQOMr2aFdSyK017Y/XtnV8Re0vf3qmxVvAYDRG0YbuzuL/UXTNkbslCGloYckDGLF7io81ZkcC3hsuG6iwrFp2CGkXpLZ5MB0j0Gej7S9mA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MDvm3ZKM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w/10aWVd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MDvm3ZKM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w/10aWVd; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from ds.suse.cz (unknown [10.100.12.205])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 2081921195;
+	Fri, 19 Jul 2024 16:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721405254;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mxFeqn9yQIJ/4dvvgdLNmdCELO84SMgr40+VWkW0U7I=;
+	b=MDvm3ZKMlgwdImkd4AfrbBJPEcS6uAydwTyUnQmLXrcwGwbt4/iCE1XECH9BVb9H8HWJaN
+	iuT0e8jYFSgtPwotRsO52WhsteHXOa67VJKbsQzDz8UTffKYdpQvdYhGDGlv5ISJ7smip7
+	dk5OLm5y3Oy4yzqLn0nBgYsJAZAdBm4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721405254;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mxFeqn9yQIJ/4dvvgdLNmdCELO84SMgr40+VWkW0U7I=;
+	b=w/10aWVdKf3ZuyxHW75o28HvrWU1ZN1UsZpiKjouuocqdMrGZalnl3X61xplRwoi5WQ50e
+	9RBNWAqURWABEFCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721405254;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mxFeqn9yQIJ/4dvvgdLNmdCELO84SMgr40+VWkW0U7I=;
+	b=MDvm3ZKMlgwdImkd4AfrbBJPEcS6uAydwTyUnQmLXrcwGwbt4/iCE1XECH9BVb9H8HWJaN
+	iuT0e8jYFSgtPwotRsO52WhsteHXOa67VJKbsQzDz8UTffKYdpQvdYhGDGlv5ISJ7smip7
+	dk5OLm5y3Oy4yzqLn0nBgYsJAZAdBm4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721405254;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mxFeqn9yQIJ/4dvvgdLNmdCELO84SMgr40+VWkW0U7I=;
+	b=w/10aWVdKf3ZuyxHW75o28HvrWU1ZN1UsZpiKjouuocqdMrGZalnl3X61xplRwoi5WQ50e
+	9RBNWAqURWABEFCw==
+Received: by ds.suse.cz (Postfix, from userid 10065)
+	id C2B84DA9B3; Fri, 19 Jul 2024 18:07:33 +0200 (CEST)
+Date: Fri, 19 Jul 2024 18:07:33 +0200
+From: David Sterba <dsterba@suse.cz>
+To: David Sterba <dsterba@suse.cz>
+Cc: Arnd Bergmann <arnd@kernel.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Qu Wenruo <wqu@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Anand Jain <anand.jain@oracle.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: change mount_opt to u64
+Message-ID: <20240719160733.GA23446@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240719103714.1217249-1-arnd@kernel.org>
+ <20240719132454.GL8022@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: hi5FmqXLcZtzLX9PPTiBx5RLpUzO05V2
-X-Proofpoint-ORIG-GUID: hi5FmqXLcZtzLX9PPTiBx5RLpUzO05V2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-19_06,2024-07-18_01,2024-05-17_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240719132454.GL8022@suse.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: 0.30
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [0.30 / 50.00];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	RCVD_NO_TLS_LAST(0.10)[];
+	MIME_GOOD(-0.10)[text/plain];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_ONE(0.00)[1];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[arndb.de:email]
+X-Spam-Level: 
 
-mkfs_main is a main-like function, meaning that return and exit are
-equivalent. Deduplicate code by adding a new out2 label.
+On Fri, Jul 19, 2024 at 03:24:54PM +0200, David Sterba wrote:
+> On Fri, Jul 19, 2024 at 12:37:06PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > The newly added BTRFS_MOUNT_IGNORESUPERFLAGS flag does not fit into a 32-bit
+> > flags word, as shown by this warning on 32-bit architectures:
+> > 
+> > fs/btrfs/super.c: In function 'btrfs_check_options':
+> > fs/btrfs/super.c:666:48: error: conversion from 'enum <anonymous>' to 'long unsigned int' changes value from '4294967296' to '0' [-Werror=overflow]
+> >   666 |              check_ro_option(info, *mount_opt, BTRFS_MOUNT_IGNORESUPERFLAGS, "ignoresuperflags")))
+> >       |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Change all interfaces that deal with mount flags to use a 64-bit type
+> > on all architectures instead.
+> > 
+> > Fixes: 32e6216512b4 ("btrfs: introduce new "rescue=ignoresuperflags" mount option")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ----
+> > Please double-check that I got all the instances. I only looked at where the
+> > obvious users are, but did not actually try to run this on a 32-bit target
+> 
+> Thanks, the build issue is known and fix will be sent in 2nd pull
+> reuqest on Monday.
+             ^^^^^^
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
----
- mkfs/main.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/mkfs/main.c b/mkfs/main.c
-index a69aa24b..5705acb6 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1915,6 +1915,8 @@ out:
- 	}
-=20
- 	btrfs_close_all_devices();
-+
-+out2:
- 	if (prepare_ctx) {
- 		for (i =3D 0; i < device_count; i++)
- 			close(prepare_ctx[i].fd);
-@@ -1927,15 +1929,9 @@ out:
- 	return !!ret;
-=20
- error:
--	if (prepare_ctx) {
--		for (i =3D 0; i < device_count; i++)
--			close(prepare_ctx[i].fd);
--	}
--	free(t_prepare);
--	free(prepare_ctx);
--	free(label);
--	free(source_dir);
--	exit(1);
-+	ret =3D 1;
-+	goto out2;
-+
- success:
- 	exit(0);
- }
---=20
-2.44.2
-
+I'll send the pull request rather today.
 
