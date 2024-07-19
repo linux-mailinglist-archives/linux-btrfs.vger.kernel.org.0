@@ -1,88 +1,62 @@
-Return-Path: <linux-btrfs+bounces-6589-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6590-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D9E09376A7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 12:29:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F42339376B4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 12:37:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 874ACB22F13
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 10:29:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 314E51C21703
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 10:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E4783CA1;
-	Fri, 19 Jul 2024 10:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BEB7839EB;
+	Fri, 19 Jul 2024 10:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sJgHGrEr";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SItvW/vw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGjia7ad"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230127BB0A;
-	Fri, 19 Jul 2024 10:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58949C147;
+	Fri, 19 Jul 2024 10:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721384958; cv=none; b=uhIZpz83dy7N++6nCdP2pSLVO1d3mbPUhfHlKyqgL+FXn5SKLBucbA+73jk+FixNHhqCDkrstZbb4H9mFuSYUUstjiWhMex7AfosH05cZ1k0z5/eMGl4FFnqmE/99rGpZbfYWnTorFrnLQ6HCxgk+PovIV4O3WXsw8hEvpFNc/U=
+	t=1721385440; cv=none; b=N2r3hSyvIRh7+Xu3vHYGpJ73sjnhgNuxN1e9LTcFNG63e9H5E7MsKLj32VdbNmKjx8ZFgG7JmLlxkLCLlXIlaMLkEm5OtusLCGYz9wcsaDgpVYmz+tb9tT7FaFhwqsBKkaWy4jut6nXKh7eTaw7gPiPY80cQOAxm2stx3OATW/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721384958; c=relaxed/simple;
-	bh=utqa96LlNzGJ6LO7YmBtLNDuSXIr53lGcbUICcbiVx0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q958BNMw2xiq7LeSMPDV7cqHhrbYENFMjyZUk76th8lP3BWC7WFIgtIFtm8VNDyWCVJvNwtsOMIRmwNVn+HYxe+l7xcE6O91JeJfbcRjK4PEGF34+S0mtkOeCW3P8uL0iKizQRUeo2RbKHZ1JOQFK1sztEjuXnxK9bqW2Y8lQSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sJgHGrEr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SItvW/vw; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 195A821B1B;
-	Fri, 19 Jul 2024 10:29:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721384954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mYLTpU+TQ80VryXSHafsvunreYjyK5cGZvwUB+lRbyk=;
-	b=sJgHGrErSUkCNmegVCv8Nv3I8txbJS7QSW/dASLQv9HjXW+uCgEfHWsYYc7XUR4+Gn+qIB
-	RFThsR/JnPngChHiKxKLOkRqXQZ86yXlCKMxpsa/hiBcrqKsL/Y/kSTaAD/BMPGuTzUZN6
-	enr/YyqSgKe6JjxxIEE4wdb8CnlX9Tw=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b="SItvW/vw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1721384953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mYLTpU+TQ80VryXSHafsvunreYjyK5cGZvwUB+lRbyk=;
-	b=SItvW/vweK12TcejIEbLKVFTwvY1n3NwFGDzT6iq/rQhSP1+Xc0jQln8VhbxdG1j26GmF1
-	Jiz9aFaVxMX19V9tX2V8QCcmlcIHWtNmiSehtQIXJh0BGtNuGYM2qc3rntStywfXoAtoH4
-	QsfvDPQFnGImlpCkv6eSJp4x4e+G7fo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4BEAE132CB;
-	Fri, 19 Jul 2024 10:29:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wPEFAvY/mmb5WAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 19 Jul 2024 10:29:10 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [PATCH v7 3/3] btrfs: prefer to allocate larger folio for metadata
-Date: Fri, 19 Jul 2024 19:58:41 +0930
-Message-ID: <fbcf1e6d824b6e6093b3d27d7b7897626417b922.1721384771.git.wqu@suse.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1721384771.git.wqu@suse.com>
-References: <cover.1721384771.git.wqu@suse.com>
+	s=arc-20240116; t=1721385440; c=relaxed/simple;
+	bh=CDdBLp0TuwU0W0IpZjdDO83n/+Ak65R0sjY7wZeSO4c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aZOmwwjqddM/OzzIzVV9uua23gnILyx+ONqnjdRcNNmASkns9BbaCAVs8lQ20IQR2LRYoEXcJfHYDxXCGBFLHe0z9tHXv3/3Q75yuEZspB+V5Q73t4wT6j5ap44bcYP8Au5fdqWwlAIGADdrKyKZuQYDrFRaEFdqSviYVwJA9mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGjia7ad; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E125C32782;
+	Fri, 19 Jul 2024 10:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721385440;
+	bh=CDdBLp0TuwU0W0IpZjdDO83n/+Ak65R0sjY7wZeSO4c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gGjia7adp4WT2sTWe0P/MwUbNV1GtSzpxgpg9zyg+ecuGRZm+vtu90QQUuZmNGoe2
+	 XQ42FzP25AGegnCK6tIT/jnYLyC/PwLB4RXVNUz9GN73Dc61MpqiL5LO97IcjfyPm+
+	 +UTqD6J4dI3cD1R5Zp/m3wBVqxJLkf9060Ex/N0qBEOnLv7w3EWtRHl3f9K37oeDbT
+	 8OlzLsIFlvMBz1JcGM9I4cOV9iCfIjfSaiziYh+KG7UXwJRxEl3eJyfP+75s68Zp2C
+	 IWPr4p7PbieT8OQB3JTZiVXIFBZeHbVU4/suG3DIwS95Q1+GGmKMjLpaRq/oV5yEO5
+	 JUhihSSiOrZcQ==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Qu Wenruo <wqu@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Anand Jain <anand.jain@oracle.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: change mount_opt to u64
+Date: Fri, 19 Jul 2024 12:37:06 +0200
+Message-Id: <20240719103714.1217249-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -90,323 +64,126 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:dkim];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 195A821B1B
 
-For btrfs metadata, the high order folios are only utilized when all the
-following conditions are met:
+From: Arnd Bergmann <arnd@arndb.de>
 
-- The extent buffer start is aligned to nodesize
-  This should be the common case for any btrfs in the last 5 years.
+The newly added BTRFS_MOUNT_IGNORESUPERFLAGS flag does not fit into a 32-bit
+flags word, as shown by this warning on 32-bit architectures:
 
-- The nodesize is larger than page size
-  Or there is no need to use larger folios at all.
+fs/btrfs/super.c: In function 'btrfs_check_options':
+fs/btrfs/super.c:666:48: error: conversion from 'enum <anonymous>' to 'long unsigned int' changes value from '4294967296' to '0' [-Werror=overflow]
+  666 |              check_ro_option(info, *mount_opt, BTRFS_MOUNT_IGNORESUPERFLAGS, "ignoresuperflags")))
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- MM layer can fulfill our folio allocation request
+Change all interfaces that deal with mount flags to use a 64-bit type
+on all architectures instead.
 
-- The larger folio must exactly cover the extent buffer
-  No longer no smaller, must be an exact fit.
-
-  This is to make extent buffer accessors much easier.
-  They only need to check the first slot in eb->folios[], to determine
-  their access unit (need per-page handling or a large folio covering
-  the whole eb).
-
-There is another small blockage, filemap APIs can not guarantee the
-folio size.
-For example, by default we go 16K nodesize on x86_64, meaning a larger
-folio we expect would be with order 2 (size 16K).
-We don't accept 2 order 1 (size 8K) folios, or we fall back to 4 order 0
-(page sized) folios.
-
-So here we go a different workaround, allocate a order 2 folio first,
-then attach them to the filemap of metadata.
-
-Thus here comes several results related to the attach attempt of eb
-folios:
-
-1) We can attach the pre-allocated eb folio to filemap
-   This is the most simple and hot path, we just continue our work
-   setting up the extent buffer.
-
-2) There is an existing folio in the filemap
-
-   2.0) Subpage case
-        We would reuse the folio no matter what, subpage is doing a
-	different way handling folio->private (a bitmap other than a
-	pointer to an existing eb).
-
-   2.1) There is already a live extent buffer attached to the filemap
-        folio
-	This should be more or less hot path, we grab the existing eb
-	and free the current one.
-
-   2.2) No live eb.
-   2.2.1) The filemap folio is larger than eb folio
-          This is a better case, we can reuse the filemap folio, but
-	  we need to cleanup all the pre-allocated folios of the
-	  new eb before reusing.
-	  Later code should take the folio size change into
-	  consideration.
-
-   2.2.2) The filemap folio is the same size of eb folio
-          We just free the current folio, and reuse the filemap one.
-	  No other special handling needed.
-
-   2.2.3) The filemap folio is smaller than eb folio
-          This is the most tricky corner case, we can not easily replace
-	  the folio in filemap using our eb folio.
-
-	  Thus here we return -EAGAIN, to inform our caller to re-try
-	  with order 0 (of course with our larger folio freed).
-
-Otherwise all the needed infrastructure is already here, we only need to
-try allocate larger folio as our first try in alloc_eb_folio_array().
-
-For now, the higher order allocation is only a preferable attempt for
-debug build, before we had enough test coverage and push it to end
-users.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Fixes: 32e6216512b4 ("btrfs: introduce new "rescue=ignoresuperflags" mount option")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+----
+Please double-check that I got all the instances. I only looked at where the
+obvious users are, but did not actually try to run this on a 32-bit target
 ---
- fs/btrfs/extent_io.c | 102 ++++++++++++++++++++++++++++---------------
- 1 file changed, 68 insertions(+), 34 deletions(-)
+ fs/btrfs/fs.h    | 2 +-
+ fs/btrfs/super.c | 6 +++---
+ fs/btrfs/super.h | 2 +-
+ fs/btrfs/zoned.c | 2 +-
+ fs/btrfs/zoned.h | 4 ++--
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index cfeed7673009..d7824644d593 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -719,12 +719,28 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
-  *
-  * For now, the folios populated are always in order 0 (aka, single page).
-  */
--static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
-+static int alloc_eb_folio_array(struct extent_buffer *eb, int order,
-+				bool nofail)
- {
- 	struct page *page_array[INLINE_EXTENT_BUFFER_PAGES] = { 0 };
- 	int num_pages = num_extent_pages(eb);
- 	int ret;
- 
-+	if (order) {
-+		gfp_t gfp;
-+
-+		if (order > 0)
-+			gfp = GFP_NOFS | __GFP_NORETRY | __GFP_NOWARN;
-+		else
-+			gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
-+		eb->folios[0] = folio_alloc(gfp, order);
-+		if (likely(eb->folios[0])) {
-+			eb->folio_size = folio_size(eb->folios[0]);
-+			eb->folio_shift = folio_shift(eb->folios[0]);
-+			return 0;
-+		}
-+		/* Fallback to 0 order (single page) allocation. */
-+	}
- 	ret = btrfs_alloc_page_array(num_pages, page_array, nofail);
- 	if (ret < 0)
- 		return ret;
-@@ -2707,7 +2723,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 1b2a7aa0af36..20900c7cc35d 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -481,7 +481,7 @@ struct btrfs_fs_info {
+ 	 * required instead of the faster short fsync log commits
  	 */
- 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+ 	u64 last_trans_log_full_commit;
+-	unsigned long mount_opt;
++	u64 mount_opt;
  
--	ret = alloc_eb_folio_array(new, false);
-+	ret = alloc_eb_folio_array(new, 0, false);
- 	if (ret) {
- 		btrfs_release_extent_buffer(new);
- 		return NULL;
-@@ -2740,7 +2756,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
- 	if (!eb)
- 		return NULL;
+ 	unsigned long compress_type:4;
+ 	unsigned int compress_level;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 43052acd7a48..ea7141330e87 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -82,7 +82,7 @@ struct btrfs_fs_context {
+ 	u32 commit_interval;
+ 	u32 metadata_ratio;
+ 	u32 thread_pool_size;
+-	unsigned long mount_opt;
++	u64 mount_opt;
+ 	unsigned long compress_type:4;
+ 	unsigned int compress_level;
+ 	refcount_t refs;
+@@ -642,7 +642,7 @@ static void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
+ }
  
--	ret = alloc_eb_folio_array(eb, false);
-+	ret = alloc_eb_folio_array(eb, 0, false);
- 	if (ret)
- 		goto err;
+ static bool check_ro_option(const struct btrfs_fs_info *fs_info,
+-			    unsigned long mount_opt, unsigned long opt,
++			    u64 mount_opt, u64 opt,
+ 			    const char *opt_name)
+ {
+ 	if (mount_opt & opt) {
+@@ -653,7 +653,7 @@ static bool check_ro_option(const struct btrfs_fs_info *fs_info,
+ 	return false;
+ }
  
-@@ -2955,6 +2971,14 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
+-bool btrfs_check_options(const struct btrfs_fs_info *info, unsigned long *mount_opt,
++bool btrfs_check_options(const struct btrfs_fs_info *info, u64 *mount_opt,
+ 			 unsigned long flags)
+ {
+ 	bool ret = true;
+diff --git a/fs/btrfs/super.h b/fs/btrfs/super.h
+index d2b8ebb46bc6..98e2444c0d82 100644
+--- a/fs/btrfs/super.h
++++ b/fs/btrfs/super.h
+@@ -10,7 +10,7 @@
+ struct super_block;
+ struct btrfs_fs_info;
+ 
+-bool btrfs_check_options(const struct btrfs_fs_info *info, unsigned long *mount_opt,
++bool btrfs_check_options(const struct btrfs_fs_info *info, u64 *mount_opt,
+ 			 unsigned long flags);
+ int btrfs_sync_fs(struct super_block *sb, int wait);
+ char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index df7733044f7e..debab1ab9e71 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -767,7 +767,7 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
  	return 0;
  }
  
-+static void free_all_eb_folios(struct extent_buffer *eb)
-+{
-+	for (int i = 0; i < INLINE_EXTENT_BUFFER_PAGES; i++) {
-+		if (eb->folios[i])
-+			folio_put(eb->folios[i]);
-+		eb->folios[i] = NULL;
-+	}
-+}
+-int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, unsigned long *mount_opt)
++int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, u64 *mount_opt)
+ {
+ 	if (!btrfs_is_zoned(info))
+ 		return 0;
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index d66d00c08001..037697878b2a 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -58,7 +58,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device, bool populate_cache);
+ void btrfs_destroy_dev_zone_info(struct btrfs_device *device);
+ struct btrfs_zoned_device_info *btrfs_clone_dev_zone_info(struct btrfs_device *orig_dev);
+ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info);
+-int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, unsigned long *mount_opt);
++int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info, u64 *mount_opt);
+ int btrfs_sb_log_location_bdev(struct block_device *bdev, int mirror, int rw,
+ 			       u64 *bytenr_ret);
+ int btrfs_sb_log_location(struct btrfs_device *device, int mirror, int rw,
+@@ -130,7 +130,7 @@ static inline int btrfs_check_zoned_mode(const struct btrfs_fs_info *fs_info)
+ }
  
- /*
-  * Return 0 if eb->folios[i] is attached to btree inode successfully.
-@@ -2974,6 +2998,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 	struct mem_cgroup *old_memcg;
- 	const unsigned long index = eb->start >> PAGE_SHIFT;
- 	struct folio *existing_folio = NULL;
-+	const int eb_order = folio_order(eb->folios[0]);
- 	int ret;
- 
- 	ASSERT(found_eb_ret);
-@@ -3003,15 +3028,6 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 		goto retry;
- 	}
- 
--	/* For now, we should only have single-page folios for btree inode. */
--	ASSERT(folio_nr_pages(existing_folio) == 1);
--
--	if (folio_size(existing_folio) != eb->folio_size) {
--		folio_unlock(existing_folio);
--		folio_put(existing_folio);
--		return -EAGAIN;
--	}
--
- finish:
- 	spin_lock(&mapping->i_private_lock);
- 	if (existing_folio && fs_info->nodesize < PAGE_SIZE) {
-@@ -3020,6 +3036,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 		eb->folios[i] = existing_folio;
- 	} else if (existing_folio) {
- 		struct extent_buffer *existing_eb;
-+		int existing_order = folio_order(existing_folio);
- 
- 		existing_eb = grab_extent_buffer(fs_info,
- 						 folio_page(existing_folio, 0));
-@@ -3031,9 +3048,34 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
- 			folio_put(existing_folio);
- 			return 1;
- 		}
--		/* The extent buffer no longer exists, we can reuse the folio. */
--		__free_page(folio_page(eb->folios[i], 0));
--		eb->folios[i] = existing_folio;
-+		if (existing_order > eb_order) {
-+			/*
-+			 * The existing one has higher order, we need to drop
-+			 * all eb folios before resuing it.
-+			 * And this should only happen for the first folio.
-+			 */
-+			ASSERT(i == 0);
-+			free_all_eb_folios(eb);
-+			eb->folios[i] = existing_folio;
-+		} else if (existing_order == eb_order) {
-+			/*
-+			 * Can safely reuse the filemap folio, just
-+			 * release the eb one.
-+			 */
-+			folio_put(eb->folios[i]);
-+			eb->folios[i] = existing_folio;
-+		} else {
-+			/*
-+			 * The existing one has lower order.
-+			 *
-+			 * Just retry and fallback to order 0.
-+			 */
-+			ASSERT(i == 0);
-+			folio_unlock(existing_folio);
-+			folio_put(existing_folio);
-+			spin_unlock(&mapping->i_private_lock);
-+			return -EAGAIN;
-+		}
- 	}
- 	eb->folio_size = folio_size(eb->folios[i]);
- 	eb->folio_shift = folio_shift(eb->folios[i]);
-@@ -3066,6 +3108,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 	u64 lockdep_owner = owner_root;
- 	bool page_contig = true;
- 	int uptodate = 1;
-+	int order = 0;
- 	int ret;
- 
- 	if (check_eb_alignment(fs_info, start))
-@@ -3082,6 +3125,10 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		btrfs_warn_32bit_limit(fs_info);
- #endif
- 
-+	if (IS_ENABLED(CONFIG_BTRFS_DEBUG) && fs_info->nodesize > PAGE_SIZE &&
-+	    IS_ALIGNED(start, fs_info->nodesize))
-+		order = ilog2(fs_info->nodesize >> PAGE_SHIFT);
-+
- 	eb = find_extent_buffer(fs_info, start);
- 	if (eb)
- 		return eb;
-@@ -3116,7 +3163,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 
- reallocate:
- 	/* Allocate all pages first. */
--	ret = alloc_eb_folio_array(eb, true);
-+	ret = alloc_eb_folio_array(eb, order, true);
- 	if (ret < 0) {
- 		btrfs_free_subpage(prealloc);
- 		goto out;
-@@ -3134,26 +3181,12 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		}
- 
- 		/*
--		 * TODO: Special handling for a corner case where the order of
--		 * folios mismatch between the new eb and filemap.
--		 *
--		 * This happens when:
--		 *
--		 * - the new eb is using higher order folio
--		 *
--		 * - the filemap is still using 0-order folios for the range
--		 *   This can happen at the previous eb allocation, and we don't
--		 *   have higher order folio for the call.
--		 *
--		 * - the existing eb has already been freed
--		 *
--		 * In this case, we have to free the existing folios first, and
--		 * re-allocate using the same order.
--		 * Thankfully this is not going to happen yet, as we're still
--		 * using 0-order folios.
-+		 * Got a corner case where the existing folio is lower order,
-+		 * fallback to 0 order and retry.
- 		 */
- 		if (unlikely(ret == -EAGAIN)) {
--			ASSERT(0);
-+			order = 0;
-+			free_all_eb_folios(eb);
- 			goto reallocate;
- 		}
- 		attached++;
-@@ -3164,6 +3197,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		 * and free the allocated page.
- 		 */
- 		folio = eb->folios[i];
-+		num_folios = num_extent_folios(eb);
- 		WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start, eb->len));
- 
- 		/*
+ static inline int btrfs_check_mountopts_zoned(const struct btrfs_fs_info *info,
+-					      unsigned long *mount_opt)
++					      u64 *mount_opt)
+ {
+ 	return 0;
+ }
 -- 
-2.45.2
+2.39.2
 
 
