@@ -1,103 +1,160 @@
-Return-Path: <linux-btrfs+bounces-6575-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6576-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3137937460
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 09:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E0B93751F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 10:39:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E6022832DD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 07:27:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC08D2822D3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 08:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E3454BE7;
-	Fri, 19 Jul 2024 07:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C9E78281;
+	Fri, 19 Jul 2024 08:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="W+gvuEef"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OZDz4HNg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9FC52F70
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 07:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526E92AF07
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 08:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721374015; cv=none; b=pGJFWjHWbHIWH5BSJvF75nAyt4RrqIeEMIw73RvFGS2NxlbkmiWGtSQtbQ4vvoQYutKWV4RlJZ7BJCTZWGUGtXmrk71r3IHdWNtfM5hHERB3FDICwgkEClrUIGFq/UiUv4LoiQOR4Qfz0uK0zM+o6+FsrAprqnqVORCmOWnYbus=
+	t=1721378346; cv=none; b=Ue9dVf2cI9eZ1B8xz7lO9L9uubFdX/zT1835hrq9k0PkiYvP8eD/qjmEGq3zyYFTIXo7SxcPosQb3RZbZGvvRnsuOrZBHhXNdcwrZpHdMO76/wVkc5STiBt1OmOqA8BKOvbMPd8KiHOKtiB6nCvQ0HG9qNhaHaY96/plXpDJy/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721374015; c=relaxed/simple;
-	bh=muXnVbC7nnGyLLk/HzLatPo9PELK4R8ESXmi65y94D0=;
+	s=arc-20240116; t=1721378346; c=relaxed/simple;
+	bh=X14Fwun7nASwCYdzrwwhQ16EL4syyLUVnW0SDuhQMx8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qSiobij+mhSE9CQ/i7BaH0Ten/MxSP8fghDFzXQTT6ZdB8oxrQdH7KEw54s+8qR2ROvm0ar1d5zwJdMpCZT9VMdcSeDopfxyxo1v3ZOx+GwBHEMwnY95+8ih5a0+st6Ud2fw4KwVqXAnFgvhkZalBoSu5etC7THItmXwq0viko0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=W+gvuEef; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4279c924ca7so10089675e9.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 00:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721374012; x=1721978812; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UeDGhmHJPJxSYVrElxPRKS8Tro4wfhJ7UU7o9dReABc=;
-        b=W+gvuEef5CzP9VJ+aSqocDOg7KiOROIleQGq7IC44bOuWxF1iSpS8DRkFcy6xRpv3X
-         G2ULxNRlV4rBTYDbqbUdJLhASAfcw1BzShsnvf185fQl4K7FCi01/3N7uljmII5Oa78q
-         dlQ25/vhe3+dh6q3to780v/PXdQlu68YZI5R49VbaRs8ns03B1KE9kkHf4wi/VZVC+WP
-         L20nGdnRvITlard+IOcYGSeLJGnxAVBs6DtT4vMoYTOYAPD47YnO+C4Ir5EhBHq790tq
-         gaFVbPApVw1bCatkfqxrjZpt0Y7t622rcxTTcVTTZM59l8B+wQHHE83KtNUgNBB8u9Uf
-         16vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721374012; x=1721978812;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UeDGhmHJPJxSYVrElxPRKS8Tro4wfhJ7UU7o9dReABc=;
-        b=ZfvZBsu00ZZYfbcogGWB8zRyYy9igIuRYCTvkBgjN2+b867hBniUFGaHXlP9GvxAh9
-         weaE+JDhxL9YR3DaDorVn1Jtt3M2S5m6kXmzD/c2Zwk+M9a7P1FtInkzthiGVbeE0kZl
-         iBlw/8im54XONWglpxwzv8iOAWEDdqru9qcCc3xL9aXwIfIcQV7UgF84W0eTJDSqr+DQ
-         kwsYmUvV61OSUzpbT99GhOgl+7LFsvONvzK0yDCwfdmJs6ncP2woR3wT3Nf2Pg4vtasA
-         F+CcOeOD+VDxjdIYxaiO6FqAU8nfKW3jJNNGkRZGZ9Dd0l6Hrkox6XXzcu1UCrBJNCmg
-         Uruw==
-X-Forwarded-Encrypted: i=1; AJvYcCU1mhNlASomJ1VEQJP1FEtMAipYyCTERxjsn1DbAFSFM5DSwVeWuvoEoDo60VBa7/anflWf3kXQaJwpqIeUmLDK1JZdFFujLCSGwEc=
-X-Gm-Message-State: AOJu0Yz6/pO42Dj3sYW0Ft5Ki/SwAq59OXhlX7ZMRUGoCWr2+MYCCaOR
-	+d2DakFoFLWOqH1P2jv338HV6Wq1LBzF3Wio+ZBUHbfFmkFhxoxHiGG6IrCMBao=
-X-Google-Smtp-Source: AGHT+IHZakqE4aOIlft8Vqa51rj5+/EmM2bBmPZ/gyR6QuUOzyoXXurdlRAvvVkXrp6UhbeYhHkFbQ==
-X-Received: by 2002:a05:600c:4f42:b0:426:6573:7058 with SMTP id 5b1f17b1804b1-427c2ca9119mr48859885e9.11.1721374012036;
-        Fri, 19 Jul 2024 00:26:52 -0700 (PDT)
-Received: from localhost (109-81-94-157.rct.o2.cz. [109.81.94.157])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-427d2a6efc5sm41419055e9.21.2024.07.19.00.26.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jul 2024 00:26:51 -0700 (PDT)
-Date: Fri, 19 Jul 2024 09:26:50 +0200
-From: Michal Hocko <mhocko@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MwAHRio5QchmIVEo5HqdkhHO9HIYHqHhJEmhPhBvaFrko64IPhFzAAsj3zAsam/SjmcC3G15F27m241+YAQS5JmVf0e90amoJaMBdH0re8RO1X5dVF+WfRXsXdMTIfsSj7IcvEWGQgQ3brgWrU3A6vwL2gbR7Zw3Ac/x2XX0EUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OZDz4HNg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10118C32782;
+	Fri, 19 Jul 2024 08:39:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721378345;
+	bh=X14Fwun7nASwCYdzrwwhQ16EL4syyLUVnW0SDuhQMx8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OZDz4HNgrHk9AQpp4YUqtFj+RnedTFTWO/CWnILQmwOnMMWJGhYTPLVkke8qJ7RTE
+	 7QCWm0TXl327+BzE+KZvVR5Iq1d1/obLCGoCC6QQjWy4AULzvtzerkCiPS3lFVWE0t
+	 hIzMGrma4/9e86NlTZUKm5Nz2KqBqKxD55fivydHz5RbpzpBTzT4x4T+8UDbm8QSYC
+	 wXjbYv6NnuMKKZo9ojvOEQTSugnaJZ/Sh22ZBGT9yhAAERRZmkWI8HARgMtEdCfhbH
+	 OOZp5qMot9k9/bXkiZ7k71wff45xW+PvDGEhCZZMy2bj1r3av+yaZ7k4K2ExnPUw4v
+	 3kgllRF/KW+YQ==
+Date: Fri, 19 Jul 2024 10:39:02 +0200
+From: Alejandro Colomar <alx@kernel.org>
 To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	Vlastimil Babka <vbabka@kernel.org>
-Subject: Re: [PATCH v5 1/2] btrfs: always uses root memcgroup for
- filemap_add_folio()
-Message-ID: <ZpoVOvMe7Tt9Ok49@tiehlicka>
-References: <cover.1721363035.git.wqu@suse.com>
- <d408a1b35307101e82a6845e26af4a122c8e5a25.1721363035.git.wqu@suse.com>
- <ZpoQ_28XHCUO9_TT@tiehlicka>
- <99334ebf-583a-4295-be52-118c253d5fca@gmx.com>
+Cc: Sam James <sam@gentoo.org>, linux-btrfs@vger.kernel.org
+Subject: Re: Build failure with trunk GCC 15 in fs/btrfs/print-tree.c
+ (-Wunterminated-string-initialization)
+Message-ID: <uhthjbiihonjjpqjkod7ao2kopeppbdgzhmdfuetu4c2tdzm6s@gevodksq2kku>
+References: <87ttgmz7q7.fsf@gentoo.org>
+ <5mnphkdvheudccjtiatrbjbkqtw54s2wkpeqevj3rqthdqlwyw@sjvn4wn52qki>
+ <8d7e4d19-bded-4a59-aeb9-cc7d93706ac8@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="omx3yx3rrqvzxyzt"
 Content-Disposition: inline
-In-Reply-To: <99334ebf-583a-4295-be52-118c253d5fca@gmx.com>
+In-Reply-To: <8d7e4d19-bded-4a59-aeb9-cc7d93706ac8@gmx.com>
 
-On Fri 19-07-24 16:46:50, Qu Wenruo wrote:
-> Meanwhile, can we just define root_mem_cgroup as NULL globally?
-> That looks more reasonable to me, and if that's fine I can send out an
-> extra patch just for that.
 
-I think it would be sufficient to pull root_mem_cgroup declaration out
-of ifdef in memcontrol.h. We do not really have to define it. Please
-send the patch and add all memcg maintainers. Ideally with this patch in
-the series so that the intention is clear.
--- 
-Michal Hocko
-SUSE Labs
+--omx3yx3rrqvzxyzt
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Sam James <sam@gentoo.org>, linux-btrfs@vger.kernel.org
+Subject: Re: Build failure with trunk GCC 15 in fs/btrfs/print-tree.c
+ (-Wunterminated-string-initialization)
+References: <87ttgmz7q7.fsf@gentoo.org>
+ <5mnphkdvheudccjtiatrbjbkqtw54s2wkpeqevj3rqthdqlwyw@sjvn4wn52qki>
+ <8d7e4d19-bded-4a59-aeb9-cc7d93706ac8@gmx.com>
+MIME-Version: 1.0
+In-Reply-To: <8d7e4d19-bded-4a59-aeb9-cc7d93706ac8@gmx.com>
+
+Hi Qu,
+
+On Fri, Jul 19, 2024 at 10:49:09AM GMT, Qu Wenruo wrote:
+>=20
+>=20
+> =E5=9C=A8 2024/7/19 07:56, Alejandro Colomar =E5=86=99=E9=81=93:
+> > Hi Sam!
+> >=20
+> > On Thu, Jul 18, 2024 at 10:54:40PM GMT, Sam James wrote:
+> > > GCC 15 introduces a new warning -Wunterminated-string-initialization
+> > > which causes, with the kernel's -Werror=3D..., the following:
+> > > ```
+> > > /var/tmp/portage/sys-kernel/gentoo-kernel-6.6.41/work/linux-6.6/fs/bt=
+rfs/print-tree.c:29:49: error: initializer-string for array of =E2=80=98cha=
+r=E2=80=99 is too long [-Werror=3Dunterminated-string-initialization]
+> > >     29 |         { BTRFS_BLOCK_GROUP_TREE_OBJECTID,      "BLOCK_GROUP=
+_TREE"      },
+> > >        |
+> > >        ^~~~~~~~~~~~~~~~~~
+> > > ```
+>=20
+> Great new GCC feature!
+
+Thanks!!  It's a pleasure to see it working.  :-)
+
+> And it's indeed too long, not only for the block group tree, but also
+> for the future RAID_STRIPE_TREE too.
+
+Yep, there are two entries too long.
+
+> I believe we can just enlarge the string to 32 bytes for now.
+> I'll send out a fix soon.
+>=20
+>=20
+> On the other hand, it's better to do build time verification on those
+> string length.
+>=20
+> Any good advice to craft some build time macro/functions to find the max
+> string length of a const array?
+
+I don't think you can write any magic macro for that.  But you can
+specify
+
+	CFLAGS +=3D -Werror=3Dunterminated-string-initialization
+
+That should do what you want.
+
+> Or at least check against the array size.
+>=20
+> Thank you guys!
+> Qu
+
+Have a lovely day!
+Alex
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--omx3yx3rrqvzxyzt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmaaJiYACgkQnowa+77/
+2zK0Ag//bojgMxq9NPLmlbZJjlFHOXE3rT7Xpo2iv3ySD8x/WnGEZnHzEApeF4M0
+QG6MDPy+TOjwTw1wLpF4paUcuEO/FhqPVSIDSk9cZyylUAIxIRv/36m0jJX+HFMi
+rj5VEZb+lDVVIKDsy5nw1ikb6QUwI17U0UhUfUHeh2ozkeRiZqhChGiBjlHG4g/Q
+b505IjplR/GkHceHjtVkQDgZB4ylP+9tdxWZzEvVNpmvmVwhn1cbulOdNLsSs1gs
+bDFbjZ3Z+Tqnp5mxlq5znypnqY34puBTreUsA4o460J2TcI4rYtpXNWQ/8syYa6c
+90FrblpuOilCJQE6Ry2GWnrQJPLq7mrwv55P/KJPMksHaEoRg1N0GJk5H0AhdDC1
+gZ36BJBOq7KszV9Cg2VrkzHk3Up/wb5YDRSgXHP4ohYtZkZyl659ffYgU3uy6cFw
+aKzqlxzRkbEePIKtmDoRuTrge50ahz4NSD5FrqqHPF0hfHB8+h8t7ts2J4YGsM63
+oRPgy02R7EMx3W6JwumJ8VeXlrvdsk6o6CRAPHfmY9rtEa6idO2Osvs+6su2fFfd
+ZpipwLls0kpU/yZoquocHY165Cr1QUqVgPGgPZgVEuexxO5GNwhctD9Xk6z9mTFL
+Kp4o+WAsj9FyHDnfz3rEuSI3sxN6zJ1veh5iJBpBRI79jWSoong=
+=I3dH
+-----END PGP SIGNATURE-----
+
+--omx3yx3rrqvzxyzt--
 
