@@ -1,56 +1,63 @@
-Return-Path: <linux-btrfs+bounces-6623-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6624-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8060937DD7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2024 00:28:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26EE3937DEA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2024 00:52:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE82CB214FF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 22:28:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4BEB282026
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 22:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9BC14884F;
-	Fri, 19 Jul 2024 22:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C36914882E;
+	Fri, 19 Jul 2024 22:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="c4iWgcut"
+	dkim=fail reason="signature verification failed" (768-bit key) header.d=casa-di-locascio.net header.i=@casa-di-locascio.net header.b="YkxWRSZe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B360137E
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 22:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17747824AE
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 22:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721428121; cv=none; b=sRgXwzDXaw1QDhex4wiXGkfaGzZZ1zXMPMQiGP4I2zWHZFwCAjdxaJu8KTg3RKS6U9oe4Be9TcERIfcNPXJ6qrOaA9Oef+rXOFuebZD/PI0CpgQ1Hwlh2paQ8RZOVavT7WFbuc9lYmFBMeP5zIe5vgiqJdqZWWLMmfu7DgsxtVc=
+	t=1721429546; cv=none; b=iUWM3j3If78nPnnBbGHlw4ilpfRdwuuXrXHg01zw4XaIiw0d8zeqPMGRVFcCZvf0HBtIL4IcizNfSyFEtB/+TRBBck3qbXTQd3de76gTL8BKRsoZvjjvBGK1Q2uxKlnFOsfI49F31HeCZ/OiEXgq/mOhLS8oHg6q0QqTAI2KWRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721428121; c=relaxed/simple;
-	bh=pCR1AoATXF6H6DWTBhje6mwIRuVlD2yVUGFiQ7Lj+Hw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=r1Oz9HAdg1xBp+zWFSGZSZ/qDc8u+zxSNgEVqsh21yPN06dgY5guYk/ccvtFP33Io5ZsMXohhxOntvagF3nmWhSwOzkWBQLgil8qdlSI3OrQPBdsXgJqnq8AZjM8W2A4FL+X86nlUV7ZN6pkF7WVuf8JW+Cb/0e+AW4fTr7NjHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=c4iWgcut; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1721428113; x=1722032913; i=quwenruo.btrfs@gmx.com;
-	bh=zUxfg1eK3ljDqUFLzoO7SylnKKMxY6auYfhbTAK2Ld0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=c4iWgcutKjU90V16H9B6DlgPLLxcUCF25CXrIRvjAI6mzM7i0NWWcpiqF3DzbgKO
-	 w1NvB2jMO+kc9PJDL39lzn2vRJrRjGPvhgBej+Q+XxwMGmvQuTmFociBDaAPFXMFy
-	 gc0WquE/Ivne4N2LI/kgs9BD320grA8iVv/RImej/WqikIQC5cmIWHWB8HHIRKNZU
-	 ee1NzUlctxxT1a/vL9ZjFs3hiJjbOHKNuU9M7mvX2P1BY35UaDg/p0i6p8VY/UavJ
-	 2qeOoLz9oAb8+74tisMc+4BQEBEM94pjKNAbx+Z1I2k8F8MRa7nfscISsiilKPGQd
-	 1DOResXyC4fIfKPoNw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49lJ-1sMAiG0WxN-00w5xS; Sat, 20
- Jul 2024 00:28:33 +0200
-Message-ID: <cbe0935a-7f38-4c13-ad39-3cbe2fbdc13e@gmx.com>
-Date: Sat, 20 Jul 2024 07:58:30 +0930
+	s=arc-20240116; t=1721429546; c=relaxed/simple;
+	bh=uaTfItKWSfHVmsIT8FFQ9FwQJFJngrzKoV4r0iMqrGw=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=oMiH53kUUKZjuGZmauPzEpofW5CjPTup17BntImOZa/Srj07CLJS9jNj6ykNcYxbs/wXtzdsDrRsM1IbPzDoX5S/6WchPimXVUDi+iy2q2iyvXoBKG0bEIhz6xbpwYuwzz9fgpN3j6runAy5y8cn2ybG1nHqsb8xcvQV5dde4OY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roosoft.ltd.uk; spf=pass smtp.mailfrom=roosoft.ltd.uk; dkim=policy (768-bit key) header.d=casa-di-locascio.net header.i=@casa-di-locascio.net header.b=YkxWRSZe reason="signing key too small"; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roosoft.ltd.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=roosoft.ltd.uk
+Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
+	by cmsmtp with ESMTPS
+	id Utlysr8oDnNFGUwSWsXrav; Fri, 19 Jul 2024 22:52:16 +0000
+Received: from box2278.bluehost.com ([50.87.176.218])
+	by cmsmtp with ESMTPS
+	id UwSVszpByX56wUwSVsba6v; Fri, 19 Jul 2024 22:52:15 +0000
+X-Authority-Analysis: v=2.4 cv=MY6nuI/f c=1 sm=1 tr=0 ts=669aee1f
+ a=XwlUGG/Joq/Evm8SRPjtJg==:117 a=XwlUGG/Joq/Evm8SRPjtJg==:17
+ a=IkcTkHD0fZMA:10 a=4kmOji7k6h8A:10 a=BDUyQTS_maiZcYpy8NIA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=mCY-HCvPnkKXJ80akIyT:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=casa-di-locascio.net; s=default; h=Content-Transfer-Encoding:Content-Type:
+	Subject:From:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=hg43emhKpqYO2f5BgtgQRtI8I3mUhi0Ylr8Nlv/SsnY=; b=YkxWRSZes0RrdWTy/RlfA+JLd0
+	5QXV7SwJg7G2t8JeljSD3fST7E8nFVa1aqcMWts0An2TXigqgFwynnurQvakWB9jF12eCoA90Xt84
+	3LJqdF880DyHaLn+fj6CkpKBo;
+Received: from [45.95.250.46] (port=36785 helo=[192.168.1.158])
+	by box2278.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <devel@roosoft.ltd.uk>)
+	id 1sUwSU-002KzJ-1e
+	for linux-btrfs@vger.kernel.org;
+	Fri, 19 Jul 2024 16:52:14 -0600
+Message-ID: <98c97077-b801-46b0-9410-8cc57780a0c0@roosoft.ltd.uk>
+Date: Fri, 19 Jul 2024 23:52:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,248 +65,100 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] btrfs-progs: set subvol uuids when converting
-To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
-References: <20240719150343.3992904-1-maharmstone@fb.com>
- <20240719150343.3992904-2-maharmstone@fb.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240719150343.3992904-2-maharmstone@fb.com>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: devel@roosoft.ltd.uk
+Subject: RE: Unable to mount after successful replace.
+Disposition-Notification-To: devel@roosoft.ltd.uk
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TBRTLJw3HoXzy+6I3Oc0+hOEyrF614QtvcgLhldks1p8ocAmDg4
- +4Q+1ePW4TiashHJ1bw4BIiklDKAhJs9cy3OF2yKKYKhZ6ScWPujL48Kj/uRvUc2nPH78XG
- r+SqI0YQGEYmUdbW7/OnZfidySnhRHN79vWMiel4ikQhV+j+EHBtlA0A5XT5DoSO9qUqAnl
- DhaUuBsaTaPjfHDXkjC+Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ZY06cNwVLZ0=;yYwk478eb5JFoQj/4ZHcjWCW3Cj
- RlyEg/gaqHStgtB8+gT8msOU9WMtyScHk2ecTy4eFJJ545WS7onrIe090EgC8rx4CrJjVsfmg
- JAgAZP3yskTGaxQnL2PSgQfcg/y+ZWXIyban1GL5Mvgy3BvrfgWKu8SpwjpMRFjUIzF/a2Y1K
- af1+X4jw9rV+t8EDfx57YEUSSVv3YWdOQ6NK7o0cuiE0cwAto0RB5h1HNhENi+mtk/4Vro4EV
- 3STcdwrKtMFTfFsEZmvYhehVR7EnIova9qsKGzgr2HV0HcYJjS5kgmXXEBXM0R2M3Z4fgjYrm
- ihlBKaZKAW2xaFjLqMs46p2c911on4XQtUsdtbM1f+iAEF2sWwIIy/ceglZJD3VV86BFyWVKE
- nVKJye1fGSh3omJd+LM94h9KMHDrFWyMYVZfMgD12rmLS6ACiMhJlnveHUMTurRHOt9tMxNRJ
- RXyX9JIHGNk06l6IieRLhBMq+GzzDS1fZESJI8kFGt5LDGSAvSqgUBwLGXp9kPaIamAjw9IWj
- X20eXHo6kaPuZxFY5xeUn1aY0gX0QRpDz1RLr4HMfc3Z3oYsbWTyJ531WHroNN+y8Ma8T7v+O
- 73hMAdBgPkEG/JhyQ28ot5lEAnOBRyXgeLrea/8W+5JCInlCCyz87lJUNsCSd1VGI4ge/rfJu
- 49bwzqGTTXFH24XLWpBKNMIVlD3VAYFaqIKn5DUjDSnBbOOAhwT8g8oaMeFrLwLhxZUatKF7D
- xA65mV/lqZaEt5xBfKO8zxh6HV4m/S4/5dtoOiUg+5MdM/bnlRJF2VXfTdvxAMNI69N4tY4Xn
- CSNVxgQlgB/tfzT6Urn2hYCA==
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box2278.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roosoft.ltd.uk
+X-BWhitelist: no
+X-Source-IP: 45.95.250.46
+X-Source-L: No
+X-Exim-ID: 1sUwSU-002KzJ-1e
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.158]) [45.95.250.46]:36785
+X-Source-Auth: fpd_eacct+casa-di-locascio.net
+X-Email-Count: 1
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: Y2FzYWRpbG87Y2FzYWRpbG87Ym94MjI3OC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPM4iN0R0b6BZgoiYvpqUtIdCA7WilVTLsSnU76SzakzsAvh5xXkQ3oVNuUiXg99UfEG00AlqgziVLAHEP+Z3V3r1kcPXr4TFtcBOnuEX/68hmWV/RgI
+ rnscK/9QNPUMwy3Pa0N05JSIbHhcrrxdB6qoiPIQqvfLK/4wQziAvzUx2hRGjnzgM/XeTniolTGMx3Csx2nprQXhHJTrgri5vdU=
+
+Hi,
+
+btrfs-progs v6.3.2
+
+6.5.0-4-amd64
+
+
+I ran a successful replace upgrading a 12 to 14Tb  disk in a 4 disk 
+filesystem
+
+ > Started on 14.Jul 08:36:44, finished on 19.Jul 13:39:31, 0 write 
+errs, 0 uncorr. read errs
+
+So I shut the machine down,  physically swapped the disks and rebooted.
+
+But the filesystem now fails to mount even in degraded mode because it 
+is missing the replaced device.
+
+```
+btrfs fi show
+Label: none  uuid: 6abaa68a-2670-4d8b-8d2a-fd7321df9242
+     Total devices 4 FS bytes used 23.82TiB
+     devid    0 size 10.91TiB used 7.96TiB path /dev/sde
+     devid    1 size 10.91TiB used 7.96TiB path /dev/sdb
+     devid    2 size 10.91TiB used 7.96TiB path /dev/sdc
+     devid    4 size 10.91TiB used 7.96TiB path /dev/sdd
+
+```
+
+```
+
+mount -o degraded /dev/sdb /mnt/ext/
+mount: /mnt/ext: mount(2) system call failed: Structure needs cleaning.
+        dmesg(1) may have more information after failed mount system call.
+
+```
+
+```
+
+[Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): using crc32c 
+(crc32c-generic) checksum algorithm
+[Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): allowing degraded mounts
+[Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): using free space tree
+[Fri Jul 19 23:16:28 2024] BTRFS warning (device sdb): devid 5 uuid 
+951ef490-5bfe-412d-b65e-8a6393428431 is missing
+[Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): bdev /dev/sde errs: 
+wr 60252097, rd 0, flush 0, corrupt 0, gen 0
+[Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): bdev <missing disk> 
+errs: wr 60254549, rd 25, flush 0, corrupt 0, gen 0
+[Fri Jul 19 23:16:28 2024] BTRFS error (device sdb): replace without 
+active item, run 'device scan --forget' on the target device
+[Fri Jul 19 23:16:28 2024] BTRFS error (device sdb): failed to init 
+dev_replace: -117
+[Fri Jul 19 23:16:28 2024] BTRFS error (device sdb): open_ctree failed
+
+```
+I have tried `btrfs dev scan --forget` to no avail.
+
+How do I remove the offending id when I am unable to mount the filesystem ?
+
+Thanks in  advance.
 
 
 
-=E5=9C=A8 2024/7/20 00:33, Mark Harmstone =E5=86=99=E9=81=93:
-> Currently when using btrfs-convert, neither the main subvolume nor the
-> image subvolume get uuids assigned, nor is the uuid tree created.
->
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-> ---
->   common/root-tree-utils.c | 29 +++++++++++++++++++++++++++++
->   common/root-tree-utils.h |  1 +
->   convert/common.c         | 14 +++++++++-----
->   convert/main.c           |  8 +++++++-
->   mkfs/main.c              | 29 -----------------------------
->   5 files changed, 46 insertions(+), 35 deletions(-)
->
-> diff --git a/common/root-tree-utils.c b/common/root-tree-utils.c
-> index f9343304..9495178c 100644
-> --- a/common/root-tree-utils.c
-> +++ b/common/root-tree-utils.c
-> @@ -59,6 +59,35 @@ error:
->   	return ret;
->   }
->
-> +int create_uuid_tree(struct btrfs_trans_handle *trans)
-> +{
-> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> +	struct btrfs_root *root;
-> +	struct btrfs_key key =3D {
-> +		.objectid =3D BTRFS_UUID_TREE_OBJECTID,
-> +		.type =3D BTRFS_ROOT_ITEM_KEY,
-> +	};
-> +	int ret =3D 0;
-> +
-> +	UASSERT(fs_info->uuid_root =3D=3D NULL);
-> +	root =3D btrfs_create_tree(trans, &key);
-> +	if (IS_ERR(root)) {
-> +		ret =3D PTR_ERR(root);
-> +		goto out;
-> +	}
-> +
-> +	add_root_to_dirty_list(root);
-> +	fs_info->uuid_root =3D root;
-> +	ret =3D btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
-> +				  BTRFS_UUID_KEY_SUBVOL,
-> +				  fs_info->fs_root->root_key.objectid);
-> +	if (ret < 0)
-> +		btrfs_abort_transaction(trans, ret);
-> +
-> +out:
-> +	return ret;
-> +}
-> +
->   int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8=
- type,
->   			u64 subvol_id_cpu)
->   {
-> diff --git a/common/root-tree-utils.h b/common/root-tree-utils.h
-> index 78731dd5..aec1849b 100644
-> --- a/common/root-tree-utils.h
-> +++ b/common/root-tree-utils.h
-> @@ -29,5 +29,6 @@ int btrfs_link_subvolume(struct btrfs_trans_handle *tr=
-ans,
->   			 int namelen, struct btrfs_root *subvol);
->   int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8=
- type,
->   			u64 subvol_id_cpu);
-> +int create_uuid_tree(struct btrfs_trans_handle *trans);
->
->   #endif
-> diff --git a/convert/common.c b/convert/common.c
-> index b093fdb5..667f38a4 100644
-> --- a/convert/common.c
-> +++ b/convert/common.c
-> @@ -190,7 +190,7 @@ static int setup_temp_extent_buffer(struct extent_bu=
-ffer *buf,
->   static void insert_temp_root_item(struct extent_buffer *buf,
->   				  struct btrfs_mkfs_config *cfg,
->   				  int *slot, u32 *itemoff, u64 objectid,
-> -				  u64 bytenr)
-> +				  u64 bytenr, bool set_uuid)
-
-Considering this is really a temporary root item, I believe we can skip
-it the UUID step for now.
-(Only one of the 4 callers are passing true for it).
 
 
-I'm wondering if a kernel like uuid tree generation would be more
-concentrated and easier to implement.
+Don Alexander
 
-E.g. after the fs is fully converted, generate the uuid tree then update
-the UUID for the involved subvolumes.
-
-Thanks,
-Qu
->   {
->   	struct btrfs_root_item root_item;
->   	struct btrfs_inode_item *inode_item;
-> @@ -210,6 +210,9 @@ static void insert_temp_root_item(struct extent_buff=
-er *buf,
->   	btrfs_set_root_generation(&root_item, 1);
->   	btrfs_set_root_bytenr(&root_item, bytenr);
->
-> +	if (set_uuid)
-> +		uuid_generate(root_item.uuid);
-> +
->   	memset(&disk_key, 0, sizeof(disk_key));
->   	btrfs_set_disk_key_type(&disk_key, BTRFS_ROOT_ITEM_KEY);
->   	btrfs_set_disk_key_objectid(&disk_key, objectid);
-> @@ -281,13 +284,14 @@ static int setup_temp_root_tree(int fd, struct btr=
-fs_mkfs_config *cfg,
->   		goto out;
->
->   	insert_temp_root_item(buf, cfg, &slot, &itemoff,
-> -			      BTRFS_EXTENT_TREE_OBJECTID, extent_bytenr);
-> +			      BTRFS_EXTENT_TREE_OBJECTID, extent_bytenr,
-> +			      false);
->   	insert_temp_root_item(buf, cfg, &slot, &itemoff,
-> -			      BTRFS_DEV_TREE_OBJECTID, dev_bytenr);
-> +			      BTRFS_DEV_TREE_OBJECTID, dev_bytenr, false);
->   	insert_temp_root_item(buf, cfg, &slot, &itemoff,
-> -			      BTRFS_FS_TREE_OBJECTID, fs_bytenr);
-> +			      BTRFS_FS_TREE_OBJECTID, fs_bytenr, true);
->   	insert_temp_root_item(buf, cfg, &slot, &itemoff,
-> -			      BTRFS_CSUM_TREE_OBJECTID, csum_bytenr);
-> +			      BTRFS_CSUM_TREE_OBJECTID, csum_bytenr, false);
->
->   	ret =3D write_temp_extent_buffer(fd, buf, root_bytenr, cfg);
->   out:
-> diff --git a/convert/main.c b/convert/main.c
-> index c863ce91..8cfd9407 100644
-> --- a/convert/main.c
-> +++ b/convert/main.c
-> @@ -1021,8 +1021,14 @@ static int init_btrfs(struct btrfs_mkfs_config *c=
-fg, struct btrfs_root *root,
->   	btrfs_set_root_dirid(&fs_info->fs_root->root_item,
->   			     BTRFS_FIRST_FREE_OBJECTID);
->
-> +	ret =3D create_uuid_tree(trans);
-> +	if (ret) {
-> +		error("failed to create uuid tree: %d", ret);
-> +		goto err;
-> +	}
-> +
->   	/* subvol for fs image file */
-> -	ret =3D btrfs_make_subvolume(trans, CONV_IMAGE_SUBVOL_OBJECTID, false)=
-;
-> +	ret =3D btrfs_make_subvolume(trans, CONV_IMAGE_SUBVOL_OBJECTID, true);
->   	if (ret < 0) {
->   		error("failed to create subvolume image root: %d", ret);
->   		goto err;
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index 0bdb414a..a69aa24b 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -735,35 +735,6 @@ static void update_chunk_allocation(struct btrfs_fs=
-_info *fs_info,
->   	}
->   }
->
-> -static int create_uuid_tree(struct btrfs_trans_handle *trans)
-> -{
-> -	struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> -	struct btrfs_root *root;
-> -	struct btrfs_key key =3D {
-> -		.objectid =3D BTRFS_UUID_TREE_OBJECTID,
-> -		.type =3D BTRFS_ROOT_ITEM_KEY,
-> -	};
-> -	int ret =3D 0;
-> -
-> -	UASSERT(fs_info->uuid_root =3D=3D NULL);
-> -	root =3D btrfs_create_tree(trans, &key);
-> -	if (IS_ERR(root)) {
-> -		ret =3D PTR_ERR(root);
-> -		goto out;
-> -	}
-> -
-> -	add_root_to_dirty_list(root);
-> -	fs_info->uuid_root =3D root;
-> -	ret =3D btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
-> -				  BTRFS_UUID_KEY_SUBVOL,
-> -				  fs_info->fs_root->root_key.objectid);
-> -	if (ret < 0)
-> -		btrfs_abort_transaction(trans, ret);
-> -
-> -out:
-> -	return ret;
-> -}
-> -
->   static int create_global_root(struct btrfs_trans_handle *trans, u64 ob=
-jectid,
->   			      int root_id)
->   {
 
