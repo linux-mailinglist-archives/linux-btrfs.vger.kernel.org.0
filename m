@@ -1,69 +1,101 @@
-Return-Path: <linux-btrfs+bounces-6609-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6610-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ACBC937B8F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 19:25:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F280937BC7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 19:43:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9BF1281FCD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 17:25:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 836FB1C2159B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 17:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE537146A8C;
-	Fri, 19 Jul 2024 17:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F39E146D78;
+	Fri, 19 Jul 2024 17:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HPGxgh4W"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W9gxKBro";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DVDsbkGy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W9gxKBro";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DVDsbkGy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BBD483A19
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 17:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B871B86D5;
+	Fri, 19 Jul 2024 17:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721409918; cv=none; b=Nul6i3pkA8CF4giOLpQFKqrWPdRA84jGfuE3CUi7udFv/R9o/xzFBqepagGQ54f2umI17mjVAHkVsJQT6aHjRDWmZuxl+YTOEkSHaEIi11FJUf3KJLVIggewpvGo3pG6Ok+FC2izymHx8vniQu6YU2KPo6DVoHRSA1fkI2p1R/w=
+	t=1721411026; cv=none; b=LLf9CIemLQftVOkk++sbfryfjonIQaKcf29loS0+37+DAnB9bHS4Vw69FFEwd60usF0sCRUr22LW2fXK2UkzFpo/SFem6uoTY9sA4LEkGEFDLP3yQLpAb2dvX4YfCfbG21NcV1ao1XhlAvbrRen70U6OvtCxo/Rkb8fPTrLepdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721409918; c=relaxed/simple;
-	bh=UvlBE0//T873lE7ymYCFQ60QVNwdI+r7MaJb5Sbvo6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ToriNg5xdrQI8PF/rSd5DfH9qxF4QmzxuhBk0FgKaiQeK/OToiwd+AtVGxuqGOyNAVe+HS+ljJcRSaenJzyBIaUT1ZJ4vZnMkBe28fbjHqpeDo6zqIW9hUWGfleHulm6yxK7SL8Q+U71CuVxvlUZZ4ASmCJzMJN7D0UCuUFcQi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HPGxgh4W; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: hannes@cmpxchg.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721409914;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5pkR6DEf3Lxs0SOZWGvsdocjpD6jlthCnw0cI5XnXA8=;
-	b=HPGxgh4WXhi970lJv9mLD2zgsEXk5Br5M5Qr9SoH6cgR9mEKImc7D2lKOL8uraoncWomzR
-	c139mioxVqtRDBcZPqYznQD/OPMe9WnPzrOlNdfN533MXRmyrz/b91oqqSKg4Lu3RvvZrz
-	7XM8U+HqDkJdrORbI/OuKNDy7gQmgts=
-X-Envelope-To: wqu@suse.com
-X-Envelope-To: linux-btrfs@vger.kernel.org
-X-Envelope-To: mhocko@kernel.org
-X-Envelope-To: shakeel.butt@linux.dev
-X-Envelope-To: muchun.song@linux.dev
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: linux-mm@kvack.org
-X-Envelope-To: mhocko@suse.com
-X-Envelope-To: vbabka@kernel.org
-Date: Fri, 19 Jul 2024 17:25:09 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	mhocko@kernel.org, shakeel.butt@linux.dev, muchun.song@linux.dev,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@kernel.org>
-Subject: Re: [PATCH v7 2/3] btrfs: always uses root memcgroup for
- filemap_add_folio()
-Message-ID: <ZpqhddM6-DnbfC7T@google.com>
-References: <cover.1721384771.git.wqu@suse.com>
- <6a9ba2c8e70c7b5c4316404612f281a031f847da.1721384771.git.wqu@suse.com>
- <20240719170206.GA3242034@cmpxchg.org>
+	s=arc-20240116; t=1721411026; c=relaxed/simple;
+	bh=KVsBhDaO8D1jYNs6pDclEnNjXeKtbtSCS2VYT4HR+Uo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=axS7B3+LCaTdBqS5rpi++n2+J6zxKd7sMga5iGW63IBtqz8q9/+Y3TsXzb+gLjf7taDYrW0j4N8KvFum/YrXWKI6/BU/ZHEhsTBGiBlH9gynsVjisf/23teJDRwUAL9FMy2+ZpvYsqyhqQzJAp3si8wa+IgiYYYw+oUkxEFjvs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W9gxKBro; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DVDsbkGy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W9gxKBro; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DVDsbkGy; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D19A71F7A5;
+	Fri, 19 Jul 2024 17:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721411022;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=KVsBhDaO8D1jYNs6pDclEnNjXeKtbtSCS2VYT4HR+Uo=;
+	b=W9gxKBromI/sNsrKIOevP2RIcbkC+BCV1at+g2SUEg543FAXNyzS+atZV0v9A+c9GFghPm
+	RhMLb5gPDGoWSw6zxnhWMptQX4D81Aw13IMWI33kXHMRtJn04fMTrChOK0mCPav711Fqcy
+	OM7wFyhX33jHrWNNKjtGkg9F9Ey6Gbs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721411022;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=KVsBhDaO8D1jYNs6pDclEnNjXeKtbtSCS2VYT4HR+Uo=;
+	b=DVDsbkGyUEW9DxctpXXrcSxh/3o9uwW4tcwZzPoPvfBvN9PwuDrOhpt1E3T1xaCc+GonZQ
+	DnIz4j3tolsM9PCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721411022;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=KVsBhDaO8D1jYNs6pDclEnNjXeKtbtSCS2VYT4HR+Uo=;
+	b=W9gxKBromI/sNsrKIOevP2RIcbkC+BCV1at+g2SUEg543FAXNyzS+atZV0v9A+c9GFghPm
+	RhMLb5gPDGoWSw6zxnhWMptQX4D81Aw13IMWI33kXHMRtJn04fMTrChOK0mCPav711Fqcy
+	OM7wFyhX33jHrWNNKjtGkg9F9Ey6Gbs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721411022;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=KVsBhDaO8D1jYNs6pDclEnNjXeKtbtSCS2VYT4HR+Uo=;
+	b=DVDsbkGyUEW9DxctpXXrcSxh/3o9uwW4tcwZzPoPvfBvN9PwuDrOhpt1E3T1xaCc+GonZQ
+	DnIz4j3tolsM9PCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 05F2B13808;
+	Fri, 19 Jul 2024 17:43:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id yOZaO82lmmaiJwAAD6G6ig
+	(envelope-from <pvorel@suse.cz>); Fri, 19 Jul 2024 17:43:41 +0000
+Date: Fri, 19 Jul 2024 19:43:25 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: ltp@lists.linux.it
+Cc: linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-xfs@vger.kernel.org, fstests@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
+	Amir Goldstein <amir73il@gmail.com>, Cyril Hrubis <chrubis@suse.cz>,
+	Andrea Cervesato <andrea.cervesato@suse.com>,
+	Avinesh Kumar <akumar@suse.de>
+Subject: [RFC] Slow down of LTP tests aiodio_sparse.c and dio_sparse.c in
+ kernel 6.6
+Message-ID: <20240719174325.GA775414@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -72,84 +104,56 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240719170206.GA3242034@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
+X-Spam-Score: 0.70
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [0.70 / 50.00];
+	MID_RHS_NOT_FQDN(0.50)[];
+	HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.dk,suse.cz,suse.com,gmail.com,suse.de];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Spam-Level: 
 
-On Fri, Jul 19, 2024 at 01:02:06PM -0400, Johannes Weiner wrote:
-> On Fri, Jul 19, 2024 at 07:58:40PM +0930, Qu Wenruo wrote:
-> > [BACKGROUND]
-> > The function filemap_add_folio() charges the memory cgroup,
-> > as we assume all page caches are accessible by user space progresses
-> > thus needs the cgroup accounting.
-> > 
-> > However btrfs is a special case, it has a very large metadata thanks to
-> > its support of data csum (by default it's 4 bytes per 4K data, and can
-> > be as large as 32 bytes per 4K data).
-> > This means btrfs has to go page cache for its metadata pages, to take
-> > advantage of both cache and reclaim ability of filemap.
-> > 
-> > This has a tiny problem, that all btrfs metadata pages have to go through
-> > the memcgroup charge, even all those metadata pages are not
-> > accessible by the user space, and doing the charging can introduce some
-> > latency if there is a memory limits set.
-> > 
-> > Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
-> > charge situation so that metadata pages won't really be limited by
-> > memcgroup.
-> > 
-> > [ENHANCEMENT]
-> > Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
-> > memory cgroup to attach metadata pages.
-> > 
-> > With root memory cgroup, we directly skip the charging part, and only
-> > rely on __GFP_NOFAIL for the real memory allocation part.
-> > 
-> > Suggested-by: Michal Hocko <mhocko@suse.com>
-> > Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > ---
-> >  fs/btrfs/extent_io.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index aa7f8148cd0d..cfeed7673009 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -2971,6 +2971,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
-> >  
-> >  	struct btrfs_fs_info *fs_info = eb->fs_info;
-> >  	struct address_space *mapping = fs_info->btree_inode->i_mapping;
-> > +	struct mem_cgroup *old_memcg;
-> >  	const unsigned long index = eb->start >> PAGE_SHIFT;
-> >  	struct folio *existing_folio = NULL;
-> >  	int ret;
-> > @@ -2981,8 +2982,17 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
-> >  	ASSERT(eb->folios[i]);
-> >  
-> >  retry:
-> > +	/*
-> > +	 * Btree inode is a btrfs internal inode, and not exposed to any
-> > +	 * user.
-> > +	 * Furthermore we do not want any cgroup limits on this inode.
-> > +	 * So we always use root_mem_cgroup as our active memcg when attaching
-> > +	 * the folios.
-> > +	 */
-> > +	old_memcg = set_active_memcg(root_mem_cgroup);
-> >  	ret = filemap_add_folio(mapping, eb->folios[i], index + i,
-> >  				GFP_NOFS | __GFP_NOFAIL);
-> > +	set_active_memcg(old_memcg);
-> 
-> It looks correct. But it's going through all dance to set up
-> current->active_memcg, then have the charge path look that up,
-> css_get(), call try_charge() only to bail immediately, css_put(), then
-> update current->active_memcg again. All those branches are necessary
-> when we want to charge to a "real" other cgroup. But in this case, we
-> always know we're not charging, so it seems uncalled for.
-> 
-> Wouldn't it be a lot simpler (and cheaper) to have a
-> filemap_add_folio_nocharge()?
+Hi all,
 
-Time to restore GFP_NOACCOUNT? I think it might be useful for allocating objects
-which are shared across the entire system and/or unlikely will go away under
-the memory pressure.
+LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3]) slowed
+down on kernel 6.6 on Btrfs and XFS, when run with default parameters. These
+tests create 100 MB sparse file and write zeros (using libaio or O_DIRECT) while
+16 other processes reads the buffer and check only zero is there.
+
+Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
+same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
+(Non default parameter creates much smaller file, thus the change is not that
+obvious).
+
+Because the slowdown has been here for few kernel releases I suppose nobody
+complained and the test is somehow artificial (nobody uses this in a real world).
+But still it'd be good to double check the problem. I can bisect a particular
+commit.
+
+Because 2 filesystems affected, could be "Improve asynchronous iomap DIO
+performance" [4] block layer change somehow related?
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/io/ltp-aiodio/aiodio_sparse.c
+[2] https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+[3] https://github.com/linux-test-project/ltp/tree/master/testcases/kernel/io/ltp-aiodio/common.h
+[4] https://kernelnewbies.org/Linux_6.6#Block_layer
 
