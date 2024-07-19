@@ -1,255 +1,218 @@
-Return-Path: <linux-btrfs+bounces-6603-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6604-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A08793797D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 17:04:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B73D4937A16
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 17:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CECE1C20B68
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 15:04:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46A641F229F5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Jul 2024 15:42:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB5B144D24;
-	Fri, 19 Jul 2024 15:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADA6145B03;
+	Fri, 19 Jul 2024 15:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="BJFs2BUU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b6aOKeiu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1394710E6
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 15:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3F81E4AD
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 15:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721401447; cv=none; b=Q76R8Gxb7fWMi43dFaBJX2DTy3FXeLtbvW4sghSv8LZ1wWllsFIjwu6qPecQCMW3zzp0IUR3nyzwyIKnUIxkZbDWZd4qS0wwqu9gN073RN3mV07eidiuutKYg0boTLQPhKJ1ooKykUF9DgQ6Rp9cPeLkVfpTWDGnt1Cag7+LqpI=
+	t=1721403752; cv=none; b=hF6Yujem+/hEu2VoXelRQU7bxY6QsaQ0Pe3TXqklB1LqytAIRW3C1MgiXjpEBC0u9Xs1dihTfH6a0X26rtbYfPcgX0xIfyX4ouv1BSgUoCUmYm5f1bA/ezkwc+OR1hVgBL6o8QULVaWqQe3DMKW11y/Hwj7wasu837u/P36ii6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721401447; c=relaxed/simple;
-	bh=HOBrQ6oaR5l4ecQ7Faz4LsVH+IrzgdaENIJCm4ZE5+k=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IL/xKiMW7qkK5LZWKJZ9yjjyMw8hQfxT0WVbRCrKVEIfUXd/Tzy0fFLjUxdGFg1FqgF/c5LvIETXw4PQcVpFjeqZYMrgYecklGZVrKAhQ33WqLkELzPiPUupx8mtRpTMcz2AofGJIIvtQSXTRNh5tRb2slFhJleZResM8F8w1Ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=BJFs2BUU; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46JExoRU017409
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 08:04:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
-	:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	facebook; bh=mDcmLVcomsKFGE708buhMKvhI4TnpHk0FFNCI5JA7TY=; b=BJF
-	s2BUUEE1J87+eY4nP26OwukP5Xm/pDNtQYGSK5MBx8vkZ0HjZCKr4ft/OyYLlF+u
-	+uhfeTOHIHCoGC3Vm4tbCxa7SbMgysbMzxsnipxHw8twmut07KtO5qfLn2f1wb0A
-	RpTiDn6ninr7w5Xlo5QdAVMu9T4bOURFLhTUsPXA=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40f1qq16h5-7
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2024 08:04:04 -0700 (PDT)
-Received: from twshared3252.08.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Fri, 19 Jul 2024 15:03:59 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id E91FD47743F0; Fri, 19 Jul 2024 16:03:50 +0100 (BST)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH 2/2] btrfs-progs: set subvol uuids when converting
-Date: Fri, 19 Jul 2024 16:03:24 +0100
-Message-ID: <20240719150343.3992904-2-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240719150343.3992904-1-maharmstone@fb.com>
-References: <20240719150343.3992904-1-maharmstone@fb.com>
+	s=arc-20240116; t=1721403752; c=relaxed/simple;
+	bh=N0EC59agI7VTwuPsKq0+s17WSLQDx3oKi87J1il55G8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qWciNywhbfoOdS4rOmIiQqcokI4HAxL/qF+k+S85QTKSL9zw9ooOrf0UFON7Rh8vOEMgcxdQ41+ucxcP9oV1HpK6smaAGuHtXguFmDVWKYEw/+2ARI56L3AGh/X65K2l+x0QnDT168dZemROvGE7ZTiY8yyYGBuILz0NADDU+xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b6aOKeiu; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1721403751; x=1752939751;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N0EC59agI7VTwuPsKq0+s17WSLQDx3oKi87J1il55G8=;
+  b=b6aOKeiut7/hjxkzmwq5yggN4iBs3ZeRTiACSa+11/l0UmaNvaINROMj
+   /w9dtMDaYBQFAx7a44pAiyX3gfbvDGqe2B10YIveBKXmrLhCWTgUUmqAz
+   /k9utabtVYI4ZeOzYOabHHqLRYKraFWqPDDLC5no/2qx4y3f+TTQZs/vY
+   VHaO7rTtmh7xVOWMSwLKZKV6OC7Z0CIzPr6Y6yyNQOOJUH917VZ6qEHgO
+   SDmoZnuUyLNosPpBwEbXz/0pJe/j0fpK3m0iuF3hsXjCmSFl4dfugMuZQ
+   r508QF0WDBJbQLMUXHB4Bj5K2VgVB/+UK2w+PkB2STaJZWMsm9z4NnQAb
+   g==;
+X-CSE-ConnectionGUID: 2P15b6bvShOG9zZ8L9GP5g==
+X-CSE-MsgGUID: VDJpuR7fSa2w0Ya6GuAY6w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11138"; a="30445633"
+X-IronPort-AV: E=Sophos;i="6.09,220,1716274800"; 
+   d="scan'208";a="30445633"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2024 08:42:30 -0700
+X-CSE-ConnectionGUID: +kUwwM+mSF64u9Xi1tpKOA==
+X-CSE-MsgGUID: KgOKr+qMR5qVUfl2epNdDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,220,1716274800"; 
+   d="scan'208";a="55348968"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 19 Jul 2024 08:42:27 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sUpkX-000iJG-2r;
+	Fri, 19 Jul 2024 15:42:25 +0000
+Date: Fri, 19 Jul 2024 23:42:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Michal Hocko <mhocko@suse.com>,
+	Vlastimil Babka <vbabka@kernel.org>
+Subject: Re: [PATCH v5 1/2] btrfs: always uses root memcgroup for
+ filemap_add_folio()
+Message-ID: <202407192308.yzjpnura-lkp@intel.com>
+References: <d408a1b35307101e82a6845e26af4a122c8e5a25.1721363035.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: mbwbsuRXfNtKovUz2lT0EQvG8G7mWXeN
-X-Proofpoint-ORIG-GUID: mbwbsuRXfNtKovUz2lT0EQvG8G7mWXeN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-19_06,2024-07-18_01,2024-05-17_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d408a1b35307101e82a6845e26af4a122c8e5a25.1721363035.git.wqu@suse.com>
 
-Currently when using btrfs-convert, neither the main subvolume nor the
-image subvolume get uuids assigned, nor is the uuid tree created.
+Hi Qu,
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
----
- common/root-tree-utils.c | 29 +++++++++++++++++++++++++++++
- common/root-tree-utils.h |  1 +
- convert/common.c         | 14 +++++++++-----
- convert/main.c           |  8 +++++++-
- mkfs/main.c              | 29 -----------------------------
- 5 files changed, 46 insertions(+), 35 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/common/root-tree-utils.c b/common/root-tree-utils.c
-index f9343304..9495178c 100644
---- a/common/root-tree-utils.c
-+++ b/common/root-tree-utils.c
-@@ -59,6 +59,35 @@ error:
- 	return ret;
- }
-=20
-+int create_uuid_tree(struct btrfs_trans_handle *trans)
-+{
-+	struct btrfs_fs_info *fs_info =3D trans->fs_info;
-+	struct btrfs_root *root;
-+	struct btrfs_key key =3D {
-+		.objectid =3D BTRFS_UUID_TREE_OBJECTID,
-+		.type =3D BTRFS_ROOT_ITEM_KEY,
-+	};
-+	int ret =3D 0;
-+
-+	UASSERT(fs_info->uuid_root =3D=3D NULL);
-+	root =3D btrfs_create_tree(trans, &key);
-+	if (IS_ERR(root)) {
-+		ret =3D PTR_ERR(root);
-+		goto out;
-+	}
-+
-+	add_root_to_dirty_list(root);
-+	fs_info->uuid_root =3D root;
-+	ret =3D btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
-+				  BTRFS_UUID_KEY_SUBVOL,
-+				  fs_info->fs_root->root_key.objectid);
-+	if (ret < 0)
-+		btrfs_abort_transaction(trans, ret);
-+
-+out:
-+	return ret;
-+}
-+
- int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 t=
-ype,
- 			u64 subvol_id_cpu)
- {
-diff --git a/common/root-tree-utils.h b/common/root-tree-utils.h
-index 78731dd5..aec1849b 100644
---- a/common/root-tree-utils.h
-+++ b/common/root-tree-utils.h
-@@ -29,5 +29,6 @@ int btrfs_link_subvolume(struct btrfs_trans_handle *tra=
-ns,
- 			 int namelen, struct btrfs_root *subvol);
- int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 t=
-ype,
- 			u64 subvol_id_cpu);
-+int create_uuid_tree(struct btrfs_trans_handle *trans);
-=20
- #endif
-diff --git a/convert/common.c b/convert/common.c
-index b093fdb5..667f38a4 100644
---- a/convert/common.c
-+++ b/convert/common.c
-@@ -190,7 +190,7 @@ static int setup_temp_extent_buffer(struct extent_buf=
-fer *buf,
- static void insert_temp_root_item(struct extent_buffer *buf,
- 				  struct btrfs_mkfs_config *cfg,
- 				  int *slot, u32 *itemoff, u64 objectid,
--				  u64 bytenr)
-+				  u64 bytenr, bool set_uuid)
- {
- 	struct btrfs_root_item root_item;
- 	struct btrfs_inode_item *inode_item;
-@@ -210,6 +210,9 @@ static void insert_temp_root_item(struct extent_buffe=
-r *buf,
- 	btrfs_set_root_generation(&root_item, 1);
- 	btrfs_set_root_bytenr(&root_item, bytenr);
-=20
-+	if (set_uuid)
-+		uuid_generate(root_item.uuid);
-+
- 	memset(&disk_key, 0, sizeof(disk_key));
- 	btrfs_set_disk_key_type(&disk_key, BTRFS_ROOT_ITEM_KEY);
- 	btrfs_set_disk_key_objectid(&disk_key, objectid);
-@@ -281,13 +284,14 @@ static int setup_temp_root_tree(int fd, struct btrf=
-s_mkfs_config *cfg,
- 		goto out;
-=20
- 	insert_temp_root_item(buf, cfg, &slot, &itemoff,
--			      BTRFS_EXTENT_TREE_OBJECTID, extent_bytenr);
-+			      BTRFS_EXTENT_TREE_OBJECTID, extent_bytenr,
-+			      false);
- 	insert_temp_root_item(buf, cfg, &slot, &itemoff,
--			      BTRFS_DEV_TREE_OBJECTID, dev_bytenr);
-+			      BTRFS_DEV_TREE_OBJECTID, dev_bytenr, false);
- 	insert_temp_root_item(buf, cfg, &slot, &itemoff,
--			      BTRFS_FS_TREE_OBJECTID, fs_bytenr);
-+			      BTRFS_FS_TREE_OBJECTID, fs_bytenr, true);
- 	insert_temp_root_item(buf, cfg, &slot, &itemoff,
--			      BTRFS_CSUM_TREE_OBJECTID, csum_bytenr);
-+			      BTRFS_CSUM_TREE_OBJECTID, csum_bytenr, false);
-=20
- 	ret =3D write_temp_extent_buffer(fd, buf, root_bytenr, cfg);
- out:
-diff --git a/convert/main.c b/convert/main.c
-index c863ce91..8cfd9407 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -1021,8 +1021,14 @@ static int init_btrfs(struct btrfs_mkfs_config *cf=
-g, struct btrfs_root *root,
- 	btrfs_set_root_dirid(&fs_info->fs_root->root_item,
- 			     BTRFS_FIRST_FREE_OBJECTID);
-=20
-+	ret =3D create_uuid_tree(trans);
-+	if (ret) {
-+		error("failed to create uuid tree: %d", ret);
-+		goto err;
-+	}
-+
- 	/* subvol for fs image file */
--	ret =3D btrfs_make_subvolume(trans, CONV_IMAGE_SUBVOL_OBJECTID, false);
-+	ret =3D btrfs_make_subvolume(trans, CONV_IMAGE_SUBVOL_OBJECTID, true);
- 	if (ret < 0) {
- 		error("failed to create subvolume image root: %d", ret);
- 		goto err;
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 0bdb414a..a69aa24b 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -735,35 +735,6 @@ static void update_chunk_allocation(struct btrfs_fs_=
-info *fs_info,
- 	}
- }
-=20
--static int create_uuid_tree(struct btrfs_trans_handle *trans)
--{
--	struct btrfs_fs_info *fs_info =3D trans->fs_info;
--	struct btrfs_root *root;
--	struct btrfs_key key =3D {
--		.objectid =3D BTRFS_UUID_TREE_OBJECTID,
--		.type =3D BTRFS_ROOT_ITEM_KEY,
--	};
--	int ret =3D 0;
--
--	UASSERT(fs_info->uuid_root =3D=3D NULL);
--	root =3D btrfs_create_tree(trans, &key);
--	if (IS_ERR(root)) {
--		ret =3D PTR_ERR(root);
--		goto out;
--	}
--
--	add_root_to_dirty_list(root);
--	fs_info->uuid_root =3D root;
--	ret =3D btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
--				  BTRFS_UUID_KEY_SUBVOL,
--				  fs_info->fs_root->root_key.objectid);
--	if (ret < 0)
--		btrfs_abort_transaction(trans, ret);
--
--out:
--	return ret;
--}
--
- static int create_global_root(struct btrfs_trans_handle *trans, u64 obje=
-ctid,
- 			      int root_id)
- {
---=20
-2.44.2
+[auto build test ERROR on kdave/for-next]
+[also build test ERROR on linus/master v6.10 next-20240719]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-always-uses-root-memcgroup-for-filemap_add_folio/20240719-125131
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/d408a1b35307101e82a6845e26af4a122c8e5a25.1721363035.git.wqu%40suse.com
+patch subject: [PATCH v5 1/2] btrfs: always uses root memcgroup for filemap_add_folio()
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20240719/202407192308.yzjpnura-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240719/202407192308.yzjpnura-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202407192308.yzjpnura-lkp@intel.com/
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-samsung.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-semitek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sjoy.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sony.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-speedlink.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-steam.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-steelseries.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sunplus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gaff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-tmff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-tivo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-topseed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-twinhan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-uclogic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-xinmo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zpff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zydacron.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-viewsonic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-waltop.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-winwing.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/fbtft/fbtft.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-bootrom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-spilib.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-hid.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-light.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-log.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-loopback.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-power-supply.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-vibrator.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-audio-manager.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-gbphy.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-i2c.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-pwm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-sdio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-spi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-uart.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-usb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/platform/chrome/cros_kunit_proto_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mailbox/mtk-cmdq-mailbox.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_simpleondemand.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_powersave.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_userspace.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/perf/arm-ccn.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/perf/fsl_imx8_ddr_perf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/perf/arm_cspmu/arm_cspmu_module.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/perf/arm_cspmu/nvidia_cspmu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/perf/arm_cspmu/ampere_cspmu.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem-apple-efuses.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem_brcm_nvram.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem_u-boot-env.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx-interconnect.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mm-interconnect.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mq-interconnect.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mn-interconnect.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mp-interconnect.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hte/hte-tegra194-test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/vdpa/vdpa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/parsers/brcm_u-boot.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/parsers/tplink_safeloader.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/hisi-spmi-controller.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/spmi-pmic-arb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pcmcia/pcmcia_rsrc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/corsair-cpro.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/mr75203.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/greybus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/gb-es2.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rpmsg/rpmsg_char.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/ingenic-adc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/xilinx-ams.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/buffer/kfifo_buf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-hub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-aspeed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-ast-cf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/siox/siox-bus-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/counter/ftm-quaddec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mtty.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mdpy.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mdpy-fb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mbochs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/configfs/configfs_sample.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/bytestream-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/dma-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/inttype-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/record-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kobject-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kset-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kprobes/kprobe_example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kprobes/kretprobe_example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kmemleak/kmemleak-test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in arch/sh/drivers/push-switch.o
+>> ERROR: modpost: "root_mem_cgroup" [fs/btrfs/btrfs.ko] undefined!
+ERROR: modpost: "__delay" [drivers/net/mdio/mdio-cavium.ko] undefined!
+ERROR: modpost: "devm_of_clk_add_hw_provider" [drivers/media/i2c/tc358746.ko] undefined!
+ERROR: modpost: "devm_clk_hw_register" [drivers/media/i2c/tc358746.ko] undefined!
+ERROR: modpost: "of_clk_hw_simple_get" [drivers/media/i2c/tc358746.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
