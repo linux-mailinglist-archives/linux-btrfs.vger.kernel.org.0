@@ -1,56 +1,64 @@
-Return-Path: <linux-btrfs+bounces-6626-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6627-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74742937E88
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2024 02:31:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 465339381CC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2024 17:22:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC4F2B212FE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2024 00:31:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE7EA1F2170B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2024 15:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A72E4436;
-	Sat, 20 Jul 2024 00:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6978D13C80C;
+	Sat, 20 Jul 2024 15:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HrqDjFNt"
+	dkim=fail reason="signature verification failed" (768-bit key) header.d=casa-di-locascio.net header.i=@casa-di-locascio.net header.b="hgmKoJiW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ADF223D7
-	for <linux-btrfs@vger.kernel.org>; Sat, 20 Jul 2024 00:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAEE73209
+	for <linux-btrfs@vger.kernel.org>; Sat, 20 Jul 2024 15:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721435479; cv=none; b=hZThZPd3sx9sbUC8bfH7rZu2DENTLAvSDLwr1yo1W7jIq09Y2IH6rORgvZCFFhPACTSlIhzGC3tCGfNAAc6OrhGph2uhiYOCh+7fU0wWvNjftZRWzOnc6iuv10cl4Gin29inG2qXCg0CVC53wCHwZENkxgWh+BiD5F5mg8zzLMg=
+	t=1721488942; cv=none; b=o1PtezfMLG3bsD+XEmzhcm+dTJkzBLyDps2sEjX9Yvfhvg0jGtmoteffbbQGbGylx7B4+x9FE0wewwybnh5HxPlf5DZDKSf4btvG5QWNJ1LBOGfXTvx4OJPVnol+Gbs6+FKhVPUApKvlIr2d4uTssWf2go+u79Ms/7xm+SpZntI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721435479; c=relaxed/simple;
-	bh=SB+rioVI+bKmWiCWmHqQwXvp0dZ3RYZhLJImalcM9jc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KDYO4GdTnbzh8f9fPTgPXYq/j+MViqPemXhWESTKctVZOBx98Mm9S3dex03+Pbxfw2j5A814UJNlwdj/KzNWGbVLthRJFdm/cRrOqIdQg2Z3LISrE6id4zP8OYysh4uKig8eKi+DBkFwTFMczAIxYsnjgaFCpnhUVqC6mtEPxWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HrqDjFNt; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1721435464; x=1722040264; i=quwenruo.btrfs@gmx.com;
-	bh=cy7uqiZdV7tljOiFFd262Okce1IItZgnsy221c3/sJ8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=HrqDjFNtUdANkPMIPhlu96NuM+QxBtPGe9CgVRfzOIwy89bxAKlu+5rI958CUrTk
-	 a/so9CPTNzfZrb/K+HIK/p5u4iBfIjOgLFsoVZ8i8iu1i6ZDc60RopDsw9gltHVKR
-	 NsWV6jwqZcd2YWvTh3ZlW4rxMwbHhUDrhAA52mnQrAfXQstVjfX7+nIfQfq4b+bQ7
-	 0xiFZ0PrVycCWow/yKXgXMhdES78cbY+gdT2/CYICfI9nG9M3Hajuh6xWXik2j6u0
-	 zWncmUJDVCrEaB0nLC/5fXsspQDHcc34vghjqA8CD8vlqYdBC4MvRHJK9OeOxH4Wk
-	 Vgi/PUlIVaGneTuQqA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRmfi-1ssjFy0JTO-00OPsD; Sat, 20
- Jul 2024 02:31:04 +0200
-Message-ID: <05c6a4a6-5dde-48d1-8876-e625dce9ce02@gmx.com>
-Date: Sat, 20 Jul 2024 10:01:00 +0930
+	s=arc-20240116; t=1721488942; c=relaxed/simple;
+	bh=BAxFi3HZv2vEJVOAtuZSJyD71neUU11+2KT+hP7Hiz0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=cI1Z7m448LlKzkY+wkI63sXdIz/lcvMkJ1Y1CW5L+daGVB5xwbrxLpKhtV9GX6Ccwxxlxjf0KZKZabD+JR0XjSORyaWnlkgr05O65RWGBXFiz/cZf3YrJnUQfHSFHyRDKv0wxm6Hu6Gs/s313uH+Ju8mX9dY6dA+aPwCB2IrEZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roosoft.ltd.uk; spf=pass smtp.mailfrom=roosoft.ltd.uk; dkim=policy (768-bit key) header.d=casa-di-locascio.net header.i=@casa-di-locascio.net header.b=hgmKoJiW reason="signing key too small"; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roosoft.ltd.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=roosoft.ltd.uk
+Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
+	by cmsmtp with ESMTPS
+	id UuSosPNE6vH7lVBuWsiqbU; Sat, 20 Jul 2024 15:22:12 +0000
+Received: from box2278.bluehost.com ([50.87.176.218])
+	by cmsmtp with ESMTPS
+	id VBuVsItNkeCxMVBuVsepiB; Sat, 20 Jul 2024 15:22:11 +0000
+X-Authority-Analysis: v=2.4 cv=M/yGKDws c=1 sm=1 tr=0 ts=669bd623
+ a=XwlUGG/Joq/Evm8SRPjtJg==:117 a=XwlUGG/Joq/Evm8SRPjtJg==:17
+ a=IkcTkHD0fZMA:10 a=4kmOji7k6h8A:10 a=CngwRIvfAAAA:8 a=fbCOJJXJpDEY7AB36HQA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=4_miDDMz0JLoEzr4jVLQ:22
+ a=mCY-HCvPnkKXJ80akIyT:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=casa-di-locascio.net; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=mDHrNmac2QE+6s7ha89UMY/8E5rcs/smYH8vA9Mvi44=; b=hgmKoJiWQ4WIAcqd6RdetJ7vau
+	u92CQuWMwcahziHKdu/oMk4Xez1HSTqpLNqpbULSV44tl+E2mmlvmoO1MkjF1JKzlGo61WdvR648Q
+	33pLIG9FThoFNiFYJyb+yL/fa;
+Received: from [45.95.250.46] (port=11483 helo=[192.168.1.158])
+	by box2278.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <devel@roosoft.ltd.uk>)
+	id 1sVBuS-002cPV-1r;
+	Sat, 20 Jul 2024 09:22:08 -0600
+Message-ID: <e1e2de51-de74-418d-9179-cbcdb9e05ac1@roosoft.ltd.uk>
+Date: Sat, 20 Jul 2024 16:22:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,118 +66,173 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: avoid using fixed char array size for tree names
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Sam James <sam@gentoo.org>
-References: <09fa6dc7de3c7033d92ec7d320a75038f8a94c89.1721364593.git.wqu@suse.com>
- <20240719235328.GB23446@twin.jikos.cz>
+Subject: Re: Unable to mount after successful replace.
+To: devel@roosoft.ltd.uk,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <98c97077-b801-46b0-9410-8cc57780a0c0@roosoft.ltd.uk>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240719235328.GB23446@twin.jikos.cz>
+From: devel@roosoft.ltd.uk
+Disposition-Notification-To: devel@roosoft.ltd.uk
+In-Reply-To: <98c97077-b801-46b0-9410-8cc57780a0c0@roosoft.ltd.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EG3JOo1haS2iV2JAId4OSGUb2ZlHoaZVuwgtyAgpPG50Q66KeyZ
- U5BrZCcAWD87oiAioFUjVLkzxHxe/Qg4oY/BVbiFz/yeG3ZXVqA08cFxr0z8Pqs+ZYfCuu6
- 934heLlaQtRyTtxvAWtEC12LYCvHsccdoi9kFsLVC6Kv9BJ7DwBUxiWDpjjj+3VMx7lnrph
- nh3FotgySmX0HZkH6aS7g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:N++qoWqSOwE=;UT2SigtdsJtbt5lWVOodCZRSHl+
- n5ePvW+LS9CWnXpeq9u6MbiTwvHK+YzoK5tgq6HIA17Sz+/HsBeYMDT/IxtYUrwkFojfYlcek
- LfgQ8TPsaTvBWbvrPPiYjQGTTDkOoMnBsNzogngC7IL/KZGftx82PbjV0IPbuPckqpaLa0OjV
- N135/dZ1urVxCjgMsF+terhysZG9h5A9qAPAngnTFS37GK5dx4MbJTl++rTqSm0rfVV69Deg+
- RcJToP7CEt/TS3OBqCfSrmAuKydP/oCyln7UhW0dJTTdg5mW7EfGRV4iZl13OGZl4+Ckf76RI
- QM3fYGaxqwlO2d6F/Qyq5CUgWifKkaJup56aM68x2e/Uhsv8OW3FEt5lJhzL957jz9bUooe/d
- Q+OyAkTGZiK9yp16taRAB88oTa0WvuP8obr4AZUvBds4eUc8BtwL6nv2FdRNlnK0puunmqxy0
- k5oTpcrHkmoBXXBw6wB+qKPvp5ouKWPOTKj+sm3AqU3oPTMMkYGhfxnDOHqQZsQScP6HNQzy0
- JdZZkAj7HvzA66PRgdBhxYfRIQrnm96tVxWuCfXfYWJQSDUEKUwtRsOUp2EubGMPncNZ+8Em0
- YUHIbVZWwdwuZ6db4zvC1/0f5hdACM2fCrd7jIBfEScIIqBa4royc3a5ON7KLy98aYxoK1vxa
- Ov8IKn8Lr1t814wV+5xLv1Jb3q49A7SyILa144f3LXsIkLYxUpUzLyIxdtcYK93XTCmWdjcCX
- iTP9FedtzkKy5gUTteYUqom3w6qACnTzDEjaKa9tY4h+mXKSO/0ZRUQDPjRlvuHKkdyf9YIuR
- BZXihVgOBIh49DkrpgOTriQw==
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box2278.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roosoft.ltd.uk
+X-BWhitelist: no
+X-Source-IP: 45.95.250.46
+X-Source-L: No
+X-Exim-ID: 1sVBuS-002cPV-1r
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.158]) [45.95.250.46]:11483
+X-Source-Auth: fpd_eacct+casa-di-locascio.net
+X-Email-Count: 1
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: Y2FzYWRpbG87Y2FzYWRpbG87Ym94MjI3OC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHPy4g/1liX7QVJWqfGxPpWd9b2ny8/21qyOsMsfhHk4vcIqXYWFMuM+dtJeeEDYBI3ibiGx6O5ziPjGP75kuf2zyrk8KOOv0xufudb0CC0o8+mztx84
+ aKo73Dm39vVt1TpE2pnkazmkQZu80fqaIA1HLrc9lUdBLrjaJ9XMUUk8hZ9PkWIdu8dByHDWzNjiQY/nJ/TVIKAudTISpUZl3W8=
+
+So I ran btrfs check and this was the result:
+
+```
+btrfs check -p /dev/sdb
+
+Opening filesystem to check...
+warning, device 5 is missing
+warning, device 5 is missing
+Checking filesystem on /dev/sdb
+UUID: 6abaa68a-2670-4d8b-8d2a-fd7321df9242
+[1/7] checking root items                      (0:01:36 elapsed, 3161640 
+items checked)
+[2/7] checking extents                         (0:10:08 elapsed, 1911321 
+items checked)
+ERROR: super total bytes 48000554500096 smaller than real device(s) size 
+60000693125120
+ERROR: mounting this fs may fail for newer kernels
+ERROR: this can be fixed by 'btrfs rescue fix-device-size'
+[3/7] checking free space tree                 (0:00:37 elapsed, 8170 
+items checked)
+[4/7] checking fs roots                        (1:22:23 elapsed, 67109 
+items checked)
+[5/7] checking csums (without verifying data)  (0:58:05 elapsed, 6127677 
+items checked)
+[6/7] checking root refs                       (0:00:00 elapsed, 72 
+items checked)
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 26187700850688 bytes used, error(s) found
+total csum bytes: 25543346724
+total tree bytes: 31313805312
+total fs tree bytes: 1104560128
+total extent tree bytes: 280035328
+btree space waste bytes: 4225057421
+file data blocks allocated: 27050290237440
+  referenced 26216212553728
+
+```
+
+But then when I run 'btrfs rescue fix-device-size' it fails because the 
+device is missing.
+
+```
+btrfs rescue fix-device-size 
+/dev/disk/by-uuid/6abaa68a-2670-4d8b-8d2a-fd7321df9242
+warning, device 5 is missing
+warning, device 5 is missing
+ERROR: devid 5 is missing or not writeable
+ERROR: fixing device size needs all device(s) to be present and writeable
+
+```
+
+
+How am I supposed to rectify this?
 
 
 
-=E5=9C=A8 2024/7/20 09:23, David Sterba =E5=86=99=E9=81=93:
-> On Fri, Jul 19, 2024 at 02:20:39PM +0930, Qu Wenruo wrote:
->> [BUG]
->> There is a bug report that using the latest trunk GCC, btrfs would caus=
-e
->> unterminated-string-initialization warning:
->>
->>    linux-6.6/fs/btrfs/print-tree.c:29:49: error: initializer-string for=
- array of =E2=80=98char=E2=80=99 is too long [-Werror=3Dunterminated-strin=
-g-initialization]
->>     29 |         { BTRFS_BLOCK_GROUP_TREE_OBJECTID,      "BLOCK_GROUP_T=
-REE"      },
->>        |
->>        ^~~~~~~~~~~~~~~~~~
->>
->> [CAUSE]
->> To print tree names we have an array of root_name_map structure, which
->> uses "char name[16];" to store the name string of a tree.
->>
->> But the following trees have names exactly at 16 chars length:
->> - "BLOCK_GROUP_TREE"
->> - "RAID_STRIPE_TREE"
->>
->> This means we will have no space for the terminating '\0', and can lead
->> to unexpected access when printing the name.
->>
->> [FIX]
->> Instead of "char name[16];" use "const char *" instead.
+On 19/07/2024 23:52, devel@roosoft.ltd.uk wrote:
+> Hi,
 >
-> Please use a fixed size string, this avoids the indirection of one
-> pointer and the actual strings.
-
-I strongly doubt the necessary of avoiding indirection.
-
-Just remember all of our error messages are some pointers to a ro data
-section, and I see no reason why we need to bother the indirection or
-whatever.
-
-They are the cold path anyway, so is our tree names.
-
-You can go char name[24], but without a proper macros checking the
-string length, we're going to hit the same problem sooner or later.
-
-So, I see no reason bothering extending the char size.
-It's not extendable, nor safe.
-
-> For static tables like this is a compact
-> way to store it.
-
-Nope, it's not compact at all, for shorter names we're just wasting
-global ro data space.
-The const char * solution is really using the minimal space.
-
-Thanks,
-Qu
-
-> As the alignment is mandated by u64 the sizes would be
-> best in multipes of 8, so 'char name[24]'.
+> btrfs-progs v6.3.2
 >
+> 6.5.0-4-amd64
+>
+>
+> I ran a successful replace upgrading a 12 to 14Tb  disk in a 4 disk 
+> filesystem
+>
+> > Started on 14.Jul 08:36:44, finished on 19.Jul 13:39:31, 0 write 
+> errs, 0 uncorr. read errs
+>
+> So I shut the machine down,  physically swapped the disks and rebooted.
+>
+> But the filesystem now fails to mount even in degraded mode because it 
+> is missing the replaced device.
+>
+> ```
+> btrfs fi show
+> Label: none  uuid: 6abaa68a-2670-4d8b-8d2a-fd7321df9242
+>     Total devices 4 FS bytes used 23.82TiB
+>     devid    0 size 10.91TiB used 7.96TiB path /dev/sde
+>     devid    1 size 10.91TiB used 7.96TiB path /dev/sdb
+>     devid    2 size 10.91TiB used 7.96TiB path /dev/sdc
+>     devid    4 size 10.91TiB used 7.96TiB path /dev/sdd
+>
+> ```
+>
+> ```
+>
+> mount -o degraded /dev/sdb /mnt/ext/
+> mount: /mnt/ext: mount(2) system call failed: Structure needs cleaning.
+>        dmesg(1) may have more information after failed mount system call.
+>
+> ```
+>
+> ```
+>
+> [Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): using crc32c 
+> (crc32c-generic) checksum algorithm
+> [Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): allowing degraded 
+> mounts
+> [Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): using free space tree
+> [Fri Jul 19 23:16:28 2024] BTRFS warning (device sdb): devid 5 uuid 
+> 951ef490-5bfe-412d-b65e-8a6393428431 is missing
+> [Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): bdev /dev/sde 
+> errs: wr 60252097, rd 0, flush 0, corrupt 0, gen 0
+> [Fri Jul 19 23:16:28 2024] BTRFS info (device sdb): bdev <missing 
+> disk> errs: wr 60254549, rd 25, flush 0, corrupt 0, gen 0
+> [Fri Jul 19 23:16:28 2024] BTRFS error (device sdb): replace without 
+> active item, run 'device scan --forget' on the target device
+> [Fri Jul 19 23:16:28 2024] BTRFS error (device sdb): failed to init 
+> dev_replace: -117
+> [Fri Jul 19 23:16:28 2024] BTRFS error (device sdb): open_ctree failed
+>
+> ```
+> I have tried `btrfs dev scan --forget` to no avail.
+>
+> How do I remove the offending id when I am unable to mount the 
+> filesystem ?
+>
+> Thanks in  advance.
+>
+>
+>
+>
+>
+> Don Alexander
+>
+>
+
+-- 
+==
+
+D LoCascio
+
+Director
+
+RooSoft Ltd
+
 
