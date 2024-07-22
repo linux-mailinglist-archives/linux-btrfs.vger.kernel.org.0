@@ -1,104 +1,108 @@
-Return-Path: <linux-btrfs+bounces-6645-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6646-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CAD39391D2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 17:30:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D146E9394B3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 22:23:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21ED21C2168C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 15:30:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5688CB21B09
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 20:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE3F16E897;
-	Mon, 22 Jul 2024 15:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40BB7224EA;
+	Mon, 22 Jul 2024 20:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Udibmumu"
+	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="kdAjxqDK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F58C2FD;
-	Mon, 22 Jul 2024 15:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127A117C8D
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 20:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721662227; cv=none; b=p8FN06doOpvaxjdxpphp8fwlG6O/IxIkn/c6iJut3nFZAdgI6JLcbN31k7Y7LGuB9e6rGetoRLOOFZ0XA+fw6eYX1bBDGkh/GX/ogb1olU8GjJH3YxHTRAevCspNEA2rRXEY18BgZxJhq7SbdbAHc6uD7sDz4hvmwJMMhRjvHpM=
+	t=1721679787; cv=none; b=Ypep7Rn02O2+LB5/kSUBCUb74Vl2UWP1ZparBHqJX6g5Gc95SLVvfnKauMwa8rhvMcvpQzP798x/1ujHUi32gvqGhMWQu1SGc5AuuIx1kWA4yF4lb4XZzR7DeYEGkuuG6IxxtUjjBjv/xcsLNV2ixRJ0bC4FiAESM3IHmkSOHZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721662227; c=relaxed/simple;
-	bh=qeOMl00DgHVITw+FjVR23dUDZQ0dZ2F3RbfRASJShYY=;
+	s=arc-20240116; t=1721679787; c=relaxed/simple;
+	bh=VHUg8U82kSsfric93le/NYObek+cBZorqIDs53wWAM4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WjkMXh2+Ieay6zEP/Wtr7UfLo4dPHN+SxoK+rirZ2t1ex+JnC55HDr6cbUYB1+fi2PG5vJbSfoVOEjouIdw5x3auBu+UTCH4DCINZW0o3Q1rJEKmmzQmC68U8fmVKQwRIG23RtRnQS68NBQquvB2ECLv2EB5xaeWPedWaQ83mLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Udibmumu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F691C116B1;
-	Mon, 22 Jul 2024 15:30:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721662227;
-	bh=qeOMl00DgHVITw+FjVR23dUDZQ0dZ2F3RbfRASJShYY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Udibmumu7SLzxEKxqIecKZDLnygO3K9IPmsYRL3I6hL5eYqNIVWX7mLjSpajAEdtJ
-	 +34Wwg7S23Sx/TsNHnSCLXzlaT8K9BzSvT0TpzDZp4qpSIexecgt4YBIFxTyDVKdR4
-	 zoGjpH6i7DCAVXe/q3qIV7BqGL/VhVJeejTJZQ5AjoBDa5DUQ2nz2ml/skzftzqSlC
-	 5qNp9evMwxpnZuVl0mgCMoNVIFBdte25OlWnbcPfa0aHZjnWFch12yFrsCVCKAOuGg
-	 mqnhjXYfz2YA35SyHO1xRH0Y7C6QIOmi+MTocaJsucU4+99bRjM3aqFDZEN/X/Fw9k
-	 bZ6cWyiYCD1kA==
-Date: Mon, 22 Jul 2024 17:30:17 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Chandan Babu R <chandan.babu@oracle.com>, 
-	"Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, Hugh Dickins <hughd@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>, 
-	Christoph Hellwig <hch@infradead.org>, Uros Bizjak <ubizjak@gmail.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Arnd Bergmann <arnd@arndb.de>, 
-	Randy Dunlap <rdunlap@infradead.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-nfs@vger.kernel.org, 
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 0/9] fs: multigrain timestamp redux
-Message-ID: <20240722-festmachen-lehrstellen-f86d1bd28997@brauner>
-References: <20240715-mgtime-v6-0-48e5d34bd2ba@kernel.org>
- <20240716-zerlegen-haudegen-ba86a22f4322@brauner>
- <60af7cff6b1cf00388e932804c81ed368fcc9f02.camel@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ElFQE5ZYOHqByD6HzGJlLqF65A5c5nrh7QNid8ChE9o7RF5Ho42F0pVgNQw1EtjSnjR+d2VtiPpy+VtH1irNxAghtLSCQNigEyyoUKVz+3hhkvdQPspc4halqQdu4v3IAo2kuBrJsc/Wbra5QrUtyUEMohWX7v7yuecjaDrsMwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=kdAjxqDK; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-70d357040dbso595377b3a.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 13:23:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1721679785; x=1722284585; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BSZlrejlJKn6NwNkAvoHBluGqiv9POvl1yZBuhoSTy4=;
+        b=kdAjxqDKubFo2s/rkKmh/mmrFf1Z7DVNE1+lAJCb8MitcZcUK9Et+/fabBlFsRPj4t
+         jBYFbHU6hHFTCyJ7ksirWt8iS6Iy4PljCLmm1JjOIoJZuns0iFii3MlorVkA/qJuqNvb
+         a2/FSLOMRU7Dq3j839tn4Q32c6YUa7cKi+u0C/FU0fglyAC3IOZroP8KYhw4pwQx7gIN
+         2za+7bZynS14KGiSYte07YWtdQzxQqNhDgsiWQRnmehb3GJkne+KdK5lIEMn68VUnP4S
+         OxxyMV/EUURXsX6TiLbeIc/UeTV5YFjuNKxMnfITIaqxWqNNfzVF6Y0i4FSeQUfWSV77
+         3b1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721679785; x=1722284585;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BSZlrejlJKn6NwNkAvoHBluGqiv9POvl1yZBuhoSTy4=;
+        b=tY4KdSHoFbEDegnE6IujFaroHRec7zb7GyVqQwRko/MaMhhPj8tPhwsEteaVoSr/nz
+         aVl0b+z16g+0rmULZvqH29F8tLI3usgmjeyTmUfGjpEcw3kAMgtd71ntXtBYDmRzu55E
+         ELhKnMtFvbPmJMyIkiIv5E85zPBBiSrCamKPu0LM9oo+TvJ8A9PXN/cnN56RD9VJln9v
+         ZqmEUM5+gDG5mtiJuGPWLWQvLOxMgLBig5nJdXIze3d6paKcCsahZZDscMjTyCx4Arjt
+         5JOm5T333Z8Tn0BzpOE8MriNjf3ZlTfrntPji4BV7ArFTqSrnJAQRaA5z58PUIjmDx1F
+         vRMw==
+X-Gm-Message-State: AOJu0Yz3J53rHThC/utOabjeokl6WMeK6zr+cTPRA92ywY99qYVvDH4f
+	WideHB+ph5q7Sc3xbLIQWBl5HxS8YF5blo9fw8FVyKJgp2JrI2+wpMh4hMuNywc=
+X-Google-Smtp-Source: AGHT+IEGBuSVf+pX83enedLoLNfGAWQDv3jUYP6Dh1NNRwq0F8rowig8a0tOL6uwXSkXRQke3GgEkA==
+X-Received: by 2002:a05:6a20:2583:b0:1c2:956a:a909 with SMTP id adf61e73a8af0-1c42857a866mr7224550637.27.1721679785297;
+        Mon, 22 Jul 2024 13:23:05 -0700 (PDT)
+Received: from telecaster.dhcp.thefacebook.com ([2620:10d:c090:400::5:bd9e])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f28bff7sm59421085ad.74.2024.07.22.13.23.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jul 2024 13:23:04 -0700 (PDT)
+Date: Mon, 22 Jul 2024 13:23:03 -0700
+From: Omar Sandoval <osandov@osandov.com>
+To: Neal Gompa <neal@gompa.dev>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+	Victor Stinner <vstinner@redhat.com>,
+	Miro Hroncok <mhroncok@redhat.com>, David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>
+Subject: Re: libbtrfsutil Python bindings FTBFS with Python 3.13 on Fedora
+ Linux 41
+Message-ID: <Zp6_p491AZl-9j5C@telecaster.dhcp.thefacebook.com>
+References: <CAEg-Je-tu0DcYvH-mqcv=2xkReYOh9GaeVoJPy0nMD=oqO6stw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60af7cff6b1cf00388e932804c81ed368fcc9f02.camel@kernel.org>
+In-Reply-To: <CAEg-Je-tu0DcYvH-mqcv=2xkReYOh9GaeVoJPy0nMD=oqO6stw@mail.gmail.com>
 
-On Tue, Jul 16, 2024 at 08:45:16AM GMT, Jeff Layton wrote:
-> On Tue, 2024-07-16 at 09:37 +0200, Christian Brauner wrote:
-> > On Mon, Jul 15, 2024 at 08:48:51AM GMT, Jeff Layton wrote:
-> > > I think this is pretty much ready for linux-next now. Since the latest
-> > > changes are pretty minimal, I've left the Reviewed-by's intact. It would
-> > > be nice to have acks or reviews from maintainers for ext4 and tmpfs too.
-> > > 
-> > > I did try to plumb this into bcachefs too, but the way it handles
-> > > timestamps makes that pretty difficult. It keeps the active copies in an
-> > > internal representation of the on-disk inode and periodically copies
-> > > them to struct inode. This is backward from the way most blockdev
-> > > filesystems do this.
-> > > 
-> > > Christian, would you be willing to pick these up  with an eye toward
-> > > v6.12 after the merge window settles?
-> > 
-> > Yup. About to queue it up. I'll try to find some time to go through it
-> > so I might have some replies later but that shouldn't hold up linux-next
-> > at all.
+On Sat, Jul 20, 2024 at 12:59:33PM -0400, Neal Gompa wrote:
+> Hey all,
 > 
-> Great!
+> Fedora Linux 41 has upgraded to Python 3.13[1], and as part of it, the
+> changes to the interpreter API to remove "private" methods have broken
+> the build for python-libbtrfsutil. There's a downstream bug about
+> this[2], but the gist of it is that _Py_IDENTIFIER and
+> _PyObject_LookupSpecial were removed[3], and so the bindings code
+> needs adjustments to fix it.
 > 
-> There is one minor update to the percpu counter patch to compile those
-> out when debugfs isn't enabled, so it may be best to pick the series
-> from the "mgtime" branch in my public git tree. Let me know if you'd
+> Anyone know how to help with this? I'm not really sure how to fix this...
 
-I did that now and pushed to vfs.mgtime. Please take a look as I rebased
-onto current master and resolved conflicts in xfs and btrfs. Thanks!
+Hi, Neal,
+
+I believe that the _Py_IDENTIFIER removal was reverted, but I can send a
+patch for _PyObject_LookupSpecial later this week. Thanks for the heads
+up.
+
+Omar
 
