@@ -1,97 +1,294 @@
-Return-Path: <linux-btrfs+bounces-6643-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6644-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ABE393906A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 16:15:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118519390B8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 16:33:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A20FB21A2B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 14:15:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2239128102B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 14:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E9FD2F5;
-	Mon, 22 Jul 2024 14:15:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F6C1D551;
+	Mon, 22 Jul 2024 14:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="jR1MoLQ6"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="Z3sJliGe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D07C2CA9
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 14:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E868F70
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 14:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721657745; cv=none; b=RuNzC2QJRdALkht4xGQG6hVatcy3cGpkVo5q6Dzrcm3awbvh98O/GzA61RAgrX3E7MgtdEzoLPWSgkwc3nMVzmgX3u+tiWqNNzqqcWwqwtFOlcIDGoeu1LJmPDxhZF+K5nBoBzOFRjEeiqJoO026YAX/ZJXAFcLuzxktH05K3Kg=
+	t=1721658772; cv=none; b=cZ41VLJwZAtZ3MAWiQ6TFNcYUndsKnBedD/Z2qBm0EVee6eVL86h9xnSw3UHfeXRarye27ohuBNlxcZpnKxQPhZDh5bA8mrvR/EYyvgHhESUlmmYq5USJbeubh3TyrDBGdVvFzlEXADE6chIs3ppqmYQles7avVoGXOPqiq2yfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721657745; c=relaxed/simple;
-	bh=MgoTEUlUq0EArcc+W4qaRN3DskX36xYXUNIMou/MVOw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qUd0QZXTl5QaHq94UDH+BtwWaAu099wLgVoq0Xd6Kz6LakqvI5SsZzXAZ0x/wqtoRlZZy9j6CXjmNyE4Wmrecw4BtPN6+frmw9CAt91KEui2IBahvoOCkBU1Va875kSR95X8SRUN/4FpOs5n2DzSHN4+n+0cy0WwweuXiKV1/OM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=jR1MoLQ6; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-643f3130ed1so43082017b3.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 07:15:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1721657742; x=1722262542; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+7UVgzffFXpiNSeYIl+LqwzKMotm47bkXr2Nz7Ljwjg=;
-        b=jR1MoLQ6X2aw+ZxiUHLj8+sXvfZi+FhdZsB5LBYjZO2twANY9fIqGwGvlIbTFAf23a
-         p2odRP7fzQ+pVGcpm5SIq+0DbQG9sbmtGGcK5MxbwBOtmlSrevax3Clq4QzJBWXHY6w7
-         PXHNyIdHwngSoVFwqsX09g8C0oAXjlQMnKLJxmIENgNI5H72nRN+2eE1qqFXUzFxKMu4
-         08lr8D5t/7hy0BUrA1oH98OO+N0h8Ea2u0s/o0P6q/5mlrOqK2lA2sSFPjgMn9/oAJ3j
-         5F2ytBJmEt8kal3riztzbY+dt8b9OWswbu0Y71TFfk/jkGhi6qmZLS3o7kJrjJ2ykKyl
-         Fb1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721657742; x=1722262542;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+7UVgzffFXpiNSeYIl+LqwzKMotm47bkXr2Nz7Ljwjg=;
-        b=IKfzd7vdP0Sh9LsBWMtPVDqFrQKSNVEGo+JQNY2kW0Kf9jhrS22tzTt1TQQFpZoKMi
-         GNvKgYFwU+JMPXC3TirDrwMBgwQDyu1xN+9RXmK6jyhkfi/jWaG/4U6vlYi+6TERdgJT
-         Ql3CzuZfaoQirhW/+bnM/oxUKZM9FvaIYM5FIucRJ7g/NQ2WnKvywJfMIm2PwNqVFaaX
-         r2eqV8jR08zZw6b76UuQKX5tcUeCLi8UhwPPzc53q3bjYSOIkh/U2Y18YNXH+FWFsQp9
-         TjH1cylF159D6byhmmzx655rmCtUDs1CV5iYog+CbUVJT7JKX68x3/wlE0AcNA+hgMUX
-         Hx3A==
-X-Gm-Message-State: AOJu0Yz2N7QkyAguBHkRPQFejLeqas4bGVU5MaaxB4rOv1Uzsl+i+uyx
-	IFQBGJm6pv0xjwdj4n8CcHpLGBQZlWYbenIf0tF1WVVtEdydoNviW9KIUMA8ato=
-X-Google-Smtp-Source: AGHT+IHtuCrCsTy88goYF79fwbHIAx70sEuH1aPI9Q6ExdyJWWFlMSuCNWmfFaMx5ItU9hnKzz/ksA==
-X-Received: by 2002:a81:c941:0:b0:650:a1cb:b122 with SMTP id 00721157ae682-66ad94ba0d2mr68055307b3.27.1721657742111;
-        Mon, 22 Jul 2024 07:15:42 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-66951f7265csm16644137b3.11.2024.07.22.07.15.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jul 2024 07:15:41 -0700 (PDT)
-Date: Mon, 22 Jul 2024 10:15:40 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: set transid in btrfs_insert_dir_item
-Message-ID: <20240722141540.GA2384989@perftesting>
-References: <20240722133320.835470-1-maharmstone@fb.com>
+	s=arc-20240116; t=1721658772; c=relaxed/simple;
+	bh=xHasprSMyD07uRTgPEpKEf/XpSnTc64H1rLjfRC9TAE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DJgx40kjmHyM3Lp3vfNyYgCmhE7HvKaNfb5TQbczrlAqqjxFjGwYRJGFKzHuV4OZ/mpOeMsY5OVdCxce5U3O4FrkOuzguG9JGrTqPAD7b+Bg55xcSeFMVUyBO9JlBoQRvJtphiPl0S+I4BPRBhPh6cHaWUHp/2yuxWFHDJMYB6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=Z3sJliGe; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 46MCNFuS015075
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 07:32:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=facebook; bh=yyGsRmOz
+	fZcft3dkYY2lUfS3vJ8kUrN7kMrB9unqGOk=; b=Z3sJliGeatqVnMVhsA0O2Kld
+	zRdQqfvJLbI+jZUMJOJ25GIEb1tC7j0XQevz54XNmLWrI6Xx7r5R+7TqVNu4YhLL
+	j5O6dOXeKmQ0nRY+iLsdFDX5BAMH7aQkSLbbrbu8r6AmTexRnnbsGttDW6jyBstQ
+	uUu0IvB9lTD2BthKsOY=
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 40g8wr07jv-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 07:32:49 -0700 (PDT)
+Received: from twshared53332.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Mon, 22 Jul 2024 14:32:43 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 1603D493D640; Mon, 22 Jul 2024 15:32:40 +0100 (BST)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH v2] btrfs-progs: simplify mkfs_main cleanup
+Date: Mon, 22 Jul 2024 15:32:24 +0100
+Message-ID: <20240722143235.1022223-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240722133320.835470-1-maharmstone@fb.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 9_BypJ2w6SGEUwzX8ybKfEk2BD089YJR
+X-Proofpoint-GUID: 9_BypJ2w6SGEUwzX8ybKfEk2BD089YJR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-22_10,2024-07-22_01,2024-05-17_01
 
-On Mon, Jul 22, 2024 at 02:33:02PM +0100, Mark Harmstone wrote:
-> btrfs_insert_dir_item wasn't setting the transid field in
-> btrfs_dir_item. Set it to the current transaction ID rather than writing
-> uninitialized memory to disk.
-> 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+mkfs_main is a main-like function, meaning that return and exit are
+equivalent. Deduplicate our cleanup code by moving the error label.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+---
+ mkfs/main.c | 40 ++++++++++++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
 
-Thanks,
+diff --git a/mkfs/main.c b/mkfs/main.c
+index a69aa24b..a721acde 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -1158,6 +1158,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 					error("unrecognized filesystem feature '%s'",
+ 							tmp);
+ 					free(orig);
++					ret =3D 1;
+ 					goto error;
+ 				}
+ 				free(orig);
+@@ -1179,6 +1180,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 					error("unrecognized runtime feature '%s'",
+ 					      tmp);
+ 					free(orig);
++					ret =3D 1;
+ 					goto error;
+ 				}
+ 				free(orig);
+@@ -1245,8 +1247,10 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+=20
+ 	if (!sectorsize)
+ 		sectorsize =3D (u32)SZ_4K;
+-	if (btrfs_check_sectorsize(sectorsize))
++	if (btrfs_check_sectorsize(sectorsize)) {
++		ret =3D 1;
+ 		goto error;
++	}
+=20
+ 	if (!nodesize)
+ 		nodesize =3D max_t(u32, sectorsize, BTRFS_MKFS_DEFAULT_NODE_SIZE);
+@@ -1261,10 +1265,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+=20
+ 	if (source_dir && device_count > 1) {
+ 		error("the option -r is limited to a single device");
++		ret =3D 1;
+ 		goto error;
+ 	}
+ 	if (shrink_rootdir && source_dir =3D=3D NULL) {
+ 		error("the option --shrink must be used with --rootdir");
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1273,11 +1279,13 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+=20
+ 		if (uuid_parse(fs_uuid, dummy_uuid) !=3D 0) {
+ 			error("could not parse UUID: %s", fs_uuid);
++			ret =3D 1;
+ 			goto error;
+ 		}
+ 		/* We allow non-unique fsid for single device btrfs filesystem. */
+ 		if (device_count !=3D 1 && !test_uuid_unique(fs_uuid)) {
+ 			error("non-unique UUID: %s", fs_uuid);
++			ret =3D 1;
+ 			goto error;
+ 		}
+ 	}
+@@ -1287,12 +1295,14 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+=20
+ 		if (uuid_parse(dev_uuid, dummy_uuid) !=3D 0) {
+ 			error("could not parse device UUID: %s", dev_uuid);
++			ret =3D 1;
+ 			goto error;
+ 		}
+ 		/* We allow non-unique device uuid for single device filesystem. */
+ 		if (device_count !=3D 1 && !test_uuid_unique(dev_uuid)) {
+ 			error("the option --device-uuid %s can be used only for a single devi=
+ce filesystem",
+ 			      dev_uuid);
++			ret =3D 1;
+ 			goto error;
+ 		}
+ 	}
+@@ -1356,6 +1366,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			if (metadata_profile !=3D data_profile) {
+ 				error(
+ 	"with mixed block groups data and metadata profiles must be the same");
++				ret =3D 1;
+ 				goto error;
+ 			}
+ 		}
+@@ -1425,12 +1436,15 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 			warning("libblkid < 2.38 does not support zoned mode's superblock loc=
+ation, update recommended");
+ 	}
+=20
+-	if (btrfs_check_nodesize(nodesize, sectorsize, &features))
++	if (btrfs_check_nodesize(nodesize, sectorsize, &features)) {
++		ret =3D 1;
+ 		goto error;
++	}
+=20
+ 	if (sectorsize < sizeof(struct btrfs_super_block)) {
+ 		error("sectorsize smaller than superblock: %u < %zu",
+ 				sectorsize, sizeof(struct btrfs_super_block));
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1461,6 +1475,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 					 S_IROTH);
+ 		if (fd < 0) {
+ 			error("unable to open %s: %m", file);
++			ret =3D 1;
+ 			goto error;
+ 		}
+=20
+@@ -1506,6 +1521,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		error("size %llu is too small to make a usable filesystem", byte_count=
+);
+ 		error("minimum size for a %sbtrfs filesystem is %llu",
+ 		      opt_zoned ? "zoned mode " : "", min_dev_size);
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1559,6 +1575,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		if (!zoned_profile_supported(metadata, rst) ||
+ 		    !zoned_profile_supported(data, rst)) {
+ 			error("zoned mode does not yet support the selected RAID profiles");
++			ret =3D 1;
+ 			goto error;
+ 		}
+ 	}
+@@ -1568,6 +1585,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+=20
+ 	if (!t_prepare || !prepare_ctx) {
+ 		error_msg(ERROR_MSG_MEMORY, "thread for preparing devices");
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1609,6 +1627,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	if (byte_count && byte_count > dev_byte_count) {
+ 		error("%s is smaller than requested size, expected %llu, found %llu",
+ 		      file, byte_count, dev_byte_count);
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1652,6 +1671,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	fs_info =3D open_ctree_fs_info(&oca);
+ 	if (!fs_info) {
+ 		error("open ctree failed");
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1675,6 +1695,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	if (IS_ERR(trans)) {
+ 		errno =3D -PTR_ERR(trans);
+ 		error_msg(ERROR_MSG_START_TRANS, "%m");
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1709,6 +1730,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 	if (IS_ERR(trans)) {
+ 		errno =3D -PTR_ERR(trans);
+ 		error_msg(ERROR_MSG_START_TRANS, "%m");
++		ret =3D 1;
+ 		goto error;
+ 	}
+=20
+@@ -1728,6 +1750,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		if (prepare_ctx[i].ret) {
+ 			errno =3D -prepare_ctx[i].ret;
+ 			error("unable to prepare device %s: %m", prepare_ctx[i].file);
++			ret =3D 1;
+ 			goto error;
+ 		}
+=20
+@@ -1776,6 +1799,7 @@ raid_groups:
+ 	if (IS_ERR(trans)) {
+ 		errno =3D -PTR_ERR(trans);
+ 		error_msg(ERROR_MSG_START_TRANS, "%m");
++		ret =3D 1;
+ 		goto error;
+ 	}
+ 	/* COW all tree blocks to newly created chunks */
+@@ -1915,6 +1939,8 @@ out:
+ 	}
+=20
+ 	btrfs_close_all_devices();
++
++error:
+ 	if (prepare_ctx) {
+ 		for (i =3D 0; i < device_count; i++)
+ 			close(prepare_ctx[i].fd);
+@@ -1926,16 +1952,6 @@ out:
+=20
+ 	return !!ret;
+=20
+-error:
+-	if (prepare_ctx) {
+-		for (i =3D 0; i < device_count; i++)
+-			close(prepare_ctx[i].fd);
+-	}
+-	free(t_prepare);
+-	free(prepare_ctx);
+-	free(label);
+-	free(source_dir);
+-	exit(1);
+ success:
+ 	exit(0);
+ }
+--=20
+2.44.2
 
-Josef
 
