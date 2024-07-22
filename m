@@ -1,116 +1,97 @@
-Return-Path: <linux-btrfs+bounces-6642-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6643-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35142938FF5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 15:33:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ABE393906A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 16:15:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCBC01F21ABC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 13:33:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A20FB21A2B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 14:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AC316D9C0;
-	Mon, 22 Jul 2024 13:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E9FD2F5;
+	Mon, 22 Jul 2024 14:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="U+Rak7ku"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="jR1MoLQ6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D72F21D696
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 13:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D07C2CA9
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 14:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721655213; cv=none; b=nw2u1jvtiY0lbnr8d9Pj66/SMAttztvoLK+Oo1/cguLfHE2dSByLdBNmEYFVFuNNw6aKP8XS27tqtv8kvX1CB5YDbTlrsTdvuy2B3DK6MThBFf0L429DJwlOnFOLC37ZanFOo6H6p2MaeiWi+hr0ghRjhcqzkKxhdJ3GX5N5gRc=
+	t=1721657745; cv=none; b=RuNzC2QJRdALkht4xGQG6hVatcy3cGpkVo5q6Dzrcm3awbvh98O/GzA61RAgrX3E7MgtdEzoLPWSgkwc3nMVzmgX3u+tiWqNNzqqcWwqwtFOlcIDGoeu1LJmPDxhZF+K5nBoBzOFRjEeiqJoO026YAX/ZJXAFcLuzxktH05K3Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721655213; c=relaxed/simple;
-	bh=i+lqykzIv1dWWkxVAZxsk7faSkh679bhngGcxCsI528=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jA46GGQvHJGoVVJ0URunlXTcFSTe+XO6QMKY/SjPCsbK3ovnMwjb6utChodFbSffAWbK2mhE8Ro4WIqWIKw/68JE+/e6KTbY1bgQBVDItQM7VuVk7N4twQHvKRk7SVYldh3+JJT20TFN6/X0eZuvBAO7bLpLdjt8iJw3B9/kWu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=U+Rak7ku; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46MCNEoA004532
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 06:33:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
-	:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=facebook; bh=6R+Jy7Vx
-	btJbG280aZuc+pqaNbyve16vvqxgFADwWMA=; b=U+Rak7ku4EbTr/D085beq5vU
-	PrbgutwOAvRqwyBPtqvUlOHObPNAfqSuNKqYRdzC0+Zj1uWxyP6Gmv8GOSp5KD+F
-	O7uBHHzBXn8Ey7hXmApne8Yeq7wwpdCmrtIID3Lqx9b7K9cZRg/l/+QL87uudLj3
-	5XztVprFfZGt/ijbxSU=
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40gcj0ygdc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 06:33:31 -0700 (PDT)
-Received: from twshared18401.02.ash9.facebook.com (2620:10d:c0a8:fe::f072) by
- mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Mon, 22 Jul 2024 13:33:29 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 7D0CC4936E0B; Mon, 22 Jul 2024 14:33:23 +0100 (BST)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH v2] btrfs-progs: set transid in btrfs_insert_dir_item
-Date: Mon, 22 Jul 2024 14:33:02 +0100
-Message-ID: <20240722133320.835470-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1721657745; c=relaxed/simple;
+	bh=MgoTEUlUq0EArcc+W4qaRN3DskX36xYXUNIMou/MVOw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qUd0QZXTl5QaHq94UDH+BtwWaAu099wLgVoq0Xd6Kz6LakqvI5SsZzXAZ0x/wqtoRlZZy9j6CXjmNyE4Wmrecw4BtPN6+frmw9CAt91KEui2IBahvoOCkBU1Va875kSR95X8SRUN/4FpOs5n2DzSHN4+n+0cy0WwweuXiKV1/OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=jR1MoLQ6; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-643f3130ed1so43082017b3.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 07:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1721657742; x=1722262542; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+7UVgzffFXpiNSeYIl+LqwzKMotm47bkXr2Nz7Ljwjg=;
+        b=jR1MoLQ6X2aw+ZxiUHLj8+sXvfZi+FhdZsB5LBYjZO2twANY9fIqGwGvlIbTFAf23a
+         p2odRP7fzQ+pVGcpm5SIq+0DbQG9sbmtGGcK5MxbwBOtmlSrevax3Clq4QzJBWXHY6w7
+         PXHNyIdHwngSoVFwqsX09g8C0oAXjlQMnKLJxmIENgNI5H72nRN+2eE1qqFXUzFxKMu4
+         08lr8D5t/7hy0BUrA1oH98OO+N0h8Ea2u0s/o0P6q/5mlrOqK2lA2sSFPjgMn9/oAJ3j
+         5F2ytBJmEt8kal3riztzbY+dt8b9OWswbu0Y71TFfk/jkGhi6qmZLS3o7kJrjJ2ykKyl
+         Fb1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721657742; x=1722262542;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+7UVgzffFXpiNSeYIl+LqwzKMotm47bkXr2Nz7Ljwjg=;
+        b=IKfzd7vdP0Sh9LsBWMtPVDqFrQKSNVEGo+JQNY2kW0Kf9jhrS22tzTt1TQQFpZoKMi
+         GNvKgYFwU+JMPXC3TirDrwMBgwQDyu1xN+9RXmK6jyhkfi/jWaG/4U6vlYi+6TERdgJT
+         Ql3CzuZfaoQirhW/+bnM/oxUKZM9FvaIYM5FIucRJ7g/NQ2WnKvywJfMIm2PwNqVFaaX
+         r2eqV8jR08zZw6b76UuQKX5tcUeCLi8UhwPPzc53q3bjYSOIkh/U2Y18YNXH+FWFsQp9
+         TjH1cylF159D6byhmmzx655rmCtUDs1CV5iYog+CbUVJT7JKX68x3/wlE0AcNA+hgMUX
+         Hx3A==
+X-Gm-Message-State: AOJu0Yz2N7QkyAguBHkRPQFejLeqas4bGVU5MaaxB4rOv1Uzsl+i+uyx
+	IFQBGJm6pv0xjwdj4n8CcHpLGBQZlWYbenIf0tF1WVVtEdydoNviW9KIUMA8ato=
+X-Google-Smtp-Source: AGHT+IHtuCrCsTy88goYF79fwbHIAx70sEuH1aPI9Q6ExdyJWWFlMSuCNWmfFaMx5ItU9hnKzz/ksA==
+X-Received: by 2002:a81:c941:0:b0:650:a1cb:b122 with SMTP id 00721157ae682-66ad94ba0d2mr68055307b3.27.1721657742111;
+        Mon, 22 Jul 2024 07:15:42 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-66951f7265csm16644137b3.11.2024.07.22.07.15.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jul 2024 07:15:41 -0700 (PDT)
+Date: Mon, 22 Jul 2024 10:15:40 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs-progs: set transid in btrfs_insert_dir_item
+Message-ID: <20240722141540.GA2384989@perftesting>
+References: <20240722133320.835470-1-maharmstone@fb.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: _-IbFI4xG7mVaIpcvxKirOj51iNHU6HA
-X-Proofpoint-GUID: _-IbFI4xG7mVaIpcvxKirOj51iNHU6HA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-22_09,2024-07-22_01,2024-05-17_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240722133320.835470-1-maharmstone@fb.com>
 
-btrfs_insert_dir_item wasn't setting the transid field in
-btrfs_dir_item. Set it to the current transaction ID rather than writing
-uninitialized memory to disk.
+On Mon, Jul 22, 2024 at 02:33:02PM +0100, Mark Harmstone wrote:
+> btrfs_insert_dir_item wasn't setting the transid field in
+> btrfs_dir_item. Set it to the current transaction ID rather than writing
+> uninitialized memory to disk.
+> 
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
 
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
----
- kernel-shared/dir-item.c | 3 +++
- 1 file changed, 3 insertions(+)
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-diff --git a/kernel-shared/dir-item.c b/kernel-shared/dir-item.c
-index 4c62597b..5e7d09e6 100644
---- a/kernel-shared/dir-item.c
-+++ b/kernel-shared/dir-item.c
-@@ -27,6 +27,7 @@
- #include "kernel-shared/accessors.h"
- #include "kernel-shared/extent_io.h"
- #include "kernel-shared/uapi/btrfs_tree.h"
-+#include "kernel-shared/transaction.h"
-=20
- struct btrfs_trans_handle;
-=20
-@@ -173,6 +174,7 @@ int btrfs_insert_dir_item(struct btrfs_trans_handle *=
-trans, struct btrfs_root
- 	btrfs_set_dir_flags(leaf, dir_item, type);
- 	btrfs_set_dir_data_len(leaf, dir_item, 0);
- 	btrfs_set_dir_name_len(leaf, dir_item, name_len);
-+	btrfs_set_dir_transid(leaf, dir_item, trans->transid);
- 	name_ptr =3D (unsigned long)(dir_item + 1);
-=20
- 	write_extent_buffer(leaf, name, name_ptr, name_len);
-@@ -202,6 +204,7 @@ insert:
- 	btrfs_set_dir_flags(leaf, dir_item, type);
- 	btrfs_set_dir_data_len(leaf, dir_item, 0);
- 	btrfs_set_dir_name_len(leaf, dir_item, name_len);
-+	btrfs_set_dir_transid(leaf, dir_item, trans->transid);
- 	name_ptr =3D (unsigned long)(dir_item + 1);
- 	write_extent_buffer(leaf, name, name_ptr, name_len);
- 	btrfs_mark_buffer_dirty(leaf);
---=20
-2.44.2
+Thanks,
 
+Josef
 
