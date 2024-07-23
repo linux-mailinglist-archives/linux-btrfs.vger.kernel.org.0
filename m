@@ -1,201 +1,190 @@
-Return-Path: <linux-btrfs+bounces-6648-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6649-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 687A39396D3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2024 01:08:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D76D939895
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2024 05:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C36BDB21927
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2024 23:08:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB27C1F22701
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2024 03:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667684C622;
-	Mon, 22 Jul 2024 23:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544BE13C3CD;
+	Tue, 23 Jul 2024 03:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="M70k9AFd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4B2376E7
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 23:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E516C42AB3;
+	Tue, 23 Jul 2024 03:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721689711; cv=none; b=CO+tDeyl0u9WSPNicMUKJy0BvNawDluo6lmequh7/iH3bLTDIMwx/dpEDDPobW7sdZzJJaQ4aKsWTMNtszQ5nCrRqnUUiX+k2imI/V4cBFFQoaox001MwGz1y5tBHWQCY/+AULJnoRSGXze4j/vgfejKEiZSep6sdfIGJAQkddA=
+	t=1721704334; cv=none; b=f6F5vyhKFTyMsz6lrjViqSLoWsvwWClc0M4olQ6BiO8ZcT3dVoWkn4P6tpRlxZ4bFZblmhWrcTliYNiRwZ6rl7JeI9zf+u0td4QZ98kfBjfV/9RCxjR88KUCFGRegeq/pnzwrZbXTRBQmf6JPrcXsRepmiP9LNxjfp6R2BJbyv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721689711; c=relaxed/simple;
-	bh=rwGIutc2zYh2Gaz+gc6mt86fq0/d0gQib+xjJM/qH9w=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rCvov7fC1QbPxt1cnVE446Wd7UVBWTJoqRaJ3+1omVl/LFTA5HI8hQZFpeEmUoPtQseJViMtfT1QVRKP6jJ9wSeUrdUXqF9VxxsMKIl9t0yPmfE/dUBHohTTQejYJrh3ax6gefnNPSDSJb3N3N76Bv2yY2TC28D++dXaWTPT4bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-39945779edaso33264745ab.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Jul 2024 16:08:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721689709; x=1722294509;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B8DSqv9G7o9mnNghAnNmvOA6qRTWCX+Wd6Im/3V6HNE=;
-        b=ow+O21Hla71ErKn3U7MXuQ9DzU91pLpmr+5dXGBu9QvO54+BhOOR63EQJ3fYmcxsfb
-         twdtbr8h4QzKmww/1/9bCp9+CsQbcnAFZDraAYuMQdN8gJawiNkXuYWbiZwfDxCnLSfB
-         1axlVR97xCeZV4NnLF32sI9H70uokFPmP46Ue8P8exKLhR+W7G+82I3rZ47+8g+WTsJu
-         BNQrH87SIOZDxPvNtG8Tbn2WYntZy6d2GKqXjjii+sRu5+WpN7QEMXutmbaz4DRvFu5o
-         CiNsKNi788bRiuJJN2EpsdbhSyBH2I9cgkGXij4FeRjsPCH5WOknGqqh2ba+XH9PU/jb
-         TLkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUEp5olH36oZDgEMHry0Ltvcd6zX4pSJwyU6Xu58NYmH9EsYWSShijIQGqez7S/qT8wEThNRQ1odg8hj4Ws4dkhZ2HPYj4qq8BFGA=
-X-Gm-Message-State: AOJu0Yzb0HaW/jI2P1B94ZeyAGmfkUBFGZIQcygOKIMM9/xIhGcjX6nX
-	6ksj5IbYOhKiPdNtRBUiIoFI5VQDOJVrB2sao0r8/vZXUsRYUaV9DX+kkLwYIBbHpzhi0B3Naxu
-	D6EWltf8r5lrn6VYwOTtvi1vw3uw/xSTbpg2wFw0OD+A7Ircq2Ujzt4c=
-X-Google-Smtp-Source: AGHT+IEf4KHTuU6VvAnEQKQ1PLhTyb0ITUAoncEWt4+1jOcJjdrO3LQ+Lchue1DbsJMd1dKu2tco5hfaJofFIaXUfWo9hJMauSl+
+	s=arc-20240116; t=1721704334; c=relaxed/simple;
+	bh=BVFBNVJEopweMgkwS0yCRpITnW9Vb72UW6UVguAMnCo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=cgeLYRpFay1ejmbLPwYOvhCp8aVKQIQ9uct6kpnmH4ovBOf0g6v9Bl3gm7/93SpbLQ0t2JCWRRMD99NjqfDY5esvmA3iviRt5e6+30l530DC4MI+67IowaNboeZViNnk61ATM37iz8Raw3M07Oy5y01svkx8m1xlpHa4VR6n8tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=M70k9AFd; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=9+ZzNfLKx1x+E/jrJLAE81V36izhpkebUp8gJEUE2eA=; b=M70k9AFdXAIjqyFoFZ8dKa4CER
+	0Tu4Fjf82g0j6gzR6KhFTK3dLjXvbth5y6OGCMjndHbd+3iNTqX+CNw3v8PINiYX6FZs7lsQB9zH6
+	mgwatODQFBAB7glBxd6Ytj1MtieNXCYECGFn3L1peItYuDxEwS64zXr8D/Gv6qhWuJmijuoTSs3uf
+	UdvBkB2gsFxenVGZNUq+fSSmiU7CpzYiKEnhJznCtegk4Ps+TqwlvpsVX2/Wrw9a97O+g5rfpbiGB
+	3iqDGx6gdJnah8LqEn6yi+K3RUu0ZJrC+eCZNPSdQESSYqGcU4nhATCei0Q/XA7BP5Vc/iolfFjEg
+	JPfey3Ow==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sW5wX-00000006Sue-3Xpv;
+	Tue, 23 Jul 2024 03:12:01 +0000
+Date: Tue, 23 Jul 2024 04:12:01 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Cc: linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: State of removing page->index
+Message-ID: <Zp8fgUSIBGQ1TN0D@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d15:b0:380:9233:96e6 with SMTP id
- e9e14a558f8ab-398e7633dfdmr7842055ab.4.1721689709380; Mon, 22 Jul 2024
- 16:08:29 -0700 (PDT)
-Date: Mon, 22 Jul 2024 16:08:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a971a061dde1f74@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in btrfs_folio_end_all_writers
-From: syzbot <syzbot+a14d8ac9af3a2a4fd0c8@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, johannes.thumshirn@wdc.com, 
-	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+My project for the next few weeks is removing page->index.
 
-syzbot found the following issue on:
+The last patch in the series is mostly:
 
-HEAD commit:    b1bc554e009e Merge tag 'media/v6.11-1' of git://git.kernel..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15f02349980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=65e004fdd6e65e46
-dashboard link: https://syzkaller.appspot.com/bug?extid=a14d8ac9af3a2a4fd0c8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11656f2d980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11cd1179980000
++++ b/include/linux/mm_types.h
+@@ -103,7 +103,7 @@ struct page {
+                        /* See page-flags.h for PAGE_MAPPING_FLAGS */
+                        struct address_space *mapping;
+                        union {
+-                               pgoff_t index;          /* Our offset within map
+ping. */
++                               pgoff_t __folio_index;          /* Our offset wi
+thin mapping. */
+                                unsigned long share;    /* share count for fsdax */
+                        };
+                        /**
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1e6d5d2330c1/disk-b1bc554e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f753d2415c93/vmlinux-b1bc554e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/80bbcb43a23d/bzImage-b1bc554e.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/17f63396bdfd/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/df45c13c09ac/mount_5.gz
+This is a stepping stone to shrinking struct page by half (64 bytes down
+to 32 bytes) [1] and allocating struct folio separately from struct page.
+It's currently 15 patches:
 
-The issue was bisected to:
+      bootmem: Stop using page->index
+      mm: Constify page_address_in_vma()
+      mm: Convert page_to_pgoff() to page_pgoff()
+      mm: Mass constification of folio/page pointers
+      fs: Turn page_offset() into a wrapper around folio_pos()
+      fs: Remove page_mkwrite_check_truncate()
+      mm: Remove references to page->index in huge_memory.c
+      mm: Use page->private instead of page->index in percpu
+      perf: Remove setting of page->index and ->mapping
+      dax: Remove access to page->index
+      null_blk: Remove accesses to page->index
+      watch_queue: Use page->private instead of page->index
+      isofs: Partially convert zisofs_read_folio to use a folio
+      dax: Use folios more widely within DAX
+      mm: Rename page->index to page->__folio_index
 
-commit 0586d0a89e77d717da14df42648ace4a9fd67981
-Author: Josef Bacik <josef@toxicpanda.com>
-Date:   Wed Mar 20 21:24:13 2024 +0000
+I haven't pushed the git tree because the build bots will choke on
+the following files which still use page->index:
 
-    btrfs: move extent bit and page cleanup into cow_file_range_inline
+drivers/hwtracing/intel_th/msu.c
+drivers/net/ethernet/sun/niu.c
+drivers/staging/fbtft/fbtft-core.c
+drivers/video/fbdev/core/fb_defio.c
+fs/btrfs/compression.c
+fs/btrfs/extent_io.c
+fs/btrfs/file.c
+fs/btrfs/super.c
+fs/ceph/addr.c
+fs/ceph/dir.c
+fs/ceph/inode.c
+fs/crypto/crypto.c
+fs/ecryptfs/crypto.c
+fs/ecryptfs/mmap.c
+fs/ecryptfs/read_write.c
+fs/erofs/data.c
+fs/f2fs/checkpoint.c
+fs/f2fs/compress.c
+fs/f2fs/data.c
+fs/f2fs/dir.c
+fs/f2fs/file.c
+fs/f2fs/inline.c
+fs/f2fs/inode.c
+fs/f2fs/node.c
+fs/f2fs/segment.c
+fs/f2fs/super.c
+fs/fuse/file.c
+fs/jffs2/file.c
+fs/jfs/jfs_metapage.c
+fs/ntfs3/frecord.c
+fs/ocfs2/alloc.c
+fs/ocfs2/aops.c
+fs/ocfs2/mmap.c
+fs/reiserfs/file.c
+fs/reiserfs/inode.c
+fs/smb/client/smb2ops.c
+fs/squashfs/file.c
+fs/squashfs/page_actor.c
+fs/ufs/dir.c
+mm/zsmalloc.c
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1653443d980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1553443d980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1153443d980000
+Some of these will be fixed with scheduled pull requests (jfs), or are
+improved (and maybe solved) by other pending series (ufs, ecryptfs,
+jffs2, zsmalloc).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a14d8ac9af3a2a4fd0c8@syzkaller.appspotmail.com
-Fixes: 0586d0a89e77 ("btrfs: move extent bit and page cleanup into cow_file_range_inline")
+Expect to see a few patches from me over the next few weeks that seem
+random; there is a destination in mind, and if everything lines up,
+we might be able to get to it by the next merge window.  Probably
+something will miss landing in v6.12 and it'll be the v6.13 release
+before page->index goes away entirely.
 
-BTRFS: error (device loop0 state EAL) in free_log_tree:3267: errno=-5 IO failure
-BTRFS warning (device loop0 state EAL): Skipping commit of aborted transaction.
-BTRFS: error (device loop0 state EAL) in cleanup_transaction:2018: errno=-5 IO failure
-assertion failed: folio_test_locked(folio), in fs/btrfs/subpage.c:871
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/subpage.c:871!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 PID: 5090 Comm: syz-executor225 Not tainted 6.10.0-syzkaller-05505-gb1bc554e009e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-RIP: 0010:btrfs_folio_end_all_writers+0x55b/0x610 fs/btrfs/subpage.c:871
-Code: e9 d3 fb ff ff e8 25 22 c2 fd 48 c7 c7 c0 3c 0e 8c 48 c7 c6 80 3d 0e 8c 48 c7 c2 60 3c 0e 8c b9 67 03 00 00 e8 66 47 ad 07 90 <0f> 0b e8 6e 45 b0 07 4c 89 ff be 08 00 00 00 e8 21 12 25 fe 4c 89
-RSP: 0018:ffffc900033d72e0 EFLAGS: 00010246
-RAX: 0000000000000045 RBX: 00fff0000000402c RCX: 663b7a08c50a0a00
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: ffffc900033d73b0 R08: ffffffff8176b98c R09: 1ffff9200067adfc
-R10: dffffc0000000000 R11: fffff5200067adfd R12: 0000000000000001
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffffea0001cbee80
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f5f076012f8 CR3: 000000000e134000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __extent_writepage fs/btrfs/extent_io.c:1597 [inline]
- extent_write_cache_pages fs/btrfs/extent_io.c:2251 [inline]
- btrfs_writepages+0x14d7/0x2760 fs/btrfs/extent_io.c:2373
- do_writepages+0x359/0x870 mm/page-writeback.c:2656
- filemap_fdatawrite_wbc+0x125/0x180 mm/filemap.c:397
- __filemap_fdatawrite_range mm/filemap.c:430 [inline]
- __filemap_fdatawrite mm/filemap.c:436 [inline]
- filemap_flush+0xdf/0x130 mm/filemap.c:463
- btrfs_release_file+0x117/0x130 fs/btrfs/file.c:1547
- __fput+0x24a/0x8a0 fs/file_table.c:422
- task_work_run+0x24f/0x310 kernel/task_work.c:222
- exit_task_work include/linux/task_work.h:40 [inline]
- do_exit+0xa2f/0x27f0 kernel/exit.c:877
- do_group_exit+0x207/0x2c0 kernel/exit.c:1026
- __do_sys_exit_group kernel/exit.c:1037 [inline]
- __se_sys_exit_group kernel/exit.c:1035 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1035
- x64_sys_call+0x2634/0x2640 arch/x86/include/generated/asm/syscalls_64.h:232
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5f075b70c9
-Code: Unable to access opcode bytes at 0x7f5f075b709f.
-RSP: 002b:00007ffd1c3f9a58 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f5f075b70c9
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 00007f5f07638390 R08: ffffffffffffffb8 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5f07638390
-R13: 0000000000000000 R14: 00007f5f07639100 R15: 00007f5f07585050
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_folio_end_all_writers+0x55b/0x610 fs/btrfs/subpage.c:871
-Code: e9 d3 fb ff ff e8 25 22 c2 fd 48 c7 c7 c0 3c 0e 8c 48 c7 c6 80 3d 0e 8c 48 c7 c2 60 3c 0e 8c b9 67 03 00 00 e8 66 47 ad 07 90 <0f> 0b e8 6e 45 b0 07 4c 89 ff be 08 00 00 00 e8 21 12 25 fe 4c 89
-RSP: 0018:ffffc900033d72e0 EFLAGS: 00010246
-RAX: 0000000000000045 RBX: 00fff0000000402c RCX: 663b7a08c50a0a00
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: ffffc900033d73b0 R08: ffffffff8176b98c R09: 1ffff9200067adfc
-R10: dffffc0000000000 R11: fffff5200067adfd R12: 0000000000000001
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffffea0001cbee80
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f5f076012f8 CR3: 000000000e134000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+I believe I have someone lined up to help with ocfs2.  If anyone wants to
+help with the remaining filesystems (btrfs & f2fs in particular!), let
+me know.  I'm honestly tempted to mark reiserfs BROKEN at this point.
 
+The diffstat of what I currently have looks like this:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/x86/mm/init_64.c         |  9 +++----
+ drivers/block/null_blk/main.c |  8 +++---
+ drivers/dax/device.c          |  9 +++----
+ fs/ceph/addr.c                | 11 ++++----
+ fs/dax.c                      | 53 ++++++++++++++++++++-------------------
+ fs/isofs/compress.c           | 13 +++++-----
+ include/linux/bootmem_info.h  | 25 +++++++++++++------
+ include/linux/ksm.h           |  7 +++---
+ include/linux/mm_types.h      |  6 ++---
+ include/linux/pagemap.h       | 58 ++++++-------------------------------------
+ include/linux/rmap.h          | 12 ++++-----
+ kernel/events/core.c          |  2 --
+ kernel/watch_queue.c          |  4 +--
+ mm/bootmem_info.c             | 11 ++++----
+ mm/huge_memory.c              | 18 +++++++-------
+ mm/internal.h                 | 13 +++++++---
+ mm/ksm.c                      |  5 ++--
+ mm/memory-failure.c           | 28 +++++++++++----------
+ mm/page_vma_mapped.c          |  5 ++--
+ mm/percpu.c                   |  4 +--
+ mm/rmap.c                     | 18 ++++++++------
+ mm/sparse.c                   |  8 +++---
+ mm/util.c                     |  2 +-
+ 23 files changed, 153 insertions(+), 176 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+... mostly it's a 1:1 replacement of page with folio, or ->index with
+->private, but we get to delete some stuff along the way.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+[1] https://kernelnewbies.org/MatthewWilcox/Memdescs/Path
+Yes, page->mapping is next on the list in case you're touching
+a page->index and notice a page->mapping next door to it.
 
