@@ -1,123 +1,319 @@
-Return-Path: <linux-btrfs+bounces-6680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6681-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69BB393B1A5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 15:31:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8C393B22F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 16:00:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D47F1F230AC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 13:31:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC01A1F25550
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 14:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF61152511;
-	Wed, 24 Jul 2024 13:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D71C158DDC;
+	Wed, 24 Jul 2024 14:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akkItAWj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5F353A9;
-	Wed, 24 Jul 2024 13:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5299EEAB;
+	Wed, 24 Jul 2024 14:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721827864; cv=none; b=I77DAF2qHV7PYc5AEJcLc0BTP2FApd110UFKXDpI9X0GoxKqzBhYKld1wIWakb89DW8KYaoSVUGkCXjmwFXYHISGQWc/Wnt0f3HpSaE5ZX727CcXFTqVs3A0/iBzS8ZfvnKTtSDtjOAoJhEy2v/b8ZlVLt/bwVaKcx3ZMVZbpys=
+	t=1721829609; cv=none; b=boZX7scWnJlrubBhAtX3ndztw83M5bPOjPyz2UHYIR3O0aAfht3IpWsv6vB4LlCNuOKwvmut7stXpU+W1gLEVXzPIPNf/QWAyLsV3iL3+ouiFF4lEOO3C6hLpSz3m+Ok71hIYwRWgs22gUR+Ay0N1yjq7e670T/XNIkMS3EbLUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721827864; c=relaxed/simple;
-	bh=gc4Zge0Fa+tisFmvWqz1nO+VZ3ckA5xFvk+K4tZCFHU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=keVNlUzlF6wlS4wU2DPHVERRepyudhdZabo/haD98kKTdcLyD/eoH1aVoRaC6rJ/DY6kMteAl8fXJrjwWa1y0Gmfrnkubww3HpXn95UJOvKviX9ftg2ozMpqIUM5n33T8bn0huRDML7V4i+6W256YfTjQPN77KcAls6GcDjcZM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WTZXc4xk4zyN5G;
-	Wed, 24 Jul 2024 21:26:08 +0800 (CST)
-Received: from kwepemf100006.china.huawei.com (unknown [7.202.181.220])
-	by mail.maildlp.com (Postfix) with ESMTPS id 629FA180087;
-	Wed, 24 Jul 2024 21:30:59 +0800 (CST)
-Received: from [10.174.177.210] (10.174.177.210) by
- kwepemf100006.china.huawei.com (7.202.181.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 24 Jul 2024 21:30:58 +0800
-Message-ID: <4188b7b5-3576-9e5f-6297-794558d7a01e@huawei.com>
-Date: Wed, 24 Jul 2024 21:30:57 +0800
+	s=arc-20240116; t=1721829609; c=relaxed/simple;
+	bh=51GwSOXZW45NdsQw6iSa5GHSCxKyayBUAUBWtLdN8TQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mLOwt4PlbVAWDD2HZrWRnMmjMa4NqdpZicCwj3DyrV3yWQ+VAnxVLgiKPd19rMZQP3ZVsKXBUGtVQIK+wri8gXfJxayI51TyPNR2mLReFjBjLAmF/TBx5hthoYEXg2R1HSXyxAG5/rfLHCG9A/Qz65io93minunCQ1hQd0xuAW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akkItAWj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6235AC32781;
+	Wed, 24 Jul 2024 14:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721829609;
+	bh=51GwSOXZW45NdsQw6iSa5GHSCxKyayBUAUBWtLdN8TQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=akkItAWjke4ZbeBj2NcryzFRioHJXUswun9p3rotOlHKpVhbpCTllRKwNgrnFcZ5z
+	 qAE9R6pGSqj+hitGezQnFYKRyxQlmSTO6w7gbFcCx6h8a9p8qVYaXkg4ASb0LjACP0
+	 XH7QtCwWGMrxN7Cnz0fkWCqGu6hj1JFbhbqb1Mc70EVwcc7d1M4+rtLd4bJ5rU0OXC
+	 HJFpy0JRxNx2vTWSNUqMQWhhyUhtWSXa/BR0JOt9QA8x5EjvLHqE6BMw5rs8yyR8lP
+	 dzMwLv816iV36pyoy+l/r3jYx3CcsGteLEryWZ3TVP7cL89gHSydRDcdfRTe9iF1QS
+	 MLjIqn85achpg==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: properly shutdown subvolume stress worker to avoid umount failures
+Date: Wed, 24 Jul 2024 14:58:52 +0100
+Message-ID: <4ee3a7f176ee871345a68aaa48b13e8ca89c2262.1721829411.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] generic/736: don't run it on tmpfs
-To: Filipe Manana <fdmanana@kernel.org>, Christoph Hellwig
-	<hch@infradead.org>, <chuck.lever@oracle.com>
-CC: <zlang@kernel.org>, <fstests@vger.kernel.org>, <linux-mm@kvack.org>,
-	<hughd@google.com>, <akpm@linux-foundation.org>, linux-btrfs
-	<linux-btrfs@vger.kernel.org>
-References: <20240720083538.2999155-1-yangerkun@huawei.com>
- <CAL3q7H5AivAMSWk3FmmsrSqbeLfqMw_hr05b_Rdzk7hnnrsWiA@mail.gmail.com>
-From: yangerkun <yangerkun@huawei.com>
-In-Reply-To: <CAL3q7H5AivAMSWk3FmmsrSqbeLfqMw_hr05b_Rdzk7hnnrsWiA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemf100006.china.huawei.com (7.202.181.220)
 
-Hi, All,
+From: Filipe Manana <fdmanana@suse.com>
 
-Sorry for the delay relay(something happened, and cannot use pc
-before...).
+When killing a test that is using the subvolume stress worker, we may end
+up in a situation where we end up leaving a subvolume mounted which makes
+the shutdown sequence fail. Example when killing a script that keeps
+running fstests in a loop:
 
-在 2024/7/21 1:26, Filipe Manana 写道:
-> On Sat, Jul 20, 2024 at 9:38 AM Yang Erkun <yangerkun@huawei.com> wrote:
->>
->> We use offset_readdir for tmpfs, and every we call rename, the offset
->> for the parent dir will increase by 1. So for tmpfs we will always
->> fail since the infinite readdir.
-> 
-> Having an infinite readdir sounds like a bug, or at least an
-> inconvenience and surprising for users.
-> We had that problem in btrfs which affected users/applications, see:
-> 
-> https://lore.kernel.org/linux-btrfs/2c8c55ec-04c6-e0dc-9c5c-8c7924778c35@landley.net/
-> 
-> which was surprising for them since every other filesystem they
-> used/tested didn't have that problem.
-> Why not fix tmpfs?
+   FSTYP         -- btrfs
+   PLATFORM      -- Linux/x86_64 debian0 6.10.0-rc7-btrfs-next-167+ #1 SMP PREEMPT_DYNAMIC Thu Jul 11 17:54:07 WEST 2024
+   MKFS_OPTIONS  -- /dev/sdc
+   MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
 
-Thanks for all your advise, I will give a detail analysis first(maybe
-until last week I can do it), and after we give a conclusion about does
-this behavior a bug or something expected to occur, I will choose the
-next step!
+   (...)
+   btrfs/065 23s ... ^C^C^C
+   Iteration 134, errors 1, leaks 0, Wed Jul 24 12:14:33 PM WEST 2024, flakey errors: 0 MKFS_OPTIONS="" MOUNT_OPTIONS=""
 
-Thanks again for all your advise!
+   SCRATCH_DEV=/dev/sdc is mounted but not on SCRATCH_MNT=/home/fdmanana/btrfs-tests/scratch_1 - aborting
+   Already mounted result:
+   /dev/sdc /home/fdmanana/btrfs-tests/scratch_1 /dev/sdc /home/fdmanana/btrfs-tests/dev/065.mnt
+   grep: results/btrfs/065.out.bad: No such file or directory
+   Error iteration 134, total errors 2, leaks 0
+   'results/btrfs/065.full' -> '/home/fdmanana/failures/btrfs_065/134/065.full'
 
+Running 'mount' to see what's going on:
 
-> 
-> Thanks.
-> 
->>
->> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
->> ---
->>   tests/generic/736 | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tests/generic/736 b/tests/generic/736
->> index d2432a82..9fafa8df 100755
->> --- a/tests/generic/736
->> +++ b/tests/generic/736
->> @@ -18,7 +18,7 @@ _cleanup()
->>          rm -fr $target_dir
->>   }
->>
->> -_supported_fs generic
->> +_supported_fs generic ^tmpfs
->>   _require_test
->>   _require_test_program readdir-while-renames
->>
->> --
->> 2.39.2
->>
->>
+   $ mount
+   (...)
+   /dev/sdb on /home/fdmanana/btrfs-tests/dev type btrfs (rw,relatime,discard=async,space_cache=v2,subvolid=5,subvol=/)
+   /dev/sdc on /home/fdmanana/btrfs-tests/scratch_1 type btrfs (rw,relatime,discard=async,space_cache=v2,subvolid=5,subvol=/)
+   /dev/sdc on /home/fdmanana/btrfs-tests/dev/065.mnt type btrfs (rw,relatime,discard=async,space_cache=v2,subvolid=2627,subvol=/subvol_3395330)
+
+Then this makes the next attempt to run a test (./check) always fail due
+to the extra mount of the subvolume, requiring one to manually umount the
+subvolume before running fstests again.
+
+So update _btrfs_kill_stress_subvolume_pid() to also unmount the subvolume.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ common/btrfs    | 2 ++
+ tests/btrfs/060 | 9 +++++----
+ tests/btrfs/065 | 9 +++++----
+ tests/btrfs/066 | 9 +++++----
+ tests/btrfs/067 | 9 +++++----
+ tests/btrfs/068 | 9 +++++----
+ 6 files changed, 27 insertions(+), 20 deletions(-)
+
+diff --git a/common/btrfs b/common/btrfs
+index c0be7c08..95a9c8e6 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -362,11 +362,13 @@ _btrfs_kill_stress_subvolume_pid()
+ {
+ 	local subvol_pid=$1
+ 	local stop_file=$2
++	local subvol_mnt=$3
+ 
+ 	touch $stop_file
+ 	# Ignore if process already died.
+ 	wait $subvol_pid &> /dev/null
+ 	rm -f $stop_file
++	$UMOUNT_PROG $subvol_mnt &> /dev/null
+ }
+ 
+ # stress btrfs by running scrub in a loop
+diff --git a/tests/btrfs/060 b/tests/btrfs/060
+index 00f57841..75c10bd2 100755
+--- a/tests/btrfs/060
++++ b/tests/btrfs/060
+@@ -14,8 +14,9 @@ _cleanup()
+ {
+ 	cd /
+ 	rm -rf $tmp.*
+-	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
+-		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
++		   [ ! -z "$subvol_mnt" ]; then
++		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	fi
+ 	if [ ! -z "$balance_pid" ]; then
+ 		_btrfs_kill_stress_balance_pid $balance_pid
+@@ -34,11 +35,11 @@ _require_scratch_dev_pool 4
+ _btrfs_get_profile_configs
+ 
+ stop_file=$TEST_DIR/$seq.stop.$$
++subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ run_test()
+ {
+ 	local mkfs_opts=$1
+-	local subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ 	echo "Test $mkfs_opts" >>$seqres.full
+ 
+@@ -69,7 +70,7 @@ run_test()
+ 	wait $fsstress_pid
+ 	unset fsstress_pid
+ 
+-	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	unset subvol_pid
+ 	_btrfs_kill_stress_balance_pid $balance_pid
+ 	unset balance_pid
+diff --git a/tests/btrfs/065 b/tests/btrfs/065
+index 5fb635ab..b87c66d6 100755
+--- a/tests/btrfs/065
++++ b/tests/btrfs/065
+@@ -14,8 +14,9 @@ _cleanup()
+ {
+ 	cd /
+ 	rm -rf $tmp.*
+-	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
+-		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
++		   [ ! -z "$subvol_mnt" ]; then
++		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	fi
+ 	if [ ! -z "$replace_pid" ]; then
+ 		_btrfs_kill_stress_replace_pid $replace_pid
+@@ -35,12 +36,12 @@ _require_scratch_dev_pool_equal_size
+ _btrfs_get_profile_configs replace
+ 
+ stop_file=$TEST_DIR/$seq.stop.$$
++subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ run_test()
+ {
+ 	local mkfs_opts=$1
+ 	local saved_scratch_dev_pool=$SCRATCH_DEV_POOL
+-	local subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ 	echo "Test $mkfs_opts" >>$seqres.full
+ 
+@@ -77,7 +78,7 @@ run_test()
+ 	wait $fsstress_pid
+ 	unset fsstress_pid
+ 
+-	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	unset subvol_pid
+ 	_btrfs_kill_stress_replace_pid $replace_pid
+ 	unset replace_pid
+diff --git a/tests/btrfs/066 b/tests/btrfs/066
+index 30fa438a..cc7cd9b7 100755
+--- a/tests/btrfs/066
++++ b/tests/btrfs/066
+@@ -14,8 +14,9 @@ _cleanup()
+ {
+ 	cd /
+ 	rm -rf $tmp.*
+-	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
+-		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
++		   [ ! -z "$subvol_mnt" ]; then
++		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	fi
+ 	if [ ! -z "$scrub_pid" ]; then
+ 		_btrfs_kill_stress_scrub_pid $scrub_pid
+@@ -34,11 +35,11 @@ _require_scratch_dev_pool 4
+ _btrfs_get_profile_configs
+ 
+ stop_file=$TEST_DIR/$seq.stop.$$
++subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ run_test()
+ {
+ 	local mkfs_opts=$1
+-	local subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ 	echo "Test $mkfs_opts" >>$seqres.full
+ 
+@@ -69,7 +70,7 @@ run_test()
+ 	wait $fsstress_pid
+ 	unset fsstress_pid
+ 
+-	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	unset subvol_pid
+ 	_btrfs_kill_stress_scrub_pid $scrub_pid
+ 	unset scrub_pid
+diff --git a/tests/btrfs/067 b/tests/btrfs/067
+index 899b96da..0b473050 100755
+--- a/tests/btrfs/067
++++ b/tests/btrfs/067
+@@ -14,8 +14,9 @@ _cleanup()
+ {
+ 	cd /
+ 	rm -rf $tmp.*
+-	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
+-		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
++		   [ ! -z "$subvol_mnt" ]; then
++		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	fi
+ 	if [ ! -z "$defrag_pid" ]; then
+ 		_btrfs_kill_stress_defrag_pid $defrag_pid
+@@ -34,12 +35,12 @@ _require_scratch_dev_pool 4
+ _btrfs_get_profile_configs
+ 
+ stop_file=$TEST_DIR/$seq.stop.$$
++subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ run_test()
+ {
+ 	local mkfs_opts=$1
+ 	local with_compress=$2
+-	local subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ 	echo "Test $mkfs_opts with $with_compress" >>$seqres.full
+ 
+@@ -70,7 +71,7 @@ run_test()
+ 	wait $fsstress_pid
+ 	unset fsstress_pid
+ 
+-	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	unset subvol_pid
+ 	_btrfs_kill_stress_defrag_pid $defrag_pid
+ 	unset defrag_pid
+diff --git a/tests/btrfs/068 b/tests/btrfs/068
+index 48b6cdb0..83e932e8 100755
+--- a/tests/btrfs/068
++++ b/tests/btrfs/068
+@@ -15,8 +15,9 @@ _cleanup()
+ {
+ 	cd /
+ 	rm -rf $tmp.*
+-	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
+-		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
++		   [ ! -z "$subvol_mnt" ]; then
++		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	fi
+ 	if [ ! -z "$remount_pid" ]; then
+ 		_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
+@@ -35,11 +36,11 @@ _require_scratch_dev_pool 4
+ _btrfs_get_profile_configs
+ 
+ stop_file=$TEST_DIR/$seq.stop.$$
++subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ run_test()
+ {
+ 	local mkfs_opts=$1
+-	local subvol_mnt=$TEST_DIR/$seq.mnt
+ 
+ 	echo "Test $mkfs_opts with $with_compress" >>$seqres.full
+ 
+@@ -70,7 +71,7 @@ run_test()
+ 	wait $fsstress_pid
+ 	unset fsstress_pid
+ 
+-	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
++	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
+ 	unset subvol_pid
+ 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
+ 	unset remount_pid
+-- 
+2.43.0
+
 
