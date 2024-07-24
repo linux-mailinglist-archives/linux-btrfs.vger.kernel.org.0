@@ -1,189 +1,123 @@
-Return-Path: <linux-btrfs+bounces-6679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6680-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8071393B179
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 15:18:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69BB393B1A5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 15:31:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35A58283556
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 13:18:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D47F1F230AC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 13:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70164158DC5;
-	Wed, 24 Jul 2024 13:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FuBQFIif";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PHN8vmjI";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FuBQFIif";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PHN8vmjI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF61152511;
+	Wed, 24 Jul 2024 13:31:05 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C528A158A01;
-	Wed, 24 Jul 2024 13:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5F353A9;
+	Wed, 24 Jul 2024 13:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721827104; cv=none; b=NJ698u9eVPR0gcN1G5XvcwU5gv/nqyyCw/cyqCjJRv2LKwJ9tSTpiF2+CPrScgOmITqxHMKLNXIXYiw7/+EygLYwTVpZffurbVOxR2NAcVv5rJj5a11LWe3FXiD4ARWxwk7DrllhbDhelXQmM6kfWLzKkbvIghMvWSL/od9k46o=
+	t=1721827864; cv=none; b=I77DAF2qHV7PYc5AEJcLc0BTP2FApd110UFKXDpI9X0GoxKqzBhYKld1wIWakb89DW8KYaoSVUGkCXjmwFXYHISGQWc/Wnt0f3HpSaE5ZX727CcXFTqVs3A0/iBzS8ZfvnKTtSDtjOAoJhEy2v/b8ZlVLt/bwVaKcx3ZMVZbpys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721827104; c=relaxed/simple;
-	bh=BcgE8AAOOwfeCRgY9SSi3X9+4INB9fz0CrgbbVMvhIk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AOIf1Dsk/PuX2euhXxWVlhmlXQVrVe3LbGKFGZwCDX4stNlGSXPBEDPU9nGtbm107NW5SJylmCjdfmu4GIJ9iYNbAmJXSWV1CdE5ivF5bTS9c+ee7H1R1NM4Cr79Q9UdidxiLVrG47mm4FTAhlDC9/VMpUdPjepffZmAhYIOAVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FuBQFIif; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PHN8vmjI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FuBQFIif; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PHN8vmjI; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BEF7D1F7A1;
-	Wed, 24 Jul 2024 13:18:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721827100;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
-	b=FuBQFIif1Yc1oeaBaLW8lYkBmLdefhslLAjPwWKBZbbVN5sjFwRfwigAdgW5tiVqWpummx
-	DTB9pwhyVNO18d0Y60YgB+rwgvkBLAcpLA0bhGMGMOWwOVzKG3/ZCsKOLKbqo0M1GG7oCw
-	0xTOW2S/R5iNPlqQ6qvgOSW2wD+1dXE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721827100;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
-	b=PHN8vmjIum5QrnGQwAC7nE4RlXzg3zgNLTPQcaz+P3mWJGTWTtJ5fKrjHLBSb9vudv11Mh
-	7uxDRJLj0Sko68Dw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FuBQFIif;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PHN8vmjI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721827100;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
-	b=FuBQFIif1Yc1oeaBaLW8lYkBmLdefhslLAjPwWKBZbbVN5sjFwRfwigAdgW5tiVqWpummx
-	DTB9pwhyVNO18d0Y60YgB+rwgvkBLAcpLA0bhGMGMOWwOVzKG3/ZCsKOLKbqo0M1GG7oCw
-	0xTOW2S/R5iNPlqQ6qvgOSW2wD+1dXE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721827100;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=h+aj3OTVxMj7+tqkBCsQv23PHYcFQaXkl3Rf51EKvUo=;
-	b=PHN8vmjIum5QrnGQwAC7nE4RlXzg3zgNLTPQcaz+P3mWJGTWTtJ5fKrjHLBSb9vudv11Mh
-	7uxDRJLj0Sko68Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10A741324F;
-	Wed, 24 Jul 2024 13:18:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id noIPARz/oGbdEwAAD6G6ig
-	(envelope-from <pvorel@suse.cz>); Wed, 24 Jul 2024 13:18:20 +0000
-Date: Wed, 24 Jul 2024 15:18:16 +0200
-From: Petr Vorel <pvorel@suse.cz>
-To: Jan Kara <jack@suse.cz>
-Cc: ltp@lists.linux.it, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-	fstests@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-	David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
-	Amir Goldstein <amir73il@gmail.com>, Cyril Hrubis <chrubis@suse.cz>,
-	Andrea Cervesato <andrea.cervesato@suse.com>,
-	Avinesh Kumar <akumar@suse.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mike Galbraith <umgwanakikbuti@gmail.com>
-Subject: Re: [RFC] Slow down of LTP tests aiodio_sparse.c and dio_sparse.c in
- kernel 6.6
-Message-ID: <20240724131816.GA950793@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20240719174325.GA775414@pevik>
- <20240722090012.mlvkaenuxar2x3vr@quack3>
+	s=arc-20240116; t=1721827864; c=relaxed/simple;
+	bh=gc4Zge0Fa+tisFmvWqz1nO+VZ3ckA5xFvk+K4tZCFHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=keVNlUzlF6wlS4wU2DPHVERRepyudhdZabo/haD98kKTdcLyD/eoH1aVoRaC6rJ/DY6kMteAl8fXJrjwWa1y0Gmfrnkubww3HpXn95UJOvKviX9ftg2ozMpqIUM5n33T8bn0huRDML7V4i+6W256YfTjQPN77KcAls6GcDjcZM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WTZXc4xk4zyN5G;
+	Wed, 24 Jul 2024 21:26:08 +0800 (CST)
+Received: from kwepemf100006.china.huawei.com (unknown [7.202.181.220])
+	by mail.maildlp.com (Postfix) with ESMTPS id 629FA180087;
+	Wed, 24 Jul 2024 21:30:59 +0800 (CST)
+Received: from [10.174.177.210] (10.174.177.210) by
+ kwepemf100006.china.huawei.com (7.202.181.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 24 Jul 2024 21:30:58 +0800
+Message-ID: <4188b7b5-3576-9e5f-6297-794558d7a01e@huawei.com>
+Date: Wed, 24 Jul 2024 21:30:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240722090012.mlvkaenuxar2x3vr@quack3>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: BEF7D1F7A1
-X-Spam-Score: -3.51
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	HAS_REPLYTO(0.30)[pvorel@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[lists.linux.it,vger.kernel.org,kernel.dk,suse.com,gmail.com,suse.cz,suse.de,infradead.org];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_EQ_FROM(0.00)[]
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] generic/736: don't run it on tmpfs
+To: Filipe Manana <fdmanana@kernel.org>, Christoph Hellwig
+	<hch@infradead.org>, <chuck.lever@oracle.com>
+CC: <zlang@kernel.org>, <fstests@vger.kernel.org>, <linux-mm@kvack.org>,
+	<hughd@google.com>, <akpm@linux-foundation.org>, linux-btrfs
+	<linux-btrfs@vger.kernel.org>
+References: <20240720083538.2999155-1-yangerkun@huawei.com>
+ <CAL3q7H5AivAMSWk3FmmsrSqbeLfqMw_hr05b_Rdzk7hnnrsWiA@mail.gmail.com>
+From: yangerkun <yangerkun@huawei.com>
+In-Reply-To: <CAL3q7H5AivAMSWk3FmmsrSqbeLfqMw_hr05b_Rdzk7hnnrsWiA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemf100006.china.huawei.com (7.202.181.220)
 
-Hi all,
+Hi, All,
+
+Sorry for the delay relay(something happened, and cannot use pc
+before...).
+
+在 2024/7/21 1:26, Filipe Manana 写道:
+> On Sat, Jul 20, 2024 at 9:38 AM Yang Erkun <yangerkun@huawei.com> wrote:
+>>
+>> We use offset_readdir for tmpfs, and every we call rename, the offset
+>> for the parent dir will increase by 1. So for tmpfs we will always
+>> fail since the infinite readdir.
+> 
+> Having an infinite readdir sounds like a bug, or at least an
+> inconvenience and surprising for users.
+> We had that problem in btrfs which affected users/applications, see:
+> 
+> https://lore.kernel.org/linux-btrfs/2c8c55ec-04c6-e0dc-9c5c-8c7924778c35@landley.net/
+> 
+> which was surprising for them since every other filesystem they
+> used/tested didn't have that problem.
+> Why not fix tmpfs?
+
+Thanks for all your advise, I will give a detail analysis first(maybe
+until last week I can do it), and after we give a conclusion about does
+this behavior a bug or something expected to occur, I will choose the
+next step!
+
+Thanks again for all your advise!
 
 
-[ Cc Peter and Mike ]
-> Hi!
-
-> On Fri 19-07-24 19:43:25, Petr Vorel wrote:
-> > LTP AIO DIO tests aiodio_sparse.c [1] and dio_sparse.c [2] (using [3])
-> > slowed down on kernel 6.6 on Btrfs and XFS, when run with default
-> > parameters. These tests create 100 MB sparse file and write zeros (using
-> > libaio or O_DIRECT) while 16 other processes reads the buffer and check
-> > only zero is there.
-
-> So the performance of this test is irrelevant because combining buffered
-> reads with direct IO writes was always in "better don't do it" territory.
-> Definitely not if you care about perfomance.
-
-> > Runtime of this particular setup (i.e. 100 MB file) on Btrfs and XFS on the
-> > same system slowed down 9x (6.5: ~1 min 6.6: ~9 min). Ext4 is not affected.
-> > (Non default parameter creates much smaller file, thus the change is not that
-> > obvious).
-
-> But still it's kind of curious what caused the 9x slow down. So I'd be
-> curious to know the result of the bisection :). Thanks for report!
-
-It looks to be the slowdown was introduced by commit 63304558ba5d
-("sched/eevdf: Curb wakeup-preemption") [1] from v6.6-rc1.
-
-I also compiled current next (next-20240724), it's also slow  and reverting
-commit from it returns the original speed on both Btrfs and XFS.
-
-Kind regards,
-Petr
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=63304558ba5dcaaff9e052ee43cfdcc7f9c29e85
-
-> 								Honza
+> 
+> Thanks.
+> 
+>>
+>> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
+>> ---
+>>   tests/generic/736 | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tests/generic/736 b/tests/generic/736
+>> index d2432a82..9fafa8df 100755
+>> --- a/tests/generic/736
+>> +++ b/tests/generic/736
+>> @@ -18,7 +18,7 @@ _cleanup()
+>>          rm -fr $target_dir
+>>   }
+>>
+>> -_supported_fs generic
+>> +_supported_fs generic ^tmpfs
+>>   _require_test
+>>   _require_test_program readdir-while-renames
+>>
+>> --
+>> 2.39.2
+>>
+>>
 
