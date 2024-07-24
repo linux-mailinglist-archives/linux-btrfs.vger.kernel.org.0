@@ -1,319 +1,114 @@
-Return-Path: <linux-btrfs+bounces-6681-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6682-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8C393B22F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 16:00:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0E4E93B412
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 17:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC01A1F25550
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 14:00:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8123F1F23FD5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 15:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D71C158DDC;
-	Wed, 24 Jul 2024 14:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3820C15D5A4;
+	Wed, 24 Jul 2024 15:43:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akkItAWj"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xBBhe6jV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5299EEAB;
-	Wed, 24 Jul 2024 14:00:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061FF14D293;
+	Wed, 24 Jul 2024 15:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721829609; cv=none; b=boZX7scWnJlrubBhAtX3ndztw83M5bPOjPyz2UHYIR3O0aAfht3IpWsv6vB4LlCNuOKwvmut7stXpU+W1gLEVXzPIPNf/QWAyLsV3iL3+ouiFF4lEOO3C6hLpSz3m+Ok71hIYwRWgs22gUR+Ay0N1yjq7e670T/XNIkMS3EbLUo=
+	t=1721835830; cv=none; b=WKOzRZxO8HgzyaAr/i+T0e6bFQH1iREqmup87JFBH1Obyzg2MW66oyAoStpmSf5z+EZDqbbFJmfah1swsst0vZIS4+fNxMrBr9JDRV2OQqwIz0T1dToAnnmrPeeXSrOV2w2abACbNc3/3HRlx90vTQUKPb3827MU6VygM/ljYvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721829609; c=relaxed/simple;
-	bh=51GwSOXZW45NdsQw6iSa5GHSCxKyayBUAUBWtLdN8TQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mLOwt4PlbVAWDD2HZrWRnMmjMa4NqdpZicCwj3DyrV3yWQ+VAnxVLgiKPd19rMZQP3ZVsKXBUGtVQIK+wri8gXfJxayI51TyPNR2mLReFjBjLAmF/TBx5hthoYEXg2R1HSXyxAG5/rfLHCG9A/Qz65io93minunCQ1hQd0xuAW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akkItAWj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6235AC32781;
-	Wed, 24 Jul 2024 14:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721829609;
-	bh=51GwSOXZW45NdsQw6iSa5GHSCxKyayBUAUBWtLdN8TQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=akkItAWjke4ZbeBj2NcryzFRioHJXUswun9p3rotOlHKpVhbpCTllRKwNgrnFcZ5z
-	 qAE9R6pGSqj+hitGezQnFYKRyxQlmSTO6w7gbFcCx6h8a9p8qVYaXkg4ASb0LjACP0
-	 XH7QtCwWGMrxN7Cnz0fkWCqGu6hj1JFbhbqb1Mc70EVwcc7d1M4+rtLd4bJ5rU0OXC
-	 HJFpy0JRxNx2vTWSNUqMQWhhyUhtWSXa/BR0JOt9QA8x5EjvLHqE6BMw5rs8yyR8lP
-	 dzMwLv816iV36pyoy+l/r3jYx3CcsGteLEryWZ3TVP7cL89gHSydRDcdfRTe9iF1QS
-	 MLjIqn85achpg==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: properly shutdown subvolume stress worker to avoid umount failures
-Date: Wed, 24 Jul 2024 14:58:52 +0100
-Message-ID: <4ee3a7f176ee871345a68aaa48b13e8ca89c2262.1721829411.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1721835830; c=relaxed/simple;
+	bh=fjoCzSVNTXzDemQxHLgm77eSI43uzAqjvUS76Oxk0bk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=izc7uYNSrv5pzSCVwZE+zEkDk3DWBpoS1Cm9osVnsLGMqBBaTyfJvNJ2Um/ZBRnek/XT4SbRYhfDV7i+NKZsh82M7xm642+eix52Sfy2onuGqU6FYvPlu5BJ7RyTpPDj7eUzxb0y848+WS6ffQ7yXn0w1L8/nuATzbitTQQMRqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=xBBhe6jV; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=A5NCdA5yQOqvciqjVmzO4FQb/LC/NqR4RCRHik4/Oxc=; b=xBBhe6jVMTs+rNw1ry/JeDmbO3
+	MNV3LRo+Yl7MrNMLXKUiUDh5a3l9B6nf0f4P0IsTIY0nSlDEHnV7a6G5I2EsV8/T4721oBI5r3MGc
+	3bgO/JHGl3nAfelh+Kd6Thukp30duUluFSk8tydhbdTnaK6QW2elJGcYbFqV8rWXjiP3d5KDfa8w4
+	PKjt6QhDh7m9FgZOlBwsfH+sj8NdO57AqPTZgajuCBIN3V0F78TjO4UmAGVqo581pq2+6oegH//ao
+	JHXnFbMNWsFGotBDBWynEQzuNL5NRzCkOLNKenS7i9xbMEBAP0uAoZ6mo4RKLEfZS3L7srGg/rYXh
+	hSFx2mNg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sWe9Y-0000000FoTR-2trX;
+	Wed, 24 Jul 2024 15:43:44 +0000
+Date: Wed, 24 Jul 2024 08:43:44 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Youling Tang <youling.tang@linux.dev>
+Cc: Christoph Hellwig <hch@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
+	Luis Chamberlain <mcgrof@kernel.org>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
+ module_subeixt helper macros
+Message-ID: <ZqEhMCjdFwC3wF4u@infradead.org>
+References: <20240723083239.41533-1-youling.tang@linux.dev>
+ <20240723083239.41533-2-youling.tang@linux.dev>
+ <Zp-_RDk5n5431yyh@infradead.org>
+ <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Jul 24, 2024 at 09:57:05AM +0800, Youling Tang wrote:
+> module_init(initfn)/module_exit(exitfn) has two definitions (via MODULE):
+> - buindin: uses do_initcalls() to iterate over the contents of the specified
+>   section and executes all initfn functions in the section in the order in
+>   which they are stored (exitfn is not required).
+> 
+> - ko: run do_init_module(mod)->do_one_initcall(mod->init) to execute initfn
+>   of the specified module.
+> 
+> If we change module_subinit to something like this, not called in
+> module_init,
 
-When killing a test that is using the subvolume stress worker, we may end
-up in a situation where we end up leaving a subvolume mounted which makes
-the shutdown sequence fail. Example when killing a script that keeps
-running fstests in a loop:
+> Not only do we want to ensure that exit is executed in reverse order of
+> init, but we also want to ensure the order of init.
 
-   FSTYP         -- btrfs
-   PLATFORM      -- Linux/x86_64 debian0 6.10.0-rc7-btrfs-next-167+ #1 SMP PREEMPT_DYNAMIC Thu Jul 11 17:54:07 WEST 2024
-   MKFS_OPTIONS  -- /dev/sdc
-   MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+Yes.
 
-   (...)
-   btrfs/065 23s ... ^C^C^C
-   Iteration 134, errors 1, leaks 0, Wed Jul 24 12:14:33 PM WEST 2024, flakey errors: 0 MKFS_OPTIONS="" MOUNT_OPTIONS=""
+> This does not guarantee the order in which init will be executed (although
+> the init/exit order will remain the same)
 
-   SCRATCH_DEV=/dev/sdc is mounted but not on SCRATCH_MNT=/home/fdmanana/btrfs-tests/scratch_1 - aborting
-   Already mounted result:
-   /dev/sdc /home/fdmanana/btrfs-tests/scratch_1 /dev/sdc /home/fdmanana/btrfs-tests/dev/065.mnt
-   grep: results/btrfs/065.out.bad: No such file or directory
-   Error iteration 134, total errors 2, leaks 0
-   'results/btrfs/065.full' -> '/home/fdmanana/failures/btrfs_065/134/065.full'
+Hmm, so the normal built-in initcalls depend on the link order, but when
+they are in the same file, the compiler can reorder them before we even
+get to the linker.
 
-Running 'mount' to see what's going on:
+I wonder what a good syntax would be to still avoid the boilerplate
+code.  We'd probably need one macro to actually define the init/exit
+table in a single statement so that it can't be reordered, but that
+would lose the ability to actually declare the module subinit/exit
+handlers in multiple files, which really is the biggest win of this
+scheme as it allows to keep the functions static instead of exposing
+them to other compilation units.
 
-   $ mount
-   (...)
-   /dev/sdb on /home/fdmanana/btrfs-tests/dev type btrfs (rw,relatime,discard=async,space_cache=v2,subvolid=5,subvol=/)
-   /dev/sdc on /home/fdmanana/btrfs-tests/scratch_1 type btrfs (rw,relatime,discard=async,space_cache=v2,subvolid=5,subvol=/)
-   /dev/sdc on /home/fdmanana/btrfs-tests/dev/065.mnt type btrfs (rw,relatime,discard=async,space_cache=v2,subvolid=2627,subvol=/subvol_3395330)
-
-Then this makes the next attempt to run a test (./check) always fail due
-to the extra mount of the subvolume, requiring one to manually umount the
-subvolume before running fstests again.
-
-So update _btrfs_kill_stress_subvolume_pid() to also unmount the subvolume.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- common/btrfs    | 2 ++
- tests/btrfs/060 | 9 +++++----
- tests/btrfs/065 | 9 +++++----
- tests/btrfs/066 | 9 +++++----
- tests/btrfs/067 | 9 +++++----
- tests/btrfs/068 | 9 +++++----
- 6 files changed, 27 insertions(+), 20 deletions(-)
-
-diff --git a/common/btrfs b/common/btrfs
-index c0be7c08..95a9c8e6 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -362,11 +362,13 @@ _btrfs_kill_stress_subvolume_pid()
- {
- 	local subvol_pid=$1
- 	local stop_file=$2
-+	local subvol_mnt=$3
- 
- 	touch $stop_file
- 	# Ignore if process already died.
- 	wait $subvol_pid &> /dev/null
- 	rm -f $stop_file
-+	$UMOUNT_PROG $subvol_mnt &> /dev/null
- }
- 
- # stress btrfs by running scrub in a loop
-diff --git a/tests/btrfs/060 b/tests/btrfs/060
-index 00f57841..75c10bd2 100755
---- a/tests/btrfs/060
-+++ b/tests/btrfs/060
-@@ -14,8 +14,9 @@ _cleanup()
- {
- 	cd /
- 	rm -rf $tmp.*
--	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
--		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
-+		   [ ! -z "$subvol_mnt" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	fi
- 	if [ ! -z "$balance_pid" ]; then
- 		_btrfs_kill_stress_balance_pid $balance_pid
-@@ -34,11 +35,11 @@ _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
- stop_file=$TEST_DIR/$seq.stop.$$
-+subvol_mnt=$TEST_DIR/$seq.mnt
- 
- run_test()
- {
- 	local mkfs_opts=$1
--	local subvol_mnt=$TEST_DIR/$seq.mnt
- 
- 	echo "Test $mkfs_opts" >>$seqres.full
- 
-@@ -69,7 +70,7 @@ run_test()
- 	wait $fsstress_pid
- 	unset fsstress_pid
- 
--	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	unset subvol_pid
- 	_btrfs_kill_stress_balance_pid $balance_pid
- 	unset balance_pid
-diff --git a/tests/btrfs/065 b/tests/btrfs/065
-index 5fb635ab..b87c66d6 100755
---- a/tests/btrfs/065
-+++ b/tests/btrfs/065
-@@ -14,8 +14,9 @@ _cleanup()
- {
- 	cd /
- 	rm -rf $tmp.*
--	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
--		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
-+		   [ ! -z "$subvol_mnt" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	fi
- 	if [ ! -z "$replace_pid" ]; then
- 		_btrfs_kill_stress_replace_pid $replace_pid
-@@ -35,12 +36,12 @@ _require_scratch_dev_pool_equal_size
- _btrfs_get_profile_configs replace
- 
- stop_file=$TEST_DIR/$seq.stop.$$
-+subvol_mnt=$TEST_DIR/$seq.mnt
- 
- run_test()
- {
- 	local mkfs_opts=$1
- 	local saved_scratch_dev_pool=$SCRATCH_DEV_POOL
--	local subvol_mnt=$TEST_DIR/$seq.mnt
- 
- 	echo "Test $mkfs_opts" >>$seqres.full
- 
-@@ -77,7 +78,7 @@ run_test()
- 	wait $fsstress_pid
- 	unset fsstress_pid
- 
--	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	unset subvol_pid
- 	_btrfs_kill_stress_replace_pid $replace_pid
- 	unset replace_pid
-diff --git a/tests/btrfs/066 b/tests/btrfs/066
-index 30fa438a..cc7cd9b7 100755
---- a/tests/btrfs/066
-+++ b/tests/btrfs/066
-@@ -14,8 +14,9 @@ _cleanup()
- {
- 	cd /
- 	rm -rf $tmp.*
--	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
--		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
-+		   [ ! -z "$subvol_mnt" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	fi
- 	if [ ! -z "$scrub_pid" ]; then
- 		_btrfs_kill_stress_scrub_pid $scrub_pid
-@@ -34,11 +35,11 @@ _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
- stop_file=$TEST_DIR/$seq.stop.$$
-+subvol_mnt=$TEST_DIR/$seq.mnt
- 
- run_test()
- {
- 	local mkfs_opts=$1
--	local subvol_mnt=$TEST_DIR/$seq.mnt
- 
- 	echo "Test $mkfs_opts" >>$seqres.full
- 
-@@ -69,7 +70,7 @@ run_test()
- 	wait $fsstress_pid
- 	unset fsstress_pid
- 
--	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	unset subvol_pid
- 	_btrfs_kill_stress_scrub_pid $scrub_pid
- 	unset scrub_pid
-diff --git a/tests/btrfs/067 b/tests/btrfs/067
-index 899b96da..0b473050 100755
---- a/tests/btrfs/067
-+++ b/tests/btrfs/067
-@@ -14,8 +14,9 @@ _cleanup()
- {
- 	cd /
- 	rm -rf $tmp.*
--	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
--		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
-+		   [ ! -z "$subvol_mnt" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	fi
- 	if [ ! -z "$defrag_pid" ]; then
- 		_btrfs_kill_stress_defrag_pid $defrag_pid
-@@ -34,12 +35,12 @@ _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
- stop_file=$TEST_DIR/$seq.stop.$$
-+subvol_mnt=$TEST_DIR/$seq.mnt
- 
- run_test()
- {
- 	local mkfs_opts=$1
- 	local with_compress=$2
--	local subvol_mnt=$TEST_DIR/$seq.mnt
- 
- 	echo "Test $mkfs_opts with $with_compress" >>$seqres.full
- 
-@@ -70,7 +71,7 @@ run_test()
- 	wait $fsstress_pid
- 	unset fsstress_pid
- 
--	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	unset subvol_pid
- 	_btrfs_kill_stress_defrag_pid $defrag_pid
- 	unset defrag_pid
-diff --git a/tests/btrfs/068 b/tests/btrfs/068
-index 48b6cdb0..83e932e8 100755
---- a/tests/btrfs/068
-+++ b/tests/btrfs/068
-@@ -15,8 +15,9 @@ _cleanup()
- {
- 	cd /
- 	rm -rf $tmp.*
--	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ]; then
--		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	if [ ! -z "$stop_file" ] && [ ! -z "$subvol_pid" ] && \
-+		   [ ! -z "$subvol_mnt" ]; then
-+		_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	fi
- 	if [ ! -z "$remount_pid" ]; then
- 		_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
-@@ -35,11 +36,11 @@ _require_scratch_dev_pool 4
- _btrfs_get_profile_configs
- 
- stop_file=$TEST_DIR/$seq.stop.$$
-+subvol_mnt=$TEST_DIR/$seq.mnt
- 
- run_test()
- {
- 	local mkfs_opts=$1
--	local subvol_mnt=$TEST_DIR/$seq.mnt
- 
- 	echo "Test $mkfs_opts with $with_compress" >>$seqres.full
- 
-@@ -70,7 +71,7 @@ run_test()
- 	wait $fsstress_pid
- 	unset fsstress_pid
- 
--	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file
-+	_btrfs_kill_stress_subvolume_pid $subvol_pid $stop_file $subvol_mnt
- 	unset subvol_pid
- 	_btrfs_kill_stress_remount_compress_pid $remount_pid $SCRATCH_MNT
- 	unset remount_pid
--- 
-2.43.0
-
+And in fact even in your three converted file systems, most
+subinit/exit handler are in separate files, so maybe instead
+enforcing that there is just one per file and slightly refactoring
+the code so that this is the case might be the best option?
 
