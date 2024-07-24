@@ -1,187 +1,533 @@
-Return-Path: <linux-btrfs+bounces-6675-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6676-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C9693ABA4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 05:47:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B135193AC1D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 06:59:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7036A1F234A8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 03:47:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61F19284581
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2024 04:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708D2219FC;
-	Wed, 24 Jul 2024 03:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDD73FE4A;
+	Wed, 24 Jul 2024 04:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="tCiY9V6s"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="faGnVtTi";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="faGnVtTi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD731B285;
-	Wed, 24 Jul 2024 03:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A731DDF5B
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jul 2024 04:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721792820; cv=none; b=jHx35pOY0bfhAo9g10Sz7MGLM1Q+gOQKjD30kCTdnp1s5mzdbCU/z8XL6peYKwIBJmWcSys06ZHEfAITDcQ5hzsosndM61gC7/duPJV4WmXaHunWEOju9vtOkcfsFhSI4QuSpd5UcIQ8c2ML/1qvGRTSTuegu6w6LOBAO0bbaSA=
+	t=1721797170; cv=none; b=UqLKpJsKIWMYPu9cfGeuYm0ttp3hwSL1f2sPZMZ6DQhwyMzTXuxsIoHI2MPPAi+Nf1foayNU0uXAUCLG9vP7o9NJEEbp94i5KpJC5TCpeXiwGFuDUqVLjYLj61xp6NrVm33jz/Ku/Ja7b7zRLeGXVaVFcF3fX/+Fg+bRNlN3iGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721792820; c=relaxed/simple;
-	bh=r1gqDA51I/Qx5mahrKge4HsiYFKz3ZMSO63/mMofe1U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=doE8bxA59v1uyYHr0Npkv5tCmVr6Fn44LtoNqdwO44UFx5UvVXt/VpuQ1vUruOJjmxOnzZLUNnKD1H82vK68M+Ji4tWmmCd5gTXqpOJwgzXprkBZPtXJ8UNeuW9QANwZXVa3LwuXBVR496b5RP4hK10KaMK9vrwZdgUgDl3rtfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=tCiY9V6s; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1721792805; x=1722397605; i=quwenruo.btrfs@gmx.com;
-	bh=5COIPdxbke0HcTy52KHjcp2kmblo3UOlKNse3xpAJl4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=tCiY9V6s3hrCM6ftU1MPvz6KyxSNrnWYhw59LMaoSDYkI2+tdozGtGd3m+GzIjJs
-	 KzC4T0qny4lErRR4ry6/vHmR82o5OGE97FBfI1VvN6yfRXCTvENepbPzIDivCcP0O
-	 YP8NrBNLOfqu+i3b6Ofb81xSSv3ExIy9JCwUtr7QTPz/GjmgHJd6czgQ9ecDlNlkB
-	 J0Rp+qk/J92AaexlEOnbjt2uK5Nq0Lh3LVux3e47MrHu2DaTRdoUKRK+wtuSMfTA3
-	 CjNXesie7Tft9zlqwbr11NKe2BpVHiYGqmKmpevumHdyuNahmgccGD1onOUdV+vKe
-	 6vsDlGkpy809pt/FeQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4hzj-1s82793fHz-00whU1; Wed, 24
- Jul 2024 05:46:45 +0200
-Message-ID: <b01886c2-d9ba-4797-a188-7bc1c83eef71@gmx.com>
-Date: Wed, 24 Jul 2024 13:16:39 +0930
+	s=arc-20240116; t=1721797170; c=relaxed/simple;
+	bh=hQrnHspPSJqYFu3JymVrqh/Tj6iSgx2VD8yhNi669/c=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=i5+f+1ntFkitUpVLuBNpXMLcRqyzl/n9fise8UMHFJyNEV/LdBspnSA2VnG+jSHSX/57knX/wKl96L1aF2A4Nxnb+WKYbFZPEwQzkm1eHk99875olYty/Fpr2yXL04gLkr7TCSDwE38akBWoue6bvNVMv/czcHf7ZfyKppkfvqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=faGnVtTi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=faGnVtTi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C5EF51F74B
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jul 2024 04:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721797165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=uOeqMXG4ANcRa/VO+N6BxB1XchT7IE6SmXM9hWQtBtM=;
+	b=faGnVtTiweC3tO+yk6b+Q5xk0Z5L/19ymDVi9qLdoiZTtc9KvCXajRWkajAk+H84yGrBBO
+	rRCaavnpQPux//NsK7sK8rErJ8DPWO3SKANUWS+wgc0zpzPXufDzbf1zLI3XR2/s+5ji1/
+	qaFFrDZ+HqPDxav0tjiA5YreajQSGJU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721797165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=uOeqMXG4ANcRa/VO+N6BxB1XchT7IE6SmXM9hWQtBtM=;
+	b=faGnVtTiweC3tO+yk6b+Q5xk0Z5L/19ymDVi9qLdoiZTtc9KvCXajRWkajAk+H84yGrBBO
+	rRCaavnpQPux//NsK7sK8rErJ8DPWO3SKANUWS+wgc0zpzPXufDzbf1zLI3XR2/s+5ji1/
+	qaFFrDZ+HqPDxav0tjiA5YreajQSGJU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E56E41324F
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jul 2024 04:59:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 81ztJiyKoGZdFQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 24 Jul 2024 04:59:24 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: move uuid tree related code to uuid-tree.[ch]
+Date: Wed, 24 Jul 2024 14:29:02 +0930
+Message-ID: <953cb5cf507f8f25b6e89a0666164ae0315c9e8e.1721797137.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/3] btrfs: always uses root memcgroup for
- filemap_add_folio()
-To: Michal Hocko <mhocko@suse.com>, Johannes Weiner <hannes@cmpxchg.org>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- cgroups@vger.kernel.org, linux-mm@kvack.org,
- Vlastimil Babka <vbabka@kernel.org>
-References: <cover.1721384771.git.wqu@suse.com>
- <6a9ba2c8e70c7b5c4316404612f281a031f847da.1721384771.git.wqu@suse.com>
- <20240719170206.GA3242034@cmpxchg.org> <Zpqs0HdfPCy2hfDh@tiehlicka>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <Zpqs0HdfPCy2hfDh@tiehlicka>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cufQEFUiWyiNRwrKWsJrP956F/8BUG8pJdhep4wjcGYVs+RLB+n
- cdmZYjO3sMKOwzd2iMW1ty3VOXGVkBULK7BvajJbgSUfhLFgDAiYswNH/GLjdF6l7WZKuXg
- jclkazR2XlGaL7rl6NUk1gQvpVJ6L5q4IYBE3xXHPJC1KM38EtgmCIGU0vq5fZptN/taRrD
- VSNdhpNVexH5C1mdvbhug==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [0.40 / 50.00];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:09GX5YJsgFc=;IYmFeiA0pRqhJIq0QKlGa8WF0L6
- /rfWIzI7OF2y2N9OVuOEsVOu01zlUPaPJTbHN8Hpkh0BLaA4uGhXd437WXJP99DmijdLUsIYU
- OxDpzuD2isDcU0xunAOLdvTZJY1TRPxsrUZtKfMAcWZ/tlxx9rkl/BUUURt22y8KnEJQtO8T1
- XBt0FMytSTn0NwUwF7OIUKNFpJzjWtVU1iXauFXKSKFtux6kHTRe0lSyQlEmqMssTL7ljyPtf
- dtCVslO3+XE0xtlp6nXjUd5Z8Nmqc7yJwg/KZPxxbsPyN5PIeoW8XjmMdtvEPiYdaxIi7+MqJ
- PvAAO07A6WcdwKHj0xtUdr63yRwXlTF0zzzZeN6spgYQE8wY1xUxAJZqQ2meY5lOBTGCjtEVN
- glv2Haa1dJwDzgZ+g8nGFiKkTslsXnJz8IlFEGL8STZNpKNv1VXAV658xfMbHxulutnaGUhIk
- 77kc8y8q74Vj9x4zIHZ2i8uoYp07F+DYy7WUb3+vjxCPatvlrPpxJjK22O/UgqqCxgXBWMVK/
- Ku6SXXfuZNH8aSmWu3945eDIXa7dVXs1NLaZdAfymPZRPJgM7zqtlxjWlwmZlG7tSqnqRpaG8
- ad2G4uIyaaEPqhKk8PcF9hnw9i2vhZDAu/zeMe298XDq4yhnhImmBFb+V8yuUnxEhxWOgW8Y6
- YQeSSyl5Q0R+lsbWUjOBkSC5Cj5pRs+qEsxUpb/bKTogie2R7vMGzJm1IulT1UxybegqVQU9o
- E70U5mhgbI2cAh+Byj1GeNsI2sNa71+LhjJx7ko+/SqI/I7+Dn69Ukgmp+DZALz0sg/prcirQ
- WtGitbWf/d8fpGsB/P3cPuaw==
+X-Spam-Score: 0.40
 
+Functions btrfs_uuid_scan_kthread() and btrfs_create_uuid_tree() are for
+UUID tree rescan and creation, it's not suitable for volumes.[ch].
 
+Move them to uuid-tree.[ch] instead.
 
-=E5=9C=A8 2024/7/20 03:43, Michal Hocko =E5=86=99=E9=81=93:
-[...]
->
->>> +	set_active_memcg(old_memcg);
->>
->> It looks correct. But it's going through all dance to set up
->> current->active_memcg, then have the charge path look that up,
->> css_get(), call try_charge() only to bail immediately, css_put(), then
->> update current->active_memcg again. All those branches are necessary
->> when we want to charge to a "real" other cgroup. But in this case, we
->> always know we're not charging, so it seems uncalled for.
->>
->> Wouldn't it be a lot simpler (and cheaper) to have a
->> filemap_add_folio_nocharge()?
->
-> Yes, that would certainly simplify things. From the previous discussion
-> I understood that there would be broader scopes which would opt-out from
-> charging. If this is really about a single filemap_add_folio call then
-> having a variant without doesn't call mem_cgroup_charge sounds like a
-> much more viable option and also it doesn't require to make any memcg
-> specific changes.
->
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/uuid-tree.c | 179 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/uuid-tree.h |   2 +
+ fs/btrfs/volumes.c   | 177 ------------------------------------------
+ fs/btrfs/volumes.h   |   2 -
+ 4 files changed, 181 insertions(+), 179 deletions(-)
 
-Talking about skipping mem cgroup charging, I still have a question.
+diff --git a/fs/btrfs/uuid-tree.c b/fs/btrfs/uuid-tree.c
+index eae75bb572b9..c6399513c66f 100644
+--- a/fs/btrfs/uuid-tree.c
++++ b/fs/btrfs/uuid-tree.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) STRATO AG 2013.  All rights reserved.
+  */
+ 
++#include <linux/kthread.h>
+ #include <linux/uuid.h>
+ #include <asm/unaligned.h>
+ #include "messages.h"
+@@ -12,6 +13,7 @@
+ #include "fs.h"
+ #include "accessors.h"
+ #include "uuid-tree.h"
++#include "ioctl.h"
+ 
+ static void btrfs_uuid_to_key(const u8 *uuid, u8 type, struct btrfs_key *key)
+ {
+@@ -390,3 +392,180 @@ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info)
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
++
++int btrfs_uuid_scan_kthread(void *data)
++{
++	struct btrfs_fs_info *fs_info = data;
++	struct btrfs_root *root = fs_info->tree_root;
++	struct btrfs_key key;
++	struct btrfs_path *path = NULL;
++	int ret = 0;
++	struct extent_buffer *eb;
++	int slot;
++	struct btrfs_root_item root_item;
++	u32 item_size;
++	struct btrfs_trans_handle *trans = NULL;
++	bool closing = false;
++
++	path = btrfs_alloc_path();
++	if (!path) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	key.objectid = 0;
++	key.type = BTRFS_ROOT_ITEM_KEY;
++	key.offset = 0;
++
++	while (1) {
++		if (btrfs_fs_closing(fs_info)) {
++			closing = true;
++			break;
++		}
++		ret = btrfs_search_forward(root, &key, path,
++				BTRFS_OLDEST_GENERATION);
++		if (ret) {
++			if (ret > 0)
++				ret = 0;
++			break;
++		}
++
++		if (key.type != BTRFS_ROOT_ITEM_KEY ||
++		    (key.objectid < BTRFS_FIRST_FREE_OBJECTID &&
++		     key.objectid != BTRFS_FS_TREE_OBJECTID) ||
++		    key.objectid > BTRFS_LAST_FREE_OBJECTID)
++			goto skip;
++
++		eb = path->nodes[0];
++		slot = path->slots[0];
++		item_size = btrfs_item_size(eb, slot);
++		if (item_size < sizeof(root_item))
++			goto skip;
++
++		read_extent_buffer(eb, &root_item,
++				   btrfs_item_ptr_offset(eb, slot),
++				   (int)sizeof(root_item));
++		if (btrfs_root_refs(&root_item) == 0)
++			goto skip;
++
++		if (!btrfs_is_empty_uuid(root_item.uuid) ||
++		    !btrfs_is_empty_uuid(root_item.received_uuid)) {
++			if (trans)
++				goto update_tree;
++
++			btrfs_release_path(path);
++			/*
++			 * 1 - subvol uuid item
++			 * 1 - received_subvol uuid item
++			 */
++			trans = btrfs_start_transaction(fs_info->uuid_root, 2);
++			if (IS_ERR(trans)) {
++				ret = PTR_ERR(trans);
++				break;
++			}
++			continue;
++		} else {
++			goto skip;
++		}
++update_tree:
++		btrfs_release_path(path);
++		if (!btrfs_is_empty_uuid(root_item.uuid)) {
++			ret = btrfs_uuid_tree_add(trans, root_item.uuid,
++						  BTRFS_UUID_KEY_SUBVOL,
++						  key.objectid);
++			if (ret < 0) {
++				btrfs_warn(fs_info, "uuid_tree_add failed %d",
++					ret);
++				break;
++			}
++		}
++
++		if (!btrfs_is_empty_uuid(root_item.received_uuid)) {
++			ret = btrfs_uuid_tree_add(trans,
++						  root_item.received_uuid,
++						 BTRFS_UUID_KEY_RECEIVED_SUBVOL,
++						  key.objectid);
++			if (ret < 0) {
++				btrfs_warn(fs_info, "uuid_tree_add failed %d",
++					ret);
++				break;
++			}
++		}
++
++skip:
++		btrfs_release_path(path);
++		if (trans) {
++			ret = btrfs_end_transaction(trans);
++			trans = NULL;
++			if (ret)
++				break;
++		}
++
++		if (key.offset < (u64)-1) {
++			key.offset++;
++		} else if (key.type < BTRFS_ROOT_ITEM_KEY) {
++			key.offset = 0;
++			key.type = BTRFS_ROOT_ITEM_KEY;
++		} else if (key.objectid < (u64)-1) {
++			key.offset = 0;
++			key.type = BTRFS_ROOT_ITEM_KEY;
++			key.objectid++;
++		} else {
++			break;
++		}
++		cond_resched();
++	}
++
++out:
++	btrfs_free_path(path);
++	if (trans && !IS_ERR(trans))
++		btrfs_end_transaction(trans);
++	if (ret)
++		btrfs_warn(fs_info, "btrfs_uuid_scan_kthread failed %d", ret);
++	else if (!closing)
++		set_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags);
++	up(&fs_info->uuid_tree_rescan_sem);
++	return 0;
++}
++
++int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info)
++{
++	struct btrfs_trans_handle *trans;
++	struct btrfs_root *tree_root = fs_info->tree_root;
++	struct btrfs_root *uuid_root;
++	struct task_struct *task;
++	int ret;
++
++	/*
++	 * 1 - root node
++	 * 1 - root item
++	 */
++	trans = btrfs_start_transaction(tree_root, 2);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
++
++	uuid_root = btrfs_create_tree(trans, BTRFS_UUID_TREE_OBJECTID);
++	if (IS_ERR(uuid_root)) {
++		ret = PTR_ERR(uuid_root);
++		btrfs_abort_transaction(trans, ret);
++		btrfs_end_transaction(trans);
++		return ret;
++	}
++
++	fs_info->uuid_root = uuid_root;
++
++	ret = btrfs_commit_transaction(trans);
++	if (ret)
++		return ret;
++
++	down(&fs_info->uuid_tree_rescan_sem);
++	task = kthread_run(btrfs_uuid_scan_kthread, fs_info, "btrfs-uuid");
++	if (IS_ERR(task)) {
++		/* fs_info->update_uuid_tree_gen remains 0 in all error case */
++		btrfs_warn(fs_info, "failed to start uuid_scan task");
++		up(&fs_info->uuid_tree_rescan_sem);
++		return PTR_ERR(task);
++	}
++
++	return 0;
++}
+diff --git a/fs/btrfs/uuid-tree.h b/fs/btrfs/uuid-tree.h
+index a3f5757cc7cf..c60ad20325cc 100644
+--- a/fs/btrfs/uuid-tree.h
++++ b/fs/btrfs/uuid-tree.h
+@@ -13,5 +13,7 @@ int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, const u8 *uuid, u8 typ
+ int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, const u8 *uuid, u8 type,
+ 			u64 subid);
+ int btrfs_uuid_tree_iterate(struct btrfs_fs_info *fs_info);
++int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info);
++int btrfs_uuid_scan_kthread(void *data);
+ 
+ #endif
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 9437e779d020..a004c2f8e114 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4784,183 +4784,6 @@ int btrfs_cancel_balance(struct btrfs_fs_info *fs_info)
+ 	return 0;
+ }
+ 
+-int btrfs_uuid_scan_kthread(void *data)
+-{
+-	struct btrfs_fs_info *fs_info = data;
+-	struct btrfs_root *root = fs_info->tree_root;
+-	struct btrfs_key key;
+-	struct btrfs_path *path = NULL;
+-	int ret = 0;
+-	struct extent_buffer *eb;
+-	int slot;
+-	struct btrfs_root_item root_item;
+-	u32 item_size;
+-	struct btrfs_trans_handle *trans = NULL;
+-	bool closing = false;
+-
+-	path = btrfs_alloc_path();
+-	if (!path) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	key.objectid = 0;
+-	key.type = BTRFS_ROOT_ITEM_KEY;
+-	key.offset = 0;
+-
+-	while (1) {
+-		if (btrfs_fs_closing(fs_info)) {
+-			closing = true;
+-			break;
+-		}
+-		ret = btrfs_search_forward(root, &key, path,
+-				BTRFS_OLDEST_GENERATION);
+-		if (ret) {
+-			if (ret > 0)
+-				ret = 0;
+-			break;
+-		}
+-
+-		if (key.type != BTRFS_ROOT_ITEM_KEY ||
+-		    (key.objectid < BTRFS_FIRST_FREE_OBJECTID &&
+-		     key.objectid != BTRFS_FS_TREE_OBJECTID) ||
+-		    key.objectid > BTRFS_LAST_FREE_OBJECTID)
+-			goto skip;
+-
+-		eb = path->nodes[0];
+-		slot = path->slots[0];
+-		item_size = btrfs_item_size(eb, slot);
+-		if (item_size < sizeof(root_item))
+-			goto skip;
+-
+-		read_extent_buffer(eb, &root_item,
+-				   btrfs_item_ptr_offset(eb, slot),
+-				   (int)sizeof(root_item));
+-		if (btrfs_root_refs(&root_item) == 0)
+-			goto skip;
+-
+-		if (!btrfs_is_empty_uuid(root_item.uuid) ||
+-		    !btrfs_is_empty_uuid(root_item.received_uuid)) {
+-			if (trans)
+-				goto update_tree;
+-
+-			btrfs_release_path(path);
+-			/*
+-			 * 1 - subvol uuid item
+-			 * 1 - received_subvol uuid item
+-			 */
+-			trans = btrfs_start_transaction(fs_info->uuid_root, 2);
+-			if (IS_ERR(trans)) {
+-				ret = PTR_ERR(trans);
+-				break;
+-			}
+-			continue;
+-		} else {
+-			goto skip;
+-		}
+-update_tree:
+-		btrfs_release_path(path);
+-		if (!btrfs_is_empty_uuid(root_item.uuid)) {
+-			ret = btrfs_uuid_tree_add(trans, root_item.uuid,
+-						  BTRFS_UUID_KEY_SUBVOL,
+-						  key.objectid);
+-			if (ret < 0) {
+-				btrfs_warn(fs_info, "uuid_tree_add failed %d",
+-					ret);
+-				break;
+-			}
+-		}
+-
+-		if (!btrfs_is_empty_uuid(root_item.received_uuid)) {
+-			ret = btrfs_uuid_tree_add(trans,
+-						  root_item.received_uuid,
+-						 BTRFS_UUID_KEY_RECEIVED_SUBVOL,
+-						  key.objectid);
+-			if (ret < 0) {
+-				btrfs_warn(fs_info, "uuid_tree_add failed %d",
+-					ret);
+-				break;
+-			}
+-		}
+-
+-skip:
+-		btrfs_release_path(path);
+-		if (trans) {
+-			ret = btrfs_end_transaction(trans);
+-			trans = NULL;
+-			if (ret)
+-				break;
+-		}
+-
+-		if (key.offset < (u64)-1) {
+-			key.offset++;
+-		} else if (key.type < BTRFS_ROOT_ITEM_KEY) {
+-			key.offset = 0;
+-			key.type = BTRFS_ROOT_ITEM_KEY;
+-		} else if (key.objectid < (u64)-1) {
+-			key.offset = 0;
+-			key.type = BTRFS_ROOT_ITEM_KEY;
+-			key.objectid++;
+-		} else {
+-			break;
+-		}
+-		cond_resched();
+-	}
+-
+-out:
+-	btrfs_free_path(path);
+-	if (trans && !IS_ERR(trans))
+-		btrfs_end_transaction(trans);
+-	if (ret)
+-		btrfs_warn(fs_info, "btrfs_uuid_scan_kthread failed %d", ret);
+-	else if (!closing)
+-		set_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags);
+-	up(&fs_info->uuid_tree_rescan_sem);
+-	return 0;
+-}
+-
+-int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info)
+-{
+-	struct btrfs_trans_handle *trans;
+-	struct btrfs_root *tree_root = fs_info->tree_root;
+-	struct btrfs_root *uuid_root;
+-	struct task_struct *task;
+-	int ret;
+-
+-	/*
+-	 * 1 - root node
+-	 * 1 - root item
+-	 */
+-	trans = btrfs_start_transaction(tree_root, 2);
+-	if (IS_ERR(trans))
+-		return PTR_ERR(trans);
+-
+-	uuid_root = btrfs_create_tree(trans, BTRFS_UUID_TREE_OBJECTID);
+-	if (IS_ERR(uuid_root)) {
+-		ret = PTR_ERR(uuid_root);
+-		btrfs_abort_transaction(trans, ret);
+-		btrfs_end_transaction(trans);
+-		return ret;
+-	}
+-
+-	fs_info->uuid_root = uuid_root;
+-
+-	ret = btrfs_commit_transaction(trans);
+-	if (ret)
+-		return ret;
+-
+-	down(&fs_info->uuid_tree_rescan_sem);
+-	task = kthread_run(btrfs_uuid_scan_kthread, fs_info, "btrfs-uuid");
+-	if (IS_ERR(task)) {
+-		/* fs_info->update_uuid_tree_gen remains 0 in all error case */
+-		btrfs_warn(fs_info, "failed to start uuid_scan task");
+-		up(&fs_info->uuid_tree_rescan_sem);
+-		return PTR_ERR(task);
+-	}
+-
+-	return 0;
+-}
+-
+ /*
+  * shrinking a device means finding all of the device extents past
+  * the new size, and then following the back refs to the chunks.
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 37a09ebb34dd..c947187539dd 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -725,8 +725,6 @@ int btrfs_recover_balance(struct btrfs_fs_info *fs_info);
+ int btrfs_pause_balance(struct btrfs_fs_info *fs_info);
+ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset);
+ int btrfs_cancel_balance(struct btrfs_fs_info *fs_info);
+-int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info);
+-int btrfs_uuid_scan_kthread(void *data);
+ bool btrfs_chunk_writeable(struct btrfs_fs_info *fs_info, u64 chunk_offset);
+ void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index);
+ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+-- 
+2.45.2
 
-[MEMCG AT FOLIO EVICTION TIME]
-Even we completely skip the mem cgroup charging, we cannot really escape
-the eviction time handling.
-
-In fact if we just skip the mem_cgroup_charge(), kernel would crash when
-evicting the folio.
-As in lru_gen_eviction(), folio_memcg() would just return NULL, and
-mem_cgroup_id(memcg) would trigger a NULL pointer dereference.
-
-That's why I sent out a patch fixing that first:
-https://lore.kernel.org/linux-mm/e1036b9cc8928be9a7dec150ab3a0317bd7180cf.=
-1720572937.git.wqu@suse.com/
-
-I'm not sure if it's going to cause any extra problems even with the
-above fix.
-
-And just for the sake of consistency, it looks more sane to have
-root_mem_cgroup for the filemap_add_folio() operation, other than leave
-it empty, especially since most filemaps still need proper memcg handling.
-
-
-[REALLY EXPENSIVE?]
-Another question is, is the set_active_memcg() and later handling really
-that expensive?
-
-set_active_memcg() is small enough to be an inline function, so is the
-active_memcg(), css_get() and the root memcg path of try_charge().
-
-Later commit part is not that expensive either, mostly simple member or
-per-cpu assignment.
-
-According to my very little knowledge about mem cgroup, most of the
-heavy lifting part is in the slow path of try_charge_memcg().
-
-Even with all the set_active_memcg(), the whole extra overhead still
-look very tiny.
-And it should already be a big win for btrfs to opt-out the regular
-charging routine.
-
-Thanks,
-Qu
 
