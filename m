@@ -1,281 +1,263 @@
-Return-Path: <linux-btrfs+bounces-6704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6705-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B9793CB28
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 01:19:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31B0093CB3F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 01:29:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D99501F22209
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 23:19:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDD8B281B70
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 23:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538A3146A8A;
-	Thu, 25 Jul 2024 23:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A89149018;
+	Thu, 25 Jul 2024 23:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cmi5LwdV"
+	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="ZFMMooUq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F8CDF6C
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 23:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9572146A8A
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 23:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721949567; cv=none; b=URaPdboupc2GYP14PKTZQiSAfmYinL0NlxxryEaN1hIBRypq48V2ETjhU8jbEX7VfRMgQg9Mlf/uRPAYsAWoZR82FKOVmg/oROb4tgShyoebbG1QVsoEpYKP6qHzUXTtPvNIp+cPlJmT6J2KuAQRlfHGb2sd6+B1rAuaG+VJyeM=
+	t=1721950125; cv=none; b=XIMVA7ExCFizC7Dl+yttG9FcJlqveeJ/3siH3VbIR7mzEkuv7aNnfS1Q8gSUpqZMD/6AGM1ZfkOg0ASDLR0fgJNAub/iDm1E/Y9gOecvqQTmnk9yg4y6aj1yyUMYG3AMN7Si9m1ys7IgCezhga1NyYO5crxthU2COwHazMHLajU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721949567; c=relaxed/simple;
-	bh=swBZ/0aa/AzifAo/WQqZzoP+/Kc4+kSgFY36255wO90=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y1FWgljENyFrDCeYVnbA6cfi3D7QBm+DTOaemmHCUe6BVGTfG/BLgRLbsZHREOgL+NUhGkv+mAp4b0leSJCPc1KT+MLm2xqupVcODv/wvOmN2T1u6dgtoY1kUCrF0TF0pr0Pw49GWwTaibD49UeMt1y3IJqXJyg01fm//Fd/DOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cmi5LwdV; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1721949553; x=1722554353; i=quwenruo.btrfs@gmx.com;
-	bh=Gzy/c1SB5pWQPjg5NaCUvfNU7Z35DpDLKJhOfE6wae4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=cmi5LwdVGO6p1zSgHpQ5OTWElethPTekGrmoLmyfeHgOP4P41S6qw3R8N2mD2+p+
-	 XnBpHt3N5Tjt7GNImdXnm68lHlaAd65NNtfaZgujOs/xEn+IkWoEfeq1+4iwgBG6l
-	 J3QHi8+031Y55TYgKALdnX8xB6bhzcqPPxaLeZD23CYtgAXsYb6QZaVi7VXIEYL17
-	 W4WmsUHrXMwqwu3gtxPlCh50mefNcNsxLFwA2UYWVjf5B4Ce/VKg/oGx6bDX8B34G
-	 jBfEgj5ex5COfmVnun83IOix0+lYiN/sqpU5qwFdnvPHKOhNp1Uazlohacg2pwHlR
-	 u658qn46SkD90ev6Ag==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRTRH-1suPDQ0BD3-00Y2se; Fri, 26
- Jul 2024 01:19:13 +0200
-Message-ID: <aeed4735-f6f2-49ef-9a02-816a3b74cbd3@gmx.com>
-Date: Fri, 26 Jul 2024 08:49:10 +0930
+	s=arc-20240116; t=1721950125; c=relaxed/simple;
+	bh=hGUoZw8LfPE8qs1EV7nuu37M1T/dA1Ezptw4UH7H3ss=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OAb06OvGN9kwc6UiFCYiQW4jaaOKo4UGl80kuMZunZBQ0nwTLwIgcADVzOFOQfRHM4NDiaIKqVQzlTeTO1qKkAcIuRmPLknHIM66wxHAMsLJfoSPe4VzJRfONP9seIkITjg6Bx3hrMXIXVxKp6dil/jip1kaKSrj9eFzG0G5YBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=ZFMMooUq; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3db15d73f04so258964b6e.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 16:28:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1721950122; x=1722554922; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eGPCoDxoXJIOgWXDzzxDZ6NSt90MIVYpVAZmNfRyy8Q=;
+        b=ZFMMooUq6QUWXp82FUUKj1YpU1roj9GquTgfRMEIao8x4lGPt43M/2kt2aUXDe578T
+         tpvADNke8YSLvb78zebtsqC8W9f7HyyOlTVAMJEs3xXXCOg/hGm1vbfaX1SExFtVDiA2
+         vMdYYPFA83KlsEO5svPAAldHg2xt/XZWzCPXvPhUVDhJGb+bJQxlhB53G/Q0T25iNxY6
+         alSLw3PA3/GqGLmABL69VfIZren0oWHi/8rauVkW4Fcy92jpktSBzfBexBePJugy/8Yh
+         kY5F8nzt4zrqvGSpIkeREyJQROoVA3SzukWlWimQDqO6Kbhl9IV3AjIkqyYfi7oiqdk4
+         GIBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721950122; x=1722554922;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eGPCoDxoXJIOgWXDzzxDZ6NSt90MIVYpVAZmNfRyy8Q=;
+        b=cdQAMpEFOPCOb6DehzhP0iG2D6CY2lbNFF7bZuKgAMzeyNkPqsMpKHs3IAi1vnV75+
+         47BCf0jA9DLHvNrgbHxuLb9Ez0ih4vpizgxztI/ul6Yr5jdhvFpdsfyHjqsHB/ksHggZ
+         uA27wy0rOHkdAcvhT2xs/1iZnwh3tY+8K3D5Xqv+fexucrCorS7AB/2zRvxSg76tysba
+         xGfqH7eOKi/M27nvbwJt8+uAskCJRqtG7e6iHRRRHR0VNe3zD0qYacfX26MnYY1nUPjl
+         vpRbHyVeX2ic+9j+7H801OUJkiHdO1V6mM1VR1WGxE4Z/PcBbGGtQtc8EUt5bNHOdJm9
+         lg8A==
+X-Gm-Message-State: AOJu0Yw/8Z783ywQ4O27X3wDVL/4Mpz4LtfAwxOouY/PAbrEW8vF/rRR
+	HuBjMBoHDK8oA0yEMFZ/BmR4XMr/oaAyrJCefI7EUscToFzo+uQ5Bw0hzp9RMLjcUMPYAOCEHjh
+	R
+X-Google-Smtp-Source: AGHT+IHaztsrJZTHENawOldX9g57sT2RMpLiCEQfqQJoi5iJjzpPF4PrajBdl6ZaLp+c7G5uWfi8dw==
+X-Received: by 2002:a05:6808:1924:b0:3d9:4004:ff27 with SMTP id 5614622812f47-3db14118421mr3418295b6e.21.1721950122525;
+        Thu, 25 Jul 2024 16:28:42 -0700 (PDT)
+Received: from telecaster.hsd1.wa.comcast.net ([2620:10d:c090:400::5:d3b1])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f8849aa8sm1457540a12.53.2024.07.25.16.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jul 2024 16:28:41 -0700 (PDT)
+From: Omar Sandoval <osandov@osandov.com>
+To: linux-btrfs@vger.kernel.org
+Cc: kernel-team@fb.com,
+	Neal Gompa <neal@gompa.dev>,
+	Sam James <sam@gentoo.org>
+Subject: [PATCH] libbtrfsutil: python: fix build on Python 3.13
+Date: Thu, 25 Jul 2024 16:28:35 -0700
+Message-ID: <fbbb792fa299bfdfa818f6e0790fa545297dc1cf.1721949827.git.osandov@fb.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Force remove of broken extent/subvolume? (Crash in
- btrfs_run_delayed_refs)
-To: dsterba@suse.cz, "Emil.s" <emil@sandnabba.se>
-Cc: linux-btrfs@vger.kernel.org
-References: <CAEA9r7DVO8gCRz-9vbwaNWznz9AOFxOyPLO0ukOJh-6Ef0o5Bw@mail.gmail.com>
- <20240725224757.GD17473@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240725224757.GD17473@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:qhLR16nKu2kGVJKeGqPKlUcevwp4b8vYL4spneinv2z5vphfbTm
- lZB9FOWQxYTls6Y2osIVLmH5H7rJefJLI5KwqzTy7CFxSWF4s0dt0adNz9DZKMSvQky/Ocd
- 55OSP1PKk+dg3wpgYSl+Sx0DMmCSuW6qnAPRTbT2/CzCiWkV9SmzxO+a7kJNkAfxXqFwZ8Y
- fFxTsqR1gVMFbFW5mjFKg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:6QNi+AxaFME=;93KrQRW5QtIYCfhNM27XFCF7E9M
- pkl5c6Po6GMzeMf/G+mXiFJIPZzJenWj3ZT2gssjw5PunPATL3Q2cI4YRuniGkzLMfTq+BgaP
- /wQYrPEitfKXk/5KYKKJf5kxwd82ALQdZ/ypBYSfJhhI8lBfRfne7ab4FhLAlmmfMuS1tlIlc
- 1hCLYpjBabjpjzlq5RbDg06mPun9OkjhCCT+Ud0toVP9xvfXf30PvRAujMH4jid2RL8tS7Nnu
- iP+Q3rmzyweJ5YO+lZEylHE9Z8avALWWyLckxO0rucgmcHRDUVC2r6FGhPPzmP6vcakfe6zFH
- sdGQZN3wRLiaLDenCuGPHuaGTP74umHnRu42dQnxC7MzLyIbJTuDIaqk0D/mBjT+mmFr8UBAJ
- 9sZiScj37LGDOw9HhzHTk45gIrvlXxCgrdZKuAVcwYxwNe9kvzIsAlqOHahkUWyvD4q+He/9u
- XvzU4dhFw+3TPJLNUDjkDU04pNndhGTpe8nW1Br+Ix6r2jQbV9oATqN3duSyVS9nhuDD9eFWE
- iQQ6NTdt8pq1gwdU+95aJOIgiGjbrKlT6E+tmwyXeND81TGg2zW8ekz7U1AO+3Acg2t2pHSVh
- SbP6Jq2vNhw4zz8KaMf93TzHZtg65y4Le7PqQ9vcvGu0pgy1Sc/70EYf+T+mL86umek/xCROh
- vJdqWm29H6WwQ56l30CBzhDun9nFmkdNbOMEFSary2gLB/TwlL+fI6kHNG4gds/D1K7VgAkzp
- soIC9BgcLfyC5q3JGuDYC2QeExosZ5f7XwQPT1YHLqsQG4o1ai6EVaCzDG1VHkugMP2ZvamcX
- ArWnMUOtw1i7ml/AxoJ9aIdQ==
+Content-Transfer-Encoding: 8bit
 
+From: Omar Sandoval <osandov@fb.com>
 
+Python 3.13, currently in beta, removed the internal
+_PyObject_LookupSpecial function. The libbtrfsutil Python bindings use
+it in the path_converter() function because it was based on internal
+path_converter() function in CPython [1]. This is causing build failures
+on Fedora Rawhide [2] and Gentoo [3]. Replace path_converter() with a
+version that only uses public functions based on the one in drgn [4].
 
-=E5=9C=A8 2024/7/26 08:17, David Sterba =E5=86=99=E9=81=93:
-> On Thu, Jul 25, 2024 at 11:06:00PM +0200, Emil.s wrote:
->> Hello!
->>
->> I got a corrupt filesystem due to backpointer mismatches:
->> ---
->> [2/7] checking extents
->> data extent[780333588480, 942080] size mismatch, extent item size
->> 925696 file item size 942080
->
-> This looks like a single bit flip:
->
->>>> bin(925696)
-> '0b11100010000000000000'
->>>> bin(942080)
-> '0b11100110000000000000'
->>>> bin(942080 ^ 925696)
-> 0b100000000000000'
->
-> or an off by one error, as the delta is 0x4000, 4x page which is one
-> node size.
->
->> backpointer mismatch on [780333588480 925696]
->> ---
->>
->> However only two extents seem to be affected, in a subvolume only used
->> for backups.
->>
->> Since I've not been able to repair it, I thought that I could just
->> delete the subvolume and recreate it.
->> But now the btrfs_run_delayed_refs function crashes a while after
->> mounting the filesystem. (Which is quite obvious when I think about
->> it, since I guess it's trying to reclaim space, hitting the bad extent
->> in the process?)
->>
->> Anyhow, is it possible to force removal of these extents in any way?
->> My understanding is that extents are mapped to a specific subvolume as
->> well?
->>
->> Here is the full crash dump:
->> https://gist.github.com/sandnabba/e3ed7f57e4d32f404355fdf988fcfbff
->
-> WARNING: CPU: 3 PID: 199588 at fs/btrfs/extent-tree.c:858 lookup_inline_=
-extent_backref+0x5c3/0x760 [btrfs]
->
->   858         } else if (WARN_ON(ret)) {
->   859                 btrfs_print_leaf(path->nodes[0]);
->   860                 btrfs_err(fs_info,
->   861 "extent item not found for insert, bytenr %llu num_bytes %llu pare=
-nt %llu root_objectid %llu owner %llu offset %llu",
->   862                           bytenr, num_bytes, parent, root_objectid=
-, owner,
->   863                           offset);
->   864                 ret =3D -EUCLEAN;
->   865                 goto out;
->   866         }
->   867
->
-> CPU: 3 PID: 199588 Comm: btrfs-transacti Tainted: P           OE      6.=
-9.9-arch1-1 #1 a564e80ab10c5cd5584d6e9a0715907a10e33ca4
-> Hardware name: LENOVO 30B4S01W00/102F, BIOS S00KT73A 05/24/2022
-> RIP: 0010:lookup_inline_extent_backref+0x5c3/0x760 [btrfs]
-> RSP: 0018:ffffabb2cd4e3b00 EFLAGS: 00010202
-> RAX: 0000000000000001 RBX: ffff992307d5c1c0 RCX: 0000000000000000
-> RDX: 0000000000000001 RSI: ffff992312c0d590 RDI: ffff99222faff680
-> RBP: 0000000000000000 R08: 00000000000000bc R09: 0000000000000001
-> R10: a8000000b5a8c360 R11: 0000000000000000 R12: 000000b5af81a000
-> R13: ffffabb2cd4e3b57 R14: 00000000000e6000 R15: ffff9927ca7551f8
-> FS:  0000000000000000(0000) GS:ffff992997980000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000ad404625100 CR3: 000000080ea20002 CR4: 00000000003706f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413c43a=
-944f40925c800621e78e]
->   ? __warn.cold+0x8e/0xe8
->   ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413c43a=
-944f40925c800621e78e]
->   ? report_bug+0xff/0x140
->   ? handle_bug+0x3c/0x80
->   ? exc_invalid_op+0x17/0x70
->   ? asm_exc_invalid_op+0x1a/0x20
->   ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413c43a=
-944f40925c800621e78e]
->   ? set_extent_buffer_dirty+0x19/0x170 [btrfs dcbea9ede49f9413c43a944f40=
-925c800621e78e]
->   insert_inline_extent_backref+0x82/0x160 [btrfs dcbea9ede49f9413c43a944=
-f40925c800621e78e]
->   __btrfs_inc_extent_ref+0x9c/0x220 [btrfs dcbea9ede49f9413c43a944f40925=
-c800621e78e]
->   ? __btrfs_run_delayed_refs+0xf64/0xfb0 [btrfs dcbea9ede49f9413c43a944f=
-40925c800621e78e]
->   __btrfs_run_delayed_refs+0xaf2/0xfb0 [btrfs dcbea9ede49f9413c43a944f40=
-925c800621e78e]
->   btrfs_run_delayed_refs+0x3b/0xd0 [btrfs dcbea9ede49f9413c43a944f40925c=
-800621e78e]
->   btrfs_commit_transaction+0x6c/0xc80 [btrfs dcbea9ede49f9413c43a944f409=
-25c800621e78e]
->   ? start_transaction+0x22c/0x830 [btrfs dcbea9ede49f9413c43a944f40925c8=
-00621e78e]
->   transaction_kthread+0x159/0x1c0 [btrfs dcbea9ede49f9413c43a944f40925c8=
-00621e78e]
->
-> followed by leaf dump with items relevant to the numbers:
->
->        item 117 key (780331704320 168 942080) itemoff 11917 itemsize 37
->                extent refs 1 gen 2245328 flags 1
->                ref#0: shared data backref parent 4455386873856 count 1
->        item 118 key (780332646400 168 942080) itemoff 11880 itemsize 37
->                extent refs 1 gen 2245328 flags 1
->                ref#0: shared data backref parent 4455386873856 count 1
->        item 119 key (780333588480 168 925696) itemoff 11827 itemsize 53
->                      ^^^^^^^^^^^^^^^^^^^^^^^
->
->                extent refs 1 gen 2245328 flags 1
->                ref#0: extent data backref root 2404 objectid 1141024 off=
-set 0 count 1
->        item 120 key (780334530560 168 942080) itemoff 11774 itemsize 53
->                extent refs 1 gen 2245328 flags 1
->                ref#0: extent data backref root 2404 objectid 1141025 off=
-set 0 count 1
->        item 121 key (780335472640 168 942080) itemoff 11721 itemsize 53
->                extent refs 1 gen 2245328 flags 1
->                ref#0: extent data backref root 2404 objectid 1141026 off=
-set 0 count 1
->
-> as you can see item 119 is the problematic one and also out of sequence,=
- the
-> adjacent items have the key offset 942080. Which confirms the bitlip
-> case.
->
-> As for any bitflip induced errors, it's hard to tell how far it got
-> propagated, this could be the only instance or there could be other
-> items referring to that one too.
->
-> We don't have any ready made tool for fixing that, the bitlips hit
-> random data structure groups or data, each is basically unique and would
-> require analysis of tree dump and look for clues how bad it is.
->
+1: https://github.com/python/cpython/blob/d9efa45d7457b0dfea467bb1c2d22c69056ffc73/Modules/posixmodule.c#L1253
+2: https://bugzilla.redhat.com/show_bug.cgi?id=2245650
+3: https://github.com/kdave/btrfs-progs/issues/838
+4: https://github.com/osandov/drgn/blob/9ad29fd86499eb32847473e928b6540872d3d59a/libdrgn/python/util.c#L81
 
-Since we're pretty sure it's a bitflip now, would you please provide the
-following info?
+Reported-by: Neal Gompa <neal@gompa.dev>
+Reported-by: Sam James <sam@gentoo.org>
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+---
+ libbtrfsutil/python/btrfsutilpy.h |  7 +--
+ libbtrfsutil/python/module.c      | 98 ++++++++++---------------------
+ 2 files changed, 33 insertions(+), 72 deletions(-)
 
-- History of the fs
-   Since you're using Arch kernel, and since 5.14 we have all the write-
-   time checkers, normally we should detect such out-of-key situation by
-   flipping the fs RO.
-   I'm wondering if the fs is handled by some older kernels thus tree-
-   checker didn't catch it early.
+diff --git a/libbtrfsutil/python/btrfsutilpy.h b/libbtrfsutil/python/btrfsutilpy.h
+index ee70c23a..49702dcc 100644
+--- a/libbtrfsutil/python/btrfsutilpy.h
++++ b/libbtrfsutil/python/btrfsutilpy.h
+@@ -40,16 +40,13 @@ extern PyTypeObject SubvolumeInfo_type;
+ extern PyTypeObject SubvolumeIterator_type;
+ extern PyTypeObject QgroupInherit_type;
+ 
+-/*
+- * Helpers for path arguments based on posixmodule.c in CPython.
+- */
+ struct path_arg {
+ 	bool allow_fd;
+-	char *path;
+ 	int fd;
++	char *path;
+ 	Py_ssize_t length;
+ 	PyObject *object;
+-	PyObject *cleanup;
++	PyObject *bytes;
+ };
+ int path_converter(PyObject *o, void *p);
+ void path_cleanup(struct path_arg *path);
+diff --git a/libbtrfsutil/python/module.c b/libbtrfsutil/python/module.c
+index 2657ee28..9b0b86b5 100644
+--- a/libbtrfsutil/python/module.c
++++ b/libbtrfsutil/python/module.c
+@@ -44,85 +44,49 @@ static int fd_converter(PyObject *o, void *p)
+ int path_converter(PyObject *o, void *p)
+ {
+ 	struct path_arg *path = p;
+-	int is_index, is_bytes, is_unicode;
+-	PyObject *bytes = NULL;
+-	Py_ssize_t length = 0;
+-	char *tmp;
+ 
+ 	if (o == NULL) {
+ 		path_cleanup(p);
+ 		return 1;
+ 	}
+ 
+-	path->object = path->cleanup = NULL;
+-	Py_INCREF(o);
+-
+ 	path->fd = -1;
++	path->path = NULL;
++	path->length = 0;
++	path->bytes = NULL;
++	if (path->allow_fd && PyIndex_Check(o)) {
++		PyObject *fd_obj;
++		int overflow;
++		long fd;
+ 
+-	is_index = path->allow_fd && PyIndex_Check(o);
+-	is_bytes = PyBytes_Check(o);
+-	is_unicode = PyUnicode_Check(o);
+-
+-	if (!is_index && !is_bytes && !is_unicode) {
+-		_Py_IDENTIFIER(__fspath__);
+-		PyObject *func;
+-
+-		func = _PyObject_LookupSpecial(o, &PyId___fspath__);
+-		if (func == NULL)
+-			goto err_format;
+-		Py_DECREF(o);
+-		o = PyObject_CallFunctionObjArgs(func, NULL);
+-		Py_DECREF(func);
+-		if (o == NULL)
++		fd_obj = PyNumber_Index(o);
++		if (!fd_obj)
+ 			return 0;
+-		is_bytes = PyBytes_Check(o);
+-		is_unicode = PyUnicode_Check(o);
+-	}
+-
+-	if (is_unicode) {
+-		if (!PyUnicode_FSConverter(o, &bytes))
+-			goto err;
+-	} else if (is_bytes) {
+-		bytes = o;
+-		Py_INCREF(bytes);
+-	} else if (is_index) {
+-		if (!fd_converter(o, &path->fd))
+-			goto err;
+-		path->path = NULL;
+-		goto out;
++		fd = PyLong_AsLongAndOverflow(fd_obj, &overflow);
++		Py_DECREF(fd_obj);
++		if (fd == -1 && PyErr_Occurred())
++			return 0;
++		if (overflow > 0 || fd > INT_MAX) {
++			PyErr_SetString(PyExc_OverflowError,
++					"fd is greater than maximum");
++			return 0;
++		}
++		if (fd < 0) {
++			PyErr_SetString(PyExc_ValueError, "fd is negative");
++			return 0;
++		}
++		path->fd = fd;
+ 	} else {
+-err_format:
+-		PyErr_Format(PyExc_TypeError, "expected %s, not %s",
+-			     path->allow_fd ? "string, bytes, os.PathLike, or integer" :
+-			     "string, bytes, or os.PathLike",
+-			     Py_TYPE(o)->tp_name);
+-		goto err;
++		if (!PyUnicode_FSConverter(o, &path->bytes)) {
++			path->object = path->bytes = NULL;
++			return 0;
++		}
++		path->path = PyBytes_AS_STRING(path->bytes);
++		path->length = PyBytes_GET_SIZE(path->bytes);
+ 	}
+-
+-	length = PyBytes_GET_SIZE(bytes);
+-	tmp = PyBytes_AS_STRING(bytes);
+-	if ((size_t)length != strlen(tmp)) {
+-		PyErr_SetString(PyExc_TypeError,
+-				"path has embedded nul character");
+-		goto err;
+-	}
+-
+-	path->path = tmp;
+-	if (bytes == o)
+-		Py_DECREF(bytes);
+-	else
+-		path->cleanup = bytes;
+-	path->fd = -1;
+-
+-out:
+-	path->length = length;
++	Py_INCREF(o);
+ 	path->object = o;
+ 	return Py_CLEANUP_SUPPORTED;
+-
+-err:
+-	Py_XDECREF(o);
+-	Py_XDECREF(bytes);
+-	return 0;
+ }
+ 
+ PyObject *list_from_uint64_array(const uint64_t *arr, size_t n)
+@@ -150,8 +114,8 @@ PyObject *list_from_uint64_array(const uint64_t *arr, size_t n)
+ 
+ void path_cleanup(struct path_arg *path)
+ {
++	Py_CLEAR(path->bytes);
+ 	Py_CLEAR(path->object);
+-	Py_CLEAR(path->cleanup);
+ }
+ 
+ static PyMethodDef btrfsutil_methods[] = {
+-- 
+2.45.2
 
-- The hardware spec
-   The dmesg only contains hardware spec "LENOVO 30B4S01W00", which seems
-   to be a workstation.
-   I'm wondering if it's certain CPU models which leads to possible
-   unreliable memories.
-   From my experience, the memory chip itself is pretty rare to be the
-   cause, but either the connection (from BGA to DIMM slot) or the memory
-   controller (nowadays in the CPU die).
-
-Thanks,
-Qu
 
