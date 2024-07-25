@@ -1,56 +1,78 @@
-Return-Path: <linux-btrfs+bounces-6688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75B493BE4A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 11:01:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE9E93BEDD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 11:16:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3333A283A6B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 09:01:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9205B22028
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 09:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC54C19753F;
-	Thu, 25 Jul 2024 09:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504C4176233;
+	Thu, 25 Jul 2024 09:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZmLEaNnC"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I+4N2mi3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C04D15FA60;
-	Thu, 25 Jul 2024 09:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F3381E
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 09:16:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721898076; cv=none; b=J+4owtk4jM2s9xVmy5nT3rajDXndGqEsJIx9efC8qqBsyzCmufP5bNt6nN7yhcApqTU2ic2iPpy3mKpGswkyDyESfbHi8j3PrsRYHqzNgdkR/9AfuQplkwWLiPOL87eISOZJoZTiv91ZwHLSwnmZnQCgOc+pwQp0L1/gIYb2eXs=
+	t=1721898969; cv=none; b=IjLXD8YA/sLAUnvAW3QP5PmgbKfb2KwY9IlqdBZRjWZ8Jf6ESVzleF6fmL6ZTQRdG8b+YdeQeY3JXXFB/+9Imw8loDZdG67+xyGpWAr9K5CrmMlZVblEt095XfsmVFBy2w8cOQnyOEbtExD7GUYDYCas6Hf2pcOK1ZFMbHvNmIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721898076; c=relaxed/simple;
-	bh=Q33MnF/0z7eUk0kHJL5c0f67TSMjk+zcMLo2cyr9nyQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P121I6OKO9BQmt7mHCu44otK/P5e/UQh39NwzrLD2wVPMOLxGKKJmAkUeRJQaCgyLt/gfJkq5byLqSt1q5Fl+YHpeMCQ8FPP2lg1OAOUK4xMetl+CzZ6hN/TkF/YHB/lr6i6bCsJLvySIim0rlfTviwfvnmFx42Tg6eILXgRjJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ZmLEaNnC; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1721898059; x=1722502859; i=quwenruo.btrfs@gmx.com;
-	bh=PTgi0kJLeNOW/y4L9y9OkM4VfBHNqvEet/Oc6GkMyq8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ZmLEaNnCQNFhgzeQGfR4vkV4Xt/QCitGYOwFqcvqgQpAHurJssLotJql29FowIjl
-	 0cN8ehgjBLHoHFlVzKso5sAcyMl/D46bAYBdrOFmn2SHEIa9Lt4jooGXw3CVEQ58e
-	 LKjyYuiyv7R0GFA5SGLOk3EELO1bBWdlHT9P53+58a0Toithl/eTr1X66got6Quli
-	 0B1Zd96QQkD1/O98xnAZqs5a2aB2eLcC8dGynX4t+vBeWNuAkcHGRghBxCViNf8Kn
-	 /iQneaOUyuu9iwtfXZnFPSg2rpAUSQxWSSl3JdR+uRDdLR1ssqjtbYEh3g66qmYca
-	 PIJ9s0wPGGodDnUeFg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mkpex-1rs7DY0XHD-00hBhq; Thu, 25
- Jul 2024 11:00:59 +0200
-Message-ID: <f84a9639-fbc4-466f-822a-d151ac4db8e6@gmx.com>
-Date: Thu, 25 Jul 2024 18:30:53 +0930
+	s=arc-20240116; t=1721898969; c=relaxed/simple;
+	bh=KU2cOPUlwGKroyilBS76gHk1VW+CM/3XU5/K1KpGR70=;
+	h=Content-Type:Message-ID:Date:MIME-Version:From:Subject:To:Cc; b=X1KXshy+o3LvkPPIv2NVl8s8LD2+CSj7ZnNqoww/Oy9CvMpRWDmppZ1fYjvdqEmaEi8yaOsinfdW+oRroKM/mi9YbwqaNVRgtzAaRBjT/P/ZdnL0FtSsQjYgnOCjPHN2KmuFNOfTVGgGh0e/XK6FihmR+4YfiD3rkVheYvw1DrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I+4N2mi3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721898966;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=SSfQlJHXSrqhwL7EakHhmyebVQFBsUYzpppEE1Eyo1c=;
+	b=I+4N2mi3ykCgCGs6ND0se7CTTjfdcA7uxluqJvC1navgB+tH5d2+lDeqF+doq6o20Cp3Cz
+	7tFKIEu5slvGAHI2hs3Dzu0Xdiu0Io6XgY4fQFn5oZaB11HQRxa2INM4a5hIO3KAxz5i9w
+	iC0CCqeKjSpekW2qzkHn1q22KhcX0tA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-66-qyFzbuQWPaygjivIqyljlQ-1; Thu, 25 Jul 2024 05:16:03 -0400
+X-MC-Unique: qyFzbuQWPaygjivIqyljlQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a7ab06d2d4fso30575066b.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 02:16:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721898961; x=1722503761;
+        h=cc:to:subject:from:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SSfQlJHXSrqhwL7EakHhmyebVQFBsUYzpppEE1Eyo1c=;
+        b=ajdYAHSm7RuZPYwyf3jndlwAgqBkn+KRbH1woQnt3NohFxt+GcjTW4/7c81M7LGSkg
+         2pRogYzOP4ImvhmW18XqXRusf5ffCKu4znkOvjbARS06jwVXAgZ/5jJ0CwwUcmxkPNBM
+         BCa0VQZr4djy/StxP7cJe+QqhN+7qZMMCd6tgvJ7xu79yhzR8js9WSKsgRKttpemymS8
+         NhgdTTP8/1j7yjMPYPKx98zzLXv0S3meuvmoVEGA+0pfxcQ8MXa8JoyK3oZNBUdS1bbn
+         eFBrLoIzru6Gy+VDCEBjpBKsrvnSq/G2eUMyTYeLqbhsLd7cXWdw9jQJd7SDfnuU1M8H
+         ynIA==
+X-Gm-Message-State: AOJu0YzPykc3OgAp1YAtfybi9iv9YrJA6QwQzB7ubU4ORvp/fUafi3Ol
+	T9NilIAuGejN0bKOKWI/cv6dBkMh+xlRu4e0khtZ0Sba2geGqzb7PqOa94F3bSbXYrHM9bEdMFr
+	T5Id9kptLTqSkrmFk5VukApoTUb+tKIo2Rk6n7knp6h2jMOvuCZFvQWUM6anCobmPW70b11Hy4J
+	Nu8SJ8vUVu476phGBmw4i0wsSzK1NTIO1YNFkz0d8GPg==
+X-Received: by 2002:a17:907:80b:b0:a7a:9f0f:ab18 with SMTP id a640c23a62f3a-a7acb404706mr89053166b.20.1721898961237;
+        Thu, 25 Jul 2024 02:16:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHSWm6miUz8Jc2fnK+q5rrZH8SgGFkF7rURoRwCiM6pcJS53HcUV5UYcO7EmNNUowVmcTD2Vw==
+X-Received: by 2002:a17:907:80b:b0:a7a:9f0f:ab18 with SMTP id a640c23a62f3a-a7acb404706mr89049966b.20.1721898960554;
+        Thu, 25 Jul 2024 02:16:00 -0700 (PDT)
+Received: from ?IPV6:2003:cf:d74b:1c0d:f9c1:fd6b:b3:d669? (p200300cfd74b1c0df9c1fd6b00b3d669.dip0.t-ipconnect.de. [2003:cf:d74b:1c0d:f9c1:fd6b:b3:d669])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad92ffbsm51104466b.171.2024.07.25.02.15.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jul 2024 02:15:59 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------lC1i1w8n0yX9nM375W3EDah2"
+Message-ID: <0b841d46-12fe-4e64-9abb-871d8d0de271@redhat.com>
+Date: Thu, 25 Jul 2024 11:15:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,161 +80,165 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Cgroups <cgroups@vger.kernel.org>
-References: <cover.1720572937.git.wqu@suse.com>
- <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+From: Hanna Czenczek <hreitz@redhat.com>
+Subject: Appending from unpopulated page creates hole
+To: linux-btrfs@vger.kernel.org
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
+ Stefano Garzarella <sgarzare@redhat.com>
+
+This is a multi-part message in MIME format.
+--------------lC1i1w8n0yX9nM375W3EDah2
+Content-Type: multipart/alternative;
+ boundary="------------a1f3nPvWwQPL2IAlZlRWQrbh"
+
+--------------a1f3nPvWwQPL2IAlZlRWQrbh
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:qxWh8oiyQcVLC0FSmg4GNGhlZ31zfEUh/cWHcX8XIWKWF2aTdYw
- on7vrejKJPEl3RHecZg6f58vnLHUtXdUHPCtsvKem3nnLCOlI0lgnMZXBHTovPsHXAeXam1
- v3lAA23Q1DKBQNPgFih2g/KwvBx60KRrM7VdmwXEDAVDzEQILYUueFSgnSgSlMEvq//H5bU
- 8Qw3Wt3oYv18KAZjIK9FQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:YRi0ivA3tHk=;z2zjEQtaE8ECvUGmr76AeH/URve
- BApBcknMny7lLNOk+wbmKSXQ22bfTgwsX7Z+zL8yzFMCBDcJaTZraKo1N1eHDj44bXT1VCIsy
- w760NSn8GNdnnmxj2Pv7CkKJ60gRM4GM0uEX4KQbBtu6ZPWBg9UG1mkD4dFrCFyeV1geMXNXa
- d9KA8XUw5GHz3O7qr7bC+5RmFqdDisVPc7U+XsIRlIzvPzOPvepCt0ekygQtrNVv5E+m3AUo5
- n6S0IxxtgZ77CySvcBzX2OR1uVrIfLo5GMs7sQVnsaMTKAhZLP40bLRBtVpRiaIuGHEmtQY1r
- VJkTQy5f6/E8fosy7X0bbt/4cMVHiZy3jj0d8SD6neccDe4kuCAqk2JhgTUxPmfhdrCC81KZR
- FPBsc/uu+9vXQLdU9mDKA9gjdaaHueBJAi8QBLjjH8t2lQaP1hjKf20Zn+2y4XDyXcDIJffow
- xaAWRs2IarVMFZyHkbQw3hQ//nzW5gvRHfthCowxmP+FT6RiS379hvc/bjrthl0wGqvurohlL
- x3p6TGyG73/vdHQUwhCd7xnaVU1i2V4IxIuCiUmLEQghjYeCoNghszyaZKzNSvNBY+tlGKqDj
- 5MVytZqlB6vIakVur62PtQqZoLVzjzNvA1VbXnsTr3VVEDOUgp5sPHRSkjkj1AH5XIqkvDU2x
- QM/hurZfNuwh3ITb2QDvz9fOqQQt7lqJv91n2JZTYloh4b83SzwxDGaJdOWxpPCZVYd+Nn7TF
- dHai26HvSpxvJ34XVIjieDZH5mN8Q0lG8uiY5kbvFy9XTPdJrUiHVSIGSK6BmjWauMEyYM88H
- qek9pJKv3Y0OJU4ZxZYRfY5w==
+Content-Transfer-Encoding: 8bit
+
+Hi,
+
+I’ve noticed that appending to a file on btrfs will create a hole before 
+the appended data under certain circumstances:
+
+- Appending means O_APPEND or RWF_APPEND,
+- Writing is done in direct mode, i.e. O_DIRECT, and
+- The source buffer is not present in the page tables (what mmap() calls 
+“unpopulated”).
+
+The hole seems to generally have the size of the data being written 
+(i.e. a 64k write will create a 64k hole, followed by the 64k of data we 
+actually wanted to write), but I assume this is true only up to a 
+specific size (depending on how the request is split in the kernel).
+
+I’ve appended a reproducer.
+
+We encounter this problem with virtio-fs (sharing of directories between 
+a virtual machine host and guest), where writing is done by virtiofsd, a 
+process external to the VMM (e.g. qemu), but the buffer comes from the 
+VM guest.  Memory is shared between virtiofsd and the VMM, so virtiofsd 
+often writes data from shared memory without having accessed it itself, 
+so it isn’t present in virtiofsd’s page tables.
+
+Stefano Garzarella (CC-ed) has tested |some Fedora kernels, and has 
+confirmed that this bug does not appear in ||6.0.7-301.fc37.x86_64, but 
+does appear in ||6.0.9-300.fc37.x86_64.
+
+While I don’t know anything about btrfs code, I looked into it, and I 
+believe the changes made by commit 
+8184620ae21213d51eaf2e0bd4186baacb928172 (btrfs: fix lost file sync on 
+direct IO write with nowait and dsync iocb) may have caused this.  
+Specifically, it changed the `goto again` on EFAULT to `goto relock`, a 
+much earlier label, which causes btrfs_direct_write() to call 
+generic_write_checks() again after the first btrfs_dio_write() attempt.
+
+btrfs_dio_write() will have already allocated extents for the data and 
+updated the file length before trying to actually write the data (which 
+generates the EFAULT), so this second generic_write_checks() call will 
+update the I/O position to this new file length, exactly at the end of 
+the area to where the data was supposed to be written.
+
+To test this hypothesis, I’ve tried skipping the generic_write_checks() 
+call after reaching this specific goto, and that does make the bug 
+disappear.
 
 
+Hanna
+|
+--------------a1f3nPvWwQPL2IAlZlRWQrbh
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-=E5=9C=A8 2024/7/18 01:25, Vlastimil Babka (SUSE) =E5=86=99=E9=81=93:
-> Hi,
->
-> you should have Ccd people according to get_maintainers script to get a
-> reply faster. Let me Cc the MEMCG section.
->
-> On 7/10/24 3:07 AM, Qu Wenruo wrote:
->> Recently I'm hitting soft lockup if adding an order 2 folio to a
->> filemap using GFP_NOFS | __GFP_NOFAIL. The softlockup happens at memcg
->> charge code, and I guess that's exactly what __GFP_NOFAIL is expected t=
-o
->> do, wait indefinitely until the request can be met.
->
-> Seems like a bug to me, as the charging of __GFP_NOFAIL in
-> try_charge_memcg() should proceed to the force: part AFAICS and just go =
-over
-> the limit.
+<!DOCTYPE html>
+<html>
+  <head>
 
-After more reproduces of the bug (thus more logs), it turns out to be a
-corner case that is specific to the different folio sizes, not the mem
-cgroup.
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <font face="monospace">Hi,<br>
+      <br>
+      I’ve noticed that appending to a file on btrfs will create a hole
+      before the appended data under certain circumstances:<br>
+      <br>
+      - Appending means O_APPEND or RWF_APPEND,<br>
+      - Writing is done in direct mode, i.e. O_DIRECT, and<br>
+      - The source buffer is not present in the page tables (what mmap()
+      calls “unpopulated”).<br>
+      <br>
+      The hole seems to generally have the size of the data being
+      written (i.e. a 64k write will create a 64k hole, followed by the
+      64k of data we actually wanted to write), but I assume this is
+      true only up to a specific size (depending on how the request is
+      split in the kernel).<br>
+      <br>
+      I’ve appended a reproducer.<br>
+      <br>
+      We encounter this problem with virtio-fs (sharing of directories
+      between a virtual machine host and guest), where writing is done
+      by virtiofsd, a process external to the VMM (e.g. qemu), but the
+      buffer comes from the VM guest.  Memory is shared between
+      virtiofsd and the VMM, so virtiofsd often writes data from shared
+      memory without having accessed it itself, so it isn’t present in
+      virtiofsd’s page tables.<br>
+      <br>
+      Stefano Garzarella (CC-ed) has tested <code>some Fedora kernels,
+        and has confirmed that this bug does not appear in </code></font><code
+      data-stringify-type="code" class="c-mrkdwn__code">6.0.7-301.fc37.x86_64,
+      but does appear in </code><code data-stringify-type="code"
+      class="c-mrkdwn__code">6.0.9-300.fc37.x86_64.<br>
+      <br>
+      While I don’t know anything about btrfs code, I looked into it,
+      and I believe the changes made by commit
+      8184620ae21213d51eaf2e0bd4186baacb928172 (btrfs: fix lost file
+      sync on direct IO write with nowait and dsync iocb) may have
+      caused this.  Specifically, it changed the `goto again` on EFAULT
+      to `goto relock`, a much earlier label, which causes
+      btrfs_direct_write() to call generic_write_checks() again after
+      the first btrfs_dio_write() attempt.<br>
+      <br>
+      btrfs_dio_write() will have already allocated extents for the data
+      and updated the file length before trying to actually write the
+      data (which generates the EFAULT), so this second
+      generic_write_checks() call will update the I/O position to this
+      new file length, exactly at the end of the area to where the data
+      was supposed to be written.<br>
+      <br>
+      To test this hypothesis, I’ve tried skipping the
+      generic_write_checks() call after reaching this specific goto, and
+      that does make the bug disappear.<br>
+      <br>
+      <br>
+      Hanna<br>
+    </code>
+  </body>
+</html>
 
-We have something like this:
+--------------a1f3nPvWwQPL2IAlZlRWQrbh--
+--------------lC1i1w8n0yX9nM375W3EDah2
+Content-Type: text/x-csrc; charset=UTF-8; name="repro.c"
+Content-Disposition: attachment; filename="repro.c"
+Content-Transfer-Encoding: base64
 
-retry:
-	ret =3D filemap_add_folio();
-	if (!ret)
-		goto out;
-	existing_folio =3D filemap_lock_folio();
-	if (IS_ERROR(existing_folio))
-		goto retry;
+I2lmbmRlZiBfR05VX1NPVVJDRQojZGVmaW5lIF9HTlVfU09VUkNFCiNlbmRpZgoKI2luY2x1
+ZGUgPGZjbnRsLmg+CiNpbmNsdWRlIDxzdGRpby5oPgojaW5jbHVkZSA8c3lzL21tYW4uaD4K
+I2luY2x1ZGUgPHN5cy9zdGF0Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KCmludCBtYWluKGlu
+dCBhcmdjLCBjaGFyICphcmd2W10pCnsKICAgIGlmIChhcmdjIDwgMikgewogICAgICAgIGZw
+cmludGYoc3RkZXJyLCAiVXNhZ2U6ICVzIDx0ZXN0IGZpbGU+XG4iLCBhcmd2WzBdKTsKICAg
+ICAgICByZXR1cm4gMTsKICAgIH0KCiAgICBpbnQgZmQgPSBvcGVuKGFyZ3ZbMV0sIE9fV1JP
+TkxZIHwgT19DUkVBVCB8IE9fVFJVTkMgfCBPX0RJUkVDVCB8IE9fQVBQRU5ELCAwNjQ0KTsK
+ICAgIGlmIChmZCA8IDApIHsKICAgICAgICBwZXJyb3IoImNyZWF0aW5nIHRlc3QgZmlsZSIp
+OwogICAgICAgIHJldHVybiAxOwogICAgfQoKICAgIGNoYXIgKmJ1ZiA9IG1tYXAoTlVMTCwg
+NDA5NiwgUFJPVF9SRUFELCBNQVBfUFJJVkFURSB8IE1BUF9BTk9OWU1PVVMsIC0xLCAwKTsK
+ICAgIHNzaXplX3QgcmV0ID0gd3JpdGUoZmQsIGJ1ZiwgNDA5Nik7CiAgICBpZiAocmV0IDwg
+MCkgewogICAgICAgIHBlcnJvcigicHdyaXRldjIiKTsKICAgICAgICByZXR1cm4gMTsKICAg
+IH0KCiAgICBzdHJ1Y3Qgc3RhdCBzdGJ1ZjsKICAgIHJldCA9IGZzdGF0KGZkLCAmc3RidWYp
+OwogICAgaWYgKHJldCA8IDApIHsKICAgICAgICBwZXJyb3IoInN0YXQiKTsKICAgICAgICBy
+ZXR1cm4gMTsKICAgIH0KCiAgICBwcmludGYoInNpemU6ICVsbHVcbiIsICh1bnNpZ25lZCBs
+b25nIGxvbmcpc3RidWYuc3Rfc2l6ZSk7CiAgICByZXR1cm4gc3RidWYuc3Rfc2l6ZSA9PSA0
+MDk2ID8gMCA6IDE7Cn0K
 
-This is causing a dead loop, if we have the following filemap layout:
+--------------lC1i1w8n0yX9nM375W3EDah2--
 
-	|<-  folio range  ->|
-	|    |    |////|////|
-
-Where |//| is the range that we have an exiting page.
-
-In above case, filemap_add_folio() will return -EEXIST due to the
-conflicting two pages.
-Meanwhile filemap_lock_folio() will always return -ENOENT, as at the
-folio index, there is no page at all.
-
-The symptom looks like cgroup related just because we're spending a lot
-of time inside cgroup code, but the cause is not cgroup at all.
-
-This is not causing problem for now because the existing code is always
-using order 0 folios, thus above case won't happen.
-
-Upon larger folios support is enabled, and we're allowing mixed folio
-sizes, it will lead to the above problem sooner or later.
-
-I'll still push the opt-out of mem cgroup as an optimization, but since
-the root cause is pinned down, I'll no longer include this optimization
-in the larger folio enablement.
-
-Thanks for all the help, and sorry for the extra noise.
-Qu
-
->
-> I was suspecting mem_cgroup_oom() a bit earlier return true, causing the
-> retry loop, due to GFP_NOFS. But it seems out_of_memory() should be
-> specifically proceeding for GFP_NOFS if it's memcg oom. But I might be
-> missing something else. Anyway we should know what exactly is going firs=
-t.
->
->> On the other hand, if we do not use __GFP_NOFAIL, we can be limited by
->> memcg at a lot of critical location, and lead to unnecessary transactio=
-n
->> abort just due to memcg limit.
->>
->> However for that specific btrfs call site, there is really no need char=
-ge
->> the memcg, as that address space belongs to btree inode, which is not
->> accessible to any end user, and that btree inode is a shared pool for
->> all metadata of a btrfs.
->>
->> So this patchset introduces a new address space flag, AS_NO_MEMCG, so
->> that folios added to that address space will not trigger any memcg
->> charge.
->>
->> This would be the basis for future btrfs changes, like removing
->> __GFP_NOFAIL completely and larger metadata folios.
->>
->> Qu Wenruo (2):
->>    mm: make lru_gen_eviction() to handle folios without memcg info
->>    mm: allow certain address space to be not accounted by memcg
->>
->>   fs/btrfs/disk-io.c      |  1 +
->>   include/linux/pagemap.h |  1 +
->>   mm/filemap.c            | 12 +++++++++---
->>   mm/workingset.c         |  2 +-
->>   4 files changed, 12 insertions(+), 4 deletions(-)
->>
->
->
 
