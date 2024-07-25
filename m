@@ -1,122 +1,159 @@
-Return-Path: <linux-btrfs+bounces-6694-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6695-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63AF793C473
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 16:40:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE0693C650
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 17:24:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C45B1F211D3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 14:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79125281BD2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 15:24:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D329D19D067;
-	Thu, 25 Jul 2024 14:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A79B19D88C;
+	Thu, 25 Jul 2024 15:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WL5/OYQ+"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x5/+uGgB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ir6fkxxE";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x5/+uGgB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ir6fkxxE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81FB619D07A;
-	Thu, 25 Jul 2024 14:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A3A019D062
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 15:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721918392; cv=none; b=aglWUHhzA1enAx8OC47rV6Lx13R0rX12qHFT1L3neSLewyjfCw8Kg6M2uct9iServYFZ4Z0jYEaPwzEcJaSQIi1W9qqFjzmgc365mkksIKiDYyAvOZE3ShNEamV5r71hr4Qo2IWqvWzat/Rt29XNipFXuBRlDq2D97QCiGCpJb4=
+	t=1721921070; cv=none; b=sfV9hqjWmOIafblPLe9DXdFA7ijuvpZIvww4JkyrE4KMIogG9VTtrvdI090WxpFrGQZipRqHevrilk3oK6uPxUDh+Y7aBMdcsGnVdtgO4nrJzVxf5P5NGpiF63M4ZL4xrYe5LYE5QTuJqee5RY+f/uCT8owmxoaFIxrPqi+gPBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721918392; c=relaxed/simple;
-	bh=8iE2fLIuKiX/R1Mck8oWn/wV8sca/R7pF11OZS3T544=;
+	s=arc-20240116; t=1721921070; c=relaxed/simple;
+	bh=eVv3dl7zWg9NWcXFDTmV8vfjViaQTbq+cA+sL9CgSDA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y75VAZin04y/PrJkF93Tza6NV/OTJVo6aAMI73txpqM1ultU1NrZBiTzqyjZJttXWcqrb42xNbuz0n2CMLJVIs9Mdeb9JFG+CJwGU1jJGoyJnWFBO3v/zkpzTrRQ+XL0oNqMHzeJ54LoUOyd2Z5JT4PwMWLmMut9SlSl019LnGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WL5/OYQ+; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=fT+P3bL2alqk783XUIpMyvxWyxVKIMjRx9YDa8Msrv8=; b=WL5/OYQ+RT6V2Tl5hRTNfUjVwL
-	oYtEItO5DN/EmTddff9oHpV7Z1VvU/Hz+Wd/ZHHcYbz51Wp7Pyq1+pk0K/7zQPkMmENAMlmbCODHD
-	e5Vr8IhAmtm1e63eRQfIZYn4YhuFhEfyTM2m+FX40WG1cnKnrVwE7Qp3XJyhDFybOgRokQsOqhLVU
-	exQ2/h/Jc8DM+0kWg1+tInyN9tyTGSg30g+Urn5OCITbb2OMIKeZqU36FmGsCWt4pMVGSDnv5zLvN
-	cjcI8uRXUENjfZNyTD2zcw+U34WMrESbsJV14YTD1M0PxUQTTJxWSlubgoMyN5eOUzZyr4+eXPHz4
-	BZFIqkRQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWzdC-00000001Iql-2cGb;
-	Thu, 25 Jul 2024 14:39:46 +0000
-Date: Thu, 25 Jul 2024 07:39:46 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Youling Tang <youling.tang@linux.dev>
-Cc: Christoph Hellwig <hch@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
-	Luis Chamberlain <mcgrof@kernel.org>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-modules@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
- module_subeixt helper macros
-Message-ID: <ZqJjsg3s7H5cTWlT@infradead.org>
-References: <20240723083239.41533-1-youling.tang@linux.dev>
- <20240723083239.41533-2-youling.tang@linux.dev>
- <Zp-_RDk5n5431yyh@infradead.org>
- <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
- <ZqEhMCjdFwC3wF4u@infradead.org>
- <895360e3-97bb-4188-a91d-eaca3302bd43@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q1mii901IICi/QoP2chAuMKQkn3FpI+wgabIziDTow1G6w+tecSw/WBJRebuM4QKKwFmFvrx0Z10ckKzTXukx61BUBEYORoByrV4IzineZv48QiCL8zpqJzjxhNvS7RZF8qGonFf+XS+npKxKHUSkn+dun6f3zhkLQmCrSoGdRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x5/+uGgB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ir6fkxxE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x5/+uGgB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ir6fkxxE; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BC01F21B55;
+	Thu, 25 Jul 2024 15:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721921066;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hbhiCrr33tERWHuPB7xy94cu5QM34lwwT9sUtNXbMDw=;
+	b=x5/+uGgBzXWZcDlcDOrlImKnx7mDLzg+K6CjpQVprbg6NTr1eAMNse07jTenX65Gi9NkAd
+	DjXsVxGqbN1edVSMvRVV05cIDyncSulzpnr8lpeXI4D1Qy8Xjjr+Ts3RNXuM1UQHFJ6Yan
+	qkbznTAlaV3g486euJvW1zQGWr8Pah8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721921066;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hbhiCrr33tERWHuPB7xy94cu5QM34lwwT9sUtNXbMDw=;
+	b=Ir6fkxxEB4DByCufDXZpJO17W3CsBqGiOrn/9bZmxn9cFiH65RoP0fR+ZD2s43HRzwzWGm
+	nUOSZAkdjElWskBA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721921066;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hbhiCrr33tERWHuPB7xy94cu5QM34lwwT9sUtNXbMDw=;
+	b=x5/+uGgBzXWZcDlcDOrlImKnx7mDLzg+K6CjpQVprbg6NTr1eAMNse07jTenX65Gi9NkAd
+	DjXsVxGqbN1edVSMvRVV05cIDyncSulzpnr8lpeXI4D1Qy8Xjjr+Ts3RNXuM1UQHFJ6Yan
+	qkbznTAlaV3g486euJvW1zQGWr8Pah8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721921066;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hbhiCrr33tERWHuPB7xy94cu5QM34lwwT9sUtNXbMDw=;
+	b=Ir6fkxxEB4DByCufDXZpJO17W3CsBqGiOrn/9bZmxn9cFiH65RoP0fR+ZD2s43HRzwzWGm
+	nUOSZAkdjElWskBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8FEFC13874;
+	Thu, 25 Jul 2024 15:24:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RR2JIipuomafJwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 25 Jul 2024 15:24:26 +0000
+Date: Thu, 25 Jul 2024 17:24:25 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Neal Gompa <neal@gompa.dev>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+	Victor Stinner <vstinner@redhat.com>,
+	Miro Hroncok <mhroncok@redhat.com>, David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>
+Subject: Re: libbtrfsutil Python bindings FTBFS with Python 3.13 on Fedora
+ Linux 41
+Message-ID: <20240725152425.GA17473@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <CAEg-Je-tu0DcYvH-mqcv=2xkReYOh9GaeVoJPy0nMD=oqO6stw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <895360e3-97bb-4188-a91d-eaca3302bd43@linux.dev>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAEg-Je-tu0DcYvH-mqcv=2xkReYOh9GaeVoJPy0nMD=oqO6stw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.80 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_FIVE(0.00)[6]
+X-Spam-Flag: NO
+X-Spam-Score: -0.80
 
-On Thu, Jul 25, 2024 at 11:01:33AM +0800, Youling Tang wrote:
-> - It doesn't feel good to have only one subinit/exit in a file.
->   Assuming that there is only one file in each file, how do we
->   ensure that the files are linked in order?(Is it sorted by *.o
->   in the Makefile?)
-
-Yes, link order already matterns for initialization order for built-in
-code, so this is a well known concept.
-
-> - Even if the order of each init is linked correctly, then the
->   runtime will be iterated through the .subinitcall.init section,
->   which executes each initfn in sequence (similar to do_initcalls),
->   which means that no other code can be inserted between each subinit.
-
-I don't understand this comment.  What do you mean with no other
-code could be inserted?
-
-> If module_subinit is called in module_init, other code can be inserted
-> between subinit, similar to the following:
+On Sat, Jul 20, 2024 at 12:59:33PM -0400, Neal Gompa wrote:
+> Hey all,
 > 
-> ```
-> static int __init init_example(void)
-> {
->     module_subinit(inita, exita);
+> Fedora Linux 41 has upgraded to Python 3.13[1], and as part of it, the
+> changes to the interpreter API to remove "private" methods have broken
+> the build for python-libbtrfsutil. There's a downstream bug about
+> this[2], but the gist of it is that _Py_IDENTIFIER and
+> _PyObject_LookupSpecial were removed[3], and so the bindings code
+> needs adjustments to fix it.
 > 
->     otherthing...
+> Anyone know how to help with this? I'm not really sure how to fix this...
 > 
->     module_subinit(initb, exitb);
+> [1]: https://fedoraproject.org/wiki/Changes/Python3.13
+> [2]: https://bugzilla.redhat.com/2245650
+> [3]: https://github.com/python/cpython/commit/4fb96a11db5eaca3646bfa697d191469e567d283
 > 
->     return 0;
-> }
-
-Yikes.  That's really not the point of having init calls, but just
-really, really convoluted control flow.
-
-> module_init(init_example);
-> ```
+> -- 
+> çœŸå®Ÿã¯ã„ã¤ã‚‚ä¸€ã¤ï¼/ Always, there's only one truth!
 > 
-> IMHO, module_subinit() might be better called in module_init().
 
-I strongly disagree.
-
+Also tracked as https://github.com/kdave/btrfs-progs/issues/838 .
 
