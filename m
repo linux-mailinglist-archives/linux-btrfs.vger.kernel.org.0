@@ -1,119 +1,101 @@
-Return-Path: <linux-btrfs+bounces-6723-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6724-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61A7A93D5FD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 17:23:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C58DE93D634
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 17:35:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4CB5B232A5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 15:22:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C740283481
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 15:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8845E17BB2B;
-	Fri, 26 Jul 2024 15:22:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC2217967C;
+	Fri, 26 Jul 2024 15:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q3elkxZE";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="947VmE0r";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kqbq+to/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UfWcXsqC"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wHP2vo54";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rrokm2+f";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oEQQXnJw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rrokm2+f"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D589418E1E;
-	Fri, 26 Jul 2024 15:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C410410A1C
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 15:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722007363; cv=none; b=ASiskY44UpoM4MyCCFDsuQpprSmB+D0yDilBMOH85+F3EOiGEB3K67OcbyLSAOI/mjkRSPU3sAM93PTsVKlUVZ61pMPfCvkrn9By1IEmP7852nJ7E8IPVWTBjLcsjcFroSKF6v9qx1JUIv9MosgZmu+soRcRQIEUg4z+a0BEzbA=
+	t=1722008124; cv=none; b=uqIvCLLH3LqNcTTGGGTueNsIKp9O8Km6VqF0jEOdW+kLdEE8fGIomiwZIz/Qc1CRt8CMdpI76u50VJpTS06lzffypksJzuq6lHA8us9+Y4jhAV4hq7St0UvHFPa4CLce+4/iwgVYtG4iy+52aTu88gZ1HtkRXqLv1vbDfcBbARw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722007363; c=relaxed/simple;
-	bh=5ea6J4F3xTYQI+FVtmFYyRykx9btGmI+rnvRxLuvejI=;
+	s=arc-20240116; t=1722008124; c=relaxed/simple;
+	bh=Vv6eF7HVtb34v8QM/8/lNJPyL3jS6VaLL1ZXhLqwJPU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V+vo8voAcEsgT3R7IxDUF/UqOD+GTSM1tRvCYGyP3ZB32/CmrZE3/v7PU97gY5Lg67TvN8pmdnSYIIZ6VA5ZNjzMhw2Kq9YRUmo8gnslezuEYYjBvbaGWKZrw9jX+S4T7uEoQN6ti5i+avvFXvYr5BI/YtUBkfc3LI2GhZvJv2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q3elkxZE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=947VmE0r; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kqbq+to/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UfWcXsqC; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=DDmA21Xxyl3hJv9cZtVMQQix9D6QAXcqDLGK/s9W1RKef6guI2V/OxWye3ntaXN1W3i4Kb6CkXcRoCoLz9x0f2+AeKq2IJkeG3kq6cj3ZBylDhCrcUpgS0oRWcmz7g94hx/ljixz1xEaMi9ux2Z2nZunZZLYAKvGmF0j36fLmu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wHP2vo54; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rrokm2+f; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oEQQXnJw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rrokm2+f; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CC7DE219BF;
-	Fri, 26 Jul 2024 15:22:38 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F366A21BCE;
+	Fri, 26 Jul 2024 15:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722007360;
+	t=1722008121;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Nr6jgka+gDBT3QQ7bb9PNkdpnMtXeZV68l1U6OfFaqc=;
-	b=q3elkxZESedwoEe0iUED5lOQbJV9ZRWPQltOdic0NpXAtJY/EiN5gMmIEUiMWY9yppgng5
-	6vHX74SCzYTqbJL/8+DyEy2mSuBbbVz+24XQLb9uAEUi4AUC1Pe9f11DGPMiyjFaWT3w6p
-	Cpc3BoFxDn3frW7nxPk+2nBnWffG11I=
+	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
+	b=wHP2vo54s54sos4iaB0MmZrQwUF2Lr0PZxsKSL2uHhvsfmC2x61pCQBj51SI59CFQwUliE
+	QsdoVBHm0reRsPbekxPs8nLgocWgqLWWGF1E+iM2wi3wcOYSVjrbglKmJHm6K8f+rUWhaX
+	bUhsDvkHLBicnv+jf53zulVxKaIl0Ho=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722007360;
+	s=susede2_ed25519; t=1722008121;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Nr6jgka+gDBT3QQ7bb9PNkdpnMtXeZV68l1U6OfFaqc=;
-	b=947VmE0rAIutWyXfUgWwi60aZCVln6pfnucIC1mlfeI9IcD5vdNjGGIV1jU6UR7rbKu34N
-	JxqUY9Is45qfwpAA==
+	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
+	b=Rrokm2+fa+W8/DWI40zvpspNeSE9PYcgNeawsUK/9zEAhzX3hY0cfM0SZSR8sJJBbr63G0
+	S2VUrFME/s6c2rCg==
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722007358;
+	t=1722008120;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Nr6jgka+gDBT3QQ7bb9PNkdpnMtXeZV68l1U6OfFaqc=;
-	b=Kqbq+to/EyF/FOIb4JQK+wpQDcfHcU09pojkYOkJXt/Nj62vQ62DbUIwyDMnE76fU7JoRl
-	h2/v3chroOC3NZ0Ewi2bHzSOBLy8opglAIvdt7tBQnwQtWM5iDPZvq94Ewf73G7p1w2Q0p
-	uAi9NZ1qkSPCJ9XKF0LjIlxsF5wjiKw=
+	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
+	b=oEQQXnJwvgml252ltI66CGxmroVUSMm93tCWW/Z85vQ9mUvowFg/NMAkUw7DbHAbEZ+191
+	cPywcLaa1WhT+pGhT7pos46XwLuhE9WdRVcF4qAbhxt8WsftR56kWk9MTxRVf/h7LiMgUk
+	QOmK6ctHWI3+hs87m7MGQw8QDqqPlIw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722007358;
+	s=susede2_ed25519; t=1722008121;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Nr6jgka+gDBT3QQ7bb9PNkdpnMtXeZV68l1U6OfFaqc=;
-	b=UfWcXsqCQv+u627gdDOwb0Qe5lzmjOGQVAtU2Gfh5f+O7bTWC5rDTkzRE1A+toGuwfcx7G
-	OZMIEwnitR8aabAw==
+	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
+	b=Rrokm2+fa+W8/DWI40zvpspNeSE9PYcgNeawsUK/9zEAhzX3hY0cfM0SZSR8sJJBbr63G0
+	S2VUrFME/s6c2rCg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9485D1396E;
-	Fri, 26 Jul 2024 15:22:38 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA8281396E;
+	Fri, 26 Jul 2024 15:35:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cGYKJD6/o2bKLgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 26 Jul 2024 15:22:38 +0000
-Date: Fri, 26 Jul 2024 17:22:37 +0200
+	id 2f0rMDjCo2YsMgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 26 Jul 2024 15:35:20 +0000
+Date: Fri, 26 Jul 2024 17:35:15 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Youling Tang <youling.tang@linux.dev>, kreijack@inwind.it,
-	Arnd Bergmann <arnd@arndb.de>, Luis Chamberlain <mcgrof@kernel.org>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Linux-Arch <linux-arch@vger.kernel.org>,
-	linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
- module_subeixt helper macros
-Message-ID: <20240726152237.GH17473@twin.jikos.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs-progs: introduce btrfs_rebuild_uuid_tree() for
+ mkfs and btrfs-convert
+Message-ID: <20240726153515.GI17473@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
- <ZqEhMCjdFwC3wF4u@infradead.org>
- <895360e3-97bb-4188-a91d-eaca3302bd43@linux.dev>
- <ZqJjsg3s7H5cTWlT@infradead.org>
- <61beb54b-399b-442d-bfdb-bad23cefa586@app.fastmail.com>
- <ZqJwa2-SsIf0aA_l@infradead.org>
- <68584887-3dec-4ce5-8892-86af50651c41@libero.it>
- <ZqKreStOD-eRkKZU@infradead.org>
- <91bfea9b-ad7e-4f35-a2c1-8cd41499b0c0@linux.dev>
- <ZqOs84hdYkSV_YWd@infradead.org>
+References: <cover.1721987605.git.wqu@suse.com>
+ <8e33931a4d078d1e1aa620aa5fe717f35146ef31.1721987605.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -122,71 +104,97 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZqOs84hdYkSV_YWd@infradead.org>
+In-Reply-To: <8e33931a4d078d1e1aa620aa5fe717f35146ef31.1721987605.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[inwind.it];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_CC(0.00)[linux.dev,inwind.it,arndb.de,kernel.org,fb.com,toxicpanda.com,suse.com,mit.edu,dilger.ca,vger.kernel.org,lists.sourceforge.net,kylinos.cn];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
 X-Spam-Level: 
 X-Spam-Flag: NO
 X-Spam-Score: -3.80
 
-On Fri, Jul 26, 2024 at 07:04:35AM -0700, Christoph Hellwig wrote:
-> On Fri, Jul 26, 2024 at 04:54:59PM +0800, Youling Tang wrote:
-> > Based on this patch, we may need to do these things with this
-> >
-> >
-> > 1. Change the order of *.o in the Makefile (the same order as before the
-> > change)
+On Fri, Jul 26, 2024 at 07:29:55PM +0930, Qu Wenruo wrote:
+> Currently mkfs uses its own create_uuid_tree(), but that function is
+> only handling FS_TREE.
 > 
-> While we'll need to be careful, we don't need to match the exact
-> order.  Most of the calls simply create slab caches / mempools and
-> similar things and the order for those does not matter at all.
+> This means for btrfs-convert, we do not generate the uuid tree, nor
+> add the UUID of the image subvolume.
 > 
-> Of course the register_filesytem calls need to be last, and sysfs
-> registration probably should be second to last, but for the vast
-> amount of calls the order does not matter as long as it is unwound
-> in reverse order.
+> This can be a problem if we're going to support multiple subvolumes
+> during mkfs time.
 > 
-> > 2. We need to define module_subinit through the ifdef MODULE
-> > distinction,
+> To address this inconvenience, this patch introduces a new helper,
+> btrfs_rebuild_uuid_tree(), which will:
 > 
-> Yes.
+> - Create a new uuid tree if there is not one
 > 
-> > When one of the subinit runs in a module fails, it is difficult
-> > to rollback execution of subexit.
+> - Empty the existing uuid tree
 > 
-> By having both section in the same order, you an just walk the
-> exit section backwards from the offset that failed.  Of course that
-> only matters for the modular case as normal initcalls don't get
-> unwound when built-in either.
+> - Iterate through all subvolumes
+>   * If the subvolume has no valid UUID, regenerate one
+>   * Add the uuid entry for the subvolume UUID
+>   * If the subvolume has received UUID, also add it to UUID tree
 > 
-> > 4. The order in which subinit is called is not intuitively known
-> > (although it can be found in the Makefile).
+> By this, this new helper can handle all the uuid tree generation needs for:
 > 
-> Link order through make file is already a well known concept due to
-> it mattering for built-in code.
+> - Current mkfs
+>   Only one uuid entry for FS_TREE
+> 
+> - Current btrfs-convert
+>   Only FS_TREE and the image subvolume
+> 
+> - Future multi-subvolume mkfs
+>   As we do the scan for all subvolumes.
+> 
+> - Future "btrfs rescue rebuild-uuid-tree"
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  common/root-tree-utils.c | 265 +++++++++++++++++++++++++++++++++++++++
+>  common/root-tree-utils.h |   1 +
+>  convert/main.c           |   5 +
+>  mkfs/main.c              |  37 +-----
+>  4 files changed, 274 insertions(+), 34 deletions(-)
+> 
+> diff --git a/common/root-tree-utils.c b/common/root-tree-utils.c
+> index 6a57c51a8a74..13f89dbd5293 100644
+> --- a/common/root-tree-utils.c
+> +++ b/common/root-tree-utils.c
+> @@ -15,9 +15,11 @@
+>   */
+>  
+>  #include <time.h>
+> +#include <uuid/uuid.h>
+>  #include "common/root-tree-utils.h"
+>  #include "common/messages.h"
+>  #include "kernel-shared/disk-io.h"
+> +#include "kernel-shared/uuid-tree.h"
+>  
+>  int btrfs_make_root_dir(struct btrfs_trans_handle *trans,
+>  			struct btrfs_root *root, u64 objectid)
+> @@ -212,3 +214,266 @@ abort:
+>  	btrfs_abort_transaction(trans, ret);
+>  	return ret;
+>  }
+> +
+> +static int empty_tree(struct btrfs_root *root)
 
-All of this sounds overengineered for something that is a simple array
-and two helpers. The code is not finalized so I'll wait for the next
-version but specific file order in makefile and linker tricks seems
-fragile and I'm not sure I want this for btrfs.
+Please rename this, it's confusing as empty can be a noun and verb so
+it's not clear if it's a meant as a predicate or action.
 
