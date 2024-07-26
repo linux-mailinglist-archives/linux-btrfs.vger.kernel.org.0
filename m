@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-6755-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6756-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A4AF93D90F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:37:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD91693D910
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:37:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 260421F24846
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:37:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 219152820EF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51656149C7D;
-	Fri, 26 Jul 2024 19:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60CD6149DEA;
+	Fri, 26 Jul 2024 19:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="f8yjYik1"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="pit8l/zx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA26149C4C
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:36:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD22149C6C
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:36:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722022614; cv=none; b=XUdhaQgc1uBNWzMArpIPR9bQaDzCblp6XbC9vmeOELW/XO9O2nnbcV+h2vogFK4ENHMzOM+GSitio84dGyUW4+IoLVhFpAy0yvnB/NccJUqUfGEfv4ZgTLWXX1dfU3rgBBiYIYJ30j2DgtTjTcTtubvRKSw4bNrl8Kp3ppa+9l0=
+	t=1722022615; cv=none; b=qRTHexOMJiDiU+OioZMdRVVqbEDcojpu0S/+gbsrjbg0VnKYcmZb4CvE3rqj4CRogXFhdlMPVK9OFuwWfY+Oo6xG1/z+2a64jgLvcOnLol2+WvtIIEobatCRW+HjZRTHAJuUT+Mrm6adsEC/606sfob/wazRnD9ZOx1CrcM0Tno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722022614; c=relaxed/simple;
-	bh=udp684RkXNYbhUh8bSqv/xFVw2PxqgIDsDcnYs2xmkM=;
+	s=arc-20240116; t=1722022615; c=relaxed/simple;
+	bh=VDAooYh9HjQiFLV6TCEASkVboELzoqk0Tb5yUcdzMkk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tOt6C5EggRqhVHNOlJOVdlhKTF8+xqWi+9UaONxVmm/NYrQx5S4HE/MW80FOcGH/nhXuhLh0HtL5ZWA/CKNqrAKTsVmY+RFgxX8nAR2hTK9dgFIz4W60xVASBgZcEb4hM7uNIgsBTe8pNSxxbhOM87muQ0E8aZ2MwaepiIwsMfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=f8yjYik1; arc=none smtp.client-ip=209.85.128.175
+	 MIME-Version; b=I92iEMzLr6u2nxg56wBBlKPnzqYH8AzzGZqRlM+ZxgqjPjQsm6F0WxuRKMuWFlOOo4/uzZ6eBX7NEDY0n7lhyDOh4u2C+2IjsFzTiYp/96yE+WsQtR/5nQWmNV0aHsKrlQG1g3NZEePpbxAekCzlw5KRWR7HpxtkiTxr5hb+Atg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=pit8l/zx; arc=none smtp.client-ip=209.85.128.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-65f7bd30546so308177b3.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:36:52 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-64b29539d86so333327b3.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:36:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022612; x=1722627412; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022613; x=1722627413; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=U89LoR7x+SU8mlCoGzs9YXLEUTi2x66vs1Payvo+bvo=;
-        b=f8yjYik1jW9kPa1zlsZ6/U+Xa/k4nP948CkkUcy8ugSW4ZOQpp2372okrjuWB97v2I
-         lmVYrL19XM4CdPk3W+C5T8unmvXTIGeLiliSa6EdYiSQSWON/OlkeuLj/gsa/t3uXme8
-         Nro0VdXYCIBCPdGSHYA1MxpsktkZbn16yHk/yS3+gvyq3nQQYK15TfugAwt2bAYNcUei
-         TJRol0+Xl4o5v21VFUQc0c4DgdAzo/srkmfjC0MPTtqDMcSfuFre+4Do5s5R8HA8G0ZQ
-         kv1Rjru/DeK4pkvfHXFswc1KvetnL+Onw3/959u2QaSW5c6lrTsGJCcbryiZuRFzehm7
-         mL1w==
+        bh=9uqAo0sphthKfqbM6Qkv/CNluSZdkXHFpbAPOmW6TFg=;
+        b=pit8l/zxoCxnSFezlWzpV9UbODLOYZDt3MsUcGqbVU8f6DZZ3OFS2uGz5jVhUH0FiI
+         oRTw+rdyxycImieaI8dL9afWpeB+v2doknBTd1+skfMq0iNiyHZoinLGb3SgcJxc+0sP
+         JK8hgStVu2tZ80f5XbqCf8Vv3AzufsqyRWQBMcBzo5l9Z7g4c90vgEcqqYtaYesrNZn/
+         flVz++TskfrreXIQ7NvStcNrCD6G/FikcUede92ZZfqNVpSTfdihIqG3QGRLv+XlnzkT
+         03gCWfqi+3W5VyJVhQawBtZfncGWaoK8mvBY5MN56bDsP61dy7CozT8IWYhrYmQgpOs0
+         P+Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722022612; x=1722627412;
+        d=1e100.net; s=20230601; t=1722022613; x=1722627413;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U89LoR7x+SU8mlCoGzs9YXLEUTi2x66vs1Payvo+bvo=;
-        b=dBZPkt9hE62HtfH8A343d55LcmSzDyFn+9BVErNR35YUMBhWl8qIVizdY1Y65TW2xx
-         rHcy/lKJf6CXKLoa3hGcH3JQ5gJx64YC9iCk83wEgLUoMcwBw5ueytsvvJxF0mw4+xFr
-         ZDjqgpeu2Rz3TAGEacadZ4mx9Zitjq8SMBTSWUu1L0jt2l4VdVzHUgGGLgTiBIKe/mWZ
-         5u1SVTpzsJXeQWNstXJlPBgJ01PdvSg2hPc9ex2L6l75aU0LWWSFn3LaaJvsss2fGqUS
-         vf/Ask8s8k6P1YcmLxXKNT5nDb36STWQuy8XitiGSGBkhts++p6EkMnluoZD1sL1Qplb
-         eTfg==
-X-Gm-Message-State: AOJu0YwUSDCD7Cr+QQbBrD2bLZgyD7RH4v8+uU60MqYBKwSBq4ZyBY0H
-	D6/4czzHZop3Y3/ZhH9d1kl+0nnpCLp/Z6ftvh/ZaaiO+ZipR9/3O6J6ELxOMB5J5IE5j14nIZZ
-	8
-X-Google-Smtp-Source: AGHT+IEAbTA/shjtuVGRQt6h5pne8p5dusvScColQPXgVjW4WXRfok7P7iaYyOfGm0DB49nmwiThfQ==
-X-Received: by 2002:a05:690c:ecb:b0:65f:cdb7:46a7 with SMTP id 00721157ae682-67a2dcf7ad1mr6690947b3.22.1722022611959;
-        Fri, 26 Jul 2024 12:36:51 -0700 (PDT)
+        bh=9uqAo0sphthKfqbM6Qkv/CNluSZdkXHFpbAPOmW6TFg=;
+        b=IS3b5OOLIedPnMS6KZY1KJfOcU7w1qdy8CqUxhYM4UAOOhHXP8lrhZs8wAmWWctkiA
+         Bgo/e964iF0oDy29Kd7LTfMjNa5kgXnFT+jU9M5FmCk+B1N5VTTd++L36NEl8KMaHUpb
+         PVDObtLJOjjF9RogPoTVogdAKrsApIYpRphFjPSEgTE9df9rTk3vDpg6FPmpko+Xaylc
+         0+CpQi8OmzwkESFOktpyo9yrGf5VhSXsv6xo/P/e8mbcQ5SJXqtIzMDdkCt/Xyp69ViA
+         kvtywQyq3yuKxwe9JXrDlutWiC/KrkFwbTXmeacgDkEum0X0+7RbfQ0DH6cBBq7aWkPD
+         pq4Q==
+X-Gm-Message-State: AOJu0Yz7I/LPVrsYuN1XKCD9ClehLpnDwQ+ZNWGwjuAmFgielxLbhbn4
+	kjvnhPltXLfWF0ZsrPULDVqQZ+UMCPQDXwTCGfgVDqn8vBO8OrlPyYer/c02yDZj3eJvQDvuGnU
+	W
+X-Google-Smtp-Source: AGHT+IFamfSyok7zp3qArQGV2boXonqTd6WsfRGaQAr81rRnhHPd/FxVI7Qo7z3IFclXp437Az7ejA==
+X-Received: by 2002:a0d:f444:0:b0:653:ffe7:d641 with SMTP id 00721157ae682-67a0afb6583mr8384287b3.45.1722022613003;
+        Fri, 26 Jul 2024 12:36:53 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-67566dd91ecsm10014987b3.17.2024.07.26.12.36.51
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6756b9be42fsm9744097b3.105.2024.07.26.12.36.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 12:36:51 -0700 (PDT)
+        Fri, 26 Jul 2024 12:36:52 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 14/46] btrfs: convert btrfs_finish_ordered_extent to take a folio
-Date: Fri, 26 Jul 2024 15:36:01 -0400
-Message-ID: <390ffab7d7ed61dbee07947874ab11f1d5e1d155.1722022376.git.josef@toxicpanda.com>
+Subject: [PATCH 15/46] btrfs: convert btrfs_mark_ordered_io_finished to take a folio
+Date: Fri, 26 Jul 2024 15:36:02 -0400
+Message-ID: <903924f0155d9652b950b650a69f634b9341aa35.1722022376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1722022376.git.josef@toxicpanda.com>
 References: <cover.1722022376.git.josef@toxicpanda.com>
@@ -84,68 +84,124 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The callers and callee's of this now all use folios, update it to take a
-folio as well.
+We only need a folio now, make it take a folio as an argument and update
+all of the callers.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c    | 4 ++--
- fs/btrfs/ordered-data.c | 6 +++---
- fs/btrfs/ordered-data.h | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ fs/btrfs/extent_io.c    | 8 ++++----
+ fs/btrfs/inode.c        | 7 ++++---
+ fs/btrfs/ordered-data.c | 9 ++++-----
+ fs/btrfs/ordered-data.h | 4 ++--
+ 4 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index da60ec1e866a..58ff09368eb9 100644
+index 58ff09368eb9..56bf87ac5f6c 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -472,8 +472,8 @@ static void end_bbio_data_write(struct btrfs_bio *bbio)
- 		"incomplete page write with offset %zu and length %zu",
- 				   fi.offset, fi.length);
+@@ -1428,8 +1428,8 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 		u32 iosize;
  
--		btrfs_finish_ordered_extent(bbio->ordered,
--				folio_page(folio, 0), start, len, !error);
-+		btrfs_finish_ordered_extent(bbio->ordered, folio, start, len,
-+					    !error);
- 		if (error)
- 			mapping_set_error(folio->mapping, error);
- 		btrfs_folio_clear_writeback(fs_info, folio, start, len);
+ 		if (cur >= i_size) {
+-			btrfs_mark_ordered_io_finished(inode, &folio->page, cur,
+-						       len, true);
++			btrfs_mark_ordered_io_finished(inode, folio, cur, len,
++						       true);
+ 			/*
+ 			 * This range is beyond i_size, thus we don't need to
+ 			 * bother writing back.
+@@ -1569,7 +1569,7 @@ static int __extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ct
+ 		folio_end_writeback(folio);
+ 	}
+ 	if (ret) {
+-		btrfs_mark_ordered_io_finished(BTRFS_I(inode), &folio->page,
++		btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
+ 					       page_start, PAGE_SIZE, !ret);
+ 		mapping_set_error(folio->mapping, ret);
+ 	}
+@@ -2331,7 +2331,7 @@ void extent_write_locked_range(struct inode *inode, const struct page *locked_pa
+ 			btrfs_folio_clear_writeback(fs_info, folio, cur, cur_len);
+ 		}
+ 		if (ret) {
+-			btrfs_mark_ordered_io_finished(BTRFS_I(inode), &folio->page,
++			btrfs_mark_ordered_io_finished(BTRFS_I(inode), folio,
+ 						       cur, cur_len, !ret);
+ 			mapping_set_error(mapping, ret);
+ 		}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 26dc2c3ac903..a8744d2c6a97 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1144,7 +1144,8 @@ static void submit_uncompressed_range(struct btrfs_inode *inode,
+ 
+ 			set_page_writeback(locked_page);
+ 			end_page_writeback(locked_page);
+-			btrfs_mark_ordered_io_finished(inode, locked_page,
++			btrfs_mark_ordered_io_finished(inode,
++						       page_folio(locked_page),
+ 						       page_start, PAGE_SIZE,
+ 						       !ret);
+ 			mapping_set_error(locked_page->mapping, ret);
+@@ -2802,8 +2803,8 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 		 * to reflect the errors and clean the page.
+ 		 */
+ 		mapping_set_error(page->mapping, ret);
+-		btrfs_mark_ordered_io_finished(inode, page, page_start,
+-					       PAGE_SIZE, !ret);
++		btrfs_mark_ordered_io_finished(inode, page_folio(page),
++					       page_start, PAGE_SIZE, !ret);
+ 		clear_page_dirty_for_io(page);
+ 	}
+ 	btrfs_folio_clear_checked(fs_info, page_folio(page), page_start, PAGE_SIZE);
 diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 760a37512c7e..e97747956040 100644
+index e97747956040..eb9b32ffbc0c 100644
 --- a/fs/btrfs/ordered-data.c
 +++ b/fs/btrfs/ordered-data.c
-@@ -397,7 +397,7 @@ static void btrfs_queue_ordered_fn(struct btrfs_ordered_extent *ordered)
- }
- 
- void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
--				 struct page *page, u64 file_offset, u64 len,
-+				 struct folio *folio, u64 file_offset, u64 len,
- 				 bool uptodate)
+@@ -449,8 +449,8 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
+ /*
+  * Mark all ordered extents io inside the specified range finished.
+  *
+- * @page:	 The involved page for the operation.
+- *		 For uncompressed buffered IO, the page status also needs to be
++ * @folio:	 The involved folio for the operation.
++ *		 For uncompressed buffered IO, the folio status also needs to be
+  *		 updated to indicate whether the pending ordered io is finished.
+  *		 Can be NULL for direct IO and compressed write.
+  *		 For these cases, callers are ensured they won't execute the
+@@ -460,7 +460,7 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
+  * extent(s) covering it.
+  */
+ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+-				    struct page *page, u64 file_offset,
++				    struct folio *folio, u64 file_offset,
+ 				    u64 num_bytes, bool uptodate)
  {
- 	struct btrfs_inode *inode = ordered->inode;
-@@ -407,8 +407,8 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- 	trace_btrfs_finish_ordered_extent(inode, file_offset, len, uptodate);
+ 	struct rb_node *node;
+@@ -524,8 +524,7 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+ 		ASSERT(end + 1 - cur < U32_MAX);
+ 		len = end + 1 - cur;
  
- 	spin_lock_irqsave(&inode->ordered_tree_lock, flags);
--	ret = can_finish_ordered_extent(ordered, page_folio(page), file_offset,
--					len, uptodate);
-+	ret = can_finish_ordered_extent(ordered, folio, file_offset, len,
-+					uptodate);
- 	spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
- 
- 	/*
+-		if (can_finish_ordered_extent(entry, page_folio(page), cur, len,
+-					      uptodate)) {
++		if (can_finish_ordered_extent(entry, folio, cur, len, uptodate)) {
+ 			spin_unlock_irqrestore(&inode->ordered_tree_lock, flags);
+ 			btrfs_queue_ordered_fn(entry);
+ 			spin_lock_irqsave(&inode->ordered_tree_lock, flags);
 diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 51b9e81726e2..90c1c3c51ae5 100644
+index 90c1c3c51ae5..4e152736d06c 100644
 --- a/fs/btrfs/ordered-data.h
 +++ b/fs/btrfs/ordered-data.h
-@@ -163,7 +163,7 @@ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry);
- void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 				struct btrfs_ordered_extent *entry);
- void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
--				 struct page *page, u64 file_offset, u64 len,
-+				 struct folio *folio, u64 file_offset, u64 len,
+@@ -166,8 +166,8 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
+ 				 struct folio *folio, u64 file_offset, u64 len,
  				 bool uptodate);
  void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
- 				struct page *page, u64 file_offset,
+-				struct page *page, u64 file_offset,
+-				u64 num_bytes, bool uptodate);
++				    struct folio *folio, u64 file_offset,
++				    u64 num_bytes, bool uptodate);
+ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
+ 				    struct btrfs_ordered_extent **cached,
+ 				    u64 file_offset, u64 io_size);
 -- 
 2.43.0
 
