@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-6783-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6784-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DB5C93D92B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:39:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C40393D92C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:39:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3817A1F21DD1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:39:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E92A0284FED
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31301552E1;
-	Fri, 26 Jul 2024 19:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED9B71552FE;
+	Fri, 26 Jul 2024 19:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="OKAfW3gY"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="wLpEiSBl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C150A56B7C
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC768154BEB
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722022644; cv=none; b=HIFRmlQsnmtvfO1j/FcuUOA5vkC8a6MYMpHwEGe0meES1m0DTG7QsqAeoS8P+X9EV9g2gAhwrX0UxmLrxMkxEw8fqba1SozIXJGYRkuFjY7VNzuQigQVfW/1ZcmS4xQdP7zaz94TPJzR7PB7VQ2ttpgHIM0DAw16jNwn8PLtCm4=
+	t=1722022645; cv=none; b=kPx6rXAatAngd17SY9vW+yKR/VihYXD6J93z3WqY3bClVPE9ZJth0WC6RvbdWisVJWwp4xOSm70HCiy2aW7ge6Rr1KLmWRyoiqrooAXZPXKUtv6G0XLwbSGQE2Y19BhYWEOK0DwSo1j3HzSjPhzhSMra6ZBvcAna3UfC2xY57RU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722022644; c=relaxed/simple;
-	bh=G4e4+w1d4Vq4YkL1BXTX3xBAwWPIZH0081iZauWDDzA=;
+	s=arc-20240116; t=1722022645; c=relaxed/simple;
+	bh=1ukRFTHBXzQDwdqZTMPmiLVbxm5h2A6hbbk/Qx87Ehk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KufVe2Lcroo0ilg24R/Q54NELVplUAcLpy5bC0DN8ABYpUjryNE2fjnsCPHprisWI7FfhGkVBfpBrSVg7c5jn9pzyOfII6q4Nv1z+YQepQuIgl5uk2zWH+U4mgI3qpdO0N3IYL3agf4iuR4v8vcQCkNVTiCDDehtbjlvp0N/9gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=OKAfW3gY; arc=none smtp.client-ip=209.85.128.177
+	 MIME-Version; b=V/LNgpMqKkSBfoa/m5l/qOg25p3SPJWEfO5HQ+eYcsCefu4IJEQBuM3c6rBKyboMIDsYK1Ag3M0vHsK6ZH7oT13VwcQBB2BFE7zYgE5p1Q3jAxXOI3tnmJj3cFM5OyKKoaXckxdiymIrULLq4AMhKBh2UPH9I5Hf8MzLkXVWdMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=wLpEiSBl; arc=none smtp.client-ip=209.85.219.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-66526e430e0so378027b3.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:22 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-e0b10e8b6b7so38463276.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022642; x=1722627442; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022643; x=1722627443; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GWxUzphjlU3Edps+E87zIu344ovkxgwglVIJpfgxmYk=;
-        b=OKAfW3gY112V9cfBkOINLnfYlFqERTeXeo3A7Fj05StzKjPT9YmIuykQFo2gaDXKhN
-         /vJ2y+Q3fJRBfnW5dbCdTRRrOsbVMdoc20gtQPJMDVFnvNPH6sLGmljrYe3OcWygh+tE
-         /LVwdme5fxh03ZQaAeyfuJqT6OJikLHLbSOokzQcosIxj1I+hNYQtsPTDhH7z32oma7w
-         onmaux6VvJnQ8vEbo7fmTgDDdjVPHI9YrD335tghXMtCj8tZj4ikf3h31B5tYzaA82wL
-         Dgb6Gwl+qCdOpcjpoTWvI0P/oz1f5EM8EZNK8ALdgIqZiPtUdK9Xu/4JEUdRnCVLFZVa
-         knpw==
+        bh=KGNJUeIXrd5N6wQzpzOyY2v+zHYUKNT6NIwGolqwReQ=;
+        b=wLpEiSBlpe3YBGKoPuQ4BqnbWsDnCRhkW6nMQAlJIlm/yzogsxHKErTZ3NPguvrI6X
+         e9YjyRLqxAD+eEbZDb3GRPi+xv11ARKR6zExWAmzQu+PhHYnuXZ4xUp1taH/1e7BsQzK
+         pImhYXCR8rcfNg9Qix5vupb3HnLvAE1p8QW2cIgOlleLIf+2QXMDugrd4JCH0alvXHD6
+         7+B8WSXMn9KpuQOtpREKj3vuT4P6WoPDkoONrg5sAmQidcH/anJtG2qlZi8gWI1bCnsu
+         OCn4ElCK8PMxATi96C6vIpZttWrZbfOYSZSBkV9GHAPjrVmJ6bhNSdjMwnP6MX/GMP/1
+         fJug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722022642; x=1722627442;
+        d=1e100.net; s=20230601; t=1722022643; x=1722627443;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GWxUzphjlU3Edps+E87zIu344ovkxgwglVIJpfgxmYk=;
-        b=KyZjvnzN5dHfFBgYxSUeqcNd6IviJUNxsl2M8ISwKc+nJPDMVYjWwXIVYVaOxkcdyn
-         bDTfws+Wt574Q3JoSMml+XPyuKvPUhsnC7p8b+OR1FUJpeQmTv103yy+hlekqVCOjJ8R
-         g5Wt4a24ayleMjf4tWN8EJBGRFn3jG10hQHbvjj8dYVwZJ8iKIRHGw/ecKMoUC2jO9G5
-         YB4Ik4mUCguk8anSlrIBnlPcTd3RXo3HqCT7f18eiunUmOd11nvYIaIAcTKGwCEfIvDx
-         TKq0MT/JsWhFIeycRvH7mXAsxtsWbTjgbUXxysa3XTfzeS1pLb/k5jxj/sSciBBeYi19
-         IggQ==
-X-Gm-Message-State: AOJu0YyW3jcX3KJWzSZducX71v6peH3fNDw6TdqYJgn+6UcX3gtu+jP7
-	Z8QrpiAu0SxPO1ZoE2SmN5by40k1jt4b32Rq6x3+E2mc9e60mhDpjc6PvBdIvfv7qGR/phy/ve1
-	J
-X-Google-Smtp-Source: AGHT+IFizDZEK9aeoHwfmLIheXo5zl3weiKF7wAt/rR+fHNB3jsyEfMbfBwJwngWGgsP5IB6RYHWxg==
-X-Received: by 2002:a81:ab53:0:b0:648:2c60:fdee with SMTP id 00721157ae682-67a0a1376demr9257687b3.38.1722022641774;
-        Fri, 26 Jul 2024 12:37:21 -0700 (PDT)
+        bh=KGNJUeIXrd5N6wQzpzOyY2v+zHYUKNT6NIwGolqwReQ=;
+        b=L0Hb2PB9LL21RVSufRPMo68ra6x2h1B9h1yGFJq5WaavXI0kidlJ2+LRuZZZBQeRWZ
+         x4wADo1Baqd9pl3bgXIehrPf8A4IiDMxs+jDeQjnoMaCB+9dpzI/eheGdfKtnzGC9QYW
+         H+tX7pOZ1R5rk0ljJZaGD7Ad/+/xzqvkKladeTvrpa5tjkw4//1IXMrkTJDMYAwIo+/X
+         SRd0dOevWAshqBn54sCUyDx8Z3VgFs0AJwV9Yp2ZLw4Z+cXPE8eaWW4XDfg0bIEipfAY
+         8UuZqpftntwRz23WKnMhfp80EufZHYbezsw53zQRjBFNnjql2qIjUcWBevRrnMjaYuGg
+         q+vw==
+X-Gm-Message-State: AOJu0Yz1+o+mZKe+vkGnqqbuyVBVa8cCzR+EblMy7hhFp1PQAVdNtjF6
+	LbiXip1IuNOiXyzzl3h1DIZYkBGQ9Gus31nB1gwz/GSos5fS+rEiGMlbjTb+sgQf8YLW/Am4maO
+	N
+X-Google-Smtp-Source: AGHT+IGIZheH/Zs8eWd6GxJ3KLEDU9r0CClxj7o+gRh6RJ1/mgpSh8qkAqvIm2WVsZ9LpyhrLMKZUA==
+X-Received: by 2002:a25:a305:0:b0:e03:63d0:4516 with SMTP id 3f1490d57ef6-e0b5460dcddmr579019276.57.1722022642725;
+        Fri, 26 Jul 2024 12:37:22 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-67561916209sm10108187b3.0.2024.07.26.12.37.21
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0b2a70d174sm845794276.47.2024.07.26.12.37.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 12:37:21 -0700 (PDT)
+        Fri, 26 Jul 2024 12:37:22 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 42/46] btrfs: convert find_next_dirty_byte to take a folio
-Date: Fri, 26 Jul 2024 15:36:29 -0400
-Message-ID: <68aebabe701ae3b96a2804104da6edb9817dce68.1722022377.git.josef@toxicpanda.com>
+Subject: [PATCH 43/46] btrfs: convert wait_subpage_spinlock to only use a folio
+Date: Fri, 26 Jul 2024 15:36:30 -0400
+Message-ID: <2c87d2780fd99842891de98c8d2337ea2436333d.1722022377.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1722022376.git.josef@toxicpanda.com>
 References: <cover.1722022376.git.josef@toxicpanda.com>
@@ -84,69 +84,53 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We already use a folio some in this function, replace all page usage
-with the folio and update the function to take the folio as an argument.
+Currently this already uses a folio for most things, update it to take a
+folio and update all the page usage with the corresponding folio usage.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/inode.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 4e9f0baba2ca..040c92541bc9 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1348,9 +1348,8 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
-  * If no dirty range is found, @start will be page_offset(page) + PAGE_SIZE.
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0cdb0b86e670..80022a8c718e 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7186,13 +7186,12 @@ struct extent_map *btrfs_create_io_em(struct btrfs_inode *inode, u64 start,
+  * for subpage spinlock.  So this function is to spin and wait for subpage
+  * spinlock.
   */
- static void find_next_dirty_byte(const struct btrfs_fs_info *fs_info,
--				 struct page *page, u64 *start, u64 *end)
-+				 struct folio *folio, u64 *start, u64 *end)
+-static void wait_subpage_spinlock(struct page *page)
++static void wait_subpage_spinlock(struct folio *folio)
  {
+-	struct btrfs_fs_info *fs_info = page_to_fs_info(page);
 -	struct folio *folio = page_folio(page);
- 	struct btrfs_subpage *subpage = folio_get_private(folio);
- 	struct btrfs_subpage_info *spi = fs_info->subpage_info;
- 	u64 orig_start = *start;
-@@ -1363,14 +1362,15 @@ static void find_next_dirty_byte(const struct btrfs_fs_info *fs_info,
- 	 * For regular sector size == page size case, since one page only
- 	 * contains one sector, we return the page offset directly.
- 	 */
--	if (!btrfs_is_subpage(fs_info, page->mapping)) {
--		*start = page_offset(page);
--		*end = page_offset(page) + PAGE_SIZE;
-+	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
-+		*start = folio_pos(folio);
-+		*end = folio_pos(folio) + folio_size(folio);
++	struct btrfs_fs_info *fs_info = folio_to_fs_info(folio);
+ 	struct btrfs_subpage *subpage;
+ 
+-	if (!btrfs_is_subpage(fs_info, page->mapping))
++	if (!btrfs_is_subpage(fs_info, folio->mapping))
  		return;
+ 
+ 	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+@@ -7221,7 +7220,7 @@ static int btrfs_launder_folio(struct folio *folio)
+ static bool __btrfs_release_folio(struct folio *folio, gfp_t gfp_flags)
+ {
+ 	if (try_release_extent_mapping(&folio->page, gfp_flags)) {
+-		wait_subpage_spinlock(&folio->page);
++		wait_subpage_spinlock(folio);
+ 		clear_page_extent_mapped(&folio->page);
+ 		return true;
  	}
+@@ -7282,7 +7281,7 @@ static void btrfs_invalidate_folio(struct folio *folio, size_t offset,
+ 	 * do double ordered extent accounting on the same folio.
+ 	 */
+ 	folio_wait_writeback(folio);
+-	wait_subpage_spinlock(&folio->page);
++	wait_subpage_spinlock(folio);
  
- 	range_start_bit = spi->dirty_offset +
--			  (offset_in_page(orig_start) >> fs_info->sectorsize_bits);
-+			  (offset_in_folio(folio, orig_start) >>
-+			   fs_info->sectorsize_bits);
- 
- 	/* We should have the page locked, but just in case */
- 	spin_lock_irqsave(&subpage->lock, flags);
-@@ -1381,8 +1381,8 @@ static void find_next_dirty_byte(const struct btrfs_fs_info *fs_info,
- 	range_start_bit -= spi->dirty_offset;
- 	range_end_bit -= spi->dirty_offset;
- 
--	*start = page_offset(page) + range_start_bit * fs_info->sectorsize;
--	*end = page_offset(page) + range_end_bit * fs_info->sectorsize;
-+	*start = folio_pos(folio) + range_start_bit * fs_info->sectorsize;
-+	*end = folio_pos(folio) + range_end_bit * fs_info->sectorsize;
- }
- 
- /*
-@@ -1443,7 +1443,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 			break;
- 		}
- 
--		find_next_dirty_byte(fs_info, &folio->page, &dirty_range_start,
-+		find_next_dirty_byte(fs_info, folio, &dirty_range_start,
- 				     &dirty_range_end);
- 		if (cur < dirty_range_start) {
- 			cur = dirty_range_start;
+ 	/*
+ 	 * For subpage case, we have call sites like
 -- 
 2.43.0
 
