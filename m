@@ -1,228 +1,620 @@
-Return-Path: <linux-btrfs+bounces-6710-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6711-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44DB693CF1F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 09:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2AE893CFF3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 10:55:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E675B2286D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 07:56:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2DC0B23047
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 08:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204D3176ABB;
-	Fri, 26 Jul 2024 07:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63C2176FC0;
+	Fri, 26 Jul 2024 08:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jPumGwHV";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="VVouPLAq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LoFQJ86K"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CE12F50A;
-	Fri, 26 Jul 2024 07:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721980565; cv=fail; b=C4l0j2ZjkWE+eDrbAii8yw8U37UvQqNCynb9Fu+QNWB4jJExgX1DRxRVn7xednUK6AsMr4ml/f0oxQfqjd2SYJN+DBTruFIuOQYPb7uMDE/XJ8Byggl7X1Kdb3GngzbZm5/9BGDZisPQacJj/1JLaBPEQVUvrcb1yCRDOOX1KUM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721980565; c=relaxed/simple;
-	bh=sUZi0RGU5XixQFzVuF9bIba/RtPImh81xrXZEyYGH+k=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=W5mUc+tjc5RVFbGKNesH88SDQWVBzgWq11aezVBf9gfkUeP5DEZa66zxcarD9ek6D5kvBzENByCAtlokZGu8k6r9k3v6i+p8zgSj53gohCFwVKt5/QoDVSpZU9tcZwid3e+ZRA3DKakkgPcEXA/qdoGQW75+eTIwrTINxZEfXeU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jPumGwHV; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=VVouPLAq; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46PLhYnG007958;
-	Fri, 26 Jul 2024 07:56:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:content-transfer-encoding
-	:content-type:mime-version; s=corp-2023-11-20; bh=Uw7AJFFPT5PnHy
-	2Ylil52sVrQ1Kw/jf5JAW6m8rPZ4Y=; b=jPumGwHVWu3dGUc3thx+02Yx90FQ/7
-	PFtYvFetQb3fAL32onOoPUgN3jkG3Iso9e0ortwVp4udqxlWUikXQUzCjfitaGtD
-	L74woSKwcinXA6atE7z2qrytWdfI86CO5nMH8v2f4R5rlJiG4+9+o1S+U6+vOHVG
-	IoZ/ndtXg8OYtxT5HY8sh4wFvgfVVffMVJK+QZUgBWQlxYSwTYDvOXyt/KsvUiFj
-	h2xrzdEFXlthuqgGXmwGmzWqm2UWUnXg+1ykDrjj6qH8syMdOutYesrKzhnaANrr
-	Sxl6VMwqOQYt+QTpBuGCrI/j+A1/WHdrX7UG4YWoRYR14ZBUrVH9VgAg==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 40hfxpn8uj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Jul 2024 07:56:00 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 46Q7HmZs010695;
-	Fri, 26 Jul 2024 07:55:59 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 40h283gg1e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 26 Jul 2024 07:55:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=UgGNQs2ULDnt1mtb0o+ID/nmuZeX3Ror7fba0DUuD/DTSCb0gresUzC6E0+iqwgrmSEj9R9Nrd6nPxwHgxblsVCs7BW9JLcYgy+4aGZS4QJ1zTJpVMTCQdANzA1eyF5OoZuBU+XyIPmPPVhYR5PhclFfg5HMGPuiJtPqk/a7j5wHngvlViWNgmdnYboc4EZTAXz7dioKIexeLxYaJcifRGMoaYvP/FQ9Yvknsgi4WQj/iJTlI9gSKKOhCQ6dw+1rvKabrojMYfL41rSEOKVDFVmzmdi4k6X94gBYQMLBdxXcPsfCKXA/hdkGCYOQVAQOLMbXzQDKPVl0w75jXwzLPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Uw7AJFFPT5PnHy2Ylil52sVrQ1Kw/jf5JAW6m8rPZ4Y=;
- b=bVNlzWo89ROhHZ51wzcUiKjcQ0tKBEYx+oJJrI6VpIpmFpY8GDLcZYlcADxPVEu11SJznoN2w4cUJXNBp242TL2x75JOpdyYaxbx0TrSoa3ihC/2x90kdiBm55HOmxs8Qx4PdcYEk+hqnH3sfNg0DI2cAr2FfW3LEclOeYzq4c1HokXZVAfz8K/CJHY8pedDxnkNy+gW1qsZq24H2HQctRIZ53LZB1l7mAXxDoR51N4VGGTQyD9IPhNhg1XTmM10edTc23IOQODOkCzQj4KsOK954j1uBLLYpgEkJTqI3zEK1aw7yPOVksjulqbZL3TB8CLry2tFg+BDpqFp7Pa9AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uw7AJFFPT5PnHy2Ylil52sVrQ1Kw/jf5JAW6m8rPZ4Y=;
- b=VVouPLAqAhzXpq65Bdynx9OoAN3ld0kMo5uKPlRgh+egbQ8Z8LW8iEYOI23MLqK+ICMStOASRJ3s0OKnSYqVxA0phwFy9PzEXAcrdyZ6CpJeVIfCEK8n8JxUyeAd0uYeGMgYGQNOcwJustLngCxnPag+VwUO6rqFV7hIz2gYkp4=
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
- by SJ0PR10MB5647.namprd10.prod.outlook.com (2603:10b6:a03:3da::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7784.18; Fri, 26 Jul
- 2024 07:55:57 +0000
-Received: from PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65]) by PH0PR10MB5706.namprd10.prod.outlook.com
- ([fe80::fea:df00:2d94:cb65%4]) with mapi id 15.20.7784.017; Fri, 26 Jul 2024
- 07:55:57 +0000
-From: Anand Jain <anand.jain@oracle.com>
-To: zlang@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [GIT PULL] fstests: btrfs changes for for-next staged-25072024
-Date: Fri, 26 Jul 2024 15:54:25 +0800
-Message-ID: <20240726075503.24386-1-anand.jain@oracle.com>
-X-Mailer: git-send-email 2.42.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0056.apcprd02.prod.outlook.com
- (2603:1096:4:1f5::7) To PH0PR10MB5706.namprd10.prod.outlook.com
- (2603:10b6:510:148::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F1A176AD6
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 08:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1721984131; cv=none; b=kVCU0wElqKRq2+MqbEMxHBVLaQktspSg27WNddP1HuHHLyVvMIZfY6IWmIB22Vh1aHJo1uSqHPy0898vEGYoTpM7c5uJkl3vAMJUsYnVuDZ/6dueOTj+gHEAiUrHafIxpxMnQXnz8yAaXadhLmO1mh/VcQ8tymXzmVNK/NnURuA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1721984131; c=relaxed/simple;
+	bh=fP3d69/vHcTaORHzZFRTQ6Zyh+2ELxk8iATuXlkTVEE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qAXFAWaqEGF5aOu0sq0tM8dqdeFzlYZOdtIWtexfSxO3ueniepjP+/pkyqoB/RrFIgef4niED2dwT3Cqtrrg2hb/Ll3TU+nhZKBfy3a8QBl+18CFbtbmcg/Ie68h8zjzw5l9/vZlEeuDhrZ+7JlS0g1DQ7S79LDH4W4rfaRN9E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LoFQJ86K; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <91bfea9b-ad7e-4f35-a2c1-8cd41499b0c0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721984126;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZlVwEHdSTyrlIDdQzITPVaoCS4YDBm7tqpKVUXKTPXI=;
+	b=LoFQJ86KnzbWOA0BZypsF3EXyxQw6jJ1mLub2Aw3bnaIhhHbtybJLq3MBCNJVLGnp+fGnN
+	7IQ0iO81RyOEVAGOiGXSDF/lFCoqjQmMIwLCd5pPs1oJTClopB4+foHPtsop6GGzbgUOdM
+	bDGV+Zaw15OJHrB0CHU4ktOtXRHWWak=
+Date: Fri, 26 Jul 2024 16:54:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|SJ0PR10MB5647:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e0d372d-5fa4-4765-e696-08dcad4861de
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?0bFELvJ9uG9Gjxb1nZgRKy7+8M270Bj87h8khiNc6/a6yKOx1+BWXWgsjWE6?=
- =?us-ascii?Q?dy+nbxYDvRd2lFikoi+6GZMNmMqZ9+85yjev4FnKR/ObuNg/SA/3xedhlORg?=
- =?us-ascii?Q?IN13IFLCgQqWX1+DgTX3HfAXg61e5ZoKW1rgYHQusK7ZX+bI5gvXve+YO44M?=
- =?us-ascii?Q?qfzjBHxnBxq99wp9vDooz4SaDrqe7IbP8BRk6YaxfJ0twwzmPglv3FYuWUDs?=
- =?us-ascii?Q?QvtnLYoxFTbSBpC0Vr7H4ob4XTTBmD0VmuRIG4Pr64JTFciACb8B3+GX/Byf?=
- =?us-ascii?Q?q55NwIVER/v7i/zbLhxfGaCjUte3pRaWRi3ChM2MjRRdRhlk16HbInDWkotp?=
- =?us-ascii?Q?x7Ouc6k7guBdT1SBKuqSE3JwUVznupJJ4Foy7NmuJYxaOQkmxhr/fywJhOmK?=
- =?us-ascii?Q?9xhEC1yPWwaabgLVmKmgdrrHGJXbGpjmFy4e1wc/xx7Axsjjmb5evcOzHoLF?=
- =?us-ascii?Q?Ve+5PKhS4fNFhuqUgju5c6bsSPS05m8KVHQgMIwACBMOt7fUyh8PtImAas+F?=
- =?us-ascii?Q?n1ok0Lfmhb99v7n6766RClrj3dF9tsndKBY6sleGk+FW+sr6hbZDtqsBhXbB?=
- =?us-ascii?Q?SXb9qa3og4u4OuUya9IQqKUfvDO89RO+5nFdBOaqNa1+X584Kjj0GvbB0Q/A?=
- =?us-ascii?Q?9GxJ7rnml/LyIvXyY1Y3xYHhuXd8jp75qvN1l/LZ5a5mJj1jqbNoAu687eDl?=
- =?us-ascii?Q?KntuMpPBTWK5y49PPwZScLz+MhIc+hQQyrnWz/5Pl6vkku7QFR7ly2YTEXpC?=
- =?us-ascii?Q?y7azcx5PIsJdZc0nJLJtP/Mk79quXO5LRRnydDFdHst2+3Oqsv+x4WT/lQx0?=
- =?us-ascii?Q?klpRxcFlREmlsqzP7dikd9cY4aWt8Z/CGkEAF9SMLze2do4pDEauIpzfJiGL?=
- =?us-ascii?Q?UZKD1SnXEsgsVtU8TPaGIqAIKyceGbZ+EQEUsaXqc/3R8T7BvFdvGf79pwDX?=
- =?us-ascii?Q?/OQhNFNzOApzJP3r1gh0+PZacp+IL2WUPjZckra7rFFM0pna2ktIomi/W1++?=
- =?us-ascii?Q?XkIcwBQl7SzcMQYxWj9vfR4g+82M+fKhsApMqNk812fSwhe0EywxgCrURh9Z?=
- =?us-ascii?Q?6uug0D3syOhqmP/reoX2sH8V9CJC4Hq1gLY9vC/fPUI0kENktKkGaSOybjIj?=
- =?us-ascii?Q?HvpXK73c6iH4KiSIh8qPgKIiTiZY53luxp+eHgARcfxDlomPJxZDmzpxNwQE?=
- =?us-ascii?Q?h2v+aw9lqp/TVoMnjhI12qrJZ7q6GbKEtPFCKFQezuI16T5CHOGYpSoSWs1S?=
- =?us-ascii?Q?4OQ8s47rMOVpIwS+IsHaNNCyTLidzk5r8Ic70WH1RA9bis0n/WGbMf54K78i?=
- =?us-ascii?Q?7XA=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?EN7Ig2p8feI3+nBFx5ezW/GGD3FtVD6B8Y26eqjGS26q8ut6/l2rKg/i1xaX?=
- =?us-ascii?Q?nYgfMh7Z2sAiON9mIISsEp4bynV+zpxQmitp4pK04B13uob3WxR9NaFmj19F?=
- =?us-ascii?Q?fa14HS0zK4zFr79FmVX6Ke+fIJHBRBKnv3jVYQlGNAUib5A3iTzalVU42yVz?=
- =?us-ascii?Q?Ped2OcI3hW301FIalw0X76W+/mh6NRBVWpVVd0PtoEYDsR8baGiWuGYjFCcg?=
- =?us-ascii?Q?xjPFC8EB1V1K4/RqjQrI82Peyv8CggoN2TNp1W79yB4zUQYuxSp2IzEY23FF?=
- =?us-ascii?Q?Z2pMNqJBBCpehGfMGY5KeYRg2NgLj5Gche8Ac5Cg6DLNQenAJfml5GJhMzKl?=
- =?us-ascii?Q?f4pBjiH8V0aEso6Dc/Ms9nlodIDMSiRVaMvnWVYWuQsmI+m5Xk/lg714Rmhu?=
- =?us-ascii?Q?iN0Hb2H/3lUOJXtYSvXBGvBHRj1czA8AFxVg2wytSa4CH6L3iJuS/xzQ59ZI?=
- =?us-ascii?Q?5BmVXcpXk2+99vdox8O04ngvK+r0c3GDA2JXz3/mgFFLlJ+KCeJzKLDoxpNZ?=
- =?us-ascii?Q?0HJ68B3uHZlRdBgWgrFN0Dg01xbQU6GqZOFJtiKUj54pMoXbWyRBhhUz8Aem?=
- =?us-ascii?Q?LD1SdwPgSsQAtL8R9NLF0BusgKEZhvjEOOkasbrsdvN9jv12muyNWfQrKAY5?=
- =?us-ascii?Q?BcKYnHxoTeMS8h9pZ2EeOCaTbNZJ0XuD/cu8Vxj0VKWI7ZU/+vD17K7F13s7?=
- =?us-ascii?Q?DM5Dck8uxdntUk6AekTaVGGKPSeA6vflmlMqispQwBYfWV1eTN+RF/V2aGa7?=
- =?us-ascii?Q?MEXdkOQHwtq6iayjxefOvS9Hrs7RXxhEUS6Hdg32xIPa7kLXGhgFVY4ZOBDb?=
- =?us-ascii?Q?bP2n+/4fklVCuK1dn7dpUOLxRNnHyOZeJdSnKrC5buYMF/VUwFLEgW27jCfB?=
- =?us-ascii?Q?cv9o03SuoPn1xcTx/fSZcDtuMdL2pXnw8HIr1GA8KQD155iD77gIpdr1oTda?=
- =?us-ascii?Q?x2SejRvjtse07FuKA40QubqQroJ93QQcS/OXlFifn5FhtoVtjrol5jgEdTrx?=
- =?us-ascii?Q?6dDmV6ElHWCbxkWGnQdgdlwAK69zsewb7RQPPl7MPV3/Rh3s+jUnWOFvjgF8?=
- =?us-ascii?Q?dmXx/X1WT+j72BVyrRut9c8nMU+y+E4VXMgbAgmag79+vZdGIdUoqDT7cLW4?=
- =?us-ascii?Q?d8kHLMEhNcfaI/VrVLuYNkBWnEmz6EZXj3L0VckNwdlykjxLCoaO9vcsi5xS?=
- =?us-ascii?Q?OMesJ4UAvtla03E2wCeXHxqNOyVxcgKhTdy8sF9gIgVhVK4eVvmjIpeEkWw2?=
- =?us-ascii?Q?AHgCP4OXL+S/zoul6iY2gOgB6No3sGRNuAx/uj7YezVV6HL74+lvP32ctqr6?=
- =?us-ascii?Q?MkXp1rAp1eeelA+62hu33eBXJ9hzSHFUtSUbt1uhilC7xog5EMnaDA+P0IVO?=
- =?us-ascii?Q?dBr84D0QzeIk9NZY5NeKgGUYzOmfpFa414UF+ygEzrzXvNlshu033gIEnFBs?=
- =?us-ascii?Q?nJAxZxvS3IhxlvCQwQea7gjgzxVWjyalma9SUCj94t6fmD4KmljWRo/JIa8a?=
- =?us-ascii?Q?uyCU7fYxIbZtd5yPysJuR5euczh0kqBibiAyBb8+a+s2M7lpzuBScK0Bdc35?=
- =?us-ascii?Q?rPOCafHW1Tzvoi8ll650jd9+BXy9QVGcKIDgHxto?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	JX8AtkbTSQ+vLmKZU+bfS9/v+VNzHH1SRkHIU3O0WmGJcomKECyTNGtAmnsiHeztRwV76OIqh3fe0URhDC2BdT/KwSuh2+cyBVHFVg0KvCJXkTbqwyi18os2kS0ZF9M8A5Ueyw86BFiGW0OC6B7Q6nuxepchftS4yY803aIY+rW4uf4ZQ5meDI7Y/WDdk5fcNeO52H6PCa4xD+565mgVxP0n08ztKvby+jXGnGK4MkMui1NgHK+QX7pnCbRgCNuExofBIPlOpwjeJMwfRME6Ll/GPMiFsikgRNYzdqZ+CcoEyH8X/MlRmQpg91slFQtly3sUwQCQB7AmOgm0xh5xXgMGnC7TSp6qphjwZXSyTWzGmWm9Ql4KsLWb5ptfzv/SmUTBZaJP/K9AhxyT4UmC1Dl8JrhKHnmcjlLOfDKsrNzKQSk3QPPVO+mO0f1VeUqitaCcfahDVuXU4dBT1TbBTtf0ziDY/aIF67eDkLGr4k1bi3qOlkjXc8tipSMmPyT1RBpqBiWzOl5StxLVbjgChveg3pV5V9ZjDw5sxMoHEakp+Fco664Ac0X9t96v4OHfU7Ul7soLTrIXrmU8s3lQUTRJb2rTKmKmvA4tqFj5fXg=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e0d372d-5fa4-4765-e696-08dcad4861de
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2024 07:55:57.4213
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8Pe8Rgs5vLGvrzsbJUqQvEhXmYjoaYIFNcN77dMDia3VfPEAQwFhdjR+fvMt9PRlfjHlLd1UFjO8fY6mp3l6hA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5647
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-26_05,2024-07-25_03,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 phishscore=0 spamscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2407110000 definitions=main-2407260052
-X-Proofpoint-GUID: aapDG37I9oYB8qkmUYaRz68Y8i1Pa9dp
-X-Proofpoint-ORIG-GUID: aapDG37I9oYB8qkmUYaRz68Y8i1Pa9dp
+Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
+ module_subeixt helper macros
+To: Christoph Hellwig <hch@infradead.org>, kreijack@inwind.it
+Cc: Arnd Bergmann <arnd@arndb.de>, Luis Chamberlain <mcgrof@kernel.org>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>,
+ linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, Youling Tang <tangyouling@kylinos.cn>
+References: <20240723083239.41533-1-youling.tang@linux.dev>
+ <20240723083239.41533-2-youling.tang@linux.dev>
+ <Zp-_RDk5n5431yyh@infradead.org>
+ <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
+ <ZqEhMCjdFwC3wF4u@infradead.org>
+ <895360e3-97bb-4188-a91d-eaca3302bd43@linux.dev>
+ <ZqJjsg3s7H5cTWlT@infradead.org>
+ <61beb54b-399b-442d-bfdb-bad23cefa586@app.fastmail.com>
+ <ZqJwa2-SsIf0aA_l@infradead.org>
+ <68584887-3dec-4ce5-8892-86af50651c41@libero.it>
+ <ZqKreStOD-eRkKZU@infradead.org>
+Content-Language: en-US, en-AU
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Youling Tang <youling.tang@linux.dev>
+In-Reply-To: <ZqKreStOD-eRkKZU@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Zorro,
+On 26/07/2024 03:46, Christoph Hellwig wrote:
+> On Thu, Jul 25, 2024 at 07:14:14PM +0200, Goffredo Baroncelli wrote:
+>> Instead of relying to the "expected" order of the compiler/linker,
+>> why doesn't manage the chain explicitly ? Something like:
+> Because that doesn't actually solve anything over simple direct calls
+> as you still need the symbols to be global?
+>
+> As an example here is a very hacky patch that just compiles with unused
+> variable warnings and doesn't work at all to show how the distributed
+> module_subinit would improve ext4, the file system with the least
+> subinit calls of the three converted in the series, and without any
+> extra cleanups like removing now unneded includes or moving more stuff
+> into subinits if they can remain entirely static that way:
+>
+>   11 files changed, 61 insertions(+), 114 deletions(-)
+>
+> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+> index 87ee3a17bd29c9..87f0ccd06fc069 100644
+> --- a/fs/ext4/block_validity.c
+> +++ b/fs/ext4/block_validity.c
+> @@ -29,7 +29,7 @@ struct ext4_system_zone {
+>   
+>   static struct kmem_cache *ext4_system_zone_cachep;
+>   
+> -int __init ext4_init_system_zone(void)
+> +static int __init ext4_init_system_zone(void)
+>   {
+>   	ext4_system_zone_cachep = KMEM_CACHE(ext4_system_zone, 0);
+>   	if (ext4_system_zone_cachep == NULL)
+> @@ -37,11 +37,12 @@ int __init ext4_init_system_zone(void)
+>   	return 0;
+>   }
+>   
+> -void ext4_exit_system_zone(void)
+> +static void ext4_exit_system_zone(void)
+>   {
+>   	rcu_barrier();
+>   	kmem_cache_destroy(ext4_system_zone_cachep);
+>   }
+> +module_subinit(ext4_init_system_zone, ext4_exit_system_zone);
+>   
+>   static inline int can_merge(struct ext4_system_zone *entry1,
+>   		     struct ext4_system_zone *entry2)
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 08acd152261ed8..db81f18cdc3266 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2915,8 +2915,6 @@ void ext4_fc_del(struct inode *inode);
+>   bool ext4_fc_replay_check_excluded(struct super_block *sb, ext4_fsblk_t block);
+>   void ext4_fc_replay_cleanup(struct super_block *sb);
+>   int ext4_fc_commit(journal_t *journal, tid_t commit_tid);
+> -int __init ext4_fc_init_dentry_cache(void);
+> -void ext4_fc_destroy_dentry_cache(void);
+>   int ext4_fc_record_regions(struct super_block *sb, int ino,
+>   			   ext4_lblk_t lblk, ext4_fsblk_t pblk,
+>   			   int len, int replay);
+> @@ -2930,8 +2928,6 @@ extern void ext4_mb_release(struct super_block *);
+>   extern ext4_fsblk_t ext4_mb_new_blocks(handle_t *,
+>   				struct ext4_allocation_request *, int *);
+>   extern void ext4_discard_preallocations(struct inode *);
+> -extern int __init ext4_init_mballoc(void);
+> -extern void ext4_exit_mballoc(void);
+>   extern ext4_group_t ext4_mb_prefetch(struct super_block *sb,
+>   				     ext4_group_t group,
+>   				     unsigned int nr, int *cnt);
+> @@ -3651,8 +3647,6 @@ static inline void ext4_set_de_type(struct super_block *sb,
+>   /* readpages.c */
+>   extern int ext4_mpage_readpages(struct inode *inode,
+>   		struct readahead_control *rac, struct folio *folio);
+> -extern int __init ext4_init_post_read_processing(void);
+> -extern void ext4_exit_post_read_processing(void);
+>   
+>   /* symlink.c */
+>   extern const struct inode_operations ext4_encrypted_symlink_inode_operations;
+> @@ -3663,14 +3657,10 @@ extern const struct inode_operations ext4_fast_symlink_inode_operations;
+>   extern void ext4_notify_error_sysfs(struct ext4_sb_info *sbi);
+>   extern int ext4_register_sysfs(struct super_block *sb);
+>   extern void ext4_unregister_sysfs(struct super_block *sb);
+> -extern int __init ext4_init_sysfs(void);
+> -extern void ext4_exit_sysfs(void);
+>   
+>   /* block_validity */
+>   extern void ext4_release_system_zone(struct super_block *sb);
+>   extern int ext4_setup_system_zone(struct super_block *sb);
+> -extern int __init ext4_init_system_zone(void);
+> -extern void ext4_exit_system_zone(void);
+>   extern int ext4_inode_block_valid(struct inode *inode,
+>   				  ext4_fsblk_t start_blk,
+>   				  unsigned int count);
+> @@ -3750,8 +3740,6 @@ extern int ext4_move_extents(struct file *o_filp, struct file *d_filp,
+>   			     __u64 len, __u64 *moved_len);
+>   
+>   /* page-io.c */
+> -extern int __init ext4_init_pageio(void);
+> -extern void ext4_exit_pageio(void);
+>   extern ext4_io_end_t *ext4_init_io_end(struct inode *inode, gfp_t flags);
+>   extern ext4_io_end_t *ext4_get_io_end(ext4_io_end_t *io_end);
+>   extern int ext4_put_io_end(ext4_io_end_t *io_end);
+> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+> index 17dcf13adde275..d381ec88441ffd 100644
+> --- a/fs/ext4/extents_status.c
+> +++ b/fs/ext4/extents_status.c
+> @@ -156,19 +156,6 @@ static int __revise_pending(struct inode *inode, ext4_lblk_t lblk,
+>   			    ext4_lblk_t len,
+>   			    struct pending_reservation **prealloc);
+>   
+> -int __init ext4_init_es(void)
+> -{
+> -	ext4_es_cachep = KMEM_CACHE(extent_status, SLAB_RECLAIM_ACCOUNT);
+> -	if (ext4_es_cachep == NULL)
+> -		return -ENOMEM;
+> -	return 0;
+> -}
+> -
+> -void ext4_exit_es(void)
+> -{
+> -	kmem_cache_destroy(ext4_es_cachep);
+> -}
+> -
+>   void ext4_es_init_tree(struct ext4_es_tree *tree)
+>   {
+>   	tree->root = RB_ROOT;
+> @@ -1883,18 +1870,25 @@ static void ext4_print_pending_tree(struct inode *inode)
+>   #define ext4_print_pending_tree(inode)
+>   #endif
+>   
+> -int __init ext4_init_pending(void)
+> +static int __init ext4_init_es(void)
+>   {
+>   	ext4_pending_cachep = KMEM_CACHE(pending_reservation, SLAB_RECLAIM_ACCOUNT);
+>   	if (ext4_pending_cachep == NULL)
+>   		return -ENOMEM;
+> +	ext4_es_cachep = KMEM_CACHE(extent_status, SLAB_RECLAIM_ACCOUNT);
+> +	if (ext4_es_cachep == NULL) {
+> +		kmem_cache_destroy(ext4_pending_cachep);
+> +		return -ENOMEM;
+> +	}
+>   	return 0;
+>   }
+>   
+> -void ext4_exit_pending(void)
+> +static void ext4_exit_es(void)
+>   {
+> +	kmem_cache_destroy(ext4_es_cachep);
+>   	kmem_cache_destroy(ext4_pending_cachep);
+>   }
+> +module_subinit(ext4_init_es, ext4_exit_es);
+>   
+>   void ext4_init_pending_tree(struct ext4_pending_tree *tree)
+>   {
+> diff --git a/fs/ext4/extents_status.h b/fs/ext4/extents_status.h
+> index 3c8e2edee5d5d1..1cdb25c3d2dae5 100644
+> --- a/fs/ext4/extents_status.h
+> +++ b/fs/ext4/extents_status.h
+> @@ -123,8 +123,6 @@ struct ext4_pending_tree {
+>   	struct rb_root root;
+>   };
+>   
+> -extern int __init ext4_init_es(void);
+> -extern void ext4_exit_es(void);
+>   extern void ext4_es_init_tree(struct ext4_es_tree *tree);
+>   
+>   extern void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+> @@ -244,8 +242,6 @@ extern void ext4_es_unregister_shrinker(struct ext4_sb_info *sbi);
+>   
+>   extern int ext4_seq_es_shrinker_info_show(struct seq_file *seq, void *v);
+>   
+> -extern int __init ext4_init_pending(void);
+> -extern void ext4_exit_pending(void);
+>   extern void ext4_init_pending_tree(struct ext4_pending_tree *tree);
+>   extern void ext4_remove_pending(struct inode *inode, ext4_lblk_t lblk);
+>   extern bool ext4_is_pending(struct inode *inode, ext4_lblk_t lblk);
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 3926a05eceeed1..b28930c4175cca 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -2293,7 +2293,7 @@ int ext4_fc_info_show(struct seq_file *seq, void *v)
+>   	return 0;
+>   }
+>   
+> -int __init ext4_fc_init_dentry_cache(void)
+> +static int __init ext4_fc_init_dentry_cache(void)
+>   {
+>   	ext4_fc_dentry_cachep = KMEM_CACHE(ext4_fc_dentry_update,
+>   					   SLAB_RECLAIM_ACCOUNT);
+> @@ -2304,7 +2304,8 @@ int __init ext4_fc_init_dentry_cache(void)
+>   	return 0;
+>   }
+>   
+> -void ext4_fc_destroy_dentry_cache(void)
+> +static void ext4_fc_destroy_dentry_cache(void)
+>   {
+>   	kmem_cache_destroy(ext4_fc_dentry_cachep);
+>   }
+> +module_subinit(ext4_fc_init_dentry_cache, ext4_fc_destroy_dentry_cache);
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 9dda9cd68ab2f5..a564882432b8ff 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -3936,7 +3936,7 @@ void ext4_process_freed_data(struct super_block *sb, tid_t commit_tid)
+>   	}
+>   }
+>   
+> -int __init ext4_init_mballoc(void)
+> +static int __init ext4_init_mballoc(void)
+>   {
+>   	ext4_pspace_cachep = KMEM_CACHE(ext4_prealloc_space,
+>   					SLAB_RECLAIM_ACCOUNT);
+> @@ -3963,7 +3963,7 @@ int __init ext4_init_mballoc(void)
+>   	return -ENOMEM;
+>   }
+>   
+> -void ext4_exit_mballoc(void)
+> +static void ext4_exit_mballoc(void)
+>   {
+>   	/*
+>   	 * Wait for completion of call_rcu()'s on ext4_pspace_cachep
+> @@ -3975,6 +3975,7 @@ void ext4_exit_mballoc(void)
+>   	kmem_cache_destroy(ext4_free_data_cachep);
+>   	ext4_groupinfo_destroy_slabs();
+>   }
+> +module_subinit(ext4_init_mballoc, ext4_exit_mballoc);
+>   
+>   #define EXT4_MB_BITMAP_MARKED_CHECK 0x0001
+>   #define EXT4_MB_SYNC_UPDATE 0x0002
+> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+> index ad5543866d2152..68639d5553080a 100644
+> --- a/fs/ext4/page-io.c
+> +++ b/fs/ext4/page-io.c
+> @@ -33,7 +33,7 @@
+>   static struct kmem_cache *io_end_cachep;
+>   static struct kmem_cache *io_end_vec_cachep;
+>   
+> -int __init ext4_init_pageio(void)
+> +static int __init ext4_init_pageio(void)
+>   {
+>   	io_end_cachep = KMEM_CACHE(ext4_io_end, SLAB_RECLAIM_ACCOUNT);
+>   	if (io_end_cachep == NULL)
+> @@ -47,11 +47,12 @@ int __init ext4_init_pageio(void)
+>   	return 0;
+>   }
+>   
+> -void ext4_exit_pageio(void)
+> +static void ext4_exit_pageio(void)
+>   {
+>   	kmem_cache_destroy(io_end_cachep);
+>   	kmem_cache_destroy(io_end_vec_cachep);
+>   }
+> +module_subinit(ext4_init_pageio, ext4_exit_pageio);
+>   
+>   struct ext4_io_end_vec *ext4_alloc_io_end_vec(ext4_io_end_t *io_end)
+>   {
+> diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
+> index 8494492582abea..5fa7329c571b42 100644
+> --- a/fs/ext4/readpage.c
+> +++ b/fs/ext4/readpage.c
+> @@ -390,7 +390,7 @@ int ext4_mpage_readpages(struct inode *inode,
+>   	return 0;
+>   }
+>   
+> -int __init ext4_init_post_read_processing(void)
+> +static int __init ext4_init_post_read_processing(void)
+>   {
+>   	bio_post_read_ctx_cache = KMEM_CACHE(bio_post_read_ctx, SLAB_RECLAIM_ACCOUNT);
+>   
+> @@ -409,8 +409,9 @@ int __init ext4_init_post_read_processing(void)
+>   	return -ENOMEM;
+>   }
+>   
+> -void ext4_exit_post_read_processing(void)
+> +static void ext4_exit_post_read_processing(void)
+>   {
+>   	mempool_destroy(bio_post_read_ctx_pool);
+>   	kmem_cache_destroy(bio_post_read_ctx_cache);
+>   }
+> +module_subinit(ext4_init_post_read_processing, ext4_exit_post_read_processing);
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 207076e7e7f055..bb6a87da00ea8c 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -1484,29 +1484,6 @@ static void init_once(void *foo)
+>   	ext4_fc_init_inode(&ei->vfs_inode);
+>   }
+>   
+> -static int __init init_inodecache(void)
+> -{
+> -	ext4_inode_cachep = kmem_cache_create_usercopy("ext4_inode_cache",
+> -				sizeof(struct ext4_inode_info), 0,
+> -				SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT,
+> -				offsetof(struct ext4_inode_info, i_data),
+> -				sizeof_field(struct ext4_inode_info, i_data),
+> -				init_once);
+> -	if (ext4_inode_cachep == NULL)
+> -		return -ENOMEM;
+> -	return 0;
+> -}
+> -
+> -static void destroy_inodecache(void)
+> -{
+> -	/*
+> -	 * Make sure all delayed rcu free inodes are flushed before we
+> -	 * destroy cache.
+> -	 */
+> -	rcu_barrier();
+> -	kmem_cache_destroy(ext4_inode_cachep);
+> -}
+> -
+>   void ext4_clear_inode(struct inode *inode)
+>   {
+>   	ext4_fc_del(inode);
+> @@ -7302,33 +7279,13 @@ static struct file_system_type ext4_fs_type = {
+>   };
+>   MODULE_ALIAS_FS("ext4");
+>   
+> -static int register_ext(void)
+> -{
+> -	register_as_ext3();
+> -	register_as_ext2();
+> -	return register_filesystem(&ext4_fs_type);
+> -}
+> -
+> -static void unregister_ext(void)
+> -{
+> -	unregister_as_ext2();
+> -	unregister_as_ext3();
+> -	unregister_filesystem(&ext4_fs_type);
+> -}
+> -
+> -static struct subexitcall_rollback rollback;
+> -
+> -static void __exit ext4_exit_fs(void)
+> -{
+> -	ext4_destroy_lazyinit_thread();
+> -	module_subexit(&rollback);
+> -}
+> -
+>   /* Shared across all ext4 file systems */
+>   wait_queue_head_t ext4__ioend_wq[EXT4_WQ_HASH_SZ];
+>   
+>   static int __init ext4_init_fs(void)
+>   {
+> +	int error;
+> +
+>   	ratelimit_state_init(&ext4_mount_msg_ratelimit, 30 * HZ, 64);
+>   	ext4_li_info = NULL;
+>   
+> @@ -7338,23 +7295,40 @@ static int __init ext4_init_fs(void)
+>   	for (int i = 0; i < EXT4_WQ_HASH_SZ; i++)
+>   		init_waitqueue_head(&ext4__ioend_wq[i]);
+>   
+> -	module_subinit(ext4_init_es, ext4_exit_es, &rollback);
+> -	module_subinit(ext4_init_pending, ext4_exit_pending, &rollback);
+> -	module_subinit(ext4_init_post_read_processing, ext4_exit_post_read_processing, &rollback);
+> -	module_subinit(ext4_init_pageio, ext4_exit_pageio, &rollback);
+> -	module_subinit(ext4_init_system_zone, ext4_exit_system_zone, &rollback);
+> -	module_subinit(ext4_init_sysfs, ext4_exit_sysfs, &rollback);
+> -	module_subinit(ext4_init_mballoc, ext4_exit_mballoc, &rollback);
+> -	module_subinit(init_inodecache, destroy_inodecache, &rollback);
+> -	module_subinit(ext4_fc_init_dentry_cache, ext4_fc_destroy_dentry_cache, &rollback);
+> -	module_subinit(register_ext, unregister_ext, &rollback);
+> +	ext4_inode_cachep = kmem_cache_create_usercopy("ext4_inode_cache",
+> +				sizeof(struct ext4_inode_info), 0,
+> +				SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT,
+> +				offsetof(struct ext4_inode_info, i_data),
+> +				sizeof_field(struct ext4_inode_info, i_data),
+> +				init_once);
+> +	if (ext4_inode_cachep == NULL)
+> +		return -ENOMEM;
+>   
+> -	return 0;
+> +	register_as_ext3();
+> +	register_as_ext2();
+> +	error = register_filesystem(&ext4_fs_type);
+> +	if (error)
+> +		kmem_cache_destroy(ext4_inode_cachep);
+> +	return error;
+> +}
+> +
+> +static void __exit ext4_exit_fs(void)
+> +{
+> +	ext4_destroy_lazyinit_thread();
+> +	unregister_as_ext2();
+> +	unregister_as_ext3();
+> +	unregister_filesystem(&ext4_fs_type);
+> +
+> +	/*
+> +	 * Make sure all delayed rcu free inodes are flushed before we
+> +	 * destroy cache.
+> +	 */
+> +	rcu_barrier();
+> +	kmem_cache_destroy(ext4_inode_cachep);
+>   }
+> +module_subinit(ext4_init_fs, ext4_exit_fs);
+>   
+>   MODULE_AUTHOR("Remy Card, Stephen Tweedie, Andrew Morton, Andreas Dilger, Theodore Ts'o and others");
+>   MODULE_DESCRIPTION("Fourth Extended Filesystem");
+>   MODULE_LICENSE("GPL");
+>   MODULE_SOFTDEP("pre: crc32c");
+> -module_init(ext4_init_fs)
+> -module_exit(ext4_exit_fs)
+> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+> index ddb54608ca2ef6..df3096a9e6e39a 100644
+> --- a/fs/ext4/sysfs.c
+> +++ b/fs/ext4/sysfs.c
+> @@ -601,7 +601,7 @@ void ext4_unregister_sysfs(struct super_block *sb)
+>   	kobject_del(&sbi->s_kobj);
+>   }
+>   
+> -int __init ext4_init_sysfs(void)
+> +static int __init ext4_init_sysfs(void)
+>   {
+>   	int ret;
+>   
+> @@ -632,7 +632,7 @@ int __init ext4_init_sysfs(void)
+>   	return ret;
+>   }
+>   
+> -void ext4_exit_sysfs(void)
+> +static void ext4_exit_sysfs(void)
+>   {
+>   	kobject_put(ext4_feat);
+>   	ext4_feat = NULL;
+> @@ -641,4 +641,4 @@ void ext4_exit_sysfs(void)
+>   	remove_proc_entry(proc_dirname, NULL);
+>   	ext4_proc_root = NULL;
+>   }
+> -
+> +module_subinit(ext4_init_sysfs, ext4_exit_sysfs);
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index 95f7c60dede9a4..3099fb2c3d813b 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -80,23 +80,13 @@ extern void cleanup_module(void);
+>    * module_subinit() - Called when the driver is subinitialized
+>    * @initfn: The subinitialization function that is called
+>    * @exitfn: Corresponding exit function
+> - * @rollback: Record information when the subinitialization failed
+> - *            or the driver was removed
+>    *
+>    * Use module_subinit_noexit() when there is only an subinitialization
+>    * function but no corresponding exit function.
+>    */
+> -#define module_subinit(initfn, exitfn, rollback)	\
+> -	__subinitcall(initfn, exitfn, rollback);
+> +#define module_subinit(initfn, exitfn)
+>   
+> -#define module_subinit_noexit(initfn, rollback)		\
+> -	__subinitcall_noexit(initfn, rollback);
+> -
+> -/*
+> - * module_subexit() - Called when the driver exits
+> - */
+> -#define module_subexit(rollback)			\
+> -	__subexitcall_rollback(rollback);
+> +#define module_subinit_noexit(initfn)
+>   
+>   #ifndef MODULE
+>   /**
+Based on this patch, we may need to do these things with this
+implementation,
 
-Please pull this branch containing a new test case, btrfs/312 (compress
-send testcase), and a few other miscellaneous fixes for btrfs test cases.
+1. Change the order of *.o in the Makefile (the same order as before the 
+change)
+```
+--- a/fs/ext4/Makefile
++++ b/fs/ext4/Makefile
+@@ -5,12 +5,16 @@
 
-Thank you.
+  obj-$(CONFIG_EXT4_FS) += ext4.o
 
-The following changes since commit b3b323777a54b6883d3254c06cf0a840e80e2465:
+-ext4-y := balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
+-               extents_status.o file.o fsmap.o fsync.o hash.o ialloc.o \
+-               indirect.o inline.o inode.o ioctl.o mballoc.o migrate.o \
+-               mmp.o move_extent.o namei.o page-io.o readpage.o resize.o \
+-               super.o symlink.o sysfs.o xattr.o xattr_hurd.o 
+xattr_trusted.o \
+-               xattr_user.o fast_commit.o orphan.o
++ext4-y := balloc.o bitmap.o dir.o ext4_jbd2.o extents.o \
++               file.o fsmap.o fsync.o hash.o ialloc.o \
++               indirect.o inline.o inode.o ioctl.o migrate.o \
++               mmp.o move_extent.o namei.o resize.o \
++               symlink.o xattr.o xattr_hurd.o xattr_trusted.o \
++               xattr_user.o orphan.o
++
++# Ensure the linking order for module_subinit
++ext4-y += extents_status.o readpage.o page-io.o block_validity.o sysfs.o \
++               mballoc.o fast_commit.o super.o
+```
 
-  btrfs/081: wait for reader process to exit before cycle mounting (2024-07-13 03:05:35 +0800)
+2. We need to define module_subinit through the ifdef MODULE
+distinction,
 
-are available in the Git repository at:
+- build-in mode:
+Need to be defined as:
+define module_subinit(initfn, 
+exitfn)                                         \
+        static subinitcall_t __subinitcall_##initfn __subinit_call = 
+initfn;   \
+        static subexitcall_t __subexitcall_##exitfn __subexit_call = exitfn;
 
-  https://github.com/asj/fstests.git staged-25072024
+Cannot be defined as:
+define module_subinit(initfn, 
+exitfn)                                         \
+        static subinitcall_t __subinitcall_##initfn __subinit_call = 
+initfn;   \
+        static subexitcall_t __subexitcall_##exitfn __subexit_call = 
+exitfn;   \
+        initfn();
 
-for you to fetch changes up to 02a689b7aa074a80427e11d4a0cab90e6e8e5985:
+module_subinit defines only __subinitcall_{initfn, exitfn} symbols
+to store initfn/exitfn addresses.initfn cannot be run directly
+(functions cannot be run directly in non-code blocks), the initfn
+of all build-in modules needs to be executed together somewhere.
 
-  btrfs: properly shutdown subvolume stress worker to avoid umount failures (2024-07-25 19:09:33 +0800)
+When one of the subinit runs in a module fails, it is difficult
+to rollback execution of subexit.
 
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs/220: remove integrity checker bits
+module_init does not have to do these things (each module has only
+one module_init), module_init executes fn through the following path,
+and even if fn fails, it only needs to return ret.
+do_initcalls
+   do_initcall_level
+     do_one_initcall
+       fn
 
-Filipe Manana (2):
-      btrfs: test a compressed send stream scenario that triggered a read corruption
-      btrfs: properly shutdown subvolume stress worker to avoid umount failures
+- .ko mode:
+Each module has multiple subinit and initfn cannot be run like
+module_init. That is, we cannot simply add a subinit member to a
+struct module and execute it via do_one_initcall(mod->subinit).
 
-Qu Wenruo (1):
-      fstests: btrfs/012: fix a false alert due to socket/pipe files
+3. Another way to record the location of the failure is still needed
+to assist in rollback exitfn.
 
- common/btrfs        |   2 +
- tests/btrfs/012     |  29 +++++++------
- tests/btrfs/012.out |   6 +++
- tests/btrfs/060     |   9 ++--
- tests/btrfs/065     |   9 ++--
- tests/btrfs/066     |   9 ++--
- tests/btrfs/067     |   9 ++--
- tests/btrfs/068     |   9 ++--
- tests/btrfs/220     |   5 ---
- tests/btrfs/312     | 115 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/312.out |   7 ++++
- 11 files changed, 172 insertions(+), 37 deletions(-)
- create mode 100755 tests/btrfs/312
- create mode 100644 tests/btrfs/312.out
+4. The order in which subinit is called is not intuitively known
+(although it can be found in the Makefile).
+
+Thanks,
+Youling.
 
