@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-6778-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6779-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AC4893D926
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:39:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBF1D93D927
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:39:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4699E285AE4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:39:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79CDDB247C3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F397153BC1;
-	Fri, 26 Jul 2024 19:37:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4C0154444;
+	Fri, 26 Jul 2024 19:37:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="DvwPSxUG"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="VOIvjoW8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A96915350B
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DD0153804
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722022638; cv=none; b=pLjP/G8ubfA3io6lTKEjdhGNGQs5rifSMIfNgXSm5qJERnMQTC2W8ZbTaq8Bb2uWky3al7khlUSHv2KJHXZfnoZ+mkLxks+GtQ4EVW8m4mZEO7EXTkkATBeCdBhll3yq9X9PgG5grKvDYJh2MeLTgdVjrwX1uvkoVYIzJtwPYZ4=
+	t=1722022639; cv=none; b=mbmuDx/rl6l3aTBnCyJb973zTYWMxeqels++OfmsvfZ3LN7usThf6Kivk9TOeIjeElZUAIC+6aIsyu4cZTDxYJgnByCDxYAB9ZopIlg5BTMJGQZNBcoP9KNOJvKy2XrHYr5oCw1KQ5Esdlbp8fUdJFfPvrSO81k7yLDQzKmW3sM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722022638; c=relaxed/simple;
-	bh=52yhmVRldo6fhrshj4UeNjlQ9T2sASylyx7e9qIOR0Q=;
+	s=arc-20240116; t=1722022639; c=relaxed/simple;
+	bh=GucPEWsDIecsbuQ7OcD/S7ZoXmhr9y2dSl4EPPECVR8=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m5edXviHccDoZxDU7E52yz5cmIHVulcfkML0ko4oDFDyj3S8ohqaMPaxgPQSGINLKOltdBYGWX9XotwAJMMhwNqDsHCQtEnbYEo/sOHao3XKQl9OzGG5t9kpxIKn6mp7WYhDoTRQtz/l6yJ9xvsXwDQvbQ2LE5uzXmaEN/p8bQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=DvwPSxUG; arc=none smtp.client-ip=209.85.128.180
+	 MIME-Version; b=RobRGmWq9kXQwYQkraLECVJIPyRZS5op/jNu1zg+ZtPs9yzI9jwgiNTpwygjQXDIaIyG96lrZErSR59anOgnGvoWHUyIvUb8QQQYaYwphovDQY8Y92QmzZmpljdNYQg3HAdETK3MX+64HR82y4euqcr7c6efPL9e5wxXjZsQJZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=VOIvjoW8; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-664b4589b1aso304487b3.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:17 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dff1ccdc17bso46822276.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022636; x=1722627436; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022637; x=1722627437; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fXkL2cHHcMIysYGbARqm/QB30uEPhELGuHXflxiPSGg=;
-        b=DvwPSxUGCe/6svaaC9lwf9VT95oRmUMmGWeCQ1RfCTDt8fEGd6CNVsOuq4m8BhrtmG
-         OPGbzCju1PBjYUlgAl8Gqp4wDuhPKjcuREf698NfRMsA2zhHUJJZkHOAUK4Kb+3GhjS0
-         WX2mFGCTEagzWHdFOtO2bBkzeEbPgQKLpyzHhcdsIfhvvkbs2XArk35U/cDCDKgkuDNz
-         QJkxT8qV3RC1hWaeMnwUqb89ZBpNFLhaHGCBKBvb5v1WTE6g+FQoPnVKMhOk/vXgALP3
-         vRW5UE9uKy5XX9aWBxz+een5ATacrAQ4q28BuGOnbdyKA/yX0TQ45uxyVwYqpNj1ONOh
-         ywWA==
+        bh=nKd/OOuZGEJ2gmxvwAHNhhH1eEtc+48z6k83BbKebcQ=;
+        b=VOIvjoW8jrd4otnzuo1a38Juq6FjTzbTacpJc8JkgILfSXWCgAapHM1BqcGJ6rycLe
+         KsL4pCADeNJTj6e8niRkaOgNjYuAgT6J4ooR7+WB4SUSMHQQ1uayzt1F55D9ZhrzEvFv
+         gNfltTdySMPUeB4LkyXdEU31jr3xUjErZWU7rCli/gaWMTrtaXrrlB0J5AoS2XJqc8e6
+         NTsQxMgKyGbk+rpOAM8JFeTOyW46XfNHtgYxDVik+udwBLvQrZgC1yeaynrPBJUgjEwj
+         76hNplxNUHhWWKzer2G7fnuE6IUnLjsFNuwR+uKwwP9Q/rAt7OX9AVdVLBnj5vVWuP0p
+         WTjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722022636; x=1722627436;
+        d=1e100.net; s=20230601; t=1722022637; x=1722627437;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fXkL2cHHcMIysYGbARqm/QB30uEPhELGuHXflxiPSGg=;
-        b=vESouWa51qQ8JJJlipWv/Nc3HcNqa/fS0jYdZCfbIF3GwhABDpPRylkyghBapBd4dp
-         pjINgFawULpWMObFfXPsnhBEP0MWxDo5lfB/pWuslQsnLTpRTTA0fmBbsbsVoWpRhCtL
-         5u1zdpI5762zmeIDZwnRq7n22EPA9GRSYK0f2/rmkvRwz0YxyjcINitf0dCZVT0e3259
-         7IGDlBqSHFNFZyPMCJs9fyZymerzVfMusSTOPVu7Fn7aXpNA7lKOK5I3NJDPhNar+RqQ
-         ML5TgyOY6XGnrioREq6g824KzAqN1dZYhoN5j4S3iNiA87rwYlbNRXjgiNH6/tRlvmRP
-         /8zw==
-X-Gm-Message-State: AOJu0YzA6kZs7dniX3ca9uSrN5792QMo+x1bW9yLzMcSaPk4uW80LHhA
-	40SOzAgtcFDY0CahHc04GoNrJGf9MxLD7MwIzQLAHjthq40jnTMLXA1/pkqOWGlzVEpopAmzdiU
-	P
-X-Google-Smtp-Source: AGHT+IFr/h4rnpeUNA5mbwDoIkZ8BTqwb33FWDL5SgmzFrC066nIu+zc/mYM49DSqQLr/kteMIgOng==
-X-Received: by 2002:a81:b54d:0:b0:62f:aa9a:93c6 with SMTP id 00721157ae682-67a29bfc4f8mr6250967b3.8.1722022636441;
-        Fri, 26 Jul 2024 12:37:16 -0700 (PDT)
+        bh=nKd/OOuZGEJ2gmxvwAHNhhH1eEtc+48z6k83BbKebcQ=;
+        b=jU5KhjLIzE1LWxBmUDy59zJtxhM3f6JZdjRIay9zh0xI+0PDq5YaUIpQLR/P8XVQhK
+         yd4BQoGt6kKhDzWTD7J7tfvMZZxbXvZNQHzQCFdwpyuU9f+H2ZVez2+Bg5BikfWvZAfI
+         zp68Bzb5PUETeWxlXTB/qArNl/JtVTzaveHzvrKfIlbLmdzbf/N4pwLlq0cy+I6ER72n
+         SHG8aB/AJ/R/3yyKDHc/yDnrmRPStZSAHRBan7zMgJy175e1pfjWKb89CjA7hxopJV9E
+         GgguLJWaORwsscuXSOYOYA46h44zWhEWuQGE7rcJ/N2GjvE5LGWCrDFwlYDWf+3SlAnk
+         yC3g==
+X-Gm-Message-State: AOJu0YzIUjNzhYevoaN/YrUzF4tooJXdIn2zpRQ77LHBW5t/j+VHonkH
+	NDTjFhN+SLTE/ZQAHnQHn3DJ9wWBBTe/Uc7twm9UCuVy4q0p2zJa3ay33D6PkblKiuqhlzlhQgc
+	k
+X-Google-Smtp-Source: AGHT+IGw9Z74f6+ywSDbO68enL1poiiVZME87EFyzneqAVkrcrlnbWye5215dpuFO2ylzh6RLgMbZA==
+X-Received: by 2002:a05:6902:188f:b0:e08:7600:4697 with SMTP id 3f1490d57ef6-e0b545c0434mr1076289276.46.1722022637380;
+        Fri, 26 Jul 2024 12:37:17 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-67568113cf9sm9986107b3.70.2024.07.26.12.37.16
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0b29f7ad81sm882558276.24.2024.07.26.12.37.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 12:37:16 -0700 (PDT)
+        Fri, 26 Jul 2024 12:37:17 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 37/46] btrfs: convert btrfs_writepage_fixup to use a folio
-Date: Fri, 26 Jul 2024 15:36:24 -0400
-Message-ID: <d7a77c2bb42621caabf9e14208edce3ed94a889a.1722022377.git.josef@toxicpanda.com>
+Subject: [PATCH 38/46] btrfs: convert uncompress_inline to take a folio
+Date: Fri, 26 Jul 2024 15:36:25 -0400
+Message-ID: <c0e3c05e1af0b08fefebd847af888b55a96d0bbf.1722022377.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1722022376.git.josef@toxicpanda.com>
 References: <cover.1722022376.git.josef@toxicpanda.com>
@@ -84,46 +84,55 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now the fixup creator and consumer use folios, change this to use a
-folio as well.
+Update uncompress_inline to take a folio and update it's usage
+accordingly.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ fs/btrfs/inode.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9234ae84175a..0667da7b1895 100644
+index 0667da7b1895..560575a5de03 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2695,7 +2695,7 @@ int btrfs_set_extent_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+@@ -6706,7 +6706,7 @@ static int btrfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+ }
  
- /* see btrfs_writepage_start_hook for details on why this is required */
- struct btrfs_writepage_fixup {
--	struct page *page;
-+	struct folio *folio;
- 	struct btrfs_inode *inode;
- 	struct btrfs_work work;
- };
-@@ -2707,8 +2707,7 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 	struct btrfs_ordered_extent *ordered;
- 	struct extent_state *cached_state = NULL;
- 	struct extent_changeset *data_reserved = NULL;
--	struct page *page = fixup->page;
--	struct folio *folio = page_folio(page);
-+	struct folio *folio = fixup->folio;
- 	struct btrfs_inode *inode = fixup->inode;
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	u64 page_start = folio_pos(folio);
-@@ -2872,7 +2871,7 @@ int btrfs_writepage_cow_fixup(struct folio *folio)
- 	btrfs_folio_set_checked(fs_info, folio, folio_pos(folio), folio_size(folio));
- 	folio_get(folio);
- 	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL);
--	fixup->page = &folio->page;
-+	fixup->folio = folio;
- 	fixup->inode = BTRFS_I(inode);
- 	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
+ static noinline int uncompress_inline(struct btrfs_path *path,
+-				      struct page *page,
++				      struct folio *folio,
+ 				      struct btrfs_file_extent_item *item)
+ {
+ 	int ret;
+@@ -6728,7 +6728,8 @@ static noinline int uncompress_inline(struct btrfs_path *path,
+ 	read_extent_buffer(leaf, tmp, ptr, inline_size);
  
+ 	max_size = min_t(unsigned long, PAGE_SIZE, max_size);
+-	ret = btrfs_decompress(compress_type, tmp, page, 0, inline_size, max_size);
++	ret = btrfs_decompress(compress_type, tmp, &folio->page, 0, inline_size,
++			       max_size);
+ 
+ 	/*
+ 	 * decompression code contains a memset to fill in any space between the end
+@@ -6739,7 +6740,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
+ 	 */
+ 
+ 	if (max_size < PAGE_SIZE)
+-		memzero_page(page, max_size, PAGE_SIZE - max_size);
++		folio_zero_range(folio, max_size, PAGE_SIZE - max_size);
+ 	kfree(tmp);
+ 	return ret;
+ }
+@@ -6759,7 +6760,7 @@ static int read_inline_extent(struct btrfs_inode *inode, struct btrfs_path *path
+ 	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
+ 			    struct btrfs_file_extent_item);
+ 	if (btrfs_file_extent_compression(path->nodes[0], fi) != BTRFS_COMPRESS_NONE)
+-		return uncompress_inline(path, page, fi);
++		return uncompress_inline(path, page_folio(page), fi);
+ 
+ 	copy_size = min_t(u64, PAGE_SIZE,
+ 			  btrfs_file_extent_ram_bytes(path->nodes[0], fi));
 -- 
 2.43.0
 
