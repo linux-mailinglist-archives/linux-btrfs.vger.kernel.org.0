@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-6770-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6772-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADC4C93D91E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3195E93D920
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:38:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D170D1C23167
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:38:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 639011C23127
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574C614F108;
-	Fri, 26 Jul 2024 19:37:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4CC14F9E6;
+	Fri, 26 Jul 2024 19:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="3a6Ckckd"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Bc4qF75F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31EA614EC4E
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C717143C7B
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722022631; cv=none; b=igFzVtGfvHChbx3wyLkI/USBLHKauwjhS3oquSvfIY0WEKrz0XnpbxF9Sqdzd0gQVP9BnkkSBkeMLy3gDQi0tsHN62LYzJi9CsRLKmfthO6eU4SxQ1eyd2QCc0/FbvIcnpb0FN+dURjm8XJ6EWl7sYJJrgbrH2dDL5C4oFpHUXQ=
+	t=1722022632; cv=none; b=bvDa+MkYftBJSO7feaKdv/CukGbKZU8XkB4TZf2+Yt/zX1ElbsRBruqqqgt/sST4tOk9jGE2fey19W0n2DfI4y+QW49TK+hkXTR9DgZLEET3Usk0KmL14IwKtAwfuA6V2DxRc2k5NBc6aIH1WqT0pbtjrwXazwqKsSfR2nN7SUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722022631; c=relaxed/simple;
-	bh=CAf2UpMV19L4WUW48ckmb8R3dcNGjV128CKSGQiVUgA=;
+	s=arc-20240116; t=1722022632; c=relaxed/simple;
+	bh=FH9PJwcRIRQEaTwtlF7DaFwjKmxj9BeI7Fhe/e5iFQk=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z+rC8hRcT0jgEwjPDkUcsZV5el8OmCJJJ8Mksi9m5j9giU/qrgwfUO10wrGK8R1BcbdPpKlxuceLoyPnr1HEKO74lT0zwrxhYPuCApZ58MXymmLrHbX0Jx1L/ixo7dJXPCCtnd/BFBmUExMkVhqfOJJhHx2TMLxrJREeNN+2OXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=3a6Ckckd; arc=none smtp.client-ip=209.85.128.174
+	 MIME-Version; b=Z3vaUURLqrkqqeqWSFpwfrvCD4g2jJM2lMJnlWXfLIMPseLRnTmiUL5Y3pAtz7V14XuAsO/Wo35yZb71ietKvQn3d1XW4+GOBcMgDZlgwWaRk5qwrrBpZlBCibMC+804lKQhgzdj+sJ076jT7bm7FS0CLnoaCeokKX+pK/DNEmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Bc4qF75F; arc=none smtp.client-ip=209.85.128.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-67682149265so382017b3.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:10 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6687f2f0986so609297b3.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022629; x=1722627429; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022630; x=1722627430; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WSKpljHV3Uo0sCNLwHxpIQpbtwjDivLUc2p915iNNkg=;
-        b=3a6CkckdWasLXIGlgIg1sGsckIFN7MpTGZ1xVbHmd6a43cSdKNRM8UEJLi9z8chbKu
-         EXZmxiUqWL4NMsyYuc/lPHiYksdoV65+iS7LM5DTHdunx6bgZYXRxG/VDpq9At81M5Lw
-         mMayKuI2xlhRK9aS5+gl68ltaFSEtJikCC0IgbQ8444wGMVk/xIGfTb3oZqqXtdevncl
-         i1Jx7as0cczlqRP9IeaeYKf0Bgu9OOtGYafKnREO452d01YGNUgRgl4YivMmHil82rVu
-         MOFTLuTb9ePx3gjrjix3tT1+wpx6aCeWcC1PhsaA8JLgsvpcl9OCoYXoAa+qBpFLWeBM
-         Yb3Q==
+        bh=9JYKSZjjub4MjUvTL+RGon1mBcuNGAyS/ZL6rxZXNbA=;
+        b=Bc4qF75FsxoY4PYgtwnD4N5MWlQfEUzB19uSlL9v7lJzQZrmjRxYPyTCcwvsRZLqlT
+         zAkAB77OeOhy9dOJ7/JG66FTz3H7OU7kHBAcjCWVoTGRgtMDUWzvG577bI2g38Oa9Z1L
+         NdCPa/4T1YDig2bVWaqcxS6NqVMprtzkwIU9xmGgXPurPMez3dzFWXNEHMWuMuDFPMiV
+         fDFmg7vuIKWRngMUd6G5xJVq8jPjh0hve5DEpxFPF+d2TQ0otaW/yJgeAkhdhe0JeKiW
+         m5m7508NkVCOQ0zvAZ9cCs2WkFT0ay3P45AQN0GCrbJ2ML5A1lwwEl9F0P4mJXvcR4XG
+         a6Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722022629; x=1722627429;
+        d=1e100.net; s=20230601; t=1722022630; x=1722627430;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WSKpljHV3Uo0sCNLwHxpIQpbtwjDivLUc2p915iNNkg=;
-        b=omy3cnKV8HKOZWBL/KqpksM6cSP4fS94IhZX60rnrhGpNBkljyX9jIBdBvleF6zZIs
-         y5fRbYtEHk689mT8Sdx2krkGtBhx4JPhMRrLAZvTxakoHcgX/tJgi/qhbTWrjL1IWZaW
-         Sj2sw5NQ/McQC1cFZlwjs5ByJxZ0jnwCwt3Lvt94sVzbBpBQudIWIKSPBZRJOI/g4QrR
-         A8L4y4EcmO5KYLB5Oqy3lQcDVmVf+uoZgbwRNY9IUtc7qBzQNds3MyRlKau/AT9m6WrB
-         PWnlWhCo8hiHU7VMvDCQ/wz7vraFKiiCuevolgo4J0tqRTcGUSSam3Yan6QMTkW5XYUa
-         ldrA==
-X-Gm-Message-State: AOJu0YyjplMzb73PJlEujHK78dmfYzWV5iIphEgk6U1ulyx0obofY4qY
-	Hj25cR/Cw3WKny8kUAnvD5nI0PxAIqaTmEnr40bx6VzO5OVHFFXMio+ON/Twy2rcken2HIkjfoT
-	Z
-X-Google-Smtp-Source: AGHT+IHkmVuZg+ByiY2hLs18u2aeTH2PJOeAGGx1yz+QuVkBpH9lDW85K3jeLkHoQLw1sqOnzOdmcg==
-X-Received: by 2002:a0d:c983:0:b0:62f:945a:7bb1 with SMTP id 00721157ae682-67a0a323dc1mr8640837b3.42.1722022629202;
-        Fri, 26 Jul 2024 12:37:09 -0700 (PDT)
+        bh=9JYKSZjjub4MjUvTL+RGon1mBcuNGAyS/ZL6rxZXNbA=;
+        b=vkziMbKDSKmfhDKUHX8T4xNwYp6S43amunC/2TghUfb9mHcA7CfXAnhikoPXx9Cpwj
+         Wp+RQ6mYijginNBOJzaZ+ZGqNnT/YcDwkL7mJqWkMC4aBO140ldfboxFk2NflZF6xG/N
+         wPRmT1bUpme4WijA4ywLiJ1oSLNg0jsVAjqS5CsUNISXHcu2wB71iXAEe2k429L6sNap
+         uNPEcT/DTssCgTCWUffpivbebSdrCmQ1XuI0fRnlV/fzkjTD4t/ZoIUTCK8ocaoewBlN
+         11jpw/HRBZGSOrmGK+y9W3othMCZisK0W+EPXRPnNSHV1LHhVlcmsCtLgDX9O/NVAtxG
+         IPwA==
+X-Gm-Message-State: AOJu0Ywxy7qBYr2jB0VGFr0wsyejGWFJ/BLyaKjhtFWNwiTuC6GO/V5b
+	+JQL4qrahkvBs1fTQjdhowf54RGCm67sUW3Fu+rHgK93VS/wTsvS+8FU23bVUdfSuBY3AfbUx65
+	G
+X-Google-Smtp-Source: AGHT+IEhhZGTcYx3aX7T5rtBEvVGtw0YLn5+MfZqceSWDfUELZ2pbvPH8m5czdj5fj+0zbCVxJb1+A==
+X-Received: by 2002:a0d:d101:0:b0:64b:a3f0:5eee with SMTP id 00721157ae682-67a071c27d3mr9099987b3.17.1722022630270;
+        Fri, 26 Jul 2024 12:37:10 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6756795e61csm10033467b3.42.2024.07.26.12.37.08
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-67566dd8e4bsm10000497b3.19.2024.07.26.12.37.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 12:37:08 -0700 (PDT)
+        Fri, 26 Jul 2024 12:37:09 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 30/46] btrfs: convert btrfs_cleanup_ordered_extents to take a folio
-Date: Fri, 26 Jul 2024 15:36:17 -0400
-Message-ID: <6987e88d64a5755e57742d39dbf2b5b690363e48.1722022377.git.josef@toxicpanda.com>
+Subject: [PATCH 31/46] btrfs: convert run_delalloc_compressed to take a folio
+Date: Fri, 26 Jul 2024 15:36:18 -0400
+Message-ID: <01064d0e836a8545787ffc747c650626f38ea258.1722022377.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1722022376.git.josef@toxicpanda.com>
 References: <cover.1722022376.git.josef@toxicpanda.com>
@@ -84,95 +84,73 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Now that btrfs_cleanup_ordered_extents is operating mostly with folios,
-update it to use a folio instead of a page, and the update the function
-and the callers as appropriate.
+This just passes the page into the compressed machinery to keep track of
+the locked page.  Update this to take a folio and convert it to a page
+where appropriate.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ fs/btrfs/inode.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index d1c81a368b52..76fa9b1e0f11 100644
+index 76fa9b1e0f11..23ab3000c5fd 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -393,7 +393,7 @@ void btrfs_inode_unlock(struct btrfs_inode *inode, unsigned int ilock_flags)
-  * extent (btrfs_finish_ordered_io()).
-  */
- static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
--						 struct page *locked_page,
-+						 struct folio *locked_folio,
- 						 u64 offset, u64 bytes)
- {
- 	unsigned long index = offset >> PAGE_SHIFT;
-@@ -401,9 +401,9 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
- 	u64 page_start = 0, page_end = 0;
- 	struct folio *folio;
- 
--	if (locked_page) {
--		page_start = page_offset(locked_page);
--		page_end = page_start + PAGE_SIZE - 1;
-+	if (locked_folio) {
-+		page_start = folio_pos(locked_folio);
-+		page_end = page_start + folio_size(locked_folio) - 1;
- 	}
- 
- 	while (index <= end_index) {
-@@ -417,7 +417,7 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
- 		 * btrfs_mark_ordered_io_finished() would skip the accounting
- 		 * for the page range, and the ordered extent will never finish.
- 		 */
--		if (locked_page && index == (page_start >> PAGE_SHIFT)) {
-+		if (locked_folio && index == (page_start >> PAGE_SHIFT)) {
- 			index++;
- 			continue;
- 		}
-@@ -436,9 +436,9 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
- 		folio_put(folio);
- 	}
- 
--	if (locked_page) {
-+	if (locked_folio) {
- 		/* The locked page covers the full range, nothing needs to be done */
--		if (bytes + offset <= page_start + PAGE_SIZE)
-+		if (bytes + offset <= page_start + folio_size(locked_folio))
- 			return;
- 		/*
- 		 * In case this page belongs to the delalloc range being
-@@ -447,8 +447,9 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
- 		 * run_delalloc_range
- 		 */
- 		if (page_start >= offset && page_end <= (offset + bytes - 1)) {
--			bytes = offset + bytes - page_offset(locked_page) - PAGE_SIZE;
--			offset = page_offset(locked_page) + PAGE_SIZE;
-+			bytes = offset + bytes - folio_pos(locked_folio) -
-+				folio_size(locked_folio);
-+			offset = folio_pos(locked_folio) + folio_size(locked_folio);
- 		}
- 	}
- 
-@@ -1138,7 +1139,8 @@ static void submit_uncompressed_range(struct btrfs_inode *inode,
- 			       &wbc, false);
- 	wbc_detach_inode(&wbc);
- 	if (ret < 0) {
--		btrfs_cleanup_ordered_extents(inode, locked_page, start, end - start + 1);
-+		btrfs_cleanup_ordered_extents(inode, page_folio(locked_page),
-+					      start, end - start + 1);
- 		if (locked_page) {
- 			const u64 page_start = page_offset(locked_page);
- 
-@@ -2317,8 +2319,8 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
- 
- out:
- 	if (ret < 0)
--		btrfs_cleanup_ordered_extents(inode, locked_page, start,
--					      end - start + 1);
-+		btrfs_cleanup_ordered_extents(inode, page_folio(locked_page),
-+					      start, end - start + 1);
- 	return ret;
+@@ -1653,7 +1653,7 @@ static noinline void submit_compressed_extents(struct btrfs_work *work, bool do_
  }
  
+ static bool run_delalloc_compressed(struct btrfs_inode *inode,
+-				    struct page *locked_page, u64 start,
++				    struct folio *locked_folio, u64 start,
+ 				    u64 end, struct writeback_control *wbc)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+@@ -1693,15 +1693,16 @@ static bool run_delalloc_compressed(struct btrfs_inode *inode,
+ 		INIT_LIST_HEAD(&async_chunk[i].extents);
+ 
+ 		/*
+-		 * The locked_page comes all the way from writepage and its
+-		 * the original page we were actually given.  As we spread
++		 * The locked_folio comes all the way from writepage and its
++		 * the original folio we were actually given.  As we spread
+ 		 * this large delalloc region across multiple async_chunk
+-		 * structs, only the first struct needs a pointer to locked_page
++		 * structs, only the first struct needs a pointer to
++		 * locked_folio.
+ 		 *
+ 		 * This way we don't need racey decisions about who is supposed
+ 		 * to unlock it.
+ 		 */
+-		if (locked_page) {
++		if (locked_folio) {
+ 			/*
+ 			 * Depending on the compressibility, the pages might or
+ 			 * might not go through async.  We want all of them to
+@@ -1711,10 +1712,10 @@ static bool run_delalloc_compressed(struct btrfs_inode *inode,
+ 			 * need full accuracy.  Just account the whole thing
+ 			 * against the first page.
+ 			 */
+-			wbc_account_cgroup_owner(wbc, locked_page,
++			wbc_account_cgroup_owner(wbc, &locked_folio->page,
+ 						 cur_end - start);
+-			async_chunk[i].locked_page = locked_page;
+-			locked_page = NULL;
++			async_chunk[i].locked_page = &locked_folio->page;
++			locked_folio = NULL;
+ 		} else {
+ 			async_chunk[i].locked_page = NULL;
+ 		}
+@@ -2307,7 +2308,8 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+ 
+ 	if (btrfs_inode_can_compress(inode) &&
+ 	    inode_need_compress(inode, start, end) &&
+-	    run_delalloc_compressed(inode, locked_page, start, end, wbc))
++	    run_delalloc_compressed(inode, page_folio(locked_page), start, end,
++				    wbc))
+ 		return 1;
+ 
+ 	if (zoned)
 -- 
 2.43.0
 
