@@ -1,76 +1,81 @@
-Return-Path: <linux-btrfs+bounces-6741-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6742-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1EC093D901
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:36:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C33793D902
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:36:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 549051F24802
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:36:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A74621C2302E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D435588E;
-	Fri, 26 Jul 2024 19:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302626F2F8;
+	Fri, 26 Jul 2024 19:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="i6a30GNr"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Mghzl9Io"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32372210EC
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:36:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87ADC433B9
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722022600; cv=none; b=FB+89Dv2BN/PmAISNIC+ld8DNhG13PjmBQ/ENrelXkcWCXEjM6RbqMNCG+oKl//OHPQs1CS/4APZcHyePYF+uptU0zENC+gJq2SbZZXnlCMBFk4zKoQ3Alf7K4hReNyuEWRs1KrSanaIUsQ5FetgIO/WXx2Lm9a6DQMz6N3QTYw=
+	t=1722022601; cv=none; b=HydB41W+av7ddJeYmyxkhInmXM5M+fxvA3/C/Hiwo7q0X0j47kIo+TKSXHcUZFRasGbC+cz2R3w0Xl+PzFrWCigNJGlRE+NS+nOpKy50DpExAU7GzWwIouQGBkluoJV1bn2lFb0zfT4cayJoWP4nk5IAEXZX+bhRErY5lUh+QuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722022600; c=relaxed/simple;
-	bh=h4rAgk2xnDaQA7nvwBS7TZf698HDAXIGj7CmnFxqmu0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VrXY8txVrJ84qBtkMQ0nskHcsgoBhZ9yPqn0DFAJj64c37Uj83dVAbK4Jq2+35RJP1VekE/I3wah7ce5lhXexMGfA8LZzqfnB97gGTw5ACFw8Rly4Y1FeYIO1CqgnLBFBoijobRXuXnYvyYuAlJRld0+Z/fpcbfUCyMSzKpeG4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=i6a30GNr; arc=none smtp.client-ip=209.85.128.178
+	s=arc-20240116; t=1722022601; c=relaxed/simple;
+	bh=xyi88THPFX2gWr+re7GLpuJAPdkz/QaVjqnB+A6McAw=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZjOlxz0K8HuDXv8pwuBkKliyiTmPyPvBpy/jLkqZA105TiLX/f/icESTxBlI1Sd/+QEDgyWVllwop6qfhEi9+tUXQwWnEr7rQvDheBcXjuLA310ScOPpdyjhXvhlbSD5NfmfJp8J75VjY2nL5xkGfG7NXEGP0viGlwMghYTj+Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Mghzl9Io; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-67682149265so377647b3.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:36:37 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-664ccd158b0so356687b3.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022597; x=1722627397; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u8EfvJqPcAVqT+iRcFxmKC6dz02kmHX1ZGGBzZn/2s8=;
-        b=i6a30GNrmq8qqdN3aodbz/mhhciEJKRlhNMCyVWNKOoWJAhzBe/e4CzbapGdgfV9Ye
-         L5ORLhEzg75RwbBOlwwt22JFFALqld6VA2Fytb7iwFrH+Ycys7OuS0ZT2zRRQqo7AFm9
-         +/wIoqI2SeDwfGGLKxfxxzM66RqrS09szykGdS+UNx+19ihEFGr1HR72dIoJCibI76Fz
-         tbr65qB2eeAjXczRw1Lzol39vhBM3hiceho94YqC8/7XKFQsVX++kebHuDsZ6zVh1f7U
-         xiBm9ipx4nB+FcjP9zn2drbWe2gJj29TNMTJmMJLGCfEkHOWvVIAwligTg9UTYjt3LAf
-         GO3Q==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022598; x=1722627398; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RS0TTQT2jStvTHFxGnRtX4MrtHswBW12/WYDHf9I5sQ=;
+        b=Mghzl9Io08MENhWPLaWl64HR97lcJdOjWb7t/00V+lfkLci/oTiz44Qu8VxSLTCVUg
+         davSfAQODBGIPLhP3h+KS5GQR1s3CsJvvkD6yD319daAG4iGd27EXYl4JFqJVN3fcpvE
+         h3ia0Q/cct7t0FXSXQ7s1SKjAOpBJc4iwsjj3ViwiuD2MsZLga+yCIi2Dy/YOq8CIgmA
+         Fx7xNrLGf3Me4MwaJTgL2s2AY/J9WgO1NjZZjSeRcc0BnDTfZZS84/HlDhZG2sheEAWx
+         256TfkLiq/P6uBf2MA83dtwqzkpgWqLkrxy2ZXqaYWxVT6BGswyp0HBjmD6FNDGjq8ps
+         Ol5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722022597; x=1722627397;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u8EfvJqPcAVqT+iRcFxmKC6dz02kmHX1ZGGBzZn/2s8=;
-        b=bIbDxWsZcFjO/pjSYA5T7rrgA9g9x/vwCg4MisR8Bs20XlCVItifii2TtNHXitFKbn
-         R06Z05kjq2MV1o4W9r93L9gCV8V+hGch3RPeuDjyT0FQFKPY4j6fycPj0ijVpMxT9DC6
-         5vTgWjnyn8Es8lLCHOimSTb34CsY9QRaDqz7yV9teObnINYxkWUnq/n+I8bkqaAwW0hM
-         PtO01e9dL5R+vYw4JBPvwdaBXWW1PQp4j1fWjbr4QcGws92Hk4N/GxC9ddJE50iTfSD+
-         qCS3nfnAO4SWuEqrqri9t8I8BoZakzYpW+86zht/8BNb5JByIpGxffhHYvCfs4hYtnDa
-         AeMg==
-X-Gm-Message-State: AOJu0YyytNUkS0HvtRWHiEeCidQN7lftrtpZTuC+z0c/6Hz1cyIzo7C6
-	cKcgbR6rnciPqo+2po1Ec9UKBGclJunBciKIJ4NN6PiM7zb5K0vO368CSeZhdZU0aQM918zLkCP
+        d=1e100.net; s=20230601; t=1722022598; x=1722627398;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RS0TTQT2jStvTHFxGnRtX4MrtHswBW12/WYDHf9I5sQ=;
+        b=w7LpSTmKjrFg75FdTdFHBp4YF23N3IX2VusLriaQxxkSk07/+Cewtp13VQF+OQCcod
+         KZnD5gDWmQGMEiEk6fnrwPh06KaeVi3n3g1hz9z+n4wT4XBm0rBEFNBv+eTjOWvyazHj
+         SATfYdDTZFlau5xahh0D95MrMjjti74TuXBBRrzeNCuwhvYAgQQuxrAPYh2ioATiPSz8
+         Pv2ihw+PQMM4qvXOpEkY3b+7QESiSUPxiMJ9rSWRttwHlyH2uvcdFklTX1sJUX1fiG4U
+         VeiPK59EdJDmxuyrthMpVMYIWutfr29GPaX5VK07ZiqxZBfimsnk8wzITCf4eQu28A5y
+         Lhnw==
+X-Gm-Message-State: AOJu0YxmnwtMARMSbfBjNTcUoaxoQCBx2anQYL2LKS7PGINlQn8yJFjs
+	tM6IpA8O+4eviOWjpW1E5vdUkQ5Yzk6oqLP0RD41qYGtA/lj0oEvSchWoz4Di33zYJ7FahoAcew
 	9
-X-Google-Smtp-Source: AGHT+IGuSkFomyO4njyYhpHgDfqQ20PFqMiRc2tky2MjnWJeOHeoCkM5GAiY6rI4wVgfasuC0m74DQ==
-X-Received: by 2002:a0d:eec2:0:b0:63b:f919:2e89 with SMTP id 00721157ae682-67a057b905emr9737397b3.2.1722022596982;
-        Fri, 26 Jul 2024 12:36:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFjEWGZAukGYNMB6pDAB87OWI1Zi4A1qtjOMPwIEq4+Z4i93Zq2O2YOAZQ0VOCu2NgfcRrN/A==
+X-Received: by 2002:a0d:ee42:0:b0:643:aef1:fb9d with SMTP id 00721157ae682-67a053e118cmr10055257b3.4.1722022598157;
+        Fri, 26 Jul 2024 12:36:38 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-67566dda562sm10073057b3.5.2024.07.26.12.36.36
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6756795e7desm10014517b3.47.2024.07.26.12.36.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 12:36:36 -0700 (PDT)
+        Fri, 26 Jul 2024 12:36:37 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 00/46] btrfs: convert most of the data path to use folios
-Date: Fri, 26 Jul 2024 15:35:47 -0400
-Message-ID: <cover.1722022376.git.josef@toxicpanda.com>
+Subject: [PATCH 01/46] btrfs: convert btrfs_readahead to only use folio
+Date: Fri, 26 Jul 2024 15:35:48 -0400
+Message-ID: <ec5ed3738204b750680e0b13de6ebb9578b2fc98.1722022376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1722022376.git.josef@toxicpanda.com>
+References: <cover.1722022376.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -79,94 +84,72 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+We're the only user of readahead_page_batch().  Convert btrfs_readahead
+to use the folio based helpers to do readahead.
 
-Willy indicated that he wants to get rid of page->index in the next merge
-window, so I went to look at what that would entail for btrfs, and I got a
-little carried away.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent_io.c | 36 ++++++++----------------------------
+ 1 file changed, 8 insertions(+), 28 deletions(-)
 
-This patch series does in fact accomplish that, but it takes almost the entirety
-of the data write path and makes it work with only folios.  I was going to
-convert everything, but there's some weird gaps that need to be handled in their
-own chunk.
-
-1. Scrub.  We're still passing around page pointers.  Not a huge deal, it was
-   just another 10ish patches just for that work, so I decided against it.
-
-2. Buffered writes.  Again, I did most of this work and it wasn't bad, but then
-   I realized that the free space cache uses some of this code, and I really
-   don't want to convert that code, I want to delete it, so I'll do that first.
-
-3. Metadata.  Qu has been doing this consistently and I didn't want to get in
-   the way of his work so I just left most of that.
-
-This has run through the CI and didn't cause any issues.  I've made everything
-as easy to review as possible and as small as possible.  My eyes started to
-glaze over a little bit with the changelogs, so let me know if there's anything
-you want changed.  Thanks,
-
-Josef
-
-Josef Bacik (46):
-  btrfs: convert btrfs_readahead to only use folio
-  btrfs: convert btrfs_read_folio to only use a folio
-  btrfs: convert end_page_read to take a folio
-  btrfs: convert begin_page_folio to take a folio instead
-  btrfs: convert submit_extent_page to use a folio
-  btrfs: convert btrfs_do_readpage to only use a folio
-  btrfs: update the writepage tracepoint to take a folio
-  btrfs: convert __extent_writepage_io to take a folio
-  btrfs: convert extent_write_locked_range to use folios
-  btrfs: convert __extent_writepage to be completely folio based
-  btrfs: convert add_ra_bio_pages to use only folios
-  btrfs: utilize folio more in btrfs_page_mkwrite
-  btrfs: convert can_finish_ordered_extent to use a folio
-  btrfs: convert btrfs_finish_ordered_extent to take a folio
-  btrfs: convert btrfs_mark_ordered_io_finished to take a folio
-  btrfs: convert writepage_delalloc to take a folio
-  btrfs: convert find_lock_delalloc_range to use a folio
-  btrfs: convert lock_delalloc_pages to take a folio
-  btrfs: convert __unlock_for_delalloc to take a folio
-  btrfs: convert __process_pages_contig to take a folio
-  btrfs: convert process_one_page to operate only on folios
-  btrfs: convert extent_clear_unlock_delalloc to take a folio
-  btrfs: convert extent_write_locked_range to take a folio
-  btrfs: convert run_delalloc_cow to take a folio
-  btrfs: convert cow_file_range_inline to take a folio
-  btrfs: convert cow_file_range to take a folio
-  btrfs: convert fallback_to_cow to take a folio
-  btrfs: convert run_delalloc_nocow to take a folio
-  btrfs: convert btrfs_cleanup_ordered_extents to use folios
-  btrfs: convert btrfs_cleanup_ordered_extents to take a folio
-  btrfs: convert run_delalloc_compressed to take a folio
-  btrfs: convert btrfs_run_delalloc_range to take a folio
-  btrfs: convert async_chunk to hold a folio
-  btrfs: convert submit_uncompressed_range to take a folio
-  btrfs: convert btrfs_writepage_fixup_worker to use a folio
-  btrfs: convert btrfs_writepage_cow_fixup to use folio
-  btrfs: convert btrfs_writepage_fixup to use a folio
-  btrfs: convert uncompress_inline to take a folio
-  btrfs: convert read_inline_extent to use a folio
-  btrfs: convert btrfs_get_extent to take a folio
-  btrfs: convert __get_extent_map to take a folio
-  btrfs: convert find_next_dirty_byte to take a folio
-  btrfs: convert wait_subpage_spinlock to only use a folio
-  btrfs: convert btrfs_set_range_writeback to use a folio
-  btrfs: convert insert_inline_extent to use a folio
-  btrfs: convert extent_range_clear_dirty_for_io to use a folio
-
- fs/btrfs/btrfs_inode.h           |   6 +-
- fs/btrfs/compression.c           |  62 +++--
- fs/btrfs/extent_io.c             | 436 +++++++++++++++----------------
- fs/btrfs/extent_io.h             |   6 +-
- fs/btrfs/file.c                  |  24 +-
- fs/btrfs/inode.c                 | 342 ++++++++++++------------
- fs/btrfs/ordered-data.c          |  28 +-
- fs/btrfs/ordered-data.h          |   6 +-
- fs/btrfs/tests/extent-io-tests.c |  10 +-
- include/trace/events/btrfs.h     |  10 +-
- 10 files changed, 467 insertions(+), 463 deletions(-)
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index aa7f8148cd0d..a4d5f8d00f04 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1176,26 +1176,6 @@ int btrfs_read_folio(struct file *file, struct folio *folio)
+ 	return ret;
+ }
+ 
+-static inline void contiguous_readpages(struct page *pages[], int nr_pages,
+-					u64 start, u64 end,
+-					struct extent_map **em_cached,
+-					struct btrfs_bio_ctrl *bio_ctrl,
+-					u64 *prev_em_start)
+-{
+-	struct btrfs_inode *inode = page_to_inode(pages[0]);
+-	int index;
+-
+-	ASSERT(em_cached);
+-
+-	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
+-
+-	for (index = 0; index < nr_pages; index++) {
+-		btrfs_do_readpage(pages[index], em_cached, bio_ctrl,
+-				  prev_em_start);
+-		put_page(pages[index]);
+-	}
+-}
+-
+ /*
+  * helper for __extent_writepage, doing all of the delayed allocation setup.
+  *
+@@ -2379,18 +2359,18 @@ int btrfs_writepages(struct address_space *mapping, struct writeback_control *wb
+ void btrfs_readahead(struct readahead_control *rac)
+ {
+ 	struct btrfs_bio_ctrl bio_ctrl = { .opf = REQ_OP_READ | REQ_RAHEAD };
+-	struct page *pagepool[16];
++	struct btrfs_inode *inode = BTRFS_I(rac->mapping->host);
++	struct folio *folio;
++	u64 start = readahead_pos(rac);
++	u64 end = start + readahead_length(rac) - 1;
+ 	struct extent_map *em_cached = NULL;
+ 	u64 prev_em_start = (u64)-1;
+-	int nr;
+ 
+-	while ((nr = readahead_page_batch(rac, pagepool))) {
+-		u64 contig_start = readahead_pos(rac);
+-		u64 contig_end = contig_start + readahead_batch_length(rac) - 1;
++	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
+ 
+-		contiguous_readpages(pagepool, nr, contig_start, contig_end,
+-				&em_cached, &bio_ctrl, &prev_em_start);
+-	}
++	while ((folio = readahead_folio(rac)) != NULL)
++		btrfs_do_readpage(&folio->page, &em_cached, &bio_ctrl,
++				  &prev_em_start);
+ 
+ 	if (em_cached)
+ 		free_extent_map(em_cached);
 -- 
 2.43.0
 
