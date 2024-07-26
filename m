@@ -1,200 +1,307 @@
-Return-Path: <linux-btrfs+bounces-6724-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6725-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58DE93D634
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 17:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DB1793D673
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 17:55:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C740283481
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 15:35:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52378281C79
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 15:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC2217967C;
-	Fri, 26 Jul 2024 15:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24DDC17BB2B;
+	Fri, 26 Jul 2024 15:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wHP2vo54";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rrokm2+f";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oEQQXnJw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rrokm2+f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRLYLK02"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C410410A1C
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 15:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC9F101F7
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 15:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722008124; cv=none; b=uqIvCLLH3LqNcTTGGGTueNsIKp9O8Km6VqF0jEOdW+kLdEE8fGIomiwZIz/Qc1CRt8CMdpI76u50VJpTS06lzffypksJzuq6lHA8us9+Y4jhAV4hq7St0UvHFPa4CLce+4/iwgVYtG4iy+52aTu88gZ1HtkRXqLv1vbDfcBbARw=
+	t=1722009349; cv=none; b=i1xJV4eLuG+lr7M3hcZD2+ScSmyiM718YX5kMG4btU8eOqsyNCdmRl0NucLWYbxpH2Wnw01d5Puwb+/sIy5QP1uInPeqdAG+1mJbl14Qan0b9lip55JYTfZLhf7K23xoUPG/2Vc6mRRC/H0UFBg3aQ6jBLSKL5ijphL9sGd+llE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722008124; c=relaxed/simple;
-	bh=Vv6eF7HVtb34v8QM/8/lNJPyL3jS6VaLL1ZXhLqwJPU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DDmA21Xxyl3hJv9cZtVMQQix9D6QAXcqDLGK/s9W1RKef6guI2V/OxWye3ntaXN1W3i4Kb6CkXcRoCoLz9x0f2+AeKq2IJkeG3kq6cj3ZBylDhCrcUpgS0oRWcmz7g94hx/ljixz1xEaMi9ux2Z2nZunZZLYAKvGmF0j36fLmu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wHP2vo54; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rrokm2+f; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oEQQXnJw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rrokm2+f; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id F366A21BCE;
-	Fri, 26 Jul 2024 15:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722008121;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
-	b=wHP2vo54s54sos4iaB0MmZrQwUF2Lr0PZxsKSL2uHhvsfmC2x61pCQBj51SI59CFQwUliE
-	QsdoVBHm0reRsPbekxPs8nLgocWgqLWWGF1E+iM2wi3wcOYSVjrbglKmJHm6K8f+rUWhaX
-	bUhsDvkHLBicnv+jf53zulVxKaIl0Ho=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722008121;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
-	b=Rrokm2+fa+W8/DWI40zvpspNeSE9PYcgNeawsUK/9zEAhzX3hY0cfM0SZSR8sJJBbr63G0
-	S2VUrFME/s6c2rCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722008120;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
-	b=oEQQXnJwvgml252ltI66CGxmroVUSMm93tCWW/Z85vQ9mUvowFg/NMAkUw7DbHAbEZ+191
-	cPywcLaa1WhT+pGhT7pos46XwLuhE9WdRVcF4qAbhxt8WsftR56kWk9MTxRVf/h7LiMgUk
-	QOmK6ctHWI3+hs87m7MGQw8QDqqPlIw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722008121;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xst7mS91OHm5lPs4eWmljqXsC8tvFcbITerHs0lCML4=;
-	b=Rrokm2+fa+W8/DWI40zvpspNeSE9PYcgNeawsUK/9zEAhzX3hY0cfM0SZSR8sJJBbr63G0
-	S2VUrFME/s6c2rCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA8281396E;
-	Fri, 26 Jul 2024 15:35:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2f0rMDjCo2YsMgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 26 Jul 2024 15:35:20 +0000
-Date: Fri, 26 Jul 2024 17:35:15 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs-progs: introduce btrfs_rebuild_uuid_tree() for
- mkfs and btrfs-convert
-Message-ID: <20240726153515.GI17473@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1721987605.git.wqu@suse.com>
- <8e33931a4d078d1e1aa620aa5fe717f35146ef31.1721987605.git.wqu@suse.com>
+	s=arc-20240116; t=1722009349; c=relaxed/simple;
+	bh=Zh4kynFqW9LQpUWIWfn08m47y0VjyM7wggasVwQ1y/k=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=RMjl1NvJgMLdxU+b5pTvUVsLTTdbs7sbQoro7JPqoosp3eI6B+0hd5tn/qr6gQ67qi2XosewR7kbV4HF7BvY58+6LxzpXkgr1mH12cvcaKAYr8ADLnEQTITCogWdlmBOch1LFCGdHFSyxPVj5l+pDIq54CnCfkVTMvgZKn8mRNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRLYLK02; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B318C32782
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 15:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722009348;
+	bh=Zh4kynFqW9LQpUWIWfn08m47y0VjyM7wggasVwQ1y/k=;
+	h=From:To:Subject:Date:From;
+	b=nRLYLK02ndmQfjZxWhAqsJsGbw5jJtZof3LatgRx9B3qajDWeYLQtSZR6wd6GzzD6
+	 CnFCTh8FRKDGM+jNJr39yJy1kVWUyJHkmCaR2mKeOqEGJwdG0Ru2/PMumIeIxUcVlQ
+	 UtlA+OEzdtbgblerC/lK6Asc0qgmZdqQp7qfeMbevBlGJZht11NXFjjOBM0/HJ1Y8Q
+	 tRbADnVYq4vYlO+tN2CkdfPuVviKrAN3jVYFz2v5H9uyiTofFjHG5Zsb+GWXTXpVCc
+	 kaASxgAZNQw8yWs3DjmG5C6M6fPfWkwFNu9s+bdgKF/1xcrcmayXws8SIFmXGxYpSs
+	 Xopp/8wzkXARw==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix corruption after buffer fault in during direct IO append write
+Date: Fri, 26 Jul 2024 16:55:40 +0100
+Message-Id: <a7cdb10155e5e823ce82edfc8eed99d1b0ef4eeb.1722005943.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e33931a4d078d1e1aa620aa5fe717f35146ef31.1721987605.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 26, 2024 at 07:29:55PM +0930, Qu Wenruo wrote:
-> Currently mkfs uses its own create_uuid_tree(), but that function is
-> only handling FS_TREE.
-> 
-> This means for btrfs-convert, we do not generate the uuid tree, nor
-> add the UUID of the image subvolume.
-> 
-> This can be a problem if we're going to support multiple subvolumes
-> during mkfs time.
-> 
-> To address this inconvenience, this patch introduces a new helper,
-> btrfs_rebuild_uuid_tree(), which will:
-> 
-> - Create a new uuid tree if there is not one
-> 
-> - Empty the existing uuid tree
-> 
-> - Iterate through all subvolumes
->   * If the subvolume has no valid UUID, regenerate one
->   * Add the uuid entry for the subvolume UUID
->   * If the subvolume has received UUID, also add it to UUID tree
-> 
-> By this, this new helper can handle all the uuid tree generation needs for:
-> 
-> - Current mkfs
->   Only one uuid entry for FS_TREE
-> 
-> - Current btrfs-convert
->   Only FS_TREE and the image subvolume
-> 
-> - Future multi-subvolume mkfs
->   As we do the scan for all subvolumes.
-> 
-> - Future "btrfs rescue rebuild-uuid-tree"
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  common/root-tree-utils.c | 265 +++++++++++++++++++++++++++++++++++++++
->  common/root-tree-utils.h |   1 +
->  convert/main.c           |   5 +
->  mkfs/main.c              |  37 +-----
->  4 files changed, 274 insertions(+), 34 deletions(-)
-> 
-> diff --git a/common/root-tree-utils.c b/common/root-tree-utils.c
-> index 6a57c51a8a74..13f89dbd5293 100644
-> --- a/common/root-tree-utils.c
-> +++ b/common/root-tree-utils.c
-> @@ -15,9 +15,11 @@
->   */
->  
->  #include <time.h>
-> +#include <uuid/uuid.h>
->  #include "common/root-tree-utils.h"
->  #include "common/messages.h"
->  #include "kernel-shared/disk-io.h"
-> +#include "kernel-shared/uuid-tree.h"
->  
->  int btrfs_make_root_dir(struct btrfs_trans_handle *trans,
->  			struct btrfs_root *root, u64 objectid)
-> @@ -212,3 +214,266 @@ abort:
->  	btrfs_abort_transaction(trans, ret);
->  	return ret;
->  }
-> +
-> +static int empty_tree(struct btrfs_root *root)
+From: Filipe Manana <fdmanana@suse.com>
 
-Please rename this, it's confusing as empty can be a noun and verb so
-it's not clear if it's a meant as a predicate or action.
+During an append (O_APPEND write flag) direct IO write if the input buffer
+was not previously faulted in, we can corrupt the file in a way that the
+final size is unexpected and it includes an unexpected hole.
+
+The problem happens like this:
+
+1) We have an empty file, with size 0, for example;
+
+2) We do an O_APPEND direct IO with a length of 4096 bytes and the input
+   buffer is not currently faulted in;
+
+3) We enter btrfs_direct_write(), lock the inode and call
+   generic_write_checks(), which calls generic_write_checks_count(), and
+   that function sets the iocb position to 0 with the following code:
+
+	if (iocb->ki_flags & IOCB_APPEND)
+		iocb->ki_pos = i_size_read(inode);
+
+4) We call btrfs_dio_write() and enter into iomap, which will end up
+   calling btrfs_dio_iomap_begin() and that calls
+   btrfs_get_blocks_direct_write(), where we update the i_size of the
+   inode to 4096 bytes;
+
+5) After btrfs_dio_iomap_begin() returns, iomap will attempt to access
+   the page of the write input buffer (at iomap_dio_bio_iter(), with a
+   call to bio_iov_iter_get_pages()) and fail with -EFAULT, which gets
+   returned to btrfs at btrfs_direct_write() via btrfs_dio_write();
+
+6) At btrfs_direct_write() we get the -EFAULT error, unlock the inode,
+   fault in the write buffer and then goto to the label 'relock';
+
+7) We lock again the inode, do all the necessary checks again and call
+   again generic_write_checks(), which calls generic_write_checks_count()
+   again, and there we set the iocb's position to 4K, which is the current
+   i_size of the inode, with the following code pointed above:
+
+        if (iocb->ki_flags & IOCB_APPEND)
+                iocb->ki_pos = i_size_read(inode);
+
+8) Then we go again to btrfs_dio_write() and enter iomap and the write
+   succeeds, but it wrote to the file range [4K, 8K[, leaving a hole in
+   the [0, 4K[ range and an i_size of 8K, which goes against the
+   expections of having the data written to the range [0, 4K[ and get an
+   i_size of 4K.
+
+Fix this by not unlocking the inode before faulting in the input buffer,
+in case we get -EFAULT or an incomplete write, and not jumping to the
+'relock' label after faulting in the buffer - instead jump to a location
+immediately before calling iomap, skipping all the write checks and
+relocking. This solves this problem and it's fine even in case the input
+buffer is memory mapped to the same file range, since only holding the
+range locked in the inode's io tree can cause a deadlock, it's safe to
+keep the inode lock (VFS lock), as was fixed and described in commit
+51bd9563b678 ("btrfs: fix deadlock due to page faults during direct IO
+reads and writes").
+
+A sample reproducer provided by a reporter is the following:
+
+   $ cat test.c
+   #ifndef _GNU_SOURCE
+   #define _GNU_SOURCE
+   #endif
+
+   #include <fcntl.h>
+   #include <stdio.h>
+   #include <sys/mman.h>
+   #include <sys/stat.h>
+   #include <unistd.h>
+
+   int main(int argc, char *argv[])
+   {
+       if (argc < 2) {
+           fprintf(stderr, "Usage: %s <test file>\n", argv[0]);
+           return 1;
+       }
+
+       int fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT |
+                     O_APPEND, 0644);
+       if (fd < 0) {
+           perror("creating test file");
+           return 1;
+       }
+
+       char *buf = mmap(NULL, 4096, PROT_READ,
+                        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+       ssize_t ret = write(fd, buf, 4096);
+       if (ret < 0) {
+           perror("pwritev2");
+           return 1;
+       }
+
+       struct stat stbuf;
+       ret = fstat(fd, &stbuf);
+       if (ret < 0) {
+           perror("stat");
+           return 1;
+       }
+
+       printf("size: %llu\n", (unsigned long long)stbuf.st_size);
+       return stbuf.st_size == 4096 ? 0 : 1;
+   }
+
+A test case for fstests will be sent soon.
+
+Reported-by: Hanna Czenczek <hreitz@redhat.com>
+Link: https://lore.kernel.org/linux-btrfs/0b841d46-12fe-4e64-9abb-871d8d0de271@redhat.com/
+Fixes: 8184620ae212 ("btrfs: fix lost file sync on direct IO write with nowait and dsync iocb")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+Note: this applies only to Linus' tree because direct IO code was moved
+      into a new new file and other minor changes in btrfs_sync_file()
+      (inode variable is now a struct btrfs_inode pointer and no longer
+      a vfs inode).
+
+      For a patch version that applies at least to kernel 6.10:
+
+      https://gist.githubusercontent.com/fdmanana/c835e21c708941e84ec3dbabd091a0da/raw/27551e26d54ffc399af49e6ffbbca5f58d300797/append-dio-fix-6.10.patch
+
+ fs/btrfs/ctree.h     |  1 +
+ fs/btrfs/direct-io.c | 38 ++++++++++++++++++++++++++++----------
+ fs/btrfs/file.c      | 12 ++++++++++--
+ 3 files changed, 39 insertions(+), 12 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index c8568b1a61c4..75fa563e4cac 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -459,6 +459,7 @@ struct btrfs_file_private {
+ 	void *filldir_buf;
+ 	u64 last_index;
+ 	struct extent_state *llseek_cached_state;
++	bool fsync_skip_inode_lock;
+ };
+ 
+ static inline u32 BTRFS_LEAF_DATA_SIZE(const struct btrfs_fs_info *info)
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index f9fb2db6a1e4..4301092e02c6 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -856,21 +856,37 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 	 * So here we disable page faults in the iov_iter and then retry if we
+ 	 * got -EFAULT, faulting in the pages before the retry.
+ 	 */
++again:
+ 	from->nofault = true;
+ 	dio = btrfs_dio_write(iocb, from, written);
+ 	from->nofault = false;
+ 
+-	/*
+-	 * iomap_dio_complete() will call btrfs_sync_file() if we have a dsync
+-	 * iocb, and that needs to lock the inode. So unlock it before calling
+-	 * iomap_dio_complete() to avoid a deadlock.
+-	 */
+-	btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+-
+-	if (IS_ERR_OR_NULL(dio))
++	if (IS_ERR_OR_NULL(dio)) {
+ 		ret = PTR_ERR_OR_ZERO(dio);
+-	else
++	} else {
++		struct btrfs_file_private stack_private = { 0 };
++		struct btrfs_file_private *private;
++		const bool have_private = (file->private_data != NULL);
++
++		if (!have_private)
++			file->private_data = &stack_private;
++
++		/*
++		 * If we have a synchoronous write, we must make sure the fsync
++		 * triggered by the iomap_dio_complete() call below doesn't
++		 * deadlock on the inode lock - we are already holding it and we
++		 * can't call it after unlocking because we may need to complete
++		 * partial writes due to the input buffer (or parts of it) not
++		 * being already faulted in.
++		 */
++		private = file->private_data;
++		private->fsync_skip_inode_lock = true;
+ 		ret = iomap_dio_complete(dio);
++		private->fsync_skip_inode_lock = false;
++
++		if (!have_private)
++			file->private_data = NULL;
++	}
+ 
+ 	/* No increment (+=) because iomap returns a cumulative value. */
+ 	if (ret > 0)
+@@ -897,10 +913,12 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 		} else {
+ 			fault_in_iov_iter_readable(from, left);
+ 			prev_left = left;
+-			goto relock;
++			goto again;
+ 		}
+ 	}
+ 
++	btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
++
+ 	/*
+ 	 * If 'ret' is -ENOTBLK or we have not written all data, then it means
+ 	 * we must fallback to buffered IO.
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 21381de906f6..60f6c6c069d4 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1603,6 +1603,7 @@ static inline bool skip_inode_logging(const struct btrfs_log_ctx *ctx)
+  */
+ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ {
++	struct btrfs_file_private *private = file->private_data;
+ 	struct dentry *dentry = file_dentry(file);
+ 	struct btrfs_inode *inode = BTRFS_I(d_inode(dentry));
+ 	struct btrfs_root *root = inode->root;
+@@ -1612,6 +1613,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	int ret = 0, err;
+ 	u64 len;
+ 	bool full_sync;
++	const bool skip_ilock = (private ? private->fsync_skip_inode_lock : false);
+ 
+ 	trace_btrfs_sync_file(file, datasync);
+ 
+@@ -1639,7 +1641,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	if (ret)
+ 		goto out;
+ 
+-	btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
++	if (skip_ilock)
++		down_write(&inode->i_mmap_lock);
++	else
++		btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
+ 
+ 	atomic_inc(&root->log_batch);
+ 
+@@ -1788,7 +1793,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	 * file again, but that will end up using the synchronization
+ 	 * inside btrfs_sync_log to keep things safe.
+ 	 */
+-	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
++	if (skip_ilock)
++		up_write(&inode->i_mmap_lock);
++	else
++		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
+ 
+ 	if (ret == BTRFS_NO_LOG_SYNC) {
+ 		ret = btrfs_end_transaction(trans);
+-- 
+2.43.0
+
 
