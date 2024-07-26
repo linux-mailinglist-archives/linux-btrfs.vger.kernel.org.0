@@ -1,155 +1,204 @@
-Return-Path: <linux-btrfs+bounces-6728-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FAD593D6BD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 18:14:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E04693D6CD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 18:21:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1BFE1F227E5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 16:14:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41CDB1C2137F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 16:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B39217C22A;
-	Fri, 26 Jul 2024 16:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4268117BB2B;
+	Fri, 26 Jul 2024 16:21:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CjymUNfu"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="TPbSh+eJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E1B17838E
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 16:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BEF47494
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 16:21:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722010441; cv=none; b=f3kqelGBtmw24lctnSjhLH8OpbZmI1Mjq2z86gyOkS0vbNLYlPi9Dn+3A8xwkFm2ggsG0lgk7iuCEPdPGKTOIqd7Z3vQBZoGX2j1OYDOmduIG6/bBtWRwaU/9jrEbtOfDQRDJ4oVRSPwvvxfLJy+w6slICVn562Q7GHb6LejlLM=
+	t=1722010907; cv=none; b=NqZJfJeqXZnSxLBibRZJdgI1RUMAcFRYhTysu1CeVhfLd6XGsxI2c1je/HvN6em0ZijzcBN+24lqYCiJmaAksVRzrILlFaYOtUT/r+P/B0OQ1JPOvQxZNXYSCDQn6EtYb2yBM9wjjxqxZWwNdynK1KwGXzqTUChBABSFmrS5spo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722010441; c=relaxed/simple;
-	bh=HTfyfYIqNcHZFVTVF7SnrAEneR+3CsZ0B5TFSPUFvSw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VPDUi1+v8/bLNoIO1+juHsOgOfFYlMaS7QV/hdc9tWaQ6s7jeZ++C+Qi35AGfxAW+04ouA2bDpjRijBBHgxRLAf5y3Hb9WzF85QL02cDXU6aSe4fxuxlCCKfLT+bUV2AWj9DvF8OjS0y4n4uhb4nYcQSpO9PLPIKmMRC6acFaVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CjymUNfu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B69AC4AF0E
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 16:14:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722010441;
-	bh=HTfyfYIqNcHZFVTVF7SnrAEneR+3CsZ0B5TFSPUFvSw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=CjymUNfucU2lYq28EG94dfO3MIPUWmF2HSH/H0+N/Ht4IcDa/SGmqLpILudtgbwPW
-	 VnkfjHD9UxgDPHS621ATJTXoRuye0BDK8AFCWcC75H6I9dhWaDmNg1ynQkKliBuPjM
-	 pZt7ecENyqMdvBqL6BOaL+2pIPRg2jqaTd2KKQkUKVvIdMErPsnfRPsKGAmdkLS3SJ
-	 1hj/usTZuiS8MYTj+b//R6puHGW0Izq54wTYyg0DFSENCF2Gz62erKxEJrPWlZYNBm
-	 eWdZnEUAyDDvop2fkRkZFzubRh5jKcxyk9RuqYl0aLnUQuKUgg5z4L9ngbX2lzS4iJ
-	 NtXLXObZLzrTw==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52efa16aad9so1994212e87.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 09:14:01 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzyCjoH/DZRzTfY6nHZZDLCeK8gGAozXnRO+j1RlXoi6HmrlbTL
-	UGPEMammK36633Hd9HjfaoZuzg44yOCkl4lmBW0mVts02MmNBhWV2rJxS7+VQWbM80DoVKt1Rd3
-	w4uK5QTWtdrj1WLV8GX7X+Tt4Lbw=
-X-Google-Smtp-Source: AGHT+IHcnYZN/ai9u4sWoAI0pg+QAmrOjvDXlpsPFPsaO6wHTi9F1+1Wkywyj8zvLjsGijTZvT/bFstim+EdAXHHCGM=
-X-Received: by 2002:ac2:4bd1:0:b0:52e:9b92:4999 with SMTP id
- 2adb3069b0e04-5309b269ae5mr238922e87.2.1722010439873; Fri, 26 Jul 2024
- 09:13:59 -0700 (PDT)
+	s=arc-20240116; t=1722010907; c=relaxed/simple;
+	bh=AwWyITbY7cNF2NoiKWEZtbL/WLsVBC2AO30Z35McBY4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uO07rnQvx8CyLnMXjieN8PUDYLWM4lVWUFnJd6Wa+RB0+3DtrUMZ8+JgkpfGF0bP94A2uE2CF5yLdaL57HOlZLrnEE9H/AnC9BYmpL8G8dq0Ooig5ixdeQHW68xkBsToq3eW/Nec9OTkETwL/plt6oUHJBoCT+sUP8/6iHhw9NQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=TPbSh+eJ; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-661d7e68e89so17385847b3.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 09:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722010904; x=1722615704; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JGEkYJ1Ps8JCNRbj9ZB9RKJ4qG2hjb4vxmHQu4GsMh4=;
+        b=TPbSh+eJWdhrqFhnBr6B8zsV4Jh9Mff5Pjk5WFkOc3g1uku1TnL/zz4hUYsanVVTxt
+         s+dHkOne3HAdq0zvIYrWcOzKzloTTEO3KFev/RiPpyoKOZXFtGU8Ks+duz1v6vIHC7GS
+         H7pzaDEG4qTg9xUZPIhwGjLx3GNXhN8L1TfWHOYyflSwNcVVtqWemLJDkcsHRgadHFMA
+         zmA5sd0VZ+OgRztjko5/YUvZd0HgrYzJ8nPIBr6vwnx/u3LzjfzqUojXrBs3CJaBVNVn
+         Pzf1+qu+pDnUBtJnwuNBFPquDPjkQLJOmP2ZTWVk/zhsqRCkKSETMqBx2zRIBvQ4SuaK
+         kuwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722010904; x=1722615704;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JGEkYJ1Ps8JCNRbj9ZB9RKJ4qG2hjb4vxmHQu4GsMh4=;
+        b=jFQocqyMulc703hYLbN9bQ9UTCHQU8WegTVyf3/d2hh8efxQtzswJeVV3lqBO/2ARH
+         D3p6M+rHMNDNKvQWaA680SUjpDZQdMXjyCtYUS5epcB79G7ukuWKVZsxBQh4L0adrs/R
+         9KC/RpQZn8F/zmmDpla6AwJJ4lWt0Q//9pQiqXW2U1rdz1arCVr/GVO7RxmHSqFzFmpE
+         SBci5MIlXM95SubUEBAINPG5lT5xL38Ub63mdF4+KJDlbmaK5cFEplov3oNrKTTFUKxW
+         /aR3k+1ULUwv/i6dFIoPF7FbQiisOXP1kyqC2FEWx0lFkYsjQVRIgvA9xOjKbn8GRQy0
+         fgug==
+X-Gm-Message-State: AOJu0YzCWx02nJFdgoJ/YWBX5LXvzMsuoT2sXGCEOCABUpFL20iQyDj+
+	evKyCDbaSObXyt3iraltqWdrjzMv1zeto0GWmDEpfCEdbKri2BfDtpQ9pgN8I1zv0c3tqHHeTE7
+	a
+X-Google-Smtp-Source: AGHT+IHZMfDBZuoIfN5TfSwVu64ha8E/igclmZXFrGZ1pevhuhM1eEi+To4Gcxba5hBfLH/ccpmoiA==
+X-Received: by 2002:a81:7e04:0:b0:65f:ca3a:2233 with SMTP id 00721157ae682-67a29bfc24fmr1045677b3.6.1722010904403;
+        Fri, 26 Jul 2024 09:21:44 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-67568113cf9sm9400347b3.70.2024.07.26.09.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jul 2024 09:21:44 -0700 (PDT)
+Date: Fri, 26 Jul 2024 12:21:43 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix corruption after buffer fault in during
+ direct IO append write
+Message-ID: <20240726162143.GA3435578@perftesting>
+References: <a7cdb10155e5e823ce82edfc8eed99d1b0ef4eeb.1722005943.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0b841d46-12fe-4e64-9abb-871d8d0de271@redhat.com>
- <CAL3q7H5VoYb6BAXYR+VZbAWirnfYRf++raT752j8nVa-0xJ7hw@mail.gmail.com> <0192c705-df2c-4fcf-8385-4ece04e4ba3f@redhat.com>
-In-Reply-To: <0192c705-df2c-4fcf-8385-4ece04e4ba3f@redhat.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 26 Jul 2024 17:13:22 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6f=y5xJWn7UOFdbsAktEkE9EY71rbBAeZ0VRvN4DM2MQ@mail.gmail.com>
-Message-ID: <CAL3q7H6f=y5xJWn7UOFdbsAktEkE9EY71rbBAeZ0VRvN4DM2MQ@mail.gmail.com>
-Subject: Re: Appending from unpopulated page creates hole
-To: Hanna Czenczek <hreitz@redhat.com>
-Cc: linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>, 
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	Stefano Garzarella <sgarzare@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a7cdb10155e5e823ce82edfc8eed99d1b0ef4eeb.1722005943.git.fdmanana@suse.com>
 
-On Thu, Jul 25, 2024 at 1:23=E2=80=AFPM Hanna Czenczek <hreitz@redhat.com> =
-wrote:
->
-> On 25.07.24 12:19, Filipe Manana wrote:
-> > On Thu, Jul 25, 2024 at 10:16=E2=80=AFAM Hanna Czenczek <hreitz@redhat.=
-com> wrote:
-> >> Hi,
-> >>
-> >> I=E2=80=99ve noticed that appending to a file on btrfs will create a h=
-ole before the appended data under certain circumstances:
-> >>
-> >> - Appending means O_APPEND or RWF_APPEND,
-> >> - Writing is done in direct mode, i.e. O_DIRECT, and
-> >> - The source buffer is not present in the page tables (what mmap() cal=
-ls =E2=80=9Cunpopulated=E2=80=9D).
-> >>
-> >> The hole seems to generally have the size of the data being written (i=
-.e. a 64k write will create a 64k hole, followed by the 64k of data we actu=
-ally wanted to write), but I assume this is true only up to a specific size=
- (depending on how the request is split in the kernel).
-> >>
-> >> I=E2=80=99ve appended a reproducer.
-> >>
-> >> We encounter this problem with virtio-fs (sharing of directories betwe=
-en a virtual machine host and guest), where writing is done by virtiofsd, a=
- process external to the VMM (e.g. qemu), but the buffer comes from the VM =
-guest.  Memory is shared between virtiofsd and the VMM, so virtiofsd often =
-writes data from shared memory without having accessed it itself, so it isn=
-=E2=80=99t present in virtiofsd=E2=80=99s page tables.
-> >>
-> >> Stefano Garzarella (CC-ed) has tested some Fedora kernels, and has con=
-firmed that this bug does not appear in 6.0.7-301.fc37.x86_64, but does app=
-ear in 6.0.9-300.fc37.x86_64.
-> >>
-> >> While I don=E2=80=99t know anything about btrfs code, I looked into it=
-, and I believe the changes made by commit 8184620ae21213d51eaf2e0bd4186baa=
-cb928172 (btrfs: fix lost file sync on direct IO write with nowait and dsyn=
-c iocb) may have caused this.  Specifically, it changed the `goto again` on=
- EFAULT to `goto relock`, a much earlier label, which causes btrfs_direct_w=
-rite() to call generic_write_checks() again after the first btrfs_dio_write=
-() attempt.
-> >>
-> >> btrfs_dio_write() will have already allocated extents for the data and=
- updated the file length before trying to actually write the data (which ge=
-nerates the EFAULT), so this second generic_write_checks() call will update=
- the I/O position to this new file length, exactly at the end of the area t=
-o where the data was supposed to be written.
-> > Yes.
-> >
-> >> To test this hypothesis, I=E2=80=99ve tried skipping the generic_write=
-_checks() call after reaching this specific goto, and that does make the bu=
-g disappear.
-> > Yes that confirms it, but it's not the correct fix but the inode was
-> > unlocked and relocked and a lot of things may have changed between
-> > those steps.
->
-> I thought as much :)
->
-> > I'll work on a fix and let you know when it's ready in case you want
-> > to test/review.
->
-> Great, thanks a lot!
+On Fri, Jul 26, 2024 at 04:55:40PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> During an append (O_APPEND write flag) direct IO write if the input buffer
+> was not previously faulted in, we can corrupt the file in a way that the
+> final size is unexpected and it includes an unexpected hole.
+> 
+> The problem happens like this:
+> 
+> 1) We have an empty file, with size 0, for example;
+> 
+> 2) We do an O_APPEND direct IO with a length of 4096 bytes and the input
+>    buffer is not currently faulted in;
+> 
+> 3) We enter btrfs_direct_write(), lock the inode and call
+>    generic_write_checks(), which calls generic_write_checks_count(), and
+>    that function sets the iocb position to 0 with the following code:
+> 
+> 	if (iocb->ki_flags & IOCB_APPEND)
+> 		iocb->ki_pos = i_size_read(inode);
+> 
+> 4) We call btrfs_dio_write() and enter into iomap, which will end up
+>    calling btrfs_dio_iomap_begin() and that calls
+>    btrfs_get_blocks_direct_write(), where we update the i_size of the
+>    inode to 4096 bytes;
+> 
+> 5) After btrfs_dio_iomap_begin() returns, iomap will attempt to access
+>    the page of the write input buffer (at iomap_dio_bio_iter(), with a
+>    call to bio_iov_iter_get_pages()) and fail with -EFAULT, which gets
+>    returned to btrfs at btrfs_direct_write() via btrfs_dio_write();
+> 
+> 6) At btrfs_direct_write() we get the -EFAULT error, unlock the inode,
+>    fault in the write buffer and then goto to the label 'relock';
+> 
+> 7) We lock again the inode, do all the necessary checks again and call
+>    again generic_write_checks(), which calls generic_write_checks_count()
+>    again, and there we set the iocb's position to 4K, which is the current
+>    i_size of the inode, with the following code pointed above:
+> 
+>         if (iocb->ki_flags & IOCB_APPEND)
+>                 iocb->ki_pos = i_size_read(inode);
+> 
+> 8) Then we go again to btrfs_dio_write() and enter iomap and the write
+>    succeeds, but it wrote to the file range [4K, 8K[, leaving a hole in
+>    the [0, 4K[ range and an i_size of 8K, which goes against the
+>    expections of having the data written to the range [0, 4K[ and get an
+>    i_size of 4K.
+> 
+> Fix this by not unlocking the inode before faulting in the input buffer,
+> in case we get -EFAULT or an incomplete write, and not jumping to the
+> 'relock' label after faulting in the buffer - instead jump to a location
+> immediately before calling iomap, skipping all the write checks and
+> relocking. This solves this problem and it's fine even in case the input
+> buffer is memory mapped to the same file range, since only holding the
+> range locked in the inode's io tree can cause a deadlock, it's safe to
+> keep the inode lock (VFS lock), as was fixed and described in commit
+> 51bd9563b678 ("btrfs: fix deadlock due to page faults during direct IO
+> reads and writes").
+> 
+> A sample reproducer provided by a reporter is the following:
+> 
+>    $ cat test.c
+>    #ifndef _GNU_SOURCE
+>    #define _GNU_SOURCE
+>    #endif
+> 
+>    #include <fcntl.h>
+>    #include <stdio.h>
+>    #include <sys/mman.h>
+>    #include <sys/stat.h>
+>    #include <unistd.h>
+> 
+>    int main(int argc, char *argv[])
+>    {
+>        if (argc < 2) {
+>            fprintf(stderr, "Usage: %s <test file>\n", argv[0]);
+>            return 1;
+>        }
+> 
+>        int fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT |
+>                      O_APPEND, 0644);
+>        if (fd < 0) {
+>            perror("creating test file");
+>            return 1;
+>        }
+> 
+>        char *buf = mmap(NULL, 4096, PROT_READ,
+>                         MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+>        ssize_t ret = write(fd, buf, 4096);
+>        if (ret < 0) {
+>            perror("pwritev2");
+>            return 1;
+>        }
+> 
+>        struct stat stbuf;
+>        ret = fstat(fd, &stbuf);
+>        if (ret < 0) {
+>            perror("stat");
+>            return 1;
+>        }
+> 
+>        printf("size: %llu\n", (unsigned long long)stbuf.st_size);
+>        return stbuf.st_size == 4096 ? 0 : 1;
+>    }
+> 
+> A test case for fstests will be sent soon.
+> 
+> Reported-by: Hanna Czenczek <hreitz@redhat.com>
+> Link: https://lore.kernel.org/linux-btrfs/0b841d46-12fe-4e64-9abb-871d8d0de271@redhat.com/
+> Fixes: 8184620ae212 ("btrfs: fix lost file sync on direct IO write with nowait and dsync iocb")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-So here it is:
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-https://lore.kernel.org/linux-btrfs/a7cdb10155e5e823ce82edfc8eed99d1b0ef4ee=
-b.1722005943.git.fdmanana@suse.com/
+Thanks for this Filipe, this stuff is so messy,
 
-Note that this applies only to Linus' tree (6.11 changes, merge
-window), due to some refactorings/cleanups, but it's fairly simple to
-backport to stable kernels.
-Here's a gist with a version that applies at least to kernel 6.10:
-
-https://gist.githubusercontent.com/fdmanana/c835e21c708941e84ec3dbabd091a0d=
-a/raw/27551e26d54ffc399af49e6ffbbca5f58d300797/append-dio-fix-6.10.patch
-
-Thanks.
-
->
-> Hanna
->
+Josef
 
