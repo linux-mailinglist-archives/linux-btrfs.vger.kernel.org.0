@@ -1,477 +1,292 @@
-Return-Path: <linux-btrfs+bounces-6716-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6717-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDC8D93D0D0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 12:04:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E59CD93D171
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 13:01:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95F352829E5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 10:04:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 142391C20E5D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 11:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0A9179949;
-	Fri, 26 Jul 2024 10:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9896317967A;
+	Fri, 26 Jul 2024 11:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Flbfkbvz"
+	dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b="YoR8QTZ2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from r08.out0.gmailify.com (r08.out0.gmailify.com [159.255.151.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29A3178395
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 10:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F06014277
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 11:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.255.151.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721988227; cv=none; b=DSfeJHsBc3MAaBhpfkCLXyoGtWh3Rqy+/1j0ptk2xU9swCtvLakU6WxEO98IT/qrxGuTuBVbygbcUlFWvG4Fi8bp8jW1xA6lhEKPm98E8LO2MU3SlLuESub9SZvVrewVKJ43AawRMod9f7HNBMoLYRyB3LXsfksYt/EgsvtPDsk=
+	t=1721991654; cv=none; b=AYAgr4DKYPB2lAo/O6XjErARnQTL3FsjZxUrkjZDdPlSrWyybIccgmLG4nx837clnT7y3X74g0UctIjy8W3LJBgT9vHZbgj8kcL4tBa4OEQmzRx9QqtR/7HS0DUEqAz38b6NgDcEY/4dEIhE7aRipeIpMJoasPAeodxbsv05Aeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721988227; c=relaxed/simple;
-	bh=TEWMkxDdkT816MEsCPW0CUXPxxpZR5M9pW07dfQV1kw=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=E5//tMaobFLNxmY1LSmCDDT/DocoevWPSDiEO2yf7QaSdCtrVKOJ+610yXqTSnzREx2E3N51ghTcgcrl+MQ6d0VmbWDKLRdAv3PzyAk4I5dbBUNuneiUBN7VoDxwI6ttUA44e4KaOu9jUD+4hzyVj05WimHf2hYBjuz2D09t6O4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Flbfkbvz; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2ef27bfd15bso14056101fa.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 03:03:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721988223; x=1722593023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l0vdJTtjiyTK3zH6i+n22gfNVvmNCq3yAEftFnoYQDU=;
-        b=FlbfkbvzEPSQZsqR2h9ukkLaFWeyATJzeXyVUy/dqivbEmgSRuQ3jNRz0hbEid1N7N
-         j2Fg0MJHLsj1Z4yKwuAOFg+2cft52mv+loY1LdIdUU3/u6q5rFlkkFDuUAfolvhLUHIM
-         NsfUhr+sfeU280bDeT6F264ZLvJ6S3Sjq1Ria/O+AvO5aY4N2qlFw7zvdmbTrr/yR0WD
-         xudAc5j+TbM+CpNZCSGWGb7HmMsD3mxpBgphwfHnENO1boPvFyl1PN4a815IZgWOUi6t
-         wrOwJpTqDdiii1/V5FZ0umrHWrDAVUSWEGlOtQGDV1NKe2VYcI9Q/zDD9a+c0QD8fQf2
-         6scg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721988223; x=1722593023;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l0vdJTtjiyTK3zH6i+n22gfNVvmNCq3yAEftFnoYQDU=;
-        b=mnknf0IafbTNq+dN0oQDuJ7HdmuATYKHXOfQEWHDsoScVGMn2iRvchz8CsmgHmnuvE
-         VCW9D6k789NE179TctM+gE8bWiQ+wxYMIFEHfZ3VqpFPTX/gcU7LJGa5jVwo7nmfUxW2
-         3SItPUVo6ihDZmfn1wio3xQDxlDjf3l6d9PaR1fyYffjHhTc8kBwo382gnqBMHWYqKEv
-         nZ6DS+HCF4oV0j9SazslZxH7d+jz+W+pwWdj97C2RpT4Ve6/sc/Hpj0HK7JcuhxcAHfb
-         Qhvdj8n/MCR4huN1wIZaASBz1JcCfGKJSVdOdZQ1yn0GwBXaOT09t4jqkDccOQ6mb/Jp
-         m2bw==
-X-Gm-Message-State: AOJu0YxW/sfXC3xnGo8LOCbV6cmkqaY2T0/PceURViZwCmj7iIlGPzWl
-	0BvpAizOhIpsUz3PBdXTf0wlM6MIbrGwK1beVLLM6gFrxVBhUwU2g/go2irD5J2emzZDA7qApKI
-	t
-X-Google-Smtp-Source: AGHT+IGpJrfOIWjWr7HDFeJcB+mqV3DvnB7dxO0EIv18x9CbsFpoTKbYfqie+Np/VaQY6uhUHFQb7w==
-X-Received: by 2002:a05:651c:210c:b0:2ef:2cbc:9072 with SMTP id 38308e7fff4ca-2f03dbf271fmr39620441fa.49.1721988222269;
-        Fri, 26 Jul 2024 03:03:42 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cf28ca15b6sm2993169a91.33.2024.07.26.03.03.40
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jul 2024 03:03:41 -0700 (PDT)
-Message-ID: <3ed3afa9-2141-493e-8a38-af9d3a8cd035@suse.com>
-Date: Fri, 26 Jul 2024 19:33:37 +0930
+	s=arc-20240116; t=1721991654; c=relaxed/simple;
+	bh=rq3hcyV/ht4/o+k5Vu7uhvm0Ls8FLIUn20xqvFyb1Jo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lwkjNJ8POqmTxwAbqpGP231jIWua5/9QGWgaGlGKXAdPPNfx/FmiyyW/ZOzcIXpXi74r0xOKxcyoIs77lPHPjXn+O8+4ORi8rhBdepQ28SBFJ1NoR32aDOjSd1mENDEjReo8HwuERFIfY3O4/IZNxBDVu8G9Zx0Er36i0VAEAPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se; spf=pass smtp.mailfrom=sandnabba.se; dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b=YoR8QTZ2; arc=none smtp.client-ip=159.255.151.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandnabba.se
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.gmailify.com (Postfix) with ESMTPSA id CBE4F11C1184
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 10:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandnabba.se;
+	s=gm0; t=1721991192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3rWdVGTwlWfZIVVEtC6Nu4DslE+xfu9IJ3x5y2dJ6E4=;
+	b=YoR8QTZ2yU3ySPu3+BWVzwLw2mtQOP4wCK0tmYReeNVDMwdZaVg3C059oz7KaTOS75KLGE
+	PXaLgddHa7TRc6NNvyUzHzvkA6831r58KoM0RSsS8MV/IRUDtUQsRfOZOiDtwlmmFF/wTT
+	lzznSCCdlTlw5NXGAdBm2UwLSxP7jO0FD5JpK7VM4es8RI8mNhGM2SGngknF1iF7LByPel
+	46GWWjjAgUI6OGz9fkpSJ8NctsLUPT7mVtrFx5sxvQGPLkfeYgceAZstfgja3REguSllwt
+	5fFWj//ANmZl2P7nWHQy/gkOC28fGLTgtJvMegR28A//V9tD7/+2Oo+0vkTPUQ==
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6b7a8cada97so2443206d6.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 03:53:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVj0wWzN7EoNb3DGRKNu1ntHd60Rw9jt8XFSYOROANvo/IPThM5D7uGNjwppKohjSaE7Tyo+QFYFDcs+w==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx51d+SCRLV1LdpZ8qTD1eQiuFOErAplU2TXlrDXCb5obKjPWIA
+	sl9YpTawFoRQODfEgzI65YH7pP2hvDCARf8xBdZlBSL4hydtjy0FPJMf7XXX7aP/d26PnUfwK8N
+	wHaeyH7c3Hk3thTMm4YR9ojMio7A=
+X-Google-Smtp-Source: AGHT+IHHYy4Oxm1yTrImmDJd6VlhWtedpF2Xlhi/DyHg1dWj4qNrRLcs1CICFLVpRmEuAN/kSXeJSKt+0rG0/yk70ak=
+X-Received: by 2002:a05:6214:21e3:b0:6b5:e202:bd91 with SMTP id
+ 6a1803df08f44-6bb406d57b0mr51536706d6.1.1721991189696; Fri, 26 Jul 2024
+ 03:53:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] btrfs-progs: introduce btrfs_rebuild_uuid_tree() for
- mkfs and btrfs-convert
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <cover.1721987605.git.wqu@suse.com>
- <8e33931a4d078d1e1aa620aa5fe717f35146ef31.1721987605.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <8e33931a4d078d1e1aa620aa5fe717f35146ef31.1721987605.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CAEA9r7DVO8gCRz-9vbwaNWznz9AOFxOyPLO0ukOJh-6Ef0o5Bw@mail.gmail.com>
+ <20240725224757.GD17473@twin.jikos.cz> <aeed4735-f6f2-49ef-9a02-816a3b74cbd3@gmx.com>
+In-Reply-To: <aeed4735-f6f2-49ef-9a02-816a3b74cbd3@gmx.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@gmailify.com and include these headers.
+From: "Emil.s" <emil@sandnabba.se>
+Date: Fri, 26 Jul 2024 12:52:58 +0200
+X-Gmail-Original-Message-ID: <CAEA9r7AzYtQ9BifUPcW3=1zz=RmS9Fb3CnProGMg6GVkmd14TQ@mail.gmail.com>
+Message-ID: <CAEA9r7AzYtQ9BifUPcW3=1zz=RmS9Fb3CnProGMg6GVkmd14TQ@mail.gmail.com>
+Subject: Re: Force remove of broken extent/subvolume? (Crash in btrfs_run_delayed_refs)
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Gmailify-Queue-Id: CBE4F11C1184
+X-Gmailify-Score: -0.10
 
+> As for any bitflip induced errors, it's hard to tell how far it got
+> propagated, this could be the only instance or there could be other
+> items referring to that one too.
 
+Right, yeah that sounds a bit more challenging then I initially thought.
+Maybe it is easier to just rebuild the array after all.
 
-在 2024/7/26 19:29, Qu Wenruo 写道:
-[...]
-> +static int empty_tree(struct btrfs_root *root)
-> +{
-> +	struct btrfs_trans_handle *trans;
-> +	struct btrfs_path path = { 0 };
-> +	struct btrfs_key key = { 0 };
-> +	int ret;
-> +
-> +	trans = btrfs_start_transaction(root, 1);
-> +	if (IS_ERR(trans)) {
-> +		ret = PTR_ERR(trans);
-> +		errno = -ret;
-> +		error_msg(ERROR_MSG_START_TRANS, "emptry tree: %m");
+And in regards to Qu's question, that is probably a good idea anyhow.
 
-One typo, "emptry" -> "empty"
+> - History of the fs
+> - The hardware spec
 
-Fixed in my github repo.
+This has been my personal NAS / home server for quite some time.
+It's basically a mix of just leftover desktop hardware (without ECC memory)=
+.
 
-Thanks for the awesome CI codespell check!
-Qu
+It was a 12 year old Gigabyte H77-D3H motherboard, an Intel i7-2600 CPU
+and 4 DDR3 DIMMs, all of different types and brands.
+The disks are WD red series, and I see now that one of them has over
+80k power on hours.
 
-> +		return ret;
-> +	}
-> +	while (true) {
-> +		int nr_items;
-> +
-> +		ret = btrfs_search_slot(trans, root, &key, &path, -1, 1);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to locate the first key of root %lld: %m",
-> +				root->root_key.objectid);
-> +			btrfs_abort_transaction(trans, ret);
-> +			return ret;
-> +		}
-> +		UASSERT(ret > 0);
-> +		nr_items = btrfs_header_nritems(path.nodes[0]);
-> +		/* The tree is empty. */
-> +		if (nr_items == 0) {
-> +			btrfs_release_path(&path);
-> +			break;
-> +		}
-> +		ret = btrfs_del_items(trans, root, &path, 0, nr_items);
-> +		btrfs_release_path(&path);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to empty the first leaf of root %lld: %m",
-> +				root->root_key.objectid);
-> +			btrfs_abort_transaction(trans, ret);
-> +			return ret;
-> +		}
-> +	}
-> +	ret = btrfs_commit_transaction(trans, root);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error_msg(ERROR_MSG_COMMIT_TRANS, "empty tree: %m");
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int rescan_subvol_uuid(struct btrfs_trans_handle *trans,
-> +			      struct btrfs_key *subvol_key)
-> +{
-> +	struct btrfs_fs_info *fs_info = trans->fs_info;
-> +	struct btrfs_root *subvol;
-> +	int ret;
-> +
-> +	UASSERT(is_fstree(subvol_key->objectid));
-> +
-> +	/*
-> +	 * Read out the subvolume root and updates root::root_item.
-> +	 * This is to avoid de-sync between in-memory and on-disk root_items.
-> +	 */
-> +	subvol = btrfs_read_fs_root(fs_info, subvol_key);
-> +	if (IS_ERR(subvol)) {
-> +		ret = PTR_ERR(subvol);
-> +		error("failed to read subvolume %llu: %m",
-> +			subvol_key->objectid);
-> +		btrfs_abort_transaction(trans, ret);
-> +		return ret;
-> +	}
-> +	/* The uuid is not set, regenerate one. */
-> +	if (uuid_is_null(subvol->root_item.uuid)) {
-> +		uuid_generate(subvol->root_item.uuid);
-> +		ret = btrfs_update_root(trans, fs_info->tree_root, &subvol->root_key,
-> +					&subvol->root_item);
-> +		if (ret < 0) {
-> +			error("failed to update subvolume %llu: %m",
-> +			      subvol_key->objectid);
-> +			btrfs_abort_transaction(trans, ret);
-> +			return ret;
-> +		}
-> +	}
-> +	ret = btrfs_uuid_tree_add(trans, subvol->root_item.uuid,
-> +				  BTRFS_UUID_KEY_SUBVOL,
-> +				  subvol->root_key.objectid);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to add uuid for subvolume %llu: %m",
-> +		      subvol_key->objectid);
-> +		btrfs_abort_transaction(trans, ret);
-> +		return ret;
-> +	}
-> +	if (!uuid_is_null(subvol->root_item.received_uuid)) {
-> +		ret = btrfs_uuid_tree_add(trans, subvol->root_item.uuid,
-> +					  BTRFS_UUID_KEY_RECEIVED_SUBVOL,
-> +					  subvol->root_key.objectid);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to add received_uuid for subvol %llu: %m",
-> +			      subvol->root_key.objectid);
-> +			btrfs_abort_transaction(trans, ret);
-> +			return ret;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int rescan_uuid_tree(struct btrfs_fs_info *fs_info)
-> +{
-> +	struct btrfs_root *tree_root = fs_info->tree_root;
-> +	struct btrfs_root *uuid_root = fs_info->uuid_root;
-> +	struct btrfs_trans_handle *trans;
-> +	struct btrfs_path path = { 0 };
-> +	struct btrfs_key key = { 0 };
-> +	int ret;
-> +
-> +	UASSERT(uuid_root);
-> +	trans = btrfs_start_transaction(uuid_root, 1);
-> +	if (IS_ERR(trans)) {
-> +		ret = PTR_ERR(trans);
-> +		errno = -ret;
-> +		error_msg(ERROR_MSG_START_TRANS, "rescan uuid tree: %m");
-> +		return ret;
-> +	}
-> +	key.objectid = BTRFS_LAST_FREE_OBJECTID;
-> +	key.type = BTRFS_ROOT_ITEM_KEY;
-> +	key.offset = (u64)-1;
-> +	/* Iterate through all subvolumes except fs tree. */
-> +	while (true) {
-> +		struct btrfs_key found_key;
-> +		struct extent_buffer *leaf;
-> +		int slot;
-> +
-> +		/* No more subvolume. */
-> +		if (key.objectid < BTRFS_FIRST_FREE_OBJECTID) {
-> +			ret = 0;
-> +			break;
-> +		}
-> +		ret = btrfs_search_slot(NULL, tree_root, &key, &path, 0, 0);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error_msg(ERROR_MSG_READ, "iterate subvolumes: %m");
-> +			btrfs_abort_transaction(trans, ret);
-> +			return ret;
-> +		}
-> +		if (ret > 0) {
-> +			ret = btrfs_previous_item(tree_root, &path,
-> +						  BTRFS_FIRST_FREE_OBJECTID,
-> +						  BTRFS_ROOT_ITEM_KEY);
-> +			if (ret < 0) {
-> +				errno = -ret;
-> +				btrfs_release_path(&path);
-> +				error_msg(ERROR_MSG_READ, "iterate subvolumes: %m");
-> +				btrfs_abort_transaction(trans, ret);
-> +				return ret;
-> +			}
-> +			/* No more subvolume. */
-> +			if (ret > 0) {
-> +				ret = 0;
-> +				btrfs_release_path(&path);
-> +				break;
-> +			}
-> +		}
-> +		leaf = path.nodes[0];
-> +		slot = path.slots[0];
-> +		btrfs_item_key_to_cpu(leaf, &found_key, slot);
-> +		btrfs_release_path(&path);
-> +		key.objectid = found_key.objectid - 1;
-> +
-> +		ret = rescan_subvol_uuid(trans, &found_key);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to rescan the uuid of subvolume %llu: %m",
-> +			      found_key.objectid);
-> +			btrfs_abort_transaction(trans, ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	/* Update fs tree uuid. */
-> +	key.objectid = BTRFS_FS_TREE_OBJECTID;
-> +	key.type = BTRFS_ROOT_ITEM_KEY;
-> +	key.offset = 0;
-> +	ret = rescan_subvol_uuid(trans, &key);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to rescan the uuid of subvolume %llu: %m",
-> +		      key.objectid);
-> +		btrfs_abort_transaction(trans, ret);
-> +		return ret;
-> +	}
-> +	ret = btrfs_commit_transaction(trans, uuid_root);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error_msg(ERROR_MSG_COMMIT_TRANS, "rescan uuid tree: %m");
-> +	}
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Rebuild the whole uuid tree.
-> + *
-> + * If no uuid tree is present, create a new one.
-> + * If there is an existing uuid tree, all items would be deleted first.
-> + *
-> + * For all existing subvolumes (except fs tree), any uninitialized uuid
-> + * (all zero) be generated using a random uuid, and inserted into the new tree.
-> + * And if a subvolume has its UUID initialized, it would not be touched and
-> + * be added to the new uuid tree.
-> + */
-> +int btrfs_rebuild_uuid_tree(struct btrfs_fs_info *fs_info)
-> +{
-> +	struct btrfs_root *uuid_root;
-> +	struct btrfs_key key;
-> +	int ret;
-> +
-> +	if (!fs_info->uuid_root) {
-> +		struct btrfs_trans_handle *trans;
-> +
-> +		trans = btrfs_start_transaction(fs_info->tree_root, 1);
-> +		if (IS_ERR(trans)) {
-> +			ret = PTR_ERR(trans);
-> +			errno = -ret;
-> +			error_msg(ERROR_MSG_START_TRANS, "create uuid tree: %m");
-> +			return ret;
-> +		}
-> +		key.objectid = BTRFS_UUID_TREE_OBJECTID;
-> +		key.type = BTRFS_ROOT_ITEM_KEY;
-> +		key.offset = 0;
-> +		uuid_root = btrfs_create_tree(trans, &key);
-> +		if (IS_ERR(uuid_root)) {
-> +			ret = PTR_ERR(uuid_root);
-> +			errno = -ret;
-> +			error("failed to create uuid root: %m");
-> +			btrfs_abort_transaction(trans, ret);
-> +			return ret;
-> +		}
-> +		add_root_to_dirty_list(uuid_root);
-> +		fs_info->uuid_root = uuid_root;
-> +		ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error_msg(ERROR_MSG_COMMIT_TRANS, "create uuid tree: %m");
-> +			return ret;
-> +		}
-> +	}
-> +	UASSERT(fs_info->uuid_root);
-> +	ret = empty_tree(fs_info->uuid_root);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to clear the existing uuid tree: %m");
-> +		return ret;
-> +	}
-> +	ret = rescan_uuid_tree(fs_info);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to rescan the uuid tree: %m");
-> +		return ret;
-> +	}
-> +	return 0;
-> +}
-> diff --git a/common/root-tree-utils.h b/common/root-tree-utils.h
-> index 0c4ece24c7cc..3cb508022e0c 100644
-> --- a/common/root-tree-utils.h
-> +++ b/common/root-tree-utils.h
-> @@ -26,5 +26,6 @@ int btrfs_link_subvolume(struct btrfs_trans_handle *trans,
->   			 struct btrfs_root *parent_root,
->   			 u64 parent_dir, const char *name,
->   			 int namelen, struct btrfs_root *subvol);
-> +int btrfs_rebuild_uuid_tree(struct btrfs_fs_info *fs_info);
->   
->   #endif
-> diff --git a/convert/main.c b/convert/main.c
-> index 078ef64e41ca..aa253781ee99 100644
-> --- a/convert/main.c
-> +++ b/convert/main.c
-> @@ -1339,6 +1339,11 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
->   		goto fail;
->   	}
->   
-> +	ret = btrfs_rebuild_uuid_tree(image_root->fs_info);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		goto fail;
-> +	}
->   	memset(root->fs_info->super_copy->label, 0, BTRFS_LABEL_SIZE);
->   	if (convert_flags & CONVERT_FLAG_COPY_LABEL) {
->   		strncpy_null(root->fs_info->super_copy->label, cctx.label, BTRFS_LABEL_SIZE);
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index b95f1c3372a3..00ccac14a41a 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -736,35 +736,6 @@ static void update_chunk_allocation(struct btrfs_fs_info *fs_info,
->   	}
->   }
->   
-> -static int create_uuid_tree(struct btrfs_trans_handle *trans)
-> -{
-> -	struct btrfs_fs_info *fs_info = trans->fs_info;
-> -	struct btrfs_root *root;
-> -	struct btrfs_key key = {
-> -		.objectid = BTRFS_UUID_TREE_OBJECTID,
-> -		.type = BTRFS_ROOT_ITEM_KEY,
-> -	};
-> -	int ret = 0;
-> -
-> -	UASSERT(fs_info->uuid_root == NULL);
-> -	root = btrfs_create_tree(trans, &key);
-> -	if (IS_ERR(root)) {
-> -		ret = PTR_ERR(root);
-> -		goto out;
-> -	}
-> -
-> -	add_root_to_dirty_list(root);
-> -	fs_info->uuid_root = root;
-> -	ret = btrfs_uuid_tree_add(trans, fs_info->fs_root->root_item.uuid,
-> -				  BTRFS_UUID_KEY_SUBVOL,
-> -				  fs_info->fs_root->root_key.objectid);
-> -	if (ret < 0)
-> -		btrfs_abort_transaction(trans, ret);
-> -
-> -out:
-> -	return ret;
-> -}
-> -
->   static int create_global_root(struct btrfs_trans_handle *trans, u64 objectid,
->   			      int root_id)
->   {
-> @@ -1822,17 +1793,15 @@ raid_groups:
->   		goto out;
->   	}
->   
-> -	ret = create_uuid_tree(trans);
-> -	if (ret)
-> -		warning(
-> -	"unable to create uuid tree, will be created after mount: %d", ret);
-> -
->   	ret = btrfs_commit_transaction(trans, root);
->   	if (ret) {
->   		errno = -ret;
->   		error_msg(ERROR_MSG_START_TRANS, "%m");
->   		goto out;
->   	}
-> +	ret = btrfs_rebuild_uuid_tree(fs_info);
-> +	if (ret < 0)
-> +		goto out;
->   
->   	ret = cleanup_temp_chunks(fs_info, &allocation, data_profile,
->   				  metadata_profile, metadata_profile);
+I know I did a rebuild about 5 years ago so the FS was probably
+created using Ubuntu server 18.04 (Linux 4.15), which has been
+upgraded to the major LTS versions since then.
+I actually hit this error when I was doing the "final backup" before
+retiring this setup, and it seems it was about time! (Was running
+Ubuntu 22.04 / Linux 5.15)
+
+The Arch setup on the Thinkstation is my workstation where I attempted
+the data recovery.
+
+So due to the legacy hardware and crappy setup I think it's worth
+wasting more time here.
+
+But thanks a lot for the detailed answer, much appreciated!
+
+Best,
+Emil
+
+On Fri, 26 Jul 2024 at 01:19, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2024/7/26 08:17, David Sterba =E5=86=99=E9=81=93:
+> > On Thu, Jul 25, 2024 at 11:06:00PM +0200, Emil.s wrote:
+> >> Hello!
+> >>
+> >> I got a corrupt filesystem due to backpointer mismatches:
+> >> ---
+> >> [2/7] checking extents
+> >> data extent[780333588480, 942080] size mismatch, extent item size
+> >> 925696 file item size 942080
+> >
+> > This looks like a single bit flip:
+> >
+> >>>> bin(925696)
+> > '0b11100010000000000000'
+> >>>> bin(942080)
+> > '0b11100110000000000000'
+> >>>> bin(942080 ^ 925696)
+> > 0b100000000000000'
+> >
+> > or an off by one error, as the delta is 0x4000, 4x page which is one
+> > node size.
+> >
+> >> backpointer mismatch on [780333588480 925696]
+> >> ---
+> >>
+> >> However only two extents seem to be affected, in a subvolume only used
+> >> for backups.
+> >>
+> >> Since I've not been able to repair it, I thought that I could just
+> >> delete the subvolume and recreate it.
+> >> But now the btrfs_run_delayed_refs function crashes a while after
+> >> mounting the filesystem. (Which is quite obvious when I think about
+> >> it, since I guess it's trying to reclaim space, hitting the bad extent
+> >> in the process?)
+> >>
+> >> Anyhow, is it possible to force removal of these extents in any way?
+> >> My understanding is that extents are mapped to a specific subvolume as
+> >> well?
+> >>
+> >> Here is the full crash dump:
+> >> https://gist.github.com/sandnabba/e3ed7f57e4d32f404355fdf988fcfbff
+> >
+> > WARNING: CPU: 3 PID: 199588 at fs/btrfs/extent-tree.c:858 lookup_inline=
+_extent_backref+0x5c3/0x760 [btrfs]
+> >
+> >   858         } else if (WARN_ON(ret)) {
+> >   859                 btrfs_print_leaf(path->nodes[0]);
+> >   860                 btrfs_err(fs_info,
+> >   861 "extent item not found for insert, bytenr %llu num_bytes %llu par=
+ent %llu root_objectid %llu owner %llu offset %llu",
+> >   862                           bytenr, num_bytes, parent, root_objecti=
+d, owner,
+> >   863                           offset);
+> >   864                 ret =3D -EUCLEAN;
+> >   865                 goto out;
+> >   866         }
+> >   867
+> >
+> > CPU: 3 PID: 199588 Comm: btrfs-transacti Tainted: P           OE      6=
+.9.9-arch1-1 #1 a564e80ab10c5cd5584d6e9a0715907a10e33ca4
+> > Hardware name: LENOVO 30B4S01W00/102F, BIOS S00KT73A 05/24/2022
+> > RIP: 0010:lookup_inline_extent_backref+0x5c3/0x760 [btrfs]
+> > RSP: 0018:ffffabb2cd4e3b00 EFLAGS: 00010202
+> > RAX: 0000000000000001 RBX: ffff992307d5c1c0 RCX: 0000000000000000
+> > RDX: 0000000000000001 RSI: ffff992312c0d590 RDI: ffff99222faff680
+> > RBP: 0000000000000000 R08: 00000000000000bc R09: 0000000000000001
+> > R10: a8000000b5a8c360 R11: 0000000000000000 R12: 000000b5af81a000
+> > R13: ffffabb2cd4e3b57 R14: 00000000000e6000 R15: ffff9927ca7551f8
+> > FS:  0000000000000000(0000) GS:ffff992997980000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00000ad404625100 CR3: 000000080ea20002 CR4: 00000000003706f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >   <TASK>
+> >   ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413c43=
+a944f40925c800621e78e]
+> >   ? __warn.cold+0x8e/0xe8
+> >   ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413c43=
+a944f40925c800621e78e]
+> >   ? report_bug+0xff/0x140
+> >   ? handle_bug+0x3c/0x80
+> >   ? exc_invalid_op+0x17/0x70
+> >   ? asm_exc_invalid_op+0x1a/0x20
+> >   ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413c43=
+a944f40925c800621e78e]
+> >   ? set_extent_buffer_dirty+0x19/0x170 [btrfs dcbea9ede49f9413c43a944f4=
+0925c800621e78e]
+> >   insert_inline_extent_backref+0x82/0x160 [btrfs dcbea9ede49f9413c43a94=
+4f40925c800621e78e]
+> >   __btrfs_inc_extent_ref+0x9c/0x220 [btrfs dcbea9ede49f9413c43a944f4092=
+5c800621e78e]
+> >   ? __btrfs_run_delayed_refs+0xf64/0xfb0 [btrfs dcbea9ede49f9413c43a944=
+f40925c800621e78e]
+> >   __btrfs_run_delayed_refs+0xaf2/0xfb0 [btrfs dcbea9ede49f9413c43a944f4=
+0925c800621e78e]
+> >   btrfs_run_delayed_refs+0x3b/0xd0 [btrfs dcbea9ede49f9413c43a944f40925=
+c800621e78e]
+> >   btrfs_commit_transaction+0x6c/0xc80 [btrfs dcbea9ede49f9413c43a944f40=
+925c800621e78e]
+> >   ? start_transaction+0x22c/0x830 [btrfs dcbea9ede49f9413c43a944f40925c=
+800621e78e]
+> >   transaction_kthread+0x159/0x1c0 [btrfs dcbea9ede49f9413c43a944f40925c=
+800621e78e]
+> >
+> > followed by leaf dump with items relevant to the numbers:
+> >
+> >        item 117 key (780331704320 168 942080) itemoff 11917 itemsize 37
+> >                extent refs 1 gen 2245328 flags 1
+> >                ref#0: shared data backref parent 4455386873856 count 1
+> >        item 118 key (780332646400 168 942080) itemoff 11880 itemsize 37
+> >                extent refs 1 gen 2245328 flags 1
+> >                ref#0: shared data backref parent 4455386873856 count 1
+> >        item 119 key (780333588480 168 925696) itemoff 11827 itemsize 53
+> >                      ^^^^^^^^^^^^^^^^^^^^^^^
+> >
+> >                extent refs 1 gen 2245328 flags 1
+> >                ref#0: extent data backref root 2404 objectid 1141024 of=
+fset 0 count 1
+> >        item 120 key (780334530560 168 942080) itemoff 11774 itemsize 53
+> >                extent refs 1 gen 2245328 flags 1
+> >                ref#0: extent data backref root 2404 objectid 1141025 of=
+fset 0 count 1
+> >        item 121 key (780335472640 168 942080) itemoff 11721 itemsize 53
+> >                extent refs 1 gen 2245328 flags 1
+> >                ref#0: extent data backref root 2404 objectid 1141026 of=
+fset 0 count 1
+> >
+> > as you can see item 119 is the problematic one and also out of sequence=
+, the
+> > adjacent items have the key offset 942080. Which confirms the bitlip
+> > case.
+> >
+> > As for any bitflip induced errors, it's hard to tell how far it got
+> > propagated, this could be the only instance or there could be other
+> > items referring to that one too.
+> >
+> > We don't have any ready made tool for fixing that, the bitlips hit
+> > random data structure groups or data, each is basically unique and woul=
+d
+> > require analysis of tree dump and look for clues how bad it is.
+> >
+>
+> Since we're pretty sure it's a bitflip now, would you please provide the
+> following info?
+>
+> - History of the fs
+>    Since you're using Arch kernel, and since 5.14 we have all the write-
+>    time checkers, normally we should detect such out-of-key situation by
+>    flipping the fs RO.
+>    I'm wondering if the fs is handled by some older kernels thus tree-
+>    checker didn't catch it early.
+>
+> - The hardware spec
+>    The dmesg only contains hardware spec "LENOVO 30B4S01W00", which seems
+>    to be a workstation.
+>    I'm wondering if it's certain CPU models which leads to possible
+>    unreliable memories.
+>    From my experience, the memory chip itself is pretty rare to be the
+>    cause, but either the connection (from BGA to DIMM slot) or the memory
+>    controller (nowadays in the CPU die).
+>
+> Thanks,
+> Qu
 
