@@ -1,263 +1,287 @@
-Return-Path: <linux-btrfs+bounces-6705-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6706-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31B0093CB3F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 01:29:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1224193CBDF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 02:10:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDD8B281B70
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2024 23:28:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73B561F21CAA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 00:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A89149018;
-	Thu, 25 Jul 2024 23:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="ZFMMooUq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55ED386;
+	Fri, 26 Jul 2024 00:10:44 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9572146A8A
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 23:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9543C00
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 00:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721950125; cv=none; b=XIMVA7ExCFizC7Dl+yttG9FcJlqveeJ/3siH3VbIR7mzEkuv7aNnfS1Q8gSUpqZMD/6AGM1ZfkOg0ASDLR0fgJNAub/iDm1E/Y9gOecvqQTmnk9yg4y6aj1yyUMYG3AMN7Si9m1ys7IgCezhga1NyYO5crxthU2COwHazMHLajU=
+	t=1721952644; cv=none; b=ARKQbbON2E34txrNt3CqgPqGgNvt9r0uAToiHVAji9gl/qhj6RGYUyyJD7EKTh2KtubdEgTZkTTBTslqZhiunf66pUVusPJ+pAATfgjVfw/F2lzb43XWSZPgVt40iPsIObWpmnpI+akmOaUEmBkdTo6Wmmo/L+0bM6z+F5Dr/2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721950125; c=relaxed/simple;
-	bh=hGUoZw8LfPE8qs1EV7nuu37M1T/dA1Ezptw4UH7H3ss=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OAb06OvGN9kwc6UiFCYiQW4jaaOKo4UGl80kuMZunZBQ0nwTLwIgcADVzOFOQfRHM4NDiaIKqVQzlTeTO1qKkAcIuRmPLknHIM66wxHAMsLJfoSPe4VzJRfONP9seIkITjg6Bx3hrMXIXVxKp6dil/jip1kaKSrj9eFzG0G5YBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=ZFMMooUq; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3db15d73f04so258964b6e.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 16:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1721950122; x=1722554922; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eGPCoDxoXJIOgWXDzzxDZ6NSt90MIVYpVAZmNfRyy8Q=;
-        b=ZFMMooUq6QUWXp82FUUKj1YpU1roj9GquTgfRMEIao8x4lGPt43M/2kt2aUXDe578T
-         tpvADNke8YSLvb78zebtsqC8W9f7HyyOlTVAMJEs3xXXCOg/hGm1vbfaX1SExFtVDiA2
-         vMdYYPFA83KlsEO5svPAAldHg2xt/XZWzCPXvPhUVDhJGb+bJQxlhB53G/Q0T25iNxY6
-         alSLw3PA3/GqGLmABL69VfIZren0oWHi/8rauVkW4Fcy92jpktSBzfBexBePJugy/8Yh
-         kY5F8nzt4zrqvGSpIkeREyJQROoVA3SzukWlWimQDqO6Kbhl9IV3AjIkqyYfi7oiqdk4
-         GIBw==
+	s=arc-20240116; t=1721952644; c=relaxed/simple;
+	bh=0DVuQzI5G4HOYaQyB1f1PsxPA5BdrqJtc8ufjovtY4U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YbZth73JbZIbVgy9Wol7KlYJTtWIulYKmj7AF8GNcoy3xC6VH8cSJSHRtDvq6t0z8gruBDSJ4WwXUTKHuZq6o2zYLVHTn1Wwju20YMuhMrdtoAeKR/gPzg27OWCNoh/FexKKqMv7sDkDSzd4unpsg8seqjQw/Dc14VaQLTUu+do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a7979c3ffb1so68204766b.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 17:10:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721950122; x=1722554922;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eGPCoDxoXJIOgWXDzzxDZ6NSt90MIVYpVAZmNfRyy8Q=;
-        b=cdQAMpEFOPCOb6DehzhP0iG2D6CY2lbNFF7bZuKgAMzeyNkPqsMpKHs3IAi1vnV75+
-         47BCf0jA9DLHvNrgbHxuLb9Ez0ih4vpizgxztI/ul6Yr5jdhvFpdsfyHjqsHB/ksHggZ
-         uA27wy0rOHkdAcvhT2xs/1iZnwh3tY+8K3D5Xqv+fexucrCorS7AB/2zRvxSg76tysba
-         xGfqH7eOKi/M27nvbwJt8+uAskCJRqtG7e6iHRRRHR0VNe3zD0qYacfX26MnYY1nUPjl
-         vpRbHyVeX2ic+9j+7H801OUJkiHdO1V6mM1VR1WGxE4Z/PcBbGGtQtc8EUt5bNHOdJm9
-         lg8A==
-X-Gm-Message-State: AOJu0Yw/8Z783ywQ4O27X3wDVL/4Mpz4LtfAwxOouY/PAbrEW8vF/rRR
-	HuBjMBoHDK8oA0yEMFZ/BmR4XMr/oaAyrJCefI7EUscToFzo+uQ5Bw0hzp9RMLjcUMPYAOCEHjh
-	R
-X-Google-Smtp-Source: AGHT+IHaztsrJZTHENawOldX9g57sT2RMpLiCEQfqQJoi5iJjzpPF4PrajBdl6ZaLp+c7G5uWfi8dw==
-X-Received: by 2002:a05:6808:1924:b0:3d9:4004:ff27 with SMTP id 5614622812f47-3db14118421mr3418295b6e.21.1721950122525;
-        Thu, 25 Jul 2024 16:28:42 -0700 (PDT)
-Received: from telecaster.hsd1.wa.comcast.net ([2620:10d:c090:400::5:d3b1])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f8849aa8sm1457540a12.53.2024.07.25.16.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jul 2024 16:28:41 -0700 (PDT)
-From: Omar Sandoval <osandov@osandov.com>
-To: linux-btrfs@vger.kernel.org
-Cc: kernel-team@fb.com,
-	Neal Gompa <neal@gompa.dev>,
-	Sam James <sam@gentoo.org>
-Subject: [PATCH] libbtrfsutil: python: fix build on Python 3.13
-Date: Thu, 25 Jul 2024 16:28:35 -0700
-Message-ID: <fbbb792fa299bfdfa818f6e0790fa545297dc1cf.1721949827.git.osandov@fb.com>
-X-Mailer: git-send-email 2.45.2
+        d=1e100.net; s=20230601; t=1721952640; x=1722557440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vFXxEq0iYmpK7+dSKmzrPtTa/OoYEMCJXYY8LreJFbA=;
+        b=Dw+naFq4btWqJoBvgFcrAEB8XwSl1e5CB1s6Rg0HuxQsQikfhhI4ozgT2e8ss/DXze
+         I7MxquZ1CwtCoAhAPjCtTMU7Uu3wghrA9XAHDdtcjotmjqRwyTC89IFu+N/WiZt9GAP+
+         xkI6bRRWwXSoULvVVbcF00E5kGHcpASKgTGuoBSwcPAgoMy6jxViKDM7fk1a8RVzxPlE
+         pnBybamYA7WmJVjn8V06RqDgLIX7rOZc/RXGUEAmsYI62iqa0/jHD9fyZwbGLxLNEN+c
+         wU317JorAo1u0ZBHVAk06X7iJe+KC1AzVyl6s36y6SAW5E/EmzUQ9FVtMKIXgoMjzeu4
+         lFbw==
+X-Gm-Message-State: AOJu0YwxXTtvd1tgr4SlGyGyzg0ZnRTqFvPWg5zhxyeQj/yLbabDF1nE
+	kHhe3NXKfL8H6mUl9fIkz7+bG3iSQBjTHs20M0mo4C5OFUsrogtXI5TqGRpq
+X-Google-Smtp-Source: AGHT+IEqyT3pLYmuzy9TE6D2y3HVPMwZ0Mt7hUpUO02Jgc0htgKnrs4CsrZbBik+mW85gQsr11eCkA==
+X-Received: by 2002:a50:d65b:0:b0:5a2:80f:a6dd with SMTP id 4fb4d7f45d1cf-5ac62525b15mr3214573a12.14.1721952640012;
+        Thu, 25 Jul 2024 17:10:40 -0700 (PDT)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5ac657836f9sm1258892a12.90.2024.07.25.17.10.39
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jul 2024 17:10:39 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5a15c2dc569so1161235a12.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 17:10:39 -0700 (PDT)
+X-Received: by 2002:a05:6402:2684:b0:57d:3df:f881 with SMTP id
+ 4fb4d7f45d1cf-5ac6203a217mr4331189a12.3.1721952639403; Thu, 25 Jul 2024
+ 17:10:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <fbbb792fa299bfdfa818f6e0790fa545297dc1cf.1721949827.git.osandov@fb.com>
+In-Reply-To: <fbbb792fa299bfdfa818f6e0790fa545297dc1cf.1721949827.git.osandov@fb.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Thu, 25 Jul 2024 20:10:03 -0400
+X-Gmail-Original-Message-ID: <CAEg-Je9ncfEXygcG1uf1DHcZtBmjhe3F=Go5f4mXn09+2LX4cw@mail.gmail.com>
+Message-ID: <CAEg-Je9ncfEXygcG1uf1DHcZtBmjhe3F=Go5f4mXn09+2LX4cw@mail.gmail.com>
+Subject: Re: [PATCH] libbtrfsutil: python: fix build on Python 3.13
+To: Omar Sandoval <osandov@osandov.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com, 
+	Sam James <sam@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Omar Sandoval <osandov@fb.com>
+On Thu, Jul 25, 2024 at 7:28=E2=80=AFPM Omar Sandoval <osandov@osandov.com>=
+ wrote:
+>
+> From: Omar Sandoval <osandov@fb.com>
+>
+> Python 3.13, currently in beta, removed the internal
+> _PyObject_LookupSpecial function. The libbtrfsutil Python bindings use
+> it in the path_converter() function because it was based on internal
+> path_converter() function in CPython [1]. This is causing build failures
+> on Fedora Rawhide [2] and Gentoo [3]. Replace path_converter() with a
+> version that only uses public functions based on the one in drgn [4].
+>
+> 1: https://github.com/python/cpython/blob/d9efa45d7457b0dfea467bb1c2d22c6=
+9056ffc73/Modules/posixmodule.c#L1253
+> 2: https://bugzilla.redhat.com/show_bug.cgi?id=3D2245650
+> 3: https://github.com/kdave/btrfs-progs/issues/838
+> 4: https://github.com/osandov/drgn/blob/9ad29fd86499eb32847473e928b654087=
+2d3d59a/libdrgn/python/util.c#L81
+>
+> Reported-by: Neal Gompa <neal@gompa.dev>
+> Reported-by: Sam James <sam@gentoo.org>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  libbtrfsutil/python/btrfsutilpy.h |  7 +--
+>  libbtrfsutil/python/module.c      | 98 ++++++++++---------------------
+>  2 files changed, 33 insertions(+), 72 deletions(-)
+>
+> diff --git a/libbtrfsutil/python/btrfsutilpy.h b/libbtrfsutil/python/btrf=
+sutilpy.h
+> index ee70c23a..49702dcc 100644
+> --- a/libbtrfsutil/python/btrfsutilpy.h
+> +++ b/libbtrfsutil/python/btrfsutilpy.h
+> @@ -40,16 +40,13 @@ extern PyTypeObject SubvolumeInfo_type;
+>  extern PyTypeObject SubvolumeIterator_type;
+>  extern PyTypeObject QgroupInherit_type;
+>
+> -/*
+> - * Helpers for path arguments based on posixmodule.c in CPython.
+> - */
+>  struct path_arg {
+>         bool allow_fd;
+> -       char *path;
+>         int fd;
+> +       char *path;
+>         Py_ssize_t length;
+>         PyObject *object;
+> -       PyObject *cleanup;
+> +       PyObject *bytes;
+>  };
+>  int path_converter(PyObject *o, void *p);
+>  void path_cleanup(struct path_arg *path);
+> diff --git a/libbtrfsutil/python/module.c b/libbtrfsutil/python/module.c
+> index 2657ee28..9b0b86b5 100644
+> --- a/libbtrfsutil/python/module.c
+> +++ b/libbtrfsutil/python/module.c
+> @@ -44,85 +44,49 @@ static int fd_converter(PyObject *o, void *p)
+>  int path_converter(PyObject *o, void *p)
+>  {
+>         struct path_arg *path =3D p;
+> -       int is_index, is_bytes, is_unicode;
+> -       PyObject *bytes =3D NULL;
+> -       Py_ssize_t length =3D 0;
+> -       char *tmp;
+>
+>         if (o =3D=3D NULL) {
+>                 path_cleanup(p);
+>                 return 1;
+>         }
+>
+> -       path->object =3D path->cleanup =3D NULL;
+> -       Py_INCREF(o);
+> -
+>         path->fd =3D -1;
+> +       path->path =3D NULL;
+> +       path->length =3D 0;
+> +       path->bytes =3D NULL;
+> +       if (path->allow_fd && PyIndex_Check(o)) {
+> +               PyObject *fd_obj;
+> +               int overflow;
+> +               long fd;
+>
+> -       is_index =3D path->allow_fd && PyIndex_Check(o);
+> -       is_bytes =3D PyBytes_Check(o);
+> -       is_unicode =3D PyUnicode_Check(o);
+> -
+> -       if (!is_index && !is_bytes && !is_unicode) {
+> -               _Py_IDENTIFIER(__fspath__);
+> -               PyObject *func;
+> -
+> -               func =3D _PyObject_LookupSpecial(o, &PyId___fspath__);
+> -               if (func =3D=3D NULL)
+> -                       goto err_format;
+> -               Py_DECREF(o);
+> -               o =3D PyObject_CallFunctionObjArgs(func, NULL);
+> -               Py_DECREF(func);
+> -               if (o =3D=3D NULL)
+> +               fd_obj =3D PyNumber_Index(o);
+> +               if (!fd_obj)
+>                         return 0;
+> -               is_bytes =3D PyBytes_Check(o);
+> -               is_unicode =3D PyUnicode_Check(o);
+> -       }
+> -
+> -       if (is_unicode) {
+> -               if (!PyUnicode_FSConverter(o, &bytes))
+> -                       goto err;
+> -       } else if (is_bytes) {
+> -               bytes =3D o;
+> -               Py_INCREF(bytes);
+> -       } else if (is_index) {
+> -               if (!fd_converter(o, &path->fd))
+> -                       goto err;
+> -               path->path =3D NULL;
+> -               goto out;
+> +               fd =3D PyLong_AsLongAndOverflow(fd_obj, &overflow);
+> +               Py_DECREF(fd_obj);
+> +               if (fd =3D=3D -1 && PyErr_Occurred())
+> +                       return 0;
+> +               if (overflow > 0 || fd > INT_MAX) {
+> +                       PyErr_SetString(PyExc_OverflowError,
+> +                                       "fd is greater than maximum");
+> +                       return 0;
+> +               }
+> +               if (fd < 0) {
+> +                       PyErr_SetString(PyExc_ValueError, "fd is negative=
+");
+> +                       return 0;
+> +               }
+> +               path->fd =3D fd;
+>         } else {
+> -err_format:
+> -               PyErr_Format(PyExc_TypeError, "expected %s, not %s",
+> -                            path->allow_fd ? "string, bytes, os.PathLike=
+, or integer" :
+> -                            "string, bytes, or os.PathLike",
+> -                            Py_TYPE(o)->tp_name);
+> -               goto err;
+> +               if (!PyUnicode_FSConverter(o, &path->bytes)) {
+> +                       path->object =3D path->bytes =3D NULL;
+> +                       return 0;
+> +               }
+> +               path->path =3D PyBytes_AS_STRING(path->bytes);
+> +               path->length =3D PyBytes_GET_SIZE(path->bytes);
+>         }
+> -
+> -       length =3D PyBytes_GET_SIZE(bytes);
+> -       tmp =3D PyBytes_AS_STRING(bytes);
+> -       if ((size_t)length !=3D strlen(tmp)) {
+> -               PyErr_SetString(PyExc_TypeError,
+> -                               "path has embedded nul character");
+> -               goto err;
+> -       }
+> -
+> -       path->path =3D tmp;
+> -       if (bytes =3D=3D o)
+> -               Py_DECREF(bytes);
+> -       else
+> -               path->cleanup =3D bytes;
+> -       path->fd =3D -1;
+> -
+> -out:
+> -       path->length =3D length;
+> +       Py_INCREF(o);
+>         path->object =3D o;
+>         return Py_CLEANUP_SUPPORTED;
+> -
+> -err:
+> -       Py_XDECREF(o);
+> -       Py_XDECREF(bytes);
+> -       return 0;
+>  }
+>
+>  PyObject *list_from_uint64_array(const uint64_t *arr, size_t n)
+> @@ -150,8 +114,8 @@ PyObject *list_from_uint64_array(const uint64_t *arr,=
+ size_t n)
+>
+>  void path_cleanup(struct path_arg *path)
+>  {
+> +       Py_CLEAR(path->bytes);
+>         Py_CLEAR(path->object);
+> -       Py_CLEAR(path->cleanup);
+>  }
+>
+>  static PyMethodDef btrfsutil_methods[] =3D {
+> --
+> 2.45.2
+>
 
-Python 3.13, currently in beta, removed the internal
-_PyObject_LookupSpecial function. The libbtrfsutil Python bindings use
-it in the path_converter() function because it was based on internal
-path_converter() function in CPython [1]. This is causing build failures
-on Fedora Rawhide [2] and Gentoo [3]. Replace path_converter() with a
-version that only uses public functions based on the one in drgn [4].
+The code changes look reasonable and the Python module builds and
+installs properly. The result also seems to work as intended.
 
-1: https://github.com/python/cpython/blob/d9efa45d7457b0dfea467bb1c2d22c69056ffc73/Modules/posixmodule.c#L1253
-2: https://bugzilla.redhat.com/show_bug.cgi?id=2245650
-3: https://github.com/kdave/btrfs-progs/issues/838
-4: https://github.com/osandov/drgn/blob/9ad29fd86499eb32847473e928b6540872d3d59a/libdrgn/python/util.c#L81
+Reviewed-by: Neal Gompa <neal@gompa.dev>
 
-Reported-by: Neal Gompa <neal@gompa.dev>
-Reported-by: Sam James <sam@gentoo.org>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- libbtrfsutil/python/btrfsutilpy.h |  7 +--
- libbtrfsutil/python/module.c      | 98 ++++++++++---------------------
- 2 files changed, 33 insertions(+), 72 deletions(-)
+Verified that the build is fixed for Fedora Linux 41 with Python 3.13:
+https://koji.fedoraproject.org/koji/taskinfo?taskID=3D121058789
 
-diff --git a/libbtrfsutil/python/btrfsutilpy.h b/libbtrfsutil/python/btrfsutilpy.h
-index ee70c23a..49702dcc 100644
---- a/libbtrfsutil/python/btrfsutilpy.h
-+++ b/libbtrfsutil/python/btrfsutilpy.h
-@@ -40,16 +40,13 @@ extern PyTypeObject SubvolumeInfo_type;
- extern PyTypeObject SubvolumeIterator_type;
- extern PyTypeObject QgroupInherit_type;
- 
--/*
-- * Helpers for path arguments based on posixmodule.c in CPython.
-- */
- struct path_arg {
- 	bool allow_fd;
--	char *path;
- 	int fd;
-+	char *path;
- 	Py_ssize_t length;
- 	PyObject *object;
--	PyObject *cleanup;
-+	PyObject *bytes;
- };
- int path_converter(PyObject *o, void *p);
- void path_cleanup(struct path_arg *path);
-diff --git a/libbtrfsutil/python/module.c b/libbtrfsutil/python/module.c
-index 2657ee28..9b0b86b5 100644
---- a/libbtrfsutil/python/module.c
-+++ b/libbtrfsutil/python/module.c
-@@ -44,85 +44,49 @@ static int fd_converter(PyObject *o, void *p)
- int path_converter(PyObject *o, void *p)
- {
- 	struct path_arg *path = p;
--	int is_index, is_bytes, is_unicode;
--	PyObject *bytes = NULL;
--	Py_ssize_t length = 0;
--	char *tmp;
- 
- 	if (o == NULL) {
- 		path_cleanup(p);
- 		return 1;
- 	}
- 
--	path->object = path->cleanup = NULL;
--	Py_INCREF(o);
--
- 	path->fd = -1;
-+	path->path = NULL;
-+	path->length = 0;
-+	path->bytes = NULL;
-+	if (path->allow_fd && PyIndex_Check(o)) {
-+		PyObject *fd_obj;
-+		int overflow;
-+		long fd;
- 
--	is_index = path->allow_fd && PyIndex_Check(o);
--	is_bytes = PyBytes_Check(o);
--	is_unicode = PyUnicode_Check(o);
--
--	if (!is_index && !is_bytes && !is_unicode) {
--		_Py_IDENTIFIER(__fspath__);
--		PyObject *func;
--
--		func = _PyObject_LookupSpecial(o, &PyId___fspath__);
--		if (func == NULL)
--			goto err_format;
--		Py_DECREF(o);
--		o = PyObject_CallFunctionObjArgs(func, NULL);
--		Py_DECREF(func);
--		if (o == NULL)
-+		fd_obj = PyNumber_Index(o);
-+		if (!fd_obj)
- 			return 0;
--		is_bytes = PyBytes_Check(o);
--		is_unicode = PyUnicode_Check(o);
--	}
--
--	if (is_unicode) {
--		if (!PyUnicode_FSConverter(o, &bytes))
--			goto err;
--	} else if (is_bytes) {
--		bytes = o;
--		Py_INCREF(bytes);
--	} else if (is_index) {
--		if (!fd_converter(o, &path->fd))
--			goto err;
--		path->path = NULL;
--		goto out;
-+		fd = PyLong_AsLongAndOverflow(fd_obj, &overflow);
-+		Py_DECREF(fd_obj);
-+		if (fd == -1 && PyErr_Occurred())
-+			return 0;
-+		if (overflow > 0 || fd > INT_MAX) {
-+			PyErr_SetString(PyExc_OverflowError,
-+					"fd is greater than maximum");
-+			return 0;
-+		}
-+		if (fd < 0) {
-+			PyErr_SetString(PyExc_ValueError, "fd is negative");
-+			return 0;
-+		}
-+		path->fd = fd;
- 	} else {
--err_format:
--		PyErr_Format(PyExc_TypeError, "expected %s, not %s",
--			     path->allow_fd ? "string, bytes, os.PathLike, or integer" :
--			     "string, bytes, or os.PathLike",
--			     Py_TYPE(o)->tp_name);
--		goto err;
-+		if (!PyUnicode_FSConverter(o, &path->bytes)) {
-+			path->object = path->bytes = NULL;
-+			return 0;
-+		}
-+		path->path = PyBytes_AS_STRING(path->bytes);
-+		path->length = PyBytes_GET_SIZE(path->bytes);
- 	}
--
--	length = PyBytes_GET_SIZE(bytes);
--	tmp = PyBytes_AS_STRING(bytes);
--	if ((size_t)length != strlen(tmp)) {
--		PyErr_SetString(PyExc_TypeError,
--				"path has embedded nul character");
--		goto err;
--	}
--
--	path->path = tmp;
--	if (bytes == o)
--		Py_DECREF(bytes);
--	else
--		path->cleanup = bytes;
--	path->fd = -1;
--
--out:
--	path->length = length;
-+	Py_INCREF(o);
- 	path->object = o;
- 	return Py_CLEANUP_SUPPORTED;
--
--err:
--	Py_XDECREF(o);
--	Py_XDECREF(bytes);
--	return 0;
- }
- 
- PyObject *list_from_uint64_array(const uint64_t *arr, size_t n)
-@@ -150,8 +114,8 @@ PyObject *list_from_uint64_array(const uint64_t *arr, size_t n)
- 
- void path_cleanup(struct path_arg *path)
- {
-+	Py_CLEAR(path->bytes);
- 	Py_CLEAR(path->object);
--	Py_CLEAR(path->cleanup);
- }
- 
- static PyMethodDef btrfsutil_methods[] = {
--- 
-2.45.2
+Confirmed that it still builds in Fedora Linux 40 with Python 3.12:
+https://koji.fedoraproject.org/koji/taskinfo?taskID=3D121058798
 
+Tested-by: Neal Gompa <neal@gompa.dev>
+
+
+
+
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
