@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-6758-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6759-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3ECB93D912
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:37:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F19A593D913
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:37:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B56161C224BE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:37:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EC4C284E40
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52D5149E0A;
-	Fri, 26 Jul 2024 19:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4C7149E17;
+	Fri, 26 Jul 2024 19:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="0OPHXX/V"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="aSntczgv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2981149DF8
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F80149DFC
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722022618; cv=none; b=pnC70GFkf6JrI3soa59WcEIn0riqZfDlZcujHiis2R840Bi5oImrMQsA6L2Mkt/jTvbIploL6g4U2tOvY/e/YXtIcVccUhGMYTKFJ0wI8zcEv912ztAJOGuZDn5UPtBdPkDlnUqFEMaUx1uiqB/4vI/PlD9FHmf50JaM2D+X2+k=
+	t=1722022618; cv=none; b=AoB29YdaQd8l+NTX/+CaExhnzHjPC9afMxCDEENyT9JFmp11ynqC6fhBEo7aoaOVGdS1av5Ud4LZniPLQ8Ogu3S0PIMh3yQIqS/jXFK0LnpS9gfhjqaD8Z1QPocOiI6mSRXoqyVg6wH6cRWyyPmlnqwi6TwEY9RKB0sZ9SvdYxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1722022618; c=relaxed/simple;
-	bh=EQLT9UHl2BuRaB4EnsHxnSlmspZ9yLCIcp8BqcZJkKY=;
+	bh=jTlEh59LEmakLdi5ZAwgkrRCYD9VBYtOVU5S3mmV/0k=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BJvYbbNPCaCkStOc3NCJrpikzjdAqB7ULjLOs3E8Hujxi1vOZKbd/llbCRGg2dTRDg3BCHeke/LYpjcwYjH4HwB+w/VXTVSymejO9XDmFB2zJypvAvi/+fO/bkt810iN7xliLEt+29k+mTnd2rDgODY6yPMwTiwih/mnsBQe35Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=0OPHXX/V; arc=none smtp.client-ip=209.85.128.174
+	 MIME-Version; b=Mj/c5wmITwY+dIB9U297xfLqadEO6QPy+xJ0fXrDDwVuh38RH2bn9yMO6E+IOyuWk05bzABNfweGnbeOEU0YHx/OMhR+vJEYFzQcmVwp8DGImNuTtL9mdItU+tZPGrXc6HdO13VPDDFski2jW9X1oPtXwnlVYcDTyuq2S9t4Oqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=aSntczgv; arc=none smtp.client-ip=209.85.128.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-663dd13c0bbso430937b3.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:36:56 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-664ccd158b0so358767b3.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:36:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022615; x=1722627415; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022616; x=1722627416; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DbayNxnh4cJQ1XDfQFZ8ECG4+Cqe8aWPiSA4REoJK/0=;
-        b=0OPHXX/V/j/u+5CG3JlTVxox4mH6gMLuG5DK6KzQyDHEkGlOgubO9xSB3pg0x86aW9
-         7bkuvIKqBy1rrf9BXhmP58QFRbgfGm08lRv5VOJApOlAeAK5/5ggNpmQgk7lcFqs9Il9
-         jifIVCjJCwFAPZRPYdte4Ro8i2MKWCFMp0ROC3p8Tzh7bwKIE2cvf7dTnAaI5j1SZZMG
-         gYgrpHxLNPilJHxapbeCw72mr9LLrbvjZUAz74KwBeUjLDfOI+1xpHboF7S58z9sVAQf
-         P58dO3HlH5kh/vRuJdespduVqTF14WKUbvMbzJo0Z2M47w2EEoKGb6/CLNBiy8Bq0wqP
-         iwGA==
+        bh=35e2ClCxEe/wCEeaddbhCpQMYPr9dVCHVaST0yK0vPs=;
+        b=aSntczgvIkE7rFbu7EtrAtGgWI9hYfBZ1ot2pkAw986Alg3DnBI0WcO0bt2j7y8kJ5
+         KZDvnFR7iDqTSSAsuRsOc5PcB+zYbqJD8Ou67WpbqS0W4+YWxeqAXXPdsrGk433txDTs
+         toWEUcZfrugC6QXfro88pW4+Nh8p46o6ZfiLSJLheZIOVQYe40WelIadBTCoKD3lnenm
+         KX3bVDaMGB3RqEsmxO/Wh2ccqxG+eW4Fsz0z1tFABccSJhXPYO0Pl02Uzd3yWQaqajr4
+         oeSSYpUxFNBv28OskWSi3wzOEh/VK5H3yLPHpsPZ2IGGG+syRHVHax+f0xxUSBoEcK+w
+         d/IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722022615; x=1722627415;
+        d=1e100.net; s=20230601; t=1722022616; x=1722627416;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DbayNxnh4cJQ1XDfQFZ8ECG4+Cqe8aWPiSA4REoJK/0=;
-        b=dYIFSQdq/1zN1TNpCNgCRTJn3Kvq1lSWqeOlizuOHXFfkbS+onMoy1d2RdouhJnkOh
-         2/kEYDQ7Bhsq9dGw1rvfkmW9ZKENXygMxviPa+NsqGn/vk/q25obDxosaFE+q/2+FzKQ
-         5DstNfotDhmz5h61zqMonAj8FOZgRbT5ZYcBBGeD2tQL4uVXmMdFITmFi2SR23vjugjh
-         b4ve46YFwjc5uqaA0F89vH/ah3xtmtyxg4daMdPuMBXmfGEH33BdZMrUV1rgdvCDVokQ
-         Q+iO2LbcNlAOZbaVIYgCxDwyJ7lYk830zgUq927OZzJfvOwtawo2T3TWw53MfwAVqyCo
-         /gNg==
-X-Gm-Message-State: AOJu0Yz2xRvCVuAirQfPaCZjRxwTZA7pVPTkb+nsDfxaR0E9YKtx9P/P
-	XNM3zvgZ2RN/VvvAfNfThjxNTZ+UpfD1yAvOpZdSoSZYxDGX8kvszV4jPqMXHycVFsB/HLMt8qz
-	C
-X-Google-Smtp-Source: AGHT+IEESv7bODAkIcxl0a31wYu7lpmAyG5AU95psCN2JUyvTMylpLN5itvBDkS7Np0cCrUxqycNCQ==
-X-Received: by 2002:a05:690c:3346:b0:632:7161:d16c with SMTP id 00721157ae682-67a090a5e7dmr9535427b3.28.1722022615412;
-        Fri, 26 Jul 2024 12:36:55 -0700 (PDT)
+        bh=35e2ClCxEe/wCEeaddbhCpQMYPr9dVCHVaST0yK0vPs=;
+        b=Cj2Ft3tgVUZhFRNxwg9Jkg0qsyi8O5WJ8dLSTv97KA1s+7YR+rbqL4An0RWdCY7z8r
+         yiPDv8wIuQwtCWCo/urQKb2f0/bOsW4fX3xJeuuPG4VinaCTJaPvc8rBkudPtZ5r2pmY
+         tnnXpAO2819TAYoGxocEO8HqVZDPep+/JREtFMZFB1pOZDzlBS+PGt/XJ8hxD2DYRBws
+         97jeyysMRGVBqp0Fiyj07qxYYJ218CDurUXOA5/jwums+2FSY8GYIoXc4KevSEg1f5RT
+         nD2car3JFYkEGDD6gQ3HnhIhx2jCMy3Q7+Wt4UDpjp0HUD0JZFkqxJzZ36FeGgpjGiBg
+         S5iA==
+X-Gm-Message-State: AOJu0Yz1PmCIq/Mi78MUmB9aVSop0Suvlvcv5AX92Fdk7YCJxoVb56tY
+	0tOaXOQeOLTut1N5rfKKt/+keTy5TYIq1U7zfOSzZm2Tdai1b2hjVx4SKTRbeDf3G9EBnN+O2Uf
+	j
+X-Google-Smtp-Source: AGHT+IGQAtVNHduZS3iV+tTGUwdRXw1ZeW1n+rozJgOTy5Ss4tDczRpldf+iblV34RkxNgoEOkPsWA==
+X-Received: by 2002:a81:5c83:0:b0:644:2639:8645 with SMTP id 00721157ae682-67a07989c5bmr9400747b3.26.1722022616445;
+        Fri, 26 Jul 2024 12:36:56 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-67566dd90dcsm10109327b3.1.2024.07.26.12.36.54
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6756795e824sm9961457b3.37.2024.07.26.12.36.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 12:36:55 -0700 (PDT)
+        Fri, 26 Jul 2024 12:36:56 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 17/46] btrfs: convert find_lock_delalloc_range to use a folio
-Date: Fri, 26 Jul 2024 15:36:04 -0400
-Message-ID: <cf41ce4033628f869f482f1ad5a3e5dd2b1b1ee7.1722022376.git.josef@toxicpanda.com>
+Subject: [PATCH 18/46] btrfs: convert lock_delalloc_pages to take a folio
+Date: Fri, 26 Jul 2024 15:36:05 -0400
+Message-ID: <effca02ec8cbc257f3acadb9d9f4a82d930c464c.1722022376.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1722022376.git.josef@toxicpanda.com>
 References: <cover.1722022376.git.josef@toxicpanda.com>
@@ -84,158 +84,89 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of passing in a page for locked_page, pass in the folio instead.
-We only use the folio itself to validate some range assumptions, and
-then pass it into other functions.
+Also rename lock_delalloc_pages => lock_delalloc_folios in the process,
+now that it exclusively works on folios.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c             | 28 ++++++++++++++--------------
- fs/btrfs/extent_io.h             |  2 +-
- fs/btrfs/tests/extent-io-tests.c | 10 +++++-----
- 3 files changed, 20 insertions(+), 20 deletions(-)
+ fs/btrfs/extent_io.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 382558fe1032..def12bb8b34d 100644
+index def12bb8b34d..33c45b6e8969 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -304,8 +304,8 @@ static noinline int lock_delalloc_pages(struct inode *inode,
-  */
- EXPORT_FOR_TESTS
- noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
--				    struct page *locked_page, u64 *start,
--				    u64 *end)
-+						 struct folio *locked_folio,
-+						 u64 *start, u64 *end)
+@@ -230,10 +230,9 @@ static noinline void __unlock_for_delalloc(const struct inode *inode,
+ 			       PAGE_UNLOCK);
+ }
+ 
+-static noinline int lock_delalloc_pages(struct inode *inode,
+-					const struct page *locked_page,
+-					u64 start,
+-					u64 end)
++static noinline int lock_delalloc_folios(struct inode *inode,
++					 const struct folio *locked_folio,
++					 u64 start, u64 end)
  {
  	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
- 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
-@@ -323,9 +323,9 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
- 	/* Caller should pass a valid @end to indicate the search range end */
- 	ASSERT(orig_end > orig_start);
+ 	struct address_space *mapping = inode->i_mapping;
+@@ -243,7 +242,7 @@ static noinline int lock_delalloc_pages(struct inode *inode,
+ 	u64 processed_end = start;
+ 	struct folio_batch fbatch;
  
--	/* The range should at least cover part of the page */
--	ASSERT(!(orig_start >= page_offset(locked_page) + PAGE_SIZE ||
--		 orig_end <= page_offset(locked_page)));
-+	/* The range should at least cover part of the folio */
-+	ASSERT(!(orig_start >= folio_pos(locked_folio) + folio_size(locked_folio) ||
-+		 orig_end <= folio_pos(locked_folio)));
- again:
- 	/* step one, find a bunch of delalloc bytes starting at start */
- 	delalloc_start = *start;
-@@ -342,25 +342,25 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
- 	}
+-	if (index == locked_page->index && index == end_index)
++	if (index == locked_folio->index && index == end_index)
+ 		return 0;
  
- 	/*
--	 * start comes from the offset of locked_page.  We have to lock
--	 * pages in order, so we can't process delalloc bytes before
--	 * locked_page
-+	 * start comes from the offset of locked_folio.  We have to lock
-+	 * folios in order, so we can't process delalloc bytes before
-+	 * locked_folio
- 	 */
- 	if (delalloc_start < *start)
- 		delalloc_start = *start;
+ 	folio_batch_init(&fbatch);
+@@ -257,23 +256,22 @@ static noinline int lock_delalloc_pages(struct inode *inode,
  
- 	/*
--	 * make sure to limit the number of pages we try to lock down
-+	 * make sure to limit the number of folios we try to lock down
- 	 */
- 	if (delalloc_end + 1 - delalloc_start > max_bytes)
+ 		for (i = 0; i < found_folios; i++) {
+ 			struct folio *folio = fbatch.folios[i];
+-			struct page *page = folio_page(folio, 0);
+ 			u32 len = end + 1 - start;
+ 
+-			if (page == locked_page)
++			if (folio == locked_folio)
+ 				continue;
+ 
+ 			if (btrfs_folio_start_writer_lock(fs_info, folio, start,
+ 							  len))
+ 				goto out;
+ 
+-			if (!PageDirty(page) || page->mapping != mapping) {
++			if (!folio_test_dirty(folio) || folio->mapping != mapping) {
+ 				btrfs_folio_end_writer_lock(fs_info, folio, start,
+ 							    len);
+ 				goto out;
+ 			}
+ 
+-			processed_end = page_offset(page) + PAGE_SIZE - 1;
++			processed_end = folio_pos(folio) + folio_size(folio) - 1;
+ 		}
+ 		folio_batch_release(&fbatch);
+ 		cond_resched();
+@@ -283,7 +281,8 @@ static noinline int lock_delalloc_pages(struct inode *inode,
+ out:
+ 	folio_batch_release(&fbatch);
+ 	if (processed_end > start)
+-		__unlock_for_delalloc(inode, locked_page, start, processed_end);
++		__unlock_for_delalloc(inode, &locked_folio->page, start,
++				      processed_end);
+ 	return -EAGAIN;
+ }
+ 
+@@ -356,8 +355,8 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
  		delalloc_end = delalloc_start + max_bytes - 1;
  
--	/* step two, lock all the pages after the page that has start */
--	ret = lock_delalloc_pages(inode, locked_page,
-+	/* step two, lock all the folioss after the folios that has start */
-+	ret = lock_delalloc_pages(inode, &locked_folio->page,
- 				  delalloc_start, delalloc_end);
+ 	/* step two, lock all the folioss after the folios that has start */
+-	ret = lock_delalloc_pages(inode, &locked_folio->page,
+-				  delalloc_start, delalloc_end);
++	ret = lock_delalloc_folios(inode, locked_folio, delalloc_start,
++				   delalloc_end);
  	ASSERT(!ret || ret == -EAGAIN);
  	if (ret == -EAGAIN) {
--		/* some of the pages are gone, lets avoid looping by
-+		/* some of the folios are gone, lets avoid looping by
- 		 * shortening the size of the delalloc range we're searching
- 		 */
- 		free_extent_state(cached_state);
-@@ -384,7 +384,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
- 
- 	unlock_extent(tree, delalloc_start, delalloc_end, &cached_state);
- 	if (!ret) {
--		__unlock_for_delalloc(inode, locked_page,
-+		__unlock_for_delalloc(inode, &locked_folio->page,
- 			      delalloc_start, delalloc_end);
- 		cond_resched();
- 		goto again;
-@@ -1209,7 +1209,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 	/* Lock all (subpage) delalloc ranges inside the folio first. */
- 	while (delalloc_start < page_end) {
- 		delalloc_end = page_end;
--		if (!find_lock_delalloc_range(&inode->vfs_inode, &folio->page,
-+		if (!find_lock_delalloc_range(&inode->vfs_inode, folio,
- 					      &delalloc_start, &delalloc_end)) {
- 			delalloc_start = delalloc_end + 1;
- 			continue;
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index dceebd76c7d1..1dd295e1b5a5 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -368,7 +368,7 @@ int btrfs_alloc_folio_array(unsigned int nr_folios, struct folio **folio_array);
- 
- #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
- bool find_lock_delalloc_range(struct inode *inode,
--			     struct page *locked_page, u64 *start,
-+			      struct folio *locked_folio, u64 *start,
- 			     u64 *end);
- #endif
- struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
-diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
-index 865d4af4b303..0a2dbfaaf49e 100644
---- a/fs/btrfs/tests/extent-io-tests.c
-+++ b/fs/btrfs/tests/extent-io-tests.c
-@@ -180,7 +180,7 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
- 	set_extent_bit(tmp, 0, sectorsize - 1, EXTENT_DELALLOC, NULL);
- 	start = 0;
- 	end = start + PAGE_SIZE - 1;
--	found = find_lock_delalloc_range(inode, locked_page, &start,
-+	found = find_lock_delalloc_range(inode, page_folio(locked_page), &start,
- 					 &end);
- 	if (!found) {
- 		test_err("should have found at least one delalloc");
-@@ -211,7 +211,7 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
- 	set_extent_bit(tmp, sectorsize, max_bytes - 1, EXTENT_DELALLOC, NULL);
- 	start = test_start;
- 	end = start + PAGE_SIZE - 1;
--	found = find_lock_delalloc_range(inode, locked_page, &start,
-+	found = find_lock_delalloc_range(inode, page_folio(locked_page), &start,
- 					 &end);
- 	if (!found) {
- 		test_err("couldn't find delalloc in our range");
-@@ -245,7 +245,7 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
- 	}
- 	start = test_start;
- 	end = start + PAGE_SIZE - 1;
--	found = find_lock_delalloc_range(inode, locked_page, &start,
-+	found = find_lock_delalloc_range(inode, page_folio(locked_page), &start,
- 					 &end);
- 	if (found) {
- 		test_err("found range when we shouldn't have");
-@@ -266,7 +266,7 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
- 	set_extent_bit(tmp, max_bytes, total_dirty - 1, EXTENT_DELALLOC, NULL);
- 	start = test_start;
- 	end = start + PAGE_SIZE - 1;
--	found = find_lock_delalloc_range(inode, locked_page, &start,
-+	found = find_lock_delalloc_range(inode, page_folio(locked_page), &start,
- 					 &end);
- 	if (!found) {
- 		test_err("didn't find our range");
-@@ -307,7 +307,7 @@ static int test_find_delalloc(u32 sectorsize, u32 nodesize)
- 	 * this changes at any point in the future we will need to fix this
- 	 * tests expected behavior.
- 	 */
--	found = find_lock_delalloc_range(inode, locked_page, &start,
-+	found = find_lock_delalloc_range(inode, page_folio(locked_page), &start,
- 					 &end);
- 	if (!found) {
- 		test_err("didn't find our range");
+ 		/* some of the folios are gone, lets avoid looping by
 -- 
 2.43.0
 
