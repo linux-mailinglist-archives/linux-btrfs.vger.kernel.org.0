@@ -1,180 +1,155 @@
-Return-Path: <linux-btrfs+bounces-6727-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6728-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2963193D683
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 18:04:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FAD593D6BD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 18:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB8EB283DED
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 16:04:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1BFE1F227E5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 16:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8886A17C7A6;
-	Fri, 26 Jul 2024 16:03:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B39217C22A;
+	Fri, 26 Jul 2024 16:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gogcZ6Qd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DqeVhEXh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gogcZ6Qd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DqeVhEXh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CjymUNfu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6C317C226
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 16:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3E1B17838E
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 16:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722009824; cv=none; b=cK1BDgLGd+h6Q0fw5otVo/G5R9XnajGDNo8Z95EWVabV6b9XpxQvkR29LscXiZR7r0KCgdVVknYoEctroVkboq309jE8W4DijwHjh7aNrEPRN5tjfpSwCaIEOfBlk2otjaIA4uKq8DG0GBCvycmDGVgQguJCiqQff7tVgCcJpS4=
+	t=1722010441; cv=none; b=f3kqelGBtmw24lctnSjhLH8OpbZmI1Mjq2z86gyOkS0vbNLYlPi9Dn+3A8xwkFm2ggsG0lgk7iuCEPdPGKTOIqd7Z3vQBZoGX2j1OYDOmduIG6/bBtWRwaU/9jrEbtOfDQRDJ4oVRSPwvvxfLJy+w6slICVn562Q7GHb6LejlLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722009824; c=relaxed/simple;
-	bh=PgLYfjdZ8rTRJLURkI49YxIESBz8iyiWmBqm/7GjEFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mSUY8kMIshONlRlDGAnvLzKlUXe5msRZuLjhPT9XEYCNfLZn9iVkOAWTMXJprM0IaNavB2VHwFYXw4J79321Uw67s3xyRUA9mOVdXbqbz/SSN7rKFlnS2PFe1FFmncieOGi23/e7URiLFA44SSqqqgacp+E199FGQm9OEFkePOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gogcZ6Qd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DqeVhEXh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gogcZ6Qd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DqeVhEXh; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 236EE1FD00;
-	Fri, 26 Jul 2024 16:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722009821;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NhlvayQ+VETRE5fH/+9kOA5BUwAHvamln48oOaU/6HI=;
-	b=gogcZ6QdQul7byd3bxMo5Gv5ptjIgTfmmDsSd1j03c5ivmswetX9B8APGx8ylYYvxF0JlH
-	vKN59LfpZdFGdMGfc0xYcuQXNfda3P26iC61j2MnMWzCq6jb55lK+z9DLHPAvIjfCjqnDm
-	o4P0A3i9fmjX9lfj0BWuIIrEE/aYa6Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722009821;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NhlvayQ+VETRE5fH/+9kOA5BUwAHvamln48oOaU/6HI=;
-	b=DqeVhEXhCgjX9g4pEtnYfHLnm2wvjoDuJxTJfiK9Y4Jxrfo8NCqlLYl+G19wyeca/hzjjI
-	VmH5puAecomnVWAA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gogcZ6Qd;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DqeVhEXh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722009821;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NhlvayQ+VETRE5fH/+9kOA5BUwAHvamln48oOaU/6HI=;
-	b=gogcZ6QdQul7byd3bxMo5Gv5ptjIgTfmmDsSd1j03c5ivmswetX9B8APGx8ylYYvxF0JlH
-	vKN59LfpZdFGdMGfc0xYcuQXNfda3P26iC61j2MnMWzCq6jb55lK+z9DLHPAvIjfCjqnDm
-	o4P0A3i9fmjX9lfj0BWuIIrEE/aYa6Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722009821;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NhlvayQ+VETRE5fH/+9kOA5BUwAHvamln48oOaU/6HI=;
-	b=DqeVhEXhCgjX9g4pEtnYfHLnm2wvjoDuJxTJfiK9Y4Jxrfo8NCqlLYl+G19wyeca/hzjjI
-	VmH5puAecomnVWAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 03B4D1396E;
-	Fri, 26 Jul 2024 16:03:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id w9auAN3Io2ZsOgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 26 Jul 2024 16:03:41 +0000
-Date: Fri, 26 Jul 2024 18:03:39 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Sam James <sam@gentoo.org>,
-	Alejandro Colomar <alx@kernel.org>
-Subject: Re: [PATCH v2] btrfs: avoid using fixed char array size for tree
- names
-Message-ID: <20240726160339.GJ17473@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <b6633fbd1110ce2b5ff03ff9605f59e508ff31d0.1721380874.git.wqu@suse.com>
+	s=arc-20240116; t=1722010441; c=relaxed/simple;
+	bh=HTfyfYIqNcHZFVTVF7SnrAEneR+3CsZ0B5TFSPUFvSw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VPDUi1+v8/bLNoIO1+juHsOgOfFYlMaS7QV/hdc9tWaQ6s7jeZ++C+Qi35AGfxAW+04ouA2bDpjRijBBHgxRLAf5y3Hb9WzF85QL02cDXU6aSe4fxuxlCCKfLT+bUV2AWj9DvF8OjS0y4n4uhb4nYcQSpO9PLPIKmMRC6acFaVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CjymUNfu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B69AC4AF0E
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 16:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722010441;
+	bh=HTfyfYIqNcHZFVTVF7SnrAEneR+3CsZ0B5TFSPUFvSw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=CjymUNfucU2lYq28EG94dfO3MIPUWmF2HSH/H0+N/Ht4IcDa/SGmqLpILudtgbwPW
+	 VnkfjHD9UxgDPHS621ATJTXoRuye0BDK8AFCWcC75H6I9dhWaDmNg1ynQkKliBuPjM
+	 pZt7ecENyqMdvBqL6BOaL+2pIPRg2jqaTd2KKQkUKVvIdMErPsnfRPsKGAmdkLS3SJ
+	 1hj/usTZuiS8MYTj+b//R6puHGW0Izq54wTYyg0DFSENCF2Gz62erKxEJrPWlZYNBm
+	 eWdZnEUAyDDvop2fkRkZFzubRh5jKcxyk9RuqYl0aLnUQuKUgg5z4L9ngbX2lzS4iJ
+	 NtXLXObZLzrTw==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52efa16aad9so1994212e87.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 09:14:01 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzyCjoH/DZRzTfY6nHZZDLCeK8gGAozXnRO+j1RlXoi6HmrlbTL
+	UGPEMammK36633Hd9HjfaoZuzg44yOCkl4lmBW0mVts02MmNBhWV2rJxS7+VQWbM80DoVKt1Rd3
+	w4uK5QTWtdrj1WLV8GX7X+Tt4Lbw=
+X-Google-Smtp-Source: AGHT+IHcnYZN/ai9u4sWoAI0pg+QAmrOjvDXlpsPFPsaO6wHTi9F1+1Wkywyj8zvLjsGijTZvT/bFstim+EdAXHHCGM=
+X-Received: by 2002:ac2:4bd1:0:b0:52e:9b92:4999 with SMTP id
+ 2adb3069b0e04-5309b269ae5mr238922e87.2.1722010439873; Fri, 26 Jul 2024
+ 09:13:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b6633fbd1110ce2b5ff03ff9605f59e508ff31d0.1721380874.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.01 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -1.01
-X-Rspamd-Queue-Id: 236EE1FD00
+References: <0b841d46-12fe-4e64-9abb-871d8d0de271@redhat.com>
+ <CAL3q7H5VoYb6BAXYR+VZbAWirnfYRf++raT752j8nVa-0xJ7hw@mail.gmail.com> <0192c705-df2c-4fcf-8385-4ece04e4ba3f@redhat.com>
+In-Reply-To: <0192c705-df2c-4fcf-8385-4ece04e4ba3f@redhat.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 26 Jul 2024 17:13:22 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6f=y5xJWn7UOFdbsAktEkE9EY71rbBAeZ0VRvN4DM2MQ@mail.gmail.com>
+Message-ID: <CAL3q7H6f=y5xJWn7UOFdbsAktEkE9EY71rbBAeZ0VRvN4DM2MQ@mail.gmail.com>
+Subject: Re: Appending from unpopulated page creates hole
+To: Hanna Czenczek <hreitz@redhat.com>
+Cc: linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>, 
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	Stefano Garzarella <sgarzare@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 19, 2024 at 06:56:46PM +0930, Qu Wenruo wrote:
-> [BUG]
-> There is a bug report that using the latest trunk GCC, btrfs would cause
-> unterminated-string-initialization warning:
-> 
->   linux-6.6/fs/btrfs/print-tree.c:29:49: error: initializer-string for array of ‘char’ is too long [-Werror=unterminated-string-initialization]
->    29 |         { BTRFS_BLOCK_GROUP_TREE_OBJECTID,      "BLOCK_GROUP_TREE"      },
->       |
->       ^~~~~~~~~~~~~~~~~~
-> 
-> [CAUSE]
-> To print tree names we have an array of root_name_map structure, which
-> uses "char name[16];" to store the name string of a tree.
-> 
-> But the following trees have names exactly at 16 chars length:
-> - "BLOCK_GROUP_TREE"
-> - "RAID_STRIPE_TREE"
-> 
-> This means we will have no space for the terminating '\0', and can lead
-> to unexpected access when printing the name.
-> 
-> [FIX]
-> Instead of "char name[16];" use "const char *" instead.
-> 
-> Since the name strings are all read-only data, and are all NULL
-> terminated by default, there is not much need to bother the length at
-> all.
-> 
-> Fixes: edde81f1abf29 ("btrfs: add raid stripe tree pretty printer")
-> Fixes: 9c54e80ddc6bd ("btrfs: add code to support the block group root")
-> Reported-by: Sam James <sam@gentoo.org>
-> Reported-by: Alejandro Colomar <alx@kernel.org>
-> Suggested-by: Alejandro Colomar <alx@kernel.org>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Thu, Jul 25, 2024 at 1:23=E2=80=AFPM Hanna Czenczek <hreitz@redhat.com> =
+wrote:
+>
+> On 25.07.24 12:19, Filipe Manana wrote:
+> > On Thu, Jul 25, 2024 at 10:16=E2=80=AFAM Hanna Czenczek <hreitz@redhat.=
+com> wrote:
+> >> Hi,
+> >>
+> >> I=E2=80=99ve noticed that appending to a file on btrfs will create a h=
+ole before the appended data under certain circumstances:
+> >>
+> >> - Appending means O_APPEND or RWF_APPEND,
+> >> - Writing is done in direct mode, i.e. O_DIRECT, and
+> >> - The source buffer is not present in the page tables (what mmap() cal=
+ls =E2=80=9Cunpopulated=E2=80=9D).
+> >>
+> >> The hole seems to generally have the size of the data being written (i=
+.e. a 64k write will create a 64k hole, followed by the 64k of data we actu=
+ally wanted to write), but I assume this is true only up to a specific size=
+ (depending on how the request is split in the kernel).
+> >>
+> >> I=E2=80=99ve appended a reproducer.
+> >>
+> >> We encounter this problem with virtio-fs (sharing of directories betwe=
+en a virtual machine host and guest), where writing is done by virtiofsd, a=
+ process external to the VMM (e.g. qemu), but the buffer comes from the VM =
+guest.  Memory is shared between virtiofsd and the VMM, so virtiofsd often =
+writes data from shared memory without having accessed it itself, so it isn=
+=E2=80=99t present in virtiofsd=E2=80=99s page tables.
+> >>
+> >> Stefano Garzarella (CC-ed) has tested some Fedora kernels, and has con=
+firmed that this bug does not appear in 6.0.7-301.fc37.x86_64, but does app=
+ear in 6.0.9-300.fc37.x86_64.
+> >>
+> >> While I don=E2=80=99t know anything about btrfs code, I looked into it=
+, and I believe the changes made by commit 8184620ae21213d51eaf2e0bd4186baa=
+cb928172 (btrfs: fix lost file sync on direct IO write with nowait and dsyn=
+c iocb) may have caused this.  Specifically, it changed the `goto again` on=
+ EFAULT to `goto relock`, a much earlier label, which causes btrfs_direct_w=
+rite() to call generic_write_checks() again after the first btrfs_dio_write=
+() attempt.
+> >>
+> >> btrfs_dio_write() will have already allocated extents for the data and=
+ updated the file length before trying to actually write the data (which ge=
+nerates the EFAULT), so this second generic_write_checks() call will update=
+ the I/O position to this new file length, exactly at the end of the area t=
+o where the data was supposed to be written.
+> > Yes.
+> >
+> >> To test this hypothesis, I=E2=80=99ve tried skipping the generic_write=
+_checks() call after reaching this specific goto, and that does make the bu=
+g disappear.
+> > Yes that confirms it, but it's not the correct fix but the inode was
+> > unlocked and relocked and a lot of things may have changed between
+> > those steps.
+>
+> I thought as much :)
+>
+> > I'll work on a fix and let you know when it's ready in case you want
+> > to test/review.
+>
+> Great, thanks a lot!
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+So here it is:
+
+https://lore.kernel.org/linux-btrfs/a7cdb10155e5e823ce82edfc8eed99d1b0ef4ee=
+b.1722005943.git.fdmanana@suse.com/
+
+Note that this applies only to Linus' tree (6.11 changes, merge
+window), due to some refactorings/cleanups, but it's fairly simple to
+backport to stable kernels.
+Here's a gist with a version that applies at least to kernel 6.10:
+
+https://gist.githubusercontent.com/fdmanana/c835e21c708941e84ec3dbabd091a0d=
+a/raw/27551e26d54ffc399af49e6ffbbca5f58d300797/append-dio-fix-6.10.patch
+
+Thanks.
+
+>
+> Hanna
+>
 
