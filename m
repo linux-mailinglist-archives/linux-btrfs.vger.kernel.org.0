@@ -1,86 +1,77 @@
-Return-Path: <linux-btrfs+bounces-6737-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6739-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6287B93D7E0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:58:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B44BF93D809
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 20:09:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9A181F22542
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 17:58:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E57C41C23126
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 18:09:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D1417BB2D;
-	Fri, 26 Jul 2024 17:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227DA17C211;
+	Fri, 26 Jul 2024 18:09:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U2Uly8Pg"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oArlGx+H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8FB3987B
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 17:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE8917A580;
+	Fri, 26 Jul 2024 18:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722016727; cv=none; b=PhLCeIdh8y0+HPs1rLsY3RacLfRWCb4rt/nxWc6L5JtRsIpTF/T5qoPQAuuhFVOUMCvswXUvZKQUkIohX8scv1DixN7cBPAX9aohP9XQXxfLOI4YCwjDesTzDVpnU2DWARpB1r38WzUKHxLPXCuyHl1VCVpAIIllax+fdHDrNmE=
+	t=1722017352; cv=none; b=cYEjYbJZOHsy7BDbQ0JHfSXVOea2pqBnUaRJTivQ/iPXN+CGL6HXsjxxi7uyBzbXvzHEUOpltCsIvXxYIWr+/tmuwCW/myhLTyWOaHUOG5fVY3gG4+Z/pRYZFsQ43dv63q+EvSfGfWm79jUW2/Bd99zJ9YYG14x6DexS/Ze1qmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722016727; c=relaxed/simple;
-	bh=YJVQUrpE17HtAxtCeUh6iRvTM71l5erc23Fs2u4Y4ec=;
+	s=arc-20240116; t=1722017352; c=relaxed/simple;
+	bh=QwKVfIJx6b6w9eytozal7rkLHjdJGPTRw1tI+tPnJqI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BW3c4SZyCYGtGe/yeSHuD1aOiKNqOUOWJfAMkKn0wv9PtqoWneKBMMt/bytqnBdTXMus3A+kKvTWmIL/mjoXDTAUqNQKEmvsdBrQH7g+aGZ+9wacoFVFDt7wo98F33KTfT0YA7z2zRLYofUEDVwSU5U3IMc9Xc4tLhs8fJyt2ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U2Uly8Pg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722016724;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZK8dmHDmQTQOQzfhtKeNpCh5hlW331TlAOjBRWzVr/Q=;
-	b=U2Uly8PgP0yStal4QljoaoJuUQoUZbBTV/OoAWZXZRsw8tPomD4xkohZN0sPWivf7AvHWY
-	mQ/NAG6uCJ7I9CDtpwzwhw0ralB4/39ZYcbBOBNxw10VAA6M8DpUV1PgqKp9bs8T9L1627
-	0Vx6gRLdXDcsiiKNRlylT/qumRFPeG8=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-382-dk0adhJaMWSzwdroT5DdKQ-1; Fri, 26 Jul 2024 13:58:43 -0400
-X-MC-Unique: dk0adhJaMWSzwdroT5DdKQ-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1fd5fe96cfeso8515925ad.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 10:58:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722016722; x=1722621522;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZK8dmHDmQTQOQzfhtKeNpCh5hlW331TlAOjBRWzVr/Q=;
-        b=Dv/bcRMixHlhTehcuvE/JciXgmJmUbYb3YDv2JJOnaavMn+BE+Ht22SiDK3CQ/ZRSO
-         vcPgpvH4AXfTyeSPtAweBE3ssv8W4hvoNg/9z08FP3SKWb/KSbnQ7I8DTn4QQOETp2OP
-         OSMQ8jvO6wsufAEddhLdVpWAp3LRQ1AGR8tqUBf1LgraBaha96Zh1FZDhviRLUpF5pHh
-         GPZ8yBNv5pIqf0b4P1rC9QBMZFUwTVKI5Trg75hOMvVVXAsmLUKNAtjxaQeEB1VQnDXV
-         x/UoBuWhU2+WSYOuPAfMwdkMF0u+KPgIVQDVOmsosvE+bY+wcOELa5f3GXVvb1gaOV78
-         iHjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUkyA5szw5XONwBWvrhioP06xrlLKV3dVxS4rW5fpHNFUKYNtZxhhDLnDNmNSzEuCZtCbSausZj7AwRl+4724GHxZtXEo5U/TPiMNk=
-X-Gm-Message-State: AOJu0YxZk5CXGCtqJaaeR/gNTTZL0iPISZvH/7li1ClvseCcb/2QYMTB
-	GrL+62KZv4zE2OOQqvwn0qL3TSjCIxDRdojMLN4mHeKh7iB0tZ+01sbN7uXQeg7ItAgbufhfZXx
-	gLwO3lQMDcGU11I29IQTRHRVrUOkDfiZJNxkokrEeyc4T86H5C3OiHyz/wiEX
-X-Received: by 2002:a17:902:e810:b0:1fd:6ca9:4c0 with SMTP id d9443c01a7336-1ff04811278mr4676105ad.18.1722016721895;
-        Fri, 26 Jul 2024 10:58:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGLDV7hr7wbBEG8HihXsAFw93P3HrDQrJcyqfGbtLhHH4L4n/8TMTXI10rLF3UsOqdClp/XzQ==
-X-Received: by 2002:a17:902:e810:b0:1fd:6ca9:4c0 with SMTP id d9443c01a7336-1ff04811278mr4675845ad.18.1722016721464;
-        Fri, 26 Jul 2024 10:58:41 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7c7fbd6sm35813315ad.62.2024.07.26.10.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 10:58:41 -0700 (PDT)
-Date: Sat, 27 Jul 2024 01:58:37 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] generic: test page fault during direct IO write with
- O_APPEND
-Message-ID: <20240726175837.jtq4df4u7rol3qac@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <652ec55049e94a59f66f4112fb8707629db3001d.1722008942.git.fdmanana@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PFb7021O/AvY6lrOp3UjunxQ1ABWd6IQAMhj20+TLe3DWWCfSTyFi2ncvIyUFl+YfUsWyihtkpIDtD1zv8ib2bA/J4N2txMPlarhFroOi+DeldLMWdK67Svrs16UJuNAZ3y+4JOzwtXN6mcEosetZXfNGdrMumLPI3L8vIwpBwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oArlGx+H; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=5Y+bBdbxxKC2hf51b7J1S8qThB2b/5XgdfKw1OYTUmk=; b=oArlGx+Huj22K57mLVmHcbr0Xl
+	MiQWzuEi4Bl7fRZsVt+B9ZKIiRlk60bv4A1VwbYD2R+Rij6yZOAmguXQjSY/MHCs+c5GLg+B3THb3
+	3L32kWuUMtGuW5OmDt0vugl+4K77MJTbYl21N3h8WQHlnLaDt19jUm/cZTwsI/giT5Mdk2ZVaQSEi
+	dAPaioHkwR/mfs6CveVJ30rbYPtXcU+9XwlzNWTKLLmrSaqNALfDlg5Bho5b/WSTNBGtSdnkr8Fxd
+	Kg9ecy0O4QzGYhFP4PuJgMaBPF/t2ijbsQYxLefX5IusHSMB6Z92ApoMggnQ+t2OmX4XcWnwFI/4X
+	MPHP0EfA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sXPNG-00000004cOz-4BYF;
+	Fri, 26 Jul 2024 18:09:02 +0000
+Date: Fri, 26 Jul 2024 11:09:02 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: David Sterba <dsterba@suse.cz>, Christoph Hellwig <hch@infradead.org>,
+	Youling Tang <youling.tang@linux.dev>, kreijack@inwind.it,
+	Arnd Bergmann <arnd@arndb.de>, Luis Chamberlain <mcgrof@kernel.org>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Linux-Arch <linux-arch@vger.kernel.org>,
+	linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
+ module_subeixt helper macros
+Message-ID: <ZqPmPufwqbGOTyGI@infradead.org>
+References: <895360e3-97bb-4188-a91d-eaca3302bd43@linux.dev>
+ <ZqJjsg3s7H5cTWlT@infradead.org>
+ <61beb54b-399b-442d-bfdb-bad23cefa586@app.fastmail.com>
+ <ZqJwa2-SsIf0aA_l@infradead.org>
+ <68584887-3dec-4ce5-8892-86af50651c41@libero.it>
+ <ZqKreStOD-eRkKZU@infradead.org>
+ <91bfea9b-ad7e-4f35-a2c1-8cd41499b0c0@linux.dev>
+ <ZqOs84hdYkSV_YWd@infradead.org>
+ <20240726152237.GH17473@twin.jikos.cz>
+ <20240726175800.GC131596@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -89,208 +80,20 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <652ec55049e94a59f66f4112fb8707629db3001d.1722008942.git.fdmanana@suse.com>
+In-Reply-To: <20240726175800.GC131596@mit.edu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Fri, Jul 26, 2024 at 04:55:46PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Fri, Jul 26, 2024 at 01:58:00PM -0400, Theodore Ts'o wrote:
+> Yeah, that's my reaction as well.  This only saves 50 lines of code in
+> ext4, and that includes unrelated changes such as getting rid of "int
+> i" and putting the declaration into the for loop --- "for (int i =
+> ...").  Sure, that saves two lines of code, but yay?
 > 
-> Test that doing a direct IO append write to a file when the input buffer
-> was not yet faulted in, does not result in an incorrect file size.
-> 
-> This exercises a bug on btrfs reported by users and which is fixed by
-> the following kernel patch:
-> 
->    "btrfs: fix corruption after buffer fault in during direct IO append write"
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  .gitignore                 |   1 +
->  src/Makefile               |   2 +-
->  src/dio-append-buf-fault.c | 131 +++++++++++++++++++++++++++++++++++++
->  tests/generic/362          |  28 ++++++++
->  tests/generic/362.out      |   2 +
->  5 files changed, 163 insertions(+), 1 deletion(-)
->  create mode 100644 src/dio-append-buf-fault.c
->  create mode 100755 tests/generic/362
->  create mode 100644 tests/generic/362.out
-> 
-> diff --git a/.gitignore b/.gitignore
-> index b5f15162..97c7e001 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -72,6 +72,7 @@ tags
->  /src/deduperace
->  /src/detached_mounts_propagation
->  /src/devzero
-> +/src/dio-append-buf-fault
->  /src/dio-buf-fault
->  /src/dio-interleaved
->  /src/dio-invalidate-cache
-> diff --git a/src/Makefile b/src/Makefile
-> index 99796137..559209be 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -20,7 +20,7 @@ TARGETS = dirstress fill fill2 getpagesize holes lstat64 \
->  	t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
->  	t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale \
->  	t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewinddir-test \
-> -	readdir-while-renames
-> +	readdir-while-renames dio-append-buf-fault
->  
->  LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> diff --git a/src/dio-append-buf-fault.c b/src/dio-append-buf-fault.c
-> new file mode 100644
-> index 00000000..f4be4845
-> --- /dev/null
-> +++ b/src/dio-append-buf-fault.c
-> @@ -0,0 +1,131 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2024 SUSE Linux Products GmbH.  All Rights Reserved.
-> + */
-> +
-> +/*
-> + * Test a direct IO write in append mode with a buffer that was not faulted in
-> + * (or just partially) before the write.
-> + */
-> +
-> +/* Get the O_DIRECT definition. */
-> +#ifndef _GNU_SOURCE
-> +#define _GNU_SOURCE
-> +#endif
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <stdint.h>
-> +#include <fcntl.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <sys/mman.h>
-> +#include <sys/stat.h>
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	struct stat stbuf;
-> +	int fd;
-> +	long pagesize;
-> +	void *buf;
-> +	ssize_t ret;
-> +
-> +	if (argc != 2) {
-> +		fprintf(stderr, "Use: %s <file path>\n", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	/*
-> +	 * First try an append write against an empty file of a buffer with a
-> +	 * size matching the page size. The buffer is not faulted in before
-> +	 * attempting the write.
-> +	 */
-> +
-> +	fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT | O_APPEND, 0666);
-> +	if (fd == -1) {
-> +		perror("Failed to open/create file");
-> +		return 2;
-> +	}
-> +
-> +	pagesize = sysconf(_SC_PAGE_SIZE);
-> +	if (pagesize == -1) {
-> +		perror("Failed to get page size");
-> +		return 3;
-> +	}
-> +
-> +	buf = mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
-> +		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +	if (buf == MAP_FAILED) {
-> +		perror("Failed to allocate first buffer");
-> +		return 4;
-> +	}
-> +
-> +	ret = write(fd, buf, pagesize);
-> +	if (ret < 0) {
-> +		perror("First write failed");
-> +		return 5;
-> +	}
-> +
-> +	ret = fstat(fd, &stbuf);
-> +	if (ret < 0) {
-> +		perror("First stat failed");
-> +		return 6;
-> +	}
-> +
-> +	if (stbuf.st_size != pagesize) {
-> +		fprintf(stderr,
-> +			"Wrong file size after first write, got %jd expected %ld\n",
-> +			(intmax_t)stbuf.st_size, pagesize);
-> +		return 7;
-> +	}
-> +
-> +	munmap(buf, pagesize);
-> +	close(fd);
-> +
-> +	/*
-> +	 * Now try an append write against an empty file of a buffer with a
-> +	 * size matching twice the page size. Only the first page of the buffer
-> +	 * is faulted in before attempting the write, so that the second page
-> +	 * should be faulted in during the write.
-> +	 */
-> +	fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT | O_APPEND, 0666);
-> +	if (fd == -1) {
-> +		perror("Failed to open/create file");
-> +		return 8;
-> +	}
-> +
-> +	buf = mmap(NULL, pagesize * 2, PROT_READ | PROT_WRITE,
-> +		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> +	if (buf == MAP_FAILED) {
-> +		perror("Failed to allocate second buffer");
-> +		return 9;
-> +	}
-> +
-> +	/* Fault in first page of the buffer before the write. */
-> +	memset(buf, 0, 1);
-> +
-> +	ret = write(fd, buf, pagesize * 2);
-> +	if (ret < 0) {
-> +		perror("Second write failed");
+> If the ordering how the functions gets called is based on the magic
+> ordering in the Makefile, I'm not sure this actually makes the code
+> clearer, more robust, and easier to maintain for the long term.
 
-Hi Filipe,
-
-This patch looks good to me, just a question about this part. Is it possible
-to get (0 < ret < pagesize * 2) at here? Is so, should we report fail too?
-
-> +		return 10;
-> +	}
-> +
-> +	ret = fstat(fd, &stbuf);
-> +	if (ret < 0) {
-> +		perror("Second stat failed");
-> +		return 11;
-> +	}
-> +
-> +	if (stbuf.st_size != pagesize * 2) {
-> +		fprintf(stderr,
-> +			"Wrong file size after second write, got %jd expected %ld\n",
-> +			(intmax_t)stbuf.st_size, pagesize * 2);
-
-Does this try to check the stbuf.st_size isn't equal to the write(2) return
-value? Or checks stbuf.st_size != pagesize * 2, when the return value is
-good (equal to pagesize * 2) ?
-
-Thanks,
-Zorro
-
-> +		return 12;
-> +	}
-> +
-> +	munmap(buf, pagesize * 2);
-> +	close(fd);
-> +
-> +	return 0;
-> +}
-
-[snip]
+So you two object to kernel initcalls for the same reason and would
+rather go back to calling everything explicitly?
 
 
