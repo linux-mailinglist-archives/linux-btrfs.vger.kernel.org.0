@@ -1,161 +1,121 @@
-Return-Path: <linux-btrfs+bounces-6707-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6708-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3A693CC47
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 03:12:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF0793CC72
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 03:30:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 362E01F214D2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 01:12:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BC7B1C2127C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 01:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD6BEDC;
-	Fri, 26 Jul 2024 01:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HQetSvKI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BVbRhD9q";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="J0lfxom5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pn27R5sC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94E89184F;
+	Fri, 26 Jul 2024 01:30:26 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69209EC7
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 01:12:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 332FC812
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 01:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721956364; cv=none; b=L8odm64NSi23re87ZYHlhoVxKtmWtruJ2QjONHS5BiOjIzEjMx7IeyjXLtqaXgJ49bx28EHj7+obuFBtWcvO4dsC4E0cHr0d302XjiEzYoxsu5d589gqZF/jGQK2RsfRYbQip0YugKTCnPNpRT3dgZ02EZNpctSeBzxEDH3bCgg=
+	t=1721957426; cv=none; b=Sh2SPBP3Y5Fx4y2tIsErAQZpfwOqrt2DGu0RKL97KzoUG6VQXLizYL1FQhW6jA+NJEIa4rzGVrxVWioYWYa00yhFytqqIejdxmXQjATxJz8zpQpTTszeE974nvD0U1r+MRKvCLj2fKFnJIR1Qcmng/sCrPjLxEoNrvHXl3FCJGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721956364; c=relaxed/simple;
-	bh=ksbErntOgGTi8usaS7fKOxUh/QOiE/5DGhbrrCkKlmE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RAMkYRolI7+oucbzlNros3qdOqlsb0XiOrZjH1QWnMGuTRPW6X6V6zavovr0GTzV8hDaSenPojOfbpjoAR7nvFwF4PSOKX0Kc0zzNM2PWGxJnrwH+MX9gCTazRnpk8gX9UFdhxAIUFuXG1H2LZfCUDoAS1prt0TIly7Xi1LQSpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HQetSvKI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BVbRhD9q; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=J0lfxom5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pn27R5sC; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D29A01F841;
-	Fri, 26 Jul 2024 01:12:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721956354;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4lWgMIgmTRz47K2T2bv24cRSIHkilWHzn7RReCtxU6Y=;
-	b=HQetSvKICPkxPdiSymsQIDED/2PEfEmYES3VCdEGwcdyVofmjcYpbeL/27WEirmDLC5GW3
-	Oo7NWpJLYN+TTZfPKbvPKL6hfK+CxbMgGskcb/HdRJhy62IB5ajBpH+ZraNjfRb09IYmvu
-	NKH7Rq6kFJIJupEorHHBvvtbXW+SnRI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721956354;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4lWgMIgmTRz47K2T2bv24cRSIHkilWHzn7RReCtxU6Y=;
-	b=BVbRhD9qfjQHoAb0Zs7GMxbLh8hh/BvAcR3xcp1xVsift9ADcKwu3WyTGZPKAvpdy3G3qM
-	zrZMC2ccfbzOQZBQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=J0lfxom5;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=pn27R5sC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721956353;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4lWgMIgmTRz47K2T2bv24cRSIHkilWHzn7RReCtxU6Y=;
-	b=J0lfxom5SU2WdLFKEscx8xFWbblat+100IZnHWgFyopSZP4+5fvu70ij2Ull37ZM+p3SDK
-	djPBzbtt6G7aueFFnVpSRDh3X7+de9yliOsgSCac832ACfgzPJpshxus+5z3hujMWkRY+z
-	XaC5744Z50YickDJQtYRIbOXPV/Bb50=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721956353;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4lWgMIgmTRz47K2T2bv24cRSIHkilWHzn7RReCtxU6Y=;
-	b=pn27R5sCS32s/7vwd9+IqZI7OTog4U/+3rkZKtBYmjWvijK1Yuhw19vPVvKWFxUw18fdVW
-	N0TqAHaqYNzcHTCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE89E13939;
-	Fri, 26 Jul 2024 01:12:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UYQQKgH4ombHRgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 26 Jul 2024 01:12:33 +0000
-Date: Fri, 26 Jul 2024 03:12:24 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Omar Sandoval <osandov@osandov.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-	Neal Gompa <neal@gompa.dev>, Sam James <sam@gentoo.org>
-Subject: Re: [PATCH] libbtrfsutil: python: fix build on Python 3.13
-Message-ID: <20240726011224.GE17473@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <fbbb792fa299bfdfa818f6e0790fa545297dc1cf.1721949827.git.osandov@fb.com>
+	s=arc-20240116; t=1721957426; c=relaxed/simple;
+	bh=he4Mdps0w//9/4Isl/DzBDnUFRjBqzH2/Rdah5CY0iA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JGhENAovB2CKQJ186rwtcY9Y9vCiTd7jh6QBtcz5N9JYYkkKoS8ERuvXizdXXG5b8yTHC3TLocA1UkQK5V9DqlDvRyXmHkT9lUDeDs637H0ckQQImdPt6+unysESdFBUHEkoTaT72aUdIQUSLCe85EVmmUbPJSweSrxfkPKtqIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a728f74c23dso151350566b.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 18:30:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721957422; x=1722562222;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=he4Mdps0w//9/4Isl/DzBDnUFRjBqzH2/Rdah5CY0iA=;
+        b=RhN02ndORdgSiqb9Xaq16dtOL/nYZvqbqebGHlrzYmoADD5Ql5rOSTikmIIsIWo+is
+         r6BfRXWGCWmg5oI4bMlaTrNqXboMSdqL5oyOdwjdVfUzh29D1XA0mWxaqWzlKLUAv41W
+         2N3lNqNsE4jo5pH9oRkADklfAdigFEH2Vl33TgDvryLjWkJ4rSvAp6A/AxI+s5wlKKRE
+         ZIGXQO+tasuytY+E7bqBnzHoNnXr0Asx5rR7Vg9trT58iQl2ISBE2/JEXBTu2VS2Y1jW
+         GHdmn/tLk4WWp8Jah6WHAVsMR77JvXz+/2JaUw3d4PQeTzgYLEWqoKXTGLi+klgyj1Ev
+         IGDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+IbagzkqNqa21gZo7055eKchcnrh6SgQJDGLMbf7I5wAxrkfnd7qALKXG66xX9vRvy/rEqmjOrN4WzrGgUYDpQsctdK1Frkmc6ZU=
+X-Gm-Message-State: AOJu0Yx+8ofcuI+4VN6mJ+Rf39dspar6EgfUsjZt3p+HzFKm79UWsvK/
+	KD7+BvDxCCqZ/gp6agcPR2hJoKrSkbthJmXOt5GqesDXVicuUssIsUs9kmIP
+X-Google-Smtp-Source: AGHT+IEuN0CTcW1PLbtZL+kaKlsVXOnCi6lWv3E73nVLIjc8rjQAzPF/5QEF2W9ZmdxfsPA8AsXgCg==
+X-Received: by 2002:a17:907:d17:b0:a7a:9e11:e87c with SMTP id a640c23a62f3a-a7ac5129dccmr328495566b.9.1721957421845;
+        Thu, 25 Jul 2024 18:30:21 -0700 (PDT)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acadb98dbsm121677166b.216.2024.07.25.18.30.21
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jul 2024 18:30:21 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5a167b9df7eso2132021a12.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2024 18:30:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV0SOw4KLvWsyWpUydoMyolrft/LhjCzy0jgK0A1onhNjjlZLnDCj9SyR5uoJkc+Q+fYLQ0xsi4rLkUOY+uAsR9pE3+B/HMqiyd3Mc=
+X-Received: by 2002:a05:6402:2356:b0:5a1:aa6d:9469 with SMTP id
+ 4fb4d7f45d1cf-5ac2ca7a600mr2994215a12.38.1721957421490; Thu, 25 Jul 2024
+ 18:30:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fbbb792fa299bfdfa818f6e0790fa545297dc1cf.1721949827.git.osandov@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.01 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -1.01
-X-Rspamd-Queue-Id: D29A01F841
+References: <fbbb792fa299bfdfa818f6e0790fa545297dc1cf.1721949827.git.osandov@fb.com>
+ <20240726011224.GE17473@twin.jikos.cz>
+In-Reply-To: <20240726011224.GE17473@twin.jikos.cz>
+From: Neal Gompa <neal@gompa.dev>
+Date: Thu, 25 Jul 2024 21:29:44 -0400
+X-Gmail-Original-Message-ID: <CAEg-Je_7OeESAbQ0zBD=fuvY_WHE05vk0iR=Vv4Bq5vAc_qCJw@mail.gmail.com>
+Message-ID: <CAEg-Je_7OeESAbQ0zBD=fuvY_WHE05vk0iR=Vv4Bq5vAc_qCJw@mail.gmail.com>
+Subject: Re: [PATCH] libbtrfsutil: python: fix build on Python 3.13
+To: dsterba@suse.cz
+Cc: Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org, kernel-team@fb.com, 
+	Sam James <sam@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 25, 2024 at 04:28:35PM -0700, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> Python 3.13, currently in beta, removed the internal
-> _PyObject_LookupSpecial function. The libbtrfsutil Python bindings use
-> it in the path_converter() function because it was based on internal
-> path_converter() function in CPython [1]. This is causing build failures
-> on Fedora Rawhide [2] and Gentoo [3]. Replace path_converter() with a
-> version that only uses public functions based on the one in drgn [4].
-> 
-> 1: https://github.com/python/cpython/blob/d9efa45d7457b0dfea467bb1c2d22c69056ffc73/Modules/posixmodule.c#L1253
-> 2: https://bugzilla.redhat.com/show_bug.cgi?id=2245650
-> 3: https://github.com/kdave/btrfs-progs/issues/838
-> 4: https://github.com/osandov/drgn/blob/9ad29fd86499eb32847473e928b6540872d3d59a/libdrgn/python/util.c#L81
-> 
-> Reported-by: Neal Gompa <neal@gompa.dev>
-> Reported-by: Sam James <sam@gentoo.org>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+On Thu, Jul 25, 2024 at 9:12=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
+e:
+>
+> On Thu, Jul 25, 2024 at 04:28:35PM -0700, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> >
+> > Python 3.13, currently in beta, removed the internal
+> > _PyObject_LookupSpecial function. The libbtrfsutil Python bindings use
+> > it in the path_converter() function because it was based on internal
+> > path_converter() function in CPython [1]. This is causing build failure=
+s
+> > on Fedora Rawhide [2] and Gentoo [3]. Replace path_converter() with a
+> > version that only uses public functions based on the one in drgn [4].
+> >
+> > 1: https://github.com/python/cpython/blob/d9efa45d7457b0dfea467bb1c2d22=
+c69056ffc73/Modules/posixmodule.c#L1253
+> > 2: https://bugzilla.redhat.com/show_bug.cgi?id=3D2245650
+> > 3: https://github.com/kdave/btrfs-progs/issues/838
+> > 4: https://github.com/osandov/drgn/blob/9ad29fd86499eb32847473e928b6540=
+872d3d59a/libdrgn/python/util.c#L81
+> >
+> > Reported-by: Neal Gompa <neal@gompa.dev>
+> > Reported-by: Sam James <sam@gentoo.org>
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+>
+> Thanks, this is more convoluted than I expected. Does this work on other
+> python versions, like 3.8 and above? I'd have to check what's the lowest
+> expected python version derived from the base line for distro support so
+> 3.6 is just a guess.
 
-Thanks, this is more convoluted than I expected. Does this work on other
-python versions, like 3.8 and above? I'd have to check what's the lowest
-expected python version derived from the base line for distro support so
-3.6 is just a guess.
+Well, I can't build it on AlmaLinux 8 with Python 3.6 because
+libgcrypt is too old, but it builds and works fine on CentOS Stream 9
+(which has Python 3.9).
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
