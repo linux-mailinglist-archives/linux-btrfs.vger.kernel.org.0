@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-6777-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6778-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A86D893D925
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:39:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AC4893D926
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 21:39:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37B5A1F232F1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:39:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4699E285AE4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2024 19:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99135153812;
-	Fri, 26 Jul 2024 19:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F397153BC1;
+	Fri, 26 Jul 2024 19:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="yO8/h7VA"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="DvwPSxUG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F048558B7
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A96915350B
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 19:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722022637; cv=none; b=ACWCEW8M7Ovwgs8AIRCjHXr3p7qGvYqteo+VRXAygWFMAACf+Uq1Y0kR3zL4ClesLZF1GfBei8zxqaUHpI4nHOGO2uizB5g5mseLDI4fH2IXIUZxglPLTV7CpLA9/nytDlVnQFcVtj3B140LYhMImZ/UZpTah3Zmyly3rRfMQqc=
+	t=1722022638; cv=none; b=pLjP/G8ubfA3io6lTKEjdhGNGQs5rifSMIfNgXSm5qJERnMQTC2W8ZbTaq8Bb2uWky3al7khlUSHv2KJHXZfnoZ+mkLxks+GtQ4EVW8m4mZEO7EXTkkATBeCdBhll3yq9X9PgG5grKvDYJh2MeLTgdVjrwX1uvkoVYIzJtwPYZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722022637; c=relaxed/simple;
-	bh=XqlwfmaVFe5J+bolmgGWz9FxsVuxHx0lGymGjzEj6Is=;
+	s=arc-20240116; t=1722022638; c=relaxed/simple;
+	bh=52yhmVRldo6fhrshj4UeNjlQ9T2sASylyx7e9qIOR0Q=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e38Aje6JBT9LgmiMgxOgEgxWUJrlZ3Ap0ghdZJfXDL8Ooq4lRVsHXr7LgZTCvp4hRNWUAfo07YFs5RNZwmdmjYsWjxw49NRm1Fxx8jLLEl0bTtSAW8nR1pyi+axr5fXLCt7RzT62RIMsCVMW3rvuFwOCuzI1yhECJgOYJ7NTJ/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=yO8/h7VA; arc=none smtp.client-ip=209.85.128.181
+	 MIME-Version; b=m5edXviHccDoZxDU7E52yz5cmIHVulcfkML0ko4oDFDyj3S8ohqaMPaxgPQSGINLKOltdBYGWX9XotwAJMMhwNqDsHCQtEnbYEo/sOHao3XKQl9OzGG5t9kpxIKn6mp7WYhDoTRQtz/l6yJ9xvsXwDQvbQ2LE5uzXmaEN/p8bQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=DvwPSxUG; arc=none smtp.client-ip=209.85.128.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-66c7aeac627so407717b3.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:16 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-664b4589b1aso304487b3.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Jul 2024 12:37:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022635; x=1722627435; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722022636; x=1722627436; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Eh9WsK9vEEAqGZ1xnhkwRSbLe82fmh0xBBwzgDkxLQI=;
-        b=yO8/h7VA/nDSrrOKIvVgzbyiQonVIlCjCmUz/GxLhly1xfvpkVkGPzdC9W8devoa3b
-         bcyJui1OPyGoAW+S07JiuFAtc6wleF2JcMl6n+Anc5B0fwSYGP6CpeXayXQ+tDUiDKqr
-         yByJB4OHWvMoEPVvW7ObaI7b21cbvPytH2VryWCZlWHrvb96ASGINufmg3fvfpB7mRy+
-         41NmEJPE8iP86KJULj3DE7oAPDKs2KOXDFurVd2ymlb9nWWWCCZfK0NtDX/+IpOR7uU5
-         db7ft2RnFdd7ZSpKWdhD4FOPqWIaAZJ4WapsE/IeV8vHSAALxoF15W8uHIfA4PBYcjwq
-         45AA==
+        bh=fXkL2cHHcMIysYGbARqm/QB30uEPhELGuHXflxiPSGg=;
+        b=DvwPSxUGCe/6svaaC9lwf9VT95oRmUMmGWeCQ1RfCTDt8fEGd6CNVsOuq4m8BhrtmG
+         OPGbzCju1PBjYUlgAl8Gqp4wDuhPKjcuREf698NfRMsA2zhHUJJZkHOAUK4Kb+3GhjS0
+         WX2mFGCTEagzWHdFOtO2bBkzeEbPgQKLpyzHhcdsIfhvvkbs2XArk35U/cDCDKgkuDNz
+         QJkxT8qV3RC1hWaeMnwUqb89ZBpNFLhaHGCBKBvb5v1WTE6g+FQoPnVKMhOk/vXgALP3
+         vRW5UE9uKy5XX9aWBxz+een5ATacrAQ4q28BuGOnbdyKA/yX0TQ45uxyVwYqpNj1ONOh
+         ywWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722022635; x=1722627435;
+        d=1e100.net; s=20230601; t=1722022636; x=1722627436;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Eh9WsK9vEEAqGZ1xnhkwRSbLe82fmh0xBBwzgDkxLQI=;
-        b=m2LLnNZiEUoLAhRE+FRl9WlZKa7LH9Hat3rZ2eRsIHg4NO5c21MP3rcyfugdaypnFG
-         54ezccl3wo+SDbfu/wbFtexLxz7snp1b2EdCBKDWQbEvVmOA+66lWescjpuMxU892zkv
-         BTkmuVpjyZLy3vStI/EUBva7TnXeGDQb89VOz18qMVr7ts/D3sgiTdzuewTwmdQ4Iqwm
-         kyI99gAJBMbm8fLhWQqhLReWVTATuSmYIHj2cKWl9dged93Obox73Z0JyiGt9W7RulQq
-         h0KaNrNwHEA/Um5oSIyABjcVPjXCMNLNEzJ1j8c71n+3UTinUPqYNR2qe996w+SqWO18
-         umyA==
-X-Gm-Message-State: AOJu0YxMxGosQFGGCIB/XK4SrfcO63ituEcRuFZZRQjM9sSfeRUVmOnd
-	iriYZFF+wzxUjGsckejdqjlD/Ma8KTSzs0DzDcnUYUgRQmpYqWhZ1e+e2iVPIagn3im3m37IGHi
-	H
-X-Google-Smtp-Source: AGHT+IEmRXQd8nq9bFqVylIvJXqMPRKM2whNd+AdA3JCY8ecz+zcKcKGQ3NSI0LYytj/ttm4kdu6Kw==
-X-Received: by 2002:a0d:ef01:0:b0:64b:7e17:b339 with SMTP id 00721157ae682-67a06edcc9amr9399367b3.15.1722022635459;
-        Fri, 26 Jul 2024 12:37:15 -0700 (PDT)
+        bh=fXkL2cHHcMIysYGbARqm/QB30uEPhELGuHXflxiPSGg=;
+        b=vESouWa51qQ8JJJlipWv/Nc3HcNqa/fS0jYdZCfbIF3GwhABDpPRylkyghBapBd4dp
+         pjINgFawULpWMObFfXPsnhBEP0MWxDo5lfB/pWuslQsnLTpRTTA0fmBbsbsVoWpRhCtL
+         5u1zdpI5762zmeIDZwnRq7n22EPA9GRSYK0f2/rmkvRwz0YxyjcINitf0dCZVT0e3259
+         7IGDlBqSHFNFZyPMCJs9fyZymerzVfMusSTOPVu7Fn7aXpNA7lKOK5I3NJDPhNar+RqQ
+         ML5TgyOY6XGnrioREq6g824KzAqN1dZYhoN5j4S3iNiA87rwYlbNRXjgiNH6/tRlvmRP
+         /8zw==
+X-Gm-Message-State: AOJu0YzA6kZs7dniX3ca9uSrN5792QMo+x1bW9yLzMcSaPk4uW80LHhA
+	40SOzAgtcFDY0CahHc04GoNrJGf9MxLD7MwIzQLAHjthq40jnTMLXA1/pkqOWGlzVEpopAmzdiU
+	P
+X-Google-Smtp-Source: AGHT+IFr/h4rnpeUNA5mbwDoIkZ8BTqwb33FWDL5SgmzFrC066nIu+zc/mYM49DSqQLr/kteMIgOng==
+X-Received: by 2002:a81:b54d:0:b0:62f:aa9a:93c6 with SMTP id 00721157ae682-67a29bfc4f8mr6250967b3.8.1722022636441;
+        Fri, 26 Jul 2024 12:37:16 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-67566dd8feasm9936407b3.18.2024.07.26.12.37.15
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-67568113cf9sm9986107b3.70.2024.07.26.12.37.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jul 2024 12:37:15 -0700 (PDT)
+        Fri, 26 Jul 2024 12:37:16 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 36/46] btrfs: convert btrfs_writepage_cow_fixup to use folio
-Date: Fri, 26 Jul 2024 15:36:23 -0400
-Message-ID: <731f88d939012cbde09a45ec30b0235134060336.1722022377.git.josef@toxicpanda.com>
+Subject: [PATCH 37/46] btrfs: convert btrfs_writepage_fixup to use a folio
+Date: Fri, 26 Jul 2024 15:36:24 -0400
+Message-ID: <d7a77c2bb42621caabf9e14208edce3ed94a889a.1722022377.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1722022376.git.josef@toxicpanda.com>
 References: <cover.1722022376.git.josef@toxicpanda.com>
@@ -84,109 +84,43 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Instead of a page, use a folio for btrfs_writepage_cow_fixup.  We
-already have a folio at the only caller, and the fixup worker uses
-folios.
+Now the fixup creator and consumer use folios, change this to use a
+folio as well.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/btrfs_inode.h |  2 +-
- fs/btrfs/extent_io.c   |  2 +-
- fs/btrfs/inode.c       | 31 ++++++++++++++++---------------
- 3 files changed, 18 insertions(+), 17 deletions(-)
+ fs/btrfs/inode.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 5599b458a9a9..fc60c0cde479 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -598,7 +598,7 @@ int btrfs_prealloc_file_range_trans(struct inode *inode,
- 				    loff_t actual_len, u64 *alloc_hint);
- int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_folio,
- 			     u64 start, u64 end, struct writeback_control *wbc);
--int btrfs_writepage_cow_fixup(struct page *page);
-+int btrfs_writepage_cow_fixup(struct folio *folio);
- int btrfs_encoded_io_compression_from_extent(struct btrfs_fs_info *fs_info,
- 					     int compress_type);
- int btrfs_encoded_read_regular_fill_pages(struct btrfs_inode *inode,
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 2f46a85888b9..ab5715de5f40 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1410,7 +1410,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 	ASSERT(start >= folio_pos(folio) &&
- 	       start + len <= folio_pos(folio) + folio_size(folio));
- 
--	ret = btrfs_writepage_cow_fixup(&folio->page);
-+	ret = btrfs_writepage_cow_fixup(folio);
- 	if (ret) {
- 		/* Fixup worker will requeue */
- 		folio_redirty_for_writepage(bio_ctrl->wbc, folio);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index cd1b3e956d7f..9234ae84175a 100644
+index 9234ae84175a..0667da7b1895 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2828,33 +2828,34 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+@@ -2695,7 +2695,7 @@ int btrfs_set_extent_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
  
- /*
-  * There are a few paths in the higher layers of the kernel that directly
-- * set the page dirty bit without asking the filesystem if it is a
-+ * set the folio dirty bit without asking the filesystem if it is a
-  * good idea.  This causes problems because we want to make sure COW
-  * properly happens and the data=ordered rules are followed.
-  *
-  * In our case any range that doesn't have the ORDERED bit set
-  * hasn't been properly setup for IO.  We kick off an async process
-  * to fix it up.  The async helper will wait for ordered extents, set
-- * the delalloc bit and make it safe to write the page.
-+ * the delalloc bit and make it safe to write the folio.
-  */
--int btrfs_writepage_cow_fixup(struct page *page)
-+int btrfs_writepage_cow_fixup(struct folio *folio)
- {
--	struct inode *inode = page->mapping->host;
-+	struct inode *inode = folio->mapping->host;
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
- 	struct btrfs_writepage_fixup *fixup;
- 
--	/* This page has ordered extent covering it already */
--	if (PageOrdered(page))
-+	/* This folio has ordered extent covering it already */
-+	if (folio_test_ordered(folio))
- 		return 0;
- 
- 	/*
--	 * PageChecked is set below when we create a fixup worker for this page,
--	 * don't try to create another one if we're already PageChecked()
-+	 * folio_checked is set below when we create a fixup worker for this
-+	 * folio, don't try to create another one if we're already
-+	 * folio_test_checked.
- 	 *
--	 * The extent_io writepage code will redirty the page if we send back
-+	 * The extent_io writepage code will redirty the foio if we send back
- 	 * EAGAIN.
- 	 */
--	if (PageChecked(page))
-+	if (folio_test_checked(folio))
- 		return -EAGAIN;
- 
- 	fixup = kzalloc(sizeof(*fixup), GFP_NOFS);
-@@ -2864,14 +2865,14 @@ int btrfs_writepage_cow_fixup(struct page *page)
- 	/*
- 	 * We are already holding a reference to this inode from
- 	 * write_cache_pages.  We need to hold it because the space reservation
--	 * takes place outside of the page lock, and we can't trust
--	 * page->mapping outside of the page lock.
-+	 * takes place outside of the folio lock, and we can't trust
-+	 * page->mapping outside of the folio lock.
- 	 */
- 	ihold(inode);
--	btrfs_folio_set_checked(fs_info, page_folio(page), page_offset(page), PAGE_SIZE);
--	get_page(page);
-+	btrfs_folio_set_checked(fs_info, folio, folio_pos(folio), folio_size(folio));
-+	folio_get(folio);
+ /* see btrfs_writepage_start_hook for details on why this is required */
+ struct btrfs_writepage_fixup {
+-	struct page *page;
++	struct folio *folio;
+ 	struct btrfs_inode *inode;
+ 	struct btrfs_work work;
+ };
+@@ -2707,8 +2707,7 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 	struct btrfs_ordered_extent *ordered;
+ 	struct extent_state *cached_state = NULL;
+ 	struct extent_changeset *data_reserved = NULL;
+-	struct page *page = fixup->page;
+-	struct folio *folio = page_folio(page);
++	struct folio *folio = fixup->folio;
+ 	struct btrfs_inode *inode = fixup->inode;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	u64 page_start = folio_pos(folio);
+@@ -2872,7 +2871,7 @@ int btrfs_writepage_cow_fixup(struct folio *folio)
+ 	btrfs_folio_set_checked(fs_info, folio, folio_pos(folio), folio_size(folio));
+ 	folio_get(folio);
  	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL);
--	fixup->page = page;
-+	fixup->page = &folio->page;
+-	fixup->page = &folio->page;
++	fixup->folio = folio;
  	fixup->inode = BTRFS_I(inode);
  	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
  
