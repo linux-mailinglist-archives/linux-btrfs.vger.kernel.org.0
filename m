@@ -1,389 +1,239 @@
-Return-Path: <linux-btrfs+bounces-6812-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6813-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87A1893E5C4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 17:15:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D5FD93E86F
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 18:30:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9243B2111A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 15:15:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5691E1C209ED
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 16:30:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F0D4A9B0;
-	Sun, 28 Jul 2024 15:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAA818FC94;
+	Sun, 28 Jul 2024 16:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fldH9HMN"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="k55FLT+1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.58.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E9E3FE55;
-	Sun, 28 Jul 2024 15:15:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA76F18FC75
+	for <linux-btrfs@vger.kernel.org>; Sun, 28 Jul 2024 16:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.58.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722179722; cv=none; b=rvUw63g+16Fn9rnrBBsn5R52sWxtGhIvWIbZ4QDNK6m2ci+aqPJ6uKWfS1fZEVAF0sme12NsGjO3bQCuzwShgXAs4V+HLSVke72yrfgTzGF+pcQiwoEeF59djwwxQyp4zvGxkGcTRviQWL/p9JyAaoiQAGZsMCZbDtyS/gXP/AI=
+	t=1722183021; cv=none; b=AeDQ8OIHn1bw0IDVVklKyIo3hyq0liaaPXQSn0onrqX6piPBHxjY9AaJ6AWDUYGDK8o9yjD1LqV+CZNxj0Za1f8K2JTh+mzyStVIb+M1j7wi8miMNNIklRM017WAfSPGhOjEeXtq4+Jr6p80yaOSaDr8Fst/6MYQPP3IKdy6378=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722179722; c=relaxed/simple;
-	bh=+JrOosRZhLpWqPpbwY4kMoLc1KjiRx+0PaVTmlQHO9c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ufcQcfnjGfpcxlcqNXwWJNfGYDtUTYKWnwwnj+JBsRQGUMG+lDdrUYiIXNBU2IYg+an2oYZ1U5pHV/tPtqdZyKrKFJpi5ccW67O5QYAvS428N+mr06pWTu0hpiVy4P1kWVnpFGdj8cj2kGmMAtER0EBogs/TERElygd1JVcyoow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fldH9HMN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C2DC4AF0E;
-	Sun, 28 Jul 2024 15:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722179721;
-	bh=+JrOosRZhLpWqPpbwY4kMoLc1KjiRx+0PaVTmlQHO9c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=fldH9HMNrPf/IDwkc5ADymEkar37A9eSlwWB7ojs/mVV8Rpz2dB+IPwH++7gH6yif
-	 9V9wjvq5YpZFQLa+fTwWgS9hvTPK2BWiyzRlU1poeXpda5eea/4ZcxJ06XW804iP9V
-	 kWffX1fHPcfMsTEQY6R/1NZuqtohTOy3GJ8CKLdWaYPKEpZtcl7RJpkT6xjqadLviN
-	 614y7MzT1sD1Lc7AxGPnNt/uxSIH4PwCjGGBRtsPKb8tnAhLWNc06HlcMMBHMaopuM
-	 uJGVM0Wwunoh78RzLqq/hxvq4bkNPA8dTBooAbAoVVPk6v2/6o37bNsmpLyYob7o0k
-	 7djl31oTlw1Zw==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-52f04b3cb33so6057041e87.0;
-        Sun, 28 Jul 2024 08:15:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWr9G6GYUsaiSddlh/koUu3WQ74NO78AC5vLpYVpre1Ka/LYRNuL8irTt3wQwDYSgSsSRBoAYgocSPGfRETFtnwKIBh4zQt+pmHDZI=
-X-Gm-Message-State: AOJu0YzTsqhi5F+49QNGA8zqfRMz3mjBFvfdJ3HG9AqyKW86PXvXexKD
-	XS1il6Vu0YQkiauArrYeb1kR62AdGW/97q1ugigyZDbry2um5wAFvsiBRymNuKCjZl2EGQiVj5x
-	ruG0hG+1yweAerCFGNP6IH1hS64A=
-X-Google-Smtp-Source: AGHT+IEEvnR85JOR+IgTo6e1BjBLDfamDZ9ft7FdmLgA1c9TwaZ4PJzfPQ3BS/nFDVrm3nEQqxLB0insYn/Q/+U/51E=
-X-Received: by 2002:ac2:5e76:0:b0:52c:df83:a740 with SMTP id
- 2adb3069b0e04-5309b299a60mr3037663e87.30.1722179719651; Sun, 28 Jul 2024
- 08:15:19 -0700 (PDT)
+	s=arc-20240116; t=1722183021; c=relaxed/simple;
+	bh=MHxixCJWQER+7QhGvhjVKtlKKcnC1zNCSpI+xbrSu5o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QtPw7D7AQ5VKQGHXMXtKLx80B65kD16nfJMoOktNCAW9O2GL4bw4Te/DUuepJm7euQE8g7oDaDWLW6seXfvDhC9J76XzDytShavPVfqWSc7272/gdZSMq7UL5Vypg1GNNPhqu6tL0kdLmBIB7XB1+qh0n9v2rR/LZw/nrHifhIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=k55FLT+1; arc=none smtp.client-ip=114.132.58.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1722182974;
+	bh=MHxixCJWQER+7QhGvhjVKtlKKcnC1zNCSpI+xbrSu5o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=k55FLT+1ADpZeqcF265+rtlIuoWangPJzaC9Gf/14rTypvjl3KQjN8OyIZjtVKQq5
+	 uH0gKdhznMrTYI2Qe+pta+tQ6dMHbuM/XPqfbYSo4qWMzenXHE66z7ZZJpcMNEDeyV
+	 JT3PdnnvTW9Crn5P2kCtdLHx3RWWzSznr9piB+vU=
+X-QQ-mid: bizesmtpip2t1722182970tpc4ly0
+X-QQ-Originating-IP: KrO+69A2YMO42GkEqm7A7wD+dyzRS1EzwGwf81phoM0=
+Received: from [IPV6:2409:8a3c:5935:8ce0:419d: ( [255.5.158.0])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 29 Jul 2024 00:09:28 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9026230350945573642
+Message-ID: <2598F89C9D10565B+29575f56-c98e-4316-8360-0e3e9e7748ff@bupt.moe>
+Date: Mon, 29 Jul 2024 00:09:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <652ec55049e94a59f66f4112fb8707629db3001d.1722008942.git.fdmanana@suse.com>
- <6c52fe9ce75354a931afdc6d2f7fb638c7f06b00.1722079321.git.fdmanana@suse.com> <20240728142842.iquah6ckxj7rfmvy@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-In-Reply-To: <20240728142842.iquah6ckxj7rfmvy@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 28 Jul 2024 16:14:42 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4bo=1ZMQohRrAH+9B-M_gpdzXc7wYqXESpYWgwb77v6g@mail.gmail.com>
-Message-ID: <CAL3q7H4bo=1ZMQohRrAH+9B-M_gpdzXc7wYqXESpYWgwb77v6g@mail.gmail.com>
-Subject: Re: [PATCH v2] generic: test page fault during direct IO write with O_APPEND
-To: Zorro Lang <zlang@redhat.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Force remove of broken extent/subvolume? (Crash in
+ btrfs_run_delayed_refs)
+To: "Emil.s" <emil@sandnabba.se>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <CAEA9r7DVO8gCRz-9vbwaNWznz9AOFxOyPLO0ukOJh-6Ef0o5Bw@mail.gmail.com>
+ <20240725224757.GD17473@twin.jikos.cz>
+ <aeed4735-f6f2-49ef-9a02-816a3b74cbd3@gmx.com>
+ <CAEA9r7AzYtQ9BifUPcW3=1zz=RmS9Fb3CnProGMg6GVkmd14TQ@mail.gmail.com>
+Content-Language: en-US
+From: Yuwei Han <hrx@bupt.moe>
+In-Reply-To: <CAEA9r7AzYtQ9BifUPcW3=1zz=RmS9Fb3CnProGMg6GVkmd14TQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpip:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Sun, Jul 28, 2024 at 3:28=E2=80=AFPM Zorro Lang <zlang@redhat.com> wrote=
-:
->
-> On Sat, Jul 27, 2024 at 12:28:16PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Test that doing a direct IO append write to a file when the input buffe=
-r
-> > was not yet faulted in, does not result in an incorrect file size.
-> >
-> > This exercises a bug on btrfs reported by users and which is fixed by
-> > the following kernel patch:
-> >
-> >    "btrfs: fix corruption after buffer fault in during direct IO append=
- write"
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >
-> > V2: Deal with partial writes by looping and writing any remaining data.
-> >     Don't exit when the first test fails, instead let the second test
-> >     run as well.
->
-> With this change I got two error lines this time [1]. Last time (V1) I
-> only got "Wrong file size after first write, got 8192 expected 4096".
+DQoNCuWcqCAyMDI0LzcvMjYgMTg6NTIsIEVtaWwucyDlhpnpgZM6DQo+PiBBcyBmb3IgYW55
+IGJpdGZsaXAgaW5kdWNlZCBlcnJvcnMsIGl0J3MgaGFyZCB0byB0ZWxsIGhvdyBmYXIgaXQg
+Z290DQo+PiBwcm9wYWdhdGVkLCB0aGlzIGNvdWxkIGJlIHRoZSBvbmx5IGluc3RhbmNlIG9y
+IHRoZXJlIGNvdWxkIGJlIG90aGVyDQo+PiBpdGVtcyByZWZlcnJpbmcgdG8gdGhhdCBvbmUg
+dG9vLg0KPiANCj4gUmlnaHQsIHllYWggdGhhdCBzb3VuZHMgYSBiaXQgbW9yZSBjaGFsbGVu
+Z2luZyB0aGVuIEkgaW5pdGlhbGx5IHRob3VnaHQuDQo+IE1heWJlIGl0IGlzIGVhc2llciB0
+byBqdXN0IHJlYnVpbGQgdGhlIGFycmF5IGFmdGVyIGFsbC4NCj4gDQo+IEFuZCBpbiByZWdh
+cmRzIHRvIFF1J3MgcXVlc3Rpb24sIHRoYXQgaXMgcHJvYmFibHkgYSBnb29kIGlkZWEgYW55
+aG93Lg0KPiANCj4+IC0gSGlzdG9yeSBvZiB0aGUgZnMNCj4+IC0gVGhlIGhhcmR3YXJlIHNw
+ZWMNCj4gDQo+IFRoaXMgaGFzIGJlZW4gbXkgcGVyc29uYWwgTkFTIC8gaG9tZSBzZXJ2ZXIg
+Zm9yIHF1aXRlIHNvbWUgdGltZS4NCj4gSXQncyBiYXNpY2FsbHkgYSBtaXggb2YganVzdCBs
+ZWZ0b3ZlciBkZXNrdG9wIGhhcmR3YXJlICh3aXRob3V0IEVDQyBtZW1vcnkpLg0KPiANCj4g
+SXQgd2FzIGEgMTIgeWVhciBvbGQgR2lnYWJ5dGUgSDc3LUQzSCBtb3RoZXJib2FyZCwgYW4g
+SW50ZWwgaTctMjYwMCBDUFUNCj4gYW5kIDQgRERSMyBESU1NcywgYWxsIG9mIGRpZmZlcmVu
+dCB0eXBlcyBhbmQgYnJhbmRzLg0KPiBUaGUgZGlza3MgYXJlIFdEIHJlZCBzZXJpZXMsIGFu
+ZCBJIHNlZSBub3cgdGhhdCBvbmUgb2YgdGhlbSBoYXMgb3Zlcg0KPiA4MGsgcG93ZXIgb24g
+aG91cnMuDQo+IA0KPiBJIGtub3cgSSBkaWQgYSByZWJ1aWxkIGFib3V0IDUgeWVhcnMgYWdv
+IHNvIHRoZSBGUyB3YXMgcHJvYmFibHkNCj4gY3JlYXRlZCB1c2luZyBVYnVudHUgc2VydmVy
+IDE4LjA0IChMaW51eCA0LjE1KSwgd2hpY2ggaGFzIGJlZW4NCj4gdXBncmFkZWQgdG8gdGhl
+IG1ham9yIExUUyB2ZXJzaW9ucyBzaW5jZSB0aGVuLg0KPiBJIGFjdHVhbGx5IGhpdCB0aGlz
+IGVycm9yIHdoZW4gSSB3YXMgZG9pbmcgdGhlICJmaW5hbCBiYWNrdXAiIGJlZm9yZQ0KPiBy
+ZXRpcmluZyB0aGlzIHNldHVwLCBhbmQgaXQgc2VlbXMgaXQgd2FzIGFib3V0IHRpbWUhIChX
+YXMgcnVubmluZw0KPiBVYnVudHUgMjIuMDQgLyBMaW51eCA1LjE1KQ0KPiANCkZvciBjdXJp
+b3NpdHksIGRpZCB5b3Ugc2V0dXAgYW55IHNjcnViIGFmdGVyIHJlYnVpbGQgRlM/DQo+IFRo
+ZSBBcmNoIHNldHVwIG9uIHRoZSBUaGlua3N0YXRpb24gaXMgbXkgd29ya3N0YXRpb24gd2hl
+cmUgSSBhdHRlbXB0ZWQNCj4gdGhlIGRhdGEgcmVjb3ZlcnkuDQo+IA0KPiBTbyBkdWUgdG8g
+dGhlIGxlZ2FjeSBoYXJkd2FyZSBhbmQgY3JhcHB5IHNldHVwIEkgdGhpbmsgaXQncyB3b3J0
+aA0KPiB3YXN0aW5nIG1vcmUgdGltZSBoZXJlLg0KPiANCj4gQnV0IHRoYW5rcyBhIGxvdCBm
+b3IgdGhlIGRldGFpbGVkIGFuc3dlciwgbXVjaCBhcHByZWNpYXRlZCENCj4gDQo+IEJlc3Qs
+DQo+IEVtaWwNCj4gDQo+IE9uIEZyaSwgMjYgSnVsIDIwMjQgYXQgMDE6MTksIFF1IFdlbnJ1
+byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT4gd3JvdGU6DQo+Pg0KPj4NCj4+DQo+PiDlnKgg
+MjAyNC83LzI2IDA4OjE3LCBEYXZpZCBTdGVyYmEg5YaZ6YGTOg0KPj4+IE9uIFRodSwgSnVs
+IDI1LCAyMDI0IGF0IDExOjA2OjAwUE0gKzAyMDAsIEVtaWwucyB3cm90ZToNCj4+Pj4gSGVs
+bG8hDQo+Pj4+DQo+Pj4+IEkgZ290IGEgY29ycnVwdCBmaWxlc3lzdGVtIGR1ZSB0byBiYWNr
+cG9pbnRlciBtaXNtYXRjaGVzOg0KPj4+PiAtLS0NCj4+Pj4gWzIvN10gY2hlY2tpbmcgZXh0
+ZW50cw0KPj4+PiBkYXRhIGV4dGVudFs3ODAzMzM1ODg0ODAsIDk0MjA4MF0gc2l6ZSBtaXNt
+YXRjaCwgZXh0ZW50IGl0ZW0gc2l6ZQ0KPj4+PiA5MjU2OTYgZmlsZSBpdGVtIHNpemUgOTQy
+MDgwDQo+Pj4NCj4+PiBUaGlzIGxvb2tzIGxpa2UgYSBzaW5nbGUgYml0IGZsaXA6DQo+Pj4N
+Cj4+Pj4+PiBiaW4oOTI1Njk2KQ0KPj4+ICcwYjExMTAwMDEwMDAwMDAwMDAwMDAwJw0KPj4+
+Pj4+IGJpbig5NDIwODApDQo+Pj4gJzBiMTExMDAxMTAwMDAwMDAwMDAwMDAnDQo+Pj4+Pj4g
+YmluKDk0MjA4MCBeIDkyNTY5NikNCj4+PiAwYjEwMDAwMDAwMDAwMDAwMCcNCj4+Pg0KPj4+
+IG9yIGFuIG9mZiBieSBvbmUgZXJyb3IsIGFzIHRoZSBkZWx0YSBpcyAweDQwMDAsIDR4IHBh
+Z2Ugd2hpY2ggaXMgb25lDQo+Pj4gbm9kZSBzaXplLg0KPj4+DQo+Pj4+IGJhY2twb2ludGVy
+IG1pc21hdGNoIG9uIFs3ODAzMzM1ODg0ODAgOTI1Njk2XQ0KPj4+PiAtLS0NCj4+Pj4NCj4+
+Pj4gSG93ZXZlciBvbmx5IHR3byBleHRlbnRzIHNlZW0gdG8gYmUgYWZmZWN0ZWQsIGluIGEg
+c3Vidm9sdW1lIG9ubHkgdXNlZA0KPj4+PiBmb3IgYmFja3Vwcy4NCj4+Pj4NCj4+Pj4gU2lu
+Y2UgSSd2ZSBub3QgYmVlbiBhYmxlIHRvIHJlcGFpciBpdCwgSSB0aG91Z2h0IHRoYXQgSSBj
+b3VsZCBqdXN0DQo+Pj4+IGRlbGV0ZSB0aGUgc3Vidm9sdW1lIGFuZCByZWNyZWF0ZSBpdC4N
+Cj4+Pj4gQnV0IG5vdyB0aGUgYnRyZnNfcnVuX2RlbGF5ZWRfcmVmcyBmdW5jdGlvbiBjcmFz
+aGVzIGEgd2hpbGUgYWZ0ZXINCj4+Pj4gbW91bnRpbmcgdGhlIGZpbGVzeXN0ZW0uIChXaGlj
+aCBpcyBxdWl0ZSBvYnZpb3VzIHdoZW4gSSB0aGluayBhYm91dA0KPj4+PiBpdCwgc2luY2Ug
+SSBndWVzcyBpdCdzIHRyeWluZyB0byByZWNsYWltIHNwYWNlLCBoaXR0aW5nIHRoZSBiYWQg
+ZXh0ZW50DQo+Pj4+IGluIHRoZSBwcm9jZXNzPykNCj4+Pj4NCj4+Pj4gQW55aG93LCBpcyBp
+dCBwb3NzaWJsZSB0byBmb3JjZSByZW1vdmFsIG9mIHRoZXNlIGV4dGVudHMgaW4gYW55IHdh
+eT8NCj4+Pj4gTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0IGV4dGVudHMgYXJlIG1hcHBlZCB0
+byBhIHNwZWNpZmljIHN1YnZvbHVtZSBhcw0KPj4+PiB3ZWxsPw0KPj4+Pg0KPj4+PiBIZXJl
+IGlzIHRoZSBmdWxsIGNyYXNoIGR1bXA6DQo+Pj4+IGh0dHBzOi8vZ2lzdC5naXRodWIuY29t
+L3NhbmRuYWJiYS9lM2VkN2Y1N2U0ZDMyZjQwNDM1NWZkZjk4OGZjZmJmZg0KPj4+DQo+Pj4g
+V0FSTklORzogQ1BVOiAzIFBJRDogMTk5NTg4IGF0IGZzL2J0cmZzL2V4dGVudC10cmVlLmM6
+ODU4IGxvb2t1cF9pbmxpbmVfZXh0ZW50X2JhY2tyZWYrMHg1YzMvMHg3NjAgW2J0cmZzXQ0K
+Pj4+DQo+Pj4gICAgODU4ICAgICAgICAgfSBlbHNlIGlmIChXQVJOX09OKHJldCkpIHsNCj4+
+PiAgICA4NTkgICAgICAgICAgICAgICAgIGJ0cmZzX3ByaW50X2xlYWYocGF0aC0+bm9kZXNb
+MF0pOw0KPj4+ICAgIDg2MCAgICAgICAgICAgICAgICAgYnRyZnNfZXJyKGZzX2luZm8sDQo+
+Pj4gICAgODYxICJleHRlbnQgaXRlbSBub3QgZm91bmQgZm9yIGluc2VydCwgYnl0ZW5yICVs
+bHUgbnVtX2J5dGVzICVsbHUgcGFyZW50ICVsbHUgcm9vdF9vYmplY3RpZCAlbGx1IG93bmVy
+ICVsbHUgb2Zmc2V0ICVsbHUiLA0KPj4+ICAgIDg2MiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGJ5dGVuciwgbnVtX2J5dGVzLCBwYXJlbnQsIHJvb3Rfb2JqZWN0aWQsIG93bmVyLA0K
+Pj4+ICAgIDg2MyAgICAgICAgICAgICAgICAgICAgICAgICAgIG9mZnNldCk7DQo+Pj4gICAg
+ODY0ICAgICAgICAgICAgICAgICByZXQgPSAtRVVDTEVBTjsNCj4+PiAgICA4NjUgICAgICAg
+ICAgICAgICAgIGdvdG8gb3V0Ow0KPj4+ICAgIDg2NiAgICAgICAgIH0NCj4+PiAgICA4NjcN
+Cj4+Pg0KPj4+IENQVTogMyBQSUQ6IDE5OTU4OCBDb21tOiBidHJmcy10cmFuc2FjdGkgVGFp
+bnRlZDogUCAgICAgICAgICAgT0UgICAgICA2LjkuOS1hcmNoMS0xICMxIGE1NjRlODBhYjEw
+YzVjZDU1ODRkNmU5YTA3MTU5MDdhMTBlMzNjYTQNCj4+PiBIYXJkd2FyZSBuYW1lOiBMRU5P
+Vk8gMzBCNFMwMVcwMC8xMDJGLCBCSU9TIFMwMEtUNzNBIDA1LzI0LzIwMjINCj4+PiBSSVA6
+IDAwMTA6bG9va3VwX2lubGluZV9leHRlbnRfYmFja3JlZisweDVjMy8weDc2MCBbYnRyZnNd
+DQo+Pj4gUlNQOiAwMDE4OmZmZmZhYmIyY2Q0ZTNiMDAgRUZMQUdTOiAwMDAxMDIwMg0KPj4+
+IFJBWDogMDAwMDAwMDAwMDAwMDAwMSBSQlg6IGZmZmY5OTIzMDdkNWMxYzAgUkNYOiAwMDAw
+MDAwMDAwMDAwMDAwDQo+Pj4gUkRYOiAwMDAwMDAwMDAwMDAwMDAxIFJTSTogZmZmZjk5MjMx
+MmMwZDU5MCBSREk6IGZmZmY5OTIyMmZhZmY2ODANCj4+PiBSQlA6IDAwMDAwMDAwMDAwMDAw
+MDAgUjA4OiAwMDAwMDAwMDAwMDAwMGJjIFIwOTogMDAwMDAwMDAwMDAwMDAwMQ0KPj4+IFIx
+MDogYTgwMDAwMDBiNWE4YzM2MCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiAwMDAwMDBi
+NWFmODFhMDAwDQo+Pj4gUjEzOiBmZmZmYWJiMmNkNGUzYjU3IFIxNDogMDAwMDAwMDAwMDBl
+NjAwMCBSMTU6IGZmZmY5OTI3Y2E3NTUxZjgNCj4+PiBGUzogIDAwMDAwMDAwMDAwMDAwMDAo
+MDAwMCkgR1M6ZmZmZjk5Mjk5Nzk4MDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAw
+DQo+Pj4gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAz
+Mw0KPj4+IENSMjogMDAwMDBhZDQwNDYyNTEwMCBDUjM6IDAwMDAwMDA4MGVhMjAwMDIgQ1I0
+OiAwMDAwMDAwMDAwMzcwNmYwDQo+Pj4gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAw
+MDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANCj4+PiBEUjM6IDAwMDAwMDAw
+MDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzogMDAwMDAwMDAwMDAwMDQwMA0K
+Pj4+IENhbGwgVHJhY2U6DQo+Pj4gICAgPFRBU0s+DQo+Pj4gICAgPyBsb29rdXBfaW5saW5l
+X2V4dGVudF9iYWNrcmVmKzB4NWMzLzB4NzYwIFtidHJmcyBkY2JlYTllZGU0OWY5NDEzYzQz
+YTk0NGY0MDkyNWM4MDA2MjFlNzhlXQ0KPj4+ICAgID8gX193YXJuLmNvbGQrMHg4ZS8weGU4
+DQo+Pj4gICAgPyBsb29rdXBfaW5saW5lX2V4dGVudF9iYWNrcmVmKzB4NWMzLzB4NzYwIFti
+dHJmcyBkY2JlYTllZGU0OWY5NDEzYzQzYTk0NGY0MDkyNWM4MDA2MjFlNzhlXQ0KPj4+ICAg
+ID8gcmVwb3J0X2J1ZysweGZmLzB4MTQwDQo+Pj4gICAgPyBoYW5kbGVfYnVnKzB4M2MvMHg4
+MA0KPj4+ICAgID8gZXhjX2ludmFsaWRfb3ArMHgxNy8weDcwDQo+Pj4gICAgPyBhc21fZXhj
+X2ludmFsaWRfb3ArMHgxYS8weDIwDQo+Pj4gICAgPyBsb29rdXBfaW5saW5lX2V4dGVudF9i
+YWNrcmVmKzB4NWMzLzB4NzYwIFtidHJmcyBkY2JlYTllZGU0OWY5NDEzYzQzYTk0NGY0MDky
+NWM4MDA2MjFlNzhlXQ0KPj4+ICAgID8gc2V0X2V4dGVudF9idWZmZXJfZGlydHkrMHgxOS8w
+eDE3MCBbYnRyZnMgZGNiZWE5ZWRlNDlmOTQxM2M0M2E5NDRmNDA5MjVjODAwNjIxZTc4ZV0N
+Cj4+PiAgICBpbnNlcnRfaW5saW5lX2V4dGVudF9iYWNrcmVmKzB4ODIvMHgxNjAgW2J0cmZz
+IGRjYmVhOWVkZTQ5Zjk0MTNjNDNhOTQ0ZjQwOTI1YzgwMDYyMWU3OGVdDQo+Pj4gICAgX19i
+dHJmc19pbmNfZXh0ZW50X3JlZisweDljLzB4MjIwIFtidHJmcyBkY2JlYTllZGU0OWY5NDEz
+YzQzYTk0NGY0MDkyNWM4MDA2MjFlNzhlXQ0KPj4+ICAgID8gX19idHJmc19ydW5fZGVsYXll
+ZF9yZWZzKzB4ZjY0LzB4ZmIwIFtidHJmcyBkY2JlYTllZGU0OWY5NDEzYzQzYTk0NGY0MDky
+NWM4MDA2MjFlNzhlXQ0KPj4+ICAgIF9fYnRyZnNfcnVuX2RlbGF5ZWRfcmVmcysweGFmMi8w
+eGZiMCBbYnRyZnMgZGNiZWE5ZWRlNDlmOTQxM2M0M2E5NDRmNDA5MjVjODAwNjIxZTc4ZV0N
+Cj4+PiAgICBidHJmc19ydW5fZGVsYXllZF9yZWZzKzB4M2IvMHhkMCBbYnRyZnMgZGNiZWE5
+ZWRlNDlmOTQxM2M0M2E5NDRmNDA5MjVjODAwNjIxZTc4ZV0NCj4+PiAgICBidHJmc19jb21t
+aXRfdHJhbnNhY3Rpb24rMHg2Yy8weGM4MCBbYnRyZnMgZGNiZWE5ZWRlNDlmOTQxM2M0M2E5
+NDRmNDA5MjVjODAwNjIxZTc4ZV0NCj4+PiAgICA/IHN0YXJ0X3RyYW5zYWN0aW9uKzB4MjJj
+LzB4ODMwIFtidHJmcyBkY2JlYTllZGU0OWY5NDEzYzQzYTk0NGY0MDkyNWM4MDA2MjFlNzhl
+XQ0KPj4+ICAgIHRyYW5zYWN0aW9uX2t0aHJlYWQrMHgxNTkvMHgxYzAgW2J0cmZzIGRjYmVh
+OWVkZTQ5Zjk0MTNjNDNhOTQ0ZjQwOTI1YzgwMDYyMWU3OGVdDQo+Pj4NCj4+PiBmb2xsb3dl
+ZCBieSBsZWFmIGR1bXAgd2l0aCBpdGVtcyByZWxldmFudCB0byB0aGUgbnVtYmVyczoNCj4+
+Pg0KPj4+ICAgICAgICAgaXRlbSAxMTcga2V5ICg3ODAzMzE3MDQzMjAgMTY4IDk0MjA4MCkg
+aXRlbW9mZiAxMTkxNyBpdGVtc2l6ZSAzNw0KPj4+ICAgICAgICAgICAgICAgICBleHRlbnQg
+cmVmcyAxIGdlbiAyMjQ1MzI4IGZsYWdzIDENCj4+PiAgICAgICAgICAgICAgICAgcmVmIzA6
+IHNoYXJlZCBkYXRhIGJhY2tyZWYgcGFyZW50IDQ0NTUzODY4NzM4NTYgY291bnQgMQ0KPj4+
+ICAgICAgICAgaXRlbSAxMTgga2V5ICg3ODAzMzI2NDY0MDAgMTY4IDk0MjA4MCkgaXRlbW9m
+ZiAxMTg4MCBpdGVtc2l6ZSAzNw0KPj4+ICAgICAgICAgICAgICAgICBleHRlbnQgcmVmcyAx
+IGdlbiAyMjQ1MzI4IGZsYWdzIDENCj4+PiAgICAgICAgICAgICAgICAgcmVmIzA6IHNoYXJl
+ZCBkYXRhIGJhY2tyZWYgcGFyZW50IDQ0NTUzODY4NzM4NTYgY291bnQgMQ0KPj4+ICAgICAg
+ICAgaXRlbSAxMTkga2V5ICg3ODAzMzM1ODg0ODAgMTY4IDkyNTY5NikgaXRlbW9mZiAxMTgy
+NyBpdGVtc2l6ZSA1Mw0KPj4+ICAgICAgICAgICAgICAgICAgICAgICBeXl5eXl5eXl5eXl5e
+Xl5eXl5eXl5eXg0KPj4+DQo+Pj4gICAgICAgICAgICAgICAgIGV4dGVudCByZWZzIDEgZ2Vu
+IDIyNDUzMjggZmxhZ3MgMQ0KPj4+ICAgICAgICAgICAgICAgICByZWYjMDogZXh0ZW50IGRh
+dGEgYmFja3JlZiByb290IDI0MDQgb2JqZWN0aWQgMTE0MTAyNCBvZmZzZXQgMCBjb3VudCAx
+DQo+Pj4gICAgICAgICBpdGVtIDEyMCBrZXkgKDc4MDMzNDUzMDU2MCAxNjggOTQyMDgwKSBp
+dGVtb2ZmIDExNzc0IGl0ZW1zaXplIDUzDQo+Pj4gICAgICAgICAgICAgICAgIGV4dGVudCBy
+ZWZzIDEgZ2VuIDIyNDUzMjggZmxhZ3MgMQ0KPj4+ICAgICAgICAgICAgICAgICByZWYjMDog
+ZXh0ZW50IGRhdGEgYmFja3JlZiByb290IDI0MDQgb2JqZWN0aWQgMTE0MTAyNSBvZmZzZXQg
+MCBjb3VudCAxDQo+Pj4gICAgICAgICBpdGVtIDEyMSBrZXkgKDc4MDMzNTQ3MjY0MCAxNjgg
+OTQyMDgwKSBpdGVtb2ZmIDExNzIxIGl0ZW1zaXplIDUzDQo+Pj4gICAgICAgICAgICAgICAg
+IGV4dGVudCByZWZzIDEgZ2VuIDIyNDUzMjggZmxhZ3MgMQ0KPj4+ICAgICAgICAgICAgICAg
+ICByZWYjMDogZXh0ZW50IGRhdGEgYmFja3JlZiByb290IDI0MDQgb2JqZWN0aWQgMTE0MTAy
+NiBvZmZzZXQgMCBjb3VudCAxDQo+Pj4NCj4+PiBhcyB5b3UgY2FuIHNlZSBpdGVtIDExOSBp
+cyB0aGUgcHJvYmxlbWF0aWMgb25lIGFuZCBhbHNvIG91dCBvZiBzZXF1ZW5jZSwgdGhlDQo+
+Pj4gYWRqYWNlbnQgaXRlbXMgaGF2ZSB0aGUga2V5IG9mZnNldCA5NDIwODAuIFdoaWNoIGNv
+bmZpcm1zIHRoZSBiaXRsaXANCj4+PiBjYXNlLg0KPj4+DQo+Pj4gQXMgZm9yIGFueSBiaXRm
+bGlwIGluZHVjZWQgZXJyb3JzLCBpdCdzIGhhcmQgdG8gdGVsbCBob3cgZmFyIGl0IGdvdA0K
+Pj4+IHByb3BhZ2F0ZWQsIHRoaXMgY291bGQgYmUgdGhlIG9ubHkgaW5zdGFuY2Ugb3IgdGhl
+cmUgY291bGQgYmUgb3RoZXINCj4+PiBpdGVtcyByZWZlcnJpbmcgdG8gdGhhdCBvbmUgdG9v
+Lg0KPj4+DQo+Pj4gV2UgZG9uJ3QgaGF2ZSBhbnkgcmVhZHkgbWFkZSB0b29sIGZvciBmaXhp
+bmcgdGhhdCwgdGhlIGJpdGxpcHMgaGl0DQo+Pj4gcmFuZG9tIGRhdGEgc3RydWN0dXJlIGdy
+b3VwcyBvciBkYXRhLCBlYWNoIGlzIGJhc2ljYWxseSB1bmlxdWUgYW5kIHdvdWxkDQo+Pj4g
+cmVxdWlyZSBhbmFseXNpcyBvZiB0cmVlIGR1bXAgYW5kIGxvb2sgZm9yIGNsdWVzIGhvdyBi
+YWQgaXQgaXMuDQo+Pj4NCj4+DQo+PiBTaW5jZSB3ZSdyZSBwcmV0dHkgc3VyZSBpdCdzIGEg
+Yml0ZmxpcCBub3csIHdvdWxkIHlvdSBwbGVhc2UgcHJvdmlkZSB0aGUNCj4+IGZvbGxvd2lu
+ZyBpbmZvPw0KPj4NCj4+IC0gSGlzdG9yeSBvZiB0aGUgZnMNCj4+ICAgICBTaW5jZSB5b3Un
+cmUgdXNpbmcgQXJjaCBrZXJuZWwsIGFuZCBzaW5jZSA1LjE0IHdlIGhhdmUgYWxsIHRoZSB3
+cml0ZS0NCj4+ICAgICB0aW1lIGNoZWNrZXJzLCBub3JtYWxseSB3ZSBzaG91bGQgZGV0ZWN0
+IHN1Y2ggb3V0LW9mLWtleSBzaXR1YXRpb24gYnkNCj4+ICAgICBmbGlwcGluZyB0aGUgZnMg
+Uk8uDQo+PiAgICAgSSdtIHdvbmRlcmluZyBpZiB0aGUgZnMgaXMgaGFuZGxlZCBieSBzb21l
+IG9sZGVyIGtlcm5lbHMgdGh1cyB0cmVlLQ0KPj4gICAgIGNoZWNrZXIgZGlkbid0IGNhdGNo
+IGl0IGVhcmx5Lg0KPj4NCj4+IC0gVGhlIGhhcmR3YXJlIHNwZWMNCj4+ICAgICBUaGUgZG1l
+c2cgb25seSBjb250YWlucyBoYXJkd2FyZSBzcGVjICJMRU5PVk8gMzBCNFMwMVcwMCIsIHdo
+aWNoIHNlZW1zDQo+PiAgICAgdG8gYmUgYSB3b3Jrc3RhdGlvbi4NCj4+ICAgICBJJ20gd29u
+ZGVyaW5nIGlmIGl0J3MgY2VydGFpbiBDUFUgbW9kZWxzIHdoaWNoIGxlYWRzIHRvIHBvc3Np
+YmxlDQo+PiAgICAgdW5yZWxpYWJsZSBtZW1vcmllcy4NCj4+ICAgICBGcm9tIG15IGV4cGVy
+aWVuY2UsIHRoZSBtZW1vcnkgY2hpcCBpdHNlbGYgaXMgcHJldHR5IHJhcmUgdG8gYmUgdGhl
+DQo+PiAgICAgY2F1c2UsIGJ1dCBlaXRoZXIgdGhlIGNvbm5lY3Rpb24gKGZyb20gQkdBIHRv
+IERJTU0gc2xvdCkgb3IgdGhlIG1lbW9yeQ0KPj4gICAgIGNvbnRyb2xsZXIgKG5vd2FkYXlz
+IGluIHRoZSBDUFUgZGllKS4NCj4+DQo+PiBUaGFua3MsDQo+PiBRdQ0KPiANCg==
 
-Yes, it's expected.
-As the changelog for v2 says, now the second test is run even if the
-first one failed.
-
-> Does this mean this v2 change help this case to be better?
-
-I prefer it like that.
-It's common in fstests to let all steps of a test run if possible
-(i.e. we don't exit, call _fail, or anything equivalent, everywhere
-unless the test can't proceed anymore).
-
->
-> Thanks,
-> Zorro
->
-> [1]
-> [root@dell-per750-41 xfstests]# ./check -s default generic/362
-> SECTION       -- default
-> FSTYP         -- btrfs
-> PLATFORM      -- Linux/x86_64 dell-xx-xxxxxx 6.10.0-0.rc7.20240712git43db=
-1e03c086.62.fc41.x86_64 #1 SMP PREEMPT_DYNAMIC Fri Jul 12 22:31:14 UTC 2024
-> MKFS_OPTIONS  -- /dev/sda6
-> MOUNT_OPTIONS -- -o context=3Dsystem_u:object_r:root_t:s0 /dev/sda6 /mnt/=
-scratch
->
-> generic/362 0s ... - output mismatch (see /root/git/xfstests/results//def=
-ault/generic/362.out.bad)
->     --- tests/generic/362.out   2024-07-28 22:22:06.098982182 +0800
->     +++ /root/git/xfstests/results//default/generic/362.out.bad 2024-07-2=
-8 22:23:16.622577397 +0800
->     @@ -1,2 +1,4 @@
->      QA output created by 362
->     +Wrong file size after first write, got 8192 expected 4096
->     +Wrong file size after second write, got 12288 expected 8192
->      Silence is golden
->
->
-> >
-> >  .gitignore                 |   1 +
-> >  src/Makefile               |   2 +-
-> >  src/dio-append-buf-fault.c | 145 +++++++++++++++++++++++++++++++++++++
-> >  tests/generic/362          |  28 +++++++
-> >  tests/generic/362.out      |   2 +
-> >  5 files changed, 177 insertions(+), 1 deletion(-)
-> >  create mode 100644 src/dio-append-buf-fault.c
-> >  create mode 100755 tests/generic/362
-> >  create mode 100644 tests/generic/362.out
-> >
-> > diff --git a/.gitignore b/.gitignore
-> > index b5f15162..97c7e001 100644
-> > --- a/.gitignore
-> > +++ b/.gitignore
-> > @@ -72,6 +72,7 @@ tags
-> >  /src/deduperace
-> >  /src/detached_mounts_propagation
-> >  /src/devzero
-> > +/src/dio-append-buf-fault
-> >  /src/dio-buf-fault
-> >  /src/dio-interleaved
-> >  /src/dio-invalidate-cache
-> > diff --git a/src/Makefile b/src/Makefile
-> > index 99796137..559209be 100644
-> > --- a/src/Makefile
-> > +++ b/src/Makefile
-> > @@ -20,7 +20,7 @@ TARGETS =3D dirstress fill fill2 getpagesize holes ls=
-tat64 \
-> >       t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
-> >       t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale=
- \
-> >       t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewindd=
-ir-test \
-> > -     readdir-while-renames
-> > +     readdir-while-renames dio-append-buf-fault
-> >
-> >  LINUX_TARGETS =3D xfsctl bstat t_mtab getdevicesize preallo_rw_pattern=
-_reader \
-> >       preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-> > diff --git a/src/dio-append-buf-fault.c b/src/dio-append-buf-fault.c
-> > new file mode 100644
-> > index 00000000..72c23265
-> > --- /dev/null
-> > +++ b/src/dio-append-buf-fault.c
-> > @@ -0,0 +1,145 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2024 SUSE Linux Products GmbH.  All Rights Reserved.
-> > + */
-> > +
-> > +/*
-> > + * Test a direct IO write in append mode with a buffer that was not fa=
-ulted in
-> > + * (or just partially) before the write.
-> > + */
-> > +
-> > +/* Get the O_DIRECT definition. */
-> > +#ifndef _GNU_SOURCE
-> > +#define _GNU_SOURCE
-> > +#endif
-> > +
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <unistd.h>
-> > +#include <stdint.h>
-> > +#include <fcntl.h>
-> > +#include <errno.h>
-> > +#include <string.h>
-> > +#include <sys/mman.h>
-> > +#include <sys/stat.h>
-> > +
-> > +static ssize_t do_write(int fd, const void *buf, size_t count)
-> > +{
-> > +        while (count > 0) {
-> > +             ssize_t ret;
-> > +
-> > +             ret =3D write(fd, buf, count);
-> > +             if (ret < 0) {
-> > +                     if (errno =3D=3D EINTR)
-> > +                             continue;
-> > +                     return ret;
-> > +             }
-> > +             count -=3D ret;
-> > +             buf +=3D ret;
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +int main(int argc, char *argv[])
-> > +{
-> > +     struct stat stbuf;
-> > +     int fd;
-> > +     long pagesize;
-> > +     void *buf;
-> > +     ssize_t ret;
-> > +
-> > +     if (argc !=3D 2) {
-> > +             fprintf(stderr, "Use: %s <file path>\n", argv[0]);
-> > +             return 1;
-> > +     }
-> > +
-> > +     /*
-> > +      * First try an append write against an empty file of a buffer wi=
-th a
-> > +      * size matching the page size. The buffer is not faulted in befo=
-re
-> > +      * attempting the write.
-> > +      */
-> > +
-> > +     fd =3D open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT | O_=
-APPEND, 0666);
-> > +     if (fd =3D=3D -1) {
-> > +             perror("Failed to open/create file");
-> > +             return 2;
-> > +     }
-> > +
-> > +     pagesize =3D sysconf(_SC_PAGE_SIZE);
-> > +     if (pagesize =3D=3D -1) {
-> > +             perror("Failed to get page size");
-> > +             return 3;
-> > +     }
-> > +
-> > +     buf =3D mmap(NULL, pagesize, PROT_READ | PROT_WRITE,
-> > +                MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> > +     if (buf =3D=3D MAP_FAILED) {
-> > +             perror("Failed to allocate first buffer");
-> > +             return 4;
-> > +     }
-> > +
-> > +     ret =3D do_write(fd, buf, pagesize);
-> > +     if (ret < 0) {
-> > +             perror("First write failed");
-> > +             return 5;
-> > +     }
-> > +
-> > +     ret =3D fstat(fd, &stbuf);
-> > +     if (ret < 0) {
-> > +             perror("First stat failed");
-> > +             return 6;
-> > +     }
-> > +
-> > +     /* Don't exit on failure so that we run the second test below too=
-. */
-> > +     if (stbuf.st_size !=3D pagesize)
-> > +             fprintf(stderr,
-> > +                     "Wrong file size after first write, got %jd expec=
-ted %ld\n",
-> > +                     (intmax_t)stbuf.st_size, pagesize);
-> > +
-> > +     munmap(buf, pagesize);
-> > +     close(fd);
-> > +
-> > +     /*
-> > +      * Now try an append write against an empty file of a buffer with=
- a
-> > +      * size matching twice the page size. Only the first page of the =
-buffer
-> > +      * is faulted in before attempting the write, so that the second =
-page
-> > +      * should be faulted in during the write.
-> > +      */
-> > +     fd =3D open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT | O_=
-APPEND, 0666);
-> > +     if (fd =3D=3D -1) {
-> > +             perror("Failed to open/create file");
-> > +             return 7;
-> > +     }
-> > +
-> > +     buf =3D mmap(NULL, pagesize * 2, PROT_READ | PROT_WRITE,
-> > +                MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> > +     if (buf =3D=3D MAP_FAILED) {
-> > +             perror("Failed to allocate second buffer");
-> > +             return 8;
-> > +     }
-> > +
-> > +     /* Fault in first page of the buffer before the write. */
-> > +     memset(buf, 0, 1);
-> > +
-> > +     ret =3D do_write(fd, buf, pagesize * 2);
-> > +     if (ret < 0) {
-> > +             perror("Second write failed");
-> > +             return 9;
-> > +     }
-> > +
-> > +     ret =3D fstat(fd, &stbuf);
-> > +     if (ret < 0) {
-> > +             perror("Second stat failed");
-> > +             return 10;
-> > +     }
-> > +
-> > +     if (stbuf.st_size !=3D pagesize * 2)
-> > +             fprintf(stderr,
-> > +                     "Wrong file size after second write, got %jd expe=
-cted %ld\n",
-> > +                     (intmax_t)stbuf.st_size, pagesize * 2);
-> > +
-> > +     munmap(buf, pagesize * 2);
-> > +     close(fd);
-> > +
-> > +     return 0;
-> > +}
-> > diff --git a/tests/generic/362 b/tests/generic/362
-> > new file mode 100755
-> > index 00000000..2c127347
-> > --- /dev/null
-> > +++ b/tests/generic/362
-> > @@ -0,0 +1,28 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FS QA Test 362
-> > +#
-> > +# Test that doing a direct IO append write to a file when the input bu=
-ffer was
-> > +# not yet faulted in, does not result in an incorrect file size.
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick
-> > +
-> > +_require_test
-> > +_require_odirect
-> > +_require_test_program dio-append-buf-fault
-> > +
-> > +[ $FSTYP =3D=3D "btrfs" ] && \
-> > +     _fixed_by_kernel_commit xxxxxxxxxxxx \
-> > +     "btrfs: fix corruption after buffer fault in during direct IO app=
-end write"
-> > +
-> > +# On error the test program writes messages to stderr, causing a golde=
-n output
-> > +# mismatch and making the test fail.
-> > +$here/src/dio-append-buf-fault $TEST_DIR/dio-append-buf-fault
-> > +
-> > +# success, all done
-> > +echo "Silence is golden"
-> > +status=3D0
-> > +exit
-> > diff --git a/tests/generic/362.out b/tests/generic/362.out
-> > new file mode 100644
-> > index 00000000..0ff40905
-> > --- /dev/null
-> > +++ b/tests/generic/362.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 362
-> > +Silence is golden
-> > --
-> > 2.43.0
-> >
-> >
->
 
