@@ -1,105 +1,267 @@
-Return-Path: <linux-btrfs+bounces-6798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6799-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 463CB93DFCF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jul 2024 16:54:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2838C93E2AC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 03:13:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8030C1C20FEE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jul 2024 14:54:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 642C0B23BE4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 01:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223AD180A6C;
-	Sat, 27 Jul 2024 14:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC31193085;
+	Sun, 28 Jul 2024 00:54:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="W3SqZwj6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FKbBwcN7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C038180A65
-	for <linux-btrfs@vger.kernel.org>; Sat, 27 Jul 2024 14:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAE9193072;
+	Sun, 28 Jul 2024 00:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722092094; cv=none; b=ZuaXCRoYa9I3Q9oztcpiq/NOJgZJldg9Z65V6huaQE3npdFXWfK6fiMj48UarvTcPGuNG7ggB6jRqPUYBUVs1KqH0msH1N0PoYc5+i5RfDx+WpZRmVfwFvKkns3Rt+5oYWI4PFkaCrxMgxbjT0yJ8D6ROiqqi4zMz0UPkr5H0ec=
+	t=1722128065; cv=none; b=aIEoa7mQThl83BRI+FF0WjvuPq6/g2943k516Mmsjl+iSc64ilXfkW1RsGP3b45K750pa6Jyy3rxUGo2vqh2/771OPZAx2KdFfRhA7h/gTePMmk6AzlyZGQ+5SJUmru19+OwPSXJxzVvMP8vetEjOxMfq+57m1O1u+gEv1c3CWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722092094; c=relaxed/simple;
-	bh=yiWuP8Onb+fyKehtZA9+3qlxXA9OLQ0daLGmt8gHCrY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cG5iqUkvWvHCaIXqeqKrY0ofh/Aw8UeChCjjtrs+EBRbiD/UtiEw5qEB5FNbkA/6aNUBGIuumZdVAN+NqGOVg8CCtBLSqvIJ/AHp4kp/vN5onq5XlsMOlUttvzz0x4pn/YTFiGFdVOFhbMiORj/h0Dz0JehUk9vTRPGTQIHmamY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=W3SqZwj6; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-113-198.bstnma.fios.verizon.net [173.48.113.198])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46REqWUW017051
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 27 Jul 2024 10:52:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1722091958; bh=qLhE8zhbnsrLQesDE5s8eN6bXS32QqwKbPnsHmPpjPs=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=W3SqZwj6xO4JInZDIxy44/G9zuWEAwQBDT8wo9oAislq4E8B456lR87n3bSU9fcTu
-	 iY0V57/ee8ng08hyb4Csnb2aESguN8FAilgp5bT1uF+l0t0N6l5WFjifYiECO6bUDd
-	 t5BTjYHDKkOovBhtRTqwkR8rL7aX++aINeXzjuXf7n9rHduxZMGTecM7BxEExtLP51
-	 RiF9Pepy9ILquFzBv7I6nIGYyVPO16Y/OWE3V35dTFL7MdnWaaeUIgp9Z79JAPI2dj
-	 iZEP64jTBjnKooEX1ccphhGHyHOYzUv04vJ6/ie7IN7IddG/d/a9WC4B2NrMWDyWKL
-	 An8LLBeP0m5Aw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 8A69515C0251; Sat, 27 Jul 2024 10:52:32 -0400 (EDT)
-Date: Sat, 27 Jul 2024 10:52:32 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: David Sterba <dsterba@suse.cz>, Youling Tang <youling.tang@linux.dev>,
-        kreijack@inwind.it, Arnd Bergmann <arnd@arndb.de>,
-        Luis Chamberlain <mcgrof@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        linux-modules@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Youling Tang <tangyouling@kylinos.cn>
-Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
- module_subeixt helper macros
-Message-ID: <20240727145232.GA377174@mit.edu>
-References: <ZqJjsg3s7H5cTWlT@infradead.org>
- <61beb54b-399b-442d-bfdb-bad23cefa586@app.fastmail.com>
- <ZqJwa2-SsIf0aA_l@infradead.org>
- <68584887-3dec-4ce5-8892-86af50651c41@libero.it>
- <ZqKreStOD-eRkKZU@infradead.org>
- <91bfea9b-ad7e-4f35-a2c1-8cd41499b0c0@linux.dev>
- <ZqOs84hdYkSV_YWd@infradead.org>
- <20240726152237.GH17473@twin.jikos.cz>
- <20240726175800.GC131596@mit.edu>
- <ZqPmPufwqbGOTyGI@infradead.org>
+	s=arc-20240116; t=1722128065; c=relaxed/simple;
+	bh=cghCpVRddNG+htzkJPqd2cxRfBTVUC+RuvYIFh2z3eY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=leeGPsAXLX821HWFp/CVMlRj8HJXaZFTSf3qfnDPUBdfUGHvqoye1JXu6RJEYoNBIU3KFhWuRvGDfECc5tcl6KdcCGHiSUF2BW/FlRkJ07F7486DuEx6iUWIPk9z71JsYTEfd7uPN1iX1dpqCbEdpfGRntBRrJc0LCCpg8+FV/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FKbBwcN7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCEAEC4AF0B;
+	Sun, 28 Jul 2024 00:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1722128064;
+	bh=cghCpVRddNG+htzkJPqd2cxRfBTVUC+RuvYIFh2z3eY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FKbBwcN7tp5S693saNeuFn5P5xcNpj0gwNGzfcoexvNVYHgEYG9xb6LuCSuEGEZT4
+	 O1YzE38LZfviieo+yAfCE2BdF+jYc/QgV5afEvBmy8v5Ekm48sRmgRGYQkP8GWNzxT
+	 qms/7Wzq08sEbOK+8mvfokx4cVGCVxzBOK5iJIJFKvXzwzLNVwTOGxU2m3HO3vSN58
+	 bdsk0tiDS0GcIGDXZlxkyWClnCK4M4zxhroL/jkxI4NEn29KjCgjZzSnVV7MTTqtfS
+	 X9G3ZAL/w0RIEbQFNtGYyO/kRZrJXwfjLno9ZEOq/7c3jf8uv4BEkZZuY+K/SAiz8H
+	 27NLYybvz2Zzg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Qu Wenruo <wqu@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.10 21/27] btrfs: do not clear page dirty inside extent_write_locked_range()
+Date: Sat, 27 Jul 2024 20:53:04 -0400
+Message-ID: <20240728005329.1723272-21-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240728005329.1723272-1-sashal@kernel.org>
+References: <20240728005329.1723272-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZqPmPufwqbGOTyGI@infradead.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.10.2
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jul 26, 2024 at 11:09:02AM -0700, Christoph Hellwig wrote:
-> On Fri, Jul 26, 2024 at 01:58:00PM -0400, Theodore Ts'o wrote:
-> > Yeah, that's my reaction as well.  This only saves 50 lines of code in
-> > ext4, and that includes unrelated changes such as getting rid of "int
-> > i" and putting the declaration into the for loop --- "for (int i =
-> > ...").  Sure, that saves two lines of code, but yay?
-> > 
-> > If the ordering how the functions gets called is based on the magic
-> > ordering in the Makefile, I'm not sure this actually makes the code
-> > clearer, more robust, and easier to maintain for the long term.
-> 
-> So you two object to kernel initcalls for the same reason and would
-> rather go back to calling everything explicitly?
+From: Qu Wenruo <wqu@suse.com>
 
-I don't oject to kernel initcalls which don't have any
-interdependencies and where ordering doesn't matter.
+[ Upstream commit 97713b1a2ced1e4a2a6c40045903797ebd44d7e0 ]
 
-						- Ted
+[BUG]
+For subpage + zoned case, the following workload can lead to rsv data
+leak at unmount time:
+
+  # mkfs.btrfs -f -s 4k $dev
+  # mount $dev $mnt
+  # fsstress -w -n 8 -d $mnt -s 1709539240
+  0/0: fiemap - no filename
+  0/1: copyrange read - no filename
+  0/2: write - no filename
+  0/3: rename - no source filename
+  0/4: creat f0 x:0 0 0
+  0/4: creat add id=0,parent=-1
+  0/5: writev f0[259 1 0 0 0 0] [778052,113,965] 0
+  0/6: ioctl(FIEMAP) f0[259 1 0 0 224 887097] [1294220,2291618343991484791,0x10000] -1
+  0/7: dwrite - xfsctl(XFS_IOC_DIOINFO) f0[259 1 0 0 224 887097] return 25, fallback to stat()
+  0/7: dwrite f0[259 1 0 0 224 887097] [696320,102400] 0
+  # umount $mnt
+
+The dmesg includes the following rsv leak detection warning (all call
+trace skipped):
+
+  ------------[ cut here ]------------
+  WARNING: CPU: 2 PID: 4528 at fs/btrfs/inode.c:8653 btrfs_destroy_inode+0x1e0/0x200 [btrfs]
+  ---[ end trace 0000000000000000 ]---
+  ------------[ cut here ]------------
+  WARNING: CPU: 2 PID: 4528 at fs/btrfs/inode.c:8654 btrfs_destroy_inode+0x1a8/0x200 [btrfs]
+  ---[ end trace 0000000000000000 ]---
+  ------------[ cut here ]------------
+  WARNING: CPU: 2 PID: 4528 at fs/btrfs/inode.c:8660 btrfs_destroy_inode+0x1a0/0x200 [btrfs]
+  ---[ end trace 0000000000000000 ]---
+  BTRFS info (device sda): last unmount of filesystem 1b4abba9-de34-4f07-9e7f-157cf12a18d6
+  ------------[ cut here ]------------
+  WARNING: CPU: 3 PID: 4528 at fs/btrfs/block-group.c:4434 btrfs_free_block_groups+0x338/0x500 [btrfs]
+  ---[ end trace 0000000000000000 ]---
+  BTRFS info (device sda): space_info DATA has 268218368 free, is not full
+  BTRFS info (device sda): space_info total=268435456, used=204800, pinned=0, reserved=0, may_use=12288, readonly=0 zone_unusable=0
+  BTRFS info (device sda): global_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): trans_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): chunk_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): delayed_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): delayed_refs_rsv: size 0 reserved 0
+  ------------[ cut here ]------------
+  WARNING: CPU: 3 PID: 4528 at fs/btrfs/block-group.c:4434 btrfs_free_block_groups+0x338/0x500 [btrfs]
+  ---[ end trace 0000000000000000 ]---
+  BTRFS info (device sda): space_info METADATA has 267796480 free, is not full
+  BTRFS info (device sda): space_info total=268435456, used=131072, pinned=0, reserved=0, may_use=262144, readonly=0 zone_unusable=245760
+  BTRFS info (device sda): global_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): trans_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): chunk_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): delayed_block_rsv: size 0 reserved 0
+  BTRFS info (device sda): delayed_refs_rsv: size 0 reserved 0
+
+Above $dev is a tcmu-runner emulated zoned HDD, which has a max zone
+append size of 64K, and the system has 64K page size.
+
+[CAUSE]
+I have added several trace_printk() to show the events (header skipped):
+
+  > btrfs_dirty_pages: r/i=5/259 dirty start=774144 len=114688
+  > btrfs_dirty_pages: r/i=5/259 dirty part of page=720896 off_in_page=53248 len_in_page=12288
+  > btrfs_dirty_pages: r/i=5/259 dirty part of page=786432 off_in_page=0 len_in_page=65536
+  > btrfs_dirty_pages: r/i=5/259 dirty part of page=851968 off_in_page=0 len_in_page=36864
+
+The above lines show our buffered write has dirtied 3 pages of inode
+259 of root 5:
+
+  704K             768K              832K              896K
+  I           |////I/////////////////I///////////|     I
+              756K                               868K
+
+  |///| is the dirtied range using subpage bitmaps. and 'I' is the page
+  boundary.
+
+  Meanwhile all three pages (704K, 768K, 832K) have their PageDirty
+  flag set.
+
+  > btrfs_direct_write: r/i=5/259 start dio filepos=696320 len=102400
+
+Then direct IO write starts, since the range [680K, 780K) covers the
+beginning part of the above dirty range, we need to writeback the
+two pages at 704K and 768K.
+
+  > cow_file_range: r/i=5/259 add ordered extent filepos=774144 len=65536
+  > extent_write_locked_range: r/i=5/259 locked page=720896 start=774144 len=65536
+
+Now the above 2 lines show that we're writing back for dirty range
+[756K, 756K + 64K).
+We only writeback 64K because the zoned device has max zone append size
+as 64K.
+
+  > extent_write_locked_range: r/i=5/259 clear dirty for page=786432
+
+!!! The above line shows the root cause. !!!
+
+We're calling clear_page_dirty_for_io() inside extent_write_locked_range(),
+for the page 768K.
+This is because extent_write_locked_range() can go beyond the current
+locked page, here we hit the page at 768K and clear its page dirt.
+
+In fact this would lead to the desync between subpage dirty and page
+dirty flags.  We have the page dirty flag cleared, but the subpage range
+[820K, 832K) is still dirty.
+
+After the writeback of range [756K, 820K), the dirty flags look like
+this, as page 768K no longer has dirty flag set.
+
+  704K             768K              832K              896K
+  I                I      |          I/////////////|   I
+                          820K                     868K
+
+This means we will no longer writeback range [820K, 832K), thus the
+reserved data/metadata space would never be properly released.
+
+  > extent_write_cache_pages: r/i=5/259 skip non-dirty folio=786432
+
+Now even though we try to start writeback for page 768K, since the
+page is not dirty, we completely skip it at extent_write_cache_pages()
+time.
+
+  > btrfs_direct_write: r/i=5/259 dio done filepos=696320 len=0
+
+Now the direct IO finished.
+
+  > cow_file_range: r/i=5/259 add ordered extent filepos=851968 len=36864
+  > extent_write_locked_range: r/i=5/259 locked page=851968 start=851968 len=36864
+
+Now we writeback the remaining dirty range, which is [832K, 868K).
+Causing the range [820K, 832K) never to be submitted, thus leaking the
+reserved space.
+
+This bug only affects subpage and zoned case.  For non-subpage and zoned
+case, we have exactly one sector for each page, thus no such partial dirty
+cases.
+
+For subpage and non-zoned case, we never go into run_delalloc_cow(), and
+normally all the dirty subpage ranges would be properly submitted inside
+__extent_writepage_io().
+
+[FIX]
+Just do not clear the page dirty at all inside extent_write_locked_range().
+As __extent_writepage_io() would do a more accurate, subpage compatible
+clear for page and subpage dirty flags anyway.
+
+Now the correct trace would look like this:
+
+  > btrfs_dirty_pages: r/i=5/259 dirty start=774144 len=114688
+  > btrfs_dirty_pages: r/i=5/259 dirty part of page=720896 off_in_page=53248 len_in_page=12288
+  > btrfs_dirty_pages: r/i=5/259 dirty part of page=786432 off_in_page=0 len_in_page=65536
+  > btrfs_dirty_pages: r/i=5/259 dirty part of page=851968 off_in_page=0 len_in_page=36864
+
+The page dirty part is still the same 3 pages.
+
+  > btrfs_direct_write: r/i=5/259 start dio filepos=696320 len=102400
+  > cow_file_range: r/i=5/259 add ordered extent filepos=774144 len=65536
+  > extent_write_locked_range: r/i=5/259 locked page=720896 start=774144 len=65536
+
+And the writeback for the first 64K is still correct.
+
+  > cow_file_range: r/i=5/259 add ordered extent filepos=839680 len=49152
+  > extent_write_locked_range: r/i=5/259 locked page=786432 start=839680 len=49152
+
+Now with the fix, we can properly writeback the range [820K, 832K), and
+properly release the reserved data/metadata space.
+
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/extent_io.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 958155cc43a81..0486b1f911248 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2246,10 +2246,8 @@ void extent_write_locked_range(struct inode *inode, struct page *locked_page,
+ 
+ 		page = find_get_page(mapping, cur >> PAGE_SHIFT);
+ 		ASSERT(PageLocked(page));
+-		if (pages_dirty && page != locked_page) {
++		if (pages_dirty && page != locked_page)
+ 			ASSERT(PageDirty(page));
+-			clear_page_dirty_for_io(page);
+-		}
+ 
+ 		ret = __extent_writepage_io(BTRFS_I(inode), page, &bio_ctrl,
+ 					    i_size, &nr);
+-- 
+2.43.0
+
 
