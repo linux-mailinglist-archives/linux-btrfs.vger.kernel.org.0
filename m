@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-6808-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76CC193E340
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 03:29:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 568E493E354
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 03:30:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1574A1F21648
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 01:29:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88D6A1C21717
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Jul 2024 01:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FC6145B23;
-	Sun, 28 Jul 2024 00:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC081AC444;
+	Sun, 28 Jul 2024 00:56:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUP3FPqJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="usU40omv"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A0C1A3BBB;
-	Sun, 28 Jul 2024 00:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15C41AC42D;
+	Sun, 28 Jul 2024 00:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722128179; cv=none; b=U2PDr7LYRyP/ubjzqoCZ/9VGM8G8C/0YLGZ64ywnstCOeUFoWWXoBAEvc9NCK/pwpWjfCUuGh6cp3FhCvH7QtloRuSB2lBpB1laNh8Vwq5QXEA4yXE2JfsfhZSdpvrZkOA4HrFzBuNIouuHU5DtP/q++l7nzDyzJcbPyLGc2ZKs=
+	t=1722128197; cv=none; b=qaMIC5Cdexea4B4QFKMnWPFfPp8U5LYIWg8tna3d3IrogVVBGeXPRBuyaF3r4KyJ3+7cyKPKsnq2R4GVWicJZQJvPjqjqbhScSf35s2jz78ha8012dPrnlqh2ZB97FGC5a0iFgd6r0C4P7xqugnJpRVH71Wlk3LnCjj8h3tLXU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722128179; c=relaxed/simple;
-	bh=zEv/k3NfI7luFSr1j4RX2rLk4wfQK7hdvSWSWeUCZcs=;
+	s=arc-20240116; t=1722128197; c=relaxed/simple;
+	bh=Rt7Lo8gELzsx4ODHUfrq/0rWxh2luWJqZTwi6ES3H3A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iMgEhst+Lcg7x5svcHBSf9uv+sHqb6cgGbh32EY5Ti2igQQw/mQzhxjvmpDZeKRad154JrNjs+dC5WTZO4HrTj1IMHsV9AIWKYO3Sd0pi302xCNkVYJsBMXrCRXxOYK5506dq+QyNK/DYKgMzdvZXdVmvPLuDnwgGnX+RzNBHcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUP3FPqJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1D17C4AF09;
-	Sun, 28 Jul 2024 00:56:17 +0000 (UTC)
+	 MIME-Version; b=OCNe0pehk9ZoPpma0E/52m/slJsHZlwqQTxBAxUNfuQxlC+7uJ+rkX22n2ClUF4nzP3mZwkxce05kf2o+RtyHU3xO/vHVdB3jyPoWR106tD/SfcK8FAv6Zw7lDTRtoy9yJkz9EXqwf5geuykjQHx1E2Y0B4KoN8Et/YBa2M4/pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=usU40omv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 367B8C32781;
+	Sun, 28 Jul 2024 00:56:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722128179;
-	bh=zEv/k3NfI7luFSr1j4RX2rLk4wfQK7hdvSWSWeUCZcs=;
+	s=k20201202; t=1722128197;
+	bh=Rt7Lo8gELzsx4ODHUfrq/0rWxh2luWJqZTwi6ES3H3A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AUP3FPqJwQSSrw2FkImNT4uDg/77ysQIir2SKMGnGdBIHdVWoHqCRJ7dWSfc7Wk8m
-	 7dDiK9ff1BW6pY1gOl5ujrYJFK3vjewZks2s14sUGvpiyPU7hRZgVdXyrtp0jAX2Vl
-	 yhvaJkPRqJ9yBwiGIHFGCZQx0hr+wrsGgsciJALce0n6XeHqWquqtx2qyMRlo6aI0i
-	 Nl3UMtcFU68EJ0pcRTj3EvcsbYeTt6oVwgC+aiK5c1WT/vB6Yqz9DBfSwXjElXtVG1
-	 Eibous9e3Qg+/BSUeAlia5rSbkKx7IVFYmrLSasRwiOUlZO9ZQf+O6URFb+JlC+X8I
-	 fAdtSls1lrsLA==
+	b=usU40omvO+11qz9oV5JvXH/vCnvyt0B2yobcGBIN2EbtRqtckrd1tm7ozMV3lo5dW
+	 1uSXTcV2Dp4WB1UnL/FYia0bDvvTRCQuQsTp6nsB1WBNpPXmPclFDpbm899pU5iqhB
+	 llNcS+qJfS0ZdcIzSeAJm/lJ+pfg/mASUJxRs6I869dJi2Vv/kyEfUSSjcoAW5weNk
+	 8MokGZW5VoteHL7ylpl69mLpdGEK69w758fBjZbD3KW0TO2ObeokXq+JtSNT8PoG3q
+	 YLtzoK3POEguDd6XvI5+0yA6iewrVdsRleH7brJtI32+yUR3XJr3+6oq4qhAPl+H/M
+	 bLTr59G4avSHg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	clm@fb.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 6/6] btrfs: fix bitmap leak when loading free space cache on duplicate entry
-Date: Sat, 27 Jul 2024 20:56:03 -0400
-Message-ID: <20240728005606.1735387-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 6/6] btrfs: fix bitmap leak when loading free space cache on duplicate entry
+Date: Sat, 27 Jul 2024 20:56:19 -0400
+Message-ID: <20240728005622.1736526-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240728005606.1735387-1-sashal@kernel.org>
-References: <20240728005606.1735387-1-sashal@kernel.org>
+In-Reply-To: <20240728005622.1736526-1-sashal@kernel.org>
+References: <20240728005622.1736526-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.223
+X-stable-base: Linux 5.4.281
 Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
@@ -87,10 +87,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 4989c60b1df9c..af52c9e005b3c 100644
+index 0cb93f73acb2d..af89fce57ff75 100644
 --- a/fs/btrfs/free-space-cache.c
 +++ b/fs/btrfs/free-space-cache.c
-@@ -798,6 +798,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+@@ -788,6 +788,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
  				spin_unlock(&ctl->tree_lock);
  				btrfs_err(fs_info,
  					"Duplicate entries in free space cache, dumping");
