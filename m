@@ -1,117 +1,90 @@
-Return-Path: <linux-btrfs+bounces-6832-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6833-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A2693F734
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 16:03:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85E8793F7D0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 16:28:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2B3EB21E8A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 14:03:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 354A51F226A5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 14:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9292149C7B;
-	Mon, 29 Jul 2024 14:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E5018EFE4;
+	Mon, 29 Jul 2024 14:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8iY2Q0S"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="1IzM35Up"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E852D05D
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2024 14:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DEE18D4B2;
+	Mon, 29 Jul 2024 14:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722261775; cv=none; b=KRdR+a/wBq6gWh2pymC4o3GiQSw/ax/kNdi2gAQXOejqkzke3GU7KQWO3stCug8mpqGC8sp7X0kltuPQNhAWtyB1Pj4bXrbKMoxfSvGZLMOGTMb2ryZvo6wmvmO78dVJwG5Y1eOOpYP/JFSHhsn37mLRac92eVcnxbS7aNE27/0=
+	t=1722262902; cv=none; b=XCk9YcpYabSqPWu7iEzMzDtgJHAFn8lIVW2DlfPPJOIo6zb5QE5xWphBrxRSv9ZU8DirApM8OY6I00GblsWZsKU0KP0ieH+Z1fh8IYPgRESLRgUDJX9M9LNkEv2JHZEenLLuTQbhPTWvcRAnLsXkbhuB4rznbdu3Kx1/WJYV3dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722261775; c=relaxed/simple;
-	bh=ajufS0BmjOchGaobmqBicgiMnUNRIvg2LMb+v++lq6U=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=jpOWmyXl8xPCK1HLQxJgus3epdeE6jHCQYtHw9oS63c15PNdUVI8dML2wGAyC95ep0IlmWtVxMi/ANxI5eSGXIl+x+dR0mzEMAVHeOSTty/Q/1MeunnhNHd2Q7hhbLKXsV1zEjcir8BuPav4t5faVvqAdcI3UAoxn7Ismfga5ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L8iY2Q0S; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2cb682fb0cdso1946619a91.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2024 07:02:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722261773; x=1722866573; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=w60KFb9+XQcKWCJETTqbfHZUvHLyV11KlEHF+iXyvf8=;
-        b=L8iY2Q0SYVR3tT8jTFW6maMoUdO+JkzyuvjS/N7evOZxJAXKbWxUtCLZ/pRh9HZT75
-         ai+z7VaVwcBsjxQkAmJjVE5Ne7ozWXnj1BXva+9vnciLMgHXg49PrwY+acf6YgNpJiMM
-         L/0mm6s2wIVl1vkNLah6AIPtXDeOkh/rHg8LyKO0789wumK7IjQ10N3wnh1zYMyWdyNz
-         65hS4yBDqDazyb4K5WjfcX6/3Z4FPK6w74RdCVWs1CcN7rjiCF0J7a2EpGsyHLnXgmOF
-         7Uitb+x0O8dLG7ZATQ3oOk1hzvSGPsgg6hzO2f1h96ar9nPox035Y6U8DarKmUZ2d0Pc
-         1/3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722261773; x=1722866573;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w60KFb9+XQcKWCJETTqbfHZUvHLyV11KlEHF+iXyvf8=;
-        b=VxGvipLcI8LvL70s7wTAPMSj1w7UopYdHnmLJ7h/htR6BKtw2cV05NpDHHmbtE+B/K
-         iaeSMJKuwsJAWsU2So45QvfFKdsL9+Ebj9DAsF3yb4DKfzIvZmYxWLuqU298zoRK8Hdq
-         EIqp/r+LTcVOpOoBGgxVNO70PtzJjsAUL74T+p4BVZ5fG0TRskRji+q+rIvymXCqv8iY
-         fqGxGaMhJLHEAN7pgsq/V+JVyLYD16LPhIccrRtqMFVs1fHf2mxUji7GAbkbroRdlNk7
-         Il++8Rj3cKLu732ahEqMnQVt4fyMU4A58ACBPA2MXblOzRaDz6yt1bGBi0z5BcVExJqa
-         eDvA==
-X-Gm-Message-State: AOJu0Ywhr1KdO+dQDWpOTLS0QNOYmsI8jl4w7xFjo6j05nSZ0WbdOr/n
-	vEef3nnYelXyYrU8Gdw6ihDe8PBxQrQHtqAeJXjKtX0kcEpEK6SbAUGGkqI7tdkmwXUhdJTVQwg
-	JxX9iSWHMBnJNNSeWbDHGb/gBe3Hv
-X-Google-Smtp-Source: AGHT+IEl/KHwrSe1cOfT3YHPQATp/jIT5SZjnOrpJt9ggLI9GSz/SAmsALUoUL6FLLbF15MJ7cZAR44EhpuO+6y2kCI=
-X-Received: by 2002:a17:90b:e0f:b0:2c9:81a2:e8da with SMTP id
- 98e67ed59e1d1-2cf7e61f471mr5567902a91.35.1722261772664; Mon, 29 Jul 2024
- 07:02:52 -0700 (PDT)
+	s=arc-20240116; t=1722262902; c=relaxed/simple;
+	bh=zdKbNpLBctOzpO+OoIHBSRHVZ2YI1X4Bp8WhHzKjulU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=skTFI4g7s0Upu6CrhqpBsxtE4G6AwHGGsGiSJVjIeWCpg0LD6y8xw31Tg3ipIV4UgrxX0pddcHFKDmxNta7/Gl/9u0IO3JagYN1frGlVRgM3KqSQWk2c07rkGvXYYzR2xDNlaFTtabu71/fRkmb8CQqS6Vy9jehLk/lEdekMfVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=1IzM35Up; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ZVZeP4kn4uvUlHvrkW4ziJmVQXuXAiVc7MV8VWayywk=; b=1IzM35UpR6KGDWE3tLxtYcQHIp
+	yXqeIHL3femg7Z7DsYX3hLZcj6sCIzrf4DwmA82MK2shllYdMKOgTB0Eenx+TnR+p1KioCBQDvMvr
+	rUTSGiSZLRjEA+rQ29J5IAS+AE8dMSojwUD4/anF2dqh+FKD9ROyRl3FpoBKClZBHmvPjBg4Jw2o3
+	d5GIKoADwwOUK6tMbQrYDwhYt8WuvFFP76ARRkjUz9RjINECABCkCIP4BOZDc2qqh4w8CdErPKYF9
+	ixeDoOBAayQnolnxG1PbVEut5rlVfXdc8U3n8vdRg8nLZYd99NAY90+V4mg3BcYEZRl4m0vbe4a6P
+	MukraIdQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sYRFp-0000000BXow-1eN3;
+	Mon, 29 Jul 2024 14:21:37 +0000
+Date: Mon, 29 Jul 2024 07:21:37 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: yangerkun <yangerkun@huawei.com>
+Cc: Filipe Manana <fdmanana@kernel.org>,
+	Christoph Hellwig <hch@infradead.org>, chuck.lever@oracle.com,
+	zlang@kernel.org, fstests@vger.kernel.org, linux-mm@kvack.org,
+	hughd@google.com, akpm@linux-foundation.org,
+	linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] generic/736: don't run it on tmpfs
+Message-ID: <ZqelcfdBQzc93w80@infradead.org>
+References: <20240720083538.2999155-1-yangerkun@huawei.com>
+ <CAL3q7H5AivAMSWk3FmmsrSqbeLfqMw_hr05b_Rdzk7hnnrsWiA@mail.gmail.com>
+ <4188b7b5-3576-9e5f-6297-794558d7a01e@huawei.com>
+ <9514fd55-4f83-8e43-bdf7-925396ab5e48@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: =?UTF-8?B?SsOpcsO0bWUgQmFyZG90?= <bardot.jerome@gmail.com>
-Date: Mon, 29 Jul 2024 16:02:27 +0200
-Message-ID: <CAK6hYTsFwBVXAJ3yBkBX-3tgmAj=1OFxN=2kybiovxjtTX4yOQ@mail.gmail.com>
-Subject: Virtualbox and btrfs superblock issue
-To: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9514fd55-4f83-8e43-bdf7-925396ab5e48@huawei.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Hi,
+On Mon, Jul 29, 2024 at 09:53:52PM +0800, yangerkun wrote:
+> But after commit a2e459555c5f("shmem: stable directory offsets"),
+> simple_offset_rename will just add the new dentry to the maple tree of
+> &SHMEM_I(inode)->dir_offsets->mt with the key always inc by 1(since
+> simple_offset_add we will find free entry start with octx->newx_offset, so
+> the entry freed in simple_offset_remove won't be found). And the same case
+> upper will be break since we loop too many times(we can fall into infinite
+> readdir without this break).
+> 
+> I prefer this is really a bug, and for the way to fix it, I think we can
+> just use the same logic what 9b378f6ad48cf("btrfs: fix infinite directory
+> reads") has did, introduce a last_index when we open the dir, and then
+> readdir will not return the entry which index greater than the last index.
+> 
+> Looking forward to your comments!
 
-Sorry if I post at the wrong place but  I didn't find an issue manager
-(like gitlab).
-(I also asking myself if a not already post but maybe before i subscribe)
+I agree to all of the above.
 
-So my issue :
-
-On a windows host laptop and with a parrot vm with a btrfs and after a
-power failure the vm looks broken.
-At start the vm drop down to initramfs.
-When I try to mount from an iso (of the same os/version) i get following error :
-
-mount -t btrfs /dev/sdc1 /media/user/to-rescue
-mount: /media/user/to-rescue: can't read superblock on /dev/sdc1.
-       dmesg(1) may have more information after failed mount system call.
-
-and dmesg get following :
-[71283.615636] BTRFS: device fsid 70bf0953-3ee3-481f-8a7d-f7327c6fba67
-devid 1 transid 182616 /dev/sdc1 (8:33) scanned by mount (24156)
-[71283.627681] BTRFS info (device sdc1): first mount of filesystem
-70bf0953-3ee3-481f-8a7d-f7327c6fba67
-[71283.627711] BTRFS info (device sdc1): using crc32c (crc32c-intel)
-checksum algorithm
-[71283.627725] BTRFS info (device sdc1): using free-space-tree
-[71283.639345] BTRFS error (device sdc1): parent transid verify failed
-on logical 26984693760 mirror 1 wanted 182616 found 182618
-[71283.642087] BTRFS error (device sdc1): parent transid verify failed
-on logical 26984693760 mirror 2 wanted 182616 found 182618
-[71283.645163] BTRFS warning (device sdc1): couldn't read tree root
-[71283.646224] BTRFS error (device sdc1): open_ctree failed
-
-How can (if I can) I fix that kind of issue.
-(i did not create backup/btrfs snapshot)
-I get that issue on 2 similar setup / power failure and one with a xfs
-system too.
-
-I'm really newbie with btrfs.
-
-thx for your feedback.
 
