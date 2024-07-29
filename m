@@ -1,163 +1,117 @@
-Return-Path: <linux-btrfs+bounces-6831-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6832-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8507193F716
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 15:54:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A2693F734
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 16:03:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AEF51F22521
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 13:54:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2B3EB21E8A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 14:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBEE14F115;
-	Mon, 29 Jul 2024 13:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9292149C7B;
+	Mon, 29 Jul 2024 14:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L8iY2Q0S"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B8DB14A0B7;
-	Mon, 29 Jul 2024 13:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E852D05D
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2024 14:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722261245; cv=none; b=rBsYoMHGXqaFIeuxp2+m2YH1EMlAEf0oxVQBz28pEPDYQIjNLIQ0FHjjISLHBSHXTofUWIvb2vakMHo4yo+tmPA8O2Bi4xel1+KoCoCia2PykMMMMdgnhMhPlwskgHpO/wnHNHqQMQn/q5qo5L9NLlXiAXUtcafLndNuXzmSUPY=
+	t=1722261775; cv=none; b=KRdR+a/wBq6gWh2pymC4o3GiQSw/ax/kNdi2gAQXOejqkzke3GU7KQWO3stCug8mpqGC8sp7X0kltuPQNhAWtyB1Pj4bXrbKMoxfSvGZLMOGTMb2ryZvo6wmvmO78dVJwG5Y1eOOpYP/JFSHhsn37mLRac92eVcnxbS7aNE27/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722261245; c=relaxed/simple;
-	bh=ZpeOxFm/gLaxfVBCZ4PcaAnxIOBoACk7GdmWouxAnR0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=fsyDR7ZiAqAkxcpfLkuR7gXX34jUpWrl19UiWtpb8mIpkdAdGIoK9PhmtNyXDFVwrz8UnHYNFql+yWOjTaqPzoPu4yNkdzJJW38K06oznr7qMprNqivp4aQPkpJVh/nT9v+xFFCctUlOQY5a0GEYlJ61vIPp9TYdvgeHGRpP4Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WXfqP0gDHzPtKQ;
-	Mon, 29 Jul 2024 21:49:37 +0800 (CST)
-Received: from kwepemf100006.china.huawei.com (unknown [7.202.181.220])
-	by mail.maildlp.com (Postfix) with ESMTPS id 00D3E1402CA;
-	Mon, 29 Jul 2024 21:53:54 +0800 (CST)
-Received: from [10.174.177.210] (10.174.177.210) by
- kwepemf100006.china.huawei.com (7.202.181.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Mon, 29 Jul 2024 21:53:53 +0800
-Message-ID: <9514fd55-4f83-8e43-bdf7-925396ab5e48@huawei.com>
-Date: Mon, 29 Jul 2024 21:53:52 +0800
+	s=arc-20240116; t=1722261775; c=relaxed/simple;
+	bh=ajufS0BmjOchGaobmqBicgiMnUNRIvg2LMb+v++lq6U=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=jpOWmyXl8xPCK1HLQxJgus3epdeE6jHCQYtHw9oS63c15PNdUVI8dML2wGAyC95ep0IlmWtVxMi/ANxI5eSGXIl+x+dR0mzEMAVHeOSTty/Q/1MeunnhNHd2Q7hhbLKXsV1zEjcir8BuPav4t5faVvqAdcI3UAoxn7Ismfga5ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L8iY2Q0S; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2cb682fb0cdso1946619a91.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2024 07:02:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722261773; x=1722866573; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=w60KFb9+XQcKWCJETTqbfHZUvHLyV11KlEHF+iXyvf8=;
+        b=L8iY2Q0SYVR3tT8jTFW6maMoUdO+JkzyuvjS/N7evOZxJAXKbWxUtCLZ/pRh9HZT75
+         ai+z7VaVwcBsjxQkAmJjVE5Ne7ozWXnj1BXva+9vnciLMgHXg49PrwY+acf6YgNpJiMM
+         L/0mm6s2wIVl1vkNLah6AIPtXDeOkh/rHg8LyKO0789wumK7IjQ10N3wnh1zYMyWdyNz
+         65hS4yBDqDazyb4K5WjfcX6/3Z4FPK6w74RdCVWs1CcN7rjiCF0J7a2EpGsyHLnXgmOF
+         7Uitb+x0O8dLG7ZATQ3oOk1hzvSGPsgg6hzO2f1h96ar9nPox035Y6U8DarKmUZ2d0Pc
+         1/3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722261773; x=1722866573;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w60KFb9+XQcKWCJETTqbfHZUvHLyV11KlEHF+iXyvf8=;
+        b=VxGvipLcI8LvL70s7wTAPMSj1w7UopYdHnmLJ7h/htR6BKtw2cV05NpDHHmbtE+B/K
+         iaeSMJKuwsJAWsU2So45QvfFKdsL9+Ebj9DAsF3yb4DKfzIvZmYxWLuqU298zoRK8Hdq
+         EIqp/r+LTcVOpOoBGgxVNO70PtzJjsAUL74T+p4BVZ5fG0TRskRji+q+rIvymXCqv8iY
+         fqGxGaMhJLHEAN7pgsq/V+JVyLYD16LPhIccrRtqMFVs1fHf2mxUji7GAbkbroRdlNk7
+         Il++8Rj3cKLu732ahEqMnQVt4fyMU4A58ACBPA2MXblOzRaDz6yt1bGBi0z5BcVExJqa
+         eDvA==
+X-Gm-Message-State: AOJu0Ywhr1KdO+dQDWpOTLS0QNOYmsI8jl4w7xFjo6j05nSZ0WbdOr/n
+	vEef3nnYelXyYrU8Gdw6ihDe8PBxQrQHtqAeJXjKtX0kcEpEK6SbAUGGkqI7tdkmwXUhdJTVQwg
+	JxX9iSWHMBnJNNSeWbDHGb/gBe3Hv
+X-Google-Smtp-Source: AGHT+IEl/KHwrSe1cOfT3YHPQATp/jIT5SZjnOrpJt9ggLI9GSz/SAmsALUoUL6FLLbF15MJ7cZAR44EhpuO+6y2kCI=
+X-Received: by 2002:a17:90b:e0f:b0:2c9:81a2:e8da with SMTP id
+ 98e67ed59e1d1-2cf7e61f471mr5567902a91.35.1722261772664; Mon, 29 Jul 2024
+ 07:02:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] generic/736: don't run it on tmpfs
-From: yangerkun <yangerkun@huawei.com>
-To: Filipe Manana <fdmanana@kernel.org>, Christoph Hellwig
-	<hch@infradead.org>, <chuck.lever@oracle.com>
-CC: <zlang@kernel.org>, <fstests@vger.kernel.org>, <linux-mm@kvack.org>,
-	<hughd@google.com>, <akpm@linux-foundation.org>, linux-btrfs
-	<linux-btrfs@vger.kernel.org>
-References: <20240720083538.2999155-1-yangerkun@huawei.com>
- <CAL3q7H5AivAMSWk3FmmsrSqbeLfqMw_hr05b_Rdzk7hnnrsWiA@mail.gmail.com>
- <4188b7b5-3576-9e5f-6297-794558d7a01e@huawei.com>
-In-Reply-To: <4188b7b5-3576-9e5f-6297-794558d7a01e@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemf100006.china.huawei.com (7.202.181.220)
+From: =?UTF-8?B?SsOpcsO0bWUgQmFyZG90?= <bardot.jerome@gmail.com>
+Date: Mon, 29 Jul 2024 16:02:27 +0200
+Message-ID: <CAK6hYTsFwBVXAJ3yBkBX-3tgmAj=1OFxN=2kybiovxjtTX4yOQ@mail.gmail.com>
+Subject: Virtualbox and btrfs superblock issue
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
 Hi,
 
-在 2024/7/24 21:30, yangerkun 写道:
-> Hi, All,
-> 
-> Sorry for the delay relay(something happened, and cannot use pc
-> before...).
-> 
-> 在 2024/7/21 1:26, Filipe Manana 写道:
->> On Sat, Jul 20, 2024 at 9:38 AM Yang Erkun <yangerkun@huawei.com> wrote:
->>>
->>> We use offset_readdir for tmpfs, and every we call rename, the offset
->>> for the parent dir will increase by 1. So for tmpfs we will always
->>> fail since the infinite readdir.
->>
->> Having an infinite readdir sounds like a bug, or at least an
->> inconvenience and surprising for users.
->> We had that problem in btrfs which affected users/applications, see:
->>
->> https://lore.kernel.org/linux-btrfs/2c8c55ec-04c6-e0dc-9c5c-8c7924778c35@landley.net/
->>
->> which was surprising for them since every other filesystem they
->> used/tested didn't have that problem.
->> Why not fix tmpfs?
-> 
-> Thanks for all your advise, I will give a detail analysis first(maybe
-> until last week I can do it), and after we give a conclusion about does
-> this behavior a bug or something expected to occur, I will choose the
-> next step!
+Sorry if I post at the wrong place but  I didn't find an issue manager
+(like gitlab).
+(I also asking myself if a not already post but maybe before i subscribe)
 
-The case generic/736 do something like below:
+So my issue :
 
-1. create 5000 files(1 2 3 ...) under one dir(testdir)
-2. call readdir(man 3 readdir) once, and get entry
-3. rename(entry, "TEMPFILE"), then rename("TMPFILE", entry)
-4. loop 2~3, until readdir return nothing of we loop too many times(15000)
+On a windows host laptop and with a parrot vm with a btrfs and after a
+power failure the vm looks broken.
+At start the vm drop down to initramfs.
+When I try to mount from an iso (of the same os/version) i get following error :
 
-For tmpfs before a2e459555c5f("shmem: stable directory offsets"), every 
-rename called, the new dentry will insert to d_subdirs *head* of parent 
-dentry, and dcache_readdir won't reenter this dentry if we have already 
-enter the dentry, so in step 4 we will break the test since readdir 
-return nothing  (I have try to change __d_move the insert to the "tail" 
-of d_sub_dirs, problem can still happend).
+mount -t btrfs /dev/sdc1 /media/user/to-rescue
+mount: /media/user/to-rescue: can't read superblock on /dev/sdc1.
+       dmesg(1) may have more information after failed mount system call.
 
-But after commit a2e459555c5f("shmem: stable directory offsets"), 
-simple_offset_rename will just add the new dentry to the maple tree of 
-&SHMEM_I(inode)->dir_offsets->mt with the key always inc by 1(since 
-simple_offset_add we will find free entry start with octx->newx_offset, 
-so the entry freed in simple_offset_remove won't be found). And the same 
-case upper will be break since we loop too many times(we can fall into 
-infinite readdir without this break).
+and dmesg get following :
+[71283.615636] BTRFS: device fsid 70bf0953-3ee3-481f-8a7d-f7327c6fba67
+devid 1 transid 182616 /dev/sdc1 (8:33) scanned by mount (24156)
+[71283.627681] BTRFS info (device sdc1): first mount of filesystem
+70bf0953-3ee3-481f-8a7d-f7327c6fba67
+[71283.627711] BTRFS info (device sdc1): using crc32c (crc32c-intel)
+checksum algorithm
+[71283.627725] BTRFS info (device sdc1): using free-space-tree
+[71283.639345] BTRFS error (device sdc1): parent transid verify failed
+on logical 26984693760 mirror 1 wanted 182616 found 182618
+[71283.642087] BTRFS error (device sdc1): parent transid verify failed
+on logical 26984693760 mirror 2 wanted 182616 found 182618
+[71283.645163] BTRFS warning (device sdc1): couldn't read tree root
+[71283.646224] BTRFS error (device sdc1): open_ctree failed
 
-I prefer this is really a bug, and for the way to fix it, I think we can 
-just use the same logic what 9b378f6ad48cf("btrfs: fix infinite 
-directory reads") has did, introduce a last_index when we open the dir, 
-and then readdir will not return the entry which index greater than the 
-last index.
+How can (if I can) I fix that kind of issue.
+(i did not create backup/btrfs snapshot)
+I get that issue on 2 similar setup / power failure and one with a xfs
+system too.
 
-Looking forward to your comments!
+I'm really newbie with btrfs.
 
-Thanks,
-Erkun.
-
-
-
-> 
-> Thanks again for all your advise!
-> 
-> 
->>
->> Thanks.
->>
->>>
->>> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
->>> ---
->>>   tests/generic/736 | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/tests/generic/736 b/tests/generic/736
->>> index d2432a82..9fafa8df 100755
->>> --- a/tests/generic/736
->>> +++ b/tests/generic/736
->>> @@ -18,7 +18,7 @@ _cleanup()
->>>          rm -fr $target_dir
->>>   }
->>>
->>> -_supported_fs generic
->>> +_supported_fs generic ^tmpfs
->>>   _require_test
->>>   _require_test_program readdir-while-renames
->>>
->>> -- 
->>> 2.39.2
->>>
->>>
+thx for your feedback.
 
