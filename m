@@ -1,121 +1,116 @@
-Return-Path: <linux-btrfs+bounces-6891-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6892-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AC349415ED
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 17:54:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14837941ACE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 18:47:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9FF1C22FE5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 15:54:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBDD01F232F4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 16:47:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7731BA868;
-	Tue, 30 Jul 2024 15:54:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A71118B462;
+	Tue, 30 Jul 2024 16:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SSpK+W1k"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="aDnPl3kq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAA129A2;
-	Tue, 30 Jul 2024 15:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 221B2189914
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 16:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722354863; cv=none; b=c3N/5yYIvJzcKBrol0ms/Ah5jCx4HqsJVjXKOOIP4oc54MbwnBz+9h7tWg6VmlnBQOb6gNpHXKoCSJji/l1h0g+uYlOV6uA8Xl+pN3rpafsbU7Z0IJu+1P/lO0AUnG+tdJLIv8JOtOczC4rMU9bjxcHpsudne27DflTAlevMCt0=
+	t=1722358047; cv=none; b=pnKVcgGJaQ9xQ6rxhSatXt1tdVDM4nEEJ48HmtQNOmAvTZtMOtEYCm8qfk7H2DlZgGfvezjaErC1cmhxMejAYfBFY0/fi4O7+3hmV9JWAbPsWOOPFiATpAWkRpwgWfigXYeI8KxEL78lrt6UvwY3tDMlfC9fRPKkTkBZoofXyNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722354863; c=relaxed/simple;
-	bh=unEtCF3an6EuUhcVoxrAjGuLanbPeD/vRQNW+01TYfo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F97/Rkwr28x0C8eqrHLGdVPKU4ZmQtcSmqfRcHhvniW1LegXOrjYD9TXSrzz4sTBemx4rDBVG+vS0i3ETmvaMsl79gpHQV2LDDdt7Zr8/XXGUMRYdEje6w9nDd9C7sdHUyDsW9JjDNcoT5vZy5sEPQj46MiGOM2zG/StSvgNm4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SSpK+W1k; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=6MXNumiKKmCQgh40ekmql/XajsTgk+xubikZMvobTSk=; b=SSpK+W1kp26+xjQWTTmaM5ZjCe
-	2XK+V9aC4beetwb6xvFEEtZM0tauZM5ADdlXygFQZYfY1sOVipzzth/ZEc5rMgn9g2gdx7K2PX4ZD
-	02XPutJJJFy3ehJQehM8oID2qMExXoI2bAN3xv/oazWG5i/jIAwnJjIfn9mFm7hzZcEk0xrLb9cnj
-	9RbYHYeYjw/GXs6q6v5Oansql87rCbU2OeqCa/Wj/6cu9tdFyhqgCseznNhe8ybtmWftvIyttUVF7
-	guJoQ5U6hGUmnfBws2Rw7OTuzPSr2N8gcX3iJQYJBWZXk2XQdstPHKE3oHPWK4dPb4D0gjKgHhkC9
-	HadHxXCw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sYpB5-0000000ErhA-2ZyA;
-	Tue, 30 Jul 2024 15:54:19 +0000
-Date: Tue, 30 Jul 2024 16:54:19 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
-	linux-fsdevel@vger.kernel.org,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Forcing vmscan to drop more (related) pages?
-Message-ID: <ZqkMq9Id43s-V_Sf@casper.infradead.org>
-References: <7e68a0b2-0bee-4562-a29f-4dd7d8713cd9@gmx.com>
+	s=arc-20240116; t=1722358047; c=relaxed/simple;
+	bh=WuaOSKi/E7lRp+lo23KrCkqVHysWhpDw5hBVzXXvVjA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=rq0j2Ouxspsi1M4H1jmVvkul+YDcBJvBc0Md3/puqyTNzvxorOMFzD69w4MG8Gk6E+KZUqTEEiRXK9LVX8WvNKWgOEInkrL9xgAZE9Fv32TDF0Ouzb1vSw6Q2MOjvA41DNr07s27LUmU/qtUC6cGcLH9jhKRFIEruxyMSN98eT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=aDnPl3kq; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-66599ca3470so34217757b3.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 09:47:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722358044; x=1722962844; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6/bcl7MUrOdNxmIDWSxSn4y0smYyQz6bnmAt/eOYcX0=;
+        b=aDnPl3kqLXnpE9r4W7SIm7Tizd7sC786JmcKoKm1YIeabERlSfigLpXFy3WPM11UDo
+         nnL9N6aFw1Vkj27Erz25RWtBasrpqIPS4UIVj/3CL+VVana2eLLM+4t6d3Zn75jNW2Qj
+         pJj7l2l8EXzIbO7e6cCNw1MRO6u2lA86Vyg+A2uX0BP6kufFHeLBIcn5LHM6vuHA7n+b
+         HLU/DwFkqnnScK5B9RZ/X2IR8eT5WLCRTGHOWSe1dJAa6hviixS7RCZdq+DCm7y7VIhm
+         simc3VGLZeilrCrAvC4LXWnrZadJWk8nDx/j3wZP2KODYfJmOk5tPI3Y20iLZCpGltAm
+         5cKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722358044; x=1722962844;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6/bcl7MUrOdNxmIDWSxSn4y0smYyQz6bnmAt/eOYcX0=;
+        b=wecj+z0EtdCEbJcBEq4X7A1bclOLO8Szjsc1j0XRU87zUBh1OfnBXZmuJDBSqrKLjF
+         hvnoX9LTRTKU1QxWKrD/5ZHTLY/dNrJhov8nb8dnql5n19v+jdoCXBkanFpTDQkKaIpI
+         pBcsdnJjcb3HWQHG8NOXwA3U8QUhASoTOUWCE1DFwFF2C9QH23v9uikheQ7qUr01H6iZ
+         pYWB0T/zR80p6/0B1SUIb0hEyL5zdtceEP6abMWautD7T471+kKrdFk2uyAV3vaT2daG
+         QtgSubncoxPJpxZ5lKYI0SEN8YZ+6E2Ut/3eoBqkg/qIOPtvZv/oYIVz1gXwVOYh4K5h
+         IBCA==
+X-Gm-Message-State: AOJu0Yxl58GECEPusRXHstElWG1FyguW9QYQcqWM1BAvUJvF/q/HMW02
+	ARMLaH0gMD3b9M4AygNs3rsQVHXdxa+TkB+04DZ3VX0Zp1tGHjCSN+65qipA/P9AeojNkkKrClT
+	t
+X-Google-Smtp-Source: AGHT+IHytHv0mI+7jrcGMTU2ZvrgX5s8jDg2FB27cSE+A4Q/kG4gVFctuTuMJUXAADvvNDS8XcxcEw==
+X-Received: by 2002:a05:6902:1029:b0:e05:a60e:e896 with SMTP id 3f1490d57ef6-e0b5449b644mr14191354276.4.1722358043836;
+        Tue, 30 Jul 2024 09:47:23 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e0b29f1c269sm2374835276.11.2024.07.30.09.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Jul 2024 09:47:23 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2] btrfs: emit a warning about space cache v1 being deprecated
+Date: Tue, 30 Jul 2024 12:47:19 -0400
+Message-ID: <51e96d7a2754991bc369065d74290e7a436934c7.1722358018.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e68a0b2-0bee-4562-a29f-4dd7d8713cd9@gmx.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 30, 2024 at 03:35:31PM +0930, Qu Wenruo wrote:
-> Hi,
-> 
-> With recent btrfs attempt to utilize larger folios (for its metadata), I
-> am hitting a case like this:
-> 
-> - Btrfs allocated an order 2 folio for metadata X
-> 
-> - Btrfs tries to add the order 2 folio at filepos X
->   Then filemap_add_folio() returns -EEXIST for filepos X.
-> 
-> - Btrfs tries to grab the existing metadata
->   Then filemap_lock_folio() returns -ENOENT for filepos X.
-> 
-> The above case can have two causes:
-> 
-> a) The folio at filepos X is released between add and lock
->    This is pretty rare, but still possible
-> 
-> b) Some folios exist at range [X+4K, X+16K)
->    In my observation, this is way more common than case a).
-> 
-> Case b) can be caused by the following situation:
-> 
-> - There is an extent buffer at filepos X
->   And it is consisted of 4 order 0 folios.
-> 
-> - vmscan wants to free folio at filepos X
->   It calls into the btrfs callback, btree_release_folio().
->   And btrfs did all the checks, release the metadata.
-> 
->   Now all the 4 folios at file pos [X, X+16K) have their private
->   flags cleared.
-> 
-> - vmscan freed folio at filepos X
->   However the remaining 3 folios X+4K, X+8K, X+12K are still attached
->   to the filemap, and in theory we should free all 4 folios in one go.
-> 
->   And later cause the conflicts with the larger folio we want to insert.
-> 
-> I'm wondering if there is anyway to make sure we can release all
-> involved folios in one go?
-> I guess it will need a new callback, and return a list of folios to be
-> released?
+We've been wanting to get rid of this for a while, add a message to
+indicate that this feature is going away and when so we can finally have
+a date when we're going to remove it.  The output looks like this
 
-I feel like we're missing a few pieces of this puzzle:
+BTRFS warning (device nvme0n1): space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2
 
- - Why did btrfs decide to create four order-0 folios in the first
-   place?
- - Why isn't there an EEXIST fallback from order-2 to order-1 to order-0
-   folios?
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- Made it all one line as per Dave's comment.
 
-But there's no need for a new API.  You can remove folios from the page
-cache whenever you like.  See delete_from_page_cache_batch() as an
-example.
+ fs/btrfs/super.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 0eda8c21d861..1eed1a42db22 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -682,8 +682,11 @@ bool btrfs_check_options(const struct btrfs_fs_info *info, unsigned long *mount_
+ 		ret = false;
+ 
+ 	if (!test_bit(BTRFS_FS_STATE_REMOUNTING, &info->fs_state)) {
+-		if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE))
++		if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE)) {
+ 			btrfs_info(info, "disk space caching is enabled");
++			btrfs_warn(info,
++"space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2");
++		}
+ 		if (btrfs_raw_test_opt(*mount_opt, FREE_SPACE_TREE))
+ 			btrfs_info(info, "using free-space-tree");
+ 	}
+-- 
+2.43.0
+
 
