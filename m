@@ -1,150 +1,164 @@
-Return-Path: <linux-btrfs+bounces-6860-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6861-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D42E79401D1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 01:47:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62ADF9402FB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 03:02:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FDB11C2200E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2024 23:47:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 142FF1F230B6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 01:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CDB18EFD9;
-	Mon, 29 Jul 2024 23:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zD6i42wL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MoA5nKV3";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W310e72W";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k/JInFd3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6837464;
+	Tue, 30 Jul 2024 01:02:27 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C19A1E49E
-	for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2024 23:47:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CA8749A;
+	Tue, 30 Jul 2024 01:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722296836; cv=none; b=G+cW6J7VnPGzj5czkz5PETzy3VQGMQ5tLkrUtDQopbeekPZMVoRsOsCKFDOmvIJTauYmpWpgqBtMkPVcEcnq5sLpop9tcMWlPmKhljY45I0jMTLLq9tG7Afsxy0lnrWUGfIAkEOE9RgY+1fTY0AROBy3tBBbSSv/JvH5YbH2+U8=
+	t=1722301346; cv=none; b=j8hqyhp/bFVZuP+/qcWb2/zOJvLICP6qxyO7uweXmMCPJg6lCMZc4jU9dSnuV8YEcoquREliIbgGYuxZR6mIr3hJZWVXy3rFYtpII1vj3t/jZXy5rD1Qzk4RszPI85maItQlHXtJxgvj+cj8FKr82gfV12fc/4N4lIr1wCcRN3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722296836; c=relaxed/simple;
-	bh=HwxYHS33fRxxC3/3k7WBJkgHnabtbFB6xXZXocm/zkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hDtgMIHVNPnyHVnZ+ERHtC7ApXbHoS6uMo7x4ke2vXSjmJBOT2eDOrHLzdHneRtmkimYC7ZGbnqHj2NvFuNej2sf22+691ziHqGx1kNG0UW7B2qLByClKv+lErr2qTwPB+os8jQ0qkgV99h3X+N4OEjw0GJ5NRVDdCwyrF+P0aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zD6i42wL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MoA5nKV3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W310e72W; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k/JInFd3; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 77CEC21B45;
-	Mon, 29 Jul 2024 23:47:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722296832;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p6N0EIX7Z0XuD8q6B0sqPg2VVLcE7DX7wDxiGblEeII=;
-	b=zD6i42wLfUsKweLbSKUG8Z7zA92Zzlja7tP/cgoz1ZbZhBU+T+RirR+McFX14cOHy9JeSM
-	Uowhn89mDUfg3yKzcvQIICO9ALGWGed/zPwh1HIvBukwiZDwqpG5AYx77PBzUClP27B6+d
-	KZ4FsGSPq0DmwORtDQvgwqQsRZvBrCU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722296832;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p6N0EIX7Z0XuD8q6B0sqPg2VVLcE7DX7wDxiGblEeII=;
-	b=MoA5nKV3aQC04e+E3KTZjVdsBqPWIcEtOZqyKGta09IBqT+Nllc7bgKLl3MHuXf7Bx9eNU
-	0i5JAgwZChiDH1DQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=W310e72W;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="k/JInFd3"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722296831;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p6N0EIX7Z0XuD8q6B0sqPg2VVLcE7DX7wDxiGblEeII=;
-	b=W310e72WK5p6jq/ZJUZvntmhGiYlnRxKg4Qmd2186Vxb1B/qSewwJ+Gpvq2tUdHqTfQn5U
-	rhB3FFuzG2zeLDGDU9QFY9aYItSwKa3R3vqdWiWucxHfgF6REuUC3WhnVnVTMhOCfkqQiS
-	rMXid1uwbPeRvdzlxfvNmMb3HIvJUTg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722296831;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p6N0EIX7Z0XuD8q6B0sqPg2VVLcE7DX7wDxiGblEeII=;
-	b=k/JInFd3doOWBiRcz3wjUwV3DeE4YRWGCxeBw57Lcu5FZ/GuVVknRtIKvxy3rM73HqUqvN
-	wfm84HRD/gwTuKAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 65D991368A;
-	Mon, 29 Jul 2024 23:47:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id l+1hGP8pqGb9eQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 29 Jul 2024 23:47:11 +0000
-Date: Tue, 30 Jul 2024 01:47:10 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: simplify mkfs_main cleanup
-Message-ID: <20240729234710.GX17473@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240722143235.1022223-1-maharmstone@fb.com>
+	s=arc-20240116; t=1722301346; c=relaxed/simple;
+	bh=AtvwPQ/Dj+sUJ0Oqu02FnwFX5Ie0+x52h8RNGy9VZMo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=pjNhmvIOjOepDH7iD1TTiCWmBYJHO1RFd3zk2FNG9n8CdkWD3X4jewHTZSqZm56e8x6DOl0ptkL+nDjHNVq/h9fFgKgJaLw3ihIoZ/oWc419PGCW/YPVsXuaJWXzjMuva9qXfCuOL1KcoWZcgd6f8U/qh70bRyBMySPuOkCeKq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WXxkW4Mg0zncmc;
+	Tue, 30 Jul 2024 09:01:23 +0800 (CST)
+Received: from kwepemf100006.china.huawei.com (unknown [7.202.181.220])
+	by mail.maildlp.com (Postfix) with ESMTPS id E3C4C140FA7;
+	Tue, 30 Jul 2024 09:02:20 +0800 (CST)
+Received: from [10.174.177.210] (10.174.177.210) by
+ kwepemf100006.china.huawei.com (7.202.181.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Tue, 30 Jul 2024 09:02:20 +0800
+Message-ID: <b692d6e8-8408-d590-7108-b08b11719f80@huawei.com>
+Date: Tue, 30 Jul 2024 09:02:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240722143235.1022223-1-maharmstone@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 77CEC21B45
-X-Spam-Score: -4.01
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,fb.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+]
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] generic/736: don't run it on tmpfs
+To: Chuck Lever III <chuck.lever@oracle.com>
+CC: Filipe Manana <fdmanana@kernel.org>, Christoph Hellwig
+	<hch@infradead.org>, "zlang@kernel.org" <zlang@kernel.org>,
+	"fstests@vger.kernel.org" <fstests@vger.kernel.org>, "linux-mm@kvack.org"
+	<linux-mm@kvack.org>, "hughd@google.com" <hughd@google.com>, Andrew Morton
+	<akpm@linux-foundation.org>, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20240720083538.2999155-1-yangerkun@huawei.com>
+ <CAL3q7H5AivAMSWk3FmmsrSqbeLfqMw_hr05b_Rdzk7hnnrsWiA@mail.gmail.com>
+ <4188b7b5-3576-9e5f-6297-794558d7a01e@huawei.com>
+ <9514fd55-4f83-8e43-bdf7-925396ab5e48@huawei.com>
+ <418B7A4D-30D7-44B4-B3F3-5BE97C04BACE@oracle.com>
+From: yangerkun <yangerkun@huawei.com>
+In-Reply-To: <418B7A4D-30D7-44B4-B3F3-5BE97C04BACE@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemf100006.china.huawei.com (7.202.181.220)
 
-On Mon, Jul 22, 2024 at 03:32:24PM +0100, Mark Harmstone wrote:
-> mkfs_main is a main-like function, meaning that return and exit are
-> equivalent. Deduplicate our cleanup code by moving the error label.
+
+
+在 2024/7/29 22:29, Chuck Lever III 写道:
 > 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> 
+>> On Jul 29, 2024, at 9:53 AM, yangerkun <yangerkun@huawei.com> wrote:
+>>
+>> Hi,
+>>
+>> 在 2024/7/24 21:30, yangerkun 写道:
+>>> Hi, All,
+>>> Sorry for the delay relay(something happened, and cannot use pc
+>>> before...).
+>>> 在 2024/7/21 1:26, Filipe Manana 写道:
+>>>> On Sat, Jul 20, 2024 at 9:38 AM Yang Erkun <yangerkun@huawei.com> wrote:
+>>>>>
+>>>>> We use offset_readdir for tmpfs, and every we call rename, the offset
+>>>>> for the parent dir will increase by 1. So for tmpfs we will always
+>>>>> fail since the infinite readdir.
+>>>>
+>>>> Having an infinite readdir sounds like a bug, or at least an
+>>>> inconvenience and surprising for users.
+>>>> We had that problem in btrfs which affected users/applications, see:
+>>>>
+>>>> https://lore.kernel.org/linux-btrfs/2c8c55ec-04c6-e0dc-9c5c-8c7924778c35@landley.net/
+>>>>
+>>>> which was surprising for them since every other filesystem they
+>>>> used/tested didn't have that problem.
+>>>> Why not fix tmpfs?
+>>> Thanks for all your advise, I will give a detail analysis first(maybe
+>>> until last week I can do it), and after we give a conclusion about does
+>>> this behavior a bug or something expected to occur, I will choose the
+>>> next step!
+>>
+>> The case generic/736 do something like below:
+>>
+>> 1. create 5000 files(1 2 3 ...) under one dir(testdir)
+>> 2. call readdir(man 3 readdir) once, and get entry
+>> 3. rename(entry, "TEMPFILE"), then rename("TMPFILE", entry)
+>> 4. loop 2~3, until readdir return nothing of we loop too many times(15000)
+>>
+>> For tmpfs before a2e459555c5f("shmem: stable directory offsets"), every rename called, the new dentry will insert to d_subdirs *head* of parent dentry, and dcache_readdir won't reenter this dentry if we have already enter the dentry, so in step 4 we will break the test since readdir return nothing  (I have try to change __d_move the insert to the "tail" of d_sub_dirs, problem can still happend).
+>>
+>> But after commit a2e459555c5f("shmem: stable directory offsets"), simple_offset_rename will just add the new dentry to the maple tree of &SHMEM_I(inode)->dir_offsets->mt with the key always inc by 1(since simple_offset_add we will find free entry start with octx->newx_offset, so the entry freed in simple_offset_remove won't be found). And the same case upper will be break since we loop too many times(we can fall into infinite readdir without this break).
+>>
+>> I prefer this is really a bug, and for the way to fix it, I think we can just use the same logic what 9b378f6ad48cf("btrfs: fix infinite directory reads") has did, introduce a last_index when we open the dir, and then readdir will not return the entry which index greater than the last index.
+>>
+>> Looking forward to your comments!
+> 
+> Is this the same bug as https://bugzilla.kernel.org/show_bug.cgi?id=219094 ?
 
-Added to devel, thanks. It adds more code but at least removes the exit
-block duplication. The 'success' label can be further moved before the
-'return !!ret' so we don't have two exit points.
+Yes.
+
+
+> 
+> 
+>> Thanks,
+>> Erkun.
+>>
+>>
+>>
+>>> Thanks again for all your advise!
+>>>>
+>>>> Thanks.
+>>>>
+>>>>>
+>>>>> Signed-off-by: Yang Erkun <yangerkun@huawei.com>
+>>>>> ---
+>>>>>    tests/generic/736 | 2 +-
+>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/tests/generic/736 b/tests/generic/736
+>>>>> index d2432a82..9fafa8df 100755
+>>>>> --- a/tests/generic/736
+>>>>> +++ b/tests/generic/736
+>>>>> @@ -18,7 +18,7 @@ _cleanup()
+>>>>>           rm -fr $target_dir
+>>>>>    }
+>>>>>
+>>>>> -_supported_fs generic
+>>>>> +_supported_fs generic ^tmpfs
+>>>>>    _require_test
+>>>>>    _require_test_program readdir-while-renames
+>>>>>
+>>>>> -- 
+>>>>> 2.39.2
+>>>>>
+>>>>>
+> 
+> --
+> Chuck Lever
+> 
+> 
 
