@@ -1,295 +1,198 @@
-Return-Path: <linux-btrfs+bounces-6876-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6877-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F19594137E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 15:47:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A74494139C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 15:50:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B32111C234A3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 13:47:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 410DC284673
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 13:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E16D1A08A6;
-	Tue, 30 Jul 2024 13:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5D81A08AB;
+	Tue, 30 Jul 2024 13:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="sUYGhLeC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CXByBGpU";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hQFm1Qeo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d5q4bom0"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="g5JP+eNJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C11181465A7
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 13:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722347253; cv=none; b=qWse7WbTa89X1CR85ELFRWhxpUIBKnA7i9eFcnbIJu5Tnpr204MXUdzkf3nrAVX8Es7r5ntFlvupXQMJRWvRUbfvFxdXmGJpftQCXO+YkHxapN0D+GtL7uLqiARNd88aHj9Q7ychdWhG/sCYQ+cqNaMw7EqrNsFHouocWYzXX/o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722347253; c=relaxed/simple;
-	bh=cFxXILOOru+LcY9xOYfSI/FD9P+oOsRCbKx77r7/+O8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MAESMUtuFrFWQIqaqrw0cPSpXV6XgMdXP2idEXmoFEUvJLyC0tj4G/CQ8WFng0FSQex36HKg5JOEyNSz6G6kDz5C/luj4lgNs89qMSO1T8hW+G93rlviSnz0XhH7B3GJEWPdraU9XZCGQHR7BBeJTZ46947vybDjImqirhv0u2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=sUYGhLeC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CXByBGpU; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hQFm1Qeo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d5q4bom0; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C490D1F7E2;
-	Tue, 30 Jul 2024 13:47:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722347249;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W30TjIq9CtiDlue3Vyuvp47KtOgRj13n2UuFSzc4gSI=;
-	b=sUYGhLeCCSAK1Cc8rNaVmP5meMHevgPx4fnEgbKDhoR1vWsRP5riX01WHBDUFOmxcwE2TR
-	RRJCyOVdU/Yu7otNthTdMHDg/xvU5XFMIiwHtS9W2lFRHDqoQg1TYUqO82vgwSbpRyGsJt
-	pUO60bbEIqGxHcKAF4Zn4Xr0scDCqNo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722347249;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W30TjIq9CtiDlue3Vyuvp47KtOgRj13n2UuFSzc4gSI=;
-	b=CXByBGpU6HLpIcuKzTtvBhV/pFgDouHtMShCsoIVTGCOJgtvUkiWMd90+XpHca7fwH6Q6Y
-	cCPzGrhldE4nz9Ag==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=hQFm1Qeo;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=d5q4bom0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722347248;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W30TjIq9CtiDlue3Vyuvp47KtOgRj13n2UuFSzc4gSI=;
-	b=hQFm1QeoKMeRRstmc8KexzIZF8gSiDU9dRhqP8B/F42vCwF400hMtrhHH/RkZmBoI+74/L
-	lvLuMIZ21dSnd/my/zKLdO05ev6fDcIT6ol6DefkDPwn687J7azCIpA163+yZCOXWTBAN3
-	NWcmxrZrsrVdjfNbu3Om9ANbOkiLS6o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722347248;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W30TjIq9CtiDlue3Vyuvp47KtOgRj13n2UuFSzc4gSI=;
-	b=d5q4bom0LxqPW75AvEjbi5BKCywe1nO3IOQKHtgcMFjKdOXN81Vx63cWeRV3Kt4mpUO9sx
-	4dlvt9cwGYhcXuDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E74013983;
-	Tue, 30 Jul 2024 13:47:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id lPlvJvDuqGZqYAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 30 Jul 2024 13:47:28 +0000
-Date: Tue, 30 Jul 2024 15:47:27 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: make cow_file_range_inline honor locked_page on
- error
-Message-ID: <20240730134727.GB17473@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <4830592782d102b8f15cb753824caee669e5d8a9.1721774105.git.boris@bur.io>
- <c62d48f9-55d2-4f4a-af7e-31ad08dbdd29@gmx.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E51B1A08A0
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 13:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.153.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1722347439; cv=fail; b=l2HYCMY4lfSYuqkFrNqaJ8WGNWjKK7tUA9knipjrXGbO+fqLVSfiwozz0B9xaMJPk4fKk/QQOMNsCBVnKw+ZQDCXzE5ID7cwvHp6PaNhld5KTFWVXCoKHF8Kuau1op19LbBcd4YmrQL++JrveVfh4VQZ9VN2hHQ9slkMru4SEvs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1722347439; c=relaxed/simple;
+	bh=ZiKDXbYgtIHcujUJwg9mN6UgxQ0eF6/ylqQPlnB4xS4=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=bid1hT9hQyEe0PPTC6mrC+OnA1T4tBS4159hOw9XB03tVoK2eMaxrzf8I19lm9ZsIt1rBoAWyJWHiEsoaAT3p0aYv9bFbCwe42cQLGfVU8JJwwLPEarkRslEsiyfiUfWlo+xca6s/m2USgg6fNWhVAsuOWBSFiHXRwpsfhPDL0Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=g5JP+eNJ; arc=fail smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46UD6qSP011970
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 06:50:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from
+	:to:subject:date:message-id:references:in-reply-to:content-type
+	:content-id:content-transfer-encoding:mime-version; s=
+	s2048-2021-q4; bh=ZiKDXbYgtIHcujUJwg9mN6UgxQ0eF6/ylqQPlnB4xS4=; b=
+	g5JP+eNJJ2uPtH2ZKh9hV9KMlsmRq/USbsBnslPRTfkSpH4ccNLNx5nHtBjUDbiV
+	igYZMx6phmIWz/Ij8UpjMTXGm9lermT+n60dyyusF5LhsbCCMJsYIcTNCHgNNK8H
+	Cp2+pYqtWGz5mPIhxav1IHb9F+hVFZXXEI8TOSjsOk12SIuKBQPfo9SNvLTvLIZb
+	qYPSrK/f4k4/K2Aos3OUfEB5ptVy/RAGtugolF9mYjMsd11bNNCA9XsLnfCvtQgz
+	Ru7G6dvJWwXRWpxm5ZrkcVETUPY7No+amqwgGYpUUVXRa2Kmgcg9ok8Syd9yCm8c
+	XrYD8x5KGGbJ/bGnV2SkIg==
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2046.outbound.protection.outlook.com [104.47.74.46])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40pq1jkgf0-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 06:50:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=YjMq0CsTt7GTcPfDoyHr3wox4WF1y1OLNqL5QMhrkvo3G8RaQrLIodAs577/wNB1NWrbVmHL9//UiONaXSTLb+pK6CAgV0p1ObFDtjqFEMz2CLrUhrNdbT8XPBRh2vkDbNIdtSzYi3b4a9hepNqE5Ss1WFTrUVOFIMpgBWVInLeGGWtdR61WzPvyV3GFAGq3r16lQ/alC5EAKp8v3ZUZML4G6uPLqnLwHF9qSoh8FHo0OF2uYxqcXJceigPNXc2znC84kwlf5XaYe2yVtkKOkTAEHQBXz8KnbY0x65qUXfZFrTO6xqMWrZKsPt8SwQ03zYwF3s6HIyGglHrI5hITHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZiKDXbYgtIHcujUJwg9mN6UgxQ0eF6/ylqQPlnB4xS4=;
+ b=yY7s8I2/K6Aw+FpulJmOIfzni1Xtf9ycBitb8JI3Eh0ECW6s1IqblldmvheLv5yj5AZzikZasFFK8MjEKIAUHcu2EtU57epsjOzxYbrFE6PDB8xOHqHcrWH2uRefMCxtfQE9rqT7ItSTh/iEBwm3p56FaHcCMzkm97XMJ/9P7y4fTfNN5v8K77pdNst9CvW4IJY7oqWjcszP9AVB+GosO40ndzBTW6ZJdleYUyhyXYvtN+j/N7FeTtFkL9UIh2e5Ft214LsOYYCaBQt3zSWOpHV5Uli1+DuMfPesEdKOVJZ2iQqz1iNFnCNt2f5rF/rrsWGh6DA5OKZPgXOyfdZg6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com (2603:10b6:a03:4c0::15)
+ by PH0PR15MB4941.namprd15.prod.outlook.com (2603:10b6:510:c5::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7807.28; Tue, 30 Jul
+ 2024 13:50:33 +0000
+Received: from SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8]) by SJ2PR15MB5669.namprd15.prod.outlook.com
+ ([fe80::bff4:aff5:7657:9fe8%2]) with mapi id 15.20.7784.020; Tue, 30 Jul 2024
+ 13:50:33 +0000
+From: Mark Harmstone <maharmstone@meta.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2] btrfs-progs: add --subvol option to mkfs.btrfs
+Thread-Topic: [PATCH v2] btrfs-progs: add --subvol option to mkfs.btrfs
+Thread-Index: AQHa4mREFne/jrRFGk2qZmk22837CbIPCG+AgABBrAA=
+Date: Tue, 30 Jul 2024 13:50:33 +0000
+Message-ID: <4dd099b3-8a2f-4a5b-9471-f01703e6b409@meta.com>
+References: <20240730093833.1169945-1-maharmstone@fb.com>
+ <d67ca8a6-9b5f-4ba1-aae3-70e1cb22ecda@gmx.com>
+In-Reply-To: <d67ca8a6-9b5f-4ba1-aae3-70e1cb22ecda@gmx.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ2PR15MB5669:EE_|PH0PR15MB4941:EE_
+x-ms-office365-filtering-correlation-id: a2ca67fa-badb-4a52-71b6-08dcb09e9525
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|366016|376014|38070700018;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?KzlOYlRUVVJsMXBlN3FQM1QxVVdaUytucEk1amlTRFJxSzRNWHZTV1pIaTEy?=
+ =?utf-8?B?TERjczVCU08xdUZ1TEl5VnpPZWU4TEJ1VmlaWWRBdXpTd1BBRFJWMGdwU3Vn?=
+ =?utf-8?B?REdJZGpPSDhrMFphV1Jya1ovd1k2TkFoaU8xNEpKNGxhbkVNMUttOTFEQyt5?=
+ =?utf-8?B?NzJVaWFMOVd2OTgvRjZXcUszS3lQcFM5RVB1NW9sNkZRYlN1YnVuREhsSjdx?=
+ =?utf-8?B?bm5HRG42QTNjb1BJRjBuVnh5MFlPNXVrRm4vQVE0RjB6ellMVS96VXVMRDIv?=
+ =?utf-8?B?bkU4S09GOWVuV3BkWnhpcjM1NVlyeDRkanJnM2ZPSlpkbE5CMW9nWjdWTDZr?=
+ =?utf-8?B?S2w1bFFMOU0vL2pFeEpDYUFpZE5RdDNvaGhYNzhFV2xPSldPVVhjSjkya3FD?=
+ =?utf-8?B?UjFhcUhRZHdjNitRVXFPVC9ZTHIvN0FPc3dTMFhMVERzQjhFSG9BRCtpTVhP?=
+ =?utf-8?B?WCt0eHlnck92eFU1Y0RxMmhVbE1jaXFJMGZYVmhkZHovRERac21BTkZkVWdL?=
+ =?utf-8?B?b2oxRWJzL09wTlI1RVFCV0MrRXZGYjFCNCt4anRza005NXM1cFBnSGxvRGxW?=
+ =?utf-8?B?amNXRTgyS2ZLSEJNMXJWdEQ0WUNReXU1cWpDejhjdTI5WnRhRE5FdkNUUXlH?=
+ =?utf-8?B?alY0NS95Yldzc281ZzAxNWxEWVVKTjJic29KL2xLRFY0bGpwUyt5cVp4WHNy?=
+ =?utf-8?B?ZC9COUZKaDNSYUpuOUJNMVJoSUNZN3FzbHp5cDZ4eXhmNlZxUlJIUnRzdUZF?=
+ =?utf-8?B?YjZFTHJoSlNrdUp2b00zeVNDSDF2dDNkOGdsRjFiR2JiSy9kb1N4QzZjWk1M?=
+ =?utf-8?B?NTIxeDRwY2pBWS9YQ1dDZjlWakxoMDRFbjRHRFpOUDdGa1pCbjFhYW5rbXIv?=
+ =?utf-8?B?bFZKTkk1a0xhSy9EVHpiLzYxUEdUWEQ0YVErMG0ySDJCMUxTT1VVNTBHakxJ?=
+ =?utf-8?B?UjUrWFFId3NlSmNlT0xDN0pHdDd3Sk1lZ1hPYXgyN01RZ2krS2FtWTErTHhQ?=
+ =?utf-8?B?MEprVTN2eFJ1a2JRbUdhTUZwL0Q1TEl6azk5NHlhaEdJaEVLWVhJS1FNK2px?=
+ =?utf-8?B?NjVWZTkvVVZNWXJKcHdST0Qwc3l2cjR5cTMzOWVzenZacS9qMWhBUTZlaytE?=
+ =?utf-8?B?UlE4WHBFZDJiS0U2ZWtwTk95YTk2MnU2c3Z2QlJzU0NJZFRGRW0yMjl2Z1Q3?=
+ =?utf-8?B?MkFYekduV08wZWdVemRBY1NuWmlVelVPVEx1NEN6dW5yMnJMeXlkdlVpMjNM?=
+ =?utf-8?B?ZkVaTWtrbVlOWG1mV0FUZ1NBSlEwZUF3U3Mxbkg5YmU2cWlYWko5UXZ2aTV1?=
+ =?utf-8?B?TkU5blNicHNNVmpPaTRSMDRvR2lUMnV2VVZnc1FlallSTlorMmUrdE9sMGFI?=
+ =?utf-8?B?Z21pZnFYMEo5RnBXUzR5QXFaMGRrcUxXOWZoazRLWVhkL05CMnI5RS9VU2xn?=
+ =?utf-8?B?dkcvajJPUThPVlRNU3BSS090eXBwdW1mYjlINWhuOEdFZ1FKZm9SNlV2SW8v?=
+ =?utf-8?B?YW8rb25jcHVKVjc1ZzZBcFFqSkkwQ0UydGFGYmRFbG5XaUR6cThFZkhhRlVO?=
+ =?utf-8?B?TjdCeUZDU29zWmR4b20rRnFQVnN6VkZXSXhmQjF4bWl3VnJzSkd1QVZEcW01?=
+ =?utf-8?B?aDNyZU5CNnZjWmk2SXZiMnJCN1lvS1lGZ3JKUzI2K2ZLR0YxUU9NalUxcENp?=
+ =?utf-8?B?RkRKVVZRaWZIdkI1bXoyZitFd01QZ2drMk5lUFpDcnF6SlprTjlZcFNxQTNi?=
+ =?utf-8?B?b2cwZ3Z3blNIWmNyT3N6emRYdytuWkw3U2pzeFN3RFBRRnZCaGJSYmltSVNu?=
+ =?utf-8?B?OUY0c01MS3NLS2xhMnBlTGlaYkwrOEVrekRPWnk3b0E1R3E3MDZjT3daOTRI?=
+ =?utf-8?B?NTR1M2lyY0dkNGhIbXgrZmFWS3R0TFZoOVBhOU9HZ3h6alE9PQ==?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR15MB5669.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?WElnKzhHRmdPdlh4d0loaHVlNTAzb29aSm53Z29oR1VNaXZPWmxrMEdpZ1BH?=
+ =?utf-8?B?M3VOS3M3V0wvZXZ1VS9rOVZORENZYTg5eDQwa0tNMlY4djdmSUt6M2lQdCsx?=
+ =?utf-8?B?cjNXQytYdHd3Z0xrLzgrcHk2bUVudVkzWmd2V3RweUNmZk9paFZOV3hUdjQx?=
+ =?utf-8?B?VVlMR1BmUWc5K0lPazkyTmpsUDBjeEd4M3JMU2d0bDZSZm5vRCtiOHhDaExS?=
+ =?utf-8?B?dnNDQ3JvSE9DQUFpaGRWVUFyU1ZneEVqc1JZbjNLTElvTnErNXNzTUZBeWNZ?=
+ =?utf-8?B?N3lLLzlNaTJiRS85cFp5a0g4WEhFSThwWjdsZHEwWW4zekdMcVFlUHdxQmFU?=
+ =?utf-8?B?OFdTVEw0R04wZWpVQmFnRDBGTmZGZ1haM3NCdllPd3F1L0c1c0hLUjdnOWFU?=
+ =?utf-8?B?cjh1dWpOSi9SaDdEK0FtSStBWWZISUV2czdGQlN5bUFiS1I0S1lWOXQ4Z0lV?=
+ =?utf-8?B?VlpaRCtyTVoyNnpkTEhsUW1Gc2JGZ2JpaDJmMitINnczZW1NR0VLUUUxemNk?=
+ =?utf-8?B?WkJzM1pmOUFQVTBQMTdacW1JbFN1NzdCN09pS2NLSXZDdzBFSW5KdjUzUjdB?=
+ =?utf-8?B?M2V1NjJrTVZCbi84ZjI2SXIwQWwxN2ljMDYwNkZmUFZKTmxyaUx5a0RnWUk4?=
+ =?utf-8?B?TnE1VE4wTHJkYlBVUnl1eWFtOTdjSkpZWXpyNWovUFViTjl6THYzZU9HZEln?=
+ =?utf-8?B?dDlGNVM3NkhEZmFhUlBXSEJySjM4QnZ4M29KNzdKNWFncFR3bmR3TkNVVVQr?=
+ =?utf-8?B?Ny9XM0U1ZU5McUhJd3N4QzRlQzhBRWloQzN0TXpnbW5UQVF4b25rNE5zOHdJ?=
+ =?utf-8?B?eS9TYWxWZUtNcFVYNVI2UkJqdDhRNUtoMG1wekZBVzdFdHhRZnQzMmRjYkdz?=
+ =?utf-8?B?eHZSWXJBRUlJYk81YTZ1RlVDQVNxQnA4V2IwT2dNS3BOMDVKeUlsYmdiNUVm?=
+ =?utf-8?B?VWpmRm9Wd0VMKzhwQW11YTUybWtvM0orekQzbG16akpOS1lqSW5VNnlVWlBh?=
+ =?utf-8?B?VWVUbk9BWVAxNUJPNVRCdlJLb2Q0L1ZSWGZRRzE3Q2RzODl5WC8vaEFOUGov?=
+ =?utf-8?B?VnlYcGpsRDUwUlJ3MVI4WFNTaDVaODNqVEhVM1pmYnNzenloZFJQZ2xOYlZN?=
+ =?utf-8?B?V1Y0VnlNeGtQVkNZSVk3WFVRc3dUNUlLcjA3QWtpcHgzeE9IKzd2TUR3WWRn?=
+ =?utf-8?B?c1l6N09mSlh5YWl3UXhCM3JuNG40VXhGNUZKeUJ3ckdyUUsvdlVYZnFEOE5E?=
+ =?utf-8?B?M2dYL004RndTK29acHZpdE5DREdHWC9Kc2oxenlSS3kyWlZVUWJud0kyK1N0?=
+ =?utf-8?B?eXNIQWFlaGFuQlk4bHRsRGtmOU5HczBWODVESkkrUEYxNmkveU9qWGlNMzhw?=
+ =?utf-8?B?RjNDcFhSZlRQVEVZaDhpbEFmVzhxd3V1OGtXcE1XeTJnWktKdGVzMGNmaGNs?=
+ =?utf-8?B?cUZ1ZDcwTGNlOXRHSTZQaVNkZ3lqMStHK2tyUm80cnVUazFsT0tnTjJ1cUN6?=
+ =?utf-8?B?VU1xUEtjN2tmdnBBamxxOHVJM2c2M085Z1ZKMVM5RDhSK2phbkc1aUpXUUEw?=
+ =?utf-8?B?WVEydklaUG00SDVuY3I5RGlHZmE2WEdBSnJzQkR2VUh1TTl2REpTR2srRmFt?=
+ =?utf-8?B?M3pUaUhyODNrUGlIS3YwTzRvMVVvVEZFdWtIS0l4NWRIOFlrdXdrYTdQUUhu?=
+ =?utf-8?B?aE05ZzI4VkZxMC9oczh4T01iT2dDc09pQUJEcEN5VHZ0cHlCNE02cHhLbzM2?=
+ =?utf-8?B?ZmUxV2RTUVFtM0RxN0JwOEs4d29mM3FzZW1KWjRpWG4xTkRCVFlXSmF0ZnBo?=
+ =?utf-8?B?RzU2RFFJQ0ppZG0xOEk1ZE1CNHp1NmhXN3pHdWE0QWVRSmRpVTRsSE1pcEVT?=
+ =?utf-8?B?RERHWWpBQUxhSjg2RTNORVBpaVlrN2Zibk5lU1FsOXM5UXhjTVI2eElOZWsr?=
+ =?utf-8?B?Sk1wWjFVSVVqVXFpcCtHQ1RTSzg1d2srR1ZiMEM1ZUlSb0psb1V4ZnBWVUl1?=
+ =?utf-8?B?NnFMcUIvSXp0MHJPSkd1K0V5YVV3anJTTTNwNjNGWHJQUGJGSmhQS0dPakJs?=
+ =?utf-8?B?djlFeitMb2J3ZjRqckdXVXErODd6eGJNU2Z6Q1dJYTFHK25nWHBMVEk3MVJn?=
+ =?utf-8?Q?VkLOijLmkHnLHrN7NjkccKdYt?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <000E9B000199C641BDE5325FDE4EC5A5@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c62d48f9-55d2-4f4a-af7e-31ad08dbdd29@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.01 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	FREEMAIL_TO(0.00)[gmx.com];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,suse.cz:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -1.01
-X-Rspamd-Queue-Id: C490D1F7E2
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR15MB5669.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2ca67fa-badb-4a52-71b6-08dcb09e9525
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2024 13:50:33.2884
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wxKyu2+h7cicMsWal/Uk3VjR9pa88DpNQr0OoLuz94PsaWpqNR7GVbVOprf058mLwI9+iEpvgYqaKMMKPxvHRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4941
+X-Proofpoint-GUID: wQaGxqi0Yml0mK9eHMVhyyfFLsmSERhW
+X-Proofpoint-ORIG-GUID: wQaGxqi0Yml0mK9eHMVhyyfFLsmSERhW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-30_11,2024-07-30_01,2024-05-17_01
 
-On Wed, Jul 24, 2024 at 08:35:02AM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/7/24 08:05, Boris Burkov 写道:
-> > The btrfs buffered write path runs through __extent_writepage which has
-> > some tricky return value handling for writepage_delalloc. Specifically,
-> > when that returns 1, we exit, but for other return values we continue
-> > and end up calling btrfs_folio_end_all_writers. If the folio has been
-> > unlocked (note that we check the PageLocked bit at the start of
-> > __extent_writepage), this results in an assert panic like this one from
-> > syzbot:
-> >
-> > BTRFS: error (device loop0 state EAL) in free_log_tree:3267: errno=-5 IO
-> > failure
-> > BTRFS warning (device loop0 state EAL): Skipping commit of aborted
-> > transaction.
-> > BTRFS: error (device loop0 state EAL) in cleanup_transaction:2018:
-> > errno=-5 IO failure
-> > assertion failed: folio_test_locked(folio), in fs/btrfs/subpage.c:871
-> > ------------[ cut here ]------------
-> > kernel BUG at fs/btrfs/subpage.c:871!
-> > Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> > CPU: 1 PID: 5090 Comm: syz-executor225 Not tainted
-> > 6.10.0-syzkaller-05505-gb1bc554e009e #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > Google 06/27/2024
-> > RIP: 0010:btrfs_folio_end_all_writers+0x55b/0x610 fs/btrfs/subpage.c:871
-> > Code: e9 d3 fb ff ff e8 25 22 c2 fd 48 c7 c7 c0 3c 0e 8c 48 c7 c6 80 3d
-> > 0e 8c 48 c7 c2 60 3c 0e 8c b9 67 03 00 00 e8 66 47 ad 07 90 <0f> 0b e8
-> > 6e 45 b0 07 4c 89 ff be 08 00 00 00 e8 21 12 25 fe 4c 89
-> > RSP: 0018:ffffc900033d72e0 EFLAGS: 00010246
-> > RAX: 0000000000000045 RBX: 00fff0000000402c RCX: 663b7a08c50a0a00
-> > RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> > RBP: ffffc900033d73b0 R08: ffffffff8176b98c R09: 1ffff9200067adfc
-> > R10: dffffc0000000000 R11: fffff5200067adfd R12: 0000000000000001
-> > R13: dffffc0000000000 R14: 0000000000000000 R15: ffffea0001cbee80
-> > FS:  0000000000000000(0000) GS:ffff8880b9500000(0000)
-> > knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f5f076012f8 CR3: 000000000e134000 CR4: 00000000003506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> > <TASK>
-> > __extent_writepage fs/btrfs/extent_io.c:1597 [inline]
-> > extent_write_cache_pages fs/btrfs/extent_io.c:2251 [inline]
-> > btrfs_writepages+0x14d7/0x2760 fs/btrfs/extent_io.c:2373
-> > do_writepages+0x359/0x870 mm/page-writeback.c:2656
-> > filemap_fdatawrite_wbc+0x125/0x180 mm/filemap.c:397
-> > __filemap_fdatawrite_range mm/filemap.c:430 [inline]
-> > __filemap_fdatawrite mm/filemap.c:436 [inline]
-> > filemap_flush+0xdf/0x130 mm/filemap.c:463
-> > btrfs_release_file+0x117/0x130 fs/btrfs/file.c:1547
-> > __fput+0x24a/0x8a0 fs/file_table.c:422
-> > task_work_run+0x24f/0x310 kernel/task_work.c:222
-> > exit_task_work include/linux/task_work.h:40 [inline]
-> > do_exit+0xa2f/0x27f0 kernel/exit.c:877
-> > do_group_exit+0x207/0x2c0 kernel/exit.c:1026
-> > __do_sys_exit_group kernel/exit.c:1037 [inline]
-> > __se_sys_exit_group kernel/exit.c:1035 [inline]
-> > __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1035
-> > x64_sys_call+0x2634/0x2640
-> > arch/x86/include/generated/asm/syscalls_64.h:232
-> > do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> > do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-> > entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> > RIP: 0033:0x7f5f075b70c9
-> > Code: Unable to access opcode bytes at
-> > 0x7f5f075b709f.
-> > RSP: 002b:00007ffd1c3f9a58 EFLAGS: 00000246
-> > ORIG_RAX: 00000000000000e7
-> > RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
-> > 00007f5f075b70c9
-> > RDX: 000000000000003c RSI: 00000000000000e7 RDI:
-> > 0000000000000000
-> > RBP: 00007f5f07638390 R08: ffffffffffffffb8 R09:
-> > 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12:
-> > 00007f5f07638390
-> > R13: 0000000000000000 R14: 00007f5f07639100 R15:
-> > 00007f5f07585050
-> > </TASK>
-> > Modules linked in:
-> > ---[ end trace 0000000000000000 ]---
-> >
-> > I was hitting the same issue by doing hundreds of accelerated runs of
-> > generic/475, which also hits IO errors by design.
-> >
-> > I instrumented that reproducer with bpftrace and found that the
-> > undesirable folio_unlock was coming from the following callstack:
-> >
-> > folio_unlock+5
-> > __process_pages_contig+475
-> > cow_file_range_inline.constprop.0+230
-> > cow_file_range+803
-> > btrfs_run_delalloc_range+566
-> > writepage_delalloc+332
-> > __extent_writepage # inlined in my stacktrace, but I added it here
-> > extent_write_cache_pages+622
-> >
-> > Looking at the bisected-to patch in the syzbot report, Josef realized
-> > that the logic of the cow_file_range_inline error path subtly changing.
-> > In the past, on error, it jumped to out_unlock in cow_file_range, which
-> > honors the locked_page, so when we ultimately call
-> > folio_end_all_writers, the folio of interest is still locked. After the
-> > change, we always unlocked ignoring the locked_page, on both success and
-> > error. On the success path, this all results in returning 1 to
-> > __extent_writepage, which skips the folio_end_all_writers call, which
-> > makes it OK to have unlocked.
-> >
-> > Fix the bug by wiring the locked_page into cow_file_range_inline and
-> > only setting locked_page to NULL on success.
-> >
-> > Reported-by: syzbot+a14d8ac9af3a2a4fd0c8@syzkaller.appspotmail.com
-> > Fixes: 0586d0a89e77 ("btrfs: move extent bit and page cleanup into cow_file_range_inline")
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> 
-> > ---
-> >   fs/btrfs/inode.c | 16 ++++++++++------
-> >   1 file changed, 10 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 8f38eefc8acd..8ca3878348ff 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -714,8 +714,9 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode, u64 offse
-> >   	return ret;
-> >   }
-> >
-> > -static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 offset,
-> > -					  u64 end,
-> > +static noinline int cow_file_range_inline(struct btrfs_inode *inode,
-> > +					  struct page *locked_page,
-> > +					  u64 offset, u64 end,
-> >   					  size_t compressed_size,
-> >   					  int compress_type,
-> >   					  struct folio *compressed_folio,
-> > @@ -739,7 +740,10 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 offset,
-> >   		return ret;
-> >   	}
-> >
-> > -	extent_clear_unlock_delalloc(inode, offset, end, NULL, &cached,
-> 
-> Better adding one comment explaining that the locked page will be
-> unlocked by the caller on error.
-
-Agreed, the patch is in for-next but I don't see any comment added.
+VGhhbmtzIFF1Lg0KDQpPbiAzMC83LzI0IDEwOjU1LCBRdSBXZW5ydW8gd3JvdGU6DQo+IEFuZCBi
+ZWZvcmUgdGhlIC0tc3Vidm9sdW1lIG9wdGlvbiwgSSdtIG1vcmUgaW50ZXNyZXN0ZWQgaW4gZ2V0
+dGluZyByaWQNCj4gb2YgdGhlIGZ1bmN0aW9uIGNvbXBsZXRlbHkuDQoNCldpdGggcmVzcGVjdCwg
+SSdkIGFwcHJlY2lhdGUgaXQgaWYgeW91IHdhaXRlZCBmb3IgYSB2ZXJzaW9uIG9mIHRoaXMgDQpw
+YXRjaCB0byBiZSB1cHN0cmVhbWVkIGJlZm9yZSBkb2luZyBhbnkgcmVmYWN0b3JpbmcuDQoNClRo
+YW5rcw0KDQpNYXJrDQoNCg==
 
