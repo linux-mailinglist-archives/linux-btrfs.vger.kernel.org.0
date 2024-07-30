@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6898-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6899-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3497942239
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 23:34:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38050942253
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 23:41:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6B371C232CD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 21:34:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85EB3B2359A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 21:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDB518E02F;
-	Tue, 30 Jul 2024 21:34:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2DD18E03F;
+	Tue, 30 Jul 2024 21:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jjK1VaRB"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="uXQcWqxG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67689145FEF;
-	Tue, 30 Jul 2024 21:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E223E145FEF
+	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 21:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722375265; cv=none; b=Sk3GJlnB3aPVo97TZd+zoiYBbBL/0nXcIN61uWLl57TmgN6Ks6yU0PGnYKbOueWs6bxBMpLvvzVDA5Hd87rKrQFaJUHnKDnWBzwuc7TuFsm1AhmaPkUeJcZiyP80Hp+rqE3Qtmy8/7anDHqODNvP7lIWmqIq38sJk+xi7xpeiZY=
+	t=1722375693; cv=none; b=XyipBc9/s6tZNLC3KUVblLvGRA3vmfaZwgpRe3089OfTWp1B5IveYPuW77I7FV13+N13wvx1bXvITFi6y6NaPBPzG/M32U139clAgrB9NDf+S87xzlEZpu4biSey7fHXJnafoYeCcSxGexPwq4GzZnFTCDJocq2+taoXC1OUucQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722375265; c=relaxed/simple;
-	bh=LIOBsl/85bP6+E2DA5IGaWxzQVvGWTObN3Im98feoNk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aYNdmO1XdJljcK+xKiQeTUXXE+ZVg8TbzAjs+eE+ghVotqn7ZucMuDxs4wJdSShwlHYX2uRWP1xTZU3lWKt0yqQnHEu1VbQKjPH5dBHjXeFuZYzbOXXVDmYyc++FkWoE5P3EbzzyKoG/dc8SsY9LM3NEokPMnuDuT25shopX6tM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jjK1VaRB; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1722375693; c=relaxed/simple;
+	bh=MXm8qW8sDBZpkLNqmt8DOYvdK2sXwBe3gnEIYRZU0b4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=piV434rCUqwJ+Z+iw/9h1Tku56e7y4JfkVX4E48agGgWCxeyAfk3E7Haxw4ZOz08XHn0QLbu7SRn917GwkDJS+AtsnKwg6CNWX0IHqPEtt9REp5lD+gReAREwZDZi/uPM/dG66SCTGOyRSV98exh1biM9MVV+yTH5gxslT6pm/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=uXQcWqxG; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722375248; x=1722980048; i=quwenruo.btrfs@gmx.com;
-	bh=3h+Bx4fVkN5DxXBKQA+F1qb24RS2zYyz3ea4CUnFaSE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1722375658; x=1722980458; i=quwenruo.btrfs@gmx.com;
+	bh=x2Girk0OdZTMh/kIMqKondg5wABVO4XTB0nMiZZpOzk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=jjK1VaRBJzy+OLNKGhC8ZweIuIQY5AW9M5egv0xXQ2YJ/nNGlc7n2UcmMGZOLyca
-	 he/LRx+VGXsB5l6n8LwO//RUhvNYgQyOBujsLxD1616ZHfPk6Gdm6xfck//A1w5v4
-	 mqLFI0/2PKpHmjiuqoRjXTcZ1ClTnGeOunzGS8LcbVmGT15W19uaSwJ11pJQ+fiw6
-	 yUIhENywgz8XvTkz+7t4iR3fSW/ltJjDucsXzg1BVhZZeljHVTxHAftxHJ9WxT+Sh
-	 kziM715D9FqEt9dPGSCoepjf/BH9o/TMZ9pJoKQ6U9BY99+nZ15nNX0ZdfKn7u9xe
-	 2raGvYyTYazgh4qemQ==
+	b=uXQcWqxGdF4p3hJwej1INhTAd7hcrvpuI/9XgAxUtwgylAdVVA/IVI90mZdlR/mX
+	 Iuvt5j7IwDSVkqmhMQXQAwCRUy9SzJrCh/vrtDPoXgoduuJvuOz3Y289Qbgs5ZkXK
+	 cXo1TOjzbgVZoUB8USwhHMyzIPP49qgBHyJ9bKZu3tx+MAq2YjRJkNwc487NgsIuW
+	 LZRyCktVSDnwkse6WrL0D3TCiGJD9TM+CDEvsUPkghatv4J2lEOBRX/+k7F4oZRJC
+	 m5Ad0pt9n4LLscfpiHLseLWlJ2NhozXAJ7T1snSzOGXmrH+6jUVSqWQeBf9gstdBK
+	 UF1fKNuL40xTVRcFnA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MowKc-1ruuJ71R1S-00hED3; Tue, 30
- Jul 2024 23:34:07 +0200
-Message-ID: <c7fb2333-8797-4b6b-bc1e-192b2ef82e8b@gmx.com>
-Date: Wed, 31 Jul 2024 07:04:02 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9dsb-1sDolT0yjV-00wyr8; Tue, 30
+ Jul 2024 23:40:58 +0200
+Message-ID: <21c6a67f-620a-4133-a955-c5707618cff8@gmx.com>
+Date: Wed, 31 Jul 2024 07:10:55 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/5] btrfs: fix relocation on RAID stripe-tree
- filesystems
-To: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>,
- Johannes Thumshirn <jthumshirn@wdc.com>, Filipe Manana <fdmanana@suse.com>
-References: <20240730-debug-v2-0-38e6607ecba6@kernel.org>
+Subject: Re: [PATCH v3] btrfs-progs: add --subvol option to mkfs.btrfs
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+References: <20240730142155.2154877-1-maharmstone@fb.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,77 +87,86 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240730-debug-v2-0-38e6607ecba6@kernel.org>
+In-Reply-To: <20240730142155.2154877-1-maharmstone@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Y9FlMj1vJGNqUnqJw34l5GRGSx2lo/TNWuCNWZ5muAWOjQ2zQXU
- g1QRwBCokuSNRpaJiQTqysbZQ4oqbIupOyn+2aUXIzIy1d0+lANnUkvN+sZd/mchkMIGnco
- AWrg7uBRQpyytDrRyRPiqSBtvRtxfOBtzPlh8fI9nUsIOxI9kQiPAUtb6eHUETLqKEjcMry
- NeVEiHZCsQSpmVwKUJkkg==
+X-Provags-ID: V03:K1:SsZwpyjt7GWCwKOF4+61GTQzvBTYrvEJvlbUxdmLb3Sc4U0uCKJ
+ i+DUQACSVny8Io4bczT98vCx+JExGetUcpGSkM2sqxaifN71JQV6ppq92K/c+t9zDO9gxiI
+ aaRI8azXDyK/r3f5zJeHdnRDk+ljK+dki2pbjTFlM2zGMKrKYRSanxN+4yaB5BBsv+1g+6V
+ YspU3lqVFWHA587jXQsSQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:lET3X0Qb+Lg=;xTu8G8V7HJS5KZ9QL9X2DycDrO+
- gmCLJbAVBEAaeCGDpMP5fbXfQw3X+SL+4j/16T8R94FcP+6vhqb6WhlZ35J/cS3I5jkZ66eDo
- Q0/efyzlDnRKPqo7HJBUltOdJ2UTs/P0xV8YWNJvTCblNPTlM8SBmd5CpGtF+VQqWgR6Gqry3
- XG5RNcC2A8FvRGRrlYLD89Y3KLNd0Tf/G8uvmiTLrCWTIAFV1Y7D2yGhkzTIoZfS2U3CH0aaO
- LHZmmt7bq5QSpAVwGT1HLXSwIb7UCumJekORt0r5KAmEvCJFz2NaakvJj+DVE2akWpxbNZUv/
- uZnlxQcvIJNfhobZxyBy83miGLPGgX14FAzUsKyAUywRenpMq8vziLG01CUteeViFEzRl1qtj
- w+zuyTG8nHTCV9Q8DhUlgj4/JZVN1deH7o4uBPL9ZNW4yCyvZ1afsDz5TdCVZZeUwss44WqT2
- oZy6ZRh8sSvHL9YE77kzb4KjjqaS6r07mx4MkKgMCnfWef/R4xgLwPzjjbMeTKWppbhN0mEO8
- cH8L54OLMBfT5xYL7zXiMg2b2SOXmZcZor7O2aYzIlnPwwag6eRfdvJStpvlNr1sRdxAQNjst
- j8npXClB/MAZXM7Y8JNBagbkWwBc8UbBz7zYmQNp8CDvXFmMpbGSUq4YdAWPtn9zvEAM6fRfe
- Af+hqFCPJOzPMOmXpSQr0SCcY6UKP5q9yJ350rPquCnOv98W+rCnq2j4wfPWMhOuGJVdCIgSX
- X09AfNFdN9Pn833Ms0qe2akUSAiWLSX56GeGhnCYAYa0xz7ZkKygGFd/onqMCr2+FUYr83vBx
- RKexdZXMq0v1OL3BwQZmtj7yZnihNM8Nnd9t+sGqz/8uk=
+UI-OutboundReport: notjunk:1;M01:P0:Vvhk06JJcIA=;XKExdOwxS+ggs6rZZUMs6hKd3En
+ koPHS/RCInLPWKke8U7q7mvqmggqtSIQYER43/ua9tKn0N2dTSzyQBRQSGX/Xp+7Dxtz9ZXtA
+ NT1QcQuOMtbyh7OicXfzZLR12dOoPpsh7nM4Fn0u2ZoyNmAXRDNnr8BnFklAA+3I6+/TAyRUz
+ D5m7GS4fFPFk8WN4ztAanKeM/ah91qRR1PAWAq+SrF12IXjPXMs+h8LL5M+auCGX2TSQB7HcM
+ rFywFiC9W92a37PJ+xvqQlt6pybP87AuyiHmyd7ojHl0kWjYknrlgAPgtWLUxDYW7pvIw01Ph
+ 1TSJ4cdbHD38rl1KFDmmxuGq5K96Nd6mevtNElVk2xZobzg1YbPKfqp5VkQeF1d0xI53rrnab
+ NcfKH+AhUipFkeqR0FM0PgILdIB4T+r9VDnY/t2lkobn/X4bSkpcaD70AU9yZNv7+wx6x0//U
+ 7fvLqCbm0ugpDRf5ahfdaup/99R3VmTqkSTOjTjI9ysW3Oo2VY1cGBzcfpBGQqvi4gNFtqwC0
+ I2B52Drp2CpTh/237APk1tpI/z6lgXWksjR9I9BhgikoILduOxCwRhJoC4xBTonueBpVFFgSa
+ ARlT1a067LfSIeoiV+T7zqWcpL0CWBwrzhsRKBCjNbExWpEXI3bt41c18/DCQS49OC4KZtRf2
+ okkqCst3KEEP0dKM06P2a9NiPRLWI6pvQKAiYJ+HBkosiWSK/Yx1RCx/XuKC/DoCOJM0BSoNN
+ z12e9ZqpcWI7tKLGIJLPUWjVAeZ2KeBHsYyitlXrIRBC9/O8TevS5W5fMzmKIClIY0Ag8WifA
+ S9RJJG+tJfTC2ZNm75G54wdQ==
 
 
 
-=E5=9C=A8 2024/7/30 20:03, Johannes Thumshirn =E5=86=99=E9=81=93:
-> When doing relocation on RST backed filesystems, there is a possibility =
-of
-> a scatter-gather list corruption.
+=E5=9C=A8 2024/7/30 23:51, Mark Harmstone =E5=86=99=E9=81=93:
+> This patch adds a --subvol option, which tells mkfs.btrfs to create the
+> specified directories as subvolumes.
 >
-> See patch 4 for details.
+> Given a populated directory img, the command
 >
-> CI Link: https://github.com/btrfs/linux/actions/runs/10143804038
+> $ mkfs.btrfs --rootdir img --subvol img/usr --subvol img/home --subvol i=
+mg/home/username /dev/loop0
 >
-> ---
-> Changes in v2:
-> - Change RST lookup error message to debug
-> - Link to v1: https://lore.kernel.org/r/20240729-debug-v1-0-f0b3d78d9438=
-@kernel.org
+> will create subvolumes usr and home within the FS root, and subvolume
+> username within the home subvolume. It will fail if any of the
+> directories do not yet exist.
 >
-> ---
-> Johannes Thumshirn (5):
->        btrfs: don't dump stripe-tree on lookup error
->        btrfs: rename btrfs_io_stripe::is_scrub to rst_search_commit_root
->        btrfs: set rst_search_commit_root in case of relocation
->        btrfs: don't readahead the relocation inode on RST
->        btrfs: change RST lookup error message to debug
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+[...]
+> @@ -570,6 +626,76 @@ static int traverse_directory(struct btrfs_trans_ha=
+ndle *trans,
+>   				pr_verbose(LOG_INFO, "ADD: %s\n", tmp);
+>   			}
+>
+> +			if (S_ISDIR(st.st_mode)) {
+> +				if (!strcmp(parent_dir_entry->dest_dir, "")) {
+> +					strcpy(cur_dest, cur_file->d_name);
+> +				} else {
+> +					strcpy(cur_dest, parent_dir_entry->dest_dir);
+> +					strcat(cur_dest, "/");
+> +					strcat(cur_dest, cur_file->d_name);
+> +				}
+> +			}
+> +
+> +			if (!list_empty(subvols) && S_ISDIR(st.st_mode)) {
+> +				struct rootdir_subvol *s;
+> +				bool found =3D false;
+> +
+> +				list_for_each_entry(s, subvols, list) {
+> +					if (!strcmp(cur_dest, s->destpath)) {
+> +						found =3D true;
+> +						break;
+> +					}
+> +				}
+> +
+> +				if (found) {
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Although I'm still not a fan of merging subvolume creation now, before
+we refactor the existing way of adding/linking new inodes, at least the
+code style can be improved.
 
-The solution looks fine to me, but I have one extra question related to
-the readahead.
+Under most case we prefer to reduce the indent by exiting early for
+non-hit cases.
 
-   Does the readahead fail because it's reading some range not covered by
-   any extent?
+In this case, we prefer something like :
 
-If so, you may want to add an example to patch 4 to explain the problem
-better.
+				if (!found)
+					continue;
+				/* do the subvolume add/link here */
 
 Thanks,
 Qu
-
->
->   fs/btrfs/bio.c              |  3 ++-
->   fs/btrfs/raid-stripe-tree.c |  8 +++-----
->   fs/btrfs/relocation.c       | 14 ++++++++++----
->   fs/btrfs/scrub.c            |  2 +-
->   fs/btrfs/volumes.h          |  2 +-
->   5 files changed, 17 insertions(+), 12 deletions(-)
-> ---
-> base-commit: 543cb1b052748dc53ff06b23273fcb78f11b8254
-> change-id: 20240726-debug-f1fe805ea37b
->
-> Best regards,
 
