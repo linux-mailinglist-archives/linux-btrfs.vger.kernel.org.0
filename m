@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6895-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6896-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC5639421FF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 23:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6A6C942220
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 23:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50A8B1F25497
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 21:04:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D831F25E26
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 21:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD93187853;
-	Tue, 30 Jul 2024 21:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E482818E059;
+	Tue, 30 Jul 2024 21:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dE3eynyG"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OBnTT4zx"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536E338B
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 21:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41B118C914;
+	Tue, 30 Jul 2024 21:19:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722373468; cv=none; b=AV0v2FUvixyYa3vjQWkcy2h/eRw0IVl10y6GiS7lCNLG+Us0Lq6rHkv/KDqCclgwuE3cnvJck4/AMGw46agIbqmpcPLbm+cbmKovpl05GJsMaLRfUMCAbB8Khkk6iEO++hFOEaR6gfWWri+iLJTQYt5/3CR4aMMYsPPsSrp35kk=
+	t=1722374358; cv=none; b=kOk0t4tbXqEdJSbUcJcbJGSM4GG/P4XVtARDBm2vrSLh2pZO0e7pnkXhXlrZ7HULvwGf80pOCj5LPEZiG8OWJRQJ/jCqkvmTnWHfr8JWvBoWK2FMrMUWMRFcagJVcUvVRcv2cb54hSF1rSzdtmlGNQsNLPQDnv+IYmAbJxEUoDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722373468; c=relaxed/simple;
-	bh=n7F00dY/zpONlTpKyiX/+KGhQXfZZmGWi1Z+HkVTuLc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eIlWZ6YfgD9+pmV4ktkiQfoWnKfX0b8zNFvvlQpnzObdX53uJfLiq/qfjg6ISw/BC8aYDv+5Q65eR4f2zJcaBpS8ej15LXPRlCVcvcHl4JvjZv1ok3hjBjxk/YNHHdd2gqraQ0L1fx1RTs9GzyfoXWY5kWxcvFZ+HeFb8tTfi0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=dE3eynyG; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1722374358; c=relaxed/simple;
+	bh=3dskeMJT5cgmy/vQcw0aHiWe8vgBLpbEb5lodlovNuY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GdRtABZPlWECAjwhJJpyMGtb3XxamjokO0L+uXPBG9+vK+TBY+vAEz2xHcvn1seqxODjzXwntAi5H1r3ICGN6Y0Pk07D3EQZEgRw/T5/qQsHTVdD4BS3d7DTCtb9LcU3u2byOUG0FtIp3Pbsr6x6hoQV+SOZ3YyyFihvRdS7/74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OBnTT4zx; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722373460; x=1722978260; i=quwenruo.btrfs@gmx.com;
-	bh=n7F00dY/zpONlTpKyiX/+KGhQXfZZmGWi1Z+HkVTuLc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1722374341; x=1722979141; i=quwenruo.btrfs@gmx.com;
+	bh=1tZkrCQj/8N6EM1a5ULIFKWfa+O4mm26vhEWtFZrC14=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=dE3eynyGfkfgSCjSOzic4R1O5cilfSlSdtQrdmQVUBPFG4cbjfq8I8CpmfwuWdjh
-	 PoYsUBqsSCxrSr9v9fPH4aCJjulZ59dyyGi6vlfo5PsQK3YkYTtaUWC6SwtwrsZ/B
-	 TtDbAM7HGad1+DT0iwfWLhRPAIxtcXX5bg07v++vNGxNYIV/48xmUkw3KvObW64DU
-	 pLqaILg6Ug8EpMoc8Sf54J7OS5St+RhK4cux0v9/ogm52g9ooyAcU650bWLg83q7X
-	 E5S2ZBICWmnt7MGoz+O25P2VQx4/sj2v7k87dMIa9srkzKnbZd3ya5MFW7XNCIH78
-	 /ySRYnnfKB4fjFfuSQ==
+	b=OBnTT4zx+tbJPaampN9JZ+eTEZ50DonVwPLPhnTeWjGG3oeGvqSwtILAtbzeaFOV
+	 io2x4ugdedi5BT6syuXDptCA4Mzwh0P2T4AJBoBuZi05e2Y+i00T82b6oozhHOJnF
+	 17wX5OsTHBsofT8RgVhh/0oVjPp6AzSpnAEpDoCOpopobDfMXxvZ4SeQTIr2k6ML8
+	 vh/6tx3OeMPz6lUU0H/QT9IW5O4puBk7G/nbCbiO755pGlxSe3/JtNOZ4Z1mRY06m
+	 yPpcCGbUyTt//auvKibbSp8uFbO31DgiDoZ0FI71u3yUthHCeo3tiO0ZIApV0iK2x
+	 dwnCNy+IdrHvm698iw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfHEJ-1s2JHr1PoZ-00q3zd; Tue, 30
- Jul 2024 23:04:20 +0200
-Message-ID: <60aa212c-c1f1-478e-a108-1201ff5fb5ef@gmx.com>
-Date: Wed, 31 Jul 2024 06:34:17 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MulmF-1sHeZq0kbL-00zft2; Tue, 30
+ Jul 2024 23:19:01 +0200
+Message-ID: <2f6a2670-cf09-4750-9578-9198eea8dff6@gmx.com>
+Date: Wed, 31 Jul 2024 06:48:57 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs-progs: add --subvol option to mkfs.btrfs
-To: Mark Harmstone <maharmstone@meta.com>,
+Subject: Re: Forcing vmscan to drop more (related) pages?
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ linux-fsdevel@vger.kernel.org,
  "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20240730093833.1169945-1-maharmstone@fb.com>
- <d67ca8a6-9b5f-4ba1-aae3-70e1cb22ecda@gmx.com>
- <4dd099b3-8a2f-4a5b-9471-f01703e6b409@meta.com>
+References: <7e68a0b2-0bee-4562-a29f-4dd7d8713cd9@gmx.com>
+ <ZqkMq9Id43s-V_Sf@casper.infradead.org>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,51 +91,120 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <4dd099b3-8a2f-4a5b-9471-f01703e6b409@meta.com>
+In-Reply-To: <ZqkMq9Id43s-V_Sf@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MFI/fU3Y1zfzPO2DL/j3K00oj6DFpnoQxHYJTlt2w5rWqx+0Twf
- uP5SMlsxjMLL9S8GM7VjSYHp8+zFXO0xuxTQdm16d6XMc6wF1+px0cvLBq3LwUNYl+DjS4H
- xgcOC7o0M5p0c5ooMH3alfX1FUZjmKAI5ydclrsUsDtnMBgjt5kvZq90kEOj2Z1M/NC4t8N
- Wfz+zFzLPFU7JG3k+0HPw==
+X-Provags-ID: V03:K1:Eo9WSU/yOw0JuSavAvDPE4x5fB6Fg02TIaXegnCI5TQP2v+O/A0
+ KioBmAyK3dtYwpXYA+lyYHSlBmktWPYrZGz7eRavfaMRZmMNeUgQUtfQ2Q4K1l4xGzz8gkV
+ MER3VFY/uWYLfS76QrVq+1umHMqewxbIbngg7KbyOMTj2GBhv97LRp6QqzQq/drJp/KkO1w
+ jrAXWGAqkNcvH/XkVsdRA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:O1BBwJZ06Z0=;/GH0uuKt4AnJogrriYPaO1U60bg
- pzHWIwMQ7tHgoVY+i1FezOLLLD8XPruTarttA6j1QhrZRQQseoiwixx3jq14bPGwuLS9lJ5z+
- WDhwT+QlCXVS69YXibhDZDzzXU+HdHSDzGJOPwR/vP6xzA30yGv7ua1j45RFMzUgxJYkujHYP
- P3sMrvQHg34wxVbtlisQ/QijVf1a1uOiNfbv8Sgg+UynVktzDVeJsAD69Ybw6VemAG6cQS/fY
- EMftqqJFqS8u05IfW94etHUo5X82XDLvBdFIsFo41xqKUYctyTjvW6dJNS8mQhQXfZJGVjBda
- BINVRS9L6FUlQQjQTJAmpMqGQIIFa7YRU1cQEOY8kuz742lNzIlqnQ/kScPWTvZb8zSPZ/tPr
- Ci0536yGtHLGc/KBl+RnhrWSfOaT86aZ/RWQeIUMOrsdI3ZKx4LQ1MmAZZ+h1Y9tLAV1Nrnoh
- tzSG2POQ3x9iWSZXFv0Fvu32XXdQBpZYzi5YbxbWGjWz/A+NGsPLJziOiMwJBOgZSy1bUOUHn
- cNT2ao1oB0I4h9RqwhT2igrrNlen8AUr/+E5Ngyc68VFrZJpte11QanZRWULZU2sxz9lF2N6O
- aohSCfF0glsaoCwxwhTGx7FVcDLAfKabvQE5NIai0pZUz9ZTvxhoi+IUBJevbF7eTGabGILq0
- U/yU65spjE2pKpDkZptRSzYKL3drJOEz2vThFYhwghI7R+FqVXOtEuGBil0wuDa1YuLZ6j/UM
- zoV7Gt7SJRgFSK8hdJzzoi3mN01ShEKARTyvwmMOet98OT8B6B0Ku3wW/taJwGNxM3Fpkp93b
- sElA4YXZ2fp3atm9vJr+8iPw==
+UI-OutboundReport: notjunk:1;M01:P0:VxWnu4AUxO0=;ZGTR7d65lueURPRG/By7dmFN6ty
+ elQPMrx9KR4QiuzDN8GYpN8nQOIXfzeZ2gn1J7Lzid+MFXunCPl0tHEUiAgLZDZ62AEauOBKp
+ eHBcLwY3IZegzrmXxocv7fP+kZakdI5Jiek+jUvdqJgIqrLIIWmX4rRyVtnDE7DdOKbhBAmij
+ nlUyCOU4tacZftTn/QEDUo+5ShxRKJ0HORMLAn97bZIwpSyi3gIRBMosi37shMVkzqxxE9Umn
+ qodOgsDQTHC9jXTYvek0gNHPrMcqCprjB7LadOEeVovKYptR+amoCRBrcMgfWP3NDXcMP7iUu
+ 2dTbMNVbreOtLjcs7h8RuaKqJQygL/wg2xHH9GamZtbp+ybfnTftWZOjCiWfy5XFsAHsBJYcU
+ McXpXibhOGz9OCoHJwF7YX+boeB1mcwTgn873d0LgpqTg/w+2hidqClwf40lPcWXojfDZraKT
+ 8yCGx2oQ4nBshNO7tpv1GSfmyBmcfnK75HwP8oBStT0XnyDFhshoRhdLpRuM1CWH1nkLOQX4M
+ 7WH9F4iEl+jLTE9O0cMxweUM3MxGmJ6m420PxYLfESQdqNn8wwb9MaTYwRl0SHB71chGGYIOu
+ a8ZTukQmaDhIouKM2B1Gdn8Z4KMiJE+C6JiR546qwHfRzHIGN80RYcy3rBeXUYM0tctOecVu5
+ C+7ZjEYCAWjznluIrBb5eJkLrJ4vi1RmtLdMl/wE9TMlaFbpHzTXgsAztZIW+UwgcgA0XINN+
+ 70ztZEBXg0QqDdXPsmMXrqS8dpHfmy9qE0Js27YAxzXzxWOllc6CXSG4EBDIPWMyr+PB19hrk
+ abiF8aHsKac4dUaFR37ypo7g==
 
 
 
-=E5=9C=A8 2024/7/30 23:20, Mark Harmstone =E5=86=99=E9=81=93:
-> Thanks Qu.
+=E5=9C=A8 2024/7/31 01:24, Matthew Wilcox =E5=86=99=E9=81=93:
+> On Tue, Jul 30, 2024 at 03:35:31PM +0930, Qu Wenruo wrote:
+>> Hi,
+>>
+>> With recent btrfs attempt to utilize larger folios (for its metadata), =
+I
+>> am hitting a case like this:
+>>
+>> - Btrfs allocated an order 2 folio for metadata X
+>>
+>> - Btrfs tries to add the order 2 folio at filepos X
+>>    Then filemap_add_folio() returns -EEXIST for filepos X.
+>>
+>> - Btrfs tries to grab the existing metadata
+>>    Then filemap_lock_folio() returns -ENOENT for filepos X.
+>>
+>> The above case can have two causes:
+>>
+>> a) The folio at filepos X is released between add and lock
+>>     This is pretty rare, but still possible
+>>
+>> b) Some folios exist at range [X+4K, X+16K)
+>>     In my observation, this is way more common than case a).
+>>
+>> Case b) can be caused by the following situation:
+>>
+>> - There is an extent buffer at filepos X
+>>    And it is consisted of 4 order 0 folios.
+>>
+>> - vmscan wants to free folio at filepos X
+>>    It calls into the btrfs callback, btree_release_folio().
+>>    And btrfs did all the checks, release the metadata.
+>>
+>>    Now all the 4 folios at file pos [X, X+16K) have their private
+>>    flags cleared.
+>>
+>> - vmscan freed folio at filepos X
+>>    However the remaining 3 folios X+4K, X+8K, X+12K are still attached
+>>    to the filemap, and in theory we should free all 4 folios in one go.
+>>
+>>    And later cause the conflicts with the larger folio we want to inser=
+t.
+>>
+>> I'm wondering if there is anyway to make sure we can release all
+>> involved folios in one go?
+>> I guess it will need a new callback, and return a list of folios to be
+>> released?
 >
-> On 30/7/24 10:55, Qu Wenruo wrote:
->> And before the --subvolume option, I'm more intesrested in getting rid
->> of the function completely.
+> I feel like we're missing a few pieces of this puzzle:
 >
-> With respect, I'd appreciate it if you waited for a version of this
-> patch to be upstreamed before doing any refactoring.
+>   - Why did btrfs decide to create four order-0 folios in the first
+>     place?
 
-But I really do not like the way new subvolumes are created.
+Maybe the larger folio allocation failed (we go with __GFP_NORETRY |
+__GFP_NOWARN for larger folio allocation), thus it falls back to order 0
+directly.
 
-If we merge it for now, it will take way more time to change/fix it.
-I do not think that's how we do the development.
+>   - Why isn't there an EEXIST fallback from order-2 to order-1 to order-=
+0
+>     folios?
+
+Mostly related to the cross folio handling.
+
+We have existing code to handle multiple order 0 folios, but that's all.
+For one single order 2 folio, it's also pretty easy to handle as it
+covers the full metadata range.
+
+If we go support other orders, we need to handle mixed orders instead,
+which doesn't bring much benefit.
+
+So here we only support order 0, or order 2 (for 16K nodesize).
+And that's why we're not using __filemap_get_folio() with FGP_CREATE to
+allocate the filemap folios.
+
+Maybe it's better to use a bitmap for allowed orders for FGP_CREATE instea=
+d?
+As for certain future use cases (e.g. fs supporting blocksize larger
+than page size), we will require a minimal folio size anyway and falling
+below that is not acceptable.
+
+>
+> But there's no need for a new API.  You can remove folios from the page
+> cache whenever you like.  See delete_from_page_cache_batch() as an
+> example.
+
+So you mean to manually truncate the other pages, inside the
+release_folio() callback?
+
+That sounds feasible, and let me experiment with that solution.
 
 Thanks,
 Qu
-
->
-> Thanks
->
-> Mark
->
 
