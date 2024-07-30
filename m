@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6897-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6898-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 692B0942224
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 23:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3497942239
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 23:34:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9317E1C22AAB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 21:21:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6B371C232CD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2024 21:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED71818E022;
-	Tue, 30 Jul 2024 21:21:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDB518E02F;
+	Tue, 30 Jul 2024 21:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="M+G7jANj"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jjK1VaRB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82121AA3FF
-	for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2024 21:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67689145FEF;
+	Tue, 30 Jul 2024 21:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722374486; cv=none; b=cKzDqG6xF5mZN5dffTEvb+A51DJ35RTsWAcgWrxvYTp+sHHbunayNVC++tJcO8oQtdgUK2hpg8S7mBwXOLwH7sfawUXqJ46KRG18ibEdWCcphLCmMDVatThY2A4D3IqDcOjOQIdjxrisL1PnNF2IpB1tb1lnd0cVehZz2XtoI/Y=
+	t=1722375265; cv=none; b=Sk3GJlnB3aPVo97TZd+zoiYBbBL/0nXcIN61uWLl57TmgN6Ks6yU0PGnYKbOueWs6bxBMpLvvzVDA5Hd87rKrQFaJUHnKDnWBzwuc7TuFsm1AhmaPkUeJcZiyP80Hp+rqE3Qtmy8/7anDHqODNvP7lIWmqIq38sJk+xi7xpeiZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722374486; c=relaxed/simple;
-	bh=8/VcPgkYIgsjrPbtttagCaOzFsCl2Gxp4sXLzD1DrgE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nP6EpeTDTRRXe10Bw2MEGSTM5abGBfhb8LBwtm9a/rCFTqxZOAngzVmtXRql0/FSjT4OrSRdl0qGRpkadr538eED97SodTsmsdt9+mdVBl9A+QIyZYkTsfV60FMUfujPwhZV/O3Jz1yuSgjmiGU585LcE+f7Cj5shWh8qIEc8M0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=M+G7jANj; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1722375265; c=relaxed/simple;
+	bh=LIOBsl/85bP6+E2DA5IGaWxzQVvGWTObN3Im98feoNk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aYNdmO1XdJljcK+xKiQeTUXXE+ZVg8TbzAjs+eE+ghVotqn7ZucMuDxs4wJdSShwlHYX2uRWP1xTZU3lWKt0yqQnHEu1VbQKjPH5dBHjXeFuZYzbOXXVDmYyc++FkWoE5P3EbzzyKoG/dc8SsY9LM3NEokPMnuDuT25shopX6tM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jjK1VaRB; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722374477; x=1722979277; i=quwenruo.btrfs@gmx.com;
-	bh=fvTURB6jAM6jODPCuTYM9RSx+YujpAH8S2tYkeFWLdw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1722375248; x=1722980048; i=quwenruo.btrfs@gmx.com;
+	bh=3h+Bx4fVkN5DxXBKQA+F1qb24RS2zYyz3ea4CUnFaSE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=M+G7jANj65skaEbJ0oLZcKzSke89WBWB2iZXLJz8991Umd2MmeXGrVGpBSzwW1BU
-	 YPMZc2t3N1DdRUP+L8GiOoWtX2u9rdF+eSv6pN8EhHhSBnSjLJ7jNjLohjOhPMdwH
-	 q0QzAxfcnszT6AmArvXLaNeiwsO6hjp3O7WarKlsauJ870voaY7D72N6WbmEuKbr9
-	 9bI1ueZSd7QSaeN2uzShfIlnpc1L2MeH1XrgMlrjeN9y3Z0pU5bsZjrhj1An8DoPF
-	 ECWN1evsScLGh7AgvuGI0PUzoCiPeQWgMGAOyFb8eUQUrB0zj8lG5J3zg/SqI7b37
-	 tY4i+9nY1UKKmRoCoA==
+	b=jjK1VaRBJzy+OLNKGhC8ZweIuIQY5AW9M5egv0xXQ2YJ/nNGlc7n2UcmMGZOLyca
+	 he/LRx+VGXsB5l6n8LwO//RUhvNYgQyOBujsLxD1616ZHfPk6Gdm6xfck//A1w5v4
+	 mqLFI0/2PKpHmjiuqoRjXTcZ1ClTnGeOunzGS8LcbVmGT15W19uaSwJ11pJQ+fiw6
+	 yUIhENywgz8XvTkz+7t4iR3fSW/ltJjDucsXzg1BVhZZeljHVTxHAftxHJ9WxT+Sh
+	 kziM715D9FqEt9dPGSCoepjf/BH9o/TMZ9pJoKQ6U9BY99+nZ15nNX0ZdfKn7u9xe
+	 2raGvYyTYazgh4qemQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEFvp-1sQyCW0v9J-001pnW; Tue, 30
- Jul 2024 23:21:17 +0200
-Message-ID: <c90191b8-4f82-4c36-ac06-ca8717c8772a@gmx.com>
-Date: Wed, 31 Jul 2024 06:51:14 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MowKc-1ruuJ71R1S-00hED3; Tue, 30
+ Jul 2024 23:34:07 +0200
+Message-ID: <c7fb2333-8797-4b6b-bc1e-192b2ef82e8b@gmx.com>
+Date: Wed, 31 Jul 2024 07:04:02 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: emit a warning about space cache v1 being
- deprecated
-To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <51e96d7a2754991bc369065d74290e7a436934c7.1722358018.git.josef@toxicpanda.com>
+Subject: Re: [PATCH v2 0/5] btrfs: fix relocation on RAID stripe-tree
+ filesystems
+To: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+ Johannes Thumshirn <jthumshirn@wdc.com>, Filipe Manana <fdmanana@suse.com>
+References: <20240730-debug-v2-0-38e6607ecba6@kernel.org>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,69 +92,77 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <51e96d7a2754991bc369065d74290e7a436934c7.1722358018.git.josef@toxicpanda.com>
+In-Reply-To: <20240730-debug-v2-0-38e6607ecba6@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3g0M0sOwD47H2iXiFmet25ocEoQ7sNoRSjzF9GukQQawMHdYzl7
- sEiu2Z6oWs+eNLEYfwOBvmNsh3Ly+CGyGjFVm5Ygpd/mrjbH1KRpPESzaBeEzQI3LsCzbmj
- RGZ4QALv4xfPO/QSmNsoF6ZJYLzXRC5USMJbOKGNmF/WZ4szzU9I+yWKrnpSCNWwgpaxLny
- wydsXsDbelSZdbu87AHAw==
+X-Provags-ID: V03:K1:Y9FlMj1vJGNqUnqJw34l5GRGSx2lo/TNWuCNWZ5muAWOjQ2zQXU
+ g1QRwBCokuSNRpaJiQTqysbZQ4oqbIupOyn+2aUXIzIy1d0+lANnUkvN+sZd/mchkMIGnco
+ AWrg7uBRQpyytDrRyRPiqSBtvRtxfOBtzPlh8fI9nUsIOxI9kQiPAUtb6eHUETLqKEjcMry
+ NeVEiHZCsQSpmVwKUJkkg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:yKx88Nj6R2I=;H5fbZAxb9bT7rkBWU8PO+1sFTQG
- jKqJDmU46ozUtQOVKkG46Eq8KT8eM/anCPL4XBcKH+T8hsVkH86OFL2mthDLJ3LW6oQQDBSfq
- c1DLLNmauuriAcKQglQ3S2yJo+dJTWcS+r3HVLoZ/ingMRKpxyeW6yKPYbqoVyloz2CtE9hsv
- GSO/BN8YxzY/ahB6P6HCjARFxvWEVQJMNYwOYp6s5LZc1jz8yGxO3bVs2LNDEnEeRrYkpj3rI
- IN7T9oI/TDWFK1uHfbhlYY4mE717r8ki3o6xzqcBcYstzt8oqwFXGrPzmAfERoYG1QpTLTc+2
- vvrBqg7YHBN6aE+NLw/oIX+DkyEjb/X0e5df6kHqsEnpNu1YUwWMdUaOLU9KUJ3Tm83TXO60u
- QPdE6vHR10AoGhV8+6BaSiDAQwdTzfdf9pMO0oKR7++MhTuyZUMEE4bRb1caNGI85lraq2rtY
- /gj7vO7llGHoQizQMET0SS9II+CGoe8f/0uCAwwoWimngxA29YRoqGKKV2kk5+ufnuZ0lyYxb
- 4wMBr6q0hse8oEqzC3MrwMV6m2OTKEnJWT9H4ST31w1VvScCnMyGNxQUu0Hljp965/bakKSuh
- sPFJkyT76nouLIlJDat+Bz6SV3fQ6GZ8A5YmtnStfpdJ0iqL/te4So//jm2n9d1PC+6ms5o6j
- Lcv53B1ron8aLt1lHM3FlRBrbdqOAyChN/9yQJcBjs6ytL1nNopWdMf8DlLBGG1L8lxFYOB88
- zgXtcThuaHwGuNx9yLxSLiVwgjHIFa79fjDCnG/T20urbxs6Vk5sM+BMxK0ABqs43Ck8VKwTl
- RW3wnFrVcR5AC9bgKQHXEWpg==
+UI-OutboundReport: notjunk:1;M01:P0:lET3X0Qb+Lg=;xTu8G8V7HJS5KZ9QL9X2DycDrO+
+ gmCLJbAVBEAaeCGDpMP5fbXfQw3X+SL+4j/16T8R94FcP+6vhqb6WhlZ35J/cS3I5jkZ66eDo
+ Q0/efyzlDnRKPqo7HJBUltOdJ2UTs/P0xV8YWNJvTCblNPTlM8SBmd5CpGtF+VQqWgR6Gqry3
+ XG5RNcC2A8FvRGRrlYLD89Y3KLNd0Tf/G8uvmiTLrCWTIAFV1Y7D2yGhkzTIoZfS2U3CH0aaO
+ LHZmmt7bq5QSpAVwGT1HLXSwIb7UCumJekORt0r5KAmEvCJFz2NaakvJj+DVE2akWpxbNZUv/
+ uZnlxQcvIJNfhobZxyBy83miGLPGgX14FAzUsKyAUywRenpMq8vziLG01CUteeViFEzRl1qtj
+ w+zuyTG8nHTCV9Q8DhUlgj4/JZVN1deH7o4uBPL9ZNW4yCyvZ1afsDz5TdCVZZeUwss44WqT2
+ oZy6ZRh8sSvHL9YE77kzb4KjjqaS6r07mx4MkKgMCnfWef/R4xgLwPzjjbMeTKWppbhN0mEO8
+ cH8L54OLMBfT5xYL7zXiMg2b2SOXmZcZor7O2aYzIlnPwwag6eRfdvJStpvlNr1sRdxAQNjst
+ j8npXClB/MAZXM7Y8JNBagbkWwBc8UbBz7zYmQNp8CDvXFmMpbGSUq4YdAWPtn9zvEAM6fRfe
+ Af+hqFCPJOzPMOmXpSQr0SCcY6UKP5q9yJ350rPquCnOv98W+rCnq2j4wfPWMhOuGJVdCIgSX
+ X09AfNFdN9Pn833Ms0qe2akUSAiWLSX56GeGhnCYAYa0xz7ZkKygGFd/onqMCr2+FUYr83vBx
+ RKexdZXMq0v1OL3BwQZmtj7yZnihNM8Nnd9t+sGqz/8uk=
 
 
 
-=E5=9C=A8 2024/7/31 02:17, Josef Bacik =E5=86=99=E9=81=93:
-> We've been wanting to get rid of this for a while, add a message to
-> indicate that this feature is going away and when so we can finally have
-> a date when we're going to remove it.  The output looks like this
+=E5=9C=A8 2024/7/30 20:03, Johannes Thumshirn =E5=86=99=E9=81=93:
+> When doing relocation on RST backed filesystems, there is a possibility =
+of
+> a scatter-gather list corruption.
 >
-> BTRFS warning (device nvme0n1): space cache v1 is being deprecated and w=
-ill be removed in a future release, please use -o space_cache=3Dv2
+> See patch 4 for details.
 >
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> CI Link: https://github.com/btrfs/linux/actions/runs/10143804038
+>
+> ---
+> Changes in v2:
+> - Change RST lookup error message to debug
+> - Link to v1: https://lore.kernel.org/r/20240729-debug-v1-0-f0b3d78d9438=
+@kernel.org
+>
+> ---
+> Johannes Thumshirn (5):
+>        btrfs: don't dump stripe-tree on lookup error
+>        btrfs: rename btrfs_io_stripe::is_scrub to rst_search_commit_root
+>        btrfs: set rst_search_commit_root in case of relocation
+>        btrfs: don't readahead the relocation inode on RST
+>        btrfs: change RST lookup error message to debug
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+The solution looks fine to me, but I have one extra question related to
+the readahead.
+
+   Does the readahead fail because it's reading some range not covered by
+   any extent?
+
+If so, you may want to add an example to patch 4 to explain the problem
+better.
 
 Thanks,
 Qu
 
+>
+>   fs/btrfs/bio.c              |  3 ++-
+>   fs/btrfs/raid-stripe-tree.c |  8 +++-----
+>   fs/btrfs/relocation.c       | 14 ++++++++++----
+>   fs/btrfs/scrub.c            |  2 +-
+>   fs/btrfs/volumes.h          |  2 +-
+>   5 files changed, 17 insertions(+), 12 deletions(-)
 > ---
-> v1->v2:
-> - Made it all one line as per Dave's comment.
+> base-commit: 543cb1b052748dc53ff06b23273fcb78f11b8254
+> change-id: 20240726-debug-f1fe805ea37b
 >
->   fs/btrfs/super.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 0eda8c21d861..1eed1a42db22 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -682,8 +682,11 @@ bool btrfs_check_options(const struct btrfs_fs_info=
- *info, unsigned long *mount_
->   		ret =3D false;
->
->   	if (!test_bit(BTRFS_FS_STATE_REMOUNTING, &info->fs_state)) {
-> -		if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE))
-> +		if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE)) {
->   			btrfs_info(info, "disk space caching is enabled");
-> +			btrfs_warn(info,
-> +"space cache v1 is being deprecated and will be removed in a future rel=
-ease, please use -o space_cache=3Dv2");
-> +		}
->   		if (btrfs_raw_test_opt(*mount_opt, FREE_SPACE_TREE))
->   			btrfs_info(info, "using free-space-tree");
->   	}
+> Best regards,
 
