@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6935-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 062F5943958
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:20:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C84F94395A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:26:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A0EAB2225C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:20:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE3A2284D69
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:26:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B0D16DC2E;
-	Wed, 31 Jul 2024 23:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B4016D9D9;
+	Wed, 31 Jul 2024 23:26:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jzwf/c6U"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="XBNLDVRw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C89E3A1A8
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 23:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA0116C695
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 23:26:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722467990; cv=none; b=KAM8uIfUmPSu+wnYNWZYrgpU+VXyw53qFN1vl+L9zqv0dWlIKrirmxBwCgy5DUlC+hBRqdK5uImAcycdwAJ+ApYVIS6oAr6oeXjo3NTbixnCJiA0Tk7m1y1kFgBR/kxd3ERBe1fEa34Hvs8c0nqZUSCUBtLhGro5SZ0AjbE4QWo=
+	t=1722468387; cv=none; b=uyf32dIgDg3b4GQOhoQatzsnYZwGCAZwIq29sh6BNzwHndV7xg3X8pxBzMwEjqyr1uChJr4wNH7W2cvlBC98bHYjeFw4YnjgUADQo+4wCrS+1JNk5G9BjT0rUGVDVoNpLFwZR6REFGgMuT2wh60nD01aeFnAUR5nHXI7JlhH2Jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722467990; c=relaxed/simple;
-	bh=JSAMr1NEtGLs3fXIy3LEONPhheJ9b1LYLJ1o/5xVA60=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LVKAoZHQp9zUPOglHQtHqAIanuldMTxdnLX9lNefDOgJDmzqDTJ9KG8xh+YDMIbOE4fj1qLY1Sf7t5XvcNdF+6ao53H/Vc3lJ5z7pQ6XC4RNMHYFjXB4hhptkEJmBVmUSIkaAE3oNlnLwNwMAcylUKzssKU7zP5n9z1nGIDZs0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jzwf/c6U; arc=none smtp.client-ip=212.227.15.18
+	s=arc-20240116; t=1722468387; c=relaxed/simple;
+	bh=xa743HMtiBCBcthIcQKf2TapVI8UbfMyMxAkJzgg7q4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Mth0Koum/7BDrmg/A4EnRhY+7iemQuJHtmQQtG31QMOvkq4Fm3Beifp3h+LJOtv4QKDVuLnwb9ZBj+UX69JBLG65Y3W4SNaoIFS+C0AfrTjv0InTCemAn046sxwgMcNeSe8pEvmGKt2GUfYCPA4i9UW7iuhKaPCW+urrCIYhpcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=XBNLDVRw; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722467982; x=1723072782; i=quwenruo.btrfs@gmx.com;
-	bh=K71om96ehID0mb0FpBXBU4FjVGrzLOD9JUgDESWKAgk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1722468347; x=1723073147; i=quwenruo.btrfs@gmx.com;
+	bh=kpDq/jZ3HdiqNTIYRWYZibXknJVRHLCveDx9zuKGqzQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=jzwf/c6Uq094zhYMOOGpw21e83+TB/g3guthbG3cPYzXrLP2HqpFfIHk3Gfryead
-	 v8VsS36ykw61HyyfxgK3491Y92SkBr3oo2aAgPOawOP/BuvnEF9GQY/pVRwBuoWWB
-	 pGjUK4/jg3JwO5wONBYVyL2AOmERGwWE8p9nIBiB4Dgv3/kAhrZH4KFAeniswfWUj
-	 mNQD9D25HLf3+SIZQs4uGNpTfxMMDmwDnztlkbN7kxNv3Zqq10M1fqjyz6kC6DCXe
-	 z01GnOInwDP8N+9q6mZn8BybtTWhtBkmmDmiV1KQfpQY87BGUuVIqGXsZ8x/UZn6+
-	 yJO4iD0u4d+P39CRSg==
+	b=XBNLDVRwadUC9vpdJ4naJH3Yk5EtpXGmtowxB4VZojUrOURokTCVLJeHgXJO9i9m
+	 8mRYB1TlIvkVjOaTu1AbUG1BuI+7/jdK5TQC7z0aAyeWC4hRBIN2S7m1ousl6Ll49
+	 b46ySz5+LFsmXBCuhTYpKuZTKN/Cqbh9laQ0hDQwHrFeCPU/5T90on46ldQBSrgmV
+	 65fU49duW2GfYrvyTCWLDt2tXsb9MlAn+rFjM67VnCYIruzX3yrgGSDhri48TlSQh
+	 HH+rdPPau+vGVzYBG6qkewAGm+OpQUrdkJuQfKc9H/9ZXLhc2NsaKCmhA71shtytf
+	 nVSNhVauJNK9jheGYA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdefD-1s0Eu43UXZ-00lx9T; Thu, 01
- Aug 2024 01:19:42 +0200
-Message-ID: <dd3444f9-c8be-46e7-97b1-8f95a161c709@gmx.com>
-Date: Thu, 1 Aug 2024 08:49:39 +0930
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTRMs-1sgyBD021c-00IZM0; Thu, 01
+ Aug 2024 01:25:47 +0200
+Message-ID: <b59af3c2-63f4-419c-ab3b-3832b9cfde16@gmx.com>
+Date: Thu, 1 Aug 2024 08:55:44 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] btrfs-progs: mkfs: rework how we traverse rootdir
-To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1722418505.git.wqu@suse.com>
- <667ee4f02fdc2cb6f186eb8b06dd089f3ce53141.1722418505.git.wqu@suse.com>
- <20240731225935.GB3808023@zen.localdomain>
+Subject: Re: [PATCH] btrfs: locking comment for cow_file_range_inline
+To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+References: <38338e851f80eb505894092dcd898de19ce720bd.1722459563.git.boris@bur.io>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,248 +88,79 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240731225935.GB3808023@zen.localdomain>
+In-Reply-To: <38338e851f80eb505894092dcd898de19ce720bd.1722459563.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:It9OxwfNQOEepxeAGbPIS2z1NaYCPgE5hfsLFUBvjJhxq+t4EQs
- mW5ysUiaHJci59JmTKUmNmYQtnt1SW6wx1k8VqW68Rqn9fJYkqSfHKDVuDinfgEqAfT1knK
- vAd7LRfhb3tgdlDpf+BuxFMwJSX6I09Zs2cLyLzsj3Ck+vjMeO2+Pndut2ln9yRAP0/JTVS
- Z66tJkPesOMxlJPp29oRA==
+X-Provags-ID: V03:K1:yskTGPpA2qv+cPe1p/yyhAHs133ATQjloJerXj2ZA2BPvWapRgp
+ ghk6lm6rL/4+Ei5AxeTWeyr1wK6mKD8wFibj6GUHAT30hP/+bgCwyjMwWpHR0huz3n9AZZl
+ AMUULD+X1j6UkYlEvuvRlz1K4ZyvNvXT5dgzoUxtFRPOTaZV9jktUzURXo+78+kL146DARX
+ JaBcFWzaQj9/jUcECfKmA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:bbr28gVLV8Y=;ei9Z01PvwM2fhmNzgvS3wc8B6VH
- vXlc5LWnanZ0WpP0E7KX/whcOjbAmRutYFdmXpmGho0Kd3WqQ1IqjllHQIxtN7fJlGkGACeDI
- jxHT+aFxuK+/1jwMtbOU/11HtFwgDRNAIf+ieth4ucLqFjDY7z73BlewAsJL5Depdv5ircXYG
- sR5J1aeVUbfx0UHz6fh9KW3SBql37oR+vDxuhF5L7+lxwSofmOxovlrVi+x0Y6oYXiwiRJxRM
- wlm6kKtj5Qk5RbjvNKQGKboPlDb3sdVK99jp53VRKAEqlyU7hcQV8C5BZPCNnRv/+56GDZrB7
- 1heMV7mhuwlnGCtCHzIHHhMD0APcadS6VAJkHpQNHh5T783OP+r6HjkPYyRex3rjMFna72WrX
- ZdsZ4oUeTqPEn4T85mD0p3GCPV0WhiatCTbHrDPmvtjnOO7vLwBd6QOq5r7/bXPeORo+K6zjO
- e+7LseQWa43QQptUIlXHnbYy3yPKxd5+wD5D6sVubxkZEP4J0LF3WTfuokPmyxhMYQ2MLmtDG
- bd+uOglIhHFq/Fu3QoH38v0wQiaIHsDchrRXQ8PdwERdcay0iIuaLacZIW0OAbcWPoWXrG7Oi
- d3PgTvOwxTM1/ATVQfx0ZnCCFPryUBePDYhx9OQZUC2lUvtFLDR9UgLV1jYL5Y/WpsEfXDx7L
- q8OlOMIQRN/G/p6zg85DP9FbkSdbP8zfpvg/9jfpTd80a71sduj73Gn9LVZJ+d4uMilUgFcMr
- BTjjr0DseVai6kNy1ZcVXkX8XNvSbphptj+9Lps+fGyo6/CWI4LRNyUBcryShNesPKAHDBzJY
- 9dZ2XJFI9tMGUCJekrgOt0Ag==
+UI-OutboundReport: notjunk:1;M01:P0:Kxr/QFRIJHU=;v0eH3PTYMJ85NRvCS6tvib88yp0
+ 51qJn69lIUj5g6sAHXfVbkxLbvA5KCmmVidl2gMC+k6t7o6aUHH+zAA+4VP/LRz0uqYprNI0J
+ 9iZTyJn3Y5130+5Pv1ieHd4MovCHT7wK2Di9zOIVvLoofCrrCNi/WyUCLX7Dlq10U0l3Bsiyn
+ Yl12LpWa/ujFTfgAUURXxg/r3KZCaL2RLxlS/E0wwYQ3mjPLuyO9As34+0fwDxGm4rF4ppdTY
+ yVQ6nKfuvSoKoxDN1dFAP/AWAX2cX3Df8Z0nC53lZ+YQB+2ElucI137xazb/PvjqLKFPj9zS8
+ I+lcDaDdJ3JottxUrnoY3wbNHTzEI12LbuNrz+OzTB+Pi5V+R3oVJyl9cEr9pT3PD3RfQLe+4
+ g7I2MKSqJ/k+cXvZp2kyyofQKjMyq0QT2gqUqdM+0xuHI4H87gWQN2uKL+QDkQolfEBJnMTuc
+ IfLeuK9uspqZIIO4qZ6S2epf3PPVJKi+FrTWm7hQoWIWVp7s6yWjuUyy5B/IsmtuB32H04FVN
+ nMGvhHCXkTvTC8tZaFDOkMNdk/NqpZ1DH6DlD/B/1iaWmNDoSlg0cKvuM7Xrdv6dybyAlva07
+ d3D9Cf9PkWuNwFbfN0yxFc6JEFLj4BEQ3qmoytwmpA0GCH6e94He0U/BLxOSMAuOqHnDlbfDm
+ MbWCr2zIi63RZp/7bmgD6nKmMcuh32KO0dx89pMSq1LgWZ4hGcgBMzW7JMeqdQlATZ4DVvwFl
+ Cu4UdnqAIHSOohKAGUuVeK86wBI5dW/CwUneUMaqDh8v8wiFHkeKYjsp/vqUWNZ+XeWbhmNiR
+ jGBNXIzZdtlq47s/U9FHj6Yg==
 
 
 
-=E5=9C=A8 2024/8/1 08:29, Boris Burkov =E5=86=99=E9=81=93:
-> On Wed, Jul 31, 2024 at 07:08:47PM +0930, Qu Wenruo wrote:
->> There are several hidden pitfalls of the existing traverse_directory():
->>
->> - Hand written preorder traversal
->>    Meanwhile there is already a better written standard library functio=
-n,
->>    nftw() doing exactly what we need.
+=E5=9C=A8 2024/8/1 06:29, Boris Burkov =E5=86=99=E9=81=93:
+> Add a comment to document the complicated locked_page unlock logic in
+> cow_file_range_inline. The specifically tricky part is that a caller
+> just up the stack converts ret =3D=3D 0 to ret =3D=3D 1 and then another
+> caller far up the callstack handles ret =3D=3D 1 as a success, AND retur=
+ns
+> without cleanup in that case, both of which "feel" unnatural and led to
+> the original bug.
 >
-> This is great!
+> Try to document that somewhat specific callstack logic here to explain
+> the weird un-setting of locked_folio on success.
 >
->>
->> - Over-designed path list
->>    To properly handle the directory change, we have structure
->>    directory_name_entry, to record every inode until rootdir.
->>
->>    But it has two string members, dir_name and path, which is a little
->>    overkilled.
->>    As for preorder traversal, we will never need to read the parent's
->>    filename, just its inode number.
->>
->>    And it's exported while no one utilizes it out of mkfs/rootdir.c.
->>
->> - Weird inode numbers
->>    We use the inode number from st->st_ino, with an extra offset.
->>    This by itself is not safe, if the rootdir has child directory in
->>    another filesystem.
->
-> Can you explain what you mean by not safe? As far as I can tell, the
-> +256 is to handle that particular invariant of btrfs. Are you worried
-> about duplicate inode numbers in the vein of the usual st_dev/st_ino
-> debates?
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-I'm worried about this case:
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-rootdir (on fs1)
-|- dir1
-|  |- file1 (fs1, ino 1024)
-|- dir2 (on fs2)
-    |- file2 (fs2, ino 1024)
-
-We do not have any cross mount point checks.
-
-I created a case like this:
-
-# fallocate -l 1G 1.img
-# fallocate -l 1G 2.img
-# mkfs.ext4 1.img
-# mkfs.ext4 2.img
-# mount 1.img mnt
-# mkdir mnt/dir1 mnt/dir2
-# touch mnt/dir1/file1 mnt/file1
-# umount mnt
-# mount 2.img mnt
-# mkdir mnt/dir1 mnt/dir2
-# touch mnt/dir1/file1 mnt/file1
-# umount mnt
-# mkdir rootdir
-# mount 1.img rootdir
-# mount 2.img rootdir/dir2
-# mkfs.btrfs -f --rootdir rootdir test.img
-ERROR: item file1 already exists but has wrong st_nlink 1 <=3D 1
-ERROR: unable to traverse directory rootdir/: 1
-ERROR: error while filling filesystem: 1
-
-And it failed as expeceted.
-
->
-> In that case, if this is a bugfix, I think it makes sense to write a
-> regression test that highlights it. It would be nice to pull the fix
-> out of the refactor, too, but I suppose that with such a deep refactor,
-> that might not be possible/worth it.
-
-Unfortunately I didn't even notice how serious these problems are, until
-I tried...
-
-Will add two new test cases. One is the above one, the other is the
-hardlink out of rootdir bug I mentioned in 3/3.
-
->
->>
->>    And this results very weird inode numbers, e.g:
->>
->> 	item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
->> 	item 6 key (88347519 INODE_ITEM 0) itemoff 15815 itemsize 160
->> 	item 16 key (88347520 INODE_ITEM 0) itemoff 15363 itemsize 160
->> 	item 20 key (88347521 INODE_ITEM 0) itemoff 15119 itemsize 160
->> 	item 24 key (88347522 INODE_ITEM 0) itemoff 14875 itemsize 160
->> 	item 26 key (88347523 INODE_ITEM 0) itemoff 14700 itemsize 160
->> 	item 28 key (88347524 INODE_ITEM 0) itemoff 14525 itemsize 160
->> 	item 30 key (88347557 INODE_ITEM 0) itemoff 14350 itemsize 160
->> 	item 32 key (88347566 INODE_ITEM 0) itemoff 14175 itemsize 160
->>
->>    Which is far from a regular fs created by copying the data.
->
-> +1, especially since it doesn't even *preserve* the inode numbers, which
-> would be a comprehensible (if not working) behavior. Creating the oids
-> in "btrfs order" seems like a nice improvement!
->
->>
->> - Weird directory inode size calculation
->>    Unlike kernel, which updated the directory inode size every time new
->>    child inodes are added, we calculate the directory inode size by
->>    searching all its children first, then later new inodes linked to th=
-is
->>    directory won't touch the inode size.
->>
->> Enhance all these points by:
->>
->> - Use nftw() to do the preorder traversal
->>    It also provides the extra level detection, which is pretty handy.
->>
->> - Use a simple local inode_entry to record each parent
->>    The only value is a u64 to record the inode number.
->>    And one simple rootdir_path structure to record the list of
->>    inode_entry, alone with the current level.
->>
->>    This rootdir_path structure along with two helpers,
->>    rootdir_path_push() and rootdir_path_pop(), along with the
->>    preorder traversal provided by nftw(), are enough for us to record
->>    all the parent directories until the rootdir.
->>
->> - Grab new inode number properly
->>    Just call btrfs_get_free_objectid() to grab a proper inode number,
->>    other than using some weird calculated value.
->>
->> - Use btrfs_insert_inode() and btrfs_add_link() to update directory
->>    inode automatically
->>
->> With all the refactor, the code is shorter and easier to read.
->
-> Agreed on all counts, I think this is a lovely refactor.
->
-> For a change of this magnitude, I think it is helpful to justify the
-> correctness of the change by documenting the testing plan. Are there
-> existing unit tests of mkfs that cover all the cases we are modifying
-> here?
-
-We have existing rootdir test cases, from the regular functional tests,
-to corner cases.
-
-But we lack corner cases of corner cases, like duplicating inode number
-(cross mnt) and hard links.
-
-> Is there some --rootdir master case that covers everything?
-
-It's inside tests/mkfs-tests/
-
-A quick grep shows:
-
-004-rootdir-keeps-size
-009-special-files-for-rootdir
-011-rootdir-create-file
-012-rootdir-no-shrink
-014-rootdir-inline-extent
-016-rootdir-bad-symbolic-link
-021-rfeatures-quota-rootdir
-022-rootdir-size
-027-rootdir-inode
-
-
-> Is it
-> in fstests? Knowing that all of the new code has at least run correctly
-> would go a long way to feeling confident in the details of the
-> transformation.
-
-We have btrfs-progs github CI, runs the all the selftests on each PR.
-And it's all green (except a typo caught by code spell).
-
-[...]
->> -	parent_inum =3D highest_inum + BTRFS_FIRST_FREE_OBJECTID;
->> -	dir_entry->inum =3D parent_inum;
->> -	list_add_tail(&dir_entry->list, &dir_head->list);
->> +	/*
->> +	 * If our path level is higher than this level - 1, this means
->> +	 * we have changed directory.
->> +	 * Poping out the unrelated inodes.
->
-> Popping
-
-Exposed by the CI, and fixed immediately in github.
-
->
-> Also, this took me like 15 minutes of working examples to figure out why
-> it worked. I think it could definitely do with some deeper explanation
-> of the invariant, like:
->
-> ftwbuf->level - 1 is the level of the parent of the current traversed
-> inode. ftw will traverse all inodes in a directory before leaving it,
-> and will never traverse an inode without first traversing its dir,
-> so if we see a level less than or equal to the last directory we saw,
-> we are finished with that directory and can pop it.
->
-> Perhaps with an annotated drawing like:
->
-> 0: /
-> 1:         /foo/
-> 2:                 /foo/bar/
-> 3:                         /foo/bar/f
-> 2:                 /foo/baz/            POP! 2 > (2 - 1); done with /foo=
-/bar/
-> 3:                         /foo/baz/g
-> 1:         /h                           POP! 2 > (1 - 1); done with /foo=
-/baz/
->
-> To help make it clearer. I honestly even think just changing to >=3D mak=
-es
-> it clearer? Not sure about that.
-
-I'll add comments with an example to explain the workflow.
-
-BTW, David and I are working with Github review system a lot recently:
-https://github.com/kdave/btrfs-progs/pull/855
-
-We do not force anyone to use specific system to do anything, but you
-may find it a little easier to comment, and feel free to fall back to
-the mail based review workflow at any time.
-
-Thanks a lot for the detailed review!
+Thanks,
 Qu
+> ---
+>   fs/btrfs/inode.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index ed95040f4bb6..07858d63378f 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -744,6 +744,20 @@ static noinline int cow_file_range_inline(struct bt=
+rfs_inode *inode,
+>   		return ret;
+>   	}
+>
+> +	/*
+> +	 * In the successful case (ret =3D=3D 0 here), cow_file_range will ret=
+urn 1.
+> +	 *
+> +	 * Quite a bit further up the callstack in __extent_writepage, ret =3D=
+=3D 1
+> +	 * is treated as a short circuited success and does not unlock the fol=
+io,
+> +	 * so we must do it here.
+> +	 *
+> +	 * In the failure case, the locked_folio does get unlocked by
+> +	 * btrfs_folio_end_all_writers, which asserts that it is still locked
+> +	 * at that point, so we must *not* unlock it here.
+> +	 *
+> +	 * The other two callsites in compress_file_range do not have a
+> +	 * locked_folio, so they are not relevant to this logic.
+> +	 */
+>   	if (ret =3D=3D 0)
+>   		locked_folio =3D NULL;
+>
 
