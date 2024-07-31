@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6931-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6932-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1EF943909
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 00:37:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC5394391E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 00:55:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EB551F23497
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 22:37:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42D1AB237F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 22:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA84016D4E5;
-	Wed, 31 Jul 2024 22:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E5C16D4DF;
+	Wed, 31 Jul 2024 22:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="MRlxLTQK"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lecsG2QC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F252B35280
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 22:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1166549625
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 22:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722465447; cv=none; b=p7xzWB0XYCC/W62bCxfvG4ezIBy/vHSol9lpLXEmZcHElD/XzdSTOfzfy5rnALhimjZALE+Gzpssm69TurfGSeO6wstwfhxpnqbdNwrBTU06/DClD7Qz71TUgqqp01GB+rRDFPcsORLT7opabqKKvjl2Diiv78fpyZ4b+9Hp6Oc=
+	t=1722466543; cv=none; b=nFlasFJggOamoSqA2KVYZdiWZwZuuiD/YLEq8T+w5zwACWDPS6QmItKDeMFhckC+7fkxkzYQA7Wh5zGa2kbP4k7wthqHwL0NHjsmtARQTa/dFa/MlfqbIx3DuHgrBBCnHoHjEBU4RVL+mmMg9qZhJVGI98enk4G0eOUM4xAnZMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722465447; c=relaxed/simple;
-	bh=ibEkBt48XdAPW5ShswGAwFakZPJ2zOlYNQvke1ox/tc=;
+	s=arc-20240116; t=1722466543; c=relaxed/simple;
+	bh=W1Ni9HasrFrVvTpxqfWsXTqdwGRpVd+ENxL9ODJpZuI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IOI24bP1njQMszf8Plf7cO4a6J2rroO243ajlUmT91xX99DhL9ogkEo/OP+ytE46xy2VMBcO4aFM0gDzchweriIVvaH/NKkjoRDCo1FRlQllPCHEfVTJA0CxrVGUoVfWFggw/9xF22riCF2B7Udj7o3DtHRyN0ymUEpQpxHtZ/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=MRlxLTQK; arc=none smtp.client-ip=212.227.15.19
+	 In-Reply-To:Content-Type; b=B1gtUK/Oyk9RfGz7ZFmz19ZBdkrpI02NDtDpoKiRvHqQxELujN9+yxOluqADSAv9sL/gAnwFMSPUwL/aivW0auhqWadzLMLaop8OzZtATY1s7f5nfd42Q9/tVwg42wc8pj5dkUKy2DtebtEOOGyskymmQhCvYbeeYaMWgXGV39A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lecsG2QC; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722465442; x=1723070242; i=quwenruo.btrfs@gmx.com;
-	bh=Q1DaGZQwcG3IZ7aczNaqwOtjQdGrNwciHdR++RdQ9Jc=;
+	s=s31663417; t=1722466533; x=1723071333; i=quwenruo.btrfs@gmx.com;
+	bh=st2/Lh5Mgk9tWiG7nFbguOl0uvO5jm6mgfGu+R338yM=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=MRlxLTQK/COroxxJGstJELB02BUkg3YSfnossjLwQ7nqsI+uM/wKPFIBq9BX5act
-	 33PkBz4QsgUrA3eHATiFAA/l9V1Wzbbaua2Drx5LC8uNS2deeaVBcihw/1J3jdPse
-	 yGmwhdBQ5YQTQXdW3G/tGR+Kk6j4uXGPe4Hr+DBhRX6rP2LKCo2jbE2MAckQgK2Xd
-	 FWMrXqiVSksXdld5zWB+F+OUJPOBH3KJwyofErj0wbNobzpPPEIKgTat9HcVFVZ0d
-	 pz7rPhfzIP5emBkDX47M1BOOC+RK0EC4IbLHNczBgH5TeMXrKwFEAMAvRKcRm5oPt
-	 gHjzs9QO/i3gMY6SpA==
+	b=lecsG2QCEc65EjUgHoTC/PgdoV8702m6b/wweY6kOuTrnrdqRt8vpMl/k/pmeWqZ
+	 WCjVIL2n7AzKXDKQhx/kXj79k+29+HaJj6JCcwlKl2g79el5ktN2c3gbrL8SEbm0e
+	 /BVKukPJxx0Q2fiFSoy/K/DJo6bY4m/ZKdEkczn2cdNTYqRc+AV0OyEZ3T+rfMmpe
+	 3gZqntFH9Kt5c6QcqvD/fYN3W6YdKvZkkxecHm/4I0wIUgIjDJxtLdu4c9APe1ntC
+	 lBFSYDpBSdBBmgVwLlncDpi49BjMYCXREK9VMzpUtfyhtI6flYLi8jPW03cswJHMj
+	 lyRF4NjWVvATXhm4cA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMXQ5-1srmR42bBP-00ODQR; Thu, 01
- Aug 2024 00:37:22 +0200
-Message-ID: <13e9de20-f023-45a4-a133-0464d3811f15@gmx.com>
-Date: Thu, 1 Aug 2024 08:07:18 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7zFZ-1sCrp81fcZ-00yVvV; Thu, 01
+ Aug 2024 00:55:33 +0200
+Message-ID: <91358b99-104e-4069-8fd2-1d8af77bd65b@gmx.com>
+Date: Thu, 1 Aug 2024 08:25:30 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8] btrfs: prefer to allocate larger folio for metadata
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <c9bd53a8c7efb8d0e16048036d0596e17e519dd6.1721902058.git.wqu@suse.com>
- <20240726145753.GC3432726@perftesting>
- <d5473dd9-69ca-4df3-b4d0-f9d7b0a46a86@gmx.com>
- <20240731151135.GC3908975@perftesting>
+Subject: Re: [PATCH 3/3] btrfs-progs: rootdir: reject hard links
+To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1722418505.git.wqu@suse.com>
+ <7984ff20beeb81268f786234d30d3c24d90a9a5b.1722418505.git.wqu@suse.com>
+ <20240731221739.GA3808023@zen.localdomain>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,73 +90,154 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240731151135.GC3908975@perftesting>
+In-Reply-To: <20240731221739.GA3808023@zen.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+fTSvxMpkhyZJmegKiAoIvfeEnaNvz6PH0Ndq6i+52aB3PpeI6s
- orM1G1OcohAlyavArrh+QDb+K6rBFbL/NYMkof6RTWvNIrZN7YE/2Se7LFnSnA5YycNlw55
- U5vpXknnXoDpH0e3Id7ADywKgQPMt8bm0POGra1Dwd0NVmgLdyUCP5zwN+UW59QhESGmCe6
- tmKdZRkX/YJgfOmMZRL8g==
+X-Provags-ID: V03:K1:j6hVtOdECMemHLW2aTd8sLrnJ8DGCN7TXwWdEehTazaU4m5aZZR
+ Ouza5AShH/O0RqZzN/R2pDl8/ccBU73fadT0xR9iQWwTu9hL8TUHSq2e5F/xSHHAmhKcjUV
+ LTVzVxKhD1ZjYxlVJWkMDrVLo0hFoE3XKmMtcmNOjtAOjwVJKWdVxtwTyboSEdMoBJeSgVp
+ N7iGfx/2mz6ZcjPAXQcTA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wBPunHg22NA=;lQgf1lk1Z08QioU3KvRD+tJ3Lod
- sUFcF/ARzKi1JKat+ZG0D3rfvA8DdSKApNL/wY3cKqnPMeWLqWW+biFVzepp7vJ7WhLs4mKPH
- fBE4DMWm5jefuE4q+EYXf9svdM2+YOAbmNwhUMn3eRX6MAuHYPWQbiUoQpoo8W6R6pkfkVAQh
- eji1KkIp4fMJGBzQZuaNBvoLRCV1LGcLuS49ntBzE1i5caiNMBGA6Z4JROQY5GcD/qzbygQc6
- KAdPGgy92RXZDamppvCboRDs9Oig8vJCZck2PviHNnuzUIR4sBgoFSF5OtJdSptOdf/bCbEp9
- 2yzRNPCJXbRVec46gB5HCWt7VmVS9LtfsUQY9iy8XloBgpIvvVeLlODtkTV0RlH8c8KST5jzi
- MN01JgPTybvs15qgu6jdpzThluY2979l1ZCnAae4I3+YCAVW+6i7Y9Mi/8oIdyKTAvoJk7FfR
- EfF9KUR9byVsrBefKJNi1oDuhHrRjjh+iXRmVFah8XU8wWikfIjj2NR40sFgo0uqAuFCV9FWu
- MoBAY/PXhOgmlI5sSdPR3ATsz9Y2Co9uzCJCXcHKDZT25rudZO9mCNYvC4wHD2BT/JXQmenCu
- 1gp2XECtdbgZBh+ThtGBq8v8wMOmo8rHMBXXmtyGgHUJw6X0POTUjMhENicUof0sGWdDog1aa
- gdzP0ZsZmM5MgIKGHX6xml+MWCVrt2oBSet69QmkS8av0LmOunvJqIQELpDi2pST8xrqukv3R
- q9sBRsMEzm52fWCfKjB3amLaPIgDoXeaXUTZdZPOjIcbn9QMgo1dLhbWP6PR89FfAC3nPawFb
- SS9vdHX3Ru3LcQ7dchLyu3GQ==
+UI-OutboundReport: notjunk:1;M01:P0:BG6OaDs3aIQ=;VbV44psz5SVDtSJ1WVup4i0F0Bc
+ hCdSmvp+2rp1YpcmIroOBEOJ+xgQQj52xwu063qGKRUcmjc47e8+eOFyi7mK3eE+/VPp4uyxk
+ BaqIO74CKLIS9kF61DDfodaoygc130Jj8o1fgO83VAARfyfObCNkTkNEr6cK6jWtWI1cJeeti
+ XCSqbY4hxko1kamS6mVx72w2N5DnOmMyv9sX6KGLmrAIEgp16M7E5e4oMQXqi/8Lv7+geC2XG
+ zVOeP4PJ2gwl5sP7E1wOzNQkD+/MxlRZrVKJGyd5lrFESYcB/2eWsi5RRnwHv7KbkN8WRspNk
+ GU+yV3DcONzY+0Yotx32uiB+cWmGFPKfoSm5brd57WgqI6SVNAf1fzDENgS6MgiLsoaMbKzJp
+ LxBPs91CxBIEyEtNUMVB8Hdr9fb7pCV8lhzdPWohLGcIaR2c6wEbrN0vJTjNL3MaIYkUD7B1i
+ FCxbiBDh7JLmJIeJn060fRvGKEFw2SNyV7z3HGSEt3vKBamM3GsEEGjyG/sBsY+jjkrSLyGVM
+ WFyPcq+Ylris6HpEy8/a6FPyagLEMTggxLwz+tpusVKsPlDToZA/IKuwJ8vQCjJrIlecGcNek
+ gp3SphzVoNqH+GFuMYgk1GxS8UOSkOiAu4kceV7ANE9ZmaL6KXa6w8aMespBAoGj4Rn8SGouB
+ RCaRZGKHbUpeYOJHcuNBE2jpu93lNEDoS98vaUyVc+eY1s6zMayN+6FM+CMF79ZdsUiAv6Zx6
+ 1k4b0EQebNwfztSrsPPeJVcyvS4/iACUObOPbUvPF6NdTf9ZASHRk6Cmn7PfiNR+3rBHBBASd
+ eqybffc/v00G2baVhSElutBw==
 
 
 
-=E5=9C=A8 2024/8/1 00:41, Josef Bacik =E5=86=99=E9=81=93:
-> On Sat, Jul 27, 2024 at 08:02:26AM +0930, Qu Wenruo wrote:
-[...]
+=E5=9C=A8 2024/8/1 07:47, Boris Burkov =E5=86=99=E9=81=93:
+> On Wed, Jul 31, 2024 at 07:08:48PM +0930, Qu Wenruo wrote:
+>> Hard link detection needs extra memory to save all the inodes hits with
+>> extra nlinks.
 >>
->> And in that case, they do the retry if filemap_add_folio() hits -EEXIST
->> just like us.
+>> There is no such support from the very beginning, and our code will jus=
+t
+>> create two different inodes, ignoring the extra links completely.
 >
-> You're right, I misread the code and thought this was the normal path, s=
-o my
-> whole rambling was just wrong, sorry about that.
->
-> However if we're allocating them at the order that our extent buffer is,=
- this
-> means that we previously had an extent buffer that had 0 order pages, an=
-d these
-> just haven't been cleaned up yet.
+> I don't understand exactly what this means.
 
-Yes, and I believe the situation is caused by the usage of (NO_RETRY |
-NO_WARN) gfp flag.
+I mean, if we have the following layout as source root dir
 
-And the fact that btree_release_folio() only handles the folio, making
-the remaining one still attached to the filemap (requiring another
-release_folio() to free it)
+rootdir
+|- dir1
+|  |- file1 (ino 1024)
+|- dir2
+    |- file2 (ino 1024)
 
-That will be another optimization soon, but I'm still wondering if we
-should get rid of (NO_RETRY | NO_WARN) if the folio is not that costly
-to allocate, or enhance the release_folio() callback, or even both?
+Then the resulted btrfs would looks like this:
 
->
-> This is kind of an ugly scenario, because now we're widening the possibi=
-lity of
-> racing with somebody else trying to create an extent buffer here.  I thi=
-nk the
-> only sane choice is to immediately switch to 0 order folios and carry on=
 .
-> Thanks,
+|- dir1
+|  |- file 1 (ino 257)
+|- dir2
+    |- file 2 (ino 259)
 
-I'm totally fine with immediately fallback.
+Making them different inodes.
 
-Thanks for the review,
+>
+> How does the code you are replacing handle hardlinks? As far as I can
+> tell (far from an expert...) it looks like it does handle them, so
+> explicitly rejecting them now is a regression?
+
+Sorry, the new code doesn't handle hardlinks, they are treated as
+different inodes.
+
+As the new code always grab a new ino number for each file.
+
+Although things like btrfs_add_link() can handle extra hard links, we
+always treat every inode we hit as a new one.
+
+
+And yes, it is a regression. The old code skips the ino number detection
+by reusing the old ino from the host fs, which introduced two bugs (that
+we didn't notice until now):
+
+- If rootdir crosses mount points, we can have conflicting ino
+   And screw up things easily
+
+- If rootdir has an inode with hardlinks out of rootdir
+   Then the resulted fs will have the same nlink number, mismatching
+   the correct number.
+
+   Just like this:
+
+   # mkfs rootfs
+   # touch rootfs/file1
+   # ln rootfs/file1 file1
+   # mkfs.btrfs -f --rootdir rootfs $dev
+   # btrfs check #dev
+   ...
+   [4/7] checking fs roots
+   root 5 inode 88347536 errors 2000, link count wrong
+	unresolved ref dir 256 index 2 namelen 5 name file1 filetype 1 errors 0
+   ERROR: errors found in fs roots
+   found 147456 bytes used, error(s) found
+
+So for now, I'll go with the more robust and correct code, with the cost
+of buggy hard links support.
+
+>
+>>
+>> Considering the most common use case (populating a rootfs), there is no=
+t
+>> much distro doing hard links intentionally, it should be pretty safe.
+>>
+>> Just error out if we hit such hard links.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   mkfs/rootdir.c | 12 ++++++++++++
+>>   1 file changed, 12 insertions(+)
+>>
+>> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+>> index d8bd2ce29d5a..babb9d102d6a 100644
+>> --- a/mkfs/rootdir.c
+>> +++ b/mkfs/rootdir.c
+>> @@ -418,6 +418,18 @@ static int ftw_add_inode(const char *full_path, co=
+nst struct stat *st,
+>>   	u64 ino;
+>>   	int ret;
+>>
+>> +	/*
+>> +	 * Hard link need extra detection code, not support for now.
+>> +	 *
+>> +	 * st_nlink on directories is fs specific, so only check it on
+>> +	 * non-directory inodes.
+>> +	 */
+>> +	if (unlikely(!S_ISDIR(st->st_mode) && st->st_nlink > 1)) {
+>> +		error("'%s' has extra hard links, not supported for now",
+>> +			full_path);
+>
+> I would change the message to something like:
+> "inodes with hard links are not supported"
+
+Thanks for the advice, I'll go with this new message, along with some
+new test cases for the existing hardlink and mount point bugs.
+
+Thanks,
 Qu
 
 >
-> Josef
+> Thanks,
+> Boris
+>
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +
+>>   	/* The rootdir itself. */
+>>   	if (unlikely(ftwbuf->level =3D=3D 0)) {
+>>   		u64 root_ino =3D btrfs_root_dirid(&root->root_item);
+>> --
+>> 2.45.2
+>>
 >
 
