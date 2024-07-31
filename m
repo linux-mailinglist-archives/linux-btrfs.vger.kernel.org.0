@@ -1,306 +1,372 @@
-Return-Path: <linux-btrfs+bounces-6938-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6939-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5951F943968
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 078D8943975
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:44:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79BC21C21B58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:30:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AB761C21951
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2842A16D9C4;
-	Wed, 31 Jul 2024 23:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DB916E86F;
+	Wed, 31 Jul 2024 23:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="b4I8E768"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="eghOI7PW";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IO1YRly8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6A51BC4E;
-	Wed, 31 Jul 2024 23:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0670C16E863
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 23:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722468641; cv=none; b=qks2R5zO0tLrIXQpwTOISVPbtTifrz3KD/rgFZOMYwvKjCf4AxGycmG1TVgTeT1dIqQNFP5lKrSYfEK6Buig5c3X556YWkQ3LS3SqXWO42ZWt6Gq/HPpNKVvFfXHD0y7Mr4vmlDSD5RI4gB2NlZes7HLsIcotfNvWoGIXOpf+t0=
+	t=1722469443; cv=none; b=j3cpIIsWnan8qzM18p/Yo7255yAhvSPChEcNFmUw7HXdGa7jdfUd4AIquH7D8HK1c368d7US8z8qHzsWU0dJlrT4dlI0nX0XulEYtncuk9X+/oI60XXRmTqazFAqTXeVIFAmaQa+y9JH9bfMdjm4jFL20FnrxLgYLqEVFobCHqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722468641; c=relaxed/simple;
-	bh=v3TEAXNudixVfadw8/RzsMdx7CPFg+Ui/giunLwfECY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JTUtozH73a8icnakJCiFb+CpR+ypX2nFD92EywuTLJ7BAmgdvdA2NYZeRfNrg6aXp7Dxi5MhMVZ889q9BD1/Z58qBziDZxINW7CZQt6o5uN4h7KdzMxrD6o0HCsnv0ovVDy05bnGh6JriDY1r3/mFlsRTMtkMQhWiJ0l72Fnfhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=b4I8E768; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722468632; x=1723073432; i=quwenruo.btrfs@gmx.com;
-	bh=JT2uQ+q1/4Ln70dhQtS54ChfvLXFFrtXShm3ivriJ8A=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=b4I8E7680coQjwrB35IINzHXm+EyhqjCwl8czO9QV8N79McJWcT7uBKcKbcPMx25
-	 QmRbcOyLhenDBGCXN4t/syeWLYSFsBKQhcBTczsuChMlFchIghqBRlw6t4ECPRhoP
-	 nVHPi81u8Yf5SiwHH2ma0AgnwIRLRz5cwQeREOBT8O0dYXqQHE0MYZMyXNTwwmH/y
-	 DxAH7pL//HTC3wvsQKKONliZdW8LJLIjddkDnLKObBDHovWj002otjKPp+k+7o89s
-	 875aJpUQDl34h/6I1lp2UWsGuH15UaXP1zCLyoGKjs2pp94Rq7Qmt6k8h5/bnbAzO
-	 qvAmoW4FmmLO5+kfYQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Ma20k-1snaXT1ZSe-00PBW4; Thu, 01
- Aug 2024 01:30:31 +0200
-Message-ID: <b0876bf8-08ae-4b34-82bb-5f044a135f5b@gmx.com>
-Date: Thu, 1 Aug 2024 09:00:28 +0930
+	s=arc-20240116; t=1722469443; c=relaxed/simple;
+	bh=HwlgBPz7jwHXH3DrVVumvqYGwOPb93wog+WyIuz90F8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RN9zX7YOd0UJ0J22JIb2TO8B3QxXUqUUYkZUKhk4mdtIzmC+33TYpbEVvdx+V0D7BAi+0l637qtTu9Jjxl/ppWzoqfJM5DB2uHldLbt3KsZS8LOYUiOIpWhszeg8+TbceO/FOI7R7PVFjayfoMrM6i1+1o86f99H7QyMxyCgD0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=eghOI7PW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IO1YRly8; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 234041146DDC;
+	Wed, 31 Jul 2024 19:44:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 31 Jul 2024 19:44:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1722469440;
+	 x=1722555840; bh=7sN/GSgGz76jozFIBpFAMW4HMa6sLt9AEnRIA+J8Yw8=; b=
+	eghOI7PWFss9+HkBoaaNxwKKLQwWrpwfUsimUJmxCM0Tl7FPK4uZdDaq+XU/cMiS
+	zY98AuvdmMj6xDD1gl+sO63sL0h0rDm2ujjyKsj+c2H7pHQv2U9+WZZfGYC7Nf33
+	W+tGmhwqUlFi65BCPqAk4MUYy+go5EprWhB0SiYUymDxTE9bdZV1Cy+NC8M0x2ru
+	SzU50pjOTMoZcd+isNY0g29cMG0h0PEHasYQWwXEY1CNgDMV0AZ19LUo9GMqkAyW
+	qwlrpDQafDDp17QAvW55Wn7w/BkVv7oWN04kNnjd1tOgASnnmE/MNN+9MKT3K2nz
+	fnALhLlYrJWnC+2MT9uhkA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1722469440; x=
+	1722555840; bh=7sN/GSgGz76jozFIBpFAMW4HMa6sLt9AEnRIA+J8Yw8=; b=I
+	O1YRly8/vKMcB92i0OP6BEqpzqPvbgAMH/gDnJ+AI+kybJl+Z8AB+WOE/8vlQWHr
+	L70eFeAZNcjulqkkXUET1sSwsK1JMa/2JQJw/y7ZZg6AVdWSO8DNkWK0atLoqHT8
+	G6a/0AKiBRcgjOEdA04EA8DWlNUPUtn768ALMpPc6IYrFColJERfW8KRpEwGNEbs
+	97/WM4z+Z3O4KwPe2aMpDY6pPpbl8Q0Rxl/JFBZAtQ+35eBAiKhg3G7JkwYPLh0q
+	jL1Vv+/6+6KF2rd1YcrHLkvYF7ydBcaHEmw4mnkWy9fdAuFxGdDx+SG3E7muVgYs
+	UZIY1XzLV/vg6DhT/qpmQ==
+X-ME-Sender: <xms:P8yqZnYu7BeotCy1bu_rBZ_zUDnc4ucQGyFn-yVXLjRSuNg9XDuxww>
+    <xme:P8yqZmboC9Kd3W-LOOUy39zNbjRi5nL-J7R6dWMxqBW_qrW-MsR_XU3p2oylhFJM6
+    12Tx3H-42s30xXj5ro>
+X-ME-Received: <xmr:P8yqZp_vRcuqV2YoANO-LoLBW4Od7auB-e1t31c4e69--y1IVIaH5XuzWhaWWk3e4VI2Sy3pJBt1GLyiZ489G-oxcUY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrjeejgddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    eikeetvdfhjeevheeiteduvddvffekieelleekjefgkeeihfeukedvhffghfffkeenucff
+    ohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthho
+    pedt
+X-ME-Proxy: <xmx:P8yqZtpMh2_87rmfO7jp6OezOiDwCHZjS3OQOICsDj6f2OsS5eaNmw>
+    <xmx:P8yqZipZ4ywOnOm4s6r-2ZdwJWpNggIB8lrVSvnbCzPvlq7f6h8ULg>
+    <xmx:P8yqZjRPh37xywwxAhEa-VdM_9-TqDOaLMHvtkNg3q2sZGBsRKftmQ>
+    <xmx:P8yqZqoCU__sss_A-G9u-Z8ENjgNIlGPq8LZnG7COgg__cyNZBF1OQ>
+    <xmx:QMyqZlXnzv3qY4_7zBOhFBQ_81L3Vg6pYITWibSZYKNIsnltRyLWhgbN>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 31 Jul 2024 19:43:59 -0400 (EDT)
+Date: Wed, 31 Jul 2024 16:42:31 -0700
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/3] btrfs-progs: mkfs: rework how we traverse rootdir
+Message-ID: <20240731234231.GA3809836@zen.localdomain>
+References: <cover.1722418505.git.wqu@suse.com>
+ <667ee4f02fdc2cb6f186eb8b06dd089f3ce53141.1722418505.git.wqu@suse.com>
+ <20240731225935.GB3808023@zen.localdomain>
+ <dd3444f9-c8be-46e7-97b1-8f95a161c709@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fstests: remove unnecessary stdout/stderr redirection for
- run_check calls
-To: fdmanana@kernel.org, fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <742c2d98a000e324106a9f5bd3498f2985bb2706.1722441541.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <742c2d98a000e324106a9f5bd3498f2985bb2706.1722441541.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:In0AOQH4+ScM2Es9I+Q4qVy3D/ratqyfa0net/SvnyBNkmNeuNe
- Ksrefau2gIJbcbZe1Yb/kGCfgk7NsAEFBYeOopOdxydYcBNhu6SBWxa5Z+RLCQgqRqzk8Ej
- 5MN3BEWLhvUtYfo+/4Z7K9pLd2483JFEXZfyxz7LfA+7uGXFlEon4T9avt1jLLNPMrD/8VD
- EodbX0mAn4QcVUqfneOFw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rLmG4H7OpHI=;E8Mn5WR9cb66Stgb9zuakmtvKBs
- noWote+vNxHxRXu7Ii1atkVyrMLcSjQBQoSWbCxnG6FOPxdcn5dfyvlPeUq76kMDw3vg0Jb8a
- TYcQHc/7w/h9ZjvH6i+4oStHGYB95MhYOCq0DY6+xPManIpG5ZBBwJHU1mERsQLAeZA8vxbLO
- 30YnUXd4J/OEUHisdVi5V4aNnl3OgkP15ebz6YQXXQPOq6Ks80kBQLXmkGU5ApkcSTk+R2IIz
- o/af5UBFQDmyvehy+n/LDpIPh78sXmvuptpGOEfYdcdrO5mK/YDaKKvWlXU8AEWW2X+w/AgYE
- Ak9ZOGfEPd35Ccw/6KP/OQRs1CMbkyD+vf80ilcWu4DbFvBbkdVJCu4YNax+Bwrj9xBHh33DY
- lXHq5Ud4x+rnPM0sRlEMvLyc2bVU+Uwvwgfn/l+QzsYtRn8GiMQF4IN0plz8Jq1qcjUXwga36
- Plna+ZV1UPpGFiTwoqEFGcRxt70wHxneYvkoSHKSlIPTcNLonYp7sbQFQd/Zrhpi6ABfkO6Mr
- +L2/etwbomAKx1TKaoXaxcgJ10faq/HkRZud2f+f1LKX0vCKbgjs0K0YqN1eMonfhgn1tWVYv
- tQFLAZ1FsJSwVo85CKM4VQWApPRQMxFUOl3YHTfEv5B9q9bi88BhkWvmWjaybeooUQjC9kWHW
- NHfXihd2QhiYzl4JUiBR9c4tmBGE6N5d1sVxiK0v5F40sVHB5+guZ5zSZOZX+gco8HeXpKFRl
- O4R4lFBH3OBBQzonw8kHTmifT3+4He43MFzMqSpEK+PizYTYWM0oYBVTuJuaKYgjLLRrQlYkT
- j2U0FpSoHpb5RcnC/A16NvyA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dd3444f9-c8be-46e7-97b1-8f95a161c709@gmx.com>
 
+On Thu, Aug 01, 2024 at 08:49:39AM +0930, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/8/1 08:29, Boris Burkov 写道:
+> > On Wed, Jul 31, 2024 at 07:08:47PM +0930, Qu Wenruo wrote:
+> > > There are several hidden pitfalls of the existing traverse_directory():
+> > > 
+> > > - Hand written preorder traversal
+> > >    Meanwhile there is already a better written standard library function,
+> > >    nftw() doing exactly what we need.
+> > 
+> > This is great!
+> > 
+> > > 
+> > > - Over-designed path list
+> > >    To properly handle the directory change, we have structure
+> > >    directory_name_entry, to record every inode until rootdir.
+> > > 
+> > >    But it has two string members, dir_name and path, which is a little
+> > >    overkilled.
+> > >    As for preorder traversal, we will never need to read the parent's
+> > >    filename, just its inode number.
+> > > 
+> > >    And it's exported while no one utilizes it out of mkfs/rootdir.c.
+> > > 
+> > > - Weird inode numbers
+> > >    We use the inode number from st->st_ino, with an extra offset.
+> > >    This by itself is not safe, if the rootdir has child directory in
+> > >    another filesystem.
+> > 
+> > Can you explain what you mean by not safe? As far as I can tell, the
+> > +256 is to handle that particular invariant of btrfs. Are you worried
+> > about duplicate inode numbers in the vein of the usual st_dev/st_ino
+> > debates?
+> 
+> I'm worried about this case:
+> 
+> rootdir (on fs1)
+> |- dir1
+> |  |- file1 (fs1, ino 1024)
+> |- dir2 (on fs2)
+>    |- file2 (fs2, ino 1024)
+> 
+> We do not have any cross mount point checks.
+> 
+> I created a case like this:
+> 
+> # fallocate -l 1G 1.img
+> # fallocate -l 1G 2.img
+> # mkfs.ext4 1.img
+> # mkfs.ext4 2.img
+> # mount 1.img mnt
+> # mkdir mnt/dir1 mnt/dir2
+> # touch mnt/dir1/file1 mnt/file1
+> # umount mnt
+> # mount 2.img mnt
+> # mkdir mnt/dir1 mnt/dir2
+> # touch mnt/dir1/file1 mnt/file1
+> # umount mnt
+> # mkdir rootdir
+> # mount 1.img rootdir
+> # mount 2.img rootdir/dir2
+> # mkfs.btrfs -f --rootdir rootdir test.img
+> ERROR: item file1 already exists but has wrong st_nlink 1 <= 1
+> ERROR: unable to traverse directory rootdir/: 1
+> ERROR: error while filling filesystem: 1
+> 
+> And it failed as expeceted.
+> 
 
+Perfect example, it did seem to be vulnerable to this with just
+"original st_ino + 256"... Thanks for the new test.
 
-=E5=9C=A8 2024/8/1 01:29, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> It's pointless, and confusing, to have calls to run_check redirect the
-> stdout and/or stderr, because run_check already redirects it:
->
->     $ cat common/rc
->     (...)
->     run_check()
->     {
->         echo "# $@" >> $seqres.full 2>&1
->         "$@" >> $seqres.full 2>&1 || _fail "failed: '$@'"
->     }
->     (...)
->
-> So remove those redirections.
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > 
+> > In that case, if this is a bugfix, I think it makes sense to write a
+> > regression test that highlights it. It would be nice to pull the fix
+> > out of the refactor, too, but I suppose that with such a deep refactor,
+> > that might not be possible/worth it.
+> 
+> Unfortunately I didn't even notice how serious these problems are, until
+> I tried...
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+That's kind of my concern with the higher level testing question, that
+we don't have much coverage for such a big refactor. OTOH, if we already
+had such serious bugs, how bad could the refactor really be :)
+
+> 
+> Will add two new test cases. One is the above one, the other is the
+> hardlink out of rootdir bug I mentioned in 3/3.
+> 
+> > 
+> > > 
+> > >    And this results very weird inode numbers, e.g:
+> > > 
+> > > 	item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
+> > > 	item 6 key (88347519 INODE_ITEM 0) itemoff 15815 itemsize 160
+> > > 	item 16 key (88347520 INODE_ITEM 0) itemoff 15363 itemsize 160
+> > > 	item 20 key (88347521 INODE_ITEM 0) itemoff 15119 itemsize 160
+> > > 	item 24 key (88347522 INODE_ITEM 0) itemoff 14875 itemsize 160
+> > > 	item 26 key (88347523 INODE_ITEM 0) itemoff 14700 itemsize 160
+> > > 	item 28 key (88347524 INODE_ITEM 0) itemoff 14525 itemsize 160
+> > > 	item 30 key (88347557 INODE_ITEM 0) itemoff 14350 itemsize 160
+> > > 	item 32 key (88347566 INODE_ITEM 0) itemoff 14175 itemsize 160
+> > > 
+> > >    Which is far from a regular fs created by copying the data.
+> > 
+> > +1, especially since it doesn't even *preserve* the inode numbers, which
+> > would be a comprehensible (if not working) behavior. Creating the oids
+> > in "btrfs order" seems like a nice improvement!
+> > 
+> > > 
+> > > - Weird directory inode size calculation
+> > >    Unlike kernel, which updated the directory inode size every time new
+> > >    child inodes are added, we calculate the directory inode size by
+> > >    searching all its children first, then later new inodes linked to this
+> > >    directory won't touch the inode size.
+> > > 
+> > > Enhance all these points by:
+> > > 
+> > > - Use nftw() to do the preorder traversal
+> > >    It also provides the extra level detection, which is pretty handy.
+> > > 
+> > > - Use a simple local inode_entry to record each parent
+> > >    The only value is a u64 to record the inode number.
+> > >    And one simple rootdir_path structure to record the list of
+> > >    inode_entry, alone with the current level.
+> > > 
+> > >    This rootdir_path structure along with two helpers,
+> > >    rootdir_path_push() and rootdir_path_pop(), along with the
+> > >    preorder traversal provided by nftw(), are enough for us to record
+> > >    all the parent directories until the rootdir.
+> > > 
+> > > - Grab new inode number properly
+> > >    Just call btrfs_get_free_objectid() to grab a proper inode number,
+> > >    other than using some weird calculated value.
+> > > 
+> > > - Use btrfs_insert_inode() and btrfs_add_link() to update directory
+> > >    inode automatically
+> > > 
+> > > With all the refactor, the code is shorter and easier to read.
+> > 
+> > Agreed on all counts, I think this is a lovely refactor.
+> > 
+> > For a change of this magnitude, I think it is helpful to justify the
+> > correctness of the change by documenting the testing plan. Are there
+> > existing unit tests of mkfs that cover all the cases we are modifying
+> > here?
+> 
+> We have existing rootdir test cases, from the regular functional tests,
+> to corner cases.
+> 
+> But we lack corner cases of corner cases, like duplicating inode number
+> (cross mnt) and hard links.
+> 
+> > Is there some --rootdir master case that covers everything?
+> 
+> It's inside tests/mkfs-tests/
+> 
+> A quick grep shows:
+> 
+> 004-rootdir-keeps-size
+> 009-special-files-for-rootdir
+> 011-rootdir-create-file
+> 012-rootdir-no-shrink
+> 014-rootdir-inline-extent
+> 016-rootdir-bad-symbolic-link
+> 021-rfeatures-quota-rootdir
+> 022-rootdir-size
+> 027-rootdir-inode
+
+Thanks for collecting those. By scanning those, it's hard to tell if
+there is, for example, a test of an "interesting" directory structure
+like the one I drew above, to test the traversal, for example.
+
+Out of curiousity, I applied your patches, ran the tests (pass) then
+put a bug in the traversal code (only pop on cur_lvl > ftw_level, not
+ftw_level - 1) and 004-rootdir-keeps-size did fail, as it ran on the
+Documentation/ dir, which does seem like a sufficiently interesting
+directory.
+
+I feel a bit better now :)
+
+Maybe something that ran after fsstress (or however we test send/recv?)
+in the long run would be a good test, as we nail down some of the bugs
+you have hit here.
+
+This comment is not directed at you, but is more general for btrfs
+development: I think explicitly stating the testing conducted on a
+complex patch is really helpful for reviewers.
+
+> 
+> 
+> > Is it
+> > in fstests? Knowing that all of the new code has at least run correctly
+> > would go a long way to feeling confident in the details of the
+> > transformation.
+> 
+> We have btrfs-progs github CI, runs the all the selftests on each PR.
+> And it's all green (except a typo caught by code spell).
+> 
+> [...]
+> > > -	parent_inum = highest_inum + BTRFS_FIRST_FREE_OBJECTID;
+> > > -	dir_entry->inum = parent_inum;
+> > > -	list_add_tail(&dir_entry->list, &dir_head->list);
+> > > +	/*
+> > > +	 * If our path level is higher than this level - 1, this means
+> > > +	 * we have changed directory.
+> > > +	 * Poping out the unrelated inodes.
+> > 
+> > Popping
+> 
+> Exposed by the CI, and fixed immediately in github.
+> 
+
+Cool!
+
+> > 
+> > Also, this took me like 15 minutes of working examples to figure out why
+> > it worked. I think it could definitely do with some deeper explanation
+> > of the invariant, like:
+> > 
+> > ftwbuf->level - 1 is the level of the parent of the current traversed
+> > inode. ftw will traverse all inodes in a directory before leaving it,
+> > and will never traverse an inode without first traversing its dir,
+> > so if we see a level less than or equal to the last directory we saw,
+> > we are finished with that directory and can pop it.
+> > 
+> > Perhaps with an annotated drawing like:
+> > 
+> > 0: /
+> > 1:         /foo/
+> > 2:                 /foo/bar/
+> > 3:                         /foo/bar/f
+> > 2:                 /foo/baz/            POP! 2 > (2 - 1); done with /foo/bar/
+> > 3:                         /foo/baz/g
+> > 1:         /h                           POP! 2 > (1 - 1); done with /foo/baz/
+> > 
+> > To help make it clearer. I honestly even think just changing to >= makes
+> > it clearer? Not sure about that.
+> 
+> I'll add comments with an example to explain the workflow.
+> 
+> BTW, David and I are working with Github review system a lot recently:
+> https://github.com/kdave/btrfs-progs/pull/855
+> 
+> We do not force anyone to use specific system to do anything, but you
+> may find it a little easier to comment, and feel free to fall back to
+> the mail based review workflow at any time.
+
+Happy to do code review in PRs! It's a bit annoying that the history
+gets blown up when the author re-pushes the branch after incorporating
+feeback (never understood that design, Phabricator tracks the *branch*
+history too and it seems very helpful to me.)
+
+BTW, if this review style is going well, we should discuss more and get
+the workflow more documented/supported in the workflow docs.
+
+Also, while we are still here in email-land, you can add
+Reviewed-by: Boris Burkov <boris@bur.io>
 
 Thanks,
-Qu
+Boris
 
-> ---
->   tests/btrfs/004   | 4 ++--
->   tests/btrfs/030   | 4 ++--
->   tests/btrfs/038   | 6 +++---
->   tests/btrfs/039   | 4 ++--
->   tests/btrfs/040   | 4 ++--
->   tests/btrfs/057   | 6 ++----
->   tests/btrfs/284   | 2 +-
->   tests/generic/482 | 2 +-
->   8 files changed, 15 insertions(+), 17 deletions(-)
->
-> diff --git a/tests/btrfs/004 b/tests/btrfs/004
-> index e89697d2..5a2ce993 100755
-> --- a/tests/btrfs/004
-> +++ b/tests/btrfs/004
-> @@ -165,7 +165,7 @@ workout()
->   	_btrfs subvolume snapshot $SCRATCH_MNT \
->   		$SCRATCH_MNT/$snap_name
->
-> -	run_check _scratch_unmount >/dev/null 2>&1
-> +	run_check _scratch_unmount
->   	_scratch_mount "-o compress=3Dlzo"
->
->   	# make some noise but ensure we're not touching existing data
-> @@ -179,7 +179,7 @@ workout()
->   	# now make more files to get a higher tree
->   	run_check $FSSTRESS_PROG -d $clean_dir -w -p $procs -n 2000 \
->   		$FSSTRESS_AVOID
-> -	run_check _scratch_unmount >/dev/null 2>&1
-> +	run_check _scratch_unmount
->   	_scratch_mount "-o atime"
->
->   	if [ $do_bg_noise -ne 0 ]; then
-> diff --git a/tests/btrfs/030 b/tests/btrfs/030
-> index bedbb728..0c84000a 100755
-> --- a/tests/btrfs/030
-> +++ b/tests/btrfs/030
-> @@ -150,10 +150,10 @@ _scratch_mkfs >/dev/null 2>&1
->   _scratch_mount
->
->   _btrfs receive -f $tmp/1.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1
->
->   _btrfs receive -f $tmp/2.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2
->
->   _scratch_unmount
->   _check_btrfs_filesystem $SCRATCH_DEV
-> diff --git a/tests/btrfs/038 b/tests/btrfs/038
-> index bdef4f41..1e6defa9 100755
-> --- a/tests/btrfs/038
-> +++ b/tests/btrfs/038
-> @@ -76,13 +76,13 @@ _scratch_mkfs >/dev/null 2>&1
->   _scratch_mount
->
->   _btrfs receive -f $tmp/1.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1
->
->   _btrfs receive -f $tmp/clones.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/clones.fssum $SCRATCH_MNT/clones_snap 2>>=
- $seqres.full
-> +run_check $FSSUM_PROG -r $tmp/clones.fssum $SCRATCH_MNT/clones_snap
->
->   _btrfs receive -f $tmp/2.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2
->
->   _scratch_unmount
->   _check_btrfs_filesystem $SCRATCH_DEV
-> diff --git a/tests/btrfs/039 b/tests/btrfs/039
-> index e7cea325..2306ffe0 100755
-> --- a/tests/btrfs/039
-> +++ b/tests/btrfs/039
-> @@ -91,10 +91,10 @@ _scratch_mkfs >/dev/null 2>&1
->   _scratch_mount
->
->   _btrfs receive -f $tmp/1.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1
->
->   _btrfs receive -f $tmp/2.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2
->
->   _scratch_unmount
->   _check_btrfs_filesystem $SCRATCH_DEV
-> diff --git a/tests/btrfs/040 b/tests/btrfs/040
-> index 5d346be3..4fc4db44 100755
-> --- a/tests/btrfs/040
-> +++ b/tests/btrfs/040
-> @@ -84,10 +84,10 @@ _scratch_mkfs >/dev/null 2>&1
->   _scratch_mount
->
->   _btrfs receive -f $tmp/1.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/1.fssum $SCRATCH_MNT/mysnap1
->
->   _btrfs receive -f $tmp/2.snap $SCRATCH_MNT
-> -run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2 2>> $seqres.=
-full
-> +run_check $FSSUM_PROG -r $tmp/2.fssum $SCRATCH_MNT/mysnap2
->
->   _scratch_unmount
->   _check_btrfs_filesystem $SCRATCH_DEV
-> diff --git a/tests/btrfs/057 b/tests/btrfs/057
-> index 07e60557..6c399946 100755
-> --- a/tests/btrfs/057
-> +++ b/tests/btrfs/057
-> @@ -19,14 +19,12 @@ _scratch_mkfs_sized $((1024 * 1024 * 1024)) >> $seqr=
-es.full 2>&1
->   _scratch_mount
->
->   # -w ensures that the only ops are ones which cause write I/O
-> -run_check $FSSTRESS_PROG -d $SCRATCH_MNT -w -p 5 -n 1000 \
-> -		$FSSTRESS_AVOID >&/dev/null
-> +run_check $FSSTRESS_PROG -d $SCRATCH_MNT -w -p 5 -n 1000 $FSSTRESS_AVOI=
-D
->
->   _btrfs subvolume snapshot $SCRATCH_MNT \
->   	$SCRATCH_MNT/snap1
->
-> -run_check $FSSTRESS_PROG -d $SCRATCH_MNT/snap1 -w -p 5 -n 1000 \
-> -       $FSSTRESS_AVOID >&/dev/null
-> +run_check $FSSTRESS_PROG -d $SCRATCH_MNT/snap1 -w -p 5 -n 1000 $FSSTRES=
-S_AVOID
->
->   _btrfs quota enable $SCRATCH_MNT
->   _btrfs quota rescan -w $SCRATCH_MNT
-> diff --git a/tests/btrfs/284 b/tests/btrfs/284
-> index 19ffbbe6..6c554f32 100755
-> --- a/tests/btrfs/284
-> +++ b/tests/btrfs/284
-> @@ -50,7 +50,7 @@ run_send_test()
->   	# Use a single process so that in case of failure it's easier to
->   	# reproduce by using the same seed (logged in $seqres.full).
->   	run_check $FSSTRESS_PROG -d $SCRATCH_MNT -p 1 -n $((LOAD_FACTOR * 200=
-)) \
-> -		  -w $FSSTRESS_AVOID -x "$snapshot_cmd" >> $seqres.full
-> +		  -w $FSSTRESS_AVOID -x "$snapshot_cmd"
->
->   	$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap=
-2 \
->   			 >> $seqres.full
-> diff --git a/tests/generic/482 b/tests/generic/482
-> index 04026c4c..54fee07d 100755
-> --- a/tests/generic/482
-> +++ b/tests/generic/482
-> @@ -77,7 +77,7 @@ _log_writes_mkfs >> $seqres.full 2>&1
->   _log_writes_mark mkfs
->
->   _log_writes_mount
-> -run_check $FSSTRESS_PROG $fsstress_args > /dev/null 2>&1
-> +run_check $FSSTRESS_PROG $fsstress_args
->   _log_writes_unmount
->
->   _log_writes_remove
+> 
+> Thanks a lot for the detailed review!
+> Qu
 
