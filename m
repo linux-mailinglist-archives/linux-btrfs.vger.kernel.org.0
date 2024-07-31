@@ -1,844 +1,362 @@
-Return-Path: <linux-btrfs+bounces-6914-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6915-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF63194329C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 17:02:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 135479432EE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 17:18:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC60D1C214B0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 15:02:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B51281B7B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 15:18:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FA811CBD;
-	Wed, 31 Jul 2024 15:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9166918FDC0;
+	Wed, 31 Jul 2024 15:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="u5jsIclr"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ZLJFDKg6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E0613FFC
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 15:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9332B17552
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 15:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722438132; cv=none; b=ffULrcQrCZnVCIFiVuYmtVc5eh4C2A56km5Bd4jnaVGlpVPa7kIDTcfZyc0d1ExuB4sA8O3NIHJarq3WR2fyQLzY8tlo9SR5UmiV7uYcps4brwFAvOm8g4Pd35wE6/qQahCAMQQjc2ZWh3OewuVsMkMhFey6Yd5r6JTF55J9apg=
+	t=1722438699; cv=none; b=BERvA5VfiQBNAYkO0xfrF5FjSIrPyUCvYaKw9YueDb5d0TB/62OUa435VO3e1tdXIJyuoR3GZafW9WDPQ8wKYvoj1XgAunXsH+FLmpcNMjdCNabXDnG4r7M6bH3qIYBAe1nscdWT95AAlZk14IfpEvB3sKbf5n63zGjzQy0BDpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722438132; c=relaxed/simple;
-	bh=b7fcxS8m5oA6GK9UZgALGRChBqI74/PUUF1ZlCU/BgY=;
+	s=arc-20240116; t=1722438699; c=relaxed/simple;
+	bh=rVClSLT9f277Ybxg0Y7Evq/Ggfaax6lI0fNU995UilA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W9d3QMHv6HIBVc2lMGW5czO48dGHix+rNWVk+Y2ifGKo41PMdBXEF/F+3ye2Ud35bBOrv4gnjPqNhb093ymfMd5qgxHSbhZLUfEqSzQTx2F7sljgoXPm1iCsqHD7LaA2aF9mN6wGltpk9ukGUUEUBMRnX3aEf4by6WGsMEWd9wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=u5jsIclr; arc=none smtp.client-ip=209.85.219.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=rZsCwUUPTceJtZ0pUvXBUmbbgmxmtZ6/T2hCcpWRsey0ZaW5TNZwEn0qnKE+aPxgQPm0fYdmi2f+NuVj1/aztHYgxBg4POcRT6ZMSbIp6qh/S9QrTx4/rQ0YL04td6UNuC+qLwoBS8GrWoMOljr41XB7b1/RaGjSB5GjO9++6KA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=ZLJFDKg6; arc=none smtp.client-ip=209.85.161.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6b7acf213a3so30544716d6.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 08:02:09 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5d5c8c1006eso3290186eaf.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 08:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722438129; x=1723042929; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bq++TTE8oPr/hauksobwNXmZBiIr2aFKhXqh1uCHjHI=;
-        b=u5jsIclr7cSxuOghTu62Q/nOARLSvFFi6LX/tMNhfCBaf/YrBqb2cH9CSv77qFC7QL
-         /p8wHC0VW0oPt7feNYgWiLaYPxDXXg6PY/ZT4jHEM/xlAUWLzUcpuYFQHYxYqPgnuy2p
-         f6V67mOQ1uufHJ6lVMRsqJdOFM9C/uW42YTqG9Hv17VZvQysrcJH20jiqEE+/XXV5UTA
-         oTLzH75ueLL+kJVwiqLbasde635a28kiZEWWX5SXh1tP3B0SmVns+mjWKXXOoFT6I9Xa
-         AMLrz7lJuwFHHSl710H3d4930c942kLclGjSX+Bgp+nIAGLEFKaMSBn05yoPIFgz+TBA
-         2P9w==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722438696; x=1723043496; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nmwefmibWUoEL6wEGhOdxrlVZv0gmH/DZ9JPwtFoHmc=;
+        b=ZLJFDKg6kRpJyri+eLBomvc1agUNBSHemxcistnKLdBvrHEl5iVTE3tx2PRM4o1bgx
+         690WAFzRqW5WoEPyvnjMySUVtnaA7NvNrCd8fcJuwtt0vtyYci1TBKzeY8fnkLQPGSRG
+         zDz7kvicC7fUjtwuqVnYQgq1Sv8ott435kGhX9ErVxqKJFni3Tuz+xDrmF0YgcBmslQh
+         cfsYpre3yxKM4J7DvLRg/1UbP++gzMVV+T2jAyBiQlSPktnE1Eq8DC7zuS4ehLoljBXU
+         PEkXcNh1R7zMK+tCqQoJyOpo5zakDgxvVPHiAzULP0iU13fxI7LdAXUxjM3xU4098JQp
+         U2GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722438129; x=1723042929;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bq++TTE8oPr/hauksobwNXmZBiIr2aFKhXqh1uCHjHI=;
-        b=LlVjGbU6l/Sp8p0MRWc9Zin2/I7QkejwU3CL/R76UIFn5/dA3nkDUXv21a1fmKd0T7
-         eu9q7XY3TDpZZLjk6dCpYghzscNlRauz/2IVXE3qRwVTaqlBIDQJ2jvweheIh4xaTgbv
-         wnontW3n3EJJ8oEaAP72FygkAUADjJmqlEKKpN9DEVehPOXrQN7zgiHWXQPE0d4/58Xh
-         GZeUOIAsxYfHQotuBKYEolPbHM7KSonm/UNs3f5fkNCVHrstig3Oz85EnA0AsQVe7lZb
-         qGhdeday7HFV0yLZUruJAE7k2jeCWYFx6fnasHBZ9eXdpunAp9bwwmKIPIdY5VBS3nLN
-         tfLg==
-X-Gm-Message-State: AOJu0YwogxbeJa1lTAH6GkrK8oSCmZnE6hd7kK+oiZE2O+SoaJd8hkY/
-	SkZsYEj3u0tcu66X2bldi2V30ZGTBcZRxoX+PHGV6RBMrsQ7JDaI7lnCde6x2hHqWkQtXhSXnZK
-	n
-X-Google-Smtp-Source: AGHT+IEFvDXkjs61EDpKsEp1e8dIvOSHzq810dPmWcVt0q/oZ/5shi22gpktl8po6nHHhkVFKADyVg==
-X-Received: by 2002:a05:6214:19ee:b0:6b0:729c:5efc with SMTP id 6a1803df08f44-6bb55b156d4mr183007746d6.56.1722438128500;
-        Wed, 31 Jul 2024 08:02:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1722438696; x=1723043496;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nmwefmibWUoEL6wEGhOdxrlVZv0gmH/DZ9JPwtFoHmc=;
+        b=rZWlKQREkbaYur3nGRdQdD7INAsMGFBe3BAzTDDMWiz7YPB9lAwLXalG7rtqTLibkV
+         8S9k8ME/XNxiRa6nF+JtGpa26+g/fnXLne5cxTd7lTEewtrLF3g39NqrhXySzmGp9tMa
+         gWLkMeRptQeGyJKMU40eNM5P1W/Q1NICFSrAHsZe0kSNTfpif1YUxYIKSFtIOwfDA3uP
+         L1BDrCEVIc/J169W6drCQrzp2GMk8E54aGwwLXBkwgXtIcCOda+pL4YhkLKxTKgWQHDd
+         +/T10/fnTwtb3JfQFZGGGEjCJW6kaoPD2YpOcA3fNhO5q5ZKGlhdRePhohWkS4azKnyd
+         DAjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOe2cNFIp77WGty7L7G9lCAATEhEywqivoaeu0w5fCqQdjWbzNUcLqON6cVFQ8iBejOE9NsoPFh/TXw4ungKA6KBBOxT3lUq6z36Q=
+X-Gm-Message-State: AOJu0YyU5aUbWcX9dnJgjIdmMSuxOlJjruNaMVrRNtlfsPRst8aSiPMY
+	FPg0fAfX6bIfBylWpwTMSy6fLL18JHZFvcUp76xH2lE8i6WKUPskH0lT+BEsUytO5uVzE1d+qJM
+	U
+X-Google-Smtp-Source: AGHT+IEzF6ngGsFfxbGdkBQcb8a51FJZYRr+E8q+I+53YoNvG5tO/Kn6+6cU3x21vY1Y5cnJOxusGA==
+X-Received: by 2002:a05:6870:610e:b0:260:fc35:b37e with SMTP id 586e51a60fabf-267d4f3b456mr16922290fac.44.1722438696495;
+        Wed, 31 Jul 2024 08:11:36 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb3fb01b05sm74741726d6.134.2024.07.31.08.02.06
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a1ea8943a4sm506723085a.121.2024.07.31.08.11.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 08:02:07 -0700 (PDT)
-Date: Wed, 31 Jul 2024 11:02:05 -0400
+        Wed, 31 Jul 2024 08:11:36 -0700 (PDT)
+Date: Wed, 31 Jul 2024 11:11:35 -0400
 From: Josef Bacik <josef@toxicpanda.com>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: add --subvol option to mkfs.btrfs
-Message-ID: <20240731150205.GB3908975@perftesting>
-References: <20240730093833.1169945-1-maharmstone@fb.com>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v8] btrfs: prefer to allocate larger folio for metadata
+Message-ID: <20240731151135.GC3908975@perftesting>
+References: <c9bd53a8c7efb8d0e16048036d0596e17e519dd6.1721902058.git.wqu@suse.com>
+ <20240726145753.GC3432726@perftesting>
+ <d5473dd9-69ca-4df3-b4d0-f9d7b0a46a86@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240730093833.1169945-1-maharmstone@fb.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d5473dd9-69ca-4df3-b4d0-f9d7b0a46a86@gmx.com>
 
-On Tue, Jul 30, 2024 at 10:38:26AM +0100, Mark Harmstone wrote:
-> This patch adds a --subvol option, which tells mkfs.btrfs to create the
-> specified directories as subvolumes.
+On Sat, Jul 27, 2024 at 08:02:26AM +0930, Qu Wenruo wrote:
 > 
-> Given a populated directory img, the command
 > 
-> $ mkfs.btrfs --rootdir img --subvol img/usr --subvol img/home --subvol img/home/username /dev/loop0
+> 在 2024/7/27 00:27, Josef Bacik 写道:
+> > On Thu, Jul 25, 2024 at 07:41:16PM +0930, Qu Wenruo wrote:
+> > > Since btrfs metadata is always in fixed size (nodesize, determined at
+> > > mkfs time, default to 16K), and btrfs has the full control of the folios
+> > > (read is triggered internally, no read/readahead call backs), it's the
+> > > best location to experimental larger folios inside btrfs.
+> > > 
+> > > To enable larger folios, the btrfs has to meet the following conditions:
+> > > 
+> > > - The extent buffer start is aligned to nodesize
+> > >    This should be the common case for any btrfs in the last 5 years.
+> > > 
+> > > - The nodesize is larger than page size
+> > > 
+> > > - MM layer can fulfill our larger folio allocation
+> > >    The larger folio will cover exactly the metadata size (nodesize).
+> > > 
+> > > If any of the condition is not met, we just fall back to page sized
+> > > folio and go as usual.
+> > > This means, we can have mixed orders for btrfs metadata.
+> > > 
+> > > Thus there are several new corner cases with the mixed orders:
+> > > 
+> > > 1) New filemap_add_folio() -EEXIST failure cases
+> > >     For mixed order cases, filemap_add_folio() can return -EEXIST
+> > >     meanwhile filemap_lock_folio() returns -ENOENT.
+> > >     We can only retry several times, before falling back to 0 order
+> > >     folios.
+> > > 
+> > > 2) Existing folio size may be different than the one we allocated
+> > >     This is after the existing eb checks.
+> > > 
+> > > 2.1) The existing folio is larger than the allocated one
+> > >       Need to free all allocated folios, and use the existing larger
+> > >       folio instead.
+> > > 
+> > > 2.2) The existing folio has the same size
+> > >       Free the allocated one and reuse the page cache.
+> > >       This is the existing path.
+> > > 
+> > > 2.3) The existing folio is smaller than the allocated one
+> > >       Fall back to re-allocate order 0 folios instead.
+> > > 
+> > > Otherwise all the needed infrastructure is already here, we only need to
+> > > try allocate larger folio as our first try in alloc_eb_folio_array().
+> > > 
+> > > For now, the higher order allocation is only a preferable attempt for
+> > > debug build, before we had enough test coverage and push it to end
+> > > users.
+> > > 
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > ---
+> > > Changelog:
+> > > [CHANGELOG]
+> > > v8:
+> > > - Drop the memcgroup optimization as dependency
+> > >    Opting out memcgroup will be pushed as an independent patchset
+> > >    instead. It's not related to the soft lockup.
+> > > 
+> > > - Fix a soft lockup caused by mixed folio orders
+> > > 	 |<- folio ->|
+> > > 	 |  |  |//|//|   |//| is the existing page cache
+> > >    In above case, the filemap_add_folio() will always return -EEXIST
+> > >    but filemap_lock_folio() also returns -ENOENT.
+> > >    Which can lead to a dead loop.
+> > >    Fix it by only retrying 5 times for larger folios, then fall back
+> > >    to 0 order folios.
+> > > 
+> > > - Slightly rewording the commit messages
+> > >    Make it shorter and better organized.
+> > > 
+> > > v7:
+> > > - Fix an accidentally removed line caused by previous modification
+> > >    attempt
+> > >    Previously I was moving that line to the common branch to
+> > >    unconditionally define root_mem_cgroup pointer.
+> > >    But that's later discarded and changed to use macro definition, but
+> > >    forgot to add back the original line.
+> > > 
+> > > v6:
+> > > - Add a new root_mem_cgroup definition for CONFIG_MEMCG=n cases
+> > >    So that users of root_mem_cgroup no longer needs to check
+> > >    CONFIG_MEMCG.
+> > >    This is to fix the compile error for CONFIG_MEMCG=n cases.
+> > > 
+> > > - Slight rewording of the 2nd patch
+> > > 
+> > > v5:
+> > > - Use root memcgroup to attach folios to btree inode filemap
+> > > - Only try higher order folio once without NOFAIL nor extra retry
+> > > 
+> > > v4:
+> > > - Hide the feature behind CONFIG_BTRFS_DEBUG
+> > >    So that end users won't be affected (aka, still per-page based
+> > >    allocation) meanwhile we can do more testing on this new behavior.
+> > > 
+> > > v3:
+> > > - Rebased to the latest for-next branch
+> > > - Use PAGE_ALLOC_COSTLY_ORDER to determine whether to use __GFP_NOFAIL
+> > > - Add a dependency MM patch "mm/page_alloc: unify the warning on NOFAIL
+> > >    and high order allocation"
+> > >    This allows us to use NOFAIL up to 32K nodesize, and makes sure for
+> > >    default 16K nodesize, all metadata would go 16K folios
+> > > 
+> > > v2:
+> > > - Rebased to handle the change in "btrfs: cache folio size and shift in extent_buffer"
+> > > ---
+> > >   fs/btrfs/extent_io.c | 122 ++++++++++++++++++++++++++++++-------------
+> > >   1 file changed, 86 insertions(+), 36 deletions(-)
+> > > 
+> > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > > index aa7f8148cd0d..0beebcb9be77 100644
+> > > --- a/fs/btrfs/extent_io.c
+> > > +++ b/fs/btrfs/extent_io.c
+> > > @@ -719,12 +719,28 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+> > >    *
+> > >    * For now, the folios populated are always in order 0 (aka, single page).
+> > >    */
+> > > -static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
+> > > +static int alloc_eb_folio_array(struct extent_buffer *eb, int order,
+> > > +				bool nofail)
+> > >   {
+> > >   	struct page *page_array[INLINE_EXTENT_BUFFER_PAGES] = { 0 };
+> > >   	int num_pages = num_extent_pages(eb);
+> > >   	int ret;
+> > > 
+> > > +	if (order) {
+> > > +		gfp_t gfp;
+> > > +
+> > > +		if (order > 0)
+> > > +			gfp = GFP_NOFS | __GFP_NORETRY | __GFP_NOWARN;
+> > > +		else
+> > > +			gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
+> > 
+> > This check is useless, we're already checking if (order) above.
+> > 
+> > > +		eb->folios[0] = folio_alloc(gfp, order);
+> > > +		if (likely(eb->folios[0])) {
+> > > +			eb->folio_size = folio_size(eb->folios[0]);
+> > > +			eb->folio_shift = folio_shift(eb->folios[0]);
+> > > +			return 0;
+> > > +		}
+> > > +		/* Fallback to 0 order (single page) allocation. */
+> > > +	}
+> > >   	ret = btrfs_alloc_page_array(num_pages, page_array, nofail);
+> > >   	if (ret < 0)
+> > >   		return ret;
+> > > @@ -2707,7 +2723,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+> > >   	 */
+> > >   	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+> > > 
+> > > -	ret = alloc_eb_folio_array(new, false);
+> > > +	ret = alloc_eb_folio_array(new, 0, false);
+> > >   	if (ret) {
+> > >   		btrfs_release_extent_buffer(new);
+> > >   		return NULL;
+> > > @@ -2740,7 +2756,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
+> > >   	if (!eb)
+> > >   		return NULL;
+> > > 
+> > > -	ret = alloc_eb_folio_array(eb, false);
+> > > +	ret = alloc_eb_folio_array(eb, 0, false);
+> > >   	if (ret)
+> > >   		goto err;
+> > > 
+> > > @@ -2955,7 +2971,16 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
+> > >   	return 0;
+> > >   }
+> > > 
+> > > +static void free_all_eb_folios(struct extent_buffer *eb)
+> > > +{
+> > > +	for (int i = 0; i < INLINE_EXTENT_BUFFER_PAGES; i++) {
+> > > +		if (eb->folios[i])
+> > > +			folio_put(eb->folios[i]);
+> > > +		eb->folios[i] = NULL;
+> > > +	}
+> > > +}
+> > > 
+> > > +#define BTRFS_ADD_FOLIO_RETRY_LIMIT	(5)
+> > >   /*
+> > >    * Return 0 if eb->folios[i] is attached to btree inode successfully.
+> > >    * Return >0 if there is already another extent buffer for the range,
+> > > @@ -2973,6 +2998,8 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+> > >   	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+> > >   	const unsigned long index = eb->start >> PAGE_SHIFT;
+> > >   	struct folio *existing_folio = NULL;
+> > > +	const int eb_order = folio_order(eb->folios[0]);
+> > > +	int retried = 0;
+> > >   	int ret;
+> > > 
+> > >   	ASSERT(found_eb_ret);
+> > > @@ -2990,18 +3017,25 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+> > >   	/* The page cache only exists for a very short time, just retry. */
+> > >   	if (IS_ERR(existing_folio)) {
+> > >   		existing_folio = NULL;
+> > > +		retried++;
+> > > +		/*
+> > > +		 * We can have the following case:
+> > > +		 *	|<- folio ->|
+> > > +		 *	|  |  |//|//|
+> > > +		 * Where |//| is the slot that we have a page cache.
+> > > +		 *
+> > > +		 * In above case, filemap_add_folio() will return -EEXIST,
+> > > +		 * but filemap_lock_folio() will return -ENOENT.
+> > > +		 * After several retries, we know it's the above case,
+> > > +		 * and just fallback to order 0 folios instead.
+> > > +		 */
+> > > +		if (eb_order > 0 && retried > BTRFS_ADD_FOLIO_RETRY_LIMIT) {
+> > > +			ASSERT(i == 0);
+> > > +			return -EAGAIN;
+> > > +		}
+> > 
+> > Ok hold on, I'm just now looking at this code, and am completely confused.
+> > 
+> > filemap_add_folio inserts our new folio into the mapping and returns with it
+> > locked.  Under what circumstances do we end up with filemap_lock_folio()
+> > returning ENOENT?
 > 
-> will create subvolumes usr and home within the FS root, and subvolume
-> username within the home subvolume. It will fail if any of the
-> directories do not yet exist.
+> Remember we go filemap_lock_folio() only when filemap_add_folio()
+> returns with -EEXIST.
 > 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-> ---
-> Changes from first patch:
-> * Rebased against upstream changes
-> * Rewrote so that directory sizes are correct within transactions
-> * Changed --subvol so that it is relative to cwd rather than rootdir, so
-> that in future we might allow out-of-tree subvols
+> There is an existing case (all order 0 folios) like this:
 > 
->  mkfs/main.c                                 | 316 +++++++++++++++++++-
->  mkfs/rootdir.c                              | 125 +++++++-
->  mkfs/rootdir.h                              |  21 +-
->  tests/mkfs-tests/034-rootdir-subvol/test.sh |  33 ++
->  4 files changed, 479 insertions(+), 16 deletions(-)
->  create mode 100755 tests/mkfs-tests/034-rootdir-subvol/test.sh
+> ------------------------------+-------------------------------------
+> filemap_add_folio()           |
+> Return -EEXIST                |
+>                               | Some page reclaim happens
+>                               | Choose the page at exactly the same
+>                               | index to be reclaimed
+> filemap_lock_folio            |
+> return -ENOENT
 > 
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index e000aeff..6c98b954 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -442,6 +442,7 @@ static const char * const mkfs_usage[] = {
->  	"Creation:",
->  	OPTLINE("-b|--byte-count SIZE", "set size of each device to SIZE (filesystem size is sum of all device sizes)"),
->  	OPTLINE("-r|--rootdir DIR", "copy files from DIR to the image root directory"),
-> +	OPTLINE("-u|--subvol SUBDIR", "create SUBDIR as subvolume rather than normal directory"),
->  	OPTLINE("--shrink", "(with --rootdir) shrink the filled filesystem to minimal size"),
->  	OPTLINE("-K|--nodiscard", "do not perform whole device TRIM"),
->  	OPTLINE("-f|--force", "force overwrite of existing filesystem"),
-> @@ -1016,6 +1017,19 @@ static void *prepare_one_device(void *ctx)
->  	return NULL;
->  }
->  
-> +static int subvol_compar(const void *p1, const void *p2)
-> +{
-> +	const struct rootdir_subvol *s1 = *(const struct rootdir_subvol**)p1;
-> +	const struct rootdir_subvol *s2 = *(const struct rootdir_subvol**)p2;
-> +
-> +	if (s1->depth < s2->depth)
-> +		return 1;
-> +	else if (s1->depth > s2->depth)
-> +		return -1;
-> +	else
-> +		return 0;
-> +}
-> +
->  int BOX_MAIN(mkfs)(int argc, char **argv)
->  {
->  	char *file;
-> @@ -1057,6 +1071,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->  	char *label = NULL;
->  	int nr_global_roots = sysconf(_SC_NPROCESSORS_ONLN);
->  	char *source_dir = NULL;
-> +	LIST_HEAD(subvols);
->  
->  	cpu_detect_flags();
->  	hash_init_accel();
-> @@ -1087,6 +1102,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->  			{ "data", required_argument, NULL, 'd' },
->  			{ "version", no_argument, NULL, 'V' },
->  			{ "rootdir", required_argument, NULL, 'r' },
-> +			{ "subvol", required_argument, NULL, 'u' },
->  			{ "nodiscard", no_argument, NULL, 'K' },
->  			{ "features", required_argument, NULL, 'O' },
->  			{ "runtime-features", required_argument, NULL, 'R' },
-> @@ -1104,7 +1120,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->  			{ NULL, 0, NULL, 0}
->  		};
->  
-> -		c = getopt_long(argc, argv, "A:b:fl:n:s:m:d:L:R:O:r:U:VvMKq",
-> +		c = getopt_long(argc, argv, "A:b:fl:n:s:m:d:L:R:O:r:U:VvMKqu:",
->  				long_options, NULL);
->  		if (c < 0)
->  			break;
-> @@ -1210,6 +1226,27 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->  				free(source_dir);
->  				source_dir = strdup(optarg);
->  				break;
-> +			case 'u': {
-> +				struct rootdir_subvol *s;
-> +
-> +				s = malloc(sizeof(struct rootdir_subvol));
-> +				if (!s) {
-> +					error("out of memory");
-> +					ret = 1;
-> +					goto error;
-> +				}
-> +
-> +				s->dir = strdup(optarg);
-> +				s->srcpath = NULL;
-> +				s->destpath = NULL;
-> +				s->parent = NULL;
-> +				s->parent_inum = 0;
-> +				INIT_LIST_HEAD(&s->children);
-> +				s->root = NULL;
-> +
-> +				list_add_tail(&s->list, &subvols);
-> +				break;
-> +				}
->  			case 'U':
->  				strncpy_null(fs_uuid, optarg, BTRFS_UUID_UNPARSED_SIZE);
->  				break;
-> @@ -1274,6 +1311,154 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
->  		ret = 1;
->  		goto error;
->  	}
-> +	if (!list_empty(&subvols) && source_dir == NULL) {
-> +		error("the option --subvol must be used with --rootdir");
-> +		ret = 1;
-> +		goto error;
-> +	}
-> +
-> +	if (source_dir) {
-> +		char *canonical = realpath(source_dir, NULL);
-> +
-> +		if (!canonical) {
-> +			error("could not get canonical path to %s", source_dir);
-> +			ret = 1;
-> +			goto error;
-> +		}
-> +
-> +		free(source_dir);
-> +		source_dir = canonical;
-> +	}
-> +
-> +	if (!list_empty(&subvols)) {
-> +		unsigned int num_subvols = 0;
-> +		size_t source_dir_len = strlen(source_dir);
-> +		struct rootdir_subvol **arr, **ptr, *s;
-> +
-> +		list_for_each_entry(s, &subvols, list) {
-> +			char *path;
-> +			struct rootdir_subvol *s2;
-> +
-> +			if (!path_exists(s->dir)) {
-> +				error("subvol %s does not exist",
-> +				      s->dir);
-> +				ret = 1;
-> +				goto error;
-> +			}
-> +
-> +			if (!path_is_dir(s->dir)) {
-> +				error("subvol %s is not a directory", s->dir);
-> +				ret = 1;
-> +				goto error;
-> +			}
-> +
-> +			path = realpath(s->dir, NULL);
-> +
-> +			if (!path) {
-> +				error("could not get canonical path to %s",
-> +				      s->dir);
-> +				ret = 1;
-> +				goto error;
-> +			}
-> +
-> +			s->srcpath = path;
-> +			s->srcpath_len = strlen(path);
-> +
-> +			if (s->srcpath_len >= source_dir_len + 1 &&
-> +			    !memcmp(path, source_dir, source_dir_len) &&
-> +			    path[source_dir_len] == '/') {
-> +				s->destpath_len = s->srcpath_len - source_dir_len - 1;
-> +
-> +				s->destpath = malloc(s->destpath_len + 1);
-> +				if (!s->destpath) {
-> +					error("out of memory");
-> +					ret = 1;
-> +					goto error;
-> +				}
-> +
-> +				memcpy(s->destpath, s->srcpath + source_dir_len + 1,
-> +				       s->destpath_len);
-> +				s->destpath[s->destpath_len] = 0;
-> +			} else {
-> +				error("subvol %s is not a child of %s",
-> +				      s->dir, source_dir);
-> +				ret = 1;
-> +				goto error;
-> +			}
-> +
-> +			for (s2 = list_first_entry(&subvols, struct rootdir_subvol, list);
-> +			     s2 != s; s2 = list_next_entry(s2, list)) {
-> +				if (!strcmp(s2->srcpath, path)) {
-> +					error("subvol %s specified more than once",
-> +					      s->dir);
-> +					ret = 1;
-> +					goto error;
-> +				}
-> +			}
-> +
-> +			s->depth = 0;
-> +			for (i = 0; i < s->destpath_len; i++) {
-> +				if (s->destpath[i] == '/')
-> +					s->depth++;
-> +			}
-> +
-> +			num_subvols++;
-> +		}
-> +
-> +		/* Reorder subvol list by depth. */
-> +
-> +		arr = malloc(sizeof(struct rootdir_subvol*) * num_subvols);
-> +		if (!arr) {
-> +			error("out of memory");
-> +			ret = 1;
-> +			goto error;
-> +		}
-> +
-> +		ptr = arr;
-> +
-> +		list_for_each_entry(s, &subvols, list) {
-> +			*ptr = s;
-> +			ptr++;
-> +		}
-> +
-> +		qsort(arr, num_subvols, sizeof(struct rootdir_subvol*),
-> +		      subvol_compar);
-> +
-> +		INIT_LIST_HEAD(&subvols);
-> +		for (i = 0; i < num_subvols; i++) {
-> +			list_add_tail(&arr[i]->list, &subvols);
-> +		}
-> +
-> +		free(arr);
+> Remember that between the filemap_add_folio() and filemap_lock_folio()
+> there is nothing preventing page reclaim from happening.
+> 
+> 
+> > 
+> > I understand in this larger folio case where this could happen, but this code
+> > exists today where we're only allocating 0 order folios.  So does this actually
+> > happen today, or were you future proofing it?
+> 
+> It's already happening even for order 0 folios. As we do not hold any
+> lock for the address space.
+> 
+> > 
+> > Also it seems like a super bad, no good thing that we can end up being allowed
+> > to insert a folio that overlaps other folios already in the mapping.  So if that
+> > can happen, that seems like the thing that needs to be addressed generically.
+> 
+> For the generic __filemap_get_folio() with FGP_CREAT, that's exactly
+> what we do, just retry with smaller folio.
+> 
+> And in that case, they do the retry if filemap_add_folio() hits -EEXIST
+> just like us.
 
-This whole bit is unnecessary, we have list_sort() available to us.
+You're right, I misread the code and thought this was the normal path, so my
+whole rambling was just wrong, sorry about that.
 
-> +
-> +		/* Assign subvols to parents. */
-> +
-> +		list_for_each_entry(s, &subvols, list) {
-> +			if (s->depth == 0)
-> +				break;
-> +
-> +			for (struct rootdir_subvol *s2 = list_next_entry(s, list);
-> +			     !list_entry_is_head(s2, &subvols, list);
-> +			     s2 = list_next_entry(s2, list)) {
-> +				if (s2->depth == s->depth)
-> +					continue;
-> +
-> +				if (s->destpath_len <= s2->destpath_len + 1)
-> +					continue;
-> +
-> +				if (s->destpath[s2->destpath_len] != '/')
-> +					continue;
-> +
-> +				if (memcmp(s->destpath, s2->destpath, s2->destpath_len))
-> +					continue;
-> +
-> +				s->parent = s2;
-> +				list_add_tail(&s->child_list, &s2->children);
-> +
-> +				break;
-> +			}
-> +		}
-> +	}
+However if we're allocating them at the order that our extent buffer is, this
+means that we previously had an extent buffer that had 0 order pages, and these
+just haven't been cleaned up yet.
 
-This whole subvol list processing bit is large enough to be its own helper, and
-could go into mkfs/rootdir.c
-
->  
->  	if (*fs_uuid) {
->  		uuid_t dummy_uuid;
-> @@ -1823,6 +2008,51 @@ raid_groups:
->  		error_msg(ERROR_MSG_START_TRANS, "%m");
->  		goto out;
->  	}
-> +
-> +	if (!list_empty(&subvols)) {
-> +		struct rootdir_subvol *s;
-> +		u64 objectid = BTRFS_FIRST_FREE_OBJECTID;
-> +
-> +		list_for_each_entry_reverse(s, &subvols, list) {
-> +			struct btrfs_key key;
-> +
-> +			s->objectid = objectid;
-> +
-> +			trans = btrfs_start_transaction(root, 1);
-> +			if (IS_ERR(trans)) {
-> +				errno = -PTR_ERR(trans);
-> +				error_msg(ERROR_MSG_START_TRANS, "%m");
-> +				ret = 1;
-> +				goto error;
-> +			}
-> +
-> +			ret = btrfs_make_subvolume(trans, objectid);
-> +			if (ret < 0) {
-> +				error("failed to create subvolume: %d", ret);
-> +				goto out;
-> +			}
-> +
-> +			ret = btrfs_commit_transaction(trans, root);
-> +			if (ret) {
-> +				errno = -ret;
-> +				error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
-> +				goto out;
-> +			}
-> +
-> +			key.objectid = objectid;
-> +			key.type = BTRFS_ROOT_ITEM_KEY;
-> +			key.offset = (u64)-1;
-> +
-> +			s->root = btrfs_read_fs_root(fs_info, &key);
-> +			if (IS_ERR(s->root)) {
-> +				error("unable to fs read root: %lu", PTR_ERR(s->root));
-> +				goto out;
-> +			}
-> +
-> +			objectid++;
-> +		}
-> +	}
-> +
-
-I would also put this in its own helper;
-
->  	ret = btrfs_rebuild_uuid_tree(fs_info);
->  	if (ret < 0)
->  		goto out;
-> @@ -1835,8 +2065,24 @@ raid_groups:
->  	}
->  
->  	if (source_dir) {
-> +		LIST_HEAD(subvol_children);
-> +
->  		pr_verbose(LOG_DEFAULT, "Rootdir from:       %s\n", source_dir);
-> -		ret = btrfs_mkfs_fill_dir(source_dir, root);
-> +
-> +		if (!list_empty(&subvols)) {
-> +			struct rootdir_subvol *s;
-> +
-> +			list_for_each_entry(s, &subvols, list) {
-> +				if (s->parent)
-> +					continue;
-> +
-> +				list_add_tail(&s->child_list,
-> +					      &subvol_children);
-> +			}
-> +		}
-> +
-> +		ret = btrfs_mkfs_fill_dir(source_dir, root, &subvol_children,
-> +					  "");
->  		if (ret) {
->  			error("error while filling filesystem: %d", ret);
->  			goto out;
-> @@ -1853,6 +2099,59 @@ raid_groups:
->  		} else {
->  			pr_verbose(LOG_DEFAULT, "  Shrink:           no\n");
->  		}
-> +
-> +		if (!list_empty(&subvols)) {
-> +			struct rootdir_subvol *s;
-> +
-> +			list_for_each_entry_reverse(s, &subvols, list) {
-> +				pr_verbose(LOG_DEFAULT,
-> +					   "  Subvol from:      %s -> %s\n",
-> +					   s->srcpath, s->destpath);
-> +			}
-> +		}
-> +	}
-> +
-> +	if (!list_empty(&subvols)) {
-> +		struct rootdir_subvol *s;
-> +
-> +		list_for_each_entry(s, &subvols, list) {
-> +			ret = btrfs_mkfs_fill_dir(s->srcpath, s->root,
-> +						  &s->children, s->destpath);
-> +			if (ret) {
-> +				error("error while filling filesystem: %d",
-> +				      ret);
-> +				goto out;
-> +			}
-> +		}
-> +
-> +		list_for_each_entry_reverse(s, &subvols, list) {
-> +			struct btrfs_root *parent = s->parent ? s->parent->root : root;
-> +
-> +			trans = btrfs_start_transaction(parent, 1);
-> +			if (IS_ERR(trans)) {
-> +				errno = -PTR_ERR(trans);
-> +				error_msg(ERROR_MSG_START_TRANS, "%m");
-> +				goto out;
-> +			}
-> +
-> +			ret = btrfs_link_subvolume(trans, parent,
-> +						 s->parent_inum,
-> +						 path_basename(s->destpath),
-> +						 strlen(path_basename(s->destpath)),
-> +						 s->root);
-> +			if (ret) {
-> +				error("unable to link subvolume %s",
-> +					path_basename(s->destpath));
-> +				goto out;
-> +			}
-> +
-> +			ret = btrfs_commit_transaction(trans, parent);
-> +			if (ret) {
-> +				errno = -ret;
-> +				error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
-> +				goto out;
-> +			}
-> +		}
->  	}
->  
->  	if (features.runtime_flags & BTRFS_FEATURE_RUNTIME_QUOTA ||
-> @@ -1948,6 +2247,19 @@ error:
->  	free(label);
->  	free(source_dir);
->  
-> +	while (!list_empty(&subvols)) {
-> +		struct rootdir_subvol *head = list_entry(subvols.next,
-> +					      struct rootdir_subvol,
-> +					      list);
-> +
-> +		free(head->dir);
-> +		free(head->srcpath);
-> +		free(head->destpath);
-> +
-> +		list_del(&head->list);
-> +		free(head);
-> +	}
-> +
->  	return !!ret;
->  
->  success:
-> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-> index 2b39f6bb..e3e576b2 100644
-> --- a/mkfs/rootdir.c
-> +++ b/mkfs/rootdir.c
-> @@ -184,17 +184,58 @@ static void free_namelist(struct dirent **files, int count)
->  	free(files);
->  }
->  
-> -static u64 calculate_dir_inode_size(const char *dirname)
-> +static u64 calculate_dir_inode_size(const char *src_dir,
-> +				    struct list_head *subvol_children,
-> +				    const char *dest_dir)
->  {
->  	int count, i;
->  	struct dirent **files, *cur_file;
->  	u64 dir_inode_size = 0;
-> +	struct rootdir_subvol *s;
->  
-> -	count = scandir(dirname, &files, directory_select, NULL);
-> +	count = scandir(src_dir, &files, directory_select, NULL);
->  
->  	for (i = 0; i < count; i++) {
-> +		size_t name_len;
-> +
->  		cur_file = files[i];
-> -		dir_inode_size += strlen(cur_file->d_name);
-> +		name_len = strlen(cur_file->d_name);
-> +
-> +		/* Skip entry if it's going to be a subvol (it will be accounted
-> +		 * for in btrfs_link_subvolume). */
-> +		if (cur_file->d_type == DT_DIR && !list_empty(subvol_children)) {
-> +			bool skip = false;
-> +
-> +			list_for_each_entry(s, subvol_children, child_list) {
-> +				if (!strcmp(dest_dir, "")) {
-> +					if (!strcmp(cur_file->d_name, s->destpath)) {
-> +						skip = true;
-> +						break;
-> +					}
-> +				} else {
-> +					if (s->destpath_len != strlen(dest_dir) + 1 +
-> +					    name_len)
-> +						continue;
-> +
-> +					if (memcmp(s->destpath, dest_dir, strlen(dest_dir)))
-> +						continue;
-> +
-> +					if (s->destpath[strlen(dest_dir)] != '/')
-> +						continue;
-> +
-> +					if (!memcmp(s->destpath + strlen(dest_dir) + 1,
-> +						    cur_file->d_name, name_len)) {
-
-This comparison code is exists twice, pull it out into a helper and use it here
-and when you're building the children relationship.  Thanks,
+This is kind of an ugly scenario, because now we're widening the possibility of
+racing with somebody else trying to create an extent buffer here.  I think the
+only sane choice is to immediately switch to 0 order folios and carry on.
+Thanks,
 
 Josef
-
-> +						skip = true;
-> +						break;
-> +					}
-> +				}
-> +			}
-> +
-> +			if (skip)
-> +				continue;
-> +		}
-> +
-> +		dir_inode_size += name_len;
->  	}
->  
->  	free_namelist(files, count);
-> @@ -207,7 +248,9 @@ static int add_inode_items(struct btrfs_trans_handle *trans,
->  			   struct btrfs_root *root,
->  			   struct stat *st, const char *name,
->  			   u64 self_objectid,
-> -			   struct btrfs_inode_item *inode_ret)
-> +			   struct btrfs_inode_item *inode_ret,
-> +			   struct list_head *subvol_children,
-> +			   const char *dest_dir)
->  {
->  	int ret;
->  	struct btrfs_inode_item btrfs_inode;
-> @@ -218,7 +261,9 @@ static int add_inode_items(struct btrfs_trans_handle *trans,
->  	objectid = self_objectid;
->  
->  	if (S_ISDIR(st->st_mode)) {
-> -		inode_size = calculate_dir_inode_size(name);
-> +		inode_size = calculate_dir_inode_size(name,
-> +						      subvol_children,
-> +						      dest_dir);
->  		btrfs_set_stack_inode_size(&btrfs_inode, inode_size);
->  	}
->  
-> @@ -430,7 +475,9 @@ end:
->  }
->  
->  static int copy_rootdir_inode(struct btrfs_trans_handle *trans,
-> -			      struct btrfs_root *root, const char *dir_name)
-> +			      struct btrfs_root *root, const char *dir_name,
-> +			      struct list_head *subvol_children,
-> +			      const char *dest_dir)
->  {
->  	u64 root_dir_inode_size;
->  	struct btrfs_inode_item *inode_item;
-> @@ -468,7 +515,8 @@ static int copy_rootdir_inode(struct btrfs_trans_handle *trans,
->  	leaf = path.nodes[0];
->  	inode_item = btrfs_item_ptr(leaf, path.slots[0], struct btrfs_inode_item);
->  
-> -	root_dir_inode_size = calculate_dir_inode_size(dir_name);
-> +	root_dir_inode_size = calculate_dir_inode_size(dir_name, subvol_children,
-> +						       dest_dir);
->  	btrfs_set_inode_size(leaf, inode_item, root_dir_inode_size);
->  
->  	/* Unlike fill_inode_item, we only need to copy part of the attributes. */
-> @@ -493,7 +541,9 @@ error:
->  
->  static int traverse_directory(struct btrfs_trans_handle *trans,
->  			      struct btrfs_root *root, const char *dir_name,
-> -			      struct directory_name_entry *dir_head)
-> +			      struct directory_name_entry *dir_head,
-> +			      struct list_head *subvol_children,
-> +			      const char *dest_dir)
->  {
->  	int ret = 0;
->  
-> @@ -519,12 +569,21 @@ static int traverse_directory(struct btrfs_trans_handle *trans,
->  		goto fail_no_dir;
->  	}
->  
-> +	dir_entry->dest_dir = strdup(dest_dir);
-> +	if (!dir_entry->dest_dir) {
-> +		error_msg(ERROR_MSG_MEMORY, NULL);
-> +		ret = -ENOMEM;
-> +		goto fail_no_dir;
-> +	}
-> +
->  	parent_inum = highest_inum + BTRFS_FIRST_FREE_OBJECTID;
->  	dir_entry->inum = parent_inum;
->  	list_add_tail(&dir_entry->list, &dir_head->list);
->  
-> -	ret = copy_rootdir_inode(trans, root, dir_name);
-> +	ret = copy_rootdir_inode(trans, root, dir_name, subvol_children,
-> +				 dest_dir);
->  	if (ret < 0) {
-> +		free(dir_entry->dest_dir);
->  		errno = -ret;
->  		error("failed to copy rootdir inode: %m");
->  		goto fail_no_dir;
-> @@ -555,7 +614,7 @@ static int traverse_directory(struct btrfs_trans_handle *trans,
->  		}
->  
->  		for (i = 0; i < count; i++) {
-> -			char tmp[PATH_MAX];
-> +			char tmp[PATH_MAX], cur_dest[PATH_MAX];
->  
->  			cur_file = files[i];
->  
-> @@ -570,6 +629,33 @@ static int traverse_directory(struct btrfs_trans_handle *trans,
->  				pr_verbose(LOG_INFO, "ADD: %s\n", tmp);
->  			}
->  
-> +			if (S_ISDIR(st.st_mode)) {
-> +				if (!strcmp(parent_dir_entry->dest_dir, "")) {
-> +					strcpy(cur_dest, cur_file->d_name);
-> +				} else {
-> +					strcpy(cur_dest, parent_dir_entry->dest_dir);
-> +					strcat(cur_dest, "/");
-> +					strcat(cur_dest, cur_file->d_name);
-> +				}
-> +			}
-> +
-> +			/* Omit child if it is going to be a subvolume. */
-> +			if (!list_empty(subvol_children) && S_ISDIR(st.st_mode)) {
-> +				struct rootdir_subvol *s;
-> +				bool skip = false;
-> +
-> +				list_for_each_entry(s, subvol_children, child_list) {
-> +					if (!strcmp(cur_dest, s->destpath)) {
-> +						s->parent_inum = parent_inum;
-> +						skip = true;
-> +						break;
-> +					}
-> +				}
-> +
-> +				if (skip)
-> +					continue;
-> +			}
-> +
->  			/*
->  			 * We can not directly use the source ino number,
->  			 * as there is a chance that the ino is smaller than
-> @@ -589,7 +675,8 @@ static int traverse_directory(struct btrfs_trans_handle *trans,
->  
->  			ret = add_inode_items(trans, root, &st,
->  					      cur_file->d_name, cur_inum,
-> -					      &cur_inode);
-> +					      &cur_inode, subvol_children,
-> +					      cur_dest);
->  			if (ret == -EEXIST) {
->  				if (st.st_nlink <= 1) {
->  					error(
-> @@ -638,6 +725,15 @@ static int traverse_directory(struct btrfs_trans_handle *trans,
->  					goto fail;
->  				}
->  				dir_entry->inum = cur_inum;
-> +
-> +				dir_entry->dest_dir = strdup(cur_dest);
-> +				if (!dir_entry->dest_dir) {
-> +					free(dir_entry->path);
-> +					error_msg(ERROR_MSG_MEMORY, NULL);
-> +					ret = -ENOMEM;
-> +					goto fail;
-> +				}
-> +
->  				list_add_tail(&dir_entry->list,
->  					      &dir_head->list);
->  			} else if (S_ISREG(st.st_mode)) {
-> @@ -661,6 +757,7 @@ static int traverse_directory(struct btrfs_trans_handle *trans,
->  		}
->  
->  		free_namelist(files, count);
-> +		free(parent_dir_entry->dest_dir);
->  		free(parent_dir_entry->path);
->  		free(parent_dir_entry);
->  
-> @@ -680,7 +777,8 @@ fail_no_dir:
->  	goto out;
->  }
->  
-> -int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)
-> +int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root,
-> +			struct list_head *subvol_children, const char* dest_dir)
->  {
->  	int ret;
->  	struct btrfs_trans_handle *trans;
-> @@ -705,7 +803,8 @@ int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)
->  		goto fail;
->  }
->  
-> -	ret = traverse_directory(trans, root, source_dir, &dir_head);
-> +	ret = traverse_directory(trans, root, source_dir, &dir_head,
-> +				 subvol_children, dest_dir);
->  	if (ret) {
->  		error("unable to traverse directory %s: %d", source_dir, ret);
->  		goto fail;
-> diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
-> index 8d5f6896..64402dbe 100644
-> --- a/mkfs/rootdir.h
-> +++ b/mkfs/rootdir.h
-> @@ -33,10 +33,29 @@ struct directory_name_entry {
->  	const char *dir_name;
->  	char *path;
->  	ino_t inum;
-> +	char *dest_dir;
->  	struct list_head list;
->  };
->  
-> -int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root);
-> +struct rootdir_subvol {
-> +	struct list_head list;
-> +	struct list_head child_list;
-> +	char *dir;
-> +	char *srcpath;
-> +	size_t srcpath_len;
-> +	char *destpath;
-> +	size_t destpath_len;
-> +	struct rootdir_subvol *parent;
-> +	u64 parent_inum;
-> +	struct list_head children;
-> +	unsigned int depth;
-> +	u64 objectid;
-> +	struct btrfs_root *root;
-> +};
-> +
-> +int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root,
-> +			struct list_head *subvol_children,
-> +			const char* dest_dir);
->  u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_dev_size,
->  			u64 meta_profile, u64 data_profile);
->  int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_ret,
-> diff --git a/tests/mkfs-tests/034-rootdir-subvol/test.sh b/tests/mkfs-tests/034-rootdir-subvol/test.sh
-> new file mode 100755
-> index 00000000..ccd6893f
-> --- /dev/null
-> +++ b/tests/mkfs-tests/034-rootdir-subvol/test.sh
-> @@ -0,0 +1,33 @@
-> +#!/bin/bash
-> +# smoke test for mkfs.btrfs --subvol option
-> +
-> +source "$TEST_TOP/common" || exit
-> +
-> +check_prereq mkfs.btrfs
-> +check_prereq btrfs
-> +
-> +setup_root_helper
-> +prepare_test_dev
-> +
-> +tmp=$(_mktemp_dir mkfs-rootdir)
-> +
-> +touch $tmp/foo
-> +mkdir $tmp/dir
-> +mkdir $tmp/dir/subvol
-> +touch $tmp/dir/subvol/bar
-> +
-> +run_check_mkfs_test_dev --rootdir "$tmp" --subvol "$tmp/dir/subvol"
-> +run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
-> +
-> +run_check_mount_test_dev
-> +run_check_stdout $SUDO_HELPER "$TOP/btrfs" subvolume list "$TEST_MNT" | \
-> +	cut -d\  -f9 > "$tmp/output"
-> +run_check_umount_test_dev
-> +
-> +result=$(cat "$tmp/output")
-> +
-> +if [ "$result" != "dir/subvol" ]; then
-> +	_fail "dir/subvol not in subvolume list"
-> +fi
-> +
-> +rm -rf -- "$tmp"
-> -- 
-> 2.44.2
-> 
 
