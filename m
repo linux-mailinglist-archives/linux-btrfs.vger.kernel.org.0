@@ -1,1056 +1,337 @@
-Return-Path: <linux-btrfs+bounces-6933-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6540943924
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:01:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 062F5943958
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:20:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1484287127
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:01:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A0EAB2225C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B34316D4C6;
-	Wed, 31 Jul 2024 23:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B0D16DC2E;
+	Wed, 31 Jul 2024 23:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="qwkXBRKy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fpqEBR9R"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jzwf/c6U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 722F5101EE
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 23:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C89E3A1A8
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Jul 2024 23:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722466868; cv=none; b=oRxITuR7CC0/2dai5RnM2xRf5hLJTlWQfoKSaHgwI7az8QtCYBUB2i+M1wOz4HxjGr1BGvnAIPmt/roqURC1QOgprfLVIA1TDp5/EHWH/hiHZjCCp7EP2iH6QbYX1z6ab/NkhPWwKqH7Ra/JpXiUXiOK6Va/lxWdSKP2CKIgkmI=
+	t=1722467990; cv=none; b=KAM8uIfUmPSu+wnYNWZYrgpU+VXyw53qFN1vl+L9zqv0dWlIKrirmxBwCgy5DUlC+hBRqdK5uImAcycdwAJ+ApYVIS6oAr6oeXjo3NTbixnCJiA0Tk7m1y1kFgBR/kxd3ERBe1fEa34Hvs8c0nqZUSCUBtLhGro5SZ0AjbE4QWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722466868; c=relaxed/simple;
-	bh=CPxjM+c2hgKAOk3mZx1eY4lWy3suv4u7fVb3F3jg3nE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AqxzYRiDJy+PWoF+AChsem1oVt6vxmq29O9B70B6axRLJlgAI5oFNk0j/SAB0YaKo/t2A9gk5F8jKa5jVZn1cm+2T7VD1EVsj9jEFUZKo4YU1I65SuYMbYrG84s7C/X+OE0quR+QJwSzSML6dK/tTJxf6abryya281JAN/92C10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=qwkXBRKy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fpqEBR9R; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 912C71147087;
-	Wed, 31 Jul 2024 19:01:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 31 Jul 2024 19:01:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1722466864; x=1722553264; bh=RGvVWkMuTc
-	YwTFxuXtD3rDou4uidIj5mEIPBpDxpVwY=; b=qwkXBRKyonyf2eKYy5kP0kbuO7
-	Qc8iFOzZXOal3j4nPRrHKKG/tndZkZjSpaolOxuvR/fT+OiyJtzKdTHtTfaWoEIa
-	6TujE/LKpiMk73yCDVA+13mGtN7y47IeIuaDqHSzD/LAa+/qpO92sh3OX/BTsdH1
-	35/c6cw/cf/IdECaG+JdVw4XBQhBvp4Uq48sUcO8f23tPf48PEV1ESFEWbLASxwQ
-	UkYL9qfC6noUXr2gDGpvII1WketA74TQz/Edi80nORtsT7U0WXnWSTiHnx64aRu/
-	aY/GKEfNrenhnhIefALHkJ7agwOMpeKHYogpJ70UwdmanGOsunmjpBWktvHA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1722466864; x=1722553264; bh=RGvVWkMuTcYwTFxuXtD3rDou4uid
-	Ij5mEIPBpDxpVwY=; b=fpqEBR9RY1QtHZ4fdoy1tKQG+auZh05b4RIod5ZUa+NY
-	xsr7U1iedO13j5raKKyjQTSBFMGdsZe3Y0d6o44wQmo/3W4Tc+jCJEGJsjpy7jY1
-	ShZ6XlM4VTM01BERntRGhfYyTYhkhwiUd34OKE1W2yxDHEXje9xs05eLecboQ/dD
-	zKw0yJR8jCqDmFLx1VNZF5U7VWw/bLypZO7j+PI3HnP6mpEfxwAiSLOSaH+hwl2X
-	nj3cxdUoVkxwo5V8W45FDLVVxP0aqA5UsuSyxGoartOLdQlPZwMAxNevJVKh7jYr
-	1r8//CCQVuhDiH0gmI8OsT0OfuKDoiX4iGUywXQ2Iw==
-X-ME-Sender: <xms:MMKqZpiOI0sbtlboQy3L938WiIzldE6p6eM6-7d0KGpmxSajB8M6hQ>
-    <xme:MMKqZuBiVnylPkvUq1QVBewrX32TWeuS3VbKkk2SALBrL9omYVt9sql0EEpaYLPd3
-    etBuFnx1HY6JK1uICY>
-X-ME-Received: <xmr:MMKqZpGxfeuFn5fPNpidiSNDD0Lc-AuupY9YuFiEHt-d9sk8GDwiGXPQ3XuIwbaHX9GF00L_e6yizMRg9YMDxAdviWg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrjeejgddujecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
-    ekuefhvdefudeuhfduteetleelgfelkeeggffgiedvkeeuhedvjedvvdevkeffnecuffho
-    mhgrihhnpehlihhsthdrnhgvgihtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedt
-X-ME-Proxy: <xmx:MMKqZuRMnObR5qMESpeHuyCQxwIX9BwGF-eOnuohPTOtZAonDUvQTA>
-    <xmx:MMKqZmxZFXSaRijnuG0ulqqXm6FqaljbwwJMDK0lii4nNXDnUAuoXg>
-    <xmx:MMKqZk635DNbHefJ3E1wemNx-DhWsvZ56Qs5c6c6XL8KfQPgdxGHag>
-    <xmx:MMKqZryxl6cwQt0PuzAogwnbzhRBR9CBAu_LhC-BoaGw90cTZ6km8A>
-    <xmx:MMKqZh-osfZ8_76aj8zHym1E-Sw1HvHXtpBUPayhn1bojZj3IecH0w8Q>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 Jul 2024 19:01:03 -0400 (EDT)
-Date: Wed, 31 Jul 2024 15:59:35 -0700
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/3] btrfs-progs: mkfs: rework how we traverse rootdir
-Message-ID: <20240731225935.GB3808023@zen.localdomain>
-References: <cover.1722418505.git.wqu@suse.com>
- <667ee4f02fdc2cb6f186eb8b06dd089f3ce53141.1722418505.git.wqu@suse.com>
+	s=arc-20240116; t=1722467990; c=relaxed/simple;
+	bh=JSAMr1NEtGLs3fXIy3LEONPhheJ9b1LYLJ1o/5xVA60=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LVKAoZHQp9zUPOglHQtHqAIanuldMTxdnLX9lNefDOgJDmzqDTJ9KG8xh+YDMIbOE4fj1qLY1Sf7t5XvcNdF+6ao53H/Vc3lJ5z7pQ6XC4RNMHYFjXB4hhptkEJmBVmUSIkaAE3oNlnLwNwMAcylUKzssKU7zP5n9z1nGIDZs0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jzwf/c6U; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1722467982; x=1723072782; i=quwenruo.btrfs@gmx.com;
+	bh=K71om96ehID0mb0FpBXBU4FjVGrzLOD9JUgDESWKAgk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=jzwf/c6Uq094zhYMOOGpw21e83+TB/g3guthbG3cPYzXrLP2HqpFfIHk3Gfryead
+	 v8VsS36ykw61HyyfxgK3491Y92SkBr3oo2aAgPOawOP/BuvnEF9GQY/pVRwBuoWWB
+	 pGjUK4/jg3JwO5wONBYVyL2AOmERGwWE8p9nIBiB4Dgv3/kAhrZH4KFAeniswfWUj
+	 mNQD9D25HLf3+SIZQs4uGNpTfxMMDmwDnztlkbN7kxNv3Zqq10M1fqjyz6kC6DCXe
+	 z01GnOInwDP8N+9q6mZn8BybtTWhtBkmmDmiV1KQfpQY87BGUuVIqGXsZ8x/UZn6+
+	 yJO4iD0u4d+P39CRSg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdefD-1s0Eu43UXZ-00lx9T; Thu, 01
+ Aug 2024 01:19:42 +0200
+Message-ID: <dd3444f9-c8be-46e7-97b1-8f95a161c709@gmx.com>
+Date: Thu, 1 Aug 2024 08:49:39 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <667ee4f02fdc2cb6f186eb8b06dd089f3ce53141.1722418505.git.wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] btrfs-progs: mkfs: rework how we traverse rootdir
+To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1722418505.git.wqu@suse.com>
+ <667ee4f02fdc2cb6f186eb8b06dd089f3ce53141.1722418505.git.wqu@suse.com>
+ <20240731225935.GB3808023@zen.localdomain>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240731225935.GB3808023@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:It9OxwfNQOEepxeAGbPIS2z1NaYCPgE5hfsLFUBvjJhxq+t4EQs
+ mW5ysUiaHJci59JmTKUmNmYQtnt1SW6wx1k8VqW68Rqn9fJYkqSfHKDVuDinfgEqAfT1knK
+ vAd7LRfhb3tgdlDpf+BuxFMwJSX6I09Zs2cLyLzsj3Ck+vjMeO2+Pndut2ln9yRAP0/JTVS
+ Z66tJkPesOMxlJPp29oRA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:bbr28gVLV8Y=;ei9Z01PvwM2fhmNzgvS3wc8B6VH
+ vXlc5LWnanZ0WpP0E7KX/whcOjbAmRutYFdmXpmGho0Kd3WqQ1IqjllHQIxtN7fJlGkGACeDI
+ jxHT+aFxuK+/1jwMtbOU/11HtFwgDRNAIf+ieth4ucLqFjDY7z73BlewAsJL5Depdv5ircXYG
+ sR5J1aeVUbfx0UHz6fh9KW3SBql37oR+vDxuhF5L7+lxwSofmOxovlrVi+x0Y6oYXiwiRJxRM
+ wlm6kKtj5Qk5RbjvNKQGKboPlDb3sdVK99jp53VRKAEqlyU7hcQV8C5BZPCNnRv/+56GDZrB7
+ 1heMV7mhuwlnGCtCHzIHHhMD0APcadS6VAJkHpQNHh5T783OP+r6HjkPYyRex3rjMFna72WrX
+ ZdsZ4oUeTqPEn4T85mD0p3GCPV0WhiatCTbHrDPmvtjnOO7vLwBd6QOq5r7/bXPeORo+K6zjO
+ e+7LseQWa43QQptUIlXHnbYy3yPKxd5+wD5D6sVubxkZEP4J0LF3WTfuokPmyxhMYQ2MLmtDG
+ bd+uOglIhHFq/Fu3QoH38v0wQiaIHsDchrRXQ8PdwERdcay0iIuaLacZIW0OAbcWPoWXrG7Oi
+ d3PgTvOwxTM1/ATVQfx0ZnCCFPryUBePDYhx9OQZUC2lUvtFLDR9UgLV1jYL5Y/WpsEfXDx7L
+ q8OlOMIQRN/G/p6zg85DP9FbkSdbP8zfpvg/9jfpTd80a71sduj73Gn9LVZJ+d4uMilUgFcMr
+ BTjjr0DseVai6kNy1ZcVXkX8XNvSbphptj+9Lps+fGyo6/CWI4LRNyUBcryShNesPKAHDBzJY
+ 9dZ2XJFI9tMGUCJekrgOt0Ag==
 
-On Wed, Jul 31, 2024 at 07:08:47PM +0930, Qu Wenruo wrote:
-> There are several hidden pitfalls of the existing traverse_directory():
-> 
-> - Hand written preorder traversal
->   Meanwhile there is already a better written standard library function,
->   nftw() doing exactly what we need.
 
-This is great!
 
-> 
-> - Over-designed path list
->   To properly handle the directory change, we have structure
->   directory_name_entry, to record every inode until rootdir.
-> 
->   But it has two string members, dir_name and path, which is a little
->   overkilled.
->   As for preorder traversal, we will never need to read the parent's
->   filename, just its inode number.
-> 
->   And it's exported while no one utilizes it out of mkfs/rootdir.c.
-> 
-> - Weird inode numbers
->   We use the inode number from st->st_ino, with an extra offset.
->   This by itself is not safe, if the rootdir has child directory in
->   another filesystem.
+=E5=9C=A8 2024/8/1 08:29, Boris Burkov =E5=86=99=E9=81=93:
+> On Wed, Jul 31, 2024 at 07:08:47PM +0930, Qu Wenruo wrote:
+>> There are several hidden pitfalls of the existing traverse_directory():
+>>
+>> - Hand written preorder traversal
+>>    Meanwhile there is already a better written standard library functio=
+n,
+>>    nftw() doing exactly what we need.
+>
+> This is great!
+>
+>>
+>> - Over-designed path list
+>>    To properly handle the directory change, we have structure
+>>    directory_name_entry, to record every inode until rootdir.
+>>
+>>    But it has two string members, dir_name and path, which is a little
+>>    overkilled.
+>>    As for preorder traversal, we will never need to read the parent's
+>>    filename, just its inode number.
+>>
+>>    And it's exported while no one utilizes it out of mkfs/rootdir.c.
+>>
+>> - Weird inode numbers
+>>    We use the inode number from st->st_ino, with an extra offset.
+>>    This by itself is not safe, if the rootdir has child directory in
+>>    another filesystem.
+>
+> Can you explain what you mean by not safe? As far as I can tell, the
+> +256 is to handle that particular invariant of btrfs. Are you worried
+> about duplicate inode numbers in the vein of the usual st_dev/st_ino
+> debates?
 
-Can you explain what you mean by not safe? As far as I can tell, the
-+256 is to handle that particular invariant of btrfs. Are you worried
-about duplicate inode numbers in the vein of the usual st_dev/st_ino
-debates?
+I'm worried about this case:
 
-In that case, if this is a bugfix, I think it makes sense to write a
-regression test that highlights it. It would be nice to pull the fix
-out of the refactor, too, but I suppose that with such a deep refactor,
-that might not be possible/worth it.
+rootdir (on fs1)
+|- dir1
+|  |- file1 (fs1, ino 1024)
+|- dir2 (on fs2)
+    |- file2 (fs2, ino 1024)
 
-> 
->   And this results very weird inode numbers, e.g:
-> 
-> 	item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
-> 	item 6 key (88347519 INODE_ITEM 0) itemoff 15815 itemsize 160
-> 	item 16 key (88347520 INODE_ITEM 0) itemoff 15363 itemsize 160
-> 	item 20 key (88347521 INODE_ITEM 0) itemoff 15119 itemsize 160
-> 	item 24 key (88347522 INODE_ITEM 0) itemoff 14875 itemsize 160
-> 	item 26 key (88347523 INODE_ITEM 0) itemoff 14700 itemsize 160
-> 	item 28 key (88347524 INODE_ITEM 0) itemoff 14525 itemsize 160
-> 	item 30 key (88347557 INODE_ITEM 0) itemoff 14350 itemsize 160
-> 	item 32 key (88347566 INODE_ITEM 0) itemoff 14175 itemsize 160
-> 
->   Which is far from a regular fs created by copying the data.
+We do not have any cross mount point checks.
 
-+1, especially since it doesn't even *preserve* the inode numbers, which
-would be a comprehensible (if not working) behavior. Creating the oids
-in "btrfs order" seems like a nice improvement!
+I created a case like this:
 
-> 
-> - Weird directory inode size calculation
->   Unlike kernel, which updated the directory inode size every time new
->   child inodes are added, we calculate the directory inode size by
->   searching all its children first, then later new inodes linked to this
->   directory won't touch the inode size.
-> 
-> Enhance all these points by:
-> 
-> - Use nftw() to do the preorder traversal
->   It also provides the extra level detection, which is pretty handy.
-> 
-> - Use a simple local inode_entry to record each parent
->   The only value is a u64 to record the inode number.
->   And one simple rootdir_path structure to record the list of
->   inode_entry, alone with the current level.
-> 
->   This rootdir_path structure along with two helpers,
->   rootdir_path_push() and rootdir_path_pop(), along with the
->   preorder traversal provided by nftw(), are enough for us to record
->   all the parent directories until the rootdir.
-> 
-> - Grab new inode number properly
->   Just call btrfs_get_free_objectid() to grab a proper inode number,
->   other than using some weird calculated value.
-> 
-> - Use btrfs_insert_inode() and btrfs_add_link() to update directory
->   inode automatically
-> 
-> With all the refactor, the code is shorter and easier to read.
+# fallocate -l 1G 1.img
+# fallocate -l 1G 2.img
+# mkfs.ext4 1.img
+# mkfs.ext4 2.img
+# mount 1.img mnt
+# mkdir mnt/dir1 mnt/dir2
+# touch mnt/dir1/file1 mnt/file1
+# umount mnt
+# mount 2.img mnt
+# mkdir mnt/dir1 mnt/dir2
+# touch mnt/dir1/file1 mnt/file1
+# umount mnt
+# mkdir rootdir
+# mount 1.img rootdir
+# mount 2.img rootdir/dir2
+# mkfs.btrfs -f --rootdir rootdir test.img
+ERROR: item file1 already exists but has wrong st_nlink 1 <=3D 1
+ERROR: unable to traverse directory rootdir/: 1
+ERROR: error while filling filesystem: 1
 
-Agreed on all counts, I think this is a lovely refactor.
+And it failed as expeceted.
 
-For a change of this magnitude, I think it is helpful to justify the
-correctness of the change by documenting the testing plan. Are there
-existing unit tests of mkfs that cover all the cases we are modifying
-here? Is there some --rootdir master case that covers everything? Is it
-in fstests? Knowing that all of the new code has at least run correctly
-would go a long way to feeling confident in the details of the
-transformation.
+>
+> In that case, if this is a bugfix, I think it makes sense to write a
+> regression test that highlights it. It would be nice to pull the fix
+> out of the refactor, too, but I suppose that with such a deep refactor,
+> that might not be possible/worth it.
 
-I left a few more notes inline.
+Unfortunately I didn't even notice how serious these problems are, until
+I tried...
 
-Thanks,
-Boris
+Will add two new test cases. One is the above one, the other is the
+hardlink out of rootdir bug I mentioned in 3/3.
 
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  mkfs/rootdir.c | 664 +++++++++++++++++++------------------------------
->  mkfs/rootdir.h |   8 -
->  2 files changed, 257 insertions(+), 415 deletions(-)
-> 
-> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-> index 2b39f6bb21fe..d8bd2ce29d5a 100644
-> --- a/mkfs/rootdir.c
-> +++ b/mkfs/rootdir.c
-> @@ -38,15 +38,12 @@
->  #include "kernel-shared/file-item.h"
->  #include "common/internal.h"
->  #include "common/messages.h"
-> -#include "common/path-utils.h"
->  #include "common/utils.h"
->  #include "common/extent-tree-utils.h"
->  #include "mkfs/rootdir.h"
+>
+>>
+>>    And this results very weird inode numbers, e.g:
+>>
+>> 	item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
+>> 	item 6 key (88347519 INODE_ITEM 0) itemoff 15815 itemsize 160
+>> 	item 16 key (88347520 INODE_ITEM 0) itemoff 15363 itemsize 160
+>> 	item 20 key (88347521 INODE_ITEM 0) itemoff 15119 itemsize 160
+>> 	item 24 key (88347522 INODE_ITEM 0) itemoff 14875 itemsize 160
+>> 	item 26 key (88347523 INODE_ITEM 0) itemoff 14700 itemsize 160
+>> 	item 28 key (88347524 INODE_ITEM 0) itemoff 14525 itemsize 160
+>> 	item 30 key (88347557 INODE_ITEM 0) itemoff 14350 itemsize 160
+>> 	item 32 key (88347566 INODE_ITEM 0) itemoff 14175 itemsize 160
+>>
+>>    Which is far from a regular fs created by copying the data.
+>
+> +1, especially since it doesn't even *preserve* the inode numbers, which
+> would be a comprehensible (if not working) behavior. Creating the oids
+> in "btrfs order" seems like a nice improvement!
+>
+>>
+>> - Weird directory inode size calculation
+>>    Unlike kernel, which updated the directory inode size every time new
+>>    child inodes are added, we calculate the directory inode size by
+>>    searching all its children first, then later new inodes linked to th=
+is
+>>    directory won't touch the inode size.
+>>
+>> Enhance all these points by:
+>>
+>> - Use nftw() to do the preorder traversal
+>>    It also provides the extra level detection, which is pretty handy.
+>>
+>> - Use a simple local inode_entry to record each parent
+>>    The only value is a u64 to record the inode number.
+>>    And one simple rootdir_path structure to record the list of
+>>    inode_entry, alone with the current level.
+>>
+>>    This rootdir_path structure along with two helpers,
+>>    rootdir_path_push() and rootdir_path_pop(), along with the
+>>    preorder traversal provided by nftw(), are enough for us to record
+>>    all the parent directories until the rootdir.
+>>
+>> - Grab new inode number properly
+>>    Just call btrfs_get_free_objectid() to grab a proper inode number,
+>>    other than using some weird calculated value.
+>>
+>> - Use btrfs_insert_inode() and btrfs_add_link() to update directory
+>>    inode automatically
+>>
+>> With all the refactor, the code is shorter and easier to read.
+>
+> Agreed on all counts, I think this is a lovely refactor.
+>
+> For a change of this magnitude, I think it is helpful to justify the
+> correctness of the change by documenting the testing plan. Are there
+> existing unit tests of mkfs that cover all the cases we are modifying
+> here?
 
-#include <ftw.h> to be explicit?
+We have existing rootdir test cases, from the regular functional tests,
+to corner cases.
 
->  
->  static u32 fs_block_size;
->  
-> -static u64 index_cnt = 2;
-> -
->  /*
->   * Size estimate will be done using the following data:
->   * 1) Number of inodes
-> @@ -63,169 +60,91 @@ static u64 index_cnt = 2;
->  static u64 ftw_meta_nr_inode;
->  static u64 ftw_data_size;
->  
-> -static int add_directory_items(struct btrfs_trans_handle *trans,
-> -			       struct btrfs_root *root, u64 objectid,
-> -			       ino_t parent_inum, const char *name,
-> -			       struct stat *st, int *dir_index_cnt)
-> +/*
-> + * Represent one inode inside the path.
-> + *
-> + * For now, all those inodes are inside fs tree.
-> + */
-> +struct inode_entry {
-> +	/* The inode number inside btrfs. */
-> +	u64 ino;
-> +	struct list_head list;
-> +};
-> +
-> +/*
-> + * The path towards the rootdir.
-> + *
-> + * Only directory inodes are stored inside the path.
-> + */
-> +struct rootdir_path {
-> +	/*
-> +	 * Level 0 means it's the rootdir itself.
-> +	 * Level -1 means it's uninitlized.
-> +	 */
-> +	int level;
-> +
-> +	struct list_head inode_list;
-> +} current_path = {
-> +	.level = -1,
-> +};
-> +
-> +struct btrfs_trans_handle *g_trans = NULL;
-> +
-> +static inline struct inode_entry *rootdir_path_last(struct rootdir_path *path)
->  {
-> -	int ret;
-> -	int name_len;
-> -	struct btrfs_key location;
-> -	u8 filetype = 0;
-> +	UASSERT(!list_empty(&path->inode_list));
->  
-> -	name_len = strlen(name);
-> -
-> -	location.objectid = objectid;
-> -	location.type = BTRFS_INODE_ITEM_KEY;
-> -	location.offset = 0;
-> -
-> -	if (S_ISDIR(st->st_mode))
-> -		filetype = BTRFS_FT_DIR;
-> -	if (S_ISREG(st->st_mode))
-> -		filetype = BTRFS_FT_REG_FILE;
-> -	if (S_ISLNK(st->st_mode))
-> -		filetype = BTRFS_FT_SYMLINK;
-> -	if (S_ISSOCK(st->st_mode))
-> -		filetype = BTRFS_FT_SOCK;
-> -	if (S_ISCHR(st->st_mode))
-> -		filetype = BTRFS_FT_CHRDEV;
-> -	if (S_ISBLK(st->st_mode))
-> -		filetype = BTRFS_FT_BLKDEV;
-> -	if (S_ISFIFO(st->st_mode))
-> -		filetype = BTRFS_FT_FIFO;
-> -
-> -	ret = btrfs_insert_dir_item(trans, root, name, name_len,
-> -				    parent_inum, &location,
-> -				    filetype, index_cnt);
-> -	if (ret)
-> -		return ret;
-> -	ret = btrfs_insert_inode_ref(trans, root, name, name_len,
-> -				     objectid, parent_inum, index_cnt);
-> -	*dir_index_cnt = index_cnt;
-> -	index_cnt++;
-> -
-> -	return ret;
-> +	return list_entry(path->inode_list.prev, struct inode_entry, list);
->  }
->  
-> -static int fill_inode_item(struct btrfs_trans_handle *trans,
-> -			   struct btrfs_root *root,
-> -			   struct btrfs_inode_item *dst, struct stat *src)
-> +static void rootdir_path_pop(struct rootdir_path *path)
->  {
-> -	u64 blocks = 0;
-> -	u64 sectorsize = root->fs_info->sectorsize;
-> +	struct inode_entry *last;
-> +	UASSERT(path->level >= 0);
->  
-> -	/*
-> -	 * btrfs_inode_item has some reserved fields
-> -	 * and represents on-disk inode entry, so
-> -	 * zero everything to prevent information leak
-> -	 */
-> -	memset(dst, 0, sizeof(*dst));
-> +	last = rootdir_path_last(path);
-> +	list_del_init(&last->list);
-> +	path->level--;
-> +	free(last);
-> +}
->  
-> -	btrfs_set_stack_inode_generation(dst, trans->transid);
-> -	btrfs_set_stack_inode_size(dst, src->st_size);
-> -	btrfs_set_stack_inode_nbytes(dst, 0);
-> -	btrfs_set_stack_inode_block_group(dst, 0);
-> -	btrfs_set_stack_inode_nlink(dst, src->st_nlink);
-> -	btrfs_set_stack_inode_uid(dst, src->st_uid);
-> -	btrfs_set_stack_inode_gid(dst, src->st_gid);
-> -	btrfs_set_stack_inode_mode(dst, src->st_mode);
-> -	btrfs_set_stack_inode_rdev(dst, 0);
-> -	btrfs_set_stack_inode_flags(dst, 0);
-> -	btrfs_set_stack_timespec_sec(&dst->atime, src->st_atime);
-> -	btrfs_set_stack_timespec_nsec(&dst->atime, 0);
-> -	btrfs_set_stack_timespec_sec(&dst->ctime, src->st_ctime);
-> -	btrfs_set_stack_timespec_nsec(&dst->ctime, 0);
-> -	btrfs_set_stack_timespec_sec(&dst->mtime, src->st_mtime);
-> -	btrfs_set_stack_timespec_nsec(&dst->mtime, 0);
-> -	btrfs_set_stack_timespec_sec(&dst->otime, 0);
-> -	btrfs_set_stack_timespec_nsec(&dst->otime, 0);
-> -
-> -	if (S_ISDIR(src->st_mode)) {
-> -		btrfs_set_stack_inode_size(dst, 0);
-> -		btrfs_set_stack_inode_nlink(dst, 1);
-> -	}
-> -	if (S_ISREG(src->st_mode)) {
-> -		btrfs_set_stack_inode_size(dst, (u64)src->st_size);
-> -		if (src->st_size <= BTRFS_MAX_INLINE_DATA_SIZE(root->fs_info) &&
-> -		    src->st_size < sectorsize)
-> -			btrfs_set_stack_inode_nbytes(dst, src->st_size);
-> -		else {
-> -			blocks = src->st_size / sectorsize;
-> -			if (src->st_size % sectorsize)
-> -				blocks += 1;
-> -			blocks *= sectorsize;
-> -			btrfs_set_stack_inode_nbytes(dst, blocks);
-> -		}
-> -	}
-> -	if (S_ISLNK(src->st_mode))
-> -		btrfs_set_stack_inode_nbytes(dst, src->st_size + 1);
-> +static int rootdir_path_push(struct rootdir_path *path, u64 ino)
-> +{
-> +	struct inode_entry *new;
->  
-> +	new = malloc(sizeof(*new));
-> +	if (!new)
-> +		return -ENOMEM;
-> +	new->ino = ino;
-> +	list_add_tail(&new->list, &path->inode_list);
-> +	path->level++;
->  	return 0;
->  }
->  
-> -static int directory_select(const struct dirent *entry)
-> +
-> +static void stat_to_inode_item(struct btrfs_inode_item *dst, const struct stat *st)
->  {
-> -	if (entry->d_name[0] == '.' &&
-> -		(entry->d_name[1] == 0 ||
-> -		 (entry->d_name[1] == '.' && entry->d_name[2] == 0)))
-> -		return 0;
-> -	return 1;
-> -}
-> -
-> -static void free_namelist(struct dirent **files, int count)
-> -{
-> -	int i;
-> -
-> -	if (count < 0)
-> -		return;
-> -
-> -	for (i = 0; i < count; ++i)
-> -		free(files[i]);
-> -	free(files);
-> -}
-> -
-> -static u64 calculate_dir_inode_size(const char *dirname)
-> -{
-> -	int count, i;
-> -	struct dirent **files, *cur_file;
-> -	u64 dir_inode_size = 0;
-> -
-> -	count = scandir(dirname, &files, directory_select, NULL);
-> -
-> -	for (i = 0; i < count; i++) {
-> -		cur_file = files[i];
-> -		dir_inode_size += strlen(cur_file->d_name);
-> -	}
-> -
-> -	free_namelist(files, count);
-> -
-> -	dir_inode_size *= 2;
-> -	return dir_inode_size;
-> -}
-> -
-> -static int add_inode_items(struct btrfs_trans_handle *trans,
-> -			   struct btrfs_root *root,
-> -			   struct stat *st, const char *name,
-> -			   u64 self_objectid,
-> -			   struct btrfs_inode_item *inode_ret)
-> -{
-> -	int ret;
-> -	struct btrfs_inode_item btrfs_inode;
-> -	u64 objectid;
-> -	u64 inode_size = 0;
-> -
-> -	fill_inode_item(trans, root, &btrfs_inode, st);
-> -	objectid = self_objectid;
-> -
-> -	if (S_ISDIR(st->st_mode)) {
-> -		inode_size = calculate_dir_inode_size(name);
-> -		btrfs_set_stack_inode_size(&btrfs_inode, inode_size);
-> -	}
-> -
-> -	ret = btrfs_insert_inode(trans, root, objectid, &btrfs_inode);
-> -
-> -	*inode_ret = btrfs_inode;
-> -	return ret;
-> +	/*
-> +	 * Do not touch size for directory inode, the size would be
-> +	 * automatically updated during btrfs_link_inode().
-> +	 */
-> +	if (!S_ISDIR(st->st_mode))
-> +		btrfs_set_stack_inode_size(dst, st->st_size);
-> +	btrfs_set_stack_inode_nbytes(dst, 0);
-> +	btrfs_set_stack_inode_block_group(dst, 0);
-> +	btrfs_set_stack_inode_uid(dst, st->st_uid);
-> +	btrfs_set_stack_inode_gid(dst, st->st_gid);
-> +	btrfs_set_stack_inode_mode(dst, st->st_mode);
-> +	btrfs_set_stack_inode_rdev(dst, 0);
-> +	btrfs_set_stack_inode_flags(dst, 0);
-> +	btrfs_set_stack_timespec_sec(&dst->atime, st->st_atime);
-> +	btrfs_set_stack_timespec_nsec(&dst->atime, 0);
-> +	btrfs_set_stack_timespec_sec(&dst->ctime, st->st_ctime);
-> +	btrfs_set_stack_timespec_nsec(&dst->ctime, 0);
-> +	btrfs_set_stack_timespec_sec(&dst->mtime, st->st_mtime);
-> +	btrfs_set_stack_timespec_nsec(&dst->mtime, 0);
-> +	btrfs_set_stack_timespec_sec(&dst->otime, 0);
-> +	btrfs_set_stack_timespec_nsec(&dst->otime, 0);
->  }
->  
->  static int add_xattr_item(struct btrfs_trans_handle *trans,
-> @@ -280,8 +199,10 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
->  
->  static int add_symbolic_link(struct btrfs_trans_handle *trans,
->  			     struct btrfs_root *root,
-> +			     struct btrfs_inode_item *inode_item,
->  			     u64 objectid, const char *path_name)
->  {
-> +	u64 nbytes;
->  	int ret;
->  	char buf[PATH_MAX];
->  
-> @@ -297,8 +218,16 @@ static int add_symbolic_link(struct btrfs_trans_handle *trans,
->  	}
->  
->  	buf[ret] = '\0'; /* readlink does not do it for us */
-> +	nbytes = ret + 1;
->  	ret = btrfs_insert_inline_extent(trans, root, objectid, 0,
-> -					 buf, ret + 1);
-> +					 buf, nbytes);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to insert inline extent for %s: %m",
-> +			path_name);
-> +		goto fail;
-> +	}
-> +	btrfs_set_stack_inode_nbytes(inode_item, nbytes);
->  fail:
->  	return ret;
->  }
-> @@ -306,7 +235,7 @@ fail:
->  static int add_file_items(struct btrfs_trans_handle *trans,
->  			  struct btrfs_root *root,
->  			  struct btrfs_inode_item *btrfs_inode, u64 objectid,
-> -			  struct stat *st, const char *path_name)
-> +			  const struct stat *st, const char *path_name)
->  {
->  	struct btrfs_fs_info *fs_info = trans->fs_info;
->  	int ret = -1;
-> @@ -355,6 +284,8 @@ static int add_file_items(struct btrfs_trans_handle *trans,
->  		ret = btrfs_insert_inline_extent(trans, root, objectid, 0,
->  						 buffer, st->st_size);
->  		free(buffer);
-> +		/* Update the inode nbytes for inline extents. */
-> +		btrfs_set_stack_inode_nbytes(btrfs_inode, st->st_size);
->  		goto end;
->  	}
->  
-> @@ -429,264 +360,199 @@ end:
->  	return ret;
->  }
->  
-> -static int copy_rootdir_inode(struct btrfs_trans_handle *trans,
-> -			      struct btrfs_root *root, const char *dir_name)
-> +static int update_inode_item(struct btrfs_trans_handle *trans,
-> +			     struct btrfs_root *root,
-> +			     const struct btrfs_inode_item *inode_item,
-> +			     u64 ino)
->  {
-> -	u64 root_dir_inode_size;
-> -	struct btrfs_inode_item *inode_item;
->  	struct btrfs_path path = { 0 };
-> -	struct btrfs_key key;
-> -	struct extent_buffer *leaf;
-> -	struct stat st;
-> +	struct btrfs_key key = {
-> +		.objectid = ino,
-> +		.type = BTRFS_INODE_ITEM_KEY,
-> +		.offset = 0,
-> +	};
-> +	u32 item_ptr_off;
->  	int ret;
->  
-> -	ret = stat(dir_name, &st);
-> -	if (ret < 0) {
-> -		ret = -errno;
-> -		error("stat failed for directory %s: %m", dir_name);
-> -		return ret;
-> -	}
-> -
-> -	ret = add_xattr_item(trans, root, btrfs_root_dirid(&root->root_item), dir_name);
-> -	if (ret < 0) {
-> -		errno = -ret;
-> -		error("failed to add xattr item for the top level inode: %m");
-> -		return ret;
-> -	}
-> -
-> -	key.objectid = btrfs_root_dirid(&root->root_item);
-> -	key.type = BTRFS_INODE_ITEM_KEY;
-> -	key.offset = 0;
->  	ret = btrfs_lookup_inode(trans, root, &path, &key, 1);
->  	if (ret > 0)
->  		ret = -ENOENT;
-> -	if (ret) {
-> -		error("failed to lookup root dir: %d", ret);
-> -		goto error;
-> +	if (ret < 0) {
-> +		btrfs_release_path(&path);
-> +		return ret;
->  	}
-> -
-> -	leaf = path.nodes[0];
-> -	inode_item = btrfs_item_ptr(leaf, path.slots[0], struct btrfs_inode_item);
-> -
-> -	root_dir_inode_size = calculate_dir_inode_size(dir_name);
-> -	btrfs_set_inode_size(leaf, inode_item, root_dir_inode_size);
-> -
-> -	/* Unlike fill_inode_item, we only need to copy part of the attributes. */
-> -	btrfs_set_inode_uid(leaf, inode_item, st.st_uid);
-> -	btrfs_set_inode_gid(leaf, inode_item, st.st_gid);
-> -	btrfs_set_inode_mode(leaf, inode_item, st.st_mode);
-> -	btrfs_set_timespec_sec(leaf, &inode_item->atime, st.st_atime);
-> -	btrfs_set_timespec_nsec(leaf, &inode_item->atime, 0);
-> -	btrfs_set_timespec_sec(leaf, &inode_item->ctime, st.st_ctime);
-> -	btrfs_set_timespec_nsec(leaf, &inode_item->ctime, 0);
-> -	btrfs_set_timespec_sec(leaf, &inode_item->mtime, st.st_mtime);
-> -	btrfs_set_timespec_nsec(leaf, &inode_item->mtime, 0);
-> -	/* FIXME */
-> -	btrfs_set_timespec_sec(leaf, &inode_item->otime, 0);
-> -	btrfs_set_timespec_nsec(leaf, &inode_item->otime, 0);
-> -	btrfs_mark_buffer_dirty(leaf);
-> -
-> -error:
-> +	item_ptr_off = btrfs_item_ptr_offset(path.nodes[0], path.slots[0]);
-> +	write_extent_buffer(path.nodes[0], inode_item, item_ptr_off, sizeof(*inode_item));
-> +	btrfs_mark_buffer_dirty(path.nodes[0]);
->  	btrfs_release_path(&path);
-> -	return ret;
-> +	return 0;
->  }
->  
-> -static int traverse_directory(struct btrfs_trans_handle *trans,
-> -			      struct btrfs_root *root, const char *dir_name,
-> -			      struct directory_name_entry *dir_head)
-> +static u8 ftype_to_btrfs_type(mode_t ftype)
->  {
-> -	int ret = 0;
-> +	if (S_ISREG(ftype))
-> +		return BTRFS_FT_REG_FILE;
-> +	if (S_ISDIR(ftype))
-> +		return BTRFS_FT_DIR;
-> +	if (S_ISLNK(ftype))
-> +		return BTRFS_FT_SYMLINK;
-> +	if (S_ISCHR(ftype))
-> +		return BTRFS_FT_CHRDEV;
-> +	if (S_ISBLK(ftype))
-> +		return BTRFS_FT_BLKDEV;
-> +	if (S_ISFIFO(ftype))
-> +		return BTRFS_FT_FIFO;
-> +	if (S_ISSOCK(ftype))
-> +		return BTRFS_FT_SOCK;
-> +	return BTRFS_FT_UNKNOWN;
->  
-> -	struct btrfs_inode_item cur_inode;
-> -	int count, i, dir_index_cnt;
-> -	struct dirent **files;
-> -	struct stat st;
-> -	struct directory_name_entry *dir_entry, *parent_dir_entry;
-> -	struct dirent *cur_file;
-> -	ino_t parent_inum, cur_inum;
-> -	ino_t highest_inum = 0;
-> -	const char *parent_dir_name;
-> +}
->  
-> -	/* Add list for source directory */
-> -	dir_entry = malloc(sizeof(struct directory_name_entry));
-> -	if (!dir_entry)
-> -		return -ENOMEM;
-> -	dir_entry->dir_name = dir_name;
-> -	dir_entry->path = realpath(dir_name, NULL);
-> -	if (!dir_entry->path) {
-> -		error("realpath failed for %s: %m", dir_name);
-> -		ret = -1;
-> -		goto fail_no_dir;
-> +static int ftw_add_inode(const char *full_path, const struct stat *st,
-> +			 int typeflag, struct FTW *ftwbuf)
-> +{
-> +	struct btrfs_fs_info *fs_info = g_trans->fs_info;
-> +	struct btrfs_root *root = fs_info->fs_root;
-> +	struct btrfs_inode_item inode_item = { 0 };
-> +	struct inode_entry *parent;
-> +	u64 ino;
-> +	int ret;
-> +
-> +	/* The rootdir itself. */
-> +	if (unlikely(ftwbuf->level == 0)) {
-> +		u64 root_ino = btrfs_root_dirid(&root->root_item);
-> +
-> +		UASSERT(S_ISDIR(st->st_mode));
-> +
-> +		ret = add_xattr_item(g_trans, root, root_ino, full_path);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to add xattr item for the top level inode: %m");
-> +			return ret;
-> +		}
-> +		stat_to_inode_item(&inode_item, st);
-> +		/*
-> +		 * Rootdir inode exists without any parent.
-> +		 * Thus needs to set its nlink to 1 manually.
-> +		 */
-> +		btrfs_set_stack_inode_nlink(&inode_item, 1);
-> +		ret = update_inode_item(g_trans, root, &inode_item, root_ino);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to update root dir for root %llu: %m",
-> +			      root->root_key.objectid);
-> +			return ret;
-> +		}
-> +
-> +		ret = rootdir_path_push(&current_path,
-> +					btrfs_root_dirid(&root->root_item));
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error_msg(ERROR_MSG_MEMORY, "push path for rootdir: %m");
-> +			return ret;
-> +		}
-> +		return ret;
->  	}
->  
-> -	parent_inum = highest_inum + BTRFS_FIRST_FREE_OBJECTID;
-> -	dir_entry->inum = parent_inum;
-> -	list_add_tail(&dir_entry->list, &dir_head->list);
-> +	/*
-> +	 * If our path level is higher than this level - 1, this means
-> +	 * we have changed directory.
-> +	 * Poping out the unrelated inodes.
+But we lack corner cases of corner cases, like duplicating inode number
+(cross mnt) and hard links.
 
-Popping
+> Is there some --rootdir master case that covers everything?
 
-Also, this took me like 15 minutes of working examples to figure out why
-it worked. I think it could definitely do with some deeper explanation
-of the invariant, like:
+It's inside tests/mkfs-tests/
 
-ftwbuf->level - 1 is the level of the parent of the current traversed
-inode. ftw will traverse all inodes in a directory before leaving it,
-and will never traverse an inode without first traversing its dir,
-so if we see a level less than or equal to the last directory we saw,
-we are finished with that directory and can pop it.
+A quick grep shows:
 
-Perhaps with an annotated drawing like:
+004-rootdir-keeps-size
+009-special-files-for-rootdir
+011-rootdir-create-file
+012-rootdir-no-shrink
+014-rootdir-inline-extent
+016-rootdir-bad-symbolic-link
+021-rfeatures-quota-rootdir
+022-rootdir-size
+027-rootdir-inode
 
-0: /
-1:         /foo/
-2:                 /foo/bar/
-3:                         /foo/bar/f
-2:                 /foo/baz/            POP! 2 > (2 - 1); done with /foo/bar/
-3:                         /foo/baz/g
-1:         /h                           POP! 2 > (1 - 1); done with /foo/baz/
 
-To help make it clearer. I honestly even think just changing to >= makes
-it clearer? Not sure about that.
+> Is it
+> in fstests? Knowing that all of the new code has at least run correctly
+> would go a long way to feeling confident in the details of the
+> transformation.
 
-> +	 */
-> +	while (current_path.level > ftwbuf->level - 1)
-> +		rootdir_path_pop(&current_path);
->  
-> -	ret = copy_rootdir_inode(trans, root, dir_name);
-> +	ret = btrfs_find_free_objectid(g_trans, root,
-> +				       BTRFS_FIRST_FREE_OBJECTID, &ino);
->  	if (ret < 0) {
->  		errno = -ret;
-> -		error("failed to copy rootdir inode: %m");
-> -		goto fail_no_dir;
-> +		error("failed to find free objectid for file %s: %m",
-> +			full_path);
-> +		return ret;
-> +	}
-> +	stat_to_inode_item(&inode_item, st);
-> +
-> +	ret = btrfs_insert_inode(g_trans, root, ino, &inode_item);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to insert inode item %llu for '%s': %m",
-> +			ino, full_path);
-> +		return ret;
->  	}
->  
-> -	do {
-> -		parent_dir_entry = list_entry(dir_head->list.next,
-> -					      struct directory_name_entry,
-> -					      list);
-> -		list_del(&parent_dir_entry->list);
-> +	parent = rootdir_path_last(&current_path);
-> +	ret = btrfs_add_link(g_trans, root, ino, parent->ino,
-> +			     full_path + ftwbuf->base,
-> +			     strlen(full_path) - ftwbuf->base,
-> +			     ftype_to_btrfs_type(st->st_mode),
-> +			     NULL, 1, 0);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to add link for inode %llu ('%s'): %m",
-> +			ino, full_path);
-> +		return ret;
-> +	}
-> +	/*
-> +	 * btrfs_add_link() has increased the nlink to 1 in the metadata.
-> +	 * Also update the value in case we need to update the inode item
-> +	 * later.
-> +	 */
-> +	btrfs_set_stack_inode_nlink(&inode_item, 1);
->  
-> -		parent_inum = parent_dir_entry->inum;
-> -		parent_dir_name = parent_dir_entry->dir_name;
-> -		if (chdir(parent_dir_entry->path)) {
-> -			error("chdir failed for %s: %m",
-> -				parent_dir_name);
-> -			ret = -1;
-> -			goto fail_no_files;
-> +	ret = add_xattr_item(g_trans, root, ino, full_path);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to add xattrs for inode %llu ('%s'): %m",
-> +			ino, full_path);
-> +		return ret;
-> +	}
-> +	if (S_ISDIR(st->st_mode)) {
-> +		ret = rootdir_path_push(&current_path, ino);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to allocate new entry for inode %llu ('%s'): %m",
-> +				ino, full_path);
-> +			return ret;
->  		}
-> -
-> -		count = scandir(parent_dir_entry->path, &files,
-> -				directory_select, NULL);
-> -		if (count == -1) {
-> -			error("scandir failed for %s: %m",
-> -				parent_dir_name);
-> -			ret = -1;
-> -			goto fail;
-> +	} else if (S_ISREG(st->st_mode)) {
-> +		ret = add_file_items(g_trans, root, &inode_item, ino, st, full_path);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to add file extents for inode %llu ('%s'): %m",
-> +				ino, full_path);
-> +			return ret;
->  		}
-> -
-> -		for (i = 0; i < count; i++) {
-> -			char tmp[PATH_MAX];
-> -
-> -			cur_file = files[i];
-> -
-> -			if (lstat(cur_file->d_name, &st) == -1) {
-> -				error("lstat failed for %s: %m",
-> -					cur_file->d_name);
-> -				ret = -1;
-> -				goto fail;
-> -			}
-> -			if (bconf.verbose >= LOG_INFO) {
-> -				path_cat_out(tmp, parent_dir_entry->path, cur_file->d_name);
-> -				pr_verbose(LOG_INFO, "ADD: %s\n", tmp);
-> -			}
-> -
-> -			/*
-> -			 * We can not directly use the source ino number,
-> -			 * as there is a chance that the ino is smaller than
-> -			 * BTRFS_FIRST_FREE_OBJECTID, which will screw up
-> -			 * backref code.
-> -			 */
-> -			cur_inum = st.st_ino + BTRFS_FIRST_FREE_OBJECTID;
-> -			ret = add_directory_items(trans, root,
-> -						  cur_inum, parent_inum,
-> -						  cur_file->d_name,
-> -						  &st, &dir_index_cnt);
-> -			if (ret) {
-> -				error("unable to add directory items for %s: %d",
-> -					cur_file->d_name, ret);
-> -				goto fail;
-> -			}
-> -
-> -			ret = add_inode_items(trans, root, &st,
-> -					      cur_file->d_name, cur_inum,
-> -					      &cur_inode);
-> -			if (ret == -EEXIST) {
-> -				if (st.st_nlink <= 1) {
-> -					error(
-> -			"item %s already exists but has wrong st_nlink %lu <= 1",
-> -						cur_file->d_name,
-> -						(unsigned long)st.st_nlink);
-> -					goto fail;
-> -				}
-> -				ret = 0;
-> -				continue;
-> -			}
-> -			if (ret) {
-> -				error("unable to add inode items for %s: %d",
-> -					cur_file->d_name, ret);
-> -				goto fail;
-> -			}
-> -
-> -			ret = add_xattr_item(trans, root,
-> -					     cur_inum, cur_file->d_name);
-> -			if (ret) {
-> -				error("unable to add xattr items for %s: %d",
-> -					cur_file->d_name, ret);
-> -				if (ret != -ENOTSUP)
-> -					goto fail;
-> -			}
-> -
-> -			if (S_ISDIR(st.st_mode)) {
-> -				dir_entry = malloc(sizeof(*dir_entry));
-> -				if (!dir_entry) {
-> -					ret = -ENOMEM;
-> -					goto fail;
-> -				}
-> -				dir_entry->dir_name = cur_file->d_name;
-> -				if (path_cat_out(tmp, parent_dir_entry->path,
-> -							cur_file->d_name)) {
-> -					error("invalid path: %s/%s",
-> -							parent_dir_entry->path,
-> -							cur_file->d_name);
-> -					ret = -EINVAL;
-> -					goto fail;
-> -				}
-> -				dir_entry->path = strdup(tmp);
-> -				if (!dir_entry->path) {
-> -					error_msg(ERROR_MSG_MEMORY, NULL);
-> -					ret = -ENOMEM;
-> -					goto fail;
-> -				}
-> -				dir_entry->inum = cur_inum;
-> -				list_add_tail(&dir_entry->list,
-> -					      &dir_head->list);
-> -			} else if (S_ISREG(st.st_mode)) {
-> -				ret = add_file_items(trans, root, &cur_inode,
-> -						     cur_inum, &st,
-> -						     cur_file->d_name);
-> -				if (ret) {
-> -					error("unable to add file items for %s: %d",
-> -						cur_file->d_name, ret);
-> -					goto fail;
-> -				}
-> -			} else if (S_ISLNK(st.st_mode)) {
-> -				ret = add_symbolic_link(trans, root,
-> -						cur_inum, cur_file->d_name);
-> -				if (ret) {
-> -					error("unable to add symlink for %s: %d",
-> -						cur_file->d_name, ret);
-> -					goto fail;
-> -				}
-> -			}
-> +		ret = update_inode_item(g_trans, root, &inode_item, ino);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to update inode item for inode %llu ('%s'): %m",
-> +				ino, full_path);
-> +			return ret;
->  		}
-> -
-> -		free_namelist(files, count);
-> -		free(parent_dir_entry->path);
-> -		free(parent_dir_entry);
-> -
-> -		index_cnt = 2;
-> -
-> -	} while (!list_empty(&dir_head->list));
-> -
-> -out:
-> -	return !!ret;
-> -fail:
-> -	free_namelist(files, count);
-> -fail_no_files:
-> -	free(parent_dir_entry);
-> -	goto out;
-> -fail_no_dir:
-> -	free(dir_entry);
-> -	goto out;
-> -}
-> +	} else if (S_ISLNK(st->st_mode)) {
-> +		ret = add_symbolic_link(g_trans, root, &inode_item, ino, full_path);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to insert link for inode %llu ('%s'): %m",
-> +				ino, full_path);
-> +			return ret;
-> +		}
-> +		ret = update_inode_item(g_trans, root, &inode_item, ino);
-> +		if (ret < 0) {
-> +			errno = -ret;
-> +			error("failed to update inode item for inode %llu ('%s'): %m",
-> +				ino, full_path);
-> +			return ret;
-> +		}
-> +	}
-> +	return 0;
-> +};
->  
->  int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)
->  {
->  	int ret;
->  	struct btrfs_trans_handle *trans;
->  	struct stat root_st;
-> -	struct directory_name_entry dir_head;
-> -	struct directory_name_entry *dir_entry = NULL;
->  
->  	ret = lstat(source_dir, &root_st);
->  	if (ret) {
-> @@ -695,17 +561,18 @@ int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)
->  		goto out;
->  	}
->  
-> -	INIT_LIST_HEAD(&dir_head.list);
-> -
->  	trans = btrfs_start_transaction(root, 1);
->  	if (IS_ERR(trans)) {
->  		ret = PTR_ERR(trans);
->  		errno = -ret;
->  		error_msg(ERROR_MSG_START_TRANS, "%m");
->  		goto fail;
-> -}
-> +	}
->  
-> -	ret = traverse_directory(trans, root, source_dir, &dir_head);
-> +	g_trans = trans;
-> +	INIT_LIST_HEAD(&current_path.inode_list);
-> +
-> +	ret = nftw(source_dir, ftw_add_inode, 32, FTW_PHYS);
->  	if (ret) {
->  		error("unable to traverse directory %s: %d", source_dir, ret);
->  		goto fail;
-> @@ -716,29 +583,12 @@ int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)
->  		error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
->  		goto out;
->  	}
-> +	while (current_path.level >= 0)
-> +		rootdir_path_pop(&current_path);
->  
->  	return 0;
->  fail:
-> -	/*
-> -	 * Since we don't have btrfs_abort_transaction() yet, uncommitted trans
-> -	 * will trigger a BUG_ON().
-> -	 *
-> -	 * However before mkfs is fully finished, the magic number is invalid,
-> -	 * so even we commit transaction here, the fs still can't be mounted.
-> -	 *
-> -	 * To do a graceful error out, here we commit transaction as a
-> -	 * workaround.
-> -	 * Since we have already hit some problem, the return value doesn't
-> -	 * matter now.
-> -	 */
-> -	btrfs_commit_transaction(trans, root);
-> -	while (!list_empty(&dir_head.list)) {
-> -		dir_entry = list_entry(dir_head.list.next,
-> -				       struct directory_name_entry, list);
-> -		list_del(&dir_entry->list);
-> -		free(dir_entry->path);
-> -		free(dir_entry);
-> -	}
-> +	btrfs_abort_transaction(trans, ret);
->  out:
->  	return ret;
->  }
-> diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
-> index 8d5f6896c3d9..4233431a9a42 100644
-> --- a/mkfs/rootdir.h
-> +++ b/mkfs/rootdir.h
-> @@ -24,18 +24,10 @@
->  #include "kerncompat.h"
->  #include <sys/types.h>
->  #include <stdbool.h>
-> -#include "kernel-lib/list.h"
->  
->  struct btrfs_fs_info;
->  struct btrfs_root;
->  
-> -struct directory_name_entry {
-> -	const char *dir_name;
-> -	char *path;
-> -	ino_t inum;
-> -	struct list_head list;
-> -};
-> -
->  int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root);
->  u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_dev_size,
->  			u64 meta_profile, u64 data_profile);
-> -- 
-> 2.45.2
-> 
+We have btrfs-progs github CI, runs the all the selftests on each PR.
+And it's all green (except a typo caught by code spell).
+
+[...]
+>> -	parent_inum =3D highest_inum + BTRFS_FIRST_FREE_OBJECTID;
+>> -	dir_entry->inum =3D parent_inum;
+>> -	list_add_tail(&dir_entry->list, &dir_head->list);
+>> +	/*
+>> +	 * If our path level is higher than this level - 1, this means
+>> +	 * we have changed directory.
+>> +	 * Poping out the unrelated inodes.
+>
+> Popping
+
+Exposed by the CI, and fixed immediately in github.
+
+>
+> Also, this took me like 15 minutes of working examples to figure out why
+> it worked. I think it could definitely do with some deeper explanation
+> of the invariant, like:
+>
+> ftwbuf->level - 1 is the level of the parent of the current traversed
+> inode. ftw will traverse all inodes in a directory before leaving it,
+> and will never traverse an inode without first traversing its dir,
+> so if we see a level less than or equal to the last directory we saw,
+> we are finished with that directory and can pop it.
+>
+> Perhaps with an annotated drawing like:
+>
+> 0: /
+> 1:         /foo/
+> 2:                 /foo/bar/
+> 3:                         /foo/bar/f
+> 2:                 /foo/baz/            POP! 2 > (2 - 1); done with /foo=
+/bar/
+> 3:                         /foo/baz/g
+> 1:         /h                           POP! 2 > (1 - 1); done with /foo=
+/baz/
+>
+> To help make it clearer. I honestly even think just changing to >=3D mak=
+es
+> it clearer? Not sure about that.
+
+I'll add comments with an example to explain the workflow.
+
+BTW, David and I are working with Github review system a lot recently:
+https://github.com/kdave/btrfs-progs/pull/855
+
+We do not force anyone to use specific system to do anything, but you
+may find it a little easier to comment, and feel free to fall back to
+the mail based review workflow at any time.
+
+Thanks a lot for the detailed review!
+Qu
 
