@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6936-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6937-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D7F594395F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:27:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 610A9943964
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 01:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 658641C216AE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:27:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C9C1281CF8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2024 23:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5211F16DC24;
-	Wed, 31 Jul 2024 23:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4412816DC11;
+	Wed, 31 Jul 2024 23:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TAeWVsbT"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="biNblVls"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB6816C695;
-	Wed, 31 Jul 2024 23:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FEE616C695;
+	Wed, 31 Jul 2024 23:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722468448; cv=none; b=QcuF9DSrX82cTUZdMF4FLjznSj+cQRigDO2uh7EqN7y/dCdKJtR0/qMPaDnU6RUGvS99QkKIuN5pv2v9B3Xw+xWlPIMScd2g6igKO6po5TiqXvuM9H9XRnjikix/WkSDEHC23hRkvUBP6QZG+mNgxZdh8yBcJdMf2Ms3tuagFs4=
+	t=1722468580; cv=none; b=sOjuZbZtbMsh4qnsYay7SaAlauavmK+wVNvR3OWvQN3C/TFMSG5MZrkHq09hwoasxstxLMsHXVra0uI/e02aAmMlJYkNMPRY6fi78m42kpP1IucshfH5TOxT8qz0BPLHYyXx9HE27qRT09TP/UJ6Fa5aVeoaG0iaoMb6YRxb3zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722468448; c=relaxed/simple;
-	bh=dlaVeLbUlqg7Tje9ufn0i1OIj3UV68RF69ko3PSVK5M=;
+	s=arc-20240116; t=1722468580; c=relaxed/simple;
+	bh=dDH4GBhsOsYyygZaBz4Dgi14TpZytnE7QFjmZhXLvG4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KT2hiS4I0C7VQehhAVkG/f3TXT4hz9pIMk+xnG7HbU5uiB/1rDLUzMG6BpgklJBSjwPKnK1hCdOA88m8fQ5yZSfEVF64twoToDN7kL/xYFLn5NnjWxQr/9PB8uhC4V0dQF9GR45qxo6S5SxnI+i4rALqUcddbeXYWIw9MB/bbbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TAeWVsbT; arc=none smtp.client-ip=212.227.15.19
+	 In-Reply-To:Content-Type; b=qDqge4IkWGIHQPRx4MFlqA6dTKUcjnMoyt+43jTPfkKXs9mi4g4fYf4gftfOwkEhO9LI2RMZxqVWZF3H5HT7JNVCqFYMKBU1+eemtfU8kKbPdM1CgrIjeH9gllfvBWScocbdSJZ43mJL05QZUnSVzMhsM61qP5X74bY20mz1lpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=biNblVls; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722468437; x=1723073237; i=quwenruo.btrfs@gmx.com;
-	bh=oH/itCIzGCwz4Urq+gqsWwPOrSFzThax/NGE3vh8rJw=;
+	s=s31663417; t=1722468568; x=1723073368; i=quwenruo.btrfs@gmx.com;
+	bh=aZqcxE32r/81KW/vg/EhD2T5X4WtQ9uqiXFvGLjLsQE=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=TAeWVsbTz+gw5+BE8MBZhdvMxKX/nZtlpH/VugwIna7tseSNLcFA0ho4BAfweR+3
-	 AiBEv9ieEnBYbytajVzlsE8R32QQZI57a2QBML/1pFR2pwB2yPWuWqlK8om0kiT1L
-	 tLdKcSPqXaIfzX8KmbiuPauGYOzQkdAcSSjrySGTkn+DvMVc/4a7+A5Xl6bt33ekG
-	 rwEDmENv/DYWSGCBxHG7jH7C/hu0WhQpSM/XBvznhZCcbGARzZAIhWJosQmqYxWeQ
-	 Sw/U988tXFbY2o0wn9j6gSdfCoLmd/NR+bVO4LsaHXDeWSTVfpAq7TIqTMWw+a5bU
-	 nLzYa7pkdGjJsYnrHw==
+	b=biNblVlsl7Pk/N434EEaFa06mqo15Vcht8TLJzzUGBH/AxG+V227w1rfiBgRRzxd
+	 W9+RiPdKfU1XKUq10Cz1z8ku9NTNaPzaKjoKaGYTh5B7E+s2qwKYHJB610rf8Vk+/
+	 jUpEGo5Eeqct3oRH879FqYSEorU/UzzrwHp80sY0AKwNnFxmE9My8McozS1EM3yz/
+	 KGlqdDL80O6/D95BaNGFl7RHoSJAsSVluX6OrpiGB6JRnRwrD+RdZO6BkIIg4kl4C
+	 TB3lWc/rHeiLcQd1jewqd2gh0g0LjDFNX+BFit9iPYRUchEAcvopH2xRIAaTx7ay4
+	 4YTi6A/5jI6WqKJimw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MulqD-1sHDyY0vOF-012vn5; Thu, 01
- Aug 2024 01:27:17 +0200
-Message-ID: <37a5f045-b6c1-4d82-83ad-2839c3f5daf7@gmx.com>
-Date: Thu, 1 Aug 2024 08:57:14 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6lpM-1sc4Aw0s9O-000LTN; Thu, 01
+ Aug 2024 01:29:28 +0200
+Message-ID: <4bcf1b73-e59f-41fb-9d47-9454db59363c@gmx.com>
+Date: Thu, 1 Aug 2024 08:59:25 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/287: wait for subvolume deletion to complete
+Subject: Re: [PATCH] generic/019: redirect fsstress output to log file instead
 To: fdmanana@kernel.org, fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <40c169580bd42e96faf11c7ce8805399dd0a180c.1722429630.git.fdmanana@suse.com>
+References: <0fdc35fdbc53f739fce1cb46ede8af97829aea11.1722441479.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,76 +88,42 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <40c169580bd42e96faf11c7ce8805399dd0a180c.1722429630.git.fdmanana@suse.com>
+In-Reply-To: <0fdc35fdbc53f739fce1cb46ede8af97829aea11.1722441479.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BL+FNqC0lev/PvYJwLr/F9dsiFbwIOFCyH0x8+twH1oKC5+kB46
- +20V5Wg25ZJob6XmTQYPwq/EBl9gZfIa+kqEcyOnaJC8z1Ba3jKsMiEErUddNnukGC2ovdW
- FjzcC+AFcbg/flIn7yMspw794EAkzXdXlm925CW2gUwNn3mCxZfXFJOQSUA+bWc4SLfxoUT
- 2UpvXfIxYZm9gX1yri+7g==
+X-Provags-ID: V03:K1:+5Gq4X5uCTk9ig89Wbxho6IyN/4PrLFw+g3jk8diUoo1hxTaSJG
+ gVqkMNGXdVOk4h/zFK6wgYXTs+GNIOpB32o9ia5vFZ3cECA44K4iS1vhqV5bhPy5oP407aS
+ +exl8VT8kd8JcjRaAGc1dcMwwZtSrNEty+vc0rdWkluOuG4gGHoMi40HwAOsRFJO9tn4s4E
+ C0hsPGBtpIPbL5nJ2VhSA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dqr8809sf80=;kt1YQ44NL1GMIGhoc/avoSz01Or
- WctdLdBcMQ7TKF7tZuD21VXWEo+BqmwXZmF4UO/5Ovhzu6DmgxvCcECdyXWWsVfR7dBROp6Ow
- t17OWqz5f2vjS/z+6RfcjYggagMXcr6i1e3CcrtZ7j0lld8vbxXyrwotYfeBY91I2ruv2oCpq
- 3AbVgciEDliNr6FvjM69gHQv9g6ACzpUx7v5BlOboZdbX315CyCMPCHILP7RANU3LEIj63BkL
- fz4E95ldRp9P/Pa7NntNWUGMNDTHMljCsGFMxX7Ci+1i2iHmwhI6KxNTZqcThnU9nWyUUOVrC
- IlqnoL6kCUm59KCMRSnMeO4tzwQif928jdPlgsSRVJVR6kS8gBJ7nqz38l4cczKQAsKZKURrV
- E4RQSJStW+OgsRNiCQOKqYZWCY3G9TAcOHMyb1wRPk1ySwSdx2zi6jvhlvWJdxEb9wfKp/nFp
- qEhob/jQUbCcxn+mb24SEgtwKEWgepQRprCSsDTCuJwMxviwHatUgwJWXqni4j0v9T/3vFa7L
- FLd1jwCPgcyH56zLGwlxKKfacPGbcmoyMNGPMUAKQlPv7WaXkLo9YE5P6thRwMoSZx1OFH7k6
- OtRTNLSWEbeY8jheNb3TFOw2CTct84eYumZlhWkr/1Jxv0ybQQ5r22xXnpBomFLoP7W2ayc4L
- OQj9bRGqW8Fb1hPl4k5FzorJC6aSQXBTQz3/YabBBTIGOIpk4dQoZ3NCHkfZ2gWcfnPZMSpXc
- fFXnXgjSjmpoXvtIuxBu4+ol8MY/trSEQQEC9AOdBBTf6oPZqE0jDnz01v0dOT/e576BCPntz
- Z02ZLxEJtWtTAskx+irZswFQ==
+UI-OutboundReport: notjunk:1;M01:P0:OHKdkwERAGI=;/NY4188oha0kgcbvSd3rzHKUoP0
+ 3ymb51vsg2yuKk5kx26k/hi70mkOHPbPynlcXc+zkVCpLp30GAFM6Pj/55VEQB91ofe1yvYkx
+ cVhwG2ZE1qQfC76t5ZlXOT8Olr/VsaSG0G52F7uHypl8p6//fXJmmIkIFLD+H361QqhHOxpBz
+ Oc4o6bWmpOZ8u8mckfCROVClNCKTmIWM54AnzyRcBP6UJGB4z+htkQk9zkFdleaTQrDR/HVEB
+ 1hd8nIxoigj0GkJEZXBRdkUL7soN9U0/wJqGwfxunyp6Os4Y8PR9Sb4Dr8Fm2xs7tsXqIda2B
+ aHuVIypC7zaXGEmaMHv3s+5xU6G9+IjXKoWJu9D3diLvyEFP9XJ/RZXfe1ZhKXFp/mUnGs7Sp
+ d0nfYOe3mVic/n8j5W7+pWIOPt2NoPqT7At5r8Yplz79y7eUhJgNIz2RKU2yu1qVR1IkZDWUk
+ N+Q+U3PCqkbw3M0lyAEc3wOPtFx7yH5z0RG8t4jdgHlAvUi+/uwdMlrbDTCGfaWFQC851YXbA
+ nPY/JtCUvlWUlEAahQ2rs+IEkfzOGABl7py8fH/lL0VajbQo/0CU2Uy/kOxIMGEjK+IFBLgro
+ 59hgAdyvkLRQsQP+jxaLJLthf6SsZQiMX2nnNyok5LM01J71XD+qImsmJMoor/fjnEb4Lwpp4
+ 2T5vEdVligYE0srgeUcgd29PHDwznpOol81hrvkq9/Q2OnijhiB/Sdfgo05Rg/f2ARv19uXlP
+ uQuyfyPw81aUHI1JIieIeeN4Q1SEvdtYvEsf1YYQDbIl/ToqgvM/O+SuOrvBNjZ3CiBE0Ub2A
+ hLEE9co/i+4Za3MwHubPesDwrARu3SvbdTx51tj38Tknc=
 
 
 
-=E5=9C=A8 2024/7/31 22:11, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/8/1 01:29, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> The test deletes the subvolume and then immediately calls the logical
-> resolve ioctl to confirm the extent is not referenced by the subvolume
-> anymore. This however may often fail because the subvolume delete only
-> makes the subvolume not accessible to user space anymore, but the actual
-> deletion of the subvolume tree, and all its data references, happens in
-> the background in the cleaner kthread running in kernel space.
+> Currently we are redirecting stdout and stderr of fsstress to /dev/null.
+> In case we have a test failure, it's useful to know the seed that
+> fsstress was using because it might be helpful to run it again with that
+> same seed in the hope of being able to reproduce the failure.
 >
-> So if by the time we do the query the cleaner kthread has not yet delete=
-d
-> the subvolume tree, the test fails like this:
+> So redirect stdout/stderr to the log file $seqres.full instead, so
+> that we'll see a line like this after running the test:
 >
->    $ ./check btrfs/287
->    FSTYP         -- btrfs
->    PLATFORM      -- Linux/x86_64 debian0 5.14.0-btrfs-next-22 #1 SMP Tue=
- Jul 30 16:31:55 WEST 2024
->    MKFS_OPTIONS  -- /dev/sdc
->    MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
->
->    btrfs/287 0s ... - output mismatch (see /home/fdmanana/git/hub/xfstes=
-ts/results//btrfs/287.out.bad)
->        --- tests/btrfs/287.out	2024-07-30 17:40:49.037599612 +0100
->        +++ /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad	20=
-24-07-31 13:06:28.275728352 +0100
->        @@ -82,12 +82,18 @@
->         inode 257 offset 20971520 snap2
->         inode 257 offset 12582912 snap2
->         inode 257 offset 4194304 snap2
->        +inode 257 offset 20971520 snap1
->        +inode 257 offset 12582912 snap1
->        +inode 257 offset 4194304 snap1
->         inode 257 offset 20971520 root 5
->        ...
->        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/287.out=
- /home/fdmanana/git/hub/xfstests/results//btrfs/287.out.bad'  to see the e=
-ntire diff)
->
->    HINT: You _MAY_ be missing kernel fix:
->          0cad8f14d70c btrfs: fix backref walking not returning all inode=
- refs
->
-> Fix this by using the "subvolume sync" command to wait for the subvolume
-> to be deleted by the cleaner kthread before doing logical resolve querie=
-s.
+>      seed =3D 1722389488
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
@@ -167,56 +133,20 @@ Thanks,
 Qu
 
 > ---
->   tests/btrfs/287 | 21 +++++++++++++++++++++
->   1 file changed, 21 insertions(+)
+>   tests/generic/019 | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/tests/btrfs/287 b/tests/btrfs/287
-> index d6c04ea8..e88f4e0a 100755
-> --- a/tests/btrfs/287
-> +++ b/tests/btrfs/287
-> @@ -147,6 +147,27 @@ query_logical_ino -o $second_extent_bytenr | filter=
-_snapshot_ids
->   # Now delete the first snapshot and repeat the last 2 queries.
->   $BTRFS_UTIL_PROG subvolume delete -C $SCRATCH_MNT/snap1 | _filter_btrf=
-s_subvol_delete
->
-> +# Remount with a commit interval of 1s so that we wake up the cleaner k=
-thread
-> +# (which does the actual subvolume tree deletion) and the transaction u=
-sed by
-> +# the cleaner kthread to delete the tree gets committed sooner and we w=
-ait less
-> +# in the subvolume sync command below.
-> +_scratch_remount commit=3D1
-> +
-> +# The subvolume delete only made the subvolume not accessible anymore, =
-but its
-> +# tree and references to data extents are only deleted when the cleaner=
- kthread
-> +# runs, so wait for the cleaner to finish. It isn't enough to pass -C/-=
-c (commit
-> +# transaction) because the cleaner may run only after the transaction c=
-ommit.
-> +# Most of the time we don't need this because the transaction kthread w=
-akes up
-> +# the cleaner kthread, which deletes the subvolume before we query the =
-extents
-> +# below, as this is a very small filesystem and therefore very fast.
-> +# Nevertheless it's racy and on slower machines it may fail often as we=
-ll as on
-> +# kernels without the reworked async transaction commit (kernel commit
-> +# fdfbf020664b ("btrfs: rework async transaction committing"), which la=
-nded in
-> +# kernel 5.17) which changes timing and substantially increases the cha=
-nces that
-> +# the cleaner already ran and deleted the subvolume tree by the time we=
- do the
-> +# queries below.
-> +$BTRFS_UTIL_PROG subvolume sync $SCRATCH_MNT >> $seqres.full
-> +
->   # Query the second extent with an offset of 0, should return file offs=
-ets 12M
->   # and 20M for the default subvolume (root 5) and file offsets 4M, 12M =
-and 20M
->   # for the second snapshot root.
+> diff --git a/tests/generic/019 b/tests/generic/019
+> index 26108be4..fe117ac8 100755
+> --- a/tests/generic/019
+> +++ b/tests/generic/019
+> @@ -90,7 +90,7 @@ _workout()
+>   	echo "Start fsstress.."
+>   	echo ""
+>   	echo "fsstress $args" >> $seqres.full
+> -	$FSSTRESS_PROG $args > /dev/null 2>&1 &
+> +	$FSSTRESS_PROG $args >> $seqres.full 2>&1 &
+>   	fs_pid=3D$!
+>   	echo "Start fio.."
+>   	cat $fio_config >>  $seqres.full
 
