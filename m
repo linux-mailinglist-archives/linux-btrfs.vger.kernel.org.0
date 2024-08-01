@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-6944-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6945-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01CB944409
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 08:19:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 976C694440A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 08:19:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FA06B25B8A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 06:19:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 515E5283D8D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 06:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53C01158528;
-	Thu,  1 Aug 2024 06:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3829C1922C5;
+	Thu,  1 Aug 2024 06:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="R6VeuOMO";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C8r5zmEO"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZV2erX/b";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZV2erX/b"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AE41917F0
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934661917D9
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722492792; cv=none; b=ZBepOZ7tlWTs1DKB/87aSJFPsVpK4PfOrHRNfWmjqUOn4/bwI17MsA3xPEqZRuTQ7xpP+2Zb5z0BCMcwY953RySO36Hs5YI3f1yZwy0Y1ZfoXXOEYfij+gLDhaHd/iVExRcnWklONDXpWYy2C71gHnBJSiJggMZH45SqbCg85n8=
+	t=1722492793; cv=none; b=sqpj6oa7X2QPDYYgsMS7KMNtZ/SCkIHFPaUOKHcnIU0t/oYRH6vFMPKLrCUwiWe7HMfSKjs3zPAYtGAVkl1UzzRapI6zRYsh4beV9gGIniSpkZ5z+HdqGS90hB4PRZ2PxWNS9YiXTgW9MTiluJuLh1gcCDjpY5IBPkhiKX1LE1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722492792; c=relaxed/simple;
-	bh=jCkyxY+3zt9fqhMIZJKzuJ8Y30x6j443ZKqQiS5zRkM=;
+	s=arc-20240116; t=1722492793; c=relaxed/simple;
+	bh=4jSHLXbckMyFdpvLLPLsmFSwKAiBgQAVBqNH4vDH0c4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E3D0jmUSgbkGjduw2z7+XwR+kFDFnF9H0Q3Nq4cfCZTOmtGFp0oaIh3r18ABJKDAC0nBrZ2n8ryK+3XpEE9YGtAcnTw3oOJl3EAuVYnfAUl+PPg0m3sCGY2Gq1S/0ItX1K3DWUFHcPoxrw9AOIgP422Mi5YQ+UU4OKtoQEBXo60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=R6VeuOMO; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C8r5zmEO; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=spUSbie+IP4SwIoNqfil/hQxMa4wBY2nbsqR+LtUdYB5b0M21UJOQswl28ThZJuXc5L7OKtw9l1WNN4AWKAubHB3R02VbJBHOIEY627Fb7dEVNY+jcx8x4cuXHHJe/swDBbPJW6HH9D+wzpdy+MVRbbaIoZva9rUnaWBpVn1iJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZV2erX/b; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZV2erX/b; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A48E01F8CD
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:08 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CAB961F8D7
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
 	t=1722492789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Eah/21p0rbBYFdSOT0GLsxkLQs0cs+cd65xHoE/CQ4Q=;
-	b=R6VeuOMOcFQjxwMB0amQ9XDUB1XdomIpxILcp5uQQ1g4UkPomwYFfNbCvhtzGFAgEj0gyh
-	tEq25ZNFcL8fGU5SxnwiVkg3EMnizduQDsNXVfpc8T7wf7sb0zdM99oueJal1ndkaD36Fy
-	nNeb+hOHuU7sOxoXZ8KWi8P73XFRZ2U=
+	bh=WgK3nzBBDnlwTlLnCZiVF3fI0OeeUCvgsghSamUsFIQ=;
+	b=ZV2erX/bnY84x0ALZ6jbiI7u7IcecFN/N9flCoXgvEsNJZmmK8Cy5Qeu6eNFt01kXMmh5Z
+	s7AkVms52iMFImI+LQRUdJgr7dDDLzVjZ1r5cp/xi/q6jNFUlK8/GoosWzNpHpN0m+AoZi
+	gkyv+jAhtJ+Rp+ovNSogcqXBFUvZhKA=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=C8r5zmEO
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1722492788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1722492789; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Eah/21p0rbBYFdSOT0GLsxkLQs0cs+cd65xHoE/CQ4Q=;
-	b=C8r5zmEObKTZdTLJx8ScrdZAjPzLIGrJW6TbFhpjWukMfN6ySmofi0vfvhN1J1SIuuuEI5
-	bf17Q3LvXU4wCtv+AyEfp3dHulXGEBdYKNcN/zjjkd50WPqD6G5uwIr6MIzxfCq1Vv/kyA
-	ZzCgbvLIC9AULhkaUNEW0Jh6PQj9NOI=
+	bh=WgK3nzBBDnlwTlLnCZiVF3fI0OeeUCvgsghSamUsFIQ=;
+	b=ZV2erX/bnY84x0ALZ6jbiI7u7IcecFN/N9flCoXgvEsNJZmmK8Cy5Qeu6eNFt01kXMmh5Z
+	s7AkVms52iMFImI+LQRUdJgr7dDDLzVjZ1r5cp/xi/q6jNFUlK8/GoosWzNpHpN0m+AoZi
+	gkyv+jAhtJ+Rp+ovNSogcqXBFUvZhKA=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C807B13946
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:07 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 32A1913946
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:08 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qAdJIHMnq2ZkaQAAD6G6ig
+	id oJtpN3Qnq2ZkaQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 01 Aug 2024 06:13:07 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 01 Aug 2024 06:13:08 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/5] btrfs-progs: rootdir: warn about hard links
-Date: Thu,  1 Aug 2024 15:42:38 +0930
-Message-ID: <f12f7dfb97b7cfbe5e6cfc7e929d674e1444cfec.1722492491.git.wqu@suse.com>
+Subject: [PATCH v2 4/5] btrfs-progs: mkfs-tests: a new test case to verify handling of hard links
+Date: Thu,  1 Aug 2024 15:42:39 +0930
+Message-ID: <cfa3a9d4f18f11641a87f617feb073e54f03d79e.1722492491.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1722492491.git.wqu@suse.com>
 References: <cover.1722492491.git.wqu@suse.com>
@@ -84,97 +84,79 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A48E01F8CD
-X-Spam-Score: -2.81
 X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+X-Spamd-Result: default: False [0.40 / 50.00];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim]
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: 0.40
 
-The recent rework changes how we detect hard links.
+The test case will create the following directory layout:
 
-[OLD BEHAVIOR]
-We trusted st_nlink and st_ino, reuse them without extra sanity
-checks.
+.
+|- rootdir/
+|  |- inside_link
+|- outside_link
 
-That behavior has problems handling cross mount-point or hard links out
-of the rootdir cases.
+Both inside_link and outside_link are hard links of each other.
+And use rootdir/ as the rootdir for mkfs.
 
-[NEW BEHAVIOR]
-The new refactored code will treat every inode, no matter if it's a
-hardlink, as a new inode.
+This is to ensure the nlink of inside_link is correctly set to 1.
 
-This means we will break the hard link detection, and every hard link
-will be created as a different inode.
-
-For the most common use case, like populating a rootfs, it's toally
-fine.
-
-[EXTRA WARNING]
-But for cases where the user have extra hard links inside the rootdir,
-output a warning just to inform the end user.
-
-This will not cause any content difference, just breaking the hard links
-into new inodes.
+Inspired by the recent rework which fixes the handling of hard links.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mkfs/rootdir.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ .../034-rootdir-extra-hard-links/test.sh      | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100755 tests/mkfs-tests/034-rootdir-extra-hard-links/test.sh
 
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index 3db32982550b..05787dc3f46c 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -419,6 +419,21 @@ static int ftw_add_inode(const char *full_path, const struct stat *st,
- 	u64 ino;
- 	int ret;
- 
-+	/*
-+	 * Hard link need extra detection code, not supported for now, but
-+	 * it's not to break anything but splitting the hard links into
-+	 * new inodes.
-+	 * And we do not even know if the hard links are inside the rootdir.
-+	 *
-+	 * So here we only need to do extra warning.
-+	 *
-+	 * On most filesystems st_nlink of a directory is the number of
-+	 * subdirs, including "." and "..", so skip directory inodes.
-+	 */
-+	if (unlikely(!S_ISDIR(st->st_mode) && st->st_nlink > 1))
-+		warning("'%s' has extra hard links, they will be converted into new inodes.",
-+			full_path);
+diff --git a/tests/mkfs-tests/034-rootdir-extra-hard-links/test.sh b/tests/mkfs-tests/034-rootdir-extra-hard-links/test.sh
+new file mode 100755
+index 000000000000..e5c00cb861e9
+--- /dev/null
++++ b/tests/mkfs-tests/034-rootdir-extra-hard-links/test.sh
+@@ -0,0 +1,24 @@
++#!/bin/bash
++#
++# Test if "mkfs.btrfs --rootdir" would handle hard links where one
++# is inside the rootdir, the other out of the rootdir.
 +
- 	/* The rootdir itself. */
- 	if (unlikely(ftwbuf->level == 0)) {
- 		u64 root_ino = btrfs_root_dirid(&root->root_item);
++source "$TEST_TOP/common" || exit
++
++prepare_test_dev
++
++tmpdir=$(_mktemp_dir mkfs-rootdir-hardlinks)
++
++mkdir "$tmpdir/rootdir"
++touch "$tmpdir/rootdir/inside_link"
++ln "$tmpdir/rootdir/inside_link" "$tmpdir/outside_link"
++
++run_check "$TOP/mkfs.btrfs" --rootdir "$tmpdir/rootdir" -f "$TEST_DEV"
++
++# For older mkfs.btrfs --rootdir we will create inside_link with 2 links,
++# but since the other one is out of the rootdir, there should only be one
++# 1 link, leading to btrfs check fail.
++#
++# The new behavior will split all hard links into different inodes, thus
++# have correct nlink for each new inode.
++run_check "$TOP/btrfs" check "$TEST_DEV"
 -- 
 2.45.2
 
