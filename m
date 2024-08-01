@@ -1,82 +1,68 @@
-Return-Path: <linux-btrfs+bounces-6946-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6947-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 463E494440C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 08:19:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 558169445CF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 09:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7721E1C21EAF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 06:19:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BC6D1F24414
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 07:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F80116C695;
-	Thu,  1 Aug 2024 06:13:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1AB0156F54;
+	Thu,  1 Aug 2024 07:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="R+ZNOxlT";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="R+ZNOxlT"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="YodZEASz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D870F1917FE
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196711EB4A2
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 07:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722492794; cv=none; b=B0y8JLE1VNys+ePshvU5vcWuOqkMH14kcM9wOPiwAg4Ywba+mO2g1CdfxhCy9XwCkNKiDk1i0FBPhq5a8QqlD6/BN/nnFQZJiI+bBBrmgsFtTj0+xgBUd1Tu0zeeDVXutEsVsn69Hp29kglHjjro4nZTADM4IkT0gMk8VESt7SU=
+	t=1722498484; cv=none; b=tcWzmT95GdSLRsj7FxJwK1MK6iyLymQ578WMsVhluqKddwTKQvxSpYBSvvo/B1G2t6DmMBNUIrMwwlCmUlm8fpxmMf3WbB5obXtdbMsYRsl4tJ6kcNJpo0PFsu4e2oRE+yOb1F81NUpPLPm43+73GMouE4rpkbRUXzOH6wE9bd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722492794; c=relaxed/simple;
-	bh=udE85QEdI72r7XQlktjzYAfiHHBlPAWtwlvWt91GnLU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=inCMsjgYCyad6+H3YtVGyE38yK+qotfqKI1KF6mW291lpaTFvCL5FH4RCmkNjug9+FVlqFPHRiCOuVjM+HPqZXe0ondQuTAY4UebCvQPyN3cGAwrXkQGKE9Msof6/6WI0Ft6yYr0a9fXaB8mh4/fEKrvcp13c+OHK5p5uaDMwB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=R+ZNOxlT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=R+ZNOxlT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 354D321A9F
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1722492791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YAnH2ob4npwMJrCgjkWyIatYCtHDMsplTrdFQVW1qPc=;
-	b=R+ZNOxlTdbWnbfihTXv/1drgExG8NQ6A33XyzD7EVRFjIB8gv+WQTk82ZtrMg36b+Re0TF
-	xwI5arm6zd46HoRzchunBYDRhUcEB3xE0d0V2bKtnGT8/LpguNnIPgL3ONY90fz8LaAtwR
-	0sxRugM/ye1qHlYFd2uSASuc8WgHBZg=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1722492791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YAnH2ob4npwMJrCgjkWyIatYCtHDMsplTrdFQVW1qPc=;
-	b=R+ZNOxlTdbWnbfihTXv/1drgExG8NQ6A33XyzD7EVRFjIB8gv+WQTk82ZtrMg36b+Re0TF
-	xwI5arm6zd46HoRzchunBYDRhUcEB3xE0d0V2bKtnGT8/LpguNnIPgL3ONY90fz8LaAtwR
-	0sxRugM/ye1qHlYFd2uSASuc8WgHBZg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EE3613946
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SNmzAnYnq2ZkaQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 01 Aug 2024 06:13:10 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1722498484; c=relaxed/simple;
+	bh=S17FxprZzhF8N0kTbH9KjGn+kmdwtKgM122AJzBVjEw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GoYBwInYhR6QKExeXEODSJ1Upo5/Okpi1PTmK0OzXV1/+tS4Fu8p6EkqNR7FCw6OhoII+wsKChM9AW+Q8jyGM2hOJknHtPgNEd+0ELnUXZPpQi8GvS2jIAoDEVxpL73owLUE8zcvXyw+HAjJufUME34tOg2A9kL2vywxhwTkcdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=YodZEASz; arc=none smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1722498482; x=1754034482;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=S17FxprZzhF8N0kTbH9KjGn+kmdwtKgM122AJzBVjEw=;
+  b=YodZEASziLK2mh5S2+YB2tS91eYAMWLOzUHdmSlIeqqIR66TZpGmBifx
+   f0NvYQE09RUgp2fqf3U8ePUgwbgllJITPCjBtSjl3l0dZJKAE28nXJlmI
+   s1M75FJ4fuHG0Aixt7s4Hk+FgoyD4JV+nGgjmjLsXRb1K3VSmA6DXcSU6
+   Y/p+lYbtx1X35UUFrsoHvpV9Y18nvzuxh3fMIKCen0Jrn5TAp4xcXDfbx
+   58vqZ9U61DNuAN7vxsDxvKn+pvNfsOVwaExwyWZpFza1vhswOqse6DyfJ
+   0Y9mWSfffhckQKLK4aWbaJncfaeFibltMr6wR5jcVClo/jpmHElfF3dMF
+   Q==;
+X-CSE-ConnectionGUID: vcEoBF/RR+6pzP7Rd/39DQ==
+X-CSE-MsgGUID: J6GpT043TNSfunslD/26KQ==
+X-IronPort-AV: E=Sophos;i="6.09,253,1716220800"; 
+   d="scan'208";a="24229860"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Aug 2024 15:48:00 +0800
+IronPort-SDR: 66ab2fbd_iauQvzhFkoCgFF819oYsUVgqVvRdwYZqe7IEhxGPdJegyaR
+ gkxdHCv/pCdsyIsjj2Tx02nsnQNHi/ARsUtuiCw==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 31 Jul 2024 23:48:29 -0700
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.114])
+  by uls-op-cesaip02.wdc.com with ESMTP; 01 Aug 2024 00:48:00 -0700
+From: Naohiro Aota <naohiro.aota@wdc.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 5/5] btrfs-progs: mkfs-tests: verify cross mount point behavior for rootdir
-Date: Thu,  1 Aug 2024 15:42:40 +0930
-Message-ID: <c8a14aa2b640d79fd60a14883a4f4c705292c1e6.1722492491.git.wqu@suse.com>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v2] btrfs: zoned: properly take lock to read/update BG's zoned variables
+Date: Thu,  1 Aug 2024 16:47:52 +0900
+Message-ID: <a3bc8f26a7c7ffff883c319464cf9b07edb10548.1722480197.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <cover.1722492491.git.wqu@suse.com>
-References: <cover.1722492491.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,104 +70,82 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.40 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: 0.40
 
-The new test case creates a special layout like this:
+__btrfs_add_free_space_zoned() references and modifies BG's alloc_offset,
+ro, and zone_unusable, but without taking the lock. It is mostly safe
+because they monotonically increase (at least for now) and this function is
+mostly called by a transaction commit, which is serialized by itself.
 
-rootdir/	(fs1 ino=256)
-|- dir1/	(fs1 ino=257)
-|  |- dir1/	(fs2 ino=257)
-|  |- dir2/	(fs2 ino=258)
-|  |- file1	(fs2 ino=259)
-|  |- file2	(fs2 ino=260)
-|- dir2/	(fs1 ino=258)
-|- file1	(fs1 ino=259)
-|- file2	(fs2 ino=259)
+Still, taking the lock is a safer and correct option and I'm going to add a
+change to reset zone_unusable while a block group is still alive. So, add
+locking around the operations.
 
-This layout intentionally creates inode number conflicts, which will
-make the old "mkfs.btrfs --rootdir" to fail.
-But newer reworked one will successfully handle them, just leave a test
-case to avoid to hit the old bugs.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Fixes: 169e0da91a21 ("btrfs: zoned: track unusable bytes for zones")
+CC: stable@vger.kernel.org # 5.15+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- .../035-rootdir-cross-mount/test.sh           | 46 +++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100755 tests/mkfs-tests/035-rootdir-cross-mount/test.sh
+v2:
+  - Use plain spin_lock()s instead of guard()s
+  - Drop unnecessary empty line
+---
+ fs/btrfs/free-space-cache.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/tests/mkfs-tests/035-rootdir-cross-mount/test.sh b/tests/mkfs-tests/035-rootdir-cross-mount/test.sh
-new file mode 100755
-index 000000000000..0215f7223356
---- /dev/null
-+++ b/tests/mkfs-tests/035-rootdir-cross-mount/test.sh
-@@ -0,0 +1,46 @@
-+#!/bin/bash
-+#
-+# Test if "mkfs.btrfs --rootdir" would handle a rootdir with subdirectories
-+# on another fs.
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index f5996a43db24..eaa1dbd31352 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -2697,15 +2697,16 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+ 	u64 offset = bytenr - block_group->start;
+ 	u64 to_free, to_unusable;
+ 	int bg_reclaim_threshold = 0;
+-	bool initial = ((size == block_group->length) && (block_group->alloc_offset == 0));
++	bool initial;
+ 	u64 reclaimable_unusable;
+ 
+-	WARN_ON(!initial && offset + size > block_group->zone_capacity);
++	spin_lock(&block_group->lock);
+ 
++	initial = ((size == block_group->length) && (block_group->alloc_offset == 0));
++	WARN_ON(!initial && offset + size > block_group->zone_capacity);
+ 	if (!initial)
+ 		bg_reclaim_threshold = READ_ONCE(sinfo->bg_reclaim_threshold);
+ 
+-	spin_lock(&ctl->tree_lock);
+ 	if (!used)
+ 		to_free = size;
+ 	else if (initial)
+@@ -2718,7 +2719,9 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+ 		to_free = offset + size - block_group->alloc_offset;
+ 	to_unusable = size - to_free;
+ 
++	spin_lock(&ctl->tree_lock);
+ 	ctl->free_space += to_free;
++	spin_unlock(&ctl->tree_lock);
+ 	/*
+ 	 * If the block group is read-only, we should account freed space into
+ 	 * bytes_readonly.
+@@ -2727,11 +2730,8 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+ 		block_group->zone_unusable += to_unusable;
+ 		WARN_ON(block_group->zone_unusable > block_group->length);
+ 	}
+-	spin_unlock(&ctl->tree_lock);
+ 	if (!used) {
+-		spin_lock(&block_group->lock);
+ 		block_group->alloc_offset -= size;
+-		spin_unlock(&block_group->lock);
+ 	}
+ 
+ 	reclaimable_unusable = block_group->zone_unusable -
+@@ -2745,6 +2745,8 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+ 		btrfs_mark_bg_to_reclaim(block_group);
+ 	}
+ 
++	spin_unlock(&block_group->lock);
 +
-+source "$TEST_TOP/common" || exit
-+
-+setup_root_helper
-+
-+# Here we need 3 devices, one for the rootdir, one for a subdirectory of
-+# rootdir. This is to ensure we have conflicting inode numbers among the
-+# two filesystems.
-+# The last device is the for the mkfs.
-+setup_loopdevs 3
-+prepare_loopdevs
-+
-+dev1=${loopdevs[1]}
-+dev2=${loopdevs[2]}
-+dev3=${loopdevs[3]}
-+tmpdir=$(_mktemp_dir mkfs-rootdir-cross-mount)
-+
-+run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$dev1"
-+run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$dev2"
-+
-+# Populate both fs with the same contents. So that we're ensured
-+# to have conflicting inode numbers.
-+for i in "$dev1" "$dev2"; do
-+	run_check $SUDO_HELPER mount -t btrfs "$i" "$tmpdir"
-+	mkdir "$tmpdir/dir1" "$tmpdir/dir2"
-+	touch "$tmpdir/file1" "$tmpdir/file2"
-+	run_check $SUDO_HELPER umount "$tmpdir"
-+done
-+
-+
-+run_check $SUDO_HELPER mount -t btrfs "$dev1" "$tmpdir"
-+run_check $SUDO_HELPER mount -t btrfs "$dev2" "$tmpdir/dir1"
-+
-+# The old rootdir implementation relies on the st_ino from the host fs, but
-+# doesn't do any cross-mount check, it would result conflicting inode numbers
-+# and fail.
-+run_check "$TOP/mkfs.btrfs" --rootdir "$tmpdir" -f "$dev3"
-+run_check $SUDO_HELPER umount "$tmpdir/dir1"
-+run_check $SUDO_HELPER umount "$tmpdir"
-+run_check "$TOP/btrfs" check "$dev3"
-+rm -rf -- "$tmpdir"
-+cleanup_loopdevs
+ 	return 0;
+ }
+ 
 -- 
 2.45.2
 
