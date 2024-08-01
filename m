@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-6941-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6942-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AED13944406
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 08:18:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0DF8944407
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 08:19:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B377283A62
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 06:18:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B9441F20F5D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 06:19:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8731917E6;
-	Thu,  1 Aug 2024 06:13:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3B51917F5;
+	Thu,  1 Aug 2024 06:13:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OsL5UlmO";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OsL5UlmO"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CB2TEqVj";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CB2TEqVj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B77818FC75
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCE21917D9
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722492788; cv=none; b=edzDPs/Nwz5rPQmf2jtfYpUeqWo+0P4Tv9GFbkTIaN6B5GrPDQD4GOuquwtEYLW7ivAC66e+50lFoYbPvL7JVQpF9uF1GFbgWCyMUrIJgPJ++S7KezL1txL/CHQOt6A8hKfxaGRfF6rKWVwi3GtM82SyBpwiDzw62zHyaDnxd6E=
+	t=1722492790; cv=none; b=NUbz/a6P8rkM7dYP1367SWr9kKpOU35+B939P3MfJCGLuH8uqBAs9o5BPTXpbqvG0xDd0ztgHf2stuejsvNmhi5u0vOmrsTwsExGGB9O0PUDg911Gi8SD+Z8TzuN0jdu70YW/wEWbaywTi1X2KQfgrLMSAMc49DUD74gnzGlQzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722492788; c=relaxed/simple;
-	bh=aW65hLCuUwAmSHovg+YrWgeQ2LtpGG+icSFfxXVX+m8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=OHtl5WEqoXjEfDrx7SI4OwxSmA2XGJZcBhfICSECu4mOxx2VcddwTlOTN66ocPq1GpKB+KA+hS8oqqdKs7+9PG8cZK2eM8DinzbpIKVomYHRBxkXwEsKL3R1Hi38jxxoWexRc7DgxwYr6rp6Doob5GhL8dDxoRhwVzv5nMxJM9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OsL5UlmO; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OsL5UlmO; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1722492790; c=relaxed/simple;
+	bh=PJo0n92KqEpn5494jBTTlHIcI5OtjV1wjXLHFKSbaz4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=pP++TeRx6gTzrd/iaCatIgkpX0trcG6umQdkj1j2kCY6V1r0AY+4YwBpnWpw7R1sp1Zvyr1lYzHkS/p1Ra+jtMrj4JDjWXK1SrqIAQmee5d/ZvrOQJv50t+sJUzyc3vVM23qPCQavtVLPfWYb8U/r/DU9mgyqQ/r2gbEtM2TOoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CB2TEqVj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CB2TEqVj; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A3CB621A9F
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:03 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 52CA01F7D4;
+	Thu,  1 Aug 2024 06:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1722492783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=JEXYSKd/6jLhlb6XCxs5+sS5ETw8IbUfn3R/+0AveOc=;
-	b=OsL5UlmOY6JjcuVgAyW3o5T9A97CBZHMwMPcVAMgakv0d0IakYb1nf/ixd9auwtHqyYE6f
-	UFpKZ6Smx55K3Wy1jemj8tb4kIEKtHogb/PvUHWh1jIxJBq+RvMFb3sjRg1f40wo6Tn0WY
-	awbNSnafwjqem7Y2j1ne7TrS00CG3N8=
-Authentication-Results: smtp-out1.suse.de;
+	t=1722492785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hkToLYaTgyReIkoSVqccMTBwqHKWc95Tvt91pkGPBjo=;
+	b=CB2TEqVjrP59wVZbBKsbVScKPlM4X3hqHmrix9Gwg0lz7dfK1xx5VZdrFpxr09PMluqrvl
+	U+yPmpBLtySWryrBNptUnv6pD/uLhxV6vLlUuAxwCjdhGQRERIgh3ZJaybB1lcOaBxRjP9
+	PfyCsX7Gvgud2dzySft1xTf7UB9hB/U=
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1722492783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=JEXYSKd/6jLhlb6XCxs5+sS5ETw8IbUfn3R/+0AveOc=;
-	b=OsL5UlmOY6JjcuVgAyW3o5T9A97CBZHMwMPcVAMgakv0d0IakYb1nf/ixd9auwtHqyYE6f
-	UFpKZ6Smx55K3Wy1jemj8tb4kIEKtHogb/PvUHWh1jIxJBq+RvMFb3sjRg1f40wo6Tn0WY
-	awbNSnafwjqem7Y2j1ne7TrS00CG3N8=
+	t=1722492785; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hkToLYaTgyReIkoSVqccMTBwqHKWc95Tvt91pkGPBjo=;
+	b=CB2TEqVjrP59wVZbBKsbVScKPlM4X3hqHmrix9Gwg0lz7dfK1xx5VZdrFpxr09PMluqrvl
+	U+yPmpBLtySWryrBNptUnv6pD/uLhxV6vLlUuAxwCjdhGQRERIgh3ZJaybB1lcOaBxRjP9
+	PfyCsX7Gvgud2dzySft1xTf7UB9hB/U=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C6FB313946
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 06:13:02 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3238E13946;
+	Thu,  1 Aug 2024 06:13:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id w7PQH24nq2ZkaQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 01 Aug 2024 06:13:02 +0000
+	id QEFRN28nq2ZkaQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 01 Aug 2024 06:13:03 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/5] btrfs-progs: rework how we traverse rootdir
-Date: Thu,  1 Aug 2024 15:42:35 +0930
-Message-ID: <cover.1722492491.git.wqu@suse.com>
+Cc: Boris Burkov <boris@bur.io>
+Subject: [PATCH v2 1/5] btrfs-progs: constify the name parameter of btrfs_add_link()
+Date: Thu,  1 Aug 2024 15:42:36 +0930
+Message-ID: <fe9b4e30843d521343a8913ddd360f2d681cb213.1722492491.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <cover.1722492491.git.wqu@suse.com>
+References: <cover.1722492491.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,92 +84,64 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+X-Spam-Level: 
+X-Spamd-Result: default: False [0.40 / 50.00];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
 	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
+	TO_DN_SOME(0.00)[];
 	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
 	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
 	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
 X-Spam-Flag: NO
-X-Spam-Score: -2.60
+X-Spam-Score: 0.40
 
-[CHANGELOG]
-v2:
-- Change the current_path.level, so that 0 means uninitialized
-  This makes the current_path level to match the ftwbuf level.
+The name is never touched, thus it should be const.
 
-- Add a comment explaining how the current_path stack works
-  With an example layout and stack changes.
+Reviewed-by: Boris Burkov <boris@bur.io>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/ctree.h | 2 +-
+ kernel-shared/inode.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-- Add two new test cases
-  Both test cases are for the old rootdir bugs:
-  * Extra hard link are out of the rootdir
-    Old --rootdir will create a corrupted fs with incorrect nlink.
-    This is because we use st_nlink without any extra verification
-
-  * Conflicting inode numbers caused by different mount points
-    Old --rootdir will fail gracefully, but still not ideal as the error
-    message doesn't explain it at all.
-    This is because we use st_inode without any extra verification
-
-- Newline and typo fixes
-
-Thanks to Mark's recent work, I finally get some time to rework rootdir
-traversal.
-
-All the problems are described inside the second patch.
-While the last patch is a small enhancement to --rootdir to reject hard
-links.
-
-With this change, it's much easier to support subvolume creations at
-mkfs time:
-
-- Create a hashmap (or other similar structure) to record all the
-  directories that should be subvolume
-
-- Call btrfs_make_subvoume() other than btrfs_insert_inode() if a path
-  should be a subvolume
-
-- Call btrfs_link_subvolume() other than btrfs_add_link() for a
-  subvolume
-
-Everything like parent directory inode size is properly handled by
-btrfs_link_subvolume() and btrfs_add_link() already.
-
-
-Qu Wenruo (5):
-  btrfs-progs: constify the name parameter of btrfs_add_link()
-  btrfs-progs: mkfs: rework how we traverse rootdir
-  btrfs-progs: rootdir: warn about hard links
-  btrfs-progs: mkfs-tests: a new test case to verify handling of hard
-    links
-  btrfs-progs: mkfs-tests: verify cross mount point behavior for rootdir
-
- kernel-shared/ctree.h                         |   2 +-
- kernel-shared/inode.c                         |   2 +-
- mkfs/rootdir.c                                | 711 ++++++++----------
- mkfs/rootdir.h                                |   8 -
- .../034-rootdir-extra-hard-links/test.sh      |  24 +
- .../035-rootdir-cross-mount/test.sh           |  46 ++
- 6 files changed, 377 insertions(+), 416 deletions(-)
- create mode 100755 tests/mkfs-tests/034-rootdir-extra-hard-links/test.sh
- create mode 100755 tests/mkfs-tests/035-rootdir-cross-mount/test.sh
-
---
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 7761b3f6fb1b..b8f7a19b64b4 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -1210,7 +1210,7 @@ int btrfs_new_inode(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ int btrfs_change_inode_flags(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_root *root, u64 ino, u64 flags);
+ int btrfs_add_link(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+-		   u64 ino, u64 parent_ino, char *name, int namelen,
++		   u64 ino, u64 parent_ino, const char *name, int namelen,
+ 		   u8 type, u64 *index, int add_backref, int ignore_existed);
+ int btrfs_unlink(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		 u64 ino, u64 parent_ino, u64 index, const char *name,
+diff --git a/kernel-shared/inode.c b/kernel-shared/inode.c
+index 5927af041dbf..265d62988fd0 100644
+--- a/kernel-shared/inode.c
++++ b/kernel-shared/inode.c
+@@ -167,7 +167,7 @@ out:
+  * Currently only supports adding link from an inode to another inode.
+  */
+ int btrfs_add_link(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+-		   u64 ino, u64 parent_ino, char *name, int namelen,
++		   u64 ino, u64 parent_ino, const char *name, int namelen,
+ 		   u8 type, u64 *index, int add_backref, int ignore_existed)
+ {
+ 	struct btrfs_path *path;
+-- 
 2.45.2
 
 
