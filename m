@@ -1,212 +1,103 @@
-Return-Path: <linux-btrfs+bounces-6954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F394945BC5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 12:05:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E621945D3D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 13:27:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9A40283454
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 10:05:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26900B215E9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 11:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEE21DAC4C;
-	Fri,  2 Aug 2024 10:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DB11E2126;
+	Fri,  2 Aug 2024 11:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="f9mmKhPt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CD814B952
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 10:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654571DE871
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 11:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722593122; cv=none; b=CyGYeB5QeaDQboo9t5yV8bV4Mh8JuvKtbImUxDWx9XL7f8aAEfJ9NHSouM4PnxNRxCJLlpIuWHm0bxv74bWDzeqafz9CKSy4XGcbYyTeC4k0w3Sb4JIOjYn/sqNV7fauLsUnKN8WMyOEsIDuO0MkZuTLdN5a7ex1mQGsRqLiZaU=
+	t=1722598061; cv=none; b=O36S6npHoRTo5bxNWGLRDGzAR+WLk82M3TMnXroQSlTf1ekStbdDFc8AYG2mXsc0BLOdGFOucXYge7RVAOe3tnQpG3d69iyU4J3fMF0A4Q3Ad3q+H8ICXYvLn0NYO8mFtrTMyT4ym1FMbNpE7Y9ZdzBglX0w4Z1ojD2lbmE0kc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722593122; c=relaxed/simple;
-	bh=NGPf0VbCXvlqYbOGaOEuH7RcGocW3kV/BHBDQBCGlMI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lqYkWlQl7VsqTLtuZ4Ckr9WjnuYXjtzXzCOWK9n4bIRTb+NnpdBCkAfzswoHfW3cS6fLa6g1G/RVK+m0rq61tnu4Wl18WKNlcSMKKLO2pD5b4VzPAWoFtZvKGPEVWPvPktSUmss7LFqfSMEjBl0gCx9BSLqE4gSfYjZb4gjRhBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-52ef95ec938so9506958e87.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 03:05:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722593118; x=1723197918;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Wg5jFQZkI8UOSqcY8UXsMwZtt4k7CR/aqiBcQAv/UE=;
-        b=iSWZFikOcNlcYaSJzFNh+FWREPGdI6EMyCj58guYKtMzR0yaeqzOLWsGMl3pz2H4bm
-         98V39GVRSi08SHVe8Ptp3P+oJeSU2o/FhIiwkdkT9jMEQ/ReEnRN43vr6fqlTunNqbow
-         HsIce/KRZ5p/B2tbz2bGDkXgY917QLDT9x5RJktnNIioodfy1QVn9oUNKA206OEgE10Y
-         mTsiEy65X9TLfsTBg7zqLTlB7QxKRhxE9cIarI4pcoy7h0Uk29xJGxnxqxJjlSzAdr0o
-         KOLkPm6+andS0NZfSUuY+hJm8jdC9zwjARRIlqOX2r9CG8pNosgJIuQzQCHHxxjtbpf1
-         AaCg==
-X-Gm-Message-State: AOJu0Ywoqh95ARyA1LLJhu/h38AvCndR4F8zQQ6ULTjnv+RUTXmiXalo
-	F5K7Uit2XW6B5uoDddTou5ISpNCxogfzxKTdDpv7oQn1K1Yb7vnm8meL0fxZ
-X-Google-Smtp-Source: AGHT+IG3mmJFmNPmbEMZVYqJi0/Rpb7l7D0zxxUh3yoeeHxUMIk4ihswaUL905H5btah+5R/nH3sKg==
-X-Received: by 2002:a05:6512:b08:b0:52e:9694:3f98 with SMTP id 2adb3069b0e04-530bb3a05c4mr1929622e87.27.1722593117940;
-        Fri, 02 Aug 2024 03:05:17 -0700 (PDT)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9c0ca17sm80139866b.84.2024.08.02.03.05.17
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Aug 2024 03:05:17 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a7a9185e1c0so799996866b.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 03:05:17 -0700 (PDT)
-X-Received: by 2002:a17:906:d253:b0:a77:e48d:bc8 with SMTP id
- a640c23a62f3a-a7dc4e69cb8mr248978966b.21.1722593117014; Fri, 02 Aug 2024
- 03:05:17 -0700 (PDT)
+	s=arc-20240116; t=1722598061; c=relaxed/simple;
+	bh=3Ii1l8S7MwjsAzVtMbuDJu3Kji2XYdPtzkmQmacGAdY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cgjn4Km5B7dPA9x/nh7P9laSVe3GAjEcolknvbLl+YsgY2dlLdAPUJyxhulLhwVg3A9hsqh9CgCFe9wOSg8BwPSSwKi4HRxicz6AbGe9mpbtw7MAHPcX9ZxRyaD8j+kIgPTJoUyOmSfXZt0lTb0/VzsOXSDsbq4G24oEDZDkdIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=f9mmKhPt; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 472B3SGw024934
+	for <linux-btrfs@vger.kernel.org>; Fri, 2 Aug 2024 04:27:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=facebook; bh=4a0FfByw
+	wU7aivLBtj2FxygHHFjsKoV3ZE7RQYjiz9s=; b=f9mmKhPtIRt+7IYnPA0yK0xI
+	cCHzgGhhiumxixKPCBUmE3iDdYSg2kpKMeWkkcj8gixmPJso6pPKDbS720rh/t/R
+	iAZEhVUz4w32FLRrLB4IDveFBmMiidlwDqizGlg/8bhtleaLsXrJMbQON1QZNklf
+	WR7XsfGD6RLz58ARyXs=
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 40rjeym4e3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 04:27:38 -0700 (PDT)
+Received: from twshared23930.07.ash9.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Fri, 2 Aug 2024 11:27:37 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id B2A904FE0C03; Fri,  2 Aug 2024 12:27:32 +0100 (BST)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH v2 0/3] btrfs-progs: use libbtrfsutil for subvolume creation
+Date: Fri, 2 Aug 2024 12:27:21 +0100
+Message-ID: <20240802112730.3575159-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240627152156.1349692-1-maharmstone@fb.com>
-In-Reply-To: <20240627152156.1349692-1-maharmstone@fb.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Fri, 2 Aug 2024 06:04:40 -0400
-X-Gmail-Original-Message-ID: <CAEg-Je8_FvnaH1AH+k3YPPT4Tmvn-e1xvsPYxo0rd946-MvTxw@mail.gmail.com>
-Message-ID: <CAEg-Je8_FvnaH1AH+k3YPPT4Tmvn-e1xvsPYxo0rd946-MvTxw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: add recursive subvol delete
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org, Omar Sandoval <osandov@fb.com>, 
-	Mark Harmstone <maharmstone@meta.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: SDCAJFbVUzs0WPCLfyhZOiFWiNbNYnJm
+X-Proofpoint-ORIG-GUID: SDCAJFbVUzs0WPCLfyhZOiFWiNbNYnJm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-02_08,2024-08-01_01,2024-05-17_01
 
-On Thu, Jun 27, 2024 at 11:22=E2=80=AFAM Mark Harmstone <maharmstone@fb.com=
-> wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> Adds a --recursive option to btrfs subvol delete, causing it to pass the
-> BTRFS_UTIL_DELETE_SUBVOLUME_RECURSIVE flag through to libbtrfsutil.
->
-> This is a resubmission of part of a patch that Omar Sandoval sent in
-> 2018, which appears to have been overlooked:
-> https://lore.kernel.org/linux-btrfs/e42cdc5d5287269faf4d09e8c9786d0b3adeb=
-658.1516991902.git.osandov@fb.com/
->
-> Signed-off-by: Mark Harmstone <maharmstone@meta.com>
-> Co-authored-by: Mark Harmstone <maharmstone@meta.com>
-> ---
->  Documentation/btrfs-subvolume.rst |  4 ++++
->  cmds/subvolume.c                  | 15 +++++++++++++--
->  2 files changed, 17 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/btrfs-subvolume.rst b/Documentation/btrfs-subv=
-olume.rst
-> index d1e89f15..b1f22344 100644
-> --- a/Documentation/btrfs-subvolume.rst
-> +++ b/Documentation/btrfs-subvolume.rst
-> @@ -112,6 +112,10 @@ delete [options] [<subvolume> [<subvolume>...]], del=
-ete -i|--subvolid <subvolid>
->          -i|--subvolid <subvolid>
->                  subvolume id to be removed instead of the <path> that sh=
-ould point to the
->                  filesystem with the subvolume
-> +
-> +        -R|--recursive
-> +                delete subvolumes beneath each subvolume recursively
-> +
->          -v|--verbose
->                  (deprecated) alias for global *-v* option
->
-> diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-> index 52bc8850..b4151af2 100644
-> --- a/cmds/subvolume.c
-> +++ b/cmds/subvolume.c
-> @@ -347,6 +347,7 @@ static const char * const cmd_subvolume_delete_usage[=
-] =3D {
->         OPTLINE("-c|--commit-after", "wait for transaction commit at the =
-end of the operation"),
->         OPTLINE("-C|--commit-each", "wait for transaction commit after de=
-leting each subvolume"),
->         OPTLINE("-i|--subvolid", "subvolume id of the to be removed subvo=
-lume"),
-> +       OPTLINE("-R|--recursive", "delete subvolumes beneath each subvolu=
-me recursively"),
->         OPTLINE("-v|--verbose", "deprecated, alias for global -v option")=
-,
->         HELPINFO_INSERT_GLOBALS,
->         HELPINFO_INSERT_VERBOSE,
-> @@ -367,6 +368,7 @@ static int cmd_subvolume_delete(const struct cmd_stru=
-ct *cmd, int argc, char **a
->         char    *path =3D NULL;
->         int commit_mode =3D 0;
->         bool subvol_path_not_found =3D false;
-> +       int flags =3D 0;
->         u8 fsid[BTRFS_FSID_SIZE];
->         u64 subvolid =3D 0;
->         char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
-> @@ -383,11 +385,12 @@ static int cmd_subvolume_delete(const struct cmd_st=
-ruct *cmd, int argc, char **a
->                         {"commit-after", no_argument, NULL, 'c'},
->                         {"commit-each", no_argument, NULL, 'C'},
->                         {"subvolid", required_argument, NULL, 'i'},
-> +                       {"recursive", no_argument, NULL, 'R'},
->                         {"verbose", no_argument, NULL, 'v'},
->                         {NULL, 0, NULL, 0}
->                 };
->
-> -               c =3D getopt_long(argc, argv, "cCi:v", long_options, NULL=
-);
-> +               c =3D getopt_long(argc, argv, "cCi:Rv", long_options, NUL=
-L);
->                 if (c < 0)
->                         break;
->
-> @@ -401,6 +404,9 @@ static int cmd_subvolume_delete(const struct cmd_stru=
-ct *cmd, int argc, char **a
->                 case 'i':
->                         subvolid =3D arg_strtou64(optarg);
->                         break;
-> +               case 'R':
-> +                       flags |=3D BTRFS_UTIL_DELETE_SUBVOLUME_RECURSIVE;
-> +                       break;
->                 case 'v':
->                         bconf_be_verbose();
->                         break;
-> @@ -416,6 +422,11 @@ static int cmd_subvolume_delete(const struct cmd_str=
-uct *cmd, int argc, char **a
->         if (subvolid > 0 && check_argc_exact(argc - optind, 1))
->                 return 1;
->
-> +       if (subvolid > 0 && flags & BTRFS_UTIL_DELETE_SUBVOLUME_RECURSIVE=
-) {
-> +               error("option --recursive not supported with --subvolid")=
-;
-> +               return 1;
-> +       }
-> +
->         pr_verbose(LOG_INFO, "Transaction commit: %s\n",
->                    !commit_mode ? "none (default)" :
->                    commit_mode =3D=3D COMMIT_AFTER ? "at the end" : "afte=
-r each");
-> @@ -528,7 +539,7 @@ again:
->
->         /* Start deleting. */
->         if (subvolid =3D=3D 0)
-> -               err =3D btrfs_util_delete_subvolume_fd(fd, vname, 0);
-> +               err =3D btrfs_util_delete_subvolume_fd(fd, vname, flags);
->         else
->                 err =3D btrfs_util_delete_subvolume_by_id_fd(fd, subvolid=
-);
->         if (err) {
-> --
-> 2.44.2
->
->
+These patches are a resending of Omar Sandoval's patch from 2018, which
+appears to have been overlooked [0], split up and rebased against the
+current code.
 
-Looks good to me.
+We change btrfs subvol create and btrfs subvol snapshot so that they use
+libbtrfsutil rather than calling the ioctl directly.
 
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+[0] https://lore.kernel.org/linux-btrfs/ab09ba595157b7fb6606814730508cae4=
+da48caf.1516991902.git.osandov@fb.com/
 
+Changelog:
+* Fixed deprecated function names
+* Fixed test failures (now returns correct return value on failure)
+* Fixed this breaking fstest btrfs/300 (thanks Boris)
+
+Mark Harmstone (3):
+  btrfs-progs: use libbtrfsutil for btrfs subvolume create
+  btrfs-progs: use libbtrfsutil for btrfs subvolume snapshot
+  btrfs-progs: remove unused qgroup functions
+
+ cmds/qgroup.c    |  64 ----------------
+ cmds/qgroup.h    |   2 -
+ cmds/subvolume.c | 194 +++++++++++++++++++----------------------------
+ 3 files changed, 76 insertions(+), 184 deletions(-)
 
 --=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+2.44.2
+
 
