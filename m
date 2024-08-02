@@ -1,120 +1,121 @@
-Return-Path: <linux-btrfs+bounces-6960-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6961-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8C6C945DCB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 14:29:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DBD2945E85
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 15:18:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AAC8B22E0D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 12:29:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F8721C218B4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 13:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78ED71E2893;
-	Fri,  2 Aug 2024 12:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XKnt4piW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323371E4853;
+	Fri,  2 Aug 2024 13:18:30 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B58F14A0A0;
-	Fri,  2 Aug 2024 12:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFF3481AA
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 13:18:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722601787; cv=none; b=Xc7EL9Tlmk44NiCjCKeHxztnuiRpjMQ8u9RxUb6KpHpLLrxsHMRVNLME/xFV/SnsYhyn4krrdN0OJlnsv7JwyZaAHxsZY+NyH9jmuJ8ENxRHVec/AnFVGuZrIMTB7grOVPUIBGugGv3nyFJzLE5A4yyQSgt13RZWsRhJvhA6dQg=
+	t=1722604709; cv=none; b=MYje5o/0aJ1Nh91QTlOPzY6kye8B+33tEiBBx8GWx2w19pZd1x2DfOBZxb2hQ+7yEiFrPia4yqgzZXWWGOGaUj92hxzG8c3kgw7ZfxIpCat//d3J+mMZ+04FuV7kSSOrPBwvqKYgyCEP0JodZ/ZfFAjInU4qwn3eHun+gEBpaeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722601787; c=relaxed/simple;
-	bh=TPZ8aWuX8dcV5p3KIElIaSI7CNBcw6WTN9JPjFF6k6s=;
+	s=arc-20240116; t=1722604709; c=relaxed/simple;
+	bh=rby3lyrrgVykqmRonCD8sv/qRt/HzwJznw4DZOnAvMo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uRH6XguPlGwo5zYW135ki936A1sVTEZA9Bmyf8C6uHF4UWGiIK6LATjuOVLwK+lZel1aiFptzzaGJYKFUuVH2jBRyxoSagT+wBNQ8th5pQ25b38oc/opN/Xto2zxNeWhZdlJkzH9kEVJnRYor+OJ13ca9AO3pbnhrW/ZTdzU6LA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XKnt4piW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CCF0C4AF11;
-	Fri,  2 Aug 2024 12:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722601787;
-	bh=TPZ8aWuX8dcV5p3KIElIaSI7CNBcw6WTN9JPjFF6k6s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XKnt4piWORyEWiUf3bbdvvWeetpNqC+f7iEkj8//WFYGtw4D1VFrj+steO5E5dDxJ
-	 ySK7dm4ZzYa3c2XStQgc0rKVZw5KPcNdya/TaNHY8iLXdm5dU9Z3KVEm/neSX0ULNU
-	 WtNCkvOG5y8fRy32LmV8WbqbGll3lUGc7CCehq1JQnk+XgtmBLK8Zio16j5WJmAT9c
-	 BfGV7JcJMVlblUNt+xrE4U+3yjhLpGIc91hitcxqZAq/iml0rmvusmId0RPzPev/hy
-	 MAp31cVI3+nUCz8sj64WoUkRsQD0Uuj3W18ZUGqSz/v9gLXEjWLRUIuT2mGukAq+4d
-	 qgM1LaLjJvWWg==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52f01ec08d6so11736049e87.2;
-        Fri, 02 Aug 2024 05:29:46 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUl7Rd70THJb5SnbH5YK2lMaXsV7DbppS7YHz+uDKT2Pwsd8ciyEKECM0XuHSyUISUZa6XannEAri4ra0Vc1eyjD8eBKSJhHoNRO4jNTXi5hfat5o7sFhGKJFTVpiLZgdPcfQhorpIvtlU=
-X-Gm-Message-State: AOJu0YxROJIoHbotBAeyYeg1yji/YZrgC7uLLvBErMWAR8ewUIH2PY7f
-	OTIV2jlcCSeRH64aTNhRukR4K3T8jJBhN0Dn1ujCFH2aLjxOo6IPnJkM2UqxyyTuIN2+QAG4CX1
-	2WvAcOLW4SHlUjjq3kQYO26cHkn0=
-X-Google-Smtp-Source: AGHT+IG8bBjNKWGKaKUm9N02/bROr4Jw7YD0IkF2WYIGiUSmueMOUr8Mj5a+pvmWsTT3zT2FcuV8T1kELjQxe5KlLbk=
-X-Received: by 2002:a05:6512:a93:b0:52e:9cb1:d254 with SMTP id
- 2adb3069b0e04-530bb39dc80mr1949529e87.46.1722601785409; Fri, 02 Aug 2024
- 05:29:45 -0700 (PDT)
+	 To:Cc:Content-Type; b=pBEmEYGbmYnBCD9fA3vPD9LEbqe+qRnELp32vmqH7YnbIb5JPWBJpe/Gb+fLd9zYV8iBD44AT6NRGjnbz0TjxxG4PdrV1wUTy3AXY8fmXRlPIOeLqMRYpR//+8jTr6bub9ahTtSmq8e7oY7ecu/hewd6vPLc4NTc698Gkp4ThIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52efc60a6e6so12693751e87.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 06:18:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722604705; x=1723209505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CFgLbh2c+9Ff40sMfbqxs6Sdchj9W8PixHQxdBbOf5c=;
+        b=kxGPe0vAK18SLBNz40rgg8CUP3wrEFrDaiWVzK0SclyHhMLbK3lTD9WDEq/o3UV/yV
+         Ekq9SdGQEr7L5vMDifE6UnqGAwIxVl1bk4psmAqyEqBsS4g8th/p20Pmxh6Zbud5qtnn
+         ZsWB8vZb81Wcu53zEBOkXniAFEQ6x4b0t/pj9jOKHlK3CCpLWMaiIOYZGFQ4ghcrTnjh
+         wN+zYFsPFg727+yIEKuoGneTwmm2BaNGaAubdb1woGNZrPk0JurCEbOkCkQ4OE8Sy5/S
+         vhqFTWISahUF6RXdR/NrPOD6VLpeZFZtkxxHonMOvfblW+6WTXwoDn0gohC1TqSxeGyg
+         5HHw==
+X-Gm-Message-State: AOJu0YylgSmNxVXhzQUdT8jz84Uq4W48u38BsvTkJeqv6H/xdJaZXOgp
+	6AXyXRFQuoEugFxAUbTUV3r0GMqHFcsyNYZSdxsZxpgl9Cv2WY3wLpzZQ/Tu
+X-Google-Smtp-Source: AGHT+IFADz1eW6no1EhL8fifAWA/q8TXS/q06D8RRuHuz+KT6vA0ZG8HgbrYtd9u9hfR8TJfLmDwtQ==
+X-Received: by 2002:a05:6512:3d20:b0:52c:dcab:6738 with SMTP id 2adb3069b0e04-530bb36686fmr2459797e87.1.1722604703791;
+        Fri, 02 Aug 2024 06:18:23 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9bc3c9asm99818966b.37.2024.08.02.06.18.23
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 02 Aug 2024 06:18:23 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a7abf92f57bso1055997066b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 06:18:23 -0700 (PDT)
+X-Received: by 2002:a17:906:794d:b0:a7d:2429:dc16 with SMTP id
+ a640c23a62f3a-a7dc5107ce6mr198974766b.65.1722604703360; Fri, 02 Aug 2024
+ 06:18:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000dfd631061eaeb4bc@google.com> <tencent_8F5362E361A97883B8444B1763F777C6DF05@qq.com>
-In-Reply-To: <tencent_8F5362E361A97883B8444B1763F777C6DF05@qq.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 2 Aug 2024 13:29:08 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7d92JC_ZHp2cZ_tWyy-+qQkqG9nVgYSTi06+GAbYpNbg@mail.gmail.com>
-Message-ID: <CAL3q7H7d92JC_ZHp2cZ_tWyy-+qQkqG9nVgYSTi06+GAbYpNbg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Add missing skip-lock for locks
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+7dbbb74af6291b5a5a8b@syzkaller.appspotmail.com, clm@fb.com, 
-	dsterba@suse.com, fdmanana@suse.com, hreitz@redhat.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240802112730.3575159-1-maharmstone@fb.com>
+In-Reply-To: <20240802112730.3575159-1-maharmstone@fb.com>
+From: Neal Gompa <neal@gompa.dev>
+Date: Fri, 2 Aug 2024 09:17:45 -0400
+X-Gmail-Original-Message-ID: <CAEg-Je9Z2LFK_rcttHvvXOJ89m9FSBK4k5ThuE5sUAbsqhUxGg@mail.gmail.com>
+Message-ID: <CAEg-Je9Z2LFK_rcttHvvXOJ89m9FSBK4k5ThuE5sUAbsqhUxGg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] btrfs-progs: use libbtrfsutil for subvolume creation
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 2, 2024 at 12:59=E2=80=AFPM Edward Adam Davis <eadavis@qq.com> =
+On Fri, Aug 2, 2024 at 7:27=E2=80=AFAM Mark Harmstone <maharmstone@fb.com> =
 wrote:
 >
-> The commit 939b656bc8ab missing a skip-lock in btrfs_sync_file,
-> it cause syzbot report WARNING: bad unlock balance in btrfs_direct_write.
+> These patches are a resending of Omar Sandoval's patch from 2018, which
+> appears to have been overlooked [0], split up and rebased against the
+> current code.
 >
-> Fixes: 939b656bc8ab ("btrfs: fix corruption after buffer fault in during =
-direct IO append write")
-> Reported-and-tested-by: syzbot+7dbbb74af6291b5a5a8b@syzkaller.appspotmail=
-.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3D7dbbb74af6291b5a5a8b
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-
-I had already a submitted a fix for this hours ago:
-
-https://lore.kernel.org/linux-btrfs/7aa71067c2946ea3a7165f26899324e0df7d772=
-e.1722588255.git.fdmanana@suse.com/
-
-Thanks.
-
-> ---
->  fs/btrfs/file.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> We change btrfs subvol create and btrfs subvol snapshot so that they use
+> libbtrfsutil rather than calling the ioctl directly.
 >
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 9f10a9f23fcc..9914419f3b7d 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1868,7 +1868,10 @@ int btrfs_sync_file(struct file *file, loff_t star=
-t, loff_t end, int datasync)
+> [0] https://lore.kernel.org/linux-btrfs/ab09ba595157b7fb6606814730508cae4=
+da48caf.1516991902.git.osandov@fb.com/
 >
->  out_release_extents:
->         btrfs_release_log_ctx_extents(&ctx);
-> -       btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
-> +       if (skip_ilock)
-> +               up_write(&inode->i_mmap_lock);
-> +       else
-> +               btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
->         goto out;
->  }
+> Changelog:
+> * Fixed deprecated function names
+> * Fixed test failures (now returns correct return value on failure)
+> * Fixed this breaking fstest btrfs/300 (thanks Boris)
+>
+> Mark Harmstone (3):
+>   btrfs-progs: use libbtrfsutil for btrfs subvolume create
+>   btrfs-progs: use libbtrfsutil for btrfs subvolume snapshot
+>   btrfs-progs: remove unused qgroup functions
+>
+>  cmds/qgroup.c    |  64 ----------------
+>  cmds/qgroup.h    |   2 -
+>  cmds/subvolume.c | 194 +++++++++++++++++++----------------------------
+>  3 files changed, 76 insertions(+), 184 deletions(-)
 >
 > --
-> 2.43.0
+> 2.44.2
 >
 >
+
+Series looks good to me.
+
+Reviewed-by: Neal Gompa <neal@gompa.dev>
+
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
 
