@@ -1,121 +1,108 @@
-Return-Path: <linux-btrfs+bounces-6961-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6962-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DBD2945E85
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 15:18:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ACEC9460E1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 17:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F8721C218B4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 13:18:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DC01F22218
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 15:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323371E4853;
-	Fri,  2 Aug 2024 13:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD34814EC57;
+	Fri,  2 Aug 2024 15:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="evpX67Qg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFF3481AA
-	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 13:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D613175D3A
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 15:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722604709; cv=none; b=MYje5o/0aJ1Nh91QTlOPzY6kye8B+33tEiBBx8GWx2w19pZd1x2DfOBZxb2hQ+7yEiFrPia4yqgzZXWWGOGaUj92hxzG8c3kgw7ZfxIpCat//d3J+mMZ+04FuV7kSSOrPBwvqKYgyCEP0JodZ/ZfFAjInU4qwn3eHun+gEBpaeg=
+	t=1722614082; cv=none; b=PU/2ct6ANYo3j4ceek+yUwd+oqHfI/GU6S1ACbFZFUOXXr6AOW7qqxeIl8m2Wdhf5uvzla7Kh5MxUNeGBlys7pz0nj6j9yp4SqURMzEa2lExZp5+bUHG0bMHuGqq9C0itvC/jJV60SOXTy+/m27HA8XNuHpzu0wMWjKcCcK3Zgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722604709; c=relaxed/simple;
-	bh=rby3lyrrgVykqmRonCD8sv/qRt/HzwJznw4DZOnAvMo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pBEmEYGbmYnBCD9fA3vPD9LEbqe+qRnELp32vmqH7YnbIb5JPWBJpe/Gb+fLd9zYV8iBD44AT6NRGjnbz0TjxxG4PdrV1wUTy3AXY8fmXRlPIOeLqMRYpR//+8jTr6bub9ahTtSmq8e7oY7ecu/hewd6vPLc4NTc698Gkp4ThIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-52efc60a6e6so12693751e87.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 06:18:26 -0700 (PDT)
+	s=arc-20240116; t=1722614082; c=relaxed/simple;
+	bh=MDXtXCnHHFIqJ5Tw3MKoy8wRnAA4UZUwynFWHLlRinI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hOGeBcIkrAtZAm5fy8C3BbKOqJ1ojfsjBY0fBXyH/n73h4JdwD3l8qyGgS13SFavdw8PaH9YcidHsRFWwSbqONci9U1Ynt5Ew0Ys1BLJa7jmCo9wd0TvKeaWA6CGy2RbCff8Rg3EW15csT2HuFvwPbNwRv6HFqmh6K+uzJDsVMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=evpX67Qg; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-66526e430e0so70416747b3.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 08:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722614080; x=1723218880; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nbq9BF2sgWBBG82nWovwNNGze17FHmfsnfFZbulUZf4=;
+        b=evpX67Qg6IcsC7T1d2YWfSGzODS65yF+c9yVUcAfF8oF6NA29SY1nEn6WKnii8lEK8
+         RTlTacOkYzjiK3qlv3YJSb312qzEJOR/DKtlIw7I/uT8E+uTHkmaXiXdKSCr8r5STJIx
+         6TmlQEVu9eLQvrFUoxaiTzRU7UTnEue78j+b0bjqEj83SjNZKU73t38Jj6QEFR8EgiCW
+         nCHBTIjaxn2RcMa0elw+ZUScfxI8RiTmKGC9fdgfAsvTRz/Mm06XB/V3kmCc2jxSEfHE
+         4lRjPXJVXuCx1Dl3XaAtL6B7sraJOjzOD5YMZO9KsJCL/33Kz6ikSKvtlFAHHy6uRpg3
+         o8MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722604705; x=1723209505;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CFgLbh2c+9Ff40sMfbqxs6Sdchj9W8PixHQxdBbOf5c=;
-        b=kxGPe0vAK18SLBNz40rgg8CUP3wrEFrDaiWVzK0SclyHhMLbK3lTD9WDEq/o3UV/yV
-         Ekq9SdGQEr7L5vMDifE6UnqGAwIxVl1bk4psmAqyEqBsS4g8th/p20Pmxh6Zbud5qtnn
-         ZsWB8vZb81Wcu53zEBOkXniAFEQ6x4b0t/pj9jOKHlK3CCpLWMaiIOYZGFQ4ghcrTnjh
-         wN+zYFsPFg727+yIEKuoGneTwmm2BaNGaAubdb1woGNZrPk0JurCEbOkCkQ4OE8Sy5/S
-         vhqFTWISahUF6RXdR/NrPOD6VLpeZFZtkxxHonMOvfblW+6WTXwoDn0gohC1TqSxeGyg
-         5HHw==
-X-Gm-Message-State: AOJu0YylgSmNxVXhzQUdT8jz84Uq4W48u38BsvTkJeqv6H/xdJaZXOgp
-	6AXyXRFQuoEugFxAUbTUV3r0GMqHFcsyNYZSdxsZxpgl9Cv2WY3wLpzZQ/Tu
-X-Google-Smtp-Source: AGHT+IFADz1eW6no1EhL8fifAWA/q8TXS/q06D8RRuHuz+KT6vA0ZG8HgbrYtd9u9hfR8TJfLmDwtQ==
-X-Received: by 2002:a05:6512:3d20:b0:52c:dcab:6738 with SMTP id 2adb3069b0e04-530bb36686fmr2459797e87.1.1722604703791;
-        Fri, 02 Aug 2024 06:18:23 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7dc9bc3c9asm99818966b.37.2024.08.02.06.18.23
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Aug 2024 06:18:23 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a7abf92f57bso1055997066b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 06:18:23 -0700 (PDT)
-X-Received: by 2002:a17:906:794d:b0:a7d:2429:dc16 with SMTP id
- a640c23a62f3a-a7dc5107ce6mr198974766b.65.1722604703360; Fri, 02 Aug 2024
- 06:18:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1722614080; x=1723218880;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nbq9BF2sgWBBG82nWovwNNGze17FHmfsnfFZbulUZf4=;
+        b=oziNz9j6d8wLpVHTn8fgGedefVv+hT0XqQSy2wx2vIJKlttIGiXclJakPpgdmqIyV1
+         clkPmf+wzmj7rEJog0n6+piONoE1+fV7XtjhWBQfC8xKElZcR0U25TDwwK2frFPFhfuQ
+         KhQSoqlDtid7mbyDSfCIpgOdpGjHL20IANSSld+GLFe0mgNrT/OI7TYn9GPBTZeR/Krw
+         M6UaZojA/zs4k3QDz4/zaEQx5swTHeuwFedDLio1D3oFSVicSzDs8pv9jAHNYSRlAqD1
+         SbbvbZ+ouCuqJLVECz4weUZjTbOdLDf6S/8ZeLBOnEUnklVwKRLcxdn+DjlWn8C/acDs
+         EkEA==
+X-Gm-Message-State: AOJu0YymjoiiC17P5xwkrc9MipRVu0O5jTtTHXYR41+oevKhedTSOrvB
+	2C0sn6eA6pqSrgg+7b04QF8XBbfs+NeOZmIAy9a9yVsOr1Nqk/kPtuzPvJH4l9k=
+X-Google-Smtp-Source: AGHT+IHObZ8hARNkf40dY5DI8Fkf5Fpm+7b/hhNror/uIYmoWLHKIeklStbTZwOzccIWgPO0ms7iEA==
+X-Received: by 2002:a0d:e947:0:b0:61b:1f0e:10 with SMTP id 00721157ae682-6895f9ec050mr45926557b3.4.1722614079921;
+        Fri, 02 Aug 2024 08:54:39 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-68a12d13909sm2927317b3.75.2024.08.02.08.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Aug 2024 08:54:39 -0700 (PDT)
+Date: Fri, 2 Aug 2024 11:54:38 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix double inode unlock for direct IO sync writes
+Message-ID: <20240802155438.GA6306@perftesting>
+References: <7aa71067c2946ea3a7165f26899324e0df7d772e.1722588255.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240802112730.3575159-1-maharmstone@fb.com>
-In-Reply-To: <20240802112730.3575159-1-maharmstone@fb.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Fri, 2 Aug 2024 09:17:45 -0400
-X-Gmail-Original-Message-ID: <CAEg-Je9Z2LFK_rcttHvvXOJ89m9FSBK4k5ThuE5sUAbsqhUxGg@mail.gmail.com>
-Message-ID: <CAEg-Je9Z2LFK_rcttHvvXOJ89m9FSBK4k5ThuE5sUAbsqhUxGg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] btrfs-progs: use libbtrfsutil for subvolume creation
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7aa71067c2946ea3a7165f26899324e0df7d772e.1722588255.git.fdmanana@suse.com>
 
-On Fri, Aug 2, 2024 at 7:27=E2=80=AFAM Mark Harmstone <maharmstone@fb.com> =
-wrote:
->
-> These patches are a resending of Omar Sandoval's patch from 2018, which
-> appears to have been overlooked [0], split up and rebased against the
-> current code.
->
-> We change btrfs subvol create and btrfs subvol snapshot so that they use
-> libbtrfsutil rather than calling the ioctl directly.
->
-> [0] https://lore.kernel.org/linux-btrfs/ab09ba595157b7fb6606814730508cae4=
-da48caf.1516991902.git.osandov@fb.com/
->
-> Changelog:
-> * Fixed deprecated function names
-> * Fixed test failures (now returns correct return value on failure)
-> * Fixed this breaking fstest btrfs/300 (thanks Boris)
->
-> Mark Harmstone (3):
->   btrfs-progs: use libbtrfsutil for btrfs subvolume create
->   btrfs-progs: use libbtrfsutil for btrfs subvolume snapshot
->   btrfs-progs: remove unused qgroup functions
->
->  cmds/qgroup.c    |  64 ----------------
->  cmds/qgroup.h    |   2 -
->  cmds/subvolume.c | 194 +++++++++++++++++++----------------------------
->  3 files changed, 76 insertions(+), 184 deletions(-)
->
-> --
-> 2.44.2
->
->
+On Fri, Aug 02, 2024 at 09:44:52AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> If we do a direct IO sync write, at btrfs_sync_file(), and we need to skip
+> inode logging or we get an error starting a transaction or an error when
+> flushing delalloc, we end up unlocking the inode when we shouldn't under
+> the 'out_release_extents' label.
+> 
+> Fix that by checking if we have to skip inode locking/unlocking under
+> that label.
+> 
+> Reported-by: syzbot+7dbbb74af6291b5a5a8b@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/linux-btrfs/000000000000dfd631061eaeb4bc@google.com/
+> Fixes: 939b656bc8ab ("btrfs: fix corruption after buffer fault in during direct IO append write")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Series looks good to me.
+Heh I just saw this syzbot thing and came to the list to see if you fixed it,
 
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
+Thanks,
 
-
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Josef
 
