@@ -1,232 +1,471 @@
-Return-Path: <linux-btrfs+bounces-6950-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6951-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30ADF945468
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 00:06:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A73D94553B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 02:19:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1AA22867A5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2024 22:06:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E5BC1C2040D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2024 00:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05EA214B97B;
-	Thu,  1 Aug 2024 22:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCCA8F48;
+	Fri,  2 Aug 2024 00:18:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="WIY8V9bO"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bct/oYf4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bct/oYf4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C9B14AA9
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2024 22:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CA1613D
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 00:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722550010; cv=none; b=FUTe2SxUKQwNxw4HkMMMBXb0EFSwIkaEFD0HlNlH2W0ID7H20Om3Vaq5JGDIrrjl8X2aGOXNh2retQsCFJqWKYcJejfmyhlGoHROl3jE93dJ75TGUz2tt2at3Rtf657WPztsabqCImMXKQ2arCFkfAgIayGIX0QIulOf2o8pziw=
+	t=1722557907; cv=none; b=bbUEIkY0JIzNuRzBoJOPFBM2Rq/15mcv0cBMp6F6No64qRqEZ/7BDCn1zUQaZBXqiowTsd3XLL29FQfkdYgfviLtQr1Gwit7duHVTvPkflhwd025OEzxIdg8TB9pXrDaxuEAqIp9brKTisrbS2tZCFcaPzUcqzQ+JjnTNBbasI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722550010; c=relaxed/simple;
-	bh=wTeINWnCCaS9cs1sqMFsrQJQ1jL/EBjFo43dcIwyhjA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t5d1wVYCdXhC4+ivnLciA9XyqFpEFsDElwvccT8gTLQQ3q7e/Jo4W9N/QRIdrzbt5riwXDJhoYSnxOKVfeI17faBGSuspS3M+bkL9OQ9hk7J7Lthe6/bMjzon9K6CXkog4+f5s0ynSMQGwIaWoKWDLu846PEHszWTWPlLKSos+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=WIY8V9bO; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722550002; x=1723154802; i=quwenruo.btrfs@gmx.com;
-	bh=s+Mzb1hHS+u2RjphILoiFtLsUPIrQ3LoNVdzE4ER3PA=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=WIY8V9bOckjQ6J7iVqHaxz/3MwHJa31dqYFmoH/d6dhqQ38795UqLbRqSojekCre
-	 hBW1fOcAn4bachZxsmtEM0vJt21bqLW6Ixf4306vrrlr7n2lSwQM+aVz2vOPy6Wc9
-	 bFzR1noQeIwIXsRUP1UrH9vdHaY2P4xrdspaIUOTdgD/3+6QBlOHE5VcPAefuNFKa
-	 F+E8U/x7wbuXwHqj7eq8hca3Wki6mui5wsp2QF1O/2qxdJ4dDLJ9S58h/04cLwbSL
-	 ayWVDTjsGtoBMOZKoo22XaCXyiFI8fCTEq4CnK8qlTOM8c19V2oPecT3v/bDlQ2Ua
-	 A9gAXGE5HcJ6Z+H/1g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MGyxN-1sW7QQ3mdP-00CCqx; Fri, 02
- Aug 2024 00:06:42 +0200
-Message-ID: <82ab8aa0-d4c7-4dbb-99f7-a63df5ab9c81@gmx.com>
-Date: Fri, 2 Aug 2024 07:36:38 +0930
+	s=arc-20240116; t=1722557907; c=relaxed/simple;
+	bh=yQKqMiXI3+XZxq3VVLyzHdBTLJiJEOvRzwJutgx8XQc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=UgaLGF5YycRa9bMDW4nR5xdS7aicmuLhfxukBKBxrXd1A6xhoZu+sN+aLoR86lZKT+qPbPeLAwRDJrwq+I69XMYmlSJAhORotnRvXzLRmWUKzUpj4wCV6KbEDI8k1pxjI5cEjK7g8V0+OVtRBP/vvQBmFGz9/rDh2Sbo6AgqaJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bct/oYf4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bct/oYf4; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 239CC1FB7E
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 00:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1722557903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Zlu6zCahHJbC45q5EG+PQPYhZWwuv5u6m+1UqJdWuHU=;
+	b=bct/oYf4M38Rb2nyMLG0PBgCjy8FFt26V4KosWNP8jsjSK+87AqRGjSC1LUVPppuzptx4P
+	o/9nUgnxEZgXg9ySlusLYq9xetJk47MBFIXL6UDTmUzUG/OfzL/w72PrOh9sLlfjyamwzY
+	pNOIIooSOeoUgEXuSnSIf6GxZC4g2Gc=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1722557903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Zlu6zCahHJbC45q5EG+PQPYhZWwuv5u6m+1UqJdWuHU=;
+	b=bct/oYf4M38Rb2nyMLG0PBgCjy8FFt26V4KosWNP8jsjSK+87AqRGjSC1LUVPppuzptx4P
+	o/9nUgnxEZgXg9ySlusLYq9xetJk47MBFIXL6UDTmUzUG/OfzL/w72PrOh9sLlfjyamwzY
+	pNOIIooSOeoUgEXuSnSIf6GxZC4g2Gc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 43CB413999
+	for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2024 00:18:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vf3ZOs0lrGYkIAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2024 00:18:21 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v9] btrfs: prefer to allocate larger folio for metadata
+Date: Fri,  2 Aug 2024 09:48:00 +0930
+Message-ID: <ef421f88bfa5cf4fd1d4293a8f27cfc97d5d10e4.1722557590.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: add recursive subvol delete
-To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
-Cc: Omar Sandoval <osandov@fb.com>, Mark Harmstone <maharmstone@meta.com>
-References: <20240627152156.1349692-1-maharmstone@fb.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240627152156.1349692-1-maharmstone@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UDNjc9HCZSs7cyl2mSoJ99jZ5q1maL+uYjBJ1693Bd4uJbHsGn8
- rAyJCggiwF8Fr/fzN9MN00zb1I0QsZVO0eOjqeUNPK0usNe3ocE7K81DwgDrkkc1o6C8aZy
- NWSFkKScdjWmZkOtSqPIU1B5IrrGoCzwlXozFx+Ub9x0yjHBGvAuOl/tq4YJ+i9h7jkJsGc
- QUVN3jsTX4WCD9+CCeZjA==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:sdGBEJt7yU4=;gTw2qdKiuGG3YG6P+axHVo7TfUh
- 1J9PBYlSAeg0rtCAOQUI4VKf4SyH1DiqAZxQqeshdB6jUvPU1j248PWAccXoNn5Cts4/nuCGx
- oHo0Coax1tW8L5Cbj+W07l3ONvHpzsTsDFTz3CUw3LdwyHnXQbpaFjKyLVSXLClfzNpYbxPtg
- ESMWu5SPw+YD/hk88AnyDk7YIxVDuTh2qkI09S2LQh4pGJlWBhzE6m6GLVrgUzabk5PDERlll
- 1zQ9hX/fCZYbCD3lSuomvmdutPiRSN2n92VpjLstKnpdTdYwn9ekcjp6klAnfh1jMEyUPN11n
- 68sxpDdmxjICcR/cMhQSpQZy4/UEU7mxc12fQR3UwvAoJ/6LcSeIFPnMrsH4+oWLHRLZ4DeNV
- g2TqGctXyrpO27QHoyicwu0s+OCgWKyXti0rXYpgFM/qS4Ox9Ofhh9RlWZoprgMyANdCC01tI
- nG7kMw9j9AxqEMoZYE+AuFKiGLfwh/dnTasFZVslY9rsrlyB3yUOxvzVLsoDhe2UJLhf2IB6v
- nH/pmrVr1rjJy/J6x0D5JmUDjKKYpKud1uyFuC5ODvYw/BQdRpNCcMhGMcZokiOMlMUgCRKKG
- ASzHc+CUqG+QCfOZ0EKqOfzC/GLnxnN8tXegvtiFHeP1HAG3+P6eACLkZhIqLEpYKCrcEWarS
- y6FmYbASEpswsO8FQSFHcoT0bVppkn333tt0vJnX6XSQxRVbXVSXikSbqYCF71/jmVbtmK75z
- U3O6ZjT2Pm4qreJrLQqI+bnA51nNlsOKX/Usb5xntIqwMpFZ9u0q9LmTijeZApVlPSqwa5wah
- WGRrrdclW4cUBcUBLZhKw/TnQTBxtiWlQyvKzS2tXwAf0=
+X-Spam-Score: -2.60
 
+Since btrfs metadata is always in fixed size (nodesize, determined at
+mkfs time, default to 16K), and btrfs has the full control of the folios
+(read is triggered internally, no read/readahead call backs), it's the
+best location to experimental larger folios inside btrfs.
 
+To enable larger folios, the btrfs has to meet the following conditions:
 
-=E5=9C=A8 2024/6/28 00:51, Mark Harmstone =E5=86=99=E9=81=93:
-> From: Omar Sandoval <osandov@fb.com>
->
-> Adds a --recursive option to btrfs subvol delete, causing it to pass the
-> BTRFS_UTIL_DELETE_SUBVOLUME_RECURSIVE flag through to libbtrfsutil.
->
-> This is a resubmission of part of a patch that Omar Sandoval sent in
-> 2018, which appears to have been overlooked:
-> https://lore.kernel.org/linux-btrfs/e42cdc5d5287269faf4d09e8c9786d0b3ade=
-b658.1516991902.git.osandov@fb.com/
->
-> Signed-off-by: Mark Harmstone <maharmstone@meta.com>
-> Co-authored-by: Mark Harmstone <maharmstone@meta.com>
+- The extent buffer start is aligned to nodesize
+  This should be the common case for any btrfs in the last 5 years.
 
-Looks very reasonable to me, especially the flag is already there.
+- The nodesize is larger than page size
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+- MM layer can fulfill our larger folio allocation
+  The larger folio will cover exactly the metadata size (nodesize).
 
-Thanks,
-Qu
-> ---
->   Documentation/btrfs-subvolume.rst |  4 ++++
->   cmds/subvolume.c                  | 15 +++++++++++++--
->   2 files changed, 17 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/btrfs-subvolume.rst b/Documentation/btrfs-sub=
-volume.rst
-> index d1e89f15..b1f22344 100644
-> --- a/Documentation/btrfs-subvolume.rst
-> +++ b/Documentation/btrfs-subvolume.rst
-> @@ -112,6 +112,10 @@ delete [options] [<subvolume> [<subvolume>...]], de=
-lete -i|--subvolid <subvolid>
->           -i|--subvolid <subvolid>
->                   subvolume id to be removed instead of the <path> that =
-should point to the
->                   filesystem with the subvolume
-> +
-> +        -R|--recursive
-> +                delete subvolumes beneath each subvolume recursively
-> +
->           -v|--verbose
->                   (deprecated) alias for global *-v* option
->
-> diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-> index 52bc8850..b4151af2 100644
-> --- a/cmds/subvolume.c
-> +++ b/cmds/subvolume.c
-> @@ -347,6 +347,7 @@ static const char * const cmd_subvolume_delete_usage=
-[] =3D {
->   	OPTLINE("-c|--commit-after", "wait for transaction commit at the end =
-of the operation"),
->   	OPTLINE("-C|--commit-each", "wait for transaction commit after deleti=
-ng each subvolume"),
->   	OPTLINE("-i|--subvolid", "subvolume id of the to be removed subvolume=
-"),
-> +	OPTLINE("-R|--recursive", "delete subvolumes beneath each subvolume re=
-cursively"),
->   	OPTLINE("-v|--verbose", "deprecated, alias for global -v option"),
->   	HELPINFO_INSERT_GLOBALS,
->   	HELPINFO_INSERT_VERBOSE,
-> @@ -367,6 +368,7 @@ static int cmd_subvolume_delete(const struct cmd_str=
-uct *cmd, int argc, char **a
->   	char	*path =3D NULL;
->   	int commit_mode =3D 0;
->   	bool subvol_path_not_found =3D false;
-> +	int flags =3D 0;
->   	u8 fsid[BTRFS_FSID_SIZE];
->   	u64 subvolid =3D 0;
->   	char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
-> @@ -383,11 +385,12 @@ static int cmd_subvolume_delete(const struct cmd_s=
-truct *cmd, int argc, char **a
->   			{"commit-after", no_argument, NULL, 'c'},
->   			{"commit-each", no_argument, NULL, 'C'},
->   			{"subvolid", required_argument, NULL, 'i'},
-> +			{"recursive", no_argument, NULL, 'R'},
->   			{"verbose", no_argument, NULL, 'v'},
->   			{NULL, 0, NULL, 0}
->   		};
->
-> -		c =3D getopt_long(argc, argv, "cCi:v", long_options, NULL);
-> +		c =3D getopt_long(argc, argv, "cCi:Rv", long_options, NULL);
->   		if (c < 0)
->   			break;
->
-> @@ -401,6 +404,9 @@ static int cmd_subvolume_delete(const struct cmd_str=
-uct *cmd, int argc, char **a
->   		case 'i':
->   			subvolid =3D arg_strtou64(optarg);
->   			break;
-> +		case 'R':
-> +			flags |=3D BTRFS_UTIL_DELETE_SUBVOLUME_RECURSIVE;
-> +			break;
->   		case 'v':
->   			bconf_be_verbose();
->   			break;
-> @@ -416,6 +422,11 @@ static int cmd_subvolume_delete(const struct cmd_st=
-ruct *cmd, int argc, char **a
->   	if (subvolid > 0 && check_argc_exact(argc - optind, 1))
->   		return 1;
->
-> +	if (subvolid > 0 && flags & BTRFS_UTIL_DELETE_SUBVOLUME_RECURSIVE) {
-> +		error("option --recursive not supported with --subvolid");
-> +		return 1;
-> +	}
-> +
->   	pr_verbose(LOG_INFO, "Transaction commit: %s\n",
->   		   !commit_mode ? "none (default)" :
->   		   commit_mode =3D=3D COMMIT_AFTER ? "at the end" : "after each");
-> @@ -528,7 +539,7 @@ again:
->
->   	/* Start deleting. */
->   	if (subvolid =3D=3D 0)
-> -		err =3D btrfs_util_delete_subvolume_fd(fd, vname, 0);
-> +		err =3D btrfs_util_delete_subvolume_fd(fd, vname, flags);
->   	else
->   		err =3D btrfs_util_delete_subvolume_by_id_fd(fd, subvolid);
->   	if (err) {
+If any of the condition is not met, we just fall back to page sized
+folio and go as usual.
+This means, we can have mixed orders for btrfs metadata.
+
+Thus there are several new corner cases with the mixed orders:
+
+1) New filemap_add_folio() -EEXIST failure cases
+   For mixed order cases, filemap_add_folio() can return -EEXIST
+   meanwhile filemap_lock_folio() returns -ENOENT.
+   In this case where are 2 possible reasons:
+   * The folio get reclaimed between add and lock
+   * The larger folio conflicts with smaller ones in the range
+
+   We have no way to distinguish them, so for larger folio case we
+   fall back to order 0 and retry, as that will rule out folio conflict
+   case.
+
+2) Existing folio size may be different than the one we allocated
+   This is after the existing eb checks.
+
+2.1) The existing folio is larger than the allocated one
+     Need to free all allocated folios, and use the existing larger
+     folio instead.
+
+2.2) The existing folio has the same size
+     Free the allocated one and reuse the page cache.
+     This is the existing path.
+
+2.3) The existing folio is smaller than the allocated one
+     Fall back to re-allocate order 0 folios instead.
+
+Otherwise all the needed infrastructure is already here, we only need to
+try allocate larger folio as our first try in alloc_eb_folio_array().
+
+For now, the higher order allocation is only a preferable attempt for
+debug build, before we had enough test coverage and push it to end
+users.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+[CHANGELOG]
+v9:
+- Remove the __GFP_NORETRY flag
+  This is to increase the possibility that we got a larger folio.
+
+- Instead of retrying 5 times, fall back to order 0 immediately if both
+  filemap_add_folio() and filemap_lock_folio() failed
+  This is to make the behavior more aligned to __filemap_get_folio()
+
+- Add extra comments on the possible racing we're facing inside
+  attach_eb_folio_to_filemap()
+  And to make it more clear, add a likely() for the filemap_add_folio()
+  case of (!ret)
+
+v8:
+- Drop the memcgroup optimization as dependency
+  Opting out memcgroup will be pushed as an independent patchset
+  instead. It's not related to the soft lockup.
+
+- Fix a soft lockup caused by mixed folio orders
+	 |<- folio ->|
+	 |  |  |//|//|   |//| is the existing page cache
+  In above case, the filemap_add_folio() will always return -EEXIST
+  but filemap_lock_folio() also returns -ENOENT.
+  Which can lead to a dead loop.
+  Fix it by only retrying 5 times for larger folios, then fall back
+  to 0 order folios.
+
+- Slightly rewording the commit messages
+  Make it shorter and better organized.
+
+v7:
+- Fix an accidentally removed line caused by previous modification
+  attempt
+  Previously I was moving that line to the common branch to
+  unconditionally define root_mem_cgroup pointer.
+  But that's later discarded and changed to use macro definition, but
+  forgot to add back the original line.
+
+v6:
+- Add a new root_mem_cgroup definition for CONFIG_MEMCG=n cases
+  So that users of root_mem_cgroup no longer needs to check
+  CONFIG_MEMCG.
+  This is to fix the compile error for CONFIG_MEMCG=n cases.
+
+- Slight rewording of the 2nd patch
+
+v5:
+- Use root memcgroup to attach folios to btree inode filemap
+- Only try higher order folio once without NOFAIL nor extra retry
+
+v4:
+- Hide the feature behind CONFIG_BTRFS_DEBUG
+  So that end users won't be affected (aka, still per-page based
+  allocation) meanwhile we can do more testing on this new behavior.
+
+v3:
+- Rebased to the latest for-next branch
+- Use PAGE_ALLOC_COSTLY_ORDER to determine whether to use __GFP_NOFAIL
+- Add a dependency MM patch "mm/page_alloc: unify the warning on NOFAIL
+  and high order allocation"
+  This allows us to use NOFAIL up to 32K nodesize, and makes sure for
+  default 16K nodesize, all metadata would go 16K folios
+
+v2:
+- Rebased to handle the change in "btrfs: cache folio size and shift in extent_buffer"
+ fs/btrfs/extent_io.c | 131 ++++++++++++++++++++++++++++++-------------
+ 1 file changed, 93 insertions(+), 38 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 040c92541bc9..83225d265b60 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -716,12 +716,28 @@ int btrfs_alloc_page_array(unsigned int nr_pages, struct page **page_array,
+  *
+  * For now, the folios populated are always in order 0 (aka, single page).
+  */
+-static int alloc_eb_folio_array(struct extent_buffer *eb, bool nofail)
++static int alloc_eb_folio_array(struct extent_buffer *eb, int order,
++				bool nofail)
+ {
+ 	struct page *page_array[INLINE_EXTENT_BUFFER_PAGES] = { 0 };
+ 	int num_pages = num_extent_pages(eb);
+ 	int ret;
+ 
++	if (order) {
++		gfp_t gfp;
++
++		if (order > 0)
++			gfp = GFP_NOFS | __GFP_NOWARN;
++		else
++			gfp = nofail ? (GFP_NOFS | __GFP_NOFAIL) : GFP_NOFS;
++		eb->folios[0] = folio_alloc(gfp, order);
++		if (likely(eb->folios[0])) {
++			eb->folio_size = folio_size(eb->folios[0]);
++			eb->folio_shift = folio_shift(eb->folios[0]);
++			return 0;
++		}
++		/* Fallback to 0 order (single page) allocation. */
++	}
+ 	ret = btrfs_alloc_page_array(num_pages, page_array, nofail);
+ 	if (ret < 0)
+ 		return ret;
+@@ -2697,7 +2713,7 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+ 	 */
+ 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+ 
+-	ret = alloc_eb_folio_array(new, false);
++	ret = alloc_eb_folio_array(new, 0, false);
+ 	if (ret) {
+ 		btrfs_release_extent_buffer(new);
+ 		return NULL;
+@@ -2730,7 +2746,7 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	if (!eb)
+ 		return NULL;
+ 
+-	ret = alloc_eb_folio_array(eb, false);
++	ret = alloc_eb_folio_array(eb, 0, false);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -2945,6 +2961,14 @@ static int check_eb_alignment(struct btrfs_fs_info *fs_info, u64 start)
+ 	return 0;
+ }
+ 
++static void free_all_eb_folios(struct extent_buffer *eb)
++{
++	for (int i = 0; i < INLINE_EXTENT_BUFFER_PAGES; i++) {
++		if (eb->folios[i])
++			folio_put(eb->folios[i]);
++		eb->folios[i] = NULL;
++	}
++}
+ 
+ /*
+  * Return 0 if eb->folios[i] is attached to btree inode successfully.
+@@ -2963,6 +2987,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+ 	const unsigned long index = eb->start >> PAGE_SHIFT;
+ 	struct folio *existing_folio = NULL;
++	const int eb_order = folio_order(eb->folios[0]);
+ 	int ret;
+ 
+ 	ASSERT(found_eb_ret);
+@@ -2973,25 +2998,39 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ retry:
+ 	ret = filemap_add_folio(mapping, eb->folios[i], index + i,
+ 				GFP_NOFS | __GFP_NOFAIL);
+-	if (!ret)
++	if (likely(!ret))
+ 		goto finish;
+ 
++	/*
++	 * The remaining code is to handle various cases of races, including:
++	 *
++	 * - The page got reclaimed just after above filemap_add_folio() failure
++	 * - Some one else has inserted the folio before us
++	 * - Some existing page cache but no extent buffer attached
++	 * - Mixed order folios caused some conflicts
++	 */
+ 	existing_folio = filemap_lock_folio(mapping, index + i);
+-	/* The page cache only exists for a very short time, just retry. */
+ 	if (IS_ERR(existing_folio)) {
+ 		existing_folio = NULL;
++		/*
++		 * There are two cases here:
++		 * - The page is reclaimed between the add and lock
++		 * - The larger folio conflicts with some pages
++		 *   E.g.
++		 *	|<- folio ->|
++		 *	|  |  |//|//|
++		 *   Where |//| is the slot that we have a page cache.
++		 *
++		 * For larger folio case, we just fallback to order 0
++		 * immediately as we have no good way to distinguish them.
++		 */
++		if (eb_order > 0) {
++			ASSERT(i == 0);
++			return -EAGAIN;
++		}
+ 		goto retry;
+ 	}
+ 
+-	/* For now, we should only have single-page folios for btree inode. */
+-	ASSERT(folio_nr_pages(existing_folio) == 1);
+-
+-	if (folio_size(existing_folio) != eb->folio_size) {
+-		folio_unlock(existing_folio);
+-		folio_put(existing_folio);
+-		return -EAGAIN;
+-	}
+-
+ finish:
+ 	spin_lock(&mapping->i_private_lock);
+ 	if (existing_folio && fs_info->nodesize < PAGE_SIZE) {
+@@ -3000,6 +3039,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 		eb->folios[i] = existing_folio;
+ 	} else if (existing_folio) {
+ 		struct extent_buffer *existing_eb;
++		int existing_order = folio_order(existing_folio);
+ 
+ 		existing_eb = grab_extent_buffer(fs_info,
+ 						 folio_page(existing_folio, 0));
+@@ -3011,9 +3051,34 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 			folio_put(existing_folio);
+ 			return 1;
+ 		}
+-		/* The extent buffer no longer exists, we can reuse the folio. */
+-		__free_page(folio_page(eb->folios[i], 0));
+-		eb->folios[i] = existing_folio;
++		if (existing_order > eb_order) {
++			/*
++			 * The existing one has higher order, we need to drop
++			 * all eb folios before resuing it.
++			 * And this should only happen for the first folio.
++			 */
++			ASSERT(i == 0);
++			free_all_eb_folios(eb);
++			eb->folios[i] = existing_folio;
++		} else if (existing_order == eb_order) {
++			/*
++			 * Can safely reuse the filemap folio, just
++			 * release the eb one.
++			 */
++			folio_put(eb->folios[i]);
++			eb->folios[i] = existing_folio;
++		} else {
++			/*
++			 * The existing one has lower order.
++			 *
++			 * Just retry and fallback to order 0.
++			 */
++			ASSERT(i == 0);
++			folio_unlock(existing_folio);
++			folio_put(existing_folio);
++			spin_unlock(&mapping->i_private_lock);
++			return -EAGAIN;
++		}
+ 	}
+ 	eb->folio_size = folio_size(eb->folios[i]);
+ 	eb->folio_shift = folio_shift(eb->folios[i]);
+@@ -3046,6 +3111,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 	u64 lockdep_owner = owner_root;
+ 	bool page_contig = true;
+ 	int uptodate = 1;
++	int order = 0;
+ 	int ret;
+ 
+ 	if (check_eb_alignment(fs_info, start))
+@@ -3062,6 +3128,10 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		btrfs_warn_32bit_limit(fs_info);
+ #endif
+ 
++	if (IS_ENABLED(CONFIG_BTRFS_DEBUG) && fs_info->nodesize > PAGE_SIZE &&
++	    IS_ALIGNED(start, fs_info->nodesize))
++		order = ilog2(fs_info->nodesize >> PAGE_SHIFT);
++
+ 	eb = find_extent_buffer(fs_info, start);
+ 	if (eb)
+ 		return eb;
+@@ -3096,7 +3166,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 
+ reallocate:
+ 	/* Allocate all pages first. */
+-	ret = alloc_eb_folio_array(eb, true);
++	ret = alloc_eb_folio_array(eb, order, true);
+ 	if (ret < 0) {
+ 		btrfs_free_subpage(prealloc);
+ 		goto out;
+@@ -3113,27 +3183,11 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 			goto out;
+ 		}
+ 
+-		/*
+-		 * TODO: Special handling for a corner case where the order of
+-		 * folios mismatch between the new eb and filemap.
+-		 *
+-		 * This happens when:
+-		 *
+-		 * - the new eb is using higher order folio
+-		 *
+-		 * - the filemap is still using 0-order folios for the range
+-		 *   This can happen at the previous eb allocation, and we don't
+-		 *   have higher order folio for the call.
+-		 *
+-		 * - the existing eb has already been freed
+-		 *
+-		 * In this case, we have to free the existing folios first, and
+-		 * re-allocate using the same order.
+-		 * Thankfully this is not going to happen yet, as we're still
+-		 * using 0-order folios.
+-		 */
++		/* Need to fallback to 0 order folios. */
+ 		if (unlikely(ret == -EAGAIN)) {
+-			ASSERT(0);
++			ASSERT(order > 0);
++			order = 0;
++			free_all_eb_folios(eb);
+ 			goto reallocate;
+ 		}
+ 		attached++;
+@@ -3144,6 +3198,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+ 		 * and free the allocated page.
+ 		 */
+ 		folio = eb->folios[i];
++		num_folios = num_extent_folios(eb);
+ 		WARN_ON(btrfs_folio_test_dirty(fs_info, folio, eb->start, eb->len));
+ 
+ 		/*
+-- 
+2.45.2
+
 
