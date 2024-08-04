@@ -1,137 +1,224 @@
-Return-Path: <linux-btrfs+bounces-6970-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6971-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE2F7946DE2
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 11:20:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD14946DE7
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 11:23:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 810051F21667
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 09:20:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6DAC2816F4
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 09:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF1B21350;
-	Sun,  4 Aug 2024 09:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D230921350;
+	Sun,  4 Aug 2024 09:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fw75P1/J"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LT+AvjlN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051F917588
-	for <linux-btrfs@vger.kernel.org>; Sun,  4 Aug 2024 09:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE95320B
+	for <linux-btrfs@vger.kernel.org>; Sun,  4 Aug 2024 09:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722763211; cv=none; b=p4JQ70Z0hgAwCAsujdRCGHKI/6wEZw7Q+W8I8Um0FmZT/Vg3eHo17yk1yFOxRVlWIU8QChM/UBgVOBMtjli4mTRZ/EGcM2X5sAjZ+0eUsAHtnp9Uw4BO4Ahjphhe+eDVkXYkIN7qnny2jFJ17IYj78jv3xaXUMMMv4PkFIt7kt4=
+	t=1722763383; cv=none; b=pQrDL8IUessD0Hr5V4mRDYSY0E7bhnYWacGXMB36DhQW8MqA0BxsY0W2r1ef+DVesxh3b+x8xVFpha8c2eMyXXB6ke6u3G2uDCz8ZFpEKYoRxomY6MY+NsMHyksu11hg5J1gY0ssHh7I+rfJbze07FYvqfLrfCFXG9OTwixDUK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722763211; c=relaxed/simple;
-	bh=CMdMBBYdOPEwXVoBjZZDt7nbS9/xyHTAaT9CsaVXc6g=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=dDngEXn4mVEjUP2C/+8MTDcMhV5CDWUkQ/nLn5F7IRdzB9MRjf4OxDsOHDgYEO9kPWMgcc7yfD3HoXzzQo7/d+OcJLBnrPC+FFnrY8AT27F0C+QEB2VEiNphJR8Hcl3PLjolBIZiFwRU53+i0WivMxc09pE73bv/0rif8WP9xuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fw75P1/J; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ef1c12ae23so106829431fa.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 04 Aug 2024 02:20:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722763208; x=1723368008; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :mime-version:date:message-id:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=96hZbMMYAJiBYiBDzZjnavGQVWYd+m7IekPv7HePRjk=;
-        b=fw75P1/JyLwwArmz7csx3hY2FWK6zRHk8L8SVP11MQsXVCKCDzUuf7TXIQBqH/FiTY
-         DmLt3QMkYqxIlzlJXcOLhRBwTJVdEA+rIjA8TDShtxE6cs/4UwgNLYudrazdY44Ogjup
-         CDh2BW0Y1/qRyVuw/ZE8D1oAkXppfxjLJ8R9Z+cmPTHGwTOuLFhJGXjmYJS+MBLsMG89
-         0VPJnEBcOGHFOb1QgO5VTvSAFqdiMDZHYar3HyzxQFjEryJd9FPG8sBs2c/hs7fSUdt6
-         cLWn2+huxpefsqYBy1ULB81n3h58uMqFHIDGtlTr0moGeeuF+ItmNtjfjqPfAgMeM50W
-         s1qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722763208; x=1723368008;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :mime-version:date:message-id:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=96hZbMMYAJiBYiBDzZjnavGQVWYd+m7IekPv7HePRjk=;
-        b=GSo81haJhmftf4mdAEY1PQBuphGw6d32CBuQyd/OcAZ007Kl86fJhK8Gpx+pJWAkNd
-         FG9ytOt2xTHo51Gf/eJz/Y5P6MVjJ1DS6RtlPMI/RVbkB7n9r3v8y/9QzvOU5zSNnTwS
-         xY4HJM7WEAxnnsYtYJmSauS0Cu65tITOaD9bYFUpcC3wX5E9AXcEICCZF30dZnc4LeTj
-         JThjq8UThY34wpB4VmUFHSRF1UoEC8iZ+F8ve2pVXlzdk1k4Wi700AM0mtCiazqgvLUP
-         XCLoze2UhWjhDfoOGS924tPQWqEOiVA+O0YYK8btuUy4po3koQOQHb8Gz4dyfnfzAi1u
-         SniA==
-X-Gm-Message-State: AOJu0Yzz8/DjWUPL4CpAwqsqkieumJxUr/F8lFo+Xpw/FhHWgeSMOpNh
-	2cv9Xtw7pMsG0B+y4uyGSP7mjwRU75xClKjMsJjyw7PDX2xojLfWnhwMUA==
-X-Google-Smtp-Source: AGHT+IGMGW7wTIzDzU0lksQOmF7KEkj8cKczvCdEbUcyPMCxUqa3Wp+Vrk0FxsnMdgG+/s2J5eMZ8Q==
-X-Received: by 2002:a05:6512:3d14:b0:52e:9b74:120 with SMTP id 2adb3069b0e04-530bb397864mr6308744e87.19.1722763207725;
-        Sun, 04 Aug 2024 02:20:07 -0700 (PDT)
-Received: from 127.0.0.1 ([94.41.86.134])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-530bba33ac2sm735076e87.190.2024.08.04.02.20.07
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Aug 2024 02:20:07 -0700 (PDT)
-Sender: <irecca.kun@gmail.com>
-Message-ID: <d190ad2e-26d5-4113-ab43-f39010b3896e@gmail.com>
-Date: Sun, 4 Aug 2024 14:20:06 +0500
+	s=arc-20240116; t=1722763383; c=relaxed/simple;
+	bh=LORIYA1QNNUsFNc3F5FgT16nYWkHkWmr458bZX25mtw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tk122k86gfDvLbBVn8vqTnWuwHraaPM2M644Qkkwr9KhXUVXZci+/fKBnnJgpnIOac4c1guGwH0CFQELhFKr1i1OsnNphN6qnqiTgPUMLfIDzkUeMjleWetbVyXaX5SoZDOyBuh1vmchi/fl1+hi6RdI42yFGGBMkxMt+0KJzxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LT+AvjlN; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1722763376; x=1723368176; i=quwenruo.btrfs@gmx.com;
+	bh=k4XGss9R1JKoMPn8Rwsev7bRmB1qt5akFbNpUFh5PLI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=LT+AvjlNWQsAsXVmV+xH2bvweCmsLaqlvXrd34pHMRgflOrWpDxIex+M1xvo3bfe
+	 VHEd5kS7/70MrGRjpj6srlbHXVtB+8bAfSOSw7DfuBzM+KKH7hOvOj7j0vBCxwDY1
+	 AkvO+MRJrSDNFb1JNKzF3hOvMgJUjtAlpx8R19TvyHW1ir/YV5r9eMaDK0j2MptqY
+	 XOs2d0GTNarhjVQGpzQ1Hf0Cs+0idNY7k2f2aA982AtvHdpoD1Ee8n6mLxu2ghA6H
+	 XIIkoB6gu/zUMOUyLOgcIPYRgBIJFx6hKX09GljOkJV4iDtBT7zNKAsHfZHVVAbeJ
+	 FQV+tYH582wCv/yZUA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4z6q-1s99EB2joa-00vPpj; Sun, 04
+ Aug 2024 11:22:56 +0200
+Message-ID: <ac63b2f0-776d-4a99-a495-ce9ed9a9180f@gmx.com>
+Date: Sun, 4 Aug 2024 18:52:52 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs: remove __GFP_NOFAIL usage for debug builds
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <cover.1720159494.git.wqu@suse.com>
+ <20240705145543.GB879955@perftesting> <20240730135538.GC17473@twin.jikos.cz>
+ <aaa0e841-fc2f-458f-9561-c7116c8a646e@suse.com>
+ <20240731171321.GT17473@twin.jikos.cz>
 Content-Language: en-US
-To: linux-btrfs@vger.kernel.org
-From: i.r.e.c.c.a.k.u.n+kernel.org@gmail.com
-Subject: 'btrfs filesystem defragment' makes files explode in size, especially
- fallocated ones
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240731171321.GT17473@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:MYmnJkeND2dqwvT2JB+tSWNEdMcObi00/luGMy56pwTSRaV/ZLD
+ pDG7/q/LlMGPk90CeWR4/f01jHgSuXwq1HrJiO/uohIY/iuwGGRN4ZXyL2smfcWJr9P6juF
+ VXLx0oe1NM4MmpbTKO3O88v8M8Ig8OJ5YYLwC52DbHLe5s+pDDNhEHaqylLEV9+S1o8oaBi
+ tR5Gmsv4YDoJV8PgV4SCQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:voMp/H9aSsE=;RTpK7vRi0/i7K5TG8U24xMafNdn
+ jTbrlx4CwdXHX3lsqzmjYS5qersNJ4EENUsawkHH4uFRhC2AGS06ibEp92OHpZNV6V0UXxy/D
+ VYXh6KLey95GK2mDj2XwQyTDPWAMJ5wk4a/2ktsuX6TuY5nuc5aczp0wamy66Zk/2ZMG06vyt
+ d/DQVuI2zzqlpbSdBjEgwnY0VsxJXGRg5svUCard/UEmt6LDcISbTOLppVGZ00OefoEXa1gpR
+ ypIk83bSJb8tisGfFb5RqXYheDwiIfUrMRuAtAkMm07PHQDAtOGo1YrGPmVSRDTLzlrPS+C8c
+ kfHb/3WYXaFrUW+hKBGoDhfKYPN7uAZ45VJ3pv+k8q54wCVgwhweQjQWy0H2tUSLfOyt7WK+0
+ SJMFaH0L6M9R7OaFPx7o5WeQFSYxkyacvksyMA8Lc3J1fcQsUOAp9uFR5WeN0E4KzawTwTSn+
+ n6jt+JjwAEqZSa6iR/fDmi0eJT7f1gOViZWFvUoh9OUg9Nu53NrebKcOKEAQQUTQ0j7yrVJDQ
+ DOFyDnVia2UB5FvmtHu9VgNJZeZ2V/WuH+CMWM9V2Rv67bIx3uYDNVWofMEc0nWLAQsJHa4Jp
+ 846dFVFi1p/BYBqR6wvfjpOhhtxuEVFHrmtiMW9h3XLQF2J7U6r0iJKalKufgtDPyxjp3kHYj
+ Nzzs1Puv3pDla4E8k1rHAzQyni1xluu8I5kITfMgzXhM4X9Vo4+fDUMA/lr3gyqL8iNLm9W69
+ nsYtH3JmiXlQhHNSGWy5yMSUOt+n9BSA0ptpOoyEdcQhqxmey6AVM6pgy02XOZWZt0nDlCS2U
+ Bb/6kPqKEI2Y05QN8URPldvT/tpWgkRXuI3D6m2AhdJaE=
 
-(Originally reported on Kernel.org Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=219033)
 
-There is a very weird quirk I found with 'btrfs filesystem defragment' command. And no, it's not about reflinks removal, I'm aware of that.
 
-It is kinda hard to replicate, but I found a somewhat reliable way. It reaches extremes with fallocated files specifically.
+=E5=9C=A8 2024/8/1 02:43, David Sterba =E5=86=99=E9=81=93:
+> On Wed, Jul 31, 2024 at 07:47:51AM +0930, Qu Wenruo wrote:
+>>
+>>
+>> =E5=9C=A8 2024/7/30 23:25, David Sterba =E5=86=99=E9=81=93:
+>>> On Fri, Jul 05, 2024 at 10:55:43AM -0400, Josef Bacik wrote:
+>>>> On Fri, Jul 05, 2024 at 03:45:37PM +0930, Qu Wenruo wrote:
+>>>>> This patchset removes all __GFP_NOFAIL flags usage inside btrfs for
+>>>>> DEBUG builds.
+>>>>>
+>>>>> There are 3 call sites utilizing __GFP_NOFAIL:
+>>>>>
+>>>>> - __alloc_extent_buffer()
+>>>>>     It's for the extent_buffer structure allocation.
+>>>>>     All callers are already handling the errors.
+>>>>>
+>>>>> - attach_eb_folio_to_filemap()
+>>>>>     It's for the filemap_add_folio() call, the flag is also passed t=
+o mem
+>>>>>     cgroup, which I suspect is not handling larger folio and __GFP_N=
+OFAIL
+>>>>>     correctly, as I'm hitting soft lockups when testing larger folio=
+s
+>>>>>
+>>>>>     New error handling is added.
+>>>>>
+>>>>> - btrfs_alloc_folio_array()
+>>>>>     This is for page allocation for extent buffers.
+>>>>>     All callers are already handling the errors.
+>>>>>
+>>>>> Furthermore, to enable more testing while not affecting end users, t=
+he
+>>>>> change is only implemented for DEBUG builds.
+>>>>>
+>>>>> Qu Wenruo (3):
+>>>>>     btrfs: do not use __GFP_NOFAIL flag for __alloc_extent_buffer()
+>>>>>     btrfs: do not use __GFP_NOFAIL flag for attach_eb_folio_to_filem=
+ap()
+>>>>>     btrfs: do not use __GFP_NOFAIL flag for btrfs_alloc_folio_array(=
+)
+>>>>
+>>>> The reason I want to leave NOFAIL is because in a cgroup memory const=
+rained
+>>>> environment we could get an errant ENOMEM on some sort of metadata op=
+eration,
+>>>> which then gets turned into an aborted transaction.  I don't want a m=
+emory
+>>>> constrained cgroup flipping the whole file system read only because i=
+t got an
+>>>> ENOMEM in a place where we have no choice but to abort the transactio=
+n.
+>>>>
+>>>> If we could eliminate that possibility then hooray, but that's not ac=
+tually
+>>>> possible, because any COW for a multi-modification case (think finish=
+ ordered
+>>>> io) could result in an ENOMEM and thus a transaction abort.  We need =
+to live
+>>>> with NOFAIL for these cases.  Thanks,
+>>>
+>>> I agree with keeping NOFAIL.  Please add the above as a comment to
+>>> btrfs_alloc_folio_array().
+>>
+>> That will soon no longer be a problem.
+>>
+>> The cgroup guys are fine if certain inode should not be limited by mem
+>> cgroup, so I already have patches to use root mem cgroup so that it wil=
+l
+>> not be charged at all.
+>>
+>> https://lore.kernel.org/linux-mm/6a9ba2c8e70c7b5c4316404612f281a031f847=
+da.1721384771.git.wqu@suse.com/
+>>
+>> Furthermore, using NOFAIL just to workaround mem cgroup looks like an
+>> abuse to me.
+>
+> It's not just because of cgroup, the nofail semantics for metadata
+> means that MM subsystem should try to get some memory instead of
+> failing, where the filesystem operation can wait a bit. What josef
+> described regarding transaction aborts applies in general.
+>
 
-1. Create a file on a Btrfs filesystem using 'fallocate' and fill it. The easy way to do that is just to copy some files with 'rsync --preallocate'.
+If you are only talking about the original patch, yes, we should not
+remove NOFAIL for folio allocation, at least for now.
 
-2. Check compsize info:
+But this patchset is already a little outdated, the latest way to remove
+NOFAIL is to only remove the usage for filemap_add_folio().
 
-# compsize foo
-Processed 71 files, 71 regular extents (71 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%      630M         630M         630M
-none       100%      630M         630M         630M
+Filemap_add_folio() is only doing two things:
 
-All is fine here for now. 1 extent per 1 file, "Disk Usage" = "Referenced".
+- Cgroup charge
+   This will be addressed by manually using root memcgroup, so that
+   we will never trigger cgroup charge anymore.
 
-3. Run defragment:
+- Xarray split (aka new slot allocation)
+   This is only allocating some xarray slots, if that fails I do not
+   really believe NOFAIL can do anything much better.
 
-# btrfs filesystem defragment -r foo
+So all your argument on the NOFAIL and metadata allocation no longer stand=
+s.
 
-4. Check compsize again:
+Because I'm not even going to touch folio allocation part (even I still
+believe we should not go NOFAIL for metadata folio allocation).
 
-# compsize foo
-Processed 71 files, 76 regular extents (76 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%      638M         638M         630M
-none       100%      638M         638M         630M
-
-Oops, besides the fact that the amount of extents is actually increased, which means 'btrfs filesystem defragment' actually made fragmentation worse, physical disk usage increased for no reason. And I didn't find any way to shrink it back.
-
----
-
-The end result seems to be random though. But I managed to achieve some truly horrifying results.
-
-# compsize foo
-Processed 45 files, 45 regular extents (45 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%      360M         360M         360M
-none       100%      360M         360M         360M
-
-# btrfs filesystem defragment -r -t 1G foo
-
-# compsize foo
-Processed 45 files, 144 regular extents (144 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%      716M         716M         360M
-none       100%      716M         716M         360M
-
-Yikes! Triple the extents! Double increase in size!
+Thanks,
+Qu
 
