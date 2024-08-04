@@ -1,224 +1,150 @@
-Return-Path: <linux-btrfs+bounces-6971-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6972-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD14946DE7
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 11:23:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A857494705B
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 21:33:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6DAC2816F4
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 09:23:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3072D2810A6
+	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 19:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D230921350;
-	Sun,  4 Aug 2024 09:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LT+AvjlN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9789C136320;
+	Sun,  4 Aug 2024 19:33:33 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE95320B
-	for <linux-btrfs@vger.kernel.org>; Sun,  4 Aug 2024 09:23:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A371D947E
+	for <linux-btrfs@vger.kernel.org>; Sun,  4 Aug 2024 19:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722763383; cv=none; b=pQrDL8IUessD0Hr5V4mRDYSY0E7bhnYWacGXMB36DhQW8MqA0BxsY0W2r1ef+DVesxh3b+x8xVFpha8c2eMyXXB6ke6u3G2uDCz8ZFpEKYoRxomY6MY+NsMHyksu11hg5J1gY0ssHh7I+rfJbze07FYvqfLrfCFXG9OTwixDUK8=
+	t=1722800013; cv=none; b=U+Tq9I57G5dmiFSUcPQWUb94ruebWlJurjHRpowp9FfVnUYJ//DiIApJ7yp3jJFyTSjxceZnqijpJVlGIl9+oVnke2PcnCoZufot9bQ+EX3oUD4vkbPlCFXSP+Vio6Ika+1R+FSSntAbwHnplyllVDMkUnMmKDa0G2uP0Nz1Tww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722763383; c=relaxed/simple;
-	bh=LORIYA1QNNUsFNc3F5FgT16nYWkHkWmr458bZX25mtw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tk122k86gfDvLbBVn8vqTnWuwHraaPM2M644Qkkwr9KhXUVXZci+/fKBnnJgpnIOac4c1guGwH0CFQELhFKr1i1OsnNphN6qnqiTgPUMLfIDzkUeMjleWetbVyXaX5SoZDOyBuh1vmchi/fl1+hi6RdI42yFGGBMkxMt+0KJzxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LT+AvjlN; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722763376; x=1723368176; i=quwenruo.btrfs@gmx.com;
-	bh=k4XGss9R1JKoMPn8Rwsev7bRmB1qt5akFbNpUFh5PLI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=LT+AvjlNWQsAsXVmV+xH2bvweCmsLaqlvXrd34pHMRgflOrWpDxIex+M1xvo3bfe
-	 VHEd5kS7/70MrGRjpj6srlbHXVtB+8bAfSOSw7DfuBzM+KKH7hOvOj7j0vBCxwDY1
-	 AkvO+MRJrSDNFb1JNKzF3hOvMgJUjtAlpx8R19TvyHW1ir/YV5r9eMaDK0j2MptqY
-	 XOs2d0GTNarhjVQGpzQ1Hf0Cs+0idNY7k2f2aA982AtvHdpoD1Ee8n6mLxu2ghA6H
-	 XIIkoB6gu/zUMOUyLOgcIPYRgBIJFx6hKX09GljOkJV4iDtBT7zNKAsHfZHVVAbeJ
-	 FQV+tYH582wCv/yZUA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4z6q-1s99EB2joa-00vPpj; Sun, 04
- Aug 2024 11:22:56 +0200
-Message-ID: <ac63b2f0-776d-4a99-a495-ce9ed9a9180f@gmx.com>
-Date: Sun, 4 Aug 2024 18:52:52 +0930
+	s=arc-20240116; t=1722800013; c=relaxed/simple;
+	bh=Ege54MFq1DMrJcWiCDMbJ2HcM2ypStFyil/0AKIiHkg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=geYCef37+48fRNpM++KsePiBjVnYiVjFVj/r4/N1CZPG6N/k1erkJNPfSi2bDj5HTBwRDsPAO1OtfveHaCjkaAWbyaA1Ba5io7zPOobcDuEGCw0PnHre0Zcswo6tI5c+34+ny8PC1kDseHMZLp2HlOnFubU9+7HxEFQ2xH3dEzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-39b3cd1813aso12277435ab.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 04 Aug 2024 12:33:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722800010; x=1723404810;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=73bjFrgcVnbFT6bvTdW7jjEosldFBKTQFoMvFajDuwI=;
+        b=h/sEWblAZ5vIGumgvrRHAukFh96PzGr1I12Nys1OZvLHAmK6S6NIGHoQ97IqDKSh1h
+         HcRXYShlrkG/TXyTy5R20RRsaAFnEvTa8gVO0MnTaaBRLZBcCsR9RjNbok52nTk1mPbd
+         Ryf6cJPrSduhtRNetY+OKFFGQZIlPaaJpoD7QKqgsHRrAUY7AC54xVo9F0MbUHxJekSY
+         /hHRl4VO0PJChtFk+uB3ZMY57e6TIO7r82UYE0U0Tb1hR92H8BRSxGT1E3D22XWzK6YI
+         LoaSNYsr9JDA9PODku1/qY9WW7yJG7B65nKy0XDDeEfCN6hCGA9fZd8VTVLWqWMntyX/
+         K0PQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWMuTEXIBVzR5Wpvki3QfDalnAy6V/0R4HyJzaWJgczq+13gMv4b1teDoul2iHUrw8Fjst25ShzzvN/tyzdUr+yYFTJUjgyxl/TjM4=
+X-Gm-Message-State: AOJu0YzFA6tAJtnI1uIN6boSX/i4SjfZzCZRI2z29mje0dTdcd7WlXaT
+	mC0TZiRYlkA55gOpUR3Cwzl+hzGHdr+wFZHU1HbVPJ7cw7UH1RJULC2Em0l9Yo89rAia9dGU4TA
+	702jXHbZV7r5IbIWPwWne5Pthd2QK01MHPRzPULjO0zQT0O+1K3weERU=
+X-Google-Smtp-Source: AGHT+IEpmvVuM1dyybCZs19PSG3BgaBmUm0n42ONUF47VQ4nArKnGOTZj3Qrw1IGPV7u1PcBkBMonLeqdOsiozAsELfQ3R32+RI1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] btrfs: remove __GFP_NOFAIL usage for debug builds
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <cover.1720159494.git.wqu@suse.com>
- <20240705145543.GB879955@perftesting> <20240730135538.GC17473@twin.jikos.cz>
- <aaa0e841-fc2f-458f-9561-c7116c8a646e@suse.com>
- <20240731171321.GT17473@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240731171321.GT17473@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MYmnJkeND2dqwvT2JB+tSWNEdMcObi00/luGMy56pwTSRaV/ZLD
- pDG7/q/LlMGPk90CeWR4/f01jHgSuXwq1HrJiO/uohIY/iuwGGRN4ZXyL2smfcWJr9P6juF
- VXLx0oe1NM4MmpbTKO3O88v8M8Ig8OJ5YYLwC52DbHLe5s+pDDNhEHaqylLEV9+S1o8oaBi
- tR5Gmsv4YDoJV8PgV4SCQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:voMp/H9aSsE=;RTpK7vRi0/i7K5TG8U24xMafNdn
- jTbrlx4CwdXHX3lsqzmjYS5qersNJ4EENUsawkHH4uFRhC2AGS06ibEp92OHpZNV6V0UXxy/D
- VYXh6KLey95GK2mDj2XwQyTDPWAMJ5wk4a/2ktsuX6TuY5nuc5aczp0wamy66Zk/2ZMG06vyt
- d/DQVuI2zzqlpbSdBjEgwnY0VsxJXGRg5svUCard/UEmt6LDcISbTOLppVGZ00OefoEXa1gpR
- ypIk83bSJb8tisGfFb5RqXYheDwiIfUrMRuAtAkMm07PHQDAtOGo1YrGPmVSRDTLzlrPS+C8c
- kfHb/3WYXaFrUW+hKBGoDhfKYPN7uAZ45VJ3pv+k8q54wCVgwhweQjQWy0H2tUSLfOyt7WK+0
- SJMFaH0L6M9R7OaFPx7o5WeQFSYxkyacvksyMA8Lc3J1fcQsUOAp9uFR5WeN0E4KzawTwTSn+
- n6jt+JjwAEqZSa6iR/fDmi0eJT7f1gOViZWFvUoh9OUg9Nu53NrebKcOKEAQQUTQ0j7yrVJDQ
- DOFyDnVia2UB5FvmtHu9VgNJZeZ2V/WuH+CMWM9V2Rv67bIx3uYDNVWofMEc0nWLAQsJHa4Jp
- 846dFVFi1p/BYBqR6wvfjpOhhtxuEVFHrmtiMW9h3XLQF2J7U6r0iJKalKufgtDPyxjp3kHYj
- Nzzs1Puv3pDla4E8k1rHAzQyni1xluu8I5kITfMgzXhM4X9Vo4+fDUMA/lr3gyqL8iNLm9W69
- nsYtH3JmiXlQhHNSGWy5yMSUOt+n9BSA0ptpOoyEdcQhqxmey6AVM6pgy02XOZWZt0nDlCS2U
- Bb/6kPqKEI2Y05QN8URPldvT/tpWgkRXuI3D6m2AhdJaE=
+X-Received: by 2002:a05:6e02:2198:b0:39a:e900:7e3e with SMTP id
+ e9e14a558f8ab-39b1fc4c0d9mr8100465ab.3.1722800010057; Sun, 04 Aug 2024
+ 12:33:30 -0700 (PDT)
+Date: Sun, 04 Aug 2024 12:33:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e7183061ee0a25f@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_run_defrag_inodes (2)
+From: syzbot <syzbot+5833b186650f87c5b7c4@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    e4fc196f5ba3 Merge tag 'for-6.11-rc1-tag' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=133acef9980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8b0cca2f3880513d
+dashboard link: https://syzkaller.appspot.com/bug?extid=5833b186650f87c5b7c4
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c4bed4c74b59/disk-e4fc196f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f90c5ef25b80/vmlinux-e4fc196f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3a4dad9a7e8e/bzImage-e4fc196f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5833b186650f87c5b7c4@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at fs/inode.c:1819!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 1 UID: 0 PID: 10710 Comm: btrfs-cleaner Not tainted 6.11.0-rc1-syzkaller-00062-ge4fc196f5ba3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
+RIP: 0010:iput+0x928/0x930 fs/inode.c:1819
+Code: ff e9 a7 fb ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 45 fe ff ff 4c 89 f7 e8 33 aa e7 ff e9 38 fe ff ff e8 29 71 80 ff 90 <0f> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc900041ffc50 EFLAGS: 00010293
+RAX: ffffffff8212f547 RBX: 0000000000000040 RCX: ffff888023d05a00
+RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
+RBP: ffff88805e4f48e0 R08: ffffffff8212ec80 R09: 1ffffffff202f495
+R10: dffffc0000000000 R11: fffffbfff202f496 R12: ffff88805e4f49b0
+R13: ffff88806c102028 R14: 0000000000000005 R15: ffff888068e60350
+FS:  0000000000000000(0000) GS:ffff8880b9300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1c9b094108 CR3: 000000005d542000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ __btrfs_run_defrag_inode fs/btrfs/defrag.c:281 [inline]
+ btrfs_run_defrag_inodes+0xa80/0xdf0 fs/btrfs/defrag.c:327
+ cleaner_kthread+0x28c/0x3d0 fs/btrfs/disk-io.c:1527
+ kthread+0x2f2/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:iput+0x928/0x930 fs/inode.c:1819
+Code: ff e9 a7 fb ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 45 fe ff ff 4c 89 f7 e8 33 aa e7 ff e9 38 fe ff ff e8 29 71 80 ff 90 <0f> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc900041ffc50 EFLAGS: 00010293
+RAX: ffffffff8212f547 RBX: 0000000000000040 RCX: ffff888023d05a00
+RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
+RBP: ffff88805e4f48e0 R08: ffffffff8212ec80 R09: 1ffffffff202f495
+R10: dffffc0000000000 R11: fffffbfff202f496 R12: ffff88805e4f49b0
+R13: ffff88806c102028 R14: 0000000000000005 R15: ffff888068e60350
+FS:  0000000000000000(0000) GS:ffff8880b9300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1c9b094108 CR3: 000000006b99e000 CR4: 0000000000350ef0
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-=E5=9C=A8 2024/8/1 02:43, David Sterba =E5=86=99=E9=81=93:
-> On Wed, Jul 31, 2024 at 07:47:51AM +0930, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2024/7/30 23:25, David Sterba =E5=86=99=E9=81=93:
->>> On Fri, Jul 05, 2024 at 10:55:43AM -0400, Josef Bacik wrote:
->>>> On Fri, Jul 05, 2024 at 03:45:37PM +0930, Qu Wenruo wrote:
->>>>> This patchset removes all __GFP_NOFAIL flags usage inside btrfs for
->>>>> DEBUG builds.
->>>>>
->>>>> There are 3 call sites utilizing __GFP_NOFAIL:
->>>>>
->>>>> - __alloc_extent_buffer()
->>>>>     It's for the extent_buffer structure allocation.
->>>>>     All callers are already handling the errors.
->>>>>
->>>>> - attach_eb_folio_to_filemap()
->>>>>     It's for the filemap_add_folio() call, the flag is also passed t=
-o mem
->>>>>     cgroup, which I suspect is not handling larger folio and __GFP_N=
-OFAIL
->>>>>     correctly, as I'm hitting soft lockups when testing larger folio=
-s
->>>>>
->>>>>     New error handling is added.
->>>>>
->>>>> - btrfs_alloc_folio_array()
->>>>>     This is for page allocation for extent buffers.
->>>>>     All callers are already handling the errors.
->>>>>
->>>>> Furthermore, to enable more testing while not affecting end users, t=
-he
->>>>> change is only implemented for DEBUG builds.
->>>>>
->>>>> Qu Wenruo (3):
->>>>>     btrfs: do not use __GFP_NOFAIL flag for __alloc_extent_buffer()
->>>>>     btrfs: do not use __GFP_NOFAIL flag for attach_eb_folio_to_filem=
-ap()
->>>>>     btrfs: do not use __GFP_NOFAIL flag for btrfs_alloc_folio_array(=
-)
->>>>
->>>> The reason I want to leave NOFAIL is because in a cgroup memory const=
-rained
->>>> environment we could get an errant ENOMEM on some sort of metadata op=
-eration,
->>>> which then gets turned into an aborted transaction.  I don't want a m=
-emory
->>>> constrained cgroup flipping the whole file system read only because i=
-t got an
->>>> ENOMEM in a place where we have no choice but to abort the transactio=
-n.
->>>>
->>>> If we could eliminate that possibility then hooray, but that's not ac=
-tually
->>>> possible, because any COW for a multi-modification case (think finish=
- ordered
->>>> io) could result in an ENOMEM and thus a transaction abort.  We need =
-to live
->>>> with NOFAIL for these cases.  Thanks,
->>>
->>> I agree with keeping NOFAIL.  Please add the above as a comment to
->>> btrfs_alloc_folio_array().
->>
->> That will soon no longer be a problem.
->>
->> The cgroup guys are fine if certain inode should not be limited by mem
->> cgroup, so I already have patches to use root mem cgroup so that it wil=
-l
->> not be charged at all.
->>
->> https://lore.kernel.org/linux-mm/6a9ba2c8e70c7b5c4316404612f281a031f847=
-da.1721384771.git.wqu@suse.com/
->>
->> Furthermore, using NOFAIL just to workaround mem cgroup looks like an
->> abuse to me.
->
-> It's not just because of cgroup, the nofail semantics for metadata
-> means that MM subsystem should try to get some memory instead of
-> failing, where the filesystem operation can wait a bit. What josef
-> described regarding transaction aborts applies in general.
->
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If you are only talking about the original patch, yes, we should not
-remove NOFAIL for folio allocation, at least for now.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-But this patchset is already a little outdated, the latest way to remove
-NOFAIL is to only remove the usage for filemap_add_folio().
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Filemap_add_folio() is only doing two things:
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-- Cgroup charge
-   This will be addressed by manually using root memcgroup, so that
-   we will never trigger cgroup charge anymore.
-
-- Xarray split (aka new slot allocation)
-   This is only allocating some xarray slots, if that fails I do not
-   really believe NOFAIL can do anything much better.
-
-So all your argument on the NOFAIL and metadata allocation no longer stand=
-s.
-
-Because I'm not even going to touch folio allocation part (even I still
-believe we should not go NOFAIL for metadata folio allocation).
-
-Thanks,
-Qu
+If you want to undo deduplication, reply with:
+#syz undup
 
