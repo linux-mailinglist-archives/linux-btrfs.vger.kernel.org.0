@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-6973-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4670B94712B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 00:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA7F947289
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 02:46:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C33031F21145
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2024 22:20:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A4961F211B5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 00:46:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A32A13A24A;
-	Sun,  4 Aug 2024 22:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBD626AD0;
+	Mon,  5 Aug 2024 00:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OLRGR3Re"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="N4JdejcE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD20AD59
-	for <linux-btrfs@vger.kernel.org>; Sun,  4 Aug 2024 22:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0E0EDC
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Aug 2024 00:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722810003; cv=none; b=M15vFSMIHzaY3PgmItpYhTAcWWOcc5jusAPK6+0mlVWbQzYe480YluzxJq9c+uTPjLYxCTeGwCAElgfUiXLmUJ8Hi7xfQQi6yoPhNA6Li4ApWkLA/K2bVqJytKEcmohgorDdBa1cvAU+kmwprPNQCLm+PYFlFaxMDNgEOVx4BS8=
+	t=1722818788; cv=none; b=oc3A8F44U6HJbgV9mz6L1tL4nCSKLB7E4gG1CA/+mzom9rLuZnz9lEY9drzwjOSvapfNU2HK1JhP5bAlsknnb6rFeLtlf5p2IHRWjVfnQsc3bSuquN5qzAH7mylMfkPQqkJ4r0//t+/DfFlTJUvOYCPsvrXbZ1ATuXK8NFvT+k4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722810003; c=relaxed/simple;
-	bh=XU2Tbjhgzt6gnggaKl/vZmlq5UZDL5Kd80vW9POKo4E=;
+	s=arc-20240116; t=1722818788; c=relaxed/simple;
+	bh=7LiMi7ADuOWU4o5TWh0ANwGd8837Zk95D2d0CApyPbU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=rrkU5hzp7YZG9wBm3qMM1wu8CJjZECdG2AiAD6EAoDNHCsFwMHFWOXkKJptoDXuPKaLzt1D86mtinbjELyy2tErMQXSUGzJlXJTsXbofOpp3JoG1pY9pLpEytZ7bKK9FPaBiZnwupHlxTyIDxOCcsuYBL+I4xGp6Sau+tWZsDl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OLRGR3Re; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=txV3bHQ8Nxo9HmMAvz68ecOm3at2Ndz6/SqeEa656sSGXMMMW5iYLAo8RYZBpn/a5+/ZdY/hC8TqWNFZrdjoalFKYs8xEVVjXHp2l8B/HFU3Iuy1ZmGMIcqlkFuQ5KIOCnJaYDXiH+FwtA7TqZulSTIMJhcxZYenE0daGPtffhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=N4JdejcE; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722809997; x=1723414797; i=quwenruo.btrfs@gmx.com;
-	bh=XU2Tbjhgzt6gnggaKl/vZmlq5UZDL5Kd80vW9POKo4E=;
+	s=s31663417; t=1722818781; x=1723423581; i=quwenruo.btrfs@gmx.com;
+	bh=zvqRVZSDJtyYebvPq37SZUCMdp0vADQk3xCU+4R44/8=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=OLRGR3Reu5LBPYUe5jGheAIb51Fk/rlPL3N+iOlYBbc4v9rC/Drl3y+8EZLSgaXc
-	 hIGv+glr0L4HP4B+EC8OVjuDfW2hrBCDAeRL5GlEGCQ1gz/J51MK3L6YGKpZnMOo0
-	 2CZv79sk+mxUHJ3iG5zKfTdDRtIJJJWsIi62I33mm9ruM5GWBGeFzwkj4n3P/q/Yb
-	 WnqN0jp80nJGlEdZifUq7P6ocw/rG29Ajrp/NXTq0qkf4eZNHnsgWNpSzWTdkeO+P
-	 m2CuZj2SVK9YUHevRIgtwCj0fC6ADEeH4PmzZIBffbaZU3OjSorkxvnChoXSa8zn6
-	 KOS638HoUs4umH7BoQ==
+	b=N4JdejcEbhB4Xm733hwbLIzvEkBEncQqzeeEEynWhSX5jfzftMGwlJDxG7ov8Imk
+	 7bgX4stGNxTlZwsbAY8FT5i1w2zRTE09HqX+dB0wqq3U3Zr3t1WGQo9MyLYKTxT7A
+	 JUsbF5CmXCNtQG/DLPEK4puux14yGRwgRvZiTlv1zoSihgShfX9Z80LFIgr1hKUs7
+	 G7D92l6xsVan0PJZXbsaaXJ7ROe9yeY1by58Z6drOuhl4HGtD9+v6/3jWjA987os5
+	 Ee2wTf29KaS3CqpOCu/86zi83n4Ro1VMoAeOQmYc95Nu1EXNW9lU8xO44QunrIDgV
+	 ZtGQY6ACqv/IVnUaQw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHoRK-1sUcv51ET0-005yeF; Mon, 05
- Aug 2024 00:19:57 +0200
-Message-ID: <7a85ea4e-814f-4940-bd3e-13299197530f@gmx.com>
-Date: Mon, 5 Aug 2024 07:49:54 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlw3X-1rthkt3Cy3-00ZFOp; Mon, 05
+ Aug 2024 02:46:21 +0200
+Message-ID: <e2d4cc82-bf94-4251-be9a-c98e6e0f6a1a@gmx.com>
+Date: Mon, 5 Aug 2024 10:16:18 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: 'btrfs filesystem defragment' makes files explode in size,
- especially fallocated ones
-To: i.r.e.c.c.a.k.u.n+kernel.org@gmail.com, linux-btrfs@vger.kernel.org
-References: <d190ad2e-26d5-4113-ab43-f39010b3896e@gmail.com>
+Subject: Re: [PATCH v2 0/3] btrfs-progs: use libbtrfsutil for subvolume
+ creation
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+References: <20240802112730.3575159-1-maharmstone@fb.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,74 +88,66 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <d190ad2e-26d5-4113-ab43-f39010b3896e@gmail.com>
+In-Reply-To: <20240802112730.3575159-1-maharmstone@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:4a4fNtN3/wGrCqr768CFkKzCs2fNuWszQa0i9JDlT4xwgD6WNQ6
- aXV7slTGgBSVbDWoxbzD9iQrYJtinOj0MeCQf490Pwio0Kq1tbcbehGrHufIVNpLkX/3Gci
- D8fWZZ2Xb6hI+Lfk57o5bf/sHx2CrEeEbc/c3uvLAcy7Xp51QQgPg38hjXZq0ihHhoFgTPr
- Qlq2VpfAYBC/iioBrPyvw==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SAqm1zR9B+UWPA2p8nyI038TzhrbIhm2vR0IeCSjWpuwXCOcZFL
+ NwRDst1jhGmIpd6l1n9FwT8p0dItUXSWBlGmNhN1h+ae6SvKf3i8JpW8fwSOkKI0tQ4gEP9
+ QOhw1ah8HlVYvQNUq2s8bcM3a3yGXVcJkXbvYNqg4XXoLGjtdrz6l469m9q7Vy3nd94PJVc
+ IzcR6b5Zk3TAO/Q4yM54Q==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:kGv5Ux6vCfw=;4oIJoNnt5IkPXwwLHAVFy8ZOQXc
- wYbPmnIg5aTaywfXjb2IB1IhngPqvBw8H9df3oEGUyCIOCira5w+I04vjd2y/kHbQcQotA96M
- +VfmZSH3qWwByMY5HyyXAXL46qr8lSzuu3xWDDE8+HGHtKhXspjzPZOLW0VSGOlxH9wfQHo9H
- ED8DrUDmST+GA9JAPxRvt81KSpCMRY8BSL5xD/nGxOlzjRir/1SsaCaIoLL3ktHtHKmIfYeKs
- 22zUaO4ddqnobo5vG0Va8N9yn2C8g6R2Lt/L7AQEnCP+Cx6LPL5WZZla9NFsxSv1Dnv9bZTI1
- k+JG7XN99nMNc5T5TGJT+izZPcwLu5C4HZjIZvQDDpivmH+LZ3I1lKNZSS31rXkSAHihJix8V
- eRaf+/C33PLaGIn/oEZtSTys2de8htp/kBjQ6g0NqKfQbBiJRJFve02HioE8EGI8xEeUedSBv
- z6hpBvKKNVDUxsHWm6W6Hm85WSQli1QYQUfWLV9QgRT5pe9ARNRhzWsJrH5jhtu7j1QPz8wb4
- VCoxJm75PNG5a+ePlEJsNLQEQwU9A/0ooCZC88SqF5NKp9n1+9KuZF89ZECkmSKmJ3gOEMH5N
- inknTVLXbB1B0Oy7Gs8G0ACft6TXmrINPvkxdaeto9eJaOV7lf9c+CKuS+ZBUPSlX4pHG8jo8
- o5dZixAtoaRBa+Nuc1TSsnJeqrpCOpS7A7eYcqEoOilwoooLwL7i7EWhMuYgpB6Svn/4YAO/A
- q+2Evsfm7DFBgAAY2Qo2OVg+JkyzeTbfmtecCu6WRMKnNIf7BShdGqs8BTZ+jxEwSPkO7lrUW
- RrpdrncLzYOVMPxbr3OoMtsOQC8M91u3oLFb0S7YiIYiQ=
+UI-OutboundReport: notjunk:1;M01:P0:lfVolXBcTCc=;zsOmJ8C8liMVzz6MYzDUcecjkpf
+ QLpJVX+43ncaBjyG2a7npfR0aQvLBGW8f/yY3ERgz4aW3SknHDiRcWK5Xw1a5NreZDtYQETX9
+ vmb0fNbZdJTh2CrBxDMm5b8I94Pg8ilCOMjqJgMu3vl/wg5yrFgKwhu0BZJb381DJtcenkTx3
+ xLsDyKtoBsfC9enqtk4OLcHhvoWthCg7Gir+N2T6ja1V/cVApqegg6InjGqxwKaSr9qWUlTP/
+ qqrtIVtAEX+GgmkLLilgZPQzWK+KLxkFauI3vKyheldhtXics/ObhBNJVt+M3jCFFLgE1HfMz
+ d46diM0FrJRJDaa/TwXwNW6JOf8jC7jzfzZWcC0mFSdlf0Ur0q7naSdWItSHB/7g5n7m2FbMV
+ rewBz5ZAKVUGihjHv/GmNnS1ps8pfrKevOxESq8bgNCXK12+c9TVymr2Ma7FQovzXjlJ/6Ny5
+ tEFhL5SvulaVQyb3y8BMDNROyqFcfiyagFM0OJold6wN/aESaJYAXv17iPFfaiqfbGSRxDXwQ
+ vRWyOTIwUEaqXzNFq2paVJfzs6SYrkVKJfdK9zNhClSH+49PNMheXD+cb4YuKoRmCFbJxl6IT
+ lJxtBArmslcTChRoXWNFEwPysHl2/baFx/fhlTRQzmuAr8A7zKl5HdalV8AI7TJr2SkzgWIe8
+ YEzFrMEi+wNBHfExIYp7TC4i+zgudYHPyA+GazUu40uGWpP0vkvPgV/MUxl6z25xLn/6h8yn3
+ 4dvCqIdCK4ulP2wyC5scn3ejRMMjBZFYoaiKxmaVQML3G3g2oPtmHRBeT4euQuwHo40/rt0mZ
+ DTOOz5Nhft469flDVzu9yM4A==
 
-DQoNCuWcqCAyMDI0LzgvNCAxODo1MCwgaS5yLmUuYy5jLmEuay51Lm4ra2VybmVsLm9yZ0BnbWFp
-bC5jb20g5YaZ6YGTOg0KPiAoT3JpZ2luYWxseSByZXBvcnRlZCBvbiBLZXJuZWwub3JnIEJ1Z3pp
-bGxhOiANCj4gaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0yMTkw
-MzMpDQo+IA0KPiBUaGVyZSBpcyBhIHZlcnkgd2VpcmQgcXVpcmsgSSBmb3VuZCB3aXRoICdidHJm
-cyBmaWxlc3lzdGVtIGRlZnJhZ21lbnQnIA0KPiBjb21tYW5kLiBBbmQgbm8sIGl0J3Mgbm90IGFi
-b3V0IHJlZmxpbmtzIHJlbW92YWwsIEknbSBhd2FyZSBvZiB0aGF0Lg0KPiANCj4gSXQgaXMga2lu
-ZGEgaGFyZCB0byByZXBsaWNhdGUsIGJ1dCBJIGZvdW5kIGEgc29tZXdoYXQgcmVsaWFibGUgd2F5
-LiBJdCANCj4gcmVhY2hlcyBleHRyZW1lcyB3aXRoIGZhbGxvY2F0ZWQgZmlsZXMgc3BlY2lmaWNh
-bGx5Lg0KPiANCj4gMS4gQ3JlYXRlIGEgZmlsZSBvbiBhIEJ0cmZzIGZpbGVzeXN0ZW0gdXNpbmcg
-J2ZhbGxvY2F0ZScgYW5kIGZpbGwgaXQuIA0KPiBUaGUgZWFzeSB3YXkgdG8gZG8gdGhhdCBpcyBq
-dXN0IHRvIGNvcHkgc29tZSBmaWxlcyB3aXRoICdyc3luYyANCj4gLS1wcmVhbGxvY2F0ZScuDQo+
-IA0KPiAyLiBDaGVjayBjb21wc2l6ZSBpbmZvOg0KDQpNaW5kIHRvIGR1bXAgdGhlIGZpbGVtYXAg
-b3V0cHV0ICh4ZnNfaW8gLWMgImZpZW1hcCAtdiIpIGJlZm9yZSBhbmQgYWZ0ZXIgDQp0aGUgZGVm
-cmFnPw0KDQpUaGFua3MsDQpRdQ0KPiANCj4gIyBjb21wc2l6ZSBmb28NCj4gUHJvY2Vzc2VkIDcx
-IGZpbGVzLCA3MSByZWd1bGFyIGV4dGVudHMgKDcxIHJlZnMpLCAwIGlubGluZS4NCj4gVHlwZcKg
-wqDCoMKgwqDCoCBQZXJjwqDCoMKgwqAgRGlzayBVc2FnZcKgwqAgVW5jb21wcmVzc2VkIFJlZmVy
-ZW5jZWQNCj4gVE9UQUzCoMKgwqDCoMKgIDEwMCXCoMKgwqDCoMKgIDYzME3CoMKgwqDCoMKgwqDC
-oMKgIDYzME3CoMKgwqDCoMKgwqDCoMKgIDYzME0NCj4gbm9uZcKgwqDCoMKgwqDCoCAxMDAlwqDC
-oMKgwqDCoCA2MzBNwqDCoMKgwqDCoMKgwqDCoCA2MzBNwqDCoMKgwqDCoMKgwqDCoCA2MzBNDQo+
-IA0KPiBBbGwgaXMgZmluZSBoZXJlIGZvciBub3cuIDEgZXh0ZW50IHBlciAxIGZpbGUsICJEaXNr
-IFVzYWdlIiA9ICJSZWZlcmVuY2VkIi4NCj4gDQo+IDMuIFJ1biBkZWZyYWdtZW50Og0KPiANCj4g
-IyBidHJmcyBmaWxlc3lzdGVtIGRlZnJhZ21lbnQgLXIgZm9vDQo+IA0KPiA0LiBDaGVjayBjb21w
-c2l6ZSBhZ2FpbjoNCj4gDQo+ICMgY29tcHNpemUgZm9vDQo+IFByb2Nlc3NlZCA3MSBmaWxlcywg
-NzYgcmVndWxhciBleHRlbnRzICg3NiByZWZzKSwgMCBpbmxpbmUuDQo+IFR5cGXCoMKgwqDCoMKg
-wqAgUGVyY8KgwqDCoMKgIERpc2sgVXNhZ2XCoMKgIFVuY29tcHJlc3NlZCBSZWZlcmVuY2VkDQo+
-IFRPVEFMwqDCoMKgwqDCoCAxMDAlwqDCoMKgwqDCoCA2MzhNwqDCoMKgwqDCoMKgwqDCoCA2MzhN
-wqDCoMKgwqDCoMKgwqDCoCA2MzBNDQo+IG5vbmXCoMKgwqDCoMKgwqAgMTAwJcKgwqDCoMKgwqAg
-NjM4TcKgwqDCoMKgwqDCoMKgwqAgNjM4TcKgwqDCoMKgwqDCoMKgwqAgNjMwTQ0KPiANCj4gT29w
-cywgYmVzaWRlcyB0aGUgZmFjdCB0aGF0IHRoZSBhbW91bnQgb2YgZXh0ZW50cyBpcyBhY3R1YWxs
-eSBpbmNyZWFzZWQsIA0KPiB3aGljaCBtZWFucyAnYnRyZnMgZmlsZXN5c3RlbSBkZWZyYWdtZW50
-JyBhY3R1YWxseSBtYWRlIGZyYWdtZW50YXRpb24gDQo+IHdvcnNlLCBwaHlzaWNhbCBkaXNrIHVz
-YWdlIGluY3JlYXNlZCBmb3Igbm8gcmVhc29uLiBBbmQgSSBkaWRuJ3QgZmluZCANCj4gYW55IHdh
-eSB0byBzaHJpbmsgaXQgYmFjay4NCj4gDQo+IC0tLQ0KPiANCj4gVGhlIGVuZCByZXN1bHQgc2Vl
-bXMgdG8gYmUgcmFuZG9tIHRob3VnaC4gQnV0IEkgbWFuYWdlZCB0byBhY2hpZXZlIHNvbWUgDQo+
-IHRydWx5IGhvcnJpZnlpbmcgcmVzdWx0cy4NCj4gDQo+ICMgY29tcHNpemUgZm9vDQo+IFByb2Nl
-c3NlZCA0NSBmaWxlcywgNDUgcmVndWxhciBleHRlbnRzICg0NSByZWZzKSwgMCBpbmxpbmUuDQo+
-IFR5cGXCoMKgwqDCoMKgwqAgUGVyY8KgwqDCoMKgIERpc2sgVXNhZ2XCoMKgIFVuY29tcHJlc3Nl
-ZCBSZWZlcmVuY2VkDQo+IFRPVEFMwqDCoMKgwqDCoCAxMDAlwqDCoMKgwqDCoCAzNjBNwqDCoMKg
-wqDCoMKgwqDCoCAzNjBNwqDCoMKgwqDCoMKgwqDCoCAzNjBNDQo+IG5vbmXCoMKgwqDCoMKgwqAg
-MTAwJcKgwqDCoMKgwqAgMzYwTcKgwqDCoMKgwqDCoMKgwqAgMzYwTcKgwqDCoMKgwqDCoMKgwqAg
-MzYwTQ0KPiANCj4gIyBidHJmcyBmaWxlc3lzdGVtIGRlZnJhZ21lbnQgLXIgLXQgMUcgZm9vDQo+
-IA0KPiAjIGNvbXBzaXplIGZvbw0KPiBQcm9jZXNzZWQgNDUgZmlsZXMsIDE0NCByZWd1bGFyIGV4
-dGVudHMgKDE0NCByZWZzKSwgMCBpbmxpbmUuDQo+IFR5cGXCoMKgwqDCoMKgwqAgUGVyY8KgwqDC
-oMKgIERpc2sgVXNhZ2XCoMKgIFVuY29tcHJlc3NlZCBSZWZlcmVuY2VkDQo+IFRPVEFMwqDCoMKg
-wqDCoCAxMDAlwqDCoMKgwqDCoCA3MTZNwqDCoMKgwqDCoMKgwqDCoCA3MTZNwqDCoMKgwqDCoMKg
-wqDCoCAzNjBNDQo+IG5vbmXCoMKgwqDCoMKgwqAgMTAwJcKgwqDCoMKgwqAgNzE2TcKgwqDCoMKg
-wqDCoMKgwqAgNzE2TcKgwqDCoMKgwqDCoMKgwqAgMzYwTQ0KPiANCj4gWWlrZXMhIFRyaXBsZSB0
-aGUgZXh0ZW50cyEgRG91YmxlIGluY3JlYXNlIGluIHNpemUhDQo+IA0K
+
+
+=E5=9C=A8 2024/8/2 20:57, Mark Harmstone =E5=86=99=E9=81=93:
+> These patches are a resending of Omar Sandoval's patch from 2018, which
+> appears to have been overlooked [0], split up and rebased against the
+> current code.
+>
+> We change btrfs subvol create and btrfs subvol snapshot so that they use
+> libbtrfsutil rather than calling the ioctl directly.
+>
+> [0] https://lore.kernel.org/linux-btrfs/ab09ba595157b7fb6606814730508cae=
+4da48caf.1516991902.git.osandov@fb.com/
+
+Since you're reviving the cleanups, you may also want to move some
+btrfs-progs' ioctl related functions to libbtrfsutils.
+
+One example is btrfs_lookup_uuid_subvol_item() and
+btrfs_lookup_uuid_received_subvol_item().
+
+With them moved to libbtrfsutils, we can mark
+kernel-shared/uuid-tree.[ch] as fully cross-ported from kernel.
+
+Thanks,
+Qu
+>
+> Changelog:
+> * Fixed deprecated function names
+> * Fixed test failures (now returns correct return value on failure)
+> * Fixed this breaking fstest btrfs/300 (thanks Boris)
+>
+> Mark Harmstone (3):
+>    btrfs-progs: use libbtrfsutil for btrfs subvolume create
+>    btrfs-progs: use libbtrfsutil for btrfs subvolume snapshot
+>    btrfs-progs: remove unused qgroup functions
+>
+>   cmds/qgroup.c    |  64 ----------------
+>   cmds/qgroup.h    |   2 -
+>   cmds/subvolume.c | 194 +++++++++++++++++++----------------------------
+>   3 files changed, 76 insertions(+), 184 deletions(-)
+>
 
