@@ -1,101 +1,100 @@
-Return-Path: <linux-btrfs+bounces-6987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6988-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB945947F33
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 18:22:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 123A7947F55
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 18:26:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91E2B280F24
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 16:22:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349251C21CAA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 16:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A36615C12A;
-	Mon,  5 Aug 2024 16:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF2B15C158;
+	Mon,  5 Aug 2024 16:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OVjZq53C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="twk0YVRM";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OVjZq53C";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="twk0YVRM"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MWFkRD1/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AKnceTJ7";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lke+TG7d";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OLmn7Pos"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A677D1547DC
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Aug 2024 16:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9CD15C13D
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Aug 2024 16:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722874945; cv=none; b=dytwZxf/e2EGSYK58XHnItdzTUDbrHmkc+vcQepI3TldKVKH9e5yO7eXWFs+dWWpKsGfywdR1eck+cU1HcGC9k2HgAnuy5/spRVTj/tyQWUhgDtVZMadk268Z+yC27DE/cOTbfI2XPSaVSNJrxnS6g8YXuZ7xjGIn4UikTU4CKY=
+	t=1722875206; cv=none; b=sKFyg8UZu487DjW9oncqMTBfiGLubGB2he8K/E5l6vZSGtlrmq5nkVOpihoVYFu1OK6UncrG+0r4UzY0PlpLC94wrYZuXbOoU8SeavR6IFRcna0U6CA9zgJJZ5xZkB1nMVEU6kwJkhYq999NYYNVzJI8b0FHYAkAsP3hRdFUVG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722874945; c=relaxed/simple;
-	bh=VMXayGpAeT4TqtAe4iPQ4iU/GJUnpiQFlNz3rhmcLwU=;
+	s=arc-20240116; t=1722875206; c=relaxed/simple;
+	bh=IlUOha0ES+VDTuWiVmHuvSFEakbF8xqf0KdIifFPcMM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MGmjAx+FzWqkqYy3SZmCpr6fE7hK6R9+4h04haci1aaf4mFYSGFgVd+P3nM2USkdFoQF5ZZz7iVZFCFia6Sz4Zk66q5X1zmNJZjvt/6cc1muRpw+74mFdJ26RIgf/uvPbwIcBRvQmq2RAj4rw8jUbMGBFHYPO6GlB8V71wATfKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OVjZq53C; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=twk0YVRM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OVjZq53C; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=twk0YVRM; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z+3OJYlO7iAGwWshY3fGlSLOLCPe1FUwVeGgZv5yRNdm3CMxrDIe3/XQIP+AkFkBKx0ZNPPoEXMJ8ntYowajs7NcdyOkdccHw2fTqILO4arrR//0gjpRY2wQ0DvB7GTRyRdavWh/9uWyLoJtZJB2ou860Tbn0NtwTpq0iRKGjCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MWFkRD1/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AKnceTJ7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lke+TG7d; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OLmn7Pos; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9D78E21BB2;
-	Mon,  5 Aug 2024 16:22:21 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A7E92117F;
+	Mon,  5 Aug 2024 16:26:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722874941;
+	t=1722875202;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a29lGh1CNHuwDKqL06Mcg5Q8J5HM4mTrFO4rWqsu/nA=;
-	b=OVjZq53C5OtOPAAVWlYa356ln1eQTAlP6mROSHeV7Ya7kXtTzkXIBLxfxH83S2SY7KNt1s
-	r1fYns/BjjEqeZIWLBw3cFVOshdJk8Ug4O8SJq3Ey4jyfvhHv6HaNavKIpvrxJIt1fE5dv
-	5h1IIJpGee206LGo9xXWiqUTrzv4h/8=
+	bh=CCOd5hE0XzbpGo0WBhacUx2X5EqDHszRik6RiBsdaio=;
+	b=MWFkRD1/c6vImaRhjDS9XOs2j13k+FD66IOpwt/LlxtGfU6g61iN7uCE97qFQ66tFkDIBc
+	qpV4qTzdtxxAFT0qOIGGoWyspKiPILTUKA3gocFdiBazjO4KhENXAWLQScRRxRanp+/UvC
+	2Hdl0aTk/+NxU33aWHGx6sgg6WtQ2tc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722874941;
+	s=susede2_ed25519; t=1722875202;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a29lGh1CNHuwDKqL06Mcg5Q8J5HM4mTrFO4rWqsu/nA=;
-	b=twk0YVRMSa/E3ubX8vmBPcKoTrBIwhVGeRiee1vGtkLDjjQKM8B4/LEQnqujaa8XbfMzN+
-	d1slenmUy/AayZAg==
+	bh=CCOd5hE0XzbpGo0WBhacUx2X5EqDHszRik6RiBsdaio=;
+	b=AKnceTJ7j1e80zJqTJooTvr2ktBHzf1FVrmG+B+T5/26sTnfjOIIZLMYxxDT5r2rqNt2zu
+	UMkxwOIoXtYzfCAA==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=OVjZq53C;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=twk0YVRM
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722874941;
+	t=1722875201;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a29lGh1CNHuwDKqL06Mcg5Q8J5HM4mTrFO4rWqsu/nA=;
-	b=OVjZq53C5OtOPAAVWlYa356ln1eQTAlP6mROSHeV7Ya7kXtTzkXIBLxfxH83S2SY7KNt1s
-	r1fYns/BjjEqeZIWLBw3cFVOshdJk8Ug4O8SJq3Ey4jyfvhHv6HaNavKIpvrxJIt1fE5dv
-	5h1IIJpGee206LGo9xXWiqUTrzv4h/8=
+	bh=CCOd5hE0XzbpGo0WBhacUx2X5EqDHszRik6RiBsdaio=;
+	b=lke+TG7d2Yx4K0CbJIZS+AURH3/bVyLi0tnFQc/bW9YAKhGFlJBywQtVXM6p8dFRPxKqRn
+	eLUzCIBSGPiWkIxiIaeeuZxKHnVajfDlhm8WOCWe58EPmCj1Vx6HOqRgxdenbAxRqoFFrZ
+	ptZqVY5i05M7hcBHMTk4Ti0IzqPYi1g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722874941;
+	s=susede2_ed25519; t=1722875201;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a29lGh1CNHuwDKqL06Mcg5Q8J5HM4mTrFO4rWqsu/nA=;
-	b=twk0YVRMSa/E3ubX8vmBPcKoTrBIwhVGeRiee1vGtkLDjjQKM8B4/LEQnqujaa8XbfMzN+
-	d1slenmUy/AayZAg==
+	bh=CCOd5hE0XzbpGo0WBhacUx2X5EqDHszRik6RiBsdaio=;
+	b=OLmn7PostszzHusoVvbQF879CuJn7hbAvmLedrjMKMBdpoBVs9O+FYXeEls+RJEK+6nS35
+	PGc1qI+spuRzAcBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8516213254;
-	Mon,  5 Aug 2024 16:22:21 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 51BAC13254;
+	Mon,  5 Aug 2024 16:26:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id VFlGID38sGaLbwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 05 Aug 2024 16:22:21 +0000
-Date: Mon, 5 Aug 2024 18:22:20 +0200
+	id SP61E0H9sGbScAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 05 Aug 2024 16:26:41 +0000
+Date: Mon, 5 Aug 2024 18:26:36 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
+To: Naohiro Aota <naohiro.aota@wdc.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: make btrfs_is_subpage() to return false directly
- for 4K page size
-Message-ID: <20240805162220.GX17473@twin.jikos.cz>
+Subject: Re: [PATCH v2] btrfs: zoned: properly take lock to read/update BG's
+ zoned variables
+Message-ID: <20240805162636.GY17473@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <bc8baf98c9c9357423178d4fab6b945bcb959f1d.1722839158.git.wqu@suse.com>
+References: <a3bc8f26a7c7ffff883c319464cf9b07edb10548.1722480197.git.naohiro.aota@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -104,67 +103,71 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc8baf98c9c9357423178d4fab6b945bcb959f1d.1722839158.git.wqu@suse.com>
+In-Reply-To: <a3bc8f26a7c7ffff883c319464cf9b07edb10548.1722480197.git.naohiro.aota@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 9D78E21BB2
-X-Spamd-Result: default: False [-4.21 / 50.00];
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
 	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Mon, Aug 05, 2024 at 03:56:30PM +0930, Qu Wenruo wrote:
-> Btrfs only supports sectorsize 4K, 8K, 16K, 32K, 64K for now, thus for
-> systems with 4K page size, there is no way the fs is subpage (sectorsize
-> < PAGE_SIZE).
+On Thu, Aug 01, 2024 at 04:47:52PM +0900, Naohiro Aota wrote:
+> __btrfs_add_free_space_zoned() references and modifies BG's alloc_offset,
+> ro, and zone_unusable, but without taking the lock. It is mostly safe
+> because they monotonically increase (at least for now) and this function is
+> mostly called by a transaction commit, which is serialized by itself.
 > 
-> So here we define btrfs_is_subpage() different according to the
-> PAGE_SIZE:
+> Still, taking the lock is a safer and correct option and I'm going to add a
+> change to reset zone_unusable while a block group is still alive. So, add
+> locking around the operations.
 > 
-> - PAGE_SIZE > 4K
->   We may hit real subpage cases, define btrfs_is_subpage() as a regular
->   function and do the usual checks.
+> Fixes: 169e0da91a21 ("btrfs: zoned: track unusable bytes for zones")
+> CC: stable@vger.kernel.org # 5.15+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+> v2:
+>   - Use plain spin_lock()s instead of guard()s
+>   - Drop unnecessary empty line
+> ---
+>  fs/btrfs/free-space-cache.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 > 
-> - PAGE_SIZE == 4K (no smaller PAGE_SIZE support AFAIK)
->   There is no way the fs is subpage, so just define btrfs_is_subpage()
->   as an inline function which always return false.
-> 
-> This saves some bytes for x86_64 debug builds:
-> 
-> 	   text	   data	    bss	    dec	    hex	filename
-> Before:	1484452	 168693	  25776	1678921	 199e49	fs/btrfs/btrfs.ko
-> After:	1476605	 168445	  25776	1670826	 197eaa	fs/btrfs/btrfs.ko
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index f5996a43db24..eaa1dbd31352 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -2697,15 +2697,16 @@ static int __btrfs_add_free_space_zoned(struct btrfs_block_group *block_group,
+>  	u64 offset = bytenr - block_group->start;
+>  	u64 to_free, to_unusable;
+>  	int bg_reclaim_threshold = 0;
+> -	bool initial = ((size == block_group->length) && (block_group->alloc_offset == 0));
+> +	bool initial;
+>  	u64 reclaimable_unusable;
+>  
+> -	WARN_ON(!initial && offset + size > block_group->zone_capacity);
+> +	spin_lock(&block_group->lock);
+>  
+> +	initial = ((size == block_group->length) && (block_group->alloc_offset == 0));
 
-The delta is 7847, not bad and it's on x86_64 so it'll affect most
-machines.
-
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: David Sterba <dsterba@suse.com>
+When this is a standalone statement I'd suggest to rewrite is as an
+'if', we can't do that in the declaration block so the conditional and
+expression is ok.
 
