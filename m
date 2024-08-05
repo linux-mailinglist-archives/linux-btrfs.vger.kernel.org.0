@@ -1,200 +1,340 @@
-Return-Path: <linux-btrfs+bounces-6981-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6982-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00F73947662
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 09:54:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9004D9477C2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 10:59:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 273061C20E8D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 07:54:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFFFCB23374
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2024 08:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29906149E0B;
-	Mon,  5 Aug 2024 07:54:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C42154BF8;
+	Mon,  5 Aug 2024 08:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b="DMEDQ/hy"
+	dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b="GEAmgC5E"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from zero.acitia.com (zero.acitia.com [69.164.212.194])
+Received: from r09.out0.gmailify.com (r09.out0.gmailify.com [159.255.151.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1E31442E3
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Aug 2024 07:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.164.212.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4C514D71A
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Aug 2024 08:56:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.255.151.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722844467; cv=none; b=bM5WmjIikpDutOE2WGW+Jr6jIcDMAmcAo09rSKyVbPNYlhluaoOoBT3Zn2891HohiGUb1DaHYHLYuiKBLqyV97QI8liEI8E5k7qp6sbVPAAGYsOOaOHhJKUtiCC3KwefA8suk1QxTW3F5tQptN/tC414pRGBS+EtCVoFD865PoU=
+	t=1722848195; cv=none; b=SWFR8UpYhNHCVbcNyVFIRPEsoLd+dDwN62DnDJVBb/V3k5njRvdfBV/MvDV8HqFo+YQO7KSe2ZxqmU3vv/Otbm7ucGzH2UA4Q8Ajryesg6sdwcMbGDcxsWdl23I1rw0bVl0u7nSIwQQpw1a2QmtXlkRoWo4B+8cHbsM6eSmxb/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722844467; c=relaxed/simple;
-	bh=LRJ0AVB8y3MFt8qbyhxg39ujxGDJ+vGkw9uiieQ4w8I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=neVNlT+vUrD07a5q0QDI1FS8B5RFgatPJKsAdSXMFuFdm+M451AO5Z7kNAzqFokLaamYKC06jXdWN+8YsLFrWU4Tt7WC1K80EadYfwaTg1b4N9vMlQ/BsX3lZbLrwst1V4atrQYziSIIWtbSfg8DJj7KqijmrcyKEpXa4fcqkfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com; spf=pass smtp.mailfrom=zetafleet.com; dkim=pass (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b=DMEDQ/hy; arc=none smtp.client-ip=69.164.212.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zetafleet.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=zetafleet.com; s=20190620; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=XvkLzTxahKP3mpMXDc8cSdInWoFjCU/yIam+qW+Lolk=; b=DMEDQ/hynlZBKAhOy15Xj5qDbe
-	ONVhchAa68AbnbTXd3kjESqOB3uSwtDk7yNtE2zErWH/MbZAE5MXvofzxHWt+wRGTfAj8pPqUkbZ+
-	iyr1Koy0e1JRcIKtFALqvKBwDIA4EBGv4QtABABLb1lySJjpOsTytKhbaocdJvnTOt9mlPFwl8hTt
-	IB4Zf99oxNAyf98zWoywFUUn29veiPaoff7O4UYy+8oaLwBkahuOp6CkDCpDe+pvCvl696W582m3b
-	BkQnPcN8bABRUtjVCOh9xMqjVnv5bILVdtag1uCA6aUDc7wH+Y775BOqLiB81uWPiIQUsSQ+NPrpB
-	WOn0PlcA==;
-Received: from authenticated by zero.acitia.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	(envelope-from <linux-btrfs-ml@zetafleet.com>)
-	id 1sasXp-0001Pw-G3
-	for linux-btrfs@vger.kernel.org; Mon, 05 Aug 2024 07:54:17 +0000
-Message-ID: <02afb6b7-e566-474e-80ff-3ace99693553@zetafleet.com>
-Date: Mon, 5 Aug 2024 02:54:17 -0500
+	s=arc-20240116; t=1722848195; c=relaxed/simple;
+	bh=ufQxPFow7uR+0iS8EE36/PWbTIoeViCam75pEZvWmow=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=taRclUjIl7zS0sBVGc9jBPQxihT6x3EAsg38gT3NEb9QpIIJCcDnooTWJ4Gqqkt7t/9A3x6/NBHxyr3IB45zTbHojhH5Giyja2rF4ioHLl5tpmD91Dsv975x7f0TTVeiNHxVi90I2Zu3WffJh4NqQ9aiUh74HFw61hDCH//EDeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se; spf=pass smtp.mailfrom=sandnabba.se; dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b=GEAmgC5E; arc=none smtp.client-ip=159.255.151.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandnabba.se
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.gmailify.com (Postfix) with ESMTPSA id B2F5611C11EC
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Aug 2024 08:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandnabba.se;
+	s=gm0; t=1722845814;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HHV05M/aPq7wJVqF1r3qoM+zM6KUw5Kf32W8RDV+JRo=;
+	b=GEAmgC5Enr13lfAxH7G6SULGmAMxz4UkuIoKLQ7P9Z1EdtimZCQ6vSBgj/szP5XYramqpW
+	u+M2lAy06gjx99ncnmQK6YzX475LD++w07PZmNkUOo6vAdn5Hsm1u2QSA0A17laQ1aPoeo
+	/KhYCDdFJoxGFYZMWcbVCosJzZoNq9A+pkX0jba/+9X/zrJKB65Mb2hYms6YvmkHzwgYtG
+	cm6jKuRoZJY80kGgpnYH69o9Qj00FsfjLfEp82syj+Rk72dHXPofeRbAszoRFUyGFadJCl
+	PcmxFlRFAxKsQfr353grrH5zB8IOc+Cx4JD3uMMPs3Gg3o55mkGvfl9XNSeFmA==
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6b7a3e468a9so74535086d6.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Aug 2024 01:16:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVLV/CnGWVxM7IW5wMd0S2MaygBSihewwImtd3naEXYn37B0iCvSYtHnb0U4GqML1u9LDNBPixU8ecrGi0dGv8Fwq+Juql6NCor9EA=
+X-Gm-Message-State: AOJu0YwcgqajuW1Fq5WlsXygJTE+p42msiv8E34kFJkNbJxcnsgCjbib
+	hIBprGcOrzoUJ0vkR9NioGMposTTb9rbNavOwSQ1zF+MRioaDtirxB956KiOH3PfY3aKrway7TX
+	Wq2xnZVndU5RAahIQlDCOe+ou+Lc=
+X-Google-Smtp-Source: AGHT+IGblYo9nNnfx6ftmBwBYqnaKlC//FeCp7mvUaHrV1glZbqlytB9ljQRwH5gkbHNsU38WnwwUckstOptMbueYr0=
+X-Received: by 2002:a05:6214:3288:b0:6b5:eb34:6e72 with SMTP id
+ 6a1803df08f44-6bb983a9421mr109034156d6.11.1722845811763; Mon, 05 Aug 2024
+ 01:16:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Handling recovery from 2-device btrfs raid1 with bad generation
- on one device due to partial hardware failure
-To: linux-btrfs@vger.kernel.org
-References: <113200b0-7584-4ada-ba40-0637478ac390@zetafleet.com>
- <ba51784b-ba20-4bf4-865a-2670a9ddde74@zetafleet.com>
-Content-Language: en-GB
-From: Colin S <linux-btrfs-ml@zetafleet.com>
-In-Reply-To: <ba51784b-ba20-4bf4-865a-2670a9ddde74@zetafleet.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.9
-X-Spam-Report: No, score=-1.9 required=5.0 tests=BAYES_00=-1.9,NO_RELAYS=-0.001 autolearn=ham autolearn_force=no version=3.4.2
+References: <CAEA9r7DVO8gCRz-9vbwaNWznz9AOFxOyPLO0ukOJh-6Ef0o5Bw@mail.gmail.com>
+ <20240725224757.GD17473@twin.jikos.cz> <aeed4735-f6f2-49ef-9a02-816a3b74cbd3@gmx.com>
+ <CAEA9r7AzYtQ9BifUPcW3=1zz=RmS9Fb3CnProGMg6GVkmd14TQ@mail.gmail.com> <2598F89C9D10565B+29575f56-c98e-4316-8360-0e3e9e7748ff@bupt.moe>
+In-Reply-To: <2598F89C9D10565B+29575f56-c98e-4316-8360-0e3e9e7748ff@bupt.moe>
+X-Report-Abuse: Please report any abuse attempt to abuse@gmailify.com and include these headers.
+From: "Emil.s" <emil@sandnabba.se>
+Date: Mon, 5 Aug 2024 10:16:40 +0200
+X-Gmail-Original-Message-ID: <CAEA9r7CaJJRvDZ3iL9LuKtgi-xO+R-qOxiUg-4Ms-vzG_y+Y5g@mail.gmail.com>
+Message-ID: <CAEA9r7CaJJRvDZ3iL9LuKtgi-xO+R-qOxiUg-4Ms-vzG_y+Y5g@mail.gmail.com>
+Subject: Re: Force remove of broken extent/subvolume? (Crash in btrfs_run_delayed_refs)
+To: Yuwei Han <hrx@bupt.moe>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Gmailify-Queue-Id: B2F5611C11EC
+X-Gmailify-Score: -0.10
 
-Hi list,
+> For curiosity, did you setup any scrub after rebuild FS?
 
-I have another (hopefully final, or at least penultimate) follow-up on 
-this issue. The headline here is that btrfs does not appear to have lost 
-any data or actually damaged the filesystem. As such, I want to first 
-give a big thanks and kudos to everyone who has worked on btrfs over the 
-years to ensure this outcome. Filesystems are hard, and this one is 
-certainly doing better than most.
+The new FS is built on new drives, on new hardware and new Linux
+kernel. And I'm rsyncing over all files so that everything will be
+built from scratch.
 
-For the rest of this email, please understand that if it feels as though 
-I am speaking too strongly or with excessive authority, it is only 
-because these issues are very important to me, and so I am using direct 
-language in order to be as clear as possible. I am deeply appreciative 
-of all the work that has gone into making btrfs, and nothing I say is 
-ever intended as an insult toward anyone, or any of the work on btrfs, 
-or as a demand. I do not believe that I know better than anyone else and 
-so some of this feedback may simply be wrong, and I am happy to be 
-corrected.
+However, I still got a snapshot (from 2024-03-20) on my offsite backup.
+I just scrubbed that drive, and it reports no errors. I'm also quite
+sure I scrubbed the corrupt drive quite recently without issues.
 
-1. btrfs-send tries using bad metadata only from the failed device. This 
-is very bad since it means that right now emergency snapshot transfer 
-off a failing filesystem using btrfs-send is not possible, and 
-reinforces to the user that the filesystem is irreparably damaged, when 
-it is not.
+Another interesting note is that I'm also unable to send any file
+system from the corrupt drive (which is probably a good thing).
+```
+$ btrfs send /mnt/snapshots/user_data_2024-03-20 > /dev/null
+At subvol /mnt/snapshots/user_data_2024-03-20
+ERROR: send ioctl failed with -30: Read-only file system
+```
 
-2. btrfs-check and btrfs-inspect-internal also try using metadata only 
-from the failed device. This is very bad because these utilities 
-*require* the user to pass a specific block device path instead of 
-filesystem path, and therefore cause a totally misleading situation 
-where it appears fatal filesystem corruption exists on *all* devices 
-when it is not because btrfs is ignoring the user’s explicit input and 
-not even giving a notice about it.
+Wasn't expecting a "Read-only file system" error when sending a
+read-only snapshot? (But maybe that is expected?).
 
-3. Due to the previous mentioned issues with the other btrfs programs, 
-*only* the per-device statistics from btrfs-scrub, plus the fact that 
-the system continued to operate normally with error correction messages 
-in the syslog, provide any evidence to users that the filesystem is 
-actually in a recoverable state. This is contradicted by all of the 
-other tools. btrfs-scrub also reinforces that there is a fatal 
-filesystem corruption because it does not show per-device scrub results 
-by default, only the overall filesystem scrub result. Unless no errors 
-are found on any device, btrfs-scrub output should always show 
-per-device results by default.
 
-4. btrfs-scrub claimed that there were “uncorrectable” errors on the 
-failing device, but btrfs-scrub in read-write mode corrected all errors 
-and now reports “no errors found” and btrfs-check is clean. btrfs-scrub 
-should not lie like this about whether there are uncorrectable errors. 
-Either this value is miscalculated, or it has a bad name and needs a 
-better one, or it is only valid for non-redundant filesystems but is 
-being applied to redundant ones too.
-
-5. The troubleshooting documentation about “parent transid verify error” 
-urgently needs updating to clarify that this is only a permanent error 
-for filesystems *without redundancy*, and that btrfs-scrub *will* 
-correct transid verify errors for filesystems that still have sufficient 
-redundancy. There may need to be added caveats around split-brain 
-situations, but right now it sounds like all hope is lost whenever you 
-see “transid verify” errors and that the only chance from there is to 
-try using btrfs-recover, and this is simply not true. In my case, 
-btrfs-scrub fixed everything.
-
-6. btrfs-scrub gives wrong “Total to scrub:” value when scrubbing a 
-single device in a multi-device filesystem. This appears to be reporting 
-the total combined size of all devices in the filesystem. This causes 
-scrub of a single device in a 2-device filesystem to finish at “50%” and 
-suggests some kind of corruption or issue with the filesystem, either 
-because it looks like the scrub aborts midway, or because there’s way 
-more data on-disk than expected.
-
-7. The documentation for btrfs-scrub has a large note at the top that 
-obscures and contradicts the first paragraph and makes it sound like it 
-will not fix most metadata errors. This note needs to be less fatalistic 
-and much clearer about what specific kinds of “structural damage” is not 
-detected or fixed by scrub and in what conditions. There needs to be 
-much clearer language about what risks exist, if any, by running 
-read-write scrub in the presence of a degraded filesystem. For me, this 
-single misleading note block is responsible for almost all the trouble I 
-encountered, as it implied that running btrfs-scrub in read-write mode 
-was the wrong thing to do, when actually, running btrfs-scrub was the 
-*right* thing to do and healed the filesystem. It seems like I am not 
-the first person to notice this as there is a Reddit thread about this, 
-but they provided evidence by linking to a page on the old btrfs wiki 
-which has been blanked out with no viewable history.
-
-8. One of the potential nightmare scenarios that was raised in IRC when 
-I was asking for help on this was the possibility of getting into a 
-split-brain situation by mounting the failing device in the absence of 
-the good device. I do not know if it is possible for kernel drivers to 
-add arbitrary variables to EFI NVRAM, but if so, one possible extra 
-defence mechanism I thought about to avoid such a split-brain nightmare 
-would be to write the last known maximum generation id for a given 
-filesystem UUID there, and then check and refuse to mount read-write 
-without user intervention if it does not match enough of the devices in 
-the filesystem that is being assembled at mount time.
-
-9. The documentation does not seem to provide clear points of contact 
-for reporting issues or seeking assistance. There are references to this 
-mailing list, but mostly it just says “mailing list” rather than 
-pointing to the specific place to subscribe to the list. There are also 
-references to IRC, but not the actual address of the IRC channel. There 
-is also the btrfs-progs GitHub issues tracker, which I literally only 
-just now realise exists, and where the current latest ticket starts with 
-“Not sure if this is the right bug tracker”. Some projects can be 
-incredibly nasty when users solicit help in the wrong place, so each 
-contact point and its intent should be made very clear in the 
-documentation if only to make people feel less afraid of reaching out 
-for assistance.
-
-I will be replacing my failing device with a new device shortly and 
-anticipate that there may be additional concerns with this process which 
-I will document as well. In particular I am concerned about the lack of 
-step-by-step documentation on how to handle various different scenarios 
-for offlining or replacing failing devices. The typical use case 
-documentation for taking raid1 to single seems to suggest taking steps 
-that would potentially cause data to be placed on the failing device and 
-when the filesystem is the root filesystem there is no clear direction 
-on what steps to take to be able to replace a failing device without 
-having to boot to a separate recovery image.
-
-Please let me know if you have any feedback on these issues, otherwise I 
-may begin to submit some documentation changes for review, or open/add 
-to issues in the btrfs-progs GitHub if that seems most appropriate.
-
-Apologies again for the length of all of these messages and I hope they 
-provide some value for future.
-
-Best regards,
+On Sun, 28 Jul 2024 at 18:09, Yuwei Han <hrx@bupt.moe> wrote:
+>
+>
+>
+> =E5=9C=A8 2024/7/26 18:52, Emil.s =E5=86=99=E9=81=93:
+> >> As for any bitflip induced errors, it's hard to tell how far it got
+> >> propagated, this could be the only instance or there could be other
+> >> items referring to that one too.
+> >
+> > Right, yeah that sounds a bit more challenging then I initially thought=
+.
+> > Maybe it is easier to just rebuild the array after all.
+> >
+> > And in regards to Qu's question, that is probably a good idea anyhow.
+> >
+> >> - History of the fs
+> >> - The hardware spec
+> >
+> > This has been my personal NAS / home server for quite some time.
+> > It's basically a mix of just leftover desktop hardware (without ECC mem=
+ory).
+> >
+> > It was a 12 year old Gigabyte H77-D3H motherboard, an Intel i7-2600 CPU
+> > and 4 DDR3 DIMMs, all of different types and brands.
+> > The disks are WD red series, and I see now that one of them has over
+> > 80k power on hours.
+> >
+> > I know I did a rebuild about 5 years ago so the FS was probably
+> > created using Ubuntu server 18.04 (Linux 4.15), which has been
+> > upgraded to the major LTS versions since then.
+> > I actually hit this error when I was doing the "final backup" before
+> > retiring this setup, and it seems it was about time! (Was running
+> > Ubuntu 22.04 / Linux 5.15)
+> >
+> For curiosity, did you setup any scrub after rebuild FS?
+> > The Arch setup on the Thinkstation is my workstation where I attempted
+> > the data recovery.
+> >
+> > So due to the legacy hardware and crappy setup I think it's worth
+> > wasting more time here.
+> >
+> > But thanks a lot for the detailed answer, much appreciated!
+> >
+> > Best,
+> > Emil
+> >
+> > On Fri, 26 Jul 2024 at 01:19, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >>
+> >>
+> >>
+> >> =E5=9C=A8 2024/7/26 08:17, David Sterba =E5=86=99=E9=81=93:
+> >>> On Thu, Jul 25, 2024 at 11:06:00PM +0200, Emil.s wrote:
+> >>>> Hello!
+> >>>>
+> >>>> I got a corrupt filesystem due to backpointer mismatches:
+> >>>> ---
+> >>>> [2/7] checking extents
+> >>>> data extent[780333588480, 942080] size mismatch, extent item size
+> >>>> 925696 file item size 942080
+> >>>
+> >>> This looks like a single bit flip:
+> >>>
+> >>>>>> bin(925696)
+> >>> '0b11100010000000000000'
+> >>>>>> bin(942080)
+> >>> '0b11100110000000000000'
+> >>>>>> bin(942080 ^ 925696)
+> >>> 0b100000000000000'
+> >>>
+> >>> or an off by one error, as the delta is 0x4000, 4x page which is one
+> >>> node size.
+> >>>
+> >>>> backpointer mismatch on [780333588480 925696]
+> >>>> ---
+> >>>>
+> >>>> However only two extents seem to be affected, in a subvolume only us=
+ed
+> >>>> for backups.
+> >>>>
+> >>>> Since I've not been able to repair it, I thought that I could just
+> >>>> delete the subvolume and recreate it.
+> >>>> But now the btrfs_run_delayed_refs function crashes a while after
+> >>>> mounting the filesystem. (Which is quite obvious when I think about
+> >>>> it, since I guess it's trying to reclaim space, hitting the bad exte=
+nt
+> >>>> in the process?)
+> >>>>
+> >>>> Anyhow, is it possible to force removal of these extents in any way?
+> >>>> My understanding is that extents are mapped to a specific subvolume =
+as
+> >>>> well?
+> >>>>
+> >>>> Here is the full crash dump:
+> >>>> https://gist.github.com/sandnabba/e3ed7f57e4d32f404355fdf988fcfbff
+> >>>
+> >>> WARNING: CPU: 3 PID: 199588 at fs/btrfs/extent-tree.c:858 lookup_inli=
+ne_extent_backref+0x5c3/0x760 [btrfs]
+> >>>
+> >>>    858         } else if (WARN_ON(ret)) {
+> >>>    859                 btrfs_print_leaf(path->nodes[0]);
+> >>>    860                 btrfs_err(fs_info,
+> >>>    861 "extent item not found for insert, bytenr %llu num_bytes %llu =
+parent %llu root_objectid %llu owner %llu offset %llu",
+> >>>    862                           bytenr, num_bytes, parent, root_obje=
+ctid, owner,
+> >>>    863                           offset);
+> >>>    864                 ret =3D -EUCLEAN;
+> >>>    865                 goto out;
+> >>>    866         }
+> >>>    867
+> >>>
+> >>> CPU: 3 PID: 199588 Comm: btrfs-transacti Tainted: P           OE     =
+ 6.9.9-arch1-1 #1 a564e80ab10c5cd5584d6e9a0715907a10e33ca4
+> >>> Hardware name: LENOVO 30B4S01W00/102F, BIOS S00KT73A 05/24/2022
+> >>> RIP: 0010:lookup_inline_extent_backref+0x5c3/0x760 [btrfs]
+> >>> RSP: 0018:ffffabb2cd4e3b00 EFLAGS: 00010202
+> >>> RAX: 0000000000000001 RBX: ffff992307d5c1c0 RCX: 0000000000000000
+> >>> RDX: 0000000000000001 RSI: ffff992312c0d590 RDI: ffff99222faff680
+> >>> RBP: 0000000000000000 R08: 00000000000000bc R09: 0000000000000001
+> >>> R10: a8000000b5a8c360 R11: 0000000000000000 R12: 000000b5af81a000
+> >>> R13: ffffabb2cd4e3b57 R14: 00000000000e6000 R15: ffff9927ca7551f8
+> >>> FS:  0000000000000000(0000) GS:ffff992997980000(0000) knlGS:000000000=
+0000000
+> >>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>> CR2: 00000ad404625100 CR3: 000000080ea20002 CR4: 00000000003706f0
+> >>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >>> Call Trace:
+> >>>    <TASK>
+> >>>    ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413=
+c43a944f40925c800621e78e]
+> >>>    ? __warn.cold+0x8e/0xe8
+> >>>    ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413=
+c43a944f40925c800621e78e]
+> >>>    ? report_bug+0xff/0x140
+> >>>    ? handle_bug+0x3c/0x80
+> >>>    ? exc_invalid_op+0x17/0x70
+> >>>    ? asm_exc_invalid_op+0x1a/0x20
+> >>>    ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9413=
+c43a944f40925c800621e78e]
+> >>>    ? set_extent_buffer_dirty+0x19/0x170 [btrfs dcbea9ede49f9413c43a94=
+4f40925c800621e78e]
+> >>>    insert_inline_extent_backref+0x82/0x160 [btrfs dcbea9ede49f9413c43=
+a944f40925c800621e78e]
+> >>>    __btrfs_inc_extent_ref+0x9c/0x220 [btrfs dcbea9ede49f9413c43a944f4=
+0925c800621e78e]
+> >>>    ? __btrfs_run_delayed_refs+0xf64/0xfb0 [btrfs dcbea9ede49f9413c43a=
+944f40925c800621e78e]
+> >>>    __btrfs_run_delayed_refs+0xaf2/0xfb0 [btrfs dcbea9ede49f9413c43a94=
+4f40925c800621e78e]
+> >>>    btrfs_run_delayed_refs+0x3b/0xd0 [btrfs dcbea9ede49f9413c43a944f40=
+925c800621e78e]
+> >>>    btrfs_commit_transaction+0x6c/0xc80 [btrfs dcbea9ede49f9413c43a944=
+f40925c800621e78e]
+> >>>    ? start_transaction+0x22c/0x830 [btrfs dcbea9ede49f9413c43a944f409=
+25c800621e78e]
+> >>>    transaction_kthread+0x159/0x1c0 [btrfs dcbea9ede49f9413c43a944f409=
+25c800621e78e]
+> >>>
+> >>> followed by leaf dump with items relevant to the numbers:
+> >>>
+> >>>         item 117 key (780331704320 168 942080) itemoff 11917 itemsize=
+ 37
+> >>>                 extent refs 1 gen 2245328 flags 1
+> >>>                 ref#0: shared data backref parent 4455386873856 count=
+ 1
+> >>>         item 118 key (780332646400 168 942080) itemoff 11880 itemsize=
+ 37
+> >>>                 extent refs 1 gen 2245328 flags 1
+> >>>                 ref#0: shared data backref parent 4455386873856 count=
+ 1
+> >>>         item 119 key (780333588480 168 925696) itemoff 11827 itemsize=
+ 53
+> >>>                       ^^^^^^^^^^^^^^^^^^^^^^^
+> >>>
+> >>>                 extent refs 1 gen 2245328 flags 1
+> >>>                 ref#0: extent data backref root 2404 objectid 1141024=
+ offset 0 count 1
+> >>>         item 120 key (780334530560 168 942080) itemoff 11774 itemsize=
+ 53
+> >>>                 extent refs 1 gen 2245328 flags 1
+> >>>                 ref#0: extent data backref root 2404 objectid 1141025=
+ offset 0 count 1
+> >>>         item 121 key (780335472640 168 942080) itemoff 11721 itemsize=
+ 53
+> >>>                 extent refs 1 gen 2245328 flags 1
+> >>>                 ref#0: extent data backref root 2404 objectid 1141026=
+ offset 0 count 1
+> >>>
+> >>> as you can see item 119 is the problematic one and also out of sequen=
+ce, the
+> >>> adjacent items have the key offset 942080. Which confirms the bitlip
+> >>> case.
+> >>>
+> >>> As for any bitflip induced errors, it's hard to tell how far it got
+> >>> propagated, this could be the only instance or there could be other
+> >>> items referring to that one too.
+> >>>
+> >>> We don't have any ready made tool for fixing that, the bitlips hit
+> >>> random data structure groups or data, each is basically unique and wo=
+uld
+> >>> require analysis of tree dump and look for clues how bad it is.
+> >>>
+> >>
+> >> Since we're pretty sure it's a bitflip now, would you please provide t=
+he
+> >> following info?
+> >>
+> >> - History of the fs
+> >>     Since you're using Arch kernel, and since 5.14 we have all the wri=
+te-
+> >>     time checkers, normally we should detect such out-of-key situation=
+ by
+> >>     flipping the fs RO.
+> >>     I'm wondering if the fs is handled by some older kernels thus tree=
+-
+> >>     checker didn't catch it early.
+> >>
+> >> - The hardware spec
+> >>     The dmesg only contains hardware spec "LENOVO 30B4S01W00", which s=
+eems
+> >>     to be a workstation.
+> >>     I'm wondering if it's certain CPU models which leads to possible
+> >>     unreliable memories.
+> >>     From my experience, the memory chip itself is pretty rare to be th=
+e
+> >>     cause, but either the connection (from BGA to DIMM slot) or the me=
+mory
+> >>     controller (nowadays in the CPU die).
+> >>
+> >> Thanks,
+> >> Qu
+> >
 
