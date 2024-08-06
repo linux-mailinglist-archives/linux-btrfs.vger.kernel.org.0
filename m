@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7011-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7012-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7000E949A88
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 23:55:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A97949AFD
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 00:11:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8F361F236DE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 21:55:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B00D1B279C4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 22:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E27216F27E;
-	Tue,  6 Aug 2024 21:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D098F16EC0B;
+	Tue,  6 Aug 2024 22:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ppltINGG"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="b5CNSkzz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 249D616D33D
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2024 21:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234D614C59A
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2024 22:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722981321; cv=none; b=oJOPLr3MjxRL8vNClJD/DjvE0s6GIplYyhy4aUMfpZXIeBg0Z3JQENGySdr4R85CQdOlQl3jSzPHNssoRU0kRXOu0PqDjIQ02SAZnjUw3uXT67Yee1pG/kb6oPdHh+zj016c6uiuoXyIgANsnTF/zEJktb9v1ePDC3alfnGEr04=
+	t=1722982264; cv=none; b=iJ011eM9BZKtNKZcHaaKqUi5BBM13VqRK3MXX380bf7KuolVEbH2jmAAzUPPuek6iBDWXg3GzEVhCq2+h+cbFrQZuMS3qUEfMoX2N7jevL7YcbRMYFq9DNWrliDnm3pYvFnrpPZKNRb/JBfep0KeD+WHwrHApqBCxVP+eYOgfZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722981321; c=relaxed/simple;
-	bh=DI+7Na59YAq3uRMTxWVQR9hDcSI2KracsMaOXYs9wkc=;
+	s=arc-20240116; t=1722982264; c=relaxed/simple;
+	bh=oB1yBzrV67eCu8+oKu3wm/TD5swQolh07NXG/hiclcA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZSFFxyzr2x0xYRyK+aIsAQMElPLmmAqjAZ4lLIPM/F/qaiNPfcY0JQ1va79xVwsRmTyqbAH7UHkt+/yuaWr4BPmM0jltQW7DqUo8yyBWGbmTU6lubHFEHhkxksElH24ard7Kz4jMFPwn+QWTGNqt+l+vsUcITUttjH3Mjy5Sxug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ppltINGG; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=FPG1uKnDEtxPsz9kawpETD9Vf1QWdEiye55E6gaaxuh6tbBofVNIB+R3FEl3p/rmyiiKS32ssQ2R5EAvEKJQKdsQHuTB3EeFwLutjI8d2kDRDdl+1ZJq+MhlNwQPSRQdWsicUXl2r9GELyNmT62Z6DJStKkQqIP8tSEbSivjpus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=b5CNSkzz; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722981316; x=1723586116; i=quwenruo.btrfs@gmx.com;
-	bh=DI+7Na59YAq3uRMTxWVQR9hDcSI2KracsMaOXYs9wkc=;
+	s=s31663417; t=1722982259; x=1723587059; i=quwenruo.btrfs@gmx.com;
+	bh=oB1yBzrV67eCu8+oKu3wm/TD5swQolh07NXG/hiclcA=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=ppltINGG8udHc6oFnFmQACPC8+1XFjoQjrS6JrV3n4uX3YCeS04N648Vt9oBw2UQ
-	 mlKPsKM8+RLrE3GkYPYcs2pAUdFHdbIIcrXPAkW09X4ftSH0RydRVhpKRdKKQmTPR
-	 6RauZpZdhliWZABwDCTu5HkFxrkIdtx56evO5zy61omsNhyTN3VcamSa5AvjCEmmm
-	 zdw6REYqWnlspjgYKuv4iXEA0xoUBcIh53qKvRtQzEQXIfVrpqBz7BV79RqiruKve
-	 bR0MNzeY0sIZpRq8EQCWxMvVY9DBqYe6dA8pCRqgC0XHOVACuZkOq9BVS1u2biKah
-	 p9w2OyxJRHmolzSLOg==
+	b=b5CNSkzzt36RcxOi4/NaZvQUXHrZjUpQCAAi3i7U9ta+5acB1dpmki5U4r4cG+LO
+	 hk0kcK92u1IA77tq7Y+xaMi2ho2aDvbR0RKCw8WTo1BTa0DnLxQV5l6o0ga/jWPAo
+	 lGMuKcM2BBoagtpmN9EcBM/BLL2/IuOUFIIY5/mJt/7QYpotuqDRI4JXeBXpS/Yj1
+	 FPijeGfd3UivSix6gXwdM2NWde00VyfsbtgHlctdjiVGpCYHvG/Z/wadO8nFXVMf8
+	 Li9rKOZfqglYKH6cjqyLPgnw9YqWdZMIbshSPHC61jSH1E4aIlZNdGvoflWHT6Zku
+	 kPJfYJe6ZAO0a1dFuA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpDNf-1rrx8N0xih-00cNwg; Tue, 06
- Aug 2024 23:55:16 +0200
-Message-ID: <716c3de3-63be-420e-b11e-cfd3eab9aea9@gmx.com>
-Date: Wed, 7 Aug 2024 07:25:13 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtwYu-1sN4oB09Zk-013nIX; Wed, 07
+ Aug 2024 00:10:59 +0200
+Message-ID: <55a368af-ab0b-4bb8-b61b-53d20b163d63@gmx.com>
+Date: Wed, 7 Aug 2024 07:40:56 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,21 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs corruption issue on Pine64 PinePhone
-To: ellie <el@horse64.org>, linux-btrfs@vger.kernel.org
-References: <9b4f0e79-6e77-48a4-b87d-b27454ffb399@horse64.org>
- <b9103729-c51a-487f-8360-e49d3e9fc5e4@horse64.org>
- <e53fdb4e-bbb2-4777-b822-f1173dfed3db@gmx.com>
- <7d692229-d3d5-4b82-a70a-b7371c8724f0@horse64.org>
- <1e96ef22-b51d-488a-ab90-84fd85c981ea@gmx.com>
- <ad8a9333-8732-4d78-a86b-22dea00aabbe@horse64.org>
+Subject: Re: 'btrfs filesystem defragment' makes files explode in size,
+ especially fallocated ones
+To: Hanabishi <i.r.e.c.c.a.k.u.n+kernel.org@gmail.com>,
+ linux-btrfs@vger.kernel.org
+References: <d190ad2e-26d5-4113-ab43-f39010b3896e@gmail.com>
+ <7a85ea4e-814f-4940-bd3e-13299197530f@gmx.com>
+ <90dab7d5-0ab8-48fe-8993-f821aa8a0db8@gmail.com>
+ <0f6cc8e0-ab32-4792-863e-0ef795258051@gmx.com>
+ <837fb96f-989c-4b56-8bd4-6f8fb5e60e7d@gmail.com>
+ <bbec0e87-8469-488b-9008-f7d85d5ee34c@gmx.com>
+ <62433c69-5d07-4781-bf2f-6558d7e79134@gmail.com>
+ <e72e1aed-4493-4d03-81cd-a88abcda5051@gmx.com>
+ <ef164317-6472-4808-83cf-acaa2b8ab758@gmail.com>
+ <d089a164-b2e8-4d29-8d96-41b12cbfae42@gmx.com>
+ <30687f37-32e9-4482-a453-7451ab05277a@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,146 +99,132 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ad8a9333-8732-4d78-a86b-22dea00aabbe@horse64.org>
+In-Reply-To: <30687f37-32e9-4482-a453-7451ab05277a@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vudeeTCu6KWh34/mFvDMyRUL+fjJI0QIkkK/87Q01Gz1OchAqdf
- 6oG6CIZSyslQgbrIFyfDkwpF6ZkM4pwfZwQSexUIi+fs/kanogW+JHYD1sqoawnEoMD1k7b
- 0nLsXt7qU1O81HrWmiCdk2/fMcM/FBjIFQHXyAxpi3GKkNjyo5L6bHRMq4xXBU9gxkRtwgz
- cimDPrjmINyGXOdcbzrNQ==
+X-Provags-ID: V03:K1:0Zujsu5cB0HoSvzRx54yUWOQMW7HsXmfvSj25KO0fRsOFsbG2fo
+ 94mxmWbh6fctra4aPBnuTS5HcudBocrpl+Q9HLo3Guz1cHFqiWLLO5a/+EbUoza1IpJvRww
+ BwxHOCvT6GrvgnmEfhd3bqPXCNhpa5buR+FYjoOtxPuqVMBb2L3etduuNLNpztWpSUCCH8d
+ jx0wYW+qmWZ+AO97l/egQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:DHcFK5S2w4I=;ydQC1UICmZeZ8qvuduQPG5/7RVv
- XFOszLfysiUtthoXLdDuIRqpmaJk1UExfJCQ336Ycgb67OV3mMW6z4LgWklI0HEhW9JRZnfxr
- ng8E2Yq1HzGQUCz4sNiLTnH4J0jn4zrH7CNcF3QcjBbi0/haqET85vIpcBlS+8Hu+JMatrNKM
- yE5yWVcSpMIw+kbxQE0m05mtMq1tZYtfmxwCuJdemYD2PRNqRQbtn+r3cIzAyVcV/zp5Knuye
- NnsDxw+ck2d9aBH3xvCuVXqS4JlgGYYzoeznQq24Uh2jQPDfLvuR9t6tDz4GPfgxQLEFWXlLa
- XA+mscZhigzWDaOL/bdTFkaLgGODMQRXCqfXnGVVxRJxAfGRezyI96sEPYvdsyVp2bgVkgvjJ
- 11dij+UwohmRVtyHHDtDGSl5XDD/2PSUo81OgUx33j8bJ/X+QTiAHiI9yn+xydGpCv519ac+L
- VDwanELKlRVBqzwzn3J+w4btjnreinp7WSFKzRmekl8RqSsKlTL4WuBl540xNBRtaCjkDuLtt
- PTMItoTSKIc1dnN46UMfPksdc9xoJfAljWUyTHOdwkdoT+22E9blFYfs1BA9ymjIqtcTVbZZx
- zYmE0f0JQvJappYrQ0Lx0qAASy2GOQmTNpQQM3WsUTc+lvtdmwDquEBFDTbrR0IhM85qLikPr
- pV8AJyOb3VnAqqwezTWOzIvggPKQTsS0qVeRkkOO4xZMC2GQp6oxM+BV9YslQypk+LbIUi1PE
- L/qrioy4Oa/3l9/qYEudTCex40PWzUNXyHEWDHMR9Czhk1PgxJSFa0tX/Uj+OaJd61tGslj+X
- fY1wUMD3E8yDPQZu1casvs1pFIpZa0joWYOqFjPkzEaqk=
+UI-OutboundReport: notjunk:1;M01:P0:MdDwPkVZdUE=;7c+7Zm/sIEiwMQGCXyZHRoDTYM/
+ MAbVkFNi4GNH+sFPqFhyCpSCNFamtD/gqtNq1srRG3V6BAnixfAixG/QQpaG8ZpE+8WTqxuSD
+ /oquDUbUv0MJHhJg2Q7q8hHePEQP+RLk0DSXNxcTtUXNyhHusK3UMem1EYs31N0Bqs5/9S8uz
+ Cn9B6RisnInIOkKguXdEx4Hc08E1Ombc8UFjzSA8jQPSKOh85u8Zbdlv4fYwC9zRgNUrIocum
+ c7jFi0/Ely/4cXpRYAprapGQq636yrVEnWx8bx7on59PArmrg1n8E+8z2fb5H3e2ntMDy6mfa
+ 0bdMZAz5EXY21CFqx8VTBTvaPrLWaGc/vspLkKTLVCxaNAWZpsF4OdTcfuT9DXEOWdCgu7Ihl
+ tC4VuIARK/vXl0TNdxb8+GJgk0uJzU/ksYmddravs7EG2qG6DOxMCtB2ACA6UeEHICaGNs6vv
+ gHrS9+qYQpzv0Rc9m/6MRkCid/GqLSva33Neiy6g52tSyfwVX3Y3WZ680ZvkZ0g0LAkSxsILd
+ +3w44pnB0ndwkZdlH+JbldxYTH7jmKNALtAUQoh+XEkG/LzdPea0mFxR3HHpqYjXBLiCkQR8R
+ JPnHADXiNRlkMagE0mzveWQxZT8fT2nzl7Ozpce66JyVnbJKxwxnTAg57wz/DhqvPkYifl6s+
+ VkxD9dq+zuq4IvTXeWt7El0wOYhOyXW5Di3pu0dhRLYHUeLWIhX50UHYhwjCKrUFLTXXihAiw
+ 1ne767hUwWyA/OUOK/uZK9alaz5URMuDnxBKpze/PA61hVlbkWCJ/+qcf/G6cnevQX4BGxxbi
+ 89axQXZDUCqLJMhFfHl84Uxw==
 
 
 
-=E5=9C=A8 2024/8/7 01:32, ellie =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/8/6 21:38, Hanabishi =E5=86=99=E9=81=93:
+> On 8/6/24 11:23, Qu Wenruo wrote:
+[...]
 >
+>> If we try to lock the defrag range, to ensure them to land in a larger
+>> extent, I'm 100% sure MM guys won't be happy, it's blocking the most
+>> common way to reclaim memory.
 >
-> On 8/5/24 08:34, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2024/8/5 15:50, ellie =E5=86=99=E9=81=93:
->>>
->>>
->>> On 8/5/24 08:10, Qu Wenruo wrote:
->>>>
->>>>
->>>> =E5=9C=A8 2024/8/5 15:25, ellie =E5=86=99=E9=81=93:
->>>>> On 8/5/24 07:39, ellie wrote:
->>>>>> Dear kernel list,
->>>>>>
->>>>>> I'm hoping this is the right place to sent this. But there seems
->>>>>> to be
->>>>>> a btrfs corruption issue on the Pine64 PinePhone:
->>>>>>
->>>>>> https://gitlab.com/postmarketOS/pmaports/-/issues/3058
->>>>>>
->>>>>> The kernel is 6.9.10, I wouldn't know what exact additional patches
->>>>>> may be used by postmarketOS (which is based on Alpine). The device =
-is
->>>>>> the PinePhone revision 1.2a or newer https://wiki.pine64.org/wiki/
->>>>>> PinePhone#Hardware_revisions sadly there doesn't seem to be a way t=
-o
->>>>>> check in software if it's 1.2a or 1.2b, and I don't remember which
->>>>>> it is.
->>>>>>
->>>>>> This is on an SD Card, so an inherently rather unreliable storage
->>>>>> medium. However, I tried two cards from what I believe to be two
->>>>>> different vendors, Lexar and SanDisk, and I'm seeing this with both=
-.
->>>>>>
->>>>>> The PinePhone had various chipset instability issues before, like
->>>>>> https://gitlab.com/postmarketOS/pmaports/-/issues/805 which I belie=
-ve
->>>>>> has however been fixed since. I have no idea if that's relevant, I'=
-m
->>>>>> just pointing it out. I also don't know if other filesystems, like
->>>>>> ext4 that I used before, might have also had corruption and just
->>>>>> didn't detect it. Not that I ever noticed anything, but I'm not
->>>>>> sure I
->>>>>> necessarily ever would have.
->>>>
->>>> In the detailed report in pmOS issue, you mentioned it's a video file=
-.
->>>>
->>>> I'm wondering if all the corruptions you see are from video files,
->>>> especially if the video files are all recorded on the file.
->>>>
->>>> If that's the case, it may be related to the IO pattern, especially i=
-f
->>>> the recording tool is using direct IO and didn't have proper writebac=
-k
->>>> wait for those direct IO.
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>
->>> Thanks so much for the quick input!
->>>
->>> All the files I mentioned in bug reports were written by syncthing, so
->>> there wasn't any on-device video recording involved. I once saw Nheko'=
-s
->>> database file corrupt however, so it's apparently not limited to
->>> syncthing. I'm guessing video files are affected so often simply due t=
-o
->>> their large size.
->>
->> I did a quick clone and search of syncthing.
->>
->> There is no usage of O_DIRECT directly, so I guess it's not the known
->> csum mismatch caused by bad sync of direct IO writeback.
->>
->> In that case, since the corrupted file is syncthing synchronized, can
->> you do a diff of the binary data?
->>
->> To avoid the EIO from btrfs, you can use "-o rescue=3Dall,ro" to mount =
-the
->> sdcard on another system, then compare the binary.
->> (e.g. "xxd file.good > good.xxd; xxd file.bad > bad.xxd; diff *.xxd")
->>
->> At this stage, we need to find out what's really causing the problem,
->> the btrfs itself or some thing lower level.
->> (I strongly hope it's not btrfs, but either way it's not going to end u=
-p
->> well)
->>
->> Thanks,
->> Qu
-> Thanks for your detailed instructions! I was about to do as you said and
-> ran the sync for a few hours, stopped it, and planned to run btrfs scrub
-> this evening. However, I then ran into a hard shutdown due to what might
-> be an upower bug (won't lie, was very annoyed at that point):
->
-> https://gitlab.com/postmarketOS/pmaports/-/issues/3073
->
-> Should I still attach a diff for an affected file I find now? Or are the
-> results going to be worthless if there was a hard shutdown in between,
-> and I need to first fix the filesystem, repeat the sync test, and repeat
-> finding a new corruption error to diff?
+> Hmm, but couldn't Btrfs simply preallocate that space? I copied files
+> much larger in size than the page cache and even entire RAM, they are
+> totally fine as you could guess.
 
-As long as you didn't touch those files, and scrub still reports errors
-on that file, the diff is still very helpful to provide some clue.
+For preallocation, welcome into the rabbit hole.
+
+TL;DR, preallocation of btrfs is never reliable, it doesn't even ensure
+the next write will success.
+
+The biggest reason here is snapshot.
+
+Even if we preallocate the range, the end user is still fully allowed to
+do any snapshot.
+
+And a preallocated range shared by multiple subvolumes will never be
+overwritten, causing the same problem.
+
+
+As you have already experienced, if set to NOCOW, everything will be
+(mostly) fine, just as all the other non-COW filesystems.
+
+But you're using btrfs for its super fast snapshot, and that will force
+data COW, causing all the complexity.
+
+> Is moving extents under the hood that different from copying files aroun=
+d?
+
+Ext4 uses move_extent to do defrag, but unfortunately we do not go that
+path, as mentioned even preallocation is not reliable.
+
+>
+>> IIRC it's already in the document, although not that clear:
+>>
+>> =C2=A0=C2=A0 The value is only advisory and the final size of the exten=
+ts may
+>> =C2=A0=C2=A0 differ, depending on the state of the free space and fragm=
+entation or
+>> =C2=A0=C2=A0 other internal logic.
+>>
+>> To be honest, defrag is not recommended for modern extent based file
+>> systems already, thus there is no longer a common and good example to
+>> follow.
+>>
+>> And for COW file systems, along with btrfs' specific bookend behavior,
+>> it brings a new level of complexity.
+>>
+>> So overall, if you're not sure what the defrag internal logic is, nor
+>> have a clear problem you want to solve, do not defrag.
+>
+> Well, I went into this hole for a reason.
+> I worked with some software piece which writes files sequentally, but in
+> a very primitive POSIX-compliant way. For reference, ~17G file it
+> produced was split into more than 1 million(!) extents. Basically
+> shredding entire file into 16K pieces. Producing a no-joke access
+> performance penalty even on SSD. In fact I only noticed the problem
+> because of horrible disk performance with the file.
+>
+> And I even tried to write it in NOCOW mode, but it didn't help,
+> fragmentation level was the same. So it has nothing to do with CoW, it's
+> Btrfs itself not really getting intentions of the software.
+> I'm not sure how it would behave with other filesystems, but for me it
+> doesn't really look as a FS fault anyway.
+
+To me, any fs will follow the sync/fsync request from the user space
+process, so if the tool wants fragmentation, it will get fragmentation.
+
+>
+> So I ended up falling back to the old good defragmentation. Discovering
+> the reported issue along the way, becaming a double-trouble for me.
+>
+
+In that case, if you do not use snapshot for that subvolume, it's
+recommended to go with NOCOW first, then preallocate space for the log
+file. By this, the log file is always using continous range on disk.
+
+And finally go with defrag (with high enough writeback threshold), to
+reduce the number of extents (fully internal, won't even be reported by
+fiemap).
+
+
+BTW, forgot to mention in your previous reply mentioning the powerloss
+of a fs, it doesn't help btrfs at least.
+
+Even we aggressively writeback the dirty data, our metadata is purely
+protected by COW, and a transactional system.
+
+It means, even you have written 10GiB new data, as long as our
+transaction is not committed, you will only get all the old data after a
+power loss (unless it's explicitly fsynced).
+That's another point very different from old non-COW filesystems.
+
+Instead "commit=3D" with a lower value is more helpful for btrfs, but that
+would cause more metadata writes though.
 
 Thanks,
 Qu
-
->
-> Regards,
->
-> Ellie
->
->
 
