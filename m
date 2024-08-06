@@ -1,206 +1,166 @@
-Return-Path: <linux-btrfs+bounces-6997-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-6998-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD69948C70
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 11:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAE1A948C9E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 12:11:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87C151C23020
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 09:55:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D02E31C22912
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 10:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FEE1BDAB5;
-	Tue,  6 Aug 2024 09:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D75F1BE23C;
+	Tue,  6 Aug 2024 10:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="FtMXzbFx"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NwmprdmC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lY6J8swy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NwmprdmC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lY6J8swy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F7D1BDAA3
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2024 09:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCE916D4DD
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2024 10:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722938131; cv=none; b=kHOqTssSouiDuoebmYkD+E/c5yOuySAmr+tKOuPJgnIeXS9Bq0qhRvLsZIjV9VAANjL3Yt4/M1Ttdz0djFq7w84qXYwQJ7kTYJK0CgJDhx7TojUWMF+D2rD0wQEGMCcomJ5uKoNLq7KT+4BZNUw7pkfvwP/C5V0jdSPwZri32Vc=
+	t=1722939100; cv=none; b=nND6X/eNhjL2wRAO4xv6Ms4ew5Mf+/mNlU2vKe69yJAhcD+RhViUdqHbx9k0wieE42Z9fMFKQrF/aXI6crqGafGQ1fmI5yOLf5oUp6Fzsd5nvlNQLfLet2CIs047W3KcjXyLc2k513m3V1aJ/zBzkRnYWwC/lfHg8/8ABtgi54s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722938131; c=relaxed/simple;
-	bh=gfMkNMzLN5jVv1SVWOHZtubEWaE/SWe+gJpWrmtx8ZA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZtgleytZuo9rMLYRU2i+iZt6WZfLFl706em0b9tQX5q0Jmys/B3GoB+/xd4jjz3bJG4nGiqZS902Tuzt++KWVsDtV2Ghj2UhvhG45ImlsHGEmnrTr2qfvCmo0jMf5BI+7gIiYKo5Mz+nMHX0X1Jm1sWPonUO94xOz7Y9IE1FL20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=FtMXzbFx; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1722938125; x=1723542925; i=quwenruo.btrfs@gmx.com;
-	bh=VKQqiX0cLtt0EUefRiBu2LxFaIugwt4zWJH/bn03XDE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=FtMXzbFxB5CVVVOThgNfS9t+ytAeTDakLcf5VJgAnfuKEbXzl75hNLV4s/MV3Vst
-	 kNxi3pOYSR+9pwf+1jXISiJsYtCf6wKivxEwZ4YaIMPiwH6nwqWMo3KDbikPF9I1E
-	 UXO+o1qwvvDA+ypAij9wCmyB6FELLloWWwKBudZKXzGa2bhFC6QYRQ2k7px5lhAmA
-	 x0E8utu7QGtu1LUxFXvQqdA+oW9lO6AW2a3vGYshy1KKHJHViU8BM5ij7pDZa41Tb
-	 iFQ8jRAMshEtATt8p7t+escaBg/Ozr/zzFoSxz5GyLSZO7vcWDyRY4hyDaZJ1MjQT
-	 vIIccJgHJoY8V3o9jg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3lY1-1sbXlG0Jyl-007n0L; Tue, 06
- Aug 2024 11:55:25 +0200
-Message-ID: <bbec0e87-8469-488b-9008-f7d85d5ee34c@gmx.com>
-Date: Tue, 6 Aug 2024 19:25:22 +0930
+	s=arc-20240116; t=1722939100; c=relaxed/simple;
+	bh=d3qsmPrQ3s0Oksg44PIl3CrKxr2DF9nYQT614nAyy0U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BSHI4MG15v4km9ooe822YhZ4tDpG4M2dD4RL4qQkCiKDQgQcvk8ZDHi5um2F3rJuMWDsnBtELuQ9Jvissa7nLbapQTHOGBMCk624+UJVaRv2BVANhjZXvQByjIm+lRYFuTTfGXqOzCam2rO2CQuaHeS3ZUIzHVzs5CuuxzuZLq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NwmprdmC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lY6J8swy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NwmprdmC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lY6J8swy; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5E39921CA9;
+	Tue,  6 Aug 2024 10:11:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1722939096;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZPZ/A33xtLYTl3b0afGTOkKViDDIuUFSqeeGCQ0Ga6g=;
+	b=NwmprdmC063Z1fNDHPsQHQhyUjN62VnDmHmb13pyhqkVD9Y3ps6jz+dvKi6a4r0TqVCQ7a
+	aVRvLfT3JK96zBPALK69w7ALNHHGFXulJ7BQA+qOqdniQEFNcIXcyp1YW/GUnKw3RQprN6
+	oXeyei0NooaRQ6UhcTo7hlYaXiZtYOc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1722939096;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZPZ/A33xtLYTl3b0afGTOkKViDDIuUFSqeeGCQ0Ga6g=;
+	b=lY6J8swypjrEICuMIhvVcQJnLyjXAV+zC5rpGohanJfxtXvuypnKkzPF77y1XWZUQ7WPSg
+	nmkuTRShxS0O5HAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1722939096;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZPZ/A33xtLYTl3b0afGTOkKViDDIuUFSqeeGCQ0Ga6g=;
+	b=NwmprdmC063Z1fNDHPsQHQhyUjN62VnDmHmb13pyhqkVD9Y3ps6jz+dvKi6a4r0TqVCQ7a
+	aVRvLfT3JK96zBPALK69w7ALNHHGFXulJ7BQA+qOqdniQEFNcIXcyp1YW/GUnKw3RQprN6
+	oXeyei0NooaRQ6UhcTo7hlYaXiZtYOc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1722939096;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZPZ/A33xtLYTl3b0afGTOkKViDDIuUFSqeeGCQ0Ga6g=;
+	b=lY6J8swypjrEICuMIhvVcQJnLyjXAV+zC5rpGohanJfxtXvuypnKkzPF77y1XWZUQ7WPSg
+	nmkuTRShxS0O5HAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4633A13770;
+	Tue,  6 Aug 2024 10:11:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mgqfENj2sWbeDAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 06 Aug 2024 10:11:36 +0000
+Date: Tue, 6 Aug 2024 12:11:30 +0200
+From: David Sterba <dsterba@suse.cz>
+To: David Sterba <dsterba@suse.cz>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: make btrfs_is_subpage() to return false directly
+ for 4K page size
+Message-ID: <20240806101130.GB17473@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <bc8baf98c9c9357423178d4fab6b945bcb959f1d.1722839158.git.wqu@suse.com>
+ <20240805162220.GX17473@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 'btrfs filesystem defragment' makes files explode in size,
- especially fallocated ones
-To: Hanabishi <i.r.e.c.c.a.k.u.n+kernel.org@gmail.com>,
- linux-btrfs@vger.kernel.org
-References: <d190ad2e-26d5-4113-ab43-f39010b3896e@gmail.com>
- <7a85ea4e-814f-4940-bd3e-13299197530f@gmx.com>
- <90dab7d5-0ab8-48fe-8993-f821aa8a0db8@gmail.com>
- <0f6cc8e0-ab32-4792-863e-0ef795258051@gmx.com>
- <837fb96f-989c-4b56-8bd4-6f8fb5e60e7d@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <837fb96f-989c-4b56-8bd4-6f8fb5e60e7d@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kwYKT5I0VpsK++nyv6KOrqeAf1Bu7BALs1NLDCfYbzHOeFVSmWp
- WZjyle0lpva+COwBitQPNwm7AepikMedn820aPmTn9WQtNZ+C4M1x5yM6s9DCd0Kj++g60f
- 9Sz0V/eeV75/7EoczAF3uyhFq9ozJosV0LYVeY1f8qFKf+2i2qNdRBHfEn5guZ7LMUlDKli
- WylUBKR08LmtwI33PVi+A==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240805162220.GX17473@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[3]
+X-Spam-Score: -4.00
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:f5ffwdNcgNc=;32q4scXGW3M+plPTrYPXf5AtH1c
- MSivu3lk6aOerCqdYnLawWe/U0RzaxW97Pjb6MRmE+d4Rt7zQWARkW92Pz383caKpf0NuGeZ0
- Iha35iJVzEcndHWRIspGkf+zsIml+BLCL7uK89o9/OZC2UNXC1VrBzDcDgLWmAvOM2ZAjR7db
- h/z3EPbeYQAzHgnUb2cNYQfE3dXf5plOVkwbJzndJDFCpNkcdnRqvT5ZHNZsagbcYYRMSIRm+
- GpO5vY/g0SMbXp31b4YalSYv6vpDu4dXHj97JyCeWRHVijEJwbjQ7FzEnUvNfQInUb0rb77eV
- 5yC4uQBaYAVjjYcXrEaLjZypA1AG1hRWzvCr27OXXfHQUoBKP0bc/plJjP6yjGZTU7cceFdcd
- jiiqFxMq8mxUW3ifKUk80MZIjyL+5atGw8xoOuf/qPnKsEfFsaTS4sS7R8g7FQ40dvI2Wf98c
- 05FH5QTjTo+K4k4r91t6dOXFtzvQz609oUWGaXbu3BYa0GqRbXS8n93GTEn6a4BZzcfzhAecE
- 92AngWnm7VPIUBdE4h6QDe+XBmE1cHz10lGhobNsRo5u99EdhKf3k/jY2vy5aAelfj3rP4/bU
- 7Z4TRbZmSeK+nY1wQH3zArNEYib8A1N4cMLn5yrC5Jt722iq5KkYVaa7M/kV7eMXsd6SlDZag
- gzsNHdstoWjW09e3UI7+Onn/vyGoCc5Zgvp9GIjbukHYBap/C5LNjLR+vtb9x09tJlqOi8P7d
- YINJ/e9OapKs+WKn7sovegr7sJE4kltkKlPaK+/3I16OrAVQWWLygAn9ebGih7AcaqGkiBNOa
- tG/iUieFIVR1bYb5uMvdA1XA==
+X-Spam-Level: 
 
+On Mon, Aug 05, 2024 at 06:22:20PM +0200, David Sterba wrote:
+> On Mon, Aug 05, 2024 at 03:56:30PM +0930, Qu Wenruo wrote:
+> > Btrfs only supports sectorsize 4K, 8K, 16K, 32K, 64K for now, thus for
+> > systems with 4K page size, there is no way the fs is subpage (sectorsize
+> > < PAGE_SIZE).
+> > 
+> > So here we define btrfs_is_subpage() different according to the
+> > PAGE_SIZE:
+> > 
+> > - PAGE_SIZE > 4K
+> >   We may hit real subpage cases, define btrfs_is_subpage() as a regular
+> >   function and do the usual checks.
+> > 
+> > - PAGE_SIZE == 4K (no smaller PAGE_SIZE support AFAIK)
+> >   There is no way the fs is subpage, so just define btrfs_is_subpage()
+> >   as an inline function which always return false.
+> > 
+> > This saves some bytes for x86_64 debug builds:
+> > 
+> > 	   text	   data	    bss	    dec	    hex	filename
+> > Before:	1484452	 168693	  25776	1678921	 199e49	fs/btrfs/btrfs.ko
+> > After:	1476605	 168445	  25776	1670826	 197eaa	fs/btrfs/btrfs.ko
+> 
+> The delta is 7847, not bad and it's on x86_64 so it'll affect most
+> machines.
 
+On my release build config it's
 
-=E5=9C=A8 2024/8/6 16:49, Hanabishi =E5=86=99=E9=81=93:
-> On 8/5/24 22:47, Qu Wenruo wrote:
->
->> It's recommended to go the default values anyway.
->
-> It's for testing purposes. As you can see in original message, it
-> happens regardless.
-> I simply noticed that increasing the threshold makes the problem worse.
->
->> Mind to provide the kernel version?
->
-> Originally reported at 6.10-rc7. Current tests with 6.11-rc1 and
-> 6.11-rc2. Still the same results.
->
->> Is there any memory pressure or the fs itself is fragmented?
->
-> No. I tested it on multiple machines with lots of free RAM, also tested
-> with like 99% empty disks.
->
-> Could you please try it yourself? It is fairly easy to follow the steps.
-> I use 'rsync --preallocate' to copy the files over (and maybe call
-> 'sync' after to be sure).
-> Then run defragment on them and see if the problem reproduces.
->
+   text    data     bss     dec     hex filename
+1339533   30572   16088 1386193  1526d1 pre/btrfs.ko
+1332328   30372   16088 1378788  1509e4 post/btrfs.ko
 
-The problem is, I can not reproduce the problem here.
-Or I'm already submitting patch to fix it.
-
-# xfs_io  -c "fiemap -v"
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst:
-  EXT: FILE-OFFSET      BLOCK-RANGE       TOTAL FLAGS
-    0: [0..460303]:     583680..1043983  460304   0x1
-
-# btrfs fi defrag /mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst
-# sync
-
-# xfs_io  -c "fiemap -v"
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst:
-  EXT: FILE-OFFSET      BLOCK-RANGE       TOTAL FLAGS
-    0: [0..460303]:     583680..1043983  460304   0x1
-
-In fact, with your initial fiemap layout, btrfs won't even try to defrag
-it, due to the extent size is already larger than the default threshold.
-
-I also tried "rsync --preallocate" as request, the same:
-
-# rsync --preallocate
-/home/adam/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst  /mnt/btrfs/
-
-# xfs_io  -c "fiemap -v"
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst:
-  EXT: FILE-OFFSET      BLOCK-RANGE       TOTAL FLAGS
-    0: [0..460303]:     1043984..1504287 460304   0x1
-
-# btrfs fi defrag /mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst
-# sync
-# xfs_io  -c "fiemap -v"
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst
-/mnt/btrfs/mingw-w64-gcc-13.1.0-1-x86_64.pkg.tar.zst:
-  EXT: FILE-OFFSET      BLOCK-RANGE       TOTAL FLAGS
-    0: [0..460303]:     1043984..1504287 460304   0x1
-
-The same, btrfs detects the extent is large enough and refuse to do
-defrag. (Although tried "-t 1G" for defrag, no difference)
-
-That's why I'm asking you all the information, because:
-
-- The kernel code should skip large enough extents
-   At least if using the default parameter.
-
-- Even for preallocated cases, as long as the file occupy
-   the whole length, it's no different.
-
-- Even btrfs chose to do defrag, and you have no memory pressure
-   there should be new continuous data extents.
-   Not the smaller ones you shown.
-
-So either there is something like cgroup involved (which can limits the
-dirty page cache and trigger write backs), or some other weird
-behavior/bugs.
-
-Thanks,
-Qu
+DELTA: -7205
 
