@@ -1,75 +1,75 @@
-Return-Path: <linux-btrfs+bounces-7018-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7019-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1AF8949B9B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 00:55:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03895949BC6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 01:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DE661C22760
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 22:55:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1E70288DE0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2024 23:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382F2171E5F;
-	Tue,  6 Aug 2024 22:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1C5174ED0;
+	Tue,  6 Aug 2024 23:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bOsYMvSS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d1d9Bn8h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BA6374C4
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2024 22:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B7B18D644
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2024 23:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722984905; cv=none; b=pV+2t5qaeAtpmN2xalpNU9mQ9I/0cYDEFuIQxINv97KT8UYpyhWKb0n+5JDNg38B0cxM9svkzHEWUsy/9BtuSKnGlSCoyMxll7Xugvjkjam+kSQ6Ad2LI9PXnI+QHS78XMCqyusdbk0oJtwcTU0e6CoiCvkf7ljANsziuzxWqOo=
+	t=1722985459; cv=none; b=c41JcncdSGl9YgBrbR1PgZHcYX/27zQuT0e2+cGTgD1dzZndNwvm1TsBRw1oTbAq71Z0qQtoj8RGgoLu5d1yO7ZXcMPeCKzHSeOiXpwSghva7VL2pLAnZZpYPALZL6v+k1100uPyD8NziRiFg3BBLUPl1MMAUzQ0RXapZak9YdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722984905; c=relaxed/simple;
-	bh=/u9cgUP1uQmadgDS/Tr4HroEqet0ZTDCE8yyPrqvV48=;
+	s=arc-20240116; t=1722985459; c=relaxed/simple;
+	bh=uP45sYGpUuPnVEPDPG6JtR51DycGs+HlSccNwLsBiMA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=EJyWnPtO/I2O2UmI6y24iX8C4iZ0O79Qrso2/C/j+ygVbdpY1nrPC4w7lu9moZfSEjdyvrkxaVQ917bjlRCub/2wrWCT2+Ov0LEzkkDJVYDBWeCyzhcsmw3o9LpSokAfjuh5UYfIOQ8Ob7ogrCQsc5907rrxDrAnJwMTcJGmn7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bOsYMvSS; arc=none smtp.client-ip=209.85.167.50
+	 In-Reply-To:Content-Type; b=HUGRGRiegxXVzXX77NWH6PR+ytxDDcnc3E3Dr9XvfjkiIYBvL2JayRA4w34HlWZbE8lXrl05726HlDzVu5UQlx452NYep3cK4QNbiMT4l9IxJiXA1J1tVUAf3Qg+C+e3yTaoOEmekNs0a0hfm7vSuMU3/bWLn0fZwRwkpLOTP9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d1d9Bn8h; arc=none smtp.client-ip=209.85.208.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-52efc60a6e6so1858036e87.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 06 Aug 2024 15:55:03 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2ef1c12ae23so12527821fa.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Aug 2024 16:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722984902; x=1723589702; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722985456; x=1723590256; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:mime-version:date:message-id:sender:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=KalNrQSdtajI3OpkeyBvgsmYsjRnShx8qUtkXNjZr+8=;
-        b=bOsYMvSSjSX70qla04oQdjWkPPpWvn7DsxwdFKCcATAu8FSiNGdgpxiw2jbhanr302
-         2tIO433ECWsWrrP2PELrERPdFkiCB/ewQXUnezsNKk0grii53ac+4VvzQn/A68pUC9w4
-         4JzodobR6P+2b58Uv1iR0c4L7ntxMnFP7O58RWBrLf3oXfFWLuhOHRegfdEl6JcE11JM
-         CsCGtRa3R+tikEhdsCODTs+qbXEINIk327lu1puNiwVyq2Bbfw9WUjeGwk92MpKnsuu+
-         L60edqxrVexjugZPPR4heKV2PDA75e3vxSGjY4BP66gHExsTycoCO79w4vwbUEeE3Bx7
-         Mntw==
+        bh=uP45sYGpUuPnVEPDPG6JtR51DycGs+HlSccNwLsBiMA=;
+        b=d1d9Bn8hcjRaOQOiBYZ945hK8wVyaH2bpi0G3XUL213li97loCd2OjH9KKS2C/52xJ
+         rYLA1J76rZi7U4ZhZhoHcS9auOvvHOB/pDd0dKSSGCwfMS6ERVr3Mretvx0lmcuhHPEh
+         TGxFZDbswgtq+C5b4lbzjIcI+RaWS8u61m1FMIPDqPXZqFLCKqp4gljWgzlJiHVXqdBY
+         iJ/EZClrwflBODg8iw5itAi2RdIdziMgU9zoIHdYuzokSRxgzuERtnuPU/9PjqMxL9D6
+         tEA7+haXhJUA4JPgOsVBvxKI7nwlz821wlX9wrs/bRyrRdlb5Ysv73GrthPgVpeodZZ/
+         iqCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722984902; x=1723589702;
+        d=1e100.net; s=20230601; t=1722985456; x=1723590256;
         h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:mime-version:date:message-id:sender
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KalNrQSdtajI3OpkeyBvgsmYsjRnShx8qUtkXNjZr+8=;
-        b=OvC8zvupgj8GgOhzDB0RPcJ2ohPI/0KpKxFCGkd0eFVScz7VZbQ0BHIH/eGffi35mD
-         ESqBx65Hv+IB1Yoc5VoRsdFj2K0LpFApQblhvRja4BI7UGZ2E3o8zP9Ks85PMOy9A3YS
-         sDROYr2fHvOAt7tKYxR3WEo01jW3lhmeY24qfgwGpPrTdVdxECUANnNI948L9HPoAMxO
-         XCqpCznz1hAQh6uERG5TlwekKolb43AkO2EA/8+eSOj4z1Skr6ctD6m+XGFjM0JK/zFg
-         c1Mv8pBhXedOKCsT725fr+8QXAx5MefkzEHCelajY8OavcHwOd+jKky8kEe1Rmp05JZt
-         xA0w==
-X-Forwarded-Encrypted: i=1; AJvYcCWHHLx3OS7rBNezzLrKkOARM/yUU4ZKZb7dVpKarpJSL0N0bTf2b5XZdwFdrxAGIazYPfG2WX844Ih0Fw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7M7BUEVZSK4ASFMkdNrmDjD7UU/JRyM+Ki5LYWQbALZNsWp1l
-	Pikt293fDYnwbpgNpK+iir+vjhzYloa/1xbhbYuOss3cWYZclZxwoHNHNA==
-X-Google-Smtp-Source: AGHT+IFGUTyRES5ldKA7cVCpuepgCcIK3L7oGDSDERY+eCGbafDa6XHfZiUrN5FtJqtthniyDhSX8g==
-X-Received: by 2002:a05:6512:2302:b0:52c:dc25:d706 with SMTP id 2adb3069b0e04-530bb3b14e9mr10930532e87.52.1722984901257;
-        Tue, 06 Aug 2024 15:55:01 -0700 (PDT)
+        bh=uP45sYGpUuPnVEPDPG6JtR51DycGs+HlSccNwLsBiMA=;
+        b=tRc1RAJnYaKs9+QJl/hJI//B2y2Dq9Q9WrI7KB8lhdMaNvsjzTKLHs4cC/DcRX81PR
+         acOuz99iVPL5aJms9SPHQ2g6nEjzBDDyEtvk/9427qc73rfSm5ApYxemSqqfwxmMpNKL
+         qwDpfKN0DhYlWgfsMqzIYki4b/iRQn/A5jgoUs0UZKDS1vRl94qjpwwwCcEhQaGPgWqa
+         7Zlp2NQbmAyq7VBD4wtMUDt5xeDktSvzCgdO1pojFxwtgl7Cm4G+8R6TlaG9SNj/bEjE
+         lBk7+oakqKGFFMpk0zGqIH1W0lN39TcPIZ8j+9/X6QgW/gsnhujU8n/qNl4kqC66ZpyC
+         HW/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWQWE1utsEQnraRfYsl6ONoXzW3UIbDqfL1lTObgwz1xB8Cr3sU7IeUK9V5VLW5kEVtcjEPpbcS+5xSkxgRTW85QOFsJKx5sMIukOM=
+X-Gm-Message-State: AOJu0YzSDcv0Ax2lbSEqId6zbW6MBQ+hnVreasTZkC+mRxQms8kVlUhb
+	J5nhOXNgfXWvhNkScrXDF3sPzib3wgmTT5Ce61BV41ZSd8aAWMDr
+X-Google-Smtp-Source: AGHT+IFYl2Z79kW45I7UPtfqFTpFwsj216Bzjyksj6o5a9GAHYxbedBTb7HUmP5qXOViWu8c3OGP+Q==
+X-Received: by 2002:a2e:934b:0:b0:2ef:2dfd:15dc with SMTP id 38308e7fff4ca-2f15aa7191fmr109710721fa.9.1722985456218;
+        Tue, 06 Aug 2024 16:04:16 -0700 (PDT)
 Received: from 127.0.0.1 ([94.41.86.134])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-530de4835aasm12633e87.305.2024.08.06.15.55.00
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2f15e1c9c7fsm15507431fa.71.2024.08.06.16.04.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 06 Aug 2024 15:55:01 -0700 (PDT)
+        Tue, 06 Aug 2024 16:04:16 -0700 (PDT)
 Sender: <irecca.kun@gmail.com>
-Message-ID: <c55cbcab-450b-43d5-b4dd-08f2b5294757@gmail.com>
-Date: Tue, 6 Aug 2024 22:55:00 +0000
+Message-ID: <1a1f1549-5fe8-4872-ae07-a83d092df56f@gmail.com>
+Date: Tue, 6 Aug 2024 23:04:15 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -90,22 +90,19 @@ References: <d190ad2e-26d5-4113-ab43-f39010b3896e@gmail.com>
  <e72e1aed-4493-4d03-81cd-a88abcda5051@gmx.com>
  <ef164317-6472-4808-83cf-acaa2b8ab758@gmail.com>
  <d089a164-b2e8-4d29-8d96-41b12cbfae42@gmx.com>
- <69ac8794-8a36-4a67-ba54-c11c44bf5044@gmail.com>
- <0c6112d6-3d65-4791-9642-927c97f9b926@gmail.com>
- <97a1d83f-d5e2-4680-a694-2d141b0d81a9@gmx.com>
+ <30687f37-32e9-4482-a453-7451ab05277a@gmail.com>
+ <55a368af-ab0b-4bb8-b61b-53d20b163d63@gmx.com>
+ <a149ff05-73bd-4232-a532-8c5efb4a69e0@gmail.com>
+ <05767a39-e59c-4615-b693-774976bd54f1@gmx.com>
 From: Hanabishi <i.r.e.c.c.a.k.u.n+kernel.org@gmail.com>
-In-Reply-To: <97a1d83f-d5e2-4680-a694-2d141b0d81a9@gmx.com>
+In-Reply-To: <05767a39-e59c-4615-b693-774976bd54f1@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 8/6/24 22:18, Qu Wenruo wrote:
+On 8/6/24 22:51, Qu Wenruo wrote:
 
-> There is an attempt to enforce defragging for such preallocated extents, but not yet merged upstream due to interface change:
-> 
-> https://lore.kernel.org/linux-btrfs/cover.1710213625.git.wqu@suse.com/T/
+> (I guess a UPS would be better for everyone except the budget?)
 
-So, can we count that you are aware of the problem at this point? Because the main goal of my report is to make devs aware.
-
-For me personally "Don't use defragment. Ever." advice is enough. In real need of defragmentation I can manually copy files without reflinking (rsync never reflinks anyway) or from another drive. Not a big deal really.
+Of course, I have it. But you underestimate level of my paranoia :)
 
 
