@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7035-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7036-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BDDE94B2B1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 00:05:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D66294B304
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 00:27:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D684282802
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 22:05:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E54A0283926
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 22:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206361514F8;
-	Wed,  7 Aug 2024 22:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB5B155352;
+	Wed,  7 Aug 2024 22:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Z1I7Dnkp"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cfWoKPf3"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16ADD14C59A
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2024 22:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8681E155337
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2024 22:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723068349; cv=none; b=FneTMm4SJPWKGbwI/hMxBZ8JhxrXg+yWb3L9MGs/NDI5kin4fsISswqCfIRSNZ8pT35wykOBqKkk8h8bbsT5CMhKwpnTAkFm/sLw9KE8I0uaUKNKdZ9Vrqi8FtkVbVgrOR3f6DbJuK/78c6fm5FedKN1LCU+UWCLTXQcEr0Ha+k=
+	t=1723069638; cv=none; b=r3mFim4s2PtC4ZVMpqrla7Y1q0aa3c+S3VSD1nxje6L6J2uFBzZjH3obWF2WOOgGKZhXOg6HAOG4rUpBJIUPLoW32S2+hVnxMOVoPQDXck/M7kp+6Vy9FRJrY25YElu/zU5sq0SDOunzXvdzm12tifB2lA9u01DMst1+Ak/a+rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723068349; c=relaxed/simple;
-	bh=dBYG+c29EN9zUJf1+sR8UVO9Fx+jat6Oipyi+uUTOaY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CEcVwt2bvLAYCo699tea825+Gt+O0zbNilSM3nHTkqjvc5pjkpBethM58ZKQWkabrcSpimlG7wzt5c5lWbg42w4cf1hnnsOkqcqHMxGdYe3SJN43zpHUJ8ZbcfEnqYrcQGUtiaILq/gweoGDyUQpByAdDYUzNAukjCLNnR3lvOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Z1I7Dnkp; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1723069638; c=relaxed/simple;
+	bh=qfKM4gBQHXGQK6JB4t01Hvg9yZ7CNd7aUQ/Qwj+lhqM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fTSWYiLqu6bNIjWR4BgyGw6OhzsY0YD95vxhH1M3FBSRd0qUvmhjU/6MtZh8nXIPA08QpeKA6OnqadF16Y6PAZAxJTpUeL7Jemul4RtRHrbiO3lMkkr4vlvusP/IkJd5gOEfg1/rX9LENirU09vPWo9ux8nTpdC6GMmmJoyikvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cfWoKPf3; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1723068344; x=1723673144; i=quwenruo.btrfs@gmx.com;
-	bh=yZD/Cy1nkYQNQ6GwcoEuJLEvVwreNmyHqW6LDjQLBWc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1723069626; x=1723674426; i=quwenruo.btrfs@gmx.com;
+	bh=Q5cmCW7lpkioA/HyZpcc+O2unFv59OLmOK3X0qKw+OM=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Z1I7DnkpCstRDl9AsdPLJRHYuxf7tXsaBw8OA6gdMFa6SLad0j6i8ii+GnTcGNZP
-	 vlHodKVzxHlfEkYbZwoi3uzXOLL2/z4XLZOllD8xJnf7TPP/0ukkyACvayfNDBcgA
-	 ++sTxp4ntkfhT8JT6xfd4hI/q5fLxROEzp+m7UXRWR2Dyguzo5u4FA2eMIPGsQmiW
-	 Qc8YekgMKhHvLFxdUuJ9f1H6yatyQH5gr1pNH5iLmROLPaXOimFwYB/Rj2LsRP3Ss
-	 wk7ayJsC5Ul0PiGLLGOdJQw+9kCcdZJSDXMj0N7rUSgG4JAQWHExgFkt795uLZkYo
-	 hFoLQWo9sQM6XscwyA==
+	b=cfWoKPf35F8Q0OvvdJNpAxTDYE8Bk2o0lVuk2umO6ast78qVVrhfZgNOIh9AnVhd
+	 4NPOawlBG+96zMFCu4VAmUTy/Neuw5FlYDJZnFYUxXp9yCZEKEx33/vMPnAJ1p9CM
+	 s/pI2ZIp+gHbcB3GRvsKRu1YuzykAmK1gfnzMIMdjQrwg/bn66zvauXxHgLm9gXMt
+	 y8BQt8bG7OKgCB7REs8wzm/WRFJDkxFvfdu5MknHDuo7ujsSdGurUTHqsncC0b6lE
+	 nNgLq5XhzBadfMelgdho/eJrPFXPR/P5jKGS6YRD5E330J3PKY2rWbxhs2qj1Uy0C
+	 2zDA9C+UbEqg8+qh0Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mn2WF-1rtuqW1mOV-00ixCd; Thu, 08
- Aug 2024 00:05:43 +0200
-Message-ID: <222e8428-4847-4b93-90a9-69b5594756d2@gmx.com>
-Date: Thu, 8 Aug 2024 07:35:40 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMobU-1suRw52Qzc-00Ll7e; Thu, 08
+ Aug 2024 00:27:06 +0200
+Message-ID: <18286600-549f-46c4-8387-33cc461d1bfe@gmx.com>
+Date: Thu, 8 Aug 2024 07:57:02 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: refactor __extent_writepage_io() to do
- sector-by-sector submission
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <9102c028537fbc1d94c4b092dd4a9940661bc58b.1723020573.git.wqu@suse.com>
- <20240807162716.GD17473@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: directly wake up cleaner kthread in the
+ BTRFS_IOC_SYNC ioctl
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <b4c0f0bc574a1b105a02132c2ebedb0e31f235eb.1723052137.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,101 +88,68 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240807162716.GD17473@twin.jikos.cz>
+In-Reply-To: <b4c0f0bc574a1b105a02132c2ebedb0e31f235eb.1723052137.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kul3qq3W/VuSBzETbPg+OjJSj/r5yPJEIptaNyKQpunc7C6uLlX
- OQkcXECMBQyR73/gLJFDByiduT3TDs7bcL32PAbl+zAzI2jRuskP6NTNDg1/o3gIlaU5vVC
- yj4yb+ejWYTUISRdFNyHh6Ywl2cz6ya7BtC/I7Xv3MZdrP7J7KQE75Vm4BjWGTktGceEmuk
- 6+ut8R2gi+AGp4r2AslfQ==
+X-Provags-ID: V03:K1:rDsTxpNoVgQ0gqSrPN/HHAxMGNQabZcd+FWmUns8tsSt6n+0T4F
+ cLGbFX/Ovh7gxFRnk7E5K4LkBbejB1tUAlHPO7rqO5eGOGdOBCg9SwrL7CCrGhFJObmslbd
+ mDC++bSGlJQFUUYjAByE8llPD4CKzw7J33CEx0j9NmVnYpzw24bAcnZ3l2nuHGIo0CYT8DG
+ UlOZxyyCkKPj2PT1BykDQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:RMUfpCWvJ7E=;c7PQ7H1EkmsLKijzjJ1Pt1lQzBT
- /+7RIHKrKEoxDZ/7lsXC4Z9fOVyRwVsSHmITL5f4RZtv1D7NNFgJnRQpHuWve+dJYviUrXUw+
- yXnf1wAFkeFT1dIqxomlbKbfE4rQaSL7suN9ANh48cRLv05TNLc0AImRtgT9lv+MvVMhgbkXb
- 9r2rEgboUyhUl6XNnKZ4zY/PMFvCaA3nUNQ23nI8d2sowHIULazP0lYtGq5VsKx699ODr0GFM
- cUdDkszfWpUGxoISDj3GZuQF+d/9W4lv99+wIsyQv93uWOFAtZUlR+n9O6GlT7eRVav6hDhEN
- Ijl5DsloFcnJAR2UzdIqxXi9bAPNmiRzMOEyY611o3at1k7PcyYxaNODpgr03l85vYqJxZ5oq
- 9TLH6GCIkDayhIkDa6Tm1IX7MRQBcn1/RL+s+OTW8kTdIO8L+JWjC6NrPm7vYHrCSqaTyFSjE
- V54lIjYYgLqBsBh03lmUIyCP0LR41jxI/AjmNLOLli9Hj2RkczkCXRXws8tMMMOW/bpHfvsDd
- 79ASWCFhfM2/u8QMg9og3K3GdU7/lp3+/MbAXnGaJi/7s+UJ7rK5o31Y0PnUOr/25TWKudUTJ
- n0BVtEvgecdLLPRpPWPjrJyajF91bPxEsWdIQBGs2aQer7dlZrvj7mwxWMAYwWVtegGd6Ql4c
- KM4RlUCDGK+XCES2MhquXCSpT+T6Mf3bF44y5IFoetig7ao2aT6z2Ln45eHscmebiG+5SQWva
- +hn8BH/7ph17XeQwGtVF43uU2XMX3LHIZe4Cuv7MyvMNjUlM37Fk7sGTfqCm1FrzfGT6RIw0z
- J2atN7MKw/wnV1osqL5d7ngQ==
+UI-OutboundReport: notjunk:1;M01:P0:lP5BpX/1tz0=;qpKXm6F0Xy1VvXnKdrm/W4h3OoT
+ YN6Nb3KUc6wF2LnXhOfA+8WgH1c6Gc7oESOi/KM92yYpzTYHoEwJe/0L0J699irdzOD16tb2S
+ KH7nOZjtrkmuUOVzhBRVyGxLkXOoe+X6iSNMA/6GODMZaq7xSbryq+jAxNn81tuLvUeMqTkTN
+ 3J0JvJ6YVLoqlqoit+f+nbkXMZqyzK/xVJ+yuV6dYh7ou6yzUJJMhvnMGjD6d0+CgzkcWpx/L
+ FW05JYTKXwQEIOM4+vV8EHg2ZISBuOUBXsZ7AKczR34G9abshdjnbYiC0/V4KrIivL1T+mlZR
+ J7MXdnKFqCmBcT58ubwho/e/An3racXaZaPDgRh9Oc+LmmOPY/uQEQFIqjXaM6whZo79+LFtE
+ UkheubOjHIARk0b3hC75Zlmbwrdl88KrRM0zrB3rhkhBK7cvurPDXvwWJFkAj5X/tCvTNjAxK
+ rXGFpU6xoo3FAMTBWEJgPdNPe2aMG99+QNLhAxlpvkP8TsfQhHULKc97ogFe5yU6AdzIW+IxE
+ KBMeP/Nx3kYXiTKHRozctgincDixBK6fuXXbUtyFHUWmuldxfFDHYwR0+GTNbBZKBsseZTM0i
+ OzKraEOHpplVZfM5dEMbchuRNN9oTJ1scPnbD7Pg8CN3SLDcEdHHe9sW6Cf4ksFxyfvDT/S0/
+ Jqi14OpeSd6sLdv9PywCaUDwnp0nVe/bAdZeFfvJilyXlW82iHoP/pQlgmasBWBHvUVMJ1WqP
+ 9OFvYl7gdJpshUl3R7HZVx6QakjIkILa5bdq/PmE/KbgEeDHubHtZ8GBT2w6R20b0HGU8zSO9
+ YTmpW+tTYqxVBQvPxyblLWdGJzl7oploMeXO+MppKCul4=
 
 
 
-=E5=9C=A8 2024/8/8 01:57, David Sterba =E5=86=99=E9=81=93:
-> On Wed, Aug 07, 2024 at 06:21:00PM +0930, Qu Wenruo wrote:
-[...]
+=E5=9C=A8 2024/8/8 03:17, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
->> +
->> +	block_start =3D extent_map_block_start(em);
->> +	disk_bytenr =3D extent_map_block_start(em) + extent_offset;
->> +
->> +	ASSERT(!extent_map_is_compressed(em));
->> +	ASSERT(block_start !=3D EXTENT_MAP_HOLE);
->> +	ASSERT(block_start !=3D EXTENT_MAP_INLINE);
->> +
->> +	free_extent_map(em);
->> +	em =3D NULL;
->> +
->> +	btrfs_set_range_writeback(inode, filepos, filepos + sectorsize - 1);
->> +	if (!folio_test_writeback(folio)) {
->> +		btrfs_err(fs_info,
->> +			  "folio %lu not writeback, cur %llu end %llu",
->> +			  folio->index, filepos, filepos + sectorsize);
+> The BTRFS_IOC_SYNC ioctl wants to wake up the cleaner kthread so that it
+> does any pending work (subvolume deletion, delayed iputs, etc), however
+> it is waking up the transaction kthread, which in turn wakes up the
+> cleaner. Since we don't have any transaction to commit, as any ongoing
+> transaction was already committed when it called btrfs_sync_fs() and
+> the goal is just to wake up the cleaner thread, directly wake up the
+> cleaner instead of the transaction kthread.
 >
-> This is copied from the original code but I wonder if this should be a
-> hard error or more visible as it looks like bad page state tracking.
->
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-I believe this can be removed completely, or converted into ASSERT().
-
-For subpage case, page writeback is set if any subpage sector has
-writeback flag set.
-
-For regular case, it's setting the whole page writeback.
-
-As long as the folio is already locked, the folio should always be
-marked writeback.
-
-So I prefer to go the ASSERT() path.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
+> ---
+>   fs/btrfs/ioctl.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
 >
->>   	}
->> -
->> -	range_start_bit =3D spi->dirty_offset +
->> -			  (offset_in_folio(folio, orig_start) >>
->> -			   fs_info->sectorsize_bits);
->> -
->> -	/* We should have the page locked, but just in case */
->> -	spin_lock_irqsave(&subpage->lock, flags);
->> -	bitmap_next_set_region(subpage->bitmaps, &range_start_bit, &range_end=
-_bit,
->> -			       spi->dirty_offset + spi->bitmap_nr_bits);
->> -	spin_unlock_irqrestore(&subpage->lock, flags);
->> -
->> -	range_start_bit -=3D spi->dirty_offset;
->> -	range_end_bit -=3D spi->dirty_offset;
->> -
->> -	*start =3D folio_pos(folio) + range_start_bit * fs_info->sectorsize;
->> -	*end =3D folio_pos(folio) + range_end_bit * fs_info->sectorsize;
->> +	/*
->> +	 * Although the PageDirty bit is cleared before entering this
->> +	 * function, subpage dirty bit is not cleared.
->> +	 * So clear subpage dirty bit here so next time we won't submit
->> +	 * folio for range already written to disk.
->> +	 */
->> +	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
->> +	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
->> +			    sectorsize, filepos - folio_pos(folio));
->> +	return 0;
->>   }
->>
->>   /*
->
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index e0a664b8a46a..ee01cc828883 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -4765,11 +4765,10 @@ long btrfs_ioctl(struct file *file, unsigned int
+>   			return ret;
+>   		ret =3D btrfs_sync_fs(inode->i_sb, 1);
+>   		/*
+> -		 * The transaction thread may want to do more work,
+> -		 * namely it pokes the cleaner kthread that will start
+> -		 * processing uncleaned subvols.
+> +		 * There may be work for the cleaner kthread to do (subvolume
+> +		 * deletion, delayed iputs, defrag inodes, etc), so wake it up.
+>   		 */
+> -		wake_up_process(fs_info->transaction_kthread);
+> +		wake_up_process(fs_info->cleaner_kthread);
+>   		return ret;
+>   	}
+>   	case BTRFS_IOC_START_SYNC:
 
