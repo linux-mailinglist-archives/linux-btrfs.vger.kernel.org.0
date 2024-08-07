@@ -1,58 +1,58 @@
-Return-Path: <linux-btrfs+bounces-7027-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7028-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DCF94ADA3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 18:08:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A6E894ADA6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 18:08:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A1C41C21A26
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 16:08:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF3EE280D47
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 16:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D77113CA8A;
-	Wed,  7 Aug 2024 16:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36488139579;
+	Wed,  7 Aug 2024 16:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KKRmLL38"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CWyqeiOX"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C3D83CD9;
-	Wed,  7 Aug 2024 16:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DBBF3839C;
+	Wed,  7 Aug 2024 16:06:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723046755; cv=none; b=VTVLkXRPyR5CIJCNwT+zpdo7PiQjNSXRW1w/MX6vM7vNFhk976nUSHoTS1H4V69yaZ33YRy2BXToGaYXc9M82R7sxCpZQ7KgjJruf0FtNK8zIYILTpXyVnn+IS5hpf/cZiOQfysoEX8Talfa1XULGMibH42YfPteHtRFS9/MOY0=
+	t=1723046770; cv=none; b=tooHB1HTfsTFzQJifQZbwQSR8YJFDRoCMN0UBBcg4ozN0NsT3A6vM7yvhOb7v+Pfg2TraT8zmCujresbUgG7/PnG3bLXf0fB9RPJdDO6Ysair5qVImixLGeJg0elKiIMFD4ysz4b4AVikMaiaYtbYFxfJfUB5Vwaj15HQXWC4II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723046755; c=relaxed/simple;
-	bh=CDqLP1PyzIdqZZV63o6/jssqp/3LjoDkJnIJI7K39qU=;
+	s=arc-20240116; t=1723046770; c=relaxed/simple;
+	bh=BSBg30Uiwl4lZcMqtdjNhXrGpn7HS5vQjr3jLi0PTcc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G2oYa4WuCCk62YXz1vbAR5pUtmavmVHuGtXcTapbnliHe2+/Q/O5t7tz/3Ons5KGGkFeB4CZW0nsGEpr1oTQ8m5SP53Twtdc74X228oTNNUli1c1/kXalCIeQCCkhH+lcP9GZJtjx3O+WSr1rrjGOPHSyLT27Q5TCPc8Kvn+TrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KKRmLL38; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8329C4AF0D;
-	Wed,  7 Aug 2024 16:05:53 +0000 (UTC)
+	 MIME-Version; b=PMsh5bA6rvklvWxS1ZQcELEtpD26MBWy8Z+qCAOLjevFbxk1I5o+lcgs1PWzHJabfqmoplE+Sm/YtLoRt0tr7EDpYwouJCyz96yEDwfUqqQTaZKsZ4TDIY+0vKe+WrgWxjhgjdJDRSoDucZd1zefbgaBxOGptsrvq0TCMCJnva0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CWyqeiOX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E0DC32781;
+	Wed,  7 Aug 2024 16:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723046755;
-	bh=CDqLP1PyzIdqZZV63o6/jssqp/3LjoDkJnIJI7K39qU=;
+	s=k20201202; t=1723046770;
+	bh=BSBg30Uiwl4lZcMqtdjNhXrGpn7HS5vQjr3jLi0PTcc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KKRmLL38fArLRQ1e/5IcVlMXmsy3b6ix/nsYzSLIdPXVG7LuEAlDn+F9sN0XHSY1a
-	 jMH7XPY9yMZN61uXgMZ4Dwy/ij/imW3JOVW3CmAdF+dVaQ8xcmmCuuJyK+S4N4XwRR
-	 Di7go3QEhgVGd1CdA/aNiggywbcTn/O1YyRgd+0WtyE3ChiyHklQd+/PFM0zZVNX5Y
-	 PQITI2rK5UWUN7x4Jb24e1ADB1deiIbjxByKynjZ0bbdzCZtvDctJXIWjpsvmcHG3i
-	 VjGXt2/X2xAn36BNf4TwSKEjRB1pwjCzxiWQPLeq+B8/6XrKXE2n5Tz0FMjadW/RxS
-	 ftsjl/qqJfa3w==
+	b=CWyqeiOX+dXG9XI7CBCCQgOhpXl1m2CIwfvFMRMbjSrHLfUL8a2STUz50a/2Gd+Kg
+	 +pD/8PzTBa6uxSkqB+Hm0r+Fnc3KQicrVVck4HpFmR6Da0C78JUKmVcFtzeNLT2g1Y
+	 dtBvNd6zR9XyAsXtWL98RhJKzOwP1YR7jMBJ2Qf0aHLcIjUEvMlLXe2nGbv+5M6Aoq
+	 hcCqzgbFXaymZwbyYDfWkGoVRPCkVSbS4ml8dGJArdW7VGXGaUvZslM7j6Y0lPteJi
+	 6lsTEo5YI2OmgJ2DxA9YzZCNUhfYKAhYwnZNb+CsBo/N30ZAQnOX3vMBEyyhyLhJ77
+	 enQ3Oek8rA7Sg==
 From: fdmanana@kernel.org
 To: stable@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
 	gregkh@linuxfoundation.org,
 	Filipe Manana <fdmanana@suse.com>,
 	Hanna Czenczek <hreitz@redhat.com>
-Subject: [PATCH for 6.6 stable] btrfs: fix corruption after buffer fault in during direct IO append write
-Date: Wed,  7 Aug 2024 17:05:49 +0100
-Message-ID: <d17ff87e1c8302c6ef287e81888c1334f014039e.1723044389.git.fdmanana@suse.com>
+Subject: [PATCH for 6.1 stable] btrfs: fix corruption after buffer fault in during direct IO append write
+Date: Wed,  7 Aug 2024 17:06:01 +0100
+Message-ID: <70a350ecda3ff98d0fdaf2a0ae421808dedd5da0.1723045219.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1723044389.git.fdmanana@suse.com>
-References: <cover.1723044389.git.fdmanana@suse.com>
+In-Reply-To: <cover.1723045219.git.fdmanana@suse.com>
+References: <cover.1723045219.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -179,22 +179,22 @@ Signed-off-by: Filipe Manana <fdmanana@suse.com>
  2 files changed, 43 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 06333a74d6c4..86c7f8ce1715 100644
+index cca1acf2e037..853b1f96b1fd 100644
 --- a/fs/btrfs/ctree.h
 +++ b/fs/btrfs/ctree.h
-@@ -445,6 +445,7 @@ struct btrfs_file_private {
+@@ -1553,6 +1553,7 @@ struct btrfs_drop_extents_args {
+ struct btrfs_file_private {
  	void *filldir_buf;
  	u64 last_index;
- 	struct extent_state *llseek_cached_state;
 +	bool fsync_skip_inode_lock;
  };
  
- static inline u32 BTRFS_LEAF_DATA_SIZE(const struct btrfs_fs_info *info)
+ 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index c997b790568f..a47a7bbf9b7e 100644
+index 1783a0fbf166..7c3ae295fdb5 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -1535,21 +1535,37 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+@@ -1526,21 +1526,37 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
  	 * So here we disable page faults in the iov_iter and then retry if we
  	 * got -EFAULT, faulting in the pages before the retry.
  	 */
@@ -208,7 +208,7 @@ index c997b790568f..a47a7bbf9b7e 100644
 -	 * iocb, and that needs to lock the inode. So unlock it before calling
 -	 * iomap_dio_complete() to avoid a deadlock.
 -	 */
--	btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+-	btrfs_inode_unlock(inode, ilock_flags);
 -
 -	if (IS_ERR_OR_NULL(dio))
 +	if (IS_ERR_OR_NULL(dio)) {
@@ -241,7 +241,7 @@ index c997b790568f..a47a7bbf9b7e 100644
  
  	/* No increment (+=) because iomap returns a cumulative value. */
  	if (err > 0)
-@@ -1576,10 +1592,12 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+@@ -1567,10 +1583,12 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
  		} else {
  			fault_in_iov_iter_readable(from, left);
  			prev_left = left;
@@ -250,12 +250,12 @@ index c997b790568f..a47a7bbf9b7e 100644
  		}
  	}
  
-+	btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
++	btrfs_inode_unlock(inode, ilock_flags);
 +
  	/*
  	 * If 'err' is -ENOTBLK or we have not written all data, then it means
  	 * we must fallback to buffered IO.
-@@ -1778,6 +1796,7 @@ static inline bool skip_inode_logging(const struct btrfs_log_ctx *ctx)
+@@ -1777,6 +1795,7 @@ static inline bool skip_inode_logging(const struct btrfs_log_ctx *ctx)
   */
  int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
  {
@@ -263,7 +263,7 @@ index c997b790568f..a47a7bbf9b7e 100644
  	struct dentry *dentry = file_dentry(file);
  	struct inode *inode = d_inode(dentry);
  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-@@ -1787,6 +1806,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+@@ -1786,6 +1805,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
  	int ret = 0, err;
  	u64 len;
  	bool full_sync;
@@ -271,39 +271,39 @@ index c997b790568f..a47a7bbf9b7e 100644
  
  	trace_btrfs_sync_file(file, datasync);
  
-@@ -1814,7 +1834,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+@@ -1813,7 +1833,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
  	if (ret)
  		goto out;
  
--	btrfs_inode_lock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
+-	btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
 +	if (skip_ilock)
 +		down_write(&BTRFS_I(inode)->i_mmap_lock);
 +	else
-+		btrfs_inode_lock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
++		btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
  
  	atomic_inc(&root->log_batch);
  
-@@ -1838,7 +1861,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+@@ -1837,7 +1860,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
  	 */
  	ret = start_ordered_ops(inode, start, end);
  	if (ret) {
--		btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
+-		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
 +		if (skip_ilock)
 +			up_write(&BTRFS_I(inode)->i_mmap_lock);
 +		else
-+			btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
++			btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
  		goto out;
  	}
  
-@@ -1941,7 +1967,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+@@ -1940,7 +1966,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
  	 * file again, but that will end up using the synchronization
  	 * inside btrfs_sync_log to keep things safe.
  	 */
--	btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
+-	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
 +	if (skip_ilock)
 +		up_write(&BTRFS_I(inode)->i_mmap_lock);
 +	else
-+		btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
++		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
  
  	if (ret == BTRFS_NO_LOG_SYNC) {
  		ret = btrfs_end_transaction(trans);
