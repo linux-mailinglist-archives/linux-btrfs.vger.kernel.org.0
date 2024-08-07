@@ -1,314 +1,300 @@
-Return-Path: <linux-btrfs+bounces-7029-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7030-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19A6A94ADA8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 18:08:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB26F94AE24
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 18:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EB741F2173B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 16:08:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E50922831C4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 16:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC91013A27D;
-	Wed,  7 Aug 2024 16:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E521513D63B;
+	Wed,  7 Aug 2024 16:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H7QIjtxI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wbwD3uyL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uSZ52EaP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wbwD3uyL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uSZ52EaP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DB543839C;
-	Wed,  7 Aug 2024 16:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8377132117
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2024 16:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723046785; cv=none; b=lV5b265VnARrZPDr/SJuRCv6lC+2/kQQivouy6mtUTAehWYtWo/HjW43Uz6dESkCCGCYxQ0/MaN8lke+LR+sZN9mC1H5NunFipGYCt99vA17F//lJBTVoSb4zXoRRX7qngczSR/CpjbL1fxIslTMP9TPpkj+mebiGejdIlUdz48=
+	t=1723048042; cv=none; b=rgdNsgCCbcb6Fq/bfWZLsdWLaw2X0HI5hgKoDPwXrHOqCjdi/JfyUFJ/9wI9kP9HrcMpoGLgtL49DRrz3y90iOtkoEa9bCUZTk+sqqoNg6t2NCxFkSn4su+/r33/ZKBXGYxZB9/CD1Qc5t2adN2BPCmZQek+7xI8KiY7H8RUPPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723046785; c=relaxed/simple;
-	bh=/xkAwu7vhhFiNkOM3+2iUJQ1RTy7Po87i5jadIqBKqI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QJBp4ui5+hjMWvXF0y1Rk4AEjqe7wZse2Te3TZD48Q05LhGC9Bf7aDM6vtXKDytUZMLVgrh35tNu0cy/BvUZEWLVUQOtvuzb74g3A50CE2gM8V5Z/a6qo/yMGFHGD1rHS1FLrBntwrWJEiqNZn4s6AKEmtFMxAOA/yx+fCSEXQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H7QIjtxI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B86ECC32781;
-	Wed,  7 Aug 2024 16:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723046784;
-	bh=/xkAwu7vhhFiNkOM3+2iUJQ1RTy7Po87i5jadIqBKqI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H7QIjtxInjziYh8vqGZJzIt88qRVlK5EDJiDGNim3fuYD3MCFq5O+wP8X91DM0Cs7
-	 SzJU1EQlbCLk1c/z4RiL7OPus4ZPtr0/tPg6NORmDoxr0Q6+PbWP4x8BgwcvCJ28eW
-	 zsMhwcML+YdgcDrkCON8Y35QfSyiiWoi50q5lEk5lKjbsP4rHbiitOgtnZt6OL6DZx
-	 acKnSWzjy9Bf0p3jCZAZJ3C0yW+Bx5I1boprNl+1gWrVn9gIMiaMzm84JQmAD2m1R0
-	 IMLOjdTyF8VM7hNujgP5Qr+B4IAUkKO+5WRzIgBIY8wqrEzj+PU5+3yzASRJBq151e
-	 fPNpLcZ8kaa+A==
-From: fdmanana@kernel.org
-To: stable@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	gregkh@linuxfoundation.org,
-	Filipe Manana <fdmanana@suse.com>,
-	Hanna Czenczek <hreitz@redhat.com>
-Subject: [PATCH for 5.15 stable] btrfs: fix corruption after buffer fault in during direct IO append write
-Date: Wed,  7 Aug 2024 17:06:17 +0100
-Message-ID: <64af0e81f19122946855ab0f76b7e53f3231f02a.1723046461.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1723046461.git.fdmanana@suse.com>
-References: <cover.1723046461.git.fdmanana@suse.com>
+	s=arc-20240116; t=1723048042; c=relaxed/simple;
+	bh=uA+7KqJCC1Arp93b44bndaOWtVdicxUVUTt2pbeXAlo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DKe/18CXwrECNAkOjpD6uFEeVvIb/0yLdZKcDBziKciymUxV/FcrNx+T1aWwGr/wZGB3daR/ssY2m7ET7qfB1ZIa9zraQKte7Vm9mloEJedlh4mPFrUKa/WhFlGxtpd7JmcTR+LvWXjSnLvhRugiLJKoklHDHUiAy6SzvQDxLvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wbwD3uyL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uSZ52EaP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wbwD3uyL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uSZ52EaP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BEF0F21B4B;
+	Wed,  7 Aug 2024 16:27:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723048037;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2nAly3Brv8MM6hbT9NpxRsIVuS2JpqOwWzVlJOPM6Vs=;
+	b=wbwD3uyLJ6q9HWH/FIj4u4lOXdCc7m6RYOHir6ogk4S4UGOGb6n/036lVcY86RPisPl7w7
+	fPt3LgPuQDBgPK0LmOH8CachaBpcKI83srb6zV0GbPJuExoatW0me4X1F40kVg21pEuXPR
+	ClGdM38pwlt+0A4pKaJ4gbWAj+LnTy4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723048037;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2nAly3Brv8MM6hbT9NpxRsIVuS2JpqOwWzVlJOPM6Vs=;
+	b=uSZ52EaP6p6+4pRoAokVdfzSdqYIBPRhPG1Lhfa3DC/EiaLYLXkBZKTPcglICh8j6bw6//
+	Y7Kwvlv0nGaQOkCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723048037;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2nAly3Brv8MM6hbT9NpxRsIVuS2JpqOwWzVlJOPM6Vs=;
+	b=wbwD3uyLJ6q9HWH/FIj4u4lOXdCc7m6RYOHir6ogk4S4UGOGb6n/036lVcY86RPisPl7w7
+	fPt3LgPuQDBgPK0LmOH8CachaBpcKI83srb6zV0GbPJuExoatW0me4X1F40kVg21pEuXPR
+	ClGdM38pwlt+0A4pKaJ4gbWAj+LnTy4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723048037;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2nAly3Brv8MM6hbT9NpxRsIVuS2JpqOwWzVlJOPM6Vs=;
+	b=uSZ52EaP6p6+4pRoAokVdfzSdqYIBPRhPG1Lhfa3DC/EiaLYLXkBZKTPcglICh8j6bw6//
+	Y7Kwvlv0nGaQOkCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8495113A7D;
+	Wed,  7 Aug 2024 16:27:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Gd3OH2Wgs2YGEAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 07 Aug 2024 16:27:17 +0000
+Date: Wed, 7 Aug 2024 18:27:16 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: refactor __extent_writepage_io() to do
+ sector-by-sector submission
+Message-ID: <20240807162716.GD17473@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <9102c028537fbc1d94c4b092dd4a9940661bc58b.1723020573.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9102c028537fbc1d94c4b092dd4a9940661bc58b.1723020573.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-8.00 / 50.00];
+	REPLY(-4.00)[];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email]
+X-Spam-Score: -8.00
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Aug 07, 2024 at 06:21:00PM +0930, Qu Wenruo wrote:
+> Unlike the bitmap usage inside raid56, for __extent_writepage_io() we
+> handle the subpage submission not sector-by-sector, but for each dirty
+> range we found.
+> 
+> This is not a big deal normally, as normally the subpage complex code is
+> already mostly optimized out.
+> 
+> For the sake of consistency and for the future of subpage sector-perfect
+> compression support, this patch does:
+> 
+> - Extract the sector submission code into submit_one_sector()
+> 
+> - Add the needed code to extract the dirty bitmap for subpage case
+> 
+> - Use bitmap_and() to calculate the target sectors we need to submit
+> 
+> For x86_64, the dirty bitmap will be fixed to 1, with the length of 1,
+> so we're still doing the same workload per sector.
+> 
+> For larger page sizes, the overhead will be a little larger, as previous
+> we only need to do one extent_map lookup per-dirty-range, but now it
+> will be one extent_map lookup per-sector.
+> 
+> But that is the same frequency as x86_64, so we're just aligning the
+> behavior to x86_64.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> The plan of sector-perfect subpage compression is to introduce another
+> bitmap, possibly inside bio_ctrl, to indicate which sectors do not need
+> writeback submission (either inline, or async submission).
+> 
+> So that __extent_writepage_io() can properly skip those ranges to
+> support sector-perfect subpage compression.
+> ---
+>  fs/btrfs/extent_io.c | 188 +++++++++++++++++--------------------------
+>  fs/btrfs/subpage.c   |  17 ++++
+>  fs/btrfs/subpage.h   |   3 +
+>  3 files changed, 96 insertions(+), 112 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 040c92541bc9..6acd763e8f26 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -1333,56 +1333,65 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+>  }
+>  
+>  /*
+> - * Find the first byte we need to write.
+> + * Return 0 if we have submitted or queued the sector for submission.
+> + * Return <0 for critical errors.
+>   *
+> - * For subpage, one page can contain several sectors, and
+> - * __extent_writepage_io() will just grab all extent maps in the page
+> - * range and try to submit all non-inline/non-compressed extents.
+> - *
+> - * This is a big problem for subpage, we shouldn't re-submit already written
+> - * data at all.
+> - * This function will lookup subpage dirty bit to find which range we really
+> - * need to submit.
+> - *
+> - * Return the next dirty range in [@start, @end).
+> - * If no dirty range is found, @start will be page_offset(page) + PAGE_SIZE.
+> + * Caller should make sure filepos < i_size and handle filepos >= i_size case.
+>   */
+> -static void find_next_dirty_byte(const struct btrfs_fs_info *fs_info,
+> -				 struct folio *folio, u64 *start, u64 *end)
+> +static int submit_one_sector(struct btrfs_inode *inode,
+> +			     struct folio *folio,
+> +			     u64 filepos, struct btrfs_bio_ctrl *bio_ctrl,
+> +			     loff_t i_size)
+>  {
+> -	struct btrfs_subpage *subpage = folio_get_private(folio);
+> -	struct btrfs_subpage_info *spi = fs_info->subpage_info;
+> -	u64 orig_start = *start;
+> -	/* Declare as unsigned long so we can use bitmap ops */
+> -	unsigned long flags;
+> -	int range_start_bit;
+> -	int range_end_bit;
+> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> +	struct extent_map *em;
+> +	u64 block_start;
+> +	u64 disk_bytenr;
+> +	u64 extent_offset;
+> +	u64 em_end;
+> +	u32 sectorsize = fs_info->sectorsize;
 
-commit 939b656bc8ab203fdbde26ccac22bcb7f0985be5 upstream.
+This can be const
 
-During an append (O_APPEND write flag) direct IO write if the input buffer
-was not previously faulted in, we can corrupt the file in a way that the
-final size is unexpected and it includes an unexpected hole.
+>  
+> -	/*
+> -	 * For regular sector size == page size case, since one page only
+> -	 * contains one sector, we return the page offset directly.
+> -	 */
+> -	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
+> -		*start = folio_pos(folio);
+> -		*end = folio_pos(folio) + folio_size(folio);
+> -		return;
+> +	ASSERT(IS_ALIGNED(filepos, sectorsize));
+> +
+> +	/* @filepos >= i_size case should be handled by the caller. */
+> +	ASSERT(filepos < i_size);
+> +
+> +	em = btrfs_get_extent(inode, NULL, filepos, sectorsize);
+> +	if (IS_ERR(em))
+> +		return PTR_ERR_OR_ZERO(em);
+> +
+> +	extent_offset = filepos - em->start;
+> +	em_end = extent_map_end(em);
+> +	ASSERT(filepos <= em_end);
+> +	ASSERT(IS_ALIGNED(em->start, fs_info->sectorsize));
+> +	ASSERT(IS_ALIGNED(em->len, fs_info->sectorsize));
 
-The problem happens like this:
+And the local sectorsize used here
 
-1) We have an empty file, with size 0, for example;
+> +
+> +	block_start = extent_map_block_start(em);
+> +	disk_bytenr = extent_map_block_start(em) + extent_offset;
+> +
+> +	ASSERT(!extent_map_is_compressed(em));
+> +	ASSERT(block_start != EXTENT_MAP_HOLE);
+> +	ASSERT(block_start != EXTENT_MAP_INLINE);
+> +
+> +	free_extent_map(em);
+> +	em = NULL;
+> +
+> +	btrfs_set_range_writeback(inode, filepos, filepos + sectorsize - 1);
+> +	if (!folio_test_writeback(folio)) {
+> +		btrfs_err(fs_info,
+> +			  "folio %lu not writeback, cur %llu end %llu",
+> +			  folio->index, filepos, filepos + sectorsize);
 
-2) We do an O_APPEND direct IO with a length of 4096 bytes and the input
-   buffer is not currently faulted in;
+This is copied from the original code but I wonder if this should be a
+hard error or more visible as it looks like bad page state tracking.
 
-3) We enter btrfs_direct_write(), lock the inode and call
-   generic_write_checks(), which calls generic_write_checks_count(), and
-   that function sets the iocb position to 0 with the following code:
 
-        if (iocb->ki_flags & IOCB_APPEND)
-                iocb->ki_pos = i_size_read(inode);
-
-4) We call btrfs_dio_write() and enter into iomap, which will end up
-   calling btrfs_dio_iomap_begin() and that calls
-   btrfs_get_blocks_direct_write(), where we update the i_size of the
-   inode to 4096 bytes;
-
-5) After btrfs_dio_iomap_begin() returns, iomap will attempt to access
-   the page of the write input buffer (at iomap_dio_bio_iter(), with a
-   call to bio_iov_iter_get_pages()) and fail with -EFAULT, which gets
-   returned to btrfs at btrfs_direct_write() via btrfs_dio_write();
-
-6) At btrfs_direct_write() we get the -EFAULT error, unlock the inode,
-   fault in the write buffer and then goto to the label 'relock';
-
-7) We lock again the inode, do all the necessary checks again and call
-   again generic_write_checks(), which calls generic_write_checks_count()
-   again, and there we set the iocb's position to 4K, which is the current
-   i_size of the inode, with the following code pointed above:
-
-        if (iocb->ki_flags & IOCB_APPEND)
-                iocb->ki_pos = i_size_read(inode);
-
-8) Then we go again to btrfs_dio_write() and enter iomap and the write
-   succeeds, but it wrote to the file range [4K, 8K[, leaving a hole in
-   the [0, 4K[ range and an i_size of 8K, which goes against the
-   expections of having the data written to the range [0, 4K[ and get an
-   i_size of 4K.
-
-Fix this by not unlocking the inode before faulting in the input buffer,
-in case we get -EFAULT or an incomplete write, and not jumping to the
-'relock' label after faulting in the buffer - instead jump to a location
-immediately before calling iomap, skipping all the write checks and
-relocking. This solves this problem and it's fine even in case the input
-buffer is memory mapped to the same file range, since only holding the
-range locked in the inode's io tree can cause a deadlock, it's safe to
-keep the inode lock (VFS lock), as was fixed and described in commit
-51bd9563b678 ("btrfs: fix deadlock due to page faults during direct IO
-reads and writes").
-
-A sample reproducer provided by a reporter is the following:
-
-   $ cat test.c
-   #ifndef _GNU_SOURCE
-   #define _GNU_SOURCE
-   #endif
-
-   #include <fcntl.h>
-   #include <stdio.h>
-   #include <sys/mman.h>
-   #include <sys/stat.h>
-   #include <unistd.h>
-
-   int main(int argc, char *argv[])
-   {
-       if (argc < 2) {
-           fprintf(stderr, "Usage: %s <test file>\n", argv[0]);
-           return 1;
-       }
-
-       int fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT |
-                     O_APPEND, 0644);
-       if (fd < 0) {
-           perror("creating test file");
-           return 1;
-       }
-
-       char *buf = mmap(NULL, 4096, PROT_READ,
-                        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-       ssize_t ret = write(fd, buf, 4096);
-       if (ret < 0) {
-           perror("pwritev2");
-           return 1;
-       }
-
-       struct stat stbuf;
-       ret = fstat(fd, &stbuf);
-       if (ret < 0) {
-           perror("stat");
-           return 1;
-       }
-
-       printf("size: %llu\n", (unsigned long long)stbuf.st_size);
-       return stbuf.st_size == 4096 ? 0 : 1;
-   }
-
-A test case for fstests will be sent soon.
-
-Reported-by: Hanna Czenczek <hreitz@redhat.com>
-Link: https://lore.kernel.org/linux-btrfs/0b841d46-12fe-4e64-9abb-871d8d0de271@redhat.com/
-Fixes: 8184620ae212 ("btrfs: fix lost file sync on direct IO write with nowait and dsync iocb")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.h |  1 +
- fs/btrfs/file.c  | 55 ++++++++++++++++++++++++++++++++++++------------
- 2 files changed, 43 insertions(+), 13 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 17ebcf19b444..f19c6aa3ea4b 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1383,6 +1383,7 @@ struct btrfs_drop_extents_args {
- struct btrfs_file_private {
- 	void *filldir_buf;
- 	u64 last_index;
-+	bool fsync_skip_inode_lock;
- };
- 
- 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index eae622ef4c6d..7ca49c02e8f8 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1983,22 +1983,38 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	 * So here we disable page faults in the iov_iter and then retry if we
- 	 * got -EFAULT, faulting in the pages before the retry.
- 	 */
-+again:
- 	from->nofault = true;
- 	dio = __iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
- 			     IOMAP_DIO_PARTIAL, written);
- 	from->nofault = false;
- 
--	/*
--	 * iomap_dio_complete() will call btrfs_sync_file() if we have a dsync
--	 * iocb, and that needs to lock the inode. So unlock it before calling
--	 * iomap_dio_complete() to avoid a deadlock.
--	 */
--	btrfs_inode_unlock(inode, ilock_flags);
--
--	if (IS_ERR_OR_NULL(dio))
-+	if (IS_ERR_OR_NULL(dio)) {
- 		err = PTR_ERR_OR_ZERO(dio);
--	else
-+	} else {
-+		struct btrfs_file_private stack_private = { 0 };
-+		struct btrfs_file_private *private;
-+		const bool have_private = (file->private_data != NULL);
-+
-+		if (!have_private)
-+			file->private_data = &stack_private;
-+
-+		/*
-+		 * If we have a synchoronous write, we must make sure the fsync
-+		 * triggered by the iomap_dio_complete() call below doesn't
-+		 * deadlock on the inode lock - we are already holding it and we
-+		 * can't call it after unlocking because we may need to complete
-+		 * partial writes due to the input buffer (or parts of it) not
-+		 * being already faulted in.
-+		 */
-+		private = file->private_data;
-+		private->fsync_skip_inode_lock = true;
- 		err = iomap_dio_complete(dio);
-+		private->fsync_skip_inode_lock = false;
-+
-+		if (!have_private)
-+			file->private_data = NULL;
-+	}
- 
- 	/* No increment (+=) because iomap returns a cumulative value. */
- 	if (err > 0)
-@@ -2025,10 +2041,12 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 		} else {
- 			fault_in_iov_iter_readable(from, left);
- 			prev_left = left;
--			goto relock;
-+			goto again;
- 		}
- 	}
- 
-+	btrfs_inode_unlock(inode, ilock_flags);
-+
- 	/* If 'err' is -ENOTBLK then it means we must fallback to buffered IO. */
- 	if ((err < 0 && err != -ENOTBLK) || !iov_iter_count(from))
- 		goto out;
-@@ -2177,6 +2195,7 @@ static inline bool skip_inode_logging(const struct btrfs_log_ctx *ctx)
-  */
- int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- {
-+	struct btrfs_file_private *private = file->private_data;
- 	struct dentry *dentry = file_dentry(file);
- 	struct inode *inode = d_inode(dentry);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-@@ -2186,6 +2205,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	int ret = 0, err;
- 	u64 len;
- 	bool full_sync;
-+	const bool skip_ilock = (private ? private->fsync_skip_inode_lock : false);
- 
- 	trace_btrfs_sync_file(file, datasync);
- 
-@@ -2213,7 +2233,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	if (ret)
- 		goto out;
- 
--	btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
-+	if (skip_ilock)
-+		down_write(&BTRFS_I(inode)->i_mmap_lock);
-+	else
-+		btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
- 
- 	atomic_inc(&root->log_batch);
- 
-@@ -2245,7 +2268,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	 */
- 	ret = start_ordered_ops(inode, start, end);
- 	if (ret) {
--		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
-+		if (skip_ilock)
-+			up_write(&BTRFS_I(inode)->i_mmap_lock);
-+		else
-+			btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
- 		goto out;
- 	}
- 
-@@ -2337,7 +2363,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	 * file again, but that will end up using the synchronization
- 	 * inside btrfs_sync_log to keep things safe.
- 	 */
--	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
-+	if (skip_ilock)
-+		up_write(&BTRFS_I(inode)->i_mmap_lock);
-+	else
-+		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
- 
- 	if (ret == BTRFS_NO_LOG_SYNC) {
- 		ret = btrfs_end_transaction(trans);
--- 
-2.43.0
-
+>  	}
+> -
+> -	range_start_bit = spi->dirty_offset +
+> -			  (offset_in_folio(folio, orig_start) >>
+> -			   fs_info->sectorsize_bits);
+> -
+> -	/* We should have the page locked, but just in case */
+> -	spin_lock_irqsave(&subpage->lock, flags);
+> -	bitmap_next_set_region(subpage->bitmaps, &range_start_bit, &range_end_bit,
+> -			       spi->dirty_offset + spi->bitmap_nr_bits);
+> -	spin_unlock_irqrestore(&subpage->lock, flags);
+> -
+> -	range_start_bit -= spi->dirty_offset;
+> -	range_end_bit -= spi->dirty_offset;
+> -
+> -	*start = folio_pos(folio) + range_start_bit * fs_info->sectorsize;
+> -	*end = folio_pos(folio) + range_end_bit * fs_info->sectorsize;
+> +	/*
+> +	 * Although the PageDirty bit is cleared before entering this
+> +	 * function, subpage dirty bit is not cleared.
+> +	 * So clear subpage dirty bit here so next time we won't submit
+> +	 * folio for range already written to disk.
+> +	 */
+> +	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
+> +	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
+> +			    sectorsize, filepos - folio_pos(folio));
+> +	return 0;
+>  }
+>  
+>  /*
 
