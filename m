@@ -1,286 +1,338 @@
-Return-Path: <linux-btrfs+bounces-7023-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9962694A9E8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 16:18:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8161894A9F8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 16:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B7941F21A87
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 14:18:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 357C4281A10
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 14:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E414C78C84;
-	Wed,  7 Aug 2024 14:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2257861FC4;
+	Wed,  7 Aug 2024 14:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="g/RGIXPO"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="hlF3Tfg2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7EE7605E
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2024 14:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96CE92AF10
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2024 14:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723040290; cv=none; b=uNSoPNyK8fJkdf/53z9RoqqoRkyAySGnw+ZkhujxQx1vsAqGmA1rSpHV9zlUBwwRo41hoPa5csQ2uQY+/MC6T/oAgBT3seVJosPXsML2aJrRtr8yMIUT0h6YApYn0+65TKhmBt+LiMQpmrJ7dCWAnHbuzfmNOwt3a1BZp+3LmGc=
+	t=1723040454; cv=none; b=YcHZJzdrSH7JdP4/fyVfa8H4lPE13v/8tA8BT8VcsfdrDwwAmCgrnCaNQEra3DwNQwbnZiiL8DG3HNy56H2q2jrh85JGJO/PKbVjlCPlXs3V6DusTAe+tiYmWvEWdKnBpTEkEgNmKiWQFPFY7VKzRJWrkkJEetfIU9wB5iWA2DE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723040290; c=relaxed/simple;
-	bh=vXoN9bzkzc6JpWrpPMm3dZa1zqs3BJ0W5o2bVXx5cOY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AcC9QeKv0fjoyzcP5S8je/iJ4oSlr6BtaMEKwsAbpwJWmAKPNgwCvl4OikTcVyYVEVrSiZNty/C6p1kTGfF967zn08iW099vb5cKvJYW9ImJqAqSSTtS02ro6cOap1KC0KM+RrxI2xHf9u63WRkAZM1nSQYap3Q9Wg97XSsrf2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=g/RGIXPO; arc=none smtp.client-ip=209.85.160.175
+	s=arc-20240116; t=1723040454; c=relaxed/simple;
+	bh=ovcTjWE+8mK1+4VFuQKXTGhVx5gvU+vfRRz+cMSn5HI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pJ2RZUkpiIhNL4eaB3nsnAJWJ/FkS4kKkpRBLSqd+NZ1bOwLJeSURWktwEDSYXmSZ1624WGKnccKZYVFjrNS1zoXFYpO+bfgbpMm6VdIt9VkwoBj07CymjFia+j9QQNhaE2B24Xq6rxPHbEP1qLR97KwoQxwQTDqd1hje7PfkNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=hlF3Tfg2; arc=none smtp.client-ip=209.85.167.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-44fe28eb1bfso9040241cf.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2024 07:18:07 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3db1657c0fdso1135635b6e.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2024 07:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723040287; x=1723645087; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xzoGv51qG688e8CkqfOWZi/K63J+LGOYfGSyGwjiq6g=;
-        b=g/RGIXPOIs68m1a/KSj9ZU2k46KmGY+kl6SnjHwjDhabpgWfi67uBG/+1vhUFFiI3k
-         GD3a5r1O2keLkBRAklRxJrdXpZvgKisIMmJLSKNyDa89v9Y3e4HCUSRpkNPlzOq4BnjZ
-         Lm1tFkYKVH0VYiQBJA+iVV9LDNueQG9SJBpDS8D4fCndKISkL9or3R49JyXJ+AJlbIqU
-         YH0dgGjmbCjAckMUd50YaL8H9mN/Dk+ZcvNLNQCJIufbavZmLa6pzBopQdaelRDfRbsK
-         gopKQbv2DTlNrkPWQcfvNXCmhda0pjJd11Y0Up0yftNjCdBCG/DsmNZn9uo8CCw3+Mjg
-         psKA==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1723040451; x=1723645251; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=H3A2suzVXizxfUfPrnFRAhodlwbWz8qmOGysIhJsq2Y=;
+        b=hlF3Tfg2/uG7Pwox3kMtTvpPQll+BGL21ZUDakBd3TZPJDhJWg7BqaAxMJHp5zGYJq
+         3UkusFhug2eUYlkk6oc0X/U4Ccf/uUiH+ASLJIluUk8Qy7r+PmyONVwd4JLoBygUZi9q
+         tLVA9A8sPs0KLitPH+r4Vsyag8HiaBheVtqRuxmstYlBsHD2i7hM3EvYR/4wUORmyEog
+         UAckbbwT4bZjYNOqPRZHEoj/ZofhuaCq7AoMDoaavbEWf8SUXeQ1+bHWQ9+FBG7KH8y1
+         LHqyMCXLD22DkBRjP6Nw5m0t2rrzavZQ9j4VP+zvhBGAwXhi0EvhhnbExVHCUIZv4oNi
+         Duiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723040287; x=1723645087;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xzoGv51qG688e8CkqfOWZi/K63J+LGOYfGSyGwjiq6g=;
-        b=qfAqWBqXlHlRLqphZ74/0JPJV5MRb2pD6IQYuC5jmAZr3ECIyruDEgEwg3+ijFqGbl
-         Gq3XAdUS/mQHZWfVFlODrw0tOsGX+WVPoL66+P2zBbrQlOwdBRzXQH66QUms6WguTvs8
-         YYmqqI+wCzW0rfFLtARsrZUNsLEfBwXVSUk4o9UxIRWTZj9VJK6EZN9W81+2srOo14oo
-         Rk1Bwn6YsE/nx6i22g42ksnQkFaepyu7gjUazwCjCgP5Rhb0NftfitowIy+ecG82gP/d
-         dQM6jO7D/7Aqn6tC+/jE3mRYncH+IX58+LI1UMb7SQr9B8d6MNrkQFjaaR7dV01HE2D1
-         P31w==
-X-Gm-Message-State: AOJu0YyGro+dJORzR4LZD6+7RlKpKVlqzyvqaGRPiVJLxQMPOaYleerP
-	xM3ImR5q1kEdWpLGmmKmdcKSYLQ3vZcTQhSEWXxy7+vODjxov76NRhHoxeriOyGi97WYoatmUMw
-	q
-X-Google-Smtp-Source: AGHT+IGJSWQFH+R3ifCujrxDZg0GTFUwE4Bo8NI4NS8qjJCXw6vzvQd3fSMz6O5vZ0krh018wm7Org==
-X-Received: by 2002:ac8:5796:0:b0:446:5568:a6de with SMTP id d75a77b69052e-451893033femr242913661cf.48.1723040286746;
-        Wed, 07 Aug 2024 07:18:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723040451; x=1723645251;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H3A2suzVXizxfUfPrnFRAhodlwbWz8qmOGysIhJsq2Y=;
+        b=UGBuCiyiVQWRH6aJ93a4Q2m35md6QmiFNfzkPL+3SPyes5IK7d5+d0KmgHLWLylfrT
+         SplePvNdyHPq1nJgQgUZfP041gDEdFt899lLbuOLmFS+FAIRRioJj1HrfUtS+Mt//47t
+         /zirB3eYWd7rzWtOdYKcML4Uebu37grcA5R0xMSNSXZPWr9C/++joSUDxa2hYlEBgcqh
+         JBN9TdcQ6MbokQkKbFP1n4ET/bT38NfdVxpeqjlCXF6n4cj9SBy2gEdsGBRRHsrrVSs1
+         oLvb10r3bvvJMIMTEF082cMIGS8iutNwMr8aLfg8D3UjYogzeh+U+VZd8kqp9mIWb2x/
+         pumA==
+X-Gm-Message-State: AOJu0YxZ++2oEj9SGMA2BYIAy8Zmy3mufcT6Yw4GEGsKsb9I2YSNEq4Q
+	eqJ2kwOG7WBgKWVNzVP5/JoaldSCv9x1Ghbt9ViQYOWUebZYmJkKv/h4oZLE6uYWmmIaczMkC4l
+	j
+X-Google-Smtp-Source: AGHT+IHJM2u/wK8dyAi0TWxZhlcIpZw5TNWn2AqN6aYUd4mj6tu6YYwaylaz+HLVeG2q+hDXR1tWxA==
+X-Received: by 2002:a05:6808:2212:b0:3d5:60b3:d9ca with SMTP id 5614622812f47-3db5583b506mr22761046b6e.43.1723040451306;
+        Wed, 07 Aug 2024 07:20:51 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-451c86ff93bsm5287851cf.20.2024.08.07.07.18.06
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6bb9c79b1fdsm57092766d6.53.2024.08.07.07.20.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Aug 2024 07:18:06 -0700 (PDT)
-Date: Wed, 7 Aug 2024 10:18:05 -0400
+        Wed, 07 Aug 2024 07:20:50 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: refactor __extent_writepage_io() to do
- sector-by-sector submission
-Message-ID: <20240807141805.GB242945@perftesting>
-References: <9102c028537fbc1d94c4b092dd4a9940661bc58b.1723020573.git.wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Cc: Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH][RESEND] btrfs: check delayed refs when we're checking if a ref exists
+Date: Wed,  7 Aug 2024 10:20:47 -0400
+Message-ID: <f64b44109b568df8a12daa8ee21fec172ef9cb26.1723040386.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9102c028537fbc1d94c4b092dd4a9940661bc58b.1723020573.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 07, 2024 at 06:21:00PM +0930, Qu Wenruo wrote:
-> Unlike the bitmap usage inside raid56, for __extent_writepage_io() we
-> handle the subpage submission not sector-by-sector, but for each dirty
-> range we found.
-> 
-> This is not a big deal normally, as normally the subpage complex code is
-> already mostly optimized out.
-> 
-> For the sake of consistency and for the future of subpage sector-perfect
-> compression support, this patch does:
-> 
-> - Extract the sector submission code into submit_one_sector()
-> 
-> - Add the needed code to extract the dirty bitmap for subpage case
-> 
-> - Use bitmap_and() to calculate the target sectors we need to submit
-> 
-> For x86_64, the dirty bitmap will be fixed to 1, with the length of 1,
-> so we're still doing the same workload per sector.
-> 
-> For larger page sizes, the overhead will be a little larger, as previous
-> we only need to do one extent_map lookup per-dirty-range, but now it
-> will be one extent_map lookup per-sector.
+In the patch 78c52d9eb6b7 ("btrfs: check for refs on snapshot delete
+resume") I added some code to handle file systems that had been
+corrupted by a bug that incorrectly skipped updating the drop progress
+key while dropping a snapshot.  This code would check to see if we had
+already deleted our reference for a child block, and skip the deletion
+if we had already.
 
-I'd like this to be a followup, because even in the normal page case (or hell
-the subpage case) we shouldn't have to look up the extent map over and over
-again, it could span a much larger area.
+Unfortunately there is a bug, as the check would only check the on-disk
+references.  I made an incorrect assumption that blocks in an already
+deleted snapshot that was having the deletion resume on mount wouldn't
+be modified.
 
-> 
-> But that is the same frequency as x86_64, so we're just aligning the
-> behavior to x86_64.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> The plan of sector-perfect subpage compression is to introduce another
-> bitmap, possibly inside bio_ctrl, to indicate which sectors do not need
-> writeback submission (either inline, or async submission).
-> 
-> So that __extent_writepage_io() can properly skip those ranges to
-> support sector-perfect subpage compression.
-> ---
->  fs/btrfs/extent_io.c | 188 +++++++++++++++++--------------------------
->  fs/btrfs/subpage.c   |  17 ++++
->  fs/btrfs/subpage.h   |   3 +
->  3 files changed, 96 insertions(+), 112 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 040c92541bc9..6acd763e8f26 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1333,56 +1333,65 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
->  }
->  
->  /*
-> - * Find the first byte we need to write.
-> + * Return 0 if we have submitted or queued the sector for submission.
-> + * Return <0 for critical errors.
->   *
-> - * For subpage, one page can contain several sectors, and
-> - * __extent_writepage_io() will just grab all extent maps in the page
-> - * range and try to submit all non-inline/non-compressed extents.
-> - *
-> - * This is a big problem for subpage, we shouldn't re-submit already written
-> - * data at all.
-> - * This function will lookup subpage dirty bit to find which range we really
-> - * need to submit.
-> - *
-> - * Return the next dirty range in [@start, @end).
-> - * If no dirty range is found, @start will be page_offset(page) + PAGE_SIZE.
-> + * Caller should make sure filepos < i_size and handle filepos >= i_size case.
->   */
-> -static void find_next_dirty_byte(const struct btrfs_fs_info *fs_info,
-> -				 struct folio *folio, u64 *start, u64 *end)
-> +static int submit_one_sector(struct btrfs_inode *inode,
-> +			     struct folio *folio,
-> +			     u64 filepos, struct btrfs_bio_ctrl *bio_ctrl,
-> +			     loff_t i_size)
->  {
-> -	struct btrfs_subpage *subpage = folio_get_private(folio);
-> -	struct btrfs_subpage_info *spi = fs_info->subpage_info;
-> -	u64 orig_start = *start;
-> -	/* Declare as unsigned long so we can use bitmap ops */
-> -	unsigned long flags;
-> -	int range_start_bit;
-> -	int range_end_bit;
-> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> +	struct extent_map *em;
-> +	u64 block_start;
-> +	u64 disk_bytenr;
-> +	u64 extent_offset;
-> +	u64 em_end;
-> +	u32 sectorsize = fs_info->sectorsize;
->  
-> -	/*
-> -	 * For regular sector size == page size case, since one page only
-> -	 * contains one sector, we return the page offset directly.
-> -	 */
-> -	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
-> -		*start = folio_pos(folio);
-> -		*end = folio_pos(folio) + folio_size(folio);
-> -		return;
-> +	ASSERT(IS_ALIGNED(filepos, sectorsize));
-> +
-> +	/* @filepos >= i_size case should be handled by the caller. */
-> +	ASSERT(filepos < i_size);
-> +
-> +	em = btrfs_get_extent(inode, NULL, filepos, sectorsize);
-> +	if (IS_ERR(em))
-> +		return PTR_ERR_OR_ZERO(em);
-> +
-> +	extent_offset = filepos - em->start;
-> +	em_end = extent_map_end(em);
-> +	ASSERT(filepos <= em_end);
-> +	ASSERT(IS_ALIGNED(em->start, fs_info->sectorsize));
-> +	ASSERT(IS_ALIGNED(em->len, fs_info->sectorsize));
-> +
-> +	block_start = extent_map_block_start(em);
-> +	disk_bytenr = extent_map_block_start(em) + extent_offset;
-> +
-> +	ASSERT(!extent_map_is_compressed(em));
-> +	ASSERT(block_start != EXTENT_MAP_HOLE);
-> +	ASSERT(block_start != EXTENT_MAP_INLINE);
-> +
-> +	free_extent_map(em);
-> +	em = NULL;
-> +
-> +	btrfs_set_range_writeback(inode, filepos, filepos + sectorsize - 1);
-> +	if (!folio_test_writeback(folio)) {
-> +		btrfs_err(fs_info,
-> +			  "folio %lu not writeback, cur %llu end %llu",
-> +			  folio->index, filepos, filepos + sectorsize);
->  	}
-> -
-> -	range_start_bit = spi->dirty_offset +
-> -			  (offset_in_folio(folio, orig_start) >>
-> -			   fs_info->sectorsize_bits);
-> -
-> -	/* We should have the page locked, but just in case */
-> -	spin_lock_irqsave(&subpage->lock, flags);
-> -	bitmap_next_set_region(subpage->bitmaps, &range_start_bit, &range_end_bit,
-> -			       spi->dirty_offset + spi->bitmap_nr_bits);
-> -	spin_unlock_irqrestore(&subpage->lock, flags);
-> -
-> -	range_start_bit -= spi->dirty_offset;
-> -	range_end_bit -= spi->dirty_offset;
-> -
-> -	*start = folio_pos(folio) + range_start_bit * fs_info->sectorsize;
-> -	*end = folio_pos(folio) + range_end_bit * fs_info->sectorsize;
-> +	/*
-> +	 * Although the PageDirty bit is cleared before entering this
-> +	 * function, subpage dirty bit is not cleared.
-> +	 * So clear subpage dirty bit here so next time we won't submit
-> +	 * folio for range already written to disk.
-> +	 */
-> +	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
-> +	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
-> +			    sectorsize, filepos - folio_pos(folio));
-> +	return 0;
->  }
->  
->  /*
-> @@ -1401,10 +1410,10 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
->  {
->  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
->  	u64 cur = start;
-> -	u64 end = start + len - 1;
-> -	u64 extent_offset;
-> -	u64 block_start;
-> -	struct extent_map *em;
-> +	unsigned long dirty_bitmap = 1;
-> +	unsigned long range_bitmap = 0;
-> +	unsigned int bitmap_size = 1;
-> +	int bit;
->  	int ret = 0;
->  	int nr = 0;
->  
-> @@ -1419,18 +1428,23 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
->  		return 1;
->  	}
->  
-> +	if (btrfs_is_subpage(fs_info, inode->vfs_inode.i_mapping)) {
-> +		ASSERT(fs_info->subpage_info);
-> +		btrfs_get_subpage_dirty_bitmap(fs_info, folio, &dirty_bitmap);
-> +		bitmap_size = fs_info->subpage_info->bitmap_nr_bits;
-> +	}
-> +	for (cur = start; cur < start + len; cur += fs_info->sectorsize)
-> +		set_bit((cur - start) >> fs_info->sectorsize_bits, &range_bitmap);
-> +	bitmap_and(&dirty_bitmap, &dirty_bitmap, &range_bitmap, bitmap_size);
+If we have 2 pending deleted snapshots that share blocks, we can easily
+modify the rules for a block.  Take the following example
 
-I'd rather move this completely under the btrfs_is_subpage() case, we don't need
-to do this where sectorsize == page size.
+subvolume a exists, and subvolume b is a snapshot of subvolume a.  They
+share references to block 1.  Block 1 will have 2 full references, one
+for subvolume a and one for subvolume b, and it belongs to subvolume a
+(btrfs_header_owner(block 1) == subvolume a).
 
-Other than that this cleans things up nicely, you can add my
+When deleting subvolume a, we will drop our full reference for block 1,
+and because we are the owner we will drop our full reference for all of
+block 1's children, convert block 1 to FULL BACKREF, and add a shared
+reference to all of block 1's children.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Then we will start the snapshot deletion of subvolume b.  We look up the
+extent info for block 1, which checks delayed refs and tells us that
+FULL BACKREF is set, so sets parent to the bytenr of block 1.  However
+because this is a resumed snapshot deletion, we call into
+check_ref_exists().  Because check_ref_exists() only looks at the disk,
+it doesn't find the shared backref for the child of block 1, and thus
+returns 0 and we skip deleting the reference for the child of block 1
+and continue.  This orphans the child of block 1.
 
-to v2.  Thanks,
+The fix is to lookup the delayed refs, similar to what we do in
+btrfs_lookup_extent_info().  However we only care about whether the
+reference exists or not.  If we fail to find our reference on disk, go
+look up the bytenr in the delayed refs, and if it exists look for an
+existing ref in the delayed ref head.  If that exists then we know we
+can delete the reference safely and carry on.  If it doesn't exist we
+know we have to skip over this block.
 
-Josef
+This bug has existed since I introduced this fix, however requires
+having multiple deleted snapshots pending when we unmount.  We noticed
+this in production because our shutdown path stops the container on the
+system, which deletes a bunch of subvolumes, and then reboots the box.
+This gives us plenty of opportunities to hit this issue.  Looking at the
+history we've seen this occasionally in production, but we had a big
+spike recently thanks to faster machines getting jobs with multiple
+subvolumes in the job.
+
+Chris Mason wrote a reproducer which does the following
+
+mount /dev/nvme4n1 /btrfs
+btrfs subvol create /btrfs/s1
+simoop -E -f 4k -n 200000 -z /btrfs/s1
+while(true) ; do
+	btrfs subvol snap /btrfs/s1 /btrfs/s2
+	simoop -f 4k -n 200000 -r 10 -z /btrfs/s2
+	btrfs subvol snap /btrfs/s2 /btrfs/s3
+	btrfs balance start -dusage=80 /btrfs
+	btrfs subvol del /btrfs/s2 /btrfs/s3
+	umount /btrfs
+	btrfsck /dev/nvme4n1 || exit 1
+	mount /dev/nvme4n1 /btrfs
+done
+
+On the second loop this would fail consistently, with my patch it has
+been running for hours and hasn't failed.
+
+I also used dm-log-writes to capture the state of the failure so I could
+debug the problem.  Using the existing failure case to test my patch
+validated that it fixes the problem.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 78c52d9eb6b7 ("btrfs: check for refs on snapshot delete resume")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+I dropped the ball on this, I've rebased it and I'm re-sending it just to make
+sure people know I'm going to merge this.  If there are any questions let me
+know, otherwise I'll push this into our for-next branch tomorrow.
+
+ fs/btrfs/delayed-ref.c | 67 ++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/delayed-ref.h |  2 ++
+ fs/btrfs/extent-tree.c | 51 ++++++++++++++++++++++++++++----
+ 3 files changed, 114 insertions(+), 6 deletions(-)
+
+diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+index 2ac9296edccb..06a9e0542d70 100644
+--- a/fs/btrfs/delayed-ref.c
++++ b/fs/btrfs/delayed-ref.c
+@@ -1134,6 +1134,73 @@ btrfs_find_delayed_ref_head(struct btrfs_delayed_ref_root *delayed_refs, u64 byt
+ 	return find_ref_head(delayed_refs, bytenr, false);
+ }
+ 
++static int find_comp(struct btrfs_delayed_ref_node *entry, u64 root, u64 parent)
++{
++	int type = parent ? BTRFS_SHARED_BLOCK_REF_KEY : BTRFS_TREE_BLOCK_REF_KEY;
++
++	if (type < entry->type)
++		return -1;
++	if (type > entry->type)
++		return 1;
++
++	if (type == BTRFS_TREE_BLOCK_REF_KEY) {
++		if (root < entry->ref_root)
++			return -1;
++		if (root > entry->ref_root)
++			return 1;
++	} else {
++		if (parent < entry->parent)
++			return -1;
++		if (parent > entry->parent)
++			return 1;
++	}
++	return 0;
++}
++
++/*
++ * Check to see if a given root/parent reference is attached to the head.  This
++ * only checks for BTRFS_ADD_DELAYED_REF references that match, as that
++ * indicates the reference exists for the given root or parent.  This is for
++ * tree blocks only.
++ *
++ * @head: the head of the bytenr we're searching.
++ * @root: the root objectid of the reference if it is a normal reference.
++ * @parent: the parent if this is a shared backref.
++ */
++bool btrfs_find_delayed_tree_ref(struct btrfs_delayed_ref_head *head,
++				 u64 root, u64 parent)
++{
++	struct rb_node *node;
++	bool found = false;
++
++	lockdep_assert_held(&head->mutex);
++
++	spin_lock(&head->lock);
++	node = head->ref_tree.rb_root.rb_node;
++	while (node) {
++		struct btrfs_delayed_ref_node *entry;
++		int ret;
++
++		entry = rb_entry(node, struct btrfs_delayed_ref_node, ref_node);
++		ret = find_comp(entry, root, parent);
++		if (ret < 0) {
++			node = node->rb_left;
++		} else if (ret > 0) {
++			node = node->rb_right;
++		} else {
++			/*
++			 * We only want to count ADD actions, as drops mean the
++			 * ref doesn't exist.
++			 */
++			if (entry->action == BTRFS_ADD_DELAYED_REF)
++				found = true;
++			break;
++		}
++	}
++	spin_unlock(&head->lock);
++	return found;
++}
++
+ void __cold btrfs_delayed_ref_exit(void)
+ {
+ 	kmem_cache_destroy(btrfs_delayed_ref_head_cachep);
+diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+index ef15e998be03..05f634eb472d 100644
+--- a/fs/btrfs/delayed-ref.h
++++ b/fs/btrfs/delayed-ref.h
+@@ -389,6 +389,8 @@ void btrfs_dec_delayed_refs_rsv_bg_updates(struct btrfs_fs_info *fs_info);
+ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
+ 				  enum btrfs_reserve_flush_enum flush);
+ bool btrfs_check_space_for_delayed_refs(struct btrfs_fs_info *fs_info);
++bool btrfs_find_delayed_tree_ref(struct btrfs_delayed_ref_head *head,
++				 u64 root, u64 parent);
+ 
+ static inline u64 btrfs_delayed_ref_owner(struct btrfs_delayed_ref_node *node)
+ {
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index ff9f0d41987e..feec49e6f9c8 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5472,23 +5472,62 @@ static int check_ref_exists(struct btrfs_trans_handle *trans,
+ 			    struct btrfs_root *root, u64 bytenr, u64 parent,
+ 			    int level)
+ {
++	struct btrfs_delayed_ref_root *delayed_refs;
++	struct btrfs_delayed_ref_head *head;
+ 	struct btrfs_path *path;
+ 	struct btrfs_extent_inline_ref *iref;
+ 	int ret;
++	bool exists = false;
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+ 		return -ENOMEM;
+-
++again:
+ 	ret = lookup_extent_backref(trans, path, &iref, bytenr,
+ 				    root->fs_info->nodesize, parent,
+ 				    btrfs_root_id(root), level, 0);
++	if (ret != -ENOENT) {
++		/*
++		 * If we get 0 then we found our reference, return 1, else
++		 * return the error if it's not -ENOENT;
++		 */
++		btrfs_free_path(path);
++		return (ret < 0 ) ? ret : 1;
++	}
++
++	/*
++	 * We could have a delayed ref with this reference, so look it up while
++	 * we're holding the path open to make sure we don't race with the
++	 * delayed ref running.
++	 */
++	delayed_refs = &trans->transaction->delayed_refs;
++	spin_lock(&delayed_refs->lock);
++	head = btrfs_find_delayed_ref_head(delayed_refs, bytenr);
++	if (!head)
++		goto out;
++	if (!mutex_trylock(&head->mutex)) {
++		/*
++		 * We're contended, means that the delayed ref is running, get a
++		 * reference and wait for the ref head to be complete and then
++		 * try again.
++		 */
++		refcount_inc(&head->refs);
++		spin_unlock(&delayed_refs->lock);
++
++		btrfs_release_path(path);
++
++		mutex_lock(&head->mutex);
++		mutex_unlock(&head->mutex);
++		btrfs_put_delayed_ref_head(head);
++		goto again;
++	}
++
++	exists = btrfs_find_delayed_tree_ref(head, root->root_key.objectid, parent);
++	mutex_unlock(&head->mutex);
++out:
++	spin_unlock(&delayed_refs->lock);
+ 	btrfs_free_path(path);
+-	if (ret == -ENOENT)
+-		return 0;
+-	if (ret < 0)
+-		return ret;
+-	return 1;
++	return exists ? 1 : 0;
+ }
+ 
+ /*
+-- 
+2.43.0
+
 
