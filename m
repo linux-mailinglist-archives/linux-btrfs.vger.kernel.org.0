@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7034-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7035-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245D694B2A2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 00:02:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BDDE94B2B1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 00:05:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7B2B2814C6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 22:02:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D684282802
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2024 22:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F089B146599;
-	Wed,  7 Aug 2024 22:02:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206361514F8;
+	Wed,  7 Aug 2024 22:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="WosVmCMx"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Z1I7Dnkp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6794D5BD
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2024 22:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16ADD14C59A
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2024 22:05:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723068129; cv=none; b=ZaMjRYaLQ6iOTk74AUaBNmg2CabCp77ryc6sakah5X90bct/v728fHOUoEcX15cMYu4a7YVeq6Wpv1BbGMQOY3XDhsloBdnyXubl5JjZfeVv4fROUV6RyksaNp/AcNNO3pCFwFI/g+y17bQwcfgQE5U8CXPCfcYtM1GG7yqxmXk=
+	t=1723068349; cv=none; b=FneTMm4SJPWKGbwI/hMxBZ8JhxrXg+yWb3L9MGs/NDI5kin4fsISswqCfIRSNZ8pT35wykOBqKkk8h8bbsT5CMhKwpnTAkFm/sLw9KE8I0uaUKNKdZ9Vrqi8FtkVbVgrOR3f6DbJuK/78c6fm5FedKN1LCU+UWCLTXQcEr0Ha+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723068129; c=relaxed/simple;
-	bh=+r0YJh1edFxeHw428wO2HoM2k2cUjTIbDj6uti0lRp4=;
+	s=arc-20240116; t=1723068349; c=relaxed/simple;
+	bh=dBYG+c29EN9zUJf1+sR8UVO9Fx+jat6Oipyi+uUTOaY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aaUKebRfmOXzzsWfL5aI6Hlf8Hn1W+qM8xhph3p0Bzxwb5KddOVd3Z5sVGbD0+nsISrlgt/jBvYtXABoMvG1su2OkfIq/fEDV5pQyg3DU2UYz33B5FS4mT05vt0ILTLiwUURWVn+H4BRR15bETQwXrLcaBE02kwERTqFU1/xrpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=WosVmCMx; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=CEcVwt2bvLAYCo699tea825+Gt+O0zbNilSM3nHTkqjvc5pjkpBethM58ZKQWkabrcSpimlG7wzt5c5lWbg42w4cf1hnnsOkqcqHMxGdYe3SJN43zpHUJ8ZbcfEnqYrcQGUtiaILq/gweoGDyUQpByAdDYUzNAukjCLNnR3lvOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Z1I7Dnkp; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1723068123; x=1723672923; i=quwenruo.btrfs@gmx.com;
-	bh=jeQ98Y49IbUR4hsSlc5nsu1+LbzNp2cvo8cpuQ17GZs=;
+	s=s31663417; t=1723068344; x=1723673144; i=quwenruo.btrfs@gmx.com;
+	bh=yZD/Cy1nkYQNQ6GwcoEuJLEvVwreNmyHqW6LDjQLBWc=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=WosVmCMxl8pUpEimElKzMsPkZP3USkf7z0sWhvdlGoIMG72drM8+aQ0vdWptJfZo
-	 QtRPykCqGwBrKksLJcv+PMAxoNlDYpjMDQC0NyGEt2HPIQAnqkg/Q7nFsCrXfCXXJ
-	 FwBsyx+yp+gpyuQQtH0+LJZiWFhnJ52mWkEl8snTqRG+lPEfqOwyDPITWX9E8Om8V
-	 RO/OUY00XYcXJu9cvD1pWC2PhMDCuAsYQX4+yoWHLbrST86b1HNDrsCIhXtBV4kPi
-	 UbfNpQ1EIfuO6/vTqVUzluTJ9Cb1sa/DTgm06d9dEIj87yToT9FZ5wkHflIQtOfml
-	 DWcRDv1eIrsInBr9gA==
+	b=Z1I7DnkpCstRDl9AsdPLJRHYuxf7tXsaBw8OA6gdMFa6SLad0j6i8ii+GnTcGNZP
+	 vlHodKVzxHlfEkYbZwoi3uzXOLL2/z4XLZOllD8xJnf7TPP/0ukkyACvayfNDBcgA
+	 ++sTxp4ntkfhT8JT6xfd4hI/q5fLxROEzp+m7UXRWR2Dyguzo5u4FA2eMIPGsQmiW
+	 Qc8YekgMKhHvLFxdUuJ9f1H6yatyQH5gr1pNH5iLmROLPaXOimFwYB/Rj2LsRP3Ss
+	 wk7ayJsC5Ul0PiGLLGOdJQw+9kCcdZJSDXMj0N7rUSgG4JAQWHExgFkt795uLZkYo
+	 hFoLQWo9sQM6XscwyA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MyKDU-1sIupS3Ndc-00xK6q; Thu, 08
- Aug 2024 00:02:03 +0200
-Message-ID: <a7dc892a-5b71-4bb7-8709-3765c91debc0@gmx.com>
-Date: Thu, 8 Aug 2024 07:31:54 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mn2WF-1rtuqW1mOV-00ixCd; Thu, 08
+ Aug 2024 00:05:43 +0200
+Message-ID: <222e8428-4847-4b93-90a9-69b5594756d2@gmx.com>
+Date: Thu, 8 Aug 2024 07:35:40 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -60,10 +60,10 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: refactor __extent_writepage_io() to do
  sector-by-sector submission
-To: Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 References: <9102c028537fbc1d94c4b092dd4a9940661bc58b.1723020573.git.wqu@suse.com>
- <20240807141805.GB242945@perftesting>
+ <20240807162716.GD17473@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,110 +90,101 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240807141805.GB242945@perftesting>
+In-Reply-To: <20240807162716.GD17473@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:WHPtypOiUymF27l5CHowz7PzlFoAtxow4DQX9e+7+dybqRKujaP
- GTE0CCeQwJWl5WxReeH2SOxPM8tX9jIGLNm4uUyfQ7o+Y7o3vDQ3TuRnqCRUNtMHpueLQce
- L2mU/3I0oH+uTnzZYgL4u14m4g7W87PgC5tEh4DSPsQW8tBmsBycXOzKWCszeqUP0vXHWGF
- xM8QYqzZDkm06FC+afFFw==
+X-Provags-ID: V03:K1:kul3qq3W/VuSBzETbPg+OjJSj/r5yPJEIptaNyKQpunc7C6uLlX
+ OQkcXECMBQyR73/gLJFDByiduT3TDs7bcL32PAbl+zAzI2jRuskP6NTNDg1/o3gIlaU5vVC
+ yj4yb+ejWYTUISRdFNyHh6Ywl2cz6ya7BtC/I7Xv3MZdrP7J7KQE75Vm4BjWGTktGceEmuk
+ 6+ut8R2gi+AGp4r2AslfQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rSohcp46fqo=;wbsLfG//wLkRwCj7o+w7WSAArJW
- 5LaS93S8nmSfPca6n4vnQMhqfpRymq9aaorvvBS6VNjQw8MaW4mEgzziE+hwS7ykK8Kyt9hrM
- uIcaH3BT6Tq6ZR229r6MDDHes0PSqH/NAg54cec+lKqow90r06EqDyfY0sxo/vWfEl4trJhZp
- OugRT3NIHc7nGKPtvNULsXo6t/FA7VM3Ju5rKRFUpJ64rlSUL9UQyxMjwFGp+jpe2mIfmhIST
- /6Mj1P8f+cdTRFri5M/gokxf8+imWKV/Kz4cL5U26nc4EgBIESciw5IM4a9W3Rti+kCObEiyc
- wIYXIKtqrBdm/s/GYKKbf/uKJegIdQd742RfA7c83Tu5TC2oNvNQDND0hTRH6isK1u9YXMWOb
- cJIWzWEA5rqrvUnkT9n6M+LYSKghumkrTFY0G4yfTPW/u1YFjc6diKXiRFVu9d+xcDi04dbTM
- a1JNbp2pSG3p31VxnKHaUQpE8quVLb5sV624Gjh/EPfe00KyDmCOBefFwAIcsUDLkWKvoVQsq
- 7wAHCXcEPBXj3dbV7wTrfD3/BkjYN3i5kwOCZEyK9Lgammitj2S44JEUp7JdMDvU4nTd5mS7Z
- X/fT9axlPiztnGP222e3TFI84EZaAO3ZO+o5eYFObR+zp/aRU9MtjgsGuXv4WF4DrZOB+xhju
- Tkr4uyRn6acmsJ3uI2e4hNrWfxMe9CNBtMGGEVxugTKbyYx8S6NzrsiGQVp7UjXWdKZJ7ZhqY
- 07dl2Gv1iutHKviNqSdEAyZ/2WoLAYHK0Yd7jEmfXuGADAD/2MAxHg8mhr0c2NRSNfFo9JzJf
- cgp2PuSrJvh30ZYBeazMoKng==
+UI-OutboundReport: notjunk:1;M01:P0:RMUfpCWvJ7E=;c7PQ7H1EkmsLKijzjJ1Pt1lQzBT
+ /+7RIHKrKEoxDZ/7lsXC4Z9fOVyRwVsSHmITL5f4RZtv1D7NNFgJnRQpHuWve+dJYviUrXUw+
+ yXnf1wAFkeFT1dIqxomlbKbfE4rQaSL7suN9ANh48cRLv05TNLc0AImRtgT9lv+MvVMhgbkXb
+ 9r2rEgboUyhUl6XNnKZ4zY/PMFvCaA3nUNQ23nI8d2sowHIULazP0lYtGq5VsKx699ODr0GFM
+ cUdDkszfWpUGxoISDj3GZuQF+d/9W4lv99+wIsyQv93uWOFAtZUlR+n9O6GlT7eRVav6hDhEN
+ Ijl5DsloFcnJAR2UzdIqxXi9bAPNmiRzMOEyY611o3at1k7PcyYxaNODpgr03l85vYqJxZ5oq
+ 9TLH6GCIkDayhIkDa6Tm1IX7MRQBcn1/RL+s+OTW8kTdIO8L+JWjC6NrPm7vYHrCSqaTyFSjE
+ V54lIjYYgLqBsBh03lmUIyCP0LR41jxI/AjmNLOLli9Hj2RkczkCXRXws8tMMMOW/bpHfvsDd
+ 79ASWCFhfM2/u8QMg9og3K3GdU7/lp3+/MbAXnGaJi/7s+UJ7rK5o31Y0PnUOr/25TWKudUTJ
+ n0BVtEvgecdLLPRpPWPjrJyajF91bPxEsWdIQBGs2aQer7dlZrvj7mwxWMAYwWVtegGd6Ql4c
+ KM4RlUCDGK+XCES2MhquXCSpT+T6Mf3bF44y5IFoetig7ao2aT6z2Ln45eHscmebiG+5SQWva
+ +hn8BH/7ph17XeQwGtVF43uU2XMX3LHIZe4Cuv7MyvMNjUlM37Fk7sGTfqCm1FrzfGT6RIw0z
+ J2atN7MKw/wnV1osqL5d7ngQ==
 
 
 
-=E5=9C=A8 2024/8/7 23:48, Josef Bacik =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/8/8 01:57, David Sterba =E5=86=99=E9=81=93:
 > On Wed, Aug 07, 2024 at 06:21:00PM +0930, Qu Wenruo wrote:
->> Unlike the bitmap usage inside raid56, for __extent_writepage_io() we
->> handle the subpage submission not sector-by-sector, but for each dirty
->> range we found.
->>
->> This is not a big deal normally, as normally the subpage complex code i=
-s
->> already mostly optimized out.
->>
->> For the sake of consistency and for the future of subpage sector-perfec=
-t
->> compression support, this patch does:
->>
->> - Extract the sector submission code into submit_one_sector()
->>
->> - Add the needed code to extract the dirty bitmap for subpage case
->>
->> - Use bitmap_and() to calculate the target sectors we need to submit
->>
->> For x86_64, the dirty bitmap will be fixed to 1, with the length of 1,
->> so we're still doing the same workload per sector.
->>
->> For larger page sizes, the overhead will be a little larger, as previou=
-s
->> we only need to do one extent_map lookup per-dirty-range, but now it
->> will be one extent_map lookup per-sector.
->
-> I'd like this to be a followup, because even in the normal page case (or=
- hell
-> the subpage case) we shouldn't have to look up the extent map over and o=
-ver
-> again, it could span a much larger area.
-
-Yep, that's also something I want to improve.
-
-My guess is, using a cached extent_map can improve the situation?
-
-But that will be another patch, purely for performance improvement.
-
 [...]
->>
->> +	if (btrfs_is_subpage(fs_info, inode->vfs_inode.i_mapping)) {
->> +		ASSERT(fs_info->subpage_info);
->> +		btrfs_get_subpage_dirty_bitmap(fs_info, folio, &dirty_bitmap);
->> +		bitmap_size =3D fs_info->subpage_info->bitmap_nr_bits;
->> +	}
->> +	for (cur =3D start; cur < start + len; cur +=3D fs_info->sectorsize)
->> +		set_bit((cur - start) >> fs_info->sectorsize_bits, &range_bitmap);
->> +	bitmap_and(&dirty_bitmap, &dirty_bitmap, &range_bitmap, bitmap_size);
 >
-> I'd rather move this completely under the btrfs_is_subpage() case, we do=
-n't need
-> to do this where sectorsize =3D=3D page size.
+>> +
+>> +	block_start =3D extent_map_block_start(em);
+>> +	disk_bytenr =3D extent_map_block_start(em) + extent_offset;
+>> +
+>> +	ASSERT(!extent_map_is_compressed(em));
+>> +	ASSERT(block_start !=3D EXTENT_MAP_HOLE);
+>> +	ASSERT(block_start !=3D EXTENT_MAP_INLINE);
+>> +
+>> +	free_extent_map(em);
+>> +	em =3D NULL;
+>> +
+>> +	btrfs_set_range_writeback(inode, filepos, filepos + sectorsize - 1);
+>> +	if (!folio_test_writeback(folio)) {
+>> +		btrfs_err(fs_info,
+>> +			  "folio %lu not writeback, cur %llu end %llu",
+>> +			  folio->index, filepos, filepos + sectorsize);
+>
+> This is copied from the original code but I wonder if this should be a
+> hard error or more visible as it looks like bad page state tracking.
+>
 
-This has a tiny problem, that page dirty and subpage dirty is not in sync.
+I believe this can be removed completely, or converted into ASSERT().
 
-For sectorsize =3D=3D PAGE_SIZE, the set_bit() is only called once, and
-bitmap_and() is very cheap for single bit operation too.
+For subpage case, page writeback is set if any subpage sector has
+writeback flag set.
 
-The complex part is already under btrfs_is_subpage() check.
+For regular case, it's setting the whole page writeback.
 
-In fact the set_bit() and bitmap_and() will later be reused for
-inline/compression skip, for both regular sectorsize =3D=3D page size and
-subpage cases.
+As long as the folio is already locked, the folio should always be
+marked writeback.
 
-(There will be another new bitmap introduced into bio_ctrl, to indicate
-which sector(s) do not need writeback, thus ther bitmap operations will
-be there for that future change)
+So I prefer to go the ASSERT() path.
 
 Thanks,
 Qu
 
 >
-> Other than that this cleans things up nicely, you can add my
->
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->
-> to v2.  Thanks,
->
-> Josef
+>>   	}
+>> -
+>> -	range_start_bit =3D spi->dirty_offset +
+>> -			  (offset_in_folio(folio, orig_start) >>
+>> -			   fs_info->sectorsize_bits);
+>> -
+>> -	/* We should have the page locked, but just in case */
+>> -	spin_lock_irqsave(&subpage->lock, flags);
+>> -	bitmap_next_set_region(subpage->bitmaps, &range_start_bit, &range_end=
+_bit,
+>> -			       spi->dirty_offset + spi->bitmap_nr_bits);
+>> -	spin_unlock_irqrestore(&subpage->lock, flags);
+>> -
+>> -	range_start_bit -=3D spi->dirty_offset;
+>> -	range_end_bit -=3D spi->dirty_offset;
+>> -
+>> -	*start =3D folio_pos(folio) + range_start_bit * fs_info->sectorsize;
+>> -	*end =3D folio_pos(folio) + range_end_bit * fs_info->sectorsize;
+>> +	/*
+>> +	 * Although the PageDirty bit is cleared before entering this
+>> +	 * function, subpage dirty bit is not cleared.
+>> +	 * So clear subpage dirty bit here so next time we won't submit
+>> +	 * folio for range already written to disk.
+>> +	 */
+>> +	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
+>> +	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
+>> +			    sectorsize, filepos - folio_pos(folio));
+>> +	return 0;
+>>   }
+>>
+>>   /*
 >
 
