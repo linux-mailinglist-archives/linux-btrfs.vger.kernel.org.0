@@ -1,662 +1,194 @@
-Return-Path: <linux-btrfs+bounces-7052-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7053-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B1394C377
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 19:17:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5361F94C58F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 22:19:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A383C1F253D5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 17:17:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 801271C221F4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 20:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680A7191493;
-	Thu,  8 Aug 2024 17:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB190155A25;
+	Thu,  8 Aug 2024 20:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="kwDc2VbX"
+	dkim=pass (1024-bit key) header.d=enstafr.onmicrosoft.com header.i=@enstafr.onmicrosoft.com header.b="l8jsPFYK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+Received: from PAUP264CU001.outbound.protection.outlook.com (mail-francecentralazon11021125.outbound.protection.outlook.com [40.107.160.125])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D868189B8D
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2024 17:17:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723137451; cv=none; b=uuDyK5Id7L95xgNFYYt3YHxeaYwXGafelVOfLvgQsT+lAmJNV+I1VzlJV7Vw4tC/tE51jU/4/icTjZAzrixfRCPVeivdt+YEGDExlUaVkTMvpqu4rwvBJEF+IcfeovsyA5OUOvk6+nBRGBo5MAHjB6uNhFYFJZT3OieVLLUbR/s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723137451; c=relaxed/simple;
-	bh=gPZ6TJLA4jpZPR+LKSF3PRc+GaB1gohFq6hzwxlO0wQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=g8zlr4VO8Co/fMiu3ux5YWsMbr1W+PA4ayy875KU3fuOXU87o8akmfE6n6Q2BnW+u6LvPzWI6fI3/J3WmxgfQnHSKNXoqh2qsiltOr2/Oh0V9PlAunZfusGOjZPeUeV/Br6YBrfNh20uYxloDutVz70qvAvraIXFgbI/MpF2OEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=kwDc2VbX; arc=none smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 478G9Og3021770
-	for <linux-btrfs@vger.kernel.org>; Thu, 8 Aug 2024 10:17:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
-	:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=facebook; bh=Kszs091P
-	+RrQzS6IodsRWr6dDmu1UcbAB3KCU2ga/54=; b=kwDc2VbX5vxZ/GuFQCpZlGR4
-	ZVFG9wunpN1/h/f7/AhJOBjVU64nTgICeSyPVCownP1CjGNHoVVrXrX0AKUuDisn
-	oEfOZJXJEWWb8y7aIFGsxAAFQ+FpO9IzAnI/VI9nfvLKOa9bOjc6K33wydgkrZBb
-	HC3lg+pk+nTfm9UDy98=
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40vjdvndg6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-btrfs@vger.kernel.org>; Thu, 08 Aug 2024 10:17:28 -0700 (PDT)
-Received: from twshared43930.03.ash8.facebook.com (2620:10d:c085:208::7cb7) by
- mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1544.11; Thu, 8 Aug 2024 17:17:27 +0000
-Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
-	id 64334538C12B; Thu,  8 Aug 2024 18:17:22 +0100 (BST)
-From: Mark Harmstone <maharmstone@fb.com>
-To: <linux-btrfs@vger.kernel.org>
-CC: Mark Harmstone <maharmstone@fb.com>
-Subject: [PATCH v5] btrfs-progs: add --subvol option to mkfs.btrfs
-Date: Thu, 8 Aug 2024 18:17:16 +0100
-Message-ID: <20240808171721.370556-1-maharmstone@fb.com>
-X-Mailer: git-send-email 2.43.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82E3146A72
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2024 20:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.160.125
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723148333; cv=fail; b=MSgYsyghtCmjBqNX7ie0Wfm11S/btbhaO8JW/4AqFxwzsAwUdv28Fv5HrLYp+BKqaP0MLLnWa+95OsOLRYXc+jkpxdFEbY1amvBoceDBuhAOiBOpEABt5VY2rSfFQxYOVsZosib4oLyoSbl0FUN7R0iPCRwVplUhi5PL4mJ9YC4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723148333; c=relaxed/simple;
+	bh=YpUNVJqgh88HdkYDR8Yy+JCfYwbJCRecbiEs1RL3OtI=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=tY4WNvoOzV27feXBEFT54IWFDOAssPioUhzQpkMHfi9NEuv5YrbHm30NabTCSGjYjIl/QnnJ+xFeED93yTML307vyddCy5P4hfEN/R6w0sKasg9xJV9re5ddyMbt1VU5uRF/v4alI0jfnLP4edkViLsk8vPZDn/HguQsYEqRctM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ensta-paris.fr; spf=pass smtp.mailfrom=ensta-paris.fr; dkim=pass (1024-bit key) header.d=enstafr.onmicrosoft.com header.i=@enstafr.onmicrosoft.com header.b=l8jsPFYK; arc=fail smtp.client-ip=40.107.160.125
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ensta-paris.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ensta-paris.fr
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=vaAnAkBf6MZhc6Lgh58Hp+6srIhEuCdUWj7eOP3x3iwxllzTOcziiHE2gqendAfZXT6AKYht7RnMapavQaKuw5Le6f/6+8iGC0o/GQxr8y/c18xfAr5Ro4D/lLQv2/agqw0OPEhZGX+qWpIVgo2WLOUkpw/eFXLOzErDOrhZ21Wr8kplZC3GlQY7rStyjtKDZwmgwJBmI4ctC8/tsfviV9pEene1tV4m3CkEawcBH5wQJz1F3WDp+XjUBQGX5p2O84zGrK6i9C+C7Sh7yFYfxaC6xYFaCVGOL45IoA38JYPOVauQmvJeNXBcrH1hLAKdHORXvW4k3So21hMYQlzmew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YpUNVJqgh88HdkYDR8Yy+JCfYwbJCRecbiEs1RL3OtI=;
+ b=fxieXoGcqGNilb/Fh/EiHnv0MbOS6/4O/l6d9zqtN7owNAbHS1gunY+jjpqIj3IM2bayG5l2iV09DZxfLLdZO1mtacYZyQxqIAGLX+b36uC1NBKuFScQ9I48cqxE7iDNW/tGLutcVRDU7qpm2J+HD9x8SqUYUSIrKKoA/LaNYwn3eQnDDK/0C3CaB2ZDPCwybFGIHUuwPGae6lI5KeY7w3bn3kQ5zK2l1gE3rEdq1OR/lndBzn3zP/3j+LQMha5X5YI2aFg+62ujm+wAMqBHymvg3motqc/wHB4GHRj/dMzNrgTUcc4wJrOXwGe6mMMC+hSIGNg1DldwZUZl47AQpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ensta-paris.fr; dmarc=pass action=none
+ header.from=ensta-paris.fr; dkim=pass header.d=ensta-paris.fr; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=enstafr.onmicrosoft.com; s=selector1-enstafr-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YpUNVJqgh88HdkYDR8Yy+JCfYwbJCRecbiEs1RL3OtI=;
+ b=l8jsPFYKUhu6mSiiMPR0Wu5Yhe8rrutJOqHz0PSecg1Ajm8R0m00cTRyjZ6Qz4fMrZQR+plZDULfl1SZNn+WIq1x1bkCX5PSvk5tYX3LLO/tgGAGhIOF8CilyqHHWnd3wje/6K8KGShEYXv/ZdTdFHqDOuChj19VP5LDVGI4X5E=
+Received: from PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b1::10)
+ by PR1P264MB3680.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:187::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7849.13; Thu, 8 Aug
+ 2024 20:18:46 +0000
+Received: from PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::3259:927:a708:ebb8]) by PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::3259:927:a708:ebb8%5]) with mapi id 15.20.7849.014; Thu, 8 Aug 2024
+ 20:18:46 +0000
+From: =?iso-8859-1?Q?Andr=E9_KALOUGUINE?= <andre.kalouguine@ensta-paris.fr>
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Recovering data after kernel panic: bad tree block start
+Thread-Topic: Recovering data after kernel panic: bad tree block start
+Thread-Index: AQHa6c6sEcIHvQW/9E6ofjZrPNXg0w==
+Date: Thu, 8 Aug 2024 20:18:46 +0000
+Message-ID:
+ <PR1P264MB22322AEB8C4FD991C5C077A3A7B92@PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=ensta-paris.fr;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PR1P264MB2232:EE_|PR1P264MB3680:EE_
+x-ms-office365-filtering-correlation-id: e8d4e1bd-ba12-4e4d-5fe1-08dcb7e74eab
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|41320700013|366016|376014|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?iso-8859-1?Q?7bMaYUgwiFKiY8CsFXKkndGIgkJEbaYXWEhlH9z+rg6Ca2QuWR8gTmog6t?=
+ =?iso-8859-1?Q?nGPr6GOdqHxjhRnc7l5179yz8IAqjSykXdahO3nvg0wAmnSkACtidKsvVe?=
+ =?iso-8859-1?Q?sOnROfPCYspoJ2wYfLcRLwHsoCTofoXnejtSempJCFoarkmkiCskT6qfvI?=
+ =?iso-8859-1?Q?ppCyoY6jqDjsJbBQSmBCFKSLi5FfHHlxnJJfbJ5uYRGwmjsRAj0FdxHYfk?=
+ =?iso-8859-1?Q?0qUEAmcb8aht2v6UUQZYyYPckhLsn8cxfM0oI3f6rvcKHNeJiqtG+J9GOY?=
+ =?iso-8859-1?Q?7mi4+IkV3ZP+7jsSLllsAERsBmCLzX25oAte4Mx54nCiluwkmPIiimY2hT?=
+ =?iso-8859-1?Q?br0pdTbrBO58hnW1t2n22v5jBb5lewzGqBOOri6sqD+l+Q9+f/qPRa0rzt?=
+ =?iso-8859-1?Q?U/fbcLCI8FPJXC8J2RzQst4NVzy2E7Z/8j7PP3DTN+tRPtjebfOoYBaD2h?=
+ =?iso-8859-1?Q?iq86MzIiIefz0SqNlOlrHUduY32yAw/4I1WRV5TURWuLs0sBZc525coFSZ?=
+ =?iso-8859-1?Q?+6W3CoeGPAuR0fVcX01owwY0PulEW80OGRNUbJIkKq0oKhM3v5prnio1ru?=
+ =?iso-8859-1?Q?3QuPcj3RSPOIeAQg+5VeW6jxPdyl+lAFSO1XLFyJPTudicPx4QncxC7ouj?=
+ =?iso-8859-1?Q?rllM7x1ikPF4svSVCljo9EUx5ZvJ+Rcp4iZR1gMyjs9Q8BzBKGgAxZ1EMO?=
+ =?iso-8859-1?Q?weJhe7EnCLcGjpNM/9bC4qtZkaqPLfFhJPjw9frng1qgEvA03v7CA4elHQ?=
+ =?iso-8859-1?Q?8cY+fQZVRFWvZC5Z0Cq4lIEUAr0kA7BK8ya9F9UJagsXCfYhXnrV362sxq?=
+ =?iso-8859-1?Q?LkmBcinelnu26BNL2ea8S2lLjnRcyhgd26bBL3xIHrxp1OcKioph5B99eO?=
+ =?iso-8859-1?Q?NY2GMkUfeLKOIxSIMxmMcOheivyDCga1bspD6y2gOhol1kf4833X4fZ7Bb?=
+ =?iso-8859-1?Q?XD2LPdn66jwaLxZoDhu4Urhb4oBR9ygqRIQAVnbwM8OlsxDADIIzNVwbg4?=
+ =?iso-8859-1?Q?5D3j6Re18TIS0M6e2mwi5k/MSNsBmkGZzi5N7Xh6Pj6XYCLohUyXGeDFmf?=
+ =?iso-8859-1?Q?K4uw3BDz0scVbpAu+1WyTpH2VJCuynsCewFfiTmvEhE7yWOj/Pwmh9ueGG?=
+ =?iso-8859-1?Q?oZPAGS0/9AzBCL8QciJ/I4qSxlGY7pFB6YE0TeFTMUXY+xMEA/tJvJo+nI?=
+ =?iso-8859-1?Q?0VjEMkGQ7cgf0nYZPju3qnImJGohjr51HcA4XuGDT2NLtqB3SH52z5nwOF?=
+ =?iso-8859-1?Q?C5EbXK6twGdqSlW6CXWTmMdYYtnY4C4gaOn/B0y6GufyRTsVru147mQXP3?=
+ =?iso-8859-1?Q?WfLAxa39pFXCjM4n/Lp8wOJQIaWgDX/1harLByEuaFgNRvo+bd3q0BgvgH?=
+ =?iso-8859-1?Q?WIDzb1mmc5hnXYzQaY3YIqsKd+wG9nzAOMdaXYPCySopcP4WnngRH6bqJ6?=
+ =?iso-8859-1?Q?d+C5Mt2YY9r86aOHJjzElHTfqUxVXUj4Zee+VQ=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(41320700013)(366016)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?jNryexr/ndO4qTkoTMAW+tNl6zinpAH6PFEzCFP+P2aqZK8SOklgbYeChD?=
+ =?iso-8859-1?Q?s52gl/+NBOjbOqjEQAt/TYoQs6Sgep9XTUW0W0IB79hWb0Ga2bS9WjGczS?=
+ =?iso-8859-1?Q?x6rpYmDbZ7ZXcHXcBElB2qgdBF5/+N2noDIDHaeh7lHVrHyYO/OA6zYGkj?=
+ =?iso-8859-1?Q?zG1SYcxwh3wuoTqJ1zQuXMxJhiq/2vr/umohuBScuTbh+N4AeLy3qeRH68?=
+ =?iso-8859-1?Q?h5PufG6kXHYoT5b43NZq1S81r+KP7TGYKhMp42WOzE2+Ny4fdNeq+RITqm?=
+ =?iso-8859-1?Q?uYazTVoJgS+eOgFLtMaAcslftTgG9+xk6R5fwa/PLWvb0nJo8AEwRi/luy?=
+ =?iso-8859-1?Q?Ca2oPm7qsKhaheysMhfTtNAugFF//lIieXNCcGkbcVJUgEIrnvyPlzkS2W?=
+ =?iso-8859-1?Q?p/TX1F8jZBokVut54vqWACzm/XnmW4UQOOKmG9pPT0tw4A69mJQeAbM5cm?=
+ =?iso-8859-1?Q?uS/nA0BhJG/aBRFZe4Trnypwpzd2c1T92EzVQq9goukjasG+dcE7sP0Dja?=
+ =?iso-8859-1?Q?o4GM1Sk737ffaRbTelCX83HWOe/GQBaHMA31S/4R1llQP82P5xOzSUB69O?=
+ =?iso-8859-1?Q?6qRfu3Jr2pRXNKiv2JcZRZCZj8EfhYiL0pU+g9QXZnb/3t+FZg9sZgmXNC?=
+ =?iso-8859-1?Q?hly1ycQaClFPeSOoad6jv4dMmcF59BmsZTfg9cFlSWh0ILwnAgJ+Kio7D/?=
+ =?iso-8859-1?Q?pLCxKvBL1V0Ez/oI4XXFqujYEyB8M7uzTuxy1X8XKizAEanwEYVlidYpn8?=
+ =?iso-8859-1?Q?MQT6zjyO7iCbVwASSqEbIN0ZIC21M+zcfPc7hfFhMA3pfVkcljNyt4L3LS?=
+ =?iso-8859-1?Q?o5NAiLMOdeR4+HovcpbazzT8+P4J8If0vtiuogFKxqrg/7dsj85F4ogeUl?=
+ =?iso-8859-1?Q?hrqicROT6GaSU+J2hxd3Gx9CIQpZv3tXl/9l57nytn3kaJhwS7L1vcrwyj?=
+ =?iso-8859-1?Q?YBKmX8S9yALMwGBWvttoaqOM3y9/9MD4nDwM5yd1GVylxS8YUpRL7qlSgq?=
+ =?iso-8859-1?Q?qUg08eb9NGhRYghwBo2HwH7hyDLA/hoGAKrVoXw2oFuTnKpCAvWolLYvJY?=
+ =?iso-8859-1?Q?9ckJoxEoDV3etKOfJjqOTiMirvnywyfeVVZU8bn5iL+OCK9k/86p/C1y4x?=
+ =?iso-8859-1?Q?Ex9WTAcfWgA4YwQCDd0CtmmVuwPZa8XoS3iqscmwNlXhiqRE1G8YjGG3ca?=
+ =?iso-8859-1?Q?mGoEYWACJtskRcHpPx/NjWcrUxMOJ79P4yjHIHtuyOObyzLQa1UmkQVBdO?=
+ =?iso-8859-1?Q?m2EaZ0t45kr+3KR13f1mAxRqJJJwgigFY7F/ph/KqEFXFesG1XqLyxlmgr?=
+ =?iso-8859-1?Q?Mt4PJj+Li1vBc9bekig9KjGJ/Cft7x/tXTaN6t+Ou+YPbeV3eAs9yxZhHw?=
+ =?iso-8859-1?Q?jCZB/DDc702+YnwdykMvd6WGFleirUskJztbx2eputF0Ij1i2xtC7RSiyR?=
+ =?iso-8859-1?Q?nFnD3tw0M4cBFPxExMT8h8Sz8ljBcyTPIi+8p5Eotg/Np71borpQ5YY0DH?=
+ =?iso-8859-1?Q?TKxVr2YEB50m5NCIM9s/vtyWSYPh8PtkqywDxGLnocq/S9nTmiJToab1tZ?=
+ =?iso-8859-1?Q?/EimKCxJ/LHUT8abRbLoyS1q5KJWCP1Ip2H4biIMl4BzAR+qeRWLs1EAfL?=
+ =?iso-8859-1?Q?hE0cshtrNd+1xF4S/66hl3LkT2IA5fTsoHeNxMXcC9luymjpmWw83EiYYa?=
+ =?iso-8859-1?Q?VOnlW7zq5tg3UW2ngW6tQMixyBnGog8BHCIlN99y7v1V3c13edl7KTTqqV?=
+ =?iso-8859-1?Q?Ro5Q=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 93TxOromLBjTZBgrUBqRwtkJ5wdjwNCg
-X-Proofpoint-GUID: 93TxOromLBjTZBgrUBqRwtkJ5wdjwNCg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-08_17,2024-08-07_01,2024-05-17_01
+X-OriginatorOrg: ensta-paris.fr
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8d4e1bd-ba12-4e4d-5fe1-08dcb7e74eab
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2024 20:18:46.4413
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f6c3f3f-c20f-4ade-b8c1-3e0fba16ec71
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 2GN5Ig6nGKGUlEOzcbFIFc77wrfQPCZGmiRD00vgl5jofSoR9M5tvfzMcB0iiHqcCaOlB7QmboobC7qb5kwYO8f+2elXB8AKyn47wJAnD2A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3680
 
-This patch adds a --subvol option, which tells mkfs.btrfs to create the
-specified directories as subvolumes.
-
-Given a populated directory img, the command
-
-$ mkfs.btrfs --rootdir img --subvol img/usr --subvol img/home --subvol im=
-g/home/username /dev/loop0
-
-will create subvolumes usr and home within the FS root, and subvolume
-username within the home subvolume. It will fail if any of the
-directories do not yet exist.
-
-Signed-off-by: Mark Harmstone <maharmstone@fb.com>
----
- mkfs/main.c                                 | 146 ++++++++++++++++++--
- mkfs/rootdir.c                              | 131 ++++++++++++++----
- mkfs/rootdir.h                              |   9 +-
- tests/mkfs-tests/036-rootdir-subvol/test.sh |  33 +++++
- 4 files changed, 277 insertions(+), 42 deletions(-)
- create mode 100755 tests/mkfs-tests/036-rootdir-subvol/test.sh
-
-Changelog:
-
-Patch 2:
-* Rebased against upstream changes
-* Rewrote so that directory sizes are correct within transactions
-* Changed --subvol so that it is relative to cwd rather than rootdir, so
-that in future we might allow out-of-tree subvols
-
-Patch 3:
-* Changed btrfs_mkfs_fill_dir so it doesn't start a transaction itself
-* Moved subvol creation and linking into traverse_directory
-* Removed depth calculation code, no longer needed
-
-Patch 4:
-* Rebased against upstream changes
-
-Patch 5:
-* Removed some useless calls to list_empty
-
-diff --git a/mkfs/main.c b/mkfs/main.c
-index b24b148d..ebf2a9c0 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -440,6 +440,7 @@ static const char * const mkfs_usage[] =3D {
- 	"Creation:",
- 	OPTLINE("-b|--byte-count SIZE", "set size of each device to SIZE (files=
-ystem size is sum of all device sizes)"),
- 	OPTLINE("-r|--rootdir DIR", "copy files from DIR to the image root dire=
-ctory"),
-+	OPTLINE("-u|--subvol SUBDIR", "create SUBDIR as subvolume rather than n=
-ormal directory"),
- 	OPTLINE("--shrink", "(with --rootdir) shrink the filled filesystem to m=
-inimal size"),
- 	OPTLINE("-K|--nodiscard", "do not perform whole device TRIM"),
- 	OPTLINE("-f|--force", "force overwrite of existing filesystem"),
-@@ -1055,6 +1056,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	char *label =3D NULL;
- 	int nr_global_roots =3D sysconf(_SC_NPROCESSORS_ONLN);
- 	char *source_dir =3D NULL;
-+	size_t source_dir_len =3D 0;
-+	struct rootdir_subvol *rds;
-+	LIST_HEAD(subvols);
-=20
- 	cpu_detect_flags();
- 	hash_init_accel();
-@@ -1085,6 +1089,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			{ "data", required_argument, NULL, 'd' },
- 			{ "version", no_argument, NULL, 'V' },
- 			{ "rootdir", required_argument, NULL, 'r' },
-+			{ "subvol", required_argument, NULL, 'u' },
- 			{ "nodiscard", no_argument, NULL, 'K' },
- 			{ "features", required_argument, NULL, 'O' },
- 			{ "runtime-features", required_argument, NULL, 'R' },
-@@ -1102,7 +1107,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			{ NULL, 0, NULL, 0}
- 		};
-=20
--		c =3D getopt_long(argc, argv, "A:b:fl:n:s:m:d:L:R:O:r:U:VvMKq",
-+		c =3D getopt_long(argc, argv, "A:b:fl:n:s:m:d:L:R:O:r:U:VvMKqu:",
- 				long_options, NULL);
- 		if (c < 0)
- 			break;
-@@ -1208,6 +1213,22 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 				free(source_dir);
- 				source_dir =3D strdup(optarg);
- 				break;
-+			case 'u': {
-+				struct rootdir_subvol *s;
-+
-+				s =3D malloc(sizeof(struct rootdir_subvol));
-+				if (!s) {
-+					error("out of memory");
-+					ret =3D 1;
-+					goto error;
-+				}
-+
-+				s->dir =3D strdup(optarg);
-+				s->full_path =3D NULL;
-+
-+				list_add_tail(&s->list, &subvols);
-+				break;
-+				}
- 			case 'U':
- 				strncpy_null(fs_uuid, optarg, BTRFS_UUID_UNPARSED_SIZE);
- 				break;
-@@ -1272,6 +1293,71 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		ret =3D 1;
- 		goto error;
- 	}
-+	if (!list_empty(&subvols) && source_dir =3D=3D NULL) {
-+		error("the option --subvol must be used with --rootdir");
-+		ret =3D 1;
-+		goto error;
-+	}
-+
-+	if (source_dir) {
-+		char *canonical =3D realpath(source_dir, NULL);
-+
-+		if (!canonical) {
-+			error("could not get canonical path to %s", source_dir);
-+			ret =3D 1;
-+			goto error;
-+		}
-+
-+		free(source_dir);
-+		source_dir =3D canonical;
-+		source_dir_len =3D strlen(source_dir);
-+	}
-+
-+	list_for_each_entry(rds, &subvols, list) {
-+		char *path;
-+		struct rootdir_subvol *rds2;
-+
-+		if (!path_exists(rds->dir)) {
-+			error("subvol %s does not exist", rds->dir);
-+			ret =3D 1;
-+			goto error;
-+		}
-+
-+		if (!path_is_dir(rds->dir)) {
-+			error("subvol %s is not a directory", rds->dir);
-+			ret =3D 1;
-+			goto error;
-+		}
-+
-+		path =3D realpath(rds->dir, NULL);
-+
-+		if (!path) {
-+			error("could not get canonical path to %s", rds->dir);
-+			ret =3D 1;
-+			goto error;
-+		}
-+
-+		rds->full_path =3D path;
-+
-+		if (strlen(path) < source_dir_len + 1 ||
-+		    memcmp(path, source_dir, source_dir_len) ||
-+		    path[source_dir_len] !=3D '/') {
-+			error("subvol %s is not a child of %s", rds->dir,
-+			      source_dir);
-+			ret =3D 1;
-+			goto error;
-+		}
-+
-+		for (rds2 =3D list_first_entry(&subvols, struct rootdir_subvol, list);
-+		     rds2 !=3D rds; rds2 =3D list_next_entry(rds2, list)) {
-+			if (!strcmp(rds2->full_path, path)) {
-+				error("subvol %s specified more than once",
-+					rds->dir);
-+				ret =3D 1;
-+				goto error;
-+			}
-+		}
-+	}
-=20
- 	if (*fs_uuid) {
- 		uuid_t dummy_uuid;
-@@ -1821,24 +1907,37 @@ raid_groups:
- 		error_msg(ERROR_MSG_START_TRANS, "%m");
- 		goto out;
- 	}
--	ret =3D btrfs_rebuild_uuid_tree(fs_info);
--	if (ret < 0)
--		goto out;
--
--	ret =3D cleanup_temp_chunks(fs_info, &allocation, data_profile,
--				  metadata_profile, metadata_profile);
--	if (ret < 0) {
--		error("failed to cleanup temporary chunks: %d", ret);
--		goto out;
--	}
-=20
- 	if (source_dir) {
- 		pr_verbose(LOG_DEFAULT, "Rootdir from:       %s\n", source_dir);
--		ret =3D btrfs_mkfs_fill_dir(source_dir, root);
-+
-+		trans =3D btrfs_start_transaction(root, 1);
-+		if (IS_ERR(trans)) {
-+			errno =3D -PTR_ERR(trans);
-+			error_msg(ERROR_MSG_START_TRANS, "%m");
-+			goto out;
-+		}
-+
-+		ret =3D btrfs_mkfs_fill_dir(trans, source_dir, root,
-+					  &subvols);
- 		if (ret) {
- 			error("error while filling filesystem: %d", ret);
-+			btrfs_abort_transaction(trans, ret);
-+			goto out;
-+		}
-+
-+		ret =3D btrfs_commit_transaction(trans, root);
-+		if (ret) {
-+			errno =3D -ret;
-+			error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
- 			goto out;
- 		}
-+
-+		list_for_each_entry(rds, &subvols, list) {
-+			pr_verbose(LOG_DEFAULT, "  Subvol from:      %s\n",
-+				   rds->full_path);
-+		}
-+
- 		if (shrink_rootdir) {
- 			pr_verbose(LOG_DEFAULT, "  Shrink:           yes\n");
- 			ret =3D btrfs_mkfs_shrink_fs(fs_info, &shrink_size,
-@@ -1853,6 +1952,17 @@ raid_groups:
- 		}
- 	}
-=20
-+	ret =3D btrfs_rebuild_uuid_tree(fs_info);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret =3D cleanup_temp_chunks(fs_info, &allocation, data_profile,
-+				  metadata_profile, metadata_profile);
-+	if (ret < 0) {
-+		error("failed to cleanup temporary chunks: %d", ret);
-+		goto out;
-+	}
-+
- 	if (features.runtime_flags & BTRFS_FEATURE_RUNTIME_QUOTA ||
- 	    features.incompat_flags & BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA) {
- 		ret =3D setup_quota_root(fs_info);
-@@ -1946,6 +2056,18 @@ error:
- 	free(label);
- 	free(source_dir);
-=20
-+	while (!list_empty(&subvols)) {
-+		struct rootdir_subvol *head =3D list_entry(subvols.next,
-+					      struct rootdir_subvol,
-+					      list);
-+
-+		free(head->dir);
-+		free(head->full_path);
-+
-+		list_del(&head->list);
-+		free(head);
-+	}
-+
- 	return !!ret;
-=20
- success:
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index 05787dc3..8f5658e1 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -40,6 +40,8 @@
- #include "common/messages.h"
- #include "common/utils.h"
- #include "common/extent-tree-utils.h"
-+#include "common/root-tree-utils.h"
-+#include "common/path-utils.h"
- #include "mkfs/rootdir.h"
-=20
- static u32 fs_block_size;
-@@ -68,6 +70,7 @@ static u64 ftw_data_size;
- struct inode_entry {
- 	/* The inode number inside btrfs. */
- 	u64 ino;
-+	struct btrfs_root *root;
- 	struct list_head list;
- };
-=20
-@@ -91,6 +94,8 @@ static struct rootdir_path current_path =3D {
- };
-=20
- static struct btrfs_trans_handle *g_trans =3D NULL;
-+static struct list_head *g_subvols;
-+static u64 next_subvol_id =3D BTRFS_FIRST_FREE_OBJECTID;
-=20
- static inline struct inode_entry *rootdir_path_last(struct rootdir_path =
-*path)
- {
-@@ -111,13 +116,15 @@ static void rootdir_path_pop(struct rootdir_path *p=
-ath)
- 	free(last);
- }
-=20
--static int rootdir_path_push(struct rootdir_path *path, u64 ino)
-+static int rootdir_path_push(struct rootdir_path *path, struct btrfs_roo=
-t *root,
-+			     u64 ino)
- {
- 	struct inode_entry *new;
-=20
- 	new =3D malloc(sizeof(*new));
- 	if (!new)
- 		return -ENOMEM;
-+	new->root =3D root;
- 	new->ino =3D ino;
- 	list_add_tail(&new->list, &path->inode_list);
- 	path->level++;
-@@ -409,13 +416,83 @@ static u8 ftype_to_btrfs_type(mode_t ftype)
- 	return BTRFS_FT_UNKNOWN;
- }
-=20
-+static int ftw_add_subvol(const char *full_path, const struct stat *st,
-+			  int typeflag, struct FTW *ftwbuf,
-+			  struct rootdir_subvol *s)
-+{
-+	int ret;
-+	struct btrfs_key key;
-+	struct btrfs_root *new_root;
-+	struct inode_entry *parent;
-+	struct btrfs_inode_item inode_item =3D { 0 };
-+	u64 subvol_id, ino;
-+
-+	subvol_id =3D next_subvol_id++;
-+
-+	ret =3D btrfs_make_subvolume(g_trans, subvol_id);
-+	if (ret < 0) {
-+		error("failed to create subvolume: %d", ret);
-+		return ret;
-+	}
-+
-+	key.objectid =3D subvol_id;
-+	key.type =3D BTRFS_ROOT_ITEM_KEY;
-+	key.offset =3D (u64)-1;
-+
-+	new_root =3D btrfs_read_fs_root(g_trans->fs_info, &key);
-+	if (IS_ERR(new_root)) {
-+		error("unable to fs read root: %lu", PTR_ERR(new_root));
-+		return -PTR_ERR(new_root);
-+	}
-+
-+	parent =3D rootdir_path_last(&current_path);
-+
-+	ret =3D btrfs_link_subvolume(g_trans, parent->root, parent->ino,
-+				   path_basename(s->full_path),
-+				   strlen(path_basename(s->full_path)), new_root);
-+	if (ret) {
-+		error("unable to link subvolume %s", path_basename(s->full_path));
-+		return ret;
-+	}
-+
-+	ino =3D btrfs_root_dirid(&new_root->root_item);
-+
-+	ret =3D add_xattr_item(g_trans, new_root, ino, full_path);
-+	if (ret < 0) {
-+		errno =3D -ret;
-+		error("failed to add xattr item for the top level inode in subvol %llu=
-: %m",
-+		      subvol_id);
-+		return ret;
-+	}
-+	stat_to_inode_item(&inode_item, st);
-+
-+	btrfs_set_stack_inode_nlink(&inode_item, 1);
-+	ret =3D update_inode_item(g_trans, new_root, &inode_item, ino);
-+	if (ret < 0) {
-+		errno =3D -ret;
-+		error("failed to update root dir for root %llu: %m", subvol_id);
-+		return ret;
-+	}
-+
-+	ret =3D rootdir_path_push(&current_path, new_root, ino);
-+	if (ret < 0) {
-+		errno =3D -ret;
-+		error("failed to allocate new entry for subvol %llu ('%s'): %m",
-+		      subvol_id, full_path);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int ftw_add_inode(const char *full_path, const struct stat *st,
- 			 int typeflag, struct FTW *ftwbuf)
- {
- 	struct btrfs_fs_info *fs_info =3D g_trans->fs_info;
--	struct btrfs_root *root =3D fs_info->fs_root;
-+	struct btrfs_root *root;
- 	struct btrfs_inode_item inode_item =3D { 0 };
- 	struct inode_entry *parent;
-+	struct rootdir_subvol *rds;
- 	u64 ino;
- 	int ret;
-=20
-@@ -436,7 +513,10 @@ static int ftw_add_inode(const char *full_path, cons=
-t struct stat *st,
-=20
- 	/* The rootdir itself. */
- 	if (unlikely(ftwbuf->level =3D=3D 0)) {
--		u64 root_ino =3D btrfs_root_dirid(&root->root_item);
-+		u64 root_ino;
-+
-+		root =3D fs_info->fs_root;
-+		root_ino =3D btrfs_root_dirid(&root->root_item);
-=20
- 		UASSERT(S_ISDIR(st->st_mode));
- 		UASSERT(current_path.level =3D=3D 0);
-@@ -462,7 +542,7 @@ static int ftw_add_inode(const char *full_path, const=
- struct stat *st,
- 		}
-=20
- 		/* Push (and initialize) the rootdir directory into the stack. */
--		ret =3D rootdir_path_push(&current_path,
-+		ret =3D rootdir_path_push(&current_path, root,
- 					btrfs_root_dirid(&root->root_item));
- 		if (ret < 0) {
- 			errno =3D -ret;
-@@ -511,6 +591,18 @@ static int ftw_add_inode(const char *full_path, cons=
-t struct stat *st,
- 	while (current_path.level > ftwbuf->level)
- 		rootdir_path_pop(&current_path);
-=20
-+	if (S_ISDIR(st->st_mode)) {
-+		list_for_each_entry(rds, g_subvols, list) {
-+			if (!strcmp(full_path, rds->full_path)) {
-+				return ftw_add_subvol(full_path, st, typeflag,
-+						      ftwbuf, rds);
-+			}
-+		}
-+	}
-+
-+	parent =3D rootdir_path_last(&current_path);
-+	root =3D parent->root;
-+
- 	ret =3D btrfs_find_free_objectid(g_trans, root,
- 				       BTRFS_FIRST_FREE_OBJECTID, &ino);
- 	if (ret < 0) {
-@@ -529,7 +621,6 @@ static int ftw_add_inode(const char *full_path, const=
- struct stat *st,
- 		return ret;
- 	}
-=20
--	parent =3D rootdir_path_last(&current_path);
- 	ret =3D btrfs_add_link(g_trans, root, ino, parent->ino,
- 			     full_path + ftwbuf->base,
- 			     strlen(full_path) - ftwbuf->base,
-@@ -556,7 +647,7 @@ static int ftw_add_inode(const char *full_path, const=
- struct stat *st,
- 		return ret;
- 	}
- 	if (S_ISDIR(st->st_mode)) {
--		ret =3D rootdir_path_push(&current_path, ino);
-+		ret =3D rootdir_path_push(&current_path, root, ino);
- 		if (ret < 0) {
- 			errno =3D -ret;
- 			error("failed to allocate new entry for inode %llu ('%s'): %m",
-@@ -597,49 +688,31 @@ static int ftw_add_inode(const char *full_path, con=
-st struct stat *st,
- 	return 0;
- };
-=20
--int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)
-+int btrfs_mkfs_fill_dir(struct btrfs_trans_handle *trans, const char *so=
-urce_dir,
-+			struct btrfs_root *root, struct list_head *subvols)
- {
- 	int ret;
--	struct btrfs_trans_handle *trans;
- 	struct stat root_st;
-=20
- 	ret =3D lstat(source_dir, &root_st);
- 	if (ret) {
- 		error("unable to lstat %s: %m", source_dir);
--		ret =3D -errno;
--		goto out;
--	}
--
--	trans =3D btrfs_start_transaction(root, 1);
--	if (IS_ERR(trans)) {
--		ret =3D PTR_ERR(trans);
--		errno =3D -ret;
--		error_msg(ERROR_MSG_START_TRANS, "%m");
--		goto fail;
-+		return -errno;
- 	}
-=20
- 	g_trans =3D trans;
-+	g_subvols =3D subvols;
- 	INIT_LIST_HEAD(&current_path.inode_list);
-=20
- 	ret =3D nftw(source_dir, ftw_add_inode, 32, FTW_PHYS);
- 	if (ret) {
- 		error("unable to traverse directory %s: %d", source_dir, ret);
--		goto fail;
--	}
--	ret =3D btrfs_commit_transaction(trans, root);
--	if (ret) {
--		errno =3D -ret;
--		error_msg(ERROR_MSG_COMMIT_TRANS, "%m");
--		goto out;
-+		return ret;
- 	}
- 	while (current_path.level > 0)
- 		rootdir_path_pop(&current_path);
-=20
- 	return 0;
--fail:
--	btrfs_abort_transaction(trans, ret);
--out:
--	return ret;
- }
-=20
- static int ftw_add_entry_size(const char *fpath, const struct stat *st,
-diff --git a/mkfs/rootdir.h b/mkfs/rootdir.h
-index 4233431a..128e9e09 100644
---- a/mkfs/rootdir.h
-+++ b/mkfs/rootdir.h
-@@ -28,7 +28,14 @@
- struct btrfs_fs_info;
- struct btrfs_root;
-=20
--int btrfs_mkfs_fill_dir(const char *source_dir, struct btrfs_root *root)=
-;
-+struct rootdir_subvol {
-+	struct list_head list;
-+	char *dir;
-+	char *full_path;
-+};
-+
-+int btrfs_mkfs_fill_dir(struct btrfs_trans_handle *trans, const char *so=
-urce_dir,
-+			struct btrfs_root *root, struct list_head *subvols);
- u64 btrfs_mkfs_size_dir(const char *dir_name, u32 sectorsize, u64 min_de=
-v_size,
- 			u64 meta_profile, u64 data_profile);
- int btrfs_mkfs_shrink_fs(struct btrfs_fs_info *fs_info, u64 *new_size_re=
-t,
-diff --git a/tests/mkfs-tests/036-rootdir-subvol/test.sh b/tests/mkfs-tes=
-ts/036-rootdir-subvol/test.sh
-new file mode 100755
-index 00000000..ccd6893f
---- /dev/null
-+++ b/tests/mkfs-tests/036-rootdir-subvol/test.sh
-@@ -0,0 +1,33 @@
-+#!/bin/bash
-+# smoke test for mkfs.btrfs --subvol option
-+
-+source "$TEST_TOP/common" || exit
-+
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+
-+setup_root_helper
-+prepare_test_dev
-+
-+tmp=3D$(_mktemp_dir mkfs-rootdir)
-+
-+touch $tmp/foo
-+mkdir $tmp/dir
-+mkdir $tmp/dir/subvol
-+touch $tmp/dir/subvol/bar
-+
-+run_check_mkfs_test_dev --rootdir "$tmp" --subvol "$tmp/dir/subvol"
-+run_check $SUDO_HELPER "$TOP/btrfs" check "$TEST_DEV"
-+
-+run_check_mount_test_dev
-+run_check_stdout $SUDO_HELPER "$TOP/btrfs" subvolume list "$TEST_MNT" | =
-\
-+	cut -d\  -f9 > "$tmp/output"
-+run_check_umount_test_dev
-+
-+result=3D$(cat "$tmp/output")
-+
-+if [ "$result" !=3D "dir/subvol" ]; then
-+	_fail "dir/subvol not in subvolume list"
-+fi
-+
-+rm -rf -- "$tmp"
---=20
-2.44.2
-
+Hi,=0A=
+I have a system running Arch Linux, kernel 6.10, with the system installed =
+on a btrfs partition (with a @home subvolume). I had a kernel panic today a=
+nd after hard rebooting, the disk can't be mounted. Under a live USB, mount=
+ing gives:=0A=
+=0A=
+BTRFS error (device nvme1n1p3): bad tree block start, mirror 1 want 2116580=
+31104 have 0=0A=
+BTRFS error (device nvme1n1p3): bad tree block start, mirror 2=A0want 21165=
+8031104 have 0=0A=
+BTRFS error (device nvme1n1p3): open_ctree failed=0A=
+=0A=
+I am planning on doing a dd copy of the partition once I find a big enough =
+disk, so I'll be able to try risky commands if necessary.=0A=
+In the meantime, is there anything I can try? I only need to recover a fold=
+er with some text files.=0A=
+=0A=
+A small request: please don't rub salt on a wound! I'm well aware of how mo=
+ronic =A0it is working on code without making backups, pushing commits upst=
+ream etc... Especially on an unfamiliar file system. Catastrophic mistakes =
+happen and I would really appreciate people trusting that I learned the les=
+son and being kind enough to avoid comments about the need for backups.=0A=
+=0A=
+Lastly, I do apologise if at any point I seem ungrateful or anything. I gre=
+atly appreciate any help even if doesn't lead anywhere. I'm just having a r=
+eally really bad day, losing nearly 2 months worth of work because I forgot=
+ to back up.=0A=
+A PhD already doesn't last nearly long enough to do all that needs to be do=
+ne and wasting more than a month of work (though I could now write it faste=
+r) is really disheartening.=0A=
+=0A=
+Thanks in advance for any piece of advice.=0A=
+Best regards,=0A=
+=0A=
+Andre=0A=
 
