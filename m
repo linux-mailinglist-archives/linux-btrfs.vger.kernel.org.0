@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-7043-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7044-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F361294B67A
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0171E94B67B
 	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 08:06:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3E091F249BC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 06:06:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 750E428343A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2024 06:06:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5587186295;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC941862AE;
 	Thu,  8 Aug 2024 06:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S9umld8u";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S9umld8u"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dBIwwAvU";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dBIwwAvU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1714B158214
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170FF13DBA2
 	for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2024 06:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723097186; cv=none; b=BbEJmbVIvOvYlHSC8EHUsiLYtlvPneT5wyN5yBQFYOanGSOgES01aoS3hjbr/ejoq6OjCs64kfSdFSmxo7sSadG5sta2W2dhUggGap1GIcnx5A+rC2kNQ2BRpIMYLgV+DweM3+04BqOH7LZOa17tt8Jwnhxhm2xeNyV4+tJjjdY=
+	t=1723097187; cv=none; b=VlUBkv7OLOqf6dFxcW9dLDYBuHb3PJSDEUJ0pksqO3kPLs+/AsQ2PoF3kE+ZAs0OrmhvRnAKt+XIjhaRMa/eLLZpTJ3lOhYYqK18pP5iZ99ZhDY3yvFVMmCNGOKF0+EDGievdtAcsCjKo8SKEtvk//lBy/Yf4UPJ0J9ug7Z4TA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723097186; c=relaxed/simple;
-	bh=6z7tpt02wi4JmL56nhvKnVc9s0vH9XPoZaDOGVXhkwM=;
+	s=arc-20240116; t=1723097187; c=relaxed/simple;
+	bh=hfeL94SsdFI+XWQEA3LGlRaHn9AtUneHK1pq9mTWFy4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ih7YHvmNZyAhMBcsTjZecesOcV23CV+iyPztptbrdqMwEv4AZQdoDWDRSbu1+tQqtidFqB8gV9hUoDSyNjWwNlRe7YoZEDjUh0ubtLAoWdxkPym2O3efWzcH53ampL3QHVTEE7Cfc3jkGGv9mz14VExY/PtcRaZsJNvz6Aoy0gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S9umld8u; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S9umld8u; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=DpKnkqnkFEds51N2bcVSOd2zW/bkZ7tSjTXtJO9cYG6fU01f5YaLJbNL36p+kiq7zW1tKhJogRXo3XLizQ8fM8FE1sALRdOG5iQPvshYV83o8BsaCq0jyc7wINs4WFmr8d9YS0K4UCULnVr52qi7CYqDI6ZAFUFm3NIB0Uw1sDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dBIwwAvU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dBIwwAvU; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0D72621B5D
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2024 06:06:21 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6C29B21B07
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2024 06:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1723097181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1723097182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NmbEfT21vFKXkhj3sKf+XlI/+hoMcz37hSJXk8oBz40=;
-	b=S9umld8uFEiFNiUE2ZIpQEd+nOls6Xw070gs3sOkChgUMgaZwFsog7dLQQqgvF5wFpdHtn
-	YQEpvpVO635SX9O/rQxwG00dUUkzNo1VzsfPRPdoMS9vJnQUlKuzouitDftRD7g0WOPGiK
-	hiTHpZ+rzkjayAz0ljDnN+AYhhri9eY=
+	bh=cy2t2BUFAF3w2sV5ZasF8M5GRDgj9gaw3W1ZHsvdD5E=;
+	b=dBIwwAvUaN8c7DJ0BGB5OAkPNZHNa5V/uZdH3h0vx5aqrslI0v+Hcn27Ogi+d8B7PG4fwu
+	3H6ZtyT+wc4WlbZaPPJLxNv0AZXtx97HOGNuTrZbKC9dzGZ9SKVaHM/VCz5MZertNGyav0
+	J69+DPHjkvzL9yHAelWJNalRAzLKeeE=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=S9umld8u
+	dkim=pass header.d=suse.com header.s=susede1 header.b=dBIwwAvU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1723097181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1723097182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NmbEfT21vFKXkhj3sKf+XlI/+hoMcz37hSJXk8oBz40=;
-	b=S9umld8uFEiFNiUE2ZIpQEd+nOls6Xw070gs3sOkChgUMgaZwFsog7dLQQqgvF5wFpdHtn
-	YQEpvpVO635SX9O/rQxwG00dUUkzNo1VzsfPRPdoMS9vJnQUlKuzouitDftRD7g0WOPGiK
-	hiTHpZ+rzkjayAz0ljDnN+AYhhri9eY=
+	bh=cy2t2BUFAF3w2sV5ZasF8M5GRDgj9gaw3W1ZHsvdD5E=;
+	b=dBIwwAvUaN8c7DJ0BGB5OAkPNZHNa5V/uZdH3h0vx5aqrslI0v+Hcn27Ogi+d8B7PG4fwu
+	3H6ZtyT+wc4WlbZaPPJLxNv0AZXtx97HOGNuTrZbKC9dzGZ9SKVaHM/VCz5MZertNGyav0
+	J69+DPHjkvzL9yHAelWJNalRAzLKeeE=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 326C713946
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2024 06:06:19 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90BF213946
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2024 06:06:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QOogN1tgtGZIZgAAD6G6ig
+	id 2HPdEl1gtGZIZgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 08 Aug 2024 06:06:19 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 08 Aug 2024 06:06:21 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: introduce extent_map::em_cached member
-Date: Thu,  8 Aug 2024 15:35:59 +0930
-Message-ID: <3843c1c37c19f547236a8ec2690d9b258a1c4489.1723096922.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: utilize cached extent map for data writeback
+Date: Thu,  8 Aug 2024 15:36:00 +0930
+Message-ID: <f1232d0ffc8ae7389206d4cc9210afc77cfcacac.1723096922.git.wqu@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <cover.1723096922.git.wqu@suse.com>
 References: <cover.1723096922.git.wqu@suse.com>
@@ -85,7 +85,10 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -5.01
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 6C29B21B07
 X-Spamd-Result: default: False [-5.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
@@ -111,89 +114,52 @@ X-Spamd-Result: default: False [-5.01 / 50.00];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -5.01
-X-Rspamd-Queue-Id: 0D72621B5D
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-For data read, we always pass an extent_map pointer as @em_cached for
-btrfs_readpage().
-And that @em_cached pointer has the same lifespan as the @bio_ctrl we
-passed in, so it's a perfect match to move @em_cached into @bio_ctrl.
+Unlike data read, we never really utilize the cached extent_map for data
+write.
+
+This means we will do the costly extent map lookup for each sector we
+need to write back.
+
+Change it to utilize the same function, __get_extent_map(), just like
+the data read path, to reduce the overhead of extent map lookup.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
+ fs/btrfs/extent_io.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 822e2bf8bc99..d4ad98488c03 100644
+index d4ad98488c03..9492cd9d4f04 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -101,6 +101,8 @@ struct btrfs_bio_ctrl {
- 	blk_opf_t opf;
- 	btrfs_bio_end_io_t end_io_func;
- 	struct writeback_control *wbc;
-+	/* For read/write extent map cache. */
-+	struct extent_map *em_cached;
- };
+@@ -1357,7 +1357,8 @@ static int submit_one_sector(struct btrfs_inode *inode,
+ 	/* @filepos >= i_size case should be handled by the caller. */
+ 	ASSERT(filepos < i_size);
  
- static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
-@@ -1003,8 +1005,8 @@ static struct extent_map *__get_extent_map(struct inode *inode,
-  * XXX JDM: This needs looking at to ensure proper page locking
-  * return 0 on success, otherwise return error
-  */
--static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
--		      struct btrfs_bio_ctrl *bio_ctrl, u64 *prev_em_start)
-+static int btrfs_do_readpage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl,
-+			     u64 *prev_em_start)
- {
- 	struct inode *inode = folio->mapping->host;
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
-@@ -1052,7 +1054,7 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
- 			break;
- 		}
- 		em = __get_extent_map(inode, folio, cur, end - cur + 1,
--				      em_cached);
-+				      &bio_ctrl->em_cached);
- 		if (IS_ERR(em)) {
- 			unlock_extent(tree, cur, end, NULL);
- 			end_folio_read(folio, false, cur, end + 1 - cur);
-@@ -1160,13 +1162,12 @@ int btrfs_read_folio(struct file *file, struct folio *folio)
- 	u64 start = folio_pos(folio);
- 	u64 end = start + folio_size(folio) - 1;
- 	struct btrfs_bio_ctrl bio_ctrl = { .opf = REQ_OP_READ };
--	struct extent_map *em_cached = NULL;
- 	int ret;
+-	em = btrfs_get_extent(inode, NULL, filepos, sectorsize);
++	em = __get_extent_map(&inode->vfs_inode, NULL, filepos, sectorsize,
++			      &bio_ctrl->em_cached);
+ 	if (IS_ERR(em))
+ 		return PTR_ERR_OR_ZERO(em);
  
- 	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
+@@ -2320,6 +2321,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
+ 		cur = cur_end + 1;
+ 	}
  
--	ret = btrfs_do_readpage(folio, &em_cached, &bio_ctrl, NULL);
--	free_extent_map(em_cached);
-+	ret = btrfs_do_readpage(folio, &bio_ctrl, NULL);
 +	free_extent_map(bio_ctrl.em_cached);
- 
- 	/*
- 	 * If btrfs_do_readpage() failed we will want to submit the assembled
-@@ -2349,16 +2350,14 @@ void btrfs_readahead(struct readahead_control *rac)
- 	struct folio *folio;
- 	u64 start = readahead_pos(rac);
- 	u64 end = start + readahead_length(rac) - 1;
--	struct extent_map *em_cached = NULL;
- 	u64 prev_em_start = (u64)-1;
- 
- 	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
- 
- 	while ((folio = readahead_folio(rac)) != NULL)
--		btrfs_do_readpage(folio, &em_cached, &bio_ctrl, &prev_em_start);
-+		btrfs_do_readpage(folio, &bio_ctrl, &prev_em_start);
- 
--	if (em_cached)
--		free_extent_map(em_cached);
-+	free_extent_map(bio_ctrl.em_cached);
- 	submit_one_bio(&bio_ctrl);
+ 	submit_write_bio(&bio_ctrl, found_error ? ret : 0);
  }
  
+@@ -2338,6 +2340,7 @@ int btrfs_writepages(struct address_space *mapping, struct writeback_control *wb
+ 	 */
+ 	btrfs_zoned_data_reloc_lock(BTRFS_I(inode));
+ 	ret = extent_write_cache_pages(mapping, &bio_ctrl);
++	free_extent_map(bio_ctrl.em_cached);
+ 	submit_write_bio(&bio_ctrl, ret);
+ 	btrfs_zoned_data_reloc_unlock(BTRFS_I(inode));
+ 	return ret;
 -- 
 2.45.2
 
