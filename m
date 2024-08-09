@@ -1,200 +1,202 @@
-Return-Path: <linux-btrfs+bounces-7078-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7079-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B521A94D908
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Aug 2024 01:13:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E481794D946
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Aug 2024 01:49:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C583B225DC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 23:13:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A8A0283745
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 23:49:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA12316D4E5;
-	Fri,  9 Aug 2024 23:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CD816D4D6;
+	Fri,  9 Aug 2024 23:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O35PwDBm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MedOejx2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com [209.85.167.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF43168490
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Aug 2024 23:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8914816A954
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Aug 2024 23:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723245191; cv=none; b=UEn0wE1RMh5Jx4ixaRNLa109o192DkM5uQBxSLWd2j5SLsEnkOSKwqzF2diVC7IOp4eSYR1ueQSzNUyztAKL8zqCUqG9Z8R1xsWp39OC3QFk4ti7L9eNY7R85cDqf5cDLOBUPDffAnRosY33ukGlt/31rqbiw2KzAyoGmUPv5+Q=
+	t=1723247366; cv=none; b=J4oQled2aH5VwLo8Xdp+K+h70GbQkJK18JLms238zb3gDzEWIp+Lt2Mq68thvY/goZmn92e0/JRBrTzJ0w9qlibPLrH/1AZ1jG4fh39g8RVQQRemho7YRNdjBijRjCXRJ+rQ18Qu6S+C/HBIjsPbAL18E9lrdncvaG8CAEiS+Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723245191; c=relaxed/simple;
-	bh=XogM9MZf83Rh04Ww8e2u/feKdrAGX7dYiHwjV043OC8=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L0BcCcRcZjhcwdbiuTKjooC2rqI1KtoBvFZJP+KS4pEr7MdJ6VBensSyr63H4iG3pqbaeyo/xbBuptSVNds1U0xGWNH4l8sHxVHSzXV4NnnQ2am0pDMvmtUU4bSBTH+clV5e3RnhbwK+08pEiL2JfIrLi9nQdRL3wu50Mq671cM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O35PwDBm; arc=none smtp.client-ip=209.85.167.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f194.google.com with SMTP id 5614622812f47-3db35ec5688so1553123b6e.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Aug 2024 16:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723245188; x=1723849988; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wvDzw+bJFK2QkWo1B/Ta98uLYB+B9NbfDHmU+mKJV7o=;
-        b=O35PwDBmV8m+/Z+pNbKpuojfUcEB/vdYMZKwPwmwOpgYtbq74DYrP66eqqZik8XYRt
-         FV7GMx4mYR1YikO6RrBPclRuWObNPum1F0qa3zeVFeISDgZN42v6kvr5qCMbHomvTGdZ
-         mGaC9iEEXOCaRMA3WGXKdUmLk/3HkRWn2m+sZYxxFlVvi539JlN2PMSxlnwIVYyMmPEy
-         2QBySs0WSyML9DwoZZRfOeZMP0ZjzMP84YGqJrOMOwK7oOBgW9e1pmkA0UW0ZDRSF5Ho
-         VIGPIE9PV9K4vap0dMi8E076VhsHbkbLzupM/KSR2ctmHET5m7DK3GNtKPahle2lQfBV
-         TqIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723245188; x=1723849988;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wvDzw+bJFK2QkWo1B/Ta98uLYB+B9NbfDHmU+mKJV7o=;
-        b=h+zuNhFfAdtn9fFz2CuE0aSreHLmpIPE4iYGfHDq/2liZ1dGe71q1Tf5BjY1858FY3
-         nJ5Q/L8OTv3kzgaEyXS2G/je1tNxi/PbC/2mBeIAySOvRaQ1j6Mvy6CWEEKVJ8h7zcwQ
-         ahpHoTJ4BgfQscHkJgPVI98W4gnsimoaGy7i7RMqXgKZsoGim1FWH99+n3oTlb5XkuD9
-         NsXaSGUHGBqIcAEFSlEk4ff4706TkdukPHJAIPx42zUaIO7w3vRvH1wiVrp9C2BZgKyU
-         e5qN6A2qsUtQ4QghKvE08u+jkokxm43j4MMMfGp+1Fm7afz2Z/CgH1D62C5unYwR2XgS
-         OstQ==
-X-Gm-Message-State: AOJu0YyvnIJghgToyj3u6VOEWPomFjXhRYm2oaGwWti60QP40X6Ydqsu
-	PEn7F26saRgJkip1Q1GlIaxtbxMrw5xMkMffwAycVnYf0INLFTzUTZ0181yC
-X-Google-Smtp-Source: AGHT+IHGDwh6Y76WQMyE/G1t8C0BUFbyVasw2HbBvJcJ4g0W0gcq1Jp/coCCPOpenXFJeIIkXdKg5g==
-X-Received: by 2002:a05:6808:1782:b0:3d8:4603:e7a3 with SMTP id 5614622812f47-3dc41677437mr3656109b6e.1.1723245188015;
-        Fri, 09 Aug 2024 16:13:08 -0700 (PDT)
-Received: from localhost (fwdproxy-eag-112.fbsv.net. [2a03:2880:3ff:70::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3dd060bc058sm142655b6e.48.2024.08.09.16.13.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Aug 2024 16:13:07 -0700 (PDT)
-From: Leo Martins <loemra.dev@gmail.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH 2/2] btrfs: use __free to automatically free btrfs_path on exit
-Date: Fri,  9 Aug 2024 16:11:49 -0700
-Message-ID: <d7b68e60fac6c4d73214854f08cf755f781edf00.1723245033.git.loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <cover.1723245033.git.loemra.dev@gmail.com>
-References: <cover.1723245033.git.loemra.dev@gmail.com>
+	s=arc-20240116; t=1723247366; c=relaxed/simple;
+	bh=N8zKFltuXkKh/nbvOJqSrnmQM8Qic67tuRsow/rwL7I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MjFqjrtoeONWCqADdXhyDPzJm5MYSQYi90A+6lYVhvaZcgrh09IlLGUYBPKhstRO5GUvUqJHneN/NGI0ZebfoMk5daCvy5BiiOg8do0qJs6TUIxWk53z5tZ4rDhm93QWwHfwunXf/o+1Bhmg4wTaCqiW0jaI7dHD87Bw15PcE84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MedOejx2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B906C4AF0D
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Aug 2024 23:49:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723247366;
+	bh=N8zKFltuXkKh/nbvOJqSrnmQM8Qic67tuRsow/rwL7I=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MedOejx2cNe4NXj3oet+yi+1QwNXtcV2S8VrG3IA94VqvUT0qZ8r+T98uYNXOjMe/
+	 xltIk15gw4/MwZW0VGC4PRgrD1Ao/YB1MJJbCwJJcn7MsJ74uWQIus++TpVfXqpkp1
+	 LKoGDrazKSfJavd1sxvgVYFaJA5utkDxzC821HIptg66BMlkg8ARMlmoxpnB5n+BKc
+	 lkr8go7LurL2VehdhWVeQHfXGVO3to0ZofnoYS//Kt+r1ZSirNs/Q79jpSF6q4FZRf
+	 x6Id/8SYEq6uXMSdhIcSJ7917PlxPVWZQpBTCUEngtRGY4aeH1MUlgQuAbL9gtahPH
+	 up3BL5h4fV0hw==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5a156557029so3194622a12.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Aug 2024 16:49:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUXsVrRk39lxAUw+EXBI4Dnl5rsR2gFb76LnmnEhTHjdwFmm0QV0YCWbhFyqetsggLLWzh9YvSNaB0jHsfJ/587vAlMBSzRqoFk+U8=
+X-Gm-Message-State: AOJu0YzBer8exrG+rUKXT2BTKbwXGZ4WPVa7yP8SNy2b7l0LpqjGgppX
+	G8QwmL7TrJq6uCu7Bo7KBWN4m/BI5OcoLhB0UlQygPlPJuP1iFBLZRN6x5540HYEh6OE31D2xBO
+	xYO+qZXJoQBwiYZdHnBjJdtBOzwg=
+X-Google-Smtp-Source: AGHT+IHxlo1OeNW+WeH65MvGd5lPb8MSK0PgMAaOcVfiZ6N0lkRelFxTyktFNfZTqLThc1V/yXRx4baH0wzb3p7zs9c=
+X-Received: by 2002:a17:906:cae5:b0:a77:dcda:1fe1 with SMTP id
+ a640c23a62f3a-a80aa598db8mr215869266b.25.1723247364929; Fri, 09 Aug 2024
+ 16:49:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHPNGSSt-a4ZZWrtJdVyYnJFscFjP9S7rMcvEMaNSpR556DdLA@mail.gmail.com>
+In-Reply-To: <CAHPNGSSt-a4ZZWrtJdVyYnJFscFjP9S7rMcvEMaNSpR556DdLA@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Sat, 10 Aug 2024 00:48:48 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6HG0w4wAvmYeqOeO5dyUgKLH4Ds7wOSxW2opE83XtHfg@mail.gmail.com>
+Message-ID: <CAL3q7H6HG0w4wAvmYeqOeO5dyUgKLH4Ds7wOSxW2opE83XtHfg@mail.gmail.com>
+Subject: Re: [REGRESSION] bisected: btrfs: spin locks way too much when
+ accessing many files concurrently
+To: Octavia Togami <octavia.togami@gmail.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	linux-btrfs@vger.kernel.org, regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Introduces the __free attribute to xattr.c. Marks the path variable in
-the btrfs_getxattr(), btrfs_setxattr(), and btrfs_listxattr() functions
-with the __free(btrfs_free_path) attribute. When a variable is marked
-with the __free attribute, the kernel will automatically call the
-specified function (in this case, btrfs_free_path()) on the variable
-when it goes out of scope. This ensures that the memory allocated for
-the variable is properly released, preventing potential memory leaks. By
-using the __free attribute, we can simplify the code and reduce the risk
-of memory-related bugs.
+On Fri, Aug 9, 2024 at 11:45=E2=80=AFPM Octavia Togami <octavia.togami@gmai=
+l.com> wrote:
+>
+> [1.] One line summary of the problem: BTRFS spin locks way too much
+> when accessing many files concurrently
+> [2.] Full description of the problem/report:
+>
+> Accessing many files concurrently at once causes BTRFS to spin lock
+> too much and basically lock up all other processes for seconds at a
+> time.
+>
+> Mostly happens when accessing their content, not the other metadata.
+>
+> This appears to be a performance regression since v6.9. I bisected to
+> this commit: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/lin=
+ux.git/commit/?id=3D956a17d9d050761e34ae6f2624e9c1ce456de204
+>
+> The commit before this one has no issues, this one reliably reproduces
+> the issue for me.
 
-Test Plan:
-Built and booted the kernel with patch applied
-Ran btrfs/fstests to make sure that no regressions were introduced
+This is already being tracked at
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219121
+There are patches there if you want to test.
 
-Signed-off-by: Leo Martins <loemra.dev@gmail.com>
----
- fs/btrfs/xattr.c | 28 ++++++++--------------------
- 1 file changed, 8 insertions(+), 20 deletions(-)
+>
+> [3.] Keywords (i.e., modules, networking, kernel): btrfs, spin_lock,
+> super_cache_scan
+> [4.] Kernel information
+> [4.1.] Kernel version (from /proc/version): Linux version
+> 6.10.3-arch1-1 (linux@archlinux) (gcc (GCC) 14.2.1 20240802, GNU ld
+> (GNU Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Sun, 04 Aug 2024
+> 05:11:32 +0000
+> [4.2.] Kernel .config file:
+> https://gist.github.com/octylFractal/1344722b55f0a9eef4fc22fcfcc34177
+> [5.] Most recent kernel version which did not have the bug: v6.9
+> [6.] Output of Oops.. message (if applicable) with symbolic information
+>      resolved (see Documentation/admin-guide/bug-hunting.rst): N/A
+> [7.] A small shell script or example program which triggers the
+>      problem (if possible): Not possible as it appears to need a
+> specific set of data and/or an NVMe-speed drive (1-2GB/s). I was using
+> `rg --no-ignore uncommon-phrase ~/Documents/` but it didn't appear to
+> work in QEMU or on a different drive, only when using my NVMe SSD. I
+> have 1,425,292 files comprising 424GB in my `~/Documents`.
+> [8.] Environment
+> [8.1.] Software (add the output of the ver_linux script here)
+> Linux Draconnet 6.10.1-arch1-1 #1 SMP PREEMPT_DYNAMIC Wed, 24 Jul 2024
+> 22:25:43 +0000 x86_64 GNU/Linux
+>
+> GNU C                   14.1.1
+> GNU Make                4.4.1
+> Binutils                2.42.0
+> Util-linux              2.40.2
+> Mount                   2.40.2
+> Module-init-tools       32
+> E2fsprogs               1.47.1
+> Jfsutils                1.1.15
+> Reiserfsprogs           3.6.27
+> Xfsprogs                6.9.0
+> PPP                     2.5.0
+> Bison                   3.8.2
+> Flex                    2.6.4
+> Linux C++ Library       6.0.33
+> Linux C++ Library       5.0.7
+> Dynamic linker (ldd)    2.40
+> Procps                  4.0.4
+> Net-tools               2.10
+> Kbd                     2.6.4
+> Console-tools           2.6.4
+> Sh-utils                9.5
+> Udev                    256
+> Wireless-tools          30
+> Modules Loaded          aesni_intel af_alg algif_hash algif_skcipher
+> amd_atl amdgpu amdxcp asus_wmi blake2b_generic bluetooth bnep bridge
+> btbcm btintel btmtk btrfs btrtl b
+> tusb ccp cec cmac crc16 crc32c_generic crc32c_intel crc32_pclmul
+> crct10dif_pclmul cryptd crypto_simd crypto_user dm_mod drm_buddy
+> drm_display_helper drm_exec drm_suballoc_
+> helper drm_ttm_helper eeepc_wmi enclosure ext4 fat gf128mul
+> ghash_clmulni_intel gpio_amdpt gpio_generic gpu_sched hid_generic
+> hwmon_vid i2c_algo_bit i2c_dev i2c_piix4 i804
+> 2 intel_rapl_common intel_rapl_msr ip_tables jbd2 jfs joydev kvm
+> kvm_amd ledtrig_timer libcrc32c libphy llc loop mac_hid mbcache mc
+> mdio_devres mousedev nct6775 nct6775_co
+> re nf_conntrack nf_defrag_ipv4 nf_defrag_ipv6 nf_nat nfnetlink
+> nf_reject_ipv4 nf_tables nft_chain_nat nft_compat nft_ct nft_masq
+> nft_reject nft_reject_ipv4 nilfs2 nls_iso8
+> 859_1 nls_ucs2_utils nvidia nvidia_drm nvidia_modeset nvidia_uvm nvme
+> nvme_auth nvme_core pkcs8_key_parser platform_profile polyval_clmulni
+> polyval_generic r8169 raid6_pq
+> rapl realtek rfcomm rfkill scsi_transport_sas serio ses sg sha1_ssse3
+> sha256_ssse3 sha512_ssse3 snd snd_hda_codec snd_hda_codec_generic
+> snd_hda_codec_hdmi snd_hda_codec_re
+> altek snd_hda_core snd_hda_intel snd_hda_scodec_component snd_hrtimer
+> snd_hwdep snd_intel_dspcfg snd_intel_sdw_acpi snd_pcm snd_seq
+> snd_seq_device snd_seq_dummy snd_timer
+> soundcore sp5100_tco sparse_keymap stp ttm tun uas uinput usbhid usblp
+> usb_storage uvc uvcvideo vfat video videobuf2_common videobuf2_memops
+> videobuf2_v4l2 videobuf2_vmall
+> oc videodev wacom wmi wmi_bmof xfs xhci_pci xhci_pci_renesas xor
+> x_tables xt_conntrack xt_mark xt_MASQUERADE xt_tcpudp zenpower
+>
+> [8.2.] Processor information (from /proc/cpuinfo):
+> https://gist.github.com/octylFractal/1dcb65816561aab9205fce590ec85e59
+> [8.3.] Module information (from /proc/modules):
+> https://gist.github.com/octylFractal/9c78960190b12e3634ae87e895858cb2
+> [8.4.] Loaded driver and hardware information (/proc/ioports,
+> /proc/iomem): https://gist.github.com/octylFractal/40a9f67dbaabac78cd2d03=
+028dd994f7
+> [8.5.] PCI information ('lspci -vvv' as root):
+> https://gist.github.com/octylFractal/325a0f211094ff11643c16f1d1f63362
+> [8.6.] SCSI information (from /proc/scsi/scsi):
+> Attached devices:
+> Host: scsi4 Channel: 00 Id: 00 Lun: 00
+>  Vendor: ATA      Model: CT4000MX500SSD1  Rev: 045
+>  Type:   Direct-Access                    ANSI  SCSI revision: 05
+> [8.7.] Other information that might be relevant to the problem
+>        (please look in /proc and include all information that you
+>        think to be relevant): The NVMe SSD I'm using is a WDS100T3X0C-00S=
+JG0.
 
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 738c7bb8ea7c..a8d5db02202b 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -29,9 +29,8 @@ int btrfs_getxattr(const struct inode *inode, const char *name,
- {
- 	struct btrfs_dir_item *di;
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
--	struct btrfs_path *path;
-+	struct btrfs_path *path __free(btrfs_free_path) = NULL;
- 	struct extent_buffer *leaf;
--	int ret = 0;
- 	unsigned long data_ptr;
- 
- 	path = btrfs_alloc_path();
-@@ -42,24 +41,20 @@ int btrfs_getxattr(const struct inode *inode, const char *name,
- 	di = btrfs_lookup_xattr(NULL, root, path, btrfs_ino(BTRFS_I(inode)),
- 			name, strlen(name), 0);
- 	if (!di) {
--		ret = -ENODATA;
--		goto out;
-+		return -ENODATA;
- 	} else if (IS_ERR(di)) {
--		ret = PTR_ERR(di);
--		goto out;
-+		return PTR_ERR(di);
- 	}
- 
- 	leaf = path->nodes[0];
- 	/* if size is 0, that means we want the size of the attr */
- 	if (!size) {
--		ret = btrfs_dir_data_len(leaf, di);
--		goto out;
-+		return btrfs_dir_data_len(leaf, di);
- 	}
- 
- 	/* now get the data out of our dir_item */
- 	if (btrfs_dir_data_len(leaf, di) > size) {
--		ret = -ERANGE;
--		goto out;
-+		return -ERANGE;
- 	}
- 
- 	/*
-@@ -73,11 +68,7 @@ int btrfs_getxattr(const struct inode *inode, const char *name,
- 				   btrfs_dir_name_len(leaf, di));
- 	read_extent_buffer(leaf, buffer, data_ptr,
- 			   btrfs_dir_data_len(leaf, di));
--	ret = btrfs_dir_data_len(leaf, di);
--
--out:
--	btrfs_free_path(path);
--	return ret;
-+	return btrfs_dir_data_len(leaf, di);
- }
- 
- int btrfs_setxattr(struct btrfs_trans_handle *trans, struct inode *inode,
-@@ -86,7 +77,7 @@ int btrfs_setxattr(struct btrfs_trans_handle *trans, struct inode *inode,
- 	struct btrfs_dir_item *di = NULL;
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
--	struct btrfs_path *path;
-+	struct btrfs_path *path __free(btrfs_free_path) = NULL;
- 	size_t name_len = strlen(name);
- 	int ret = 0;
- 
-@@ -214,7 +205,6 @@ int btrfs_setxattr(struct btrfs_trans_handle *trans, struct inode *inode,
- 		 */
- 	}
- out:
--	btrfs_free_path(path);
- 	if (!ret) {
- 		set_bit(BTRFS_INODE_COPY_EVERYTHING,
- 			&BTRFS_I(inode)->runtime_flags);
-@@ -280,7 +270,7 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 	struct btrfs_key key;
- 	struct inode *inode = d_inode(dentry);
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
--	struct btrfs_path *path;
-+	struct btrfs_path *path __free(btrfs_free_path) = NULL;
- 	int iter_ret = 0;
- 	int ret = 0;
- 	size_t total_size = 0, size_left = size;
-@@ -356,8 +346,6 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 	else
- 		ret = total_size;
- 
--	btrfs_free_path(path);
--
- 	return ret;
- }
- 
--- 
-2.43.5
+All of this is redundant, like loaded modules, versions of installed
+libraries and programs (it's a kernel problem).
 
+Thanks.
+
+>
+> #regzbot introduced: 956a17d9d050761e34ae6f2624e9c1ce456de204
+>
 
