@@ -1,104 +1,188 @@
-Return-Path: <linux-btrfs+bounces-7070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC6F394D540
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 19:14:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C168494D583
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 19:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50C68B20BB3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 17:14:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E0D4282B85
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 17:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F0E4502F;
-	Fri,  9 Aug 2024 17:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879F34F5FB;
+	Fri,  9 Aug 2024 17:36:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b="Rk9EK4yJ"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="NtX3l2GE"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from zero.acitia.com (zero.acitia.com [69.164.212.194])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B99B4084E
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Aug 2024 17:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.164.212.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C964D16426
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Aug 2024 17:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723223678; cv=none; b=SIHPnIpVSNJD89aLGXOUVcXYfscAAXctcOaow/YApXcnALUHLuyczOtyO/u9VcYz4NSsiI3taQejQPTIGK/Z3Ei180Ohd4G4iu+TTN2lZ6X6RnG/4vdkECYrLT/q6gDZ4fa3hbFXTrzhUgIC1rEZuEbW3KOQUk4HGCIm2OZwuT8=
+	t=1723224997; cv=none; b=eLM6ycABi/u0YfiuFSJ05g/iVZ0pJ7SWm8y7LODcW61sNsiqIUYrjPEl2zYw8H/APnA5KrbrBntjd4bGsbn0r3lAtflkZUzhVO9tyL5O8wCaYOstfkjSmpu/tavsg8ngIQhjqymGkvsTEJ0QkRMpYW2GDlfgEjLdBjeczINX1I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723223678; c=relaxed/simple;
-	bh=WJvHovzMZ14z1jS1iSIk+C6e5+yhZAOfL85icxFI0Ug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZU/rTWvUC8x5Ak+JTMQeKMqC9j+bmUZepCQZeU46mIvo0wqZNozmo3xMhlsBqzF54+0AvjVSv+dp0r7yDD+CEhsbk6iPscmRleDmL9BpNU9vpYNfg8Y0oVwLgm78TDYjte5SNui0cSouCRiqvVxSy4NnDNH3wuiFcykQQSn8fZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com; spf=pass smtp.mailfrom=zetafleet.com; dkim=pass (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b=Rk9EK4yJ; arc=none smtp.client-ip=69.164.212.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zetafleet.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=zetafleet.com; s=20190620; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=PBRKLvRapxY5UL+Jjh9WSpehJ+RB+8jVc4C7VKyVvLQ=; b=Rk9EK4yJYCJjzB/+i00wUryLch
-	ATMjVpEEz6buudf5zkrf8C1ryF/CUopW1GpudctPZPLr5rpomclj0kt6huicGTrv57rOUk9tbYULC
-	SaRfkj/QleHc0/XEh28J6r0f5h2YOrMcYi2+Y+Pk1//Wt8KBbI4Gximkqi5lZFn0WSH0J1x9FSZqe
-	E2SvWV9HsGUTcOclCqef+3NR7A174D6gXGalVAz7HkAS3Sm+AHGOFfoJmtqmv2bkWwqAzbTqWt/xy
-	zNM020S9PBzkrfrk3erCCvjKTuJz838m8oehCRgGkWY2EF3lQwdzkFGAPhnmK2xoSU7E+ovWhneY/
-	bSlAHM7Q==;
-Received: from authenticated by zero.acitia.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	(envelope-from <linux-btrfs-ml@zetafleet.com>)
-	id 1scTC6-0008Nw-TZ
-	for linux-btrfs@vger.kernel.org; Fri, 09 Aug 2024 17:14:28 +0000
-Message-ID: <e42a03e0-df4f-45f8-a61e-3b44fcd387e3@zetafleet.com>
-Date: Fri, 9 Aug 2024 12:14:25 -0500
+	s=arc-20240116; t=1723224997; c=relaxed/simple;
+	bh=kpLn4JF1gvuTaL6G38CAyDC6tcqcRMeZP06kI/Nm7GU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Jxcm0tbLBXQTkr7xcC3NAyRnI58oLrmUk42Ub15ZOVyxmUzrDJeR9zeTixB6roFwOwR5uYYdg4OosrlRHwAb/hPGP+B99U0IU6KtOG2vS8sx0GViar1DQW4NjsrdXL/x/ff24+K6A1euGO+5aNNQLsUo2+dCV6Q2g+zLhmDDlyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=NtX3l2GE; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 479E48PM009736
+	for <linux-btrfs@vger.kernel.org>; Fri, 9 Aug 2024 10:36:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=facebook; bh=MAsgRmE1
+	SNZlqCVqjPjepVpXSzCLtPoFC/4LMM7Fifo=; b=NtX3l2GE83geYZ2BrQgpt3uY
+	NAaeMhd1T0bmDv+0ZbJj/hbUvQsnrcVXBinpJH3FUZtN8MYw2+kKf27tBWhXVx1N
+	OfN90hk3fWLbuodEUHhkLC5WzVCj58o9xsobQb3B9gUZp4IQzxrAl2AWXYTTvzn6
+	hMQAe4mj+57t2+ZFCBA=
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 40wmj2hgud-6
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Fri, 09 Aug 2024 10:36:34 -0700 (PDT)
+Received: from twshared53332.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Fri, 9 Aug 2024 17:36:05 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 941245429456; Fri,  9 Aug 2024 18:35:54 +0100 (BST)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <linux-btrfs@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH] btrfs: add io_uring interface for encoded reads
+Date: Fri, 9 Aug 2024 18:35:27 +0100
+Message-ID: <20240809173552.929988-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Recovering data after kernel panic: bad tree block start
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <PR1P264MB22322AEB8C4FD991C5C077A3A7B92@PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM>
- <d76a88d8-4262-4db4-88fd-d230139a98e0@gmx.com>
- <d4776023-178b-4e30-bba8-9a5930fdd48d@ensta-paris.fr>
- <966421a1-9b6a-4a35-9e96-b0e1a4e0cce9@suse.com>
- <d5152a0e-b430-4dc8-b7e7-e131265000b3@ensta-paris.fr>
- <16141995-25ee-4ba7-a731-5e1a16b4655c@gmx.com>
-Content-Language: en-GB
-From: Colin S <linux-btrfs-ml@zetafleet.com>
-In-Reply-To: <16141995-25ee-4ba7-a731-5e1a16b4655c@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.9
-X-Spam-Report: No, score=-1.9 required=5.0 tests=BAYES_00=-1.9,NO_RELAYS=-0.001 autolearn=ham autolearn_force=no version=3.4.2
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: TJmfwv5ydPSyqeDQ-43oykD2s5c0QpcF
+X-Proofpoint-ORIG-GUID: TJmfwv5ydPSyqeDQ-43oykD2s5c0QpcF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-09_14,2024-08-07_01,2024-05-17_01
 
-On 09/08/2024 00:17, Qu Wenruo wrote:
+Adds an io_uring interface for asynchronous encoded reads, using the
+same interface as for the ioctl. To use this you would use an SQE opcode
+of IORING_OP_URING_CMD, the cmd_op would be BTRFS_IOC_ENCODED_READ, and
+addr would point to the userspace address of the
+btrfs_ioctl_encoded_io_args struct. As with the ioctl, you need to have
+CAP_SYS_ADMIN for this to work.
 
-> Another possibility is, some NVME firmware has automatic dedup, thus the
-> DUP profile makes no different than single. 
+Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+---
+ fs/btrfs/file.c  |  1 +
+ fs/btrfs/ioctl.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/ioctl.h |  1 +
+ 3 files changed, 50 insertions(+)
 
-If this is a known behaviour of some firmware, is it possible/do 
-benefits outweigh risks to store DUP copies with a simple transformation 
-like fixed XOR to stop them from ever doing this?
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index f9d76072398d..974f9e85b46e 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3850,6 +3850,7 @@ const struct file_operations btrfs_file_operations =
+=3D {
+ 	.compat_ioctl	=3D btrfs_compat_ioctl,
+ #endif
+ 	.remap_file_range =3D btrfs_remap_file_range,
++	.uring_cmd	=3D btrfs_uring_cmd,
+ };
+=20
+ int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end=
+)
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 0493272a7668..8f5cc7d1429c 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -29,6 +29,7 @@
+ #include <linux/fileattr.h>
+ #include <linux/fsverity.h>
+ #include <linux/sched/xacct.h>
++#include <linux/io_uring/cmd.h>
+ #include "ctree.h"
+ #include "disk-io.h"
+ #include "export.h"
+@@ -4648,6 +4649,53 @@ static int btrfs_ioctl_encoded_write(struct file *=
+file, void __user *argp, bool
+ 	return ret;
+ }
+=20
++static void btrfs_uring_encoded_read_cb(struct io_uring_cmd *cmd,
++					unsigned int issue_flags)
++{
++	int ret;
++
++	ret =3D btrfs_ioctl_encoded_read(cmd->file, (void __user *)cmd->sqe->ad=
+dr,
++				       false);
++
++	io_uring_cmd_done(cmd, ret, 0, issue_flags);
++}
++
++static void btrfs_uring_encoded_read_compat_cb(struct io_uring_cmd *cmd,
++					       unsigned int issue_flags)
++{
++	int ret;
++
++	ret =3D btrfs_ioctl_encoded_read(cmd->file, (void __user *)cmd->sqe->ad=
+dr,
++				       true);
++
++	io_uring_cmd_done(cmd, ret, 0, issue_flags);
++}
++
++static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
++				    unsigned int issue_flags)
++{
++	if (issue_flags & IO_URING_F_COMPAT)
++		io_uring_cmd_complete_in_task(cmd, btrfs_uring_encoded_read_compat_cb)=
+;
++	else
++		io_uring_cmd_complete_in_task(cmd, btrfs_uring_encoded_read_cb);
++
++	return -EIOCBQUEUED;
++}
++
++int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags)
++{
++	switch (cmd->cmd_op) {
++	case BTRFS_IOC_ENCODED_READ:
++#if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
++	case BTRFS_IOC_ENCODED_READ_32:
++#endif
++		return btrfs_uring_encoded_read(cmd, issue_flags);
++	}
++
++	io_uring_cmd_done(cmd, -EINVAL, 0, issue_flags);
++	return -EIOCBQUEUED;
++}
++
+ long btrfs_ioctl(struct file *file, unsigned int
+ 		cmd, unsigned long arg)
+ {
+diff --git a/fs/btrfs/ioctl.h b/fs/btrfs/ioctl.h
+index 2c5dc25ec670..33578f4b5f46 100644
+--- a/fs/btrfs/ioctl.h
++++ b/fs/btrfs/ioctl.h
+@@ -22,5 +22,6 @@ void btrfs_sync_inode_flags_to_i_flags(struct inode *in=
+ode);
+ int __pure btrfs_is_empty_uuid(u8 *uuid);
+ void btrfs_update_ioctl_balance_args(struct btrfs_fs_info *fs_info,
+ 				     struct btrfs_ioctl_balance_args *bargs);
++int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags);
+=20
+ #endif
+--=20
+2.44.2
 
-
-On 09/08/2024 02:31, Qu Wenruo wrote:
-
->> Is there any sort of worst-case scenario data recovery tools (maybe 3rd
->> party?) that does pattern-matching of the raw data or something? It's
->> not like I need to recover videos or something, it's only a few text
->> files with known names, locations and partially known content.
-> Unfortunately no.
-
-testdisk/photorec/scalpel do pattern matching recovery. Is there some 
-special thing about the way btrfs stores data with single profile that 
-would make them worse for btrfs than other filesystem? I guess if 
-transparent compression is used then they will not see anything, but 
-anything else?
-
-Searching, there are some other third party utilities that claim to 
-support btrfs and attempt tree reconstruction at 
-<https://superuser.com/a/1752751> but I do not know anything about them.
-
-Thanks, and good luck OP,
 
