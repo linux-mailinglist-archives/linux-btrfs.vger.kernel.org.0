@@ -1,149 +1,104 @@
-Return-Path: <linux-btrfs+bounces-7069-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C70194D2EE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 17:08:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC6F394D540
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 19:14:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBF12280D96
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 15:08:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50C68B20BB3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2024 17:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B3C197A8A;
-	Fri,  9 Aug 2024 15:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F0E4502F;
+	Fri,  9 Aug 2024 17:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xdHjAC9g";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5SliJT01";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OF/spF4S";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="31IMFBWy"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b="Rk9EK4yJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zero.acitia.com (zero.acitia.com [69.164.212.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C97155A25
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Aug 2024 15:08:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B99B4084E
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Aug 2024 17:14:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.164.212.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723216129; cv=none; b=Bym8W9E0Zu6tdsIDrA9pTn66U3E2ng88T6mhoLbGJgKhdlirQGnfeLZLRWXSCiOl/NqKGIgakCmSoxcXtj0fiq07Bnm0K6Wg6sKmJYF3T+8wtmx7E8hiRKpFJugPqB1CbHkARHVvX4k7sggnVCmCn2mJCuMoLok74epCKsQPIG4=
+	t=1723223678; cv=none; b=SIHPnIpVSNJD89aLGXOUVcXYfscAAXctcOaow/YApXcnALUHLuyczOtyO/u9VcYz4NSsiI3taQejQPTIGK/Z3Ei180Ohd4G4iu+TTN2lZ6X6RnG/4vdkECYrLT/q6gDZ4fa3hbFXTrzhUgIC1rEZuEbW3KOQUk4HGCIm2OZwuT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723216129; c=relaxed/simple;
-	bh=LnDnpaI6ILjDdNN3btRVbAMSAKbi16zEa6pr+Gt52+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BOxGF5NnT9Da0Im3IiqsGAQ8v0hCVR3XSEHI7cVWW/efs1TyY0JnK8oj7ST2D228LMV+xmTOXifZ/DBt4D6EhdTSEawWJrqMqS9TOaMT206AhXjuYcxzKFe++jPKR5VPtC+oi36VNud+qW7M7DDjYEF/FUKkwHi4ALXTL9H28dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xdHjAC9g; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5SliJT01; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OF/spF4S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=31IMFBWy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D45A41FF90;
-	Fri,  9 Aug 2024 15:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723216126;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYmEVQ8eC8F4vKIdXeiCoHZXVIHmCRqwURf9ShbHmrI=;
-	b=xdHjAC9gzq7UafM8vQLJAgpz48USmxgZeBsXEMqJaH+0wW4f7Amr2Tzq6BydMjn7dpLo3j
-	tF6IVRHJFQLEZonN6xPLFF3r8NfHQQLG1G7vCYoQRmaYbHOZ47Z+STzbF7N4qKBVQdnTFh
-	OR+mRNYJw4Ah1yD7F0I0oZhc2Rb+he0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723216126;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYmEVQ8eC8F4vKIdXeiCoHZXVIHmCRqwURf9ShbHmrI=;
-	b=5SliJT01G2wQ6ylQUEvGX2ZiqTOiH0ibjBmCpfbywEhTb3ff9EWIogMoDNhafQD254ZclG
-	Yj1s/0BmbqJfDIBA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="OF/spF4S";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=31IMFBWy
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723216125;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYmEVQ8eC8F4vKIdXeiCoHZXVIHmCRqwURf9ShbHmrI=;
-	b=OF/spF4ScJ3EaOmt3KjHxWM1l6tP0JRrXzSZ2uVRBwfcbwv5O/KOZVn+0L9pzAIB2NzEWb
-	T3Xjhy2Pk6ni4pKyIZoqPojl+ZcAbp+BzUt3pKqhuP5+5hAhBXwofEyqVdY1aDAchSEcVp
-	NlY/RhfSViKdF/H8jQLe2Jjb/1sBV2E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723216125;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eYmEVQ8eC8F4vKIdXeiCoHZXVIHmCRqwURf9ShbHmrI=;
-	b=31IMFBWyAtvtlbcOQ0Vm4lsPHPsF61odJkCIJsckmV5NavuNWGJUNeQlpxqQ6kpNUQBkn6
-	olOqtGB/wAh1KBAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5FC71379A;
-	Fri,  9 Aug 2024 15:08:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JlrpK/0wtmYsHwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 09 Aug 2024 15:08:45 +0000
-Date: Fri, 9 Aug 2024 17:08:44 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <naohiro.aota@wdc.com>
-Cc: linux-btrfs@vger.kernel.org,
-	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: Re: [PATCH] btrfs: fix invalid mapping xarray state
-Message-ID: <20240809150844.GA25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cb40bca119cc0519bb5e17f6a9060a35a839ea28.1723189951.git.naohiro.aota@wdc.com>
+	s=arc-20240116; t=1723223678; c=relaxed/simple;
+	bh=WJvHovzMZ14z1jS1iSIk+C6e5+yhZAOfL85icxFI0Ug=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZU/rTWvUC8x5Ak+JTMQeKMqC9j+bmUZepCQZeU46mIvo0wqZNozmo3xMhlsBqzF54+0AvjVSv+dp0r7yDD+CEhsbk6iPscmRleDmL9BpNU9vpYNfg8Y0oVwLgm78TDYjte5SNui0cSouCRiqvVxSy4NnDNH3wuiFcykQQSn8fZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com; spf=pass smtp.mailfrom=zetafleet.com; dkim=pass (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b=Rk9EK4yJ; arc=none smtp.client-ip=69.164.212.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zetafleet.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=zetafleet.com; s=20190620; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=PBRKLvRapxY5UL+Jjh9WSpehJ+RB+8jVc4C7VKyVvLQ=; b=Rk9EK4yJYCJjzB/+i00wUryLch
+	ATMjVpEEz6buudf5zkrf8C1ryF/CUopW1GpudctPZPLr5rpomclj0kt6huicGTrv57rOUk9tbYULC
+	SaRfkj/QleHc0/XEh28J6r0f5h2YOrMcYi2+Y+Pk1//Wt8KBbI4Gximkqi5lZFn0WSH0J1x9FSZqe
+	E2SvWV9HsGUTcOclCqef+3NR7A174D6gXGalVAz7HkAS3Sm+AHGOFfoJmtqmv2bkWwqAzbTqWt/xy
+	zNM020S9PBzkrfrk3erCCvjKTuJz838m8oehCRgGkWY2EF3lQwdzkFGAPhnmK2xoSU7E+ovWhneY/
+	bSlAHM7Q==;
+Received: from authenticated by zero.acitia.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	(envelope-from <linux-btrfs-ml@zetafleet.com>)
+	id 1scTC6-0008Nw-TZ
+	for linux-btrfs@vger.kernel.org; Fri, 09 Aug 2024 17:14:28 +0000
+Message-ID: <e42a03e0-df4f-45f8-a61e-3b44fcd387e3@zetafleet.com>
+Date: Fri, 9 Aug 2024 12:14:25 -0500
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cb40bca119cc0519bb5e17f6a9060a35a839ea28.1723189951.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.21
-X-Rspamd-Queue-Id: D45A41FF90
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: Recovering data after kernel panic: bad tree block start
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <PR1P264MB22322AEB8C4FD991C5C077A3A7B92@PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM>
+ <d76a88d8-4262-4db4-88fd-d230139a98e0@gmx.com>
+ <d4776023-178b-4e30-bba8-9a5930fdd48d@ensta-paris.fr>
+ <966421a1-9b6a-4a35-9e96-b0e1a4e0cce9@suse.com>
+ <d5152a0e-b430-4dc8-b7e7-e131265000b3@ensta-paris.fr>
+ <16141995-25ee-4ba7-a731-5e1a16b4655c@gmx.com>
+Content-Language: en-GB
+From: Colin S <linux-btrfs-ml@zetafleet.com>
+In-Reply-To: <16141995-25ee-4ba7-a731-5e1a16b4655c@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.9
+X-Spam-Report: No, score=-1.9 required=5.0 tests=BAYES_00=-1.9,NO_RELAYS=-0.001 autolearn=ham autolearn_force=no version=3.4.2
 
-On Fri, Aug 09, 2024 at 04:54:22PM +0900, Naohiro Aota wrote:
-> 
-> Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-> Fixes: 97713b1a2ced ("btrfs: do not clear page dirty inside extent_write_locked_range()")
+On 09/08/2024 00:17, Qu Wenruo wrote:
 
-This is fixing a regression in 6.11 but the patch does not apply to
-anything that could be used as a base branch (master, misc-6.11,
-for-next).
+> Another possibility is, some NVME firmware has automatic dedup, thus the
+> DUP profile makes no different than single. 
+
+If this is a known behaviour of some firmware, is it possible/do 
+benefits outweigh risks to store DUP copies with a simple transformation 
+like fixed XOR to stop them from ever doing this?
+
+
+On 09/08/2024 02:31, Qu Wenruo wrote:
+
+>> Is there any sort of worst-case scenario data recovery tools (maybe 3rd
+>> party?) that does pattern-matching of the raw data or something? It's
+>> not like I need to recover videos or something, it's only a few text
+>> files with known names, locations and partially known content.
+> Unfortunately no.
+
+testdisk/photorec/scalpel do pattern matching recovery. Is there some 
+special thing about the way btrfs stores data with single profile that 
+would make them worse for btrfs than other filesystem? I guess if 
+transparent compression is used then they will not see anything, but 
+anything else?
+
+Searching, there are some other third party utilities that claim to 
+support btrfs and attempt tree reconstruction at 
+<https://superuser.com/a/1752751> but I do not know anything about them.
+
+Thanks, and good luck OP,
 
