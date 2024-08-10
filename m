@@ -1,197 +1,387 @@
-Return-Path: <linux-btrfs+bounces-7086-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7087-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9638294DDA4
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Aug 2024 18:46:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF83B94DE00
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Aug 2024 20:46:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EE081F21966
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Aug 2024 16:46:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54BB628258C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Aug 2024 18:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1250015FCED;
-	Sat, 10 Aug 2024 16:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374AA5FEED;
+	Sat, 10 Aug 2024 18:46:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=enstafr.onmicrosoft.com header.i=@enstafr.onmicrosoft.com header.b="Vm0tVjaJ"
+	dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b="duce0OoW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from PAUP264CU001.outbound.protection.outlook.com (mail-francecentralazon11021110.outbound.protection.outlook.com [40.107.160.110])
+Received: from r07.out1.gmailify.com (r07.out1.gmailify.com [45.153.89.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC36C8D1
-	for <linux-btrfs@vger.kernel.org>; Sat, 10 Aug 2024 16:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.160.110
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723308359; cv=fail; b=lI18Tsdk6FDfqSiQAf+yz/ivHQcVu9RCQRwkQjIULOMAhqvfiUGnbtyQmMpoeoqawHpRgmH/cFwZ4j4R1V/QBygcjLNl9myQSKY4PGCrm2Sdca9sVPQWgCoyF9tKQOiX2MKBXRizJRK53rRSih3FjN4chyLrJ2WYJHMloufW8BU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723308359; c=relaxed/simple;
-	bh=R4+wlGuqxqfQGw1j01ZxG83JVihdJ8PmDuYus8FXG5E=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=DiXsP5lb1n4ORrSrvsAGl4HyJbuWmmfa6Tq+dQYzFue/RC2zGvAX55FNQxqKg1rAirMbpQHYfmcDW1PQpx2IlQWZuai5DDh3SOj3HDxZHHCcaqzl1KyDVPFpsCyE5FtJUZm8KrYwV5r8UMxfJMU8CBBXa5UN3BRWF3gKo8VD3k8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ensta-paris.fr; spf=pass smtp.mailfrom=ensta-paris.fr; dkim=pass (1024-bit key) header.d=enstafr.onmicrosoft.com header.i=@enstafr.onmicrosoft.com header.b=Vm0tVjaJ; arc=fail smtp.client-ip=40.107.160.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ensta-paris.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ensta-paris.fr
-Received: from MR1P264MB1812.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:5::13) by
- MRZP264MB2809.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1e::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7849.19; Sat, 10 Aug 2024 13:11:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DOzb4VLrMaHlkgZgBEv6Yrz5CvqZfGziJjurcdN0ebHvQKZ+LMdn/h+6+s/4Nh1e2B/SpqB8RT1i8siIwW1wFIaIhUKeAyEtW48AVKeouNJ+zl9fSry/fIQsbXaVF0ABK6E2K5Okb9lk++CYOlnbyQk57JMB8ruHiylFLpv89tDyWGEgXsKOKFyZeIL4RO0O1tuxu1uoF5+2UBUFMZMzzZlpSJ/kV1KIxJXCawGCzcHgtIhkxESwj5ZtBChK8zl2mhLWUG4VMfhJSPOuCsPNTdASS3DlG34bwf+4ayY7CNjPmOqL37TmemVAobeTE/91CL3gkhonJuv1VHLzGyIr0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OKyFy8wD2fjh4eIPzBqYeMSQzOGxpQ4N4Lf1G6QBQMQ=;
- b=wfaGgoGJqN9W/omdsnuaB2eP0XG7jaOGjxOcO0ps3k2TBI5oba8hCgifdXi2L3CnImo8zhjVUgVzMsNrd6r278mP84VqyyVKOhOQVR9ovTu5ITL5QIc5tMAFvbmRZCTDIyv9iPrBs41UPT9yl5FqLhcYmm0C59tjpL47sRSTDYF+hJHcGPNUmV9WANXhOE2SLRuu2YEkPDLeArcF5OorCxrAR0LxeLVeUgyT3cEa2vZ8w3D8mSzVERPN1ABoAvuPoyuvi17X2nc+nkXiopTyjTwNK0NoQzgaDgkFH98WGCjtWSTLy7qWLFTfl22n4I7jYrpbIEs35qKyPSRgZm6n9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ensta-paris.fr; dmarc=pass action=none
- header.from=ensta-paris.fr; dkim=pass header.d=ensta-paris.fr; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=enstafr.onmicrosoft.com; s=selector1-enstafr-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OKyFy8wD2fjh4eIPzBqYeMSQzOGxpQ4N4Lf1G6QBQMQ=;
- b=Vm0tVjaJ4NjBGLQHLCCHOw+M7LbZQWW+tyErnJVkNPuOr4LkcoqZps/e/oFIuyllaEFvUHhyQoOPnserVYXiBgi1f4TKCasw7kINr6gQLDz3ek7FyzQfygUh2qODcT/4WQ7alBDiXPpHMirspquA171gyU+iQKV1sIzYVpej+S0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=ensta-paris.fr;
-Received: from PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b1::10)
- by MR1P264MB1812.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:5::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7849.18; Sat, 10 Aug
- 2024 10:34:19 +0000
-Received: from PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM
- ([fe80::3259:927:a708:ebb8]) by PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM
- ([fe80::3259:927:a708:ebb8%5]) with mapi id 15.20.7849.015; Sat, 10 Aug 2024
- 10:34:18 +0000
-Message-ID: <133cc484-f609-4274-a745-6567d7635855@ensta-paris.fr>
-Date: Sat, 10 Aug 2024 12:34:07 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: Recovering data after kernel panic: bad tree block start
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <PR1P264MB22322AEB8C4FD991C5C077A3A7B92@PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM>
- <d76a88d8-4262-4db4-88fd-d230139a98e0@gmx.com>
- <d4776023-178b-4e30-bba8-9a5930fdd48d@ensta-paris.fr>
- <966421a1-9b6a-4a35-9e96-b0e1a4e0cce9@suse.com>
- <d5152a0e-b430-4dc8-b7e7-e131265000b3@ensta-paris.fr>
- <16141995-25ee-4ba7-a731-5e1a16b4655c@gmx.com>
-Content-Language: en-US
-From: Andre KALOUGUINE <andre.kalouguine@ensta-paris.fr>
-In-Reply-To: <16141995-25ee-4ba7-a731-5e1a16b4655c@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR0P264CA0102.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:19::18) To PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:1b1::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0890918AF9
+	for <linux-btrfs@vger.kernel.org>; Sat, 10 Aug 2024 18:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.153.89.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723315565; cv=none; b=MUmj4VOteEwG+2GJIbuC+buv/eOMjglInU0TqcRdT/IaMohJvdjWzOo6+036fT+cpeXXwKsIzYyk6JVrAX7RYufum2LWL+1KmqRzFU+2srN+qAsqjEpqq/Cp+VZx4wFBuXXzbZICYdVBmKgoQxRrnkOQwR6b4IIrlt3/hr2ve0I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723315565; c=relaxed/simple;
+	bh=czjeX+s0tjuuDoMIAHle2tPzxvzNNuTtwrBnGkXinAA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j1GJgQyKzcEOV1Z8YTxKedvClHeq+wFDKmbPVG4071HoUTF3z7i9JJ1Acbywy9NMm+ttxJMGyEo2h4pFOV5b6hHV4kpYJoiq+Vm1NXGcnHKiUE/9tzWIsNe4Tt2W+IT490+emY4KLE3dnGV7zF8y9jtlcW3GLpuoxQknua417gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se; spf=pass smtp.mailfrom=sandnabba.se; dkim=pass (2048-bit key) header.d=sandnabba.se header.i=@sandnabba.se header.b=duce0OoW; arc=none smtp.client-ip=45.153.89.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sandnabba.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandnabba.se
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.gmailify.com (Postfix) with ESMTPSA id 62C3A18410F3
+	for <linux-btrfs@vger.kernel.org>; Sat, 10 Aug 2024 18:39:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandnabba.se;
+	s=gm0; t=1723315172;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RXF3wLg4L5V9/Jl6PPdoiHmKenwMfj9ulBq/qF93V0g=;
+	b=duce0OoWE3T8tMtaVuP0GaSzXzUYRC5WrfVMsuKaWIZ8rDSlieibwdOtvnDRTI+i2lnVGW
+	nfAIfGrQ6CTopa7l8BsO+237i599V1eqBjXJYg8BFERCeUQ9Bg5YyV01Joai3Cg/iw5/Km
+	0FlbHdBakNlmFlE4q7UdtZr3CgExxdGOYMgpBl9qZNPb7aDVuFUG4PIeyTmYoGBZk12jnf
+	UzTECWizx+/bRUZsIJvj16Fo9QQbkKCnFU/k0Hism4k3SM2JWVdkPhnAHRYsJbzfq/w6Iw
+	HX2x/NXlG1mXXWt+dIyGZ0r3BwtXXy/qO35GjLfzjxW8Tb9WdoIaXqkYFVnMIQ==
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3db157d3bb9so2044454b6e.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Aug 2024 11:39:32 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWZ++6RV+n+JZ/GgtDYVIu/hgLLdKBraI20AXDr4jUl6NGVrZrqnVwm+PsUX31CUz29quri0JLQ/1gGU9iawCSN/UEtX9K7SVa5jHE=
+X-Gm-Message-State: AOJu0YzcXjSuIpq9F64nAABhlzfEu5N0xH9xIlqikRZPLwU3aspFFC5H
+	1vwmTRXDk6WPiXUNXJOne48YMKnOpj1xpPaYCOGCV9wL/C2Aw8GxRaESER1UVhsQgzqt/6PobU+
+	7p1iRyCflqEGY3HCkp34pI1nVBQA=
+X-Google-Smtp-Source: AGHT+IF6Aev07MxjK7UYnX/5/DjHa/SJbZu0hGX8ce8A5sUIMTW66NdlnNG0IKu1ZgEEscPgOCEnzyr/GBjFz1hyIbM=
+X-Received: by 2002:a05:6830:611c:b0:709:4ef3:244 with SMTP id
+ 46e09a7af769-70b7cb304a4mr6162651a34.30.1723315169123; Sat, 10 Aug 2024
+ 11:39:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic:
-	PR1P264MB2232:EE_|MR1P264MB1812:EE_|MRZP264MB2809:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3903213e-e9dd-41b5-0d53-08dcb927fd76
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|41320700013|366016|1800799024|376014;
-X-Microsoft-Antispam-Message-Info:
- =?utf-8?B?bFRQaWR3b3dsbUJiUy9Wc2RxdXl1VkFsM0QvMHVtZEozUGRxTDlvc1pDYkRY?=
- =?utf-8?B?S0lteWE2WENzbEV2dnFNUzlQUFBsV0hEOUNQV202SEoyb3Y0QXgyOXh0dUsz?=
- =?utf-8?B?bUFYaytoVlUyYWpzeXY0OTFTRWxZZ2pYT2J4ai9Qd0lScWFwZlRXS1k2TEVt?=
- =?utf-8?B?NUJVUDlhc1NCTkRUNkxRdHRNNlNIN2gvWXY1cjRXZk1ydXpWU3FZN0J2cC9K?=
- =?utf-8?B?MlZ1b3lldlk3MlZFQUJSeStXVmYwczkwN2FSNVc2TTBMbnhYZHBERy84NW8x?=
- =?utf-8?B?d0J3bnh2MEdXTVhLU2VuejI4UlZlZC9mNCtRcE9jQU96bHR0VEFEdTZaek1E?=
- =?utf-8?B?cTkrTDNjMldPUklJcmtOa3NwMFk1RzBELzZuKzBqNHNiZ3hWQkorOEwyU2hk?=
- =?utf-8?B?Q1FxUVRiekVkK3NuRkZ0YTZBNE5WUUZrTWU4aC9UeFBDcXlHbUxIREpiKzBO?=
- =?utf-8?B?elVuUnVhVS9RUlNLL3Q0TEc5RkY1aXphbFdSTWZvb3M3QjhrbC84bWxFNVRk?=
- =?utf-8?B?Q29XY1gvQVpNZzdKWmROZXU1Y3RvYVE4REVqZEVIcGRQbzF6eS9Zc3RuNkpu?=
- =?utf-8?B?VlFQZFVIR3BaM0QwcWhsWVgxc2NKOFlpU1JCMmxTaGJ4TitXSVlYeHhMY0ov?=
- =?utf-8?B?VytlamNiMVFyandQYjBJUHpSTW45MWt5YkpLODlqREt5Si9QdzdtbUgrenJN?=
- =?utf-8?B?WWNJaWJqZkh5WVpjcFRsRjI4eUxoZUxZbTViQ0d2VG5HMFFYdmJpb3habFZw?=
- =?utf-8?B?SFlkMis3MmxXdUxCSGRqQVhVdmtncW1OK01SWVZNWUNnOTg1OXRDeFVZdjdJ?=
- =?utf-8?B?cCtpTmtwanFNeUMvMndrUDFRd2VJWUx4VUxhWnBwSWFpM2Y5WFIzdXA5WjFY?=
- =?utf-8?B?bXRxRFQ4Y1FIUklXbGRldFoxSitCa0NtOENnd2F5NnFoTmxDNXM5c2ZKMnVq?=
- =?utf-8?B?RytkRmlLazNVenRTV2s4eUtkZ1JJcEtMWVdGeGtQRVRMaVlJMDBpU01mTFVL?=
- =?utf-8?B?Y0JONElDZktEMzVsYmJNVHRVNlpBR2g1eTc0RWRBLzVEd0dpSXVsaS9rTVBu?=
- =?utf-8?B?bnd2VlY1T3N4UXdJUG9WY2xQU0QyblZmV3A4QnJGejkra3pVaGxZNUU0NHAy?=
- =?utf-8?B?VjVhREM3TFZTWGJicWkzMGpHMlRWeUxiS1F3SzFZUlFsQXRnQUxjNDc1UFFV?=
- =?utf-8?B?WmFmZUtvcU81Vm5oZkVUdzFtd3N4bTF1QmNvNkk5R2tPZHMvRlJSZVB3OW5H?=
- =?utf-8?B?NUtnUEI0RVBJNTlvVXVJUTc0MEdnVEJsbkVDRTZjbDFIOVBMMktMcmF3Qm1K?=
- =?utf-8?B?SUgzUFd5NE85QWxiMnUxQ3ZFM1p3dUZUNnc3dmNTa0pRTEJlRzdwRjQ2ZzBR?=
- =?utf-8?B?Qnp6MnJSWEp6WGo2TTNFUXFpMmtsMWQ1UmQ1MkpZbS9pQXNmWFlscUZ4Qlo1?=
- =?utf-8?B?YTJ5TXI2K1ZWS3RFcmJpbElMWUgwdmtuSEhKa3JTTzF2ZGt3M3JNZzBmUlor?=
- =?utf-8?B?MFVCeE1rdEtWMVhpOU1NeHc1Q2NDdVV3OGpxemx0bnV0MzhMZitNSmpGSW42?=
- =?utf-8?B?aHJPVlJicGpKMm5RYXAzVVkxNWpOTmJFdUZPNFhkeWd2UGJMY2s5OVpia2Vz?=
- =?utf-8?B?a3NLS25uM2xySDcwK1JuMjlDcVdoRXdzTFhuNHJBQjExbWZEL1FvNTZFek9y?=
- =?utf-8?Q?PbpWWHw2Zc5XV1MyHsdx?=
-X-Forefront-Antispam-Report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(41320700013)(366016)(1800799024)(376014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
- =?utf-8?B?cS9kL3pMaUU5UC9mOXR4ZVQwNEV2bTZ3cWNiR3pXWHN3Nnkxc2tCS2xWOEda?=
- =?utf-8?B?S1FTaWlZbUc5ZXVYaG1vS1k0QTgxeEpyeEZZMUt3MEE0dUFkRlpiWlAwaUdB?=
- =?utf-8?B?WVhSNDdlVUlMWUFvdDR0QW9iNE1mNzdXVzNUU25ud005LzAyaC9kakYrQkh1?=
- =?utf-8?B?bm1LRW9BaHdiYTBIaHlsWHo5UHo4V0ZTYXBTTHBCeFZLKzFURWVXbjc4VjRM?=
- =?utf-8?B?YktZYUJHM09kUTB3MG4ySE00czk4aDRVTGg0TzcvN1FJeWhlS3c2WUFWSTZv?=
- =?utf-8?B?WTkrc3I4RFVtV2RlYlZwYnpySUVCV3RLQXFXT2ljS1oybzRlaWUzVkx1MHlF?=
- =?utf-8?B?UFowTG9laTlSbTErUjR2ZUUwMG9yTmkrK01TdzJqanR3eGFxdisxTG9RRHZK?=
- =?utf-8?B?TGxkZEdJV0xrQW1LVFpoQ1VyRXJPYm13R2xuK01CMEZWYXBLdWZ1YmZxcE1O?=
- =?utf-8?B?Mkl4QlN2dVNDV0tORzdkbndDQ1VOYXlaYkZ6N2hseFMwV0ZDTDNCMmpCUkRI?=
- =?utf-8?B?RUxiTXZTd3VhRW1KNTBkalZBWTFEa01oSEI5UUpnZmtFaWJ3dVUwTVNEU2Ey?=
- =?utf-8?B?b3VhWlFwT2lYbGpJNlZUbUw5TlpuWmc2QVBaZkhneVhOR1FIUGloSTVZOVNP?=
- =?utf-8?B?cTcxSXBuQlJ3N3E4cnM0bEM0cWMvTXFDRXcrbDZqbGtRK3A5M1RESkx5djBw?=
- =?utf-8?B?NHNVNUFDUCtJeFNrRWhyQUFacS9TenhhUnZjamYzQ0lra1JaZUdMdzkyQ2Ev?=
- =?utf-8?B?SitBMlZZaHlTS0R0aXhBMkJiaUlkRlVBRUNOZm5HcE92KzEwZ08rL2xWVHpO?=
- =?utf-8?B?NnB0UnRYTVM1WGQ5MFQxMEo4UldSYlRmUmVSSU43VjZJaTdpZ213U1oxUGNG?=
- =?utf-8?B?bm1JY0dUcnhMNm8xMkVWSmhDN09TS3RPSEhTK0pyZzJGQWVHRGZ5QS9KSzF2?=
- =?utf-8?B?VUNSMzE4R3FNTVM1VENmVXRPNXVDUXduUHI0NmpWaEVZT0FjZmNTczl5NkRR?=
- =?utf-8?B?cXR1QXFDSUN3bFNhMWw3UkU3OVlsV1pTSWl2VVovd0pnVFhmZm9mN0tjc0RC?=
- =?utf-8?B?WHErUmx1V1RvZkhvbzhQb01PL2Jja0hMMCtYWjY5OG52SldtT0paajZqNHlQ?=
- =?utf-8?B?K0pOc3k0VWkwYzdHMURPNzIzSHNiTGYvZ0tlMGpPOW1yVFlFc3Q5TGNJVUFw?=
- =?utf-8?B?Y3ZUMmpJQmwzWWdDOElhQlpobFcrekFRLzdvMkRWY3ZmemtmMm5FVmRqcHha?=
- =?utf-8?B?US9XcG5mNVgvWGYyVUtla2ljZ000SmFoWVZadllCVUtubmF1VFphTW9ZRjgv?=
- =?utf-8?B?dzJNZUczcTBWTWZCYnNXRkUwcDFJWUZEOGVkZW9mdkM2RE5CYzhVNDVMbm54?=
- =?utf-8?B?c2o0ZlVVNzRYeWZJckszM2E4UStiMndpb2JYbGYvenFjTFhYS3RhN3A1cWZP?=
- =?utf-8?B?b2Q3WEY5dGZRWVMxWHBMME5JU0YvZWduVE1SUzExWHA2MmhmTVV6YXd5VHRw?=
- =?utf-8?B?OTh2YWt3bkVOMW5OWGtRSEU5ZE5pWGljNFkrcjV3UFBvUnlWUCs3MmpzMW5q?=
- =?utf-8?B?amRIN1M1ZGk2dXhMMmo4U1M3Z1pGTXRLV3ZTSDBWUkN6bXhZTjBtYTdPQTNI?=
- =?utf-8?B?M0NGb3dTWWpCVkFEaUNGRytBcHQxUHFCKzROWmtjNjZVOVJMeS9PYTJtNUJE?=
- =?utf-8?B?MkVyVy9mbitJbXRpTHlVbEFlTnJhRllRZENlNUZBcGg0QlNhbkZNMXhQb0N1?=
- =?utf-8?B?SjgxcjlFRVNkRGhlMGlkSTVLWVVDa1VpZ2tOTFduQ01NNjJGMHEveHoyVWl5?=
- =?utf-8?B?WlJxWFlCdENXalR5Z1NCM29ZZzN1dmFoKzVZWmx3THU3VnVFeUpRZVRXbE9w?=
- =?utf-8?B?NVJYSDROTEVVUUxaTVpPdUVmTHoxV2ZibEZnamRaNEZLUjRUUkhvdjk2bmM1?=
- =?utf-8?B?czVoTjd2NytZa0xuWTZEQkcwZGZUNVd6L2RlZ1NaSmJnVHJ4N1BmWjBTSVg2?=
- =?utf-8?B?QXpVVjNvSHhjakZQYTNld0Y3UUFSb29lcVhBY0gxNVkrbTdiNk40ZmhxRGJW?=
- =?utf-8?B?QmJMQ2hlbDZuZzFaeHFBN29jT3B2OGRPYnBsZWkzUHRpYXhhNWUxWDVZeTY4?=
- =?utf-8?B?UnJzT2RMR2NOMjM3d2lCbzQ0dmswMlBoYmk0dEpuZTBJWGQxaGNjQVIvN2hv?=
- =?utf-8?B?a0xSaWJJOEU1ZzZQUjdqeFhHWWxMZkk5eWJERWNlek9HUktPNnlOamIyNXR3?=
- =?utf-8?Q?EpiGjsxQqMWCf0PZ36v2KCcPRrcKWJRhobtc+6RSd4=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3903213e-e9dd-41b5-0d53-08dcb927fd76
-X-MS-Exchange-CrossTenant-AuthSource: PR1P264MB2232.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2024 10:34:18.7995
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8f6c3f3f-c20f-4ade-b8c1-3e0fba16ec71
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MvPXk58WMOccCSivtTZAC1+o7QtOnk67el86sstmioQXN3R4SymObrRZQfaJzrRQYZ5kNvf/wp6XVP+/sXsRErO/z66iJu2UiGwe26Ya4lg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB1812
-X-OriginatorOrg: ensta-paris.fr
+References: <CAEA9r7DVO8gCRz-9vbwaNWznz9AOFxOyPLO0ukOJh-6Ef0o5Bw@mail.gmail.com>
+ <20240725224757.GD17473@twin.jikos.cz> <aeed4735-f6f2-49ef-9a02-816a3b74cbd3@gmx.com>
+ <CAEA9r7AzYtQ9BifUPcW3=1zz=RmS9Fb3CnProGMg6GVkmd14TQ@mail.gmail.com>
+ <2598F89C9D10565B+29575f56-c98e-4316-8360-0e3e9e7748ff@bupt.moe>
+ <CAEA9r7CaJJRvDZ3iL9LuKtgi-xO+R-qOxiUg-4Ms-vzG_y+Y5g@mail.gmail.com> <086eee00-f2f3-420a-abd4-771f6098fd2c@gmx.com>
+In-Reply-To: <086eee00-f2f3-420a-abd4-771f6098fd2c@gmx.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@gmailify.com and include these headers.
+From: "Emil.s" <emil@sandnabba.se>
+Date: Sat, 10 Aug 2024 20:39:17 +0200
+X-Gmail-Original-Message-ID: <CAEA9r7BuYiWj+gp5jaePH34zaLzHmAVOYWrLAV_P+f8g3oHm3Q@mail.gmail.com>
+Message-ID: <CAEA9r7BuYiWj+gp5jaePH34zaLzHmAVOYWrLAV_P+f8g3oHm3Q@mail.gmail.com>
+Subject: Re: Force remove of broken extent/subvolume? (Crash in btrfs_run_delayed_refs)
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Yuwei Han <hrx@bupt.moe>, dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Gmailify-Queue-Id: 62C3A18410F3
+X-Gmailify-Score: -0.10
 
-On 8/9/24 9:31 AM, Qu Wenruo wrote:
-> But we do not have such tool, so normally one may go with
-> btrfs-find-root, trying to salvage a good fs or your home subvolume root.
-I attempted btrfs-find-root (without options) and it returned this: 
-https://gist.github.com/Semptum/83ff8f1b590d214b34562d53dea5fddd
-> Then go with btrfs-restore to salve data.
+Hi again,
 
-I attemted to use the dry run restore command with the tree root it 
-found (275009601536) but the error was the same.
+Did just spin up the old corrupt array to reproduce the error. Now I
+actually got one more line:
+"ERROR: failed to read stream from kernel: Bad file descriptor"
 
-Thanks
+I updated the system earlier this week, so I'm now on Linux 6.10.1
+(last try was with 6.9.9).
 
-Best regards,
+Full output:
+```
+$ btrfs send /mnt/snapshots/user_data_2024-03-20 > /dev/null
+At subvol /mnt/snapshots/user_data_2024-03-20
+ERROR: send ioctl failed with -30: Read-only file system
+ERROR: failed to read stream from kernel: Bad file descriptor
+```
 
-Andre
+But there are no additional log messages showing up in the kernel log / dme=
+sg.
 
+Best regards
+
+Emil
+
+
+On Mon, 5 Aug 2024 at 10:59, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2024/8/5 17:46, Emil.s =E5=86=99=E9=81=93:
+> >> For curiosity, did you setup any scrub after rebuild FS?
+> >
+> > The new FS is built on new drives, on new hardware and new Linux
+> > kernel. And I'm rsyncing over all files so that everything will be
+> > built from scratch.
+> >
+> > However, I still got a snapshot (from 2024-03-20) on my offsite backup.
+> > I just scrubbed that drive, and it reports no errors. I'm also quite
+> > sure I scrubbed the corrupt drive quite recently without issues.
+> >
+> > Another interesting note is that I'm also unable to send any file
+> > system from the corrupt drive (which is probably a good thing).
+> > ```
+> > $ btrfs send /mnt/snapshots/user_data_2024-03-20 > /dev/null
+> > At subvol /mnt/snapshots/user_data_2024-03-20
+> > ERROR: send ioctl failed with -30: Read-only file system
+> > ```
+> >
+> > Wasn't expecting a "Read-only file system" error when sending a
+> > read-only snapshot? (But maybe that is expected?).
+>
+> In that case, please provide the dmesg of that incident. (if any)
+>
+> It looks like something else is wrong.
+>
+> Thanks,
+> Qu
+> >
+> >
+> > On Sun, 28 Jul 2024 at 18:09, Yuwei Han <hrx@bupt.moe> wrote:
+> >>
+> >>
+> >>
+> >> =E5=9C=A8 2024/7/26 18:52, Emil.s =E5=86=99=E9=81=93:
+> >>>> As for any bitflip induced errors, it's hard to tell how far it got
+> >>>> propagated, this could be the only instance or there could be other
+> >>>> items referring to that one too.
+> >>>
+> >>> Right, yeah that sounds a bit more challenging then I initially thoug=
+ht.
+> >>> Maybe it is easier to just rebuild the array after all.
+> >>>
+> >>> And in regards to Qu's question, that is probably a good idea anyhow.
+> >>>
+> >>>> - History of the fs
+> >>>> - The hardware spec
+> >>>
+> >>> This has been my personal NAS / home server for quite some time.
+> >>> It's basically a mix of just leftover desktop hardware (without ECC m=
+emory).
+> >>>
+> >>> It was a 12 year old Gigabyte H77-D3H motherboard, an Intel i7-2600 C=
+PU
+> >>> and 4 DDR3 DIMMs, all of different types and brands.
+> >>> The disks are WD red series, and I see now that one of them has over
+> >>> 80k power on hours.
+> >>>
+> >>> I know I did a rebuild about 5 years ago so the FS was probably
+> >>> created using Ubuntu server 18.04 (Linux 4.15), which has been
+> >>> upgraded to the major LTS versions since then.
+> >>> I actually hit this error when I was doing the "final backup" before
+> >>> retiring this setup, and it seems it was about time! (Was running
+> >>> Ubuntu 22.04 / Linux 5.15)
+> >>>
+> >> For curiosity, did you setup any scrub after rebuild FS?
+> >>> The Arch setup on the Thinkstation is my workstation where I attempte=
+d
+> >>> the data recovery.
+> >>>
+> >>> So due to the legacy hardware and crappy setup I think it's worth
+> >>> wasting more time here.
+> >>>
+> >>> But thanks a lot for the detailed answer, much appreciated!
+> >>>
+> >>> Best,
+> >>> Emil
+> >>>
+> >>> On Fri, 26 Jul 2024 at 01:19, Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
+e:
+> >>>>
+> >>>>
+> >>>>
+> >>>> =E5=9C=A8 2024/7/26 08:17, David Sterba =E5=86=99=E9=81=93:
+> >>>>> On Thu, Jul 25, 2024 at 11:06:00PM +0200, Emil.s wrote:
+> >>>>>> Hello!
+> >>>>>>
+> >>>>>> I got a corrupt filesystem due to backpointer mismatches:
+> >>>>>> ---
+> >>>>>> [2/7] checking extents
+> >>>>>> data extent[780333588480, 942080] size mismatch, extent item size
+> >>>>>> 925696 file item size 942080
+> >>>>>
+> >>>>> This looks like a single bit flip:
+> >>>>>
+> >>>>>>>> bin(925696)
+> >>>>> '0b11100010000000000000'
+> >>>>>>>> bin(942080)
+> >>>>> '0b11100110000000000000'
+> >>>>>>>> bin(942080 ^ 925696)
+> >>>>> 0b100000000000000'
+> >>>>>
+> >>>>> or an off by one error, as the delta is 0x4000, 4x page which is on=
+e
+> >>>>> node size.
+> >>>>>
+> >>>>>> backpointer mismatch on [780333588480 925696]
+> >>>>>> ---
+> >>>>>>
+> >>>>>> However only two extents seem to be affected, in a subvolume only =
+used
+> >>>>>> for backups.
+> >>>>>>
+> >>>>>> Since I've not been able to repair it, I thought that I could just
+> >>>>>> delete the subvolume and recreate it.
+> >>>>>> But now the btrfs_run_delayed_refs function crashes a while after
+> >>>>>> mounting the filesystem. (Which is quite obvious when I think abou=
+t
+> >>>>>> it, since I guess it's trying to reclaim space, hitting the bad ex=
+tent
+> >>>>>> in the process?)
+> >>>>>>
+> >>>>>> Anyhow, is it possible to force removal of these extents in any wa=
+y?
+> >>>>>> My understanding is that extents are mapped to a specific subvolum=
+e as
+> >>>>>> well?
+> >>>>>>
+> >>>>>> Here is the full crash dump:
+> >>>>>> https://gist.github.com/sandnabba/e3ed7f57e4d32f404355fdf988fcfbff
+> >>>>>
+> >>>>> WARNING: CPU: 3 PID: 199588 at fs/btrfs/extent-tree.c:858 lookup_in=
+line_extent_backref+0x5c3/0x760 [btrfs]
+> >>>>>
+> >>>>>     858         } else if (WARN_ON(ret)) {
+> >>>>>     859                 btrfs_print_leaf(path->nodes[0]);
+> >>>>>     860                 btrfs_err(fs_info,
+> >>>>>     861 "extent item not found for insert, bytenr %llu num_bytes %l=
+lu parent %llu root_objectid %llu owner %llu offset %llu",
+> >>>>>     862                           bytenr, num_bytes, parent, root_o=
+bjectid, owner,
+> >>>>>     863                           offset);
+> >>>>>     864                 ret =3D -EUCLEAN;
+> >>>>>     865                 goto out;
+> >>>>>     866         }
+> >>>>>     867
+> >>>>>
+> >>>>> CPU: 3 PID: 199588 Comm: btrfs-transacti Tainted: P           OE   =
+   6.9.9-arch1-1 #1 a564e80ab10c5cd5584d6e9a0715907a10e33ca4
+> >>>>> Hardware name: LENOVO 30B4S01W00/102F, BIOS S00KT73A 05/24/2022
+> >>>>> RIP: 0010:lookup_inline_extent_backref+0x5c3/0x760 [btrfs]
+> >>>>> RSP: 0018:ffffabb2cd4e3b00 EFLAGS: 00010202
+> >>>>> RAX: 0000000000000001 RBX: ffff992307d5c1c0 RCX: 0000000000000000
+> >>>>> RDX: 0000000000000001 RSI: ffff992312c0d590 RDI: ffff99222faff680
+> >>>>> RBP: 0000000000000000 R08: 00000000000000bc R09: 0000000000000001
+> >>>>> R10: a8000000b5a8c360 R11: 0000000000000000 R12: 000000b5af81a000
+> >>>>> R13: ffffabb2cd4e3b57 R14: 00000000000e6000 R15: ffff9927ca7551f8
+> >>>>> FS:  0000000000000000(0000) GS:ffff992997980000(0000) knlGS:0000000=
+000000000
+> >>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >>>>> CR2: 00000ad404625100 CR3: 000000080ea20002 CR4: 00000000003706f0
+> >>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >>>>> Call Trace:
+> >>>>>     <TASK>
+> >>>>>     ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9=
+413c43a944f40925c800621e78e]
+> >>>>>     ? __warn.cold+0x8e/0xe8
+> >>>>>     ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9=
+413c43a944f40925c800621e78e]
+> >>>>>     ? report_bug+0xff/0x140
+> >>>>>     ? handle_bug+0x3c/0x80
+> >>>>>     ? exc_invalid_op+0x17/0x70
+> >>>>>     ? asm_exc_invalid_op+0x1a/0x20
+> >>>>>     ? lookup_inline_extent_backref+0x5c3/0x760 [btrfs dcbea9ede49f9=
+413c43a944f40925c800621e78e]
+> >>>>>     ? set_extent_buffer_dirty+0x19/0x170 [btrfs dcbea9ede49f9413c43=
+a944f40925c800621e78e]
+> >>>>>     insert_inline_extent_backref+0x82/0x160 [btrfs dcbea9ede49f9413=
+c43a944f40925c800621e78e]
+> >>>>>     __btrfs_inc_extent_ref+0x9c/0x220 [btrfs dcbea9ede49f9413c43a94=
+4f40925c800621e78e]
+> >>>>>     ? __btrfs_run_delayed_refs+0xf64/0xfb0 [btrfs dcbea9ede49f9413c=
+43a944f40925c800621e78e]
+> >>>>>     __btrfs_run_delayed_refs+0xaf2/0xfb0 [btrfs dcbea9ede49f9413c43=
+a944f40925c800621e78e]
+> >>>>>     btrfs_run_delayed_refs+0x3b/0xd0 [btrfs dcbea9ede49f9413c43a944=
+f40925c800621e78e]
+> >>>>>     btrfs_commit_transaction+0x6c/0xc80 [btrfs dcbea9ede49f9413c43a=
+944f40925c800621e78e]
+> >>>>>     ? start_transaction+0x22c/0x830 [btrfs dcbea9ede49f9413c43a944f=
+40925c800621e78e]
+> >>>>>     transaction_kthread+0x159/0x1c0 [btrfs dcbea9ede49f9413c43a944f=
+40925c800621e78e]
+> >>>>>
+> >>>>> followed by leaf dump with items relevant to the numbers:
+> >>>>>
+> >>>>>          item 117 key (780331704320 168 942080) itemoff 11917 items=
+ize 37
+> >>>>>                  extent refs 1 gen 2245328 flags 1
+> >>>>>                  ref#0: shared data backref parent 4455386873856 co=
+unt 1
+> >>>>>          item 118 key (780332646400 168 942080) itemoff 11880 items=
+ize 37
+> >>>>>                  extent refs 1 gen 2245328 flags 1
+> >>>>>                  ref#0: shared data backref parent 4455386873856 co=
+unt 1
+> >>>>>          item 119 key (780333588480 168 925696) itemoff 11827 items=
+ize 53
+> >>>>>                        ^^^^^^^^^^^^^^^^^^^^^^^
+> >>>>>
+> >>>>>                  extent refs 1 gen 2245328 flags 1
+> >>>>>                  ref#0: extent data backref root 2404 objectid 1141=
+024 offset 0 count 1
+> >>>>>          item 120 key (780334530560 168 942080) itemoff 11774 items=
+ize 53
+> >>>>>                  extent refs 1 gen 2245328 flags 1
+> >>>>>                  ref#0: extent data backref root 2404 objectid 1141=
+025 offset 0 count 1
+> >>>>>          item 121 key (780335472640 168 942080) itemoff 11721 items=
+ize 53
+> >>>>>                  extent refs 1 gen 2245328 flags 1
+> >>>>>                  ref#0: extent data backref root 2404 objectid 1141=
+026 offset 0 count 1
+> >>>>>
+> >>>>> as you can see item 119 is the problematic one and also out of sequ=
+ence, the
+> >>>>> adjacent items have the key offset 942080. Which confirms the bitli=
+p
+> >>>>> case.
+> >>>>>
+> >>>>> As for any bitflip induced errors, it's hard to tell how far it got
+> >>>>> propagated, this could be the only instance or there could be other
+> >>>>> items referring to that one too.
+> >>>>>
+> >>>>> We don't have any ready made tool for fixing that, the bitlips hit
+> >>>>> random data structure groups or data, each is basically unique and =
+would
+> >>>>> require analysis of tree dump and look for clues how bad it is.
+> >>>>>
+> >>>>
+> >>>> Since we're pretty sure it's a bitflip now, would you please provide=
+ the
+> >>>> following info?
+> >>>>
+> >>>> - History of the fs
+> >>>>      Since you're using Arch kernel, and since 5.14 we have all the =
+write-
+> >>>>      time checkers, normally we should detect such out-of-key situat=
+ion by
+> >>>>      flipping the fs RO.
+> >>>>      I'm wondering if the fs is handled by some older kernels thus t=
+ree-
+> >>>>      checker didn't catch it early.
+> >>>>
+> >>>> - The hardware spec
+> >>>>      The dmesg only contains hardware spec "LENOVO 30B4S01W00", whic=
+h seems
+> >>>>      to be a workstation.
+> >>>>      I'm wondering if it's certain CPU models which leads to possibl=
+e
+> >>>>      unreliable memories.
+> >>>>      From my experience, the memory chip itself is pretty rare to be=
+ the
+> >>>>      cause, but either the connection (from BGA to DIMM slot) or the=
+ memory
+> >>>>      controller (nowadays in the CPU die).
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>
 
