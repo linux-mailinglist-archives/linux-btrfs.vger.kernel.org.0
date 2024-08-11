@@ -1,119 +1,99 @@
-Return-Path: <linux-btrfs+bounces-7101-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7102-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6FAD94E1DA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 17:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8743194E218
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 17:58:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5105281549
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 15:34:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44C68281467
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 15:58:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A8514B94B;
-	Sun, 11 Aug 2024 15:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D4914D444;
+	Sun, 11 Aug 2024 15:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uP0h/ov2"
+	dkim=pass (1024-bit key) header.d=kota.moe header.i=@kota.moe header.b="KrXJ5g+E"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1ED01CA85;
-	Sun, 11 Aug 2024 15:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17C214C59C
+	for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 15:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723390473; cv=none; b=B2Je7TN0Dj374QXwFPqjS9F6G/t5FpQ8DCMGj3IpLV/O66bXWbCk6h/SCRhUeug0XmjmY2yfMVueZ326b8h/UdCf7ER2zYpVTH6vb33S6Gmd33nYZ2Uty9XIPb7ny2XItWiTIvTqI84++BOkG9iCJcZ8u2RFzRezXud2COZxHTU=
+	t=1723391886; cv=none; b=KJ4dfcJMz910V+5ymAiMRZsYDQJol1AMKTz642nOB0brP+Od7U2EtZ4n1U3x4+xkI/j0FbfDXnR6OLo4EEQVhwuOeB5G62kmz7tsRT2Kvk5q1IuFaJNniHNELMkTTBysG0UJBOcOh3Eerk1w4b8/4p7dd9s4+ZRRk9YuPnU0d0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723390473; c=relaxed/simple;
-	bh=YwksnDw8VPXal3P7dd2jgZKdFH8IbM7kCgoHRSJTUYY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JgPShqX5j8Hpy8KCi4fBpDrM0EfDJX2Tw7QzlOp/YI2AAWNHR/aoRURQOq3WhyAe/0ipZk8f3eCYg70jKxg8GdnQVNhGXDs/sOJFEDTQEncXP9Z9gsgkPxZ3QA85tlqoyF3/TGf71Afuo472KUrRVq2rayOq+GmuXH4a1yRNWHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uP0h/ov2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47578C4AF0F;
-	Sun, 11 Aug 2024 15:34:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723390473;
-	bh=YwksnDw8VPXal3P7dd2jgZKdFH8IbM7kCgoHRSJTUYY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uP0h/ov2VCuj/kvYMNcD36MxjugPyiSj+MHglw0bQ0tA5F8/GSpNRpJJAgiHY86pU
-	 8QxTnuajNui3/AMs27Lv2hMZPz6N+VlvuOERM8EOenyAStEpB12ZFcfIw0zmQCXBVF
-	 k6GOpVD1uw/MsGuWF8o1ROayt3thJLY13Q3pjmkzkDqho+pwt/PfKX+JYyNdUX+66m
-	 CZJOYiDGGq3Uiu7YjD+PepjdsWE13UGnxgma1FHfgoZtXbYO4C139Lkf2wN0qDfKi8
-	 lqEIFp7zVqSFItxiX4T2nwOXDrRq5REMkulNTZd9W3cbIfiCQq+T8enrER5t7qCtVl
-	 dD7+as510aapQ==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5320d8155b4so13811e87.3;
-        Sun, 11 Aug 2024 08:34:33 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWYlo7UB8fyCqZd8N5Wd0viLM26RubhkoWxbn9Gwk7Hv2uTrJW59YU4U5kjc+27tCHe5WaIZneBwPn0XckmKTAArH4CF/6zdlxSgG6pE7zqfzWwYtM7zDm7HxMB+9s+L7QJnO3VttFCTXk=
-X-Gm-Message-State: AOJu0YxHWAIY9L1835x1pQ9JiQtLzOxEWoj0jM3NVmCPwZ8UPx8ktCcB
-	Z0jCiTUDGNn1YhPPCoTsaUZuuM+YGKgzqgOkHNM+mDwcO6VVwboq28D/6sgfsppXMyPexQWTrY8
-	F9ISAKjEdgvxIGOtTiuW2lLv02fA=
-X-Google-Smtp-Source: AGHT+IES5W/xGCH2uWWHRv0dGCi0+rtFXcqtmn0Bv5Fx/hX0jdnU/L373uRehGhIcqIZ7MBs+7C0ZG9WFLxHO80NtD0=
-X-Received: by 2002:a05:6512:690:b0:52e:933c:5a18 with SMTP id
- 2adb3069b0e04-530eea5da02mr4470050e87.56.1723390471606; Sun, 11 Aug 2024
- 08:34:31 -0700 (PDT)
+	s=arc-20240116; t=1723391886; c=relaxed/simple;
+	bh=2NDFBHQXUWdtBXQ2N1BKX4DHXbTA2UU8ej4SQ99qBUs=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=SCn4UzTdvMJs/VcRC8lQH9X0m/5kGKk8iJfYT4gk5OwJrZub/wtnQZI7A7sCQPvmXx9Hyc7/NLgr1qZT42xrvacrOmR3ZyrUHM5Ic2koYkAVNC3c4H/sxHW9nSXfS4OkXryH7veej8T1bVnz5iADJQNZmrAi3Y0PmECbmsUFRew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kota.moe; spf=pass smtp.mailfrom=kota.moe; dkim=pass (1024-bit key) header.d=kota.moe header.i=@kota.moe header.b=KrXJ5g+E; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kota.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kota.moe
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6b7b349a98aso27197786d6.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 08:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kota.moe; s=google; t=1723391881; x=1723996681; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vnRl62dITUETaiWLECsYE+STgn5RVQBZTrV5BmWaoUk=;
+        b=KrXJ5g+EG4F+K5wTR8FIO49R49Yx4uPR+6YSuLLknDPX43IGSpSIV0mrh5MnKEwdSl
+         gazyoeX39SIujAeoASG+ACa70gTNLGODVCOJjGmTsPUvGX6qYiORwTPwXE4Qh7XYVBrc
+         ZRVqyCoo8grwhAmAqucthtUNARgkU+keQOSs0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723391881; x=1723996681;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vnRl62dITUETaiWLECsYE+STgn5RVQBZTrV5BmWaoUk=;
+        b=Dzp24Nxdd3E1nnztJctt15ifdEs73VNuOfIkkrWPuBavreApkOaSkvyj/0F12wobLN
+         ehKcEH1x7bq2aUhXMKVvh6KlJifciVMU8bQU7XHYv+UpLNWdZqhsy78cOMGhCAKgeyyq
+         Ryt+4JxtqyoGkZ/XPzivs+ZdRlXuvCSCFk3AxqyR5flPEL64HB0qeBLap031kR0pr0DJ
+         r04t12Hl7p8zkYNdnFSbcJqdemPRmoyYnpwsAX3Q/pHRgWZ4Bcw+lf0AewCm4XpDa4Vn
+         /neEo540dns1oJlo6tyopVqQNos3cK9wanq+gGiPwIfRpvc3B7TR6dSQnkvFrFZkBHRT
+         V74g==
+X-Gm-Message-State: AOJu0YzgCHLv1Jy1A+jrCVDxDjFHx3Naj1r6K4gpOd5GYFal9twjSRQ3
+	BdEJeCMEMu+gGGha7uKPJhntxFvyuGyFbpGV/6RpN4YGAfrxpk2HxAOQd1JOdKI5L0u6BgBbx/7
+	b3mHWIH3Ixi375893zRfnXJK2TJc3bcQEpno1G/JRNvScrvtPbpc=
+X-Google-Smtp-Source: AGHT+IEQtG6NnvuV+7EmzMUMt1dtPmH7kXF0xTvkZAY2kmDTkEE59bXo/f6hWbkS80HhcduR5CvnqYVUg8ANCRESNrI=
+X-Received: by 2002:a05:6214:4308:b0:6b7:b277:dd12 with SMTP id
+ 6a1803df08f44-6bd78e9ae00mr86115486d6.49.1723391881328; Sun, 11 Aug 2024
+ 08:58:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAL3q7H5zfQNS1qy=jAAZa-7w088Q1K-R7+asj-f++6=N8skWzg@mail.gmail.com>
- <277314c9-c4aa-4966-9fbe-c5c42feed7ef@gmail.com>
-In-Reply-To: <277314c9-c4aa-4966-9fbe-c5c42feed7ef@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 11 Aug 2024 16:33:54 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4iYRsjG9BvRYh_aB6UN-QFuTCqJdiq6hV_Xh7+U7qJ5A@mail.gmail.com>
-Message-ID: <CAL3q7H4iYRsjG9BvRYh_aB6UN-QFuTCqJdiq6hV_Xh7+U7qJ5A@mail.gmail.com>
-Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
- execution time of the kswapd0 process and symptoms as if there is not enough memory
-To: =?UTF-8?Q?Jannik_Gl=C3=BCckert?= <jannik.glueckert@gmail.com>
-Cc: andrea.gelmini@gmail.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	mikhail.v.gavrilov@gmail.com, regressions@lists.linux.dev
+From: =?UTF-8?B?4oCN5bCP5aSq?= <nospam@kota.moe>
+Date: Mon, 12 Aug 2024 01:57:24 +1000
+Message-ID: <CACsxjPYnQF9ZF-0OhH16dAx50=BXXOcP74MxBc3BG+xae4vTTw@mail.gmail.com>
+Subject: "inode mode mismatch with dir" error on dmesg
+To: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Aug 11, 2024 at 9:08=E2=80=AFAM Jannik Gl=C3=BCckert
-<jannik.glueckert@gmail.com> wrote:
->
-> Hello,
->
-> I am still encountering this issue on 6.10.3. As far as I can see this
-> is the last post in the thread, if the discussion continued elsewhere
-> please let me know.
->
-> My workload is a backup via restic, the system is idle otherwise.
-> This is on a Zen4 CPU with a very fast PCIe Gen4 nvme, so perhaps it was
-> fixed for others because they had comparatively slow IO or a smaller
-> workload?
->
-> I have attached the bpftrace run and a graph of the memory PSI. kswapd0
-> is at 100% during the critical sections. dmesg is empty.
-> Important events were e.g. 09:31-09:32 and 09:33-09:34 where the system
-> was completely unresponsive multiple times, for about 5 seconds at a time=
-.
->
-> I did also mention this on the #btrfs IRC channel and there are other
-> users still encountering this on 6.10
+Hello, I've been encountering this error for a specific directory on
+my filesystem:
 
-This came to my attention a couple days ago in a bugzilla report here:
+kota@home:~/.cache/mozilla/firefox-esr/a5h8u08v.default$ uname -a
+Linux home.kota.moe 6.9.12-amd64 #1 SMP PREEMPT_DYNAMIC Debian
+6.9.12-1 (2024-07-27) x86_64 GNU/Linux
+kota@home:~/.cache/mozilla/firefox-esr/a5h8u08v.default$ ls -l
+ls: cannot access 'safebrowsing': Structure needs cleaning
+total 0
+?????????? ? ? ? ?            ? safebrowsing
+kota@home:~/.cache/mozilla/firefox-esr/a5h8u08v.default$ stat safebrowsing
+stat: cannot statx 'safebrowsing': Structure needs cleaning
+kota@home:~/.cache/mozilla/firefox-esr/a5h8u08v.default$ sudo dmesg | tail
+[ 1881.553937] BTRFS critical (device dm-0): inode mode mismatch with
+dir: inode mode=040700 btrfs type=2 dir type=0
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D219121
+It's been happening for a long time now (months? years?) but I've
+never bothered to try to fix it because it's not data I cared about,
+so was simply a minor annoyance when scanning the filesystem
 
-There's also 2 other recent threads in the mailing about it.
-
-There's a fix there in the bugzilla, and I've just sent it to the mailing l=
-ist.
-In case you want to try it:
-
-https://lore.kernel.org/linux-btrfs/d85d72b968a1f7b8538c581eeb8f5baa973dfc9=
-5.1723377230.git.fdmanana@suse.com/
-
-Thanks.
-
-
-
->
-> Best
-> Jannik
+But is there a way to fix this?
+I'm happy to just delete the directory rather than try to recover
+anything inside.
+btrfs check also found the issue, but seemed unable to fix it.
+btrfs scrub does not find the issue.
 
