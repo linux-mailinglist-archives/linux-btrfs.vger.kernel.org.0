@@ -1,119 +1,155 @@
-Return-Path: <linux-btrfs+bounces-7106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7107-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6211494E3D4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 01:28:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4959594E3DE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 01:36:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFC2DB21A6A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 23:28:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7DE91F21305
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 23:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C07165EEE;
-	Sun, 11 Aug 2024 23:28:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FFC167DB7;
+	Sun, 11 Aug 2024 23:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kota.moe header.i=@kota.moe header.b="AYbKxEbd"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SCWHHWd5";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SCWHHWd5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E836215FCE7
-	for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 23:28:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD871547D6
+	for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 23:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723418913; cv=none; b=tNtzwXlmrJoe22ax1nEIZewvU41Z0ZMEHlrBsuxWNPB0hCVxfrQCjTdYA19GcpZE9U4BNQ6YMbDhQMTMHENTQ7Zz60GuQYq7WIlaZDVrHJtAGJERdUGd178k7tBp6QqwYnPlWA8sgsXba1SgiV9s0Yg5Zww6y708u2HdsOi8JeY=
+	t=1723419361; cv=none; b=fQNMUaNiPdmZzcJYSR5dIbAKiSQc9kx8WlqmedVrGa2Ch6DghkvmgUQkv9qnwQJBE8CFO3TzMPB5RYIBFQKDGV7VQ8qRXRL3Xl93MST6XtEIGcuRVyBiAjgWBw+NgYtPFPqOxcNIbaZq4RELh7I2BzcrJ8piwh9gkTNv8DGiLdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723418913; c=relaxed/simple;
-	bh=e2xN/7dIadoRJcsPnWUwLRgXsT/UJDA/2f0HT/8llSQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eB3JUPLgkrI2fIhn1nfQaCg5DkvKOuMwoquCQWh+ay1P600aBnQuo7/vnQosASUuJRxB04XmLLIVcZ/JVcp1ve1ySf7iiV6GwJDJDH98YNsV6Mt0fouvpgt1zmIDNWK+qIcTzSGLsSk+kvcLDW0xif0BFQttxdW9dwz+WFLdAEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kota.moe; spf=pass smtp.mailfrom=kota.moe; dkim=pass (1024-bit key) header.d=kota.moe header.i=@kota.moe header.b=AYbKxEbd; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kota.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kota.moe
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6bba6ced3d4so19396566d6.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 16:28:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kota.moe; s=google; t=1723418908; x=1724023708; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kCZ5fZwC7KhWRYTXvX+QgaO6YJwLeb7/gRk3nkMJa6Q=;
-        b=AYbKxEbdtDG0IgrTs69kBO+iIJ4PzCvqdPFwlDOobrbcjnsgMhPebszMvCTdyHe5R8
-         Is7ICIdCNSy8HhbFcD9lX/sC5VL8OwGmTCaqct3sfYj7t4JXNrvCk8UowY5LFSnf6QFK
-         TWEKSJ0aEG09x8665rnUuyUP8NDsSkiBlMUPY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723418908; x=1724023708;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kCZ5fZwC7KhWRYTXvX+QgaO6YJwLeb7/gRk3nkMJa6Q=;
-        b=dxJi9JhrtCudGRxychE01eV8lKGsyC1PJSmX138o6SJCBx5LOEH9HxF1cVHHRraegr
-         RrU8lBrqaFbj6oeifqMNtjCSpfUXaKwNgZ5aNAjKV9DTGzar6+cqDZHZEVI/+Y2DJHSE
-         UPf7pXeq+kIG/Y6u3h7XyatI6eoBExEmZRJslzCGNzaIBTiSlTPWN2vaNapAg9nNrLWU
-         F55/z/0FLEk8/CoPdLnGd5GNXQPyVXO9PAe6jJbZ+IypQAQ37tawj1PzVVPU/VAoPAMx
-         68mF5WTLdsxz5vVypD5mX8JEsnA0dBS28sKXEF9tNkLm6V/+tSuwx1cMi1aa3/I2czkT
-         Ph+A==
-X-Gm-Message-State: AOJu0YzlEGJkz8rQ8vpMfLKjj+W39XeDiLsUOLyebiyy9Z4yZIU+xMj8
-	Iv/7GUo8gWmLd6HC0zW15JXhUiPKUe3k1HO8mEJk388rl/qVoWbsxHHuy0lBdVOOuub6CnYwW8K
-	4WbLdKmSrHW3RrWXXmMM04Bb06Ui7hrhY5ihuCGwvF4Us1aIMfuE=
-X-Google-Smtp-Source: AGHT+IHGHWCAYbdSklS6OK1TR1zhJXCPoSjL2o6zPYuF1CifTvZ6REyZiNfdgwSqD1ACPsX5t88RlHbRImMnA15RHxs=
-X-Received: by 2002:a05:6214:4407:b0:6b7:427a:dc35 with SMTP id
- 6a1803df08f44-6bd78d1e4f6mr68970056d6.9.1723418908427; Sun, 11 Aug 2024
- 16:28:28 -0700 (PDT)
+	s=arc-20240116; t=1723419361; c=relaxed/simple;
+	bh=8CfocXQ0CArsPO3l6XiL/PiiViEKHpKrS5JC4sVGcYg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AIQUkcVtIDZQlC9qDoKNTfl64U7MS/KO6gRdh2KNINhNN2INhxEUwOnr1OchT0Q+1wgnVRhWwMh5NCQ0VZiqoSqo9syREGQ4IJv71ymp7SFa34G6ywGFm2sW1mEDBvZcRUfte9rWFJkZOSS1/5Ofdhy8mRRs22A85qww5/IbR6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SCWHHWd5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SCWHHWd5; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6933B2241C;
+	Sun, 11 Aug 2024 23:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723419357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MY2vdinZQLPTQUHDlK7JNARh+y71D1VouXrosgSmIL0=;
+	b=SCWHHWd5sGOxUf/CwSVuDfO+BChqvMJaBrz5i2ZHRdXO5SmNY+D5jjNg11CyO/W61OMKyt
+	SmInQ44ca0SQ003/MPnwxuEGVe+ugYc5q8X4lmXO3so34HqhS/qatDnyZpC8Wvg7LFAr4t
+	BBGKuMkwljgnx1TQOScswblT1M6niC8=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723419357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=MY2vdinZQLPTQUHDlK7JNARh+y71D1VouXrosgSmIL0=;
+	b=SCWHHWd5sGOxUf/CwSVuDfO+BChqvMJaBrz5i2ZHRdXO5SmNY+D5jjNg11CyO/W61OMKyt
+	SmInQ44ca0SQ003/MPnwxuEGVe+ugYc5q8X4lmXO3so34HqhS/qatDnyZpC8Wvg7LFAr4t
+	BBGKuMkwljgnx1TQOScswblT1M6niC8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4867113704;
+	Sun, 11 Aug 2024 23:35:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id clq4ANxKuWZJHQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Sun, 11 Aug 2024 23:35:56 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Kota <nospam@kota.moe>
+Subject: [PATCH] btrfs: tree-checker: reject BTRFS_FT_UNKNOWN dir type
+Date: Mon, 12 Aug 2024 09:05:34 +0930
+Message-ID: <f8cf038608f5da4a94d95f435cc24065afb2c21f.1723419296.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACsxjPYnQF9ZF-0OhH16dAx50=BXXOcP74MxBc3BG+xae4vTTw@mail.gmail.com>
- <5c42a8a3-6571-474a-936b-df13057ff0ea@gmx.com>
-In-Reply-To: <5c42a8a3-6571-474a-936b-df13057ff0ea@gmx.com>
-From: =?UTF-8?B?4oCN5bCP5aSq?= <nospam@kota.moe>
-Date: Mon, 12 Aug 2024 09:27:52 +1000
-Message-ID: <CACsxjPbjbBFV1YBSfMSN07kx6qoNrFihVC6oqZOmrtZgKHYytw@mail.gmail.com>
-Subject: Re: "inode mode mismatch with dir" error on dmesg
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Mon, 12 Aug 2024 at 09:14, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
-> The corruption itself looks like a very basic bitflip (0x2 -> 0x0).
->
-> Please run a memtest first before doing anything.
-> And also please provide the CPU/memory models just in case.
+[REPORT]
+There is a bug report that kernel is rejecting a mismatching inode mode
+and its dir item:
 
-If it was a bitflip, it probably happened on my previous machine
-before I switched to ECC memory (~2022)
+[ 1881.553937] BTRFS critical (device dm-0): inode mode mismatch with
+dir: inode mode=040700 btrfs type=2 dir type=0
 
-kota@home:~/.cache/mozilla/firefox-esr/a5h8u08v.default$ ls -la
-ls: cannot access 'safebrowsing': Structure needs cleaning
-total 0
-drwx------ 1 kota kota 24 Jun  7  2020 .
-drwx------ 1 kota kota 32 Jun  7  2020 ..
-?????????? ? ?    ?     ?            ? safebrowsing
+[CAUSE]
+It looks like the inode mode is correct, while the dir item type
+0 is BTRFS_FT_UNKNOWN, which should not be generated by btrfs at all.
 
-But just in case, here's my current CPU and memory:
- - CPU: AMD Ryzen Threadripper 3960X 24-Core Processor
- - Memory: 4=C3=97 Kingston 9965745-020.A00G (32GB DDR4-3200 ECC Unbuffered
-DIMM CL22 2Rx8 1.2V Micron E)
-(ras-mc-ctl does not show any uncorrectable errors)
+This may be caused by a memory bit flip.
 
-And my old machine:
- - CPU: Intel(R) Core(TM) i7-6700
- - Memory: 2=C3=97 Kingston 9905625-036.A00G (16GB DDR4-2133 Unbuffered DIM=
-M)
+[ENHACENMENT]
+Although tree-checker is not able to do any cross-leaf verification, for
+this particular case we can at least reject any dir type with
+BTRFS_FT_UNKNOWN.
 
-> And for the repair, the current btrfs-check is not able to handle them ye=
-t.
->
-> I can work on btrfs-progs to provide a fix soon, but that may take
-> several days.
+So here we enhance the dir type check from [0, BTRFS_FT_MAX), to (0,
+BTRFS_FT_MAX).
+Although the existing corruption can not be fixed just by such enhanced
+checking, it should prevent the same 0x2->0x0 bitflip for dir type to
+reach disk in the future.
 
-Thanks!
-And no worries, this isn't urgent (as I haven't even bothered to
-report it for the ~years it's existed) :)
+Reported-by: Kota <nospam@kota.moe>
+Link: https://lore.kernel.org/linux-btrfs/CACsxjPYnQF9ZF-0OhH16dAx50=BXXOcP74MxBc3BG+xae4vTTw@mail.gmail.com/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/tree-checker.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 3e8fbedfe04d..634d69964fe4 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -569,9 +569,10 @@ static int check_dir_item(struct extent_buffer *leaf,
+ 
+ 		/* dir type check */
+ 		dir_type = btrfs_dir_ftype(leaf, di);
+-		if (unlikely(dir_type >= BTRFS_FT_MAX)) {
++		if (unlikely(dir_type <= BTRFS_FT_UNKNOWN ||
++			     dir_type >= BTRFS_FT_MAX)) {
+ 			dir_item_err(leaf, slot,
+-			"invalid dir item type, have %u expect [0, %u)",
++			"invalid dir item type, have %u expect (0, %u)",
+ 				dir_type, BTRFS_FT_MAX);
+ 			return -EUCLEAN;
+ 		}
+-- 
+2.45.2
+
 
