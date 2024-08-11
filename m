@@ -1,145 +1,177 @@
-Return-Path: <linux-btrfs+bounces-7098-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E949494E0B6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 11:46:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C3A494E112
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 14:24:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92D651F21527
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 09:46:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3A31C20B41
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Aug 2024 12:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE9B381BA;
-	Sun, 11 Aug 2024 09:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E524C618;
+	Sun, 11 Aug 2024 12:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b="R4OZWQBp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eUOFdygz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from vps01.wiesinger.com (vps01.wiesinger.com [46.36.37.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752AD7F6
-	for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 09:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.36.37.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90AF34D112
+	for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 12:24:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723369563; cv=none; b=uRdyxwOWIyFYXUSfw1t6xDPlz+AuIuG7RrohT18YEhAtLSKjZ+BLofQftUbDlD6Fg2jQZhhCi7a7IKggf3sc6R+jCTPEDYDz5hKpPqUsSMyiRVQM1+f5Nk2mHKDYhk4fJEec9RDtVvwDEhLF3thuuIhzijITeS2rKD3TXA3lffI=
+	t=1723379086; cv=none; b=n7M/pfzg5l3xHy/QYKBDmSVwMisU7XrjwI0yaQ84YXIkWv1oEl488xN6iapUL0ZzGhmxPrGvOOf5jccuWL0QeBTFRFbgU3LP8soHbdGYr3m1+h8sK+mBfo40g1rDkHRgW1rxJF40M4LMSj+xmzyuMdP9HRdV0vT5v5thJxjpkCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723369563; c=relaxed/simple;
-	bh=JvO4YDFd6jmlqX2n2I4oryFS/VpMGS5wMBWDc90lxx0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Y9K+WbbdfYGGASwPHu+Zi6eU0fGRluwPckcAtiMPHeVLB/yoef1FsKZsfuHAH63pzlzvhoMueEb4q/0jk1t/n2vjMpq8Gg8efMYsdp/D8oBok3ZVGjnWZz/1bwqSMB4/ApvX5pAdvFM7Gl90sNYni0X09CCLKSfnrmweiEnDQxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com; spf=pass smtp.mailfrom=wiesinger.com; dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b=R4OZWQBp; arc=none smtp.client-ip=46.36.37.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiesinger.com
-Received: from wiesinger.com (wiesinger.com [84.112.177.114])
-	by vps01.wiesinger.com (Postfix) with ESMTPS id D2FA39F21C;
-	Sun, 11 Aug 2024 11:39:35 +0200 (CEST)
-Received: from [192.168.33.7] (wireguard7.intern [192.168.33.7] (may be forged))
-	(authenticated bits=0)
-	by wiesinger.com (8.18.1/8.18.1) with ESMTPSA id 47B9dA3Q1353501
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-	Sun, 11 Aug 2024 11:39:34 +0200
-DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 47B9dA3Q1353501
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
-	s=default; t=1723369175;
-	bh=jpXJVQ+ihy+4IDPOEydFEc3GlpL/fp7nRmw7oe3zROM=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=R4OZWQBpDvy1JzSLfCJ6hdPcHVYx0q0Qp+UeZyBjc6cNT97ztIi2sL27rBvf4IpzB
-	 9rJWBgpLYKTekvZV6z84eiZW9R958gLsWLhCmejYWyU1JUko6MUdsKa6DB9xduE+d2
-	 dBlgubk/51LYpU+MVOqF0Pcp2Po/+l+Um985I0P6mrpNDnSjWtkxRb4dwuvM7TOYWJ
-	 3vM1Zdp7uo17xAZffvKyti4sgblMQqJpN8htTqSodncsQOSbmxpFvPMZWb+j9aRzOi
-	 gzdL1n6JrjBQ+UN1yGEAoIl9z75nNERTBWJpnB9m0snLN89BzwacJlelEdDK3AxnbN
-	 qG0NuzSC6tMynvBX5Ll/ySG0CbWFfJkShtBqAh+qqwFDtfAlElxIa+/+Lf/2z7pHIG
-	 OpzwysrsgzrS7jIkDnYHHYS1iavLKC2j6LXmYebapIjm6cOQWmetk5oWam67BwN9ka
-	 rcYsqjbMltw00IK2ZRiCFvkHH56nv5ZEOg4ixmrM9bAhMasuEc2H4kfxuSE+EnTOYg
-	 JUqvxUn4PVojt985J0LI5w+pekUJhtI/qRSMfcmwKjLxFehB2gLyJYtQPt1pqdQ7Zm
-	 Q2nxwlaBEaIVNtGQ5ACFIvIQGOP7kvC5r2DGnYfO94N4Mbs3UMObcVKKN4UCDSFuud
-	 czJ88QlaJ/+AAkYXAqC673Zg=
-Message-ID: <2eb00476-d956-4b02-85e1-2ceea77034e9@wiesinger.com>
-Date: Sun, 11 Aug 2024 11:39:10 +0200
+	s=arc-20240116; t=1723379086; c=relaxed/simple;
+	bh=5gcyc5LbJNInF0D1jtUZ7aSekjqnxEhuoXJNLJh4+Ug=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=opPkacfFIMA700iTQxC8822JuL4/AnrKtyC/qlmlgbMFsYGsgUeNcrQsIYVKQBmVChRl9RE1IKyMEEUq+BcVwARkMGZ0OhZRZ2RuDcqW/UIyhYzYS1H+3N8gnD6lR67ro8qVatH0ySexd0IVqzoLH4glIttoHJMhovoSb2Rh06g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eUOFdygz; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5d5c2ac3410so2092965eaf.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 Aug 2024 05:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723379083; x=1723983883; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=um0hn4NiuTaIXW28NbcxqL6HnqLECc5dFI4XMCjZn0w=;
+        b=eUOFdygzLUmnbNpaXdsq+yFyf4DwtQ3tS0a5YvENHQvGIxvJo7BfxbInlAiNbTnAXj
+         6+574QVi75HRzR7IxIb146Lzl0TJ0R3vlPhSbyNqK4bkU7Gp+JQnLjmptyQ6bDpp9E++
+         /P5M65EKgg4bnp618s77q9BOLoz2ePBOvDmYzhaH4Cj5GOeCfthAhM5UQ+muFY/pQwUE
+         rmydm8R1E9/MXV1MQTaQlcI18pvEDMywJVcR679gyWndoVoHeE6b/3mlC7t35VMOa223
+         WwfSoafATWR+JxqXZxMYy1rVLon15xDE1u8KzuMoq9sXGjYPv3nu2wAyO+E1LQtYlO/D
+         0pTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723379083; x=1723983883;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=um0hn4NiuTaIXW28NbcxqL6HnqLECc5dFI4XMCjZn0w=;
+        b=bLwcObzhHh4KgKoDhaKchs1+c3TS+HjmI0JnNDsiqoclOskz0AzX5Jtl2QftCPNeAP
+         nwsekanaZ4lrhC4vE5/O9Q35p/M2M3rUB4n2jeV+iYcW8m0BK+YgndszNGeaCCXEurjt
+         ZlbBClgj37em5II2R8VUOJPXfXDz5H6YxxWkIYEyUjQFs6LbX+P6pHpYXyu8Ex+AwzQ3
+         okred/LiVJRn65LRRkYDUu8OBkcydll/2dMFPGYeCuiRhi1PePYXGr+XeoRN4iR2Z0qT
+         2s+3ZH/E3KHxCXJ/rQejn4Q/LLG56m96AsDj/3ShjVhw7MayvcpwmZs5euSGkpNcEAob
+         TmHg==
+X-Gm-Message-State: AOJu0YxSNonQTmroWXqXwmVJbavX4S85aAlu82o69jd9NGMa8zS0AJQQ
+	fSUo98sDJB1v7F5AeSh8N8tCRYveWC/a2fo080b/jkkQ8BnlV8ZEnDDJIc+0
+X-Google-Smtp-Source: AGHT+IGGL/nCA1RY60jKqzMjmjcXdYCkuocUraJKbpyvPjoKIVDgdCKJ7pXZxMtS4lJDroemp/sLpg==
+X-Received: by 2002:a05:6358:280d:b0:1aa:c71e:2b37 with SMTP id e5c5f4694b2df-1b17713bbc1mr1047772555d.21.1723379082966;
+        Sun, 11 Aug 2024 05:24:42 -0700 (PDT)
+Received: from sidong.sidong.yang.office.furiosa.vpn ([61.83.209.48])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5ab7af4sm2341802b3a.208.2024.08.11.05.24.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Aug 2024 05:24:42 -0700 (PDT)
+From: Sidong Yang <realwakka@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH v2] btrfs-progs: property: introduce drop_subtree_threshold property
+Date: Sun, 11 Aug 2024 12:24:15 +0000
+Message-ID: <20240811122415.6575-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BTRFS doesn't compress on the fly
-Content-Language: en-US
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <ac521d3f-6575-4a72-a911-1991a2ca5f67@wiesinger.com>
- <ccec2d73-98a7-4e73-a9ee-9be0fc2e1c92@gmx.com>
- <b7995589-35a4-4595-baea-1dcdf1011d68@wiesinger.com>
- <d30abb90-4ab2-4f66-88b0-7d0992b41527@gmx.com>
- <6ae85272-3967-417e-bc9a-e2141a4c688a@gmx.com>
- <a9fafe9c-27c8-4465-aafa-a4af6987c031@wiesinger.com>
- <6c2424bb-9c91-4ac0-970b-613ca97b3e01@gmx.com>
- <771df9a9-c7c3-40a7-a426-0126118d3af0@wiesinger.com>
- <9f4ad251-7af7-4f02-b388-64dd6c8257ac@gmx.com>
- <0c644c25-7ec4-43da-a70b-1632e87490b3@wiesinger.com>
- <ef780348-5570-4f5d-8c92-bf7bc4868752@gmx.com>
-From: Gerhard Wiesinger <lists@wiesinger.com>
-In-Reply-To: <ef780348-5570-4f5d-8c92-bf7bc4868752@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 22.12.2023 07:13, Qu Wenruo wrote:
->
->
-> On 2023/12/22 16:28, Gerhard Wiesinger wrote:
->> On 03.12.2023 11:19, Qu Wenruo wrote:
->>>
->>>
->>>> BTW:
->>>>
->>>> if compression is forced, should be then just any "block" be 
->>>> compressed?
->>>
->>> There is a long existing problem with compression with preallocation.
->>>
->>> One easy example is, if we go compression for the preallocated range,
->>> what we do with the gap (compressed size is always smaller than the 
->>> real
->>> size).
->>>
->>> If we leave the gap, then the read performance can be even worse, as 
->>> now
->>> we have to read several small extents with gaps between them, vs a 
->>> large
->>> contig read.
->>>
->>> IIRC years ago when I was a btrfs newbie, that's the direction I tried
->>> to go, but never reached upstream.
->>>
->>> Thus you can see some of the reason why we do not go compression for
->>> preallocated range.
->>>
->>> But I still don't believe we should go as the current behavior.
->>> We should still try to go compression as long as we know the write 
->>> still
->>> needs COW, thus we should fix it.
->>
->>
->> Any progress with the fix?
->
-> Tried several solution, the best one would still lead to reserved space
-> underflow.
->
-> The proper fix would introduce some larger changes to the whole delalloc
-> mechanism.
->
-> Thus it's not something can be easily fixed yet.
->
-> Thanks,
-> Qu
+This patch introduces new property drop_subtree_threshold. This property
+could be set/get easily by root dir without find sysfs path.
 
-Any update on the issue or plans to fix it?
+Fixes: https://github.com/kdave/btrfs-progs/issues/795
 
-Thanks.
+Issue: #795
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+v2: error msg for -ENOENT, fix desc for prop
+---
+ cmds/property.c | 53 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-Ciao,
-
-Gerhard
-
+diff --git a/cmds/property.c b/cmds/property.c
+index a36b5ab2..88344001 100644
+--- a/cmds/property.c
++++ b/cmds/property.c
+@@ -35,6 +35,7 @@
+ #include "common/utils.h"
+ #include "common/help.h"
+ #include "common/filesystem-utils.h"
++#include "common/sysfs-utils.h"
+ #include "cmds/commands.h"
+ #include "cmds/props.h"
+ 
+@@ -236,6 +237,50 @@ out:
+ 
+ 	return ret;
+ }
++static int prop_drop_subtree_threshold(enum prop_object_type type,
++				       const char *object,
++				       const char *name,
++				       const char *value,
++				       bool force) {
++	int ret;
++	int fd;
++	int sysfs_fd;
++	char buf[255];
++
++        fd = btrfs_open_path(object, value, false);
++	if (fd < 0)
++		return -errno;
++
++	sysfs_fd = sysfs_open_fsid_file(fd, "qgroups/drop_subtree_threshold");
++	if (sysfs_fd < 0) {
++		if (sysfs_fd == -ENOENT) {
++			error("failed to access qgroups/drop_subtree_threshold for %s,"
++			      " quota should be enabled for this property: %m",
++			      object);
++		}
++		close(fd);
++		return -errno;
++	}
++
++	if (value) {
++		ret = write(sysfs_fd, value, strlen(value));
++	} else {
++		ret = read(sysfs_fd, buf, 255);
++		if (ret > 0) {
++			buf[ret] = 0;
++			pr_verbose(LOG_DEFAULT, "drop_subtree_threshold=%s", buf);
++		}
++	}
++	if (ret < 0) {
++		ret = -errno;
++	} else {
++		ret = 0;
++	}
++
++	close(sysfs_fd);
++	close(fd);
++	return ret;
++}
+ 
+ const struct prop_handler prop_handlers[] = {
+ 	{
+@@ -259,6 +304,14 @@ const struct prop_handler prop_handlers[] = {
+ 		.types = prop_object_inode,
+ 		.handler = prop_compression
+ 	},
++	{
++		.name = "drop_subtree_threshold",
++		.desc = "subtree level threshold to mark qgroup inconsistent during"
++		"snapshot deletion, can reduce qgroup workload of snapshot deletion",
++		.read_only = 0,
++		.types = prop_object_root,
++		.handler = prop_drop_subtree_threshold
++	},
+ 	{NULL, NULL, 0, 0, NULL}
+ };
+ 
+-- 
+2.43.0
 
 
