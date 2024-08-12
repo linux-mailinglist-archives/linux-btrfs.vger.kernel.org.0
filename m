@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7146-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7147-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0729694F95E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 00:08:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5475894F969
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 00:13:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6984FB22320
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 22:08:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813A5B20E49
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 22:12:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8062F194C8F;
-	Mon, 12 Aug 2024 22:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35D3195390;
+	Mon, 12 Aug 2024 22:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lZDNXQWQ"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="t5DTXaM6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4889189BB7
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 22:08:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE78954759
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 22:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723500515; cv=none; b=L+ZM+iXtm8g8uxtG3WK4ICVlDBZ24KrHRkZAc94N4sYygDSuScUFrEqcryTgtUvgcBwutjL06PTB9cMsicKFUI8FOhU/Ut69MJP5Ls1TcLK70vSl1cQ3Yi49H4fiL4r0thNIvBwFL45cboKO2BMJLu1AnzVSwYS+sGTUPlwdQvA=
+	t=1723500769; cv=none; b=Z+7rg0dswsxtl88PvvRGtrU376HFIJ4Dmk7ISPsyaEoSbC1Z7atBw4aFSd6BBgyMMK/h82PtEdmxML0LHal1qTHjQHvcS2ccOFRfO9Lkibkkp2dlKTGXhHN0n1/a+ZJV/m+05T5JfUNLk3HNQ6Z/14P7KWVCI4wk5MexFwcbiuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723500515; c=relaxed/simple;
-	bh=0HFXB1q0Y4RmCfhqymmaPIn+pHfVxHTZZIyAR04i/pk=;
+	s=arc-20240116; t=1723500769; c=relaxed/simple;
+	bh=J3IdUuu3vGJxLiydzlbqHy6eEVtPhfze/ZpkZgO+neQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lWdsN6GWoLg4uKhx6xysxVK6cuhiLYFeTC5UNNMuDNUt4oPXMnf8hYZeHDzuGHfccB7YUqiYLbw8skM0hhH2s8lMJiBk6/J14iMlnWUYUhZ1sejH4JD9mOflvNmwFY9l0QrHtkAJMtiD83bUXlDaM2l7WGVGPmrHBA0e86lMmog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lZDNXQWQ; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=R42g660yT8r9sS3omSfRTa6+9yQ9NfCwg7Q8mXbmOyFi0YuxXT2S6RN93GF8fnu5P0ZKXG5DjkZq2yhT63qd2ixFZGw8vqF6TU15X3/8SoI+QtwgIhzl9So6MvyLonZHAFtSdQJpOh0jd2IV9vvxy3XKy/seEN2V+n62MIw1ZPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=t5DTXaM6; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1723500506; x=1724105306; i=quwenruo.btrfs@gmx.com;
-	bh=0HFXB1q0Y4RmCfhqymmaPIn+pHfVxHTZZIyAR04i/pk=;
+	s=s31663417; t=1723500763; x=1724105563; i=quwenruo.btrfs@gmx.com;
+	bh=J3IdUuu3vGJxLiydzlbqHy6eEVtPhfze/ZpkZgO+neQ=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=lZDNXQWQRQ/47iOEl2lC0kffZy60DuiF493isLHWrelzOaMBmpW6n0s6hjdh93JQ
-	 e/ld8pFioqThS0rlUgIYrqo4FxkIGw3d0qX/XWm6uHY8tbmeQJ3Bq77EWyao0viBG
-	 ncDaGxHBiUmOlSARYzZc91pHU6eGc5/mmaB7nLbGVNe53VWOItCNcfW6+hVdtPMt+
-	 Jr5zGRexElTS63rGfiafGaS8a5ZdWByQA/7vsEOQmEe1oVkMDb4uixLp+XWVcEOZ9
-	 7ESr0RLKdhmQ+4wR6CAxICTk8e7creX4yUzrY0ycysZ0hrBLa2GDPp6lpbbzJo2nN
-	 xCuUNT/1zNpooT0R4g==
+	b=t5DTXaM6SMsiR5wav1tB9OEyJJ8iSXDpIfVDpVJ7S7qMcoEMCAaaqlCnBM/VY2Hb
+	 v0qidMV4XqmQVM3kAWES6jf9/pcV3bjk1miHbEFnh4BfJeuVf8VYTMWcTUyHYiL+q
+	 l8z28DGoOclHszBgp54iDg28671AnmlQWKT05kriinNVx7vdR3bh6+XHgeirbjMHZ
+	 SHRKrMkg+CqJJFmF3Y1CPiFgT64UnQ3DfcY0u0m4ltPEEh0qGbYz679g/hJd/Ux2h
+	 dYBDTXsHDbJ9i3N9Fj0nVq6dCBsTBSUvjo9kBzoppE0U+6puYdd95TltGwlr7x7vf
+	 fa0da3qzgjCp3dpObw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MSbx3-1skcHg1uAb-00U7UG; Tue, 13
- Aug 2024 00:08:26 +0200
-Message-ID: <77cda2a4-08ae-47b9-8efd-e3ca0e8fe9bc@gmx.com>
-Date: Tue, 13 Aug 2024 07:38:22 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWRVb-1sffjV39A3-00UpLw; Tue, 13
+ Aug 2024 00:12:43 +0200
+Message-ID: <4b2b80ad-ef51-410b-8093-60d133e9c523@gmx.com>
+Date: Tue, 13 Aug 2024 07:42:40 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,14 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] btrfs-progs: add --subvol option to mkfs.btrfs
-To: kreijack@inwind.it, dsterba@suse.cz, Mark Harmstone <maharmstone@fb.com>
+Subject: Re: Help! Unmountable due to dev extent overlap
+To: Stefan N <stefannnau@gmail.com>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <20240808171721.370556-1-maharmstone@fb.com>
- <20240809193112.GD25962@twin.jikos.cz>
- <f9492406-1fc4-4801-a74d-890353a34e3e@libero.it>
- <df13dc7a-88d5-4769-b028-3c5c28c29698@gmx.com>
- <1af5c6be-27ff-4dd5-ba5e-9213bd1e9f68@inwind.it>
+References: <CA+W5K0rSO3koYTo=nzxxTm1-Pdu1HYgVxEpgJ=aGc7d=E8mGEg@mail.gmail.com>
+ <ac2ff9ae-b2fa-49df-9ce3-fc32ddd3c222@gmx.com>
+ <CA+W5K0qUAXYSZFxJv+vVM+knFkXm+VK61zOb2qF6TXmW156LOA@mail.gmail.com>
+ <7bc8aa3b-f5c1-4db5-b588-4332af4bdda6@suse.com>
+ <CA+W5K0qW5x-V2LR0FoJMueAeG9P-VNnKJ5C=ObCvEVVKwwXagA@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,139 +92,96 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <1af5c6be-27ff-4dd5-ba5e-9213bd1e9f68@inwind.it>
+In-Reply-To: <CA+W5K0qW5x-V2LR0FoJMueAeG9P-VNnKJ5C=ObCvEVVKwwXagA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:C/VZNgcCtBnRjjutp22g5crtKCFB0dtXrvLYeJlf6ZrfNWHk+nL
- H/PWk+3Ag+HYl0ipf1500D+LWIOs2cINtN2Z4OT9JjwF68bpc1bWciOyHYkbK6VLzeiDpIX
- cGmHo1ieBoHu7+iv3R9boqUMLPl9fqvzQLvwI5bP/mmCV0XNhPdnAU4/avb3+9nAD7iF+Eu
- 7XD/3wcOtjrMURLi2KUQg==
+X-Provags-ID: V03:K1:eslBiYhX45jKSAN6JlepfiblHf+ljoTYlLnE5FUEby9teehFFBs
+ Jwujzbi2jvZC3ZLdhjYP+xCjscwp2ifQLxgHd5cuHrQbCD5AIZpAvAU7+CsKw5Naw7lpyJn
+ m4BAMigK5XA3y0UWpgBtYT9Pgo/2hsGksS3WuUM9YVhZrnv0/iCNwISXtbAVgrrIH/c0LV0
+ nMUjzmMj7KiFDlwGOIZmg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XZ4Y00LzATQ=;dl0gzCTtUYl7Gbo5p8/LaXmqO6+
- lstVjvoEWlOgMnURT9F8UFKO6IKKqk61p2HOlvmy1ObBUwezWg8v7u2W4N9ZdS464DmthCoTq
- R9Sv5vLjbqxIT70UzyBfTsTU4+prgjLlO/ywPHFoguEaQeHfWPNia2ByLgmG/V02H3K3zldcE
- NWf+i+7qk3ufmuJGF5GyvVj27DJwtKzy8zXmsPDafIlS0fqH2jOyerZOzKNXFnCvcVQIsduha
- vLWrJ7V/LWJ6a8QX1fnhARq+bmE7e7VykbJj4K3Zx4yXrl/LPX2rljfAIRDgLa59GMtKjxvLJ
- 0/IPyDvT1VRd1IzFIEal9VFBC0Gup9BlksrlcXwLH94n/fcE20OqoFUUcmqKwcSyuSYtwLQWv
- GxfBnZNu1/TOMgaUkxPT6EO04XdRGyGDp1uwV/MVB0jQh9HT9/oNfdOHQP6hBCBRlhOrkJPmp
- CS5Neelk/R+dz6GZl5xgVbqrGeokwGQi+pFDZ8wnRhFIlr92WR8TxrRql1SZ/B4YbcK7UXkzS
- Bz1hkLpTFwpunxV9XpbFX5Q32IQgXdqJwcPkkURDLTj8vWxM8eEM556gLXdrsRENNpazRXq5j
- qb6DVsDkGa6os7PwjEqvd7NRdHEjbn/KcNemcZxz3E3RHyVcvKTyfCKhJp+wDIjC1Tnb/hEU3
- wP05zNljrw/+h1BoZOABjMn70CywWl/pMUgWYNNvUS88jwy4Po685DZT87bV2Uxu90WAL59KV
- tVl2NiUMZvznVbS3JCvw2ktwTl/txgVu7iaNUxChvneTe3vVVdiF1yNJGKu+ut4C6yBaZuNhr
- 6RcHZkwOLZ5GPHaJyaXkYn4A==
+UI-OutboundReport: notjunk:1;M01:P0:rKRphdHIFOY=;etDp7bNhz1YF59bhd6lidcHap0p
+ 1lUmcitaukaaLF7N+L9XMFt0DsqJNO3WNgsWcStGRUAfB1hNThYdi7e1u5AOkBe5i9Z1IaSFl
+ OPwe87kutEf4PwMxmZovPcm6tSstzXerImH2u6xUkFyYoTgRpMioFY9RYx6E0lR54mcCFM9SF
+ RItmGVT68qLSYgtDx+AWJKkcFfe0ICefKq0uT7kliP5xPgqbSeP3iyFO4Yd5+5Qa1BCJL1Qsj
+ ie2CXrfJZyrCGqudIXYZdadSK4E2u9rI2LIWEQ0I2N5EfoZZ1KpvbNuG8wK2D+EHoZ1oFZJyL
+ kYxGZ7pnN9j1dNBeDlqE+BYvgHObqa2eBSnFZAJA6NRyg0BMqKP96oQA+8pPDSsSzh8Necz3e
+ QE8WzypHHRyoncY4gtLECoaEP9D161B33UUPBuW2jNgUih3d/TcaPW4fabG0b/fKzdY9sC5Ui
+ iUZJTV2pk5epxOwoS7+BZk2agj2UBQD9QhK3qjdwmsu+KDw/jmvYRrh7B+zN+0N6dIUsToYgo
+ npfRxLcd1qtXnMtLFzl/tD3c+pD0/gj4D5Kwuv78zDtOCSehfk+gthq+7B6c1oQYMNxF7IdAt
+ 3M1X88Rxl8BRWrBH6UgyGwDavqsu0i2feP6JIZLGLnCHh7CNX0lG7F2hFDhLzbEXb942knrBf
+ x13nWDyKy2x8bzayL7f1/gEv+6vTvWsVJk9zGflc4Fcl2KnPjwYGYMZFfOfbk7T/0dW2EKJSF
+ IwMAcVNrTAUkKgjlm32RSJQzzQItXMUEBdV+UkrMjtsZgR6s+gX/w3roP2ieOSRU48wwFoh98
+ EggdNF0XskCC0pkU1bg0Phzw==
 
 
 
-=E5=9C=A8 2024/8/12 21:12, Goffredo Baroncelli =E5=86=99=E9=81=93:
-> On 11/08/2024 00.40, Qu Wenruo wrote:
+=E5=9C=A8 2024/8/12 21:21, Stefan N =E5=86=99=E9=81=93:
+> On Mon, 12 Aug 2024 at 17:05, Qu Wenruo <wqu@suse.com> wrote:
 [...]
->>
->> Personally speaking, I would prefer the current scheme way more than th=
-e
->> out of tree subvolumes.
->>
->> It's super easy to have something like this:
->>
->> rootdir
->> |- dir1
->> |- dir2
->>
->> Then you specify "--rootdir rootdir and --subvolume /somewhereelse/dir1=
-"
->>
->> This is going to lead filename conflicts and mostly an EEXIST to end th=
-e
->> operation.
 >
-> I am not sure to fully understand to what you means as "filename
-> conflicts";
-> anyhow, now you have the ENOEXIST problem :-)
-
-I mean, if you support specifying a out of rootdir subvolume, along with
-rootdir, then it's going to cause conflicts (the file from rootdir with
-the same filename conflicts with the out-of-rootdir subvolume)
+> 3 passes on memtest and no errors!
 >
+> This is an old filesystem though that has been going for several
+> years, is it possible this issue has been there for a while
+> undetected?
+
+Yes, that's also possible.
+
+In that case I guess the fs is also mounted on a different system before?
+
+> It's been through several out of space data/metadata
+> consistency issues over the years and I had believed scrubbing had
+> resolved these, is it possible that these errors combined with the
+> scrub not verifying the metadata caused the issues today?
+
+The only situation to lead to the corruption is at chunk allocation.
+
+Scrub is not going to detect nor worsen the problem.
+
+> Or given the
+> bit flip, do you still think it's more likely to be memory? There's
+> been no other symptoms but it is non-ECC..
+>
+>> And I have already submitted a patch to detect the corruption and
+>> prevent it from corrupting the on-disk data in the future.
 >>
+>> Unfortunately I have no idea how to fix your fs at all...
 >>
->> =C2=A0From my understand, the "--rootdir" along with "--subvol" is most=
-ly
->> used to populate a fs image for distro building.
+>> The overlapping can indeed lead to data corruption (since the
+>> overlapping dev-extents will be overwritten eventually from two
+>> different data chunks).
 >>
->> If you really want just a single subvolume, why won't "--rootdir rootdi=
-r
->> --subvol dir1" work for you?
+>> And since their chunk items are completely valid, I can not simply craf=
+t
+>> a dirty fix to modify the value of that dev-extent, as that will cause
+>> problems for dev-extent verification against chunks.
 >>
->> If your only goal is to reduce parameters, then your next question is
->> already answering why the idea is a bad one.
+>> And if I need to modify the chunk items, it's going to cause a chain
+>> reaction to modify all the other dev-extents and dev items and superblo=
+cks.
+>>
+>> So I can only recommend to backing up your data (may hit EIO if unlucky
+>> enough), and rebuild the whole fs.
 >
->
-> The use case that I have in my mind is to create a filesystem with a
-> default
-> non root sub-volume, and nothing more.
+> How can I best mount the filesystem to recover what data I can? So far
+> I haven't mounted it at all, the ro flag isn't sufficient to bypass
+> the error.
 
-You ignored all the things like owner/group/privilege bits and maybe
-even xattrs (for SELINUX) that will be needed.
-
-
-> This would prevent the typical
-> problem
-> that you face when you populate the root-subvolume, then snapshot it and
-> then
-> revert to an old snapshot, swapping the subvolumes.
-> It is not easy to swap the root subvolume, because it is a special in
-> the sense
-> that it cannot be deleted and it is the root of all subvolumes.
-
-A seemingly simple solution is not always that simple.
-
-And I can always argue that, for your "simple" subvolume case, why not
-just mount it and create one?
-Especially that one needs to set the default subvolume of the fs anyway.
-
->
-> Being so I think that it is better to avoid to have the root subvolume a=
-s
-> default sub-volume.
->
-> For my goal (having a filesystem with a non root default sub-volume)
-> creating a
-> template filesystem is waste of effort.
->
-> Now these two use cases (my one, and the one related to this patch) have
-> a lot
-> in common. So I trying to find a way so the two can be joined.
-
-Unfortunately, as long as you're creating a subvolume, you need all the
-details you ignored (which makes the use case looking simple).
-
-In that case, it's just a subset of the feature of Mark's patch.
-
-Meanwhile Mark's solution provides all the information needed, thus I
-see no reason to introduce extra interfaces especially when Mark's
-solution is already a superset.
+"-o rescue=3Dall,ro" should be enough. That "rescue=3Dignorebadroots"
+implied by "rescue=3Dall" will make btrfs to skip dev-extent verification.
 
 Thanks,
 Qu
+
 >
->>
->>>
->>> However, this would lead to the queston: which user and permission has
->>> to be set to those subvolumes ?
->>> So I think that we need a further parameter like "--subvol-perm" and
->>> "--subvol-owner"...
->>
->> Nope, the current code is already handling that way better.
->> The user/owner and modes are from the rootdir.
->>
->> Meanwhile your idea is just asking for extra problems.
+>> At least your sacrifice will be remembered in the kernel git log foreve=
+r...
 >>
 >> Thanks,
 >> Qu
->>
 >>>
->>> BR
+>>>> Thanks,
+>>>> Qu
 >>>
->
->
 
