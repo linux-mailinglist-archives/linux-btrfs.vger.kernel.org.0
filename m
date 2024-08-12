@@ -1,139 +1,260 @@
-Return-Path: <linux-btrfs+bounces-7110-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4BCA94E61B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 07:17:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69FE194E753
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 09:01:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E766A1C208FA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 05:17:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CA821C20C36
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 07:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8ECC14B940;
-	Mon, 12 Aug 2024 05:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D70B165F12;
+	Mon, 12 Aug 2024 07:01:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="VXMezo+V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bPGEm42Z"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CF04D8CE
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 05:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C097E165EF0
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 07:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723439836; cv=none; b=LgkjKJASdG8i6AsVi5i9sg598U8Lah42A/5twcrytBpIjmbO+E1UtbD0Qfi1rLCI7ZGbKyEo/beim30bUly2qy6yOhMTFkbxlVXEYSdBJrqqDXpE2D7AS6+1UVja2ASEIF0/6+1qo6eEo/ObMFDPthjAVjehmeyX3XVGGo5WUzg=
+	t=1723446065; cv=none; b=GP0Qba5WyXqJCQPw8RN2CFw3yYgO80jk4/wXGcUyJqd5mJrFGW7xQ8E2jlOQk/xJrZ2tO7qdt+9sZGyqiUoo3jNSCDqZeJm3jCstim2veSH2UdFW6C5p40tHTe07uG0fePpfN7sqN9J9p1sjma9tXte5e3EIxWNtdYDY9Et5/3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723439836; c=relaxed/simple;
-	bh=IJ3kGiSsoqP5e1nXglLPHHuxXV6xYrUhxeB0/EFdR/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OWH2zZIPmRcQ8MBGxWIirOJruNjz6DMPgyh63OlquKKW8tZbOImxMwIsl3wp37cx4lWxCKNdBsgLg/ENdc8Ket/I5dgYyc3y9+TW6uTqP3s8xHF5VUlAy63TgYbucY+T/s7tlZFJHFl/W+MCXp0SApECLoe5jNcZGtnPn8p4Kpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=VXMezo+V; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1723439828; x=1724044628; i=quwenruo.btrfs@gmx.com;
-	bh=IJ3kGiSsoqP5e1nXglLPHHuxXV6xYrUhxeB0/EFdR/o=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=VXMezo+Vfkey8iDW4qNg+LByK3zFSEc1Yzro99ZmrcKg3bsAI49NIBaVcOZDBYp1
-	 MbridY74a1hnVNrigLQSVkAm2szafYmlp7z+RD9oP0+NDuTxPJWBf2n8PQGdMhyyM
-	 Yaeec8K/eErWVE9MxAwDfgMkFvHR3mbPsJz0ABV3Zz/bOESaZaLvhR/ZUMqUUGHgn
-	 Xcjm1cfy4zhOgUAFIGH3ufVLyLHtV79HzLohB4BlFJOIenoSN9GZEoHMVrXJAw1DW
-	 1uuNdAN+qtZ4w93fZASVKMkj2y6zk6Ol+3T2xuXjiUvsj8RNAl9nlt9JNnAwWuxR4
-	 a4KR9BLMWcEv2qw6Qw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MZkpb-1sjEyB021n-00Vnt5; Mon, 12
- Aug 2024 07:17:08 +0200
-Message-ID: <9bedda40-76fc-427e-8cbc-dfa613dafa7e@gmx.com>
-Date: Mon, 12 Aug 2024 14:47:04 +0930
+	s=arc-20240116; t=1723446065; c=relaxed/simple;
+	bh=YxY/2cyGRA1mhm9cDczXfZ4ByzUOQafTmCy32Li+Xjs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f4KZURY3heyW2/gP90RQ+xZYyJP7BENLxTJPzSru2V+W+ldSaIIEPTz1JH0k24XFbSgEn2mcCg2qgPTql7GwETyas8PTCspR2+YTbaJbgXRPWsvzSJJ9c+jpUS5AyQpVSounyy5L1b3IENU+ZStw4WSlDywnuP/vIzrSQCLpvAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bPGEm42Z; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5d80752933bso2846990eaf.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 00:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723446063; x=1724050863; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pCsJawL7nuEaHymd/Zv9cZ0Ncllnx3thMC+PbtZc+7g=;
+        b=bPGEm42ZMv0rexmDe+/xzxdz4uWV1bqqVd04uTFmwasgtU+UmAi3+cPy8P0+s5e4YP
+         2Kp8eSQ9A+99CMu0w/Q8E/ELDoS03q7cPlp/QZ5j7HSguZqnL18VblJisffkcza/un6K
+         omwcRPhXrrHbs8Awt2hG9o2C0ykjtsrHlNpx0XIYWMnxB0ejA9CwpsIEqz9/X5lY/PCu
+         xH0/P+GOkg6m2plOR51iLP+yMqq94k3TW12qLwTCZp+pi3hjtY/BxfLtf6NEcjVf3Df2
+         bl/U1xnAIVKx1pB1jAZ2h9j5J4cAI+ZFOijw84ngDnIJmuc0UFd6yC7MlAt1hzeps7MM
+         hfWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723446063; x=1724050863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pCsJawL7nuEaHymd/Zv9cZ0Ncllnx3thMC+PbtZc+7g=;
+        b=RbeCLVrChsbBB/MZ2jR/cgApVkNDWYxLXqB4ZlLl3oHSY8EunsgseftnT9OyOgQTZ6
+         iiB9Ase19W73BMll8vTL3DfA2HHTb3nx8w+iaE2gDj41gbwW358yEW4XgRD5qc2RIs9Q
+         0UFjwZXI1cuFg69at2beH/uYcDTmJyTtYM4rVz0I7Vt0XDLcMH2MbBy2s+g69/spstkS
+         uL9WQoEUpTkmrOKrjVsSA4LOWPcJzDWgV0wDvWd93Fi+1JukqXVQDIfUkUBbYuTBe3lr
+         eh4H2BADl8YAcvXXh0wun/j8Vw421pRJg7ZvODtIvNLkCB4sjQ5EhLhAVtWC3YV+zTBy
+         EMaw==
+X-Gm-Message-State: AOJu0Yz6VE6BDz7A8D81WCiB3OtI5psxA70GRSJNBS2QEHpqGlahpOnV
+	h5t/+eU/qwYOAR2fSgrN3whw4qGzjnje3tOfMyOE3WSIT3d+yKihIPVRD5NuJAcCIN6UYBVG5Jb
+	O82DSkzrfMi8nYntmZNdZyFnMallDILKs
+X-Google-Smtp-Source: AGHT+IHtCFvU50sMrMrnLFQpGRpsVUUlDqVhFaTtuzDO1QsYi2r4EoSuI5sT4dOXFIC69QmyAhhYy0I6pXpMZx9wH3s=
+X-Received: by 2002:a05:6820:60e:b0:5c4:2497:c92d with SMTP id
+ 006d021491bc7-5d867c96139mr10475160eaf.2.1723446062608; Mon, 12 Aug 2024
+ 00:01:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix invalid mapping xarray state
-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>
-Cc: linux-btrfs@vger.kernel.org,
- Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-References: <cb40bca119cc0519bb5e17f6a9060a35a839ea28.1723189951.git.naohiro.aota@wdc.com>
- <20240809150844.GA25962@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240809150844.GA25962@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <CA+W5K0rSO3koYTo=nzxxTm1-Pdu1HYgVxEpgJ=aGc7d=E8mGEg@mail.gmail.com>
+ <ac2ff9ae-b2fa-49df-9ce3-fc32ddd3c222@gmx.com>
+In-Reply-To: <ac2ff9ae-b2fa-49df-9ce3-fc32ddd3c222@gmx.com>
+From: Stefan N <stefannnau@gmail.com>
+Date: Mon, 12 Aug 2024 16:30:51 +0930
+Message-ID: <CA+W5K0qUAXYSZFxJv+vVM+knFkXm+VK61zOb2qF6TXmW156LOA@mail.gmail.com>
+Subject: Re: Help! Unmountable due to dev extent overlap
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hV6ctlm0rFPw6JZ9ItFVynNsSHwaDI+tYdq7zfNucGHdrQxcu9O
- ykQ3DHFmCOL7a/nE/Zq48kZn7PYZ071+Bn0WKPeSmEsWCuCDF5RrAjZUiQw1KhpKZZ96pU5
- w7BBuq4YtlPBd4USNQ4X3G5JuIfhm1K8VzP6KeODhgaxBMX+jYiVcyyxQfNDvFFgHUl9Dn3
- UrJDcSIgafy2E8IxTzclA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:J8Sn8CGj9cc=;RcLhzmqga2uxyF6WaYUOPxzwhge
- OKLsrj6CT4BfSHOHZexEv4uMokSCXHUsZRBzzsxOfRb5R3GcS9myH1rYdNlwH4NjzR62oewsD
- 32NTscDcpYSPKfmJ/+F5P6a1Zpevf1l0B7d32f/ynj0ccpshIWRnADod+pdKX4CKZQlirW1k2
- g9xeNio6/z+XYt8gQnN/VDEK/M+fmiB9JysRAN63OmQUPYHDeOSKi3qYeJlifVJVzTCeqg8gC
- eAjCMlOPmlSqKKbl2Uk60i1PCV9thD/Zlt5qIjTljTf45UzaGGSiU99WdCMLukyhF4BLslZCn
- vGBljCaiFmLQjSJg6tPaVJAc8gogEmX9iKJpLGY77pYt3io6caJvc2uC7ME9H/2EkFOiOqyXp
- kITzSqZm4bqPFkTdDnaKAGrvL4EjKUaO8IGxijwK+7KQleIfLeZAiibJjdVWc8IIvwFewfSaX
- 9iwCuh8Gi4fYeyYIL4Gx+Ge63ohdrE8BDmsZrpK9mxdbYx/sA/g2x6KWjcpFE6Dhd2sDZXGx0
- EpoB18WEPsEAywblRECjMRFefP5uKDppRjGjucqtGZF6FK2nb8NSmStnqI1wvlsPwcuvYqSa/
- mdKyqAGNpal5Aa+k6Unfdu+UtyaOBeaBSlTSEWW5kZ+zTJPULCdRGLA4oGlljrh/N1yxUDz0+
- ky4jRaE4Ju9wj2dU0+9F96go+Ik49U+ds+hQurpNCj2ZL62qQX4mosUrxiTepc0vQX18M5p8j
- tI28fi89/b58vNfN3Z8AqXWlrdpcbSkXdDgaGx+nB72v/zxuu4p0DJjoJG+06LCXpdtoAafLD
- YM5DSkZoO3gXRHJc8Lcw/kQvQsXOfC7bc9+DbAVptPrzQ=
 
+Hi Qu,
 
+Thanks for the informative response as always!
 
-=E5=9C=A8 2024/8/10 00:38, David Sterba =E5=86=99=E9=81=93:
-> On Fri, Aug 09, 2024 at 04:54:22PM +0900, Naohiro Aota wrote:
->>
->> Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
->> Fixes: 97713b1a2ced ("btrfs: do not clear page dirty inside extent_writ=
-e_locked_range()")
+Responses inline below
+
+On Sun, 11 Aug 2024 at 11:51, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >
-> This is fixing a regression in 6.11 but the patch does not apply to
-> anything that could be used as a base branch (master, misc-6.11,
-> for-next).
 >
+>
+> =E5=9C=A8 2024/8/11 10:57, Stefan N =E5=86=99=E9=81=93:
+> > Hi,
+> >
+> > I've got a currently unmountable RAID6 array with no particularly
+> > obvious trigger that I'm attempting to repair. As it's unmountable
+> > I've not been able to include btrfs fi usage but it's RAID6 data,
+> > RAID1c3 metadata, and afaik is not out of space.
+> >
+> > Background:
+> > Having previously scrubbed all disks by devid successfully
+>
+> Unfortunately scrub doesn't do the full verification of metadata (yet),
+> a successful scrub can only ensure all the checksums (for both data nad
+> metadata) matche the content.
+>
+> > I had a
+> > complete hardware failure on one disk, which I resolved with btrfs
+> > replace -r and did not notice any errors immediately after. The new
+> > disk is /dev/sdh devid 5, and the last disk replaced/added roughly 3
+> > months prior was /dev/sdf devid 12.
+> > Roughly a week after the replace completed I began a scrub on /dev/sdc
+> > devid 1, and roughly 36 hours later without anything logged, this
+> > triggered a kernel panic (btrfs_create_pending_block_groups:2716:
+> > errno=3D-17 Object already exists) resulting in read only, and
+> > unmountable since. Several days later, this scrub then finished
+> > successfully and reported no errors.
+>
+> That "panic" (to be more accurate, just kernel warning, not a panic)
+> shows the first hit.
+>
+> Do you still have that dmesg? Or it matches the one you posted here?
 
-Are you using a wrong branch?
+I split the several days of dmesg into the output in-line, I just
+trimmed it and deduped the relevant btrfs lines as it was a lot!
 
-This patch can be applied without any conflict (although a typo, beging
--> being) on for-next (89af55f1ed3d4354a629f08b87dfcafa3aabb90e).
+> > While the data is all replaceable, due to the amount of data involved
+> > I'm keen to retain the filesystem and identify specific files/folders
+> > to replace, provided this is achievable and can maintain the future
+> > integrity of the filesystem!
+>
+> It's a little hard, especially when we do not have a clear clue on what
+> is causing that warning yet.
+>
+> >
+> > Any help or direction would be greatly appreciated
+> >
+> > Command output and relevant logs included inline below
+> >
+> > Cheers,
+> >
+> > Stefan
+> >
+> > # btrfs check /dev/sdb
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > Device extent[13, 2257707008000, 6488064] existed.
+> > Device extent[13, 2258112544768, 6488064] existed.
+> > Device extent[13, 2260271366144, 6488064] existed.
+> > Device extent[13, 7812682350592, 6488064] existed.
+> > Device extent[13, 7813260705792, 6488064] existed.
+> > Device extent[13, 7814399262720, 6488064] existed.
+> > Device extent[13, 7815832010752, 6488064] existed.
+> > Device extent[13, 7819053236224, 6488064] existed.
+> > Device extent[13, 7821200719872, 6488064] existed.
+> > Device extent[4, 15746057961472, 6488064] existed.
+> > Device extent[4, 15977630334976, 6488064] existed.
+> > Device extent[4, 14263979671552, 6488064] existed.
+> > Device extent[4, 14367058886656, 6488064] existed.
+> > Device extent[4, 14369206370304, 6488064] existed.
+> > Device extent[4, 14624786284544, 6488064] existed.
+> > Device extent[4, 15141140627456, 6488064] existed.
+> > Device extent[4, 15194827784192, 6488064] existed.
+> > Device extent[4, 15486894211072, 6488064] existed.
+> > ERROR: dev extent devid 4 physical offset 14263979671552 overlap with
+> > previous dev extent end 14263980982272
+>
+> Please provide the following dump:
+>
+> # btrfs ins dump-tree -t dev <device>
+> # btrfs ins dump-tree -t chunk <device>
 
-For upstream RCs, it's only conflicting with the recent change on the
-folio usage, only a `page_folio(page)`->`folio` change.
+dumptrees stdout is 50mb bzipped for all devices (no output to
+stderr), so have uploaded to https://filebin.net/92cnqpr9xx9565oe
+From this output, sda (devid 4) and sdm (devid 13) are the two that
+btrfs check is complaining about
 
-Thanks,
-Qu
+> > ERROR: errors found in extent allocation tree or chunk allocation
+> > [3/7] checking free space tree
+> > [4/7] checking fs roots
+> > [5/7] checking only csums items (without verifying data)
+> > [6/7] checking root refs
+> > [7/7] checking quota groups skipped (not enabled on this FS)
+> > Opening filesystem to check...
+> > Checking filesystem on /dev/sdb
+> > UUID: guid-x-y-z
+> > found 104052224266240 bytes used, error(s) found
+> > total csum bytes: 101533362472
+> > total tree bytes: 117929181184
+> > total fs tree bytes: 1742323712
+> > total extent tree bytes: 1548320768
+> > btree space waste bytes: 11865883351
+> > file data blocks allocated: 139229426343936
+> >   referenced 139218099167232
+> >
+> > # btrfs check -b /dev/sdb
+>
+> This just provides extra noise. The regular "btrfs check" is the most
+> important one.
+> If possible, "btrfs check --mode=3Dlowmem" provides a more developer
+> friendly output (but much slower).
+
+# btrfs check --mode lowmem /dev/sdb
+[1/7] checking root items
+[2/7] checking extents
+ERROR: dev extent devid 4 offset 14263979671552 len 6488064 overlap
+with previous dev extent end 14263980982272
+ERROR: dev extent devid 13 offset 2257707008000 len 6488064 overlap
+with previous dev extent end 2257707270144
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs done with fs roots in lowmem mode, skipping
+[7/7] checking quota groups skipped (not enabled on this FS)
+Opening filesystem to check...
+Checking filesystem on /dev/sdb
+UUID: 3cde0d85-f53e-4db6-ac2c-a0e6528c5ced
+found 104088092352512 bytes used, error(s) found
+total csum bytes: 101533362472
+total tree bytes: 117929181184
+total fs tree bytes: 1742323712
+total extent tree bytes: 1548320768
+btree space waste bytes: 11865883351
+file data blocks allocated: 139229426343936
+ referenced 139218099167232
+
+> > # uname -a
+> > Linux mynas.x.y.z 6.8.0-39-generic #39-Ubuntu SMP PREEMPT_DYNAMIC Fri
+> > Jul  5 21:49:14 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+>
+> I guess your NAS is running this newer kernel even before the first
+> warning? Or is there any older kernel involved?
+
+last reports that this 6.8.0-39 kernel (Ubuntu noble) was active from
+30 Jul, I recall I did a release upgrade a few days after the replace,
+so yes the errors all occurred while running this kernel. Prior to
+this, it appears to have been running 6.5.0-44-generic and earlier 6.5
+releases for 9 months (Ubuntu mantic).
+
+> A quick glance into the tree-checker shows that we do not have any
+> checks on dev extent items.
+> And I guess that's why we didn't detect the corruption in the first and
+> let the corruption sneak in and written the corrupted one onto disk.
+>
+> But my current guess is, it looks possible some kind of bitflip sneaks in=
+.
+>
+> Just to be sure, after taking the dumps, please run a memtest just in cas=
+e.
+
+I've got memtest86+ running now to confirm, will confirm the output
+next response
+
+> Thanks,
+> Qu
 
