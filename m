@@ -1,151 +1,175 @@
-Return-Path: <linux-btrfs+bounces-7119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7120-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F41EE94EBD4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 13:31:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63A5294EC06
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 13:45:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B36D0282171
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 11:31:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D0B51F2267C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 11:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6739C175D3E;
-	Mon, 12 Aug 2024 11:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357B416CD16;
+	Mon, 12 Aug 2024 11:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dyMVcG+L";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7kP6X5rJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dyMVcG+L";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7kP6X5rJ"
+	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="r/0imVPG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 086D83C0B;
-	Mon, 12 Aug 2024 11:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9914116DC20
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 11:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723462275; cv=none; b=BuFnXHfrf29g6GqFqAkU1RhNNLi0V5PvrQhdVmAOS8zgC4OgzLjOyuZlGNWOqbu1w2Lp2C+d2IakzcMS58w6jFmc+ImMDk6nbgLOLIVHKfkiSC2y4ugS+4DUTNXrBGAy1TvTgS3lHLVZWQkdIoA2kc6t4IL/12mzzgzkHR6i83E=
+	t=1723463111; cv=none; b=Z8Y2cmNsxO+80rnaCQT4P6fCOeit2iuLnajLhnXsFxcxGF65QAs2ZarMaRtr0ej/k3N9qQJkflN5dIGjFSKvpARwh89QKAj25A/Yp7zJtvocnv8CXA901r8ga7ycXyPXJ8jihksly5HMbLUHBfX5htErAU99H4Ogx14bUG6/RUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723462275; c=relaxed/simple;
-	bh=3+CJyFJLjoj48HvzCItu+Gv0H77IGYQqfEAS0cyyUuU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sxObA11sfI143E5MdYo8m3beKueJCprjnYV2fJntilOXtsCOCZJFSexYWrGw8zqviBh0bUuAnFV89T0dFTmqWqvADECg2YJ8D5JSJQrgOJb7ZhMlSrgVc8sMBSPnIgKlcE9LKPFgFifnGeddosdUzfZe52sF2iaAIV22isYMMq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dyMVcG+L; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7kP6X5rJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dyMVcG+L; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7kP6X5rJ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1165920268;
-	Mon, 12 Aug 2024 11:31:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723462272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=96EUmExynSb2mVUwXqoNk5b4rhcR95sKR8ipS/TtSM4=;
-	b=dyMVcG+Lmr2O2jHkLermQPV7/4oOxALt18XgN4JNkvp+4B6Ho1nWU5p3C4v0gtNgl98G9j
-	Ujj9j/FQcuMemw4frEA+FECc6KrJPkm36J5sqwprL0fA7XCv+bsSQ6B69yTBz6FSVj0CTe
-	20dsURmjEnkaDt5bV96s9XvSrozGI2M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723462272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=96EUmExynSb2mVUwXqoNk5b4rhcR95sKR8ipS/TtSM4=;
-	b=7kP6X5rJ8NnFfLBeNABY0HHRv7JxhuA8dYva58mIB4mCHHfWpOR8IBEif1U559MXvVwuby
-	cyYHD8VwzTe6JJCw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dyMVcG+L;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=7kP6X5rJ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723462272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=96EUmExynSb2mVUwXqoNk5b4rhcR95sKR8ipS/TtSM4=;
-	b=dyMVcG+Lmr2O2jHkLermQPV7/4oOxALt18XgN4JNkvp+4B6Ho1nWU5p3C4v0gtNgl98G9j
-	Ujj9j/FQcuMemw4frEA+FECc6KrJPkm36J5sqwprL0fA7XCv+bsSQ6B69yTBz6FSVj0CTe
-	20dsURmjEnkaDt5bV96s9XvSrozGI2M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723462272;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=96EUmExynSb2mVUwXqoNk5b4rhcR95sKR8ipS/TtSM4=;
-	b=7kP6X5rJ8NnFfLBeNABY0HHRv7JxhuA8dYva58mIB4mCHHfWpOR8IBEif1U559MXvVwuby
-	cyYHD8VwzTe6JJCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E3853137BA;
-	Mon, 12 Aug 2024 11:31:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id clhSN3/yuWZJVgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 12 Aug 2024 11:31:11 +0000
-Date: Mon, 12 Aug 2024 13:31:02 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, kees@kernel.org,
-	gustavoars@kernel.org, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Annotate structs with __counted_by()
-Message-ID: <20240812113102.GG25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240812103619.2720-2-thorsten.blum@toblux.com>
+	s=arc-20240116; t=1723463111; c=relaxed/simple;
+	bh=lYkJtXhbwBxlo7/27QE4bhzYl7fyFG6ZQVz1lylGJn4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Eyx/yk9AW1gAmE20fdDcldrkQR2KfGTFn7D/n5+7/6D6YVUYwpeqexBL6p/R7WpzayMnHTb4STwGu10zhN9Jka4/z3EB0Nf7aXwOkbIsef39hh8kdYkpU41cElzC2jnRUiQ1hqScuWOkw81TmMkAxZlaBdcTkpX3U59mJn4WeMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=r/0imVPG; arc=none smtp.client-ip=213.209.10.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-16.iol.local with ESMTPSA
+	id dTRTsJlrM201ldTRTs5f2E; Mon, 12 Aug 2024 13:42:28 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+	t=1723462948; bh=7YNeYxqOkwxCNLGgsNUgKZwWBbg8xU3j12nT+F+ZZhk=;
+	h=From;
+	b=r/0imVPGybM7yGvzNKgC7zYySBabBd2PL71Pg1TpxJB2cLUXpOT2pSToanF++uRuc
+	 mfmMinEV5XQa1XXl5Gn8OQZ7uGI0ShsDyOuVPxhG2hksiV8pALi9dziG0CMWL9w/b1
+	 CvcT/DjYap/+tjMQ567AEYAs+6BHwI0HZI3LzmtQF8CqYFg8OSGfC97okAM/2TYyPX
+	 YTU49Gdmq9Xn4WvF3ZV4jWWiu13WgT6AMmiLXgLlJpXbRoSFvVC8/EzlGTGpXiDH9V
+	 /SgyZJ1BmQ384RfGy+DCOGfQaYTklLdanMnW24BYu4kMaxybw8S3BByF8cAKhpr/A0
+	 zpNfoVABGxbpQ==
+X-CNFS-Analysis: v=2.4 cv=f7aDB/yM c=1 sm=1 tr=0 ts=66b9f524 cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=NpvV3WJMCwzl7tNDu6IA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+Message-ID: <1af5c6be-27ff-4dd5-ba5e-9213bd1e9f68@inwind.it>
+Date: Mon, 12 Aug 2024 13:42:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240812103619.2720-2-thorsten.blum@toblux.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 1165920268
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH v5] btrfs-progs: add --subvol option to mkfs.btrfs
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+ Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <20240808171721.370556-1-maharmstone@fb.com>
+ <20240809193112.GD25962@twin.jikos.cz>
+ <f9492406-1fc4-4801-a74d-890353a34e3e@libero.it>
+ <df13dc7a-88d5-4769-b028-3c5c28c29698@gmx.com>
+Content-Language: en-US
+From: Goffredo Baroncelli <kreijack@inwind.it>
+In-Reply-To: <df13dc7a-88d5-4769-b028-3c5c28c29698@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfPavLSedTLJAg3FQ+mWqZd67Ul8zsq0209K77TGRb0Y73ACZzN6kXjTqxtUj+oHaKO6XNvnZcoTJTnMwKxJ7m8JCAAlmF8zxanHtRy689V8XOyw52jKU
+ YLbvsnVkhjhRoszjOLuVVJPgnJuD6N4CoiPyXun9MN3Bs9R1md8MYW3ChNu9ndlAHMNakZJCwYqbEDudbkTk9rcDqtUfhUIc0yjMoZgnooaH1xkK1jSTDWgU
+ 3RUiJ2bYeQaEWf5v7hvjLStkKMTiI50vVuDp8FK4webtCAIXXOMnEp9UnipcYTb8
 
-On Mon, Aug 12, 2024 at 12:36:20PM +0200, Thorsten Blum wrote:
-> Add the __counted_by compiler attribute to the flexible array member
-> stripes to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-> CONFIG_FORTIFY_SOURCE.
+On 11/08/2024 00.40, Qu Wenruo wrote:
 > 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> 
+> 在 2024/8/10 19:23, Goffredo Baroncelli 写道:
+>> On 09/08/2024 21.31, David Sterba wrote:
+>>> On Thu, Aug 08, 2024 at 06:17:16PM +0100, Mark Harmstone wrote:
+>>>> This patch adds a --subvol option, which tells mkfs.btrfs to create the
+>>>> specified directories as subvolumes.
+>>>>
+>>>> Given a populated directory img, the command
+>>>>
+>>>> $ mkfs.btrfs --rootdir img --subvol img/usr --subvol img/home
+>>>> --subvol img/home/username /dev/loop0
+>>>>
+>>>> will create subvolumes usr and home within the FS root, and subvolume
+>>>> username within the home subvolume. It will fail if any of the
+>>>> directories do not yet exist.
+>>>
+>>> Can this be fixed so the intermediate directories are created if they
+>>> don't exist? So for example
+>>>
+>>> mkfs.btrfs --rootdir dir --subvolume /var/lib/images
+>>>
+>>> where dir contains only /var. I don't think it's that common but we
+>>> should not make users type something can be done programmaticaly.
+>>
+>> Can we go a bit further ? I mean get rid of --rootdir completely, so
+>> a filesystem with "a default" subvolume can be created without
+>> passing --rootdir.
+> 
+> Personally speaking, I would prefer the current scheme way more than the
+> out of tree subvolumes.
+> 
+> It's super easy to have something like this:
+> 
+> rootdir
+> |- dir1
+> |- dir2
+> 
+> Then you specify "--rootdir rootdir and --subvolume /somewhereelse/dir1"
+> 
+> This is going to lead filename conflicts and mostly an EEXIST to end the
+> operation.
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+I am not sure to fully understand to what you means as "filename conflicts";
+anyhow, now you have the ENOEXIST problem :-)
+
+> 
+> 
+>  From my understand, the "--rootdir" along with "--subvol" is mostly
+> used to populate a fs image for distro building.
+> 
+> If you really want just a single subvolume, why won't "--rootdir rootdir
+> --subvol dir1" work for you?
+> 
+> If your only goal is to reduce parameters, then your next question is
+> already answering why the idea is a bad one.
+
+
+The use case that I have in my mind is to create a filesystem with a default
+non root sub-volume, and nothing more. This would prevent the typical problem
+that you face when you populate the root-subvolume, then snapshot it and then
+revert to an old snapshot, swapping the subvolumes.
+It is not easy to swap the root subvolume, because it is a special in the sense
+that it cannot be deleted and it is the root of all subvolumes.
+
+Being so I think that it is better to avoid to have the root subvolume as
+default sub-volume.
+
+For my goal (having a filesystem with a non root default sub-volume) creating a
+template filesystem is waste of effort.
+
+Now these two use cases (my one, and the one related to this patch) have a lot
+in common. So I trying to find a way so the two can be joined.
+
+> 
+>>
+>> However, this would lead to the queston: which user and permission has
+>> to be set to those subvolumes ?
+>> So I think that we need a further parameter like "--subvol-perm" and
+>> "--subvol-owner"...
+> 
+> Nope, the current code is already handling that way better.
+> The user/owner and modes are from the rootdir.
+> 
+> Meanwhile your idea is just asking for extra problems.
+> 
+> Thanks,
+> Qu
+> 
+>>
+>> BR
+>>
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
