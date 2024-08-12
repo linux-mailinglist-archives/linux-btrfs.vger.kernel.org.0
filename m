@@ -1,113 +1,165 @@
-Return-Path: <linux-btrfs+bounces-7142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC1F294F54E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 18:51:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CF9E94F576
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 18:58:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62D4E1F218F9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 16:51:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EAE11C21020
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 16:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A3218785F;
-	Mon, 12 Aug 2024 16:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28502187FEB;
+	Mon, 12 Aug 2024 16:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bivMigPw"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EVr/7ebH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AHJCGf7l";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EVr/7ebH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AHJCGf7l"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A8C1836E2;
-	Mon, 12 Aug 2024 16:51:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF82018754F;
+	Mon, 12 Aug 2024 16:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723481489; cv=none; b=LbXgzjenSLC9BXY6OihMpL8ApbHwTuM61a0EUdOmcm1BgRt70K98iw2jVTGtdbpzd6qHlQ+aPyJYZNqK7zqmD1M0HcNrQYNBXEUNv0/DgqQ6dK62+87QFZtL5k/2hX2uVbyTrQ/aYHXX96TeKRj3TfR8DQWge8AqjImE0kXPoQE=
+	t=1723481901; cv=none; b=KWqmFHxtlm0ErL7sjicath+xD5x19zaurxTCDbXjTgVwcxK7wJ0lspKKFtGuWXJA82YTve3r2CKMxlBOH8pZii+jEWwS5G4EAuRW7+uR4trUXQWwQV77jW6KxkBu8zIZ7FDnbca4zsA+bMS3Z7KGDDQ+oMy/TkRTFG4ACYxpBkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723481489; c=relaxed/simple;
-	bh=LGTlsEWy9JCGyazAemGTJCuuwrCAe2BvnYB/olyIPXU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GNDOc2uNYUgs4HVApBQiIOh2UBJ9Dk3VzL1EJy0/SGpBwy2y32u4WNV7NFlgDGuw0w/WdfDG3JtlxYy5iBa0Ik/Ul9gAdtDVVzsLWgXsNAvz8VT8pbn5FzINWD51xToAaxHaX6Y9DzGOfArCY28NuYreJOtnqH1USJqS2Lxj0tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bivMigPw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28675C32782;
-	Mon, 12 Aug 2024 16:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723481489;
-	bh=LGTlsEWy9JCGyazAemGTJCuuwrCAe2BvnYB/olyIPXU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=bivMigPwThXLkTGwe6eS7CAyYRKGSG8saGAE2CUUHcNuiJqIv+JXbLGyTMhKpBl3l
-	 +Z2jAX9lLzuvjlUWQyRjfqsHneXKrP3VJX+IiObEcORL+wCZdZ1ZYwW9AbQSwmZSIQ
-	 B9AMXMH2vMnDvZLP4BxGQ1GvBMTKI5IznbuDIfUwqR+Dnqn8bxnK2fB1EGSyewHcdj
-	 q4oUaAB8RtV7HHdcHogbbl6+S87CVooVAeE61XzqDxcMDsAqTZEcodwylKhuBbOlnf
-	 V7G7BFgpvSgQqeDBBV9yIDcn5YxxuG+5YRAY+chc0EnsO0Xcvpsaf0wICjlc0LQ0w3
-	 pGuB3qZmJn8Og==
-Message-ID: <c0a0266cbb46694318e5eeb5248216779cb68442.camel@kernel.org>
-Subject: Re: [PATCH] btrfs: update target inode's ctime on unlink
-From: Jeff Layton <jlayton@kernel.org>
-To: dsterba@suse.cz
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David
- Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org,  bpf@vger.kernel.org
-Date: Mon, 12 Aug 2024 12:51:21 -0400
-In-Reply-To: <20240812164220.GK25962@twin.jikos.cz>
-References: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
-	 <20240812164220.GK25962@twin.jikos.cz>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw
- n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv
- egyjnSsFt7EGoDjdKqr1TS9syJYFjagYtvWk/UfHlW09X+jOh4vYtfX7iYSx/NfqV3W1D7EDi0PqV
- T2h6v8i8YqsATFPwO4nuiTmL6I40ZofxVd+9wdRI4Db8yUNA4ZSP2nqLcLtFjClYRBoJvRWvsv4lm
- 0OX6MYPtv76hka8lW4mnRmZqqx3UtfHX/hF/zH24Gj7A6sYKYLCU3YrI2Ogiu7/ksKcl7goQjpvtV
- YrOOI5VGLHge0awt7bhMCTM9KAfPc+xL/ZxAMVWd3NCk5SamL2cE99UWgtvNOIYU8m6EjTLhsj8sn
- VluJH0/RcxEeFbnSaswVChNSGa7mXJrTR22lRL6ZPjdMgS2Km90haWPRc8Wolcz07Y2se0xpGVLEQ
- cDEsvv5IMmeMe1/qLZ6NaVkNuL3WOXvxaVT9USW1+/SGipO2IpKJjeDZfehlB/kpfF24+RrK+seQf
- CBYyUE8QJpvTZyfUHNYldXlrjO6n5MdOempLqWpfOmcGkwnyNRBR46g/jf8KnPRwXs509yAqDB6sE
- LZH+yWr9LQZEwARAQABtCBKZWZmIExheXRvbiA8amxheXRvbkBrZXJuZWwub3JnPokCOAQTAQIAIg
- UCWe8u6AIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQAA5oQRlWghUuCg/+Lb/xGxZD2Q1
- oJVAE37uW308UpVSD2tAMJUvFTdDbfe3zKlPDTuVsyNsALBGclPLagJ5ZTP+Vp2irAN9uwBuacBOT
- tmOdz4ZN2tdvNgozzuxp4CHBDVzAslUi2idy+xpsp47DWPxYFIRP3M8QG/aNW052LaPc0cedYxp8+
- 9eiVUNpxF4SiU4i9JDfX/sn9XcfoVZIxMpCRE750zvJvcCUz9HojsrMQ1NFc7MFT1z3MOW2/RlzPc
- og7xvR5ENPH19ojRDCHqumUHRry+RF0lH00clzX/W8OrQJZtoBPXv9ahka/Vp7kEulcBJr1cH5Wz/
- WprhsIM7U9pse1f1gYy9YbXtWctUz8uvDR7shsQxAhX3qO7DilMtuGo1v97I/Kx4gXQ52syh/w6EB
- ny71CZrOgD6kJwPVVAaM1LRC28muq91WCFhs/nzHozpbzcheyGtMUI2Ao4K6mnY+3zIuXPygZMFr9
- KXE6fF7HzKxKuZMJOaEZCiDOq0anx6FmOzs5E6Jqdpo/mtI8beK+BE7Va6ni7YrQlnT0i3vaTVMTi
- CThbqsB20VrbMjlhpf8lfK1XVNbRq/R7GZ9zHESlsa35ha60yd/j3pu5hT2xyy8krV8vGhHvnJ1XR
- MJBAB/UYb6FyC7S+mQZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1723481901; c=relaxed/simple;
+	bh=443q6LOjOjuF400eu9Qmc3JZsLFoZTc4Fv5YKRpGy/E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jL74A+QGRrm8bac17HpXQwO2W0UMFP1q4LVkWkXJtafVmA/4ML4YV5OotUd5Y2nrox5Lt85SJiUgWsDNKJfAEhYxASedZRx3VOQ/Iu1jn8mQh3eI75NPVpSd4AVojZK3wOQ67drx81YEIGaBaYJ7J5bkCAkpbXytRlCDoA4oD50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EVr/7ebH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AHJCGf7l; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EVr/7ebH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AHJCGf7l; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BE23B1FB91;
+	Mon, 12 Aug 2024 16:58:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723481897;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
+	b=EVr/7ebH8FDvbGHS+5REICn4QBXLFf+fzKsqwHsnQtxSNEAQi7Fpf9we0XZy9P60JFHTS6
+	98nvXUamu7fRtqGXVFIB3d6QP2yZNZ1NKw7ITvJy0XygM9UrZ69ampfLWbyPwQ+4VUzuVs
+	0fszbS9b/ucKCy2Pomfj4XbR/Pv4blI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723481897;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
+	b=AHJCGf7lv4LIKBYIlt/VcK6zgKW6MgEvIt7Dq2ISnUpMMgNyd6u1lO6a88K33h8pmgQCja
+	a5RwUzyhGbxMTVBw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="EVr/7ebH";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=AHJCGf7l
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723481897;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
+	b=EVr/7ebH8FDvbGHS+5REICn4QBXLFf+fzKsqwHsnQtxSNEAQi7Fpf9we0XZy9P60JFHTS6
+	98nvXUamu7fRtqGXVFIB3d6QP2yZNZ1NKw7ITvJy0XygM9UrZ69ampfLWbyPwQ+4VUzuVs
+	0fszbS9b/ucKCy2Pomfj4XbR/Pv4blI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723481897;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
+	b=AHJCGf7lv4LIKBYIlt/VcK6zgKW6MgEvIt7Dq2ISnUpMMgNyd6u1lO6a88K33h8pmgQCja
+	a5RwUzyhGbxMTVBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A947313AD8;
+	Mon, 12 Aug 2024 16:58:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Hn0VKSk/umbMQQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 12 Aug 2024 16:58:17 +0000
+Date: Mon, 12 Aug 2024 18:58:16 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add io_uring interface for encoded reads
+Message-ID: <20240812165816.GL25962@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240809173552.929988-1-maharmstone@fb.com>
+ <Zrnxgu7vkVDgI6VU@infradead.org>
+ <1f5f4194-8981-46d4-aa7d-819cbdf653b9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f5f4194-8981-46d4-aa7d-819cbdf653b9@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -2.71
+X-Rspamd-Queue-Id: BE23B1FB91
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_TO(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On Mon, 2024-08-12 at 18:42 +0200, David Sterba wrote:
-> On Mon, Aug 12, 2024 at 12:30:52PM -0400, Jeff Layton wrote:
-> > Unlink changes the link count on the target inode. POSIX mandates that
-> > the ctime must also change when this occurs.
->=20
-> Right, thanks. According to https://pubs.opengroup.org/onlinepubs/9699919=
-799/functions/unlink.html:
->=20
-> Upon successful completion, unlink() shall mark for update the last data
-> modification and last file status change timestamps of the parent
-> directory. Also, if the file's link count is not 0, the last file status
-> change timestamp of the file shall be marked for update.
->=20
+On Mon, Aug 12, 2024 at 05:10:15PM +0100, Pavel Begunkov wrote:
+> And the last point, I'm surprised there are two versions of
+> btrfs_ioctl_encoded_io_args. Maybe, it's a good moment to fix it if
+> we're creating a new interface.
+> 
+> E.g. by adding a new structure defined right with u64 and such, use it
+> in io_uring, and cast to it in the ioctl code when it's x64 (with
+> a good set of BUILD_BUG_ON sprinkled) and convert structures otherwise?
 
-Weird way to phrase to that. IMO, we still want to stamp the inode's
-ctime even if the link count goes to 0. That's what Linux generally
-does, anyway. Oh well..
-=20
->=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->=20
-> Reviewed-by: David Sterba <dsterba@suse.com>
-
-
-FWIW, this should probably go in via the btrfs tree.=20
---=20
-Jeff Layton <jlayton@kernel.org>
+If you mean the 32bit version of the ioctl struct
+(btrfs_ioctl_encoded_io_args_32), I don't think we can fix it. It's been
+there from the beginning and it's not a mistake. I don't remember the
+details why and only vaguely remember that I'd asked why we need it.
+Similar 64/32 struct is in the send ioctl but that was a mistake due to
+a pointer being passed in the structure and that needs to be handled due
+to different type width.
 
