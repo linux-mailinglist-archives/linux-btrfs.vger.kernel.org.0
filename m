@@ -1,121 +1,107 @@
-Return-Path: <linux-btrfs+bounces-7133-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A58594F137
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 17:03:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED09694F196
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 17:26:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADB281C2205E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 15:03:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9BA328157B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 15:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229D717D368;
-	Mon, 12 Aug 2024 15:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D1D184522;
+	Mon, 12 Aug 2024 15:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3CdMYtw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Heskn4Iq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADFC91E504;
-	Mon, 12 Aug 2024 15:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2568717C9FC;
+	Mon, 12 Aug 2024 15:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723475004; cv=none; b=YMbztLkFK3nA874KchpOz2ISlZSiShfpJNiO3by/+/j91TDwLci6Gl9afqnGs72wd2bIRGGXk02QXI3n0tzL4As/nCRl7e4qHWfWTqMe+VwY/pixkVZMbNGaC1O4zP1rv6gFXpSnkGDFHBhvmwcfn9u019gwVWtQIGuhOCzBLpM=
+	t=1723476359; cv=none; b=SWK0pvExDHSCrewKnzQDk6pvhowYhxPJQKe+5mEj+tONWcSvzlOEjMssfEYCdQZSwTt72RaSLAZS7TG/Kv4wC1i02WT0nPWsqy01CWkn3tcLYVvDTn/YI7jIhJ+lZfP9ce/LesjuDqNRwZidt3UD8Y0ALmlzZDl7fervcSmo/JQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723475004; c=relaxed/simple;
-	bh=QwP0vGEK4sodQeENKkw2OjgxGCSKK/RmzQvfNDTIaQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nc8eojbH+AAmI8SnavgjqHdLiO7bkAdm5kPP0ZqTexUpBC3RPekwmcVdPKVsFsjQUha2Npj8myU6XmlyJQdpt148MYLnskyrVYCFxH09avt4WPzEaAGQ17dycKfX0A/yTTFgKXkhjl52hwq47NsuP4LQY+LIUyxLlT3oauaUFZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A3CdMYtw; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42816ca782dso34102035e9.2;
-        Mon, 12 Aug 2024 08:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723475001; x=1724079801; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JtvyEdKnl129bGdPA8p9XAq76/4RIujBwi8fVV3N7ko=;
-        b=A3CdMYtwwoSthjApoFOHSkbSeygcUiMlpRxzqdr/fOlbRY3NeUmZZY0MUmlwzI8Vij
-         eYHu6TnLNQ00K4AmKfg7/CSljKjF673uRrJZFPtZ5ZOeLpzotpksYVh9RhftiLY1iIp4
-         mnHHKvc76qYZLBH44UPw0ROTP3IsgduYkgBczV/bKPQlFIzd/+BzBLCMMCW/WYKZPgsk
-         Tl0EFUhu0m367cL5lHbqcHuM2xt/uHyCt/BsUTHvlBDaCdZbFQlqZrzCkD7A0rD5F68b
-         spA0XmRnAwO8TUeFNUyckIj8NujdDQbHlcmj5vHm1gF09eSf6fh53uY+cYJbjGQ1o+Od
-         BuoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723475001; x=1724079801;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JtvyEdKnl129bGdPA8p9XAq76/4RIujBwi8fVV3N7ko=;
-        b=rETiRnemtmmYfWOc3Uon5d4ztb5OSnStjgjZ97f9zu1dgv8c4VYLWcohbjyK8VA+Wk
-         P27zLlDkHXFvuePAxkverMMQHCaPaAK2+MQGd51mE0O3WthPVWyQ4mpIlWnXT7VFCxFj
-         TfsXVgku1gvCxfkY+zciOS4KpZ16XCLmjlNrJhtsmBi4+hKyHresL2ztlgjka1wTnjEu
-         Q4Igc4Im6NdwmAtwgamq7wUhIiyTTqlfHT7gEDZJYwlI0Q6G41aO7OFEKH9m2QI4qyb9
-         ABi9TMZqfhOe9mjg0L49YWkrRaHqYKIHauO96DkqDODn2WWMOrNt3owLAHYZHEVj0U63
-         es4w==
-X-Forwarded-Encrypted: i=1; AJvYcCV3XVYw01AjdrpPyijynNBlcIYuFNt2eY092C1zaPmReKdn80qMi9Drnf1s8SU5qdrjNEc20tYz4Xo+3RW21K5xtm0nPLBrGtM=
-X-Gm-Message-State: AOJu0YxBbHoTnAR9CalOATz22PKa4fUv57qTg0MH2EQA4OsbzGcAzIzC
-	oQ5xTznJL8n09EMl2Sb7cVtceu5Ia2Vk3HvJQu0tOhk7Ht4DVIzk0VMD8mUU
-X-Google-Smtp-Source: AGHT+IFVGL89yyQWV91H1VKNCyGPDmxSxPR8YjhTs/YbqMc6TP8W39+rrnwvolD9NRYXHYpYu461mQ==
-X-Received: by 2002:a5d:694f:0:b0:367:8876:68e6 with SMTP id ffacd0b85a97d-3716cd1fe1amr358504f8f.48.1723475000675;
-        Mon, 12 Aug 2024 08:03:20 -0700 (PDT)
-Received: from [192.168.42.116] ([85.255.232.227])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36e4c93833asm7784641f8f.41.2024.08.12.08.03.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Aug 2024 08:03:20 -0700 (PDT)
-Message-ID: <899fdd00-a3ab-43df-8f4a-04b36fdcddb4@gmail.com>
-Date: Mon, 12 Aug 2024 16:03:50 +0100
+	s=arc-20240116; t=1723476359; c=relaxed/simple;
+	bh=NmCf39JdeAxzWlINGyTyT0YTEVkYbzQv+t+jtZ22OCI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CLjod4kWA4rLNi8IbS07VU0MZAnHHw8GJCLI5JJ4T25u8YsDbiRNTxhoOvD1D3sXfo5HGfgXlLhJdrwu5aw8wWyjEh88YBLTJpNKu2YVQsR1CJOGF0GH4qTEYDAzMByOhhpEntJpiLpDqcNo4uNJGIFDBuGDLPncQzfVToV7cTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Heskn4Iq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A97EC32782;
+	Mon, 12 Aug 2024 15:25:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723476358;
+	bh=NmCf39JdeAxzWlINGyTyT0YTEVkYbzQv+t+jtZ22OCI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Heskn4Iqi8vOyNirE+GW6Qtq9Rqa6ScXuxU2yTQrimxHUPVO0mCrmLAfMf3+kha+S
+	 5LHwzCONssor1SEYIupv0oSNIu57TTmQksF4dahzxGfg51NUiyOCNp1IFH7DOJAkQ0
+	 gJ/YnsI1ycfnHmwj1NdCV07WeVK2UjZv9YL5bXaj9mY95v5UaYIODb6tv1qOT7RUu8
+	 +Gw/XHfspFADCYkpCWjLbLcUVroE/L91EJwg+Fv4ZxMljrfXVm+3e7FRowCekReH7k
+	 vYtw403tloqBsU3PYPNWmXsbqai8lZT/2ehujqPCz6gh2SB/+PqqUifN3O1XYafe83
+	 CwP0TGA9wDbmg==
+From: fdmanana@kernel.org
+To: stable@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	Filipe Manana <fdmanana@suse.com>,
+	syzbot+7dbbb74af6291b5a5a8b@syzkaller.appspotmail.com,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Subject: [PATCH for 6.10 stable] btrfs: fix double inode unlock for direct IO sync writes
+Date: Mon, 12 Aug 2024 16:25:53 +0100
+Message-ID: <8ffd293acee0e4c823a4ed1e4e5672981d614d72.1723043969.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1723043969.git.fdmanana@suse.com>
+References: <cover.1723043969.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: add io_uring interface for encoded reads
-To: Mark Harmstone <maharmstone@meta.com>,
- Christoph Hellwig <hch@infradead.org>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
- Jens Axboe <axboe@kernel.dk>,
- "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-References: <20240809173552.929988-1-maharmstone@fb.com>
- <Zrnxgu7vkVDgI6VU@infradead.org>
- <ac79ec76-200e-44bd-80fc-08ca38c565d0@meta.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <ac79ec76-200e-44bd-80fc-08ca38c565d0@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 8/12/24 15:46, Mark Harmstone wrote:
-> On 12/8/24 12:26, Christoph Hellwig wrote:
->> What is the point if this doesn't actually do anything but returning
->> -EIOCBQUEUED?
-> 
-> It returns EIOCBQUEUED to say that io_uring has queued the request, and
-> adds the task to io_uring's thread pool for it to be completed.
+From: Filipe Manana <fdmanana@suse.com>
 
-No, it doesn't. With your patch it'll be executed by the
-task submitting the request and seemingly get blocked,
-which is not how an async interface can work.
+commit e0391e92f9ab4fb3dbdeb139c967dcfa7ac4b115 upstream.
 
-I'll comment on the main patch.
+If we do a direct IO sync write, at btrfs_sync_file(), and we need to skip
+inode logging or we get an error starting a transaction or an error when
+flushing delalloc, we end up unlocking the inode when we shouldn't under
+the 'out_release_extents' label, and then unlock it again at
+btrfs_direct_write().
 
+Fix that by checking if we have to skip inode unlocking under that label.
 
->> Note that that the internals of the btrfs encoded read is built
->> around kiocbs anyway, so you might as well turn things upside down,
->> implement a real async io_uring cmd and just wait for it to complete
->> to implement the existing synchronous ioctl.
-> 
-> I'd have to look into it, but that sounds like it could be an
-> interesting future refactor.
-> 
-> Mark
+Reported-by: syzbot+7dbbb74af6291b5a5a8b@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/000000000000dfd631061eaeb4bc@google.com/
+Fixes: 939b656bc8ab ("btrfs: fix corruption after buffer fault in during direct IO append write")
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/file.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 35ce1c810bd3..ca434f0cd27f 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2080,7 +2080,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 
+ out_release_extents:
+ 	btrfs_release_log_ctx_extents(&ctx);
+-	btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
++	if (skip_ilock)
++		up_write(&BTRFS_I(inode)->i_mmap_lock);
++	else
++		btrfs_inode_unlock(BTRFS_I(inode), BTRFS_ILOCK_MMAP);
+ 	goto out;
+ }
+ 
 -- 
-Pavel Begunkov
+2.43.0
+
 
