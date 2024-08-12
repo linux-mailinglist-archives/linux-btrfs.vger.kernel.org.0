@@ -1,165 +1,176 @@
-Return-Path: <linux-btrfs+bounces-7143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CF9E94F576
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 18:58:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1351694F579
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 19:00:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EAE11C21020
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 16:58:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEBB81F2128A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 17:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28502187FEB;
-	Mon, 12 Aug 2024 16:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EVr/7ebH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AHJCGf7l";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EVr/7ebH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="AHJCGf7l"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D101A18785F;
+	Mon, 12 Aug 2024 16:59:54 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF82018754F;
-	Mon, 12 Aug 2024 16:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86DB186E5B;
+	Mon, 12 Aug 2024 16:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723481901; cv=none; b=KWqmFHxtlm0ErL7sjicath+xD5x19zaurxTCDbXjTgVwcxK7wJ0lspKKFtGuWXJA82YTve3r2CKMxlBOH8pZii+jEWwS5G4EAuRW7+uR4trUXQWwQV77jW6KxkBu8zIZ7FDnbca4zsA+bMS3Z7KGDDQ+oMy/TkRTFG4ACYxpBkc=
+	t=1723481994; cv=none; b=Z1R66fhVfmKfqb9IPzND6nM4E6RSRIFTDqrhYJ709qHlMWIaJuxuPiQmaecZpuhp24cZWb1p1FReWNqQyovBxYFK/v7tecOMNBYEU4C4ISt8Du1x/114DDWv/wPBRR+dDQQ02BFNP+HPNDCavZJe7FUZsf35bLsi3nL2e6TPk80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723481901; c=relaxed/simple;
-	bh=443q6LOjOjuF400eu9Qmc3JZsLFoZTc4Fv5YKRpGy/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jL74A+QGRrm8bac17HpXQwO2W0UMFP1q4LVkWkXJtafVmA/4ML4YV5OotUd5Y2nrox5Lt85SJiUgWsDNKJfAEhYxASedZRx3VOQ/Iu1jn8mQh3eI75NPVpSd4AVojZK3wOQ67drx81YEIGaBaYJ7J5bkCAkpbXytRlCDoA4oD50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EVr/7ebH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AHJCGf7l; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EVr/7ebH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=AHJCGf7l; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BE23B1FB91;
-	Mon, 12 Aug 2024 16:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723481897;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
-	b=EVr/7ebH8FDvbGHS+5REICn4QBXLFf+fzKsqwHsnQtxSNEAQi7Fpf9we0XZy9P60JFHTS6
-	98nvXUamu7fRtqGXVFIB3d6QP2yZNZ1NKw7ITvJy0XygM9UrZ69ampfLWbyPwQ+4VUzuVs
-	0fszbS9b/ucKCy2Pomfj4XbR/Pv4blI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723481897;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
-	b=AHJCGf7lv4LIKBYIlt/VcK6zgKW6MgEvIt7Dq2ISnUpMMgNyd6u1lO6a88K33h8pmgQCja
-	a5RwUzyhGbxMTVBw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="EVr/7ebH";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=AHJCGf7l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723481897;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
-	b=EVr/7ebH8FDvbGHS+5REICn4QBXLFf+fzKsqwHsnQtxSNEAQi7Fpf9we0XZy9P60JFHTS6
-	98nvXUamu7fRtqGXVFIB3d6QP2yZNZ1NKw7ITvJy0XygM9UrZ69ampfLWbyPwQ+4VUzuVs
-	0fszbS9b/ucKCy2Pomfj4XbR/Pv4blI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723481897;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Um+voa6pXaS8Mx4m8dcda8iX6et8VBzOxl8Rc8AytZQ=;
-	b=AHJCGf7lv4LIKBYIlt/VcK6zgKW6MgEvIt7Dq2ISnUpMMgNyd6u1lO6a88K33h8pmgQCja
-	a5RwUzyhGbxMTVBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A947313AD8;
-	Mon, 12 Aug 2024 16:58:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Hn0VKSk/umbMQQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 12 Aug 2024 16:58:17 +0000
-Date: Mon, 12 Aug 2024 18:58:16 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
-	Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add io_uring interface for encoded reads
-Message-ID: <20240812165816.GL25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240809173552.929988-1-maharmstone@fb.com>
- <Zrnxgu7vkVDgI6VU@infradead.org>
- <1f5f4194-8981-46d4-aa7d-819cbdf653b9@gmail.com>
+	s=arc-20240116; t=1723481994; c=relaxed/simple;
+	bh=MWZG/stRZlwSBWX9yPCSHf4vAICXFPCGDCYET2x9MKg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=R0zRIAFosyy4D5e9Jl3SRzPBmJEnE/z7UbTC6LLS4cZBwraKaXausnpyAW9OHHvi/gSk/8eA87yN9L/ok+5lKwOby1arDUmKTXoC9/d5yLyXcWXB1a2ujDvzh9OAXAILUtdF/lU9usVBYFicxMxDaeGrb9iMiCEqXVaodj7Ccww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5bb477e3a6dso4395099a12.0;
+        Mon, 12 Aug 2024 09:59:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723481991; x=1724086791;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/o1IqV2hgO8RM/6MLdLztA93uxz4FzzAolAt4JwN+e0=;
+        b=SMZTsAI5558PpWo/zrURN7JWcTFEwaqcUfZ9w8vO7f4kH3rg1Nb5kV2gyfZcRPyoA7
+         ylF6NNLyvcyQULdBIbvwIrvv7evE1qCakXd4jO93+6z55++1zoZQukC4tVgIaPgkj3e/
+         SpoFAy2idnDhkP8SseqX061HgCkPKh24yowV/AXMQWFndxuUO38t9teBfCWvemPDyUdY
+         sYBt3DEIenV3+Eor1pUusNfjiHAYc19TxXiLaK1F9yB82iyf/bGCePm4E5zExSbUsPr0
+         NqEevR+PAq/VETCNvDBkgvwcvJUVZAT/yk9TTMGIr5UvrYhFgDf8jUt3/AmaBRDF8eKA
+         hvvA==
+X-Forwarded-Encrypted: i=1; AJvYcCVAB/tHfojVQvJ/qrFIU0gtw3UlTNIxSzzY2fe1qaBjp18kYWDeL8Tt1BUqTE+ToWfr/8GbeMc3jiGahrGyA9Gh5MHC4ekq1YNsKJ/I8liS/PsZzNLwHPbG+vs3qJhrx2L4vkQ2MxqJfOw=
+X-Gm-Message-State: AOJu0YyMCKX/bPHPhJcKO3Hx13wVe/nWj/ivi5DEjDwfeXr8P6MmyjRb
+	2IA7hYRvrochpdvIRYDQ5R804SG/9jpqDt6saNWMN6ei2/seEPe5d7h2mA==
+X-Google-Smtp-Source: AGHT+IHw7XaBfNS4pMZ543DETIq182k43CcwQ31/PxFJbOHDuW6srOl/LlmVNpcMTwOEaZc72ChluA==
+X-Received: by 2002:a17:907:f18c:b0:a7a:c256:3c5 with SMTP id a640c23a62f3a-a80ed2c4c8amr71517866b.46.1723481990834;
+        Mon, 12 Aug 2024 09:59:50 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f732f200fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f732:f200:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80bb0e0565sm244050766b.67.2024.08.12.09.59.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Aug 2024 09:59:50 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: reduce chunk_map lookups in btrfs_map_block
+Date: Mon, 12 Aug 2024 18:59:31 +0200
+Message-ID: <20240812165931.9106-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f5f4194-8981-46d4-aa7d-819cbdf653b9@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -2.71
-X-Rspamd-Queue-Id: BE23B1FB91
-X-Spamd-Result: default: False [-2.71 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Mon, Aug 12, 2024 at 05:10:15PM +0100, Pavel Begunkov wrote:
-> And the last point, I'm surprised there are two versions of
-> btrfs_ioctl_encoded_io_args. Maybe, it's a good moment to fix it if
-> we're creating a new interface.
-> 
-> E.g. by adding a new structure defined right with u64 and such, use it
-> in io_uring, and cast to it in the ioctl code when it's x64 (with
-> a good set of BUILD_BUG_ON sprinkled) and convert structures otherwise?
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-If you mean the 32bit version of the ioctl struct
-(btrfs_ioctl_encoded_io_args_32), I don't think we can fix it. It's been
-there from the beginning and it's not a mistake. I don't remember the
-details why and only vaguely remember that I'd asked why we need it.
-Similar 64/32 struct is in the send ioctl but that was a mistake due to
-a pointer being passed in the structure and that needs to be handled due
-to different type width.
+Currently we're calling btrfs_num_copies() before btrfs_get_chunk_map() in
+btrfs_map_block(). But btrfs_num_copies() itself does a chunk map lookup
+to be able to calculate the number of copies.
+
+So split out the code getting the number of copies from btrfs_num_copies()
+into a helper called btrfs_chunk_map_num_copies() and directly call it
+from btrfs_map_block() and btrfs_num_copies().
+
+This saves us one rbtree lookup per btrfs_map_block() invocation.
+
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/volumes.c | 50 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 29 insertions(+), 21 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index e07452207426..4863bdb4d6f4 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5781,10 +5781,33 @@ void btrfs_mapping_tree_free(struct btrfs_fs_info *fs_info)
+ 	write_unlock(&fs_info->mapping_tree_lock);
+ }
+ 
++static int btrfs_chunk_map_num_copies(struct btrfs_chunk_map *map)
++{
++	enum btrfs_raid_types index = btrfs_bg_flags_to_raid_index(map->type);
++
++	/* Non-RAID56, use their ncopies from btrfs_raid_array. */
++	if (!(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK))
++		return btrfs_raid_array[index].ncopies;
++
++	if (map->type & BTRFS_BLOCK_GROUP_RAID5)
++		return 2;
++
++	/*
++	 * There could be two corrupted data stripes, we need
++	 * to loop retry in order to rebuild the correct data.
++	 *
++	 * Fail a stripe at a time on every retry except the
++	 * stripe under reconstruction.
++	 */
++	if (map->type & BTRFS_BLOCK_GROUP_RAID6)
++		return map->num_stripes;
++
++	return 1;
++}
++
+ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
+ {
+ 	struct btrfs_chunk_map *map;
+-	enum btrfs_raid_types index;
+ 	int ret = 1;
+ 
+ 	map = btrfs_get_chunk_map(fs_info, logical, len);
+@@ -5797,22 +5820,7 @@ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
+ 		 */
+ 		return 1;
+ 
+-	index = btrfs_bg_flags_to_raid_index(map->type);
+-
+-	/* Non-RAID56, use their ncopies from btrfs_raid_array. */
+-	if (!(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK))
+-		ret = btrfs_raid_array[index].ncopies;
+-	else if (map->type & BTRFS_BLOCK_GROUP_RAID5)
+-		ret = 2;
+-	else if (map->type & BTRFS_BLOCK_GROUP_RAID6)
+-		/*
+-		 * There could be two corrupted data stripes, we need
+-		 * to loop retry in order to rebuild the correct data.
+-		 *
+-		 * Fail a stripe at a time on every retry except the
+-		 * stripe under reconstruction.
+-		 */
+-		ret = map->num_stripes;
++	ret = btrfs_chunk_map_num_copies(map);
+ 	btrfs_free_chunk_map(map);
+ 	return ret;
+ }
+@@ -6462,14 +6470,14 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	io_geom.stripe_index = 0;
+ 	io_geom.op = op;
+ 
+-	num_copies = btrfs_num_copies(fs_info, logical, fs_info->sectorsize);
+-	if (io_geom.mirror_num > num_copies)
+-		return -EINVAL;
+-
+ 	map = btrfs_get_chunk_map(fs_info, logical, *length);
+ 	if (IS_ERR(map))
+ 		return PTR_ERR(map);
+ 
++	num_copies = btrfs_chunk_map_num_copies(map);
++	if (io_geom.mirror_num > num_copies)
++		return -EINVAL;
++
+ 	map_offset = logical - map->start;
+ 	io_geom.raid56_full_stripe_start = (u64)-1;
+ 	max_len = btrfs_max_io_len(map, map_offset, &io_geom);
+-- 
+2.43.0
+
 
