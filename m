@@ -1,102 +1,57 @@
-Return-Path: <linux-btrfs+bounces-7116-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7117-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63B4F94EBBD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 13:23:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6691D94EBC4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 13:27:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E17C1F2231E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 11:23:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B9201F22358
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 11:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693C51741FA;
-	Mon, 12 Aug 2024 11:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AD0175D29;
+	Mon, 12 Aug 2024 11:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c+zQGBRX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hvOxM4nG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c+zQGBRX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hvOxM4nG"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eI1k8baS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92702130495
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 11:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADDD130495;
+	Mon, 12 Aug 2024 11:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723461827; cv=none; b=m87ex6MupeDqh7/efe/5bO0cq219ks5SjZhioist1924QC6xntwnOMD7vWN8Q4n5xbHQWveesorUclCSoCquXcSgE0GsgGpmN8LG3OulmStNfGkRJqGWpxMzfyJAEbvZ5SogjJTo24Pq+LA/cg7W6BZ2ktjzKy2b3M85b9S+csk=
+	t=1723462023; cv=none; b=YpVQ+7bLbPKA1jMPhK62eKvhfXAxSwFFEHSvh7dHY1fLbEgeyXlSQ2QXL9002ZDLCzR+nC2pHJbtIBFREwZ8zkYmhP6bA72C2Tyz8b40gJj4NrjQ0/ceBZXDrgCuYmTmwHsQYvwuP5amLgc19i/y6BVZGO55MwLqopjAYiBjRrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723461827; c=relaxed/simple;
-	bh=WJOVGwPc2bmDarDQBuTsJFbT9jJMgtPAvzGeafD1sHU=;
+	s=arc-20240116; t=1723462023; c=relaxed/simple;
+	bh=F8I1SY3rXlC2gfcrEh1GD/M48WGX4duQA0Xf3cSqbW8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U4Ub6jGAG5BL6V4aqQXVVdEUV3Vx3Kt9ySzdbjegVjTLe1Gdq4rtYi8J07Le+jVzPjO/6A0qTl/taeWTtmUh8CZt01unqSE7tZfrb3M93Pj8NHYVwr+xMIcn1Py2X3OmGktnuugdoKLtcy0kUBHW1ObyvKFDiEshQt6X0oaojIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c+zQGBRX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hvOxM4nG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c+zQGBRX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hvOxM4nG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5E75122516;
-	Mon, 12 Aug 2024 11:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723461823;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=agXbP0s7mlI3oV0H30+A5MdwEC8kQnfU3/VcyRJPzTU=;
-	b=c+zQGBRXcekRvhF57D+Td+jVggg2v80vH5CcPD+u0ys4k2Q81VG/bpak5FqJ40KJYMzQBi
-	87W+sE8CzaKeT4iact632Cy7qh1GxbCZV9BkOVGfnLfUDChpSxPf9Ir1V6nAPXcs6H92gK
-	kXVD2BADCHAmdpteUM+jE2mhDdoBtEM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723461823;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=agXbP0s7mlI3oV0H30+A5MdwEC8kQnfU3/VcyRJPzTU=;
-	b=hvOxM4nGCUKjblrjmpkOzEDU0kxyGDfc08lpkmi2i11R1OgB7yUYLFB7NyDKmGiW/9Voh6
-	GM19y1gtGpQbLICA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=c+zQGBRX;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=hvOxM4nG
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723461823;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=agXbP0s7mlI3oV0H30+A5MdwEC8kQnfU3/VcyRJPzTU=;
-	b=c+zQGBRXcekRvhF57D+Td+jVggg2v80vH5CcPD+u0ys4k2Q81VG/bpak5FqJ40KJYMzQBi
-	87W+sE8CzaKeT4iact632Cy7qh1GxbCZV9BkOVGfnLfUDChpSxPf9Ir1V6nAPXcs6H92gK
-	kXVD2BADCHAmdpteUM+jE2mhDdoBtEM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723461823;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=agXbP0s7mlI3oV0H30+A5MdwEC8kQnfU3/VcyRJPzTU=;
-	b=hvOxM4nGCUKjblrjmpkOzEDU0kxyGDfc08lpkmi2i11R1OgB7yUYLFB7NyDKmGiW/9Voh6
-	GM19y1gtGpQbLICA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 424C5137BA;
-	Mon, 12 Aug 2024 11:23:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5XixD7/wuWbSUwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 12 Aug 2024 11:23:43 +0000
-Date: Mon, 12 Aug 2024 13:23:42 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <maharmstone@meta.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bhqkAzMtDKbF8QZ2muCX3QqsXqxaK7xAnhnlSjJ4QN0EedfzPhCMYFPX6ZnnGKdEvl6MmBZrkho5be9BahWZA+K7hERRdpXxbfOE3P4H7BzCZIIbQCkE2we2ECjUbblq/7vFIvZtTMd3lH6cmYrCvn9AjagztiJMGG/iIz3RBmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=eI1k8baS; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=XzgLkolRhPVwGss834FlidYVeS9OBsZfq9KH2KXQ19k=; b=eI1k8baSAk30s74B+KSj0Di1Nw
+	YMy1P2zjaVEO3vBEFRQeOxm23hnck1GfNbFzBQ/MqzCdpkt4FzNTgeNSos1Buv2XILIkSA564nMmE
+	z1entxSJiQM9WnedTTat+niPg/yUGGLnuUaH0N8QWQ9cKtwEjAjcjNBQFxRi/XGU6RIufGZ1bd3q/
+	D4fui/ujT+/eRxUYQvLVfR/i/U8v3qrI7QeTuqNDXIF0V8ZCQX5hliiE/f9fr4cio/QDP5RYJX8NY
+	HHDvq61QTJGAy6YJKdSl4OyzzsgtBT5llZYfTYb2IQm6W4ztBLHkZh55goyFNQnniQJ0+8Qax1DI2
+	gdu5rV/A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sdTCU-000000008Fu-0yts;
+	Mon, 12 Aug 2024 11:26:58 +0000
+Date: Mon, 12 Aug 2024 04:26:58 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
 Subject: Re: [PATCH] btrfs: add io_uring interface for encoded reads
-Message-ID: <20240812112342.GE25962@suse.cz>
-Reply-To: dsterba@suse.cz
+Message-ID: <Zrnxgu7vkVDgI6VU@infradead.org>
 References: <20240809173552.929988-1-maharmstone@fb.com>
- <20240809183418.GC25962@twin.jikos.cz>
- <879d0861-9a67-4e02-b6ec-60f2c6c6cb40@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -105,51 +60,125 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <879d0861-9a67-4e02-b6ec-60f2c6c6cb40@meta.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 5E75122516
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <20240809173552.929988-1-maharmstone@fb.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Aug 12, 2024 at 09:20:19AM +0000, Mark Harmstone wrote:
-> On 9/8/24 19:34, David Sterba wrote:
-> > Where is the CAP_SYS_ADMIN check done? It's not in this patch so I
-> > assume it's somewhere in io_uring but I don't see it. Thanks.
+On Fri, Aug 09, 2024 at 06:35:27PM +0100, Mark Harmstone wrote:
+> Adds an io_uring interface for asynchronous encoded reads, using the
+> same interface as for the ioctl. To use this you would use an SQE opcode
+> of IORING_OP_URING_CMD, the cmd_op would be BTRFS_IOC_ENCODED_READ, and
+> addr would point to the userspace address of the
+> btrfs_ioctl_encoded_io_args struct. As with the ioctl, you need to have
+> CAP_SYS_ADMIN for this to work.
+
+What is the point if this doesn't actually do anything but returning
+-EIOCBQUEUED?
+
+Note that that the internals of the btrfs encoded read is built
+around kiocbs anyway, so you might as well turn things upside down,
+implement a real async io_uring cmd and just wait for it to complete
+to implement the existing synchronous ioctl.
+
 > 
-> It still gets done in btrfs_ioctl_encoded_read, which gets called by 
-> io_uring in a task with the process context.
-
-Oh of course. The io_uring wrapper is simple so the check does not have
-to be lifted from the function.
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> ---
+>  fs/btrfs/file.c  |  1 +
+>  fs/btrfs/ioctl.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/ioctl.h |  1 +
+>  3 files changed, 50 insertions(+)
+> 
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index f9d76072398d..974f9e85b46e 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -3850,6 +3850,7 @@ const struct file_operations btrfs_file_operations = {
+>  	.compat_ioctl	= btrfs_compat_ioctl,
+>  #endif
+>  	.remap_file_range = btrfs_remap_file_range,
+> +	.uring_cmd	= btrfs_uring_cmd,
+>  };
+>  
+>  int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end)
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 0493272a7668..8f5cc7d1429c 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/fileattr.h>
+>  #include <linux/fsverity.h>
+>  #include <linux/sched/xacct.h>
+> +#include <linux/io_uring/cmd.h>
+>  #include "ctree.h"
+>  #include "disk-io.h"
+>  #include "export.h"
+> @@ -4648,6 +4649,53 @@ static int btrfs_ioctl_encoded_write(struct file *file, void __user *argp, bool
+>  	return ret;
+>  }
+>  
+> +static void btrfs_uring_encoded_read_cb(struct io_uring_cmd *cmd,
+> +					unsigned int issue_flags)
+> +{
+> +	int ret;
+> +
+> +	ret = btrfs_ioctl_encoded_read(cmd->file, (void __user *)cmd->sqe->addr,
+> +				       false);
+> +
+> +	io_uring_cmd_done(cmd, ret, 0, issue_flags);
+> +}
+> +
+> +static void btrfs_uring_encoded_read_compat_cb(struct io_uring_cmd *cmd,
+> +					       unsigned int issue_flags)
+> +{
+> +	int ret;
+> +
+> +	ret = btrfs_ioctl_encoded_read(cmd->file, (void __user *)cmd->sqe->addr,
+> +				       true);
+> +
+> +	io_uring_cmd_done(cmd, ret, 0, issue_flags);
+> +}
+> +
+> +static int btrfs_uring_encoded_read(struct io_uring_cmd *cmd,
+> +				    unsigned int issue_flags)
+> +{
+> +	if (issue_flags & IO_URING_F_COMPAT)
+> +		io_uring_cmd_complete_in_task(cmd, btrfs_uring_encoded_read_compat_cb);
+> +	else
+> +		io_uring_cmd_complete_in_task(cmd, btrfs_uring_encoded_read_cb);
+> +
+> +	return -EIOCBQUEUED;
+> +}
+> +
+> +int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> +{
+> +	switch (cmd->cmd_op) {
+> +	case BTRFS_IOC_ENCODED_READ:
+> +#if defined(CONFIG_64BIT) && defined(CONFIG_COMPAT)
+> +	case BTRFS_IOC_ENCODED_READ_32:
+> +#endif
+> +		return btrfs_uring_encoded_read(cmd, issue_flags);
+> +	}
+> +
+> +	io_uring_cmd_done(cmd, -EINVAL, 0, issue_flags);
+> +	return -EIOCBQUEUED;
+> +}
+> +
+>  long btrfs_ioctl(struct file *file, unsigned int
+>  		cmd, unsigned long arg)
+>  {
+> diff --git a/fs/btrfs/ioctl.h b/fs/btrfs/ioctl.h
+> index 2c5dc25ec670..33578f4b5f46 100644
+> --- a/fs/btrfs/ioctl.h
+> +++ b/fs/btrfs/ioctl.h
+> @@ -22,5 +22,6 @@ void btrfs_sync_inode_flags_to_i_flags(struct inode *inode);
+>  int __pure btrfs_is_empty_uuid(u8 *uuid);
+>  void btrfs_update_ioctl_balance_args(struct btrfs_fs_info *fs_info,
+>  				     struct btrfs_ioctl_balance_args *bargs);
+> +int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags);
+>  
+>  #endif
+> -- 
+> 2.44.2
+> 
+> 
+---end quoted text---
 
