@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7147-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7148-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5475894F969
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 00:13:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9BF994F988
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 00:22:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813A5B20E49
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 22:12:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FCCC1F22D1D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 22:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35D3195390;
-	Mon, 12 Aug 2024 22:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CEA197552;
+	Mon, 12 Aug 2024 22:22:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="t5DTXaM6"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="okNlwg/0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE78954759
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 22:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED49F14A4DF
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 22:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723500769; cv=none; b=Z+7rg0dswsxtl88PvvRGtrU376HFIJ4Dmk7ISPsyaEoSbC1Z7atBw4aFSd6BBgyMMK/h82PtEdmxML0LHal1qTHjQHvcS2ccOFRfO9Lkibkkp2dlKTGXhHN0n1/a+ZJV/m+05T5JfUNLk3HNQ6Z/14P7KWVCI4wk5MexFwcbiuo=
+	t=1723501369; cv=none; b=uug8m7hmfdjD4U7ic47PJoa8I+fyq2+yocO9VEnfOsNT5afgtv27kcjTuv0DF03W7U3HeQTWuI9VnPdBJ7K+RyQGqp9FAZVOb+JJf2LLSG6x8IRcNXOUIsNeEbwbEOUrEXKs9yWZlGPw/9hKaHdD+SM38v7bv24A5GXqdXDlkZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723500769; c=relaxed/simple;
-	bh=J3IdUuu3vGJxLiydzlbqHy6eEVtPhfze/ZpkZgO+neQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R42g660yT8r9sS3omSfRTa6+9yQ9NfCwg7Q8mXbmOyFi0YuxXT2S6RN93GF8fnu5P0ZKXG5DjkZq2yhT63qd2ixFZGw8vqF6TU15X3/8SoI+QtwgIhzl9So6MvyLonZHAFtSdQJpOh0jd2IV9vvxy3XKy/seEN2V+n62MIw1ZPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=t5DTXaM6; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1723501369; c=relaxed/simple;
+	bh=tAWKkI5qF43+aEXtkW5m+H4AjnSzlwliImAlHDAP4yk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=kuAXyZySF+iU5+SDdTXnjwNdhch/NjXYXTLFJGZIWn+o/WAj3JpylpIYacbxXETsXiLbM459j7xCmR2qAPzB0b5DyrmrrlEZ7s92yKutLJQFKLtUj2m7vCd20bOST+DE6TW/MzfoDbJdpdTMlW7XHnGonqHcbiq2L+6AmwwmbwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=okNlwg/0; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1723500763; x=1724105563; i=quwenruo.btrfs@gmx.com;
-	bh=J3IdUuu3vGJxLiydzlbqHy6eEVtPhfze/ZpkZgO+neQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1723501360; x=1724106160; i=quwenruo.btrfs@gmx.com;
+	bh=iaMsX5LqIwuXOPH8bDg2qbhGvwybWMrEqD74BLCurpQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=t5DTXaM6SMsiR5wav1tB9OEyJJ8iSXDpIfVDpVJ7S7qMcoEMCAaaqlCnBM/VY2Hb
-	 v0qidMV4XqmQVM3kAWES6jf9/pcV3bjk1miHbEFnh4BfJeuVf8VYTMWcTUyHYiL+q
-	 l8z28DGoOclHszBgp54iDg28671AnmlQWKT05kriinNVx7vdR3bh6+XHgeirbjMHZ
-	 SHRKrMkg+CqJJFmF3Y1CPiFgT64UnQ3DfcY0u0m4ltPEEh0qGbYz679g/hJd/Ux2h
-	 dYBDTXsHDbJ9i3N9Fj0nVq6dCBsTBSUvjo9kBzoppE0U+6puYdd95TltGwlr7x7vf
-	 fa0da3qzgjCp3dpObw==
+	b=okNlwg/06AGZlVi4UdnlpW288PjReOoVdF4qr4U/ACptCctNp7nUtaT+NZSA1y3r
+	 MwhtRsf4WfuCBwiytLd99/96T3gpJSj0IvAzLs8kRiY32oGxbC8BGh9+UesVixIXO
+	 IUJu65ihrJ2ljlzfAkAHPwcj72AQe0hP7BDpF/TIFdh2v2X+IBRkb/l89s4CKCzp+
+	 MXwKVjCE175g8ezDfKIBxXavpHmdluoM1FAY9+Y/nxjp5lRGBk1GsI7I6NQIf8LDR
+	 DUtF4d83jOzssIfjbnPA9PoF6bLWWmUuPkms/nFEafYdPxgCbPfPGCwS5QyIxmna+
+	 /1uid2vedrWRTIBulw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWRVb-1sffjV39A3-00UpLw; Tue, 13
- Aug 2024 00:12:43 +0200
-Message-ID: <4b2b80ad-ef51-410b-8093-60d133e9c523@gmx.com>
-Date: Tue, 13 Aug 2024 07:42:40 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5fIQ-1sWUZ3368g-004o7U; Tue, 13
+ Aug 2024 00:22:40 +0200
+Message-ID: <ccbb9b8b-f6be-48fd-bcbb-795c76d3f82a@gmx.com>
+Date: Tue, 13 Aug 2024 07:52:37 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Help! Unmountable due to dev extent overlap
-To: Stefan N <stefannnau@gmail.com>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <CA+W5K0rSO3koYTo=nzxxTm1-Pdu1HYgVxEpgJ=aGc7d=E8mGEg@mail.gmail.com>
- <ac2ff9ae-b2fa-49df-9ce3-fc32ddd3c222@gmx.com>
- <CA+W5K0qUAXYSZFxJv+vVM+knFkXm+VK61zOb2qF6TXmW156LOA@mail.gmail.com>
- <7bc8aa3b-f5c1-4db5-b588-4332af4bdda6@suse.com>
- <CA+W5K0qW5x-V2LR0FoJMueAeG9P-VNnKJ5C=ObCvEVVKwwXagA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: send: allow cloning non-aligned extent if it ends
+ at i_size
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <e764923c5a0bca3cdf90199da34747b38094a390.1723469840.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,96 +88,221 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CA+W5K0qW5x-V2LR0FoJMueAeG9P-VNnKJ5C=ObCvEVVKwwXagA@mail.gmail.com>
+In-Reply-To: <e764923c5a0bca3cdf90199da34747b38094a390.1723469840.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eslBiYhX45jKSAN6JlepfiblHf+ljoTYlLnE5FUEby9teehFFBs
- Jwujzbi2jvZC3ZLdhjYP+xCjscwp2ifQLxgHd5cuHrQbCD5AIZpAvAU7+CsKw5Naw7lpyJn
- m4BAMigK5XA3y0UWpgBtYT9Pgo/2hsGksS3WuUM9YVhZrnv0/iCNwISXtbAVgrrIH/c0LV0
- nMUjzmMj7KiFDlwGOIZmg==
+X-Provags-ID: V03:K1:xam6/tX1bjTVnpa/90MyflahE3NfMN5DYMsAUEXslQzheraJ07L
+ 5z3EPnZgmMH44rLUQdVdbsrrfiOhtzYHZgWG8nvR8B3QJwX+Lcex8zREElQpluQ1fMZcU63
+ AjpCCArM+cFv0R1sjy+cpmeE2i+pZX6jVECP1FSlgNGOOcXgC5qBu4CUdUM98WnEAZPsWBD
+ wxB4+p3O6A57r9J+3UOgg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rKRphdHIFOY=;etDp7bNhz1YF59bhd6lidcHap0p
- 1lUmcitaukaaLF7N+L9XMFt0DsqJNO3WNgsWcStGRUAfB1hNThYdi7e1u5AOkBe5i9Z1IaSFl
- OPwe87kutEf4PwMxmZovPcm6tSstzXerImH2u6xUkFyYoTgRpMioFY9RYx6E0lR54mcCFM9SF
- RItmGVT68qLSYgtDx+AWJKkcFfe0ICefKq0uT7kliP5xPgqbSeP3iyFO4Yd5+5Qa1BCJL1Qsj
- ie2CXrfJZyrCGqudIXYZdadSK4E2u9rI2LIWEQ0I2N5EfoZZ1KpvbNuG8wK2D+EHoZ1oFZJyL
- kYxGZ7pnN9j1dNBeDlqE+BYvgHObqa2eBSnFZAJA6NRyg0BMqKP96oQA+8pPDSsSzh8Necz3e
- QE8WzypHHRyoncY4gtLECoaEP9D161B33UUPBuW2jNgUih3d/TcaPW4fabG0b/fKzdY9sC5Ui
- iUZJTV2pk5epxOwoS7+BZk2agj2UBQD9QhK3qjdwmsu+KDw/jmvYRrh7B+zN+0N6dIUsToYgo
- npfRxLcd1qtXnMtLFzl/tD3c+pD0/gj4D5Kwuv78zDtOCSehfk+gthq+7B6c1oQYMNxF7IdAt
- 3M1X88Rxl8BRWrBH6UgyGwDavqsu0i2feP6JIZLGLnCHh7CNX0lG7F2hFDhLzbEXb942knrBf
- x13nWDyKy2x8bzayL7f1/gEv+6vTvWsVJk9zGflc4Fcl2KnPjwYGYMZFfOfbk7T/0dW2EKJSF
- IwMAcVNrTAUkKgjlm32RSJQzzQItXMUEBdV+UkrMjtsZgR6s+gX/w3roP2ieOSRU48wwFoh98
- EggdNF0XskCC0pkU1bg0Phzw==
+UI-OutboundReport: notjunk:1;M01:P0:fy96aedCqk4=;knMAb/bC0oBJS5zWGz1pX76IK4H
+ 0O4Z77sP+JGnGGLz9hldNTq6cIC4kOBij307+LS91+NoSACkgLCMn2hleAnM2Nc0px6SjLM7V
+ lGGt3gQJG4wVLTI9KaOpD+tnuxMd61uyY7gp16EPTqgc4LAdpafC9zMG1C/73k3eHplfPs9tX
+ 25f2qW3e9r1MWZZFSu/lAH5BN/80ADIDB6iGOWL4ivLMo+lFLF4OVMDl+ZofL1VytBxnxlfAi
+ 1wp9dRP+dkx730HL/iMhUGezGiuPE4fpHSb8QwRE5v57p6kJXZwrpivL0TzsZz4IUZBDUEfyg
+ 3sJ4NAjslQc4+WPkSA8ME07w8j3LxJgeDO/urfK06fQ6quIk6XWLzaIZIWZD8Q+ZiIjIEbzHL
+ +3Pn65dNNEegdzA7qwx0dwEF8dcilY2bNXMnp2ETWpBD0AGbEtrl17OLsrAyAV1g4Qh5YV5Wc
+ nKlEa71QHShf6KSRWjWCeUo2rRWw+Kyy5udqQS/BPsC+9Wd7oisnCf5wIHpa2/jdr4szu4Xti
+ XuzdCPCulZ5hOqVWwUcomNtMigcr8cAW5RNajx0vLa1hnxQ8MXTaQNHoP3NbOUL8tvcFKirwG
+ HDF2+jMRgYY0VRJZBEQQHR4wsDGirVFuZNBvuuOj8a5OOwXBDY/TdMcqC2nEHvgc2n/4phUpm
+ r3ffPaRcRYMcsIcGy4csNu1nsXm8qvkYjS/h2PbH9GyxL7syjlJXPQCjS43KljdWT9m5fYf/H
+ CHrX8hS7ptzXxYvhyMc16+AcrYQ6bxuC2tCVeINgLVvD8OF/gl3lPvQOqwrA3/C1QCfE5uf1D
+ bXtjBlDIKdzyNCBEMdGUInIRNBEPSkuptbymsGi7GDpRA=
 
 
 
-=E5=9C=A8 2024/8/12 21:21, Stefan N =E5=86=99=E9=81=93:
-> On Mon, 12 Aug 2024 at 17:05, Qu Wenruo <wqu@suse.com> wrote:
-[...]
+=E5=9C=A8 2024/8/12 23:20, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> 3 passes on memtest and no errors!
+> If we a find that an extent is shared but its end offset is not sector
+> size aligned, then we don't clone it and issue write operations instead.
+> This is because the reflink (remap_file_range) operation does not allow
+> to clone unaligned ranges, except if the end offset of the range matches
+> the i_size of the source and destination files (and the start offset is
+> sector size aligned).
 >
-> This is an old filesystem though that has been going for several
-> years, is it possible this issue has been there for a while
-> undetected?
-
-Yes, that's also possible.
-
-In that case I guess the fs is also mounted on a different system before?
-
-> It's been through several out of space data/metadata
-> consistency issues over the years and I had believed scrubbing had
-> resolved these, is it possible that these errors combined with the
-> scrub not verifying the metadata caused the issues today?
-
-The only situation to lead to the corruption is at chunk allocation.
-
-Scrub is not going to detect nor worsen the problem.
-
-> Or given the
-> bit flip, do you still think it's more likely to be memory? There's
-> been no other symptoms but it is non-ECC..
+> While this is not incorrect because send can only guarantee that a file
+> has the same data in the source and destination snapshots, it's not
+> optimal and generates confusion and surprising behaviour for users.
 >
->> And I have already submitted a patch to detect the corruption and
->> prevent it from corrupting the on-disk data in the future.
->>
->> Unfortunately I have no idea how to fix your fs at all...
->>
->> The overlapping can indeed lead to data corruption (since the
->> overlapping dev-extents will be overwritten eventually from two
->> different data chunks).
->>
->> And since their chunk items are completely valid, I can not simply craf=
-t
->> a dirty fix to modify the value of that dev-extent, as that will cause
->> problems for dev-extent verification against chunks.
->>
->> And if I need to modify the chunk items, it's going to cause a chain
->> reaction to modify all the other dev-extents and dev items and superblo=
-cks.
->>
->> So I can only recommend to backing up your data (may hit EIO if unlucky
->> enough), and rebuild the whole fs.
+> For example, running this test:
 >
-> How can I best mount the filesystem to recover what data I can? So far
-> I haven't mounted it at all, the ro flag isn't sufficient to bypass
-> the error.
+>    $ cat test.sh
+>    #!/bin/bash
+>
+>    DEV=3D/dev/sdi
+>    MNT=3D/mnt/sdi
+>
+>    mkfs.btrfs -f $DEV
+>    mount $DEV $MNT
+>
+>    # Use a file size not aligned to any possible sector size.
+>    file_size=3D$((1 * 1024 * 1024 + 5)) # 1MB + 5 bytes
+>    dd if=3D/dev/random of=3D$MNT/foo bs=3D$file_size count=3D1
+>    cp --reflink=3Dalways $MNT/foo $MNT/bar
+>
+>    btrfs subvolume snapshot -r $MNT/ $MNT/snap
+>    rm -f /tmp/send-test
+>    btrfs send -f /tmp/send-test $MNT/snap
+>
+>    umount $MNT
+>    mkfs.btrfs -f $DEV
+>    mount $DEV $MNT
+>
+>    btrfs receive -vv -f /tmp/send-test $MNT
+>
+>    xfs_io -r -c "fiemap -v" $MNT/snap/bar
+>
+>    umount $MNT
+>
+> Gives the following result:
+>
+>    (...)
+>    mkfile o258-7-0
+>    rename o258-7-0 -> bar
+>    write bar - offset=3D0 length=3D49152
+>    write bar - offset=3D49152 length=3D49152
+>    write bar - offset=3D98304 length=3D49152
+>    write bar - offset=3D147456 length=3D49152
+>    write bar - offset=3D196608 length=3D49152
+>    write bar - offset=3D245760 length=3D49152
+>    write bar - offset=3D294912 length=3D49152
+>    write bar - offset=3D344064 length=3D49152
+>    write bar - offset=3D393216 length=3D49152
+>    write bar - offset=3D442368 length=3D49152
+>    write bar - offset=3D491520 length=3D49152
+>    write bar - offset=3D540672 length=3D49152
+>    write bar - offset=3D589824 length=3D49152
+>    write bar - offset=3D638976 length=3D49152
+>    write bar - offset=3D688128 length=3D49152
+>    write bar - offset=3D737280 length=3D49152
+>    write bar - offset=3D786432 length=3D49152
+>    write bar - offset=3D835584 length=3D49152
+>    write bar - offset=3D884736 length=3D49152
+>    write bar - offset=3D933888 length=3D49152
+>    write bar - offset=3D983040 length=3D49152
+>    write bar - offset=3D1032192 length=3D16389
+>    chown bar - uid=3D0, gid=3D0
+>    chmod bar - mode=3D0644
+>    utimes bar
+>    utimes
+>    BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=3D06d640da-9ca1-604c-b87c-3375175a=
+8eb3, stransid=3D7
+>    /mnt/sdi/snap/bar:
+>     EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>       0: [0..2055]:       26624..28679      2056   0x1
+>
+> There's no clone operation to clone extents from the file foo into file
+> bar and fiemap confirms there's no shared flag (0x2000).
+>
+> So update send_write_or_clone() so that it proceeds with cloning if the
+> source and destination ranges end at the i_size of the respective files.
+>
+> After this changes the result of the test is:
+>
+>    (...)
+>    mkfile o258-7-0
+>    rename o258-7-0 -> bar
+>    clone bar - source=3Dfoo source offset=3D0 offset=3D0 length=3D104858=
+1
+>    chown bar - uid=3D0, gid=3D0
+>    chmod bar - mode=3D0644
+>    utimes bar
+>    utimes
+>    BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=3D582420f3-ea7d-564e-bbe5-ce440d62=
+2190, stransid=3D7
+>    /mnt/sdi/snap/bar:
+>     EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>       0: [0..2055]:       26624..28679      2056 0x2001
+>
+> A test case for fstests will also follow up soon.
+>
+> Link: https://github.com/kdave/btrfs-progs/issues/572#issuecomment-22828=
+41416
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-"-o rescue=3Dall,ro" should be enough. That "rescue=3Dignorebadroots"
-implied by "rescue=3Dall" will make btrfs to skip dev-extent verification.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Thanks,
+Thanks for the rapid response and fix for the case!
 Qu
 
+> ---
+>   fs/btrfs/send.c | 52 ++++++++++++++++++++++++++++++++++++-------------
+>   1 file changed, 39 insertions(+), 13 deletions(-)
 >
->> At least your sacrifice will be remembered in the kernel git log foreve=
-r...
->>
->> Thanks,
->> Qu
->>>
->>>> Thanks,
->>>> Qu
->>>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 4ca711a773ef..7fc692fc76e1 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -6157,25 +6157,51 @@ static int send_write_or_clone(struct send_ctx *=
+sctx,
+>   	u64 offset =3D key->offset;
+>   	u64 end;
+>   	u64 bs =3D sctx->send_root->fs_info->sectorsize;
+> +	struct btrfs_file_extent_item *ei;
+> +	u64 disk_byte;
+> +	u64 data_offset;
+> +	u64 num_bytes;
+> +	struct btrfs_inode_info info =3D { 0 };
+>
+>   	end =3D min_t(u64, btrfs_file_extent_end(path), sctx->cur_inode_size)=
+;
+>   	if (offset >=3D end)
+>   		return 0;
+>
+> -	if (clone_root && IS_ALIGNED(end, bs)) {
+> -		struct btrfs_file_extent_item *ei;
+> -		u64 disk_byte;
+> -		u64 data_offset;
+> +	num_bytes =3D end - offset;
+>
+> -		ei =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
+> -				    struct btrfs_file_extent_item);
+> -		disk_byte =3D btrfs_file_extent_disk_bytenr(path->nodes[0], ei);
+> -		data_offset =3D btrfs_file_extent_offset(path->nodes[0], ei);
+> -		ret =3D clone_range(sctx, path, clone_root, disk_byte,
+> -				  data_offset, offset, end - offset);
+> -	} else {
+> -		ret =3D send_extent_data(sctx, path, offset, end - offset);
+> -	}
+> +	if (!clone_root)
+> +		goto write_data;
+> +
+> +	if (IS_ALIGNED(end, bs))
+> +		goto clone_data;
+> +
+> +	/*
+> +	 * If the extent end is not aligned, we can clone if the extent ends a=
+t
+> +	 * the i_size of the inode and the clone range ends at the i_size of t=
+he
+> +	 * source inode, otherwise the clone operation fails with -EINVAL.
+> +	 */
+> +	if (end !=3D sctx->cur_inode_size)
+> +		goto write_data;
+> +
+> +	ret =3D get_inode_info(clone_root->root, clone_root->ino, &info);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (clone_root->offset + num_bytes =3D=3D info.size)
+> +		goto clone_data;
+> +
+> +write_data:
+> +	ret =3D send_extent_data(sctx, path, offset, num_bytes);
+> +	sctx->cur_inode_next_write_offset =3D end;
+> +	return ret;
+> +
+> +clone_data:
+> +	ei =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
+> +			    struct btrfs_file_extent_item);
+> +	disk_byte =3D btrfs_file_extent_disk_bytenr(path->nodes[0], ei);
+> +	data_offset =3D btrfs_file_extent_offset(path->nodes[0], ei);
+> +	ret =3D clone_range(sctx, path, clone_root, disk_byte, data_offset, of=
+fset,
+> +			  num_bytes);
+>   	sctx->cur_inode_next_write_offset =3D end;
+>   	return ret;
+>   }
 
