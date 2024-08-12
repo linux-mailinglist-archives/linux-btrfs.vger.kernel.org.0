@@ -1,101 +1,101 @@
-Return-Path: <linux-btrfs+bounces-7128-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7129-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B6A94EF73
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 16:25:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699BC94EFB9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 16:37:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6AB61C211B6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 14:25:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB3971F231CE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 14:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FF7180032;
-	Mon, 12 Aug 2024 14:25:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E828A183092;
+	Mon, 12 Aug 2024 14:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vCVnryyI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uIpc++BN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vCVnryyI";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uIpc++BN"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ySQlSLIi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yDDBZ2MR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ySQlSLIi";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yDDBZ2MR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E40C16C440
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2024 14:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B0AC17E44F;
+	Mon, 12 Aug 2024 14:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723472702; cv=none; b=az/+XHiaiTpwUoQbKgalTMR1rA0nk2dCTjvVZZTu3hNrnUmOaYPjW/MR65DAZ5XkIFV6qR4AQyJad4TJXiQGQd819qU/rWaAP+JtAp8RThbjyjJkc1C1PZ1tf4OuXdnqxqWEFFO72L0CCxBgK6K95fvjdXryzethA5Mb1kaP2Rc=
+	t=1723473421; cv=none; b=pif9vhwj6toUyqjpiIEzSH/zbXbjvTxOxKfcwozhvvyRdMu3tIOv6OU6//RmzNPau+umW19icgihshUJsjYK6P0I2YCBD1naIUu+SlBCPZ+lLOsjSys3O7+DMivnBPbFz6/cnR5B2IjxX5ld2/EjP5S2pbRs/l4fNlA4w9fbNAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723472702; c=relaxed/simple;
-	bh=Sxm25Jo23SBZpzlyb/m314tqSSQs1z+jdEBFt5EFF3w=;
+	s=arc-20240116; t=1723473421; c=relaxed/simple;
+	bh=S8hCmQAO9OS5+WRquuV3ir9+fqiHJ+W9afXQlxVoQKI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cQ1IZOydBH7el9lmIG6D1Pn1rTWNXahhwNEa98sSI9IBLX90Y7tUbdLiYvP0UO8h5u/xr22PaENaaFHsr6n9ZuYw6/Q+mC+KqaAaj1K9VcReuhFEN9CAM0lxRwa3w8+A+p3uBJvFO6t6+58ymmXkE1qzkUT7tjtlzBvjQ6cQYQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vCVnryyI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uIpc++BN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vCVnryyI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uIpc++BN; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=qYGhyM7GDcSPGzr+Dpcvs3X083fvlq5HStloR21n60Fve4mNLr53ANrPVcFMnSzkig74DObvSrx6LSF4feo506g5Jm6Gws/yoBiV/D0axWuvQlDFh32Q5yTLVAA8MWskcVZlt1iCtUIRiE1KDScBpSjDqKcwXquC3K7CEwROgqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ySQlSLIi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yDDBZ2MR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ySQlSLIi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yDDBZ2MR; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 728762256A;
-	Mon, 12 Aug 2024 14:24:58 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AB4AD20289;
+	Mon, 12 Aug 2024 14:36:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723472698;
+	t=1723473417;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gA3MHUOJ8JfQoYjMC7iNPTY2vklQWWNe8xGbDG+1kGo=;
-	b=vCVnryyIwJf5p4Kr+sWKb7OD7PLQt9neqLT0jMKjozq5AlmjeozwMzabHCWCtQBGMiQS1r
-	J+UzsxMibiqbaSqcAnhSPPVfrDBQuVCAXU1u024lLvK1l7gWBBiNd+5ErsaKr4SdQ1fBMm
-	iIFjT0kdq+qJCnEm3hJsM4HDYF+/0Ew=
+	bh=AwyzWivMVi2/w3/8MOOzsxt/HDCoxgp/Z7fKLbMHTUE=;
+	b=ySQlSLIi09Jb0XkwWqdzXrwd9qdZ8uR/vVWoj5m9AP4M9Tiw7teo4nOKBSPYoAw3IOTy0h
+	G6MiqD6actA7zhu2xcDw1JUvyK4WWUq6XPqVr0mVqyoetJDL8khMAn9bk6W0JbyPfP4t+I
+	ult1a+kgZMDGYp4kcCWnI0AqztJxHGU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723472698;
+	s=susede2_ed25519; t=1723473417;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gA3MHUOJ8JfQoYjMC7iNPTY2vklQWWNe8xGbDG+1kGo=;
-	b=uIpc++BNeNF4vkByK7nq35A5yKMdPiE3SQl34RBbxqgjAupm3drB3o7LS5fPrAL/HRDScF
-	uYoZSPzMb+nWZQCA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vCVnryyI;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=uIpc++BN
+	bh=AwyzWivMVi2/w3/8MOOzsxt/HDCoxgp/Z7fKLbMHTUE=;
+	b=yDDBZ2MRtiPSzgj1ssJ8YjLfmPDwGwf42o1Y52Nat6lPsDHxbI9wjnbLisa2CMLAUbkCWT
+	xtHcytKF+OBoyjDA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723472698;
+	t=1723473417;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gA3MHUOJ8JfQoYjMC7iNPTY2vklQWWNe8xGbDG+1kGo=;
-	b=vCVnryyIwJf5p4Kr+sWKb7OD7PLQt9neqLT0jMKjozq5AlmjeozwMzabHCWCtQBGMiQS1r
-	J+UzsxMibiqbaSqcAnhSPPVfrDBQuVCAXU1u024lLvK1l7gWBBiNd+5ErsaKr4SdQ1fBMm
-	iIFjT0kdq+qJCnEm3hJsM4HDYF+/0Ew=
+	bh=AwyzWivMVi2/w3/8MOOzsxt/HDCoxgp/Z7fKLbMHTUE=;
+	b=ySQlSLIi09Jb0XkwWqdzXrwd9qdZ8uR/vVWoj5m9AP4M9Tiw7teo4nOKBSPYoAw3IOTy0h
+	G6MiqD6actA7zhu2xcDw1JUvyK4WWUq6XPqVr0mVqyoetJDL8khMAn9bk6W0JbyPfP4t+I
+	ult1a+kgZMDGYp4kcCWnI0AqztJxHGU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723472698;
+	s=susede2_ed25519; t=1723473417;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gA3MHUOJ8JfQoYjMC7iNPTY2vklQWWNe8xGbDG+1kGo=;
-	b=uIpc++BNeNF4vkByK7nq35A5yKMdPiE3SQl34RBbxqgjAupm3drB3o7LS5fPrAL/HRDScF
-	uYoZSPzMb+nWZQCA==
+	bh=AwyzWivMVi2/w3/8MOOzsxt/HDCoxgp/Z7fKLbMHTUE=;
+	b=yDDBZ2MRtiPSzgj1ssJ8YjLfmPDwGwf42o1Y52Nat6lPsDHxbI9wjnbLisa2CMLAUbkCWT
+	xtHcytKF+OBoyjDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EEC813A23;
-	Mon, 12 Aug 2024 14:24:58 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 905F313A23;
+	Mon, 12 Aug 2024 14:36:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id g18IEzobumbEDwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 12 Aug 2024 14:24:58 +0000
-Date: Mon, 12 Aug 2024 16:24:53 +0200
+	id So0HIwkeumbdEwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 12 Aug 2024 14:36:57 +0000
+Date: Mon, 12 Aug 2024 16:36:56 +0200
 From: David Sterba <dsterba@suse.cz>
 To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: send: allow cloning non-aligned extent if it ends
- at i_size
-Message-ID: <20240812142453.GI25962@twin.jikos.cz>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: test send clones extents with unaligned end
+ offset ending at i_size
+Message-ID: <20240812143656.GJ25962@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <e764923c5a0bca3cdf90199da34747b38094a390.1723469840.git.fdmanana@suse.com>
+References: <177f429d65afb5cc99a7f950779ba15b130cd581.1723470203.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -104,147 +104,44 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e764923c5a0bca3cdf90199da34747b38094a390.1723469840.git.fdmanana@suse.com>
+In-Reply-To: <177f429d65afb5cc99a7f950779ba15b130cd581.1723470203.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 728762256A
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.991];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[4]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Mon, Aug 12, 2024 at 02:50:34PM +0100, fdmanana@kernel.org wrote:
+On Mon, Aug 12, 2024 at 02:51:09PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> If we a find that an extent is shared but its end offset is not sector
-> size aligned, then we don't clone it and issue write operations instead.
-> This is because the reflink (remap_file_range) operation does not allow
-> to clone unaligned ranges, except if the end offset of the range matches
-> the i_size of the source and destination files (and the start offset is
-> sector size aligned).
+> Test that a send operation will issue a clone operation for a shared
+> extent of a file if the extent ends at the i_size of the file and the
+> i_size is not sector size aligned.
 > 
-> While this is not incorrect because send can only guarantee that a file
-> has the same data in the source and destination snapshots, it's not
-> optimal and generates confusion and surprising behaviour for users.
+> This verifies an improvement to the btrfs send feature implemented by
+> the following kernel patch:
 > 
-> For example, running this test:
+>   "btrfs: send: allow cloning non-aligned extent if it ends at i_size"
 > 
->   $ cat test.sh
->   #!/bin/bash
-> 
->   DEV=/dev/sdi
->   MNT=/mnt/sdi
-> 
->   mkfs.btrfs -f $DEV
->   mount $DEV $MNT
-> 
->   # Use a file size not aligned to any possible sector size.
->   file_size=$((1 * 1024 * 1024 + 5)) # 1MB + 5 bytes
->   dd if=/dev/random of=$MNT/foo bs=$file_size count=1
->   cp --reflink=always $MNT/foo $MNT/bar
-> 
->   btrfs subvolume snapshot -r $MNT/ $MNT/snap
->   rm -f /tmp/send-test
->   btrfs send -f /tmp/send-test $MNT/snap
-> 
->   umount $MNT
->   mkfs.btrfs -f $DEV
->   mount $DEV $MNT
-> 
->   btrfs receive -vv -f /tmp/send-test $MNT
-> 
->   xfs_io -r -c "fiemap -v" $MNT/snap/bar
-> 
->   umount $MNT
-> 
-> Gives the following result:
-> 
->   (...)
->   mkfile o258-7-0
->   rename o258-7-0 -> bar
->   write bar - offset=0 length=49152
->   write bar - offset=49152 length=49152
->   write bar - offset=98304 length=49152
->   write bar - offset=147456 length=49152
->   write bar - offset=196608 length=49152
->   write bar - offset=245760 length=49152
->   write bar - offset=294912 length=49152
->   write bar - offset=344064 length=49152
->   write bar - offset=393216 length=49152
->   write bar - offset=442368 length=49152
->   write bar - offset=491520 length=49152
->   write bar - offset=540672 length=49152
->   write bar - offset=589824 length=49152
->   write bar - offset=638976 length=49152
->   write bar - offset=688128 length=49152
->   write bar - offset=737280 length=49152
->   write bar - offset=786432 length=49152
->   write bar - offset=835584 length=49152
->   write bar - offset=884736 length=49152
->   write bar - offset=933888 length=49152
->   write bar - offset=983040 length=49152
->   write bar - offset=1032192 length=16389
->   chown bar - uid=0, gid=0
->   chmod bar - mode=0644
->   utimes bar
->   utimes
->   BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=06d640da-9ca1-604c-b87c-3375175a8eb3, stransid=7
->   /mnt/sdi/snap/bar:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..2055]:       26624..28679      2056   0x1
-> 
-> There's no clone operation to clone extents from the file foo into file
-> bar and fiemap confirms there's no shared flag (0x2000).
-> 
-> So update send_write_or_clone() so that it proceeds with cloning if the
-> source and destination ranges end at the i_size of the respective files.
-> 
-> After this changes the result of the test is:
-> 
->   (...)
->   mkfile o258-7-0
->   rename o258-7-0 -> bar
->   clone bar - source=foo source offset=0 offset=0 length=1048581
->   chown bar - uid=0, gid=0
->   chmod bar - mode=0644
->   utimes bar
->   utimes
->   BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=582420f3-ea7d-564e-bbe5-ce440d622190, stransid=7
->   /mnt/sdi/snap/bar:
->    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
->      0: [0..2055]:       26624..28679      2056 0x2001
-> 
-> A test case for fstests will also follow up soon.
-> 
-> Link: https://github.com/kdave/btrfs-progs/issues/572#issuecomment-2282841416
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: David Sterba <dsterba@suse.com>
