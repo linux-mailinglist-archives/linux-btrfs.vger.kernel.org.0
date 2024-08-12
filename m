@@ -1,148 +1,113 @@
-Return-Path: <linux-btrfs+bounces-7141-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7142-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C35494F520
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 18:42:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1F294F54E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 18:51:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E99BE1F21AD8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 16:42:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62D4E1F218F9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 16:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E65187568;
-	Mon, 12 Aug 2024 16:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A3218785F;
+	Mon, 12 Aug 2024 16:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YETtedG5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IxWXqqqh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="er+Tr6s6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yPvPl9r9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bivMigPw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291B0130E27;
-	Mon, 12 Aug 2024 16:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A8C1836E2;
+	Mon, 12 Aug 2024 16:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723480946; cv=none; b=ssC8s4tHb6UELXT2rUxlUDpmtVng90B9hRwA3hTMbkcK4ZaG/ivaHivyJui4rT2pAdk53plX1cNyT2OVLtupKOPn7aQS5eqHOTxwLzuWWVZ8iRskndzPg/9V0rrpOjrKI69mzCGOTXK3SV+bZv0JPYDlHa64sL4hKaAK/BysQcU=
+	t=1723481489; cv=none; b=LbXgzjenSLC9BXY6OihMpL8ApbHwTuM61a0EUdOmcm1BgRt70K98iw2jVTGtdbpzd6qHlQ+aPyJYZNqK7zqmD1M0HcNrQYNBXEUNv0/DgqQ6dK62+87QFZtL5k/2hX2uVbyTrQ/aYHXX96TeKRj3TfR8DQWge8AqjImE0kXPoQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723480946; c=relaxed/simple;
-	bh=UXNyY0Y/XATpxaSUkI5vJ9WXxIozB3dji+bgRcnlncA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GeDvdE5LAbbWMe8Nv8PtTLAIWuB4+gpJn4QrcuT85ud6NtClFMAaTowPvpfaNh5TSN9s6W88sqCmuW79BpcODBgCLieRcSpsXfzcjfvtqZ6UgAWhI8InL3+ovEL15Uod1C6MA3S7GuYG+Ysf3AMGLQ2lppFkKLAUoDsNsR9s/aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YETtedG5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IxWXqqqh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=er+Tr6s6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yPvPl9r9; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 00187202A2;
-	Mon, 12 Aug 2024 16:42:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723480943;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UXNyY0Y/XATpxaSUkI5vJ9WXxIozB3dji+bgRcnlncA=;
-	b=YETtedG52dxzzQKoc5UNo+STUbiZMzUJ5uknGtzgsLUZhHJdUTaQCrdFBdAGlTAl4iVvQy
-	BvA0lc4UHOjMyGgoDGCXDsSGI/jnp5QEi4xP9F9Lifw+7TwL3zTg596SeVs1YmGAykDHEh
-	7Bis2NhhpDZPSn+/fOL7mnF+q2B2hbE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723480943;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UXNyY0Y/XATpxaSUkI5vJ9WXxIozB3dji+bgRcnlncA=;
-	b=IxWXqqqhFp7St3AwPza3ffJytGxZxnAOHbQt41wIuRSQKFuhibbCvTMjk6QEi0J+xIcFff
-	MvFHW5vh1cH/MiAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723480942;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UXNyY0Y/XATpxaSUkI5vJ9WXxIozB3dji+bgRcnlncA=;
-	b=er+Tr6s6jwipCg415x7OaHlTKmwxPvKl5Ix4lKVvvwnT30cfYarXAvhMka2P/uBkBg0oZW
-	GFIoyoE5dqH97HgyHp66kanzH3wMoc2O5TVPx5Xz5gc4j66X1SIF09XoGgDbcDku6CA3ty
-	QCPHeY8hohh6QEBTxCFCAiwzh2qnTUQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723480942;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UXNyY0Y/XATpxaSUkI5vJ9WXxIozB3dji+bgRcnlncA=;
-	b=yPvPl9r9MCkiehrPXLpy6BlgXj0u6j7Bv17+GaDukJm/XzaonoTaKOI2FkAn6tcTOSS+/i
-	YtsH1RVHKXmABBBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD00113A23;
-	Mon, 12 Aug 2024 16:42:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qz3OMW07umaiPAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 12 Aug 2024 16:42:21 +0000
-Date: Mon, 12 Aug 2024 18:42:20 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+	s=arc-20240116; t=1723481489; c=relaxed/simple;
+	bh=LGTlsEWy9JCGyazAemGTJCuuwrCAe2BvnYB/olyIPXU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GNDOc2uNYUgs4HVApBQiIOh2UBJ9Dk3VzL1EJy0/SGpBwy2y32u4WNV7NFlgDGuw0w/WdfDG3JtlxYy5iBa0Ik/Ul9gAdtDVVzsLWgXsNAvz8VT8pbn5FzINWD51xToAaxHaX6Y9DzGOfArCY28NuYreJOtnqH1USJqS2Lxj0tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bivMigPw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28675C32782;
+	Mon, 12 Aug 2024 16:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723481489;
+	bh=LGTlsEWy9JCGyazAemGTJCuuwrCAe2BvnYB/olyIPXU=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=bivMigPwThXLkTGwe6eS7CAyYRKGSG8saGAE2CUUHcNuiJqIv+JXbLGyTMhKpBl3l
+	 +Z2jAX9lLzuvjlUWQyRjfqsHneXKrP3VJX+IiObEcORL+wCZdZ1ZYwW9AbQSwmZSIQ
+	 B9AMXMH2vMnDvZLP4BxGQ1GvBMTKI5IznbuDIfUwqR+Dnqn8bxnK2fB1EGSyewHcdj
+	 q4oUaAB8RtV7HHdcHogbbl6+S87CVooVAeE61XzqDxcMDsAqTZEcodwylKhuBbOlnf
+	 V7G7BFgpvSgQqeDBBV9yIDcn5YxxuG+5YRAY+chc0EnsO0Xcvpsaf0wICjlc0LQ0w3
+	 pGuB3qZmJn8Og==
+Message-ID: <c0a0266cbb46694318e5eeb5248216779cb68442.camel@kernel.org>
 Subject: Re: [PATCH] btrfs: update target inode's ctime on unlink
-Message-ID: <20240812164220.GK25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
+From: Jeff Layton <jlayton@kernel.org>
+To: dsterba@suse.cz
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David
+ Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  bpf@vger.kernel.org
+Date: Mon, 12 Aug 2024 12:51:21 -0400
+In-Reply-To: <20240812164220.GK25962@twin.jikos.cz>
 References: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
+	 <20240812164220.GK25962@twin.jikos.cz>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw
+ n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv
+ egyjnSsFt7EGoDjdKqr1TS9syJYFjagYtvWk/UfHlW09X+jOh4vYtfX7iYSx/NfqV3W1D7EDi0PqV
+ T2h6v8i8YqsATFPwO4nuiTmL6I40ZofxVd+9wdRI4Db8yUNA4ZSP2nqLcLtFjClYRBoJvRWvsv4lm
+ 0OX6MYPtv76hka8lW4mnRmZqqx3UtfHX/hF/zH24Gj7A6sYKYLCU3YrI2Ogiu7/ksKcl7goQjpvtV
+ YrOOI5VGLHge0awt7bhMCTM9KAfPc+xL/ZxAMVWd3NCk5SamL2cE99UWgtvNOIYU8m6EjTLhsj8sn
+ VluJH0/RcxEeFbnSaswVChNSGa7mXJrTR22lRL6ZPjdMgS2Km90haWPRc8Wolcz07Y2se0xpGVLEQ
+ cDEsvv5IMmeMe1/qLZ6NaVkNuL3WOXvxaVT9USW1+/SGipO2IpKJjeDZfehlB/kpfF24+RrK+seQf
+ CBYyUE8QJpvTZyfUHNYldXlrjO6n5MdOempLqWpfOmcGkwnyNRBR46g/jf8KnPRwXs509yAqDB6sE
+ LZH+yWr9LQZEwARAQABtCBKZWZmIExheXRvbiA8amxheXRvbkBrZXJuZWwub3JnPokCOAQTAQIAIg
+ UCWe8u6AIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQAA5oQRlWghUuCg/+Lb/xGxZD2Q1
+ oJVAE37uW308UpVSD2tAMJUvFTdDbfe3zKlPDTuVsyNsALBGclPLagJ5ZTP+Vp2irAN9uwBuacBOT
+ tmOdz4ZN2tdvNgozzuxp4CHBDVzAslUi2idy+xpsp47DWPxYFIRP3M8QG/aNW052LaPc0cedYxp8+
+ 9eiVUNpxF4SiU4i9JDfX/sn9XcfoVZIxMpCRE750zvJvcCUz9HojsrMQ1NFc7MFT1z3MOW2/RlzPc
+ og7xvR5ENPH19ojRDCHqumUHRry+RF0lH00clzX/W8OrQJZtoBPXv9ahka/Vp7kEulcBJr1cH5Wz/
+ WprhsIM7U9pse1f1gYy9YbXtWctUz8uvDR7shsQxAhX3qO7DilMtuGo1v97I/Kx4gXQ52syh/w6EB
+ ny71CZrOgD6kJwPVVAaM1LRC28muq91WCFhs/nzHozpbzcheyGtMUI2Ao4K6mnY+3zIuXPygZMFr9
+ KXE6fF7HzKxKuZMJOaEZCiDOq0anx6FmOzs5E6Jqdpo/mtI8beK+BE7Va6ni7YrQlnT0i3vaTVMTi
+ CThbqsB20VrbMjlhpf8lfK1XVNbRq/R7GZ9zHESlsa35ha60yd/j3pu5hT2xyy8krV8vGhHvnJ1XR
+ MJBAB/UYb6FyC7S+mQZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,opengroup.org:url,suse.com:email,suse.cz:replyto]
-X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Mon, Aug 12, 2024 at 12:30:52PM -0400, Jeff Layton wrote:
-> Unlink changes the link count on the target inode. POSIX mandates that
-> the ctime must also change when this occurs.
+On Mon, 2024-08-12 at 18:42 +0200, David Sterba wrote:
+> On Mon, Aug 12, 2024 at 12:30:52PM -0400, Jeff Layton wrote:
+> > Unlink changes the link count on the target inode. POSIX mandates that
+> > the ctime must also change when this occurs.
+>=20
+> Right, thanks. According to https://pubs.opengroup.org/onlinepubs/9699919=
+799/functions/unlink.html:
+>=20
+> Upon successful completion, unlink() shall mark for update the last data
+> modification and last file status change timestamps of the parent
+> directory. Also, if the file's link count is not 0, the last file status
+> change timestamp of the file shall be marked for update.
+>=20
 
-Right, thanks. According to https://pubs.opengroup.org/onlinepubs/9699919799/functions/unlink.html:
-
-Upon successful completion, unlink() shall mark for update the last data
-modification and last file status change timestamps of the parent
-directory. Also, if the file's link count is not 0, the last file status
-change timestamp of the file shall be marked for update.
+Weird way to phrase to that. IMO, we still want to stamp the inode's
+ctime even if the link count goes to 0. That's what Linux generally
+does, anyway. Oh well..
+=20
+>=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> Reviewed-by: David Sterba <dsterba@suse.com>
 
 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-
-Reviewed-by: David Sterba <dsterba@suse.com>
+FWIW, this should probably go in via the btrfs tree.=20
+--=20
+Jeff Layton <jlayton@kernel.org>
 
