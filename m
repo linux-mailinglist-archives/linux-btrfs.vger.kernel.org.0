@@ -1,46 +1,46 @@
-Return-Path: <linux-btrfs+bounces-7134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7135-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED09694F196
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 17:26:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6141294F199
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 17:26:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9BA328157B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 15:26:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1561B223CC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2024 15:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D1D184522;
-	Mon, 12 Aug 2024 15:26:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3AA5183CDD;
+	Mon, 12 Aug 2024 15:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Heskn4Iq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vLZxZNSi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2568717C9FC;
-	Mon, 12 Aug 2024 15:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25595130AC8;
+	Mon, 12 Aug 2024 15:26:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723476359; cv=none; b=SWK0pvExDHSCrewKnzQDk6pvhowYhxPJQKe+5mEj+tONWcSvzlOEjMssfEYCdQZSwTt72RaSLAZS7TG/Kv4wC1i02WT0nPWsqy01CWkn3tcLYVvDTn/YI7jIhJ+lZfP9ce/LesjuDqNRwZidt3UD8Y0ALmlzZDl7fervcSmo/JQ=
+	t=1723476382; cv=none; b=IKgiXLc9LaNxst0w8VJT/cghhDQ6bv/f3cTILeH93mq5B5ZIHlC2ELIP00J5v8CK28qbipq92gFoqjFzYbe5MYqlb5WbiRePfOdXwRu71Q9UZ39AdiY2pr2pdt32Lps7g4GCXJU5KpQ1ZQ9T8zI7wC7wpFEpk/Al0GYdkNZttUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723476359; c=relaxed/simple;
-	bh=NmCf39JdeAxzWlINGyTyT0YTEVkYbzQv+t+jtZ22OCI=;
+	s=arc-20240116; t=1723476382; c=relaxed/simple;
+	bh=JxpmLD0PgjESFpo/tnECS6dAsiEutBeyOhOcjSJqhx4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CLjod4kWA4rLNi8IbS07VU0MZAnHHw8GJCLI5JJ4T25u8YsDbiRNTxhoOvD1D3sXfo5HGfgXlLhJdrwu5aw8wWyjEh88YBLTJpNKu2YVQsR1CJOGF0GH4qTEYDAzMByOhhpEntJpiLpDqcNo4uNJGIFDBuGDLPncQzfVToV7cTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Heskn4Iq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A97EC32782;
-	Mon, 12 Aug 2024 15:25:57 +0000 (UTC)
+	 MIME-Version; b=Enjj3VO53julzTWVI20eeUJll4eSAX/OH1XusRN5Ghv5wnkAvtXrAGs9WoL/5Oj7wxKJO58DEgaYwOB7L/nhOHMtJCP6NS8l8jpd40KLHewMA+vhw7jBnKrJjlTMQmA0WaqIIanDxMt0HqErmt4POYKSAEC3LPQaiTdqYRadzcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vLZxZNSi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 185FEC32782;
+	Mon, 12 Aug 2024 15:26:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723476358;
-	bh=NmCf39JdeAxzWlINGyTyT0YTEVkYbzQv+t+jtZ22OCI=;
+	s=k20201202; t=1723476381;
+	bh=JxpmLD0PgjESFpo/tnECS6dAsiEutBeyOhOcjSJqhx4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Heskn4Iqi8vOyNirE+GW6Qtq9Rqa6ScXuxU2yTQrimxHUPVO0mCrmLAfMf3+kha+S
-	 5LHwzCONssor1SEYIupv0oSNIu57TTmQksF4dahzxGfg51NUiyOCNp1IFH7DOJAkQ0
-	 gJ/YnsI1ycfnHmwj1NdCV07WeVK2UjZv9YL5bXaj9mY95v5UaYIODb6tv1qOT7RUu8
-	 +Gw/XHfspFADCYkpCWjLbLcUVroE/L91EJwg+Fv4ZxMljrfXVm+3e7FRowCekReH7k
-	 vYtw403tloqBsU3PYPNWmXsbqai8lZT/2ehujqPCz6gh2SB/+PqqUifN3O1XYafe83
-	 CwP0TGA9wDbmg==
+	b=vLZxZNSiKoreJORyZb80YRrGVMMwt+GTA/km0ujJcK5KzgySUEYxh9z40w8CIFeH/
+	 Jze4+W87l0WTilYlp3RZT1W4DE8kX0ybtNzJ15in0Cg5efhvwN1nBjb1UxPAZcgS1O
+	 mYPydOpAY2ZMJs3601M9yqWOGLB8hKs/V/+z8PQYgrFPu2WpVuKB4JIncup9h3b1OV
+	 BJM6RvA5hBz5gYwPh9c6lp72n/H2+cGNLb1x/15YenyPihDj+9HDgr14T/KwZYHHLO
+	 omhFiA00HNG6NZe1F/J9bXOsUj2p93D7WrSZmH96OXWosoNOLeMcgp1tnNN0/8aDLU
+	 cDlZNDgS7nz9w==
 From: fdmanana@kernel.org
 To: stable@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
@@ -49,12 +49,12 @@ Cc: linux-btrfs@vger.kernel.org,
 	syzbot+7dbbb74af6291b5a5a8b@syzkaller.appspotmail.com,
 	Josef Bacik <josef@toxicpanda.com>,
 	David Sterba <dsterba@suse.com>
-Subject: [PATCH for 6.10 stable] btrfs: fix double inode unlock for direct IO sync writes
-Date: Mon, 12 Aug 2024 16:25:53 +0100
-Message-ID: <8ffd293acee0e4c823a4ed1e4e5672981d614d72.1723043969.git.fdmanana@suse.com>
+Subject: [PATCH for 6.6 stable] btrfs: fix double inode unlock for direct IO sync writes
+Date: Mon, 12 Aug 2024 16:26:07 +0100
+Message-ID: <d1a461ee8d8dc3064bc181304c70958990a1bdc8.1723044389.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1723043969.git.fdmanana@suse.com>
-References: <cover.1723043969.git.fdmanana@suse.com>
+In-Reply-To: <cover.1723044389.git.fdmanana@suse.com>
+References: <cover.1723044389.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -86,10 +86,10 @@ Signed-off-by: David Sterba <dsterba@suse.com>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 35ce1c810bd3..ca434f0cd27f 100644
+index a47a7bbf9b7e..952cf145c629 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -2080,7 +2080,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+@@ -2038,7 +2038,10 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
  
  out_release_extents:
  	btrfs_release_log_ctx_extents(&ctx);
