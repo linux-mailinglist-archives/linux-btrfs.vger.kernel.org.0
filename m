@@ -1,178 +1,183 @@
-Return-Path: <linux-btrfs+bounces-7175-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7176-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0904A950E59
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 23:07:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF7C9950F24
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 23:29:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 299181C2353E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 21:07:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 668372839D0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 21:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1D51A7073;
-	Tue, 13 Aug 2024 21:07:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D661A76D5;
+	Tue, 13 Aug 2024 21:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b="AI7lqxSe"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wxRaKbQw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BC6g0/FV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wxRaKbQw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BC6g0/FV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from zero.acitia.com (zero.acitia.com [69.164.212.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D045B1A7064
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2024 21:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.164.212.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A721D1EA84
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2024 21:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723583243; cv=none; b=l6em15AkAKNi7x3HwMGLle56JbkxtsSliZj3oG6c60jLGZ6lOYQ8OimuaQWzdUgVUpropK1M67sE40MXN1GUvEhoUeNcmi3zJXAfKMTgamH+8RkipbeyZsjqPrhrvJME8OTf1sIGr1VV7l6HSfBdEsccLGSXvWvN/rS0S+ItCck=
+	t=1723584552; cv=none; b=g2r0p6Msbl+JJnQ4J+ygjZ/oGR97PUGpYYQ4vm+oL3AAq6EFxiEmrYftqI1WpEV3DVTIa90udgLy3wUzl0ubJo+kBFTBOWukol3mZKednlN0gT9gxbu8zYufLD7V0gp8TyWJJZ623MAkNK0VsaB1vHqWh2y7Ks1ZUCHp7zZYSRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723583243; c=relaxed/simple;
-	bh=2ip5q0E5qNU5z35Uw3dkGtIj8tBXtbbAMvbOGmiCZpw=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=hgGfm1GpulfXBf1BCzZMHcminCs2l0jbmrbo+vKVeoGy3noOoN+nBgFJL8IDPIoaNJVBp/32VzBrhK0rd/czr+K+aUSqToSUg2UI/Xi0YX/oSJI1tG//RNwAKXcWF1Cm5hTI15Ekh8RJzyGr8D0GgaYCAPB+tqEuld8LD7kbZ1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com; spf=pass smtp.mailfrom=zetafleet.com; dkim=pass (2048-bit key) header.d=zetafleet.com header.i=@zetafleet.com header.b=AI7lqxSe; arc=none smtp.client-ip=69.164.212.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=zetafleet.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zetafleet.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=zetafleet.com; s=20190620; h=Content-Transfer-Encoding:Content-Type:Subject
-	:From:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Sf6NbEWgZm0AbYX7KuoD2gEUQTqESFgtMG/K1uwnFCw=; b=AI7lqxSerIOXYa+CP+Oh1Thb3X
-	HpQ+mniW7VKyE3dcEaerzw9ULJ8Uf1rOS/M4C+qvccOysuYPyLRQAN58FS+SNNlaL/HzZrYMox/Sl
-	trz/tqLMTazfOdwl083Ci0frK3UJPsKtk8bpu3krXAzp547E/GNRxYHFxoW8xwdhoDSxPmF5rMGJM
-	p40uMfxqljBm+Ei4QIA4xChoVyYTMFfw+tAcOcdD/0q2UBQoaWvnYIUjN5XWaSR4b2tdXBcWiRQHA
-	iUOrgQUhD0AuANnThA96hV2A1yf8ojX/wauhWBvjyTCJvq7+manWQSjdwch2yQulr/w1gXFip/GiY
-	Sa+Dbp2g==;
-Received: from authenticated by zero.acitia.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	(envelope-from <linux-btrfs-ml@zetafleet.com>)
-	id 1sdyjY-0002wG-7m
-	for linux-btrfs@vger.kernel.org; Tue, 13 Aug 2024 21:07:14 +0000
-Message-ID: <55c3f03d-a650-4193-8982-ffcb70575c2e@zetafleet.com>
-Date: Tue, 13 Aug 2024 16:07:11 -0500
+	s=arc-20240116; t=1723584552; c=relaxed/simple;
+	bh=FpF8UHd5EAL+FLDenDudhTIRhxD36dvwWnDONLGe6W4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ONxHYUWeNVLCPTnwPNgkuFilqUcOttsm4F4d/R3+isUiIofZomjXABrstscFCbNgEeJZ7pJzX0n9GQ8Pgz812uOHdNg5jicUPYmBC+CynUBf+E+yrG2aYIw7DuTMpIA6vUW4oKBheeTCjDw+IL4tVbHV+i9+uDlQYFTlWclbuF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wxRaKbQw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BC6g0/FV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wxRaKbQw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BC6g0/FV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B36B5223CD;
+	Tue, 13 Aug 2024 21:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723584548;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9e3WdjJkNbxgbir3tB+LGXzEYsfOzrWioIvHo2j1EJ4=;
+	b=wxRaKbQw14+9Q+I/oESxZWDkI2uFp2Vr4OXu5DIXZF49kxL9+63OFuBf/QlBLy+f3RU1zg
+	81nYFyl08HtKrhZEFn3LbOdyTVY4b2oePxIgpf/jkKmoeZ1pEu+ghUQ3RnEJHaMvmYpyKY
+	jqV+ti8twdhT1Vvuas6vdKcaMJK8t8A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723584548;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9e3WdjJkNbxgbir3tB+LGXzEYsfOzrWioIvHo2j1EJ4=;
+	b=BC6g0/FVcZuL2qrRWeZSXr7XuQHERhKfkRZTDhXi9DvQBAJ95lXPJYswWcBp9my1gjSX9N
+	o1LzOZW5QrbbaQBA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723584548;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9e3WdjJkNbxgbir3tB+LGXzEYsfOzrWioIvHo2j1EJ4=;
+	b=wxRaKbQw14+9Q+I/oESxZWDkI2uFp2Vr4OXu5DIXZF49kxL9+63OFuBf/QlBLy+f3RU1zg
+	81nYFyl08HtKrhZEFn3LbOdyTVY4b2oePxIgpf/jkKmoeZ1pEu+ghUQ3RnEJHaMvmYpyKY
+	jqV+ti8twdhT1Vvuas6vdKcaMJK8t8A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723584548;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9e3WdjJkNbxgbir3tB+LGXzEYsfOzrWioIvHo2j1EJ4=;
+	b=BC6g0/FVcZuL2qrRWeZSXr7XuQHERhKfkRZTDhXi9DvQBAJ95lXPJYswWcBp9my1gjSX9N
+	o1LzOZW5QrbbaQBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9985313983;
+	Tue, 13 Aug 2024 21:29:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5vkIJSTQu2Y+GAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 13 Aug 2024 21:29:08 +0000
+Date: Tue, 13 Aug 2024 23:29:03 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Leo Martins <loemra.dev@gmail.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 0/2] btrfs: add __free attribute and improve xattr cleanup
+Message-ID: <20240813212903.GS25962@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1723245033.git.loemra.dev@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-GB
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From: Colin S <linux-btrfs-ml@zetafleet.com>
-Subject: Needed improvements for raid1 integrity and availability
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.9
-X-Spam-Report: No, score=-1.9 required=5.0 tests=BAYES_00=-1.9,NO_RELAYS=-0.001,T_SCC_BODY_TEXT_LINE=-0.01 autolearn=ham autolearn_force=no version=3.4.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1723245033.git.loemra.dev@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-0.999];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[3]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Dear maintainers,
+On Fri, Aug 09, 2024 at 04:11:47PM -0700, Leo Martins wrote:
+> The first patch introduces the __free attribute to the btrfs code, allowing
+> for automatic memory management of certain variables. This attribute enables
+> the kernel to automatically call a specified function (in this case,
+> btrfs_free_path()) on a variable when it goes out of scope, ensuring proper
+> memory release and preventing potential memory leaks.
+> 
+> The second patch applies the __free attribute to the path variable in the
+> btrfs_getxattr(), btrfs_setxattr(), and btrfs_listxattr() functions, ensuring
+> that the memory allocated for this variable is properly released when it goes
+> out of scope. This improves the memory management of xattr operations in
+> btrfs, reducing the risk of memory-related bugs and improving overall system
+> stability.
+> 
+> As a next step, I want to extend the use of the __free attribute to other
+> instances where btrfs_free_path is being manually called.
 
-As discussed in a previous episode 
-<https://lore.kernel.org/linux-btrfs/ba51784b-ba20-4bf4-865a-2670a9ddde74@zetafleet.com/T/>, 
-I experienced a single disk hardware failure on btrfs raid1. Ultimately 
-I would give btrfs two stars out of five in its handling of this 
-specific failure condition. The final situation is:
+Hold on. Adding the automatic memory management can be done but in the
+example patches you sent it's IMHO making things worse on the code
+level.
 
-* I mainly used a third-party guide from Forza[0] because official docs 
-do not describe all steps required to replace a failed disk (thanks, Forza!)
-* I did not lose any data or have to rebuild filesystem (yay!), but I 
-discovered that this is partly due to luck, rather than thanks to 
-inherent safety of current btrfs implementation
-* I experienced hours of downtime, despite the actual hardware 
-replacement taking only 15 minutes, due to btrfs current design choice 
-to not mount filesystem below minimum redundancy, lack of clarity 
-regarding safety of repeated use of `-o degraded` and its interaction 
-with systemd[1], and tool failures
-* Docs and tools provided wrong/misleading/incomplete information 
-multiple times throughout the process which caused confusion and 
-required some leaps of faith that happened to work out OK
-* Tools crashed or failed to work several times due to bugs
+The btrfs_free_path (or btrfs_release_path for that matter) are not
+simple free helpers but also part of the b-tree locking primitives,
+pairing with btrfs_search_slot and nontrivial semantics depending on the
+various setting flags.
 
-I will try to figure out how to report some of the specific tools issues 
-separately before I forget them or lose records. Since the recovery 
-environment was a bit behind the latest release (kernel 6.9.9, 
-btrfs-progs 6.6.3), I suspect some things I encountered may be either 
-duplicates of existing known issues, or things that got fixed in the 
-very latest versions of the tools. This has been an exhausting process, 
-so my tolerance to search for existing tickets is somewhat degraded, and 
-I apologise in advance for this and will be delighted to hear “hey good 
-news, that thing was already fixed, closing”.
+Dropping the explicit marker from the code is obscuring where the
+locked section is.
 
-To provide minimum equivalent integrity and availability guarantees to 
-mdadm in this failure scenario, I would beg for prioritisation of these 
-changes in btrfs, and links to any concrete planning 
-info/timeline/tracker if they exist, in order of importance:
+Another problem is that this will make any backports less obviously
+correct from releases that use the __free attribue to older kernels.
 
-1. Implement some more traditional generational tracking that tracks 
-device failures (or something smarter but equivalent), and prohibit 
-auto-rejoining devices with mismatched generation until item (2) below 
-is also implemented;
+In the second patch in btrfs_setxattr() you removed btrfs_free_path()
+but there's still some code after that. In this case it's harmless and
+only slightly extending the section covered by path, ie. just by a few
+instructions, but this won't be always possible.
 
-2. Add write-intent bitmap, so outdated devices can be guaranteed to 
-receive correct data from healthy replicas when they are rejoined to 
-filesystem and not be used as read sources for known missing data 
-(currently, nodatasum files will read-balance to return garbage, as will 
-datasum blocks with different data but checksum collision);
+In some cases the placement of freeing the path unlocks the tree so it
+has a strong reason to be there.
 
-3. Make `btrfs replace` auto-rebalance back to intended redundancy 
-profile (single -> raid1, raid1 -> raid1c3) upon device replace, instead 
-of requiring manual rebalance of the reduced profile chunks created 
-after `-o degraded` mount;
+Overall, we could the automatic memory management, although for kernel,
+for me, it's on the same level as trying to use other fancy C++
+features. We could start using __free in new structures so it's used
+consistently from the beginning and not mixing two styles namely when
+not all instances of btrfs_path can use it.
 
-4. Temporarily auto-degrade redundancy profile (raid1c3 -> raid1, raid1 
--> single) to maintain uptime instead of forcing read-only when there is 
-still at least one available copy of all the filesystem data (n.b. I am 
-not 100% clear on what the current expected behaviour is, because 
-degrading to read-only did not happen in my case; I assume this is only 
-because dm-crypt left a dangling block device so btrfs didn’t know the 
-hardware was gone; I did not end up with any single blocks on the 
-filesystem until removing the unhealthy device and mounting with `-o 
-degraded`, because the failed disk kept working after a reboot);
-
-5. Add `btrfs device` subcommand to perform manual resilvering in case 
-some error occurs with underlying storage layer that is opaque to btrfs 
-(e.g. pvmove failure as described in [2]);
-
-6. Add device subcommand to mark existing device as unusable/missing if 
-it is flaky and the user needs/wants to do this.
-
-I would also suggest stability status for raid1 should only be “mostly 
-OK” in status page documentation until at least items 1 & 2 from above 
-are implemented, since currently btrfs raid1 does not assure data 
-integrity to the same level as mdadm raid1 in this common failure scenario.
-
-I will try not to rehash many discussions, remarks, implementation 
-approaches[3][4][5][6][7][8][9][10][11][12][13][14][15] from others who 
-have experienced unexpected downtime or unexpected data loss due to 
-current btrfs raid1 behaviour. I hope by giving this list of links it 
-demonstrates the urgency of this problem and provides enough evidence to 
-justify dedicating resources to the problem. Nominally I would try to 
-assist but I am not enough of a domain expert to make meaningful code 
-contributions, nor do I have the mental capacity to work on 
-data-safety-critical systems.
-
-Best regards,
-
-[0] https://wiki.tnonline.net/w/Btrfs/Replacing_a_disk
-[1] https://wiki.tnonline.net/w/Btrfs/Replacing_a_disk “Systemd may 
-automatically unmount a filesystem from fstab if you manually mount it 
-degraded!”
-[2] https://github.com/kdave/btrfs-progs/pull/863#discussion_r1710574045
-[3] https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg78254.html
-[4] https://www.spinics.net/lists/linux-btrfs/msg124987.html
-[5] https://github.com/kdave/btrfs-progs/issues/466
-[6] https://github.com/kdave/btrfs-progs/pull/863#discussion_r1710328076
-[7] https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg78254.html
-[8] https://old.reddit.com/r/btrfs/comments/xki69r/nodatacow_and_data_loss/
-[9] 
-https://forums.unraid.net/topic/123037-reconsider-btrfs-nocow-default-option-on-domains-share-due-to-irrecoverable-corruption-risks/
-[10] 
-https://archive.kernel.org/oldwiki/btrfs.wiki.kernel.org/index.php/Gotchas.html#raid1_volumes_only_mountable_once_RW_if_degraded
-[11] https://www.spinics.net/lists/linux-btrfs/msg124795.html
-[12] 
-https://old.reddit.com/r/btrfs/comments/1d6ddgn/unmountable_raid1_filesystem_after_removing_a/
-[13] 
-https://old.reddit.com/r/btrfs/comments/iktbkz/failed_raid1_array/g3nl4vl/
-[14] https://github.com/kdave/btrfs-progs/issues/777
-[15] https://www.axllent.org/docs/btrfs-raid1-recovery/ “Don't make the 
-mistake I made”
+In justified cases the auto freeing may make sense but not at the cost
+of making the code confusing about the pairing free or extending the
+locked section unnecessarily. The btrfs_path is not a good example where
+to start with that.
 
