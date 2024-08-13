@@ -1,167 +1,212 @@
-Return-Path: <linux-btrfs+bounces-7170-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7171-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43BAA9506A5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 15:37:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 429A5950C20
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 20:21:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F186728963A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 13:37:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3F101F22489
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 18:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4473119B5BB;
-	Tue, 13 Aug 2024 13:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDCD1A38DF;
+	Tue, 13 Aug 2024 18:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vUD0SUb8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7wMN2EpR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oq1bNyCi";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aDRwbvMU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PLkYdW1f"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B3660EC4
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2024 13:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F77643155;
+	Tue, 13 Aug 2024 18:21:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723556222; cv=none; b=NWa76iaFH0014IdfiU6+Fkh+tuM4drkQS6v2MR3vyKyhkjiVOQbQkH1uddGy8paYRmEw59s3WYimuabHzzTExEHZ08R/bccESOMuNRo0ftkBTWme0F8CmjfbdZgqaQblg6z40ovM/nNxX0uovL03iwLK6ffuLWIlXJhzpVU3DOw=
+	t=1723573270; cv=none; b=NRFHveptH2ZlcoPZeR5LgxD5bU4ymj9LywALy3s3eBOyRjFgCPDni/HXZ04cpPdk9CYVQNnCCCw95Vli2NXTjOAtZ6HBnxXzaJsX/H+bFe5aonvHBn4wL45KSIzpMrxywjkIdKHbVKGPB33Yh/gDXELQ06F4uM+qLCxxNfi8who=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723556222; c=relaxed/simple;
-	bh=vKN/vcUb8whOpXl77sVjX9wg0i+vMXk5TSBgHYKdsP0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cK2f/TP+ww5upExnN3lz2qYNEajSWDe4zVKjPJ9OOw0rfrG3PTHeN6ybUkjC50Qlb4y+fBrwPOsTwecr1GxmlSYHMdoKuoiwASVfoqeGn8X4PaMpnIPgqGK9CYCLp5IM6pouhX3nQiCPWxGGXkGU525M2aANcSgQlS+PvYNAIfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vUD0SUb8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7wMN2EpR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oq1bNyCi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aDRwbvMU; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 856ED203B9;
-	Tue, 13 Aug 2024 13:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723556217;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lImuZU+frRjP93FNgCuAYcHXv0fJOCD96tyYdDmdZqU=;
-	b=vUD0SUb8NrlOCIxBMs3aKTlgqC8jlaD5c7MFx89Z0ijUZ4kTAe2Fo5ejYx+XP39LL4evkj
-	xMBlLO6lnW4UE6wcdpwy2rlqRdBXjwJtA6/xJcDWdumF3eilQQh/TIiLiEQ01zY1y6jFO2
-	3imkiH6vegWuRzwgZxQ+pW3CJDX4RA4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723556217;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lImuZU+frRjP93FNgCuAYcHXv0fJOCD96tyYdDmdZqU=;
-	b=7wMN2EpRunslh7CU1MDcIf4+48HHJzXF864n4/OlH+6Vzsncx4u4UtcDU3Waa5v3Z56/EW
-	iCoRgV3LrL2dYYBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723556216;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lImuZU+frRjP93FNgCuAYcHXv0fJOCD96tyYdDmdZqU=;
-	b=oq1bNyCiVv5VU9vZGnVLJi7520vLziHU/5Otxyw4/Qnvr89+bzVEJhKjosRfa7RXt8EbW7
-	8KJeoJse4uy8/oK1rojYIxcfoFzlX1EUALsx9IDa3svaPwX/OXiU3hI4BSyvAlNBxm788G
-	je8rii+QLpvD5LPMnaTOlWdr4FQwbxc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723556216;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lImuZU+frRjP93FNgCuAYcHXv0fJOCD96tyYdDmdZqU=;
-	b=aDRwbvMU88cbU4lNBbC1NrKZZmjAEAXxzYELDixHiQQEWw6vRIIm4xFCHonyHWIZGpo7xV
-	oMaIFzBWIT0kwGAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 54BCD13ABD;
-	Tue, 13 Aug 2024 13:36:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id jl19E3hhu2YpGAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 13 Aug 2024 13:36:56 +0000
-Date: Tue, 13 Aug 2024 15:36:51 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-	linux-btrfs@vger.kernel.org,
-	Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: Re: [PATCH] btrfs: fix invalid mapping xarray state
-Message-ID: <20240813133651.GR25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cb40bca119cc0519bb5e17f6a9060a35a839ea28.1723189951.git.naohiro.aota@wdc.com>
- <20240809150844.GA25962@twin.jikos.cz>
- <9bedda40-76fc-427e-8cbc-dfa613dafa7e@gmx.com>
+	s=arc-20240116; t=1723573270; c=relaxed/simple;
+	bh=0FfawM6Ws50nNU2tSSGn+8MK81B8Z4Sye5v4DK7RKcY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fN9+aapNRMAji/FCOdhbo08ETlBJ93q83rS6DhWzEsp4WOdxRs0MTKNjQkJ2POJeltVCnLACL+vjkEkAipLbUAE3gsVICJHyxN3nGpVns9UcsSbehEFsZKWK5lAWOq/+OTmsRRmwhJozbFlrS03+RY9OBHSaBQZr7zhc8O/hYeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PLkYdW1f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 747FFC32782;
+	Tue, 13 Aug 2024 18:21:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723573269;
+	bh=0FfawM6Ws50nNU2tSSGn+8MK81B8Z4Sye5v4DK7RKcY=;
+	h=From:Date:Subject:To:Cc:From;
+	b=PLkYdW1ftsylOD2WCwuqeM0ZmZ7lqyFx0e1GiIr06N6X5wQGRnxPMaVGDAtdEIZo0
+	 B8d3iMKulZpmFASILn8T6jF/gSORpcKXVjVotM3UVa40//txOuDaJttaDC0LHiclTL
+	 mhhekanjdjmg50MBLMaaKDSzGdPOPKdGll/bVParfZ4VdubfkU0leP5x9ahJJrAqYx
+	 gmrbCVaSzki/diXur00R6acW+vgiA++B3rDhl3AfLnA4D80oxnN7gagE2KDepbr4zF
+	 /Ab4fdH462I9Cn0hDRK7WKiFzwg4+EU+8RyVmKgQSOdOX/aphl2RKwDg2kbEkciriH
+	 fWQ3xO2DyzTiA==
+From: Jeff Layton <jlayton@kernel.org>
+Date: Tue, 13 Aug 2024 14:21:08 -0400
+Subject: [PATCH fstests] generic/755: test that inode's ctime is updated on
+ unlink
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9bedda40-76fc-427e-8cbc-dfa613dafa7e@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.com];
-	FREEMAIL_ENVRCPT(0.00)[gmx.com];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,twin.jikos.cz:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_FIVE(0.00)[5]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240813-master-v1-1-862678cc4000@kernel.org>
+X-B4-Tracking: v=1; b=H4sIABOku2YC/x3MSwqAIBRG4a3IP06wDIm2Eg00b3UHPfBGBNLek
+ 4YHPk6GUGIS9Coj0c3Cx16irhSm1e8LaY6l0ZimNV1t9ebloqTJhtZFctaEiILPRDM//2jAXIh
+ cgvF9P6ybpQthAAAA
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ Christoph Hellwig <hch@infradead.org>, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3516; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=0FfawM6Ws50nNU2tSSGn+8MK81B8Z4Sye5v4DK7RKcY=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmu6QV8I8asDagDaui4Ac1XnOlCOMn45Gd8GFwI
+ FLYU2PVZ9eJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZrukFQAKCRAADmhBGVaC
+ FXoXEACjnJWfoNA53AD6CNjxTY9PqrP6HZdsNS8kScOCErYeG0lExEVbKrEWwlSZ0k7xSPrY6ac
+ MJzprcpaTxWujZftWVz5pgB6ILUDlZerD6qy/AlMa7sr2i48veWuQsQS3TXSpT5py2O0U0055Qm
+ 5EZPUZgBk75yXtVs2sWKyDeiJqB0vF5LSXxmQjwzzb1AC+dWOGPcI27US7Bhv6y+nIRH+04jQro
+ ITydLH+lBAbOcqW/RQcpXu+iDpgDvl3i+FqnjCNHNYCRj//mW3cWQM8I0wq9ZEDw/wbSUw93lDj
+ Dwl+Z/xHhtjZBAcIh3jfkT+yuHX/3do2pWFt1YQBycW1+DVBGBdl5vN2OV2quYPe7OZZq/r4PD6
+ 98RzGFWmpjASZZYY3YmVoClKyNp66RAAuJHi+SC+J36gQcW7PhpiaFDak8nbIXJ79VYZCHZgXmB
+ gaJA2Hk3O9ysv8MWrVX6KpuA7vg7J4ShWrT80GYHNVi1V0qP09PYYFSNWgYlDenWJz1u9ptirWS
+ Uw/3+ORxO2dFOQ/o5AZOgA0UCpp8NgEasDMSbZDWEi5EQBL9eo0lpAgOD19ZkGLIn8escYEYq9u
+ 3PkyZnrYRa/cL1tM77YVOlO37WXTR0p2zVZLEdsFIEQtIKZlmh2Wn71TO6qTpaitJBvqu5cDyTO
+ Fw5kuuPInrbtzRQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-On Mon, Aug 12, 2024 at 02:47:04PM +0930, Qu Wenruo wrote:
-> 
-> 
-> 在 2024/8/10 00:38, David Sterba 写道:
-> > On Fri, Aug 09, 2024 at 04:54:22PM +0900, Naohiro Aota wrote:
-> >>
-> >> Reported-by: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-> >> Fixes: 97713b1a2ced ("btrfs: do not clear page dirty inside extent_write_locked_range()")
-> >
-> > This is fixing a regression in 6.11 but the patch does not apply to
-> > anything that could be used as a base branch (master, misc-6.11,
-> > for-next).
-> >
-> 
-> Are you using a wrong branch?
-> 
-> This patch can be applied without any conflict (although a typo, beging
-> -> being) on for-next (89af55f1ed3d4354a629f08b87dfcafa3aabb90e).
-> 
-> For upstream RCs, it's only conflicting with the recent change on the
-> folio usage, only a `page_folio(page)`->`folio` change.
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+HCH suggested I roll a fstest for this problem that I found in btrfs the
+other day. In principle, we probably could expand this to other dir
+operations and to check the parent timestamps, but having to do all that
+in C is a pain.  I didn't see a good way to use xfs_io for this,
+however.
+---
+ src/Makefile          |  2 +-
+ src/unlink-ctime.c    | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/755     | 26 ++++++++++++++++++++++++++
+ tests/generic/755.out |  2 ++
+ 4 files changed, 79 insertions(+), 1 deletion(-)
 
-Yeah, now it applies to for-next cleanly and the page/folio is minor
-conflict.
+diff --git a/src/Makefile b/src/Makefile
+index 9979613711c9..c71fa41e4668 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -34,7 +34,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
+ 	attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles \
+ 	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
+ 	detached_mounts_propagation ext4_resize t_readdir_3 splice2pipe \
+-	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault
++	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault unlink-ctime
+ 
+ EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
+ 	      btrfs_crc32c_forged_name.py popdir.pl popattr.py \
+diff --git a/src/unlink-ctime.c b/src/unlink-ctime.c
+new file mode 100644
+index 000000000000..7661e340eaba
+--- /dev/null
++++ b/src/unlink-ctime.c
+@@ -0,0 +1,50 @@
++#define _GNU_SOURCE 1
++#include <stdio.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <errno.h>
++#include <sys/stat.h>
++
++int main(int argc, char **argv)
++{
++	int fd, ret;
++	struct statx before, after;
++
++	if (argc < 2) {
++		fprintf(stderr, "Must specify filename!\n");
++		return 1;
++	}
++
++	fd = open(argv[1], O_RDWR|O_CREAT, 0600);
++	if (fd < 0) {
++		perror("open");
++		return 1;
++	}
++
++	ret = statx(fd, "", AT_EMPTY_PATH, STATX_CTIME, &before);
++	if (ret) {
++		perror("statx");
++		return 1;
++	}
++
++	sleep(1);
++
++	ret = unlink(argv[1]);
++	if (ret) {
++		perror("unlink");
++		return 1;
++	}
++
++	ret = statx(fd, "", AT_EMPTY_PATH, STATX_CTIME, &after);
++	if (ret) {
++		perror("statx");
++		return 1;
++	}
++
++	if (before.stx_ctime.tv_nsec == after.stx_ctime.tv_nsec &&
++	    before.stx_ctime.tv_sec == after.stx_ctime.tv_sec) {
++		printf("No change to ctime after unlink!\n");
++		return 1;
++	}
++	return 0;
++}
+diff --git a/tests/generic/755 b/tests/generic/755
+new file mode 100755
+index 000000000000..500c51f99630
+--- /dev/null
++++ b/tests/generic/755
+@@ -0,0 +1,26 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2024, Jeff Layton <jlayton@kernel.org>
++#
++# FS QA Test No. 755
++#
++# Create a file, stat it and then unlink it. Does the ctime of the
++# target inode change?
++#
++. ./common/preamble
++_begin_fstest auto quick
++
++# Import common functions.
++. ./common/filter
++. ./common/dmerror
++
++_require_test
++_require_test_program unlink-ctime
++
++testfile="$TEST_DIR/unlink-ctime.$$"
++
++$here/src/unlink-ctime $testfile
++
++echo Silence is golden
++status=0
++exit
+diff --git a/tests/generic/755.out b/tests/generic/755.out
+new file mode 100644
+index 000000000000..7c9ea51cd298
+--- /dev/null
++++ b/tests/generic/755.out
+@@ -0,0 +1,2 @@
++QA output created by 755
++Silence is golden
+
+---
+base-commit: f5ada754d5838d29fd270257003d0d123a9d1cd2
+change-id: 20240813-master-e3b46de630bd
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
 
