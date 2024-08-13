@@ -1,158 +1,232 @@
-Return-Path: <linux-btrfs+bounces-7154-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7155-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D27DC94FAF3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 03:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5095950279
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 12:29:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A664B223F0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 01:06:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 504F6B26B97
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2024 10:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52B8B6FC5;
-	Tue, 13 Aug 2024 01:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13CBE194A5B;
+	Tue, 13 Aug 2024 10:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OE1XzPZO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q8YRfTDQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84157F8;
-	Tue, 13 Aug 2024 01:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C1A18DF62;
+	Tue, 13 Aug 2024 10:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723511192; cv=none; b=nkElPE5vrfvvw4h8Rep/LYIUG9EFiVA75HEDWcgkOofVTzWgWKh9BReCtgHNmLkZYRdw24gXi7X6X0EAiviFOdEAAYbY7c10c/amxmbwUClOJF2M/28ERpYpieDLb/pLiVAXplRVDITvzihTEVpVPT2hsAw9Wb9TUn5RHBZz7Og=
+	t=1723544827; cv=none; b=PDzB+nUOj7FudkPxADo4APNRN/PT4GK2ZdH0qUcHCqUtnVadHNM+HKFNE+OKPAryKXEefDxr7vC3qWuBh4GUwfcelUdnivwpGugZ/L6vx4g9OEtVBrvItlq6mErjEm4bierU9YIdq/J5GLLwUBTtoBIF8XzFAW3sddvfAz11ALQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723511192; c=relaxed/simple;
-	bh=5iv5miWVkRDsd0wtEW6gKvDpoRlfIQjjKzJJy89R9wo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fQ8vSqu5ZyXH+h98stOMpodfj+Z3DAD2dUm/anGIycPB7lutUjVf4QIEnl5EAfJ2Cya8YmQpFAzm+mIRGB6soJuIafkGwF3oDrRMHYbJVEbOSCUBmSZ+AvPua6xBESbtmT2NsD71cXn3/Kl1KYVwXuSj+Zq4h/uf1wYuqQL6Wfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OE1XzPZO; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4280ee5f1e3so37805135e9.0;
-        Mon, 12 Aug 2024 18:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723511189; x=1724115989; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SQwGFQgNCLwZuGHlPhnW3Zcwnbys1JKt+ZT379aTVuw=;
-        b=OE1XzPZOpk9X8uIu8qnZz37u6jM4Fjbx03TgRMAy7ii83llyh8OWXPpT4DVtd92ZeM
-         LBdgd9nHRsDmkhCR/nNBXNYCJBLTum253cJFI0wzwyL3krIMLOVFDkx7UWQGUxiM07o/
-         VxFIyJQ1u56r/q/9ZjTcVHlON0TyOiyeyrXhz+YgrZb4tJdoifOcN2/qF9giuRNBejbh
-         cFVp392uk9uT36i4/QvEqrRNb+sTyTeKUih8UBfa6/99lxazCJGdBmw1IZ2S56kg72ZL
-         zMPkmQuRRPHKlZ9cmbtfY4M6de7sWxzX3/oPoZsTmlN1+D4rxbX4ABNR46d9OK3NVKf6
-         XK5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723511189; x=1724115989;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SQwGFQgNCLwZuGHlPhnW3Zcwnbys1JKt+ZT379aTVuw=;
-        b=JIxdwY0DI07fq19IMa2oRllXAN3WEYZ+uq/PauPrSqQwOoEIRwBPO8r2yJ9BkjMBiB
-         4eQYntJDwOcyxGSAoPpvExRIm7GoXF9LZszrD0b7ryxVXgrRbnmq9pfLNz0PPHnjt4vC
-         Yw5uW6vf8eLo+507dgrbwSpbm8V9hHJw+Rr6+b+34eQPrtTt1VxdRN8F/gIdgwIlHLdP
-         jN2mo9+6Ykk3xFyalJSDooX124RYwSVnt45zuTAfUswiQ4cbL+HCpcuFiV0FigQACTjP
-         W0itnky+oSS1Xip1AaLsllbhorNdP4HwaYrDCfnkM0PJYNV4upvAkfYIQhjwfyQE95+f
-         VzSg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCQ1PR9iZM2wuswmbiDdqWSsUAH5SBTcd6w1oyHbzWP3633r3j0Ch9RZ9maRlofA9YL4kovsYAYeIRFaqHWw8LdOvbYsgH5LZtDLXMTgoSHvWS+h+vJG0GQoob53ydGka6hY5Qnw==
-X-Gm-Message-State: AOJu0YyFEb3nBCBQv3hO3zRZUw/pYj69vuL6GhyrBhyQn+0hzqPYGRkI
-	eYndkWkhOqfyPCnsA4QQ7eHQAcw7vKHtbwDoN4ZSgrTZOIKdrvRkyhEPful4
-X-Google-Smtp-Source: AGHT+IEsbHzTRFUiQb7fTKYJd7LRcNdgUyb97jOThPxanIN2qNyUzvtkYwHkdFUfar5vTo2IQkA3CQ==
-X-Received: by 2002:a05:600c:1e03:b0:426:60b8:d8ba with SMTP id 5b1f17b1804b1-429d4870874mr15687765e9.28.1723511188757;
-        Mon, 12 Aug 2024 18:06:28 -0700 (PDT)
-Received: from [192.168.42.116] ([85.255.232.227])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4290c72d4c9sm208885875e9.8.2024.08.12.18.06.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Aug 2024 18:06:28 -0700 (PDT)
-Message-ID: <ad7c846c-f6fc-4fff-a406-7079dbb734dd@gmail.com>
-Date: Tue, 13 Aug 2024 02:06:57 +0100
+	s=arc-20240116; t=1723544827; c=relaxed/simple;
+	bh=whD3H4/YPbcQqCEdT/d7oKczontTk3uLQSOgIE/FGxI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dyUw0jrJI1q1F92u6X7hUkFZJnreFqbBDqq37czzDOE5r1dhyaBYxAzSttz03TTjnbiMe/iX9exRu1/VSesDCuGs4BYrh/91Kky5C2+dr1RATBBsPxqyhIlmCyaKP2wZ/TtlFX6Eft+o90F9Tk9UWivHaZg9T31DkVo9spqA0TI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q8YRfTDQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BD00C4AF0B;
+	Tue, 13 Aug 2024 10:27:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723544826;
+	bh=whD3H4/YPbcQqCEdT/d7oKczontTk3uLQSOgIE/FGxI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=q8YRfTDQ5y/6+/BOgtfNk34bYBqLlnZD3dwOMaIunBU8b8KXijf2SMIQK8WOr2qqO
+	 dNE2qkpL5S3f9J0PfsHAgJXhs6+w4zHZrwaR30mOt+52RA6xPaSPP9Wvtu1OAdOraZ
+	 7T+kLMud80zEMNqrLDh+QSimtFUs4npZs1mEFmH3gAK0iB/FTx7rzM6p69D19tJJWi
+	 gqjAJQVlGzRlcd3t2KaVlQSR3Q8nbbTvz/5Ftr1aTJB46xL0NU9ciVHfPVpvwfjX1O
+	 Z49R19XENLVpdTqlMKwFo801oC3qq2cD+jdxr4PvEYLjg068+QBs1fG21dfle28WnU
+	 YHuTgP5Rz7X4A==
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a7a9e25008aso74222466b.0;
+        Tue, 13 Aug 2024 03:27:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX+lnXIGHP0v6h5cno9BM+z2L8/Qhe2UALAZM1HH73/S8OKQFMCqU+RxtO0kp3zk02wAFv7M4Cdzs3sGPsbKTODZybriYwe7Z73/8Hd7db3R1A/5yDPpNO59DX15MLdEXQaCftOJHPyhXg=
+X-Gm-Message-State: AOJu0YzMWw9QeIote+BZPd7/3ZKzIJh65kSUK5EoC+QY8rWol7gECnpf
+	BKVQA0xzyvKBIrgsCCJWHdI1zNop4VWGcsHvilC1kXSHKjIiB4ujA5Dr+AtGYviEbynGRkb+9xc
+	IndCO3wWtA0G3OWoOJMUZZW+Pp6o=
+X-Google-Smtp-Source: AGHT+IGHdspHEbs6oPwEELfckFST2N3+WXraVbD6ObT2rgImU9WBraFQ9WOWSQyKcRluBUbyaJGBFlMgU2YaE06kMR0=
+X-Received: by 2002:a17:907:f148:b0:a7a:929f:c0ce with SMTP id
+ a640c23a62f3a-a80ed1efe70mr254124966b.19.1723544825105; Tue, 13 Aug 2024
+ 03:27:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: add io_uring interface for encoded reads
-To: dsterba@suse.cz
-Cc: Christoph Hellwig <hch@infradead.org>, Mark Harmstone
- <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
- Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-References: <20240809173552.929988-1-maharmstone@fb.com>
- <Zrnxgu7vkVDgI6VU@infradead.org>
- <1f5f4194-8981-46d4-aa7d-819cbdf653b9@gmail.com>
- <20240812165816.GL25962@twin.jikos.cz>
- <8d8e24bf-95d2-418e-b305-42eec37341c7@gmail.com>
- <20240813004935.GM25962@twin.jikos.cz>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20240813004935.GM25962@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240812165931.9106-1-jth@kernel.org>
+In-Reply-To: <20240812165931.9106-1-jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 13 Aug 2024 11:26:28 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H71KCunZHKZhbNxJEAWriJ4eZzogBNMmpT39o_LzaBWBA@mail.gmail.com>
+Message-ID: <CAL3q7H71KCunZHKZhbNxJEAWriJ4eZzogBNMmpT39o_LzaBWBA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: reduce chunk_map lookups in btrfs_map_block
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	"open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/13/24 01:49, David Sterba wrote:
-> On Mon, Aug 12, 2024 at 08:17:43PM +0100, Pavel Begunkov wrote:
->> On 8/12/24 17:58, David Sterba wrote:
->>> On Mon, Aug 12, 2024 at 05:10:15PM +0100, Pavel Begunkov wrote:
->>>> And the last point, I'm surprised there are two versions of
->>>> btrfs_ioctl_encoded_io_args. Maybe, it's a good moment to fix it if
->>>> we're creating a new interface.
->>>>
->>>> E.g. by adding a new structure defined right with u64 and such, use it
->>>> in io_uring, and cast to it in the ioctl code when it's x64 (with
->>>> a good set of BUILD_BUG_ON sprinkled) and convert structures otherwise?
->>>
->>> If you mean the 32bit version of the ioctl struct
->>> (btrfs_ioctl_encoded_io_args_32), I don't think we can fix it. It's been
->>
->> Right, I meant btrfs_ioctl_encoded_io_args_32. And to clarify, nothing
->> can be done for the ioctl(2) part, I only suggested to have a single
->> structure when it comes to io_uring.
->>
->>> there from the beginning and it's not a mistake. I don't remember the
->>> details why and only vaguely remember that I'd asked why we need it.
->>> Similar 64/32 struct is in the send ioctl but that was a mistake due to
->>> a pointer being passed in the structure and that needs to be handled due
->>> to different type width.
->>
->> Would be interesting to learn why, maybe Omar remembers? Only two
->> fields are not explicitly sized, both could've been just u64.
->> The structure iov points to (struct iovec) would've had a compat
->> flavour, but that doesn't require a separate
->> btrfs_ioctl_encoded_io_args.
-> 
-> Found it:
-> 
-> "why don't we avoid the send 32bit workaround"
-> https://lore.kernel.org/linux-btrfs/20190828120650.GZ2752@twin.jikos.cz/
-> 
-> "because big-endian"
-> https://lore.kernel.org/linux-btrfs/20190903171458.GA7452@vader/
+On Mon, Aug 12, 2024 at 6:18=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
+>
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> Currently we're calling btrfs_num_copies() before btrfs_get_chunk_map() i=
+n
+> btrfs_map_block(). But btrfs_num_copies() itself does a chunk map lookup
+> to be able to calculate the number of copies.
+>
+> So split out the code getting the number of copies from btrfs_num_copies(=
+)
+> into a helper called btrfs_chunk_map_num_copies() and directly call it
+> from btrfs_map_block() and btrfs_num_copies().
+>
+> This saves us one rbtree lookup per btrfs_map_block() invocation.
+>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/volumes.c | 50 +++++++++++++++++++++++++++-------------------
+>  1 file changed, 29 insertions(+), 21 deletions(-)
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index e07452207426..4863bdb4d6f4 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -5781,10 +5781,33 @@ void btrfs_mapping_tree_free(struct btrfs_fs_info=
+ *fs_info)
+>         write_unlock(&fs_info->mapping_tree_lock);
+>  }
+>
+> +static int btrfs_chunk_map_num_copies(struct btrfs_chunk_map *map)
 
-union {
-	void __user *buf;
-	__u64 __buf_alignment;
-};
+Can be made const.
 
-Endianness is indeed a problem here, but I don't see the
-purpose of aliasing it with a pointer instead of keeping
-just u64, which is a common pattern.
+> +{
+> +       enum btrfs_raid_types index =3D btrfs_bg_flags_to_raid_index(map-=
+>type);
+> +
+> +       /* Non-RAID56, use their ncopies from btrfs_raid_array. */
+> +       if (!(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK))
+> +               return btrfs_raid_array[index].ncopies;
 
-struct btrfs_ioctl_encoded_io_args {
-	__u64 buf;
-	...
-};
+Since the index is only used here, it could be declared here.
+Or just just shorten the function to something like this, which also
+addresses Qu's comment:
 
-// user
-void *buf = ...;
-arg.buf = (__u64)(uintptr_t)buf;
+static int btrfs_chunk_map_num_copies(const struct btrfs_chunk_map *map)
+{
+     enum btrfs_raid_types index =3D btrfs_bg_flags_to_raid_index(map->type=
+);
 
-// kernel
-void __user *p = u64_to_user_ptr(arg.buf);
+     if (map->type & BTRFS_BLOCK_GROUP_RAID5)
+         return 2;
 
--- 
-Pavel Begunkov
+    /*
+     * There could be two corrupted data stripes, we need
+     * to loop retry in order to rebuild the correct data.
+     *
+     * Fail a stripe at a time on every retry except the
+     * stripe under reconstruction.
+     */
+    if (map->type & BTRFS_BLOCK_GROUP_RAID6)
+        return map->num_stripes;
+
+    /* Non-RAID56, use their ncopies from btrfs_raid_array. */
+    return btrfs_raid_array[index].ncopies;
+}
+
+Less code, less one if statement, and no need for the assert Qu mentioned.
+
+> +
+> +       if (map->type & BTRFS_BLOCK_GROUP_RAID5)
+> +               return 2;
+> +
+> +       /*
+> +        * There could be two corrupted data stripes, we need
+> +        * to loop retry in order to rebuild the correct data.
+> +        *
+> +        * Fail a stripe at a time on every retry except the
+> +        * stripe under reconstruction.
+
+Since this is moving the comment and it falls too short of the 80
+characters line length,
+it's a good opportunity to reformat it to have the lines closer to 80
+characters.
+
+Otherwise it looks fine:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> +        */
+> +       if (map->type & BTRFS_BLOCK_GROUP_RAID6)
+> +               return map->num_stripes;
+> +
+> +       return 1;
+> +}
+> +
+>  int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len=
+)
+>  {
+>         struct btrfs_chunk_map *map;
+> -       enum btrfs_raid_types index;
+>         int ret =3D 1;
+>
+>         map =3D btrfs_get_chunk_map(fs_info, logical, len);
+> @@ -5797,22 +5820,7 @@ int btrfs_num_copies(struct btrfs_fs_info *fs_info=
+, u64 logical, u64 len)
+>                  */
+>                 return 1;
+>
+> -       index =3D btrfs_bg_flags_to_raid_index(map->type);
+> -
+> -       /* Non-RAID56, use their ncopies from btrfs_raid_array. */
+> -       if (!(map->type & BTRFS_BLOCK_GROUP_RAID56_MASK))
+> -               ret =3D btrfs_raid_array[index].ncopies;
+> -       else if (map->type & BTRFS_BLOCK_GROUP_RAID5)
+> -               ret =3D 2;
+> -       else if (map->type & BTRFS_BLOCK_GROUP_RAID6)
+> -               /*
+> -                * There could be two corrupted data stripes, we need
+> -                * to loop retry in order to rebuild the correct data.
+> -                *
+> -                * Fail a stripe at a time on every retry except the
+> -                * stripe under reconstruction.
+> -                */
+> -               ret =3D map->num_stripes;
+> +       ret =3D btrfs_chunk_map_num_copies(map);
+>         btrfs_free_chunk_map(map);
+>         return ret;
+>  }
+> @@ -6462,14 +6470,14 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info=
+, enum btrfs_map_op op,
+>         io_geom.stripe_index =3D 0;
+>         io_geom.op =3D op;
+>
+> -       num_copies =3D btrfs_num_copies(fs_info, logical, fs_info->sector=
+size);
+> -       if (io_geom.mirror_num > num_copies)
+> -               return -EINVAL;
+> -
+>         map =3D btrfs_get_chunk_map(fs_info, logical, *length);
+>         if (IS_ERR(map))
+>                 return PTR_ERR(map);
+>
+> +       num_copies =3D btrfs_chunk_map_num_copies(map);
+> +       if (io_geom.mirror_num > num_copies)
+> +               return -EINVAL;
+> +
+>         map_offset =3D logical - map->start;
+>         io_geom.raid56_full_stripe_start =3D (u64)-1;
+>         max_len =3D btrfs_max_io_len(map, map_offset, &io_geom);
+> --
+> 2.43.0
+>
+>
 
