@@ -1,111 +1,151 @@
-Return-Path: <linux-btrfs+bounces-7198-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7199-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C919524A6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2024 23:24:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34B1F9524E9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2024 23:47:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EC311F2276E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2024 21:24:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 638A61C217F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2024 21:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C911A1C8232;
-	Wed, 14 Aug 2024 21:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC581C825B;
+	Wed, 14 Aug 2024 21:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZpZM0FG"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y5sZFs0c";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="esNQY8uQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rZGpg1rx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bC16Cqp/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FEC91BE241;
-	Wed, 14 Aug 2024 21:24:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF857346D
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Aug 2024 21:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723670670; cv=none; b=JffrfLE44GJcUrwX0hNfZWcatBTwJaDjSOZjE8dd9gh6pKsn0Mye9sbdEq5HGQJmJq8ZaY1DtMNKba7GhAi6Fg2fTzpssoKS7gRn4NDbiLZ7QVYVPDinJvxvGPitqYvG7a2Z4XifwZ7Liq4ytRMZR9oBsvaHtE2VpX2fARsvYpk=
+	t=1723672057; cv=none; b=tgK/HdNgdycl4FvDOiaaHbzZbuWSEQTHnX3eJpPHFN4AtRZ2NQvQxrWGOjKLuMMxs3sGMae7U6Mrf7hTMec5oiEfGDVd0D+FmD2EBpXLa7fiqhYbWGjCRwxw7CarQSgyju/0yKe8eB8DUvclRsOF9l0PwW73NJgHWZG42LFvHNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723670670; c=relaxed/simple;
-	bh=70ZVhRIeQZZoEcfgxUeSKJYGOEmRh5NTAji1BZ8/rMk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TkrOynn6bnskbozUf+p9IXd9yrRhgkqTRBHt1BOjFJCZp+DdkaURDhaennUZgGdQv9BXOU/P5xG1NQv3b/0c2ypYChCxTmGu0Q/OHHfez9bxMko/jrJHpShyaKh+6ABLIA0Iv4F9acM7mn7hqJX5XcKKkYUqASGk0v9w0Menmok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PZpZM0FG; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-368440b073bso164619f8f.0;
-        Wed, 14 Aug 2024 14:24:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723670667; x=1724275467; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CJ8c8qOAB5Bc3n9KNWTAAiBx1ZDIQSVvg8ywZE8CxyA=;
-        b=PZpZM0FG/RHKAtDz3VqF3GpisUFx+vPihnp1fogV9HHvU32h9mJxzn5GbBeC3g2mQN
-         /n1gZYInLNzVYlbSrdfqZfSqFaMv7mZaTIAHyE2qSO+l2GVyJEZMu7yBd+F9oYSCV7Jc
-         F2g6EOROijX/YPWpsJY9siZF8oi3MjAY6heSXtjeA6fL/k8EZqgTm7M1f7/NWdkaS8fZ
-         YqkIVqfNvBUNwNsDGM/3lFdtl479L34bQ/t65EMYgmMCGaxeH4tERtYFxBjOsjrjtZ0Q
-         c24GnBqFNCgtqhvNtuktG5qkFamUHcRL7CD37gkyLSrz/CjPWHVv9cPKiEehKA3l9rL6
-         Agrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723670667; x=1724275467;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CJ8c8qOAB5Bc3n9KNWTAAiBx1ZDIQSVvg8ywZE8CxyA=;
-        b=J6FrddERSKI/du8T1rBdDpCdPYlJvQWnWXX9RcpSwdMWZ6QIFyxbqzfLHVeg1lGJFC
-         TYXFWxdn9CT0PO0hkA5UVlHD6Kzrbmd3jIR2OJdqKF5VmzYburd1FkN7SsTuo/p1S8xC
-         eifZHs4Z152yb8h+7Cg0ctNcCyvVEJc1h88XXxy9yNfO8nd80n/Wbo7U6VKcJJqgNNOX
-         lHwG7o0G5iFA4lWu7iCcD/9t2PLZCFXNPkKmstHBOz9hGjym7y1YWem1K5UhjbJucj5l
-         aOid2lffSJxnG9vb38sNy95BwmSKxUHDMrHO4s/AlGo2CloX5CCtIWbESh3s76tKLpFr
-         gZFw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqrHbZtYv0lDci9leLy76wMaA1z83/cH80YWVTeyhdTOOfrHc4o6hGVToZVlZ61FAgVbDoYzmJi9ouy3UaigmFueYWn0hE4Xm+Vy4AZBKdEZ6V56nNfUzZHn2OwPRnaVeOrgVr3bApIHM=
-X-Gm-Message-State: AOJu0YwsUhLMIz6ySsjNCEFg4pqWt3nH1SL7oz8+EjDxEasldWkw0YXw
-	E3lJV+AnZHf+jV1Fu9+030ZA6xgEsxdB6FdPHQZF0CiWJFzAJwH0RKmjrSqBB/g=
-X-Google-Smtp-Source: AGHT+IE0tdjKd7Izw/570py8NiZmTH5iwdogIHFsUVNtPvq7imLC1cuCKjotWItEmXe2EeaQooQnTg==
-X-Received: by 2002:adf:fd8e:0:b0:371:8319:98de with SMTP id ffacd0b85a97d-37186c121e2mr541370f8f.14.1723670666380;
-        Wed, 14 Aug 2024 14:24:26 -0700 (PDT)
-Received: from ?IPV6:2003:cf:3f1a:a602:9067:1658:40a2:feec? (p200300cf3f1aa6029067165840a2feec.dip0.t-ipconnect.de. [2003:cf:3f1a:a602:9067:1658:40a2:feec])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-371898ab469sm45884f8f.100.2024.08.14.14.24.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Aug 2024 14:24:26 -0700 (PDT)
-Message-ID: <c30fd6b3-ca7a-4759-8a53-d42878bf84f7@gmail.com>
-Date: Wed, 14 Aug 2024 23:24:39 +0200
+	s=arc-20240116; t=1723672057; c=relaxed/simple;
+	bh=6NAiPZvrgPVWWltDER7GEO2RztQOTSu8QvedGb5I6Zc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z1OENGeud1Fjb7NUPHDhrLrgpYmIdMeddu4mP8qJvEQk4mDGHkriJ5iJBwq05oPj3/7ThILjNYTd9LylBqhzTcVYRvDhgLndbuG5TK6SNQ2bPWF67caksfPg/5qZ8kCAFbNEkAFLzXOzp2XrrwRwWnqCI5TQnCfZosCbqSw2dRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y5sZFs0c; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=esNQY8uQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rZGpg1rx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bC16Cqp/; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8862322035;
+	Wed, 14 Aug 2024 21:47:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723672053;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dI88J+kfKeO3pGehfM/eNBHPz6qC5JjkdJYWB+MZDL4=;
+	b=y5sZFs0cgg2ningPzPVwMfWYkDi4Tf9vGQP3IUKfWqK2oyrwDwUBrtFWXGH1On5sKgrwy8
+	AXOs7kRltR16D+Wjfgn8R1Ld6to0F9cRx3ctlREGW3eetIWqtJBFIL19ApJ5yPuKVC9mX6
+	5WE+/1POPAUVKIbQRxpQ4kCfS65Q3pU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723672053;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dI88J+kfKeO3pGehfM/eNBHPz6qC5JjkdJYWB+MZDL4=;
+	b=esNQY8uQFB3KVL8LU0GOsbbFdcawNuve6fmsd0BQhprrp8EyFkoonY8pMq79qXJTqPx6Ai
+	T8ah5cQi9HKJugDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723672052;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dI88J+kfKeO3pGehfM/eNBHPz6qC5JjkdJYWB+MZDL4=;
+	b=rZGpg1rxgNNKD0AwHT9M3anCuVVvcNGNCWXbWx0lmKvtBJ5rw4eq16DaOe98I4X2aJBrEi
+	x4cQsnoSwlIsUL1F+6ApykRbWkey3mZ96OI8rw701FuWZ7o1JJHqa2nufYvYOgL7ZpSv5e
+	r4BXJyRVpoqXfzh2DG8RmllEeERLIJ4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723672052;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dI88J+kfKeO3pGehfM/eNBHPz6qC5JjkdJYWB+MZDL4=;
+	b=bC16Cqp/4PjjqT9IP1ONp1BtCUDwO7wZKIr3FUfqaD35eG4DqppHOMs1tbsssO1FMce59P
+	kMBWGk2VsRozXyDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7123B1348F;
+	Wed, 14 Aug 2024 21:47:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id yqvwGvQlvWa8VQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 14 Aug 2024 21:47:32 +0000
+Date: Wed, 14 Aug 2024 23:47:31 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Anand Jain <anand.jain@oracle.com>
+Cc: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v5] btrfs-progs: add --subvol option to mkfs.btrfs
+Message-ID: <20240814214731.GA25962@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20240808171721.370556-1-maharmstone@fb.com>
+ <20240809193112.GD25962@twin.jikos.cz>
+ <83f9b6b1-9027-41e5-b0ee-c667dd181fa4@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
- execution time of the kswapd0 process and symptoms as if there is not enough
- memory
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: andrea.gelmini@gmail.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- mikhail.v.gavrilov@gmail.com, regressions@lists.linux.dev
-References: <CAL3q7H5zfQNS1qy=jAAZa-7w088Q1K-R7+asj-f++6=N8skWzg@mail.gmail.com>
- <277314c9-c4aa-4966-9fbe-c5c42feed7ef@gmail.com>
- <CAL3q7H4iYRsjG9BvRYh_aB6UN-QFuTCqJdiq6hV_Xh7+U7qJ5A@mail.gmail.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Jannik_Gl=C3=BCckert?= <jannik.glueckert@gmail.com>
-In-Reply-To: <CAL3q7H4iYRsjG9BvRYh_aB6UN-QFuTCqJdiq6hV_Xh7+U7qJ5A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <83f9b6b1-9027-41e5-b0ee-c667dd181fa4@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:mid,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Level: 
 
-On 8/11/24 17:33, Filipe Manana wrote:
-> There's a fix there in the bugzilla, and I've just sent it to the mailing list.
-> In case you want to try it:
+On Tue, Aug 13, 2024 at 08:52:04AM +0800, Anand Jain wrote:
 > 
-> https://lore.kernel.org/linux-btrfs/d85d72b968a1f7b8538c581eeb8f5baa973dfc95.1723377230.git.fdmanana@suse.com/
+> Nice feature.
 > 
-> Thanks
+> >> +	OPTLINE("-u|--subvol SUBDIR", "create SUBDIR as subvolume rather than normal directory"),
+> > 
+> > Please mention that it can be specified multiple times.
+> 
+> Nitpick..
+> 
+> Should '--subvol' be '--subvolume' for consistency? use the full names.
 
-Hi Filipe,
-
-this patch mostly fixes the issue, but I still get a 1-2 second window 
-of freezing every now and then. I also still see long periods of 100% 
-kswapd0 usage, but without the periodic freezing.
-
-Thanks
-Jannik
+For convenience both can be accepted, there are aliases for options. The
+subcommand names are recognized if abbreviated and still unique, I'm not
+sure getopt does the same for long options, if not adding another line
+to define another name is no problem.
 
