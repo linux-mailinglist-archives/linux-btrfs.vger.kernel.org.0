@@ -1,80 +1,75 @@
-Return-Path: <linux-btrfs+bounces-7214-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7215-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D88E953968
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2024 19:47:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A135D95399F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2024 20:07:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3093B22BC9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2024 17:46:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F5FB1F253EF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2024 18:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF10C54656;
-	Thu, 15 Aug 2024 17:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633FD46444;
+	Thu, 15 Aug 2024 18:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PmP5mn5J"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t+ghFo53";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t+ghFo53"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oo1-f66.google.com (mail-oo1-f66.google.com [209.85.161.66])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48D23EA76
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 17:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BCC615CB
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 18:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723743940; cv=none; b=sLOV+TGAcKq9S/YNlnrACeJ9qHmMZQ0Zuen5SF8Pn9NbOr4hWUZiy6dI6mRrhmKKKygY1bO1XgDFRbuS2otfZSLf0bL1BMhNhG9E7U8GC9TvCwJUwshtJg30YjE/qbQxFrDAUu4Rs29VqmV8LXM+oBuZ/ZfY6f7bMVkxAkT1txM=
+	t=1723745233; cv=none; b=BHlMTcrB1WwRNB81AooSRgXdFkDSU+CZWVLBElRAGG17DNGrQIkqW4PDAFvGMKLivwLb2fLYeZNmfG8LVifPkNHoWFezKhRZHLY8l5WHrA2av4xbSR1hRMzcVYvJgl0Hhw4cj0/dqhTUhXC9WGacOJY9OEbzkiA97C9agHUwly8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723743940; c=relaxed/simple;
-	bh=dh0sdv0xgHcDD/3YvVi7uvPo86Cfz6IKMIGx76Fl5G0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=FRLbCZFyajeuc3u6yU4ZyjKhKQYJnBDr/KI4sS4fTsKcYR2gwBTDuCiGk7IquW7lU3+5hfEU73PDQBJoaesHuz9AkXiUNHd0H22yqJIT0+dffqz/EgeX09/T8eTyc/62/DUchT1LkMX92fkG8LfAGRSsu35jbJ7iOzwVT0nYRXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PmP5mn5J; arc=none smtp.client-ip=209.85.161.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f66.google.com with SMTP id 006d021491bc7-5d5d077c60aso659914eaf.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 10:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723743938; x=1724348738; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to
-         :references:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EK8GeEJOAuTu7HqhYyR+w6PoZO92G6Wh26vpRlq9ifQ=;
-        b=PmP5mn5JulMqO4t5E3MXlfG5M6I/SfJzxH/sEuqevQgHuNEaOQb6y8ojvnIcjyRZZi
-         rAw5RRsihMknDoTTeLvwVuZXJrrCqTI8r0axQN80Q8ia2Z9cn9wOOXHUZAG4Anr31f8e
-         GOf133D3C0gCYyM/shfseCALPRU9vV1ncanzIcGM9ezf2Pm58QQJu6Zx87S2uGvw+R8E
-         4FI4S4w4l3PUDEmxsBp67zJJA/d8Vratman/oB24PAV0LbJUNJHI833NZDsKI8uZ6GbX
-         t8jpaHrDzjZgrxzLOIxtbhq290cPFcRxmb7dbl0FdSSYBJC0n93aXIypp3vvGz1ZdRE8
-         o7gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723743938; x=1724348738;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to
-         :references:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EK8GeEJOAuTu7HqhYyR+w6PoZO92G6Wh26vpRlq9ifQ=;
-        b=jF7lsE2i7Hu7tOsd6TVUwoiuvWBzzGrp+A5dliDpcmFLZetLHlO31doUJdfCDDm1MF
-         UzOzUpzs7febyU4nfvdX3cAFKWvqUAy5TLXKO0alZ2s22mbQJ3LeC2R16WGZVjfYxYrc
-         2nnvzWCoZPgbctyyvghIT8MzQfkSYB8/hfB1/77tH7Zh2B9L+g2+vSKIiQ3/JTeA64W/
-         WvlpGTe4+LMIdINKoxmq0V+lp86nOOJvP9NvL/kl4BjPJqyOWyNIjXOw33qmOWpB5Gw2
-         9pX8qZlmHdBy2JQWWX5BlndYWBadJcGUJjYWgauxriDatxEj38iUb/F7ZcEIVKufmazT
-         fMcQ==
-X-Gm-Message-State: AOJu0Yx3ird0CL1NrQpkDzQxqVKlWvqQoACJfqZ0F5EkBvW9wyrzgAXi
-	4Ea8zNyofVIR367OF71NpLr+SNw6P9u5J8sqS01OgDz6A+cCcIKHQ/XrYetN
-X-Google-Smtp-Source: AGHT+IENVL++8o/jz93WtZ3AFZvCh9VIZM4ji4sprKIL/JmlxgCQn2epU/aMYu0u5ORm1hM3KiaaAQ==
-X-Received: by 2002:a05:6820:2212:b0:5d8:750:21b with SMTP id 006d021491bc7-5da97f54c7dmr775531eaf.1.1723743937605;
-        Thu, 15 Aug 2024 10:45:37 -0700 (PDT)
-Received: from localhost (fwdproxy-eag-003.fbsv.net. [2a03:2880:3ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5da8cda16b6sm342753eaf.15.2024.08.15.10.45.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2024 10:45:37 -0700 (PDT)
-Date: Thu, 15 Aug 2024 10:38:24 -0700
-From: Leo Martins <loemra.dev@gmail.com>
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/2] btrfs: add __free attribute and improve xattr cleanup
-User-Agent: meli 0.8.6
-References: <cover.1723245033.git.loemra.dev@gmail.com> <20240813212903.GS25962@twin.jikos.cz>
-In-Reply-To: <20240813212903.GS25962@twin.jikos.cz>
-Message-ID: <i9tc0.0f867os9viy6@gmail.com>
+	s=arc-20240116; t=1723745233; c=relaxed/simple;
+	bh=ubreYoCnuwrhd4yuYetcX4QdT5k+dT8WK+s8IXzbXk0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=VQo0IKL8rmI9uT8ktdYMUHhfG3pj2v0n0NWXdIjUvyhmHGjdBOpu4a/Iz8moly4+LwiJ1SbdLMww7ea8EpHlzsG8PHbjy4O6uZNMYxo2bB8tq8l5xRl/OsoW1ukd5LBi/iI9mw0CHVjJVScgtKpYWc0pSNW3Ri5RtvLQL/GWL/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t+ghFo53; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t+ghFo53; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9717C21179
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 18:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723745229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=mhorOLfIAQYxRkcLgi6zPEg4MpIe9QDS2xCZG0Ucgjk=;
+	b=t+ghFo53wjmrQgJK09XfaBo6K27ihNZdNfSaXAJ3HYdNt60PTI4BAOF4NiYPZiU8xISYMK
+	U50/3auagYOFL9NUGCq1W/lZOtJGQUB7fORZkZDuoRaBm3KTXUtTrL6DgLsaJdKPUwuWX2
+	osFJepNiFruRwxGG7THr6OYfxN+kC9E=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723745229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=mhorOLfIAQYxRkcLgi6zPEg4MpIe9QDS2xCZG0Ucgjk=;
+	b=t+ghFo53wjmrQgJK09XfaBo6K27ihNZdNfSaXAJ3HYdNt60PTI4BAOF4NiYPZiU8xISYMK
+	U50/3auagYOFL9NUGCq1W/lZOtJGQUB7fORZkZDuoRaBm3KTXUtTrL6DgLsaJdKPUwuWX2
+	osFJepNiFruRwxGG7THr6OYfxN+kC9E=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 905001342D
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 18:07:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id r8M5I81Dvmb7OgAAD6G6ig
+	(envelope-from <dsterba@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 18:07:09 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: Btrfs progs release 6.10.1
+Date: Thu, 15 Aug 2024 20:07:06 +0200
+Message-ID: <20240815180707.13722-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,97 +77,49 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8; format=flowed
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
 
-On Tue, 13 Aug 2024 14:29, David Sterba <dsterba@suse.cz> wrote:
->On Fri, Aug 09, 2024 at 04:11:47PM -0700, Leo Martins wrote:
->> The first patch introduces the __free attribute to the btrfs code, allowing
->> for automatic memory management of certain variables. This attribute enables
->> the kernel to automatically call a specified function (in this case,
->> btrfs_free_path()) on a variable when it goes out of scope, ensuring proper
->> memory release and preventing potential memory leaks.
->> 
->> The second patch applies the __free attribute to the path variable in the
->> btrfs_getxattr(), btrfs_setxattr(), and btrfs_listxattr() functions, ensuring
->> that the memory allocated for this variable is properly released when it goes
->> out of scope. This improves the memory management of xattr operations in
->> btrfs, reducing the risk of memory-related bugs and improving overall system
->> stability.
->> 
->> As a next step, I want to extend the use of the __free attribute to other
->> instances where btrfs_free_path is being manually called.
->
->Hold on. Adding the automatic memory management can be done but in the
->example patches you sent it's IMHO making things worse on the code
->level.
->
->The btrfs_free_path (or btrfs_release_path for that matter) are not
->simple free helpers but also part of the b-tree locking primitives,
->pairing with btrfs_search_slot and nontrivial semantics depending on the
->various setting flags.
->
->Dropping the explicit marker from the code is obscuring where the
->locked section is.
->
->Another problem is that this will make any backports less obviously
->correct from releases that use the __free attribue to older kernels.
->
->In the second patch in btrfs_setxattr() you removed btrfs_free_path()
->but there's still some code after that. In this case it's harmless and
->only slightly extending the section covered by path, ie. just by a few
->instructions, but this won't be always possible.
->
->In some cases the placement of freeing the path unlocks the tree so it
->has a strong reason to be there.
->
->Overall, we could the automatic memory management, although for kernel,
->for me, it's on the same level as trying to use other fancy C++
->features. We could start using __free in new structures so it's used
->consistently from the beginning and not mixing two styles namely when
->not all instances of btrfs_path can use it.
->
->In justified cases the auto freeing may make sense but not at the cost
->of making the code confusing about the pairing free or extending the
->locked section unnecessarily. The btrfs_path is not a good example where
->to start with that.
+Hi,
 
-This makes sense, I will drop the xattr patch. Do you think there would
-be any benefit in using the __free pattern in situations where it
-is clear that btrfs_free_path is the last thing called before returning?
-For example:
+btrfs-progs version 6.10.1 have been released. This is a bugfix release.
 
+Changelog:
 
-int btrfs_del_orphan_item(struct btrfs_trans_handle *trans,
-			  struct btrfs_root *root, u64 offset)
-{
-	struct btrfs_path *path;
-	struct btrfs_key key;
-	int ret = 0;
+  * mkfs: rework --rootdir traversal, skip hardlinks and create new inodes
+    instead, also warn about them, this did not work as expected and will be
+    fixed in the future
+  * receive: search in older trees for UUIDs when detecting clone sources
+  * libbtrfsutil: bindings available at https://pypi.org/project/btrfsutil
+  * libbtrfs:
+    * patchlevel version update 0.1.4
+    * cleanup in headers, removed unused definitions, no functional changes
+    * don't ship list.h and rbtree.h
+  * other: documentation updates
 
-	key.objectid = BTRFS_ORPHAN_OBJECTID;
-	key.type = BTRFS_ORPHAN_ITEM_KEY;
-	key.offset = offset;
-
-	path = btrfs_alloc_path();
-	if (!path)
-		return -ENOMEM;
-
-	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
-	if (ret < 0)
-		goto out;
-	if (ret) { /* JDM: Really? */
-		ret = -ENOENT;
-		goto out;
-	}
-
-	ret = btrfs_del_item(trans, root, path);
-
-out:
-	btrfs_free_path(path);
-	return ret;
-}
-
-
-In this code the behavior would be the same except it would eliminate
-the need for goto out as the path is freed automatically on exit.
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+Release: https://github.com/kdave/btrfs-progs/releases/tag/v6.10.1
 
