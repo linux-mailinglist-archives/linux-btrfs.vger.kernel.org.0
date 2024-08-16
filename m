@@ -1,178 +1,264 @@
-Return-Path: <linux-btrfs+bounces-7225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23C5095434F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 09:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A5829544EC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 10:58:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAF262853FF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 07:51:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90AD8284E88
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 08:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AF813D882;
-	Fri, 16 Aug 2024 07:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BCD913C699;
+	Fri, 16 Aug 2024 08:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="dkuLA6on"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MWJ2SNf2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MWJ2SNf2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C8984205D;
-	Fri, 16 Aug 2024 07:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C73A127E3A
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 08:58:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723794348; cv=none; b=RRYGglqcQ/20xSAkVNPttw0AN1NvEE/YdQ0t+63WELe5PcnLyQcy38VZxorS4uSQZat2rYYBcTF3QBxCrcrWP/HNIRtjLwJii4VZQYEB3u931I9ijHpfLJxlkCL2JjWJCXsFvFeTKutvwqY7w5OIiyoMrLpovycFH79L/rvgE0E=
+	t=1723798717; cv=none; b=dJuuLt/6raQh4jMIGMIGDPY8M6ON5Xb5BiMeDtO8mO+lzdAlRvpJqc8DzZ0+rco0Yr2NMx/wAK2mTgHRv2s94abtGcDfTIHrJfCtCHz5OPDUq9ghD/eYNL1gM5QSPo12GAxqAyihbc9t38/heVAeRlBG8kzR4QhFd2xbPgYIfBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723794348; c=relaxed/simple;
-	bh=F5ENiML29rLl8aBNpN8jhSOvik4ZfegSlDcPw6HH9g8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B+UGkr9bUNuv5jsmk2LzLShZClhcfSqpnPb5T+a76F46t5COuYnQpqZn0HhBI5JiqoJkMzM0C7amrN1AlrR260j1f15ogIjAt7OLjT2v6ycx1SxkQoX2/8ivsT/2SCKlxuXe767MlNQDOgTFvdJBaufwYCwrmSwH037nuJyiyJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=dkuLA6on; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1723794341; x=1724399141; i=quwenruo.btrfs@gmx.com;
-	bh=xev38Kn6r+hoKSd7Y07iIqEQWZS68/nFMYj1sMxvF/I=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=dkuLA6onF+LsasMz3Y7kjc/kIu44fw2/COqhsg7+FJuI0unLAOv1RndZXIkqTtM5
-	 v5AyhQ3o5HS7diSYNXkPIBGIvttPPTGio6Lqf1RKBiBqb8xz9s/MUJosboBVETYdV
-	 uFwD4x43ZzqcmGrpPedzNCohnLu8A8NJXt0Uk2EOnwF7vMgFTj+l6iTwv161lWShr
-	 QV4QyKPT8xagLNPBEcZ4Bei5mCF5KzrZ84oR8oHWRK/qoHsOEh8THmCCnzUv5LPk7
-	 uTCLdGo+ziV9q1tjvvWYxSW9aWz+mwWuLn27YHmGivzu5W/Tz9Xo8TYA9tXKOrbma
-	 PMHj3OACIOSAam74rg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO6C-1rqSs83HVA-00jZBp; Fri, 16
- Aug 2024 09:45:41 +0200
-Message-ID: <81f434bf-f1b7-40d4-aa33-54c2f4869574@gmx.com>
-Date: Fri, 16 Aug 2024 17:15:37 +0930
+	s=arc-20240116; t=1723798717; c=relaxed/simple;
+	bh=78dZ4OOye8ocBlsYQh75ACZELIzq+PyRC1z0dsnr/p0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JNQyAKGXJ7wSHk3NGNrF896iKF7mTALFtPUJH+C2r7tDKYuHcgIsAaBUsEA6d2DD1f+kP901EHsGmU8nZqH1B80P6JCHIPqxh3AV5xzc0xIUfjl+3X/idUaJ3ajxB02D19qVqZJoMoRoJ9l3jN/Gnwwm1LG9WKZdmLcWFtDV16k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MWJ2SNf2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MWJ2SNf2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2E2042221A;
+	Fri, 16 Aug 2024 08:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723798713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=IoRUJvRApyCgO2XvCnA1yPYk5tZ3aA0WtT2QCrUk4oo=;
+	b=MWJ2SNf2I9dUWgtPS4xcF7EgRJRZGm+7sFmGvJkg7PAodvrmDKbF9GRG4U0irsLRjS1E8F
+	eFig5tDdxJtjH7kvd5vPRhfQ5DNAqb5OBssTsRsFAPjvhKJQiJUjvFoTITRJVNOhFi7XTO
+	PhI2C0/I7ZdHi460c3XLoFidjxoftqg=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723798713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=IoRUJvRApyCgO2XvCnA1yPYk5tZ3aA0WtT2QCrUk4oo=;
+	b=MWJ2SNf2I9dUWgtPS4xcF7EgRJRZGm+7sFmGvJkg7PAodvrmDKbF9GRG4U0irsLRjS1E8F
+	eFig5tDdxJtjH7kvd5vPRhfQ5DNAqb5OBssTsRsFAPjvhKJQiJUjvFoTITRJVNOhFi7XTO
+	PhI2C0/I7ZdHi460c3XLoFidjxoftqg=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C441113A2F;
+	Fri, 16 Aug 2024 08:58:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 63ugH7cUv2YQJwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 16 Aug 2024 08:58:31 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Ivan Shapovalov <intelfx@intelfx.name>,
+	=?UTF-8?q?Jannik=20Gl=C3=BCckert?= <jannik.glueckert@gmail.com>
+Subject: [PATCH RFC] btrfs: only run extent map shrinker inside cleaner kthread
+Date: Fri, 16 Aug 2024 18:28:09 +0930
+Message-ID: <b5f8d32e8b4fb1bfb3a88f5373530980f1d2f523.1723798569.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
- execution time of the kswapd0 process and symptoms as if there is not enough
- memory
-To: Ivan Shapovalov <intelfx@intelfx.name>,
- Andrea Gelmini <andrea.gelmini@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CAL3q7H5zfQNS1qy=jAAZa-7w088Q1K-R7+asj-f++6=N8skWzg@mail.gmail.com>
- <277314c9-c4aa-4966-9fbe-c5c42feed7ef@gmail.com>
- <CAL3q7H4iYRsjG9BvRYh_aB6UN-QFuTCqJdiq6hV_Xh7+U7qJ5A@mail.gmail.com>
- <3df4acd616a07ef4d2dc6bad668701504b412ffc.camel@intelfx.name>
- <95f2c790f1746b6a3623ceb651864778d26467af.camel@intelfx.name>
- <CAK-xaQaPbmZ+pcqFvfgtwTyMnHbMcs6j8KjgVOYBxGzGgoAJ7Q@mail.gmail.com>
- <7fca93ba155921cd3d32678899bbfcea58d23da3.camel@intelfx.name>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <7fca93ba155921cd3d32678899bbfcea58d23da3.camel@intelfx.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m37P737eWgX8tTolImS24TexYAsFCDEPs710cU/fQGmuHGmlEeQ
- zj8yRqptqFvDzSyKaToKCZGI3x6DP37fHfIdO/UGllCGA5jOSaQsHaw6O0A0k9ppXzFVCTH
- +K3h5HONGp/HxA5MquNFYIEx/UD1eAYQjpM8PZSuTFxfJGRChi96FxavVAhoerhxcWTfk+I
- sZ71nRXal2E5GlBxny2mQ==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:VDN6cGCHYYI=;h50RBhS8ZqtJ5mcuOu7rPlnq6Tb
- OHoLoL/2OMYVbbFf/Tb4orzFPri1nQgJ6jWVaDpiM0oj6zPZkxOyIhbM1SGIVOlFXeNOIcQMw
- tKHu/4ffV64SSNeslRRDlZKyqRvZOdYHzV1LVrBV1/dRr6fvT5I97ahHjJs4JU2Ot7eZABKqz
- 1OtSqe4/lyyC2XuOwqf9D7Hyw1KEoUdpDpuIzVNAowBoXXUUo7l2y/ANgdlnNhEVWM9SF9Djn
- ofF1cRJbN64KY/d9Uu6T4mWDxIPDwIvTHGqKdaq8fvyQGgsW7Uf9hkTCp2mTQJQXQRGYvuAp9
- ZDpN6TuszbfxLzA5puGRk4HylVSMiMdsEYoirQuFGiUOBbS5y+ZBIvb3Dir1YWNhU4OlnG5qE
- okigml08TLrOClkjPz1A3wy4Am7SSPqxZMe1LDM+7gnqm+7Uf102Kf2E1yJFlPZEEf7//3gNr
- Y5C+tuf89wFbJM8TNTgNmhBDw/m9DTYDCW2DZp7DxUTeDfGiDhffgZeriRPAxEuFDbE3JxEEJ
- LK2zFc4Hw8appPkj7CplTfZ0J3qvVk6QYxsRnMBBMCldGM/hyaZlZN+EwtUwxpoVbmn+rdurd
- MQqtxY8qT8/pax4PAzX2gbpUTfKLBLgsyS79xt+z8J0KGGXAoOJ30f4ffBOyhRh3sWy2ryLRv
- XTMpxdPbjVsg7PVVv0KtmUVDi8ztqS1UtwMz9NTU0giPuPXTPGqcbb3RFawtNQfAwJtMTkNmx
- Z0njfYaNQmmfdELHvdw/euJEZVl+qug/tB8c6JLsgNJ9cKSkXOpcu0w6u5o1EvekhQe1D1hzY
- S5oZzbPNH7VhWM7CsoWBudCA==
+X-Spam-Score: -3.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[intelfx.name,gmail.com];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo]
 
+There are still reports about extent map shrinker is causing high CPU
+usage.
 
+It turns out that the call backs can be very frequent, even inside
+kswapd (and we can have multiple kswapd if the system have several
+nodes).
 
-=E5=9C=A8 2024/8/16 16:17, Ivan Shapovalov =E5=86=99=E9=81=93:
-> On 2024-08-16 at 08:42 +0200, Andrea Gelmini wrote:
->> Il giorno ven 16 ago 2024 alle ore 01:17 <intelfx@intelfx.name> ha scri=
-tto:
->>> Can we please have it reverted on the basis of this severe regression,
->>> until a better solution is found?
->>
->> To disable the shrinker I simply remove two items:
->>
->> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
->> index f05cce7c8b8d..4f958ba61e0e 100644
->> --- a/fs/btrfs/super.c
->> +++ b/fs/btrfs/super.c
->> @@ -2410,8 +2410,6 @@ static const struct super_operations btrfs_super_=
-ops =3D {
->>         .statfs         =3D btrfs_statfs,
->>         .freeze_fs      =3D btrfs_freeze,
->>         .unfreeze_fs    =3D btrfs_unfreeze,
->> -   .nr_cached_objects =3D btrfs_nr_cached_objects,
->> -   .free_cached_objects =3D btrfs_free_cached_objects,
->> };
->>
->> static const struct file_operations btrfs_ctl_fops =3D {
->>
->> This is from my thread with Filipe about same topic you can find in
->> the mailing list archive.
->
-> Yes, that's what I did locally so far, on those systems that I _can_
-> run custom kernels on. The others I had to downgrade to 6.9 for the
-> time being. So I do have a vested interest in this being resolved in
-> the mainline/stable tree :-)
->
+For the only other fs implementing the reclaim callbacks, XFS does it
+very differently by ensure the following conditions:
 
-That's the most straightforward way to revert to the previous behavior.
+- Make sure there is only one reclaim work queued
 
-Or you can try this patch, which is less obvious but should do the same
-thing:
-https://lore.kernel.org/linux-btrfs/09ca70ddac244d13780bd82866b8b708088362=
-fb.1723770634.git.wqu@suse.com/T/#u
+- Add a delay before queuing the reclaim workload
+  The default delay is 18s (60% of xfs_syncd_centisecs)
 
-Meanwhile after looking into how XFS triggers its reclaim, I believe we
-should not even bother using those callbacks.
+In btrfs, there is already a context which is very similar to the XFS
+condition: cleaner kthread.
 
-XFS handles the trigger by making sure there is only one reclaim
-workload queued, and the workload always delay 18s by default.
+There is only one cleaner kthread for the fs, and it's waken periodically
+(the same time interval as commit interval, which is 30s by default).
 
-So for btrfs, I believe it's better to do the reclaim in the cleaner threa=
-d.
+So it's much better to run the extent map shrinker inside cleaner
+kthread.
 
-Will craft a proper fix for you guys to test, and since Filipe is on
-vacation, we may go disable the reclaim workload for now.
+And make the free_cached_objects() callback to only record the latest
+number to free.
 
-Thanks,
-Qu
+Link: https://lore.kernel.org/linux-btrfs/3df4acd616a07ef4d2dc6bad668701504b412ffc.camel@intelfx.name/
+Link: https://lore.kernel.org/linux-btrfs/c30fd6b3-ca7a-4759-8a53-d42878bf84f7@gmail.com/
+Reported-by: Ivan Shapovalov <intelfx@intelfx.name>
+Reported-by: Jannik Glückert <jannik.glueckert@gmail.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
+
+I do not have an environment which can trigger the reclaim that
+frequently, thus more tests would be appreciated.
+
+If one wants to test, please use this branch:
+https://github.com/adam900710/linux.git em_shrink_freq
+
+And enable CONFIG_BTRFS_DEBUG (since the previous patch hides the
+shrinker behind DEBUG builds).
+
+---
+ fs/btrfs/disk-io.c    |  3 +++
+ fs/btrfs/extent_map.c |  3 ++-
+ fs/btrfs/extent_map.h |  2 +-
+ fs/btrfs/fs.h         |  1 +
+ fs/btrfs/super.c      | 22 +++++++---------------
+ 5 files changed, 14 insertions(+), 17 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index a6f5441e62d1..624dd7552e0f 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1542,6 +1542,9 @@ static int cleaner_kthread(void *arg)
+ 		 * space.
+ 		 */
+ 		btrfs_reclaim_bgs(fs_info);
++
++		if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
++			btrfs_free_extent_maps(fs_info);
+ sleep:
+ 		clear_and_wake_up_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags);
+ 		if (kthread_should_park())
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 25d191f1ac10..1491429f9386 100644
+--- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -1248,13 +1248,14 @@ static long btrfs_scan_root(struct btrfs_root *root, struct btrfs_em_shrink_ctx
+ 	return nr_dropped;
+ }
+ 
+-long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info, long nr_to_scan)
++long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_em_shrink_ctx ctx;
+ 	u64 start_root_id;
+ 	u64 next_root_id;
+ 	bool cycled = false;
+ 	long nr_dropped = 0;
++	long nr_to_scan = READ_ONCE(fs_info->extent_map_shrinker_nr_to_scan);
+ 
+ 	ctx.scanned = 0;
+ 	ctx.nr_to_scan = nr_to_scan;
+diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
+index 5154a8f1d26c..070621b4467f 100644
+--- a/fs/btrfs/extent_map.h
++++ b/fs/btrfs/extent_map.h
+@@ -189,6 +189,6 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *inode,
+ int btrfs_replace_extent_map_range(struct btrfs_inode *inode,
+ 				   struct extent_map *new_em,
+ 				   bool modified);
+-long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info, long nr_to_scan);
++long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info);
+ 
+ #endif
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 3d6d4b503220..a594c8309693 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -636,6 +636,7 @@ struct btrfs_fs_info {
+ 	spinlock_t extent_map_shrinker_lock;
+ 	u64 extent_map_shrinker_last_root;
+ 	u64 extent_map_shrinker_last_ino;
++	long extent_map_shrinker_nr_to_scan;
+ 
+ 	/* Protected by 'trans_lock'. */
+ 	struct list_head dirty_cowonly_roots;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 98fa0f382480..5d9958063ddd 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2402,13 +2402,7 @@ static long btrfs_nr_cached_objects(struct super_block *sb, struct shrink_contro
+ 
+ 	trace_btrfs_extent_map_shrinker_count(fs_info, nr);
+ 
+-	/*
+-	 * Only report the real number for DEBUG builds, as there are reports of
+-	 * serious performance degradation caused by too frequent shrinks.
+-	 */
+-	if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
+-		return nr;
+-	return 0;
++	return nr;
+ }
+ 
+ static long btrfs_free_cached_objects(struct super_block *sb, struct shrink_control *sc)
+@@ -2417,15 +2411,13 @@ static long btrfs_free_cached_objects(struct super_block *sb, struct shrink_cont
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+ 
+ 	/*
+-	 * We may be called from any task trying to allocate memory and we don't
+-	 * want to slow it down with scanning and dropping extent maps. It would
+-	 * also cause heavy lock contention if many tasks concurrently enter
+-	 * here. Therefore only allow kswapd tasks to scan and drop extent maps.
++	 * Only record the latest nr_to_scan value. The real scan will happen
++	 * at cleaner kthread.
++	 * As free_cached_objects() can be triggered very frequently, it's
++	 * not practical to scan the whole fs to reclaim extent maps.
+ 	 */
+-	if (!current_is_kswapd())
+-		return 0;
+-
+-	return btrfs_free_extent_maps(fs_info, nr_to_scan);
++	WRITE_ONCE(fs_info->extent_map_shrinker_nr_to_scan, nr_to_scan);
++	return 0;
+ }
+ 
+ static const struct super_operations btrfs_super_ops = {
+-- 
+2.46.0
+
 
