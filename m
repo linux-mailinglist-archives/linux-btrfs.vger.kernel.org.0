@@ -1,145 +1,132 @@
-Return-Path: <linux-btrfs+bounces-7285-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7286-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A30295514B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 21:18:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0612955222
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 22:59:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54783284772
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 19:18:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 042DB1C2165A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 20:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30031C3F11;
-	Fri, 16 Aug 2024 19:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B541C5789;
+	Fri, 16 Aug 2024 20:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="INfiEl7L";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hmgr6lxg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="INfiEl7L";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hmgr6lxg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bakgKZfH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E046F30D;
-	Fri, 16 Aug 2024 19:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F9C10E4;
+	Fri, 16 Aug 2024 20:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723835911; cv=none; b=S8LqzT2RA3XO4SIT8vld51lXyRCzkEX5SyUqpTmQERTGSuC8aHPBMp1uLJJfXhwdTcrhVIpgDyQ9UApVZ3eQGcqr35iorAjNkybe8CqUtrbtol9FryzXaZXYY3uuxDSRbOfUq7ZkcWA+Sn2nqw2MNstpgmnlnZQDgdmsFTEeWTE=
+	t=1723841928; cv=none; b=qdrSDthTRT0z6ck6WHBhysh9KxuW/IE7cQIOE1XEqDVigiTcyGolzM9rQQlpMjjOwfU7LkORpSz9dJbSZMZ5AB4gzaXaDiju8EO1a2mAioJqafO0K5IpNQGhpkERFYlKy/znLw3Bm0gv3euQpEyontC0KPy/QpBGUznlYYG/BQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723835911; c=relaxed/simple;
-	bh=wRF91Xuac5qlFY6lEYkJrYyrF3JIQi24NGZajxH9k/c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HhTd/ZcjOrBJK2EWbDkCPo/PLzZQwc0CxxMMajsOnB8gMo/prE6ObR7wR9FOLs51uj3/+DuyQN8QjZyKjjK7BB+7BpQ/zN2Fzgffi62YN+wXpZpqF5CSlxElvLQA+HJKPTWXxIAUU2hJuESEqj8MZ+XuwNn50FxoR8XBh2Sk5tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=INfiEl7L; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hmgr6lxg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=INfiEl7L; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hmgr6lxg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 94E13200F8;
-	Fri, 16 Aug 2024 19:18:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723835906;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qRt9XlnmYrBnBCRNCGsrSo1pRzErx88p8BUGEGdG2mc=;
-	b=INfiEl7L/2s7UzmGv5FdD40Y4VIqvQUw2fq1lKPukeoNzXGFqEWdfNZzxjFd9E/JaYB7lT
-	1HpiNHo9mdXGKV5fSK8ZCZ2nmryHF6vWNw8GjURVRuA+arnXpwwI6IWL/iOtOMD/+Fcld1
-	WMGzThWSqX8EAYAivD48XNhHxW8DEeA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723835906;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qRt9XlnmYrBnBCRNCGsrSo1pRzErx88p8BUGEGdG2mc=;
-	b=hmgr6lxgW7DE9po9ONoWWkcn1/wfn6ccYX+zg8/gOz9Wfq/cgWrxvyUxPCt7d6DV+KtCGe
-	/aZZ+1Glry7q+kDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723835906;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qRt9XlnmYrBnBCRNCGsrSo1pRzErx88p8BUGEGdG2mc=;
-	b=INfiEl7L/2s7UzmGv5FdD40Y4VIqvQUw2fq1lKPukeoNzXGFqEWdfNZzxjFd9E/JaYB7lT
-	1HpiNHo9mdXGKV5fSK8ZCZ2nmryHF6vWNw8GjURVRuA+arnXpwwI6IWL/iOtOMD/+Fcld1
-	WMGzThWSqX8EAYAivD48XNhHxW8DEeA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723835906;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qRt9XlnmYrBnBCRNCGsrSo1pRzErx88p8BUGEGdG2mc=;
-	b=hmgr6lxgW7DE9po9ONoWWkcn1/wfn6ccYX+zg8/gOz9Wfq/cgWrxvyUxPCt7d6DV+KtCGe
-	/aZZ+1Glry7q+kDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75A471379A;
-	Fri, 16 Aug 2024 19:18:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yDgxHAKmv2Z/VgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 16 Aug 2024 19:18:26 +0000
-Date: Fri, 16 Aug 2024 21:18:21 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: only enable extent map shrinker for DEBUG builds
-Message-ID: <20240816191821.GI25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <09ca70ddac244d13780bd82866b8b708088362fb.1723770634.git.wqu@suse.com>
+	s=arc-20240116; t=1723841928; c=relaxed/simple;
+	bh=prKEysYXyyWuDvDu9eJZ44qO6cHeJEujNjWHyFKJvT8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nFn7MNzNIQst6F7Tk+yZmgWPp2b/i07Kew+59CjplJe2UAiqyhLjQyBugTag1M4akc3Nw2q7rxlh1ikVo46x8cf0FBx3y5RJ4l3LM2PkSawOMz2qw4Tq17Xps5d67pRUiFuwl+Brwj713zl63nbFJmX1GFkCNhihU7Jtlfks7uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bakgKZfH; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723841927; x=1755377927;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=prKEysYXyyWuDvDu9eJZ44qO6cHeJEujNjWHyFKJvT8=;
+  b=bakgKZfH3QD2r+QafOjSJ1lubuMHElZrnpDlAyEHMgR96rpgd8c2K1YZ
+   Q2i3QcG8plMHBCF7BFhOpnlf2i+rL5nG46hLpTOBGICaCCnhUpY3qN8jL
+   MWCDc4ZYRCBZCrdX9WRpdjaz6/TwgHrEqy+hph/cIfMpPWQ4D9ibb4yXJ
+   xU7dGhgyakXCqm0UScnKROKGc8yjLgFizRV9OuoX6zkz36WfVBqlZDxpY
+   QMdqMhFGuFLpEPcLad1fgOsDDG1lQzsfEXdbUFuJKEvV+bDQu06ix5AXJ
+   PdpsRx/4HoxVPZji0W4xi8RvynSl9g6kRDakKsYUH2ePi1Rw860U9yySz
+   A==;
+X-CSE-ConnectionGUID: zceVZwTFTG62FaHGnQzT3Q==
+X-CSE-MsgGUID: /V2I8uDuQMWlRbYUbOcbYw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11166"; a="47552982"
+X-IronPort-AV: E=Sophos;i="6.10,152,1719903600"; 
+   d="scan'208";a="47552982"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 13:58:46 -0700
+X-CSE-ConnectionGUID: KyEt2O1KTnaKwGbbUPz49Q==
+X-CSE-MsgGUID: nU4SDx70T0qy2MZzNo7IIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,152,1719903600"; 
+   d="scan'208";a="64730816"
+Received: from unknown (HELO [10.125.111.71]) ([10.125.111.71])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 13:58:45 -0700
+Message-ID: <c39d5638-f72c-4001-85f8-0ba81661638a@intel.com>
+Date: Fri, 16 Aug 2024 13:58:44 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09ca70ddac244d13780bd82866b8b708088362fb.1723770634.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-8.00 / 50.00];
-	REPLY(-4.00)[];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Score: -8.00
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 03/25] dax: Document dax dev range tuple
+To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, nvdimm@lists.linux.dev
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-3-7c9b96cba6d7@intel.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240816-dcd-type2-upstream-v3-3-7c9b96cba6d7@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Aug 16, 2024 at 10:40:38AM +0930, Qu Wenruo wrote:
-> Although there are several patches improving the extent map shrinker,
-> there are still reports of too frequent shrinker behavior, taking too
-> much CPU for the kswapd process.
+
+
+On 8/16/24 7:44 AM, Ira Weiny wrote:
+> The device DAX structure is being enhanced to track additional DCD
+> information.
 > 
-> So let's only enable extent shrinker for now, until we got more
-> comprehensive understanding and a better solution.
+> The current range tuple was not fully documented.  Document it prior to
+> adding information for DC.
+> 
+> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Thanks, that's probably better than to disable it completely. I'll
-forward to patch so we get it to sable next week.
-
-Reviewed-by: David Sterba <dsterba@suse.com>
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> 
+> ---
+> Changes:
+> [iweiny: move to start of series]
+> ---
+>  drivers/dax/dax-private.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index 446617b73aea..ccde98c3d4e2 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -58,7 +58,10 @@ struct dax_mapping {
+>   * @dev - device core
+>   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+>   * @nr_range: size of @ranges
+> - * @ranges: resource-span + pgoff tuples for the instance
+> + * @ranges: range tuples of memory used
+> + * @pgoff: page offset
+> + * @range: resource-span
+> + * @mapping: device to assist in interrogating the range layout
+>   */
+>  struct dev_dax {
+>  	struct dax_region *region;
+> 
 
