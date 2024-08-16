@@ -1,112 +1,114 @@
-Return-Path: <linux-btrfs+bounces-7222-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08262954011
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 05:36:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FCC9541F1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 08:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A61121F22968
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 03:36:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 947931C236AE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 06:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA075F873;
-	Fri, 16 Aug 2024 03:36:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEAED83CD9;
+	Fri, 16 Aug 2024 06:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JM8LgF+U"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JzkVZwtQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B07E482E4
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 03:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69F482866;
+	Fri, 16 Aug 2024 06:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723779405; cv=none; b=Ti6n2+/Fsi1SQhh/7cHQykJ0kKZAHtX0JXHicN7ycerUbwOqKe2DfeCwfW3phRmKrMyIft3O2opJcHZEmIanis1kD4LuG8Z3qeXnmwZFpvI7l37zQR9j+3gbrVEY500sVI8ygDKSqYj5MbPfFQ6fwtE0QXmKwKmyn4MUE/moJfg=
+	t=1723790582; cv=none; b=lRUrdVf2d+JejVAZEOPAGjStUUOjnNzVF8Z5N9HCW4zqOugEHKD3h2bTPNM9aW6lBEBxHsDlOrr1SSYZYPSRwFOkYkqIU/lXOwD1tl0TknuBjXI3wR79+FEuvn8jjkyeOg2nLNZynuKBqvmxSke2j2fTNpNfe+sstYixXbR4PvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723779405; c=relaxed/simple;
-	bh=LDyutCRlNsC8DYeLe8q0IW5u6nG5OBACoRADpWAdcTo=;
+	s=arc-20240116; t=1723790582; c=relaxed/simple;
+	bh=9MzRT6MQhoASRVKxtLl6TLviFlnQnH0RbQCnybUc2go=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OWAon+2Q3BwkoCXW8isOFV+n2fOWm5BVHSUfVJLBmQ3hSfA64Rd4Li88xocmwBWBw5LFBQrJ0Wi8R8Oh2M+xupgFWBAFg9JUQjd/rm77Oiwl5lX5pM6JItY+MSXOhfQFI15/hSLD+RAaUNWVrKSp5bNngAap9tzFxfGyvPTEfO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JM8LgF+U; arc=none smtp.client-ip=209.85.208.171
+	 To:Cc:Content-Type; b=chUyrlNoAek88k1Hx7GwFn+LJislVu5zwIdFjkb1WMjsU0nUuKK00nK3cYJR0om4tZ0BYDczkuczXQzKsVa1NzdwhD7QlIMKbdqOEHk/WQc9IXaNQuDw84qGlchWL6Qm69Kw1LqlLvnWQyun7bwwNd7Zzp15pLFjussqT02vftM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JzkVZwtQ; arc=none smtp.client-ip=209.85.128.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2f15e48f35bso16298511fa.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 20:36:43 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-69483a97848so17093797b3.2;
+        Thu, 15 Aug 2024 23:43:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723779402; x=1724384202; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KdtvqKmgpVkKBV/pWHXhhYEJQzAqYKa4fYJ6jG8kFW4=;
-        b=JM8LgF+UVqMnIaqFB2l87/oBgz51U+AlFAo6s3EB0IvH6jUxaQKmsFxsbZRQVCEsMF
-         XOj//Kl431MCmJvb01qZS10oshIBfnRIH6gyX4j4Vl3BRW8/1Q5wCLSpjd6mdcV1VpzE
-         +h9QBvayaSGTy19m+cpOK57PtCh9uDVaXBsJ04pOryMNO7r78Zr47Fi6lxVGS5PNF/Co
-         Vf1gy+5NdC6PBJObXiTdbEW1KF0x564dLu7kfAY3xMuqYXGeQirYdfcTgqputZrRO59y
-         WJKfkjykdl+Z6WIpOpC3ccxmOwhaHINZIlD4jKR7dt4P7XUFG/d9vDvhpx5m1mo6LSo4
-         XmtQ==
+        d=gmail.com; s=20230601; t=1723790579; x=1724395379; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9984CAS7CNIQxBvvTikDkZZTlOsU6w6r8X2XroTC3V8=;
+        b=JzkVZwtQ/tuT9AXT0oa8KELY2buQY+jP74ikg6bkA4hcY1SUmmsc8mlI3HNg71Sm2Q
+         fURijlSYZ10TpM/zJfcWyjO6JOklo3oxlmoJqNlBfgOa8yK5hFq+LgwH1qOToI8iQLAH
+         yl76ufT5L1WdJa74tYG1bm6ipH1IkqnrCbHsuwux5rJCHyZxPcRVp6bPDyScioG/zmOl
+         I+8mhMalExzQzf8EZeE2YNuIT/Drkur4nsAnAhaUvrU0Tn652g5sit/9gTdfdorzt5uh
+         +fOU5BQChk8jo41GUZnvX6BmlIpAQ0gEE5nY5sfbVMiu8ZnOPNsTKExpLNVMoSaPIr61
+         DaQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723779402; x=1724384202;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KdtvqKmgpVkKBV/pWHXhhYEJQzAqYKa4fYJ6jG8kFW4=;
-        b=pn4DyPvYopstCwTejn0MFQekSWw1QEcyaGAjbZJCwjKjueptr/xYCEuxZT+VTB3LmD
-         6Lo3ldrBnd6gzTqtUibjx2zO1PwTfsE66z5BFxRuWeAmO0RptlB08UOUg3xXRAbwVp0H
-         InM+XtxiV+X8mFLDLxWdjTneI82iazWUiumzakC4Ga2KRp/h81Kf8ZxR7YPrbywJptzZ
-         15nYwuMXAfbnYjhAQyqKGvvls1RLjwO+88PTD5pIalUPXyaGrMyN24cfo3/D/MMV6sg0
-         zjJ1mDU/swnUIIDdJNN8fuY2atxe81vVB/Cx6Kd6zfsxr1T/5+PjGR+dMwSIkQBVhyk6
-         kirw==
-X-Gm-Message-State: AOJu0YyZ3TiWiqkTJD/+df/uS/pvXOE+jPT+FsvyttqTjQNAd/al38j1
-	qdLoIv6AkbEpyFVuX3KKt5KnPI6gb1OvvBQ33uoCyaFI3RICvflUjMASNhLrBPLDKhYIwRrdJl8
-	n+EpHg0XkdHoh0xebhBf5w8QDgFw=
-X-Google-Smtp-Source: AGHT+IHgr4KOvS7fcDf1iNfIYiy+nrXb8QMJ3h9RQPqZvfYPAM9jZvyxzOmo/qh+qWV2LzsmF4CSll6z4+VxlL5eJWg=
-X-Received: by 2002:a2e:8898:0:b0:2ef:2c4b:b799 with SMTP id
- 38308e7fff4ca-2f3be5aa1d3mr9847791fa.28.1723779401255; Thu, 15 Aug 2024
- 20:36:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723790579; x=1724395379;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9984CAS7CNIQxBvvTikDkZZTlOsU6w6r8X2XroTC3V8=;
+        b=XD6RyTFzU71kgm5wHowQQIEyPndAiIFiD5UmnNzFf6uw19C36b+YPgEHxWJ//Wm8/u
+         mtzTRGg467cXhXUjznwAcqELIwLrIZ3zM2bdIqnDTg5YdbOZwRSM+5nR1Hv8xO6xJicL
+         BbULxv7T4dq7aB/f1PLyFdnoQn/YLtBssdfU4S/qrKnZvsM2pviSzCMGhHgK5jQdNfuU
+         p7Geav2aG4Vmheue1k6zp//X69wf3BBJ29wSak53krUEyOlCe5KOMJRcoN2DgKIFHiBE
+         YSfKqEfgD2DdzJ2BYQ7CSsdY8RNj6UiEYJ5CWWtmf3WEbNSeA3BCqWwX0mD0S9BhPzJq
+         74gw==
+X-Forwarded-Encrypted: i=1; AJvYcCXivrFk7DxGLlhUn3vqUpUrOCjqsBzwJOBFOPyJZdryxBCZ14On2Iw6oLMC7dsyCaC+wKiaPxNRN+uEcf6aSZJtmWZK07USHOe7AeRKhucg/rwdq1PQ9MzFW3zg9jqVacTx76ymmH4R7UI=
+X-Gm-Message-State: AOJu0Yylv0Z0rTVdXVWMefqgvNDEyg3AY3VSroIwFfvIRLt2iXgjaLre
+	5Q/KqQArZ8NAh5oIqDv+jlAGdfWjXRn1Xrw/3kGAh511TaVZFSQx6z4CtWb+gjGHiLoP95lVfGW
+	W8cxZWYUpwAJdPpuwegcALKlSDWg=
+X-Google-Smtp-Source: AGHT+IFwaUdjqwZ0EpK280Y4+BayIVwVmptraNcFRsFUCRRzajjVCxtXiorbxlU3aWf+0BDjO9tNnEDrqszN/MseIaw=
+X-Received: by 2002:a05:690c:438a:b0:6b0:70fc:f6d3 with SMTP id
+ 00721157ae682-6b1bcf8ec67mr14579087b3.45.1723790579487; Thu, 15 Aug 2024
+ 23:42:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240607143021.122220-1-sunjunchao2870@gmail.com> <20240813224433.GV25962@twin.jikos.cz>
-In-Reply-To: <20240813224433.GV25962@twin.jikos.cz>
-From: Julian Sun <sunjunchao2870@gmail.com>
-Date: Fri, 16 Aug 2024 11:36:29 +0800
-Message-ID: <CAHB1NahuscKz-4b7MTR2xzLSocswDFObXjKuqy9g=QL=QnKyRQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] btrfs: qgroup: use goto style to handle error in add_delayed_ref().
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, 
-	dsterba@suse.com, wqu@suse.com
+References: <CAL3q7H5zfQNS1qy=jAAZa-7w088Q1K-R7+asj-f++6=N8skWzg@mail.gmail.com>
+ <277314c9-c4aa-4966-9fbe-c5c42feed7ef@gmail.com> <CAL3q7H4iYRsjG9BvRYh_aB6UN-QFuTCqJdiq6hV_Xh7+U7qJ5A@mail.gmail.com>
+ <3df4acd616a07ef4d2dc6bad668701504b412ffc.camel@intelfx.name> <95f2c790f1746b6a3623ceb651864778d26467af.camel@intelfx.name>
+In-Reply-To: <95f2c790f1746b6a3623ceb651864778d26467af.camel@intelfx.name>
+From: Andrea Gelmini <andrea.gelmini@gmail.com>
+Date: Fri, 16 Aug 2024 08:42:43 +0200
+Message-ID: <CAK-xaQaPbmZ+pcqFvfgtwTyMnHbMcs6j8KjgVOYBxGzGgoAJ7Q@mail.gmail.com>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted increased
+ execution time of the kswapd0 process and symptoms as if there is not enough memory
+To: intelfx@intelfx.name
+Cc: Filipe Manana <fdmanana@kernel.org>, =?UTF-8?Q?Jannik_Gl=C3=BCckert?= <jannik.glueckert@gmail.com>, 
+	dsterba@suse.com, josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mikhail.v.gavrilov@gmail.com, 
+	regressions@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-David Sterba <dsterba@suse.cz> =E4=BA=8E2024=E5=B9=B48=E6=9C=8814=E6=97=A5=
-=E5=91=A8=E4=B8=89 06:44=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Fri, Jun 07, 2024 at 10:30:20PM +0800, Junchao Sun wrote:
-> > Clean up resources using goto to get rid of repeated code.
-> >
-> > Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
->
-> I had the patches in my testing branches, no problems so far so I'm
-> adding it for 6.12. Thanks.
-I just noticed I missed a commit for a file. Sorry for the oversight.
-Should I send a new version of the patch?
+Il giorno ven 16 ago 2024 alle ore 01:17 <intelfx@intelfx.name> ha scritto:
+> Can we please have it reverted on the basis of this severe regression,
+> until a better solution is found?
 
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -125,7 +125,6 @@ struct btrfs_inode;
-  * Record a dirty extent, and info qgroup to update quota on it
-  */
- struct btrfs_qgroup_extent_record {
--       struct rb_node node;
-        u64 bytenr;
-        u64 num_bytes;
+To disable the shrinker I simply remove two items:
 
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index f05cce7c8b8d..4f958ba61e0e 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2410,8 +2410,6 @@ static const struct super_operations btrfs_super_ops = {
+       .statfs         = btrfs_statfs,
+       .freeze_fs      = btrfs_freeze,
+       .unfreeze_fs    = btrfs_unfreeze,
+-   .nr_cached_objects = btrfs_nr_cached_objects,
+-   .free_cached_objects = btrfs_free_cached_objects,
+};
 
-Best regards,
---=20
-Junchao Sun <sunjunchao2870@gmail.com>
+static const struct file_operations btrfs_ctl_fops = {
+
+This is from my thread with Filipe about same topic you can find in
+the mailing list archive.
+
+Ciao,
+Gelma
 
