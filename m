@@ -1,283 +1,218 @@
-Return-Path: <linux-btrfs+bounces-7230-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7231-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419F995478E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 13:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 412049547E5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 13:19:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6586D1C21D66
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 11:10:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3E21C23047
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 11:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B151991D2;
-	Fri, 16 Aug 2024 11:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432C61B8EAC;
+	Fri, 16 Aug 2024 11:16:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IreKD9hI"
+	dkim=pass (1024-bit key) header.d=intelfx.name header.i=@intelfx.name header.b="V9hvGrps"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C557198A2A
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 11:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69A2191F75
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 11:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723806595; cv=none; b=bb+FlduN82Z+Xy+wsNPKxs7mLyC4BkddlXddJSPRXWyIRSaVoDYfUF2Kiai9qG7DcWKCzzEijR/HukZoVhae64ANkuIfPOnhNSkf7IzEJnIr5niQdESSPC6lKd5YWc7UjFQn6PfjNI7EK9FQZEL+uxOHZ5y8Z5+j7ckemBOwVD8=
+	t=1723806986; cv=none; b=cDvANVMRlZT6kNgbHgsv6YLDuXWp9w74I2XJpgNzc442GANfe4+VAVtlMFXMncyC1DJ+Indsn6TPaMVlg8eRWc5yc0my1FQ3OUFBL+3An0444mBl4siIu7/GK0hZbiG7M3vEyOp6YyAbv1bGoKqh9o6GZy9PqFftVLKJLtEt0T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723806595; c=relaxed/simple;
-	bh=pYOUMBCP0WNB15J+GNvzfzDe8PXrGGnFDbD2tZOoBvo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PUmnXNRChhDEu48Vf83u9Glg07tf+qQQvDWAfbhF8lsWwEdW+E0JAPIMHoPIdTc5XQxg7OYUDBTYaEsjWZyw19nsXrbSYKjw1ygCMGGxa6Z+7dlS3aBge/JRPziYBQLGdmRPJ4xW01vEPtVtMXpBdiMR45KAOxbznzA7Yr/saGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IreKD9hI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6DF6C32782
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 11:09:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723806594;
-	bh=pYOUMBCP0WNB15J+GNvzfzDe8PXrGGnFDbD2tZOoBvo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IreKD9hIpSekT6A8nNMp5z/rB5eEQJgMffMiZ04XuH6IRkPywk9oc/GhM0myoyotK
-	 aZEq6DCUOwsHl7Nm4/7me9UMV3uoZUSk78cjWZkAdnASit8HgV74z/ndIYfRRfZ/Ug
-	 bFySKXuLmrlZqS7gsbUwDWR1U5ttmXmIKRw4QWgyH0caRcWEMyQUKCEJB7w2XHy9r4
-	 AQYhxO2Cg6c1OpQ3ev7MBCJVlqzvyucqgBGckM+vWYmRecmVmbxIFyQUomNU6r6I8j
-	 0eIYQgUH1lFK3Wejl/RMsQ41lhWsttlhnQwFNGt+2a2OZ6G4JEncZQAJT+7IZ7LtLr
-	 1eJPyexu1wsig==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2eeb1ba0468so26370241fa.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 04:09:54 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxA1uJ4l85HRzOgUFytTSv6HrWgWJ9Dp61EKP2HRwxTMq8GYvx+
-	7rQ0j3rV3OtoCk0K6uSViYaSImEdoQVZPmzwM8Q/61MrZIzoSG8Vcw10GCarLAebQHEZoQlFCA0
-	iC3VZXaJ+nCWWXsqrpUyzakJE/j8=
-X-Google-Smtp-Source: AGHT+IGjQbLNUi4SXf7BdqTKHxJqLAu86imFKuRicACuNqV9ITtPMQQV/Kj1V1j6Rj9FkhpnGlNIEkvHYIBcD89eKJo=
-X-Received: by 2002:a05:6512:280b:b0:530:ae99:c7fa with SMTP id
- 2adb3069b0e04-5331c690bddmr1575841e87.10.1723806592939; Fri, 16 Aug 2024
- 04:09:52 -0700 (PDT)
+	s=arc-20240116; t=1723806986; c=relaxed/simple;
+	bh=dUl1HtKDQhN3EIbS7a4MMSHD3zQmh7SyIBtWzRSlcyg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ocM4cVdFdbm7qlVgKJ4xanx/Jx9Jj+wgvZ9nTaoAF7r0yu7z7tH4rAXOaEvJO5j1YFIPoFFGSDUMSCEFAp8ge/IwnJAaCOq0WpbatGcGY5fxqEdIhgRzz6YIpnfkS4Hin8IRmG3Lum0hQu7fjMvYvBM4rEhlaqueanagaGsODLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=intelfx.name; spf=pass smtp.mailfrom=intelfx.name; dkim=pass (1024-bit key) header.d=intelfx.name header.i=@intelfx.name header.b=V9hvGrps; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=intelfx.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intelfx.name
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-428141be2ddso12641945e9.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 04:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intelfx.name; s=google; t=1723806983; x=1724411783; darn=vger.kernel.org;
+        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
+         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=dUl1HtKDQhN3EIbS7a4MMSHD3zQmh7SyIBtWzRSlcyg=;
+        b=V9hvGrpsUhkuW84QQWWdXDVTKi9Fuoc1YdUB0+UJD9blWTj6ZXqDpxCk0ATET/sHsz
+         8RSWHE/sflHogiACYIZHq1e+aOLg54ZEY05Ek+WbzAwMRxL32Cd+x5r+rSijuQuWJWX5
+         CYhDs3wmtATSYXVk1UppsdHbo00GBXPmdAoVk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723806983; x=1724411783;
+        h=mime-version:user-agent:references:in-reply-to:date:cc:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dUl1HtKDQhN3EIbS7a4MMSHD3zQmh7SyIBtWzRSlcyg=;
+        b=cChRqsGt6LcQCaXnXCT+lU3c4RaD0zFBNgFw71qN5FrycTAE8NpiaPOpatQtYLOSBG
+         PVg+JM5ziAjfwKy6VjvrwYwv2xdWWCAwU+7Pz825tX+PvWRkKRtwfIESqba4EahbdsIA
+         FVnswK9Q5Xd49gH33tkSQvnB6cHi1dySjAX+78J9Ya0yfPIddBjM9X2yCOs19Wg7nsAk
+         B39+kmq6ja0JfCOsOCb4c+Mz2X2nn0uClBz8JCnRgAl2oVeShsTPqYRJm+2C00gkbdBA
+         WqK8W4JO8KmumQWTj/NFS6xkinBBSFuL8qHE8Vaw+LwXR1ArlhDlWi3wZDsNl5tUBn7Y
+         YJUA==
+X-Forwarded-Encrypted: i=1; AJvYcCXei1QUD8oFIPbKmMmhM2yv2np2tA9sgYkgG9UwW71CgW2wxopRBSNbbayuxH9vJbOfABsUwzU74X9/1yLoiIOyuecO7rea9tQD09g=
+X-Gm-Message-State: AOJu0Yy+puBLSRDGHEfSgmuho3oSj1Ibbwg590XmpBX8zYzlePjOxGIx
+	7xIyT9ScZvRNF4uSoq51DJdCmrneL1khTxpuZVUng9MJiEYwotwNzsqFmkwm4vQ=
+X-Google-Smtp-Source: AGHT+IFmKCzYTCM+3t4wnCLK96lkKAVIemH6mOEI6TJNtckUppFzJFnxeosm+5/WkgLETAoiAV2SHQ==
+X-Received: by 2002:adf:b307:0:b0:368:4edc:611e with SMTP id ffacd0b85a97d-37194344041mr1665229f8f.14.1723806982640;
+        Fri, 16 Aug 2024 04:16:22 -0700 (PDT)
+Received: from able.exile.i.intelfx.name ([109.172.181.47])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37189859d4esm3433562f8f.49.2024.08.16.04.16.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Aug 2024 04:16:22 -0700 (PDT)
+Message-ID: <c876143d683d356a1c657455e295525f18e08895.camel@intelfx.name>
+Subject: Re: 6.10/regression/bisected - after f1d97e769152 I spotted
+ increased execution time of the kswapd0 process and symptoms as if there is
+ not enough memory
+From: Ivan Shapovalov <intelfx@intelfx.name>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Jannik =?ISO-8859-1?Q?Gl=FCckert?= <jannik.glueckert@gmail.com>, 
+	andrea.gelmini@gmail.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mikhail.v.gavrilov@gmail.com, regressions@lists.linux.dev
+Date: Fri, 16 Aug 2024 13:16:19 +0200
+In-Reply-To: <CAL3q7H7-04s=j0fwGRx-TxGeP2-7ZeZ5Kdeo2fYdDFLE9ijupA@mail.gmail.com>
+References: 
+	<CAL3q7H5zfQNS1qy=jAAZa-7w088Q1K-R7+asj-f++6=N8skWzg@mail.gmail.com>
+	 <277314c9-c4aa-4966-9fbe-c5c42feed7ef@gmail.com>
+	 <CAL3q7H4iYRsjG9BvRYh_aB6UN-QFuTCqJdiq6hV_Xh7+U7qJ5A@mail.gmail.com>
+	 <3df4acd616a07ef4d2dc6bad668701504b412ffc.camel@intelfx.name>
+	 <95f2c790f1746b6a3623ceb651864778d26467af.camel@intelfx.name>
+	 <CAL3q7H7-04s=j0fwGRx-TxGeP2-7ZeZ5Kdeo2fYdDFLE9ijupA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-k+P2PspMaBe/8arJkmZN"
+User-Agent: Evolution 3.52.4 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b5f8d32e8b4fb1bfb3a88f5373530980f1d2f523.1723798569.git.wqu@suse.com>
-In-Reply-To: <b5f8d32e8b4fb1bfb3a88f5373530980f1d2f523.1723798569.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 16 Aug 2024 12:09:16 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H68VyuHLe3Y4ieBtkHk3ET3=sbXrCadK8Q9ck=EskeLEQ@mail.gmail.com>
-Message-ID: <CAL3q7H68VyuHLe3Y4ieBtkHk3ET3=sbXrCadK8Q9ck=EskeLEQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] btrfs: only run extent map shrinker inside cleaner kthread
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Ivan Shapovalov <intelfx@intelfx.name>, 
-	=?UTF-8?Q?Jannik_Gl=C3=BCckert?= <jannik.glueckert@gmail.com>
+
+
+--=-k+P2PspMaBe/8arJkmZN
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 16, 2024 at 9:58=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> There are still reports about extent map shrinker is causing high CPU
-> usage.
->
-> It turns out that the call backs can be very frequent, even inside
-> kswapd (and we can have multiple kswapd if the system have several
-> nodes).
+On 2024-08-16 at 11:58 +0100, Filipe Manana wrote:
+> On Fri, Aug 16, 2024 at 12:17=E2=80=AFAM <intelfx@intelfx.name> wrote:
+> >=20
+> > On 2024-08-16 at 00:21 +0200, intelfx@intelfx.name wrote:
+> > > On 2024-08-11 at 16:33 +0100, Filipe Manana wrote:
+> > > > <...>
+> > > > This came to my attention a couple days ago in a bugzilla report he=
+re:
+> > > >=20
+> > > > https://bugzilla.kernel.org/show_bug.cgi?id=3D219121
+> > > >=20
+> > > > There's also 2 other recent threads in the mailing about it.
+> > > >=20
+> > > > There's a fix there in the bugzilla, and I've just sent it to the m=
+ailing list.
+> > > > In case you want to try it:
+> > > >=20
+> > > > https://lore.kernel.org/linux-btrfs/d85d72b968a1f7b8538c581eeb8f5ba=
+a973dfc95.1723377230.git.fdmanana@suse.com/
+> > > >=20
+> > > > Thanks.
+> > >=20
+> > > Hello,
+> > >=20
+> > > I confirm that excessive "system" CPU usage by kswapd and btrfs-clean=
+er
+> > > kernel threads is still happening on the latest 6.10 stable with all
+> > > quoted patches applied, making the system close to unusable (not to
+> > > mention excessive power usage which crosses the line well *into*
+> > > "unusable" for low-power systems such as laptops).
+> > >=20
+> > > With just 5 minutes of uptime on a freshly booted 6.10.5 system, the
+> > > cumulative CPU time of kswapd is already at 2 minutes.
+>=20
+> Less than 24 hours before your message, there was a patch merged to
+> Linus' tree, which was not (and is not) yet in any stable release
+> (including 6.10.5 of course).
+> Have you tried that patch?
 
-You mean numa nodes?
-Are you sure that's the problem, and not something like tasks waiting
-long for a kswapd task because it's doing extent map removal?
+Yes, I did =E2=80=94 as I said, I tried 6.10.5 with all combinations of pat=
+ches
+ever posted in this thread (skipping those that I was not able to
+apply; it seems that there were a few mutually incompatible attempts to
+improve the extent map shrinker, some of which have already gone into
+the stable tree, thus making others inapplicable).
 
->
-> For the only other fs implementing the reclaim callbacks, XFS does it
-> very differently by ensure the following conditions:
->
-> - Make sure there is only one reclaim work queued
->
-> - Add a delay before queuing the reclaim workload
->   The default delay is 18s (60% of xfs_syncd_centisecs)
->
-> In btrfs, there is already a context which is very similar to the XFS
-> condition: cleaner kthread.
->
-> There is only one cleaner kthread for the fs, and it's waken periodically
-> (the same time interval as commit interval, which is 30s by default).
->
-> So it's much better to run the extent map shrinker inside cleaner
-> kthread.
+> > As a follow-up, after 1 hour of uptime of this system the total CPU
+> > time of kswapd0 is exactly 30 minutes. So whatever is the theoretical
+> > OOM issue that the extent map shrinker is trying to solve, the solution
+>=20
+> It's not a theoretical problem.
+> It's a problem that any unprivileged user can trigger provided that
+> the amount of available disk space is much higher than total RAM,
+> which is by far the most common case.
+>=20
+> The problem is explained in the commit change log, there's a
+> reproducer and it was even reported by a user:
+>=20
+> https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d42c55e@amaz=
+on.com/
+>=20
+> This link was included in the changelog of the patch when submitted to
+> the list [1], but somehow it disappeared when it was merged to the git
+> repository.
+>=20
+> Any user can effectively trigger a denial of service by creating an
+> unlimited number of extent maps that never get removed while it keeps
+> a file descriptor open and doing writes, either with direct IO, which
+> is simpler, or even buffered IO in case it creates holes in the files
+> (example: keep doing append writes starting after current eof, to
+> create a bunch of holes). Even if that task doing that gets killed by
+> the OOM, as long as there are idle processes keeping the file open,
+> the problem doesn't go away.
 
-No please, don't do it in the cleaner.
+Sorry, I did not intend to sound dismissive =E2=80=94 what I wanted to say =
+was
+that we fixed an edge case (and yes, I acknowledge that this edge case
+could be a security problem) by instead pessimizing a common case.
 
-There's already a lot of different work that the cleaner does, from
-running delayed iputs, to defrag inodes, remove deleted roots, etc.
-Adding the shrinker there only increases the delay for those tasks and
-those tasks increase the delay for the shrinker to run and free
-memory.
+--=20
+Ivan Shapovalov / intelfx /
 
-I'd rather have this done as an unbounded work queue item like we do
-for space reclaim.
-In fact one thing I have in my todo list is to get rid of the cleaner
-and have all work done in work queues (it's not that straightforward
-as it may seem).
+> [1] https://lore.kernel.org/linux-btrfs/1cb649870b6cad4411da7998735ab1141=
+bb9f2f0.1712837044.git.fdmanana@suse.com/
+>=20
+> > in its current form is clearly unacceptable.
+> >=20
+> > Can we please have it reverted on the basis of this severe regression,
+> > until a better solution is found?
+>=20
+> Disabling the shrinker might be the best for now. I'm on vacation and
+> can't write and test code, but I do have plans for making it better
+> and solving any remaining issues.
+> There's already a patch for that from Qu.
 
->
-> And make the free_cached_objects() callback to only record the latest
-> number to free.
->
-> Link: https://lore.kernel.org/linux-btrfs/3df4acd616a07ef4d2dc6bad6687015=
-04b412ffc.camel@intelfx.name/
-> Link: https://lore.kernel.org/linux-btrfs/c30fd6b3-ca7a-4759-8a53-d42878b=
-f84f7@gmail.com/
-> Reported-by: Ivan Shapovalov <intelfx@intelfx.name>
-> Reported-by: Jannik Gl=C3=BCckert <jannik.glueckert@gmail.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Reason for RFC:
->
-> I do not have an environment which can trigger the reclaim that
-> frequently, thus more tests would be appreciated.
+--=-k+P2PspMaBe/8arJkmZN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-So I'd rather have time spent analysing things and testing them than
-having hypothetical test patches.
+-----BEGIN PGP SIGNATURE-----
 
->
-> If one wants to test, please use this branch:
-> https://github.com/adam900710/linux.git em_shrink_freq
->
-> And enable CONFIG_BTRFS_DEBUG (since the previous patch hides the
-> shrinker behind DEBUG builds).
->
-> ---
->  fs/btrfs/disk-io.c    |  3 +++
->  fs/btrfs/extent_map.c |  3 ++-
->  fs/btrfs/extent_map.h |  2 +-
->  fs/btrfs/fs.h         |  1 +
->  fs/btrfs/super.c      | 22 +++++++---------------
->  5 files changed, 14 insertions(+), 17 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index a6f5441e62d1..624dd7552e0f 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1542,6 +1542,9 @@ static int cleaner_kthread(void *arg)
->                  * space.
->                  */
->                 btrfs_reclaim_bgs(fs_info);
-> +
-> +               if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
-> +                       btrfs_free_extent_maps(fs_info);
->  sleep:
->                 clear_and_wake_up_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info-=
->flags);
->                 if (kthread_should_park())
-> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> index 25d191f1ac10..1491429f9386 100644
-> --- a/fs/btrfs/extent_map.c
-> +++ b/fs/btrfs/extent_map.c
-> @@ -1248,13 +1248,14 @@ static long btrfs_scan_root(struct btrfs_root *ro=
-ot, struct btrfs_em_shrink_ctx
->         return nr_dropped;
->  }
->
-> -long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info, long nr_to_sc=
-an)
-> +long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info)
->  {
->         struct btrfs_em_shrink_ctx ctx;
->         u64 start_root_id;
->         u64 next_root_id;
->         bool cycled =3D false;
->         long nr_dropped =3D 0;
-> +       long nr_to_scan =3D READ_ONCE(fs_info->extent_map_shrinker_nr_to_=
-scan);
->
->         ctx.scanned =3D 0;
->         ctx.nr_to_scan =3D nr_to_scan;
-> diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-> index 5154a8f1d26c..070621b4467f 100644
-> --- a/fs/btrfs/extent_map.h
-> +++ b/fs/btrfs/extent_map.h
-> @@ -189,6 +189,6 @@ void btrfs_drop_extent_map_range(struct btrfs_inode *=
-inode,
->  int btrfs_replace_extent_map_range(struct btrfs_inode *inode,
->                                    struct extent_map *new_em,
->                                    bool modified);
-> -long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info, long nr_to_sc=
-an);
-> +long btrfs_free_extent_maps(struct btrfs_fs_info *fs_info);
->
->  #endif
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 3d6d4b503220..a594c8309693 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -636,6 +636,7 @@ struct btrfs_fs_info {
->         spinlock_t extent_map_shrinker_lock;
->         u64 extent_map_shrinker_last_root;
->         u64 extent_map_shrinker_last_ino;
-> +       long extent_map_shrinker_nr_to_scan;
->
->         /* Protected by 'trans_lock'. */
->         struct list_head dirty_cowonly_roots;
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 98fa0f382480..5d9958063ddd 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -2402,13 +2402,7 @@ static long btrfs_nr_cached_objects(struct super_b=
-lock *sb, struct shrink_contro
->
->         trace_btrfs_extent_map_shrinker_count(fs_info, nr);
->
-> -       /*
-> -        * Only report the real number for DEBUG builds, as there are rep=
-orts of
-> -        * serious performance degradation caused by too frequent shrinks=
-.
-> -        */
-> -       if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
-> -               return nr;
-> -       return 0;
-> +       return nr;
->  }
->
->  static long btrfs_free_cached_objects(struct super_block *sb, struct shr=
-ink_control *sc)
-> @@ -2417,15 +2411,13 @@ static long btrfs_free_cached_objects(struct supe=
-r_block *sb, struct shrink_cont
->         struct btrfs_fs_info *fs_info =3D btrfs_sb(sb);
->
->         /*
-> -        * We may be called from any task trying to allocate memory and w=
-e don't
-> -        * want to slow it down with scanning and dropping extent maps. I=
-t would
-> -        * also cause heavy lock contention if many tasks concurrently en=
-ter
-> -        * here. Therefore only allow kswapd tasks to scan and drop exten=
-t maps.
-> +        * Only record the latest nr_to_scan value. The real scan will ha=
-ppen
-> +        * at cleaner kthread.
-> +        * As free_cached_objects() can be triggered very frequently, it'=
-s
-> +        * not practical to scan the whole fs to reclaim extent maps.
->          */
-> -       if (!current_is_kswapd())
-> -               return 0;
-> -
-> -       return btrfs_free_extent_maps(fs_info, nr_to_scan);
-> +       WRITE_ONCE(fs_info->extent_map_shrinker_nr_to_scan, nr_to_scan);
+iQJJBAABCgAzFiEE5N8nvImcx2nJlFGce94XyOTjDp0FAma/NQMVHGludGVsZnhA
+aW50ZWxmeC5uYW1lAAoJEHveF8jk4w6dHSAP/1BkpltZKUNJDVE7zomlJTj4FZkC
+1hFVcsp+kzmxj7DlH4d7xYVfSqq9Vvkccvv6iB99Euj+GolBzI5b6JoY9LoCwxR/
+JCT0o3PB6RcoP6DCjyEs5c3a/9D9HLvSTxBoE0y69ySaLIitngiIGP3Ja15UW0hH
+Y3boIz9DLUvRpjPMSIk750u7uQSGI+0ryvVqIv70CWNwjjiTCsTYzDQ8dIqLHNrn
+3y5B+zpqvwBOu7c1oIIurKq13f5HejV+SnIfzMxzqC3J9SCkBGHXOz2q6rrXFiQC
+pxv1VG8nwFUai1JKrLDEB+dYju8PtQRVVbuX0/pHfhqmSzT4wKuJMOrLFomJ+82O
+rJo/LOyG5AVea/Yp0jOLLFaW2AguywRRoP/H916eacu8erF5f/HtHFXUgFcEkGlN
+KuqMxwtQw5phNpSgMBxMvtMd8XbzQZqrig3HTGZPBKsppnUYWFyMXO342aIaCZUf
+NvkaQ0eALBHRfgLa+Qyy0pbN0GpEijZMJH6yRk57eRtw6om2UT0bhcsOV70bBT72
+PkdewZ4h8Wu/oPUAukOY3HNhMwpiXzp8qe2YZrhiISkyxVo7P6jztaLXKGmbSDNP
+XI947jo1QGHdVkOO8HWtwCygj6gj/v5SaLs5dmR46w4vO0RBbBnw0yLSVQq9qp0P
+1PJj5UTecYEiwVfw
+=EBDq
+-----END PGP SIGNATURE-----
 
-This is never reset to 0, so the shrinker will run even when we don't
-need to free extent maps anymore, doing extra work, causing some
-fsyncs to go to the slow path, etc.
-
-If you can wait about 1 week for me to be back from vacation, I can
-continue with plans I have for the shrinker, and just disable the
-shrinker in the meanwhile.
-
-Thanks Qu.
-
-> +       return 0;
->  }
->
->  static const struct super_operations btrfs_super_ops =3D {
-> --
-> 2.46.0
->
->
+--=-k+P2PspMaBe/8arJkmZN--
 
