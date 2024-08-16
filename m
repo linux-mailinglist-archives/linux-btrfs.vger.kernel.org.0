@@ -1,66 +1,66 @@
-Return-Path: <linux-btrfs+bounces-7269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3BCD954CDB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 16:48:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9186E954CE0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 16:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BB9B28C730
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 14:48:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D807B24BBB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 14:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1859E1C57B4;
-	Fri, 16 Aug 2024 14:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F741C68B3;
+	Fri, 16 Aug 2024 14:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UGrlwPPT"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RecpEXiO"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD081C579B;
-	Fri, 16 Aug 2024 14:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE0F1C6887;
+	Fri, 16 Aug 2024 14:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723819493; cv=none; b=A/gV+Yw5MT69J7R0C+8EgWMW6dsyQZDH8X1h6TNZMxCCXCZLufgM3hS5qds2IrYFeHTHEHTjIzJHI1AoG93LjBlgBM2CFRZFKFTj9HgKKc5VgZnmh9ckN2pZom0xcvUK5CSlc0qEgV1Jv0cfZvhfvH0jzSbpTMRIWer/6ktGgCc=
+	t=1723819496; cv=none; b=ltrL+f4wHuyWP/uHMhcbLg++hatyxmMChmcq+dH2tcPs1k3dyU5obZbYj4eWwfvWPKq9wIuP7rAe8rx6jtdHXcfv0IiXdl+KeVLFCTaFMFBEDXEhH9qRLCmUzwVMla9TXggQva79jcw4YXb8R1myt2P0mMsCzoykuRi3xAnXT0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723819493; c=relaxed/simple;
-	bh=oy8Qxz9d7zPSmigFAM/yo7+9bCW3Y82VCZ4bNKpEe2Y=;
+	s=arc-20240116; t=1723819496; c=relaxed/simple;
+	bh=EuwIZdTBxuucZWNs1IHHx7UI5yCAFWOZzZein89o/lg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=H0T2QyUlsLlKe3tiUyWA+L6olg13Abk6AMlA2jnIlOllkzVW/O9t2JLeLd1z5gS518kIKcHXnWoKWUu3SUsyELtLgyebnC28qoX9Xha500ilhIMANXzsWe/P75io0ubBjdzP5r7a+OKU5VsYHx1/IUCjRJM7SlTiaICFaLrlqs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UGrlwPPT; arc=none smtp.client-ip=192.198.163.11
+	 In-Reply-To:To:Cc; b=ENkErrzzC0exuTh4yV4ubUaBI+sefpZWMjbrrrsU7u3PalITr8SdD4Jd55ozjcq/AucqXV4Z1i89pXLM23vJgyb3f7JaBxj2nDJAEWZtVu8SXC/cGTVrXPyf8kmjjPhr0Usgdk61lpKcHGwYD1QlFTEa+5ugY4XjOwxShdE95kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RecpEXiO; arc=none smtp.client-ip=192.198.163.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723819491; x=1755355491;
+  t=1723819495; x=1755355495;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=oy8Qxz9d7zPSmigFAM/yo7+9bCW3Y82VCZ4bNKpEe2Y=;
-  b=UGrlwPPT553GIsbeg++cMq4NPWdSlguuEVVKRu1wu9syQ67KqvuFSRxc
-   0adAh5+C9kKlzFxKWCzEzuX7VwxjZDGglFqDNXnnng0AoDnwB1Eh5Tjxi
-   2JLPuDTqbzsr6Z74vc4oaTJl/Q3vmcZqshQxxvgWP8FRMm4T2Q8wPU6F0
-   2nw18o8Uj830ffpCRIqJE5qlfn2jHqRBmTiR77a19LbqcsFf0D24L5MAZ
-   fckcBFAwEcvbT6K+d8Z6IwhsuLYgkW4SzagnhnxmlSlf2Vqd9ksqox0SD
-   OD6Kt4zDclBkSuIipveCCG4n0FlXXniuvMcIQYUZUTtQN5mpFHwIJ0e0s
-   g==;
-X-CSE-ConnectionGUID: V42n2+24Rfi68XyvpTNm2A==
-X-CSE-MsgGUID: GySDoMcPRKyBgF/VNmPh9g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11166"; a="32753146"
+  bh=EuwIZdTBxuucZWNs1IHHx7UI5yCAFWOZzZein89o/lg=;
+  b=RecpEXiOkLhLp2SLkm9n/83tXIRGZI0usRcyWNLTdZbThlypx6ckokaI
+   CvjiXrIonKfEq3Zriv8L1eCLLi0jU58aYk3G9tfLROoNVxM+Qa51w6+BJ
+   nYCm1iO8HtCnKe1iA1c44dX9UY+LvmRFQI5GK1pUGnrhhFMScqzeBpxY/
+   xcyg4MSEcWCmI+jtgnU4Aq7PHoW8uOifsvQt9nWkoaESemlt8Ipm0QHa/
+   DTmZtX/nmKtL60hsi37ElTd7k4iV3hCl6sskpQXFA4aih1E5Uw2v9juyd
+   osBxc/X4uY2f1ud8sRsYIRj1wNHjdtlsBBEZoevioXnkHpgA6uDIL/oyx
+   A==;
+X-CSE-ConnectionGUID: jkHkZH+VT0+6R0xu22F+bQ==
+X-CSE-MsgGUID: rggiEP7uR1uQ7wxRcTdE6Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11166"; a="32753166"
 X-IronPort-AV: E=Sophos;i="6.10,152,1719903600"; 
-   d="scan'208";a="32753146"
+   d="scan'208";a="32753166"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 07:44:51 -0700
-X-CSE-ConnectionGUID: o896BSopTgCGEeut9RtcVQ==
-X-CSE-MsgGUID: csUaTJbWTkqD2cEzUChZNg==
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 07:44:54 -0700
+X-CSE-ConnectionGUID: aPYJYDYKTzGQyYRzHFUiWw==
+X-CSE-MsgGUID: Cf9jMqDJQHqJnnVIvq6Dqg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,152,1719903600"; 
-   d="scan'208";a="64086985"
+   d="scan'208";a="64086989"
 Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.125.111.52])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 07:44:50 -0700
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 07:44:53 -0700
 From: ira.weiny@intel.com
-Date: Fri, 16 Aug 2024 09:44:18 -0500
-Subject: [PATCH v3 10/25] cxl/port: Add endpoint decoder DC mode support to
+Date: Fri, 16 Aug 2024 09:44:19 -0500
+Subject: [PATCH v3 11/25] cxl/mem: Expose DCD partition capabilities in
  sysfs
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240816-dcd-type2-upstream-v3-10-7c9b96cba6d7@intel.com>
+Message-Id: <20240816-dcd-type2-upstream-v3-11-7c9b96cba6d7@intel.com>
 References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
 In-Reply-To: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
 To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
@@ -90,21 +90,20 @@ Cc: Dan Williams <dan.j.williams@intel.com>,
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
  nvdimm@lists.linux.dev
 X-Mailer: b4 0.15-dev-37811
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1723819455; l=6094;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1723819455; l=5476;
  i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=eL2Cjy9eq507v8CxJssOAbmuGsrUdtv05y9iWM/ZS+M=;
- b=KBUle4yEc+AMa+grT7fQqAKMuocYuV1HQZdcda7Mm/W2EC0ezVZlgEaQIqtSe9mdDchawuFjn
- ImzwibIzCjSDzlQ8bzOdF/C1ws4SFKmQcqhDtWhfGUmDptqeAl8hxNM
+ bh=YPz6lE5LA4LvIZp/Ltai16uHx+vNTDp+xGMjO2PW7AM=;
+ b=0Q2ijg863GOxnUfUHkzlUi/7zFYfI2RE5PFVg9JpqHbMp3FvHi9MQzgPynO2KYGjIgfWaprCn
+ qliZyR43QakCM5vCZP+h37ndsafhXTLFHDV+4Pk8Ek6Q0pmot88phN/
 X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
  pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
 
 From: Navneet Singh <navneet.singh@intel.com>
 
-Endpoint decoder mode is used to represent the partition the decoder
-points to such as ram or pmem.
+To properly configure CXL regions on Dynamic Capacity Devices (DCD),
+user space will need to know the details of the DC partitions available.
 
-Expand the mode to allow a decoder to point to a specific DC partition
-(Region).
+Expose dynamic capacity capabilities through sysfs.
 
 Signed-off-by: Navneet Singh <navneet.singh@intel.com>
 Co-developed-by: Ira Weiny <ira.weiny@intel.com>
@@ -112,165 +111,160 @@ Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
 ---
 Changes:
-[Fan: change mode range logic]
-[Fan: use !resource_size()]
-[djiang: use the static mode name string array in mode_store()]
-[Jonathan: remove rc check from mode to region index]
-[Jonathan: clarify decoder mode 'mixed']
-[djbw: drop cleanup patch and just follow the convention in cxl_dpa_set_mode()]
-[fan: make dcd resource size check similar to other partitions]
-[djbw, jonathan, fan: remove mode range check from dc_mode_to_region_index]
-[iweiny: push sysfs versions to 6.12]
+[iweiny: remove review tags]
+[Davidlohr/Fan/Jonathan: omit 'dc' attribute directory if device is not DC]
+[Jonathan: update documentation for dc visibility]
+[Jonathan: Add a comment to DC region X attributes to ensure visibility checks work]
+[iweiny: push sysfs version to 6.12]
 ---
- Documentation/ABI/testing/sysfs-bus-cxl | 21 ++++++++++----------
- drivers/cxl/core/hdm.c                  | 10 ++++++++++
- drivers/cxl/core/port.c                 | 10 +++++-----
- drivers/cxl/cxl.h                       | 35 ++++++++++++++++++---------------
- 4 files changed, 45 insertions(+), 31 deletions(-)
+ Documentation/ABI/testing/sysfs-bus-cxl | 12 ++++
+ drivers/cxl/core/memdev.c               | 97 +++++++++++++++++++++++++++++++++
+ 2 files changed, 109 insertions(+)
 
 diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-index 3f5627a1210a..957717264709 100644
+index 957717264709..6227ae0ab3fc 100644
 --- a/Documentation/ABI/testing/sysfs-bus-cxl
 +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-@@ -316,23 +316,24 @@ Description:
+@@ -54,6 +54,18 @@ Description:
+ 		identically named field in the Identify Memory Device Output
+ 		Payload in the CXL-2.0 specification.
  
++What:		/sys/bus/cxl/devices/memX/dc/region_count
++		/sys/bus/cxl/devices/memX/dc/regionY_size
++Date:		August, 2024
++KernelVersion:	v6.12
++Contact:	linux-cxl@vger.kernel.org
++Description:
++		(RO) Dynamic Capacity (DC) region information.  The dc
++		directory is only visible on devices which support Dynamic
++		Capacity.
++		The region_count is the number of Dynamic Capacity (DC)
++		partitions (regions) supported on the device.
++		regionY_size is the size of each of those partitions.
  
- What:		/sys/bus/cxl/devices/decoderX.Y/mode
--Date:		May, 2022
--KernelVersion:	v6.0
-+Date:		May, 2022, October 2024
-+KernelVersion:	v6.0, v6.12 (dcY)
- Contact:	linux-cxl@vger.kernel.org
- Description:
- 		(RW) When a CXL decoder is of devtype "cxl_decoder_endpoint" it
- 		translates from a host physical address range, to a device local
- 		address range. Device-local address ranges are further split
--		into a 'ram' (volatile memory) range and 'pmem' (persistent
--		memory) range. The 'mode' attribute emits one of 'ram', 'pmem',
--		'mixed', or 'none'. The 'mixed' indication is for error cases
--		when a decoder straddles the volatile/persistent partition
--		boundary, and 'none' indicates the decoder is not actively
--		decoding, or no DPA allocation policy has been set.
-+		into a 'ram' (volatile memory) range, 'pmem' (persistent
-+		memory) range, or Dynamic Capacity (DC) range. The 'mode'
-+		attribute emits one of 'ram', 'pmem', 'dcY', 'mixed', or
-+		'none'. The 'mixed' indication is for error cases when a
-+		decoder straddles partition boundaries, and 'none' indicates
-+		the decoder is not actively decoding, or no DPA allocation
-+		policy has been set.
+ What:		/sys/bus/cxl/devices/memX/pmem/qos_class
+ Date:		May, 2023
+diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+index 0277726afd04..7da1f0f5711a 100644
+--- a/drivers/cxl/core/memdev.c
++++ b/drivers/cxl/core/memdev.c
+@@ -101,6 +101,18 @@ static ssize_t pmem_size_show(struct device *dev, struct device_attribute *attr,
+ static struct device_attribute dev_attr_pmem_size =
+ 	__ATTR(size, 0444, pmem_size_show, NULL);
  
- 		'mode' can be written, when the decoder is in the 'disabled'
--		state, with either 'ram' or 'pmem' to set the boundaries for the
--		next allocation.
-+		state, with 'ram', 'pmem', or 'dcY' to set the boundaries for
-+		the next allocation.
- 
- 
- What:		/sys/bus/cxl/devices/decoderX.Y/dpa_resource
-diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
-index b4a517c6d283..ceca0b3d3e5c 100644
---- a/drivers/cxl/core/hdm.c
-+++ b/drivers/cxl/core/hdm.c
-@@ -551,6 +551,7 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
- 	switch (mode) {
- 	case CXL_DECODER_RAM:
- 	case CXL_DECODER_PMEM:
-+	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
- 		break;
- 	default:
- 		dev_dbg(dev, "unsupported mode: %d\n", mode);
-@@ -578,6 +579,15 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
- 		goto out;
- 	}
- 
-+	if (mode >= CXL_DECODER_DC0 && mode <= CXL_DECODER_DC7) {
-+		rc = dc_mode_to_region_index(mode);
-+		if (!resource_size(&cxlds->dc_res[rc])) {
-+			dev_dbg(dev, "no available dynamic capacity\n");
-+			rc = -ENXIO;
-+			goto out;
-+		}
-+	}
++static ssize_t region_count_show(struct device *dev, struct device_attribute *attr,
++				 char *buf)
++{
++	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
 +
- 	cxled->mode = mode;
- 	rc = 0;
- out:
-diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
-index 8054cbaac9f6..222aa0aeeef7 100644
---- a/drivers/cxl/core/port.c
-+++ b/drivers/cxl/core/port.c
-@@ -205,11 +205,11 @@ static ssize_t mode_store(struct device *dev, struct device_attribute *attr,
- 	enum cxl_decoder_mode mode;
- 	ssize_t rc;
- 
--	if (sysfs_streq(buf, "pmem"))
--		mode = CXL_DECODER_PMEM;
--	else if (sysfs_streq(buf, "ram"))
--		mode = CXL_DECODER_RAM;
--	else
-+	for (mode = CXL_DECODER_RAM; mode < CXL_DECODER_MIXED; mode++)
-+		if (sysfs_streq(buf, cxl_decoder_mode_names[mode]))
-+			break;
++	return sysfs_emit(buf, "%d\n", mds->nr_dc_region);
++}
 +
-+	if (mode >= CXL_DECODER_MIXED)
- 		return -EINVAL;
- 
- 	rc = cxl_dpa_set_mode(cxled, mode);
-diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-index 53b666ef4097..16861c867537 100644
---- a/drivers/cxl/cxl.h
-+++ b/drivers/cxl/cxl.h
-@@ -365,6 +365,9 @@ struct cxl_decoder {
- /*
-  * CXL_DECODER_DEAD prevents endpoints from being reattached to regions
-  * while cxld_unregister() is running
-+ *
-+ * NOTE: CXL_DECODER_RAM must be second and CXL_DECODER_MIXED must be last.
-+ *	 See mode_store()
-  */
- enum cxl_decoder_mode {
- 	CXL_DECODER_NONE,
-@@ -382,25 +385,25 @@ enum cxl_decoder_mode {
- 	CXL_DECODER_DEAD,
++static struct device_attribute dev_attr_region_count =
++	__ATTR(region_count, 0444, region_count_show, NULL);
++
+ static ssize_t serial_show(struct device *dev, struct device_attribute *attr,
+ 			   char *buf)
+ {
+@@ -448,6 +460,90 @@ static struct attribute *cxl_memdev_security_attributes[] = {
+ 	NULL,
  };
  
-+static const char * const cxl_decoder_mode_names[] = {
-+	[CXL_DECODER_NONE] = "none",
-+	[CXL_DECODER_RAM] = "ram",
-+	[CXL_DECODER_PMEM] = "pmem",
-+	[CXL_DECODER_DC0] = "dc0",
-+	[CXL_DECODER_DC1] = "dc1",
-+	[CXL_DECODER_DC2] = "dc2",
-+	[CXL_DECODER_DC3] = "dc3",
-+	[CXL_DECODER_DC4] = "dc4",
-+	[CXL_DECODER_DC5] = "dc5",
-+	[CXL_DECODER_DC6] = "dc6",
-+	[CXL_DECODER_DC7] = "dc7",
-+	[CXL_DECODER_MIXED] = "mixed",
++static ssize_t show_size_regionN(struct cxl_memdev *cxlmd, char *buf, int pos)
++{
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
++
++	return sysfs_emit(buf, "%#llx\n", mds->dc_region[pos].decode_len);
++}
++
++#define REGION_SIZE_ATTR_RO(n)						\
++static ssize_t region##n##_size_show(struct device *dev,		\
++				     struct device_attribute *attr,	\
++				     char *buf)				\
++{									\
++	return show_size_regionN(to_cxl_memdev(dev), buf, (n));		\
++}									\
++static DEVICE_ATTR_RO(region##n##_size)
++REGION_SIZE_ATTR_RO(0);
++REGION_SIZE_ATTR_RO(1);
++REGION_SIZE_ATTR_RO(2);
++REGION_SIZE_ATTR_RO(3);
++REGION_SIZE_ATTR_RO(4);
++REGION_SIZE_ATTR_RO(5);
++REGION_SIZE_ATTR_RO(6);
++REGION_SIZE_ATTR_RO(7);
++
++/*
++ * RegionX attributes must be listed in order and first in this array to
++ * support the visbility checks.
++ */
++static struct attribute *cxl_memdev_dc_attributes[] = {
++	&dev_attr_region0_size.attr,
++	&dev_attr_region1_size.attr,
++	&dev_attr_region2_size.attr,
++	&dev_attr_region3_size.attr,
++	&dev_attr_region4_size.attr,
++	&dev_attr_region5_size.attr,
++	&dev_attr_region6_size.attr,
++	&dev_attr_region7_size.attr,
++	&dev_attr_region_count.attr,
++	NULL,
 +};
 +
- static inline const char *cxl_decoder_mode_name(enum cxl_decoder_mode mode)
++static umode_t cxl_memdev_dc_attr_visible(struct kobject *kobj, struct attribute *a, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
++
++	/* Not a memory device */
++	if (!mds)
++		return 0;
++
++	if (a == &dev_attr_region_count.attr)
++		return a->mode;
++
++	/*
++	 * Show only the regions supported, regionX attributes are first in the
++	 * list
++	 */
++	if (n < mds->nr_dc_region)
++		return a->mode;
++
++	return 0;
++}
++
++static bool cxl_memdev_dc_group_visible(struct kobject *kobj)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
++
++	/* No DC regions */
++	if (!mds || mds->nr_dc_region == 0)
++		return false;
++	return true;
++}
++
++DEFINE_SYSFS_GROUP_VISIBLE(cxl_memdev_dc);
++
++static struct attribute_group cxl_memdev_dc_group = {
++	.name = "dc",
++	.attrs = cxl_memdev_dc_attributes,
++	.is_visible = SYSFS_GROUP_VISIBLE(cxl_memdev_dc),
++};
++
+ static umode_t cxl_memdev_visible(struct kobject *kobj, struct attribute *a,
+ 				  int n)
  {
--	static const char * const names[] = {
--		[CXL_DECODER_NONE] = "none",
--		[CXL_DECODER_RAM] = "ram",
--		[CXL_DECODER_PMEM] = "pmem",
--		[CXL_DECODER_DC0] = "dc0",
--		[CXL_DECODER_DC1] = "dc1",
--		[CXL_DECODER_DC2] = "dc2",
--		[CXL_DECODER_DC3] = "dc3",
--		[CXL_DECODER_DC4] = "dc4",
--		[CXL_DECODER_DC5] = "dc5",
--		[CXL_DECODER_DC6] = "dc6",
--		[CXL_DECODER_DC7] = "dc7",
--		[CXL_DECODER_MIXED] = "mixed",
--	};
--
- 	if (mode >= CXL_DECODER_NONE && mode <= CXL_DECODER_MIXED)
--		return names[mode];
-+		return cxl_decoder_mode_names[mode];
- 	return "mixed";
- }
+@@ -528,6 +624,7 @@ static const struct attribute_group *cxl_memdev_attribute_groups[] = {
+ 	&cxl_memdev_ram_attribute_group,
+ 	&cxl_memdev_pmem_attribute_group,
+ 	&cxl_memdev_security_attribute_group,
++	&cxl_memdev_dc_group,
+ 	NULL,
+ };
  
 
 -- 
