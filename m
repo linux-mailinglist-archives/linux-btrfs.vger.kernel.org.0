@@ -1,123 +1,158 @@
-Return-Path: <linux-btrfs+bounces-7232-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7233-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86581954831
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 13:43:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF68A954835
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 13:46:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E78C281C7B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 11:43:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE5B1F25635
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 11:46:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9312B1AB53B;
-	Fri, 16 Aug 2024 11:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD171AE051;
+	Fri, 16 Aug 2024 11:46:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MvF12n4k"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gLhf0OFO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4fkxBlEh";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R1we6Nm0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OJJy3eKC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1182B19EEC0
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 11:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D651A01AE
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 11:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723808574; cv=none; b=NBJZ0dPqKk1PhQDG4KvCZzSobM50NUQt1xks3CqAl0tzZY5AOx0QGwfyX7PpifgAZ1tYdBBr1ZbrP4qOiU5B2Eb3afSFEmxV+6hKS04vchqj01Xlr9Jn3TfHOUhVO3EpbSDFvy2i6mFpZqlidPLOZpf56C1BMIqphUZ/DfXpOmA=
+	t=1723808802; cv=none; b=XnOPKjlgMqy20wdnaF/tfBQu1PmyBTc57I72stb32NROPrHije45WRic6sonHHq6B5O9r8Hmixoqop5927nuNApmT0+3n1XqxfXkPNVVEYEkKIs+brfQKvY36IkrK6i+/nz3qEb75g7z7W8jqXycm57OEbaD3SWPlGcZ20kQZ0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723808574; c=relaxed/simple;
-	bh=2mVTsqxNSKcFUF22bN7u9NeuSTPq+ny+GLfwgME3W/g=;
+	s=arc-20240116; t=1723808802; c=relaxed/simple;
+	bh=aqXUjajT5WMddpqD7FQnzPjnkrDzzayU+/l856U5yxU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DT/TfI4fRGY1bL9G1AEId+6k0X4pP1omV1mXZ4u3ZxObXHcuJ1rqhhepobs/5KZU1Vsyh/mkGURj0goLyVVR7JR+Bc5AQNWpsRYQxxgz2ED3vYV6C+BfP3QTwZ7w69CoYtQh45Ni20C2TApd4SIKkWuCNQXZidpY2PVWxI+7TI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MvF12n4k; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723808571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nYXTjentR7V0p9OH+xYrrAnEtw/Nh3RgV55Y6X6ZGcF4KK46a6+jxKXXFs8by+Uia8bNYKCXd4nTHP5LSf4CUM6t5xRRIVlqAwoUqr82KszI/46utoi5TzX1nBD0MvdQq6hFRUYDVbzwuit4+4zHYbVWZ8sMxeRFRlFos0gZprQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gLhf0OFO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4fkxBlEh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R1we6Nm0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OJJy3eKC; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 23C93221EA;
+	Fri, 16 Aug 2024 11:46:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723808798;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=59r0sawk1GsuglTZhsCX1OUeGQomXixjBhl57tHpsFo=;
-	b=MvF12n4kK3nO/Ol80jas4AkbogzNzJqaB3FX4fULFYD9yiyPFXfvwlG9/VZH9Lhl3aCLE5
-	ERnOaP6kkcMaGAqPzxxbD6zwx5q2PQaXia6a07m+YZcyh7QXH1DyCkGCJiexxLiBP8oMbc
-	+niLPMuJTmi4U9XhcbrvCS/AimG/lOg=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-646-BRS-3QXXPjC8C1DNi9pR3w-1; Fri, 16 Aug 2024 07:42:50 -0400
-X-MC-Unique: BRS-3QXXPjC8C1DNi9pR3w-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-70d1df50db2so1442521b3a.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 04:42:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723808569; x=1724413369;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=59r0sawk1GsuglTZhsCX1OUeGQomXixjBhl57tHpsFo=;
-        b=PMJpMG741mKmQF9UivZC8CBZGNCXIB6+6gdkGhGwZF8I2QB0WCm46fGdEx9kRUtg2a
-         4kSlKdHYQhrhfBy2fY079obSZQvidaGdtQ0Ij6IiBage1aXV9G5YhaT6X5YGvUsr2Ddm
-         5pbNgANVxQQw1us27VG0LC7LKpqo16zb8sk0HloR1aFfJ1yrSjpX0X+txlsmre0WqPL1
-         IEUfq+V4U3oFqfkrrzJmmxk0pZbKx2gnar740YO1P0hgMjIjCTHFhwv5aO6JDZeHSgX+
-         +AYMeTVyLIewbizxVSZistGz9NXpHNtM/VvrXPQIpWTnTWr4rjrk2riVZvl5bbRKxLRo
-         QTiA==
-X-Gm-Message-State: AOJu0YwPuTJckaHsbJTxDSrN1feeYI175KPDBHXWHhQQbYpu5eE4cuSh
-	czxP2HQELg5S2yWjYQGUjEp3c1/Mr9sRHCRHiLNxzfMfH3CeVbtvTlilhuB/KY05SvGa6oVqWo5
-	ZRdPxDPdJu7y/IlNtQZoD39hog89UdOqZ3Wi5XrSYcHryjLkwtKEMjtRFF7tJ4uHXKsM2heQ=
-X-Received: by 2002:a05:6a00:2e29:b0:708:41c4:8849 with SMTP id d2e1a72fcca58-713c666c435mr3505016b3a.9.1723808569395;
-        Fri, 16 Aug 2024 04:42:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEqMKUdSBtB+QUYrQ4lrRa7GmaVwYM1LO/AF82w524Y9KAd3uWV+nbBAxcFBZDZT/E8WXh3+Q==
-X-Received: by 2002:a05:6a00:2e29:b0:708:41c4:8849 with SMTP id d2e1a72fcca58-713c666c435mr3504967b3a.9.1723808568779;
-        Fri, 16 Aug 2024 04:42:48 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c6b6357b67sm2800873a12.72.2024.08.16.04.42.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2024 04:42:48 -0700 (PDT)
-Date: Fri, 16 Aug 2024 19:42:45 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-	fstests@vger.kernel.org, fdmanana@kernel.org
-Subject: Re: [PATCH] btrfs: test send clones extents with unaligned end
- offset ending at i_size
-Message-ID: <20240816114245.mgugfp66skww72nu@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <177f429d65afb5cc99a7f950779ba15b130cd581.1723470203.git.fdmanana@suse.com>
- <ffe34979-75bf-4cb4-ac66-d21bdc85578c@oracle.com>
+	bh=aqXUjajT5WMddpqD7FQnzPjnkrDzzayU+/l856U5yxU=;
+	b=gLhf0OFOcDIRKoE/LapneVMOTSdakKNkA24vNqzSubWppO8Z4+TjVgz9mijUOiyGnL8kKg
+	Kpt8NK3AsvC1H+qvfysMRNrGj0thPpmHj2py7o12wqaaEjPqgIz5UeLxo9xXE2isR1kWpR
+	hm/YlIG7l4VS5wwPGmRS77tINpoYps4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723808798;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aqXUjajT5WMddpqD7FQnzPjnkrDzzayU+/l856U5yxU=;
+	b=4fkxBlEhLP7TiNdDSscMCZvmXdg9ucWOq47EAxbMTBePPvqGO+Q3rlppADL6E20O9DYSRs
+	cDhU1Fr+PBiqOPDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1723808797;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aqXUjajT5WMddpqD7FQnzPjnkrDzzayU+/l856U5yxU=;
+	b=R1we6Nm0cLN7Dxqz6yQETHn9BQ3O37BpKagpOs78v/Wi3I15aRMaNmuJ/e1oCDeeEKrNYA
+	6cLI7rn2YdTscAitURCruwvHAwUD3vxvWQ5yU78FACCHZbiufXhzyFXS+ubX9btFMdscGR
+	meF1RI1MUT6g0ONw011HxwGU/kn1tZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1723808797;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aqXUjajT5WMddpqD7FQnzPjnkrDzzayU+/l856U5yxU=;
+	b=OJJy3eKC4ZZ599nNo5f02ZFtlJiP4MvV6/6zRU5E8xdhW3y0AQ+Z48CFVxqw9xWDFvI6D2
+	XBzzOuKWMCUp/2Bw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A67F13A2F;
+	Fri, 16 Aug 2024 11:46:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 86m0AR08v2ZaWwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 16 Aug 2024 11:46:37 +0000
+Date: Fri, 16 Aug 2024 13:46:27 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Julian Sun <sunjunchao2870@gmail.com>
+Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, wqu@suse.com
+Subject: Re: [PATCH v3 1/2] btrfs: qgroup: use goto style to handle error in
+ add_delayed_ref().
+Message-ID: <20240816114627.GH25962@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20240607143021.122220-1-sunjunchao2870@gmail.com>
+ <20240813224433.GV25962@twin.jikos.cz>
+ <CAHB1NahuscKz-4b7MTR2xzLSocswDFObXjKuqy9g=QL=QnKyRQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ffe34979-75bf-4cb4-ac66-d21bdc85578c@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHB1NahuscKz-4b7MTR2xzLSocswDFObXjKuqy9g=QL=QnKyRQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:email,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
+	RCPT_COUNT_FIVE(0.00)[6];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 
-On Fri, Aug 16, 2024 at 06:58:37PM +0800, Anand Jain wrote:
-> On 12/8/24 9:51 pm, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > Test that a send operation will issue a clone operation for a shared
-> > extent of a file if the extent ends at the i_size of the file and the
-> > i_size is not sector size aligned.
-> > 
-> > This verifies an improvement to the btrfs send feature implemented by
-> > the following kernel patch:
-> > 
-> >    "btrfs: send: allow cloning non-aligned extent if it ends at i_size"
-> > 
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> 
-> 
-> Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> 
-> Zorro,
-> 
-> Could you please add this to the patches in queue? Since this is the only
-> patch pending, I will not be sending a PR this week
+On Fri, Aug 16, 2024 at 11:36:29AM +0800, Julian Sun wrote:
+> David Sterba <dsterba@suse.cz> 于2024年8月14日周三 06:44写道：
+> >
+> > On Fri, Jun 07, 2024 at 10:30:20PM +0800, Junchao Sun wrote:
+> > > Clean up resources using goto to get rid of repeated code.
+> > >
+> > > Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
+> >
+> > I had the patches in my testing branches, no problems so far so I'm
+> > adding it for 6.12. Thanks.
+> I just noticed I missed a commit for a file. Sorry for the oversight.
+> Should I send a new version of the patch?
 
-Sure, thanks Anand :)
-
-> 
-> Thx, Anand
-> 
-
+No need to, I'll update the commit, thanks.
 
