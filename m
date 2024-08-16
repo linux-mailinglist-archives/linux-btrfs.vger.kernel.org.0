@@ -1,162 +1,112 @@
-Return-Path: <linux-btrfs+bounces-7221-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7222-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F01953ECE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 03:11:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08262954011
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 05:36:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 543ABB213EB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 01:11:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A61121F22968
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 03:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5777B1DFEB;
-	Fri, 16 Aug 2024 01:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA075F873;
+	Fri, 16 Aug 2024 03:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mymc92bG";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mymc92bG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JM8LgF+U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67EA5B647;
-	Fri, 16 Aug 2024 01:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B07E482E4
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 03:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723770663; cv=none; b=uaN14Kh/07EzTXkET5Tl+r/Ajs5WCKht2TZiio+kPKP7d9mP0YeCoK2qsNSye8tsxPvhHG5lQCmetWeG/bkcwBZgwZri59NVkMPZdeXEq4WBiQb0klsnoFgsPW51WjkynLEJApFcdbRmX7i1dBrHsQvS96d1KfW8ieWwLbNsoTA=
+	t=1723779405; cv=none; b=Ti6n2+/Fsi1SQhh/7cHQykJ0kKZAHtX0JXHicN7ycerUbwOqKe2DfeCwfW3phRmKrMyIft3O2opJcHZEmIanis1kD4LuG8Z3qeXnmwZFpvI7l37zQR9j+3gbrVEY500sVI8ygDKSqYj5MbPfFQ6fwtE0QXmKwKmyn4MUE/moJfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723770663; c=relaxed/simple;
-	bh=Wg98roUs9UnDkZvwfwUi/QM50bCz9k2dNbQZp4JxeGg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ubB4dWtVVl6AdU0/yCSZ1u8KuO+ZmaV+UrQ/ynCqTs1IFuNIALjra1fIFTKvAiJZQoHFdjBQpGVjlnqTpJ30WUfFcj4/xjEEDWk/fAp2piZp4MbhA4B0iPmfefcicovxRIiksDaOyFbeBAQuob3QnH2OwX6dQpLX/Hd0cohmtf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mymc92bG; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mymc92bG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 96ABC2288B;
-	Fri, 16 Aug 2024 01:10:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1723770657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=5izJoME/EgOGqrOxxJbNIFZPzL4ZTxq6Pfp9grC9ENs=;
-	b=mymc92bGEglNExdRewcYIqalOz7g4HU6w6wnnOnNoVLg/iLJjODpnq1VZu5tz22QpOmhXd
-	xQmezh+zbTvqdCcKmSr9TUBLY9spBxTfPBxSxtxsKzaaZBs63UVgl+3JcM66TATv2CVIlf
-	uXt6xd2KSBFmDjtH/ITDfde/X5tRSN8=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1723770657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=5izJoME/EgOGqrOxxJbNIFZPzL4ZTxq6Pfp9grC9ENs=;
-	b=mymc92bGEglNExdRewcYIqalOz7g4HU6w6wnnOnNoVLg/iLJjODpnq1VZu5tz22QpOmhXd
-	xQmezh+zbTvqdCcKmSr9TUBLY9spBxTfPBxSxtxsKzaaZBs63UVgl+3JcM66TATv2CVIlf
-	uXt6xd2KSBFmDjtH/ITDfde/X5tRSN8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 74E3E13983;
-	Fri, 16 Aug 2024 01:10:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xLXcCyCnvmbXJwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 16 Aug 2024 01:10:56 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH] btrfs: only enable extent map shrinker for DEBUG builds
-Date: Fri, 16 Aug 2024 10:40:38 +0930
-Message-ID: <09ca70ddac244d13780bd82866b8b708088362fb.1723770634.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1723779405; c=relaxed/simple;
+	bh=LDyutCRlNsC8DYeLe8q0IW5u6nG5OBACoRADpWAdcTo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OWAon+2Q3BwkoCXW8isOFV+n2fOWm5BVHSUfVJLBmQ3hSfA64Rd4Li88xocmwBWBw5LFBQrJ0Wi8R8Oh2M+xupgFWBAFg9JUQjd/rm77Oiwl5lX5pM6JItY+MSXOhfQFI15/hSLD+RAaUNWVrKSp5bNngAap9tzFxfGyvPTEfO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JM8LgF+U; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2f15e48f35bso16298511fa.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2024 20:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723779402; x=1724384202; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KdtvqKmgpVkKBV/pWHXhhYEJQzAqYKa4fYJ6jG8kFW4=;
+        b=JM8LgF+UVqMnIaqFB2l87/oBgz51U+AlFAo6s3EB0IvH6jUxaQKmsFxsbZRQVCEsMF
+         XOj//Kl431MCmJvb01qZS10oshIBfnRIH6gyX4j4Vl3BRW8/1Q5wCLSpjd6mdcV1VpzE
+         +h9QBvayaSGTy19m+cpOK57PtCh9uDVaXBsJ04pOryMNO7r78Zr47Fi6lxVGS5PNF/Co
+         Vf1gy+5NdC6PBJObXiTdbEW1KF0x564dLu7kfAY3xMuqYXGeQirYdfcTgqputZrRO59y
+         WJKfkjykdl+Z6WIpOpC3ccxmOwhaHINZIlD4jKR7dt4P7XUFG/d9vDvhpx5m1mo6LSo4
+         XmtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723779402; x=1724384202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KdtvqKmgpVkKBV/pWHXhhYEJQzAqYKa4fYJ6jG8kFW4=;
+        b=pn4DyPvYopstCwTejn0MFQekSWw1QEcyaGAjbZJCwjKjueptr/xYCEuxZT+VTB3LmD
+         6Lo3ldrBnd6gzTqtUibjx2zO1PwTfsE66z5BFxRuWeAmO0RptlB08UOUg3xXRAbwVp0H
+         InM+XtxiV+X8mFLDLxWdjTneI82iazWUiumzakC4Ga2KRp/h81Kf8ZxR7YPrbywJptzZ
+         15nYwuMXAfbnYjhAQyqKGvvls1RLjwO+88PTD5pIalUPXyaGrMyN24cfo3/D/MMV6sg0
+         zjJ1mDU/swnUIIDdJNN8fuY2atxe81vVB/Cx6Kd6zfsxr1T/5+PjGR+dMwSIkQBVhyk6
+         kirw==
+X-Gm-Message-State: AOJu0YyZ3TiWiqkTJD/+df/uS/pvXOE+jPT+FsvyttqTjQNAd/al38j1
+	qdLoIv6AkbEpyFVuX3KKt5KnPI6gb1OvvBQ33uoCyaFI3RICvflUjMASNhLrBPLDKhYIwRrdJl8
+	n+EpHg0XkdHoh0xebhBf5w8QDgFw=
+X-Google-Smtp-Source: AGHT+IHgr4KOvS7fcDf1iNfIYiy+nrXb8QMJ3h9RQPqZvfYPAM9jZvyxzOmo/qh+qWV2LzsmF4CSll6z4+VxlL5eJWg=
+X-Received: by 2002:a2e:8898:0:b0:2ef:2c4b:b799 with SMTP id
+ 38308e7fff4ca-2f3be5aa1d3mr9847791fa.28.1723779401255; Thu, 15 Aug 2024
+ 20:36:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
+References: <20240607143021.122220-1-sunjunchao2870@gmail.com> <20240813224433.GV25962@twin.jikos.cz>
+In-Reply-To: <20240813224433.GV25962@twin.jikos.cz>
+From: Julian Sun <sunjunchao2870@gmail.com>
+Date: Fri, 16 Aug 2024 11:36:29 +0800
+Message-ID: <CAHB1NahuscKz-4b7MTR2xzLSocswDFObXjKuqy9g=QL=QnKyRQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] btrfs: qgroup: use goto style to handle error in add_delayed_ref().
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, 
+	dsterba@suse.com, wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Although there are several patches improving the extent map shrinker,
-there are still reports of too frequent shrinker behavior, taking too
-much CPU for the kswapd process.
+David Sterba <dsterba@suse.cz> =E4=BA=8E2024=E5=B9=B48=E6=9C=8814=E6=97=A5=
+=E5=91=A8=E4=B8=89 06:44=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Fri, Jun 07, 2024 at 10:30:20PM +0800, Junchao Sun wrote:
+> > Clean up resources using goto to get rid of repeated code.
+> >
+> > Signed-off-by: Junchao Sun <sunjunchao2870@gmail.com>
+>
+> I had the patches in my testing branches, no problems so far so I'm
+> adding it for 6.12. Thanks.
+I just noticed I missed a commit for a file. Sorry for the oversight.
+Should I send a new version of the patch?
 
-So let's only enable extent shrinker for now, until we got more
-comprehensive understanding and a better solution.
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -125,7 +125,6 @@ struct btrfs_inode;
+  * Record a dirty extent, and info qgroup to update quota on it
+  */
+ struct btrfs_qgroup_extent_record {
+-       struct rb_node node;
+        u64 bytenr;
+        u64 num_bytes;
 
-Link: https://lore.kernel.org/linux-btrfs/3df4acd616a07ef4d2dc6bad668701504b412ffc.camel@intelfx.name/
-Link: https://lore.kernel.org/linux-btrfs/c30fd6b3-ca7a-4759-8a53-d42878bf84f7@gmail.com/
-Fixes: 956a17d9d050 ("btrfs: add a shrinker for extent maps")
-CC: stable@vger.kernel.org # 6.10+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-I also checked how XFS (the only other fs implemented the
-free_cached_objects callback) implemented the callback.
 
-They did two things:
-
-- Make sure there is only one queued reclaim
-  Currently we only do the reclaim for kswapd, but for multi-node
-  systems, we can still have multiple kswapd processes.
-
-  But I do not think that's the root cause.
-
-- With an extra delay of 60% of xfs_syncd_centiseccs
-  The default value for xfs_syncd_centiseccs is 3000 centiseconds (30s),
-  with a minimal 100 centiseconds (1s).
-  This results the reclaim work only to be executed at most every 18
-  seconds by default (or 0.6s for the minimal interval).
-
-  I believe this is the root cause, we have no extra delay and that
-  makes btrfs to shrink extent maps too frequently.
----
- fs/btrfs/super.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 11044e9e2cb1..98fa0f382480 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2402,7 +2402,13 @@ static long btrfs_nr_cached_objects(struct super_block *sb, struct shrink_contro
- 
- 	trace_btrfs_extent_map_shrinker_count(fs_info, nr);
- 
--	return nr;
-+	/*
-+	 * Only report the real number for DEBUG builds, as there are reports of
-+	 * serious performance degradation caused by too frequent shrinks.
-+	 */
-+	if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
-+		return nr;
-+	return 0;
- }
- 
- static long btrfs_free_cached_objects(struct super_block *sb, struct shrink_control *sc)
--- 
-2.46.0
-
+Best regards,
+--=20
+Junchao Sun <sunjunchao2870@gmail.com>
 
