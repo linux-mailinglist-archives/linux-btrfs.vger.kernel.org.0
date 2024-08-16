@@ -1,66 +1,66 @@
-Return-Path: <linux-btrfs+bounces-7237-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7238-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F135954B9E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 16:00:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBEBC954BA1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 16:00:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87213281E9E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 14:00:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7112F1F24456
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 14:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E851BCA16;
-	Fri, 16 Aug 2024 13:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F7C1BD515;
+	Fri, 16 Aug 2024 14:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UVMSrejw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EFMgH9vB"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1659C1BB69B;
-	Fri, 16 Aug 2024 13:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A521BCA0C;
+	Fri, 16 Aug 2024 13:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723816797; cv=none; b=rE3By0AnOgiCP4zet3dWIleL0fZYzc03S98R6iDtDX4KYRxsCNoUQokIMhf75rj1Kf4xyZC/PAwBc8VM7kUiVeXMSeg9w/BnS9+Ett3BYXbYWKe7W4nzYrtwtacZ3L6o7Pohqig6Z+xNx1JyZZnXqSYrZGPAcgI3M7ar4PCrFx8=
+	t=1723816800; cv=none; b=fPKJfKAV7PU5ylAVb6DzN44eDAMmmt/KS/y+ZBiB23pgDZya+dLs93xMZ5TEaXhSXAKyGS33vNMLvubcAi0Xzewl/WsoDoInntR4Zdq27x2d3wviw9+FeFdRFiVKjCKZ9jBT9D7Yy82H2+OGTMeilMmkJMd7F+QDJpsbDE7sNgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723816797; c=relaxed/simple;
-	bh=iuwoKFBy90JgvWLAvMU7CdNYTV/UBM55Pi1kkx/Ytv0=;
+	s=arc-20240116; t=1723816800; c=relaxed/simple;
+	bh=4PkH1xqJoyauYPLTeFqwpXSPhLz7QrsYzPhGNpKM7KQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MYLyyWG6mAeqCvfqN38K/I+74jnxgZtOb2mx8i3uf6uw0tb3NrXPCbPCeL9O4axrP5oSsLlHR6nMgLydKnQJ7Kq+UooErM/byAGAtumCS2/+a6l+4oBzhmsldHO0yqms3CQGeIPNcVftkD34qsc6CbEf8z2KzXaskcPohElLhAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UVMSrejw; arc=none smtp.client-ip=192.198.163.15
+	 In-Reply-To:To:Cc; b=OB7hwxX1MwwRPREq7Nmu7Me4grWeJF33J+ksRsEDwWMa6a8/cnipv1Dpoa1yhkACIkqdfxXiur9znEAYkmlEyDVGKssIwOG6ke4K01NX3urzy2FyoZpKUu6U2ClNXhIkF0/wpgWnY5T7Kn8Io/FTqJvw/+qc6GtiGb9NtMKWJWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EFMgH9vB; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723816796; x=1755352796;
+  t=1723816798; x=1755352798;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=iuwoKFBy90JgvWLAvMU7CdNYTV/UBM55Pi1kkx/Ytv0=;
-  b=UVMSrejwC2I58NYuemt3lKPtUvw1qg9CkWHi797PaGAgQ7UU6xQ1Y/wR
-   EdcKBvdsUBAEqK2cmWgNXCeVL910SY8rU+IWT5aUAkpT39Gn6Nmq2AWvK
-   aRwd/ZjUcw6thH8ayr2f3EdHE2MsV9FY6x5c8KANpsAuxISngmSW9LcIu
-   2BzBpY3XLg8zYNSWIooA/KkZSQNfB35ghRyw9gNoNOp2sJ7Ilwzm8oc2P
-   uVc6pRDejagKxsSfMuEzX99PmhMdjI109f2SWU0AXzc7EvxZj0VZFvC4B
-   siDY4d9erz4DRfK8INPsEebG1LvvgpXArSgKoZtf8BtLeEnNiCzMVO1YW
+  bh=4PkH1xqJoyauYPLTeFqwpXSPhLz7QrsYzPhGNpKM7KQ=;
+  b=EFMgH9vBgUra+xfJub4zH5EunJ7VY+FDjeERBo3T7oW7hvTyDUQWgjlb
+   DeXmUbA+5fb7gZpOskzu1uDYbTHL0+Hm/sE0mtiQWvR0wnT0D3fgQqT5T
+   2zSP0U8QfmNVwW3TSUTwM4UknulYewe9iD2nqBgZEnzH92/sa2bs55br/
+   u8/5BcrxtiJP+m+W3jm2EUan6iv4zbQ1kNRBl29JUJ1LlZ+3qAa8iLe7s
+   NvNqyNT5Jwruw5KOkBWKvSz8yhHZLwzAPKm94TlVkOtZ9c3q3twGXLsYO
+   TnFtaP5W7fLWZodpfUiMrNThQjTOHs4nmh5vjoxbiZbSWwrwwp0kXlXM+
    Q==;
-X-CSE-ConnectionGUID: jdMVji4eRwWBqLnxspr+xQ==
-X-CSE-MsgGUID: 387r/qqURSGFDSfJvzLPkw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11166"; a="22272721"
+X-CSE-ConnectionGUID: EZtpySuRTcaZsgrogD4mBA==
+X-CSE-MsgGUID: jYjSkizhQaSK+U0abjlFcg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11166"; a="22272733"
 X-IronPort-AV: E=Sophos;i="6.10,151,1719903600"; 
-   d="scan'208";a="22272721"
+   d="scan'208";a="22272733"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 06:59:55 -0700
-X-CSE-ConnectionGUID: oPiRCRZ0TUSN/kjfl8bs3A==
-X-CSE-MsgGUID: +UlXRaZlS4q/9LngM6RQLA==
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 06:59:57 -0700
+X-CSE-ConnectionGUID: jW0ko+rETeeKZeMEcDL96w==
+X-CSE-MsgGUID: zFuzs5tqSDShBwmW/Bez+Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,151,1719903600"; 
-   d="scan'208";a="90410994"
+   d="scan'208";a="90411023"
 Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.125.111.52])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 06:59:55 -0700
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 06:59:57 -0700
 From: Ira Weiny <ira.weiny@intel.com>
-Date: Fri, 16 Aug 2024 08:59:49 -0500
-Subject: [PATCH v2 01/25] range: Add range_overlaps()
+Date: Fri, 16 Aug 2024 08:59:50 -0500
+Subject: [PATCH v2 02/25] printk: Add print format (%par) for struct range
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -69,7 +69,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240816-dcd-type2-upstream-v2-1-20189a10ad7d@intel.com>
+Message-Id: <20240816-dcd-type2-upstream-v2-2-20189a10ad7d@intel.com>
 References: <20240816-dcd-type2-upstream-v2-0-20189a10ad7d@intel.com>
 In-Reply-To: <20240816-dcd-type2-upstream-v2-0-20189a10ad7d@intel.com>
 To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
@@ -80,110 +80,130 @@ Cc: Dan Williams <dan.j.williams@intel.com>,
  Alison Schofield <alison.schofield@intel.com>, 
  Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
  linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
+ linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>, 
+ Steven Rostedt <rostedt@goodmis.org>, Jonathan Corbet <corbet@lwn.net>, 
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
 X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1723816790; l=3425;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1723816790; l=4286;
  i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=iuwoKFBy90JgvWLAvMU7CdNYTV/UBM55Pi1kkx/Ytv0=;
- b=t0DhbhgY8dfn3/XHD3DXg/WDDbVvXnUzbg+lWnTqRCGt1FLe7m5300xpd5mob3k89VSykSE4/
- vfU/NJ2SC4RBWn42euFHoRzzMs5JEKSqzNVds73QoFLtA5yxGaQkr0O
+ bh=4PkH1xqJoyauYPLTeFqwpXSPhLz7QrsYzPhGNpKM7KQ=;
+ b=t10lP1XtEXcLhFatOm25WwMYhWOifjIkp49NUsu7pjvvp2GsgxzzD0r48iSokf+1HgjbEThrV
+ eQs5WVLY9hQDOLd6c4Pe2MmdUE4F0K9gfOQRh/wDs8v7yjwCFVnjZNX
 X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
  pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
 
-Code to support CXL Dynamic Capacity devices will have extent ranges
-which need to be compared for intersection not a subset as is being
-checked in range_contains().
+The use of struct range in the CXL subsystem is growing.  In particular,
+the addition of Dynamic Capacity devices uses struct range in a number
+of places which are reported in debug and error messages.
 
-range_overlaps() is defined in btrfs with a different meaning from what
-is required in the standard range code.  Dan Williams pointed this out
-in [1].  Adjust the btrfs call according to his suggestion there.
+To wit requiring the printing of the start/end fields in each print
+became cumbersome.  Dan Williams mentions in [1] that it might be time
+to have a print specifier for struct range similar to struct resource
 
-Then add a generic range_overlaps().
+A few alternatives were considered including '%pn' for 'print raNge' but
+%par follows that struct range is most often used to store a range of
+physical addresses.  So use '%par' for 'print address range'.
 
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Chris Mason <clm@fb.com>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-
-Acked-by: David Sterba <dsterba@suse.com>
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Reviewed-by: Fan Ni <fan.ni@samsung.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Petr Mladek <pmladek@suse.com> (maintainer:VSPRINTF)
+To: Steven Rostedt <rostedt@goodmis.org> (maintainer:VSPRINTF)
+To: Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
+Cc: linux-doc@vger.kernel.org (open list:DOCUMENTATION)
+Cc: linux-kernel@vger.kernel.org (open list)
+Link: https://lore.kernel.org/all/663922b475e50_d54d72945b@dwillia2-xfh.jf.intel.com.notmuch/ [1]
+Suggested-by: "Dan Williams" <dan.j.williams@intel.com>
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
-[1] https://lore.kernel.org/all/65949f79ef908_8dc68294f2@dwillia2-xfh.jf.intel.com.notmuch/
 ---
- fs/btrfs/ordered-data.c | 10 +++++-----
- include/linux/range.h   |  7 +++++++
- 2 files changed, 12 insertions(+), 5 deletions(-)
+ Documentation/core-api/printk-formats.rst | 14 ++++++++++++
+ lib/vsprintf.c                            | 37 +++++++++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 82a68394a89c..37164cc44a25 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -111,8 +111,8 @@ static struct rb_node *__tree_search(struct rb_root *root, u64 file_offset,
- 	return NULL;
+diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
+index 4451ef501936..a02ef899b2a6 100644
+--- a/Documentation/core-api/printk-formats.rst
++++ b/Documentation/core-api/printk-formats.rst
+@@ -231,6 +231,20 @@ width of the CPU data path.
+ 
+ Passed by reference.
+ 
++Struct Range
++------------
++
++::
++
++	%par	[range 0x60000000-0x6fffffff] or
++		[range 0x0000000060000000-0x000000006fffffff]
++
++For printing struct range.  A variation of printing a physical address is to
++print the value of struct range which are often used to hold a physical address
++range.
++
++Passed by reference.
++
+ DMA address types dma_addr_t
+ ----------------------------
+ 
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 2d71b1115916..c132178fac07 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -1140,6 +1140,39 @@ char *resource_string(char *buf, char *end, struct resource *res,
+ 	return string_nocheck(buf, end, sym, spec);
  }
  
--static int range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
--			  u64 len)
-+static int btrfs_range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
-+				u64 len)
- {
- 	if (file_offset + len <= entry->file_offset ||
- 	    entry->file_offset + entry->num_bytes <= file_offset)
-@@ -985,7 +985,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
- 
- 	while (1) {
- 		entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
--		if (range_overlaps(entry, file_offset, len))
-+		if (btrfs_range_overlaps(entry, file_offset, len))
- 			break;
- 
- 		if (entry->file_offset >= file_offset + len) {
-@@ -1114,12 +1114,12 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
- 	}
- 	if (prev) {
- 		entry = rb_entry(prev, struct btrfs_ordered_extent, rb_node);
--		if (range_overlaps(entry, file_offset, len))
-+		if (btrfs_range_overlaps(entry, file_offset, len))
- 			goto out;
- 	}
- 	if (next) {
- 		entry = rb_entry(next, struct btrfs_ordered_extent, rb_node);
--		if (range_overlaps(entry, file_offset, len))
-+		if (btrfs_range_overlaps(entry, file_offset, len))
- 			goto out;
- 	}
- 	/* No ordered extent in the range */
-diff --git a/include/linux/range.h b/include/linux/range.h
-index 6ad0b73cb7ad..9a46f3212965 100644
---- a/include/linux/range.h
-+++ b/include/linux/range.h
-@@ -13,11 +13,18 @@ static inline u64 range_len(const struct range *range)
- 	return range->end - range->start + 1;
- }
- 
-+/* True if r1 completely contains r2 */
- static inline bool range_contains(struct range *r1, struct range *r2)
- {
- 	return r1->start <= r2->start && r1->end >= r2->end;
- }
- 
-+/* True if any part of r1 overlaps r2 */
-+static inline bool range_overlaps(struct range *r1, struct range *r2)
++static noinline_for_stack
++char *range_string(char *buf, char *end, const struct range *range,
++		      struct printf_spec spec, const char *fmt)
 +{
-+	return r1->start <= r2->end && r1->end >= r2->start;
++#define RANGE_PRINTK_SIZE		16
++#define RANGE_DECODED_BUF_SIZE		((2 * sizeof(struct range)) + 4)
++#define RANGE_PRINT_BUF_SIZE		sizeof("[range - ]")
++	char sym[RANGE_DECODED_BUF_SIZE + RANGE_PRINT_BUF_SIZE];
++	char *p = sym, *pend = sym + sizeof(sym);
++
++	static const struct printf_spec str_spec = {
++		.field_width = -1,
++		.precision = 10,
++		.flags = LEFT,
++	};
++	static const struct printf_spec range_spec = {
++		.base = 16,
++		.field_width = RANGE_PRINTK_SIZE,
++		.precision = -1,
++		.flags = SPECIAL | SMALL | ZEROPAD,
++	};
++
++	*p++ = '[';
++	p = string_nocheck(p, pend, "range ", str_spec);
++	p = number(p, pend, range->start, range_spec);
++	*p++ = '-';
++	p = number(p, pend, range->end, range_spec);
++	*p++ = ']';
++	*p = '\0';
++
++	return string_nocheck(buf, end, sym, spec);
 +}
 +
- int add_range(struct range *range, int az, int nr_range,
- 		u64 start, u64 end);
+ static noinline_for_stack
+ char *hex_string(char *buf, char *end, u8 *addr, struct printf_spec spec,
+ 		 const char *fmt)
+@@ -1802,6 +1835,8 @@ char *address_val(char *buf, char *end, const void *addr,
+ 		return buf;
  
+ 	switch (fmt[1]) {
++	case 'r':
++		return range_string(buf, end, addr, spec, fmt);
+ 	case 'd':
+ 		num = *(const dma_addr_t *)addr;
+ 		size = sizeof(dma_addr_t);
+@@ -2364,6 +2399,8 @@ char *rust_fmt_argument(char *buf, char *end, void *ptr);
+  *            to use print_hex_dump() for the larger input.
+  * - 'a[pd]' For address types [p] phys_addr_t, [d] dma_addr_t and derivatives
+  *           (default assumed to be phys_addr_t, passed by reference)
++ * - 'ar' For decoded struct ranges (a variation of physical address which are
++ *        most often stored in struct ranges.
+  * - 'd[234]' For a dentry name (optionally 2-4 last components)
+  * - 'D[234]' Same as 'd' but for a struct file
+  * - 'g' For block_device name (gendisk + partition number)
 
 -- 
 2.45.2
