@@ -1,305 +1,243 @@
-Return-Path: <linux-btrfs+bounces-7302-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7303-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C1299555A2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2024 07:53:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2CB39557C3
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2024 14:22:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51579285AA5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2024 05:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C9D1C21134
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2024 12:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 999FA12FB0A;
-	Sat, 17 Aug 2024 05:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B719914B07E;
+	Sat, 17 Aug 2024 12:21:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M/5K/yp6"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Be00bQJh";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Be00bQJh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706C2101DE
-	for <linux-btrfs@vger.kernel.org>; Sat, 17 Aug 2024 05:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA787DA97
+	for <linux-btrfs@vger.kernel.org>; Sat, 17 Aug 2024 12:21:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723873993; cv=none; b=WG3+iD8WDfQTVse9ex0hxKcS4g5lI3ubSQ+kO5abJhlimoZ2RBSz5QvI4e46QoTyJFS8TAcIMKB6jFeWHe/DLapPDKF+F5qxa6TWZQZrQ2RAVc59mYjB6aRnY4FrV0xB2P2We99UfbkFtTUpxZ/up6taEDk48kvh5tQdT8nsjhM=
+	t=1723897314; cv=none; b=ZXCOsjUBai6drVrwL0PfhQun9v8RDCoiXWruBjZI2ITWPJQwM3x8i5Ojd4WUuFr8gaHrXB0ZZ3xjexL7o0LrEoNQVuRn06Z+IezF9ZfZGs4hraQMaTle5ZSResBf9Gbr2Zinm+iwJ2S4X84B7/LIuYZa9IXmp9eKKvJNFn0whfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723873993; c=relaxed/simple;
-	bh=ucpncKES4KJw14hD8IfM5Zh+hz3zkHF2ESwrVlipdVA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G3tNuBCq+gV+CD8JRF+R2yMJom/Exck+e1V4EgNWqS7CgD418qt6EtjtR3mgqMJZxuZEIYhpWezYpPyBJQnunOLfffkFWg70Q2duWqjEtVpKbG5A8f8foV6mfm9QabEk6pCCK0e14Y4Hd74nG1jMfEbVDIMyPaJu7bYjb1xS+ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M/5K/yp6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1723873989;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qEAXMzXw+X+bVqWar3Yh4pHMhyMCyR0F3kFCLJ3f/CI=;
-	b=M/5K/yp6zpv1H70ewRl83olew7pB8BEQi1gvpGLxfbUOnHR17e5YWPE67216P/tycFP5LV
-	uhRTK+sPBeplOH9OALPBp1Zb0q+idNRUXZs1YfwLufmXE/H59Qknvf7YOzS6bqpqPFGedu
-	cFRQ6Tw9mA01KaF0zi8v1/wfvqlsE0M=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-371-wo7ELoF9Nc-XAkdzRWsfaA-1; Sat, 17 Aug 2024 01:53:07 -0400
-X-MC-Unique: wo7ELoF9Nc-XAkdzRWsfaA-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-20201834f25so17393615ad.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2024 22:53:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723873986; x=1724478786;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qEAXMzXw+X+bVqWar3Yh4pHMhyMCyR0F3kFCLJ3f/CI=;
-        b=wn/z4J1uP0JBPd7fZXdfcfDace8/ToGscnkPJj8n1WeBgiSldG9PBu+iuPFB2UMU3l
-         +Zr1w5J/qoPJ4h+9AxuecTZR+pMe8l5lw+onjw0UgLL/+gDpcR0IM17KbX3LVuzNGJGh
-         oXwBqjKIKmMNOU4LKiFUYupRnqkeohBdoV+zj7hveSyhukkVZLjyXeR1CldXszikM2Yr
-         LSVlZO5s3sqPgVt3SlMdPuh92F2LRXx6HOglYhsco7UCRCi2dyiIwKhtKQw8ODwF4qh9
-         ckBGR/1+JU0Sal2vSnZiZYJnyd2icctvSjGpbdepREtIeMmNjgfLnsPDPRk1Aiu1pSXf
-         9Z9w==
-X-Forwarded-Encrypted: i=1; AJvYcCXLpUb9Zz3drm9Cd17stjuLU3hdlOnJDY1De0YLzPdXEcDfq4S/S6Jlu06Dk0/aKUUuFDhMM6Wjva/HRA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMv8x3A2ZbujpgOqNla2zJSWA3CaCX2x4cog6ZAJcmzuff1E4u
-	ALV/eOvKbcGYRlyzieKt02Eft471M25Hr1Y3heIXSfulR/M2eSsVgr5iTrMv6EegVkMT/YjSyfu
-	PNFk+sJylsFWDFeW6g+a7Y8Yih/CKdh+HIdS+Hsket7F/hpfK6ePfDdQN+2Ig
-X-Received: by 2002:a17:902:cec1:b0:201:ef87:9535 with SMTP id d9443c01a7336-20203e4c9c5mr60765415ad.3.1723873986528;
-        Fri, 16 Aug 2024 22:53:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFGuk3QzJCQcRlqzVWBZVy+LeAY9P0SxB7zFNl7Ztatybb0uNMFCyCw+wg/pN8dVnNZd8v3Bw==
-X-Received: by 2002:a17:902:cec1:b0:201:ef87:9535 with SMTP id d9443c01a7336-20203e4c9c5mr60765195ad.3.1723873985801;
-        Fri, 16 Aug 2024 22:53:05 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f037aeadsm33509125ad.138.2024.08.16.22.53.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2024 22:53:05 -0700 (PDT)
-Date: Sat, 17 Aug 2024 13:53:01 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH fstests] generic/755: test that inode's ctime is updated
- on unlink
-Message-ID: <20240817055301.nisxjdvue6lasois@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240813-master-v1-1-862678cc4000@kernel.org>
- <20240816125557.yu7664riqf4gvckl@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <0fc76e7d49e8523d00f54fd5b50f24f040e7cf70.camel@kernel.org>
+	s=arc-20240116; t=1723897314; c=relaxed/simple;
+	bh=az/ZuY+I96r0ZELenEvN8sRIOUuVRMFQKLW5U1oeC9c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lj02baa4GOBYd5ZwXFuNg5IwFokXKRJedzVHU9Mei3RhMi3/LHl5Td2aAzVUluAqGacV/P7q/Cd8F4hK0xiayO+tJyUQjr9CjxC56BxJIWW5WXf2KXWylKdlNATHfptGG9jh7gLceH+KssDD31VYKdyCJQUmAbq/oCKislVn9Sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Be00bQJh; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Be00bQJh; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 86DCE21FF7;
+	Sat, 17 Aug 2024 12:21:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723897310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=KpErxIPCFErSZ6WcqDp2kRUihkFpLdNFnJR5EAaDCHo=;
+	b=Be00bQJhzASoBNq9JB4BRfoGH79CdHJjCJNUZCriqpK38hOxwGskVel1M75P4c9qga9qYr
+	EEsC3D1ES1RrKJKRbIZsMI4OY/F9flfPv43wMkRSAIHtsuxZBXpgWzcVlhzwIjcaow1X1y
+	Vytv2K68qv7ZmxVl0EQVbKwE+uydAUs=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1723897310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=KpErxIPCFErSZ6WcqDp2kRUihkFpLdNFnJR5EAaDCHo=;
+	b=Be00bQJhzASoBNq9JB4BRfoGH79CdHJjCJNUZCriqpK38hOxwGskVel1M75P4c9qga9qYr
+	EEsC3D1ES1RrKJKRbIZsMI4OY/F9flfPv43wMkRSAIHtsuxZBXpgWzcVlhzwIjcaow1X1y
+	Vytv2K68qv7ZmxVl0EQVbKwE+uydAUs=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 657471397F;
+	Sat, 17 Aug 2024 12:21:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xXQHCN2VwGYIPQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Sat, 17 Aug 2024 12:21:49 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.cz>
+Subject: [PATCH] btrfs: fix a use-after-free bug when hitting errors inside btrfs_submit_chunk()
+Date: Sat, 17 Aug 2024 21:51:27 +0930
+Message-ID: <25987ba63d6e11a6983bf2c57eb2ac8efe059d8e.1723897285.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fc76e7d49e8523d00f54fd5b50f24f040e7cf70.camel@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.cz:email,opensuse.org:url,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Level: 
+X-Spam-Score: -2.80
 
-On Fri, Aug 16, 2024 at 08:58:28AM -0400, Jeff Layton wrote:
-> On Fri, 2024-08-16 at 20:55 +0800, Zorro Lang wrote:
-> > On Tue, Aug 13, 2024 at 02:21:08PM -0400, Jeff Layton wrote:
-> > 
-> > Hi Jeff :)
-> > 
-> > Any description about this case test for?
-> > 
-> 
-> Yes. I should have put that info in the commit. Can you add it if the
-> patch otherwise looks OK?
-> 
->     https://lore.kernel.org/linux-btrfs/20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org/
+[BUG]
+There is an internal report that KASAN is reporting use-after-free, with
+the following backtrace:
 
-Hi Jeff,
+ ==================================================================
+ BUG: KASAN: slab-use-after-free in btrfs_check_read_bio+0xa68/0xb70 [btrfs]
+ Read of size 4 at addr ffff8881117cec28 by task kworker/u16:2/45
+ CPU: 1 UID: 0 PID: 45 Comm: kworker/u16:2 Not tainted 6.11.0-rc2-next-20240805-default+ #76
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-3-gd478f380-rebuilt.opensuse.org 04/01/2014
+ Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
+ Call Trace:
+  <TASK>
+  dump_stack_lvl+0x61/0x80
+  print_address_description.constprop.0+0x5e/0x2f0
+  print_report+0x118/0x216
+  kasan_report+0x11d/0x1f0
+  btrfs_check_read_bio+0xa68/0xb70 [btrfs]
+  process_one_work+0xce0/0x12a0
+  worker_thread+0x717/0x1250
+  kthread+0x2e3/0x3c0
+  ret_from_fork+0x2d/0x70
+  ret_from_fork_asm+0x11/0x20
+  </TASK>
 
-I saw this patch has gotten 3 RVBs, it's going to be in btrfs tree.
-I think it's good enough. BTW, you can add "_fixed_by_kernel_commit"
-to the test case, see below tests/generic/755 ...
+ Allocated by task 20917:
+  kasan_save_stack+0x37/0x60
+  kasan_save_track+0x10/0x30
+  __kasan_slab_alloc+0x7d/0x80
+  kmem_cache_alloc_noprof+0x16e/0x3e0
+  mempool_alloc_noprof+0x12e/0x310
+  bio_alloc_bioset+0x3f0/0x7a0
+  btrfs_bio_alloc+0x2e/0x50 [btrfs]
+  submit_extent_page+0x4d1/0xdb0 [btrfs]
+  btrfs_do_readpage+0x8b4/0x12a0 [btrfs]
+  btrfs_readahead+0x29a/0x430 [btrfs]
+  read_pages+0x1a7/0xc60
+  page_cache_ra_unbounded+0x2ad/0x560
+  filemap_get_pages+0x629/0xa20
+  filemap_read+0x335/0xbf0
+  vfs_read+0x790/0xcb0
+  ksys_read+0xfd/0x1d0
+  do_syscall_64+0x6d/0x140
+  entry_SYSCALL_64_after_hwframe+0x4b/0x53
 
-By reading above link, I think this issue doesn't need a C program (to
-reproduce), it can be done in bash script. e.g.
+ Freed by task 20917:
+  kasan_save_stack+0x37/0x60
+  kasan_save_track+0x10/0x30
+  kasan_save_free_info+0x37/0x50
+  __kasan_slab_free+0x4b/0x60
+  kmem_cache_free+0x214/0x5d0
+  bio_free+0xed/0x180
+  end_bbio_data_read+0x1cc/0x580 [btrfs]
+  btrfs_submit_chunk+0x98d/0x1880 [btrfs]
+  btrfs_submit_bio+0x33/0x70 [btrfs]
+  submit_one_bio+0xd4/0x130 [btrfs]
+  submit_extent_page+0x3ea/0xdb0 [btrfs]
+  btrfs_do_readpage+0x8b4/0x12a0 [btrfs]
+  btrfs_readahead+0x29a/0x430 [btrfs]
+  read_pages+0x1a7/0xc60
+  page_cache_ra_unbounded+0x2ad/0x560
+  filemap_get_pages+0x629/0xa20
+  filemap_read+0x335/0xbf0
+  vfs_read+0x790/0xcb0
+  ksys_read+0xfd/0x1d0
+  do_syscall_64+0x6d/0x140
+  entry_SYSCALL_64_after_hwframe+0x4b/0x53
 
-# touch file
-# link file linkfile
-# ctime1=$(stat -c %Z file)
-# sleep 2
-# ctime2=$(stat -c %Z file)
-# if [ "$ctime1" == "$ctime2" ];then ....
+[CAUSE]
+Although I can not reproduce the error, the report itself is good enough
+to pin down the cause.
 
-Does that make sense to you?
+The call trace is the regular endio workqueue context, but the
+free-by-task trace is showing that during btrfs_submit_chunk() we
+already hit a critical error, and is calling btrfs_bio_end_io() to error
+out.
+And the original endio function called bio_put() to free the whole bio.
 
-> 
-> Thanks,
-> 
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > > HCH suggested I roll a fstest for this problem that I found in btrfs the
-> > > other day. In principle, we probably could expand this to other dir
-> > > operations and to check the parent timestamps, but having to do all that
-> > > in C is a pain.  I didn't see a good way to use xfs_io for this,
-> > > however.
-> > 
-> > Is there a kernel commit or patch link about the bug which you found?
-> > 
-> > > ---
-> > >  src/Makefile          |  2 +-
-> > >  src/unlink-ctime.c    | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
-> > >  tests/generic/755     | 26 ++++++++++++++++++++++++++
-> > >  tests/generic/755.out |  2 ++
-> > >  4 files changed, 79 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/src/Makefile b/src/Makefile
-> > > index 9979613711c9..c71fa41e4668 100644
-> > > --- a/src/Makefile
-> > > +++ b/src/Makefile
-> > > @@ -34,7 +34,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
-> > >  	attr_replace_test swapon mkswap t_attr_corruption t_open_tmpfiles \
-> > >  	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
-> > >  	detached_mounts_propagation ext4_resize t_readdir_3 splice2pipe \
-> > > -	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault
-> > > +	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault unlink-ctime
-> > 
-> > The .gitignore need updating too.
+This means a double freeing thus causing use-after-free, e.g:
 
-[need changing]
+1. Enter btrfs_submit_bio() with a read bio
+   The read bio length is 128K, crossing two 64K stripes.
 
-> > 
-> > >  
-> > >  EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
-> > >  	      btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-> > > diff --git a/src/unlink-ctime.c b/src/unlink-ctime.c
-> > > new file mode 100644
-> > > index 000000000000..7661e340eaba
-> > > --- /dev/null
-> > > +++ b/src/unlink-ctime.c
-> > > @@ -0,0 +1,50 @@
-> > > +#define _GNU_SOURCE 1
-> > > +#include <stdio.h>
-> > > +#include <fcntl.h>
-> > > +#include <unistd.h>
-> > > +#include <errno.h>
-> > > +#include <sys/stat.h>
-> > > +
-> > > +int main(int argc, char **argv)
-> > > +{
-> > > +	int fd, ret;
-> > > +	struct statx before, after;
-> > > +
-> > > +	if (argc < 2) {
-> > > +		fprintf(stderr, "Must specify filename!\n");
-> > > +		return 1;
-> > > +	}
-> > > +
-> > > +	fd = open(argv[1], O_RDWR|O_CREAT, 0600);
-> > > +	if (fd < 0) {
-> > > +		perror("open");
-> > > +		return 1;
-> > > +	}
-> > > +
-> > > +	ret = statx(fd, "", AT_EMPTY_PATH, STATX_CTIME, &before);
-> > > +	if (ret) {
-> > > +		perror("statx");
-> > > +		return 1;
-> > > +	}
-> > > +
-> > > +	sleep(1);
-> > > +
-> > > +	ret = unlink(argv[1]);
-> > > +	if (ret) {
-> > > +		perror("unlink");
-> > > +		return 1;
-> > > +	}
-> > > +
-> > > +	ret = statx(fd, "", AT_EMPTY_PATH, STATX_CTIME, &after);
-> > 
-> > So you need to keep the "fd" after unlink. If so, there might not be a
-> > way through xfs_io to do that.
-> > 
-> > > +	if (ret) {
-> > > +		perror("statx");
-> > > +		return 1;
-> > > +	}
-> > > +
-> > > +	if (before.stx_ctime.tv_nsec == after.stx_ctime.tv_nsec &&
-> > > +	    before.stx_ctime.tv_sec == after.stx_ctime.tv_sec) {
-> > > +		printf("No change to ctime after unlink!\n");
-> > > +		return 1;
-> > > +	}
-> > > +	return 0;
-> > > +}
-> > > diff --git a/tests/generic/755 b/tests/generic/755
-> > > new file mode 100755
-> > > index 000000000000..500c51f99630
-> > > --- /dev/null
-> > > +++ b/tests/generic/755
-> > > @@ -0,0 +1,26 @@
-> > > +#! /bin/bash
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +# Copyright (c) 2024, Jeff Layton <jlayton@kernel.org>
-> > > +#
-> > > +# FS QA Test No. 755
-> > > +#
-> > > +# Create a file, stat it and then unlink it. Does the ctime of the
-> > > +# target inode change?
-> > > +#
-> > > +. ./common/preamble
-> > > +_begin_fstest auto quick
-> >                              ^^^^^^
-> >                              unlink
+2. The first run of btrfs_submit_chunk()
 
-[need changing]
+2.1 Call btrfs_map_block(), which returns 64K
+2.2 Call btrfs_split_bio()
+    Now there are two bios, one referring to the first 64K, the other
+    referring to the second 64K.
+2.3 The first half is submitted.
 
-> > 
-> > > +
-> > > +# Import common functions.
-> > > +. ./common/filter
-> > > +. ./common/dmerror
-> > 
-> > Why dmerror and filter are needed? If not necessary, remove these
-> > 3 lines.
+3. The second run of btrfs_submit_chunk()
 
-[need changing]
+3.1 Call btrfs_map_block(), which by somehow failed
+    Now we call btrfs_bio_end_io() to handle the error
 
-> > 
-> > Others looks good to me.
-> > 
-> > Thanks,
-> > Zorro
-> > 
-> > > +
-> > > +_require_test
-> > > +_require_test_program unlink-ctime
+3.2 btrfs_bio_end_io() calls the original endio function
+    Which is end_bbio_data_read(), and it calls bio_put() for the
+    original bio.
 
-  _fixed_by_kernel_commit XXXXXXXXXXXX btrfs: update target inode's ctime on unlink
+    Now the original bio is freed.
 
-> > > +
-> > > +testfile="$TEST_DIR/unlink-ctime.$$"
-> > > +
-> > > +$here/src/unlink-ctime $testfile
-> > > +
-> > > +echo Silence is golden
-> > > +status=0
-> > > +exit
-> > > diff --git a/tests/generic/755.out b/tests/generic/755.out
-> > > new file mode 100644
-> > > index 000000000000..7c9ea51cd298
-> > > --- /dev/null
-> > > +++ b/tests/generic/755.out
-> > > @@ -0,0 +1,2 @@
-> > > +QA output created by 755
-> > > +Silence is golden
-> > > 
-> > > ---
-> > > base-commit: f5ada754d5838d29fd270257003d0d123a9d1cd2
-> > > change-id: 20240813-master-e3b46de630bd
-> > > 
-> > > Best regards,
-> > > -- 
-> > > Jeff Layton <jlayton@kernel.org>
-> > > 
-> > > 
-> > 
-> 
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
+4. The submitted first 64K bio finished
+   Now we call into btrfs_check_read_bio() and tries to advance the bio
+   iter.
+   But since the original bio (thus its iter) is already freed, we
+   trigger the above use-after free.
+
+   And even if the memory is not poisoned/corrupted, we will later call
+   the original endio function, causing a double freeing.
+
+[FIX]
+Instead of calling btrfs_bio_end_io(), call btrfs_orig_bbio_end_io(),
+which has the extra check on split bios and do the proper refcounting
+for cloned bios.
+
+Reported-by: David Sterba <dsterba@suse.cz>
+Fixes: 852eee62d31a ("btrfs: allow btrfs_submit_bio to split bios")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/bio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 0ef70fce85ff..4a0e97a56475 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -762,7 +762,8 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 		btrfs_cleanup_bio(bbio);
+ fail:
+ 	btrfs_bio_counter_dec(fs_info);
+-	btrfs_bio_end_io(orig_bbio, ret);
++	bbio->bio.bi_status = ret;
++	btrfs_orig_bbio_end_io(bbio);
+ 	/* Do not submit another chunk */
+ 	return true;
+ }
+-- 
+2.46.0
 
 
