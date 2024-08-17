@@ -1,65 +1,65 @@
-Return-Path: <linux-btrfs+bounces-7299-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7300-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A349553F7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2024 01:57:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47FC5955406
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2024 02:02:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E42FFB21FC6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2024 23:57:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA1E2283E5A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2024 00:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A163114830F;
-	Fri, 16 Aug 2024 23:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3916210E9;
+	Sat, 17 Aug 2024 00:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lg+L73E7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QKJhu/O2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA6AB661;
-	Fri, 16 Aug 2024 23:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9662E6FD3;
+	Sat, 17 Aug 2024 00:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723852637; cv=none; b=gmOdWQqK1Yp9Skhi4QnU/H2eFBkhlHwQVCnE/GxoB0nEictuJiS1jZxzJ/LEncENuYxAyAI17PcJnL7xtRbK8cVS07byIVsTKha1B+RflsFSJ47+9PGyY7h79MOZKVJMY/IqLhP7PNelERSxwj3FAhCbM7mid+kemWrTpKV4cDs=
+	t=1723852957; cv=none; b=L13QfNGq8JkGuF9Ld6+gOihEJtkKxex3VzU7JSG8S7gSeAHiWszG8iv8CEVIrBPOWBeyTB3osGo5K/istdzW9VP2+kYxsewJxDHhFLHV+SGk+h6uKz78YdpQCQpSjz+ZxVmUQWUZV/JkIDsWVFxuZpZcriCS69MH6a+kbwOUTmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723852637; c=relaxed/simple;
-	bh=UHlzo5S6DdvUcdhWPCY3lGHMj3T/in1RAfErRbmFYWI=;
+	s=arc-20240116; t=1723852957; c=relaxed/simple;
+	bh=NuhIj1J02UysqmDVGSje94SaDZPttynyjirGgg07UtY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jni2KPrNjx0IBLUaaNABVtmY4Rpt2U5zaWCJ7SWnYzA1BWcNr06vI6cxdC8+YO0S/+s+NNnJs9MMK8fLCthzcAKiqkPbc8UMPeTRS0FdY0/j/NX8+UDKP3o4j/2Fm2OmCMcs5dWrY490tIrTcf59e/21fVE0zr9FQoBpIwcC7po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lg+L73E7; arc=none smtp.client-ip=198.175.65.11
+	 In-Reply-To:Content-Type; b=KFKYWO2VkUSDrQQV+2b7eQ1MwnmaL2SoqJaR6vb/IGXlfQj1nJqyFXiYlDKUl2Oth9ZolYvSpXNKD+dBgD4ByyMzMb5fALXwx25BZimT5TbeSz6rigILS0tQnhppmG0jCIPP86CFMXGFQQXU6SRqXS0aUnCSC+5A96aW9B9wReE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QKJhu/O2; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723852635; x=1755388635;
+  t=1723852956; x=1755388956;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=UHlzo5S6DdvUcdhWPCY3lGHMj3T/in1RAfErRbmFYWI=;
-  b=lg+L73E7ArGLymrNYcIdt6+EAcHwL/u4UJPdboX4n2ixI91Ru39sfn1s
-   4rhaXF0DFftt5x4LUDD4lCMj1/lENs75bmPVmyWzVsNVPk3xHNxwzYG81
-   zitnuqV20L7FLncn2wEwELXud1fSHuMqlaN2pJjh4CEliazeBXvWloiyX
-   Ea97i86iNXjnq0qU74IONRHdqtnge6jHrembgnwutstdJh95BiODTv0pb
-   XjMjwqYTNcCD928OgWSF1otp9AeYw0/3h+wiTtS7XiIYJOfcKHFYCoTLS
-   8CYeX7UXu08YFNbZcMzKiRPg7q049ojXaqEnRE2ZGngTZXKLD3LPbmr3J
-   g==;
-X-CSE-ConnectionGUID: z88lSqDYSxKX74KUJBby0Q==
-X-CSE-MsgGUID: rbF4DYpQRnuK1L4Wbkt+Cw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11166"; a="32735549"
+  bh=NuhIj1J02UysqmDVGSje94SaDZPttynyjirGgg07UtY=;
+  b=QKJhu/O2OZUMJ/SB5vP+4kc90usaOibDyXA1Og94VK3o0rb7W+yP4Spw
+   N7Kr+qAvDjPFTZbgwLzor90NycdbEJMB/YXOZG6ZZy6ISRTPuxzcWh5Vv
+   rVUjEItFckFsKphOPCZC/aSxscyGDGEsmGI9uoaucJXkWVTJM/WcP5e4E
+   x1kZRIYN2KCjNIYmGPLTukk4WgJWR4On9cOISr8eJHtRVwYF5IMj3mtmz
+   NbM1emJax9L21Ol6yZawx5EM957aVem9ewzl+3ed8X4qc2K4/ZGpaM1zH
+   bN3mtSn9OXIF4ugU+9tHAXEA2msK4qanqceWY/6+9e+1S+Nb0e6rJU7Gk
+   A==;
+X-CSE-ConnectionGUID: ooy0MepvSI2SAF3ssbSwsQ==
+X-CSE-MsgGUID: Ao5+/hxZTmy4Hc/0OLzQMA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11166"; a="25918809"
 X-IronPort-AV: E=Sophos;i="6.10,153,1719903600"; 
-   d="scan'208";a="32735549"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 16:57:15 -0700
-X-CSE-ConnectionGUID: CnvhQkBcRbqHhNIr/FlI5A==
-X-CSE-MsgGUID: MTXli2OBREurMyd4AIS65Q==
+   d="scan'208";a="25918809"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 17:02:36 -0700
+X-CSE-ConnectionGUID: tlxDfjcySJ2pHE4ox9f2QA==
+X-CSE-MsgGUID: dhFxq7X/RnCY74e033c/8g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,153,1719903600"; 
-   d="scan'208";a="59973236"
+   d="scan'208";a="59785771"
 Received: from unknown (HELO [10.125.111.71]) ([10.125.111.71])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 16:57:14 -0700
-Message-ID: <9a15afbe-409d-4432-8b06-d1f7046c0f7a@intel.com>
-Date: Fri, 16 Aug 2024 16:57:11 -0700
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2024 17:02:34 -0700
+Message-ID: <974af11f-b515-427b-b679-16cf8cebd739@intel.com>
+Date: Fri, 16 Aug 2024 17:02:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -67,9 +67,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 14/25] cxl/events: Split event msgnum configuration
- from irq setup
-To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
+Subject: Re: [PATCH v3 16/25] cxl/mem: Configure dynamic capacity interrupts
+To: ira.weiny@intel.com, Fan Ni <fan.ni@samsung.com>,
  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
  Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
  Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
@@ -85,102 +84,198 @@ Cc: Dan Williams <dan.j.williams@intel.com>,
  linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-doc@vger.kernel.org, nvdimm@lists.linux.dev
 References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
- <20240816-dcd-type2-upstream-v3-14-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-16-7c9b96cba6d7@intel.com>
 Content-Language: en-US
 From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240816-dcd-type2-upstream-v3-14-7c9b96cba6d7@intel.com>
+In-Reply-To: <20240816-dcd-type2-upstream-v3-16-7c9b96cba6d7@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
 
-On 8/16/24 7:44 AM, Ira Weiny wrote:
-> Dynamic Capacity Devices (DCD) require event interrupts to process
-> memory addition or removal.  BIOS may have control over non-DCD event
-> processing.  DCD interrupt configuration needs to be separate from
-> memory event interrupt configuration.
+On 8/16/24 7:44 AM, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> Split cxl_event_config_msgnums() from irq setup in preparation for
-> separate DCD interrupts configuration.
+> Dynamic Capacity Devices (DCD) support extent change notifications
+> through the event log mechanism.  The interrupt mailbox commands were
+> extended in CXL 3.1 to support these notifications.  Firmware can't
+> configure DCD events to be FW controlled but can retain control of
+> memory events.
 > 
+> Configure DCD event log interrupts on devices supporting dynamic
+> capacity.  Disable DCD if interrupts are not supported.
+> 
+> Care is taken to preserve the interrupt policy set by the FW if FW first
+> has been selected by the BIOS.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
 Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> ---
->  drivers/cxl/pci.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+
 > 
+> ---
+> Changes:
+> [iweiny: update commit message]
+> [iweiny: rebase to upstream irq code]
+> [iweiny: disable DCD if irqs not supported]
+> [Jonathan: formatting fix]
+> [Fan: add text to debug print]
+> [djiang: make dcd helpers inline]
+> ---
+>  drivers/cxl/cxlmem.h |  2 ++
+>  drivers/cxl/pci.c    | 72 +++++++++++++++++++++++++++++++++++++++++++---------
+>  2 files changed, 62 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index b4eb8164d05d..d41bec5433db 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -225,7 +225,9 @@ struct cxl_event_interrupt_policy {
+>  	u8 warn_settings;
+>  	u8 failure_settings;
+>  	u8 fatal_settings;
+> +	u8 dcd_settings;
+>  } __packed;
+> +#define CXL_EVENT_INT_POLICY_BASE_SIZE 4 /* info, warn, failure, fatal */
+>  
+>  /**
+>   * struct cxl_event_state - Event log driver state
 > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index f7f03599bc83..17bea49bbf4d 100644
+> index 370c74eae323..e5430c4e3a3b 100644
 > --- a/drivers/cxl/pci.c
 > +++ b/drivers/cxl/pci.c
-> @@ -698,35 +698,31 @@ static int cxl_event_config_msgnums(struct cxl_memdev_state *mds,
->  	return cxl_event_get_int_policy(mds, policy);
+> @@ -669,22 +669,33 @@ static int cxl_event_get_int_policy(struct cxl_memdev_state *mds,
 >  }
 >  
-> -static int cxl_event_irqsetup(struct cxl_memdev_state *mds)
-> +static int cxl_event_irqsetup(struct cxl_memdev_state *mds,
-> +			      struct cxl_event_interrupt_policy *policy)
+>  static int cxl_event_config_msgnums(struct cxl_memdev_state *mds,
+> -				    struct cxl_event_interrupt_policy *policy)
+> +				    struct cxl_event_interrupt_policy *policy,
+> +				    bool native_cxl)
 >  {
->  	struct cxl_dev_state *cxlds = &mds->cxlds;
-> -	struct cxl_event_interrupt_policy policy;
+> +	size_t size_in = CXL_EVENT_INT_POLICY_BASE_SIZE;
+>  	struct cxl_mbox_cmd mbox_cmd;
 >  	int rc;
 >  
-> -	rc = cxl_event_config_msgnums(mds, &policy);
-> -	if (rc)
-> -		return rc;
-> -
-> -	rc = cxl_event_req_irq(cxlds, policy.info_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->info_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Info log\n");
->  		return rc;
->  	}
+> -	*policy = (struct cxl_event_interrupt_policy) {
+> -		.info_settings = CXL_INT_MSI_MSIX,
+> -		.warn_settings = CXL_INT_MSI_MSIX,
+> -		.failure_settings = CXL_INT_MSI_MSIX,
+> -		.fatal_settings = CXL_INT_MSI_MSIX,
+> -	};
+> +	/* memory event policy is left if FW has control */
+> +	if (native_cxl) {
+> +		*policy = (struct cxl_event_interrupt_policy) {
+> +			.info_settings = CXL_INT_MSI_MSIX,
+> +			.warn_settings = CXL_INT_MSI_MSIX,
+> +			.failure_settings = CXL_INT_MSI_MSIX,
+> +			.fatal_settings = CXL_INT_MSI_MSIX,
+> +			.dcd_settings = 0,
+> +		};
+> +	}
+> +
+> +	if (cxl_dcd_supported(mds)) {
+> +		policy->dcd_settings = CXL_INT_MSI_MSIX;
+> +		size_in += sizeof(policy->dcd_settings);
+> +	}
 >  
-> -	rc = cxl_event_req_irq(cxlds, policy.warn_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->warn_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Warn log\n");
->  		return rc;
->  	}
+>  	mbox_cmd = (struct cxl_mbox_cmd) {
+>  		.opcode = CXL_MBOX_OP_SET_EVT_INT_POLICY,
+>  		.payload_in = policy,
+> -		.size_in = sizeof(*policy),
+> +		.size_in = size_in,
+>  	};
 >  
-> -	rc = cxl_event_req_irq(cxlds, policy.failure_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->failure_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Failure log\n");
->  		return rc;
->  	}
+>  	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+> @@ -731,6 +742,31 @@ static int cxl_event_irqsetup(struct cxl_memdev_state *mds,
+>  	return 0;
+>  }
 >  
-> -	rc = cxl_event_req_irq(cxlds, policy.fatal_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->fatal_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Fatal log\n");
->  		return rc;
-> @@ -745,7 +741,7 @@ static bool cxl_event_int_is_fw(u8 setting)
->  static int cxl_event_config(struct pci_host_bridge *host_bridge,
+> +static int cxl_irqsetup(struct cxl_memdev_state *mds,
+> +			struct cxl_event_interrupt_policy *policy,
+> +			bool native_cxl)
+> +{
+> +	struct cxl_dev_state *cxlds = &mds->cxlds;
+> +	int rc;
+> +
+> +	if (native_cxl) {
+> +		rc = cxl_event_irqsetup(mds, policy);
+> +		if (rc)
+> +			return rc;
+> +	}
+> +
+> +	if (cxl_dcd_supported(mds)) {
+> +		rc = cxl_event_req_irq(cxlds, policy->dcd_settings);
+> +		if (rc) {
+> +			dev_err(cxlds->dev, "Failed to get interrupt for DCD event log\n");
+> +			cxl_disable_dcd(mds);
+> +			return rc;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static bool cxl_event_int_is_fw(u8 setting)
+>  {
+>  	u8 mode = FIELD_GET(CXLDEV_EVENT_INT_MODE_MASK, setting);
+> @@ -757,17 +793,25 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
 >  			    struct cxl_memdev_state *mds, bool irq_avail)
 >  {
-> -	struct cxl_event_interrupt_policy policy;
-> +	struct cxl_event_interrupt_policy policy = { 0 };
+>  	struct cxl_event_interrupt_policy policy = { 0 };
+> +	bool native_cxl = host_bridge->native_cxl_error;
 >  	int rc;
 >  
 >  	/*
-> @@ -773,11 +769,15 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
->  		return -EBUSY;
+>  	 * When BIOS maintains CXL error reporting control, it will process
+>  	 * event records.  Only one agent can do so.
+> +	 *
+> +	 * If BIOS has control of events and DCD is not supported skip event
+> +	 * configuration.
+>  	 */
+> -	if (!host_bridge->native_cxl_error)
+> +	if (!native_cxl && !cxl_dcd_supported(mds))
+>  		return 0;
+>  
+>  	if (!irq_avail) {
+>  		dev_info(mds->cxlds.dev, "No interrupt support, disable event processing.\n");
+> +		if (cxl_dcd_supported(mds)) {
+> +			dev_info(mds->cxlds.dev, "DCD requires interrupts, disable DCD\n");
+> +			cxl_disable_dcd(mds);
+> +		}
+>  		return 0;
 >  	}
 >  
-> +	rc = cxl_event_config_msgnums(mds, &policy);
-> +	if (rc)
-> +		return rc;
-> +
->  	rc = cxl_mem_alloc_event_buf(mds);
+> @@ -775,10 +819,10 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
 >  	if (rc)
 >  		return rc;
 >  
-> -	rc = cxl_event_irqsetup(mds);
-> +	rc = cxl_event_irqsetup(mds, &policy);
+> -	if (!cxl_event_validate_mem_policy(mds, &policy))
+> +	if (native_cxl && !cxl_event_validate_mem_policy(mds, &policy))
+>  		return -EBUSY;
+>  
+> -	rc = cxl_event_config_msgnums(mds, &policy);
+> +	rc = cxl_event_config_msgnums(mds, &policy, native_cxl);
 >  	if (rc)
 >  		return rc;
+>  
+> @@ -786,12 +830,16 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
+>  	if (rc)
+>  		return rc;
+>  
+> -	rc = cxl_event_irqsetup(mds, &policy);
+> +	rc = cxl_irqsetup(mds, &policy, native_cxl);
+>  	if (rc)
+>  		return rc;
+>  
+>  	cxl_mem_get_event_records(mds, CXLDEV_EVENT_STATUS_ALL);
+>  
+> +	dev_dbg(mds->cxlds.dev, "Event config : %s DCD %s\n",
+> +		native_cxl ? "OS" : "BIOS",
+> +		cxl_dcd_supported(mds) ? "supported" : "not supported");
+> +
+>  	return 0;
+>  }
 >  
 > 
 
