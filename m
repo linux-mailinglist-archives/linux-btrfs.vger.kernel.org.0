@@ -1,255 +1,227 @@
-Return-Path: <linux-btrfs+bounces-7305-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7306-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB76F955A74
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Aug 2024 02:04:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAB98955B13
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Aug 2024 08:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FDADB217DA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Aug 2024 00:04:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8CE31C2108E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Aug 2024 06:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4F717D2;
-	Sun, 18 Aug 2024 00:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hr5y4FWf";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="M9UG9BIU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBEFBDF59;
+	Sun, 18 Aug 2024 06:06:26 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB9587FD
-	for <linux-btrfs@vger.kernel.org>; Sun, 18 Aug 2024 00:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE445C8C7
+	for <linux-btrfs@vger.kernel.org>; Sun, 18 Aug 2024 06:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723939478; cv=none; b=fmuZYVmjr7llordYKaqY5hL+8KsgeP+XgcuuwVnEaID754DU8Usz3W2scjIpYpAtdzM7ekqqTNg/XVB0Br747jB5MZMJaecjs5/aMGQpBbrHnaHv9ZUOWpGJwsTTOeew0oeyUFSejBwk5u4gHLMYHEE3rjYO8CzUQPfEk837gEQ=
+	t=1723961186; cv=none; b=ZuM7rnHBpnvUqjF8iLx1oFeNadZLBApEnj+jymgA0PbjVIHGZJ1ZazETZ/35IXrdE5t7VpRX/0en8oiRbUAnn2sKzP/1gOrSvR/W79IVxNbJJCiP9zSFJ0oLzq1eQ7PU6+nsXtK62Ay6Wb3AIGwDtivNzuiTPYZwQNdh3AbmqEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723939478; c=relaxed/simple;
-	bh=CchY44cwaQoNQbUmEzkRz4ZlCqNn5sKCxvWgdaJANDs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P1MQFIuE/NI7boj326fDnFhBBGlmsW1ALX9XSDRO0ewYMHPYdRntHYW31Yj9MK8Tp9S86P57/TcIQOCHWqsbFBhkZGrjDiaMjs3Z24HJZmAmLN1qc42uOmp+H+HFf7xUp5S7q8cjVPvmC4F7aW5S36je+pw0r4qHvbR7zfBlgkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hr5y4FWf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=M9UG9BIU; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CB41E21EC0;
-	Sun, 18 Aug 2024 00:04:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1723939472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=uQCrKrh6QSqDnIeCj3Vvr4KJ9Yp+xq/v7NGgKDi1KSo=;
-	b=hr5y4FWfQv4m226ydNtkGHjWxOhoWDrYI9NPgIx1TPW+p3lfPudVGAz6VLociVBhs7kUIl
-	ZNuw9JQtN9xKrwotpfBKeJe0hKd1G+0D6jKS5y9ddH8v+OXi2fgIhtWUmxds4wmekAqHkG
-	s/WA48Vlto+8minGJdG7F1nold6J5BM=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1723939471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=uQCrKrh6QSqDnIeCj3Vvr4KJ9Yp+xq/v7NGgKDi1KSo=;
-	b=M9UG9BIUKqU+Gm3jcxEIqzMXLZVaEfvJOah+5EIRgHw0VNOj4MNBn0JAPCLRnMEN3iuejF
-	3B84FaUI8gDjGekhnsPTpfSgy8qo/TMAuIB5+gY0P6hUCJF9+764wtoHLiBPkYwYY4HWAA
-	SgD3ajWU/z7bAuM+17a028DXB1snGeI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABA6D13A17;
-	Sun, 18 Aug 2024 00:04:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id v7AjGY46wWYtWgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sun, 18 Aug 2024 00:04:30 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: David Sterba <dsterba@suse.cz>
-Subject: [PATCH v2] btrfs: fix a use-after-free bug when hitting errors inside btrfs_submit_chunk()
-Date: Sun, 18 Aug 2024 09:34:08 +0930
-Message-ID: <40aec6703430581de1c987a95121da91c2dc8f19.1723939329.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1723961186; c=relaxed/simple;
+	bh=jz7twpM+7+6ff0ALSulET3mW0nfeOe/+biy+TCNXhCE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=b1ECFp5IIQJpvHJJpTFRLYfby+b34bK0Sk7eyQG37MKhqYGtsukNZw3NS5aGYACu9mUskRd11/NZGD+cAEMe533zLsK2M3rS2mjX3GEi/MWyqn2wGv3iK2/ZS15fJzau9xDM7ulOCeC7t3T5xCWg3UTlQ7xMxNzTjENX1ZPo2w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-81f81da0972so350672839f.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Aug 2024 23:06:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723961184; x=1724565984;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zLeaX4ZYCJfD/qs4gb+GcXtjCSYeyQ791Oq5hIK8L+0=;
+        b=AhjBhBbEHikeBQmlZhjTsLVZrFwPLLfFj8opoFNZBPGsDoZDX2SaW2O/8rHTP/FPfb
+         nBqSBA0OtwdwFIPKYAMSQpknzM4uxHsSex2jo75HP6Xw7Xr5+fPKyAvVzPSLnjO7hcqw
+         RGaMshYbHpGbpsdiGgpL8EPbwth29TdCG3064U2xlRnyjxTULLkexbDJTIYxAamfCzdy
+         1J9gvhWNncfZ/p7VUmRycINnahh88IRinjhGsoWfTkfYcgnmPFytEH04Loy6zxEN1EIb
+         hoGrEXaaiGTe8XqDEBzkD/lMwNbCM2BBJ07LG1Ehulgng0y0T+p5mcsSt+qaJ+HqHm7L
+         NWdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWoZwPIr3zfY+4Qa1/w09XKCDeVQjk1iAXAvaGyJ+dtx4PNlAsKw+ZpRyQtkXMmaG7ad6O2njnHEZZxwg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YztfaptunhbQgvOsFh07K4AtjTflgktekNncDPQDrU2ECwI0ARt
+	SS2CnOaoeJhY+MciqVB5HSu0e9U9t26DF9wDMGz+f0LXI5YTDiptDnonPKQZfDP+Qa1OnRadyWW
+	jxPFpSEa9yCC6TuvJvT3gQXf8mHl+I2juTIimcf+FVnlIJ6jULE+J6Vk=
+X-Google-Smtp-Source: AGHT+IEJCxuzGlogMXXEg0BKd1mVFe9tR628QCFxjm2ZeAqwHWmde9T2H0ftSQH48Qf95vFDQzngikaGTvkQFhSvC0+uiv2WRMGG
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.986];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,opensuse.org:url];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
+X-Received: by 2002:a05:6638:9807:b0:4c0:a90d:4a78 with SMTP id
+ 8926c6da1cb9f-4cce173107cmr474656173.6.1723961183755; Sat, 17 Aug 2024
+ 23:06:23 -0700 (PDT)
+Date: Sat, 17 Aug 2024 23:06:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f6f09e061feefd16@google.com>
+Subject: [syzbot] [btrfs?] general protection fault in __alloc_workqueue
+From: syzbot <syzbot+9fd43bb1ae7b5d9240c3@syzkaller.appspotmail.com>
+To: Jason@zx2c4.com, clm@fb.com, davem@davemloft.net, dsterba@suse.com, 
+	edumazet@google.com, josef@toxicpanda.com, kuba@kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
+	wireguard@lists.zx2c4.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[BUG]
-There is an internal report that KASAN is reporting use-after-free, with
-the following backtrace:
+Hello,
 
- ==================================================================
- BUG: KASAN: slab-use-after-free in btrfs_check_read_bio+0xa68/0xb70 [btrfs]
- Read of size 4 at addr ffff8881117cec28 by task kworker/u16:2/45
- CPU: 1 UID: 0 PID: 45 Comm: kworker/u16:2 Not tainted 6.11.0-rc2-next-20240805-default+ #76
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-3-gd478f380-rebuilt.opensuse.org 04/01/2014
- Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
- Call Trace:
-  <TASK>
-  dump_stack_lvl+0x61/0x80
-  print_address_description.constprop.0+0x5e/0x2f0
-  print_report+0x118/0x216
-  kasan_report+0x11d/0x1f0
-  btrfs_check_read_bio+0xa68/0xb70 [btrfs]
-  process_one_work+0xce0/0x12a0
-  worker_thread+0x717/0x1250
-  kthread+0x2e3/0x3c0
-  ret_from_fork+0x2d/0x70
-  ret_from_fork_asm+0x11/0x20
-  </TASK>
+syzbot found the following issue on:
 
- Allocated by task 20917:
-  kasan_save_stack+0x37/0x60
-  kasan_save_track+0x10/0x30
-  __kasan_slab_alloc+0x7d/0x80
-  kmem_cache_alloc_noprof+0x16e/0x3e0
-  mempool_alloc_noprof+0x12e/0x310
-  bio_alloc_bioset+0x3f0/0x7a0
-  btrfs_bio_alloc+0x2e/0x50 [btrfs]
-  submit_extent_page+0x4d1/0xdb0 [btrfs]
-  btrfs_do_readpage+0x8b4/0x12a0 [btrfs]
-  btrfs_readahead+0x29a/0x430 [btrfs]
-  read_pages+0x1a7/0xc60
-  page_cache_ra_unbounded+0x2ad/0x560
-  filemap_get_pages+0x629/0xa20
-  filemap_read+0x335/0xbf0
-  vfs_read+0x790/0xcb0
-  ksys_read+0xfd/0x1d0
-  do_syscall_64+0x6d/0x140
-  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+HEAD commit:    367b5c3d53e5 Add linux-next specific files for 20240816
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=3D12aa95f5980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3D61ba6f3b22ee546=
+7
+dashboard link: https://syzkaller.appspot.com/bug?extid=3D9fd43bb1ae7b5d924=
+0c3
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debia=
+n) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D15b868dd98000=
+0
 
- Freed by task 20917:
-  kasan_save_stack+0x37/0x60
-  kasan_save_track+0x10/0x30
-  kasan_save_free_info+0x37/0x50
-  __kasan_slab_free+0x4b/0x60
-  kmem_cache_free+0x214/0x5d0
-  bio_free+0xed/0x180
-  end_bbio_data_read+0x1cc/0x580 [btrfs]
-  btrfs_submit_chunk+0x98d/0x1880 [btrfs]
-  btrfs_submit_bio+0x33/0x70 [btrfs]
-  submit_one_bio+0xd4/0x130 [btrfs]
-  submit_extent_page+0x3ea/0xdb0 [btrfs]
-  btrfs_do_readpage+0x8b4/0x12a0 [btrfs]
-  btrfs_readahead+0x29a/0x430 [btrfs]
-  read_pages+0x1a7/0xc60
-  page_cache_ra_unbounded+0x2ad/0x560
-  filemap_get_pages+0x629/0xa20
-  filemap_read+0x335/0xbf0
-  vfs_read+0x790/0xcb0
-  ksys_read+0xfd/0x1d0
-  do_syscall_64+0x6d/0x140
-  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0b1b4e3cad3c/disk-=
+367b5c3d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5bb090f7813c/vmlinux-=
+367b5c3d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6674cb0709b1/bzI=
+mage-367b5c3d.xz
 
-[CAUSE]
-Although I can not reproduce the error, the report itself is good enough
-to pin down the cause.
+IMPORTANT: if you fix the issue, please add the following tag to the commit=
+:
+Reported-by: syzbot+9fd43bb1ae7b5d9240c3@syzkaller.appspotmail.com
 
-The call trace is the regular endio workqueue context, but the
-free-by-task trace is showing that during btrfs_submit_chunk() we
-already hit a critical error, and is calling btrfs_bio_end_io() to error
-out.
-And the original endio function called bio_put() to free the whole bio.
+workqueue: Failed to create a rescuer kthread for wq "wg-crypt-=18": -EINTR
+Oops: general protection fault, probably for non-canonical address 0xdffffc=
+0000000000: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 UID: 0 PID: 5585 Comm: syz-executor Not tainted 6.11.0-rc3-next-2024=
+0816-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
+gle 08/06/2024
+RIP: 0010:__lock_acquire+0x69/0x2040 kernel/locking/lockdep.c:5010
+Code: b6 04 30 84 c0 0f 85 87 16 00 00 45 31 f6 83 3d b8 08 a9 0e 00 0f 84 =
+ac 13 00 00 89 54 24 54 89 5c 24 68 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 1=
+2 4c 89 ff e8 49 5c 8c 00 48 be 00 00 00 00 00 fc
+RSP: 0018:ffffc9000306ec30 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffffbfff20318b6 R12: ffff88802c88bc00
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000555563814500(0000) GS:ffff8880b9000000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6ead045000 CR3: 0000000061be2000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5762
+ touch_wq_lockdep_map kernel/workqueue.c:3876 [inline]
+ __flush_workqueue+0x1e3/0x1770 kernel/workqueue.c:3918
+ drain_workqueue+0xc9/0x3a0 kernel/workqueue.c:4082
+ destroy_workqueue+0xba/0xc40 kernel/workqueue.c:5830
+ __alloc_workqueue+0x1c30/0x1fb0 kernel/workqueue.c:5745
+ alloc_workqueue+0xd6/0x210 kernel/workqueue.c:5758
+ wg_newlink+0x260/0x640 drivers/net/wireguard/device.c:343
+ rtnl_newlink_create net/core/rtnetlink.c:3510 [inline]
+ __rtnl_newlink net/core/rtnetlink.c:3730 [inline]
+ rtnl_newlink+0x1591/0x20a0 net/core/rtnetlink.c:3743
+ rtnetlink_rcv_msg+0x73f/0xcf0 net/core/rtnetlink.c:6647
+ netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2550
+ netlink_unicast_kernel net/netlink/af_netlink.c:1331 [inline]
+ netlink_unicast+0x7f6/0x990 net/netlink/af_netlink.c:1357
+ netlink_sendmsg+0x8e4/0xcb0 net/netlink/af_netlink.c:1901
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ __sys_sendto+0x3a8/0x500 net/socket.c:2204
+ __do_sys_sendto net/socket.c:2216 [inline]
+ __se_sys_sendto net/socket.c:2212 [inline]
+ __x64_sys_sendto+0xde/0x100 net/socket.c:2212
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f943557bd0c
+Code: 2a 5a 02 00 44 8b 4c 24 2c 4c 8b 44 24 20 89 c5 44 8b 54 24 28 48 8b =
+54 24 18 b8 2c 00 00 00 48 8b 74 24 10 8b 7c 24 08 0f 05 <48> 3d 00 f0 ff f=
+f 77 34 89 ef 48 89 44 24 08 e8 70 5a 02 00 48 8b
+RSP: 002b:00007ffd6d464f30 EFLAGS: 00000293 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007f9436244620 RCX: 00007f943557bd0c
+RDX: 000000000000003c RSI: 00007f9436244670 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007ffd6d464f84 R09: 000000000000000c
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000003
+R13: 0000000000000000 R14: 00007f9436244670 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__lock_acquire+0x69/0x2040 kernel/locking/lockdep.c:5010
+Code: b6 04 30 84 c0 0f 85 87 16 00 00 45 31 f6 83 3d b8 08 a9 0e 00 0f 84 =
+ac 13 00 00 89 54 24 54 89 5c 24 68 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 1=
+2 4c 89 ff e8 49 5c 8c 00 48 be 00 00 00 00 00 fc
+RSP: 0018:ffffc9000306ec30 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffffbfff20318b6 R12: ffff88802c88bc00
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000555563814500(0000) GS:ffff8880b9000000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6ead045000 CR3: 0000000061be2000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	b6 04                	mov    $0x4,%dh
+   2:	30 84 c0 0f 85 87 16 	xor    %al,0x1687850f(%rax,%rax,8)
+   9:	00 00                	add    %al,(%rax)
+   b:	45 31 f6             	xor    %r14d,%r14d
+   e:	83 3d b8 08 a9 0e 00 	cmpl   $0x0,0xea908b8(%rip)        # 0xea908cd
+  15:	0f 84 ac 13 00 00    	je     0x13c7
+  1b:	89 54 24 54          	mov    %edx,0x54(%rsp)
+  1f:	89 5c 24 68          	mov    %ebx,0x68(%rsp)
+  23:	4c 89 f8             	mov    %r15,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	80 3c 30 00          	cmpb   $0x0,(%rax,%rsi,1) <-- trapping instruct=
+ion
+  2e:	74 12                	je     0x42
+  30:	4c 89 ff             	mov    %r15,%rdi
+  33:	e8 49 5c 8c 00       	call   0x8c5c81
+  38:	48                   	rex.W
+  39:	be 00 00 00 00       	mov    $0x0,%esi
+  3e:	00 fc                	add    %bh,%ah
 
-This means a double freeing thus causing use-after-free, e.g:
 
-1. Enter btrfs_submit_bio() with a read bio
-   The read bio length is 128K, crossing two 64K stripes.
-
-2. The first run of btrfs_submit_chunk()
-
-2.1 Call btrfs_map_block(), which returns 64K
-2.2 Call btrfs_split_bio()
-    Now there are two bios, one referring to the first 64K, the other
-    referring to the second 64K.
-2.3 The first half is submitted.
-
-3. The second run of btrfs_submit_chunk()
-
-3.1 Call btrfs_map_block(), which by somehow failed
-    Now we call btrfs_bio_end_io() to handle the error
-
-3.2 btrfs_bio_end_io() calls the original endio function
-    Which is end_bbio_data_read(), and it calls bio_put() for the
-    original bio.
-
-    Now the original bio is freed.
-
-4. The submitted first 64K bio finished
-   Now we call into btrfs_check_read_bio() and tries to advance the bio
-   iter.
-   But since the original bio (thus its iter) is already freed, we
-   trigger the above use-after free.
-
-   And even if the memory is not poisoned/corrupted, we will later call
-   the original endio function, causing a double freeing.
-
-[FIX]
-Instead of calling btrfs_bio_end_io(), call btrfs_orig_bbio_end_io(),
-which has the extra check on split bios and do the proper refcounting
-for cloned bios.
-
-Reported-by: David Sterba <dsterba@suse.cz>
-Fixes: 852eee62d31a ("btrfs: allow btrfs_submit_bio to split bios")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v2:
-- Remove the unused variable  @orig_bbio
----
- fs/btrfs/bio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 0ef70fce85ff..088ceaca6ab0 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -668,7 +668,6 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- {
- 	struct btrfs_inode *inode = bbio->inode;
- 	struct btrfs_fs_info *fs_info = bbio->fs_info;
--	struct btrfs_bio *orig_bbio = bbio;
- 	struct bio *bio = &bbio->bio;
- 	u64 logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
- 	u64 length = bio->bi_iter.bi_size;
-@@ -762,7 +761,8 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 		btrfs_cleanup_bio(bbio);
- fail:
- 	btrfs_bio_counter_dec(fs_info);
--	btrfs_bio_end_io(orig_bbio, ret);
-+	bbio->bio.bi_status = ret;
-+	btrfs_orig_bbio_end_io(bbio);
- 	/* Do not submit another chunk */
- 	return true;
- }
--- 
-2.46.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
