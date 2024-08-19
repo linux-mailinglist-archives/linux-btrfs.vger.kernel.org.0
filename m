@@ -1,210 +1,920 @@
-Return-Path: <linux-btrfs+bounces-7327-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7328-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8683B95785B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2024 01:06:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 447959578A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2024 01:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C4F6B21D43
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2024 23:06:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 692351C23950
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2024 23:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C958A1E2116;
-	Mon, 19 Aug 2024 23:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A1D1E2108;
+	Mon, 19 Aug 2024 23:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZQMj1H0J"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21B21DD384
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Aug 2024 23:06:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AD85C613;
+	Mon, 19 Aug 2024 23:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724108787; cv=none; b=jr8xPa/BhNWKV37OEVC66QKqjRsMi1PGeD6Ly9sO3BNeEFM7kfdg1dsyF5RvW3M1fugw2KdRKpjRmTaqJ4JYJbJEIG9zcijc4BnOdWsv1BCemmH89nNoXYcPDQ4oP7GvKMpmmjT7R+YxbdHnN2SNq1z7iQDDiiOWhBS4e4EGfkM=
+	t=1724110226; cv=none; b=gS9RZb5zLZy1WhpserwASUI5Ik/63u4/bumIIjC+88ekqFwGPr4z4MLo8vvmJNfNw6UkfQr5IoFqImwxaQ1lslAgDb58A2sjRV190sp8+Rzpzo5S45z4nscGMKk91/+NMKNQco6ZCJFHLW2eAnqwbFB6stgNWRZHXcI4Dwx5Jvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724108787; c=relaxed/simple;
-	bh=u1njAj6+UfJ0WpyQt66qhpI6ohoE7RApXFZkn6BxuUQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=c75WBiEPdmQbMFrottnO6KymFAC1TUcBBGo4CJEV9jYhVZ1vvw8vsmGpbnrUTJ6s4O2HoP06JKiXgTEgwo+ypALaUjKTKd00566QRpRojvUEutMriM92urv+lDRCpxQ8CsjuzoM1X0vcD8UdQ3QVPA9QFS/ZSojgYyuibf7ZMCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-39d2dee9722so39593885ab.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Aug 2024 16:06:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724108785; x=1724713585;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mcqLAn/0WxmaTOn+9QeeAyIEyPR9eYIH/vhup2t6WV4=;
-        b=BYOug7tbtI8gM2puGed14FrwN+vvvuhDQS5NkRF5rHZHSFZGk/eZXycTiI9scKdm0n
-         yKl8osq3dGNthJzmrPUl56tjjPCymVpHgiFZ2WgEkS44H/zV8WKHM+5kNLLVSsc/0B0q
-         6IlCwI8MUf1TsA4FfJdr/QOHVo9HPg+2vt6FqO1AiGBkOD6Hp56alRinj3Rr7MtxZ++q
-         YvmTargY8XrrCE5UlxPgYdMasAKYX6rRW31MslcQVt3TLXEnrLdF3pOtpZubfiRtnOAX
-         AAMhPCWd+Na7+fgY8KQijDNLH05y4awVeVhgyJOizsj1xoSN4azE64o6CrtsJRW46knx
-         Zr3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXANbZV3FwojWFL4jAMaPcOQPZjC2fKTXuFXwupuT6um0W+CO09JnPolJEbQUc9YaO15UnfGiou6IQHDQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6ohu7theOGPC7GXInVVr90XhNBXiWholQqSPj7vUK5GIIqqlB
-	rNDZox4pyR7hw6lcdnFZDGHfSIqguPwHIpzvAVK4mAcNgIIaHfzv6v5MaUrin4LT9+NBPdNDGt+
-	M4Ivd5ztS3L3kKMgR6krpm7dpv6r9/gcjdyHdEcmFJAmp1xsW6bbxo24=
-X-Google-Smtp-Source: AGHT+IFpdZ7oC/bG0cCQW9emo025+pIVRewECDg57asvxq3GaGoe7xmu6MGqkKYgdt98fl0AkpR9w1JYF9yoBi+ohv/pcIsMqrlA
+	s=arc-20240116; t=1724110226; c=relaxed/simple;
+	bh=hZvcyGG68uLKoCbUQoJLUDRDoj/7HmDP1LsY9RRESbg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ma1R4t/MXIOLjJx8CaZBcHtnQPuXp7uiOzRqJxOf07xVsvNdRSXrUZGlUz9+UeSnxlm50vWoTKafwAHE9TUOiNUOMge26ZGJd6pTaKU0SPUuPtCUbs0OybIJAZv8HCjrL4dK3MTurOsJU/VySlqfDYM72vWFYP1oXIFsHQOS6lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZQMj1H0J; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724110224; x=1755646224;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=hZvcyGG68uLKoCbUQoJLUDRDoj/7HmDP1LsY9RRESbg=;
+  b=ZQMj1H0Js6Yb157Niqdr1Kj142BJsRCN/LElvd/YbsuEapFXRjq/93eL
+   mBxmp+DIsvsya7qEy/u6VG+8zGaDUR0LXA5uZcgmLhuGdTW38wztMVrku
+   Q6GIJrGj7MhgUYQt+wRTDLdwx1fl0BkL24nZg3eSXWeY80CRt2CYvroK9
+   Q2cEuxQQRmqS7ygBtvIHv6RWLHHyruesl56DICHiMXdKMmcK1+6Yov5Cy
+   Sb0DHrFI6VHYreiqEXusluQgx66APGght1ejv1jJcHC6aoLmc2vuw4fq1
+   n3ptOg1E8dSnxMI4n86minxfquDIDThbds6EeV69JJkZJR1fDWFEga2wj
+   g==;
+X-CSE-ConnectionGUID: 9aFcEm8jTz+hC+1hjVav0w==
+X-CSE-MsgGUID: +xA/++7ORaWgiJ/4G1G0Qg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11169"; a="26248216"
+X-IronPort-AV: E=Sophos;i="6.10,160,1719903600"; 
+   d="scan'208";a="26248216"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 16:30:23 -0700
+X-CSE-ConnectionGUID: icN7AKYVS2G6HmSUEottdw==
+X-CSE-MsgGUID: B6/wrRHeQZWRUQxuEKDQVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,160,1719903600"; 
+   d="scan'208";a="60846455"
+Received: from mgoodin-mobl2.amr.corp.intel.com (HELO [10.125.111.235]) ([10.125.111.235])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 16:30:21 -0700
+Message-ID: <9b441d16-703d-4626-8707-29f4fcde2853@intel.com>
+Date: Mon, 19 Aug 2024 16:30:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3106:b0:39d:300f:e911 with SMTP id
- e9e14a558f8ab-39d300fec7fmr7563125ab.2.1724108784919; Mon, 19 Aug 2024
- 16:06:24 -0700 (PDT)
-Date: Mon, 19 Aug 2024 16:06:24 -0700
-In-Reply-To: <000000000000f6f09e061feefd16@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000adfbb70620115bdc@google.com>
-Subject: Re: [syzbot] [btrfs?] general protection fault in __alloc_workqueue
-From: syzbot <syzbot+9fd43bb1ae7b5d9240c3@syzkaller.appspotmail.com>
-To: clm@fb.com, davem@davemloft.net, dsterba@suse.com, edumazet@google.com, 
-	hdanton@sina.com, jason@zx2c4.com, josef@toxicpanda.com, kuba@kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, syzkaller-bugs@googlegroups.com, 
-	wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    367b5c3d53e5 Add linux-next specific files for 20240816
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=3D16ef69f5980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3D61ba6f3b22ee546=
-7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3D9fd43bb1ae7b5d924=
-0c3
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debia=
-n) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17582fbb98000=
-0
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1060bfc5980000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0b1b4e3cad3c/disk-=
-367b5c3d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5bb090f7813c/vmlinux-=
-367b5c3d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6674cb0709b1/bzI=
-mage-367b5c3d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/af299b68d869=
-/mount_2.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:
-Reported-by: syzbot+9fd43bb1ae7b5d9240c3@syzkaller.appspotmail.com
-
-workqueue: Failed to create a rescuer kthread for wq "btrfs-=18": -EINTR
-Oops: general protection fault, probably for non-canonical address 0xdffffc=
-0000000000: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 UID: 0 PID: 8040 Comm: syz-executor149 Not tainted 6.11.0-rc3-next-2=
-0240816-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 08/06/2024
-RIP: 0010:__lock_acquire+0x69/0x2040 kernel/locking/lockdep.c:5010
-Code: b6 04 30 84 c0 0f 85 87 16 00 00 45 31 f6 83 3d b8 08 a9 0e 00 0f 84 =
-ac 13 00 00 89 54 24 54 89 5c 24 68 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 1=
-2 4c 89 ff e8 49 5c 8c 00 48 be 00 00 00 00 00 fc
-RSP: 0018:ffffc9000e68f030 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: dffffc0000000000 R11: fffffbfff20318b6 R12: ffff88802b298000
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007fbb7be9e6c0(0000) GS:ffff8880b9000000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055df1c2ef668 CR3: 000000002e318000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5762
- touch_wq_lockdep_map kernel/workqueue.c:3876 [inline]
- __flush_workqueue+0x1e3/0x1770 kernel/workqueue.c:3918
- drain_workqueue+0xc9/0x3a0 kernel/workqueue.c:4082
- destroy_workqueue+0xba/0xc40 kernel/workqueue.c:5830
- __alloc_workqueue+0x1c30/0x1fb0 kernel/workqueue.c:5745
- alloc_workqueue+0xd6/0x210 kernel/workqueue.c:5758
- btrfs_alloc_workqueue+0x1c8/0x2a0 fs/btrfs/async-thread.c:112
- btrfs_init_workqueues+0x3af/0x740 fs/btrfs/disk-io.c:2004
- open_ctree+0x122c/0x2a10 fs/btrfs/disk-io.c:3364
- btrfs_fill_super fs/btrfs/super.c:965 [inline]
- btrfs_get_tree_super fs/btrfs/super.c:1888 [inline]
- btrfs_get_tree+0xe7a/0x1920 fs/btrfs/super.c:2114
- vfs_get_tree+0x90/0x2a0 fs/super.c:1800
- fc_mount+0x1b/0xb0 fs/namespace.c:1231
- btrfs_get_tree_subvol fs/btrfs/super.c:2077 [inline]
- btrfs_get_tree+0x652/0x1920 fs/btrfs/super.c:2115
- vfs_get_tree+0x90/0x2a0 fs/super.c:1800
- do_new_mount+0x2be/0xb40 fs/namespace.c:3507
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4055 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4032
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fbb7bf1346a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 1e 09 00 00 66 2e 0f 1f 84 =
-00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbb7be9e088 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fbb7be9e0a0 RCX: 00007fbb7bf1346a
-RDX: 0000000020005100 RSI: 0000000020005140 RDI: 00007fbb7be9e0a0
-RBP: 0000000000000004 R08: 00007fbb7be9e0e0 R09: 0000000000005106
-R10: 0000000000000012 R11: 0000000000000282 R12: 00007fbb7be9e0e0
-R13: 0000000000000012 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__lock_acquire+0x69/0x2040 kernel/locking/lockdep.c:5010
-Code: b6 04 30 84 c0 0f 85 87 16 00 00 45 31 f6 83 3d b8 08 a9 0e 00 0f 84 =
-ac 13 00 00 89 54 24 54 89 5c 24 68 4c 89 f8 48 c1 e8 03 <80> 3c 30 00 74 1=
-2 4c 89 ff e8 49 5c 8c 00 48 be 00 00 00 00 00 fc
-RSP: 0018:ffffc9000e68f030 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: dffffc0000000000 R11: fffffbfff20318b6 R12: ffff88802b298000
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007fbb7be9e6c0(0000) GS:ffff8880b9000000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055df1c2ef668 CR3: 000000002e318000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	b6 04                	mov    $0x4,%dh
-   2:	30 84 c0 0f 85 87 16 	xor    %al,0x1687850f(%rax,%rax,8)
-   9:	00 00                	add    %al,(%rax)
-   b:	45 31 f6             	xor    %r14d,%r14d
-   e:	83 3d b8 08 a9 0e 00 	cmpl   $0x0,0xea908b8(%rip)        # 0xea908cd
-  15:	0f 84 ac 13 00 00    	je     0x13c7
-  1b:	89 54 24 54          	mov    %edx,0x54(%rsp)
-  1f:	89 5c 24 68          	mov    %ebx,0x68(%rsp)
-  23:	4c 89 f8             	mov    %r15,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	80 3c 30 00          	cmpb   $0x0,(%rax,%rsi,1) <-- trapping instruct=
-ion
-  2e:	74 12                	je     0x42
-  30:	4c 89 ff             	mov    %r15,%rdi
-  33:	e8 49 5c 8c 00       	call   0x8c5c81
-  38:	48                   	rex.W
-  39:	be 00 00 00 00       	mov    $0x0,%esi
-  3e:	00 fc                	add    %bh,%ah
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 21/25] dax/region: Create resources on sparse DAX
+ regions
+To: ira.weiny@intel.com, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, nvdimm@lists.linux.dev
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-21-7c9b96cba6d7@intel.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240816-dcd-type2-upstream-v3-21-7c9b96cba6d7@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+
+On 8/16/24 7:44 AM, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> DAX regions which map dynamic capacity partitions require that memory be
+> allowed to come and go.  Recall sparse regions were created for this
+> purpose.  Now that extents can be realized within DAX regions the DAX
+> region driver can start tracking sub-resource information.
+> 
+> The tight relationship between DAX region operations and extent
+> operations require memory changes to be controlled synchronously with
+> the user of the region.  Synchronize through the dax_region_rwsem and by
+> having the region driver drive both the region device as well as the
+> extent sub-devices.
+> 
+> Recall requests to remove extents can happen at any time and that a host
+> is not obligated to release the memory until it is not being used.  If
+> an extent is not used allow a release response.
+> 
+> The DAX layer has no need for the details of the CXL memory extent
+> devices.  Expose extents to the DAX layer as device children of the DAX
+> region device.  A single callback from the driver aids the DAX layer to
+> determine if the child device is an extent.  The DAX layer also
+> registers a devres function to automatically clean up when the device is
+> removed from the region.
+> 
+> There is a race between extents being surfaced and the dax_cxl driver
+> being loaded.  The driver must therefore scan for any existing extents
+> while still under the device lock.
+> 
+> Respond to extent notifications.  Manage the DAX region resource tree
+> based on the extents lifetime.  Return the status of remove
+> notifications to lower layers such that it can manage the hardware
+> appropriately.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes:
+> [iweiny: patch reorder]
+> [iweiny: move hunks from other patches to clarify code changes and
+>          add/release flows WRT dax regions]
+> [iweiny: use %par]
+> [iweiny: clean up variable names]
+> [iweiny: Simplify sparse_ops]
+> [Fan: avoid open coding range_len()]
+> [djbw: s/reg_ext/region_extent]
+> ---
+>  drivers/cxl/core/extent.c |  76 +++++++++++++--
+>  drivers/cxl/cxl.h         |   6 ++
+>  drivers/dax/bus.c         | 243 +++++++++++++++++++++++++++++++++++++++++-----
+>  drivers/dax/bus.h         |   3 +-
+>  drivers/dax/cxl.c         |  63 +++++++++++-
+>  drivers/dax/dax-private.h |  34 +++++++
+>  drivers/dax/hmem/hmem.c   |   2 +-
+>  drivers/dax/pmem.c        |   2 +-
+>  8 files changed, 391 insertions(+), 38 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/extent.c b/drivers/cxl/core/extent.c
+> index d7d526a51e2b..103b0bec3a4a 100644
+> --- a/drivers/cxl/core/extent.c
+> +++ b/drivers/cxl/core/extent.c
+> @@ -271,20 +271,67 @@ static void calc_hpa_range(struct cxl_endpoint_decoder *cxled,
+>  	hpa_range->end = hpa_range->start + range_len(dpa_range) - 1;
+>  }
+>  
+> +static int cxlr_notify_extent(struct cxl_region *cxlr, enum dc_event event,
+> +			      struct region_extent *region_extent)
+> +{
+> +	struct cxl_dax_region *cxlr_dax;
+> +	struct device *dev;
+> +	int rc = 0;
+> +
+> +	cxlr_dax = cxlr->cxlr_dax;
+> +	dev = &cxlr_dax->dev;
+> +	dev_dbg(dev, "Trying notify: type %d HPA %par\n",
+> +		event, &region_extent->hpa_range);
+> +
+> +	/*
+> +	 * NOTE the lack of a driver indicates a notification has failed.  No
+> +	 * user space coordiantion was possible.
+> +	 */
+> +	device_lock(dev);
+> +	if (dev->driver) {
+> +		struct cxl_driver *driver = to_cxl_drv(dev->driver);
+> +		struct cxl_notify_data notify_data = (struct cxl_notify_data) {
+> +			.event = event,
+> +			.region_extent = region_extent,
+> +		};
+> +
+> +		if (driver->notify) {
+> +			dev_dbg(dev, "Notify: type %d HPA %par\n",
+> +				event, &region_extent->hpa_range);
+> +			rc = driver->notify(dev, &notify_data);
+> +		}
+> +	}
+> +	device_unlock(dev);
+
+Maybe a cleaner version:
+	guard(device)(dev);
+	if (!dev->driver || !dev->driver->notify)
+		return 0;
+
+	dev_dbg(...);
+	return driver->notify(dev, &notify_data);
+
+
+> +	return rc;
+> +}
+> +
+> +struct rm_data {
+> +	struct cxl_region *cxlr;
+> +	struct range *range;
+> +};
+> +
+>  static int cxlr_rm_extent(struct device *dev, void *data)
+>  {
+>  	struct region_extent *region_extent = to_region_extent(dev);
+> -	struct range *region_hpa_range = data;
+> +	struct rm_data *rm_data = data;
+> +	int rc;
+>  
+>  	if (!region_extent)
+>  		return 0;
+>  
+>  	/*
+> -	 * Any extent which 'touches' the released range is removed.
+> +	 * Any extent which 'touches' the released range is attempted to be
+> +	 * removed.
+>  	 */
+> -	if (range_overlaps(region_hpa_range, &region_extent->hpa_range)) {
+> +	if (range_overlaps(rm_data->range, &region_extent->hpa_range)) {
+> +		struct cxl_region *cxlr = rm_data->cxlr;
+> +
+>  		dev_dbg(dev, "Remove region extent HPA %par\n",
+>  			&region_extent->hpa_range);
+> +		rc = cxlr_notify_extent(cxlr, DCD_RELEASE_CAPACITY, region_extent);
+> +		if (rc == -EBUSY)
+> +			return 0;
+> +		/* Extent not in use or error, remove it */
+>  		region_rm_extent(region_extent);
+>  	}
+>  	return 0;
+> @@ -312,8 +359,13 @@ int cxl_rm_extent(struct cxl_memdev_state *mds, struct cxl_extent *extent)
+>  
+>  	calc_hpa_range(cxled, cxlr->cxlr_dax, &dpa_range, &hpa_range);
+>  
+> +	struct rm_data rm_data = {
+> +		.cxlr = cxlr,
+> +		.range = &hpa_range,
+> +	};
+> +
+>  	/* Remove region extents which overlap */
+> -	return device_for_each_child(&cxlr->cxlr_dax->dev, &hpa_range,
+> +	return device_for_each_child(&cxlr->cxlr_dax->dev, &rm_data,
+>  				     cxlr_rm_extent);
+>  }
+>  
+> @@ -338,8 +390,20 @@ static int cxlr_add_extent(struct cxl_dax_region *cxlr_dax,
+>  		return rc;
+>  	}
+>  
+> -	/* device model handles freeing region_extent */
+> -	return online_region_extent(region_extent);
+> +	rc = online_region_extent(region_extent);
+> +	/* device model handled freeing region_extent */
+> +	if (rc)
+> +		return rc;
+> +
+> +	rc = cxlr_notify_extent(cxlr_dax->cxlr, DCD_ADD_CAPACITY, region_extent);
+> +	/*
+> +	 * The region device was breifly live but DAX layer ensures it was not
+> +	 * used
+> +	 */
+> +	if (rc)
+> +		region_rm_extent(region_extent);
+> +
+> +	return rc;
+>  }
+>  
+>  /* Callers are expected to ensure cxled has been attached to a region */
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index c858e3957fd5..9abbfc68c6ad 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -916,10 +916,16 @@ bool is_cxl_region(struct device *dev);
+>  
+>  extern struct bus_type cxl_bus_type;
+>  
+> +struct cxl_notify_data {
+> +	enum dc_event event;
+> +	struct region_extent *region_extent;
+> +};
+> +
+>  struct cxl_driver {
+>  	const char *name;
+>  	int (*probe)(struct device *dev);
+>  	void (*remove)(struct device *dev);
+> +	int (*notify)(struct device *dev, struct cxl_notify_data *notify_data);
+>  	struct device_driver drv;
+>  	int id;
+>  };
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 975860371d9f..f14b0cfa7edd 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -183,6 +183,83 @@ static bool is_sparse(struct dax_region *dax_region)
+>  	return (dax_region->res.flags & IORESOURCE_DAX_SPARSE_CAP) != 0;
+>  }
+>  
+> +static void __dax_release_resource(struct dax_resource *dax_resource)
+> +{
+> +	struct dax_region *dax_region = dax_resource->region;
+> +
+> +	lockdep_assert_held_write(&dax_region_rwsem);
+> +	dev_dbg(dax_region->dev, "Extent release resource %pr\n",
+> +		dax_resource->res);
+> +	if (dax_resource->res)
+> +		__release_region(&dax_region->res, dax_resource->res->start,
+> +				 resource_size(dax_resource->res));
+> +	dax_resource->res = NULL;
+> +}
+> +
+> +static void dax_release_resource(void *res)
+> +{
+> +	struct dax_resource *dax_resource = res;
+> +
+> +	guard(rwsem_write)(&dax_region_rwsem);
+> +	__dax_release_resource(dax_resource);
+> +	kfree(dax_resource);
+> +}
+> +
+> +int dax_region_add_resource(struct dax_region *dax_region,
+> +			    struct device *device,
+> +			    resource_size_t start, resource_size_t length)
+>
+kdoc header?
+
+ +{
+> +	struct resource *new_resource;
+> +	int rc;
+> +
+> +	struct dax_resource *dax_resource __free(kfree) =
+> +				kzalloc(sizeof(*dax_resource), GFP_KERNEL);
+> +	if (!dax_resource)
+> +		return -ENOMEM;
+> +
+> +	guard(rwsem_write)(&dax_region_rwsem);
+> +
+> +	dev_dbg(dax_region->dev, "DAX region resource %pr\n", &dax_region->res);
+> +	new_resource = __request_region(&dax_region->res, start, length, "extent", 0);
+> +	if (!new_resource) {
+> +		dev_err(dax_region->dev, "Failed to add region s:%pa l:%pa\n",
+> +			&start, &length);
+> +		return -ENOSPC;
+> +	}
+> +
+> +	dev_dbg(dax_region->dev, "add resource %pr\n", new_resource);
+> +	dax_resource->region = dax_region;
+> +	dax_resource->res = new_resource;
+> +	dev_set_drvdata(device, dax_resource);
+> +	rc = devm_add_action_or_reset(device, dax_release_resource,
+> +				      no_free_ptr(dax_resource));
+> +	/*  On error; ensure driver data is cleared under semaphore */
+> +	if (rc)
+> +		dev_set_drvdata(device, NULL);
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_region_add_resource);
+> +
+> +int dax_region_rm_resource(struct dax_region *dax_region,
+> +			   struct device *dev)
+
+kdoc header
+> +{
+> +	struct dax_resource *dax_resource;
+> +
+> +	guard(rwsem_write)(&dax_region_rwsem);
+> +
+> +	dax_resource = dev_get_drvdata(dev);
+> +	if (!dax_resource)
+> +		return 0;
+> +
+> +	if (dax_resource->use_cnt)
+> +		return -EBUSY;
+> +
+> +	/* avoid races with users trying to use the extent */
+> +	__dax_release_resource(dax_resource);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_region_rm_resource);
+> +
+>  bool static_dev_dax(struct dev_dax *dev_dax)
+>  {
+>  	return is_static(dev_dax->region);
+> @@ -296,19 +373,44 @@ static ssize_t region_align_show(struct device *dev,
+>  static struct device_attribute dev_attr_region_align =
+>  		__ATTR(align, 0400, region_align_show, NULL);
+>  
+> +#define for_each_child_resource(extent, res) \
+> +	for (res = (extent)->child; res; res = res->sibling)
+> +
+> +resource_size_t
+> +dax_avail_size(struct resource *dax_resource)
+kdoc header
+
+DJ
+
+> +{
+> +	resource_size_t rc;
+> +	struct resource *used_res;
+> +
+> +	rc = resource_size(dax_resource);
+> +	for_each_child_resource(dax_resource, used_res)
+> +		rc -= resource_size(used_res);
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_avail_size);
+> +
+>  #define for_each_dax_region_resource(dax_region, res) \
+>  	for (res = (dax_region)->res.child; res; res = res->sibling)
+>  
+>  static unsigned long long dax_region_avail_size(struct dax_region *dax_region)
+>  {
+> -	resource_size_t size = resource_size(&dax_region->res);
+> +	resource_size_t size;
+>  	struct resource *res;
+>  
+>  	lockdep_assert_held(&dax_region_rwsem);
+>  
+> -	if (is_sparse(dax_region))
+> -		return 0;
+> +	if (is_sparse(dax_region)) {
+> +		/*
+> +		 * Children of a sparse region represent available space not
+> +		 * used space.
+> +		 */
+> +		size = 0;
+> +		for_each_dax_region_resource(dax_region, res)
+> +			size += dax_avail_size(res);
+> +		return size;
+> +	}
+>  
+> +	size = resource_size(&dax_region->res);
+>  	for_each_dax_region_resource(dax_region, res)
+>  		size -= resource_size(res);
+>  	return size;
+> @@ -449,15 +551,26 @@ EXPORT_SYMBOL_GPL(kill_dev_dax);
+>  static void trim_dev_dax_range(struct dev_dax *dev_dax)
+>  {
+>  	int i = dev_dax->nr_range - 1;
+> -	struct range *range = &dev_dax->ranges[i].range;
+> +	struct dev_dax_range *dev_range = &dev_dax->ranges[i];
+> +	struct range *range = &dev_range->range;
+>  	struct dax_region *dax_region = dev_dax->region;
+> +	struct resource *res = &dax_region->res;
+>  
+>  	lockdep_assert_held_write(&dax_region_rwsem);
+>  	dev_dbg(&dev_dax->dev, "delete range[%d]: %#llx:%#llx\n", i,
+>  		(unsigned long long)range->start,
+>  		(unsigned long long)range->end);
+>  
+> -	__release_region(&dax_region->res, range->start, range_len(range));
+> +	if (dev_range->dax_resource) {
+> +		res = dev_range->dax_resource->res;
+> +		dev_dbg(&dev_dax->dev, "Trim sparse extent %pr\n", res);
+> +	}
+> +
+> +	__release_region(res, range->start, range_len(range));
+> +
+> +	if (dev_range->dax_resource)
+> +		dev_range->dax_resource->use_cnt--;
+> +
+>  	if (--dev_dax->nr_range == 0) {
+>  		kfree(dev_dax->ranges);
+>  		dev_dax->ranges = NULL;
+> @@ -640,7 +753,7 @@ static void dax_region_unregister(void *region)
+>  
+>  struct dax_region *alloc_dax_region(struct device *parent, int region_id,
+>  		struct range *range, int target_node, unsigned int align,
+> -		unsigned long flags)
+> +		unsigned long flags, struct dax_sparse_ops *sparse_ops)
+>  {
+>  	struct dax_region *dax_region;
+>  
+> @@ -658,12 +771,16 @@ struct dax_region *alloc_dax_region(struct device *parent, int region_id,
+>  			|| !IS_ALIGNED(range_len(range), align))
+>  		return NULL;
+>  
+> +	if (!sparse_ops && (flags & IORESOURCE_DAX_SPARSE_CAP))
+> +		return NULL;
+> +
+>  	dax_region = kzalloc(sizeof(*dax_region), GFP_KERNEL);
+>  	if (!dax_region)
+>  		return NULL;
+>  
+>  	dev_set_drvdata(parent, dax_region);
+>  	kref_init(&dax_region->kref);
+> +	dax_region->sparse_ops = sparse_ops;
+>  	dax_region->id = region_id;
+>  	dax_region->align = align;
+>  	dax_region->dev = parent;
+> @@ -845,7 +962,8 @@ static int devm_register_dax_mapping(struct dev_dax *dev_dax, int range_id)
+>  }
+>  
+>  static int alloc_dev_dax_range(struct resource *parent, struct dev_dax *dev_dax,
+> -			       u64 start, resource_size_t size)
+> +			       u64 start, resource_size_t size,
+> +			       struct dax_resource *dax_resource)
+>  {
+>  	struct device *dev = &dev_dax->dev;
+>  	struct dev_dax_range *ranges;
+> @@ -884,6 +1002,7 @@ static int alloc_dev_dax_range(struct resource *parent, struct dev_dax *dev_dax,
+>  			.start = alloc->start,
+>  			.end = alloc->end,
+>  		},
+> +		.dax_resource = dax_resource,
+>  	};
+>  
+>  	dev_dbg(dev, "alloc range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
+> @@ -966,7 +1085,8 @@ static int dev_dax_shrink(struct dev_dax *dev_dax, resource_size_t size)
+>  	int i;
+>  
+>  	for (i = dev_dax->nr_range - 1; i >= 0; i--) {
+> -		struct range *range = &dev_dax->ranges[i].range;
+> +		struct dev_dax_range *dev_range = &dev_dax->ranges[i];
+> +		struct range *range = &dev_range->range;
+>  		struct dax_mapping *mapping = dev_dax->ranges[i].mapping;
+>  		struct resource *adjust = NULL, *res;
+>  		resource_size_t shrink;
+> @@ -982,12 +1102,21 @@ static int dev_dax_shrink(struct dev_dax *dev_dax, resource_size_t size)
+>  			continue;
+>  		}
+>  
+> -		for_each_dax_region_resource(dax_region, res)
+> -			if (strcmp(res->name, dev_name(dev)) == 0
+> -					&& res->start == range->start) {
+> -				adjust = res;
+> -				break;
+> -			}
+> +		if (dev_range->dax_resource) {
+> +			for_each_child_resource(dev_range->dax_resource->res, res)
+> +				if (strcmp(res->name, dev_name(dev)) == 0
+> +						&& res->start == range->start) {
+> +					adjust = res;
+> +					break;
+> +				}
+> +		} else {
+> +			for_each_dax_region_resource(dax_region, res)
+> +				if (strcmp(res->name, dev_name(dev)) == 0
+> +						&& res->start == range->start) {
+> +					adjust = res;
+> +					break;
+> +				}
+> +		}
+>  
+>  		if (dev_WARN_ONCE(dev, !adjust || i != dev_dax->nr_range - 1,
+>  					"failed to find matching resource\n"))
+> @@ -1025,19 +1154,21 @@ static bool adjust_ok(struct dev_dax *dev_dax, struct resource *res)
+>  }
+>  
+>  /**
+> - * dev_dax_resize_static - Expand the device into the unused portion of the
+> - * region. This may involve adjusting the end of an existing resource, or
+> - * allocating a new resource.
+> + * __dev_dax_resize - Expand the device into the unused portion of the region.
+> + * This may involve adjusting the end of an existing resource, or allocating a
+> + * new resource.
+>   *
+>   * @parent: parent resource to allocate this range in
+>   * @dev_dax: DAX device to be expanded
+>   * @to_alloc: amount of space to alloc; must be <= space available in @parent
+> + * @dax_resource: if sparse; the parent resource
+>   *
+>   * Return the amount of space allocated or -ERRNO on failure
+>   */
+> -static ssize_t dev_dax_resize_static(struct resource *parent,
+> -				     struct dev_dax *dev_dax,
+> -				     resource_size_t to_alloc)
+> +static ssize_t __dev_dax_resize(struct resource *parent,
+> +				struct dev_dax *dev_dax,
+> +				resource_size_t to_alloc,
+> +				struct dax_resource *dax_resource)
+>  {
+>  	struct resource *res, *first;
+>  	int rc;
+> @@ -1045,7 +1176,8 @@ static ssize_t dev_dax_resize_static(struct resource *parent,
+>  	first = parent->child;
+>  	if (!first) {
+>  		rc = alloc_dev_dax_range(parent, dev_dax,
+> -					   parent->start, to_alloc);
+> +					   parent->start, to_alloc,
+> +					   dax_resource);
+>  		if (rc)
+>  			return rc;
+>  		return to_alloc;
+> @@ -1059,7 +1191,8 @@ static ssize_t dev_dax_resize_static(struct resource *parent,
+>  		if (res == first && res->start > parent->start) {
+>  			alloc = min(res->start - parent->start, to_alloc);
+>  			rc = alloc_dev_dax_range(parent, dev_dax,
+> -						 parent->start, alloc);
+> +						 parent->start, alloc,
+> +						 dax_resource);
+>  			if (rc)
+>  				return rc;
+>  			return alloc;
+> @@ -1083,7 +1216,8 @@ static ssize_t dev_dax_resize_static(struct resource *parent,
+>  				return rc;
+>  			return alloc;
+>  		}
+> -		rc = alloc_dev_dax_range(parent, dev_dax, res->end + 1, alloc);
+> +		rc = alloc_dev_dax_range(parent, dev_dax, res->end + 1, alloc,
+> +					 dax_resource);
+>  		if (rc)
+>  			return rc;
+>  		return alloc;
+> @@ -1094,6 +1228,54 @@ static ssize_t dev_dax_resize_static(struct resource *parent,
+>  	return 0;
+>  }
+>  
+> +static ssize_t dev_dax_resize_static(struct dax_region *dax_region,
+> +				     struct dev_dax *dev_dax,
+> +				     resource_size_t to_alloc)
+> +{
+> +	return __dev_dax_resize(&dax_region->res, dev_dax, to_alloc, NULL);
+> +}
+> +
+> +static int find_free_extent(struct device *dev, void *data)
+> +{
+> +	struct dax_region *dax_region = data;
+> +	struct dax_resource *dax_resource;
+> +
+> +	if (!dax_region->sparse_ops->is_extent(dev))
+> +		return 0;
+> +
+> +	dax_resource = dev_get_drvdata(dev);
+> +	if (!dax_resource || !dax_avail_size(dax_resource->res))
+> +		return 0;
+> +	return 1;
+> +}
+> +
+> +static ssize_t dev_dax_resize_sparse(struct dax_region *dax_region,
+> +				     struct dev_dax *dev_dax,
+> +				     resource_size_t to_alloc)
+> +{
+> +	struct dax_resource *dax_resource;
+> +	resource_size_t available_size;
+> +	struct device *extent_dev;
+> +	ssize_t alloc;
+> +
+> +	extent_dev = device_find_child(dax_region->dev, dax_region,
+> +				       find_free_extent);
+> +	if (!extent_dev)
+> +		return 0;
+> +
+> +	dax_resource = dev_get_drvdata(extent_dev);
+> +	if (!dax_resource)
+> +		return 0;
+> +
+> +	available_size = dax_avail_size(dax_resource->res);
+> +	to_alloc = min(available_size, to_alloc);
+> +	alloc = __dev_dax_resize(dax_resource->res, dev_dax, to_alloc, dax_resource);
+> +	if (alloc > 0)
+> +		dax_resource->use_cnt++;
+> +	put_device(extent_dev);
+> +	return alloc;
+> +}
+> +
+>  static ssize_t dev_dax_resize(struct dax_region *dax_region,
+>  		struct dev_dax *dev_dax, resource_size_t size)
+>  {
+> @@ -1117,7 +1299,10 @@ static ssize_t dev_dax_resize(struct dax_region *dax_region,
+>  		return -ENXIO;
+>  
+>  retry:
+> -	alloc = dev_dax_resize_static(&dax_region->res, dev_dax, to_alloc);
+> +	if (is_sparse(dax_region))
+> +		alloc = dev_dax_resize_sparse(dax_region, dev_dax, to_alloc);
+> +	else
+> +		alloc = dev_dax_resize_static(dax_region, dev_dax, to_alloc);
+>  	if (alloc <= 0)
+>  		return alloc;
+>  	to_alloc -= alloc;
+> @@ -1226,7 +1411,7 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
+>  	to_alloc = range_len(&r);
+>  	if (alloc_is_aligned(dev_dax, to_alloc))
+>  		rc = alloc_dev_dax_range(&dax_region->res, dev_dax, r.start,
+> -					 to_alloc);
+> +					 to_alloc, NULL);
+>  	up_write(&dax_dev_rwsem);
+>  	up_write(&dax_region_rwsem);
+>  
+> @@ -1494,8 +1679,14 @@ static struct dev_dax *__devm_create_dev_dax(struct dev_dax_data *data)
+>  	device_initialize(dev);
+>  	dev_set_name(dev, "dax%d.%d", dax_region->id, dev_dax->id);
+>  
+> +	if (is_sparse(dax_region) && data->size) {
+> +		dev_err(parent, "Sparse DAX region devices are created initially with 0 size");
+> +		rc = -EINVAL;
+> +		goto err_id;
+> +	}
+> +
+>  	rc = alloc_dev_dax_range(&dax_region->res, dev_dax, dax_region->res.start,
+> -				 data->size);
+> +				 data->size, NULL);
+>  	if (rc)
+>  		goto err_range;
+>  
+> diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
+> index 783bfeef42cc..ae5029ea6047 100644
+> --- a/drivers/dax/bus.h
+> +++ b/drivers/dax/bus.h
+> @@ -9,6 +9,7 @@ struct dev_dax;
+>  struct resource;
+>  struct dax_device;
+>  struct dax_region;
+> +struct dax_sparse_ops;
+>  
+>  /* dax bus specific ioresource flags */
+>  #define IORESOURCE_DAX_STATIC BIT(0)
+> @@ -17,7 +18,7 @@ struct dax_region;
+>  
+>  struct dax_region *alloc_dax_region(struct device *parent, int region_id,
+>  		struct range *range, int target_node, unsigned int align,
+> -		unsigned long flags);
+> +		unsigned long flags, struct dax_sparse_ops *sparse_ops);
+>  
+>  struct dev_dax_data {
+>  	struct dax_region *dax_region;
+> diff --git a/drivers/dax/cxl.c b/drivers/dax/cxl.c
+> index 367e86b1c22a..bf3b82b0120d 100644
+> --- a/drivers/dax/cxl.c
+> +++ b/drivers/dax/cxl.c
+> @@ -5,6 +5,60 @@
+>  
+>  #include "../cxl/cxl.h"
+>  #include "bus.h"
+> +#include "dax-private.h"
+> +
+> +static int __cxl_dax_add_resource(struct dax_region *dax_region,
+> +				  struct region_extent *region_extent)
+> +{
+> +	resource_size_t start, length;
+> +	struct device *dev;
+> +
+> +	dev = &region_extent->dev;
+> +	start = dax_region->res.start + region_extent->hpa_range.start;
+> +	length = range_len(&region_extent->hpa_range);
+> +	return dax_region_add_resource(dax_region, dev, start, length);
+> +}
+> +
+> +static int cxl_dax_add_resource(struct device *dev, void *data)
+> +{
+> +	struct dax_region *dax_region = data;
+> +	struct region_extent *region_extent;
+> +
+> +	region_extent = to_region_extent(dev);
+> +	if (!region_extent)
+> +		return 0;
+> +
+> +	dev_dbg(dax_region->dev, "Adding resource HPA %par\n",
+> +		&region_extent->hpa_range);
+> +
+> +	return __cxl_dax_add_resource(dax_region, region_extent);
+> +}
+> +
+> +static int cxl_dax_region_notify(struct device *dev,
+> +				 struct cxl_notify_data *notify_data)
+> +{
+> +	struct cxl_dax_region *cxlr_dax = to_cxl_dax_region(dev);
+> +	struct dax_region *dax_region = dev_get_drvdata(dev);
+> +	struct region_extent *region_extent = notify_data->region_extent;
+> +
+> +	switch (notify_data->event) {
+> +	case DCD_ADD_CAPACITY:
+> +		return __cxl_dax_add_resource(dax_region, region_extent);
+> +	case DCD_RELEASE_CAPACITY:
+> +		return dax_region_rm_resource(dax_region, &region_extent->dev);
+> +	case DCD_FORCED_CAPACITY_RELEASE:
+> +	default:
+> +		dev_err(&cxlr_dax->dev, "Unknown DC event %d\n",
+> +			notify_data->event);
+> +		break;
+> +	}
+> +
+> +	return -ENXIO;
+> +}
+> +
+> +struct dax_sparse_ops sparse_ops = {
+> +	.is_extent = is_region_extent,
+> +};
+>  
+>  static int cxl_dax_region_probe(struct device *dev)
+>  {
+> @@ -24,14 +78,16 @@ static int cxl_dax_region_probe(struct device *dev)
+>  		flags |= IORESOURCE_DAX_SPARSE_CAP;
+>  
+>  	dax_region = alloc_dax_region(dev, cxlr->id, &cxlr_dax->hpa_range, nid,
+> -				      PMD_SIZE, flags);
+> +				      PMD_SIZE, flags, &sparse_ops);
+>  	if (!dax_region)
+>  		return -ENOMEM;
+>  
+> -	if (cxlr->mode == CXL_REGION_DC)
+> +	if (cxlr->mode == CXL_REGION_DC) {
+> +		device_for_each_child(&cxlr_dax->dev, dax_region,
+> +				      cxl_dax_add_resource);
+>  		/* Add empty seed dax device */
+>  		dev_size = 0;
+> -	else
+> +	} else
+>  		dev_size = range_len(&cxlr_dax->hpa_range);
+>  
+>  	data = (struct dev_dax_data) {
+> @@ -47,6 +103,7 @@ static int cxl_dax_region_probe(struct device *dev)
+>  static struct cxl_driver cxl_dax_region_driver = {
+>  	.name = "cxl_dax_region",
+>  	.probe = cxl_dax_region_probe,
+> +	.notify = cxl_dax_region_notify,
+>  	.id = CXL_DEVICE_DAX_REGION,
+>  	.drv = {
+>  		.suppress_bind_attrs = true,
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index ccde98c3d4e2..9e9f98c85620 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -16,6 +16,36 @@ struct inode *dax_inode(struct dax_device *dax_dev);
+>  int dax_bus_init(void);
+>  void dax_bus_exit(void);
+>  
+> +/**
+> + * struct dax_resource - For sparse regions; an active resource
+> + * @region: dax_region this resources is in
+> + * @res: resource
+> + * @use_cnt: count the number of uses of this resource
+> + *
+> + * Changes to the dax_reigon and the dax_resources within it are protected by
+> + * dax_region_rwsem
+> + */
+> +struct dax_resource {
+> +	struct dax_region *region;
+> +	struct resource *res;
+> +	unsigned int use_cnt;
+> +};
+> +int dax_region_add_resource(struct dax_region *dax_region, struct device *dev,
+> +			    resource_size_t start, resource_size_t length);
+> +int dax_region_rm_resource(struct dax_region *dax_region,
+> +			   struct device *dev);
+> +resource_size_t dax_avail_size(struct resource *dax_resource);
+> +
+> +typedef int (*match_cb)(struct device *dev, resource_size_t *size_avail);
+> +
+> +/**
+> + * struct dax_sparse_ops - Operations for sparse regions
+> + * @is_extent: return if the device is an extent
+> + */
+> +struct dax_sparse_ops {
+> +	bool (*is_extent)(struct device *dev);
+> +};
+> +
+>  /**
+>   * struct dax_region - mapping infrastructure for dax devices
+>   * @id: kernel-wide unique region for a memory range
+> @@ -27,6 +57,7 @@ void dax_bus_exit(void);
+>   * @res: resource tree to track instance allocations
+>   * @seed: allow userspace to find the first unbound seed device
+>   * @youngest: allow userspace to find the most recently created device
+> + * @sparse_ops: operations required for sparse regions
+>   */
+>  struct dax_region {
+>  	int id;
+> @@ -38,6 +69,7 @@ struct dax_region {
+>  	struct resource res;
+>  	struct device *seed;
+>  	struct device *youngest;
+> +	struct dax_sparse_ops *sparse_ops;
+>  };
+>  
+>  struct dax_mapping {
+> @@ -62,6 +94,7 @@ struct dax_mapping {
+>   * @pgoff: page offset
+>   * @range: resource-span
+>   * @mapping: device to assist in interrogating the range layout
+> + * @dax_resource: if not NULL; dax sparse resource containing this range
+>   */
+>  struct dev_dax {
+>  	struct dax_region *region;
+> @@ -79,6 +112,7 @@ struct dev_dax {
+>  		unsigned long pgoff;
+>  		struct range range;
+>  		struct dax_mapping *mapping;
+> +		struct dax_resource *dax_resource;
+>  	} *ranges;
+>  };
+>  
+> diff --git a/drivers/dax/hmem/hmem.c b/drivers/dax/hmem/hmem.c
+> index 5e7c53f18491..0eea65052874 100644
+> --- a/drivers/dax/hmem/hmem.c
+> +++ b/drivers/dax/hmem/hmem.c
+> @@ -28,7 +28,7 @@ static int dax_hmem_probe(struct platform_device *pdev)
+>  
+>  	mri = dev->platform_data;
+>  	dax_region = alloc_dax_region(dev, pdev->id, &mri->range,
+> -				      mri->target_node, PMD_SIZE, flags);
+> +				      mri->target_node, PMD_SIZE, flags, NULL);
+>  	if (!dax_region)
+>  		return -ENOMEM;
+>  
+> diff --git a/drivers/dax/pmem.c b/drivers/dax/pmem.c
+> index c8ebf4e281f2..f927e855f240 100644
+> --- a/drivers/dax/pmem.c
+> +++ b/drivers/dax/pmem.c
+> @@ -54,7 +54,7 @@ static struct dev_dax *__dax_pmem_probe(struct device *dev)
+>  	range.start += offset;
+>  	dax_region = alloc_dax_region(dev, region_id, &range,
+>  			nd_region->target_node, le32_to_cpu(pfn_sb->align),
+> -			IORESOURCE_DAX_STATIC);
+> +			IORESOURCE_DAX_STATIC, NULL);
+>  	if (!dax_region)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> 
 
