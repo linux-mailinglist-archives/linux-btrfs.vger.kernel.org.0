@@ -1,189 +1,214 @@
-Return-Path: <linux-btrfs+bounces-7318-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7319-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF67A956D66
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2024 16:34:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87C2195707B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2024 18:37:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A62E5286ABD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2024 14:34:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06B921F242AF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2024 16:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2358516D4C4;
-	Mon, 19 Aug 2024 14:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2778B49652;
+	Mon, 19 Aug 2024 16:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zOOjbMVn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o7ETYuFL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zOOjbMVn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o7ETYuFL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A+ZMsRNg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C50716BE1D
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Aug 2024 14:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77251177982;
+	Mon, 19 Aug 2024 16:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724078070; cv=none; b=Q/9xUI/N8+WCOZ4jKm/LSZrBUgITvIgmZDuoZYxdnj5YNoB4kuITyH9IuOST6K6HC5mjfjDS4v7J4lSwS9P3JWAF3uVZbdQv8eyTnDSKfYKKyuJvlBuhYaCBP6hFy+V22o+KmIWDrV1hDLvRaSH/5LfdIi0MzoDhO6hxokVgxIs=
+	t=1724085372; cv=none; b=cc8J6BmeG5UaBGHEmpMxhVTaI9sAdGoJfB2YBCh8GgDDLh1J8/nd4qVimDeJV6SHxbSZluAKs59zriMgf0mJjZCGdojEpE10syqdkw37txTBRksFHswS9qJ/9VKGTgKUrDr9wlzkfRIZYupPDGWVL1Wzpunus8yxnV8sg6G3Wzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724078070; c=relaxed/simple;
-	bh=R/ZVYK4w3CjMY7wlYFbgfsdXY0emduJdtNM2jFUzf6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UZ0arhw5Qc9YixSsW1R3jo97QVwUyfoXfg0Y+wdcLQAZQCmCfSvUb6/GKzC/cVSev9laH04WxKDm0AU3dT/srCg4XUkMHA2N3HIfCURnVzX/oc63k6Ot8F5Du4AKBMTFmEy45BrxR0+/LnIkScp8+kS1s2xrSBf2lEATdRbqHEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zOOjbMVn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o7ETYuFL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zOOjbMVn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o7ETYuFL; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9F0F722713;
-	Mon, 19 Aug 2024 14:34:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724078066;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TyksDQQdXo0fbssu9v+rgh95Xa65iPiStVTa/Q/ixbI=;
-	b=zOOjbMVnpusa5zTIlmTzzqpIGhN+4j0yCK56BUbzRwSPZvm6iElXmwLDthauS708Xq2h5h
-	kgKGiShfn3qJkpLgXc9O9HvxX6rsBRQympj9rZh9dK/3jP/CFbw57p83Qq3MahPIPC42SX
-	RQsNWdnCOvBFM0qs3t18SdHMs8NCPUo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724078066;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TyksDQQdXo0fbssu9v+rgh95Xa65iPiStVTa/Q/ixbI=;
-	b=o7ETYuFLouOJhA/Kadnd8NrmqgcAD71/GOIL9Pi3DwZGbkBJWwQbLVY5jkV8S8R3KQxXEm
-	IU+ESQDrPdYRcpCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724078066;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TyksDQQdXo0fbssu9v+rgh95Xa65iPiStVTa/Q/ixbI=;
-	b=zOOjbMVnpusa5zTIlmTzzqpIGhN+4j0yCK56BUbzRwSPZvm6iElXmwLDthauS708Xq2h5h
-	kgKGiShfn3qJkpLgXc9O9HvxX6rsBRQympj9rZh9dK/3jP/CFbw57p83Qq3MahPIPC42SX
-	RQsNWdnCOvBFM0qs3t18SdHMs8NCPUo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724078066;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TyksDQQdXo0fbssu9v+rgh95Xa65iPiStVTa/Q/ixbI=;
-	b=o7ETYuFLouOJhA/Kadnd8NrmqgcAD71/GOIL9Pi3DwZGbkBJWwQbLVY5jkV8S8R3KQxXEm
-	IU+ESQDrPdYRcpCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 860F91397F;
-	Mon, 19 Aug 2024 14:34:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BJqBH/JXw2bgCwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 19 Aug 2024 14:34:26 +0000
-Date: Mon, 19 Aug 2024 16:34:21 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: merge btrfs_orig_bbio_end_io() into
- btrfs_bio_end_io()
-Message-ID: <20240819143421.GK25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <2107a0e72fa6eac67583deb421ac1247b02b7723.1724057484.git.wqu@suse.com>
+	s=arc-20240116; t=1724085372; c=relaxed/simple;
+	bh=Ij42qg4XwDB1sODuJcyZUx7sN09vuh1W4zuPaVmRGAI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VRhx4/9W5lwDiRECrQVpH9AjaKEIYcDwJi5W5iWtqB7ZRXKzPN39ivSxwXdoHZOrd56svE5cKDw+2Qi/oZ0/bkNCXI4eJOr6x6g1L5qj1A3SFhReAsfQIe1mYFBwnRAv8AcCCKrbXL4pHeF3tGHZDtEbLqRzTGAXo+3adyR+Owk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A+ZMsRNg; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724085370; x=1755621370;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Ij42qg4XwDB1sODuJcyZUx7sN09vuh1W4zuPaVmRGAI=;
+  b=A+ZMsRNgnRODGlPLdzke2AlkmGneaZLPdg72u23xiwWEBR4rmoBdCSfj
+   5G5qsmPBriS8o04h8K77ekMb0yhLM48nww9IfX1QgFCKx6wSgzrjoHJWH
+   YjERuX6766vnNaYO2EXASfoUxQIlyc6O2tWrEybsrAXDjBYC0QrOFMEzA
+   cK4tslv88to+NZgxQb2j7pMPvDhzOyaKDzHZscbhwmRsPYLyIM6wMpz1G
+   GlOjhUNRADh7EnhY69z5YIp6WLIZ+3PkDaOW4DRUkTPz/Ow4Ms0tx3Oft
+   Zo9hTu6dCD8i/KDN/sTe7DC7RO8u3Cu+I7qHFSFON3U9Ubw7GZuoTGacv
+   w==;
+X-CSE-ConnectionGUID: nvSkGs9GTGKoQEvokLjaeA==
+X-CSE-MsgGUID: GL/sByv2TCirSRFRlYI3Cw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11169"; a="33014580"
+X-IronPort-AV: E=Sophos;i="6.10,159,1719903600"; 
+   d="scan'208";a="33014580"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 09:36:09 -0700
+X-CSE-ConnectionGUID: ljhaOIarRHyIrsJxWNopMw==
+X-CSE-MsgGUID: 6PLaEDX6RsWzXnrsWF2giw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,159,1719903600"; 
+   d="scan'208";a="60400622"
+Received: from mgoodin-mobl2.amr.corp.intel.com (HELO [10.125.111.235]) ([10.125.111.235])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 09:36:06 -0700
+Message-ID: <47768d4a-1be2-4e4e-a84e-05e736f3966c@intel.com>
+Date: Mon, 19 Aug 2024 09:35:49 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2107a0e72fa6eac67583deb421ac1247b02b7723.1724057484.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -8.00
-X-Spamd-Result: default: False [-8.00 / 50.00];
-	REPLY(-4.00)[];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 17/25] cxl/core: Return endpoint decoder information
+ from region search
+To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, nvdimm@lists.linux.dev
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-17-7c9b96cba6d7@intel.com>
+Content-Language: en-US
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240816-dcd-type2-upstream-v3-17-7c9b96cba6d7@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Aug 19, 2024 at 06:21:59PM +0930, Qu Wenruo wrote:
-> There is only two differences between the two functions:
-> 
-> - btrfs_orig_bbio_end_io() do extra error propagation
->   This is mostly to allow tolerance for write errors.
-> 
-> - btrfs_orig_bbio_end_io() do extra pending_ios check
->   This check can handle both the original bio, or the cloned one.
->   (All accounting happens in the original one).
-> 
-> This makes btrfs_orig_bbio_end_io() a much safer call.
-> In fact we already had a double freeing error due to usage of
-> btrfs_bio_end_io() in the error path of btrfs_submit_chunk().
-> 
-> This patch will move the whole content of btrfs_orig_bbio_end_io() into
 
-"Move the ..."
 
-> btrfs_bio_end_io().
+On 8/16/24 7:44 AM, Ira Weiny wrote:
+> cxl_dpa_to_region() finds the region from a <DPA, device> tuple.
+> The search involves finding the device endpoint decoder as well.
 > 
-> For normal paths this brings no change, because they are already calling
-> btrfs_orig_bbio_end_io() in the first place.
+> Dynamic capacity extent processing uses the endpoint decoder HPA
+> information to calculate the HPA offset.  In addition, well behaved
+> extents should be contained within an endpoint decoder.
 > 
-> For error paths (not only inside bio.c but also external callers), this
-> change will introduce extra checks, especially for external callers, as
-> they will error out without submitting the btrfs bio.
+> Return the endpoint decoder found to be used in subsequent DCD code.
 > 
-> But considering it's already in the error path, such slower but much
-> safer checks are still an overall win.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Reviewed-by: David Sterba <dsterba@suse.com>
-
-Please fix the grammar in the changelog when you commit the patch.
-
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 > ---
->  fs/btrfs/bio.c | 26 ++++++++++----------------
->  1 file changed, 10 insertions(+), 16 deletions(-)
+>  drivers/cxl/core/core.h   | 6 ++++--
+>  drivers/cxl/core/mbox.c   | 2 +-
+>  drivers/cxl/core/memdev.c | 4 ++--
+>  drivers/cxl/core/region.c | 8 +++++++-
+>  4 files changed, 14 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 088ceaca6ab0..0e4de33515fe 100644
-> --- a/fs/btrfs/bio.c
-> +++ b/fs/btrfs/bio.c
-> @@ -120,12 +120,6 @@ static void __btrfs_bio_end_io(struct btrfs_bio *bbio)
->  	}
+> diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
+> index 15b6cf1c19ef..76c4153a9b2c 100644
+> --- a/drivers/cxl/core/core.h
+> +++ b/drivers/cxl/core/core.h
+> @@ -39,7 +39,8 @@ void cxl_decoder_kill_region(struct cxl_endpoint_decoder *cxled);
+>  int cxl_region_init(void);
+>  void cxl_region_exit(void);
+>  int cxl_get_poison_by_endpoint(struct cxl_port *port);
+> -struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa);
+> +struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa,
+> +				     struct cxl_endpoint_decoder **cxled);
+>  u64 cxl_dpa_to_hpa(struct cxl_region *cxlr, const struct cxl_memdev *cxlmd,
+>  		   u64 dpa);
+>  
+> @@ -50,7 +51,8 @@ static inline u64 cxl_dpa_to_hpa(struct cxl_region *cxlr,
+>  	return ULLONG_MAX;
+>  }
+>  static inline
+> -struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa)
+> +struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa,
+> +				     struct cxl_endpoint_decoder **cxled)
+>  {
+>  	return NULL;
+>  }
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 68c26c4be91a..01a447aaa1b1 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -909,7 +909,7 @@ void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+>  		guard(rwsem_read)(&cxl_dpa_rwsem);
+>  
+>  		dpa = le64_to_cpu(evt->media_hdr.phys_addr) & CXL_DPA_MASK;
+> -		cxlr = cxl_dpa_to_region(cxlmd, dpa);
+> +		cxlr = cxl_dpa_to_region(cxlmd, dpa, NULL);
+>  		if (cxlr)
+>  			hpa = cxl_dpa_to_hpa(cxlr, cxlmd, dpa);
+>  
+> diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+> index 7da1f0f5711a..12fb07fb89a6 100644
+> --- a/drivers/cxl/core/memdev.c
+> +++ b/drivers/cxl/core/memdev.c
+> @@ -323,7 +323,7 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
+>  	if (rc)
+>  		goto out;
+>  
+> -	cxlr = cxl_dpa_to_region(cxlmd, dpa);
+> +	cxlr = cxl_dpa_to_region(cxlmd, dpa, NULL);
+>  	if (cxlr)
+>  		dev_warn_once(mds->cxlds.dev,
+>  			      "poison inject dpa:%#llx region: %s\n", dpa,
+> @@ -387,7 +387,7 @@ int cxl_clear_poison(struct cxl_memdev *cxlmd, u64 dpa)
+>  	if (rc)
+>  		goto out;
+>  
+> -	cxlr = cxl_dpa_to_region(cxlmd, dpa);
+> +	cxlr = cxl_dpa_to_region(cxlmd, dpa, NULL);
+>  	if (cxlr)
+>  		dev_warn_once(mds->cxlds.dev,
+>  			      "poison clear dpa:%#llx region: %s\n", dpa,
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index 35c4a1f4f9bd..8e0884b52f84 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -2828,6 +2828,7 @@ int cxl_get_poison_by_endpoint(struct cxl_port *port)
+>  struct cxl_dpa_to_region_context {
+>  	struct cxl_region *cxlr;
+>  	u64 dpa;
+> +	struct cxl_endpoint_decoder *cxled;
+>  };
+>  
+>  static int __cxl_dpa_to_region(struct device *dev, void *arg)
+> @@ -2861,11 +2862,13 @@ static int __cxl_dpa_to_region(struct device *dev, void *arg)
+>  			dev_name(dev));
+>  
+>  	ctx->cxlr = cxlr;
+> +	ctx->cxled = cxled;
+>  
+>  	return 1;
 >  }
 >  
-> -void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
-> -{
-> -	bbio->bio.bi_status = status;
-> -	__btrfs_bio_end_io(bbio);
-
-This leaves one last call to __btrfs_bio_end_io() so it can be moved to
-it's caller btrfs_orig_bbio_end_io().
+> -struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa)
+> +struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa,
+> +				     struct cxl_endpoint_decoder **cxled)
+>  {
+>  	struct cxl_dpa_to_region_context ctx;
+>  	struct cxl_port *port;
+> @@ -2877,6 +2880,9 @@ struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa)
+>  	if (port && is_cxl_endpoint(port) && cxl_num_decoders_committed(port))
+>  		device_for_each_child(&port->dev, &ctx, __cxl_dpa_to_region);
+>  
+> +	if (cxled)
+> +		*cxled = ctx.cxled;
+> +
+>  	return ctx.cxlr;
+>  }
+>  
+> 
 
