@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7347-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF18958FE2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2024 23:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FD56959042
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 00:09:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D20481C21F14
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2024 21:45:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C47501C21C36
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2024 22:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE0AD1C6891;
-	Tue, 20 Aug 2024 21:45:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D801C7B65;
+	Tue, 20 Aug 2024 22:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OpHFwZBm"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Zd/X86e5"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9591518E377;
-	Tue, 20 Aug 2024 21:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B7A1E86E
+	for <linux-btrfs@vger.kernel.org>; Tue, 20 Aug 2024 22:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724190329; cv=none; b=RgcWB4CsVg2IjtU9uvyWjuPyjLdvRuNuUK2PttvgEkrO9i+r6gY4wqpAlzO/eumuCHarsMWOom6A69R/2/r8z5EfmsGs5ixoLafwar31XzIY+JkiNe98KlNcixFz782cEtSOLgmS52cVusTwUmvNwqlaaUtlZ8AZN1KF61g7JjM=
+	t=1724191762; cv=none; b=Ykz2S1DCNmE3ztz5et2aWID1cylNZ+AvqcwbOjrwQ2WlLAA1gRLO4BBxzWbqpjTCLArUexbcwWOVqaMFnqtCY0Ftf5+w7DYO6d2gGeZB49UCwwzUrmqMHMok00Vaexah1DwclWZduiSJ1E36boRk4/8kQZONS264rpkildnvy0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724190329; c=relaxed/simple;
-	bh=3kxn8BgPrdccYDzgLGRgpOLkQavUywNpTO9t2iOC0Uc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TUk6/rDEI6qRg5RDjV6/PXsUkXLlTo+HJz+GT57oXkAxzbjqGD7BxsZRrY5kg0zoZT2FY0ZG2wSEvSx62ahr1PnLxzXBzynQCgrZnLL+mEptWC1R2qLSpkNoNoz3N92t2hwFDglrcoT0Hqd8lpMxdNb4+22okkubMR12SygDsYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OpHFwZBm; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1724191762; c=relaxed/simple;
+	bh=lZQh9JilL2lJgajjYSjG7l+OLbcOZftaSg5x1rXbLqA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=F5ttSs02VXCXVpvmxfbNBRuPFgZbzyJphuRX3iMisXJTqdh9AKBV3y6P2bjAZyCBzZTicenkbdvv9FX4KWc8sqnQp69um9d+Tp0mTsJqPHzDJhTdohHw6UCklRzgeG0o+lOz3ujRh/zABlKL9DWGnWNCxRwiUJsfQS6VwZvAKXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Zd/X86e5; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724190311; x=1724795111; i=quwenruo.btrfs@gmx.com;
-	bh=1sYaJog3scACLdPVt33Dhx+scQPOzihP/XAJPS6q3xQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1724191749; x=1724796549; i=quwenruo.btrfs@gmx.com;
+	bh=lZQh9JilL2lJgajjYSjG7l+OLbcOZftaSg5x1rXbLqA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=OpHFwZBmosKg9hOvUNnW/1vvnS38pI77AJoxK9soIGlRhST9Ztwl1UkG+7hqUjjk
-	 7RgVL3eKr9ROB5G1K+a+PuJut6N77Da9sFGxsHwJLuOc8l+fGmkrJOFx+LXlcLBAx
-	 HdxHm0WMnDkUdV3iq9X2I4Ag8Lojxk+WlDhESXT727dLmcz54rMYGkz/ZE/QCjX3e
-	 tSPjbnYZcW53/+bQ6vrNlJhWoagYLCD0vPUGnu/j7x/KtDt0vEVXZwNHgQSlGHh9u
-	 A+3Bt7ORnNj0yxS70o2ye3vJxj0oaBncFH/NYB0kR5deH1mOKd0Qg3wEqY4+ZnjG0
-	 AMmBdY8TqAkeZ3qdYA==
+	b=Zd/X86e5Wj2oyEbJGTDaMBY4irIjAMHKquIry6BQpxNHhakpfENNVW3WimUnwy5S
+	 WguQMqNH6UtNsMTUbsbW7vogeeJN/A24RbWdQGozM+ajQm1yxG9+qeYrO0+m+TUYJ
+	 gjkq/rmX/X99IRtbeyWSG2VbH01Kqz98TJiD+V19VRCkBYzd4GB9etpHw933EwXp5
+	 +HcVoe6Pz7/JJYNUuhqRKl5N/rbohqxdb8Af+IYZoLXjQ92DQL0UydZLqjOhQJ9pv
+	 5tvfgGJMeGzmmQl5gfeyWezwVoFyDCFDm8d/xLNCTT0w0FNzhEcO7RmNoDnGTJ+Hx
+	 z/YrcA96pzIb/PVdew==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBlxM-1sqRkQ1Syy-00ADdR; Tue, 20
- Aug 2024 23:45:10 +0200
-Message-ID: <796068cf-1492-44a7-a495-888a55429ab6@gmx.com>
-Date: Wed, 21 Aug 2024 07:15:05 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9MpY-1s23Rg3cQe-017pl2; Wed, 21
+ Aug 2024 00:09:09 +0200
+Message-ID: <6b17f157-49c3-4874-898f-68541b2dce0a@gmx.com>
+Date: Wed, 21 Aug 2024 07:39:04 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,15 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: scrub: don't mark inline extents as errors on RST
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: Qu Wenru <wqu@suse.com>
-References: <20240820143453.25428-1-jth@kernel.org>
- <3ec1dd40-cdc7-4e47-9f74-9a29f60b6368@wdc.com>
+Subject: Re: out of space (>865 GB free), filesystem remounts read-only - how
+ to recover?
+To: Tomasz Chmielewski <mangoo@wpkg.org>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <f11daee5026d303e673d480f3f812b15@wpkg.org>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -93,141 +89,221 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <3ec1dd40-cdc7-4e47-9f74-9a29f60b6368@wdc.com>
+In-Reply-To: <f11daee5026d303e673d480f3f812b15@wpkg.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YWIIyOqoih2/IeWR8WADyIENpS8mLR6KdIDpkgaeEXG/0rtBFy+
- wFDpu9S0NweAqoLgcb4RN5AB/iSNNDPJ/+nG3IAoQsSrErHKqfnybwap2d4Sj383pczArOU
- 4T1xqdH033osxGsxUNZKqHF4ss9f3if6PfdjOZrecfBehSbKGAjkDDrqS2+jPtLIqKz9sQz
- gwlu2Hn48pHbGpMYMSQfA==
+X-Provags-ID: V03:K1:eVyOraEoY7m8zlAWf2B2Zo0w+wWjXKwxq90HfxqBlfbXoIl5BTW
+ gAaZuI6RVbsfIeoYaS4TgZaiLZAPOyehvRpDh6Rgbhsq++LVXqOfOSBJ/qY+1LpwVozWizE
+ p+EOyAl9UP/uEgfuh/6bAJWKnFOMDJbjB/ld5GlFkVwP+2R0rQwExgYROy9oSGNQdJn+xBy
+ G1UqNYGU/Ej2Vsx9flWaA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dh9cSgvPswc=;xkq3q666rV41XTbPmEi/Ez8Jv6F
- WVYB2DIBKffTw4w/Qux/sE0UlsHyza/671poj5e2Gq0GKGGzRd6hZYAULD7v8pVw5IQOFjcGC
- zhuuT/K5AN0zhp85toTJq/j83oy7LOwemm7ha4B0xGI1G2hg0dEG2nQIDeRNKdXyAU9DajVu2
- b9EoQEk/ULId1c/veRWPPh4EJFn0BA4b8q5ZkWYwDDNtD/UfobBAbl101j6rg/QV85PMRTUdy
- LthBRRBZWsj/XnylcmlHTrO4gicDEo9A2qbihShVb9gz/96/Djga9L94JIMivbcnafo6QB6ZI
- HWHfaJTET8jIbxh9vx1BXmnRPgje97O05kcl02PkK6EpMIFc+2/McPHa9ugm6A5b5lTlhxd2S
- KM5KuOIdCWalp+AlYuUjnpmlI2H2QmKt366tU7Bvq4pmMkyIDzyE/79WEc0MUWgFwSErAtNXv
- AegWuM4AJcrHnCrbEHdIJ/mTGxGGjStA7gfLojcF0IL0SG0g6y5CpR+CDHlXBuX0txKU9YTwv
- RYjHdrWV2iQIMBgoMJ4U/4Fc5Aj8wWyxiaEnbGldNTX2uWAC28PZuqYjaLzZdfkIHlFh3xzUH
- X9/AkRTk80F/exCg5hZwNrkD/LiqSzce4Qk63sMjMvyfL8GmT9v0Utst9suNI0YUPqITyDbBs
- lGMht4xTIijEV2cV3gTr0EEiXMB0HjUfw54iee0aJVKR11eEMDetBHjnUM/iVuzz74NlXkIlB
- 90Wc7OHY6WxCNNKBpE+c5M0UEGOsgPKvORHEH2+nSPYFY3N+FGTGdF6X4RpfxJqK4Q0fWpM8G
- QOquSggYCXVDGE12eqRmT71g==
+UI-OutboundReport: notjunk:1;M01:P0:jGLjqdyfoBY=;AwpWMJwpPJd5np8mg1ZwaXIMc4r
+ FOto2DjDkhLj8iX3X8Ixtq9bmbpR8MvZUuizj/FOhYXhwWOWrWlBw+2zIidektXdJdqiMFmyN
+ EUtrc8h6TnC/YJumV9f5t9ed+qYlTSCzbmUCIFsgBIkIV/8vUfPmOxeC47wySPYlXG2FsDogW
+ i79aUnaaZ2OHVkMic675ZrEXyQrQ2ytwJYVqGKK9ugLYH9PhTFtbtIEX71LZKx3gswbIGwN4k
+ luFgfXu6VsmuIPkba6jKuUeLLcNNFHcrbRxDLjBCo0v2wGJ+QbOmRT7glly6F883KnLeuqBjS
+ zIuezKOOfR/+8pOs9Yv11FnJxNPh9/MTANdmcud2yKErwcTQuB8HkzxdvNZQah/q5kuq9AWvX
+ 9bnrmel/5IN+cjKtuhYwL8g+PXCB1yQQixd/oyv1gbuqop9SWJ/Hz2b8YkqcYvC1AgQecX2Ab
+ FKz3tDZiMcXHUqQJMDS9oCDjj7CpEJ+4B+1pHt3BqFocv42xZ/Oxll7grVAfWL1lDD3MeTFyR
+ 5g6VAlNWJHNMb9nkqXvWoPBwaw1M/qysKvubY6TgWbTNcxQQaO1BBfOxv0XYimHHLQ2/w7LqL
+ iG3ngGotpoyPJM7rgzmdGM6nSi7riWmbv4LoAiJv7+5veAA/Lzg7fLJprtwV1VgIParsAQFPC
+ S4VtdT23nZO3Rt48Vjygzz4zQe17zWkYhxMlO+4eKBS61Z5yMrNqVinD+U/rqiHrerZ1hEDH6
+ Z0Y9bSHJMO70mfTPY+6SVymjtN/rRF4wPnqcOtJhSRGmrfom8H04IDgGjvQvCcLRKm/SEvrye
+ qDKCOZAeA5/t9AyUUqrHeJ+w==
 
 
 
-=E5=9C=A8 2024/8/21 03:17, Johannes Thumshirn =E5=86=99=E9=81=93:
-> On 20.08.24 16:35, Johannes Thumshirn wrote:
->> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->>
->> When scrubbing a RAID stripe-tree backed btrfs system, we're doing
->> extent based block mappings. These block mappings go through the RAID
->> stripe-tree to do logical to physical translation.
->>
->> In case we're hitting an inline extent, there is no backing by the
->> RAID stripe-tree for it and the block mapping returns an error. So the
->> bit in the extent bitmap is marked as error.
->>
->> Fix this by not marking mapping failures for inline extents as error.
->>
->> Cc: Qu Wenru <wqu@suse.com>
->> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Scratch that one, that apparently only works in my test environment.
+=E5=9C=A8 2024/8/20 23:07, Tomasz Chmielewski =E5=86=99=E9=81=93:
+> My 44 TB filesystem was getting full (~865 GB free out of 44 TB in
+> total), so I thought removing some old data would be a good thing to do.
 
-And I'm also wondering why inline data extents would even show up in
-extent tree.
+btrfs fi usage output please.
 
-Inlined data won't have any extents, they are just part of metadata.
+I bet it's some btrfs RAID setup, maybe RAID1/10 or RAID1C3/C4 for metadat=
+a.
+And the disk usages got unbalanced, the metadata overcommitment did a
+wrong estimation and cause the ENOSPC.
 
 Thanks,
 Qu
 >
+> Unfortunately now I'm not able to recover - the filesystem remounts
+> read-only (no free space in metadata) a few minutes after mounting.
 >
->> ---
->>    fs/btrfs/scrub.c | 41 +++++++++++++++++++++++++++++++++++++++--
->>    1 file changed, 39 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
->> index b3afa6365823..8240b205699c 100644
->> --- a/fs/btrfs/scrub.c
->> +++ b/fs/btrfs/scrub.c
->> @@ -67,6 +67,7 @@ struct scrub_ctx;
->>    /* Represent one sector and its needed info to verify the content. *=
-/
->>    struct scrub_sector_verification {
->>    	bool is_metadata;
->> +	bool is_inline;
->>
->>    	union {
->>    		/*
->> @@ -1479,6 +1480,34 @@ static int sync_write_pointer_for_zoned(struct s=
-crub_ctx *sctx, u64 logical,
->>    	return ret;
->>    }
->>
->> +static bool extent_is_inline(struct btrfs_fs_info *fs_info,
->> +			     u64 extent_start, u64 extent_len)
->> +{
->> +	struct btrfs_file_extent_item *ei;
->> +	struct extent_buffer *leaf;
->> +	struct btrfs_path *path;
->> +	struct btrfs_root *extent_root =3D btrfs_extent_root(fs_info, extent_=
-start);
->> +	int ret;
->> +	bool is_inline =3D false;
->> +
->> +	path =3D btrfs_alloc_path();
->> +	if (!path)
->> +		return false;
->> +
->> +	ret =3D btrfs_lookup_file_extent(NULL, extent_root, path, extent_star=
-t, extent_len, 0);
->> +	if (ret < 0)
->> +		goto out;
->> +
->> +	leaf =3D path->nodes[0];
->> +	ei =3D btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_=
-item);
->> +	if (btrfs_file_extent_type(leaf, ei) =3D=3D BTRFS_FILE_EXTENT_INLINE)
->> +		is_inline =3D true;
->> +
->> + out:
->> +	btrfs_free_path(path);
->> +	return is_inline;
->> +}
->> +
->>    static void fill_one_extent_info(struct btrfs_fs_info *fs_info,
->>    				 struct scrub_stripe *stripe,
->>    				 u64 extent_start, u64 extent_len,
->> @@ -1497,6 +1526,9 @@ static void fill_one_extent_info(struct btrfs_fs_=
-info *fs_info,
->>    		if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
->>    			sector->is_metadata =3D true;
->>    			sector->generation =3D extent_gen;
->> +		} else {
->> +			sector->is_inline =3D extent_is_inline(
->> +				fs_info, extent_start, extent_len);
->>    		}
->>    	}
->>    }
->> @@ -1704,8 +1736,13 @@ static void scrub_submit_extent_sector_read(stru=
-ct scrub_ctx *sctx,
->>    					      &stripe_len, &bioc, &io_stripe, &mirror);
->>    			btrfs_put_bioc(bioc);
->>    			if (err < 0) {
->> -				set_bit(i, &stripe->io_error_bitmap);
->> -				set_bit(i, &stripe->error_bitmap);
->> +				struct scrub_sector_verification *sector =3D
->> +					&stripe->sectors[i];
->> +
->> +				if (!sector->is_inline) {
->> +					set_bit(i, &stripe->io_error_bitmap);
->> +					set_bit(i, &stripe->error_bitmap);
->> +				}
->>    				continue;
->>    			}
->>
+> - kernel is 6.10.6
+>
+> - the filesystem was writable and did not have any problems
+>
+> - I've decided to delete some subvolumes with "btrfs sub del ..."
+>
+> - a couple of minutes later after deleting the subvolumes, the
+> filesystem went read only
+>
+> - when I unmount and mount again - it resumes deleting the subvolumes in
+> the background, free space goes up from 865G to 870G and filesystem
+> remounts read-only
+>
+> - after unmounting/mounting again, it again has 865GB free
+>
+> - even if I remove some files right after mounting, as soon as the
+> filesystem goes read-only - I unmount/mount again - removed files
+> magically appear again
+>
+> - I've added a 100 GB device to the filesystem - but it doesn't help,
+> the filesystem still goes read only shortly after mounting
+>
+> - tried running data and metadata balance - but the filesystem still
+> goes read only shortly after mounting
+>
+> How can I recover from that?
+>
+> 1) dmesg after mounting with "skip_balance" option:
+>
+> [26883.769459] BTRFS info (device sdc1 state EA): last unmount of
+> filesystem a80ce575-8c39-4065-80ce-2ca015fa1d51
+> [26890.241370] BTRFS info (device sdc1): first mount of filesystem
+> a80ce575-8c39-4065-80ce-2ca015fa1d51
+> [26890.241402] BTRFS info (device sdc1): using crc32c (crc32c-intel)
+> checksum algorithm
+> [26890.241414] BTRFS info (device sdc1): using free-space-tree
+> [27025.188366] BTRFS info (device sdc1): balance: resume skipped
+>
+>
+> 2) dmesg after it goes read-only:
+>
+> [27493.879003] ------------[ cut here ]------------
+> [27493.879014] BTRFS: Transaction aborted (error -28)
+> [27493.887226] BTRFS: error (device sdc1 state A) in
+> do_free_extent_accounting:2968: errno=3D-28 No space left
+> [27493.936410] WARNING: CPU: 7 PID: 2990 at fs/btrfs/extent-tree.c:2968
+> do_free_extent_accounting.cold+0xec/0x1f0 [btrfs]
+> [27494.050834] BTRFS info (device sdc1 state EA): forced readonly
+> [27494.050841] BTRFS error (device sdc1 state EA): failed to run delayed
+> ref for logical 7329684533248 num_bytes 53248 type 184 action 2 ref_mod
+> 1: -28
+> [27494.051372] Modules linked in: tls
+> [27494.052220] BTRFS: error (device sdc1 state EA) in
+> btrfs_run_delayed_refs:2207: errno=3D-28 No space left
+> [27494.211400]=C2=A0 isofs binfmt_misc ip6t_REJECT nf_reject_ipv6
+> nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4
+> ipt_REJECT nf_reject_ipv4 xt_tcpudp nft_compat nf_tables nfnetlink
+> nls_iso8859_1 intel_rapl_msr intel_rapl_common intel_uncore_frequency
+> intel_uncore_frequency_common sb_edac x86_pkg_temp_thermal
+> intel_powerclamp coretemp kvm_intel ipmi_ssif kvm rapl intel_cstate
+> cmdlinepart spi_nor input_leds mei_me joydev intel_pch_thermal mtd mei
+> ioatdma acpi_ipmi mac_hid ipmi_si ipmi_devintf ipmi_msghandler acpi_pad
+> sch_fq_codel dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua msr
+> efi_pstore ip_tables x_tables autofs4 btrfs blake2b_generic raid10
+> raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor
+> raid6_pq libcrc32c raid0 raid1 hid_generic usbhid hid crct10dif_pclmul
+> crc32_pclmul polyval_clmulni spi_intel_platform polyval_generic ixgbe
+> ghash_clmulni_intel spi_intel ahci gpio_ich igb i2c_i801 xfrm_algo
+> sha256_ssse3 mxm_wmi i2c_mux libahci lpc_ich sha1_ssse3 i2c_smbus
+> i2c_algo_bit xhci_pci
+> [27494.325621]=C2=A0 dca xhci_pci_renesas mdio wmi aesni_intel crypto_si=
+md
+> cryptd
+> [27494.325631] CPU: 7 PID: 2990 Comm: btrfs-transacti Tainted: G
+> W=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.10.6-061006-ge=
+neric #202408190440
+> [27494.325635] Hardware name: Supermicro Super Server/X10SDV-TLN4F, BIOS
+> 2.1.v1 06/05/2020
+> [27494.325637] RIP: 0010:do_free_extent_accounting.cold+0xec/0x1f0 [btrf=
+s]
+> [27494.325721] Code: 83 e0 01 e8 ec 52 00 00 e9 d0 5f f1 ff 89 df e8 e0
+> ee ff ff 84 c0 0f 84 e8 00 00 00 89 de 48 c7 c7 d0 4f a4 c0 e8 4a c4 b7
+> fb <0f> 0b eb bc 45 31 c0 41 83 e0 01 89 d9 ba b1 0b 00 00 4c 89 e7 48
+> [27494.325724] RSP: 0018:ffff956e01fbbb50 EFLAGS: 00010246
+> [27494.325727] RAX: 0000000000000000 RBX: 00000000ffffffe4 RCX:
+> 0000000000000000
+> [27494.325729] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
+> 0000000000000000
+> [27494.325731] RBP: ffff956e01fbbb80 R08: 0000000000000000 R09:
+> 0000000000000000
+> [27494.325733] R10: 0000000000000000 R11: 0000000000000000 R12:
+> ffff8a4135049f18
+> [27494.325735] R13: 000006aa92150000 R14: 0000000000010000 R15:
+> ffff956e01fbbc08
+> [27494.325738] FS:=C2=A0 0000000000000000(0000) GS:ffff8a479f980000(0000=
+)
+> knlGS:0000000000000000
+> [27494.325740] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [27494.325742] CR2: 0000713914aeef04 CR3: 000000016223c002 CR4:
+> 00000000003706f0
+> [27494.325745] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> [27494.325747] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+> 0000000000000400
+> [27494.325749] Call Trace:
+> [27494.325751]=C2=A0 <TASK>
+> [27494.325754]=C2=A0 ? show_trace_log_lvl+0x1be/0x310
+> [27494.325761]=C2=A0 ? show_trace_log_lvl+0x1be/0x310
+> [27494.325766]=C2=A0 ? __btrfs_free_extent.isra.0+0x62a/0x900 [btrfs]
+> [27494.325838]=C2=A0 ? show_regs.part.0+0x22/0x30
+> [27494.325842]=C2=A0 ? show_regs.cold+0x8/0x10
+> [27494.325845]=C2=A0 ? do_free_extent_accounting.cold+0xec/0x1f0 [btrfs]
+> [27494.325928]=C2=A0 ? __warn.cold+0xa7/0x101
+> [27494.325934]=C2=A0 ? do_free_extent_accounting.cold+0xec/0x1f0 [btrfs]
+> [27494.326010]=C2=A0 ? report_bug+0x114/0x160
+> [27494.326015]=C2=A0 ? irq_work_queue+0x2d/0x70
+> [27494.326021]=C2=A0 ? handle_bug+0x51/0xa0
+> [27494.326025]=C2=A0 ? exc_invalid_op+0x18/0x80
+> [27494.326028]=C2=A0 ? asm_exc_invalid_op+0x1b/0x20
+> [27494.326034]=C2=A0 ? do_free_extent_accounting.cold+0xec/0x1f0 [btrfs]
+> [27494.326109]=C2=A0 __btrfs_free_extent.isra.0+0x62a/0x900 [btrfs]
+> [27494.326181]=C2=A0 run_delayed_data_ref+0x6c/0x1d0 [btrfs]
+> [27494.326247]=C2=A0 btrfs_run_delayed_refs_for_head+0x30a/0x420 [btrfs]
+> [27494.326312]=C2=A0 __btrfs_run_delayed_refs+0x106/0x1b0 [btrfs]
+> [27494.326375]=C2=A0 btrfs_run_delayed_refs+0x3c/0xd0 [btrfs]
+> [27494.326437]=C2=A0 btrfs_commit_transaction+0x6a/0xc70 [btrfs]
+> [27494.326513]=C2=A0 transaction_kthread+0x167/0x1d0 [btrfs]
+> [27494.326584]=C2=A0 ? __pfx_transaction_kthread+0x10/0x10 [btrfs]
+> [27494.326653]=C2=A0 kthread+0xe4/0x110
+> [27494.326657]=C2=A0 ? __pfx_kthread+0x10/0x10
+> [27494.326660]=C2=A0 ret_from_fork+0x47/0x70
+> [27494.326665]=C2=A0 ? __pfx_kthread+0x10/0x10
+> [27494.326667]=C2=A0 ret_from_fork_asm+0x1a/0x30
+> [27494.326673]=C2=A0 </TASK>
+> [27494.326674] ---[ end trace 0000000000000000 ]---
+> [27494.326678] BTRFS info (device sdc1 state EA): dumping space info:
+> [27494.326681] BTRFS info (device sdc1 state EA): space_info DATA has
+> 928231587840 free, is not full
+> [27494.326684] BTRFS info (device sdc1 state EA): space_info
+> total=3D35882286448640, used=3D34948418105344, pinned=3D5635772416,
+> reserved=3D0, may_use=3D0, readonly=3D983040 zone_unusable=3D0
+> [27494.326688] BTRFS info (device sdc1 state EA): space_info METADATA
+> has -6576521216 free, is full
+> [27494.326691] BTRFS info (device sdc1 state EA): space_info
+> total=3D78383153152, used=3D77616775168, pinned=3D71188480,
+> reserved=3D695123968, may_use=3D6576521216, readonly=3D65536 zone_unusab=
+le=3D0
+> [27494.326695] BTRFS info (device sdc1 state EA): space_info SYSTEM has
+> 5980160 free, is not full
+> [27494.326698] BTRFS info (device sdc1 state EA): space_info
+> total=3D8388608, used=3D2408448, pinned=3D0, reserved=3D0, may_use=3D0, =
+readonly=3D0
+> zone_unusable=3D0
+> [27494.326701] BTRFS info (device sdc1 state EA): global_block_rsv: size
+> 536870912 reserved 536805376
+> [27494.326703] BTRFS info (device sdc1 state EA): trans_block_rsv: size
+> 0 reserved 0
+> [27494.326706] BTRFS info (device sdc1 state EA): chunk_block_rsv: size
+> 0 reserved 0
+> [27494.326708] BTRFS info (device sdc1 state EA): delayed_block_rsv:
+> size 0 reserved 0
+> [27494.326710] BTRFS info (device sdc1 state EA): delayed_refs_rsv: size
+> 1727549669376 reserved 6039715840
+> [27494.326713] BTRFS: error (device sdc1 state EA) in
+> do_free_extent_accounting:2968: errno=3D-28 No space left
+> [27494.443071] BTRFS error (device sdc1 state EA): failed to run delayed
+> ref for logical 7329665056768 num_bytes 65536 type 184 action 2 ref_mod
+> 1: -28
+> [27494.603135] BTRFS: error (device sdc1 state EA) in
+> btrfs_run_delayed_refs:2207: errno=3D-28 No space left
+>
+>
+>
+>
+> Tomasz Chmielewski
 >
 
