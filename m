@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7349-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7350-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710089590BC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 00:55:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 277329590D4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 01:02:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AA38285524
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2024 22:55:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CAD81F240C1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2024 23:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD471C823F;
-	Tue, 20 Aug 2024 22:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6D81C3F1A;
+	Tue, 20 Aug 2024 23:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="r25VS0wG"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="IOF4h7nX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDACD1C8221
-	for <linux-btrfs@vger.kernel.org>; Tue, 20 Aug 2024 22:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228EB219E0
+	for <linux-btrfs@vger.kernel.org>; Tue, 20 Aug 2024 23:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724194527; cv=none; b=i5svpKpQlfamaXJNw4/xVi2ye5V7AzxrP0I015BV9pPXiCrqfC/jKae+QqgwxijlEyiYdYSIpU90h5l6b+zgJ9feizvJE4/vxL+8nk3542lxVaaKoRBHGK9lSitzXuxvt0wYPplzLA/OvU2JTHLBx3Ho5uxVZCWnNcm09FNdhNk=
+	t=1724194944; cv=none; b=RYB1YnYTxK9q6Lw0EYQ/+14zrNJP1ujHYzvKlA7nUhWQN7jUkWA8U2G15bGj9LImn6s7P91np1dTqtOYHgvv8RlULYcaF3i0AiU0u1h249QtVcLWAtKRhzfW9Ha8XbPQ3VNdQDqkAFJMBVzDJq0JhIcxPJ/hGF+U1cn4eNmepvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724194527; c=relaxed/simple;
-	bh=xeLlTrAUZY5NmDHNQWJx3O2ToNlLI/PqPEDRw2UAsnA=;
+	s=arc-20240116; t=1724194944; c=relaxed/simple;
+	bh=Ucv6tjTXGFYEnVIxKYpXzT+3nIHO+X0aq5fAzQljsvA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=M9zjv/aP5Xpfdc1iEL3pK9SGUWNwZpSXhogdax2XMW+DT+nBeqgy0AMqWNoxiXpQEKUUQGEXPYrURqKqZPiHcQW3CbhZJdu2PhhOxNCZR5am+mZrWY1pR2fJ0ShO7WEYny+fTkqgLoOe7Yb2hy2mdGR/UOCc2fkgUj1ZmywnbM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=r25VS0wG; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=mdQEEETojO8bRnRXlYEREjrEu7/UgBRAZfErBz3EPLgwavhVKj1bIQFlQXgcMBT4zBquK7T31k0Sopyq1TpQXNzvBVvNNU+VmTCUXyaN1cxXhsriEsnQz+3eceUAu5DkeDpEV4gTMHPzwJi0VNSwiezF0wA2Lsab044wlTvDdI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=IOF4h7nX; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724194520; x=1724799320; i=quwenruo.btrfs@gmx.com;
-	bh=xeLlTrAUZY5NmDHNQWJx3O2ToNlLI/PqPEDRw2UAsnA=;
+	s=s31663417; t=1724194937; x=1724799737; i=quwenruo.btrfs@gmx.com;
+	bh=Ucv6tjTXGFYEnVIxKYpXzT+3nIHO+X0aq5fAzQljsvA=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=r25VS0wGncdD6WIWnxUiBt5amTKRarUxT02JIlOh5TAexBgO3E/cXjY6CKsiMcU1
-	 ZXAUdW2rolW3XGqsx66I6ujBMtxWWxB1wDokhkEBgzijUFxVGnIcBP/ghwE4ezXmv
-	 eqzfGEI2h1Mr9JC5i9iS16wHOEqHhVuOwsy2mYsqtYdSn094mrHQisyBcW+GCYZxC
-	 NimoEyVR/tMhqTSro0RBX1qGskD/4RTUx7se7PBrl1mV6tBJbhZ9ILeomNsM43iIW
-	 Gwb6MXFd8j+yRfea01kGUmxPWbV7gP4nIpo6RVDGoriqsVKZJjr7X0eNjijU1IpQM
-	 8lDp+TCHKuNOoJOYVA==
+	b=IOF4h7nXgJSB7Ppfwi0TdAj3ShpUTKvztX6/sUWsYg19FnT762w5gkv+pxIdfbcL
+	 OJDWn5YTVxBhvxE57qwW/2QtGTQy2u0aWWCKtVY37evfxuv1ADcoL7vDFDN4wFIT3
+	 FtYlsMxJsGdluIpvpHA44BERTsXyG4eJC1ouPWxem9Z42bjLPvH+uUAWlxAxb9h6A
+	 xKvqTM9Mv2iPt4YlwBe7kFk1pxo30nOdkLfzIqwtzUkEihcKQSVsn15hroM7yBIy2
+	 OK48WQ5ZpeHA8ZN5k2F7RFq3lom8bqCu8F1KV3nCf/BwJUfoUs6DY9vS1mcLm8iaW
+	 WVfEZyhMgfRF/1btfg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbRjt-1s9OrZ0Qfp-00ZLjs; Wed, 21
- Aug 2024 00:55:20 +0200
-Message-ID: <a60d90ae-a8df-492b-adaa-35fc8724ff83@gmx.com>
-Date: Wed, 21 Aug 2024 08:25:17 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMobU-1sNv3M1nAS-00LFEW; Wed, 21
+ Aug 2024 01:02:16 +0200
+Message-ID: <6d90baa9-ffc1-4c9d-87b2-4ba89983bef1@gmx.com>
+Date: Wed, 21 Aug 2024 08:32:14 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -61,7 +61,6 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: Errors found in extent allocation tree (single bit flipped)
 To: Pieter P <pieter.p.dev@outlook.com>, linux-btrfs@vger.kernel.org
 References: <AS8P250MB0886A81B469CD5F707144EA38F852@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
- <AS8P250MB0886FC6ADE47901FBD009A6D8F8D2@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,72 +87,55 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <AS8P250MB0886FC6ADE47901FBD009A6D8F8D2@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
+In-Reply-To: <AS8P250MB0886A81B469CD5F707144EA38F852@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4P9lbHZ2J9Yj4maIqzQ9ASQN39gystr5bwGfINUN9pI9JkIMuqR
- 5/btIqjm8WUN+zb5IrJTIBaoHk0oZuY+FQ+fb/c8OVCsXrUOjxYhjfIK2pWhGhkzU+HyHo0
- UHKYD9rWsLS9y6UlqgZC1AcEuIRYQFLldwJ/AYba9hf7a3VumXk35qoKfTThmG4bAJ8DFtl
- dZa8Zg8JIkoDT9qD5rnCA==
+X-Provags-ID: V03:K1:WJ9fj3p6O6IDXdDCNXuEP53EBSWl9o9gS7H0SIbWKb5+ahSYzlu
+ fTh28LjpQFFUdC6eVhTKJAv27AU7oYNtXeWqYHQEu1ioF3CF1mYPzGliBqu0wZT7MQJt3kF
+ yAUUfs9tfvRI5vUlOp1sIVkxQr5xfIqanGGDUJecbWGp6dYUjzTMO3SJtT/1BM3Dsx6RDek
+ 1s+HinVXCvkwH04QL66hA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:H3mREW1QjsI=;8nNAFce+6J5975XO9dz6xL+JzS5
- 4yKqTxvn4SERDPQm+hqEYftVhWNHOOwdqKsno7/CcAFBG7jNzfr1BvMG6DYVlkfwnrt3nm+ex
- Q7BzvRED6tRMVr3oQs8Q0dEOt+gWpnhcxnHnj+sbiOoiOKXKlVZ380XZX/IGsux5O9hQe4/yU
- UD4cCcPf8qVIbBR8yDl8vDeyal2w/CKQYlFUzHfsPRuSEIuAwUCj5GyobHDo0rQgE2mqxXuIk
- J9XDXcR+pkNlUQdk+EhJBHTFx28Om5oloieshSMGyc8XEFTWM0rqN6zU2OkxJH2ThPcvnxqf5
- szfkx0xfyHLjUOuTOmPKynqBaWV8Ja65KwEVoYU14tOX73Z2NGfDDzKD0F79hOMF6u8KmICX8
- AIf0L6HujV6+zKKStIdpR83ZTIA5DlcdhO/SmXV32Reybkk6bqf2yUT/WaQ4w9EFvPJkoX/NZ
- kznE8rBJUkME2jIfbvIgjiuGTI8ePDWmMuVGONiKgk5MwbHtGxpgNAgRdvbW5MFy3WQCOunPL
- tWUoZ8QgUlDhVRrlOrkjkvXLblfw3CcuHzVGwIlaGNC2BJjsjLaoK2196XJkNnCqUsNFcGjvE
- lQ8nIZ6cUidfPx6MpJn6MVs+iTkwzWpm7TW5RHaPGMpwGUIzg8wrxU1iyAKoYDE7IOAyihxvr
- Dbdyrx3J7aR0/VKRvbtrMp1TUMR5pX/61SJiDM3Kvz8xJV8PVgTuXGjuVyBakLtoGaTFEDGJQ
- xikBtrb+3JX8iQNwgOTs77Q+CNEZz6CYpYPBS2TlO7W9szk4Q7GWKCcvRPasyaM9LZ3HjeIxM
- KaFE2tm2blBLV484SMwZF33g==
+UI-OutboundReport: notjunk:1;M01:P0:YZBmQqXZ96o=;h4QIWyedEKa+BBUKiDMq5UhX3Mn
+ tCfrlEk2s5dA01CklFhr8yfOADYGSQuqcdzjD15sd5wy8qx6ImUr2OFFi5kWINttApKOTTB91
+ Ar5xqAEGIIpzZWPr+4G2yCUdG5rajQ2YJSsgllwOyTDKt79spRBynec7ksIFuQ6kgAxTZvUsE
+ 0yMilZSixunjMmXAprMC6y9STc7iSy1WP3K+ii01SJVNFojO3h8yWhVwi0vlcs0ArPfOIfVXM
+ 7DWZV1YatsDOV2MaktG1TRbv9wH7NtZwTa44Err1QiBvF67PGWM8uvLZF0wR6/pWxRg+He5V2
+ bKtdiKa1tsH2xr4W0VDnxz3KGNU+ZgEC1fVX7D+xIXtLuN8D4Lu1TME4PeEca6+tskVhKCMMK
+ u+fY4xUIiIC7QW+ut8xRy9dzvHkshhCuk9rG9VAMc+NKcgkDSHpEM4DkWYFpJCwQm9NBvWNX+
+ rfAOqYDsJP3aen3LgUZCKxST80QXjUV1t+mati8DIGmJcbEIYIlRqA+GpcnM6+VrwhGqquhvK
+ cc0l03oz3F3lrSqIMFzwhbyP5DW3CAN9wj6gQeRfelwzS4c1HBiX4ZUFk5Qiy0pWbxRPTM5FA
+ j39lS5SGtSArYFY8fRdV6RcxMR9EUV271wHeZBeS9XZDnirjXmsut6KJwukUHPP+jkju8gkus
+ /zzvPcwpJvbddhjwZ/1TbeZn+PHuZ/o6HAiJenWCRWWSXOuLEfU1P7bnDaHYCuaPVLxmdTdlM
+ saqMklhLVkROysOb5j+0KRpOu5Wr6wOEUXmKyVJUuJVgU5DoR6z1HkFk3YPHEG2jv2Q120DJO
+ 6FhDDd4mB1CDF0sBITbXQnMtWIX0Vk1NFXxcrpk6dcOwM=
 
 
 
-=E5=9C=A8 2024/8/20 23:31, Pieter P =E5=86=99=E9=81=93:
-> On 12/08/2024 16:57, Pieter P wrote:
->> Can this problem be fixed by running btrfs check --repair from a live
->> USB? (I'm using Ubuntu 22.04 with btrfs-progs v5.16.2).
+=E5=9C=A8 2024/8/13 00:27, Pieter P =E5=86=99=E9=81=93:
+> Hello,
 >
-> Turns out, the answer is no :(
-> I tried this on (a copy of) a backup image of the corrupt file system,
-> and btrfs check --repair simply failed in step [2/7].
-
-The corruption is not in extent tree, but seemingly inside the subvolume
-tree.
-
-And in that case, "btrfs check --mode=3Dlowmem" output may help a little
-more, and the same for "btrfs check --repair --mode=3Dlowmem".
-
+> My btrfs partition suddenly went read-only three different times over
+> the past couple of days. Looking at the dmesg output (see attachment),
+> and then running btrfs check, it seems that a single bit is flipped
+> somewhere in a btrfs bytenr (2216718336 =3D 0x84207000, 5764607545201418=
+24
+> =3D 0x800000084207000).
 >
-> 1. What should my next move be? How can I fix my file system?
+> I've verified that my RAM, SSD and other hardware are fine using Dell's
+> preboot diagnostic tool
 
-If above lowmem mode still doesn't work, I can craft a tool for your
-specific corruption if really needed.
+Unless the system is using ECC memories, I doubt if that diagnostic tool
+makes any difference.
 
-But that will need the dump of your subvolume 257 inode 50058751.
-
-
-> 2. Or if that's not possible, how to figure out which files may be
-> lost/corrupt when copying everything to a fresh btrfs partition?
-
-Subvolume 257, inode 50058751.
-
-
-> 3. When creating a new file system, can I somehow "clone" the subvolumes
-> on my current file system (e.g. @ and @home, and the dozens of
-> subvolumes created by Docker)?
-
-Btrfs send should still be fine, except subvolume 257.
+If there is already a strong indication of bitflip (and yes, it is), a
+full memtest is highly recommended.
+Unless the fs is pretty old and have been run on other systems before.
+(aka, the corruption happened on other systems and not detected until
+the file is going to be deleted).
 
 Thanks,
 Qu
 
->
-> Thanks,
-> Pieter
->
->
+> and Samsung's SSD magician full diagnostic scan.
+[...]
 
