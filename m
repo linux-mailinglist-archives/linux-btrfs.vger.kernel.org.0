@@ -1,72 +1,177 @@
-Return-Path: <linux-btrfs+bounces-7355-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7356-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C38C9594DA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 08:40:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACAB2959613
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 09:27:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27BD81F24BCD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 06:40:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4372228A362
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 07:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589B1175D45;
-	Wed, 21 Aug 2024 06:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF6BC15747C;
+	Wed, 21 Aug 2024 07:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pszP6qaA"
+	dkim=pass (2048-bit key) header.d=wpkg.org header.i=@wpkg.org header.b="gRNwG6aY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mail.virtall.com (mail.virtall.com [46.4.129.203])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220DB170A30;
-	Wed, 21 Aug 2024 06:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5411B81B8
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 07:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.4.129.203
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724222360; cv=none; b=gJr4hWB7QCFbtrDGpoh+zB0Um+2uVtQ1twHftbXijzGSAVsoHHEZJ4yVBMlR1BRpKcbvwaAyh9WjZRMladvbejrpeL6g9JBRtoDaLlvayKKHWlD4X6AA2BDy0JWhe7kl24TY6d/ATqRhcwTp2rzKNJeYRhvFG/9NRJMovkG4hvY=
+	t=1724225222; cv=none; b=Dr3jD6CJdxK1j4Q5NjvrpJpjIOX4zmzCalDFL9F0dnwwkvK/5UQdV/xFRatlqAv18DIbKF9xvtabFe7yD0fAErG/W20bw5gShId5DkSrfgciCtQgip85DoUAL0rrhHLFJjRwCQZn0GlnByUsilRGRS9GaLqNzOqpzPxWaBEdsXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724222360; c=relaxed/simple;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p0k6dH9U6hp2H3kmCApKq3dhMdBNBmYv+paw2TdtJw325PK1jnsn2Q5Q2bhoQjIynpYjH9zZwCUVZAzQ7aSu0Nd8K/025luRBXwqsxhI171p3X9oCrDJdsVcW5hc4XnMAjYoXnEgZ4FxjbOVwOrkKyggUBPU/bubusYzc0XTeGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pszP6qaA; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=pszP6qaAzRBLgDguJQ9OwdSRPm
-	Sg3lWuQ5LejXMq3wTJaC7OjpGBstaMJHveLi0bc3w1Kg74TVpgCcuZhll/58OeOs9gb4EFKJJTFTO
-	QieP0TM8efehe/no8wtyP4VCZe24o8h5KA32ZCqQnDMSyKUH17g33LGyiOGT58rMwXSHEOytBnUIA
-	fyFqELXHpoPNVh+9w3yTJ+791h2B0HsrurQ1DR4evyGqBELRGp8B3SuHXxhEeBVWmDvihOG3qs53D
-	WtcbOl42CA+cJ5L9IEMps6dn7gTJBPY8PK0fdn2Ms+rjPO2O/OH6bZldsHU1Aku3nYrxcQR/a2KP7
-	0nVLZWBQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgf02-00000007kHx-2qlv;
-	Wed, 21 Aug 2024 06:39:18 +0000
-Date: Tue, 20 Aug 2024 23:39:18 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH fstests v2] generic/755: test that inode's ctime is
- updated on unlink
-Message-ID: <ZsWLlnzcHQj1ih26@infradead.org>
-References: <20240820-master-v2-1-41703dddcc32@kernel.org>
+	s=arc-20240116; t=1724225222; c=relaxed/simple;
+	bh=kvOl9rQMMnrSefp7hG1yeIDQi9ZDHU6rutCkCO3yCoA=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=HW8aMM4mdt4QJB5GEnMjnc8dmTaL4haMal7CLZx3mSHmhKexqlWHC4IPRy/DfyIRLEDetIrjZQ0cMtddCZL4fMHO4YP3koRP7dE1XeNfOoZewBjLXth6uQqXqBXCF/3jsgBc3I3GrrRW0O6oEJtbxhWIv1o0RHB42Nx+wsNxMi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wpkg.org; spf=pass smtp.mailfrom=wpkg.org; dkim=pass (2048-bit key) header.d=wpkg.org header.i=@wpkg.org header.b=gRNwG6aY; arc=none smtp.client-ip=46.4.129.203
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wpkg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wpkg.org
+Received: from mail.virtall.com (localhost [127.0.0.1])
+	by mail.virtall.com (Postfix) with ESMTP id 7984113F063D6;
+	Wed, 21 Aug 2024 07:26:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wpkg.org; s=default;
+	t=1724225210; bh=PYCcfCyowPKmAbMAF2yBgVqahQToKC+29Tb0sT/ynH4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=gRNwG6aYTxOm77ab7jFQ7+UzqW70QRtjA1VTF/IQCO7FNTu7nMYhNkVUNhd0LRXOZ
+	 PDO2Ow7qWPoALZfygiP+mGHvgpPfNkCnTMfgeSYR8cSlBAAuWnqoAzQfW8nWmpSjYV
+	 YiR4AAjuJqvNqk9XQk4Xt4SzWVclXDDAPLLX7bUVwPOzbPCpjfIjcRK+oggUd7R2Tl
+	 XxejntJUP8cecsBv1T/vm3iyNymHPZSEgks519nlZvAkvZfoSKMcHBoYUWOoWTf+ft
+	 euY34jF4QQcbEiSqN3G5B0sMpoipdYJSeapEw46/+ExZT8TbF2onhrZIzQqg54pNOy
+	 DS6sludILVltA==
+X-Fuglu-Suspect: 5098512da23c44f8aacdf1e977bee163
+X-Fuglu-Spamstatus: NO
+Received: from localhost (localhost [127.0.0.1]) (Authenticated sender: tch@virtall.com)
+	by mail.virtall.com (Postfix) with ESMTPSA;
+	Wed, 21 Aug 2024 07:26:43 +0000 (UTC)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240820-master-v2-1-41703dddcc32@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Date: Wed, 21 Aug 2024 09:26:42 +0200
+From: Tomasz Chmielewski <mangoo@wpkg.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: out of space (>865 GB free), filesystem remounts read-only - how
+ to recover?
+In-Reply-To: <6b17f157-49c3-4874-898f-68541b2dce0a@gmx.com>
+References: <f11daee5026d303e673d480f3f812b15@wpkg.org>
+ <6b17f157-49c3-4874-898f-68541b2dce0a@gmx.com>
+Message-ID: <6505eaf6b2bdaefa835944c7617d2725@wpkg.org>
+X-Sender: mangoo@wpkg.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 
-Looks good:
+On 2024-08-21 00:09, Qu Wenruo wrote:
+> 在 2024/8/20 23:07, Tomasz Chmielewski 写道:
+>> My 44 TB filesystem was getting full (~865 GB free out of 44 TB in
+>> total), so I thought removing some old data would be a good thing to 
+>> do.
+> 
+> btrfs fi usage output please.
+> 
+> I bet it's some btrfs RAID setup, maybe RAID1/10 or RAID1C3/C4 for 
+> metadata.
+> And the disk usages got unbalanced, the metadata overcommitment did a
+> wrong estimation and cause the ENOSPC.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+# btrfs filesystem usage /data1
+Overall:
+     Device size:                  43.75TiB
+     Device allocated:             43.66TiB
+     Device unallocated:          100.00GiB
+     Device missing:                  0.00B
+     Used:                         42.51TiB
+     Free (estimated):            951.71GiB      (min: 926.71GiB)
+     Free (statfs, df):           876.71GiB
+     Data ratio:                       1.33
+     Metadata ratio:                   2.00
+     Global reserve:              512.00MiB      (used: 64.00KiB)
+     Multiple profiles:                  no
 
+Data,RAID5: Size:32.63TiB, Used:31.78TiB (97.38%)
+    /dev/sdc1      10.88TiB
+    /dev/sdd1      10.88TiB
+    /dev/sde1      10.88TiB
+    /dev/sdf1      10.88TiB
+
+Metadata,RAID1: Size:73.00GiB, Used:71.89GiB (98.48%)
+    /dev/sdc1      37.00GiB
+    /dev/sdd1      37.00GiB
+    /dev/sde1      36.00GiB
+    /dev/sdf1      36.00GiB
+
+System,RAID1: Size:8.00MiB, Used:2.30MiB (28.71%)
+    /dev/sde1       8.00MiB
+    /dev/sdf1       8.00MiB
+
+Unallocated:
+    /dev/sdc1       1.00MiB
+    /dev/sdd1       1.00MiB
+    /dev/sde1       1.00MiB
+    /dev/sdf1       1.00MiB
+    /dev/loop0    100.00GiB
+# btrfs filesystem usage /data1
+Overall:
+     Device size:                  43.75TiB
+     Device allocated:             43.66TiB
+     Device unallocated:          100.00GiB
+     Device missing:                  0.00B
+     Used:                         42.51TiB
+     Free (estimated):            951.71GiB      (min: 926.71GiB)
+     Free (statfs, df):           876.71GiB
+     Data ratio:                       1.33
+     Metadata ratio:                   2.00
+     Global reserve:              512.00MiB      (used: 64.00KiB)
+     Multiple profiles:                  no
+
+Data,RAID5: Size:32.63TiB, Used:31.78TiB (97.38%)
+    /dev/sdc1      10.88TiB
+    /dev/sdd1      10.88TiB
+    /dev/sde1      10.88TiB
+    /dev/sdf1      10.88TiB
+
+Metadata,RAID1: Size:73.00GiB, Used:71.89GiB (98.48%)
+    /dev/sdc1      37.00GiB
+    /dev/sdd1      37.00GiB
+    /dev/sde1      36.00GiB
+    /dev/sdf1      36.00GiB
+
+System,RAID1: Size:8.00MiB, Used:2.30MiB (28.71%)
+    /dev/sde1       8.00MiB
+    /dev/sdf1       8.00MiB
+
+Unallocated:
+    /dev/sdc1       1.00MiB
+    /dev/sdd1       1.00MiB
+    /dev/sde1       1.00MiB
+    /dev/sdf1       1.00MiB
+    /dev/loop0    100.00GiB
+
+
+# btrfs filesystem df /data1
+Data, RAID5: total=32.63TiB, used=31.78TiB
+System, RAID1: total=8.00MiB, used=2.30MiB
+Metadata, RAID1: total=73.00GiB, used=71.89GiB
+GlobalReserve, single: total=512.00MiB, used=64.00KiB
+
+
+# btrfs filesystem show /data1
+Label: 'data'  uuid: a80ce575-8c39-4065-80ce-2ca015fa1d51
+         Total devices 5 FS bytes used 31.85TiB
+         devid    1 size 10.91TiB used 10.91TiB path /dev/sdc1
+         devid    2 size 10.91TiB used 10.91TiB path /dev/sdd1
+         devid    3 size 10.91TiB used 10.91TiB path /dev/sde1
+         devid    4 size 10.91TiB used 10.91TiB path /dev/sdf1
+         devid    5 size 100.00GiB used 0.00B path /dev/loop0
+
+
+Tomasz
 
