@@ -1,79 +1,87 @@
-Return-Path: <linux-btrfs+bounces-7374-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7375-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 369E995A463
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 20:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76D3F95A4E3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 20:47:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E214A282D68
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 18:08:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F0AA284993
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 18:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F3A1B3B0A;
-	Wed, 21 Aug 2024 18:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FEE1B3B21;
+	Wed, 21 Aug 2024 18:47:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ZbqPWpPF"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q0zLGIgs"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36142142631
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 18:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2756516BE25
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 18:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724263687; cv=none; b=qlv5hQtFQlv+isEJPbi2J2LTwlpBRNhT66Mm0MF75caqMOe055085Tv4d9iKDiJ3cWIojtkaAY+wFu6j2RKtM2fYAKddOMvaXGbfeFYvekZ3qsdDM+odAaA49ZZHNpPr9Fm8HnXBLuoy7u2w/mXLvEBhw99xktVbYWmN5TUb1Ek=
+	t=1724266023; cv=none; b=Vu0FVrlb7J8J0uAlqv7orcnt/K5hD3fiC2/+VlJKoECiAsRZfV+2JqjBMXxcfUmM6FglWadWRVC3y3laDgYijakKZsHwf0EDaxiCRKoFnU6Y+8tqRzHb1E1zsao69Dy0ri5gRCFtcAPRFmgvW22zl2oNVIep9u57mnDpppLZUdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724263687; c=relaxed/simple;
-	bh=0lVqIJGc2EApbGk353iTzWJaICl9QseyhZch818YFDo=;
+	s=arc-20240116; t=1724266023; c=relaxed/simple;
+	bh=W9Hyq6Il41NvtHVMGjlZLIU+xP8f0gf2RcjpKVRqm80=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NMVnpojN2UMOOh5StOwRHe61oEKrTJrVTRMzv0zkd3KC0wZaYdgBxfTqTTUGOJFAOnihqNgWMw6tX2O6bq/RPYBRTQgrQSX1QJ88c248vYIEFTX++ljCe6HOO7W7vIxL7C1jKuP2cxc53NOMu51nsyMzzD4L+4T3ADDfeGltLUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=ZbqPWpPF; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-e05f25fb96eso14113276.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 11:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1724263685; x=1724868485; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=g2dWuKHtJVS6aU/UltCyUUTv5aoTU265tGKaSxNwpdg=;
-        b=ZbqPWpPFKP4dDIi9l343J99R9GzBkAFGtkyLN/NINrnaUfrocUnyG4xqj8LMLU185R
-         IjzZjsbh0JSb6u81j8MYBgExi0oOFyUlXDWvDf0VyW7CNMBjqc/z8D9eM/2hMcY2K+M+
-         udE+wUTDwTH2KEv3d62ivFWaV95zVqyLow/yOuqXY4RN1chz2fsbx/ns5MmUuWkkTIMi
-         DfRqfbdnI2k3ePy09LiF4YnZ07ehESpLoVaZA+RPDVgUz2C6PD7JfoVIjr3/O1aClQhb
-         35ADv7dW/CTQF7GDKOE4hOE+m0d8B7mEapa9ckplW2MVfujVPzbrxvDg72VFawz+9JKd
-         qQ9Q==
+	 Content-Type:Content-Disposition:In-Reply-To; b=q1sgDVfOEl49YjE4TLOq9LT/rooBzj7IQYdAOR4mFusnfcn05fcxo9o6gVTtsAvX1AYrRW2iXCZ4UK13iGz+cqTEBLPIBYfKwp3ENy+YIX+EPQmNhKMkiwJLWeAeMDfoQHCJ9O6dZWUSenHqkcBez6luaaU2QoCzfjt1OJZ41IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q0zLGIgs; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724266019;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t3HwX0urRRVamqrd2OG6BEVxWEdfk5MbvAIpPHwQ/pM=;
+	b=Q0zLGIgsAilvYgClj4e10o/ypExBsTSwr5jAUmasDkKVs+oLl9tmhHQg0tXBjX+KdPz50h
+	NweZ/IM3uS4327xz1N7JM3JtNECOwrlemFOUIPes0ucVip/BPr3QGaDzFm0FHcuPX2Lpkn
+	0oMMmTWph3Yrac/dgH3s7XGRkMgz/NM=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-375-ZdtplWKANBqhx8retCMq5w-1; Wed, 21 Aug 2024 14:46:58 -0400
+X-MC-Unique: ZdtplWKANBqhx8retCMq5w-1
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-7143016f82bso2938b3a.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 11:46:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724263685; x=1724868485;
+        d=1e100.net; s=20230601; t=1724266017; x=1724870817;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=g2dWuKHtJVS6aU/UltCyUUTv5aoTU265tGKaSxNwpdg=;
-        b=wp1LpQs+2djIgqUoLFWjsKXniHqKVwUx11FtDqchzyrj4WnsoyATFKj2B0I2LEd9Cf
-         XvUQRG74WrDbvv6uMBumQ21sHFWYFDyzikx4CV7Ia4xpyex7enH7cj6TiiwE9DJV7OHj
-         oTb8pIr+kMNXfEEDZhAYM6pr8YlZ+LWNyYoLRknAwZKnBmNrdt1gZcvdflGQhl1IyiUg
-         0rlBmMMOAqBiMCgocYYUySrHpThlhAGHjIgpOH/3adh+WS79xm84ExqNoz1N78eXtQvA
-         xEX6DVKoY54/b0HI4nK1RC94Ay7i5oUe7T/VAhiji+OI1djbZ0Bb3Fo/0Z2reZUMqKYj
-         xkUQ==
-X-Gm-Message-State: AOJu0YyXZBqAj+/hxraHftCnc5h9iifAUNlZ9XZohYfjXrnTncA/BQcB
-	tHWn4l/avQgrx6twYONc9TmzvS0GlVj3jkyNArQRe60hgMj8mhIa0Gn0OQrDNNQ=
-X-Google-Smtp-Source: AGHT+IGnmZPgepuL3HGkgA7tjMbmplROCP26e6nLpdI6NT2SWykOfXGaiQxacnbMvy6ZRM2xdJfSRA==
-X-Received: by 2002:a05:6902:220e:b0:e14:db6f:d94b with SMTP id 3f1490d57ef6-e166553a542mr3575809276.44.1724263685226;
-        Wed, 21 Aug 2024 11:08:05 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e1171e709e1sm3098525276.34.2024.08.21.11.08.04
+        bh=t3HwX0urRRVamqrd2OG6BEVxWEdfk5MbvAIpPHwQ/pM=;
+        b=nihHs1cp+35dcePKW+yN6TiznowoBo71SGOu617SWJgXsRsKY/3yG2txWrL+WjyGn/
+         IvhsA9U3yCQ1s/Oe5mq4LrMpfLuXDNdRI3bEFe/uDZoZ2Ep6CbkThQOYPxFefYBisL4P
+         kJ9/jlI/KRsuqQ8F42PvvAbSvMsbo5Uc4c6WE4r+bohkAvAtAAnnkXBwiwEGrBTRdsH4
+         mRgfi/UwgCAkUojnthxC3NPxjd3jb7EtwSYMzdYRgKJGeLXWIU5V1S5RzRJh9VqMJaZ5
+         WQ2Smye9bm301D047jwCa7grJBZq9xpPPJf0YnFV793IHQdkKcwuJYM1yrKgS8l7WJtS
+         u9Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCX+W8fyxOzTWE/JgXdIh/zl+WypsAeh6hgJXPB58CC2vDU6gLKjvi93tC2abriRocIwBPHV+sF3VKMeLQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0HFIovXKZO8kiDfYW5eTkJkUJAio84ONQw+SdI8vN8+VZ5+gB
+	2prLWK+Z4ukjGpgcdts7xgoiQ2/rBLZdrh1RAkvczAz6Wnz7WuGf2usXzWPUe+jdydu/pRrzA17
+	0YmGDrBgKAr12dYpcRfh3wnjGe9vV8Rldmcrd/QHi7Sj1xQG9sMsJttte4LsH
+X-Received: by 2002:a05:6a00:4b10:b0:714:2069:d90e with SMTP id d2e1a72fcca58-7142354ccd6mr3761369b3a.26.1724266017407;
+        Wed, 21 Aug 2024 11:46:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHTVQbwYr3xDyB+2yy0tUVPKts85eVqVshKQfM1kr1bAaaAiv7Zipo+038I6s5nWX1sKWBFyA==
+X-Received: by 2002:a05:6a00:4b10:b0:714:2069:d90e with SMTP id d2e1a72fcca58-7142354ccd6mr3761345b3a.26.1724266016909;
+        Wed, 21 Aug 2024 11:46:56 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-714209bf529sm1958615b3a.160.2024.08.21.11.46.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 11:08:04 -0700 (PDT)
-Date: Wed, 21 Aug 2024 14:08:04 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Julian Sun <sunjunchao2870@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
-	syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix the race between umount and btrfs-cleaner
-Message-ID: <20240821180804.GF1998418@perftesting>
-References: <20240821114628.645455-1-sunjunchao2870@gmail.com>
+        Wed, 21 Aug 2024 11:46:56 -0700 (PDT)
+Date: Thu, 22 Aug 2024 02:46:53 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH fstests v2] generic/755: test that inode's ctime is
+ updated on unlink
+Message-ID: <20240821184653.dbwzyp2tiblsmkzw@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20240820-master-v2-1-41703dddcc32@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,33 +90,105 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240821114628.645455-1-sunjunchao2870@gmail.com>
+In-Reply-To: <20240820-master-v2-1-41703dddcc32@kernel.org>
 
-On Wed, Aug 21, 2024 at 07:46:28PM +0800, Julian Sun wrote:
-> There is a race condition generic_shutdown_super() and
-> __btrfs_run_defrag_inode().
-> Consider the following scenario:
+On Tue, Aug 20, 2024 at 03:48:25PM -0400, Jeff Layton wrote:
+> I recently found and fixed a bug in btrfs where it wasn't updating the
+> citme on the target inode when unlinking [1]. Add a fstest for this.
 > 
-> umount thread:             btrfs-cleaner thread:
-> 			     btrfs_run_delayed_iputs()
-> 			       ->run_delayed_iput_locked()
-> 				->iput(inode)
-> 				  // Here the inode (ie ino 261) will be cleared and freed
-> btrfs_kill_super()
->   ->generic_shutdown_super()
->     			     btrfs_run_defrag_inodes()
-> 			       ->__btrfs_run_defrag_inode()
-> 				->btrfs_iget(ino)
-> 				// The inode 261 was recreated with i_count=1
-> 				// and added to the sb list
->     ->evict_inodes(sb)          // After some work
->     // inode 261 was added      ->iput(inode)
->     // to the dispose list        ->iput_funal()
->       ->evict(inode)                ->evict(inode)
+> [1]: https://lore.kernel.org/linux-btrfs/20240812-btrfs-unlink-v1-1-ee5c2ef538eb@kernel.org/
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+> HCH suggested I roll a fstest for this problem that I found in btrfs the
+> other day. This just creates a file and a hardlink to it, statx's it and
+> then unlinks the hardlink and statx's it again. The ctimes are then
+> compared.
+> ---
+> Changes in v2:
+> - Turn it into a shell script.
+> - Link to v1: https://lore.kernel.org/r/20240813-master-v1-1-862678cc4000@kernel.org
+> ---
+>  tests/generic/755     | 38 ++++++++++++++++++++++++++++++++++++++
+>  tests/generic/755.out |  2 ++
+>  2 files changed, 40 insertions(+)
+> 
+> diff --git a/tests/generic/755 b/tests/generic/755
+> new file mode 100755
+> index 000000000000..68da3b20073f
+> --- /dev/null
+> +++ b/tests/generic/755
+> @@ -0,0 +1,38 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2024, Jeff Layton <jlayton@kernel.org>
+> +#
+> +# FS QA Test No. 755
+> +#
+> +# Create a file, stat it and then unlink it. Does the ctime of the
+> +# target inode change?
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick
+> +
+> +_require_test
+> +_require_test_program unlink-ctime
+                         ^^^^
+This V2 shouldn't require this program, it's cause this case _notrun directly.
+The 3bc2ac2f8f0b ("btrfs: update target inode's ctime on unlink") has been merged,
 
-This is wrong though, evict_inodes() isn't supposed to isolate if i_count == 1,
-and iput_final sets I_FREEING, so we won't get the evict() from evict_inodes.
-Something else is happening here.  Thanks,
+I'll remove this "_require_test_program" line, and add:
+[ "$FSTYP = btrfs"] && _fixed_by_kernel_commit 3bc2ac2f8f0b \
+	"btrfs: update target inode's ctime on unlink"
 
-Josef
+when I merge this patch. Others looks good to me.
+
+Reviewed-by: Zorro Lang <zlang@redhat.com>
+
+Thanks,
+Zorro
+
+> +
+> +testfile="$TEST_DIR/unlink-ctime1.$$"
+> +testlink="$TEST_DIR/unlink-ctime2.$$"
+> +
+> +rm -f $testfile $testlink
+> +touch $testfile
+> +ln $testfile $testlink
+> +
+> +time1=$(stat -c "%Z" $testfile)
+> +
+> +sleep 2
+> +unlink $testlink
+> +
+> +time2=$(stat -c "%Z" $testfile)
+> +
+> +unlink $testfile
+> +
+> +if [ $time1 -eq $time2 ]; then
+> +	echo "Target's ctime did not change after unlink!"
+> +fi
+> +
+> +echo Silence is golden
+> +status=0
+> +exit
+> diff --git a/tests/generic/755.out b/tests/generic/755.out
+> new file mode 100644
+> index 000000000000..7c9ea51cd298
+> --- /dev/null
+> +++ b/tests/generic/755.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 755
+> +Silence is golden
+> 
+> ---
+> base-commit: f5ada754d5838d29fd270257003d0d123a9d1cd2
+> change-id: 20240813-master-e3b46de630bd
+> 
+> Best regards,
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
+> 
+
 
