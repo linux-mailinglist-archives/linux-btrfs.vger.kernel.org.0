@@ -1,129 +1,100 @@
-Return-Path: <linux-btrfs+bounces-7378-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7379-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D661495A5B2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 22:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D76E95A6A1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 23:31:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A5031F22FA6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 20:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 258FD1F22809
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 21:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A16116FF44;
-	Wed, 21 Aug 2024 20:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7748178378;
+	Wed, 21 Aug 2024 21:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="VNTU/eEH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BruqV51d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-ot1-f67.google.com (mail-ot1-f67.google.com [209.85.210.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9CCB1D12F4
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 20:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7C513A3E8
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 21:31:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724271222; cv=none; b=JbZ0VMpmp+60oRjziCuM/Wp4GAv+V4Uk9OB3AqKFXs8WraHrRt1vQlzPkhXk2Xf6i4He9J146Y29FBNMv1OW42+ewD6p8gt3NhRUaTZ1h0ghn4LopA8QKUiwXkMw64fp71G5JR1Jjeb74dYW6vjrcRb7W2GuftsPuJytHzLy/dc=
+	t=1724275904; cv=none; b=Zrvwv3nrSEHAgIHyff+zXIXF890Cjs6RIAMXS5Zd3iFZY9V8d6KROsb8+JGnnJzFrvmiwzYYqnIiVr/d8cBkn49KhKALJPHYOYgbm0f0/zOT5Q8bwouSu2PH/1LOK+ygku058gxDZs3FawXuRtLvg98U2xyMciW1BlYds6EUh+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724271222; c=relaxed/simple;
-	bh=LURSiKjo2JQN9dRGWFRkWt6N1bvrp+X/h+jx6sqK4L0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k+ORTNSYHvspUDQEVKszL5L5ECq9ND8Cnjri87GpC+WbMiT+mJG/HyzaObK0OWXufIPn7rh2pUea93LghT8+6NVZV32XxuilJppvmhO8fIVZzkoQup26KVa+qxzZmXcoSXq+phnEnavwrwmdZ11T0cYZ5AqsIKQx7V6kO2dU//U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=VNTU/eEH; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e13c23dbabdso118414276.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 13:13:40 -0700 (PDT)
+	s=arc-20240116; t=1724275904; c=relaxed/simple;
+	bh=H8GdSP2EjhV2e+6TemI5mXMEPE1mhhOlR+7kxKShS+8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=mQ0CZeCYxzr7KpookwSrDeygxVddQbu9Gcldj1wMv06kYTkv/0vwY2DGbPmPTqjn6R1yWBW8gmPHnBYQYFNzEwW3L8g6H0RV92POD4unTN3tbDeFxL/zw3UwdEZGnRC85aSN6Qv+xMBCMnh6lBzLk28FaGY44qsVaJHcJS041SA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BruqV51d; arc=none smtp.client-ip=209.85.210.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f67.google.com with SMTP id 46e09a7af769-70949118d26so155389a34.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 14:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1724271220; x=1724876020; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YYmNcsedkOqUFLEQeKe1yqW9pGRfFKO4juWfk6FKFmU=;
-        b=VNTU/eEH94wpXyGmPB1BdqE68+dwIk+Ck91tBIZz89QN/TAWRgFxnuLjLh8CWAygFd
-         Oc5YbbkTAbBBiT3owI6CPH9jSCEM7/xk2Qa0L5qhjygcOgynDVKSYXVqTvx2Bi0/g+Ur
-         2Rzmk+xxYtV5uNvkYoWCVcM2V9LpuO12nvIjtT+AudVjwNgRee3l7cDbSqzazsS+E4lU
-         rd6ZQ7yNtfi9ng02gkbBc1ufcPxkHvWiWNEMedQX4FQ9YiZ05kW3L0WvqpVwide7o1CE
-         D1lZ8PGdH5KXd8t/Cc1rPE+IkXnVAzfcYvem9QLRt56kA7epJB9I8pOC723Jf04zFtGg
-         HFWQ==
+        d=gmail.com; s=20230601; t=1724275900; x=1724880700; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrWaLCMet6s+dAWavkF789pUfClW0cMRPzr3bcI9j8I=;
+        b=BruqV51dhzEYAEGAUaK4hlIEpa+5rBzPkCaAl2c6DTPzqIacSsMHcX3/DsySogWQsD
+         V72EzPLgVce5re5cuW2eZXxY+tC5VMYGaESa2JwkLvN6AZH3mYp18d80cX9VSmSU4XNb
+         ZfOijgxDaP2ja6JnjfjK6jLVJDaJRCZLmibjl8R1gxrKYIXNqybOziz+YAmk0k3G0Ls4
+         Vz85j2yntwvE+LRpWDWPIygootTYouPsmA61BhEfNXmSuJTqBlGqI3VFmu5UgfzPzB03
+         UM+SiosYF8x2P+4hWWXwBq4e8njI2N/YqJUBXU2qLz0vkSJ274WFwWtrdzyH3oHnfAMX
+         MT6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724271220; x=1724876020;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YYmNcsedkOqUFLEQeKe1yqW9pGRfFKO4juWfk6FKFmU=;
-        b=cEObY1LF6vZks0u7GbmhVhMGsgfuZXK7tdK+YdoZhpCLD7pUM9H80y2NHvUTrxZWW7
-         +KWc/BRpXkQ4vD03A9g1vRkmqg4d/alZYgFZhy0R0TgX03+jY7vzTQkd/3+3b99djZML
-         Mgs6Dod+tVW0UBEoSjNrLcVe+1VBEtKyhO/ri2qQygXtK/xBdxD7YuEziPeU0j0KecNa
-         i65ZNd+aY6TOD3LDDIf5NbloNUQI7OhdlmufImKC2Loh+d69icEsXHjK9IiYGdC9AQBn
-         HvTW4r2eQpfoWsTduEmpxp44HIL/S2RYtxBJKKJsKzk9ga7sfRVRgd7fYd18bE6F3Tzn
-         McOA==
-X-Forwarded-Encrypted: i=1; AJvYcCX3jVOXixeeel7dKv1j6Vn/m+teuLyfXMHqd1AvBagpwCzGWcRJJMBKBOnpJ0MRfMGM7w7xCiM33HKOCw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxC2WHquXyoQuC1dszsNr8FpFcI5ltdmiSfAzJ9r9Mn90Hs8J9F
-	EQXR5ySdX+W47VDVyHjol0Y/VOG4QKpS39Ik3nWPqayUFsIFvBhJ5TIc7hwURt8=
-X-Google-Smtp-Source: AGHT+IGx0uv0WJiwFWZKjviM9+GmZlu0vQylW48VVx9PfvDLz248cWEULf/z5v0Gbzu1ZFB5VbSdUw==
-X-Received: by 2002:a05:6902:2508:b0:e16:4d32:adcd with SMTP id 3f1490d57ef6-e166549c3damr3770246276.29.1724271219864;
-        Wed, 21 Aug 2024 13:13:39 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e178e67e660sm3818276.54.2024.08.21.13.13.39
+        d=1e100.net; s=20230601; t=1724275900; x=1724880700;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrWaLCMet6s+dAWavkF789pUfClW0cMRPzr3bcI9j8I=;
+        b=ibOkZnTHCAL0Sx7IyqcJ/8wVdtR4Zn3i3fdA5xvcDo3LWDVYBmzns/irkm9Cd/rn2L
+         sy/T5icrcK4UTf3YYlDOj+LTVYfkzVM2LlQ4XIogqjl3Y2VWoNN7k8XCMewJn1NM0Iwf
+         rHxK+yFNe5ia1t9Y8StBQzqphHoCmo5rkLnKp57bGMBZ7p/B4MwF1tPoAxy1mEThA2gk
+         4vmmMlXyNMauS4Mbyxy7zY4uDo2XDH63zW5Ypf4RpsqV/5SB8Ydl+NSvqr9SsI6CXMz3
+         rC3NYXPy7MKvxYR8qgCbDEmhkpcd2dHX4dJvgwwVZ6lp1pQLjMH7Ey84qD0awX/HtXR1
+         JIPg==
+X-Gm-Message-State: AOJu0YyJcRnKogTuYXcElovOpaDv1022hGeM/+uAt7FKCQOhDJzSxCl6
+	/tLp2bW5VfC66lFSn1A9MgGcVYZGJxNzwd6xFLPgay61XkWARq13EPw+inxx
+X-Google-Smtp-Source: AGHT+IG0OKr43MnEEuF7WiAwBsbaXiOhxhAt4qfuTpzbjIqbbEkiN0V1i2CZBZW7GS+JZTLSO4sHGg==
+X-Received: by 2002:a05:6870:d14d:b0:270:1708:b7 with SMTP id 586e51a60fabf-2737ef57af6mr3877639fac.28.1724275900339;
+        Wed, 21 Aug 2024 14:31:40 -0700 (PDT)
+Received: from localhost (fwdproxy-eag-114.fbsv.net. [2a03:2880:3ff:72::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-273ce73b661sm25497fac.0.2024.08.21.14.31.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Aug 2024 13:13:39 -0700 (PDT)
-Date: Wed, 21 Aug 2024 16:13:38 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: syzbot <syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com>
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (6)
-Message-ID: <20240821201338.GA2109582@perftesting>
-References: <0000000000008f55e4062036c827@google.com>
+        Wed, 21 Aug 2024 14:31:40 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v3 0/2] clean up iget_path, read_locked_inode
+Date: Wed, 21 Aug 2024 14:31:01 -0700
+Message-ID: <cover.1724267937.git.loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000008f55e4062036c827@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 21, 2024 at 12:45:25PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    5c43d43bad35 Merge branches 'for-next/acpi', 'for-next/mis..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13471a05980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c91f83ae59feaa1f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=dfb6eff2a68b42d557d3
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10efded5980000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e94093980000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/cc2dd4be620e/disk-5c43d43b.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/81d40d99ddbf/vmlinux-5c43d43b.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/bc6aed0f2bc5/Image-5c43d43b.gz.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/d55321fffedc/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com
-> 
-> BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+The first patch moves the path allocation from
+btrfs_read_locked_inode to btrfs_iget_path. It makes
+more sense to handle a path allocation outside of 
+read_locked_inode.
 
-Can we disable syzbot issues for this specific error?  Btrfs uses lockdep
-annotations for our tree locks, so we _easily_ cross this threshold on the
-default configuration.  Our CI config requires the following settings to get
-lockdep to work longer than two or three tests
+The second patch moves the clean up code from
+btrfs_iget_path into btrfs_read_locked_inode 
+simplifying btrfs_iget_path.
 
-CONFIG_LOCKDEP_BITS=20
-CONFIG_LOCKDEP_CHAINS_BITS=20
-CONFIG_LOCKDEP_STACK_TRACE_BITS=19
-CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
-CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
+Leo Martins (2):
+  btrfs: move path allocation to btrfs_iget_path
+  btrfs: move cleanup code to read_locked_inode
 
-but there's no way to require that in our config (nor do I think we should
-really be able to tbqh).  It makes more sense for syzbot to just ignore this
-particular error as it's not actually a bug.  Thanks,
+ fs/btrfs/inode.c | 125 +++++++++++++++++++++++------------------------
+ 1 file changed, 62 insertions(+), 63 deletions(-)
 
-Josef
+-- 
+2.43.5
+
 
