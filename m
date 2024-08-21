@@ -1,153 +1,129 @@
-Return-Path: <linux-btrfs+bounces-7377-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7378-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E798795A563
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 21:45:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D661495A5B2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 22:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2744F1C220E7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 19:45:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A5031F22FA6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 20:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37AFE16F0CB;
-	Wed, 21 Aug 2024 19:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A16116FF44;
+	Wed, 21 Aug 2024 20:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="VNTU/eEH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E4C136352
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 19:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9CCB1D12F4
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 20:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724269527; cv=none; b=TOBbM1EDovay7XBEm8v5TDquoXPRj46aJjfxcdljgJ0EFpnWufRRNPqU1IaH6AC+qm/DRMJAW++guqmWwbBUCa09DLKmADHumw7L3QZW8tw3w+lsKZUQgBaS0uh7aqOXhILviee59O0YA33x0C52+OQJgNUrGfwNjE4X8rVNVB0=
+	t=1724271222; cv=none; b=JbZ0VMpmp+60oRjziCuM/Wp4GAv+V4Uk9OB3AqKFXs8WraHrRt1vQlzPkhXk2Xf6i4He9J146Y29FBNMv1OW42+ewD6p8gt3NhRUaTZ1h0ghn4LopA8QKUiwXkMw64fp71G5JR1Jjeb74dYW6vjrcRb7W2GuftsPuJytHzLy/dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724269527; c=relaxed/simple;
-	bh=Xbh2IDk8CQzJBqLV0qUdcsKypBnfwPCGDgLgVfvmoog=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bwB3Bof4Lt7smLgE58GJvloy9dXw4oI7Uq7ofsLYJI9uGe9UNgVc9TgA2TkWyKnINYEj+PcXyQm0+u53xTiLU7XfyV+ru9aCcNnvBxaxtszmePCUcP6fpqTwJwBZkSkd9eK82uP2uwx+/m9oOo3zLjC3d3ct1ixAe/4ljTuSFWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-39d10b6da2dso346695ab.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 12:45:26 -0700 (PDT)
+	s=arc-20240116; t=1724271222; c=relaxed/simple;
+	bh=LURSiKjo2JQN9dRGWFRkWt6N1bvrp+X/h+jx6sqK4L0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k+ORTNSYHvspUDQEVKszL5L5ECq9ND8Cnjri87GpC+WbMiT+mJG/HyzaObK0OWXufIPn7rh2pUea93LghT8+6NVZV32XxuilJppvmhO8fIVZzkoQup26KVa+qxzZmXcoSXq+phnEnavwrwmdZ11T0cYZ5AqsIKQx7V6kO2dU//U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=VNTU/eEH; arc=none smtp.client-ip=209.85.219.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e13c23dbabdso118414276.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 13:13:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1724271220; x=1724876020; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YYmNcsedkOqUFLEQeKe1yqW9pGRfFKO4juWfk6FKFmU=;
+        b=VNTU/eEH94wpXyGmPB1BdqE68+dwIk+Ck91tBIZz89QN/TAWRgFxnuLjLh8CWAygFd
+         Oc5YbbkTAbBBiT3owI6CPH9jSCEM7/xk2Qa0L5qhjygcOgynDVKSYXVqTvx2Bi0/g+Ur
+         2Rzmk+xxYtV5uNvkYoWCVcM2V9LpuO12nvIjtT+AudVjwNgRee3l7cDbSqzazsS+E4lU
+         rd6ZQ7yNtfi9ng02gkbBc1ufcPxkHvWiWNEMedQX4FQ9YiZ05kW3L0WvqpVwide7o1CE
+         D1lZ8PGdH5KXd8t/Cc1rPE+IkXnVAzfcYvem9QLRt56kA7epJB9I8pOC723Jf04zFtGg
+         HFWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724269525; x=1724874325;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VoAyvLICTdN5ZkejhKcALLA7I88asnEwXKB5c+YRjho=;
-        b=vQ3PlstLhM/XONY6nDQzATUApVxTJ787fkZNe8ijT6kl0FMhp7D4qb12iIx/zIfWtq
-         keoGtkOrGjfC+W+lJUXE9gcGtURogN6JuiuZWA/ERAn/jWQJG29LBx6An5Sy5JrWzWQF
-         kE0C880z4X8n321237PJPLgmE1bhA4/zOm/UPmUZ05MYdslI2sBwkC+H+4x1mJ38loZe
-         ddAYeHy3pLbqx2HiXPuIjvplsdCpeWYPYAD7vRzop+qrvFiXfLNlfXpvlEX5PjqWgKKd
-         MTzL7XGE48OgvbICqFX19D/LDvkxF4krc8dyv2pZf88ZWQ8CwqK/YqVL2NBX8+Wdrb1y
-         pg/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVUzqM/fthEVPcLNIm4MTCcAPj0q837eu13xYJjkdKvPjpyebh5CUe+Book31tBImYFJUn7Gqcujr47pA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxXFY+LhPos6DLX0qhYabdbR0xIR6tS/GD7FM5vMheEACVtRfze
-	yUcfHU5Ole2k+AisUh54bXokgu5ByiSDKwjCApsSe3K1+bqoKg0Dm6bM1SizzyAEeN+UNOvou9a
-	xeByOQy+ObIlbDH1qPCLPN2Fpizdx2kdGT/ugXEkFYUQWqR6DWtAgkVg=
-X-Google-Smtp-Source: AGHT+IHa9XQV+mQ9Wu9HX3LY+GRuH6TSqZfP1xH8nhvn3S2dxaSvHJWphFQxwJgBSdEkdLk9+jh0QGQV9cWyAw70o0wYQFFfPnKn
+        d=1e100.net; s=20230601; t=1724271220; x=1724876020;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YYmNcsedkOqUFLEQeKe1yqW9pGRfFKO4juWfk6FKFmU=;
+        b=cEObY1LF6vZks0u7GbmhVhMGsgfuZXK7tdK+YdoZhpCLD7pUM9H80y2NHvUTrxZWW7
+         +KWc/BRpXkQ4vD03A9g1vRkmqg4d/alZYgFZhy0R0TgX03+jY7vzTQkd/3+3b99djZML
+         Mgs6Dod+tVW0UBEoSjNrLcVe+1VBEtKyhO/ri2qQygXtK/xBdxD7YuEziPeU0j0KecNa
+         i65ZNd+aY6TOD3LDDIf5NbloNUQI7OhdlmufImKC2Loh+d69icEsXHjK9IiYGdC9AQBn
+         HvTW4r2eQpfoWsTduEmpxp44HIL/S2RYtxBJKKJsKzk9ga7sfRVRgd7fYd18bE6F3Tzn
+         McOA==
+X-Forwarded-Encrypted: i=1; AJvYcCX3jVOXixeeel7dKv1j6Vn/m+teuLyfXMHqd1AvBagpwCzGWcRJJMBKBOnpJ0MRfMGM7w7xCiM33HKOCw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxC2WHquXyoQuC1dszsNr8FpFcI5ltdmiSfAzJ9r9Mn90Hs8J9F
+	EQXR5ySdX+W47VDVyHjol0Y/VOG4QKpS39Ik3nWPqayUFsIFvBhJ5TIc7hwURt8=
+X-Google-Smtp-Source: AGHT+IGx0uv0WJiwFWZKjviM9+GmZlu0vQylW48VVx9PfvDLz248cWEULf/z5v0Gbzu1ZFB5VbSdUw==
+X-Received: by 2002:a05:6902:2508:b0:e16:4d32:adcd with SMTP id 3f1490d57ef6-e166549c3damr3770246276.29.1724271219864;
+        Wed, 21 Aug 2024 13:13:39 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e178e67e660sm3818276.54.2024.08.21.13.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 13:13:39 -0700 (PDT)
+Date: Wed, 21 Aug 2024 16:13:38 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: syzbot <syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com>
+Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (6)
+Message-ID: <20240821201338.GA2109582@perftesting>
+References: <0000000000008f55e4062036c827@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d16:b0:39d:1236:a9c0 with SMTP id
- e9e14a558f8ab-39d6c358632mr2669205ab.1.1724269525419; Wed, 21 Aug 2024
- 12:45:25 -0700 (PDT)
-Date: Wed, 21 Aug 2024 12:45:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008f55e4062036c827@google.com>
-Subject: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (6)
-From: syzbot <syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000008f55e4062036c827@google.com>
 
-Hello,
+On Wed, Aug 21, 2024 at 12:45:25PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    5c43d43bad35 Merge branches 'for-next/acpi', 'for-next/mis..
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13471a05980000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c91f83ae59feaa1f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=dfb6eff2a68b42d557d3
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: arm64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10efded5980000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e94093980000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/cc2dd4be620e/disk-5c43d43b.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/81d40d99ddbf/vmlinux-5c43d43b.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/bc6aed0f2bc5/Image-5c43d43b.gz.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/d55321fffedc/mount_0.gz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com
+> 
+> BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
 
-syzbot found the following issue on:
+Can we disable syzbot issues for this specific error?  Btrfs uses lockdep
+annotations for our tree locks, so we _easily_ cross this threshold on the
+default configuration.  Our CI config requires the following settings to get
+lockdep to work longer than two or three tests
 
-HEAD commit:    5c43d43bad35 Merge branches 'for-next/acpi', 'for-next/mis..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=13471a05980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c91f83ae59feaa1f
-dashboard link: https://syzkaller.appspot.com/bug?extid=dfb6eff2a68b42d557d3
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10efded5980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e94093980000
+CONFIG_LOCKDEP_BITS=20
+CONFIG_LOCKDEP_CHAINS_BITS=20
+CONFIG_LOCKDEP_STACK_TRACE_BITS=19
+CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
+CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cc2dd4be620e/disk-5c43d43b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/81d40d99ddbf/vmlinux-5c43d43b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bc6aed0f2bc5/Image-5c43d43b.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/d55321fffedc/mount_0.gz
+but there's no way to require that in our config (nor do I think we should
+really be able to tbqh).  It makes more sense for syzbot to just ignore this
+particular error as it's not actually a bug.  Thanks,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com
-
-BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-turning off the locking correctness validator.
-CPU: 0 UID: 0 PID: 2037 Comm: kworker/u8:8 Not tainted 6.11.0-rc3-syzkaller-g5c43d43bad35 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-Workqueue: btrfs-endio-write btrfs_work_helper
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:317
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:324
- __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0xe4/0x150 lib/dump_stack.c:119
- dump_stack+0x1c/0x28 lib/dump_stack.c:128
- lookup_chain_cache_add kernel/locking/lockdep.c:3815 [inline]
- validate_chain kernel/locking/lockdep.c:3836 [inline]
- __lock_acquire+0x1fa0/0x779c kernel/locking/lockdep.c:5142
- lock_acquire+0x240/0x728 kernel/locking/lockdep.c:5759
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- free_extent_buffer_stale+0x2c/0x1ec fs/btrfs/extent_io.c:3333
- btrfs_force_cow_block+0xf2c/0x1c9c fs/btrfs/ctree.c:659
- btrfs_cow_block+0x318/0xa28 fs/btrfs/ctree.c:754
- btrfs_search_slot+0xba0/0x2a08
- btrfs_lookup_file_extent+0x124/0x1bc fs/btrfs/file-item.c:267
- btrfs_drop_extents+0x370/0x2ad8 fs/btrfs/file.c:251
- insert_reserved_file_extent+0x2b4/0xa6c fs/btrfs/inode.c:2911
- insert_ordered_extent_file_extent+0x348/0x508 fs/btrfs/inode.c:3016
- btrfs_finish_one_ordered+0x6a0/0x129c fs/btrfs/inode.c:3124
- btrfs_finish_ordered_io+0x120/0x134 fs/btrfs/inode.c:3266
- finish_ordered_fn+0x20/0x30 fs/btrfs/ordered-data.c:331
- btrfs_work_helper+0x340/0xd28 fs/btrfs/async-thread.c:314
- process_one_work+0x79c/0x15b8 kernel/workqueue.c:3231
- process_scheduled_works kernel/workqueue.c:3312 [inline]
- worker_thread+0x938/0xebc kernel/workqueue.c:3390
- kthread+0x288/0x310 kernel/kthread.c:389
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Josef
 
