@@ -1,89 +1,164 @@
-Return-Path: <linux-btrfs+bounces-7363-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7364-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F4E8959994
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 13:23:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D40F959AF4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 13:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 316011F21A0D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 11:23:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B754B1F243A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2024 11:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96AAE20527D;
-	Wed, 21 Aug 2024 10:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4309D1B2EF3;
+	Wed, 21 Aug 2024 11:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M9uslCvO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B61F9205251
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 10:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F761BA26C;
+	Wed, 21 Aug 2024 11:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724234886; cv=none; b=bNQrE2KjT4zDxl+pK7umW65e3dSbt62K/gd6LJONBALI7Xzr+XVVHevDgbmsJA0Cr4PhkNXphNzFeAtlDVlFI1sknoOlUzQU6gQWPYqLV8nAf84a4LCD/WzBGdzDXUlgD/6JiNQOOykCqJTXQOjdLEh9rKbEcjSaMHwwKT45Kkw=
+	t=1724240797; cv=none; b=rCJ5TWxt9Tyb6LxPRy3MVpgb7NP6V+z3zWwCm9twGA8ghg0j38p+Low3iYObMeQDSqkf0LaJZH1ZmQS9/4yvn/KD87tElck6SQ2BpXspqWDs3AnhKoSU4kYebyVoFPHwdNNBgSKOaiov8IAal5V7f8h5BbUvGEz9PUUMdnwOtSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724234886; c=relaxed/simple;
-	bh=bcZTltfrN96IpyEwZ5ov0EAIPhOEfYKK/v9DQ75hgls=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=OfVWCcYXtqmPnYGHSIAnenVo+9CfBX08SC6JLD5TdbWdWU9B4eAIKe6/wBTfFlQHI3NjDvyPmenRvVYxwTpNAFJOihIqHo64yNPgTDBATJvIKJNaeAtfdBOqoGxQX97Yz+DJbnu+X2x6jrzkseeZfX0E0w1E7hzZv6heZx+asAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-81fc0896188so631808939f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2024 03:08:04 -0700 (PDT)
+	s=arc-20240116; t=1724240797; c=relaxed/simple;
+	bh=TRRFUD0axKH2Dc16kuha505qsbky9IfLxik8ATNrwrY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HC6+NQ/VdzOLLB5wrZaQ6vQgjsvssNMiZawxJ6BJEY0zQbJqb+O3gyzOWstggjTC5YtJNc/OPnzFTJizxM4I7Dj0M5d/0+TCkoBQOCiEmdcEBUwPU823EsMKqnia5JDukFJpjosTp8iKQJXjAwYfJLPdyZAD5715Vh47yLKfXG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M9uslCvO; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-201f7fb09f6so47828485ad.2;
+        Wed, 21 Aug 2024 04:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724240795; x=1724845595; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sK/Ke7C2jpf7KWdx8g1GMOzWj9txiBHskLjIjZ4El28=;
+        b=M9uslCvO35DM1w2wzzN0Y1rqdxvIhJbLFDszkDU93zy8gSv5fVMMjwVHbFpGM4RbNc
+         659eOkpplsQy0hjnasvr3O3uO5S5f5WK28Xd363y5deXl5phsGcDAgYPkuQXfOyT9dXO
+         nJ1RVgIQFXkPArrZlExpFo+KnclUqeKe/JV0lqnNrbDUAzgHxSG3K6canxnCGLzQq3jP
+         K21leZ+pQ1HAyhI1CSXJ/H9398puEc4XJqtGsNVmgKODqifF8qGZPv6IUwz8tENDnF8u
+         nMS/U78RWc5LkLDyRccKcRfZxZjTN9qzqOc1d+Gm1DZa6zOd/XBrrlG3HHl00anjTjcy
+         g6Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724234884; x=1724839684;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ltq4NN1gtmsJ84XbCNBVAWHYj2I60jKYTteZrBL53oY=;
-        b=rTK0JforkyEXR/glJffqfPc8muKJMxdjGpXk8+4oYw037BiwPgicmoht8nhCeKds2n
-         WcagyLp6VzaXUgrK0IF76jDBHYeQIDLuQDYIU6Zf0uFaupInGs5K2ytvkLS2eYeHJeP9
-         ziErzjbw0hkNLW0mnBEThFgHzmktzEEAXph2c/Z+INssMLLB4k+LW0JR4mF5T1VnfIK6
-         g/AIvnDbV4v5krYa3ukPA+xZK336lKd09g/MH4Auk4JWi+Mplg3fgzEBzeGu6rYZHhU+
-         YEG1muj7ClfG4KMabsNBIb32rrzhjsuSg6975CfoGD6T7dYyiZk6HD/b3o+axn5V3iLL
-         sCxA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJRE1r1beratuyZlTb1mZI1WzcTEvWc3kHii3Qu4nAgVV+FI8PGWSRmPEQkHQes+di1j0A+zJeLNiPwg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz3l3WKmTzfydg3WDHXBGWAkb3wGxEINtZ/R3rEy5b9JCLjGL01
-	0bPXOQAdZZ2omZ+0JXFztkvImstDXDH0Je4NnxtaIBJhVZMJq9RhMTdZtQFDaOQaZHJSEQiWeEZ
-	Hj8kCQJTPU2UwYQuf/bq7pwWuQQy/GvAuUneW7thWSA9/2FlHKEcmCTI=
-X-Google-Smtp-Source: AGHT+IEmB9UKevzYR0v8ZXvKnJsY7QyO14fBNAwZNyW12v4IM2oSwrprNKl2vkG2DtSDkY01BRFROBWdEcBatPLKYZqmXfKlaPwb
+        d=1e100.net; s=20230601; t=1724240795; x=1724845595;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sK/Ke7C2jpf7KWdx8g1GMOzWj9txiBHskLjIjZ4El28=;
+        b=tP4TsMtUyYef3GGQ6lp2doE7jB3f0rNGH0PeHozBPV2GY969e0V9c7cgx9rolKwncP
+         zJtAWQDkjMUvztlPVCin89jZadmv89njvHHM5hgYpJDldCZQ6mcXZF0JBInuOeVhLhrB
+         uFug/G3K6eoAiCFGWGT//kjmkoM8xHgbkRWSH23Rf412Al2TG3fVlJzaczP+RI8YMPxl
+         cu1/CjiNKiFHMHnuEGNM6w1eDOXlj5zoxEpv4DdTny1SYPDxxvm2hZfrEa6Xm9Fwko2a
+         vhduKmFpqw0HnHcXXi77FJoMDdEGEcEbAEuNllMsnrqROT5aDD0xiHofsGepsdp2wZdc
+         LCdg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+pEapRkyRIBmH8kxZ7UHdYBGFZl5amDTyqwKV5VN+5K6FJP+Dm2tam+UH0GwnW3hssSb9yws=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwuQBX1IFSF0FX4vZkiWvy2ajqwJYw9ONY8bgFPEnBD61ar1Ozn
+	2vKJPx3P9+OrobJ4dLzgPlhr1VNfAqriDVwFl3aXEaBNI0Hwg2GfGldAwnGG7ag=
+X-Google-Smtp-Source: AGHT+IFOFSYgDosIMZaVGIdsunnc0tqd3F3USjkCnUlBYJiEJct/pIPdqKpMyiAm2LS9FJU42XeAEQ==
+X-Received: by 2002:a17:902:d2c3:b0:202:2f0:3bb2 with SMTP id d9443c01a7336-20368199f53mr21210435ad.60.1724240794548;
+        Wed, 21 Aug 2024 04:46:34 -0700 (PDT)
+Received: from localhost ([114.242.33.243])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f037526csm91653515ad.122.2024.08.21.04.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 04:46:33 -0700 (PDT)
+From: Julian Sun <sunjunchao2870@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	Julian Sun <sunjunchao2870@gmail.com>,
+	syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com,
+	stable@vger.kernel.org
+Subject: [PATCH] btrfs: fix the race between umount and btrfs-cleaner
+Date: Wed, 21 Aug 2024 19:46:28 +0800
+Message-Id: <20240821114628.645455-1-sunjunchao2870@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1603:b0:824:d658:396 with SMTP id
- ca18e2360f4ac-8252f4bd9ffmr9836239f.3.1724234883914; Wed, 21 Aug 2024
- 03:08:03 -0700 (PDT)
-Date: Wed, 21 Aug 2024 03:08:03 -0700
-In-Reply-To: <9343ba32a457acc4f536120e904a3d7fa9ed0adb.camel@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3eba306202eb72d@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in clear_inode
-From: syzbot <syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	sunjunchao2870@gmail.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+There is a race condition generic_shutdown_super() and
+__btrfs_run_defrag_inode().
+Consider the following scenario:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+umount thread:             btrfs-cleaner thread:
+			     btrfs_run_delayed_iputs()
+			       ->run_delayed_iput_locked()
+				->iput(inode)
+				  // Here the inode (ie ino 261) will be cleared and freed
+btrfs_kill_super()
+  ->generic_shutdown_super()
+    			     btrfs_run_defrag_inodes()
+			       ->__btrfs_run_defrag_inode()
+				->btrfs_iget(ino)
+				// The inode 261 was recreated with i_count=1
+				// and added to the sb list
+    ->evict_inodes(sb)          // After some work
+    // inode 261 was added      ->iput(inode)
+    // to the dispose list        ->iput_funal()
+      ->evict(inode)                ->evict(inode)
 
-Reported-by: syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
-Tested-by: syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
+Now, we have two threads simultaneously evicting
+the same inode, which led to a bug.
 
-Tested on:
+The above behavior can be confirmed by the log I added for debugging
+and the log printed when BUG was triggered.
+Due to space limitations, I cannot paste the full diff and here is a
+brief describtion.
 
-commit:         d30d0e49 Merge tag 'net-6.10-rc3' of git://git.kernel...
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=14fbfe05980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=399230c250e8119c
-dashboard link: https://syzkaller.appspot.com/bug?extid=67ba3c42bcbb4665d3ad
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17b31fbb980000
+First, within __btrfs_run_defrag_inode(), set inode->i_state |= (1<<19)
+just before calling iput().
+Within the dispose_list(), check the flag, if the flag was set, then
+pr_info("bug! double evict! crash will happen! state is 0x%lx\n", inode->i_state);
 
-Note: testing is done by a robot and is best-effort only.
+Here is the printed log when the BUG was triggered:
+[  190.686726][ T2336] bug! double evict! crash will happen! state is 0x80020
+[  190.687647][ T2336] ------------[ cut here ]------------
+[  190.688294][ T2336] kernel BUG at fs/inode.c:626!
+[  190.688939][ T2336] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+[  190.689792][ T2336] CPU: 1 PID: 2336 Comm: a.out Not tainted 6.10.0-rc2-00223-g0c529ab65ef8-dirty #109
+[  190.690894][ T2336] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[  190.692111][ T2336] RIP: 0010:clear_inode+0x15b/0x190
+// some logs...
+[  190.704501][ T2336]  btrfs_evict_inode+0x529/0xe80
+[  190.706966][ T2336]  evict+0x2ed/0x6c0
+[  190.707209][ T2336]  dispose_list+0x62/0x260
+[  190.707490][ T2336]  evict_inodes+0x34e/0x450
+
+To prevent this behavior, we need to set BTRFS_FS_CLOSING_START
+before kill_anon_super() to ensure that
+btrfs_run_defrag_inodes() doesn't continue working after unmount.
+
+Reported-and-tested-by: syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=67ba3c42bcbb4665d3ad
+CC: stable@vger.kernel.org
+Fixes: c146afad2c7f ("Btrfs: mount ro and remount support")
+Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
+---
+ fs/btrfs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index f05cce7c8b8d..f7e87fe583ab 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2093,6 +2093,7 @@ static int btrfs_get_tree(struct fs_context *fc)
+ static void btrfs_kill_super(struct super_block *sb)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
++	set_bit(BTRFS_FS_CLOSING_START, &fs_info->flags);
+ 	kill_anon_super(sb);
+ 	btrfs_free_fs_info(fs_info);
+ }
+-- 
+2.39.2
+
 
