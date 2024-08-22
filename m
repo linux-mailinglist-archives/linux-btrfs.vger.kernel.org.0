@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7401-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7402-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C87495B34C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 12:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2632895B367
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 13:02:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFCCF1F23DE0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 10:59:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42FE1F241C7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 11:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB83183CB5;
-	Thu, 22 Aug 2024 10:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5AA318308D;
+	Thu, 22 Aug 2024 11:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KaogCv3K"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZgnVrsR0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B19D166F3D
-	for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 10:59:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F094F18C31
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 11:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724324363; cv=none; b=SPhyj4uFzuja/lcjc4REqGCPySHQ/xGyMX2v8q7nfxBACRAXXCAVs2wljmWr3O0vnIUvk63DGcvmqVfqWlwC8HrMCwXyyi4J5gwQ7VVZGjj9Sj6BGhW7hhIkHk3gX7XMJMm52f+jJmh/CoqmH9DDnDLiLE/XlRLgMD/Hzr5hjG4=
+	t=1724324540; cv=none; b=FFNQ/0+S1N1ZgiJrpyDI0zZan17WE4Qr5qCRTQBPdyHhvXmGSACTJOkGWOo+p5Ew4VKTydt9lv1tDMk26ZB7yb46tNTwzWVTQ+G2o3OYAIzvgFPE0+ggxut/GSJiIVIsm0bJqHfpx8EAxm959wa5PoD4nYOfct3niEdkcj41zE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724324363; c=relaxed/simple;
-	bh=+84YK6+zwFvcumX3A0QOLsb1YpQCG2WSgvCLDPYt8Fo=;
+	s=arc-20240116; t=1724324540; c=relaxed/simple;
+	bh=BDNUTGsR5rsd9bQxG18DAjlfa43zSOpEZTUhhbu0tU4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eGmu1nbJb4Zwmnn0+t4ztftO4qB7UdLBqV0ecgg+ygpqqp27jbGAiAoS5YKypUZOBWDJbUG+IBhl01aere9gh0ullH54Ye5CRs5m3QMrjbtUrJBHZ9yE3bUDLUzAlcJ8sDwBCDzClR0p1DW4/SDhBSmGYS0fi8gKaonsK8U5TV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=KaogCv3K; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=GLtJudtx1MgqiWNBWZrHbmQ6+cMkRHhu3TYktKeiTcTD9Wxk+G9yAasiUf62vWuUNH11PdCer0RMdfEk0JD2xCQmmqAQ+eubLPKL9AQcaKKIGPPPSN2qYSyFeaQ5jC9r/DLcQ3riw0wb7ULg9KcR2fwb/sa9Fr6vzU+3r278XaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ZgnVrsR0; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724324297; x=1724929097; i=quwenruo.btrfs@gmx.com;
-	bh=z7bsh2q22Pgsp59libq4MfKgK1dNZBn4pNAk8Le00aA=;
+	s=s31663417; t=1724324511; x=1724929311; i=quwenruo.btrfs@gmx.com;
+	bh=p5LugtInfG5PpMXW1laltD35A5E1nWXeEWvj3V1iu9Q=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=KaogCv3KJROMprj1/OqnmP91/56PhqjfDJshEDdSa+47ut3lmYAGaarB6wtpCJ1R
-	 es+ChW2fcHtdXE+wJkSzelimtg9nFOX6kqwrV4sIyiwILtuAfkJPoKe5+2vqTNqq5
-	 kPyr3f26GTcQrTWcQaMTLm2SMfcIPIamKsljVHzsd4jX6R5xMMMYyCzkRFezYaBzL
-	 3ZUQdN87o2G4+jLzBSLOpVV4JU3+ZitT4snnxWyPCb7rkIUnXt7ZRxGm/CObKQXTL
-	 BIQtwFmIJVHVqOjDtxPuS6aBV4s2GR7IH0Xez3GJ0f8E1SfItk3xe8j8H7EVC34ue
-	 7Q/JJJeqOomFroVwXQ==
+	b=ZgnVrsR0W3k63XUpc/YWjXL7IppFxzvppI0KD05zlojhveeN0zwtEXx6RoLrYDpH
+	 OL9OJCyMf2J0t3NI5/2wUl2hoMlRXLwX1l5GjaYEXzEjIPxBEXzj9BzZ10Q8qxi9a
+	 BQo3JqKMram/YVm0TjISmrDPMS00zX5CgOaGLivTbgQQIvST49TvIZXtRpJ1TZwPh
+	 rTEPEAFiXtTbcA8c4nXDchEb7iETZxUK8YIjCUIflPaGTBtqi5PNbzqCvXoG5ZLv4
+	 AFR8PiyKqzrlrbyCktZQwA92vebixfg/XgbphQe0u2tIAOXyRgCwmoClG2peLDCTW
+	 6sRfvk8urm57i4ui8Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mkpex-1sH8Ip2yid-00jpL5; Thu, 22
- Aug 2024 12:58:17 +0200
-Message-ID: <0f643b0f-f1c2-48b7-99d5-809b8b7f0aac@gmx.com>
-Date: Thu, 22 Aug 2024 20:28:09 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4hvb-1rxPVw1Lq3-016zxw; Thu, 22
+ Aug 2024 13:01:51 +0200
+Message-ID: <e975458a-edf4-4525-b424-5f284eebe979@gmx.com>
+Date: Thu, 22 Aug 2024 20:31:46 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -95,24 +95,24 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
 In-Reply-To: <Zsaq_QkyQIhGsvTj@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7mJ/c2TSUe7ALlg/F/jsxHMl5yUnUZOzvtsePpbl8j9Tgi8Z+Uc
- RdKVWi4eOMccC0EPginzcTHe6Ga93ofgbjmOaEBSGEY+zvWLpVGPl26soN+dq420p4tPpRc
- 4cq2al3tap77XWwR2+bWUr/r2Nqowd3hRrg27djBftxTKFTb2U0COGa73wjaE0K1du4DHOk
- KLaO3oFCjUYzQOSpFVMrA==
+X-Provags-ID: V03:K1:GDAnGXDL6aEutjR12TqJRyPi0QdhoBXRm7C6YdXoCL4WGAxM3vc
+ ah8E0Jx4R/WmSf7YXdpxQRXSamBJ6Knn7uAvGtDeowZTBykTfAdjWJ/I92rFvxWnHEx6GNV
+ iXtHHUUY6AZUs1NS96QSxff5+xIF0wwe+TTF2etMXwl9w7nG+cR8BhYVE8jSjfJb7S803oz
+ BSBtOM7zbs00mYtkgPT/A==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:WQ2j5eHUrqg=;lzfUnnLzgJ/gd/5x9OeFiO3zLn6
- 3eOeHmD4TtIMkS+Psz9XyNUWsUcCEfAvYkDrWsBFjPRgNBU1kHUNtJOhl2E4MhoeCDWvBgXfP
- nkdR3oB6JNpYwiJgMXTwQKy/nbZ/EnUMToQQnulSxXU8PqQFFrV17WzfYIAXQlOQigLhfLh+G
- bv1MP4c9u5BPtYEBEeO/VMsijST3jywKnhGAwEjDNxHRf4cPRYbzBMkhm8fOfMXHaG+uaJEEF
- nFmMD33QUe/PsYSSTzA272r1cJxoAiONYvHeeOjOJnaezvsGmQYRcoPHOwRRmrt59oC7YPB8B
- Yorg3LTQH5vjDt+iHzonUcjZhWodUNkPe9qEL3wvTfxrLc9m9TmODaHMEnD6r/Of0Xz01KJOh
- EBykOPt5iLadJzHS9+wj95hb4De10z72yqi1zztTK7VczeZqoamAcLnLM1wJRL4DuwCdPMLoP
- o6hRhDfhtIA3OAzCSNNe2FxGJwEohieFlnWOv0Or9BUF0bnpnIQzXP7+8Y5lpAk+v4d/NqADV
- 7seRQwtOAAzY695k4ejXSb9yxgnCAIr4dA+M55KuoGEa0SYstY6qkEJp48rM3vDNfd8kYw9st
- cTF/JKUaxGs729yKaWbrDIRHBbXIr94RTIBV8ZKNIk6qNy/e5CcomOpcAcjnYgjm9q9NgQ3TK
- p14rBY2evekgqPz2PV1E7HTkEEJT/tOSF72Yw25wsi6L8AcWJSxASMbQWF/xfHbrvTnojM0PE
- 6AbZM0mNu2DHZsfDgTUzpBSMg9/BwkH50hYXLCFRguz/Hl1LYpc0EOPdJdyMS0IWymjAG4nno
- sc4vuswZYMDpvKmD3sn0f4NQ==
+UI-OutboundReport: notjunk:1;M01:P0:z2xu3eHn5e8=;4mam5odIxAsFkVDuNUmKggEcU52
+ 4d3sWr8SrgzwlObVJJXEat12uOvXebdBzOVNyU4bPsSER9/13KdMeonQPHYx/MqEuj7eE8vSs
+ GeWWXA+fhTDrplUqtEkePtLtpNApBwbLZoux2dGmaOb6Sje3JbpTiOZBk8n12CpTgtx9ye9rh
+ 2/dykP/llfaZpu559Rm9aNLt9qfX2kocrzXBme+fRewQbtqE9Ss4FOpdycct6GLtHM3v4hyZL
+ Exu5872MSabVV5tQSrluVYlxA/hqmDxD1XPr6veBc4k2JULMeqD+AoEm2BwrKGofkS/46gjDv
+ uq8jwE6Q2W5dNFp5ey0fYRcVou+oaCX6nOlNB0e6HYc7LPg5Br0ccq5AV0AQps/Tt0CC0iHyX
+ hFZi73sEQAUrRdQG5orA+pPesj8TPDmGIo7MbO/gSXn2jaITs0UK0gOM5gi8JpqygYz/HhNN0
+ t0/ceLMR3qJ8hfySBesrN6t83KFLFQqxZcmlwtwuhxHR/oOweQykGzQOTwi3CluDY4W2c6C8F
+ FhpWRGP5IgWsww0Ha1ZHDU+Ysi45OZedWlaMIkpCj6spfjNQbbzt9pwKNRyYkkt0j6lPu5G62
+ /lylwNetgO15e/Zkwat+/LBWkAY1xlJyev2lIgu1YDSEeMHqCRt7RFRFBv9up9giwGZfw01BG
+ GXog0wmdYHejvn7kMyrMNrsjaxlbGqM4vnXdjojfN+bw7VdDP74NL+gb7+w65INwBvccQsXDq
+ gIll0xZn5rj20rYn+vPJ2fnWNc/7iq11Om3Mitr/cB7wY2OaGb7z/Dqj5ED5bwXUsnrt/aX4Y
+ zZOyk9xg52T9RhJaes96gvmA==
 
 
 
@@ -138,30 +138,17 @@ UI-OutboundReport: notjunk:1;M01:P0:WQ2j5eHUrqg=;lzfUnnLzgJ/gd/5x9OeFiO3zLn6
 >> +	while (cur < folio_start + PAGE_SIZE) {
 >
 > Presumably we want to support large folios in btrfs at some point?
-
-Yes, and we're already working towards that direction.
-
 > I certainly want to remove CONFIG_READ_ONLY_THP_FOR_FS soon and that'll
 > be a bit of a regression for btrfs if it doesn't have large folio
 > support.  So shouldn't we also s/PAGE_SIZE/folio_size(folio)/ ?
 
-AFAIK we're only going to support larger folios to support larger than
-PAGE_SIZE sector size so far.
-So every folio is still in a fixed size (sector size, >=3D PAGE_SIZE).
+Forgot to mention that, this function is only called inside subpage
+routine (sectorsize < PAGE_SIZE and nodesize, aka metadata size < PAGE_SIZ=
+E)
 
-Not familiar with transparent huge page, I thought transparent huge page
-is transparent to fs.
-
-Or do we need some special handling?
-My uneducated guess is, we will get a larger folio passed to readpage
-call back directly?
-It's straightforward enough to read all contents for a larger folio,
-it's no different to subpage handling.
-
-But what will happen if some writes happened to that larger folio?
-Do MM layer detects that and split the folios? Or the fs has to go the
-subpage routine (with an extra structure recording all the subpage flags
-bitmap)?
+So PAGE_SIZE is correct. Going folio_size() is only wasting CPU time,
+but if you do not feel safe, we can add extra ASSERT() to make sure it's
+only called for subpage routine.
 
 Thanks,
 Qu
