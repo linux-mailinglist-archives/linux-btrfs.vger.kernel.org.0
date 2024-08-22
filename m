@@ -1,247 +1,322 @@
-Return-Path: <linux-btrfs+bounces-7410-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7411-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE2695BC71
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 18:50:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F8AE95BDC3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 19:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827FF1C219E2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 16:50:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 703251C21ED7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 17:53:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0955E1CDA3B;
-	Thu, 22 Aug 2024 16:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C3F41CE718;
+	Thu, 22 Aug 2024 17:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itYhNd10"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bnGNyDAT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E518182DF;
-	Thu, 22 Aug 2024 16:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724345424; cv=none; b=JQkYreh8Q0xCRzORLbtbr5H5UjBrZ/tR45vOIRp7yZ8BJX7oxmSAu7fWL/JivrSATjY9+Bgjs997UY8s8ehFb+hDq1D/LnjJnsVVmDaQ528TguQE91Lq9X54BlAPZoXnVSAEWM3xO+A1aRUeVv/ErGYf9iPgpGRUQh5+WM8u70I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724345424; c=relaxed/simple;
-	bh=NCwOYKHYOxXoWk0xfYfIq4WyF4GNxsFkW/6/603e224=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hRi0mMluswKmolPfG+q4Uo65bWLY2UZeygoL8oojUkvRQdvlZC5dcYXsHdNmxm5nqxfBXRTV6ED2VHXh782NuH/hZbU22h9FdTIhLRgF75tXtrL1ZBdNn1ZRYGccTxCK/8Jfvw3WBqgIByKEa09SODs/EAuOLBrq4VUouWzPDA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itYhNd10; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-428178fc07eso7442035e9.3;
-        Thu, 22 Aug 2024 09:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724345420; x=1724950220; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A3unbMUhOla43eCltTkkVXdqseB7mJt30tHdRO+hF6s=;
-        b=itYhNd10KCUYfP5Io/Kjg+u/UZsA6IIjV1DsYPJEyov1nUaPuFt3syWcLwokenkFxD
-         qT/Hyt5aD3rMxyjwXy3WA/hbrKuRHUSGEzJanulwt25t9wKWu8nPoZ5+eHrk6BQPcnJQ
-         DIaAPG41suAR4dabB6Fqb3qp4NH8FpLgY2zVIgeBHtvCzqAXZrX3Q+tJln4KNuKuRYga
-         xmYA3f4BrjEOkzTb+l0gPLB5lnMWIBeuN4FvO2E9tlcaUlxP26D1fxr011Bqd7o66RnO
-         ZOYyjiPbTV57UY63XIzSnXsJ+4tq6kSomvTr2J9I6oD6f+gQ/YgzYcx8QhcUL/WWpcKO
-         ug1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724345420; x=1724950220;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A3unbMUhOla43eCltTkkVXdqseB7mJt30tHdRO+hF6s=;
-        b=wxHnfje8vx+/I8jxed1hdXLn3WlZpiq4HqLR8Fp8BDYE8iHDEtDZoapeJTS0/4zTPw
-         Wy7ZsLXHXkOHfRWFW+uS+Y/2O/vhuB5vevaT8Tx6jYqrB9NqMGrMQRIS3LeiDwk5v5Nl
-         iYDSpfA1IHwfeEdPmWn1smiFAjx/tIWPHkOlG2E1Mx8B4KS4HJ0f7so1pJxztM9ADoAi
-         Wbx1uEcdS3qXQtupgPeHsElE3u8VvikqPwxbK+ez/zauarFEaF9R0JaF0mXLOhNio3sZ
-         /hnFSeiw/n2CZQ61sZb3U6DZjEzFHu19OAJ+H+hhl7MgVuLRQy5zr6gkvgEajF0G4T29
-         4NWg==
-X-Forwarded-Encrypted: i=1; AJvYcCW/kFCsTLJBhKrFjZPOyhH0KuBKCA2yW5t0SJK60mfE3P0hn6PcX/2IHf8QRWL4GzOs0At0yJaGFMWPsQ==@vger.kernel.org, AJvYcCWFSrHjtncXCyvSp71NZqEpdp4MpgypSPcYf2PFgWf3DwdJlwWU/sN+Ohs+COHY+FEjE2UR+kArA+R8LFMW@vger.kernel.org
-X-Gm-Message-State: AOJu0YwrFrVwQD5XLkL3yvMpJd8PxTXTouJvRIG07zEX1aQJRm08wrwp
-	ONoAHs7k3bJdAtbBIaAi4iLII3ZA3woAM0TEJNyicqrKin890JnuweC36VHm
-X-Google-Smtp-Source: AGHT+IGdomA5eWn9DTUmWur5B3yIsU0TYNgbHmEdqsKbWNdS8kmRjGZgk+c7NKvwoRf3c/0/SqY+tw==
-X-Received: by 2002:adf:b356:0:b0:371:9377:975f with SMTP id ffacd0b85a97d-37308c185b1mr1470026f8f.25.1724345419433;
-        Thu, 22 Aug 2024 09:50:19 -0700 (PDT)
-Received: from fedora-thinkpad.lan (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-37308265ae6sm2073725f8f.109.2024.08.22.09.50.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2024 09:50:18 -0700 (PDT)
-From: Luca Stefani <luca.stefani.ge1@gmail.com>
-To: 
-Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: Don't block system suspend during fstrim
-Date: Thu, 22 Aug 2024 18:48:21 +0200
-Message-ID: <20240822164908.4957-1-luca.stefani.ge1@gmail.com>
-X-Mailer: git-send-email 2.46.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59E6C1CF283;
+	Thu, 22 Aug 2024 17:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724349226; cv=fail; b=ghKw0elJRXi2IIPyCTqV5zJFnkD110dO6qX58vDMZTobaSOGqpSbRDxBnJsd3J43IwTqvxu7THPWANmTixeFy8GK0rzXWaV5Tts8s7KE7oMH1cy6bg1a5IbReSVH+xRctFt6cv4B1Kv1r61yZ+GRUcmv7vjpF7JIjA0RCi5/zSc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724349226; c=relaxed/simple;
+	bh=jglLrmzjP+qwksAOOrxSnUzj5G6e8ZSj6F+hp797yV8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=f2IN5D5xk1kLYYEjd1YXaIzB9JrB/WI9zyGM19LaFAz4N+XGH1be0y06apgGl9NZ8K5ntTkCkhHi4xpLqtEIdZHOtRLr4CJ9J0QmNu6TXnwYjSi0qy7s0RuXow8JBMRM/zFQGv6IuQCkzaSYzD/BXSO3JBgwGN3eahGYpaOTLBg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bnGNyDAT; arc=fail smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724349225; x=1755885225;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=jglLrmzjP+qwksAOOrxSnUzj5G6e8ZSj6F+hp797yV8=;
+  b=bnGNyDAThCgmq8lkqSslOfalCzkS19rleUGAo8ndThaOUHeejYp5bIfY
+   pC+3E1tj2booYMpGiZ+gCnrD9xj6SXicrrNZnnVKONjfP2W3fBIwRsLYt
+   2E/xRrcHJwMUjApC+g5fVF6gitVcrbylUCwD+LIjx8mo/1TYxWzSxjzpK
+   1bX6Yl8xVEOXZRPNgq1FVW+QF2mDmLgbDseFeEjBhJjmQ+JCECNMGd+XL
+   ceDCVXewGkT5EIpgs37ty93zXnnn3Ff5Qq2Jj6cnaiR0c1hyU7WH9Tvc6
+   evUgn/ajzafCudmg3phSPwNuwk7nvb1g00ZFjF5C1m49lyr2LgvXtjb9v
+   g==;
+X-CSE-ConnectionGUID: WostxNnoTl64e4s1mN+wyg==
+X-CSE-MsgGUID: 0mEiOGX0R1eLKxNUzqMNeQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11172"; a="26538861"
+X-IronPort-AV: E=Sophos;i="6.10,167,1719903600"; 
+   d="scan'208";a="26538861"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2024 10:53:44 -0700
+X-CSE-ConnectionGUID: 2ulwNFZZSIK946rH5KRLeQ==
+X-CSE-MsgGUID: +8FZhZIpQvG0IGcxDDRrog==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,167,1719903600"; 
+   d="scan'208";a="61240244"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Aug 2024 10:53:42 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 22 Aug 2024 10:53:41 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 22 Aug 2024 10:53:41 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 22 Aug 2024 10:53:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dkX4LCgeQ4os5PDyvGNpGaXIv8/gtrLwTA7bMU0xcWh+iAb48R2rs9eOmXuE5qo+fRuhhYyFBSLz0+SuF9pQfRNuvpobiEqijiQSR15pweL43nRwoKwfyP7AzcXebwehdSf8LXlmFX0alM4wLoG6YD1uV50p/RzePUB+EIwoB9dt6BLxnFrAmbkBgfU8TyQW9T8ivotkMr+FSI4jyKoAMB3ynSel9/fi644K76NDUobw7RNUhKPb12cVESLHZro7hGkIlW1xTWVxfRF0QT4vg9EMmJhCz+YfWn66ymjPbmLMY5e6XigmkCtKN+7GpDI9jHVAZF90cFHR3CQsWSdgyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IxT62GXyKXO3UF8QoxJMLavN0gHqBUbO8rojBCbaSHQ=;
+ b=RmiOACeIHPy8SnSMGltdljMTUyyI5E3+5Uzyfhq3bMhc3Ad/ZZIoDRPeqhOz+83TEeEHx0PmtmYSWM1U5cZ8JSZ2S7p1Ba4IHgOaooOml/YDvBKUwSENSizD1RHc9/Qk/VN5FUihIr2QMYK2r44xuxvPDy2GBCBfXcfeEXKRKieeUsNObkw66F//rHbS0BdfhjoGjIlnv1lwm9HmipcY0dYKlz7SpYf5cdUF5K6+lJwZM6v9UT1kURotl+T6ffRZA+sJ4rCVyah03+rL3MhCmqI8DpvEEWl1W7ChJckHzKe/uLXc978nVKA3aPKv4nNh1RdMhzGNSJcR+rZSAMn2SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by PH7PR11MB7643.namprd11.prod.outlook.com (2603:10b6:510:27c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.19; Thu, 22 Aug
+ 2024 17:53:39 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57%6]) with mapi id 15.20.7897.014; Thu, 22 Aug 2024
+ 17:53:39 +0000
+Date: Thu, 22 Aug 2024 12:53:32 -0500
+From: Ira Weiny <ira.weiny@intel.com>
+To: Petr Mladek <pmladek@suse.com>, Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Jonathan
+ Cameron" <Jonathan.Cameron@huawei.com>, Navneet Singh
+	<navneet.singh@intel.com>, Chris Mason <clm@fb.com>, Josef Bacik
+	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Steven Rostedt
+	<rostedt@goodmis.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Sergey Senozhatsky
+	<senozhatsky@chromium.org>, Jonathan Corbet <corbet@lwn.net>, Andrew Morton
+	<akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>
+Subject: Re: [PATCH v3 02/25] printk: Add print format (%par) for struct range
+Message-ID: <66c77b1c5c65c_1719d2940@iweiny-mobl.notmuch>
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-2-7c9b96cba6d7@intel.com>
+ <ZsSjdjzRSG87alk5@pathway.suse.cz>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZsSjdjzRSG87alk5@pathway.suse.cz>
+X-ClientProxiedBy: MW4PR03CA0349.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::24) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH7PR11MB7643:EE_
+X-MS-Office365-Filtering-Correlation-Id: 166a6925-e840-4760-0795-08dcc2d35a69
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Tq4aNYU6AwbJ7rJxkGKWkJ9Yn+q4nfnvMW0A+ULlFkAYA9Ps/LgPHJRohgIZ?=
+ =?us-ascii?Q?P4+7MXwpRqjsPBCVeM0LpG3VDRc6DJf3RQCtkEj6YUEq34Gf5IICLuqUExfN?=
+ =?us-ascii?Q?d/C+IIV0JBGT44NJrHm83TWAwz5/hIT6hZbqmVhZTYCCD9ya3o5PgfCzyQPi?=
+ =?us-ascii?Q?vcDouXShKct8VQbzwY246SY4LDI/3V1VxRZ/AxJzCK5pFiAY1pBcOpX3A3w2?=
+ =?us-ascii?Q?wI9Fkri2vsqBV/tqeTo9a2FAFIBvglhK28ZKUuPc4cqLjUJ/i0Rro6IkEH9p?=
+ =?us-ascii?Q?1HSVcwojK6H/zas/d1X/zlF9uu1mQrDFDVPD6o9xYZy0HZOTqz04lOKI1+AC?=
+ =?us-ascii?Q?tENVeJGx4qSPvbvwMf14TOA5T0aXEhfjUQZuvU/ayU5nOQk0uev7Tf2Z87dl?=
+ =?us-ascii?Q?PNL+676URdLDYI3B3QO2KfnftxdaQ76QOK5CGt3k7NWlW/S0FKqz95fLHanb?=
+ =?us-ascii?Q?ICk4PwUWnerAorGDLXRomYCm0k1h/ggDA99U5rcnBvMUzY04Ihs6pktoCwPT?=
+ =?us-ascii?Q?MRP/sr42Z6qSmZZhUOv/CJvq7RnU8TI5/ol9C2cVksy4YtbUd/TKtE4N/4iJ?=
+ =?us-ascii?Q?cQEnW0CdZvWAQqnsa/o/WPh0Eu/eyOT6CqRHvBmY8k3RphxNQlL7z8d6WzjJ?=
+ =?us-ascii?Q?3F15tUqTl6OMjt7QvdfZa2RVo3L4xP4BZLj/G1qcsuL7voGQpBJ0PMWgaSox?=
+ =?us-ascii?Q?ssn3hz9muUVuIpXjSpSp54bskfkel9rwJHXJNm2hJoW++tZRNBH6pMMqQL6v?=
+ =?us-ascii?Q?8wgYD4d/j6xLTp97SvC/TFr0cnr5tGDq3wRJKmnj/7I/EcsAqVMGt2g3zdXz?=
+ =?us-ascii?Q?nPal5fC4DoZAyRh76Bq8c+zJN6i2WTU2V6Viqb5tl36cxTfSrQNm/L6Y+oi5?=
+ =?us-ascii?Q?OV1I7eUcGA7MOTu3ke2ZZo3tPVR2kEvDFP6RUkONRCugVSkVYyhzD+87cB4W?=
+ =?us-ascii?Q?TKdGRUt72nQq0oZdz77Tt3zGFJYPgP1C9ldUnvwuK5wTVtRuHlkDsAkksMUe?=
+ =?us-ascii?Q?01GUW2oaFAAK2BIhE0M56Ao/VGlnM55sgOBdu7HvSjqU0W/3OAImdFhbx+Tk?=
+ =?us-ascii?Q?PsjpZYK88NLEUHJ8mlWaTkGUnELPCC6okihS0zSNvtt63gPw8yr0IQga4r3a?=
+ =?us-ascii?Q?5AokaYh2PoWfw0jD5hILhPu4RR3jdl8VsH+Uw/5BSxdW9rqCyCfDQxRKU1aX?=
+ =?us-ascii?Q?i1r+CaBFohvzGWBlyLj7OqrU0gzYG21oVzQBEDQlaNK0NXGrIWLhtCnHH8zf?=
+ =?us-ascii?Q?7gMltkHJ9QE/Hm89ija7Dd2NXTuoTIm1eO0pEcmBjDLwHM2Ovc/G9myfvl5d?=
+ =?us-ascii?Q?UEn3ef/QJZ6ssXpQiKBcT6LIQDO90Dwp1+rDpZP/KSZeHg=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zi9HAm4GI6guYvUfoW8magcY6zHKWauI+a/pZHnIzxk6jCearioiTPSvqoxt?=
+ =?us-ascii?Q?BCouZ/iRNOuvGAwz/Zrr/MujBJaJh2pNRFtoVX1f3YNxh5dFWDvW4QcB6r8b?=
+ =?us-ascii?Q?d38S24ophGjN+meWAvMnvvuli7hxctR49z29TkSYL3/Qj954MZoaSwJF+Yjg?=
+ =?us-ascii?Q?TGxQj1XK5GaYwaKsjSY17YQCza7nEvYZDsreQxwr+OCdxp6W/ys+ODD9aVJ7?=
+ =?us-ascii?Q?PilTiPG/G6hP6DdGk41dCfxzpsdH7fIdjUBv2q7vV1F6N4hj06to7wsox8iK?=
+ =?us-ascii?Q?Tcu9G/6nuXfjFvZDXH+ga06BXBlIYt4Ary4Nr2sxoAfzp1/A+FgaRl6hncPm?=
+ =?us-ascii?Q?pSzXY9mXGvSYsRqCOsDKKllwe+GQdXqJyMF0xksZ6S1NhqDIUOi7sVl3+zHF?=
+ =?us-ascii?Q?XrdzVOYGfrUeZf3BppsPg0c1Vnz8uyRaMWDdI7LHNsyPwTOD/V6QAp3pHUsH?=
+ =?us-ascii?Q?uTwQ8QhTlP2fNfmUDC4gcDRBprIAlXaiC3RWUefC+mNk9Zjiieq2vvUMHbmF?=
+ =?us-ascii?Q?tEA7zKNqMViXiCseMYtsDJxXrbZDTu+m96cPJAHIa/SqkXpoPNnBQ8RBOLO+?=
+ =?us-ascii?Q?XunNXBnx5tJMOMm2ysOgWY0RI+u6NS5ZSYsrilSlZGTRxBJhI1IVmhSFDWze?=
+ =?us-ascii?Q?WGUv7vYwWsaIiaw1K1UCXMxIOqUqvjFiyA09SJqeZD1oI/h3eFBQJiq9vdtm?=
+ =?us-ascii?Q?2kwsTDWbowM/S2a16CiHHv8ThP6gJvEea9Vzc+ZtINwHXskkjfMKMRuOCeD1?=
+ =?us-ascii?Q?kUNcldVf1NiurTWB2lnDiaKkhU+8SpmrkMNeyg7iDJfZgLDunCM90iW/gOHW?=
+ =?us-ascii?Q?UHua3TBvG02yoGqGTq6XWVBrtbI3zS85ohl7nK/YECKW4/gVBOtEK25+c2TX?=
+ =?us-ascii?Q?DO6qrNTuEPKF2HsJMlSIYXAuLBCSpdb7ptquhbLvCTYQIoAiZGHbbXb7iTqR?=
+ =?us-ascii?Q?XOB3xMU6pes4W+I6Q6Iy1y8qNlsF1towmEIUsGA1o9pL3J9ya2rF6X/KlAtq?=
+ =?us-ascii?Q?GopQel0w9q+G6cwRfixeof62mC2E+BNs6BlESKwWzZqiEc5UdZZv8+SnfqtE?=
+ =?us-ascii?Q?7JGgKMk2yNlHxLq5hQD5TmSD6uh3t6oIirRmKtawcVLseqALu8XWEetYB6/k?=
+ =?us-ascii?Q?8v9eUFRF4QVb1ivOjNE5cViUeuOa47Qvd8bSR1+w127mw2nXHU2UCRtalAlK?=
+ =?us-ascii?Q?Imt/9/nOvqI5VLIUatB9iNI8MOZScCP/RZ4Qgk2qw0oODdAQ8tsGjrRxU6pV?=
+ =?us-ascii?Q?ZmO2z/0XECmgxuqexXTb5o7jg+JJg4qY4Cw5R+3XLgqoJjgQef98Qrc7j07i?=
+ =?us-ascii?Q?/c9w2WySneDsfcWe7/UrC9/UTOwSqLCwx/pkYMmVD/cadE8+veJZ/rljGbTw?=
+ =?us-ascii?Q?bxPF4En03bVJGwpAe1oKL47/+57nGp3RqNJPhaXSdJVfcVIZCdH3qJ0T+xkS?=
+ =?us-ascii?Q?m+ywIRvCHBO5LehBn0h26kv/mSsQdZpyudhec4BRc76CaIfJdN61RCaA518d?=
+ =?us-ascii?Q?yYVv4vH4veM189+Fl1/SZ/JLX5EMd+LET8+Yx31ZKMkR/OiPx4w49vC69Ajn?=
+ =?us-ascii?Q?wnVwEEqAwoFIbkmUzb6dSxd948svWJBGn/eHMABF?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 166a6925-e840-4760-0795-08dcc2d35a69
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2024 17:53:39.2851
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rmroZx04pGhoEt5nn0TNwnTVjwfWfJvRWPyTkvJBfnm+dylOWfRNMVLTj/nM5uxXBY6xk9ll82U5+aZD2mfOBQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7643
+X-OriginatorOrg: intel.com
 
-Sometimes the system isn't able to suspend because
-the task responsible for trimming the device isn't
-able to finish in time.
+Petr Mladek wrote:
+> On Fri 2024-08-16 09:44:10, Ira Weiny wrote:
+> > The use of struct range in the CXL subsystem is growing.  In particular,
+> > the addition of Dynamic Capacity devices uses struct range in a number
+> > of places which are reported in debug and error messages.
+> > 
+> > To wit requiring the printing of the start/end fields in each print
+> > became cumbersome.  Dan Williams mentions in [1] that it might be time
+> > to have a print specifier for struct range similar to struct resource
+> > 
+> > A few alternatives were considered including '%pn' for 'print raNge' but
+> > %par follows that struct range is most often used to store a range of
+> > physical addresses.  So use '%par' for 'print address range'.
+> > 
+> > --- a/Documentation/core-api/printk-formats.rst
+> > +++ b/Documentation/core-api/printk-formats.rst
+> > @@ -231,6 +231,20 @@ width of the CPU data path.
+> >  
+> >  Passed by reference.
+> >  
+> > +Struct Range
+> > +------------
+> > +
+> > +::
+> > +
+> > +	%par	[range 0x60000000-0x6fffffff] or
+> 
+> It seems that it is always 64-bit. It prints:
+> 
+> struct range {
+> 	u64   start;
+> 	u64   end;
+> };
 
-Since discard isn't a critical call it can be interrupted
-at any time, we can simply report the amount of discarded
-bytes in such cases and stop the trim.
+Indeed.  Thanks I should not have just copied/pasted.
 
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=219180
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
----
-I have no idea if that's correct, just something I implemented
-looking at the same solution made in ext4 by 5229a658f645.
+> 
+> > +		[range 0x0000000060000000-0x000000006fffffff]
+> > +
+> > +For printing struct range.  A variation of printing a physical address is to
+> > +print the value of struct range which are often used to hold a physical address
+> > +range.
+> > +
+> > +Passed by reference.
+> > +
+> >  DMA address types dma_addr_t
+> >  ----------------------------
+> >  
+> > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> > index 2d71b1115916..c132178fac07 100644
+> > --- a/lib/vsprintf.c
+> > +++ b/lib/vsprintf.c
+> > @@ -1140,6 +1140,39 @@ char *resource_string(char *buf, char *end, struct resource *res,
+> >  	return string_nocheck(buf, end, sym, spec);
+> >  }
+> >  
+> > +static noinline_for_stack
+> > +char *range_string(char *buf, char *end, const struct range *range,
+> > +		      struct printf_spec spec, const char *fmt)
+> > +{
+> > +#define RANGE_PRINTK_SIZE		16
+> > +#define RANGE_DECODED_BUF_SIZE		((2 * sizeof(struct range)) + 4)
+> > +#define RANGE_PRINT_BUF_SIZE		sizeof("[range - ]")
+> 
+> I think that it should be "[range -]"
 
-The patch in itself seems to solve the issue.
+Sounds good.
 
-repro is as follows:
-sudo /sbin/fstrim --listed-in /etc/fstab:/proc/self/mountinfo --verbose --quiet-unsupported &
-sudo ./sleepgraph.py -m mem -rtcwake 5
+> 
+> > +	char sym[RANGE_DECODED_BUF_SIZE + RANGE_PRINT_BUF_SIZE];
+> > +	char *p = sym, *pend = sym + sizeof(sym);
+> > +
+> > +	static const struct printf_spec str_spec = {
+> > +		.field_width = -1,
+> > +		.precision = 10,
+> > +		.flags = LEFT,
+> > +	};
+> 
+> Is this really needed? What about using "default_str_spec" instead?
 
-[836563.289069] PM: suspend exit
-[836563.909298] PM: suspend entry (s2idle)
-[836563.935447] Filesystems sync: 0.026 seconds
-[836563.951391] Freezing user space processes
-[836583.958957] Freezing user space processes failed after 20.007 seconds (1 tasks refusing to freeze, wq_busy=0):
-[836583.959582] task:fstrim          state:D stack:0     pid:241865 tgid:241865 ppid:241864 flags:0x00004006
-[836583.959592] Call Trace:
-[836583.959595]  <TASK>
-[836583.959600]  __schedule+0x400/0x1720
-[836583.959612]  ? mod_delayed_work_on+0xa4/0xb0
-[836583.959622]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959628]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959631]  ? blk_mq_flush_plug_list.part.0+0x1e3/0x610
-[836583.959640]  schedule+0x27/0xf0
-[836583.959644]  schedule_timeout+0x12f/0x160
-[836583.959652]  io_schedule_timeout+0x51/0x70
-[836583.959657]  wait_for_completion_io+0x8a/0x160
-[836583.959663]  submit_bio_wait+0x60/0x90
-[836583.959671]  blkdev_issue_discard+0x91/0x100
-[836583.959680]  btrfs_issue_discard+0xc4/0x140
-[836583.959689]  btrfs_discard_extent+0x241/0x2a0
-[836583.959695]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959702]  do_trimming+0xd2/0x240
-[836583.959712]  trim_bitmaps+0x350/0x4c0
-[836583.959723]  btrfs_trim_block_group+0xb8/0x110
-[836583.959729]  btrfs_trim_fs+0x118/0x440
-[836583.959734]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959738]  ? security_capable+0x41/0x70
-[836583.959746]  btrfs_ioctl_fitrim+0x113/0x180
-[836583.959752]  btrfs_ioctl+0xdaf/0x2670
-[836583.959759]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959763]  ? ioctl_has_perm.constprop.0.isra.0+0xd8/0x130
-[836583.959774]  __x64_sys_ioctl+0x94/0xd0
-[836583.959782]  do_syscall_64+0x82/0x160
-[836583.959790]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959793]  ? syscall_exit_to_user_mode+0x72/0x220
-[836583.959799]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959802]  ? do_syscall_64+0x8e/0x160
-[836583.959807]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959811]  ? do_sys_openat2+0x9c/0xe0
-[836583.959821]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959825]  ? syscall_exit_to_user_mode+0x72/0x220
-[836583.959828]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959832]  ? do_syscall_64+0x8e/0x160
-[836583.959835]  ? syscall_exit_to_user_mode+0x72/0x220
-[836583.959838]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959842]  ? do_syscall_64+0x8e/0x160
-[836583.959845]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959849]  ? do_syscall_64+0x8e/0x160
-[836583.959851]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959855]  ? do_syscall_64+0x8e/0x160
-[836583.959858]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959861]  ? do_syscall_64+0x8e/0x160
-[836583.959864]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959868]  ? srso_alias_return_thunk+0x5/0xfbef5
-[836583.959873]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[836583.959878] RIP: 0033:0x7f3e4261af2d
-[836583.959944] RSP: 002b:00007ffec002f400 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[836583.959950] RAX: ffffffffffffffda RBX: 00007ffec002f570 RCX: 00007f3e4261af2d
-[836583.959952] RDX: 00007ffec002f470 RSI: 00000000c0185879 RDI: 0000000000000003
-[836583.959955] RBP: 00007ffec002f450 R08: 0000562d74da7010 R09: 00007ffec002e7f2
-[836583.959957] R10: 0000000000000000 R11: 0000000000000246 R12: 0000562d74daafc0
-[836583.959960] R13: 0000000000000003 R14: 0000562d74daa970 R15: 0000562d74daad40
-[836583.959967]  </TASK>
----
- fs/btrfs/extent-tree.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+Because I got confused and was coping from resource_string().
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index feec49e6f9c8..7e4c1d4f2f7c 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -16,6 +16,7 @@
- #include <linux/percpu_counter.h>
- #include <linux/lockdep.h>
- #include <linux/crc32c.h>
-+#include <linux/freezer.h>
- #include "ctree.h"
- #include "extent-tree.h"
- #include "transaction.h"
-@@ -6361,6 +6362,11 @@ void btrfs_error_unpin_extent_range(struct btrfs_fs_info *fs_info, u64 start, u6
- 	unpin_extent_range(fs_info, start, end, false);
- }
- 
-+static bool btrfs_trim_interrupted(void)
-+{
-+	return fatal_signal_pending(current) || freezing(current);
-+}
-+
- /*
-  * It used to be that old block groups would be left around forever.
-  * Iterating over them would be enough to trim unused space.  Since we
-@@ -6459,8 +6465,8 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
- 		start += len;
- 		*trimmed += bytes;
- 
--		if (fatal_signal_pending(current)) {
--			ret = -ERESTARTSYS;
-+		if (btrfs_trim_interrupted()) {
-+			ret = 0;
- 			break;
- 		}
- 
-@@ -6508,6 +6514,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 
- 	cache = btrfs_lookup_first_block_group(fs_info, range->start);
- 	for (; cache; cache = btrfs_next_block_group(cache)) {
-+		if (btrfs_trim_interrupted())
-+			break;
-+
- 		if (cache->start >= range_end) {
- 			btrfs_put_block_group(cache);
- 			break;
-@@ -6547,17 +6556,20 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 
- 	mutex_lock(&fs_devices->device_list_mutex);
- 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+		if (btrfs_trim_interrupted())
-+			break;
-+
- 		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
- 			continue;
- 
- 		ret = btrfs_trim_free_extents(device, &group_trimmed);
-+
-+		trimmed += group_trimmed;
- 		if (ret) {
- 			dev_failed++;
- 			dev_ret = ret;
- 			break;
- 		}
--
--		trimmed += group_trimmed;
- 	}
- 	mutex_unlock(&fs_devices->device_list_mutex);
- 
--- 
-2.46.0
+Deleted now...
 
+> 
+> > +	static const struct printf_spec range_spec = {
+> > +		.base = 16,
+> > +		.field_width = RANGE_PRINTK_SIZE,
+
+However, my testing indicates this needs to be.
+
+                .field_width = 18, /* 2 (0x) + 2 * 8 (bytes) */
+
+... to properly zero pad the value.  Does that make sense?
+
+> > +		.precision = -1,
+> > +		.flags = SPECIAL | SMALL | ZEROPAD,
+> > +	};
+> > +
+> > +	*p++ = '[';
+> > +	p = string_nocheck(p, pend, "range ", str_spec);
+> > +	p = number(p, pend, range->start, range_spec);
+> > +	*p++ = '-';
+> > +	p = number(p, pend, range->end, range_spec);
+> > +	*p++ = ']';
+> > +	*p = '\0';
+> > +
+> > +	return string_nocheck(buf, end, sym, spec);
+> > +}
+> > +
+> >  static noinline_for_stack
+> >  char *hex_string(char *buf, char *end, u8 *addr, struct printf_spec spec,
+> >  		 const char *fmt)
+> 
+> Also add a selftest into lib/test_printf.c, please.
+
+Yes of course...  Makes testing easier too.
+
+Thanks,
+Ira
+
+> 
+> Best Regards,
+> Petr
 
