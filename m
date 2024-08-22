@@ -1,313 +1,309 @@
-Return-Path: <linux-btrfs+bounces-7404-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7405-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F8095B40F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 13:41:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E86BF95B44B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 13:52:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF3551F22E70
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 11:41:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AEB41F24679
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 11:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE511C93DE;
-	Thu, 22 Aug 2024 11:41:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D451C9430;
+	Thu, 22 Aug 2024 11:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BSyI/V2d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2WN7/De"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FF717A584;
-	Thu, 22 Aug 2024 11:41:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE031C93CE;
+	Thu, 22 Aug 2024 11:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724326898; cv=none; b=izCVILMlB4YNcpHf7K57JCz/MAg0zu2ACxWulmiYcixaRnmUxbduSj29QU5J0oA64s343LKkv8rV01HL2Jaa9uNLoOTaAFuZQSuSKA2bjs3GofS+17OJC+3wXk8DCy0yAcz/+p8m1nqUqpvlPaD4RZSNKWUm/DT9v2nxom8rrr8=
+	t=1724327517; cv=none; b=CfOtYPri9BuPcVVVkq2cvRLXcpdFpU+2ZQvdWwxs8HvBLSkneT/ABsDSFKOXzB0R1+cnL1Jq+6rpS+lw++fLr/EqtR57GlliErLpDP8Vx+G7KQsYWdL82Woh5HVM3SHdycjm+aJtrJ20g65gLo08Pm7j3Ust4I8zftQPqN7NTiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724326898; c=relaxed/simple;
-	bh=58k+EK0uz9VZEQWT5oIuY/GelOZLcOZe1onvQSj93UM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QuMmyUVjl/CuxkOHnmVbVbahmNoajw10j6Ekp7vvNG9DlmoRHdfOW0YLxQSOYwe3KFeF4lmX4NcU+XFPUAgf0SLvR09A1z8V0k1TSuLKI/LWszFYjBaPgbyrPNYY5StDOsp3NbBhadrfg9Z7eSiqFn5Ti81Ml7dCG4lerj8GcGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BSyI/V2d; arc=none smtp.client-ip=209.85.216.54
+	s=arc-20240116; t=1724327517; c=relaxed/simple;
+	bh=IDT9EJWVxqxXzqJ7qHhEJJmCxjW3JiXDWxmHqjIUMxc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=aGafYNlDl6lE51edaAA7rDzjkyGuL1Arn+lf6MN9reDXBm1LuSgcyd+MdKJdy6QMRTmcxQV6zDI0pGs+RQlLTYWdvrhzy61mT2BSozGFeV7MmMqsKl0GyrrQXdK3QUb7ySjaYRklkH+LmnVPFLqMxoUGFuvSov3NbmB7Pmgxg/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G2WN7/De; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2d3d0b06a2dso550736a91.0;
-        Thu, 22 Aug 2024 04:41:37 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70cec4aa1e4so498628b3a.1;
+        Thu, 22 Aug 2024 04:51:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724326896; x=1724931696; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Be5M2+00B/TcfeJVQOceNm0Gn8MZuRdB3WRZWzpxOwM=;
-        b=BSyI/V2dD6p7/vy97G+FUsRVPzQ+6CQhU8zI6y9EVwbge7NCFe3haNF4QrvxBTcUpQ
-         zuN+EJLrVzRQaXHPGPLgKvBg/DE0lw0dRhWdNP9ZCtCbVPtkYmADIL8Ylu+CmwYykJvE
-         Jl3sjbIXJmp/j3kaZsNDX8QUlW4tx6CYhsQMmjtCJuAPhUyAnuDi+ZX/utfudglF06r8
-         Fe7/aPUwte8AtZpcyf7xjpdVEnfo9FXjwO4GiJ0XHw355RIktHKIhiWqGMa+2SpQv+YX
-         meYRuP2ssHu9TjQCfzkfMiaVfTy1BqOX17IK6sqKzETtxkH5RW6RKQawwCL2pZn8J+IG
-         6+jg==
+        d=gmail.com; s=20230601; t=1724327514; x=1724932314; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IDT9EJWVxqxXzqJ7qHhEJJmCxjW3JiXDWxmHqjIUMxc=;
+        b=G2WN7/DeukpV1t7F3gVxoDbdJg5yFGaRSaGzb+zx2GoMp6Ovvhcn2ymrFa4TfTQ8Cy
+         ynElJP3PmXCXdmQRE7RZrwdNOH02RTCqcOrNhabvJXls5G0FpfbllcUxcwz2Z2SmzZPt
+         FyXP3tAUco/uyarc4Xft0phPajyM0dLyDlu2bGioJdAH/4yrGiaCyBCw04107FgzpY+2
+         fkEB8Gwy2jsJTpHmSP2g6mfHw5knxYYDtdUaS3xdpdGqYRNsGChrZ7SAky7BqEvhOaYL
+         1MJkisGLCdC1x3a7BrD0/7gDVA51K1dFoAZ6H5AHl1bqosCKIIVLkfVCn8bhGDUVEc2W
+         11Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724326896; x=1724931696;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Be5M2+00B/TcfeJVQOceNm0Gn8MZuRdB3WRZWzpxOwM=;
-        b=o9XHdl424894QrgyvZ2M7GYfFlF7YutqcESDiTiCcQoOBRutXGQvbcYqGRPwP+pVND
-         oTwx5dC+58iDVI4pU9puAxeJy+dO80AAxYbWch9iGT5DFdsJKYmyENJY6gTHQGzRG5I6
-         hh0U/oVWPfAdYWL7LzPhiSeTjlfFtoJyg7iEgIvntbZFblcrpv3ssNZku+U0QMYr7C/Z
-         9ULazd5kq8DGtsQrFX/Ncqi3ieUH54TbUl2O02fLo1aKS5ccVPKlr4mStoMG/L3lbEMh
-         UDO4dHf5P6i9xj+UwWE8t0uTX7trsKof9B95F+sxC0rsVshyw0r0z42qi3VfZkOSwWXi
-         4E9w==
-X-Forwarded-Encrypted: i=1; AJvYcCUX/FjY86uctCFZcyqVo8PTnM1dMzpolVORq8dC/f6jHOpyIZjbx+giVQHNEKLBWfQQQv3A8ONQzc5GMA==@vger.kernel.org, AJvYcCXJOhGBWXAEQ0Mncavw3/gxi0fy5yNNt7qUBn5UmYpQmQ3e8Tr5kSb1UDnn3UOMxkjk4Iy3+Vg4@vger.kernel.org
-X-Gm-Message-State: AOJu0YxAvO5dgxXhzn5D0I0Csfz7KM3nIRIi+jECwV1Af970RMG6SE0y
-	ynHTGPh9F1mf9kRRBkha3ZbGPULHwLqZngkukffMEkoCRGohzkkV
-X-Google-Smtp-Source: AGHT+IGxs5TD/I41bqPlYEJcDzydF4C5MOASYBdcJ9YOKvQXmfRKtyNDCRJfLlE8m7RclnIi94TLIg==
-X-Received: by 2002:a17:90a:ff04:b0:2cd:49c6:e2d7 with SMTP id 98e67ed59e1d1-2d616b242c5mr1608195a91.19.1724326896337;
-        Thu, 22 Aug 2024 04:41:36 -0700 (PDT)
-Received: from localhost ([123.113.110.156])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d5c2e1605bsm4235079a91.1.2024.08.22.04.41.34
+        d=1e100.net; s=20230601; t=1724327514; x=1724932314;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IDT9EJWVxqxXzqJ7qHhEJJmCxjW3JiXDWxmHqjIUMxc=;
+        b=oz5fBaiDeDHID/pM3CERafGaGxIesNjEVV3v+WW9MYfJ/jN0pZBwPRfrihtIOLXarR
+         VACjPEsZh0pZlzHMyGH6fSsuEG8rCk4xV7ReCFavLqWP/wHQ7aUJy459BM8834Vwowvb
+         KVYiIhsaxUScfiTKD6W0KAkYs6jGAAC0mDpaJlEkAVuM/o+5pA5tG+r/Wvz7Fe1w/geP
+         5gZinMhQ0qv2dk07LS6CqwylW16ZuZ6B1tuisXCNdia0purpIwOVJnAeAN3kiOWkJZCu
+         9gZ6grV2Uwq6IWHSM+uEVdIZSO2G9WbLkgb2ZORael8WaLBLRau8hIKcZlz/XNfBIQ8o
+         xJLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCiH4cw8UV6EOmrDgodDp60hfZpa5OX2XRAkNdB9oEHxbsU9Psu/QPR4lI3MIJdgFByIbWLCOb@vger.kernel.org, AJvYcCVSO1pmKSqTU0uW0wxTMTCVfvI0Y85KWLyHLH5AasobKU6OAkqxrU4CgbAg491peTSaFxaSqxuchOJY3A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQqRj1RBVLkLQf4IDER0NBEjYYr8b2l5IhA1U1lHhDHBWKNpdW
+	4oWW83HhopeHE85fTRHt/hxT8Z5fICN1GZSf/VjfqzDMgwzWHH1Z
+X-Google-Smtp-Source: AGHT+IGPsvrkRDk19iXlzJCilp0En18mh85zqvZe2U5KLs93vAauZfGHa36KhBpNyaZqnl6dCnJB+Q==
+X-Received: by 2002:a05:6a20:d50d:b0:1c8:ebd2:8599 with SMTP id adf61e73a8af0-1cada148966mr6214726637.38.1724327514105;
+        Thu, 22 Aug 2024 04:51:54 -0700 (PDT)
+Received: from [127.0.0.1] ([174.139.202.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7143430608csm1205216b3a.153.2024.08.22.04.51.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2024 04:41:35 -0700 (PDT)
+        Thu, 22 Aug 2024 04:51:53 -0700 (PDT)
+Message-ID: <dd35da917e763973846cb3c7442541ef8361a70d.camel@gmail.com>
+Subject: Re: [PATCH] btrfs: fix the race between umount and btrfs-cleaner
 From: Julian Sun <sunjunchao2870@gmail.com>
 To: josef@toxicpanda.com
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	linux-btrfs@vger.kernel.org,
-	stable@vger.kernel.org,
-	sunjunchao2870@gmail.com,
-	syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: fix the race between umount and btrfs-cleaner
-Date: Thu, 22 Aug 2024 19:41:31 +0800
-Message-Id: <20240822114131.1350726-1-sunjunchao2870@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240821180804.GF1998418@perftesting>
+Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+ stable@vger.kernel.org,
+ syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
+Date: Thu, 22 Aug 2024 19:51:48 +0800
+In-Reply-To: <20240822114131.1350726-1-sunjunchao2870@gmail.com>
 References: <20240821180804.GF1998418@perftesting>
+	 <20240822114131.1350726-1-sunjunchao2870@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Hi, Josef.
-Thanks for your review and comments.
-Yeah, you are correct, sorry for the mistake.
+T24gVGh1LCAyMDI0LTA4LTIyIGF0IDE5OjQxICswODAwLCBKdWxpYW4gU3VuIHdyb3RlOgo+IEhp
+LCBKb3NlZi4KPiBUaGFua3MgZm9yIHlvdXIgcmV2aWV3IGFuZCBjb21tZW50cy4KPiBZZWFoLCB5
+b3UgYXJlIGNvcnJlY3QsIHNvcnJ5IGZvciB0aGUgbWlzdGFrZS4KPiAKPiBJJ20gdGhpbmtpbmcg
+aWYgaXMgdGhlcmUgYW55IG1pc3VuZGVyc3RhbmRpbmcgaW4gdGhlIGZvbGxvd2luZwo+IHNjZW5h
+cmlvCj4gCj4gdW1vdW50IHRocmVhZDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGJ0cmZzLWNsZWFuZXIgdGhyZWFkOgo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3J1bl9kZWxh
+eWVkX2lwdXRzKCkKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLT5ydW5fZGVsYXllZF9pcHV0X2xvY2tlZCgp
+Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAtPmlwdXQoaW5vZGUpCj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgLT5zcGluX2xvY2soaW5vZGUpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLy8gaW5v
+ZGUtPmlfY291bnQgZGVjIHRvIDAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAtPmlwdXRfZmlu
+YWwoKQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAtPl9faW5vZGVfYWRkX2xydSgpCj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLy8gbWFwcGluZ19zaHJpbmthYmxlKCkKPiBy
+ZXR1cm5lZCBmYWxzZQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8vIHNvIGlwdXRf
+ZmluYWwoKQo+IHJldHVybmVkIHdpdGggaV9jb3VudD0wCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgLy8gbm90ZSBoZXJlOiB0aGUgaW5vZGUKPiBzdGlsbAo+IMKgYnRyZnNfa2lsbF9z
+dXBlcigpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8v
+IGluIHRoZSBzYiBsaXN0IGFuZAo+IElfRlJFRUlORwo+IMKgwqAgLT5nZW5lcmljX3NodXRkb3du
+X3N1cGVyKCnCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8vIHdhcyBub3Qgc2V0Cj4gwqDC
+oMKgwqAgLT5ldmljdF9pbm9kZXMoKcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIC0+c3Bpbl91bmxvY2soaW5vZGUpCj4gwqDCoMKgwqDCoCAtPnNwaW5fbG9jayhp
+bm9kZSkKPiDCoMKgwqDCoMKgIC8vIGlfY291bnQgaXMgMCBhbmTCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgLy8gY29udGludWUgcnVubmluZy4uLgo+IMKgwqDCoMKgwqAgLy8gSV9GUkVF
+SU5HIHdhcyBub3Qgc2V0wqDCoMKgwqDCoMKgwqDCoMKgwqAgLT5fX2J0cmZzX3J1bl9kZWZyYWdf
+aW5vZGUoKQo+IMKgwqDCoMKgwqAgLy8gc28gdGhlIGlub2RlIHdhcyBhZGRlZCB0b8KgwqDCoMKg
+wqDCoMKgwqAgLT5idHJmc19pZ2V0KCkKPiDCoMKgwqDCoMKgIC8vIGRpc3Bvc3QgbGlzdMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLy8gbm90ZSB0aGUgaW5v
+ZGUgaXMKPiBzdGlsbAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLy8gaW4gdGhl
+IHNiIGxpc3TCoCAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8vIGFuZAo+IElf
+V0lMTF9GUkVFfElfRlJFRUlORwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLy8g
+d2FzIG5vdCBzZXQKPiDCoCAtPnNwaW5fdW5sb2NrKCnCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLT5maW5kX2lub2RlKCkKPiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLT5zcGluX2xvY2soaW5vZGUpCj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIC0+X19pZ2V0KCk7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIC0+c3Bpbl91bmxvY2soKTsKPiDCoCAtPmRpc3Bvc2VfbGlzdCgpwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKPiDCoMKgwqAg
+LT5ldmljdCgpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgLT5pcHV0KCkKPiDCoMKgwqDCoCAvLyBub3RlOiBpX2xvY2sgd2FzIG5vdMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAtPnNwaW5fbG9jayhpbm9kZSkKPiDCoMKgwqDCoCAv
+LyBob2xkIGhlcmUuwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgLT5pcHV0X2ZpbmFsKCkKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+LT5zcGluX3VubG9jaygpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC0+ZXZp
+Y3QoKQo+IApUaGUgdW5kZXJzdGFuZGluZyBoZXJlIGlzIG5vdCBjb3JyZWN0LCBJIHdpbGwgdHJ5
+IHRvIGFuYWx5emUgaXQgbW9yZQpjYXJlZnVsbHkuCgo+IE5vdywgd2UgaGF2ZSB0d28gdGhyZWFk
+cyBzaW11bHRhbmVvdXNseSBldmljdGluZwo+IHRoZSBzYW1lIGlub2RlLCB3aGljaCBsZWQgdG8g
+YSBidWcuCj4gCj4gVGhlIGtleSBwb2ludHMgaGVyZSBhcmU6Cj4gMS4gYnRyZnMtY2xlYW5lcjog
+aXB1dF9maW5hbCgpIGNhbGxlZCBfX2lub2RlX2FkZF9scnUoKSBhbmQgdGhlbgo+IHJldHVybiBi
+ZWNhdXNlIHNvbWUgcmVhc29uIHdpdGggaV9jb3VudD0wLCBhbmQgSV9GUkVFSU5HIHdhcyBub3Qg
+c2V0LAo+IGFuZCBtb3N0IGltcG9ydGFudCwgaV9sb2NrIHdhcyB1bmxvY2tlZCwKPiB3aGljaCBn
+aXZlcyBldmljdF9pbm9kZXMoKSBhIHBlcmZlY3QgY2hhbmNlIHRvIHB1dCB0aGUgaW5vZGUgaW50
+bwo+IGRpc3Bvc2UgbGlzdC4KPiAyLiB1bW91bnQgdGhyZWFkOiBUaGUgaW5vZGUgKHdoaWNoIGlf
+Y291bnQgaXMgMCBhbmQgSV9GUkVFSU5HIHdhcyBub3QKPiBzZXQpIAo+IHdhcyBhZGRlZCB0byBk
+aXNwb3NlIGxpc3QuCj4gMy4gYnRyZnMtY2xlYW5lcjogQmVmb3JlIHVtb3VudCB0aHJlYWQgc2V0
+IElfRlJFRUlORyBmbGFnLAo+IGJ0cmZzX2lnZXQoKQo+IGZpbmRlZCB0aGUgaW5vZGUgYW5kIGlu
+YyBpX2NvdW50Cj4gNC4gdW1vdW50IHRocmVhZCBjYWxsZWQgZXZpY3QoKSBhbmQgYnRyZnMtY2xl
+YW5lciBjYWxsZWQgaXB1dCgpLAo+IHdoaWNoIGxlYWRzIAo+IHRvIGJ1Zy4KPiAKPiBUaGUgYWJv
+dmUgYmVoYXZpb3IgY2FuIGJlIGNvbmZpcm1lZCBieSB0aGUgZGVidWdnaW5nIGxvZyAKPiBiYXNl
+ZCBvbiBjb21taXQgZDMwZDBlNDlkYTcxOgo+IAo+IGRpZmYgLS1naXQgYS9mcy9idHJmcy9kZWZy
+YWcuYyBiL2ZzL2J0cmZzL2RlZnJhZy5jCj4gaW5kZXggNDA3Y2NlYzNlNTdlLi5jYzUwZGQxZThi
+ZWIgMTAwNjQ0Cj4gLS0tIGEvZnMvYnRyZnMvZGVmcmFnLmMKPiArKysgYi9mcy9idHJmcy9kZWZy
+YWcuYwo+IEBAIC0yNzgsNiArMjc4LDggQEAgc3RhdGljIGludCBfX2J0cmZzX3J1bl9kZWZyYWdf
+aW5vZGUoc3RydWN0Cj4gYnRyZnNfZnNfaW5mbyAqZnNfaW5mbywKPiDCoMKgwqDCoMKgwqDCoMKg
+cmV0ID0gYnRyZnNfZGVmcmFnX2ZpbGUoaW5vZGUsIE5VTEwsICZyYW5nZSwgZGVmcmFnLT50cmFu
+c2lkLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlRSRlNfREVGUkFHX0JBVENIKTsKPiDCoMKgwqDC
+oMKgwqDCoMKgc2JfZW5kX3dyaXRlKGZzX2luZm8tPnNiKTsKPiArwqDCoMKgwqDCoMKgwqBpZiAo
+aW5vZGUtPmlfc3RhdGUgJiAoMTw8MTkpKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBwcl9pbmZvKCJidWchIGRvdWJsZSBldmljdCEgY3Jhc2ggd2lsbCBoYXBwZW5cbiIpOwo+IMKg
+wqDCoMKgwqDCoMKgwqBpcHV0KGlub2RlKTsKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqBpZiAocmV0
+IDwgMCkKPiBkaWZmIC0tZ2l0IGEvZnMvaW5vZGUuYyBiL2ZzL2lub2RlLmMKPiBpbmRleCAzYTQx
+ZjgzYTRiYTUuLjY0MWE4MjhiYzJiNyAxMDA2NDQKPiAtLS0gYS9mcy9pbm9kZS5jCj4gKysrIGIv
+ZnMvaW5vZGUuYwo+IEBAIC00NjEsOCArNDYxLDE0IEBAIHN0YXRpYyB2b2lkIF9faW5vZGVfYWRk
+X2xydShzdHJ1Y3QgaW5vZGUgKmlub2RlLAo+IGJvb2wgcm90YXRlKQo+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuOwo+IMKgwqDCoMKgwqDCoMKgwqBpZiAoIShpbm9kZS0+
+aV9zYi0+c19mbGFncyAmIFNCX0FDVElWRSkpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqByZXR1cm47Cj4gLcKgwqDCoMKgwqDCoMKgaWYgKCFtYXBwaW5nX3Nocmlua2FibGUoJmlu
+b2RlLT5pX2RhdGEpKQo+ICvCoMKgwqDCoMKgwqDCoGlmICghbWFwcGluZ19zaHJpbmthYmxlKCZp
+bm9kZS0+aV9kYXRhKSkgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoaW5v
+ZGUtPmlfaW5vID09IDI2MSkgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgcHJfaW5mbygic2V0IGlub2RlIDB4JXB4IGRiZ19mbGFnIGNhc3VlCj4gbWFw
+cGluZ19zaHJpbmthYmxlXG4iLCBpbm9kZSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBkdW1wX3N0YWNrKCk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBXUklURV9PTkNFKGlub2RlLT5pX3N0YXRlLCBpbm9k
+ZS0KPiA+IGlfc3RhdGV8KDE8PDE5KSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oH0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybjsKPiArwqDCoMKgwqDC
+oMKgwqB9Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKGxpc3RfbHJ1X2FkZF9vYmooJmlub2Rl
+LT5pX3NiLT5zX2lub2RlX2xydSwgJmlub2RlLQo+ID4gaV9scnUpKQo+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgdGhpc19jcHVfaW5jKG5yX3VudXNlZCk7Cj4gQEAgLTYyMyw3ICs2
+MjksMTAgQEAgdm9pZCBjbGVhcl9pbm9kZShzdHJ1Y3QgaW5vZGUgKmlub2RlKQo+IMKgwqDCoMKg
+wqDCoMKgwqB4YV91bmxvY2tfaXJxKCZpbm9kZS0+aV9kYXRhLmlfcGFnZXMpOwo+IMKgwqDCoMKg
+wqDCoMKgwqBCVUdfT04oIWxpc3RfZW1wdHkoJmlub2RlLT5pX2RhdGEuaV9wcml2YXRlX2xpc3Qp
+KTsKPiDCoMKgwqDCoMKgwqDCoMKgQlVHX09OKCEoaW5vZGUtPmlfc3RhdGUgJiBJX0ZSRUVJTkcp
+KTsKPiAtwqDCoMKgwqDCoMKgwqBCVUdfT04oaW5vZGUtPmlfc3RhdGUgJiBJX0NMRUFSKTsKPiAr
+wqDCoMKgwqDCoMKgwqBpZiAoaW5vZGUtPmlfc3RhdGUgJiBJX0NMRUFSKSB7Cj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHByX2luZm8oImlub2RlIDB4JXB4IHN0YXRlIDB4JWx4IHRy
+aWdnZXJlZCBidWdcbiIsCj4gaW5vZGUsIGlub2RlLT5pX3N0YXRlKTsKPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgQlVHKCk7Cj4gK8KgwqDCoMKgwqDCoMKgfQo+IMKgwqDCoMKgwqDC
+oMKgwqBCVUdfT04oIWxpc3RfZW1wdHkoJmlub2RlLT5pX3diX2xpc3QpKTsKPiDCoMKgwqDCoMKg
+wqDCoMKgLyogZG9uJ3QgbmVlZCBpX2xvY2sgaGVyZSwgbm8gY29uY3VycmVudCBtb2RzIHRvIGlf
+c3RhdGUgKi8KPiDCoMKgwqDCoMKgwqDCoMKgaW5vZGUtPmlfc3RhdGUgPSBJX0ZSRUVJTkcgfCBJ
+X0NMRUFSOwo+IEBAIC0xNzU0LDcgKzE3NjMsMTAgQEAgdm9pZCBpcHV0KHN0cnVjdCBpbm9kZSAq
+aW5vZGUpCj4gwqB7Cj4gwqDCoMKgwqDCoMKgwqDCoGlmICghaW5vZGUpCj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm47Cj4gLcKgwqDCoMKgwqDCoMKgQlVHX09OKGlub2Rl
+LT5pX3N0YXRlICYgSV9DTEVBUik7Cj4gK8KgwqDCoMKgwqDCoMKgaWYgKGlub2RlLT5pX3N0YXRl
+ICYgSV9DTEVBUikgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwcl9pbmZvKCJp
+bm9kZSAweCVweCBzdGF0ZSAweCVseCB0cmlnZ2VyZWQgYSBidWdcbiIsCj4gaW5vZGUsIGlub2Rl
+LT5pX3N0YXRlKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgQlVHKCk7Cj4gK8Kg
+wqDCoMKgwqDCoMKgfQo+IMKgcmV0cnk6Cj4gwqDCoMKgwqDCoMKgwqDCoGlmIChhdG9taWNfZGVj
+X2FuZF9sb2NrKCZpbm9kZS0+aV9jb3VudCwgJmlub2RlLT5pX2xvY2spKSB7Cj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoaW5vZGUtPmlfbmxpbmsgJiYgKGlub2RlLT5pX3N0
+YXRlICYKPiBJX0RJUlRZX1RJTUUpKQo+IHsKPiBAQCAtMTc2NCw2ICsxNzc2LDggQEAgdm9pZCBp
+cHV0KHN0cnVjdCBpbm9kZSAqaW5vZGUpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgbWFya19pbm9kZV9kaXJ0eV9zeW5jKGlub2RlKTsKPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIHJldHJ5Owo+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqBpZiAoaW5vZGUtPmlfaW5vID09IDI2MSAmJiAoaW5vZGUtPmlfc3RhdGUgJigxPDwx
+OSkpKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcHJf
+aW5mbygic3RhdGUgaXMgMHglbHgsIGJ1ZyBtYXkgYmUKPiB0cmlnZ2VyZWRcbiIsIGlub2RlLT5p
+X3N0YXRlKTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlwdXRfZmluYWwoaW5v
+ZGUpOwo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqB9Cj4gCj4gVGhlICgxPDwxOSkgYml0IHdhcyB1
+c2VkIHRvIGRlYnVnZ2luZy4KPiAKPiBIZXJlIGlzIHRoZSBsb2cgd2hlbiBidWcgd2FzIHRyaWdn
+ZXJlZDoKPiAKPiBbwqDCoCAzMy4wMjgwMjRdWyBUMjQ1MV0gc2V0IGlub2RlIDB4ZmZmZjg4ODAx
+ZmI4NzczOCBkYmdfZmxhZyBjYXN1ZQo+IG1hcHBpbmdfc2hyaW5rYWJsZQo+IFvCoMKgIDMzLjAy
+ODQ3OF1bIFQyNDUxXSBDUFU6IDAgUElEOiAyNDUxIENvbW06IGJ0cmZzLWNsZWFuZXIgTm90Cj4g
+dGFpbnRlZAo+IDYuMTAuMC1yYzItMDAyMjUtZ2YwZGViMDFkNTJiMy1kaXJ0eSAjMTMyCj4gW8Kg
+wqAgMzMuMDI5MDcyXVsgVDI0NTFdIEhhcmR3YXJlIG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0
+NDBGWCArCj4gUElJWCwKPiAxOTk2KSwgQklPUyAxLjE2LjItZGViaWFuLTEuMTYuMi0xIDA0LzAx
+LzIwMTQKPiBbwqDCoCAzMy4wMjk2NzVdWyBUMjQ1MV0gQ2FsbCBUcmFjZToKPiBbwqDCoCAzMy4w
+Mjk4NzNdWyBUMjQ1MV3CoCA8VEFTSz4KPiBbwqDCoCAzMy4wMzAwNDZdWyBUMjQ1MV3CoCBkdW1w
+X3N0YWNrX2x2bCsweDE2Yy8weDFmMAo+IFvCoMKgIDMzLjAzMDMzMF1bIFQyNDUxXcKgIF9faW5v
+ZGVfYWRkX2xydS5wYXJ0LjArMHgxZWEvMHgyODAKPiBbwqDCoCAzMy4wMzA2NDddWyBUMjQ1MV3C
+oCBpcHV0KzB4N2M3LzB4OTIwCj4gW8KgwqAgMzMuMDMwODc2XVsgVDI0NTFdwqAgcnVuX2RlbGF5
+ZWRfaXB1dF9sb2NrZWQrMHgxMzYvMHgxZTAKPiBbwqDCoCAzMy4wMzExOTldWyBUMjQ1MV3CoCBi
+dHJmc19ydW5fZGVsYXllZF9pcHV0cysweDhlLzB4MTIwCj4gW8KgwqAgMzMuMDMxNTE2XVsgVDI0
+NTFdwqAgY2xlYW5lcl9rdGhyZWFkKzB4MmQzLzB4NDgwCj4gW8KgwqAgMzMuMDMxODAxXVsgVDI0
+NTFdwqAgPyBfX3BmeF9jbGVhbmVyX2t0aHJlYWQrMHgxMC8weDEwCj4gW8KgwqAgMzMuMDMyMTEz
+XVsgVDI0NTFdwqAga3RocmVhZCsweDJjMS8weDNhMAo+IFvCoMKgIDMzLjAzMjM1NF1bIFQyNDUx
+XcKgID8gX3Jhd19zcGluX3VubG9ja19pcnErMHgyMy8weDUwCj4gW8KgwqAgMzMuMDMyNjU5XVsg
+VDI0NTFdwqAgPyBfX3BmeF9rdGhyZWFkKzB4MTAvMHgxMAo+IFvCoMKgIDMzLjAzMjkyOV1bIFQy
+NDUxXcKgIHJldF9mcm9tX2ZvcmsrMHg0NS8weDgwCj4gW8KgwqAgMzMuMDMzMTk4XVsgVDI0NTFd
+wqAgPyBfX3BmeF9rdGhyZWFkKzB4MTAvMHgxMAo+IFvCoMKgIDMzLjAzMzQ2OV1bIFQyNDUxXcKg
+IHJldF9mcm9tX2ZvcmtfYXNtKzB4MWEvMHgzMAo+IFvCoMKgIDMzLjAzMzc1Nl1bIFQyNDUxXcKg
+IDwvVEFTSz4KPiBbwqDCoCAzMy4wMzM5NzhdWyBUMjQ1MV0gYnVnISBkb3VibGUgZXZpY3QhIGNy
+YXNoIHdpbGwgaGFwcGVuCj4gW8KgwqAgMzMuMDM0MTY4XVsgVDIzMzJdIEJUUkZTIGluZm8gKGRl
+dmljZSBsb29wMCk6IGxhc3QgdW5tb3VudCBvZgo+IGZpbGVzeXN0ZW0gYzlmZTQ0ZGEtZGU1Ny00
+MDZhLTgyNDEtNTdlYzdkNDQxMmNmCj4gW8KgwqAgMzMuMDM0Mjk1XVsgVDI0NTFdIGlub2RlIDB4
+ZmZmZjg4ODAxZmI4NzczOCBzdGF0ZSAweDYwIHRyaWdnZXJlZAo+IGEKPiBidWcKPiBbwqDCoCAz
+My4wMzQzMzJdWyBUMjQ1MV0gLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCj4g
+W8KgwqAgMzMuMDM1NTc4XVsgVDI0NTFdIGtlcm5lbCBCVUcgYXQgZnMvaW5vZGUuYzoxNzY4IQo+
+IFvCoMKgIDMzLjAzNTg3M11bIFQyNDUxXSBPb3BzOiBpbnZhbGlkIG9wY29kZTogMDAwMCBbIzFd
+IFBSRUVNUFQgU01QCj4gS0FTQU4gTk9QVEkKPiBbwqDCoCAzMy4wMzYyODZdWyBUMjQ1MV0gQ1BV
+OiAwIFBJRDogMjQ1MSBDb21tOiBidHJmcy1jbGVhbmVyIE5vdAo+IHRhaW50ZWQKPiA2LjEwLjAt
+cmMyLTAwMjI1LWdmMGRlYjAxZDUyYjMtZGlydHkgIzEzMgo+IFvCoMKgIDMzLjAzNjg3MF1bIFQy
+NDUxXSBIYXJkd2FyZSBuYW1lOiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKwo+IFBJSVgsCj4g
+MTk5NiksIEJJT1MgMS4xNi4yLWRlYmlhbi0xLjE2LjItMSAwNC8wMS8yMDE0Cj4gW8KgwqAgMzMu
+MDM3NDY0XVsgVDI0NTFdIFJJUDogMDAxMDppcHV0KzB4ODk2LzB4OTIwCj4gLy8gbG9ncyAuLi4K
+PiBbwqDCoCAzMy4wNDI4ODJdWyBUMjQ1MV0gUEtSVTogNTU1NTU1NTQKPiBbwqDCoCAzMy4wNDMw
+OTJdWyBUMjQ1MV0gQ2FsbCBUcmFjZToKPiBbwqDCoCAzMy4wNDMyODhdWyBUMjQ1MV3CoCA8VEFT
+Sz4KPiBbwqDCoCAzMy4wNDQxOTBdWyBUMjQ1MV3CoCA/IGlwdXQrMHg4OTYvMHg5MjAKPiBbwqDC
+oCAzMy4wNDczMjFdWyBUMjQ1MV3CoCA/IGJ0cmZzX3J1bl9kZWZyYWdfaW5vZGVzKzB4YjQ5LzB4
+ZTYwCj4gW8KgwqAgMzMuMDQ3NjUzXVsgVDI0NTFdwqAgYnRyZnNfcnVuX2RlZnJhZ19pbm9kZXMr
+MHhhNDAvMHhlNjAKPiBbwqDCoCAzMy4wNDc5NzVdWyBUMjQ1MV3CoCA/IF9fcGZ4X2J0cmZzX3J1
+bl9kZWZyYWdfaW5vZGVzKzB4MTAvMHgxMAo+IFvCoMKgIDMzLjA0ODMyN11bIFQyNDUxXcKgID8g
+X19wZnhfX19tdXRleF91bmxvY2tfc2xvd3BhdGgrMHgxMC8weDEwCj4gW8KgwqAgMzMuMDQ4Njc4
+XVsgVDI0NTFdwqAgPyBfX3BmeF9kb19yYXdfc3Bpbl9sb2NrKzB4MTAvMHgxMAo+IFvCoMKgIDMz
+LjA0ODk5Nl1bIFQyNDUxXcKgID8gX3Jhd19zcGluX3VubG9jaysweDI4LzB4NTAKPiBbwqDCoCAz
+My4wNDkyODVdWyBUMjQ1MV3CoCA/Cj4gYnRyZnNfY2xlYW5fb25lX2RlbGV0ZWRfc25hcHNob3Qr
+MHgyYjIvMHg0MjAKPiBbwqDCoCAzMy4wNDk2NjBdWyBUMjQ1MV3CoCBjbGVhbmVyX2t0aHJlYWQr
+MHgyZWUvMHg0ODAKPiBbwqDCoCAzMy4wNDk5NDFdWyBUMjQ1MV3CoCA/IF9fcGZ4X2NsZWFuZXJf
+a3RocmVhZCsweDEwLzB4MTAKPiBbwqDCoCAzMy4wNTAyNTJdWyBUMjQ1MV3CoCBrdGhyZWFkKzB4
+MmMxLzB4M2EwCj4gW8KgwqAgMzMuMDUwNDkyXVsgVDI0NTFdwqAgPyBfcmF3X3NwaW5fdW5sb2Nr
+X2lycSsweDIzLzB4NTAKPiBbwqDCoCAzMy4wNTA3OTZdWyBUMjQ1MV3CoCA/IF9fcGZ4X2t0aHJl
+YWQrMHgxMC8weDEwCj4gW8KgwqAgMzMuMDUxMDY3XVsgVDI0NTFdwqAgcmV0X2Zyb21fZm9yaysw
+eDQ1LzB4ODAKPiBbwqDCoCAzMy4wNTEzMzNdWyBUMjQ1MV3CoCA/IF9fcGZ4X2t0aHJlYWQrMHgx
+MC8weDEwCj4gW8KgwqAgMzMuMDUxNjAzXVsgVDI0NTFdwqAgcmV0X2Zyb21fZm9ya19hc20rMHgx
+YS8weDMwCj4gW8KgwqAgMzMuMDUxODg3XVsgVDI0NTFdwqAgPC9UQVNLPgo+IFvCoMKgIDMzLjA1
+MjA2Nl1bIFQyNDUxXSBNb2R1bGVzIGxpbmtlZCBpbjoKPiBbwqDCoCAzMy4wNTIzMTZdWyBUMjQ1
+MV0gLS0tWyBlbmQgdHJhY2UgMDAwMDAwMDAwMDAwMDAwMCBdLS0tCj4gW8KgwqAgMzMuMDUyNjM0
+XVsgVDI0NTFdIFJJUDogMDAxMDppcHV0KzB4ODk2LzB4OTIwCj4gCj4gUGxlYXNlIG5vdGUgaW5v
+ZGUgMHhmZmZmODg4MDFmYjg3NzM4LCB3aGljaCB3YXMgc2V0IGRlYnVnIGZsYWcgYnkKPiBfX2lu
+b2RlX2FkZF9scnUoKSBpbiB0aGUgcnVuX2RlbGF5ZWRfaXB1dF9sb2NrZWQoKSBjb2RlIHBhdGgu
+IFRoaXMgCj4gaW5kaWNhdGVzIHRoYXQgdGhlIGlub2RlIHdhcyBub3QgYWN0dWFsbHkgZXZpY3Rl
+ZC4gCj4gVGhlbiwgcGxlYXNlIG5vdGUgdGhlIGRvdWJsZSBldmljdCBsb2csIHdoaWNoIHNob3dz
+IHRoYXQgdGhpcwo+IGlub2RlIHdoaWNoIHdhcyBzZXQgZGVidWcgZmxhZyBhbmQgd2FzIG5vdCBi
+ZSBldmljdGVkIGlzIAo+IHN0aWxsIG9uIHRoZSBzYiBsaXN0IGFuZCB3YXMgc3VjY2Vzc2Z1bGx5
+IGFjcXVpcmVkIGJ5IGJ0cmZzX2lnZXQoKS4gCj4gTmV4dCwgdGFrZSBub3RlIG9mIHRoZSB1bm1v
+dW50IGxvZywgaW5kaWNhdGluZyB0aGF0IHRoZXJlIHdhcyAKPiBhIGNvbmN1cnJlbnQgdW5tb3Vu
+dCB0aHJlYWQgd2hpY2ggaGFzIGFscmVhZHkgY2FsbGVkIGV2aWN0X2lub2RlcygpCj4gYXQgdGhh
+dCB0aW1lLiAKPiBGaW5hbGx5LCBvYnNlcnZlIHdoZXJlIHRoZSBCVUcgd2FzIHRyaWdnZXJlZDog
+dGhlIHN0YXRlIG9mIGlub2RlCj4gMHhmZmZmODg4MDFmYjg3NzM4IGhhZCBiZWVuIHNldCB0byAw
+eDYwIGJ5IHRoZSB1bm1vdW50IHRocmVhZCBjYWxsaW5nCj4gaW5vZGVfY2xlYXIoKSwgYW5kIGF0
+IHRoZSBzYW1lIHRpbWUsIGJ0cmZzLWNsZWFuZXIgY2FsbGVkIGlwdXQoKSwKPiB1bHRpbWF0ZWx5
+IGxlYWRpbmcgdG8gdGhlIEJVRyBhdCB0aGUgYmVnaW5uaW5nIGNoZWNrIG9mIGlwdXQoKS4gCj4g
+QWx0aG91Z2ggdGhlIHBvaW50IG9mIHRyaWdnZXIgZGlmZmVycyBmcm9tIHRoZSBvbmUgcmVwb3J0
+ZWQgYnkgCj4gc3l6Ym90LCB0aGVyZSBpcyBubyBkb3VidCB0aGF0IHRoZXkgYXJlIHRoZSBzYW1l
+IGJ1Zy4KPiAKPiBZb3UgY291bGQgYXBwbHkgdGhlIGFib3ZlIGRpZmYgYW5kIHRyeSB0byByZXBy
+b2R1Y2UgdGhlIGJ1ZyB1c2luZyB0aGUKPiByZXByb2R1Y2VyWzFdLgo+IAo+IElmIHRoZXJlIGlz
+IGFueXRoaW5nIEknbSBtaXNzaW5nIG9yIG1vcmUgaW5mbyB3YXMgbmVlZGVkLCBwbGVhc2UgbGV0
+Cj4gbWUga25vdy4KPiAKPiBbMV06IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL3gvcmVw
+cm8uYz94PTE0YzU3ZjE2OTgwMDAwCj4gCj4gVGhhbmtzLgoK
 
-I'm thinking if is there any misunderstanding in the following scenario
-
-umount thread:                     btrfs-cleaner thread:
-                                   btrfs_run_delayed_iputs()
-                                     ->run_delayed_iput_locked()
-                                       ->iput(inode)
-                                         ->spin_lock(inode)
- 				         // inode->i_count dec to 0
-                                         ->iput_final()
-                                           ->__inode_add_lru()
-                                            // mapping_shrinkable() returned false
-                                            // so iput_final() returned with i_count=0
-                                            // note here: the inode still
- btrfs_kill_super()                         // in the sb list and I_FREEING
-   ->generic_shutdown_super()               // was not set
-     ->evict_inodes()                       ->spin_unlock(inode)
-      ->spin_lock(inode)
-      // i_count is 0 and                // continue running...
-      // I_FREEING was not set           ->__btrfs_run_defrag_inode()
-      // so the inode was added to         ->btrfs_iget()
-      // dispost list                        // note the inode is still
-                                             // in the sb list  
-                                             // and I_WILL_FREE|I_FREEING
-                                             // was not set
-  ->spin_unlock()                            ->find_inode()
-                                              ->spin_lock(inode)
-                                              ->__iget();
-                                              ->spin_unlock();
-  ->dispose_list()                           
-    ->evict()                             ->iput()
-     // note: i_lock was not                ->spin_lock(inode)
-     // hold here.                          ->iput_final()
-                                              ->spin_unlock()
-                                              ->evict()
-
-Now, we have two threads simultaneously evicting
-the same inode, which led to a bug.
-
-The key points here are:
-1. btrfs-cleaner: iput_final() called __inode_add_lru() and then
-return because some reason with i_count=0, and I_FREEING was not set, 
-and most important, i_lock was unlocked,
-which gives evict_inodes() a perfect chance to put the inode into dispose list.
-2. umount thread: The inode (which i_count is 0 and I_FREEING was not set) 
-was added to dispose list.
-3. btrfs-cleaner: Before umount thread set I_FREEING flag, btrfs_iget()
-finded the inode and inc i_count
-4. umount thread called evict() and btrfs-cleaner called iput(), which leads 
-to bug.
-
-The above behavior can be confirmed by the debugging log 
-based on commit d30d0e49da71:
-
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index 407ccec3e57e..cc50dd1e8beb 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -278,6 +278,8 @@ static int __btrfs_run_defrag_inode(struct
-btrfs_fs_info *fs_info,
- 	ret = btrfs_defrag_file(inode, NULL, &range, defrag->transid,
- 				       BTRFS_DEFRAG_BATCH);
- 	sb_end_write(fs_info->sb);
-+	if (inode->i_state & (1<<19))
-+		pr_info("bug! double evict! crash will happen\n");
- 	iput(inode);
- 
- 	if (ret < 0)
-diff --git a/fs/inode.c b/fs/inode.c
-index 3a41f83a4ba5..641a828bc2b7 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -461,8 +461,14 @@ static void __inode_add_lru(struct inode *inode,
-bool rotate)
- 		return;
- 	if (!(inode->i_sb->s_flags & SB_ACTIVE))
- 		return;
--	if (!mapping_shrinkable(&inode->i_data))
-+	if (!mapping_shrinkable(&inode->i_data)) {
-+		if (inode->i_ino == 261) {
-+			pr_info("set inode 0x%px dbg_flag casue
-mapping_shrinkable\n", inode);
-+			dump_stack();
-+			WRITE_ONCE(inode->i_state, inode-
->i_state|(1<<19));
-+		}
- 		return;
-+	}
- 
- 	if (list_lru_add_obj(&inode->i_sb->s_inode_lru, &inode-
->i_lru))
- 		this_cpu_inc(nr_unused);
-@@ -623,7 +629,10 @@ void clear_inode(struct inode *inode)
- 	xa_unlock_irq(&inode->i_data.i_pages);
- 	BUG_ON(!list_empty(&inode->i_data.i_private_list));
- 	BUG_ON(!(inode->i_state & I_FREEING));
--	BUG_ON(inode->i_state & I_CLEAR);
-+	if (inode->i_state & I_CLEAR) {
-+		pr_info("inode 0x%px state 0x%lx triggered bug\n",
-inode, inode->i_state);
-+		BUG();
-+	}
- 	BUG_ON(!list_empty(&inode->i_wb_list));
- 	/* don't need i_lock here, no concurrent mods to i_state */
- 	inode->i_state = I_FREEING | I_CLEAR;
-@@ -1754,7 +1763,10 @@ void iput(struct inode *inode)
- {
- 	if (!inode)
- 		return;
--	BUG_ON(inode->i_state & I_CLEAR);
-+	if (inode->i_state & I_CLEAR) {
-+		pr_info("inode 0x%px state 0x%lx triggered a bug\n",
-inode, inode->i_state);
-+		BUG();
-+	}
- retry:
- 	if (atomic_dec_and_lock(&inode->i_count, &inode->i_lock)) {
- 		if (inode->i_nlink && (inode->i_state & I_DIRTY_TIME))
-{
-@@ -1764,6 +1776,8 @@ void iput(struct inode *inode)
- 			mark_inode_dirty_sync(inode);
- 			goto retry;
- 		}
-+		if (inode->i_ino == 261 && (inode->i_state &(1<<19)))
-+			pr_info("state is 0x%lx, bug may be
-triggered\n", inode->i_state);
- 		iput_final(inode);
- 	}
- }
-
-The (1<<19) bit was used to debugging.
-
-Here is the log when bug was triggered:
-
-[   33.028024][ T2451] set inode 0xffff88801fb87738 dbg_flag casue
-mapping_shrinkable
-[   33.028478][ T2451] CPU: 0 PID: 2451 Comm: btrfs-cleaner Not tainted
-6.10.0-rc2-00225-gf0deb01d52b3-dirty #132
-[   33.029072][ T2451] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[   33.029675][ T2451] Call Trace:
-[   33.029873][ T2451]  <TASK>
-[   33.030046][ T2451]  dump_stack_lvl+0x16c/0x1f0
-[   33.030330][ T2451]  __inode_add_lru.part.0+0x1ea/0x280
-[   33.030647][ T2451]  iput+0x7c7/0x920
-[   33.030876][ T2451]  run_delayed_iput_locked+0x136/0x1e0
-[   33.031199][ T2451]  btrfs_run_delayed_iputs+0x8e/0x120
-[   33.031516][ T2451]  cleaner_kthread+0x2d3/0x480
-[   33.031801][ T2451]  ? __pfx_cleaner_kthread+0x10/0x10
-[   33.032113][ T2451]  kthread+0x2c1/0x3a0
-[   33.032354][ T2451]  ? _raw_spin_unlock_irq+0x23/0x50
-[   33.032659][ T2451]  ? __pfx_kthread+0x10/0x10
-[   33.032929][ T2451]  ret_from_fork+0x45/0x80
-[   33.033198][ T2451]  ? __pfx_kthread+0x10/0x10
-[   33.033469][ T2451]  ret_from_fork_asm+0x1a/0x30
-[   33.033756][ T2451]  </TASK>
-[   33.033978][ T2451] bug! double evict! crash will happen
-[   33.034168][ T2332] BTRFS info (device loop0): last unmount of
-filesystem c9fe44da-de57-406a-8241-57ec7d4412cf
-[   33.034295][ T2451] inode 0xffff88801fb87738 state 0x60 triggered a
-bug
-[   33.034332][ T2451] ------------[ cut here ]------------
-[   33.035578][ T2451] kernel BUG at fs/inode.c:1768!
-[   33.035873][ T2451] Oops: invalid opcode: 0000 [#1] PREEMPT SMP
-KASAN NOPTI
-[   33.036286][ T2451] CPU: 0 PID: 2451 Comm: btrfs-cleaner Not tainted
-6.10.0-rc2-00225-gf0deb01d52b3-dirty #132
-[   33.036870][ T2451] Hardware name: QEMU Standard PC (i440FX + PIIX,
-1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[   33.037464][ T2451] RIP: 0010:iput+0x896/0x920
-// logs ...
-[   33.042882][ T2451] PKRU: 55555554
-[   33.043092][ T2451] Call Trace:
-[   33.043288][ T2451]  <TASK>
-[   33.044190][ T2451]  ? iput+0x896/0x920
-[   33.047321][ T2451]  ? btrfs_run_defrag_inodes+0xb49/0xe60
-[   33.047653][ T2451]  btrfs_run_defrag_inodes+0xa40/0xe60
-[   33.047975][ T2451]  ? __pfx_btrfs_run_defrag_inodes+0x10/0x10
-[   33.048327][ T2451]  ? __pfx___mutex_unlock_slowpath+0x10/0x10
-[   33.048678][ T2451]  ? __pfx_do_raw_spin_lock+0x10/0x10
-[   33.048996][ T2451]  ? _raw_spin_unlock+0x28/0x50
-[   33.049285][ T2451]  ? btrfs_clean_one_deleted_snapshot+0x2b2/0x420
-[   33.049660][ T2451]  cleaner_kthread+0x2ee/0x480
-[   33.049941][ T2451]  ? __pfx_cleaner_kthread+0x10/0x10
-[   33.050252][ T2451]  kthread+0x2c1/0x3a0
-[   33.050492][ T2451]  ? _raw_spin_unlock_irq+0x23/0x50
-[   33.050796][ T2451]  ? __pfx_kthread+0x10/0x10
-[   33.051067][ T2451]  ret_from_fork+0x45/0x80
-[   33.051333][ T2451]  ? __pfx_kthread+0x10/0x10
-[   33.051603][ T2451]  ret_from_fork_asm+0x1a/0x30
-[   33.051887][ T2451]  </TASK>
-[   33.052066][ T2451] Modules linked in:
-[   33.052316][ T2451] ---[ end trace 0000000000000000 ]---
-[   33.052634][ T2451] RIP: 0010:iput+0x896/0x920
-
-Please note inode 0xffff88801fb87738, which was set debug flag by
-__inode_add_lru() in the run_delayed_iput_locked() code path. This 
-indicates that the inode was not actually evicted. 
-Then, please note the double evict log, which shows that this
-inode which was set debug flag and was not be evicted is 
-still on the sb list and was successfully acquired by btrfs_iget(). 
-Next, take note of the unmount log, indicating that there was 
-a concurrent unmount thread which has already called evict_inodes() at that time. 
-Finally, observe where the BUG was triggered: the state of inode
-0xffff88801fb87738 had been set to 0x60 by the unmount thread calling
-inode_clear(), and at the same time, btrfs-cleaner called iput(),
-ultimately leading to the BUG at the beginning check of iput(). 
-Although the point of trigger differs from the one reported by 
-syzbot, there is no doubt that they are the same bug.
-
-You could apply the above diff and try to reproduce the bug using the 
-reproducer[1].
-
-If there is anything I'm missing or more info was needed, please let me know.
-
-[1]: https://syzkaller.appspot.com/x/repro.c?x=14c57f16980000
-
-Thanks.
 
