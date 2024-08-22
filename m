@@ -1,155 +1,350 @@
-Return-Path: <linux-btrfs+bounces-7402-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7403-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2632895B367
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 13:02:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEB5F95B3B7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 13:27:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42FE1F241C7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 11:02:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69F3028355D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 11:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5AA318308D;
-	Thu, 22 Aug 2024 11:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9621C93B5;
+	Thu, 22 Aug 2024 11:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ZgnVrsR0"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="I+AGRzXm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F094F18C31
-	for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 11:02:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183B516EB54
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 11:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724324540; cv=none; b=FFNQ/0+S1N1ZgiJrpyDI0zZan17WE4Qr5qCRTQBPdyHhvXmGSACTJOkGWOo+p5Ew4VKTydt9lv1tDMk26ZB7yb46tNTwzWVTQ+G2o3OYAIzvgFPE0+ggxut/GSJiIVIsm0bJqHfpx8EAxm959wa5PoD4nYOfct3niEdkcj41zE8=
+	t=1724326039; cv=none; b=VVB5j2NiAANRgJLEiFpbbFRC37YvAjRuAKd9g0iabKlJ0YL9Za3WGrphUQeOXRHDRmq1edy0arfdoElehPfWBbu8vuKNaTmTXQ0q0p3ncDqkce8SrA3qQ2FLQV9ixCM36FRoNqZG0CvxXaGFvhIBN+X4C32EaG9xwgiswG3KliU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724324540; c=relaxed/simple;
-	bh=BDNUTGsR5rsd9bQxG18DAjlfa43zSOpEZTUhhbu0tU4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GLtJudtx1MgqiWNBWZrHbmQ6+cMkRHhu3TYktKeiTcTD9Wxk+G9yAasiUf62vWuUNH11PdCer0RMdfEk0JD2xCQmmqAQ+eubLPKL9AQcaKKIGPPPSN2qYSyFeaQ5jC9r/DLcQ3riw0wb7ULg9KcR2fwb/sa9Fr6vzU+3r278XaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ZgnVrsR0; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724324511; x=1724929311; i=quwenruo.btrfs@gmx.com;
-	bh=p5LugtInfG5PpMXW1laltD35A5E1nWXeEWvj3V1iu9Q=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=ZgnVrsR0W3k63XUpc/YWjXL7IppFxzvppI0KD05zlojhveeN0zwtEXx6RoLrYDpH
-	 OL9OJCyMf2J0t3NI5/2wUl2hoMlRXLwX1l5GjaYEXzEjIPxBEXzj9BzZ10Q8qxi9a
-	 BQo3JqKMram/YVm0TjISmrDPMS00zX5CgOaGLivTbgQQIvST49TvIZXtRpJ1TZwPh
-	 rTEPEAFiXtTbcA8c4nXDchEb7iETZxUK8YIjCUIflPaGTBtqi5PNbzqCvXoG5ZLv4
-	 AFR8PiyKqzrlrbyCktZQwA92vebixfg/XgbphQe0u2tIAOXyRgCwmoClG2peLDCTW
-	 6sRfvk8urm57i4ui8Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4hvb-1rxPVw1Lq3-016zxw; Thu, 22
- Aug 2024 13:01:51 +0200
-Message-ID: <e975458a-edf4-4525-b424-5f284eebe979@gmx.com>
-Date: Thu, 22 Aug 2024 20:31:46 +0930
+	s=arc-20240116; t=1724326039; c=relaxed/simple;
+	bh=0egdaud3XJnLrHOfKJR02AkJ9G1kwMRfcILmqDKOvbk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W4fzt3PitVDXIo8XE9WsRiKIugZFxxMHDjCx4aIYQc9oxcWa05QfMbR51ofcKJGGm6fSnoWHe2mjl+Os8R6+WghswpgClksfRIsiChT7BC7/csailTxU2m5H913mlejY6wPC3VHsgbw9+GvZA+NhpgRUgV47CEaBkc3+c0sqo0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=I+AGRzXm; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2f3e9fb6ee9so7287981fa.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 04:27:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1724326034; x=1724930834; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OdcrbgUwYZCbvTxgX6hl7dn8mDljxmv7MhBnsCIJfOc=;
+        b=I+AGRzXm8LJ07LPiI2Y6KctwlfnF0wefl83XokyCP5SfwVPnPAoJVZPbE6o5vEC/AP
+         Eiip3H4W30vxtlxg+LbywQyCh6+oxgdQawGMM08tew1Ilxqt5g0/zTImTLFW5yaIBBP/
+         aBbvAa6SjCgQKOeC6YylMOlrp5t9+XfeZl5tO1KHc6HoiWGV77MDgJ9sC/NyMBc846Mj
+         RztnlxbeFd28laXSluC8PN9sUkyR5gi3WrYM75+/W3ue0LsSeN6wlkn/OsELoIzpceI4
+         le7ZUeQt3b8Jbb3PShxTYwIucpb1Y9o95d5AWgM8cn3tnRzO3Pmco9Q+IJQGTSZWLNoW
+         WL/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724326034; x=1724930834;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OdcrbgUwYZCbvTxgX6hl7dn8mDljxmv7MhBnsCIJfOc=;
+        b=RP0hdNFGhwUBwWItB1BOqQz/lZqTeQKZrdnoSU314++/5qqAIBjsy+WZGJ3bZOsmqV
+         lZCGwX/Kdm3D0EHR74uYSijVMpP3kwhrHmzj0eLdAYBwQWRGZYPLwb3YPPEPMGNu9/yE
+         htDhtbNnlJreMx96zjPZpdBqT8knjHqP3r8vHKB4oZkgn4CavBiE8SOU5s6kaO8RzieN
+         yMrAZp9+ixd/U+nXD20b0YtbN3xhfftfBufOhuQYjnlhX3avratdAZAaZfVNz+JZOSdc
+         UAecMEaw6FOz3xWuwYBKye0fQLaL9eGZ/EFAbxrsS6eLpH/ewAu4K7fd2qw6KXTXGUQn
+         NxAw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwO1iHijZ9TCqMcYDG8szp1pF9eywdT6Msgdr4LKRJik6zYFwCjsb31Dq1SM5Ia9rHpWWRoGaxLnC4mw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/ty1pTq7PmwND15sH5FxLzi8VoP14G34E7SI/MKyfE9R9l9uq
+	FvE6EEHAqdmdhmg8TWDCZndbdTobnwITBvCKswHGKuJhxWDoNBawHyA2DEKikLA=
+X-Google-Smtp-Source: AGHT+IHAU8FDGqmIJEUfnfRLVt+aTgE3s5SHVaHgmnI/b3XT2WX5U2lY1l6UDcY90CmnGCCqaxafaQ==
+X-Received: by 2002:a2e:f19:0:b0:2ef:2d3a:e70a with SMTP id 38308e7fff4ca-2f3f883066amr30830081fa.18.1724326033653;
+        Thu, 22 Aug 2024 04:27:13 -0700 (PDT)
+Received: from localhost ([2a02:8071:8280:d6e0:e324:b080:c95e:f348])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c044ddbccbsm803653a12.11.2024.08.22.04.27.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2024 04:27:13 -0700 (PDT)
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Huang, Ying" <ying.huang@intel.com>,
+	Hugh Dickins <hughd@google.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: swapfile: fix SSD detection with swapfile on btrfs
+Date: Thu, 22 Aug 2024 13:24:58 +0200
+Message-ID: <20240822112707.351844-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/14] btrfs: convert get_next_extent_buffer() to take a
- folio
-To: Matthew Wilcox <willy@infradead.org>, Li Zetao <lizetao1@huawei.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, terrelln@fb.com,
- linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-References: <20240822013714.3278193-1-lizetao1@huawei.com>
- <20240822013714.3278193-3-lizetao1@huawei.com>
- <Zsaq_QkyQIhGsvTj@casper.infradead.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <Zsaq_QkyQIhGsvTj@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GDAnGXDL6aEutjR12TqJRyPi0QdhoBXRm7C6YdXoCL4WGAxM3vc
- ah8E0Jx4R/WmSf7YXdpxQRXSamBJ6Knn7uAvGtDeowZTBykTfAdjWJ/I92rFvxWnHEx6GNV
- iXtHHUUY6AZUs1NS96QSxff5+xIF0wwe+TTF2etMXwl9w7nG+cR8BhYVE8jSjfJb7S803oz
- BSBtOM7zbs00mYtkgPT/A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:z2xu3eHn5e8=;4mam5odIxAsFkVDuNUmKggEcU52
- 4d3sWr8SrgzwlObVJJXEat12uOvXebdBzOVNyU4bPsSER9/13KdMeonQPHYx/MqEuj7eE8vSs
- GeWWXA+fhTDrplUqtEkePtLtpNApBwbLZoux2dGmaOb6Sje3JbpTiOZBk8n12CpTgtx9ye9rh
- 2/dykP/llfaZpu559Rm9aNLt9qfX2kocrzXBme+fRewQbtqE9Ss4FOpdycct6GLtHM3v4hyZL
- Exu5872MSabVV5tQSrluVYlxA/hqmDxD1XPr6veBc4k2JULMeqD+AoEm2BwrKGofkS/46gjDv
- uq8jwE6Q2W5dNFp5ey0fYRcVou+oaCX6nOlNB0e6HYc7LPg5Br0ccq5AV0AQps/Tt0CC0iHyX
- hFZi73sEQAUrRdQG5orA+pPesj8TPDmGIo7MbO/gSXn2jaITs0UK0gOM5gi8JpqygYz/HhNN0
- t0/ceLMR3qJ8hfySBesrN6t83KFLFQqxZcmlwtwuhxHR/oOweQykGzQOTwi3CluDY4W2c6C8F
- FhpWRGP5IgWsww0Ha1ZHDU+Ysi45OZedWlaMIkpCj6spfjNQbbzt9pwKNRyYkkt0j6lPu5G62
- /lylwNetgO15e/Zkwat+/LBWkAY1xlJyev2lIgu1YDSEeMHqCRt7RFRFBv9up9giwGZfw01BG
- GXog0wmdYHejvn7kMyrMNrsjaxlbGqM4vnXdjojfN+bw7VdDP74NL+gb7+w65INwBvccQsXDq
- gIll0xZn5rj20rYn+vPJ2fnWNc/7iq11Om3Mitr/cB7wY2OaGb7z/Dqj5ED5bwXUsnrt/aX4Y
- zZOyk9xg52T9RhJaes96gvmA==
+Content-Transfer-Encoding: 8bit
 
+We've been noticing a trend of significant lock contention in the swap
+subsystem as core counts have been increasing in our fleet. It turns
+out that our swapfiles on btrfs on flash were in fact using the old
+swap code for rotational storage.
 
+This turns out to be a detection issue in the swapon sequence: btrfs
+sets si->bdev during swap activation, which currently happens *after*
+swapon's SSD detection and cluster setup. Thus, none of the SSD
+optimizations and cluster lock splitting are enabled for btrfs swap.
 
-=E5=9C=A8 2024/8/22 12:35, Matthew Wilcox =E5=86=99=E9=81=93:
-> On Thu, Aug 22, 2024 at 09:37:02AM +0800, Li Zetao wrote:
->>   static struct extent_buffer *get_next_extent_buffer(
->> -		const struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
->> +		const struct btrfs_fs_info *fs_info, struct folio *folio, u64 bytenr=
-)
->>   {
->>   	struct extent_buffer *gang[GANG_LOOKUP_SIZE];
->>   	struct extent_buffer *found =3D NULL;
->> -	u64 page_start =3D page_offset(page);
->> -	u64 cur =3D page_start;
->> +	u64 folio_start =3D folio_pos(folio);
->> +	u64 cur =3D folio_start;
->>
->> -	ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
->> +	ASSERT(in_range(bytenr, folio_start, PAGE_SIZE));
->>   	lockdep_assert_held(&fs_info->buffer_lock);
->>
->> -	while (cur < page_start + PAGE_SIZE) {
->> +	while (cur < folio_start + PAGE_SIZE) {
->
-> Presumably we want to support large folios in btrfs at some point?
-> I certainly want to remove CONFIG_READ_ONLY_THP_FOR_FS soon and that'll
-> be a bit of a regression for btrfs if it doesn't have large folio
-> support.  So shouldn't we also s/PAGE_SIZE/folio_size(folio)/ ?
+Rearrange the swapon sequence so that filesystem activation happens
+*before* determining swap behavior based on the backing device.
 
-Forgot to mention that, this function is only called inside subpage
-routine (sectorsize < PAGE_SIZE and nodesize, aka metadata size < PAGE_SIZ=
-E)
+Afterwards, the nonrotational drive is detected correctly:
 
-So PAGE_SIZE is correct. Going folio_size() is only wasting CPU time,
-but if you do not feel safe, we can add extra ASSERT() to make sure it's
-only called for subpage routine.
+- Adding 2097148k swap on /mnt/swapfile.  Priority:-3 extents:1 across:2097148k
++ Adding 2097148k swap on /mnt/swapfile.  Priority:-3 extents:1 across:2097148k SS
 
-Thanks,
-Qu
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/swapfile.c | 165 ++++++++++++++++++++++++++------------------------
+ 1 file changed, 86 insertions(+), 79 deletions(-)
+
+Changes since RFC:
+o walk badpages[] instead of [0, maxpages] for faster swapon (thanks Ying!)
+
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index c1638a009113..aff73a3d0ead 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3196,29 +3196,15 @@ static unsigned long read_swap_header(struct swap_info_struct *si,
+ static int setup_swap_map_and_extents(struct swap_info_struct *si,
+ 					union swap_header *swap_header,
+ 					unsigned char *swap_map,
+-					struct swap_cluster_info *cluster_info,
+ 					unsigned long maxpages,
+ 					sector_t *span)
+ {
+-	unsigned int j, k;
+ 	unsigned int nr_good_pages;
++	unsigned long i;
+ 	int nr_extents;
+-	unsigned long nr_clusters = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+-	unsigned long col = si->cluster_next / SWAPFILE_CLUSTER % SWAP_CLUSTER_COLS;
+-	unsigned long i, idx;
+ 
+ 	nr_good_pages = maxpages - 1;	/* omit header page */
+ 
+-	INIT_LIST_HEAD(&si->free_clusters);
+-	INIT_LIST_HEAD(&si->full_clusters);
+-	INIT_LIST_HEAD(&si->discard_clusters);
+-
+-	for (i = 0; i < SWAP_NR_ORDERS; i++) {
+-		INIT_LIST_HEAD(&si->nonfull_clusters[i]);
+-		INIT_LIST_HEAD(&si->frag_clusters[i]);
+-		si->frag_cluster_nr[i] = 0;
+-	}
+-
+ 	for (i = 0; i < swap_header->info.nr_badpages; i++) {
+ 		unsigned int page_nr = swap_header->info.badpages[i];
+ 		if (page_nr == 0 || page_nr > swap_header->info.last_page)
+@@ -3226,25 +3212,11 @@ static int setup_swap_map_and_extents(struct swap_info_struct *si,
+ 		if (page_nr < maxpages) {
+ 			swap_map[page_nr] = SWAP_MAP_BAD;
+ 			nr_good_pages--;
+-			/*
+-			 * Haven't marked the cluster free yet, no list
+-			 * operation involved
+-			 */
+-			inc_cluster_info_page(si, cluster_info, page_nr);
+ 		}
+ 	}
+ 
+-	/* Haven't marked the cluster free yet, no list operation involved */
+-	for (i = maxpages; i < round_up(maxpages, SWAPFILE_CLUSTER); i++)
+-		inc_cluster_info_page(si, cluster_info, i);
+-
+ 	if (nr_good_pages) {
+ 		swap_map[0] = SWAP_MAP_BAD;
+-		/*
+-		 * Not mark the cluster free yet, no list
+-		 * operation involved
+-		 */
+-		inc_cluster_info_page(si, cluster_info, 0);
+ 		si->max = maxpages;
+ 		si->pages = nr_good_pages;
+ 		nr_extents = setup_swap_extents(si, span);
+@@ -3257,8 +3229,70 @@ static int setup_swap_map_and_extents(struct swap_info_struct *si,
+ 		return -EINVAL;
+ 	}
+ 
++	return nr_extents;
++}
++
++static struct swap_cluster_info *setup_clusters(struct swap_info_struct *si,
++						union swap_header *swap_header,
++						unsigned long maxpages)
++{
++	unsigned long nr_clusters = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
++	unsigned long col = si->cluster_next / SWAPFILE_CLUSTER % SWAP_CLUSTER_COLS;
++	struct swap_cluster_info *cluster_info;
++	unsigned long i, j, k, idx;
++	int cpu, err = -ENOMEM;
++
++	cluster_info = kvcalloc(nr_clusters, sizeof(*cluster_info), GFP_KERNEL);
+ 	if (!cluster_info)
+-		return nr_extents;
++		goto err;
++
++	for (i = 0; i < nr_clusters; i++)
++		spin_lock_init(&cluster_info[i].lock);
++
++	si->cluster_next_cpu = alloc_percpu(unsigned int);
++	if (!si->cluster_next_cpu)
++		goto err_free;
++
++	/* Random start position to help with wear leveling */
++	for_each_possible_cpu(cpu)
++		per_cpu(*si->cluster_next_cpu, cpu) =
++		get_random_u32_inclusive(1, si->highest_bit);
++
++	si->percpu_cluster = alloc_percpu(struct percpu_cluster);
++	if (!si->percpu_cluster)
++		goto err_free;
++
++	for_each_possible_cpu(cpu) {
++		struct percpu_cluster *cluster;
++
++		cluster = per_cpu_ptr(si->percpu_cluster, cpu);
++		for (i = 0; i < SWAP_NR_ORDERS; i++)
++			cluster->next[i] = SWAP_NEXT_INVALID;
++	}
++
++	/*
++	 * Mark unusable pages as unavailable. The clusters aren't
++	 * marked free yet, so no list operations are involved yet.
++	 *
++	 * See setup_swap_map_and_extents(): header page, bad pages,
++	 * and the EOF part of the last cluster.
++	 */
++	inc_cluster_info_page(si, cluster_info, 0);
++	for (i = 0; i < swap_header->info.nr_badpages; i++)
++		inc_cluster_info_page(si, cluster_info,
++				      swap_header->info.badpages[i]);
++	for (i = maxpages; i < round_up(maxpages, SWAPFILE_CLUSTER); i++)
++		inc_cluster_info_page(si, cluster_info, i);
++
++	INIT_LIST_HEAD(&si->free_clusters);
++	INIT_LIST_HEAD(&si->full_clusters);
++	INIT_LIST_HEAD(&si->discard_clusters);
++
++	for (i = 0; i < SWAP_NR_ORDERS; i++) {
++		INIT_LIST_HEAD(&si->nonfull_clusters[i]);
++		INIT_LIST_HEAD(&si->frag_clusters[i]);
++		si->frag_cluster_nr[i] = 0;
++	}
+ 
+ 	/*
+ 	 * Reduce false cache line sharing between cluster_info and
+@@ -3281,7 +3315,13 @@ static int setup_swap_map_and_extents(struct swap_info_struct *si,
+ 			list_add_tail(&ci->list, &si->free_clusters);
+ 		}
+ 	}
+-	return nr_extents;
++
++	return cluster_info;
++
++err_free:
++	kvfree(cluster_info);
++err:
++	return ERR_PTR(err);
+ }
+ 
+ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+@@ -3377,6 +3417,17 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		goto bad_swap_unlock_inode;
+ 	}
+ 
++	error = swap_cgroup_swapon(si->type, maxpages);
++	if (error)
++		goto bad_swap_unlock_inode;
++
++	nr_extents = setup_swap_map_and_extents(si, swap_header, swap_map,
++						maxpages, &span);
++	if (unlikely(nr_extents < 0)) {
++		error = nr_extents;
++		goto bad_swap_unlock_inode;
++	}
++
+ 	if (si->bdev && bdev_stable_writes(si->bdev))
+ 		si->flags |= SWP_STABLE_WRITES;
+ 
+@@ -3384,63 +3435,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 		si->flags |= SWP_SYNCHRONOUS_IO;
+ 
+ 	if (si->bdev && bdev_nonrot(si->bdev)) {
+-		int cpu, i;
+-		unsigned long ci, nr_cluster;
+-
+ 		si->flags |= SWP_SOLIDSTATE;
+-		si->cluster_next_cpu = alloc_percpu(unsigned int);
+-		if (!si->cluster_next_cpu) {
+-			error = -ENOMEM;
+-			goto bad_swap_unlock_inode;
+-		}
+-		/*
+-		 * select a random position to start with to help wear leveling
+-		 * SSD
+-		 */
+-		for_each_possible_cpu(cpu) {
+-			per_cpu(*si->cluster_next_cpu, cpu) =
+-				get_random_u32_inclusive(1, si->highest_bit);
+-		}
+-		nr_cluster = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+ 
+-		cluster_info = kvcalloc(nr_cluster, sizeof(*cluster_info),
+-					GFP_KERNEL);
+-		if (!cluster_info) {
+-			error = -ENOMEM;
++		cluster_info = setup_clusters(si, swap_header, maxpages);
++		if (IS_ERR(cluster_info)) {
++			error = PTR_ERR(cluster_info);
++			cluster_info = NULL;
+ 			goto bad_swap_unlock_inode;
+ 		}
+-
+-		for (ci = 0; ci < nr_cluster; ci++)
+-			spin_lock_init(&((cluster_info + ci)->lock));
+-
+-		si->percpu_cluster = alloc_percpu(struct percpu_cluster);
+-		if (!si->percpu_cluster) {
+-			error = -ENOMEM;
+-			goto bad_swap_unlock_inode;
+-		}
+-		for_each_possible_cpu(cpu) {
+-			struct percpu_cluster *cluster;
+-
+-			cluster = per_cpu_ptr(si->percpu_cluster, cpu);
+-			for (i = 0; i < SWAP_NR_ORDERS; i++)
+-				cluster->next[i] = SWAP_NEXT_INVALID;
+-		}
+ 	} else {
+ 		atomic_inc(&nr_rotate_swap);
+ 		inced_nr_rotate_swap = true;
+ 	}
+ 
+-	error = swap_cgroup_swapon(si->type, maxpages);
+-	if (error)
+-		goto bad_swap_unlock_inode;
+-
+-	nr_extents = setup_swap_map_and_extents(si, swap_header, swap_map,
+-		cluster_info, maxpages, &span);
+-	if (unlikely(nr_extents < 0)) {
+-		error = nr_extents;
+-		goto bad_swap_unlock_inode;
+-	}
+-
+ 	if ((swap_flags & SWAP_FLAG_DISCARD) &&
+ 	    si->bdev && bdev_max_discard_sectors(si->bdev)) {
+ 		/*
+-- 
+2.46.0
+
 
