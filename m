@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7417-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7418-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48A4095C0D2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 00:26:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E69895C130
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 01:01:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEEA61F246C6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 22:26:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4425E1C21E79
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 23:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5C61D1728;
-	Thu, 22 Aug 2024 22:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747861D1F4C;
+	Thu, 22 Aug 2024 23:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jbpB3nI8"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mBz9ENcA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EC3EC5
-	for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 22:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38FA261FFC
+	for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 23:01:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724365570; cv=none; b=bDEBIcbX/Bfwpu4W6DnOGuOJRglnArEGvInU7iRIdplrfg0+KCKLToLOjY6GYrFc0p2+SlSzqTCBHJgU6hOqUXzQ4Sp+1ItQzy3pz4o2usj4V9/LvJbK5bIx2+iUJx1TLua/QkciRLdQ+K0SyaALZFB3jIg/Njmb+ypS29Ccbgk=
+	t=1724367667; cv=none; b=qoz0SsP1+mn6T9ynrA0QEzwWMZrwJnpxiS1qdnk77cksFNgdbGX2Jdtv7lOVg93n4qnCcv+6AgHc0GeubApzhcl4oTGcrJWVZ7jqQwWrL4Am6vSV2g8TDQA3OVsiqjc0wpYX6CkFYvMwRtmnIKsm5mIHhlr665PZdGWUU3l1OgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724365570; c=relaxed/simple;
-	bh=dG7W6uX1/qy2GRzwKis7eF8mUursOzNqqbLaQQGtI6A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DzJa0oj6vytNPzRESO7LwBZ605KevjgYyZ8RgWWI4jEGpZINzLv2/4DDnpv+5en1ticcJxc1Wi0tmBwkRxeVU4lt7I/REO1NxJ3Qmg+NL+XIapi5zSkRUaw8BhOOgxIKayhb2vXha4mkTl37An4GB8/QG8jhjbPeqts69K82eVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jbpB3nI8; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1724367667; c=relaxed/simple;
+	bh=ztZ3FpAmlcrSSbZMkLCkGo6Q3zkhw7c6uqb2NsYO04U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=PB5TOTZmok1dTEK5e+rB1zjsOa+K89V6ksJnUdEg3M9PPmt5eUNQSranHcdzC+ybAln47JmWOC/U+wKvVn9HUE/s1WklJy0FQNa+yIFeewvyEr6jPUtJTQ/FGw4NWu4Fy/0tP8R9wV0PRrXgFVdqQyM9OqVIrWssSX9UzJBvbvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=mBz9ENcA; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724365537; x=1724970337; i=quwenruo.btrfs@gmx.com;
-	bh=/MU6KgJvG7ddTcuqUsaRiwPMSXbM1laEUvP/S1Qg768=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1724367656; x=1724972456; i=quwenruo.btrfs@gmx.com;
+	bh=VZUHd+MzXDaGwNaZXeS2nkIsWdVfOztq6CZns0N8ql4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=jbpB3nI8aO4MCB+/MbRbjrOq15x+PDwAVNxy0RAobL01s3jrv5KCmZ7se+movdkk
-	 aEgv9pqjmNDumHkqbMS02qfqAbBgDwmZ0fSZ2WQyBdFznPglU3vvDuFaQiZnGm1A4
-	 YLm1eNJBKrtrkAEaz4m5LEepZA0L/UGL5b2L7N8OlVfOsYnWtclRxSSCRI9W3Qxo5
-	 NYEp/K2NuKe5Ui0DWFaSeu2q/lP5Hl/nHxyPqnmmmf6O4eBeKq79RftiUjcX5fvUU
-	 jUV/raHMsUo4ERzlxkZfOEbMz1Ew8V14Pa5Bj8T8eAIFdLi72X33Xz2tB+RmV7bog
-	 mKODg38/Tw63N4R5Zg==
+	b=mBz9ENcAqseq4UWrekrQ5d5gBPhNFDuiTc0qMzO/MHgqQSroOPEDXofSNpOijLRS
+	 bz9x5pqB2Ukm4xfY8seiueN5jkcM8HR7WpZQFWU1+PC4UwnuuEQHQB7rzsKeqKgLI
+	 2AcSvtuYoZaLDZCxzLa43OOIl/pSb2UY/Zh5almA0pyBV/ceR1U3hTuGBQBcTXOxA
+	 39HNoa+BVxsyexlTkzAhu+aKIX2l9xtyPaHQM+KYH4hNnUKNvKHuU6HYTjE/qgVoG
+	 3AOOIxCA5JC+awIa87FSdA9P+p1PDUXbzsuC+PUPzE2xLoaq/ywn6o84xdB0rjvC6
+	 BoNT83ub6d9a/wSXGA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDnC-1sqZNG3uMI-00E3hN; Fri, 23
- Aug 2024 00:25:37 +0200
-Message-ID: <38247c40-604b-443a-a600-0876b596a284@gmx.com>
-Date: Fri, 23 Aug 2024 07:55:30 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUosT-1sY9zl0jqL-00YDCZ; Fri, 23
+ Aug 2024 01:00:56 +0200
+Message-ID: <8b7b2f3d-0ef3-4587-b20b-287074ce759a@gmx.com>
+Date: Fri, 23 Aug 2024 08:30:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,17 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/14] btrfs: convert get_next_extent_buffer() to take a
- folio
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Li Zetao <lizetao1@huawei.com>, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, terrelln@fb.com, linux-btrfs@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240822013714.3278193-1-lizetao1@huawei.com>
- <20240822013714.3278193-3-lizetao1@huawei.com>
- <Zsaq_QkyQIhGsvTj@casper.infradead.org>
- <0f643b0f-f1c2-48b7-99d5-809b8b7f0aac@gmx.com>
- <ZscqGAMm1tofHSSG@casper.infradead.org>
+Subject: Re: [PATCH] btrfs: run delayed iputs when flushing delalloc
+To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+References: <c718e1eef33488e3cd232a650b7c2d97701bbf24.1724341245.git.josef@toxicpanda.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -95,126 +88,70 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZscqGAMm1tofHSSG@casper.infradead.org>
+In-Reply-To: <c718e1eef33488e3cd232a650b7c2d97701bbf24.1724341245.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/9WKVUdnzyydlFtroztkO05heOwmOHUlvPTrr8IrCIl1eCKv2v9
- X1s+UpR3DY0lx9npliKRqpC+9XhtByy5h5P1/bSp583EnMWj6BH96XYA18iK9KbT2rYXFor
- giqMlXHWV2+81zwILEI5fmoJCQzTDVKFDEqw0zQVLed2v/Y/d0sUgLCcZRNDn0SJGTFbqZh
- D+kYrci7xTbQu+ChiJ0vg==
+X-Provags-ID: V03:K1:/9waPJ+6n1Fyw+WDlJ1Y90sol0TzCKBtkMiRpu2OHIVMtVH+ZX2
+ TxdVuoK3UOuADqji5z2Vxs2DKjfbZzS7ClUcZGtkLHa7ystRZbNKSKgWPoiYAZ398Wfptau
+ EslnPMsGxR/O+LDGzkoRgu2Y+4QgfPJjASxDeUjtX4qYx3wQofJyoZ9rJdp1tYGh4HCt0ZK
+ jbIkU1qVXHsECjjERVRyA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hEYuEQ3KozY=;igA7M5AM+n0gRO9BHKW5DF57umv
- WpK8uj0JVl1BTO8FsktwF6NPmtNY7bN1iYUNJoVY7iNmXZQR82crQ3qDaM7AXRXA6t08h1x48
- YryRQBthE+LKvusagS9hj7OQUIv2ZPI79lmrnCKD/wgMx8wMs2TBXwwbq8yZQGjexpBChc37v
- iGM6nS626P9nP2smco9x+GCNQNuTw3wXcShiOpYZQhAZzkJx0C7bIUSIHNBB5k5wlwmK0TWB2
- IuXSybihsq8gjzO51OuTNO1zbWy2XSjSPVS0ZBdVMcy8SJ3tvhyIRvLQgclLa34Zp7++10/dM
- Ts4VbGsOCsoByC2pYAT4NA0vdX4ydRh383GEtbjSVcF+1bXSuKeeWN+eyq9i26HpVnNO0VUUe
- BX98fjbF9hQmRdM0U33+3sfkmytUtatfQ88j8MrZJeVC5/R696i2c2ndlns+cqIl7RVllBybo
- zDkgdP6hp0J4afmLkRLLQLjK77kjgHz+IyRexrN2s/20FaewDoVQrSLNPEu1hPySXqU35qnX5
- D4b7dW2D3G3cCk/97uzTClwA3TrUfGTGM3iLBYrs9yxxfNKLirdArtlSjPF56es91wBVcH5ZR
- m4wSyK01dz44xcNc6KqysqIac8/1FQAMRCXktzNas3ksjUj8IsVsH0RmkCFy1KSHVhIy8DYGs
- eyLidVxgHDvzNXSlTi/S6xgrtd2EsRH8RRiU9RVdaYvWgjTpS1OTg5SY/hJfNmIYrXg7STi/5
- fRQMHWIUpbD5mnfDga5xaO3O2EosTjZdVfodx63DCi45R94E0rfU9zlinhg0wqezPSxZ+KOvS
- IWS+uBwC8K50L2klsQh5US9w==
+UI-OutboundReport: notjunk:1;M01:P0:jxNvlH1GEdc=;uVYrJNUuS0iiH2+0yPPK29y+git
+ p5MUhc0v8G+STgYkyieQVAfa7GBoQpqql3cenWk28TSl0xWj9zynXPd+8UfAv7+0olDKLeUy9
+ hV1lpQYqso1IBdfPafGVzQcmFDHBoI6qJaVyK3bozOtvof/1DnKW9OSZugRbQL0JSkG512D9M
+ FG/xs5neCGoFCF5oeP5DbD+hdEelik0Ylc2VqNUt6Yi5/6LcEXNMh0SYdJ5gjldMXeawruh8D
+ LS8qUJdaCXAEYx4P71LzKSSReJzZtaVLrKgEbSB0CYHvQQdCvXmMTn1a60x3sKf1SVXE1f3L+
+ EFRTC5Kvv41piQzIOPULLTaIWDvvvS7nfAD8id8e5m8xUvkUhs3Hx6MXd3enltui2tp5O93Xz
+ ZEZK4PC147OfLYM6a/kalj9/lSoWoDupRdhMhWJZGxMTNaRzLqhAdwgGKnvt+iF4i758PzJax
+ EFwNOkKdKlBcwIxTdnOKlUJd5SPYQz7wPjUa2FxrRsjC2F9Z6uzM5FEhCk0EbbIK3QCJ7hej5
+ sd7e1aLBz1IZCv4//rdRJy8Oprifz+8vbKfbt/zkTGuHI/iM+0bnwWw12DHGF1Ei/5bXTpasb
+ ji40amBedZ/PScH2dzVXFsjaaC6COQheahHs2lJwxEsfKmP+nnDjIvIfqQ9s3AgM1us531W3s
+ 3UIlmI/iEuXreY7di0+DhSrpnLJ2WdJ7zwcqffXyHFnt3fTSV0HrepDkEwcl7nOkPkNWQ4zio
+ hZgJOoD8m2ndU0Xi47N2HKrbET/HqiTOTnGeV3xy3UHX79d9oaLsOpVP73UjnvvVp3NgpFBJZ
+ g9XyJFZTcLwvJ/xRT2KDSMYQ==
 
 
 
-=E5=9C=A8 2024/8/22 21:37, Matthew Wilcox =E5=86=99=E9=81=93:
-> On Thu, Aug 22, 2024 at 08:28:09PM +0930, Qu Wenruo wrote:
->> =E5=9C=A8 2024/8/22 12:35, Matthew Wilcox =E5=86=99=E9=81=93:
->>>> -	while (cur < page_start + PAGE_SIZE) {
->>>> +	while (cur < folio_start + PAGE_SIZE) {
->>>
->>> Presumably we want to support large folios in btrfs at some point?
->>
->> Yes, and we're already working towards that direction.
->>
->>> I certainly want to remove CONFIG_READ_ONLY_THP_FOR_FS soon and that'l=
-l
->>> be a bit of a regression for btrfs if it doesn't have large folio
->>> support.  So shouldn't we also s/PAGE_SIZE/folio_size(folio)/ ?
->>
->> AFAIK we're only going to support larger folios to support larger than
->> PAGE_SIZE sector size so far.
+=E5=9C=A8 2024/8/23 01:10, Josef Bacik =E5=86=99=E9=81=93:
+> We have transient failures with btrfs/301, specifically in the part
+> where we do
 >
-> Why do you not want the performance gains from using larger folios?
+> for i in $(seq 0 10); do
+> 	write 50m to file
+> 	rm -f file
+> done
 >
->> So every folio is still in a fixed size (sector size, >=3D PAGE_SIZE).
->>
->> Not familiar with transparent huge page, I thought transparent huge pag=
-e
->> is transparent to fs.
->>
->> Or do we need some special handling?
->> My uneducated guess is, we will get a larger folio passed to readpage
->> call back directly?
+> Sometimes this will result in a transient quota error, and it's because
+> sometimes we start writeback on the file which results in a delayed
+> iput, and thus the rm doesn't actually clean the file up.  When we're
+> flushing the quota space we need to run the delayed iputs to make sure
+> all the unlinks that we think have completed have actually completed.
+> This removes the small window where we could fail to find enough space
+> in our quota.
 >
-> Why do you choose to remain uneducated?  It's not like I've been keeping
-> all of this to myself for the past five years.  I've given dozens of
-> presentations on it, including plenary sessions at LSFMM.  As a filesyst=
-em
-> developer, you must want to not know about it at this point.
->
->> It's straightforward enough to read all contents for a larger folio,
->> it's no different to subpage handling.
->>
->> But what will happen if some writes happened to that larger folio?
->> Do MM layer detects that and split the folios? Or the fs has to go the
->> subpage routine (with an extra structure recording all the subpage flag=
-s
->> bitmap)?
->
-> Entirely up to the filesystem.  It would help if btrfs used the same
-> terminology as the rest of the filesystems instead of inventing its own
-> "subpage" thing.  As far as I can tell, "subpage" means "fs block size",
-> but maybe it has a different meaning that I haven't ascertained.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Then tell me the correct terminology to describe fs block size smaller
-than page size in the first place.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-"fs block size" is not good enough, we want a terminology to describe
-"fs block size" smaller than page size.
-
->
-> Tracking dirtiness on a per-folio basis does not seem to be good enough.
-> Various people have workloads that regress in performance if you do
-> that.  So having some data structure attached to folio->private which
-> tracks dirtiness on a per-fs-block basis works pretty well.  iomap also
-> tracks the uptodate bit on a per-fs-block basis, but I'm less convinced
-> that's necessary.
->
-> I have no idea why btrfs thinks it needs to track writeback, ordered,
-> checked and locked in a bitmap.  Those make no sense to me.  But they
-> make no sense to me if you're support a 4KiB filesystem on a machine
-> with a 64KiB PAGE_SIZE, not just in the context of "larger folios".
-> Writeback is something the VM tells you to do; why do you need to tag
-> individual blocks for writeback?
-
-Because there are cases where btrfs needs to only write back part of the
-folio independently.
-
-And especially for mixing compression and non-compression writes inside
-a page, e.g:
-
-       0     16K     32K     48K      64K
-       |//|          |///////|
-          4K
-
-In above case, if we need to writeback above page with 4K sector size,
-then the first 4K is not suitable for compression (result will still
-take a full 4K block), while the range [32K, 48K) will be compressed.
-
-In that case, [0, 4K) range will be submitted directly for IO.
-Meanwhile [32K, 48) will be submitted for compression in antoher wq.
-(Or time consuming compression will delay the writeback of the remaining
-pages)
-
-This means the dirty/writeback flags will have a different timing to be
-changed.
-
-I think compression is no long a btrfs exclusive feature, thus this
-should be obvious?
-
-Thanks,
+Thanks for pinning down this random failure!
 Qu
+
+> ---
+>   fs/btrfs/qgroup.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index be9a56a5d298..a77d2cd9d89d 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -4185,6 +4185,8 @@ static int try_flush_qgroup(struct btrfs_root *roo=
+t)
+>   		return 0;
+>   	}
+>
+> +	btrfs_run_delayed_iputs(root->fs_info);
+> +	btrfs_wait_on_delayed_iputs(root->fs_info);
+>   	ret =3D btrfs_start_delalloc_snapshot(root, true);
+>   	if (ret < 0)
+>   		goto out;
 
