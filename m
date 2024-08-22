@@ -1,52 +1,52 @@
-Return-Path: <linux-btrfs+bounces-7395-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7396-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59BAC95AA8F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 03:37:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C9F795AA90
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 03:37:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC37DB25F56
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 01:37:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8D101F21606
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2024 01:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 145EA13B580;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B1FF13B787;
 	Thu, 22 Aug 2024 01:29:49 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7758938DD3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BBF56766
 	for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2024 01:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724290188; cv=none; b=j0vTFZhc3B9FUrkL7mhzT8Dg0ClNGaAYnTqSdKVJGYGbM2a8ds2GptwBWbZkbka++rQuPnsHSTIB9rL9yLhym7eFms6rL51cb+viz3t/C4mzZNMncfQrstk6UXrirBPuEiy7P+ykoC8IwwZmB1x8twMTY9XBhosjf3wBvZo2dl8=
+	t=1724290188; cv=none; b=Y5fkFaWHbGPhDGwdsxCcTknq0zhRB4buxULeFHeDXltRdJeoz9MulsLIKFMoBJBgtUyHrjKxX2vTCljJky0FHXSoptHyaM0cTq/GkbcHZ87RnJAiaLxgAI1QV3GfxPo/Eh79gJTog4XfLMHIsjMP4WeDVGWdMGOo6lDzAgT59G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724290188; c=relaxed/simple;
-	bh=b5LZsZ0MUgoI3HeshLowtMZNbGOn77j5/5YaV+lZaXk=;
+	bh=uDLeiFNv8iQbAb0vm7pscTF80mc3TKjg1EkRm1JDnU4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MEow0q2NKUMPUYl4R7J8rRUioqk2x6zP5U9s5dfbu34Lwub2KItXGE9x/vRFz9Bw6yIkMgF3ObOjEakgvBR4x61ERrdTLoZzgFapEGloDNKNI2WlI7IsrCTzOCJ32yXx2icr+Nq6ABmFgy6U+vCl4M7J/Vsfm4EQf+YWKd1iF1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=GPVsSlcXkK+pD+w3CCYuXwDxgDo7fZNSDnm/QkOK/A6kEqEgcMxqaRlDZ+9fw0GSikgqY5luM6OEMkfkLTBm9uUsQeR9aFSMd6i7y+2V9dGTvNgrsCC/ZKT1Zpf59ISJJLbVA9UzcTNki0tEzdt7876d/kw56/sEoDJpgtS7oC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Wq5GY0jV0z2Cn8v;
-	Thu, 22 Aug 2024 09:29:41 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Wq5DH5KK5zhY5Y;
+	Thu, 22 Aug 2024 09:27:43 +0800 (CST)
 Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
-	by mail.maildlp.com (Postfix) with ESMTPS id 313851400FD;
+	by mail.maildlp.com (Postfix) with ESMTPS id 942941800D3;
 	Thu, 22 Aug 2024 09:29:44 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemd500012.china.huawei.com
  (7.221.188.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 22 Aug
- 2024 09:29:43 +0800
+ 2024 09:29:44 +0800
 From: Li Zetao <lizetao1@huawei.com>
 To: <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>,
 	<terrelln@fb.com>
 CC: <willy@infradead.org>, <lizetao1@huawei.com>,
 	<linux-btrfs@vger.kernel.org>, <linux-f2fs-devel@lists.sourceforge.net>
-Subject: [PATCH 13/14] btrfs: convert btrfs_decompress() to take a folio
-Date: Thu, 22 Aug 2024 09:37:13 +0800
-Message-ID: <20240822013714.3278193-14-lizetao1@huawei.com>
+Subject: [PATCH 14/14] btrfs: convert copy_inline_to_page() to use folio
+Date: Thu, 22 Aug 2024 09:37:14 +0800
+Message-ID: <20240822013714.3278193-15-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240822013714.3278193-1-lizetao1@huawei.com>
 References: <20240822013714.3278193-1-lizetao1@huawei.com>
@@ -63,102 +63,93 @@ X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
 
 The old page API is being gradually replaced and converted to use folio
 to improve code readability and avoid repeated conversion between page
-and folio. Based on the previous patch, the compression path can be
-directly used in folio without converting to page.
+and folio. Moreover find_or_create_page() is compatible API, and it can
+replaced with __filemap_get_folio(). Some interfaces have been converted
+to use folio before, so the conversion operation from page can be
+eliminated here.
 
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
- fs/btrfs/compression.c | 14 +++++++-------
- fs/btrfs/compression.h |  2 +-
- fs/btrfs/inode.c       |  2 +-
- fs/btrfs/reflink.c     |  2 +-
- 4 files changed, 10 insertions(+), 10 deletions(-)
+ fs/btrfs/reflink.c | 35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index eab79edeb64c..9869944a5acc 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -138,15 +138,15 @@ static int compression_decompress_bio(struct list_head *ws,
- }
- 
- static int compression_decompress(int type, struct list_head *ws,
--		const u8 *data_in, struct page *dest_page,
-+		const u8 *data_in, struct folio *dest_folio,
- 		unsigned long dest_pgoff, size_t srclen, size_t destlen)
- {
- 	switch (type) {
--	case BTRFS_COMPRESS_ZLIB: return zlib_decompress(ws, data_in, page_folio(dest_page),
-+	case BTRFS_COMPRESS_ZLIB: return zlib_decompress(ws, data_in, dest_folio,
- 						dest_pgoff, srclen, destlen);
--	case BTRFS_COMPRESS_LZO:  return lzo_decompress(ws, data_in, page_folio(dest_page),
-+	case BTRFS_COMPRESS_LZO:  return lzo_decompress(ws, data_in, dest_folio,
- 						dest_pgoff, srclen, destlen);
--	case BTRFS_COMPRESS_ZSTD: return zstd_decompress(ws, data_in, page_folio(dest_page),
-+	case BTRFS_COMPRESS_ZSTD: return zstd_decompress(ws, data_in, dest_folio,
- 						dest_pgoff, srclen, destlen);
- 	case BTRFS_COMPRESS_NONE:
- 	default:
-@@ -1061,10 +1061,10 @@ static int btrfs_decompress_bio(struct compressed_bio *cb)
-  * single page, and we want to read a single page out of it.
-  * start_byte tells us the offset into the compressed data we're interested in
-  */
--int btrfs_decompress(int type, const u8 *data_in, struct page *dest_page,
-+int btrfs_decompress(int type, const u8 *data_in, struct folio *dest_folio,
- 		     unsigned long dest_pgoff, size_t srclen, size_t destlen)
- {
--	struct btrfs_fs_info *fs_info = page_to_fs_info(dest_page);
-+	struct btrfs_fs_info *fs_info = folio_to_fs_info(dest_folio);
- 	struct list_head *workspace;
- 	const u32 sectorsize = fs_info->sectorsize;
- 	int ret;
-@@ -1077,7 +1077,7 @@ int btrfs_decompress(int type, const u8 *data_in, struct page *dest_page,
- 	ASSERT(dest_pgoff + destlen <= PAGE_SIZE && destlen <= sectorsize);
- 
- 	workspace = get_workspace(type, 0);
--	ret = compression_decompress(type, workspace, data_in, dest_page,
-+	ret = compression_decompress(type, workspace, data_in, dest_folio,
- 				     dest_pgoff, srclen, destlen);
- 	put_workspace(type, workspace);
- 
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index d2453cf28eef..b6563b6a333e 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -96,7 +96,7 @@ void __cold btrfs_exit_compress(void);
- int btrfs_compress_folios(unsigned int type_level, struct address_space *mapping,
- 			  u64 start, struct folio **folios, unsigned long *out_folios,
- 			 unsigned long *total_in, unsigned long *total_out);
--int btrfs_decompress(int type, const u8 *data_in, struct page *dest_page,
-+int btrfs_decompress(int type, const u8 *data_in, struct folio *dest_folio,
- 		     unsigned long start_byte, size_t srclen, size_t destlen);
- int btrfs_decompress_buf2page(const char *buf, u32 buf_len,
- 			      struct compressed_bio *cb, u32 decompressed);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index e844c409c12a..f9ade617700f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6746,7 +6746,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- 	read_extent_buffer(leaf, tmp, ptr, inline_size);
- 
- 	max_size = min_t(unsigned long, PAGE_SIZE, max_size);
--	ret = btrfs_decompress(compress_type, tmp, &folio->page, 0, inline_size,
-+	ret = btrfs_decompress(compress_type, tmp, folio, 0, inline_size,
- 			       max_size);
- 
- 	/*
 diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index df6b93b927cd..b768e590a44c 100644
+index b768e590a44c..1681d63f03dd 100644
 --- a/fs/btrfs/reflink.c
 +++ b/fs/btrfs/reflink.c
-@@ -118,7 +118,7 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
- 		memcpy_to_page(page, offset_in_page(file_offset), data_start,
- 			       datal);
+@@ -66,7 +66,7 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
+ 	const size_t inline_size = size - btrfs_file_extent_calc_inline_size(0);
+ 	char *data_start = inline_data + btrfs_file_extent_calc_inline_size(0);
+ 	struct extent_changeset *data_reserved = NULL;
+-	struct page *page = NULL;
++	struct folio *folio = NULL;
+ 	struct address_space *mapping = inode->vfs_inode.i_mapping;
+ 	int ret;
+ 
+@@ -83,14 +83,15 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
+ 	if (ret)
+ 		goto out;
+ 
+-	page = find_or_create_page(mapping, file_offset >> PAGE_SHIFT,
+-				   btrfs_alloc_write_mask(mapping));
+-	if (!page) {
++	folio = __filemap_get_folio(mapping, file_offset >> PAGE_SHIFT,
++					FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
++					btrfs_alloc_write_mask(mapping));
++	if (IS_ERR(folio)) {
+ 		ret = -ENOMEM;
+ 		goto out_unlock;
+ 	}
+ 
+-	ret = set_page_extent_mapped(page);
++	ret = set_folio_extent_mapped(folio);
+ 	if (ret < 0)
+ 		goto out_unlock;
+ 
+@@ -115,15 +116,15 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
+ 	set_bit(BTRFS_INODE_NO_DELALLOC_FLUSH, &inode->runtime_flags);
+ 
+ 	if (comp_type == BTRFS_COMPRESS_NONE) {
+-		memcpy_to_page(page, offset_in_page(file_offset), data_start,
+-			       datal);
++		memcpy_to_folio(folio, offset_in_folio(folio, file_offset), data_start,
++					datal);
  	} else {
--		ret = btrfs_decompress(comp_type, data_start, page,
-+		ret = btrfs_decompress(comp_type, data_start, page_folio(page),
- 				       offset_in_page(file_offset),
+-		ret = btrfs_decompress(comp_type, data_start, page_folio(page),
+-				       offset_in_page(file_offset),
++		ret = btrfs_decompress(comp_type, data_start, folio,
++				       offset_in_folio(folio, file_offset),
  				       inline_size, datal);
  		if (ret)
+ 			goto out_unlock;
+-		flush_dcache_page(page);
++		flush_dcache_folio(folio);
+ 	}
+ 
+ 	/*
+@@ -139,15 +140,15 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
+ 	 * So what's in the range [500, 4095] corresponds to zeroes.
+ 	 */
+ 	if (datal < block_size)
+-		memzero_page(page, datal, block_size - datal);
++		folio_zero_range(folio, datal, block_size - datal);
+ 
+-	btrfs_folio_set_uptodate(fs_info, page_folio(page), file_offset, block_size);
+-	btrfs_folio_clear_checked(fs_info, page_folio(page), file_offset, block_size);
+-	btrfs_folio_set_dirty(fs_info, page_folio(page), file_offset, block_size);
++	btrfs_folio_set_uptodate(fs_info, folio, file_offset, block_size);
++	btrfs_folio_clear_checked(fs_info, folio, file_offset, block_size);
++	btrfs_folio_set_dirty(fs_info, folio, file_offset, block_size);
+ out_unlock:
+-	if (page) {
+-		unlock_page(page);
+-		put_page(page);
++	if (IS_ERR(folio)) {
++		folio_unlock(folio);
++		folio_put(folio);
+ 	}
+ 	if (ret)
+ 		btrfs_delalloc_release_space(inode, data_reserved, file_offset,
 -- 
 2.34.1
 
