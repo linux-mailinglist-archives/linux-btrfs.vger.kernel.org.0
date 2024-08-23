@@ -1,296 +1,250 @@
-Return-Path: <linux-btrfs+bounces-7420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE25795C318
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 04:03:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B9A95C324
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 04:14:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2D111C21CEC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 02:03:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B63FB234B1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 02:14:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 335B61CF90;
-	Fri, 23 Aug 2024 02:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511C31D52D;
+	Fri, 23 Aug 2024 02:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QrHwwfIG"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="tBpVTJPU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576C029406;
-	Fri, 23 Aug 2024 02:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724378570; cv=fail; b=cSG2M2KEySE1Id5QE/Fpf5z5YpdE0LsMisoJAXRvzJC3un0nKn6UmHACDBlw90BONZ0TobYTQRfjlN8l8OhIcr9VDY6EGiMF4InVTBt808XqMG0YLWQpeavOE2oL9zk1P7WACzb3I2vTpsA6p7x4X5s/iT/a31llVCk4+MLH5s8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724378570; c=relaxed/simple;
-	bh=g701McdicLVUh7MsqjixghLHqQk+7jHpSdCSyroqM60=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=uxuWARmBrackH3KOPqbaeHnPMUlvPN0ovB3qiZy3ooIZ8mDacL64Ih7Ws7zPg1f0JGdIkcyUIb1uCFSWMNbOFdNEOlmUMRhaBUD/phTguh94xiL/qJWhH8FTKhyNtLT8A9zO5u6PmjbbcgaqFgbW9ulINhntafngG5gRn9TceUQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QrHwwfIG; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724378568; x=1755914568;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=g701McdicLVUh7MsqjixghLHqQk+7jHpSdCSyroqM60=;
-  b=QrHwwfIGZi2T/tgKro+Q7d1hetPc9apusBzjajUInNcF03G4mL6xRp7k
-   zkM4Ugprm0D/jKXmIzZvnqHK+ge0aybUu4FuNBGzQABlXK2xD4nOixbAc
-   +H4ZmhEZpdniR1jxMCqkQDR7O0TTZWFs2RLaEqQP1RjNxfdr88HkxGIQk
-   IbFv5mkavYCq8XUzaL2KM2DWClut4xs1JDX6fuABWyXMmysC4Adi97Lt9
-   rkp5iWgfLvqTX4MeU6qlHUklNP77wl0JOixFTeBEq9ybM2jwGZQFnLGLZ
-   WNHu0MEa3RqRWNALQnYoTJXNiPB1RTTTP6slwKRrscI3fWX0kt7lcTobg
-   Q==;
-X-CSE-ConnectionGUID: cqFcMFniQJy13ZTfThdWqQ==
-X-CSE-MsgGUID: gZmUI+uiQmS0kcla44TGBA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11172"; a="33493872"
-X-IronPort-AV: E=Sophos;i="6.10,168,1719903600"; 
-   d="scan'208";a="33493872"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2024 19:02:47 -0700
-X-CSE-ConnectionGUID: UwEZM//oRNydqexCykl0JQ==
-X-CSE-MsgGUID: GS1w8FZMSdO3KlZjLQD0UA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,168,1719903600"; 
-   d="scan'208";a="66473171"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Aug 2024 19:02:47 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 22 Aug 2024 19:02:46 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Thu, 22 Aug 2024 19:02:46 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.47) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 22 Aug 2024 19:02:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=DM0JLG002D6Y+5SNJluBjwqjuXyV5OcocfvbpOCQ/gZYAC3M+iMKekkiatnIQp6w58ZouRaIZC7Uy8oU2JMt5JpR2OUOj7dvnbfqMlGEIX1SixrRvaa57+3pTuHEEQZG1BskP1TH5WmO0CXijxmARPlPigOLidhV38301R6/5b8k6FHORpfHa+XmivEn8hPZIPgdkvd91pSAusmXqpNvGvG5ph2O5o7Y1ckGPSFXMO9fYDUNhqF/aF8hzvuRbFOKrmMew+Gy6Fwhen7LtIGeWgb3jPS4S6iFs0Kbf99IEmFxFYukXWSRXV75GojyENnISKdNteB/x7TdKenOEZoRZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mXm8X5/VrTQYAYRa8Sb7eNvTW9hFOw9ww41gl910Mm4=;
- b=QY1ODDJ+vFiuQr/j0A8DK+eNxrVBy5sGn4aERgvq+UnJy71q8w2YOXUDw447MlpMm293SMVZ64cq40u5nh/eS1JAN7B5Chpw3EhQjdCPq6GLFSJq7bc+1HV69UK2dro71H3m4GjcJQPRQa7rJWWWthp0GuN/k1yy/L4MupJcHkzvBdW+XJREnNkeBzkZi26LSX9Ph1h2axS3npASWQcqWhRbS1RGOlVwst5+RAClOiY0ehvUGA7W2iQDqz2f6Gdjbl67tg8lqBzR8+a5sAMHF0/jOQey35+gRNLgpd+VRbc1oUlumLH2n2ZIUDNMI/lyc6ZjaXHDu3sP2jHcsqDKOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by PH8PR11MB6804.namprd11.prod.outlook.com (2603:10b6:510:1bc::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.18; Fri, 23 Aug
- 2024 02:02:42 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::cf7d:9363:38f4:8c57%6]) with mapi id 15.20.7897.014; Fri, 23 Aug 2024
- 02:02:42 +0000
-Date: Thu, 22 Aug 2024 21:02:35 -0500
-From: Ira Weiny <ira.weiny@intel.com>
-To: Fan Ni <nifan.cxl@gmail.com>, Dave Jiang <dave.jiang@intel.com>
-CC: <ira.weiny@intel.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>, "Josef
- Bacik" <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Petr Mladek
-	<pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
-	<linux@rasmusvillemoes.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
-	Dan Williams <dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>, "Li, Ming"
-	<ming4.li@intel.com>
-Subject: Re: [PATCH v3 06/25] cxl/mem: Read dynamic capacity configuration
- from the device
-Message-ID: <66c7edbbbbccb_1719d2942d@iweiny-mobl.notmuch>
-References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
- <20240816-dcd-type2-upstream-v3-6-7c9b96cba6d7@intel.com>
- <1ce9afe3-6f24-4471-8a10-5f4ea503e685@intel.com>
- <ZsTL1QQgYjVdfzqj@fan>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZsTL1QQgYjVdfzqj@fan>
-X-ClientProxiedBy: MW4PR04CA0232.namprd04.prod.outlook.com
- (2603:10b6:303:87::27) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6C9111A1
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Aug 2024 02:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724379266; cv=none; b=lvLZQ8M86IOgSjr5cXdTphVrXt3HKHgCtaw4SRoV+Pq7gmP+dJIfmmjoxnUn4X6hwXWjdP8VKY+bDWwQmApvsvzMrtmhUb0g2s54hTb0CM5Izjfgr5zyEwUz1kziupNfhK7NJ9bgd681XwHnz9boNIM8h5M9kcxz5U8v5NkNqMA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724379266; c=relaxed/simple;
+	bh=D5a8lMjYh3fZDSEpW/gsSl2As2iqDYpdNnjzsfeBuEk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Mowp1Yn37tdcohufydX2q3YtA4oQ5cw/JUbaQR8ynBuwctVdxzckUy5UV5kScuZrL+p/P6RA0P2FThw0YeBDH2Bs+UwYqTOqJJ9QdYNqZtod8M+57lhTzad/ZdOv57yjz1SVKm8HU9B/gL6LO0ro0bQJ5Eqju5sv+841Zn7oNpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=tBpVTJPU; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1724379227; x=1724984027; i=quwenruo.btrfs@gmx.com;
+	bh=aXrScm3PulmHUJmCd/1Rzxhhm/hbcv77BnAf8YXDiGk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
+	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=tBpVTJPUqx0mw75Ux8Eg/aqpfKFHe8BXr9vGTMIByIco0wHodPaC5jr6ZsJ6QuHm
+	 jv4VFflZ/yvauqkpXEqMLNRkMEZK43+sCTwdMKmD3iFMnZhHgl7KnfdAcQI6NTF4a
+	 siRPh4dL4NP9oCZfnsj8C/YmNkjX03bTVefh192uOK1olmfZsQfNUiJwmoCGpzLNl
+	 nPtrA/9ieJjSSqaNgcpU+sWiur44HJDNmKMuyD0AeVqcv6sgTqpvGDKmjxrVOF7eo
+	 hevGbJxrjScVMO5vX6B7+2ej6/rTITfxweZcpjcj1lqw9P1Y6qE9s1V4vBZQfkHTb
+	 Th7GGgo/jcCI5xRoqg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxlzC-1rvGOC46KE-00xM5F; Fri, 23
+ Aug 2024 04:13:47 +0200
+Message-ID: <7a04ac3b-e655-4a80-89dc-19962db50f05@gmx.com>
+Date: Fri, 23 Aug 2024 11:43:41 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH8PR11MB6804:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43c09d37-bd8a-413e-2496-08dcc317ac0a
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?i3AbNfkRO+Ku9P/1YzUM2v9PdK5UakbBUnJVNziinjG7lMDITDZapSFU68RZ?=
- =?us-ascii?Q?sF/678f6SpLu59YbSx5Vu8cuVcn14ZAf76ZyENvaNhBNH1ZSYcaKGrVaL8zK?=
- =?us-ascii?Q?fte+XlzdpLR4NQujwvzQ0JsA0+SPzP1c71BnIkjYjkkb4s2bkAe1FUDHyQqz?=
- =?us-ascii?Q?3G5DKbbdf+/ynIcl+iT4wMssMcqaN7OU1r5ceNDO2of12+nNqeCaEodpjNYG?=
- =?us-ascii?Q?ZfiVZG7dg7/N7s4IK2At99QpzjNhqlr4XBoPOAjv1qxEPDlvnAt3u99nVJi6?=
- =?us-ascii?Q?rhKgI2xDSzbJsBWCB+b0M9Qp+vApJkupkzmJNUusmCl19qLwZhZrhZXAoWUd?=
- =?us-ascii?Q?P2hktElqMjBiTW7tw1s9L4LMyXYnB0psEcLPrglycmhzjcc7qQco5MIv3dBz?=
- =?us-ascii?Q?GoaA1p0zbPzAsCXmO1AiqSXTwK2Rgn5AOPUBv+jbyr39hJH3n5KOKM9L1qcY?=
- =?us-ascii?Q?kFMNQkMbxOfnN4Sqai2LaYgIuvzCm7grD3p6Lat26iM48UP+2eaKOl5fLyLi?=
- =?us-ascii?Q?zzRU3x7Mn2vKdUYVXhJGoU+kyq6se8N/bMdUTyfYl15t5+iw8aUjGKZDKAS+?=
- =?us-ascii?Q?PGr8XEBoSqPJ4qzURWofi/xphPtMZfDxk5n7VXL2zdxRZl9JvYciKylfSWN7?=
- =?us-ascii?Q?gr3jpiY7sg1V018TIRbqW9y3o9yLQinQbLIAihhdKQPFWzLPYTT75zdVkLnL?=
- =?us-ascii?Q?41+8SCBdGX+/yFlxYuyFJlCmVfCKrWp+cRYWoHUq8AC9wSknDNpR1801fD9p?=
- =?us-ascii?Q?K08E6WPIGnpfb51kIGVEHWXZcQNv0t1hgXJLH0ARyDrzgtngRUNZ0Tk1KiZZ?=
- =?us-ascii?Q?GkrW/vcZYHWj+SajebpjZ2TdrXdXLhkUDKDB7U+P/a3LtAJeUMXJZKtEffAy?=
- =?us-ascii?Q?QrB7GFsFinZVnkMpv1CfEVoTpFZA6LCf5NTeTsLFcvq4EUNAAhHROdtpSPDd?=
- =?us-ascii?Q?2XSbqDDJ08ATzgSqPKHG9vUrUwwP+5GDPO6wP8RhLtzxbgKRd26LjMlZvaEs?=
- =?us-ascii?Q?Ftyyz7RU6y6UagTrBUyqA2joTvNk/eFVerIrziOB7GGRqlahIaAweRBIC7Tx?=
- =?us-ascii?Q?QzFrcPKKfVwgSi+8WgtS/CkQs4wMLJQtyFKO+VOjvx9VipaHyP8KI/sRnGBq?=
- =?us-ascii?Q?8mYqmEfA9ltdruRgZ0aR3GI7WuonTDQvyMhUlmIOjHS+qMII9Nkd1k4qRmD8?=
- =?us-ascii?Q?wAUBJp/Jk1X0ISMyUmaBfQBjrlvsTL3ac127e+ML92j3WVgQ4OfF53kx1MTe?=
- =?us-ascii?Q?Y3802bW2CtyOQjVZtIyPszN7DM/lYDdfJNRTWJ1Plhog5/laBCqOLusFDM5q?=
- =?us-ascii?Q?gb7Fj6cEWS0gO/J3MJtUlgUbR4dygs9XJ+cMzdUvEgXedw=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2Kjm5iK8+FX7xPENpIC/HZs56NkX/TgPyZm3Kb8VnFeJ/k/rjQvnqrU7hWIV?=
- =?us-ascii?Q?OAT3XhtYm0TyRBwc+HW7UcssJ46L5Y0PdqEE0a9lMJlZPvlj/Lrsr38bqRgr?=
- =?us-ascii?Q?dxS/GOU4A4flqRBDGHKL424ijCZO95bbgRnGDhVGh2nQt5LoAo/QgDw8otFF?=
- =?us-ascii?Q?dRIfBhrk/oLigNu/lVHife4E4GSpdloOMSh0dCAQQS7WNgYSJ9o3lAM4n7dz?=
- =?us-ascii?Q?yMS2sBw//tGLTJdFO/opBk3F6NeQ9ZR6f5phCcoOQBCD2XM1gAzH2TawnVTT?=
- =?us-ascii?Q?xJhZsdkak/D8Z0Odr2h/UKBnk/uxc9OHPv1Mo3EhMzVKi/6llKVJb947t2Wk?=
- =?us-ascii?Q?b+2ut68dXBs7ZX/sWorR6gdtKyHA1aXqWmsEQUl0FZr4CW2Q+Q9V91GTBHZT?=
- =?us-ascii?Q?ruBKqI0lY8EQf2qAsbjnuUGc31TpRMupPWPW3m6bzn4qvRKasCpTYwiMH2bf?=
- =?us-ascii?Q?5OKd8L9G9peakFzy5/gNg1R6uWBaBZwX77bLSdLm63Sqofls4c2B7C4t66c7?=
- =?us-ascii?Q?uUCiLQ4jJNqMCC2qd7QGks9OMtKFCJfsjHra4bqY1jOBZOZhCbAcrWU1XUzm?=
- =?us-ascii?Q?oGPDSJiekyqXeiEjpyLUniexRAcH5wBBEpZqS1IuNBMPGymCLhPFcwzHoQPl?=
- =?us-ascii?Q?py53/bcmoBf8BTTvjzJvk4bZeEw/bLbBoqZmSYqtiAvxjr+dZKaH/7V6el8L?=
- =?us-ascii?Q?+hZE0ADn57TCohC+pNGGzFtQKuhN1i5DqRFSOezRQ56G2LdDTl6Ad4B7k6VU?=
- =?us-ascii?Q?Pxjpny4biUmRqrAIj5YXbOO2mIlnW58IltkjsuLau0hA6xer30xWTLgAkq/1?=
- =?us-ascii?Q?h4Sw7QYkrQcDC2DrRwdnUB4fRLwL/z1+pIAKCJ0D4H3pC+XeQ0SeEmSZMKUw?=
- =?us-ascii?Q?VjDzJsKut9VA7NHJnVs3W/oitKhbolKvr4pnJxjNtaVIB0/UCRgZCT1OUNgU?=
- =?us-ascii?Q?t3HtgHJSNkkHqjSUZHBAUFW2mSGLSSgpnFzO3Pn8GWCB3E0Hpc8oWs69Jc5W?=
- =?us-ascii?Q?JI6Ku0G1xHxKlTv+Y7bQx0PXVV49umqGmYc385EgD/g1RECkgVdUgUlCguMo?=
- =?us-ascii?Q?EimTUBA3eOyFSG5Q9mbHHERDgstOQ4ucuzIdbEWefSsWdq+t4uJffYISXpfp?=
- =?us-ascii?Q?DDLet/Zf9f49CEfpPDdq6eWKeS4B+ZGYq+0qMaq6Vnu6jzI+/8iL3tOpSsCg?=
- =?us-ascii?Q?I6nWe6qq+Grnn9HW+/ZXkltNnMerrvCcUP+elKQLSmOJn9HihG8AiH3Ixjgq?=
- =?us-ascii?Q?VQAdGrsdXRPbjqF+FYllLcVqvqZ27cm5jNtnPB9YXSMG1zJmhFPGr4ba9TaF?=
- =?us-ascii?Q?xT4D7o4VKFsClHauUUA4qCeSTqv2IfheiqstmfDUoU6vyk8vP8eVTnYltQQb?=
- =?us-ascii?Q?gB3A1Feq8cwzqjVZyXHKed2PNxUFLZzxDs4QL6YE3jTVoqPkGOBttZAVV3xZ?=
- =?us-ascii?Q?RaHe+MRkvYry7CKShksyNovSnmzNDCrpy2GWHYkPMzhaJF77hYik5WufLamf?=
- =?us-ascii?Q?3YtAShldG0SnCkSx+InddivSLnl5AFhjgURkGmZat+OEbV293oIsp/0GVrVt?=
- =?us-ascii?Q?bmGyjUenoFQvvw586Q0Icq2ieZo65CrRf7D2XZr0?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43c09d37-bd8a-413e-2496-08dcc317ac0a
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2024 02:02:41.9382
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vtAFdsyie08e4BUfplw35zxIeEftX8/h2Au9KLHQCzr2U43Btwx55Yhd/ly9BVWwY8NZe4WkRyGTeQlofv+mEw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6804
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/14] btrfs: convert get_next_extent_buffer() to take a
+ folio
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Li Zetao <lizetao1@huawei.com>, clm@fb.com, josef@toxicpanda.com,
+ dsterba@suse.com, terrelln@fb.com, linux-btrfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20240822013714.3278193-1-lizetao1@huawei.com>
+ <20240822013714.3278193-3-lizetao1@huawei.com>
+ <Zsaq_QkyQIhGsvTj@casper.infradead.org>
+ <0f643b0f-f1c2-48b7-99d5-809b8b7f0aac@gmx.com>
+ <ZscqGAMm1tofHSSG@casper.infradead.org>
+ <38247c40-604b-443a-a600-0876b596a284@gmx.com>
+Content-Language: en-US
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <38247c40-604b-443a-a600-0876b596a284@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Dvs7VzrjjFpp1r9ZI7YTkeiaqLMrnufdKl4GmRyuV81uEUpg2wR
+ UYH3V8I+oLGRz56PAYi+AD9lW4h56rk+tD0Yy60vL21bhYsL1rjV8V8Y6NQq0j9r9urCIve
+ 9a8CHXR6v7LdOL5Vpj0HAiybaX758eCxxWPASKXkXhsEiOr+W9ZxLZX5zGFdME7joJVzJ3D
+ AYlVW6mAsaIYCwdFuksnw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:KWAnWs1w4AI=;FIDgK7OOtFR8xkoc9zyy0TDH69H
+ 0T2FOALWLke2bZxHZv0umErh1y+/bO4LMARgoUciODzxIbNgO6cWEFU8uNo9t1Sx92Qx4hDUo
+ uRg938njahko1ByVwhM0HdY14nerzenEXTHR5sw4EraAKj4HWyiXb1fP7Zw2z6LxdgudsQj4a
+ 3pKbkwvUh5ajI2D7o5wKpIiG71qPGQ4SZZAHz0wZpevQklMHjCy17+QGFQdgEyjcogqG2e8hV
+ gxSmVeKuc/TbOdsEPD4BKqhgZOTbQAWfmKOPohX4+XEnpHTaJlmkrzQq2Thqh9meJIl7XrWbZ
+ g1cUzbotELMLOy4UizNOXcVDFPto7B6rjPXLP8/kDU6l+wacVlMlDFQ5FrYcwlJkA99uaA/3S
+ sjd8z/wjgVk5UgwP0vIuFgq6cQSAlyxfibhVTlnNMl/IE2Nf7/LgYLLlM6NDx+hRze9ajrUZu
+ BIa0fzYxtKaE8Uftz2y/KKlIV85G5QPM5tY8k8S2n9IwptANw/DFmXPPAwdJ95JsvMGcYESt2
+ bLjwr8dbNU0dSKuQAK1n5XmC42XCmHpQYQD0i42BrjwA2iqwgza18H7eiK7kRqDdZipS4F2E+
+ 2dcZjXu5WezfkMh57r8acvHSKJJKUOu4Ij+vUKlzQFp1oPdBUrF/m16NdYKeAiKNo2wxgl8Gd
+ iYn2ElZjV0kxiuHt7okG3S0c8j9QjYFs7BzZVc9F+LnJyDtj9I0er/vrU6+HyRbhnZpP74ZzR
+ 0sq0EyVRnKc+az4jheYViSuNDJ6A1RtQ2z1SJBexvo9GyVkDOOMnq145LAmmkVcBf5ihthF8V
+ +HyR2o5W9Jdmwuz+oKDdQ3UQ==
 
-Fan Ni wrote:
-> On Fri, Aug 16, 2024 at 02:45:47PM -0700, Dave Jiang wrote:
 
-[snip]
 
-> > > +
-> > > +/**
-> > > + * cxl_dev_dynamic_capacity_identify() - Reads the dynamic capacity
-> > > + *					 information from the device.
-> > > + * @mds: The memory device state
-> > > + *
-> > > + * Read Dynamic Capacity information from the device and populate the state
-> > > + * structures for later use.
-> > > + *
-> > > + * Return: 0 if identify was executed successfully, -ERRNO on error.
-> > > + */
-> > > +int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
-> > > +{
-> > > +	size_t dc_resp_size = mds->payload_size;
-> > > +	struct device *dev = mds->cxlds.dev;
-> > > +	u8 start_region, i;
-> > > +
-> > > +	for (i = 0; i < CXL_MAX_DC_REGION; i++)
-> > > +		snprintf(mds->dc_region[i].name, CXL_DC_REGION_STRLEN, "<nil>");
-> > > +
-> > > +	if (!cxl_dcd_supported(mds)) {
-> > > +		dev_dbg(dev, "DCD not supported\n");
-> > > +		return 0;
-> > > +	}
-> > 
-> > This should happen before you pre-format the name string? I would assume that if DCD is not supported then the dcd name sysfs attribs would be not be visible?
-> > 
+=E5=9C=A8 2024/8/23 07:55, Qu Wenruo =E5=86=99=E9=81=93:
+>
+>
+> =E5=9C=A8 2024/8/22 21:37, Matthew Wilcox =E5=86=99=E9=81=93:
+>> On Thu, Aug 22, 2024 at 08:28:09PM +0930, Qu Wenruo wrote:
+>>> =E5=9C=A8 2024/8/22 12:35, Matthew Wilcox =E5=86=99=E9=81=93:
+>>>>> -=C2=A0=C2=A0=C2=A0 while (cur < page_start + PAGE_SIZE) {
+>>>>> +=C2=A0=C2=A0=C2=A0 while (cur < folio_start + PAGE_SIZE) {
+>>>>
+>>>> Presumably we want to support large folios in btrfs at some point?
+>>>
+>>> Yes, and we're already working towards that direction.
+>>>
+>>>> I certainly want to remove CONFIG_READ_ONLY_THP_FOR_FS soon and that'=
+ll
+>>>> be a bit of a regression for btrfs if it doesn't have large folio
+>>>> support.=C2=A0 So shouldn't we also s/PAGE_SIZE/folio_size(folio)/ ?
+>>>
+>>> AFAIK we're only going to support larger folios to support larger than
+>>> PAGE_SIZE sector size so far.
+>>
+>> Why do you not want the performance gains from using larger folios?
+>>
+>>> So every folio is still in a fixed size (sector size, >=3D PAGE_SIZE).
+>>>
+>>> Not familiar with transparent huge page, I thought transparent huge pa=
+ge
+>>> is transparent to fs.
+>>>
+>>> Or do we need some special handling?
+>>> My uneducated guess is, we will get a larger folio passed to readpage
+>>> call back directly?
+>>
+>> Why do you choose to remain uneducated?=C2=A0 It's not like I've been k=
+eeping
+>> all of this to myself for the past five years.=C2=A0 I've given dozens =
+of
+>> presentations on it, including plenary sessions at LSFMM.=C2=A0 As a
+>> filesystem
+>> developer, you must want to not know about it at this point.
+>>
+>>> It's straightforward enough to read all contents for a larger folio,
+>>> it's no different to subpage handling.
+>>>
+>>> But what will happen if some writes happened to that larger folio?
+>>> Do MM layer detects that and split the folios? Or the fs has to go the
+>>> subpage routine (with an extra structure recording all the subpage fla=
+gs
+>>> bitmap)?
+>>
+>> Entirely up to the filesystem.=C2=A0 It would help if btrfs used the sa=
+me
+>> terminology as the rest of the filesystems instead of inventing its own
+>> "subpage" thing.=C2=A0 As far as I can tell, "subpage" means "fs block =
+size",
+>> but maybe it has a different meaning that I haven't ascertained.
+>
+> Then tell me the correct terminology to describe fs block size smaller
+> than page size in the first place.
+>
+> "fs block size" is not good enough, we want a terminology to describe
+> "fs block size" smaller than page size.
+>
+>>
+>> Tracking dirtiness on a per-folio basis does not seem to be good enough=
+.
+>> Various people have workloads that regress in performance if you do
+>> that.=C2=A0 So having some data structure attached to folio->private wh=
+ich
+>> tracks dirtiness on a per-fs-block basis works pretty well.=C2=A0 iomap=
+ also
+>> tracks the uptodate bit on a per-fs-block basis, but I'm less convinced
+>> that's necessary.
+>>
+>> I have no idea why btrfs thinks it needs to track writeback, ordered,
+>> checked and locked in a bitmap.=C2=A0 Those make no sense to me.=C2=A0 =
+But they
+>> make no sense to me if you're support a 4KiB filesystem on a machine
+>> with a 64KiB PAGE_SIZE, not just in the context of "larger folios".
+>> Writeback is something the VM tells you to do; why do you need to tag
+>> individual blocks for writeback?
+>
+> Because there are cases where btrfs needs to only write back part of the
+> folio independently.
+>
+> And especially for mixing compression and non-compression writes inside
+> a page, e.g:
+>
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 16K=C2=A0=C2=
+=A0=C2=A0=C2=A0 32K=C2=A0=C2=A0=C2=A0=C2=A0 48K=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 64K
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |//|=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |///////|
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4K
+>
+> In above case, if we need to writeback above page with 4K sector size,
+> then the first 4K is not suitable for compression (result will still
+> take a full 4K block), while the range [32K, 48K) will be compressed.
+>
+> In that case, [0, 4K) range will be submitted directly for IO.
+> Meanwhile [32K, 48) will be submitted for compression in antoher wq.
+> (Or time consuming compression will delay the writeback of the remaining
+> pages)
+>
+> This means the dirty/writeback flags will have a different timing to be
+> changed.
 
-No this string is not used for sysfs.  It is used to label the dpa
-resources...  That said in review I don't recall why it was necessary to
-add the '<nil>' to them by default.  I'm actually going to remove that and
-continue testing and if I recall where this was showing up I might add it
-back in.
+Just in case if you mean using an atomic to trace the writeback/lock
+progress, then it's possible to go that path, but for now it's not space
+efficient.
 
-> > > +
-> > > +	struct cxl_mbox_get_dc_config_out *dc_resp __free(kfree) =
-> > > +					kvmalloc(dc_resp_size, GFP_KERNEL);
-> > > +	if (!dc_resp)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	start_region = 0;
-> > > +	do {
-> > > +		int rc, j;
-> > > +
-> > > +		rc = cxl_get_dc_config(mds, start_region, dc_resp, dc_resp_size);
-> > > +		if (rc < 0) {
-> > > +			dev_dbg(dev, "Failed to get DC config: %d\n", rc);
-> > > +			return rc;
-> > > +		}
-> > > +
-> > > +		mds->nr_dc_region += rc;
-> > > +
-> > > +		if (mds->nr_dc_region < 1 || mds->nr_dc_region > CXL_MAX_DC_REGION) {
-> > > +			dev_err(dev, "Invalid num of dynamic capacity regions %d\n",
-> > > +				mds->nr_dc_region);
-> > > +			return -EINVAL;
-> > > +		}
-> > > +
-> > > +		for (i = start_region, j = 0; i < mds->nr_dc_region; i++, j++) {
-> > 
-> > This should be 'j < mds->nr_dc_region'? Otherwise if your start region say is '3' and you have '2' DC regions, you never enter the loop. Or does that not happen? I also wonder if you need to check if 'start_region + mds->nr_dc_region > CXL_MAX_DC_REGION'.
-> > 
-> That can not happen, start_region was updated to the number of regions
-> has returned till now (not counting the current call), while
-> nr_dc_region is the total number of regions returned till now (including
-> the current call) as we update it above, so start_region should never be larger
-> than nr_dc_region.
+For 16 blocks per page case (4K sectorsize 64K page size), each atomic
+takes 4 bytes while a bitmap only takes 2 bytes.
 
-Yep.
+And for 4K sectorsize 16K page size case, it's worse and btrfs compact
+all the bitmaps into a larger one to save more space, while each atomic
+still takes 4 bytes.
 
-> 
-> > > +			rc = cxl_dc_save_region_info(mds, i, &dc_resp->region[j]);
-> > > +			if (rc) {
-> > > +				dev_dbg(dev, "Failed to save region info: %d\n", rc);
-> 
-> I am not sure why we sometimes use dev_err and sometimes we use dev_dbg
-> here, if dcd is supported, error from getting dc configuration is an
-> error to me.
+Thanks,
+Qu
 
-We are trying to reduce the dev_err() use.  cxl_dc_save_region_info() has
-dev_err() which is much more specific as to the error.  At worse this is
-just redundant as a debug.
-
-I'll remove it because the debug output is pretty verbose too.
-
-Ira
-
-> 
-> Fan
-
-[snip]
+>
+> I think compression is no long a btrfs exclusive feature, thus this
+> should be obvious?
+>
+> Thanks,
+> Qu
+>
 
