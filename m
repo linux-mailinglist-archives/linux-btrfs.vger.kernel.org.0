@@ -1,250 +1,331 @@
-Return-Path: <linux-btrfs+bounces-7421-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7422-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5B9A95C324
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 04:14:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 002D895C337
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 04:27:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B63FB234B1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 02:14:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833A51F23AE9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 02:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511C31D52D;
-	Fri, 23 Aug 2024 02:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D4C27713;
+	Fri, 23 Aug 2024 02:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="tBpVTJPU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HWZGvY0s"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6C9111A1
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 Aug 2024 02:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724379266; cv=none; b=lvLZQ8M86IOgSjr5cXdTphVrXt3HKHgCtaw4SRoV+Pq7gmP+dJIfmmjoxnUn4X6hwXWjdP8VKY+bDWwQmApvsvzMrtmhUb0g2s54hTb0CM5Izjfgr5zyEwUz1kziupNfhK7NJ9bgd681XwHnz9boNIM8h5M9kcxz5U8v5NkNqMA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724379266; c=relaxed/simple;
-	bh=D5a8lMjYh3fZDSEpW/gsSl2As2iqDYpdNnjzsfeBuEk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Mowp1Yn37tdcohufydX2q3YtA4oQ5cw/JUbaQR8ynBuwctVdxzckUy5UV5kScuZrL+p/P6RA0P2FThw0YeBDH2Bs+UwYqTOqJJ9QdYNqZtod8M+57lhTzad/ZdOv57yjz1SVKm8HU9B/gL6LO0ro0bQJ5Eqju5sv+841Zn7oNpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=tBpVTJPU; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724379227; x=1724984027; i=quwenruo.btrfs@gmx.com;
-	bh=aXrScm3PulmHUJmCd/1Rzxhhm/hbcv77BnAf8YXDiGk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
-	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=tBpVTJPUqx0mw75Ux8Eg/aqpfKFHe8BXr9vGTMIByIco0wHodPaC5jr6ZsJ6QuHm
-	 jv4VFflZ/yvauqkpXEqMLNRkMEZK43+sCTwdMKmD3iFMnZhHgl7KnfdAcQI6NTF4a
-	 siRPh4dL4NP9oCZfnsj8C/YmNkjX03bTVefh192uOK1olmfZsQfNUiJwmoCGpzLNl
-	 nPtrA/9ieJjSSqaNgcpU+sWiur44HJDNmKMuyD0AeVqcv6sgTqpvGDKmjxrVOF7eo
-	 hevGbJxrjScVMO5vX6B7+2ej6/rTITfxweZcpjcj1lqw9P1Y6qE9s1V4vBZQfkHTb
-	 Th7GGgo/jcCI5xRoqg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxlzC-1rvGOC46KE-00xM5F; Fri, 23
- Aug 2024 04:13:47 +0200
-Message-ID: <7a04ac3b-e655-4a80-89dc-19962db50f05@gmx.com>
-Date: Fri, 23 Aug 2024 11:43:41 +0930
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29AB1CD31;
+	Fri, 23 Aug 2024 02:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724380013; cv=fail; b=tGow3x64JHLvIebe+jVmdV8auS2N8A361fI5s3a7+y6un7ehs5d+XY7Kb3rvrOgI964vnifgyEPLuKph+H9O5Ijfda/5B1ZLwnCgHEq+8cDKNkIm6y0f5hM3t2rWFAIt4juFIX3w3LMyjg7azcIwliV8CHUv8GgBuzDb92vGRGQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724380013; c=relaxed/simple;
+	bh=/9UcnSXD/sYfhyJ2qMOEE+MKe/gTD2f7147yz3f8xHU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=VR4hhG0rDy5h3M2RXTKzA01m8dO/JS7rKVriUrNffg2+FGt373QcCcuRnYtK/9AbLBtpxUsGOBdvufbPPmEfn3oL2aFaJXsAJavgLUDQwVrZsE1qoSZ29bIu+bFPHSnG1FyZGEhVQYLHvMJOZoneayPZVXrYK7wwNODiHhHRP1M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HWZGvY0s; arc=fail smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724380012; x=1755916012;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=/9UcnSXD/sYfhyJ2qMOEE+MKe/gTD2f7147yz3f8xHU=;
+  b=HWZGvY0s7tJ7s1/HVrytnFS7r3QroaT+czcQVJxV3gpcsnUPwECCbj/J
+   88ayYA5s+CFMTM9s+xD/9Fs3fjqE1oZoq1kxnAbmhF8TtwZjjgxAdrocY
+   tpsLrLpfPu25HsW/YNR4NeXX0XfRSOWxbOL4iefY+tGmKeIiCoAyKku4z
+   IPxW8qu3hT6eUTbCzLO/yJVQWnkG1fjO0hMykxrasHTqKm1B4lv5kbi+4
+   dssV7Tm5C84WSbzbyG4JBmJF5RLKtDLDQ4A7M44iHZ/98tdp389KrpkuY
+   ZKJ4LgOdOIVbD4nv35V+/2pxf1MDBNE6WL8EGN8Ap9tCqJSF48lqq0YtD
+   A==;
+X-CSE-ConnectionGUID: 4Ka0/5azRKelIb0xIFcDbA==
+X-CSE-MsgGUID: Yy9J1hnaSlOzTyA7OUyQmg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11172"; a="33990049"
+X-IronPort-AV: E=Sophos;i="6.10,169,1719903600"; 
+   d="scan'208";a="33990049"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2024 19:26:51 -0700
+X-CSE-ConnectionGUID: UVmPIgSMQAOnxBVlwsOGmg==
+X-CSE-MsgGUID: dbaqVokoSx+/NlXfFojQGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,169,1719903600"; 
+   d="scan'208";a="61672646"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Aug 2024 19:26:51 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 22 Aug 2024 19:26:50 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 22 Aug 2024 19:26:50 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 22 Aug 2024 19:26:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=JNtmPk5xENT3Znym6GZV6wSlVWNi4dqxarosdKr5Z6Qw41dWQj4yKG2E1E5DChVmEr7dyCO9zzxWNEb1SLMKs0UE3ILoJ34icMLgfkLO/4UVx4A1c62FoE1kuuIMQ2kZ0ak0Kjm/7xVmaDNvbr9AAUZtWENVZyTP2qR7pRJIIFRlrczBaIoibeuLTE7MDx8l/5QJxkAgskScqjaloOzsbrwvFQGoEodgstUZ4bbb/3VCVz0NEUF86jO8mU+1wFYydb8FkBX+CzELxedNJWqDmAA9ke98mTgPrLIuajpKAyMqJIsqP0qPEtbcILr4LgEEjkPb/PqRRuBgi4iijAIxJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7zOp3sn5ENL7oy+Q6OCF/YBzW02pxiiC7gz9k7a1Kl4=;
+ b=CmhDVs9o3t4v00TrZzbQQy5D+kvLd7cY/p5o6ZwqvQ9oMzHL7eqeuylTBT93d/+68sLQHt5JJt0ht+Jfnt4rD3ldKx8I/gWUPEBNxFpITt92Z+NENIpzkLVWNdmiehUCK2qOyZYn1vbkpNLL+KpqlK003EBcUBQGE8KiAFVxpM4DllTFBj+KHabeJR91hgdjZr9uVo+015egsrqe9XLAMljVZh7INUfeXpv4MEGWz2moBypRRKp7YeOFZP2bI0XWXK1D9v6Pnody8Hzk7vdOebKD2bKIR2rDwS9qvJ+pNny9st8ZMPtvf/CQjoHoe1L5EmWsppJPa/qm/vVCNL4Hpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by SA1PR11MB8524.namprd11.prod.outlook.com (2603:10b6:806:3a9::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21; Fri, 23 Aug
+ 2024 02:26:48 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::cf7d:9363:38f4:8c57%6]) with mapi id 15.20.7897.014; Fri, 23 Aug 2024
+ 02:26:48 +0000
+Date: Thu, 22 Aug 2024 21:26:42 -0500
+From: Ira Weiny <ira.weiny@intel.com>
+To: Dave Jiang <dave.jiang@intel.com>, <ira.weiny@intel.com>, Fan Ni
+	<fan.ni@samsung.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	"Navneet Singh" <navneet.singh@intel.com>, Chris Mason <clm@fb.com>, Josef
+ Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Petr Mladek
+	<pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
+	<linux@rasmusvillemoes.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>
+CC: Dan Williams <dan.j.williams@intel.com>, Davidlohr Bueso
+	<dave@stgolabs.net>, Alison Schofield <alison.schofield@intel.com>, "Vishal
+ Verma" <vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>
+Subject: Re: [PATCH v3 09/25] cxl/hdm: Add dynamic capacity size support to
+ endpoint decoders
+Message-ID: <66c7f3624d881_1719d2943b@iweiny-mobl.notmuch>
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-9-7c9b96cba6d7@intel.com>
+ <8eefaa52-ba46-4e9b-8695-c086e08b0498@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <8eefaa52-ba46-4e9b-8695-c086e08b0498@intel.com>
+X-ClientProxiedBy: MW4P222CA0026.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::31) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/14] btrfs: convert get_next_extent_buffer() to take a
- folio
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Li Zetao <lizetao1@huawei.com>, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, terrelln@fb.com, linux-btrfs@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240822013714.3278193-1-lizetao1@huawei.com>
- <20240822013714.3278193-3-lizetao1@huawei.com>
- <Zsaq_QkyQIhGsvTj@casper.infradead.org>
- <0f643b0f-f1c2-48b7-99d5-809b8b7f0aac@gmx.com>
- <ZscqGAMm1tofHSSG@casper.infradead.org>
- <38247c40-604b-443a-a600-0876b596a284@gmx.com>
-Content-Language: en-US
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <38247c40-604b-443a-a600-0876b596a284@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Dvs7VzrjjFpp1r9ZI7YTkeiaqLMrnufdKl4GmRyuV81uEUpg2wR
- UYH3V8I+oLGRz56PAYi+AD9lW4h56rk+tD0Yy60vL21bhYsL1rjV8V8Y6NQq0j9r9urCIve
- 9a8CHXR6v7LdOL5Vpj0HAiybaX758eCxxWPASKXkXhsEiOr+W9ZxLZX5zGFdME7joJVzJ3D
- AYlVW6mAsaIYCwdFuksnw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:KWAnWs1w4AI=;FIDgK7OOtFR8xkoc9zyy0TDH69H
- 0T2FOALWLke2bZxHZv0umErh1y+/bO4LMARgoUciODzxIbNgO6cWEFU8uNo9t1Sx92Qx4hDUo
- uRg938njahko1ByVwhM0HdY14nerzenEXTHR5sw4EraAKj4HWyiXb1fP7Zw2z6LxdgudsQj4a
- 3pKbkwvUh5ajI2D7o5wKpIiG71qPGQ4SZZAHz0wZpevQklMHjCy17+QGFQdgEyjcogqG2e8hV
- gxSmVeKuc/TbOdsEPD4BKqhgZOTbQAWfmKOPohX4+XEnpHTaJlmkrzQq2Thqh9meJIl7XrWbZ
- g1cUzbotELMLOy4UizNOXcVDFPto7B6rjPXLP8/kDU6l+wacVlMlDFQ5FrYcwlJkA99uaA/3S
- sjd8z/wjgVk5UgwP0vIuFgq6cQSAlyxfibhVTlnNMl/IE2Nf7/LgYLLlM6NDx+hRze9ajrUZu
- BIa0fzYxtKaE8Uftz2y/KKlIV85G5QPM5tY8k8S2n9IwptANw/DFmXPPAwdJ95JsvMGcYESt2
- bLjwr8dbNU0dSKuQAK1n5XmC42XCmHpQYQD0i42BrjwA2iqwgza18H7eiK7kRqDdZipS4F2E+
- 2dcZjXu5WezfkMh57r8acvHSKJJKUOu4Ij+vUKlzQFp1oPdBUrF/m16NdYKeAiKNo2wxgl8Gd
- iYn2ElZjV0kxiuHt7okG3S0c8j9QjYFs7BzZVc9F+LnJyDtj9I0er/vrU6+HyRbhnZpP74ZzR
- 0sq0EyVRnKc+az4jheYViSuNDJ6A1RtQ2z1SJBexvo9GyVkDOOMnq145LAmmkVcBf5ihthF8V
- +HyR2o5W9Jdmwuz+oKDdQ3UQ==
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SA1PR11MB8524:EE_
+X-MS-Office365-Filtering-Correlation-Id: e9a3069d-e7f7-4c94-044e-08dcc31b0a3d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|366016|376014|921020;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Ol96cpDrsajERoEeKL28FJhFU056FilpYKXl6c4+nGo0RrTfJfxSh473zUc3?=
+ =?us-ascii?Q?8KRKmu5kVuxxQYJzXT8Ioe3Fztjgk5n8uoEVQRZM3AXCd63f7FYeSZxfOoYw?=
+ =?us-ascii?Q?A4msC0i1hJgjumRhXgvb8YNVTq6qj7DU+wBmxww3rjarSvR8ESzlOkwz909r?=
+ =?us-ascii?Q?cu6vhIhlsSwMntejpRaZGMFFobW/cJdwhkDU/6VPEvTD+J8nf8shjrmCB39V?=
+ =?us-ascii?Q?vpYtJAL6GJjj0sCRQo7WDToPgTnViRSHMXBPUw+6FWJkKVuTNdy1ufwn8RmI?=
+ =?us-ascii?Q?M/QMyTaoNWhcXa4ROJhUq7BiRfhGKtrCCmCssFMvVThpD2GbnwGvrp7STJv7?=
+ =?us-ascii?Q?arMGkOuTcy1SWrI0sBW5t88AbSRSrOzeAK8v8/mrImvbcuMoAK3Oi5vHzQuq?=
+ =?us-ascii?Q?0dEgxTEecnKiBxjmH6gxYMIwgjy4sWLh8ytbRLBD7pyTh98kza8o2znzYD5X?=
+ =?us-ascii?Q?So/3LTq9cPJbKsFE385j6w/0ihVP7y+z+TtJKzja2IpkH6meiWM4lmqQYHxq?=
+ =?us-ascii?Q?/BW2r/RQaNdZOHM96llHRURyLheJgkls9l9LSzdvGpd7PU3NjsPGBxyhMirD?=
+ =?us-ascii?Q?cIntQ1xus5mxaoJaa0DwHvNFSXyjtM/TE12NwTozNNZnQsSAwDDOlJiWbAt5?=
+ =?us-ascii?Q?2iIsOcwoJ62ESa7GIGRGcAf4jpzDXBBhWymOUUYHPobvc2N+/W6H+rQvzaP4?=
+ =?us-ascii?Q?ur1V90PqDOGTJcH4HkEVzDvBTIIYJyvHiT1KWBE2m91v7f0KuAD4O52vf+Ff?=
+ =?us-ascii?Q?g/0EeG6HdAEAGjhG7W3eAVmfP5v5igSTetagy3KniBqCaD3BkIn147Tdgmys?=
+ =?us-ascii?Q?yd+Hnzwj5dnoAJ2mjXogxHh4Qs1ABYnTMMNByesayJsEX0TGfeR9EcWXGiBM?=
+ =?us-ascii?Q?CB4tkWwHgBg6D9H4AL2V0uAtYtI9rmrsm1TiwdP2l71U53RHGduz29f4EHor?=
+ =?us-ascii?Q?7tpUtgl/bG2UbrhkifCX/pUe09N9aElgJcE8tciwBgH5GW9VgYRTVtFqnR9C?=
+ =?us-ascii?Q?fMIQ6A5DcoS8a7u82pEvCrRZLYQAOymaJixKJxSbJMetFyU/6N6SzrWDXjzf?=
+ =?us-ascii?Q?jbasvNSAT8vwddDhtCRyMlpls3iJcbc9vrsoe/nq7mdTcqLEqXJOJpTHmhzn?=
+ =?us-ascii?Q?RDgUvvQbEBNQxwNIwnjgDr1EVA71/L3iYySmfNSMD+x1V63k9BYycILVoTHq?=
+ =?us-ascii?Q?Rw5oyOsZ0u5vaaoq9JFxIdRaj4Yski1uSYrV/Q9WbbjyLVjp8zOwTHyjB8ev?=
+ =?us-ascii?Q?FU3a0t+9nKM3gnj0nKvne+8lqW4EHwl0tZqOWrsDjQMXT9UTu2PQ0z9/pTVZ?=
+ =?us-ascii?Q?IgQApO362xf8WXvd687KSs560kJkIoEMw7pp1UFLbEALxK7iDftK2vvwDuz+?=
+ =?us-ascii?Q?9g5D+Zb94900IwrNyCtY0maW1KzK?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m6au82mvB+W5X4clAsuJ/udEIzfie206CpWjRJfFhqNeM6c8mSUwt8DcNFlo?=
+ =?us-ascii?Q?LJLSnxNvVijcO74QYeo/cQxyRCszReBCTnrcOlijQQDgZSWJ0JTLl6dtDnGd?=
+ =?us-ascii?Q?XWGLIurV2o4MXlBnrrT3k05piHzkcV+I/EaspNeL7av5rtqXxR6y4WqXA6z1?=
+ =?us-ascii?Q?4LUJJE4iCEqQurNHP1HbCs8Q2CzmB9mVOrAL64BFE0UD7hTFAFO1GwyDXycS?=
+ =?us-ascii?Q?9XHHuCF9/7zFLqp+HftyFDKSDRXmpGQM6c8Nf9aokEPpCeGx/NyScg7DtzT4?=
+ =?us-ascii?Q?vWs2vNolGuNho/EZ/V7q0eIA7myrm1mmxIr753UyWcbMmOzNUxo4aicXxBAz?=
+ =?us-ascii?Q?7oE8cb+xKZ/i01bzGUBflBRk0201zUr0MT2SDucOmVeAfSiPusKI7cdtiKrr?=
+ =?us-ascii?Q?W1p1qxUJTxz4+J/QyLV6IrJTulyzTOY0O8eTVc1oHr3yozUotFfJw/0WoPds?=
+ =?us-ascii?Q?aEuQLyEcWuzbfU1XDJnuxUrSAfW4XHD/drnWwz0H+2rofTiyJFBQRRCApmb2?=
+ =?us-ascii?Q?JnbuJH3UoXCxPPI8+gZ2/yeMyNj2+dPtpyAlv1gZoTujeEL4LOmOJjdL0fCx?=
+ =?us-ascii?Q?G9pcOd50No9Ne6168AJoYnJKP4R64qd//iMJedndjsLmoEWiWM7V5mtbwuMC?=
+ =?us-ascii?Q?DM79ATizwh9Mn4snnlSx94lmbwuUUIEzEbRi8ibNLxvxEWsDOQvy7UcB4WwI?=
+ =?us-ascii?Q?CQ6gfLfki3blKFM8Zu7KDQed7V6xK9LGI+/d6aRL74BIBEf+cI0YNDt8tMM/?=
+ =?us-ascii?Q?TK3eoM9zAdHI5SbrDB6jE0BtW1Aw1Dco2H7SYuDP8aEKWmaJoEFkGlv1/aZU?=
+ =?us-ascii?Q?vKXDphx2GXRZ5UEB0RPIOB6I/V74IWFetOMgmNFhE92N6hJITkdYttzDgMqT?=
+ =?us-ascii?Q?CCgFaq0ShViD+Hup81NR8bfzexLTQgUGAoMZWYVogHOG/2bUKUJFyFJIFf+F?=
+ =?us-ascii?Q?VQIMBPZ+pa0W5fAfF8gusbrBraxTXVaS4OFq1BU9vB9hHTn95BBkJ5eiN+Tf?=
+ =?us-ascii?Q?oLRujNc5/NIvGCgnq5KVlBfQhVjTItu/Tz2deB03j9qyKC3GCSkrNLUpA3ld?=
+ =?us-ascii?Q?9pWCX5X5TjZX/L0bqvrQpP3M6Cg2mQWOzLdmZeUhg8ZJBSk3D37M9gtJiJGC?=
+ =?us-ascii?Q?dddR0asQFcPY7SEFRazT/HRtaUi0PCq5TNQImO4FGOnuwQFpUR+E5cMqFFKE?=
+ =?us-ascii?Q?dJ+czccDn6Fuk+nkjsMlOLm/hdsczvrvWI2LZasa5dj0cGycv6//urvqBiRv?=
+ =?us-ascii?Q?TgmQMjk9iutrrU5u9aBxdDZLNLxUyEikrpLKva7n5OGy3MKQhLJFA+z50gmS?=
+ =?us-ascii?Q?WRfkT3JUsRG1cQQjdi5YIfrMogx4FWE25nJ8nGbKAPl2BSf4wqz3+71NuFXZ?=
+ =?us-ascii?Q?DESZGqa9laGqG3obxO34mso5XE8bNSmoow4SVUBIwolsm7RiksMPaNDM1sAj?=
+ =?us-ascii?Q?FSKV7Wz6EguD93Dv74cuUFnmo85eMNFlU+/8fHLVRmiRhnCna0whamH++pEJ?=
+ =?us-ascii?Q?Y9IkG9y4yUohETZfKSyp2KbRHKAZ9prO/9tPf/AecBlxaqPy3op4VXSi2w5b?=
+ =?us-ascii?Q?FAlmFbSzJ7BPah834OYRV75fpq7RQ9opaXuiKjz6?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9a3069d-e7f7-4c94-044e-08dcc31b0a3d
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2024 02:26:48.4846
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3uSyd+ndSp+hytgCixnibhPAuy7dmvo5a/fYJnDJhlX28+HD/rtXLi+LEy+hv4pUcDJorARmYBz1IyXy5QCxfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8524
+X-OriginatorOrg: intel.com
 
+Dave Jiang wrote:
+> 
+> 
+> On 8/16/24 7:44 AM, ira.weiny@intel.com wrote:
+> > From: Navneet Singh <navneet.singh@intel.com>
+> > 
 
+[snip]
 
-=E5=9C=A8 2024/8/23 07:55, Qu Wenruo =E5=86=99=E9=81=93:
->
->
-> =E5=9C=A8 2024/8/22 21:37, Matthew Wilcox =E5=86=99=E9=81=93:
->> On Thu, Aug 22, 2024 at 08:28:09PM +0930, Qu Wenruo wrote:
->>> =E5=9C=A8 2024/8/22 12:35, Matthew Wilcox =E5=86=99=E9=81=93:
->>>>> -=C2=A0=C2=A0=C2=A0 while (cur < page_start + PAGE_SIZE) {
->>>>> +=C2=A0=C2=A0=C2=A0 while (cur < folio_start + PAGE_SIZE) {
->>>>
->>>> Presumably we want to support large folios in btrfs at some point?
->>>
->>> Yes, and we're already working towards that direction.
->>>
->>>> I certainly want to remove CONFIG_READ_ONLY_THP_FOR_FS soon and that'=
-ll
->>>> be a bit of a regression for btrfs if it doesn't have large folio
->>>> support.=C2=A0 So shouldn't we also s/PAGE_SIZE/folio_size(folio)/ ?
->>>
->>> AFAIK we're only going to support larger folios to support larger than
->>> PAGE_SIZE sector size so far.
->>
->> Why do you not want the performance gains from using larger folios?
->>
->>> So every folio is still in a fixed size (sector size, >=3D PAGE_SIZE).
->>>
->>> Not familiar with transparent huge page, I thought transparent huge pa=
-ge
->>> is transparent to fs.
->>>
->>> Or do we need some special handling?
->>> My uneducated guess is, we will get a larger folio passed to readpage
->>> call back directly?
->>
->> Why do you choose to remain uneducated?=C2=A0 It's not like I've been k=
-eeping
->> all of this to myself for the past five years.=C2=A0 I've given dozens =
-of
->> presentations on it, including plenary sessions at LSFMM.=C2=A0 As a
->> filesystem
->> developer, you must want to not know about it at this point.
->>
->>> It's straightforward enough to read all contents for a larger folio,
->>> it's no different to subpage handling.
->>>
->>> But what will happen if some writes happened to that larger folio?
->>> Do MM layer detects that and split the folios? Or the fs has to go the
->>> subpage routine (with an extra structure recording all the subpage fla=
-gs
->>> bitmap)?
->>
->> Entirely up to the filesystem.=C2=A0 It would help if btrfs used the sa=
-me
->> terminology as the rest of the filesystems instead of inventing its own
->> "subpage" thing.=C2=A0 As far as I can tell, "subpage" means "fs block =
-size",
->> but maybe it has a different meaning that I haven't ascertained.
->
-> Then tell me the correct terminology to describe fs block size smaller
-> than page size in the first place.
->
-> "fs block size" is not good enough, we want a terminology to describe
-> "fs block size" smaller than page size.
->
->>
->> Tracking dirtiness on a per-folio basis does not seem to be good enough=
-.
->> Various people have workloads that regress in performance if you do
->> that.=C2=A0 So having some data structure attached to folio->private wh=
-ich
->> tracks dirtiness on a per-fs-block basis works pretty well.=C2=A0 iomap=
- also
->> tracks the uptodate bit on a per-fs-block basis, but I'm less convinced
->> that's necessary.
->>
->> I have no idea why btrfs thinks it needs to track writeback, ordered,
->> checked and locked in a bitmap.=C2=A0 Those make no sense to me.=C2=A0 =
-But they
->> make no sense to me if you're support a 4KiB filesystem on a machine
->> with a 64KiB PAGE_SIZE, not just in the context of "larger folios".
->> Writeback is something the VM tells you to do; why do you need to tag
->> individual blocks for writeback?
->
-> Because there are cases where btrfs needs to only write back part of the
-> folio independently.
->
-> And especially for mixing compression and non-compression writes inside
-> a page, e.g:
->
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 16K=C2=A0=C2=
-=A0=C2=A0=C2=A0 32K=C2=A0=C2=A0=C2=A0=C2=A0 48K=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 64K
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |//|=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |///////|
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4K
->
-> In above case, if we need to writeback above page with 4K sector size,
-> then the first 4K is not suitable for compression (result will still
-> take a full 4K block), while the range [32K, 48K) will be compressed.
->
-> In that case, [0, 4K) range will be submitted directly for IO.
-> Meanwhile [32K, 48) will be submitted for compression in antoher wq.
-> (Or time consuming compression will delay the writeback of the remaining
-> pages)
->
-> This means the dirty/writeback flags will have a different timing to be
-> changed.
+> > +static int dc_mode_to_region_index(enum cxl_decoder_mode mode)
+> > +{
+> > +	return mode - CXL_DECODER_DC0;
+> > +}
+> > +
+> > +static int cxl_request_skip(struct cxl_endpoint_decoder *cxled,
+> > +			    resource_size_t skip_base, resource_size_t skip_len)
+> > +{
+> > +	struct cxl_dev_state *cxlds = cxled_to_memdev(cxled)->cxlds;
+> > +	const char *name = dev_name(&cxled->cxld.dev);
+> > +	struct cxl_port *port = cxled_to_port(cxled);
+> > +	struct resource *dpa_res = &cxlds->dpa_res;
+> > +	struct device *dev = &port->dev;
+> > +	struct resource *res;
+> > +	int rc;
+> > +
+> > +	res = __request_region(dpa_res, skip_base, skip_len, name, 0);
+> > +	if (!res)
+> > +		return -EBUSY;
+> > +
+> > +	rc = xa_insert(&cxled->skip_res, skip_base, res, GFP_KERNEL);
+> 
+> Maybe rename skip_res to skip_xa, given most of the vars in CXL with
+> _res are 'struct resource' to avoid confusion. See 'dpa_res' above.
+> 
 
-Just in case if you mean using an atomic to trace the writeback/lock
-progress, then it's possible to go that path, but for now it's not space
-efficient.
+Good idea.
+[done]
 
-For 16 blocks per page case (4K sectorsize 64K page size), each atomic
-takes 4 bytes while a bitmap only takes 2 bytes.
+> > +	if (rc) {
+> > +		__release_region(dpa_res, skip_base, skip_len);
+> > +		return rc;
+> > +	}
+> > +
+> > +	dev_dbg(dev, "decoder%d.%d: skipped space; %pr\n",
+> > +		port->id, cxled->cxld.id, res);
+> > +	return 0;
+> > +}
+> > +
+> > +static int cxl_reserve_dpa_skip(struct cxl_endpoint_decoder *cxled,
+> > +				resource_size_t base, resource_size_t skipped)
+> > +{
+> > +	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
+> > +	struct cxl_port *port = cxled_to_port(cxled);
+> > +	struct cxl_dev_state *cxlds = cxlmd->cxlds;
+> > +	resource_size_t skip_base = base - skipped;
+> > +	struct device *dev = &port->dev;
+> > +	resource_size_t skip_len = 0;
+> > +	int rc, index;
+> > +
+> > +	if (resource_size(&cxlds->ram_res) && skip_base <= cxlds->ram_res.end) {
+> > +		skip_len = cxlds->ram_res.end - skip_base + 1;
+> > +		rc = cxl_request_skip(cxled, skip_base, skip_len);
+> > +		if (rc)
+> > +			return rc;
+> > +		skip_base += skip_len;
+> > +	}
+> > +
+> > +	if (skip_base == base) {
+> > +		dev_dbg(dev, "skip done ram!\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	if (resource_size(&cxlds->pmem_res) &&
+> > +	    skip_base <= cxlds->pmem_res.end) {
+> > +		skip_len = cxlds->pmem_res.end - skip_base + 1;
+> > +		rc = cxl_request_skip(cxled, skip_base, skip_len);
+> > +		if (rc)
+> > +			return rc;
+> > +		skip_base += skip_len;
+> > +	}
+> 
+> Does 'skip_base == base' need to be checked here again before going to DCD?
 
-And for 4K sectorsize 16K page size case, it's worse and btrfs compact
-all the bitmaps into a larger one to save more space, while each atomic
-still takes 4 bytes.
+No it is checked below...
 
-Thanks,
-Qu
+> 
+> DJ
+> 
+> > +
+> > +	index = dc_mode_to_region_index(cxled->mode);
+> > +	for (int i = 0; i <= index; i++) {
+> > +		struct resource *dcr = &cxlds->dc_res[i];
+> > +
+> > +		if (skip_base < dcr->start) {
+> > +			skip_len = dcr->start - skip_base;
+> > +			rc = cxl_request_skip(cxled, skip_base, skip_len);
+> > +			if (rc)
+> > +				return rc;
+> > +			skip_base += skip_len;
+> > +		}
+> > +
+> > +		if (skip_base == base) {
+> > +			dev_dbg(dev, "skip done DC region %d!\n", i);
+> > +			break;
+> > +		}
 
->
-> I think compression is no long a btrfs exclusive feature, thus this
-> should be obvious?
->
-> Thanks,
-> Qu
->
+... here.
+
+After any skips between pmem and the first DC partition.
+Ira
+
+> > +
+> > +		if (resource_size(dcr) && skip_base <= dcr->end) {
+> > +			if (skip_base > base) {
+> > +				dev_err(dev, "Skip error DC region %d; skip_base %pa; base %pa\n",
+> > +					i, &skip_base, &base);
+> > +				return -ENXIO;
+> > +			}
+> > +
+> > +			skip_len = dcr->end - skip_base + 1;
+> > +			rc = cxl_request_skip(cxled, skip_base, skip_len);
+> > +			if (rc)
+> > +				return rc;
+> > +			skip_base += skip_len;
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+
+[snip]
 
