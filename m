@@ -1,156 +1,99 @@
-Return-Path: <linux-btrfs+bounces-7448-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7449-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33A1595D30A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 18:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C43395D361
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 18:29:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE1CFB25740
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 16:19:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE044B26654
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2024 16:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BD918E02B;
-	Fri, 23 Aug 2024 16:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826D218CC15;
+	Fri, 23 Aug 2024 16:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="IXSz6d5T"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3CB518BBAC;
-	Fri, 23 Aug 2024 16:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32C218CBE4
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Aug 2024 16:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724429881; cv=none; b=UzlKR2V3s8tb+ie4CNcfRBs8S154vzdudUhqEtLzhfM4WxbU1xBs16AWSiVMVBTIsT6iR8yHpb9v4FExzgJfayFszTo6ARs8lx/hSoTXP+9lvMUpfFFyPxTV1KLNoHAbDSQH77JZhpYD0IGRrd8be51qysE0svti2kczkH42axM=
+	t=1724430505; cv=none; b=oWstEFY6VXNF0Jm8lKDuuAv7odvgbCDtG6XJvyNgLZc6Bo/uyBcIUoJLDucczFs6MT8MzP0nLW43qGy2HwWa+F0z9DKqtz7wL7Jl+/GfUHANq6Vzsaa7oAhJQHJZwTO9uHXPYi7cdyTSPePTsZyTT7/tssZdhICuful7HjuHQe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724429881; c=relaxed/simple;
-	bh=czqBYsrZ9fnUopyb9/ZeopdlLvO4lAvI2lPQMbjb4XQ=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DCpCnE1ftrgbFMwD9Mzwisnvq2g0Mryc4TYoNYyl6rF6sFWDpOo5flXJ3V3KaBWYjdKYj1VDC2NX62LXouj3BSP0A/zdIC9fpfKEiFmIizJ3fcIfVzbMDsnqvhFURogvMIFG0mwgl37EnBpKiaJp4N21dqX9z8943YBYvys8J0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Wr4sS4Cpjz6K61C;
-	Sat, 24 Aug 2024 00:14:52 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8357E140C98;
-	Sat, 24 Aug 2024 00:17:57 +0800 (CST)
-Received: from localhost (10.203.177.66) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 23 Aug
- 2024 17:17:56 +0100
-Date: Fri, 23 Aug 2024 17:17:55 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Chris Mason <clm@fb.com>, Josef Bacik
-	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Petr Mladek
-	<pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
-	<linux@rasmusvillemoes.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
-	Dan Williams <dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>
-Subject: Re: [PATCH v3 12/25] cxl/region: Refactor common create region code
-Message-ID: <20240823171755.00002ce6@Huawei.com>
-In-Reply-To: <20240816-dcd-type2-upstream-v3-12-7c9b96cba6d7@intel.com>
-References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
-	<20240816-dcd-type2-upstream-v3-12-7c9b96cba6d7@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1724430505; c=relaxed/simple;
+	bh=IhRlCHVoviiUKuHJg/Di2yAYuiLFicM78Y1I/8tC+dk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VM1RZ+seQxOJQyCKowCDQl+QLUcyQNBip40L/Bp7KnIy8Rs5nZAE2WFszR1wpG2LgEox7FOeBwg7X7BsMfYAprjVfL/NrbshkA9LxRY9vjz4bFNT2C8F6/LBlaza/udAOj5T9xLKaYjOttL/PR3XUH24rIcrAyp5UeDknACi+SY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=IXSz6d5T; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47NAA3Pj028815
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Aug 2024 09:28:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=facebook; bh=e93kBa7v
+	9ZsVtcFWC82zRWXhaV4Qzv6E6bprJLTBfnU=; b=IXSz6d5TfoTEBEZD9NRWMeMZ
+	mC/9J4XRV6YzpvFynijd2cmxOTttxvPjMUxG1ESu1PEI7ML5t9OqbDqBUwGkaQvr
+	JwY+MVBHon3HiXSFb2luINP17qgJFGGdF2+L1cH6mMAT4Wy9zbFN2ZuFXSr15uaT
+	GP7DIhUf6eKw067p5wY=
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 416reaa285-18
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Aug 2024 09:28:23 -0700 (PDT)
+Received: from twshared12613.02.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Fri, 23 Aug 2024 16:28:21 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 356A45CB7F75; Fri, 23 Aug 2024 17:28:13 +0100 (BST)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <io-uring@vger.kernel.org>, <linux-btrfs@vger.kernel.org>
+CC: Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH 0/6] btrfs: add io_uring for encoded reads
+Date: Fri, 23 Aug 2024 17:27:42 +0100
+Message-ID: <20240823162810.1668399-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: BtcM7Sf8CLYbZ2zRFFvoGv4HJaiU3iT1
+X-Proofpoint-GUID: BtcM7Sf8CLYbZ2zRFFvoGv4HJaiU3iT1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-23_13,2024-08-22_01,2024-05-17_01
 
-On Fri, 16 Aug 2024 09:44:20 -0500
-Ira Weiny <ira.weiny@intel.com> wrote:
+This patch series adds io_uring support for btrfs encoded reads,
+complementing the ioctl we already have. The first few patches refactor
+the ioctl code so that the bio wait is moved to the outer function, and
+so that we can share as much code as possible between the two
+interfaces.
 
-> create_pmem_region_store() and create_ram_region_store() are identical
-> with the exception of the region mode.  With the addition of DC region
-> mode this would end up being 3 copies of the same code.
-> 
-> Refactor create_pmem_region_store() and create_ram_region_store() to use
-> a single common function to be used in subsequent DC code.
-> 
-> Suggested-by: Fan Ni <fan.ni@samsung.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Mark Harmstone (6):
+  btrfs: remove iocb from btrfs_encoded_read
+  btrfs: store encoded read state in struct btrfs_encoded_read_private
+  btrfs: add btrfs_encoded_read_finish
+  btrfs: add btrfs_prepare_encoded_read
+  btrfs: move wait out of btrfs_encoded_read
+  btrfs: add io_uring interface for encoded reads
 
-Make sense
+ fs/btrfs/btrfs_inode.h |  23 +++-
+ fs/btrfs/file.c        |   1 +
+ fs/btrfs/inode.c       | 292 ++++++++++++++++++++++++-----------------
+ fs/btrfs/ioctl.c       | 194 +++++++++++++++++++--------
+ fs/btrfs/ioctl.h       |   3 +
+ 5 files changed, 337 insertions(+), 176 deletions(-)
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-
-> ---
->  drivers/cxl/core/region.c | 28 +++++++++++-----------------
->  1 file changed, 11 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 650fe33f2ed4..f85b26b39b2f 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -2553,9 +2553,8 @@ static struct cxl_region *__create_region(struct cxl_root_decoder *cxlrd,
->  	return devm_cxl_add_region(cxlrd, id, mode, CXL_DECODER_HOSTONLYMEM);
->  }
->  
-> -static ssize_t create_pmem_region_store(struct device *dev,
-> -					struct device_attribute *attr,
-> -					const char *buf, size_t len)
-> +static ssize_t create_region_store(struct device *dev, const char *buf,
-> +				   size_t len, enum cxl_region_mode mode)
->  {
->  	struct cxl_root_decoder *cxlrd = to_cxl_root_decoder(dev);
->  	struct cxl_region *cxlr;
-> @@ -2565,31 +2564,26 @@ static ssize_t create_pmem_region_store(struct device *dev,
->  	if (rc != 1)
->  		return -EINVAL;
->  
-> -	cxlr = __create_region(cxlrd, CXL_REGION_PMEM, id);
-> +	cxlr = __create_region(cxlrd, mode, id);
->  	if (IS_ERR(cxlr))
->  		return PTR_ERR(cxlr);
->  
->  	return len;
->  }
-> +
-> +static ssize_t create_pmem_region_store(struct device *dev,
-> +					struct device_attribute *attr,
-> +					const char *buf, size_t len)
-> +{
-> +	return create_region_store(dev, buf, len, CXL_REGION_PMEM);
-> +}
->  DEVICE_ATTR_RW(create_pmem_region);
->  
->  static ssize_t create_ram_region_store(struct device *dev,
->  				       struct device_attribute *attr,
->  				       const char *buf, size_t len)
->  {
-> -	struct cxl_root_decoder *cxlrd = to_cxl_root_decoder(dev);
-> -	struct cxl_region *cxlr;
-> -	int rc, id;
-> -
-> -	rc = sscanf(buf, "region%d\n", &id);
-> -	if (rc != 1)
-> -		return -EINVAL;
-> -
-> -	cxlr = __create_region(cxlrd, CXL_REGION_RAM, id);
-> -	if (IS_ERR(cxlr))
-> -		return PTR_ERR(cxlr);
-> -
-> -	return len;
-> +	return create_region_store(dev, buf, len, CXL_REGION_RAM);
->  }
->  DEVICE_ATTR_RW(create_ram_region);
->  
-> 
+--=20
+2.44.2
 
 
