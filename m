@@ -1,194 +1,132 @@
-Return-Path: <linux-btrfs+bounces-7475-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7476-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D6895DFD4
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Aug 2024 21:38:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8A495E0C7
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Aug 2024 05:00:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76BF61F2195D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Aug 2024 19:38:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54892B20A81
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Aug 2024 03:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559B77DA8C;
-	Sat, 24 Aug 2024 19:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF16AD39;
+	Sun, 25 Aug 2024 03:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0zQdDHoc";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7TlPAbU8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="I0svpBRY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qtNs9NHY"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="J5zw1i02"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FDC1AD2F;
-	Sat, 24 Aug 2024 19:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9232576F
+	for <linux-btrfs@vger.kernel.org>; Sun, 25 Aug 2024 02:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724528322; cv=none; b=rEQSgtRYaqsM2hgR32LsVWUBMI8Z1tEVMww5VCqfgQyT1tLewk1yl7Ua4GwhiFtuqh3jvd9IMEKJVce59JM0attHtUIlQ4v/EL+HZd1lcCNZ6meBk7KylMhjy3TbPRXVIE0LqbVwgE7zbPoeXmL5RovauAnxOz/wGqE4deZWlVk=
+	t=1724554801; cv=none; b=FYJzYUqJaQFn3ILkMLYdxI9yy0AehQjX3nYWhg4I/wyS4HXiUfgyWsb9wLgAtyiUN9HoUxiRRGHvYw3Hb8lzj+FFN/zc9Xhb5vGFnMMw84G0+E1tMm+JbRs9qxgdfBWvqdO8uBXHSqkjBIhwuRIimHlNxOQYVxuNXdrTV3kzLTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724528322; c=relaxed/simple;
-	bh=qGu9Fxwa2fRM/5SEKZgAf9Alfc/Oj2nFzVIGapXFERA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iiLA9ksN7/9eVxE8Pf7+QedeASkPii5MT9jRs3lLT333Q0g1UpENYoXN7LyEtOH8QmvjaLacce+PU6KCe0W4gLQHo+VdK8Yz08orDv0YTj11ejVjLnZfnYUx7KSmq5IwegEzTlNL5vobcDYIAyrVf7udOv/VL/40PtY23q2qOPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0zQdDHoc; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7TlPAbU8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=I0svpBRY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qtNs9NHY; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D0AC4219D3;
-	Sat, 24 Aug 2024 19:38:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724528318;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QNExPYtYa7tchxVnplv7yYS46Nlfpr/VrPmEFZrymvU=;
-	b=0zQdDHocPd/gg1yx/LhN7QjUAPnf7wgRAJ7xES/UuHFc3YWkHu6x/TXU5zI6XPjepeEWsA
-	DxsJLpV11+1ybbj+ZhC5BgAKyc5Mb511P0l/HdET8cmuWfmboKwne1TTCuBvqnNcbIVEus
-	vtglPhoC7fQemMD6+a67tvFolbmC3FM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724528318;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QNExPYtYa7tchxVnplv7yYS46Nlfpr/VrPmEFZrymvU=;
-	b=7TlPAbU8iwIGkLBr5TqxQzVXdj8duI3dnjqI14DF/icNePeo5lO5wdKzFmV6iM9EH9Qi7f
-	4VQ5OSxuD5T4k0DQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724528316;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QNExPYtYa7tchxVnplv7yYS46Nlfpr/VrPmEFZrymvU=;
-	b=I0svpBRYMcj/273st4zNI747GYy11khXqhKy8Bm4nDQeUxe2gi/lw7QrXKC06dzEeG0eU5
-	rnVR6c8wj9cxKnCjSPvjeKb53iEhbSQgFkuy+qcbEQeGVJ/7dYyquPrk8OA4VfTQohfUdk
-	8LQs7OjGlR3vdCZelYJQaSQGGVwABEY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724528316;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QNExPYtYa7tchxVnplv7yYS46Nlfpr/VrPmEFZrymvU=;
-	b=qtNs9NHYg51ggQ0plsAQVMGdLzcwC/1uOKiumtGcViTo5eY21GuqzQ1rtBUXJESfztPQEm
-	SsUwFXFvoTAbF9Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC36C139DE;
-	Sat, 24 Aug 2024 19:38:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kGqKKbw2ymY3NAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Sat, 24 Aug 2024 19:38:36 +0000
-Date: Sat, 24 Aug 2024 21:38:35 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: Josef Bacik <josef@toxicpanda.com>,
-	syzkaller <syzkaller@googlegroups.com>,
-	syzbot <syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com>,
-	clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (6)
-Message-ID: <20240824193835.GN25962@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <0000000000008f55e4062036c827@google.com>
- <20240821201338.GA2109582@perftesting>
- <CACT4Y+aSV8ZptNaLqVg+QgOyDn+tJ1WUyBxQ-9hk7joqbmT6GA@mail.gmail.com>
+	s=arc-20240116; t=1724554801; c=relaxed/simple;
+	bh=KTlXlnkbM5EyE7Fq1s2LhAh0XdYaHH5PaTzbxERt3Ts=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=bR7kOb9J76FhEcw0yn2qUXk3rJ4hxmUzAtXCRZc+ybqqC8DxTUGjl4ImzwpBc2ln1Pphjb1TGRB6JPrBJLBZ9TKeeIH8v7DZiJ9+ROOIL2yEEwm3ulb1dfHlSZKlVpbdaqeUJmS2qlWprhZQUrOWnJQbbJV6xOYXahOcHl4MZyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=J5zw1i02; arc=none smtp.client-ip=15.184.224.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1724554791;
+	bh=ZnWdEpVKnOJBGdTHYa8KhctzjUQ9M499DMjiazB2oBM=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject;
+	b=J5zw1i02h9qBDds5Mbvb+nu4cM/PzpJsyvJBrNp6atqDKNEZ9thFUJ0VZ1I9L9e2J
+	 suB1gTvEefaWWtOWM22EVy4n1Wa2n6GT9lm7XSir5gSzFcZzgFQPERTZ2T5iwdpCq2
+	 9GPfZr1uWdqw9Tjtu8L2KMeun8v4THoq8Vlg2UN4=
+X-QQ-mid: bizesmtpip3t1724554791tri49qq
+X-QQ-Originating-IP: ACNDHoMYAVH6JCZtJsCrHIqTLtDmI2DcwoZIA1XIA14=
+Received: from [IPV6:2409:8a3c:5937:7b50:aeeb: ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with SMTP id 0
+	for <linux-btrfs@vger.kernel.org>; Sun, 25 Aug 2024 10:59:50 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11087308676701543882
+Message-ID: <65B7F79F09D5083C+d0bb90c4-ba72-4b8e-8275-9ee8bfdbd3dd@bupt.moe>
+Date: Sun, 25 Aug 2024 10:59:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+aSV8ZptNaLqVg+QgOyDn+tJ1WUyBxQ-9hk7joqbmT6GA@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -2.50
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[dfb6eff2a68b42d557d3];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SUBJECT_HAS_EXCLAIM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,btrfs.readthedocs.io:url];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: Yuwei Han <hrx@bupt.moe>
+Subject: Can't set RAID10 on zoned device using experimental build
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpip:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Thu, Aug 22, 2024 at 02:05:01PM +0200, Dmitry Vyukov wrote:
-> > > BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-> >
-> > Can we disable syzbot issues for this specific error?  Btrfs uses lockdep
-> > annotations for our tree locks, so we _easily_ cross this threshold on the
-> > default configuration.  Our CI config requires the following settings to get
-> > lockdep to work longer than two or three tests
-> >
-> > CONFIG_LOCKDEP_BITS=20
-> > CONFIG_LOCKDEP_CHAINS_BITS=20
-> > CONFIG_LOCKDEP_STACK_TRACE_BITS=19
-> > CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
-> > CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
-> >
-> > but there's no way to require that in our config (nor do I think we should
-> > really be able to tbqh).  It makes more sense for syzbot to just ignore this
-> > particular error as it's not actually a bug.  Thanks,
-> 
-> Hi Josef,
-> 
-> We could bump these values, the last 3 are already this or higher on syzbot.
-> Do you know if increasing CONFIG_LOCKDEP_BITS and
-> CONFIG_LOCKDEP_CHAINS_BITS significantly increases memory usage?
-> 
-> Ignoring random bugs on unknown heuristics is really not scalable.
+Hi,
+I am using btrfs-progs experimental build to create RAID10 volume on 
+zoned device. But it didn't succeed.
 
-This is not a random bug. The warning has been reported many times, it
-does not point to a specific problem in code that uses lockdep but
-rather some defficiency in the lockdep mechanism itself.
+# ./btrfs version
+btrfs-progs v6.10.1
++EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED 
+CRYPTO=builtin
 
-> Consider: there are hundreds of kernel subsystems, if each of them
-> declares a random subset of bugs as not bugs.
+# ./mkfs.btrfs -f -O bgt,rst -mraid10 -draid10 /dev/sda /dev/sdb 
+/dev/sdc /dev/sdd
+btrfs-progs v6.10.1
+See https://btrfs.readthedocs.io for more information.
 
-"If each of them", no this won't happen. Or, if you add this one and
-reject the others you'll still make people happy.
+Zoned: /dev/sda: host-managed device detected, setting zoned feature
+Resetting device zones /dev/sda (52156 zones) ...
+Resetting device zones /dev/sdb (52156 zones) ...
+Resetting device zones /dev/sdc (52156 zones) ...
+Resetting device zones /dev/sdd (52156 zones) ...
+ERROR: zoned: failed to reset device '/dev/sdd' zones: Remote I/O error
+ERROR: zoned: failed to reset device '/dev/sdb' zones: Remote I/O error
+ERROR: zoned: failed to reset device '/dev/sdc' zones: Remote I/O error
+ERROR: zoned: failed to reset device '/dev/sda' zones: Remote I/O error
+ERROR: unable prepare device: /dev/sda
 
-> What's the maintenance
-> story here? And it's not syzbot specific, any automated and manual
-> testing will have the same problem.
+related dmesg:
+[ 479.729281] sd 0:0:2:0: [sdc] tag#953 FAILED Result: hostbyte=DID_OK 
+driverbyte=DRIVER_OK cmd_age=0s
+[  479.729930] sd 0:0:1:0: [sdb] tag#184 FAILED Result: hostbyte=DID_OK 
+driverbyte=DRIVER_OK cmd_age=0s
+[  479.729944] sd 0:0:3:0: [sdd] tag#12 FAILED Result: hostbyte=DID_OK 
+driverbyte=DRIVER_OK cmd_age=0s
+[  479.729949] sd 0:0:3:0: [sdd] tag#12 Sense Key : Illegal Request 
+[current]
+[  479.729951] sd 0:0:3:0: [sdd] tag#12 Add. Sense: Invalid field in cdb
+[  479.729954] sd 0:0:3:0: [sdd] tag#12 CDB: Write same(16) 93 08 00 00 
+00 00 00 00 00 00 00 01 00 00 00 00
+[  479.729956] critical target error, dev sdd, sector 0 op 0x3:(DISCARD) 
+flags 0x800 phys_seg 1 prio class 0
+[  479.729960] sd 0:0:0:0: [sda] tag#597 FAILED Result: hostbyte=DID_OK 
+driverbyte=DRIVER_OK cmd_age=0s
+[  479.729963] sd 0:0:0:0: [sda] tag#597 Sense Key : Illegal Request 
+[current]
+[  479.729966] sd 0:0:0:0: [sda] tag#597 Add. Sense: Invalid field in cdb
+[  479.729968] sd 0:0:0:0: [sda] tag#597 CDB: Write same(16) 93 08 00 00 
+00 00 00 00 00 00 00 01 00 00 00 00
+[  479.729970] critical target error, dev sda, sector 0 op 0x3:(DISCARD) 
+flags 0x800 phys_seg 1 prio class 0
+[  479.738363] sd 0:0:2:0: [sdc] tag#953 Sense Key : Illegal Request 
+[current]
+[  479.747438] sd 0:0:1:0: [sdb] tag#184 Sense Key : Illegal Request 
+[current]
+[  479.756425] sd 0:0:2:0: [sdc] tag#953 Add. Sense: Invalid field in cdb
+[  479.763338] sd 0:0:1:0: [sdb] tag#184 Add. Sense: Invalid field in cdb
+[  479.769733] sd 0:0:2:0: [sdc] tag#953 CDB: Write same(16) 93 08 00 00 
+00 00 00 00 00 00 00 01 00 00 00 00
+[  479.779152] sd 0:0:1:0: [sdb] tag#184 CDB: Write same(16) 93 08 00 00 
+00 00 00 00 00 00 00 01 00 00 00 00
+[  479.788656] critical target error, dev sdc, sector 0 op 0x3:(DISCARD) 
+flags 0x800 phys_seg 1 prio class 0
+[  479.797730] critical target error, dev sdb, sector 0 op 0x3:(DISCARD) 
+flags 0x800 phys_seg 1 prio class 0
 
-Yes this does not avoid reports but at least it won't be a syzbot report
-that somebody thinks is worth time. Everybody else will be told "ignore"
-or poitned to documentation or the report ignored completely
-(https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#bug-max-lockdep-chain-hlocks-too-low).
+drive info: WDC HC620 (HSH721414ALN6M0)
 
-> The only scalable way to mark false reports is to not produce them.
 
-In an ideal case yes. So far we have only the workaround with increasing
-the config value (which makes sense on a distro config), otherwise I
-remembet locking guys to suggest some fix but I can't find it now in the
-numerous reports.
 
