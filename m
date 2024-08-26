@@ -1,333 +1,164 @@
-Return-Path: <linux-btrfs+bounces-7495-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72B2D95F1B8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 14:46:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0097695F2A2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 15:17:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 977B21C20C15
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 12:46:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9346281227
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 13:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C7B1714B4;
-	Mon, 26 Aug 2024 12:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3B61862B8;
+	Mon, 26 Aug 2024 13:17:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OH9PuAP5"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MrHo6uOe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF5C328A0;
-	Mon, 26 Aug 2024 12:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1738017C9AB
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 13:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724676355; cv=none; b=KyA+vkl1AQgV0X4bfO+m6GismwbFdjq+I/eI4XU44pwJAlFx4HHS+rs7/mjhvIMrIiBqwq+QtDCPYevet4gMKLbjKOaHtuFiebctg8VebvYtRWTKeLDJB2eievCMXvSLygE8440+lgm/lORtvGvrkJeN2uzluusgFQZhP6gepF8=
+	t=1724678253; cv=none; b=tFGUys4/ebe99TOqwBqaHKzOkGaxhRVG63QiTq/X2IlloQegRTSciG/LObBUX/Cp9vHbX1LNFYXlVEE+yYfq2JEQc544o88BK5tkAVNrn5X71WdPHi94eWOzPtCYZKqZMgVFh+tTfYb8unAJpxcY4Nq6B1YSPy63zuDK8T3qdaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724676355; c=relaxed/simple;
-	bh=Qexn//9f5LtbgqRGo+XtTfOpbrFOizOPZfWa5irj+yg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TP8aVC8b4f7KIPCS+3JfxkV9jLGZUXurgdt5/xFrHCJRrhTUF6mZWWpabcP96vPvrzwP/wTjQN92phSYOcvXi0MA3xgq2hWQ7xeRGFGtx5vBMU8zsOg3jXNxGTsngstc1bC4LwTjRqjSpp5llR0vEmYpxwNwCN3mVBl9ajyFOFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OH9PuAP5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7A2C581A3;
-	Mon, 26 Aug 2024 12:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724676355;
-	bh=Qexn//9f5LtbgqRGo+XtTfOpbrFOizOPZfWa5irj+yg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OH9PuAP5/9M6MhVvuWCM9JiWuynj5XUmE/d9IFuGl0PI/DZS65xpuZL2z+3fzvHnT
-	 x6L/sgs/hvXlw46hTJ6FV0Y4ErfymYrN64nvkO2V8T4kTFVx+z0KuV/A1SVrbgf3z8
-	 ZstOckDWob31cjvdsKVzEKprL9i+L7ifduh4iH2og6j2AmvBhXNMnZP56GUUyy6qwf
-	 u1rmwoDLqU5HMgAMsPk9d48PgOKph9AfuKT5Kz0LrhackjT8EurHdT7t3Z7+ySsznt
-	 yiGkcgzQLv+uv0byM1ULos7Fqh3bAyUFYwBvDvk8ViKgXTCrgheF5r2jfVZ5I7WJ8u
-	 UyYuLM3DIKRRg==
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5becc379f3fso4611515a12.3;
-        Mon, 26 Aug 2024 05:45:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXcdUrwbhscpYyVnYp4Hs3b2OGkhDrKkW1Euu33/FyVOVT+gfGPL6wcsbNXN7dLU6aWCkcvNwsJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx91dIuYmtBzLlbIBeCilfZrx2j712TibMXLF7otbxYdxlSD/9a
-	s40GcnOfw6kDQz2henlw/z8kZNx8vZU4gpeXY75nIvPvSvbje0nUT5Q84b/IaUn8gzQVA7UuSEE
-	sZDsrkz0QKpOjM5IhVIOd4LWC0ZI=
-X-Google-Smtp-Source: AGHT+IGQjlESHihEKEfKcgnPc8WMjNd3pOHmfWWetfkw/q7SAZdgtnJMnofjCr7WDpz7/49ffsnWTO2tC6lGyAmxwz4=
-X-Received: by 2002:a17:907:c0e:b0:a7d:a031:7bb2 with SMTP id
- a640c23a62f3a-a86a5305129mr612395466b.40.1724676353791; Mon, 26 Aug 2024
- 05:45:53 -0700 (PDT)
+	s=arc-20240116; t=1724678253; c=relaxed/simple;
+	bh=JSH8SqpNQbSt6NhrXIE9u7Eh0AndPutbj+FZ/nav9j8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dGUCq3QC9hSuD8OzNygyjqiIlM1oV3YNWApZI3y7m4hwpbzOnsgLSMeDURuKR2JylKSfYtC8wOCbvekZxiELN8a18RO8Cdz3sHQgFRahgJ9pGIlYaaE1/xvWsI0paQ0OH9LTwcmuUIXBgwhEAN+8KszlFRsb468hUG+3d41K7hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MrHo6uOe; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f3f0bdbcd9so47896381fa.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 06:17:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1724678248; x=1725283048; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sAQ6M5i9O8EydHcTNPBCvK0jtmZ3cgr0b0dzil6s4RI=;
+        b=MrHo6uOelrxJxUdkkNWhKD1J064xyxBLfk6+8E1jusKYrR9J+WInIELUmBEplbAeB5
+         HpWv+CQqiP7vsis+0FSncM2hd3wCjUscU4qB/5+VfRL8pJaVZ9IIaJ/Dxbi7FNGkTwvG
+         NphTPOeEUXug7TuYPwyyECsftztYR/sf6eyDSrnzsKIGCuE8HHQUr4ZpKdk+Js4iILNh
+         4Q8Jn9/lJ/Y/odEuquqLRlpJB4ETznFKUz+a8egpGsrDGRLwGB1hD/uojsKndSE6N+ZJ
+         /B4wMBBkINbCSGh3J9rciTw/A2thFw3Bt54EnauuzDAgKv6liUTC+FKuemf8jh0wTCmy
+         qw1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724678248; x=1725283048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sAQ6M5i9O8EydHcTNPBCvK0jtmZ3cgr0b0dzil6s4RI=;
+        b=TXeFCe8WpW2GgC6qrCZXxI3j08ioSKIsYJziNRjNg/L4Qcr4uh5KNCSj5uFubq0wOQ
+         iNus9fcsGh1C0suiYZAUIL/7dyyDZX0gdHxqZ73uOFeyZN4zZl1jjR4MzeQr5cO9csvA
+         iH8v3Tpe5rFKy4eQkwJtVUpOEWsKeDhx8p68A2hOykxaWPq/pZqNZrUKgwlJY0+zv5zy
+         TygI0onpFBCkxIbujqS7bZyy6mzb1IuYXJaaWVaWvDSGM0mmW5GSeBOwV4WajQvMukOL
+         /qzFqq5JvH+mz9XEx1sVf3VIku8rQx2rvnkPw4aDbTKgsbQasbDFj65aPblgwmZc+eim
+         PjwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXZpcIAfqvgo9ub8L0hIH0UzQf3uSiiAOeusXus87V2TxgFwrUa1tOx+D7sII4W1AfmBdXRMjFwkbN3fA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YztcGA8wdKqMCDi4FL/D4W1q7sv4T51b9Jv/0ucDmNua0rYL9kK
+	Tz7yDDG6aOXQiw0IKb4zwZj4eWNlsPrH15VylhJWwxsbdtcqT/yhNoFUVm6e+Zg=
+X-Google-Smtp-Source: AGHT+IF23h3rP35OdQrEVkqc47eRF5yl1OaSv9GaxlcrSNP3KudzCHntUQv44MhoMobTuNvYO7e7Lw==
+X-Received: by 2002:a2e:71a:0:b0:2ec:637a:c212 with SMTP id 38308e7fff4ca-2f4f493a108mr65127501fa.39.1724678248005;
+        Mon, 26 Aug 2024 06:17:28 -0700 (PDT)
+Received: from pathway.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c044ddc6basm5590989a12.12.2024.08.26.06.17.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 06:17:27 -0700 (PDT)
+Date: Mon, 26 Aug 2024 15:17:26 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: Ira Weiny <ira.weiny@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	nvdimm@lists.linux.dev
+Subject: Re: [PATCH v3 02/25] printk: Add print format (%par) for struct range
+Message-ID: <ZsyAZsDeWLNvSec9@pathway.suse.cz>
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-2-7c9b96cba6d7@intel.com>
+ <ZsSjdjzRSG87alk5@pathway.suse.cz>
+ <66c77b1c5c65c_1719d2940@iweiny-mobl.notmuch>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240824103021.264856-1-wqu@suse.com> <CAL3q7H7Hmqr_bn7b7G6aSKK1vWq4EhW=tuWZRPWZGv-MJtbMTQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H7Hmqr_bn7b7G6aSKK1vWq4EhW=tuWZRPWZGv-MJtbMTQ@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 26 Aug 2024 13:45:15 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7Th0MjT_34883pHoDX1cs4EM2a2dh_Vb2aRFdEBJqGQA@mail.gmail.com>
-Message-ID: <CAL3q7H7Th0MjT_34883pHoDX1cs4EM2a2dh_Vb2aRFdEBJqGQA@mail.gmail.com>
-Subject: Re: [PATCH v2] fstests: btrfs: a new test case to verify a
- use-after-free bug
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66c77b1c5c65c_1719d2940@iweiny-mobl.notmuch>
 
-On Mon, Aug 26, 2024 at 1:14=E2=80=AFPM Filipe Manana <fdmanana@kernel.org>=
- wrote:
->
-> On Sat, Aug 24, 2024 at 11:31=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
-> >
-> > [BUG]
-> > There is a use-after-free bug triggered very randomly by btrfs/125.
-> >
-> > If KASAN is enabled it can be triggered on certain setup.
-> > Or it can lead to crash.
-> >
-> > [CAUSE]
-> > The test case btrfs/125 is using RAID5 for metadata, which has a known
-> > RMW problem if the there is some corruption on-disk.
-> >
-> > RMW will use the corrupted contents to generate a new parity, losing th=
-e
-> > final chance to rebuild the contents.
-> >
-> > This is specific to metadata, as for data we have extra data checksum,
-> > but the metadata has extra problems like possible deadlock due to the
-> > extra metadata read/recovery needed to search the extent tree.
-> >
-> > And we know this problem for a while but without a better solution othe=
-r
-> > than avoid using RAID56 for metadata:
-> >
-> > >   Metadata
-> > >       Do not use raid5 nor raid6 for metadata. Use raid1 or raid1c3
-> > >       respectively.
-> >
-> > Combined with the above csum tree corruption, since RAID5 is stripe
-> > based, btrfs needs to split its read bios according to stripe boundary.
-> > And after a split, do a csum tree lookup for the expected csum.
->
-> This is way too much unrelated stuff.
-> The problem may have been triggered sporadically by btrfs/125, but
-> there's no need to go into details on raid5 problems in btrfs.
-> Even because the use-after-free bug can be triggered without raid5,
-> just using raid0 like in the test case introduced by this patch.
->
-> >
-> > But if that csum lookup failed, in the error path btrfs doesn't handle
-> > the split bios properly and lead to double freeing of the original bio
-> > (the one containing the bio vectors).
-> >
-> > [NEW TEST CASE]
-> > Unlike the original btrfs/125, which is very random and picky to
-> > reproduce, introduce a new test case to verify the specific behavior by=
-:
-> >
-> > - Create a btrfs with enough csum leaves
-> >   To bump the csum tree level, use the minimal nodesize possible (4K).
-> >   Writing 32M data which needs at least 8 leaves for data checksum
-> >
-> > - Find the last csum tree leave and corrupt it
-> >
-> > - Read the data many times until we trigger the bug or exit gracefully
-> >   With an x86_64 VM (which is never able to trigger btrfs/125 failure)
-> >   with KASAN enabled, it can trigger the KASAN report in just 4
-> >   iterations (the default iteration number is 32).
-> >
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > ---
-> > Changelog:
-> > v2:
-> > - Fix the wrong commit hash
-> >   The proper fix is not yet merged, the old hash is a place holder
-> >   copied from another test case but forgot to remove.
-> >
-> > - Minor wording update
-> >
-> > - Add to "dangerous" group
-> > ---
-> >  tests/btrfs/319     | 84 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/319.out |  2 ++
-> >  2 files changed, 86 insertions(+)
-> >  create mode 100755 tests/btrfs/319
-> >  create mode 100644 tests/btrfs/319.out
-> >
-> > diff --git a/tests/btrfs/319 b/tests/btrfs/319
-> > new file mode 100755
-> > index 00000000..4be2b50b
-> > --- /dev/null
-> > +++ b/tests/btrfs/319
->
-> There's already a btrfs/319 test case in for-next btw. This needs to
-> be renumbered.
->
-> > @@ -0,0 +1,84 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FS QA Test 319
-> > +#
-> > +# Make sure data csum lookup failure will not lead to double bio freei=
-ng
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick dangerous
->
-> Missing the "raid" group.
->
-> > +
-> > +_require_scratch
+On Thu 2024-08-22 12:53:32, Ira Weiny wrote:
+> Petr Mladek wrote:
+> > On Fri 2024-08-16 09:44:10, Ira Weiny wrote:
+> > > The use of struct range in the CXL subsystem is growing.  In particular,
+> > > the addition of Dynamic Capacity devices uses struct range in a number
+> > > of places which are reported in debug and error messages.
+> > > 
+> > > To wit requiring the printing of the start/end fields in each print
+> > > became cumbersome.  Dan Williams mentions in [1] that it might be time
+> > > to have a print specifier for struct range similar to struct resource
+> > > 
+> > > A few alternatives were considered including '%pn' for 'print raNge' but
+> > > %par follows that struct range is most often used to store a range of
+> > > physical addresses.  So use '%par' for 'print address range'.
+> > > 
+> > > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> > > index 2d71b1115916..c132178fac07 100644
+> > > --- a/lib/vsprintf.c
+> > > +++ b/lib/vsprintf.c
+> > > @@ -1140,6 +1140,39 @@ char *resource_string(char *buf, char *end, struct resource *res,
+> > >  	return string_nocheck(buf, end, sym, spec);
+> > >  }
+> > >  
+> > > +static noinline_for_stack
+> > > +char *range_string(char *buf, char *end, const struct range *range,
+> > > +		      struct printf_spec spec, const char *fmt)
+> > > +{
+> > > +#define RANGE_PRINTK_SIZE		16
+> > > +#define RANGE_DECODED_BUF_SIZE		((2 * sizeof(struct range)) + 4)
+> > > +#define RANGE_PRINT_BUF_SIZE		sizeof("[range - ]")
 
-Also this is not needed, because below we do a call to:
-_require_scratch_nocheck
+[...]
 
-Finally the subject could be more specific like for example:
+> > > +	static const struct printf_spec range_spec = {
+> > > +		.base = 16,
+> > > +		.field_width = RANGE_PRINTK_SIZE,
+> 
+> However, my testing indicates this needs to be.
+> 
+>                 .field_width = 18, /* 2 (0x) + 2 * 8 (bytes) */
 
-"btrfs: test reading data with a corrupted checksum tree leaf"
+Makes sense. Great catch!
 
-Since the test serves to check there are no use-after-free, crashes,
-deadlocks, etc, when reading data which has its checksums in a
-corrupted csum tree block.
+> ... to properly zero pad the value.  Does that make sense?
+>
+> > > +		.precision = -1,
+> > > +		.flags = SPECIAL | SMALL | ZEROPAD,
+> > > +	};
+> > > +
+> > > +	*p++ = '[';
+> > > +	p = string_nocheck(p, pend, "range ", str_spec);
+> > > +	p = number(p, pend, range->start, range_spec);
+> > > +	*p++ = '-';
+> > > +	p = number(p, pend, range->end, range_spec);
+> > > +	*p++ = ']';
+> > > +	*p = '\0';
 
-Thanks.
-
-> > +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> > +       "btrfs: fix a use-after-free bug when hitting errors inside btr=
-fs_submit_chunk()"
-> > +
-> > +# The final fs will have a corrupted csum tree, which will never pass =
-fsck
-> > +_require_scratch_nocheck
-> > +_require_scratch_dev_pool 2
-> > +
-> > +# Use RAID0 for data to get bio splitted according to stripe boundary.
-> > +# This is required to trigger the bug.
-> > +_check_btrfs_raid_type raid0
-> > +
-> > +# This test goes 4K sectorsize and 4K nodesize, so that we easily crea=
-te
-> > +# higher level of csum tree.
-> > +_require_btrfs_support_sectorsize 4096
-> > +
-> > +# The bug itself has a race window, run this many times to ensure trig=
-gering.
-> > +# On an x86_64 VM with KASAN enabled, normally it is triggered before =
-the 10th run.
-> > +runtime=3D32
->
-> This is a confusing name because it actually means iterations in the
-> for loop below, and not a time duration.
-> I would suggest renaming it to "iterations" for example, or just get
-> rid of it since it's only used in the for loop's condition.
->
-> > +
-> > +_scratch_pool_mkfs "-d raid0 -m single -n 4k -s 4k" >> $seqres.full 2>=
-&1
-> > +# This test requires data checksum to trigger the bug.
-> > +_scratch_mount -o datasum,datacow
-> > +
-> > +# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 32M=
- data
-> > +# will need 32K data checksum at minimal, which is at least 8 leaves.
-> > +_pwrite_byte 0xef 0 32m "$SCRATCH_MNT/foobar" > /dev/null
-> > +sync
->
-> What's this sync for?
-> We just do a unmount right after it, which makes it pointless and confusi=
-ng.
->
-> > +_scratch_unmount
-> > +
-> > +# Search for the last leaf of the csum tree, that will be the target t=
-o destroy.
-> > +$BTRFS_UTIL_PROG inspect dump-tree -t csum $SCRATCH_DEV >> $seqres.ful=
-l
->
-> Please use the full command name: inspect -> inspect-internal
->
-> > +target_bytenr=3D$($BTRFS_UTIL_PROG inspect dump-tree -t csum $SCRATCH_=
-DEV | grep "leaf.*flags" | sort | tail -n1 | cut -f2 -d\ )
->
-> Same here.
->
-> Also, missing at the top a:
->
-> _require_btrfs_command inspect-internal dump-tree
->
-> Also we're passing the symbolic name "csum" to -t, which not all
-> versions of btrfs-progs support.
-> The support was added in btrfs-progs 4.5 (commit
-> 69874af7b81519e40db9d92efa6beebee4220c63).
->
-> > +
-> > +if [ -z "$target_bytenr" ]; then
-> > +       _fail "unable to locate the last csum tree leave"
->
-> leave -> leaf
->
-> > +fi
-> > +
-> > +echo "bytenr of csum tree leave to corrupt: $target_bytenr" >> $seqres=
-.full
->
-> leave -> leaf
->
-> > +
-> > +# Corrupt that csum tree block.
-> > +physical=3D$(_btrfs_get_physical "$target_bytenr" 1)
-> > +dev=3D$(_btrfs_get_device_path "$target_bytenr" 1)
-> > +
-> > +echo "physical bytenr: $physical" >> $seqres.full
-> > +echo "physical device: $dev" >> $seqres.full
-> > +
-> > +_pwrite_byte 0x00 "$physical" 4 "$dev" > /dev/null
-> > +
-> > +for (( i =3D 0; i < $runtime; i++ )); do
-> > +       echo "=3D=3D=3D run $i/$runtime =3D=3D=3D" >> $seqres.full
-> > +       _scratch_mount -o ro
-> > +       # Since the data is on RAID0, read bios will be split at the st=
-ripe
-> > +       # (64K sized) boundary. If csum lookup failed due to corrupted =
-csum
-> > +       # tree, there is a race window that can lead to double bio free=
-ing
-> > +       # (triggering KASAN at least).
-> > +       cat "$SCRATCH_MNT/foobar" &> /dev/null
-> > +       _scratch_unmount
-> > +
-> > +       # Manually check the dmesg for "BUG", and do not call _check_dm=
-esg()
-> > +       # as it will clear 'check_dmesg' file and skips the final check=
- after
-> > +       # the test.
-> > +       # For now just focus on the "BUG:" line from KASAN.
-> > +       if _check_dmesg_for "BUG" ; then
-> > +               _fail "Critical error(s) found in dmesg"
-> > +       fi
->
-> Why do the check manually? The check script calls _check_dmesg when a
-> test finishes and if it finds 'BUG:' there, it will make the test
-> fail.
-> So there's no need to do the unmount and call _check_dmesg_for.
->
-> Thanks.
->
-> > +done
-> > +
-> > +echo "Silence is golden"
-> > +
-> > +# success, all done
-> > +status=3D0
-> > +exit
-> > diff --git a/tests/btrfs/319.out b/tests/btrfs/319.out
-> > new file mode 100644
-> > index 00000000..d40c929a
-> > --- /dev/null
-> > +++ b/tests/btrfs/319.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 319
-> > +Silence is golden
-> > --
-> > 2.46.0
-> >
-> >
+Best Regards,
+Petr
 
