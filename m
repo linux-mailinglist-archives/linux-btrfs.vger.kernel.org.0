@@ -1,448 +1,139 @@
-Return-Path: <linux-btrfs+bounces-7512-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7513-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1DCD95F6C3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 18:39:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 254BF95F73A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 18:56:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D66931C21DE3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 16:39:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF9CC282D5D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 16:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C5A6198E74;
-	Mon, 26 Aug 2024 16:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93983197A97;
+	Mon, 26 Aug 2024 16:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="wACL9pKW"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="P6L98cES"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC72197A96
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 16:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8CE197A6C
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 16:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724690260; cv=none; b=V3KcnBbOjA3o77yAEBdScBEIbbpOtDgizYOeEe0soOiUuLVDmY+sk/w2N1HDetvAYUeEtYm92VqfI8KWR5oS2Fo1sH8epE0RNo+AxzYvcRbKwJbBx/cf5KfXSBzQyczorvTyVmFiyr2HZmIRy9x3CXhiHzCfX44KH2alDAh3HzE=
+	t=1724691368; cv=none; b=d9Wrq3leP8cmVjlMuwL3NjlM5V7XC8R63/F1Z7tvp9GBcFUF8g7FowUewBZy9OfOL1ht8dioI1uzv1M0BlGaueNxvO0YbUjXuxom10mfqk7u+OIabCmW9+fp3Z3Iz2AU2TXHswlmzmB7XdCLhP7JdSGrQe7PsC+zMiGLzfKTjDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724690260; c=relaxed/simple;
-	bh=koTIbd2yLEx7KE3dkHB01IaCI6y0K6EykuDxkfIQQrU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LQUNDsLTAi1c1WPopulBi38BL5P6hW66Rxji86vkzKDomXBQGFqP08Yrvxp7Khyox2zKv14dECp8pH3ss8u07hCuQRTEtW34fv+m+/78o7DZ5bWC65iYIfwOWOt+Ri7/DwAjd0qvCeKbvaickxuCaTLywxNoHQBIsOTeyfVZyhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=wACL9pKW; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-45007373217so45323821cf.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 09:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1724690257; x=1725295057; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vaDu0DfN3qPF9Q0BdQ0NeIu7kfGDROgJGSVogolXkps=;
-        b=wACL9pKWEr/eMGnF+mqkBRLxFBw3DiCxIjuKd9RHkgMW3XC/FiYHkwY1e8s6fUFjA0
-         onRPMgraEKv3XXHfDFZ1+MqYnhT4PZhAoyIT2X2xUV6fwSsi9mZkkFc52WfzCSBuJIEH
-         QI/S4Nl5qFQNaoqYe5iUp36a+J1HObAXLU5uBY7D4RUbRAYGD9eRtvDqg0geEau5wZZI
-         VTbqFHDwJWooNFrOpyiG217u2K+5OhamQGNSIEaaPj9fddchEtWPYzN4XwiqVU1hpa2O
-         Ce1Zcaeu8gL9ltvfmNj+RVllupna4aPK/WesYFbcGg/QO/KXKObjqn1UpU82eF5oSxFl
-         +HeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724690257; x=1725295057;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vaDu0DfN3qPF9Q0BdQ0NeIu7kfGDROgJGSVogolXkps=;
-        b=Mm4LXkAkpBLI+VfYqovZWoQvIzyL4MkT4rxVEhTBzNSw0MM3EsNrIbIxp05j1Lwshd
-         ygxCFTGNCqoEIQ4vynXMGqn5JRuaU+h+aRwZEhN1BYJbZCoA+jUlNcfgI8Ze+LMmSMlH
-         7dEif3xjxRP5dY9YVDZLMQh0Qkg/LcmCEg/ENaxdVKxIaX0go6qxTcmaotIbPpQ/sLdK
-         AXGw1HUsajmHKtgDj6TR6KVITpxKMB7rbulsjB2599J1ZCUFEDPEFH7GLgE5rOUARAaj
-         FDrAfQF1wfnYCCVYa6DxmERo4u+D6UctvUARRlidMAPOQt1bLHCl+xvjtPm3Lqkb+RZF
-         NgFQ==
-X-Gm-Message-State: AOJu0YxwZbS2JYis9E/jlJ66JiHEJAdNQBkEF2XxuA/3ETLSojRgbRDP
-	6uLeyGMes89P3paTpNsIiAEkXaGrGm9s0tIj5c0qv7zlTAcUCVL4F6GKSShWiI0jBNSO8hkxFBe
-	M
-X-Google-Smtp-Source: AGHT+IE50CatkpydzIgK26LJ3673NqXokmKFyWLW9woogM8Yx25yZZLEO+veSufv1AHPjo5fuBK+Ig==
-X-Received: by 2002:a05:622a:2b4a:b0:451:8b27:381c with SMTP id d75a77b69052e-4566000fcf3mr3514651cf.14.1724690256925;
-        Mon, 26 Aug 2024 09:37:36 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-454fe1967a3sm44929821cf.68.2024.08.26.09.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2024 09:37:36 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH v2 3/3] btrfs: do not hold the extent lock for entire read
-Date: Mon, 26 Aug 2024 12:37:26 -0400
-Message-ID: <3a8713ffde30072690bcc9149ec211abc1aed8ca.1724690141.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1724690141.git.josef@toxicpanda.com>
-References: <cover.1724690141.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1724691368; c=relaxed/simple;
+	bh=mQqDw30mY7bI26HrKbunLq8dqcW8ccu+VgZ8iR6pZoc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T4Tybrj8nbipUiHhope7mDqFgCeT5ERSpSTmcPlAmAetff8PmOYJwTIRw1KosgEZwGQbf9Gr2KjyT13SFKnx5RX3lhfDqJoqr3kXM9UMzt3rn1Ew6zM/R4vnadYQeesgioRfVSCCXLvB7gAMIt+4NdneaCccDPvmc7EZJQVwIEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=P6L98cES; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=9EWUv2HImFfX/N/60IfkTY1e4eWVBnEv8GezCD5Wv5M=; b=P6L98cESGD9Qh41ZcEq/xBG8SN
+	hPI3io7GBvPSM8ZWU5rHhZsEpq709sHLf8UUFkdokoBlOFY4dx0eG59Xd7xEIHXlGZgYN+V0H8juj
+	S5KIyXGS7/UIq2c2tCXrvKv56YvSN3AiSCA0nbGsUwSu6lPp+HVPEHwOUR2xYlvB7ubvPZkZq/bcf
+	I30eFxO1PWroFdLaT+F9DYGt4kR/AN4AdLNMPWjqwGTUCvIwdX1MqdBu5AhV0+UYlfW4tAqIAB4eQ
+	PoA1fV5hLGObyhqEbnFsoC3+iaNAkuOQjafYL5zBtMs4wQR3tPGk9QdxuDlFXxhRkdbYhO7drQ03j
+	+fMYmZmA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sid0b-0000000Ff0f-3vrS;
+	Mon, 26 Aug 2024 16:56:01 +0000
+Date: Mon, 26 Aug 2024 17:56:01 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	linux-f2fs-devel@lists.sourceforge.net, clm@fb.com, terrelln@fb.com,
+	dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH 02/14] btrfs: convert get_next_extent_buffer()
+ to take a folio
+Message-ID: <Zsyzoef1LlNacPkb@casper.infradead.org>
+References: <20240822013714.3278193-1-lizetao1@huawei.com>
+ <20240822013714.3278193-3-lizetao1@huawei.com>
+ <Zsaq_QkyQIhGsvTj@casper.infradead.org>
+ <0f643b0f-f1c2-48b7-99d5-809b8b7f0aac@gmx.com>
+ <ZscqGAMm1tofHSSG@casper.infradead.org>
+ <38247c40-604b-443a-a600-0876b596a284@gmx.com>
+ <7a04ac3b-e655-4a80-89dc-19962db50f05@gmx.com>
+ <Zsis82IKSAq6Mgms@casper.infradead.org>
+ <20240826141301.GB2393039@perftesting>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240826141301.GB2393039@perftesting>
 
-Historically we've held the extent lock throughout the entire read.
-There's been a few reasons for this, but it's mostly just caused us
-problems.  For example, this prevents us from allowing page faults
-during direct io reads, because we could deadlock.  This has forced us
-to only allow 4k reads at a time for io_uring NOWAIT requests because we
-have no idea if we'll be forced to page fault and thus have to do a
-whole lot of work.
+On Mon, Aug 26, 2024 at 10:13:01AM -0400, Josef Bacik wrote:
+> On Fri, Aug 23, 2024 at 04:38:27PM +0100, Matthew Wilcox wrote:
+> > On Fri, Aug 23, 2024 at 11:43:41AM +0930, Qu Wenruo wrote:
+> > > 在 2024/8/23 07:55, Qu Wenruo 写道:
+> > > > 在 2024/8/22 21:37, Matthew Wilcox 写道:
+> > > > > On Thu, Aug 22, 2024 at 08:28:09PM +0930, Qu Wenruo wrote:
+> > > > > > But what will happen if some writes happened to that larger folio?
+> > > > > > Do MM layer detects that and split the folios? Or the fs has to go the
+> > > > > > subpage routine (with an extra structure recording all the subpage flags
+> > > > > > bitmap)?
+> > > > > 
+> > > > > Entirely up to the filesystem.  It would help if btrfs used the same
+> > > > > terminology as the rest of the filesystems instead of inventing its own
+> > > > > "subpage" thing.  As far as I can tell, "subpage" means "fs block size",
+> > > > > but maybe it has a different meaning that I haven't ascertained.
+> > > > 
+> > > > Then tell me the correct terminology to describe fs block size smaller
+> > > > than page size in the first place.
+> > > > 
+> > > > "fs block size" is not good enough, we want a terminology to describe
+> > > > "fs block size" smaller than page size.
+> > 
+> > Oh dear.  btrfs really has corrupted your brain.  Here's the terminology
+> > used in the rest of Linux:
+> 
+> This isn't necessary commentary, this gives the impression that we're
+> wrong/stupid/etc.  We're all in this community together, having public, negative
+> commentary like this is unnecessary, and frankly contributes to my growing
+> desire/priorities to shift most of my development outside of the kernel
+> community.  And if somebody with my experience and history in this community is
+> becoming more and more disillusioned with this work and making serious efforts
+> to extricate themselves from the project, then what does that say about our
+> ability to bring in new developers?  Thanks,
 
-On the buffered side we are protected by the page lock, as long as we're
-reading things like buffered writes, punch hole, and even direct IO to a
-certain degree will get hung up on the page lock while the page is in
-flight.
+You know what?  I'm disillusioned too.  It's been over two and a half
+years since folios were added (v5.16 was the first release with folios).
+I knew it would be a long project (I was anticipating five years).
+I was expecting to have to slog through all the old unmaintained crap
+filesystems doing minimal conversions.  What I wasn't expecting was for
+all the allegedly maintained filesystems to sit on their fucking hands and
+ignore it as long as possible.  The biggest pains right now are btrfs,
+ceph and f2fs, all of which have people who are paid to work on them!
+I had to do ext4 largely myself.
 
-On the direct side we have the dio extent lock, which acts much like the
-way the extent lock worked previously to this patch, however just for
-direct reads.  This protects direct reads from concurrent direct writes,
-while we're protected from buffered writes via the inode lock.
+Some filesystems have been great.  XFS worked with me as I did that
+filesystem first.  nfs took care of their own code.  Dave Howells has
+done most of the other network filesystems.  Many other people have
+also helped.
 
-Now that we're protected in all cases, narrow the extent lock to the
-part where we're getting the extent map to submit the reads, no longer
-holding the extent lock for the entire read operation.  Push the extent
-lock down into do_readpage() so that we're only grabbing it when looking
-up the extent map.  This portion was contributed by Goldwyn.
+But we can't even talk to each other unless we agree on what words mean.
+And btrfs inventing its own terminology for things which already exist
+in other filesystems is extremely unhelpful.
 
-Co-developed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/compression.c |  2 +-
- fs/btrfs/direct-io.c   | 51 +++++++++++------------
- fs/btrfs/extent_io.c   | 94 ++----------------------------------------
- 3 files changed, 29 insertions(+), 118 deletions(-)
+We need to remove the temporary hack that is CONFIG_READ_ONLY_THP_FOR_FS.
+That went in with the understanding that filesystems that mattered would
+add large folio support.  When I see someone purporting to represent
+btrfs say "Oh, we're not going to do that", that's a breach of trust.
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 832ab8984c41..511f81f312af 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -521,6 +521,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 		}
- 		add_size = min(em->start + em->len, page_end + 1) - cur;
- 		free_extent_map(em);
-+		unlock_extent(tree, cur, page_end, NULL);
- 
- 		if (folio->index == end_index) {
- 			size_t zero_offset = offset_in_folio(folio, isize);
-@@ -534,7 +535,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 
- 		if (!bio_add_folio(orig_bio, folio, add_size,
- 				   offset_in_folio(folio, cur))) {
--			unlock_extent(tree, cur, page_end, NULL);
- 			folio_unlock(folio);
- 			folio_put(folio);
- 			break;
-diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
-index 576f469cacee..66f1ce5fcfd2 100644
---- a/fs/btrfs/direct-io.c
-+++ b/fs/btrfs/direct-io.c
-@@ -366,7 +366,7 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 	int ret = 0;
- 	u64 len = length;
- 	const u64 data_alloc_len = length;
--	bool unlock_extents = false;
-+	u32 unlock_bits = EXTENT_LOCKED;
- 
- 	/*
- 	 * We could potentially fault if we have a buffer > PAGE_SIZE, and if
-@@ -527,7 +527,6 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 						    start, &len, flags);
- 		if (ret < 0)
- 			goto unlock_err;
--		unlock_extents = true;
- 		/* Recalc len in case the new em is smaller than requested */
- 		len = min(len, em->len - (start - em->start));
- 		if (dio_data->data_space_reserved) {
-@@ -548,23 +547,8 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 							       release_offset,
- 							       release_len);
- 		}
--	} else {
--		/*
--		 * We need to unlock only the end area that we aren't using.
--		 * The rest is going to be unlocked by the endio routine.
--		 */
--		lockstart = start + len;
--		if (lockstart < lockend)
--			unlock_extents = true;
- 	}
- 
--	if (unlock_extents)
--		clear_extent_bit(&BTRFS_I(inode)->io_tree, lockstart, lockend,
--				 EXTENT_LOCKED | EXTENT_DIO_LOCKED,
--				 &cached_state);
--	else
--		free_extent_state(cached_state);
--
- 	/*
- 	 * Translate extent map information to iomap.
- 	 * We trim the extents (and move the addr) even though iomap code does
-@@ -583,6 +567,23 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 	iomap->length = len;
- 	free_extent_map(em);
- 
-+	/*
-+	 * Reads will hold the EXTENT_DIO_LOCKED bit until the io is completed,
-+	 * writes only hold it for this part.  We hold the extent lock until
-+	 * we're completely done with the extent map to make sure it remains
-+	 * valid.
-+	 */
-+	if (write)
-+		unlock_bits |= EXTENT_DIO_LOCKED;
-+
-+	clear_extent_bit(&BTRFS_I(inode)->io_tree, lockstart, lockend,
-+			 unlock_bits, &cached_state);
-+
-+	/* We didn't use everything, unlock the dio extent for the remainder. */
-+	if (!write && (start + len) < lockend)
-+		unlock_dio_extent(&BTRFS_I(inode)->io_tree, start + len,
-+				  lockend, NULL);
-+
- 	return 0;
- 
- unlock_err:
-@@ -615,9 +616,8 @@ static int btrfs_dio_iomap_end(struct inode *inode, loff_t pos, loff_t length,
- 
- 	if (!write && (iomap->type == IOMAP_HOLE)) {
- 		/* If reading from a hole, unlock and return */
--		clear_extent_bit(&BTRFS_I(inode)->io_tree, pos,
--				  pos + length - 1,
--				  EXTENT_LOCKED | EXTENT_DIO_LOCKED, NULL);
-+		unlock_dio_extent(&BTRFS_I(inode)->io_tree, pos,
-+				  pos + length - 1, NULL);
- 		return 0;
- 	}
- 
-@@ -628,10 +628,8 @@ static int btrfs_dio_iomap_end(struct inode *inode, loff_t pos, loff_t length,
- 			btrfs_finish_ordered_extent(dio_data->ordered, NULL,
- 						    pos, length, false);
- 		else
--			clear_extent_bit(&BTRFS_I(inode)->io_tree, pos,
--					 pos + length - 1,
--					 EXTENT_LOCKED | EXTENT_DIO_LOCKED,
--					 NULL);
-+			unlock_dio_extent(&BTRFS_I(inode)->io_tree, pos,
-+					  pos + length - 1, NULL);
- 		ret = -ENOTBLK;
- 	}
- 	if (write) {
-@@ -663,9 +661,8 @@ static void btrfs_dio_end_io(struct btrfs_bio *bbio)
- 					    dip->file_offset, dip->bytes,
- 					    !bio->bi_status);
- 	} else {
--		clear_extent_bit(&inode->io_tree, dip->file_offset,
--				 dip->file_offset + dip->bytes - 1,
--				 EXTENT_LOCKED | EXTENT_DIO_LOCKED, NULL);
-+		unlock_dio_extent(&inode->io_tree, dip->file_offset,
-+				  dip->file_offset + dip->bytes - 1, NULL);
- 	}
- 
- 	bbio->bio.bi_private = bbio->private;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 6083bed89df2..77161116af7a 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -480,75 +480,6 @@ static void end_bbio_data_write(struct btrfs_bio *bbio)
- 	bio_put(bio);
- }
- 
--/*
-- * Record previously processed extent range
-- *
-- * For endio_readpage_release_extent() to handle a full extent range, reducing
-- * the extent io operations.
-- */
--struct processed_extent {
--	struct btrfs_inode *inode;
--	/* Start of the range in @inode */
--	u64 start;
--	/* End of the range in @inode */
--	u64 end;
--	bool uptodate;
--};
--
--/*
-- * Try to release processed extent range
-- *
-- * May not release the extent range right now if the current range is
-- * contiguous to processed extent.
-- *
-- * Will release processed extent when any of @inode, @uptodate, the range is
-- * no longer contiguous to the processed range.
-- *
-- * Passing @inode == NULL will force processed extent to be released.
-- */
--static void endio_readpage_release_extent(struct processed_extent *processed,
--			      struct btrfs_inode *inode, u64 start, u64 end,
--			      bool uptodate)
--{
--	struct extent_state *cached = NULL;
--	struct extent_io_tree *tree;
--
--	/* The first extent, initialize @processed */
--	if (!processed->inode)
--		goto update;
--
--	/*
--	 * Contiguous to processed extent, just uptodate the end.
--	 *
--	 * Several things to notice:
--	 *
--	 * - bio can be merged as long as on-disk bytenr is contiguous
--	 *   This means we can have page belonging to other inodes, thus need to
--	 *   check if the inode still matches.
--	 * - bvec can contain range beyond current page for multi-page bvec
--	 *   Thus we need to do processed->end + 1 >= start check
--	 */
--	if (processed->inode == inode && processed->uptodate == uptodate &&
--	    processed->end + 1 >= start && end >= processed->end) {
--		processed->end = end;
--		return;
--	}
--
--	tree = &processed->inode->io_tree;
--	/*
--	 * Now we don't have range contiguous to the processed range, release
--	 * the processed range now.
--	 */
--	unlock_extent(tree, processed->start, processed->end, &cached);
--
--update:
--	/* Update processed to current range */
--	processed->inode = inode;
--	processed->start = start;
--	processed->end = end;
--	processed->uptodate = uptodate;
--}
--
- static void begin_folio_read(struct btrfs_fs_info *fs_info, struct folio *folio)
- {
- 	ASSERT(folio_test_locked(folio));
-@@ -575,7 +506,6 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
- {
- 	struct btrfs_fs_info *fs_info = bbio->fs_info;
- 	struct bio *bio = &bbio->bio;
--	struct processed_extent processed = { 0 };
- 	struct folio_iter fi;
- 	const u32 sectorsize = fs_info->sectorsize;
- 
-@@ -640,11 +570,7 @@ static void end_bbio_data_read(struct btrfs_bio *bbio)
- 
- 		/* Update page status and unlock. */
- 		end_folio_read(folio, uptodate, start, len);
--		endio_readpage_release_extent(&processed, BTRFS_I(inode),
--					      start, end, uptodate);
- 	}
--	/* Release the last extent */
--	endio_readpage_release_extent(&processed, NULL, 0, 0, false);
- 	bio_put(bio);
- }
- 
-@@ -973,6 +899,7 @@ static struct extent_map *__get_extent_map(struct inode *inode,
- 					   u64 len, struct extent_map **em_cached)
- {
- 	struct extent_map *em;
-+	struct extent_state *cached_state = NULL;
- 
- 	ASSERT(em_cached);
- 
-@@ -988,12 +915,15 @@ static struct extent_map *__get_extent_map(struct inode *inode,
- 		*em_cached = NULL;
- 	}
- 
-+	btrfs_lock_and_flush_ordered_range(BTRFS_I(inode), start, start + len - 1, &cached_state);
- 	em = btrfs_get_extent(BTRFS_I(inode), folio, start, len);
- 	if (!IS_ERR(em)) {
- 		BUG_ON(*em_cached);
- 		refcount_inc(&em->refs);
- 		*em_cached = em;
- 	}
-+	unlock_extent(&BTRFS_I(inode)->io_tree, start, start + len - 1, &cached_state);
-+
- 	return em;
- }
- /*
-@@ -1019,11 +949,9 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
- 	size_t pg_offset = 0;
- 	size_t iosize;
- 	size_t blocksize = fs_info->sectorsize;
--	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
- 
- 	ret = set_folio_extent_mapped(folio);
- 	if (ret < 0) {
--		unlock_extent(tree, start, end, NULL);
- 		folio_unlock(folio);
- 		return ret;
- 	}
-@@ -1047,14 +975,12 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
- 		if (cur >= last_byte) {
- 			iosize = folio_size(folio) - pg_offset;
- 			folio_zero_range(folio, pg_offset, iosize);
--			unlock_extent(tree, cur, cur + iosize - 1, NULL);
- 			end_folio_read(folio, true, cur, iosize);
- 			break;
- 		}
- 		em = __get_extent_map(inode, folio, cur, end - cur + 1,
- 				      em_cached);
- 		if (IS_ERR(em)) {
--			unlock_extent(tree, cur, end, NULL);
- 			end_folio_read(folio, false, cur, end + 1 - cur);
- 			return PTR_ERR(em);
- 		}
-@@ -1123,7 +1049,6 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
- 		if (block_start == EXTENT_MAP_HOLE) {
- 			folio_zero_range(folio, pg_offset, iosize);
- 
--			unlock_extent(tree, cur, cur + iosize - 1, NULL);
- 			end_folio_read(folio, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
-@@ -1131,7 +1056,6 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
- 		}
- 		/* the get_extent function already copied into the folio */
- 		if (block_start == EXTENT_MAP_INLINE) {
--			unlock_extent(tree, cur, cur + iosize - 1, NULL);
- 			end_folio_read(folio, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
-@@ -1156,15 +1080,10 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
- 
- int btrfs_read_folio(struct file *file, struct folio *folio)
- {
--	struct btrfs_inode *inode = folio_to_inode(folio);
--	u64 start = folio_pos(folio);
--	u64 end = start + folio_size(folio) - 1;
- 	struct btrfs_bio_ctrl bio_ctrl = { .opf = REQ_OP_READ };
- 	struct extent_map *em_cached = NULL;
- 	int ret;
- 
--	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
--
- 	ret = btrfs_do_readpage(folio, &em_cached, &bio_ctrl, NULL);
- 	free_extent_map(em_cached);
- 
-@@ -2337,15 +2256,10 @@ int btrfs_writepages(struct address_space *mapping, struct writeback_control *wb
- void btrfs_readahead(struct readahead_control *rac)
- {
- 	struct btrfs_bio_ctrl bio_ctrl = { .opf = REQ_OP_READ | REQ_RAHEAD };
--	struct btrfs_inode *inode = BTRFS_I(rac->mapping->host);
- 	struct folio *folio;
--	u64 start = readahead_pos(rac);
--	u64 end = start + readahead_length(rac) - 1;
- 	struct extent_map *em_cached = NULL;
- 	u64 prev_em_start = (u64)-1;
- 
--	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
--
- 	while ((folio = readahead_folio(rac)) != NULL)
- 		btrfs_do_readpage(folio, &em_cached, &bio_ctrl, &prev_em_start);
- 
--- 
-2.43.0
-
+When I'm accused of not understanding things from the filesystem
+perspective, that's just a lie.  I have 192 commits in fs/ between 6.6
+and 6.10 versus 160 in mm/ (346 commits in both combined, so 6 commits
+are double-counted because they touch both).  This whole project has
+been filesystem-centric from the beginning.
 
