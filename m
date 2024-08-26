@@ -1,138 +1,99 @@
-Return-Path: <linux-btrfs+bounces-7488-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7489-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4758F95EE03
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 12:04:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A68A895EF00
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 12:54:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0341B284BB0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 10:04:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3157CB22D18
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 10:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B512145A01;
-	Mon, 26 Aug 2024 10:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201D4185E53;
+	Mon, 26 Aug 2024 10:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="YQ8sTJNf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qp0ilSam"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E1712DD90
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 10:04:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3423015539F;
+	Mon, 26 Aug 2024 10:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724666664; cv=none; b=dFq2YiTudnc9kbqtvsSJo505zbG/ph153q/u2vUk0HhdpUoq3myd6dApBM30rbzSxuoYKP7H4avvFl3KRpLilmE5aTsVp/lrd8zLrYMcvoyd2tx4k2r2++zCfznPknL5bkF4xfMRyuWsqGntSbm+6qw9gX7cH11SROJSxnvwrYI=
+	t=1724669477; cv=none; b=CbuE2ExnMv+QBWBKgIqQ0E2qmQgKz+ATnXPKoaTFCa6xw58o50jXAEnknEmP09EF4gCSzw3oqjT9GJkRFdKuLvC+C9pX3DsJjmtg51m8G4TErLAwAcSQNeBMHwDzLZfIAgRdCOyoFHU2MTKE+cJ8ulTlzm8NV0naps9Z8bxJgP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724666664; c=relaxed/simple;
-	bh=qMM457lu3I8jbZYpOeaEnC6DUK1H/JeK/r5JmqwT6ws=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uy8etK1INUibVCMTmNjVY1m03A3XuKE9zuBBVuqcMClSheq2ezSuntvA3WdftqrzTtVkkqOywTSz2nyeso0tAAGN0Z0X2w29m+S15AuAj0S/OP/XS1ZpoWFFJLdnzVeJceKBC7DK0kpS4j9wWipCEllSZPpCfhPNMYPnowJTEKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=YQ8sTJNf; arc=none smtp.client-ip=15.184.224.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1724666654;
-	bh=qMM457lu3I8jbZYpOeaEnC6DUK1H/JeK/r5JmqwT6ws=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=YQ8sTJNfUqT1EGPCHSfMojPbHW7ytT6md9lfdUsRGfZkV3gr67Q8EXodkxC/cWA5c
-	 EZ5kQKexQXI43apHQ1MSz7gWG6WrwgbdLkISMq8OViHQ0cYWbtbyBWzmDfimAu10Rv
-	 6QVl5OaGgH0UMD4JVP3gMDzfeX920yaJWwAUfAD8=
-X-QQ-mid: bizesmtpip3t1724666653tidjlmg
-X-QQ-Originating-IP: DtLXirwlpGDA6hokLE22MI6Cqh833s+WDI2NzTM70RY=
-Received: from [IPV6:2408:8215:5910:5dc0:166b: ( [localhost])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 26 Aug 2024 18:04:12 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 8172147434646186442
-Message-ID: <1F186795D5BE22A6+fe73060c-a6b9-4b31-a792-af963d06c157@bupt.moe>
-Date: Mon, 26 Aug 2024 18:04:12 +0800
+	s=arc-20240116; t=1724669477; c=relaxed/simple;
+	bh=C5Y/qSHgQZACxwKSqcH92sWROtc2L1TL/YZtDg6REHU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bpdTpms7rG8dwXaFTV+fWVfib3faxOrPQplFyrdBD/rgEDYXZikc7rian4R9kkBBXSMZ76nbA0Ad/2S/NCIk3Hc99rCHZFr2dJ22lRKQrKnUPmkiETukjpjvbzjE8JYSjgFBcFt3DmxzhyHiOM3fAG+PRkYygA9nMDZ7VCv++w8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qp0ilSam; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2387C51422;
+	Mon, 26 Aug 2024 10:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724669476;
+	bh=C5Y/qSHgQZACxwKSqcH92sWROtc2L1TL/YZtDg6REHU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Qp0ilSampHvHO/PKthgFW0Gu0htzhqZ9PlKJkZEM5B+TiK8gdWmCsJg1CBMx4yCH0
+	 av7zhY4GN278cUhfvucrRanVqHUp2NINrP+boJVbFJCQTzbIcsRBiGvUOciiJle7Ny
+	 f0RLW9EYjsJPMN0Act+e/ii83fb2cMlkeqcZ+U4TZEaWXeucI2+BlvDociFIwilPcc
+	 jizA5IXpfrFUgDmECYbUYpLfEPZIpBAk8nr2n7aNtlvgVhtDTSKlVka7YzwTWgQP1Q
+	 xofCJqOWxXW+bZhBS/9X5/M2K9J55rYWj9RY941BSs+hIpiJoEn6oSIkSdJlnF2YDC
+	 znCEBmoYSyrnw==
+From: Christian Brauner <brauner@kernel.org>
+To: Julian Sun <sunjunchao2870@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	viro@zeniv.linux.org.uk,
+	jack@suse.cz,
+	david@fromorbit.com,
+	zhuyifei1999@gmail.com,
+	syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com,
+	stable@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] vfs: fix race between evice_inodes() and find_inode()&iput()
+Date: Mon, 26 Aug 2024 12:50:59 +0200
+Message-ID: <20240826-irdisch-verflachen-c724c28dfc3c@brauner>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240823130730.658881-1-sunjunchao2870@gmail.com>
+References: <20240823130730.658881-1-sunjunchao2870@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Can't set RAID10 on zoned device using experimental build
-To: Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <65B7F79F09D5083C+d0bb90c4-ba72-4b8e-8275-9ee8bfdbd3dd@bupt.moe>
- <xi6vsetz4ymtdyfw564e7gkdpdsqqe6xxvn2rujuchhw423vz5@fomt4llvviq5>
-Content-Language: en-US
-From: Yuwei Han <hrx@bupt.moe>
-In-Reply-To: <xi6vsetz4ymtdyfw564e7gkdpdsqqe6xxvn2rujuchhw423vz5@fomt4llvviq5>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1094; i=brauner@kernel.org; h=from:subject:message-id; bh=C5Y/qSHgQZACxwKSqcH92sWROtc2L1TL/YZtDg6REHU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSdiZPZ43DQ6OuTrN/pfQ3Pe1/8ua/2jEky4Y23DmvSn u1GZ0uFOkpZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACaSn8DI8M0ou/rHJ42GrK/V n88+OPfArquuvKFpwbMHyr0yiX80njL899p8rXSLOzPHx3cBqfn1DTo9XBcWGkuu3+0rsv2HyMM pDAA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-DQoNCuWcqCAyMDI0LzgvMjYgMTM6MjAsIE5hb2hpcm8gQW90YSDlhpnpgZM6DQo+IE9uIFN1
-biwgQXVnIDI1LCAyMDI0IGF0IDEwOjU5OjQ5QU0gR01ULCBZdXdlaSBIYW4gd3JvdGU6DQo+
-PiBIaSwNCj4+IEkgYW0gdXNpbmcgYnRyZnMtcHJvZ3MgZXhwZXJpbWVudGFsIGJ1aWxkIHRv
-IGNyZWF0ZSBSQUlEMTAgdm9sdW1lIG9uIHpvbmVkDQo+PiBkZXZpY2UuIEJ1dCBpdCBkaWRu
-J3Qgc3VjY2VlZC4NCj4+DQo+PiAjIC4vYnRyZnMgdmVyc2lvbg0KPj4gYnRyZnMtcHJvZ3Mg
-djYuMTAuMQ0KPj4gK0VYUEVSSU1FTlRBTCAtSU5KRUNUIC1TVEFUSUMgK0xaTyArWlNURCAr
-VURFViArRlNWRVJJVFkgK1pPTkVEDQo+PiBDUllQVE89YnVpbHRpbg0KPj4NCj4+ICMgLi9t
-a2ZzLmJ0cmZzIC1mIC1PIGJndCxyc3QgLW1yYWlkMTAgLWRyYWlkMTAgL2Rldi9zZGEgL2Rl
-di9zZGIgL2Rldi9zZGMNCj4+IC9kZXYvc2RkDQo+PiBidHJmcy1wcm9ncyB2Ni4xMC4xDQo+
-PiBTZWUgaHR0cHM6Ly9idHJmcy5yZWFkdGhlZG9jcy5pbyBmb3IgbW9yZSBpbmZvcm1hdGlv
-bi4NCj4+DQo+PiBab25lZDogL2Rldi9zZGE6IGhvc3QtbWFuYWdlZCBkZXZpY2UgZGV0ZWN0
-ZWQsIHNldHRpbmcgem9uZWQgZmVhdHVyZQ0KPj4gUmVzZXR0aW5nIGRldmljZSB6b25lcyAv
-ZGV2L3NkYSAoNTIxNTYgem9uZXMpIC4uLg0KPj4gUmVzZXR0aW5nIGRldmljZSB6b25lcyAv
-ZGV2L3NkYiAoNTIxNTYgem9uZXMpIC4uLg0KPj4gUmVzZXR0aW5nIGRldmljZSB6b25lcyAv
-ZGV2L3NkYyAoNTIxNTYgem9uZXMpIC4uLg0KPj4gUmVzZXR0aW5nIGRldmljZSB6b25lcyAv
-ZGV2L3NkZCAoNTIxNTYgem9uZXMpIC4uLg0KPj4gRVJST1I6IHpvbmVkOiBmYWlsZWQgdG8g
-cmVzZXQgZGV2aWNlICcvZGV2L3NkZCcgem9uZXM6IFJlbW90ZSBJL08gZXJyb3INCj4+IEVS
-Uk9SOiB6b25lZDogZmFpbGVkIHRvIHJlc2V0IGRldmljZSAnL2Rldi9zZGInIHpvbmVzOiBS
-ZW1vdGUgSS9PIGVycm9yDQo+PiBFUlJPUjogem9uZWQ6IGZhaWxlZCB0byByZXNldCBkZXZp
-Y2UgJy9kZXYvc2RjJyB6b25lczogUmVtb3RlIEkvTyBlcnJvcg0KPj4gRVJST1I6IHpvbmVk
-OiBmYWlsZWQgdG8gcmVzZXQgZGV2aWNlICcvZGV2L3NkYScgem9uZXM6IFJlbW90ZSBJL08g
-ZXJyb3INCj4+IEVSUk9SOiB1bmFibGUgcHJlcGFyZSBkZXZpY2U6IC9kZXYvc2RhDQo+Pg0K
-Pj4gcmVsYXRlZCBkbWVzZzoNCj4+IFsgNDc5LjcyOTI4MV0gc2QgMDowOjI6MDogW3NkY10g
-dGFnIzk1MyBGQUlMRUQgUmVzdWx0OiBob3N0Ynl0ZT1ESURfT0sNCj4+IGRyaXZlcmJ5dGU9
-RFJJVkVSX09LIGNtZF9hZ2U9MHMNCj4+IFsgIDQ3OS43Mjk5MzBdIHNkIDA6MDoxOjA6IFtz
-ZGJdIHRhZyMxODQgRkFJTEVEIFJlc3VsdDogaG9zdGJ5dGU9RElEX09LDQo+PiBkcml2ZXJi
-eXRlPURSSVZFUl9PSyBjbWRfYWdlPTBzDQo+PiBbICA0NzkuNzI5OTQ0XSBzZCAwOjA6Mzow
-OiBbc2RkXSB0YWcjMTIgRkFJTEVEIFJlc3VsdDogaG9zdGJ5dGU9RElEX09LDQo+PiBkcml2
-ZXJieXRlPURSSVZFUl9PSyBjbWRfYWdlPTBzDQo+PiBbICA0NzkuNzI5OTQ5XSBzZCAwOjA6
-MzowOiBbc2RkXSB0YWcjMTIgU2Vuc2UgS2V5IDogSWxsZWdhbCBSZXF1ZXN0DQo+PiBbY3Vy
-cmVudF0NCj4+IFsgIDQ3OS43Mjk5NTFdIHNkIDA6MDozOjA6IFtzZGRdIHRhZyMxMiBBZGQu
-IFNlbnNlOiBJbnZhbGlkIGZpZWxkIGluIGNkYg0KPj4gWyAgNDc5LjcyOTk1NF0gc2QgMDow
-OjM6MDogW3NkZF0gdGFnIzEyIENEQjogV3JpdGUgc2FtZSgxNikgOTMgMDggMDAgMDAgMDAN
-Cj4+IDAwIDAwIDAwIDAwIDAwIDAwIDAxIDAwIDAwIDAwIDAwDQo+PiBbICA0NzkuNzI5OTU2
-XSBjcml0aWNhbCB0YXJnZXQgZXJyb3IsIGRldiBzZGQsIHNlY3RvciAwIG9wIDB4MzooRElT
-Q0FSRCkNCj4+IGZsYWdzIDB4ODAwIHBoeXNfc2VnIDEgcHJpbyBjbGFzcyAwDQo+PiBbICA0
-NzkuNzI5OTYwXSBzZCAwOjA6MDowOiBbc2RhXSB0YWcjNTk3IEZBSUxFRCBSZXN1bHQ6IGhv
-c3RieXRlPURJRF9PSw0KPj4gZHJpdmVyYnl0ZT1EUklWRVJfT0sgY21kX2FnZT0wcw0KPj4g
-WyAgNDc5LjcyOTk2M10gc2QgMDowOjA6MDogW3NkYV0gdGFnIzU5NyBTZW5zZSBLZXkgOiBJ
-bGxlZ2FsIFJlcXVlc3QNCj4+IFtjdXJyZW50XQ0KPj4gWyAgNDc5LjcyOTk2Nl0gc2QgMDow
-OjA6MDogW3NkYV0gdGFnIzU5NyBBZGQuIFNlbnNlOiBJbnZhbGlkIGZpZWxkIGluIGNkYg0K
-Pj4gWyAgNDc5LjcyOTk2OF0gc2QgMDowOjA6MDogW3NkYV0gdGFnIzU5NyBDREI6IFdyaXRl
-IHNhbWUoMTYpIDkzIDA4IDAwIDAwIDAwDQo+PiAwMCAwMCAwMCAwMCAwMCAwMCAwMSAwMCAw
-MCAwMCAwMA0KPj4gWyAgNDc5LjcyOTk3MF0gY3JpdGljYWwgdGFyZ2V0IGVycm9yLCBkZXYg
-c2RhLCBzZWN0b3IgMCBvcCAweDM6KERJU0NBUkQpDQo+PiBmbGFncyAweDgwMCBwaHlzX3Nl
-ZyAxIHByaW8gY2xhc3MgMA0KPj4gWyAgNDc5LjczODM2M10gc2QgMDowOjI6MDogW3NkY10g
-dGFnIzk1MyBTZW5zZSBLZXkgOiBJbGxlZ2FsIFJlcXVlc3QNCj4+IFtjdXJyZW50XQ0KPj4g
-WyAgNDc5Ljc0NzQzOF0gc2QgMDowOjE6MDogW3NkYl0gdGFnIzE4NCBTZW5zZSBLZXkgOiBJ
-bGxlZ2FsIFJlcXVlc3QNCj4+IFtjdXJyZW50XQ0KPj4gWyAgNDc5Ljc1NjQyNV0gc2QgMDow
-OjI6MDogW3NkY10gdGFnIzk1MyBBZGQuIFNlbnNlOiBJbnZhbGlkIGZpZWxkIGluIGNkYg0K
-Pj4gWyAgNDc5Ljc2MzMzOF0gc2QgMDowOjE6MDogW3NkYl0gdGFnIzE4NCBBZGQuIFNlbnNl
-OiBJbnZhbGlkIGZpZWxkIGluIGNkYg0KPj4gWyAgNDc5Ljc2OTczM10gc2QgMDowOjI6MDog
-W3NkY10gdGFnIzk1MyBDREI6IFdyaXRlIHNhbWUoMTYpIDkzIDA4IDAwIDAwIDAwDQo+PiAw
-MCAwMCAwMCAwMCAwMCAwMCAwMSAwMCAwMCAwMCAwMA0KPj4gWyAgNDc5Ljc3OTE1Ml0gc2Qg
-MDowOjE6MDogW3NkYl0gdGFnIzE4NCBDREI6IFdyaXRlIHNhbWUoMTYpIDkzIDA4IDAwIDAw
-IDAwDQo+PiAwMCAwMCAwMCAwMCAwMCAwMCAwMSAwMCAwMCAwMCAwMA0KPj4gWyAgNDc5Ljc4
-ODY1Nl0gY3JpdGljYWwgdGFyZ2V0IGVycm9yLCBkZXYgc2RjLCBzZWN0b3IgMCBvcCAweDM6
-KERJU0NBUkQpDQo+PiBmbGFncyAweDgwMCBwaHlzX3NlZyAxIHByaW8gY2xhc3MgMA0KPj4g
-WyAgNDc5Ljc5NzczMF0gY3JpdGljYWwgdGFyZ2V0IGVycm9yLCBkZXYgc2RiLCBzZWN0b3Ig
-MCBvcCAweDM6KERJU0NBUkQpDQo+PiBmbGFncyAweDgwMCBwaHlzX3NlZyAxIHByaW8gY2xh
-c3MgMA0KPj4NCj4+IGRyaXZlIGluZm86IFdEQyBIQzYyMCAoSFNINzIxNDE0QUxONk0wKQ0K
-Pj4NCj4+DQo+IA0KPiBBcmUgeW91IHVzaW5nIGEgLXJjIGtlcm5lbD8gVGhpcyBsb29rcyBz
-aW1pbGFyIHRvIGFuIGlzc3VlIHJlcG9ydGVkIGhlcmUuDQpZZXMuIEkgYW0gdXNpbmcgNi4x
-MS1yYzQga2VybmVsLiBTaG91bGQgSSBjaGFuZ2UgdG8gcmM1Pw0KDQpIQU4gWXV3ZWkNCj4g
-DQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXNjc2kvWnJvZzREWVhyaXJoSkU3
-UEBkZWJpYW4ubG9jYWwvDQo=
+On Fri, 23 Aug 2024 21:07:30 +0800, Julian Sun wrote:
+> Recently I noticed a bug[1] in btrfs, after digged it into
+> and I believe it'a race in vfs.
+> 
+> Let's assume there's a inode (ie ino 261) with i_count 1 is
+> called by iput(), and there's a concurrent thread calling
+> generic_shutdown_super().
+> 
+> [...]
 
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] vfs: fix race between evice_inodes() and find_inode()&iput()
+      https://git.kernel.org/vfs/vfs/c/f37af83281e6
 
