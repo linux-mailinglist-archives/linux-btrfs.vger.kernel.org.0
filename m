@@ -1,178 +1,329 @@
-Return-Path: <linux-btrfs+bounces-7490-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7491-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7346995EF2A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 12:57:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE6995EF79
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 13:11:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E73691F25A56
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 10:57:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4BC11C21CE4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 11:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17550155730;
-	Mon, 26 Aug 2024 10:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2441B150981;
+	Mon, 26 Aug 2024 11:11:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fordfrog.com header.i=@fordfrog.com header.b="J41FWgbl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWqUJr6i"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from beast.visionsuite.biz (beast.visionsuite.biz [85.163.23.103])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6B0148850
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 10:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.163.23.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1F713DDD9;
+	Mon, 26 Aug 2024 11:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724669806; cv=none; b=Yopd+iAVg4hqdoX3R766bfQjPuFRdZ4ZvNOS09S4D2k1BZJ7cSE/UqMg0yjcE04fs1z2OHKient9HBR+mwVZq3V4Ky1mGUitkScgBORTiJ8sLSXZCE0bBXxSXqkorD7GOIfheTauTMNmnJHLW89y794QKE9d1EFUpPtAnYsFQmo=
+	t=1724670704; cv=none; b=P6DJn/12Wq/cHoIEWR7vIbyJ8vx3j2/OQ0YrU1zVzf0QIEJjVZdPT3au4OU2mWvPS6EWR2OkPE+QjbPsX7ZbWk2/D+7xC3UOcBhEDBHHO8SPOKqQsIY7bhKIqClvIjrQfDJ/ixCyNAk70hfbKKcrStEhJakjp30fv5tF4eLi4Z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724669806; c=relaxed/simple;
-	bh=D7pT0P8SNkq3eX/HOCisPzYwSw82M/QrRV4qjBj1i+E=;
-	h=MIME-Version:Date:From:To:Subject:Message-ID:Content-Type; b=IgS91yVtl5z7zzm+IVPOa6Bs1Mw7eq9va/tNfvgLrsxzH7EtdNHYRVCdkM3F7RvjJzZVcqEZHccSI04MemKmxEF5AbkHyHX40rw0ecAFGyNUXAq5PL4ohciyanxOHG198gMLbzUwmJiP6FGh4bLE6xou1N9p0Z+Piyz5pdIh8Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fordfrog.com; spf=pass smtp.mailfrom=fordfrog.com; dkim=pass (1024-bit key) header.d=fordfrog.com header.i=@fordfrog.com header.b=J41FWgbl; arc=none smtp.client-ip=85.163.23.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fordfrog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fordfrog.com
-Received: from localhost (beast.visionsuite.biz [127.0.0.1])
-	by beast.visionsuite.biz (Postfix) with ESMTP id 724CB4E4EAD7
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 12:56:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at visionsuite.biz
-Received: from beast.visionsuite.biz ([127.0.0.1])
-	by localhost (beast.visionsuite.biz [127.0.0.1]) (amavisd-new, port 10026)
-	with LMTP id C5JKwrVavWDY for <linux-btrfs@vger.kernel.org>;
-	Mon, 26 Aug 2024 12:56:39 +0200 (CEST)
-Received: from roundcube.visionsuite.biz (beast.visionsuite.biz [127.0.0.1])
-	by beast.visionsuite.biz (Postfix) with ESMTPA id 999A44E4EACA
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 12:56:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fordfrog.com;
-	s=beast; t=1724669799;
-	bh=yxjCYGMepbBHXK6EJtetxfBq6DRMqZdfEYWOuyV2yrQ=;
-	h=Date:From:To:Subject;
-	b=J41FWgbl5VRcHOrJYeuuHo2CdrSjSEgvNbQKdNRz/dLDEtSdv9f7xLT8VHEA58CkY
-	 WlhzqdhRubrZBwgUtjNzJ8BJW2ZNONeEiQGuMHJ/pTJ1bHnUqIhkI1dBqm7rguFAPe
-	 HejYmoNtgwT6bgURwnpu+Ly9EQOvk/B0fpiWD94g=
+	s=arc-20240116; t=1724670704; c=relaxed/simple;
+	bh=vzdpiqfIll/LNeU2pSZLrR7ukgcd3hsZ9RlgQL0FX14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=klXGXpTpxcyoi0rAwX4wiOsXVg6RpZEFm9a736Q5MeMeIMpAlkc7yjnOUkRYXRdKeue9gM7BhhWg10d7Hdk5GX/z7kkFpcQSY0+zWczyx/X5/wI8iVEcLlSR0gqh7EDMqs8OpAeT2eM1//IuVFLdkEwc37b5y/ZaSdLV/F8Lt8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eWqUJr6i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7462C51415;
+	Mon, 26 Aug 2024 11:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724670703;
+	bh=vzdpiqfIll/LNeU2pSZLrR7ukgcd3hsZ9RlgQL0FX14=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eWqUJr6iuaq7VmwKIsRobdhN6FoA6FyNx7fU1xgTyu7xqFN+RiCWlUScbyQGF4flc
+	 L78/K/Sd/cE+PNTBrxQULrVCZPUNTatHVH8Td1Eyc6xHhrUwaRk5tkhNdeQXHUTxdE
+	 Hpz0OctdyLydtZRLLekaVnmFSCxyqrS+lgP4qqQr+jY6a4kxGfMyYBgMyOkW3Yw6nq
+	 ev4GLzh6dFN7IrTGW/j76E5CUK1Y6LxJ729KYE5wijjqjscG0hOc+OQ3PH9cbcIJOx
+	 Y9CdW9UEFk22JzbKyqFBe7v0qvI8KOrOd/DLykMXgiuILa7mlZ5sMdasIriU2y+Jky
+	 XUZRfNlmElh7w==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a7a81bd549eso300595566b.3;
+        Mon, 26 Aug 2024 04:11:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUFU/qJ/lfTrcpYBT1b/hDNlVWr7vqOolNCpieysMHOkarxu88s/9lCV2mptmta08oI4gZ6xSOLasFLlQ==@vger.kernel.org, AJvYcCUaN3zn0HSyU/bjwsmZd5/udo5zAFex7p3+qpCRY8sE4g5iZbMEznYvNUEwCbW/UIrcZdDe1ZeOQAEIhHE+@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQIwthWYzXiPNNui8dH8qJlZ0+tFlH3odzaW6L8VJKX+SnNMWR
+	6lMjPgtcrW7LBHjiwfdn7qIox7OsiQKYersTzCQxS5tbLltA6HnZLs4C09nxl4meTVd++XxxiMN
+	pxE6y8477yXUJlQhwKez9/WWRS3k=
+X-Google-Smtp-Source: AGHT+IGbtB/IQsARRuYuKTjCEUa99uv/ZTZYxpbp02ZkrY/Gwg1v3PNv/C/LvQgqM+Ito/Iv7gnuWaQ0HsxbNlAcJ1Q=
+X-Received: by 2002:a17:907:3e8b:b0:a86:ac9e:45fd with SMTP id
+ a640c23a62f3a-a86ac9e484emr573847666b.62.1724670702336; Mon, 26 Aug 2024
+ 04:11:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Mon, 26 Aug 2024 12:56:39 +0200
-From: =?UTF-8?Q?Miroslav_=C5=A0ulc?= <miroslav.sulc@fordfrog.com>
-To: linux-btrfs@vger.kernel.org
-Subject: recovering btrfs filesystem from synology raid5
-Message-ID: <0eb0e2f033f40a0b14d652a6b7c220e4@fordfrog.com>
-X-Sender: miroslav.sulc@fordfrog.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <9e26957661751f7697220d978a9a7f927d0ec378.1723726582.git.jth@kernel.org>
+In-Reply-To: <9e26957661751f7697220d978a9a7f927d0ec378.1723726582.git.jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 26 Aug 2024 12:11:04 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6NP_Rr33cdeV3+=GvseOafowaED-maWhtUw65P4Bti+w@mail.gmail.com>
+Message-ID: <CAL3q7H6NP_Rr33cdeV3+=GvseOafowaED-maWhtUw65P4Bti+w@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: don't take dev_replace rwsem on task already
+ holding it
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	"open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-hello,
+On Thu, Aug 15, 2024 at 1:57=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
+>
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> Running fstests btrfs/011 with MKFS_OPTIONS=3D"-O rst" to force the usage=
+ of
+> the RAID stripe-tree, we get the following splat from lockdep:
+>
+>  BTRFS info (device sdd): dev_replace from /dev/sdd (devid 1) to /dev/sdb=
+ started
+>
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  WARNING: possible recursive locking detected
+>  6.11.0-rc3-btrfs-for-next #599 Not tainted
+>  --------------------------------------------
+>  btrfs/2326 is trying to acquire lock:
+>  ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btrfs_ma=
+p_block+0x39f/0x2250
+>
+>  but task is already holding lock:
+>  ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btrfs_ma=
+p_block+0x39f/0x2250
+>
+>  other info that might help us debug this:
+>   Possible unsafe locking scenario:
+>
+>         CPU0
+>         ----
+>    lock(&fs_info->dev_replace.rwsem);
+>    lock(&fs_info->dev_replace.rwsem);
+>
+>   *** DEADLOCK ***
+>
+>   May be due to missing lock nesting notation
+>
+>  1 lock held by btrfs/2326:
+>   #0: ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btr=
+fs_map_block+0x39f/0x2250
+>
+>  stack backtrace:
+>  CPU: 1 UID: 0 PID: 2326 Comm: btrfs Not tainted 6.11.0-rc3-btrfs-for-nex=
+t #599
+>  Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+>  Call Trace:
+>   <TASK>
+>   dump_stack_lvl+0x5b/0x80
+>   __lock_acquire+0x2798/0x69d0
+>   ? __pfx___lock_acquire+0x10/0x10
+>   ? __pfx___lock_acquire+0x10/0x10
+>   lock_acquire+0x19d/0x4a0
+>   ? btrfs_map_block+0x39f/0x2250
+>   ? __pfx_lock_acquire+0x10/0x10
+>   ? find_held_lock+0x2d/0x110
+>   ? lock_is_held_type+0x8f/0x100
+>   down_read+0x8e/0x440
+>   ? btrfs_map_block+0x39f/0x2250
+>   ? __pfx_down_read+0x10/0x10
+>   ? do_raw_read_unlock+0x44/0x70
+>   ? _raw_read_unlock+0x23/0x40
+>   btrfs_map_block+0x39f/0x2250
+>   ? btrfs_dev_replace_by_ioctl+0xd69/0x1d00
+>   ? btrfs_bio_counter_inc_blocked+0xd9/0x2e0
+>   ? __kasan_slab_alloc+0x6e/0x70
+>   ? __pfx_btrfs_map_block+0x10/0x10
+>   ? __pfx_btrfs_bio_counter_inc_blocked+0x10/0x10
+>   ? kmem_cache_alloc_noprof+0x1f2/0x300
+>   ? mempool_alloc_noprof+0xed/0x2b0
+>   btrfs_submit_chunk+0x28d/0x17e0
+>   ? __pfx_btrfs_submit_chunk+0x10/0x10
+>   ? bvec_alloc+0xd7/0x1b0
+>   ? bio_add_folio+0x171/0x270
+>   ? __pfx_bio_add_folio+0x10/0x10
+>   ? __kasan_check_read+0x20/0x20
+>   btrfs_submit_bio+0x37/0x80
+>   read_extent_buffer_pages+0x3df/0x6c0
+>   btrfs_read_extent_buffer+0x13e/0x5f0
+>   read_tree_block+0x81/0xe0
+>   read_block_for_search+0x4bd/0x7a0
+>   ? __pfx_read_block_for_search+0x10/0x10
+>   btrfs_search_slot+0x78d/0x2720
+>   ? __pfx_btrfs_search_slot+0x10/0x10
+>   ? lock_is_held_type+0x8f/0x100
+>   ? kasan_save_track+0x14/0x30
+>   ? __kasan_slab_alloc+0x6e/0x70
+>   ? kmem_cache_alloc_noprof+0x1f2/0x300
+>   btrfs_get_raid_extent_offset+0x181/0x820
+>   ? __pfx_lock_acquire+0x10/0x10
+>   ? __pfx_btrfs_get_raid_extent_offset+0x10/0x10
+>   ? down_read+0x194/0x440
+>   ? __pfx_down_read+0x10/0x10
+>   ? do_raw_read_unlock+0x44/0x70
+>   ? _raw_read_unlock+0x23/0x40
+>   btrfs_map_block+0x5b5/0x2250
+>   ? __pfx_btrfs_map_block+0x10/0x10
+>   scrub_submit_initial_read+0x8fe/0x11b0
+>   ? __pfx_scrub_submit_initial_read+0x10/0x10
+>   submit_initial_group_read+0x161/0x3a0
+>   ? lock_release+0x20e/0x710
+>   ? __pfx_submit_initial_group_read+0x10/0x10
+>   ? __pfx_lock_release+0x10/0x10
+>   scrub_simple_mirror.isra.0+0x3eb/0x580
+>   scrub_stripe+0xe4d/0x1440
+>   ? lock_release+0x20e/0x710
+>   ? __pfx_scrub_stripe+0x10/0x10
+>   ? __pfx_lock_release+0x10/0x10
+>   ? do_raw_read_unlock+0x44/0x70
+>   ? _raw_read_unlock+0x23/0x40
+>   scrub_chunk+0x257/0x4a0
+>   scrub_enumerate_chunks+0x64c/0xf70
+>   ? __mutex_unlock_slowpath+0x147/0x5f0
+>   ? __pfx_scrub_enumerate_chunks+0x10/0x10
+>   ? bit_wait_timeout+0xb0/0x170
+>   ? __up_read+0x189/0x700
+>   ? scrub_workers_get+0x231/0x300
+>   ? up_write+0x490/0x4f0
+>   btrfs_scrub_dev+0x52e/0xcd0
+>   ? create_pending_snapshots+0x230/0x250
+>   ? __pfx_btrfs_scrub_dev+0x10/0x10
+>   btrfs_dev_replace_by_ioctl+0xd69/0x1d00
+>   ? lock_acquire+0x19d/0x4a0
+>   ? __pfx_btrfs_dev_replace_by_ioctl+0x10/0x10
+>   ? lock_release+0x20e/0x710
+>   ? btrfs_ioctl+0xa09/0x74f0
+>   ? __pfx_lock_release+0x10/0x10
+>   ? do_raw_spin_lock+0x11e/0x240
+>   ? __pfx_do_raw_spin_lock+0x10/0x10
+>   btrfs_ioctl+0xa14/0x74f0
+>   ? lock_acquire+0x19d/0x4a0
+>   ? find_held_lock+0x2d/0x110
+>   ? __pfx_btrfs_ioctl+0x10/0x10
+>   ? lock_release+0x20e/0x710
+>   ? do_sigaction+0x3f0/0x860
+>   ? __pfx_do_vfs_ioctl+0x10/0x10
+>   ? do_raw_spin_lock+0x11e/0x240
+>   ? lockdep_hardirqs_on_prepare+0x270/0x3e0
+>   ? _raw_spin_unlock_irq+0x28/0x50
+>   ? do_sigaction+0x3f0/0x860
+>   ? __pfx_do_sigaction+0x10/0x10
+>   ? __x64_sys_rt_sigaction+0x18e/0x1e0
+>   ? __pfx___x64_sys_rt_sigaction+0x10/0x10
+>   ? __x64_sys_close+0x7c/0xd0
+>   __x64_sys_ioctl+0x137/0x190
+>   do_syscall_64+0x71/0x140
+>   entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>  RIP: 0033:0x7f0bd1114f9b
+>  Code: Unable to access opcode bytes at 0x7f0bd1114f71.
+>  RSP: 002b:00007ffc8a8c3130 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>  RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f0bd1114f9b
+>  RDX: 00007ffc8a8c35e0 RSI: 00000000ca289435 RDI: 0000000000000003
+>  RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000007
+>  R10: 0000000000000008 R11: 0000000000000246 R12: 00007ffc8a8c6c85
+>  R13: 00000000398e72a0 R14: 0000000000004361 R15: 0000000000000004
+>   </TASK>
+>
+> This happens because on RAID stripe-tree filesystems we recurse back into
+> btrfs_map_block() on scrub to perform the logical to device physical
+> mapping.
+>
+> But as the device replace task is already holding the dev_replace::rwsem
+> we deadlock.
+>
+> So don't take the dev_replace::rwsem in case our task is the task perform=
+ing
+> the device replace.
+>
+> Suggested-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/dev-replace.c | 2 ++
+>  fs/btrfs/fs.h          | 2 ++
+>  fs/btrfs/volumes.c     | 4 +++-
+>  3 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index 83d5cdd77f29..604399e59a3d 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -641,6 +641,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_in=
+fo *fs_info,
+>                 return ret;
+>
+>         down_write(&dev_replace->rwsem);
+> +       dev_replace->replace_task =3D current;
+>         switch (dev_replace->replace_state) {
+>         case BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED:
+>         case BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED:
+> @@ -994,6 +995,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_f=
+s_info *fs_info,
+>         list_add(&tgt_device->dev_alloc_list, &fs_devices->alloc_list);
+>         fs_devices->rw_devices++;
+>
+> +       dev_replace->replace_task =3D NULL;
+>         up_write(&dev_replace->rwsem);
+>         btrfs_rm_dev_replace_blocked(fs_info);
+>
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 3d6d4b503220..53824da92cc3 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -317,6 +317,8 @@ struct btrfs_dev_replace {
+>
+>         struct percpu_counter bio_counter;
+>         wait_queue_head_t replace_wait;
+> +
+> +       struct task_struct *replace_task;
+>  };
+>
+>  /*
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 4b9b647a7e29..d2e80a1f258d 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6481,7 +6481,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, =
+enum btrfs_map_op op,
+>         *length =3D min_t(u64, map->chunk_len - map_offset, max_len);
+>
+>         down_read(&dev_replace->rwsem);
+> -       dev_replace_is_ongoing =3D btrfs_dev_replace_is_ongoing(dev_repla=
+ce);
+> +       if (btrfs_dev_replace_is_ongoing(dev_replace) && dev_replace->rep=
+lace_task !=3D current)
+> +               dev_replace_is_ongoing =3D 1;
 
-i have here a broken btrfs filesystem that was on a synology nas with 
-raid5 (mdadm + lvm) where one disk started to be broken and another was 
-removed from the raid roughly two months ago (but the number of events 
-on that disk isn't that much lower). more details about the raid can be 
-seen here: 
-https://lore.kernel.org/linux-raid/d6e87810cbfe40f3be74dfa6b0acb48e@fordfrog.com/T/
+So the idea I suggested was not like this.
+The idea was just to not ever down_read() the semaphore if the current
+task is the replace task.
 
-i was able to assemble the raid5 from 4 disks (3 with up-to-date data 
-and one with older data) to the extent that i can use lvm to see the 
-logical volume and btrfs filesystem on it, though the filesystem reports 
-to be broken.
+What this patch is doing is fishy, because it's setting
+dev_replace_is_ongoing to false when there's an actual dev replace in
+progress.
+By setting it to false we are preventing the redirection of a write to
+the new device.
 
-# cat /proc/mdstat
-Personalities : [raid0] [raid1] [raid10] [raid6] [raid5] [raid4]
-md127 : active raid5 dm-19[4] dm-16[3] dm-13[1] dm-10[0]
-       31236781824 blocks super 1.2 level 5, 64k chunk, algorithm 2 [5/4] 
-[UU_UU]
-       bitmap: 0/59 pages [0KB], 65536KB chunk
+Was that intentional? If so, why (the changelog doesn't mention it,
+and that's a very important detail)?
 
-unused devices: <none>
+For my suggestion, since we will skip the locking of the semaphore,
+we'll have to compare "current" with "dev_replace->replace_task"
+without any locking,
+but that's ok and we can use data_race() to silence KCSAN.
 
-# btrfs check /dev/vg1000/lv
-Opening filesystem to check...
-parent transid verify failed on 4330339713024 wanted 2221844 found 
-2221848
-parent transid verify failed on 4330321559552 wanted 2221843 found 
-1957353
-parent transid verify failed on 4330321559552 wanted 2221843 found 
-1957359
-parent transid verify failed on 4330321559552 wanted 2221843 found 
-1957359
-Ignoring transid failure
-corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end, 
-have 16079 expect 16105
-leaf 4330321559552 items 87 free space 11792 generation 1957359 owner 
-EXTENT_TREE
-leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
-fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
-chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
-         item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105 
-itemsize 178
-         item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040 
-itemsize 39
-         item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 16218 
-itemsize 44
-                 refs 14078082519432455026 gen 151715012486066369 flags 
-|FULL_BACKREF
-                 tree block skinny level -1444450301
-ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33 
-leaf data limit 16283
-ERROR: skip remaining slots
-parent transid verify failed on 4330321559552 wanted 2221843 found 
-1957359
-Ignoring transid failure
-corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end, 
-have 16079 expect 16105
-leaf 4330321559552 items 87 free space 11792 generation 1957359 owner 
-EXTENT_TREE
-leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
-fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
-chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
-         item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105 
-itemsize 178
-         item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040 
-itemsize 39
-         item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 16218 
-itemsize 44
-                 refs 14078082519432455026 gen 151715012486066369 flags 
-|FULL_BACKREF
-                 tree block skinny level -1444450301
-ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33 
-leaf data limit 16283
-ERROR: skip remaining slots
-corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end, 
-have 16079 expect 16105
-leaf 4330321559552 items 87 free space 11792 generation 1957359 owner 
-EXTENT_TREE
-leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
-fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
-chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
-         item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105 
-itemsize 178
-         item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040 
-itemsize 39
-         item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 16218 
-itemsize 44
-                 refs 14078082519432455026 gen 151715012486066369 flags 
-|FULL_BACKREF
-                 tree block skinny level -1444450301
-ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33 
-leaf data limit 16283
-ERROR: skip remaining slots
-ERROR: failed to read block groups: Operation not permitted
-ERROR: cannot open file system
+Thanks.
 
-i have the disks mapped in read-only mode with overlay set up over them 
-so that i can freely experiment with the filesystem. but so far i was 
-not able to get the filesystem to a state where i could read files from 
-it, even with btrfs restore.
-
-there are some data on the filesystem that are crucial for the client so 
-my goal is to be able to recover at least those. so, i'd like to ask 
-whether there is any chance to resolve these issues shown above to be 
-able to at least list the files from the filesystem and recover at least 
-a selection of them.
-
-thank you in advance for any hints.
-
-miroslav
+> +
+>         /*
+>          * Hold the semaphore for read during the whole operation, write =
+is
+>          * requested at commit time but must wait.
+> --
+> 2.43.0
+>
+>
 
