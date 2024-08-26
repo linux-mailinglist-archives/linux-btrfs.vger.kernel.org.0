@@ -1,170 +1,177 @@
-Return-Path: <linux-btrfs+bounces-7523-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7524-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E352E95FBB7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 23:32:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 678D095FC9D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 00:16:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B6E7283DF7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 21:32:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5291C2034A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 22:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 274FF19AD8E;
-	Mon, 26 Aug 2024 21:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD28019D88A;
+	Mon, 26 Aug 2024 22:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Fgb2Aj6J"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="DXsIRRoC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F027213DDCC
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 21:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C56219D088;
+	Mon, 26 Aug 2024 22:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724707942; cv=none; b=trTnv6528pVOt/pTZrtQVI0ObJpblP05oQOkIS8lG68+mhAdmgx/Nh/jIr5rK5JY05N5v2eHntG3+mKHIX7NqaqomwsrJ48e2DW4mqNGLSxPJtplQgAMRbcu0RJcQGHvCadYhUGiExNFoRhX1Rk6J+AgWnpqWqeQNlfMQ4wMpbQ=
+	t=1724710570; cv=none; b=sAgibM6PoHbTEQKGOwxiMAS+FaarcqqK9wQdbd+AdypnK32Ur6ab7TaCRtQwGyMmXjnNpXrHroOAO9/MsctqCBzAayKkPnf3M6ekogpN/aBBFmj1JpjWaJb+i0ePMmGpYjFEmrjdQwc1CmW0dCln+yE+xHGS7ukmSDN8kQ7Iqw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724707942; c=relaxed/simple;
-	bh=2ek0yDKSB2gTN1Xpa9IujVjVQbR5N0mjF7EUovXUPmM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZMpsDfjPk95A/OPKjysqvZUK6uGc0fzm3SBU8AKC01fU/QNyaXOLap2ror/r5KMTI15UcjLSv/zTvkLHbbbsesQwtYlnUdZc/dvd9w/JYRBSqYpFQ+nZjqSdpl0523Ts0uspAl7SWTMpqykl+277hNIbMR18EFb/6qwJgqRMTlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Fgb2Aj6J; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7a1d7bc07b7so313253685a.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 14:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1724707939; x=1725312739; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=By8CKYnZaj8r7EpytON1Xz+eijJuZOFzFCGO6VJQjvk=;
-        b=Fgb2Aj6JjxW+Ojzfpg09EC/xc6UbzfbDmUoPFwlD6D8aKRcXGzWaNQX0DkRVKwm5dB
-         QFuQ6M6moZGiuxyVXYvEWNirCmev3K6RzpJ7uk26JRCvdYMWDvjIx3wHdVYv/ShhaM9j
-         VUsY9ydgCGcNxCudsRdcXVvTiFG6OXOjc0FjFdkSN03KIhZayTPGSqDpQP99MCa6dnax
-         L/YzjnopS4EzG4b3d5LSn7TgoeNcahWV5aWd0GztynY9LalzAxoLpx6KcAyIC5WItIiz
-         36CjMYUiLFjD7iJU6CoQBl0cA52C9ZGvfNdG6qrLzuUdWFH3ufmzU0V7WJCwIUE1vlsL
-         e8SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724707939; x=1725312739;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=By8CKYnZaj8r7EpytON1Xz+eijJuZOFzFCGO6VJQjvk=;
-        b=PXr61NFqqNODToJestuxI6ks7Zc7fA1QETgHVLdgjNCvIlDUue16zMQr+MppjLkjuY
-         FEv7/wA3/ot9ZquzyiHJxB6B8ETaUwUasPXj4CxliBMgkFxjn/q7tb3Eb6F8OWEe2v8w
-         wC3AfVuiRdHbywJlnSNzzsgDxfWMG98kHPx55TKcv3RmRBKCn6VVgWsqbsO3wbvLXBUz
-         WdLeFAZ7Xt9g6svUFHFV4rsDEL2Z7Gwz/1CJIk+QSYsUjet2n69OSh0CMdC6Q9UcW1zG
-         aKQYDmRREupx++uzfP2RLoWwLvaCYAIDStB3FCCi/JLpl+adgl0VB22EmUFo+Gr6tQRo
-         yCNA==
-X-Forwarded-Encrypted: i=1; AJvYcCVX0XmBTZMfN4ZCtm4IFpW+ifXirW412UMNDagmbgm2yrsVUN3890iIe5g9pybMRwIpMr7f8VnUdWWfdw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVveqOw/SdTXJbkrobA8cBU2474V0QPf41NKBZWDjxiU2NgNah
-	A0nSQ58fIJ6uI6tMOUZZK8SZNV7vDLSkXd/lMwSlTCqDy7T6xZnEI2sdkA0+I5I=
-X-Google-Smtp-Source: AGHT+IGlUx4UI/v3b2oENqpUD3SWe5iXsSQ5zVHEi5EPQKaNatFrxKUMmpfzMaoDqDOnznbvgWPVyg==
-X-Received: by 2002:a05:620a:4403:b0:7a2:db1:573d with SMTP id af79cd13be357-7a689719a8bmr1317699185a.36.1724707938647;
-        Mon, 26 Aug 2024 14:32:18 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a67f41e276sm488523785a.136.2024.08.26.14.32.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2024 14:32:17 -0700 (PDT)
-Date: Mon, 26 Aug 2024 17:32:16 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,
-	linux-f2fs-devel@lists.sourceforge.net, clm@fb.com, terrelln@fb.com,
-	dsterba@suse.com, linux-btrfs@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH 02/14] btrfs: convert get_next_extent_buffer()
- to take a folio
-Message-ID: <20240826213216.GA2420297@perftesting>
-References: <20240822013714.3278193-1-lizetao1@huawei.com>
- <20240822013714.3278193-3-lizetao1@huawei.com>
- <Zsaq_QkyQIhGsvTj@casper.infradead.org>
- <0f643b0f-f1c2-48b7-99d5-809b8b7f0aac@gmx.com>
- <ZscqGAMm1tofHSSG@casper.infradead.org>
- <38247c40-604b-443a-a600-0876b596a284@gmx.com>
- <7a04ac3b-e655-4a80-89dc-19962db50f05@gmx.com>
- <Zsis82IKSAq6Mgms@casper.infradead.org>
- <20240826141301.GB2393039@perftesting>
- <Zsyzoef1LlNacPkb@casper.infradead.org>
+	s=arc-20240116; t=1724710570; c=relaxed/simple;
+	bh=9XvTM4wMA78+6qINfD1s2G4S1dwvqzuLP2uiJYp3ZKM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=irutMFjRTuoYgHXd2sadALkVXYukNj9XlOAB2ELSzyYXdzh4j8PXk2IKhyL3Z6fJsEYWKnABBDM3Q5C1QcSSkMclv0Fg/sacEiBIctmjqv1DKyBFIrhlEfli4yna5yLXGbfjlesuVts6+sICuJmrPdc86KgclJ1np1wEZuAnLAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=DXsIRRoC; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1724710556; x=1725315356; i=quwenruo.btrfs@gmx.com;
+	bh=g1MkF2A8UY0lY8N2xcqW1C4UynF1W8GTPh761UUE8z4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=DXsIRRoC/AT58vr67l5eI5kLapdIFc6qFjOgEogw6Pgc1RfOYplC1a9k2U8T70RP
+	 j5AAh8JBvbjPldlxMKbNmzrAeMhZZXJ/g7Ptju25iYfRRgACe8/gn+bfSX7HU0N7Q
+	 WSUKDZVOv7FEhEfJJkIQy83zUFdb8aBo0rsOCjXzTI0A8ZIMXgccZ98FwDukuHC6Y
+	 m1P8X2hSVywthVZu/nWcI8t3pE6Gza+0n6MptIfh1xiCohuDBkyTC/hFiktHb4pn2
+	 PDh4lBzkULo4doDyl7oCTOGlQT+mX0aeeI+D9Z7StXY6Ukmw1gcIdFHOXkhuEaBRI
+	 NOQ8Cc+uo9lodnJPoQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0X8o-1ruz3g1RYq-00viVN; Tue, 27
+ Aug 2024 00:15:56 +0200
+Message-ID: <e8a39bc8-7efd-421e-8315-b4a5c977d942@gmx.com>
+Date: Tue, 27 Aug 2024 07:45:53 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zsyzoef1LlNacPkb@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] fstests: btrfs: a new test case to verify a
+ use-after-free bug
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+References: <20240824103021.264856-1-wqu@suse.com>
+ <CAL3q7H7Hmqr_bn7b7G6aSKK1vWq4EhW=tuWZRPWZGv-MJtbMTQ@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAL3q7H7Hmqr_bn7b7G6aSKK1vWq4EhW=tuWZRPWZGv-MJtbMTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OXtvyuu50mNvbHv5ruo2wFrcPK4QFnbSdBRwu/LEIdsiG0HFg8B
+ WiOUU8kBvZ1lph1g7XoA5dYlnobn0QvhsnD7v/UMMWXLTMyZFKjOc/Srz5GL9jw6wJChF6v
+ xH37LBimFgcOKj2PyJuytV9SlDY76LptNQi2QmJ5EUhz67GRoysEQaezeiBsp9KbV6ur/VW
+ VIO1GPQRYlYfE2j8/mhew==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:rK/koKkZaIU=;7UEUPZlrRHJzKPcmFkziJcauH5h
+ Qt72qe66yOLAh1pQfm1snVnb16l8tcD3+utPDL7taemESaIE4jLZ8dCEiuEFdHN2SRznbDv/f
+ BhtTLpJ9SOuEcG9Xfq1F3ysO+EkeHzRxU3OHvJMj8m/BM/YTYJtWPjdj4yE6JeoKe+1P4tnkB
+ GAO9iqUQ82uoPJmqjX2XEPDwNed03U60aCav8LxdY7E6K7Jk9JSk3u22s0T6jCbJEuiZq+e/L
+ WXNvq7JwWuXr/BYRcAxqjDiW2TzR682Pc3paYHOaxTW0C9PH45zlH0/PEb7nXqjp694UyfsvZ
+ oTw1f2AxwAY06DJRgxOY63oW2FEVTsHh/Vp3S1+K5BC3Pq+rjtqKWj4l6i6Ov9FcYZSkN6+vr
+ 9QaHfckUAXAlHKW8xC4P26KyiIvODkMKyvnereK5UHeBEUEcme53nXTuQ2kXuv7njBWBhrSo8
+ DSKnUvwcRTP9mh069HvEyAvVvKBw3VvcHjbPN/OvCuBKzcO8mHQu6n+PwPdKqU/AgsBqU1/Cw
+ nhaO47ZPgz2rzoP0xrcLhsu9b1z2HxnCXqU6BjzWg81y3Ab3Tk9Tr7U3cauRZJy6v5Bn0ASj4
+ MSt1yVtp52/ZYoWgDR7JANFYKawXZSddj86ehb/LMrKimlQhmnMfF+rlkVNw6sD4jPPYV+Fwj
+ V8o432R3RbPQbTx+8+MC3mtMWqjQQ9Xual53jGWN5v++GAzh0mJo7ENTcFjdABw+Nwb/wD++4
+ MD2TdweZpi1eC+PPP/109Dw4uYA49tvDovwE72ONBiMY6saQkZnUn0e/PXTBRo4JqH8vW8cRW
+ gM1DK4wqHh10iuUPdjOdYFZw==
 
-On Mon, Aug 26, 2024 at 05:56:01PM +0100, Matthew Wilcox wrote:
-> On Mon, Aug 26, 2024 at 10:13:01AM -0400, Josef Bacik wrote:
-> > On Fri, Aug 23, 2024 at 04:38:27PM +0100, Matthew Wilcox wrote:
-> > > On Fri, Aug 23, 2024 at 11:43:41AM +0930, Qu Wenruo wrote:
-> > > > 在 2024/8/23 07:55, Qu Wenruo 写道:
-> > > > > 在 2024/8/22 21:37, Matthew Wilcox 写道:
-> > > > > > On Thu, Aug 22, 2024 at 08:28:09PM +0930, Qu Wenruo wrote:
-> > > > > > > But what will happen if some writes happened to that larger folio?
-> > > > > > > Do MM layer detects that and split the folios? Or the fs has to go the
-> > > > > > > subpage routine (with an extra structure recording all the subpage flags
-> > > > > > > bitmap)?
-> > > > > > 
-> > > > > > Entirely up to the filesystem.  It would help if btrfs used the same
-> > > > > > terminology as the rest of the filesystems instead of inventing its own
-> > > > > > "subpage" thing.  As far as I can tell, "subpage" means "fs block size",
-> > > > > > but maybe it has a different meaning that I haven't ascertained.
-> > > > > 
-> > > > > Then tell me the correct terminology to describe fs block size smaller
-> > > > > than page size in the first place.
-> > > > > 
-> > > > > "fs block size" is not good enough, we want a terminology to describe
-> > > > > "fs block size" smaller than page size.
-> > > 
-> > > Oh dear.  btrfs really has corrupted your brain.  Here's the terminology
-> > > used in the rest of Linux:
-> > 
-> > This isn't necessary commentary, this gives the impression that we're
-> > wrong/stupid/etc.  We're all in this community together, having public, negative
-> > commentary like this is unnecessary, and frankly contributes to my growing
-> > desire/priorities to shift most of my development outside of the kernel
-> > community.  And if somebody with my experience and history in this community is
-> > becoming more and more disillusioned with this work and making serious efforts
-> > to extricate themselves from the project, then what does that say about our
-> > ability to bring in new developers?  Thanks,
-> 
-> You know what?  I'm disillusioned too.  It's been over two and a half
-> years since folios were added (v5.16 was the first release with folios).
-> I knew it would be a long project (I was anticipating five years).
-> I was expecting to have to slog through all the old unmaintained crap
-> filesystems doing minimal conversions.  What I wasn't expecting was for
-> all the allegedly maintained filesystems to sit on their fucking hands and
-> ignore it as long as possible.  The biggest pains right now are btrfs,
-> ceph and f2fs, all of which have people who are paid to work on them!
-> I had to do ext4 largely myself.
-> 
-> Some filesystems have been great.  XFS worked with me as I did that
-> filesystem first.  nfs took care of their own code.  Dave Howells has
-> done most of the other network filesystems.  Many other people have
-> also helped.
-> 
-> But we can't even talk to each other unless we agree on what words mean.
-> And btrfs inventing its own terminology for things which already exist
-> in other filesystems is extremely unhelpful.
-> 
-> We need to remove the temporary hack that is CONFIG_READ_ONLY_THP_FOR_FS.
-> That went in with the understanding that filesystems that mattered would
-> add large folio support.  When I see someone purporting to represent
-> btrfs say "Oh, we're not going to do that", that's a breach of trust.
-> 
-> When I'm accused of not understanding things from the filesystem
-> perspective, that's just a lie.  I have 192 commits in fs/ between 6.6
-> and 6.10 versus 160 in mm/ (346 commits in both combined, so 6 commits
-> are double-counted because they touch both).  This whole project has
-> been filesystem-centric from the beginning.
 
-I'm not talking about the pace of change, I'm talking about basic, professional
-communication standards.  Being frustrated is one thing, taking it out on a
-developer or a project in a public forum is another.  Thanks,
 
-Josef
+=E5=9C=A8 2024/8/26 21:44, Filipe Manana =E5=86=99=E9=81=93:
+[...]
+>> +       # Manually check the dmesg for "BUG", and do not call _check_dm=
+esg()
+>> +       # as it will clear 'check_dmesg' file and skips the final check=
+ after
+>> +       # the test.
+>> +       # For now just focus on the "BUG:" line from KASAN.
+>> +       if _check_dmesg_for "BUG" ; then
+>> +               _fail "Critical error(s) found in dmesg"
+>> +       fi
+>
+> Why do the check manually? The check script calls _check_dmesg when a
+> test finishes and if it finds 'BUG:' there, it will make the test
+> fail.
+> So there's no need to do the unmount and call _check_dmesg_for.
+
+The main reasons are:
+
+1. Fail the test as soon as possible
+    Mostly to let the dmesg to contain only the failed iteration.
+    I found it especially useful to stop immediately to inspect the
+    dmesg, during the verification of my fix.
+
+    This doesn't make too much difference for routine QA runs, but in the
+    future if some regression happened and one (maybe myself) is going to
+    investigate the failure, this early exit will make life much easier.
+
+2. To avoid too small dmesg buffer
+    Since each iteration will trigger some error message due to the
+    corrupted tree blocks, combined with the 32 runs, I'm not that
+    confident all dmesg buffer size can save all the dmesg.
+
+Hopes this explains the reasons well.
+
+Thanks,
+Qu
+>
+> Thanks.
+>
+>> +done
+>> +
+>> +echo "Silence is golden"
+>> +
+>> +# success, all done
+>> +status=3D0
+>> +exit
+>> diff --git a/tests/btrfs/319.out b/tests/btrfs/319.out
+>> new file mode 100644
+>> index 00000000..d40c929a
+>> --- /dev/null
+>> +++ b/tests/btrfs/319.out
+>> @@ -0,0 +1,2 @@
+>> +QA output created by 319
+>> +Silence is golden
+>> --
+>> 2.46.0
+>>
+>>
+>
 
