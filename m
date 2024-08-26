@@ -1,74 +1,70 @@
-Return-Path: <linux-btrfs+bounces-7497-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7498-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CD6D95F2D4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 15:24:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B15895F2D8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 15:24:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA25A2814C1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 13:24:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D59921F23FDE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 13:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9001185E7B;
-	Mon, 26 Aug 2024 13:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB311185B77;
+	Mon, 26 Aug 2024 13:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Idkm4azm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ky9zwDdo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B72A1714B4
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 13:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399EA2C95;
+	Mon, 26 Aug 2024 13:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724678636; cv=none; b=WGF3swcmrlkxZH8cH43UNR5tRMj8+eMGfiKCO9pLNy/YMgBexmCc1eD7EUxLaV8THuAB7qTpwYJPYFVrbGnqPeNo0U3ymkZglHim5ICtZhd9tL6vITy6FVMjIWpvL/1Hx39NoYXGbcgRIKbvx21vM3YeltD+C+RqczWfbqSNf6E=
+	t=1724678680; cv=none; b=mFQixAmw65czEkeJScPGWzha0d+czCBsrUs19ytGP4I7LNWsz33ZNSgfAT5+xwmOdRUjnAckYHy6wRzW12FuBbGre0k2yC59Iw+kjmCIBxUj8iiToT77TKFf7Is4zFEcTOKrS7qIZcFKnuLx4sxDWS4alsGJ1on74HJtW0DhhaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724678636; c=relaxed/simple;
-	bh=jeztrx2wemey1pVY0c62bFmR4t/EoPdY6f0cjjxFm3E=;
+	s=arc-20240116; t=1724678680; c=relaxed/simple;
+	bh=xfEqhEDpmWF2aBmxxyu37rCNaOAJ77ma15Jwxkgm6Q4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VHdqFhMxQgLg1YDBoYdYh8TMKa+w9xplzmXRK01aOJmfQuMZYkIJbRqnEeMHiKkFXSrzsrMEKteZvAnyygHJ5mIIJRKvTxnVSX6Os//t4b0vw8hQrH0DPYmVQSx7H0iVouuG8S4Oxciejd9eLv5Vl74OrlWMuQhOOGuMKmxj4Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Idkm4azm; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5334c4d6829so5924976e87.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 06:23:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724678632; x=1725283432; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IQCe7McW9E8hf61lrcG6VB7x1ye3Lq6gKShLHGG32KE=;
-        b=Idkm4azmAAv0OlQT098UhA2YN2r/QCXeuSiG+8tpEoLTUag1bQzyHOZW9eH9Ndyss1
-         M6FfNmt/ldaX+xjNd1V7yfIwr1yzlFp9tbaRBMj/nnZ6jnmofi5tDJz3OOqWZYeyqyA3
-         ny2DvMDCFImTRnnT2VCLZCvkjNp8Np/z3spOS9QG45n5a9DBIlmBL5WQCHfEt692Mi6C
-         H7bK/MxdCIjEnLt2S6tYTQARhtOH84jlZwmotNzDpkDmzv/M29RXRNpFX+Ile4sEhz0l
-         SGKJ7VyBaLuYHP7+I2V9IPxSWgPcT9ZRCwz2QtZ2Ja9hEvN02c6QrxVnOSkXnKnA19qU
-         FTmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724678632; x=1725283432;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IQCe7McW9E8hf61lrcG6VB7x1ye3Lq6gKShLHGG32KE=;
-        b=XLKx9gWrVWs4vp4SGSbWOkZnsvrwD+S9ZXFrQoP7cTaLUN3Af/asfUy0Oz+IEhH4CO
-         2BgZrDJvnLbKrUb+dNoqF/28tcXcmrNsziFjDAFST3Cu0HQtmfrWtVTMOjoY4RBOkbkW
-         8+d597f2dJWZa0FlrUEcxgoBydgHBIIBRL0MUqdf1GwxCUGUuMFFrdIXDz4rNinxAj1C
-         +i5qhFlfNRNzfTUi9D3I4L2V48HVweVJ0A4BvxJp9QfY0nyVvWDfJA5nMp7T5j04YMcw
-         4Z4WOiUYL3ohDACR8mNt1zWOzTRnM+AWggh8udtLTWUUI9sEbKrt0/XZgayzfSyrhu/w
-         K5bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzgKtYaUrjTGVOu3ri+ojaPjiV2uMc6QugcusMREhdVuedX4oF5pNNtNO4GGM6ZKwLdOf0qcJB89hWGQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9pewPZxzH6mL2XmoSQrP9NGO87Mwe2WPb+6AsPULCVpvQqQkG
-	YulqnYTXXD7czbmDYtp8QFtQtKLaq9Io0PSlW+b7c5u2AQUzxoqgZ3p4UmmG0oA=
-X-Google-Smtp-Source: AGHT+IHb9h8+cB84cqvegDS1MyMJPEFI1QyTGHUhHtl3xRFQzxT2+gqbftjjzsxNnZRT1RRhuK0Sgg==
-X-Received: by 2002:a05:6512:3d24:b0:533:44a3:21b9 with SMTP id 2adb3069b0e04-534387681d2mr6366176e87.1.1724678632351;
-        Mon, 26 Aug 2024 06:23:52 -0700 (PDT)
-Received: from pathway.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a868f436330sm665305066b.112.2024.08.26.06.23.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Aug 2024 06:23:52 -0700 (PDT)
-Date: Mon, 26 Aug 2024 15:23:50 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AZ4qiQjvjk1HTYhuGGnIQmMwcUZ8DCgXJln0BKziPHf1C/eVQQjBpZ4aNDGMMZFNV+Mp5RYxH4ecKtLTGlDbOhtKRGEQ40nQVGVpCq3ZUfZJv48mPBTRwlAEyn3gGMcRv+eECngW4y5qFC9FovLrYw8SWsJlaJEibmLbWOTAtJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ky9zwDdo; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724678678; x=1756214678;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xfEqhEDpmWF2aBmxxyu37rCNaOAJ77ma15Jwxkgm6Q4=;
+  b=ky9zwDdoe2dfXGbrov2pnwf+/Y7vfkIR943MtSs567GaJWtGyjkx09Wk
+   gy4vIXhHPwlyjVfqqFzY8ht9ImGecmFJlg1dS6zT6ctTwqN0a4/exPXqE
+   pM5OigC+3bFJsIn52grvfaVk2pqcdTRJDhfXqNh4sAJVJjJOk8Oy59X6m
+   SXtzrc/zv77BQl2OLVYSTkRVvnEKd0+i4/vFSEi/jvJAktY3e+8IvTDIi
+   lKlyb7a3d01ujELxia1O6eqJzwAK2P37qxiTbAppdGFlrR1yVlM/qNn0Y
+   eyK3suBDCb00wKP9OmWbKBVpulBBmJSacGfN31rD+FsN+w3WZk00UgGFg
+   w==;
+X-CSE-ConnectionGUID: 4VxtkrMbS8GEWqjEoUNqjg==
+X-CSE-MsgGUID: zZfxmvlkSNqWaLEvC4f7wA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="23281410"
+X-IronPort-AV: E=Sophos;i="6.10,177,1719903600"; 
+   d="scan'208";a="23281410"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 06:24:37 -0700
+X-CSE-ConnectionGUID: xQeijwBhS+6GvIOEaDqo4g==
+X-CSE-MsgGUID: 1VWYcWNxQfGomDPvu7kDqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,177,1719903600"; 
+   d="scan'208";a="62479751"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 06:24:33 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1siZht-00000001wVd-0PJg;
+	Mon, 26 Aug 2024 16:24:29 +0300
+Date: Mon, 26 Aug 2024 16:24:28 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Petr Mladek <pmladek@suse.com>
 Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
 	Fan Ni <fan.ni@samsung.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
@@ -87,12 +83,12 @@ Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
 	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
 	nvdimm@lists.linux.dev
 Subject: Re: [PATCH v3 02/25] printk: Add print format (%par) for struct range
-Message-ID: <ZsyB5rqhaZ-oRwny@pathway.suse.cz>
+Message-ID: <ZsyCDP-AJqH02zJk@smile.fi.intel.com>
 References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
  <20240816-dcd-type2-upstream-v3-2-7c9b96cba6d7@intel.com>
  <ZsSjdjzRSG87alk5@pathway.suse.cz>
  <66c77b1c5c65c_1719d2940@iweiny-mobl.notmuch>
- <Zsd_EctNZ80fuKMu@smile.fi.intel.com>
+ <ZsyAZsDeWLNvSec9@pathway.suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -101,43 +97,38 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zsd_EctNZ80fuKMu@smile.fi.intel.com>
+In-Reply-To: <ZsyAZsDeWLNvSec9@pathway.suse.cz>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu 2024-08-22 21:10:25, Andy Shevchenko wrote:
-> On Thu, Aug 22, 2024 at 12:53:32PM -0500, Ira Weiny wrote:
+On Mon, Aug 26, 2024 at 03:17:26PM +0200, Petr Mladek wrote:
+> On Thu 2024-08-22 12:53:32, Ira Weiny wrote:
 > > Petr Mladek wrote:
 > > > On Fri 2024-08-16 09:44:10, Ira Weiny wrote:
-> 
-> ...
-> 
-> > > > +	%par	[range 0x60000000-0x6fffffff] or
-> > > 
-> > > It seems that it is always 64-bit. It prints:
-> > > 
-> > > struct range {
-> > > 	u64   start;
-> > > 	u64   end;
-> > > };
+
+[...]
+
+> > > > +	static const struct printf_spec range_spec = {
+> > > > +		.base = 16,
+> > > > +		.field_width = RANGE_PRINTK_SIZE,
 > > 
-> > Indeed.  Thanks I should not have just copied/pasted.
+> > However, my testing indicates this needs to be.
+> > 
+> >                 .field_width = 18, /* 2 (0x) + 2 * 8 (bytes) */
 > 
-> With that said, I'm not sure the %pa is a good placeholder for this ('a' stands
-> to "address" AFAIU). Perhaps this should go somewhere under %pr/%pR?
+> Makes sense. Great catch!
 
-The r/R in %pr/%pR actually stands for "resource".
+Which effectively means usage of special_hex_number().
+But again, consider to unite this with %pR/r implementation(s).
 
-But "%ra" really looks like a better choice than "%par". Both
-"resource"  and "range" starts with 'r'. Also the struct resource
-is printed as a range of values.
+> > ... to properly zero pad the value.  Does that make sense?
+> >
+> > > > +		.precision = -1,
+> > > > +		.flags = SPECIAL | SMALL | ZEROPAD,
+> > > > +	};
 
-> > > > +		[range 0x0000000060000000-0x000000006fffffff]
-> > > > +
-> > > > +For printing struct range.  A variation of printing a physical address is to
-> > > > +print the value of struct range which are often used to hold a physical address
-> > > > +range.
-> > > > +
-> > > > +Passed by reference.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Best Regards,
-Petr
+
 
