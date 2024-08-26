@@ -1,222 +1,248 @@
-Return-Path: <linux-btrfs+bounces-7530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 583FB95FD72
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 00:51:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B3495FDAA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 01:05:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D98A81F235A4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 22:51:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60F2F1F255B6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 23:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2461A0712;
-	Mon, 26 Aug 2024 22:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C4D19DF68;
+	Mon, 26 Aug 2024 23:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZNBcjZfI";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Sn4KPvKI"
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="GI4vsleI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR03-VI1-obe.outbound.protection.outlook.com (mail-vi1eur03olkn2040.outbound.protection.outlook.com [40.92.57.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F56519D07B;
-	Mon, 26 Aug 2024 22:47:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724712456; cv=none; b=SvAb92mA5lnMnEk57lDyXdRM125eQI9aca2slQ3d8exndYzT2u5L2oHDxIHSbLgqHYcUcryU8t3H8kgfXFPON4xtwzGffZMOryOVryVxMb2PPzeh88Z0UKu1wxcIeGKFuBK2iwCp5rd6v6KDwnasdbSWY6t4BO+GZOwT2mcMmqQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724712456; c=relaxed/simple;
-	bh=acmLaQghCWHJkgCN1F81wTRDNj40GOGDzfLTFF9Im4s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hfQnlOteF7uHqcUwJX8MsyzrWBhlenIKiqpmIo785lBxPmvaNFoqNjFoYh3KcWEnNua1CKUl0GQilhIwfUtmktbiS5wdsDSG6uyr7bmUHDJ8tJitSV018P+IizAUzNkZuEDpu1ilzIj97Rjx2l3yppYChr/8Ki7E9oXcQLdIYs4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZNBcjZfI; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Sn4KPvKI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DA38221997;
-	Mon, 26 Aug 2024 22:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1724712452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xtRDyhTd4mtm4s6AmWEzPG2y7hu+27we2igLdfn6l3g=;
-	b=ZNBcjZfI0sVseb/p926cxxLk9ocg1C+rtJ9KY69VZmzhMc6F6W253RUJtzKCcfBXk6gMmY
-	Q+kUFJPcixZ+8Bf54EHAVzFRtEOQoH+asQzKVieywxHR+f/Zdby86jT3J8roZ709kg4wHh
-	aO4R6WUweNz3y7ppX8t4miOb+jKNu7Y=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Sn4KPvKI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1724712451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=xtRDyhTd4mtm4s6AmWEzPG2y7hu+27we2igLdfn6l3g=;
-	b=Sn4KPvKIiG2LMeCG9/JyH7KhwzOv1fUqw6jKxCLWDk41Vu0PNnUi/WQlAYYaz1aKLtT/vJ
-	R+DEuQ6KbaJCnky+G7hLt6+0HJrGgalyvR5u+wuq4RxezgsPGiZP/HHnNC0uVFE9BZS1th
-	8VOBBzykk2V2R2VjNW8j2kGdjt190XI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9937E13724;
-	Mon, 26 Aug 2024 22:47:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id S3ObFgIGzWZsbQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 26 Aug 2024 22:47:30 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] fstests: btrfs/125: do not use raid5 for metadata
-Date: Tue, 27 Aug 2024 08:17:08 +0930
-Message-ID: <20240826224708.9322-1-wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6BF482C7E
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 23:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.57.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724713480; cv=fail; b=WKLfZlx083RjARVm0qcrLcrKeNlXbs9b7XDysRwwOLciIS8XTTpHSQgC3YTUSZdzNhmC2gW3j4SN6uAdDMYcGrFHYcUekMTJog/D0/aVrLIPbSeMgBClvda4fa8iyecu4v3iSO6ahsQAMgCEOui31AXIR5uX8+beM8e2HLzwH90=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724713480; c=relaxed/simple;
+	bh=vS/C4CpXO1KAgtxGf3co0xWCqNcXiKCT6t6xE20AnU4=;
+	h=Content-Type:Message-ID:Date:Subject:To:References:From:
+	 In-Reply-To:MIME-Version; b=VYKW7yjxt8nza2r2kYfcTfvlXzMjl0rV6TQtf8FR/o39zdHInaChoEw7T+TtXdlOcxDUwx+g/GK43WzhEFUoeQ6zcNMdytzt4nwzrUQncojCRiJmdSvNuY8e6935i+g+vjm/8DshFn9quwCk6QTS0A+mHNd9b6NyETFNzEhBSx4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=GI4vsleI; arc=fail smtp.client-ip=40.92.57.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=uAkkhYIU5QP07+44FjcwVeoecmMcW/PzkWTvEAqmSTIEONHgoDTI33zTo50UGm8ZvX17a2atABLY1kebrPgIDxgj+5jxaHv6dFKTVSpTT8hbppGFOZA7m0ZwcC2Tj2gJ7dsXLJNsN9N2Dja8wCYpD289dGj5g45KIH28C+zKSBzCDeUIxBX7M5cZv8tiqQCbiJIyx7FFUH8wwNBNI6Ocruak4BrKwe/iFzwgWEiyEUfjbQi7GwQWrzyCS43+PKrspWVmkoARg3IZQLRHx8Ea7kWvAiQUVFT4DH0coZAMQHBWJIweig1+MO0XARrkP2WuMw9/OCGajDzJ5y+o6O8CAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hv60O79Fhhcec7XwmdTS2y2/mF+F/qF9IpQ+TvNDuro=;
+ b=OVBkSUt06Ih7Tga1b0ThE/rgxZ+EWiU6D6uPWbgYVlB5In8sBIsLqTfp0JWj7CoTf4JyYSCerewI3IYvqurTVDapitkT4Qwg5mnBnuFPOn8eH+kjof0mT7WdtNFl7ViNeWLDFaZLaNKdjO0DAfvxoM4cvTlia6V/C04GEJBINgL3V6oW4ixH1byyA/kDdZegzZB9VoHmTJFOdGxZVUkC6hNDge3XiYjcP3jyYm+JnaPa9/0KlNMYL2CMMlJ2gmwgvTFgZYn8L4i+0SFkakqL9U1KjqzJDwnYOamVJAjKubBQ+A1Xqny8tr+Ee22QNPE2+xKs5zPCzE5jCOyxAFhKyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hv60O79Fhhcec7XwmdTS2y2/mF+F/qF9IpQ+TvNDuro=;
+ b=GI4vsleIy8h1gTpgr1+kqsWp9IFWkn6Kzr1infEUIXnoAEzbALwuTGdpS23ep1nSj5EL1UFqZSui8HIkw6ypSSpfZUlQVSjVdwZ1hwsGMVEIDJzmUhfYfuLTh3wc5j/p9q19LxNfTyL5/DC2oCNwaGNiHBKZmZSIXso+WyFzGR5pD8R3sE0EHln/Nl/wKspEgYpBjjHdhWMt2/1D2COofTmABu2H/Zg9ymGP7zUXrNZlxwPQLt6knBLCPBe+1bp3e6wElfFMXUQ+VGvSGR7ZhuZizwPltnBwYxWnMnW3CXZDX9xUiNVf2yG3G1K7i1GPimY7a/uRB9AYZVypBwdKPg==
+Received: from AS8P250MB0886.EURP250.PROD.OUTLOOK.COM (2603:10a6:20b:54b::7)
+ by PA2P250MB1069.EURP250.PROD.OUTLOOK.COM (2603:10a6:102:40d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7897.24; Mon, 26 Aug
+ 2024 23:04:36 +0000
+Received: from AS8P250MB0886.EURP250.PROD.OUTLOOK.COM
+ ([fe80::e8e5:32e2:57ff:ab61]) by AS8P250MB0886.EURP250.PROD.OUTLOOK.COM
+ ([fe80::e8e5:32e2:57ff:ab61%2]) with mapi id 15.20.7897.021; Mon, 26 Aug 2024
+ 23:04:35 +0000
+Content-Type: multipart/mixed; boundary="------------jSJqvbfjlV51OgYwOHhNv2kG"
+Message-ID:
+ <AS8P250MB08869C932AF99C5C087F1B408F8B2@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
+Date: Tue, 27 Aug 2024 01:04:34 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: Errors found in extent allocation tree (single bit flipped)
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <AS8P250MB0886A81B469CD5F707144EA38F852@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
+ <6d90baa9-ffc1-4c9d-87b2-4ba89983bef1@gmx.com>
+Content-Language: en-US
+From: Pieter P <pieter.p.dev@outlook.com>
+In-Reply-To: <6d90baa9-ffc1-4c9d-87b2-4ba89983bef1@gmx.com>
+X-TMN: [glYVMmZwLSUTF1LLFsEKdbhcdpI1Espq]
+X-ClientProxiedBy: AS4P190CA0069.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:656::15) To AS8P250MB0886.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:20b:54b::7)
+X-Microsoft-Original-Message-ID:
+ <869641e2-1e5e-4f02-a74f-1eaf219a6ef2@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: DA38221997
-X-Spam-Score: -5.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8P250MB0886:EE_|PA2P250MB1069:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4360c875-7dfe-4daa-b6a5-08dcc623743f
+X-Microsoft-Antispam:
+	BCL:0;ARA:14566002|6092099012|15080799006|461199028|8060799006|19110799003|5072599009|440099028|3412199025;
+X-Microsoft-Antispam-Message-Info:
+	FRyh2XS0hEKzVKNH59hKONDlUD/nsfDQAC7EbQIaxDR0PCjLrn6GTmZ+JMi98RDsh7/9Cof45xt/K6EVB9etHE61Nq/f7YZVZptbWdl3f9K1TJLzZYrK7qqHBajLht64ykv54koxzelVtSs9X2KT+zDIh2Xny3OLisMlQYYvXYXjUuAXozDVYX/3Cx772XGcv2GAtnm040ta+zYpTR99LwutrT9/O13SZEZVeo6nYq8iL0AUULS1srOTfNepL59eRMsltiafW16Dazpjp0VUckHjDINKy62ddLW5ew7Kk5hJpvw92+KBOuXMMqAxqrg+aOPr07WE/kXMsciYv4VHfUhhipK/JT7ARo9WgN1h06+v20At3+efk+nnaH6Ys6lcLBM70+5t4zzgEQAQcDLyng1+/de62ZW94aAghAwBpNqiddkDwTrstq+AZycirlHaK3J6ifEwHqzgmaj3fJLmGW51OAPOmzwBsgXzBZaBMF0eBH68G7+n3IW4Ks5GJ1b8RFeeMdDENvrKXcF9L9XbhH3A6HxH1kquTq+8MRmtjQhtRIRDuehRfJv8k0RZxnN+BLUM38LHM+kwxJpRb+H25DeoOmO51Ove3RP11fDW52SDDyxF9qw7j3RKbXM49WMvgw8qPANXNyy5Xltka52tw4NyW2vHTe++vx+G9RxGxeS0tDj8qakKvbYplfyJ7PleZHNKFfe6U6CduAAKzpSaZq8zh10CEpwiq/1OzY2dRaGAEBJHiGkOzTYHCtafL1V3
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZHpzSm1uSzE4U3Fza25Hak1YZ3dmd2xLWTRQbWd3WXhqSnR3Vkdid2lXa056?=
+ =?utf-8?B?bS8xOEZGNEgwbjloSWhuY2c4cDdoYW1sRXk1clN0dkx3a3ZaeDhRc1BvRkFx?=
+ =?utf-8?B?YWJKNGRseHVzUG9Bb3JJdXc0ejdjeFAyWVJxa004Y0QrZ2hNRTlJZ2VPMXRW?=
+ =?utf-8?B?cWR1dlRuN3QvMndBLy9jYnJuM0lUYnV1bVRrYmJsQVJIZWJqNXJ3TWgxZ2p3?=
+ =?utf-8?B?R3FzWGM0eFV1ci9VSElFc1FiRUV6Rm12dFJNbEJTdmxWQmNVdTNaYkFydlQ2?=
+ =?utf-8?B?M1Rvd1VyZEthOTluRStIMGMvTTNEcFVvZHBzVWQvTUxISnNFNmQzZWxkYUM0?=
+ =?utf-8?B?aG1wdElNck52YzIrUGtCdEZtdEl0UHduTFJCVkVISHdRRDZReVRrcVZNMXNj?=
+ =?utf-8?B?NENjQmpOQmlKQWtYSEd2cXBoWUFsZElaQVd2eGF6N0IwTFd3c1Z4dzVHR2NJ?=
+ =?utf-8?B?SG0yVXYvMzVtVUdwTUcxWHRjS3FrNVlodFk0VjVSUks4MmNMU1V0SC90Uzho?=
+ =?utf-8?B?RHh3NUNOcEVteS9nMHF0WW0vbVJqQm9KSjYxYUNjcGNUZlpESUp5NEdBaWd4?=
+ =?utf-8?B?SjR4QkJtNTAxOVpxRnVWRERaYXNWUVE0dkpzR0FDbUJGNFRZKy9ueW95eUdU?=
+ =?utf-8?B?ZWZxQ3BDUXpsRVJRSTIvQU1QN3dCVHNEemQ1aVl6L1ZrVEJSa2tiQWlLTTFl?=
+ =?utf-8?B?eEg4MU8wQVRicEwzNUk5cTlUUVBONkVQL2RiSzY2Mmg5bzdFbWVjWTVnOFFF?=
+ =?utf-8?B?K3VWa0cxWlBpbjJXTW85L1BBWjhIMm5BeDZOcFJYWFZBQlZSdkVjbWVGRU14?=
+ =?utf-8?B?SXZoQ2NRYXpPSW9XQkJOcTg1c0lnV0tzVlVTZVEzT3FweU0vQlorZ0x4QWlF?=
+ =?utf-8?B?ZFp5MkRBeUNZaDZBM3VYaEZFclVHc1hUQTRHUWhpaFkwU1dxLzkvTm5Ld1Vq?=
+ =?utf-8?B?a2lhajZQbWNZWnZNSFlSVC8wUW93K2hyRExia2svamRYaVdoeFhWNUdkamxn?=
+ =?utf-8?B?eWYrbGZUbEQxZTRlTWx2QmcvdHQwcXN0Rm9qZGJUVENOU2QrbkUxQ1gvY2hR?=
+ =?utf-8?B?d29hUHBIR3Fnb2JyMS9GS3RZd2EyTUFlQnpPLzBSTzBCQm50a0VmRUdZZ1ly?=
+ =?utf-8?B?NXh1a2Vod243RStySHVOVldrc3hpaFRDSEp2bkpJNGJuMWRGMW0vZFFMQkRu?=
+ =?utf-8?B?eFdhQUNKMDZGNEFoeG12VWZHb1FsL0J5U2dlblVpNUVxWWhOaWtoMzBOL2hH?=
+ =?utf-8?B?OHV1TnkwWnhQbkNQMTNTMktKV0VMemNYL2Z4UUx5Y0E2b25sK0Z1Vi9UcHZ6?=
+ =?utf-8?B?UnlqUEdhWFZaamFzQXNCZ2lyVDlVUVhhL2pVZHFkeGNGMW5zYWJNTXpRU2Ri?=
+ =?utf-8?B?MWdMeTNGbkRzSFIyNGZXYk44bzVPdTN5eHYwd2FqOEUwUUNzNWx2TDlENlhV?=
+ =?utf-8?B?Q1ZXSms0SnVWUFBNRjZUa0wwKzJYRElNU2EwTFdoQ3ZGYlR1dmdYNVI0N1J6?=
+ =?utf-8?B?RDlZSVkzZmJTd2ZSRm1CeWVFRUFlcWFrMFBEeUZKbG1YSHJYY2E5Y1hxSmk0?=
+ =?utf-8?B?S05jby9NUzlYTnJyNVdsS3k1bUpGMTlEV2p6Mi9EOE9JYTV2RjJtTXY4T3Bs?=
+ =?utf-8?B?UWZJcVRlY3NTcDJYNTZoSEpEcGxPOS9MbXh4OU5TODJqTkxQempIV1pYTXFP?=
+ =?utf-8?Q?RM/SIdnwxbUNsU7qSRm1?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4360c875-7dfe-4daa-b6a5-08dcc623743f
+X-MS-Exchange-CrossTenant-AuthSource: AS8P250MB0886.EURP250.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2024 23:04:35.8128
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2P250MB1069
 
-[BUG]
-There are several bug reports of btrfs/125 failure recently, either
-causing balance failure (-EIO), or even kernel crash.
+--------------jSJqvbfjlV51OgYwOHhNv2kG
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The balance failure looks like this:
+Thanks for the help!
 
-     Mount normal and balance
-    +ERROR: error during balancing '/mnt/scratch': Input/output error
-    +There may be more info in syslog - try dmesg | tail
-    +md5sum: /mnt/scratch/tf2: Input/output error
+On 21/08/2024 00:55, Qu Wenruo wrote:
 
-The test case btrfs/125 is not reliable in the past, and has been
-discussed several times:
+> And in that case, "btrfs check --mode=lowmem" output may help a little
+> more, and the same for "btrfs check --repair --mode=lowmem". 
 
-https://lore.kernel.org/linux-btrfs/CAL3q7H4oa70DUhOFE7kot62KjxcbvvZKxu62VfLpAcmgsinBFw@mail.gmail.com/
-https://lore.kernel.org/linux-btrfs/53f7bace2ac75d88ace42dd811d48b7912647301.1654672140.git.wqu@suse.com/#t
+I've attached the output from both commands, unfortunately, that didn't 
+fix the issue.
 
-[CAUSE]
-There are several different factors involved.
+Subvolume 257 is my /home directory, and the broken inode is a temporary 
+file in a Chromium cache folder. I've tried deleting and overwriting 
+that file, but this causes the file system to go read-only a couple of 
+seconds later, and after re-mounting, the file re-appears. Reading the 
+file is not possible (input/output error).
 
-1. RMW mix the old and new metadata, causing unrepairable corruption
-   E.g. with the following layout:
+Is there a way to restore the file system by simply deleting this 
+inode+data entirely?
 
-   data 1   |<- Stale metadata ->| (from the out-of-date device)
-   data 2   |     Unused         |
-   parity   |PPPPPPPPPPPPPPPPPPPP|
+> If above lowmem mode still doesn't work, I can craft a tool for your
+> specific corruption if really needed.
+>
+> But that will need the dump of your subvolume 257 inode 50058751. 
 
-   In above case, although metadata on data 1 is out-of-date, we can
-   still rebuild the correct data from parity and data 2.
+Which data would you need specifically? How do I get such a dump?
 
-   But if we have new metadata writes into the data 2 stripe, an RMW
-   will screw up the whole situation:
+> Unless the system is using ECC memories, I doubt if that diagnostic tool
+> makes any difference.
+>
+> If there is already a strong indication of bitflip (and yes, it is), a
+> full memtest is highly recommended.
 
-   data 1   |<- Stale metadata ->| (from the out-of-date device)
-   data 2   |<-  New metadata  ->|
-   parity   |XXXXXXXXXXXXXXXXXXXX|
+No ECC memory, but I did perform the "thorough" memory test using the 
+Dell diagnostic tool multiple times. It included data bus stress tests, 
+march C- tests, ground bounce tests, random pattern tests, and some 
+others; all passed without issues. Since I haven't noticed any other 
+problems (the system works fine when booting from another drive), I'm 
+blaming an unfortunate cosmic ray for now :)
 
-   The RMW will use the stale metadata and new metadata to calculate new
-   parity.
-   The resulted new parity will no longer be able to recover the old
-   data 1.
+Thank you!
+Pieter
 
-   This is a known bug, thus our documentation is already recommending
-   to avoid RAID56 for metadata usage.
+--------------jSJqvbfjlV51OgYwOHhNv2kG
+Content-Type: text/plain; charset=UTF-8; name="btrfs-output.txt"
+Content-Disposition: attachment; filename="btrfs-output.txt"
+Content-Transfer-Encoding: base64
 
-   > Metadata
-   >    Do not use raid5 nor raid6 for metadata. Use raid1 or raid1c3
-   >    respectively.
+c3VkbyAuL2J0cmZzLnN0YXRpYyBjaGVjayAtLW1vZGU9bG93bWVtIC9kZXYvbWFwcGVyL2x1a3Mt
+eHh4eHgKT3BlbmluZyBmaWxlc3lzdGVtIHRvIGNoZWNrLi4uCkNoZWNraW5nIGZpbGVzeXN0ZW0g
+b24gL2Rldi9tYXBwZXIvbHVrcy14eHh4eApVVUlEOiB4eHh4eApbMS83XSBjaGVja2luZyByb290
+IGl0ZW1zClsyLzddIGNoZWNraW5nIGV4dGVudHMKRVJST1I6IGV4dGVudFsyMjE2NzE4MzM2LCA0
+MDk2XSByZWZlcmVuY2VyIGNvdW50IG1pc21hdGNoIChyb290OiAyNTcsIG93bmVyOiA1MDA1ODc1
+MSwgb2Zmc2V0OiAwKSB3YW50ZWQ6IDEsIGhhdmU6IDAKRVJST1I6IGZpbGUgZXh0ZW50WzUwMDU4
+NzUxIDBdIHJvb3QgMjU3IG93bmVyIDI1NyBiYWNrcmVmIGxvc3QKRVJST1I6IGVycm9ycyBmb3Vu
+ZCBpbiBleHRlbnQgYWxsb2NhdGlvbiB0cmVlIG9yIGNodW5rIGFsbG9jYXRpb24KWzMvN10gY2hl
+Y2tpbmcgZnJlZSBzcGFjZSB0cmVlCls0LzddIGNoZWNraW5nIGZzIHJvb3RzCkVSUk9SOiByb290
+IDI1NyBFWFRFTlRfREFUQVs1MDA1ODc1MSAwXSBjc3VtIG1pc3NpbmcsIGhhdmU6IDAsIGV4cGVj
+dGVkOiA0MDk2CkVSUk9SOiByb290IDI1NyBFWFRFTlRfREFUQVs1MDA1ODc1MSAwXSBjb21wcmVz
+c2VkIGV4dGVudCBtdXN0IGhhdmUgY3N1bSwgYnV0IG9ubHkgMCBieXRlcyBoYXZlLCBleHBlY3Qg
+NDA5NgpFUlJPUjogZXJyb3JzIGZvdW5kIGluIGZzIHJvb3RzCmZvdW5kIDU5NzAzOTEwODA5NiBi
+eXRlcyB1c2VkLCBlcnJvcihzKSBmb3VuZAp0b3RhbCBjc3VtIGJ5dGVzOiA1NjM5Nzg4MjgKdG90
+YWwgdHJlZSBieXRlczogMTQ3MzkwNjI3ODQKdG90YWwgZnMgdHJlZSBieXRlczogMTMwODgyMjcz
+MjgKdG90YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDkxMTkxNzA1NgpidHJlZSBzcGFjZSB3YXN0ZSBi
+eXRlczogMjUyNzYwMTg5MgpmaWxlIGRhdGEgYmxvY2tzIGFsbG9jYXRlZDogODE2ODEyNTM1ODA4
+CiByZWZlcmVuY2VkIDEwNTUyOTA0OTA4ODAKCnN1ZG8gLi9idHJmcy5zdGF0aWMgY2hlY2sgLS1t
+b2RlPWxvd21lbSAtLXJlcGFpciAvZGV2L21hcHBlci9sdWtzLXh4eHh4CmVuYWJsaW5nIHJlcGFp
+ciBtb2RlCldBUk5JTkc6CgoJRG8gbm90IHVzZSAtLXJlcGFpciB1bmxlc3MgeW91IGFyZSBhZHZp
+c2VkIHRvIGRvIHNvIGJ5IGEgZGV2ZWxvcGVyCglvciBhbiBleHBlcmllbmNlZCB1c2VyLCBhbmQg
+dGhlbiBvbmx5IGFmdGVyIGhhdmluZyBhY2NlcHRlZCB0aGF0IG5vCglmc2NrIGNhbiBzdWNjZXNz
+ZnVsbHkgcmVwYWlyIGFsbCB0eXBlcyBvZiBmaWxlc3lzdGVtIGNvcnJ1cHRpb24uIEUuZy4KCXNv
+bWUgc29mdHdhcmUgb3IgaGFyZHdhcmUgYnVncyBjYW4gZmF0YWxseSBkYW1hZ2UgYSB2b2x1bWUu
+CglUaGUgb3BlcmF0aW9uIHdpbGwgc3RhcnQgaW4gMTAgc2Vjb25kcy4KCVVzZSBDdHJsLUMgdG8g
+c3RvcCBpdC4KMTAgOSA4IDcgNiA1IDQgMyAyIDEKU3RhcnRpbmcgcmVwYWlyLgpPcGVuaW5nIGZp
+bGVzeXN0ZW0gdG8gY2hlY2suLi4KQ2hlY2tpbmcgZmlsZXN5c3RlbSBvbiAvZGV2L21hcHBlci9s
+dWtzLXh4eHh4ClVVSUQ6IHh4eHh4ClsxLzddIGNoZWNraW5nIHJvb3QgaXRlbXMKRml4ZWQgMCBy
+b290cy4KWzIvN10gY2hlY2tpbmcgZXh0ZW50cwpFUlJPUjogZXh0ZW50WzIyMTY3MTgzMzYsIDQw
+OTZdIHJlZmVyZW5jZXIgY291bnQgbWlzbWF0Y2ggKHJvb3Q6IDI1Nywgb3duZXI6IDUwMDU4NzUx
+LCBvZmZzZXQ6IDApIHdhbnRlZDogMSwgaGF2ZTogMApDcmVhdGVkIG5ldyBjaHVuayBbNzQxOTg2
+MDA5MDg4IDEwNzM3NDE4MjRdCkRlbGV0ZSBiYWNrcmVmIGluIGV4dGVudCBbMjIxNjcxODMzNiA0
+MDk2XQpFUlJPUjogZmlsZSBleHRlbnRbNTAwNTg3NTEgMF0gcm9vdCAyNTcgb3duZXIgMjU3IGJh
+Y2tyZWYgbG9zdApBZGQgb25lIGV4dGVudCBkYXRhIGJhY2tyZWYgWzU3NjQ2MDc1NDUyMDE0MTgy
+NCA0MDk2XQpzdXBlciBieXRlc191c2VkIDU5NzA0MDA0MTk4NCBtaXNtYXRjaGVzIGFjdHVhbCB1
+c2VkIDU5NzA0MDkyNjcyMApFUlJPUjogZXJyb3JzIGZvdW5kIGluIGV4dGVudCBhbGxvY2F0aW9u
+IHRyZWUgb3IgY2h1bmsgYWxsb2NhdGlvbgpbMy83XSBjaGVja2luZyBmcmVlIHNwYWNlIHRyZWUK
+WzQvN10gY2hlY2tpbmcgZnMgcm9vdHMKRVJST1I6IHJvb3QgMjU3IEVYVEVOVF9EQVRBWzUwMDU4
+NzUxIDBdIGNzdW0gbWlzc2luZywgaGF2ZTogMCwgZXhwZWN0ZWQ6IDQwOTYKRVJST1I6IHJvb3Qg
+MjU3IEVYVEVOVF9EQVRBWzUwMDU4NzUxIDBdIGNvbXByZXNzZWQgZXh0ZW50IG11c3QgaGF2ZSBj
+c3VtLCBidXQgb25seSAwIGJ5dGVzIGhhdmUsIGV4cGVjdCA0MDk2CkVSUk9SOiBlcnJvcnMgZm91
+bmQgaW4gZnMgcm9vdHMKZm91bmQgNTk3MDQwOTI2NzIwIGJ5dGVzIHVzZWQsIGVycm9yKHMpIGZv
+dW5kCnRvdGFsIGNzdW0gYnl0ZXM6IDU2Mzk3ODgyNAp0b3RhbCB0cmVlIGJ5dGVzOiAxNDc0MDAy
+OTQ0MAp0b3RhbCBmcyB0cmVlIGJ5dGVzOiAxMzA4ODIyNzMyOAp0b3RhbCBleHRlbnQgdHJlZSBi
+eXRlczogOTExOTQ5ODI0CmJ0cmVlIHNwYWNlIHdhc3RlIGJ5dGVzOiAyNTI3Njg2OTkzCmZpbGUg
+ZGF0YSBibG9ja3MgYWxsb2NhdGVkOiA4MTY4MTI1MzU4MDgKIHJlZmVyZW5jZWQgMTA1NTI5MDQ5
+MDg4MAoKc3VkbyAuL2J0cmZzLnN0YXRpYyBjaGVjayAvZGV2L21hcHBlci9sdWtzLXh4eHh4Ck9w
+ZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4uLgpDaGVja2luZyBmaWxlc3lzdGVtIG9uIC9kZXYv
+bWFwcGVyL2x1a3MteHh4eHgKVVVJRDogeHh4eHgKWzEvN10gY2hlY2tpbmcgcm9vdCBpdGVtcwpb
+Mi83XSBjaGVja2luZyBleHRlbnRzCnN1cGVyIGJ5dGVzIHVzZWQgMTE5NDA4MTk2ODEyOCBtaXNt
+YXRjaGVzIGFjdHVhbCB1c2VkIDU5NzA0MTkyMjA0OApFUlJPUjogZXJyb3JzIGZvdW5kIGluIGV4
+dGVudCBhbGxvY2F0aW9uIHRyZWUgb3IgY2h1bmsgYWxsb2NhdGlvbgpbMy83XSBjaGVja2luZyBm
+cmVlIHNwYWNlIHRyZWUKWzQvN10gY2hlY2tpbmcgZnMgcm9vdHMKcm9vdCAyNTcgaW5vZGUgNTAw
+NTg3NTEgZXJyb3JzIDEwMDAsIHNvbWUgY3N1bSBtaXNzaW5nCkVSUk9SOiBlcnJvcnMgZm91bmQg
+aW4gZnMgcm9vdHMKZm91bmQgNTk3MDMzNDE0NjYyIGJ5dGVzIHVzZWQsIGVycm9yKHMpIGZvdW5k
+CnRvdGFsIGNzdW0gYnl0ZXM6IDU2Mzk3ODgyNAp0b3RhbCB0cmVlIGJ5dGVzOiAxNDc0MTg4MDgz
+Mgp0b3RhbCBmcyB0cmVlIGJ5dGVzOiAxMzA4ODIyNzMyOAp0b3RhbCBleHRlbnQgdHJlZSBieXRl
+czogOTExOTMzNDQwCmJ0cmVlIHNwYWNlIHdhc3RlIGJ5dGVzOiAyNTI3ODU5NTY1CmZpbGUgZGF0
+YSBibG9ja3MgYWxsb2NhdGVkOiA4MTY4MTI1MzU4MDgKIHJlZmVyZW5jZWQgMTA1NTI5MDQ5MDg4
+MAoKc3VkbyBidHJmcyBpbnNwZWN0LWludGVybmFsIGlub2RlLXJlc29sdmUgNTAwNTg3NTEgL21l
+ZGlhL3BpZXRlci94eHh4eC9AaG9tZQovbWVkaWEvcGlldGVyL3h4eHh4L0Bob21lL3BpZXRlci9z
+bmFwL2Nocm9taXVtL2NvbW1vbi9jaHJvbWl1bS9EZWZhdWx0L0NhY2hlL0NhY2hlX0RhdGEvZjg4
+ZDlkNDZlMWFiNjRlM18wCgo=
 
-   And this is very hard to fix, unlike data we can fetch the
-   data csum and verify during RMW, we can not do that during RMW.
-
-   At the timing of RMW, we're holding the rbio lock for the full
-   stripe.
-   If the extent tree search requires a read-recover, it will generate
-   another rbio, which may cover the same full stripe we're working on,
-   leading to a deadlock.
-
-   Furthermore the current RAID56 repair code is all based on veritical
-   sectors, but metadata can cross several horizontal sectors.
-   This will require multiple combinations to repair a metadata.
-
-2. Crash caused by double freeing a bio
-   By chance if the above RMW corrupted csum tree, then during
-   btrfs_submit_chunk() we will hit an error path that leads to double
-   freeing of a bio, resulting crash or a KASAN report.
-
-   Thankfully the patch fixing the use-after-free is already sent to the
-   mailing list:
-   https://lore.kernel.org/linux-btrfs/f4f916352ddf3f80048567ec7d8cc64cb388dc09.1724493430.git.wqu@suse.com/
-
-[WORKAROUND]
-Since it's very hard to fix the RAID56 metadata problem without a
-deadlock or a huge code rework, for now just use RAID1 for the metadata
-of this particular test case.
-
-There may be a chance to fix the situation by properly marking the
-missing-then-reappear device as out-of-date, so no direct read from that
-device.
-
-But that will also be a huge new feature, not something can be done
-immediately.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Add links to the past discussion of the btrfs/125 failure
-- Add a link to the kernel fix of the use-after-free bug
----
- tests/btrfs/125 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tests/btrfs/125 b/tests/btrfs/125
-index 31379d81..c8c0dd42 100755
---- a/tests/btrfs/125
-+++ b/tests/btrfs/125
-@@ -70,7 +70,7 @@ count=$(($max_fs_sz / 1000000))
- echo >> $seqres.full
- echo "max_fs_sz=$max_fs_sz count=$count" >> $seqres.full
- echo "-----Initialize -----" >> $seqres.full
--_scratch_pool_mkfs "-mraid5 -draid5" >> $seqres.full 2>&1
-+_scratch_pool_mkfs "-mraid1 -draid5" >> $seqres.full 2>&1
- _scratch_mount >> $seqres.full 2>&1
- dd if=/dev/zero of="$SCRATCH_MNT"/tf1 bs=$bs count=1 \
- 					>>$seqres.full 2>&1
--- 
-2.46.0
-
+--------------jSJqvbfjlV51OgYwOHhNv2kG--
 
