@@ -1,193 +1,133 @@
-Return-Path: <linux-btrfs+bounces-7508-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7509-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA8895F549
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 17:39:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3202095F6BF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 18:38:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C542A28284E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 15:39:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBE101F22AAE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 16:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C61C1946A8;
-	Mon, 26 Aug 2024 15:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E70197548;
+	Mon, 26 Aug 2024 16:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XPbKV1zQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RHQZTVD9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XPbKV1zQ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RHQZTVD9"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="IIWk++p9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B6F194096;
-	Mon, 26 Aug 2024 15:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D0F143C7D
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 16:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724686751; cv=none; b=L3PLP36LwKPUPS+pL3cWIEmBeO6STNwcoLn3Z+I6epJnMqcA6caJkT+CDDeOxXq+PPD83OsyWW2QRdvxczc+bcRe0noFZGNfgfEwduHHRyRHTbddXBiVPbEHSTL8Qe8KCFpk59hQugnvs/mlVBODMpHAVfEqLPstHGqdMbLIfmA=
+	t=1724690255; cv=none; b=HdA0AUmZFDtR9bJVAYM/yKSKxjEMsJjh6IqvBu8ZhVT4yG35OS1XrsUtUN5QvafJdxgwIUTKVAYxAOSTEjkcC3oPgbkFpVIS6ycbaorZLoQovUNRXDdTtqQcAsZPidkZ/C3yT2ACO1MvVAgKl95RVZnLoa9QW8aNpFTUUAP/ieA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724686751; c=relaxed/simple;
-	bh=8Q9mQZsmLs0nnnagjGhXv67IgmVrkxtc1Jufbx9UgGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MT3dvyukCs50FqQekQo3tLDcDlZ3/GMJPxANXCoXQhryjPUjhkqY4WktrQzAYX3fngL+z65GolfRrN8zqV7hKwlXCuv8l9f2MoH6kX0aGmbp6D2YZ1eH/IRtzomB1lYZf2WtJl2+7Ew56JF1F18uQIl6J0ea0zANT21xMDMEcgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XPbKV1zQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RHQZTVD9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XPbKV1zQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RHQZTVD9; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 55E211F894;
-	Mon, 26 Aug 2024 15:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724686747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7nGSNeI9+toSqot2xIzZRmBlBYQYRWwPcrJTv2ZB4nw=;
-	b=XPbKV1zQy6lFOMWmNOK7ZfrSwnHlRAzOda8Ul4PeTTpmsLZqiGfNWij01Q8FBgBAzRVimw
-	t9e6cDf1EZ4IbYGKusUui3SwdtlpGWJI4B/PltsXwK56vCsZ5723TOsVW2EvoPqup6x20R
-	fgThQERiceElkByCpFA2eKx3oHuYGd4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724686747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7nGSNeI9+toSqot2xIzZRmBlBYQYRWwPcrJTv2ZB4nw=;
-	b=RHQZTVD9IXXxzvZEaOJ9jgW6JrCVu70avlFPsJBgQISh7PFmqXBbnTXHBsCgnww37whA1o
-	chphyN2/dWyeN/BA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XPbKV1zQ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RHQZTVD9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724686747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7nGSNeI9+toSqot2xIzZRmBlBYQYRWwPcrJTv2ZB4nw=;
-	b=XPbKV1zQy6lFOMWmNOK7ZfrSwnHlRAzOda8Ul4PeTTpmsLZqiGfNWij01Q8FBgBAzRVimw
-	t9e6cDf1EZ4IbYGKusUui3SwdtlpGWJI4B/PltsXwK56vCsZ5723TOsVW2EvoPqup6x20R
-	fgThQERiceElkByCpFA2eKx3oHuYGd4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724686747;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7nGSNeI9+toSqot2xIzZRmBlBYQYRWwPcrJTv2ZB4nw=;
-	b=RHQZTVD9IXXxzvZEaOJ9jgW6JrCVu70avlFPsJBgQISh7PFmqXBbnTXHBsCgnww37whA1o
-	chphyN2/dWyeN/BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 35EB51398D;
-	Mon, 26 Aug 2024 15:39:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1eX0DJuhzGadbgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 26 Aug 2024 15:39:07 +0000
-Date: Mon, 26 Aug 2024 17:39:06 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Julian Sun <sunjunchao2870@gmail.com>
-Cc: josef@toxicpanda.com, clm@fb.com, dsterba@suse.com,
-	linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-	syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: fix the race between umount and btrfs-cleaner
-Message-ID: <20240826153906.GR25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240821180804.GF1998418@perftesting>
- <20240822124524.1375008-1-sunjunchao2870@gmail.com>
+	s=arc-20240116; t=1724690255; c=relaxed/simple;
+	bh=9FjipFGtyfWNFl//F7TDhqdgQpCTgzW1fhlgwCTvZvI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=lg6tY03zxJEBKaFFPl+YxRTe+MZU34sTLlTRIQWwx9jdG4JjhxeJfu0taZTtI3+0pwkQdntiTvjOEUNoxhHybVtJ1c6IBwygxAeowxe6Ng43u8r6Hr1cM9R41puEoge9gDMDy8HzywnPLvn9DBItax5vcP6Ov12GD6Kmn8j6S9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=IIWk++p9; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7a1df0a93eeso274433985a.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 09:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1724690252; x=1725295052; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vC4ag3QkwAdXIxfEr/1lN6pLeS+NBL45/EBBHGVfnaI=;
+        b=IIWk++p96DBJYRllYdmkhG2HL7HyItqAnJFrVAIZDyORKxIi1WvzCOrq7OmdPAWY4a
+         Jt0Vl8iIx7iEN3Smp1t6VAzdCLTMyUr6t5j7pQis26onDv14J5Kciv/KFVYfZlDwdfFs
+         vtvDL3lLAWXdsKF/hILp2AjMz3zq3VE2QqNetskuA4FyicGadPIJCqCDQmVQ8E6alESZ
+         rfZ70vThGVX9BgV+8mp8UdhuhpUZu1OLDB8foQGVHfVB7ChNg8CRycqZq616rkL7lybg
+         WIbj3ZNfn4hmAtfIjnqJhWNDWRqEBwQ70SII50TeZwDivfSwi9qQIur8T1fDGakVW+6s
+         6GdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724690252; x=1725295052;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vC4ag3QkwAdXIxfEr/1lN6pLeS+NBL45/EBBHGVfnaI=;
+        b=VUEl+Z++KyzrdAB1keGWk1GCRU3ysfrg058LhD4TIKiU43SpzE8qye7RfGIeV1FZU7
+         APY/rW2W3VJdOzKK8TaE575M30MVEhGvSQC9SbWFG0TvHZiWqRk58lhzarQOVXQFcOod
+         sh8G/1T+PuSAhroktYZVCIhr5XxOvma6hHKfObWu0ejbG8k7NB1Tw+azZmmjx7RtMlhw
+         yUbKUr8wGCC2imTnn26p+nmXX+lz90zP09RHOGERWCXE7t03bZ1W7onrDnPL+UoMKvPA
+         gnX0dTj7quVJdVhISjy5mA5KMbc3qJD+A7W7RloP21VCNd8hUavFnKrcDcYJut6FSJsx
+         N/nQ==
+X-Gm-Message-State: AOJu0YxVUVOzG1LONniaYT1O+8rCYp/Lm1NtBsZI+mGYZJ6fag1+9GvB
+	znx8MlFjc62gNkeGFUp2MbC1novhcNKPy15Q+0g+Z/aDIYnD/QEl0AVnHixmg9SctyM6fTLk46v
+	k
+X-Google-Smtp-Source: AGHT+IEKjzEW7mwwpGZNgq5ChqLSlrqftrhj+omh2Q/OGcWunG669/MWk3Hn9muQzZ2pLCRID5DZpg==
+X-Received: by 2002:a05:620a:2908:b0:7a6:4a55:a626 with SMTP id af79cd13be357-7a7e4e4b88emr19060285a.51.1724690251737;
+        Mon, 26 Aug 2024 09:37:31 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a67f3bb2ebsm467993685a.79.2024.08.26.09.37.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 09:37:31 -0700 (PDT)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2 0/3] btrfs: no longer hold the extent lock for the entire read
+Date: Mon, 26 Aug 2024 12:37:23 -0400
+Message-ID: <cover.1724690141.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240822124524.1375008-1-sunjunchao2870@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 55E211F894
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.71 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[67ba3c42bcbb4665d3ad];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -2.71
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Thu, Aug 22, 2024 at 08:45:24PM +0800, Julian Sun wrote:
-> Hi, Josef
-> 
-> I believe there is a bug in the following scenario, but I'm not sure
-> if it is the same bug reported by syzbot. Do you have any idea?
-> 
-> umount thread:                     btrfs-cleaner thread:
->                                    btrfs_run_delayed_iputs()
->                                      ->run_delayed_iput_locked()
->   btrfs_kill_super()                   ->iput(inode)
->     ->generic_shutdown_super()           ->spin_lock(inode)
->       ->evict_inodes()               	 // inode->i_count dec to 0
->        ->spin_lock(inode)                ->iput_final()
->                                           // cause some reason, get into
->                                           // __inode_add_lru
->        // passed i_count==0 test          ->__inode_add_lru()
->        // and then schedule out		  // so iput_final() returned wich I_FREEING was not set
->                                           // note here: the inode still in the sb list
-> 				     ->__btrfs_run_defrag_inode()
-> 					    ->btrfs_iget()
->   		                              ->find_inode()
->                                                 ->spin_lock(inode)
->                                                 ->__iget(); // i_count inc to 1
->                                                 ->spin_unlock(inode);
->      // schedule back
->      spin_lock(inode)
->      // I_FREEING was not set
->      // so we continue
->      set I_FREEING flag
->      spin_unlock(inode)                   ->iput() 
->      // put the inode into dispose          ->spin_lock(inode)
->      // list                                    // dec i_count to 0
->   ->dispose_list()                          ->iput_final()
->     ->evict()                                 ->spin_unlock()
->                                               ->evict()
->                                               
-> Now, we have two threads simultaneously evicting
-> the same inode, which led to a bug.
-> I think this can be addressed by protecting the 
-> atomic_read(inode->i_count) in evict_inode() with
-> inode->i_lock.
+v1: https://lore.kernel.org/linux-btrfs/cover.1724255475.git.josef@toxicpanda.com/
 
-For reference, this will be fixed in VFS
+v1->v2:
+- Added Goldwyn's bit to move the extent lock to only cover the part where we
+  look up the extent map, added his Co-developed-by to the patch.
 
-https://lore.kernel.org/linux-btrfs/20240823130730.658881-1-sunjunchao2870@gmail.com/
+-- Original email --
+Hello,
+
+One of the biggest obstacles to switching to iomap is that our extent locking is
+a bit wonky.  We've made a lot of progress on the write side to drastically
+narrow the scope of the extent lock, but the read side is arguably the most
+problematic in that we hold it until the readpage is completed.
+
+This patch series addresses this by no longer holding the lock for the entire
+IO.  This is safe on the buffered side because we are protected by the page lock
+and the checks for ordered extents when we start the write.
+
+The direct io side is the more problematic side, since we could now end up with
+overlapping and concurrent direct writes in direct read ranges.  To solve this
+problem I'm introducing a new extent io bit to do range locking for direct IO.
+This will work basically the same as the extent lock did before, but only for
+direct IO.  We are saved by the normal inode lock and page cache in the mixed
+buffered and direct case, so this shouldn't carry the same iomap+locking
+reloated woes that the extent lock did.
+
+This will also allow us to remove the page fault restrictions in the direct IO
+case, which will be done in a followup series.
+
+I've run this through the CI and a lot of local testing, I'm keeping it small
+and targeted because this is a pretty big logical shift for us, so I want to
+make sure we get good testing on it before I go doing the other larger projects.
+Thanks,
+
+Josef
+
+Josef Bacik (3):
+  btrfs: introduce EXTENT_DIO_LOCKED
+  btrfs: take the dio extent lock during O_DIRECT operations
+  btrfs: do not hold the extent lock for entire read
+
+ fs/btrfs/compression.c    |  2 +-
+ fs/btrfs/direct-io.c      | 72 +++++++++++++++++++-----------
+ fs/btrfs/extent-io-tree.c | 52 ++++++++++------------
+ fs/btrfs/extent-io-tree.h | 38 ++++++++++++++--
+ fs/btrfs/extent_io.c      | 94 ++-------------------------------------
+ 5 files changed, 109 insertions(+), 149 deletions(-)
+
+-- 
+2.43.0
+
 
