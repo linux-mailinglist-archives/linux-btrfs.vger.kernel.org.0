@@ -1,202 +1,268 @@
-Return-Path: <linux-btrfs+bounces-7532-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7533-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A22E95FDBC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 01:19:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9992795FDCB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 01:31:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C95D1C22505
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 23:19:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD6FB1C21086
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 23:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2862E19CCED;
-	Mon, 26 Aug 2024 23:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD5519A2BD;
+	Mon, 26 Aug 2024 23:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iRO4GO50"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i8pxPKpC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YeQ3Hm6S";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oDg30KxG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RtJ4NYE0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E16A580027
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 23:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D544B7DA92
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 23:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724714337; cv=none; b=umx24SaiScNSgmqK43Nb18KdJ0GeGXESmet38FenzgiF9rvjdKCyjY0MLpk/HKJqjOW9ZDyLYpvwkc1J2Sd1dL1winxTLkdW4tEY5/eEdntaJAgOUAhXACUWoRPxBpypXz8ISAb7H3oN8J6eRH7BzvWBMez0/orTe5M95Iwd+tg=
+	t=1724715089; cv=none; b=YZp829p3LsHDfWiElzlIVHQUOF+SSyzuSzTtQotIs7G7O+snixXOIUWJGfYV655VnKcc9RzWn+mzpGx+VovGT8rWbOa8vVmqLApXTi5fSbEcyFhX2Y0kwVVWZu50qi1VDjyhmBSG4vVdcM2egW26UGDnRJEo1RBkpdDdfEkYLMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724714337; c=relaxed/simple;
-	bh=aOZ8rBFEO/5cqDuRw9fQjtPw9ImePl/3ZZ7Sohj3yMY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=UCP6XOr5tl9hURLzn3PcCynJ7yDOLpxBsmkl69p/ggU46RwOiVDqyj7lFwUApvQBHF/GeZz7ngQHU8ZMYTb3/xfBdQVGr2NC1Kz6a3gwi4K4YnaKEHjbN7ywcAR/k7qNL7brYP0PJdDMP7kSJVJDFRtqF8gvFar3IxkeDcVmxTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iRO4GO50; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724714329; x=1725319129; i=quwenruo.btrfs@gmx.com;
-	bh=HKeHcTh0Hhg+VHGw1+TJs32hdu9Au9BxZGlIAZcXTLI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=iRO4GO50DvtgkOSYfHDVXAoDSB24b2+e6Ch6TNgL+InWcEvvzqTXeXdRDIG25wPX
-	 GaePbAq3SxXqllGBttGDpIT2jtaqSDRPujxBEu3gcrd2xMgGNiaVGvsJyblWW+9LU
-	 YsxvdqY61gn1R4ZcYC8MruaMYmt4ANUBo/2xIQJL2eJi9ROFaDQpBt17/fnbBkZpp
-	 mYSjnr/iDjdehYBiyOsmYPJUST9FfgJTP7a4hnlF5tC+JjD2LygyNqH1xJJ4lrNvn
-	 TPbSueVOVPBDqb96KKMTHsptNRsLlnPhk/cal6qaSKumPV2L6wxfETtce+/v5tyJm
-	 3mREVu9qVm3RhQKVYQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLR1f-1sRTDO0QFv-00KQMt; Tue, 27
- Aug 2024 01:18:49 +0200
-Message-ID: <012717c6-4e7e-44e9-9906-5f13e4273c35@gmx.com>
-Date: Tue, 27 Aug 2024 08:48:46 +0930
+	s=arc-20240116; t=1724715089; c=relaxed/simple;
+	bh=MhHa0cptwQRBVEbA2o9ezOmM9JyVpL8pp26vk94+ELs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RRTghO/iQ2G2UEE4o/MFWFkAcXy2dpBRNKVSlzIg4KKgvBRmKaYt3Ek7m7HimVhQzMLLJZiXtDFKUAL2Q+66TZNRoEo5GGp9F+SLWbSTjq/MbFPQiVagoNpJGmvCUS2zbeFSVhrebnefvwElK5r3vlW/k8fpvGiPnTYrl/iQCpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i8pxPKpC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YeQ3Hm6S; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oDg30KxG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RtJ4NYE0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ECFF721AEE;
+	Mon, 26 Aug 2024 23:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724715086;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xCNRb6r4CnZau+Ephjvu391xhBbA9UbTZL2mcEwAxPo=;
+	b=i8pxPKpC1X2HuYfR2mm6lqtzDRGsIO9EvUlEQAxY4N+bymqbHBKybMyVlqZ4y8dL1mt6no
+	rkp5jZMGlSeJRcvsge7jXnRAPS2tlnTIXbjJQXnPIC1bbSQ/TMMZysgExPcfAdn4U9L0W9
+	BbqNP2oj5I13oUYVpan0wY5vWL6I2m4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724715086;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xCNRb6r4CnZau+Ephjvu391xhBbA9UbTZL2mcEwAxPo=;
+	b=YeQ3Hm6ScITaJlTxeufl2Ahh0O01+30QiIuip8pKKjV9kdof39u/Y+7QEAM/lYyrUQ4nIb
+	BIFffbkwxRmhIxCA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724715085;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xCNRb6r4CnZau+Ephjvu391xhBbA9UbTZL2mcEwAxPo=;
+	b=oDg30KxGbO//XAMCG7AuKaJybrUPTs4rasnKhUMBF8qMjYMEh4P9iJnoWYOYcIqVzXlaYg
+	5wiqxxbGaTcz1tlQFlPGo+JWTWAt2y16fpJGVV/nY9jUTRpofWSTnxhZagAy5ZRyPlmhUr
+	GpPTMjE0j/T+CFBbQO9oCfQ2Mauhfe4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724715085;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xCNRb6r4CnZau+Ephjvu391xhBbA9UbTZL2mcEwAxPo=;
+	b=RtJ4NYE0x4B6vL8OZYHP7fmM4B15x9xfw7xIm6UZldoNe4kf9Z1ME8W+DW59iBIxEu5B6T
+	Mn4pzZrwVJ6+ZOCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEBEE1398D;
+	Mon, 26 Aug 2024 23:31:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ivsULk0QzWYceQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 26 Aug 2024 23:31:25 +0000
+Date: Tue, 27 Aug 2024 01:31:16 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH v4] btrfs: fix a use-after-free bug when hitting errors
+ inside btrfs_submit_chunk()
+Message-ID: <20240826233116.GT25962@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <f4f916352ddf3f80048567ec7d8cc64cb388dc09.1724493430.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Errors found in extent allocation tree (single bit flipped)
-To: Pieter P <pieter.p.dev@outlook.com>, linux-btrfs@vger.kernel.org
-References: <AS8P250MB0886A81B469CD5F707144EA38F852@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
- <6d90baa9-ffc1-4c9d-87b2-4ba89983bef1@gmx.com>
- <AS8P250MB08869C932AF99C5C087F1B408F8B2@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <AS8P250MB08869C932AF99C5C087F1B408F8B2@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Jum/qjcineDyDOJW0o+ExHwfmLfXudD74U6UGxf0bfS7JYMeYgJ
- 4qp3OShh27jriRu9sHLqpsJ6YviHrWqfFR/1YGxuoPCZnr2ivihZf02PE8eEO7lXmsjgQuJ
- my/LuCMuFaQuWERKuWor1vOb03TjeW4dDNrirQ+9uAdk8yiwRKVWbMOvvY4XPF26SEb/3Zq
- 4y5/YGIXJsNkqrMg3rv0g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4f916352ddf3f80048567ec7d8cc64cb388dc09.1724493430.git.wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,opensuse.org:url];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:S7/rx9x4jig=;M/uVDpyrUmK7WBc+ghV7R8nNrhb
- 3v3qk7ri59KKmEMcIRFehJbAdcExcvXRCRFls59S5Lt9mNpQhEzFIZb7KZusdyS1TvTiEzI+G
- kynbeE5NpDCL4GMhQMS+xMfOgz0uQYPSDo9KjqjwN+SAQvaBj0PQ/oW1laQArTOKz7odR/hc5
- sNMhMXCyaU4HWSVEs7rgKkr1H5fFpA3Ffc2V6pnTqjk1GU2bEd3e0nJLKIK84b8arfRX6UzCb
- z8FCiBJeTtD73cULcvGFhguwiPVZ+QkiUYxK9N16QletoQA64D/Gpfby+GsPX8mgM5GjiP7w+
- OlrS/teslBkkSCLICaI/va6FigDMbPaUg377oF618hD8e6LOGdmF+IoCl6dCUIpTQ6QJPux36
- 72skixcxIaG2E72GUfVNZIVODQ0+w2JQ1Avc30M4re0dfYBbszdmAlXzDKMqBtJLDQy4qu3Sa
- rtLhkCGH54HpJA1hxRnXyoWqz2UgkbVQiiqWEXKikECmAEZOad2zaZ291Gwsg4KtguHjQm1pN
- 9/o+NkwZX0UB2zqWKQajt2tszNvCQCMyb5aqTfQnIueHOHmLouqCCBTt1ncCau+wt8a5AAkYr
- sc0qzhoL5v0GKzbbYyx8sMZ5y9UKugv0i+TbLau9gty+Mjhktm6A3Vxb9KthzKvibBNROBZSr
- yh/wsfEi19RdLbTGVWNNAdHRp3JFuPYQQzyBF/jqkxUeBhnUEwMxiSYpzSs89Dtgcvxutm0df
- 2PtuiMKaschVvaVkEoNw/2x2PQgr09MwKKJCNKbFYQKVL8OiJmph6u3zdLnkdFBeVRNn4IrUN
- 7qXzf2qFrvCMakmZte+gv8mg==
+X-Spam-Level: 
 
+On Sat, Aug 24, 2024 at 07:28:23PM +0930, Qu Wenruo wrote:
+> [BUG]
+> There is an internal report that KASAN is reporting use-after-free, with
+> the following backtrace:
+> 
+>  ==================================================================
+>  BUG: KASAN: slab-use-after-free in btrfs_check_read_bio+0xa68/0xb70 [btrfs]
+>  Read of size 4 at addr ffff8881117cec28 by task kworker/u16:2/45
+>  CPU: 1 UID: 0 PID: 45 Comm: kworker/u16:2 Not tainted 6.11.0-rc2-next-20240805-default+ #76
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-3-gd478f380-rebuilt.opensuse.org 04/01/2014
+>  Workqueue: btrfs-endio btrfs_end_bio_work [btrfs]
+>  Call Trace:
+>   <TASK>
+>   dump_stack_lvl+0x61/0x80
+>   print_address_description.constprop.0+0x5e/0x2f0
+>   print_report+0x118/0x216
+>   kasan_report+0x11d/0x1f0
+>   btrfs_check_read_bio+0xa68/0xb70 [btrfs]
+>   process_one_work+0xce0/0x12a0
+>   worker_thread+0x717/0x1250
+>   kthread+0x2e3/0x3c0
+>   ret_from_fork+0x2d/0x70
+>   ret_from_fork_asm+0x11/0x20
+>   </TASK>
+> 
+>  Allocated by task 20917:
+>   kasan_save_stack+0x37/0x60
+>   kasan_save_track+0x10/0x30
+>   __kasan_slab_alloc+0x7d/0x80
+>   kmem_cache_alloc_noprof+0x16e/0x3e0
+>   mempool_alloc_noprof+0x12e/0x310
+>   bio_alloc_bioset+0x3f0/0x7a0
+>   btrfs_bio_alloc+0x2e/0x50 [btrfs]
+>   submit_extent_page+0x4d1/0xdb0 [btrfs]
+>   btrfs_do_readpage+0x8b4/0x12a0 [btrfs]
+>   btrfs_readahead+0x29a/0x430 [btrfs]
+>   read_pages+0x1a7/0xc60
+>   page_cache_ra_unbounded+0x2ad/0x560
+>   filemap_get_pages+0x629/0xa20
+>   filemap_read+0x335/0xbf0
+>   vfs_read+0x790/0xcb0
+>   ksys_read+0xfd/0x1d0
+>   do_syscall_64+0x6d/0x140
+>   entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> 
+>  Freed by task 20917:
+>   kasan_save_stack+0x37/0x60
+>   kasan_save_track+0x10/0x30
+>   kasan_save_free_info+0x37/0x50
+>   __kasan_slab_free+0x4b/0x60
+>   kmem_cache_free+0x214/0x5d0
+>   bio_free+0xed/0x180
+>   end_bbio_data_read+0x1cc/0x580 [btrfs]
+>   btrfs_submit_chunk+0x98d/0x1880 [btrfs]
+>   btrfs_submit_bio+0x33/0x70 [btrfs]
+>   submit_one_bio+0xd4/0x130 [btrfs]
+>   submit_extent_page+0x3ea/0xdb0 [btrfs]
+>   btrfs_do_readpage+0x8b4/0x12a0 [btrfs]
+>   btrfs_readahead+0x29a/0x430 [btrfs]
+>   read_pages+0x1a7/0xc60
+>   page_cache_ra_unbounded+0x2ad/0x560
+>   filemap_get_pages+0x629/0xa20
+>   filemap_read+0x335/0xbf0
+>   vfs_read+0x790/0xcb0
+>   ksys_read+0xfd/0x1d0
+>   do_syscall_64+0x6d/0x140
+>   entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> 
+> [CAUSE]
+> Although I can not reproduce the error, the report itself is good enough
+> to pin down the cause.
+> 
+> The call trace is the regular endio workqueue context, but the
+> free-by-task trace is showing that during btrfs_submit_chunk() we
+> already hit a critical error, and is calling btrfs_bio_end_io() to error
+> out.
+> And the original endio function called bio_put() to free the whole bio.
+> 
+> This means a double freeing thus causing use-after-free, e.g:
+> 
+> 1. Enter btrfs_submit_bio() with a read bio
+>    The read bio length is 128K, crossing two 64K stripes.
+> 
+> 2. The first run of btrfs_submit_chunk()
+> 
+> 2.1 Call btrfs_map_block(), which returns 64K
+> 2.2 Call btrfs_split_bio()
+>     Now there are two bios, one referring to the first 64K, the other
+>     referring to the second 64K.
+> 2.3 The first half is submitted.
+> 
+> 3. The second run of btrfs_submit_chunk()
+> 
+> 3.1 Call btrfs_map_block(), which by somehow failed
+>     Now we call btrfs_bio_end_io() to handle the error
+> 
+> 3.2 btrfs_bio_end_io() calls the original endio function
+>     Which is end_bbio_data_read(), and it calls bio_put() for the
+>     original bio.
+> 
+>     Now the original bio is freed.
+> 
+> 4. The submitted first 64K bio finished
+>    Now we call into btrfs_check_read_bio() and tries to advance the bio
+>    iter.
+>    But since the original bio (thus its iter) is already freed, we
+>    trigger the above use-after free.
+> 
+>    And even if the memory is not poisoned/corrupted, we will later call
+>    the original endio function, causing a double freeing.
+> 
+> [FIX]
+> Instead of calling btrfs_bio_end_io(), call btrfs_orig_bbio_end_io(),
+> which has the extra check on split bios and do the proper refcounting
+> for cloned bios.
+> 
+> Furthermore there is already one extra btrfs_cleanup_bio() call, but
+> that is duplicated to btrfs_orig_bbio_end_io() call, so remove that
+> tag completely.
+> 
+> Reported-by: David Sterba <dsterba@suse.cz>
+> Fixes: 852eee62d31a ("btrfs: allow btrfs_submit_bio to split bios")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v4:
+> - Fix a case where the endio function is never called
+>   If we have split the bbio and hit a critical error, we have to end
+>   both the current and the remaining bbio.
+>   As the remaining one will never be submitted, thus pending_ios will
+>   never reach 0.
 
+The tests now pass, thanks.
 
-=E5=9C=A8 2024/8/27 08:34, Pieter P =E5=86=99=E9=81=93:
-> Thanks for the help!
->
-> On 21/08/2024 00:55, Qu Wenruo wrote:
->
->> And in that case, "btrfs check --mode=3Dlowmem" output may help a littl=
-e
->> more, and the same for "btrfs check --repair --mode=3Dlowmem".
->
-> I've attached the output from both commands, unfortunately, that didn't
-> fix the issue.
->
-> Subvolume 257 is my /home directory, and the broken inode is a temporary
-> file in a Chromium cache folder. I've tried deleting and overwriting
-> that file, but this causes the file system to go read-only a couple of
-> seconds later, and after re-mounting, the file re-appears. Reading the
-> file is not possible (input/output error).
->
-> Is there a way to restore the file system by simply deleting this
-> inode+data entirely?
-
-After your latest --repair try, the fs should be more or less fine, you
-can try remove the offending file.
-
-Just a minor problem left with the superblock used bytes, that can be
-fixed by another "btrfs check --repair" run very safely.
-
->
->> If above lowmem mode still doesn't work, I can craft a tool for your
->> specific corruption if really needed.
->>
->> But that will need the dump of your subvolume 257 inode 50058751.
->
-> Which data would you need specifically? How do I get such a dump?
-
-No need anymore, the latest result contains the all the info I need.
-
->
->> Unless the system is using ECC memories, I doubt if that diagnostic too=
-l
->> makes any difference.
->>
->> If there is already a strong indication of bitflip (and yes, it is), a
->> full memtest is highly recommended.
->
-> No ECC memory, but I did perform the "thorough" memory test using the
-> Dell diagnostic tool multiple times. It included data bus stress tests,
-> march C- tests, ground bounce tests, random pattern tests, and some
-> others; all passed without issues. Since I haven't noticed any other
-> problems (the system works fine when booting from another drive), I'm
-> blaming an unfortunate cosmic ray for now :)
-
-Unfortunately it's indeed a bitflip, from your latest lowmem repair
-result (which mostly solves the problem).
-
- > ERROR: extent[2216718336, 4096] referencer count mismatch (root: 257,
-owner: 50058751, offset: 0) wanted: 1, have: 0
-
-This is the original extent item, which looks sane to me.
-
- > Add one extent data backref [576460754520141824 4096]
-
-This is the one to be added according to the subvoluem tree. The huge
-value itself is already a little concerning.
-
-Furthermore:
-
-hex(576460754520141824) =3D 0x800000084207000
-hex(2216718336)         =3D 0x000000084207000
-
-It's an obvious bitflip.
-
-Another possibility is, the fs is old and you just migrated the drive/fs
-to the current platform, but I doubt about the case considering the file
-is some browser cache, which shouldn't be that old.
-
-Just in case, mind to try something like memtest86+ (UEFI payload) or
-memtester (inside the OS) to rule out the hardware problem?
-
-Hope it's really a cosmic ray, not a persistent hardware problem.
-
-Thanks,
-Qu
->
-> Thank you!
-> Pieter
+Reviewed-by: David Sterba <dsterba@suse.com>
 
