@@ -1,139 +1,149 @@
-Return-Path: <linux-btrfs+bounces-7513-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7514-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254BF95F73A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 18:56:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58C5D95F7F8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 19:24:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF9CC282D5D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 16:56:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D4C92819BF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2024 17:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93983197A97;
-	Mon, 26 Aug 2024 16:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31C61991B6;
+	Mon, 26 Aug 2024 17:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="P6L98cES"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RG7jfQBZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8CE197A6C
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2024 16:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED041990A5;
+	Mon, 26 Aug 2024 17:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724691368; cv=none; b=d9Wrq3leP8cmVjlMuwL3NjlM5V7XC8R63/F1Z7tvp9GBcFUF8g7FowUewBZy9OfOL1ht8dioI1uzv1M0BlGaueNxvO0YbUjXuxom10mfqk7u+OIabCmW9+fp3Z3Iz2AU2TXHswlmzmB7XdCLhP7JdSGrQe7PsC+zMiGLzfKTjDM=
+	t=1724693008; cv=none; b=fzsi2ISXWeuMDisjZ9WpUGDTn+jgES37XyMKEC+I5ELgvH5c8kx/LIZxCiLORMea34EoWP/bUJSTx1jIHpJkCze/UHhfNbVDxbTcpjAn9BZ/QMbWKMXN1XSeyaZ3Jmhk65PZhQj9c3KvY9JM8JT2asfj7G9REgjW8aTNc+VNa6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724691368; c=relaxed/simple;
-	bh=mQqDw30mY7bI26HrKbunLq8dqcW8ccu+VgZ8iR6pZoc=;
+	s=arc-20240116; t=1724693008; c=relaxed/simple;
+	bh=EH4sLmUi31moY38px/brd6V2p1f9A3ICQEkXbIPLoGI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T4Tybrj8nbipUiHhope7mDqFgCeT5ERSpSTmcPlAmAetff8PmOYJwTIRw1KosgEZwGQbf9Gr2KjyT13SFKnx5RX3lhfDqJoqr3kXM9UMzt3rn1Ew6zM/R4vnadYQeesgioRfVSCCXLvB7gAMIt+4NdneaCccDPvmc7EZJQVwIEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=P6L98cES; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=9EWUv2HImFfX/N/60IfkTY1e4eWVBnEv8GezCD5Wv5M=; b=P6L98cESGD9Qh41ZcEq/xBG8SN
-	hPI3io7GBvPSM8ZWU5rHhZsEpq709sHLf8UUFkdokoBlOFY4dx0eG59Xd7xEIHXlGZgYN+V0H8juj
-	S5KIyXGS7/UIq2c2tCXrvKv56YvSN3AiSCA0nbGsUwSu6lPp+HVPEHwOUR2xYlvB7ubvPZkZq/bcf
-	I30eFxO1PWroFdLaT+F9DYGt4kR/AN4AdLNMPWjqwGTUCvIwdX1MqdBu5AhV0+UYlfW4tAqIAB4eQ
-	PoA1fV5hLGObyhqEbnFsoC3+iaNAkuOQjafYL5zBtMs4wQR3tPGk9QdxuDlFXxhRkdbYhO7drQ03j
-	+fMYmZmA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sid0b-0000000Ff0f-3vrS;
-	Mon, 26 Aug 2024 16:56:01 +0000
-Date: Mon, 26 Aug 2024 17:56:01 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,
-	linux-f2fs-devel@lists.sourceforge.net, clm@fb.com, terrelln@fb.com,
-	dsterba@suse.com, linux-btrfs@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH 02/14] btrfs: convert get_next_extent_buffer()
- to take a folio
-Message-ID: <Zsyzoef1LlNacPkb@casper.infradead.org>
-References: <20240822013714.3278193-1-lizetao1@huawei.com>
- <20240822013714.3278193-3-lizetao1@huawei.com>
- <Zsaq_QkyQIhGsvTj@casper.infradead.org>
- <0f643b0f-f1c2-48b7-99d5-809b8b7f0aac@gmx.com>
- <ZscqGAMm1tofHSSG@casper.infradead.org>
- <38247c40-604b-443a-a600-0876b596a284@gmx.com>
- <7a04ac3b-e655-4a80-89dc-19962db50f05@gmx.com>
- <Zsis82IKSAq6Mgms@casper.infradead.org>
- <20240826141301.GB2393039@perftesting>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dCDqqdWeccaZFIJ7jYTQMApU9KlbMwEK/+IXgNzyJF+KcC1j60kiOhwnl9oWA9Gj+SsO62ck1FGHthQ7mLNk160i5/lMYG8kETFex+TINtaQf9OavTnVZGflu40OGwzNuWpGrugpiVHKQhlDUi4ADmdnHo03SRMP2BLwN0k6TWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RG7jfQBZ; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724693007; x=1756229007;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EH4sLmUi31moY38px/brd6V2p1f9A3ICQEkXbIPLoGI=;
+  b=RG7jfQBZDEE+xybcGDjX9YoxUj9drbl/SUod1/1aYLD6Q+gR5UxauPu1
+   LcH2GvM7hUqUMp2zAGcAUHW1P88VeyjfhEDJX4q+rZZjg5ZtWNrLAk5Vx
+   ZxpA7t1f07WGID5WZz18LYlxCbw2cWeuNpUPti02iGTVNl/wvq1vnTBRN
+   vNyvHX8etKcrdQGkDoMoxb8YgnfH+x95FOKkRO8MLUeTWIVzxqc6+CHaM
+   QtQ+ZoKiyDoO2TeJHJlRi83ANKgxbgVbfE30yVyZ3cOcp9oT5ogEtyXNe
+   CpwAXLeRSsQjWh49QGaSBpBMtT/BWOWu1WT3MNdlR9RD0eOM9bDjQnk50
+   A==;
+X-CSE-ConnectionGUID: j1Jf8l10S2mjGbi4pYugwQ==
+X-CSE-MsgGUID: aMrX+BC3T9iiDBY2Ff+vng==
+X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="40635600"
+X-IronPort-AV: E=Sophos;i="6.10,178,1719903600"; 
+   d="scan'208";a="40635600"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 10:23:26 -0700
+X-CSE-ConnectionGUID: 8A35PKczQaeEPyg9h8MbHQ==
+X-CSE-MsgGUID: NdgO3xEzQY6GDoWJMR2D+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,178,1719903600"; 
+   d="scan'208";a="67264184"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2024 10:23:21 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1sidQz-000000021TV-2vmu;
+	Mon, 26 Aug 2024 20:23:17 +0300
+Date: Mon, 26 Aug 2024 20:23:17 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Petr Mladek <pmladek@suse.com>
+Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+	Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	nvdimm@lists.linux.dev
+Subject: Re: [PATCH v3 02/25] printk: Add print format (%par) for struct range
+Message-ID: <Zsy6BbJiYqiXORGu@smile.fi.intel.com>
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-2-7c9b96cba6d7@intel.com>
+ <ZsSjdjzRSG87alk5@pathway.suse.cz>
+ <66c77b1c5c65c_1719d2940@iweiny-mobl.notmuch>
+ <Zsd_EctNZ80fuKMu@smile.fi.intel.com>
+ <ZsyB5rqhaZ-oRwny@pathway.suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240826141301.GB2393039@perftesting>
+In-Reply-To: <ZsyB5rqhaZ-oRwny@pathway.suse.cz>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Aug 26, 2024 at 10:13:01AM -0400, Josef Bacik wrote:
-> On Fri, Aug 23, 2024 at 04:38:27PM +0100, Matthew Wilcox wrote:
-> > On Fri, Aug 23, 2024 at 11:43:41AM +0930, Qu Wenruo wrote:
-> > > 在 2024/8/23 07:55, Qu Wenruo 写道:
-> > > > 在 2024/8/22 21:37, Matthew Wilcox 写道:
-> > > > > On Thu, Aug 22, 2024 at 08:28:09PM +0930, Qu Wenruo wrote:
-> > > > > > But what will happen if some writes happened to that larger folio?
-> > > > > > Do MM layer detects that and split the folios? Or the fs has to go the
-> > > > > > subpage routine (with an extra structure recording all the subpage flags
-> > > > > > bitmap)?
-> > > > > 
-> > > > > Entirely up to the filesystem.  It would help if btrfs used the same
-> > > > > terminology as the rest of the filesystems instead of inventing its own
-> > > > > "subpage" thing.  As far as I can tell, "subpage" means "fs block size",
-> > > > > but maybe it has a different meaning that I haven't ascertained.
+On Mon, Aug 26, 2024 at 03:23:50PM +0200, Petr Mladek wrote:
+> On Thu 2024-08-22 21:10:25, Andy Shevchenko wrote:
+> > On Thu, Aug 22, 2024 at 12:53:32PM -0500, Ira Weiny wrote:
+> > > Petr Mladek wrote:
+> > > > On Fri 2024-08-16 09:44:10, Ira Weiny wrote:
+
+...
+
+> > > > > +	%par	[range 0x60000000-0x6fffffff] or
 > > > > 
-> > > > Then tell me the correct terminology to describe fs block size smaller
-> > > > than page size in the first place.
+> > > > It seems that it is always 64-bit. It prints:
 > > > > 
-> > > > "fs block size" is not good enough, we want a terminology to describe
-> > > > "fs block size" smaller than page size.
+> > > > struct range {
+> > > > 	u64   start;
+> > > > 	u64   end;
+> > > > };
+> > > 
+> > > Indeed.  Thanks I should not have just copied/pasted.
 > > 
-> > Oh dear.  btrfs really has corrupted your brain.  Here's the terminology
-> > used in the rest of Linux:
+> > With that said, I'm not sure the %pa is a good placeholder for this ('a' stands
+> > to "address" AFAIU). Perhaps this should go somewhere under %pr/%pR?
 > 
-> This isn't necessary commentary, this gives the impression that we're
-> wrong/stupid/etc.  We're all in this community together, having public, negative
-> commentary like this is unnecessary, and frankly contributes to my growing
-> desire/priorities to shift most of my development outside of the kernel
-> community.  And if somebody with my experience and history in this community is
-> becoming more and more disillusioned with this work and making serious efforts
-> to extricate themselves from the project, then what does that say about our
-> ability to bring in new developers?  Thanks,
+> The r/R in %pr/%pR actually stands for "resource".
+> 
+> But "%ra" really looks like a better choice than "%par". Both
+> "resource"  and "range" starts with 'r'. Also the struct resource
+> is printed as a range of values.
 
-You know what?  I'm disillusioned too.  It's been over two and a half
-years since folios were added (v5.16 was the first release with folios).
-I knew it would be a long project (I was anticipating five years).
-I was expecting to have to slog through all the old unmaintained crap
-filesystems doing minimal conversions.  What I wasn't expecting was for
-all the allegedly maintained filesystems to sit on their fucking hands and
-ignore it as long as possible.  The biggest pains right now are btrfs,
-ceph and f2fs, all of which have people who are paid to work on them!
-I had to do ext4 largely myself.
+Fine with me as long as it:
+1) doesn't collide with %pa namespace
+2) tries to deduplicate existing code as much as possible.
 
-Some filesystems have been great.  XFS worked with me as I did that
-filesystem first.  nfs took care of their own code.  Dave Howells has
-done most of the other network filesystems.  Many other people have
-also helped.
+> > > > > +		[range 0x0000000060000000-0x000000006fffffff]
+> > > > > +
+> > > > > +For printing struct range.  A variation of printing a physical address is to
+> > > > > +print the value of struct range which are often used to hold a physical address
+> > > > > +range.
+> > > > > +
+> > > > > +Passed by reference.
 
-But we can't even talk to each other unless we agree on what words mean.
-And btrfs inventing its own terminology for things which already exist
-in other filesystems is extremely unhelpful.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-We need to remove the temporary hack that is CONFIG_READ_ONLY_THP_FOR_FS.
-That went in with the understanding that filesystems that mattered would
-add large folio support.  When I see someone purporting to represent
-btrfs say "Oh, we're not going to do that", that's a breach of trust.
 
-When I'm accused of not understanding things from the filesystem
-perspective, that's just a lie.  I have 192 commits in fs/ between 6.6
-and 6.10 versus 160 in mm/ (346 commits in both combined, so 6 commits
-are double-counted because they touch both).  This whole project has
-been filesystem-centric from the beginning.
 
