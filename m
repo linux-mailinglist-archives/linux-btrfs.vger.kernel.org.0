@@ -1,134 +1,155 @@
-Return-Path: <linux-btrfs+bounces-7559-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7560-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F9E960BCB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 15:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE7C960C03
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 15:27:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1569D285C3B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 13:22:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 692CB288285
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 13:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765D11BFDFF;
-	Tue, 27 Aug 2024 13:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gngz+sY9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5777C1C0DCE;
+	Tue, 27 Aug 2024 13:26:21 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 445821BDA91;
-	Tue, 27 Aug 2024 13:22:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9DB1BDA8B;
+	Tue, 27 Aug 2024 13:26:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724764934; cv=none; b=IiTmGW0vOvUjor2hXgZ4wVL4FESWadviDvz7X8lIBLSEoBc9zqW1NHQ8kwbZoN0UK7oIETxojsTFfvYP3uqVIMSkTH4+x1G2W0BVQ7LPhxweHacEvJeQszbCVhB3c9b87xrz374Kz8iL/0E/KqXw1nL0HYHz9BGyZ134WM41aCQ=
+	t=1724765180; cv=none; b=spwHJVygn/GKuRMSLYvvnZlMzMWLsjCTVnpjHzxxCV0qiJ8uLIqx/LlhKb9sk/XlxM5hpehMmIwcpmaWHPTfG/vVQmpzBBsdHztC6rQH8ilkuSdZ9mNNfBt2c5LGuNbN+JoYtHRCnkNmfW85u355U5Cp+R+kXMQ751MYeXVv3Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724764934; c=relaxed/simple;
-	bh=mmintB9ndCfunLcL05i0iSaGGs9dzvdyankk1KB3g3Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=spPtt2KiiSbjREgyPjKnNecTac9fpmPKF5iGJ9QsDL96vzxwI2QowL8pZujZAdLbADAuQ9i8E6wK8cnX5rRqy/PnGWBQ7/zfRO1CMm2PiwbnZOnHORcrwCn6eMz3e1IgHkeNxfY6Sh79np6Gn7g56VrnJJcNYIW9m99IKYh0q/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gngz+sY9; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724764934; x=1756300934;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mmintB9ndCfunLcL05i0iSaGGs9dzvdyankk1KB3g3Q=;
-  b=gngz+sY9m1kejJsC29q1k8Xl9z6QvoXCrtoZ/C7n+JVa8pLN2jL+WEN1
-   T6m+wDrWPW2ewIneXQRVW6lh/q+i5J8iHEilfhmGDTqMlnxKHLrNYzrzX
-   qml5az2L18aYnMffUGzV702Wy6+8bWyAAl6SNh5TPHoUxr/xwiavQ6THq
-   vpe2hXLa8a5fPZ5MUYsboL9qNo3SJdtKKZGiJnIyzzB+EDanKcYYDb8vE
-   p3Px9BYBUH4uX8+GciBQ1EOEV9qMhfP4tse+LaH8YAosvJOr5ozB0mVso
-   L0rn9JhU0Yhr2IFr6qQnhr6eg8VQvV4tv5iYwJ/QwBETgp6L4jekjTatC
-   A==;
-X-CSE-ConnectionGUID: IHx+mRYES3Omq5MxrAKTwg==
-X-CSE-MsgGUID: vS+rIVXXTWW/srasgvXxXw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11176"; a="45759074"
-X-IronPort-AV: E=Sophos;i="6.10,180,1719903600"; 
-   d="scan'208";a="45759074"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2024 06:21:30 -0700
-X-CSE-ConnectionGUID: v2v1nDK8QJ2yR5gnvtj3PA==
-X-CSE-MsgGUID: plyR9erVT++yURG7ogCnRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,180,1719903600"; 
-   d="scan'208";a="62837678"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa009.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2024 06:21:25 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.98)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1siw8O-00000002Gxk-3W05;
-	Tue, 27 Aug 2024 16:21:20 +0300
-Date: Tue, 27 Aug 2024 16:21:20 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Petr Mladek <pmladek@suse.com>
-Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-	Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	nvdimm@lists.linux.dev
-Subject: Re: [PATCH v3 02/25] printk: Add print format (%par) for struct range
-Message-ID: <Zs3S0J6xus82y9jh@smile.fi.intel.com>
+	s=arc-20240116; t=1724765180; c=relaxed/simple;
+	bh=m2CmJ77UcG+8tkfrra5kg4E79NABuUeCBphF2gCmP10=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Pw7YNo+T6aOQlSHDP72hKrRZZ+iR5SWEUAIaQS1ydV+5pAr3FzVtXLceI2YiH79rbGPXFKRayKRY6hYKI2POSx35LsUZdrUDXZ8fLdJ6sJJOyEBhzRNYU55EaQqzPZasjaP5LpPLB5WFoL41efxjXCPg2zY2E11WaxynkTlDyVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4WtSrT0Kfvz6J7F9;
+	Tue, 27 Aug 2024 21:22:17 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4DCDA140A87;
+	Tue, 27 Aug 2024 21:26:15 +0800 (CST)
+Received: from localhost (10.203.177.66) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 27 Aug
+ 2024 14:26:14 +0100
+Date: Tue, 27 Aug 2024 14:26:13 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Chris Mason <clm@fb.com>, Josef Bacik
+	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Petr Mladek
+	<pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Andy Shevchenko
+	<andriy.shevchenko@linux.intel.com>, Rasmus Villemoes
+	<linux@rasmusvillemoes.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>,
+	Dan Williams <dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>
+Subject: Re: [PATCH v3 20/25] dax/bus: Factor out dev dax resize logic
+Message-ID: <20240827142613.00005c91@Huawei.com>
+In-Reply-To: <20240816-dcd-type2-upstream-v3-20-7c9b96cba6d7@intel.com>
 References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
- <20240816-dcd-type2-upstream-v3-2-7c9b96cba6d7@intel.com>
- <ZsSjdjzRSG87alk5@pathway.suse.cz>
- <66c77b1c5c65c_1719d2940@iweiny-mobl.notmuch>
- <Zsd_EctNZ80fuKMu@smile.fi.intel.com>
- <ZsyB5rqhaZ-oRwny@pathway.suse.cz>
- <Zsy6BbJiYqiXORGu@smile.fi.intel.com>
- <66ccf10089b0_e0732294ef@iweiny-mobl.notmuch>
- <Zs2DhzbLK_LU6B0a@pathway.suse.cz>
+	<20240816-dcd-type2-upstream-v3-20-7c9b96cba6d7@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zs2DhzbLK_LU6B0a@pathway.suse.cz>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, Aug 27, 2024 at 09:43:32AM +0200, Petr Mladek wrote:
-> On Mon 2024-08-26 16:17:52, Ira Weiny wrote:
-> > Andy Shevchenko wrote:
+On Fri, 16 Aug 2024 09:44:28 -0500
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-...
-
-> But I could live with all other variants, except for %pn mentioned below.
-
-I believe %r is also no go as we most likely get a complier warning.
-
-...
-
-> > Am I missing your point somehow?  I considered cramming a struct range into a
-> > struct resource to let resource_string() process the data.  But that would
-> > involve creating a new IORESOURCE_* flag (not ideal) and also does not allow
-> > for the larger u64 data in struct range should this be a 32 bit physical
-> > address config.
+> Dynamic Capacity regions must limit dev dax resources to those areas
+> which have extents backing real memory.  Such DAX regions are dubbed
+> 'sparse' regions.  In order to manage where memory is available four
+> alternatives were considered:
 > 
-> This would be nasty. I believe that this is not what Andy meant.
+> 1) Create a single region resource child on region creation which
+>    reserves the entire region.  Then as extents are added punch holes in
+>    this reservation.  This requires new resource manipulation to punch
+>    the holes and still requires an additional iteration over the extent
+>    areas which may already have existing dev dax resources used.
+> 
+> 2) Maintain an ordered xarray of extents which can be queried while
+>    processing the resize logic.  The issue is that existing region->res
+>    children may artificially limit the allocation size sent to
+>    alloc_dev_dax_range().  IE the resource children can't be directly
+>    used in the resize logic to find where space in the region is.  This
+>    also poses a problem of managing the available size in 2 places.
+> 
+> 3) Maintain a separate resource tree with extents.  This option is the
+>    same as 2) but with the different data structure.  Most ideally there
+>    should be a unified representation of the resource tree not two places
+>    to look for space.
+> 
+> 4) Create region resource children for each extent.  Manage the dax dev
+>    resize logic in the same way as before but use a region child
+>    (extent) resource as the parents to find space within each extent.
+> 
+> Option 4 can leverage the existing resize algorithm to find space within
+> the extents.  It manages the available space in a singular resource tree
+> which is less complicated for finding space.
+> 
+> In preparation for this change, factor out the dev_dax_resize logic.
+> For static regions use dax_region->res as the parent to find space for
+> the dax ranges.  Future patches will use the same algorithm with
+> individual extent resources as the parent.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+I'm not 100% confident on this one, so will probably take another look
+before giving a tag.
+One trivial comment below.
 
-You are right, this is not what I meant.
 
--- 
-With Best Regards,
-Andy Shevchenko
+
+> +static ssize_t dev_dax_resize(struct dax_region *dax_region,
+> +		struct dev_dax *dev_dax, resource_size_t size)
+> +{
+> +	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+> +	resource_size_t dev_size = dev_dax_size(dev_dax);
+> +	struct device *dev = &dev_dax->dev;
+> +	resource_size_t alloc = 0;
+
+No path in which this is not set before use.
+
+> +
+> +	if (dev->driver)
+> +		return -EBUSY;
+> +	if (size == dev_size)
+> +		return 0;
+> +	if (size > dev_size && size - dev_size > avail)
+> +		return -ENOSPC;
+> +	if (size < dev_size)
+> +		return dev_dax_shrink(dev_dax, size);
+> +
+> +	to_alloc = size - dev_size;
+> +	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
+> +			"resize of %pa misaligned\n", &to_alloc))
+> +		return -ENXIO;
+> +
+> +retry:
+> +	alloc = dev_dax_resize_static(&dax_region->res, dev_dax, to_alloc);
+> +	if (alloc <= 0)
+> +		return alloc;
+>  	to_alloc -= alloc;
+>  	if (to_alloc)
+>  		goto retry;
 
 
 
