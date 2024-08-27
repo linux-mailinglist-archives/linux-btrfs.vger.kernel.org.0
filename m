@@ -1,75 +1,76 @@
-Return-Path: <linux-btrfs+bounces-7595-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7596-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8128D961A2F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 00:59:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F95C961A38
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 01:02:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34F1E285044
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 22:59:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43A501C22CA6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 23:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2371D416C;
-	Tue, 27 Aug 2024 22:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B7C1C3F2C;
+	Tue, 27 Aug 2024 23:02:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Cou54qAg"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AyuhluSz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CB464A
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 22:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDCB199FB9
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 23:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724799572; cv=none; b=FmVb/g6A672BrXo3gOEkUkampk88HnYB+3uK6rapl/rIY7+qjcuJJ1n9oeFyEljjGx+BK1S2JB+E0bN0rMLQg97y/anML3UcyIHsolHlXlYYCUglN6xEDSwf/aaYnB8z0xSGA0ejhCDsovga/Ms/638UKzIRJm69Y2ge4AXdpHY=
+	t=1724799757; cv=none; b=ilBk19HVS1kyth4kBwCVgmJfBQuXZsKg1SR9Eoko9kv3Z9zeq8pcEGyZ0Zr6tpzVc20cz10/n+2u0NODxyTwb9gk3tOydZu++2w2tLljf1s30snlJJcjyEkFj7j2gzxwy0jnoLV2V6Tej9VWV+Uo4mWnl+luYP6GKc94yGQV+Z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724799572; c=relaxed/simple;
-	bh=NdzwYrjoflo4oQWFnaFqYnryZCYdYHYTYHFrkdSSob0=;
+	s=arc-20240116; t=1724799757; c=relaxed/simple;
+	bh=vdQqDZTaroLio1ukfk11oDu5AoKLce7uMLDOp6N+EbQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Gz9IMMkaRC+/UE9BR1f2oew9FlH4GY0lwefE3x5ivriTSva7mScH7HNS2pvaQi27TAhR9jLJtWbnijQ0fnkbAcDm/Az7p7zWzTZqtLmWO3KifMjb7WfqJoG8bTL4pLs502sOrm8N+xJ7334FmfWq/211r/JzJREgp9EG/MokkEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Cou54qAg; arc=none smtp.client-ip=209.85.221.44
+	 In-Reply-To:Content-Type; b=UOeaV98kKsbS+KbRlIUFjqQiZht7w4Hnx78KzqV3DZsxUuUE0V61ydHBvRXt1R8hCEj9qXd52NR5mtv+4K4ePaiGJtU/NPb8SD/Xh2oqlxWQgRQ1FbhEPUuo5S2G24tfdaguy5LswM+9X1s6tjqHTGHsbUXnS/1AV4JgIUKfunY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AyuhluSz; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-371aa511609so3014308f8f.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 15:59:29 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-371bb8322b2so22850f8f.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 16:02:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724799568; x=1725404368; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1724799754; x=1725404554; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=FBHD0KQJlBT9EYDf9CyqvuDB7M7twHKAIttGW0Glgzo=;
-        b=Cou54qAgz/FIrpuTQsZiSR3+GrjObAWC39HLc9rjqFNy/B6Pv3rc6dHqJUCHQoeskl
-         aUyYcueMr/X7Jz3Mu8bWZ8DB2/Br8UIpw0TLxngrDbuSMqEMONcevcSWyXDEqZW6ZMbd
-         JgzEGKwWs6qyYnUPRuASmTVcXXmyKOWbHZHoDuGH/RjX1OCFzeW5dacCw+1hYyQSRot2
-         8effrPr4CGof5MuxibS/w1BX99R9RgLAvMVLG16atm4XMPpsDLoCYKfuVXL+aUN2ycPQ
-         rDY7o3/VrLCaNhAEhK4mJpGUxS7aXirJUv6gidjfndB5PvYYi0ODT5+WSYvmGY4ivMcW
-         Nd8w==
+        bh=oUJL+S7jddsnnxM14vIXY9HdJTRDuzpwRs7nW6YY/fE=;
+        b=AyuhluSzVjB3Nh4/7XTxVDyImwVoSSGSCs/AB1uHca/6kAO/PVdpVZW6YUdfb3D84G
+         hiskbpOY3vJU94wWbk84KpIzpl3Nkp40guirr3lLnSD+Xd7mkLbeiVxbsSkmmJ6Yp50J
+         RfgGYYo0ViURMiW0TaOipXpZ+k5OFSdrzOv9mX1StuQAkhAV25tawRNcXwNHP5lKWsJF
+         d7gpAvj/Ne88jM5gdNb/rNyBcEPHXn86jC+ApdcVnC7Whx+HFYo4S+7JSwDFgVPsVF+v
+         MKucRsYCm37nKW66W1yiimrRqCrWQU4wIfQIyr7tBW1uj/whDJjX1uK3xFzZTSIZbgCa
+         6b0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724799568; x=1725404368;
+        d=1e100.net; s=20230601; t=1724799754; x=1725404554;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FBHD0KQJlBT9EYDf9CyqvuDB7M7twHKAIttGW0Glgzo=;
-        b=xS+5yYrXOlvJc4bA/Zuz3zjmw67w4RNLKr6y0G31D58jFdPZOxz+3DHlLELsWcx9ou
-         pm3jhjk4Em4OQzIJBtGL5QWiYnNGUfBegBODQvrHEjk8qJltiOAq80+R784/WZCrduxj
-         kMcoF55c2yWMzPtaBDJJ4SO5EoUuzgpTfB15OY0wX5f+OVanUMIHOd2mEjq/0HEFuIQK
-         KX+3N2eoM1rlSxYUpNRvtRxVjLI+3bfNI3Bj96BZuYVN9U2o1V1yvt7zsJKIzvviEX4j
-         Jh2NwSkh6wRjVcG/D0FQ1+Mcc24t4zElekY/yIMJ/xI3FNBLESrREDTSHPbSLuH81Xj5
-         Nqew==
-X-Forwarded-Encrypted: i=1; AJvYcCUndxGTi0ipVA1RK/HJW1iSO9qiQg4l6hDSN+EhUBXgf1TMpULxojTizFNUm6l0NP86nJsvCaPUpw8W9g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwQSSsggRQqzUyM8XD7XKbmqxeuGO3ympSTqzjCVsTJhHfk+dM+
-	zTvt/VHSqr4wsZIErANz05ZhOIofhpHWyBmiQr/WDh6Cf8IViJaUC2bN5USZitw=
-X-Google-Smtp-Source: AGHT+IFKwuNGuBuWlM5bkVYQFRefWgHXU63ZryeVdkNlk7bYPZJsOwR1CFlviePY2ptFBIMm0xHViw==
-X-Received: by 2002:a05:6000:108d:b0:368:3ee5:e3e1 with SMTP id ffacd0b85a97d-3749680da42mr63025f8f.7.1724799567723;
-        Tue, 27 Aug 2024 15:59:27 -0700 (PDT)
+        bh=oUJL+S7jddsnnxM14vIXY9HdJTRDuzpwRs7nW6YY/fE=;
+        b=Fht/0UFJv1Ckum/4/QR510wuZiSUtIICyE2DpGBdOdhAjeKzq7caEbpGXOcfg87ABP
+         A6NO4tFpwNKVyGAagrEveCDYj8Pn9ZvEnQDIOQ1KDAd4sxzCDJkMw8L3LmAxMll3wRVu
+         b0gLojFl0igIw83fzY/Yce3LroC0Mo+nfL1f7NK8sXTAnMmrEfLbS5kz9ENFgh0kfSVL
+         vHd6I8TDZID+6IZ28Y4tf/T34bZwWAK3+ti6qjbXB0vdM2fpuu0jIiflKHzV6Jp03RgU
+         kyytu5iftl7wDeDn/tA7BFzHC0itTvN/2RMx6xzXNOh8mUKcnySUdfoAKVLOUzYpuYCs
+         TrZg==
+X-Forwarded-Encrypted: i=1; AJvYcCX10CxPVgQagenXIWYh1F2I5aw3vmtgjy+KsVh5lDx1R0DOwyW4FvC4j1yNqchuCZVVNcmMVaq0xz0WIQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYGuEP1Pj2DGjGTLXDU68s/MRwBGAYEdQeojhpHUoHDzWg/JhL
+	T2wc0RnQMEVh6nTSYKrYiyPXGQpVFoomqLPiqoUtstATtJXOZPaedQkuAPqbVfh+rUXRPfLMJkn
+	Q
+X-Google-Smtp-Source: AGHT+IHfeu8AqPVcwv3wYmPfqQkGpHNU/knCxCYkBPKgl4kBUSM0M5lhZS23kai3HqNMHDjbu+YiOQ==
+X-Received: by 2002:a5d:6308:0:b0:371:82ed:245b with SMTP id ffacd0b85a97d-37495e917camr135879f8f.0.1724799753974;
+        Tue, 27 Aug 2024 16:02:33 -0700 (PDT)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2038557ee79sm88662225ad.82.2024.08.27.15.59.25
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d84467e748sm48896a91.55.2024.08.27.16.02.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Aug 2024 15:59:27 -0700 (PDT)
-Message-ID: <b8754522-47d4-41e6-b47a-261bda449d80@suse.com>
-Date: Wed, 28 Aug 2024 08:29:23 +0930
+        Tue, 27 Aug 2024 16:02:33 -0700 (PDT)
+Message-ID: <49f29308-f177-4b42-852b-e0f6b28f5360@suse.com>
+Date: Wed, 28 Aug 2024 08:32:28 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,11 +78,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/12] btrfs: clear defragmented inodes using postorder in
- btrfs_cleanup_defrag_inodes()
+Subject: Re: [PATCH 00/12] Renames and defrag cleanups
 To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1724795623.git.dsterba@suse.com>
- <e4ad6d8e46f084001770fb9dad6ac8df38cd3e2e.1724795624.git.dsterba@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -108,72 +107,53 @@ Autocrypt: addr=wqu@suse.com; keydata=
  bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
  AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
  ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <e4ad6d8e46f084001770fb9dad6ac8df38cd3e2e.1724795624.git.dsterba@suse.com>
+In-Reply-To: <cover.1724795623.git.dsterba@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
 在 2024/8/28 07:25, David Sterba 写道:
-> btrfs_cleanup_defrag_inodes() is not called frequently, only in remount
-> or unmount, but the way it frees the inodes in fs_info->defrag_inodes
-> is inefficient. Each time it needs to locate first node, remove it,
-> potentially rebalance tree until it's done. This allows to do a
-> conditional reschedule.
+> A few simple cleanups, dropping underscores and improving some code in
+> defrag.
 > 
-> For cleanups the rbtree_postorder_for_each_entry_safe() iterator is
-> convenient but if the reschedule happens and unlocks fs_info->defrag_inodes_lock
-> we can't be sure that the tree is in the same state. If that happens,
-> restart the iteration from the beginning.
+> David Sterba (12):
+>    btrfs: rename btrfs_submit_bio() to btrfs_submit_bbio()
+>    btrfs: rename __btrfs_submit_bio() and drop double underscores
+>    btrfs: rename __extent_writepage() and drop double underscores
+>    btrfs: rename __compare_inode_defrag() and drop double underscores
+>    btrfs: constify arguments of compare_inode_defrag()
+>    btrfs: rename __need_auto_defrag() and drop double underscores
+>    btrfs: rename __btrfs_add_inode_defrag() and drop double underscores
+>    btrfs: rename __btrfs_run_defrag_inode() and drop double underscores
+>    btrfs: clear defragmented inodes using postorder in
+>      btrfs_cleanup_defrag_inodes()
 
-In that case, isn't the rbtree itself in an inconsistent state, and 
-restarting will only cause invalid memory access?
+This one doesn't look safe to me as the rbtree_postorder_for_each_safe() 
+doesn't look like interruption safe.
 
-So in this particular case, since we can be interrupted, the full tree 
-balance looks like the only safe way we can go?
+The remaining ones looks good to me.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
+>    btrfs: return void from btrfs_add_inode_defrag()
+>    btrfs: drop transaction parameter from btrfs_add_inode_defrag()
+>    btrfs: always pass readahead state to defrag
 > 
-> The cleanup operation is kmem_cache_free() which will likely take the
-> fast path for most objects.
+>   fs/btrfs/bio.c               |  20 +++----
+>   fs/btrfs/bio.h               |   6 +--
+>   fs/btrfs/compression.c       |   4 +-
+>   fs/btrfs/defrag.c            | 100 ++++++++++++++---------------------
+>   fs/btrfs/defrag.h            |   3 +-
+>   fs/btrfs/direct-io.c         |   2 +-
+>   fs/btrfs/extent_io.c         |  34 ++++++------
+>   fs/btrfs/inode.c             |   8 +--
+>   fs/btrfs/scrub.c             |  10 ++--
+>   fs/btrfs/subpage.c           |   4 +-
+>   include/trace/events/btrfs.h |   2 +-
+>   11 files changed, 86 insertions(+), 107 deletions(-)
 > 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/defrag.c | 17 ++++++++---------
->   1 file changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-> index 41d67065d02b..bd1769dd134c 100644
-> --- a/fs/btrfs/defrag.c
-> +++ b/fs/btrfs/defrag.c
-> @@ -212,19 +212,18 @@ static struct inode_defrag *btrfs_pick_defrag_inode(
->   
->   void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info)
->   {
-> -	struct inode_defrag *defrag;
-> -	struct rb_node *node;
-> +	struct inode_defrag *defrag, *next;
->   
->   	spin_lock(&fs_info->defrag_inodes_lock);
-> -	node = rb_first(&fs_info->defrag_inodes);
-> -	while (node) {
-> -		rb_erase(node, &fs_info->defrag_inodes);
-> -		defrag = rb_entry(node, struct inode_defrag, rb_node);
-> +again:
-> +	rbtree_postorder_for_each_entry_safe(defrag, next, &fs_info->defrag_inodes,
-> +					     rb_node) {
->   		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
->   
-> -		cond_resched_lock(&fs_info->defrag_inodes_lock);
-> -
-> -		node = rb_first(&fs_info->defrag_inodes);
-> +		if (cond_resched_lock(&fs_info->defrag_inodes_lock)) {
-> +			/* Rescheduled and unlocked. */
-> +			goto again;
-> +		}
->   	}
->   	spin_unlock(&fs_info->defrag_inodes_lock);
->   }
 
