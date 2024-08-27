@@ -1,75 +1,80 @@
-Return-Path: <linux-btrfs+bounces-7591-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7592-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E51961A17
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 00:42:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E19A6961A18
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 00:42:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1A171C22A41
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 22:42:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ECEDB22D5B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 22:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E3B1D415A;
-	Tue, 27 Aug 2024 22:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD3B1D4173;
+	Tue, 27 Aug 2024 22:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X+KmZfYW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WabaKWnn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f67.google.com (mail-oa1-f67.google.com [209.85.160.67])
+Received: from mail-oo1-f66.google.com (mail-oo1-f66.google.com [209.85.161.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5C281714BC
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 22:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578A11D1F59
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 22:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724798527; cv=none; b=EBHVguX7HtUt+wMwLhdAr9fJ2MTmKGplW05IXbTebqBri6hWnjgfsEG4WvU9PZVfmoSe9Bc14zcBPEBtlyaVKGKj0wk6nfA+k5siOTxSeEcyhIdHvViJ7X9l6jzoPSgMg0oHFio78Q1EpnVnT/h1Po+mfLhSnAxYHHxoXv1tlXc=
+	t=1724798528; cv=none; b=EvNV2ls774u+4yBglzsJHaIFOCd8kfq8bnqwTV6YJYQPNmYe4S+fAEQh2fBZlhYqwXEivYTFLgTjAA+Oh27N338o9xvRO8wliYgL5b4yBVhahBVym8+u09WsIHcDyVOp5cvQfCNmYZKjjX2/kqGHKFmJUGELOp4PReMsNSHRj4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724798527; c=relaxed/simple;
-	bh=ZhN5vt284t/UHxWaOuyaUyqNDE8ElEPIAfOBggDjXLc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=jg9AZphC3Vkq/S4dIcugv/CTnsgnJIKCeMWJcV5dbMmRBQZSY5mf6Nk0yjBkJQEKGbyAKWfcu/yuzMd9oVSHfNHDQ8BmBLW++A2RhVaimgKQM59rIq8gY9KcuUFX9MVBDu/r9XgHTek7OtnO2s0w1FE2K45LIxEt5y3BTLda8mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X+KmZfYW; arc=none smtp.client-ip=209.85.160.67
+	s=arc-20240116; t=1724798528; c=relaxed/simple;
+	bh=n5LbD98MyNqaSQ4tcqe2s26KYYC32K2UmgcnC+bmjsQ=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iqfuy1boh5GIJQpO23h7bA+5mTVaLl4L2t7xHKefoR78gHMTTnSi1tizIxjT8QiJxoFDctrPJxYaP9gH+ezQyQIC11NPozOB47rTlBTIoiK2EQ9/efT/YT83DxlXOAaeg9Mh4lrTlyIaHCsHXzQQ+KtIFsp7eD6xMZyASPWltoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WabaKWnn; arc=none smtp.client-ip=209.85.161.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f67.google.com with SMTP id 586e51a60fabf-2701c010388so3572227fac.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 15:42:05 -0700 (PDT)
+Received: by mail-oo1-f66.google.com with SMTP id 006d021491bc7-5d5e97b8adbso4922654eaf.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 15:42:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724798525; x=1725403325; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FjqsjT1Xp8+sFZpoDnJqkoI6gpVu39vVwwA4wlozZIw=;
-        b=X+KmZfYWqecOviJ4HUOOLY+5kxSC+HMI+jc0QKOG2drUlPZ0S4UR6k4JjLVgf/UPIe
-         8x7TtbY8eDDJbAu+5gcvuAiF0uxh/fNG6RGcT4gr2t9Wt5qEHZikvtccZbTsOvSwsfv5
-         FcO4ZoLInKJj24OawHjC0yamPktIVhDjy8juYWaKkTVO89+EULsiFbygkD+sWY/vgB8f
-         3ZejZZxR5i/jDhn67zgddmBv4kNdM60AHnLTEzTG/qJaeVdtXDBZF+aoepPyk2/t0YCB
-         U8T8l7Jn+1CMBveY1Id6HtVgfh/8eLvZLrYaDBEnypJ4i/MHTo6YtWKTiVmxkJrO/Yo+
-         oWQw==
+        d=gmail.com; s=20230601; t=1724798526; x=1725403326; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3+YxbXppocQU2l4EFQo704T8jvOcTqNyJkKqw3tNp1o=;
+        b=WabaKWnnFgITjSFyJ8jxPwTWYHzvEkjlDO3ATYj54eEmmpBQpPRRnifJcGuYT62crI
+         lPHGt+o2Hz7uiwoHhFkQkvu1L7RngWGOlANWaS7OSsUajewZOYYd5XEH1NxrayC4vtRQ
+         IUwO7QoG8782+vJ4vI0HwVViJ0ip5gH5x0fBV8RctPOK5BnHMjID2/NsIqPGs+djN1Wu
+         3AxtL1HNfMaDTqYcKnHryQ6mK7EIRcpSxHqJmChd4k752NYCJVjsPtdKsa+jEZMmQ4fI
+         eBw7+8MsQgY088yaIoLqJuzurRKGOW5R8KkOAowSWN127GRreJRfxUuuu+Hqxgf1YmYe
+         hRPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724798525; x=1725403325;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FjqsjT1Xp8+sFZpoDnJqkoI6gpVu39vVwwA4wlozZIw=;
-        b=PYenXucUwlFa8JjDwK/1lM2OR/ubep05l+B1WVFQnJRvTJPcElL93ycW1Dgy8UFkxP
-         67y1nOW1VFh3yd3fKno1xxKud9oyQzvsrPQweECgrr2/lEx2xLtrIcrOMNyWruypeEf8
-         OiRViiH2EJQrSb4GBTBcuRJ1CuD8vtwTCzE/5kLbWbw3PRraoW874wdRo//nAG0KVwJ1
-         3oxPH/5MTEKV0qsc2oB0i2KJ8CzvHvQcmd5zVCCVMFlWomjxIrGBfdLCc3rPrUZ7Gk9r
-         b6/7dVhkxGge2ppPw8X6J7FwZKqGcn0f5XKeACszUWA8JqXmgP2/bSmaRAF502oZc9j3
-         gsOg==
-X-Gm-Message-State: AOJu0YxXZ7I7NjGc0v/1HPkEFgYAUswFiF6eDzhneoXmBiWxhmSShGb2
-	z0M6LUWZDzwzztsOvyVZgqYHmuSFW/InsY+FLHOaha+K2y19KIbWW2CxOmQx
-X-Google-Smtp-Source: AGHT+IFiKPtEE/I0y9pIXZBumsnLOmh2BLq+Dxq+cajQ8koFLNwDyfe8w4bFUXd1qKf37i6T65UiAQ==
-X-Received: by 2002:a05:6871:1c9:b0:261:52d:1aef with SMTP id 586e51a60fabf-2777d363652mr21246fac.49.1724798524734;
-        Tue, 27 Aug 2024 15:42:04 -0700 (PDT)
-Received: from localhost (fwdproxy-eag-004.fbsv.net. [2a03:2880:3ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-70e03b60235sm2580656a34.61.2024.08.27.15.42.04
+        d=1e100.net; s=20230601; t=1724798526; x=1725403326;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3+YxbXppocQU2l4EFQo704T8jvOcTqNyJkKqw3tNp1o=;
+        b=KdP9ydoFRVM2AWdIYEVZogObEJBORgy2AsOClCkR1WbSdfs280f8sIBaQvHgKdT2mM
+         FOBvdKEvjf4iDafIB6p9rFtWL8b3/f1kUVm4TYc6vkRzOzfEFbWumi4xVMV6VK/8rMiK
+         uQ+QAPkUahDb5Fn24iitTFiSZbsM9Dlqr0wxlPsBVOXWEU5lQXH5SgrIQydhb3pGqsk5
+         D+Fw3A+zjwgXt2p+qqEsKJNMadnbw5ip4tzP0eU0G9SPRChR2OIJo+OaSWEPrb5ZYiLx
+         LPVCKxclAVEsCcAUoMZMeNeVjfU7CV2mWTupxWti67FIcc42sQpYF/WURCESWuXYOqpT
+         saMw==
+X-Gm-Message-State: AOJu0YyWw51p42XWFl75gVmU//tyepVya/YuJGTKuZKT+enlCYw0Mvb9
+	GLCYsRM+xAut466Hrg3FSRTSPLzLUow4DyrWOdyhcTRfGFojFFQBy0oH61kt
+X-Google-Smtp-Source: AGHT+IE/3sPBoyZhbzBRYNCDJ0XPQpT1eKnjPdiAe92XgrM5wAavu+lrNkTmVWguTlZB+mR4sEmVeA==
+X-Received: by 2002:a4a:ec41:0:b0:5c6:5f2d:8430 with SMTP id 006d021491bc7-5dcc5ec241amr15667420eaf.2.1724798526108;
+        Tue, 27 Aug 2024 15:42:06 -0700 (PDT)
+Received: from localhost (fwdproxy-eag-115.fbsv.net. [2a03:2880:3ff:73::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5dcb5de7c83sm2699104eaf.14.2024.08.27.15.42.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2024 15:42:04 -0700 (PDT)
+        Tue, 27 Aug 2024 15:42:05 -0700 (PDT)
 From: Leo Martins <loemra.dev@gmail.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v3 0/3] btrfs path auto free
-Date: Tue, 27 Aug 2024 15:41:30 -0700
-Message-ID: <cover.1724792563.git.loemra.dev@gmail.com>
+Subject: [PATCH v3 1/3] btrfs: DEFINE_FREE for btrfs_free_path
+Date: Tue, 27 Aug 2024 15:41:31 -0700
+Message-ID: <02d02a785f1d71b41104c48fb38eee7488a672c6.1724792563.git.loemra.dev@gmail.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <cover.1724792563.git.loemra.dev@gmail.com>
+References: <cover.1724792563.git.loemra.dev@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,46 +83,52 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The DEFINE_FREE macro defines a wrapper function for a given memory
-cleanup function which takes a pointer as an argument and calls the
-cleanup function with the value of the pointer. The __free macro adds
-a scoped-based cleanup to a variable, using the __cleanup attribute
-to specify the cleanup function that should be called when the variable
-goes out of scope.
+Add a DEFINE_FREE for btrfs_free_path. This defines a function that can
+be called using the __free attribute. Defined a macro
+BTRFS_PATH_AUTO_FREE to make the declaration of an auto freeing path
+very clear.
 
-Using this cleanup code pattern ensures that memory is properly freed
-when it's no longer needed, preventing memory leaks and reducing the
-risk of crashes or other issues caused by incorrect memory management.
-Even if the code is already memory safe, using this pattern reduces
-the risk of introducing memory-related bugs in the future
+Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+---
+ fs/btrfs/ctree.c | 2 +-
+ fs/btrfs/ctree.h | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-In this series of patches I've added a DEFINE_FREE for btrfs_free_path
-and created a macro BTRFS_PATH_AUTO_FREE to clearly identify path
-declarations that will be automatically freed.
-
-I've included some simple examples of where this pattern can be used.
-The trivial examples are ones where there is one exit path and the only
-cleanup performed is a call to btrfs_free_path.
-
-There appear to be around 130 instances that would be a pretty simple to
-convert to this pattern. Is it worth going back and updating
-all trivial instances or would it be better to leave them and use the pattern
-in new code? Another option is to have all path declarations declared
-with BTRFS_PATH_AUTO_FREE and not remove any btrfs_free_path instances.
-In theory this would not change the functionality as it is fine to call
-btrfs_free_path on an already freed path.
-
-Leo Martins (3):
-  btrfs: DEFINE_FREE for btrfs_free_path
-  btrfs: BTRFS_PATH_AUTO_FREE in zoned.c
-  btrfs: BTRFS_PATH_AUTO_FREE in orphan.c
-
- fs/btrfs/ctree.c  |  2 +-
- fs/btrfs/ctree.h  |  4 ++++
- fs/btrfs/orphan.c | 19 ++++++-------------
- fs/btrfs/zoned.c  | 34 +++++++++++-----------------------
- 4 files changed, 22 insertions(+), 37 deletions(-)
-
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 451203055bbfb..f0bdea206d672 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -196,7 +196,7 @@ struct btrfs_path *btrfs_alloc_path(void)
+ /* this also releases the path */
+ void btrfs_free_path(struct btrfs_path *p)
+ {
+-	if (!p)
++	if (IS_ERR_OR_NULL(p))
+ 		return;
+ 	btrfs_release_path(p);
+ 	kmem_cache_free(btrfs_path_cachep, p);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 75fa563e4cacb..fbf1f8644faea 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -6,6 +6,7 @@
+ #ifndef BTRFS_CTREE_H
+ #define BTRFS_CTREE_H
+ 
++#include "linux/cleanup.h"
+ #include <linux/pagemap.h>
+ #include <linux/spinlock.h>
+ #include <linux/rbtree.h>
+@@ -599,6 +600,9 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
+ void btrfs_release_path(struct btrfs_path *p);
+ struct btrfs_path *btrfs_alloc_path(void);
+ void btrfs_free_path(struct btrfs_path *p);
++DEFINE_FREE(btrfs_free_path, struct btrfs_path *, btrfs_free_path(_T))
++#define BTRFS_PATH_AUTO_FREE(path_name) \
++	struct btrfs_path *path_name __free(btrfs_free_path) = NULL;
+ 
+ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		   struct btrfs_path *path, int slot, int nr);
 -- 
 2.43.5
 
