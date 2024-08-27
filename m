@@ -1,100 +1,48 @@
-Return-Path: <linux-btrfs+bounces-7540-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7541-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 518AD95FE2A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 03:13:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4310D95FFAE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 05:20:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFF741F2287C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 01:13:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D28C4B21CF0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 03:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00771523A;
-	Tue, 27 Aug 2024 01:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QyqHs4yl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+5WT+e4+";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QyqHs4yl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+5WT+e4+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1E345028;
+	Tue, 27 Aug 2024 03:20:21 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F23F1C2E;
-	Tue, 27 Aug 2024 01:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5313C08A;
+	Tue, 27 Aug 2024 03:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724721187; cv=none; b=QqvXPFPUzARCliEU3MbELXiBHyFe5spZJrjhE2ogVfzGuWb2YB48tbw5p1oncC1uVaOY4RA50FV8AodGieLoKEL1l5V0iIF4ym2mSbOgzgMtq1SaA+aEk/R0KuNA9YU5FgChqQC8eWlfgmPRtBHqCwnCjhVd+d0fv0JDje6QhGI=
+	t=1724728821; cv=none; b=r3BAyarsnHDFM4k9jTvjJMJkWNTNwOxhgoVnysnK1FL4FG5j81UJeFzKLEB+nVu7BzLXqcEymx2BGBGvc71N+ykxS7i1e9d4lihqDfnoiUvcvc3zhJJmm7+bL0JYG7Z4rcyh/Rhc3/mX8Ws4UXNqijYOqizTGgQ8Imfw9HJ8aDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724721187; c=relaxed/simple;
-	bh=aNoL+ykWfWNQAvvZuiDPIYkBFzKPFhLSiKYzADFs9HI=;
+	s=arc-20240116; t=1724728821; c=relaxed/simple;
+	bh=p6fipsd3x1Sw9wjZZGiJ8W3285c/MDM9/55CsKL6FqE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jX98jXBsOZsfyLSRGi8hv4TtH67J8xcNrcO72Un/dx1XRpd5G8mISWEoENe3O4DuADxbO4Hm75KZANKLN5ruZFLAZlDRNnjbvMgqMSENhHQXxS0ttXQD0xH887sYOWQjERnzAkkDF3vxr01dn83Gyx09C1zX0EHgxAkuHdAL50w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QyqHs4yl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+5WT+e4+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QyqHs4yl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+5WT+e4+; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7EA3C219E8;
-	Tue, 27 Aug 2024 01:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724721183;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aNoL+ykWfWNQAvvZuiDPIYkBFzKPFhLSiKYzADFs9HI=;
-	b=QyqHs4yl30v6yv949vBAGG4w2EkLTlMgHBJESwz46+I8j2emvAVszAnqg/Io7i1HbwH+wI
-	KjiZ7WODAd7v6sZEoW7V7gE/A/N3eSQWLl93D7KLzaiOSqyEsmXAvUN5QBhg3D9O15s2rX
-	RnNye+N7HuqcYNAqelFbKE21UI8FyHU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724721183;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aNoL+ykWfWNQAvvZuiDPIYkBFzKPFhLSiKYzADFs9HI=;
-	b=+5WT+e4+djFaEjRfRcKjkRi/Rt4MPDeNS73b4lNjtvu0TVrpqP3uzYxyou8mBIJMbZ6JOC
-	OZGQmk5ZTQX8ZtCQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724721183;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aNoL+ykWfWNQAvvZuiDPIYkBFzKPFhLSiKYzADFs9HI=;
-	b=QyqHs4yl30v6yv949vBAGG4w2EkLTlMgHBJESwz46+I8j2emvAVszAnqg/Io7i1HbwH+wI
-	KjiZ7WODAd7v6sZEoW7V7gE/A/N3eSQWLl93D7KLzaiOSqyEsmXAvUN5QBhg3D9O15s2rX
-	RnNye+N7HuqcYNAqelFbKE21UI8FyHU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724721183;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aNoL+ykWfWNQAvvZuiDPIYkBFzKPFhLSiKYzADFs9HI=;
-	b=+5WT+e4+djFaEjRfRcKjkRi/Rt4MPDeNS73b4lNjtvu0TVrpqP3uzYxyou8mBIJMbZ6JOC
-	OZGQmk5ZTQX8ZtCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6B90D13724;
-	Tue, 27 Aug 2024 01:13:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AH/GGR8ozWYVFgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 27 Aug 2024 01:13:03 +0000
-Date: Tue, 27 Aug 2024 03:12:58 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: io-uring@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/6] btrfs: remove iocb from btrfs_encoded_read
-Message-ID: <20240827011258.GX25962@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240823162810.1668399-1-maharmstone@fb.com>
- <20240823162810.1668399-2-maharmstone@fb.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HclY9fMm3BgV27jkffbuYKrPzqEb2MGjTdGNFv0BTLmWV7QtwqMvTvUyXIdXfmnjWMlSvEFMR0HpuKu1mk1y9hzlqyzmuYV7nrPn580cQhFPhQ4cRFpHCfNZFhptg3LN/G+QbS0l4GaK5yBPcIFrHedpixtrUhvod1qfaeCePN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id ECF43227AAA; Tue, 27 Aug 2024 05:20:12 +0200 (CEST)
+Date: Tue, 27 Aug 2024 05:20:12 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Hans Holmberg <Hans.Holmberg@wdc.com>,
+	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+	linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/4] block: rework bio splitting
+Message-ID: <20240827032012.GA9357@lst.de>
+References: <20240826173820.1690925-1-hch@lst.de> <20240826173820.1690925-2-hch@lst.de> <e59de073-c608-4206-8f98-9f46b1750931@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,38 +51,58 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240823162810.1668399-2-maharmstone@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,twin.jikos.cz:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <e59de073-c608-4206-8f98-9f46b1750931@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Fri, Aug 23, 2024 at 05:27:43PM +0100, Mark Harmstone wrote:
-> We initialize a struct kiocb for encoded reads, but this never gets
-> passed outside the driver. Simplify things by replacing it with a file,
-> offset pair.
+On Tue, Aug 27, 2024 at 07:26:40AM +0900, Damien Le Moal wrote:
+> > +static struct bio *bio_submit_split(struct bio *bio, int split_sectors)
+> 
+> Why not "unsigned int" for split_sectors ? That would avoid the need for the
+> first "if" of the function. Note that bio_split() also takes an int for the
+> sector count and also checks for < 0 count with a BUG_ON(). We can clean that up
+> too. BIOs sector count is unsigned int...
 
-Please change the subject so it matches the description, so
-"btrfs: replace iocb with file and offset in btrfs_encoded_read()"
+Because we need to handle the case where we do no want to submit any
+bio and error out as well, and a negative error code works nicely
+for that.  Note that the bios has an unsigned int byte count, so we
+have the extra precision for the sign bit.
+
+> But shouldn't this check be:
+> 
+> 	if (split_sectors >= bio_sectors(bio))
+> 		return bio;
+
+The  API is to return the split position or 0 if no split is needed.
+That is needed because splits are usually done for limits singnificantly
+smaller than what the bio could take.
+
+> > +static inline struct bio *__bio_split_to_limits(struct bio *bio,
+> > +		const struct queue_limits *lim, unsigned int *nr_segs)
+> >  {
+> >  	switch (bio_op(bio)) {
+> > +	default:
+> > +		if (bio_may_need_split(bio, lim))
+> > +			return bio_split_rw(bio, lim, nr_segs);
+> > +		*nr_segs = 1;
+> > +		return bio;
+> 
+> Wouldn't it be safer to move the if check inside bio_split_rw(), so that here we
+> can have:
+
+The !bio_may_need_split case is the existing fast path optimization
+without a function call that I wanted to keep because it made a
+difference from some workloads that Jens was testing.
+
+> And at the top of bio_split_rw() add:
+> 
+> 	if (!bio_may_need_split(bio, lim)) {
+> 		*nr_segs = 1;
+> 		return bio;
+> 	}
+> 
+> so that bio_split_rw() always does the right thing ?
+
+Note that bio_split_rw still always does the right thing, it'll just
+do it a little slower than this fast path optimization.
+
 
