@@ -1,193 +1,211 @@
-Return-Path: <linux-btrfs+bounces-7546-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7547-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D08919605A8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 11:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 390E696060F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 11:45:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01B4C1C22C76
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 09:33:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DADE1C2240E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 09:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A74219CD0F;
-	Tue, 27 Aug 2024 09:33:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262661A01DA;
+	Tue, 27 Aug 2024 09:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="CYVsOtTR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="npe9Ryil"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E24413BAE4
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 09:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33C919D8A2;
+	Tue, 27 Aug 2024 09:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724751190; cv=none; b=Na5uPqivQ7gsOIVnwzrfUekibSqpwAl+RrwvF76bE2xPZTtzxGVa1kcozNYWMa4sw/TSZBntQy4TYAVvPn3ny7FtudTI5RnviAAzfyQwNyM6MiLieuhoSl58GgjUSmpgWe5jGUs8BBk9Ax/OGPGmcdaYBRN4sV+MKw92FEpIcNE=
+	t=1724751773; cv=none; b=QYk4Wg+LGVKZ+585RydFG4x2gB0cIoGHlaPxHJ0jf+tZFvCaKUlrr4Gc1eLaqQod1atNhNcbACMHr8zIkG8Xumaj7rVtI+cAhLr3XiqdWRPeorpgcCPMdMMfovX0Q6N9A0moeMo06L/xfPhMcES0T2B7kyQvsBRcZLdaLbljDDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724751190; c=relaxed/simple;
-	bh=seGUFddA6rvBiliDZheztxdk/jiY4lwqceEecivjatQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=ETPR1Eyldiw6WdraTAvM3VyZqjz8C2DSx80gSUDXxv2mYy+ClLYaCoxUheoUz6pkP7Fttq0oagNJd/JDP5ubHobiqlsVK4WohwP/49tGQGYclW4TdxtzWqlxOELLVQI6F3Q2kKU/YlaMyO77cExzBoGOHIfBHcV5az/fdRoUOkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=CYVsOtTR; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1724751184; x=1725355984; i=quwenruo.btrfs@gmx.com;
-	bh=seGUFddA6rvBiliDZheztxdk/jiY4lwqceEecivjatQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
-	 References:In-Reply-To:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=CYVsOtTROihjHgK/S3ZwZqLa7puE8vTp0AO0OAGGHOkJrPuH6o01YaehbiJiw/DG
-	 BXbb4DVDk5S+5TguaYJixmwSj1/Kd3Ce1UkPqn1e1D6ttE7dyMIuPk4QYbzEYrGZU
-	 qyDooMT+6c2pqjU6c690sW9Z2PSkyXDsHHXwgswpYUL23W9ajuK5bgB0pEoJ/Q01T
-	 UYclsrT1OXjZcTXo6/GoO8f7eUCAhfHMttcQ6bivO+OvSh/5+98PphvshMfuJdiWJ
-	 nVLTizmmmUl1jQisGxNESuZQoslHurn6ht2zBMg/QVQzBeccEZxBwtpBclNYJaQ7s
-	 k7uoDVmBFhOs+iTiig==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1fii-1rydiJ2tTM-0107u2; Tue, 27
- Aug 2024 11:33:04 +0200
-Message-ID: <c29529ca-e6b5-4979-a25a-b254a4d800d0@gmx.com>
-Date: Tue, 27 Aug 2024 19:03:01 +0930
+	s=arc-20240116; t=1724751773; c=relaxed/simple;
+	bh=9Vh+/kkN/kF6bdSbAdTVGytqEz8xw37S4L54KoUT2rI=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=APZvvm9kJyR1hIyuppYcTM+NonFyt6iDn2lofCCMGRXSMoWyP72ItJs2uQ8VP+S3px3hnOrAKRnvnxjlyDHKOJCMRrYZszMBZcvwUEZLRr0Y/uXb9dOeX79MaVjWqdVH4khSaNWq4D5pLviiNj3z34H75WaW22hl1fTOlkq3ZsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=npe9Ryil; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-7093ba310b0so3129947a34.2;
+        Tue, 27 Aug 2024 02:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724751771; x=1725356571; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9Vh+/kkN/kF6bdSbAdTVGytqEz8xw37S4L54KoUT2rI=;
+        b=npe9Ryil+oAinDxrsPrQITC2G6CyICeP8uRMgxRTO7BUUaBie+rqwhi1P6cvYJY0Zm
+         ZlyEHWak2dk3/Ry4iSnHxEMbbD8+xdM4Q8hmb7D3dpH8ZJgsfOCiMntxnqsOg7vbFeLp
+         u4zG+x0hBFFH9GjGWt/X2yZzvmZUwWKwy7g7x98Zr6w/Y2igUHp27AVcRQoXdtx61HEC
+         XMbCOoLETlW2hWn4kGtIxygCK3/SiPw3JScIA2z1R4SlE0RQjF6fscHNkrd9fe1X8Duh
+         nYfKZIesj+qYWRtvXDtabe+Pd3pnQYzpepcXf7d6xMCfsWeOmB6swlfuxbUTrXrrAnGn
+         0wsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724751771; x=1725356571;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=9Vh+/kkN/kF6bdSbAdTVGytqEz8xw37S4L54KoUT2rI=;
+        b=MN92ocbNbx/PFqaMvMM6KTv6jDSj7DG3y3an0wEJp8fzSAv6fMcJPm+ElEwgz49Z4F
+         Gys5zQ+GNfVD8dyijWyDZATjgUFHFdPmwN4twDdPNyLyPz9GBK/Vtk022dtWAPbPuE44
+         1K/2bhCTHXXuGCCqI/i4D0UipBJ1nD0HH8Ev8pQLy5EWFTjA6I5MK6wgdy0PhUiOZvRV
+         oF6H7ShuXcshHHXo11hwmGSgxa8OemBCmnKyBT7V26gyW6yADaLk/2SM2Rr72gnxeovv
+         FYppw8Vil9eqDwKHo9V6kmLIiidRHgn0nrox7So8RZachGxT2dFyJ/SFcJqeJZj96D/x
+         S42w==
+X-Forwarded-Encrypted: i=1; AJvYcCVZnovRBuIxM5+zyWSfagYf7Oy0mn6YcK2qt52KM+Je7on8HiC8RqdcX2+9WIkR9oUejfNCc2KmfilBRg==@vger.kernel.org, AJvYcCXt38YaRxmU3uTwQIZgKBoYQRm2YKfbiEQJ7OqiaZh2YMyvMEqYUza2CTgWyJVngH8++cw97Wpm/S5C+ru/@vger.kernel.org
+X-Gm-Message-State: AOJu0YzcnJKTYdRp2AdwJxkpxoRr4IjiojxbtcsF1tsu4En+SpqA080H
+	jVdFTZmtokwpLyHP+vQS6iqnH/Yqf3pR7gMYw/4Uhcf6yd4YVY34
+X-Google-Smtp-Source: AGHT+IFKqbtifrDFrWjEDH4eJ39U/2LefoMSkQz/GfI+WJhm4raLscZYR+WK1i2RsIZjoQesEZtZ/A==
+X-Received: by 2002:a05:6808:2e9b:b0:3d9:27fc:158f with SMTP id 5614622812f47-3def3f65f91mr2409843b6e.29.1724751770592;
+        Tue, 27 Aug 2024 02:42:50 -0700 (PDT)
+Received: from [127.0.0.1] ([103.85.75.88])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9acdb54asm8972313a12.42.2024.08.27.02.42.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Aug 2024 02:42:49 -0700 (PDT)
+Message-ID: <b65a238dd9852158d381156aa6db92c0ef09562e.camel@gmail.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_run_defrag_inodes (2)
+From: Julian Sun <sunjunchao2870@gmail.com>
+To: syzbot <syzbot+5833b186650f87c5b7c4@syzkaller.appspotmail.com>, 
+ clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+ linux-btrfs@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com
+Date: Tue, 27 Aug 2024 17:42:46 +0800
+In-Reply-To: <0000000000009e7183061ee0a25f@google.com>
+References: <0000000000009e7183061ee0a25f@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Errors found in extent allocation tree (single bit flipped)
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Pieter P <pieter.p.dev@outlook.com>, linux-btrfs@vger.kernel.org
-References: <AS8P250MB0886A81B469CD5F707144EA38F852@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
- <6d90baa9-ffc1-4c9d-87b2-4ba89983bef1@gmx.com>
- <AS8P250MB08869C932AF99C5C087F1B408F8B2@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
- <012717c6-4e7e-44e9-9906-5f13e4273c35@gmx.com>
- <AS8P250MB08866EFCC85A9CCCAF99E65E8F942@AS8P250MB0886.EURP250.PROD.OUTLOOK.COM>
- <6f7117dd-a9ba-4c0a-be4b-6adae1be98d3@gmx.com>
- <bc8701ab-0054-48c7-88d9-6fd9e856cde7@gmx.com>
-Content-Language: en-US
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <bc8701ab-0054-48c7-88d9-6fd9e856cde7@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NeDiZR5KSWFPWknfJpLOFLYr+UakHUKvBll07TG68Io6gGC4sKv
- lMmxTDiBbEMTkvoCXlkDnea0Xh9YxKDBwrbZRVwgUmRmbUxaSADx/CUQYKFYdiG6Xiqi/9Z
- Q+FPtWGX6hxcZjioEVfmdRfFQcfr+nhobn8i6PHcc9+2kx6bQYBBhMoGkLwFXn6gtNguETN
- 8UDUXkftqljlX5f820QqQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:JF6T2wsBRTc=;R3ymN72+xB4Ex0TQyZcZGyOA3iB
- QJmmi73CJjQL7buF41fD2ve1h782Iaq+bH2SGPHdn1lAOifVPj/CrXBN7UTrfaiysuItVO/cQ
- 51cw87gXCYgg2XvW3rl4xKo3wI27f94Cpw9BcYLFk2UQ25TVtXiH+fvUxlgzKs/aoHbyhQ1B5
- 26mtV6jFlrrIo+Rp8m5I6EJ0L9sMdcavXRRMc8T2h8HhzK/tGkXpnPuTGCJqL5hsIghm150xS
- V05x58lJ4FTpUajD1CSuEwFd02SXVXTDIjiztHDiqrnTm18KJKetm/wR/oHB8WmRvBEGQlwdR
- yVCDDaQbm2eMaRctRJ4cRemgzyak+M0hIfFkJ0VOLiigC1kCdKqDEPXCNbdA19SBQWEPYAIRE
- RNixGaKR4lAUr7UVDrn32M01yazKTaucavsMwzQ+2LoZpX5h2/STWjwsFCTp1LCNP5Lahf2g8
- gapS+JTr7XsY8opd2zJexVQPNl32e8zxReUw2bqhcF1YuStALRqC9F1tkIGUJGNysWtuPqFMw
- ZXd/yqdZpXfRe3BwcG7gnuxxMLTdlDqH5+/kpIPJO9M7nmZs9Bj6SYwOzuNilOhiNhyOpCBOL
- XTbW1O1o2pmqjmZdubSQOplTvFTum1rVVNt2Cw3ig8XcN6uRr2/39fcjzrRTlpN98jvEP5yCl
- oUk+pzBrCfC9cRkGr2EpUk7/r5vHGSV45J+N9hDeTDtq3DSc6EfYV0G6cF9fZ+6bhruoYPOjh
- vr+s1RZ4199Oet65Fd3wHIgUi3pazWacSTo7G6NOoYci0tIurCoOTFEzkxhaF2rhUxEQlfZTE
- a9QJ/16z3B0wP7Z4bqc4YFcQ==
 
+On Sun, 2024-08-04 at 12:33 -0700, syzbot wrote:
 
+#syz dup: kernel BUG in clear_inode
 
-=E5=9C=A8 2024/8/27 16:21, Qu Wenruo =E5=86=99=E9=81=93:
->
->
-> =E5=9C=A8 2024/8/27 14:49, Qu Wenruo =E5=86=99=E9=81=93:
->>
->>
->> =E5=9C=A8 2024/8/27 10:17, Pieter P =E5=86=99=E9=81=93:
->>> On 27/08/2024 01:18, Qu Wenruo wrote:
->>>> After your latest --repair try, the fs should be more or less fine, y=
-ou
->>>> can try remove the offending file.
->>>>
->>>> Just a minor problem left with the superblock used bytes, that can be
->>>> fixed by another "btrfs check --repair" run very safely.
->>>
->>> No luck, unfortunately. Removing the file fails (automatically gets
->>> re-mounted read-only, and the file re-appears), and btrfs check --repa=
-ir
->>> fails to repair the super bytes_used error (output attached).
->>>
->>>> Another possibility is, the fs is old and you just migrated the
->>>> drive/fs
->>>> to the current platform, but I doubt about the case considering the
->>>> file
->>>> is some browser cache, which shouldn't be that old.
->>>>
->>>> Just in case, mind to try something like memtest86+ (UEFI payload) or
->>>> memtester (inside the OS) to rule out the hardware problem?
->>>
->>> The fs is only around 1.5 years old, it never left the system. The fil=
-e
->>> was last modified on July 22. I'll run another memtest.
->>
->> Anyway considering it's not going to be resolved by repair, I can craft
->> a dedicated tool, if you can compile btrfs-progs.
->>
->> That should fix modify that specific file extent (root 257 ino 50058751
->> filepos 0) by changing its on-disk bytenr to the correctly.
->>
->> Will let you know when the tool is done (should be pretty soon)
->
-> Here is the hand crafted fix for you:
->
-> https://github.com/adam900710/btrfs-progs/tree/dirty_fixes
->
-> The usage is:
->
-> # ./btrfs-corrupt-block -X <device>
->
-> The fs must be unmounted.
+As mentioned in fix[1], there are two threads simultaneously evicting
+the same inode, which may trigger the BUG(inode->i_state & I_CLEAR)
+statement both within clear_inode() and iput().
+So this report specifically triggered the BUG(inode->i_state & I_CLEAR)
+statement in iput(). And I did encounter this issue when I attempted to
+reproduce and fix it.
 
-And it's better to run "btrfs check --readonly" after a successful run
-(the successful should result no output), and paste the output of the
-btrfs-check.
+[1]:https://lore.kernel.org/linux-btrfs/20240823130730.658881-1-sunjunchao2=
+870@gmail.com/
 
-If there is something wrong, the program should output something and
-please paste it here.
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:=C2=A0=C2=A0=C2=A0 e4fc196f5ba3 Merge tag 'for-6.11-rc1-tag' =
+of
+> git://git.ker..
+> git tree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 upstream
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=3D133acef9980000
+> kernel config:=C2=A0
+> https://syzkaller.appspot.com/x/.config?x=3D8b0cca2f3880513d
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=3D5833b186650f87c5b7c4
+> compiler:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Debian clang version 15.0.6=
+, GNU ld (GNU Binutils for
+> Debian) 2.40
+>=20
+> Unfortunately, I don't have any reproducer for this issue yet.
+>=20
+> Downloadable assets:
+> disk image:
+> https://storage.googleapis.com/syzbot-assets/c4bed4c74b59/disk-e4fc196f.r=
+aw.xz
+> vmlinux:
+> https://storage.googleapis.com/syzbot-assets/f90c5ef25b80/vmlinux-e4fc196=
+f.xz
+> kernel image:
+> https://storage.googleapis.com/syzbot-assets/3a4dad9a7e8e/bzImage-e4fc196=
+f.xz
+>=20
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit:
+> Reported-by: syzbot+5833b186650f87c5b7c4@syzkaller.appspotmail.com
+>=20
+> ------------[ cut here ]------------
+> kernel BUG at fs/inode.c:1819!
+> Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> CPU: 1 UID: 0 PID: 10710 Comm: btrfs-cleaner Not tainted 6.11.0-rc1-
+> syzkaller-00062-ge4fc196f5ba3 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine,
+> BIOS Google 06/27/2024
+> RIP: 0010:iput+0x928/0x930 fs/inode.c:1819
+> Code: ff e9 a7 fb ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 45 fe
+> ff ff 4c 89 f7 e8 33 aa e7 ff e9 38 fe ff ff e8 29 71 80 ff 90 <0f>
+> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+> RSP: 0018:ffffc900041ffc50 EFLAGS: 00010293
+> RAX: ffffffff8212f547 RBX: 0000000000000040 RCX: ffff888023d05a00
+> RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
+> RBP: ffff88805e4f48e0 R08: ffffffff8212ec80 R09: 1ffffffff202f495
+> R10: dffffc0000000000 R11: fffffbfff202f496 R12: ffff88805e4f49b0
+> R13: ffff88806c102028 R14: 0000000000000005 R15: ffff888068e60350
+> FS:=C2=A0 0000000000000000(0000) GS:ffff8880b9300000(0000)
+> knlGS:0000000000000000
+> CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f1c9b094108 CR3: 000000005d542000 CR4: 0000000000350ef0
+> Call Trace:
+> =C2=A0<TASK>
+> =C2=A0__btrfs_run_defrag_inode fs/btrfs/defrag.c:281 [inline]
+> =C2=A0btrfs_run_defrag_inodes+0xa80/0xdf0 fs/btrfs/defrag.c:327
+> =C2=A0cleaner_kthread+0x28c/0x3d0 fs/btrfs/disk-io.c:1527
+> =C2=A0kthread+0x2f2/0x390 kernel/kthread.c:389
+> =C2=A0ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+> =C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+> =C2=A0</TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:iput+0x928/0x930 fs/inode.c:1819
+> Code: ff e9 a7 fb ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 45 fe
+> ff ff 4c 89 f7 e8 33 aa e7 ff e9 38 fe ff ff e8 29 71 80 ff 90 <0f>
+> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+> RSP: 0018:ffffc900041ffc50 EFLAGS: 00010293
+> RAX: ffffffff8212f547 RBX: 0000000000000040 RCX: ffff888023d05a00
+> RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
+> RBP: ffff88805e4f48e0 R08: ffffffff8212ec80 R09: 1ffffffff202f495
+> R10: dffffc0000000000 R11: fffffbfff202f496 R12: ffff88805e4f49b0
+> R13: ffff88806c102028 R14: 0000000000000005 R15: ffff888068e60350
+> FS:=C2=A0 0000000000000000(0000) GS:ffff8880b9300000(0000)
+> knlGS:0000000000000000
+> CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f1c9b094108 CR3: 000000006b99e000 CR4: 0000000000350ef0
+>=20
+>=20
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ=C2=A0for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>=20
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status=C2=A0for how to communicate with syzbot.
+>=20
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>=20
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>=20
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>=20
+> If you want to undo deduplication, reply with:
+> #syz undup
 
 Thanks,
-Qu
-
->
-> Thanks,
-> Qu
->
->>
->> Thanks,
->> Qu
->>>
->>> Thank you,
->>> Pieter
->>>
->>
->
+--=20
+Julian Sun <sunjunchao2870@gmail.com>
 
