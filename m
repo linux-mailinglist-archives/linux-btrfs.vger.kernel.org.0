@@ -1,211 +1,261 @@
-Return-Path: <linux-btrfs+bounces-7547-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7548-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390E696060F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 11:45:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EEAF960730
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 12:18:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DADE1C2240E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 09:45:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63AA6B2435C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 10:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262661A01DA;
-	Tue, 27 Aug 2024 09:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5521A01D3;
+	Tue, 27 Aug 2024 10:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="npe9Ryil"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="spTWnpe9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33C919D8A2;
-	Tue, 27 Aug 2024 09:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F6F19FA9F;
+	Tue, 27 Aug 2024 10:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724751773; cv=none; b=QYk4Wg+LGVKZ+585RydFG4x2gB0cIoGHlaPxHJ0jf+tZFvCaKUlrr4Gc1eLaqQod1atNhNcbACMHr8zIkG8Xumaj7rVtI+cAhLr3XiqdWRPeorpgcCPMdMMfovX0Q6N9A0moeMo06L/xfPhMcES0T2B7kyQvsBRcZLdaLbljDDE=
+	t=1724753482; cv=none; b=YTf0fSPjhu9gBmNy/0Eyy512NmgYaWg4WEtYpoIe384uCW4qMuJJPIQ/O15K+FaBWCVLPKhD24Oe7pn+MangkSyKKIJPuwAKo8MHAbtRlR1K8FINLrcZ9mGovSaw+BbVL7pUXaAmIbjwRsK14GS2Aqzw60w28IZEFzo2jA5NZNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724751773; c=relaxed/simple;
-	bh=9Vh+/kkN/kF6bdSbAdTVGytqEz8xw37S4L54KoUT2rI=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=APZvvm9kJyR1hIyuppYcTM+NonFyt6iDn2lofCCMGRXSMoWyP72ItJs2uQ8VP+S3px3hnOrAKRnvnxjlyDHKOJCMRrYZszMBZcvwUEZLRr0Y/uXb9dOeX79MaVjWqdVH4khSaNWq4D5pLviiNj3z34H75WaW22hl1fTOlkq3ZsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=npe9Ryil; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-7093ba310b0so3129947a34.2;
-        Tue, 27 Aug 2024 02:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724751771; x=1725356571; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Vh+/kkN/kF6bdSbAdTVGytqEz8xw37S4L54KoUT2rI=;
-        b=npe9Ryil+oAinDxrsPrQITC2G6CyICeP8uRMgxRTO7BUUaBie+rqwhi1P6cvYJY0Zm
-         ZlyEHWak2dk3/Ry4iSnHxEMbbD8+xdM4Q8hmb7D3dpH8ZJgsfOCiMntxnqsOg7vbFeLp
-         u4zG+x0hBFFH9GjGWt/X2yZzvmZUwWKwy7g7x98Zr6w/Y2igUHp27AVcRQoXdtx61HEC
-         XMbCOoLETlW2hWn4kGtIxygCK3/SiPw3JScIA2z1R4SlE0RQjF6fscHNkrd9fe1X8Duh
-         nYfKZIesj+qYWRtvXDtabe+Pd3pnQYzpepcXf7d6xMCfsWeOmB6swlfuxbUTrXrrAnGn
-         0wsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724751771; x=1725356571;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=9Vh+/kkN/kF6bdSbAdTVGytqEz8xw37S4L54KoUT2rI=;
-        b=MN92ocbNbx/PFqaMvMM6KTv6jDSj7DG3y3an0wEJp8fzSAv6fMcJPm+ElEwgz49Z4F
-         Gys5zQ+GNfVD8dyijWyDZATjgUFHFdPmwN4twDdPNyLyPz9GBK/Vtk022dtWAPbPuE44
-         1K/2bhCTHXXuGCCqI/i4D0UipBJ1nD0HH8Ev8pQLy5EWFTjA6I5MK6wgdy0PhUiOZvRV
-         oF6H7ShuXcshHHXo11hwmGSgxa8OemBCmnKyBT7V26gyW6yADaLk/2SM2Rr72gnxeovv
-         FYppw8Vil9eqDwKHo9V6kmLIiidRHgn0nrox7So8RZachGxT2dFyJ/SFcJqeJZj96D/x
-         S42w==
-X-Forwarded-Encrypted: i=1; AJvYcCVZnovRBuIxM5+zyWSfagYf7Oy0mn6YcK2qt52KM+Je7on8HiC8RqdcX2+9WIkR9oUejfNCc2KmfilBRg==@vger.kernel.org, AJvYcCXt38YaRxmU3uTwQIZgKBoYQRm2YKfbiEQJ7OqiaZh2YMyvMEqYUza2CTgWyJVngH8++cw97Wpm/S5C+ru/@vger.kernel.org
-X-Gm-Message-State: AOJu0YzcnJKTYdRp2AdwJxkpxoRr4IjiojxbtcsF1tsu4En+SpqA080H
-	jVdFTZmtokwpLyHP+vQS6iqnH/Yqf3pR7gMYw/4Uhcf6yd4YVY34
-X-Google-Smtp-Source: AGHT+IFKqbtifrDFrWjEDH4eJ39U/2LefoMSkQz/GfI+WJhm4raLscZYR+WK1i2RsIZjoQesEZtZ/A==
-X-Received: by 2002:a05:6808:2e9b:b0:3d9:27fc:158f with SMTP id 5614622812f47-3def3f65f91mr2409843b6e.29.1724751770592;
-        Tue, 27 Aug 2024 02:42:50 -0700 (PDT)
-Received: from [127.0.0.1] ([103.85.75.88])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9acdb54asm8972313a12.42.2024.08.27.02.42.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2024 02:42:49 -0700 (PDT)
-Message-ID: <b65a238dd9852158d381156aa6db92c0ef09562e.camel@gmail.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_run_defrag_inodes (2)
-From: Julian Sun <sunjunchao2870@gmail.com>
-To: syzbot <syzbot+5833b186650f87c5b7c4@syzkaller.appspotmail.com>, 
- clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org,  linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-Date: Tue, 27 Aug 2024 17:42:46 +0800
-In-Reply-To: <0000000000009e7183061ee0a25f@google.com>
-References: <0000000000009e7183061ee0a25f@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1724753482; c=relaxed/simple;
+	bh=ath6OFH61Xr/w25A3v8QAofa3f0OvBqt0rgzsZhicUY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i5HMiaVheEIVQzH3Fqujt6IWC2xtP+4I49JuflTQRyHe6TgsNxeUsZYw84b0kNAJaGdAltW48XF+0E6GOFJtkF8b+/niX9WWM7AFqPp+KmuKTEzESNi9tNJVFiwbIM9iJosuOI3OeI4iC9wcU0tly5LgOlWxcO+ENNITzhCnXpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=spTWnpe9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54A3CC8B7AA;
+	Tue, 27 Aug 2024 10:11:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724753481;
+	bh=ath6OFH61Xr/w25A3v8QAofa3f0OvBqt0rgzsZhicUY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=spTWnpe9kIA6xNBdbRXyG0MV+4fvVHwwids/kRJdIZVWqiYVc4OUlDdNekvxs5frT
+	 mN1X7Sz37PadhTcsatym0DdWIsShxEjAu3N5YHyiIOZ9357oveGinpZgDvygb5Nbx8
+	 c9ow/OXbmTVHsfpRsSDuw//Du8/uT/DQwK3bTkWmAOoAd5EZoMoQSwLci20Pf947pP
+	 K1cjVmvP/55xXFMesnr9XA0iVDoaKeOcCi6I8Q4UKyydl5lSrtDLw2xs//27Vh6ARe
+	 KaI4DqdA56R3qsC7vHpcFGcPAJHh/9QDwukGRb0rUZFSUd5JUSF9aSjWIH0F/+2gxW
+	 dPMdTKywVVedA==
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a86859e2fc0so657104566b.3;
+        Tue, 27 Aug 2024 03:11:21 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVZkvQMQ2CHs4c+Ju9koT0XPjzMUGIMdHC2uYBPPontRzdR8gI9ena+w/DxUylBF+0tUgVpETF3@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyxycf3VO6cjehSzU7CuHDqIt0m640t30LYJSIYb0nf/NNMi898
+	Mm3LarD4NcwRWvTZIrYDXpzJJWDVCvzDo0PZb9+FIYJAiDA+CZQr4wswaoQR5KXoTtnUhOmYUg3
+	0+lJxW6Wers7xOzdgoGNqDw6+3G8=
+X-Google-Smtp-Source: AGHT+IFjmq72qIk0t8isx3YSqzQ+/tBYblxHuyACj+9S6cGVpsXkqZV9HrjHk5ptsL7pauOsgP3WI63owpRdKx9+NSQ=
+X-Received: by 2002:a17:907:7da4:b0:a7a:bece:6222 with SMTP id
+ a640c23a62f3a-a86e397e681mr144464566b.10.1724753479833; Tue, 27 Aug 2024
+ 03:11:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <1b0c008b1b05a9fd24b751e174da37bd769637ff.1724717443.git.wqu@suse.com>
+In-Reply-To: <1b0c008b1b05a9fd24b751e174da37bd769637ff.1724717443.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 27 Aug 2024 11:10:42 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5h3RbhrTG0+UUtQ-0=uyeDefM4x_EFrqtq1uopu2b-DQ@mail.gmail.com>
+Message-ID: <CAL3q7H5h3RbhrTG0+UUtQ-0=uyeDefM4x_EFrqtq1uopu2b-DQ@mail.gmail.com>
+Subject: Re: [PATCH v3] fstests: btrfs: test reading data with a corrupted
+ checksum tree leaf
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 2024-08-04 at 12:33 -0700, syzbot wrote:
+On Tue, Aug 27, 2024 at 1:14=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> There is a bug report that, KASAN get triggered when:
+>
+> - A read bio needs to be split
+>   This can happen for profiles with stripes, including
+>   RAID0/RAID10/RAID5/RAID6.
+>
+> - An error happens before submitting the new split bio
+>   This includes:
+>   * chunk map lookup failure
+>   * data csum lookup failure
+>
+> Then during the error path of btrfs_submit_chunk(), the original bio is
+> fully freed before submitted range has a chance to call its endio
+> function, resulting a use-after-free bug.
+>
+> [NEW TEST CASE]
+> Introduce a new test case to verify the specific behavior by:
+>
+> - Create a btrfs with enough csum leaves with data RAID0 profile
+>   To bump the csum tree level, use the minimal nodesize possible (4K).
+>   Writing 32M data which needs at least 8 leaves for data checksum
+>
+>   RAID0 profile ensures the data read bios will get split.
+>
+> - Find the last csum tree leave and corrupt it
+>
+> - Read the data many times until we trigger the bug or exit gracefully
+>   With an x86_64 VM with KASAN enabled, it can trigger the KASAN report i=
+n
+>   just 4 iterations (the default iteration number is 32).
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-#syz dup: kernel BUG in clear_inode
+Fine now, thanks.
 
-As mentioned in fix[1], there are two threads simultaneously evicting
-the same inode, which may trigger the BUG(inode->i_state & I_CLEAR)
-statement both within clear_inode() and iput().
-So this report specifically triggered the BUG(inode->i_state & I_CLEAR)
-statement in iput(). And I did encounter this issue when I attempted to
-reproduce and fix it.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-[1]:https://lore.kernel.org/linux-btrfs/20240823130730.658881-1-sunjunchao2=
-870@gmail.com/
 
-> Hello,
->=20
-> syzbot found the following issue on:
->=20
-> HEAD commit:=C2=A0=C2=A0=C2=A0 e4fc196f5ba3 Merge tag 'for-6.11-rc1-tag' =
-of
-> git://git.ker..
-> git tree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 upstream
-> console output:
-> https://syzkaller.appspot.com/x/log.txt?x=3D133acef9980000
-> kernel config:=C2=A0
-> https://syzkaller.appspot.com/x/.config?x=3D8b0cca2f3880513d
-> dashboard link:
-> https://syzkaller.appspot.com/bug?extid=3D5833b186650f87c5b7c4
-> compiler:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Debian clang version 15.0.6=
-, GNU ld (GNU Binutils for
-> Debian) 2.40
->=20
-> Unfortunately, I don't have any reproducer for this issue yet.
->=20
-> Downloadable assets:
-> disk image:
-> https://storage.googleapis.com/syzbot-assets/c4bed4c74b59/disk-e4fc196f.r=
-aw.xz
-> vmlinux:
-> https://storage.googleapis.com/syzbot-assets/f90c5ef25b80/vmlinux-e4fc196=
-f.xz
-> kernel image:
-> https://storage.googleapis.com/syzbot-assets/3a4dad9a7e8e/bzImage-e4fc196=
-f.xz
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit:
-> Reported-by: syzbot+5833b186650f87c5b7c4@syzkaller.appspotmail.com
->=20
-> ------------[ cut here ]------------
-> kernel BUG at fs/inode.c:1819!
-> Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> CPU: 1 UID: 0 PID: 10710 Comm: btrfs-cleaner Not tainted 6.11.0-rc1-
-> syzkaller-00062-ge4fc196f5ba3 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 06/27/2024
-> RIP: 0010:iput+0x928/0x930 fs/inode.c:1819
-> Code: ff e9 a7 fb ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 45 fe
-> ff ff 4c 89 f7 e8 33 aa e7 ff e9 38 fe ff ff e8 29 71 80 ff 90 <0f>
-> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-> RSP: 0018:ffffc900041ffc50 EFLAGS: 00010293
-> RAX: ffffffff8212f547 RBX: 0000000000000040 RCX: ffff888023d05a00
-> RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
-> RBP: ffff88805e4f48e0 R08: ffffffff8212ec80 R09: 1ffffffff202f495
-> R10: dffffc0000000000 R11: fffffbfff202f496 R12: ffff88805e4f49b0
-> R13: ffff88806c102028 R14: 0000000000000005 R15: ffff888068e60350
-> FS:=C2=A0 0000000000000000(0000) GS:ffff8880b9300000(0000)
-> knlGS:0000000000000000
-> CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f1c9b094108 CR3: 000000005d542000 CR4: 0000000000350ef0
-> Call Trace:
-> =C2=A0<TASK>
-> =C2=A0__btrfs_run_defrag_inode fs/btrfs/defrag.c:281 [inline]
-> =C2=A0btrfs_run_defrag_inodes+0xa80/0xdf0 fs/btrfs/defrag.c:327
-> =C2=A0cleaner_kthread+0x28c/0x3d0 fs/btrfs/disk-io.c:1527
-> =C2=A0kthread+0x2f2/0x390 kernel/kthread.c:389
-> =C2=A0ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
-> =C2=A0ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> =C2=A0</TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:iput+0x928/0x930 fs/inode.c:1819
-> Code: ff e9 a7 fb ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 45 fe
-> ff ff 4c 89 f7 e8 33 aa e7 ff e9 38 fe ff ff e8 29 71 80 ff 90 <0f>
-> 0b 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-> RSP: 0018:ffffc900041ffc50 EFLAGS: 00010293
-> RAX: ffffffff8212f547 RBX: 0000000000000040 RCX: ffff888023d05a00
-> RDX: 0000000000000000 RSI: 0000000000000040 RDI: 0000000000000000
-> RBP: ffff88805e4f48e0 R08: ffffffff8212ec80 R09: 1ffffffff202f495
-> R10: dffffc0000000000 R11: fffffbfff202f496 R12: ffff88805e4f49b0
-> R13: ffff88806c102028 R14: 0000000000000005 R15: ffff888068e60350
-> FS:=C2=A0 0000000000000000(0000) GS:ffff8880b9300000(0000)
-> knlGS:0000000000000000
-> CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f1c9b094108 CR3: 000000006b99e000 CR4: 0000000000350ef0
->=20
->=20
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ=C2=A0for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->=20
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status=C2=A0for how to communicate with syzbot.
->=20
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->=20
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->=20
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->=20
-> If you want to undo deduplication, reply with:
-> #syz undup
-
-Thanks,
---=20
-Julian Sun <sunjunchao2870@gmail.com>
+> Changelog:
+> v3:
+> - Remove the unrelated btrfs/125 references
+>   There is nothing specific to RAID56, it's just a coincident that
+>   btrfs/125 leads us to the bug.
+>   Since we have a more comprehensive understanding of the bug, there is
+>   no need to mention it at all.
+>
+> - More grammar fixes
+> - Use proper _check_btrfs_raid_type() to verify raid0 support
+> - Update the title to be more specific about the test case
+> - Renumber to btrfs/321 to avoid conflicts with an new test case
+> - Remove unnecessary 'sync' which is followed by unmount
+> - Use full subcommand name "inspect-internal"
+> - Explain why we want to fail early if hitting the bug
+> - Remove unnecessary `_require_scratch` which is duplicated to
+>   `_require_scratch_nocheck`
+>
+> v2:
+> - Fix the wrong commit hash
+>   The proper fix is not yet merged, the old hash is a place holder
+>   copied from another test case but forgot to remove.
+>
+> - Minor wording update
+>
+> - Add to "dangerous" group
+> ---
+>  tests/btrfs/321     | 83 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/321.out |  2 ++
+>  2 files changed, 85 insertions(+)
+>  create mode 100755 tests/btrfs/321
+>  create mode 100644 tests/btrfs/321.out
+>
+> diff --git a/tests/btrfs/321 b/tests/btrfs/321
+> new file mode 100755
+> index 000000000000..e30199daa0d0
+> --- /dev/null
+> +++ b/tests/btrfs/321
+> @@ -0,0 +1,83 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 321
+> +#
+> +# Make sure there are no use-after-free, crashes, deadlocks etc, when re=
+ading data
+> +# which has its data checksums in a corrupted csum tree block.
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick raid dangerous
+> +
+> +_require_scratch_nocheck
+> +_require_scratch_dev_pool 2
+> +
+> +# Use RAID0 for data to get bio split according to stripe boundary.
+> +# This is required to trigger the bug.
+> +_require_btrfs_raid_type raid0
+> +
+> +# This test goes 4K sectorsize and 4K nodesize, so that we easily create
+> +# higher level of csum tree.
+> +_require_btrfs_support_sectorsize 4096
+> +_require_btrfs_command inspect-internal dump-tree
+> +
+> +_fixed_by_kernel_commit xxxxxxxxxxxx \
+> +       "btrfs: fix a use-after-free bug when hitting errors inside btrfs=
+_submit_chunk()"
+> +
+> +# The bug itself has a race window, run this many times to ensure trigge=
+ring.
+> +# On an x86_64 VM with KASAN enabled, normally it is triggered before th=
+e 10th run.
+> +iterations=3D32
+> +
+> +_scratch_pool_mkfs "-d raid0 -m single -n 4k -s 4k" >> $seqres.full 2>&1
+> +# This test requires data checksum to trigger the bug.
+> +_scratch_mount -o datasum,datacow
+> +
+> +# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 32M d=
+ata
+> +# will need 32K data checksum at minimal, which is at least 8 leaves.
+> +_pwrite_byte 0xef 0 32m "$SCRATCH_MNT/foobar" > /dev/null
+> +_scratch_unmount
+> +
+> +
+> +# Search for the last leaf of the csum tree, that will be the target to =
+destroy.
+> +$BTRFS_UTIL_PROG inspect-internal dump-tree -t 7 $SCRATCH_DEV >> $seqres=
+.full
+> +target_bytenr=3D$($BTRFS_UTIL_PROG inspect-internal dump-tree -t 7 $SCRA=
+TCH_DEV | grep "leaf.*flags" | sort | tail -n1 | cut -f2 -d\ )
+> +
+> +if [ -z "$target_bytenr" ]; then
+> +       _fail "unable to locate the last csum tree leaf"
+> +fi
+> +
+> +echo "bytenr of csum tree leaf to corrupt: $target_bytenr" >> $seqres.fu=
+ll
+> +
+> +# Corrupt that csum tree block.
+> +physical=3D$(_btrfs_get_physical "$target_bytenr" 1)
+> +dev=3D$(_btrfs_get_device_path "$target_bytenr" 1)
+> +
+> +echo "physical bytenr: $physical" >> $seqres.full
+> +echo "physical device: $dev" >> $seqres.full
+> +
+> +_pwrite_byte 0x00 "$physical" 4 "$dev" > /dev/null
+> +
+> +for (( i =3D 0; i < $iterations; i++ )); do
+> +       echo "=3D=3D=3D run $i/$iterations =3D=3D=3D" >> $seqres.full
+> +       _scratch_mount -o ro
+> +       # Since the data is on RAID0, read bios will be split at the stri=
+pe
+> +       # (64K sized) boundary. If csum lookup failed due to corrupted cs=
+um
+> +       # tree, there is a race window that can lead to double bio freein=
+g
+> +       # (triggering KASAN at least).
+> +       cat "$SCRATCH_MNT/foobar" &> /dev/null
+> +       _scratch_unmount
+> +
+> +       # Instead of relying on the final _check_dmesg() to find errors,
+> +       # error out immediately if KASAN is triggered.
+> +       # As non-triggering runs will generate quite some error messages,
+> +       # making investigation much harder.
+> +       if _check_dmesg_for "BUG" ; then
+> +               _fail "Critical error(s) found in dmesg"
+> +       fi
+> +done
+> +
+> +echo "Silence is golden"
+> +
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/321.out b/tests/btrfs/321.out
+> new file mode 100644
+> index 000000000000..290a5eb31312
+> --- /dev/null
+> +++ b/tests/btrfs/321.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 321
+> +Silence is golden
+> --
+> 2.46.0
+>
+>
 
