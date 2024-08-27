@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-7582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7583-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CBD696198D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 23:55:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA87C96198E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 23:55:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD96528527C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 21:55:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C8D11F24A9E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 21:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FCF1D4169;
-	Tue, 27 Aug 2024 21:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00791D415A;
+	Tue, 27 Aug 2024 21:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="efnuQLJB";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="efnuQLJB"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Nnk0j+Rv";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Nnk0j+Rv"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E271D415B
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 21:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486CD1D31BA
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2024 21:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724795730; cv=none; b=YII/dY5xDw1mqknwQ4gPEKMi9SMR86tyNdoOnVHi6+cEMb/iyq98LJoiqxepAGI00VJTDfwAuHCML7thfIanKi8ut1tOZkvpM9eaTYFX4k3T6i7ahRjE6SWWUY4Q7DSQB9WvdWOc0HsEuTkxWt7jYYhbyuFUj+84tbi2biiOGP8=
+	t=1724795737; cv=none; b=r1GmiEi7h8hfnlZDjK3/2o+up3PeFDM1xz/nDhfiHp+h/fDvlivNsBA8jtR8H42WnW3zRiPZm5/qP07RmHRbLX0FgT7dUqKOaZHBkE0s74OG7O+s9HftuB9P+7myZKbmzUnSi919C2H9s7gb9GU58AT6YroBAJRXR6CIKxLOCyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724795730; c=relaxed/simple;
-	bh=B0w8AViltyKKA+Kdo4rEerz9W/4LXz41frMiR4JyDoI=;
+	s=arc-20240116; t=1724795737; c=relaxed/simple;
+	bh=5+GotFln1QaZHkXVbSkQJ+Mwfci5d58d3SL3KVuyjak=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gxcIZD37MSIsjlwRTfQMSUL6Ff7GRaSNmqGq6wQL4LEL07RgOQ7p34Fj/xiXjqlGqsQsCWGl8tEkqS7Rq9YLS7LrhgU/vu3rs/XU4U/imvs+jzUGKa+6KkCDCRy+DbxUOxlDnQlzvfbxhdYIo+AZ4MyKTerljR1pJEbssb3hfD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=efnuQLJB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=efnuQLJB; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=FZUUHN5+ekw2zJYTOL9Usm9Ssots+NscswGVef1jLBtNVvPr3u3roDXT/GN2ud8uvKF1qbZfweOGVxtIldhZcgHh5pmjcE8sRCCn4O5OCo6ZVH+WYYUNu+26w+kuCMwri8g7pmjRwFg1CdpLRAyfkavjRkTrzjdRcfyet3573lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Nnk0j+Rv; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Nnk0j+Rv; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1E1FD1FB92;
-	Tue, 27 Aug 2024 21:55:27 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 870231FB85;
+	Tue, 27 Aug 2024 21:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1724795727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1724795733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e0NDsgXaH9JrC7FVCUqgqfTasKcdaBCUwsl/TI5kpWQ=;
-	b=efnuQLJBbGdV+HdZg17HJBvGbSvDxmsFR9ra8kx4AAWEHLKOuiZQf7DN90ZtH2AIbTVe3r
-	M5MQW29BBwkREXSPiyBXL6NH9DIpKr27y7oxP/SwN/RFUgbu+glYTj+PkT9rObwGFQJeJW
-	o0lOow8ycg3Q1EdIR02ApkR1Uv/Bw/o=
+	bh=IMs3vkKZh69DT3kNsNnrIqSrW3E9fj9XhMW/OudbjOA=;
+	b=Nnk0j+Rvf3/aI1vSr3s0T3WQ1Il3qEFDNe1zkjffPab4CMGEyYAKn/U6SrvPwfJcK3a9dj
+	BgM6t9g3p1+D9NP7ggg9q4YSyp0cpvTYJkF2YO2NcP2gC5/998Ydj1VaeJdOsiKvzCYx4d
+	/1wNvBqji62q1Ycy5KWOsmlQbSsJ2yU=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1724795727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1724795733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e0NDsgXaH9JrC7FVCUqgqfTasKcdaBCUwsl/TI5kpWQ=;
-	b=efnuQLJBbGdV+HdZg17HJBvGbSvDxmsFR9ra8kx4AAWEHLKOuiZQf7DN90ZtH2AIbTVe3r
-	M5MQW29BBwkREXSPiyBXL6NH9DIpKr27y7oxP/SwN/RFUgbu+glYTj+PkT9rObwGFQJeJW
-	o0lOow8ycg3Q1EdIR02ApkR1Uv/Bw/o=
+	bh=IMs3vkKZh69DT3kNsNnrIqSrW3E9fj9XhMW/OudbjOA=;
+	b=Nnk0j+Rvf3/aI1vSr3s0T3WQ1Il3qEFDNe1zkjffPab4CMGEyYAKn/U6SrvPwfJcK3a9dj
+	BgM6t9g3p1+D9NP7ggg9q4YSyp0cpvTYJkF2YO2NcP2gC5/998Ydj1VaeJdOsiKvzCYx4d
+	/1wNvBqji62q1Ycy5KWOsmlQbSsJ2yU=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 179BB13A20;
-	Tue, 27 Aug 2024 21:55:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7613013A20;
+	Tue, 27 Aug 2024 21:55:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +QLBBU9LzmaKGgAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Tue, 27 Aug 2024 21:55:27 +0000
+	id W1jQHFVLzmaXGgAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 27 Aug 2024 21:55:33 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 04/12] btrfs: rename __compare_inode_defrag() and drop double underscores
-Date: Tue, 27 Aug 2024 23:55:26 +0200
-Message-ID: <6f799faaf6cf515d0bd0c1825e15d3cdce201a4a.1724795624.git.dsterba@suse.com>
+Subject: [PATCH 05/12] btrfs: constify arguments of compare_inode_defrag()
+Date: Tue, 27 Aug 2024 23:55:29 +0200
+Message-ID: <0dd124f30b6dc7dc1a90f64ae501a7ced0afb9ec.1724795624.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1724795623.git.dsterba@suse.com>
 References: <cover.1724795623.git.dsterba@suse.com>
@@ -86,7 +86,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Level: 
 X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
@@ -103,59 +103,33 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Score: -2.80
 X-Spam-Flag: NO
 
-The function does not follow the pattern where the underscores would be
-justified, so rename it.
+A comparator function does not change its parameters, make them const.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/defrag.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/defrag.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index f6dbda37a361..e2949f630584 100644
+index e2949f630584..e4bb5a8651f3 100644
 --- a/fs/btrfs/defrag.c
 +++ b/fs/btrfs/defrag.c
-@@ -45,7 +45,7 @@ struct inode_defrag {
+@@ -45,8 +45,8 @@ struct inode_defrag {
  	u32 extent_thresh;
  };
  
--static int __compare_inode_defrag(struct inode_defrag *defrag1,
-+static int compare_inode_defrag(struct inode_defrag *defrag1,
- 				  struct inode_defrag *defrag2)
+-static int compare_inode_defrag(struct inode_defrag *defrag1,
+-				  struct inode_defrag *defrag2)
++static int compare_inode_defrag(const struct inode_defrag *defrag1,
++				const struct inode_defrag *defrag2)
  {
  	if (defrag1->root > defrag2->root)
-@@ -83,7 +83,7 @@ static int __btrfs_add_inode_defrag(struct btrfs_inode *inode,
- 		parent = *p;
- 		entry = rb_entry(parent, struct inode_defrag, rb_node);
- 
--		ret = __compare_inode_defrag(defrag, entry);
-+		ret = compare_inode_defrag(defrag, entry);
- 		if (ret < 0)
- 			p = &parent->rb_left;
- 		else if (ret > 0)
-@@ -189,7 +189,7 @@ static struct inode_defrag *btrfs_pick_defrag_inode(
- 		parent = p;
- 		entry = rb_entry(parent, struct inode_defrag, rb_node);
- 
--		ret = __compare_inode_defrag(&tmp, entry);
-+		ret = compare_inode_defrag(&tmp, entry);
- 		if (ret < 0)
- 			p = parent->rb_left;
- 		else if (ret > 0)
-@@ -198,7 +198,7 @@ static struct inode_defrag *btrfs_pick_defrag_inode(
- 			goto out;
- 	}
- 
--	if (parent && __compare_inode_defrag(&tmp, entry) > 0) {
-+	if (parent && compare_inode_defrag(&tmp, entry) > 0) {
- 		parent = rb_next(parent);
- 		if (parent)
- 			entry = rb_entry(parent, struct inode_defrag, rb_node);
+ 		return 1;
 -- 
 2.45.0
 
