@@ -1,105 +1,143 @@
-Return-Path: <linux-btrfs+bounces-7566-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7567-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0506C9611BE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 17:23:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF859612F9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 17:38:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37F531C2311A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 15:23:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 780AA2816DF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2024 15:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2EA1C57BF;
-	Tue, 27 Aug 2024 15:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9941C7B61;
+	Tue, 27 Aug 2024 15:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="W4KF0RGN"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aFKwpdiw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h5+Lg4D2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="aFKwpdiw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h5+Lg4D2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B938F1A072D;
-	Tue, 27 Aug 2024 15:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7289B19EEA2;
+	Tue, 27 Aug 2024 15:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724772164; cv=none; b=nEbYftbGPYwacDEmcgqXW4O2dsLXHV6+aai6OCOPxz7asHaVIZwaXXh+SKiIR3MTaVfU311hAiAPMEIrhUMEUWrFgqpt3t8ghAOMD0mV9qQqw19h5E0sSkgUCn4BeVlKqxA1pqh4S7EtJ+YrcXc7XQE53ynlD2K6gYqEUDt3zrU=
+	t=1724773069; cv=none; b=ljKjHQkGuu4uBoIaD0XI8hW5tyRuvj2YN7XrpPmqt4xmACJ4EZ4kaEO2sIduEOJLQ45hVPfB/5PunPy5GxQtFn+gxfurrod9va4EHp8tWt6iBTnFZJuaiUtlQDSiqhdY9rxn9Hvx+Tw/m3oxnauH+XthrW+ptPkSArPxVSQ6jH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724772164; c=relaxed/simple;
-	bh=uX2VF1ISl15ZvFiOQ8kAznCsbp8tplhrTRlmCK22HiI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F4P4tYjT4v7Zc326+mYzm98hVWGZVVArBfz1nQGlShvyLwfomAorGAKav4wZYcnRS/4n6BdzIgdJKSzh4k4ZyHupGTlD9AibjORJJb3AUzwV3repx/83W1DjM3FdUqjlXezjoksGjkgXHazII5MEXG6hiMmwPKVNsCtuPGJ00Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=W4KF0RGN; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from fpc.intra.ispras.ru (unknown [10.10.165.16])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 1214840B1E79;
-	Tue, 27 Aug 2024 15:13:34 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 1214840B1E79
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1724771614;
-	bh=5W38TwAm/xm3LEpuuE3aTN7FkHlJ4T793ps5j3TMybM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=W4KF0RGNIRlmPn4U1pYvfTblFtPVcoUVKSQ3nhjgds0Lv6oKbjkoZSeV6oXyq4Udy
-	 mzwDaq2CX5sNGUKCpusoPnLnNHQ6AxaHAvqv7se8zo47HnAp5Td+ogOM2v4sgfWQy0
-	 mIL4c37zfGXwvXUDrp3u/MMqvwK+i9NFQ4T/BE1c=
-From: Fedor Pchelkin <pchelkin@ispras.ru>
-To: David Sterba <dsterba@suse.com>
-Cc: Fedor Pchelkin <pchelkin@ispras.ru>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Boris Burkov <boris@bur.io>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com,
-	stable@vger.kernel.org
-Subject: [PATCH] btrfs: qgroup: add missing extent changeset release
-Date: Tue, 27 Aug 2024 18:12:43 +0300
-Message-Id: <20240827151243.63493-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1724773069; c=relaxed/simple;
+	bh=ZVsyH+5BlaRKkuNNP3WObwiO6VxPzbzhqUi0aY/uRw8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qjX9QWrPeYruiFfAvlrJ9d7RFM119RW0nJCrSthtfHpbzpLxnyCM596psGA7SyB7U2KGiQ69Ij3Shfy/fx4ksazUunrLY94jLiV8//rDI7uyBRC2xO4VULaJPDkLncfuF0ZvxD/vvQrltvjEgOXjSitkP5nzQdeFpN3wndsn4YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aFKwpdiw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h5+Lg4D2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=aFKwpdiw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h5+Lg4D2; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B350B21AA6;
+	Tue, 27 Aug 2024 15:37:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724773065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BcCsuhIw7zwSosdhpQoFiQdYj2NYeJCTsIAoNY2Bd9E=;
+	b=aFKwpdiwqCVvAFOwwmCQy5yCoPpzPJBJJZgVJzCr3CF9lHnOe53jKQuMYV3rg4n5SKy1Wd
+	rd4QQWsCMeFznhDJ+KIARPwVUXFOXGbSKlm7EXKTkYTYXrPHd35hQsjXXoVfB00HRJ14N6
+	aGd9K20fo84aMr/ew85gIte3qyXhxbI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724773065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BcCsuhIw7zwSosdhpQoFiQdYj2NYeJCTsIAoNY2Bd9E=;
+	b=h5+Lg4D2PDf6XkoGom3NyBxfJmo49e/lVNL/yPLY0Act1IArjGY4dNXfy9DwEkl6MYGvfg
+	JJ3IW8skZoCDAyDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724773065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BcCsuhIw7zwSosdhpQoFiQdYj2NYeJCTsIAoNY2Bd9E=;
+	b=aFKwpdiwqCVvAFOwwmCQy5yCoPpzPJBJJZgVJzCr3CF9lHnOe53jKQuMYV3rg4n5SKy1Wd
+	rd4QQWsCMeFznhDJ+KIARPwVUXFOXGbSKlm7EXKTkYTYXrPHd35hQsjXXoVfB00HRJ14N6
+	aGd9K20fo84aMr/ew85gIte3qyXhxbI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724773065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BcCsuhIw7zwSosdhpQoFiQdYj2NYeJCTsIAoNY2Bd9E=;
+	b=h5+Lg4D2PDf6XkoGom3NyBxfJmo49e/lVNL/yPLY0Act1IArjGY4dNXfy9DwEkl6MYGvfg
+	JJ3IW8skZoCDAyDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 95A4A13A44;
+	Tue, 27 Aug 2024 15:37:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tecqJMnyzWZMKAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 27 Aug 2024 15:37:45 +0000
+Date: Tue, 27 Aug 2024 17:37:39 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Li Zetao <lizetao1@huawei.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH next] btrfs: Fix reversed condition in
+ copy_inline_to_page()
+Message-ID: <20240827153739.GY25962@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <3a05145b-6c24-4101-948e-1a457b92ea3e@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3a05145b-6c24-4101-948e-1a457b92ea3e@stanley.mountain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.994];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[]
+X-Spam-Score: -4.00
+X-Spam-Flag: NO
 
-The extent changeset may have some additional memory dynamically allocated
-for ulist in result of clear_record_extent_bits() execution.
+On Tue, Aug 27, 2024 at 01:21:08PM +0300, Dan Carpenter wrote:
+> This if statement is reversed leading to locking issues.
+> 
+> Fixes: 8e603cfe05f0 ("btrfs: convert copy_inline_to_page() to use folio")
 
-Release it after the local changeset is no longer needed in
-BTRFS_QGROUP_MODE_DISABLED case.
-
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
-
-Reported-by: syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/lkml/000000000000aa8c0c060ade165e@google.com
-Fixes: af0e2aab3b70 ("btrfs: qgroup: flush reservations during quota disable")
-Cc: stable@vger.kernel.org # 6.10+
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
- fs/btrfs/qgroup.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 5d57a285d59b..4f1fa5d427e1 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -4345,9 +4345,10 @@ static int __btrfs_qgroup_release_data(struct btrfs_inode *inode,
- 
- 	if (btrfs_qgroup_mode(inode->root->fs_info) == BTRFS_QGROUP_MODE_DISABLED) {
- 		extent_changeset_init(&changeset);
--		return clear_record_extent_bits(&inode->io_tree, start,
--						start + len - 1,
--						EXTENT_QGROUP_RESERVED, &changeset);
-+		ret = clear_record_extent_bits(&inode->io_tree, start,
-+					       start + len - 1,
-+					       EXTENT_QGROUP_RESERVED, &changeset);
-+		goto out;
- 	}
- 
- 	/* In release case, we shouldn't have @reserved */
--- 
-2.39.2
-
+This is from series that appeared in linux-next for a short time and has
+been removed due to problems, one if which might be the one you report.
+Thanks.
 
