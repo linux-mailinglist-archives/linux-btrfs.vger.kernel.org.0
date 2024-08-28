@@ -1,104 +1,108 @@
-Return-Path: <linux-btrfs+bounces-7628-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7629-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69BB1962DC9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 18:36:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1228E962DF0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 18:57:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 990FA1C23E10
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 16:36:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 157A1282EA0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 16:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C91F1A4F19;
-	Wed, 28 Aug 2024 16:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420011A4F27;
+	Wed, 28 Aug 2024 16:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pYUdr+EN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DMGStuL5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="o0ka+z48";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="McmltJ7t"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="qjXUEo8y";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KJwMlf7f"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F65336130;
-	Wed, 28 Aug 2024 16:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4F11A3BD1;
+	Wed, 28 Aug 2024 16:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724862983; cv=none; b=NkobP4LBgFwjiggpgLsfJSnKlWU2RRDE2/3lvblm/p5bHX0Ko9HcRhxePrG/Mqw46539aY+oMkK9f1ZalxhWVhfDpiBQRzLBqX+vr6AX4HwLFfk1Qy4rAXhaj4IE1a5mdodiJuUXatbqFh15UBpt87NESEhjagHMKhH1Z+NREio=
+	t=1724864235; cv=none; b=uoWve8wTYbsNEGI6mzhK+hASukzb96lIOguWsZqA8WeW0spHcg8DBocC6v8iGchYhXubLr3NqiiVw9Z6bLBFMK9zTxE2YJoLEHUajZILjeIjbCQgzHT505pkWQo/nUexh0/Ptff1kqAMlB0XJy1gFdXxMU6BurRzvdgtgz/f53g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724862983; c=relaxed/simple;
-	bh=7Tx4u/wCein9qY/KIq4GT9HP4jQcGk1lfUy9Iler/mk=;
+	s=arc-20240116; t=1724864235; c=relaxed/simple;
+	bh=qSQZaic1piiRaVwBistKi7MzxIz1c4l5xA0Yz7ujkV0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kC8vXYY9h+gRip/aBJWam2a9VJGQMXBzEzrie6q/t/vJ08w5seQK9P/nlIZM9YHKWMQMNBB1vy7J9KCpGDjNmOmP1UhPqusd+s05Ph34hHatrwWHlbDdF2UtBBh+bxS+plcncbI4zAlh2pray5onjJd5lk8ReCreWr8oKe0xPy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pYUdr+EN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DMGStuL5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=o0ka+z48; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=McmltJ7t; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E89F71FCE1;
-	Wed, 28 Aug 2024 16:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724862980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ki5vuidXZjGYdd78rEMC7d0LG8cLiU814H5NqoowWNk=;
-	b=pYUdr+EN93Kb5SBp94ur9+0EZsZfdHYXtitqraoL0MkLzTwjcfyyq1x69B8qQaM5ZOJyyl
-	V4OHB+1tijF+WH5oUgmVHdTAppIXfo8TJmoLf7FvLq+3reGqtmg7hpK9WSiJz8KsI7Gx9y
-	ZcQ7ys00jtHSkGLHAS1u7XL9/vqLGoI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724862980;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ki5vuidXZjGYdd78rEMC7d0LG8cLiU814H5NqoowWNk=;
-	b=DMGStuL5d0cM24yORQYuSnc4aCmEy40tF9+HyqHgLebJ4KAins3C83KBA79HHnzuDOxt2v
-	YdITvEy4PWtCojCw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=o0ka+z48;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=McmltJ7t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724862978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ki5vuidXZjGYdd78rEMC7d0LG8cLiU814H5NqoowWNk=;
-	b=o0ka+z48tVxxjBxC+7jPo+7terU8p+KJZHMhHARR4zC8Z2hnJzk1K2lnaTsPS3KNZhLdye
-	bhclowkTeYX6jvEJL1WjNR4wq6Cey2iXB32RVsfbyKDcJE4bRZKpGFmbi3VxvxYkVl1DaP
-	JBZZFbI34MErPlyV14ZHkQNqr4kfD2Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724862978;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ki5vuidXZjGYdd78rEMC7d0LG8cLiU814H5NqoowWNk=;
-	b=McmltJ7tvLj+lj8OAh9iZwVYV3I4/8mZlGweTb2gSpMNc+86aC2Um7ODTW6Z/kK4cylhxL
-	71rTD9jQKrafQbDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D34361398F;
-	Wed, 28 Aug 2024 16:36:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LXyKMwJSz2beZgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 28 Aug 2024 16:36:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7F03BA0965; Wed, 28 Aug 2024 18:36:14 +0200 (CEST)
-Date: Wed, 28 Aug 2024 18:36:14 +0200
-From: Jan Kara <jack@suse.cz>
-To: Julian Sun <sunjunchao2870@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	david@fromorbit.com, zhuyifei1999@gmail.com,
-	syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com,
+	 Content-Type:Content-Disposition:In-Reply-To; b=gbLaSMFPLxnwFaVpdz/Axh//fm0MM4VNw+5kJIxzmJtbLgQLxgnxV9p8Y94CWuruxYJWA/43b8b9ofTj57NWTnh7NU+8S144A9ZDvPkfgJ0IedpwsQ/qC2dpvnwHqvovGYh3p/pmidwfFWmJdb+++H1B4GiZ8gaqL0s49Ru34dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=qjXUEo8y; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KJwMlf7f; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-03.internal (phl-compute-03.nyi.internal [10.202.2.43])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id B33021150DE1;
+	Wed, 28 Aug 2024 12:57:11 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Wed, 28 Aug 2024 12:57:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1724864231; x=1724950631; bh=yZDFJ+uBkJ
+	NN6I5DAKEUENScf20U9fLYyspVCQoBezg=; b=qjXUEo8y0CJNW4ycmbwMxJSKA0
+	IIxzcgKwTNW2gse0g7STqGQhi95Cn1ahjhuOaeBbNaSrS7+8kSoTMwuqhP+X06sp
+	U7OdBDyL1MjS6RMlvHtkgf/4IrLCBvqHoVcByVibRw1VDoNdymVuwXtCLihfgjEK
+	QSHmyqV4QQlU8vNfyqOFkXODMPnEHzoWcxeOOEUs8XvpEMs3xMzcoJ3uOy4Fcf3P
+	rgGyJTDtp/amWoCQmPWRCfR5ujVTbA5I3vq1Zc4iMgc1JNaR1/JINMgK0hvV5SIV
+	ckc+ikkh1/tNV4SkOCXcg7u3GFETNYSWh3Tx06GSGpAdl/V2+GRuIt+Ae1Wg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1724864231; x=1724950631; bh=yZDFJ+uBkJNN6I5DAKEUENScf20U
+	9fLYyspVCQoBezg=; b=KJwMlf7fI+IJ0KyEG70caoGJTZxGgqCEMbuSPkPq1ts2
+	whb1v4W5CoUEz5Nqu0ObL1W4Iy/l88Q9QzCIXk45StwLrQ3aqNdDYTKOvLUxvRUL
+	cD08cZVyQb+NWYfq/0xBzMHZ7XX7wLYd3PuayDgiCzxA/f+2wBNzJH5ep+UhQNJ3
+	SGutwDOvPAS4wRioXoc0uyynDPOflDxOzJv3qChJqhyrXYUatw2IySrb/y1vajsP
+	z6Yc9Q6/SirCZ8JX7Y2oNBIQGPB0PteP+wFAMkM4uc/Cr9mKdfLobhXe2t7ulsHd
+	uy2iUi6prMdPz0+gnB/t8P+uzayDVZjDMSeoKCr8FA==
+X-ME-Sender: <xms:51bPZhlrSfa93G5JhiCXBTmwrignRq5Dn8MNbAcHLI-XY71oXGf0SQ>
+    <xme:51bPZs0rfYRwsHIP_SKKDU1N_5f6WWGXxOZJLVOA0PCKX_VqCZpZ0R2PLYWt2dKO8
+    01oVsJ80sIrNrj5zF8>
+X-ME-Received: <xmr:51bPZnosAv3ao6mjzp6Juof3r0bP4hlsoNMIgC91HhRVtVEr8AXCfNQy-VlLSQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudefvddguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
+    cuggftrfgrthhtvghrnhepffekgeffueegffeitdeviedvvdeliefgkedvtdejieffffdu
+    ffduhffgjeelvedunecuffhomhgrihhnpehlihhnuhigthgvshhtihhnghdrohhrghdpkh
+    gvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedutddpmhhoug
+    gvpehsmhhtphhouhhtpdhrtghpthhtohepphgthhgvlhhkihhnsehishhprhgrshdrrhhu
+    pdhrtghpthhtohepqhhufigvnhhruhhordgsthhrfhhssehgmhigrdgtohhmpdhrtghpth
+    htohepughsthgvrhgsrgesshhushgvrdgtohhmpdhrtghpthhtoheptghlmhesfhgsrdgt
+    ohhmpdhrtghpthhtohepjhhoshgvfhesthhogihitghprghnuggrrdgtohhmpdhrtghpth
+    htoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
+    thhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtph
+    htthhopehlvhgtqdhprhhojhgvtghtsehlihhnuhigthgvshhtihhnghdrohhrghdprhgt
+    phhtthhopehshiiisghothdokeduieejtdefiedvtgdvkeeffhefuggukeeklegtsehshi
+    iikhgrlhhlvghrrdgrphhpshhpohhtmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:51bPZhn4Pb9cATyffAApZvHsXUfy_Dz7Sw5Wo8Uv7oxTLxxLfYBonw>
+    <xmx:51bPZv3cmLswj7tdXprordllUjzex-qkUz6aQA3ftJ7d5rAJp91pDw>
+    <xmx:51bPZgsCxNajM1J9wWZHLga3ZgPaykxjxsfVvueWxQcWs55C6BvfTg>
+    <xmx:51bPZjVSDGqAD8GuTBeCWVYGJzVtj0uWdtHdHxTYwawM_lnfzT285A>
+    <xmx:51bPZouolGbTmzj-nSG2hWMEdZ8iKhJcEJXdcMWxyRMHXPpmjQh7PLgm>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 28 Aug 2024 12:57:10 -0400 (EDT)
+Date: Wed, 28 Aug 2024 09:57:05 -0700
+From: Boris Burkov <boris@bur.io>
+To: Fedor Pchelkin <pchelkin@ispras.ru>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com,
 	stable@vger.kernel.org
-Subject: Re: [PATCH] vfs: fix race between evice_inodes() and
- find_inode()&iput()
-Message-ID: <20240828163614.gsmg4vjjpy7gmsy7@quack3>
-References: <20240823130730.658881-1-sunjunchao2870@gmail.com>
+Subject: Re: [PATCH v2] btrfs: qgroup: don't use extent changeset when not
+ needed
+Message-ID: <Zs9W4dIlckbUt5JM@devvm12410.ftw0.facebook.com>
+References: <8d26b493-6bc4-488c-b0a7-f2d129d94089@gmx.com>
+ <20240828161411.534042-1-pchelkin@ispras.ru>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -107,150 +111,53 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240823130730.658881-1-sunjunchao2870@gmail.com>
-X-Rspamd-Queue-Id: E89F71FCE1
-X-Spam-Score: -2.51
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[67ba3c42bcbb4665d3ad];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,zeniv.linux.org.uk,kernel.org,suse.cz,fromorbit.com,gmail.com,syzkaller.appspotmail.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,suse.cz:email,suse.cz:dkim,appspotmail.com:email,suse.com:email]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <20240828161411.534042-1-pchelkin@ispras.ru>
 
-On Fri 23-08-24 21:07:30, Julian Sun wrote:
-> Hi, all
+On Wed, Aug 28, 2024 at 07:14:11PM +0300, Fedor Pchelkin wrote:
+> The local extent changeset is passed to clear_record_extent_bits() where
+> it may have some additional memory dynamically allocated for ulist. When
+> qgroup is disabled, the memory is leaked because in this case the
+> changeset is not released upon __btrfs_qgroup_release_data() return.
 > 
-> Recently I noticed a bug[1] in btrfs, after digged it into
-> and I believe it'a race in vfs.
+> Since the recorded contents of the changeset are not used thereafter, just
+> don't pass it.
 > 
-> Let's assume there's a inode (ie ino 261) with i_count 1 is
-> called by iput(), and there's a concurrent thread calling
-> generic_shutdown_super().
+> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
 > 
-> cpu0:                              cpu1:
-> iput() // i_count is 1
->   ->spin_lock(inode)
->   ->dec i_count to 0
->   ->iput_final()                    generic_shutdown_super()
->     ->__inode_add_lru()               ->evict_inodes()
->       // cause some reason[2]           ->if (atomic_read(inode->i_count)) continue;
->       // return before                  // inode 261 passed the above check
->       // list_lru_add_obj()             // and then schedule out
->    ->spin_unlock()
-> // note here: the inode 261
-> // was still at sb list and hash list,
-> // and I_FREEING|I_WILL_FREE was not been set
-> 
-> btrfs_iget()
->   // after some function calls
->   ->find_inode()
->     // found the above inode 261
->     ->spin_lock(inode)
->    // check I_FREEING|I_WILL_FREE
->    // and passed
->       ->__iget()
->     ->spin_unlock(inode)                // schedule back
->                                         ->spin_lock(inode)
->                                         // check (I_NEW|I_FREEING|I_WILL_FREE) flags,
->                                         // passed and set I_FREEING
-> iput()                                  ->spin_unlock(inode)
->   ->spin_lock(inode)			  ->evict()
->   // dec i_count to 0
->   ->iput_final()
->     ->spin_unlock()
->     ->evict()
-> 
-> Now, we have two threads simultaneously evicting
-> the same inode, which may trigger the BUG(inode->i_state & I_CLEAR)
-> statement both within clear_inode() and iput().
-> 
-> To fix the bug, recheck the inode->i_count after holding i_lock.
-> Because in the most scenarios, the first check is valid, and
-> the overhead of spin_lock() can be reduced.
-> 
-> If there is any misunderstanding, please let me know, thanks.
-> 
-> [1]: https://lore.kernel.org/linux-btrfs/000000000000eabe1d0619c48986@google.com/
-> [2]: The reason might be 1. SB_ACTIVE was removed or 2. mapping_shrinkable()
-> return false when I reproduced the bug.
-> 
-> Reported-by: syzbot+67ba3c42bcbb4665d3ad@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=67ba3c42bcbb4665d3ad
-> CC: stable@vger.kernel.org
-> Fixes: 63997e98a3be ("split invalidate_inodes()")
-> Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
+> Reported-by: syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/lkml/000000000000aa8c0c060ade165e@google.com
+> Fixes: af0e2aab3b70 ("btrfs: qgroup: flush reservations during quota disable")
+> Cc: stable@vger.kernel.org # 6.10+
+> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
 
-Thanks for the fix. It looks good to me and I'm curious how come we didn't
-hit this earlier ;). Anyway, feel free to add:
+This version looks even better, to me. Thanks for the catch and fix!
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-I'd just note that the Fixes tag isn't correct AFAICT. At the time of
-commit 63997e98a3be we had a global inode_lock and the
-atomic_read(&inode->i_count) check was done under it. I'd say it was
-
-55fa6091d831 ("fs: move i_sb_list out from under inode_lock")
-
-or possibly
-
-250df6ed274d ("fs: protect inode->i_state with inode->i_lock")
-
-(depending on how you look at it) that introduced this problem. Not that it
-would matter that much these days :).
-
-								Honza
+Reviewed-by: Boris Burkov <boris@bur.io>
 
 > ---
->  fs/inode.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> v2: rework the fix as Qu Wenruo suggested - just don't pass unneeded
+>     changeset. Update the commit title and description accordingly.
 > 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 3a41f83a4ba5..011f630777d0 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -723,6 +723,10 @@ void evict_inodes(struct super_block *sb)
->  			continue;
+>  fs/btrfs/qgroup.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 5d57a285d59b..f6118c5f3c9f 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -4344,10 +4344,9 @@ static int __btrfs_qgroup_release_data(struct btrfs_inode *inode,
+>  	int ret;
 >  
->  		spin_lock(&inode->i_lock);
-> +		if (atomic_read(&inode->i_count)) {
-> +			spin_unlock(&inode->i_lock);
-> +			continue;
-> +		}
->  		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
->  			spin_unlock(&inode->i_lock);
->  			continue;
+>  	if (btrfs_qgroup_mode(inode->root->fs_info) == BTRFS_QGROUP_MODE_DISABLED) {
+> -		extent_changeset_init(&changeset);
+>  		return clear_record_extent_bits(&inode->io_tree, start,
+>  						start + len - 1,
+> -						EXTENT_QGROUP_RESERVED, &changeset);
+> +						EXTENT_QGROUP_RESERVED, NULL);
+>  	}
+>  
+>  	/* In release case, we shouldn't have @reserved */
 > -- 
 > 2.39.2
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
