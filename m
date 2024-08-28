@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-7634-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7633-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE6FA962FBE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 20:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D784962FBD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 20:21:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CCC01C229E3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 18:21:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C987F1C21129
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 18:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0B01AAE39;
-	Wed, 28 Aug 2024 18:21:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57171AAE0D;
+	Wed, 28 Aug 2024 18:21:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCABF2747B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28493156649;
 	Wed, 28 Aug 2024 18:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724869267; cv=none; b=XsWadLFTHFaCRHM9gB5RRk47HJpgsMfdrich6LE419S6VRO21rl0YwNlM4EoQhW1X38/hdwPTiReGH9daiORpkY6KHvxL4w9KE1RlDvgH+tiKcoP4J8e1++RoQHsp8pus0Yn1Smr4aOChw9XvXJI8sOL7E8XgMY1R+OVZx778Js=
+	t=1724869267; cv=none; b=kXyBv+FL9bInzDoDF2a8nWeFTA2UuNsq0kf42hXR3dINKPfxR8g3slzynOmWp4QwlQQvV1SYk8FDAy3/tEvjOhxKLLIlOabp5N7nlMYxETPAbIA0s0Z4OY/1sz2wFaRP2lDbstaSbMbFGergRgbPl8L1qNxdmnBKJxiEDteOOX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724869267; c=relaxed/simple;
-	bh=zKO0QC/sfuHjz0tyujMt3M++7xZf2OUSJUv4aav3yt4=;
+	bh=XvWC5RxTiYgmiQZx3O4Fkh/2fsCea7Ge7ljSuN5vYrA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TCY5Ma8181xRHmhyNjUZowlABE4aRxoUNBH34r/ntaPsN9uDJZAJ+4b5MfDdNroU8IDhyyXtUDPPn15EE11n5b0O4TDMoVU20aK0B+u0hvTHBXUCMCjBXULwUUMm2ouEzgZk45ngUmK8vQveYYH/0MN01oFXfNZR7gFk+m0NpuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	 MIME-Version:Content-Type; b=kSwCKtq3oZ/BP3FQ966VT4fhMxZJtyUkvYqsEuWU55Q4DSkeuF3usQL0y7yxaEil3x/PZxPbpIF+wfCNT24qXCipHC4GC27C5NAqO1yFHuR6ckGzAFYRWHSXCANAqRC2OIQNE254vfSu7UhjZfETbreFicIdu5gj0Oryv+fP07Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WvCNl57H3zpTwf;
-	Thu, 29 Aug 2024 02:19:19 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4WvCQV2JsPz1S9Fd;
+	Thu, 29 Aug 2024 02:20:50 +0800 (CST)
 Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3549A1800CC;
+	by mail.maildlp.com (Postfix) with ESMTPS id 9A714180019;
 	Thu, 29 Aug 2024 02:21:02 +0800 (CST)
 Received: from huawei.com (10.90.53.73) by kwepemd500012.china.huawei.com
  (7.221.188.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 29 Aug
- 2024 02:21:01 +0800
+ 2024 02:21:02 +0800
 From: Li Zetao <lizetao1@huawei.com>
 To: <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>,
 	<terrelln@fb.com>, <quwenruo.btrfs@gmx.com>, <willy@infradead.org>,
 	<dan.carpenter@linaro.org>
 CC: <lizetao1@huawei.com>, <linux-btrfs@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH -next v2 01/14] btrfs: convert clear_page_extent_mapped() to take a folio
-Date: Thu, 29 Aug 2024 02:28:55 +0800
-Message-ID: <20240828182908.3735344-2-lizetao1@huawei.com>
+Subject: [PATCH -next v2 02/14] btrfs: convert get_next_extent_buffer() to take a folio
+Date: Thu, 29 Aug 2024 02:28:56 +0800
+Message-ID: <20240828182908.3735344-3-lizetao1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240828182908.3735344-1-lizetao1@huawei.com>
 References: <20240828182908.3735344-1-lizetao1@huawei.com>
@@ -64,82 +64,59 @@ X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
 
 The old page API is being gradually replaced and converted to use folio
 to improve code readability and avoid repeated conversion between page
-and folio. And Now clear_page_extent_mapped() can deal with a folio
-directly, so change it name to clear_folio_extent_mapped().
+and folio. And use folio_pos instend of page_offset, which is more
+consistent with folio usage.
 
 Signed-off-by: Li Zetao <lizetao1@huawei.com>
 ---
-v1 -> v2: change funtion name clear_page_extent_mapped to
-  clear_folio_extent_mapped.
-v1: https://lore.kernel.org/all/20240822013714.3278193-2-lizetao1@huawei.com/
-
- fs/btrfs/extent_io.c | 9 ++++-----
- fs/btrfs/extent_io.h | 2 +-
- fs/btrfs/inode.c     | 4 ++--
- 3 files changed, 7 insertions(+), 8 deletions(-)
+ fs/btrfs/extent_io.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index bd737b797864..7f630edcc791 100644
+index 7f630edcc791..a77e38fc563e 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -877,18 +877,17 @@ int set_folio_extent_mapped(struct folio *folio)
- 	return 0;
- }
+@@ -4042,17 +4042,17 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
  
--void clear_page_extent_mapped(struct page *page)
-+void clear_folio_extent_mapped(struct folio *folio)
+ #define GANG_LOOKUP_SIZE	16
+ static struct extent_buffer *get_next_extent_buffer(
+-		const struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
++		const struct btrfs_fs_info *fs_info, struct folio *folio, u64 bytenr)
  {
--	struct folio *folio = page_folio(page);
- 	struct btrfs_fs_info *fs_info;
+ 	struct extent_buffer *gang[GANG_LOOKUP_SIZE];
+ 	struct extent_buffer *found = NULL;
+-	u64 page_start = page_offset(page);
+-	u64 cur = page_start;
++	u64 folio_start = folio_pos(folio);
++	u64 cur = folio_start;
  
--	ASSERT(page->mapping);
-+	ASSERT(folio->mapping);
+-	ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
++	ASSERT(in_range(bytenr, folio_start, PAGE_SIZE));
+ 	lockdep_assert_held(&fs_info->buffer_lock);
  
- 	if (!folio_test_private(folio))
- 		return;
+-	while (cur < page_start + PAGE_SIZE) {
++	while (cur < folio_start + PAGE_SIZE) {
+ 		int ret;
+ 		int i;
  
--	fs_info = page_to_fs_info(page);
--	if (btrfs_is_subpage(fs_info, page->mapping))
-+	fs_info = folio_to_fs_info(folio);
-+	if (btrfs_is_subpage(fs_info, folio->mapping))
- 		return btrfs_detach_subpage(fs_info, folio);
- 
- 	folio_detach_private(folio);
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index b38460279b99..1d9b30021109 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -249,7 +249,7 @@ int btree_write_cache_pages(struct address_space *mapping,
- void btrfs_readahead(struct readahead_control *rac);
- int set_folio_extent_mapped(struct folio *folio);
- int set_page_extent_mapped(struct page *page);
--void clear_page_extent_mapped(struct page *page);
-+void clear_folio_extent_mapped(struct folio *folio);
- 
- struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 					  u64 start, u64 owner_root, int level);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a8ad540d6de2..f113ec3d5392 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7240,7 +7240,7 @@ static bool __btrfs_release_folio(struct folio *folio, gfp_t gfp_flags)
- {
- 	if (try_release_extent_mapping(&folio->page, gfp_flags)) {
- 		wait_subpage_spinlock(folio);
--		clear_page_extent_mapped(&folio->page);
-+		clear_folio_extent_mapped(folio);
- 		return true;
- 	}
- 	return false;
-@@ -7438,7 +7438,7 @@ static void btrfs_invalidate_folio(struct folio *folio, size_t offset,
- 	btrfs_folio_clear_checked(fs_info, folio, folio_pos(folio), folio_size(folio));
- 	if (!inode_evicting)
- 		__btrfs_release_folio(folio, GFP_NOFS);
--	clear_page_extent_mapped(&folio->page);
-+	clear_folio_extent_mapped(folio);
- }
- 
- static int btrfs_truncate(struct btrfs_inode *inode, bool skip_writeback)
+@@ -4064,7 +4064,7 @@ static struct extent_buffer *get_next_extent_buffer(
+ 			goto out;
+ 		for (i = 0; i < ret; i++) {
+ 			/* Already beyond page end */
+-			if (gang[i]->start >= page_start + PAGE_SIZE)
++			if (gang[i]->start >= folio_start + PAGE_SIZE)
+ 				goto out;
+ 			/* Found one */
+ 			if (gang[i]->start >= bytenr) {
+@@ -4097,7 +4097,7 @@ static int try_release_subpage_extent_buffer(struct page *page)
+ 		 * with spinlock rather than RCU.
+ 		 */
+ 		spin_lock(&fs_info->buffer_lock);
+-		eb = get_next_extent_buffer(fs_info, page, cur);
++		eb = get_next_extent_buffer(fs_info, page_folio(page), cur);
+ 		if (!eb) {
+ 			/* No more eb in the page range after or at cur */
+ 			spin_unlock(&fs_info->buffer_lock);
 -- 
 2.34.1
 
