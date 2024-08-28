@@ -1,133 +1,129 @@
-Return-Path: <linux-btrfs+bounces-7617-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7618-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B020962843
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 15:09:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF696962857
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 15:13:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B256BB221C9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 13:09:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E61B1C2334C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 13:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1333188003;
-	Wed, 28 Aug 2024 13:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495AA185E6A;
+	Wed, 28 Aug 2024 13:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pv4EmUsP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ECF7167D98
-	for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2024 13:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB9514A605
+	for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2024 13:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724850516; cv=none; b=FU5Tp+eQW1/4SE76OTYRLV+jZuKaanjDMH3WhjvvBXvzpJnXuO1xp5hrb7eFqvY+GCWtDoM6w6gHVIgIpwlbdzUl8xE/ygr8OXxwmFyOxwPUkIZYZ2VBq86ZvTKyciaY6MXidfrRgJRgGZ64N7CZCesoQe8suBp2wEvD1cmaLo4=
+	t=1724850809; cv=none; b=ruVjuyU5rvFSeRl7ZNGvyW3HYfZ5iPY5n/fkqKpRHl0H+XMIGOAH2CY5sCyHEi7Hewhk/k3zTp41ZnRLToc7xIXDjHB9NfVCvATDw9v4zCMbYMa3ACAbCzln+kWY3r9lvMw3mtpF25ClVXc064hqudjUpMCGjtCbt9u76stIra4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724850516; c=relaxed/simple;
-	bh=Y7bzSuUD/3RkXrEZlRqSite5c3G1gSCYzekpQk7jeQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=atM1R3V8JtXlTGbZwfaEF5MLr6dyqFq3g90tVHGWaceIvltb2VNjNRmyJef+6PVsjH3q4jlfpcudbJxCoZkTvKyqW8opcNj2ry6e6MT9k51A1x55EYmmSp0ebPcRaUKjepUZJ+bNh0bEmNtXyhbivwqF584J1ZP2qf08N1gbAhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Wv4TB5wC2zyQfQ;
-	Wed, 28 Aug 2024 21:07:42 +0800 (CST)
-Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
-	by mail.maildlp.com (Postfix) with ESMTPS id 67390180105;
-	Wed, 28 Aug 2024 21:08:31 +0800 (CST)
-Received: from [10.67.111.176] (10.67.111.176) by
- kwepemd500012.china.huawei.com (7.221.188.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Wed, 28 Aug 2024 21:08:30 +0800
-Message-ID: <2a0a26e9-ae51-4e69-aa84-30681dc6284f@huawei.com>
-Date: Wed, 28 Aug 2024 21:08:30 +0800
+	s=arc-20240116; t=1724850809; c=relaxed/simple;
+	bh=c/zc+UsOMGU7+W7R+4O3camx+C1Cz8Nz25luYqSOAOA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZAaPJ91LH7X0oVg/WHMITGBgbSYG1Tm7tm2qkEQY/KkuaC9nX9UiJ8p5ZrzSVujCPDg2o/fS1XB5pTGnXSdQ08nfNn3e5tIKQapPPOVoBlLYLo7+oqvtHFKrqC4MaZsqnli1bAlYXHX0/VwyP1A1GWr5TDxzJu/IqZtXn2YXnJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Pv4EmUsP; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-371893dd249so3598056f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2024 06:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1724850806; x=1725455606; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oKFxTdVhG0vl9VERtDu2+jX5SZIfs0u5rZfANIo5dLc=;
+        b=Pv4EmUsPR+RhkhJm3FqTYbbdMUR44zZK4F5eddJyZ4O3QO/mjkjsj5kR5HaKr8NswT
+         sok37IC+taVc23VsrZ6A2Fp08lNSoOjsCtKuH2v1qYqZIftQBu630JZS1bG5ULB3GBsD
+         6rRcIaXVPc48oT0RQgjR5y4B0MdhN6BYCLQ99ugKUOIERbtFjQkJRGk5vX2UmEL7aPlc
+         niCGA+Z7xOqOtmE1a1FpzJbM1qDf3xdFB1bS5mgeWDQ0VLskN+HK4sh0BiduKvEXr4ro
+         9txj3RGfG2glD0kusqc2WBt7eGyUAc4TRqett87tauG0zO4YCKTyW+Oae/s7rIWvm6zo
+         LxEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724850806; x=1725455606;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oKFxTdVhG0vl9VERtDu2+jX5SZIfs0u5rZfANIo5dLc=;
+        b=blSYuubd597VBCJKR8WINnDPVSHLZ5pbQsz7CnfoKrIjkfHeIVBMO5ZxkJzKjG0Zpv
+         9cHPjZ4ccL0WZm9PPQELCO4NYmtVJBtBKsVnFK4onTJrPR+0gHs1jx6JJcB33DPOBryy
+         0zw7PzZcD98sp/K628V3uO51xyFMS9yqETKFd696B0vufXBPzsKoD0ILPhYs1IcyH4Gz
+         WArrpHxvaWXMg1X/yGe99t2AQJ3yqtJv1Hx2M8WGz/fi2KXYNIlelmN7NU70K570C3kP
+         bJqE25ONKSVq6vLRywGH8//qVkN4mBoMCR29YRYMsYhfy3+w+qo2k7gxcMjZ88GttdCB
+         1tew==
+X-Forwarded-Encrypted: i=1; AJvYcCX+bykZOU/e3N1pN2PdXg2Ov/XkKnvDTM4LEEB6KET3DQfMrbUUudjl+xmAwEq99nJ1yzGou235mCVinA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwY04XvAZ+LBMIFnxGFvqDh3oTp+5XHOjlv5oybKU+K7VA7HZ62
+	ynWzNfUO8cOAowPcGjsKg2rgQDO7bO4r63J9zF47cnkXflK1TF1TPI/pEaDwKAw=
+X-Google-Smtp-Source: AGHT+IGG2FnZQPb+umi9NbaPw0r2wgnClzF57CwQ4CjBjoGjUZ26/eTfZhl9zE3dVOSPHBTGIqLBeg==
+X-Received: by 2002:adf:f7c9:0:b0:367:9575:2820 with SMTP id ffacd0b85a97d-373118d12a4mr10702272f8f.45.1724850805948;
+        Wed, 28 Aug 2024 06:13:25 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37308110603sm15621246f8f.2.2024.08.28.06.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2024 06:13:25 -0700 (PDT)
+Date: Wed, 28 Aug 2024 16:13:21 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Li Zetao <lizetao1@huawei.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH next] btrfs: Fix reversed condition in
+ copy_inline_to_page()
+Message-ID: <5a19b8a7-385c-4616-a5b7-212e19c9ddc1@stanley.mountain>
+References: <3a05145b-6c24-4101-948e-1a457b92ea3e@stanley.mountain>
+ <40421bdb-4573-4768-8d6d-39b0d0df9260@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH -next 00/14] btrfs: Cleaned up folio->page
- conversion
-To: Josef Bacik <josef@toxicpanda.com>
-CC: <willy@infradead.org>, <linux-f2fs-devel@lists.sourceforge.net>,
-	<clm@fb.com>, <terrelln@fb.com>, <dsterba@suse.com>,
-	<linux-btrfs@vger.kernel.org>
-References: <20240822013714.3278193-1-lizetao1@huawei.com>
- <20240823195051.GD2237731@perftesting> <20240823211522.GA2305223@perftesting>
- <20240826140818.GA2393039@perftesting>
-From: Li Zetao <lizetao1@huawei.com>
-In-Reply-To: <20240826140818.GA2393039@perftesting>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggpeml500014.china.huawei.com (7.185.36.63) To
- kwepemd500012.china.huawei.com (7.221.188.25)
+In-Reply-To: <40421bdb-4573-4768-8d6d-39b0d0df9260@huawei.com>
 
-
-
-在 2024/8/26 22:08, Josef Bacik 写道:
-> On Fri, Aug 23, 2024 at 05:15:22PM -0400, Josef Bacik wrote:
->> On Fri, Aug 23, 2024 at 03:50:51PM -0400, Josef Bacik wrote:
->>> On Thu, Aug 22, 2024 at 09:37:00AM +0800, Li Zetao wrote:
->>>> Hi all,
->>>>
->>>> In btrfs, because there are some interfaces that do not use folio,
->>>> there is page-folio-page mutual conversion. This patch set should
->>>> clean up folio-page conversion as much as possible and use folio
->>>> directly to reduce invalid conversions.
->>>>
->>>> This patch set starts with the rectification of function parameters,
->>>> using folio as parameters directly. And some of those functions have
->>>> already been converted to folio internally, so this part has little
->>>> impact.
->>>>
->>>> I have tested with fsstress more than 10 hours, and no problems were
->>>> found. For the convenience of reviewing, I try my best to only modify
->>>> a single interface in each patch.
->>>>
->>>> Josef also worked on converting pages to folios, and this patch set was
->>>> inspired by him:
->>>> https://lore.kernel.org/all/cover.1722022376.git.josef@toxicpanda.com/
->>>>
->>>
->>> This looks good, I'm running it through the CI.  If that comes out clean then
->>> I'll put my reviewed-by on it and push it to our for-next branch.  The CI run
->>> can be seen here
->>>
->>> https://github.com/btrfs/linux/actions/runs/10531503734
->>>
->>
->> Looks like the compression stuff panic'ed, the run has to finish before it
->> collects the dmesg so IDK where it failed yet, but I'd go over the compression
->> stuff again to see if you can spot it.  When the whole run finishes there will
->> be test artifacts you can get to.  If you don't have permissions (I honestly
->> don't know how the artifacts permission stuff works) then no worries, I'll grab
->> it in the morning and send you the test and dmesg of what fell over.  Thanks,
->>
+On Wed, Aug 28, 2024 at 08:53:44PM +0800, Li Zetao wrote:
+> Hi Dan,
 > 
-> They all fell over, so I suggest running fstests against your series before you
-> resend.  btrfs/069 paniced on one machine, btrfs/060 paniced on one machine.
-> None of the machines passsed without panicing.  Thanks,
+> 在 2024/8/27 18:21, Dan Carpenter 写道:
+> > This if statement is reversed leading to locking issues.
+> > 
+> > Fixes: 8e603cfe05f0 ("btrfs: convert copy_inline_to_page() to use folio")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > ---
+> > This patch is obviously correct but it's from static analysis so additional
+> > testing would be good as well.
+> > 
+> >   fs/btrfs/reflink.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+> > index 1681d63f03dd..f0824c948cb7 100644
+> > --- a/fs/btrfs/reflink.c
+> > +++ b/fs/btrfs/reflink.c
+> > @@ -146,7 +146,7 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
+> >   	btrfs_folio_clear_checked(fs_info, folio, file_offset, block_size);
+> >   	btrfs_folio_set_dirty(fs_info, folio, file_offset, block_size);
+> >   out_unlock:
+> > -	if (IS_ERR(folio)) {
+> > +	if (!IS_ERR(folio)) {
+> This is a mistake caused by my carelessness,thank you for the patch
+> >   		folio_unlock(folio);
+> >   		folio_put(folio);
+> >   	}
 > 
-Thank you for your test. When btrfs/060 and btrfs/069 failed due to my 
-carelessness, Dan has issued a patch[1] to fix it. After applying his 
-patch, it was still found that 3 test cases reported errors. I reverted 
-my patchset and the error still persists, so the errors may not be 
-caused by my patch. Below is the test log:
+> Can I merge your patch into my patchset and add you as a co-author?
 
-   Failures: btrfs/012 btrfs/249 btrfs/284
-   Failed 3 of 322 tests
+Just merge it.  No need for co-author credit for something tiny like this.  :P
 
-My xfstests project is forked from https://github.com/kdave/xfstests.git
+regards,
+dan carpenter
 
-> Josef
-> 
-
-[1]: 
-https://lore.kernel.org/linux-btrfs/20240827153739.GY25962@twin.jikos.cz/T/#m3f3e28dad05a9c8385a72f5503a5b9c130b44c04
-
-
-Thanks,
-Li Zetao.
 
