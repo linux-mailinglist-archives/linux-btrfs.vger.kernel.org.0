@@ -1,108 +1,100 @@
-Return-Path: <linux-btrfs+bounces-7629-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7630-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1228E962DF0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 18:57:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09070962E33
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 19:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 157A1282EA0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 16:57:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C1261C23D00
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 17:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420011A4F27;
-	Wed, 28 Aug 2024 16:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2F01A4F20;
+	Wed, 28 Aug 2024 17:09:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="qjXUEo8y";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KJwMlf7f"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="G+EfbIq1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="G41VDtnZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
+Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4F11A3BD1;
-	Wed, 28 Aug 2024 16:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD32C4D108
+	for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2024 17:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724864235; cv=none; b=uoWve8wTYbsNEGI6mzhK+hASukzb96lIOguWsZqA8WeW0spHcg8DBocC6v8iGchYhXubLr3NqiiVw9Z6bLBFMK9zTxE2YJoLEHUajZILjeIjbCQgzHT505pkWQo/nUexh0/Ptff1kqAMlB0XJy1gFdXxMU6BurRzvdgtgz/f53g=
+	t=1724864961; cv=none; b=K/p2L8l87KHZWp9JjnkaP2QcyUACIEMutJlYBhVEXT/ak/ZtQ6+glDH+0kW06vnCktIx7pHgo9vouAdWolgjHYhVvgkJp6p56KSQmDxVEsJnrZl/fZ0LgLxlhhMggMO1zyLxq90OpoxrMK/71fFe6oT4xEYGCGQ+L5UTrSdTAWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724864235; c=relaxed/simple;
-	bh=qSQZaic1piiRaVwBistKi7MzxIz1c4l5xA0Yz7ujkV0=;
+	s=arc-20240116; t=1724864961; c=relaxed/simple;
+	bh=7lbaUWqI44b2jg4sVzUnQTIjjzibjZ5eUD2ov255N50=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gbLaSMFPLxnwFaVpdz/Axh//fm0MM4VNw+5kJIxzmJtbLgQLxgnxV9p8Y94CWuruxYJWA/43b8b9ofTj57NWTnh7NU+8S144A9ZDvPkfgJ0IedpwsQ/qC2dpvnwHqvovGYh3p/pmidwfFWmJdb+++H1B4GiZ8gaqL0s49Ru34dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=qjXUEo8y; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KJwMlf7f; arc=none smtp.client-ip=103.168.172.153
+	 Content-Type:Content-Disposition:In-Reply-To; b=dIOZ4WDikOjode4UOemwsZ7VS91uPtFJ1/zPZ5hgJc+tWXAdqQPpELLSFVtRCgWRmn/8sdqr29SXkGqVCzUUVDPBIk3SbRhVZEGIBhPFHmCddy8FjQPXIeOkzHZ0vD1LvQxBfBjdMkDLciNLBqS9oveChleaaL0zwfyJ+SdWijA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=G+EfbIq1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=G41VDtnZ; arc=none smtp.client-ip=103.168.172.149
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-03.internal (phl-compute-03.nyi.internal [10.202.2.43])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id B33021150DE1;
-	Wed, 28 Aug 2024 12:57:11 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Wed, 28 Aug 2024 12:57:11 -0400
+Received: from phl-compute-08.internal (phl-compute-08.nyi.internal [10.202.2.48])
+	by mailfout.nyi.internal (Postfix) with ESMTP id C29D2138FF4B;
+	Wed, 28 Aug 2024 13:09:17 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-08.internal (MEProxy); Wed, 28 Aug 2024 13:09:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1724864231; x=1724950631; bh=yZDFJ+uBkJ
-	NN6I5DAKEUENScf20U9fLYyspVCQoBezg=; b=qjXUEo8y0CJNW4ycmbwMxJSKA0
-	IIxzcgKwTNW2gse0g7STqGQhi95Cn1ahjhuOaeBbNaSrS7+8kSoTMwuqhP+X06sp
-	U7OdBDyL1MjS6RMlvHtkgf/4IrLCBvqHoVcByVibRw1VDoNdymVuwXtCLihfgjEK
-	QSHmyqV4QQlU8vNfyqOFkXODMPnEHzoWcxeOOEUs8XvpEMs3xMzcoJ3uOy4Fcf3P
-	rgGyJTDtp/amWoCQmPWRCfR5ujVTbA5I3vq1Zc4iMgc1JNaR1/JINMgK0hvV5SIV
-	ckc+ikkh1/tNV4SkOCXcg7u3GFETNYSWh3Tx06GSGpAdl/V2+GRuIt+Ae1Wg==
+	:subject:to:to; s=fm2; t=1724864957; x=1724951357; bh=bJZJEWtT2h
+	jv/sR2UZ7TTYp9XZcyjHBHO/MCXlNzkmM=; b=G+EfbIq1On6gA87W3pCSX1gR5A
+	c68r2zsI+hY6lzMSjttMhhpqeIJMiTB35YG/2MuVwEIBJQbrdPcqPp58GtGCbYZm
+	IOhHi7jr6k2uJMOVpfjP2dPh8adK8clM+lMnvcygpm6X/K3IdH2J1Nj6xSDXUqMU
+	S8miJN2FQ2RqTObFPJKHYKVKyfbRlE63rxyJiHGzHruW/tQh+RJzQSbbkCGXlUJm
+	IuVKGEoH2nKs2M6OWo3j1zoU6Hd13BOqSLG5lOsN5DVtcekAnw873Y++wz5zRMyp
+	ydCW8EmZin+/WAxqQOTm/1o9oGK7zOx82madOXrUb5avkikFK2UE7zCZr6bA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1724864231; x=1724950631; bh=yZDFJ+uBkJNN6I5DAKEUENScf20U
-	9fLYyspVCQoBezg=; b=KJwMlf7fI+IJ0KyEG70caoGJTZxGgqCEMbuSPkPq1ts2
-	whb1v4W5CoUEz5Nqu0ObL1W4Iy/l88Q9QzCIXk45StwLrQ3aqNdDYTKOvLUxvRUL
-	cD08cZVyQb+NWYfq/0xBzMHZ7XX7wLYd3PuayDgiCzxA/f+2wBNzJH5ep+UhQNJ3
-	SGutwDOvPAS4wRioXoc0uyynDPOflDxOzJv3qChJqhyrXYUatw2IySrb/y1vajsP
-	z6Yc9Q6/SirCZ8JX7Y2oNBIQGPB0PteP+wFAMkM4uc/Cr9mKdfLobhXe2t7ulsHd
-	uy2iUi6prMdPz0+gnB/t8P+uzayDVZjDMSeoKCr8FA==
-X-ME-Sender: <xms:51bPZhlrSfa93G5JhiCXBTmwrignRq5Dn8MNbAcHLI-XY71oXGf0SQ>
-    <xme:51bPZs0rfYRwsHIP_SKKDU1N_5f6WWGXxOZJLVOA0PCKX_VqCZpZ0R2PLYWt2dKO8
-    01oVsJ80sIrNrj5zF8>
-X-ME-Received: <xmr:51bPZnosAv3ao6mjzp6Juof3r0bP4hlsoNMIgC91HhRVtVEr8AXCfNQy-VlLSQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudefvddguddthecutefuodetggdotefrod
+	fm1; t=1724864957; x=1724951357; bh=bJZJEWtT2hjv/sR2UZ7TTYp9XZcy
+	jHBHO/MCXlNzkmM=; b=G41VDtnZN5y2TvmdvYFMoRpliB5rU5j7hMVm78+uF7uP
+	HoReZ1NSg7jda5vu8ZEpa+gVcBmo55vQnJlz7hrVH5tSHS7W4hO4sBmyX1LB5JXY
+	uhUKk8Z82s1PDRf5a6cioVVcVL9un2EgPz8mZLX3RULgyPmhv1U6SyRxT9uE5Xwk
+	eZgwdYgrReI9XcOO+eIlnFX0fTcFVHgyLMN7DjGmj8SolBCBJRqTY726nCuQ3MmV
+	3s1WzjwYkDtuXk9uhUI/017cy0VgqcFiGbWn4HRp6Ct5IHFCI56jlSZAy/BOooB+
+	grh5IFmizVfRiKqR9ElsqWR9JaqaY/9wz8pdkIjtpA==
+X-ME-Sender: <xms:vVnPZtrOWRnEnM2yvn9bCTsW35TRahGaPHB61fm84sbhkqQ5JJBmUA>
+    <xme:vVnPZvoKA4BXYqaRU0EQ5vKHSgH0T93dPQUOm41D8q-Xs2HHclv9XRotp3lahHyc3
+    GIlSEibubPaR3ax1Rw>
+X-ME-Received: <xmr:vVnPZqOgAB910cGCjCvGds7aO-woWOdWFjoslbZ_hiZgYyo2ichrmU7_xYtZHQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudefvddguddtjecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
     necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepffekgeffueegffeitdeviedvvdeliefgkedvtdejieffffdu
-    ffduhffgjeelvedunecuffhomhgrihhnpehlihhnuhigthgvshhtihhnghdrohhrghdpkh
-    gvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedutddpmhhoug
-    gvpehsmhhtphhouhhtpdhrtghpthhtohepphgthhgvlhhkihhnsehishhprhgrshdrrhhu
-    pdhrtghpthhtohepqhhufigvnhhruhhordgsthhrfhhssehgmhigrdgtohhmpdhrtghpth
-    htohepughsthgvrhgsrgesshhushgvrdgtohhmpdhrtghpthhtoheptghlmhesfhgsrdgt
-    ohhmpdhrtghpthhtohepjhhoshgvfhesthhogihitghprghnuggrrdgtohhmpdhrtghpth
-    htoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphht
-    thhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtph
-    htthhopehlvhgtqdhprhhojhgvtghtsehlihhnuhigthgvshhtihhnghdrohhrghdprhgt
-    phhtthhopehshiiisghothdokeduieejtdefiedvtgdvkeeffhefuggukeeklegtsehshi
-    iikhgrlhhlvghrrdgrphhpshhpohhtmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:51bPZhn4Pb9cATyffAApZvHsXUfy_Dz7Sw5Wo8Uv7oxTLxxLfYBonw>
-    <xmx:51bPZv3cmLswj7tdXprordllUjzex-qkUz6aQA3ftJ7d5rAJp91pDw>
-    <xmx:51bPZgsCxNajM1J9wWZHLga3ZgPaykxjxsfVvueWxQcWs55C6BvfTg>
-    <xmx:51bPZjVSDGqAD8GuTBeCWVYGJzVtj0uWdtHdHxTYwawM_lnfzT285A>
-    <xmx:51bPZouolGbTmzj-nSG2hWMEdZ8iKhJcEJXdcMWxyRMHXPpmjQh7PLgm>
+    cuggftrfgrthhtvghrnhepleffgeevgeetueegledtueeluddtudekhefhudeuheegfeev
+    ieehteevieejueetnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhi
+    ohdpnhgspghrtghpthhtohephedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepug
+    hsthgvrhgsrgesshhushgvrdgtiidprhgtphhtthhopehjohhsvghfsehtohigihgtphgr
+    nhgurgdrtghomhdprhgtphhtthhopehlohgvmhhrrgdruggvvhesghhmrghilhdrtghomh
+    dprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:vVnPZo5Dvnhekgt7w04KxITxEhTGiakZgQHHXMz9XgMpw27gaXAFhg>
+    <xmx:vVnPZs4b4ADaAqtvZgyUgxbcKUA-srfeJ7-OXIVV5Lfbz5YVwxXSqA>
+    <xmx:vVnPZgiHNX9wwGo650927Iaj6jZX3tsvO6jHtxFWfypoqhzfmlo2wg>
+    <xmx:vVnPZu4_GR-6N07Bcbzy4OU_30eLTWwGHIgLNxElQ1SIrIV0ujKYhQ>
+    <xmx:vVnPZmS_9YNKc-xTmsoDdUfF7JHx5sTqAbjogsm9jOmr6i-t7x63_6SY>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 28 Aug 2024 12:57:10 -0400 (EDT)
-Date: Wed, 28 Aug 2024 09:57:05 -0700
+ 28 Aug 2024 13:09:16 -0400 (EDT)
+Date: Wed, 28 Aug 2024 10:09:12 -0700
 From: Boris Burkov <boris@bur.io>
-To: Fedor Pchelkin <pchelkin@ispras.ru>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: qgroup: don't use extent changeset when not
- needed
-Message-ID: <Zs9W4dIlckbUt5JM@devvm12410.ftw0.facebook.com>
-References: <8d26b493-6bc4-488c-b0a7-f2d129d94089@gmx.com>
- <20240828161411.534042-1-pchelkin@ispras.ru>
+To: David Sterba <dsterba@suse.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, Leo Martins <loemra.dev@gmail.com>,
+	linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 1/3] btrfs: DEFINE_FREE for btrfs_free_path
+Message-ID: <Zs9ZuApvQCH4ITT9@devvm12410.ftw0.facebook.com>
+References: <cover.1724785204.git.loemra.dev@gmail.com>
+ <6951e579322f1389bcc02de692a696880edb2a7e.1724785204.git.loemra.dev@gmail.com>
+ <20240827203058.GA2576577@perftesting>
+ <20240828001601.GC25962@twin.jikos.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -111,53 +103,73 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240828161411.534042-1-pchelkin@ispras.ru>
+In-Reply-To: <20240828001601.GC25962@twin.jikos.cz>
 
-On Wed, Aug 28, 2024 at 07:14:11PM +0300, Fedor Pchelkin wrote:
-> The local extent changeset is passed to clear_record_extent_bits() where
-> it may have some additional memory dynamically allocated for ulist. When
-> qgroup is disabled, the memory is leaked because in this case the
-> changeset is not released upon __btrfs_qgroup_release_data() return.
+On Wed, Aug 28, 2024 at 02:16:01AM +0200, David Sterba wrote:
+> On Tue, Aug 27, 2024 at 04:30:58PM -0400, Josef Bacik wrote:
+> > On Tue, Aug 27, 2024 at 12:08:43PM -0700, Leo Martins wrote:
+> > > Add a DEFINE_FREE for btrfs_free_path. This defines a function that can
+> > > be called using the __free attribute. Defined a macro
+> > > BTRFS_PATH_AUTO_FREE to make the declaration of an auto freeing path
+> > > very clear.
+> > > ---
+> > >  fs/btrfs/ctree.c | 2 +-
+> > >  fs/btrfs/ctree.h | 4 ++++
+> > >  2 files changed, 5 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> > > index 451203055bbfb..f0bdea206d672 100644
+> > > --- a/fs/btrfs/ctree.c
+> > > +++ b/fs/btrfs/ctree.c
+> > > @@ -196,7 +196,7 @@ struct btrfs_path *btrfs_alloc_path(void)
+> > >  /* this also releases the path */
+> > >  void btrfs_free_path(struct btrfs_path *p)
+> > >  {
+> > > -	if (!p)
+> > > +	if (IS_ERR_OR_NULL(p))
+> > >  		return;
+> > >  	btrfs_release_path(p);
+> > >  	kmem_cache_free(btrfs_path_cachep, p);
+> > > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > > index 75fa563e4cacb..babc86af564a2 100644
+> > > --- a/fs/btrfs/ctree.h
+> > > +++ b/fs/btrfs/ctree.h
+> > > @@ -6,6 +6,7 @@
+> > >  #ifndef BTRFS_CTREE_H
+> > >  #define BTRFS_CTREE_H
+> > >  
+> > > +#include "linux/cleanup.h"
+> > >  #include <linux/pagemap.h>
+> > >  #include <linux/spinlock.h>
+> > >  #include <linux/rbtree.h>
+> > > @@ -599,6 +600,9 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
+> > >  void btrfs_release_path(struct btrfs_path *p);
+> > >  struct btrfs_path *btrfs_alloc_path(void);
+> > >  void btrfs_free_path(struct btrfs_path *p);
+> > > +DEFINE_FREE(btrfs_free_path, struct btrfs_path *, if (!IS_ERR_OR_NULL(_T)) btrfs_free_path(_T))
+> > 
+> > Remember to run "git commit -s" so you get your signed-off-by automatically
+> > added.
+> > 
+> > You don't need the extra IS_ERR_OR_NULL bit if the free has it, so you can keep
+> > the change above and just have btrfs_free_path(_T) here.  Thanks,
 > 
-> Since the recorded contents of the changeset are not used thereafter, just
-> don't pass it.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
-> 
-> Reported-by: syzbot+81670362c283f3dd889c@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/lkml/000000000000aa8c0c060ade165e@google.com
-> Fixes: af0e2aab3b70 ("btrfs: qgroup: flush reservations during quota disable")
-> Cc: stable@vger.kernel.org # 6.10+
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+> The pattern I'd suggest is to keep the special NULL checks in the
+> functions so it's obvious that it's done, the macro wrapping the cleanup
+> functil will be a simple call to the freeing function.
 
-This version looks even better, to me. Thanks for the catch and fix!
+This pattern came from the cleanup.h documentation:
+https://github.com/torvalds/linux/blob/master/include/linux/cleanup.h#L11
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+As far as I can tell, it will only be relevant if we end up using the
+'return_ptr' functionality in the cleanup library, which seems
+relatively unlikely for btrfs_path.
 
-> ---
-> v2: rework the fix as Qu Wenruo suggested - just don't pass unneeded
->     changeset. Update the commit title and description accordingly.
-> 
->  fs/btrfs/qgroup.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 5d57a285d59b..f6118c5f3c9f 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -4344,10 +4344,9 @@ static int __btrfs_qgroup_release_data(struct btrfs_inode *inode,
->  	int ret;
->  
->  	if (btrfs_qgroup_mode(inode->root->fs_info) == BTRFS_QGROUP_MODE_DISABLED) {
-> -		extent_changeset_init(&changeset);
->  		return clear_record_extent_bits(&inode->io_tree, start,
->  						start + len - 1,
-> -						EXTENT_QGROUP_RESERVED, &changeset);
-> +						EXTENT_QGROUP_RESERVED, NULL);
->  	}
->  
->  	/* In release case, we shouldn't have @reserved */
-> -- 
-> 2.39.2
-> 
+But there is also not much harm in using the common documented pattern,
+and seeds future uses in btrfs that are likely to copy this one. For
+example, if we do it for allocating something we do have a "factory"
+function for.
+
+Thanks,
+Boris
 
