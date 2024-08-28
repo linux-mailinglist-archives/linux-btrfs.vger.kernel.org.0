@@ -1,196 +1,348 @@
-Return-Path: <linux-btrfs+bounces-7653-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDEE99634DC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 00:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71960963513
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 00:55:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 488511F26899
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 22:34:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 018591F25B3B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2024 22:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508801AD3ED;
-	Wed, 28 Aug 2024 22:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A301AD9D8;
+	Wed, 28 Aug 2024 22:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t05VqxK0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t05VqxK0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF94158546
-	for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2024 22:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821F11A7AD8
+	for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2024 22:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724884462; cv=none; b=TdiCzXJ53O72nkyThgmPtRdUYB3PKId0XOqkQ5BYsD10R1h2NmJOc2bu/N0C+Vz9+iA6MO/q7AKgYnF+xgxKBJ2u8epNMzDjGRCHLiSw7p5qt8J1xT0VH0R+xVAIO63o5IwK2EYjNGaI81H6y/RETIVZLP2Eb+h1FP8hlJd/DdU=
+	t=1724885723; cv=none; b=nSvWVWDvx75QnI6bhdTBOdxcpwQOgacYxmCxfHoDAapILOoxvE2F7k/zzGz7oHM2KI7gffCqeiZnpUA6paYL3fSTGdnVpNqpVN/6nn4fmxfF8ViD81xLcAO0KEno+4N10RpdymHkYi5fjT0HxMmLgxCUCvjeeIlQ6nKTUcjevAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724884462; c=relaxed/simple;
-	bh=sOQz8kkEi5Ubq+Mjv10jlf6DH/Uax0Bh8eUjBH/cOUo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=eWyvajsDqMSpiuiwjda9G9OReou9V+wuiPtaj6qcMnOitJkOqSutHz1bqnkBdEKWvB4ifTwCmpjC//wF+ZnDeHDUA9zk8kBZG+P49UzHjIqIzXDDPPMXCxaiXtQGqZdcLgqiHpz22HwC+Ofm7rezwmQvZfXWWaBVCKsxNQxCfGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-82a13b28f1dso5012439f.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2024 15:34:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724884460; x=1725489260;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+IjJ2MY54Emt8uSjZEqDveAzp1Pv35o4h28WCyiZ0Io=;
-        b=oBgX05+a1DysOYTEpDEbKSLrcrXBcAliFW6vYRfbWKUrmO4H/ojqxzFWgAoKKkC1Zl
-         MPENAj2twO7r4HyYJOIjG3CxOlSWk1Lf4iSFo04fo7cWyP+71v5ppILP5INyhhsxE+rX
-         dMkZmFajwbqs8GeL7jHMZ/i0iODT045lNtG2xFgrqlCTLsCqoc9vRWaxkBh9cPOotV5L
-         fPoO/iKH1ebEmiHB1wxyMlkpEX9q5ns0FCiIOilK2Cm5VfWthEZ96lMQogy4naPuStYd
-         B7IxwK/mOPB5Eayoo0QZxnaNDcbfnKLoxmxBextgB+Cjp8HppA3an/MBX90kcA8mP9uB
-         Pupw==
-X-Forwarded-Encrypted: i=1; AJvYcCUP9LIEyxWpw9zl9NhWqGAqT+FmyUIdpb1HIrvu2K46LDAnoeta5j2tgElx6Q4op+xjroM5EuLuHmaJbg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzSVQlfi86QK3gnrIQPzH5WupJtQyiNbEOPVqFpjtHu1BqDiY/d
-	iIoqlHMizbFmHHBKDN3sO4RAC0eNg+InEpegSj9x1ds8m/CZnQgx03DLmbAZEkqoEMhipzlj2Mp
-	Fvu+VQmGCtkYc/1QdDiC8aQnva9evIrFxe9zsFkGNZ32rOryFxKIKCvY=
-X-Google-Smtp-Source: AGHT+IHDOjRuYWKOInHY9wiI2ox0PvQiiErxuZ+PFgdIYthTmkhgpFsxVcxTm/LxXjxBoM7PrBdFjVzluYZ6hO9nrQdtye/m82hN
+	s=arc-20240116; t=1724885723; c=relaxed/simple;
+	bh=Vh+pxbRV6AOwhOoh0MGQpagtZg5zStYONnbfSPJFc+Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G/tCS6Dfg1MQe22TCGzyfMcUfn6BlI7gH6CVEE7nGYoCP3AA9OVfZ+6SWQOmzmiiXMj5ALMANAWABPkMXRbHCyu1guAeDakzwSQxS9b3rCZF2istDOlSkwBoMzOP+f/UZQF4NfSsxlrx5R6WQJN+ydL89vI1b6jySomBO45oSUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t05VqxK0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t05VqxK0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7C50E21B66;
+	Wed, 28 Aug 2024 22:55:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1724885719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tHFZ5SjScAS/kJiF08PFlXnIn846nO49iAa25l/9RiY=;
+	b=t05VqxK06taAAWP8bl4q3lenEnBRktoFHBTkMOuCWpPwvX3FAfq7kXfSDoLtEYv61FJvlo
+	w68XuQRj4xuuX3wDy0a64lAyIrpffHjPVg43+TsDfbNJR/LlGQC0sS8jgUYW3ulYZrgZfF
+	Elb4bzS6ISwEuCiWXBe1v+2YWFr2kG4=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=t05VqxK0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1724885719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tHFZ5SjScAS/kJiF08PFlXnIn846nO49iAa25l/9RiY=;
+	b=t05VqxK06taAAWP8bl4q3lenEnBRktoFHBTkMOuCWpPwvX3FAfq7kXfSDoLtEYv61FJvlo
+	w68XuQRj4xuuX3wDy0a64lAyIrpffHjPVg43+TsDfbNJR/LlGQC0sS8jgUYW3ulYZrgZfF
+	Elb4bzS6ISwEuCiWXBe1v+2YWFr2kG4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 817341398F;
+	Wed, 28 Aug 2024 22:55:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7lVnEdaqz2a7TAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 28 Aug 2024 22:55:18 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Rolf Wentland <R.Wentland@gmx.de>
+Subject: [PATCH] btrfs: interrupt long running operations if the current process is freezing
+Date: Thu, 29 Aug 2024 08:25:00 +0930
+Message-ID: <7c5345c3acb54ca6e02fdb2398d9af14a0bebd35.1724885694.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:370d:b0:4c0:971d:36b1 with SMTP id
- 8926c6da1cb9f-4ced08b2b8dmr15059173.3.1724884460255; Wed, 28 Aug 2024
- 15:34:20 -0700 (PDT)
-Date: Wed, 28 Aug 2024 15:34:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008851fe0620c5f51c@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in __extent_writepage_io (2)
-From: syzbot <syzbot+ba3c0273042a898c230e@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, hch@lst.de, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 7C50E21B66
+X-Spam-Level: 
+X-Spamd-Result: default: False [-5.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url,suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.com:+];
+	FREEMAIL_CC(0.00)[gmx.de];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -5.01
+X-Spam-Flag: NO
 
-Hello,
+[BUG]
+There is a bug report that running fstrim will prevent the system from
+hibernation, result the following dmesg:
 
-syzbot found the following issue on:
+ PM: suspend entry (deep)
+ Filesystems sync: 0.060 seconds
+ Freezing user space processes
+ Freezing user space processes failed after 20.007 seconds (1 tasks refusing to freeze, wq_busy=0):
+ task:fstrim          state:D stack:0     pid:15564 tgid:15564 ppid:1      flags:0x00004006
+ Call Trace:
+  <TASK>
+  __schedule+0x381/0x1540
+  schedule+0x24/0xb0
+  schedule_timeout+0x1ea/0x2a0
+  io_schedule_timeout+0x19/0x50
+  wait_for_completion_io+0x78/0x140
+  submit_bio_wait+0xaa/0xc0
+  blkdev_issue_discard+0x65/0xb0
+  btrfs_issue_discard+0xcf/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  btrfs_discard_extent+0x120/0x2a0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  do_trimming+0xd4/0x220 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  trim_bitmaps+0x418/0x520 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  btrfs_trim_block_group+0xcb/0x130 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  btrfs_trim_fs+0x119/0x460 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  btrfs_ioctl_fitrim+0xfb/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  btrfs_ioctl+0x11cc/0x29f0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+  __x64_sys_ioctl+0x92/0xd0
+  do_syscall_64+0x5b/0x80
+  entry_SYSCALL_64_after_hwframe+0x7c/0xe6
+ RIP: 0033:0x7f5f3b529f9b
+ RSP: 002b:00007fff279ebc20 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+ RAX: ffffffffffffffda RBX: 00007fff279ebd60 RCX: 00007f5f3b529f9b
+ RDX: 00007fff279ebc90 RSI: 00000000c0185879 RDI: 0000000000000003
+ RBP: 000055748718b2d0 R08: 00005574871899e8 R09: 00007fff279eb010
+ R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+ R13: 000055748718ac40 R14: 000055748718b290 R15: 000055748718b290
+  </TASK>
+ OOM killer enabled.
+ Restarting tasks ... done.
+ random: crng reseeded on system resumption
+ PM: suspend exit
+ PM: suspend entry (s2idle)
+ Filesystems sync: 0.047 seconds
 
-HEAD commit:    d2bafcf224f3 Merge tag 'cgroup-for-6.11-rc4-fixes' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d5fa7b980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4fc2afd52fd008bb
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba3c0273042a898c230e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137c040b980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ddb015980000
+[CAUSE]
+PM code is freezing all user space processes before entering
+hibernation/suspension, but if a user space process is trapping into the
+kernel for a long running operation, it will not be frozen since it's
+still inside kernel.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7569f02310fb/disk-d2bafcf2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e30fee7b6c1d/vmlinux-d2bafcf2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2ffddebac153/bzImage-d2bafcf2.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/cd08557ae343/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/90ff8392fe84/mount_2.gz
-mounted in repro #3: https://storage.googleapis.com/syzbot-assets/9c5b91850930/mount_7.gz
+Normally those long running operations check for fatal signals and exit
+early, but freezing user space processes is not done by signals but a
+different infrastructure.
 
-The issue was bisected to:
+Unfortunately btrfs only checks fatal signals but not if the current
+task is being frozen.
 
-commit f22b5dcbd71edea087946511554956591557de9a
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Wed May 31 06:04:59 2023 +0000
+[FIX]
+Introduce a helper, btrfs_interrupted(), to check both fatal signals and
+freezing status, and apply to all long running operations, with
+dedicated error code:
 
-    btrfs: remove non-standard extent handling in __extent_writepage_io
+- reflink (-EINTR)
+- fstrim (-ERESTARTSYS)
+- relocation (-ECANCELD)
+- llseek (-EINTR)
+- defrag (-EAGAIN)
+- fiemap (-EINTR)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10974043980000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12974043980000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14974043980000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ba3c0273042a898c230e@syzkaller.appspotmail.com
-Fixes: f22b5dcbd71e ("btrfs: remove non-standard extent handling in __extent_writepage_io")
-
-assertion failed: block_start != EXTENT_MAP_HOLE, in fs/btrfs/extent_io.c:1488
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/extent_io.c:1488!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 1 UID: 0 PID: 5722 Comm: syz-executor399 Not tainted 6.11.0-rc4-syzkaller-00255-gd2bafcf224f3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-RIP: 0010:__extent_writepage_io+0x1224/0x1400 fs/btrfs/extent_io.c:1488
-Code: f7 07 90 0f 0b e8 dc 68 df fd 48 c7 c7 e0 92 2c 8c 48 c7 c6 c0 a0 2c 8c 48 c7 c2 80 92 2c 8c b9 d0 05 00 00 e8 9d 15 f7 07 90 <0f> 0b e8 b5 68 df fd 48 8b 3c 24 e8 bc 9d ff ff 48 89 c7 48 c7 c6
-RSP: 0018:ffffc900097d6ee8 EFLAGS: 00010246
-RAX: 000000000000004e RBX: 0000000000000000 RCX: 2f9fd79be1350f00
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: dffffc0000000000 R08: ffffffff817402ac R09: 1ffff920012fad7c
-R10: dffffc0000000000 R11: fffff520012fad7d R12: ffffea0001ccbdc8
-R13: 1ffffd40003997b9 R14: fffffffffffffffd R15: 000000000007b000
-FS:  00007f11a84976c0(0000) GS:ffff8880b9300000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f11a0fff000 CR3: 0000000020e4c000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __extent_writepage fs/btrfs/extent_io.c:1578 [inline]
- extent_write_cache_pages fs/btrfs/extent_io.c:2251 [inline]
- btrfs_writepages+0x12a2/0x2760 fs/btrfs/extent_io.c:2373
- do_writepages+0x35d/0x870 mm/page-writeback.c:2683
- filemap_fdatawrite_wbc+0x125/0x180 mm/filemap.c:397
- __filemap_fdatawrite_range mm/filemap.c:430 [inline]
- filemap_fdatawrite_range+0x120/0x180 mm/filemap.c:448
- btrfs_fdatawrite_range+0x53/0xe0 fs/btrfs/file.c:3794
- btrfs_direct_write+0x558/0xb40 fs/btrfs/direct-io.c:952
- btrfs_do_write_iter+0x2a1/0x760 fs/btrfs/file.c:1505
- do_iter_readv_writev+0x60a/0x890
- vfs_writev+0x37c/0xbb0 fs/read_write.c:971
- do_pwritev fs/read_write.c:1072 [inline]
- __do_sys_pwritev2 fs/read_write.c:1131 [inline]
- __se_sys_pwritev2+0x1ca/0x2d0 fs/read_write.c:1122
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f11a850bd79
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 41 1d 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f11a8497158 EFLAGS: 00000212 ORIG_RAX: 0000000000000148
-RAX: ffffffffffffffda RBX: 00007f11a85916d8 RCX: 00007f11a850bd79
-RDX: 0000000000000001 RSI: 0000000020000240 RDI: 0000000000000004
-RBP: 00007f11a85916d0 R08: 0000000000000000 R09: 0000000000000003
-R10: 0000000000002000 R11: 0000000000000212 R12: 00007f11a85916dc
-R13: 000000000000006e R14: 00007ffd9dcad860 R15: 00007ffd9dcad948
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__extent_writepage_io+0x1224/0x1400 fs/btrfs/extent_io.c:1488
-Code: f7 07 90 0f 0b e8 dc 68 df fd 48 c7 c7 e0 92 2c 8c 48 c7 c6 c0 a0 2c 8c 48 c7 c2 80 92 2c 8c b9 d0 05 00 00 e8 9d 15 f7 07 90 <0f> 0b e8 b5 68 df fd 48 8b 3c 24 e8 bc 9d ff ff 48 89 c7 48 c7 c6
-RSP: 0018:ffffc900097d6ee8 EFLAGS: 00010246
-RAX: 000000000000004e RBX: 0000000000000000 RCX: 2f9fd79be1350f00
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: dffffc0000000000 R08: ffffffff817402ac R09: 1ffff920012fad7c
-R10: dffffc0000000000 R11: fffff520012fad7d R12: ffffea0001ccbdc8
-R13: 1ffffd40003997b9 R14: fffffffffffffffd R15: 000000000007b000
-FS:  00007f11a84976c0(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005654e2821068 CR3: 0000000020e4c000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Reported-by: Rolf Wentland <R.Wentland@gmx.de>
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/btrfs/defrag.h           | 3 ++-
+ fs/btrfs/extent-tree.c      | 3 +--
+ fs/btrfs/fiemap.c           | 2 +-
+ fs/btrfs/file.c             | 2 +-
+ fs/btrfs/free-space-cache.c | 5 ++---
+ fs/btrfs/misc.h             | 7 +++++++
+ fs/btrfs/reflink.c          | 2 +-
+ fs/btrfs/relocation.c       | 2 +-
+ 8 files changed, 16 insertions(+), 10 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/fs/btrfs/defrag.h b/fs/btrfs/defrag.h
+index 878528e086fb..70b3df35aea2 100644
+--- a/fs/btrfs/defrag.h
++++ b/fs/btrfs/defrag.h
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/compiler_types.h>
++#include "misc.h"
+ 
+ struct inode;
+ struct file_ra_state;
+@@ -26,7 +27,7 @@ int btrfs_defrag_root(struct btrfs_root *root);
+ 
+ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
+ {
+-	return signal_pending(current);
++	return signal_pending(current) || btrfs_interrupted();
+ }
+ 
+ #endif
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index feec49e6f9c8..08e5df8c7de3 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -4,7 +4,6 @@
+  */
+ 
+ #include <linux/sched.h>
+-#include <linux/sched/signal.h>
+ #include <linux/pagemap.h>
+ #include <linux/writeback.h>
+ #include <linux/blkdev.h>
+@@ -6459,7 +6458,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+ 		start += len;
+ 		*trimmed += bytes;
+ 
+-		if (fatal_signal_pending(current)) {
++		if (btrfs_interrupted()) {
+ 			ret = -ERESTARTSYS;
+ 			break;
+ 		}
+diff --git a/fs/btrfs/fiemap.c b/fs/btrfs/fiemap.c
+index df7f09f3b02e..372db4e718d1 100644
+--- a/fs/btrfs/fiemap.c
++++ b/fs/btrfs/fiemap.c
+@@ -794,7 +794,7 @@ static int extent_fiemap(struct btrfs_inode *inode,
+ 
+ 		prev_extent_end = extent_end;
+ next_item:
+-		if (fatal_signal_pending(current)) {
++		if (btrfs_interrupted()) {
+ 			ret = -EINTR;
+ 			goto out_unlock;
+ 		}
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 76f4cc686af9..b915aedbe58a 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3676,7 +3676,7 @@ static loff_t find_desired_extent(struct file *file, loff_t offset, int whence)
+ 		start = extent_end;
+ 		last_extent_end = extent_end;
+ 		path->slots[0]++;
+-		if (fatal_signal_pending(current)) {
++		if (btrfs_interrupted()) {
+ 			ret = -EINTR;
+ 			goto out;
+ 		}
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index eaa1dbd31352..da26fee0eb97 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -5,7 +5,6 @@
+ 
+ #include <linux/pagemap.h>
+ #include <linux/sched.h>
+-#include <linux/sched/signal.h>
+ #include <linux/slab.h>
+ #include <linux/math64.h>
+ #include <linux/ratelimit.h>
+@@ -3809,7 +3808,7 @@ static int trim_no_bitmap(struct btrfs_block_group *block_group,
+ 		if (async && *total_trimmed)
+ 			break;
+ 
+-		if (fatal_signal_pending(current)) {
++		if (btrfs_interrupted()) {
+ 			ret = -ERESTARTSYS;
+ 			break;
+ 		}
+@@ -4000,7 +3999,7 @@ static int trim_bitmaps(struct btrfs_block_group *block_group,
+ 		}
+ 		block_group->discard_cursor = start;
+ 
+-		if (fatal_signal_pending(current)) {
++		if (btrfs_interrupted()) {
+ 			if (start != offset)
+ 				reset_trimming_bitmap(ctl, offset);
+ 			ret = -ERESTARTSYS;
+diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
+index 0d599fd847c9..2c0b8ef63445 100644
+--- a/fs/btrfs/misc.h
++++ b/fs/btrfs/misc.h
+@@ -9,6 +9,8 @@
+ #include <linux/wait.h>
+ #include <linux/math64.h>
+ #include <linux/rbtree.h>
++#include <linux/sched/signal.h>
++#include <linux/freezer.h>
+ 
+ /*
+  * Enumerate bits using enum autoincrement. Define the @name as the n-th bit.
+@@ -163,4 +165,9 @@ static inline bool bitmap_test_range_all_zero(const unsigned long *addr,
+ 	return (found_set == start + nbits);
+ }
+ 
++static inline bool btrfs_interrupted(void)
++{
++	return fatal_signal_pending(current) || freezing(current);
++}
++
+ #endif
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index df6b93b927cd..11c05c94c580 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -564,7 +564,7 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
+ 		btrfs_release_path(path);
+ 		key.offset = prev_extent_end;
+ 
+-		if (fatal_signal_pending(current)) {
++		if (btrfs_interrupted()) {
+ 			ret = -EINTR;
+ 			goto out;
+ 		}
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index ea4ed85919ec..17bcda566da8 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2936,7 +2936,7 @@ noinline int btrfs_should_cancel_balance(const struct btrfs_fs_info *fs_info)
+ {
+ 	return atomic_read(&fs_info->balance_cancel_req) ||
+ 		atomic_read(&fs_info->reloc_cancel_req) ||
+-		fatal_signal_pending(current);
++		btrfs_interrupted();
+ }
+ ALLOW_ERROR_INJECTION(btrfs_should_cancel_balance, TRUE);
+ 
+-- 
+2.46.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
