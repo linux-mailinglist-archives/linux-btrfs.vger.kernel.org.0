@@ -1,213 +1,294 @@
-Return-Path: <linux-btrfs+bounces-7678-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A87E965315
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 00:39:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBEEA96533A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 01:02:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEF521F214E3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 22:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1729E1C21361
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 23:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74AF718E745;
-	Thu, 29 Aug 2024 22:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E6018E341;
+	Thu, 29 Aug 2024 23:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ufoJ3IPI";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ufoJ3IPI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W3ch8Dih";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u2YBKFbL";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="W3ch8Dih";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u2YBKFbL"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777B71898E5
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2024 22:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C28A18A6D2
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2024 23:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724971178; cv=none; b=Fc1NkwYXDVB+tSvBtX+LPACEn+jRMpPn25i5PW9S9WGXf6uY5GN68lhqreoa2oU+MqJkLSN+PtFCWnsK7C7a6geTMvo+4/woTRuCTZlH3vGgicEaimqUklHgrhG+QwYuXrmWcyLPod53NmlMIp5JJgyx77E8m/ujqWx3qDU+MSA=
+	t=1724972527; cv=none; b=AUQyq80ukhlfA9aZS/EMMV0TCjoXEyqri61WpCL8TbaU2qO5j1LRfMRwLo++9kFkPvlmeF7Y4yHqnIVXUmDjIK0dZf0JlQlmH2W0pHSUpauQtt4hMwsgLw9j21uhtWuGVNqX+DSHmNrZiKdonV1PSs/z5hBIvGjq9e/ZFY3ga5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724971178; c=relaxed/simple;
-	bh=NAAu26VMURmOk6cMgB//db7xXspTAbMZPFbOrtTi1ec=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P3Rx95wyneT9LFeWsv0Q885CXh9AwF/ivU9vyglluYHXWnJ2Z0CGY6vzYBRIRPUds4m74+oq+QYOjIYDXr6ppMgjTi4v2gxK0BHS8LZ11vYnvdu3CXbllW9msapH00ORScaaXnaZLNk3ZZ13lbskTT3mAI5qpqKaE1NpQ7VTvgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ufoJ3IPI; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ufoJ3IPI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1724972527; c=relaxed/simple;
+	bh=2dfnu8YVvRBLw3XWZHZ3TFxT9RTbelc0fUlklCzCmpg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IdxvrOEqQPly4WRwjRr5NTFU0v/r0jvT/apwylYrJaSyb6ivnXdK60t2AG1+whcqidqn5U2QmoKF0h3HFIUmRG83tSASd9/z1NTv2v/RUafyW2unXqFelDpMOSgQTejB1JkQI+78YOGbczD7AyntBJZJdSmfbcHb9JJbyGvQ+Yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W3ch8Dih; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u2YBKFbL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=W3ch8Dih; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u2YBKFbL; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 76011219C6;
-	Thu, 29 Aug 2024 22:39:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1724971174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=G/86Tlh28u4hjnQiCxNbTehQyhXFLxKVXdI/dS7BCBE=;
-	b=ufoJ3IPIjTmO6F3qkMlhrHMEVbqMAsGMkKojShoUB3T0RJ2WB2CVBsaiIqB+C4v+IY6Frz
-	XlWKHJoZlki5hiT/yeYvmWZZupRv9UwtEXaM5ATTxvQ+nryntaCDyLPNu4VQhHzZwRBwyc
-	unJ6O6b12+Sf4sUOyeKKAjvzR0Aze/o=
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A4F8B219E6;
+	Thu, 29 Aug 2024 23:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724972523;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YcnIi8KjhPbkkg1pQCCkxic7Qm5VOXRCm67JNi2vjOQ=;
+	b=W3ch8Dihg9mdk9L2ca/1U0/tI0zdeNpF7v6fVZwfiXqvg0CkjNr+ho00BGl9pMfu5oaWOw
+	Z68M52U1Q2RyHTKOm0FysGxrBrape51wXdzmxjXCndLMhqSzxv8H736DwIQ7rBqgoRuMoQ
+	1x1r6VAjKC3g9tM/T1aEvg38CV+c0ME=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724972523;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YcnIi8KjhPbkkg1pQCCkxic7Qm5VOXRCm67JNi2vjOQ=;
+	b=u2YBKFbLph8a32Lru00OqmUegL3sTf8xuQTKAG3R8B7N/GQC1UjoI5FxncC9MLHc4KwB6O
+	jeguciO97jJyJaDg==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=ufoJ3IPI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1724971174; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=G/86Tlh28u4hjnQiCxNbTehQyhXFLxKVXdI/dS7BCBE=;
-	b=ufoJ3IPIjTmO6F3qkMlhrHMEVbqMAsGMkKojShoUB3T0RJ2WB2CVBsaiIqB+C4v+IY6Frz
-	XlWKHJoZlki5hiT/yeYvmWZZupRv9UwtEXaM5ATTxvQ+nryntaCDyLPNu4VQhHzZwRBwyc
-	unJ6O6b12+Sf4sUOyeKKAjvzR0Aze/o=
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724972523;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YcnIi8KjhPbkkg1pQCCkxic7Qm5VOXRCm67JNi2vjOQ=;
+	b=W3ch8Dihg9mdk9L2ca/1U0/tI0zdeNpF7v6fVZwfiXqvg0CkjNr+ho00BGl9pMfu5oaWOw
+	Z68M52U1Q2RyHTKOm0FysGxrBrape51wXdzmxjXCndLMhqSzxv8H736DwIQ7rBqgoRuMoQ
+	1x1r6VAjKC3g9tM/T1aEvg38CV+c0ME=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724972523;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YcnIi8KjhPbkkg1pQCCkxic7Qm5VOXRCm67JNi2vjOQ=;
+	b=u2YBKFbLph8a32Lru00OqmUegL3sTf8xuQTKAG3R8B7N/GQC1UjoI5FxncC9MLHc4KwB6O
+	jeguciO97jJyJaDg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7258E13408;
-	Thu, 29 Aug 2024 22:39:33 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68198139B0;
+	Thu, 29 Aug 2024 23:02:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id emfXDKX40Gb5WgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 29 Aug 2024 22:39:33 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Rolf Wentland <R.Wentland@gmx.de>
-Subject: [PATCH v3] btrfs: interrupt fstrim if the current process is freezing
-Date: Fri, 30 Aug 2024 08:09:11 +0930
-Message-ID: <eeffae0b8beecb3406f43ff48e788fd9d88fb2e2.1724971143.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	id +iY6GOv90GZ/YAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 29 Aug 2024 23:02:03 +0000
+Date: Fri, 30 Aug 2024 01:02:02 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Miroslav =?utf-8?B?xaB1bGM=?= <miroslav.sulc@fordfrog.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: recovering btrfs filesystem from synology raid5
+Message-ID: <20240829230202.GS25962@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <0eb0e2f033f40a0b14d652a6b7c220e4@fordfrog.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 76011219C6
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.01 / 50.00];
+In-Reply-To: <0eb0e2f033f40a0b14d652a6b7c220e4@fordfrog.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -3.99
+X-Spamd-Result: default: False [-3.99 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.19)[-0.967];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_CC(0.00)[gmx.de];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url,suse.com:email,suse.com:dkim,suse.com:mid,gmx.de:email];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -5.01
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-[BUG]
-There is a bug report that running fstrim will prevent the system from
-hibernation, result the following dmesg:
+On Mon, Aug 26, 2024 at 12:56:39PM +0200, Miroslav Šulc wrote:
+> hello,
+> 
+> i have here a broken btrfs filesystem that was on a synology nas with 
+> raid5 (mdadm + lvm)
 
- PM: suspend entry (deep)
- Filesystems sync: 0.060 seconds
- Freezing user space processes
- Freezing user space processes failed after 20.007 seconds (1 tasks refusing to freeze, wq_busy=0):
- task:fstrim          state:D stack:0     pid:15564 tgid:15564 ppid:1      flags:0x00004006
- Call Trace:
-  <TASK>
-  __schedule+0x381/0x1540
-  schedule+0x24/0xb0
-  schedule_timeout+0x1ea/0x2a0
-  io_schedule_timeout+0x19/0x50
-  wait_for_completion_io+0x78/0x140
-  submit_bio_wait+0xaa/0xc0
-  blkdev_issue_discard+0x65/0xb0
-  btrfs_issue_discard+0xcf/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  btrfs_discard_extent+0x120/0x2a0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  do_trimming+0xd4/0x220 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  trim_bitmaps+0x418/0x520 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  btrfs_trim_block_group+0xcb/0x130 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  btrfs_trim_fs+0x119/0x460 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  btrfs_ioctl_fitrim+0xfb/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  btrfs_ioctl+0x11cc/0x29f0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
-  __x64_sys_ioctl+0x92/0xd0
-  do_syscall_64+0x5b/0x80
-  entry_SYSCALL_64_after_hwframe+0x7c/0xe6
- RIP: 0033:0x7f5f3b529f9b
- RSP: 002b:00007fff279ebc20 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
- RAX: ffffffffffffffda RBX: 00007fff279ebd60 RCX: 00007f5f3b529f9b
- RDX: 00007fff279ebc90 RSI: 00000000c0185879 RDI: 0000000000000003
- RBP: 000055748718b2d0 R08: 00005574871899e8 R09: 00007fff279eb010
- R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
- R13: 000055748718ac40 R14: 000055748718b290 R15: 000055748718b290
-  </TASK>
- OOM killer enabled.
- Restarting tasks ... done.
- random: crng reseeded on system resumption
- PM: suspend exit
- PM: suspend entry (s2idle)
- Filesystems sync: 0.047 seconds
+AFAIK synology has some patches that connect btrfs and MD raid5 so it
+fixes the problems that btrfs-raid5 has. But the patches are not
+upstream and I don't know how it works.
 
-[CAUSE]
-PM code is freezing all user space processes before entering
-hibernation/suspension, but if a user space process is trapping into the
-kernel for a long running operation, it will not be frozen since it's
-still inside kernel.
+> where one disk started to be broken and another was 
+> removed from the raid roughly two months ago (but the number of events 
+> on that disk isn't that much lower). more details about the raid can be 
+> seen here: 
+> https://lore.kernel.org/linux-raid/d6e87810cbfe40f3be74dfa6b0acb48e@fordfrog.com/T/
 
-Normally those long running operations check for fatal signals and exit
-early, but freezing user space processes is not done by signals but a
-different infrastructure.
+This looks like the problems are on the MD level with the device
+removed, added back and interrupted synchronization. The analysis points
+out there are some old data or stats. More below.
 
-Unfortunately btrfs only checks fatal signals but not if the current
-task is being frozen for fstrim.
+> i was able to assemble the raid5 from 4 disks (3 with up-to-date data 
+> and one with older data) to the extent that i can use lvm to see the 
+> logical volume and btrfs filesystem on it, though the filesystem reports 
+> to be broken.
+> 
+> # cat /proc/mdstat
+> Personalities : [raid0] [raid1] [raid10] [raid6] [raid5] [raid4]
+> md127 : active raid5 dm-19[4] dm-16[3] dm-13[1] dm-10[0]
+>        31236781824 blocks super 1.2 level 5, 64k chunk, algorithm 2 [5/4] 
+> [UU_UU]
+>        bitmap: 0/59 pages [0KB], 65536KB chunk
+> 
+> unused devices: <none>
+> 
+> # btrfs check /dev/vg1000/lv
+> Opening filesystem to check...
+> parent transid verify failed on 4330339713024 wanted 2221844 found 
+> 2221848
 
-[FIX]
-For now just do the extra freezing() check at a per-block-group basis.
+This error typically means old data were read, the difference is 4
+transactions.
 
-Reported-by: Rolf Wentland <R.Wentland@gmx.de>
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v3:
-- Only check the freezing status for fstrim
-  As David still has concerns on all the other long running operations.
+> parent transid verify failed on 4330321559552 wanted 2221843 found 
+> 1957353
+> parent transid verify failed on 4330321559552 wanted 2221843 found 
+> 1957359
+> parent transid verify failed on 4330321559552 wanted 2221843 found 
+> 1957359
+> Ignoring transid failure
+> corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end, 
+> have 16079 expect 16105
 
-v2:
-- Rename the helper to btrfs_task_interrupted()
----
- fs/btrfs/extent-tree.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This kind of error does not apper often, the 'transid verify failed'
+from above usually has a consistent b-tree node/leaf but from a
+different transaction "epoch". A wrong item end means there's a mismatch
+in the stored and calculated data. Reasons for that can vary, a software
+bug can never be ruled out (but we'd see more reports) or the recovery
+of the b-tree node/leaf was partial and the item descriptor (the stored
+part) is older than what's actually found in the leaf (the calculated
+part).
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index feec49e6f9c8..1768628d68da 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/sched.h>
- #include <linux/sched/signal.h>
-+#include <linux/freezer.h>
- #include <linux/pagemap.h>
- #include <linux/writeback.h>
- #include <linux/blkdev.h>
-@@ -6459,7 +6460,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
- 		start += len;
- 		*trimmed += bytes;
- 
--		if (fatal_signal_pending(current)) {
-+		if (fatal_signal_pending(current) || freezing(current)) {
- 			ret = -ERESTARTSYS;
- 			break;
- 		}
--- 
-2.46.0
+> leaf 4330321559552 items 87 free space 11792 generation 1957359 owner 
+> EXTENT_TREE
+> leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
+> fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
+> chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
+>          item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105 
 
+UNKNOWN.164 must be some synology NAS specific thing
+
+> itemsize 179
+>          item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040 
+
+Same.
+
+> itemsize 39
+>          item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 16218 
+> itemsize 44
+>                  refs 14078082519432455026 gen 151715012486066369 flags 
+
+The numbers 14078082519432455026 and 151715012486066369 are likely a
+complete garbage, either a block that was randomly overwritten or a
+random block read and interpreted.
+
+> |FULL_BACKREF
+>                  tree block skinny level -1444450301
+
+Levels are 0..7
+
+> ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33 
+> leaf data limit 16283
+> ERROR: skip remaining slots
+> parent transid verify failed on 4330321559552 wanted 2221843 found 
+> 1957359
+> Ignoring transid failure
+> corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end, 
+> have 16079 expect 16105
+> leaf 4330321559552 items 87 free space 11792 generation 1957359 owner 
+> EXTENT_TREE
+> leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
+> fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
+> chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
+>          item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105 
+> itemsize 178
+>          item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040 
+> itemsize 39
+>          item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 16218 
+> itemsize 44
+>                  refs 14078082519432455026 gen 151715012486066369 flags 
+> |FULL_BACKREF
+>                  tree block skinny level -1444450301
+> ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33 
+> leaf data limit 16283
+> ERROR: skip remaining slots
+> corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end, 
+> have 16079 expect 16105
+> leaf 4330321559552 items 87 free space 11792 generation 1957359 owner 
+> EXTENT_TREE
+> leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
+> fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
+> chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
+>          item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105 
+> itemsize 178
+>          item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040 
+> itemsize 39
+>          item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 16218 
+> itemsize 44
+>                  refs 14078082519432455026 gen 151715012486066369 flags 
+> |FULL_BACKREF
+>                  tree block skinny level -1444450301
+> ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33 
+> leaf data limit 16283
+> ERROR: skip remaining slots
+> ERROR: failed to read block groups: Operation not permitted
+> ERROR: cannot open file system
+> 
+> i have the disks mapped in read-only mode with overlay set up over them 
+> so that i can freely experiment with the filesystem. but so far i was 
+> not able to get the filesystem to a state where i could read files from 
+> it, even with btrfs restore.
+
+The recovery options for btrfs are to try to read partially consistent
+data from past generations, this is what 'btrfs restore' does, but it
+seems that the block data are mixed and even inconsistent within
+somethign that btrfs would consider a unit.
+
+> there are some data on the filesystem that are crucial for the client so 
+> my goal is to be able to recover at least those. so, i'd like to ask 
+> whether there is any chance to resolve these issues shown above to be 
+> able to at least list the files from the filesystem and recover at least 
+> a selection of them.
+
+You can try 'btrfs restore' if you haven't done that yet but this may
+also require to write some custom code to work around the specific
+issues you find. This is also from a custom kernel from synology with
+apparent modifications that the upstream linux kernel does not have so
+we can't help with that beyond the common points.
 
