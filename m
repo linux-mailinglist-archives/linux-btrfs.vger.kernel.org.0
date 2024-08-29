@@ -1,205 +1,175 @@
-Return-Path: <linux-btrfs+bounces-7667-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7668-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7D64964DE1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 20:40:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55372965063
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 21:59:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E7BC28370A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 18:40:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D389F1F248F1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 19:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E860B1B8E87;
-	Thu, 29 Aug 2024 18:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="iQniuaT4";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uYchxXQe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686871BB68E;
+	Thu, 29 Aug 2024 19:56:22 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4772B148FF0
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2024 18:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DB71BAEDC
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2024 19:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724956847; cv=none; b=sB2wuNhDVbBKMOe/Dqm+AhViunGPDuZQsfls5RgWBUf/ZH8s7e2fb+6bgHrzutC+uMORRI5gJpQpPyUn2Ju95W9Ssr+1GTnoBzi0h5TAZAF2cqghgUlFKLmkwONUGVcvc8Xhd8eWD2egsM5L6Gxmz3PZw233Q9tTRQ3SKb3oYwQ=
+	t=1724961381; cv=none; b=r0ddlNVZzdUIQcRYnijEevp2V4T2/QQDrl+Gy0HviZ/fE4Aw6jQU572DGP7Oky5u3ObdtysM3wfwr+lWjJDbDnALzk9YkZOkQy45hwneQT8nKZM7iPPdVXrYmq+VjzpJIBfr1anTjXefyCsyvDecLU/tbOEvP7L1v0KEeu0hGjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724956847; c=relaxed/simple;
-	bh=ogipQgAU0TJAh77JjhQYfao9QTlAGfPf/fMuLZFOZKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EPskfVNWpmA3OTbwGokjrDJEaNoUL11xOtvINWkd07qQ/Nn8CEKZBBqJ9yDCU5/T5ze6HbrQ0iXHBx5BqpKZWuLXCz26vj2kYcd1OLX2CDMK8D4h7ZKdPLR7wmH0NffGz5f5TQkiYa8m4ASAPQiTUUR2T4HjlRRYdQlGvQg5NOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=iQniuaT4; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=uYchxXQe; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 5FBEB138FD34;
-	Thu, 29 Aug 2024 14:40:43 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Thu, 29 Aug 2024 14:40:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1724956843; x=1725043243; bh=nNKIEvhzZY
-	2VY263cYScUG6vP8DemRPrEivmyZ+6JyI=; b=iQniuaT4u33bovccMbdMmrbmhd
-	b5owdRKL9Nhv9Ly0eNELJOtIX4SDnqmVHUxBLaPNxY7r+mKCeEUOFPpeR01PLtFZ
-	FqOLb51zleoPmTfMgQImBNLJHS5LhE5xDLJa7Q6L6TA7lUMG/0GiKXcbFukqkrB0
-	xBu0DoXmY7OBKWjin6RvIQ0j82KSXyKyZXck8kPgFtA94lySqU+TEVFSzKC2yajy
-	YA+2F/lM+CBJiw3cbyyG25wAdjQ1y1nNKTsLkhbNa/x2w9o+UNmQ19DkjNA2bJH3
-	t+GVe7ypM/lrSy6k3H0mWwJKre+xSHCwBOykmW0ryquOFgIN9q4LUJoASxog==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1724956843; x=1725043243; bh=nNKIEvhzZY2VY263cYScUG6vP8De
-	mRPrEivmyZ+6JyI=; b=uYchxXQe0kIH9VvQwd4XzjB9LGu+twNmJbotRWUzdlnW
-	5r+4flk2cT+/4Du9foQyg7aahwIzDYwSCx69gQWE1ktWyf3qnnlnIwq9tZrYUlQR
-	IMRGppT7HwDSpW62cbf6wClggiZQxumOIPdUc8zvM5N5ub82M10flTo8xe697Fzi
-	QND8FAr29ZyH+IK2cA7H6VPca/ID5k64XVcilN1nyyCgCH17822rmavgYLlbJ0lp
-	GY3mfokLKUrMpHYUGwAjZfrpcDwHaSQGV2b2U8dXvFwZesVcFLnvTpMkQRDh9h3P
-	eTsgZoVp5q1hxHWtDERhQxP1Rso0Drc+knDP527EvQ==
-X-ME-Sender: <xms:q8DQZkBSfSnKL2pGh2BrGlKyOYKLXUHR7vXDySZcSnJiQSLsTNQOFg>
-    <xme:q8DQZmihN92EkvbwM20m-WKWKgBgfYuAF40P2m1HleSBIXChHoBRvNSMa4cwPH9jb
-    HE4PyHcNC_vmvM0SFI>
-X-ME-Received: <xmr:q8DQZnmB8x4kfALlDqHTM8uzhFt69-ay7QcChr6RhUYcRvQ0S6KZMSy0-fxzBh5IlNxwXccXwdZmNRUhvpzcJlMYDp8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudefgedguddvjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
-    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepleffgeevgeetueegledtueeluddtudekhefhudeuheegfeev
-    ieehteevieejueetnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhi
-    ohdpnhgspghrtghpthhtohephedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepug
-    hsthgvrhgsrgesshhushgvrdgtiidprhgtphhtthhopehjohhsvghfsehtohigihgtphgr
-    nhgurgdrtghomhdprhgtphhtthhopehlohgvmhhrrgdruggvvhesghhmrghilhdrtghomh
-    dprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-    pdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:q8DQZqxCcIKpSrJW5709iwP173qnF4IhRixjia32iNx-grKkaoDNXw>
-    <xmx:q8DQZpSvhkAbOj3Eb0-iBJQ1YdLvLvOQGsjd5AvKR_GPe5JzJ_GBHg>
-    <xmx:q8DQZlZWbjBAM9VjJ0YL_CzjipdwbnI81w8-EHJ2WS8Uq2YCOIq2uQ>
-    <xmx:q8DQZiSYcV7dGyX2cnC99qWmTiLEzM1mocwqWL_dwN6WfpSYG7s0Fg>
-    <xmx:q8DQZiL031wLI32owwJTUOxv5ZejmCFZRgDvi3KrO5gg_hLP7c4E7lNx>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 29 Aug 2024 14:40:42 -0400 (EDT)
-Date: Thu, 29 Aug 2024 11:40:41 -0700
-From: Boris Burkov <boris@bur.io>
-To: David Sterba <dsterba@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, Leo Martins <loemra.dev@gmail.com>,
-	linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 1/3] btrfs: DEFINE_FREE for btrfs_free_path
-Message-ID: <20240829184041.GA1560741@zen.localdomain>
-References: <cover.1724785204.git.loemra.dev@gmail.com>
- <6951e579322f1389bcc02de692a696880edb2a7e.1724785204.git.loemra.dev@gmail.com>
- <20240827203058.GA2576577@perftesting>
- <20240828001601.GC25962@twin.jikos.cz>
- <Zs9ZuApvQCH4ITT9@devvm12410.ftw0.facebook.com>
- <20240828175419.GI25962@twin.jikos.cz>
- <Zs9ycrywZ/yIboGO@devvm12410.ftw0.facebook.com>
- <20240829173655.GN25962@suse.cz>
+	s=arc-20240116; t=1724961381; c=relaxed/simple;
+	bh=FIXiCzanORVwqq9ZnXwiWeK8TZ7/dcQ5D6Fa+s4XAzU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=noM/H89QVqf2C1mJzPSy6nDPDL78A6Ss9HqDm+sJnTUjSLmoMe/tfxUvpEbpAujNNsb4FpTc2MJOi3RorP8UHCMvCa324gOlSDFTvm0NNRmBgg2GE1+cud5g43VDyADxQ5qWhO26TVhEz+y7SP1UlLEOgQfkUyE9P8TQUsGzQ68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-82a1c57f4a1so99847839f.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2024 12:56:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724961379; x=1725566179;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dGGcm9Zs17wZbGGXA0+iV2y/0Ronp4Bvq6W9gouKn9g=;
+        b=bOd8rTj2SRwcPSTC6BmKkBS7n3qlLr+vlQ6QltcyLJJjBt8nNUi/qjkbR57P+J1Paf
+         2zbnw6O6fRrmsxV+wfvDetRYt5/E170IyLZEWd1DdXPtQKVbptZ+6t02uInQ/0z42Nru
+         HiFA4GYQio2Fofpjwn5fIVNUL/8SPVZ7M38Rp6viFbwyuPenKk01iiWKMOitmAAYaw7Q
+         XEoKRzeZMYYun4zOkU0Zye1piI46I7CiV060t5hpcouWu1MCDQw1cdP06kTM3FpkxLmf
+         Uwxp3xVZil44plCIis5M2K2HJDq1PN/mTp40Rjv3zxwO8XyGbrTnjC6vsLHdwKw0Bq8o
+         6WRg==
+X-Forwarded-Encrypted: i=1; AJvYcCXGWFLqZ1zSjL90WU9x7GvCexWe1qLTejMYRAhAqXZpuKEl2TghpIsYzr5BaPsAZ1lFCSSvzqQjGDQFGA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzT+y/2TKz6H9dppIUh3W3D42u+1Zzt2e2dhldJbp8ZTBnYnLQ+
+	TN3ATK7EOeIu23pj95vrRn+925D+RfTfmGtdF9obvhIqZp9PVlwEtZrPwGqKwggfENt0fxALero
+	X3Ocx2h+b9f3mJNrzTlWlNrVLevrLy60Fjpl34KYXDzqLlWFvbBW0qoE=
+X-Google-Smtp-Source: AGHT+IEZkSD+k9fmrUGlfpu0IzPmJTPo1sX03BMy3ZXJCSkxp9KGqqkeo9NcDIyq0pJl2Z4le8atfg+OdfpAhsv+G2Zudcfv4E1P
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240829173655.GN25962@suse.cz>
+X-Received: by 2002:a05:6638:1412:b0:4c2:90d0:b311 with SMTP id
+ 8926c6da1cb9f-4ced002cb3emr175299173.3.1724961379380; Thu, 29 Aug 2024
+ 12:56:19 -0700 (PDT)
+Date: Thu, 29 Aug 2024 12:56:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000044ff540620d7dee2@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_get_ordered_extents_for_logging
+From: syzbot <syzbot+4704b3cc972bd76024f1@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Aug 29, 2024 at 07:36:56PM +0200, David Sterba wrote:
-> On Wed, Aug 28, 2024 at 11:54:42AM -0700, Boris Burkov wrote:
-> > > > This pattern came from the cleanup.h documentation:
-> > > > https://github.com/torvalds/linux/blob/master/include/linux/cleanup.h#L11
-> > > 
-> > > [...] @free should typically include a NULL test before calling a function
-> > > 
-> > > Typically yes, but we don't need to do it twice.
-> > 
-> > I believe we do if we want to get the desired compiler behavior in the
-> > release case. Whether or not the resource-freeing function we call
-> > checks NULL is not relevant to the point of checking it here in the
-> > macro.
-> 
-> I'm trying to understand why we're discussing that, maybe I'm missing
-> some aspect that makes it important to stick to the recommended use.
-> I've been reading the macros and looking for potential use, from that
-> POV no "if(NULL)" check is needed when it's done in the freeing
-> function.
+Hello,
 
-For the record, I I agree that there is no risk for ever doing something
-bad to a btrfs_path, no matter what we do with this extra check in
-DEFINE_FREE
+syzbot found the following issue on:
 
-> 
-> There will be few cases that we will review when using the macros and
-> then we can forget about the details and it will work.
-> 
-> > > > As far as I can tell, it will only be relevant if we end up using the
-> > > > 'return_ptr' functionality in the cleanup library, which seems
-> > > > relatively unlikely for btrfs_path.
-> > > 
-> > > So return_ptr undoes __free, in that case we shouldn't use it at all,
-> > > the macros obscure what the code does, this is IMHO taking it too far.
-> > 
-> > This may well be taking it too far, but it is a common and valid
-> > pattern of RAII: auto freeing the half-initialized parts of structure
-> > automatically on the error exit paths in the initialization, while
-> > releasing the local cleanup responsibility on success.
-> > 
-> > Look at their alloc_obj example again:
-> > https://github.com/torvalds/linux/blob/master/include/linux/cleanup.h#L31
-> > and the explanation that acknowledges kfree handles NULL:
-> > https://github.com/torvalds/linux/blob/master/include/linux/cleanup.h#L43
-> > 
-> > Suppose we were initializing some object that owned a path (and cleaned
-> > it up itself on death), then initializing that object we would create a
-> > __free owned path (to cleanup on every error path), but then once we were
-> > sure we were done, we would release the auto free and let the owning object
-> > take over before returning it to the caller. Freeing the path in this case
-> > would be a bug, as the owning object would have it freed under it.
-> > 
-> > That's almost certainly nonsense for btrfs_path and will never happen,
-> > but it isn't in general,
-> 
-> You got me worried in the previous paragraph, I agree it will never
-> happen so I'm less inclined to prepare for such cases.
-> 
+HEAD commit:    5be63fc19fca Linux 6.11-rc5
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11f0800d980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a0455552d0b27491
+dashboard link: https://syzkaller.appspot.com/bug?extid=4704b3cc972bd76024f1
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16692a29980000
 
-That is fair enough, and I have no problem with that judgement.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cad8c335ccde/disk-5be63fc1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c4d2dd818c33/vmlinux-5be63fc1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ab5cbe08133f/bzImage-5be63fc1.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/9b6630601ecf/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/1eee9b57c8d5/mount_3.gz
+mounted in repro #3: https://storage.googleapis.com/syzbot-assets/ba6ddfb704dc/mount_4.gz
+mounted in repro #4: https://storage.googleapis.com/syzbot-assets/e681ae9a9992/mount_9.gz
 
-> > so if we do add a __free, it makes sense to me
-> > to do it by the book. If we really want to avoid this double check, then
-> > we should add a comment saying that btrfs_path will never be released,
-> > so it doesn't make sense to support that pattern.
-> 
-> Sorry I don't understand this, can you please provide pseudo-code
-> examples? Why wouldn't be btrfs_path released?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4704b3cc972bd76024f1@syzkaller.appspotmail.com
 
-I think this is just me not having a good terminology for "we used
-return_ptr or no_free_ptr". Perhaps "gave up ownership" or "gave up
-responsibility" or "canceled free" as "released" is too similar to the
-actual __free action :)
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/ordered-data.c:1018!
+Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 1 UID: 0 PID: 6479 Comm: syz.4.61 Not tainted 6.11.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+RIP: 0010:btrfs_get_ordered_extents_for_logging+0x4fd/0x500 fs/btrfs/ordered-data.c:1018
+Code: f7 07 90 0f 0b e8 23 f1 df fd 48 c7 c7 40 8a 2c 8c 48 c7 c6 e0 8c 2c 8c 48 c7 c2 20 8a 2c 8c b9 fa 03 00 00 e8 e4 ad f7 07 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f
+RSP: 0018:ffffc90009627938 EFLAGS: 00010246
+RAX: 0000000000000055 RBX: 0000000000000000 RCX: 3784e5b0ceb58c00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffff88806597d690 R08: ffffffff817402ac R09: 1ffff920012c4ec8
+R10: dffffc0000000000 R11: fffff520012c4ec9 R12: 0000000000000000
+R13: dffffc0000000000 R14: ffffc90009627ae0 R15: ffff88806597d690
+FS:  00007f60c8eec6c0(0000) GS:ffff8880b9300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa599c4220a CR3: 000000007953c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_sync_file+0x929/0x10f0 fs/btrfs/file.c:1712
+ generic_write_sync include/linux/fs.h:2821 [inline]
+ btrfs_do_write_iter+0x5e2/0x760 fs/btrfs/file.c:1515
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xa72/0xc90 fs/read_write.c:590
+ ksys_pwrite64 fs/read_write.c:705 [inline]
+ __do_sys_pwrite64 fs/read_write.c:715 [inline]
+ __se_sys_pwrite64 fs/read_write.c:712 [inline]
+ __x64_sys_pwrite64+0x1aa/0x230 fs/read_write.c:712
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f60c8179e79
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f60c8eec038 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+RAX: ffffffffffffffda RBX: 00007f60c8316130 RCX: 00007f60c8179e79
+RDX: 000000000000003d RSI: 00000000200001c0 RDI: 0000000000000007
+RBP: 00007f60c81e793e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000001 R14: 00007f60c8316130 R15: 00007ffd4fce3d08
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_get_ordered_extents_for_logging+0x4fd/0x500 fs/btrfs/ordered-data.c:1018
+Code: f7 07 90 0f 0b e8 23 f1 df fd 48 c7 c7 40 8a 2c 8c 48 c7 c6 e0 8c 2c 8c 48 c7 c2 20 8a 2c 8c b9 fa 03 00 00 e8 e4 ad f7 07 90 <0f> 0b 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 0f 1f
+RSP: 0018:ffffc90009627938 EFLAGS: 00010246
+RAX: 0000000000000055 RBX: 0000000000000000 RCX: 3784e5b0ceb58c00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffff88806597d690 R08: ffffffff817402ac R09: 1ffff920012c4ec8
+R10: dffffc0000000000 R11: fffff520012c4ec9 R12: 0000000000000000
+R13: dffffc0000000000 R14: ffffc90009627ae0 R15: ffff88806597d690
+FS:  00007f60c8eec6c0(0000) GS:ffff8880b9300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f449fcc2723 CR3: 000000007953c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-I don't have any pseudocode materially different from the example in
-cleanup.h with "btrfs_path" substituted in.
 
-All I'm trying to accomplish in this whole discussion is emphasize that
-the extra IS_ERR_OR_NULL check is not about ensuring that btrfs_path is
-valid, but is about following the best practice for supporting the code
-reduction in the "gave up ownership" happy path. In fact, just "if (_T)"
-would be sufficient in Leo's DEFINE_FREE, for that reason.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-My taste preference here is to explicitly acknowledge that we plan to
-never give up ownership of an auto-free btrfs_path, and thus document
-that we are intentionally not including the extra NULL check. Since the
-authors of the library bothered to explicitly call it out as a pattern
-users should follow.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Thanks for entertaining this discussion, I enjoyed learning more about
-cleanup.h.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Boris
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
