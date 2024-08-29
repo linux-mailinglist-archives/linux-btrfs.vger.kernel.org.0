@@ -1,102 +1,62 @@
-Return-Path: <linux-btrfs+bounces-7662-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7663-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AD22964B8A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 18:22:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E12B2964C7A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 19:03:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17362282F67
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 16:22:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FFEF1C238D1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2024 17:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F115F1B5EAB;
-	Thu, 29 Aug 2024 16:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="usxUqEHY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LAZIFWO1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="usxUqEHY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LAZIFWO1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 371CA1B86FA;
+	Thu, 29 Aug 2024 17:00:02 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D671B5EA9;
-	Thu, 29 Aug 2024 16:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBD31B6528
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2024 16:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724948478; cv=none; b=IPqTfIb9C94wl2RGjXMeEFvxwXzVsWxdd8wg+v8GF2AORxIZRCvnwABbjYvPkyzvcx6BpuYHffQ74CHcVlgDeJwWCtdvZDqXYQQVf5RwBkE2qKMaW24ndIPpxQY8bOL+2EqdUtBB8EVIBQZUymCnzgZy3aiKCtaREzQdolcyR90=
+	t=1724950801; cv=none; b=LMK41OLkEZEWmCwYd5kAfd24lZERbTbcAu7u4r0byI2A3o0qSuMip5H9KGL1oCTeEOUVcIblpGFIhwS5qBnds6b9Ruo/41Ziq8KgvUlUthkJNrAWD6ntZuWaZdyBSWrdoOCNl8HxfTbd2x9CMaRaNwzf5D91QPkn2BYkRTURDGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724948478; c=relaxed/simple;
-	bh=feddWetKR7w8vLOuU0KO55ikFM7rHi8fF5f60gOjwTM=;
+	s=arc-20240116; t=1724950801; c=relaxed/simple;
+	bh=1ewRQxwtETUvXusaJoq2xH4Ja2rQ8jiN7OUcYILEsjk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NTgyErr6/FaBgOSQ5LEckYvLfauVw+99hI8R7vjeJNhOKGXa9grNPa25xR+BB/KurtAbL53XeSOq4f7MFuLPI71HAhckAkAYcdjSMZly1ssGEurQq9Trg4Y7xU0It1rfUWXOpRmj+Sfhtm3UOvw/b7zpxVpUO+SKUTSglTLFE1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=usxUqEHY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LAZIFWO1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=usxUqEHY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LAZIFWO1; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y0V8kzF2nwWBISD5ElHZ1oF8CqurSYXz5ddX21LkTTQh+XPMz5x5TazNpTYrAsuzCaAr/+RqSsNgojIXjQWxHrW4qWyzQpj7hQF8q7KsLKCDF56PMSKgG16bNkjZlHGVg8L70/iNOMDO4Zzl6yPqG9QBR7b5901erx+xdmLNF/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 47FC1219C2;
-	Thu, 29 Aug 2024 16:21:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724948474;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+TwU6ENaL8PPaefwtyUWsE4PAIXqcRKW6XtyVITl8CE=;
-	b=usxUqEHYRggEOU9o8UoTcx+TVfATRePy7K8+XnPVOB9sRMAyybEfuuZaB2jwqDWVNeTxei
-	VL32xFWDVokt9spoyuFvSXoSvGFjh0eOgROF3Fh8G9XmDTduhpusKy/OeGvHkI8rg46Ujf
-	2J9F27DmGXKQbRC9dMhssmEfD7Az7mU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724948474;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+TwU6ENaL8PPaefwtyUWsE4PAIXqcRKW6XtyVITl8CE=;
-	b=LAZIFWO1JJaONEHJBdttsTjU4anLzfhGQVMPbyFuSBeTK6az1+q0QwPKqlkquNGLdVPqve
-	8U4tYSCaBKL1vVDA==
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1CA8B219AF;
+	Thu, 29 Aug 2024 16:59:58 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=usxUqEHY;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=LAZIFWO1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724948474;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+TwU6ENaL8PPaefwtyUWsE4PAIXqcRKW6XtyVITl8CE=;
-	b=usxUqEHYRggEOU9o8UoTcx+TVfATRePy7K8+XnPVOB9sRMAyybEfuuZaB2jwqDWVNeTxei
-	VL32xFWDVokt9spoyuFvSXoSvGFjh0eOgROF3Fh8G9XmDTduhpusKy/OeGvHkI8rg46Ujf
-	2J9F27DmGXKQbRC9dMhssmEfD7Az7mU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724948474;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+TwU6ENaL8PPaefwtyUWsE4PAIXqcRKW6XtyVITl8CE=;
-	b=LAZIFWO1JJaONEHJBdttsTjU4anLzfhGQVMPbyFuSBeTK6az1+q0QwPKqlkquNGLdVPqve
-	8U4tYSCaBKL1vVDA==
+	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 342AA13408;
-	Thu, 29 Aug 2024 16:21:14 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0347F139B0;
+	Thu, 29 Aug 2024 16:59:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vZiADPqf0GbkeAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 29 Aug 2024 16:21:14 +0000
-Date: Thu, 29 Aug 2024 18:21:03 +0200
+	id gMhFAA6p0GaQBAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 29 Aug 2024 16:59:57 +0000
+Date: Thu, 29 Aug 2024 18:59:48 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Kunwu Chan <kunwu.chan@linux.dev>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: Re: [PATCH] btrfs: Remove duplicate 'unlikely()' usage
-Message-ID: <20240829162102.GL25962@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, Rolf Wentland <R.Wentland@gmx.de>,
+	Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v2] btrfs: interrupt long running operations if the
+ current process is freezing
+Message-ID: <20240829165948.GM25962@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20240829072952.35335-1-kunwu.chan@linux.dev>
+References: <bbcd9ebaeccb3a9e5a875a2ffc1afb498d6b75fe.1724889346.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -105,47 +65,96 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240829072952.35335-1-kunwu.chan@linux.dev>
+In-Reply-To: <bbcd9ebaeccb3a9e5a875a2ffc1afb498d6b75fe.1724889346.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 47FC1219C2
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,suse.cz:mid]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Spam-Score: -4.00
 X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 1CA8B219AF
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 
-On Thu, Aug 29, 2024 at 03:29:52PM +0800, Kunwu Chan wrote:
-> From: Kunwu Chan <chentao@kylinos.cn>
+On Thu, Aug 29, 2024 at 09:26:17AM +0930, Qu Wenruo wrote:
+> [BUG]
+> There is a bug report that running fstrim will prevent the system from
+> hibernation, result the following dmesg:
+>  PM: suspend entry (deep)
+>  Filesystems sync: 0.060 seconds
+>  Freezing user space processes
+>  Freezing user space processes failed after 20.007 seconds (1 tasks refusing to freeze, wq_busy=0):
+>  task:fstrim          state:D stack:0     pid:15564 tgid:15564 ppid:1      flags:0x00004006
+>  Call Trace:
+>   <TASK>
+>   __schedule+0x381/0x1540
+>   schedule+0x24/0xb0
+>   schedule_timeout+0x1ea/0x2a0
+>   io_schedule_timeout+0x19/0x50
+>   wait_for_completion_io+0x78/0x140
+>   submit_bio_wait+0xaa/0xc0
+>   blkdev_issue_discard+0x65/0xb0
+>   btrfs_issue_discard+0xcf/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_discard_extent+0x120/0x2a0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   do_trimming+0xd4/0x220 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   trim_bitmaps+0x418/0x520 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_trim_block_group+0xcb/0x130 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_trim_fs+0x119/0x460 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_ioctl_fitrim+0xfb/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_ioctl+0x11cc/0x29f0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   __x64_sys_ioctl+0x92/0xd0
+>   do_syscall_64+0x5b/0x80
+>   entry_SYSCALL_64_after_hwframe+0x7c/0xe6
+>  RIP: 0033:0x7f5f3b529f9b
+>  RSP: 002b:00007fff279ebc20 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>  RAX: ffffffffffffffda RBX: 00007fff279ebd60 RCX: 00007f5f3b529f9b
+>  RDX: 00007fff279ebc90 RSI: 00000000c0185879 RDI: 0000000000000003
+>  RBP: 000055748718b2d0 R08: 00005574871899e8 R09: 00007fff279eb010
+>  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+>  R13: 000055748718ac40 R14: 000055748718b290 R15: 000055748718b290
+>   </TASK>
+>  OOM killer enabled.
+>  Restarting tasks ... done.
+>  random: crng reseeded on system resumption
+>  PM: suspend exit
+>  PM: suspend entry (s2idle)
+>  Filesystems sync: 0.047 seconds
 > 
-> nested unlikely() calls, IS_ERR already uses unlikely() internally
+> [CAUSE]
+> PM code is freezing all user space processes before entering
+> hibernation/suspension, but if a user space process is trapping into the
+> kernel for a long running operation, it will not be frozen since it's
+> still inside kernel.
 > 
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> Normally those long running operations check for fatal signals and exit
+> early, but freezing user space processes is not done by signals but a
+> different infrastructure.
+> 
+> Unfortunately btrfs only checks fatal signals but not if the current
+> task is being frozen.
+> 
+> [FIX]
+> Introduce a helper, btrfs_task_interrupted(), to check both fatal signals
+> and freezing status, and apply to all long running operations, with
+> dedicated error code:
+> 
+> - reflink (-EINTR)
+> - fstrim (-ERESTARTSYS)
+> - relocation (-ECANCELD)
+> - llseek (-EINTR)
+> - defrag (-EAGAIN)
+> - fiemap (-EINTR)
 
-Thanks for noticing it, I've folded the change to the patch "btrfs:
-convert extent_range_clear_dirty_for_io() to use a folio"
+Is it correct to interrupt the operations? If there's a reflink in
+progress and system gets hibernated what's the reason to cancel it? It
+should be possible to just freeze the state and continue after thaw, no?
+
+Imagine a case when a long running file copy (reflink) is going on and
+the system gets frozen. This is wrong from user perspective.
 
