@@ -1,247 +1,253 @@
-Return-Path: <linux-btrfs+bounces-7687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7688-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B231796583F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 09:18:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B4C965840
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 09:19:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B2B028136A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 07:18:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E911DB23E79
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 07:19:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA9B1531FE;
-	Fri, 30 Aug 2024 07:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B5E1531FE;
+	Fri, 30 Aug 2024 07:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="egscyZ13";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="egscyZ13"
+	dkim=pass (1024-bit key) header.d=fordfrog.com header.i=@fordfrog.com header.b="fmDcc4fa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from beast.visionsuite.biz (beast.visionsuite.biz [85.163.23.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E931614B96F
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 07:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78649481D1
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 07:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.163.23.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725002323; cv=none; b=U7yPWu1HUq7eKVSj6CcaXSwv0vydbflTJW9nCVk20mUBVoWVh54nS9LsRxkd/zO12z7doLHpmSUsyAz0pjtSdEnCQhzwzoxCmAcoFnbGs93m6zKuQZ3dyo/2GlO3de5UaN6O7JYAcv1nBSQ30gpEnrfpplVl9PcQfyhxJsbOJ9g=
+	t=1725002345; cv=none; b=ATXxBWeZ9j8aujmAhYsruX9uPOoH6CiWuXdMwQtWZjZPBSyyrG0mOKdr28EUmsuKybm2Roy+/eso2rZoNtPfWVmSsx/zOikEOzdTdV8XUts8yl0y8IyXkRNMfxZ/nWOEt9sSwyN4xa4jgXQDu1EyfmjMRx1p57kr5BmlN1xvd/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725002323; c=relaxed/simple;
-	bh=pym+uxxV4j8z7tzN3E5t43V8ZF3pp3bMZwqAktNVvKc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=BOBO9hfJbwgtiiGt9d9H3acsUZyS+9WPwqO2SwpuArZ3AQEpmmTKFV6rPpF8JW6q2HVnDuOaUXDY4UnYyied+xO80ojV8mNhgUJTaOMz2KyV+y1b7Liu6tNcSoEZqLsWgwpflBy8L1f8FwgqL8Dn/Zzx5qajrRQwZbZdopkiE/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=egscyZ13; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=egscyZ13; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1707D21A16
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 07:18:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725002319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=w9tn+RgoF1+Zfd4l2GP1kwX6WOLfvEZvltqnSguegLA=;
-	b=egscyZ1323kEAhTVLeOw8z4zVpgrbfjmkssOJtJyVEPygb4x0C9rw2ZByw0bQN1/y1sMST
-	dTJrwltjuiXsF1N+Nf+ZMH0xAc6dBJNfmiBKQq2jPMRMs9u1eixGh+P4ebIvz7mvDscMjh
-	xhWO3ylMR/vJHtCVONck/zpM8mVkkBs=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=egscyZ13
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725002319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=w9tn+RgoF1+Zfd4l2GP1kwX6WOLfvEZvltqnSguegLA=;
-	b=egscyZ1323kEAhTVLeOw8z4zVpgrbfjmkssOJtJyVEPygb4x0C9rw2ZByw0bQN1/y1sMST
-	dTJrwltjuiXsF1N+Nf+ZMH0xAc6dBJNfmiBKQq2jPMRMs9u1eixGh+P4ebIvz7mvDscMjh
-	xhWO3ylMR/vJHtCVONck/zpM8mVkkBs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 535C013A44
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 07:18:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EhvQBU5y0Wa9XwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 07:18:38 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove btrfs_folio_end_all_writers()
-Date: Fri, 30 Aug 2024 16:48:20 +0930
-Message-ID: <60a56967e6ebbeb47726c31883a6d453abc561c8.1725002293.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1725002345; c=relaxed/simple;
+	bh=/HChkKmwzcWEojhx3fpu3KVCt6cjfGMVad+1JhajyP0=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=bS9UT5aRJu+KJ1pa7xXPM8VhZ1T6DtHvAFIbAwkCsnoyqRJSjfwPX/QxVN0iPlqH864hGQOq92hINVxtviMDf0okiUf/6krgfwveSrWlMbmS4DtA3zVNdHzojcxs+5lHRqSsY8CkYPbyFqog7uHyb6GbSmqqO/DDIlju9Ogyj4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fordfrog.com; spf=pass smtp.mailfrom=fordfrog.com; dkim=pass (1024-bit key) header.d=fordfrog.com header.i=@fordfrog.com header.b=fmDcc4fa; arc=none smtp.client-ip=85.163.23.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fordfrog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fordfrog.com
+Received: from localhost (beast.visionsuite.biz [127.0.0.1])
+	by beast.visionsuite.biz (Postfix) with ESMTP id C70954EB4A84;
+	Fri, 30 Aug 2024 09:18:50 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at visionsuite.biz
+Received: from beast.visionsuite.biz ([127.0.0.1])
+	by localhost (beast.visionsuite.biz [127.0.0.1]) (amavisd-new, port 10026)
+	with LMTP id 9g4OkH4dphUS; Fri, 30 Aug 2024 09:18:49 +0200 (CEST)
+Received: from roundcube.visionsuite.biz (beast.visionsuite.biz [127.0.0.1])
+	by beast.visionsuite.biz (Postfix) with ESMTPA id 6CD034EB4A73;
+	Fri, 30 Aug 2024 09:18:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fordfrog.com;
+	s=beast; t=1725002329;
+	bh=jW61i8kyj+DRA/k+vVtW2f0zX9DqUoYET+8Zma6J/30=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=fmDcc4favQ7cJNtorjRA0X6ZGdkWS+XutASsAWv1iRhh/GKZR9ZMhIjLSu6l1AuVb
+	 zCgZ+Lhoe8JCvmCOAV22fm6EGWRl2/W52HEaFBhlhWrtVyNvo9jitYqM218SSWb+lH
+	 rntm010Lr87F3EZuQcO7YUnGwTdzAMFJo75sNyas=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Date: Fri, 30 Aug 2024 09:18:49 +0200
+From: =?UTF-8?Q?Miroslav_=C5=A0ulc?= <miroslav.sulc@fordfrog.com>
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: recovering btrfs filesystem from synology raid5
+In-Reply-To: <20240829230202.GS25962@twin.jikos.cz>
+References: <0eb0e2f033f40a0b14d652a6b7c220e4@fordfrog.com>
+ <20240829230202.GS25962@twin.jikos.cz>
+Message-ID: <d51c038fca82b2a3b247a84e14941349@fordfrog.com>
+X-Sender: miroslav.sulc@fordfrog.com
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1707D21A16
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -5.01
-X-Spam-Flag: NO
 
-The function btrfs_folio_end_all_writers() is only utilized in
-extent_writepage() as a way to unlock all subpage range (for both
-successful submission and error handling).
+hi David, thank you for your detail reply. i tried btrfs restore but 
+that didn't recover anything. though i did set up the raid on my desktop 
+and not on the nas because the one i have here does not support btrfs. 
+from what you wrote, it comes to my mind that it would make sense to set 
+up the raid on synology nas that supports btrfs and check whether that 
+improves the situation or not, because of the modified system on the 
+nas.
 
-Meanwhile we have a similar function, btrfs_folio_end_writer_lock().
-
-The difference is, btrfs_folio_end_writer_lock() expects a range that is
-a subset of the already locked range.
-
-This limit on btrfs_folio_end_writer_lock() is a little overkilled,
-preventing it from being utilized for error paths.
-
-So here we enhance btrfs_folio_end_writer_lock() to accept a superset of
-the locked range, and only end the locked subset.
-This means we can replace btrfs_folio_end_all_writers() with
-btrfs_folio_end_writer_lock() instead.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c |  3 ++-
- fs/btrfs/subpage.c   | 57 +++++++-------------------------------------
- fs/btrfs/subpage.h   |  1 -
- 3 files changed, 10 insertions(+), 51 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index bd1a7b2fc71a..fbb9fadaf0a0 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1467,7 +1467,8 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
- 		mapping_set_error(folio->mapping, ret);
- 	}
- 
--	btrfs_folio_end_all_writers(inode_to_fs_info(inode), folio);
-+	btrfs_folio_end_writer_lock(inode_to_fs_info(inode), folio,
-+				    page_start, PAGE_SIZE);
- 	ASSERT(ret <= 0);
- 	return ret;
- }
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index ca7d2aedfa8d..7fe58c4d9923 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -322,6 +322,8 @@ static bool btrfs_subpage_end_and_test_writer(const struct btrfs_fs_info *fs_inf
- 	const int start_bit = subpage_calc_start_bit(fs_info, folio, locked, start, len);
- 	const int nbits = (len >> fs_info->sectorsize_bits);
- 	unsigned long flags;
-+	unsigned int cleared = 0;
-+	int bit = start_bit;
- 	bool last;
- 
- 	btrfs_subpage_assert(fs_info, folio, start, len);
-@@ -339,11 +341,12 @@ static bool btrfs_subpage_end_and_test_writer(const struct btrfs_fs_info *fs_inf
- 		return true;
- 	}
- 
--	ASSERT(atomic_read(&subpage->writers) >= nbits);
--	/* The target range should have been locked. */
--	ASSERT(bitmap_test_range_all_set(subpage->bitmaps, start_bit, nbits));
--	bitmap_clear(subpage->bitmaps, start_bit, nbits);
--	last = atomic_sub_and_test(nbits, &subpage->writers);
-+	for_each_set_bit_from(bit, subpage->bitmaps, start_bit + nbits) {
-+		clear_bit(bit, subpage->bitmaps);
-+		cleared++;
-+	}
-+	ASSERT(atomic_read(&subpage->writers) >= cleared);
-+	last = atomic_sub_and_test(cleared, &subpage->writers);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- 	return last;
- }
-@@ -825,50 +828,6 @@ bool btrfs_subpage_find_writer_locked(const struct btrfs_fs_info *fs_info,
- 	return found;
- }
- 
--/*
-- * Unlike btrfs_folio_end_writer_lock() which unlocks a specified subpage range,
-- * this ends all writer locked ranges of a page.
-- *
-- * This is for the locked page of extent_writepage(), as the locked page
-- * can contain several locked subpage ranges.
-- */
--void btrfs_folio_end_all_writers(const struct btrfs_fs_info *fs_info, struct folio *folio)
--{
--	struct btrfs_subpage *subpage = folio_get_private(folio);
--	u64 folio_start = folio_pos(folio);
--	u64 cur = folio_start;
--
--	ASSERT(folio_test_locked(folio));
--	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
--		folio_unlock(folio);
--		return;
--	}
--
--	/* The page has no new delalloc range locked on it. Just plain unlock. */
--	if (atomic_read(&subpage->writers) == 0) {
--		folio_unlock(folio);
--		return;
--	}
--	while (cur < folio_start + PAGE_SIZE) {
--		u64 found_start;
--		u32 found_len;
--		bool found;
--		bool last;
--
--		found = btrfs_subpage_find_writer_locked(fs_info, folio, cur,
--							 &found_start, &found_len);
--		if (!found)
--			break;
--		last = btrfs_subpage_end_and_test_writer(fs_info, folio,
--							 found_start, found_len);
--		if (last) {
--			folio_unlock(folio);
--			break;
--		}
--		cur = found_start + found_len;
--	}
--}
--
- #define GET_SUBPAGE_BITMAP(subpage, fs_info, name, dst)			\
- {									\
- 	const int sectors_per_page = fs_info->sectors_per_page;		\
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index b67cd5f6539d..f90e0c4f4cab 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -109,7 +109,6 @@ void btrfs_folio_set_writer_lock(const struct btrfs_fs_info *fs_info,
- bool btrfs_subpage_find_writer_locked(const struct btrfs_fs_info *fs_info,
- 				      struct folio *folio, u64 search_start,
- 				      u64 *found_start_ret, u32 *found_len_ret);
--void btrfs_folio_end_all_writers(const struct btrfs_fs_info *fs_info, struct folio *folio);
- 
- /*
-  * Template for subpage related operations.
--- 
-2.46.0
-
+Dne 2024-08-30 01:02, David Sterba napsal:
+> On Mon, Aug 26, 2024 at 12:56:39PM +0200, Miroslav Šulc wrote:
+>> hello,
+>> 
+>> i have here a broken btrfs filesystem that was on a synology nas with
+>> raid5 (mdadm + lvm)
+> 
+> AFAIK synology has some patches that connect btrfs and MD raid5 so it
+> fixes the problems that btrfs-raid5 has. But the patches are not
+> upstream and I don't know how it works.
+> 
+>> where one disk started to be broken and another was
+>> removed from the raid roughly two months ago (but the number of events
+>> on that disk isn't that much lower). more details about the raid can 
+>> be
+>> seen here:
+>> https://lore.kernel.org/linux-raid/d6e87810cbfe40f3be74dfa6b0acb48e@fordfrog.com/T/
+> 
+> This looks like the problems are on the MD level with the device
+> removed, added back and interrupted synchronization. The analysis 
+> points
+> out there are some old data or stats. More below.
+> 
+>> i was able to assemble the raid5 from 4 disks (3 with up-to-date data
+>> and one with older data) to the extent that i can use lvm to see the
+>> logical volume and btrfs filesystem on it, though the filesystem 
+>> reports
+>> to be broken.
+>> 
+>> # cat /proc/mdstat
+>> Personalities : [raid0] [raid1] [raid10] [raid6] [raid5] [raid4]
+>> md127 : active raid5 dm-19[4] dm-16[3] dm-13[1] dm-10[0]
+>>        31236781824 blocks super 1.2 level 5, 64k chunk, algorithm 2 
+>> [5/4]
+>> [UU_UU]
+>>        bitmap: 0/59 pages [0KB], 65536KB chunk
+>> 
+>> unused devices: <none>
+>> 
+>> # btrfs check /dev/vg1000/lv
+>> Opening filesystem to check...
+>> parent transid verify failed on 4330339713024 wanted 2221844 found
+>> 2221848
+> 
+> This error typically means old data were read, the difference is 4
+> transactions.
+> 
+>> parent transid verify failed on 4330321559552 wanted 2221843 found
+>> 1957353
+>> parent transid verify failed on 4330321559552 wanted 2221843 found
+>> 1957359
+>> parent transid verify failed on 4330321559552 wanted 2221843 found
+>> 1957359
+>> Ignoring transid failure
+>> corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end,
+>> have 16079 expect 16105
+> 
+> This kind of error does not apper often, the 'transid verify failed'
+> from above usually has a consistent b-tree node/leaf but from a
+> different transaction "epoch". A wrong item end means there's a 
+> mismatch
+> in the stored and calculated data. Reasons for that can vary, a 
+> software
+> bug can never be ruled out (but we'd see more reports) or the recovery
+> of the b-tree node/leaf was partial and the item descriptor (the stored
+> part) is older than what's actually found in the leaf (the calculated
+> part).
+> 
+>> leaf 4330321559552 items 87 free space 11792 generation 1957359 owner
+>> EXTENT_TREE
+>> leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
+>> fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
+>> chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
+>>          item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105
+> 
+> UNKNOWN.164 must be some synology NAS specific thing
+> 
+>> itemsize 179
+>>          item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040
+> 
+> Same.
+> 
+>> itemsize 39
+>>          item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 
+>> 16218
+>> itemsize 44
+>>                  refs 14078082519432455026 gen 151715012486066369 
+>> flags
+> 
+> The numbers 14078082519432455026 and 151715012486066369 are likely a
+> complete garbage, either a block that was randomly overwritten or a
+> random block read and interpreted.
+> 
+>> |FULL_BACKREF
+>>                  tree block skinny level -1444450301
+> 
+> Levels are 0..7
+> 
+>> ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33
+>> leaf data limit 16283
+>> ERROR: skip remaining slots
+>> parent transid verify failed on 4330321559552 wanted 2221843 found
+>> 1957359
+>> Ignoring transid failure
+>> corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end,
+>> have 16079 expect 16105
+>> leaf 4330321559552 items 87 free space 11792 generation 1957359 owner
+>> EXTENT_TREE
+>> leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
+>> fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
+>> chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
+>>          item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105
+>> itemsize 178
+>>          item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040
+>> itemsize 39
+>>          item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 
+>> 16218
+>> itemsize 44
+>>                  refs 14078082519432455026 gen 151715012486066369 
+>> flags
+>> |FULL_BACKREF
+>>                  tree block skinny level -1444450301
+>> ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33
+>> leaf data limit 16283
+>> ERROR: skip remaining slots
+>> corrupt leaf: root=2 block=4330321559552 slot=1, unexpected item end,
+>> have 16079 expect 16105
+>> leaf 4330321559552 items 87 free space 11792 generation 1957359 owner
+>> EXTENT_TREE
+>> leaf 4330321559552 flags 0x1(WRITTEN) backref revision 1
+>> fs uuid 7138daf1-5d16-4053-b559-0eb7da7d0a23
+>> chunk uuid 55d47533-7e1e-4dda-bc51-f5ad0006fc9f
+>>          item 0 key (142836266048 UNKNOWN.164 1478857) itemoff 16105
+>> itemsize 178
+>>          item 1 key (142837019712 UNKNOWN.189 818382621) itemoff 16040
+>> itemsize 39
+>>          item 2 key (142836675648 METADATA_ITEM 2850516995) itemoff 
+>> 16218
+>> itemsize 44
+>>                  refs 14078082519432455026 gen 151715012486066369 
+>> flags
+>> |FULL_BACKREF
+>>                  tree block skinny level -1444450301
+>> ERROR: leaf 4330321559552 slot 3 pointer invalid, offset 16369 size 33
+>> leaf data limit 16283
+>> ERROR: skip remaining slots
+>> ERROR: failed to read block groups: Operation not permitted
+>> ERROR: cannot open file system
+>> 
+>> i have the disks mapped in read-only mode with overlay set up over 
+>> them
+>> so that i can freely experiment with the filesystem. but so far i was
+>> not able to get the filesystem to a state where i could read files 
+>> from
+>> it, even with btrfs restore.
+> 
+> The recovery options for btrfs are to try to read partially consistent
+> data from past generations, this is what 'btrfs restore' does, but it
+> seems that the block data are mixed and even inconsistent within
+> somethign that btrfs would consider a unit.
+> 
+>> there are some data on the filesystem that are crucial for the client 
+>> so
+>> my goal is to be able to recover at least those. so, i'd like to ask
+>> whether there is any chance to resolve these issues shown above to be
+>> able to at least list the files from the filesystem and recover at 
+>> least
+>> a selection of them.
+> 
+> You can try 'btrfs restore' if you haven't done that yet but this may
+> also require to write some custom code to work around the specific
+> issues you find. This is also from a custom kernel from synology with
+> apparent modifications that the upstream linux kernel does not have so
+> we can't help with that beyond the common points.
 
