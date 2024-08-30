@@ -1,100 +1,100 @@
-Return-Path: <linux-btrfs+bounces-7695-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7696-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3CA296690B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 20:40:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28D5966926
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 20:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC68C1C239C6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 18:40:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C4CD1F2366C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 18:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2941BC07B;
-	Fri, 30 Aug 2024 18:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E911BC07B;
+	Fri, 30 Aug 2024 18:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HZsEbn7k";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9oY8KcRV";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vi9HPxUa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0g65QdIL"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xkLhIyio";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BCZJ1hec";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZL2E9gkv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+9v/wZhL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEA83DBB6
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 18:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E6C1BAEF5
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 18:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725043225; cv=none; b=WtPgNktkMLlM1VZIyeLxmLtqV/QQQGE2izzNxYmdWLqxfIKerNgHd47h7x5LLBrmiYbFLOWWaZYmsXhcrP+ku+MwGfVvPOq7nDGzjspQT7PSKC0s87chTWHVgIhuut7suHtaikp/cC/i6tsLSox/4oIoRqFrKGAAIXWyHy7z/H4=
+	t=1725043879; cv=none; b=mfS+MKRdEm4i3mwekW53ApGTd3gW+b+w9H2JWv+YihjPOmhauNSVD+vQiJqrGRgUdmgq8+SlGXwKq19+c/9K4PqjbArIB4tkKntEihFI+g0fCabCCy+bs0xORPGz2g1hPPyOYxJokFZIkg1bJtan3ML61HBHEqXn1U/U577dWDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725043225; c=relaxed/simple;
-	bh=bAggjb80SHXBGq2q9Qbt3Jbfyvekpobr2eRlb9uy91g=;
+	s=arc-20240116; t=1725043879; c=relaxed/simple;
+	bh=Lsod64vaXmE90REbi9W12j5Cnnu8oNRQV5fFaQt/OsE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vEthYwyn8ESUs3CrAoTp+4HVPL3yNSDFR3DD8WVL0cYqWB3bkLObio5MuAretZEmh3L4mh00FomNFwL2Pi5SIE/1Jp4Ld7oPsYJlHOP03k2ivAou/YCZQ0PXKnPG5v+qVbqN9gkP/L2Gh1AdTh33erJ+P1ygr4NOZ3IC5b0oPWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HZsEbn7k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9oY8KcRV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vi9HPxUa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0g65QdIL; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=kEIwXW5b1r2CEM0RG5WuDU2REdaiz/RnVqCc3legliuoMg8JPWFhHQl8eLkPLjEKmyvHixVSZlcgC8OLRwxB1DGAoP1PsRiHVHicJuBFpf1+IwVTYzyosR/K0FOhCGqXZuEjqVob5iRzO06wjEICHs2wOq2RcgqE2DkHcXsjTXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xkLhIyio; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BCZJ1hec; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZL2E9gkv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+9v/wZhL; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3A2B21F7E7;
-	Fri, 30 Aug 2024 18:40:20 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DF16821976;
+	Fri, 30 Aug 2024 18:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725043221;
+	t=1725043875;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9iEXfI0Vp7BSJRK34wE+CapVFrYsmbLzWgwTj7aPZGQ=;
-	b=HZsEbn7kyYmwR8EP6lWTQf1bDcXIoPy1NcWw8m1flDjObjL3DZ60A5KsZUMgWQW6QyN4vl
-	SsIDuSouVkmzPKUgQDvtj+ZhbuPtfS1I7bAkLiX0ndrC3SLrT24nw4ROFpAu3+O4rAqhy+
-	gBB5R4++R9LJEEJh9swCak5KQ6gBlvY=
+	bh=35q/mDFpG5dlBuwRZTQY3wlBe3KE4GK11fpWan/jwkk=;
+	b=xkLhIyio2+OsmVVpsm1YQzaOwTQygSe9z51/e/2Oyic8Fk71WKz4hH1D7yXCFgtKzZxS5L
+	sdmpvVVs3RHuajX4tDLAanfSPr1yUESgoi96U5SpUylFc6E6ePzYN5+fi7VdrYqNhgk7Ie
+	T3VsHdN1hWVChPm4Nx1/1nB6L+8CepE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725043221;
+	s=susede2_ed25519; t=1725043875;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9iEXfI0Vp7BSJRK34wE+CapVFrYsmbLzWgwTj7aPZGQ=;
-	b=9oY8KcRVinBOHm1ovmBBdx/PgmZiaYyUzOSGRFcIy6FJhTwyOSzOm9ypmxpfda+Jg4mgkE
-	GD7qqH4Hr1BnN2CA==
-Authentication-Results: smtp-out2.suse.de;
+	bh=35q/mDFpG5dlBuwRZTQY3wlBe3KE4GK11fpWan/jwkk=;
+	b=BCZJ1hecKLdhYpqYx2u4gaGYaZcfGvwKOsjQyknvoht6OYwkdj3+Ym+aN1fVnECkNumJpv
+	JEoItxRg/En1tbBA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725043220;
+	t=1725043874;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9iEXfI0Vp7BSJRK34wE+CapVFrYsmbLzWgwTj7aPZGQ=;
-	b=Vi9HPxUaxHz185oCPuyoliKAZ2lLSC4b4K3DRYfv+c710wm4b4lYk6CzfeM7HpEgTXGMnR
-	X72W0z5IYaGU8EIl8cx2LxoziiBhVfPkd+KGOvTtPufJYP60q52qz27kbYPsnhq/hVStzQ
-	3d8P0FDkyjw9v2eaEPTFxVUBmeXU7oI=
+	bh=35q/mDFpG5dlBuwRZTQY3wlBe3KE4GK11fpWan/jwkk=;
+	b=ZL2E9gkv9PIy6mP1te1Xo3slORJGxtdQjSdxBila03VHry3MeO28NftUn1wd4cEOBUph+n
+	LVNJKJTsAoc13TSQBQco8khzIGtKsG/EgyiRAKvtoAvkRL8C0xyJv03r/CSBPuDkK8dO5z
+	f0392duWeiYJBt86TtlyXkUbs+XUvjU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725043220;
+	s=susede2_ed25519; t=1725043874;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9iEXfI0Vp7BSJRK34wE+CapVFrYsmbLzWgwTj7aPZGQ=;
-	b=0g65QdIL7CePXbsJD6sMCDN75F9TypWiPItPMWROgZZ6G+a/4zS6vqS/0O6/kb9nbe/+MY
-	myf968IZrNCLIvAw==
+	bh=35q/mDFpG5dlBuwRZTQY3wlBe3KE4GK11fpWan/jwkk=;
+	b=+9v/wZhLyDzkPQsHURb8BjRD6zCcgT/3uMmRgfmyTN9UwuoRkQwGUTWYdki6dpyY5l9KDS
+	xffA9HgquZMyHyAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1F68C139D3;
-	Fri, 30 Aug 2024 18:40:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C415B139D3;
+	Fri, 30 Aug 2024 18:51:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cYcQBxQS0mYZMgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 30 Aug 2024 18:40:20 +0000
-Date: Fri, 30 Aug 2024 20:40:18 +0200
+	id vuagL6IU0mb3NAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 30 Aug 2024 18:51:14 +0000
+Date: Fri, 30 Aug 2024 20:51:13 +0200
 From: David Sterba <dsterba@suse.cz>
 To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: subpage: fix the bitmap dump which can cause
- bitmap corruption
-Message-ID: <20240830184018.GV25962@twin.jikos.cz>
+Cc: linux-btrfs@vger.kernel.org, Rolf Wentland <R.Wentland@gmx.de>
+Subject: Re: [PATCH v3] btrfs: interrupt fstrim if the current process is
+ freezing
+Message-ID: <20240830185113.GW25962@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <b93aac5fb44b46cd5391f3d5d177c0976e7d5ce0.1725001507.git.wqu@suse.com>
+References: <eeffae0b8beecb3406f43ff48e788fd9d88fb2e2.1724971143.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,7 +103,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b93aac5fb44b46cd5391f3d5d177c0976e7d5ce0.1725001507.git.wqu@suse.com>
+In-Reply-To: <eeffae0b8beecb3406f43ff48e788fd9d88fb2e2.1724971143.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Score: -4.00
 X-Spamd-Result: default: False [-4.00 / 50.00];
@@ -112,68 +112,93 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCPT_COUNT_THREE(0.00)[3];
 	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmx.de];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo,twin.jikos.cz:mid,suse.com:url,suse.com:email];
 	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Fri, Aug 30, 2024 at 04:35:48PM +0930, Qu Wenruo wrote:
-> In commit 75258f20fb70 ("btrfs: subpage: dump extra subpage bitmaps for
-> debug") an internal macro GET_SUBPAGE_BITMAP() is introduced to grab the
-> bitmap of each attribute.
+On Fri, Aug 30, 2024 at 08:09:11AM +0930, Qu Wenruo wrote:
+> [BUG]
+> There is a bug report that running fstrim will prevent the system from
+> hibernation, result the following dmesg:
 > 
-> But that commit is using bitmap_cut() which will do the left shift of
-> the larger bitmap, causing incorrect values.
+>  PM: suspend entry (deep)
+>  Filesystems sync: 0.060 seconds
+>  Freezing user space processes
+>  Freezing user space processes failed after 20.007 seconds (1 tasks refusing to freeze, wq_busy=0):
+>  task:fstrim          state:D stack:0     pid:15564 tgid:15564 ppid:1      flags:0x00004006
+>  Call Trace:
+>   <TASK>
+>   __schedule+0x381/0x1540
+>   schedule+0x24/0xb0
+>   schedule_timeout+0x1ea/0x2a0
+>   io_schedule_timeout+0x19/0x50
+>   wait_for_completion_io+0x78/0x140
+>   submit_bio_wait+0xaa/0xc0
+>   blkdev_issue_discard+0x65/0xb0
+>   btrfs_issue_discard+0xcf/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_discard_extent+0x120/0x2a0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   do_trimming+0xd4/0x220 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   trim_bitmaps+0x418/0x520 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_trim_block_group+0xcb/0x130 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_trim_fs+0x119/0x460 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_ioctl_fitrim+0xfb/0x160 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   btrfs_ioctl+0x11cc/0x29f0 [btrfs 7ab35b9b86062a46f6ff578bb32d55ecf8e6bf82]
+>   __x64_sys_ioctl+0x92/0xd0
+>   do_syscall_64+0x5b/0x80
+>   entry_SYSCALL_64_after_hwframe+0x7c/0xe6
+>  RIP: 0033:0x7f5f3b529f9b
+>  RSP: 002b:00007fff279ebc20 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>  RAX: ffffffffffffffda RBX: 00007fff279ebd60 RCX: 00007f5f3b529f9b
+>  RDX: 00007fff279ebc90 RSI: 00000000c0185879 RDI: 0000000000000003
+>  RBP: 000055748718b2d0 R08: 00005574871899e8 R09: 00007fff279eb010
+>  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+>  R13: 000055748718ac40 R14: 000055748718b290 R15: 000055748718b290
+>   </TASK>
+>  OOM killer enabled.
+>  Restarting tasks ... done.
+>  random: crng reseeded on system resumption
+>  PM: suspend exit
+>  PM: suspend entry (s2idle)
+>  Filesystems sync: 0.047 seconds
 > 
-> Thankfully this bitmap_cut() is only called for debug usage, and so far
-> it's not yet causing problem.
+> [CAUSE]
+> PM code is freezing all user space processes before entering
+> hibernation/suspension, but if a user space process is trapping into the
+> kernel for a long running operation, it will not be frozen since it's
+> still inside kernel.
 > 
-> Fix it to use bitmap_read() to only grab the desired sub-bitmap.
+> Normally those long running operations check for fatal signals and exit
+> early, but freezing user space processes is not done by signals but a
+> different infrastructure.
 > 
-> Fixes: 75258f20fb70 ("btrfs: subpage: dump extra subpage bitmaps for debug")
+> Unfortunately btrfs only checks fatal signals but not if the current
+> task is being frozen for fstrim.
+> 
+> [FIX]
+> For now just do the extra freezing() check at a per-block-group basis.
+> 
+> Reported-by: Rolf Wentland <R.Wentland@gmx.de>
+> Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
+As a quick fix it's ok, I hope there's some way to support freezing of
+the ioctls, try_to_freeze() or schedule() at the right time could work.
+
 Reviewed-by: David Sterba <dsterba@suse.com>
-
-> ---
-> Changelog:
-> v2:
-> - Do not change the parameters of GET_SUBPAGE_BITMAP()
->   To minimal the backport needed.
-> ---
->  fs/btrfs/subpage.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index 663f2f953a65..ca7d2aedfa8d 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -870,9 +870,14 @@ void btrfs_folio_end_all_writers(const struct btrfs_fs_info *fs_info, struct fol
->  }
->  
->  #define GET_SUBPAGE_BITMAP(subpage, fs_info, name, dst)			\
-> -	bitmap_cut(dst, subpage->bitmaps, 0,				\
-> -		   fs_info->sectors_per_page * btrfs_bitmap_nr_##name,	\
-> -		   fs_info->sectors_per_page)
-> +{									\
-> +	const int sectors_per_page = fs_info->sectors_per_page;		\
-> +									\
-> +	ASSERT(sectors_per_page < BITS_PER_LONG);			\
-> +	*dst = bitmap_read(subpage->bitmaps,				\
-
-Eventually this can be "dst = ...", the pointer was required for
-bitmap_cut, but like that it's also acceptable.
 
