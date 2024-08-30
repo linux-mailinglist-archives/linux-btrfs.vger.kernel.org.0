@@ -1,81 +1,89 @@
-Return-Path: <linux-btrfs+bounces-7701-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7702-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2F5C966B01
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 22:54:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FB7D966CAB
+	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Aug 2024 00:48:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D75511C22045
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 20:54:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39DFE1F23E5B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 22:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65171BFE0F;
-	Fri, 30 Aug 2024 20:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF50715FA92;
+	Fri, 30 Aug 2024 22:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EUqb3Uj9"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="B5Tol0Pv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f68.google.com (mail-ot1-f68.google.com [209.85.210.68])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7525F15C153
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 20:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8538B46B91
+	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 22:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725051289; cv=none; b=rHS3VYFRj3emVJuty93bXHhhSxN/u8mu+vO1/c8PJbeCghRFmpiNbcXinJdfn5ucJYdt+rh8qtnF1hIA6I9uKFaYvgp3UdcavkFUcEvN9B2rXSX1tcmpGlk//d1/FQy5fLNqrjzs4x+KhOXAkzHOgk6Rra3qZKv3zQjDjM5MVfU=
+	t=1725058109; cv=none; b=JCl/nMnYuxM/XUe/2kMjUE9sxUslEPbLZwsfVQEKrK4e1A59B5dTxB5Q8cHBbItsFdDPuIUbVfmPAw1TtwE2NLwqQ77bMDOTULkFPusvLvl2U9YGiOYvHSrmtC2VvjfSZ9wOjkfgEldZMmBPnYKPcdY3UU80Z8GkMftEIcEbyXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725051289; c=relaxed/simple;
-	bh=D+Q9UbPqFgFHNfOGgd40FRevWZ0/DcyJAcOwvpkzUX0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=AyNq40L7yOueQN/Kn7/CoHpSCbVvkNDYnBZXUdZvryf0B3yO/fTSVwJInij2a5U1zpg89KTHkP/j/TfW+hFHSe5e5sAvZJfKIOGmBnAMDfdsv+lRSihkdtuU0IlxDwIm7stoF3N5BAvOip+Qas9SbGBpBeM9uuVcTXM+8dhHp60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EUqb3Uj9; arc=none smtp.client-ip=209.85.210.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f68.google.com with SMTP id 46e09a7af769-70df4b5cdd8so1499493a34.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 13:54:47 -0700 (PDT)
+	s=arc-20240116; t=1725058109; c=relaxed/simple;
+	bh=vDBOVW/AVBG02x/v9uJ4/nu1OHfiF8pUsqC+5wp8YJg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=iwbL+LULx3JNAUr5E+JCzU5b1YXy2ilc24OtbhGQxnCRGMqOkct3OTVqaqcD899mJRNQGCpfdsrGM6On3Utu6S7nuHtg9iJ+Qz8Z+X0J0YI/0re5rj+Y8CEd2S66V/tVV5ay4OCZjGtssPaCv6/hQeAtH5CarUFku6hNOxclZ7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=B5Tol0Pv; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2020ac89cabso24899875ad.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 15:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725051286; x=1725656086; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to
-         :references:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=x7J6LebUMTqmDlnvzslmlyBlq4EwezfnlX+bAwIYABU=;
-        b=EUqb3Uj9+B3KiweMy8xWrkoT62L8H0k1g/iX62PYLO5sfc0OoXY+q/cVlS7RZTuoa8
-         a5wBthRUqXTWZliu31UF623atfl3UmTSHyYkQbfOCdSywocZX/bqv3hmwmPbtJ/DplAh
-         XM+tetbo+EgSmQIrsIhuib5UFxd4cy//qoMH8AXO4WsRkANtElx6UJGJXfkCewaMbiBu
-         q4wHSFfIBjp5cwy1J1C1ikC0Kf3Sv6cdZ7TWm+sb5qzqboUym2zRnK1mFyL1OTbnS4oJ
-         09kGQnb5LptmXg7M76xvcverfTt+6/9Pqt5Va5snz3tZ5+6v+YF4/gWLpskZKzYpMYBg
-         Ejnw==
+        d=broadcom.com; s=google; t=1725058107; x=1725662907; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wW6gEJ1Jx+14Xq80zJDUEJGqqo7PszsHlAqP/A24X4g=;
+        b=B5Tol0PvrhKKSPFhGQyxrFBSG4MRYkYMPmgOABcTd5VawiA12R5YdfsCW+SZgirou8
+         BiAE3Q3OCyNaPgLXiLj02C5iQsjU+1aP2J+qgCt3RE1gZLbmg+eKYST+2wpNufqSJjaI
+         XA93fmDxC8l5kd0tCCYhK4phUF9v/MquEmDQk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725051286; x=1725656086;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to
-         :references:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=x7J6LebUMTqmDlnvzslmlyBlq4EwezfnlX+bAwIYABU=;
-        b=VUZKKLeqUizxPT4rDlkLH9yIU+JAzQ19cQ/vcmyjO52Gq7na4lNynT06BOAkKfCPN8
-         0IhWGCoRV+onVn7hSxQadTEebZ7u2mXLZjgqNUJOqKfMZGuuuf5xRyPvsadasPqp37ef
-         6RIqn73sTB8sv1mk2D/NaB+gfRGl9eIwSC4WFMHfdPxy+hq28E++fALth0pTLRoyfPGq
-         H21SK/xo7GXYUk+5jlVBWOg+9eElPXGoi6oVH7DIIr5mWVVl5PGpQvbfodOxlWRTd63G
-         jHBNd/HWPBWywyc3J5OkM8Ar2kNjk+4MLiv2ca01qu34Rdxmuqs6LPf+yv4awEzKFcJr
-         uFbA==
-X-Forwarded-Encrypted: i=1; AJvYcCW6bAWIVeD8d6BZDnQD0FoEJvr1cowbXc672lFuq/8nZwM+Gjj9NjbzAwXWuOM6ALJ7IwRWZxSu1j5xlw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2d4UderY3WgLVGH9cUCG+f3TFepxCj1tlhiMSg2elk5/l3usl
-	d+OXtYB50yBz8rcr2ly0mtPBDRG8nQEyTVgYYzaEXtv561ehGPAQ
-X-Google-Smtp-Source: AGHT+IEOJyJXpwBZYTJEKfTzqDoMqU4NXOl1SBxC1Jy3xV0vRlK6W366z9PDxYktDXhXcP6wojAtAg==
-X-Received: by 2002:a05:6830:2783:b0:703:5fb2:34b7 with SMTP id 46e09a7af769-70f711956damr508364a34.32.1725051286304;
-        Fri, 30 Aug 2024 13:54:46 -0700 (PDT)
-Received: from localhost (fwdproxy-eag-008.fbsv.net. [2a03:2880:3ff:8::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-70f67158f54sm645306a34.29.2024.08.30.13.54.45
+        d=1e100.net; s=20230601; t=1725058107; x=1725662907;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wW6gEJ1Jx+14Xq80zJDUEJGqqo7PszsHlAqP/A24X4g=;
+        b=nX/GrxKYl2YFrRqEwpzT6DSbG7w6YWvOfvuOoBkzs/pVSATsiuZVEtVAoLzkqs/845
+         6dDmxgx0h0ufoqL0vYr8PRBCZgNVMvxwBEwhHwUXLutxqIUacfKRoO5vwJJ0c5ri/h4S
+         y7lSJZrqpgMef1eRymsEyOaZ33QdNpqvQGq/2INuAy/8/0ZV9K9UwpSwUkPLT1QQvIzv
+         pnNYFcg5oYQCEwK5A0YL5eZGRiGVqEbAHWRnkQhvIR16u6UGOGm0OcuHmAYdpzRiM/Ix
+         Z6tp9pL2870p9thP4Kj3qC8kMGRCfrPSQS1kBXODrLof9NLkD025OJ/Sidb5mvNom3IB
+         IIpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVr0zrim57j5Asc7KMr77SZa0hxsM44qIBLnj/mCWVVNahIBdZ4424fKgicHlD4mDAQqoO0RVO+Yc9gYw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2EKWTf+D23UDVPiJgoK9XPILAqWoC9r3IhJT3jzr5ZBmGYFW3
+	f0VdDOGX+sP6bKRproErDgxsKbF9EnqAabwslHOZwuJjbQk8GCKTeeCigEbTDA==
+X-Google-Smtp-Source: AGHT+IER+xIuciY45gqep767TACOPrYbqk5vc2U2E6TNNhPn0PRMzBL1D6DFREDsVTCXO4FgzDRt/g==
+X-Received: by 2002:a17:903:22c5:b0:201:f065:2b2c with SMTP id d9443c01a7336-2050c4666b0mr93068005ad.55.1725058106538;
+        Fri, 30 Aug 2024 15:48:26 -0700 (PDT)
+Received: from patch-virtual-machine.eng.vmware.com ([66.170.99.2])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205152b15besm31300245ad.55.2024.08.30.15.48.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2024 13:54:45 -0700 (PDT)
-Date: Fri, 30 Aug 2024 13:46:59 -0700
-From: Leo Martins <loemra.dev@gmail.com>
-To: kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Cc: 
-Subject: Re: [PATCH v3 0/3] btrfs path auto free
-User-Agent: meli 0.8.6
-References: <cover.1724792563.git.loemra.dev@gmail.com>
-In-Reply-To: <cover.1724792563.git.loemra.dev@gmail.com>
-Message-ID: <j1u38.er61zc06h8sh@gmail.com>
+        Fri, 30 Aug 2024 15:48:26 -0700 (PDT)
+From: Brennan Lamoreaux <brennan.lamoreaux@broadcom.com>
+To: stable@vger.kernel.org
+Cc: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	wqu@suse.com,
+	ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vasavi.sirnapalli@broadcom.com,
+	linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>,
+	syzbot+853d80cba98ce1157ae6@syzkaller.appspotmail.com,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Brennan Lamoreaux <brennan.lamoreaux@broadcom.com>
+Subject: [PATCH 6.1.y] btrfs: fix extent map use-after-free when adding pages to compressed bio
+Date: Fri, 30 Aug 2024 15:45:36 -0700
+Message-Id: <20240830224536.64932-1-brennan.lamoreaux@broadcom.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2024072924-overact-drainable-8abb@gregkh>
+References: <2024072924-overact-drainable-8abb@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,58 +91,50 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8; format=flowed
 
-I think the only feedback I haven't addressed in this patchset was
-moving the declaration to be next to the btrfs_path struct.
-However, I don't think moving the declaration makes sense because
-the DEFINE_FREE references btrfs_free_path which itself is only
-declared after the structure. The other examples I've looked at also
-have DEFINE_FREE next to the freeing function as opposed to the
-structure being freed.
+From: Filipe Manana <fdmanana@suse.com>
 
-On Tue, 27 Aug 2024 15:41, Leo Martins <loemra.dev@gmail.com> wrote:
->The DEFINE_FREE macro defines a wrapper function for a given memory
->cleanup function which takes a pointer as an argument and calls the
->cleanup function with the value of the pointer. The __free macro adds
->a scoped-based cleanup to a variable, using the __cleanup attribute
->to specify the cleanup function that should be called when the variable
->goes out of scope.
->
->Using this cleanup code pattern ensures that memory is properly freed
->when it's no longer needed, preventing memory leaks and reducing the
->risk of crashes or other issues caused by incorrect memory management.
->Even if the code is already memory safe, using this pattern reduces
->the risk of introducing memory-related bugs in the future
->
->In this series of patches I've added a DEFINE_FREE for btrfs_free_path
->and created a macro BTRFS_PATH_AUTO_FREE to clearly identify path
->declarations that will be automatically freed.
->
->I've included some simple examples of where this pattern can be used.
->The trivial examples are ones where there is one exit path and the only
->cleanup performed is a call to btrfs_free_path.
->
->There appear to be around 130 instances that would be a pretty simple to
->convert to this pattern. Is it worth going back and updating
->all trivial instances or would it be better to leave them and use the pattern
->in new code? Another option is to have all path declarations declared
->with BTRFS_PATH_AUTO_FREE and not remove any btrfs_free_path instances.
->In theory this would not change the functionality as it is fine to call
->btrfs_free_path on an already freed path.
->
->Leo Martins (3):
->  btrfs: DEFINE_FREE for btrfs_free_path
->  btrfs: BTRFS_PATH_AUTO_FREE in zoned.c
->  btrfs: BTRFS_PATH_AUTO_FREE in orphan.c
->
-> fs/btrfs/ctree.c  |  2 +-
-> fs/btrfs/ctree.h  |  4 ++++
-> fs/btrfs/orphan.c | 19 ++++++-------------
-> fs/btrfs/zoned.c  | 34 +++++++++++-----------------------
-> 4 files changed, 22 insertions(+), 37 deletions(-)
->
->-- 
->2.43.5
->
+commit 8e7860543a94784d744c7ce34b78a2e11beefa5c upstream.
+
+At add_ra_bio_pages() we are accessing the extent map to calculate
+'add_size' after we dropped our reference on the extent map, resulting
+in a use-after-free. Fix this by computing 'add_size' before dropping our
+extent map reference.
+
+Reported-by: syzbot+853d80cba98ce1157ae6@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/000000000000038144061c6d18f2@google.com/
+Fixes: 6a4049102055 ("btrfs: subpage: make add_ra_bio_pages() compatible")
+CC: stable@vger.kernel.org # 6.1+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[ Brennan: Applied to v6.1 ]
+Signed-off-by: Brennan Lamoreaux <brennan.lamoreaux@broadcom.com>
+---
+ fs/btrfs/compression.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index e6635fe70067..cb56ac8b925e 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -613,6 +613,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+ 			put_page(page);
+ 			break;
+ 		}
++		add_size = min(em->start + em->len, page_end + 1) - cur;
+ 		free_extent_map(em);
+ 
+ 		if (page->index == end_index) {
+@@ -625,7 +626,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+ 			}
+ 		}
+ 
+-		add_size = min(em->start + em->len, page_end + 1) - cur;
+ 		ret = bio_add_page(cb->orig_bio, page, add_size, offset_in_page(cur));
+ 		if (ret != add_size) {
+ 			unlock_extent(tree, cur, page_end, NULL);
+-- 
+2.39.4
 
