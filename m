@@ -1,74 +1,108 @@
-Return-Path: <linux-btrfs+bounces-7691-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7692-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A007966602
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 17:47:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0AA966665
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 18:02:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03E991F245CE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 15:47:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4A29286FE8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2024 16:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D201B2EF6;
-	Fri, 30 Aug 2024 15:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC09E1B9B34;
+	Fri, 30 Aug 2024 16:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U2VOKmdn"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yK/V0ejK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8pf+f7fl";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jlUoTIys";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TaEYzW0E"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE76EEC9
-	for <linux-btrfs@vger.kernel.org>; Fri, 30 Aug 2024 15:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807E81B8EAC;
+	Fri, 30 Aug 2024 16:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725032840; cv=none; b=EhadMDMKrTek6bQUNEB1/Ikt2PZqR54h7djZPDkM8xujFts2ANkaI156hbTyh5JIw3OnhF8Nr9KdKo6vyanWS6uhAE8Ap64iumTfnEZAtdbK+20BZJJk/oHYHYPadHW5Cz8OYn2OTSu/p2+ETB8C2XLc3B2OtKWtkK0XW5fGA5A=
+	t=1725033667; cv=none; b=nxm24yrOEcKcDJHYVEQNtAJx/PExXLM1qR5PdcOBD5DYGHnQoi+RHMQu95OfPSEWGpBD556bs8QSfm9FeAnupRvhxr8JmY0tYqEWmv8Y13G2Lfbs9Xa0vjhGN13owJswnmAH8Gix4I5V2Ph+Nb3ghKnDM+PSMLDRCJ5sliMY224=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725032840; c=relaxed/simple;
-	bh=uiCnDnNiKIAco9v6qpSv5J3po9i3rWfe/GTa8Dxcvwg=;
+	s=arc-20240116; t=1725033667; c=relaxed/simple;
+	bh=uFqyLaE4NatfX8kmKu9K3ygU2sPwGOrH8wgq2yV8q0M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oot/IMEECnrBZWjcH9r7Zp82LQgO63T4Orb1h3mLTdZbBSLjGEtexsB2TB9D154O8+TcF4TXsHZiBtDdev7AA3thskw7ZkOvRxebOrYlRHXLuDu1qgv191GmvCUHoE+KhWXFZw8H7dYJmSnTVrd27ytjKa/xVHwOPnZXSZApyXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U2VOKmdn; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725032839; x=1756568839;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uiCnDnNiKIAco9v6qpSv5J3po9i3rWfe/GTa8Dxcvwg=;
-  b=U2VOKmdniAkocZwuvdTLMoZ5I7z74iijglmw4MscktUH/ePlOJBwLa1p
-   KXX1Lziw1WnnuBKieFvSA5eTTJbQhQW2RLuyQXDjI+DXP3n8QuoQQLf+C
-   UUJdVs5DjkHw4/uc2fnKtLwQyKjqDg+FfhZ1T71SnG/RWSag7WJTmeRP/
-   6trObAR8wRB1b+X/QXuYky+jXurZ6V26ewxWdEheOofGc0FMhOrRDWLpC
-   +eD1GGRiu41VHcyEZTgaxAHWSFCjYE93kK80yh5MZT6v6BTYy0MlhZcJq
-   dk8pBKVYJR6vT3t+cUEeoZu1QFHcuu2fgRlspMVPatrL3xZRJUHNM3Jfn
-   A==;
-X-CSE-ConnectionGUID: HJ3RzKGNQa2tLFCNvIa+9A==
-X-CSE-MsgGUID: yUMtYgugTVO7H8cj+EBxBA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11180"; a="46187235"
-X-IronPort-AV: E=Sophos;i="6.10,189,1719903600"; 
-   d="scan'208";a="46187235"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2024 08:47:19 -0700
-X-CSE-ConnectionGUID: I4UYG+87Qfa+7DgX0IABYA==
-X-CSE-MsgGUID: MB/2X/7GR/+3GLIJpNyARw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,189,1719903600"; 
-   d="scan'208";a="94744154"
-Received: from lkp-server01.sh.intel.com (HELO 9c6b1c7d3b50) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 30 Aug 2024 08:47:16 -0700
-Received: from kbuild by 9c6b1c7d3b50 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sk3qE-0001bq-0n;
-	Fri, 30 Aug 2024 15:47:14 +0000
-Date: Fri, 30 Aug 2024 23:47:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 2/2] btrfs: constify more pointer parameters
-Message-ID: <202408302358.rW7e7sjz-lkp@intel.com>
-References: <e163012ed80a4f55ce17641586681c6ac4ff9018.1724859620.git.dsterba@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HTquZziq9MVWMXerKrM8oWa6UcZtxuhDP+leQnbu3X7zPowBaan6JcaQpnpCO0w4Urocvi1bOJI/JAao0C30Uk/Z/tnuh+ns3JjrgPWBn9WI1k/ywhGVMlnW6XiDclfBwCY+SCYInNkRW+NDu9aiBo2HzSAqOxXHpZwLA2KoNpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yK/V0ejK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8pf+f7fl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jlUoTIys; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TaEYzW0E; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 424F621A42;
+	Fri, 30 Aug 2024 16:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725033657;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hYzO9GShbTK3uvm96Kc6nRShRJAXkilJCo0OS6nYBQU=;
+	b=yK/V0ejK2LmZ1E92HEmHw504ZuEsBp796BcjVfRa1TKSmddU6+7tsm+1VHoYrSlXTwYcw2
+	/dcS9CeOWmC2sIN8QHkOQsXaOzCbGAfmlTYtfUs0SMja2z3jDgmk2MbHggioSu7GFoDwkd
+	AZyHJKcgOromNmEbpVYDchW0VUCs3EE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725033657;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hYzO9GShbTK3uvm96Kc6nRShRJAXkilJCo0OS6nYBQU=;
+	b=8pf+f7fl5qZxVsZUTHwjJeTYcMlK4b/QvPVhVib/UbXPJwxr/PQ7wbq18n7qAk2F44+7Wr
+	JCmASNT0N1JM0FDQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jlUoTIys;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=TaEYzW0E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725033656;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hYzO9GShbTK3uvm96Kc6nRShRJAXkilJCo0OS6nYBQU=;
+	b=jlUoTIysmn6BlNeVurQSUx5OIDXp4oVMuKPQeOhJHXfS6bctk8sskYYnwvVKFbTTDx0f+o
+	zeOU/RDJPvCNrpeL+cgPt2ygPL6TXzJYN8kDsvzRSAk1472T0ZEH8jkhXgHrGw1+Jdx+ph
+	g6nLo07JowOO2fZuLL4We7WS46pHa/g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725033656;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hYzO9GShbTK3uvm96Kc6nRShRJAXkilJCo0OS6nYBQU=;
+	b=TaEYzW0EfiLhR26bw11PzXCFZOoklPk0zEg0IN8oaXgAalGlNpXMt8OXDNSr7kSBLx5Tkn
+	9ABB2tO3/kMHzyBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 170C213A44;
+	Fri, 30 Aug 2024 16:00:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id VLBnBbjs0WZgBwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 30 Aug 2024 16:00:56 +0000
+Date: Fri, 30 Aug 2024 18:00:54 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Dmitry Vyukov <dvyukov@google.com>
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	syzkaller <syzkaller@googlegroups.com>,
+	syzbot <syzbot+dfb6eff2a68b42d557d3@syzkaller.appspotmail.com>,
+	clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (6)
+Message-ID: <20240830160054.GU25962@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <0000000000008f55e4062036c827@google.com>
+ <20240821201338.GA2109582@perftesting>
+ <CACT4Y+aSV8ZptNaLqVg+QgOyDn+tJ1WUyBxQ-9hk7joqbmT6GA@mail.gmail.com>
+ <20240824193835.GN25962@suse.cz>
+ <CACT4Y+bsEPHkzofGZPHkhpj1jnGRwFmqR-scJGX0EXAZLe-Zng@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,56 +111,116 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e163012ed80a4f55ce17641586681c6ac4ff9018.1724859620.git.dsterba@suse.com>
+In-Reply-To: <CACT4Y+bsEPHkzofGZPHkhpj1jnGRwFmqR-scJGX0EXAZLe-Zng@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 424F621A42
+X-Spam-Score: -2.71
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SUBJECT_HAS_EXCLAIM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,suse.cz:replyto,suse.cz:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,btrfs.readthedocs.io:url];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[dfb6eff2a68b42d557d3];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Hi David,
+On Fri, Aug 30, 2024 at 05:02:09PM +0200, Dmitry Vyukov wrote:
+> On Sat, 24 Aug 2024 at 21:38, David Sterba <dsterba@suse.cz> wrote:
+> >
+> > On Thu, Aug 22, 2024 at 02:05:01PM +0200, Dmitry Vyukov wrote:
+> > > > > BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+> > > >
+> > > > Can we disable syzbot issues for this specific error?  Btrfs uses lockdep
+> > > > annotations for our tree locks, so we _easily_ cross this threshold on the
+> > > > default configuration.  Our CI config requires the following settings to get
+> > > > lockdep to work longer than two or three tests
+> > > >
+> > > > CONFIG_LOCKDEP_BITS=20
+> > > > CONFIG_LOCKDEP_CHAINS_BITS=20
+> > > > CONFIG_LOCKDEP_STACK_TRACE_BITS=19
+> > > > CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
+> > > > CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
+> > > >
+> > > > but there's no way to require that in our config (nor do I think we should
+> > > > really be able to tbqh).  It makes more sense for syzbot to just ignore this
+> > > > particular error as it's not actually a bug.  Thanks,
+> > >
+> > > Hi Josef,
+> > >
+> > > We could bump these values, the last 3 are already this or higher on syzbot.
+> > > Do you know if increasing CONFIG_LOCKDEP_BITS and
+> > > CONFIG_LOCKDEP_CHAINS_BITS significantly increases memory usage?
+> > >
+> > > Ignoring random bugs on unknown heuristics is really not scalable.
+> >
+> > This is not a random bug. The warning has been reported many times, it
+> > does not point to a specific problem in code that uses lockdep but
+> > rather some defficiency in the lockdep mechanism itself.
+> 
+> By "random" I meant that the predicate is some custom English
+> sentence, rather than something that can be expressed in the code. So
+> on the global kernel scale it's hard/impossible to filter out such
+> reports.
+> 
+> Additional complication here is that the predicate involves knowing
+> that exactly system calls triggered this warning, since the warning is
+> generic. We don't generally know what exact syscall sequence triggered
+> a report. So it would only be possible to ignore "BUG:
+> MAX_LOCKDEP_CHAIN_HLOCKS too low" globally, which is not good.
+> 
+> > > Consider: there are hundreds of kernel subsystems, if each of them
+> > > declares a random subset of bugs as not bugs.
+> >
+> > "If each of them", no this won't happen. Or, if you add this one and
+> > reject the others you'll still make people happy.
+> >
+> > > What's the maintenance
+> > > story here? And it's not syzbot specific, any automated and manual
+> > > testing will have the same problem.
+> >
+> > Yes this does not avoid reports but at least it won't be a syzbot report
+> > that somebody thinks is worth time. Everybody else will be told "ignore"
+> > or poitned to documentation or the report ignored completely
+> > (https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#bug-max-lockdep-chain-hlocks-too-low).
+> >
+> > > The only scalable way to mark false reports is to not produce them.
+> >
+> > In an ideal case yes. So far we have only the workaround with increasing
+> > the config value (which makes sense on a distro config), otherwise I
+> > remembet locking guys to suggest some fix but I can't find it now in the
+> > numerous reports.
+> 
+> I've bumped LOCKDEP parameters in syzbot configs:
+> https://github.com/google/syzkaller/commit/f4865e39dd0bcae7e5f3f5d59807d6ac9a8a99ba
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on linus/master next-20240830]
-[cannot apply to v6.11-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Sterba/btrfs-rework-BTRFS_I-as-macro-to-preserve-parameter-const/20240828-234222
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/e163012ed80a4f55ce17641586681c6ac4ff9018.1724859620.git.dsterba%40suse.com
-patch subject: [PATCH 2/2] btrfs: constify more pointer parameters
-config: i386-buildonly-randconfig-001-20240830 (https://download.01.org/0day-ci/archive/20240830/202408302358.rW7e7sjz-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240830/202408302358.rW7e7sjz-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408302358.rW7e7sjz-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   fs/btrfs/block-group.c: In function 'btrfs_should_reclaim':
->> fs/btrfs/block-group.c:1762:51: warning: passing argument 1 of 'btrfs_zoned_should_reclaim' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-    1762 |                 return btrfs_zoned_should_reclaim(fs_info);
-         |                                                   ^~~~~~~
-   In file included from fs/btrfs/block-group.c:20:
-   fs/btrfs/zoned.h:245:69: note: expected 'struct btrfs_fs_info *' but argument is of type 'const struct btrfs_fs_info *'
-     245 | static inline bool btrfs_zoned_should_reclaim(struct btrfs_fs_info *fs_info)
-         |                                               ~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
-
-
-vim +1762 fs/btrfs/block-group.c
-
-2ca0ec770c62b3 Johannes Thumshirn 2021-10-14  1758  
-17ca64afd0470e David Sterba       2024-08-28  1759  static inline bool btrfs_should_reclaim(const struct btrfs_fs_info *fs_info)
-3687fcb0752ac9 Johannes Thumshirn 2022-03-29  1760  {
-3687fcb0752ac9 Johannes Thumshirn 2022-03-29  1761  	if (btrfs_is_zoned(fs_info))
-3687fcb0752ac9 Johannes Thumshirn 2022-03-29 @1762  		return btrfs_zoned_should_reclaim(fs_info);
-3687fcb0752ac9 Johannes Thumshirn 2022-03-29  1763  	return true;
-3687fcb0752ac9 Johannes Thumshirn 2022-03-29  1764  }
-3687fcb0752ac9 Johannes Thumshirn 2022-03-29  1765  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+LOCKDEP_CHAINS_BITS=20 will improve the situation, thanks.
 
