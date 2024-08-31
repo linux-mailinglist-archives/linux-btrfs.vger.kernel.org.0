@@ -1,105 +1,193 @@
-Return-Path: <linux-btrfs+bounces-7703-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18EB1966D8D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Aug 2024 02:36:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C95D0966F27
+	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Aug 2024 05:56:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 834CBB2265A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Aug 2024 00:36:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B16D01C21E02
+	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Aug 2024 03:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11526FCC;
-	Sat, 31 Aug 2024 00:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28115674E;
+	Sat, 31 Aug 2024 03:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="C9Zn7d2j"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2BA41D1309;
-	Sat, 31 Aug 2024 00:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8621446B4
+	for <linux-btrfs@vger.kernel.org>; Sat, 31 Aug 2024 03:56:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.59.177.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725064579; cv=none; b=EOxpqfpYmbBzGn/YNJ75+VEUGnzOjvo5iHCJJVpNSqmV+xXBUUz+bE2SObVOsvoGbDkANvHDqe2o5gOv+R3dlnNk+NbN3bJVTO/9mRw2VSuLVfqLYIoZP/hA2/zcSOO2eqS0RwLKqUk7MxbcRQF7Vj2e/YxKvdk/hIzl/bDstPg=
+	t=1725076572; cv=none; b=UMEJkohwI5ec6CmjDDr0hLzpWqtwnrnTQIlc5MgxMaMPzN2fVqU/WUQRzOUWW1ct5mcmZ6W+HTbvjJWSzaRP1iVQxhnvQyrkIsvzawLRIwO4QVD3R/+PjyWvF2sPzO8z1bmq4UuY2ki3YKsaNXUHHBoMjMGdMfVNiQuOYG/BkJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725064579; c=relaxed/simple;
-	bh=ez1uLWZElCWBv5bLkXxc6KjkAHcwOdiyQY1fr5ULPOg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b65+ZesIHb74qnvRDfsCGJBeajztjihAlsB8K5PrpZ75gCO69WaiyXDXST6A6Tn6/tA1VIcEDHij8N85PAxQ/7LCgFeoT+9tpjzdk+UB4z1LjFn4pGZdzkEGvCbTD5LptrtbUDV07iNsq/I6WWW8rq7op2aK1oZ0XYbAqgDS90k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47V0Ad6V000915;
-	Fri, 30 Aug 2024 17:22:25 -0700
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 419unh3p8t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 30 Aug 2024 17:22:25 -0700 (PDT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Fri, 30 Aug 2024 17:22:24 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.39 via Frontend Transport; Fri, 30 Aug 2024 17:22:23 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+4704b3cc972bd76024f1@syzkaller.appspotmail.com>
-CC: <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
-        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: [PATCH] btrfs: Add assert or condition
-Date: Sat, 31 Aug 2024 08:22:22 +0800
-Message-ID: <20240831002222.2275740-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000044ff540620d7dee2@google.com>
-References: <00000000000044ff540620d7dee2@google.com>
+	s=arc-20240116; t=1725076572; c=relaxed/simple;
+	bh=Vn9FV12YIFsbNKeJI7hK2AuUMxcLVGnXywypeLnQs0w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UUlzQY+vnEd17yZwyAnYTQwhRJfzRok4YeHf3JZMbt4yRjFo82jttyDycoKFwyDTbi32n1VztcXDFBraNmxfrKJAGhySa8nVNQo8Nihh6Flhs34oUdrhcp3byOs44BL+pE9oIa2L/U7whVFr9LraSNhIty/9DONzcwYq2hR0gT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=C9Zn7d2j; arc=none smtp.client-ip=52.59.177.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1725076555;
+	bh=Vn9FV12YIFsbNKeJI7hK2AuUMxcLVGnXywypeLnQs0w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=C9Zn7d2jLevfOb6pcZyBeTjtiToYdAc04myjJEN2QtjEqeol3jPKhSsJmc8fG1hhX
+	 b4y8uHqdM5OnbOtlhWypnSijgM3l4tCPEoBkyDuDyisitGhGm+k13i3g8SfzwlsFPj
+	 qSH+scI4U0JM5XgwVK5tFy2eZx26H9R6egh4dpik=
+X-QQ-mid: bizesmtp91t1725076554tlz1hsr6
+X-QQ-Originating-IP: GvUhMle0trNgokR43CFKMirE0X11BpLpXZ6iuq6FJgk=
+Received: from [192.168.1.105] ( [60.215.125.134])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Sat, 31 Aug 2024 11:55:51 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9680354208277392040
+Message-ID: <DA75CD1FC5E6DF1D+d9249015-4fb1-478d-8064-e8e9ab4d25f8@bupt.moe>
+Date: Sat, 31 Aug 2024 11:55:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: YeYNFiSsZKJWH2ppmGtPvnp5jBaQ1zN9
-X-Proofpoint-ORIG-GUID: YeYNFiSsZKJWH2ppmGtPvnp5jBaQ1zN9
-X-Authority-Analysis: v=2.4 cv=K8RwHDWI c=1 sm=1 tr=0 ts=66d26241 cx=c_pps a=K4BcnWQioVPsTJd46EJO2w==:117 a=K4BcnWQioVPsTJd46EJO2w==:17 a=yoJbH4e0A30A:10 a=hSkVLCK3AAAA:8 a=edf1wS77AAAA:8 a=t7CeM3EgAAAA:8 a=WQ4PzUGnyvOGiPlKdjgA:9 a=cQPPKAXgyycSBL8etih5:22
- a=DcSpbTIhAlouE1Uv7lRv:22 a=FdTzh2GWekK77mhwV6Dw:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-30_12,2024-08-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 spamscore=0 clxscore=1011 mlxlogscore=697 lowpriorityscore=0
- suspectscore=0 malwarescore=0 impostorscore=0 mlxscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.21.0-2407110000 definitions=main-2408310001
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: zoned: handle broken write pointer on zones
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc: xuefer@gmail.com
+References: <6a8b1550cef136b1d733d5c1016a7ba717335344.1725035560.git.naohiro.aota@wdc.com>
+Content-Language: en-US
+From: Yuwei Han <hrx@bupt.moe>
+In-Reply-To: <6a8b1550cef136b1d733d5c1016a7ba717335344.1725035560.git.naohiro.aota@wdc.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------opDbCn2ljKrp3mqV2SlXAsxr"
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:bupt.moe:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-When the value of fsync_skip_inode_lock is true, i_mmap_lock is used,
-so add it or condition in the ASSERT. 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------opDbCn2ljKrp3mqV2SlXAsxr
+Content-Type: multipart/mixed; boundary="------------cz9O1ufFYeJAf7xtMmRS6Jyr";
+ protected-headers="v1"
+From: Yuwei Han <hrx@bupt.moe>
+To: Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc: xuefer@gmail.com
+Message-ID: <d9249015-4fb1-478d-8064-e8e9ab4d25f8@bupt.moe>
+Subject: Re: [PATCH] btrfs: zoned: handle broken write pointer on zones
+References: <6a8b1550cef136b1d733d5c1016a7ba717335344.1725035560.git.naohiro.aota@wdc.com>
+In-Reply-To: <6a8b1550cef136b1d733d5c1016a7ba717335344.1725035560.git.naohiro.aota@wdc.com>
 
-Reported-and-tested-by: syzbot+4704b3cc972bd76024f1@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=4704b3cc972bd76024f1
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- fs/btrfs/ordered-data.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--------------cz9O1ufFYeJAf7xtMmRS6Jyr
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 82a68394a89c..d0187e1fb941 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -1015,7 +1015,8 @@ void btrfs_get_ordered_extents_for_logging(struct btrfs_inode *inode,
- {
- 	struct rb_node *n;
- 
--	ASSERT(inode_is_locked(&inode->vfs_inode));
-+	ASSERT(inode_is_locked(&inode->vfs_inode) ||
-+	       rwsem_is_locked(&inode->i_mmap_lock));
- 
- 	spin_lock_irq(&inode->ordered_tree_lock);
- 	for (n = rb_first(&inode->ordered_tree); n; n = rb_next(n)) {
--- 
-2.43.0
+DQoNCuWcqCAyMDI0LzgvMzEgMDA6MzIsIE5hb2hpcm8gQW90YSDlhpnpgZM6DQo+IEJ0cmZz
+IHJlamVjdHMgdG8gbW91bnQgYSBGUyBpZiBpdCBmaW5kcyBhIGJsb2NrIGdyb3VwIHdpdGgg
+YSBicm9rZW4gd3JpdGUNCj4gcG9pbnRlciAoZS5nLCB1bmVxdWFsIHdyaXRlIHBvaW50ZXJz
+IG9uIHR3byB6b25lcyBvZiBSQUlEMSBibG9jayBncm91cCkuDQo+IFNpbmNlIHN1Y2ggY2Fz
+ZSBjYW4gaGFwcGVuIGVhc2lseSB3aXRoIGEgcG93ZXItbG9zcyBvciBjcmFzaCBvZiBhIHN5
+c3RlbSwNCj4gd2UgbmVlZCB0byBoYW5kbGUgdGhlIGNhc2UgbW9yZSBnZW50bHkuDQo+IA0K
+Q2FuIHRoaXMgKGJyb2tlbiB3cml0ZSBwb2ludGVyKSBiZSByZXByb2R1Y2VkIHdpdGggc29t
+ZSBnZW50bGUgd2F5PyBTbyBJIA0KY2FuIHRlc3QgaXQgd2l0aG91dCB3b3JyeWluZyBidXJu
+aW5nIG91dCBteSBwcmVjaW91cyBIQzYyMCAoIHRoZXkgYXJlIA0KdmVyeSBkaWZmaWN1bHQg
+dG8gcHVyY2hhc2UpLg0KPiBIYW5kbGUgc3VjaCBibG9jayBncm91cCBieSBtYWtpbmcgaXQg
+dW5hbGxvY2F0YWJsZSwgc28gdGhhdCB0aGVyZSB3aWxsIGJlDQo+IG5vIHdyaXRlcyBpbnRv
+IGl0LiBUaGF0IGNhbiBiZSBkb25lIGJ5IHNldHRpbmcgdGhlIGFsbG9jYXRpb24gcG9pbnRl
+ciBhdA0KPiB0aGUgZW5kIG9mIGFsbG9jYXRpbmcgcmVnaW9uICg9IGJsb2NrX2dyb3VwLT56
+b25lX2NhcGFjaXR5KS4gVGhlbiwgZXhpc3RpbmcNCj4gY29kZSBoYW5kbGUgem9uZV91bnVz
+YWJsZSBwcm9wZXJseS4NCj4gDQo+IEhhdmluZyBwcm9wZXIgem9uZV9jYXBhY2l0eSBpcyBu
+ZWNlc3NhcnkgZm9yIHRoZSBjaGFuZ2UuIFNvLCBzZXQgaXQgYXMgZmFzdA0KPiBhcyBwb3Nz
+aWJsZS4NCj4gDQo+IFdlIGNhbm5vdCBoYW5kbGUgUkFJRDAgYW5kIFJBSUQxMCBjYXNlIGxp
+a2UgdGhpcy4gQnV0LCB0aGV5IGFyZSBhbnl3YXkNCj4gdW5hYmxlIHRvIHJlYWQgYmVjYXVz
+ZSBvZiBhIG1pc3Npbmcgc3RyaXBlLg0KPiANCj4gRml4ZXM6IDI2NWY3MjM3ZGQyNSAoImJ0
+cmZzOiB6b25lZDogYWxsb3cgRFVQIG9uIG1ldGEtZGF0YSBibG9jayBncm91cHMiKQ0KPiBG
+aXhlczogNTY4MjIwZmE5NjU3ICgiYnRyZnM6IHpvbmVkOiBzdXBwb3J0IFJBSUQwLzEvMTAg
+b24gdG9wIG9mIHJhaWQgc3RyaXBlIHRyZWUiKQ0KPiBDQzogc3RhYmxlQHZnZXIua2VybmVs
+Lm9yZyAjIDYuMSsNCj4gUmVwb3J0ZWQtYnk6IEhBTiBZdXdlaSA8aHJ4QGJ1cHQubW9lPg0K
+PiBDYzogWHVlZmVyIDx4dWVmZXJAZ21haWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBOYW9o
+aXJvIEFvdGEgPG5hb2hpcm8uYW90YUB3ZGMuY29tPg0KPiAtLS0NCj4gICBmcy9idHJmcy96
+b25lZC5jIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQo+ICAgMSBmaWxl
+IGNoYW5nZWQsIDI1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZm
+IC0tZ2l0IGEvZnMvYnRyZnMvem9uZWQuYyBiL2ZzL2J0cmZzL3pvbmVkLmMNCj4gaW5kZXgg
+NjZmNjNlODJhZjc5Li4wNDdlMzMzNzg1MmUgMTAwNjQ0DQo+IC0tLSBhL2ZzL2J0cmZzL3pv
+bmVkLmMNCj4gKysrIGIvZnMvYnRyZnMvem9uZWQuYw0KPiBAQCAtMTQwNiw2ICsxNDA2LDgg
+QEAgc3RhdGljIGludCBidHJmc19sb2FkX2Jsb2NrX2dyb3VwX2R1cChzdHJ1Y3QgYnRyZnNf
+YmxvY2tfZ3JvdXAgKmJnLA0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+ICAgCX0NCj4gICAN
+Cj4gKwliZy0+em9uZV9jYXBhY2l0eSA9IG1pbl9ub3RfemVybyh6b25lX2luZm9bMF0uY2Fw
+YWNpdHksIHpvbmVfaW5mb1sxXS5jYXBhY2l0eSk7DQo+ICsNCj4gICAJaWYgKHpvbmVfaW5m
+b1swXS5hbGxvY19vZmZzZXQgPT0gV1BfTUlTU0lOR19ERVYpIHsNCj4gICAJCWJ0cmZzX2Vy
+cihiZy0+ZnNfaW5mbywNCj4gICAJCQkgICJ6b25lZDogY2Fubm90IHJlY292ZXIgd3JpdGUg
+cG9pbnRlciBmb3Igem9uZSAlbGx1IiwNCj4gQEAgLTE0MzIsNyArMTQzNCw2IEBAIHN0YXRp
+YyBpbnQgYnRyZnNfbG9hZF9ibG9ja19ncm91cF9kdXAoc3RydWN0IGJ0cmZzX2Jsb2NrX2dy
+b3VwICpiZywNCj4gICAJfQ0KPiAgIA0KPiAgIAliZy0+YWxsb2Nfb2Zmc2V0ID0gem9uZV9p
+bmZvWzBdLmFsbG9jX29mZnNldDsNCj4gLQliZy0+em9uZV9jYXBhY2l0eSA9IG1pbih6b25l
+X2luZm9bMF0uY2FwYWNpdHksIHpvbmVfaW5mb1sxXS5jYXBhY2l0eSk7DQo+ICAgCXJldHVy
+biAwOw0KPiAgIH0NCj4gICANCj4gQEAgLTE0NTAsNiArMTQ1MSw5IEBAIHN0YXRpYyBpbnQg
+YnRyZnNfbG9hZF9ibG9ja19ncm91cF9yYWlkMShzdHJ1Y3QgYnRyZnNfYmxvY2tfZ3JvdXAg
+KmJnLA0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+ICAgCX0NCj4gICANCj4gKwkvKiBJbiBj
+YXNlIGEgZGV2aWNlIGlzIG1pc3Npbmcgd2UgaGF2ZSBhIGNhcCBvZiAwLCBzbyBkb24ndCB1
+c2UgaXQuICovDQo+ICsJYmctPnpvbmVfY2FwYWNpdHkgPSBtaW5fbm90X3plcm8oem9uZV9p
+bmZvWzBdLmNhcGFjaXR5LCB6b25lX2luZm9bMV0uY2FwYWNpdHkpOw0KPiArDQo+ICAgCWZv
+ciAoaSA9IDA7IGkgPCBtYXAtPm51bV9zdHJpcGVzOyBpKyspIHsNCj4gICAJCWlmICh6b25l
+X2luZm9baV0uYWxsb2Nfb2Zmc2V0ID09IFdQX01JU1NJTkdfREVWIHx8DQo+ICAgCQkgICAg
+em9uZV9pbmZvW2ldLmFsbG9jX29mZnNldCA9PSBXUF9DT05WRU5USU9OQUwpDQo+IEBAIC0x
+NDcxLDkgKzE0NzUsNiBAQCBzdGF0aWMgaW50IGJ0cmZzX2xvYWRfYmxvY2tfZ3JvdXBfcmFp
+ZDEoc3RydWN0IGJ0cmZzX2Jsb2NrX2dyb3VwICpiZywNCj4gICAJCQlpZiAodGVzdF9iaXQo
+MCwgYWN0aXZlKSkNCj4gICAJCQkJc2V0X2JpdChCTE9DS19HUk9VUF9GTEFHX1pPTkVfSVNf
+QUNUSVZFLCAmYmctPnJ1bnRpbWVfZmxhZ3MpOw0KPiAgIAkJfQ0KPiAtCQkvKiBJbiBjYXNl
+IGEgZGV2aWNlIGlzIG1pc3Npbmcgd2UgaGF2ZSBhIGNhcCBvZiAwLCBzbyBkb24ndCB1c2Ug
+aXQuICovDQo+IC0JCWJnLT56b25lX2NhcGFjaXR5ID0gbWluX25vdF96ZXJvKHpvbmVfaW5m
+b1swXS5jYXBhY2l0eSwNCj4gLQkJCQkJCSB6b25lX2luZm9bMV0uY2FwYWNpdHkpOw0KPiAg
+IAl9DQo+ICAgDQo+ICAgCWlmICh6b25lX2luZm9bMF0uYWxsb2Nfb2Zmc2V0ICE9IFdQX01J
+U1NJTkdfREVWKQ0KPiBAQCAtMTU2Myw2ICsxNTY0LDcgQEAgaW50IGJ0cmZzX2xvYWRfYmxv
+Y2tfZ3JvdXBfem9uZV9pbmZvKHN0cnVjdCBidHJmc19ibG9ja19ncm91cCAqY2FjaGUsIGJv
+b2wgbmV3KQ0KPiAgIAl1bnNpZ25lZCBsb25nICphY3RpdmUgPSBOVUxMOw0KPiAgIAl1NjQg
+bGFzdF9hbGxvYyA9IDA7DQo+ICAgCXUzMiBudW1fc2VxdWVudGlhbCA9IDAsIG51bV9jb252
+ZW50aW9uYWwgPSAwOw0KPiArCXU2NCBwcm9maWxlOw0KPiAgIA0KPiAgIAlpZiAoIWJ0cmZz
+X2lzX3pvbmVkKGZzX2luZm8pKQ0KPiAgIAkJcmV0dXJuIDA7DQo+IEBAIC0xNjIzLDcgKzE2
+MjUsOCBAQCBpbnQgYnRyZnNfbG9hZF9ibG9ja19ncm91cF96b25lX2luZm8oc3RydWN0IGJ0
+cmZzX2Jsb2NrX2dyb3VwICpjYWNoZSwgYm9vbCBuZXcpDQo+ICAgCQl9DQo+ICAgCX0NCj4g
+ICANCj4gLQlzd2l0Y2ggKG1hcC0+dHlwZSAmIEJUUkZTX0JMT0NLX0dST1VQX1BST0ZJTEVf
+TUFTSykgew0KPiArCXByb2ZpbGUgPSBtYXAtPnR5cGUgJiBCVFJGU19CTE9DS19HUk9VUF9Q
+Uk9GSUxFX01BU0s7DQo+ICsJc3dpdGNoIChwcm9maWxlKSB7DQo+ICAgCWNhc2UgMDogLyog
+c2luZ2xlICovDQo+ICAgCQlyZXQgPSBidHJmc19sb2FkX2Jsb2NrX2dyb3VwX3NpbmdsZShj
+YWNoZSwgJnpvbmVfaW5mb1swXSwgYWN0aXZlKTsNCj4gICAJCWJyZWFrOw0KPiBAQCAtMTY1
+MCw2ICsxNjUzLDIzIEBAIGludCBidHJmc19sb2FkX2Jsb2NrX2dyb3VwX3pvbmVfaW5mbyhz
+dHJ1Y3QgYnRyZnNfYmxvY2tfZ3JvdXAgKmNhY2hlLCBib29sIG5ldykNCj4gICAJCWdvdG8g
+b3V0Ow0KPiAgIAl9DQo+ICAgDQo+ICsJaWYgKHJldCA9PSAtRUlPICYmIHByb2ZpbGUgIT0g
+MCAmJiBwcm9maWxlICE9IEJUUkZTX0JMT0NLX0dST1VQX1JBSUQwICYmDQo+ICsJICAgIHBy
+b2ZpbGUgIT0gQlRSRlNfQkxPQ0tfR1JPVVBfUkFJRDEwKSB7DQo+ICsJCS8qDQo+ICsJCSAq
+IERldGVjdGVkIGJyb2tlbiB3cml0ZSBwb2ludGVyLiAgTWFrZSB0aGlzIGJsb2NrIGdyb3Vw
+DQo+ICsJCSAqIHVuYWxsb2NhdGFibGUgYnkgc2V0dGluZyB0aGUgYWxsb2NhdGlvbiBwb2lu
+dGVyIGF0IHRoZSBlbmQgb2YNCj4gKwkJICogYWxsb2NhdGFibGUgcmVnaW9uLiBSZWxvY2F0
+aW5nIHRoaXMgYmxvY2sgZ3JvdXAgd2lsbCBmaXggdGhlDQo+ICsJCSAqIG1pc21hdGNoLg0K
+PiArCQkgKg0KPiArCQkgKiBDdXJyZW50bHksIHdlIGNhbm5vdCBoYW5kbGUgUkFJRDAgb3Ig
+UkFJRDEwIGNhc2UgbGlrZSB0aGlzDQo+ICsJCSAqIGJlY2F1c2Ugd2UgZG9uJ3QgaGF2ZSBh
+IHByb3BlciB6b25lX2NhcGFjaXR5IHZhbHVlLiBCdXQsDQo+ICsJCSAqIHJlYWRpbmcgZnJv
+bSB0aGlzIGJsb2NrIGdyb3VwIHdvbid0IHdvcmsgYW55d2F5IGJ5IGEgbWlzc2luZw0KPiAr
+CQkgKiBzdHJpcGUuDQo+ICsJCSAqLw0KPiArCQljYWNoZS0+YWxsb2Nfb2Zmc2V0ID0gY2Fj
+aGUtPnpvbmVfY2FwYWNpdHk7DQo+ICsJCXJldCA9IDA7DQo+ICsJfQ0KPiArDQo+ICAgb3V0
+Og0KPiAgIAkvKiBSZWplY3Qgbm9uIFNJTkdMRSBkYXRhIHByb2ZpbGVzIHdpdGhvdXQgUlNU
+ICovDQo+ICAgCWlmICgobWFwLT50eXBlICYgQlRSRlNfQkxPQ0tfR1JPVVBfREFUQSkgJiYN
+Cg==
 
+--------------cz9O1ufFYeJAf7xtMmRS6Jyr--
+
+--------------opDbCn2ljKrp3mqV2SlXAsxr
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQS1I4nXkeMajvdkf0VLkKfpYfpBUwUCZtKUQQAKCRBLkKfpYfpB
+U+75AQC6MaAYxv2kM0ox+g8eUvtlf1vxsVGw4Gpd1w6zMuxiGgEAthxXxsa/Hee1
+EFAA9zefsQLujgaMhK5XBCr323qkuAI=
+=2SmF
+-----END PGP SIGNATURE-----
+
+--------------opDbCn2ljKrp3mqV2SlXAsxr--
 
