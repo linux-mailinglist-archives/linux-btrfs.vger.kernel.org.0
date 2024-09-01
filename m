@@ -1,231 +1,217 @@
-Return-Path: <linux-btrfs+bounces-7709-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7710-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B58B7967394
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2024 00:34:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 545C09675B8
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2024 11:17:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76B6B28306B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 31 Aug 2024 22:34:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73E4AB2196C
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2024 09:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED6017F500;
-	Sat, 31 Aug 2024 22:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E219B1448CD;
+	Sun,  1 Sep 2024 09:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Xc23ZNL7"
+	dkim=pass (1024-bit key) header.d=beware.dropbear.id.au header.i=@beware.dropbear.id.au header.b="vXlPa2jg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from smtp70.iad3a.emailsrvr.com (smtp70.iad3a.emailsrvr.com [173.203.187.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC5529A5;
-	Sat, 31 Aug 2024 22:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2147C219F6
+	for <linux-btrfs@vger.kernel.org>; Sun,  1 Sep 2024 09:16:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.203.187.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725143633; cv=none; b=uofWcElNIGDTMlzW91cXVqa4jSd7r5J3IoYO8nCme81h6nkZfTtIEE827wVAgoLBnFcVyYPbNcytNaaBRCeijiZb3kov0B93z447iVq/1GcJMC5jMv82H1kiSOqmc1/duvQsaLTAfyMMSoJS6pOaCMRJZCyt6zat+aPDVK1WKUA=
+	t=1725182215; cv=none; b=Xs0ijfavdii5GSWgqkiP6uT3zX5M7x7jVrDNdm7pe+4JPrRyY11xhaE7gGrk5QD9RyvTNtfBp7U1qgZwxOYAffTJP34kWOWxDWZJtH0DkrB9h5fBKG+OGpyIFSz/1o66EtoX3BWHB9q5+n8/KTKfLPAzdGYniG1RIzLM7zgTQCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725143633; c=relaxed/simple;
-	bh=P4WTBxhdMmxXB7nraLoaZ5h/u9jp6GxFQqbnPOnHI2o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=f9+sr1sR/a8eypR+XnQb1FMCLg51e28cx+o+Aq1dxlxLpuFsHjBY79btP1rUjhG7lSwmOvsKLYvqT6yKa12hAlRZhC5qJhGxIlPbdRuRlPyBXqquzgBvFYoNSnmJ/9iy+ke1U2odh9POB1pawbNwDaalIinlGhhFP+Wl2ngNQ0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Xc23ZNL7; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1725143614; x=1725748414; i=quwenruo.btrfs@gmx.com;
-	bh=Mve+gyKsjgpW/qavfRjnHzJFKd0yzVjXgkM84t7FqHU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Xc23ZNL7ysZJT2Tzm6uIUVAPPi/76hYA/1+YDJakty/b8Ndc0kyY23/wEbZT1zlR
-	 UWc4MMQJILhwwVxugReUCnAAhbZKm/aqJEaGkB2MzjIA7FS1VvagOOxT1VDbcHnsb
-	 UtqiiQuGVP1pzWbk5tvmXJzeO9796+sSjctKgtDnGitcqRtAzNIzJk5zkXykuev0P
-	 WbgjDa3LmhM9w4eggsGeXmdu7p4BraLutUKBCl9MBxHZhPyGWV3aTXxxJ+oGTSG2w
-	 ZVX6gmJhE4XWPZaqKzKc6T9nXaB4BIkpGLMOgSoWGtt69rk5/znJr55YkRuMkzFS0
-	 GOSRWAbhMmNUqsxzPw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLQxX-1sSAaz0QBn-00Pvdq; Sun, 01
- Sep 2024 00:33:34 +0200
-Message-ID: <aa2e3dba-9729-4b6b-94a5-36075d57ca7f@gmx.com>
-Date: Sun, 1 Sep 2024 08:03:29 +0930
+	s=arc-20240116; t=1725182215; c=relaxed/simple;
+	bh=pPNgaO+NNVBWBJrUC1MZB5WPnl0cEvEjgKgXXxMlsac=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=ExnItrA40zUYFe5tIjnisZVXbaUl8y+rgx5721LcNg39kf+WwN00moRp2GW+cLSCZOikVwK3Qhh6FH5HC3l8OO8woG5u5CKCBLsXU0MvNNdnHUTy2uUTCoSF7pOg/R/Z8ZkIIf027CPfJneGfTk2ikeoZQZS/5LxfpchkkphaQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=beware.dropbear.id.au; spf=pass smtp.mailfrom=beware.dropbear.id.au; dkim=pass (1024-bit key) header.d=beware.dropbear.id.au header.i=@beware.dropbear.id.au header.b=vXlPa2jg; arc=none smtp.client-ip=173.203.187.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=beware.dropbear.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=beware.dropbear.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=beware.dropbear.id.au; s=20201218-7owj1hyf; t=1725181663;
+	bh=pPNgaO+NNVBWBJrUC1MZB5WPnl0cEvEjgKgXXxMlsac=;
+	h=Subject:From:To:Date:From;
+	b=vXlPa2jgwyCgVHAO4D+/3p8HNMUNejhYC7x0zJppcc+c0agHj//BF9MXMkIezz8Yl
+	 yqjVvrBXqVSKKWqMTL00V3un6DvcbWCAa7Bf5xVq9LCJgyadlW56bcLp/aWFyLW5Ye
+	 bIRdUj4Bm0utTly2D3jjMUgYjpDWNAlfWQ89MWZw=
+X-Auth-ID: fergus@beware.dropbear.id.au
+Received: by smtp1.relay.iad3a.emailsrvr.com (Authenticated sender: fergus-AT-beware.dropbear.id.au) with ESMTPSA id 233D53F2B
+	for <linux-btrfs@vger.kernel.org>; Sun,  1 Sep 2024 05:07:42 -0400 (EDT)
+Message-ID: <b9b86b32095ba924fb8c7eec4d8ec024113d9ff4.camel@beware.dropbear.id.au>
+Subject: Btrfs balance broke filesystem
+From: Fergus Dall <fergus@beware.dropbear.id.au>
+To: linux-btrfs@vger.kernel.org
+Date: Sun, 01 Sep 2024 18:37:40 +0930
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [btrfs?] WARNING in __btrfs_free_extent (3)
-To: syzbot <syzbot+480676efc0c3a76b5214@syzkaller.appspotmail.com>,
- clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <000000000000e93ea70620fe777a@google.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <000000000000e93ea70620fe777a@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TMddwUrNFH/YE5OEr/dWAfw85JCTXP1mMGVc1grfCERlU3Fp3Qe
- 8kIth18GMw3B2y2f2hDg0n/t9cdTlObZkYygJe9IHjSSMjGv1lhNmdNRPUsKDj5KuJGlYz5
- XSg7QZ6GH+iQdUjUCPa2C5+QZI6rp3Tk3iv7ZW3ey/Sj56uOiNUXrSaZ7kn9YgJm+NlC5UL
- cOy6P3twL6lmbSoFKzx7w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BmYq8SQBt/s=;94CgZW+K2wwAOaoCODSSMQWyYM8
- d43omfLlX/9n+RRbgBqMkxwROWp/8TlQ024k0hmXPa5u6/HTrNpa51iLCAao/6zjJXqh3CXjd
- LkxwLlgqxUScXsegjL8x1s6M0xS6rXxFzPOp90HOpjykcH9CLxF/X+gH0tb0kkWzejliCy82x
- iw+BAlNo6IGWnN1/GUIHg5lEVWD9zr2W6uOgTXsQxzY55kNwR58gU1uH64Z8OjVmSc1100pFJ
- BUFmMoUnzWXk2bzQ9eoo6XkXf3vBWGX76Ze49fjEfFmk1aTnJqdga9YI7cxkllDTc3OPDuh4Y
- ILlQpZV7Gykzy9qmwZIYxCDz7GTMNWEGuIpbuoSemXEn5wck1OmGZHEAjccQ9p3YdyW/DfXmz
- 4cLc2idQK0+9dD3xgrJamYG+sCjmeFzAhofEKT0armOWwxaEXFl1ncxk/kwT/xAEkWofduZhv
- rK2hCMQLOeKrMzy77qTUaHckqnsZoTmYVbhzVbmCl6xB1QcRye3uwOxbpIUFUwnfMPjX+VMow
- JiLPX2UpAG+4jGLdRFxMv7mIKiSNN60XhjT3h71lD4vgDwM2ssrLnN/k/Ro5cIcHAMxxPrZ21
- 59WA6WSOGowmB3Q1rNeFUFkqQKS2xm1uAS5Js29W3pSGGNddHM5A7P0R6SiEXSBL2xr/fQKQ9
- s/7Yi/z+bBei/0IumOANBPq8vIoSjjSQiVkBK1ZgaGjrfOVJ6+yHR/JMd0NZ5uRqqQKYWDnRI
- tfiQGgBUddLqtiyqnaawpxxGbCMrm8OXqaJgGWbAB8wzGlAtiGMibWzg+onWH6qSPhjHj5hL5
- 5fvttCWt4tvOvahNlc8ZRXXA==
+X-Classification-ID: 43c285fb-939b-463d-898e-e438dc4e334e-1-1
+
+I recently tried to add a new disk to my existing, nearly full, btrfs
+filesystem. I then tried running "btrfs balance -mconvert=3Draid1,soft"
+to duplicate the metadata to the new disk and, like seemingly many
+people trying similar things, got an ENOSPC error followed by the
+filesystem becoming read-only.
+
+The standard advice for this situation seems to be to add a new device
+to the filesystem, then mount with "-o skip_balance", then cancel the
+existing balance operation, and finally run "btrfs balance -musage=3D0"
+to clear the allocated but unused metadata. However, in my case the
+filesystem encounters an error and becomes read-only during mount, and
+all these operations seem to require a read-write filesystem. There
+don't appear to be any mount options to skip the failing operation, or
+offline tools that can perform the necessary operations on an unmounted
+filesystem.
+
+Additionally, the stack trace from the aborted transaction in the
+kernel logs appears different that has been previously reported, so
+this may be a new, or previously unreported, bug.
+
+Is there any way to recover this filesystem, short of copying all the
+files somewhere else?
+
+Kernel version is 6.10.7-arch1-1, dmesg and btrfs allocation
+information below:
+
+[   42.886920] BTRFS warning (device dm-1 state M): Skipping commit of
+aborted transaction.
+[   42.886924] ------------[ cut here ]------------
+[   42.886925] BTRFS: Transaction aborted (error -28)
+[   42.886933] WARNING: CPU: 0 PID: 595 at fs/btrfs/transaction.c:1999
+btrfs_commit_transaction.cold+0x103/0x356 [btrfs]
+[   42.886975] Modules linked in: ip6t_REJECT nf_reject_ipv6 xt_hl
+ip6t_rt ipt_REJECT nf_reject_ipv4 xt_LOG nf_log_syslog xt_comment
+xt_limit xt_addrtype xt_tcpudp xt_conntrack nf_conntrack nf_defrag_ipv6
+nf_defrag_ipv4 ip6table_filter ip6_tables iptable_filter i2c_dev
+crypto_user loop nfnetlink ip_tables x_tables btrfs blake2b_generic
+libcrc32c crc32c_generic xor raid6_pq dm_crypt cbc encrypted_keys
+trusted asn1_encoder tee hid_generic usbhid dm_mod crct10dif_pclmul
+crc32_pclmul crc32c_intel polyval_clmulni polyval_generic gf128mul
+ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 nvme
+aesni_intel nvme_core crypto_simd ccp cryptd xhci_pci nvme_auth
+xhci_pci_renesas
+[   42.887019] CPU: 0 PID: 595 Comm: btrfs-transacti Not tainted
+6.10.7-arch1-1 #1 2b2df360fbb0436393dc89f6589e9eeea2964ecb
+[   42.887022] Hardware name: To Be Filled By O.E.M. X570 Phantom
+Gaming 4/X570 Phantom Gaming 4, BIOS P5.60 01/18/2024
+[   42.887024] RIP: 0010:btrfs_commit_transaction.cold+0x103/0x356
+[btrfs]
+[   42.887055] Code: f3 ff 4c 89 ef e8 c3 15 09 ce e9 a5 f3 f3 ff 0f 0b
+e9 6e ff ff ff 45 31 c0 eb 9f 44 89 f6 48 c7 c7 10 c0 81 c0 e8 83 7b 34
+cd <0f> 0b eb 86 49 3b 9c 24 40 02 00 00 75 2a c7 43 20 03 00 00 00 48
+[   42.887057] RSP: 0018:ffffbfa78430fe30 EFLAGS: 00010282
+[   42.887059] RAX: 0000000000000000 RBX: ffff9d080c959e00 RCX:
+0000000000000027
+[   42.887061] RDX: ffff9d16fea219c8 RSI: 0000000000000001 RDI:
+ffff9d16fea219c0
+[   42.887062] RBP: ffff9d080d0c9150 R08: 0000000000000000 R09:
+ffffbfa78430fcb0
+[   42.887064] R10: ffffffff8fab21e8 R11: 0000000000000003 R12:
+ffff9d080eb3e000
+[   42.887065] R13: ffff9d080d0c90a0 R14: 00000000ffffffe4 R15:
+ffff9d080d0c90a0
+[   42.887066] FS:  0000000000000000(0000) GS:ffff9d16fea00000(0000)
+knlGS:0000000000000000
+[   42.887068] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   42.887070] CR2: 00007f01caa5a168 CR3: 0000000106234000 CR4:
+0000000000f50ef0
+[   42.887071] PKRU: 55555554
+[   42.887073] Call Trace:
+[   42.887075]  <TASK>
+[   42.887076]  ? btrfs_commit_transaction.cold+0x103/0x356 [btrfs
+f3cde2e054b00a9dbda089e3ed25c43789a01aae]
+[   42.887103]  ? __warn.cold+0x8e/0xe8
+[   42.887107]  ? btrfs_commit_transaction.cold+0x103/0x356 [btrfs
+f3cde2e054b00a9dbda089e3ed25c43789a01aae]
+[   42.887134]  ? report_bug+0xff/0x140
+[   42.887138]  ? handle_bug+0x3c/0x80
+[   42.887141]  ? exc_invalid_op+0x17/0x70
+[   42.887143]  ? asm_exc_invalid_op+0x1a/0x20
+[   42.887149]  ? btrfs_commit_transaction.cold+0x103/0x356 [btrfs
+f3cde2e054b00a9dbda089e3ed25c43789a01aae]
+[   42.887176]  ? __pfx_autoremove_wake_function+0x10/0x10
+[   42.887181]  transaction_kthread+0x159/0x1c0 [btrfs
+f3cde2e054b00a9dbda089e3ed25c43789a01aae]
+[   42.887216]  ? __pfx_transaction_kthread+0x10/0x10 [btrfs
+f3cde2e054b00a9dbda089e3ed25c43789a01aae]
+[   42.887244]  kthread+0xd2/0x100
+[   42.887247]  ? __pfx_kthread+0x10/0x10
+[   42.887250]  ret_from_fork+0x34/0x50
+[   42.887253]  ? __pfx_kthread+0x10/0x10
+[   42.887256]  ret_from_fork_asm+0x1a/0x30
+[   42.887261]  </TASK>
+[   42.887262] ---[ end trace 0000000000000000 ]---
+[   42.887264] BTRFS info (device dm-1 state MA): dumping space info:
+[   42.887267] BTRFS info (device dm-1 state MA): space_info DATA has
+50215018496 free, is not full
+[   42.887269] BTRFS info (device dm-1 state MA): space_info
+total=3D907277959168, used=3D857062809600, pinned=3D0, reserved=3D0, may_us=
+e=3D0,
+readonly=3D131072 zone_unusable=3D0
+[   42.887272] BTRFS info (device dm-1 state MA): space_info METADATA
+has -537264128 free, is full
+[   42.887274] BTRFS info (device dm-1 state MA): space_info
+total=3D77317799936, used=3D3742138368, pinned=3D0, reserved=3D0,
+may_use=3D537264128, readonly=3D73575661568 zone_unusable=3D0
+[   42.887276] BTRFS info (device dm-1 state MA): space_info SYSTEM has
+0 free, is not full
+[   42.887278] BTRFS info (device dm-1 state MA): space_info
+total=3D33554432, used=3D114688, pinned=3D0, reserved=3D0, may_use=3D0,
+readonly=3D33439744 zone_unusable=3D0
+[   42.887280] BTRFS info (device dm-1 state MA): global_block_rsv:
+size 536870912 reserved 536870912
+[   42.887282] BTRFS info (device dm-1 state MA): trans_block_rsv: size
+0 reserved 0
+[   42.887284] BTRFS info (device dm-1 state MA): chunk_block_rsv: size
+0 reserved 0
+[   42.887285] BTRFS info (device dm-1 state MA): delayed_block_rsv:
+size 0 reserved 0
+[   42.887287] BTRFS info (device dm-1 state MA): delayed_refs_rsv:
+size 0 reserved 0
+[   42.887290] BTRFS: error (device dm-1 state MA) in
+cleanup_transaction:1999: errno=3D-28 No space left
+[   42.887298] BTRFS error (device dm-1 state MA): Error removing
+orphan entry, stopping orphan cleanup
+[   42.887712] BTRFS error (device dm-1 state EMA): could not do orphan
+cleanup -28
+
+$ btrfs filesystem df
+Data, single: total=3D844.97GiB, used=3D798.20GiB
+System, single: total=3D32.00MiB, used=3D112.00KiB
+Metadata, single: total=3D72.01GiB, used=3D3.48GiB
+GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+
+$ btrfs filesystem show
+Label: none  uuid: 031d5f75-700a-4e42-b4e5-51a2f841d68c
+	Total devices 2 FS bytes used 801.69GiB
+	devid    1 size 915.01GiB used 915.01GiB path
+/dev/mapper/cryptroot-1
+	devid    2 size 1.82TiB used 2.00GiB path
+/dev/mapper/cryptroot-2
+
+$ btrfs device usage
+/dev/mapper/cryptroot-1, ID: 1
+   Device size:           915.01GiB
+   Device slack:            3.50KiB
+   Data,single:           842.97GiB
+   Metadata,single:        72.01GiB
+   System,single:          32.00MiB
+   Unallocated:             1.00MiB
+
+/dev/mapper/cryptroot-2, ID: 2
+   Device size:             1.82TiB
+   Device slack:              0.00B
+   Data,single:             2.00GiB
+   Unallocated:             1.82TiB
 
 
-
-=E5=9C=A8 2024/9/1 03:29, syzbot =E5=86=99=E9=81=93:
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    86987d84b968 Merge tag 'v6.11-rc5-client-fixes' of git:/=
-/g..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D109f14259800=
-00
-
-I was checking the console and trying to find out what's before the
-transaction abort.
-
-The error number means it's ENOENT thus it seems to be a missing extent
-item or whatever.
-
-But the console output contains not even the WARNING line, is the
-console output trimmed or whatever?
-
-Thanks,
-Qu
-
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Da0455552d0b2=
-7491
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D480676efc0c3a7=
-6b5214
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for De=
-bian) 2.40
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/87692913ef45/di=
-sk-86987d84.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a27da6973d7f/vmlin=
-ux-86987d84.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/2e28d02ce725/=
-bzImage-86987d84.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the com=
-mit:
-> Reported-by: syzbot+480676efc0c3a76b5214@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> BTRFS: Transaction aborted (error -2)
-> WARNING: CPU: 1 PID: 63 at fs/btrfs/extent-tree.c:2972 do_free_extent_ac=
-counting fs/btrfs/extent-tree.c:2972 [inline]
-> WARNING: CPU: 1 PID: 63 at fs/btrfs/extent-tree.c:2972 __btrfs_free_exte=
-nt+0x32d1/0x3a10 fs/btrfs/extent-tree.c:3346
-> Modules linked in:
-> CPU: 1 UID: 0 PID: 63 Comm: kworker/u8:4 Not tainted 6.11.0-rc5-syzkalle=
-r-00057-g86987d84b968 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS =
-Google 08/06/2024
-> Workqueue: events_unbound btrfs_async_reclaim_metadata_space
-> RIP: 0010:do_free_extent_accounting fs/btrfs/extent-tree.c:2972 [inline]
-> RIP: 0010:__btrfs_free_extent+0x32d1/0x3a10 fs/btrfs/extent-tree.c:3346
-> Code: e8 24 a4 ae fd 90 0f 0b 90 90 e9 3c f3 ff ff e8 35 80 ec fd 90 48 =
-c7 c7 00 79 2b 8c 44 8b 6c 24 18 44 89 ee e8 00 a4 ae fd 90 <0f> 0b 90 90 =
-4c 8b 24 24 e9 4f f3 ff ff e8 0d 80 ec fd 90 48 c7 c7
-> RSP: 0018:ffffc900015e6f80 EFLAGS: 00010246
-> RAX: ec2b4374561a8400 RBX: ffff88805d790001 RCX: ffff888015581e00
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-> RBP: ffffc900015e7150 R08: ffffffff8155b212 R09: fffffbfff1cba0e0
-> R10: dffffc0000000000 R11: fffffbfff1cba0e0 R12: dffffc0000000000
-> R13: 00000000fffffffe R14: 0000000000000000 R15: ffff88805d3be5c8
-> FS:  0000000000000000(0000) GS:ffff8880b9300000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f3dca9f0270 CR3: 000000002dd02000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   run_delayed_tree_ref fs/btrfs/extent-tree.c:1724 [inline]
->   run_one_delayed_ref fs/btrfs/extent-tree.c:1750 [inline]
->   btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2015 [inline]
->   __btrfs_run_delayed_refs+0x112e/0x4680 fs/btrfs/extent-tree.c:2085
->   btrfs_run_delayed_refs+0xe3/0x2c0 fs/btrfs/extent-tree.c:2197
->   btrfs_commit_transaction+0x4be/0x3740 fs/btrfs/transaction.c:2198
->   flush_space+0x19c/0xd00 fs/btrfs/space-info.c:835
->   btrfs_async_reclaim_metadata_space+0x6dc/0x840 fs/btrfs/space-info.c:1=
-106
->   process_one_work kernel/workqueue.c:3231 [inline]
->   process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3312
->   worker_thread+0x86d/0xd10 kernel/workqueue.c:3389
->   kthread+0x2f0/0x390 kernel/kthread.c:389
->   ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
->   </TASK>
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
 
