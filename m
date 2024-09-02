@@ -1,213 +1,165 @@
-Return-Path: <linux-btrfs+bounces-7753-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7754-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5563968FD4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 00:36:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489D496907E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 01:41:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47A891F25B00
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 22:36:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C90CA1F22D56
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 23:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EA113BC2F;
-	Mon,  2 Sep 2024 22:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F93188592;
+	Mon,  2 Sep 2024 23:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J16BW/DJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ybCCz7Ct";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SKJdZyeK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ybCCz7Ct";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SKJdZyeK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE94213D50A
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 22:36:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6EC13CFB7;
+	Mon,  2 Sep 2024 23:41:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725316589; cv=none; b=LB53AjnQ7jL/C7TFaeers42TgVN9Ig27uiIYlIn/682w/3ZQEYFKPhAI9wLNH382Kl36vMWjcT3A1zK+uBxCH1Q+lASMHUpqFNLCtwY3a6ttJ5qJ+jySkkGhoxYWZhuGi30oTJhV3LQPa0thc0HU8RbBEIAGIMAqvvL6OB7zkYw=
+	t=1725320482; cv=none; b=ozcAECQN2AVdlSH97L+Dot0osxd+iNECJdDRMPfrOBVFy8XkYWQB1UZRNDnn7JapQXwNdBela/09OrqLHAtGsCFdrrhcgNFb5CqCt1U+dkhJYc2zZI9dexx8s4ntN152PsEYINqdLd9gdgC0J77hVUOdXb1ad1rJD650fSijszs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725316589; c=relaxed/simple;
-	bh=JeKAIV8Qs1+w6IaBQoCKZtopNY1wXWgBLUY+Nn5mHLM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eoe7E9rGaUXfdcdBt8W3gEa1lOiDI40I2q7tRQonh97XCNUU2fV9q94ir55lFXgOmnSqgKVm0KRPF8UjNNn0UWMsBfVjfX4poFFxyqIxZgz4qgQs29X+WUBUk53lTi9HQwpAJXtXbFvvyOODVgUns0Fwxskd+1KOD0BAziqSoSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J16BW/DJ; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-42c7bc97423so24435945e9.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Sep 2024 15:36:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725316585; x=1725921385; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=aiGY7FrMUgB/JFXLqO9FHvLDXWOoOx/leerdKf01sPA=;
-        b=J16BW/DJosK8QO9CpFtGctl8Gautj+AB2jfpNL2HdLL+kz0cANzZr2c4oHl02+Mruq
-         XSuM5hv+99sG8SgTMkRnzPr47uRO7qdcyNqTyURA906GIBbIIg8gd2MIjZkIzTmMid/b
-         HYDwn+DuergE5CFtJRcJX8hZ6sDR0/TAM+dMZVLZNv98ojWUDefYhcyuQ/2J1Yb5aXU+
-         b3bhROCnO0l3SD7vntkd9VlWItddlkJvdtMhHm+lNmlWvehrsQC3j+Fy5F89CddVuiiA
-         StbLoiZTnONbh/Y8jFnn4SeDIcqUuS4jtmoMKjwRq8FE+bLxNJMGRYJ96NyAAjJlTO3s
-         HahA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725316585; x=1725921385;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aiGY7FrMUgB/JFXLqO9FHvLDXWOoOx/leerdKf01sPA=;
-        b=QRqBN8mNg46M8E1aZRxYS4di6YFwOtBOJVJYThra9aDaMjLG6t1UVA2QjMotixJ0OH
-         Ni+8aD0Eog/NTIvNg2hu15sMNP5cS1PkIUCsKEkli92PkdqA38wQEdOx9rxd3wyuDnVg
-         g0sG38r6XXPOYla+DoaX288PJfAmx4bZzMc2GkUaGQvnMYh93EvCH6Z0Qz4QbGvoB5nQ
-         dAtHydr7QE5UY9n8K/X4el9u9YnrQlalBVirOWcDCqt64wDXQqUTePrFS3t5wkoAUK0I
-         lzIaVQGCwM5YG2jArzFyYfCDxcAr2dh9JmCCe56VQVgkx66Az0b4P7qOW+tAFuu+euJR
-         6L9A==
-X-Forwarded-Encrypted: i=1; AJvYcCU+JiTOhcxeNvjBQxDxfTT5kQM548cjQCnx5RbP/9nf/aIjC3bWpri3xeh8UP/ob+132dWsm2Ptz5yprw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8uwrQIwTEf4/nsgYIu4Ht42v6WrqfZMjn698M3OMdD0AJ56SX
-	qPfdhgL4RTHuNvbLh5Z6cau4EunaikCh3HIE9A8v16esr87tcEQceWUyszZrUT4=
-X-Google-Smtp-Source: AGHT+IHtb2QavBah0ufS5XufJQhqFWTnBfXdA4IaAMKaRk0IUL3FulKXfBZZtdpGDA0qi5EHUlB1lA==
-X-Received: by 2002:adf:f1cb:0:b0:374:bde8:66af with SMTP id ffacd0b85a97d-374bde866f9mr6352144f8f.57.1725316584451;
-        Mon, 02 Sep 2024 15:36:24 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d8e79bb5d7sm2271408a91.55.2024.09.02.15.36.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Sep 2024 15:36:23 -0700 (PDT)
-Message-ID: <6416ac73-0a2a-4568-b407-62fbeb6d5540@suse.com>
-Date: Tue, 3 Sep 2024 08:06:18 +0930
+	s=arc-20240116; t=1725320482; c=relaxed/simple;
+	bh=3uoFZbAJTCfBfq1Ms59IG9WOj4qBaDng3/DkkHYFVfU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DekJWF4sdPsH3VJ+eytO55MyjwCCornKtkNv8qwCEjjBYwDKHL7cGKBvHa7RfvtyMpBMGoIYBxsWzYEb9c+67F/a4YzxjO9lLg6naMp4J0mEVr5QqOe4JfpG0vjeeHuT0PLz+GH9KX7bve5VCNzRWiTbZZmVneexGPcNi3GUtcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ybCCz7Ct; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SKJdZyeK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ybCCz7Ct; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SKJdZyeK; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9CCCB21B62;
+	Mon,  2 Sep 2024 23:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725320478;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dRtcEr/ZYAAw8oGtsiw6gfQw3k8Ez8e/JP4IYOSwvvo=;
+	b=ybCCz7CtTxwozjTq73zhI9CT+3kCbvbvaW0VxsaH4f6iDOxZs/hTND5vxawgCuqmJOoLLW
+	U/QTFNAu7BUooUaYkFpU5aIe++Ia8OwLHEkh5Ql3jT93OB+0GRj8O1eOlkV0GQaUlrEscq
+	o8u5yN1kEeL9T0uyeOx6xVPCqb/LNKU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725320478;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dRtcEr/ZYAAw8oGtsiw6gfQw3k8Ez8e/JP4IYOSwvvo=;
+	b=SKJdZyeKkVxC/cycoCuFbAWoWYW/m6UMEIl2Sshi5zS5FqrVhQM1vS9FgWVFjoVBiFXkdN
+	JUj93/tmVo88hCAA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725320478;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dRtcEr/ZYAAw8oGtsiw6gfQw3k8Ez8e/JP4IYOSwvvo=;
+	b=ybCCz7CtTxwozjTq73zhI9CT+3kCbvbvaW0VxsaH4f6iDOxZs/hTND5vxawgCuqmJOoLLW
+	U/QTFNAu7BUooUaYkFpU5aIe++Ia8OwLHEkh5Ql3jT93OB+0GRj8O1eOlkV0GQaUlrEscq
+	o8u5yN1kEeL9T0uyeOx6xVPCqb/LNKU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725320478;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dRtcEr/ZYAAw8oGtsiw6gfQw3k8Ez8e/JP4IYOSwvvo=;
+	b=SKJdZyeKkVxC/cycoCuFbAWoWYW/m6UMEIl2Sshi5zS5FqrVhQM1vS9FgWVFjoVBiFXkdN
+	JUj93/tmVo88hCAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6E6B01398F;
+	Mon,  2 Sep 2024 23:41:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id IcqtGh5N1mbMSgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 02 Sep 2024 23:41:18 +0000
+Date: Tue, 3 Sep 2024 01:41:17 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: Luca Stefani <luca.stefani.ge1@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] btrfs: Split remaining space to discard in chunks
+Message-ID: <20240902234117.GG26776@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240902205828.943155-1-luca.stefani.ge1@gmail.com>
+ <20240902205828.943155-3-luca.stefani.ge1@gmail.com>
+ <c5aa26ad-4ae7-4498-8a27-118876181890@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] btrfs: Don't block system suspend during fstrim
-To: Luca Stefani <luca.stefani.ge1@gmail.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-btrfs@vger.kernel.org
-References: <20240902205828.943155-1-luca.stefani.ge1@gmail.com>
- <20240902205828.943155-4-luca.stefani.ge1@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <20240902205828.943155-4-luca.stefani.ge1@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c5aa26ad-4ae7-4498-8a27-118876181890@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -2.50
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.dk,fb.com,toxicpanda.com,suse.com,vger.kernel.org];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-
-
-在 2024/9/3 06:26, Luca Stefani 写道:
-> Sometimes the system isn't able to suspend because the task
-> responsible for trimming the device isn't able to finish in
-> time, especially since we have a free extent discarding phase,
-> which can trim a lot of unallocated space, and there is no
-> limits on the trim size (unlike the block group part).
+On Tue, Sep 03, 2024 at 08:01:16AM +0930, Qu Wenruo wrote:
 > 
-> Since discard isn't a critical call it can be interrupted
-> at any time, in such cases we stop the trim, report the amount
-> of discarded bytes and return failure.
 > 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=219180
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
-> Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
-> ---
->   fs/btrfs/extent-tree.c | 17 ++++++++++++++++-
->   1 file changed, 16 insertions(+), 1 deletion(-)
+> 在 2024/9/3 06:26, Luca Stefani 写道:
+> > Per Qu Wenruo in case we have a very large disk, e.g. 8TiB device,
+> > mostly empty although we will do the split according to our super block
+> > locations, the last super block ends at 256G, we can submit a huge
+> > discard for the range [256G, 8T), causing a super large delay.
+> > 
+> > We now split the space left to discard based the block discard limit
+> > in preparation of introduction of cancellation signals handling.
+> > 
+> > Reported-by: Qu Wenruo <wqu@suse.com>
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 894684f4f497..7c78ed4044db 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -16,6 +16,7 @@
->   #include <linux/percpu_counter.h>
->   #include <linux/lockdep.h>
->   #include <linux/crc32c.h>
-> +#include <linux/freezer.h>
->   #include "ctree.h"
->   #include "extent-tree.h"
->   #include "transaction.h"
-> @@ -1235,6 +1236,11 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
->   	return ret;
->   }
->   
-> +static bool btrfs_trim_interrupted(void)
-> +{
-> +	return fatal_signal_pending(current) || freezing(current);
-> +}
-> +
->   static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
->   			       u64 *discarded_bytes)
->   {
-> @@ -1302,6 +1308,9 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
->   	}
->   
->   	while (bytes_left) {
-> +		if (btrfs_trim_interrupted())
-> +			break;
-> +
+> Well, I'd say who ever reported the original fstrim and suspension 
+> failure should be the reporter, not me.
 
-Although with this change, the check should be more than enough to cover 
-everything, better than the existing per-block-group check and the 
-possibly large discard for the free extents.
-
-Thus just this check would be enough.
-
-The other thing is the old return value, I guess you can just add "ret = 
--EERESTARTSYS;" before the break.
-
-Thanks,
-Qu
->   		sector = start >> SECTOR_SHIFT;
->   		nr_sects = bytes_left >> SECTOR_SHIFT;
->   		bio_sects = min(nr_sects, bio_discard_limit(bdev, sector));
-> @@ -6470,7 +6479,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
->   		start += len;
->   		*trimmed += bytes;
->   
-> -		if (fatal_signal_pending(current)) {
-> +		if (btrfs_trim_interrupted()) {
->   			ret = -ERESTARTSYS;
->   			break;
->   		}
-> @@ -6519,6 +6528,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
->   
->   	cache = btrfs_lookup_first_block_group(fs_info, range->start);
->   	for (; cache; cache = btrfs_next_block_group(cache)) {
-> +		if (btrfs_trim_interrupted())
-> +			break;
-> +
->   		if (cache->start >= range_end) {
->   			btrfs_put_block_group(cache);
->   			break;
-> @@ -6558,6 +6570,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
->   
->   	mutex_lock(&fs_devices->device_list_mutex);
->   	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> +		if (btrfs_trim_interrupted())
-> +			break;
-> +
->   		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
->   			continue;
->   
+Once the patch is finalized I'll add the links to reports but yeah if
+they're added when the patches are submitted it's helpful.
 
