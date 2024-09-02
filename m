@@ -1,350 +1,460 @@
-Return-Path: <linux-btrfs+bounces-7749-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0B7B968F2D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 23:38:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A9F8968F34
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 23:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88AF9283D3E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 21:38:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF6A41F233F2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 21:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DEB020FA82;
-	Mon,  2 Sep 2024 21:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE60185B6E;
+	Mon,  2 Sep 2024 21:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzhoRV1o";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D6KvwLjX";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2DwutmEo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bNoqK5SW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QmJq34ZN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4BA1A4E8D
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 21:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4321A4E9F;
+	Mon,  2 Sep 2024 21:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725313099; cv=none; b=F0IejZSvOkWLQfwysImbxPaprizsTFqTauEYtnyCN4H5kElrBmPcpBhPSgBifsk9ZSrnSak79pnC79Eicji689oo4PGNkldAEcdKeSH4FkbSQK18LclfvHYCb9rJLr4vnDS511aBZG7cuHEByo4h0ihtg+520x8PoArXkUaVxOw=
+	t=1725313572; cv=none; b=hXWciPBYCkrn9m8ypJchJFCo7NX2k6LBlYH0YUr2Iv8HDhPEFHy+ffPaghQ8OArQBUEukKez9oahScage2EOAVOqAl8DNLu0Y01iH0GmMJSD/Rpdl6UmopOaXBOzcaRvvkNtdfG9Q4EwAJtUwq/DFWVG6IDl6XxgMIo1sFUn9e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725313099; c=relaxed/simple;
-	bh=oai8wa09TSUULCbdJeDPBYYKH3feZ21PqGnA1H7ngX8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NeppaUrb0JvAqLN+coQ8DdNJ1Dmaaw1lcCJKdZWUs+HTQbQqbaQ4la3W5UCg0FEdL8qUog63vZUy8zte9wemYL5NiNMiS5TBaVJ4gLJjuRQf8S5UFygcJNkn/ZTX5lBkl0d/vwXpvmZKk2eqQnpLYw5n56aOSihC5V/M5qOKEcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GzhoRV1o; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D6KvwLjX; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2DwutmEo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bNoqK5SW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E2CFA218E4;
-	Mon,  2 Sep 2024 21:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725313096;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V1athTkOqBegD9G3nwG2kxD0Ql/9QdNqHKUuGyk/56k=;
-	b=GzhoRV1onnNV5o0xn/7a0nKmokCJsOvXRCkYhzHmS/dWya7nCebljBhUmNDlPuWMOxQluo
-	d7mljubBij4XWb6Ye/8hMZF0tZc+N7ue1VAFUk/a5jIv9OGuXxSJZcqGbbOcmFcAcykCV7
-	Bmk+KJtxU0FPGdns9vqqmFir0yFvJUo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725313096;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V1athTkOqBegD9G3nwG2kxD0Ql/9QdNqHKUuGyk/56k=;
-	b=D6KvwLjXQCiviA7ryhgwEvfcVqwcBjNGdsaze/2z0p3DodnI1W/31g77nG7mGN7vuXG0h3
-	aQPR6/pH3foaGQBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725313095;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V1athTkOqBegD9G3nwG2kxD0Ql/9QdNqHKUuGyk/56k=;
-	b=2DwutmEomLtPciIbb95TgjJnbnjeVaKlyZji0vZesaCJ6/+0lu58kex9fNZ3jOsRBfuxA5
-	6+DoSsjo9yPeayNY0sO7yZj8hlxamEVnKoDcU4EMaphwK5lKMhX/iEByBs0yuU6F4nx43x
-	csxv1j5BKKomfH/OzOeeiVTKhRwRySs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725313095;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V1athTkOqBegD9G3nwG2kxD0Ql/9QdNqHKUuGyk/56k=;
-	b=bNoqK5SWAY07lRKbYXIPg5AiqXjaoKo/BcVuS3v+MUfNmfswvCiRWa31RO3NlFwj9ic8Td
-	dr5T1iEMEI4ykrDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B7E241398F;
-	Mon,  2 Sep 2024 21:38:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7OlnLEcw1mbsKwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 02 Sep 2024 21:38:15 +0000
-Date: Mon, 2 Sep 2024 23:38:10 +0200
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs: fix race between direct IO write and fsync
- when using same fd
-Message-ID: <20240902213810.GE26776@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1724972506.git.fdmanana@suse.com>
- <717029440fe379747b9548a9c91eb7801bc5a813.1724972507.git.fdmanana@suse.com>
+	s=arc-20240116; t=1725313572; c=relaxed/simple;
+	bh=H6OR6tcNipdcLJN3o0XKIVNqQZde6KPDiKKJ/4xtDUU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lJ2kzbF9mV8xRDszgi/N7NZtKAhDwxa8cn8D2wJs83N4ORhLJXzaou53XSwS19j6M6Zb8x5+yxcHpcRcIrM+EL3G7loDqc5+tHL8pTHTvN7NjJp6Bl9ZBd7/ExIKGMlORSONlIGxSKGAgf40kn5XHNuVnflPGE+NRDGT9CFuNPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QmJq34ZN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57A63C4CEC6;
+	Mon,  2 Sep 2024 21:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725313571;
+	bh=H6OR6tcNipdcLJN3o0XKIVNqQZde6KPDiKKJ/4xtDUU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QmJq34ZNnO5jlP0IFy5tsfG6XaBwWTG64qPCfE2Gs5Bx4n7d8Dm8qasCiN//3wshZ
+	 m/Zdw+UhovdIdneLVRHS7no1DFkPUwFdr8IONFAcgX5FKHuBTCCQ9uCWbyMjAz4c5g
+	 HZEzbQ7Gf0IJN74elvfmOhS1h1uc730j6CRda7mYbIG0Y7fpytu3PGSwO/LFigg43I
+	 cp/F8hxXY3gOHOlw3H8Y60SgvRImOVnsDFIwlBiqvBx98TbBaNHjkA1XuCBu1VITfT
+	 tjVldvLbjm4zbNaP4yuYLui41UO9eZ7cuDFWK83NN8PsUU/zxx3KJjAVar1OyAbH4T
+	 D7+fCeQxONdsA==
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a8695cc91c8so459976366b.3;
+        Mon, 02 Sep 2024 14:46:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXMLzl05zXOboobvrM8LNtqFrTmnSSPHJxoVNP6PQctgJvHnofbLRAY/qVLQUwg5TY9Hg1o+JlPj+5sQQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywo39ORNBwgnusX6qScZSPdIvTSZ5UheRqbxbHIDqBwWBWEVL1r
+	YVAOJDU3uvZyZ+KCsO+h4+k1Pc1q6IoHZOzYEv6waBw2ccfhSkO3HC9gA2xtP7wijS85nD3Da+k
+	TQxrqgnjFeoUOrzoyjqo0vBGAshs=
+X-Google-Smtp-Source: AGHT+IGO4xS03JddFzgzZAWdVo2+DZC4HUQy/bqJtu+eqq0Pbrd3omlpiPW5SdVIGFnwEsjlyuW6+rHCJ1lCg7MyzVo=
+X-Received: by 2002:a17:907:6d24:b0:a72:44d8:3051 with SMTP id
+ a640c23a62f3a-a897f84bcd1mr1032055066b.16.1725313569771; Mon, 02 Sep 2024
+ 14:46:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <717029440fe379747b9548a9c91eb7801bc5a813.1724972507.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <fa20c58b1a711d9da9899b895a5237f8737163af.1724972803.git.fdmanana@suse.com>
+ <20240902202856.e5mqgsbwmiwxs4qe@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20240902202856.e5mqgsbwmiwxs4qe@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 2 Sep 2024 22:45:33 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7vDpoG=k55yh9rJQWw=sit5fMkjPZMpVfwf7629b_hsA@mail.gmail.com>
+Message-ID: <CAL3q7H7vDpoG=k55yh9rJQWw=sit5fMkjPZMpVfwf7629b_hsA@mail.gmail.com>
+Subject: Re: [PATCH] generic: test concurrent direct IO writes and fsync using
+ same fd
+To: Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 30, 2024 at 12:09:36AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> If we have 2 threads that are using the same file descriptor and one of
-> them is doing direct IO writes while the other is doing fsync, we have a
-> race where we can end up either:
-> 
-> 1) Attempt a fsync without holding the inode's lock, triggering an
->    assertion failures when assertions are enabled;
-> 
-> 2) Do an invalid memory access from the fsync task because the file private
->    points to memory allocated on stack by the direct IO task.
-> 
-> The race happens like this:
-> 
-> 1) A user space program opens a file descriptor with O_DIRECT;
-> 
-> 2) The program spawns 2 threads using libpthread for example;
-> 
-> 3) One of the threads uses the file descriptor to do direct IO writes,
->    while the other calls fsync using the same file descriptor.
-> 
-> 4) Call task A the thread doing direct IO writes and task B the thread
->    doing fsyncs;
-> 
-> 5) Task A does a direct IO write, and at btrfs_direct_write() sets the
->    file's private to an on stack allocated private with the member
->    'fsync_skip_inode_lock' set to true;
-> 
-> 6) Task B enters btrfs_sync_file() and sees that there's a private
->    structure associated to the file which has 'fsync_skip_inode_lock' set
->    to true, so it skips locking the inode's vfs lock;
-> 
-> 7) Task completes the direct IO write, and resets the file's private to
->    NULL since it had prior private and our private was stack allocated.
->    Then it unlocks the inode's vfs lock;
-> 
-> 8) Task B enters btrfs_get_ordered_extents_for_logging(), then the
->    assertion that checks the inode's vfs lock is held fails, since task B
->    never locked it and task A has already unlocked it.
-> 
-> The stack trace produced is the following:
-> 
->    Aug 21 11:46:43 kerberos kernel: assertion failed: inode_is_locked(&inode->vfs_inode), in fs/btrfs/ordered-data.c:983
->    Aug 21 11:46:43 kerberos kernel: ------------[ cut here ]------------
->    Aug 21 11:46:43 kerberos kernel: kernel BUG at fs/btrfs/ordered-data.c:983!
->    Aug 21 11:46:43 kerberos kernel: Oops: invalid opcode: 0000 [#1] PREEMPT SMP PTI
->    Aug 21 11:46:43 kerberos kernel: CPU: 9 PID: 5072 Comm: worker Tainted: G     U     OE      6.10.5-1-default #1 openSUSE Tumbleweed 69f48d427608e1c09e60ea24c6c55e2ca1b049e8
->    Aug 21 11:46:43 kerberos kernel: Hardware name: Acer Predator PH315-52/Covini_CFS, BIOS V1.12 07/28/2020
->    Aug 21 11:46:43 kerberos kernel: RIP: 0010:btrfs_get_ordered_extents_for_logging.cold+0x1f/0x42 [btrfs]
->    Aug 21 11:46:43 kerberos kernel: Code: 50 d6 86 c0 e8 (...)
->    Aug 21 11:46:43 kerberos kernel: RSP: 0018:ffff9e4a03dcfc78 EFLAGS: 00010246
->    Aug 21 11:46:43 kerberos kernel: RAX: 0000000000000054 RBX: ffff9078a9868e98 RCX: 0000000000000000
->    Aug 21 11:46:43 kerberos kernel: RDX: 0000000000000000 RSI: ffff907dce4a7800 RDI: ffff907dce4a7800
->    Aug 21 11:46:43 kerberos kernel: RBP: ffff907805518800 R08: 0000000000000000 R09: ffff9e4a03dcfb38
->    Aug 21 11:46:43 kerberos kernel: R10: ffff9e4a03dcfb30 R11: 0000000000000003 R12: ffff907684ae7800
->    Aug 21 11:46:43 kerberos kernel: R13: 0000000000000001 R14: ffff90774646b600 R15: 0000000000000000
->    Aug 21 11:46:43 kerberos kernel: FS:  00007f04b96006c0(0000) GS:ffff907dce480000(0000) knlGS:0000000000000000
->    Aug 21 11:46:43 kerberos kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    Aug 21 11:46:43 kerberos kernel: CR2: 00007f32acbfc000 CR3: 00000001fd4fa005 CR4: 00000000003726f0
->    Aug 21 11:46:43 kerberos kernel: Call Trace:
->    Aug 21 11:46:43 kerberos kernel:  <TASK>
->    Aug 21 11:46:43 kerberos kernel:  ? __die_body.cold+0x14/0x24
->    Aug 21 11:46:43 kerberos kernel:  ? die+0x2e/0x50
->    Aug 21 11:46:43 kerberos kernel:  ? do_trap+0xca/0x110
->    Aug 21 11:46:43 kerberos kernel:  ? do_error_trap+0x6a/0x90
->    Aug 21 11:46:43 kerberos kernel:  ? btrfs_get_ordered_extents_for_logging.cold+0x1f/0x42 [btrfs bb26272d49b4cdc847cf3f7faadd459b62caee9a]
->    Aug 21 11:46:43 kerberos kernel:  ? exc_invalid_op+0x50/0x70
->    Aug 21 11:46:43 kerberos kernel:  ? btrfs_get_ordered_extents_for_logging.cold+0x1f/0x42 [btrfs bb26272d49b4cdc847cf3f7faadd459b62caee9a]
->    Aug 21 11:46:43 kerberos kernel:  ? asm_exc_invalid_op+0x1a/0x20
->    Aug 21 11:46:43 kerberos kernel:  ? btrfs_get_ordered_extents_for_logging.cold+0x1f/0x42 [btrfs bb26272d49b4cdc847cf3f7faadd459b62caee9a]
->    Aug 21 11:46:43 kerberos kernel:  ? btrfs_get_ordered_extents_for_logging.cold+0x1f/0x42 [btrfs bb26272d49b4cdc847cf3f7faadd459b62caee9a]
->    Aug 21 11:46:43 kerberos kernel:  btrfs_sync_file+0x21a/0x4d0 [btrfs bb26272d49b4cdc847cf3f7faadd459b62caee9a]
->    Aug 21 11:46:43 kerberos kernel:  ? __seccomp_filter+0x31d/0x4f0
->    Aug 21 11:46:43 kerberos kernel:  __x64_sys_fdatasync+0x4f/0x90
->    Aug 21 11:46:43 kerberos kernel:  do_syscall_64+0x82/0x160
->    Aug 21 11:46:43 kerberos kernel:  ? do_futex+0xcb/0x190
->    Aug 21 11:46:43 kerberos kernel:  ? __x64_sys_futex+0x10e/0x1d0
->    Aug 21 11:46:43 kerberos kernel:  ? switch_fpu_return+0x4f/0xd0
->    Aug 21 11:46:43 kerberos kernel:  ? syscall_exit_to_user_mode+0x72/0x220
->    Aug 21 11:46:43 kerberos kernel:  ? do_syscall_64+0x8e/0x160
->    Aug 21 11:46:43 kerberos kernel:  ? syscall_exit_to_user_mode+0x72/0x220
->    Aug 21 11:46:43 kerberos kernel:  ? do_syscall_64+0x8e/0x160
->    Aug 21 11:46:43 kerberos kernel:  ? syscall_exit_to_user_mode+0x72/0x220
->    Aug 21 11:46:43 kerberos kernel:  ? do_syscall_64+0x8e/0x160
->    Aug 21 11:46:43 kerberos kernel:  ? syscall_exit_to_user_mode+0x72/0x220
->    Aug 21 11:46:43 kerberos kernel:  ? do_syscall_64+0x8e/0x160
->    Aug 21 11:46:43 kerberos kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> 
-> Another problem here is if task B grabs the private pointer and then uses
-> it after task A has finished, since the private was allocated in the stack
-> of trask A, resulting in some invalid memory access with a hard to predict
-> result.
-> 
-> This issue, triggering the assertion, was observed with QEMU workloads by
-> two users in the Link tags below.
-> 
-> Fix this by not relying on a file's private to pass information to fsync
-> that it should skip locking the inode and instead pass this information
-> through a special value stored in current->journal_info. This is safe
-> because in the relevant section of the direct IO write path we are not
-> holding a transaction handle, so current->journal_info is NULL.
-> 
-> The following C program triggers the issue:
-> 
->    $ cat repro.c
->    /* Get the O_DIRECT definition. */
->    #ifndef _GNU_SOURCE
->    #define _GNU_SOURCE
->    #endif
-> 
->    #include <stdio.h>
->    #include <stdlib.h>
->    #include <unistd.h>
->    #include <stdint.h>
->    #include <fcntl.h>
->    #include <errno.h>
->    #include <string.h>
->    #include <pthread.h>
-> 
->    static int fd;
-> 
->    static ssize_t do_write(int fd, const void *buf, size_t count, off_t offset)
->    {
->        while (count > 0) {
->            ssize_t ret;
-> 
->            ret = pwrite(fd, buf, count, offset);
->            if (ret < 0) {
->                if (errno == EINTR)
->                    continue;
->                return ret;
->            }
->            count -= ret;
->            buf += ret;
->        }
->        return 0;
->    }
-> 
->    static void *fsync_loop(void *arg)
->    {
->        while (1) {
->            int ret;
-> 
->            ret = fsync(fd);
->            if (ret != 0) {
->                perror("Fsync failed");
->                exit(6);
->            }
->        }
->    }
-> 
->    int main(int argc, char *argv[])
->    {
->        long pagesize;
->        void *write_buf;
->        pthread_t fsyncer;
->        int ret;
-> 
->        if (argc != 2) {
->            fprintf(stderr, "Use: %s <file path>\n", argv[0]);
->            return 1;
->        }
-> 
->        fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT, 0666);
->        if (fd == -1) {
->            perror("Failed to open/create file");
->            return 1;
->        }
-> 
->        pagesize = sysconf(_SC_PAGE_SIZE);
->        if (pagesize == -1) {
->            perror("Failed to get page size");
->            return 2;
->        }
-> 
->        ret = posix_memalign(&write_buf, pagesize, pagesize);
->        if (ret) {
->            perror("Failed to allocate buffer");
->            return 3;
->        }
-> 
->        ret = pthread_create(&fsyncer, NULL, fsync_loop, NULL);
->        if (ret != 0) {
->            fprintf(stderr, "Failed to create writer thread: %d\n", ret);
->            return 4;
->        }
-> 
->        while (1) {
->            ret = do_write(fd, write_buf, pagesize, 0);
->            if (ret != 0) {
->                perror("Write failed");
->                exit(5);
->            }
->        }
-> 
->        return 0;
->    }
-> 
->    $ mkfs.btrfs -f /dev/sdi
->    $ mount /dev/sdi /mnt/sdi
->    $ timeout 10 ./repro /mnt/sdi/foo
-> 
-> Usually the race is triggered within less than 1 second. A test case for
-> fstests will follow soon.
-> 
-> Reported-by: Paulo Dias <paulo.miguel.dias@gmail.com>
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=219187
-> Reported-by: Andreas Jahn <jahn-andi@web.de>
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=219199
-> Reported-by: syzbot+4704b3cc972bd76024f1@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/linux-btrfs/00000000000044ff540620d7dee2@google.com/
-> Fixes: 939b656bc8ab ("btrfs: fix corruption after buffer fault in during direct IO append write")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Mon, Sep 2, 2024 at 9:29=E2=80=AFPM Zorro Lang <zlang@redhat.com> wrote:
+>
+> On Fri, Aug 30, 2024 at 12:10:21AM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Test that a program that has 2 threads using the same file descriptor a=
+nd
+> > concurrently doing direct IO writes and fsync doesn't trigger any crash
+> > or deadlock.
+> >
+> > This is motivated by a bug found in btrfs fixed by the following patch:
+> >
+> >   "btrfs: fix race between direct IO write and fsync when using same fd=
+"
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  .gitignore                    |   1 +
+> >  src/Makefile                  |   2 +-
+> >  src/dio-write-fsync-same-fd.c | 106 ++++++++++++++++++++++++++++++++++
+> >  tests/generic/363             |  30 ++++++++++
+> >  tests/generic/363.out         |   2 +
+> >  5 files changed, 140 insertions(+), 1 deletion(-)
+> >  create mode 100644 src/dio-write-fsync-same-fd.c
+> >  create mode 100755 tests/generic/363
+> >  create mode 100644 tests/generic/363.out
+> >
+> > diff --git a/.gitignore b/.gitignore
+> > index 36083e9d..57519263 100644
+> > --- a/.gitignore
+> > +++ b/.gitignore
+> > @@ -76,6 +76,7 @@ tags
+> >  /src/dio-buf-fault
+> >  /src/dio-interleaved
+> >  /src/dio-invalidate-cache
+> > +/src/dio-write-fsync-same-fd
+> >  /src/dirhash_collide
+> >  /src/dirperf
+> >  /src/dirstress
+> > diff --git a/src/Makefile b/src/Makefile
+> > index b3da59a0..b9ad6b5f 100644
+> > --- a/src/Makefile
+> > +++ b/src/Makefile
+> > @@ -20,7 +20,7 @@ TARGETS =3D dirstress fill fill2 getpagesize holes ls=
+tat64 \
+> >       t_get_file_time t_create_short_dirs t_create_long_dirs t_enospc \
+> >       t_mmap_writev_overlap checkpoint_journal mmap-rw-fault allocstale=
+ \
+> >       t_mmap_cow_memory_failure fake-dump-rootino dio-buf-fault rewindd=
+ir-test \
+> > -     readdir-while-renames dio-append-buf-fault
+> > +     readdir-while-renames dio-append-buf-fault dio-write-fsync-same-f=
+d
+> >
+> >  LINUX_TARGETS =3D xfsctl bstat t_mtab getdevicesize preallo_rw_pattern=
+_reader \
+> >       preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
+> > diff --git a/src/dio-write-fsync-same-fd.c b/src/dio-write-fsync-same-f=
+d.c
+> > new file mode 100644
+> > index 00000000..79472a9e
+> > --- /dev/null
+> > +++ b/src/dio-write-fsync-same-fd.c
+> > @@ -0,0 +1,106 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2024 SUSE Linux Products GmbH.  All Rights Reserved.
+> > + */
+> > +
+> > +/*
+> > + * Test two threads working with the same file descriptor, one doing d=
+irect IO
+> > + * writes into the file and the other just doing fsync calls. We want =
+to verify
+> > + * that there are no crashes or deadlocks.
+> > + *
+> > + * This program never finishes, it starts two infinite loops to write =
+and fsync
+> > + * the file. It's meant to be called with the 'timeout' program from c=
+oreutils.
+> > + */
+> > +
+> > +/* Get the O_DIRECT definition. */
+> > +#ifndef _GNU_SOURCE
+> > +#define _GNU_SOURCE
+> > +#endif
+> > +
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <unistd.h>
+> > +#include <stdint.h>
+> > +#include <fcntl.h>
+> > +#include <errno.h>
+> > +#include <string.h>
+> > +#include <pthread.h>
+> > +
+> > +static int fd;
+> > +
+> > +static ssize_t do_write(int fd, const void *buf, size_t count, off_t o=
+ffset)
+> > +{
+> > +        while (count > 0) {
+> > +             ssize_t ret;
+> > +
+> > +             ret =3D pwrite(fd, buf, count, offset);
+> > +             if (ret < 0) {
+> > +                     if (errno =3D=3D EINTR)
+> > +                             continue;
+> > +                     return ret;
+> > +             }
+> > +             count -=3D ret;
+> > +             buf +=3D ret;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static void *fsync_loop(void *arg)
+> > +{
+> > +     while (1) {
+> > +             int ret;
+> > +
+> > +             ret =3D fsync(fd);
+> > +             if (ret !=3D 0) {
+> > +                     perror("Fsync failed");
+> > +                     exit(6);
+> > +             }
+> > +     }
+> > +}
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> > +     long pagesize;
+> > +     void *write_buf;
+> > +     pthread_t fsyncer;
+> > +     int ret;
+> > +
+> > +     if (argc !=3D 2) {
+> > +             fprintf(stderr, "Use: %s <file path>\n", argv[0]);
+> > +             return 1;
+> > +     }
+> > +
+> > +     fd =3D open(argv[1], O_WRONLY | O_CREAT | O_TRUNC | O_DIRECT, 066=
+6);
+> > +     if (fd =3D=3D -1) {
+> > +             perror("Failed to open/create file");
+> > +             return 1;
+> > +     }
+> > +
+> > +     pagesize =3D sysconf(_SC_PAGE_SIZE);
+> > +     if (pagesize =3D=3D -1) {
+> > +             perror("Failed to get page size");
+> > +             return 2;
+> > +     }
+> > +
+> > +     ret =3D posix_memalign(&write_buf, pagesize, pagesize);
+> > +     if (ret) {
+> > +             perror("Failed to allocate buffer");
+> > +             return 3;
+> > +     }
+> > +
+> > +     ret =3D pthread_create(&fsyncer, NULL, fsync_loop, NULL);
+> > +     if (ret !=3D 0) {
+> > +             fprintf(stderr, "Failed to create writer thread: %d\n", r=
+et);
+> > +             return 4;
+> > +     }
+> > +
+> > +     while (1) {
+> > +             ret =3D do_write(fd, write_buf, pagesize, 0);
+> > +             if (ret !=3D 0) {
+> > +                     perror("Write failed");
+> > +                     exit(5);
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > diff --git a/tests/generic/363 b/tests/generic/363
+> > new file mode 100755
+> > index 00000000..21159e24
+> > --- /dev/null
+> > +++ b/tests/generic/363
+> > @@ -0,0 +1,30 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
+> > +#
+> > +# FS QA Test 363
+> > +#
+> > +# Test that a program that has 2 threads using the same file descripto=
+r and
+> > +# concurrently doing direct IO writes and fsync doesn't trigger any cr=
+ash or
+> > +# deadlock.
+> > +#
+> > +. ./common/preamble
+> > +_begin_fstest auto quick
+> > +
+> > +_require_test
+> > +_require_odirect
+> > +_require_test_program dio-write-fsync-same-fd
+> > +_require_command "$TIMEOUT_PROG" timeout
+> > +
+> > +[ $FSTYP =3D=3D "btrfs" ] && \
+> > +     _fixed_by_kernel_commit xxxxxxxxxxxx \
+> > +     "btrfs: fix race between direct IO write and fsync when using sam=
+e fd"
+> > +
+> > +# On error the test program writes messages to stderr, causing a golde=
+n output
+> > +# mismatch and making the test fail.
+> > +$TIMEOUT_PROG 10s $here/src/dio-write-fsync-same-fd $TEST_DIR/dio-writ=
+e-fsync-same-fd
+>
+> Hi Filipe,
+>
+> Thanks for this new test case. How reproducible is this test? I tried to =
+run it on
+> a linux v6.11-rc3+ without above kernel fix, but test passed. Does this r=
+eproducer
+> need some specical test conditions?
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+It's a race condition so it may not trigger so easily in every machine.
+
+In my box it takes less than 1 second, so I left the timeout in the
+test at 10s. You can try to increase that, say, 30 seconds, 60 seconds
+and see if it triggers.
+Don't know what distro you are using, but make sure that the kernel
+config has CONFIG_BTRFS_ASSERT=3Dy, which is a default in some distros
+like SUSE ones.
+
+When the test fails it should have a trace like this in dmesg:
+
+[362164.748435] run fstests generic/363 at 2024-09-02 22:40:19
+[362165.667172] assertion failed: inode_is_locked(&inode->vfs_inode),
+in fs/btrfs/ordered-data.c:1018
+[362165.668629] ------------[ cut here ]------------
+[362165.669542] kernel BUG at fs/btrfs/ordered-data.c:1018!
+[362165.670902] Oops: invalid opcode: 0000 [#1] PREEMPT SMP PTI
+[362165.682061] CPU: 3 UID: 0 PID: 3687221 Comm: dio-write-fsync Not
+tainted 6.11.0-rc5-btrfs-next-172+ #1
+[362165.684672] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+[362165.687682] RIP:
+0010:btrfs_get_ordered_extents_for_logging+0x1a2/0x1b0 [btrfs]
+[362165.689592] Code: 00 e8 22 3a ac e3 e9 1b ff ff ff b9 fa 03 00 00
+48 c7 c2 61 39 e3 c0 48 c7 c6 20 d1 e3 c0 48 c7 c7 30 cf e3 c0 e8 de
+10 64 e3 <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90
+90 90
+[362165.693968] RSP: 0018:ffffb9f1c264fe20 EFLAGS: 00010246
+[362165.694959] RAX: 0000000000000055 RBX: ffff962c3d01bd88 RCX:
+0000000000000000
+[362165.696778] RDX: 0000000000000000 RSI: ffffffffa544b924 RDI:
+00000000ffffffff
+[362165.698751] RBP: ffff962b5da07f00 R08: 0000000000000000 R09:
+ffffb9f1c264fc68
+[362165.700707] R10: 0000000000000001 R11: 0000000000000001 R12:
+ffff962c3d01bc00
+[362165.702273] R13: ffff962b215af800 R14: 0000000000000001 R15:
+0000000000000000
+[362165.704168] FS:  00007fe3630006c0(0000) GS:ffff962e2fac0000(0000)
+knlGS:0000000000000000
+[362165.706002] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[362165.707258] CR2: 00007fe362ffff78 CR3: 00000002a3f5e005 CR4:
+0000000000370ef0
+[362165.708844] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[362165.710344] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+[362165.711926] Call Trace:
+[362165.712563]  <TASK>
+[362165.713122]  ? __die_body+0x1b/0x60
+[362165.713933]  ? die+0x39/0x60
+[362165.714648]  ? do_trap+0xe4/0x110
+[362165.715466]  ? btrfs_get_ordered_extents_for_logging+0x1a2/0x1b0 [btrfs=
+]
+[362165.717253]  ? do_error_trap+0x6a/0x90
+[362165.718257]  ? btrfs_get_ordered_extents_for_logging+0x1a2/0x1b0 [btrfs=
+]
+[362165.720057]  ? exc_invalid_op+0x4e/0x70
+[362165.721062]  ? btrfs_get_ordered_extents_for_logging+0x1a2/0x1b0 [btrfs=
+]
+[362165.722822]  ? asm_exc_invalid_op+0x16/0x20
+[362165.723934]  ? btrfs_get_ordered_extents_for_logging+0x1a2/0x1b0 [btrfs=
+]
+[362165.725751]  btrfs_sync_file+0x227/0x510 [btrfs]
+[362165.726923]  do_fsync+0x38/0x70
+[362165.727732]  __x64_sys_fsync+0x10/0x20
+[362165.728679]  do_syscall_64+0x4a/0x110
+[362165.729642]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+[362165.730741] RIP: 0033:0x7fe36315397a
+[362165.731598] Code: 48 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00
+48 83 ec 18 89 7c 24 0c e8 b3 49 f8 ff 8b 7c 24 0c 89 c2 b8 4a 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 36 89 d7 89 44 24 0c e8 13 4a f8 ff 8b
+44 24
+[362165.735846] RSP: 002b:00007fe362fffeb0 EFLAGS: 00000293 ORIG_RAX:
+000000000000004a
+[362165.737208] RAX: ffffffffffffffda RBX: 00007fe363000cdc RCX:
+00007fe36315397a
+[362165.738763] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
+0000000000000003
+[362165.740062] RBP: 0000000000000000 R08: 0000000000000000 R09:
+00007fe3630006c0
+[362165.741463] R10: 00007fe363067400 R11: 0000000000000293 R12:
+ffffffffffffff88
+[362165.743280] R13: 0000000000000000 R14: 00007fffaa292c10 R15:
+00007fe362800000
+[362165.744494]  </TASK>
+[362165.744954] Modules linked in: btrfs xfs dm_zero dm_snapshot
+dm_thin_pool dm_persistent_data dm_bio_prison dm_bufio dm_log_writes
+dm_dust dm_flakey dm_mod loop blake2b_generic xor raid6_pq libcrc32c
+overlay intel_rapl_msr intel_rapl_common crct10dif_pclmul
+ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3 aesni_intel
+gf128mul crypto_simd cryptd bochs rapl drm_vram_helper drm_ttm_helper
+ttm input_leds led_class drm_kms_helper pcspkr sg button evdev
+serio_raw qemu_fw_cfg binfmt_misc drm ip_tables x_tables autofs4 ext4
+crc32c_generic crc16 mbcache jbd2 sd_mod virtio_net net_failover
+virtio_scsi failover ata_generic ata_piix libata crc32_pclmul scsi_mod
+crc32c_intel virtio_pci virtio psmouse virtio_pci_legacy_dev i2c_piix4
+virtio_pci_modern_dev virtio_ring i2c_smbus scsi_common [last
+unloaded: btrfs]
+[362165.756697] ---[ end trace 0000000000000000 ]---
+[362165.757582] RIP:
+0010:btrfs_get_ordered_extents_for_logging+0x1a2/0x1b0 [btrfs]
+[362165.758955] Code: 00 e8 22 3a ac e3 e9 1b ff ff ff b9 fa 03 00 00
+48 c7 c2 61 39 e3 c0 48 c7 c6 20 d1 e3 c0 48 c7 c7 30 cf e3 c0 e8 de
+10 64 e3 <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90
+90 90
+[362165.762283] RSP: 0018:ffffb9f1c264fe20 EFLAGS: 00010246
+[362165.763164] RAX: 0000000000000055 RBX: ffff962c3d01bd88 RCX:
+0000000000000000
+[362165.764414] RDX: 0000000000000000 RSI: ffffffffa544b924 RDI:
+00000000ffffffff
+[362165.765774] RBP: ffff962b5da07f00 R08: 0000000000000000 R09:
+ffffb9f1c264fc68
+[362165.767001] R10: 0000000000000001 R11: 0000000000000001 R12:
+ffff962c3d01bc00
+[362165.768223] R13: ffff962b215af800 R14: 0000000000000001 R15:
+0000000000000000
+[362165.769369] FS:  00007fe3630006c0(0000) GS:ffff962e2fac0000(0000)
+knlGS:0000000000000000
+[362165.771117] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[362165.772435] CR2: 00007fe362ffff78 CR3: 00000002a3f5e005 CR4:
+0000000000370ef0
+[362165.773934] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+0000000000000000
+[362165.775357] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
+0000000000000400
+
+
+>
+>   # ./check -s default generic/363
+>   SECTION       -- default
+>   FSTYP         -- btrfs
+>   PLATFORM      -- Linux/x86_64 dell-xxxxx-xx 6.11.0-0.rc3.20240814git6b0=
+f8db921ab.32.fc42.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Aug 14 16:46:57 UTC 202=
+4
+>   MKFS_OPTIONS  -- /dev/sda6
+>   MOUNT_OPTIONS -- -o context=3Dsystem_u:object_r:root_t:s0 /dev/sda6 /mn=
+t/scratch
+>
+>   generic/363 10s ...  10s
+>   Ran: generic/363
+>   Passed all 1 test
+>
+> Thanks,
+> Zorro
+>
+> > +
+> > +# success, all done
+> > +echo "Silence is golden"
+> > +status=3D0
+> > +exit
+> > diff --git a/tests/generic/363.out b/tests/generic/363.out
+> > new file mode 100644
+> > index 00000000..d03d2dc2
+> > --- /dev/null
+> > +++ b/tests/generic/363.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 363
+> > +Silence is golden
+> > --
+> > 2.43.0
+> >
+> >
+>
 
