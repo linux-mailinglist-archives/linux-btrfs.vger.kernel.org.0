@@ -1,300 +1,261 @@
-Return-Path: <linux-btrfs+bounces-7714-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7715-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B82967C82
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 00:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B69F967E7B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 06:27:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0BBF1F214A9
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2024 22:14:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 253641F211DF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 04:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACF2185B4A;
-	Sun,  1 Sep 2024 22:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDFF14D6F9;
+	Mon,  2 Sep 2024 04:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="CNth6cRR"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ph4u529E";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Ph4u529E"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7791304B0
-	for <linux-btrfs@vger.kernel.org>; Sun,  1 Sep 2024 22:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905A41E50B
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 04:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725228880; cv=none; b=BvBFqiA5aBDzOmbap96oHGMDWDOXa65TMuxwb4OJ1tbXMShSy/WrlVU5FY07w0qlAJUjvtjrTyg1T8gxPuw/nfi3w1SgLepJLGuTErbAiRshSzIjKy0GyA+WdOlyTznryLjuOJHGy9zRZt2j/bsAYy3cMR2jwrHRcI2mb5zsI14=
+	t=1725251255; cv=none; b=ZngXbH+MXxmCf5JxhEm6TymI4v5F9wu1KjZ01uzQNo1n+b0vom46V6ZfgH+T6V1PUlkcbrNlwvyBRF6kNRxIhuSj17qpsas1i81+qWSaQGIdzSHJ8OgqbWMPMxOhA4mSw0jXiNY4QBPtZCeFW9hwHqcUk6SjSpFg90braNifeno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725228880; c=relaxed/simple;
-	bh=T1Z2f4yYC7tf3y4SHJYsnSVfbsaBUdr07UVy24uKGG8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=FrnSxwj9eL2R1W2iFNDd8DVcsmY36v2VTi3ylZm/WzVsb44qIvJwLFb9Z90cij335m6XsO2emHaGLmZ/4h4u7jDxZ5/HEbNH59/7INNVTPGkW1BLRcthY3cDLfjokS1JxvXdkgVtF9CnxV/5IMRcf5ZjPNXU8VdhEM1LuXsn0r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=CNth6cRR; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1725228813; x=1725833613; i=quwenruo.btrfs@gmx.com;
-	bh=MK+OvhyUpwqVr50mcEEE/NJAHhId6VnawCx2zEl9IEs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=CNth6cRRuCyBfFKSV0cRer8fjPk6RLs1jQInFn8m68m8KjARd2TXTcVnlDY/afN8
-	 KkPHruF5rllOnfba73gLH3BIz3WmaeaIOEQuImw2kW7Or4chf66FuotlFCnNEePjj
-	 rcTKW+KjFNRERQzzD+Zpp0jSuS5UalkLyXMTOWY4aoj5NgNKoZUD2Vh3XBxxVlTMW
-	 EgTfMtRZi5gDJHIdssYJJlPiir0Pks4AukrxWZ9DU5yXyyN6iIGLasQ5IaPk2TGny
-	 ESKOVdoS6oQrc2EFwZlMv0ExlNMu4DV7fu1KobGVZyvOwBVWdojS4X9TLCYI5WU1/
-	 W6GsrU534K9YDwCl1A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MwQXN-1rt3DV3dcD-00vBgO; Mon, 02
- Sep 2024 00:13:33 +0200
-Message-ID: <c06d4a06-589a-428d-a50f-93e29254976e@gmx.com>
-Date: Mon, 2 Sep 2024 07:43:30 +0930
+	s=arc-20240116; t=1725251255; c=relaxed/simple;
+	bh=KaX6lKGFP6EAd7Ei0UAiPKTNH4fO19LdSEXWQbC9VH0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=uVDKAuHagJ8LpswZ+ze/Q6Q4bLznPiDNSgJ0zPXZr93wKrb4gPmjtbnoyUCZxr+BCGuxL5floDkzuAo1NaL3B48NiAl7BO88nx1FroYo0ppXTwIkwfy0giUSUvj53OiIagM8GYoinuSfkgsCqvfqi+AH8vjjRvKdij4sbvkrCUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ph4u529E; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Ph4u529E; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6C8351FB8F
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 04:27:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1725251251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=txhjrbamRsjCPCy8Jj6K92bgq5s0tsppxlXxiWknPBQ=;
+	b=Ph4u529EKHiUTsLyEVcimCSPx4FrhwzYi9cUHkdHpGnPzoe7+dYhZ4XYM1yacrCU9eqUsQ
+	9v3YTe+FmkIDFmKFDDG/cBlVmm0jqxpH3rMUowmr812BF6lmMPZAJpBgOk7IsRVlc/6Dwj
+	VlYPg/WH+opjlXNKvtlknkflZluM7nI=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=Ph4u529E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1725251251; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=txhjrbamRsjCPCy8Jj6K92bgq5s0tsppxlXxiWknPBQ=;
+	b=Ph4u529EKHiUTsLyEVcimCSPx4FrhwzYi9cUHkdHpGnPzoe7+dYhZ4XYM1yacrCU9eqUsQ
+	9v3YTe+FmkIDFmKFDDG/cBlVmm0jqxpH3rMUowmr812BF6lmMPZAJpBgOk7IsRVlc/6Dwj
+	VlYPg/WH+opjlXNKvtlknkflZluM7nI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0BE113A7C
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 04:27:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qDIiGLI+1WYIegAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 02 Sep 2024 04:27:30 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: merge btrfs_folio_unlock_writer() into btrfs_folio_end_writer_lock()
+Date: Mon,  2 Sep 2024 13:57:08 +0930
+Message-ID: <4201e46852d085bf6e1790ea2cd12f5f970abb8a.1725251192.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Corrupt BTRFS can't be get into a consistent state
-To: Gerhard Wiesinger <lists@wiesinger.com>, linux-btrfs@vger.kernel.org
-References: <63f8866f-ceda-4228-b595-e37b016e7b1f@wiesinger.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <63f8866f-ceda-4228-b595-e37b016e7b1f@wiesinger.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tmfS5tG24N5NaYEIu0O2XhK8nzWNqzHWz5jZqG40g1+ddbv0umG
- 6IxvHgoovaMBjOavZRIhRF4Mtk8fRyEWhWGDwO6Mo7PaBgkyWDJ02RiyjdpKE+5th2M2ICS
- 6/5VwEAW2nwaS1FiZAH5Di/1lFdm1uEhA3j9yi8gJ2Cpc1oIbSNZiXa/BQ6lSrP3UIJDpRK
- op9ssMJfkihycRu0HuwHA==
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 6C8351FB8F
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ZWlP1ktOWdM=;p4U/cVuGfborhUHLh+2tqPHPp5y
- FSzCqfWCr6S4nvThfhHoXXtRjcps/BsWfq3ji3ETL8igK7+ovYaumXLdACNMG72tc+DboQF3a
- qto02XqrLtfPzZORcz+yKbKiTSBiLZjvvmeD3Cg6OUQeuYaRgmWi9i7TsikeuvjV5G73GEGEm
- 9NnO0HBKKTaDv/lzdudiesdnMYZ1qj0Jx0WKVVEhmv8tDHmaGu3N9prv+HDRs2pjjdm11zixb
- is+67U0TifOYlvcDy3p0FZOYfNhREJRI/zYOUi0TeRhBfLQ1OKiBGdrGbLULZ7YEU6araz80u
- rdaFszxvD/AyFKKkGsFESBbo/8feoaf8cO9mGfuTStB5J2cX//a/Ki3O2xVFqzUsTrhOFcpYP
- or4WpxtDF2sbOFOSSV6wkYKgV1Wk0Cfy+mI/JNXdx8I622BPN0EDCyQzrZ7L9Dc0vZRrZ1mr9
- c2oHkkQnRvotN0/esWcXbUnXlvlhj1pWFiXu6V7sGJFmRTk9UCr9gwkCyBC4Z6qBUzBrH5sZu
- I/TNCF9oHCbkBiNCaJgHIbjkvckjNHfp/o1OW3JuSTyWCAVlQwhN4mMqmtf4szcdORwfiEX0U
- j62skj4QgQ0/h636BQ2onjQLNiWFktq/+pAYXE2OEU24628AD1xXpEd7dEwfub3EgqUwneD3x
- jYOEAVdPckMo9DtK9SZxbN9l/EpmG0FU0Oq5sqU3u32UdMcxz4Fjba/vyOsTJsSlIDMvb2kHu
- ZHz5et0FLE6BKW/WXc+QHmKswvFyTW1VWdic1eCAwAFhD0UAtWYKfJKS+46kAiThrTw45IuXV
- mZqylBZMl8Fs4qOV0Wt4+I3A==
 
+The function btrfs_folio_unlock_writer() is already calling
+btrfs_folio_end_writer_lock() to do the heavy lifting work, the only
+missing 0 writer check.
 
+Thus there is no need to keep two different functions, move the 0 writer
+check into btrfs_folio_end_writer_lock(), and remove
+btrfs_folio_unlock_writer().
 
-=E5=9C=A8 2024/9/1 21:13, Gerhard Wiesinger =E5=86=99=E9=81=93:
-> Hello,
->
-> I'm having some Fedora Linux VMs (actual versions, latest updates) in a
-> virtual test infrastructure on Virtualbox. There I run different VMs
-> with different filesystems (ext4, xfs, zfs, bcachefs and btrfs).
->
-> I had a hardware problem on the underlying hardware where around 1000 4k
-> blocks could not be read anymore. I migrated with ddrescure the whole
-> disk which worked well.
->
-> Of course I was expecting some data loss in the VMs but wanted to get
-> them in a consistent state.
->
-> The following file systems got very easy in a consistent state with the
-> corresponding repair/scrub tools of the filesystems:
-> - ext4
-> - xfs
-> - zfs
->
-> Unfortunately 2 filesystem can't get into a state, where the filesystem
-> repair tools report "everything fine" (of course with some loss data,
-> but that's fine):
-> - btrfs
-> - bcachefs
->
-> btrfs --version
-> btrfs-progs v6.10.1
-> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED
-> CRYPTO=3Dlibgcrypt
->
-> commands run with btrfs:
-> btrfs check device
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c |  2 +-
+ fs/btrfs/subpage.c   | 81 +++++++++++++++++++-------------------------
+ fs/btrfs/subpage.h   |  2 --
+ 3 files changed, 35 insertions(+), 50 deletions(-)
 
-This is readonly operation, just to tell you what's going wrong.
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 485d88f9947b..70be1150c34e 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2220,7 +2220,7 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
+ 						       cur, cur_len, !ret);
+ 			mapping_set_error(mapping, ret);
+ 		}
+-		btrfs_folio_unlock_writer(fs_info, folio, cur, cur_len);
++		btrfs_folio_end_writer_lock(fs_info, folio, cur, cur_len);
+ 		if (ret < 0)
+ 			found_error = true;
+ next_page:
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 7fe58c4d9923..2f071f4b8b8d 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -378,13 +378,47 @@ int btrfs_folio_start_writer_lock(const struct btrfs_fs_info *fs_info,
+ 	return 0;
+ }
+ 
++/*
++ * Handle different locked folios:
++ *
++ * - Non-subpage folio
++ *   Just unlock it.
++ *
++ * - folio locked but without any subpage locked
++ *   This happens either before writepage_delalloc() or the delalloc range is
++ *   already handled by previous folio.
++ *   We can simple unlock it.
++ *
++ * - folio locked with subpage range locked.
++ *   We go through the locked sectors inside the range and clear their locked
++ *   bitmap, reduce the writer lock number, and unlock the page if that's
++ *   the last locked range.
++ */
+ void btrfs_folio_end_writer_lock(const struct btrfs_fs_info *fs_info,
+ 				 struct folio *folio, u64 start, u32 len)
+ {
++	struct btrfs_subpage *subpage = folio_get_private(folio);
++
++	ASSERT(folio_test_locked(folio));
++
+ 	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio->mapping)) {
+ 		folio_unlock(folio);
+ 		return;
+ 	}
++
++	/*
++	 * For subpage case, there are two types of locked page.  With or
++	 * without writers number.
++	 *
++	 * Since we own the page lock, no one else could touch subpage::writers
++	 * and we are safe to do several atomic operations without spinlock.
++	 */
++	if (atomic_read(&subpage->writers) == 0) {
++		/* No writers, locked by plain lock_page() */
++		folio_unlock(folio);
++		return;
++	}
++
+ 	btrfs_subpage_clamp_range(folio, &start, &len);
+ 	if (btrfs_subpage_end_and_test_writer(fs_info, folio, start, len))
+ 		folio_unlock(folio);
+@@ -702,53 +736,6 @@ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
+ 
+-/*
+- * Handle different locked pages with different page sizes:
+- *
+- * - Page locked by plain lock_page()
+- *   It should not have any subpage::writers count.
+- *   Can be unlocked by unlock_page().
+- *   This is the most common locked page for extent_writepage() called
+- *   inside extent_write_cache_pages().
+- *   Rarer cases include the @locked_page from extent_write_locked_range().
+- *
+- * - Page locked by lock_delalloc_pages()
+- *   There is only one caller, all pages except @locked_page for
+- *   extent_write_locked_range().
+- *   In this case, we have to call subpage helper to handle the case.
+- */
+-void btrfs_folio_unlock_writer(struct btrfs_fs_info *fs_info,
+-			       struct folio *folio, u64 start, u32 len)
+-{
+-	struct btrfs_subpage *subpage;
+-
+-	ASSERT(folio_test_locked(folio));
+-	/* For non-subpage case, we just unlock the page */
+-	if (!btrfs_is_subpage(fs_info, folio->mapping)) {
+-		folio_unlock(folio);
+-		return;
+-	}
+-
+-	ASSERT(folio_test_private(folio) && folio_get_private(folio));
+-	subpage = folio_get_private(folio);
+-
+-	/*
+-	 * For subpage case, there are two types of locked page.  With or
+-	 * without writers number.
+-	 *
+-	 * Since we own the page lock, no one else could touch subpage::writers
+-	 * and we are safe to do several atomic operations without spinlock.
+-	 */
+-	if (atomic_read(&subpage->writers) == 0) {
+-		/* No writers, locked by plain lock_page() */
+-		folio_unlock(folio);
+-		return;
+-	}
+-
+-	/* Have writers, use proper subpage helper to end it */
+-	btrfs_folio_end_writer_lock(fs_info, folio, start, len);
+-}
+-
+ /*
+  * This is for folio already locked by plain lock_page()/folio_lock(), which
+  * doesn't have any subpage awareness.
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index f90e0c4f4cab..f805261e0999 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -155,8 +155,6 @@ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
+ 
+ void btrfs_folio_assert_not_dirty(const struct btrfs_fs_info *fs_info,
+ 				  struct folio *folio, u64 start, u32 len);
+-void btrfs_folio_unlock_writer(struct btrfs_fs_info *fs_info,
+-			       struct folio *folio, u64 start, u32 len);
+ void btrfs_get_subpage_dirty_bitmap(struct btrfs_fs_info *fs_info,
+ 				    struct folio *folio,
+ 				    unsigned long *ret_bitmap);
+-- 
+2.46.0
 
-> btrfs check --init-csum-tree device
-> btrfs check --init-extent-tree device
-
-These two are dangerous operations.
-
-And why you didn't try "btrfs scrub"?
-
->
-> But btrfs never got into a consistent state, also with newer versions
-> (have copies of original virtual disk, around 6 month ago). Also btrfs
-> check runs for hours for around 4GB of data.
->
-> To reproduce the problem I created a new filesystem and copied some
-> files there:
-> # Copy around 4GB
-> time cp -Rap /usr /mnt
->
-> Afterwards I created a (quick&dirty) script "corrupt_device.sh" to
-> corrupt the device in the same manner as the original failure (1000 4k
-> blocks will be randomly overwritten).
-> Script: see below
->
-> Result: It can be reproduced, that btrfs can't be brought into a
-> consistent state even after several runs of the repair.
-> If the filesystem is modified in between (e.g. some further files are
-> written) it gets even worser.
->
-> You can also try to reproduce it and create a testcase out of it.
-
-I created a 10GiB fs, filled with around 3.7G data using fsstress, run
-your script.
-
-And the result is the opposite as yours:
-
-Opening filesystem to check...
-Checking filesystem on /dev/test/scratch1
-UUID: c2be653b-6b00-4ed9-925f-258cc7ca5391
-[1/7] checking root items
-checksum verify failed on 37896192 wanted 0x1e3b3b76 found 0xf6ba3f0c
-[2/7] checking extents
-checksum verify failed on 276135936 wanted 0x142c0f06 found 0xdcc4a8df
-checksum verify failed on 66502656 wanted 0x6fff8502 found 0x333397eb
-checksum verify failed on 107397120 wanted 0x52894737 found 0x56e3558b
-checksum verify failed on 235864064 wanted 0x3a0b6ded found 0xe11cbb02
-checksum verify failed on 72384512 wanted 0x9306ee79 found 0x62a123d8
-checksum verify failed on 264683520 wanted 0x2cebc20f found 0x293c9426
-checksum verify failed on 196001792 wanted 0xe3ec9b3f found 0x29d32fce
-[3/7] checking free space tree
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 3776757760 bytes used, no error found <<<
-total csum bytes: 1692008
-total tree bytes: 82444288
-total fs tree bytes: 71237632
-total extent tree bytes: 6455296
-btree space waste bytes: 43820357
-file data blocks allocated: 29158084608
-  referenced 4905811968
-
-Btrfs properly detects the corruption in metadata, but since the default
-profile is DUP, it's totally fine and can go with the other mirror.
-
-And sure since your data is still SINGLE thus you will lose some data,
-but your metadata is totally fine.
-
-With proper btrfs scrub run:
-
-scrub done for c2be653b-6b00-4ed9-925f-258cc7ca5391
-Scrub started:    Mon Sep  2 06:08:23 2024
-Status:           finished
-Duration:         0:00:03
-Total to scrub:   3.61GiB
-Rate:             1.20GiB/s
-Error summary:    verify=3D36 csum=3D169
-   Corrected:      60
-   Uncorrectable:  145
-   Unverified:     0
-
-So it means 60 metadata csum mismatch is fixed, only 145 bad data sectors.
-
-And after the above scrub, btrfs check reports no more error (at least
-for metadata):
-
-Opening filesystem to check...
-Checking filesystem on /dev/test/scratch1
-UUID: c2be653b-6b00-4ed9-925f-258cc7ca5391
-[1/7] checking root items
-[2/7] checking extents
-[3/7] checking free space tree
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 3776757760 bytes used, no error found
-total csum bytes: 1692008
-total tree bytes: 82444288
-total fs tree bytes: 71237632
-total extent tree bytes: 6455296
-btree space waste bytes: 43819992
-file data blocks allocated: 29158084608
-  referenced 4905811968
-
->
-> Any ideas how to repair and what can be done to get it into a consistent
-> state?
-
-Please give the original "btrfs check" output.
-
-I think your original fs is either using SINGLE metadata profile (then
-very hard to do repair), AND you're using incorrect way to repair (scrub
-first, then btrfs check to verify, never --init-extent-tree nor
-=2D-init-csum-tree unless you know what you're really doing).
-
-And your random corruption script is the best case scenario for btrfs,
-it's pretty easy for btrfs just to use the good mirror to repair
-metadata, without any need to extra repair inside metadata.
-
-Thanks,
-Qu
->
-> Thnx.
->
-> Ciao,
-> Gerhard
->
-> Script corrupt_device.sh:
-> #!/usr/bin/env bash
->
-> RANDOM_DEVICE=3D/dev/urandom
-> OUTPUT_DEVICE=3D/dev/sdb
-> COUNT=3D1000
-> BLOCK_SIZE=3D4096
->
-> MAX_BLOCK_SIZE=3D$(blockdev --getsize64 ${OUTPUT_DEVICE})
->
-> echo "# Configured maximum size=3D${MAX_BLOCK_SIZE}"
-> MAX_BLOCK_NUMBER=3D$((MAX_BLOCK_SIZE/BLOCK_SIZE))
-> echo "# Maximum block number=3D${MAX_BLOCK_NUMBER}"
->
-> for ((BLOCK_NUMBER=3D1; BLOCK_NUMBER<=3D${COUNT}; BLOCK_NUMBER++ )) do
->  =C2=A0 BLOCK=3D`shuf --input-range=3D0-${MAX_BLOCK_NUMBER} --head-count=
-=3D1`
->  =C2=A0 dd if=3D${RANDOM_DEVICE} of=3D${OUTPUT_DEVICE} bs=3D${BLOCK_SIZE=
-}
-> seek=3D${BLOCK} count=3D1 > /dev/null 2>&1
-> done
->
->
 
