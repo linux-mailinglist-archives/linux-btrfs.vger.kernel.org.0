@@ -1,192 +1,110 @@
-Return-Path: <linux-btrfs+bounces-7744-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7745-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52418968EE1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 22:31:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07FB5968F03
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 23:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8A841F2346D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 20:31:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A98DF1F2347C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 21:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160A51581F8;
-	Mon,  2 Sep 2024 20:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30931CB52F;
+	Mon,  2 Sep 2024 21:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0CBw84Sh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w0SEx8Bg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0CBw84Sh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w0SEx8Bg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I34JQPBk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FBA41A4E7F
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 20:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB3B1AB6C2;
+	Mon,  2 Sep 2024 21:00:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725309094; cv=none; b=s16X+7GjkjuJ7q5QLfj/Uks2cCQhhpvgwdt5UhOmm37Q3hh3hOCwD6u0+J5L/UoZWkQdH4DIKbxn801rb9RuTf80FF5jYYfvR0Fo4Tla6ok3pJ2Wz5OyU0cxlQlBbtZhA6XTWpoKS4jmU12VFs/rGKSOwHPLT0Ylk8hU/OdAYzY=
+	t=1725310802; cv=none; b=KLiY2Qt+uLMCjAthPCxRXvy2dvsVN2izsi4nyzW9AR0Vs+eNPNjc32TKzEXzKHiDHtE0qFcX8cjahstcRMCR2Hdhbd/wUC5PjCXbNb/0ia7lSHQaBXGXjj5DS5BDieJksj+G1ZInYOhbjtzC2mnRGdqn5Q2WnrbMH31KVqh7CgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725309094; c=relaxed/simple;
-	bh=HB35RfcF7Ae2qIRsrSbU6KgP0t2m4e0c7XzbBhzrDCY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R99m4+sghndLPnCKxOjYPLjNIo0d6/mhGntwji7iSTyR/GN03pnLsdi/XCWkSCHFkSlOue2QNECmtXP4+e13c010Q4WXXLvTvJgvlEfPO+hkclT+MxPOPOYWBkU8N4U9TqyjJDSca3ma1GSE3F+RUpQ5h1ty3DN5qKj7LoamMkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0CBw84Sh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w0SEx8Bg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0CBw84Sh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w0SEx8Bg; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 29A3821B4C;
-	Mon,  2 Sep 2024 20:31:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725309089;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n/6hYjqkdAhiBoeSReeGwe14t1R7qeaqg9uKKHbYD1g=;
-	b=0CBw84ShkZ8JCJOi5IRcpFyPZ8LHk5elAQEhlWZGM+9cQVLv8V+Hg/JwolF+vlXvV2eqkE
-	Q0JmWoNBq6uD9o3saSGzTo68Hi8tmSsZOTVsUTKz8yOOiRjzZbKMg0xlwptwp+e10htBfZ
-	RySzBD9OZHEF+kevh40DtHKnSUQgAhk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725309089;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n/6hYjqkdAhiBoeSReeGwe14t1R7qeaqg9uKKHbYD1g=;
-	b=w0SEx8BgMlAeyLQ0eoX+2jcJibJVuURi2nfyElLxtfzD9zvWI5KuaytQGjOp9Tu6z8k2aJ
-	+DVELkddpVcv5MCw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=0CBw84Sh;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=w0SEx8Bg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725309089;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n/6hYjqkdAhiBoeSReeGwe14t1R7qeaqg9uKKHbYD1g=;
-	b=0CBw84ShkZ8JCJOi5IRcpFyPZ8LHk5elAQEhlWZGM+9cQVLv8V+Hg/JwolF+vlXvV2eqkE
-	Q0JmWoNBq6uD9o3saSGzTo68Hi8tmSsZOTVsUTKz8yOOiRjzZbKMg0xlwptwp+e10htBfZ
-	RySzBD9OZHEF+kevh40DtHKnSUQgAhk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725309089;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n/6hYjqkdAhiBoeSReeGwe14t1R7qeaqg9uKKHbYD1g=;
-	b=w0SEx8BgMlAeyLQ0eoX+2jcJibJVuURi2nfyElLxtfzD9zvWI5KuaytQGjOp9Tu6z8k2aJ
-	+DVELkddpVcv5MCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 05C1013A21;
-	Mon,  2 Sep 2024 20:31:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id DOblAKEg1mbRGwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 02 Sep 2024 20:31:29 +0000
-Date: Mon, 2 Sep 2024 22:31:27 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Naohiro Aota <naohiro.aota@wdc.com>
-Cc: linux-btrfs@vger.kernel.org, xuefer@gmail.com, HAN Yuwei <hrx@bupt.moe>
-Subject: Re: [PATCH] btrfs: zoned: handle broken write pointer on zones
-Message-ID: <20240902203127.GD26776@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <6a8b1550cef136b1d733d5c1016a7ba717335344.1725035560.git.naohiro.aota@wdc.com>
+	s=arc-20240116; t=1725310802; c=relaxed/simple;
+	bh=jtVPDlL69fasPswaGQl07C+4X4MgfXXfXKb8B2UMDtQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ocAgGfO3fsb1ELTTmMCZSDhAQcFJzd3hSD9dPjEKJ3XpRf6t2bGZqf/2usC+zjlAlft45no0+hCqrdsU6CwogV6T/18Fg/4el0sR38vTxhSE+hvfk20gAn9548SlNeADKubJbXSIWwkVB8+iOJJa82zrcpFEdpkqcd/nDIACwQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I34JQPBk; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42bbe809b06so26913955e9.1;
+        Mon, 02 Sep 2024 14:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725310799; x=1725915599; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KLomT+JOYe+3Bd9KrcDWYYSpigUrZ/r+BaH0p1DDjlc=;
+        b=I34JQPBkSSsoaAoVEdOrIwPSTU/ryJTLluFSmSw8JNOr2CVVgAwG9uFco4rVI+EmHE
+         rMapFhqu6Yd/cZHxw7m8/ZODr0uQExndDovG/5DRacJysrE0lWQW1WznwykEVmL3E2PK
+         l73mCU14sUFShEdO/3F2UPgsN0ZIv92Z42/4GKpYyLB9/3wqqGnls9byqbz9GUKJzUC7
+         p8aL4luLdsgbFaCIVP5NWZSgC7/WDjnwkyci60/XC9lu624eTTXheAFvLkS+nRrClkqz
+         uW+vSaB4YgLq+Yr1zE6d/fDKx8z1JKmWiIEmVyzJchuZcHDH0W9k7fA7Nnetbu2Fk35d
+         jgvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725310799; x=1725915599;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KLomT+JOYe+3Bd9KrcDWYYSpigUrZ/r+BaH0p1DDjlc=;
+        b=VuaTk9HudwWen2Wm7T4zs9exPGKx1a8GNy4F9S9t5uToPgFpCrGOYGCmWRcXmwVa0p
+         Bigtye/T02dLlh+77NuEzcmOR35ejcAUtuvaLz/vfWS/2eq4qbwQPk5AiYqFlPIAZNjp
+         R5qih5HWlcFnrCecKe+/skPTbrVOo7Uus/znan/BXec46/mufsfJbvJpYEopT+ZOLSNO
+         FRvNw6e8xSY8DMl/4obc+T7u1eHcU4v8O0+zDcn8ypZdZJh5UAmLqPEdCd3zE2hS0snS
+         Nf3uKj5OzbFsX2tRQ/h4bQ3+PYsQEtK49WGgeDDpPj/3fdJWvD8K4zT4PlVBhySgq4/r
+         vSZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV19QGHMQPho9ApsKxKrANJii93gotieWCmMeS2xxCpY3xzHZOxlA/9wyOIDfXDRN+Khyzk7oeuJyf0cWlq@vger.kernel.org, AJvYcCVWjV6618lpYfhvctxvfVQsMR6mrlF0OZQf8fr9ogN3XqqupM/xcClh1dF4sTLVVVL9g8ZwyvMZVR6YDQ==@vger.kernel.org, AJvYcCW0YJsKgqZ1/6/b2Hj+XGJ/IRNMTGD3ck4qv9yPWTK01yY9cNb7r42nzffznmn8gHLB++K8CPzsNoy/9mc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSswwTTsv0eYAEhy+DOALTl2AYvUlWpGLIt+jOzPoE7OMN66EI
+	rSCBWxJd23X0oXP6xhMQWd6pmjQC3EbOOZML6KZMMpQAXbay4toQ
+X-Google-Smtp-Source: AGHT+IHJ9pBT9ytsk5tzNva8P095WxsjFs7tjWt4r2Bdp1wdA7GW5O8Hu0pL/1xrREBHGc1IX3+k9A==
+X-Received: by 2002:a05:600c:1ca8:b0:426:6f17:531 with SMTP id 5b1f17b1804b1-42bb02edaf6mr113745395e9.13.1725310798523;
+        Mon, 02 Sep 2024 13:59:58 -0700 (PDT)
+Received: from fedora-thinkpad.lan (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-42c89dca8absm2913705e9.27.2024.09.02.13.59.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Sep 2024 13:59:58 -0700 (PDT)
+From: Luca Stefani <luca.stefani.ge1@gmail.com>
+To: 
+Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/3] btrfs: Don't block suspend during fstrim
+Date: Mon,  2 Sep 2024 22:56:09 +0200
+Message-ID: <20240902205828.943155-1-luca.stefani.ge1@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a8b1550cef136b1d733d5c1016a7ba717335344.1725035560.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 29A3821B4C
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:replyto,suse.cz:dkim];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,bupt.moe];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On Sat, Aug 31, 2024 at 01:32:49AM +0900, Naohiro Aota wrote:
-> Btrfs rejects to mount a FS if it finds a block group with a broken write
-> pointer (e.g, unequal write pointers on two zones of RAID1 block group).
-> Since such case can happen easily with a power-loss or crash of a system,
-> we need to handle the case more gently.
-> 
-> Handle such block group by making it unallocatable, so that there will be
-> no writes into it. That can be done by setting the allocation pointer at
-> the end of allocating region (= block_group->zone_capacity). Then, existing
-> code handle zone_unusable properly.
+Changes since v1:
+* Use bio_discard_limit to calculate chunk size
+* Makes use of the split chunks
 
-This sounds like the best option, this makes the zone read-only and
-relocation will reset it back to a good state. Alternatives like another
-state or error bits would need tracking them and increase complexity.
+v1: https://lore.kernel.org/lkml/20240902114303.922472-1-luca.stefani.ge1@gmail.com/
+Original discussion: https://lore.kernel.org/lkml/20240822164908.4957-1-luca.stefani.ge1@gmail.com/
 
-> Having proper zone_capacity is necessary for the change. So, set it as fast
-> as possible.
-> 
-> We cannot handle RAID0 and RAID10 case like this. But, they are anyway
-> unable to read because of a missing stripe.
-> 
-> Fixes: 265f7237dd25 ("btrfs: zoned: allow DUP on meta-data block groups")
-> Fixes: 568220fa9657 ("btrfs: zoned: support RAID0/1/10 on top of raid stripe tree")
-> CC: stable@vger.kernel.org # 6.1+
-> Reported-by: HAN Yuwei <hrx@bupt.moe>
-> Cc: Xuefer <xuefer@gmail.com>
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Luca Stefani (3):
+  block: Export bio_discard_limit
+  btrfs: Split remaining space to discard in chunks
+  btrfs: Don't block system suspend during fstrim
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+ block/blk-lib.c        |  3 ++-
+ fs/btrfs/extent-tree.c | 40 +++++++++++++++++++++++++++++++++-------
+ include/linux/blkdev.h |  1 +
+ 3 files changed, 36 insertions(+), 8 deletions(-)
 
-> @@ -1650,6 +1653,23 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
->  		goto out;
->  	}
->  
-> +	if (ret == -EIO && profile != 0 && profile != BTRFS_BLOCK_GROUP_RAID0 &&
-> +	    profile != BTRFS_BLOCK_GROUP_RAID10) {
-> +		/*
-> +		 * Detected broken write pointer.  Make this block group
-> +		 * unallocatable by setting the allocation pointer at the end of
-> +		 * allocatable region. Relocating this block group will fix the
-> +		 * mismatch.
-> +		 *
-> +		 * Currently, we cannot handle RAID0 or RAID10 case like this
-> +		 * because we don't have a proper zone_capacity value. But,
-> +		 * reading from this block group won't work anyway by a missing
-> +		 * stripe.
-> +		 */
-> +		cache->alloc_offset = cache->zone_capacity;
+-- 
+2.46.0
 
-Mabe print a warning, this looks like a condition that should be
-communicated back to the user.
 
