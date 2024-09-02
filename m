@@ -1,424 +1,428 @@
-Return-Path: <linux-btrfs+bounces-7716-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7717-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3508B967EA3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 06:59:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B687967EC7
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 07:28:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F1921C216F9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 04:59:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC2421F21E5C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2024 05:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85F514A636;
-	Mon,  2 Sep 2024 04:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B836814F100;
+	Mon,  2 Sep 2024 05:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="vV9tRb+K";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="vV9tRb+K"
+	dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b="vzuVUn2j"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from vps01.wiesinger.com (vps01.wiesinger.com [46.36.37.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93C728F5
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 04:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EDB179AA
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 05:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.36.37.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725253169; cv=none; b=FsV9dgDflVL6IdIIjjZtVl/xjXQDWc2DXpDyQaG0aCBbazw/N6P0gIRZjmVn6pEo7ZosAUf1IChQ18jJGuSsIu0MG7U9vsgpiNFxCP7tZEUJnTS4XNyR3FsLIKcls29zWEwkVBLkqReZbjlgBtgqgkCsje9xdYX2qftYgf7dkDQ=
+	t=1725254924; cv=none; b=nwtuJwfqL7f37+Tg9qJ5toSO4j+n3+CjfheDHW51GxPnlo2wJPheHb693AUmbrZHLHySMaf0o0Lv9tDjv7f5iG62G2swJ25JRlPExxnrbs3hgSz2cRkvilyar9eHPxuN71UZ6GklSlQvCmZFl8zxJ7gT9xQ2mlFNEEqPmgK86RE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725253169; c=relaxed/simple;
-	bh=A/VoGTo8bY3ZXS+INSsd/3/DatLMxKWf5LsQFjXdDbY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=RnTdnI1cRRXF2Dj05gO3HdycWmCVq3bBL1FzuUfUTjt8dylFMomcBklO6qpCYgqkoUfvrCaEBaCAaoKUsiK/KEm4ObKBSXlTqTGWzGzx9GQHk+ries4fRYuRBisJ2ZDmiQTdXyyW+wYD7IEMXOgN9OsIW7LlMJ3PO9iEMTnY8TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=vV9tRb+K; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=vV9tRb+K; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C031E219D7
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 04:59:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725253164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=aIj97RrguisPToS7qqu0dXOR1vPq6TTygyZZoZ2+WPs=;
-	b=vV9tRb+Kcabt9NUAimaXmAWJnVqNRPxIQtaFGulDC3np3mCMcPrnm48/L1FHTWOWUQt5Tx
-	jPj5tE/+O7+gvkp2KWrgyoWMD6wHqnB0YZfqtnD00K59bVC/wMS4edveiQ3EZTCu1ZQQi3
-	QgWEtm5Uj9wycMYWFWwQu6wS7d8ocCM=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=vV9tRb+K
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725253164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=aIj97RrguisPToS7qqu0dXOR1vPq6TTygyZZoZ2+WPs=;
-	b=vV9tRb+Kcabt9NUAimaXmAWJnVqNRPxIQtaFGulDC3np3mCMcPrnm48/L1FHTWOWUQt5Tx
-	jPj5tE/+O7+gvkp2KWrgyoWMD6wHqnB0YZfqtnD00K59bVC/wMS4edveiQ3EZTCu1ZQQi3
-	QgWEtm5Uj9wycMYWFWwQu6wS7d8ocCM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 020F813A7C
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 04:59:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id eVn3LCtG1Wa+AwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 02 Sep 2024 04:59:23 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: only unlock the to-be-submitted ranges inside a folio
-Date: Mon,  2 Sep 2024 14:29:06 +0930
-Message-ID: <73395cf297579616ecc84611eb06a2cc190e8ee8.1725253141.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1725254924; c=relaxed/simple;
+	bh=YRBDg4/3l7TMEB4jMb6nk+GeLPJt51unNElldmA019Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=QdwpMnJYvpyUET8q8UHllD8RKvDM3TBLi4IT/iZ53ipf5h9KrDw+pXZhokMOGZC6wQQmqiIpQJ+o7YTiQAfBrt4Utm9zqXrwBNJo3fQgTLgB+9HXmNpS40mQUBt/79ySWVVIe3dZ99ry6KQOMWMMDbgKDrf3AA1DBM8aeUhJPjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com; spf=pass smtp.mailfrom=wiesinger.com; dkim=pass (4096-bit key) header.d=wiesinger.com header.i=@wiesinger.com header.b=vzuVUn2j; arc=none smtp.client-ip=46.36.37.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wiesinger.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wiesinger.com
+Received: from wiesinger.com (wiesinger.com [84.112.177.114])
+	by vps01.wiesinger.com (Postfix) with ESMTPS id EDE9D9F262;
+	Mon,  2 Sep 2024 07:28:39 +0200 (CEST)
+Received: from [192.168.0.63] ([192.168.0.63])
+	(authenticated bits=0)
+	by wiesinger.com (8.18.1/8.18.1) with ESMTPSA id 4825Sd0P1181841
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Mon, 2 Sep 2024 07:28:39 +0200
+DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 4825Sd0P1181841
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
+	s=default; t=1725254919;
+	bh=FuAlY07O80VbbHu4dxe2wcRGowLQAE5kPHHjzF/GVKs=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=vzuVUn2jwmC+ELuKVKhfFEJpoFvds8RVbQ/LZxN0JU5gUmK5T4j67oOptCwfVtA2O
+	 cYQY9fqmI48IqyT7PZfFrMgE74e3qILqhiu5JrMUqxBqhnncgaAxQ4wdCOp5gziOGy
+	 N1ehpKGOSfBkwn0OqA64y/qC3g4VxjD95XSF4EWiORye/L2Q87xZczBV05epPDuvI9
+	 D0Xm7fy0T1lLDLacuPpd43Ez++mtK04Ztohckh4gpmr/gYBVV3g/5fAvuGB/NJ7et0
+	 4MInyq2iwgC5gmzhsZ1aDuTfk1Rvlzb792xb/dvYNZGpUgHd6BCvJiBAaroPdLnkbY
+	 ZRM3IRctPtCmhNXQcrbRB92zD1qX3lTidS9QYBT4A0DIBUKDxoanWXkp2Sm0dqsB4v
+	 eLZKDe1uFdhqf1Tueqc1vApiDD6gytdxX2T/OQCfPDv/0Yu+IEpN+EFhRDK0IexjMh
+	 ASyCsE7FA74t+RUNaK4WeBd1FTlX2JGyIddb8QpunLqUyyCg7JDS+AMFtxApqlSfii
+	 B4t6ssojiSw/oKWs8+78YjTrENtMZCdr44XRMTUCe5/hCoajZWfFUaSDZ9Drzoe8ey
+	 EUA1xBOiWXWOO0EEO3wAoh7+G0RVoWJkPUVaSwnyPzEKRHPlpydZxnb4kh2MzxmNKi
+	 5WCeouSfg6YYd/J0UKHexv1Q=
+Message-ID: <ce3a4dbc-4e81-4b05-b9e5-c92eec9b5d80@wiesinger.com>
+Date: Mon, 2 Sep 2024 07:28:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Betterbird (Windows)
+Subject: Re: Corrupt BTRFS can't be get into a consistent state
+Content-Language: en-US
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <63f8866f-ceda-4228-b595-e37b016e7b1f@wiesinger.com>
+ <c06d4a06-589a-428d-a50f-93e29254976e@gmx.com>
+From: Gerhard Wiesinger <lists@wiesinger.com>
+In-Reply-To: <c06d4a06-589a-428d-a50f-93e29254976e@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C031E219D7
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
 
-[SUBPAGE COMPRESSION LIMITS]
-Currently inside writepage_delalloc(), if a delalloc range is going to
-be submitted asynchronously (inline or compression, the page
-dirty/writeback/unlock are all handled in a different timing, not at the
-submission time), then we return 1 and extent_writepage() will skip the
-submission.
+On 02.09.2024 00:13, Qu Wenruo wrote:
+>
+>
+> 在 2024/9/1 21:13, Gerhard Wiesinger 写道:
+>> Hello,
+>>
+>> I'm having some Fedora Linux VMs (actual versions, latest updates) in a
+>> virtual test infrastructure on Virtualbox. There I run different VMs
+>> with different filesystems (ext4, xfs, zfs, bcachefs and btrfs).
+>>
+>> I had a hardware problem on the underlying hardware where around 1000 4k
+>> blocks could not be read anymore. I migrated with ddrescure the whole
+>> disk which worked well.
+>>
+>> Of course I was expecting some data loss in the VMs but wanted to get
+>> them in a consistent state.
+>>
+>> The following file systems got very easy in a consistent state with the
+>> corresponding repair/scrub tools of the filesystems:
+>> - ext4
+>> - xfs
+>> - zfs
+>>
+>> Unfortunately 2 filesystem can't get into a state, where the filesystem
+>> repair tools report "everything fine" (of course with some loss data,
+>> but that's fine):
+>> - btrfs
+>> - bcachefs
+>>
+>> btrfs --version
+>> btrfs-progs v6.10.1
+>> -EXPERIMENTAL -INJECT -STATIC +LZO +ZSTD +UDEV +FSVERITY +ZONED
+>> CRYPTO=libgcrypt
+>>
+>> commands run with btrfs:
+>> btrfs check device
+>
+> This is readonly operation, just to tell you what's going wrong.
+>
+>> btrfs check --init-csum-tree device
+>> btrfs check --init-extent-tree device
+>
+> These two are dangerous operations.
+>
+> And why you didn't try "btrfs scrub"?
 
-This is fine if every sector matches page size, but if a sector is
-smaller than page size (aka, subpage case), then it can be very
-problematic, for example for the following 64K page:
+Forgot to mention, started with this one.
 
-     0     16K     32K    48K     64K
-     |/|   |///////|      |/|
-       |                    |
-       4K                   52K
+>
+>>
+>> But btrfs never got into a consistent state, also with newer versions
+>> (have copies of original virtual disk, around 6 month ago). Also btrfs
+>> check runs for hours for around 4GB of data.
+>>
+>> To reproduce the problem I created a new filesystem and copied some
+>> files there:
+>> # Copy around 4GB
+>> time cp -Rap /usr /mnt
+>>
+>> Afterwards I created a (quick&dirty) script "corrupt_device.sh" to
+>> corrupt the device in the same manner as the original failure (1000 4k
+>> blocks will be randomly overwritten).
+>> Script: see below
+>>
+>> Result: It can be reproduced, that btrfs can't be brought into a
+>> consistent state even after several runs of the repair.
+>> If the filesystem is modified in between (e.g. some further files are
+>> written) it gets even worser.
+>>
+>> You can also try to reproduce it and create a testcase out of it.
+>
+> I created a 10GiB fs, filled with around 3.7G data using fsstress, run
+> your script.
+>
+> And the result is the opposite as yours:
+>
+> Opening filesystem to check...
+> Checking filesystem on /dev/test/scratch1
+> UUID: c2be653b-6b00-4ed9-925f-258cc7ca5391
+> [1/7] checking root items
+> checksum verify failed on 37896192 wanted 0x1e3b3b76 found 0xf6ba3f0c
+> [2/7] checking extents
+> checksum verify failed on 276135936 wanted 0x142c0f06 found 0xdcc4a8df
+> checksum verify failed on 66502656 wanted 0x6fff8502 found 0x333397eb
+> checksum verify failed on 107397120 wanted 0x52894737 found 0x56e3558b
+> checksum verify failed on 235864064 wanted 0x3a0b6ded found 0xe11cbb02
+> checksum verify failed on 72384512 wanted 0x9306ee79 found 0x62a123d8
+> checksum verify failed on 264683520 wanted 0x2cebc20f found 0x293c9426
+> checksum verify failed on 196001792 wanted 0xe3ec9b3f found 0x29d32fce
+> [3/7] checking free space tree
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 3776757760 bytes used, no error found <<<
+> total csum bytes: 1692008
+> total tree bytes: 82444288
+> total fs tree bytes: 71237632
+> total extent tree bytes: 6455296
+> btree space waste bytes: 43820357
+> file data blocks allocated: 29158084608
+>  referenced 4905811968
+>
+> Btrfs properly detects the corruption in metadata, but since the default
+> profile is DUP, it's totally fine and can go with the other mirror.
+>
+> And sure since your data is still SINGLE thus you will lose some data,
+> but your metadata is totally fine.
+>
+> With proper btrfs scrub run:
+>
+> scrub done for c2be653b-6b00-4ed9-925f-258cc7ca5391
+> Scrub started:    Mon Sep  2 06:08:23 2024
+> Status:           finished
+> Duration:         0:00:03
+> Total to scrub:   3.61GiB
+> Rate:             1.20GiB/s
+> Error summary:    verify=36 csum=169
+>   Corrected:      60
+>   Uncorrectable:  145
+>   Unverified:     0
+>
+> So it means 60 metadata csum mismatch is fixed, only 145 bad data 
+> sectors.
 
-Where |/| is the dirty range we need to submit.
+How to get rid of the 145 uncorrectables?
 
-In above case, we need the following different handling for the 3
-ranges:
+>
+> And after the above scrub, btrfs check reports no more error (at least
+> for metadata):
+>
+> Opening filesystem to check...
+> Checking filesystem on /dev/test/scratch1
+> UUID: c2be653b-6b00-4ed9-925f-258cc7ca5391
+> [1/7] checking root items
+> [2/7] checking extents
+> [3/7] checking free space tree
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 3776757760 bytes used, no error found
+> total csum bytes: 1692008
+> total tree bytes: 82444288
+> total fs tree bytes: 71237632
+> total extent tree bytes: 6455296
+> btree space waste bytes: 43819992
+> file data blocks allocated: 29158084608
+>  referenced 4905811968
+>
+>>
+>> Any ideas how to repair and what can be done to get it into a consistent
+>> state?
+>
+> Please give the original "btrfs check" output.
+>
+> I think your original fs is either using SINGLE metadata profile (then
+> very hard to do repair), AND you're using incorrect way to repair (scrub
+> first, then btrfs check to verify, never --init-extent-tree nor
+> --init-csum-tree unless you know what you're really doing).
 
-- [0, 4K) needs to be submitted for regular write
-  A single sector can not be compressed.
+I originally did scrub first (forget to mention, but there were still 
+uncorrectable errors as with my test script)
 
-- [16K, 32K) needs to be submitted for compressed write
+Original ones: DUP Metadata, so repair should work fine regarding 
+metadata (I have also an original copy of the virtual disk image so I 
+can play around).
 
-- [48K, 52K) needs to be submitted for regular write.
+btrfs inspect-internal list-chunks /mnt
+Devid PNumber      Type/profile   PStart    Length     PEnd LNumber   
+LStart Usage%
+----- ------- ----------------- -------- --------- -------- ------- 
+-------- ------
+     1       1       Data/single 12.00MiB   8.00MiB 20.00MiB 1 12.00MiB  
+99.76
+     1       2   Metadata/DUP    36.00MiB   1.00GiB  1.04GiB 2 28.00MiB  
+14.74
+     1       3   Metadata/DUP     1.04GiB   1.00GiB  2.04GiB 3 28.00MiB  
+14.74
+     1       4       Data/single  2.04GiB   1.00GiB  3.04GiB 4  1.03GiB  
+93.51
+     1       5       Data/single  3.04GiB   1.00GiB  4.04GiB 5  2.03GiB  
+49.37
+     1       6     System/DUP     4.10GiB  32.00MiB  4.13GiB 15 
+15.18GiB   0.05
+     1       7     System/DUP     4.13GiB  32.00MiB  4.16GiB 16 
+15.18GiB   0.05
+     1       8       Data/single  4.60GiB   1.00GiB  5.60GiB 6  6.56GiB  
+37.75
+     1       9   Metadata/DUP     5.60GiB 128.00MiB  5.72GiB 7  
+7.71GiB   9.55
+     1      10   Metadata/DUP     5.72GiB 128.00MiB  5.85GiB 8  
+7.71GiB   9.55
+     1      11       Data/single  5.85GiB   1.00GiB  6.85GiB 9  8.12GiB  
+11.79
+     1      12       Data/single  6.85GiB   1.00GiB  7.85GiB 10  
+9.12GiB  16.43
+     1      13       Data/single  7.85GiB   1.00GiB  8.85GiB 11 
+10.12GiB  69.76
+     1      14       Data/single  8.85GiB   1.00GiB  9.85GiB 12 
+11.15GiB  80.00
+     1      15       Data/single  9.85GiB   1.00GiB 10.85GiB 13 
+12.15GiB  45.58
+     1      16       Data/single 11.85GiB   1.00GiB 12.85GiB 14 
+14.18GiB  67.44
+     1      17       Data/single 12.85GiB   1.00GiB 13.85GiB 17 
+15.21GiB  35.54
 
-In above case, if we try to submit [16K, 32K) for compressed write, we
-will return 1 and immediately, and without submitting the remaining
-[48K, 52K) range.
+(BTW: Any other way to find this out?)
 
-Furthermore, since extent_writepage() will exit without unlocking any
-sectors, the submitted range [0, 4K) will not have sector unlocked.
 
-That's the reason why for now subpage is only allowed for full page
-range.
+>
+> And your random corruption script is the best case scenario for btrfs,
+> it's pretty easy for btrfs just to use the good mirror to repair
+> metadata, without any need to extra repair inside metadata. 
 
-[ENHANCEMENT]
-- Introduce a submission bitmap at btrfs_bio_ctrl::submit_bitmap
-  This records which sectors will be submitted by extent_writepage_io().
-  This allows us to track which sectors needs to be submitted thus later
-  to be properly unlocked.
+# Syntethic test case:
 
-  For asynchronously submitted range (inline/compression), the
-  corresponding bits will be cleared from that bitmap.
+# Destroyed with script after btrfs scrub start /mnt
+[root@localhost ~]# btrfs scrub status /mnt
+UUID:             717cee50-d376-4c5a-941d-3dac986256fd
+Scrub started:    Mon Sep  2 07:11:30 2024
+Status:           finished
+Duration:         0:00:25
+Total to scrub:   3.73GiB
+Rate:             152.74MiB/s
+Error summary:    verify=8 csum=182
+   Corrected:      12
+   Uncorrectable:  178
+   Unverified:     0
 
-- Only return 1 if no sector needs to be submitted in
-  writepage_delalloc()
+# After finishing
+btrfs scrub status /mnt
+UUID:             717cee50-d376-4c5a-941d-3dac986256fd
+Scrub started:    Mon Sep  2 07:12:39 2024
+Status:           finished
+Duration:         0:00:26
+Total to scrub:   3.73GiB
+Rate:             146.87MiB/s
+Error summary:    csum=178
+   Corrected:      0
+   Uncorrectable:  178
+   Unverified:     0
 
-- Only submit sectors marked by submission bitmap inside
-  extent_writepage_io()
-  So we won't touch the asynchronously submitted part.
+=> so there are still uncorrectables, why can't they be fixed with 
+scrub? (Expectation: "Clean filesystem afterwards, maybe some data lost 
+due to overwritten parts")
 
-- Introduce btrfs_folio_end_writer_lock_bitmap() helper
-  This will only unlock the involved sectors specified by @bitmap
-  parameter, to avoid touching the range asynchronously submitted.
+# Original disk (after running a lot of scrub/repair commands):
 
-Please note that, since subpage compression is still limited to page
-aligned range, this change is only a preparation for future sector
-perfect compression support for subpage.
+btrfs check /dev/mapper/fedora--defect-root--defect
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 90 +++++++++++++++++++++++++-------------------
- fs/btrfs/subpage.c   | 33 ++++++++++++++++
- fs/btrfs/subpage.h   |  2 +
- 3 files changed, 87 insertions(+), 38 deletions(-)
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+Missing extent item in extent tree for disk_bytenr 1402974208, num_bytes 
+1847296
+Missing extent item in extent tree for disk_bytenr 1423011840, num_bytes 
+598016
+Missing extent item in extent tree for disk_bytenr 1457127424, num_bytes 
+6164480
+Missing extent item in extent tree for disk_bytenr 1484931072, num_bytes 
+7127040
+Missing extent item in extent tree for disk_bytenr 2022019072, num_bytes 
+1773568
+Missing extent item in extent tree for disk_bytenr 2635603968, num_bytes 
+5255168
+Missing extent item in extent tree for disk_bytenr 2817658880, num_bytes 
+8073216
+Missing extent item in extent tree for disk_bytenr 2935803904, num_bytes 
+3244032
+Missing extent item in extent tree for disk_bytenr 2605039616, num_bytes 
+8355840
+Missing extent item in extent tree for disk_bytenr 2745331712, num_bytes 
+3706880
+Missing extent item in extent tree for disk_bytenr 3018563584, num_bytes 
+3121152
+Missing extent item in extent tree for disk_bytenr 2947518464, num_bytes 
+8302592
+Missing extent item in extent tree for disk_bytenr 3068272640, num_bytes 
+2781184
+Missing extent item in extent tree for disk_bytenr 2791301120, num_bytes 
+3547136
+Missing extent item in extent tree for disk_bytenr 7574302720, num_bytes 
+3350528
+Missing extent item in extent tree for disk_bytenr 3031347200, num_bytes 
+1216512
+root 5 inode 72933 errors 840, bad file extent, odd csum item
+root 5 inode 90368 errors 840, bad file extent, odd csum item
+root 5 inode 166783 errors 840, bad file extent, odd csum item
+root 5 inode 219687 errors 840, bad file extent, odd csum item
+root 5 inode 248131 errors 840, bad file extent, odd csum item
+root 5 inode 346844 errors 840, bad file extent, odd csum item
+root 5 inode 379257 errors 840, bad file extent, odd csum item
+root 5 inode 464039 errors 840, bad file extent, odd csum item
+root 5 inode 464044 errors 840, bad file extent, odd csum item
+root 5 inode 471393 errors 840, bad file extent, odd csum item
+root 5 inode 681858 errors 840, bad file extent, odd csum item
+root 5 inode 833692 errors 840, bad file extent, odd csum item
+root 5 inode 909657 errors 840, bad file extent, odd csum item
+root 5 inode 910009 errors 840, bad file extent, odd csum item
+root 5 inode 1032866 errors 840, bad file extent, odd csum item
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 70be1150c34e..385e88b7fcf5 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -101,6 +101,13 @@ struct btrfs_bio_ctrl {
- 	blk_opf_t opf;
- 	btrfs_bio_end_io_t end_io_func;
- 	struct writeback_control *wbc;
-+
-+	/*
-+	 * The sectors of the page which are going to be submitted by
-+	 * extent_writepage_io().
-+	 * This is to avoid touching ranges covered by compression/inline.
-+	 */
-+	unsigned long submit_bitmap;
- };
- 
- static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
-@@ -1106,9 +1113,10 @@ int btrfs_read_folio(struct file *file, struct folio *folio)
-  */
- static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 						 struct folio *folio,
--						 struct writeback_control *wbc)
-+						 struct btrfs_bio_ctrl *bio_ctrl)
- {
- 	struct btrfs_fs_info *fs_info = inode_to_fs_info(&inode->vfs_inode);
-+	struct writeback_control *wbc = bio_ctrl->wbc;
- 	const bool is_subpage = btrfs_is_subpage(fs_info, folio->mapping);
- 	const u64 page_start = folio_pos(folio);
- 	const u64 page_end = page_start + folio_size(folio) - 1;
-@@ -1123,6 +1131,14 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 	u64 delalloc_to_write = 0;
- 	int ret = 0;
- 
-+	/* Save the dirty bitmap as our submission bitmap will be a subset of it. */
-+	if (btrfs_is_subpage(fs_info, inode->vfs_inode.i_mapping)) {
-+		ASSERT(fs_info->sectors_per_page > 1);
-+		btrfs_get_subpage_dirty_bitmap(fs_info, folio, &bio_ctrl->submit_bitmap);
-+	} else {
-+		bio_ctrl->submit_bitmap = 1;
-+	}
-+
- 	/* Lock all (subpage) delalloc ranges inside the folio first. */
- 	while (delalloc_start < page_end) {
- 		delalloc_end = page_end;
-@@ -1190,22 +1206,19 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		}
- 
- 		/*
--		 * We can hit btrfs_run_delalloc_range() with >0 return value.
--		 *
--		 * This happens when either the IO is already done and folio
--		 * unlocked (inline) or the IO submission and folio unlock would
--		 * be handled as async (compression).
--		 *
--		 * Inline is only possible for regular sectorsize for now.
--		 *
--		 * Compression is possible for both subpage and regular cases,
--		 * but even for subpage compression only happens for page aligned
--		 * range, thus the found delalloc range must go beyond current
--		 * folio.
-+		 * We have some ranges that's going to be submitted async
-+		 * (compression or inline).
-+		 * Those range has their own control on when to unlock the pages.
-+		 * We should not touch them anymore, so clear the range from the
-+		 * submission bitmap.
- 		 */
--		if (ret > 0)
--			ASSERT(!is_subpage || found_start + found_len >= page_end);
--
-+		if (ret > 0) {
-+			unsigned int start_bit = (found_start - page_start) >>
-+						 fs_info->sectorsize_bits;
-+			unsigned int end_bit = (min(page_end + 1, found_start + found_len) -
-+						page_start) >> fs_info->sectorsize_bits;
-+			bitmap_clear(&bio_ctrl->submit_bitmap, start_bit, end_bit - start_bit);
-+		}
- 		/*
- 		 * Above btrfs_run_delalloc_range() may have unlocked the folio,
- 		 * thus for the last range, we cannot touch the folio anymore.
-@@ -1230,10 +1243,10 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		DIV_ROUND_UP(delalloc_end + 1 - page_start, PAGE_SIZE);
- 
- 	/*
--	 * If btrfs_run_dealloc_range() already started I/O and unlocked
--	 * the folios, we just need to account for them here.
-+	 * If all ranges are submitted asynchronously, we just need to account
-+	 * for them here.
- 	 */
--	if (ret == 1) {
-+	if (bitmap_empty(&bio_ctrl->submit_bitmap, fs_info->sectors_per_page)) {
- 		wbc->nr_to_write -= delalloc_to_write;
- 		return 1;
- 	}
-@@ -1331,15 +1344,6 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	unsigned long range_bitmap = 0;
--	/*
--	 * This is the default value for sectorsize == PAGE_SIZE case.
--	 * We known we need to write the dirty sector (aka the page),
--	 * even if the page is not dirty (we cleared it before entering).
--	 *
--	 * For subpage cases we will get the correct bitmap later.
--	 */
--	unsigned long dirty_bitmap = 1;
--	unsigned int bitmap_size = 1;
- 	bool submitted_io = false;
- 	const u64 folio_start = folio_pos(folio);
- 	u64 cur;
-@@ -1357,18 +1361,14 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 		return 1;
- 	}
- 
--	if (btrfs_is_subpage(fs_info, inode->vfs_inode.i_mapping)) {
--		ASSERT(fs_info->sectors_per_page > 1);
--		btrfs_get_subpage_dirty_bitmap(fs_info, folio, &dirty_bitmap);
--		bitmap_size = fs_info->sectors_per_page;
--	}
- 	for (cur = start; cur < start + len; cur += fs_info->sectorsize)
- 		set_bit((cur - folio_start) >> fs_info->sectorsize_bits, &range_bitmap);
--	bitmap_and(&dirty_bitmap, &dirty_bitmap, &range_bitmap, bitmap_size);
-+	bitmap_and(&bio_ctrl->submit_bitmap, &bio_ctrl->submit_bitmap, &range_bitmap,
-+		   fs_info->sectors_per_page);
- 
- 	bio_ctrl->end_io_func = end_bbio_data_write;
- 
--	for_each_set_bit(bit, &dirty_bitmap, bitmap_size) {
-+	for_each_set_bit(bit, &bio_ctrl->submit_bitmap, fs_info->sectors_per_page) {
- 		cur = folio_pos(folio) + (bit << fs_info->sectorsize_bits);
- 
- 		if (cur >= i_size) {
-@@ -1421,6 +1421,7 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl)
- {
- 	struct inode *inode = folio->mapping->host;
-+	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
- 	const u64 page_start = folio_pos(folio);
- 	int ret;
- 	size_t pg_offset;
-@@ -1442,11 +1443,16 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
- 	if (folio->index == end_index)
- 		folio_zero_range(folio, pg_offset, folio_size(folio) - pg_offset);
- 
-+	/*
-+	 * Default to unlock the whole folio.
-+	 * The proper bitmap can only be initialized until writepage_delalloc().
-+	 */
-+	bio_ctrl->submit_bitmap = (unsigned long)-1;
- 	ret = set_folio_extent_mapped(folio);
- 	if (ret < 0)
- 		goto done;
- 
--	ret = writepage_delalloc(BTRFS_I(inode), folio, bio_ctrl->wbc);
-+	ret = writepage_delalloc(BTRFS_I(inode), folio, bio_ctrl);
- 	if (ret == 1)
- 		return 0;
- 	if (ret)
-@@ -1466,8 +1472,11 @@ static int extent_writepage(struct folio *folio, struct btrfs_bio_ctrl *bio_ctrl
- 		mapping_set_error(folio->mapping, ret);
- 	}
- 
--	btrfs_folio_end_writer_lock(inode_to_fs_info(inode), folio,
--				    page_start, PAGE_SIZE);
-+	/*
-+	 * Only unlock ranges that is submitted. As there can be some async
-+	 * submitted range inside the folio.
-+	 */
-+	btrfs_folio_end_writer_lock_bitmap(fs_info, folio, bio_ctrl->submit_bitmap);
- 	ASSERT(ret <= 0);
- 	return ret;
- }
-@@ -2210,6 +2219,11 @@ void extent_write_locked_range(struct inode *inode, const struct folio *locked_f
- 		if (pages_dirty && folio != locked_folio)
- 			ASSERT(folio_test_dirty(folio));
- 
-+		/*
-+		 * Set the submission bitmap to submit all sectors.
-+		 * extent_writepage_io() will do the truncation correctly.
-+		 */
-+		bio_ctrl.submit_bitmap = (unsigned long)-1;
- 		ret = extent_writepage_io(BTRFS_I(inode), folio, cur, cur_len,
- 					  &bio_ctrl, i_size);
- 		if (ret == 1)
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 2f071f4b8b8d..8a8724c4a0a1 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -424,6 +424,39 @@ void btrfs_folio_end_writer_lock(const struct btrfs_fs_info *fs_info,
- 		folio_unlock(folio);
- }
- 
-+void btrfs_folio_end_writer_lock_bitmap(const struct btrfs_fs_info *fs_info,
-+					struct folio *folio, unsigned long bitmap)
-+{
-+	struct btrfs_subpage *subpage = folio_get_private(folio);
-+	const int start_bit = fs_info->sectors_per_page * btrfs_bitmap_nr_locked;
-+	unsigned long flags;
-+	bool last = false;
-+	int cleared = 0;
-+	int bit;
-+
-+	if (unlikely(!fs_info) || !btrfs_is_subpage(fs_info, folio->mapping)) {
-+		folio_unlock(folio);
-+		return;
-+	}
-+
-+	if (atomic_read(&subpage->writers) == 0) {
-+		/* No writers, locked by plain lock_page() */
-+		folio_unlock(folio);
-+		return;
-+	}
-+
-+	spin_lock_irqsave(&subpage->lock, flags);
-+	for_each_set_bit(bit, &bitmap, fs_info->sectors_per_page) {
-+		if (test_and_clear_bit(bit + start_bit, subpage->bitmaps))
-+			cleared++;
-+	}
-+	ASSERT(atomic_read(&subpage->writers) >= cleared);
-+	last = atomic_sub_and_test(cleared, &subpage->writers);
-+	spin_unlock_irqrestore(&subpage->lock, flags);
-+	if (last)
-+		folio_unlock(folio);
-+}
-+
- #define subpage_test_bitmap_all_set(fs_info, subpage, name)		\
- 	bitmap_test_range_all_set(subpage->bitmaps,			\
- 			fs_info->sectors_per_page * btrfs_bitmap_nr_##name, \
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index f805261e0999..4b85d91d0e18 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -106,6 +106,8 @@ void btrfs_folio_end_writer_lock(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio, u64 start, u32 len);
- void btrfs_folio_set_writer_lock(const struct btrfs_fs_info *fs_info,
- 				 struct folio *folio, u64 start, u32 len);
-+void btrfs_folio_end_writer_lock_bitmap(const struct btrfs_fs_info *fs_info,
-+					struct folio *folio, unsigned long bitmap);
- bool btrfs_subpage_find_writer_locked(const struct btrfs_fs_info *fs_info,
- 				      struct folio *folio, u64 search_start,
- 				      u64 *found_start_ret, u32 *found_len_ret);
--- 
-2.46.0
+root 5 inode 1153395 errors 2001, no inode item, link count wrong
+         unresolved ref dir 53460 index 0 namelen 75 name 
+7ae2e1b7acb59ea0b30163c03de1cf3884abdc3f-kernel-core-4.19.6-200.fc28-x86_64 
+filetype 2 errors 6, no dir index, no inode ref
+root 5 inode 1153401 errors 2001, no inode item, link count wrong
+         unresolved ref dir 53460 index 0 namelen 70 name 
+2ed0519ee6bab67f5e5d5d6ce4650e541fbb359f-kernel-4.19.6-200.fc28-x86_64 
+filetype 2 errors 6, no dir index, no inode ref
+root 5 inode 1153403 errors 2001, no inode item, link count wrong
+         unresolved ref dir 53460 index 0 namelen 76 name 
+f2caebbe5620078065d21c37e4a88e8f5957215b-kernel-devel-4.19.6-200.fc28-x86_64 
+filetype 2 errors 6, no dir index, no inode ref
+root 5 inode 1153405 errors 2001, no inode item, link count wrong
+         unresolved ref dir 53460 index 0 namelen 78 name 
+2ad09f77ebb3882396b40dfa44f2840cccf4cf9d-kernel-modules-4.19.6-200.fc28-x86_64 
+filetype 2 errors 6, no dir index, no inode ref
+root 5 inode 1159931 errors 2001, no inode item, link count wrong
+         unresolved ref dir 271 index 0 namelen 15 name fc29-update.log 
+filetype 1 errors 6, no dir index, no inode ref
+root 5 inode 1159933 errors 2001, no inode item, link count wrong
+         unresolved ref dir 53026 index 0 namelen 31 name 
+fedora-modular-ce4dd907f26812da filetype 2 errors 6, no dir index, no 
+inode ref
+
+<skipped a lot here>
+
+ERROR: errors found in fs roots
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/fedora--defect-root--defect
+UUID: 7bb1e7be-c83c-4cbb-a396-14c38393977c
+found 5625135104 bytes used, error(s) found
+total csum bytes: 4979288
+total tree bytes: 171147264
+total fs tree bytes: 154255360
+total extent tree bytes: 10895360
+btree space waste bytes: 36824455
+file data blocks allocated: 11575373824
+  referenced 5772767232
+
+Can test on the original disk in the evening.
+
+Thnx.
+
+Ciao,
+
+Gerhard
 
 
