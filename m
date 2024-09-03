@@ -1,195 +1,180 @@
-Return-Path: <linux-btrfs+bounces-7756-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7757-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F9F296908B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 02:00:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765FF969148
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 04:05:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D68AC1F235A0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 00:00:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ADBB1C22959
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 02:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 510DD18756E;
-	Mon,  2 Sep 2024 23:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709CA1CCEDF;
+	Tue,  3 Sep 2024 02:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qAYWp/m+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gshsTGn9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qAYWp/m+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gshsTGn9"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bhZv7cBy";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="g5c+NQOQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6A5185E68
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Sep 2024 23:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA27513D503
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 02:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725321595; cv=none; b=KmXlRz8Iy5ixsq06iMRjOI33etQxMtP/zIOAyLJg/oBBZn6Z6RURGcAmVEKKvusMl2kfWV1Eos54qOUwr2etE8QAPkmlz8zaOe4P+Jz0/9rPTwpMb95Tb3oFBerNp7ZgkOkdTH9JLkseZcS+zKrtHL3q4De+0kXnE94RyaiWiEA=
+	t=1725329101; cv=none; b=IcW5GBVt+6H1/RrbB1hJMpHhDlcGXh+lWGMhVFv286A8Gs2GP9AHLUXRm7FM1BHUQLNnKTOgKhvoAMy3DDW+x7nzrbw1L9sHARYOasi3gBuozdIy6gS07vsx9Sdt8qIpbsDWKPB0ClaVG2U2gqDa3xBnhuD8syJ0LdJ8BWVDhJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725321595; c=relaxed/simple;
-	bh=T1xp5gQunTClBS7vJIznjTMZwf3RDhBSNlL7fbZKJnI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q/WAD6xXTKzBD6WEagDf/Tp5P3Qkk+zq7Pz0mdZVt4Xj0WoWXzpGYFOE1rbi2sjSH+Qa1tGZWhTfeIuwk7QCYZOdf+73r6nO66sHvXFqY6mPcEtDUH0jDTIjhC3cKTk/n6vENDDcweDd1+plGNvFcBTR3EBgbNfbPB2uNwtk+0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qAYWp/m+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gshsTGn9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qAYWp/m+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gshsTGn9; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+	s=arc-20240116; t=1725329101; c=relaxed/simple;
+	bh=tLoR68gJBNhEt0sQPfwHtVjREnYv1zI1wHI4arW5Qyw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=nnYddiFpuOgQkd/oai66SrusuzsNrAYCrtgIOQirPdozpxZMa+Vx3rkqcjloNT1Bo6sORTLcYE38iALulvLx2gv5VuOUONK7e6M+x0s8J4q321zw5iNUI7WEpAo1d3Kb6dPmLV69rI/IjiFUOQwpPMd7nl5v/kYkrdDHwW83CWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bhZv7cBy; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=g5c+NQOQ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CB0AD1FC85;
-	Mon,  2 Sep 2024 23:59:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725321591;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=miwrDrcG4JFRE//VSk5He5o5aeTXod4F2YIfaa0Osuw=;
-	b=qAYWp/m+z9++mEbEDpk2riL+bbxAs1hw7FILvWd1NYv84xQCnbk/6Mf2XpygTCT+L54WTq
-	SZDL04N37uQ2hdnafQ/A810AYPBGboeg+XjAFdKiQi8YultYt/TK4+M5c/Jdombz9ThFGU
-	b9up0zgt2Lzt1DvhhfNlaUoIvLoETTc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725321591;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=miwrDrcG4JFRE//VSk5He5o5aeTXod4F2YIfaa0Osuw=;
-	b=gshsTGn9+htFsN8dHhVUajhmow/I90g3v2uHJrp9wgB5P53TYMWbWr1slaadgftm+9YkI8
-	zuiqiOoRGglYe9DA==
-Authentication-Results: smtp-out2.suse.de;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A0A1B21B5A
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 02:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1725329097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=OnE+g8a/QVjZTz+SZzpIwqC1X0mEVCsrbHEDeFc9gWk=;
+	b=bhZv7cByMzP0Q2SKNrznJhdQhPF3tMyayaUSkvGsoX+N4q5CjvH0ThUxCbEa5jjgZs2ITB
+	7jlqpHTz0e2JXA25pzBcRHzPWQndDZanSZNGoL5I5p2WLN5qaL8b7/uNDao0JZw4Ydn4e3
+	Xd4AVKUlCL7EHAD2Av9puTkfPjln0+E=
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725321591;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=miwrDrcG4JFRE//VSk5He5o5aeTXod4F2YIfaa0Osuw=;
-	b=qAYWp/m+z9++mEbEDpk2riL+bbxAs1hw7FILvWd1NYv84xQCnbk/6Mf2XpygTCT+L54WTq
-	SZDL04N37uQ2hdnafQ/A810AYPBGboeg+XjAFdKiQi8YultYt/TK4+M5c/Jdombz9ThFGU
-	b9up0zgt2Lzt1DvhhfNlaUoIvLoETTc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725321591;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=miwrDrcG4JFRE//VSk5He5o5aeTXod4F2YIfaa0Osuw=;
-	b=gshsTGn9+htFsN8dHhVUajhmow/I90g3v2uHJrp9wgB5P53TYMWbWr1slaadgftm+9YkI8
-	zuiqiOoRGglYe9DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1725329096; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=OnE+g8a/QVjZTz+SZzpIwqC1X0mEVCsrbHEDeFc9gWk=;
+	b=g5c+NQOQcCIiLSbGVrdkSetPpcnpcrOLSD4YjjBn3QPZsXbmHc9bXoPR2weeR+syTNhUJn
+	7pIwtxmsmZ00G39KgEPfRzb2sbMfutY43fhuZj+cFOA2a2vDRJqfUgnVny01+7M9KiEI9O
+	D5xA+fL+zwdmoQOdLc3Gwb1TyG+5XkY=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABC0913326;
-	Mon,  2 Sep 2024 23:59:51 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C9C931351A
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 02:04:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5xVjKXdR1mbeTwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 02 Sep 2024 23:59:51 +0000
-Date: Tue, 3 Sep 2024 01:59:46 +0200
-From: David Sterba <dsterba@suse.cz>
-To: David Sterba <dsterba@suse.cz>
-Cc: Leo Martins <loemra.dev@gmail.com>, kernel-team@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] btrfs path auto free
-Message-ID: <20240902235946.GI26776@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1724792563.git.loemra.dev@gmail.com>
- <j1u38.er61zc06h8sh@gmail.com>
- <20240902234346.GH26776@twin.jikos.cz>
+	id jUMTIsdu1mZndAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 03 Sep 2024 02:04:55 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: convert: fix inline extent size for symbol link
+Date: Tue,  3 Sep 2024 11:34:33 +0930
+Message-ID: <08ff5d66302e6b84481fda9d50d53bb50a519fd3.1725329062.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240902234346.GH26776@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.50 / 50.00];
-	REPLYTO_EQ_TO_ADDR(5.00)[];
-	REPLY(-4.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,fb.com,vger.kernel.org];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_THREE(0.00)[4]
-X-Spam-Score: -1.50
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue, Sep 03, 2024 at 01:43:46AM +0200, David Sterba wrote:
-> On Fri, Aug 30, 2024 at 01:46:59PM -0700, Leo Martins wrote:
-> > I think the only feedback I haven't addressed in this patchset was
-> > moving the declaration to be next to the btrfs_path struct.
-> > However, I don't think moving the declaration makes sense because
-> > the DEFINE_FREE references btrfs_free_path which itself is only
-> > declared after the structure.
-> 
-> As long as the definition of btrfs_free_path() is not needed to
-> compile, because it's a macro, I'd really want to keep the auto freeing
-> defininion next to the structure because it's closely related to the
-> structure. So if I ever go to the definition of any structure I want to
-> see right away if it does or does not support the auto free.
+[BUG]
+For btrfs converted from ext* or reiserfs, the inlined data extent is
+always one byte larger than the inode size:
 
-This diff demonstrates the idea:
+	item 10 key (267 INODE_ITEM 0) itemoff 15543 itemsize 160
+		generation 1 transid 1 size 4 nbytes 5
+		block group 0 mode 120777 links 1 uid 0 gid 0 rdev 0
+		sequence 0 flags 0x0(none)
+	item 11 key (267 INODE_REF 256) itemoff 15529 itemsize 14
+		index 3 namelen 4 name: path
+	item 12 key (267 EXTENT_DATA 0) itemoff 15503 itemsize 26
+		generation 4 type 0 (inline)
+		inline extent data size 5 ram_bytes 5 compression 0 (none)
 
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -196,7 +196,7 @@ struct btrfs_path *btrfs_alloc_path(void)
- /* this also releases the path */
- void btrfs_free_path(struct btrfs_path *p)
- {
--       if (IS_ERR_OR_NULL(p))
-+       if (!p)
-                return;
-        btrfs_release_path(p);
-        kmem_cache_free(btrfs_path_cachep, p);
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index fbf1f8644fae..fd5474770862 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -85,6 +85,9 @@ struct btrfs_path {
-        unsigned int nowait:1;
- };
- 
-+#define BTRFS_PATH_AUTO_FREE(path_name) \
-+       struct btrfs_path *path_name __free(btrfs_free_path) = NULL;
-+
- /*
-  * The state of btrfs root
-  */
-@@ -601,8 +604,6 @@ void btrfs_release_path(struct btrfs_path *p);
- struct btrfs_path *btrfs_alloc_path(void);
- void btrfs_free_path(struct btrfs_path *p);
- DEFINE_FREE(btrfs_free_path, struct btrfs_path *, btrfs_free_path(_T))
--#define BTRFS_PATH_AUTO_FREE(path_name) \
--       struct btrfs_path *path_name __free(btrfs_free_path) = NULL;
- 
- int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
-                   struct btrfs_path *path, int slot, int nr);
+[CAUSE]
+Inside the symbol link creation path for each fs, they all create the
+inline data extent with a tailing NUL ('\0').
+
+This is different from what btrfs kernel module does:
+
+	item 4 key (257 INODE_ITEM 0) itemoff 15883 itemsize 160
+		generation 9 transid 9 size 4 nbytes 4
+		block group 0 mode 120777 links 1 uid 0 gid 0 rdev 0
+		sequence 0 flags 0x0(none)
+	item 5 key (257 INODE_REF 256) itemoff 15869 itemsize 14
+		index 2 namelen 4 name: path
+	item 6 key (257 EXTENT_DATA 0) itemoff 15844 itemsize 25
+		generation 9 type 0 (inline)
+		inline extent data size 4 ram_bytes 4 compression 0 (none)
+
+[FIX]
+Thankfully this is not a big deal, kernel properly reads the content and
+use inode size to determine the proper link target.
+
+Just align the btrfs-progs convert behavior to the kernel one.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
+ convert/source-ext2.c     | 4 ++--
+ convert/source-reiserfs.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-So, it's moving defintion of auto free capability next to the structure, while
-keeping the DEFINE_FREE next to the function forward declaration, or eventually
-definition if needed.
+diff --git a/convert/source-ext2.c b/convert/source-ext2.c
+index acba5db7ee81..d5d6b165a62d 100644
+--- a/convert/source-ext2.c
++++ b/convert/source-ext2.c
+@@ -489,8 +489,8 @@ static int ext2_create_symlink(struct btrfs_trans_handle *trans,
+ 	pathname = (char *)&(ext2_inode->i_block[0]);
+ 	BUG_ON(pathname[inode_size] != 0);
+ 	ret = btrfs_insert_inline_extent(trans, root, objectid, 0,
+-					 pathname, inode_size + 1);
+-	btrfs_set_stack_inode_nbytes(btrfs_inode, inode_size + 1);
++					 pathname, inode_size);
++	btrfs_set_stack_inode_nbytes(btrfs_inode, inode_size);
+ 	return ret;
+ }
+ 
+diff --git a/convert/source-reiserfs.c b/convert/source-reiserfs.c
+index 3edc72ed08a5..e2f07bfda188 100644
+--- a/convert/source-reiserfs.c
++++ b/convert/source-reiserfs.c
+@@ -538,8 +538,8 @@ static int reiserfs_copy_symlink(struct btrfs_trans_handle *trans,
+ 	len = get_ih_item_len(tp_item_head(&path));
+ 
+ 	ret = btrfs_insert_inline_extent(trans, root, objectid, 0,
+-					 symlink, len + 1);
+-	btrfs_set_stack_inode_nbytes(btrfs_inode, len + 1);
++					 symlink, len);
++	btrfs_set_stack_inode_nbytes(btrfs_inode, len);
+ fail:
+ 	pathrelse(&path);
+ 	return ret;
+-- 
+2.46.0
+
 
