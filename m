@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-7797-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7798-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9016D96A662
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E2B96A661
 	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 20:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D85EAB214BE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 18:20:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CB2C1C241C0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 18:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB611917EC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72098191F62;
 	Tue,  3 Sep 2024 18:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RstG/XqM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JBzgW3DW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oo1-f66.google.com (mail-oo1-f66.google.com [209.85.161.66])
+Received: from mail-oi1-f195.google.com (mail-oi1-f195.google.com [209.85.167.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CAD191477
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 18:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA361917C9
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 18:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725387644; cv=none; b=NWnXB1sAKFCxk3DhDp18kRLTDLl6jlxJnvgv0X+lKpN6V7CjqrY6L7WmGiOoQyiY2YYcojsuJX3XEEW9DawrYycbvKHzBe3bpVcsgHVR7+jX6q2yqaxzq7Ox275XDY59BSG2L0C6oVjmMdlaYBVwwTUl7pEl+/An7FOpEybSswk=
+	t=1725387644; cv=none; b=aQOsG7qatazHgWp5zlZlv4W5QDK5oIhVgwXaL2YdYGVxzUJ2bbSAQgEzFQ5ev1osw2Mwd288FN+46910x2W3jWs/dmvWOuwAA8VSBYhHgqCymMsU2lqOLuAx6KrYaO/3g8I66lX9lrm1kChFA84HYXa6YvEZOd+JaWzqu436qjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725387644; c=relaxed/simple;
-	bh=clbmW1IBOaDLzgD9lVizc5tzFAeT7qVHCtvJ6QkBNT4=;
+	bh=wFHHFmxc0TbIdO3TTNIX9UIQAqSQI1psuBHMMfJAD+A=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MscTMHIIiAVC7FvthMs/QIWWkhxUkXA19ZJC38UeIXew2oaEPgt2fjX12TiUFeLmGj0mX80jcy81dYB1v9+crcMf53s4XKkGB0wRu8J4XBvemBIFKGDuKh4Reg9taZJyDu5LtXckfSb8vQbl4VaQTyRIVuRVvuUwkaba16x7Ovo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RstG/XqM; arc=none smtp.client-ip=209.85.161.66
+	 MIME-Version; b=LJhBKqU9smLoNascofu1SFCA0I0nY0KK4KoyfSrhff5Zw13rxo8PGG/T4S5zpxPSTkYwiwlAoFACeY2im8DEBhRRyazufD5L4C1G42DIKauvzdGJlu7tOsSlwd0VhMzrcwL3OZP/GuD3vXMsCs6yOCMrHb9DpgYk6PQf/Yq3Gvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JBzgW3DW; arc=none smtp.client-ip=209.85.167.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f66.google.com with SMTP id 006d021491bc7-5df9a9f7fe2so3549920eaf.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Sep 2024 11:20:41 -0700 (PDT)
+Received: by mail-oi1-f195.google.com with SMTP id 5614622812f47-3e0047fcb3aso1005492b6e.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Sep 2024 11:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725387640; x=1725992440; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725387642; x=1725992442; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0xbSRqu1Ja0gILZro/cH2E2bBk7KK/AeI8IlJAsCAks=;
-        b=RstG/XqMRljECboj4jSpFoe6XeVrGEiVa3K/w10u3rrBWG+Fks4LWQ8lRNWdIJtER8
-         qxQRGoFInWUyI0RA3OHK2unUiM3PB2C0E1zIU2wxjrZSlXvTAAOD8JmEb0DUvNnBzGv/
-         Yz7ocbGpTahXKAZHqpljfci0ExFU55XPg4TtEvvoXJXlgHWVbUR7/CMnxRXWEThVoC06
-         5b2IkNJ8ucZmR57U6f+UbEsl+kFQIoc0ipEdm1v+xfdtCNwexX9sbw4ZnTPx05t02/Ai
-         2aTqXGY01dxw+g2sMORltnGFDaMQKbwkuiY+w54RHxQU/vMGpU/rCys7Jz9zPPvpa66e
-         sjcw==
+        bh=PCH1DfVOKonao3jChYQBvzWNIQZiX9CFR7wUHN2gk20=;
+        b=JBzgW3DWvV162sQ4fPlwWmCoEE1sHXGyDnNvKsMveJ40LSAvFeOl9rYge2jF0XbFps
+         P9J5VV+3TChqNce9wmY9zfwzb02I0FYmI7LCASapeVlTWeQCL0FhO3GSuAFsaoKYAsjW
+         89i/a5RruM82K7OYgwNheBHRmrgY5qA/YdkmqgujOKpHc9l5T7b+lUk/K+BE8J0Px55c
+         yOUts96SPgfjIvU8iTInXZIQhd7y6FFlmpNrhc1mszqAiiFq/0jZcaYfbPhW47LBfJts
+         EF8PETEnDIJpsRPUQorQ1Pg+Ej8x+86DZqHz0/YrB4ohhDF3zpcX1H2MGCSscy8ZVNFR
+         YZUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725387640; x=1725992440;
+        d=1e100.net; s=20230601; t=1725387642; x=1725992442;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0xbSRqu1Ja0gILZro/cH2E2bBk7KK/AeI8IlJAsCAks=;
-        b=jpDSu+vOJB4D4rxNI7UVny4zKvK6JcoFdEtObbfbjawwolaye3gcgFlOiAiO1we+0b
-         Yj05Rk5jhbUOavP1Whzke58ldFslno3Du/OOnyGo/Q3EhNdiicaLwvd4N3eMTQbZRwqK
-         5veIZrLhwbuToCmz5hIODaRSjImJ0ZfMkjoTlt0BNbuJUGVs2FGMV9xOqrL3OGBZ3HC+
-         OIiHrgE29efeYA5USmFQJW+FeCG4su2T4EOJwelUbrUDPeKbwqpKk+jBidqovqGpvwVK
-         4gscAccGXWZsNmKClQk/U7t9VLpHi/4ksqWnfauUw/uVyeinEgQM1NPCRvi6N6I+JzEE
-         Ua1g==
-X-Gm-Message-State: AOJu0YxzW8wa0rsV/FxdzpYhpzJxHp6kPLPqVCF7HH5tWMdqt4lIea8y
-	JbfbNHWOO5z8V3EE8Ao7oPnD15tWpbreTP+jbq8BINNNNcrQ/10UEFbc7w9F
-X-Google-Smtp-Source: AGHT+IH5uYYKrCfDGyD8Wh8hNJxqaNHu0a/8RleZgMX2jOFogsl1OCHlToHTsgblW8GUSkAopqFqoA==
-X-Received: by 2002:a05:6820:168d:b0:5da:9bde:1c0b with SMTP id 006d021491bc7-5dfacc16c7cmr16848333eaf.0.1725387640471;
-        Tue, 03 Sep 2024 11:20:40 -0700 (PDT)
-Received: from localhost (fwdproxy-eag-112.fbsv.net. [2a03:2880:3ff:70::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5dfa049d050sm2159128eaf.18.2024.09.03.11.20.39
+        bh=PCH1DfVOKonao3jChYQBvzWNIQZiX9CFR7wUHN2gk20=;
+        b=QB+wVyJMwyC9VEzp/mIPu1JLdVQnGkTNCZmbl8Z/LeHSrYudtsjMffWauDdMsKWP6p
+         gq/vpYSScZpbydOVyKVRKiTjtbnP1NsJy7Ukt5UqZxbNnLvxTP7uvtby9kw6Rbdf+//E
+         JgqFeSn4gU5FxkocmDNfY3KlBRuvAu3G+fVSyboJtoJmHCWnmK0Har90oBuPaWl6dXGj
+         SfpfTXcl8Ri4qN3oEpOOMpvoS7nFnmS4VnEk6gPpo+VdUU7TMhUhoig19kpgfVqSuXBs
+         1VbZsUhGq5LTktWevShWVP2GSr8Pi0HiGS2nXr5dEGPDyngMRIDL2v8tp8v1efv1klyw
+         cJFw==
+X-Gm-Message-State: AOJu0Yw+5m47uq7g8nFgTuf8YdzKH+PS6TyiLcyXfQXU8brUHOWhy67r
+	enwkLucbioz5wy9AFfry2LwmTjQxsgAUYeB3AVjINbNq5jk+4pbaMPm9eJDM
+X-Google-Smtp-Source: AGHT+IGZOr/uPlBM1ZkjVAXCk2DobsXHd0XnBpDeje806R13qN9uAlaQLloiJmqrtALznzPOt7jBbQ==
+X-Received: by 2002:a05:6808:23c9:b0:3dd:ca:a3f6 with SMTP id 5614622812f47-3df0682c6camr7996971b6e.18.1725387641933;
+        Tue, 03 Sep 2024 11:20:41 -0700 (PDT)
+Received: from localhost (fwdproxy-eag-000.fbsv.net. [2a03:2880:3ff::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-3df117c446bsm2443361b6e.21.2024.09.03.11.20.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2024 11:20:40 -0700 (PDT)
+        Tue, 03 Sep 2024 11:20:41 -0700 (PDT)
 From: Leo Martins <loemra.dev@gmail.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v4 1/3] btrfs: DEFINE_FREE for btrfs_free_path
-Date: Tue,  3 Sep 2024 11:19:05 -0700
-Message-ID: <0d93fe7692452725d0ec550b7b01ed0a68b9c600.1725386993.git.loemra.dev@gmail.com>
+Subject: [PATCH v4 2/3] btrfs: BTRFS_PATH_AUTO_FREE in zoned.c
+Date: Tue,  3 Sep 2024 11:19:06 -0700
+Message-ID: <6ee68aa5c468b53adb93c617a99c184ea1e9f1a2.1725386993.git.loemra.dev@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <cover.1725386993.git.loemra.dev@gmail.com>
 References: <cover.1725386993.git.loemra.dev@gmail.com>
@@ -83,63 +83,106 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-CHANGELOG:
-Move BTRFS_PATH_AUTO_FREE macro definition next to btrfs_path struct.
-
-Add a DEFINE_FREE for btrfs_free_path. This defines a function that can
-be called using the __free attribute. Defined a macro
-BTRFS_PATH_AUTO_FREE to make the declaration of an auto freeing path
-very clear.
+All cleanup paths lead to btrfs_path_free so path can be defined with
+the automatic freeing callback.
 
 Signed-off-by: Leo Martins <loemra.dev@gmail.com>
 ---
- fs/btrfs/ctree.c | 2 +-
- fs/btrfs/ctree.h | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ fs/btrfs/zoned.c | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 451203055bbfb..f0bdea206d672 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -196,7 +196,7 @@ struct btrfs_path *btrfs_alloc_path(void)
- /* this also releases the path */
- void btrfs_free_path(struct btrfs_path *p)
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 66f63e82af793..158bb0b708805 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -287,7 +287,7 @@ static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
+ /* The emulated zone size is determined from the size of device extent */
+ static int calculate_emulated_zone_size(struct btrfs_fs_info *fs_info)
  {
--	if (!p)
-+	if (IS_ERR_OR_NULL(p))
- 		return;
- 	btrfs_release_path(p);
- 	kmem_cache_free(btrfs_path_cachep, p);
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index c8568b1a61c43..7a7b051e994ac 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -6,6 +6,7 @@
- #ifndef BTRFS_CTREE_H
- #define BTRFS_CTREE_H
+-	struct btrfs_path *path;
++	BTRFS_PATH_AUTO_FREE(path);
+ 	struct btrfs_root *root = fs_info->dev_root;
+ 	struct btrfs_key key;
+ 	struct extent_buffer *leaf;
+@@ -304,28 +304,21 @@ static int calculate_emulated_zone_size(struct btrfs_fs_info *fs_info)
  
-+#include "linux/cleanup.h"
- #include <linux/pagemap.h>
- #include <linux/spinlock.h>
- #include <linux/rbtree.h>
-@@ -84,6 +85,9 @@ struct btrfs_path {
- 	unsigned int nowait:1;
- };
+ 	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+ 	if (ret < 0)
+-		goto out;
++		return ret;
  
-+#define BTRFS_PATH_AUTO_FREE(path_name) \
-+	struct btrfs_path *path_name __free(btrfs_free_path) = NULL;
-+
- /*
-  * The state of btrfs root
-  */
-@@ -598,6 +602,7 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
- void btrfs_release_path(struct btrfs_path *p);
- struct btrfs_path *btrfs_alloc_path(void);
- void btrfs_free_path(struct btrfs_path *p);
-+DEFINE_FREE(btrfs_free_path, struct btrfs_path *, btrfs_free_path(_T))
+ 	if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
+ 		ret = btrfs_next_leaf(root, path);
+ 		if (ret < 0)
+-			goto out;
++			return ret;
+ 		/* No dev extents at all? Not good */
+-		if (ret > 0) {
+-			ret = -EUCLEAN;
+-			goto out;
+-		}
++		if (ret > 0)
++			return -EUCLEAN;
+ 	}
  
- int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		   struct btrfs_path *path, int slot, int nr);
+ 	leaf = path->nodes[0];
+ 	dext = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_dev_extent);
+ 	fs_info->zone_size = btrfs_dev_extent_length(leaf, dext);
+-	ret = 0;
+-
+-out:
+-	btrfs_free_path(path);
+-
+-	return ret;
++	return 0;
+ }
+ 
+ int btrfs_get_dev_zone_info_all_devices(struct btrfs_fs_info *fs_info)
+@@ -1211,7 +1204,7 @@ static int calculate_alloc_pointer(struct btrfs_block_group *cache,
+ {
+ 	struct btrfs_fs_info *fs_info = cache->fs_info;
+ 	struct btrfs_root *root;
+-	struct btrfs_path *path;
++	BTRFS_PATH_AUTO_FREE(path);
+ 	struct btrfs_key key;
+ 	struct btrfs_key found_key;
+ 	int ret;
+@@ -1246,7 +1239,7 @@ static int calculate_alloc_pointer(struct btrfs_block_group *cache,
+ 	if (!ret)
+ 		ret = -EUCLEAN;
+ 	if (ret < 0)
+-		goto out;
++		return ret;
+ 
+ 	ret = btrfs_previous_extent_item(root, path, cache->start);
+ 	if (ret) {
+@@ -1254,7 +1247,7 @@ static int calculate_alloc_pointer(struct btrfs_block_group *cache,
+ 			ret = 0;
+ 			*offset_ret = 0;
+ 		}
+-		goto out;
++		return ret;
+ 	}
+ 
+ 	btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
+@@ -1266,15 +1259,10 @@ static int calculate_alloc_pointer(struct btrfs_block_group *cache,
+ 
+ 	if (!(found_key.objectid >= cache->start &&
+ 	       found_key.objectid + length <= cache->start + cache->length)) {
+-		ret = -EUCLEAN;
+-		goto out;
++		return -EUCLEAN;
+ 	}
+ 	*offset_ret = found_key.objectid + length - cache->start;
+-	ret = 0;
+-
+-out:
+-	btrfs_free_path(path);
+-	return ret;
++	return 0;
+ }
+ 
+ struct zone_info {
 -- 
 2.43.5
 
