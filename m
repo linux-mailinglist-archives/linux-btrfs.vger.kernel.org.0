@@ -1,84 +1,83 @@
-Return-Path: <linux-btrfs+bounces-7774-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7775-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871CE96950A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 09:17:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7569696950D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 09:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B49041C22DEE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 07:17:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E28D9B22249
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 07:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC05B200128;
-	Tue,  3 Sep 2024 07:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4595E201275;
+	Tue,  3 Sep 2024 07:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KYnTtFnh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M06K5cS2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A78A1D6C48;
-	Tue,  3 Sep 2024 07:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3C91D6C78;
+	Tue,  3 Sep 2024 07:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725347802; cv=none; b=kIpV/kc99M7dIeRRSK7JWRwb/eBqtEalDY76fLYBN6EGXvl4ESZFcj+rpA2Aak5nB9+UJxMjwLc3alUQ3WQskqBKNjBAep9slpmhb4sT9SI32nUDhWvPJiVyeHJitIiKPoGTrh6FigP3vuu6epRLTnAJvq2m/FCd4uxxOgb2OUM=
+	t=1725347803; cv=none; b=aPTwP0qNVTN82c8hll50qgBQHa6qFDVY/ZcGtZvM4eWs5LeP2WuabQfUGGSu40FLtUaQ8T8P5ooU8faUZzsA1BTz35uiqIy8HD5syyJNF66Y/PzlDyQLOCNSdrDv/kY6cCb1NoJVttSrH0enuXhenZ18zBAmCEF1IaUQR9xwhf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725347802; c=relaxed/simple;
-	bh=+OQdfPxxcjTD3+sUfVA/9T2w8bAdEbP+yqDYsBHnQzg=;
+	s=arc-20240116; t=1725347803; c=relaxed/simple;
+	bh=ThNtPFXL57A51d99qaXTeauCFubif2+4fiwjdImBiJM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HhJV3/j0PAG8IJ0IJqGUGSHXyn1VuZ6aZduC91v0caHPoCDh49bDkBHt94/kPzF/azupAik5NKHpNOBGVxrsCDOpOd+iyQQf77Ait5rJWubiuHK+KACONIfZ/xEb6w6DLaJD1HUmom6Gx1Jhxl9MJUrtu/VOmJYz1U8YFeODuvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KYnTtFnh; arc=none smtp.client-ip=209.85.221.48
+	 MIME-Version; b=twGpJFnUWoZyFThNlkLRfR3O2uuiF8iBAJwGlfv2dMquvXQpwJCmVlDht/bD+UTdgAi+XUE+BntTRFpJIb/07rcXzdZUFBqFBqX+4/thKECSd7t4PrQbNBcjNK0diyrwYhDHng+dkuXUrAc5LpjU4d724Uf4xl7vi46cqKEp6CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M06K5cS2; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-374bb1a3addso1914365f8f.1;
-        Tue, 03 Sep 2024 00:16:40 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42bbf138477so28551895e9.2;
+        Tue, 03 Sep 2024 00:16:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725347799; x=1725952599; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725347800; x=1725952600; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yjiEQutbL4t9l0my21gE0YieX3qenAsUUpmVjhWTT/Q=;
-        b=KYnTtFnh2Edx9U9/T99U5E6ZWHNdwMz45yC3cVAkGQNS5bbXmIsCfizrqZPpRkVEZe
-         TD1DQ63zNUYMQalCXcOWeA3ipyhqyilw8Ct/9N63vLPywV68WQ1hb1VPfLwggRLQoaXL
-         z5P4CYc13jzSOELrw4730Gb0O3haDTpfeKHhobATbFHM8r4NhsdsjWzFFw1yM0ZfrE30
-         f6ajkNJCz25dd5eGNfDbu+sCnqOBSJ6EBJzgo6YPKTG/n+xhem5HN8IkmBW1j2VbmZgk
-         TEtwCVKTWUrOe4RaVJLCURJ3YrOAQX/yIlIfBGLri3pHeqcoc+eQkxIKyhCUAy76p2Az
-         /4xw==
+        bh=ryqZJRWkyu5qx2NdJr7139fCsE/EdmFwuSbUl8OhEdM=;
+        b=M06K5cS2Pi5CnKgu3QJ+hx26Ry+TLKCacSGUg7Qy7BWaLDY8fMii/NbPXmUI9Isdb9
+         92CgM332beOntqelnYfsinqV9YJiXHM0WteXL4XBJQ+za8Sw5W4+pQ7mltWNbP/9BqOh
+         qRyZHesLmDPAlLN9O05ZyCmOwD8khgf2C0SVxlq001shMwm017cfRyM/Bhmgs5Y4qTE1
+         OfsqUOFrmeR/6u/ezui4DkVjvyYxiE9xjWf8mxh9ZqC2ydM9gVtDJbLlkhLJwhvaDNKd
+         MW3tJI4A+6PGc3afhswR0L+cZQUV8QkcywfdClkDSTXA6swBG8FdW/TrF1tgc+paJj/G
+         m+wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725347799; x=1725952599;
+        d=1e100.net; s=20230601; t=1725347800; x=1725952600;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yjiEQutbL4t9l0my21gE0YieX3qenAsUUpmVjhWTT/Q=;
-        b=cGPy9r3aCm7wb1fV5QmlvJT4IK7AkeJdyab7iG/3AhaXafWU/V4yVEgFxOXAQIfQxo
-         H//g+halB70kSBbx9ZINqZFfwaQEvuhpmef1P4e5tHA/SvVbBOFYsToAOIwCJ3Ot079W
-         sQ6RO3fLArJ1wUCWf3Z7sIv9AWdiCs9hd+809+NIvmbUgLKPlRC/NO1qal7pt15Yv9Vq
-         NbUvn4lXZ1SVRgezivmNIsfss28mMfoF9O+xJwMPiROH+6JN2eBAe4Wzz7CDz8rgWLUK
-         CidhI1xNY7RrwR3nqjA7g6olDJvDzjs3Hy/YqM0M5N8em48vXoRqESby9bgLYINPMzy2
-         KeDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWcHJK6eZkz159aHzJVFqTo7yX/1Mzvs4mw0hPRt5AxJ9y86qWjKHgMyzrKTWJheeu3NPooVC3YrlBRmQ==@vger.kernel.org, AJvYcCX2TAEmoj/qN5ToIeXEhveRmrjZU1CUhyl24lMqzUHxguCauAL4yKn76sCyKPYv7Kqa5vz/yhHOtKCaWgMq@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTW6tSBuNonfB15LyDYDwol/OXcaNqtapjnmR174dlCPUI94ba
-	7hUQtWnlToVKxQWqIs+xg1HHiiGahVz/WJLrT3qKf6AvNVoIPJfP
-X-Google-Smtp-Source: AGHT+IE3qfgEJWSXt4JsHiQ6wXgNrsQ/B6JmvLau6Ed8BoyGcY6uxABDNzyVFgsHpouelO+9MZhtfg==
-X-Received: by 2002:a5d:47c6:0:b0:374:c287:929b with SMTP id ffacd0b85a97d-374c28793aamr7035251f8f.4.1725347798392;
-        Tue, 03 Sep 2024 00:16:38 -0700 (PDT)
+        bh=ryqZJRWkyu5qx2NdJr7139fCsE/EdmFwuSbUl8OhEdM=;
+        b=FQyT+55YBv2wAbeLgLZUJ3Nm1zR64bcDMMJkbIMAr6SXs+fQHTXGun87qkeKRbqhBG
+         +GWp8f0moXQkcbxnUY1NRV6v/Uixx9zTcHbOXyQiz8e8i7c+TDDxG1T9DTfMIt6bkL1l
+         M0TzAUGIBGEnAweJnpecOr4ZlFXv75SS1OeVgMbsvQPyfUi/iB+T7c9cB6ExReR6KZDy
+         KjJLasLuSKs9nv7/Pyz25yeVpOd/RHHSycfwtEND59cgoCslQ6hiYzgwBMiTzOeJXvB3
+         E9sZ+UkGDLOMAAAm3BNiWcn63GMJEfms90hmtaQSaUhpY+5FajZE3bqXAN4I+HYK745i
+         85Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFuDiAq0YP721RI2dXloCGwut0ihhJvATO1Z6FBqdh4IWMq4nd/H7qnNq+ueNjxEkKX43anWjD6hHFUw==@vger.kernel.org, AJvYcCXQujuKVvWEMd6gSZMBzFlngOnM5zhUELbyOVBNjM9USnaWDd6xV7KFhHH+EvDg4NGhsnbERRropvqFSRdt@vger.kernel.org
+X-Gm-Message-State: AOJu0YzNezAoTVDtex941XmhoxOD4s5zDECywLwP65rcCMKaqRhUjZHw
+	35yVhxp6uJ3JBWFT3KQUXPWDzo97m5SJdNjyyrByYVdgSEEfFTZL
+X-Google-Smtp-Source: AGHT+IHclp0SP6+Nzye3WHRy+v0L2cVP+Ta1KlUQWveQ37LmGxy/YIEIQll5uQnwvAankg4Dmg/vAg==
+X-Received: by 2002:a05:600c:3b08:b0:42b:a9b4:3f59 with SMTP id 5b1f17b1804b1-42c880efb93mr16434265e9.14.1725347799827;
+        Tue, 03 Sep 2024 00:16:39 -0700 (PDT)
 Received: from fedora-thinkpad.lan (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-42bb85ffbadsm154349815e9.12.2024.09.03.00.16.37
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-42bb85ffbadsm154349815e9.12.2024.09.03.00.16.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Sep 2024 00:16:37 -0700 (PDT)
+        Tue, 03 Sep 2024 00:16:39 -0700 (PDT)
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 To: 
 Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
-	Qu Wenruo <wqu@suse.com>,
 	Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
 	David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/3] btrfs: Always update fstrim_range on failure
-Date: Tue,  3 Sep 2024 09:16:10 +0200
-Message-ID: <20240903071625.957275-2-luca.stefani.ge1@gmail.com>
+Subject: [PATCH v3 2/3] btrfs: Split remaining space to discard in chunks
+Date: Tue,  3 Sep 2024 09:16:11 +0200
+Message-ID: <20240903071625.957275-3-luca.stefani.ge1@gmail.com>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240903071625.957275-1-luca.stefani.ge1@gmail.com>
 References: <20240903071625.957275-1-luca.stefani.ge1@gmail.com>
@@ -90,59 +89,57 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Even in case of failure we could've discarded
-some data and userspace should be made aware of it,
-so copy fstrim_range to userspace regardless.
+Per Qu Wenruo in case we have a very large disk, e.g. 8TiB device,
+mostly empty although we will do the split according to our super block
+locations, the last super block ends at 256G, we can submit a huge
+discard for the range [256G, 8T), causing a super large delay.
 
-Also make sure to update the trimmed bytes amount
-even if btrfs_trim_free_extents fails.
+We now split the space left to discard based the block discard limit
+in preparation of introduction of cancellation signals handling.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=219180
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
 Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
 ---
- fs/btrfs/extent-tree.c | 4 ++--
- fs/btrfs/ioctl.c       | 4 +---
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ fs/btrfs/extent-tree.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index feec49e6f9c8..a5966324607d 100644
+index a5966324607d..9c1ddf13659e 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -6551,13 +6551,13 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 			continue;
- 
- 		ret = btrfs_trim_free_extents(device, &group_trimmed);
-+
-+		trimmed += group_trimmed;
- 		if (ret) {
- 			dev_failed++;
- 			dev_ret = ret;
- 			break;
- 		}
--
--		trimmed += group_trimmed;
+@@ -1301,12 +1301,26 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
  	}
- 	mutex_unlock(&fs_devices->device_list_mutex);
  
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index e0a664b8a46a..94d8f29b04c5 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -543,13 +543,11 @@ static noinline int btrfs_ioctl_fitrim(struct btrfs_fs_info *fs_info,
- 
- 	range.minlen = max(range.minlen, minlen);
- 	ret = btrfs_trim_fs(fs_info, &range);
--	if (ret < 0)
--		return ret;
- 
- 	if (copy_to_user(arg, &range, sizeof(range)))
- 		return -EFAULT;
- 
--	return 0;
-+	return ret;
+ 	if (bytes_left) {
+-		ret = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
+-					   bytes_left >> SECTOR_SHIFT,
+-					   GFP_NOFS);
+-		if (!ret)
+-			*discarded_bytes += bytes_left;
++		u64 bytes_to_discard;
++		struct bio *bio = NULL;
++		sector_t sector = start >> SECTOR_SHIFT;
++		sector_t nr_sects = bytes_left >> SECTOR_SHIFT;
++
++		while ((bio = blk_alloc_discard_bio(bdev, &sector, &nr_sects,
++				GFP_NOFS))) {
++			ret = submit_bio_wait(bio);
++			bio_put(bio);
++
++			if (!ret)
++				bytes_to_discard = bio->bi_iter.bi_size;
++			else if (ret != -EOPNOTSUPP)
++				return ret;
++
++			start += bytes_to_discard;
++			bytes_left -= bytes_to_discard;
++		}
+ 	}
++
+ 	return ret;
  }
  
- int __pure btrfs_is_empty_uuid(const u8 *uuid)
 -- 
 2.46.0
 
