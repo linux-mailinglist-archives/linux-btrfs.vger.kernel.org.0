@@ -1,56 +1,74 @@
-Return-Path: <linux-btrfs+bounces-7787-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7788-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 648E89699AE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 12:02:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1692969A5A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 12:39:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13EAD2870A6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 10:02:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 860C61F23BCF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 10:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8B319F427;
-	Tue,  3 Sep 2024 10:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E68BD1B985C;
+	Tue,  3 Sep 2024 10:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="HNhN33XV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ny9UNNzp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911BA1A0BF7;
-	Tue,  3 Sep 2024 10:02:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655101B9850;
+	Tue,  3 Sep 2024 10:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725357735; cv=none; b=NG3bOhjwbpYo2VK5RFgYUYuRsW47jnjrjFLL03M38Lyizp474vL1L+cpt+GSmUiJoX39PSNHOH65s5FPQzTIcq+/xtVvQgr608LuQpMMLRE7+bl3woInV/bneWTdZIpzdr3jrriqqZOooEeI7xI/NQvKTHVFGgJVk7VfY37U6TQ=
+	t=1725359957; cv=none; b=ZH4Y4v9CNemVwp1ZqZPkzUloW1CeRsLK2xLgT3Gtpj4memf7ZDJpuc7cjLZ1ZFzA9gHaTTkXkw/No85s2PEH6i+1HEuhNYtZIa6HhLKAOP+DJ01AJIP89UVD3zEx+jDs4vfbe0OSd2QRSyG7toHsRAFltZkZN5cq5qeFXnCJRf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725357735; c=relaxed/simple;
-	bh=0EsLlew7p4ixQUH1iqCKCxGIJ0MwBss9nsjMczTCMhQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eam/tWW7RfSSkCuLlJGcvz9u2tc6Bpx4eEO1zEKe36oShx6oeovmKXS1qkQuNU6gzraeaNKUFYsaXQGqQ8zNgBJ9MYI0yAZvnvhmElByOkqZn8krkmj/0bk1AEnPFjD2GSlRqqXo5Ro5zqQ5KINb7hENRpZijkBt8xKNTooLcig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=HNhN33XV; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1725357725; x=1725962525; i=quwenruo.btrfs@gmx.com;
-	bh=0EsLlew7p4ixQUH1iqCKCxGIJ0MwBss9nsjMczTCMhQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=HNhN33XVe21tHRMYq/iW1VAJUqiqPa65wYdB/pZQ+OH9zucGzyik6IAu1MXC6hMY
-	 ifHld6ZcQUXM1WMkmKRjbBGaGrMZmmaStHwhI6NINmFyIgMh6uoJ3XsjxY7ShfLFK
-	 Uf176fbu8xTu59BhV9gUw+m8IBIS3tQ38qp5xBFJ+P7FLNRp3hQ3k57VWFDO78LCh
-	 zUyk4lQUZ4Yc46NgDL6kJWJx52PDOc5hDtp2XC0wpH2LMT1xp0CqdoHYTCNLzLzHB
-	 3i2WvkUycyq2RF4HmvbyjfLAiEO9sqAsOcUqOk7SBHHXkMNWzXTsb6Whb9PmNOZTm
-	 UZUSAKbKUpyt2Sjz+Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqaxU-1sGVOW3Woi-00pPHF; Tue, 03
- Sep 2024 12:02:05 +0200
-Message-ID: <4201d17f-beff-448d-a8fa-5fcab46c6325@gmx.com>
-Date: Tue, 3 Sep 2024 19:32:01 +0930
+	s=arc-20240116; t=1725359957; c=relaxed/simple;
+	bh=x9VR8yJKbpFlJ9ULZWhO2nDLSKG8nCREG0OWxhGouxU=;
+	h=Message-ID:Date:MIME-Version:Subject:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RYjsxslVPVhqxiR8hYVHNzq+U7fr9lQCg+5zTzIOs/2jHH3/rkEbXYGXft21z/bZEG74Yr56bF47ruyqz0zOV7mQXvGQYw0HjvNzj9Wk4aNxnLhkuZjBslW4oI8Trl6KSbyRDZGDuBVay4VpNl5dULYkZS3D+oyvqBxg/2PPjpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ny9UNNzp; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5334a8a1af7so5525651e87.2;
+        Tue, 03 Sep 2024 03:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725359953; x=1725964753; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=F/QXg6hFQdGDiK+u7axMDheJkaPRg6gOiLwD/Eu5ECw=;
+        b=Ny9UNNzpSNB1Ri2WKmfEkpTAjCCndF9C9vkrmvVxCjAHzyJA8tu/zgdUAr4ayGG6jC
+         y2X+3I9O+6sv4XqAiL5SLtoFcgbv0RlJmKiApWO3bPNCUMEbrb39Gh9JF34Wj9loNebl
+         iWj+wdfFXob6J48t1DDnh+VFjasH7YDlRr+yg6KpXYTi1+xoSaiEo+RBfY9njgj1P+oX
+         iR2Aii4woDCX+AR+KoJGB8tWNzCFkwuzBQNy9pCeAmNir20SrkxXLe3jVmDOAK6vSJOD
+         vvtHxmneoS+Q7HUA6gEHca8iN+dxAsCYKYaPnhLXLSarsieTWxJ/RHF2ufKvycPed9n7
+         nM2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725359953; x=1725964753;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F/QXg6hFQdGDiK+u7axMDheJkaPRg6gOiLwD/Eu5ECw=;
+        b=cMX7dx+QrlyjVSAlb0d2N+bwq4qM1CCb9jRAC+S43eSTVQlwWZPAssEMtSAlKwqryA
+         3FLS1fQxkGSVtOSrqyISIp0jvMFmQPm5kB7fgtWND/nt5l66u0J+6eCf9YW9XJfcQ3rb
+         +NEOLOC7hJvgR79px1BDsajcMhPKIhP48qKwTOwWkujcQkf2WpLFcJUGOyfLb3cduupa
+         J4iSK51UAy6fh+e+YnaesuOLB3BeUXeFILyeWSWpN+db7B29IjoRrSs30vWS2Puu6s6W
+         NqTfCw1Lqi1Zgw/rBMSNpLNfQWkVxp0GW0ApR7/oKx2/UEmBLZaoZOHpmMvPQFchteh8
+         wr6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUN/Fdc3uQIn/lLGjn5Or+c83l3tGixT6+PSwdypadffN70S8ktnWbY/ElOYoqfLFT9DKJgRbvmo0kqUA==@vger.kernel.org, AJvYcCVB4DBFOCCleLwUKcmtNENjRaulSTvG3Bm2oMwrHFONI97eWgtKipKJonIbZ9rcYwHtyrNuBSdtYAA8iANC@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQ/ne2j4SP2ZD34k7EyomtMg6SKkn2Rhe98Y1J8AoaxqPraGw7
+	wmN6a8aRTSvPnDYjXOo3gEsp8ky00qYnRut6KGNY3ZN1e7qV39VVMIlLuK4f
+X-Google-Smtp-Source: AGHT+IFfDSIgGycFkDwfEkQ/yD94GBs9dZ4GvnjIVsl1C8IImbbjE/sR8SX0srkysrkWbt4kcpFqkQ==
+X-Received: by 2002:a05:6512:1393:b0:52d:b150:b9b3 with SMTP id 2adb3069b0e04-53546b34943mr7692852e87.32.1725359952885;
+        Tue, 03 Sep 2024 03:39:12 -0700 (PDT)
+Received: from [192.168.50.7] (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bb6e274c1sm166861645e9.36.2024.09.03.03.39.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Sep 2024 03:39:12 -0700 (PDT)
+Message-ID: <f19308b7-9613-4b58-a4ff-edc66c964687@gmail.com>
+Date: Tue, 3 Sep 2024 12:39:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,126 +76,78 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] generic: test concurrent direct IO writes and fsync using
- same fd
-To: Filipe Manana <fdmanana@kernel.org>, Zorro Lang <zlang@redhat.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <fa20c58b1a711d9da9899b895a5237f8737163af.1724972803.git.fdmanana@suse.com>
- <20240902202856.e5mqgsbwmiwxs4qe@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <CAL3q7H7vDpoG=k55yh9rJQWw=sit5fMkjPZMpVfwf7629b_hsA@mail.gmail.com>
- <20240903040907.gqfprq4ul6x7s2kt@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <CAL3q7H4WSd7woy_cDmQ-1Z45zgMDdyfSS-2uzhOqkHisQewWXw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] btrfs: Split remaining space to discard in chunks
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240903071625.957275-1-luca.stefani.ge1@gmail.com>
+ <20240903071625.957275-3-luca.stefani.ge1@gmail.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H4WSd7woy_cDmQ-1Z45zgMDdyfSS-2uzhOqkHisQewWXw@mail.gmail.com>
+From: Luca Stefani <luca.stefani.ge1@gmail.com>
+In-Reply-To: <20240903071625.957275-3-luca.stefani.ge1@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:L/5s3FBzFnP6DEk18qZGkxHMzSft5XxkQyqxafm1WMwtFuGMn27
- 4wNrQ0fdwACokEmEEc+hP9Yej0oNxr6gtpv5YPk9LiUPRyDDddc8VUswLsP1uwS9NRUbtTA
- +eUaAKStEEucyV+JXwANW6F9V/W6Vyux9MNlNsVyOrtYlVVHs21tdSl/yjP9etYqFZpXJ8e
- 6fZKpxccrRjjur/Cfg6KQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:msU6GcQf/A4=;D2PktTWMgpwISgPiZdspdtE5WjM
- /SIz2fzsoNQUNTJIfxoVinr8r8YEcjV4/F/83JfTxfFi8JNZZIOjiCIgvmdZV4c7XWFN+0thn
- wY55wW8r4wC/qAXNcFJd7uZ6jo0gcO6ZMD2nfhgcPJao11iDdgVRlsmzpnT8LlxDjJtbbsdiP
- 5o88MwEroEeprlI8ohK27Jh4+hGPnxG0VKRK/YHX6S5nN8MZMHVh63DDBv1suCb7uEwVExtWI
- ZlrHkH3tRgsu5A4q8uUWX9bubww/IokSewcyd/mVzcaFC0paH2YSvnS68oqK4rIsjz54AtJUG
- ZlVcT7+Xl+t0ulGL2cEotUmBhLR0hyhAyJyKZfofoPa1gW/bFDetvhpBvbb8EoHnBYitJWXkm
- 4lAlrm2Dix2Ta+tM2JEUKIyXYqA5bfeH8VJhZQd/oyFbK5y+JQINCd7ZrTwRGKDC9cOBqXjFp
- H6eUGPSgMlkXDEkqHFki9XwoZW+7EfRUHUp50cj8AVikhrpTw9bo+/2BKd3NKukKoXvb38sOC
- hteJcOnIfSJvDfCtDphnvGDKP78t3abcLH4deo3ssZdoeNAksuf/32cvxXjAXfSC4sDEVV/aQ
- gYPTGrvexJt7Cn7osBcsV2OYr1DadqDqA7LD7tO4LVEaOk1S+UVCwP6YA94oA4EHDFR26E5Z/
- nCcJOJXqNnd0mnIHr5ip/cg3k6UaTuP7H+kfLH329l8GH8itPpaUm3Y9ulFLDbuYi6Y9JYX7N
- qLkXDhDgVeJ8PHVzJ2ATkq3YH5gqtF91XuUowvo6K5ogzhL2f2Eer7ZvkdFmcpXdv/GNU4X9n
- kaqwGxhDP+8K0UqlDH6EO/RA==
+Content-Transfer-Encoding: 7bit
 
 
 
-=E5=9C=A8 2024/9/3 19:11, Filipe Manana =E5=86=99=E9=81=93:
-> On Tue, Sep 3, 2024 at 5:09=E2=80=AFAM Zorro Lang <zlang@redhat.com> wro=
-te:
-[...]
->>
->> Oh, so this test depends on CONFIG_BTRFS_ASSERT=3Dy, or it always test =
-passed? I tested
->> on general kernel of fedora 42, which doesn't enable this config.
->>
->> There's a _require_xfs_debug helper in common/xfs (and _require_no_xfs_=
-debug
->> too), does btrfs have similar method to check that?
->
-> No, we don't.
->
-> I don't think we should make the test run only if the kernel config
-> has CONFIG_BTRFS_ASSERT=3Dy.
->
-> This particular regression is easily detected with
-> CONFIG_BTRFS_ASSERT=3Dy, and btrfs developers and the CI we use have
-> that setting enabled.
->
-> The fact that this regression happened shows that fstests didn't have
-> this type of scenario covered, which happens in practice with qemu's
-> workload (from two user reports).
->
-> I'm adding the test not just to prove the assertion can be triggered
-> for this particular regression, but also to make sure no other types
-> of regressions happen in the future which may be unrelated to the
-> reason for the current regression.
+On 03/09/24 09:16, Luca Stefani wrote:
+> Per Qu Wenruo in case we have a very large disk, e.g. 8TiB device,
+> mostly empty although we will do the split according to our super block
+> locations, the last super block ends at 256G, we can submit a huge
+> discard for the range [256G, 8T), causing a super large delay.
+> 
+> We now split the space left to discard based the block discard limit
+> in preparation of introduction of cancellation signals handling.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=219180
+> Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
+> Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
+> ---
+>   fs/btrfs/extent-tree.c | 24 +++++++++++++++++++-----
+>   1 file changed, 19 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index a5966324607d..9c1ddf13659e 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -1301,12 +1301,26 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
+>   	}
+>   
+>   	if (bytes_left) {
+> -		ret = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
+> -					   bytes_left >> SECTOR_SHIFT,
+> -					   GFP_NOFS);
+> -		if (!ret)
+> -			*discarded_bytes += bytes_left;
+I removed this by mistake, will be re-added.
+> +		u64 bytes_to_discard;
+> +		struct bio *bio = NULL;
+> +		sector_t sector = start >> SECTOR_SHIFT;
+> +		sector_t nr_sects = bytes_left >> SECTOR_SHIFT;
+> +
+> +		while ((bio = blk_alloc_discard_bio(bdev, &sector, &nr_sects,
+> +				GFP_NOFS))) {
+> +			ret = submit_bio_wait(bio);
+> +			bio_put(bio);
+> +
+> +			if (!ret)
+> +				bytes_to_discard = bio->bi_iter.bi_size;
+> +			else if (ret != -EOPNOTSUPP)
+> +				return ret;
+I think I got the logic wrong, we probably want to `continue` in case 
+ret is set, but it's not -EOPNOTSUPP, otherwise bytes_to_discard might 
+be left uninitialized.
+bio->bi_iter.bi_size can be used directly for all those cases, so I'll 
+remove bytes_to_discard as a whole.
+> +
+> +			start += bytes_to_discard;
+> +			bytes_left -= bytes_to_discard;
+> +		}
+>   	}
+> +
+>   	return ret;
+>   }
+>   
 
-I agree with Filipe, yes I know it's frustrating if one can not
-reproduce the bug.
-
-But considering filesystems can have different configs to expose
-different behavior, limiting the test case for certain configs doesn't
-really improve coverage.
-
-And I believe for most fs development teams, we all have different
-kernel configs for prod and develop coverage.
-
-For this particular case, I believe just mentioning what is needed to
-trigger the original failure (and what the original symptom) is good enoug=
-h.
-Although I guess that's what is missing and caused the initial confusion.
-
-So mind to slightly update the commit message to mention the needed
-config to trigger the original bug?
-
-With such a small update, it should help us to communicate with other
-people who mostly works out of our realm.
-
-Thanks,
-Qu
->
-> Hope that makes sense.
->
->>
->> Thanks,
->> Zorro
->>
-
->
+I'll fix those up for v4, but I'll wait for more comments before doing so.
 
