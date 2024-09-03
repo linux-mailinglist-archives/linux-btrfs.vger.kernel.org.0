@@ -1,139 +1,105 @@
-Return-Path: <linux-btrfs+bounces-7790-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7792-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E594A969EFE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 15:27:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B53696A351
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 17:50:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BEC51F24FFF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 13:27:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06C66282BD6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 15:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636A71B12D8;
-	Tue,  3 Sep 2024 13:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D20188929;
+	Tue,  3 Sep 2024 15:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="Ljt2gf+G"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="maVIZxOF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mxex2.tik.uni-stuttgart.de (mxex2.tik.uni-stuttgart.de [129.69.192.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522B61A0BC6
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 13:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053EF18859E
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 15:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725370021; cv=none; b=XdK/F20uwrVkWqLZ3NgdXol45x6O4ypStau7WErMyQHxzz6nnGDsrxfGrc3nNt+GZhh9RACnjlS58eyLyG3VXR9df1TI+o2yKUMr0NIWnuWw3134dSy4duBUiwAGkB/gBqYMF641B5+07BOd2ucgp43o7yXOKaXbDW6eKQDeeVo=
+	t=1725378647; cv=none; b=fgR5IyxN7wCRqtMUFmNs4r5TknyK4FiFFD4yJGx/q24CgupABKNJKJ9VtQzBQTCSGDlTSDMlQ4mTiMUlodNo82lFo2Fbs0uyJjHzwATonTnV2GCe7pz5mthbp1ryUbUpzHf1pOpMsMkY8dpcXDh8Ds4W4mzZnmiZFliTaeKuC/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725370021; c=relaxed/simple;
-	bh=yWqHt73awSNYEAr2mplgcfpAepf9G46cyKROlZ6oyz4=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u/1JqSl2oytU8xwGfUZ4oe6vvTmrO8W733FrUd3zBtQacersmItfZPMGwGGPOPZDgoKySlkTxkLqQt7k2dV11CbyH75wP4TZSjN9ZtyS5tTwJJr27VZWyt51Ly2w0JHkh0iaor6MRNrtRnGBysPYyBMm8XU6mtbl07MhZwRrvdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=Ljt2gf+G; arc=none smtp.client-ip=129.69.192.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rus.uni-stuttgart.de
-Received: from localhost (localhost [127.0.0.1])
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id 28BFE60A09
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 15:26:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
-	 h=x-mailer:user-agent:in-reply-to:content-transfer-encoding
-	:content-disposition:content-type:content-type:mime-version
-	:references:message-id:subject:subject:from:from:date:date; s=
-	dkim; i=@rus.uni-stuttgart.de; t=1725370010; x=1727108811; bh=yW
-	qHt73awSNYEAr2mplgcfpAepf9G46cyKROlZ6oyz4=; b=Ljt2gf+GjtnWOD4Hrd
-	cBQCmd61gqH5yzJK/FheCM5DVeYKWBmrDygMLJS7uUnjGv46cbe2zQyCeKBO8JJT
-	Ea0dBLYsXCKiyqpydUCiBpVdiWyt0+L2SCou1cf9EZ7jYXGk55fCEY/0xszr+dxG
-	20PCPVm9TAeG50XKnOJ/8pmvD997htBwvjS3hP1A31yO1yVGnl2L3vubhtuWLoGf
-	5NE2AryNLbkhnZLcqsVDDSf6bH/j50JTH64/K2urT0g5aLql7NurK91oIA9Wx09+
-	2ft34JUK8zIflnelRPlBH+mvkcG/gXvjdt+KGh5Fo2yI+GsbjCcMWd4ZMBUuRMBr
-	HSig==
-X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
-Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
- by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
- with ESMTP id BDjloyNQcUDJ for <linux-btrfs@vger.kernel.org>;
- Tue,  3 Sep 2024 15:26:50 +0200 (CEST)
-Received: from authenticated client
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
-Date: Tue, 3 Sep 2024 15:26:50 +0200
-From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To: linux-btrfs@vger.kernel.org
-Subject: Re: workaround for buggy GNU df
-Message-ID: <20240903132650.GB20488@tik.uni-stuttgart.de>
-Mail-Followup-To: linux-btrfs@vger.kernel.org
-References: <20240621065709.GA598391@tik.uni-stuttgart.de>
- <87le2s6gbw.fsf@vps.thesusis.net>
- <4da3947b-5412-ccaa-527d-d2263da7f36d@georgianit.com>
- <303dee41-7b6e-4a54-be75-acbc3b4da5a5@gmail.com>
+	s=arc-20240116; t=1725378647; c=relaxed/simple;
+	bh=rHCaYRQ3lT3pa8vfNirHSbOjA6zCvS2POPgP29MBz3k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DQdHu3oDvvNWdpaZxFHFTz7jtxwod6yU5X6CifeWuHYTNY/9DYgDutd9d8JTiGtsrYQcUs59FUHVaCZMf0gFGVfWoyCFPzDlko+XYcWS22GAd+m/s4kMLDXu0eyi8MRr5kyI0CeMP8rnB/lriBmZtSJ7VcMQywgQfkz7nAcqUAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=maVIZxOF; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e1a9e4fa5aaso2813571276.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Sep 2024 08:50:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1725378645; x=1725983445; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L7qnM8q1c0w9kirjZVQKjB3/n+YUpwmvAEeIVjnk6VQ=;
+        b=maVIZxOFHxMbbuL4eU9RfWIJK2m/XflMp/QNnZRZ4ywy/f8BPerCOCHnVE9layrU53
+         1h0LKbDlJs6G6j5nLViUrN91CXTyJ4A1Uw84ZERg8yADNXVcKeWlYW/1hO9pmRRDc2c7
+         vRxtomHhRD4qPgIDkFJCoyaFAHlqPuBHSrWEye7kcXVsTJQqvB+ehgGP2AF6oda/FBNC
+         iyR38uXwsXkrzqkEHQieKEOHco+4aFV8kqqklzYZRRcAnmp3of9u8SUg92w3se/GI+B1
+         K3oJ5zX3QK++zDtZy7QDy8cvRlb7maDNgXv7ba0UMWOgz7yUQtoLz5M6UbgH28lN6JQ9
+         G52A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725378645; x=1725983445;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L7qnM8q1c0w9kirjZVQKjB3/n+YUpwmvAEeIVjnk6VQ=;
+        b=Qr26pfPAcsgoWBohHbKZ8Al7po6srAgxfeqytcdhmcNusR8nxd7yK3Ham2sil9wAfN
+         ziqBI9luaWbn2wuYADvGyw8j3C2p0p7s/xGch42q6ios9DXFtdYnCtrCDUGFfMiwX8+Q
+         OsjzO08fitZGYEg0FJfysFvY+7i4t9JjXzRIU9v+fCp0Vza/J63rC8UAFrvnZpgDXIjp
+         31FJcx77zYcw7RwTvHA10LkxGJ5k+w8TI+djqDQqsIdB4YlCMeX9cAYkn+L40oLOirmH
+         EaPmE36fGCZTVE9VqjzVvI+3a0l0oCvVxpSGCZwmGDK3E18EoY+G8zIdaMdiTMcXx8Yg
+         DJfA==
+X-Gm-Message-State: AOJu0YxhbwDl5ZGyyQIbC+4uNLBpN8qdfQv750jtorAeCEp9ReSCvUPk
+	wda41g8u8M3yKUknMIu6wcmqzmEoezcr5gA+ssBR/0xFhuubeiOg22UWb6tcpXs=
+X-Google-Smtp-Source: AGHT+IF9085Lcd7TFbfrNqRXT+kATcoNDkmyxcMucIMvWB3wFYJEXM7fCuEblaYEyPPzkeHEaJdjkw==
+X-Received: by 2002:a05:690c:6703:b0:6ae:528f:be36 with SMTP id 00721157ae682-6d40dc7b873mr181116927b3.12.1725378644805;
+        Tue, 03 Sep 2024 08:50:44 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6d5b5fc3e1asm11836737b3.40.2024.09.03.08.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Sep 2024 08:50:44 -0700 (PDT)
+Date: Tue, 3 Sep 2024 11:50:43 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] btrfs: fix a regression with concurrent DIO writes
+ and fsync on the same fd
+Message-ID: <20240903155043.GA3354361@perftesting>
+References: <cover.1724972506.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <303dee41-7b6e-4a54-be75-acbc3b4da5a5@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Mailer: smtpsend-20240729
+In-Reply-To: <cover.1724972506.git.fdmanana@suse.com>
 
-On Wed 2024-06-26 (09:40), Andrei Borzenkov wrote:
-> On 25.06.2024 22:12, Remi Gauvin wrote:
+On Fri, Aug 30, 2024 at 12:09:35AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> > On 2024-06-25 2:13 p.m., Phillip Susi wrote:
-> >>> The GNU tool df does not work correctly on btrfs, example:
-> >>>
-> >>> root@fex:/test/test/test# df -T phoon.png
-> >>> Filesystem     Type 1K-blocks     Used Available Use% Mounted on
-> >>> -              -     67107840 16458828  47946692  26% /test/test
-> >>>
-> >>> root@fex:/test/test/test# grep /test /proc/mounts || echo nope
-> >>> nope
-> >>>
-> >>> The mountpoint is wrong, the kernel knows the truth.
-> >> How did you get this to happen?
-> >>
-> >
-> > Very easy to replicate.  If you call df with a path, it prints the
-> > location of the subvolume in the "Mounted As" column.  No other steps
-> > necessary.
-> >
-> >
+> Fix a recent regression when doing concurrent direct IO writes and fsync
+> using the same fd from multiple threads. This was reported recently by a
+> couple users when using QEMU, as well as syzbot. The fix is the first
+> patch in the series, the second one is just an improvement for some
+> assertions. Details in the change logs of each patch.
 > 
-> bor@tw:~> df -T /home
-> Filesystem     Type  1K-blocks     Used Available Use% Mounted on
-> /dev/sda2      btrfs  39835648 20799988  16982220  56% /home
-> bor@tw:~> df -T /home/bor
-> Filesystem     Type  1K-blocks     Used Available Use% Mounted on
-> /dev/sda2      btrfs  39835648 20799988  16982220  56% /home
-> bor@tw:~> df -T /home/bor/bin
-> Filesystem     Type  1K-blocks     Used Available Use% Mounted on
-> /dev/sda2      btrfs  39835648 20799988  16982220  56% /home
+> Filipe Manana (2):
+>   btrfs: fix race between direct IO write and fsync when using same fd
+>   btrfs: add and use helper to verify the calling task has locked the inode
+> 
 
-You have no subvolumes in /home, therefore no problems with df output.
-Try:
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-framstag@watschel:~: btrfs sub create tmp/test
-Create subvolume 'tmp/test'
+Thanks,
 
-framstag@watschel:~: df -H tmp/test
-Filesystem      Size  Used Avail Use% Mounted on
--               199G  154G   44G  78% /local/home/framstag/tmp/test
-
-framstag@watschel:~: fst tmp/test
-Path:       /local/home/framstag/tmp/test
-Mountpoint: /local
-Subvolume:  /local/home/framstag/tmp/test
-Volume:     /dev/sdc3
-Filesystem: btrfs
-
--- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
-REF:<303dee41-7b6e-4a54-be75-acbc3b4da5a5@gmail.com>
+Josef
 
