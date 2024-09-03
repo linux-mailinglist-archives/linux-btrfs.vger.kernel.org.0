@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-7782-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7783-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AEA969572
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 09:30:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCDA969573
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 09:30:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D5D31F23175
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 07:30:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD2CC280A10
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2024 07:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D02200120;
-	Tue,  3 Sep 2024 07:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6439820011E;
+	Tue,  3 Sep 2024 07:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ovVdwtfF";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ovVdwtfF"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NMa+Tggf";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NMa+Tggf"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0194200105
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 07:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC8E1DAC75
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 07:29:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725348572; cv=none; b=ipSP4/t6GTsby0XrlVgI5cj/RXGa3LaBx3qRuswvZytfUZuEPxL8sRequuV/D5YyyyCrjwZjGR+VoX0/2Czi436xAR0GLy4/A1+E7XjbAZyzz5IYyb+A7o6RCicDr0KYqwidxfPL9zqPJDRySu32IDJii//ziucVdbMwzEel3GQ=
+	t=1725348574; cv=none; b=ps01CHml6FQ/GnjYiveZPiAI/q7PnRTeSc2kStsoTTI14hUWRTW73FZvg7lafBbWMgYrBgYl/isAaOaTiSLIoZvjfLyjGo0CVJkY18yEXsAKvg7TKqOggxwaKzbTrq2RLyhs4hVTX8qYg8XqgVRYRXoXQZW+g3wEKrRxuHhm/l4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725348572; c=relaxed/simple;
-	bh=pH1M09rD3gj+Hldor4uc2wZ7uRhVPubf67ZovSUuUWQ=;
+	s=arc-20240116; t=1725348574; c=relaxed/simple;
+	bh=+Z7CH9mZp0NktwpUoLUfi2rmlUiwBwVGKPEGSTrk6TI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N5bsWf7NPkYKawDVAxSbaRU7eU6zoSnG/qVjTlA/w7WvS/YTh2ZiVZBHL7jqX+FB/hW0AIVsx57J9jwnOWLXL1YS3pimH4T5A3o3/fBfRm04557uexaGOyIFc52Qu+ozRD3uRy3BKj+tDR4ZLElLzdGB8IrKcaTn6zUytfQavR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ovVdwtfF; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ovVdwtfF; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=ElSlHjQxLzP1URc+30Wv/3BODD7CknBnohwsA6sJT+4nclcwnPAEtlwHi3INOSNMbZ1h3bLX9uJ0mexA/ky7rVwte0FYcZ9ZMpDmFEmS03lNiX9k93IO4w1DtyTAiZHw1pZyWBNR+GuBl0uoEogJ4k5u7Yomtw4sWOIxrUyVmRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NMa+Tggf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NMa+Tggf; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DF63E1FCEE
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 07:29:28 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1EAC71FCF0
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 07:29:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725348568; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1725348570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XOGIkAsVz3bHpC559NMm5hInpAGk7TG1nvqGylkyBaA=;
-	b=ovVdwtfFDN2OmzeG/xmHF/Gkz5MSuj7WwOgXz0EJBoRuOs4mV38kQ2EiFzKXHpEZNCA2MP
-	E9PrarxqcCRy5cYHRgO88cQ7wcJDDwTp78bhZga4sBYGJkG63cp23XFgi/ptO/G9GLJgm7
-	jaCVUFwin4Z2L2cEge+wkEUH8cnKADc=
+	bh=pZjnjnMKIDk8n6pMeBglt/owzdcB/3QiKV0j/LoUDSY=;
+	b=NMa+Tggfk0vfqO2L8DjLMakrTlPmuF2xLo4v89qCubfA4DFdrjISs+SWvE35qCY5Ob/YDO
+	E3E5JBYCIiXXiNIEHZ3jyxLRhtGE+AXz3Z03pryfuCjONRAZZ8qMVJN5ZLer8m0B8BqoRU
+	GOrDCS53DZjnK2PFlS83bxIR1i432/M=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725348568; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1725348570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XOGIkAsVz3bHpC559NMm5hInpAGk7TG1nvqGylkyBaA=;
-	b=ovVdwtfFDN2OmzeG/xmHF/Gkz5MSuj7WwOgXz0EJBoRuOs4mV38kQ2EiFzKXHpEZNCA2MP
-	E9PrarxqcCRy5cYHRgO88cQ7wcJDDwTp78bhZga4sBYGJkG63cp23XFgi/ptO/G9GLJgm7
-	jaCVUFwin4Z2L2cEge+wkEUH8cnKADc=
+	bh=pZjnjnMKIDk8n6pMeBglt/owzdcB/3QiKV0j/LoUDSY=;
+	b=NMa+Tggfk0vfqO2L8DjLMakrTlPmuF2xLo4v89qCubfA4DFdrjISs+SWvE35qCY5Ob/YDO
+	E3E5JBYCIiXXiNIEHZ3jyxLRhtGE+AXz3Z03pryfuCjONRAZZ8qMVJN5ZLer8m0B8BqoRU
+	GOrDCS53DZjnK2PFlS83bxIR1i432/M=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 28F7613A52
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 07:29:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D55313A52
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2024 07:29:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cC8pN9e61mY2TwAAD6G6ig
+	id cBZiCNm61mY2TwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 03 Sep 2024 07:29:27 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 03 Sep 2024 07:29:29 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/4] btrfs-progs: check/lowmem: detect invalid file extents for symbol links
-Date: Tue,  3 Sep 2024 16:59:01 +0930
-Message-ID: <044b77cd6c56bcec3ba011820b9f7977182280b6.1725348299.git.wqu@suse.com>
+Subject: [PATCH 4/4] btrfs-progs: convert-tests: add a test case to verify large symbol link handling
+Date: Tue,  3 Sep 2024 16:59:02 +0930
+Message-ID: <715a310387bb3138bd0e41809e21bfef3825df1d.1725348299.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <cover.1725348299.git.wqu@suse.com>
 References: <cover.1725348299.git.wqu@suse.com>
@@ -86,123 +86,84 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Score: -2.80
 X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+	BAYES_HAM(-3.00)[99.99%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-[BUG]
-There is a recent bug that btrfs/012 fails and kernel rejects to read a
-symbol link which is backed by a regular extent.
+The new test case will:
 
-Furthremore in that case, "btrfs check --mode=lowmem" doesn't detect such
-problem at all.
+- Create a symbol which contains a 4095 bytes sized target on ext4
 
-[CAUSE]
-For symbol links, we only allow inline extents, and this means we should
-only have a symbol link target which is smaller than 4K.
+- Convert the ext4 to btrfs
 
-But lowmem mode btrfs check doesn't handle symbol link inodes any
-differently, thus it doesn't check if the file extents are inlined or not,
-nor reporting this problem as an error.
-
-[FIX]
-When processing data extents, if we find the owning inode is a symbol
-link, and the file extent is regular/preallocated, report an error for
-the bad file extent item.
+- Make sure we can still read the symbol link
+  For unpatched btrfs-convert, the resulted symbol link will be rejected
+  by kernel and fail.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/mode-lowmem.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ .../027-large-symbol-link/test.sh             | 33 +++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+ create mode 100755 tests/convert-tests/027-large-symbol-link/test.sh
 
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index a9908eaf629d..a5e49f03355d 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -3351,6 +3351,31 @@ out_no_release:
- 	return err;
- }
- 
-+static int grab_inode_item(struct btrfs_root *root,
-+			   u64 ino, struct btrfs_inode_item *ret_ii)
-+{
-+	struct btrfs_path path = { 0 };
-+	struct btrfs_key key = {
-+		.objectid = ino,
-+		.type = BTRFS_INODE_ITEM_KEY,
-+		.offset = 0
-+	};
-+	int ret;
+diff --git a/tests/convert-tests/027-large-symbol-link/test.sh b/tests/convert-tests/027-large-symbol-link/test.sh
+new file mode 100755
+index 000000000000..85f7329a86d2
+--- /dev/null
++++ b/tests/convert-tests/027-large-symbol-link/test.sh
+@@ -0,0 +1,33 @@
++#!/bin/bash
++# Make sure btrfs-convert can handle a symbol link which is 4095 bytes large
 +
-+	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
-+	if (ret > 0)
-+		ret = -ENOENT;
-+	if (ret < 0)
-+		goto out;
++source "$TEST_TOP/common" || exit
++source "$TEST_TOP/common.convert" || exit
 +
-+	read_extent_buffer(path.nodes[0], ret_ii,
-+			   btrfs_item_ptr_offset(path.nodes[0], path.slots[0]),
-+			   sizeof(*ret_ii));
-+out:
-+	btrfs_release_path(&path);
-+	return ret;
-+}
++setup_root_helper
++prepare_test_dev 1G
++check_global_prereq mkfs.ext4
 +
- /*
-  * Check EXTENT_DATA item, mainly for its dbackref in extent tree
-  *
-@@ -3371,6 +3396,7 @@ static int check_extent_data_item(struct btrfs_root *root,
- 	struct btrfs_extent_item *ei;
- 	struct btrfs_extent_inline_ref *iref;
- 	struct btrfs_extent_data_ref *dref;
-+	struct btrfs_inode_item inode_item;
- 	u64 owner;
- 	u64 disk_bytenr;
- 	u64 disk_num_bytes;
-@@ -3400,6 +3426,24 @@ static int check_extent_data_item(struct btrfs_root *root,
- 	extent_num_bytes = btrfs_file_extent_num_bytes(eb, fi);
- 	offset = btrfs_file_extent_offset(eb, fi);
- 
-+	/*
-+	 * There is a regular/preallocated data extent. Make sure the owning
-+	 * inode is not a symbol link.
-+	 * As symbol links can only have inline data extents.
-+	 */
-+	ret = grab_inode_item(root, fi_key.objectid, &inode_item);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to grab the inode item for inode %llu: %m",
-+		      fi_key.objectid);
-+		err |= INODE_ITEM_MISSING;
-+	}
-+	if (S_ISLNK(inode_item.mode)) {
-+		error("symbol link at root %lld ino %llu has regular/preallocated extents",
-+		      root->root_key.objectid, fi_key.objectid);
-+		err |= FILE_EXTENT_ERROR;
-+	}
++link_target=""
 +
- 	/* Check unaligned disk_bytenr, disk_num_bytes and num_bytes */
- 	if (!IS_ALIGNED(disk_bytenr, gfs_info->sectorsize)) {
- 		error(
++# Soft link in btrfs can only have inlined data extent.
++# So here we create a symbol link whose target is 4095 bytes length.
++for ((i = 0; i < 4095; i++)); do
++	link_target+="b"
++done
++
++convert_test_prep_fs ext4 mke2fs -t ext4 -b 4096
++run_check $SUDO_HELPER ln -s "$link_target" "$TEST_MNT/symbol_link"
++run_check_umount_test_dev
++
++# For unpatched btrfs-convert, it will always append one byte to the
++# link target, causing above 4095 target to be 4096, exactly one sector,
++# resulting a regular file extent.
++convert_test_do_convert
++
++run_check_mount_test_dev
++# If the unpatched btrfs-convert created a regular extent, and the kernel is
++# newer enough, such readlink will be rejected by kernel.
++run_check $SUDO_HELPER readlink "$TEST_MNT/symbol_link"
++run_check_umount_test_dev
++
 -- 
 2.46.0
 
