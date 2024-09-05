@@ -1,83 +1,82 @@
-Return-Path: <linux-btrfs+bounces-7852-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7853-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8969196D1C2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 10:18:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76FE296D1EE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 10:24:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4129D284642
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 08:18:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 020B3B21E13
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 08:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A8E195381;
-	Thu,  5 Sep 2024 08:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CC9194122;
+	Thu,  5 Sep 2024 08:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OQC5wxj+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lwu9wWq0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47F9193079;
-	Thu,  5 Sep 2024 08:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159338F66;
+	Thu,  5 Sep 2024 08:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725524057; cv=none; b=pPDJGmlWwJsRx2Tb/1BvCH5rnOULT9KW+CrJM1xUn+pkaMsWck9U4bbeggYSmovzdXoXwQ3cgsjRuRYb6Pdx3byNwhRngx7gvdCaFE3zEB8SVsArPNsksukWc19bqPrtFU6FflCRxzgNm2bg/swfyeAWiuVVApLu/HHoAV+phyY=
+	t=1725524636; cv=none; b=Ag3P/BYUcOy2PYgjwUWg5MWVwYRjkRWx05N3IDovhZNriJhL3zcSaCf14QcKPjFd4xJHTBD+5+gxu/DeG6XfvyWANpnsFhimaiovRp/n6FAK5wZn4uU4mZnLw2CCpYzg+MXJdlK1le1nGNr/k/h/kwWILFp9q/iC4673Djsq3m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725524057; c=relaxed/simple;
-	bh=0Vw11TeXJsR1xXlzKl9emuyRB2EMghGKDWUx1W7c1cY=;
+	s=arc-20240116; t=1725524636; c=relaxed/simple;
+	bh=TwKwteQ9GQakcBA9WOXf4pXII2GxlwD14AaG4Apu1qs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LEA+YQVp/yErRpHYcZD05mZfctbT9ZS3PdBLjs8DpJDBu+kIFO3fGZjwLVt+9FFt25Vu2EeVGWWOhrj9mlLqIfEf8T3TWro9k1byPQv+QUM6Nl3NlLKJPS1WNUzl0LIIQeHyHJ4fiL9DiVkoO48Hjgv7Kj4Z/Zj8UbtCqVGFaBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OQC5wxj+; arc=none smtp.client-ip=209.85.222.178
+	 To:Cc:Content-Type; b=OVNOTblPSQqEgkHfSY4h8OOc/esL570UwhBA2fYeEzhDWWafAOihPlCsRBq2AFjnEtw4tJWKezhBYk2cWDrBsLIvNA54U0LGgRjVe98Bm+gDJpvD3dcUEO1Xk8CYFy2++hDQdfxyBSjPQOkze3nPKi0tSadFr2QGRVFj+zGLCtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lwu9wWq0; arc=none smtp.client-ip=209.85.210.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7a80511d124so31050385a.1;
-        Thu, 05 Sep 2024 01:14:15 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-70f6a7c4dcdso350164a34.1;
+        Thu, 05 Sep 2024 01:23:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725524054; x=1726128854; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725524634; x=1726129434; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GyBCK9InRyMt0WInCHwzobA7WWqSCgMtXck53xCZvD4=;
-        b=OQC5wxj+rRDpgOvzvYeRmfsz0Afzz+uG30toJmHRSW/vWUNSsBoTg1lagmn9hRC2yw
-         eof1txJ2oeqerhW8AYw/FPiRJ5XY+cO6ns8YAf3JEU1cFQw9OTbXDoqLiDPqWj1RGyTq
-         8CJAtyw1XkbfKy14aP7RgFWjvU3DnJl2WANr6VawLO0xGT4OX0mJO+gacui1GJM2MCWv
-         NNsC9kGce4qSCwqf1ExmqUnuqVpoyiCAwJGu4+KLEyQlTjSjkiJAzaD39VKXAsj19WeC
-         bWAYy0/x3aeF3NCTiVxoNslwZRvx5bqxeZ5eLO2iBoeh4C+3wHuKy2IO0W29PgEa3JR6
-         nU/Q==
+        bh=chdOXpxl19grJ0lyYlh2nBdFQ3cbblx2XVMM1r+6Sk0=;
+        b=lwu9wWq0aJ2UPjSKmpRbRbrLaswasJVCK7vAg0qUHECkgLJr/DJHwm6mMHzzCE1c1X
+         QVFiM8+m2QI+E5lsVMnQ/MqDbFNX0b9h6vE3b1TkpS9cz6R5FlVC+nnGavo5EETxyNy+
+         AreFyON2YSn2mwz6Ob295QZGvj0j8TPR+vpg2jxmSbt40MNMPH1MLeq0ygq5OXNv2rP1
+         WVpytv6o4WT4VndDB4RAzmX1LtDOEsrJJhjVtw/G6yOjIgwC/u21I/P8lA1G1WBS+fGt
+         HCRndgm0KaEG0WP8FJvyNqkDVblZgJI6nuB2war4k1+TuzB6D2k4ObuRcCn1VRPZFr6n
+         ZHdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725524054; x=1726128854;
+        d=1e100.net; s=20230601; t=1725524634; x=1726129434;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GyBCK9InRyMt0WInCHwzobA7WWqSCgMtXck53xCZvD4=;
-        b=KBb8jcAhUCQ+KlqUBmZ/cRIcBnKOzTMqODeaUUgiiPZQCYYs2HPBpYZnLADf+ub0e0
-         S5UQiB6c04+ukt6oBo4cmPYfQdokrcaAYZAu+1k7QMhK9s7rjq3j7o4y+vtsMFvVWzJv
-         alUm7r48f6/C+SUDdoHic3fGN9symr9s5ul8qU/DNsWqyB9lTjT3ImGKmepnsj1R6PIA
-         Yjf6qa3V+D1gT46ZzewPoiOj503yCHbLWDxu6Gu8M8kAvYrPmS35uuNuLmNJ/Ge3hVHI
-         sJhJXwkMg/YquEKY1HjfyHtdUtp+Ei5Oy1sks/ZtvYNzi7eWNbk3n1dlAXoSBKiw2ftP
-         SgDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKzSkurYibhiULEMkPvb5SnEEQqdwB3GrYQG9DAp3tojRFR/wMb4W1JkMaSgLMMSrvI9qdElzDRPqyWUY=@vger.kernel.org, AJvYcCVE9FFiJeCuamgjHReFMcyUaqf6T4/rlIwfkq5XmJ780QGlXHxyPbwl68wPRdN9oPpNxZW8isJ5chovqUn8vw==@vger.kernel.org, AJvYcCX+5Mgx7X380yVRPxFG7WhDa03PTb24yOJHtrWwWABRn4ZQoI8xM2Q47Knq0QpjdA8/QaCdOUr88kDz@vger.kernel.org, AJvYcCXe9BNjfbeAC0MjEZurjZ+HOrB6ssGVptA/yfKFk2/XdAFnxPRyhhlYZAQrn93TYd0DwQksdT3AQN+Pj3uOsQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYT55TPDRoqCQeOtCBBgHTIvqb67lgRWoQ0lNjieAvQ3HsfnIB
-	iVVkeAoZ4bgz9zpuJ0vyXeXapDkXkOUFxs48PNor6DEM4O14tH14T3bUgcCHxSvclD0K4mDfiUK
-	5++oUdmtkraHd759w2FPhEe3zUXZZWBVH2dQFcg==
-X-Google-Smtp-Source: AGHT+IHioFe00Pp0XmEgOtQZaGDRJoBV57MAuA+hhUGAaxnDLKex7wtypkjrpGpwlYIqGtL5aAZry+TjLKdJIPcbpZ8=
-X-Received: by 2002:a05:620a:190d:b0:79f:78a:f7b4 with SMTP id
- af79cd13be357-7a902e90175mr1780961985a.42.1725524054468; Thu, 05 Sep 2024
- 01:14:14 -0700 (PDT)
+        bh=chdOXpxl19grJ0lyYlh2nBdFQ3cbblx2XVMM1r+6Sk0=;
+        b=mC8ePawcEfqP0casCM7liDj3AWnM08ZHhdwHgkmaL59o7U3/tzECaDqaXF2McJXubv
+         M99ERKvqr3NHlxzP39TiBGUv603cjkH20KrWoCRjHm1wS4fcyq8tA9JWwWAwy+9Z3KVD
+         CC6LOgk+n3MQyHwdmWseJzykyUcPgHqSS1qeKTdBRKKjC8IRG8ewX2OOBny7NXUXFADK
+         kz0hp0lShE9KvDVJ/nDcq3uOB6CT9LnqpZdVLl+jUATzrAE7HbJGswbzkqazOgngS4y/
+         Q4xooDR/xNVcp0/Tm4i8StDS7WmjpLG+vMl08kR/N9K/XTx+UQpKpPncI1gehd5AwZxV
+         /rew==
+X-Forwarded-Encrypted: i=1; AJvYcCVrKe6iqbkiWzIXRmQV+xzruAe+ljrePSVKPSUjsivpU8yZU/KBh7OGxACU3KS5Y0SGuXPYLXO3pb56NYnV4Q==@vger.kernel.org, AJvYcCVwrjo+pEmZZUd3pEY/yHnSsxZPkUPTcc7mz/ETvXLyE6XKSCpzN1YmlXDAX0OwFLS4/RrDyG+rZ87eb4M=@vger.kernel.org, AJvYcCWD1swA//Fht3X7P1h+uHaeqLkJU1Lfk1/fLKLkWqBORza3sAe85Fx5qTzqaF1NfEsYiWONH/tC2aVHVum4+Q==@vger.kernel.org, AJvYcCXlmYpPsTjUy3Holan15xs8HOfJORUkHu6npTtoWIEPyxu53r1vdfTicNDliV3AuleH1TP8VZjXQy0g@vger.kernel.org
+X-Gm-Message-State: AOJu0YyeJC6apvWMKREGy20rDZBkdnuYI1zeVLblHtKILrJZXDV0MShr
+	88s5UXrCCo2R27ZPhSldQi75JJfVHp6XTY243Hw9/ceXtqQSfwhQdfgSU8rl3iUIjKD64bw9dP1
+	Bp69NRIkKJQzoyj9MQH7JIcgBR0Q=
+X-Google-Smtp-Source: AGHT+IE6p7wq/aGZc71KmWg1q+RkZP/2KfOy+tFjCt8EugCjNDM0MIPDzBeTnbCvcWLRpy4UVsXFGx3EjMXkydC/8RI=
+X-Received: by 2002:a05:6830:90e:b0:710:adbb:ff33 with SMTP id
+ 46e09a7af769-710af69eae6mr7229761a34.10.1725524633873; Thu, 05 Sep 2024
+ 01:23:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1725481503.git.josef@toxicpanda.com> <80e7221d9679032c2d5affc317957114e5d77657.1725481503.git.josef@toxicpanda.com>
-In-Reply-To: <80e7221d9679032c2d5affc317957114e5d77657.1725481503.git.josef@toxicpanda.com>
+References: <cover.1725481503.git.josef@toxicpanda.com> <367fe83ae53839b1e88dc00b5b420035496d28ff.1725481503.git.josef@toxicpanda.com>
+In-Reply-To: <367fe83ae53839b1e88dc00b5b420035496d28ff.1725481503.git.josef@toxicpanda.com>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 5 Sep 2024 10:14:03 +0200
-Message-ID: <CAOQ4uxiOvuVFp7ivBoXC-GygDcQ_m3-un1x_jgg1gWNqzddgVg@mail.gmail.com>
-Subject: Re: [PATCH v5 13/18] mm: don't allow huge faults for files with pre
- content watches
+Date: Thu, 5 Sep 2024 10:23:41 +0200
+Message-ID: <CAOQ4uxjteVH2kX2zORBaudu-EVLQRWxVjHvdgoXhR=ji8yZwDg@mail.gmail.com>
+Subject: Re: [PATCH v5 17/18] btrfs: disable defrag on pre-content watched files
 To: Josef Bacik <josef@toxicpanda.com>
 Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
 	brauner@kernel.org, linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
@@ -88,110 +87,52 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Sep 4, 2024 at 10:29=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
 wrote:
 >
-> There's nothing stopping us from supporting this, we could simply pass
-> the order into the helper and emit the proper length.  However currently
-> there's no tests to validate this works properly, so disable it until
-> there's a desire to support this along with the appropriate tests.
+> We queue up inodes to be defrag'ed asynchronously, which means we do not
+> have their original file for readahead.  This means that the code to
+> skip readahead on pre-content watched files will not run, and we could
+> potentially read in empty pages.
 >
-> Reviewed-by: Christian Brauner <brauner@kernel.org>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> Handle this corner case by disabling defrag on files that are currently
+> being watched for pre-content events.
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+IIUC, you are disabling the *start* of async defrag.
+What happens if defrag has already started and then a pre-content
+watch is set up?
+
+Do we care about this corner of a corner case?
 
 Thanks,
 Amir.
 
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  mm/memory.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+>  fs/btrfs/ioctl.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 >
-> diff --git a/mm/memory.c b/mm/memory.c
-> index d10e616d7389..3010bcc5e4f9 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -78,6 +78,7 @@
->  #include <linux/ptrace.h>
->  #include <linux/vmalloc.h>
->  #include <linux/sched/sysctl.h>
-> +#include <linux/fsnotify.h>
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index e0a664b8a46a..529f7416814f 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2640,6 +2640,15 @@ static int btrfs_ioctl_defrag(struct file *file, v=
+oid __user *argp)
+>                         goto out;
+>                 }
 >
->  #include <trace/events/kmem.h>
->
-> @@ -5252,8 +5253,17 @@ static vm_fault_t do_numa_page(struct vm_fault *vm=
-f)
->  static inline vm_fault_t create_huge_pmd(struct vm_fault *vmf)
->  {
->         struct vm_area_struct *vma =3D vmf->vma;
-> +       struct file *file =3D vma->vm_file;
->         if (vma_is_anonymous(vma))
->                 return do_huge_pmd_anonymous_page(vmf);
-> +       /*
-> +        * Currently we just emit PAGE_SIZE for our fault events, so don'=
-t allow
-> +        * a huge fault if we have a pre content watch on this file.  Thi=
-s would
-> +        * be trivial to support, but there would need to be tests to ens=
-ure
-> +        * this works properly and those don't exist currently.
-> +        */
-> +       if (file && fsnotify_file_has_pre_content_watches(file))
-> +               return VM_FAULT_FALLBACK;
->         if (vma->vm_ops->huge_fault)
->                 return vma->vm_ops->huge_fault(vmf, PMD_ORDER);
->         return VM_FAULT_FALLBACK;
-> @@ -5263,6 +5273,7 @@ static inline vm_fault_t create_huge_pmd(struct vm_=
-fault *vmf)
->  static inline vm_fault_t wp_huge_pmd(struct vm_fault *vmf)
->  {
->         struct vm_area_struct *vma =3D vmf->vma;
-> +       struct file *file =3D vma->vm_file;
->         const bool unshare =3D vmf->flags & FAULT_FLAG_UNSHARE;
->         vm_fault_t ret;
->
-> @@ -5277,6 +5288,9 @@ static inline vm_fault_t wp_huge_pmd(struct vm_faul=
-t *vmf)
->         }
->
->         if (vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) {
-> +               /* See comment in create_huge_pmd. */
-> +               if (file && fsnotify_file_has_pre_content_watches(file))
-> +                       goto split;
->                 if (vma->vm_ops->huge_fault) {
->                         ret =3D vma->vm_ops->huge_fault(vmf, PMD_ORDER);
->                         if (!(ret & VM_FAULT_FALLBACK))
-> @@ -5296,9 +5310,13 @@ static vm_fault_t create_huge_pud(struct vm_fault =
-*vmf)
->  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) &&                    \
->         defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD)
->         struct vm_area_struct *vma =3D vmf->vma;
-> +       struct file *file =3D vma->vm_file;
->         /* No support for anonymous transparent PUD pages yet */
->         if (vma_is_anonymous(vma))
->                 return VM_FAULT_FALLBACK;
-> +       /* See comment in create_huge_pmd. */
-> +       if (file && fsnotify_file_has_pre_content_watches(file))
-> +               return VM_FAULT_FALLBACK;
->         if (vma->vm_ops->huge_fault)
->                 return vma->vm_ops->huge_fault(vmf, PUD_ORDER);
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> @@ -5310,12 +5328,16 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vm=
-f, pud_t orig_pud)
->  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) &&                    \
->         defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD)
->         struct vm_area_struct *vma =3D vmf->vma;
-> +       struct file *file =3D vma->vm_file;
->         vm_fault_t ret;
->
->         /* No support for anonymous transparent PUD pages yet */
->         if (vma_is_anonymous(vma))
->                 goto split;
->         if (vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) {
-> +               /* See comment in create_huge_pmd. */
-> +               if (file && fsnotify_file_has_pre_content_watches(file))
-> +                       goto split;
->                 if (vma->vm_ops->huge_fault) {
->                         ret =3D vma->vm_ops->huge_fault(vmf, PUD_ORDER);
->                         if (!(ret & VM_FAULT_FALLBACK))
+> +               /*
+> +                * Don't allow defrag on pre-content watched files, as it=
+ could
+> +                * populate the page cache with 0's via readahead.
+> +                */
+> +               if (fsnotify_file_has_pre_content_watches(file)) {
+> +                       ret =3D -EINVAL;
+> +                       goto out;
+> +               }
+> +
+>                 if (argp) {
+>                         if (copy_from_user(&range, argp, sizeof(range))) =
+{
+>                                 ret =3D -EFAULT;
 > --
 > 2.43.0
 >
