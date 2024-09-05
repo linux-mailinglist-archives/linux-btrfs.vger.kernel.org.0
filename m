@@ -1,125 +1,176 @@
-Return-Path: <linux-btrfs+bounces-7856-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7857-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7A6A96D235
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 10:33:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2CE396D628
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 12:33:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5417F1F2325F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 08:33:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E21EA1C2279E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 10:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1211B1953A3;
-	Thu,  5 Sep 2024 08:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFED198E81;
+	Thu,  5 Sep 2024 10:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKMOspPr"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PylMlti7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9ILpYAjl";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PylMlti7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9ILpYAjl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3138193424;
-	Thu,  5 Sep 2024 08:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DF619413B;
+	Thu,  5 Sep 2024 10:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725525208; cv=none; b=dncTLDieGKKJ6QbYwMHggy7B5rfXlbyUK8Ycp+0r5/I0UfL6lFED+51MXTBvQn91HC8TJCSiCX+SPa0/9OsRV677rwd+OIwh3EVwIdBpIc1hKhR83NaH8HXXvgCt7ht6nvyIA0N2ug0zfRQKbrQd/Bww62QwyZsHNQlaeTQFqW8=
+	t=1725532366; cv=none; b=PO/krXf0SrnO9fynPdcrsbSSaydUaf1xJ64CCcxqlDeHWhmcUal1p72M+HtR5y85wvbENBQCvyZDSjlPcTGB4JH0KN9k4kr0zieitylJsnJ+zCj6bZycGT54qlnRwzYn+noiPo9oMqe+lsDky5ER1shNs6yOvrmpFp1LgL+XHxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725525208; c=relaxed/simple;
-	bh=XZnPEdwYX5299M5M5CvLohjv7UGr7OVeODRERuSitr0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KJhUn8xkx8Lz8GZ7U4nrtR2COulqpM2jN9v5iLQbEXHSqkcBW51sqlcs17j+qcMViU3CuOJbSHOi/LrXtkfGZZ6jqXvEyS+MhkyVuq+v0PJQu+FPA+/XAyNux9Wj59mA5kT6FGShAd5q6f5TrQtojCWsVknMbQUnPWsLhEffyaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RKMOspPr; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a86984e035aso84727766b.2;
-        Thu, 05 Sep 2024 01:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725525205; x=1726130005; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z6VoVXvMgjJFAnKoFBYcoiUaf50g7AR944M8kCA7EnY=;
-        b=RKMOspPrH3TywRmNaIgB2Ns1wFOHLQsjxGRxmMfIDeId/VM+wJdhMk33MmzmbrlMiW
-         FkN3owU8yKuxyvoBsQw/2sh1i730LLI3btRr1QjwkivnIEJ44oM9Mr8pTKR6qdSmiKQg
-         iath7yK9xkUTAt4OY1k4Adks5vxK4e5L8dQ6pIJ7ong4Qv4EvL5+YjNgmJNmy+xKXqZw
-         MDuHKkAOjUqaPFXTmNdvLTilcICa/LIh70xOE61SfurgFpt+1b9NmP6zWT2+7JQvQ6G8
-         ODSanpUEtQcYppvNj/1bDVCVHQ2jxkac/8A6wU7IzbDOZ1GYjqixXlvVqB9Vew0cqoVx
-         x9KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725525205; x=1726130005;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z6VoVXvMgjJFAnKoFBYcoiUaf50g7AR944M8kCA7EnY=;
-        b=QhHZhMrXf9RUSbiVvIIqUCVDAnaweZ4HPK1cPZWDX3iZNbsLjVFX4QI2EH488vl8xm
-         CqDLVUncDMuXjq4taixOyQ34Peau1lWO/1kY8/JSlxhb5FX6//Ni2qiAVhi47b+0Dymz
-         vCcRh+uNgcaGLZYwn6mSKtKOz8gcuo0pGPYwQowSH7QVvRPnLcJlt5Lmb7ZJlFZcYMQw
-         SCt0On5fVRlLi4x61PZgj2oR8GRX9Ili7KAJOzLqUvViQ+FFwBy9r+fRAVAfIXvAGt0K
-         W8yn+/hG/oynqslc8qD4wotRAhNU17wFdu00GFAWWkSHVGo+pkt28cOxn0zg+8SWiVSe
-         lFoA==
-X-Forwarded-Encrypted: i=1; AJvYcCUZV8l/fDd1wNFtRtXimecNS31XYZ/fqWoOxA5/KoVo87ign+twiUCHyaMVP8jrVp+iVu5x3mvvN38CMUSJog==@vger.kernel.org, AJvYcCVbhSFtnQ+XxcUvatsbyha0xeSeEIm5A6BqNkIS+XkzcHiXeQEfSgAtMKbm3WoAXAjIRs4bNTjPOq2JM3uRaw==@vger.kernel.org, AJvYcCW4Inss/fb/BlvoBcAk2YSAsJh1pREaBjReay689Bns6CtHTqnS8ifmDRdTlWkq+QFoLgzfmA7MJsLM@vger.kernel.org, AJvYcCWHLpkTSoR5cx1J5EI18vw/rpkZjjZbqhmm91eAYiTJhdnT/NrH3zYmUZYI/HGNJlf4otu9JEjBFACRY6k=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy3WD+Kz28GFNImAQWEDqFg/JnF9jOiVpKM2E9aIAGv/5vOfwe3
-	RWbtyVkElYKDhr5ciPplJh5jAHoV1Nx44F+yxob8crr8aoM8C5ldPqadb4DQwLccjTlCQBLX/BL
-	Q6Lj1AFZABlKKzI8/hkSJEaeFYQs=
-X-Google-Smtp-Source: AGHT+IGcHHmcIfL3pt3Z+CSw87wwzuOptm9dc3Y5/ExCPVuX7rDOZZpaYVk+knjoWAY+OGISPhiN58eLFv90/DszDTY=
-X-Received: by 2002:a17:907:12cd:b0:a8a:3f78:7b7b with SMTP id
- a640c23a62f3a-a8a3f79d5a5mr252075066b.14.1725525204534; Thu, 05 Sep 2024
- 01:33:24 -0700 (PDT)
+	s=arc-20240116; t=1725532366; c=relaxed/simple;
+	bh=lrw6JKXkg2xkRPCTeIJW+sWANZV34HVUrJYskrX2q7M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QF02fw8+DXHMwKExDjWVB/qgxtydeIzqLIbEbbI16xqZgf/HlUBAROHGGeC7u0KSAjmoEG34zaADsNxYmBBJmljK/b+f+t4M9FWoI0j4dCV32/HxY/f8U/AcVztgBEvbzOlbj2OPcWtjsrOKccsZr43tmsB30Y8b0IqMBuHmRCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PylMlti7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9ILpYAjl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PylMlti7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9ILpYAjl; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 495B921997;
+	Thu,  5 Sep 2024 10:32:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725532362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QGTkH4oh9NHDW96Zl9RwXbqcPM3Zj5WtaBYMX1tApro=;
+	b=PylMlti7gwg0DsmBhYtHDa80c6zGryAmrJuKFjikMJFNfNO/HkscTxhaxjTi+f1dPkrWWG
+	fYSeVmFDzViCZQeYhly1joWDfjMRYVNTpNO2x3UUVOCk8yUSQQWd2rnunFpW/et/+x6I5D
+	Rg1jyutz3r3o+pA0bwgmxbJTcgyD/k4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725532362;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QGTkH4oh9NHDW96Zl9RwXbqcPM3Zj5WtaBYMX1tApro=;
+	b=9ILpYAjljzRtAxT6Kq/JyLrSs37uU//KgjxqN0tShlrWfHkqOR0MMR1FdmLtLTWHb6ppAw
+	tgMeujab5HDi7IAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PylMlti7;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9ILpYAjl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725532362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QGTkH4oh9NHDW96Zl9RwXbqcPM3Zj5WtaBYMX1tApro=;
+	b=PylMlti7gwg0DsmBhYtHDa80c6zGryAmrJuKFjikMJFNfNO/HkscTxhaxjTi+f1dPkrWWG
+	fYSeVmFDzViCZQeYhly1joWDfjMRYVNTpNO2x3UUVOCk8yUSQQWd2rnunFpW/et/+x6I5D
+	Rg1jyutz3r3o+pA0bwgmxbJTcgyD/k4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725532362;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QGTkH4oh9NHDW96Zl9RwXbqcPM3Zj5WtaBYMX1tApro=;
+	b=9ILpYAjljzRtAxT6Kq/JyLrSs37uU//KgjxqN0tShlrWfHkqOR0MMR1FdmLtLTWHb6ppAw
+	tgMeujab5HDi7IAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EC2C139D2;
+	Thu,  5 Sep 2024 10:32:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BLVMD8qI2WaTTQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 05 Sep 2024 10:32:42 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D932AA0968; Thu,  5 Sep 2024 12:32:37 +0200 (CEST)
+Date: Thu, 5 Sep 2024 12:32:37 +0200
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, jack@suse.cz, kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org,
+	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v5 00/18] fanotify: add pre-content hooks
+Message-ID: <20240905103237.cuqlgj4nbrapahtu@quack3>
+References: <cover.1725481503.git.josef@toxicpanda.com>
+ <CAOQ4uxikusW_q=zdqDKCHz8kGoTyUg1htWhPR1OFAFGHdj-vcQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1725481503.git.josef@toxicpanda.com>
-In-Reply-To: <cover.1725481503.git.josef@toxicpanda.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 5 Sep 2024 10:33:07 +0200
-Message-ID: <CAOQ4uxikusW_q=zdqDKCHz8kGoTyUg1htWhPR1OFAFGHdj-vcQ@mail.gmail.com>
-Subject: Re: [PATCH v5 00/18] fanotify: add pre-content hooks
-To: Josef Bacik <josef@toxicpanda.com>, jack@suse.cz
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxikusW_q=zdqDKCHz8kGoTyUg1htWhPR1OFAFGHdj-vcQ@mail.gmail.com>
+X-Rspamd-Queue-Id: 495B921997
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Wed, Sep 4, 2024 at 10:29=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxi=
-cpanda.com/
-> v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxi=
-cpanda.com/
-> v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxi=
-cpanda.com/
-> v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxi=
-cpanda.com/
->
-> v4->v5:
-> - Cleaned up the various "I'll fix it on commit" notes that Jan made sinc=
-e I had
->   to respin the series anyway.
-> - Renamed the filemap pagefault helper for fsnotify per Christians sugges=
-tion.
-> - Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough ske=
-tch.
-> - Added a patch to disable btrfs defrag on pre-content watched files.
-> - Added a patch to turn on FS_ALLOW_HSM for all the file systems that I t=
-ested.
+On Thu 05-09-24 10:33:07, Amir Goldstein wrote:
+> On Wed, Sep 4, 2024 at 10:29 PM Josef Bacik <josef@toxicpanda.com> wrote:
+> >
+> > v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxicpanda.com/
+> > v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
+> > v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
+> > v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
+> >
+> > v4->v5:
+> > - Cleaned up the various "I'll fix it on commit" notes that Jan made since I had
+> >   to respin the series anyway.
+> > - Renamed the filemap pagefault helper for fsnotify per Christians suggestion.
+> > - Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough sketch.
+> > - Added a patch to disable btrfs defrag on pre-content watched files.
+> > - Added a patch to turn on FS_ALLOW_HSM for all the file systems that I tested.
+> 
+> My only nits are about different ordering of the FS_ALLOW_HSM patches
+> I guess as the merge window is closing in, Jan could do these trivial
+> reorders on commit, based on his preference (?).
 
-My only nits are about different ordering of the FS_ALLOW_HSM patches
-I guess as the merge window is closing in, Jan could do these trivial
-reorders on commit, based on his preference (?).
+Yes, I can do the reordering on commit.
 
-> - Added two fstests (which will be posted separately) to validate everyth=
-ing,
->   re-validated the series with btrfs, xfs, ext4, and bcachefs to make sur=
-e I
->   didn't break anything.
-
-Very cool!
-
-Thanks again for the "productization" of my patches :)
-Amir.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
