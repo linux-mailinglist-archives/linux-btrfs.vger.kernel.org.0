@@ -1,250 +1,272 @@
-Return-Path: <linux-btrfs+bounces-7858-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7859-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A40F996D634
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 12:36:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FA2196D7E5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 14:08:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E8DC287626
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 10:36:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A45F62898D1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 12:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D771B198E83;
-	Thu,  5 Sep 2024 10:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A216B19AD6A;
+	Thu,  5 Sep 2024 12:08:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zagojlb0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7FfrRaLJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zagojlb0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7FfrRaLJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUBIhauk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DjnIceNR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZUBIhauk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DjnIceNR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B131EBFEC;
-	Thu,  5 Sep 2024 10:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06659199FB4;
+	Thu,  5 Sep 2024 12:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725532601; cv=none; b=qt5nZnY2teZRg90EAGdqah4VfNIigzRy9vOZDG73W+8HRMqeltI/l9ZQcGBlltyva8ua3xEN0c08ObrhfPZnmREi0aPl7qMlFAJ8P4Jd3dfeBZuY71MppQq46oAqvqULuTuyFNe0yaoPNuAOVm8BladdiEaW+gB4x1vF1quFX1Y=
+	t=1725538100; cv=none; b=DynmsdZyqE8JoqKVIQYpGjasCRzi4jJI9o3c0w57NwYcL8bSlt1DUsfrS2NP+/3RvLJtZxAuWNZVjWu3qw6y58ja+xwoo7u9+YT4edeZICqXwKDAfHNKuGawaVTaD7rJRe9i0RQiM2B5ElAtJ+Peubkt84m2OboiIGc/2oDd59I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725532601; c=relaxed/simple;
-	bh=yENuZN46jPjIVz0FxqHcz+reBuR2EX4khOhF4z9jrCo=;
+	s=arc-20240116; t=1725538100; c=relaxed/simple;
+	bh=pnup+PjNdWYL01f6Vj8DyxDxFFGWiNQX79oCLmQV2cU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g0KP/ok05RnB1wgIf0DXsvG/7LXeWLBeux/s5V8oFOrsVUMhIHqj7h6xLmhQDTXGJnVt4qjoLWgsnZ5L0Rpz7OPVVuoVOysDPTBC+aVpWwRKEmQrVkHhJyyxKM+MVYlueGTTBlLy6jORKECRobS5qEtGwSYTP3815qOoHoHYJzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zagojlb0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7FfrRaLJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zagojlb0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7FfrRaLJ; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=WALUXvsADid7f3LOT1CkN6+0yRm8uSi3OZXy4lYcrcBDYY9AQ/BrkZikgHnIMMWodj3bFCZJI9xdDbaKOFwn1AgF3i3zWYiziUTx82kt/wTih02H9LGytWno5HW45kXLc7VifCKc+7C6f9Ff8KMXoGVzwIZM2MyJiI/LfV968sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUBIhauk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DjnIceNR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZUBIhauk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DjnIceNR; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5EE991F811;
-	Thu,  5 Sep 2024 10:36:37 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2205421A81;
+	Thu,  5 Sep 2024 12:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725532597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1725538097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RrQ0eAQTSx7Dllj1ZbCTVu1ER+Z69NqSE9+1bil57/I=;
-	b=Zagojlb0zmOSGJriBxxrS+96q1e3kE+rv1+FU1j/ouhm7jOrCVpFUuQ5FSU22TBKSwqWwY
-	CTtrysg/NWbIEMCAFu+Qw6Scdpi+6HPf5TZzgdILHFryKMMUb917dN/hm9sJDMxSZFbrdz
-	S98FAUW9qnD7l7i5NG5OLJDcN1CQLcI=
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=ZUBIhauk9pLBn+4LtJzsocMf/RdTLy24lmCpQqShpi8SbBM/cNVVG2D4BUnJnHTyV6NuNo
+	Xc2FU8Q2CA8TL4E1kWdxYz6g86k7fiDmM9MnDHAA8X4fbZEMqEKBvEbKCqLvnxXIgWWB5l
+	0KzppmFnuC1nIEfCnB5bP/djulDphLc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725532597;
+	s=susede2_ed25519; t=1725538097;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RrQ0eAQTSx7Dllj1ZbCTVu1ER+Z69NqSE9+1bil57/I=;
-	b=7FfrRaLJZuzdNayTP8lgi8DRLk7W+0tiG8Qlohu3IhqEgNYN/VDaiX7PhcGP92rJByJUMl
-	0HwJKuZIo39LfiAA==
-Authentication-Results: smtp-out2.suse.de;
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=DjnIceNRdWP15oYi6DsfMSICUce41R5WBJZXVfFmhDi3YmzSQR+qRyG0QJhu7wLGzfRbqi
+	Lwpq7LY9iCpx6KDQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725532597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1725538097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RrQ0eAQTSx7Dllj1ZbCTVu1ER+Z69NqSE9+1bil57/I=;
-	b=Zagojlb0zmOSGJriBxxrS+96q1e3kE+rv1+FU1j/ouhm7jOrCVpFUuQ5FSU22TBKSwqWwY
-	CTtrysg/NWbIEMCAFu+Qw6Scdpi+6HPf5TZzgdILHFryKMMUb917dN/hm9sJDMxSZFbrdz
-	S98FAUW9qnD7l7i5NG5OLJDcN1CQLcI=
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=ZUBIhauk9pLBn+4LtJzsocMf/RdTLy24lmCpQqShpi8SbBM/cNVVG2D4BUnJnHTyV6NuNo
+	Xc2FU8Q2CA8TL4E1kWdxYz6g86k7fiDmM9MnDHAA8X4fbZEMqEKBvEbKCqLvnxXIgWWB5l
+	0KzppmFnuC1nIEfCnB5bP/djulDphLc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725532597;
+	s=susede2_ed25519; t=1725538097;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RrQ0eAQTSx7Dllj1ZbCTVu1ER+Z69NqSE9+1bil57/I=;
-	b=7FfrRaLJZuzdNayTP8lgi8DRLk7W+0tiG8Qlohu3IhqEgNYN/VDaiX7PhcGP92rJByJUMl
-	0HwJKuZIo39LfiAA==
+	bh=4WJ4nFRla3E237+ALZbePBMCha1Jx0LA7680EWIZ9qA=;
+	b=DjnIceNRdWP15oYi6DsfMSICUce41R5WBJZXVfFmhDi3YmzSQR+qRyG0QJhu7wLGzfRbqi
+	Lwpq7LY9iCpx6KDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 521DE139D2;
-	Thu,  5 Sep 2024 10:36:37 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1653613419;
+	Thu,  5 Sep 2024 12:08:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +bEJFLWJ2WbHTgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 05 Sep 2024 10:36:37 +0000
+	id dP5sBTGf2WbLawAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 05 Sep 2024 12:08:17 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 05F53A0968; Thu,  5 Sep 2024 12:36:21 +0200 (CEST)
-Date: Thu, 5 Sep 2024 12:36:21 +0200
+	id B2A12A0968; Thu,  5 Sep 2024 14:08:08 +0200 (CEST)
+Date: Thu, 5 Sep 2024 14:08:08 +0200
 From: Jan Kara <jack@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, jack@suse.cz, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org,
-	linux-xfs@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v5 18/18] fs: enable pre-content events on supported file
- systems
-Message-ID: <20240905103621.abnoeibagmxyu5pp@quack3>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	amir73il@gmail.com, brauner@kernel.org, linux-xfs@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v5 00/18] fanotify: add pre-content hooks
+Message-ID: <20240905120808.7fcsnv7nslqsq4t6@quack3>
 References: <cover.1725481503.git.josef@toxicpanda.com>
- <33151057684a62a89b45466d53671c6232c34a68.1725481503.git.josef@toxicpanda.com>
- <CAOQ4uxgaLY+EQCdGqr+yPsBuRh3uMe2DGLqXrBmC=hvDYBo23A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxgaLY+EQCdGqr+yPsBuRh3uMe2DGLqXrBmC=hvDYBo23A@mail.gmail.com>
+In-Reply-To: <cover.1725481503.git.josef@toxicpanda.com>
 X-Spam-Score: -3.80
 X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.999];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[3];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[fb.com,vger.kernel.org,suse.cz,gmail.com,kernel.org,kvack.org];
 	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Thu 05-09-24 10:27:52, Amir Goldstein wrote:
-> On Wed, Sep 4, 2024 at 10:29 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> > Now that all the code has been added for pre-content events, and the
-> > various file systems that need the page fault hooks for fsnotify have
-> > been updated, add FS_ALLOW_HSM to the currently tested file systems.
-> >
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> 
-> I would not be devastated if this patch remains as is,
-> but I think it would be nicer to:
-> 1. Move it before the fs specific patches
-> 2. Set the HSM flag only on ext*
-> 3. Add the HSM flag in other fs specific patches
+Hello!
 
-I agree that doing this inside the patch where we tweak its functions to
-properly support HSM would be more natural. And then only ext4 will remain
-here. I guess I'll do this on commit.
+On Wed 04-09-24 16:27:50, Josef Bacik wrote:
+> These are the patches for the bare bones pre-content fanotify support.  The
+> majority of this work is Amir's, my contribution to this has solely been around
+> adding the page fault hooks, testing and validating everything.  I'm sending it
+> because Amir is traveling a bunch, and I touched it last so I'm going to take
+> all the hate and he can take all the credit.
+> 
+> There is a PoC that I've been using to validate this work, you can find the git
+> repo here
+> 
+> https://github.com/josefbacik/remote-fetch
+
+The test tool seems to be a bit outdated wrt the current series. It took me
+quite a while to debug why HSM isn't working with it (eventually I've
+tracked it down to the changes in struct fanotify_event_info_range...).
+Anyway all seems to be working (after fixing up some missing export), I've
+pushed out the result I have to:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git fsnotify
+
+and will push it to linux-next as well so that it gets some soaking before
+the merge window. That being said I'd still like to get explicit ack from
+XFS folks (hint) so don't patches may still rebase due to that.
 
 								Honza
 
+ 
+> This consists of 3 different tools.
 > 
-> Thanks,
-> Amir.
+> 1. populate.  This just creates all the stub files in the directory from the
+>    source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
+>    recursively create all of the stub files and directories.
+> 2. remote-fetch.  This is the actual PoC, you just point it at the source and
+>    destination directory and then you can do whatever.  ./remote-fetch ~/linux
+>    ~/hsm-linux.
+> 3. mmap-validate.  This was to validate the pagefault thing, this is likely what
+>    will be turned into the selftest with remote-fetch.  It creates a file and
+>    then you can validate the file matches the right pattern with both normal
+>    reads and mmap.  Normally I do something like
 > 
-> > ---
-> >  fs/bcachefs/fs.c   | 2 +-
-> >  fs/btrfs/super.c   | 3 ++-
-> >  fs/ext4/super.c    | 6 +++---
-> >  fs/xfs/xfs_super.c | 2 +-
-> >  4 files changed, 7 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> > index 3a5f49affa0a..f889a105643b 100644
-> > --- a/fs/bcachefs/fs.c
-> > +++ b/fs/bcachefs/fs.c
-> > @@ -2124,7 +2124,7 @@ static struct file_system_type bcache_fs_type = {
-> >         .name                   = "bcachefs",
-> >         .init_fs_context        = bch2_init_fs_context,
-> >         .kill_sb                = bch2_kill_sb,
-> > -       .fs_flags               = FS_REQUIRES_DEV,
-> > +       .fs_flags               = FS_REQUIRES_DEV | FS_ALLOW_HSM,
-> >  };
-> >
-> >  MODULE_ALIAS_FS("bcachefs");
-> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> > index 0eda8c21d861..201ed90a6083 100644
-> > --- a/fs/btrfs/super.c
-> > +++ b/fs/btrfs/super.c
-> > @@ -2193,7 +2193,8 @@ static struct file_system_type btrfs_fs_type = {
-> >         .init_fs_context        = btrfs_init_fs_context,
-> >         .parameters             = btrfs_fs_parameters,
-> >         .kill_sb                = btrfs_kill_super,
-> > -       .fs_flags               = FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA | FS_ALLOW_IDMAP,
-> > +       .fs_flags               = FS_REQUIRES_DEV | FS_BINARY_MOUNTDATA |
-> > +                                 FS_ALLOW_IDMAP | FS_ALLOW_HSM,
-> >   };
-> >
-> >  MODULE_ALIAS_FS("btrfs");
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index e72145c4ae5a..a042216fb370 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -137,7 +137,7 @@ static struct file_system_type ext2_fs_type = {
-> >         .init_fs_context        = ext4_init_fs_context,
-> >         .parameters             = ext4_param_specs,
-> >         .kill_sb                = ext4_kill_sb,
-> > -       .fs_flags               = FS_REQUIRES_DEV,
-> > +       .fs_flags               = FS_REQUIRES_DEV | FS_ALLOW_HSM,
-> >  };
-> >  MODULE_ALIAS_FS("ext2");
-> >  MODULE_ALIAS("ext2");
-> > @@ -153,7 +153,7 @@ static struct file_system_type ext3_fs_type = {
-> >         .init_fs_context        = ext4_init_fs_context,
-> >         .parameters             = ext4_param_specs,
-> >         .kill_sb                = ext4_kill_sb,
-> > -       .fs_flags               = FS_REQUIRES_DEV,
-> > +       .fs_flags               = FS_REQUIRES_DEV | FS_ALLOW_HSM,
-> >  };
-> >  MODULE_ALIAS_FS("ext3");
-> >  MODULE_ALIAS("ext3");
-> > @@ -7298,7 +7298,7 @@ static struct file_system_type ext4_fs_type = {
-> >         .init_fs_context        = ext4_init_fs_context,
-> >         .parameters             = ext4_param_specs,
-> >         .kill_sb                = ext4_kill_sb,
-> > -       .fs_flags               = FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-> > +       .fs_flags               = FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_ALLOW_HSM,
-> >  };
-> >  MODULE_ALIAS_FS("ext4");
-> >
-> > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > index 27e9f749c4c7..04a6ec7bc2ae 100644
-> > --- a/fs/xfs/xfs_super.c
-> > +++ b/fs/xfs/xfs_super.c
-> > @@ -2052,7 +2052,7 @@ static struct file_system_type xfs_fs_type = {
-> >         .init_fs_context        = xfs_init_fs_context,
-> >         .parameters             = xfs_fs_parameters,
-> >         .kill_sb                = xfs_kill_sb,
-> > -       .fs_flags               = FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-> > +       .fs_flags               = FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_ALLOW_HSM,
-> >  };
-> >  MODULE_ALIAS_FS("xfs");
-> >
-> > --
-> > 2.43.0
-> >
+>    ./mmap-validate create ~/src/foo
+>    ./populate ~/src ~/dst
+>    ./rmeote-fetch ~/src ~/dst
+>    ./mmap-validate validate ~/dst/foo
+
+
+
+> 
+> I did a bunch of testing, I also got some performance numbers.  I copied a
+> kernel tree, and then did remote-fetch, and then make -j4
+> 
+> Normal
+> real    9m49.709s
+> user    28m11.372s
+> sys     4m57.304s
+> 
+> HSM
+> real    10m6.454s
+> user    29m10.517s
+> sys     5m2.617s
+> 
+> So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
+> to see the size
+> 
+> [root@fedora ~]# du -hs /src/linux
+> 1.6G    /src/linux
+> [root@fedora ~]# du -hs dst
+> 125M    dst
+> 
+> This mirrors the sort of savings we've seen in production.
+> 
+> Meta has had these patches (minus the page fault patch) deployed in production
+> for almost a year with our own utility for doing on-demand package fetching.
+> The savings from this has been pretty significant.
+> 
+> The page-fault hooks are necessary for the last thing we need, which is
+> on-demand range fetching of executables.  Some of our binaries are several gigs
+> large, having the ability to remote fetch them on demand is a huge win for us
+> not only with space savings, but with startup time of containers.
+> 
+> There will be tests for this going into LTP once we're satisfied with the
+> patches and they're on their way upstream.  Thanks,
+> 
+> Josef
+> 
+> Amir Goldstein (8):
+>   fsnotify: introduce pre-content permission event
+>   fsnotify: generate pre-content permission event on open
+>   fanotify: introduce FAN_PRE_ACCESS permission event
+>   fanotify: introduce FAN_PRE_MODIFY permission event
+>   fanotify: pass optional file access range in pre-content event
+>   fanotify: rename a misnamed constant
+>   fanotify: report file range info with pre-content events
+>   fanotify: allow to set errno in FAN_DENY permission response
+> 
+> Josef Bacik (10):
+>   fanotify: don't skip extra event info if no info_mode is set
+>   fs: add a flag to indicate the fs supports pre-content events
+>   fanotify: add a helper to check for pre content events
+>   fanotify: disable readahead if we have pre-content watches
+>   mm: don't allow huge faults for files with pre content watches
+>   fsnotify: generate pre-content permission event on page fault
+>   bcachefs: add pre-content fsnotify hook to fault
+>   xfs: add pre-content fsnotify hook for write faults
+>   btrfs: disable defrag on pre-content watched files
+>   fs: enable pre-content events on supported file systems
+> 
+>  fs/bcachefs/fs-io-pagecache.c      |   4 +
+>  fs/bcachefs/fs.c                   |   2 +-
+>  fs/btrfs/ioctl.c                   |   9 ++
+>  fs/btrfs/super.c                   |   3 +-
+>  fs/ext4/super.c                    |   6 +-
+>  fs/namei.c                         |   9 ++
+>  fs/notify/fanotify/fanotify.c      |  33 ++++++--
+>  fs/notify/fanotify/fanotify.h      |  15 ++++
+>  fs/notify/fanotify/fanotify_user.c | 119 ++++++++++++++++++++++-----
+>  fs/notify/fsnotify.c               |  17 +++-
+>  fs/xfs/xfs_file.c                  |   4 +
+>  fs/xfs/xfs_super.c                 |   2 +-
+>  include/linux/fanotify.h           |  20 +++--
+>  include/linux/fs.h                 |   1 +
+>  include/linux/fsnotify.h           |  58 +++++++++++--
+>  include/linux/fsnotify_backend.h   |  59 ++++++++++++-
+>  include/linux/mm.h                 |   1 +
+>  include/uapi/linux/fanotify.h      |  18 ++++
+>  mm/filemap.c                       | 128 +++++++++++++++++++++++++++--
+>  mm/memory.c                        |  22 +++++
+>  mm/readahead.c                     |  13 +++
+>  security/selinux/hooks.c           |   3 +-
+>  22 files changed, 489 insertions(+), 57 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
