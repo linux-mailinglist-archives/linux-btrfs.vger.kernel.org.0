@@ -1,124 +1,362 @@
-Return-Path: <linux-btrfs+bounces-7863-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7864-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68DFF96E33D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 21:31:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B6A896E34A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 21:36:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2521E28B462
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 19:31:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2E051F26D7A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2024 19:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1BF15574D;
-	Thu,  5 Sep 2024 19:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38EC61917D9;
+	Thu,  5 Sep 2024 19:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="LXImTKbv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S9CCOJk8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182274400
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Sep 2024 19:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D56218D65A;
+	Thu,  5 Sep 2024 19:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725564661; cv=none; b=ITXM4SYQpH44rJgdgq/1qkN9+A8OBoGOvQEVszd4SZAshENT3+KTFLfXIbzxxTueQ05VYaqkgrQKK1VW4qdRToACFb/I3CwPvOdGoBmLSp3aeAPdWGBn2TNmmQurItSH87XHKxvwaaYt+2AmAHAP5689kKtIg6Jf/cqJoCP4yb8=
+	t=1725564957; cv=none; b=OyWdZsw9NaRS6NGi0CiJo30YeouiEQDPYh7Yhnw5lCe1b/C3cPaiZuXb9nfdJ8MeqXSoWJzeV5x9VT/+dUZ8CWHG9ahYWCRJO5oEasZUX33F17kuhTvlRdyFRdFp0/RkGihSiZq3kmBFJK4B5bJQoXcvQubxwSXU+ko81JidY8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725564661; c=relaxed/simple;
-	bh=aJZ8bQSkUIVqDFRiCuFHGmMzhivAESBpCNJ0n0n+DEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r3krujEt+HXzxAy8YXkzspEF6BkUe2vHcnGy4gbl1OJt04URQB+cU0vXzZ/GpzZRW3xSb2+4m4OG72FzlQ0oJyf3Y0+/rp0lH7sM0c2N9Zsn7vmbwvXUJoOz7nDkmnbqGbZ5CV9oX3MXib/gUafX1tiZOO6NG1rV1M+s2pXpRbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=LXImTKbv; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-278279a3a39so757550fac.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Sep 2024 12:30:59 -0700 (PDT)
+	s=arc-20240116; t=1725564957; c=relaxed/simple;
+	bh=hg1VB48bR/JeQnIfHqGN6DhLpJiuFJBNnlWbbVb1B7U=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KrdMxsH8uJZjtbvlCi8tHsNRw+fgss9FrVk54Zd1hLEJzBpRYidj9w1leujEZ3FKl102mU+Mt3owRbLHjnPVjg8CexJZe+/YtCzSNVn7rbODLltBfA9IcxjV7/xAAS3YoJbmZJJAZaEr7l72/ZXvWtcuO9FIHAAbZov/Wm7Db24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S9CCOJk8; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-717929b671eso809130b3a.0;
+        Thu, 05 Sep 2024 12:35:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1725564659; x=1726169459; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1725564954; x=1726169754; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=XWzsnrKOmtVghAOq6+Gelxt9/1OrdoNtOgO3/1pVemw=;
-        b=LXImTKbv5+Ty10V4xWlmNZvDYRJgeXcvbNG0XEy+AUshlKSj/VCj3tueGQLTl4NKyh
-         FVP6/nSCKWNv8x/l9vJLBO2JR2US1VrS7C0xa6EwBKiz68IV3KpuWYR8CXnQvtE5YJ5j
-         ZKPhKepuqtlU38a2dfiWzoN+UNPC80S7qCnhXhD/pugOJtIK5n9zOz9AG9WVclfwYUOe
-         GsABP1R6vzGbn5im88Eu6AP8YFeCxknFIH7DZyCaIVksygkhHamL8Q2vtE+yWGSeDdjf
-         iDcsihPp17TXBdA4YpuvNfqLrouorWMD81JWAEwsfESTEiRmKsxLhKRSokTAK5sG+qz1
-         eZBg==
+        bh=ldUcJ/O505YBHpEtE4Y4MG2TZNU+VkuexkFLNr7L7Ng=;
+        b=S9CCOJk8h6kj7hQ40CywzlmafM9iYP6F+95j4sdLpyCAvnG5Icgy+iawFTUsJY912g
+         6xTGxPDHjV/Fqupx0jNYGURMhRjkxmz/BzmeTF1n/hcVzB6Kks6ukEatiW0s+wQgSVqw
+         IWE1CVnJiumx53nobJD3oKX4iJytnKOrorMMVoRVEfPSVA+leG8KvtcJQ1ygrztCstPZ
+         1rQ6LX+do3FiLkY2RpKnNk14nYbllQbz4uu2X1HdOSLlbyWq8n2xB4AOrAHPOCDi6q83
+         pY5khnqgvl18LLDP0Smqt1AtdzHzrBjNtDfeORbE8Q8QWtU9b05tMb/zENAHsb7eKdKa
+         XKLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725564659; x=1726169459;
+        d=1e100.net; s=20230601; t=1725564954; x=1726169754;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XWzsnrKOmtVghAOq6+Gelxt9/1OrdoNtOgO3/1pVemw=;
-        b=RTcScs3aCAKYCkE6ZGJaITOfK+InxCT2xmWnu6Kd9v7qQwmdeoil48MvQO/oD1Uyfy
-         9oWSJIaGb/jZiD+fR1c11Zgs7qhA439Wz2vRIxPW94IYERk0s7IFQYnkdndsVwdHIyJo
-         vlfSCG3qp8hg9LcXetaLdD6aG0gVJBMKP2ANvxzC2emlnDcBl3eN0K/jr7ZebisuYJNv
-         OwFC5mzxQswNThXRCko6MJELtoy3W+WzTMBPq/j9UPjM/jhVztITRT4wdw3MjdzJ4+hp
-         Wct7RG5/qtYWAjW4kRZaiq6MiBckOtcniWKy2S8Tf+J6+9ZARnipdpecNkHVnt0IiBkD
-         LKmw==
-X-Forwarded-Encrypted: i=1; AJvYcCUH0nvC69w7/f959OHMvWAXdzN0j1TjalJdUfcI1Bof1oKHfQQEv2aLsfpbtPRzP+o5cnV4AR6biP4Dag==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOB2N0uOW4RcFQHjfiyUvbKxBROOR64VGE3d+U8+L5ue38ZI3O
-	9gqoZW0Z6ir8BHUwZK2jY4IKsilTlfWqiXOt9p6gB5DZYKu92Bb+it9BxLpXIYw=
-X-Google-Smtp-Source: AGHT+IFXdd+03g78Al1lMAeKqgNUOu/nJpHoXFDkr25DBgvdfGzY+Xz0bdnePSiuP1u3rPhxKsaK6A==
-X-Received: by 2002:a05:6870:6111:b0:277:f301:40ce with SMTP id 586e51a60fabf-27b82e6745bmr338204fac.20.1725564659009;
-        Thu, 05 Sep 2024 12:30:59 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a98efeb945sm100782485a.98.2024.09.05.12.30.58
+        bh=ldUcJ/O505YBHpEtE4Y4MG2TZNU+VkuexkFLNr7L7Ng=;
+        b=s6pHkTSB0o9KPNtOmQLnt84UZxdd7n3N15A01f2dpPG0cBujWcy131iRc6YF1xV+B/
+         QrThpwK6Iefpy7sIOZ4643SseyoJOwiL5FS4nsH0jk2kqzsPkCMti6I6d89JR3GAO8Y1
+         1EyzmJMmFvuDixQ9yrCXJAOf8OXm552crqXBxpjVyg74mxuhOaDXc7P+YnGMYDh+g6CH
+         UV3PCN9durLqeTH1C3rMvVcEKxQC5uK02MKR6UgP4kuganPTqEh1BuygzLuwsum3ui/h
+         QQwSN+B/8CbxSgngCzubr+xeqDw33/y1fGYdUitUq794VMqHvyy8EDzhhQA3u0YMnHEV
+         ZUlw==
+X-Forwarded-Encrypted: i=1; AJvYcCUOVYHHnqFCoRbpAYq1b+5e3KhaammRVcnAh/SMOE+AiZt9SXtGPmaKCyoac2cZJ2lStAJ7eRG7TEJNldIf@vger.kernel.org, AJvYcCUQf4IBFiDOUMUgJnyUWHqBucFn1BXT6JX1GK8bwdcDimibVvgIcaA36UfuShNQsjhTtVjbDHK4HlRI@vger.kernel.org, AJvYcCVJpqqlUdTwBknsWWtk+vUGQCILWzdSA8xbtCbGFsAqlPEI+aeKAOFlD6pTWi7ocdCU8xVpfv1MYG9eaw==@vger.kernel.org, AJvYcCVah2x3R8OzeQszqgDmDSQuhpBKGT38wn4lk+5TBEKn+JCwLSlVb6xECCjuNf0mUaTozd4Cw9+uLGQe@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQM4iGPKmtT2AR4lV7XHw+6l+CPiJPw8CUTRBCbyeRGacDilt5
+	V+3y56DLmZm0O5oJ6meUKU6pTFW0JsjJ06iXrUdS+4zGg1ZD7/EP
+X-Google-Smtp-Source: AGHT+IHZ1IEMG5FS4rIqy20GfOj9Vmd9lMPZ3MIwCONUTpNQojCB7EQk4p3T12mTbcpvPU1WvTo9hw==
+X-Received: by 2002:a05:6a00:23d2:b0:714:2620:d235 with SMTP id d2e1a72fcca58-718d5e997c2mr255727b3a.16.1725564954136;
+        Thu, 05 Sep 2024 12:35:54 -0700 (PDT)
+Received: from leg ([2601:646:8f03:9fee:1d73:7db5:2b4a:dfdd])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71778521165sm3555838b3a.20.2024.09.05.12.35.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Sep 2024 12:30:58 -0700 (PDT)
-Date: Thu, 5 Sep 2024 15:30:57 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: jack@suse.cz, kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org, linux-xfs@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v5 00/18] fanotify: add pre-content hooks
-Message-ID: <20240905193057.GB3710628@perftesting>
-References: <cover.1725481503.git.josef@toxicpanda.com>
- <CAOQ4uxikusW_q=zdqDKCHz8kGoTyUg1htWhPR1OFAFGHdj-vcQ@mail.gmail.com>
+        Thu, 05 Sep 2024 12:35:53 -0700 (PDT)
+From: Fan Ni <nifan.cxl@gmail.com>
+X-Google-Original-From: Fan Ni <fan.ni@samsung.com>
+Date: Thu, 5 Sep 2024 12:35:50 -0700
+To: ira.weiny@intel.com
+Cc: Dave Jiang <dave.jiang@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	nvdimm@lists.linux.dev
+Subject: Re: [PATCH v3 22/25] cxl/region: Read existing extents on region
+ creation
+Message-ID: <ZtoIFjI9gXp3l9OO@leg>
+References: <20240816-dcd-type2-upstream-v3-0-7c9b96cba6d7@intel.com>
+ <20240816-dcd-type2-upstream-v3-22-7c9b96cba6d7@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxikusW_q=zdqDKCHz8kGoTyUg1htWhPR1OFAFGHdj-vcQ@mail.gmail.com>
+In-Reply-To: <20240816-dcd-type2-upstream-v3-22-7c9b96cba6d7@intel.com>
 
-On Thu, Sep 05, 2024 at 10:33:07AM +0200, Amir Goldstein wrote:
-> On Wed, Sep 4, 2024 at 10:29â€¯PM Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> > v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxicpanda.com/
-> > v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
-> > v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
-> > v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
-> >
-> > v4->v5:
-> > - Cleaned up the various "I'll fix it on commit" notes that Jan made since I had
-> >   to respin the series anyway.
-> > - Renamed the filemap pagefault helper for fsnotify per Christians suggestion.
-> > - Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough sketch.
-> > - Added a patch to disable btrfs defrag on pre-content watched files.
-> > - Added a patch to turn on FS_ALLOW_HSM for all the file systems that I tested.
+On Fri, Aug 16, 2024 at 09:44:30AM -0500, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> My only nits are about different ordering of the FS_ALLOW_HSM patches
-> I guess as the merge window is closing in, Jan could do these trivial
-> reorders on commit, based on his preference (?).
+> Dynamic capacity device extents may be left in an accepted state on a
+> device due to an unexpected host crash.  In this case it is expected
+> that the creation of a new region on top of a DC partition can read
+> those extents and surface them for continued use.
 > 
-> > - Added two fstests (which will be posted separately) to validate everything,
-> >   re-validated the series with btrfs, xfs, ext4, and bcachefs to make sure I
-> >   didn't break anything.
+> Once all endpoint decoders are part of a region and the region is being
+> realized a read of the devices extent list can reveal these previously
+> accepted extents.
 > 
-> Very cool!
+> CXL r3.1 specifies the mailbox call Get Dynamic Capacity Extent List for
+> this purpose.  The call returns all the extents for all dynamic capacity
+> partitions.  If the fabric manager is adding extents to any DCD
+> partition, the extent list for the recovered region may change.  In this
+> case the query must retry.  Upon retry the query could encounter extents
+> which were accepted on a previous list query.  Adding such extents is
+> ignored without error because they are entirely within a previous
+> accepted extent.
 > 
-> Thanks again for the "productization" of my patches :)
+> The scan for existing extents races with the dax_cxl driver.  This is
+> synchronized through the region device lock.  Extents which are found
+> after the driver has loaded will surface through the normal notification
+> path while extents seen prior to the driver are read during driver load.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Thanks for doing all the heavy lifting in the first place! Glad we can move on
-to other things from here,
+With the minor things fixed mentioned by Jonathan and Dave,
 
-Josef
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
+
+> 
+> ---
+> Changes:
+> [iweiny: Leverage the new add path from the event processing code such
+> 	 that the adding and surfacing of extents flows through the same
+> 	 code path for both event processing and existing extents.
+> 	 While this does validate existing extents again on start up
+> 	 this is an error recovery case / new boot scenario and should
+> 	 not cause any major issues while making the code more
+> 	 straight forward and maintainable.]
+> 
+> [iweiny: use %par]
+> [iweiny: rebase]
+> [iweiny: Move this patch later in the series such that the realization
+>          of extents can go through the same path as an add event]
+> [Fan: Issue a retry if the gen number changes]
+> [djiang: s/uint64_t/u64/]
+> [djiang: update function names]
+> [Jørgen/djbw: read the generation and total count on first iteration of
+>               the Get Extent List call]
+> [djbw: s/cxl_mbox_get_dc_extent_in/cxl_mbox_get_extent_in/]
+> [djbw: s/cxl_mbox_get_dc_extent_out/cxl_mbox_get_extent_out/]
+> [djbw/iweiny: s/cxl_read_dc_extents/cxl_read_extent_list]
+> ---
+>  drivers/cxl/core/core.h   |   2 +
+>  drivers/cxl/core/mbox.c   | 100 ++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/cxl/core/region.c |  12 ++++++
+>  drivers/cxl/cxlmem.h      |  21 ++++++++++
+>  4 files changed, 135 insertions(+)
+> 
+> diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
+> index 8dfc97b2e0a4..9e54064a6f48 100644
+> --- a/drivers/cxl/core/core.h
+> +++ b/drivers/cxl/core/core.h
+> @@ -21,6 +21,8 @@ cxled_to_mds(struct cxl_endpoint_decoder *cxled)
+>  	return container_of(cxlds, struct cxl_memdev_state, cxlds);
+>  }
+>  
+> +void cxl_read_extent_list(struct cxl_endpoint_decoder *cxled);
+> +
+>  #ifdef CONFIG_CXL_REGION
+>  extern struct device_attribute dev_attr_create_pmem_region;
+>  extern struct device_attribute dev_attr_create_ram_region;
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index f629ad7488ac..d43ac8eabf56 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -1670,6 +1670,106 @@ int cxl_dev_dynamic_capacity_identify(struct cxl_memdev_state *mds)
+>  }
+>  EXPORT_SYMBOL_NS_GPL(cxl_dev_dynamic_capacity_identify, CXL);
+>  
+> +/* Return -EAGAIN if the extent list changes while reading */
+> +static int __cxl_read_extent_list(struct cxl_endpoint_decoder *cxled)
+> +{
+> +	u32 current_index, total_read, total_expected, initial_gen_num;
+> +	struct cxl_memdev_state *mds = cxled_to_mds(cxled);
+> +	struct device *dev = mds->cxlds.dev;
+> +	struct cxl_mbox_cmd mbox_cmd;
+> +	u32 max_extent_count;
+> +	bool first = true;
+> +
+> +	struct cxl_mbox_get_extent_out *extents __free(kfree) =
+> +				kvmalloc(mds->payload_size, GFP_KERNEL);
+> +	if (!extents)
+> +		return -ENOMEM;
+> +
+> +	total_read = 0;
+> +	current_index = 0;
+> +	total_expected = 0;
+> +	max_extent_count = (mds->payload_size - sizeof(*extents)) /
+> +				sizeof(struct cxl_extent);
+> +	do {
+> +		struct cxl_mbox_get_extent_in get_extent;
+> +		u32 nr_returned, current_total, current_gen_num;
+> +		int rc;
+> +
+> +		get_extent = (struct cxl_mbox_get_extent_in) {
+> +			.extent_cnt = max(max_extent_count,
+> +					  total_expected - current_index),
+> +			.start_extent_index = cpu_to_le32(current_index),
+> +		};
+> +
+> +		mbox_cmd = (struct cxl_mbox_cmd) {
+> +			.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
+> +			.payload_in = &get_extent,
+> +			.size_in = sizeof(get_extent),
+> +			.size_out = mds->payload_size,
+> +			.payload_out = extents,
+> +			.min_out = 1,
+> +		};
+> +
+> +		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+> +		if (rc < 0)
+> +			return rc;
+> +
+> +		/* Save initial data */
+> +		if (first) {
+> +			total_expected = le32_to_cpu(extents->total_extent_count);
+> +			initial_gen_num = le32_to_cpu(extents->generation_num);
+> +			first = false;
+> +		}
+> +
+> +		nr_returned = le32_to_cpu(extents->returned_extent_count);
+> +		total_read += nr_returned;
+> +		current_total = le32_to_cpu(extents->total_extent_count);
+> +		current_gen_num = le32_to_cpu(extents->generation_num);
+> +
+> +		dev_dbg(dev, "Got extent list %d-%d of %d generation Num:%d\n",
+> +			current_index, total_read - 1, current_total, current_gen_num);
+> +
+> +		if (current_gen_num != initial_gen_num || total_expected != current_total) {
+> +			dev_dbg(dev, "Extent list change detected; gen %u != %u : cnt %u != %u\n",
+> +				current_gen_num, initial_gen_num,
+> +				total_expected, current_total);
+> +			return -EAGAIN;
+> +		}
+> +
+> +		for (int i = 0; i < nr_returned ; i++) {
+> +			struct cxl_extent *extent = &extents->extent[i];
+> +
+> +			dev_dbg(dev, "Processing extent %d/%d\n",
+> +				current_index + i, total_expected);
+> +
+> +			rc = validate_add_extent(mds, extent);
+> +			if (rc)
+> +				continue;
+> +		}
+> +
+> +		current_index += nr_returned;
+> +	} while (total_expected > total_read);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cxl_read_extent_list() - Read existing extents
+> + * @cxled: Endpoint decoder which is part of a region
+> + *
+> + * Issue the Get Dynamic Capacity Extent List command to the device
+> + * and add existing extents if found.
+> + */
+> +void cxl_read_extent_list(struct cxl_endpoint_decoder *cxled)
+> +{
+> +	int retry = 10;
+> +	int rc;
+> +
+> +	do {
+> +		rc = __cxl_read_extent_list(cxled);
+> +	} while (rc == -EAGAIN && retry--);
+> +}
+> +
+>  static int add_dpa_res(struct device *dev, struct resource *parent,
+>  		       struct resource *res, resource_size_t start,
+>  		       resource_size_t size, const char *type)
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index 8c9171f914fb..885fb3004784 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -3190,6 +3190,15 @@ static int devm_cxl_add_pmem_region(struct cxl_region *cxlr)
+>  	return rc;
+>  }
+>  
+> +static void cxlr_add_existing_extents(struct cxl_region *cxlr)
+> +{
+> +	struct cxl_region_params *p = &cxlr->params;
+> +	int i;
+> +
+> +	for (i = 0; i < p->nr_targets; i++)
+> +		cxl_read_extent_list(p->targets[i]);
+> +}
+> +
+>  static void cxlr_dax_unregister(void *_cxlr_dax)
+>  {
+>  	struct cxl_dax_region *cxlr_dax = _cxlr_dax;
+> @@ -3227,6 +3236,9 @@ static int devm_cxl_add_dax_region(struct cxl_region *cxlr)
+>  	dev_dbg(&cxlr->dev, "%s: register %s\n", dev_name(dev->parent),
+>  		dev_name(dev));
+>  
+> +	if (cxlr->mode == CXL_REGION_DC)
+> +		cxlr_add_existing_extents(cxlr);
+> +
+>  	return devm_add_action_or_reset(&cxlr->dev, cxlr_dax_unregister,
+>  					cxlr_dax);
+>  err:
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index 3a40fe1f0be7..11c03637488d 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -624,6 +624,27 @@ struct cxl_mbox_dc_response {
+>  	} __packed extent_list[];
+>  } __packed;
+>  
+> +/*
+> + * Get Dynamic Capacity Extent List; Input Payload
+> + * CXL rev 3.1 section 8.2.9.9.9.2; Table 8-166
+> + */
+> +struct cxl_mbox_get_extent_in {
+> +	__le32 extent_cnt;
+> +	__le32 start_extent_index;
+> +} __packed;
+> +
+> +/*
+> + * Get Dynamic Capacity Extent List; Output Payload
+> + * CXL rev 3.1 section 8.2.9.9.9.2; Table 8-167
+> + */
+> +struct cxl_mbox_get_extent_out {
+> +	__le32 returned_extent_count;
+> +	__le32 total_extent_count;
+> +	__le32 generation_num;
+> +	u8 rsvd[4];
+> +	struct cxl_extent extent[];
+> +} __packed;
+> +
+>  struct cxl_mbox_get_supported_logs {
+>  	__le16 entries;
+>  	u8 rsvd[6];
+> 
+> -- 
+> 2.45.2
+> 
 
