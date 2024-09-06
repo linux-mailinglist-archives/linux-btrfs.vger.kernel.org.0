@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-7871-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7872-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F5AA96E90D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 07:17:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E6096E90E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 07:17:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56F581F2475B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 05:17:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 798E9B20D23
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 05:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E2212EBDB;
-	Fri,  6 Sep 2024 05:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6271311A7;
+	Fri,  6 Sep 2024 05:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DixfVBSi";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DixfVBSi"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="l3zy3fDi";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="l3zy3fDi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B75444C86
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2024 05:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5075823DE
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2024 05:17:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725599822; cv=none; b=FItK//7LpFcgMqdoZnN/a2KB2ntTP4jnqAk/9B+y6P+6ASrnhc6Vu2a3CtbG8SDaDYkC/ap+NosUM2V29Zm3cg5x9K9qeBPw0Eu7EKJiHniPMlgN5EO0QmYZQwXyXpxwQgicL1oXXAi/0K3wYYoTSZWzm5GYf3QKRIRtRbp7UIg=
+	t=1725599823; cv=none; b=s0py/xoHLr772fObaqBCIdM496w159OxLJm2hEWWetDKORJzTfx2+IPZU5lmuBmWa9tmfloPz6vqDMfTo4hE2JCr2F/OT/Yvj33SLzqDS6y+NU2DwSoP3PdHHyZfrdPv6ZFPO8YG1eXK0UoP7P53GtjC0wMni9gQc8pHaW3jc8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725599822; c=relaxed/simple;
-	bh=kPZlMEqsIS61aJZWywPWNLrQ/fN4hc2iFU+w189HCew=;
+	s=arc-20240116; t=1725599823; c=relaxed/simple;
+	bh=8wUYTs1p4bP6qdDA9pZEmT6Y0i1CH28NuOUS3x7kroI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E8kQD7XIm+xXhd/doAzcT1sRnM9wXxmjpjG69adIoZGiog81OZ7A7TRyMds9W34yu/MaAwaTAQG3kpKvWFaaaNHEqvx5fyxy5Fp8XQtJaXzTOF8uhnaJ84LIjEtls2GjfNFS9dd1cPf0VhVXTZuab2VKI5/o6H/7ggSvTWYpOzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DixfVBSi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DixfVBSi; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=UCXvwED39+DWIDt7+/KI/ymrg7Qr0lsD/3kTVzZozwSb65gY1TpCUbi3FZdrBdN2cEIy7BDTtyY2o5WYR35Sk65ZAhhnslpxYVDWKXzj/AWiW0CU5wh0XkL5+EJIzgGu+SbjtuzLSzB3A26WKWEaDzpO6GxQhUuDEiSA3JotEqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=l3zy3fDi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=l3zy3fDi; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AD0B91F88F
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2024 05:16:58 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E86632198C
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2024 05:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725599818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1725599819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ApyqJFl2LFyj5mzEZ9mYajo9bMouq5odBHVDvF7iJfU=;
-	b=DixfVBSiQrFBdUUvHRyBthMyLPlhXgTaTQv9s0pAFo7lUlKEAVCuSrxbUxeNdAeInm/fGc
-	qMWWDIXdpR6AW7bHbcPwLNC0VURn2b6mhY2Wo2JinUyxzuyPASJRzotuOmRh0CEinHwJ9o
-	fn6AbwdtIHudmht+h9L8aT1qcXOd2HI=
-Authentication-Results: smtp-out2.suse.de;
+	bh=2iOvP2zWsGCteZr9apUrtW3ZJKt2W7Ac/qCGZW+VQks=;
+	b=l3zy3fDisqK3wGZr5y6kh9nFUkUsNEEER8Lqkne7ovt/1n1Mms4Wdd+Hv8aAa8b1ZD/tVD
+	YTBYtMMAqseJqED1pLh55+4RGWcHFGtfigdao30L2JstO/SH3X/lsYShgC++Y9PPNovF3U
+	MgUGYnvy8xbNTzje7UglSIaehyUKaCw=
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1725599818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1725599819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ApyqJFl2LFyj5mzEZ9mYajo9bMouq5odBHVDvF7iJfU=;
-	b=DixfVBSiQrFBdUUvHRyBthMyLPlhXgTaTQv9s0pAFo7lUlKEAVCuSrxbUxeNdAeInm/fGc
-	qMWWDIXdpR6AW7bHbcPwLNC0VURn2b6mhY2Wo2JinUyxzuyPASJRzotuOmRh0CEinHwJ9o
-	fn6AbwdtIHudmht+h9L8aT1qcXOd2HI=
+	bh=2iOvP2zWsGCteZr9apUrtW3ZJKt2W7Ac/qCGZW+VQks=;
+	b=l3zy3fDisqK3wGZr5y6kh9nFUkUsNEEER8Lqkne7ovt/1n1Mms4Wdd+Hv8aAa8b1ZD/tVD
+	YTBYtMMAqseJqED1pLh55+4RGWcHFGtfigdao30L2JstO/SH3X/lsYShgC++Y9PPNovF3U
+	MgUGYnvy8xbNTzje7UglSIaehyUKaCw=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E673D1395F
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2024 05:16:57 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D14C1395F
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2024 05:16:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ENp4KUmQ2ma6DQAAD6G6ig
+	id qP/jN0qQ2ma6DQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2024 05:16:57 +0000
+	for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2024 05:16:58 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: zstd: make the compression path to handle sector size < page size
-Date: Fri,  6 Sep 2024 14:46:21 +0930
-Message-ID: <764a9c6a8e9e5d88253a65595dba8b2709f8d5f2.1725599171.git.wqu@suse.com>
+Subject: [PATCH 3/3] btrfs: compression: add an ASSERT() to ensure the read-in length is sane
+Date: Fri,  6 Sep 2024 14:46:22 +0930
+Message-ID: <56cd7dba707d1a4c65e7c9b86e65359a0d11cfa9.1725599171.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <cover.1725599171.git.wqu@suse.com>
 References: <cover.1725599171.git.wqu@suse.com>
@@ -84,9 +84,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
+X-Spam-Score: -2.80
 X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
@@ -97,7 +97,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -106,46 +106,45 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	TO_DN_NONE(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-Inside zstd_compress_folios(), after exhausted one input page, we need
-to switch to the next page as input.
+There are already two bugs (one in zlib, one in zstd) that involved
+compression path is not handling sector size < page size cases well.
 
-However when counting the total input bytes (@tot_in), we always increase
-it by PAGE_SIZE.
+So it makes more sense to make sure that btrfs_compress_folios() returns
 
-For the following case, it can cause incorrect value:
-
-        0          32K         64K          96K
-        |          |///////////||///////////|
-
-After compressing range [32K, 64K), we switch to the next page, and
-increasing @tot_in by 64K, while we only read 32K.
-
-This will cause the @total_in to return a value larger than the input
-length.
-
-Fix it by only increase @tot_in by the input size.
+Since we already have two bugs (one in zlib, one in zstd) in the
+compression path resulting the @total_in be to larger than the
+to-be-compressed range length, there is enough reason to add an ASSERT()
+to make sure the total read-in length doesn't exceed the input length.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/zstd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/compression.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index 866607fd3e58..15f8a83165a3 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -495,7 +495,7 @@ int zstd_compress_folios(struct list_head *ws, struct address_space *mapping,
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 90aef2627ca2..6e9c4a5e0d51 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -1030,6 +1030,7 @@ int btrfs_compress_folios(unsigned int type_level, struct address_space *mapping
+ {
+ 	int type = btrfs_compress_type(type_level);
+ 	int level = btrfs_compress_level(type_level);
++	const unsigned long orig_len = *total_out;
+ 	struct list_head *workspace;
+ 	int ret;
  
- 		/* Check if we need more input */
- 		if (workspace->in_buf.pos == workspace->in_buf.size) {
--			tot_in += PAGE_SIZE;
-+			tot_in += workspace->in_buf.size;
- 			kunmap_local(workspace->in_buf.src);
- 			workspace->in_buf.src = NULL;
- 			folio_put(in_folio);
+@@ -1037,6 +1038,8 @@ int btrfs_compress_folios(unsigned int type_level, struct address_space *mapping
+ 	workspace = get_workspace(type, level);
+ 	ret = compression_compress_pages(type, workspace, mapping, start, folios,
+ 					 out_folios, total_in, total_out);
++	/* The total read-in bytes should be no larger than the input. */
++	ASSERT(*total_in <= orig_len);
+ 	put_workspace(type, workspace);
+ 	return ret;
+ }
 -- 
 2.46.0
 
