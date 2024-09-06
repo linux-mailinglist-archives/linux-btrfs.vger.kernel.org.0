@@ -1,160 +1,202 @@
-Return-Path: <linux-btrfs+bounces-7878-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7879-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E4F96F83A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 17:33:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92A8E96FB60
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 20:42:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3F82B24CDE
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 15:33:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20C081F22ABF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2024 18:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A306A1D2F57;
-	Fri,  6 Sep 2024 15:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4DC814A4D6;
+	Fri,  6 Sep 2024 18:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPZKp6Vb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="THwKipZU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B611CEAB9;
-	Fri,  6 Sep 2024 15:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB591B85CA
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2024 18:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725636771; cv=none; b=Nc/as9g5km+7Qt4BUSEyBthzP/MywSdn4af6mho+NYNC8tL+Bpotkzk1QAoSBhrVbhFstetiXGlnC5GIjR+aQcIA1i2zlsnvWD3zPJKBNBX4ORErtagBCkPSfJg/Tnd5utgGKPgM9zP70GimFNUsIFU3mO5Gd/p8UswtSRqddfE=
+	t=1725648168; cv=none; b=EedG2tr6katHxAk7+8cGA6qGszCSOx951lfpNQEYr7hP2cDF1B9JmV8qP/qvNhp4GSgcQ+N04jZViHPEdKCmQ7y3zN4rG+k8DWy1pdb7dq97KpCUUeqxVYEXN01wh/g0duVaFCnzVjQnlPIvPEuGtJSLlnB69EVkCVNT5PpjBic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725636771; c=relaxed/simple;
-	bh=xeovkNnnSLmrya64GpJqoUYmgTuKAmSAgs24yKZ4C08=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=s8xiythmvuvBtPnKTefz+Wtv8JI4WxTGkvHFt5EIjQeIr/F+HNQFy5YG2nnEGozNnIGoiEggjmBVI9+qdQg4I8eGOntxowPbBtB8HRnTXfb3ETk5Xj9809eQ4lk36lbDQPPKZHi4uPMJmQZv03xqvhmFDf56LXaBN1Js3uCqeRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPZKp6Vb; arc=none smtp.client-ip=209.85.218.52
+	s=arc-20240116; t=1725648168; c=relaxed/simple;
+	bh=hMc2JncvsaWTT5+UozWOwVEhWGfXy+GjmZHsHyo1RZ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rzPdsYAB/1KahSTzZXcJ0gya4Vq3hmlqkclwglvETF9e0HhCW+HZBOiSemlJp5ZQOpZgOdF+/eoQv3dJ9pKn8RJpBRAde/UIXFbPAhCWOrvRGlNBdUPQQQftEznvnUc1hTZNBlTvJ7YGsciufNS4+hXhzyfwgl3vl0h0pYHImIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=THwKipZU; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a8d0d0aea3cso47716066b.3;
-        Fri, 06 Sep 2024 08:32:49 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a8d0d82e76aso70766566b.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2024 11:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725636768; x=1726241568; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=S2+/frcoEfUGkfiJP2n/QBxPH7SGG59G5awXviqtM7w=;
-        b=YPZKp6VbyeujXclRaPm99Jzezc9H0o6y+MKKjME2PPEHJmIhYPOVoOtlfbSHIQ7+yW
-         WpkBcL51e/UohMJ0PGMay/VQiRDSpVGLQqEz9hf6ob7LTKLI2C93y68XYZQdTsrz4sfP
-         LD8Ob7DXKN1sBLMcKpe6ozM+n53JqknWi4i8wkvABSO8UoZs2UX2uHKlR33/ETzLQLyZ
-         Pf8buoMVEfCQGL3rrCMOq2WpHUA0z6OARq89iNVMFvQXi+EmMNm4W5DUuZourGxt6+EK
-         lMbdPP/9e1XJkeRZ/4Jm0+9Q3wTB5efeX46Hb0L0A0hlAE2+g1oCG0sZLo3jCfX/3JwQ
-         G4HA==
+        d=gmail.com; s=20230601; t=1725648165; x=1726252965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DHZd5LmEr+YeevZxCpH4bpBYGQbvhkMhdnGX75a+ZFM=;
+        b=THwKipZUd6R5sTChim9b1yb3YuMZrbVQEymlNzakADrxFmTF1MC8pHYIcS9sK+UIkd
+         l0zJCzSQsRVO33eDjL5JsRaeutHNTSuO2m9SFec+1aJJwG0H0B90EceQ2VlXVBWxfVji
+         EE6siusAT59ciHoneCUm/fx3udA1tEqPNKiuc0KZsFWuunWY13EYqleaTd+1Ule72PVq
+         5yybdQRAg9I+Pwqvnf8JNZigORh3HtQoucROgPBDL/Q2Di46gomXRw7beL+KTVt0Dvab
+         HuM2Iw8WaG01DAOi6ieGzs/mMJiHp0DmcxMg6KWVks9bOpJMFf69vdzpGkHxEVhaoN+x
+         J2oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725636768; x=1726241568;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S2+/frcoEfUGkfiJP2n/QBxPH7SGG59G5awXviqtM7w=;
-        b=BHbHDMWmGVNoh2uoPQFzD7wIjVZ928vfBtMGpBC2YFHsMjWtTudrVn3Px0JluSzH/z
-         nYB3j06fmzqzi8f2CXOHJdPo3SvxjS9bmTmQeaQx1vijZ+R/139x0vnTsTAB114F9Pt3
-         Xo2STTbvjdoiNY+nVsnZOTqo1ZTF6jJoZpV+LdGft2E+XEhymCPsPQa6On9uAN1gqdVE
-         sT6HSvQuaDbyCwAsWlOhYTkBYllMxLo883qLgzQrmAq0UOUn2Z5qjsrBFuqTmb2qIT3t
-         Eh7tkxRpvrJbZ1hTPO8J+nNuyKrnPV+c6xLk70KBz1IHvoMmiC02Qo+0Z5WqUqPmjhCi
-         Ii1w==
-X-Forwarded-Encrypted: i=1; AJvYcCUpeoOCzvGOeowbBbq6E5n72++v/Y0XwQmZBdL5DCkGtWhdDGNPHCzYZiTdOgCoe+gqsYI3mIc+AA==@vger.kernel.org, AJvYcCW0Zbcymj9iDdIjZUzxy9YiUrPbrjlzAwCIs9uvq8AJ8nYjhVD88PG9TJiZm6f4o9jheaMQPMDbSBh+v1k=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqOry/wW0XxWFs7ryCh6LHKBmMdBOV2hYbhpyvca7+wcbYj3HY
-	MAa9vaJftRNOiV2qAOJaa1AHvpLDhCOr/UOcVStg8TyqH3tK5cJRACAiWJn5
-X-Google-Smtp-Source: AGHT+IFQIcRf/qbe5K5BhxpTsj5bwt0b3v40/2hbYV8m29zDQaIECDAmxbUhyX/QHd9QYLVnUCxAPQ==
-X-Received: by 2002:a17:907:97c5:b0:a8a:6e20:761e with SMTP id a640c23a62f3a-a8a887e5fc0mr194781366b.48.1725636768422;
-        Fri, 06 Sep 2024 08:32:48 -0700 (PDT)
-Received: from [192.168.42.54] ([163.114.131.193])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8a75504ed4sm221697466b.158.2024.09.06.08.32.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Sep 2024 08:32:47 -0700 (PDT)
-Message-ID: <d8ac29a6-06fa-4624-b17d-36e37db11e83@gmail.com>
-Date: Fri, 6 Sep 2024 16:33:21 +0100
+        d=1e100.net; s=20230601; t=1725648165; x=1726252965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DHZd5LmEr+YeevZxCpH4bpBYGQbvhkMhdnGX75a+ZFM=;
+        b=tIrlAzArJrSSyLPG1N9rtUzZ86uqjsX4tlGGosQSmbdL4+NdvQbElH9SEKbDczahAB
+         hEjYXivKrA+Jrh2/CSWcVVaqkKXdDerYLoT5YgPa2scFa/Cx15egMVCMQDSxMjE6cK7c
+         TlzeqXyj49xdbReX9rVoZlfuwOGdw9ZQoizLw7D/xODV2U9JLsbAIQICaWmN+dir41HX
+         4Gvkhj7Karn1TcyU0FjbN6qLnlmtKYOybu3g4UBoQOLneqD5L2FYYjxhKiPkqGa8XgMD
+         NsxBsEpeoN3cRpVwEI7enFtf6f8D72ed+0duqUzzyOSHmbKCdmzKYjWOoslPR69jCuiC
+         nhUg==
+X-Gm-Message-State: AOJu0YxJfi9zn4YnDGAu48ynMXx15f036tSzH/Mp5QkK6mKOusil2Zyd
+	2SDUI/eH4d82IN9ZkrKJ2HqM6FT3MP8q0Z1UtbrWBDOaeXRbZdFzFPwkZ2yAHZ2Y3BvXyZMaBtm
+	3SHzR8YuLxQHnPG1DeqW9vzqdMqLeHwEs
+X-Google-Smtp-Source: AGHT+IHIp9fTFnMyRYNHY7Cq96sKHCi2pe5jU0WHxhTYtIqlA0wIQ4thDLG74JpevbohBYVVTah/J5sxr4kBNKnTHO8=
+X-Received: by 2002:a17:907:7f22:b0:a86:9e84:dddc with SMTP id
+ a640c23a62f3a-a8d1cd6a3ecmr9556866b.61.1725648165008; Fri, 06 Sep 2024
+ 11:42:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] btrfs: add io_uring interface for encoded reads
-To: Mark Harmstone <maharmstone@fb.com>, io-uring@vger.kernel.org,
- linux-btrfs@vger.kernel.org
-References: <20240823162810.1668399-1-maharmstone@fb.com>
- <20240823162810.1668399-7-maharmstone@fb.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20240823162810.1668399-7-maharmstone@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CACSb8pLWjCPBvfYNGqFQ_6V06SFSqdm-Ea=SC6g+D9_=qygvgw@mail.gmail.com>
+ <57d77231-4d07-4773-93c4-0f27bd9a851c@gmx.com>
+In-Reply-To: <57d77231-4d07-4773-93c4-0f27bd9a851c@gmx.com>
+From: Brent Bartlett <brent.bartlett1@gmail.com>
+Date: Fri, 6 Sep 2024 18:42:33 +0000
+Message-ID: <CACSb8p+PLVhF8iKDjxr_jD+q8tAuG99NdF7Z2EQ5UZQqt9aJ4Q@mail.gmail.com>
+Subject: Re: SSD stuck in read-only mode with call trace and itemoff /
+ itemsize errors
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 8/23/24 17:27, Mark Harmstone wrote:
-> Adds an io_uring interface for asynchronous encoded reads, using the
-> same interface as for the ioctl. To use this you would use an SQE opcode
-> of IORING_OP_URING_CMD, the cmd_op would be BTRFS_IOC_ENCODED_READ, and
-> addr would point to the userspace address of the
-> btrfs_ioctl_encoded_io_args struct. As with the ioctl, you need to have
-> CAP_SYS_ADMIN for this to work.
-> 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
-> ---
-...
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 1bd4c74e8c51..e4458168c340 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -34,6 +34,7 @@
->   #include <linux/iomap.h>
->   #include <asm/unaligned.h>
->   #include <linux/fsverity.h>
-> +#include <linux/io_uring/cmd.h>
->   #include "misc.h"
->   #include "ctree.h"
->   #include "disk-io.h"
-> @@ -9078,7 +9079,7 @@ static ssize_t btrfs_encoded_read_inline(
->   	return ret;
->   }
->   
-> -static void btrfs_encoded_read_endio(struct btrfs_bio *bbio)
-> +static void btrfs_encoded_read_ioctl_endio(struct btrfs_bio *bbio)
->   {
->   	struct btrfs_encoded_read_private *priv = bbio->private;
->   
-> @@ -9098,6 +9099,47 @@ static void btrfs_encoded_read_endio(struct btrfs_bio *bbio)
->   	bio_put(&bbio->bio);
->   }
->   
-> +static inline struct btrfs_encoded_read_private *btrfs_uring_encoded_read_pdu(
-> +		struct io_uring_cmd *cmd)
-> +{
-> +	return *(struct btrfs_encoded_read_private **)cmd->pdu;
-> +}
-> +static void btrfs_finish_uring_encoded_read(struct io_uring_cmd *cmd,
-> +					    unsigned int issue_flags)
-> +{
-> +	struct btrfs_encoded_read_private *priv;
-> +	ssize_t ret;
-> +
-> +	priv = btrfs_uring_encoded_read_pdu(cmd);
-> +	ret = btrfs_encoded_read_finish(priv, -EIOCBQUEUED);
+Here's the output from btrfs check --mode=3Dlowmem <device>
 
-tw callback -> btrfs_encoded_read_finish() -> copy_to_user()
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p2
+UUID: 12e7a361-f58a-4611-81ff-ed8303782bcb
+[1/7] checking root items
+[2/7] checking extents
+ERROR: extent [228558536704 16384] lost referencer (owner: 1281, level: 0)
+ERROR: extent[335642972160, 4096] referencer count mismatch (root:
+257, owner: 9223372036856479121, offset: 305790976) wanted: 1, have: 0
+ERROR: file extent[1703313 305790976] root 257 owner 257 backref lost
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs done with fs roots in lowmem mode, skipping
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 771521245184 bytes used, error(s) found
+total csum bytes: 750323744
+total tree bytes: 2901278720
+total fs tree bytes: 1938309120
+total extent tree bytes: 166903808
+btree space waste bytes: 365206037
+file data blocks allocated: 857740091392
+referenced 855826853888
 
-That's usually fine except cases when the task and/or io_uring are dying
-and the callback executes not from a user task context. Same problem as
-with fuse, we can pass a flag from io_uring into the callback telling
-btrfs that it should terminate the request and not rely on mm or any
-other task related pieces.
+and here's the output from btrfs check <device>
 
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p2
+UUID: 12e7a361-f58a-4611-81ff-ed8303782bcb
+[1/7] checking root items
+[2/7] checking extents
+tree extent[228558536704, 16384] root 257 has no backref item in extent tre=
+e
+tree extent[228558536704, 16384] root 1281 has no tree block found
+incorrect global backref count on 228558536704 found 2 wanted 1
+backpointer mismatch on [228558536704 16384]
+data extent[335642972160, 4096] referencer count mismatch (root 257
+owner 1703313 offset 305790976) wanted 0 have 1
+data extent[335642972160, 4096] bytenr mimsmatch, extent item bytenr
+335642972160 file item bytenr 0
+data extent[335642972160, 4096] referencer count mismatch (root 257
+owner 9223372036856479121 offset 305790976) wanted 1 have 0
+backpointer mismatch on [335642972160 4096]
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 771521236992 bytes used, error(s) found
+total csum bytes: 750323744
+total tree bytes: 2901278720
+total fs tree bytes: 1938309120
+total extent tree bytes: 166903808
+btree space waste bytes: 365206037
+file data blocks allocated: 857740091392
+referenced 855826853888
 
-> +
-> +	io_uring_cmd_done(priv->cmd, ret, 0, priv->issue_flags);
-> +
-> +	kfree(priv);
-> +}
-> +
+Thank you
 
-...
-
--- 
-Pavel Begunkov
+On Fri, Sep 6, 2024 at 1:39=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> w=
+rote:
+>
+>
+>
+> =E5=9C=A8 2024/9/6 10:29, Brent Bartlett =E5=86=99=E9=81=93:
+> > I have an SSD drive that was mounted by the system as read-only due to
+> > errors. I have posted my full dmesg here:
+> > https://pastebin.com/BDQ9eUVc
+>
+> Great you have posted the full output:
+>
+> [   36.195752]  item 123 key (228558536704 169 0) itemoff 12191 itemsize =
+33
+> [   36.195754]          extent refs 1 gen 101460 flags 2
+> [   36.195754]          ref#0: tree block backref root 1281
+>
+> This is the offending backref item for the tree block.
+>
+> But what your fs is expecting is:
+>
+> [   36.195988] BTRFS critical (device nvme0n1p2 state EA): unable to
+> find ref byte nr 228558536704 parent 0 root 257 owner 0 offset 0 slot 124
+>
+> hex(1281) =3D 0x501
+> hex(257)  =3D 0x101
+>
+> Another bitflip.
+>
+> I'm pretty sure "btrfs check" will just give the same error.
+>
+> And this really looks like something wrong with your hardware memory.
+>
+> >
+> > Please let me know if you need any other information. How should I proc=
+eed?
+> >
+>
+> It's strongly recommend to run a full memtest before doing anything.
+>
+> I'd say your previous RO flips may also be caused by your faulty
+> hardware memory too.
+>
+> Other than that, please provide the following output on another system:
+> (The lowmem mode output is a little more human readable)
+>
+> # btrfs check --mode=3Dlowmem <device>
+> # btrfs check <device>
+>
+> To make sure if that's the only corruption, and we can determine what to
+> do next.
+>
+> Thanks,
+> Qu
 
