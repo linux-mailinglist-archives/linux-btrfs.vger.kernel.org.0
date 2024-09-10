@@ -1,71 +1,75 @@
-Return-Path: <linux-btrfs+bounces-7904-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7905-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6822972B47
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 09:56:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA99972BAA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 10:11:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04EFE1C2416E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 07:56:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59891289F31
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 08:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C3C181B86;
-	Tue, 10 Sep 2024 07:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57AF189B9D;
+	Tue, 10 Sep 2024 08:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C6OgMBcA";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C6OgMBcA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C58180032;
-	Tue, 10 Sep 2024 07:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119DE1891BA
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 08:07:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725954953; cv=none; b=CAa4tqlUsyVTtnNiynUVVB4OuaH6t+v3hm0OMeES96SHIkH/icHdUMFSWtdisDwJ2DKapU3gGPbjkOQsDG9lYrO9Aqr7m+R6R52ME937xDiO/8IBbGu8zvEQ/saqJkGRFldivjD8sTQ6pe0IGkcOVRM23ucTFaON5sjcwuQ6w+4=
+	t=1725955670; cv=none; b=N+8Au4jO/IMAbXLxJq48SApDvmjYDZvRMfSRBxHJTBUn6r7oH20Zzlf3HMfCqvKA8htX/qkuuwra/ZmlPGiRkfkvdpUEQSRxOgmqXWtVYtJZtg7zmP2HtwBq7ZsZbiKetv4o9rVVjjbp2+/7q6Okrhn2Ef0qQ07ZSM3swfDIeBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725954953; c=relaxed/simple;
-	bh=NSfkCXmP8UOuYBRg13+Vub5tUvvwBF9eyr5oi3qcYsY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AmuKYiD9jsH+kw61x9MRCkJRsMtPvEdcdOU4n16iuCKgVHoocUWpq/LpMo44o412BCJtSi8cGeDK8yOz8y1SA7u7LXovMQI9TCry3xzcRxgpi6XykVrFrF9f9W5VCuUtVWmaA6Ejms3lxbwaxVsrIfoRApjxFsnzKexJUNXuzII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-536584f6c84so5053531e87.0;
-        Tue, 10 Sep 2024 00:55:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725954950; x=1726559750;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dw5YeTlm4zhPLP18WLBdD2dIrDxb0xf1POdjWouS1K0=;
-        b=qhtPezVzwaXD2FmQPXSghkusHUYuD7qk/ZLFu1x67QowNAbwYhbmrhJr0dp+s/axb+
-         veuDlGOgSqWQpk2KrIysbyEMscrUypl13ULZ7zkQSGqZcVt14wpHQoO5+pJCDbXSLVTt
-         MAJUihLI54mI6cR6wvrCEIr1y8ceMq/+HB7vRkkrus53CfZwtyrgH3usDu2gsTtL/c6k
-         jkSkpskiSBoO1CsYpIrR3wJQF5Mkg1ds6NgAdquZD5uzjC38BtIeBEjQcCbFCMA9b4Ji
-         KpkHfRofoWImGFR4gLh97XuVK8bMaQqHjvduyRPKhCTBKUEC345kryyhNwYTFP2fK4n2
-         mZ6A==
-X-Forwarded-Encrypted: i=1; AJvYcCV+Zp4LFdLeSVkjz3meRytvTFEscGYGtuIMqkPe/FAtnyTa1CNCPFtDZLovqV+ZyJW42/ANEhj1kl8jdQ==@vger.kernel.org, AJvYcCXw1Bc47FUV7upTtZq1Mgk6mN45mujHpfxDAuPO7fudckWDKOKc28eGHaZQjuJb4LUloeWUQoy/VMjWO4jp@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMxwiYuZydxTQ8dPuzuNRgzp0u7+vqjfR+/FGoTOiVgRFmc+tO
-	ZGiU/TFaQ4k9gHKWYFxl7fkZ/RLPOhbUb5Fubm6yiprNbmWwD4sA
-X-Google-Smtp-Source: AGHT+IElSanQ2NlqBxxpMquRqdOdzFMzHXAbQJbqrZOea9u0J5aVMbrpBu7rzvmN2NpSz7waYGuOrg==
-X-Received: by 2002:a05:6512:2388:b0:536:55ef:69e8 with SMTP id 2adb3069b0e04-5365856ca37mr9019415e87.0.1725954949171;
-        Tue, 10 Sep 2024 00:55:49 -0700 (PDT)
-Received: from nuc.fritz.box (p200300f6f7178100fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f717:8100:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42caeb323f4sm102005245e9.12.2024.09.10.00.55.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2024 00:55:48 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Johannes Thumshirn <jth@kernel.org>
-Subject: Re: [PATCH v2] btrfs: don't take dev_replace rwsem on task already
-Date: Tue, 10 Sep 2024 09:55:37 +0200
-Message-ID: <20240910075538.15884-1-jth@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <dd0cb649510537a495bc64d91e09da5a8119d2e3.1725950283.git.jth@kernel.org>
-References: <dd0cb649510537a495bc64d91e09da5a8119d2e3.1725950283.git.jth@kernel.org>
+	s=arc-20240116; t=1725955670; c=relaxed/simple;
+	bh=a/jpys+dP4B43RAUHBLhkrH9AWaxGjmsLZZ8FxceeVU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=q7DKvkgaLvTC796yH1282gt4IALPne25q8WVE3QvbOVXDERfZVXNDf9M/iC7XSXLnqIp1LhxZXnssvmEDXchAiXWRCDuqcK4ZrQ1+A5A0QBDXBf564/lXYUk/iuR/77A+qYqmVCtzJBGCCZf6hGpMvEecxoPypMjnMIpCfBxHJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C6OgMBcA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C6OgMBcA; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 352F61F454
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 08:07:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1725955667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=f4/Qy0qnmFD577meT60q02pHDmeEKxCu6pmC6+HXlPw=;
+	b=C6OgMBcAoRWN7JYgJ3TJ41Tfja/LIYCAco06Zqg3TOu1sShv49+O8PC2r+gtk/Ts1zeXKA
+	0wfOIyfO6Ul+Dnp0KrO7EeB0LhNEg50mjAPE2P+TBXbXhpOcefG6xgBHQrrU5/0AR6TwcQ
+	+JFQeW5Znrh7ZnYJs3Abnqb7AWXOp54=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=C6OgMBcA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1725955667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=f4/Qy0qnmFD577meT60q02pHDmeEKxCu6pmC6+HXlPw=;
+	b=C6OgMBcAoRWN7JYgJ3TJ41Tfja/LIYCAco06Zqg3TOu1sShv49+O8PC2r+gtk/Ts1zeXKA
+	0wfOIyfO6Ul+Dnp0KrO7EeB0LhNEg50mjAPE2P+TBXbXhpOcefG6xgBHQrrU5/0AR6TwcQ
+	+JFQeW5Znrh7ZnYJs3Abnqb7AWXOp54=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 64ACF132CB
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 08:07:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0sr3CFL+32Y5MwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 08:07:46 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: make extent_range_clear_diryt_for_io() to handle sector size < page size cases
+Date: Tue, 10 Sep 2024 17:37:28 +0930
+Message-ID: <6a5d4240e53b55381d3049f6051d10323d356e95.1725955565.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -73,92 +77,99 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 352F61F454
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_NONE(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-This is to fold in if we decide to go by pid instead of a task_struct.
+For btrfs with sector size < page size (e.g. 4K sector size, 64K page
+size), and enable the sector perfect compression support, then the
+following dirty range can lead to problems:
 
+   0     32K     64K     96K    128K
+   |     |///////||//////|    |/|
+                              124K
+
+In above case, if we start writeback for that inode, the last dirty
+range [124K, 128K) will not be submitted and cause reserved space
+leakage:
+
+- Start writeback for page 0
+  We find the range [32K, 96K) is suitable for compression, and queue it
+  into a workqueue to do the delayed compression and submission.
+
+- Compression happens for range [32K, 96K)
+  Function extent_range_clear_diryt_for_io() is called, however it is
+  only doing full page handling, not considering any the extra bitmaps
+  for subpage cases.
+
+  That function will clear page dirty for both page 0 and page 64K.
+
+- Writeback for the inode is done
+  Because page 64K has its dirty flag cleared, it will not be considered
+  as a writeback target.
+
+This means the range [124K, 128K) will not be submitted, and reserved
+space for it will be leaked.
+
+Fix this problem by using the subpage helper to clear the dirty flag.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/dev-replace.c | 4 ++--
- fs/btrfs/fs.h          | 3 ++-
- fs/btrfs/volumes.c     | 8 +++++---
- 3 files changed, 9 insertions(+), 6 deletions(-)
+The previous version seems to causing a hang, but it looks very possible
+that's caused by the double page freeing at the same kernel window.
 
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 604399e59a3d..a1efb8de8170 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -641,7 +641,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_info *fs_info,
- 		return ret;
- 
- 	down_write(&dev_replace->rwsem);
--	dev_replace->replace_task = current;
-+	dev_replace->replace_task = current->pid;
- 	switch (dev_replace->replace_state) {
- 	case BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED:
- 	case BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED:
-@@ -995,7 +995,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
- 	list_add(&tgt_device->dev_alloc_list, &fs_devices->alloc_list);
- 	fs_devices->rw_devices++;
- 
--	dev_replace->replace_task = NULL;
-+	dev_replace->replace_task = 0;
- 	up_write(&dev_replace->rwsem);
- 	btrfs_rm_dev_replace_blocked(fs_info);
- 
-diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-index cbfb225858a5..a30978f29a59 100644
---- a/fs/btrfs/fs.h
-+++ b/fs/btrfs/fs.h
-@@ -3,6 +3,7 @@
- #ifndef BTRFS_FS_H
- #define BTRFS_FS_H
- 
-+#include "linux/types.h"
- #include <linux/blkdev.h>
- #include <linux/sizes.h>
- #include <linux/time64.h>
-@@ -318,7 +319,7 @@ struct btrfs_dev_replace {
- 	struct percpu_counter bio_counter;
- 	wait_queue_head_t replace_wait;
- 
--	struct task_struct *replace_task;
-+	pid_t replace_task;
- };
- 
- /*
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 995b0647f538..c3f53a59cbf3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6480,7 +6480,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	max_len = btrfs_max_io_len(map, map_offset, &io_geom);
- 	*length = min_t(u64, map->chunk_len - map_offset, max_len);
- 
--	if (dev_replace->replace_task != current)
-+	if (dev_replace->replace_task != current->pid)
- 		down_read(&dev_replace->rwsem);
- 
- 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
-@@ -6488,7 +6488,8 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	 * Hold the semaphore for read during the whole operation, write is
- 	 * requested at commit time but must wait.
- 	 */
--	if (!dev_replace_is_ongoing && dev_replace->replace_task != current)
-+	if (!dev_replace_is_ongoing &&
-+	    dev_replace->replace_task != current->pid)
- 		up_read(&dev_replace->rwsem);
- 
- 	switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
-@@ -6628,7 +6629,8 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	bioc->mirror_num = io_geom.mirror_num;
- 
- out:
--	if (dev_replace_is_ongoing && dev_replace->replace_task != current) {
-+	if (dev_replace_is_ongoing &&
-+	    dev_replace->replace_task != current->pid) {
- 		lockdep_assert_held(&dev_replace->rwsem);
- 		/* Unlock and let waiting writers proceed */
- 		up_read(&dev_replace->rwsem);
+With that double page freeing fix, I haven't hit any lockup on subpage
+cases with this patch applied anymore.
+---
+ fs/btrfs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index edac499fd83d..d53b9e4ca13e 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -902,7 +902,8 @@ static int extent_range_clear_dirty_for_io(struct inode *inode, u64 start, u64 e
+ 				ret = PTR_ERR(folio);
+ 			continue;
+ 		}
+-		folio_clear_dirty_for_io(folio);
++		btrfs_folio_clamp_clear_dirty(inode_to_fs_info(inode), folio, start,
++					      end + 1 - start);
+ 		folio_put(folio);
+ 	}
+ 	return ret;
 -- 
-2.43.0
+2.46.0
 
 
