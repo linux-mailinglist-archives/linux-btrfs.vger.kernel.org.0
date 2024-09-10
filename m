@@ -1,187 +1,332 @@
-Return-Path: <linux-btrfs+bounces-7906-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7907-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E441972BFA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 10:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D96B9732A7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 12:25:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06EF21F25ABA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 08:18:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 172531F21BB5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 10:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593B1188CB6;
-	Tue, 10 Sep 2024 08:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49F6198A22;
+	Tue, 10 Sep 2024 10:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pDfy82SR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B811188A09
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 08:17:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AAB188A28;
+	Tue, 10 Sep 2024 10:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725956249; cv=none; b=Hh5zGeR/UPdMU3qUeicMiJIT17XYYMNz0du8IQ+fhCUkVBN+6hnq00vPdo020IjSBSujrTIxVkQ0V9jHBRZC9bDLo0R7IzaFRDwNGCvfOt8ldJkotOD+yQ2BT4aRzFaL+6S4Buggkv3m+jJ6G0OG2Y0ZW5EJM+dulOSmaDYFj7M=
+	t=1725963565; cv=none; b=LTvChTlBZlccmuXrLkT3f14tCn2HFI55m5v64YWm/Leiiu1JGnHNZx0oL5+PWuGhT+IWQ/rcYOXbUVi+oCnelF2/AyOKmk0ldoWCxhVIPEqLlzgKVCZEmsdxsAJlksoT+mOEnbefz4bQwrAVkush4Km8xLaPKb23Cw7+dGf9PiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725956249; c=relaxed/simple;
-	bh=6FYgG1IvW/082napJZ+ehi9meAzlGAz93+hEpJ8Pxps=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NWKirQ90oDlikxau6dLq52GF0bE3ddc7gKD7lcJVXi+Pcotm7qf770sXQOs7FJXoHOCAbAZg1a2g4TxENrXIM7ekSDCz/+UoqPA9FWdAwyT8ff9z8f9HZjqRtBDVMZFQ4vSesmri3ziZ2BBNYiQTovUOvB9MWx0/sK3latm8Vso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-39f37874297so98256605ab.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 01:17:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725956247; x=1726561047;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Jew5OkVpcIS81fvOcA+7NjvaPli0TbzCp58akL7QRbY=;
-        b=XakZ5yYARVf3+igUpI9eI7/uXFcwnEByLW/anUCrVXcwIkwuuOxOpXe5uMrgg5d4wQ
-         L1/KvFNDqrSafJMlK+er16MI8BN0SJVMDSIwdYwQ+9QDFUe3g0NQkBGyCxY1UJ7Zjlzn
-         sROhVDfkdyImEafGubCvEDsxXPY0bjVzh9PfdjydfBJOYELUOWAcI8RHBLj1LX1nLhYg
-         O+bK2viIewLfIgRWsc7cXrRXL4yaVYFb5RnAnTH+wKxWOEgRL6ujqzw594t7aZ2rrq/C
-         x0K/EiSklRrg45gOPLePrEf7oGDoRBvdUwSkMvmhe9mgd1xEeVz8HYMdLyTHQSVU4vpf
-         Mrew==
-X-Forwarded-Encrypted: i=1; AJvYcCXvDwvSlhRgJLfVnXsiMSN0xCjn+2cMmneY+VBn8rOZZKYMSAfagLCxKNJMihYq6BII5msWza1swPNkDA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzk9BpFN6XzJpS8ZnLJeXMvBtxNuh63/bkeKASBTZq+xL4+b4K8
-	RBw0I1R0QHsqVaMyqEBJcA/6yNzjWLOt374EOgGXQpVljKxpkFYNIVOgXRGGITil1S2H9JP5c/d
-	sBZO2GKEy8AVx0/4FwustyzBTCs7SczURAjIv1+3+2e9s8sA0iP8AtAg=
-X-Google-Smtp-Source: AGHT+IFjbu3GEeDpBBANB5vfEjO2gZOSflmR0Gl5BDAHLkygwXw+FWBzQT1qR9Nr5rrwYJTLy2gLlufOB8R8ZlKBq7gczmRzGPGJ
+	s=arc-20240116; t=1725963565; c=relaxed/simple;
+	bh=q+krpLA9WNZnvWjIyi+jH35POZYLBa+qsnEdlbQwO1c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lwYx8HTES7k/6XOUXbivJrzixzpwl3HdQeoYHb5aYCbjZDHvmm6Yij8VaF4AiO+RqNbtNIP/6sDmxBDWKpLpoEIxu8CtBhIe5b+QHZwLXsSEaQX4tko95IfAEaC40pXZah/8FwtJPJsNoUIe0lpp7Q923cP4adAoUgL11/J/3Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pDfy82SR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD09C4CECD;
+	Tue, 10 Sep 2024 10:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725963565;
+	bh=q+krpLA9WNZnvWjIyi+jH35POZYLBa+qsnEdlbQwO1c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=pDfy82SRX/3DseH/ISW4EfhbED8IUd/WnNLYsR/WR+c0K6YqiSeFBL8YvWkGb7Pkj
+	 fuTyCtihHqULNZGAP4Kxm2OHZ+yByXxzIe/abC4RsxhtQIiqhPaV7/e5As3b4shlBr
+	 OMg2hFt+Mei0sNcCNEhA0BNr2YGkpukFK73zCpPM5C1cxfvxb30oWdSw9pP9x4O8w0
+	 Bvgfjo3IQh1gHabXOiYxoo2TmQ9SRtcbLn3RpcdvIGwzyU6hOcu6XjlB2Q7+RzCpPH
+	 giivcXw3viUx99BWZdpX5ZAsyFrRnGHyNG3NX3bXSL9u2jE8Mrk0XnueKOiAZ5uPsx
+	 sdnBPwmubnHhg==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a8d6ac24a3bso245327966b.1;
+        Tue, 10 Sep 2024 03:19:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUFS5DNYqRYNhnQ3ivFun1fuETTCFu8zgpZIlcJUZzUVbGWRJJNEQAv88FBENR70ECvvp6Et4BVjciHmg==@vger.kernel.org, AJvYcCXX/c1Fep/4IHaa9Yv6MP9yxzuoM9WZ50JIJq0vbfZi0nsfCh5hF11MXyL0nnXkg1in8rtGSPmmfGBaMEId@vger.kernel.org
+X-Gm-Message-State: AOJu0YyvM73dCjZdiSZJ+wzsIXz21EpDVsscdNylL9lIqPbQFhkMpFxB
+	G+qiVxou/o3TFe5TFuA0MPOTeVBaI1OsUvmu9nAld9zgaf98xjLqrMD/AT+Cv948ZsgwhMZ9s6a
+	QnFo0j3rkmexasMiXhPysVyi+2kk=
+X-Google-Smtp-Source: AGHT+IFo9x4lYJkrVXpDHxHeK47RKEfUZ1ZqkW1WcXUsxFDleK/79LOy4Ht37GLyfA/he+2dRYXyfBg3SYBVXYEVgmY=
+X-Received: by 2002:a17:907:7283:b0:a86:9fac:6939 with SMTP id
+ a640c23a62f3a-a8ffb2fe465mr25911166b.30.1725963564121; Tue, 10 Sep 2024
+ 03:19:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a4a:b0:39e:68f8:43e5 with SMTP id
- e9e14a558f8ab-3a04f0731fbmr150648235ab.9.1725956247177; Tue, 10 Sep 2024
- 01:17:27 -0700 (PDT)
-Date: Tue, 10 Sep 2024 01:17:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000002df770621bf81d9@google.com>
-Subject: [syzbot] [btrfs?] [fbdev?] BUG: unable to handle kernel NULL pointer
- dereference in fbcon_putcs (3)
-From: syzbot <syzbot+3d613ae53c031502687a@syzkaller.appspotmail.com>
-To: clm@fb.com, daniel@ffwll.ch, deller@gmx.de, 
-	dri-devel@lists.freedesktop.org, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-fbdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <dd0cb649510537a495bc64d91e09da5a8119d2e3.1725950283.git.jth@kernel.org>
+In-Reply-To: <dd0cb649510537a495bc64d91e09da5a8119d2e3.1725950283.git.jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 10 Sep 2024 11:18:45 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7RE+cUJaN7fmvwT64gVteRY2s=uqcQPjcBe8dwChBj7Q@mail.gmail.com>
+Message-ID: <CAL3q7H7RE+cUJaN7fmvwT64gVteRY2s=uqcQPjcBe8dwChBj7Q@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: don't take dev_replace rwsem on task already
+ holding it
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	"open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Sep 10, 2024 at 8:55=E2=80=AFAM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
+>
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> Running fstests btrfs/011 with MKFS_OPTIONS=3D"-O rst" to force the usage=
+ of
+> the RAID stripe-tree, we get the following splat from lockdep:
+>
+>  BTRFS info (device sdd): dev_replace from /dev/sdd (devid 1) to /dev/sdb=
+ started
+>
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  WARNING: possible recursive locking detected
+>  6.11.0-rc3-btrfs-for-next #599 Not tainted
+>  --------------------------------------------
+>  btrfs/2326 is trying to acquire lock:
+>  ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btrfs_ma=
+p_block+0x39f/0x2250
+>
+>  but task is already holding lock:
+>  ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btrfs_ma=
+p_block+0x39f/0x2250
+>
+>  other info that might help us debug this:
+>   Possible unsafe locking scenario:
+>
+>         CPU0
+>         ----
+>    lock(&fs_info->dev_replace.rwsem);
+>    lock(&fs_info->dev_replace.rwsem);
+>
+>   *** DEADLOCK ***
+>
+>   May be due to missing lock nesting notation
+>
+>  1 lock held by btrfs/2326:
+>   #0: ffff88810f215c98 (&fs_info->dev_replace.rwsem){++++}-{3:3}, at: btr=
+fs_map_block+0x39f/0x2250
+>
+>  stack backtrace:
+>  CPU: 1 UID: 0 PID: 2326 Comm: btrfs Not tainted 6.11.0-rc3-btrfs-for-nex=
+t #599
+>  Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+>  Call Trace:
+>   <TASK>
+>   dump_stack_lvl+0x5b/0x80
+>   __lock_acquire+0x2798/0x69d0
+>   ? __pfx___lock_acquire+0x10/0x10
+>   ? __pfx___lock_acquire+0x10/0x10
+>   lock_acquire+0x19d/0x4a0
+>   ? btrfs_map_block+0x39f/0x2250
+>   ? __pfx_lock_acquire+0x10/0x10
+>   ? find_held_lock+0x2d/0x110
+>   ? lock_is_held_type+0x8f/0x100
+>   down_read+0x8e/0x440
+>   ? btrfs_map_block+0x39f/0x2250
+>   ? __pfx_down_read+0x10/0x10
+>   ? do_raw_read_unlock+0x44/0x70
+>   ? _raw_read_unlock+0x23/0x40
+>   btrfs_map_block+0x39f/0x2250
+>   ? btrfs_dev_replace_by_ioctl+0xd69/0x1d00
+>   ? btrfs_bio_counter_inc_blocked+0xd9/0x2e0
+>   ? __kasan_slab_alloc+0x6e/0x70
+>   ? __pfx_btrfs_map_block+0x10/0x10
+>   ? __pfx_btrfs_bio_counter_inc_blocked+0x10/0x10
+>   ? kmem_cache_alloc_noprof+0x1f2/0x300
+>   ? mempool_alloc_noprof+0xed/0x2b0
+>   btrfs_submit_chunk+0x28d/0x17e0
+>   ? __pfx_btrfs_submit_chunk+0x10/0x10
+>   ? bvec_alloc+0xd7/0x1b0
+>   ? bio_add_folio+0x171/0x270
+>   ? __pfx_bio_add_folio+0x10/0x10
+>   ? __kasan_check_read+0x20/0x20
+>   btrfs_submit_bio+0x37/0x80
+>   read_extent_buffer_pages+0x3df/0x6c0
+>   btrfs_read_extent_buffer+0x13e/0x5f0
+>   read_tree_block+0x81/0xe0
+>   read_block_for_search+0x4bd/0x7a0
+>   ? __pfx_read_block_for_search+0x10/0x10
+>   btrfs_search_slot+0x78d/0x2720
+>   ? __pfx_btrfs_search_slot+0x10/0x10
+>   ? lock_is_held_type+0x8f/0x100
+>   ? kasan_save_track+0x14/0x30
+>   ? __kasan_slab_alloc+0x6e/0x70
+>   ? kmem_cache_alloc_noprof+0x1f2/0x300
+>   btrfs_get_raid_extent_offset+0x181/0x820
+>   ? __pfx_lock_acquire+0x10/0x10
+>   ? __pfx_btrfs_get_raid_extent_offset+0x10/0x10
+>   ? down_read+0x194/0x440
+>   ? __pfx_down_read+0x10/0x10
+>   ? do_raw_read_unlock+0x44/0x70
+>   ? _raw_read_unlock+0x23/0x40
+>   btrfs_map_block+0x5b5/0x2250
+>   ? __pfx_btrfs_map_block+0x10/0x10
+>   scrub_submit_initial_read+0x8fe/0x11b0
+>   ? __pfx_scrub_submit_initial_read+0x10/0x10
+>   submit_initial_group_read+0x161/0x3a0
+>   ? lock_release+0x20e/0x710
+>   ? __pfx_submit_initial_group_read+0x10/0x10
+>   ? __pfx_lock_release+0x10/0x10
+>   scrub_simple_mirror.isra.0+0x3eb/0x580
+>   scrub_stripe+0xe4d/0x1440
+>   ? lock_release+0x20e/0x710
+>   ? __pfx_scrub_stripe+0x10/0x10
+>   ? __pfx_lock_release+0x10/0x10
+>   ? do_raw_read_unlock+0x44/0x70
+>   ? _raw_read_unlock+0x23/0x40
+>   scrub_chunk+0x257/0x4a0
+>   scrub_enumerate_chunks+0x64c/0xf70
+>   ? __mutex_unlock_slowpath+0x147/0x5f0
+>   ? __pfx_scrub_enumerate_chunks+0x10/0x10
+>   ? bit_wait_timeout+0xb0/0x170
+>   ? __up_read+0x189/0x700
+>   ? scrub_workers_get+0x231/0x300
+>   ? up_write+0x490/0x4f0
+>   btrfs_scrub_dev+0x52e/0xcd0
+>   ? create_pending_snapshots+0x230/0x250
+>   ? __pfx_btrfs_scrub_dev+0x10/0x10
+>   btrfs_dev_replace_by_ioctl+0xd69/0x1d00
+>   ? lock_acquire+0x19d/0x4a0
+>   ? __pfx_btrfs_dev_replace_by_ioctl+0x10/0x10
+>   ? lock_release+0x20e/0x710
+>   ? btrfs_ioctl+0xa09/0x74f0
+>   ? __pfx_lock_release+0x10/0x10
+>   ? do_raw_spin_lock+0x11e/0x240
+>   ? __pfx_do_raw_spin_lock+0x10/0x10
+>   btrfs_ioctl+0xa14/0x74f0
+>   ? lock_acquire+0x19d/0x4a0
+>   ? find_held_lock+0x2d/0x110
+>   ? __pfx_btrfs_ioctl+0x10/0x10
+>   ? lock_release+0x20e/0x710
+>   ? do_sigaction+0x3f0/0x860
+>   ? __pfx_do_vfs_ioctl+0x10/0x10
+>   ? do_raw_spin_lock+0x11e/0x240
+>   ? lockdep_hardirqs_on_prepare+0x270/0x3e0
+>   ? _raw_spin_unlock_irq+0x28/0x50
+>   ? do_sigaction+0x3f0/0x860
+>   ? __pfx_do_sigaction+0x10/0x10
+>   ? __x64_sys_rt_sigaction+0x18e/0x1e0
+>   ? __pfx___x64_sys_rt_sigaction+0x10/0x10
+>   ? __x64_sys_close+0x7c/0xd0
+>   __x64_sys_ioctl+0x137/0x190
+>   do_syscall_64+0x71/0x140
+>   entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>  RIP: 0033:0x7f0bd1114f9b
+>  Code: Unable to access opcode bytes at 0x7f0bd1114f71.
+>  RSP: 002b:00007ffc8a8c3130 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>  RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f0bd1114f9b
+>  RDX: 00007ffc8a8c35e0 RSI: 00000000ca289435 RDI: 0000000000000003
+>  RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000007
+>  R10: 0000000000000008 R11: 0000000000000246 R12: 00007ffc8a8c6c85
+>  R13: 00000000398e72a0 R14: 0000000000004361 R15: 0000000000000004
+>   </TASK>
+>
+> This happens because on RAID stripe-tree filesystems we recurse back into
+> btrfs_map_block() on scrub to perform the logical to device physical
+> mapping.
+>
+> But as the device replace task is already holding the dev_replace::rwsem
+> we deadlock.
+>
+> So don't take the dev_replace::rwsem in case our task is the task perform=
+ing
+> the device replace.
+>
+> Suggested-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-syzbot found the following issue on:
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-HEAD commit:    da3ea35007d0 Linux 6.11-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15662a8b980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=61d235cb8d15001c
-dashboard link: https://syzkaller.appspot.com/bug?extid=3d613ae53c031502687a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12221420580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1133a797980000
+Looks good, thanks.
+The review applies regardless of using task_struct or pid_t.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-da3ea350.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1ab780d224f6/vmlinux-da3ea350.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/834dde85c1c2/bzImage-da3ea350.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/f56cd5277a08/mount_8.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3d613ae53c031502687a@syzkaller.appspotmail.com
-
-BTRFS info (device loop0): disabling free space tree
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 357e5067 P4D 357e5067 PUD 3c1d6067 PMD 0 
-Oops: Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 0 UID: 0 PID: 5093 Comm: syz-executor182 Not tainted 6.11.0-rc7-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc90002c5f6b8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff88801acc9000 RCX: 0000000000000001
-RDX: ffff888033fd413e RSI: ffff88801f5cb000 RDI: ffff88801acc9000
-RBP: 1ffff110067fa827 R08: 0000000000000000 R09: 000000000000009f
-R10: 0000000000000002 R11: 0000000000000000 R12: ffff88801f5cb000
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff888033fd413e
-FS:  0000555586260380(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000409ee000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- fbcon_putcs+0x255/0x390 drivers/video/fbdev/core/fbcon.c:1288
- do_update_region+0x396/0x450 drivers/tty/vt/vt.c:619
- invert_screen+0x401/0xe50 drivers/tty/vt/vt.c:740
- highlight drivers/tty/vt/selection.c:57 [inline]
- clear_selection+0x59/0x80 drivers/tty/vt/selection.c:87
- vc_do_resize+0x6e6/0x17f0 drivers/tty/vt/vt.c:1187
- vc_resize include/linux/vt_kern.h:49 [inline]
- fbcon_set_disp+0xac9/0x11d0 drivers/video/fbdev/core/fbcon.c:1389
- con2fb_init_display drivers/video/fbdev/core/fbcon.c:794 [inline]
- set_con2fb_map+0xa6c/0x10a0 drivers/video/fbdev/core/fbcon.c:865
- fbcon_set_con2fb_map_ioctl+0x207/0x320 drivers/video/fbdev/core/fbcon.c:3092
- do_fb_ioctl+0x38f/0x7b0 drivers/video/fbdev/core/fb_chrdev.c:138
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:907 [inline]
- __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f7cf95f6fa9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdb38b4c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 7573617461646f6e RCX: 00007f7cf95f6fa9
-RDX: 00000000200000c0 RSI: 0000000000004610 RDI: 0000000000000003
-RBP: 00007f7cf96705f0 R08: 00005555862614c0 R09: 00005555862614c0
-R10: 00005555862614c0 R11: 0000000000000246 R12: 00007ffdb38b4c80
-R13: 00007ffdb38b4ea8 R14: 431bde82d7b634db R15: 00007f7cf964001d
- </TASK>
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 0000000000000000 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0018:ffffc90002c5f6b8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff88801acc9000 RCX: 0000000000000001
-RDX: ffff888033fd413e RSI: ffff88801f5cb000 RDI: ffff88801acc9000
-RBP: 1ffff110067fa827 R08: 0000000000000000 R09: 000000000000009f
-R10: 0000000000000002 R11: 0000000000000000 R12: ffff88801f5cb000
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff888033fd413e
-FS:  0000555586260380(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000409ee000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>  fs/btrfs/dev-replace.c | 2 ++
+>  fs/btrfs/fs.h          | 2 ++
+>  fs/btrfs/volumes.c     | 8 +++++---
+>  3 files changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index 83d5cdd77f29..604399e59a3d 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -641,6 +641,7 @@ static int btrfs_dev_replace_start(struct btrfs_fs_in=
+fo *fs_info,
+>                 return ret;
+>
+>         down_write(&dev_replace->rwsem);
+> +       dev_replace->replace_task =3D current;
+>         switch (dev_replace->replace_state) {
+>         case BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED:
+>         case BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED:
+> @@ -994,6 +995,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_f=
+s_info *fs_info,
+>         list_add(&tgt_device->dev_alloc_list, &fs_devices->alloc_list);
+>         fs_devices->rw_devices++;
+>
+> +       dev_replace->replace_task =3D NULL;
+>         up_write(&dev_replace->rwsem);
+>         btrfs_rm_dev_replace_blocked(fs_info);
+>
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 79f64e383edd..cbfb225858a5 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -317,6 +317,8 @@ struct btrfs_dev_replace {
+>
+>         struct percpu_counter bio_counter;
+>         wait_queue_head_t replace_wait;
+> +
+> +       struct task_struct *replace_task;
+>  };
+>
+>  /*
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 8f340ad1d938..995b0647f538 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -6480,13 +6480,15 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info=
+, enum btrfs_map_op op,
+>         max_len =3D btrfs_max_io_len(map, map_offset, &io_geom);
+>         *length =3D min_t(u64, map->chunk_len - map_offset, max_len);
+>
+> -       down_read(&dev_replace->rwsem);
+> +       if (dev_replace->replace_task !=3D current)
+> +               down_read(&dev_replace->rwsem);
+> +
+>         dev_replace_is_ongoing =3D btrfs_dev_replace_is_ongoing(dev_repla=
+ce);
+>         /*
+>          * Hold the semaphore for read during the whole operation, write =
+is
+>          * requested at commit time but must wait.
+>          */
+> -       if (!dev_replace_is_ongoing)
+> +       if (!dev_replace_is_ongoing && dev_replace->replace_task !=3D cur=
+rent)
+>                 up_read(&dev_replace->rwsem);
+>
+>         switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+> @@ -6626,7 +6628,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, =
+enum btrfs_map_op op,
+>         bioc->mirror_num =3D io_geom.mirror_num;
+>
+>  out:
+> -       if (dev_replace_is_ongoing) {
+> +       if (dev_replace_is_ongoing && dev_replace->replace_task !=3D curr=
+ent) {
+>                 lockdep_assert_held(&dev_replace->rwsem);
+>                 /* Unlock and let waiting writers proceed */
+>                 up_read(&dev_replace->rwsem);
+> --
+> 2.43.0
+>
+>
 
