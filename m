@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7913-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7914-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D27079744CA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 23:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C57B79744D7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 23:31:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA7F1F26D70
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 21:28:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C2651F27483
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2024 21:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15ADC1AB521;
-	Tue, 10 Sep 2024 21:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372851AB500;
+	Tue, 10 Sep 2024 21:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GYA0FicY"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="VMG6Wc/7"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A2C23774
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 21:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25CC51A76D1
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 21:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726003728; cv=none; b=ib8DYQFctQEgL/OvKpETj9jkQZHi1JeouZgypDWNuC/R7giFxzinJlZJmkkk6ckV2xQGQr1f2QHnZDEaFQg5mFmX3QJW/5XnBcRUOnFSCGTIOGeI9w2SGTu2+nb8NRnJfEJhvkUprya6c/TCYQaMkDcL87FT1KkNY2zWaPEYIK8=
+	t=1726003848; cv=none; b=TPK1I6EiyEZvSkx7n6NLZIvoBFx9wTnbT5QQTzHsemNfpOcc6ezFVVDJawCB01ZVpgznevKJ4gpJvCzvb1NyZ8aZYKh/VRegRGCyzrgWyXFOTMGSfqiSQQWmZ1r+XJB0V0eQMAJESIH47JIeB2ca+6c/ajjhF9bNVfhJUJHTJ9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726003728; c=relaxed/simple;
-	bh=7ldcY+E/By176xYEyW1SmjhU8B4F4sZo7rmMVbY/qU8=;
+	s=arc-20240116; t=1726003848; c=relaxed/simple;
+	bh=yfydiwTdeVGXXtX8TKPVFEDWCOgS7aoN0omDx4WXvi4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=MztctpByMBeLuyKchWVg4Ra7HyhXEbAEabPme8VCzrbbmU1KOo1VPazChUomQdTVIRsJK6wEKlX9UEB2y005sYWuiElFbqhn7Gg1UDl8vVjdGTA/8nkkoBQvBJIWjsOFD+pc/utFYID2AXPc2pYpnXRZ+YRqfY8Es+fr2K2z+o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GYA0FicY; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=sC7OLyW4KX3NEfgj7x76OX6aPvX/7vEiKHODBx4wVFeu98zmnqQ6ErpYKLe7fcdRpLRtfejup5uQHOFzIoV28KDXMsALFWYNUsfYKQxa4oUEu/okQ2L++5WO+lu69nwCTgfC7O9KE+G9VooaqQcqShhJarxyPniLOF01QFNi8Ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=VMG6Wc/7; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726003722; x=1726608522; i=quwenruo.btrfs@gmx.com;
-	bh=7ldcY+E/By176xYEyW1SmjhU8B4F4sZo7rmMVbY/qU8=;
+	s=s31663417; t=1726003843; x=1726608643; i=quwenruo.btrfs@gmx.com;
+	bh=9yxXnEJbuX7TSwJKWhzXFFfjL4DipV/JFLJPgdVWA1g=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=GYA0FicYcBnCI4ZT+jNYFx6JVE+bboorXKZJ4+4aXRUrUSt0+ilWT+vaLBB59ImV
-	 PtMRo93ELhXtVVcE2H+5XdsaFqlu2PLaDu0CSkoNKrMpoZ56gk8YLDOqL/nh1JXHR
-	 9x5Yc9MEix+kC3vizRNcnKZ4oFtQROcnmitrJ7ijPCxLDyrJgDACBWkN4bTD2EbN5
-	 UJgo9OYwLbF6JPUOdRg8UgR1PDo99wKJgp0wacgSYAJjqI2HMK0hqr+2StjkBynxW
-	 +LrnIYXg6Mj4AhcvrcVa4Xuf+OAaIq3cqQFku6WmMBJNMs+4KKgzPJNh229dPWXzR
-	 MGOL/j93nmWXURroPw==
+	b=VMG6Wc/7m6be2gG8sm1wE4veLJqx5v2c3uUKvnA6ajtsH4tXp8Q6VlL/VIXulqCl
+	 8TiKtw1wn4BI3r7NabBwbQzY5QkGcf+55JVOc9o6pzssakSvyZZEGV/7oE98+16W7
+	 VhO7V1ZUc7YZ0hRNmX3Lmjzt7DIis4tN+r10Dm7icGFbqS3SEVow+tWCRkROzQSWt
+	 jVHMKA+q3iLHJpau/LEt48vsvf3Fl8KRll5lkdIINAcEjXbiQI6Pa87x0t1svhLs5
+	 Ik0rsB4Ie/zh3guziQbTFgOcyhMNPjaVSIvQBrjZ6tZfyhAdOavh5+i+0tL77md4b
+	 p2qJi9Lq/pnKTWkiOg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7sDq-1st46F2pQA-0052zQ; Tue, 10
- Sep 2024 23:28:42 +0200
-Message-ID: <244f1d2b-f412-4860-af34-65f630e7f231@gmx.com>
-Date: Wed, 11 Sep 2024 06:58:38 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1ML9yc-1sX9Yf0ZZy-00UmH6; Tue, 10
+ Sep 2024 23:30:43 +0200
+Message-ID: <89131a4f-5362-4002-9a55-d1a24428ef05@gmx.com>
+Date: Wed, 11 Sep 2024 07:00:40 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,9 +58,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Critical error from Tree-checker
-To: Archange <archange@archlinux.org>, linux-btrfs@vger.kernel.org
-References: <9541deea-9056-406e-be16-a996b549614d@archlinux.org>
+Subject: Re: Tree corruption
+To: Neil Parton <njparton@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAAYHqBbrrgmh6UmW3ANbysJX9qG9Pbg3ZwnKsV=5mOpv_qix_Q@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,90 +87,82 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <9541deea-9056-406e-be16-a996b549614d@archlinux.org>
+In-Reply-To: <CAAYHqBbrrgmh6UmW3ANbysJX9qG9Pbg3ZwnKsV=5mOpv_qix_Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hCa0AIjwX7p/gV+eso41ANltoKeNQH0v1Tg5Lcx2w2xj7rqh06r
- Q8fWALgMz0L/uVp8Szy4ScVXX2bq3brwKxVl+vsppMfMJ1QMktOWD3gK+UuEB0E+5mQ2fzn
- VgL+EOfPny1xex4NJDFwpYcr1lD/qpP9+TnB8P7GYPHHEuhw67WjgygXVszS1lwBCPWYfOc
- 3pfl6k3p1lFVet5gtNDcg==
+X-Provags-ID: V03:K1:fyorL6+wwxXcxLx40L2KlnloRMwgy9ZKw+Kb1cdXaJm6ZgoeagK
+ cYvlIC2xLnM6x24suZAZHk307VF6kwR0fABAp2vkFsrhixGkvjQKytbzqbiy4CEUJMQUM6q
+ NqdLaWY+sO2AYMhhPp9qfJrFdV1LvBt0hS6WcV4iOYFheQAc4zboAbvTNfyKLerOBYSoMT1
+ 93gpMBJHM7+TzXgFf6MsA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:KpVauw0xDe0=;kCDtUQhEASKN5Rw1lW1KUFCKLkD
- aaTN2fq4/bso8XDiWS/fN6Epi1dNbxF9ppjcpZqebwpiHRz0FtS38dyTslHcPVJ0j+kXHjgr5
- ++YACaHWaEsBSeNAWkd4nTxNcl3x4YU4IplmW8fcISl6HCJLn4VEn7m4faizx9AjfP1JPPRXb
- xN8qrzVPcSgfcZkqio5FmF2gf59Bq/F0B0h35D+f2wo9wdrIEbqGxQlk0NzFNKA/VNrrXQrfq
- zkBdtWyocxhnEI37A2Nx4qLSG+Nh+Zmln5RKRdnBjVepJeC5aPPYpuplNiwwp55sLcqdL0B+M
- M3MHFDMCt7w6Vkh3zzTpikCgqEdoP8u1SnH4G3md8tZ9PCRh8vITcfEhYiM9SsaBwPoikjFQ9
- WDp13w+XPyGf4aJc1WnWUXZ0fHnL2HJDoT2+0Alznengv9atX4M9WB+bm9pU8D3r0Q4DutM0c
- zHsOTLOyy60ZPSqIvBMPX/NmzUOt+5AzHqPtuOYSxmvvlzuzdecHR5XgAYw99rUvhdUHkAq/T
- nGIqfGtgLWt4zmq3uaOrCEdA189mWjjgeQ83paAvOeV+hLq+fc8pvAee+mmo4wRhYNQjz5eJo
- AVOElXz6QEM2euFNraESzR8WZqdWyuT67VX2GBxeZNdlUjTPnmPztC8SLCGRTDbsawQLKzNKc
- vFqQsVWpEENI+JJU7T0aJbYbkwAmPfyYuS5heqifxRaOf9ewfk3T80luUnQ85Efn7m+MV/8zl
- Z2X9sCRbjQNnMKgINwvRwg/y87yLbOhN+/Q6IObrw71DCcWg/H2lT9Goh4w4ESRH9rohdyYi2
- bAF1PdmsmEcOLukKaszEeFXw==
+UI-OutboundReport: notjunk:1;M01:P0:AkP5E1pAx8Y=;PXV7kY2W1mVH9TXqStQ+DGRwex7
+ NIOQp63VVZdxah39duX9J6mC8SJVPqV4DByWKUDPZg0T396+T/EFU8iRrZlDY8iG7NggobmaB
+ gZy3zGOFeVFQK6vaWEx74Mou1m0uYCg0JcH/15fSrkdKcQgAPvq4xYLHkW4gBmo621nWdy+Us
+ 8uFbOcKHsP27o8tScL1JLnCd64X3D/pTibgSuSHL8s4ukoPrVCwc61S2swrLpVS9C3TDeLknh
+ zrahe29sbM+Rkym4X/bORrs3OJ3Xvyicw86OsbSHTmA2vx+1JEnHDk4ZL5RBT18SDnTWLQMYK
+ VAhlxgVTu6npWQN8EZL7GR0TKezEWHELdJ3d4Zt+2NK7xkJvMhMkkrjuFQ6YwIyhqShloo7V0
+ 6Md8p9DwOLOsydCHcwXGt2DJ3G+LDtaFyBAnGNWxHDEUowbUbxNzGaok5GCauLxqniOPAxyfv
+ d/VTUozBK9A0LDW8P0my7w4Th4RJR0+wO6+TAsCeKajQ1tlq8eU+nxJ1XKXIHxFHxaUk8oGUc
+ fPKZbcQw5cpJDOyKJOvWM9nv105m/bzVM55dg5JvMy0KfoRi9LSgbiIeYP3Zc4Kk0OlYHFYn5
+ Y6K/UJcN562fsMcy6m16vGyoAfpJxLhBjzativmGEcYcHoD6p8IdX4gTR5s72P/SxK2UZCj8t
+ N8/ETzktCSeqhrRLBxz9dJcstESy3t9sPnx4I2N4bhjEdHNmAvLayhyhRUuZNR6M5HQqTjgCz
+ EQjRR90RgqJTv3yYsb8V5MbOArLD+axaa1yYHqRnfLocmkY21xipLcBaaIJp6wtK+MvmSPgLF
+ y56yNFYBm/AXDSJHPlmQe6kQ==
 
 
 
-=E5=9C=A8 2024/9/11 06:35, Archange =E5=86=99=E9=81=93:
-> Hi there,
+=E5=9C=A8 2024/9/11 02:38, Neil Parton =E5=86=99=E9=81=93:
+> Arch LTS system (kernel 6.6.50)
 >
-> Since today, my system started randomly becoming read-only. At that
-> point I can still run dmesg in an open terminal, so I=E2=80=99ve seen it=
- was
-> related to a btrfs error, but did not try anything since I could not
-> open a web browser anymore. But I=E2=80=99ve seen the error to be =E2=80=
-=9CBTRFS
-> critical=E2=80=9D and related to a =E2=80=9Ccorrupt leaf=E2=80=9D.
+> Cannot mount a raid1 (data) raid1c3 (metadata) array made up of 4
+> drives as I'm getting corrupt leaf and read time tree block corruption
+> errors.
 >
-> I=E2=80=99ve tried to run `btrfs scrub` on the device after rebooting, a=
-nd in
-> fact it aborted almost right away triggering the same error in dmesg
-> (but not turning the system read-only, so I can copy paste it here):
+> mount -o recovery /dev/sda /mountpoint   didn't help
 >
-> [=C2=A0 365.268769] BTRFS info (device dm-0): scrub: started on devid 1
-> [=C2=A0 385.788000] page: refcount:3 mapcount:0 mapping:00000000d0054cae
-> index:0x9678888 pfn:0x11ce15
-> [=C2=A0 385.788015] memcg:ffff9fc94db8f000
-> [=C2=A0 385.788021] aops:btree_aops [btrfs] ino:1
-> [=C2=A0 385.788235] flags:
-> 0x2ffffa000004020(lru|private|node=3D0|zone=3D2|lastcpupid=3D0x1ffff)
-> [=C2=A0 385.788248] raw: 02ffffa000004020 ffffea9a8574ff88 ffffea9a84738=
-5c8
-> ffff9fc95b8365b0
-> [=C2=A0 385.788255] raw: 0000000009678888 ffff9fc9ae554000 00000003fffff=
-fff
-> ffff9fc94db8f000
-> [=C2=A0 385.788259] page dumped because: eb page dump
-> [=C2=A0 385.788264] BTRFS critical (device dm-0): corrupt leaf:
-> block=3D646267305984 slot=3D92 extent bytenr=3D1182031872 len=3D106496 i=
-nvalid
-> data ref objectid value 257
+> If I blank the log on what seems to be the affected drive I can get it
+> to mount but it will give out the same errors after a few sec and turn
+> the file system read only.
+>
+> If I pull the affected drive and mount degraded I get the same errors
+> from another drive.
+>
+> Trying to work out if I'm shafted or if there are steps I can take to re=
+pair.
+>
+> Critical data is backed up off site but I also have a tonne of
+> non-critical data that will take me weeks to re-establish so nuking
+> not my preferred option.
+>
+> I've managed to ssh in and here are some lines from dmesg:
+>
+> [   14.997524] BTRFS info (device sda): using free space tree
+> [   22.987814] BTRFS info (device sda): checking UUID tree
+> [  195.130484] BTRFS error (device sda): read time tree block
+> corruption detected on logical 333654787489792 mirror 2
+> [  195.149862] BTRFS error (device sda): read time tree block
+> corruption detected on logical 333654787489792 mirror 1
+> [  195.159188] BTRFS error (device sda): read time tree block
+> corruption detected on logical 333654787489792 mirror 3
+>
+> [  195.128789] BTRFS critical (device sda): corrupt leaf:
+> block=3D333654787489792 slot=3D110 extent bytenr=3D333413935558656 len=
+=3D65536
+> invalid data ref objectid value 2543
+> [  195.148076] BTRFS critical (device sda): corrupt leaf:
+> block=3D333654787489792 slot=3D110 extent bytenr=3D333413935558656 len=
+=3D65536
+> invalid data ref objectid value 2543
+> [  195.157375] BTRFS critical (device sda): corrupt leaf:
+> block=3D333654787489792 slot=3D110 extent bytenr=3D333413935558656 len=
+=3D65536
+> invalid data ref objectid value 2543
 
-Full dmesg please.
-
-Normally it should dump the full content of the tree block, to help
-debugging the problem.
+`btrfs ins dump-tree -b 333413935558656 /dev/sda` output please.
 
 Thanks,
 Qu
-> [=C2=A0 385.788283] BTRFS error (device dm-0): read time tree block
-> corruption detected on logical 646267305984 mirror 1
-> [=C2=A0 385.796803] BTRFS info (device dm-0): scrub: not finished on dev=
-id 1
-> with status: -5
 >
-> According to https://btrfs.readthedocs.io/en/latest/Tree-checker.html
-> this is not really expected, and the last paragraph says to report
-> troubles here. So here I am, in the search for advice about this error
-> (web searches returned nothing with this specific error except the
-> commit/ml messages that added the code for it) and how to fix my random
-> lockups.
->
-> Regards.
->
-> P.S.: I=E2=80=99m not subscribed to the list, so please keep me in copy =
-when
-> answering.
->
+> advice needed please
 >
 
