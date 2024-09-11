@@ -1,244 +1,269 @@
-Return-Path: <linux-btrfs+bounces-7934-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7935-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F6EC974E6B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 11:21:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 799C0974E80
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 11:30:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6B3C286B1E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 09:21:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC360B25818
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 09:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC5414AD0A;
-	Wed, 11 Sep 2024 09:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806DF17838C;
+	Wed, 11 Sep 2024 09:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MxW2vn65";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MxW2vn65"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XMdUJEiL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87F45339F
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 09:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4DA17C228
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 09:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726046465; cv=none; b=A9P7BjwopP/Xxy7/7H8qvGBLN9mKhQl8T1UwozbZ0U99ZoGcVsYwRePmE8XifQ0SrYuokIrVlAxt3Fa3PRtSAeCidcBfeg0wQdXtVfTXlBRe/doxbNBPepi01F41nf/1O48Asb/Pe243m+FuzuWvs03WNPXzUzdOlNPrnEcRI2A=
+	t=1726047011; cv=none; b=JlJtgUNR0TnnmEUv1A5IALr7c/c5Y0pDWIQnf/oW9Ndzl3/gcRug4YtwgZvoYVQ9t/Kb5NMGcwdcY/S5MxFv0TwZAF5miU5BwY1jZV3ZLiObm0/AHAyyO/6DaCJvYGi/KtrumyjAsJc4k4lbdCrIdXN423Ck+UZmDh5eb9uHg+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726046465; c=relaxed/simple;
-	bh=vpdon82yKBlm+UIcQzBAEbmFMGCfBLxx7+s6LoaYGY0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DhKVjnDHUn6/YV+uGlmVKKmtTV27lGKFUriudyJ10HyQ6VtiaKyoGtVfInR2oh3vqwlk1WRJxjSAmeEjT4vKesFjUWzHGPiU/GVSqi94GW+dXCVnBVeiTAp0qYGyC6gDjkYJzrHYXGo4Oc3sWofVUcFqxFft3t36089tRNx1tJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MxW2vn65; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MxW2vn65; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DC6CA1F7E9;
-	Wed, 11 Sep 2024 09:20:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1726046459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=R0LuxAWBdhOgE8+oPPJmiqUSAiUZ60jXWb9vkJNrfVE=;
-	b=MxW2vn653j0FmE3uhgtITZs+XqRcS7/bck75+w7LSf3wrXWj5Q/6JFGx22e+qZGzLJkBVX
-	wfGPCyT5Wnu369Fof28EE/q5yKq5BAnqenv1LLVxfWDuK4pI0SL6XgAGfjqnniuL1dh/TQ
-	D9rKxMSvjtzBfUjypQU2CYpwT27uIng=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=MxW2vn65
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1726046459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=R0LuxAWBdhOgE8+oPPJmiqUSAiUZ60jXWb9vkJNrfVE=;
-	b=MxW2vn653j0FmE3uhgtITZs+XqRcS7/bck75+w7LSf3wrXWj5Q/6JFGx22e+qZGzLJkBVX
-	wfGPCyT5Wnu369Fof28EE/q5yKq5BAnqenv1LLVxfWDuK4pI0SL6XgAGfjqnniuL1dh/TQ
-	D9rKxMSvjtzBfUjypQU2CYpwT27uIng=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DA64E132CB;
-	Wed, 11 Sep 2024 09:20:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SeOQJvpg4WblbgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 11 Sep 2024 09:20:58 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: pandada8 <pandada8@gmail.com>
-Subject: [PATCH] btrfs-progs: open the devices exclusively for writes
-Date: Wed, 11 Sep 2024 18:50:37 +0930
-Message-ID: <5c993f306f3f2f7f05ce71f00b0fcd023009ae32.1726045930.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1726047011; c=relaxed/simple;
+	bh=BiAhLZVlekEavwrDhuEhNXJkF2nqP5q9PLMXkJYZZJM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lgIA3/OUjsTYeZY0CTTdvcdE+b3dvg6m3MNmkcIfrUfklD+cx5IuIhlYLGn9FHO/oB+8QkWp1BijbpCLdxwpKGRuWOCXPF4gyAjLSvn0gQFb4zeKucu/kbsXM9gCvTmPYxJkwl4HVRGSng/3JJxvTxTE9sWQp9toE5eQlLjWi7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XMdUJEiL; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7a99fdf2e1aso415919885a.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 02:30:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726047009; x=1726651809; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D5oRzGotL4mPRUx9F0HLuY4cGzgfQMuJT1ps2+G2pA0=;
+        b=XMdUJEiLJ6ot3GKn7aWlc1Db5YoR/JEpjQYv/0fcUMmcsoiGSizkwGIs4h9Y91HPt0
+         JYYgaw/8M60DEFCYnotRhCzLWsuuLYe64xNj/TJnD9kOxPMq/6dsRYRwVi1nDL06FPxT
+         ljxT24t3NaS+azEoy2FLKVZd+ZHYmInJn+WeVPpEHCapDPss7yHZduAHO8G2iZ76jBiW
+         VAhqtLP6CJ8U9nVpfEYdtPqmP9fc5IszzKGjNMzIronCbAnqBpV4f3F7gveLoehr06At
+         pCJz7Q1xMpoAmc9zCG8hQikYmLUEhx8XOH3HQfs6v9iLIun0Tjl0wJgnC0Ij6q5GCXir
+         0RtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726047009; x=1726651809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D5oRzGotL4mPRUx9F0HLuY4cGzgfQMuJT1ps2+G2pA0=;
+        b=J6LLZDEV7tM+RhV7gOBfN61CQbZy/Ljesp8oaDkvNQcePM3Og5noUpdn3lTZAzL+Yk
+         GO5eUMOGl3cwajEmuLMU2ipOZQHGxs8TqBto+f26MenatTDXzO8qTxr30pA77pI7W8uP
+         1jc/4MvK5qDWGObbn31gJQWyzwvk8d/J2pFc1+WSXSMRB9fsrKAfdTBg3R9rpkk7Rbxj
+         j8WPGOVqFQvtq7gyeak1nxrTqGRSW0d8oFE/NKf3nvSYd8TGFpFyN+bCUlRNlNB4yXi4
+         KGKDb72PDAWh+ZmI+GlvkXM9GzUEDZ8z20vpAAIHknuKh6QCARzVd3jpz2ffgf/ZruW6
+         1vOA==
+X-Forwarded-Encrypted: i=1; AJvYcCVYD0ivr1Z6VWUgXj6S+fQJSuNQ5tto5/vmb9xmXff/U/ZECIxgCL2HjCa1H7kA37PEQvzC4byb/ThflA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJNj/lXzEB+QxzNDvCpehNLWoYXDRbK+iE+vCeiDpIxLi5odZT
+	ApXQOcz6FIo8phH1ee7vkqJiHsooxGjIk5SbgvuVFnO3zMnr4NnssPJc+PMdhyP+4b0Q0hLqd8M
+	h5gdMMq6THJKtN+P1nRrvtJH5Wsc=
+X-Google-Smtp-Source: AGHT+IE+BkVzC2f/Bj+Co5tDzv1IWOHRj2ue667Y4uWJIWQvGDNhDCBENVU71vfMxmZ6eRMrxeeTXhiZ32HIxtqbMuU=
+X-Received: by 2002:a05:620a:2596:b0:79f:67b:4fdc with SMTP id
+ af79cd13be357-7a99732852amr2557537385a.2.1726047008898; Wed, 11 Sep 2024
+ 02:30:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: DC6CA1F7E9
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_CC(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+References: <CAAYHqBbrrgmh6UmW3ANbysJX9qG9Pbg3ZwnKsV=5mOpv_qix_Q@mail.gmail.com>
+ <89131a4f-5362-4002-9a55-d1a24428ef05@gmx.com> <CAAYHqBZ+-3GbDmQFGxMcYs3HpO-DUQA4pCG0xqWMZW+sbw-KJg@mail.gmail.com>
+ <331b4034-7a6c-4fa8-a10d-6fa87b801d21@gmx.com> <CAAYHqBaEEq8_AWKtMv9RtH4ZNtTEheCjAZzBstkrECt775UzJA@mail.gmail.com>
+ <72315446-3ad4-40d1-8cff-1ec25ae207bd@gmx.com> <CAAYHqBYKQVNOyNbVBw=Xg2K2rXK0KTT7XDx3Ayn=SbNHtf53Lw@mail.gmail.com>
+ <d0a1012f-7485-4e34-9f6a-b03a1164f53f@suse.com> <CAAYHqBbcDEuHQgG_iim84otLk-h9TioqNeT1BdiRSvEuwDJaZQ@mail.gmail.com>
+ <12a91072-9289-479a-8a15-4c4f0894ead1@gmx.com>
+In-Reply-To: <12a91072-9289-479a-8a15-4c4f0894ead1@gmx.com>
+From: Neil Parton <njparton@gmail.com>
+Date: Wed, 11 Sep 2024 10:29:58 +0100
+Message-ID: <CAAYHqBbfXj64BuY5kESx+8NJReqz-dzKeXHwf=vHKqYhKVwB3w@mail.gmail.com>
+Subject: Re: Tree corruption
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is an internal report that, during btrfs-convert to block-group
-tree, by accident some systemd events triggered the mount of the target
-fs.
+dmesg | grep BTRFS
+[    2.551970] BTRFS: device fsid 75c9efec-6867-4c02-be5c-8d106b352286
+devid 14 transid 12746924 /dev/sda scanned by btrfs (142)
+[    2.552100] BTRFS: device fsid 75c9efec-6867-4c02-be5c-8d106b352286
+devid 12 transid 12746924 /dev/sdc scanned by btrfs (142)
+[    2.552225] BTRFS: device fsid 75c9efec-6867-4c02-be5c-8d106b352286
+devid 15 transid 12746924 /dev/sdb scanned by btrfs (142)
+[    2.552343] BTRFS: device fsid 75c9efec-6867-4c02-be5c-8d106b352286
+devid 13 transid 12746924 /dev/sdd scanned by btrfs (142)
+[    6.064021] BTRFS info (device sdc): first mount of filesystem
+75c9efec-6867-4c02-be5c-8d106b352286
+[    6.064047] BTRFS info (device sdc): using crc32c (crc32c-intel)
+checksum algorithm
+[    6.064064] BTRFS info (device sdc): use zstd compression, level 3
+[    6.064079] BTRFS info (device sdc): enabling auto defrag
+[    6.064092] BTRFS info (device sdc): using free space tree
+[   76.647420] BTRFS error (device sdc): level verify failed on
+logical 313163105075200 mirror 2 wanted 0 found 1
+[   76.660155] BTRFS info (device sdc): read error corrected: ino 0
+off 313163105075200 (dev /dev/sdc sector 1145047360)
+[   76.660353] BTRFS info (device sdc): read error corrected: ino 0
+off 313163105079296 (dev /dev/sdc sector 1145047368)
+[   76.660553] BTRFS info (device sdc): read error corrected: ino 0
+off 313163105083392 (dev /dev/sdc sector 1145047376)
+[   76.660719] BTRFS info (device sdc): read error corrected: ino 0
+off 313163105087488 (dev /dev/sdc sector 1145047384)
+[  153.697518] BTRFS info (device sdc): scrub: started on devid 12
+[  153.875912] BTRFS info (device sdc): scrub: started on devid 14
+[  153.876949] BTRFS info (device sdc): scrub: started on devid 15
+[  153.943291] BTRFS info (device sdc): scrub: started on devid 13
+[  260.968635] BTRFS error (device sdc): parent transid verify failed
+on logical 313163116052480 mirror 2 wanted 12746898 found 12746888
+[  261.047602] BTRFS info (device sdc): read error corrected: ino 0
+off 313163116052480 (dev /dev/sdc sector 1145068800)
+[  261.047893] BTRFS info (device sdc): read error corrected: ino 0
+off 313163116056576 (dev /dev/sdc sector 1145068808)
+[  261.051132] BTRFS info (device sdc): read error corrected: ino 0
+off 313163116060672 (dev /dev/sdc sector 1145068816)
+[  261.051398] BTRFS info (device sdc): read error corrected: ino 0
+off 313163116064768 (dev /dev/sdc sector 1145068824)
 
-This leads to double mount (one by kernel and one by the btrfs-progs),
-which seems to cause quite some problems.
-
-To avoid such accident, exclusively opens all devices if btrfs-progs is
-doing write opeartions.
-
-Reported-by: pandada8 <pandada8@gmail.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- cmds/rescue.c             | 6 +++---
- common/filesystem-utils.c | 3 ++-
- convert/main.c            | 3 ++-
- image/image-restore.c     | 4 +++-
- mkfs/main.c               | 3 ++-
- tune/main.c               | 2 +-
- 6 files changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/cmds/rescue.c b/cmds/rescue.c
-index 6d7d526df145..5bbd47e5c2e3 100644
---- a/cmds/rescue.c
-+++ b/cmds/rescue.c
-@@ -203,7 +203,7 @@ static int cmd_rescue_zero_log(const struct cmd_struct *cmd,
- 	}
- 
- 	root = open_ctree(devname, 0, OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL |
--			  OPEN_CTREE_NO_BLOCK_GROUPS);
-+			  OPEN_CTREE_NO_BLOCK_GROUPS | OPEN_CTREE_EXCLUSIVE);
- 	if (!root) {
- 		error("could not open ctree");
- 		return 1;
-@@ -258,7 +258,7 @@ static int cmd_rescue_fix_device_size(const struct cmd_struct *cmd,
- 	}
- 
- 	oca.filename = devname;
--	oca.flags = OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL;
-+	oca.flags = OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL | OPEN_CTREE_EXCLUSIVE;
- 	fs_info = open_ctree_fs_info(&oca);
- 	if (!fs_info) {
- 		error("could not open btrfs");
-@@ -437,7 +437,7 @@ static int cmd_rescue_clear_ino_cache(const struct cmd_struct *cmd,
- 		goto out;
- 	}
- 	oca.filename = devname;
--	oca.flags = OPEN_CTREE_WRITES;
-+	oca.flags = OPEN_CTREE_WRITES | OPEN_CTREE_EXCLUSIVE;
- 	fs_info = open_ctree_fs_info(&oca);
- 	if (!fs_info) {
- 		error("could not open btrfs");
-diff --git a/common/filesystem-utils.c b/common/filesystem-utils.c
-index 7e898a3d193c..05451093a9fd 100644
---- a/common/filesystem-utils.c
-+++ b/common/filesystem-utils.c
-@@ -94,7 +94,8 @@ static int set_label_unmounted(const char *dev, const char *label)
- 	/* Open the super_block at the default location
- 	 * and as read-write.
- 	 */
--	root = open_ctree(dev, 0, OPEN_CTREE_WRITES);
-+	root = open_ctree(dev, 0, OPEN_CTREE_WRITES |
-+				  OPEN_CTREE_EXCLUSIVE);
- 	if (!root) /* errors are printed by open_ctree() */
- 		return -1;
- 
-diff --git a/convert/main.c b/convert/main.c
-index 1af47260cdf6..a227cc6fef84 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -1374,7 +1374,8 @@ static int do_convert(const char *devname, u32 convert_flags, u32 nodesize,
- 	btrfs_sb_committed = true;
- 
- 	root = open_ctree_fd(fd, devname, 0,
--			     OPEN_CTREE_WRITES | OPEN_CTREE_TEMPORARY_SUPER);
-+			     OPEN_CTREE_WRITES | OPEN_CTREE_TEMPORARY_SUPER |
-+			     OPEN_CTREE_EXCLUSIVE);
- 	if (!root) {
- 		error("unable to open ctree for finalization");
- 		goto fail;
-diff --git a/image/image-restore.c b/image/image-restore.c
-index bed5e78d227d..667b9811233d 100644
---- a/image/image-restore.c
-+++ b/image/image-restore.c
-@@ -1790,7 +1790,8 @@ int restore_metadump(const char *input, FILE *out, int old_restore,
- 
- 		oca.filename = target;
- 		oca.flags = OPEN_CTREE_WRITES | OPEN_CTREE_RESTORE |
--			    OPEN_CTREE_PARTIAL | OPEN_CTREE_SKIP_LEAF_ITEM_CHECKS;
-+			    OPEN_CTREE_PARTIAL | OPEN_CTREE_SKIP_LEAF_ITEM_CHECKS |
-+			    OPEN_CTREE_EXCLUSIVE;
- 		info = open_ctree_fs_info(&oca);
- 		if (!info) {
- 			error("open ctree failed");
-@@ -1855,6 +1856,7 @@ int restore_metadump(const char *input, FILE *out, int old_restore,
- 		root = open_ctree_fd(fileno(out), target, 0,
- 					  OPEN_CTREE_PARTIAL |
- 					  OPEN_CTREE_WRITES |
-+					  OPEN_CTREE_EXCLUSIVE |
- 					  OPEN_CTREE_NO_DEVICES |
- 					  OPEN_CTREE_ALLOW_TRANSID_MISMATCH |
- 					  OPEN_CTREE_SKIP_LEAF_ITEM_CHECKS);
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 45c25df339ff..06cc2484e612 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1846,7 +1846,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	}
- 
- 	oca.filename = file;
--	oca.flags = OPEN_CTREE_WRITES | OPEN_CTREE_TEMPORARY_SUPER;
-+	oca.flags = OPEN_CTREE_WRITES | OPEN_CTREE_TEMPORARY_SUPER |
-+		    OPEN_CTREE_EXCLUSIVE;
- 	fs_info = open_ctree_fs_info(&oca);
- 	if (!fs_info) {
- 		error("open ctree failed");
-diff --git a/tune/main.c b/tune/main.c
-index b0509cf131e6..d246b970e82e 100644
---- a/tune/main.c
-+++ b/tune/main.c
-@@ -185,7 +185,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- {
- 	struct btrfs_root *root;
- 	struct btrfs_fs_info *fs_info;
--	unsigned ctree_flags = OPEN_CTREE_WRITES;
-+	unsigned ctree_flags = OPEN_CTREE_WRITES | OPEN_CTREE_EXCLUSIVE;
- 	int seeding_flag = 0;
- 	u64 seeding_value = 0;
- 	int random_fsid = 0;
--- 
-2.46.0
-
+On Wed, 11 Sept 2024 at 10:10, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2024/9/11 18:31, Neil Parton =E5=86=99=E9=81=93:
+> > Many thanks Qu, I appear to be back up and running but I also had to
+> > run 'btrfs rescue zero-log' to get rid of a superblock error.
+> > super-recover said the superblock was fine.
+>
+> This is not expected. I believe btrfs-rescue should check log trees
+> before doing the operation.
+>
+> >
+> > On reboot and remount (as normal) I have a couple of residual transid
+> > errors and I'm currently running a full scrub to try and clean things
+> > up.
+>
+> Transid is also not expected, if the transid error persists, it's a huge
+> problem.
+>
+> Does the transid only shows on certain mirrors?
+>
+> Anyway a full dmesg from the first transid mismsatch will help a lot to
+> find out what's really going wrong.
+>
+> I hope it's really just the bad log trees.
+>
+> Thanks,
+> Qu
+> >
+> > Hopefully though I'm back up and running, this is the longest the FS
+> > has been mounted in 48 hours without it reverting to ro!
+> >
+> > Can't thank you enough for your help. I hope I'm not premature in
+> > thanking you / will report back with any more errors.
+> >
+> > Regards
+> >
+> > Neil
+> >
+> > On Wed, 11 Sept 2024 at 09:55, Qu Wenruo <wqu@suse.com> wrote:
+> >>
+> >>
+> >>
+> >> =E5=9C=A8 2024/9/11 17:43, Neil Parton =E5=86=99=E9=81=93:
+> >>> Is it safe to run 'btrfs rescue clear-ino-cache' on all 4 drives in
+> >>> the array?
+> >>
+> >> Run it on any device of the fs.
+> >>
+> >> Most "btrfs rescue" sub-commands applies to a fs, not a device.
+> >>
+> >> And you must run the command with the fs unmounted.
+> >>
+> >>>   Reason I ask is when this first occurred it was one
+> >>> particular drive reporting errors and now after switching out cables
+> >>> and to a different hard drive controller it's a different drive
+> >>> reporting errors.
+> >>>
+> >>> It's also worth noting that this array was originally created on a
+> >>> Debian system some 6-8 years ago and I've gradually upgraded the
+> >>> drives over time to increase capacity, I'm up to drive ID 16 now to
+> >>> give you an idea.  Does that mean there are other gremlins potentiall=
+y
+> >>> lurking behind the scenes?
+> >>
+> >> Nope, this is really limited to that inode_cache mount option.
+> >> I guess you mounted it once with inode_cache, but kernel never cleans
+> >> that up, and until that feature is fully deprecated, and newer
+> >> tree-checker consider it invalid, and trigger the problem.
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>>
+> >>> On Wed, 11 Sept 2024 at 09:04, Qu Wenruo <quwenruo.btrfs@gmx.com> wro=
+te:
+> >>>>
+> >>>>
+> >>>>
+> >>>> =E5=9C=A8 2024/9/11 17:24, Neil Parton =E5=86=99=E9=81=93:
+> >>>>> btrfs check --readonly /dev/sda gives the following, I will run a
+> >>>>> lowmem command next and report back once finished (takes a while)
+> >>>>>
+> >>>>> Opening filesystem to check...
+> >>>>> Checking filesystem on /dev/sda
+> >>>>> UUID: 75c9efec-6867-4c02-be5c-8d106b352286
+> >>>>> [1/7] checking root items
+> >>>>> [2/7] checking extents
+> >>>>> [3/7] checking free space tree
+> >>>>> [4/7] checking fs roots
+> >>>>> [5/7] checking only csums items (without verifying data)
+> >>>>> [6/7] checking root refs
+> >>>>> [7/7] checking quota groups skipped (not enabled on this FS)
+> >>>>> found 24251238731776 bytes used, no error found
+> >>>>> total csum bytes: 23630850888
+> >>>>> total tree bytes: 25387204608
+> >>>>> total fs tree bytes: 586088448
+> >>>>> total extent tree bytes: 446742528
+> >>>>> btree space waste bytes: 751229234
+> >>>>> file data blocks allocated: 132265579855872
+> >>>>>     referenced 23958365622272
+> >>>>>
+> >>>>> When the error first occurred I didn't manage to capture what was i=
+n
+> >>>>> dmesg, but far more info seemed to be printed to the screen when I
+> >>>>> check on subsequent tries, I have some photos of these messages but=
+ no
+> >>>>> text output, but can try again with some mount commands after the
+> >>>>> check has completed.
+> >>>>>
+> >>>>> dump as requested:
+> >>>>>
+> >>>> [...]
+> >>>>>                    refs 1 gen 12567531 flags DATA
+> >>>>>                    (178 0x674d52ffce820576) extent data backref roo=
+t 2543
+> >>>>> objectid 18446744073709551604 offset 0 count 1
+> >>>>
+> >>>> This is the cause of the tree-checker.
+> >>>>
+> >>>> The objectid is -12, used to be the FREE_INO_OBJECTID for inode cach=
+e.
+> >>>>
+> >>>> Unfortunately that feature is no longer supported, thus being reject=
+ed.
+> >>>>
+> >>>> I'm very surprised that someone has even used that feature.
+> >>>>
+> >>>> For now, it can be cleared by the following command:
+> >>>>
+> >>>>     # btrfs rescue clear-ino-cache /dev/sda
+> >>>>
+> >>>> Then kernel will no longer rejects it anymore.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>
 
