@@ -1,296 +1,427 @@
-Return-Path: <linux-btrfs+bounces-7946-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7947-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 083AA975C12
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 22:55:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C9C6975C55
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 23:20:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CD82B2312F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 20:55:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBAFFB21ED0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 21:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC9A14B97E;
-	Wed, 11 Sep 2024 20:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA44F15575C;
+	Wed, 11 Sep 2024 21:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="X6e9BRmT"
+	dkim=pass (4096-bit key) header.d=archlinux.org header.i=@archlinux.org header.b="Dl6mdjqa";
+	dkim=permerror (0-bit key) header.d=archlinux.org header.i=@archlinux.org header.b="ReoSswy5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mail.archlinux.org (mail.archlinux.org [95.216.189.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFA13D3B8
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 20:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367302AE69
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 21:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.216.189.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726088098; cv=none; b=HZQ49cJaQkHBJGRiIEA/0qivgnsFNwI9ZRIVroL5B+Fkyvv+52t6Q3ubx7Rw+s/xkljmTXVln39yjQnG4LJAZsQw9GTZCeikQsrT9RhW73+MIfGqFite8UK4qrBu5CWjfYiwNWIh/hCNzTpFWL0DSxCnFxKT5OxWBQDBe4qI0p4=
+	t=1726089643; cv=none; b=UWQHz+hPIK2fLmyPp60Irj6/Ajiz/7j1dmB0mXsQvJoUZNPUa5pP2sRp1IIWnjkZVqgjuTDnlTG4/U4odQpH81WlDYgytG/pa/a/1c7QNeU3Wd9Lm32A5Z9YEQYYuCsQHJ7a5a04z0+zQxaCej4DhDsc1dXPPwF9NQotJPGTCEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726088098; c=relaxed/simple;
-	bh=Iql6mgd0SvHVfH5kSY2+hHbFBcI32Dy3aTr6dsrc1uk=;
+	s=arc-20240116; t=1726089643; c=relaxed/simple;
+	bh=LsCwGO9aOttzcBrHEx3LBcxIROpfOO/uf/l56Tkfp58=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=C2NBFXJMSaafKXg1RnViNbMT8Na/tsBIYyOm0OeR0+RDMG3Mt/oxJNnY3zGTiJXM0agLI9E8Ab80aNqNYbXNACA45BF3Loho2kci4tEIMnHEknusonpYoYl8IVCOM8EdTuZGe5/54dro8pB2yoab9Bd9emaD9LKniOo2YkqbVx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=X6e9BRmT; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726088092; x=1726692892; i=quwenruo.btrfs@gmx.com;
-	bh=hVBvs+2lqWtZcBKqotVSrStl8GGdc9gKKP25EwaljRE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=X6e9BRmT8SpHACUUbHUw2Kmx0AN9+1xrA2MzhopJf28lJBP6g0kuTSCa1GZAwvlX
-	 3g9pw9AnXYfguwHxUDEEA7EqUrW/8i4WcsmU5n+XZxjxzJ9t/TVJOXzWfTWYP/XQF
-	 MQD1CMwdhK5N/o0zZxpUyXNIxCZdFY8Is7KGMEZRhu1ew1jJuOV9c3vn6mcJc+5Sg
-	 wZz0jczKqoPnrYxYQS+ESzei9QP0bmYknwDGLsjpNpFIv2+mQGnpMqhGJ7tmlyHRa
-	 SrTcgquanu6YUfQFFDY9eXlkTuOWelzx5PyG0mFZBy3J9AIHWM84KNx7PCsmN3yes
-	 ubnYWrhWjfg15BOlDA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuDc7-1s1U6o3cDd-014Pgx; Wed, 11
- Sep 2024 22:54:52 +0200
-Message-ID: <914ea24d-aa0d-4f01-8c5e-96cf5544f931@gmx.com>
-Date: Thu, 12 Sep 2024 06:24:49 +0930
+	 In-Reply-To:Content-Type; b=VB6NGxQ9/zSDWvKyOcEbtNXo8ACcZR/AW7jUe69MCKdf+OOp2pAAlONnJmMEcazHaK222xepIPN77DmynKcN/mybeIBwGXVKNyr5mABYFBDqVSXfv290Odhasjrd8cMMxlRqrpRlE7VEQDeJ4npSYhVX/mxiPaKrIjOhmroRuN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=archlinux.org; spf=pass smtp.mailfrom=archlinux.org; dkim=pass (4096-bit key) header.d=archlinux.org header.i=@archlinux.org header.b=Dl6mdjqa; dkim=permerror (0-bit key) header.d=archlinux.org header.i=@archlinux.org header.b=ReoSswy5; arc=none smtp.client-ip=95.216.189.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=archlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinux.org
+Message-ID: <2cec94bd-fc5e-4e9c-acc9-fb8d58ca3ee1@archlinux.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
+	s=dkim-rsa; t=1726089636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LJFi+CjbC9+w8Lwj6+h4Tb8l08zicyr+Jrx1bPFu+3U=;
+	b=Dl6mdjqa2I0GxxR24gzkvfNwvaULWrw+hQbe938vBBbhPkZP4zGzLZXdQkGUERyrEctI4U
+	wNrl3Knbt0QxqP6fjXs4ParpVXsOtzDpGhX93poTNQDxLYYa8MXYUApRj1uc7wnkqZLN7o
+	TUbn0cnfFUosMTifO4oDkWS1WPlZfFQV487ke/66FOajYs6v+5Ht97t8Gh8vCyEsnEZLf1
+	Fo5FEd21PetNXecFV8k5G4B3c51y/WFi6N7keoqJMsIwrUZrqqxldF7h9w1O6eu6bKxKmC
+	9jaJxG+P4jLGq5zp+cdMplhHnNUi+RdVMZFCqTL5vFD+wgxt1PHYrV+lMgSh6Dw8S1HHvo
+	imW9eRAhImt8h4sem2Bmvxvix+7rvdrWob9ULuphf6Ey7OQkF67wpJcVko04hbihDGB/OY
+	C7zMXvmbrtQfzzF+02CjX6pbLtr+x/SB91qyPCdzcL78nh2wa3hEUrGz8YMsCCqdiclVLG
+	0gBxxgQMHSKDt9POXwzZifeZ/dnPaEnnpnEi5NeqDlK0pTGVDSsaZIueSc65KVrkcjxv3a
+	t2PzCN4G3yibIJpyXmUizb9H1vQRuudOn8g3Y60aJp6+1tRRNZYpwjuinGdrRrOVJoG7A2
+	wvs96Jp7mV1+ILCcNnzpPnFChBrTdfj8fnIXpKBzYhgrKHV3ZhFYk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
+	s=dkim-ed25519; t=1726089636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LJFi+CjbC9+w8Lwj6+h4Tb8l08zicyr+Jrx1bPFu+3U=;
+	b=ReoSswy5YFuTF7twOJgFI5DPuOQTJnm6dGs83RD7HN0wOcZrTZ3WdzHiM8v7IObtXQRjz3
+	pJ3Aws19KPLbByCQ==
+Authentication-Results: mail.archlinux.org;
+	auth=pass smtp.auth=archange smtp.mailfrom=archange@archlinux.org
+Date: Thu, 12 Sep 2024 01:20:29 +0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
 Subject: Re: Critical error from Tree-checker
-To: Archange <archange@archlinux.org>, linux-btrfs@vger.kernel.org
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 References: <9541deea-9056-406e-be16-a996b549614d@archlinux.org>
  <244f1d2b-f412-4860-af34-65f630e7f231@gmx.com>
  <3fa8f466-7da9-4333-9af7-36dabc2a2047@gmx.com>
  <4803f696-2dc5-4987-a353-fce1272e93e7@archlinux.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <4803f696-2dc5-4987-a353-fce1272e93e7@archlinux.org>
+ <914ea24d-aa0d-4f01-8c5e-96cf5544f931@gmx.com>
+Content-Language: fr-FR, en-GB-large
+From: Archange <archange@archlinux.org>
+In-Reply-To: <914ea24d-aa0d-4f01-8c5e-96cf5544f931@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:093UKl9Wqbg1mD0Z2kZGqxqK/v5DM1KdWbbOIM46NkSn+Ia8h6K
- ixhezFWEQiXvqsjqBpwS5YKEDbmD/pmjQ8wcwXJGT9bhNwx/OzwDZaAACFQdlhM0o8/ae1E
- vsU2p4dqrc+FbNnAcL+ppftDv/OTjcVpr0pMqI4Mz0aSGvEDSaSka79G5gnhfDgUvGqbLOB
- Smjo/GnZRnaWosWZnTvFw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Su1gwU+2oBk=;9rkxnmJ5Io42Yq4PUE6WTgOGxqs
- uMRpSgmr7S3x6IA2SJb63mmGQdYML/YraaLJ3v3xqV53V2ptb4g7u/KYsob331huTyTxYVYHR
- teynWRPjR/v9nedkSWBxEqyFyodFcDa2vPYtda7sgaczD3JdwWrFpzo8uPs4VfXR7Gi8GW9ZA
- 2kS34Nud+WRjD41UFwXdmvmiKLhKS8YY/GCIRpKj6zOwnmph3tqWC0PwtdxHZ6hntO8aoLL78
- 1NSXpTWTGBa9LyvLNZRfPJK0refp7cathmlwWofsHyHLTmbgDvXqViaP9Att9jv1gEvwx/PXk
- AAekEkvKQpv9VvXgVHUCF30CUap1AtYXREnL0J1i4uuMeJMjacxnPga6ZYtZ+WqYcXoQiupAF
- 9axSe+2mAW098fUqEBJXs6/CE5XdRH2ecmEEAyw5Z0Wqlm0PlJJ4G+6Z2YSdQUf+soc7YZJNg
- /eJg6mzZmFoFuplxT+ov47lfH24A3GBFhGotLJ/ywyk9+axEglDRZajhD8XDEMx1ItINmoMhs
- YPqzmz8JXNTqTdAScwpReUqim713Lvnzhi34S3aJK+6bkixpmgUzqGtERZ/XC3CmCjedHndPL
- mjBm09RULK7B7UzmllEaHNpxtoLDu+73y7TgYcDeYS4Uyxm6MrLcFWCCUO0v30p+dva6k2Nwe
- 1X4Fp9kRGP+keK4+Gy4wwFp27VrQnybfuC95L+wNA1noIF83cxjLVEXmB1j1k7Ovjskad/bLa
- f6V48Xv4qy79pSAoznfQz/MyGusGBO4JWrr4jsx2vdumQ71Kf8bsWAfez+x+8g8TE+DhyNfQF
- M9vvXdDNsgkv+wkTvaKr9qHLfEnUQBCFDf+S/skdk1UlQ=
+Content-Transfer-Encoding: 8bit
+
+Le 12/09/2024 à 00:54, Qu Wenruo a écrit :
+> 在 2024/9/12 05:25, Archange 写道:
+>> Le 11/09/2024 à 01:37, Qu Wenruo a écrit :
+>>> 在 2024/9/11 06:58, Qu Wenruo 写道:
+>>>> 在 2024/9/11 06:35, Archange 写道:
+>>>> […]
+>
+> This looks exactly like another report that is caused by inode cache.
+>
+> So in that case, mind to try the following commands?
+>
+> # btrfs rescue zero-log <device>
+> # btrfs rescue clear-inode-cache <device>
+
+I supposed the second command was meant to be `clear-ino-cache` (I 
+remember having to remove `inode_cache` from mount options some time ago 
+as it prevented booting, I had then discovered the related feature had 
+been deprecated and removed).
+
+Here are the command outputs:
+
+# btrfs rescue zero-log /dev/mapper/rootext
+Clearing log on /dev/mapper/rootext, previous log_root 0, level 0
+
+# btrfs rescue clear-ino-cache /dev/mapper/rootext
+Successfully cleaned up ino cache for root id: 5
+Successfully cleaned up ino cache for root id: 257
+Successfully cleaned up ino cache for root id: 258
+corrupt node: root=7 block=647369064448 slot=0, invalid level for leaf, 
+have 1 expect 0
+node 647369064448 level 1 items 252 free space 241 generation 6065173 
+owner CSUM_TREE
+node 647369064448 flags 0x1(WRITTEN) backref revision 1
+fs uuid e6614f01-6f56-4776-8b0a-c260089c35e7
+chunk uuid f665f535-4cfd-49e0-8be9-7f94bf59b75d
+     key (EXTENT_CSUM EXTENT_CSUM 3714473984) block 677126111232 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 3720785920) block 646338183168 gen 6065030
+     key (EXTENT_CSUM EXTENT_CSUM 3728965632) block 677126176768 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 3737710592) block 676941266944 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3747074048) block 677126209536 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 3754676224) block 676863508480 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 3764305920) block 676863524864 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 3772821504) block 646742212608 gen 6065087
+     key (EXTENT_CSUM EXTENT_CSUM 3780558848) block 676863557632 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 3792121856) block 646843056128 gen 6065107
+     key (EXTENT_CSUM EXTENT_CSUM 3799425024) block 677126258688 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 3808354304) block 676888068096 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 3822206976) block 647458684928 gen 5744378
+     key (EXTENT_CSUM EXTENT_CSUM 3838750720) block 648070070272 gen 1381537
+     key (EXTENT_CSUM EXTENT_CSUM 3855294464) block 648070184960 gen 1381537
+     key (EXTENT_CSUM EXTENT_CSUM 3871838208) block 647481884672 gen 1381531
+     key (EXTENT_CSUM EXTENT_CSUM 3888381952) block 676963188736 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 3899301888) block 676943937536 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3908460544) block 647367393280 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 3916058624) block 676909989888 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3922890752) block 676715134976 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 3932336128) block 676941283328 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3943030784) block 676910022656 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3952046080) block 676854464512 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 3959169024) block 676910071808 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3966623744) block 676933074944 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3975307264) block 647369162752 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 3983073280) block 676948852736 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3990368256) block 676941299712 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 3998121984) block 676948869120 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4009500672) block 676910170112 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4017614848) block 646264160256 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 4025708544) block 676843307008 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 4033413120) block 646515097600 gen 6065053
+     key (EXTENT_CSUM EXTENT_CSUM 4041183232) block 677125914624 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4047310848) block 647409041408 gen 6065170
+     key (EXTENT_CSUM EXTENT_CSUM 4054364160) block 676723982336 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 4062892032) block 677107367936 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4072263680) block 677107417088 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4081119232) block 676844634112 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 4089425920) block 676910350336 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4097601536) block 677107302400 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4105961472) block 676910432256 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4114223104) block 676963237888 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4121116672) block 646473465856 gen 6065044
+     key (EXTENT_CSUM EXTENT_CSUM 4130504704) block 677107351552 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4139896832) block 676933156864 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4150054912) block 677107384320 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4159819776) block 677107400704 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4166836224) block 677125980160 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4178882560) block 647369195520 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4185473024) block 676715347968 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 4193738752) block 676715364352 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 4203532288) block 676724146176 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 4211822592) block 676910612480 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4220416000) block 676754997248 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 4234862592) block 676855054336 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 4247011328) block 647369097216 gen 6065173
+     key (EXTENT_CSUM EXTENT_CSUM 4257337344) block 647369228288 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4270247936) block 646992494592 gen 6065114
+     key (EXTENT_CSUM EXTENT_CSUM 4284358656) block 676910743552 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4295380992) block 646842253312 gen 6065107
+     key (EXTENT_CSUM EXTENT_CSUM 4305231872) block 677126012928 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4316020736) block 676963450880 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4325187584) block 677314379776 gen 6064991
+     key (EXTENT_CSUM EXTENT_CSUM 4341161984) block 646746472448 gen 6065087
+     key (EXTENT_CSUM EXTENT_CSUM 4345565184) block 676941332480 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4354514944) block 646342459392 gen 6065029
+     key (EXTENT_CSUM EXTENT_CSUM 4361768960) block 676963467264 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4369428480) block 676967317504 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4376809472) block 676967350272 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4385017856) block 676963483648 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4392333312) block 676941365248 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4400939008) block 676941381632 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4408795136) block 676941496320 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4416131072) block 646359908352 gen 6065030
+     key (EXTENT_CSUM EXTENT_CSUM 4424679424) block 676715528192 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 4433436672) block 647351910400 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4442791936) block 647369261056 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4451270656) block 646407585792 gen 6065032
+     key (EXTENT_CSUM EXTENT_CSUM 4459581440) block 677126569984 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4466970624) block 648044281856 gen 6065171
+     key (EXTENT_CSUM EXTENT_CSUM 4473278464) block 647373193216 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4481544192) block 676967743488 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4489117696) block 676967792640 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4501204992) block 647357153280 gen 6065164
+     key (EXTENT_CSUM EXTENT_CSUM 4508569600) block 676967907328 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4513787904) block 676967940096 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4519464960) block 676967972864 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4528398336) block 676968005632 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4537438208) block 677148459008 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 4543373312) block 676968087552 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4553338880) block 676963303424 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4564582400) block 676968169472 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4574752768) block 647373455360 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4584710144) block 648044314624 gen 6065171
+     key (EXTENT_CSUM EXTENT_CSUM 4589998080) block 676932272128 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4596559872) block 676693639168 gen 6064993
+     key (EXTENT_CSUM EXTENT_CSUM 4603473920) block 676933222400 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4613885952) block 676948901888 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4624228352) block 676963532800 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4633935872) block 676911284224 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4644610048) block 646338265088 gen 6065030
+     key (EXTENT_CSUM EXTENT_CSUM 4653531136) block 646359941120 gen 6065030
+     key (EXTENT_CSUM EXTENT_CSUM 4664819712) block 676963565568 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4676636672) block 647386398720 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4686704640) block 646343639040 gen 6065029
+     key (EXTENT_CSUM EXTENT_CSUM 4698435584) block 676963598336 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4713156608) block 647392772096 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 4722995200) block 646264193024 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 4731748352) block 676911611904 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4738572288) block 676933238784 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4748193792) block 676942348288 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4753985536) block 676942364672 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4761124864) block 676911644672 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4770844672) block 646845300736 gen 6065107
+     key (EXTENT_CSUM EXTENT_CSUM 4780126208) block 676911677440 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4787306496) block 676942397440 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4798906368) block 676844863488 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 4807143424) block 676963631104 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4817457152) block 676546248704 gen 6064992
+     key (EXTENT_CSUM EXTENT_CSUM 4826439680) block 676693966848 gen 6064993
+     key (EXTENT_CSUM EXTENT_CSUM 4840206336) block 676911742976 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4851683328) block 647302086656 gen 6065158
+     key (EXTENT_CSUM EXTENT_CSUM 4857987072) block 646943653888 gen 6065108
+     key (EXTENT_CSUM EXTENT_CSUM 4866301952) block 676933271552 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4875943936) block 676911824896 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4888219648) block 676942413824 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4898308096) block 676911857664 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4912943104) block 647369392128 gen 6065173
+     key (EXTENT_CSUM EXTENT_CSUM 4923723776) block 676968497152 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4934074368) block 676632723456 gen 6064993
+     key (EXTENT_CSUM EXTENT_CSUM 4948840448) block 676911890432 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 4963790848) block 676968579072 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4975116288) block 676968644608 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 4984283136) block 647080198144 gen 6065133
+     key (EXTENT_CSUM EXTENT_CSUM 4994596864) block 646304825344 gen 6065025
+     key (EXTENT_CSUM EXTENT_CSUM 5002313728) block 646324338688 gen 6065026
+     key (EXTENT_CSUM EXTENT_CSUM 5008089088) block 676963336192 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5018886144) block 647399227392 gen 6065170
+     key (EXTENT_CSUM EXTENT_CSUM 5028757504) block 647385743360 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5037797376) block 647385858048 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5049577472) block 647386382336 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5057458176) block 676949278720 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5072642048) block 676963352576 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5085605888) block 676911988736 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5093662720) block 676963368960 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5105045504) block 647178960896 gen 6065146
+     key (EXTENT_CSUM EXTENT_CSUM 5116792832) block 647383547904 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5130141696) block 676912218112 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5139943424) block 676912267264 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5148413952) block 676912300032 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5156237312) block 676942430208 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5165236224) block 676942446592 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5177163776) block 646300827648 gen 6065025
+     key (EXTENT_CSUM EXTENT_CSUM 5187325952) block 676749754368 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 5201133568) block 676942479360 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5213573120) block 676657332224 gen 6064993
+     key (EXTENT_CSUM EXTENT_CSUM 5228421120) block 676845240320 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 5236654080) block 676942495744 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5246169088) block 676942512128 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5254701056) block 646343688192 gen 6065029
+     key (EXTENT_CSUM EXTENT_CSUM 5263523840) block 676942528512 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5271793664) block 676932288512 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5284384768) block 676933320704 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5298110464) block 676759650304 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 5304373248) block 676942544896 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5314695168) block 646338510848 gen 6065030
+     key (EXTENT_CSUM EXTENT_CSUM 5323919360) block 676942561280 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5336117248) block 676912496640 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5345054720) block 676963680256 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5350932480) block 676863836160 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 5363728384) block 676657709056 gen 6064993
+     key (EXTENT_CSUM EXTENT_CSUM 5369249792) block 676912594944 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5379948544) block 646264209408 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5392506880) block 676978917376 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5402152960) block 646948175872 gen 6065108
+     key (EXTENT_CSUM EXTENT_CSUM 5412794368) block 646948208640 gen 6065108
+     key (EXTENT_CSUM EXTENT_CSUM 5422727168) block 676694409216 gen 6064993
+     key (EXTENT_CSUM EXTENT_CSUM 5436506112) block 646264225792 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5446492160) block 646948241408 gen 6065108
+     key (EXTENT_CSUM EXTENT_CSUM 5457653760) block 646264242176 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5469483008) block 646264258560 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5479792640) block 646264143872 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5491097600) block 647262306304 gen 6065152
+     key (EXTENT_CSUM EXTENT_CSUM 5504716800) block 646264438784 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5516099584) block 646264504320 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5526601728) block 676942594048 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5538586624) block 646716211200 gen 6065083
+     key (EXTENT_CSUM EXTENT_CSUM 5550575616) block 677029806080 gen 6065001
+     key (EXTENT_CSUM EXTENT_CSUM 5560479744) block 647350697984 gen 6065163
+     key (EXTENT_CSUM EXTENT_CSUM 5570015232) block 647383580672 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5578293248) block 646264487936 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5590724608) block 676863950848 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 5603069952) block 646263504896 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5615501312) block 676913020928 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5626724352) block 676913102848 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5639708672) block 677029822464 gen 6065001
+     key (EXTENT_CSUM EXTENT_CSUM 5653757952) block 647216037888 gen 6065147
+     key (EXTENT_CSUM EXTENT_CSUM 5660786688) block 647207895040 gen 6065147
+     key (EXTENT_CSUM EXTENT_CSUM 5668933632) block 676715937792 gen 6064994
+     key (EXTENT_CSUM EXTENT_CSUM 5677277184) block 647383613440 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5687111680) block 646264520704 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5694754816) block 647384301568 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5704658944) block 647417839616 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5714460672) block 647417872384 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 5725593600) block 647114440704 gen 6065138
+     key (EXTENT_CSUM EXTENT_CSUM 5733572608) block 647409156096 gen 6065170
+     key (EXTENT_CSUM EXTENT_CSUM 5743837184) block 677138202624 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 5755424768) block 646943686656 gen 6065108
+     key (EXTENT_CSUM EXTENT_CSUM 5766553600) block 676963794944 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5778427904) block 646264651776 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5784666112) block 676913709056 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5792251904) block 647225573376 gen 6065149
+     key (EXTENT_CSUM EXTENT_CSUM 5800312832) block 676981161984 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5811654656) block 676981080064 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5822210048) block 646336544768 gen 6065030
+     key (EXTENT_CSUM EXTENT_CSUM 5831127040) block 677138219008 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 5843570688) block 646264668160 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5854285824) block 646943703040 gen 6065108
+     key (EXTENT_CSUM EXTENT_CSUM 5862305792) block 647229030400 gen 6065148
+     key (EXTENT_CSUM EXTENT_CSUM 5872865280) block 646834454528 gen 6065104
+     key (EXTENT_CSUM EXTENT_CSUM 5883650048) block 646264717312 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5895880704) block 677151473664 gen 6065002
+     key (EXTENT_CSUM EXTENT_CSUM 5904617472) block 646827114496 gen 6065100
+     key (EXTENT_CSUM EXTENT_CSUM 5915639808) block 677029265408 gen 6065001
+     key (EXTENT_CSUM EXTENT_CSUM 5926555648) block 647290617856 gen 6065156
+     key (EXTENT_CSUM EXTENT_CSUM 5936168960) block 646264799232 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 5947744256) block 676963827712 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5956050944) block 676914577408 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 5967777792) block 676963844096 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 5978038272) block 646653607936 gen 6065072
+     key (EXTENT_CSUM EXTENT_CSUM 5989384192) block 646578962432 gen 6065059
+     key (EXTENT_CSUM EXTENT_CSUM 5997871104) block 647357890560 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 6009282560) block 646263701504 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 6021009408) block 646264930304 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 6032379904) block 646264963072 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 6043267072) block 646265044992 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 6054461440) block 647357300736 gen 6065164
+     key (EXTENT_CSUM EXTENT_CSUM 6063206400) block 647417905152 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 6072909824) block 647385645056 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 6084259840) block 647417987072 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 6096568320) block 646263603200 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 6107648000) block 676963958784 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 6116904960) block 646993084416 gen 6065111
+     key (EXTENT_CSUM EXTENT_CSUM 6128369664) block 646265094144 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 6138900480) block 647353303040 gen 6065172
+     key (EXTENT_CSUM EXTENT_CSUM 6146465792) block 676849172480 gen 6064995
+     key (EXTENT_CSUM EXTENT_CSUM 6156619776) block 646265323520 gen 6065024
+     key (EXTENT_CSUM EXTENT_CSUM 6168879104) block 676992876544 gen 6064998
+     key (EXTENT_CSUM EXTENT_CSUM 6179160064) block 676915036160 gen 6064996
+     key (EXTENT_CSUM EXTENT_CSUM 6192357376) block 646396493824 gen 6065032
+ERROR: failed to clear ino cache: Input/output error
+
+Not sure what to do with this.
+
+dmesg from subsequent mounting on the rescue system:
+
+[  365.027631] BTRFS: device label root devid 1 transid 6065178 
+/dev/mapper/rootext (254:1) scanned by mount (1425)
+[  365.028812] BTRFS info (device dm-1): first mount of filesystem 
+e6614f01-6f56-4776-8b0a-c260089c35e7
+[  365.028823] BTRFS info (device dm-1): using crc32c (crc32c-intel) 
+checksum algorithm
+[  365.028840] BTRFS info (device dm-1): disk space caching is enabled
+[  365.039509] BTRFS warning (device dm-1): devid 1 physical 0 len 
+4194304 inside the reserved space
+[  365.041044] BTRFS info (device dm-1): bdev /dev/mapper/rootext errs: 
+wr 0, rd 0, flush 0, corrupt 4, gen 0
+[  365.424564] BTRFS info (device dm-1): checking UUID tree
 
 
+dmesg from booting on the system:
 
-=E5=9C=A8 2024/9/12 05:25, Archange =E5=86=99=E9=81=93:
-> Le 11/09/2024 =C3=A0 01:37, Qu Wenruo a =C3=A9crit=C2=A0:
->> =E5=9C=A8 2024/9/11 06:58, Qu Wenruo =E5=86=99=E9=81=93:
->>> =E5=9C=A8 2024/9/11 06:35, Archange =E5=86=99=E9=81=93:
->>>> Hi there,
->>>>
->>>> Since today, my system started randomly becoming read-only. At that
->>>> point I can still run dmesg in an open terminal, so I=E2=80=99ve seen=
- it was
->>>> related to a btrfs error, but did not try anything since I could not
->>>> open a web browser anymore. But I=E2=80=99ve seen the error to be =E2=
-=80=9CBTRFS
->>>> critical=E2=80=9D and related to a =E2=80=9Ccorrupt leaf=E2=80=9D.
->>>>
->>>> I=E2=80=99ve tried to run `btrfs scrub` on the device after rebooting=
-, and in
->>>> fact it aborted almost right away triggering the same error in dmesg
->>>> (but not turning the system read-only, so I can copy paste it here):
->>>>
->>>> [=C2=A0 365.268769] BTRFS info (device dm-0): scrub: started on devid=
- 1
->>>> [=C2=A0 385.788000] page: refcount:3 mapcount:0 mapping:00000000d0054=
-cae
->>>> index:0x9678888 pfn:0x11ce15
->>>> [=C2=A0 385.788015] memcg:ffff9fc94db8f000
->>>> [=C2=A0 385.788021] aops:btree_aops [btrfs] ino:1
->>>> [=C2=A0 385.788235] flags:
->>>> 0x2ffffa000004020(lru|private|node=3D0|zone=3D2|lastcpupid=3D0x1ffff)
->>>> [=C2=A0 385.788248] raw: 02ffffa000004020 ffffea9a8574ff88 ffffea9a84=
-7385c8
->>>> ffff9fc95b8365b0
->>>> [=C2=A0 385.788255] raw: 0000000009678888 ffff9fc9ae554000 00000003ff=
-ffffff
->>>> ffff9fc94db8f000
->>>> [=C2=A0 385.788259] page dumped because: eb page dump
->>>> [=C2=A0 385.788264] BTRFS critical (device dm-0): corrupt leaf:
->>>> block=3D646267305984 slot=3D92 extent bytenr=3D1182031872 len=3D10649=
-6 invalid
->>>> data ref objectid value 257
->>>
->>> Full dmesg please.
->>>
->>> Normally it should dump the full content of the tree block, to help
->>> debugging the problem.
->>
->> Nevermind, the code doesn't dump the full leaf for debug anyway.
->>
->> In that case please dump that corrupted leaf by:
->>
->> =C2=A0# btrfs ins dump-tree -b 1182031872 /dev/dm-0
->
-> Sorry for the delay, in the meantime my computer went unbootable: the
-> initramfs went missing, then some systemd files=E2=80=A6 Last time such =
-things
-> happened was when my btrfs went out of free space, but there is plenty
-> currently, so I guess this is related to this other kind of btrfs issue
-> I=E2=80=99m facing. Now everything seems in order and I=E2=80=99m back t=
-o my emails.
->
-> Here is the output of the asked command:
->
-> # btrfs ins dump-tree -b 1182031872 /dev/dm-0
-> btrfs-progs v6.10.1
-> checksum verify failed on 1182031872 wanted 0x00000000 found 0x21b9544e
-> ERROR: failed to read tree block 1182031872
->
-> Some additional informations:
->
-> 1. I was able to save the log the next time it went read-only, it is a
-> bit different:
->
-> [ 4588.750188] page: refcount:4 mapcount:0 mapping:00000000d0054cae
-> index:0x967c1f0 pfn:0x35077d
-> [ 4588.750203] memcg:ffff9fc9400ae000
-> [ 4588.750208] aops:btree_aops [btrfs] ino:1
-> [ 4588.750407] flags:
-> 0x2ffff8000004000(private|node=3D0|zone=3D2|lastcpupid=3D0x1ffff)
-> [ 4588.750419] raw: 02ffff8000004000 0000000000000000 dead000000000122
-> ffff9fc95b8365b0
-> [ 4588.750425] raw: 000000000967c1f0 ffff9fcafdcc2690 00000004ffffffff
-> ffff9fc9400ae000
-> [ 4588.750428] page dumped because: eb page dump
-> [ 4588.750433] BTRFS critical (device dm-0): corrupt leaf:
-> block=3D646327500800 slot=3D105 extent bytenr=3D11287011328 len=3D114688=
- invalid
-> data ref objectid value 258
-> [ 4588.750451] BTRFS error (device dm-0): read time tree block
-> corruption detected on logical 646327500800 mirror 1
-> [ 4588.750524] BTRFS error (device dm-0): failed to run delayed ref for
-> logical 11285897216 num_bytes 36864 type 178 action 1 ref_mod 1: -5
-> [ 4588.750542] BTRFS error (device dm-0 state A): Transaction aborted
-> (error -5)
-> [ 4588.750549] BTRFS: error (device dm-0 state A) in
-> btrfs_run_delayed_refs:2207: errno=3D-5 IO failure
-> [ 4588.750559] BTRFS info (device dm-0 state EA): forced readonly
->
-> 2. I=E2=80=99ve thus decided to run
->
-> # btrfs ins dump-tree -b 11287011328 /dev/dm-0
-> btrfs-progs v6.10.1
-> checksum verify failed on 11287011328 wanted 0x00000000 found 0x2c7de3ac
-> ERROR: failed to read tree block 11287011328
->
-> and
->
-> # btrfs ins dump-tree -b 11285897216 /dev/dm-0
-> btrfs-progs v6.10.1
-> checksum verify failed on 11285897216 wanted 0x28b52ffd found 0xa166b670
-> ERROR: failed to read tree block 11285897216
->
-> 3. There is some information on kernel loading
->
-> [=C2=A0=C2=A0 12.793025] Btrfs loaded, zoned=3Dyes, fsverity=3Dyes
-> [=C2=A0=C2=A0 12.886212] BTRFS: device label root devid 1 transid 606502=
-2
-> /dev/mapper/root (254:0) scanned by mount (252)
-> [=C2=A0=C2=A0 12.887845] BTRFS info (device dm-0): first mount of filesy=
-stem
-> e6614f01-6f56-4776-8b0a-c260089c35e7
-> [=C2=A0=C2=A0 12.887874] BTRFS info (device dm-0): using crc32c (crc32c-=
-intel)
-> checksum algorithm
-> [=C2=A0=C2=A0 12.887885] BTRFS info (device dm-0): disk space caching is=
- enabled
-> [=C2=A0=C2=A0 12.907001] BTRFS warning (device dm-0): devid 1 physical 0=
- len
-> 4194304 inside the reserved space
-> [=C2=A0=C2=A0 12.910034] BTRFS info (device dm-0): bdev /dev/mapper/root=
- errs: wr
-> 0, rd 0, flush 0, corrupt 4, gen 0
->
-> (Especially the =E2=80=9Ccorrupt 4=E2=80=9D I guess, but the warning abo=
-ve might also be
-> relevant?)
->
-> 4. I=E2=80=99ve run a full scrub while the disk was mounted on another s=
-ystem,
-> which returned no error.
->
-> 5. I=E2=80=99ve also run a check from that system while the fs was not m=
-ounted:
->
-> # btrfs check /dev/mapper/rootext
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/rootext
-> UUID: e6614f01-6f56-4776-8b0a-c260089c35e7
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 480039342080 bytes used, no error found
-> total csum bytes: 466668868
-> total tree bytes: 1618149376
-> total fs tree bytes: 898007040
-> total extent tree bytes: 138395648
-> btree space waste bytes: 331985228
-> file data blocks allocated: 517562126336
->  =C2=A0referenced 492533391360
->
-> Waiting for further debugging instructions.
+[   12.697569] Btrfs loaded, zoned=yes, fsverity=yes
+[   12.793884] BTRFS: device label root devid 1 transid 6065180 
+/dev/mapper/root (254:0) scanned by mount (249)
+[   12.795330] BTRFS info (device dm-0): first mount of filesystem 
+e6614f01-6f56-4776-8b0a-c260089c35e7
+[   12.795358] BTRFS info (device dm-0): using crc32c (crc32c-intel) 
+checksum algorithm
+[   12.795369] BTRFS info (device dm-0): disk space caching is enabled
+[   12.809564] BTRFS warning (device dm-0): devid 1 physical 0 len 
+4194304 inside the reserved space
+[   12.813203] BTRFS info (device dm-0): bdev /dev/mapper/root errs: wr 
+0, rd 0, flush 0, corrupt 4, gen 0
+[   16.026687] BTRFS info (device dm-0 state M): use zstd compression, 
+level 3
+[   16.842214] BTRFS info: devid 1 device path /dev/mapper/root changed 
+to /dev/dm-0 scanned by (udev-worker) (364)
+[   16.843857] BTRFS info: devid 1 device path /dev/dm-0 changed to 
+/dev/mapper/root scanned by (udev-worker) (364)
+[   19.888321] BTRFS warning (device dm-0): block group 1094713344 has 
+wrong amount of free space
+[   19.888325] BTRFS warning (device dm-0): failed to load free space 
+cache for block group 1094713344, rebuilding it now
+[   19.968700] BTRFS warning (device dm-0): block group 10758389760 has 
+wrong amount of free space
+[   19.968705] BTRFS warning (device dm-0): failed to load free space 
+cache for block group 10758389760, rebuilding it now
 
-This looks exactly like another report that is caused by inode cache.
+That being said no critical error has been encountered since I’ve had to 
+repair my boot, but I’ve not tried to scrub from the running system 
+again, should I do that (as it used to trigger the error before)?
 
-So in that case, mind to try the following commands?
+Regards,
+Archange
 
-# btrfs rescue zero-log <device>
-# btrfs rescue clear-inode-cache <device>
-
-Then try mounting the fs.
-
-Thanks,
-Qu
->
-> Thanks,
-> Archange
->
 
