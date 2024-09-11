@@ -1,202 +1,183 @@
-Return-Path: <linux-btrfs+bounces-7931-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7932-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6CBE974DCB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 11:01:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11F78974DDE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 11:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B9B61F25978
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 09:01:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8947285D1E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 09:04:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B8341714A5;
-	Wed, 11 Sep 2024 09:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7FA155A52;
+	Wed, 11 Sep 2024 09:04:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XcEYrSi/"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="aOnJBfEU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A649C14A60E
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 09:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D62BA2AF1D
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 09:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726045285; cv=none; b=szZq1ciEWpHGv+vp3V4aqjFwXKnMbnJvtPQM+A4LlGbI1zUCpPJDM4AVeO8YOMnC0iyw4I/CcsguBpRgk3glsOC3zEY+pMXIBH8C1uTaG13LB+XRSM1+Qn/z04YiIsviaY6RI2KNUJeu06xKGHeYiQ6/Rx3tSGnMOOaKx33osk0=
+	t=1726045458; cv=none; b=hA/8uR8ouexumJsiZOUet3Yze0UeA5b/WtwKRZ2d2T/kErWaD+ROeDF2AY/nNyDk/lKcoy14hLyOnEyw2fb5kJR62lMhIvZ1/TlRCnGl4lgGsr715FoCQf8yYjvkitSkIdFy+ppA6Vgw27dmHiypFXp6pUzjpmURp+tplHhRw3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726045285; c=relaxed/simple;
-	bh=mqDmLOo8ijroLQpK6YjKnqn5Zb7Zy39S0D3qCJVgQ+s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dt26ZkJB8NU/cgRJNJ0Inw48G3D8W8ni7BY1v+psxhdx8ijiVGozNKMN+FtwjcHksy7ajefaIy6YXOixu3cGL+u+mkkFLJrZdwDABUwhBmb6z/ZJhKqCClqGhviT12N6Qaq5iUw6UJdRfICx+2lefo8PiHjBOOvvXtBcNQ+2czE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XcEYrSi/; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7a9b72749bcso248575185a.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 02:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726045282; x=1726650082; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tvb+GWc5qIVzyza9/qVIIAYaANt6nrf50wjiyVsber0=;
-        b=XcEYrSi/iEMdvZ5TTOf8yFdOyAkytMW2eD4lqAdCW4v4Vt/i3Kddr+dZ0SMXvXOYIz
-         51I8D8hRZGHmu8sRcE61CMsPg84Fqfks10TCICuRa+uJICOKGX/PubF/KHfdd5q75EZb
-         o/kmbY8S3deh9WerGMsMrX/ScebP3s0eDc9JJ0U5jD5ZVZVjwLB2DneIU2dBc9attLSH
-         Cb3toSsS5C7t8gzWakQqeGHIJ56UOl/NuOkwUv9f01CdV/fnyzqZjJSO9/n+6Mcmdl/w
-         OIkvB0Yo4zzexHUJGpS8xZ4IeDC8ewoS6g39VJ5oJLQU9byPTnBqRiJDlzHQp5XD/EQG
-         BnmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726045282; x=1726650082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tvb+GWc5qIVzyza9/qVIIAYaANt6nrf50wjiyVsber0=;
-        b=WLTVxfyPMfTxxLeKUzuxr0r6+vjMzsibhAqonBJlO3aw07c/na0nMQGN1sVTRNfO6q
-         ml5PdWvovbREn/PP19VrziJp4N/gJK/Uiw1VBvyXFeCrqNpc/T2e0HJx7EFbiI8912ZY
-         lMyMSpvDOts+y07Ytwb5DYKv3ADO1VJ1LKUYpFdsUTihIBYnjJR5F2M3TjGbKRx1og3O
-         i9t0VTHAUvMmct4qKdSF2YoIslo3PyRnkqM3/8tyNk9o6N7c01X8ZLcTcuWYMUZM+BOV
-         LtVQMMAOe8EY5c1t1neL4Im6N9t/cvsuu0kH79GucGq0Nc1EBH0T+hSK6ROEsO5o7Bw0
-         PSGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVJRGxP/FZEydbA2LtlwvmEZB7VYtCEwdd86/EAH19KNnwr3NC478Wnv7Lny4TwbPu6AkIqcztf/YkyCg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwgbMSMonXqMnAOCpyT4qVkK/2yV9q1HXLmnX1ce4R1Kw0xpUQp
-	TDPe229u+kELf5z0Qul7AS7Ot7uF03SNdzZilh2R8ywzRuNSFDTqECydoNatfqBbT97rfwYuLy0
-	MW0SCidjlFMwvMPJOqTUTJlMcMa8=
-X-Google-Smtp-Source: AGHT+IHo/4YiNTxN7/NJXIHmIkt2LOeszevekz1rAfc0+UzHrqmj8EkCgEZa8m9g/aPbleEC0bOpFt38+hLUp1Ycj84=
-X-Received: by 2002:a05:620a:4442:b0:79f:433:6e7f with SMTP id
- af79cd13be357-7a997333c51mr2267545885a.21.1726045282377; Wed, 11 Sep 2024
- 02:01:22 -0700 (PDT)
+	s=arc-20240116; t=1726045458; c=relaxed/simple;
+	bh=5JFWjvlpnacTFEtcOIAObx50Hrkc8K3UkpPHl7fUgmw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=qsMquYrC+JfWplYG1/pEBWSk1LcckRI7QVOva99PHoLSOqF+KpOBWEKHFrjqoSnBYED0YseMG22Li2w9jkhuzbvwZJ1EFCn2tncCSCwgjEyVhBqLXGlsvEJnRmlvteumzQ0Mb3ysi2clq6GP5hSHM3R//DcEo6frDNMbnk0jsZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=aOnJBfEU; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1726045454; x=1726650254; i=quwenruo.btrfs@gmx.com;
+	bh=Yz02bzQTplCXsIhN0HsTqdSSpsHAbiQwh85e9fIxlrA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=aOnJBfEUbprpQX559J+Kt0qM4BykOkcpiB+mDEEp3U/RXsJiV2qWM/MtxOaXWX/v
+	 X6AfUHqHeCwyi2TgddtQqmdIZ61ZDctEJtLbVTXuaTvEKVqZUbsGykM3goUMLh9c8
+	 OzGf6PJBIeNLGZNjY67q4vfV5kHt+A0rTuEmUxGwV6qfprXj4pWd9sdxFt3gGDq28
+	 aG4sJ/groV52dpihgPLuGqGTRwX414YWVGjtOxlRmSAm7OtsDOOrDAdYXm9n4iDPT
+	 qBBWJKyuiAgqn4RqzlPRuMBmCZdo7E6bnEiX2CrJ61li9056KABlXL45JaZah4mM6
+	 P0IfttiliUOYnnGuQQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2f9b-1srsAc1zLD-004C6B for
+ <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 11:04:13 +0200
+Message-ID: <d91459d0-ee3f-43f4-87c9-6b7eec69e48e@gmx.com>
+Date: Wed, 11 Sep 2024 18:34:11 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAAYHqBbrrgmh6UmW3ANbysJX9qG9Pbg3ZwnKsV=5mOpv_qix_Q@mail.gmail.com>
- <89131a4f-5362-4002-9a55-d1a24428ef05@gmx.com> <CAAYHqBZ+-3GbDmQFGxMcYs3HpO-DUQA4pCG0xqWMZW+sbw-KJg@mail.gmail.com>
- <331b4034-7a6c-4fa8-a10d-6fa87b801d21@gmx.com> <CAAYHqBaEEq8_AWKtMv9RtH4ZNtTEheCjAZzBstkrECt775UzJA@mail.gmail.com>
- <72315446-3ad4-40d1-8cff-1ec25ae207bd@gmx.com> <CAAYHqBYKQVNOyNbVBw=Xg2K2rXK0KTT7XDx3Ayn=SbNHtf53Lw@mail.gmail.com>
- <d0a1012f-7485-4e34-9f6a-b03a1164f53f@suse.com>
-In-Reply-To: <d0a1012f-7485-4e34-9f6a-b03a1164f53f@suse.com>
-From: Neil Parton <njparton@gmail.com>
-Date: Wed, 11 Sep 2024 10:01:11 +0100
-Message-ID: <CAAYHqBbcDEuHQgG_iim84otLk-h9TioqNeT1BdiRSvEuwDJaZQ@mail.gmail.com>
-Subject: Re: Tree corruption
-To: Qu Wenruo <wqu@suse.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: Btrfs balance broke filesystem
+To: linux-btrfs@vger.kernel.org
+References: <b9b86b32095ba924fb8c7eec4d8ec024113d9ff4.camel@beware.dropbear.id.au>
+ <5fdb905b-20ee-4978-ba81-10b1fc4ac475@gmx.com>
+ <20240911080004.GA218002@tik.uni-stuttgart.de>
+ <79e83450-098a-4e09-bfcb-625b6346525d@gmx.com>
+ <20240911085829.GC218002@tik.uni-stuttgart.de>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240911085829.GC218002@tik.uni-stuttgart.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:EjSoqQ9kA9NpseQzyp+j9yr9J9pyqaOMvcUHKJWbu1BAgVc+8BF
+ aijFEMJcbiIrNuWmib/1uVh2Y8JBo/Ka/1EzAtgh9igvbDL6j6Ml0IqvVYgS8yZj/2iFx96
+ GEf/M5UWmZrhOusAOovUdh7lJUzHxW9Pzxbs5D0vkHtLLxhLcvn6ziKML6aPzh16Eat2waD
+ BHjGXt4RbUPhgjZd0SLMQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:/v5dpfI/qEw=;PPghGrPFVK4mGn8MyGyaVNUJOXh
+ 9i/s/qFijJx2YL85r4szKjh+AdaLDHWwpIKi8tIO/MXSNJ8s4iZBzEB6NisLxJ4+DpAcDsGZ/
+ /K7yL6+cl72gsGBq20pIGFdwi0Mnnc7uNgXXQSsWfd55YRLfdqm4bypa8xKw6S8EvgQc3vtx+
+ 6+yVL82pa9IrfwUlO3q93ljj9Rx40aNaxM8U1hspSGZUD6M7Z1BzVxpOF0eZ9W+rHQ9DLnbIs
+ 4zlkRqGFklv2BC0kHbvjv3oKk11NtM39S5YHfaN1YVNH5QpgKkJ+AF2jw08TZji10V4IxMNKV
+ pXLQiGhOePGFfRxdL07xcFSBea4w2o6Gjgl/2J/7fimUTh400wPOs6jg041jhCakpeQSZd3ME
+ U8cQCmZC4XEoiUCcTjOI9t10VFmHwyItIjMrYO6dUXbXgzyEH+7yxGULePdNzwBNlCvuu5jfH
+ AW2mZOCdCOterSEfwDvpWwjtIU7g8XtOA5vbbRTO0wXOgbVPmhHwRNQ8iqigsasB9ymzkJJk9
+ b3s9La+LDWyDXkQCnqoRkOK4uvtpeU0Z3bWBbGw8qTMgawJT2pDOx5kNUBLWufpYB3nXJtUA8
+ HyjQmvydU/F6/KvyZtAnSjW2faWwtcViJcw86C+hN8PyNNBQDtkTvhqpU78AjhZECvptpVhKD
+ 9vF5x5be6plJXhmzm6YPezUBlC5k065M0nzJZwtSKOlXMOSTPbtopm08OiA5ofwZWRVdi7p8m
+ TgSBKKt4cT5fTrqaYCOJdLjxE6cYAgeNzcVo392g3wcyGUHoZNUBMZXuAv86fN5aDrwqYZbwD
+ z76bAL/bubuRvhSBxLqpeeQg==
 
-Many thanks Qu, I appear to be back up and running but I also had to
-run 'btrfs rescue zero-log' to get rid of a superblock error.
-super-recover said the superblock was fine.
 
-On reboot and remount (as normal) I have a couple of residual transid
-errors and I'm currently running a full scrub to try and clean things
-up.
 
-Hopefully though I'm back up and running, this is the longest the FS
-has been mounted in 48 hours without it reverting to ro!
+=E5=9C=A8 2024/9/11 18:28, Ulli Horlacher =E5=86=99=E9=81=93:
+> On Wed 2024-09-11 (17:41), Qu Wenruo wrote:
+>
+>> =C3=A5=C2=9C=C5=A1 2024/9/11 17:30, Ulli Horlacher =C3=A5=C2=86=C2=99=
+=C3=A9=C2=81":
+>>
+>>> On Sun 2024-09-01 (19:15), Qu Wenruo wrote:
+>>>
+>>>> Convert/balance is only recommended if you have unallocated space (sh=
+own
+>>>> in `btrfs fi show`) to fulfill at least a metadata block group (1G in
+>>>> size for most cases).
+>>>
+>>> How can I detect this "unallocated space"?
+>>
+>> My bad, the more correct usage should be "btrfs fi usage"
+>
+> I see, it is just "free space"!
+>
+>
+>> In your case, "btrfs dev usage" is also fine, and that already shows th=
+e
+>> problem:
+>>
+>> /dev/mapper/cryptroot-1, ID: 1
+>>      Device size:           915.01GiB
+>>      Device slack:            3.50KiB
+>>      Data,single:           842.97GiB
+>>      Metadata,single:        72.01GiB
+>>      System,single:          32.00MiB
+>>      Unallocated:             1.00MiB  <<< Only 1MiB, not enough
+>
+> Mismatch-error :-)
+>
+> It is not "my case". The thread starting mail was not from me, I have ha=
+d
+> just an addon question regarding btrfsmaintenance.
+>
+>
+>
+>> This multi-device problem is a long existing known problem, I guess it'=
+s
+>> really time for us to properly fix it.
+>>
+>> The unallocated space is only a workaround, to prevent hitting the
+>> situation.
+>
+>> For your use case, RAID1 with unbalanced disk size, there is really no
+>> good way to fix it until we fix the root bug.
+>
+> If there are no btrfs RAID filesystems balancing is not an issue?
+>
+> My storage is a hardware RAID (Netapp), the btrfs filesystems are on sin=
+gle
+> virtual disks (/dev/sdX)
+>
+> I can riskless continue using "btrfsmaintenance"?
+> (I just should switch to the official Ubuntu package)
 
-Can't thank you enough for your help. I hope I'm not premature in
-thanking you / will report back with any more errors.
+In that case, yes.
 
-Regards
-
-Neil
-
-On Wed, 11 Sept 2024 at 09:55, Qu Wenruo <wqu@suse.com> wrote:
+Thanks,
+Qu
 >
 >
->
-> =E5=9C=A8 2024/9/11 17:43, Neil Parton =E5=86=99=E9=81=93:
-> > Is it safe to run 'btrfs rescue clear-ino-cache' on all 4 drives in
-> > the array?
->
-> Run it on any device of the fs.
->
-> Most "btrfs rescue" sub-commands applies to a fs, not a device.
->
-> And you must run the command with the fs unmounted.
->
-> >  Reason I ask is when this first occurred it was one
-> > particular drive reporting errors and now after switching out cables
-> > and to a different hard drive controller it's a different drive
-> > reporting errors.
-> >
-> > It's also worth noting that this array was originally created on a
-> > Debian system some 6-8 years ago and I've gradually upgraded the
-> > drives over time to increase capacity, I'm up to drive ID 16 now to
-> > give you an idea.  Does that mean there are other gremlins potentially
-> > lurking behind the scenes?
->
-> Nope, this is really limited to that inode_cache mount option.
-> I guess you mounted it once with inode_cache, but kernel never cleans
-> that up, and until that feature is fully deprecated, and newer
-> tree-checker consider it invalid, and trigger the problem.
->
-> Thanks,
-> Qu
->
-> >
-> > On Wed, 11 Sept 2024 at 09:04, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
-:
-> >>
-> >>
-> >>
-> >> =E5=9C=A8 2024/9/11 17:24, Neil Parton =E5=86=99=E9=81=93:
-> >>> btrfs check --readonly /dev/sda gives the following, I will run a
-> >>> lowmem command next and report back once finished (takes a while)
-> >>>
-> >>> Opening filesystem to check...
-> >>> Checking filesystem on /dev/sda
-> >>> UUID: 75c9efec-6867-4c02-be5c-8d106b352286
-> >>> [1/7] checking root items
-> >>> [2/7] checking extents
-> >>> [3/7] checking free space tree
-> >>> [4/7] checking fs roots
-> >>> [5/7] checking only csums items (without verifying data)
-> >>> [6/7] checking root refs
-> >>> [7/7] checking quota groups skipped (not enabled on this FS)
-> >>> found 24251238731776 bytes used, no error found
-> >>> total csum bytes: 23630850888
-> >>> total tree bytes: 25387204608
-> >>> total fs tree bytes: 586088448
-> >>> total extent tree bytes: 446742528
-> >>> btree space waste bytes: 751229234
-> >>> file data blocks allocated: 132265579855872
-> >>>    referenced 23958365622272
-> >>>
-> >>> When the error first occurred I didn't manage to capture what was in
-> >>> dmesg, but far more info seemed to be printed to the screen when I
-> >>> check on subsequent tries, I have some photos of these messages but n=
-o
-> >>> text output, but can try again with some mount commands after the
-> >>> check has completed.
-> >>>
-> >>> dump as requested:
-> >>>
-> >> [...]
-> >>>                   refs 1 gen 12567531 flags DATA
-> >>>                   (178 0x674d52ffce820576) extent data backref root 2=
-543
-> >>> objectid 18446744073709551604 offset 0 count 1
-> >>
-> >> This is the cause of the tree-checker.
-> >>
-> >> The objectid is -12, used to be the FREE_INO_OBJECTID for inode cache.
-> >>
-> >> Unfortunately that feature is no longer supported, thus being rejected=
-.
-> >>
-> >> I'm very surprised that someone has even used that feature.
-> >>
-> >> For now, it can be cleared by the following command:
-> >>
-> >>    # btrfs rescue clear-ino-cache /dev/sda
-> >>
-> >> Then kernel will no longer rejects it anymore.
-> >>
-> >> Thanks,
-> >> Qu
-> >
 
