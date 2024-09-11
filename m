@@ -1,181 +1,151 @@
-Return-Path: <linux-btrfs+bounces-7919-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7920-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFB3974747
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 02:21:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E805B974A79
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 08:40:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F3E7B213C6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 00:21:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A46DB2884B9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 06:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66B6D63B9;
-	Wed, 11 Sep 2024 00:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE11C7DA88;
+	Wed, 11 Sep 2024 06:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NTetWz8v";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NTetWz8v"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iDJwUsvf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A578423D2
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 00:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8844A2BAE3
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 06:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726014088; cv=none; b=ewvl32OtqI7bEbmn1kSV5SVlkmk3EgTHJ+cjaIwATdmycrE6ApTNA1mptMTG/0SuPpngkMtltPKA5cA9VOxdB37UtVvEHTx98dJehlDZMI3qdzsjevw6RfQUPxich/nURrbWPBsE1hvG5YG2IZUMqn3CcoQ7EYKP+wz4NtKyWaw=
+	t=1726036847; cv=none; b=Fa1bPyIUPmfVYcM5/lWmhoXexE+y6Ex9ztIZrhI/Nv/oi3EaC/19DvuL/yKV7mqOHl5NJW9WewnhJROpOxVsc+hRnL3hTHTaelAhcXRX3KyOT0xRu6SIPTqq73ZrsSyiPeuHwzvEHXu2zpBlYweBWQNxrIdp43+SeMuMT/9y1w8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726014088; c=relaxed/simple;
-	bh=WwQ5hcKiZmCx4c6IDzEGv1ZaJ7DdBvvOGmTIyB0NKtk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=RrM0akBNopySrkj+wt7TiV0HbkunXrc2y2BrPygloPcfu8JdKB27gFYpwPLSjMVl019ZrWiWAgwSKLU1+MoUMUy/CxxMDf5TQ+x9zLkwNONaO/bC+Ol7thlmcXnlioy0URjQeXfksBT5PnUxOgLdmX196R5QGSYZh8cWzCsAUzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NTetWz8v; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NTetWz8v; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7B4F01FCF7
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 00:21:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1726014084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=1jFz+cPfP68dpLGIpABMkXB4sdXpElCgjoPtYQQUuI8=;
-	b=NTetWz8vWOoTvwoTPdtBWwHa2w1wahyImcbSy+9tiqqnSiNM9pzHbXkmqBIjaQwWhyXcxz
-	y1FcsfGtZOQJCNYx2y/0EaetNu2h4MmdroBB4AV6BVFGqWn+71RRtfL5VIgdGAr9o4GGit
-	rUiSM8YmGyZFsW3cgnk2poYaJmETUA8=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=NTetWz8v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1726014084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=1jFz+cPfP68dpLGIpABMkXB4sdXpElCgjoPtYQQUuI8=;
-	b=NTetWz8vWOoTvwoTPdtBWwHa2w1wahyImcbSy+9tiqqnSiNM9pzHbXkmqBIjaQwWhyXcxz
-	y1FcsfGtZOQJCNYx2y/0EaetNu2h4MmdroBB4AV6BVFGqWn+71RRtfL5VIgdGAr9o4GGit
-	rUiSM8YmGyZFsW3cgnk2poYaJmETUA8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B82E0132CB
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 00:21:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id PShaHoPi4GbXWQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 00:21:23 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: do not assume the full page range is not dirty in extent_writepage_io()
-Date: Wed, 11 Sep 2024 09:51:02 +0930
-Message-ID: <6239c8bb8ce319c2940d6469ffcb7f5f6641db79.1726011300.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	s=arc-20240116; t=1726036847; c=relaxed/simple;
+	bh=LCF95sgRscJhuMTL4dg5NP9s6yywyw4rpB61JVLDIqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V1Jk7MTTm5oaSbe0HdqEyWakFIt/glDDxtNOQj88fdeW1GloVUiPcaJXJLSj56Kg24gg1ZdgoTI/IAra0ZA9/97sNMmPWvLJ/rwupSZO/mDubzQiVWNUXgOFy81Z/3Bb76xxGogpWaw2FbSa3OiGUEsFQ35qFTaT9FmH9BfB3ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iDJwUsvf; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-7a9a23fc16fso162504685a.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2024 23:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726036844; x=1726641644; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6M5TsgLQM7R6di1l21KUw5PDVp7qq8WzPqIK4QTnv70=;
+        b=iDJwUsvfPOn5CnrC1Q+XaUnXShoi/dqQFQxf2YjLTe7lAf4Rmev35DFZNjW8rlUe+c
+         nqdCQjZLinSltbofGsBMlh2aFc5sBL9SLrklkmh44zpqGfgo59BLoPWMYTPYCk91ru8+
+         YQyMb5S1aSynx7Z4gb+Hfn5sktnaDxihQ3V8c2pYwL8uX7knUAJ4rtHgr5AYCbTCnw3t
+         8iPKTQhb04Lb4bM4LMwVLjAmbu9saUnQkwQ7/Fy+pwBAtjUY+4AlNw0RoOryfpV4Z1eT
+         sSsMFqJnRUMdhs0bnU2VcSXOAd1qGSmcrPC65bC4UbiM2hjxSRHCUO3yeEuLxyNBmp0R
+         3siQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726036844; x=1726641644;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6M5TsgLQM7R6di1l21KUw5PDVp7qq8WzPqIK4QTnv70=;
+        b=Z0KSYKpNvdZ6GYOqFcv0MLZoCB+xy00mhxti600wEs2xIQ9nzH7L37FgqzbYqhCxoe
+         FuN8odPHqfGNQgUJ7jqHin3YjTPykicmFiBv1SA7For/eXiYKp0VrfdevUvzSJ9BuSWj
+         i10+FHKZ8pyt+PHTHfXyhz6HTdGmQdHCu0EpZcreL+iUHFbdRv9XclCL3NRufUNU+e8u
+         /bRZZFOfFcfl2QxjOw7mCSGy8rpmmojQ/+KGJSR0HZYr3KcpaJpINToSH/EbB6+MjVgU
+         cy2rT2POcH6yOHzZYvitYOR7qiLVuOh8mpK+K67+hZRcCtAt+CMV+L5siVTXSplQsAYh
+         s3ag==
+X-Gm-Message-State: AOJu0YzZDuGYn3fYrIJLhE9SXGxTTtddiQu9xIpVc8jXWbupvBQNhNQo
+	i7mhLzrICoUBlcIjP5T1XZbXCgSupkggvPNsrkp7jax4vsbYEIGVQnVXUhsN1aUFitlCgK6jGGR
+	VSoppz6+xmKTJ/6SFt3g1XCpf5/0=
+X-Google-Smtp-Source: AGHT+IEYnizhYCDQKRhvoL/DGxsXHIA+cfbWL9GcIYm+pDi7YwfpgjxfrENJgGO7yV0HtuV+mKDTjvIEozB9+Gmw2Rc=
+X-Received: by 2002:a05:620a:2717:b0:7a9:b7c7:ad4c with SMTP id
+ af79cd13be357-7a9d3d7ffebmr325282985a.58.1726036844320; Tue, 10 Sep 2024
+ 23:40:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 7B4F01FCF7
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid];
-	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
-X-Spam-Flag: NO
+References: <CAAYHqBbrrgmh6UmW3ANbysJX9qG9Pbg3ZwnKsV=5mOpv_qix_Q@mail.gmail.com>
+ <89131a4f-5362-4002-9a55-d1a24428ef05@gmx.com>
+In-Reply-To: <89131a4f-5362-4002-9a55-d1a24428ef05@gmx.com>
+From: Neil Parton <njparton@gmail.com>
+Date: Wed, 11 Sep 2024 07:40:34 +0100
+Message-ID: <CAAYHqBZ+-3GbDmQFGxMcYs3HpO-DUQA4pCG0xqWMZW+sbw-KJg@mail.gmail.com>
+Subject: Re: Tree corruption
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The function extent_writepage_io() will submit the dirty sectors inside
-the page for the write.
+btrfs ins dump-tree -b 333413935558656 /dev/sda
+btrfs-progs v6.10.1
+checksum verify failed on 333413935558656 wanted 0x00000000 found 0xbd640a7=
+9
+checksum verify failed on 333413935558656 wanted 0x00000000 found 0xbd640a7=
+9
+ERROR: failed to read tree block 333413935558656
 
-But recently to co-operate with the incoming subpage compression
-enhancement, a new bitmap is introduced to
-btrfs_bio_ctrl::submit_bitmap, to only avoid a subset of the dirty
-range.
-
-This is because we can have the following cases with 64K page size:
-
-    0      16K       32K       48K       64K
-    |      |/////////|         |/|
-                                 52K
-
-For range [16K, 32K), we queue the dirty range for compression, which is
-ran in a delayed workqueue.
-Then for range [48K, 52K), we go through the regular submission path.
-
-In that case, our btrfs_bio_ctrl::submit_bitmap will exclude the range
-[16K, 32K).
-
-The dirty flags for the range [16K, 32K) is only cleared when the
-compression is done, by the extent_clear_unlock_delalloc() call inside
-submit_one_async_extent().
-
-This patch fix the false alert by removing the
-btrfs_folio_assert_not_dirty() check, since it's no longer correct for
-subpage compression cases.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-This should be the last patch before the enablement of sector perfect
-compression support for subpage.
-
-Locally I have already been testing the sector perfect compression, and
-that's the last fix.
-
-All the subpage related fixes can be applied out of order as long as the
-final enablement patch is at the end of the queue, but for now
-my local branch has the following patch order (git log sequence):
-
- btrfs: allow compression even if the range is not page aligned
- btrfs: do not assume the full page range is not dirty in extent_writepage_io()
- btrfs: make extent_range_clear_diryt_for_io() to handle sector size < page size cases
- btrfs: wait for writeback if sector size is smaller than page size
- btrfs: compression: add an ASSERT() to ensure the read-in length is sane
- btrfs: zstd: make the compression path to handle sector size < page size
- btrfs: zlib: make the compression path to handle sector size < page size
----
- fs/btrfs/extent_io.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 644e00d5b0f8..982bb469046f 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1391,8 +1391,6 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 			goto out;
- 		submitted_io = true;
- 	}
--
--	btrfs_folio_assert_not_dirty(fs_info, folio, start, len);
- out:
- 	/*
- 	 * If we didn't submitted any sector (>= i_size), folio dirty get
--- 
-2.46.0
-
+On Tue, 10 Sept 2024 at 22:30, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2024/9/11 02:38, Neil Parton =E5=86=99=E9=81=93:
+> > Arch LTS system (kernel 6.6.50)
+> >
+> > Cannot mount a raid1 (data) raid1c3 (metadata) array made up of 4
+> > drives as I'm getting corrupt leaf and read time tree block corruption
+> > errors.
+> >
+> > mount -o recovery /dev/sda /mountpoint   didn't help
+> >
+> > If I blank the log on what seems to be the affected drive I can get it
+> > to mount but it will give out the same errors after a few sec and turn
+> > the file system read only.
+> >
+> > If I pull the affected drive and mount degraded I get the same errors
+> > from another drive.
+> >
+> > Trying to work out if I'm shafted or if there are steps I can take to r=
+epair.
+> >
+> > Critical data is backed up off site but I also have a tonne of
+> > non-critical data that will take me weeks to re-establish so nuking
+> > not my preferred option.
+> >
+> > I've managed to ssh in and here are some lines from dmesg:
+> >
+> > [   14.997524] BTRFS info (device sda): using free space tree
+> > [   22.987814] BTRFS info (device sda): checking UUID tree
+> > [  195.130484] BTRFS error (device sda): read time tree block
+> > corruption detected on logical 333654787489792 mirror 2
+> > [  195.149862] BTRFS error (device sda): read time tree block
+> > corruption detected on logical 333654787489792 mirror 1
+> > [  195.159188] BTRFS error (device sda): read time tree block
+> > corruption detected on logical 333654787489792 mirror 3
+> >
+> > [  195.128789] BTRFS critical (device sda): corrupt leaf:
+> > block=3D333654787489792 slot=3D110 extent bytenr=3D333413935558656 len=
+=3D65536
+> > invalid data ref objectid value 2543
+> > [  195.148076] BTRFS critical (device sda): corrupt leaf:
+> > block=3D333654787489792 slot=3D110 extent bytenr=3D333413935558656 len=
+=3D65536
+> > invalid data ref objectid value 2543
+> > [  195.157375] BTRFS critical (device sda): corrupt leaf:
+> > block=3D333654787489792 slot=3D110 extent bytenr=3D333413935558656 len=
+=3D65536
+> > invalid data ref objectid value 2543
+>
+> `btrfs ins dump-tree -b 333413935558656 /dev/sda` output please.
+>
+> Thanks,
+> Qu
+> >
+> > advice needed please
+> >
 
