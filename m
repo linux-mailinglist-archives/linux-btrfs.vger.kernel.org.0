@@ -1,231 +1,325 @@
-Return-Path: <linux-btrfs+bounces-7953-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF07975D4E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 00:34:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592BF975D5C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 00:45:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61FC61C21DE0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 22:34:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6301F236B6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2024 22:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4041A3031;
-	Wed, 11 Sep 2024 22:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1213D184524;
+	Wed, 11 Sep 2024 22:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="j5euCHjx"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fz6f1SfR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fz6f1SfR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 266F1157A5C
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 22:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27FF1E4B2
+	for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2024 22:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726094084; cv=none; b=bSktzeGJ9BkfbPYWymARXGZTx0fhYBdGJ7KfPc6xYikK+nSH5W0SUVTnGqOcBpMD/N8xb9B9CZ4BytalIz6mXt81Nv7ZlIDRQLgummajvKaI2lpOqNq5gRQfjMda/g3KV+S3B8xm7su7ltRQoA3osAWlBZr1JfnPjOrSBn9ZrQY=
+	t=1726094746; cv=none; b=U0FnH9pX+crrQHCAhrxBRucKMmeyQwQywQgfGpgntvr/96/I6uZe5jhP0uBSqu92X8sGCk9SQMOkFELkOCtl3Ktpr3rM5y9Dgdi0JEQzQDXJiF2pwmkCVmdaYaGpebbgH4EbLlz9A2FmrCNNseY6jmLFBrFuT6KfUclyE3RLEA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726094084; c=relaxed/simple;
-	bh=Qffq7xbYaiPglTZC+QQYS/QPkQwiMa7FU+4S8TdAXKA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=oO8jQD8+eyuJ2tbG4GFOgjeVrhbWu8cl4pLV00s6sSvPJY49RSZGYquLKYw6Y/hhoGsBsS9ztvhx1hVszvdOEf7pOMw4044p6/SSMz2tmkdS5pJJWWIt0F2aORrgZX0ItITddGQGdkiPhrUEfsKyaadhsuenjVxpXji4iaNqTic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=j5euCHjx; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726094078; x=1726698878; i=quwenruo.btrfs@gmx.com;
-	bh=Ekp5LhYMQ1mW/kK2z5usKIZone1upltlEeL0AHzr1Dc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=j5euCHjxGvt+UOW9im64SpN6tXt8+4194K8RfPDmCq/j0cH/qlqkBz1G4JZJUNTl
-	 y4ZuBYrZH+xzUEKBCgkLxdaunOPyESBpgsPY73h8dumVG0ih2zVuI1/k+nYCuuBDg
-	 RJdw9hCnMZ7YT7mBvvwOjbmlmrZaQ9BGiNnT1xPA9Uft1spFbzFm0I10eLKne+cZ+
-	 6k38v44X9NJyzk7xigOdiHOuxzCaPz1KzsTWgsyj89w1wUCtwUN7aC2Xnx9vThyus
-	 vmTCe8paU5V3CZh0++nq2SJ4JmZPLlKN+ypOhSC7zolMegVSWVUdJ3/k3Q66vhXIs
-	 oqpxyOVvbu5noRA3uQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MoO2E-1sDGHG1M5o-00aZPh; Thu, 12
- Sep 2024 00:34:38 +0200
-Message-ID: <57614727-8097-4b43-93f5-d08a078cbde9@gmx.com>
-Date: Thu, 12 Sep 2024 08:04:35 +0930
+	s=arc-20240116; t=1726094746; c=relaxed/simple;
+	bh=c7yqj6UcV4gnq5kxt9NQEl+6vnkQJrXnrawnPNrOjNg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VgJ8wtBeegiWC1XDBIro1zUTWByz24TUoSViePC/s1qDuWK/NKCMS3PWAjMXCtQoIHiaBmCgCRFTb5g6SIJRxruQz93SGClqcsQCBjTK6xgV6K9cQbI7J2hcPiSPytrLem0duAH1lugcNZJsCNkUNlNPQga1Yi6JKuW6mZEpDHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fz6f1SfR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fz6f1SfR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B377121AD3;
+	Wed, 11 Sep 2024 22:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726094740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=oGPiuYMle10rOPg9+LtSe+ZM6UzN8nR5IGpF898a2cY=;
+	b=fz6f1SfRA5gv5VigfULR8q9/RDushb/mnNJD0pWS/+fxV/TqjRArg9sqTV8VyS+Psel5pS
+	5fgN8G082Y9wSVKLTFB6pEhJFAivO91UDn+V7kJquqi22rS0LIigj+i4fobuWyLBDdbxDY
+	QnqR9f82+MPpZFUSdC8v9SHfLhLHqcs=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=fz6f1SfR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726094740; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=oGPiuYMle10rOPg9+LtSe+ZM6UzN8nR5IGpF898a2cY=;
+	b=fz6f1SfRA5gv5VigfULR8q9/RDushb/mnNJD0pWS/+fxV/TqjRArg9sqTV8VyS+Psel5pS
+	5fgN8G082Y9wSVKLTFB6pEhJFAivO91UDn+V7kJquqi22rS0LIigj+i4fobuWyLBDdbxDY
+	QnqR9f82+MPpZFUSdC8v9SHfLhLHqcs=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B038313A6E;
+	Wed, 11 Sep 2024 22:45:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UEJNHJMd4mZ0awAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 11 Sep 2024 22:45:39 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Archange <archange@archlinux.org>
+Subject: [PATCH] btrfs-progs: fix a false failure for inode cache cleanup
+Date: Thu, 12 Sep 2024 08:15:17 +0930
+Message-ID: <6a7acf399863f0ad8627a082a92ef8fc332c2642.1726094645.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Critical error from Tree-checker
-To: Archange <archange@archlinux.org>, linux-btrfs@vger.kernel.org
-References: <9541deea-9056-406e-be16-a996b549614d@archlinux.org>
- <244f1d2b-f412-4860-af34-65f630e7f231@gmx.com>
- <3fa8f466-7da9-4333-9af7-36dabc2a2047@gmx.com>
- <4803f696-2dc5-4987-a353-fce1272e93e7@archlinux.org>
- <914ea24d-aa0d-4f01-8c5e-96cf5544f931@gmx.com>
- <2cec94bd-fc5e-4e9c-acc9-fb8d58ca3ee1@archlinux.org>
- <e81fe89a-52bc-4629-a27b-c69d64c9fbec@gmx.com>
- <b44f33ba-3230-476c-ba3e-cb47e1b9233a@archlinux.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <b44f33ba-3230-476c-ba3e-cb47e1b9233a@archlinux.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RiT6iipQF0EqdHG99PM5vQpiloDt5Wnll48AwDmyYx0w+Mw7rKv
- Z1nvrb9gncmkcSOIu/PymDMtkoB0iyybGfoO5aXe5BGVuO9w+hdEUzKRoBYodne8Jvk34KD
- Kavns1ptHL/z/506rtzb4kjyTlk4jr70Nmw+OuYSzFuLS06VPJMC+kLfApd0bElNu0Uyzwi
- gEccZDDW3qLxolV0HnWMg==
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: B377121AD3
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:9q7zx8S/6hA=;Z71xT8PDLyzd6XS57dpyf8LZXDc
- AEf4qODD66uB3/NF6cnth9rViNzCqvN+MGnB1J15x6VYS3YD11vSJ9wbk9LKCh4tU0zjVHn9m
- ddW7zZO6NNJeTOFDNDbGVRqNYDUkxDn+7eSIMeBHI6GbWalO2hVfT2YL/8oBTzEXz8as1bQPP
- NXNwnIusmCi1nGg16C255aMWb693G9A2xOAUQ2nUVVbvYleSEUCyrbuGrl8gIAShLJtU0mnRg
- +TdPGc/C6XvV7obbkKh7ZyaD9YCRino4bEu3sAIDuCQ/+bNvk93i56GdjmkM1K+snh+BydYV7
- m+SGb9K938hTyPfGk+JrcT4E2ecxs/dlM/4Va8gc3osqHCbR0tmxR0K1kmCycU0LhjbDpbmfH
- bK1zVBqVTVGaJIdQv6pvP8vUdILaYqYMIXSJvNJ6StYyqA74ZCHlfoILR2PNmzFxVFbNxatpe
- WchIIsL0SSeLHbp9CpMtUk8RIrxjTyCvklybvXFSn4LeZ4NzbJ85xdj1p230iHtOarKhIhA/f
- nbEWZ8Rnm2xsjVfJvfTzz04E3laNdvDGwf3F5DNm24sTmCOmoCeeb0Q5PHnrUyDVVf/UJvziq
- +hN3vB4qh/T/McqBaev7qOSf6a3lkaEdv4dnEQKyDoOgMSCsrORKe5mC+gTFNXecFhIdDLUdK
- npKaV6GT0TwPJfNXa83ckTsQNeENa4hbhwj45P5NPdHxRQ7WZ6y4u4JebhKKn3NVZGV1UWz/j
- NIGpZeB26M9QMR592nurvJfZAED360I4D/cux0OTLogF1588FX+uIffSGu4QW4G1HgNkl42Uf
- JYBxbhhIC5p3Qbf5uKBtnKuw==
+X-Spam-Level: 
 
+[BUG]
+There is one report about `btrfs rescue clear-ino-cache` failed with
+tree block level mismatch:
 
+ # btrfs rescue clear-ino-cache /dev/mapper/rootext
+ Successfully cleaned up ino cache for root id: 5
+ Successfully cleaned up ino cache for root id: 257
+ Successfully cleaned up ino cache for root id: 258
+ corrupt node: root=7 block=647369064448 slot=0, invalid level for leaf, have 1 expect 0
+ node 647369064448 level 1 items 252 free space 241 generation 6065173 owner CSUM_TREE
+ node 647369064448 flags 0x1(WRITTEN) backref revision 1
+ fs uuid e6614f01-6f56-4776-8b0a-c260089c35e7
+ chunk uuid f665f535-4cfd-49e0-8be9-7f94bf59b75d
+     key (EXTENT_CSUM EXTENT_CSUM 3714473984) block 677126111232 gen 6065002
+     [...]
+     key (EXTENT_CSUM EXTENT_CSUM 6192357376) block 646396493824 gen 6065032
+ ERROR: failed to clear ino cache: Input/output error
 
-=E5=9C=A8 2024/9/12 07:35, Archange =E5=86=99=E9=81=93:
->
-> Le 12/09/2024 =C3=A0 01:23, Qu Wenruo a =C3=A9crit=C2=A0:
-[...]
->
-> While the previous one (see my second message in this thread) had no
-> error, there is now one:
->
-> # btrfs check /dev/mapper/rootext
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/rootext
-> UUID: e6614f01-6f56-4776-8b0a-c260089c35e7
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> wanted bytes 688128, found 720896 for off 676326604800
-> cache appears valid but isn't 676326604800
+[CAUSE]
+During `btrfs rescue clear-ino-cache`, btrfs-progs will iterate through
+all the subvolumes, and clear the inode cache inode from each subvolume.
 
-Minor problem, still I'd recommend to run
-  `btrfs rescue clear-space-cache v1 <dev>` to clear the v1 cache first.
+The problem is in how we iterate the subvolumes.
 
-Then you can mount with v2 space cache or keep going with the v1 cache
-(not recommended, will be deprecated soon)
+We hold a path of tree root, and go modifiy the fs for each found
+subvolume, then call btrfs_next_item().
 
-And if your fs only have subvolumes 5 (the top level one), 257 and 258,
-then you're totally fine to continue.
-I guess that's the case?
+This is not safe, because the path to tree root is not longer reliable
+if we modified the fs.
 
-If you have other subvolumes, then you may need to wait for my fix to
-ino-clear code to clear the remaining subvolumes, just in case.
+So the btrfs_next_item() call will fail because the fs is modified
+halfway, resulting the above problem.
 
-Thanks,
-Qu
+[FIX]
+Instead of holding a path to a subvolume root item, and modify the fs
+halfway, here introduce a helper, find_next_root(), to locate the root
+item whose objectid >= our target rootid, and return the found item key.
 
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 478434086912 bytes used, error(s) found
-> total csum bytes: 465136176
-> total tree bytes: 1590493184
-> total fs tree bytes: 870760448
-> total extent tree bytes: 138231808
-> btree space waste bytes: 326062620
-> file data blocks allocated: 516090466304
->  =C2=A0referenced 492383629312
->
->> For the bad free space cache, I'd recommend to go v2 space cache instea=
-d.
->
-> Since the above error seems related to space cache, and that I had
-> switching to v2 on my todo list for a long time, I=E2=80=99ve just did s=
-o.
->
-> dmesg mount messages right after (nothing unexpected I guess, outside
-> the warning and =E2=80=9Ccorrupt 4=E2=80=9D still present):
->
-> [=C2=A0 812.242212] BTRFS: device label root devid 1 transid 6065207
-> /dev/mapper/rootext (254:1) scanned by mount (2145)
-> [=C2=A0 812.243727] BTRFS info (device dm-1): first mount of filesystem
-> e6614f01-6f56-4776-8b0a-c260089c35e7
-> [=C2=A0 812.243770] BTRFS info (device dm-1): using crc32c (crc32c-intel=
-)
-> checksum algorithm
-> [=C2=A0 812.243788] BTRFS info (device dm-1): using free-space-tree
-> [=C2=A0 812.256356] BTRFS warning (device dm-1): devid 1 physical 0 len
-> 4194304 inside the reserved space
-> [=C2=A0 812.258504] BTRFS info (device dm-1): bdev /dev/mapper/rootext e=
-rrs:
-> wr 0, rd 0, flush 0, corrupt 4, gen 0
-> [=C2=A0 812.810623] BTRFS info (device dm-1): creating free space tree
-> [=C2=A0 819.778945] BTRFS info (device dm-1): setting compat-ro feature =
-flag
-> for FREE_SPACE_TREE (0x1)
-> [=C2=A0 819.778949] BTRFS info (device dm-1): setting compat-ro feature =
-flag
-> for FREE_SPACE_TREE_VALID (0x2)
-> [=C2=A0 819.877973] BTRFS info (device dm-1): cleaning free space cache =
-v1
-> [=C2=A0 819.885829] BTRFS info (device dm-1): checking UUID tree
-> [=C2=A0 866.299565] BTRFS info (device dm-1): last unmount of filesystem
-> e6614f01-6f56-4776-8b0a-c260089c35e7
->
-> I=E2=80=99ve run check again after that:
->
-> # btrfs check /dev/mapper/rootext
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/rootext
-> UUID: e6614f01-6f56-4776-8b0a-c260089c35e7
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space tree
-> there is no free space entry for 0-65536
-> cache appears valid but isn't 0
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 478312665088 bytes used, error(s) found
-> total csum bytes: 465136176
-> total tree bytes: 1593524224
-> total fs tree bytes: 870760448
-> total extent tree bytes: 138231808
-> btree space waste bytes: 326060271
-> file data blocks allocated: 515966013440
->  =C2=A0referenced 492259176448
->
-> So there is still an error, but different this time.
->
->
+The path to root tree is only hold then released inside
+find_next_root().
+
+By this, we won't hold any unrelated path while modifying the
+filesystem.
+
+And since we're here, also adding back the missing new line when all ino
+cache is cleared.
+
+Reported-by: Archange <archange@archlinux.org>
+Link: https://lore.kernel.org/linux-btrfs/4803f696-2dc5-4987-a353-fce1272e93e7@archlinux.org/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ cmds/rescue.c        |   2 +-
+ common/clear-cache.c | 122 ++++++++++++++++++++++++-------------------
+ 2 files changed, 70 insertions(+), 54 deletions(-)
+
+diff --git a/cmds/rescue.c b/cmds/rescue.c
+index 5bbd47e5c2e3..c60bf11675b9 100644
+--- a/cmds/rescue.c
++++ b/cmds/rescue.c
+@@ -449,7 +449,7 @@ static int cmd_rescue_clear_ino_cache(const struct cmd_struct *cmd,
+ 		errno = -ret;
+ 		error("failed to clear ino cache: %m");
+ 	} else {
+-		pr_verbose(LOG_DEFAULT, "Successfully cleared ino cache");
++		pr_verbose(LOG_DEFAULT, "Successfully cleared ino cache\n");
+ 	}
+ 	close_ctree(fs_info->tree_root);
+ out:
+diff --git a/common/clear-cache.c b/common/clear-cache.c
+index 960c3466ce44..f0bc40753e6d 100644
+--- a/common/clear-cache.c
++++ b/common/clear-cache.c
+@@ -555,69 +555,85 @@ out:
+ 	return ret;
+ }
+ 
+-int clear_ino_cache_items(struct btrfs_fs_info *fs_info)
++/*
++ * Find a root item whose key.objectid >= @rootid, and save the found
++ * key into @found_key.
++ *
++ * Return 0 if a root item is found.
++ * Return >0 if no more root item is found.
++ * Return <0 for error.
++ */
++static int find_next_root(struct btrfs_fs_info *fs_info, u64 rootid,
++			  struct btrfs_key *found_key)
+ {
+-	int ret;
++	struct btrfs_key key = {
++		.objectid = rootid,
++		.type = BTRFS_ROOT_ITEM_KEY,
++		.offset = 0,
++	};
+ 	struct btrfs_path path = { 0 };
+-	struct btrfs_key key;
+-
+-	key.objectid = BTRFS_FS_TREE_OBJECTID;
+-	key.type = BTRFS_ROOT_ITEM_KEY;
+-	key.offset = 0;
++	int ret;
+ 
+ 	ret = btrfs_search_slot(NULL, fs_info->tree_root, &key, &path, 0, 0);
+ 	if (ret < 0)
+ 		return ret;
+-
+-	while(1) {
+-		struct btrfs_key found_key;
+-
+-		btrfs_item_key_to_cpu(path.nodes[0], &found_key, path.slots[0]);
+-		if (found_key.type == BTRFS_ROOT_ITEM_KEY &&
+-		    is_fstree(found_key.objectid)) {
+-			struct btrfs_root *root;
+-
+-			found_key.offset = (u64)-1;
+-			root = btrfs_read_fs_root(fs_info, &found_key);
+-			if (IS_ERR(root))
+-				goto next;
+-			ret = truncate_free_ino_items(root);
+-			if (ret)
+-				goto out;
+-			printf("Successfully cleaned up ino cache for root id: %lld\n",
+-					root->objectid);
+-		} else {
+-			/* If we get a negative tree this means it's the last one */
+-			if ((s64)found_key.objectid < 0 &&
+-			    found_key.type == BTRFS_ROOT_ITEM_KEY)
+-				goto out;
+-		}
+-
+-		/*
+-		 * Only fs roots contain an ino cache information - either
+-		 * FS_TREE_OBJECTID or subvol id >= BTRFS_FIRST_FREE_OBJECTID
+-		 */
+-next:
+-		if (key.objectid == BTRFS_FS_TREE_OBJECTID) {
+-			key.objectid = BTRFS_FIRST_FREE_OBJECTID;
+-			btrfs_release_path(&path);
+-			ret = btrfs_search_slot(NULL, fs_info->tree_root, &key,
+-						&path,	0, 0);
+-			if (ret < 0)
+-				return ret;
+-		} else {
+-			ret = btrfs_next_item(fs_info->tree_root, &path);
+-			if (ret < 0) {
+-				goto out;
+-			} else if (ret > 0) {
+-				ret = 0;
+-				goto out;
+-			}
++	while (true) {
++		btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
++		if (key.type == BTRFS_ROOT_ITEM_KEY && key.objectid >= rootid) {
++			memcpy(found_key, &key, sizeof(key));
++			ret = 0;
++			goto out;
+ 		}
++		ret = btrfs_next_item(fs_info->tree_root, &path);
++		if (ret)
++			goto out;
+ 	}
+-
+ out:
+ 	btrfs_release_path(&path);
+ 	return ret;
+ }
+ 
++int clear_ino_cache_items(struct btrfs_fs_info *fs_info)
++{
++	u64 cur_subvol = BTRFS_FS_TREE_OBJECTID;
++	int ret;
++
++	while (1) {
++		struct btrfs_key key = { 0 };
++		struct btrfs_root *root;
++
++		ret = find_next_root(fs_info, cur_subvol, &key);
++		if (ret < 0) {
++			errno = -ret;
++			error("failed to find the next root item: %m");
++			break;
++		}
++		if (ret > 0 || !is_fstree(key.objectid)) {
++			ret = 0;
++			break;
++		}
++		root = btrfs_read_fs_root(fs_info, &key);
++		if (IS_ERR(root)) {
++			ret = PTR_ERR(root);
++			errno = -ret;
++			error("failed to read root %llu: %m", key.objectid);
++			break;
++		}
++		ret = truncate_free_ino_items(root);
++		if (ret < 0) {
++			errno = -ret;
++			error("failed to clean up ino cache for root %llu: %m",
++			      key.objectid);
++			break;
++		}
++		printf("Successfully cleaned up ino cache for root id: %lld\n",
++			root->objectid);
++
++		if (cur_subvol == BTRFS_FS_TREE_OBJECTID)
++			cur_subvol = BTRFS_FIRST_FREE_OBJECTID;
++		else
++			cur_subvol = root->objectid + 1;
++	}
++	return ret;
++}
++
+-- 
+2.46.0
+
 
