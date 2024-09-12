@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7977-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7978-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5A59773AC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 23:35:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AF709773AD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 23:36:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D0F9284978
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 21:35:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956081C23CCA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 21:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3331C174C;
-	Thu, 12 Sep 2024 21:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F761C1720;
+	Thu, 12 Sep 2024 21:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="nEFxaO32"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="kKQysdgF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0CB2C80;
-	Thu, 12 Sep 2024 21:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0D42C80
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 21:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726176943; cv=none; b=fASPz/UqV4EOQuswEiqEMcNX+QnEF9esH2Bq/7lm0QM2PSy1xJ+d9ibzpn8zRqBgOos39nuzQzdS3C/j+i0DYfNMQ+h+HYUgSNGte2rF2bcgCM9dS0rKVoQMDFl/DskOnqwL50tSc/R/ILMXGS0iYeOaUzpgXt0S9lN7xIF+Cts=
+	t=1726176983; cv=none; b=KIJCJrntjOJ2JJb3V/pIBaVGSRd3E9sj6bqyk3XmVC1zuc5BV3YgXFoW4vZHqQtz8osJ+bp3v+lRDxsmk+X6Fl9KZ44/XNe4eM+do6uhoIyaYbxY1FDQc5hoTtGJ1sqQg71H8uZSux3mPBtGtsSRbliYpfNYvt7geuOoVlosml0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726176943; c=relaxed/simple;
-	bh=hcaSJNOKaKzVUWJ1JNBR0mLmzCxaWhSLXbJ5M+9Cj0g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u6/SCY3Tf+JAx2bzKg7BYLGNCP773yw/sg5VxJ0G+v+w9cZ1ytapKUu5GJcW8ojh9WXhEuZpfzInm+Awud6ajBcfQt3Rt9SoFN8FgxSCFzb+l4jsKu2HsBW/G3bh+kweoY9DqgHGoDLC39ReUWavHUtDDLf7KPicKKZfdYKWDV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=nEFxaO32; arc=none smtp.client-ip=212.227.17.22
+	s=arc-20240116; t=1726176983; c=relaxed/simple;
+	bh=0PZnxb9oDafnshelbF7+IpU0Zzc+QyP040FKauXNp7E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TYZv/4wXjS6UEHgf2OotoRcpqtL5c/IPA6JxbuSOQVg4lN/ryqEbW/vIPvdLZzN9b7E26SpnpRWcmrkbZn0ZLcrOd3soplY+ju3Xgzf2CX5AVx3D84EuirBeYuPZLFVfJYiMB7Lv5bRfKK3A+sMZBZ7E4MZ9Fv48KeibuAgnLaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=kKQysdgF; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726176934; x=1726781734; i=quwenruo.btrfs@gmx.com;
-	bh=y4tt9c8/CDVs6N61r+jnPAv9En3aRlmm+Lz5g5B5nTc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1726176975; x=1726781775; i=quwenruo.btrfs@gmx.com;
+	bh=Yz2DztCBKNAOe+mInWUu+Ja4FgnHXCZvP75Do1lSYbM=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=nEFxaO32kjyYsy5O9CNiuTi2Gwb+9ZYVWf7E3VNbH5p9Gl0wuIlMcgtCwO8j6CH0
-	 K7wu+XvtGfNEm6IjnnKZErJuXN0m2zNKk0v8jtDzHunBgf+Kw1Eh2VVZsEB+DBoxZ
-	 /QD/Nn7+E1UK4Or6LcODRSl2krc3vfF65lgLOBmZGF9E9k+AvwJDW358IyQep0uuW
-	 I76nH6dODmCocdHoAM5U79qBMXRYkIRTcTKQQrVkfKH+Vs6fyabxClNUaceeFYUSn
-	 B7ULkXHo5XhBnx+YRlnXEjvGZDPJtKQRKfYuaqptlcLGsLoPEpRPDlcMon+95jZAt
-	 SJOif/2V6pgal5Kdog==
+	b=kKQysdgFRMkU6JPsZbbDR5vQFZlllKXyqBankZjO9b1Ljc6jhj5zzE7MTR4sEhWI
+	 8z7KuVdslOaTMrmOXLGSdBCuzSvjPdtN7r3IUcn6JEza7kK+XFE2D+/u3eJyvHI53
+	 Xy7mJaKPTldrmsqkBVFZz+HsKVfOLK6FebhmgL7FG15RwaVgx8pxpGnZeOj0+9BJb
+	 yU+qRrZYNfCZfg8YhNX1tyQrJOqDmuCnoG2o1kmpLdgdu3wWeia+OUDp3PC4FHN9l
+	 KqcCyl85Q9KmWp/fdvbj69Y6NOGdQGQrcS6a7vgvPSZw+b2kM3Pi8Ys1p/KWfJOmp
+	 0iZTZbI52lqW914+pg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mzyuc-1s33kR20n8-00x0hE; Thu, 12
- Sep 2024 23:35:34 +0200
-Message-ID: <992b0055-12a2-47e8-91e2-38fb763cac9e@gmx.com>
-Date: Fri, 13 Sep 2024 07:05:30 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv2xU-1ry8J42OMS-00qwYC; Thu, 12
+ Sep 2024 23:36:15 +0200
+Message-ID: <26d6f8ba-6a8f-4519-9945-a50a4a74b502@gmx.com>
+Date: Fri, 13 Sep 2024 07:06:12 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs/321: make the test work when compression is enabled
-To: fdmanana@kernel.org, fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <21f8d987309ca0699c6bb95666278d02da03ff32.1726145029.git.fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs-progs: map-logical: fix search miss when extent is
+ the first in a leaf
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <dd34707ffd1cd5a458980a209cfcc06a1817b848.1726149878.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,119 +88,134 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <21f8d987309ca0699c6bb95666278d02da03ff32.1726145029.git.fdmanana@suse.com>
+In-Reply-To: <dd34707ffd1cd5a458980a209cfcc06a1817b848.1726149878.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:9/2RGrmHj3S14fFzesFqIC/ryfe0dpV3p8UELVfXOAOYyelG5Zl
- APwkIY4mn0Fr1ft6PVbghTkYzfGsXxqCr1I0S9xcm3Dkvehkd1qW4lszxbKWi7kevaYOhiW
- Pfm/zGzH29CQEeOxDNjPdGEfIoWYdqW8CirncuCALUUl2mffivXsyrq/+6w5KM2DsPRN/5c
- cgjXTkMq/x+8C2Y4Oez0w==
+X-Provags-ID: V03:K1:v55IHxVjcrCMdJ2dmAIKo37eTQ5K9ATL9KFxx/KACvJ0GFBqn7j
+ nfeQszEDeG2J3ZTVMfCA8Tjbr86bY8BzOEZ80WOvA90E2B4g3gde8Xanm7nC7x+tkCN9Hq+
+ 8NFezjPaosjH8ln/IftY23KLZnXakLectz0+7x9m1Cx8w2T2ZqOAfJII2i+wUCQGIpOEQ/Z
+ pMgCNnTclbam60RsAzxYA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:FQQK2XS+Fqc=;WF649X7hn5U5Wl5zhwE+OslECEP
- xw+F3E7tYdpjStdXL+qNVjCDU6wutq35DuCpvnQeEv0RS9TJCBllRw8MO3NIDZI2M0IL/fDcG
- 8yKNpvTAp+PLiggHvrpS0SUXO2xna3kBbSxFeDxKoyXLub6MGhuJiz3ru5fW5L3/VBqh0jUGx
- sI0c+lmmkHTFwrVR+vvBayBwcR1GUJeDZ/wxvRE55lEhh7zCiEoJeEJMjDsm+fMczVjoEhb9F
- v2gDBjTm3Pp4i4lRj3eQg94EAJJy4ZnQqR4twyX7APO1qlf4e9IMvBq2JUb7aMPXbkysRC3LR
- ly5S+Vj3OWxdrYeBiUeWeDsclw1YeAhePAh+JrvbwUoiXi8SsHDgals/DS8tAma7ymiIN211D
- bIoCp+iGMeSODY9CABXbIKlcEsPFJobDcPikfnJKjSTp/CCb5kqnROvEIpp8I2jB5zuebE+sO
- z5FMjf9juhR/K4esTEHvSOk/VK7aXcSo5yXwdrSnS0pYQE2E2ZKeE/v27mpzkEWC9QBsGmtGo
- 6dBGYEgDqO/SOqfage5NlFpbmjCMw4GLUgyI54XHrpWKOjd5/tbR4vn1saa9OmVq37IJuYwRn
- peJVaZDYbUNJGOkljjLh99iGmlry5rhaCgtdoeTgNJ8X1OLsBR0QuSJPVKcPMOfnd9sbaOnUw
- F92AI2nj1aH7Tl5yDz6uIW5hMng5U+njrSc+NHe2HdqeFP6HiOzl1YS30TieNmyzgInkGJ6Go
- FbMdMG/SDh869D5lhA2kDoqMzhRQzEfVIFybcSzuj6csbgcvW28d2JQhUouCePhlhJxuqN3sC
- 6z9ckCTDrxtA4j3lfmhW1JmQ==
+UI-OutboundReport: notjunk:1;M01:P0:2XmIJTfZuA8=;sK2hRVF0Io/9/WYmcgC+/a+QNgF
+ W5v81H+5NlZH9SNJciqQpGaUtDlOuZ8dZb2lxI7OnD7WFzB478XNteu6qwRQbSgPmTv5rX+NW
+ ZqQKji8o+Kv0bKh1Q26IaIVTCN/qXT7KJDSph++yMqFtfpY9nNk9NnJuEeJO8pyjaWXT2P9hA
+ uyDmz7KQ9Ym0mBbJhblzYtWmgWLkGrJWMzwg5Nqjfl6WXqWLl5pFtEcdWl9OiGQs2+H6iuskz
+ rjIYURROo41We5BMtBzzsRyqWjx2TC/Hy79edra6q7wDXRBUb6+OMHeaPOmR/B7aRzbVwcn7H
+ TAUkudzBNoF4gXdCD9gQptpc7pI7zExt3JhMSYsAaskDkdHkkL72UA6LEJhXC1/xT7Hu114O3
+ uY2xeSLiZvYeWWumgVAupbXuMSTQqQzuVbx019A0TaBHUuLZSVYQwOKazT6fgCuK8PuRrbuL1
+ 4nNufWQT7eYv7Bqe3LXnDZ3HNYe3EEoJfGRDuAieOF3as9H22P6QoECR0OJ7eJ/uO2GY/ecuy
+ bhLFEhZtUOy313ejb85q3zG445aLXIseY3kpjwI4e1G28jaSv/676qWzjeHPBrEejFqKfRmby
+ S3+Mj86U070lloh0iiOBGqL6brsFV+AN1ItKqp0A9zSfLaZcmQbOzMqZBRM89J8Fb1UK4n4c/
+ tXsL61UFEh+j3jL8YNFCYMlqQztg9NVOc6bMEV8zUcJFv8mZxW1yXJ5FInNHtNJml3b4SWTrC
+ RFckxPj0Ok6IHTPdzvYQvioosUebyXkpBjURCXu/g+Jrit95/WfTeUxyskefmN2eAgk+ZOpUo
+ FXgo4aDtu5nRl/LS0sMgtqWg==
 
 
 
-=E5=9C=A8 2024/9/12 22:15, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/9/12 23:35, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> When running btrfs/321 with compression enabled it fails like this:
+> When searching the extent tree for the target extent item, we can miss i=
+t
+> if the extent item is the first item in a leaf and if there is a previou=
+s
+> leaf in the extent tree.
 >
->    $ MOUNT_OPTIONS=3D"-o compress" ./check btrfs/321
->    FSTYP         -- btrfs
->    PLATFORM      -- Linux/x86_64 debian0 6.11.0-rc7-btrfs-next-174+ #1 S=
-MP PREEMPT_DYNAMIC Tue Sep 10 17:11:38 WEST 2024
->    MKFS_OPTIONS  -- /dev/sdc
->    MOUNT_OPTIONS -- -o compress /dev/sdc /home/fdmanana/btrfs-tests/scra=
-tch_1
+> For example, if we call btrfs-map-logical like this:
 >
->    btrfs/321 2s ... [failed, exit status 1]- output mismatch (see /home/=
-fdmanana/git/hub/xfstests/results//btrfs/321.out.bad)
->        --- tests/btrfs/321.out	2024-09-12 12:12:11.259272125 +0100
->        +++ /home/fdmanana/git/hub/xfstests/results//btrfs/321.out.bad	20=
-24-09-12 13:18:40.231120012 +0100
->        @@ -1,2 +1,5 @@
->         QA output created by 321
->        -Silence is golden
->        +mount: /home/fdmanana/btrfs-tests/scratch_1: can't read superblo=
-ck on /dev/sdc.
->        +       dmesg(1) may have more information after failed mount sys=
-tem call.
->        +mount -o compress -o ro /dev/sdc /home/fdmanana/btrfs-tests/scra=
-tch_1 failed
->        +(see /home/fdmanana/git/hub/xfstests/results//btrfs/321.full for=
- details)
->        ...
->        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/321.out=
- /home/fdmanana/git/hub/xfstests/results//btrfs/321.out.bad'  to see the e=
-ntire diff)
+>     $ btrfs-map-logical -l 5382144 /dev/sdc
 >
->    HINT: You _MAY_ be missing kernel fix:
->          10d9d8c3512f btrfs: fix a use-after-free bug when hitting error=
-s inside btrfs_submit_chunk()
+> And we have the following extent tree layout:
 >
->    Ran: btrfs/321
->    Failures: btrfs/321
->    Failed 1 of 1 tests
+>     leaf 5386240 items 26 free space 2505 generation 7 owner EXTENT_TREE
+>     leaf 5386240 flags 0x1(WRITTEN) backref revision 1
+>     (...)
+>             item 25 key (5373952 METADATA_ITEM 0) itemoff 3155 itemsize =
+33
+>                     refs 1 gen 7 flags TREE_BLOCK
+>                     tree block skinny level 0
+>                     (176 0x5) tree block backref root FS_TREE
 >
-> This is because with compression enabled we get a csum tree that has onl=
-y
-> one leaf, and that leaf is the root of the csum tree. That means that
-> after the test corrupts the leaf, the next mount will fail since an erro=
-r
-> loading the root is critical and makes the mount operation fail.
+>     leaf 5480448 items 56 free space 276 generation 7 owner EXTENT_TREE
+>     leaf 5480448 flags 0x1(WRITTEN) backref revision 1
+>     (...)
+>             item 0 key (5382144 METADATA_ITEM 0) itemoff 3962 itemsize 3=
+3
+>                     refs 1 gen 7 flags TREE_BLOCK
+>                     tree block skinny level 0
+>                     (176 0x7) tree block backref root CSUM_TREE
+>     (...)
 >
-> Fix this by creating a file with 128M of data instead of 32M, as this
-> guarantees that even if compression is enabled, and even with the maximu=
-m
-> allowed leaf size (64K), we still get a csum tree with multiple leaves,
-> making the test work.
+> Then the following happens:
+>
+> 1) We enter map_one_extent() with search_forward =3D=3D 0 and
+>     *logical_ret =3D=3D 5382144;
+>
+> 2) We search for the key (5382144 0 0) which leaves us with a path
+>     pointing to leaf 5386240 at slot 26 - one slot beyond the last item;
+>
+> 3) We then call:
+>
+>       btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0])
+>
+>     Which is not valid since there's no item at that slot, but since the
+>     area of the leaf where an item at that slot should be is zeroed out,
+>     we end up getting a key of (0 0 0);
+>
+> 4) We then enter the "if" statement bellow, since key.type is 0, and cal=
+l
+>     btrfs_previous_extent_item(), which leaves at slot 25 of leaf 538624=
+0,
+>     point to the extent item of the extent 5373952.
+>
+>     The requested extent, 5382144, is the first item of the next leaf
+>     (5480448), but we totally miss it;
+>
+> 5) We return to the caller, the main() function, with 'cur_logical'
+>     pointing to the metadata extent at 5373952, and not to the requested
+>     one at 5382144.
+>
+>     In the last while loop of main() we have 'cur_logical' =3D=3D 537395=
+2,
+>     which makes the loop have no iterations and therefore the local
+>     variable 'found' remans with a value of 0, and then the program fail=
+s
+>     like this:
+>
+>     $ btrfs-map-logical -l 5382144 /dev/sdc
+>     ERROR: no extent found at range [5382144,5386240)
+>
+> Fix this by never accessing beyond the last slot of a leaf. If we ever e=
+nd
+> up at a slot beyond the last item in a leaf, just call btrfs_next_leaf()
+> and process the first item in the returned path.
 >
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-My bad, I forgot compression, which will reduce the csum size.
-
 Thanks,
 Qu
+
 > ---
->   tests/btrfs/321 | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
+>   btrfs-map-logical.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 >
-> diff --git a/tests/btrfs/321 b/tests/btrfs/321
-> index 93935530..c13ccc1e 100755
-> --- a/tests/btrfs/321
-> +++ b/tests/btrfs/321
-> @@ -33,9 +33,11 @@ _scratch_pool_mkfs "-d raid0 -m single -n 4k -s 4k" >=
-> $seqres.full 2>&1
->   # This test requires data checksum to trigger the bug.
->   _scratch_mount -o datasum,datacow
+> diff --git a/btrfs-map-logical.c b/btrfs-map-logical.c
+> index 2984e645..a97afea4 100644
+> --- a/btrfs-map-logical.c
+> +++ b/btrfs-map-logical.c
+> @@ -74,6 +74,11 @@ static int map_one_extent(struct btrfs_fs_info *fs_in=
+fo,
+>   	BUG_ON(ret =3D=3D 0);
+>   	ret =3D 0;
 >
-> -# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 32M =
-data
-> -# will need 32K data checksum at minimal, which is at least 8 leaves.
-> -_pwrite_byte 0xef 0 32m "$SCRATCH_MNT/foobar" > /dev/null
-> +# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 128M=
- of data
-> +# will need 128K data checksum at minimal, which is at least 34 leaves =
-when
-> +# running without compression and a leaf size of 64K. With compression =
-enabled
-> +# and a 64K leaf size, it will be 2 leaves.
-> +_pwrite_byte 0xef 0 128m "$SCRATCH_MNT/foobar" > /dev/null
->   _scratch_unmount
->
->
+> +	if (path->slots[0] >=3D btrfs_header_nritems(path->nodes[0])) {
+> +		ret =3D btrfs_next_leaf(extent_root, path);
+> +		if (ret)
+> +			goto out;
+> +	}
+>   again:
+>   	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+>   	if ((search_forward && key.objectid < logical) ||
 
