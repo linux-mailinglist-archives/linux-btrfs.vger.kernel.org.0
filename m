@@ -1,56 +1,75 @@
-Return-Path: <linux-btrfs+bounces-7978-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7979-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF709773AD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 23:36:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60A429773B8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 23:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956081C23CCA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 21:36:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E52F284AB5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 21:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F761C1720;
-	Thu, 12 Sep 2024 21:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334CD1C2306;
+	Thu, 12 Sep 2024 21:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="kKQysdgF"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gqh7q1w3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0D42C80
-	for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 21:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180412C80
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 21:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726176983; cv=none; b=KIJCJrntjOJ2JJb3V/pIBaVGSRd3E9sj6bqyk3XmVC1zuc5BV3YgXFoW4vZHqQtz8osJ+bp3v+lRDxsmk+X6Fl9KZ44/XNe4eM+do6uhoIyaYbxY1FDQc5hoTtGJ1sqQg71H8uZSux3mPBtGtsSRbliYpfNYvt7geuOoVlosml0=
+	t=1726177385; cv=none; b=fYulJdmF7FYnCBHcdKRiSOdnS6R691hxpS65fMoWm/5VNz2SyDCGmJ2n3aELUMJb2YWqUFqTAP9+alhwluAWkuT6bD7x7+HhWfWMxQ4cc1AGjf3oL4P9FyEGKzYvN2tJ9VdTGUJtdDK+dZy98W4LTGpjegAUnpHstcwvz8e5Huo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726176983; c=relaxed/simple;
-	bh=0PZnxb9oDafnshelbF7+IpU0Zzc+QyP040FKauXNp7E=;
+	s=arc-20240116; t=1726177385; c=relaxed/simple;
+	bh=np3G7KBZ+tiCKuzdAhiEKPEplg4juHErDLapNvZecfA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=TYZv/4wXjS6UEHgf2OotoRcpqtL5c/IPA6JxbuSOQVg4lN/ryqEbW/vIPvdLZzN9b7E26SpnpRWcmrkbZn0ZLcrOd3soplY+ju3Xgzf2CX5AVx3D84EuirBeYuPZLFVfJYiMB7Lv5bRfKK3A+sMZBZ7E4MZ9Fv48KeibuAgnLaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=kKQysdgF; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726176975; x=1726781775; i=quwenruo.btrfs@gmx.com;
-	bh=Yz2DztCBKNAOe+mInWUu+Ja4FgnHXCZvP75Do1lSYbM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=kKQysdgFRMkU6JPsZbbDR5vQFZlllKXyqBankZjO9b1Ljc6jhj5zzE7MTR4sEhWI
-	 8z7KuVdslOaTMrmOXLGSdBCuzSvjPdtN7r3IUcn6JEza7kK+XFE2D+/u3eJyvHI53
-	 Xy7mJaKPTldrmsqkBVFZz+HsKVfOLK6FebhmgL7FG15RwaVgx8pxpGnZeOj0+9BJb
-	 yU+qRrZYNfCZfg8YhNX1tyQrJOqDmuCnoG2o1kmpLdgdu3wWeia+OUDp3PC4FHN9l
-	 KqcCyl85Q9KmWp/fdvbj69Y6NOGdQGQrcS6a7vgvPSZw+b2kM3Pi8Ys1p/KWfJOmp
-	 0iZTZbI52lqW914+pg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mv2xU-1ry8J42OMS-00qwYC; Thu, 12
- Sep 2024 23:36:15 +0200
-Message-ID: <26d6f8ba-6a8f-4519-9945-a50a4a74b502@gmx.com>
-Date: Fri, 13 Sep 2024 07:06:12 +0930
+	 In-Reply-To:Content-Type; b=ioTVjDbZUkmFfHygk6NWwToujUu0ApqH+tpJ+TVsf9WJP/as6s48eBJ0RsKfjAr/Yq/QPhFC2Rgnf2PNvJrsTG6IJpokODXLt8FnrkR0/qiHLTQLN9eyUAwngki4WppQ+KturTqbwUtyfZ/k0gEtRyTqlqhrQDHKzXiX3yoEdSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gqh7q1w3; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3770320574aso1030620f8f.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 14:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1726177381; x=1726782181; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ll1dsDdskaMu6/mGog4LGmlEDrRvbii0stFY5/8uDhg=;
+        b=gqh7q1w3Kp/chV3IQZw4dmTBdvTktz/rnxaEBh2ZZTQcgpw8eOcm6HqbdzJyn/gkqL
+         t2HhTPeKnOJlt8fIwDrfAabdAmqfW+reRiAYqMlj2usr26Y0fHk9eQjTWH4B0ZL5jdag
+         qbPUuccqDK9l8aMt+TV8LEV78yC+Vlq789v/DlGnchfOujmOoMayGsS8pGxVuHjoIbrr
+         bZlUx1YkaNHmsj/JGfO1T57iwNgJhfj+E+AdBJeiw0ec18IknGUvDt8GG7lBn2LamkWQ
+         yogylBizyJop4CzmDRQLn8k7/HznypG1z3Z07J9hl/7gQXVE+VRzBLjxsLdMzjaDVeRe
+         XInA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726177381; x=1726782181;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ll1dsDdskaMu6/mGog4LGmlEDrRvbii0stFY5/8uDhg=;
+        b=dQYGLvHtBrLhKkgLJP9z9U7dsw5tr3tOc6HoHiIxm3QtRet4/za/UYunaG5UB5vG2A
+         wymsJY9JR/h1bsbvvMv9rr/QKuuyZNplBqqEy6R7WKU8dipCGCNrzysunAKByV9mn+y3
+         s+pf3QAS4JBj0tbTmkCoExxt8V9b9TTZoqiSnDsNoiQSCq4RWP6p0y3U7RgvD+3hDNQR
+         PnKohS7c0gwqJoAwS9iJ9xu2Phsz7NbJglVrTasH+Q7R5clDOSC5ZLUbLERd/besQX0+
+         LAGcEPwFMEj55GcEm/KqYU2q5Pm7ccMsmWxG7vT/+GY2fLzO2zhlUDGoZ6C2rWDVsMIv
+         9D4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUWa2OOGjWPDRw8Gz1vay9HUaOzwgVdkmvpoSg88On1cZqY+/mlgB4cpTVnQbuq45OJYJJFmKDjBEfXUw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz74oHo/N1DXyMqY3GyQvaWXnGE9IxXbcMPrIFHREyXqZZ9X9zu
+	HFtrkmS8GiQjCw1DQHzBKFCI1uro7evER3w4G7AijMb5sMIxQPf1Ck9nvPcG4vw=
+X-Google-Smtp-Source: AGHT+IEfigSXjWrNPlmxPci/Zu9qmeQUz5sw+KFLFzJm7e2+ACPtmmBRgG2PwsL0zaCwwHi50SbJ7g==
+X-Received: by 2002:adf:ec07:0:b0:374:c61a:69b8 with SMTP id ffacd0b85a97d-378c2d058abmr2645560f8f.15.1726177380721;
+        Thu, 12 Sep 2024 14:43:00 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-719090037fbsm5169562b3a.94.2024.09.12.14.42.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Sep 2024 14:43:00 -0700 (PDT)
+Message-ID: <1ee66f34-b855-4a96-bf75-a3d14b9ce392@suse.com>
+Date: Fri, 13 Sep 2024 07:12:56 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,164 +77,116 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: map-logical: fix search miss when extent is
- the first in a leaf
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <dd34707ffd1cd5a458980a209cfcc06a1817b848.1726149878.git.fdmanana@suse.com>
+Subject: Re: Critical error from Tree-checker
+To: Archange <archange@archlinux.org>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ linux-btrfs@vger.kernel.org
+References: <9541deea-9056-406e-be16-a996b549614d@archlinux.org>
+ <244f1d2b-f412-4860-af34-65f630e7f231@gmx.com>
+ <3fa8f466-7da9-4333-9af7-36dabc2a2047@gmx.com>
+ <4803f696-2dc5-4987-a353-fce1272e93e7@archlinux.org>
+ <914ea24d-aa0d-4f01-8c5e-96cf5544f931@gmx.com>
+ <2cec94bd-fc5e-4e9c-acc9-fb8d58ca3ee1@archlinux.org>
+ <e81fe89a-52bc-4629-a27b-c69d64c9fbec@gmx.com>
+ <b44f33ba-3230-476c-ba3e-cb47e1b9233a@archlinux.org>
+ <57614727-8097-4b43-93f5-d08a078cbde9@gmx.com>
+ <66e28d81-7162-4ab4-b321-088ee733678e@archlinux.org>
+ <523adab7-9a88-4c27-93bf-a85fd87162d8@gmx.com>
+ <3bfdf0ee-9efa-44b8-b9fd-cabcf90875ec@archlinux.org>
+ <ca541404-4bfd-41b8-9afd-735bce6db663@suse.com>
+ <e1dc1add-0bb7-4d13-8929-a1bfdb8181bf@archlinux.org>
+ <650f2de0-c5e5-4e3c-aa0e-ff79d931a263@gmx.com>
+ <ccf78d58-a050-4ba7-853b-37b6a1386a69@archlinux.org>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <dd34707ffd1cd5a458980a209cfcc06a1817b848.1726149878.git.fdmanana@suse.com>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <ccf78d58-a050-4ba7-853b-37b6a1386a69@archlinux.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:v55IHxVjcrCMdJ2dmAIKo37eTQ5K9ATL9KFxx/KACvJ0GFBqn7j
- nfeQszEDeG2J3ZTVMfCA8Tjbr86bY8BzOEZ80WOvA90E2B4g3gde8Xanm7nC7x+tkCN9Hq+
- 8NFezjPaosjH8ln/IftY23KLZnXakLectz0+7x9m1Cx8w2T2ZqOAfJII2i+wUCQGIpOEQ/Z
- pMgCNnTclbam60RsAzxYA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2XmIJTfZuA8=;sK2hRVF0Io/9/WYmcgC+/a+QNgF
- W5v81H+5NlZH9SNJciqQpGaUtDlOuZ8dZb2lxI7OnD7WFzB478XNteu6qwRQbSgPmTv5rX+NW
- ZqQKji8o+Kv0bKh1Q26IaIVTCN/qXT7KJDSph++yMqFtfpY9nNk9NnJuEeJO8pyjaWXT2P9hA
- uyDmz7KQ9Ym0mBbJhblzYtWmgWLkGrJWMzwg5Nqjfl6WXqWLl5pFtEcdWl9OiGQs2+H6iuskz
- rjIYURROo41We5BMtBzzsRyqWjx2TC/Hy79edra6q7wDXRBUb6+OMHeaPOmR/B7aRzbVwcn7H
- TAUkudzBNoF4gXdCD9gQptpc7pI7zExt3JhMSYsAaskDkdHkkL72UA6LEJhXC1/xT7Hu114O3
- uY2xeSLiZvYeWWumgVAupbXuMSTQqQzuVbx019A0TaBHUuLZSVYQwOKazT6fgCuK8PuRrbuL1
- 4nNufWQT7eYv7Bqe3LXnDZ3HNYe3EEoJfGRDuAieOF3as9H22P6QoECR0OJ7eJ/uO2GY/ecuy
- bhLFEhZtUOy313ejb85q3zG445aLXIseY3kpjwI4e1G28jaSv/676qWzjeHPBrEejFqKfRmby
- S3+Mj86U070lloh0iiOBGqL6brsFV+AN1ItKqp0A9zSfLaZcmQbOzMqZBRM89J8Fb1UK4n4c/
- tXsL61UFEh+j3jL8YNFCYMlqQztg9NVOc6bMEV8zUcJFv8mZxW1yXJ5FInNHtNJml3b4SWTrC
- RFckxPj0Ok6IHTPdzvYQvioosUebyXkpBjURCXu/g+Jrit95/WfTeUxyskefmN2eAgk+ZOpUo
- FXgo4aDtu5nRl/LS0sMgtqWg==
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2024/9/12 23:35, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> When searching the extent tree for the target extent item, we can miss i=
-t
-> if the extent item is the first item in a leaf and if there is a previou=
-s
-> leaf in the extent tree.
->
-> For example, if we call btrfs-map-logical like this:
->
->     $ btrfs-map-logical -l 5382144 /dev/sdc
->
-> And we have the following extent tree layout:
->
->     leaf 5386240 items 26 free space 2505 generation 7 owner EXTENT_TREE
->     leaf 5386240 flags 0x1(WRITTEN) backref revision 1
->     (...)
->             item 25 key (5373952 METADATA_ITEM 0) itemoff 3155 itemsize =
-33
->                     refs 1 gen 7 flags TREE_BLOCK
->                     tree block skinny level 0
->                     (176 0x5) tree block backref root FS_TREE
->
->     leaf 5480448 items 56 free space 276 generation 7 owner EXTENT_TREE
->     leaf 5480448 flags 0x1(WRITTEN) backref revision 1
->     (...)
->             item 0 key (5382144 METADATA_ITEM 0) itemoff 3962 itemsize 3=
-3
->                     refs 1 gen 7 flags TREE_BLOCK
->                     tree block skinny level 0
->                     (176 0x7) tree block backref root CSUM_TREE
->     (...)
->
-> Then the following happens:
->
-> 1) We enter map_one_extent() with search_forward =3D=3D 0 and
->     *logical_ret =3D=3D 5382144;
->
-> 2) We search for the key (5382144 0 0) which leaves us with a path
->     pointing to leaf 5386240 at slot 26 - one slot beyond the last item;
->
-> 3) We then call:
->
->       btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0])
->
->     Which is not valid since there's no item at that slot, but since the
->     area of the leaf where an item at that slot should be is zeroed out,
->     we end up getting a key of (0 0 0);
->
-> 4) We then enter the "if" statement bellow, since key.type is 0, and cal=
-l
->     btrfs_previous_extent_item(), which leaves at slot 25 of leaf 538624=
-0,
->     point to the extent item of the extent 5373952.
->
->     The requested extent, 5382144, is the first item of the next leaf
->     (5480448), but we totally miss it;
->
-> 5) We return to the caller, the main() function, with 'cur_logical'
->     pointing to the metadata extent at 5373952, and not to the requested
->     one at 5382144.
->
->     In the last while loop of main() we have 'cur_logical' =3D=3D 537395=
-2,
->     which makes the loop have no iterations and therefore the local
->     variable 'found' remans with a value of 0, and then the program fail=
-s
->     like this:
->
->     $ btrfs-map-logical -l 5382144 /dev/sdc
->     ERROR: no extent found at range [5382144,5386240)
->
-> Fix this by never accessing beyond the last slot of a leaf. If we ever e=
-nd
-> up at a slot beyond the last item in a leaf, just call btrfs_next_leaf()
-> and process the first item in the returned path.
->
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+在 2024/9/12 21:43, Archange 写道:
+> Le 12/09/2024 à 14:23, Qu Wenruo a écrit :
+>> 在 2024/9/12 19:34, Archange 写道:
+>>> Le 12/09/2024 à 14:01, Qu Wenruo a écrit :
+>>>> 在 2024/9/12 19:27, Archange 写道:
+>>>>> […]
+>>>>>
+>>>>> [3/7] checking free space tree
+>>>>> there is no free space entry for 0-65536
+>>>>> cache appears valid but isn't 0
+>>>>
+>>>> Then it's totally fine.
+>>>>
+>>>> For the 0-65536 problem, mind to provide the following dump?
+>>>>
+>>>> # btrfs ins dump-tree -t fst <device>
+>>>>
+>>>> I'm afraid since the fs is somewhat old, there may be some corner case
+>>>> btrfs-check is not handling properly.
+>>>
+>>> ERROR: unexpected tree id suffix of 'fst': t
+>>
+>> My bad, it should be "btrfs ins dump-tree -t free-space <device>".
+> 
+> The output is too big for an email, so uploaded here:
+> 
+> https://paste.xinu.at/XtR8/
+> 
+>> And if possible, also "btrfs ins dump-tree -t extent <device>" just in 
+>> case.
+> 
+> Same thing (even bigger), also output on the terminal and while 
+> redirecting to a file was quite different (but maybe that’s more because 
+> something changed between the two calls), so here are:
+> 
+> – the cli run : https://paste.xinu.at/9vs/
+> 
+> – the file run: https://paste.xinu.at/XpzhbZ/
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Thanks a lot.
+
+This indeed shows a very old filesystem, and for a long long time, we no 
+longer create any block group at logical bytenr 0, thus it shows an 
+corner case that older fs layout doesn't exclude the first 1MiB.
+
+And it's indeed a false alert.
+
+In that case, as long as you still have unallocated space, you can just 
+relocate the system chunks:
+
+# btrfs balacne start -s <mnt>
+
+Which should move the system chunks to new locations and will not 
+utilize the first 1MiB reserved space.
 
 Thanks,
 Qu
-
-> ---
->   btrfs-map-logical.c | 5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/btrfs-map-logical.c b/btrfs-map-logical.c
-> index 2984e645..a97afea4 100644
-> --- a/btrfs-map-logical.c
-> +++ b/btrfs-map-logical.c
-> @@ -74,6 +74,11 @@ static int map_one_extent(struct btrfs_fs_info *fs_in=
-fo,
->   	BUG_ON(ret =3D=3D 0);
->   	ret =3D 0;
->
-> +	if (path->slots[0] >=3D btrfs_header_nritems(path->nodes[0])) {
-> +		ret =3D btrfs_next_leaf(extent_root, path);
-> +		if (ret)
-> +			goto out;
-> +	}
->   again:
->   	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
->   	if ((search_forward && key.objectid < logical) ||
+> 
+> Regards,
+> Archange
+> 
 
