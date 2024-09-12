@@ -1,161 +1,152 @@
-Return-Path: <linux-btrfs+bounces-7965-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8CF9765BE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 11:35:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7A9A97662D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 11:57:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D706B23BAA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 09:35:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 896561F27D53
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 09:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAB219CC16;
-	Thu, 12 Sep 2024 09:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804A119F12C;
+	Thu, 12 Sep 2024 09:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=archlinux.org header.i=@archlinux.org header.b="RhQ7PkFz";
+	dkim=permerror (0-bit key) header.d=archlinux.org header.i=@archlinux.org header.b="B2v00zLB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.archlinux.org (mail.archlinux.org [95.216.189.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9791118E043
-	for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 09:35:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BEC1917CD
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 09:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.216.189.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726133728; cv=none; b=A+WV1utQlTdMzLzmRNRtHeZnsLhkJrNcL5ksvSDrrUurUTppc2fy+sUXtIJaqIY6T/OVqaYeYxHFLFIZNMMXTVtzw2Fm7I0ZRg6UN9jUQioUW2yvIqW6+a3p6h8lZvgt67zgznxLXKJu0uWp3NjQeKFlC5Pigx6pOVOHwbbRUec=
+	t=1726135071; cv=none; b=gX+p/omSXKhDNHsQzvlrP308CpVMCvy/qqmCrkP7Vka8V+OE63GU09q/v4+sBrDGpEGhohgl9WadOFdKoJWoP8fj3T9545/aE/+D3/XYsw7oMC843er84oVWatFDWf4p9WQJae9YS7hPY5ukC8iX54T9Fb3v3kwWkq4WQan4KjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726133728; c=relaxed/simple;
-	bh=2Pb+1qdyBRlYhUb3gAIRIDVPdu7sAaLz7e8j7xbWY4A=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rgogkw1odXolkHda3W5Vqry8seXtvDrrLOOjf+a5fTG/6n/mY+LRUgclr6sxd7EkTlgC9bbrOqkF/WgXVfVRp+4zO+W6yMpUdofXERDFv4nzR7Y+Sq3XiJX/I8cjRdcO8mWyfJ4G2L+vyRc+k6nV98TyEnvn18aaam0tsM/kjmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-39f510b3f81so24135345ab.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 02:35:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726133726; x=1726738526;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EvsVbk2tfqPiyiGs5RPZdw1iX6YznRXmuK6gNwuUJgo=;
-        b=Rv6BWgI2JJIw1gyLJFCUpTcItwyJa1zYCosuwhV6vpkZ2YBYi5h+KbtcJdvZ7j0xeY
-         Ywt/aJYp4Z0i/AoXPdYQRHDBlqn6AGOBS9BagNJIChd0tR4zBfZm2J+3MijJq9rnXw+m
-         wM5Ka7EcCGyMs7kuPcm1B54mi4h8uNs2hZ1f0mDHUlte5kJ0MyDNxLISCd+nf/hYnNBe
-         CuNZ4Ixjk+A4qEXEydnF1dMnde3WCPsN2H1+vZuxBTsCRBCu40Vnl2J9at5aj3LeNdl6
-         1KeF0hj2+az/6LSQ4LELApI4Hb08LkHKFq9uzG9Y1BE9Ig9SWTnUDA5eeoK7Z6JknNnC
-         K8LA==
-X-Forwarded-Encrypted: i=1; AJvYcCUCmStEer5Rx+ePomr/MRmXqtnIxHBb6aQzRFRdNAPyGt8XNBAwbnMuvRsILvt8fzltnSOWE+dVLdq4qA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/UkZ7eu6c3QD8a7J/Xz9iiQCJpSDiJqGKr5p6WdXwfx1rsCPz
-	jHo9InM1pbKRX/w2mTlS/jPJ3jZIpkU1IwKkPtvutmcGsuhnf0b8W5iqPpbjpFH4CH0QeGlgNCP
-	Jo7H5Igw76yajinije0W242aXEXPVZDEAy0TfbgHRlC3qdx/ifGCarhM=
-X-Google-Smtp-Source: AGHT+IH6w3R1tcY3hl7RTeHeAUFIPxt9DLwWQRQ2QECfiI8p9aN7JXHt3H6b2C+mY0LUhLNSMD6jfrvkDvYdY68Vza8XGUWbQdRe
+	s=arc-20240116; t=1726135071; c=relaxed/simple;
+	bh=yWmwkLXAMj5n8DtsRgecGPNJ5uvxAFtDHv4ifuiQ/f4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mJlyyaspypXnigyPpt+NwwlbQMY7WJJ/P/wtsX2c5fxD/BTAYFd0dr47OdI6TF90n4xj/FhtPa/pEjXb1cRKAQnFMpf+VChB2/A/VV9wQ5PQaXu8D5YjlW/FW+4Y/zIWj7dJ0alp7V+Em8FeJwl7I9m2TWkoWS3sguZqL5A7AS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=archlinux.org; spf=pass smtp.mailfrom=archlinux.org; dkim=pass (4096-bit key) header.d=archlinux.org header.i=@archlinux.org header.b=RhQ7PkFz; dkim=permerror (0-bit key) header.d=archlinux.org header.i=@archlinux.org header.b=B2v00zLB; arc=none smtp.client-ip=95.216.189.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=archlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinux.org
+Message-ID: <3bfdf0ee-9efa-44b8-b9fd-cabcf90875ec@archlinux.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
+	s=dkim-rsa; t=1726135065;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yWmwkLXAMj5n8DtsRgecGPNJ5uvxAFtDHv4ifuiQ/f4=;
+	b=RhQ7PkFzFw54+Dm8zMA0G1CqBocLMpcFenxVGD+7HsLTAV4yH9NYH6xlsdYZf6UJiPNkoP
+	mQQGy/EqRDu0PWQY74WUquEs3YLwmnrLWeqlys57l7UQz1fBjavjWio65GSzAADBn/a5MJ
+	8xIZi9EYQksDhycszd+cOLblil/R0pNNfrKRfxu9NSdw3uOb0Xo8i+HyMoqyApteudwFeO
+	6KYdn9nEuWP4s2X7w/JNgMM2ppYHSsiy7znFBSDriuM01BlY9pz460S7UQ2A+52b24k3jH
+	ij99DR4BbAlfCtXiWMmgb8OrvmAs1oNJNJCq6XsJwv8XuLbGuju3FitJNn1PkQca2SXga4
+	FEaj6id3ba8o/K+5MyeEw5ejhjByBRaMt5PsaFzbatW/P9LVkQokkwkI98GLFGEI2Uwm/C
+	RLeIXj7A85WuZW7zG5Mwf0WE2KvbucgjEJ3Z+BCXp3qXN9oURpQOQfgpTbPKwKjyP+BaYW
+	aRDbZfaVFvhpJM6Gi/xPq/4ehmR6WGd/5aWOEIp9tT70/KeJdcdExtg3cpNEurFfa0CAa/
+	kG9fGhHNvH+/4DUPVGIfrUh0wv16rBy+ka60eKjNxG8LqTfMWPzcOtTpl9gewuqB49+8XA
+	AtRIBls7GYi8MhB2thEDEl1xMrcZbwk8TCY7LXlLtURXnVOC7V2wQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
+	s=dkim-ed25519; t=1726135065;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yWmwkLXAMj5n8DtsRgecGPNJ5uvxAFtDHv4ifuiQ/f4=;
+	b=B2v00zLBkGnUwtizUNbq3G696U1kOe/DGRcvngEJucbEoH9N4grb7AlZSBvSqDyWmr7JlJ
+	r3Jg5TIs7INxBMAA==
+Authentication-Results: mail.archlinux.org;
+	auth=pass smtp.auth=archange smtp.mailfrom=archange@archlinux.org
+Date: Thu, 12 Sep 2024 13:57:39 +0400
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12c5:b0:39f:325f:78e6 with SMTP id
- e9e14a558f8ab-3a0845a0d55mr16695925ab.0.1726133725753; Thu, 12 Sep 2024
- 02:35:25 -0700 (PDT)
-Date: Thu, 12 Sep 2024 02:35:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008f00ed0621e8d33c@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_destroy_inode (2)
-From: syzbot <syzbot+3f149babf28b57cee242@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: Critical error from Tree-checker
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <9541deea-9056-406e-be16-a996b549614d@archlinux.org>
+ <244f1d2b-f412-4860-af34-65f630e7f231@gmx.com>
+ <3fa8f466-7da9-4333-9af7-36dabc2a2047@gmx.com>
+ <4803f696-2dc5-4987-a353-fce1272e93e7@archlinux.org>
+ <914ea24d-aa0d-4f01-8c5e-96cf5544f931@gmx.com>
+ <2cec94bd-fc5e-4e9c-acc9-fb8d58ca3ee1@archlinux.org>
+ <e81fe89a-52bc-4629-a27b-c69d64c9fbec@gmx.com>
+ <b44f33ba-3230-476c-ba3e-cb47e1b9233a@archlinux.org>
+ <57614727-8097-4b43-93f5-d08a078cbde9@gmx.com>
+ <66e28d81-7162-4ab4-b321-088ee733678e@archlinux.org>
+ <523adab7-9a88-4c27-93bf-a85fd87162d8@gmx.com>
+Content-Language: fr-FR, en-GB-large
+From: Archange <archange@archlinux.org>
+In-Reply-To: <523adab7-9a88-4c27-93bf-a85fd87162d8@gmx.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Le 12/09/2024 à 12:25, Qu Wenruo a écrit :
+> 在 2024/9/12 17:51, Archange 写道:
+>> Le 12/09/2024 à 02:34, Qu Wenruo a écrit :
+>>> 在 2024/9/12 07:35, Archange 写道:
+>>>>
+>>>> Le 12/09/2024 à 01:23, Qu Wenruo a écrit :
+>>> [...]
+>>>>
+>>>> While the previous one (see my second message in this thread) had no
+>>>> error, there is now one:
+>>>>
+>>>> # btrfs check /dev/mapper/rootext
+>>>> Opening filesystem to check...
+>>>> Checking filesystem on /dev/mapper/rootext
+>>>> UUID: e6614f01-6f56-4776-8b0a-c260089c35e7
+>>>> [1/7] checking root items
+>>>> [2/7] checking extents
+>>>> [3/7] checking free space cache
+>>>> wanted bytes 688128, found 720896 for off 676326604800
+>>>> cache appears valid but isn't 676326604800
+>>>
+>>> Minor problem, still I'd recommend to run
+>>>  `btrfs rescue clear-space-cache v1 <dev>` to clear the v1 cache first.
+>>
+>> I indeed did that as explained in the second part of my message.
+>>
+>>> Then you can mount with v2 space cache or keep going with the v1 cache
+>>> (not recommended, will be deprecated soon)
+>>
+>> Done too.
+>>
+>>> And if your fs only have subvolumes 5 (the top level one), 257 and 258,
+>>> then you're totally fine to continue.
+>>> I guess that's the case?
+>>
+>> Indeed!
+>
+> Just in case, you can run "btrfs check --mode=lowmem" to check if there
+> is no more inode cache left.
+>
+> If there is any left, lowmem mode can detect it with errors like:
+>
+> ERROR: root 5 INODE[18446744073709551604] nlink(1) not equal to
+> inode_refs(0)
+> ERROR: invalid imode mode bits: 00
+> ERROR: invalid inode generation 18446744073709551604 or transid 1 for
+> ino 18446744073709551605, expect [0, 72)
+> ERROR: root 5 INODE[18446744073709551605] is orphan item
+>
+> And I'm already adding the ability to the original mode check to detect
+> such problem.
 
-syzbot found the following issue on:
+No such thing appeared during the lowmem check. Only the
 
-HEAD commit:    89f5e14d05b4 Merge tag 'timers_urgent_for_v6.11_rc7' of gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14c39f29980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=58a85aa6925a8b78
-dashboard link: https://syzkaller.appspot.com/bug?extid=3f149babf28b57cee242
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+[3/7] checking free space tree
+there is no free space entry for 0-65536
+cache appears valid but isn't 0
 
-Unfortunately, I don't have any reproducer for this issue yet.
+is still there.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-89f5e14d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/dfc310daee41/vmlinux-89f5e14d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a92f22c06568/bzImage-89f5e14d.xz
+Archange
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3f149babf28b57cee242@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5121 at fs/btrfs/inode.c:7729 btrfs_destroy_inode+0x323/0x7d0 fs/btrfs/inode.c:7729
-Modules linked in:
-CPU: 0 UID: 0 PID: 5121 Comm: syz.0.0 Not tainted 6.11.0-rc6-syzkaller-00363-g89f5e14d05b4 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:btrfs_destroy_inode+0x323/0x7d0 fs/btrfs/inode.c:7729
-Code: 0f 0b 90 e9 61 fe ff ff e8 aa 07 e1 fd 90 0f 0b 90 e9 d2 fe ff ff e8 9c 07 e1 fd 90 0f 0b 90 e9 fd fe ff ff e8 8e 07 e1 fd 90 <0f> 0b 90 48 85 ed 0f 85 2d ff ff ff e8 7c 07 e1 fd 49 8d 9c 24 98
-RSP: 0018:ffffc90002f9efa8 EFLAGS: 00010283
-RAX: ffffffff83b28522 RBX: ffffffffffffffff RCX: 0000000000040000
-RDX: ffffc9000b53a000 RSI: 000000000002e363 RDI: 000000000002e364
-RBP: ffff88803d78c000 R08: ffffffff83b28445 R09: 1ffffffff2030ee5
-R10: dffffc0000000000 R11: ffffffff83b28200 R12: ffff88801310b790
-R13: ffff88803d78c000 R14: ffff88801310b3f0 R15: dffffc0000000000
-FS:  00007ff6855786c0(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000556646649f88 CR3: 0000000040dba000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- destroy_inode fs/inode.c:313 [inline]
- evict+0x809/0x950 fs/inode.c:729
- btrfs_iget_path+0x124f/0x17b0 fs/btrfs/inode.c:5605
- btrfs_iget_logging fs/btrfs/tree-log.c:154 [inline]
- add_conflicting_inode fs/btrfs/tree-log.c:5680 [inline]
- copy_inode_items_to_log fs/btrfs/tree-log.c:5950 [inline]
- btrfs_log_inode+0x22bb/0x4700 fs/btrfs/tree-log.c:6613
- btrfs_log_inode_parent+0xb3e/0x1160 fs/btrfs/tree-log.c:7106
- btrfs_log_dentry_safe+0x61/0x80 fs/btrfs/tree-log.c:7207
- btrfs_sync_file+0xb60/0x11c0 fs/btrfs/file.c:1778
- generic_write_sync include/linux/fs.h:2822 [inline]
- btrfs_do_write_iter+0x5e2/0x760 fs/btrfs/file.c:1515
- do_iter_readv_writev+0x60a/0x890
- vfs_writev+0x37c/0xbb0 fs/read_write.c:971
- do_pwritev fs/read_write.c:1072 [inline]
- __do_sys_pwritev2 fs/read_write.c:1131 [inline]
- __se_sys_pwritev2+0x1ca/0x2d0 fs/read_write.c:1122
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff68477cef9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff685578038 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
-RAX: ffffffffffffffda RBX: 00007ff684936058 RCX: 00007ff68477cef9
-RDX: 0000000000000001 RSI: 0000000020022e80 RDI: 0000000000000008
-RBP: 00007ff6847ef046 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007ff684936058 R15: 00007fff28631528
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
