@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-7976-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7977-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F3ED9773AB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 23:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E5A59773AC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 23:35:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0608D2826F2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 21:33:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D0F9284978
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 21:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2452D1C1AC8;
-	Thu, 12 Sep 2024 21:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D3331C174C;
+	Thu, 12 Sep 2024 21:35:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KRLaFk+D"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="nEFxaO32"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1842C80;
-	Thu, 12 Sep 2024 21:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0CB2C80;
+	Thu, 12 Sep 2024 21:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726176773; cv=none; b=owXdGtNWz09WurYqPXWYd3I1d7NpLrCIY8MP67xIDHspd52hVxF8VJfIeOwPfNpm+WZ3kwvqYEAuun1Uh4lQt1TowJgPCVEBfE9xfCWNHm6p4piwMdOuwlWXjLY0fm8Z6T2AElF936ijk24Kc9n7rqwjIsHrwL+ka9bV+GL6YP8=
+	t=1726176943; cv=none; b=fASPz/UqV4EOQuswEiqEMcNX+QnEF9esH2Bq/7lm0QM2PSy1xJ+d9ibzpn8zRqBgOos39nuzQzdS3C/j+i0DYfNMQ+h+HYUgSNGte2rF2bcgCM9dS0rKVoQMDFl/DskOnqwL50tSc/R/ILMXGS0iYeOaUzpgXt0S9lN7xIF+Cts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726176773; c=relaxed/simple;
-	bh=1Fzl7TRVTDIErHZq05Ym7/w1xEzQv+aQl7/C5PxAL50=;
+	s=arc-20240116; t=1726176943; c=relaxed/simple;
+	bh=hcaSJNOKaKzVUWJ1JNBR0mLmzCxaWhSLXbJ5M+9Cj0g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Agdmov5mAhs7y+vDD7osDQu/JV+h/qhCXXf7NLbFRFx3+SqcGcRIJqdC+vYgu5gdv/so+w89w/BPAa2JBYvXCRSA73tHG6z6/w/KpbWsE6qaiRK+L5IpLCUKK6gH8asxEHwwTfPYyNnPDGXT5FYnxoU6oW/4QPbUkPFScdgDROI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=KRLaFk+D; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=u6/SCY3Tf+JAx2bzKg7BYLGNCP773yw/sg5VxJ0G+v+w9cZ1ytapKUu5GJcW8ojh9WXhEuZpfzInm+Awud6ajBcfQt3Rt9SoFN8FgxSCFzb+l4jsKu2HsBW/G3bh+kweoY9DqgHGoDLC39ReUWavHUtDDLf7KPicKKZfdYKWDV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=nEFxaO32; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726176756; x=1726781556; i=quwenruo.btrfs@gmx.com;
-	bh=A7i/HcCWsfKmbwIYy6IUidLYZbj6aiMFfZuIjJtx6nE=;
+	s=s31663417; t=1726176934; x=1726781734; i=quwenruo.btrfs@gmx.com;
+	bh=y4tt9c8/CDVs6N61r+jnPAv9En3aRlmm+Lz5g5B5nTc=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=KRLaFk+DI5iStiGWsWa3KZ6U10ToUriyMHqLNEHI5D8bRuBXRjnVurmGYX6fMKm1
-	 51ViJkLJb+jzL8kvLycx/Ux040P70zkkZ4EOHSTdrLBEyiIyjqv4VkwQUpEMhGmpY
-	 4ugWendf8tPnNqjEkV0m/tLoCS0pkNPf67MOwzSM/Yze7uG47W8IgSt7abEMs2cfa
-	 zovDX5MaZrJmVV829I/+Ts8TKlyfxh6A8pTGOBgd6Zj213RZtREMi4Zz0eMfe8rRs
-	 2bnxiS3hAUVFtJS2bp3fFivrthWTXkigBgMtI53JhoGXCa98UvG78/qc8aN0kgxmQ
-	 DN2DWDe9hRRCnEcM8A==
+	b=nEFxaO32kjyYsy5O9CNiuTi2Gwb+9ZYVWf7E3VNbH5p9Gl0wuIlMcgtCwO8j6CH0
+	 K7wu+XvtGfNEm6IjnnKZErJuXN0m2zNKk0v8jtDzHunBgf+Kw1Eh2VVZsEB+DBoxZ
+	 /QD/Nn7+E1UK4Or6LcODRSl2krc3vfF65lgLOBmZGF9E9k+AvwJDW358IyQep0uuW
+	 I76nH6dODmCocdHoAM5U79qBMXRYkIRTcTKQQrVkfKH+Vs6fyabxClNUaceeFYUSn
+	 B7ULkXHo5XhBnx+YRlnXEjvGZDPJtKQRKfYuaqptlcLGsLoPEpRPDlcMon+95jZAt
+	 SJOif/2V6pgal5Kdog==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHG8m-1skThM0MSG-00DKjC; Thu, 12
- Sep 2024 23:32:36 +0200
-Message-ID: <a0d0fa88-e67c-4b35-88b4-74c5b15a16bb@gmx.com>
-Date: Fri, 13 Sep 2024 07:02:31 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mzyuc-1s33kR20n8-00x0hE; Thu, 12
+ Sep 2024 23:35:34 +0200
+Message-ID: <992b0055-12a2-47e8-91e2-38fb763cac9e@gmx.com>
+Date: Fri, 13 Sep 2024 07:05:30 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: scrub: skip PREALLOC extents on RAID stripe-tree
-To: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>, Qu Wenru <wqu@suse.com>
-References: <20240912143312.14442-1-jth@kernel.org>
+Subject: Re: [PATCH] btrfs/321: make the test work when compression is enabled
+To: fdmanana@kernel.org, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <21f8d987309ca0699c6bb95666278d02da03ff32.1726145029.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,99 +88,119 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240912143312.14442-1-jth@kernel.org>
+In-Reply-To: <21f8d987309ca0699c6bb95666278d02da03ff32.1726145029.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Yh/ahhImB5kcoXwItdZAqKKp/7qB0fkAc4UQ3QVU44UKjLXoykS
- cq3ECbx80KK8AWnVxlM4LFZvMp8Dd4BRkopfhPMTMbJzkwZCNnidV++74Nf8GZUquW0aInh
- 5PQ95jZan/xy2k+6W3SKfhraUFVlevpuSz4KqKlUN+54NUr8xFFYrIWugds7inLeh7uIQK4
- 1a+Tzn9aIur8uc1W8zogw==
+X-Provags-ID: V03:K1:9/2RGrmHj3S14fFzesFqIC/ryfe0dpV3p8UELVfXOAOYyelG5Zl
+ APwkIY4mn0Fr1ft6PVbghTkYzfGsXxqCr1I0S9xcm3Dkvehkd1qW4lszxbKWi7kevaYOhiW
+ Pfm/zGzH29CQEeOxDNjPdGEfIoWYdqW8CirncuCALUUl2mffivXsyrq/+6w5KM2DsPRN/5c
+ cgjXTkMq/x+8C2Y4Oez0w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rhFdnXRV9+I=;/G6wjo9DdFGYpWplR2JZ409DOMV
- 39gerWSOCEwezDkTDK/0YujcHMedYAJ3ER20z5v2ZB/xwkmia0baTQnOAflDcfBnA65ZbHOC2
- i+jVzR+rXPTiVAtJoE2GrmPoJr8cdk6zVjnyb3nIbW7DkQ+OtZTpb/K6Fn2qyGIitJckQ2sao
- qgD8Mg1g1NbaEMSLtkQ+e17fji1wc2XkYvs53GLULEiYxvDHLeiCFifn4wtu1dqfITbWW1jh3
- glip9qWgwREFpnVC/V+39do3lc8k9htsIXMS0e3Ryw9D4Cdslv8kf7ISrzd8Fh98eDEhGZbMw
- hSdcCcbyN7lgSnxjN1Z4QHhf1Jt5NG2+VXZcPE1jH4jC+gDZysNNQrvCm2kI2IZmTRjs6tukl
- MCxGZ3klfTpe65v6HqO+0ERkpKO7lP1nyxq7H40jdX3cNfy58Lyk5CkUTBqNnQkxFnuN70QsV
- ZiJd4wyDNCrGq82Ov/zWSrqAdzyuZBhN7vYtbvEH0xdrynUeb/pBkVMNm9BCPXl2mNuFpqrjG
- qEH9hyYRsNRuO1bnCTyVQtzJgJeJ3d15VPhToDNJYwvStSYMm2FMyxOHq/eWI38nwxwnKsGbv
- NfF62BwrazCkZpZYP1BSmnHlne+/Bj6zEj54E7FUtXfYnVhFHoj2eVj+kSoiG0ngSW0AYbPLs
- ugCNRTPu8V7ToZqEJ4yLg1mCGGDnoeL5zQEeqJaUAy9UmEOApfbGqwtd9Rjevw08estN0ZK3U
- 4ilWpbgiSuPxt+pogdEwZ5gV0qZ168gcda52xA/6+1A4RWLDCiqovWFe9+BV3d46WIj4Ts8hS
- Z/hUH7H8FknmPnDQIGv3xk9XPRbCQb6ydfsj233TolN/8=
+UI-OutboundReport: notjunk:1;M01:P0:FQQK2XS+Fqc=;WF649X7hn5U5Wl5zhwE+OslECEP
+ xw+F3E7tYdpjStdXL+qNVjCDU6wutq35DuCpvnQeEv0RS9TJCBllRw8MO3NIDZI2M0IL/fDcG
+ 8yKNpvTAp+PLiggHvrpS0SUXO2xna3kBbSxFeDxKoyXLub6MGhuJiz3ru5fW5L3/VBqh0jUGx
+ sI0c+lmmkHTFwrVR+vvBayBwcR1GUJeDZ/wxvRE55lEhh7zCiEoJeEJMjDsm+fMczVjoEhb9F
+ v2gDBjTm3Pp4i4lRj3eQg94EAJJy4ZnQqR4twyX7APO1qlf4e9IMvBq2JUb7aMPXbkysRC3LR
+ ly5S+Vj3OWxdrYeBiUeWeDsclw1YeAhePAh+JrvbwUoiXi8SsHDgals/DS8tAma7ymiIN211D
+ bIoCp+iGMeSODY9CABXbIKlcEsPFJobDcPikfnJKjSTp/CCb5kqnROvEIpp8I2jB5zuebE+sO
+ z5FMjf9juhR/K4esTEHvSOk/VK7aXcSo5yXwdrSnS0pYQE2E2ZKeE/v27mpzkEWC9QBsGmtGo
+ 6dBGYEgDqO/SOqfage5NlFpbmjCMw4GLUgyI54XHrpWKOjd5/tbR4vn1saa9OmVq37IJuYwRn
+ peJVaZDYbUNJGOkljjLh99iGmlry5rhaCgtdoeTgNJ8X1OLsBR0QuSJPVKcPMOfnd9sbaOnUw
+ F92AI2nj1aH7Tl5yDz6uIW5hMng5U+njrSc+NHe2HdqeFP6HiOzl1YS30TieNmyzgInkGJ6Go
+ FbMdMG/SDh869D5lhA2kDoqMzhRQzEfVIFybcSzuj6csbgcvW28d2JQhUouCePhlhJxuqN3sC
+ 6z9ckCTDrxtA4j3lfmhW1JmQ==
 
 
 
-=E5=9C=A8 2024/9/13 00:03, Johannes Thumshirn =E5=86=99=E9=81=93:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+=E5=9C=A8 2024/9/12 22:15, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> When scrubbing a RAID stripe-tree based filesystem with preallocated
-> extents, the btrfs_map_block() called by
-> scrub_submit_extent_sector_read() will return ENOENT, because there is
-> no RAID stripe-tree entry for preallocated extents. This then causes
-> the sector to be marked as a sector with an I/O error.
+> When running btrfs/321 with compression enabled it fails like this:
 >
-> To prevent this false alert don't mark secotors for that
-> btrfs_map_block() returned an ENOENT as I/O errors but skip them.
+>    $ MOUNT_OPTIONS=3D"-o compress" ./check btrfs/321
+>    FSTYP         -- btrfs
+>    PLATFORM      -- Linux/x86_64 debian0 6.11.0-rc7-btrfs-next-174+ #1 S=
+MP PREEMPT_DYNAMIC Tue Sep 10 17:11:38 WEST 2024
+>    MKFS_OPTIONS  -- /dev/sdc
+>    MOUNT_OPTIONS -- -o compress /dev/sdc /home/fdmanana/btrfs-tests/scra=
+tch_1
 >
-> This results for example in errors in fstests' btrfs/060 .. btrfs/074
-> which all perform fsstress and scrub operations. Whit this fix, these
-> errors are gone and the tests pass again.
+>    btrfs/321 2s ... [failed, exit status 1]- output mismatch (see /home/=
+fdmanana/git/hub/xfstests/results//btrfs/321.out.bad)
+>        --- tests/btrfs/321.out	2024-09-12 12:12:11.259272125 +0100
+>        +++ /home/fdmanana/git/hub/xfstests/results//btrfs/321.out.bad	20=
+24-09-12 13:18:40.231120012 +0100
+>        @@ -1,2 +1,5 @@
+>         QA output created by 321
+>        -Silence is golden
+>        +mount: /home/fdmanana/btrfs-tests/scratch_1: can't read superblo=
+ck on /dev/sdc.
+>        +       dmesg(1) may have more information after failed mount sys=
+tem call.
+>        +mount -o compress -o ro /dev/sdc /home/fdmanana/btrfs-tests/scra=
+tch_1 failed
+>        +(see /home/fdmanana/git/hub/xfstests/results//btrfs/321.full for=
+ details)
+>        ...
+>        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/321.out=
+ /home/fdmanana/git/hub/xfstests/results//btrfs/321.out.bad'  to see the e=
+ntire diff)
 >
-> Cc: Qu Wenru <wqu@suse.com>
+>    HINT: You _MAY_ be missing kernel fix:
+>          10d9d8c3512f btrfs: fix a use-after-free bug when hitting error=
+s inside btrfs_submit_chunk()
+>
+>    Ran: btrfs/321
+>    Failures: btrfs/321
+>    Failed 1 of 1 tests
+>
+> This is because with compression enabled we get a csum tree that has onl=
+y
+> one leaf, and that leaf is the root of the csum tree. That means that
+> after the test corrupts the leaf, the next mount will fail since an erro=
+r
+> loading the root is critical and makes the mount operation fail.
+>
+> Fix this by creating a file with 128M of data instead of 32M, as this
+> guarantees that even if compression is enabled, and even with the maximu=
+m
+> allowed leaf size (64K), we still get a csum tree with multiple leaves,
+> making the test work.
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-My concern is, ENOENT can be some real problems other than PREALLOC.
-I'd prefer this to be the last-resort method.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Would it be possible to create an RST entry for preallocated operations
-manually? E.g. without creating a dummy OE, but just insert the needed
-RST entries into RST tree at fallocate time?
+My bad, I forgot compression, which will reduce the csum size.
 
 Thanks,
 Qu
-
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->   fs/btrfs/scrub.c | 15 +++++++++++++--
->   1 file changed, 13 insertions(+), 2 deletions(-)
+>   tests/btrfs/321 | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
 >
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 3a3427428074..b195c41676e3 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1657,7 +1657,7 @@ static u32 stripe_length(const struct scrub_stripe=
- *stripe)
->   }
+> diff --git a/tests/btrfs/321 b/tests/btrfs/321
+> index 93935530..c13ccc1e 100755
+> --- a/tests/btrfs/321
+> +++ b/tests/btrfs/321
+> @@ -33,9 +33,11 @@ _scratch_pool_mkfs "-d raid0 -m single -n 4k -s 4k" >=
+> $seqres.full 2>&1
+>   # This test requires data checksum to trigger the bug.
+>   _scratch_mount -o datasum,datacow
 >
->   static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
-> -					    struct scrub_stripe *stripe)
-> +					   struct scrub_stripe *stripe)
->   {
->   	struct btrfs_fs_info *fs_info =3D stripe->bg->fs_info;
->   	struct btrfs_bio *bbio =3D NULL;
-> @@ -1703,10 +1703,21 @@ static void scrub_submit_extent_sector_read(stru=
-ct scrub_ctx *sctx,
->   			err =3D btrfs_map_block(fs_info, BTRFS_MAP_READ, logical,
->   					      &stripe_len, &bioc, &io_stripe, &mirror);
->   			btrfs_put_bioc(bioc);
-> -			if (err < 0) {
-> +			if (err < 0 && err !=3D -ENOENT) {
->   				set_bit(i, &stripe->io_error_bitmap);
->   				set_bit(i, &stripe->error_bitmap);
->   				continue;
-> +			} else if (err =3D=3D -ENOENT) {
-> +				/*
-> +				 * btrfs_map_block() returns -ENOENT if it can't
-> +				 * find the logical  address in the RAID stripe
-> +				 * tree. This can happens on PREALLOC  extents.
-> +				 * As we know the extent tree  has an extent
-> +				 * recorded there, we can be sure this is a
-> +				 * PREALLOC  extent, so skip this sector and
-> +				 * continue to the next.
-> +				 */
-> +				continue;
->   			}
+> -# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 32M =
+data
+> -# will need 32K data checksum at minimal, which is at least 8 leaves.
+> -_pwrite_byte 0xef 0 32m "$SCRATCH_MNT/foobar" > /dev/null
+> +# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 128M=
+ of data
+> +# will need 128K data checksum at minimal, which is at least 34 leaves =
+when
+> +# running without compression and a leaf size of 64K. With compression =
+enabled
+> +# and a 64K leaf size, it will be 2 leaves.
+> +_pwrite_byte 0xef 0 128m "$SCRATCH_MNT/foobar" > /dev/null
+>   _scratch_unmount
 >
->   			bbio =3D btrfs_bio_alloc(stripe->nr_sectors, REQ_OP_READ,
+>
 
