@@ -1,136 +1,126 @@
-Return-Path: <linux-btrfs+bounces-7971-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-7972-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573AF9768D1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 14:14:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB93B976962
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 14:45:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5764B21E93
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 12:14:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55483285D4C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2024 12:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE8DA19F414;
-	Thu, 12 Sep 2024 12:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0411A2627;
+	Thu, 12 Sep 2024 12:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=archlinux.org header.i=@archlinux.org header.b="egCoRTEH";
-	dkim=permerror (0-bit key) header.d=archlinux.org header.i=@archlinux.org header.b="uGClwg16"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="li7EdmOh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.archlinux.org (mail.archlinux.org [95.216.189.61])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4FF1A262F
-	for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2024 12:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.216.189.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3241F1A4E85;
+	Thu, 12 Sep 2024 12:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726143237; cv=none; b=JOqolPxEQqeKAjPQkrc6aam/HZmsRbVIUP2diQIbsNszI3XDZD+ucRK6Yx73fBQA7u7eTIRCRM26cxEOeLTc6Va47uvn3foWFoQbU/rTTDEYW9/8I9Wa7bn9+voqz5P86Q44NsY2fJ11ry3dp0huuf26MSaLxIDkpzGTtLZbHzg=
+	t=1726145107; cv=none; b=oe8xLAuN/D2Ti5215Nn7LafpFIIVUj0EqsYAO2UBwUYSDCLUuzUIMr5ecrRlpV5GWlDT8gGTnw10F75HpNc9laoc4d4+tY62xCve1qZnzmkADayf470YD71FBGtRJ8WRQjIDfylUUblG5hfdHiGJFa4Fc4Q5kQEdrRqtxDaCqEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726143237; c=relaxed/simple;
-	bh=5O5g2/Qs3/5enJiNVYSp63HC2naBZIb3AgwHBNsF3pw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=D8E0zCnkwRqFAQrHFzEnPnB8BiI9/KLxFNnkpZ97m5yuuNFPfstIrBcEQ/dDso7sdJYwY5JIuaVLra4uP4n3wyd7Z7nLJeJUkal0JOg5mhh2CD064a5OK19EFzCDXdC0edMJdxOWYDt3RJxHsA+RVfqF6xzS8+SUyD5d5k0xhIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=archlinux.org; spf=pass smtp.mailfrom=archlinux.org; dkim=pass (4096-bit key) header.d=archlinux.org header.i=@archlinux.org header.b=egCoRTEH; dkim=permerror (0-bit key) header.d=archlinux.org header.i=@archlinux.org header.b=uGClwg16; arc=none smtp.client-ip=95.216.189.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=archlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=archlinux.org
-Message-ID: <ccf78d58-a050-4ba7-853b-37b6a1386a69@archlinux.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
-	s=dkim-rsa; t=1726143232;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1kYDXq6cKWm74KrRsZcBmgL+5UXoa8RnRzAVkTXFTU=;
-	b=egCoRTEHNw0qKbyT3/A/bk0DaXGVQV6Ky64w8RuBBLqjTE79V3ZCyrtf2gr/I8F8/Ej3Re
-	MG/eiCxqlSn7ULVyQqIod9NvdUNtvGA5z1LAimPRgE1MUuHHWJzW0VSKsZ7BT5S9rI2hCJ
-	HuUNsxpYknG8qJd94tJK9IxyNfaQ/aA+5RGJAyYQbXoQKxjPAnVs8fFGi0aesLNBNY5X3W
-	P/3C7+xUw3NtLTXwt+sONfeCCeqnpFHKi9vDL1WbUpHCqdwEY6uoDpNpJWmydPeQZDvSbS
-	YQe90Y6aAsnsND5lp7xTLSdueG4aCgq6NMIDHMfYkWXBp6O4RYl0ekZrLfMtVdrFgskzbq
-	9fv2Qf7nHeWrN7kYN9fffj5O62/fWRqazjv4nSl7IdAC6pKfET2EXG4+r9ERyArqQazUqI
-	j25481r+/Iyj6ZXRkU+/FIU7KBrOYkOOdzhQZ5e64KV8WKcKTbFdt9S03kNvSEvmtAHUFF
-	Ek5KSgCCwOba9sZfiSa1DKrsvW0v4u+jZobhBxCk7/5CZmvVyfrPMe/c6XcZVPgk/1p8Tr
-	1G5SI2MQylVkJ4oE7yRsgwSbJgvjUtnROopn1niuFSSpRempDFMMttqrD26YocbcAI61ZG
-	lnv+oWOIPCiGwD1ftbOQGSL2FIg81TqcieatoD/CFiB9OCkO+6+20=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
-	s=dkim-ed25519; t=1726143232;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1kYDXq6cKWm74KrRsZcBmgL+5UXoa8RnRzAVkTXFTU=;
-	b=uGClwg162wTw10PYYOa6c+xvGdX+AkhIYXwHQHX7gLUJXI12fJPuFYkLU9wEtoTjs28HKl
-	XWKN8sSHNL+5npAg==
-Authentication-Results: mail.archlinux.org;
-	auth=pass smtp.auth=archange smtp.mailfrom=archange@archlinux.org
-Date: Thu, 12 Sep 2024 16:13:45 +0400
+	s=arc-20240116; t=1726145107; c=relaxed/simple;
+	bh=eytcVU4Igne2L7WRNk2/ov3GQ3XP5+lebIE+x7DCPEw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jgbJbyP5z/Yg2ZBU0FqG0TLaAw5KK7UaBxCODv9+tCqJFgtmO9g/sw2h9bElTK7TnjQ3Quxu66WvLSmrhW8FGByxs3nxUCj+wBeUptlJzTCoFOWzelp+7/WOI5NKsOagwS97OO8mA6xcY5Vq2OKNuLEDlUsardAOgvtAliGLegg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=li7EdmOh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C505FC4CEC3;
+	Thu, 12 Sep 2024 12:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726145106;
+	bh=eytcVU4Igne2L7WRNk2/ov3GQ3XP5+lebIE+x7DCPEw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=li7EdmOhsb6S5w/HVm5Dn8W71QEpZ5QMw4jaMVvlTYlWx+8u6pMTKbA4wXueSdH4A
+	 q1lud08jFWcStCWPudLUEndbjanV531/+q+jcAo6iLp5KZsOklr0JBG9JW3FttyZcl
+	 52LWw/BJCkVEqe+QX1J1ke1RmwS2iOa0kNDIzNG4DSoLvXkxo88vbQ0z6LwSmw+ZUN
+	 ZZWKoBwd6/JMhBS/TSrzq7z/LV7gvDh9gNYx6DNz+1VSq0exXW4aELOvveKhY520dd
+	 e2RX9jDHQuIkha961Q254ll2mLTRU0XtW2esyPJVOuthn5r0rZfywOUJEftt0Mi6bz
+	 JFjBta4abMSEw==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs/321: make the test work when compression is enabled
+Date: Thu, 12 Sep 2024 13:45:00 +0100
+Message-ID: <21f8d987309ca0699c6bb95666278d02da03ff32.1726145029.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Critical error from Tree-checker
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <9541deea-9056-406e-be16-a996b549614d@archlinux.org>
- <244f1d2b-f412-4860-af34-65f630e7f231@gmx.com>
- <3fa8f466-7da9-4333-9af7-36dabc2a2047@gmx.com>
- <4803f696-2dc5-4987-a353-fce1272e93e7@archlinux.org>
- <914ea24d-aa0d-4f01-8c5e-96cf5544f931@gmx.com>
- <2cec94bd-fc5e-4e9c-acc9-fb8d58ca3ee1@archlinux.org>
- <e81fe89a-52bc-4629-a27b-c69d64c9fbec@gmx.com>
- <b44f33ba-3230-476c-ba3e-cb47e1b9233a@archlinux.org>
- <57614727-8097-4b43-93f5-d08a078cbde9@gmx.com>
- <66e28d81-7162-4ab4-b321-088ee733678e@archlinux.org>
- <523adab7-9a88-4c27-93bf-a85fd87162d8@gmx.com>
- <3bfdf0ee-9efa-44b8-b9fd-cabcf90875ec@archlinux.org>
- <ca541404-4bfd-41b8-9afd-735bce6db663@suse.com>
- <e1dc1add-0bb7-4d13-8929-a1bfdb8181bf@archlinux.org>
- <650f2de0-c5e5-4e3c-aa0e-ff79d931a263@gmx.com>
-Content-Language: fr-FR, en-GB-large
-From: Archange <archange@archlinux.org>
-In-Reply-To: <650f2de0-c5e5-4e3c-aa0e-ff79d931a263@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Le 12/09/2024 à 14:23, Qu Wenruo a écrit :
-> 在 2024/9/12 19:34, Archange 写道:
->> Le 12/09/2024 à 14:01, Qu Wenruo a écrit :
->>> 在 2024/9/12 19:27, Archange 写道:
->>>> […]
->>>>
->>>> [3/7] checking free space tree
->>>> there is no free space entry for 0-65536
->>>> cache appears valid but isn't 0
->>>
->>> Then it's totally fine.
->>>
->>> For the 0-65536 problem, mind to provide the following dump?
->>>
->>> # btrfs ins dump-tree -t fst <device>
->>>
->>> I'm afraid since the fs is somewhat old, there may be some corner case
->>> btrfs-check is not handling properly.
->>
->> ERROR: unexpected tree id suffix of 'fst': t
->
-> My bad, it should be "btrfs ins dump-tree -t free-space <device>".
+From: Filipe Manana <fdmanana@suse.com>
 
-The output is too big for an email, so uploaded here:
+When running btrfs/321 with compression enabled it fails like this:
 
-https://paste.xinu.at/XtR8/
+  $ MOUNT_OPTIONS="-o compress" ./check btrfs/321
+  FSTYP         -- btrfs
+  PLATFORM      -- Linux/x86_64 debian0 6.11.0-rc7-btrfs-next-174+ #1 SMP PREEMPT_DYNAMIC Tue Sep 10 17:11:38 WEST 2024
+  MKFS_OPTIONS  -- /dev/sdc
+  MOUNT_OPTIONS -- -o compress /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
 
-> And if possible, also "btrfs ins dump-tree -t extent <device>" just in 
-> case.
+  btrfs/321 2s ... [failed, exit status 1]- output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/321.out.bad)
+      --- tests/btrfs/321.out	2024-09-12 12:12:11.259272125 +0100
+      +++ /home/fdmanana/git/hub/xfstests/results//btrfs/321.out.bad	2024-09-12 13:18:40.231120012 +0100
+      @@ -1,2 +1,5 @@
+       QA output created by 321
+      -Silence is golden
+      +mount: /home/fdmanana/btrfs-tests/scratch_1: can't read superblock on /dev/sdc.
+      +       dmesg(1) may have more information after failed mount system call.
+      +mount -o compress -o ro /dev/sdc /home/fdmanana/btrfs-tests/scratch_1 failed
+      +(see /home/fdmanana/git/hub/xfstests/results//btrfs/321.full for details)
+      ...
+      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/321.out /home/fdmanana/git/hub/xfstests/results//btrfs/321.out.bad'  to see the entire diff)
 
-Same thing (even bigger), also output on the terminal and while 
-redirecting to a file was quite different (but maybe that’s more because 
-something changed between the two calls), so here are:
+  HINT: You _MAY_ be missing kernel fix:
+        10d9d8c3512f btrfs: fix a use-after-free bug when hitting errors inside btrfs_submit_chunk()
 
-– the cli run : https://paste.xinu.at/9vs/
+  Ran: btrfs/321
+  Failures: btrfs/321
+  Failed 1 of 1 tests
 
-– the file run: https://paste.xinu.at/XpzhbZ/
+This is because with compression enabled we get a csum tree that has only
+one leaf, and that leaf is the root of the csum tree. That means that
+after the test corrupts the leaf, the next mount will fail since an error
+loading the root is critical and makes the mount operation fail.
 
-Regards,
-Archange
+Fix this by creating a file with 128M of data instead of 32M, as this
+guarantees that even if compression is enabled, and even with the maximum
+allowed leaf size (64K), we still get a csum tree with multiple leaves,
+making the test work.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/btrfs/321 | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/tests/btrfs/321 b/tests/btrfs/321
+index 93935530..c13ccc1e 100755
+--- a/tests/btrfs/321
++++ b/tests/btrfs/321
+@@ -33,9 +33,11 @@ _scratch_pool_mkfs "-d raid0 -m single -n 4k -s 4k" >> $seqres.full 2>&1
+ # This test requires data checksum to trigger the bug.
+ _scratch_mount -o datasum,datacow
+ 
+-# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 32M data
+-# will need 32K data checksum at minimal, which is at least 8 leaves.
+-_pwrite_byte 0xef 0 32m "$SCRATCH_MNT/foobar" > /dev/null
++# For the smallest csum size (CRC32C) it's 4 bytes per 4K, writing 128M of data
++# will need 128K data checksum at minimal, which is at least 34 leaves when
++# running without compression and a leaf size of 64K. With compression enabled
++# and a 64K leaf size, it will be 2 leaves.
++_pwrite_byte 0xef 0 128m "$SCRATCH_MNT/foobar" > /dev/null
+ _scratch_unmount
+ 
+ 
+-- 
+2.43.0
 
 
