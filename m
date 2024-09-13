@@ -1,94 +1,113 @@
-Return-Path: <linux-btrfs+bounces-8012-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8013-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19E9978B91
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2024 00:58:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C843978BE0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2024 01:30:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8BB81F25C45
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2024 22:58:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A35BF289C3C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2024 23:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0B917920C;
-	Fri, 13 Sep 2024 22:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC21117838B;
+	Fri, 13 Sep 2024 23:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b="orMhjJFa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Va7jAcvT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com [209.85.167.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B595E3FE4
-	for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2024 22:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885601474C5
+	for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2024 23:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726268306; cv=none; b=KafRHjPklweQgWl2zcZIrgS2kWu3m4zAi8jkJJdsAvglfPgOB9RXwfP9wkmQvIBmD87NCyTk5qv6HWU1McywQ/QwOQruxzBAcpJIjq9lKQuJo4ThrkH67rIG+eN9KGSaDGu+W0fIXsSJNt2wWTEAG0aGW+dZokHDO6UR0M1I4rw=
+	t=1726270247; cv=none; b=Gbfl1x4WJ2/kBeFtM/vC9rH+bXQTaky2m8V2cq0x4y5Bsb2eiqXLgrYe+qnHtzNv6LHeG3Pq3MMvmpwp0On4LUhh9qy1bcmZrGK44GNAg8xUrnknz94e+5XI/E9YnSwMl+fLPIr/QGlB14OqUfBgfenmgfiHRXK3SWhuhc4MZO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726268306; c=relaxed/simple;
-	bh=MgN34+cWL97Qcuj0KGwgeOsnvgRi4jPBZYLjUge/3BI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kPuHBF8Ccxud/Jccmtp4o9y9yUxhC6V1HeK9iL222hPCrGgx39rmXOZRYuQHKEE920TgyGopSrkO11m8vdGI6O3cwFCgLA0ZQZJLNo+AooNXJCfsPux+NuRtqWABwp1TDOAhd1LZKvZjJLuY7SMtHeRg7A379HdeeVx6V5KlQhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com; spf=none smtp.mailfrom=osandov.com; dkim=pass (2048-bit key) header.d=osandov-com.20230601.gappssmtp.com header.i=@osandov-com.20230601.gappssmtp.com header.b=orMhjJFa; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osandov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=osandov.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-718e0421143so540270b3a.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2024 15:58:24 -0700 (PDT)
+	s=arc-20240116; t=1726270247; c=relaxed/simple;
+	bh=OtwflSISu36AdtmYTnwUMT4QM+kfpwumJ+U8Ao3YS3c=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=pu/o/qPnb7oX3xQgjyyYnvYSIpKJzJWNIr07yMkrVunvSsPzsxEW669DckCkRZL2swEuUak7usWIsQzY796ll1iokB1EGNk4ZjeA4YIx15jkXOHJfc/cTz8dpkJHDEkGcenHdfqggF4MhAKRqKPGc7LBwQKmww6zf5b7XfoHUqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Va7jAcvT; arc=none smtp.client-ip=209.85.167.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f193.google.com with SMTP id 5614622812f47-3e034fac53bso625385b6e.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2024 16:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1726268304; x=1726873104; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EQ7pn753vAetgV8Hbc/lQtTpIGzRgeLKdXCHE3oc6WE=;
-        b=orMhjJFaNDve0Y2+1Q797QYrPDGnjnJDHHcwem+hK3sNhTx+6Cnk4x8wh+MvoL7L9x
-         2BKmMhUe0eJrrb0kM3O0PQoRd1vfD2PfBpnc3MdAB2wWPh3+8XyjkL8Ef2WnYN2IfzFa
-         YJ3pTpDTT8zaKOexae8OqiE0nDtHmWI1VKcKmopC9C3pgMrLkLzdkrw6UDWtoO2NwtcM
-         MKLBPA4rRXODvjMl8u16VrPCkvjwWkeQYNjH0t+oR0YijFfuRzbWq0put5PTeVnEMV3F
-         leJOLnvoslfTH7v55YRyhZ5LhjO8SKXCNZZirVnRvskLmwZMCEXxFqtOtlI3X2/YCzxU
-         zccw==
+        d=gmail.com; s=20230601; t=1726270244; x=1726875044; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BIGNxVzR0VnNS5lNUbo1YO1lNTW2hK6w5JFS8wBkhNk=;
+        b=Va7jAcvTy+xEGRUCR2hlgfJkMxuKvSMSg45+xt3QdTLVK057E0lR6hD7bnSvVBWsoy
+         mfu32cTYO5foylP7x0qr/3Y0w2Us0KBSt5w6tc/R/gGPTVdjaMqnmTiZ0ghR7FYcjLqd
+         gmlFHKOYoLY10DwXeY9rFKvUgPiZ+LdgFeuuzHeOj79iFF04ZukaE7dHal6WknL1V53l
+         WAWe8gSUhL4jliOYcuoiUYJZUosd/PF7GD+yotN0kj1TwedlP921iHT0ZPeDs/DVnePl
+         hTdG0OzWEZbvPiANrMKI5iIeAqLOTWCSMZUlFTxvWp4andQ8UzMs2Xc2gXcd3EKgw/ra
+         mspQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726268304; x=1726873104;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EQ7pn753vAetgV8Hbc/lQtTpIGzRgeLKdXCHE3oc6WE=;
-        b=SUkH8uHRQWymLM8kAZfDchcJmp7V+seHkBb051DgQu8j+7XuBglyFIM+1kF98vorMJ
-         34a4OybU2rbuhE7JxuALnc7cyBwJC/QxATt20EhgwqnhZVmH5+yAGhINeLNuewGy/zOK
-         7pXx4zQXKFwJ4gWtUBEz6P5qUL9zDqdXL9B+R4XRvHC1DuRG8AxNkyu8WsfVVeAD/q+N
-         J6G41YTPJ+vHdeWhIF2OVqHHxoMGmUrDEiLYzRgQ+19x2KC0hiif89FVFqa18Sq3LDpS
-         +0F0MXbEI5FH3I5QPt6kkQSa+SW64OtVQtNNMOL9VHa4WTeq5aLp/uCMTQq2wN2b5OLQ
-         GQlw==
-X-Gm-Message-State: AOJu0Yy1QRWW6Q0iwxhQy3z62zRYxOxI2FzU4mBOHdBvHN4ki2iVl/cg
-	Y8gSLG63Akm1ldXL24GmRuB46hX98Ta1i8UGb7QteocOf5rdNWOOg05LO2XvGf4=
-X-Google-Smtp-Source: AGHT+IFwukdpLSiT4L1fSlLKR05SfUBLpMsbuJg7l8RXji+uFHGTOVJJyREgn5NPEiu41AMv35rTjw==
-X-Received: by 2002:a17:90b:78e:b0:2db:60b:366a with SMTP id 98e67ed59e1d1-2dba007f424mr3758362a91.9.1726268303557;
-        Fri, 13 Sep 2024 15:58:23 -0700 (PDT)
-Received: from telecaster.dhcp.thefacebook.com ([2620:10d:c090:500::6:7584])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2dbb9c8ca84sm2375936a91.19.2024.09.13.15.58.22
+        d=1e100.net; s=20230601; t=1726270244; x=1726875044;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BIGNxVzR0VnNS5lNUbo1YO1lNTW2hK6w5JFS8wBkhNk=;
+        b=kq0BjwWUMVriK5rsp10n/H+rMBEZYOutbKKnBOby6k0mIHPjOMOMmvJD8QV783fEQL
+         JFzlbSqCCKlo5EPalzbKrRK4YAnQgrhMwAUTdmZRHDbrLmea95p/sqxHW+W3XO2/DKAy
+         KDe5GblLpulndUErUQFRWYZm2f7TwDh89Z+jSehH9ihUMCNQI4YAskYyAzA7+7jUrslS
+         LS+wOAnF/fJN6s6mQeC/Ju7I7m8wpHkMwycGVDGUHdinBLcNoppry45SmXwU7EBRvguZ
+         GRUSMzunU57/9UNFfrFvTG0BvPbD6AFVN+wCMXFBolchMr2X56gxo6rzw0fQWVK9BnNn
+         FdXw==
+X-Gm-Message-State: AOJu0YyO1SZyJnOfh7zH/uRVZR7ys0GzDUFiQ2ILK91DsdC3DiknGxHf
+	wukbi5yO9AHleHO29jOAMZ9aYjyMcFhpGivlAnijVK0H7WHoJpE3D5r/H15P
+X-Google-Smtp-Source: AGHT+IEmqSrBskl58Kg5JiUGfxKYxMSLlFbgA6rW6SuylG+EkUYu+Z5c/lavsrwk2wlqlalGbevMug==
+X-Received: by 2002:a05:6830:3103:b0:710:fe9b:d55c with SMTP id 46e09a7af769-71116bce5femr2451526a34.2.1726270243832;
+        Fri, 13 Sep 2024 16:30:43 -0700 (PDT)
+Received: from localhost (fwdproxy-eag-006.fbsv.net. [2a03:2880:3ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5e3b0d971d0sm77281eaf.20.2024.09.13.16.30.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Sep 2024 15:58:23 -0700 (PDT)
-Date: Fri, 13 Sep 2024 15:58:21 -0700
-From: Omar Sandoval <osandov@osandov.com>
-To: Leo Martins <loemra.dev@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: set flag to message when ratelimited
-Message-ID: <ZuTDjX9DDd7fMXby@telecaster.dhcp.thefacebook.com>
-References: <0628fc55984c3507c5365d4e1d5ed96d28693939.1726261774.git.loemra.dev@gmail.com>
+        Fri, 13 Sep 2024 16:30:42 -0700 (PDT)
+From: Leo Martins <loemra.dev@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs-progs: remove free space when block group freed
+Date: Fri, 13 Sep 2024 16:30:16 -0700
+Message-ID: <083c235db86e27f6191fc938fd5f61c980cc5e18.1726269996.git.loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0628fc55984c3507c5365d4e1d5ed96d28693939.1726261774.git.loemra.dev@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Sep 13, 2024 at 02:26:06PM -0700, Leo Martins wrote:
-> Set RATELIMIT_MSG_ON_RELEASE flag to send a message when being
-> ratelimited. During some recent debugging not realizing that
-> logs were being ratelimited caused some confusion so making
-> sure there is a warning seems prudent.
-> 
-> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+In the upstream equivalent of btrfs_remove_block_group(), the
+function remove_block_group_free_space() is called to delete free
+spaces associated with the block group being freed. However, this
+function is defined in btrfs-progs but not called anywhere.
 
-Reviewed-by: Omar Sandoval <osandov@fb.com>
+To address this issue, I added a call to
+remove_block_group_free_space() in btrfs_remove_block_group(). This
+ensures that the free spaces are properly deleted when a block group
+is removed.
+
+Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+---
+ kernel-shared/extent-tree.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
+index af04b9ea..df843862 100644
+--- a/kernel-shared/extent-tree.c
++++ b/kernel-shared/extent-tree.c
+@@ -3536,6 +3536,9 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 		return ret;
+ 	}
+ 
++	/* delete free space items associated with this block group */
++	remove_block_group_free_space(trans, block_group);
++
+ 	/* Now release the block_group_cache */
+ 	ret = free_block_group_cache(trans, fs_info, bytenr, len);
+ 	btrfs_unpin_extent(fs_info, bytenr, len);
+-- 
+2.43.5
+
 
