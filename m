@@ -1,166 +1,114 @@
-Return-Path: <linux-btrfs+bounces-8015-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8016-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16DA9978C1D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2024 02:28:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94750978E79
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2024 08:42:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73581B21D53
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2024 00:28:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BE172874CF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2024 06:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6B22107;
-	Sat, 14 Sep 2024 00:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="GYUm9TBQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F312518E351;
+	Sat, 14 Sep 2024 06:42:16 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A3920E6
-	for <linux-btrfs@vger.kernel.org>; Sat, 14 Sep 2024 00:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF212748D;
+	Sat, 14 Sep 2024 06:42:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726273695; cv=none; b=gdzrcXHDcTfTL8nZBh5RCQpluGeBuMK8enfexiV+FKSjCXKciuWBsY82RZ/92EkX4gHRJg78XSFkqKkw03sCJU3ASDsZJy4JMgJSsBoyhEEGh1keIo4yZJvD1Q2rmwmoBTksyZnzkJ9peKHkoyufgkltyJxDXBuw307Mo4p01fs=
+	t=1726296136; cv=none; b=kcmCJkDUBSdt+lxsJhJDhQ9/jeZeub+dNACeizOncK2Djo+CmPYINmmI6URWds+wQ260oKhyiD/9D7kFfgZ7K5ZA9LBecMYKRz5fz6YGBx32HgT9efd9xVWZeUpSitnWHyPhcNPqCujhLwzV2FC4DOTyVpGt7pPf8CYibxdgXOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726273695; c=relaxed/simple;
-	bh=10qTclWZQ1yux1Q+9kZFDVDuhmImiYLQW3tQz5cmOzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=avM4Qwt4p6b2IKAkUsWKv1IwOFSZ+s9rDTToOLH/6jshCEkN5s0fWrpMzbiBzM7QIwwDaSkK0x9CNRKHgFODzAEMG3e/Hlfq7vumbAfuiv4s34GQxgxvMfGGBOmcJuCw2tu/9NPnRyBKouVrX7RtHtTXNx9RwblovdGFyj6jG08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=GYUm9TBQ; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726273686; x=1726878486; i=quwenruo.btrfs@gmx.com;
-	bh=9Z30KMvSoevZvDwRs4Py2feyeTMvAN5deiSL3uYX1eM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=GYUm9TBQI6dz0uPhCDttwGOwX7VgvGZeGgZvbXCnjtvAjoDd+vgClrVHgsHyk3Ya
-	 3/n9O3xXcRAMatkhS1Vw4VzCzFD9tZatXJIopl/kAVdZJBzmYBGS1+vCG2YxmcTpw
-	 FVExFomMfODEnTSE5fjTgB1AZwsUTLLML59FDb8Ya4WTKlQ6+aSj/EST11f2p8wXj
-	 ZSOjm61z48Y8WYTpab2kKBjk01oTxo2ahyH4mnqnbowuclx6FnJatGFgYVwr6Xtv2
-	 eB7pvVyx3cZ9W8vsSnTdFqedJNZWAq7cLFnoMWi730d5+0zW6NnerEC3WQHH9DrKF
-	 /i3gzG8vpJo8KHmbtQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N95iR-1rtc9Z0AFj-0167Ry; Sat, 14
- Sep 2024 02:28:06 +0200
-Message-ID: <8694ef4e-b22f-4a7e-a574-f76992ef264e@gmx.com>
-Date: Sat, 14 Sep 2024 09:58:03 +0930
+	s=arc-20240116; t=1726296136; c=relaxed/simple;
+	bh=RB5m2694UUoAdkdSHGdUeOOp8FnRPJZhxkbkDi+Db1U=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AGf7cbNE2TAA9zMQRw5B7HAsENHvh6AAwvio+pPg8nfNlMAAaVEYPf3gQ/hAaSvc5pPixrW1K4kOgekMXDGsDjYC+2El/oMPnwbr1zXlTZjcy0g/ggb0RYipJkWUrnNfQF4zmKdtcmfQf8GyZoEhs4wNnpmbotf6nOmW+QjmQYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48E5o14Z015615;
+	Sat, 14 Sep 2024 06:42:02 GMT
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 41n1f984j6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Sat, 14 Sep 2024 06:42:02 +0000 (GMT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Fri, 13 Sep 2024 23:42:01 -0700
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2507.39 via Frontend Transport; Fri, 13 Sep 2024 23:41:59 -0700
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <syzbot+56360f93efa90ff15870@syzkaller.appspotmail.com>
+CC: <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>,
+        <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [btrfs?] general protection fault in write_all_supers
+Date: Sat, 14 Sep 2024 14:41:58 +0800
+Message-ID: <20240914064158.75664-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000008c5d090621cb2770@google.com>
+References: <0000000000008c5d090621cb2770@google.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: remove free space when block group freed
-To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <083c235db86e27f6191fc938fd5f61c980cc5e18.1726269996.git.loemra.dev@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <083c235db86e27f6191fc938fd5f61c980cc5e18.1726269996.git.loemra.dev@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+5+0t4pEUTWZSssEmYM0XY4MulxlT6f2vXfoeTl8dBiOeqGxsSx
- U411yOFl4+AP4T5lnhu5OsaS7+cSEv5QWFS1tgZWWm3Z3Zv1mB9Y73p3D4rZ41Nnx9dSTmP
- 2t+KfkQpWNvzDsGQdXANXBKrekDuxVSfrtQrTeZ6+QPdPoiyPqcnCDr3m7MmL3FwTJRYSbo
- 5R/HPQFc3JaQiBJt+Mh3g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:pNrhao6/2VQ=;i25FJ6gVoPNADlPdgAcE3i74dzL
- 4Wc4DgeTH1bnRFfxYBecwsBwLAVJsjRQ6e9mA1V5m190gD1zCvPgWZJeBcoW476svztS4ikjK
- MIHZtMekmUZWAIRhMGgIxjE60kgcPedYZ6TQawKsBMxBQEOajZzoUYb4/SGRDBgMf7XfjOqzl
- JUAlafyZYAM4Rz//SfcJvk6AHxvUVW7Vjl/mlYhAhyC/xi3g3XdYX1S+SfFbX1nMq5U3BMmVN
- seszT6AsSqdnD5vjRI8AUOqBfblpYhkwwzZZsCzLuiPWUQ38vvXdp8Ilh+JVF06DeZEEZROox
- aINXOH4TLqU4r+Hqn0tczBSqyT5HKy64s0f5h/jO10nolyQ+TEq6Ii/+hjL3+tSaU93tYGJj7
- uKCqSuKIxrsAGLKHSHD2jSppngNbguTQlMR/mSW0YEelx+f9DZMBRem4sZ+focexZ+DKjLN2X
- NsXzT8EhNDFeP/QeJcIRLjZ9SUj4EX9MMx1bSRKYQE6LA56Y245YOCfjoUPQuyTGVO5/TpUBg
- WpuelgdzbMNEIabWLyqjX9V2yUrNonnYdLdigp+ggeAnZbNHLLAJCIUL324bWw1gldMYibTE2
- EmRYfG4cJ9VHIyECVoykIAeLS0RED8ZTWca+1v259qKJUkdgdnFBRylHuwMwR5zTaI4brV1Ub
- Kp2Gh3Z9OWTIrIAR9R/VmU8NDzwjN6orvKZ/m5atWSpo8nbCUt25bbRJMwb+EmZNdXcmfCqcy
- IEbVIChfKmGrL4SJoCTXUqkQ9bw2trz2MODTB4d4dS7lbwAwfOZmRWx+wzAqpmyfthMZH8Iha
- HcAqxkd5mS2fTCwZcsSVOd9A==
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: g5Ms3QAjNUlZmop5gpXHKKJpsyVpR3xF
+X-Authority-Analysis: v=2.4 cv=afUzngot c=1 sm=1 tr=0 ts=66e5303a cx=c_pps a=/ZJR302f846pc/tyiSlYyQ==:117 a=/ZJR302f846pc/tyiSlYyQ==:17 a=EaEq8P2WXUwA:10 a=QI9cfog0S1L15HQcuNoA:9
+X-Proofpoint-GUID: g5Ms3QAjNUlZmop5gpXHKKJpsyVpR3xF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-14_05,2024-09-13_02,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 spamscore=0 mlxlogscore=832 suspectscore=0
+ impostorscore=0 classifier=spam authscore=0 adjust=0 reason=mlx
+ scancount=1 engine=8.21.0-2408220000 definitions=main-2409140045
 
+if we have IGNOREDATACSUMS then don't need to backup csum root 
 
+#syz test
 
-=E5=9C=A8 2024/9/14 09:00, Leo Martins =E5=86=99=E9=81=93:
-> In the upstream equivalent of btrfs_remove_block_group(), the
-> function remove_block_group_free_space() is called to delete free
-> spaces associated with the block group being freed. However, this
-> function is defined in btrfs-progs but not called anywhere.
->
-> To address this issue, I added a call to
-> remove_block_group_free_space() in btrfs_remove_block_group(). This
-> ensures that the free spaces are properly deleted when a block group
-> is removed.
-
-The idea is correct, we should remove the free space of a block group
-from v1 or v2 free space cache.
-
-But remove_block_group_free_space() in btrfs-progs is not the same as
-the kernel one, as it doesn't check if the fs has free space tree enabled.
-
-Thus for a v1 space cached btrfs, this will lead to a NULL pointer
-dereference.
-
-Mind to add the free space tree checks before calling it inside
-btrfs_remove_block_group()?
-
-Another thing is, this is very hard to trigger since in btrfs-progs we
-seldom do deletion to trigger empty block groups removal.
-
-If you can find a way to test this corner case, it would be a great help.
-
-Thanks,
-Qu
->
-> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> ---
->   kernel-shared/extent-tree.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-> index af04b9ea..df843862 100644
-> --- a/kernel-shared/extent-tree.c
-> +++ b/kernel-shared/extent-tree.c
-> @@ -3536,6 +3536,9 @@ int btrfs_remove_block_group(struct btrfs_trans_ha=
-ndle *trans,
->   		return ret;
->   	}
->
-> +	/* delete free space items associated with this block group */
-> +	remove_block_group_free_space(trans, block_group);
-> +
->   	/* Now release the block_group_cache */
->   	ret =3D free_block_group_cache(trans, fs_info, bytenr, len);
->   	btrfs_unpin_extent(fs_info, bytenr, len);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index a6f5441e62d1..415ad3b07032 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1679,7 +1679,6 @@ static void backup_super_roots(struct btrfs_fs_info *info)
+ 
+ 	if (!btrfs_fs_compat_ro(info, BLOCK_GROUP_TREE)) {
+ 		struct btrfs_root *extent_root = btrfs_extent_root(info, 0);
+-		struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
+ 
+ 		btrfs_set_backup_extent_root(root_backup,
+ 					     extent_root->node->start);
+@@ -1688,11 +1687,15 @@ static void backup_super_roots(struct btrfs_fs_info *info)
+ 		btrfs_set_backup_extent_root_level(root_backup,
+ 					btrfs_header_level(extent_root->node));
+ 
+-		btrfs_set_backup_csum_root(root_backup, csum_root->node->start);
+-		btrfs_set_backup_csum_root_gen(root_backup,
+-					       btrfs_header_generation(csum_root->node));
+-		btrfs_set_backup_csum_root_level(root_backup,
+-						 btrfs_header_level(csum_root->node));
++		if (!btrfs_test_opt(info, IGNOREDATACSUMS)) {
++			struct btrfs_root *csum_root = btrfs_csum_root(info, 0);
++
++			btrfs_set_backup_csum_root(root_backup, csum_root->node->start);
++			btrfs_set_backup_csum_root_gen(root_backup,
++						       btrfs_header_generation(csum_root->node));
++			btrfs_set_backup_csum_root_level(root_backup,
++							 btrfs_header_level(csum_root->node));
++		}
+ 	}
+ 
+ 	/*
 
