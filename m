@@ -1,157 +1,229 @@
-Return-Path: <linux-btrfs+bounces-8076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8077-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5B897A8E7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 23:46:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4257297A96E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 00:58:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD0A5B28A55
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 21:46:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A156B1F22CB8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 22:58:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBF1158550;
-	Mon, 16 Sep 2024 21:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BAC14F9EA;
+	Mon, 16 Sep 2024 22:58:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="oAjFLw7o"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bZXTxKvz";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HL6+5N5V"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A12C9443
-	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 21:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA4B14B965
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 22:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726523172; cv=none; b=S231ZgW9enh0/mFUSbWc+isoDEil8qtc4Rho+xkVNVGzjCwH5Or62NZmKboGaFqVgJ/+fJZZGfzaB5ceY2+JvcunTBOryiu++shZ/OQ7Vx1pVYjAHpMhV5T8nZ2UJ8F1PIOK8M1frFbE7SZ7voNzkEnAmT2MODfGpadoqNmpbOM=
+	t=1726527516; cv=none; b=B0kDctgvaSgdSV9AAEF7Ze+v9REVmwWFzI0oK953vOdw1A0/AQEnr8TvzhBGzz8M35yegQndJ2tfBWMoByefbQjXNZeTKzl8pZFDgQqHTjLJGVhru0Aj7ph7+Q3kTNtZZUJQBwfB5eM1tJDrn1SpC2Mj/erNgscm6WTPfWHNllE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726523172; c=relaxed/simple;
-	bh=/YXWrNSJ6k6swpunjIgvkUr1d8TCoklf/NMBLFEZlCg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=kqY5HJDLkd8wkSnwZBrTuoZjSUQQSebd80Qs435jGo0Wjd/6lNdzZT1SNoCLWf6TXMijigCGwngZ8rZ6ZsehH1miBD+PL6iGhg7BWIeSnCMrFL2/p3HjHLeWeLEpZW0qd/Yg9tP+MDFHquwr4m9L5bjyog5K4XxHWi40qeLAZ/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=oAjFLw7o; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726523162; x=1727127962; i=quwenruo.btrfs@gmx.com;
-	bh=UHlhUlXg/T6YRxzf24R4VFeAVgnL5urLNJBFra2/Ab4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=oAjFLw7o7SR2l1qhPqRUGTGRhb+4rnCTydktFrW74mP0FxyZ335E43bZrK7Tv9gx
-	 /XbjDeDOKwbah6j1n64fKEtKxgNJSgPGo7mCiArNpr8ci5UQCvtZA/08adbylT8YK
-	 Z6lsz9keq40zpq3yzzgkOzTBb5l9DxEEdDlz24ErilgMNLNptU2tS2vEtQgvMFUD6
-	 /ffoiiOCs7+gvwpznAF8jpKERGA2pw1bpQRDUI0gIpjxaCdcJ5CFE1jmxbnH4pGJD
-	 1kSjPqN0NyuGFfeJoGx+nGvQ3DyYcAS10AKlMLl9FnCoyi0PBbnHvGTWvMMlfUZoD
-	 wXF+41AsOkLGFMyqNA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJVDW-1sWape0xp2-00VuZl; Mon, 16
- Sep 2024 23:46:02 +0200
-Message-ID: <8aea5f61-4e27-4eb3-86a0-9dcccff9d196@gmx.com>
-Date: Tue, 17 Sep 2024 07:16:00 +0930
+	s=arc-20240116; t=1726527516; c=relaxed/simple;
+	bh=Ww9RvrsN5trpkoEiI27akmOH2Sn0wZ93Fon9WPXvDnk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=a5TzBLmUT4LYh6mlay3r4Xfdi6s4PCH08QNWg2ssC6BwmfSfYLlp8JeO52sET2qqodmJpKLv+dV/pRzIKsaFWWJZLy3+1ASXOBWB4e1DvZ0jG/H++WiDGfEmYLNU/ycd2yykafwtQUQOsrwRHemu2479VmXCbC2GZSJgybZCDwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bZXTxKvz; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HL6+5N5V; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id BF1301FDED
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 22:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726527512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0DdksfJBSNRnqiBOvLdnpECScENUTrs1HB8d5QfyAKQ=;
+	b=bZXTxKvze07d8DiwWyXYvLGr/K9EulQQVq/n8AboiPhBvHHmbsDi+2Rz6Xb2TALJEVXvn8
+	YzhUBuRGsevuDSFVQ75vvv3dME9HxDgQMuNNRrPiQj8IJ3peyX6oXX2HUkEvHhcVjEDgwp
+	L2z1+2xxCErmBtostydH1udeSLfj338=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=HL6+5N5V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726527510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=0DdksfJBSNRnqiBOvLdnpECScENUTrs1HB8d5QfyAKQ=;
+	b=HL6+5N5VAO481Igs3p4DxI9g2BwpTKQDkl3sTWaSs/l9AS2ioKKG5zEfgt+RFxhr+w8kGx
+	vSbPOhYiQSF0JtHLENX5+2cn+Xbi+9JMBAxBl018/wQGa74Jkescg5BLbeNa+66dfdFWQR
+	baOmKbsop2GHyWWhIpW8V+GNjtNQOn4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0058A139CE
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 22:58:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AxSnLBW46GYcQAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 22:58:29 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: allow compression even if the range is not page aligned
+Date: Tue, 17 Sep 2024 08:28:12 +0930
+Message-ID: <05299dac9e4379aff3f24986b4ca3fafb04d5d6a.1726527472.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix use-after-free on rbtree that tracks inodes
- for auto defrag
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <743f120462032370c7ae8ff899bfd8dbfb0ed006.1726486545.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <743f120462032370c7ae8ff899bfd8dbfb0ed006.1726486545.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lzqrlleLJJEcrGg2ddQ8d+mjSa42hMIP8DW2ZTvoi0fv7fUR7ho
- CH/jmVSg1tZaBlzqUDdWw42S+zu3uE+U4WEQSq+6oDiLIxbUaBHb9AvPTnlBYvSBV4INZjX
- ujAMrrQr3CY8i22OmcRQrxwmhdTx43WOZRNY2SBFcnP7yKtlTVRQfk9cHYeWkEWlFxdjo4e
- X23mVcI5Qhs9eFHo92AgQ==
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: BF1301FDED
+X-Spam-Score: -5.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-5.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:M6wqKtYk464=;rwLrsf/nKyvykG02BUL5xmJADOQ
- fMsnQw3I1FudOb3t5mrZ/dL6RuXrIgeM0K5tuRngAzKYNWIlX/+C177CUIrVaXd4bsE4rp2h/
- jCIKrN8j0tKC+pnCPmtp38A1wVjA73yIga9p+Gac13bZ9POQNI0A3yt0DLZlathFDS4HfhQW6
- a87PQKFk5wPiSprqRfGq9MlqIQpTp8rxsvNrH6rLAhpX8TPRTCp3/B2hmENeey2PJQ9bE1iVY
- nqwbNcnKZMudAXjLvw1/EO/7dIuuHcIQeMhc9vsPfTDGzjNQl/nC7XzY+QqWS94q6/9svMDa1
- ooENhyskX31AYrxhZnpCxdp0qQYuRhRs1QHa0Z2oOlyIfMEBJKcWmV9eWiGOmctfKj/piCHe5
- 76V253l3NfOTwAyihJUvxPbLe7q7ZFEV1oo3Nxjjp9M5y2b2zqpUXB/1Op+slrDHiyRJeiRNc
- JQ+cdjhPieAc9mxXnxJ0jIh0j30+ro2cWVqZ/ukjd+guCqd5ZpFzfaBMWQ8A67L7bjQnxokZn
- HxRQ0zg/2nl9vIJ2cgjnU3EPXoJjapreJgH4PBHV7VmNw7VzOJ1cELPtFpt8v20eicWYfLMeP
- KpmO7EnQjyQpKcolsSRkLxcSPoMgj2kMTBJME2VXDIyPfRKsn0jeOTau92vCmKjpvTBtzfnEj
- x/UNmgZW//JR9wZlT9jF6H0B45Ocae2x1YPnxlZFlMeTrueHi8aCcOWoJlzjpChxmDR4O+e5i
- QWhK0QQN6u+sxjRhaCxaeEATF2Ug0hhpTdvX0/0meLgTADTKntf1pQmjAIyfQ8XUAHbJb0qxE
- wuylG+VZtkrva1a2D69q9JSw==
+X-Spam-Level: 
 
+Previously for btrfs with sector size smaller than page size (subpage),
+we only allow compression if the range is fully page aligned.
 
+This is to work around the asynchronous submission of compressed range,
+which delayed the page unlock and writeback into a workqueue,
+furthermore asynchronous submission can lock multiple sector range
+across page boundary.
 
-=E5=9C=A8 2024/9/16 21:07, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> From: Filipe Manana <fdmanana@suse.com>
->
-> When cleaning up defrag inodes at btrfs_cleanup_defrag_inodes(), called
-> during remount and unmount, we are freeing every node from the rbtree
-> that tracks inodes for auto defrag using
-> rbtree_postorder_for_each_entry_safe(), which doesn't modify the tree
-> itself. So once we unlock the lock that protects the rbtree, we have a
-> tree pointing to a root that was freed (and a root pointing to freed
-> nodes, and their children pointing to other freed nodes, and so on).
-> This makes further access to the tree result in a use-after-free with
-> unpredictable results.
->
-> Fix this by initializing the rbtree to an empty root after the call to
-> rbtree_postorder_for_each_entry_safe() and before unlocking.
->
-> Fixes: 276940915f23 ("btrfs: clear defragmented inodes using postorder i=
-n btrfs_cleanup_defrag_inodes()")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Such asynchronous submission makes it very hard to co-operate with other
+regular writes.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+With the recent changes to the subpage folio unlock path, now
+asynchronous submission of compressed pages can co-operate with regular
+submission, so enable sector perfect compression if it's an experimental
+build.
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/defrag.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-> index acf1f39e45d0..b95ef44c326b 100644
-> --- a/fs/btrfs/defrag.c
-> +++ b/fs/btrfs/defrag.c
-> @@ -213,6 +213,8 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_inf=
-o *fs_info)
->   					     &fs_info->defrag_inodes, rb_node)
->   		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
->
-> +	fs_info->defrag_inodes =3D RB_ROOT;
-> +
->   	spin_unlock(&fs_info->defrag_inodes_lock);
->   }
->
+The ETA for moving this feature out of experimental is 6.15, and I hope
+all remaining corner cases can be exposed before that.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+This is the final enablement patch for sector perfect compression
+support. (Previously compression is only page perfect, which means it's
+only block perfect for sector size == page size).
+
+This patch relies on all the previous various small fixes (some are
+already merged into for-next branch), the recommended (and local)
+sequence of the unmerged fixes are (in git log order):
+
+ btrfs: allow compression even if the range is not page aligned
+ btrfs: mark all dirty sectors as locked inside writepage_delalloc()
+ btrfs: move the delalloc range bitmap search into extent_io.c
+ btrfs: do not assume the full page range is not dirty in extent_writepage_io()
+ btrfs: make extent_range_clear_diryt_for_io() to handle sector size < page size cases
+ btrfs: wait for writeback if sector size is smaller than page size
+ btrfs: compression: add an ASSERT() to ensure the read-in length is sane
+ btrfs: zstd: make the compression path to handle sector size < page size
+ btrfs: zlib: make the compression path to handle sector size < page size
+
+And the following patches already in for-next are also needed:
+
+ btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from CONFIG_BTRFS_DEBUG
+ btrfs: only unlock the to-be-submitted ranges inside a folio
+ btrfs: merge btrfs_folio_unlock_writer() into btrfs_folio_end_writer_lock()
+ btrfs: make compression path to be subpage compatible
+ btrfs: merge btrfs_orig_bbio_end_io() into btrfs_bio_end_io()
+---
+ fs/btrfs/inode.c | 41 +++++++----------------------------------
+ 1 file changed, 7 insertions(+), 34 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index d53b9e4ca13e..fbb303f7ccaa 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -832,32 +832,16 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
+ 		return 0;
+ 	}
+ 	/*
+-	 * Special check for subpage.
++	 * Only enable sector perfect compression for experimental builds.
+ 	 *
+-	 * We lock the full page then run each delalloc range in the page, thus
+-	 * for the following case, we will hit some subpage specific corner case:
++	 * This is a big feature change for subpage cases, and can hit
++	 * different corner cases, so only limit this feature for
++	 * experimental build for now.
+ 	 *
+-	 * 0		32K		64K
+-	 * |	|///////|	|///////|
+-	 *		\- A		\- B
+-	 *
+-	 * In above case, both range A and range B will try to unlock the full
+-	 * page [0, 64K), causing the one finished later will have page
+-	 * unlocked already, triggering various page lock requirement BUG_ON()s.
+-	 *
+-	 * So here we add an artificial limit that subpage compression can only
+-	 * if the range is fully page aligned.
+-	 *
+-	 * In theory we only need to ensure the first page is fully covered, but
+-	 * the tailing partial page will be locked until the full compression
+-	 * finishes, delaying the write of other range.
+-	 *
+-	 * TODO: Make btrfs_run_delalloc_range() to lock all delalloc range
+-	 * first to prevent any submitted async extent to unlock the full page.
+-	 * By this, we can ensure for subpage case that only the last async_cow
+-	 * will unlock the full page.
++	 * ETA for moving this out of experimental builds is 6.15.
+ 	 */
+-	if (fs_info->sectorsize < PAGE_SIZE) {
++	if (fs_info->sectorsize < PAGE_SIZE &&
++	    !IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL)) {
+ 		if (!PAGE_ALIGNED(start) ||
+ 		    !PAGE_ALIGNED(end + 1))
+ 			return 0;
+@@ -1002,17 +986,6 @@ static void compress_file_range(struct btrfs_work *work)
+ 	   (start > 0 || end + 1 < inode->disk_i_size))
+ 		goto cleanup_and_bail_uncompressed;
+ 
+-	/*
+-	 * For subpage case, we require full page alignment for the sector
+-	 * aligned range.
+-	 * Thus we must also check against @actual_end, not just @end.
+-	 */
+-	if (blocksize < PAGE_SIZE) {
+-		if (!PAGE_ALIGNED(start) ||
+-		    !PAGE_ALIGNED(round_up(actual_end, blocksize)))
+-			goto cleanup_and_bail_uncompressed;
+-	}
+-
+ 	total_compressed = min_t(unsigned long, total_compressed,
+ 			BTRFS_MAX_UNCOMPRESSED);
+ 	total_in = 0;
+-- 
+2.46.0
+
 
