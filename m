@@ -1,198 +1,116 @@
-Return-Path: <linux-btrfs+bounces-8046-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8047-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47C9979F01
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:13:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF8D979F16
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D98D1F241A9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 10:13:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E1451C23258
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 10:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327EB1514EE;
-	Mon, 16 Sep 2024 10:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C8314D282;
+	Mon, 16 Sep 2024 10:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v1sVvDod";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ft94qdf3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e7nEnRb8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542DD14BFB0;
-	Mon, 16 Sep 2024 10:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1D5482EF;
+	Mon, 16 Sep 2024 10:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726481581; cv=none; b=PpixcNevIYC8HE6xL65nbcSMlvo04w3Zh0Ttiq5XmzgmHVsIask1/9Ha8cvrAhbg1N5xgY86WMQZmcHnIHbte+CffDOJNAxEC4KV+Kvsn+TpAxTlsLOAClPXasIJEnYfQ8df7lLa0WAQ8heEFX4GFC8hO4SUWlQ8337TCgr0TY0=
+	t=1726481788; cv=none; b=T2BGIqzJIQXO1GzL88SCYAKIeBdTwiwQbXTqOxCZQyWI0ouKP0c7iv7qxzNmNZfAixGef209dQQbhEP/8ozN0iAEc3viBZwklqiccLPbqKj0R2yZrnhEqMJhgC+rR2N560rvKWoCHa3Gu569RW0E/w/joLcHO7rs/N5F5yWRGLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726481581; c=relaxed/simple;
-	bh=7f22G+6r66QEwau72pU8x4w4ZuPvjQGUXc8asSZd1lI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UaOQMJm1JaeMiVU4tSZDBhKKOVC8Npq/iseFUs9P0hqGQnXuAzTS0QaMYDLAm2KtGr8cahzyH8fEGuRkvV0J877xTTfvcJmOHCEpYbxjKRVrqrTLSc5bKKLGBtdVqG9lmJW64aTDVViwW/x3tfl6Gbg58ZjoGEFdwqn5/Lr9qgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=v1sVvDod; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ft94qdf3; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1726481577;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v3ll6KO8H5UrZC6yCuHnxrKwZc40QeoVwfA712SGpCg=;
-	b=v1sVvDodszPQaC6MYGfaSe4O0YiaY1fze0PmCKJ6c2G23tPz7qhE8S1B1sLtwUgWIXMmak
-	lcl5g5XiApkWPI1SCVyw7s9z1iO9KN6mpCWlZuVUdZluKI8O4fUF6eIdjm1NesbAgwTjm9
-	L5r8Exaw6kxoLg3DrFsWi8+mp8bsCM3zkFSSojxJ6whDP0q0k1EnEEodbLafdu9xFs6uaz
-	8eHdofzdFoTnlGmddqeYRaFKXUxsd24x8fzw0LItUenj5KjkqN5heAotraD7Uf01iomULo
-	x3kKNZ67/a7jl0TuyFLafUFm2vFpo2t7LtFrG+RNKJkiP8/m8yTSt9sPqggSzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1726481577;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v3ll6KO8H5UrZC6yCuHnxrKwZc40QeoVwfA712SGpCg=;
-	b=ft94qdf3mKKez4Fq6giUKHTG2x5ATRcMmRN9N6Lxg1hlqvpyZTzutygIeaN9KywFwHwHHJ
-	c1DaKC+nUT0MDZDQ==
-To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
- Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
- <corbet@lwn.net>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J.
- Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
- <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
- <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Hugh Dickins
- <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Chuck Lever
- <chuck.lever@oracle.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-mm@kvack.org, Jeff Layton
- <jlayton@kernel.org>
-Subject: Re: [PATCH v8 01/11] timekeeping: move multigrain timestamp floor
- handling into timekeeper
-In-Reply-To: <20240914-mgtime-v8-1-5bd872330bed@kernel.org>
-References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
- <20240914-mgtime-v8-1-5bd872330bed@kernel.org>
-Date: Mon, 16 Sep 2024 12:12:55 +0200
-Message-ID: <87a5g79aag.ffs@tglx>
+	s=arc-20240116; t=1726481788; c=relaxed/simple;
+	bh=3PmXEbvBwZ5AbWNH/b5CsVXpSiXv4PAu75LGPqoGkr0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eilCWMjzVQwcsPH+4PIB9o4ajuRpjDkBKmrOnOeDTWLmwOXNKRC8KolruS7ufJcsTgxfPxabU8/vu/IJmZY4v4YzxALjq8hV9mc9XvB7ROl4YIM7lCfvRdkyI6rmEAcl3V/azsioZVoiucK7ineiQF9j5zf4NMZtqxCov8Xgxe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e7nEnRb8; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-42cb6f3a5bcso40628585e9.2;
+        Mon, 16 Sep 2024 03:16:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726481785; x=1727086585; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ubr2Tf5MwgkTisbIHjcv/5KCFjGzBhTy/uqy94EsX0=;
+        b=e7nEnRb8fg1vss6l66uQ3/N+/UsD12zJRD7fnHjLZZnYnpMMuirfD9csJ0RlT2Wfk6
+         MlKa1kuE3tRxzerFYW28GeYG7IEKa7DWtMeNjIJNMlUJvoMDyXe7kTxYcrQDCK/9yx1n
+         H1UKd/NYXY3Twc8JfGKTF88tF6I0w5UNxWEhKC3mRtM98htKEb6chK0omYfuuy9pyefa
+         OGLjtv4jApz24FRWjLwH9PFxPPTGs2Amy1Ld4tY3M061KMUJwAMUfMotPTEWvZ4mzUeD
+         yMicpZxcxKJuolJU9JzFRM93h8VisTNaSAwOUH7QixHIebOSeTqC5jUX/yJivTF30qb/
+         imNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726481785; x=1727086585;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4ubr2Tf5MwgkTisbIHjcv/5KCFjGzBhTy/uqy94EsX0=;
+        b=ffg7uTVYIaGDRVG1gW99zV+rS6qjKSwimFlFhqWQLjW46TQKiZF8xuh1PgPc2YjKof
+         bwVNOLk48s4r7Xfn60x8/1LpXpmR8WxYSVvxX8+AfDApMaUOgBvOC0hOsxad1r5wV0Wu
+         s60JJErmqO0OOERaYGfxyrhw+dgJEk18DaGSWQZ7afxGfD6zPqqn8MdWU239UVfqyRnJ
+         ItvpAXdEswvIOMHxpIt2lLJcVG9vbSiCrzGE2Ca3c/5XA6dQMakfysqLeBNZsHEVxNyI
+         rtWMWkJ89W1sDJMy+/DRc+VhLje50J2OnUMf6hUwSN9NXPQKRKM6HVVXxy0dDGNms1SR
+         D2Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCU/NelkMxcTO3YNfSUFOwy4Z1bhtFgmZW9YMApF/OoHY9Wt+5+5zrnGK+aWVqyYlVzqU8cFUWMckSg3Sf94@vger.kernel.org, AJvYcCXZ4qZWb0oVv9FfAwrqDUJpuq8enQz/tru4IU/BTh8uzrkz7jNhurzpA7TGUqGwQKXiRQ7VKSbm/ZheEg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwA1YPKfoDWeqMirzawSLYdVcwCQF348BvhPyWDM6gxx1pLBH0+
+	9kkN111YvfbzOkKRRuiyP6HKapsgjj380CqJSUpjA/+RTugxO3B5
+X-Google-Smtp-Source: AGHT+IHtEMrW+hVZzph3jggyzBYxyIzLuJ0tA7ui9amp6DJfSCqCLpPCH26uG8zGhduTj1La709dHQ==
+X-Received: by 2002:a05:600c:350a:b0:426:59fe:ac27 with SMTP id 5b1f17b1804b1-42d964d76ffmr109567105e9.26.1726481784313;
+        Mon, 16 Sep 2024 03:16:24 -0700 (PDT)
+Received: from fedora-thinkpad.lan (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
+        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-378e780015dsm6814201f8f.69.2024.09.16.03.16.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Sep 2024 03:16:23 -0700 (PDT)
+From: Luca Stefani <luca.stefani.ge1@gmail.com>
+To: 
+Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/3] btrfs: Don't block system suspend during fstrim
+Date: Mon, 16 Sep 2024 12:16:06 +0200
+Message-ID: <20240916101615.116164-1-luca.stefani.ge1@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Sat, Sep 14 2024 at 13:07, Jeff Layton wrote:
-> For multigrain timestamps, we must keep track of the latest timestamp
+Changes since v3:
+* Went back to manual chunk size
 
-What is a multgrain timestamp? Can you please describe the concept
-behind it? I'm not going to chase random documentation or whatever
-because change logs have to self contained.
+Changes since v2:
+* Use blk_alloc_discard_bio directly
+* Reset ret to ERESTARTSYS
 
-And again 'we' do nothing. Describe the problem in technical terms and
-do not impersonate code.
+Changes since v1:
+* Use bio_discard_limit to calculate chunk size
+* Makes use of the split chunks
 
-> To maximize the window of this occurring when multiple tasks are racing
-> to update the floor, ktime_get_coarse_real_ts64_mg returns a cookie
-> value that represents the state of the floor tracking word, and
-> ktime_get_real_ts64_mg accepts a cookie value that it uses as the "old"
-> value when calling cmpxchg().
+v1: https://lore.kernel.org/lkml/20240902114303.922472-1-luca.stefani.ge1@gmail.com/
+v2: https://lore.kernel.org/lkml/20240902205828.943155-1-luca.stefani.ge1@gmail.com/
+v3: https://lore.kernel.org/lkml/20240903071625.957275-4-luca.stefani.ge1@gmail.com/
+Original discussion: https://lore.kernel.org/lkml/20240822164908.4957-1-luca.stefani.ge1@gmail.com/
 
-Clearly:
+Luca Stefani (3):
+  btrfs: Always update fstrim_range on failure
+  btrfs: Split remaining space to discard in chunks
+  btrfs: Don't block system suspend during fstrim
 
-> +void ktime_get_real_ts64_mg(struct timespec64 *ts, u64 cookie)
+ fs/btrfs/extent-tree.c | 47 +++++++++++++++++++++++++++++++++++-------
+ fs/btrfs/ioctl.c       |  4 +---
+ 2 files changed, 40 insertions(+), 11 deletions(-)
 
-Can you please get your act together?
+-- 
+2.46.0
 
-> +/**
-> + * ktime_get_coarse_real_ts64_mg - get later of coarse grained time or floor
-> + * @ts: timespec64 to be filled
-> + *
-> + * Adjust floor to realtime and compare it to the coarse time. Fill
-> + * @ts with the latest one.
-
-This explains nothing.
-
->      Note that this is a filesystem-specific
-> + * interface and should be avoided outside of that context.
-> + */
-> +void ktime_get_coarse_real_ts64_mg(struct timespec64 *ts)
-> +{
-> +	struct timekeeper *tk = &tk_core.timekeeper;
-> +	u64 floor = atomic64_read(&mg_floor);
-> +	ktime_t f_real, offset, coarse;
-> +	unsigned int seq;
-> +
-> +	WARN_ON(timekeeping_suspended);
-> +
-> +	do {
-> +		seq = read_seqcount_begin(&tk_core.seq);
-> +		*ts = tk_xtime(tk);
-> +		offset = *offsets[TK_OFFS_REAL];
-
-Why this indirection? What's wrong with using
-tk_core.timekeeper.offs_real directly?
-
-> +	} while (read_seqcount_retry(&tk_core.seq, seq));
-> +
-> +	coarse = timespec64_to_ktime(*ts);
-> +	f_real = ktime_add(floor, offset);
-
-How is any of this synchronized against concurrent updates of the floor
-value or the offset? I'm failing to see anything which keeps this
-consistent. If this is magically consistent then it wants a big fat
-comment in the code which explains it.
-
-> +void ktime_get_real_ts64_mg(struct timespec64 *ts, u64 cookie)
-
-What is this cookie argument for and how does that match the
-declaration?
-
-> +extern void ktime_get_real_ts64_mg(struct timespec64 *ts);
-
-This does not even build.
-
-> +{
-> +	struct timekeeper *tk = &tk_core.timekeeper;
-> +	ktime_t old = atomic64_read(&mg_floor);
-> +	ktime_t offset, mono;
-> +	unsigned int seq;
-> +	u64 nsecs;
-> +
-> +	WARN_ON(timekeeping_suspended);
-
-WARN_ON_ONCE() if at all.
-
-> +	do {
-> +		seq = read_seqcount_begin(&tk_core.seq);
-> +
-> +		ts->tv_sec = tk->xtime_sec;
-> +		mono = tk->tkr_mono.base;
-> +		nsecs = timekeeping_get_ns(&tk->tkr_mono);
-> +		offset = *offsets[TK_OFFS_REAL];
-> +	} while (read_seqcount_retry(&tk_core.seq, seq));
-> +
-> +	mono = ktime_add_ns(mono, nsecs);
-> +
-> +	if (atomic64_try_cmpxchg(&mg_floor, &old, mono)) {
-> +		ts->tv_nsec = 0;
-> +		timespec64_add_ns(ts, nsecs);
-> +	} else {
-> +		/*
-> +		 * Something has changed mg_floor since "old" was
-> +		 * fetched. "old" has now been updated with the
-> +		 * current value of mg_floor, so use that to return
-> +		 * the current coarse floor value.
-
-'Something has changed' is a truly understandable technical
-explanation.
-
-I'm not going to accept this voodoo which makes everyone scratch his
-head who wasn't involved in this.
-
-Thanks,
-
-        tglx
 
