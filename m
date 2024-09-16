@@ -1,181 +1,224 @@
-Return-Path: <linux-btrfs+bounces-8065-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8066-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AF0E97A2A3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 14:57:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7E6397A2E6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 15:25:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FBD31F23F28
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:57:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 594251F23CB9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 13:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57E51581F9;
-	Mon, 16 Sep 2024 12:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B988156C72;
+	Mon, 16 Sep 2024 13:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UU89tAMb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNb2Z+6C"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B7B156654;
-	Mon, 16 Sep 2024 12:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0C4155730
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 13:25:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726491437; cv=none; b=hPesSbsKBHxJIeJkCYfzkGUDY3Oq8SlAA1jVyjaI7xm3fiZabZxftncZwttU5cYONp/YnDk5P/dBIHi6LQ1ZMMAYo3v7MPY9zCWlT+FOgg0F+C81raqU6s+tRX8K57GEzxgp/Rp3QanmbpsHEVbz8PH1aUB0o+CuI/YWzcqSy64=
+	t=1726493147; cv=none; b=sUl6M8WWABZuWa2p7fvAFJxEgdN25U0coEDwisjRQ6DQBO78mohUGExPgxGBI3APz0f0cpQhAX3V3T6AoCYLb43SOZ6XINmjNTvf18QwuflnDklILj4Dp+iQE1odCeDEZVo3hANT5ILGU5tsmdCttkjBUktMg/2Q8ltu0DKdIBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726491437; c=relaxed/simple;
-	bh=8uBllyDJlc4U/ldVink22w8oM+go5/KtiBhOC/MQGYw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X7ddsd9v0VFhILSXtuVWTvTyqo8T9oXottQ7XOF1IG7D4jujkKAS8M9lUGzQWppH9/LinkwKXEvUm3eVL4erM4x+Y7Lw+80YGxjOiI/OeTE08HLjt1JkgOlq/tmFDXvRGj0N2LrMiIBYQlJ3n/bodQ9IbC3InYx/PREe+KK5Ar0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UU89tAMb; arc=none smtp.client-ip=209.85.128.45
+	s=arc-20240116; t=1726493147; c=relaxed/simple;
+	bh=soTBR3IEjnmw2mXnIQwh9FmsutdUZqYNQCRfm+h8HhM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=L+SrUNg9mpGSHzGGf1bLnRF52JIO78p1ivwHJgX3inRvgNiPuO4TDY86jX9N53cRyheneYrYiakUzsc9sIJaH6tIF3uCXkgVej76oSGbN83ggwwlZBJjOP9NW6ZeNXo5mBoGdGC7kvWOldlhfTjRFcdN1j4HppHVIInnQlG3yP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TNb2Z+6C; arc=none smtp.client-ip=209.85.216.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cb57f8b41so43003145e9.0;
-        Mon, 16 Sep 2024 05:57:15 -0700 (PDT)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2d885019558so3015006a91.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 06:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726491434; x=1727096234; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F7maCUuqvqku5DtJPieBq8TjJIvVE/clAoBVWSpIBOg=;
-        b=UU89tAMbNGWQ9QYZII8HsxYVSK1/AZORX4sWZpxO/5Ff6lGemrzJhLo79N4RD4UYS5
-         6T8w7NKmbrbMqF0QFnntYSpwOZdRzyrlVcyk2f1EctHZsTZsLiwQSC1hojH6EdB5QGUt
-         wvItdWoI+bPuNZf5N1MIUzJjGxjVlAjyQw5VY6VMhvkC2QRgQ3TW/Xt2KaVZeZJWRWQE
-         RlAFKuEjNg3l4aEdTfuBQAeJV9g0TnX03P9ASovpyDNMaGxECkgLsbTN3yaw3KEsNUeV
-         /gmmb4YvkyonR7I8FaYcNRQUNKXd5uij03LXaXud4SfpsEKv7xubbu8DAZTCGtCbiH3R
-         kANg==
+        d=gmail.com; s=20230601; t=1726493145; x=1727097945; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kfoBc6a6z0pZAo5BA5Yva/CIOWWGCpDomL3UaQ5C18E=;
+        b=TNb2Z+6CkvOghszboUx3/7yONVPWQs1jxtS1fIeLT4CuCEcYrmqJkoFBnME9Lh3x2s
+         GhPK+w86ECgqE3M4h5HvMrOFEmp3DzApSQynXPRQ7LlmSE3pVVtqeUZawmmM0KYr5fmM
+         2Zup4e5us8P5CIlhKcmJdruPlPJ0amJFYd9BT2AVOoOCrn7iIzT/dHipHhX+CIK3qcCt
+         y9Rv37tarns/RPTwBm454d6Az2g3xKAdPWX30cVeCxdDM2rmxNHVH9eIfQ0MgnVPfA+t
+         hpxADBooY6BatV16QnO2Q6RzxMxOQBiGTnUdsqs8JOa7Y3OJpJ1+vXppYdH2YtqfSoVh
+         wNWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726491434; x=1727096234;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F7maCUuqvqku5DtJPieBq8TjJIvVE/clAoBVWSpIBOg=;
-        b=vBCN1+OgSQvvjK3D987Mm0+1jfs2P3I2CEMum9VprxpleHwzxVxj8OQgrc6UTOS6d+
-         cmSaDQNXML+MFDb3BGUgUJ0lsBrU2VUtRZaXMbOhiDVCuo6vK0+0n/jSv5C1qoD/R5re
-         cXHylzK3XiLELwQVnieXrO6Ry5yOzqa+6sj61ezZ1Wx8fsNWcNdhrlQwfMiYpwq6Y7k0
-         I3bQvjeqJQ7fD3v6g+NxdK6wL2ANq646SeCDptPMzjrmqigUYWf+V0rGNQjAJBn3q11K
-         Fy/JU7l5uYHzmFfohNSMqyMyjKzkrmh73GPB6EESnaWLcQrXxPmHpjNKbIu87rIMWPYB
-         Ef9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU4bC1bnfHloNhdeFPNyOG0/R6u2xHw+R1fopzfCKhNl2eLqG8dKsOxNa+uk9R0AdniVPM6nz25T1wXOJ4P@vger.kernel.org, AJvYcCWHfTh3/nFzo944zw8i5Mhm6AkRUMnAeBkRRSQK8BXQI3FNhIGMeabcAqDgs/KbzKeyZW7PDwW5pN6WHw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzzJoKKAZiwiQ5Umi7DwVaZACQLzftAmCywjEAtKz3o4qSls1bk
-	UzRkqLFxw5UbZ4m9TyjGgW7way7jsSo6I5UNyhWQzEa4fv/zjsSd
-X-Google-Smtp-Source: AGHT+IFbnk33wn5kbVw/+K328MOha5PalQj9pkuNKI8yYeCb6JBq2B98slV4gnbu7SHyy8BsQuasUQ==
-X-Received: by 2002:a05:600c:4f41:b0:42c:b950:6821 with SMTP id 5b1f17b1804b1-42d90829e60mr106135605e9.19.1726491433520;
-        Mon, 16 Sep 2024 05:57:13 -0700 (PDT)
-Received: from fedora-thinkpad.lan (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-42da242741csm77129615e9.47.2024.09.16.05.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2024 05:57:13 -0700 (PDT)
-From: Luca Stefani <luca.stefani.ge1@gmail.com>
-To: 
-Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] btrfs: Don't block system suspend during fstrim
-Date: Mon, 16 Sep 2024 14:56:15 +0200
-Message-ID: <20240916125707.127118-3-luca.stefani.ge1@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240916125707.127118-1-luca.stefani.ge1@gmail.com>
-References: <20240916125707.127118-1-luca.stefani.ge1@gmail.com>
+        d=1e100.net; s=20230601; t=1726493145; x=1727097945;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kfoBc6a6z0pZAo5BA5Yva/CIOWWGCpDomL3UaQ5C18E=;
+        b=eKEg8qECXpfjKjPIA4xncCgKAGNZ8sSpwwqDtLUqU8nEK7x+kIcBGHVl1+K+SpRTb1
+         dTe1BcAXjNplf+gy1izE/wxrvPMQRGhJWyPDmPK/0JsRQwQwGvv1vbGDxBM6huznpJK1
+         z65Z5VRdAyR1HneBXKj/vgjDPJfJPhippa2vn8Nu3vmYZ7ieH+WRgzo1xFcMAddGk2j9
+         4q33IR0VranVwXYPVEGANGUGi61kT5HYgr6ZqRR6V7swoZxCY1EEzvGbjqAHlHR8ZEC/
+         ScxSbxOiLmq+vijniLcJVqO0AG7N5JuqUfYgJXzCxrJYD9z/GleztPCO8nUvUcajEucY
+         a9eg==
+X-Gm-Message-State: AOJu0Yz/DIyyE3qNlKmllWF4aCXhNQ9z4snU1fnY/5GHffNvSJlw+/hp
+	AjPLN5rE7E8xTvXitzkuNp+AxGSuJPVxgxmeE6czTYsQrnKjvpUgsFBby0Zx37v3D1p4p2KwI6b
+	PE31LuWxOVbd9a1ujjQq7m+RyoO/8tDtQ
+X-Google-Smtp-Source: AGHT+IHDZ+kGeGVKY2PVwg+L6ZwlBH21/c/emjMs9d8iueEOnJZGk1ke6j3PbdOeFRRw5CSNYxhl7a076KyTfnV+Kcw=
+X-Received: by 2002:a17:90a:4e0b:b0:2cc:ff56:5be1 with SMTP id
+ 98e67ed59e1d1-2db9ffb0e2bmr18368732a91.7.1726493144669; Mon, 16 Sep 2024
+ 06:25:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: "Ed T." <edtoml@gmail.com>
+Date: Mon, 16 Sep 2024 09:25:08 -0400
+Message-ID: <CAPQz974fFioBDc=sBBJNkmCQna4gQONbDyRNXQ5dApfzSj-Hjw@mail.gmail.com>
+Subject: Hung task timeouts from btrfs on 6.11
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Sometimes the system isn't able to suspend because the task
-responsible for trimming the device isn't able to finish in
-time, especially since we have a free extent discarding phase,
-which can trim a lot of unallocated space, and there is no
-limits on the trim size (unlike the block group part).
+Noticed this in my logs this morning.  I updated from 6.11-rc7 to 6.11
+yesterday.  Have not seen any hung tasks in rc7.
 
-Since discard isn't a critical call it can be interrupted
-at any time, in such cases we stop the trim, report the amount
-of discarded bytes and return failure.
+The kernel is tainted with a dkms module for a razer mouse.  There are
+also two local patches, one adding a quirk to an nvme device and the
+other printing
+more info on errors I am getting from a sata device (tout_hsm errors
+none of which had occurred when these tracebacks happened).
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=219180
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
----
- fs/btrfs/extent-tree.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+During the time this occurred the system was doing backups which
+create a snapshot and then sends it to a backup fs.  This is done for
+three btrfs raid10 volumes.
+No LVM or LUKS used.
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 79b9243c9cd6..cef368a30731 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -16,6 +16,7 @@
- #include <linux/percpu_counter.h>
- #include <linux/lockdep.h>
- #include <linux/crc32c.h>
-+#include <linux/freezer.h>
- #include "ctree.h"
- #include "extent-tree.h"
- #include "transaction.h"
-@@ -1235,6 +1236,11 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
- 	return ret;
- }
- 
-+static bool btrfs_trim_interrupted(void)
-+{
-+	return fatal_signal_pending(current) || freezing(current);
-+}
-+
- static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
- 			       u64 *discarded_bytes)
- {
-@@ -1316,6 +1322,11 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
- 		start += bytes_to_discard;
- 		bytes_left -= bytes_to_discard;
- 		*discarded_bytes += bytes_to_discard;
-+
-+		if (btrfs_trim_interrupted()) {
-+			ret = -ERESTARTSYS;
-+			break;
-+		}
- 	}
- 
- 	return ret;
-@@ -6470,7 +6481,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
- 		start += len;
- 		*trimmed += bytes;
- 
--		if (fatal_signal_pending(current)) {
-+		if (btrfs_trim_interrupted()) {
- 			ret = -ERESTARTSYS;
- 			break;
- 		}
-@@ -6519,6 +6530,11 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 
- 	cache = btrfs_lookup_first_block_group(fs_info, range->start);
- 	for (; cache; cache = btrfs_next_block_group(cache)) {
-+		if (btrfs_trim_interrupted()) {
-+			bg_ret = -ERESTARTSYS;
-+			break;
-+		}
-+
- 		if (cache->start >= range_end) {
- 			btrfs_put_block_group(cache);
- 			break;
-@@ -6558,6 +6574,11 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 
- 	mutex_lock(&fs_devices->device_list_mutex);
- 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+		if (btrfs_trim_interrupted()) {
-+			dev_ret = -ERESTARTSYS;
-+			break;
-+		}
-+
- 		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
- 			continue;
- 
--- 
-2.46.0
+Thanks
+Ed Tomlinson
 
+Sep 16 03:09:18 grover kernel: INFO: task btrfs:154859 blocked for
+more than 122 seconds.
+Sep 16 03:09:18 grover kernel:       Tainted: G           OE
+6.11.0-1-stable-git #1
+Sep 16 03:09:18 grover kernel: "echo 0 >
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Sep 16 03:09:18 grover kernel: task:btrfs           state:D stack:0
+ pid:154859 tgid:154859 ppid:4114   flags:0x00000002
+Sep 16 03:09:18 grover kernel: Call Trace:
+Sep 16 03:09:18 grover kernel:  <TASK>
+Sep 16 03:09:18 grover kernel:  __schedule+0x3d5/0x1520
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? ttwu_queue_wakelist+0xd0/0xf0
+Sep 16 03:09:18 grover kernel:  schedule+0x27/0xf0
+Sep 16 03:09:18 grover kernel:
+btrfs_commit_transaction_async+0xe6/0x140 [btrfs
+d81a5631725934f03c861b18e6ad76df5247d033]
+Sep 16 03:09:18 grover kernel:  ? __pfx_autoremove_wake_function+0x10/0x10
+Sep 16 03:09:18 grover kernel:  btrfs_ioctl_start_sync+0x4b/0xb0
+[btrfs d81a5631725934f03c861b18e6ad76df5247d033]
+Sep 16 03:09:18 grover kernel:  __x64_sys_ioctl+0x94/0xd0
+Sep 16 03:09:18 grover kernel:  do_syscall_64+0x82/0x190
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? __pte_offset_map+0x1b/0x180
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? next_uptodate_folio+0x89/0x2a0
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? filemap_map_pages+0x518/0x600
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? syscall_exit_to_user_mode_prepare+0x149/0x170
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? do_fault+0x26e/0x470
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? __handle_mm_fault+0x7e2/0x1030
+Sep 16 03:09:18 grover kernel:  ? do_fault+0x26e/0x470
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? __handle_mm_fault+0x7e2/0x1030
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? __count_memcg_events+0x58/0xf0
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? count_memcg_events.constprop.0+0x1a/0x30
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? handle_mm_fault+0x1bb/0x2c0
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? do_user_addr_fault+0x36c/0x620
+Sep 16 03:09:18 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:09:18 grover kernel:  ? exc_page_fault+0x81/0x190
+Sep 16 03:09:18 grover kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+Sep 16 03:09:18 grover kernel: RIP: 0033:0x7fa24f5e6ced
+Sep 16 03:09:18 grover kernel: RSP: 002b:00007ffcca7b7820 EFLAGS:
+00000246 ORIG_RAX: 0000000000000010
+Sep 16 03:09:18 grover kernel: RAX: ffffffffffffffda RBX:
+00007ffcca7b7900 RCX: 00007fa24f5e6ced
+Sep 16 03:09:18 grover kernel: RDX: 00007ffcca7b78f0 RSI:
+0000000080089418 RDI: 0000000000000003
+Sep 16 03:09:18 grover kernel: RBP: 00007ffcca7b7870 R08:
+000055efb4c21c00 R09: 0000000000000007
+Sep 16 03:09:18 grover kernel: R10: 0000000000000000 R11:
+0000000000000246 R12: 00007ffcca7b78f0
+Sep 16 03:09:18 grover kernel: R13: 000055efb4be7418 R14:
+0000000000000003 R15: 000055efbdf8b2d0
+Sep 16 03:09:18 grover kernel:  </TASK>
+Sep 16 03:10:36 grover clamd[981]: Mon Sep 16 03:10:36 2024 ->
+SelfCheck: Database status OK.
+Sep 16 03:11:21 grover kernel: INFO: task btrfs:154859 blocked for
+more than 245 seconds.
+Sep 16 03:11:21 grover kernel:       Tainted: G           OE
+6.11.0-1-stable-git #1
+Sep 16 03:11:21 grover kernel: "echo 0 >
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Sep 16 03:11:21 grover kernel: task:btrfs           state:D stack:0
+ pid:154859 tgid:154859 ppid:4114   flags:0x00000002
+Sep 16 03:11:21 grover kernel: Call Trace:
+Sep 16 03:11:21 grover kernel:  <TASK>
+Sep 16 03:11:21 grover kernel:  __schedule+0x3d5/0x1520
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? ttwu_queue_wakelist+0xd0/0xf0
+Sep 16 03:11:21 grover kernel:  schedule+0x27/0xf0
+Sep 16 03:11:21 grover kernel:
+btrfs_commit_transaction_async+0xe6/0x140 [btrfs
+d81a5631725934f03c861b18e6ad76df5247d033]
+Sep 16 03:11:21 grover kernel:  ? __pfx_autoremove_wake_function+0x10/0x10
+Sep 16 03:11:21 grover kernel:  btrfs_ioctl_start_sync+0x4b/0xb0
+[btrfs d81a5631725934f03c861b18e6ad76df5247d033]
+Sep 16 03:11:21 grover kernel:  __x64_sys_ioctl+0x94/0xd0
+Sep 16 03:11:21 grover kernel:  do_syscall_64+0x82/0x190
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? __pte_offset_map+0x1b/0x180
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? next_uptodate_folio+0x89/0x2a0
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? filemap_map_pages+0x518/0x600
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? syscall_exit_to_user_mode_prepare+0x149/0x170
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? do_fault+0x26e/0x470
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? __handle_mm_fault+0x7e2/0x1030
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? __count_memcg_events+0x58/0xf0
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? count_memcg_events.constprop.0+0x1a/0x30
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? handle_mm_fault+0x1bb/0x2c0
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? do_user_addr_fault+0x36c/0x620
+Sep 16 03:11:21 grover kernel:  ? srso_alias_return_thunk+0x5/0xfbef5
+Sep 16 03:11:21 grover kernel:  ? exc_page_fault+0x81/0x190
+Sep 16 03:11:21 grover kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+Sep 16 03:11:21 grover kernel: RIP: 0033:0x7fa24f5e6ced
+Sep 16 03:11:21 grover kernel: RSP: 002b:00007ffcca7b7820 EFLAGS:
+00000246 ORIG_RAX: 0000000000000010
+Sep 16 03:11:21 grover kernel: RAX: ffffffffffffffda RBX:
+00007ffcca7b7900 RCX: 00007fa24f5e6ced
+Sep 16 03:11:21 grover kernel: RDX: 00007ffcca7b78f0 RSI:
+0000000080089418 RDI: 0000000000000003
+Sep 16 03:11:21 grover kernel: RBP: 00007ffcca7b7870 R08:
+000055efb4c21c00 R09: 0000000000000007
+Sep 16 03:11:21 grover kernel: R10: 0000000000000000 R11:
+0000000000000246 R12: 00007ffcca7b78f0
+Sep 16 03:11:21 grover kernel: R13: 000055efb4be7418 R14:
+0000000000000003 R15: 000055efbdf8b2d0
+Sep 16 03:11:21 grover kernel:  </TASK>
 
