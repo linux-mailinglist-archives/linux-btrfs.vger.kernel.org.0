@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-8064-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8065-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909A697A2A1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 14:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF0E97A2A3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 14:57:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21E541F23EDE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:57:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FBD31F23F28
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8BD156F3B;
-	Mon, 16 Sep 2024 12:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57E51581F9;
+	Mon, 16 Sep 2024 12:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T31ZFWSc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UU89tAMb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8BC14D439;
-	Mon, 16 Sep 2024 12:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B7B156654;
+	Mon, 16 Sep 2024 12:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726491435; cv=none; b=F3hPBQpEmtci3WV301Rf328bmbIOuBr0reNnh9FhJlElh0hqnanEJ12hOQxtgRDEAoIB2wYfR95MNu+h5Xxneaor9k9yy1if1tisiqyc+GWnQJ4k2/NTuoA9S7vMwKAgT8UJi8d1BtLk2zAvomQWgJXTd8a5Vy0MRrt39Bu+VU0=
+	t=1726491437; cv=none; b=hPesSbsKBHxJIeJkCYfzkGUDY3Oq8SlAA1jVyjaI7xm3fiZabZxftncZwttU5cYONp/YnDk5P/dBIHi6LQ1ZMMAYo3v7MPY9zCWlT+FOgg0F+C81raqU6s+tRX8K57GEzxgp/Rp3QanmbpsHEVbz8PH1aUB0o+CuI/YWzcqSy64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726491435; c=relaxed/simple;
-	bh=BIcnYwMDs2dY2drk8F2v3KpjtKtj8m6NLOirkf4mDF4=;
+	s=arc-20240116; t=1726491437; c=relaxed/simple;
+	bh=8uBllyDJlc4U/ldVink22w8oM+go5/KtiBhOC/MQGYw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JVBXN0Wfag1rVyu3PHWloYW2ffWpj1C7e1e+HYuwQwqs+j29RrD4LgCJpOtV67SOWezloLLN59OeRpv6GHPRU0c1dtypvhHS8Tg4f65w189AP9arTynV815bTyNYq6eys4UIjzyipAv15OXbP6sMqQVGOTgx32D3wyQp9I/+EYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T31ZFWSc; arc=none smtp.client-ip=209.85.128.54
+	 MIME-Version; b=X7ddsd9v0VFhILSXtuVWTvTyqo8T9oXottQ7XOF1IG7D4jujkKAS8M9lUGzQWppH9/LinkwKXEvUm3eVL4erM4x+Y7Lw+80YGxjOiI/OeTE08HLjt1JkgOlq/tmFDXvRGj0N2LrMiIBYQlJ3n/bodQ9IbC3InYx/PREe+KK5Ar0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UU89tAMb; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-42cd46f3a26so25963335e9.2;
-        Mon, 16 Sep 2024 05:57:13 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cb57f8b41so43003145e9.0;
+        Mon, 16 Sep 2024 05:57:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726491432; x=1727096232; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726491434; x=1727096234; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=26uP1fl+enfCssDsTFAvyc+N4DqStofePJ8NkWqMYoQ=;
-        b=T31ZFWScpmpBUP1lzR3igqi0Kt0DD3dnakMkItjpfP86xMhY63hW9yZD8Z1fC3gaEc
-         drI5ZCKTxnJHsa7pnLPqNlbZEeJykpBSe2qLCbZ63gLuIJasteEVg+GQXCgfa7H3pwSH
-         zaiwNaMOWynyl0ffEQgcfIzFFz7LJinanvOA4hWEvsyWLtQheOGUD+lG+ZWoVLGjNodK
-         UN6I4dQhFnf4fXX/M3N4NWlyHPLiehcHGehZPFMGQrlaylEC2uY1KCz7pXf+v4+GKKNP
-         NAhfldA15cZjKctyiOMwkWQvS3iWcrMo4sK7XznTcbpC/7ao8Mu4b6QkDJWaIv4xQqAN
-         B5lQ==
+        bh=F7maCUuqvqku5DtJPieBq8TjJIvVE/clAoBVWSpIBOg=;
+        b=UU89tAMbNGWQ9QYZII8HsxYVSK1/AZORX4sWZpxO/5Ff6lGemrzJhLo79N4RD4UYS5
+         6T8w7NKmbrbMqF0QFnntYSpwOZdRzyrlVcyk2f1EctHZsTZsLiwQSC1hojH6EdB5QGUt
+         wvItdWoI+bPuNZf5N1MIUzJjGxjVlAjyQw5VY6VMhvkC2QRgQ3TW/Xt2KaVZeZJWRWQE
+         RlAFKuEjNg3l4aEdTfuBQAeJV9g0TnX03P9ASovpyDNMaGxECkgLsbTN3yaw3KEsNUeV
+         /gmmb4YvkyonR7I8FaYcNRQUNKXd5uij03LXaXud4SfpsEKv7xubbu8DAZTCGtCbiH3R
+         kANg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726491432; x=1727096232;
+        d=1e100.net; s=20230601; t=1726491434; x=1727096234;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=26uP1fl+enfCssDsTFAvyc+N4DqStofePJ8NkWqMYoQ=;
-        b=BDi2lq2X23ZQE94zoaxDwzF0aUoVFZ/VP/LpvpmxDxzXoEAPm9QdD1hHcuLC6+GtdG
-         a6+g6dt9nSrpjpjd6KfhxoOqX2t7i5i5Z9Z5sUvX4FFlmg1E/VgfyMyxpA6WEnvWtL7d
-         on/HXWFtBrl1+foUfaMj9SJmxqlsGaFUlwGHPUiNMakrYeodUuHNwVw+HdL19qRlRDiQ
-         z0RGDhmUn1EzA1DxsYOugezU11KMBoqt47IEfxjH6BmOF+UssZB0E267VWL9tAebv+jL
-         /J9SstAHWhabjBq76QyiJ3sgHfs9zamRTNgUhxIu2FKPY1o+Qo3lwq0dz/wTH1T9hKf7
-         JjSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFDkLLFpFUwsywZWJNBdQxeEiChblgqU55CvjL6o9NmIqa1oMGr0yXKVRIIEW04BqaZU6ZW9sSYWh+Ag==@vger.kernel.org, AJvYcCXKaWLPc45DIW0jkdq6Q7KbqFtqf9qfjv3DXKNFKhDDH07454YecY6hTGB5q7heozQEdO2U6u8Vwa7UjU4q@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBSrxNPl87q31QKkWRiwgRSnQHBvxQVgw4SKFWSO62UEsgMYtT
-	iPFEk0aQoqYmT2RtqwCUfOTuuKMrqKBN7/9RHfG0ALf7P4BIeFoG
-X-Google-Smtp-Source: AGHT+IHDxq7x/0f+AkQXgKdrTQmLx+q7stD5KyPmM8BiHUioCXNdBl2s9dsGN2DP/pBInM7HcXJGQA==
-X-Received: by 2002:a7b:cc88:0:b0:42c:bb75:4f86 with SMTP id 5b1f17b1804b1-42d9a91052fmr75782705e9.32.1726491432082;
-        Mon, 16 Sep 2024 05:57:12 -0700 (PDT)
+        bh=F7maCUuqvqku5DtJPieBq8TjJIvVE/clAoBVWSpIBOg=;
+        b=vBCN1+OgSQvvjK3D987Mm0+1jfs2P3I2CEMum9VprxpleHwzxVxj8OQgrc6UTOS6d+
+         cmSaDQNXML+MFDb3BGUgUJ0lsBrU2VUtRZaXMbOhiDVCuo6vK0+0n/jSv5C1qoD/R5re
+         cXHylzK3XiLELwQVnieXrO6Ry5yOzqa+6sj61ezZ1Wx8fsNWcNdhrlQwfMiYpwq6Y7k0
+         I3bQvjeqJQ7fD3v6g+NxdK6wL2ANq646SeCDptPMzjrmqigUYWf+V0rGNQjAJBn3q11K
+         Fy/JU7l5uYHzmFfohNSMqyMyjKzkrmh73GPB6EESnaWLcQrXxPmHpjNKbIu87rIMWPYB
+         Ef9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU4bC1bnfHloNhdeFPNyOG0/R6u2xHw+R1fopzfCKhNl2eLqG8dKsOxNa+uk9R0AdniVPM6nz25T1wXOJ4P@vger.kernel.org, AJvYcCWHfTh3/nFzo944zw8i5Mhm6AkRUMnAeBkRRSQK8BXQI3FNhIGMeabcAqDgs/KbzKeyZW7PDwW5pN6WHw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzzJoKKAZiwiQ5Umi7DwVaZACQLzftAmCywjEAtKz3o4qSls1bk
+	UzRkqLFxw5UbZ4m9TyjGgW7way7jsSo6I5UNyhWQzEa4fv/zjsSd
+X-Google-Smtp-Source: AGHT+IFbnk33wn5kbVw/+K328MOha5PalQj9pkuNKI8yYeCb6JBq2B98slV4gnbu7SHyy8BsQuasUQ==
+X-Received: by 2002:a05:600c:4f41:b0:42c:b950:6821 with SMTP id 5b1f17b1804b1-42d90829e60mr106135605e9.19.1726491433520;
+        Mon, 16 Sep 2024 05:57:13 -0700 (PDT)
 Received: from fedora-thinkpad.lan (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
-        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-42da242741csm77129615e9.47.2024.09.16.05.57.11
+        by smtp.googlemail.com with ESMTPSA id 5b1f17b1804b1-42da242741csm77129615e9.47.2024.09.16.05.57.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2024 05:57:11 -0700 (PDT)
+        Mon, 16 Sep 2024 05:57:13 -0700 (PDT)
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 To: 
 Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
@@ -75,9 +75,9 @@ Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
 	David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/2] btrfs: Split remaining space to discard in chunks
-Date: Mon, 16 Sep 2024 14:56:14 +0200
-Message-ID: <20240916125707.127118-2-luca.stefani.ge1@gmail.com>
+Subject: [PATCH v5 2/2] btrfs: Don't block system suspend during fstrim
+Date: Mon, 16 Sep 2024 14:56:15 +0200
+Message-ID: <20240916125707.127118-3-luca.stefani.ge1@gmail.com>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240916125707.127118-1-luca.stefani.ge1@gmail.com>
 References: <20240916125707.127118-1-luca.stefani.ge1@gmail.com>
@@ -89,53 +89,91 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Per Qu Wenruo in case we have a very large disk, e.g. 8TiB device,
-mostly empty although we will do the split according to our super block
-locations, the last super block ends at 256G, we can submit a huge
-discard for the range [256G, 8T), causing a super large delay.
+Sometimes the system isn't able to suspend because the task
+responsible for trimming the device isn't able to finish in
+time, especially since we have a free extent discarding phase,
+which can trim a lot of unallocated space, and there is no
+limits on the trim size (unlike the block group part).
 
-We now split the space left to discard based on BTRFS_MAX_DATA_CHUNK_SIZE
-in preparation of introduction of cancellation signals handling.
+Since discard isn't a critical call it can be interrupted
+at any time, in such cases we stop the trim, report the amount
+of discarded bytes and return failure.
 
 Link: https://bugzilla.kernel.org/show_bug.cgi?id=219180
 Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
 Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
 ---
- fs/btrfs/extent-tree.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ fs/btrfs/extent-tree.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index a5966324607d..79b9243c9cd6 100644
+index 79b9243c9cd6..cef368a30731 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -1300,13 +1300,24 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
- 		bytes_left = end - start;
- 	}
- 
--	if (bytes_left) {
-+	while (bytes_left) {
-+		u64 bytes_to_discard = min(SZ_1G, bytes_left);
-+
- 		ret = blkdev_issue_discard(bdev, start >> SECTOR_SHIFT,
--					   bytes_left >> SECTOR_SHIFT,
-+					   bytes_to_discard >> SECTOR_SHIFT,
- 					   GFP_NOFS);
--		if (!ret)
--			*discarded_bytes += bytes_left;
-+
-+		if (ret) {
-+			if (ret != -EOPNOTSUPP)
-+				break;
-+			continue;
-+		}
-+
-+		start += bytes_to_discard;
-+		bytes_left -= bytes_to_discard;
-+		*discarded_bytes += bytes_to_discard;
- 	}
-+
+@@ -16,6 +16,7 @@
+ #include <linux/percpu_counter.h>
+ #include <linux/lockdep.h>
+ #include <linux/crc32c.h>
++#include <linux/freezer.h>
+ #include "ctree.h"
+ #include "extent-tree.h"
+ #include "transaction.h"
+@@ -1235,6 +1236,11 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
  	return ret;
  }
+ 
++static bool btrfs_trim_interrupted(void)
++{
++	return fatal_signal_pending(current) || freezing(current);
++}
++
+ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
+ 			       u64 *discarded_bytes)
+ {
+@@ -1316,6 +1322,11 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
+ 		start += bytes_to_discard;
+ 		bytes_left -= bytes_to_discard;
+ 		*discarded_bytes += bytes_to_discard;
++
++		if (btrfs_trim_interrupted()) {
++			ret = -ERESTARTSYS;
++			break;
++		}
+ 	}
+ 
+ 	return ret;
+@@ -6470,7 +6481,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+ 		start += len;
+ 		*trimmed += bytes;
+ 
+-		if (fatal_signal_pending(current)) {
++		if (btrfs_trim_interrupted()) {
+ 			ret = -ERESTARTSYS;
+ 			break;
+ 		}
+@@ -6519,6 +6530,11 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 
+ 	cache = btrfs_lookup_first_block_group(fs_info, range->start);
+ 	for (; cache; cache = btrfs_next_block_group(cache)) {
++		if (btrfs_trim_interrupted()) {
++			bg_ret = -ERESTARTSYS;
++			break;
++		}
++
+ 		if (cache->start >= range_end) {
+ 			btrfs_put_block_group(cache);
+ 			break;
+@@ -6558,6 +6574,11 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 
+ 	mutex_lock(&fs_devices->device_list_mutex);
+ 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
++		if (btrfs_trim_interrupted()) {
++			dev_ret = -ERESTARTSYS;
++			break;
++		}
++
+ 		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+ 			continue;
  
 -- 
 2.46.0
