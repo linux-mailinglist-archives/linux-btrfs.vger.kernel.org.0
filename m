@@ -1,51 +1,53 @@
-Return-Path: <linux-btrfs+bounces-8060-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8061-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DACC297A064
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 13:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE2B97A11A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 14:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2E0E2811CB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 11:37:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C14F3285938
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AEB9154452;
-	Mon, 16 Sep 2024 11:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCAF156F36;
+	Mon, 16 Sep 2024 12:03:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oBLh7DZ4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KRMF8VQ2"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A5613A89B
-	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 11:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F91A15534E;
+	Mon, 16 Sep 2024 12:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726486630; cv=none; b=Xb2isbbspCS8zaB2AjW0Oo8SajqFAh32PR2NOb7g94Pel6aEvUMXv1sqmRiS9LxD8wxdf18krD95RzyNGJ37e01jpZPlEHKAWq1xbouTWuaHsaI1lOBNg/dJnIbGitqMflzubcbvJhvDXTZmu63deVVfwJEKtDVg2j7N8HjWGow=
+	t=1726488199; cv=none; b=mC6Hx9sre9zimab3UIMw8mKpPg4hNzDxjJVbeXeZQmsnSISmrRVNZZNU9VlNOyyX/KeH14qX9fXfEJwBMlPwzUL0800I3CbS74OPSaNarmFhTbac5WWy5fmn7W/2696vLtNAP9JGbxA2h2txgqRu6jqkzS7czZpFQvo58jOboWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726486630; c=relaxed/simple;
-	bh=+Xe4MZ1BC86uCFT96XDn11RV9TZjUbsfBlaPM2dXI/o=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=csNqbVKpBokuhMsM6HQzavQxEQzjCp/2KrQCmuOSrFePs9fwlqEdTBO79RmcCWsQjdd1YKK0tY52JWJQue1pYBzR9uXgUMALkv4I2pd6ym0zRvITDejDTaAwv/b0yisX44nt2A4VjolU+Da8uG6NFkGTESEexOLEePsv89PXrDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oBLh7DZ4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D00AC4CEC4
-	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 11:37:09 +0000 (UTC)
+	s=arc-20240116; t=1726488199; c=relaxed/simple;
+	bh=lbtU0/wv7ulkVjSLGH+HvnFEQu4bO+9oGH33F51dffU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cJXMpph5vU3e8hQTpbkPedjV/d8Y8nA39Dh/XuuqwSAdv+FLOfmW0I9rXGNRYccgFmxO8NRZ2aZYzKUy6WQ9P6ryrn1+OZwyngg8pQ6n3sZkcFnfa941ynjgcDUtftI37Bo476oI2xJwn8SIxlFo/S76iJhyWpQc3tYWO5QYpso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KRMF8VQ2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B647C4CEC4;
+	Mon, 16 Sep 2024 12:03:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726486629;
-	bh=+Xe4MZ1BC86uCFT96XDn11RV9TZjUbsfBlaPM2dXI/o=;
-	h=From:To:Subject:Date:From;
-	b=oBLh7DZ4BbNBUG7RuCL2etq5FSq5hceQPUSsTiXvWoNjUh4WRDUisyAE/6wElvgl8
-	 F7FyhmSi0caH+CGojvZNWrIfrjQ1ZJagElXCGSrg1qamSukZ2KUHm66eh3fgebbTg7
-	 TdMnkUhcLRhNQvdYyTj+Jg/k2hRRAS9Mm3V8gu9pX/H6r74NXT/V4ScoC+phKxYCS5
-	 WRs34qSZ+2Fd+UMBVD4MWMbOg18a4vmzwf1ujz25RP5WRFa2VAPaxwlgpFBAgrfLAf
-	 ddYOZRCK5oPFvnBFQwiZXTtapBFDpc7QNV/Jaofe53pvM66WgVwilB1bE4YhCLr6Ku
-	 bSb3d7FRNgpZw==
+	s=k20201202; t=1726488199;
+	bh=lbtU0/wv7ulkVjSLGH+HvnFEQu4bO+9oGH33F51dffU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KRMF8VQ2zbsERi2SeuXELSR/edXsrb4jKbm24EUoNqifA4t1NY1QhhanGpT2n7skw
+	 D9BXJxN3epHfCT11R9DLNLKvCHmuTpHd1fPCaVmIFBu+KdCE0zxDoMTApbSovFuH6O
+	 ulRAazs3PDd2Z7rc1VAFfkfLyRByNW6omo81w0TEMD1ObMmzsgdb2TL2fJEk7/GhZk
+	 x/AQ1YMrL8BoDRPrvnfsLxajAOMJkYr+5JVFTFRVVMZNr8wKzXeiaNjrD1Z1qQSOUH
+	 RKK3RABZKf+3bQjhujpU4UPlfCk0gDaYDavuWnb4Y2be4eph3FpYhJZYiv9fbyyCTy
+	 wY2h7DA3MryBw==
 From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix use-after-free on rbtree that tracks inodes for auto defrag
-Date: Mon, 16 Sep 2024 12:37:06 +0100
-Message-Id: <743f120462032370c7ae8ff899bfd8dbfb0ed006.1726486545.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] fstests: fix min_dio_alignment logic for getting device block size
+Date: Mon, 16 Sep 2024 13:03:12 +0100
+Message-ID: <0d6ec0b588b578b9f9aabef91b8ecdf9950b682a.1726488132.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,38 +58,51 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When cleaning up defrag inodes at btrfs_cleanup_defrag_inodes(), called
-during remount and unmount, we are freeing every node from the rbtree
-that tracks inodes for auto defrag using
-rbtree_postorder_for_each_entry_safe(), which doesn't modify the tree
-itself. So once we unlock the lock that protects the rbtree, we have a
-tree pointing to a root that was freed (and a root pointing to freed
-nodes, and their children pointing to other freed nodes, and so on).
-This makes further access to the tree result in a use-after-free with
-unpredictable results.
+If we failed to get the dio alignment from statx we try to get the
+device's block size using the BLKSSZGET ioctl, however we failed to
+return it because we don't check if the ioctl succeeded (returned 0).
+Furthermore in case the ioctl returned an error, we end up returning an
+undefined value since the 'logical_block_size' variable ends up not
+being initialized.
 
-Fix this by initializing the rbtree to an empty root after the call to
-rbtree_postorder_for_each_entry_safe() and before unlocking.
+This was causing some tests to be skipped on btrfs after commit
+ee799a0cf1d4 ("replace _min_dio_alignment with calls to
+src/min_dio_alignment"), like generic/240 for example:
 
-Fixes: 276940915f23 ("btrfs: clear defragmented inodes using postorder in btrfs_cleanup_defrag_inodes()")
+  $ ./check generic/240
+  FSTYP         -- btrfs
+  PLATFORM      -- Linux/x86_64 debian0 6.11.0-rc7-btrfs-next-174+ #1 SMP PREEMPT_DYNAMIC Tue Sep 10 17:11:38 WEST 2024
+  MKFS_OPTIONS  -- /dev/sdc
+  MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+
+  generic/240 1s ... [not run] fs block size must be larger than the device block size.  fs block size: 4096, device block size: 4096
+  Ran: generic/240
+  Not run: generic/240
+  Passed all 1 tests
+
+Where before that commit the test ran.
+
+Fix this by checking that the ioctl succeeded.
+
+Fixes: 0e5f196d0a6a ("add a new min_dio_alignment helper")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/defrag.c | 2 ++
- 1 file changed, 2 insertions(+)
+ src/min_dio_alignment.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
-index acf1f39e45d0..b95ef44c326b 100644
---- a/fs/btrfs/defrag.c
-+++ b/fs/btrfs/defrag.c
-@@ -213,6 +213,8 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_info *fs_info)
- 					     &fs_info->defrag_inodes, rb_node)
- 		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
- 
-+	fs_info->defrag_inodes = RB_ROOT;
-+
- 	spin_unlock(&fs_info->defrag_inodes_lock);
- }
- 
+diff --git a/src/min_dio_alignment.c b/src/min_dio_alignment.c
+index 131f6023..5a7c7d9f 100644
+--- a/src/min_dio_alignment.c
++++ b/src/min_dio_alignment.c
+@@ -42,7 +42,7 @@ static int min_dio_alignment(const char *mntpnt, const char *devname)
+ 		if (dev_fd > 0 &&
+ 		    fstat(dev_fd, &st) == 0 &&
+ 		    S_ISBLK(st.st_mode) &&
+-		    ioctl(dev_fd, BLKSSZGET, &logical_block_size)) {
++		    ioctl(dev_fd, BLKSSZGET, &logical_block_size) == 0) {
+ 			return logical_block_size;
+ 		}
+ 	}
 -- 
 2.43.0
 
