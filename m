@@ -1,177 +1,160 @@
-Return-Path: <linux-btrfs+bounces-8050-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8051-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE928979F1C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:17:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A145F979F2A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 12:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 417801F221B3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 10:17:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58FD51F21483
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 10:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD071552E4;
-	Mon, 16 Sep 2024 10:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D1E153BEE;
+	Mon, 16 Sep 2024 10:20:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mWsvn21f"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="E94SEr6H";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X9vlzHNg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A03152E0C;
-	Mon, 16 Sep 2024 10:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C83CA935;
+	Mon, 16 Sep 2024 10:20:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726481791; cv=none; b=D2giG68cdvtEbtiPKW5oMGM/9j60IDHzRryizTE2WQEcqf/UF9ryX0Dy0+72LHXpbcsp6JzxAABG3eNU7dyOg5AJx/0FggTPeKbcG55Hlol1VOvkCmQJb+qxWrunbsimgoFHrt1jpT1jQRV36TF8L86OnNCzvma842r5PYLvIfI=
+	t=1726482041; cv=none; b=mjPNOkeiNJd3hRvXM0jOgp+495axDkTWA5pV+IJG9mbZMJKkMq60ZFsN+UGPkg/3DaIC30NPmFEtOT7rBN3fSjGeLZuHCSCBs2aik5wKIvEWLNZSxmmNmHVGeD1mog7513wyCZ6h4Ndl7TFaOt4u2tJv3Tj2JVD9tYHszUEHvHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726481791; c=relaxed/simple;
-	bh=Qli+h/uXJqZx6B+dTAdfsruBtooNooToeUGYDRfRd80=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NWsFlWvDdiNnxDYJA1fNi30Istr0WVjRPBFeh7A23XS2mH800h8u0+B/qDNEAbacsQNLRxtGFExzpeHFnuVRO9mcCejGRyUU6jbDdQSL6osHHJRwFsA2jTtElU6O0EmTWwJuXg0uR231FvZSxVP3AuwHPczobP6SnO+soqRjbas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mWsvn21f; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3787e067230so3049913f8f.1;
-        Mon, 16 Sep 2024 03:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726481788; x=1727086588; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+96dCE/RH3/NNKWNE9Y9s9N6w3czRGVtUhIxMgqQU3M=;
-        b=mWsvn21fJP7M5O7r/i9o05M7omERfFqi6FW6bQF5PQB3NdRARuZLmcemySVq4Rh2IT
-         xpz/jZ9501l8oY3L9OKjIrkLh3rDeeTEjTW62P5cUO4wAlSZWBmuChDMhQbqoTqfN4pP
-         vShL8C968CMdf5mooST6JFu6w/FMEY/fwNzyD6dDh2n8aIJGum+TdwoXAc4xfmUlGS8O
-         m+TgIN/iol5KbzbRNY6iGL61vgPy81kjx/K4XtjMIteT+C0wQYrsa/5AD9CkRA4JCb5l
-         IDdxbbDG/uQ2bCMVoz1UCP0qR2T4LQeTJIi3z6DQquFeNfdFobym2sfValQKXffc6Ou3
-         4fHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726481788; x=1727086588;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+96dCE/RH3/NNKWNE9Y9s9N6w3czRGVtUhIxMgqQU3M=;
-        b=n9HmVjHx/YcNcg6UPXzfG/SMavWoepXknRYQfsmkqwDI7nyq7N+5Lrvw85HXq5CkWe
-         gOt3+lmAEBAczgD2t6HKM2RsrhCDiooh5gBO7KYv6v/jP7OV/3Py/A8kA+7Vpf5IRs3+
-         i276eLpOshFc1/sfgxWMastIsY9QduxtDeZ15r8Rgl6LIkVTrjB2yYmWtZQ5HZM9AbBL
-         0soyAEP60hkIYBYfIHTH6J6TKvezHaspqUWv1w/lVZgxzn12dRq2GCCC7Mx6+qaKeYig
-         m7Y04g3+ZLgQuW8gixUOB7ymme8Oq1/EHavj9G+8E8xC7uGTeRLXjyLn++z3paz7dejt
-         qOqA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6R9+KnybpeY9+1Nu/+s8jFspZRJ+1O8HNO+q9OAav+pppGNHcBpgWTBtrW1Y4rqLTiv9anqrzQogr0MwT@vger.kernel.org, AJvYcCWHzJmqJZqTdRiMALpEL1AOsMV942FTQG9uzIYmsxawSaLXiiYqdA9BlXBR4RWi9dtirEaBiR6TgOAwAg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwA1wkaka0mwikusiXvvBrEvy1QXOk86QbzjXWlh3A6//tv8BRO
-	ECpN3DYeJZYoaEdLoNtp/K6uVmVgx9x4JozI1MhvmX1lJWz0CYmD/GiJiZb2
-X-Google-Smtp-Source: AGHT+IFl0F8VDK8TI+2SWw31p5UlBQYeCPPUv9AJyKtmv/4CMqWc25Im1+rPat3RplPVB4itghh46w==
-X-Received: by 2002:adf:f801:0:b0:374:c1de:5525 with SMTP id ffacd0b85a97d-378c2cfecefmr9223537f8f.6.1726481788461;
-        Mon, 16 Sep 2024 03:16:28 -0700 (PDT)
-Received: from fedora-thinkpad.lan (net-109-116-17-225.cust.vodafonedsl.it. [109.116.17.225])
-        by smtp.googlemail.com with ESMTPSA id ffacd0b85a97d-378e780015dsm6814201f8f.69.2024.09.16.03.16.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2024 03:16:28 -0700 (PDT)
-From: Luca Stefani <luca.stefani.ge1@gmail.com>
-To: 
-Cc: Luca Stefani <luca.stefani.ge1@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] btrfs: Don't block system suspend during fstrim
-Date: Mon, 16 Sep 2024 12:16:09 +0200
-Message-ID: <20240916101615.116164-4-luca.stefani.ge1@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240916101615.116164-1-luca.stefani.ge1@gmail.com>
-References: <20240916101615.116164-1-luca.stefani.ge1@gmail.com>
+	s=arc-20240116; t=1726482041; c=relaxed/simple;
+	bh=E/w4+xa3amQXpGI5fCZ/ptW0dOLoQK0QOmDuZUDIOP8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Y112G5awmGDBPCSkgjcZ1vHa8Vf73EjHTJTc47p18ERXJMPdXc3tewgQj2PvYHsOY7tVMyzf3x/6c7jtlNnjTkAt1+DEj0EzA3UScCx29CXplIPygGQFR47G1O++CTk3itG3PIxQNiSPvCgtkSwU3lxyU034PdqQnE6LNDgtx64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=E94SEr6H; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=X9vlzHNg; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1726482038;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OVG16f7Lu6e/H23VRJ+O/4IkmfuMphsrI/ipqzuRwhM=;
+	b=E94SEr6HGjjaRf5H7+ZkfgZowKYiFKpF328zjde6biUZeuGmGrtQv6oS3PBXA3GIoHTyKH
+	mQlJbIgW5eYuB9Qlvfl4V2sBvjGis+xqWMvwHYULSu2I9gleX8ZCTMU12a7jWzdcYLH9jl
+	LlwCnTAIHGLPcKhOqS6Gju9gsGcihltDLI9EUw5/JiygRw72jIjI+rP4BQPrr0Fs+5M3/D
+	OW+FIoCrmGJ9vK79YGucwB4XWRiKZmHjbiUFjrMmi2Bk3tbVVtwa4npQSIX7CmsQnEQvb9
+	xJdlZuWC6RRwTl2JzrFR4gwnJAsKly0FnZRlnIgwihMwy/O6ZrI4Brk8w2PyLQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1726482038;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OVG16f7Lu6e/H23VRJ+O/4IkmfuMphsrI/ipqzuRwhM=;
+	b=X9vlzHNgUVa0a3OKlhqGWstodYRShttuTWSfa1R6XCAL0ByC2d7QTL8VeW7MjLvjBlT+Lg
+	qpOskyA6Rt0z6SDQ==
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+ Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
+ <corbet@lwn.net>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J.
+ Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
+ <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Hugh Dickins
+ <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Chuck Lever
+ <chuck.lever@oracle.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-mm@kvack.org, Jeff Layton
+ <jlayton@kernel.org>
+Subject: Re: [PATCH v8 06/11] fs: add percpu counters for significant
+ multigrain timestamp events
+In-Reply-To: <20240914-mgtime-v8-6-5bd872330bed@kernel.org>
+References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
+ <20240914-mgtime-v8-6-5bd872330bed@kernel.org>
+Date: Mon, 16 Sep 2024 12:20:37 +0200
+Message-ID: <877cbb99xm.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Sometimes the system isn't able to suspend because the task
-responsible for trimming the device isn't able to finish in
-time, especially since we have a free extent discarding phase,
-which can trim a lot of unallocated space, and there is no
-limits on the trim size (unlike the block group part).
+On Sat, Sep 14 2024 at 13:07, Jeff Layton wrote:
+>  fs/inode.c                         | 76 ++++++++++++++++++++++++++++++++++++--
+>  include/linux/timekeeping.h        |  1 +
+>  kernel/time/timekeeping.c          |  3 +-
+>  kernel/time/timekeeping_debug.c    | 12 ++++++
+>  kernel/time/timekeeping_internal.h |  3 ++
 
-Since discard isn't a critical call it can be interrupted
-at any time, in such cases we stop the trim, report the amount
-of discarded bytes and return failure.
+So the subject says 'fs:'. This is not how it works.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=219180
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1229737
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
----
- fs/btrfs/extent-tree.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+Provide the timekeeping changes in a separate patch and then add the fs
+voodoo. Documentation is pretty clear about this, no?
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index cbe66d0acff8..ab2e5d366a3a 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -16,6 +16,7 @@
- #include <linux/percpu_counter.h>
- #include <linux/lockdep.h>
- #include <linux/crc32c.h>
-+#include <linux/freezer.h>
- #include "ctree.h"
- #include "extent-tree.h"
- #include "transaction.h"
-@@ -1235,6 +1236,11 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
- 	return ret;
- }
- 
-+static bool btrfs_trim_interrupted(void)
-+{
-+	return fatal_signal_pending(current) || freezing(current);
-+}
-+
- static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
- 			       u64 *discarded_bytes)
- {
-@@ -1319,6 +1325,11 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
- 		start += bytes_to_discard;
- 		bytes_left -= bytes_to_discard;
- 		*discarded_bytes += bytes_to_discard;
-+
-+		if (btrfs_trim_interrupted()) {
-+			ret = -ERESTARTSYS;
-+			break;
-+		}
- 	}
- 
- 	return ret;
-@@ -6473,7 +6484,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
- 		start += len;
- 		*trimmed += bytes;
- 
--		if (fatal_signal_pending(current)) {
-+		if (btrfs_trim_interrupted()) {
- 			ret = -ERESTARTSYS;
- 			break;
- 		}
-@@ -6522,6 +6533,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 
- 	cache = btrfs_lookup_first_block_group(fs_info, range->start);
- 	for (; cache; cache = btrfs_next_block_group(cache)) {
-+		if (btrfs_trim_interrupted())
-+			break;
-+
- 		if (cache->start >= range_end) {
- 			btrfs_put_block_group(cache);
- 			break;
-@@ -6561,6 +6575,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 
- 	mutex_lock(&fs_devices->device_list_mutex);
- 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+		if (btrfs_trim_interrupted())
-+			break;
-+
- 		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
- 			continue;
- 
--- 
-2.46.0
+> diff --git a/kernel/time/timekeeping_debug.c b/kernel/time/timekeeping_debug.c
+> index b73e8850e58d..9a3792072762 100644
+> --- a/kernel/time/timekeeping_debug.c
+> +++ b/kernel/time/timekeeping_debug.c
+> @@ -17,6 +17,9 @@
+>  
+>  #define NUM_BINS 32
+>  
+> +/* incremented every time mg_floor is updated */
 
+Sentences start with a uppercase letter.
+
+> +DEFINE_PER_CPU(long, mg_floor_swaps);
+
+Why is this long? This is a counter which always counts up..
+
+>  static unsigned int sleep_time_bin[NUM_BINS] = {0};
+>  
+>  static int tk_debug_sleep_time_show(struct seq_file *s, void *data)
+> @@ -53,3 +56,12 @@ void tk_debug_account_sleep_time(const struct timespec64 *t)
+>  			   (s64)t->tv_sec, t->tv_nsec / NSEC_PER_MSEC);
+>  }
+>  
+> +long get_mg_floor_swaps(void)
+
+Can we please have a proper subsystem prefix and not this get_*()
+notation. It's horrible to grep for. timekeeping_mg_get_...() makes it
+clear where this function belongs to, no?
+
+> +{
+> +	int i;
+> +	long sum = 0;
+
+https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
+
+Also please use 'cpu' instead of 'i'. Self explanatory variable names
+have a value.
+
+> +	for_each_possible_cpu(i)
+> +		sum += per_cpu(mg_floor_swaps, i);
+
+This needs annotation for kcsan as this is a racy access.
+
+> +	return sum < 0 ? 0 : sum;
+> +}
+> diff --git a/kernel/time/timekeeping_internal.h b/kernel/time/timekeeping_internal.h
+> index 4ca2787d1642..2b49332b45a5 100644
+> --- a/kernel/time/timekeeping_internal.h
+> +++ b/kernel/time/timekeeping_internal.h
+> @@ -11,8 +11,11 @@
+>   */
+>  #ifdef CONFIG_DEBUG_FS
+>  extern void tk_debug_account_sleep_time(const struct timespec64 *t);
+> +DECLARE_PER_CPU(long, mg_floor_swaps);
+> +#define mgtime_counter_inc(__var)	this_cpu_inc(__var)
+
+Please use static inlines for this.
+
+Thanks,
+
+        tglx
 
