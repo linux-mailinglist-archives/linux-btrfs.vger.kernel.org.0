@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8075-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8076-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B066D97A8E6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 23:45:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5B897A8E7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 23:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C31021C27234
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 21:45:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD0A5B28A55
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 21:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5E515D5B6;
-	Mon, 16 Sep 2024 21:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBF1158550;
+	Mon, 16 Sep 2024 21:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ADuDhtrL"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="oAjFLw7o"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380F39443
-	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 21:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A12C9443
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 21:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726523115; cv=none; b=rmpdnv3jL46PCGkxJBqqiKJfuRsRMzC599KKb5kDLwqT1dDE76RwPgPwrYpzsfufuu7H3Y2AvJXncBi0UySJSdIR2pA8txy7NQdJ9coE1gwWXgP7JaX5YGHwEvGg6rjISAZP0NONF0sWpyPIpWzearD3orzeNvYqw0PsZyvP+yc=
+	t=1726523172; cv=none; b=S231ZgW9enh0/mFUSbWc+isoDEil8qtc4Rho+xkVNVGzjCwH5Or62NZmKboGaFqVgJ/+fJZZGfzaB5ceY2+JvcunTBOryiu++shZ/OQ7Vx1pVYjAHpMhV5T8nZ2UJ8F1PIOK8M1frFbE7SZ7voNzkEnAmT2MODfGpadoqNmpbOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726523115; c=relaxed/simple;
-	bh=lEQibylVKgB5s9skph5MJM/dO0O5O7Ow7GgX2ChCmQI=;
+	s=arc-20240116; t=1726523172; c=relaxed/simple;
+	bh=/YXWrNSJ6k6swpunjIgvkUr1d8TCoklf/NMBLFEZlCg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Zxyxi2Ch/hZ20I6IX6MHlhJAjr3rHXi6YZrZYhu3CbxfiUmcB/rSwMrXe73IQ1ghzSA742nFfWC24nf0XeW4Toby89R/qXckBpgZoGYJWm9vDMltn6axkdno1+Fo3hk+1b0sW9nNu15biyAY9zaqiltktagRFvBue3Kfr1Ua7IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ADuDhtrL; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=kqY5HJDLkd8wkSnwZBrTuoZjSUQQSebd80Qs435jGo0Wjd/6lNdzZT1SNoCLWf6TXMijigCGwngZ8rZ6ZsehH1miBD+PL6iGhg7BWIeSnCMrFL2/p3HjHLeWeLEpZW0qd/Yg9tP+MDFHquwr4m9L5bjyog5K4XxHWi40qeLAZ/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=oAjFLw7o; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726523100; x=1727127900; i=quwenruo.btrfs@gmx.com;
-	bh=yVpLnd+FOTe956DCcqpnpzR8sd1SLN8PywU8YSECpE4=;
+	s=s31663417; t=1726523162; x=1727127962; i=quwenruo.btrfs@gmx.com;
+	bh=UHlhUlXg/T6YRxzf24R4VFeAVgnL5urLNJBFra2/Ab4=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=ADuDhtrLUVvKrecq87KqMMV8Abtuddrf0Zy0Lzla8x3BnozXKQFwwVJv7InyKfMr
-	 M93A9+itZBjrNUj84bqYalnDex+iRNo+klb6rkJ+IgNjLXNFgDczoIg2e7pIo4j8X
-	 rN54+LE3C6nQ6JVeErqvxPVVziOetsZIDFcCRPCvoHdzWQRisVrXfQJwiVCg/F+sk
-	 WxXX7CPg3urippgz9h+nMH63vzRUb5c6HkHuFBDDup463V1swllDDjJmUnVjGdkvx
-	 PC9boc03NQG8bCnACoYo2iqwYE4jOjNZGmi2SGQWjjNqnauIyRlLshpzqE+0XiUql
-	 4BmackohngxIIS7Jfw==
+	b=oAjFLw7o7SR2l1qhPqRUGTGRhb+4rnCTydktFrW74mP0FxyZ335E43bZrK7Tv9gx
+	 /XbjDeDOKwbah6j1n64fKEtKxgNJSgPGo7mCiArNpr8ci5UQCvtZA/08adbylT8YK
+	 Z6lsz9keq40zpq3yzzgkOzTBb5l9DxEEdDlz24ErilgMNLNptU2tS2vEtQgvMFUD6
+	 /ffoiiOCs7+gvwpznAF8jpKERGA2pw1bpQRDUI0gIpjxaCdcJ5CFE1jmxbnH4pGJD
+	 1kSjPqN0NyuGFfeJoGx+nGvQ3DyYcAS10AKlMLl9FnCoyi0PBbnHvGTWvMMlfUZoD
+	 wXF+41AsOkLGFMyqNA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MkHMZ-1s6EHC2yBV-00ZRRb; Mon, 16
- Sep 2024 23:45:00 +0200
-Message-ID: <872a799c-0ac1-4ef0-bedd-1b0f6f0403cc@gmx.com>
-Date: Tue, 17 Sep 2024 07:14:57 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MJVDW-1sWape0xp2-00VuZl; Mon, 16
+ Sep 2024 23:46:02 +0200
+Message-ID: <8aea5f61-4e27-4eb3-86a0-9dcccff9d196@gmx.com>
+Date: Tue, 17 Sep 2024 07:16:00 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,9 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: end_bbio_data_read is strange
-To: Matthew Wilcox <willy@infradead.org>, linux-btrfs@vger.kernel.org
-References: <ZuiaPA7SaU2Pj75_@casper.infradead.org>
+Subject: Re: [PATCH] btrfs: fix use-after-free on rbtree that tracks inodes
+ for auto defrag
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <743f120462032370c7ae8ff899bfd8dbfb0ed006.1726486545.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,81 +88,70 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <ZuiaPA7SaU2Pj75_@casper.infradead.org>
+In-Reply-To: <743f120462032370c7ae8ff899bfd8dbfb0ed006.1726486545.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dwN9G98nydOIEGubLOo1siJS1XyKrkJIK5pve6vGv+NsA0TQr1M
- 3Jmi4+P4BL7VEIgsAJS6IRNodc2TSQcZn6OlG9yl0yVgoBknxkE40qq2J8bzh9bJ/RnSLnf
- 7RHsiquxE+AWwZ/t+eyBlK+IPXfSln/BDw0En3M2TRvkUMWwdeKOr2GDK5j288XuY9fsJG/
- syv7/ZmKFeWxup66zYZGw==
+X-Provags-ID: V03:K1:lzqrlleLJJEcrGg2ddQ8d+mjSa42hMIP8DW2ZTvoi0fv7fUR7ho
+ CH/jmVSg1tZaBlzqUDdWw42S+zu3uE+U4WEQSq+6oDiLIxbUaBHb9AvPTnlBYvSBV4INZjX
+ ujAMrrQr3CY8i22OmcRQrxwmhdTx43WOZRNY2SBFcnP7yKtlTVRQfk9cHYeWkEWlFxdjo4e
+ X23mVcI5Qhs9eFHo92AgQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:V623iO7dL8c=;8Qm5qXy/HDJDrUyzQO8pqamhYmW
- ehHWoBlAT67NMnjZ2rzj7pBjvfEsrIbOOp+hsqZU0F1mnZ8h0BV3XkxMVNPqBAdZc3HK9MgZK
- p82EqJLeuOm4qN39lGNxDTxWg3YPpdopAgxtHZKj748J3T39qHH2c1Qa+5H034Y8JNbVcb8nJ
- xd4ZglGG0Um717tTA3zKs015lf4oD3+jTkNknhWpgSnyA2WCIeYxYLPR29HycUvId7rQ8/ptH
- K6JvquP3l+EFftDzRq8T7wVi/zq29h8NeIZ0ydq6svOkmurNaEAAuwiDTi9xOdkHYcs5KMVHg
- RxM/ANY8ivwgAC/MKDCw6IMSXNy8aSoc1tfpWuizG67YsTnswo1v72GRE2kX04Yg5yP+N0IVU
- FbYxc8YeP9IfqIpBbP9BepzY4TSEoGK58n3kdztI7dYLfvD/jo+pWP44XXoFk3U9om8e+UUpO
- 7K4Hdf+u/UqFASw8njss9ncdrvgQaELPGFJbFQuEVxyEkQ+U7TGrE0od2TJ9A1c6cSU/uC05d
- I5YJ71nLwslA/905rV0Gdu7UqwF3zSR19+7dSui5ErBHR2tV2Zu7jRufyV7n1myoq4JIfAqGv
- cLFGPJbNqQhfyp2WBCB//PNHpwio/rLuAtjuk8RqqfXdcu0EmvulM2gUbzPJLpQbmZiok0Zsk
- /kFNqcdgUbrSGUOAFJLyGjfjEnJM18M6S7s7Va9XIO5ostz3aNxv7fMY2/qJTaHMxI9ZgUyOT
- m9hCC5zXaNaIBaw8I/ry4n7DUu2iB5opIYzqEF23beiqxxCdftwarSIjiSmt6CubR42dv8iqz
- b09WaZWpzP38qrsKSyvBBoYA==
+UI-OutboundReport: notjunk:1;M01:P0:M6wqKtYk464=;rwLrsf/nKyvykG02BUL5xmJADOQ
+ fMsnQw3I1FudOb3t5mrZ/dL6RuXrIgeM0K5tuRngAzKYNWIlX/+C177CUIrVaXd4bsE4rp2h/
+ jCIKrN8j0tKC+pnCPmtp38A1wVjA73yIga9p+Gac13bZ9POQNI0A3yt0DLZlathFDS4HfhQW6
+ a87PQKFk5wPiSprqRfGq9MlqIQpTp8rxsvNrH6rLAhpX8TPRTCp3/B2hmENeey2PJQ9bE1iVY
+ nqwbNcnKZMudAXjLvw1/EO/7dIuuHcIQeMhc9vsPfTDGzjNQl/nC7XzY+QqWS94q6/9svMDa1
+ ooENhyskX31AYrxhZnpCxdp0qQYuRhRs1QHa0Z2oOlyIfMEBJKcWmV9eWiGOmctfKj/piCHe5
+ 76V253l3NfOTwAyihJUvxPbLe7q7ZFEV1oo3Nxjjp9M5y2b2zqpUXB/1Op+slrDHiyRJeiRNc
+ JQ+cdjhPieAc9mxXnxJ0jIh0j30+ro2cWVqZ/ukjd+guCqd5ZpFzfaBMWQ8A67L7bjQnxokZn
+ HxRQ0zg/2nl9vIJ2cgjnU3EPXoJjapreJgH4PBHV7VmNw7VzOJ1cELPtFpt8v20eicWYfLMeP
+ KpmO7EnQjyQpKcolsSRkLxcSPoMgj2kMTBJME2VXDIyPfRKsn0jeOTau92vCmKjpvTBtzfnEj
+ x/UNmgZW//JR9wZlT9jF6H0B45Ocae2x1YPnxlZFlMeTrueHi8aCcOWoJlzjpChxmDR4O+e5i
+ QWhK0QQN6u+sxjRhaCxaeEATF2Ug0hhpTdvX0/0meLgTADTKntf1pQmjAIyfQ8XUAHbJb0qxE
+ wuylG+VZtkrva1a2D69q9JSw==
 
 
 
-=E5=9C=A8 2024/9/17 06:21, Matthew Wilcox =E5=86=99=E9=81=93:
-> I was looking at usage of folio_index() in filesystems (none should need
-> it) and I started looking at end_bbio_data_read().
-
-I thought folio_index() is no different than folio_pos(), or it has
-something we should know but didn't?
-
->  This function has
-> some things which don't make sense to me, and I think it's an artefact
-> of the "block size is page size" code being converted to support multipl=
-e
-> blocks per page without, perhaps, a larger rethink.
+=E5=9C=A8 2024/9/16 21:07, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> The biggest thing that strikes me as strange is the zeroing of the part
-> of the folio past the EOF.  Most filesystems do this at I/O submission
-> time when we're still in process context.  btrfs is choosing to do this
-> at I/O completion time which might well be in hard or soft interrupt
-> context (and so we're robbing some other process of its timeslice and
-> possibly hot cache).
-
-end_bbio_data_read() is always called either in wq context (IO
-submitted) or the caller's context (not submitted, error path).
-
-The details are inside the real per-device bio handling functions, e.g.
-btrfs_simple_end_io() for single device IO, which queue
-btrfs_end_bio_work() into wq.
-
-As btrfs has extra bbio layer to do the multi-device handling and csum
-verification, so the real endio function is only called after all those
-handling and it's done in wq context, never directly in irq context.
-
-We may change the timing of zeroing folio just for the sake of
-consistency, but that will be slow after tons of tests, to avoid
-unexpected data corruption.
-
+> When cleaning up defrag inodes at btrfs_cleanup_defrag_inodes(), called
+> during remount and unmount, we are freeing every node from the rbtree
+> that tracks inodes for auto defrag using
+> rbtree_postorder_for_each_entry_safe(), which doesn't modify the tree
+> itself. So once we unlock the lock that protects the rbtree, we have a
+> tree pointing to a root that was freed (and a root pointing to freed
+> nodes, and their children pointing to other freed nodes, and so on).
+> This makes further access to the tree result in a use-after-free with
+> unpredictable results.
 >
-> There are other things that don't make sense to me, but it may just be
-> unfamiliarity with how btrfs handles block size < PAGE_SIZE.  This one
-> seems like a genuine problem that should be fixed by someone with a
-> greater understanding of the btrfs code base than me.
+> Fix this by initializing the rbtree to an empty root after the call to
+> rbtree_postorder_for_each_entry_safe() and before unlocking.
 >
-For example? I know you're not happy with the extra per block
-lock/checked/ordered flags.
+> Fixes: 276940915f23 ("btrfs: clear defragmented inodes using postorder i=
+n btrfs_cleanup_defrag_inodes()")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-But for lock flags, it will be there until we change how we submit
-compressed writes.
-Checked and ordered will also be moved to per-folio other than
-per-sector. But that will be after the block perfect compression support.
-
-What else you're not happy with?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+> ---
+>   fs/btrfs/defrag.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+> index acf1f39e45d0..b95ef44c326b 100644
+> --- a/fs/btrfs/defrag.c
+> +++ b/fs/btrfs/defrag.c
+> @@ -213,6 +213,8 @@ void btrfs_cleanup_defrag_inodes(struct btrfs_fs_inf=
+o *fs_info)
+>   					     &fs_info->defrag_inodes, rb_node)
+>   		kmem_cache_free(btrfs_inode_defrag_cachep, defrag);
+>
+> +	fs_info->defrag_inodes =3D RB_ROOT;
+> +
+>   	spin_unlock(&fs_info->defrag_inodes_lock);
+>   }
+>
 
