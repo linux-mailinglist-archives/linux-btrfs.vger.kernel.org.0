@@ -1,55 +1,54 @@
-Return-Path: <linux-btrfs+bounces-8072-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8073-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5CCA97A86E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 22:51:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C100497A8B0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 23:21:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF8CD1C222AC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 20:51:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80EA528A791
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 21:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04EE015C15B;
-	Mon, 16 Sep 2024 20:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43ECE158A09;
+	Mon, 16 Sep 2024 21:21:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IZhTH0NO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HR7PVE2P"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F155C101EE
-	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 20:51:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658A3F9DA;
+	Mon, 16 Sep 2024 21:21:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726519874; cv=none; b=fVUhcl6LPK7CHaGyIaLoSSsTFxMrdLkKH88Z6lR7PvjlB4ipMizPeLoKlXCArW9IPeknuZyrTiCRaZmi98eI0XCYBHdcHugwpwZavZMK+QXqRyGaW0GDw4gV5OY4pk79fH9/vs2HHF5/TMXz+86/Ol/K88spq6MOjnoqtD20TtI=
+	t=1726521703; cv=none; b=sLd6p6x3gGRk0aV8t+BV8940E9dD+Kz4wLaAoFfmbumuCT/yTBAakiPy1C6iQfqsxxVTcqeENcdTUnHNX+V5ABeRPTODpIhnYg4kqjxBWrDDIKDDFd2sP/i2UTCmkR1vKD8pQXll8HQXv0Z4ISn6Cz7GrX1cwhlC7pCcBJ4HDX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726519874; c=relaxed/simple;
-	bh=NTrqURj+HlUDp/pZQs03QYGzU8qWKmM2whyjSqxlF5A=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kVwDX9rxuKLZhju3yTbtQRyCPpX1v9Nbmisebqi/sAwdeM+L0hvOcJBpJjhOZ/IoIbu5Cu+xPSz9rpWvdDrCFsYL96G5thB1rp+/oOOMdJI9vOzw9Pmka+20EEWI8r0Txdq38PA+YcqlbsgP0Ai9r+zJ4JshL37rQNbGYO3ox9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IZhTH0NO; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-	Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=6JOBOU1UIYgoNGSAUtO+ptEHb5NWMzc8ICV1CKEPDRs=; b=IZhTH0NOeWQQ98id0ls9p7ayb3
-	DHI9bZSO4BES59BWOlXoRxPjnsTvUHgTPFcrTcWS1dqoXe2Ofz5wZZYrBaUUXTe/4ED76q8nUJJ0W
-	SpeUGsXU/hT9kHkU2cI6ecaLla15PQO/NRbv6QMe0lLE/DwIgENsWZj9VyN+EhSU7rjbu6xyYGbyy
-	PhWigLbqCXLWJDydLV+ikCgbNX2cdiAWTFtaxUv1L2tbXYWhHKyB6aeO28p3yUDKGKdzaik40xAEQ
-	cG6O9idPsCTxgY4RTUDXwasRyva3MWL0bmJZ4YxmXAn++dPLScPfvSJqkPljxAbXtULgthw0f6/IL
-	hzPFF1Xw==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqIge-00000002Mw5-31Os
-	for linux-btrfs@vger.kernel.org;
-	Mon, 16 Sep 2024 20:51:08 +0000
-Date: Mon, 16 Sep 2024 21:51:08 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: linux-btrfs@vger.kernel.org
-Subject: end_bbio_data_read is strange
-Message-ID: <ZuiaPA7SaU2Pj75_@casper.infradead.org>
+	s=arc-20240116; t=1726521703; c=relaxed/simple;
+	bh=rcP4MakEqdLoYp8j1UwE3hEanBGid0pNyLyhOmyWSpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xr4dZvRnuj1yDY7Fd/VRFCBT5mS8Kz93Nw//VFVQllO8zA5iP+/plBUx1Y9fl21leUGgz6m4hNUqyNYkH9Ew3abKj9oxWRuQemVruAm8HxXmN9MQaD7/F2lHIM/vm41679c3obdk+3G5qyqFlLb3bb9r/T2sIYRfeiP9gg9wu18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HR7PVE2P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5C44C4CEC4;
+	Mon, 16 Sep 2024 21:21:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726521702;
+	bh=rcP4MakEqdLoYp8j1UwE3hEanBGid0pNyLyhOmyWSpU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HR7PVE2PKPiUHvNVQM2pn47aV1Dewqx72/dVFBC2vfsIJG0jTAA66ZtfeWGWrivut
+	 bKcRF3BLtOyCHDTW/Xx9jjOk73u6pIVUuQ/iAVsACQ0XrpLLdjfQb1vXHC0GrbRgGN
+	 tw/BNDJ9BbjY53x67elTe3it/sWw8eJbIzrvZ1NEIWFxclf+sz/4eY6zOuhkjzlEoH
+	 vteyPWxQxMzmaYdf4oLjVfYM+Amv355+LJKxw0ft5P0eqJp0lU2DI558BC5wAIAXHf
+	 mU0mdh8EUNCMrog0NUDso286pUt54+EOsqQuHkHofjmwRe6ePiZbnBXRLSrrMZekWM
+	 e7m1ZJDw2zoSQ==
+Date: Mon, 16 Sep 2024 14:21:42 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: add missing kernel git commit IDs to some tests
+Message-ID: <20240916212142.GB182183@frogsfrogsfrogs>
+References: <1fe1768c5148fc857ddbba244e607f965a17937b.1726140369.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,22 +57,69 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1fe1768c5148fc857ddbba244e607f965a17937b.1726140369.git.fdmanana@suse.com>
 
-I was looking at usage of folio_index() in filesystems (none should need
-it) and I started looking at end_bbio_data_read().  This function has
-some things which don't make sense to me, and I think it's an artefact
-of the "block size is page size" code being converted to support multiple
-blocks per page without, perhaps, a larger rethink.
+On Thu, Sep 12, 2024 at 12:26:38PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Three tests (btrfs/321, generic/364 and xfs/608) refer to kernel patches
+> that are now in Linus' git kernel tree, so update the tests to include
+> the commit IDs.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/btrfs/321   | 2 +-
+>  tests/generic/364 | 2 +-
+>  tests/xfs/608     | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tests/btrfs/321 b/tests/btrfs/321
+> index e30199da..93935530 100755
+> --- a/tests/btrfs/321
+> +++ b/tests/btrfs/321
+> @@ -22,7 +22,7 @@ _require_btrfs_raid_type raid0
+>  _require_btrfs_support_sectorsize 4096
+>  _require_btrfs_command inspect-internal dump-tree
+>  
+> -_fixed_by_kernel_commit xxxxxxxxxxxx \
+> +_fixed_by_kernel_commit 10d9d8c3512f \
+>  	"btrfs: fix a use-after-free bug when hitting errors inside btrfs_submit_chunk()"
+>  
+>  # The bug itself has a race window, run this many times to ensure triggering.
+> diff --git a/tests/generic/364 b/tests/generic/364
+> index 34029597..968b4754 100755
+> --- a/tests/generic/364
+> +++ b/tests/generic/364
+> @@ -18,7 +18,7 @@ _require_command "$TIMEOUT_PROG" timeout
+>  
+>  # Triggers very frequently with kernel config CONFIG_BTRFS_ASSERT=y.
+>  [ $FSTYP == "btrfs" ] && \
+> -	_fixed_by_kernel_commit xxxxxxxxxxxx \
+> +	_fixed_by_kernel_commit cd9253c23aed \
+>  	"btrfs: fix race between direct IO write and fsync when using same fd"
+>  
+>  # On error the test program writes messages to stderr, causing a golden output
+> diff --git a/tests/xfs/608 b/tests/xfs/608
+> index a74c7bf3..7ac40137 100755
+> --- a/tests/xfs/608
+> +++ b/tests/xfs/608
+> @@ -9,7 +9,7 @@
+>  . ./common/preamble
+>  _begin_fstest auto
+>  
+> -_fixed_by_kernel_commit XXXXXXXXXXXX \
+> +_fixed_by_kernel_commit e21fea4ac3cf \
+>  	"xfs: fix di_onlink checking for V1/V2 inodes",
 
-The biggest thing that strikes me as strange is the zeroing of the part
-of the folio past the EOF.  Most filesystems do this at I/O submission
-time when we're still in process context.  btrfs is choosing to do this
-at I/O completion time which might well be in hard or soft interrupt
-context (and so we're robbing some other process of its timeslice and
-possibly hot cache).
+Yep, thank you...
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-There are other things that don't make sense to me, but it may just be
-unfamiliarity with how btrfs handles block size < PAGE_SIZE.  This one
-seems like a genuine problem that should be fixed by someone with a
-greater understanding of the btrfs code base than me.
+--D
+
+>  
+>  _require_scratch_nocheck	# we'll do our own checking
+> -- 
+> 2.43.0
+> 
+> 
 
