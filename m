@@ -1,173 +1,145 @@
-Return-Path: <linux-btrfs+bounces-8041-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8042-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66AAE979993
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 01:39:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 016D79799BC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 03:01:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83BF41C21DFC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Sep 2024 23:39:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D43A9B21C97
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 01:01:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D2A82D91;
-	Sun, 15 Sep 2024 23:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C146ADDC5;
+	Mon, 16 Sep 2024 01:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FnOQAN5k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cmL+WM2g"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097CF17BA7
-	for <linux-btrfs@vger.kernel.org>; Sun, 15 Sep 2024 23:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970C9256D;
+	Mon, 16 Sep 2024 01:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726443537; cv=none; b=d8wSTU0PKx8FVFYZcJBl5FGMVzUzmM6gHY58geDZwNduR4dTFDlR5FpnMY1oKsmwXgresq1IX31WwVI3rrkFPSOduI8uD2GmTknUGU+GSLFsYuH0PsBlNrsUpWjYonSj4iMHJ2zaqzlrriAb9jBfSovIpzgviaJ1OcwGHSNgKZk=
+	t=1726448489; cv=none; b=Yz+g5pMxahac/X813kLmJRDdHdRBLMKW/ebPFphE0SD6z1FGeMYl0ieTMZRCE4jtt8mTvRrdc/IDZknrmBUgmCoHDQ5pRoD1AkPg2l0n4N4ly4J6t8RIRVIrTW/CGruRnnIVd/Iy5S/kq/98SLUC945h93HuJc8O+bj95tFnr44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726443537; c=relaxed/simple;
-	bh=Q05MzAQUjoyTIReqVFjapvvv46qdHiXcWFqJ72KXy7k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CNeGm0K00aK9clFIBobFpDVKZrnr+lvFE7dYEV20O3nvE4biUNW2w29L8N0oiCHS3Qf7MAgkWYG51Taxlzck5mVvYgv5Q/r44EDEKtsw3bsFNAEnLlpjaghGEOis1uckL52zb48jNqvGT5RMDPVoZzno0fToYM1DS7sXaPIFrds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FnOQAN5k; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-374ca65cafdso1731383f8f.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Sep 2024 16:38:54 -0700 (PDT)
+	s=arc-20240116; t=1726448489; c=relaxed/simple;
+	bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FOP8JcKzVXqDJrdMzufjF9Y0dGi5t19iYu60anZG8fkv3aD1t5aqjJRry//UUmWYe9v8I7r4cAUWvhDbH/OK8HPGB/CZP4cYCANaxfqluIGbBCPYlMAZYI8liPiPybReVxZ/FeS2Xj2iK1gS7INmuCK3N2NhPVPS1lw034c4lS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cmL+WM2g; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7db12af2f31so3492658a12.1;
+        Sun, 15 Sep 2024 18:01:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1726443533; x=1727048333; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=3eSEgcq9tRW8ltV03/cwCcdOKi3LwklnRUc9FwD15uM=;
-        b=FnOQAN5koDDuZt6juOpEqoxwy/V1S24FwA1+hrvaoQ5lctHf9EoZcuZa6EJKG5pO5c
-         jvwhhlrG+wft0ea4EWz4ZUWRhwVGdF5Q7AmG3qLBhe84V5DAEbiW7RIVqhyzXBgHy8oD
-         Yds/r9HgbHahiz7yamZOa4144xe5xtzaN4WxojyjDhmMyvB0gSnt0w40U7CVOwnknoEQ
-         gxX7UCsw2xcq4VlkP3SrWbB8/BWEdqEhCPEEs3it5WXyXeygp1uksEYx8+3vXXLU9apI
-         J8NygJJXgzk6hcxyZrBz+agH4CPVj9UMKp3vhDPjXtIeF9NFxpEXl12l4kGXzk2/20JK
-         gA5g==
+        d=gmail.com; s=20230601; t=1726448487; x=1727053287; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
+        b=cmL+WM2gDuP4O+bn690YwmFhQ0vXL4n+Be4FXT+6NrMbMwJNsOaHCVSbLsB5bVCFJx
+         BoykbxIOQC/tyxrPBwl5hd28pQ7453AMb7wKDMRvidhChCLiodiG/Q0BVIMXGtMskbP6
+         4P++jFgGMx4wUmT0eCHLQY484hbjkJsbk1ZnbzjhFaSNM0nmAd/4WWRWXEGdU7O8jNhO
+         gBL/Y+tMU5V1dE4gQ1NjG2kI677N7CTb6gI/q8LnACmUw+/50q4KXVpnT6nqfzeR0kyN
+         cD0yYIKFaxwn/ySnatFQtmYJzfl0ZMvI5mJe3ihqMZu3L2uioZkdPiF4tSh/ljuUrwIx
+         q2og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726443533; x=1727048333;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1726448487; x=1727053287;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3eSEgcq9tRW8ltV03/cwCcdOKi3LwklnRUc9FwD15uM=;
-        b=rsMFLkM++r1Vcdr9WDDYQXo8kvzZrijvy2UtQMImlVf1bj8+1tW+sp8JEdVVFmyDDD
-         axprNYu+zMhZ4e2AtelcMhlUDd3cNUSCHtj5FxAq97uOInRM0hfZI3rkl/LwBr/MNEus
-         JJVrM3zLDLAor1nv14mqlPPULA4fg+ZBykE/6HFmgzWniHUy2vn/vN10qCAsGNh7fnM2
-         puXFz+lOLfaSoDTVXsFKfHIYTpdH7lit5vk+v4qcSwXV6L01xAyBrW14V6uDTyZD1SQZ
-         T5OYH864sx5Wyj62lUvXRtLlQqwUxz/JOBSbd9soZ61JnI5VLVhgW272zTyX3vUQa7Td
-         kz/w==
-X-Gm-Message-State: AOJu0YwzHvedcGVHTA3TksLk0cUO7nHmY3KK+u5zgUGG85RdonFTnahB
-	QjoiTyJaRjKG1xM7igwJSO/ZQmes5xzvZEj1b2wlgfS9pqkD26pCuHlQ/RiHnnM=
-X-Google-Smtp-Source: AGHT+IGwDz4KqJelqM3MyoQ8Oo2fcT+8h7k5mKajDDivralLCdds5hese1BMPS070ynYi3OaSfn8ZQ==
-X-Received: by 2002:adf:facb:0:b0:374:babf:ac4d with SMTP id ffacd0b85a97d-378d625360bmr4517413f8f.58.1726443532538;
-        Sun, 15 Sep 2024 16:38:52 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944b7e5bbsm2721066b3a.124.2024.09.15.16.38.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Sep 2024 16:38:51 -0700 (PDT)
-Message-ID: <70cf7c18-feaa-461f-9f96-f83bdea5f4c2@suse.com>
-Date: Mon, 16 Sep 2024 09:08:47 +0930
+        bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
+        b=hfW4uY9AHq2FrjNEzDvRlq8d3/HgJ3Rnv6JBCwYqaYZ+7+v5ojnLJkRGX0/A8gJ1Tl
+         D9SJuCpwJ/wzj+ZykfhyhZikww6ju9902U7NRu4b10RGG2qvH+me0TRbix7E4QlXDk3s
+         BXYU/gwtPLTvvIHs46gVnacrMEguPXiHjLz2gztt0ZePKIBMdMf/1llR7NTtKeYVTuyF
+         jwouKQs8mVPcn/65WODXRlC9wULPUQ9VKBI34VYiUMgQL+rn7LTLSx+4iuPSwxCzuGte
+         Ro+GjV6fCi0Od6HKUXXA+gw1CY2FYzDdzGMHeWsD7wSGaq+POWmUWLpAV6UaTZGRpIMJ
+         w1nw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6gPr6GZiCCWvt87JPJZVop2HKVTWtmVfHW75j87HPwqWOE5Q/h1pObTZ/Yr29Buo05MyMLiLq3Yi5dw==@vger.kernel.org, AJvYcCV+ef29yjCDReIQSI1xZTFW2FLbDMTdERqTZe+N9+YV19U2tExX5UUudVu5TFOd0o59XCm/YQJHoIcEpg==@vger.kernel.org, AJvYcCV1KfMhFRPYeB5wR2w0hVRrYO9VuCVX4fz7Gte9MsQan4vgya3oDBTjCGcF8G5uX2x8ogZ3xtmULzgo1SSRq38Zx/QK@vger.kernel.org, AJvYcCWHfzt861yQB6PRHHjgspZWyNtMHHeSLOxEQHB+dJE70zlhLOP/0Gsqy/NFRHYUMG7yXMR7VFDAlxsM@vger.kernel.org, AJvYcCXUWmz5+px2CjpNev7KKw47RQ8WCx22TjafwAgk+eWFfUgalQcefImg5fefHP6jZbytlNcVC2aR4SRQ@vger.kernel.org, AJvYcCXUbzumcfbGFuHyCoQ8Ryt6l5sYnpUc54wX1SVTXcrM8tCSs6JcFb9vYVmpC6LIJ4ciRKa8Xf1E+IBJKqt+RQ==@vger.kernel.org, AJvYcCXbP1nbH+5Tuh6XuD2Tcnv1agPva2WVUpkrkE/xO2vZ9QHVnFL0F9aarFtoz5UbyY20LHFWWbvHOJJ5@vger.kernel.org, AJvYcCXcS83TFyAh+8dHwtvClGNdMmaYs53fi5jSd+2GuqwPk2TKk+AFoghdtmOWXUk59WXmY90IDUmgkPbdQiER@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxgf38IRsysiWk+NNSdQQB6MN94TiM5M+zWiK/dfv1ZAZP0EZdI
+	WGaTyYeu+27E7ua+8xEBkhDODMA33TixslZEhkOMudLyHKkIsSfz
+X-Google-Smtp-Source: AGHT+IHeKKZs+OQSLFWh2p0zJ8126QggRcFIs3Yl9qB6SRWRR42B+47A+pkLNPsEo9M1k9q1ghVFtw==
+X-Received: by 2002:a17:902:da84:b0:206:adc8:2dcb with SMTP id d9443c01a7336-2076e35b147mr249054285ad.25.1726448486481;
+        Sun, 15 Sep 2024 18:01:26 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2079473d05dsm27143635ad.287.2024.09.15.18.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Sep 2024 18:01:25 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 8220D4A358AE; Mon, 16 Sep 2024 08:01:22 +0700 (WIB)
+Date: Mon, 16 Sep 2024 08:01:22 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v8 07/11] Documentation: add a new file documenting
+ multigrain timestamps
+Message-ID: <ZueDYmduQtlAnX_5@archie.me>
+References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
+ <20240914-mgtime-v8-7-5bd872330bed@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Btrfs keeps getting corrupted
-To: Roman Mamedov <rm@romanrm.net>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <20240916004527.0464200f@nvm>
- <05487866-261a-46da-8b1b-fa8e0092be81@gmx.com> <20240916033159.670efe45@nvm>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <20240916033159.670efe45@nvm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kwvsaHxP9Dj4QI8r"
+Content-Disposition: inline
+In-Reply-To: <20240914-mgtime-v8-7-5bd872330bed@kernel.org>
 
 
+--kwvsaHxP9Dj4QI8r
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-在 2024/9/16 08:01, Roman Mamedov 写道:
-> On Mon, 16 Sep 2024 06:59:54 +0930
-> Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> 
->>> Such a high disparity in transid mismatch, flush is not working somewhere? But
->>> I specifically do "sync" even multiple times now, before unmounting and after.
->>
->> Manually sync still relies on FLUSH, and FLUSH is not working on the
->> lower storage stack (from LUKS to your SSD/HDD firmware), sync won't
->> save you.
-> 
-> I always kept in mind that 'sync' was the key to ensure all data has been
-> moved from RAM to the HDD. But I now realize that I missed that there's also a
-> buffer in the HDD, which also needs to be flushed to disk. It could be that I
-> power-off the device before it manages to do that. Also it is an SMR HDD, so
-> it might need to do housekeeping with the data on-disk as well.
+On Sat, Sep 14, 2024 at 01:07:20PM -0400, Jeff Layton wrote:
+> +Multigrain timestamps aim to remedy this by selectively using fine-grain=
+ed
+> +timestamps when a file has had its timestamps queried recently, and the =
+current
+> +coarse-grained time does not cause a change.
 
-The point of FLUSH command is, for any correctly behaving firmware, the 
-device should only report that command is done, AFTER all data is 
-written into non-volatile storage (can be the spinning disk of a HDD, 
-NAND or even battery powered RAM).
+Do you mean using fine-grained timestamps when timestamps of a file has been
+recently queried/modified BUT its coarse-grained timestamps aren't changed?
 
-So if the device is reporting FLUSH done, but in fact it's not, then 
-it's a big problem for the device firmware or anything between, 
-including the firmware of the disk, USB to ATA converter, the device-map 
-layer (remember, each dm device will also need to handle the FLUSH 
-command) etc.
+Confused...
 
-Although just cheating the FLUSH behavior is not that a big deal, I'm 
-using that behavior all day for all my testing VMs, and AFAIK VMware and 
-VBox are also doing such cheating by default
+--=20
+An old man doll... just what I always wanted! - Clara
 
-The problem can only happen if a power loss/crash happens, thus dropping 
-the cache (and break the required write sequence), and corrupt the btrfs 
-filesystem, since btrfs strongly relies on the correct FLUSH behavior to 
-implement CoW to protect its metadata.
-(I still remember a lot users reporting btrfs corruption with Vmware/Vbox)
+--kwvsaHxP9Dj4QI8r
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> One idea I got is sending drive to sleep (hdparm -Y) before calling power-off
-> now. Hopefully that makes it flush before sleep.
-> 
->>> How can I figure out what is to blame here, is it the enclosure, is it USB,
->>> LUKS, Btrfs, or some fundamental bug involving a combination of these?
->>
->> In that case, you may want to provide your kernel version first (to rule
->> out known bugs or too old kernels), then reduce the depth of the storage
->> stack, aka, running btrfs directly on that device as a test.
-> 
-> The kernel is 6.6 series, cannot say exact, but was at most 5-10 point
-> releases older than latest, both of the times the issue occured.
-> 
+-----BEGIN PGP SIGNATURE-----
 
-Then I do not think it's the dm layer.
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZueDXQAKCRD2uYlJVVFO
+o9i4AP0T1JkEX2kwhV2+holu89lH/60QVNXUO2Lay3YffP3/dQD9G4CUoLWZ82Xp
+x8Jx3+7J66rerRpl5waFiihhu7wbiQ0=
+=tXkm
+-----END PGP SIGNATURE-----
 
-Thanks,
-Qu
+--kwvsaHxP9Dj4QI8r--
 
