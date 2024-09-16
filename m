@@ -1,145 +1,141 @@
-Return-Path: <linux-btrfs+bounces-8042-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8043-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 016D79799BC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 03:01:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FBE8979DD3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 11:06:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D43A9B21C97
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 01:01:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC6B31F2408F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2024 09:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C146ADDC5;
-	Mon, 16 Sep 2024 01:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C4713BC1E;
+	Mon, 16 Sep 2024 09:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cmL+WM2g"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Pj6bJzzN";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jx34kRQa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970C9256D;
-	Mon, 16 Sep 2024 01:01:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FA9130499
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 09:05:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726448489; cv=none; b=Yz+g5pMxahac/X813kLmJRDdHdRBLMKW/ebPFphE0SD6z1FGeMYl0ieTMZRCE4jtt8mTvRrdc/IDZknrmBUgmCoHDQ5pRoD1AkPg2l0n4N4ly4J6t8RIRVIrTW/CGruRnnIVd/Iy5S/kq/98SLUC945h93HuJc8O+bj95tFnr44=
+	t=1726477556; cv=none; b=N14hhzlrmn6NEuBh+0esGeloC0UICQOZJvZOw8ezA2IM8JAkRNkzYMWjn3d/ZWIldoKPLQAfFdl7+XLJqFFmaueYXtRaYhl3cPW/F1FPCzgbk2mF+4SSGQr4sh2+NFpIc266iUw/8hnYxMkLHLdHLhV28/qt4rIEyoSRv2bwu4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726448489; c=relaxed/simple;
-	bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FOP8JcKzVXqDJrdMzufjF9Y0dGi5t19iYu60anZG8fkv3aD1t5aqjJRry//UUmWYe9v8I7r4cAUWvhDbH/OK8HPGB/CZP4cYCANaxfqluIGbBCPYlMAZYI8liPiPybReVxZ/FeS2Xj2iK1gS7INmuCK3N2NhPVPS1lw034c4lS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cmL+WM2g; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7db12af2f31so3492658a12.1;
-        Sun, 15 Sep 2024 18:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726448487; x=1727053287; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
-        b=cmL+WM2gDuP4O+bn690YwmFhQ0vXL4n+Be4FXT+6NrMbMwJNsOaHCVSbLsB5bVCFJx
-         BoykbxIOQC/tyxrPBwl5hd28pQ7453AMb7wKDMRvidhChCLiodiG/Q0BVIMXGtMskbP6
-         4P++jFgGMx4wUmT0eCHLQY484hbjkJsbk1ZnbzjhFaSNM0nmAd/4WWRWXEGdU7O8jNhO
-         gBL/Y+tMU5V1dE4gQ1NjG2kI677N7CTb6gI/q8LnACmUw+/50q4KXVpnT6nqfzeR0kyN
-         cD0yYIKFaxwn/ySnatFQtmYJzfl0ZMvI5mJe3ihqMZu3L2uioZkdPiF4tSh/ljuUrwIx
-         q2og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726448487; x=1727053287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
-        b=hfW4uY9AHq2FrjNEzDvRlq8d3/HgJ3Rnv6JBCwYqaYZ+7+v5ojnLJkRGX0/A8gJ1Tl
-         D9SJuCpwJ/wzj+ZykfhyhZikww6ju9902U7NRu4b10RGG2qvH+me0TRbix7E4QlXDk3s
-         BXYU/gwtPLTvvIHs46gVnacrMEguPXiHjLz2gztt0ZePKIBMdMf/1llR7NTtKeYVTuyF
-         jwouKQs8mVPcn/65WODXRlC9wULPUQ9VKBI34VYiUMgQL+rn7LTLSx+4iuPSwxCzuGte
-         Ro+GjV6fCi0Od6HKUXXA+gw1CY2FYzDdzGMHeWsD7wSGaq+POWmUWLpAV6UaTZGRpIMJ
-         w1nw==
-X-Forwarded-Encrypted: i=1; AJvYcCU6gPr6GZiCCWvt87JPJZVop2HKVTWtmVfHW75j87HPwqWOE5Q/h1pObTZ/Yr29Buo05MyMLiLq3Yi5dw==@vger.kernel.org, AJvYcCV+ef29yjCDReIQSI1xZTFW2FLbDMTdERqTZe+N9+YV19U2tExX5UUudVu5TFOd0o59XCm/YQJHoIcEpg==@vger.kernel.org, AJvYcCV1KfMhFRPYeB5wR2w0hVRrYO9VuCVX4fz7Gte9MsQan4vgya3oDBTjCGcF8G5uX2x8ogZ3xtmULzgo1SSRq38Zx/QK@vger.kernel.org, AJvYcCWHfzt861yQB6PRHHjgspZWyNtMHHeSLOxEQHB+dJE70zlhLOP/0Gsqy/NFRHYUMG7yXMR7VFDAlxsM@vger.kernel.org, AJvYcCXUWmz5+px2CjpNev7KKw47RQ8WCx22TjafwAgk+eWFfUgalQcefImg5fefHP6jZbytlNcVC2aR4SRQ@vger.kernel.org, AJvYcCXUbzumcfbGFuHyCoQ8Ryt6l5sYnpUc54wX1SVTXcrM8tCSs6JcFb9vYVmpC6LIJ4ciRKa8Xf1E+IBJKqt+RQ==@vger.kernel.org, AJvYcCXbP1nbH+5Tuh6XuD2Tcnv1agPva2WVUpkrkE/xO2vZ9QHVnFL0F9aarFtoz5UbyY20LHFWWbvHOJJ5@vger.kernel.org, AJvYcCXcS83TFyAh+8dHwtvClGNdMmaYs53fi5jSd+2GuqwPk2TKk+AFoghdtmOWXUk59WXmY90IDUmgkPbdQiER@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxgf38IRsysiWk+NNSdQQB6MN94TiM5M+zWiK/dfv1ZAZP0EZdI
-	WGaTyYeu+27E7ua+8xEBkhDODMA33TixslZEhkOMudLyHKkIsSfz
-X-Google-Smtp-Source: AGHT+IHeKKZs+OQSLFWh2p0zJ8126QggRcFIs3Yl9qB6SRWRR42B+47A+pkLNPsEo9M1k9q1ghVFtw==
-X-Received: by 2002:a17:902:da84:b0:206:adc8:2dcb with SMTP id d9443c01a7336-2076e35b147mr249054285ad.25.1726448486481;
-        Sun, 15 Sep 2024 18:01:26 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2079473d05dsm27143635ad.287.2024.09.15.18.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Sep 2024 18:01:25 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 8220D4A358AE; Mon, 16 Sep 2024 08:01:22 +0700 (WIB)
-Date: Mon, 16 Sep 2024 08:01:22 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v8 07/11] Documentation: add a new file documenting
- multigrain timestamps
-Message-ID: <ZueDYmduQtlAnX_5@archie.me>
-References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
- <20240914-mgtime-v8-7-5bd872330bed@kernel.org>
+	s=arc-20240116; t=1726477556; c=relaxed/simple;
+	bh=sefn6udt6+Fi+Ey/arOdHhIP5EV8+YGJpnIe+Jt7q2k=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=X3HCdWwQ6kCERtHS9Edtyf6JQA/DDrm7VtN/e4N56IweKPh9LcapGlQhIkd0ELWmwgWXWSrTchEZHPVT9aVQVm62Rl45oP2smCVKB8Mrg3z2XXXshRmc8hfwITOggiAUBvLCMQge4TDK7xnBYCwME1ERdTkBngbIUYKqAcAhQSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Pj6bJzzN; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jx34kRQa; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 956511FD56
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 09:05:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726477552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tnDnaa23emcIVn6iXID012NyktMiszyyujZya9fSDQ8=;
+	b=Pj6bJzzNDxPYXmozxDVatQOufZ2RewLAcKCSWQD3mHaXizz/eCJ/RB3rvkQsrVSv5pISie
+	PrH8F8ZuQnmrvpzbfW21dPFFFD0OfY9YV0TWucfsFpQXvrpfjn+GghGM7IfD4VjyICl3e4
+	xLW4T6fEemSIaXxtKYytCynsKvK0a6I=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726477551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tnDnaa23emcIVn6iXID012NyktMiszyyujZya9fSDQ8=;
+	b=jx34kRQaLZrrAIk3XU8J5cf1xvpLwQ93wi2qrTxqxMMFKRIlqxsgUlmsVsKYD9Q91ZHhiJ
+	aX2yc/7qHKnuAKsRGY5RDatOOCtbtP9qr5u9c/OZJL0oXAUibay4AbOEWZkB7z7QKoKyKQ
+	laGUHQJYZXRrncbeKJljJJG0fmJTwJw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D6A11139CE
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 09:05:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NIgyJu7052bTSgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2024 09:05:50 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from CONFIG_BTRFS_DEBUG
+Date: Mon, 16 Sep 2024 18:35:27 +0930
+Message-ID: <cover.1726477365.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kwvsaHxP9Dj4QI8r"
-Content-Disposition: inline
-In-Reply-To: <20240914-mgtime-v8-7-5bd872330bed@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_NONE(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
+The first patch is to make it more consistent for assert_rbio() to
+follow the CONFIG_BTRFS_ASSERT.
 
---kwvsaHxP9Dj4QI8r
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then the second patch split out the following features into the new
+CONFIG_BTRFS_EXPERIMENTAL:
 
-On Sat, Sep 14, 2024 at 01:07:20PM -0400, Jeff Layton wrote:
-> +Multigrain timestamps aim to remedy this by selectively using fine-grain=
-ed
-> +timestamps when a file has had its timestamps queried recently, and the =
-current
-> +coarse-grained time does not cause a change.
+- Extent map shrinker
+- Extent tree v2
+- Raid stripe tree
+- Csum offload mode
+- Send string v3
 
-Do you mean using fine-grained timestamps when timestamps of a file has been
-recently queried/modified BUT its coarse-grained timestamps aren't changed?
+This is mostly to make those features to get more attention, and
+eventually to move into stable features.
 
-Confused...
+So far I think csum offload mode and extent map shrinker are strong
+candidates, and later sector perfect compression will also join the
+experimental features.
 
---=20
-An old man doll... just what I always wanted! - Clara
+Qu Wenruo (2):
+  btrfs: make assert_rbio() to only check CONFIG_BTRFS_DEBUG
+  btrfs: split out CONFIG_BTRFS_EXPERIMENTAL from CONFIG_BTRFS_DEBUG
 
---kwvsaHxP9Dj4QI8r
-Content-Type: application/pgp-signature; name="signature.asc"
+ fs/btrfs/Kconfig   | 9 +++++++++
+ fs/btrfs/bio.c     | 2 +-
+ fs/btrfs/fs.h      | 4 ++--
+ fs/btrfs/raid56.c  | 3 +--
+ fs/btrfs/send.h    | 2 +-
+ fs/btrfs/super.c   | 6 +++---
+ fs/btrfs/sysfs.c   | 4 ++--
+ fs/btrfs/volumes.h | 4 ++--
+ 8 files changed, 21 insertions(+), 13 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.46.0
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZueDXQAKCRD2uYlJVVFO
-o9i4AP0T1JkEX2kwhV2+holu89lH/60QVNXUO2Lay3YffP3/dQD9G4CUoLWZ82Xp
-x8Jx3+7J66rerRpl5waFiihhu7wbiQ0=
-=tXkm
------END PGP SIGNATURE-----
-
---kwvsaHxP9Dj4QI8r--
 
