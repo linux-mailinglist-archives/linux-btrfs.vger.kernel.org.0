@@ -1,81 +1,97 @@
-Return-Path: <linux-btrfs+bounces-8078-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8079-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E68997AAF5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 07:20:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1149197AE7E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 12:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA1491F24039
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 05:20:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 274241C216DD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 10:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA2849659;
-	Tue, 17 Sep 2024 05:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA81165F19;
+	Tue, 17 Sep 2024 10:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rk7Lwrec"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8SD4KPG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A64482EF;
-	Tue, 17 Sep 2024 05:20:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 812C516190B;
+	Tue, 17 Sep 2024 10:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726550449; cv=none; b=tEDwFeetKb3TLRva201JkKtsFNLa5YR2hn22tKRkWGHhXgDF3vn8cwDzbb/BFoIcC858L/ZBiGMGeMIU1ha05WB4Na71kYGOMbd+TEZ7u/PxtXIHgKPMCJSvH2cJ0VA9I2Wv6UKRvmH3FpXlg8bdtbXsPQqjnsrsx3IVFvTLyws=
+	t=1726567681; cv=none; b=P2TEIE9GrAtHJ99phK1RmgyPrvhycYIINLk1hfg4vF+f5vVvJ2uVKqi1XGzDnBTQ+y3V9u/7lv8ElqURiDTHrRQCnExcNhF2E9di+gwYjux/dpJx48IeJR702HEvcJZ2QrnpfM78G/poyiVOMYX/w2Jb0jg6V/VYL92oyNOuSk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726550449; c=relaxed/simple;
-	bh=POmRjhI16tEvwmVBsJJfa86IwaoLWe1lae7yRelAbSA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MGd0EVVK6xEY2gwgw1OIbguvZhcCmZ9dTDmy964xA/3t7LzyQAKiLloox45WrwEkoVoNkrg95Yg/YfJk8xjOwL/XYosKvSOjvsWHYDuN0UnMaeAjRHtSkgJMUmN5mvQV8NneOikgdQGSGPI4rqV+xo4nQ6zfOaAWLRk/7HZ/RQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rk7Lwrec; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=gKc7eNctAPQNgV6aPTpA/drZBkrkMJyFK0gpRH9y/rU=; b=rk7LwrecXZ7VkcnksNosFEjF6F
-	QqQGO1UsRSNxyM1jk3I6SdCdhY0f2Wya+e4woNFKFy6VPDY0AWQHIxsPErlN8v08BekCpzmTMFt/Q
-	M3SatfR5uE29AIEH76xitXcv2ZfGknKoE+5vE6piRUic9D1vBHncLSvx7N2Ad30j+oXRML1kWDecg
-	fOU2KieGxijUIZ92Hi1lWshIaxVx3+76UDbcZQ8alICHUiM6geEb67bJ1FlK4Xq50M5N+rW2LFWj+
-	8ucxl+Meh+DUfMczWDFMNCdkm6HxAxAfFJ98nGgB8/D55v0sv/iRud5UR/+xQKwZ0BMpyc22A8Uwj
-	0f8XwAtA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sqQdp-00000005OaD-1yMG;
-	Tue, 17 Sep 2024 05:20:45 +0000
-Date: Mon, 16 Sep 2024 22:20:45 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] fstests: fix min_dio_alignment logic for getting device
- block size
-Message-ID: <ZukRreQ--325baAG@infradead.org>
-References: <0d6ec0b588b578b9f9aabef91b8ecdf9950b682a.1726488132.git.fdmanana@suse.com>
+	s=arc-20240116; t=1726567681; c=relaxed/simple;
+	bh=o5ol+cE6vz/oNmxm8DgNvdozLRil5ax36g+ymqC2xxw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WjMii9NjolBd0Z1VVAPC+ed2vQKUAg3u6dqG2jKuLcFg8en80NH4Zb/I0NlQvz9k424Mc6pdI8xsPCZjR64sJmJ51w+n5moSXaxTkOFGug5lKfdDoOam+EVHte6kDxQp/f7vmPjlihgGCuFjLy9uAi2oL/Qkc69aX9k9IC8RPa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i8SD4KPG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23E05C4CECE;
+	Tue, 17 Sep 2024 10:08:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726567681;
+	bh=o5ol+cE6vz/oNmxm8DgNvdozLRil5ax36g+ymqC2xxw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=i8SD4KPGkFA1rAAS9hCegbbHVLIWH73atTCTVjmRjYYKgr3Uf+o3GS5a2oyktSQfl
+	 q9CCiY+KbZTcYevoJMvdtDWuJVJpama6+kMWRxbwMms+MFXqaTWuImHxAQMxdq12Uq
+	 dl6GtNS73Te2cvEFKwYIDj5hNa+WVgywkr7Q1u6rN8bVGs1PSgem0otkh/Mmu8yndl
+	 WyKDt5X4LSv+r/tWjojXPf8EooUbXbIihMwUPJRY+7gP/BH0LCG0ZxOJ0BGlZuY8zc
+	 69ef+Q5nW4NgIAFzohZcozmEXsJ7ejAVOuQczfZmnZFmjQo79QyjE5LDI7DbTfIogZ
+	 8KhWYJ6d6uQkQ==
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a8d64b27c45so684361266b.3;
+        Tue, 17 Sep 2024 03:08:01 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVGWpksa6C7GKrQ+CDl1aV37u5VGidlRNRWdV90SSs2yYBZ8Q56gwUaV06/4zaA9IPtgi+zA32+hIzAKw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy4/YLPAkp0XOfFE3ikoXR5aSJF1D73P8Hqownr349jQY2EkWqu
+	951z6d/6OwhO6mTsxp2aOPclQgkcLXOm4vt2rHL/3KSRVS2DHAkAYNS4bt+mKoEuY/U1siswOAv
+	xEvDDNfk7qYhydQ0O7hPGGSobZ3Y=
+X-Google-Smtp-Source: AGHT+IF/SbZJQAVvoLjt+CKNjGAT6zQbqHSHSjb6rphF1ex3gyYY1smvi1f7QEavfSwGOPGIUXBeKsQilHCZwvF46Hw=
+X-Received: by 2002:a17:907:971b:b0:a89:ffd0:352f with SMTP id
+ a640c23a62f3a-a90481045d7mr1575193666b.48.1726567679687; Tue, 17 Sep 2024
+ 03:07:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d6ec0b588b578b9f9aabef91b8ecdf9950b682a.1726488132.git.fdmanana@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <0d6ec0b588b578b9f9aabef91b8ecdf9950b682a.1726488132.git.fdmanana@suse.com>
+ <ZukRreQ--325baAG@infradead.org>
+In-Reply-To: <ZukRreQ--325baAG@infradead.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 17 Sep 2024 11:07:22 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H426o19pjDEp_Jo1=GBpEEperV3m9-QbQHv-8TZSKjL-Q@mail.gmail.com>
+Message-ID: <CAL3q7H426o19pjDEp_Jo1=GBpEEperV3m9-QbQHv-8TZSKjL-Q@mail.gmail.com>
+Subject: Re: [PATCH] fstests: fix min_dio_alignment logic for getting device
+ block size
+To: Christoph Hellwig <hch@infradead.org>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 16, 2024 at 01:03:12PM +0100, fdmanana@kernel.org wrote:
-> Fix this by checking that the ioctl succeeded.
+On Tue, Sep 17, 2024 at 6:20=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
+g> wrote:
+>
+> On Mon, Sep 16, 2024 at 01:03:12PM +0100, fdmanana@kernel.org wrote:
+> > Fix this by checking that the ioctl succeeded.
+>
+> The fixes look good:
+>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>
+> What file do you manage to open but fail BLKSSZGET on here?  This smells
+> like we have an issue in high level logic.
 
-The fixes look good:
+I haven't hit any case where the ioctl failed. I was just saying that
+in case it fails, we may return an uninitialized/undefined value.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-What file do you manage to open but fail BLKSSZGET on here?  This smells
-like we have an issue in high level logic.
-
-And btrfs really should implement STATX_DIOALIGN with it's multi-device
-setup that doesn't make the fallback very useful.
-
-> 
+>
+> And btrfs really should implement STATX_DIOALIGN with it's multi-device
+> setup that doesn't make the fallback very useful.
+>
+> >
 
