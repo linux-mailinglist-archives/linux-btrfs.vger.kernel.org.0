@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8097-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8098-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D6B97B512
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 23:16:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D7297B51E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 23:23:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 907A8B26759
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 21:16:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E58A4284C27
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 21:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844DD1922CB;
-	Tue, 17 Sep 2024 21:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCCF18BC12;
+	Tue, 17 Sep 2024 21:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ILi5DPLY"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iaeh4g9v"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BD11891BB
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2024 21:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48CB41862B9
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2024 21:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726607798; cv=none; b=f7yt3Prc2JuBLJ4hy0EXcDeC1fFw7Q+yufLUg70vIux2f3U52VVk2Je32O0LuuVYeTdNyqYS1s6Gusk9gmqCWqlOflSasYvKx9GwffX9pIcbybFFfPQKpRPD/kGEpaBBGOfPOWWnqugXnUvO12XhJsBjBe6jwmlaSAcpAD2/eo4=
+	t=1726608220; cv=none; b=fctQopAJxmUOfJ7eRuf9rzqwF6o01OSVU3U1N1y0QhuTTM+AVSW2AL8YsWY0uOiKb2hWNizhZOoa0OH9FbB0NIXnNce1xG/iLjWZO2i3lyUt8pwjkE8Le/yTZcyHWQwXLw5MvY27hl17gqhdN01v8PoIzRgalpRUiPgOHs8QVy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726607798; c=relaxed/simple;
-	bh=3Jvahh2zx0mXt/HapHfQM65FrCUBvy7xFyuM+xZd2aA=;
+	s=arc-20240116; t=1726608220; c=relaxed/simple;
+	bh=+arKzJ8oiy9UNhpmGeJsVqEfdQhzfDCBxHsExE39bPo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BZt42AVkyqpZd3WgOlLE3nbif+/m29cx37dNi4QVPWm4jIw00CBtPKuuQ4UiCY97BxMYYVcyqq7tAg/4DRm5hp176DGUb/b1l7fzdmCWR775wMz06+LXHo7ixbm2wxWTMGK/K6Os8PV0cH0E90C32blSqgg21dIXSALR45jmwUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ILi5DPLY; arc=none smtp.client-ip=212.227.15.18
+	 In-Reply-To:Content-Type; b=T5v3cZKg6RSxwxXuU1w8V1y3LECHYS4EO70mxy+cbugjrG2C2FHdeZ06JhXHP+uFjrrrLPJK4b5lJUXFI1ZOYKnkGTY+A0TIXdQA3a1rw5H1ZZgVCFNZUA+5xFYPMtBS7B24Ii+0SrUvzZTy7yfaG9MpUt9ypIld/Ayoxa5KDl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iaeh4g9v; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726607793; x=1727212593; i=quwenruo.btrfs@gmx.com;
-	bh=RcNzGqXKu7DHQ/5aPaIhXZ8zuDRPv2sYuV+Xh02wGDs=;
+	s=s31663417; t=1726608215; x=1727213015; i=quwenruo.btrfs@gmx.com;
+	bh=JvHfGTLe0eeKj6zkIk3BiUCiLqrkmw2tGFAxsO2pDSc=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=ILi5DPLYPTczdsmPTaGrUV2bDqHzpfdP03NEGJij1VYjVdRnANAWa7o0S7atzLMo
-	 ny57ryL5AWsAyPRh6kZwz2yHyf6gh0ew22ECijQNqyXuyfKfJPEYhK4Cf4Doz/1i2
-	 lcDu21qhcBNAjDdDJe32thw6AvOzz2Z1ymEjiXyE2jS39bIRKlY+lLWjtAwsbPn9L
-	 dV87/GgdtL2fAt3zV55muHI4lEz0qqC/sXWH8Aw6L70PnShFv22LZ/V82QNRqcsZq
-	 ODvBs/rsCZZ2JGKYFdkbJo9Syv8QbvF53DuLfKAXV3ZoSvd1Noi3MjYCzkyIvP5uF
-	 vhDJ3CwILUk1LSH3IA==
+	b=iaeh4g9voqNUzRXRUGjDQGEbcBI4kVuWS1OjUGmtI3idA/VKuagLTHFR+7aNIHKD
+	 SBbY8DZgoRFswe0v//ibvXAvzgVr91k8K8vgJZbIN7rsBLt9t8s1dtM5RA70xYE8Q
+	 dD6Xxr3ffp2nZ/KbWDpbPgFKTupGzMEex67sbaHXITh8NnpOZg4Nd5dvCOjCTxJx7
+	 CLuEIYq8hUNom06OLFiG8MfsQANWX1LPkV5fDtVvKn59CH1TAkC5FW0vQCgvbm7oe
+	 +MTBr0CoV8+oj44RBcjJuxZwtVR/tkb+FzdqIyKY9JJdQuLWgsHkQ80Lhp3JgdhUB
+	 CbuNRFRwyOaEdDdjQw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6llE-1suW6w1oMA-009RL8; Tue, 17
- Sep 2024 23:16:32 +0200
-Message-ID: <a72c9f34-cbab-477e-9c7e-9c4c2a994213@gmx.com>
-Date: Wed, 18 Sep 2024 06:46:29 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRTN9-1seDJr1Zmn-00Y6ZT; Tue, 17
+ Sep 2024 23:23:34 +0200
+Message-ID: <8cbc9893-5612-482e-ae4b-95545f9e100d@gmx.com>
+Date: Wed, 18 Sep 2024 06:53:32 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: wait for writeback if sector size is smaller than
- page size
+Subject: Re: [PATCH] btrfs: do not assume the full page range is not dirty in
+ extent_writepage_io()
 To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <39b20c5e65df079ad99aa06ec7f70f164a541c09.1726011483.git.wqu@suse.com>
- <20240917164543.GG2920@twin.jikos.cz>
+References: <6239c8bb8ce319c2940d6469ffcb7f5f6641db79.1726011300.git.wqu@suse.com>
+ <20240917165941.GH2920@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,141 +90,115 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240917164543.GG2920@twin.jikos.cz>
+In-Reply-To: <20240917165941.GH2920@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:duwJsLTDaeOP++sg8ribjYGyzb2NnD+1UrBKZmLYZY3SAowIQE0
- FsrovkewVW1gOnLTt+q7TzhRFtD2XOwHxUG/4gWXeRBsDFC9yHS+UswgmMEXHHMxzzmB23r
- hDccETv5bR4I7velX/SpvB2hVWOIxJeN4its4kJDeWqLmr0NWZ5CcanjmsSj9KVkWuB2F3m
- Z2HAk8IZaE8GziKLGierA==
+X-Provags-ID: V03:K1:0k5Kulc2ajV/lpsq21MynnXZzEdwuR1mE9yyZ0mbQ5peDo5p9mg
+ t8s2+d4DAbUX5UWuyOCCVLCWJtJx8oF/bslvB04mdMoKOsOpvlWRJcZWZuTxk6DPo2zyJ4k
+ rmA/sg9HMpKzj+7M8mav4zzHl4rCnFQfM1GfAWNGlfM1LsOqOBK/8m3Hrkc7NxBiZn//Phv
+ GBD0qM8tELRENkoWYPEUw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:gDa2hhut7x0=;owyr3GxwTeBm/nYYh9l2RMSH9sJ
- k1CSYBAQj7DqPPbiPVnK8sG1XN3vK4yhOaPCju5pWqnuc4Blyhzze7o+tR+h99pbCwozCsCMK
- ZPZOu+D5IwUnwN78ScACZEWx5vbm68VCJbnU4TtL8OOV04oUgLVKX7VlOE8CDLLOSPgM8ZZmu
- JgMa86ONF2sXnc8SjlmtiH+RMzXdn9730mMuoN7PHQJZaewBHguqrf+HIhCVeJlcNWsvHQTS+
- W7rL3LeliddwAlNHsy3uyQG01bIDjWaYgPA/Hb3J8BkBihHa50RLJ1uCC7eNWst/vHquJ/7g7
- Rym8u8v78ATtbL2wDjT0w0Fidj/8sg85j9tEfFbTYbGmXm4BfqbKBkqPItqiscAweIGLv3Bzf
- fovLeBr2VCQkUyKQyKotQTnTUl9GQddK9KMGe3sud+ET+4Dx9E7KHonzGmhffxEFDSgg1gwym
- fHgIWvu9mPgv0E/syRJ4abZFM5APD2Me0NLKg2UiLuAwPTD/UaWwoZTth35BxMDMVfrIPhILR
- qFinxHeN5fmcU7OQ9Nkl1b+9Va/zwJgVLfKNFH+dnUWqqCgM4QmVjkG+haWutTMDPBMPFii7x
- 60gQoOuPJSy69S3gzhkXE07+RHOIINcT7Ax7HoCsF73kkK4JdHM/ewYyI7kkIhhtfnaGovGXX
- lbrGgZaPaZjU7YONpYty2amlYxq+D26qhtMoqWZtQ6/y9C1W4F/TuSWnykGEZR/iCdGW9uqt/
- 3dZkH736nEQmlZdtmpRh0P4eusulYQ6uloFX/X0mxxdwOaKOXbEHy2juvQQCmLdnzFouPmw7b
- 10s5u8yKFuF1cyb57RW1c0cOTyhq4SxYeV3myKYf+4xR0=
+UI-OutboundReport: notjunk:1;M01:P0:fVxC9dVRcUo=;zdF/7tIsX/F/WR53qrIKsVENwdj
+ fVrLK6O5kJYcncNtMwVpeaVFbRIcizghmvJemk6hbZjdybTk4ijPudkQcDKKEZThrYhFfMQfh
+ Ykmt8cv2nGmLvItA2GtiepuWFjyShR0JhZdC87FEsVT5bhOM8o7lUrvWDyxPwAJu1HI+zTgv7
+ j12Wi+6NRgGesFx77+c0TpltQU/+SccGhkJP1dDI6XTnz/kgX3vyFaZJrM7Xv4hmhnIW4xXfo
+ FjHEoFO0XvSLzBpdENoEFcgiC4+JLEAObnZ7A/wMO5QD+MK0xZ82nf3MkBGKenZDj81BcPxcI
+ NDTc9g+ZONFd4jJhUSDiVVK2+42X1utcCuXlHLQ3KzlV6z8Gm+TII461U4610Pw7NnrX7yXCq
+ 8umMyRHGY/amgAdXUwKznSbJgGAJXiT6wAZ4DnEG8mlLrnTXZ1hGKDpgl/89i4xCSAIc4GZMS
+ 97LcjogdDy/hb76KkLPVYXFvT2ycyPwee3Zs5j2CJ/xvYwROXGF78V+u2fPLaSgvsWjivsZrI
+ Gmrfx1Lla5aDYz4E/WreHcUvNM5/5Aw2K9vUsMwKURXMNKsZMPQyhbWy79qwVxgx2CHxzmY8V
+ h9vB9GYqK5MVs2mRjr0Rk8jhSvM6YSUrnOl4dg70CRB7Fd1SP0ImOveUn0c0vj/7tJawpUtbO
+ 72gX4Meh8CSzLhdG8JXqLEWDc9waUB/xOhOoWBhMpQ5VCXzv46xGfAx612jzbOjTVmW8RMJpu
+ 7C3Iti39s6LX/StwW9B9hlasjYCZinZl3sVEUNkW4RWdEwi+p8T4e3hbx+uRF9f47LeFF3UT+
+ mAKKN5LlB89P1+1It1yibjyq3NYyjvwQxezBoHo7trIz8=
 
 
 
-=E5=9C=A8 2024/9/18 02:15, David Sterba =E5=86=99=E9=81=93:
-> On Wed, Sep 11, 2024 at 09:09:05AM +0930, Qu Wenruo wrote:
->> [PROBLEM]
->> If sector perfect compression is enabled for sector size < page size
->> case, the following case can lead dirty ranges not being written back:
+=E5=9C=A8 2024/9/18 02:29, David Sterba =E5=86=99=E9=81=93:
+> On Wed, Sep 11, 2024 at 09:51:02AM +0930, Qu Wenruo wrote:
+>> The function extent_writepage_io() will submit the dirty sectors inside
+>> the page for the write.
 >>
->>       0     32K     64K     96K     128K
->>       |     |///////||//////|     |/|
->>                                   124K
+>> But recently to co-operate with the incoming subpage compression
+>> enhancement, a new bitmap is introduced to
+>> btrfs_bio_ctrl::submit_bitmap, to only avoid a subset of the dirty
+>> range.
 >>
->> In above example, the page size is 64K, and we need to write back above
->> two pages.
+>> This is because we can have the following cases with 64K page size:
 >>
->> - Submit for page 0 (main thread)
->>    We found delalloc range [32K, 96K), which can be compressed.
->>    So we queue an async range for [32K, 96K).
->>    This means, the page unlock/clearing dirty/setting writeback will
->>    all happen in a workqueue context.
+>>      0      16K       32K       48K       64K
+>>      |      |/////////|         |/|
+>>                                   52K
 >>
->> - The compression is done, and compressed range is submitted (workqueue=
-)
->>    Since the compression is done in asynchronously, the compression can
->>    be done before the main thread to submit for page 64K.
+>> For range [16K, 32K), we queue the dirty range for compression, which i=
+s
+>> ran in a delayed workqueue.
+>> Then for range [48K, 52K), we go through the regular submission path.
 >>
->>    Now the whole range [32K, 96K), involving two pages, will be marked
->>    writeback.
+>> In that case, our btrfs_bio_ctrl::submit_bitmap will exclude the range
+>> [16K, 32K).
 >>
->> - Submit for page 64K (main thread)
->>    extent_write_cache_pages() got its wbc->sync_mode is WB_SYNC_NONE,
->>    so it skips the writeback wait.
+>> The dirty flags for the range [16K, 32K) is only cleared when the
+>> compression is done, by the extent_clear_unlock_delalloc() call inside
+>> submit_one_async_extent().
 >>
->>    And unlock the page and exit. This means the dirty range [124K, 128K=
-)
->>    will never be submitted, until next writeback happens for page 64K.
->>
->> This will never happen for previous kernels because:
->>
->> - For sector size =3D=3D page size case
->>    Since one page is one sector, if a page is marked writeback it will
->>    not have dirty flags.
->>    So this corner case will never hit.
->>
->> - For sector size < page size case
->>    We never do subpage compression, a range can only be submitted for
->>    compression if the range is fully page aligned.
->>    This change makes the subpage behavior mostly the same as non-subpag=
-e
->>    cases.
->>
->> [ENHANCEMENT]
->> Instead of relying WB_SYNC_NONE check only, if it's a subpage case, the=
-n
->> always wait for writeback flags.
+>> This patch fix the false alert by removing the
+>> btrfs_folio_assert_not_dirty() check, since it's no longer correct for
+>> subpage compression cases.
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->>   fs/btrfs/extent_io.c | 22 +++++++++++++++++++++-
->>   1 file changed, 21 insertions(+), 1 deletion(-)
+>> This should be the last patch before the enablement of sector perfect
+>> compression support for subpage.
 >>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 385e88b7fcf5..644e00d5b0f8 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -2116,7 +2116,27 @@ static int extent_write_cache_pages(struct addre=
-ss_space *mapping,
->>   				continue;
->>   			}
+>> Locally I have already been testing the sector perfect compression, and
+>> that's the last fix.
 >>
->> -			if (wbc->sync_mode !=3D WB_SYNC_NONE) {
->> +			/*
->> +			 * For subpage case, compression can lead to mixed
->> +			 * writeback and dirty flags, e.g:
->> +			 * 0     32K    64K    96K    128K
->> +			 * |     |//////||/////|   |//|
->> +			 *
->> +			 * In above case, [32K, 96K) is asynchronously submitted
->> +			 * for compression, and [124K, 128K) needs to be written back.
->> +			 *
->> +			 * If we didn't wait wrtiteback for page 64K, [128K, 128K)
+>> All the subpage related fixes can be applied out of order as long as th=
+e
+>> final enablement patch is at the end of the queue, but for now
+>> my local branch has the following patch order (git log sequence):
+>>
+>>   btrfs: allow compression even if the range is not page aligned
+>>   btrfs: do not assume the full page range is not dirty in extent_write=
+page_io()
+>>   btrfs: make extent_range_clear_diryt_for_io() to handle sector size <=
+ page size cases
+>>   btrfs: wait for writeback if sector size is smaller than page size
+>>   btrfs: compression: add an ASSERT() to ensure the read-in length is s=
+ane
+>>   btrfs: zstd: make the compression path to handle sector size < page s=
+ize
+>>   btrfs: zlib: make the compression path to handle sector size < page s=
+ize
 >
-> Should this be referring to the page from offset 64K, ie [64K, 128K)?
-> Otherwise the range in the comment does not make sense.
+> That's great news. I don't think there's anything else of comparable
+> size missing from the subpage support.
 
-My bad, I mean [124K, 128K).
+Well, one more submitted series, which slightly reworks the delalloc
+locking inside a page, to fix a possible double folio unlock which leads
+to some hang:
+
+https://lore.kernel.org/linux-btrfs/cover.1726441226.git.wqu@suse.com/
+
+Then we're able to enable the feature:
+
+https://lore.kernel.org/linux-btrfs/05299dac9e4379aff3f24986b4ca3fafb04d5d=
+6a.1726527472.git.wqu@suse.com/
+
 
 >
->> +			 * won't be submitted as the page still has writeback flag
->> +			 * and will be skipped in the next check.
->> +			 *
->> +			 * This mixed writeback and dirty case is only possible for
->> +			 * subpage case.
->> +			 *
->> +			 * TODO: Remove this check after migrating compression to
->> +			 * regular submission.
->
-> Please don't add the TODOs, keep a note or add an assertion instead.
+> We're now in the middle of merge window but as the pull request has been
+> merged there's nothing blocking for-next so you can post the patches and
+> then add them.
 
-OK.
+Sure, but IIRC none of the small fixes gets reviewed, I'm still waiting
+for feedback.
+
+Appreciate any review on those fixes, especially for those compression
+path ones (the first 3), as they are really small fixes and will still
+be needed even if we later change how we submit compressed writes.
 
 Thanks,
 Qu
-
->
->> +			 */
->> +			if (wbc->sync_mode !=3D WB_SYNC_NONE ||
->> +			    btrfs_is_subpage(inode_to_fs_info(inode), mapping)) {
->>   				if (folio_test_writeback(folio))
->>   					submit_write_bio(bio_ctrl, 0);
->>   				folio_wait_writeback(folio);
->> --
->> 2.46.0
->>
->
 
