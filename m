@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8098-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D7297B51E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 23:23:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7456D97B54F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 23:40:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E58A4284C27
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 21:23:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933751C22E71
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 21:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCCF18BC12;
-	Tue, 17 Sep 2024 21:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D21191F95;
+	Tue, 17 Sep 2024 21:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iaeh4g9v"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KEW+utMs"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48CB41862B9
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2024 21:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227FC1531C5
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2024 21:40:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726608220; cv=none; b=fctQopAJxmUOfJ7eRuf9rzqwF6o01OSVU3U1N1y0QhuTTM+AVSW2AL8YsWY0uOiKb2hWNizhZOoa0OH9FbB0NIXnNce1xG/iLjWZO2i3lyUt8pwjkE8Le/yTZcyHWQwXLw5MvY27hl17gqhdN01v8PoIzRgalpRUiPgOHs8QVy4=
+	t=1726609249; cv=none; b=o+gfn+w62hKk+8Uc4ikiBfLderJWOVylUL0lSm33qnYKfclhhs+XQr98po9hmLhB/7xuyUYF1NOnWuI/B9g/tGhFTPOoS6so4IqoN/Fd+dAsOrsJbg6ZdSP7fSeKRjQOP/WmRf7QyDfv2Wkolx/lH4hlLtaOCdn8Jv1I2MYFsgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726608220; c=relaxed/simple;
-	bh=+arKzJ8oiy9UNhpmGeJsVqEfdQhzfDCBxHsExE39bPo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T5v3cZKg6RSxwxXuU1w8V1y3LECHYS4EO70mxy+cbugjrG2C2FHdeZ06JhXHP+uFjrrrLPJK4b5lJUXFI1ZOYKnkGTY+A0TIXdQA3a1rw5H1ZZgVCFNZUA+5xFYPMtBS7B24Ii+0SrUvzZTy7yfaG9MpUt9ypIld/Ayoxa5KDl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iaeh4g9v; arc=none smtp.client-ip=212.227.15.18
+	s=arc-20240116; t=1726609249; c=relaxed/simple;
+	bh=4bvRIu0nWOd3QEUV+5WKf4JPfcXLKHj+iDnmNEO0U8A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FhFPWdw9IpCYop9kwQI4kfusvOz7t+/oH5v2l6XaQam8imlvfiPz5BebRHChIkueKhnC+sm3fTzm7UZJChoSCr26hmd3k5hSLvVa2x0vJyEXQxOrDWFtPoABPreMJNouA7hOBEsJJiOKtUCse6MCPt0N6TDoFDgmppUi0RcvzeQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=KEW+utMs; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726608215; x=1727213015; i=quwenruo.btrfs@gmx.com;
-	bh=JvHfGTLe0eeKj6zkIk3BiUCiLqrkmw2tGFAxsO2pDSc=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1726609242; x=1727214042; i=quwenruo.btrfs@gmx.com;
+	bh=ZGlXF1mOQ4LGGehnKydMaZ9tnIRdx8monlLjfXACkL4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=iaeh4g9voqNUzRXRUGjDQGEbcBI4kVuWS1OjUGmtI3idA/VKuagLTHFR+7aNIHKD
-	 SBbY8DZgoRFswe0v//ibvXAvzgVr91k8K8vgJZbIN7rsBLt9t8s1dtM5RA70xYE8Q
-	 dD6Xxr3ffp2nZ/KbWDpbPgFKTupGzMEex67sbaHXITh8NnpOZg4Nd5dvCOjCTxJx7
-	 CLuEIYq8hUNom06OLFiG8MfsQANWX1LPkV5fDtVvKn59CH1TAkC5FW0vQCgvbm7oe
-	 +MTBr0CoV8+oj44RBcjJuxZwtVR/tkb+FzdqIyKY9JJdQuLWgsHkQ80Lhp3JgdhUB
-	 CbuNRFRwyOaEdDdjQw==
+	b=KEW+utMsmSastdjX8FVfTVY9dyqNd1xJhuiwQblZKorTRgQvRftsEamNasbg95Iy
+	 Q3BSbDsPZjgiCHEbLgUibJRWq6/mbKpWUTbA9wF5Ejo/PdZyspRSvfntLMhsq2sCc
+	 hw95ZzzJ8hEhWo8z1mSAvpkZnB2CTHqQfCqkrBcqYkvXoRFkk4gDLwRAjGXYA7OSQ
+	 wwiSByYACo1I8OgHRjWUgELbHlKZ26IB/ELwxuuwuwoXZav/o5dEn1yvEJiDfZZMj
+	 5DEpxtXt6x9iH3OIEzARh6+kQ/uv1UIwTg/CTdnnDD9N2oVvvfWJjHIxl/z2d876w
+	 fGQrXQsqqY+tipnSPQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRTN9-1seDJr1Zmn-00Y6ZT; Tue, 17
- Sep 2024 23:23:34 +0200
-Message-ID: <8cbc9893-5612-482e-ae4b-95545f9e100d@gmx.com>
-Date: Wed, 18 Sep 2024 06:53:32 +0930
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MCsU6-1shqFV42wi-002apE; Tue, 17
+ Sep 2024 23:40:42 +0200
+Message-ID: <2ffd987f-f767-4fd2-b684-0c95d418a977@gmx.com>
+Date: Wed, 18 Sep 2024 07:10:39 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: do not assume the full page range is not dirty in
- extent_writepage_io()
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <6239c8bb8ce319c2940d6469ffcb7f5f6641db79.1726011300.git.wqu@suse.com>
- <20240917165941.GH2920@twin.jikos.cz>
+Subject: Re: BTRFS critical, corrupt node, unaligned pointer, should be
+ aligned to 4096
+To: Chris Murphy <lists@colorremedies.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <47636de6-8270-4a24-b97a-df9c267439c7@app.fastmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,115 +89,114 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240917165941.GH2920@twin.jikos.cz>
+In-Reply-To: <47636de6-8270-4a24-b97a-df9c267439c7@app.fastmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0k5Kulc2ajV/lpsq21MynnXZzEdwuR1mE9yyZ0mbQ5peDo5p9mg
- t8s2+d4DAbUX5UWuyOCCVLCWJtJx8oF/bslvB04mdMoKOsOpvlWRJcZWZuTxk6DPo2zyJ4k
- rmA/sg9HMpKzj+7M8mav4zzHl4rCnFQfM1GfAWNGlfM1LsOqOBK/8m3Hrkc7NxBiZn//Phv
- GBD0qM8tELRENkoWYPEUw==
+X-Provags-ID: V03:K1:7/cHnN/xoV8oES0DO9avfm72cUS/EAiOh7np5qHzEQI5LgiSKbf
+ 9YBQql0XJrMe3kOYeaxFII/gT/EV6NOyz8Bvm2SGNFK3WgntsjBYrUW/bVZ/jDBiTw0JFVI
+ csn8C47HX/J6dkZiEBRTEzZk00bwzhMgD2soPSlkcQmvbQysOVvTsBvMInFc+OCn5W9OkWq
+ SfLEw2YrqKdnqFB4OVkWQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fVxC9dVRcUo=;zdF/7tIsX/F/WR53qrIKsVENwdj
- fVrLK6O5kJYcncNtMwVpeaVFbRIcizghmvJemk6hbZjdybTk4ijPudkQcDKKEZThrYhFfMQfh
- Ykmt8cv2nGmLvItA2GtiepuWFjyShR0JhZdC87FEsVT5bhOM8o7lUrvWDyxPwAJu1HI+zTgv7
- j12Wi+6NRgGesFx77+c0TpltQU/+SccGhkJP1dDI6XTnz/kgX3vyFaZJrM7Xv4hmhnIW4xXfo
- FjHEoFO0XvSLzBpdENoEFcgiC4+JLEAObnZ7A/wMO5QD+MK0xZ82nf3MkBGKenZDj81BcPxcI
- NDTc9g+ZONFd4jJhUSDiVVK2+42X1utcCuXlHLQ3KzlV6z8Gm+TII461U4610Pw7NnrX7yXCq
- 8umMyRHGY/amgAdXUwKznSbJgGAJXiT6wAZ4DnEG8mlLrnTXZ1hGKDpgl/89i4xCSAIc4GZMS
- 97LcjogdDy/hb76KkLPVYXFvT2ycyPwee3Zs5j2CJ/xvYwROXGF78V+u2fPLaSgvsWjivsZrI
- Gmrfx1Lla5aDYz4E/WreHcUvNM5/5Aw2K9vUsMwKURXMNKsZMPQyhbWy79qwVxgx2CHxzmY8V
- h9vB9GYqK5MVs2mRjr0Rk8jhSvM6YSUrnOl4dg70CRB7Fd1SP0ImOveUn0c0vj/7tJawpUtbO
- 72gX4Meh8CSzLhdG8JXqLEWDc9waUB/xOhOoWBhMpQ5VCXzv46xGfAx612jzbOjTVmW8RMJpu
- 7C3Iti39s6LX/StwW9B9hlasjYCZinZl3sVEUNkW4RWdEwi+p8T4e3hbx+uRF9f47LeFF3UT+
- mAKKN5LlB89P1+1It1yibjyq3NYyjvwQxezBoHo7trIz8=
+UI-OutboundReport: notjunk:1;M01:P0:2Ez7KgaUKTs=;PmpsjHcsqqTG72K8bxgZ39+1fIZ
+ 88N63EoHT+X2Yg2jITpBo6zwsLQX1pJxlkg1tjwGkBEp4Y1q7EOSQq1ux0bGXcA8eIRrLSftg
+ y2whFDhh5dDl2vExgsgrzSBm5xCevWPubAemy/m0fusWVdMI71s4TGijvStx/vyGK1EErRBwm
+ MF6D+lZvnoOeAT5ZitKg7mqN/jnNaJ6j9bRK1qBA5P9A31urSAt/+iOwzQvP3QtOsHCnS8qgN
+ 5xhIqPsORgEOxxSrec+FgG1jWVVu6A+A4TL550OoUiuJypWn0XrlnRKJv27lj4vSfY7kO/RQk
+ XQRgmMBjCVMup6J47tIO4Q6fISs1Y4WxJeC/PJuuxxb4KU8JvSXqccCjDfwyV1qCEj8aQSBlN
+ M9W6PePCvbJnb6wV6e3XtDPbmw871s09SuG3CNcOitqF0KrhNYKW4rWsIWzLxkuM0SVSeRaMc
+ 1Tmfy4UE77/cNI664uYScAAEOBx0/ze+UKIx4cl2eYF++60ewDGq1MuUuwlAnLvjxRpC2YTut
+ WGbD1ykLYW5CuTixI5z935q+eItmFWhNdRR2Wm+oQfEVvwIOxdSiTU7YQ0r0c5F2oHguEgnZj
+ ENhBAHA4wXXR2UY6pzYrRjQ7yVhuu3Kd0HHeTMAUX4S3xkUvy/5B4OSjJHzu6CW6UooFqGPG1
+ uOG8xX9A7zFoNxeH0gW3Yg/mmgt/bGahgc0iW/0ounkIpBbgZrqR3Q0Q4IFMoi5c0mqE9MYcN
+ kf+/QdFORXCHoWpnBv55sbsthC2IRoZASOUnfYKeaG/QlVp21CQW8BR90TxRdlwfX9Mv70C1N
+ IkveX9VwYHqBMMegcZ2Ia4y0Xc0JH2Y3kcPgnfZQH3L4w=
 
 
 
-=E5=9C=A8 2024/9/18 02:29, David Sterba =E5=86=99=E9=81=93:
-> On Wed, Sep 11, 2024 at 09:51:02AM +0930, Qu Wenruo wrote:
->> The function extent_writepage_io() will submit the dirty sectors inside
->> the page for the write.
->>
->> But recently to co-operate with the incoming subpage compression
->> enhancement, a new bitmap is introduced to
->> btrfs_bio_ctrl::submit_bitmap, to only avoid a subset of the dirty
->> range.
->>
->> This is because we can have the following cases with 64K page size:
->>
->>      0      16K       32K       48K       64K
->>      |      |/////////|         |/|
->>                                   52K
->>
->> For range [16K, 32K), we queue the dirty range for compression, which i=
-s
->> ran in a delayed workqueue.
->> Then for range [48K, 52K), we go through the regular submission path.
->>
->> In that case, our btrfs_bio_ctrl::submit_bitmap will exclude the range
->> [16K, 32K).
->>
->> The dirty flags for the range [16K, 32K) is only cleared when the
->> compression is done, by the extent_clear_unlock_delalloc() call inside
->> submit_one_async_extent().
->>
->> This patch fix the false alert by removing the
->> btrfs_folio_assert_not_dirty() check, since it's no longer correct for
->> subpage compression cases.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> This should be the last patch before the enablement of sector perfect
->> compression support for subpage.
->>
->> Locally I have already been testing the sector perfect compression, and
->> that's the last fix.
->>
->> All the subpage related fixes can be applied out of order as long as th=
-e
->> final enablement patch is at the end of the queue, but for now
->> my local branch has the following patch order (git log sequence):
->>
->>   btrfs: allow compression even if the range is not page aligned
->>   btrfs: do not assume the full page range is not dirty in extent_write=
-page_io()
->>   btrfs: make extent_range_clear_diryt_for_io() to handle sector size <=
- page size cases
->>   btrfs: wait for writeback if sector size is smaller than page size
->>   btrfs: compression: add an ASSERT() to ensure the read-in length is s=
-ane
->>   btrfs: zstd: make the compression path to handle sector size < page s=
-ize
->>   btrfs: zlib: make the compression path to handle sector size < page s=
-ize
+=E5=9C=A8 2024/9/18 03:34, Chris Murphy =E5=86=99=E9=81=93:
+> Happens with 6.10.6-6.10.9, does not happen with 6.9.7.
 >
-> That's great news. I don't think there's anything else of comparable
-> size missing from the subpage support.
-
-Well, one more submitted series, which slightly reworks the delalloc
-locking inside a page, to fix a possible double folio unlock which leads
-to some hang:
-
-https://lore.kernel.org/linux-btrfs/cover.1726441226.git.wqu@suse.com/
-
-Then we're able to enable the feature:
-
-https://lore.kernel.org/linux-btrfs/05299dac9e4379aff3f24986b4ca3fafb04d5d=
-6a.1726527472.git.wqu@suse.com/
-
-
+> Complete kernel messages are attached to the bug report
+> https://bugzilla.redhat.com/show_bug.cgi?id=3D2312886
 >
-> We're now in the middle of merge window but as the pull request has been
-> merged there's nothing blocking for-next so you can post the patches and
-> then add them.
+> kernel message excerpts:
+>
+> Sep 17 00:55:42 kernel: page: refcount:4 mapcount:0 mapping:00000000339e=
+ecab index:0xef2f60 pfn:0x1528ae
+> Sep 17 00:55:42 kernel: memcg:ffff9a2180399000
+> Sep 17 00:55:42 kernel: aops:btree_aops ino:1
+> Sep 17 00:55:42 kernel: flags: 0x17ffffd600422e(referenced|uptodate|lru|=
+workingset|private|writeback|node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
+> Sep 17 00:55:42 kernel: raw: 0017ffffd600422e ffffe31e054a2bc8 ffffe31e0=
+54a2b48 ffff9a2180488338
+> Sep 17 00:55:42 kernel: raw: 0000000000ef2f60 ffff9a232a13c1e0 00000004f=
+fffffff ffff9a2180399000
+> Sep 17 00:55:42 kernel: page dumped because: eb page dump
+> Sep 17 00:55:43 kernel: BTRFS critical (device vda3): corrupt node: root=
+=3D2 block=3D64205750272 slot=3D121, unaligned pointer, have 64012238993 s=
+hould be aligned to 4096
+> Sep 17 00:55:43 kernel: BTRFS info (device vda3): node 64205750272 level=
+ 1 gen 2593 total ptrs 206 free spc 287 owner 2
+> ...
+> Sep 17 00:55:43 kernel: BTRFS error (device vda3): block=3D64205750272 w=
+rite time tree block corruption detected
+> Sep 17 00:55:43 kernel: page: refcount:4 mapcount:0 mapping:00000000339e=
+ecab index:0xef3a90 pfn:0x1ce336
+> Sep 17 00:55:43 kernel: memcg:ffff9a2180399000
+> Sep 17 00:55:43 kernel: aops:btree_aops ino:1
+> Sep 17 00:55:43 kernel: flags: 0x17ffffd600422e(referenced|uptodate|lru|=
+workingset|private|writeback|node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
+> Sep 17 00:55:43 kernel: raw: 0017ffffd600422e ffffe31e04b94988 ffffe31e0=
+738cdc8 ffff9a2180488338
+> Sep 17 00:55:43 kernel: raw: 0000000000ef3a90 ffff9a2192f701e0 00000004f=
+fffffff ffff9a2180399000
+> Sep 17 00:55:43 kernel: page dumped because: eb page dump
+> Sep 17 00:55:43 kernel: BTRFS critical (device vda3): corrupt leaf: root=
+=3D256 block=3D64217481216 slot=3D3 ino=3D16205860, invalid dir item type,=
+ have 33 expect (0, 9)
+>
+> ...
+> Sep 17 00:55:43 kernel: BTRFS error (device vda3): block=3D64217481216 w=
+rite time tree block corruption detected
+> Sep 17 00:55:43 kernel: BTRFS: error (device vda3) in btrfs_commit_trans=
+action:2505: errno=3D-5 IO failure (Error while writing out transaction)
+> Sep 17 00:55:43 kernel: BTRFS info (device vda3 state E): forced readonl=
+y
+>
+>
 
-Sure, but IIRC none of the small fixes gets reviewed, I'm still waiting
-for feedback.
+[17 Sep]
+It shows everything we need to know:
 
-Appreciate any review on those fixes, especially for those compression
-path ones (the first 3), as they are really small fixes and will still
-be needed even if we later change how we submit compressed writes.
+  kernel: #011key 120 (40535728128 168 4096) block 64012189696 gen 2592
+  kernel: #011key 121 (2774366982960963584 113 5236482350604877970)
+block 64012238993 gen 2592
+  kernel: #011key 122 (40538132480 168 4096) block 64012255232 gen 2592
+
+Obviously the key 121 is corrupted and not continuous with other keys.
+
+Furthermore, the generation looks good, so it looks like a range of
+memory is corrupted.
+The affected range includes the key and block ptr bytenr.
+
+And for the other write time failure, it may be a bit flip (0x01 ->
+0x21), at least there is no other obvious corruption unlike the node
+pointer error.
+
+Considering it's a VM for fedora project, I guess it has ECC memory so
+that we can rule out the memory corruption by hardware.
+
+[9 SEP]
+Is the dmesg truncated? For every EUCLEAN case from
+__btrfs_free_extent() we should have an error message line (that's the
+standard practice to have an error message for each EUCLEAN error).
+
+I can not see the needed error line, thus hard to say.
 
 Thanks,
 Qu
+
+> --
+> Chris Murphy
+>
 
