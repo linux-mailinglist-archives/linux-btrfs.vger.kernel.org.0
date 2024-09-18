@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8101-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7456D97B54F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 23:40:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A4CA97B756
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 07:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 933751C22E71
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2024 21:40:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC1CB1F25A54
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 05:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46D21191F95;
-	Tue, 17 Sep 2024 21:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B1714D6FE;
+	Wed, 18 Sep 2024 05:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KEW+utMs"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lYcvdKOg"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227FC1531C5
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2024 21:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B3213CFBC
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 05:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726609249; cv=none; b=o+gfn+w62hKk+8Uc4ikiBfLderJWOVylUL0lSm33qnYKfclhhs+XQr98po9hmLhB/7xuyUYF1NOnWuI/B9g/tGhFTPOoS6so4IqoN/Fd+dAsOrsJbg6ZdSP7fSeKRjQOP/WmRf7QyDfv2Wkolx/lH4hlLtaOCdn8Jv1I2MYFsgA=
+	t=1726636300; cv=none; b=ND8n6VVu7frmSETZD57wc5so0CZx7cUm/1vl7QbJykCf3vgzO7bSJN6HnX4BJVPvAkuh/FN9+Z/WDaF83HZmkeah+Cd5bLoX5XInjYajyCHC/cY/7Rm72jjw5yNz33zYqi+aZY1oxSeJ5AYtGqcmUFk1BSNng8saxF693/phneo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726609249; c=relaxed/simple;
-	bh=4bvRIu0nWOd3QEUV+5WKf4JPfcXLKHj+iDnmNEO0U8A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=FhFPWdw9IpCYop9kwQI4kfusvOz7t+/oH5v2l6XaQam8imlvfiPz5BebRHChIkueKhnC+sm3fTzm7UZJChoSCr26hmd3k5hSLvVa2x0vJyEXQxOrDWFtPoABPreMJNouA7hOBEsJJiOKtUCse6MCPt0N6TDoFDgmppUi0RcvzeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=KEW+utMs; arc=none smtp.client-ip=212.227.15.19
+	s=arc-20240116; t=1726636300; c=relaxed/simple;
+	bh=A1cvnmMHspL5o5NuVtmTeRfYb32O3p1sboubhz5vv0c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M4oMtiVYRKJndL9i7S0oPT95wvWZeyvlPq+0i+EDimGmNIeuDLcQo4JWcwHL3AvgK0uXnqVy23sSlhdEsVQxKOlKnWtPdrZ3aNUdqLJE33zva40p3sBbCqRGjFG5sSWtqnm98HV2TTQMiZ8rcgIpED7lED34Aly6Nht1hud0mpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lYcvdKOg; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726609242; x=1727214042; i=quwenruo.btrfs@gmx.com;
-	bh=ZGlXF1mOQ4LGGehnKydMaZ9tnIRdx8monlLjfXACkL4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1726636294; x=1727241094; i=quwenruo.btrfs@gmx.com;
+	bh=lK22khm5i6oNBsZsbfKAOOPWaVjV48UJSdez5iUwCGY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=KEW+utMsmSastdjX8FVfTVY9dyqNd1xJhuiwQblZKorTRgQvRftsEamNasbg95Iy
-	 Q3BSbDsPZjgiCHEbLgUibJRWq6/mbKpWUTbA9wF5Ejo/PdZyspRSvfntLMhsq2sCc
-	 hw95ZzzJ8hEhWo8z1mSAvpkZnB2CTHqQfCqkrBcqYkvXoRFkk4gDLwRAjGXYA7OSQ
-	 wwiSByYACo1I8OgHRjWUgELbHlKZ26IB/ELwxuuwuwoXZav/o5dEn1yvEJiDfZZMj
-	 5DEpxtXt6x9iH3OIEzARh6+kQ/uv1UIwTg/CTdnnDD9N2oVvvfWJjHIxl/z2d876w
-	 fGQrXQsqqY+tipnSPQ==
+	b=lYcvdKOgC6OSTr28+Z3yV5B2nniI309njVQtPVbewhCOmKRxff5b6cDxNbv6fCKf
+	 lg46WEzw+1SSyZPGNIdYg3+t9hw0ZRT8I4230/IJYoz6xNxtaNxZvWwncAbH/tv4L
+	 +XRFjlLrIaeKuhnXbggXqQXKw3KGwOPDYiLbp3wHAAm/mlO11pH6Sb78vC4CmmSZ3
+	 U89WTr8AfCQxhDxYzcp9LfPU43fwKCCM/iB7P3qgpK4s4df/M5fpJvcdcmOh/MZg8
+	 5SKdvx3EwXfvN8LGFxJUvDkf5UWlRam0okfYBpA+pgMzZvq3HfQxqS6xnQbD+wpyb
+	 kVhjLaLULxw4xoMtZQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MCsU6-1shqFV42wi-002apE; Tue, 17
- Sep 2024 23:40:42 +0200
-Message-ID: <2ffd987f-f767-4fd2-b684-0c95d418a977@gmx.com>
-Date: Wed, 18 Sep 2024 07:10:39 +0930
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYvcA-1sUhlO1g3M-00OVdE; Wed, 18
+ Sep 2024 07:11:34 +0200
+Message-ID: <7d10742c-41eb-4b7d-9ff4-189eb71f85b7@gmx.com>
+Date: Wed, 18 Sep 2024 14:41:32 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,17 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: BTRFS critical, corrupt node, unaligned pointer, should be
- aligned to 4096
-To: Chris Murphy <lists@colorremedies.com>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <47636de6-8270-4a24-b97a-df9c267439c7@app.fastmail.com>
+Subject: Re: SSD stuck in read-only mode with call trace and itemoff /
+ itemsize errors
+To: Brent Bartlett <brent.bartlett1@gmail.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <CACSb8pLWjCPBvfYNGqFQ_6V06SFSqdm-Ea=SC6g+D9_=qygvgw@mail.gmail.com>
+ <57d77231-4d07-4773-93c4-0f27bd9a851c@gmx.com>
+ <CACSb8p+PLVhF8iKDjxr_jD+q8tAuG99NdF7Z2EQ5UZQqt9aJ4Q@mail.gmail.com>
+ <6fc7b8e6-ae80-411b-8313-8e89d2c3a6d7@gmx.com>
+ <CACSb8pKHFYYBVA7Jri+XnpMnrfRtfym8Xc0T4uVP3CyftecwEQ@mail.gmail.com>
+ <8cdf0eeb-0c88-4900-8e85-e793cffe7330@gmx.com>
+ <CACSb8p+F0njvqFg0-ZVZ0bTtgVGwvV6pSYdWsi=0Cg7BK1qh=g@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,114 +95,291 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <47636de6-8270-4a24-b97a-df9c267439c7@app.fastmail.com>
+In-Reply-To: <CACSb8p+F0njvqFg0-ZVZ0bTtgVGwvV6pSYdWsi=0Cg7BK1qh=g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7/cHnN/xoV8oES0DO9avfm72cUS/EAiOh7np5qHzEQI5LgiSKbf
- 9YBQql0XJrMe3kOYeaxFII/gT/EV6NOyz8Bvm2SGNFK3WgntsjBYrUW/bVZ/jDBiTw0JFVI
- csn8C47HX/J6dkZiEBRTEzZk00bwzhMgD2soPSlkcQmvbQysOVvTsBvMInFc+OCn5W9OkWq
- SfLEw2YrqKdnqFB4OVkWQ==
+X-Provags-ID: V03:K1:CpXYKQEgsKVcAVl5Y3wLnnAGdf4AcApr18tqY96BsgGx9KGbAm8
+ NP9d+Q9BG3mncxpQLo89x/gvmlKyFkEjfLcs1Mag1Twnh/yg5gcMwCinypzPJNAw80iPpBr
+ bilKIwScTTDKKS221iImzuUQPrAyRCwkTMn8CxMMdCjRdYZdDM0dpTc5DwhiFM8cp3ie4K9
+ j9l7H70RBa3JcQY6VmbpA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:2Ez7KgaUKTs=;PmpsjHcsqqTG72K8bxgZ39+1fIZ
- 88N63EoHT+X2Yg2jITpBo6zwsLQX1pJxlkg1tjwGkBEp4Y1q7EOSQq1ux0bGXcA8eIRrLSftg
- y2whFDhh5dDl2vExgsgrzSBm5xCevWPubAemy/m0fusWVdMI71s4TGijvStx/vyGK1EErRBwm
- MF6D+lZvnoOeAT5ZitKg7mqN/jnNaJ6j9bRK1qBA5P9A31urSAt/+iOwzQvP3QtOsHCnS8qgN
- 5xhIqPsORgEOxxSrec+FgG1jWVVu6A+A4TL550OoUiuJypWn0XrlnRKJv27lj4vSfY7kO/RQk
- XQRgmMBjCVMup6J47tIO4Q6fISs1Y4WxJeC/PJuuxxb4KU8JvSXqccCjDfwyV1qCEj8aQSBlN
- M9W6PePCvbJnb6wV6e3XtDPbmw871s09SuG3CNcOitqF0KrhNYKW4rWsIWzLxkuM0SVSeRaMc
- 1Tmfy4UE77/cNI664uYScAAEOBx0/ze+UKIx4cl2eYF++60ewDGq1MuUuwlAnLvjxRpC2YTut
- WGbD1ykLYW5CuTixI5z935q+eItmFWhNdRR2Wm+oQfEVvwIOxdSiTU7YQ0r0c5F2oHguEgnZj
- ENhBAHA4wXXR2UY6pzYrRjQ7yVhuu3Kd0HHeTMAUX4S3xkUvy/5B4OSjJHzu6CW6UooFqGPG1
- uOG8xX9A7zFoNxeH0gW3Yg/mmgt/bGahgc0iW/0ounkIpBbgZrqR3Q0Q4IFMoi5c0mqE9MYcN
- kf+/QdFORXCHoWpnBv55sbsthC2IRoZASOUnfYKeaG/QlVp21CQW8BR90TxRdlwfX9Mv70C1N
- IkveX9VwYHqBMMegcZ2Ia4y0Xc0JH2Y3kcPgnfZQH3L4w=
+UI-OutboundReport: notjunk:1;M01:P0:IS4G4hDDKsU=;5o6KcfJGzKftvbCfSMMM5kzTt0O
+ xADL3pfjiQ7NyOruEgcDHd9PVIgVBHqDqGIztgVKGoTGwGjfo3fqGGaFuYIXRrtWV0yQVf0vW
+ B+ALlhrWzTpgg1rVgUMGDhxFFvDI5n7HEdPdmXFk0MDFlDCJE1gl+5Vg3ioWhmuN4s9IJFMrI
+ j9f2i4xvFs/pi59BLD3ELcK8LgxQdLdohwB6hgOSJPY2hmcvmOC65Vnw5PJaeRY5c4rUNHkef
+ eJKhssqVnFr7JaWrBhmOHhboInZ41uEbipbeOMCf2u0xbqQz3EdlAa7LNOICTAXaV8eNE8ILX
+ 1DHhhJSZMtuNewj0nW1uVcWt84LaHW9P5JHd9M3IFw1WC210JC8nRt/L8hzBZAaZLUOdIqGAe
+ so+nIjWXvkw5IOut+nZP0PDju8h0A2ganxxfpSSuTupw9mimsLq13NTe3aTsNf/mpY/VXPTh5
+ kLdaeK0+8OhzPZ2RIQ02krLKJLlqpVfKxFZOUfDwIyoG4Wnz3TI4YsXSCniuJmi0i8hbBOtXT
+ AM8kK5xakbXOr9EKjwrkaU4a2c+WohcYWBEtfc51I9CbDA/HP1+fdHZkU6fDkWd5U5ytMvORs
+ rwVrv1IdODGDg3j+thDOCfJWnuWrygAiqKE2a62oNZlfGqkMC3r0KybeSoWBaL8wTJ5PJJlGu
+ +nR7H2LfxLARBcpURiFYVXd70dZ0E2U/hS7C8ylOeuUyEY1pYfvh25DFSDqZTsEZIzhjBw2Hh
+ bMLqD3/wGfcC2ShA0tme7BU5NwvtQYFbJ97QR7SJ1LHfleDD6wMGY/IngnZUAfgB8R8YOinAI
+ rvRuUY/CyJPonaPgcjcKOKFkBa+Z+8EtBbVaACvszfICY=
 
 
 
-=E5=9C=A8 2024/9/18 03:34, Chris Murphy =E5=86=99=E9=81=93:
-> Happens with 6.10.6-6.10.9, does not happen with 6.9.7.
->
-> Complete kernel messages are attached to the bug report
-> https://bugzilla.redhat.com/show_bug.cgi?id=3D2312886
->
-> kernel message excerpts:
->
-> Sep 17 00:55:42 kernel: page: refcount:4 mapcount:0 mapping:00000000339e=
-ecab index:0xef2f60 pfn:0x1528ae
-> Sep 17 00:55:42 kernel: memcg:ffff9a2180399000
-> Sep 17 00:55:42 kernel: aops:btree_aops ino:1
-> Sep 17 00:55:42 kernel: flags: 0x17ffffd600422e(referenced|uptodate|lru|=
-workingset|private|writeback|node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
-> Sep 17 00:55:42 kernel: raw: 0017ffffd600422e ffffe31e054a2bc8 ffffe31e0=
-54a2b48 ffff9a2180488338
-> Sep 17 00:55:42 kernel: raw: 0000000000ef2f60 ffff9a232a13c1e0 00000004f=
-fffffff ffff9a2180399000
-> Sep 17 00:55:42 kernel: page dumped because: eb page dump
-> Sep 17 00:55:43 kernel: BTRFS critical (device vda3): corrupt node: root=
-=3D2 block=3D64205750272 slot=3D121, unaligned pointer, have 64012238993 s=
-hould be aligned to 4096
-> Sep 17 00:55:43 kernel: BTRFS info (device vda3): node 64205750272 level=
- 1 gen 2593 total ptrs 206 free spc 287 owner 2
-> ...
-> Sep 17 00:55:43 kernel: BTRFS error (device vda3): block=3D64205750272 w=
-rite time tree block corruption detected
-> Sep 17 00:55:43 kernel: page: refcount:4 mapcount:0 mapping:00000000339e=
-ecab index:0xef3a90 pfn:0x1ce336
-> Sep 17 00:55:43 kernel: memcg:ffff9a2180399000
-> Sep 17 00:55:43 kernel: aops:btree_aops ino:1
-> Sep 17 00:55:43 kernel: flags: 0x17ffffd600422e(referenced|uptodate|lru|=
-workingset|private|writeback|node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
-> Sep 17 00:55:43 kernel: raw: 0017ffffd600422e ffffe31e04b94988 ffffe31e0=
-738cdc8 ffff9a2180488338
-> Sep 17 00:55:43 kernel: raw: 0000000000ef3a90 ffff9a2192f701e0 00000004f=
-fffffff ffff9a2180399000
-> Sep 17 00:55:43 kernel: page dumped because: eb page dump
-> Sep 17 00:55:43 kernel: BTRFS critical (device vda3): corrupt leaf: root=
-=3D256 block=3D64217481216 slot=3D3 ino=3D16205860, invalid dir item type,=
- have 33 expect (0, 9)
->
-> ...
-> Sep 17 00:55:43 kernel: BTRFS error (device vda3): block=3D64217481216 w=
-rite time tree block corruption detected
-> Sep 17 00:55:43 kernel: BTRFS: error (device vda3) in btrfs_commit_trans=
-action:2505: errno=3D-5 IO failure (Error while writing out transaction)
-> Sep 17 00:55:43 kernel: BTRFS info (device vda3 state E): forced readonl=
-y
->
->
+=E5=9C=A8 2024/9/18 14:29, Brent Bartlett =E5=86=99=E9=81=93:
+> I used Ventoy to boot into a memtest86+ ISO. I got errors, so it looks
+> like there's a problem with at least one of my memory modules.
 
-[17 Sep]
-It shows everything we need to know:
+Great, btrfs is again acting as the second best memtest tool. :)
 
-  kernel: #011key 120 (40535728128 168 4096) block 64012189696 gen 2592
-  kernel: #011key 121 (2774366982960963584 113 5236482350604877970)
-block 64012238993 gen 2592
-  kernel: #011key 122 (40538132480 168 4096) block 64012255232 gen 2592
-
-Obviously the key 121 is corrupted and not continuous with other keys.
-
-Furthermore, the generation looks good, so it looks like a range of
-memory is corrupted.
-The affected range includes the key and block ptr bytenr.
-
-And for the other write time failure, it may be a bit flip (0x01 ->
-0x21), at least there is no other obvious corruption unlike the node
-pointer error.
-
-Considering it's a VM for fedora project, I guess it has ECC memory so
-that we can rule out the memory corruption by hardware.
-
-[9 SEP]
-Is the dmesg truncated? For every EUCLEAN case from
-__btrfs_free_extent() we should have an error message line (that's the
-standard practice to have an error message for each EUCLEAN error).
-
-I can not see the needed error line, thus hard to say.
+Then you can run the "btrfs check --repair" on a system which can pass
+memtest, and that should fix the error.
+Just to be extra safe, you can run "btrfs check --readonly" after above
+fix to make sure everything is fine.
 
 Thanks,
 Qu
-
-> --
-> Chris Murphy
+>
+> On Fri, Sep 6, 2024, 3:20 PM Qu Wenruo <quwenruo.btrfs@gmx.com
+> <mailto:quwenruo.btrfs@gmx.com>> wrote:
+>
+>
+>
+>     =E5=9C=A8 2024/9/7 07:41, Brent Bartlett =E5=86=99=E9=81=93:
+>      > I'm not familiar with memtest.=C2=A0 This is the program for test=
+ing RAM?
+>
+>     You can either go memtest86+, it supports both legacy BIOS and UEFI
+>     payload.
+>
+>     That should be the most comprehensive one, as it acts an independent
+>     UEFI payload, with minimal amount of memory reserved.
+>
+>     The disadvantage is you need to boot into memtest86+ payload to do
+>     the test.
+>
+>     https://wiki.archlinux.org/title/Stress_testing#MemTest86+
+>     <https://wiki.archlinux.org/title/Stress_testing#MemTest86+>
+>
+>
+>
+>     Another but less comprehensive one is memtester, it will lock certai=
+n
+>     amount of memory and do the tests in user space.
+>
+>     The problem is kernel can still reserve quite some memory, and that =
+part
+>     can not be tested.
+>     But at least you do not need to boot into another UEFI payload.
+>
+>     Thanks,
+>     Qu
+>      >
+>      > On Fri, Sep 6, 2024, 2:55 PM Qu Wenruo <quwenruo.btrfs@gmx.com
+>     <mailto:quwenruo.btrfs@gmx.com>
+>      > <mailto:quwenruo.btrfs@gmx.com <mailto:quwenruo.btrfs@gmx.com>>>
+>     wrote:
+>      >
+>      >
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0=E5=9C=A8 2024/9/7 04:12, Brent Bartlett =E5=
+=86=99=E9=81=93:
+>      >=C2=A0 =C2=A0 =C2=A0 > Here's the output from btrfs check --mode=
+=3Dlowmem <device>
+>      >=C2=A0 =C2=A0 =C2=A0 >
+>      >=C2=A0 =C2=A0 =C2=A0 > Opening filesystem to check...
+>      >=C2=A0 =C2=A0 =C2=A0 > Checking filesystem on /dev/nvme0n1p2
+>      >=C2=A0 =C2=A0 =C2=A0 > UUID: 12e7a361-f58a-4611-81ff-ed8303782bcb
+>      >=C2=A0 =C2=A0 =C2=A0 > [1/7] checking root items
+>      >=C2=A0 =C2=A0 =C2=A0 > [2/7] checking extents
+>      >=C2=A0 =C2=A0 =C2=A0 > ERROR: extent [228558536704 16384] lost ref=
+erencer (owner:
+>     1281,
+>      >=C2=A0 =C2=A0 =C2=A0level: 0)
+>      >=C2=A0 =C2=A0 =C2=A0 > ERROR: extent[335642972160, 4096] reference=
+r count
+>     mismatch (root:
+>      >=C2=A0 =C2=A0 =C2=A0 > 257, owner: 9223372036856479121, offset: 30=
+5790976) wanted: 1,
+>      >=C2=A0 =C2=A0 =C2=A0have: 0
+>      >=C2=A0 =C2=A0 =C2=A0 > ERROR: file extent[1703313 305790976] root =
+257 owner 257
+>     backref lost
+>      >=C2=A0 =C2=A0 =C2=A0 > ERROR: errors found in extent allocation tr=
+ee or chunk
+>     allocation
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0So that's the only corruption (at least inside=
+ metadata).
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0IIRC "btrfs check --repair" is able to fix tha=
+t, but just in
+>     case, you
+>      >=C2=A0 =C2=A0 =C2=A0may want to backup the important data first.
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0Meanwhile I'm more interested in the memtest r=
+esult though.
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0Thanks,
+>      >=C2=A0 =C2=A0 =C2=A0Qu
+>      >
+>      >=C2=A0 =C2=A0 =C2=A0 > [3/7] checking free space tree
+>      >=C2=A0 =C2=A0 =C2=A0 > [4/7] checking fs roots
+>      >=C2=A0 =C2=A0 =C2=A0 > [5/7] checking only csums items (without ve=
+rifying data)
+>      >=C2=A0 =C2=A0 =C2=A0 > [6/7] checking root refs done with fs roots=
+ in lowmem
+>     mode, skipping
+>      >=C2=A0 =C2=A0 =C2=A0 > [7/7] checking quota groups skipped (not en=
+abled on this FS)
+>      >=C2=A0 =C2=A0 =C2=A0 > found 771521245184 bytes used, error(s) fou=
+nd
+>      >=C2=A0 =C2=A0 =C2=A0 > total csum bytes: 750323744
+>      >=C2=A0 =C2=A0 =C2=A0 > total tree bytes: 2901278720
+>      >=C2=A0 =C2=A0 =C2=A0 > total fs tree bytes: 1938309120
+>      >=C2=A0 =C2=A0 =C2=A0 > total extent tree bytes: 166903808
+>      >=C2=A0 =C2=A0 =C2=A0 > btree space waste bytes: 365206037
+>      >=C2=A0 =C2=A0 =C2=A0 > file data blocks allocated: 857740091392
+>      >=C2=A0 =C2=A0 =C2=A0 > referenced 855826853888
+>      >=C2=A0 =C2=A0 =C2=A0 >
+>      >=C2=A0 =C2=A0 =C2=A0 > and here's the output from btrfs check <dev=
+ice>
+>      >=C2=A0 =C2=A0 =C2=A0 >
+>      >=C2=A0 =C2=A0 =C2=A0 > Opening filesystem to check...
+>      >=C2=A0 =C2=A0 =C2=A0 > Checking filesystem on /dev/nvme0n1p2
+>      >=C2=A0 =C2=A0 =C2=A0 > UUID: 12e7a361-f58a-4611-81ff-ed8303782bcb
+>      >=C2=A0 =C2=A0 =C2=A0 > [1/7] checking root items
+>      >=C2=A0 =C2=A0 =C2=A0 > [2/7] checking extents
+>      >=C2=A0 =C2=A0 =C2=A0 > tree extent[228558536704, 16384] root 257 h=
+as no backref
+>     item in
+>      >=C2=A0 =C2=A0 =C2=A0extent tree
+>      >=C2=A0 =C2=A0 =C2=A0 > tree extent[228558536704, 16384] root 1281 =
+has no tree
+>     block found
+>      >=C2=A0 =C2=A0 =C2=A0 > incorrect global backref count on 228558536=
+704 found 2
+>     wanted 1
+>      >=C2=A0 =C2=A0 =C2=A0 > backpointer mismatch on [228558536704 16384=
+]
+>      >=C2=A0 =C2=A0 =C2=A0 > data extent[335642972160, 4096] referencer =
+count mismatch
+>     (root 257
+>      >=C2=A0 =C2=A0 =C2=A0 > owner 1703313 offset 305790976) wanted 0 ha=
+ve 1
+>      >=C2=A0 =C2=A0 =C2=A0 > data extent[335642972160, 4096] bytenr mims=
+match, extent
+>     item bytenr
+>      >=C2=A0 =C2=A0 =C2=A0 > 335642972160 file item bytenr 0
+>      >=C2=A0 =C2=A0 =C2=A0 > data extent[335642972160, 4096] referencer =
+count mismatch
+>     (root 257
+>      >=C2=A0 =C2=A0 =C2=A0 > owner 9223372036856479121 offset 305790976)=
+ wanted 1 have 0
+>      >=C2=A0 =C2=A0 =C2=A0 > backpointer mismatch on [335642972160 4096]
+>      >=C2=A0 =C2=A0 =C2=A0 > ERROR: errors found in extent allocation tr=
+ee or chunk
+>     allocation
+>      >=C2=A0 =C2=A0 =C2=A0 > [3/7] checking free space tree
+>      >=C2=A0 =C2=A0 =C2=A0 > [4/7] checking fs roots
+>      >=C2=A0 =C2=A0 =C2=A0 > [5/7] checking only csums items (without ve=
+rifying data)
+>      >=C2=A0 =C2=A0 =C2=A0 > [6/7] checking root refs
+>      >=C2=A0 =C2=A0 =C2=A0 > [7/7] checking quota groups skipped (not en=
+abled on this FS)
+>      >=C2=A0 =C2=A0 =C2=A0 > found 771521236992 bytes used, error(s) fou=
+nd
+>      >=C2=A0 =C2=A0 =C2=A0 > total csum bytes: 750323744
+>      >=C2=A0 =C2=A0 =C2=A0 > total tree bytes: 2901278720
+>      >=C2=A0 =C2=A0 =C2=A0 > total fs tree bytes: 1938309120
+>      >=C2=A0 =C2=A0 =C2=A0 > total extent tree bytes: 166903808
+>      >=C2=A0 =C2=A0 =C2=A0 > btree space waste bytes: 365206037
+>      >=C2=A0 =C2=A0 =C2=A0 > file data blocks allocated: 857740091392
+>      >=C2=A0 =C2=A0 =C2=A0 > referenced 855826853888
+>      >=C2=A0 =C2=A0 =C2=A0 >
+>      >=C2=A0 =C2=A0 =C2=A0 > Thank you
+>      >=C2=A0 =C2=A0 =C2=A0 >
+>      >=C2=A0 =C2=A0 =C2=A0 > On Fri, Sep 6, 2024 at 1:39=E2=80=AFAM Qu W=
+enruo
+>     <quwenruo.btrfs@gmx.com <mailto:quwenruo.btrfs@gmx.com>
+>      >=C2=A0 =C2=A0 =C2=A0<mailto:quwenruo.btrfs@gmx.com
+>     <mailto:quwenruo.btrfs@gmx.com>>> wrote:
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> =E5=9C=A8 2024/9/6 10:29, Brent Bartlett =
+=E5=86=99=E9=81=93:
+>      >=C2=A0 =C2=A0 =C2=A0 >>> I have an SSD drive that was mounted by t=
+he system as
+>     read-only
+>      >=C2=A0 =C2=A0 =C2=A0due to
+>      >=C2=A0 =C2=A0 =C2=A0 >>> errors. I have posted my full dmesg here:
+>      >=C2=A0 =C2=A0 =C2=A0 >>> https://pastebin.com/BDQ9eUVc
+>     <https://pastebin.com/BDQ9eUVc> <https://pastebin.com/BDQ9eUVc
+>     <https://pastebin.com/BDQ9eUVc>>
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> Great you have posted the full output:
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> [=C2=A0 =C2=A036.195752]=C2=A0 item 123 ke=
+y (228558536704 169 0) itemoff
+>     12191
+>      >=C2=A0 =C2=A0 =C2=A0itemsize 33
+>      >=C2=A0 =C2=A0 =C2=A0 >> [=C2=A0 =C2=A036.195754]=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 extent refs 1 gen 101460 flags 2
+>      >=C2=A0 =C2=A0 =C2=A0 >> [=C2=A0 =C2=A036.195754]=C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 ref#0: tree block backref root 1281
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> This is the offending backref item for the=
+ tree block.
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> But what your fs is expecting is:
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> [=C2=A0 =C2=A036.195988] BTRFS critical (d=
+evice nvme0n1p2 state
+>     EA): unable to
+>      >=C2=A0 =C2=A0 =C2=A0 >> find ref byte nr 228558536704 parent 0 roo=
+t 257 owner 0
+>     offset 0
+>      >=C2=A0 =C2=A0 =C2=A0slot 124
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> hex(1281) =3D 0x501
+>      >=C2=A0 =C2=A0 =C2=A0 >> hex(257)=C2=A0 =3D 0x101
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> Another bitflip.
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> I'm pretty sure "btrfs check" will just gi=
+ve the same error.
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> And this really looks like something wrong=
+ with your hardware
+>      >=C2=A0 =C2=A0 =C2=A0memory.
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >>>
+>      >=C2=A0 =C2=A0 =C2=A0 >>> Please let me know if you need any other =
+information. How
+>      >=C2=A0 =C2=A0 =C2=A0should I proceed?
+>      >=C2=A0 =C2=A0 =C2=A0 >>>
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> It's strongly recommend to run a full memt=
+est before
+>     doing anything.
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> I'd say your previous RO flips may also be=
+ caused by your
+>     faulty
+>      >=C2=A0 =C2=A0 =C2=A0 >> hardware memory too.
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> Other than that, please provide the follow=
+ing output on
+>     another
+>      >=C2=A0 =C2=A0 =C2=A0system:
+>      >=C2=A0 =C2=A0 =C2=A0 >> (The lowmem mode output is a little more h=
+uman readable)
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> # btrfs check --mode=3Dlowmem <device>
+>      >=C2=A0 =C2=A0 =C2=A0 >> # btrfs check <device>
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> To make sure if that's the only corruption=
+, and we can
+>     determine
+>      >=C2=A0 =C2=A0 =C2=A0what to
+>      >=C2=A0 =C2=A0 =C2=A0 >> do next.
+>      >=C2=A0 =C2=A0 =C2=A0 >>
+>      >=C2=A0 =C2=A0 =C2=A0 >> Thanks,
+>      >=C2=A0 =C2=A0 =C2=A0 >> Qu
+>      >
 >
 
