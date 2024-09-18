@@ -1,204 +1,180 @@
-Return-Path: <linux-btrfs+bounces-8116-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8117-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7142597C120
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 22:58:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 654FD97C16A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 23:35:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88A1BB21F30
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 20:58:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4241F21255
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 21:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE101CB30F;
-	Wed, 18 Sep 2024 20:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E274E1CB30A;
+	Wed, 18 Sep 2024 21:35:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BaRbXE6p"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WOHCUxmp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C389C1CA6A5
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 20:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0FE1C9EC9
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 21:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726693094; cv=none; b=kvt53k2Qn2HDEHP2GYiPaReH+6Z7sxmYui4rRl6O015jWYGRyzfn44rtKacOPDq/aatfD4S14tG6OA39iRyWX/Z1b1UoQNJQs9W7l3ZqCTsynlc1maGg5gZujeTcz/0UVbjsGOVQTGQ5HDMnbthL4cWoTSkU/h2TK24OSwVh83c=
+	t=1726695300; cv=none; b=E+zCpE2UPmX/ToQ6drdYcAFvi1BpsZmqcVQNFd8YvmJ7gessf/TaBx/Sc9gu/ZWnWAyfMivG29OheWyAAGRIdcxfiQSAZMR+EpO4+mFqw2wFmHjDAQlk6ScqBY5W6/i0XEPIyrPGwtPV6Qu2vRMK/eOjDA1AY0MoL9W9FWjCqCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726693094; c=relaxed/simple;
-	bh=+rOcLYcxegJxwXQTQxXeqLKEYpW2/XQEqWIBhETWjM8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K75a0soCf7EtswiLWJKquE32VWVkVKMguyyz3cPQ+dyaT5jMoGeBenOcMgTCuQZm4CGLLnzlUu/6tht6iZd7PiNHwXt0EMBGroxgEVHqxx5qv4guJM+Jutbmd2DYwfE+grhKqBzdo/TxojmFZ7vUc06f8/QjnhCvNCkJmZjHROc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BaRbXE6p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E19C4CEC7
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 20:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726693094;
-	bh=+rOcLYcxegJxwXQTQxXeqLKEYpW2/XQEqWIBhETWjM8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=BaRbXE6pbqkF4AzTMnsOvny8WVnVymmpppLZtgB6mapf3tiZrX8RSPDbyLqJIBs8n
-	 MFMF+1RNJFds2fOQ5sWzqyRnFyT1fVuGyZgv+VAWYbGWQAFUg0HK2k2vAGqhmBXwLZ
-	 8BSS1I+0j8MiFJt8PPaFrd/jRI9ghdeURvzLtKYgDRl4jypTSHbYBVbGF8GuOlVmIF
-	 z61squjqVlEXLE2o9Zc7YTIg9NFVUPOvkUfnrvstp3Bn0bWr/C5nCfcQFSDQ+Raf/s
-	 9UOHZI4FEQ8eZq5B3vXy5O/k2Dc4m1LNe3ifORuBJZQ8GbJZymZvNPrnBwClOSWcQ7
-	 Ejma460EMx3FQ==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a90188ae58eso12095366b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 13:58:14 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzKTzh6WD+Ba0rh6BHcpfLohS8udZEvTRotE0NOPAfhnvm7FYce
-	o6Too6DdQEpw34ZU1ndihHxezzF2EuL6e4G7w/PkEj9YVY+Ft7ko5U7qTPCbKBfJrVqfybsRKQb
-	k4qxcMZDB0HZhgYsCr+/3z8gw6U4=
-X-Google-Smtp-Source: AGHT+IFEjZDl9NkfculbziwAtiV/rx33hM0MnKV3NoaqgyaaAni+PFhwvh4TiBCc5CiI09xHhKmBJDyDl5BAgxDKriE=
-X-Received: by 2002:a17:907:e6df:b0:a86:743e:7a08 with SMTP id
- a640c23a62f3a-a90294ac51amr2227504466b.31.1726693093114; Wed, 18 Sep 2024
- 13:58:13 -0700 (PDT)
+	s=arc-20240116; t=1726695300; c=relaxed/simple;
+	bh=BdgnerTODUNMpagYy5ebcISgBzK0E3hXUWWMY6OU6YI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F3vzblBV7JJGvh3Upq6eKf1cbwKeWFcPM9BqfKtK3IGV8mVUyLjkam/TdpIESWbdGP733qHZn9hiC+rIvFDJXGiBFWM7tYmYEk4N/x6MoY8Io0kn29tTFcuZsIQUVS7+7gv84bk9InYTZsEXABt45xd3j63QYyDw+PRIxt4ZVCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WOHCUxmp; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-42cae6bb895so962345e9.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 14:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1726695295; x=1727300095; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=C6j4i0FrgkuZCRDPVul7Yymx4wqWERXWV9ZJm7RQN0g=;
+        b=WOHCUxmpichp1z2z26l/Okfc49ak0lWDH0205GslVxa8FXZhwZvtPYCE+m8wM7sJbl
+         wLTt3ONOv3RnOPRF/mFBrSbZkPeeEtrV53POwlvyjfAHo8hyNm2LgVbZwain1BzEiFS1
+         1B0wsFLhHN8Q3QcHYobjyuQW5quDdwai1lDe0+iRki+JNR3Aj7W6hWMhOXIBGS84aUAT
+         Smj6pgDo+yUMDm3jwe1vlfyzt47AQD7H098QbrNH3EuNmA54riaC4Rzt1+GR0GuCuYIy
+         oQsdrv4j5pGq9gBje1P8mPwgUg3GrwuHNDQdLXqF4spSJunbEDfmcOnRVaqFuMILEGwr
+         xZvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726695295; x=1727300095;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C6j4i0FrgkuZCRDPVul7Yymx4wqWERXWV9ZJm7RQN0g=;
+        b=FULdwxOS5zA/i3DSLStHySUfkh23oJLVihUD56uroHNY48p3+Nab2oQnejSR5CXghI
+         4f3o1fnCWM0KetWRYZaNgAHbLoiQLA45F40RmPvQJ4Jo4Ngx0yCaEUvkDPchUKLEnxHy
+         ZaQ8k/9HVXjM93tkSB5fo3zuq39ns4BkFkknyjEqg2cxABitrfXH1KFeqz89W831xMic
+         1os9EAPEEF/LwOY/H0Rbxl569lDTTeyNP7PoLyPh79px8JDxOElfJQJMTm6ivDh0U3Lu
+         6g1NRTOMgFCn9ACUJ96bLFCZkCSuvIr/B9Pfp6Q56lh830Cg4e5ffQoznEZyoxwVpCeC
+         /awg==
+X-Forwarded-Encrypted: i=1; AJvYcCUhcQZZ4WsJOJVsKRM2sGhJzhR7Q4friQitTSDz+IfsNBE4/DfSDE9Jd6F3tGe3rcaYiCjec1efyzOW8g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxy3kbHRLCYKk7/eidRf60aTmzkh+N+te7lLFVp88aO+7UREByL
+	cr9CZ7HY6g7bXlDoRpSfsr3HGSB+J23uNlK4VKHr5hL+Xe3qaoWO9H6HIU4DVRA=
+X-Google-Smtp-Source: AGHT+IHi0q8QYWvLBhein37pmXFOov4IViZRxMIHoIOTdAGF/XByRDlK09bGb8EbJiSLUJlFWaXqFw==
+X-Received: by 2002:adf:ae51:0:b0:374:d157:c019 with SMTP id ffacd0b85a97d-378c2cfeb36mr13615345f8f.12.1726695294681;
+        Wed, 18 Sep 2024 14:34:54 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207945db10csm69457485ad.53.2024.09.18.14.34.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Sep 2024 14:34:54 -0700 (PDT)
+Message-ID: <f8e00bb5-b9a2-48fa-9939-85a882d15563@suse.com>
+Date: Thu, 19 Sep 2024 07:04:48 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cee4591a-3088-49ba-99b8-d86b4242b8bd@prnet.org>
-In-Reply-To: <cee4591a-3088-49ba-99b8-d86b4242b8bd@prnet.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 18 Sep 2024 21:57:36 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7NCN_FHcSjYs+OVuw-D-0XfxHNBs2NsCjzNAe_=XHisQ@mail.gmail.com>
-Message-ID: <CAL3q7H7NCN_FHcSjYs+OVuw-D-0XfxHNBs2NsCjzNAe_=XHisQ@mail.gmail.com>
-Subject: Re: btrfs send crash on kernel 6.11.0
-To: David Arendt <admin@prnet.org>
-Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/2] btrfs: Don't block system suspend during fstrim
+To: Luca Stefani <luca.stefani.ge1@gmail.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240917203346.9670-1-luca.stefani.ge1@gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <20240917203346.9670-1-luca.stefani.ge1@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 18, 2024 at 7:59=E2=80=AFPM David Arendt <admin@prnet.org> wrot=
-e:
->
-> Hi,
->
-> I am experiencing the following crash when doing an incremental btrfs
-> send (started by btrbk) on kernel 6.11.0:
->
-> Sep 15 23:32:17 sdslinux1 kernel: ------------[ cut here ]------------
-> Sep 15 23:32:17 sdslinux1 kernel: strcpy: detected buffer overflow: 20
-> byte write of buffer size 19
-> Sep 15 23:32:17 sdslinux1 kernel: WARNING: CPU: 3 PID: 3310 at
-> __fortify_report+0x45/0x50
-> Sep 15 23:32:17 sdslinux1 kernel: Modules linked in: nfsd auth_rpcgss
-> lockd grace nfs_acl bridge stp llc bonding tls vfat fat binfmt_misc
-> snd_hda_codec_hdmi intel_rapl_msr intel_rapl_common x8
-> 6_pkg_temp_thermal intel_powerclamp kvm_intel iTCO_wdt intel_pmc_bxt
-> spi_intel_platform kvm at24 mei_wdt spi_intel mei_pxp
-> iTCO_vendor_support mei_hdcp btusb snd_hda_codec_realtek btbcm btinte
-> l snd_hda_scodec_component i915 rapl iwlwifi snd_hda_codec_generic btrtl
-> intel_cstate btmtk cec snd_hda_intel intel_uncore cfg80211
-> snd_intel_dspcfg drm_buddy coretemp snd_intel_sdw_acpi bluet
-> ooth ttm pcspkr snd_hda_codec rfkill snd_hda_core snd_hwdep intel_vbtn
-> snd_pcm mei_me drm_display_helper snd_timer sparse_keymap i2c_i801 mei
-> snd i2c_smbus lpc_ich soundcore cdc_mbim cdc_wdm cdc_ncm cdc_ether
-> usbnet crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
-> polyval_generic ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3
-> igb r8152 serio_raw i2c_algo_bit mii dca e1000e video wmi sunrpc
-> Sep 15 23:32:17 sdslinux1 kernel: CPU: 3 UID: 0 PID: 3310 Comm: btrfs
-> Not tainted 6.11.0-prnet #1
-> Sep 15 23:32:17 sdslinux1 kernel: Hardware name: CompuLab Ltd.
-> sbc-ihsw/Intense-PC2 (IPC2), BIOS IPC2_3.330.7 X64 03/15/2018
-> Sep 15 23:32:17 sdslinux1 kernel: RIP: 0010:__fortify_report+0x45/0x50
-> Sep 15 23:32:17 sdslinux1 kernel: Code: 48 8b 34 c5 e0 a9 97 a8 40 f6 c7
-> 01 48 c7 c0 51 5d 86 a8 48 c7 c1 c0 61 84 a8 48 0f 44 c8 48 c7 c7 60 9d
-> 8a a8 e8 4b f6 88 ff <0f> 0b c3 cc cc cc cc cc cc cc cc 90 90 90 90 90
-> 90 90 90 90 90 90
-> Sep 15 23:32:17 sdslinux1 kernel: RSP: 0018:ffff97ebc0d6f650 EFLAGS:
-> 00010246
-> Sep 15 23:32:17 sdslinux1 kernel: RAX: 7749924ef60fa600 RBX:
-> ffff8bf5446a521a RCX: 0000000000000027
-> Sep 15 23:32:17 sdslinux1 kernel: RDX: 00000000ffffdfff RSI:
-> ffff97ebc0d6f548 RDI: ffff8bf84e7a1cc8
-> Sep 15 23:32:17 sdslinux1 kernel: RBP: ffff8bf548574080 R08:
-> ffffffffa8c40e10 R09: 0000000000005ffd
-> Sep 15 23:32:17 sdslinux1 kernel: R10: 0000000000000004 R11:
-> ffffffffa8c70e10 R12: ffff8bf551eef400
-> Sep 15 23:32:17 sdslinux1 kernel: R13: 0000000000000000 R14:
-> 0000000000000013 R15: 00000000000003a8
-> Sep 15 23:32:17 sdslinux1 kernel: FS:  00007fae144de8c0(0000)
-> GS:ffff8bf84e780000(0000) knlGS:0000000000000000
-> Sep 15 23:32:17 sdslinux1 kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-> 0000000080050033
-> Sep 15 23:32:17 sdslinux1 kernel: CR2: 00007fae14691690 CR3:
-> 00000001027a2003 CR4: 00000000001706f0
-> Sep 15 23:32:17 sdslinux1 kernel: Call Trace:
-> Sep 15 23:32:17 sdslinux1 kernel:  <TASK>
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __warn+0x12a/0x1d0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __fortify_report+0x45/0x50
-> Sep 15 23:32:17 sdslinux1 kernel:  ? report_bug+0x154/0x1c0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? handle_bug+0x42/0x70
-> Sep 15 23:32:17 sdslinux1 kernel:  ? exc_invalid_op+0x1a/0x50
-> Sep 15 23:32:17 sdslinux1 kernel:  ? asm_exc_invalid_op+0x1a/0x20
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __fortify_report+0x45/0x50
-> Sep 15 23:32:17 sdslinux1 kernel:  __fortify_panic+0x9/0x10
-> Sep 15 23:32:17 sdslinux1 kernel: __get_cur_name_and_parent+0x3bc/0x3c0
-> Sep 15 23:32:17 sdslinux1 kernel:  get_cur_path+0x207/0x3b0
-> Sep 15 23:32:17 sdslinux1 kernel:  send_extent_data+0x709/0x10d0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? find_parent_nodes+0x22df/0x25d0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? mas_nomem+0x13/0x90
-> Sep 15 23:32:17 sdslinux1 kernel:  ? mtree_insert_range+0xa5/0x110
-> Sep 15 23:32:17 sdslinux1 kernel:  ? btrfs_lru_cache_store+0x5f/0x1e0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? iterate_extent_inodes+0x52d/0x5a0
-> Sep 15 23:32:17 sdslinux1 kernel:  process_extent+0xa96/0x11a0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_lookup_backref_cache+0x10/0x10
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_store_backref_cache+0x10/0x10
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_iterate_backrefs+0x10/0x10
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_check_extent_item+0x10/0x10
-> Sep 15 23:32:17 sdslinux1 kernel:  changed_cb+0x6fa/0x930
-> Sep 15 23:32:17 sdslinux1 kernel:  ? tree_advance+0x362/0x390
-> Sep 15 23:32:17 sdslinux1 kernel:  ? memcmp_extent_buffer+0xd7/0x160
-> Sep 15 23:32:17 sdslinux1 kernel:  send_subvol+0xf0a/0x1520
-> Sep 15 23:32:17 sdslinux1 kernel:  btrfs_ioctl_send+0x106b/0x11d0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx___clone_root_cmp_sort+0x10/0x1=
-0
-> Sep 15 23:32:17 sdslinux1 kernel:  _btrfs_ioctl_send+0x1ac/0x240
-> Sep 15 23:32:17 sdslinux1 kernel:  btrfs_ioctl+0x75b/0x850
-> Sep 15 23:32:17 sdslinux1 kernel:  __se_sys_ioctl+0xca/0x150
-> Sep 15 23:32:17 sdslinux1 kernel:  do_syscall_64+0x85/0x160
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __count_memcg_events+0x69/0x100
-> Sep 15 23:32:17 sdslinux1 kernel:  ? handle_mm_fault+0x1327/0x15c0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? __se_sys_rt_sigprocmask+0xf1/0x180
-> Sep 15 23:32:17 sdslinux1 kernel:  ? syscall_exit_to_user_mode+0x75/0xa0
-> Sep 15 23:32:17 sdslinux1 kernel:  ? do_syscall_64+0x91/0x160
-> Sep 15 23:32:17 sdslinux1 kernel:  ? do_user_addr_fault+0x21d/0x630
-> Sep 15 23:32:17 sdslinux1 kernel: entry_SYSCALL_64_after_hwframe+0x76/0x7=
-e
-> Sep 15 23:32:17 sdslinux1 kernel: RIP: 0033:0x7fae145eeb4f
-> Sep 15 23:32:17 sdslinux1 kernel: Code: 00 48 89 44 24 18 31 c0 48 8d 44
-> 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10
-> b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77
-> 18 48 8b 44 24 18 64 48 2b 04 25 28 00 00
-> Sep 15 23:32:17 sdslinux1 kernel: RSP: 002b:00007ffdf1cb09b0 EFLAGS:
-> 00000246 ORIG_RAX: 0000000000000010
-> Sep 15 23:32:17 sdslinux1 kernel: RAX: ffffffffffffffda RBX:
-> 0000000000000004 RCX: 00007fae145eeb4f
-> Sep 15 23:32:17 sdslinux1 kernel: RDX: 00007ffdf1cb0ad0 RSI:
-> 0000000040489426 RDI: 0000000000000004
-> Sep 15 23:32:17 sdslinux1 kernel: RBP: 00000000000078fe R08:
-> 00007fae144006c0 R09: 00007ffdf1cb0927
-> Sep 15 23:32:17 sdslinux1 kernel: R10: 0000000000000008 R11:
-> 0000000000000246 R12: 00007ffdf1cb1ce8
-> Sep 15 23:32:17 sdslinux1 kernel: R13: 0000000000000003 R14:
-> 000055c499fab2e0 R15: 0000000000000004
-> Sep 15 23:32:17 sdslinux1 kernel:  </TASK>
-> Sep 15 23:32:17 sdslinux1 kernel: ---[ end trace 0000000000000000 ]---
-> Sep 15 23:32:17 sdslinux1 kernel: ------------[ cut here ]------------
->
-> The same btrfs send is working without any problem on kernel 6.10.10.
 
-Try this:
 
-https://lore.kernel.org/linux-btrfs/fbbc0efa2ad81b3dcc00c6dcb15af8189d343af=
-3.1726692825.git.fdmanana@suse.com/
+在 2024/9/18 06:03, Luca Stefani 写道:
+> Changes since v5:
+> * Make chunk size a define
+> * Remove superfluous trim_interrupted checks
+>    after moving them to trim_no_bitmap/trim_bitmaps
+> 
+> Changes since v4:
+> * Set chunk size to 1G
+> * Set proper error return codes in case of interruption
+> * Dropped fstrim_range fixup as pulled in -next
+> 
+> Changes since v3:
+> * Went back to manual chunk size
+> 
+> Changes since v2:
+> * Use blk_alloc_discard_bio directly
+> * Reset ret to ERESTARTSYS
+> 
+> Changes since v1:
+> * Use bio_discard_limit to calculate chunk size
+> * Makes use of the split chunks
+> 
+> Original discussion: https://lore.kernel.org/lkml/20240822164908.4957-1-luca.stefani.ge1@gmail.com/
+> v1: https://lore.kernel.org/lkml/20240902114303.922472-1-luca.stefani.ge1@gmail.com/
+> v2: https://lore.kernel.org/lkml/20240902205828.943155-1-luca.stefani.ge1@gmail.com/
+> v3: https://lore.kernel.org/lkml/20240903071625.957275-4-luca.stefani.ge1@gmail.com/
+> v4: https://lore.kernel.org/lkml/20240916101615.116164-1-luca.stefani.ge1@gmail.com/
+> v5: https://lore.kernel.org/lkml/20240916125707.127118-1-luca.stefani.ge1@gmail.com/
+> 
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Thanks.
+> ---
+> 
+> NB: I didn't change btrfs_discard_workfn yet to add error checks
+> as I don't know what semantics we should have in that case.
+> The work queue is always re-scheduled and created with WQ_FREEZABLE
+> so it should be automatically frozen. Shall I simply add some logs?
 
->
-> Thanks in advance,
->
-> David Arendt
->
->
+And that is for async discard, which has a much smaller discard size and 
+iops limits.
+
+The main part of large discard is the free extents discarding, which is 
+already addressed by your patch correctly now.
+
+IIRC we do not need to bother that much for it.
+
+Thanks,
+Qu
+
+> 
+> ---
+> 
+> Luca Stefani (2):
+>    btrfs: Split remaining space to discard in chunks
+>    btrfs: Don't block system suspend during fstrim
+> 
+>   fs/btrfs/extent-tree.c      | 26 +++++++++++++++++++++-----
+>   fs/btrfs/free-space-cache.c |  4 ++--
+>   fs/btrfs/free-space-cache.h |  6 ++++++
+>   fs/btrfs/volumes.h          |  1 +
+>   4 files changed, 30 insertions(+), 7 deletions(-)
+> 
 
