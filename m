@@ -1,191 +1,136 @@
-Return-Path: <linux-btrfs+bounces-8111-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8112-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D6A097BDB4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 16:09:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032B497BE4E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 17:03:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FD2D1F2264B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 14:09:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74968B2180B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 15:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A1318BC31;
-	Wed, 18 Sep 2024 14:09:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1461C8FD0;
+	Wed, 18 Sep 2024 15:03:27 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9B2189914
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 14:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAAE1C8FBD
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 15:03:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726668548; cv=none; b=KdIhC77zJ8vXjPM159wLlevYQxIi6HpZP09EAnnlJIcduLDTNlmdbtygDmMSMkIJBlOkEfnJyEoJ8EfDIu7bP9gMuCYzCTBHEbNXXxOkoFLWuvFj1zql1U8ByFMpomWV8SgTTGNwou/LsscMuEKf8nWZ4qTR2Zfh6UwzYY3usT0=
+	t=1726671806; cv=none; b=XeKrtDLJZeO111T9Hv1uSzIJFucQtVfCtzw05ljwPKkRiolk9iZPrcPRsnKgFI49SN4l7VlGiwjC+wVPb5TQKxoLRg9sckhA5aEdpLiDkszteTdQlvFK1e5c/12GdNKLQ2JkQkGSeQxAihyTFWSOCwAWJobGjJ9HCw8ghYmmWYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726668548; c=relaxed/simple;
-	bh=0WNv+65dOiIOviCNJzCuUggZHu9ojjNYgMRaqHgQw+Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DsBaDKk8vYs+AmvLrT9eID1aB4nmQMOf9FH7uVQXyisglviDiw7l5Nzu8W66xkkwbxoTZEMxGuVVICEyIaeHtCByowd5yalG/onLUt0cLok0yiD4eCjDWm/VxS1/xmnBeS2xheR44e4SPlrZEvxIo5KhqfS6GXoSKhMrMtZaumQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42ca4e0299eso53847625e9.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 07:09:06 -0700 (PDT)
+	s=arc-20240116; t=1726671806; c=relaxed/simple;
+	bh=BhzpLIq6Vxfl5iUIGMXzekYXB+e52TdqSnfp5qidmWE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Ldz4EPJTxtgY3U0l9d3ughKHf6P93yCe3154BaPsYuZMwDdyx3lta+rhD8QSPGt1wpkOuPdBWQ6oSmRkyjMqqji+kmkGXisOM7pxXq2JrFB0E3axIGsQRuSwsMG0vDtW9vz1U8nC1VTbar8ZiieoSQUGep+xvbjMzmyMYlT34fA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a04bf03b1aso123441875ab.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 08:03:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726668545; x=1727273345;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QbwsKGHs5K9UGuhFgwWUG6p1ChJGXLMF8cq52ZvMgp4=;
-        b=Zo7O1hAaUlfYY4BijiqJptNt4BVPTQ1u+UTgbAAv+cTxi4GTiWfivO7H/rhVvr66TK
-         aEZegWuyYQkOeSpcMqt7EdNUIJ0WTMYLStgAM1sM+Kl5PvemSlub28aw2odPSYBOt+N3
-         +xwuVO8l1XxUCpAP1oUG7AouqkkkMDaLcws05R1/rPR6ZL+RxrIlBnUZqPUexG5hhwcC
-         oEjzeLtCiCdzBEFhPWcXZYCjmfPBVKeca2EyMgWXHm6byFqeTOBXOUF17rqSh/vFxWHE
-         J3hBhbx4vN1k4HkcJFC4KE8lyFeCg9EnDSIwPrOzWGYgbG7BeaWuqKPMxnKd57AMXXRS
-         1pCg==
-X-Gm-Message-State: AOJu0YxJrHJzguuaU5SvAm+x/Evy9ZfWR2M8amh/yJAEllUALlLvC04V
-	34UzUip2DbZdYNX0DBKwljd+4dU62olwY3DDY2Qd7L1j9PL7fgyE
-X-Google-Smtp-Source: AGHT+IGmBoZI8Tz/fI+S5Uo4E2Ubbhgzr6CEdUj0Ntjgr6nLblefzSENEAc+SOsvSo2PYaO95ATwlw==
-X-Received: by 2002:a05:600c:1c27:b0:428:150e:4f13 with SMTP id 5b1f17b1804b1-42cdb572754mr153206865e9.33.1726668545049;
-        Wed, 18 Sep 2024 07:09:05 -0700 (PDT)
-Received: from nuc.fritz.box (p200300f6f72a2100fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f72a:2100:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e704f2698sm18282125e9.24.2024.09.18.07.09.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Sep 2024 07:09:04 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [RFC 2/2] btrfs: insert dummy RAID stripe extents for preallocated data
-Date: Wed, 18 Sep 2024 16:08:50 +0200
-Message-ID: <20240918140850.27261-3-jth@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240918140850.27261-1-jth@kernel.org>
-References: <85888aaa-c8f5-453b-8344-6cabc82f537e@gmx.com>
- <20240918140850.27261-1-jth@kernel.org>
+        d=1e100.net; s=20230601; t=1726671804; x=1727276604;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+UC6Mc3Avq1l/u0KK21V2/bnbzcYLVONph6/3dO9HTk=;
+        b=SVuWlquu0Dlj59COUX9p5W7MIcPpRdGHJQh+YRbLPrx2N6+LytDPGhMzOMigK6rzJO
+         bszWM8UUWHquQ+W+TD78PtrMs15jPfZ9XA5VyDrRgrRVdGXt3slX+imLB3O83GXTiZV5
+         nIVB1fL1S0NKYYgiSvcvEE2zWFzq+NxVPdv1eSSuMToff6CWivwDPM7CValMiOGYmmwz
+         p/NGY2CXuKvZWWjOyzB92Hpaxecz9ddhpM7Lh+qkat+t8MYERUga3GJSTLbh+MRgXD2N
+         vsfCYNXizfWPpnXEgTjtMU0BQxpXqwgm0ro0leajw22yaoiGCuQTMFe8zqK+K05a70fc
+         5bhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXOujjamsVwCNQfGBR7iar1mtzn7aqJ6JD0Ys4fwGYotSC76VU7BIu5xH8IY7YgKcPAYK6q0WxUjB8fcA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxx9ycI4bA87vecAAVv7bkWq/NxYwHv/+MLcC9HbomLMJ/W0wDF
+	elu+mJIRe7as6eDpNh2rBtSfrUCBiu2wQMAr3ldFilNxXibMMyjut96MwRaruCXd5JTvAzUF9QK
+	jXi12tOqcJ5LQjBnFUtzMvIIlsUvxq6flWDGk4JlotXuso6OcoPaSjhE=
+X-Google-Smtp-Source: AGHT+IGhaa35gFQtE7Vu6kAqFod34bDr20BPHRMrc2dgJZosDloT+LS7bv0hMwlqO3aSKOat4cDUUzLJfcHG+Xzj1r6MMSb7kWtL
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:5a9:b0:3a0:8c68:7705 with SMTP id
+ e9e14a558f8ab-3a08c6877c6mr146178425ab.21.1726671804203; Wed, 18 Sep 2024
+ 08:03:24 -0700 (PDT)
+Date: Wed, 18 Sep 2024 08:03:24 -0700
+In-Reply-To: <66e55308.050a0220.1f4381.0004.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66eaebbc.050a0220.252d9a.0015.GAE@google.com>
+Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (7)
+From: syzbot <syzbot+74f79df25c37437e4d5a@syzkaller.appspotmail.com>
+To: chao@kernel.org, clm@fb.com, dsterba@suse.com, jaegeuk@kernel.org, 
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+syzbot has found a reproducer for the following issue on:
 
-Preallocated extents are not backed by a RAID stripe-tree entry (in
-case the filesystem is using the RAID stripe-tree), because there is
-no real logical to physical mapping needed for them.
+HEAD commit:    5f5673607153 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=137fc69f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dedbcb1ff4387972
+dashboard link: https://syzkaller.appspot.com/bug?extid=74f79df25c37437e4d5a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b8f500580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10dbc4a9980000
 
-But for instance scrub is performing RAID stripe-tree lookups for all
-extents in the extent-tree, even for preallocated ones, so
-the stripe-tree lookup code will return -ENOENT for them. This is
-causing scrub to mark these extents as I/O errors.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/40172aed5414/disk-5f567360.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/58372f305e9d/vmlinux-5f567360.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d2aae6fa798f/Image-5f567360.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e4b8f51425ac/mount_0.gz
 
-To solve this issue, add a dummy RAID stripe-tree entry for these
-extents, so the block mapping performed for scrub operations doesn't fail.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+74f79df25c37437e4d5a@syzkaller.appspotmail.com
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+turning off the locking correctness validator.
+CPU: 0 UID: 0 PID: 137 Comm: kworker/u8:4 Not tainted 6.11.0-rc7-syzkaller-g5f5673607153 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+Workqueue: btrfs-endio-write btrfs_work_helper
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:319
+ show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:326
+ __dump_stack lib/dump_stack.c:93 [inline]
+ dump_stack_lvl+0xe4/0x150 lib/dump_stack.c:119
+ dump_stack+0x1c/0x28 lib/dump_stack.c:128
+ lookup_chain_cache_add kernel/locking/lockdep.c:3815 [inline]
+ validate_chain kernel/locking/lockdep.c:3836 [inline]
+ __lock_acquire+0x1fa0/0x779c kernel/locking/lockdep.c:5142
+ lock_acquire+0x240/0x728 kernel/locking/lockdep.c:5759
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:351 [inline]
+ btrfs_block_rsv_size fs/btrfs/block-rsv.h:136 [inline]
+ btrfs_use_block_rsv+0x184/0x73c fs/btrfs/block-rsv.c:495
+ btrfs_alloc_tree_block+0x16c/0x12d4 fs/btrfs/extent-tree.c:5130
+ btrfs_force_cow_block+0x4e4/0x1c9c fs/btrfs/ctree.c:573
+ btrfs_cow_block+0x318/0xa28 fs/btrfs/ctree.c:754
+ btrfs_search_slot+0xba0/0x2a08
+ btrfs_lookup_file_extent+0x124/0x1bc fs/btrfs/file-item.c:267
+ btrfs_drop_extents+0x370/0x2ad8 fs/btrfs/file.c:251
+ insert_reserved_file_extent+0x2b4/0xa6c fs/btrfs/inode.c:2911
+ insert_ordered_extent_file_extent+0x348/0x508 fs/btrfs/inode.c:3016
+ btrfs_finish_one_ordered+0x6a0/0x129c fs/btrfs/inode.c:3124
+ btrfs_finish_ordered_io+0x120/0x134 fs/btrfs/inode.c:3266
+ finish_ordered_fn+0x20/0x30 fs/btrfs/ordered-data.c:331
+ btrfs_work_helper+0x340/0xd28 fs/btrfs/async-thread.c:314
+ process_one_work+0x79c/0x15b8 kernel/workqueue.c:3231
+ process_scheduled_works kernel/workqueue.c:3312 [inline]
+ worker_thread+0x978/0xec4 kernel/workqueue.c:3389
+ kthread+0x288/0x310 kernel/kthread.c:389
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+
 ---
- fs/btrfs/inode.c            | 47 +++++++++++++++++++++++++++++++++++++
- fs/btrfs/raid-stripe-tree.c |  4 ++++
- 2 files changed, 51 insertions(+)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index edac499fd83d..a8e119809670 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -71,6 +71,7 @@
- #include "backref.h"
- #include "raid-stripe-tree.h"
- #include "fiemap.h"
-+#include "volumes.h"
- 
- struct btrfs_iget_args {
- 	u64 ino;
-@@ -8679,6 +8680,44 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	return err;
- }
- 
-+static int insert_prealloc_rst_entry(struct btrfs_fs_info *fs_info,
-+				     struct btrfs_trans_handle *trans_in,
-+				     u64 start, u64 len)
-+{
-+	struct btrfs_trans_handle *trans;
-+	struct btrfs_chunk_map *map;
-+	u64 map_type;
-+	int ret;
-+
-+	if (!btrfs_fs_incompat(fs_info, RAID_STRIPE_TREE))
-+		return 0;
-+
-+	if (trans_in)
-+		trans = trans_in;
-+	else
-+		trans = btrfs_join_transaction(fs_info->stripe_root);
-+
-+	map = btrfs_find_chunk_map(fs_info, start, len);
-+	if (!map)
-+		return -ENOENT;
-+
-+	map_type = map->type;
-+	btrfs_free_chunk_map(map);
-+
-+	if (!btrfs_need_stripe_tree_update(fs_info, map_type))
-+		return 0;
-+	ret = btrfs_insert_dummy_raid_extent(trans, start, len);
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
-+		return ret;
-+	}
-+
-+	if (trans != trans_in)
-+		btrfs_end_transaction(trans);
-+
-+	return 0;
-+}
-+
- static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 				       struct btrfs_trans_handle *trans_in,
- 				       struct btrfs_inode *inode,
-@@ -8817,6 +8856,14 @@ static int __btrfs_prealloc_file_range(struct inode *inode, int mode,
- 			break;
- 		}
- 
-+		ret = insert_prealloc_rst_entry(fs_info, trans, ins.objectid,
-+						cur_offset);
-+		if (ret) {
-+			btrfs_free_reserved_extent(fs_info, ins.objectid,
-+						   ins.offset, 0);
-+			break;
-+		}
-+
- 		em = alloc_extent_map();
- 		if (!em) {
- 			btrfs_drop_extent_map_range(BTRFS_I(inode), cur_offset,
-diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-index bbe0689b1d17..f559ea14976f 100644
---- a/fs/btrfs/raid-stripe-tree.c
-+++ b/fs/btrfs/raid-stripe-tree.c
-@@ -61,6 +61,9 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 le
- 		trace_btrfs_raid_extent_delete(fs_info, start, end,
- 					       found_start, found_end);
- 
-+		if (key.type == BTRFS_RAID_STRIPE_DUMMY_KEY)
-+			goto delete;
-+
- 		if (found_start < start) {
- 			struct btrfs_key prev;
- 			u64 diff = start - found_start;
-@@ -112,6 +115,7 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start, u64 le
- 			break;
- 		}
- 
-+delete:
- 		ret = btrfs_del_item(trans, stripe_root, path);
- 		if (ret)
- 			break;
--- 
-2.43.0
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
