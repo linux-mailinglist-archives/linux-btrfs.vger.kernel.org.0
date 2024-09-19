@@ -1,195 +1,206 @@
-Return-Path: <linux-btrfs+bounces-8121-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763A597C4F8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 09:39:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861CC97C834
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 12:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 370B8282A7B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 07:39:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 047611F22809
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 10:48:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463E8194C69;
-	Thu, 19 Sep 2024 07:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D2A199FCD;
+	Thu, 19 Sep 2024 10:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Ok8k6jn6"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SkIk4+0h";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SkIk4+0h"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C317166F31
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 07:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777F960B8A
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 10:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726731556; cv=none; b=meckZxZWgLRaFBciHKOJ6Fj8uWpOedVQKfK3VUvZfeQdKtBs0tgEEbiMov3GEp15gDEZ36z3BpXk2Xf9XEOWSLrNudc9JPNqdwTHQ91eEZvUBXfhNS/P01NmKkD+cJ0hToZrrlwpc889rjLJ3axhpYbw0LP4d/aNy9QPvk501JA=
+	t=1726742923; cv=none; b=hSsNXaNPsukywB8s6VNbulT12YUirw9UKC9fTU3IgUWtetlqV7XM2QKTBejrTtAWKhDxE1g/6/40UOrZRyCaalt/aHUAJW+UsKJSmlwTrNnfX8FUx2W7ZxSj4+1KYPKorUzZuSApNSALpMOM5qwAZiOp9ScNz/PGjgvqam6vxuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726731556; c=relaxed/simple;
-	bh=Q/2krKD8OAotqTloZEDnmGSjjCOriPOznrQEyLsDrfY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ffXvw9jDuXgwHJPLRklPWVDzNTfgJlkmOHtVA+ScrQfCSBI9Of7/bKxerrSVlj+8TSGVrHnVnI8pI3dEfR17pdtOeeqB+JibVev2IzUquLqvtAcgT0OtinHNPFRjPSjRjUVU1DTylUtmBAcI72MB+8FmpolZy2CmT4e6J8AQEyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Ok8k6jn6; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726731550; x=1727336350; i=quwenruo.btrfs@gmx.com;
-	bh=VZ44wIyKZlXo8eDwkhGCjq0uBBBpGv8va1XTPww9egg=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Ok8k6jn6OoQZ7iX08Bew2f67pyw7PGbQ2lQqGwLKJEdbDgkT/YmvvXnLa+G6IjdP
-	 imwfweUHytETaQAVSepm65TgFhlLpsY7IenzQiOIKNJPUDgD5CtqcNh76iTNIuhUi
-	 DzC6K09SOGtHUTnEN4Le7vS9uCbGgUdWJc1ZQ5N2DFY2yIwFrsWv91wuUPFE69Ft1
-	 Ysp3MNRIzHpVQGAMBe3ocamrYy3Y5JeOtLZYtCDMzRxl6wIRDSK01p24WCW2z6KkK
-	 k2dSt+THZyp8ack4577F3X/cg673jc51Sj84S5CJyJchB56szKj4in5Ls6sFkohVb
-	 bSchTLU6FNlvTOfs2w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MKbkM-1sYQRm0ZW0-00RmBT; Thu, 19
- Sep 2024 09:39:10 +0200
-Message-ID: <34e6df34-360b-42d4-aa4a-9346f248056a@gmx.com>
-Date: Thu, 19 Sep 2024 17:09:07 +0930
+	s=arc-20240116; t=1726742923; c=relaxed/simple;
+	bh=FmzLZiJoT02BfCdO7fLWG417pT6ta6GpfqeGBTrTpGI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WWvVPWehtow4Hx83E4KIRDmANq4fV1Bwl8D5QzKwiqIudy6ECJj3oZexlu9kp8wd+tceYSOac5Mb6nC0UJTV3qE1DIsoRkLKv7T8zw4sD0mDqvNJpjJmtSOTNztjUN+txXwmQaqf2gfQNaA+Ap3ATTeXFspDSQojLzHg2BbNlOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SkIk4+0h; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SkIk4+0h; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 374603387B;
+	Thu, 19 Sep 2024 10:48:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726742914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=NrsvIn2N6e0HEEy9AmSgmKu/Pik39a2CR2Ud3o1pNEw=;
+	b=SkIk4+0hOOigpGGlzIbA8bHPO3KpNi1QAAPhTKaFTupF8AUr4zHL3Fyo3vZcu+MFdf31tP
+	1fMwBjCxuTOXNdceKGZTrpYJiRD4mMnWha3MzbLBpABTiz5N20e+R6g7XNXsFa4SbOzFnv
+	hcPpEUoOJa8p5GnpMuc1aYwzKMltZh0=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726742914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=NrsvIn2N6e0HEEy9AmSgmKu/Pik39a2CR2Ud3o1pNEw=;
+	b=SkIk4+0hOOigpGGlzIbA8bHPO3KpNi1QAAPhTKaFTupF8AUr4zHL3Fyo3vZcu+MFdf31tP
+	1fMwBjCxuTOXNdceKGZTrpYJiRD4mMnWha3MzbLBpABTiz5N20e+R6g7XNXsFa4SbOzFnv
+	hcPpEUoOJa8p5GnpMuc1aYwzKMltZh0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36D1D13A1E;
+	Thu, 19 Sep 2024 10:48:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id KotaOoAB7GZdDAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 19 Sep 2024 10:48:32 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: syzbot+56360f93efa90ff15870@syzkaller.appspotmail.com
+Subject: [PATCH v2] btrfs: reject ro->rw reconfiguration if there are hard ro requirements
+Date: Thu, 19 Sep 2024 20:18:11 +0930
+Message-ID: <b03b069ea18d29ccad3410c61ed40b979b12f50b.1726742871.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: "inode mode mismatch with dir" error on dmesg
-To: =?UTF-8?B?5bCP5aSq?= <nospam@kota.moe>
-Cc: linux-btrfs@vger.kernel.org
-References: <CACsxjPYnQF9ZF-0OhH16dAx50=BXXOcP74MxBc3BG+xae4vTTw@mail.gmail.com>
- <5c42a8a3-6571-474a-936b-df13057ff0ea@gmx.com>
- <CACsxjPbjbBFV1YBSfMSN07kx6qoNrFihVC6oqZOmrtZgKHYytw@mail.gmail.com>
- <CACsxjPa1T+XUXqQ450fn69O91_g6mte-U_xhctTMmL5RujSzxA@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CACsxjPa1T+XUXqQ450fn69O91_g6mte-U_xhctTMmL5RujSzxA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sMsD2r50y96KnrbLR47JtuaoslWDNdnSm/m9NCfiusel5bqLnv4
- W4Ssylst1YY1suuk4sRidCInIoBMlFdLVP5vp5srSR5u1lidzr/RAqcbbTP0/f+9ytNgDpc
- 3Ze12gvziD5vsmebxc2aV9AwUepewzvyqFzZrKF7tPP0JtCq00whce4gFjMWGudWVAW4dqi
- FR/k8fR9IQjokU5+kj98w==
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_NONE(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[56360f93efa90ff15870];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -2.80
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fsRSHZZM/bc=;ds0+Hhv04WWU6aruT0CzajqQs4l
- UHXKJBOcWyGypspgoLfsKwrnOv3Bk+DLa94tC25u/14Sy1qzSQRi71/fzw8pbxpi+8SbZufbS
- MWSBtlDT2vNMzrVStLdberF1X640wgGX+osPhscZ+A+bOmYb0qeH1guSym+bcF/2jKJwnELR3
- p8xYyyoF9A/R74yCKWpvkzo5DwfLfs6TJ66DhYKHRTj4y5Qz497BsV5mmsCUKX3r3yXflKlsK
- /A6dSLgVGPwaGvs4N7oJGbkXOE5EXlE20uPi2JmBpbVHTSPQTgc/ZrZ2SaQsFDn4WoYuH1tim
- XaLLtdGyrnNObvkXSZ+6nmeZRjnSsSukvYLhzaIZXznx/wiVEj5d29+jn2YuP3A5AmfHIEkDc
- P8IQxu+1EVVjG15LxEhiubbZ1GLcNSicLGWt9vYycq1TIXZJn7PTekFlBkxGfVYrInUSlKGi/
- r2ffHQhvCgl+ylPAOAXpceDkbOHltY9m9KUgdnlPRqZelgzAaa0Wv9YVyaF9D5YW3lumDRv9l
- 3yi8KF7Ql/fzn8i8p8QW6+vJ9muJNCau/n+JuZOfabdJ70IQNv3D8NmscIXATEE8AU78FlN1w
- k/37TZUDsCb68EethAAaHuFX67UX1rJCkkiMFV8hgFAkOx7Dq/JJjnDj+nl+dPbZ1IdJF6JjP
- nNW8+3IlV2zpzaxjOpGsCJwQ+9xFYWN9Lxz08VNdr3jEII3KnoE8PQkWwtmKZDv8ZwGJ6wuHj
- yX6Fbr5Bsc14Ap110IfZRALxgGpk5kOFg9arkcdhDguK41caskWn6fhVLxY1cfevNI3LemOtS
- xB2oeh+ympu8cpwMAb87/cpg==
 
+[BUG]
+Syzbot reports the following crash:
 
+  BTRFS info (device loop0 state MCS): disabling free space tree
+  BTRFS info (device loop0 state MCS): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
+  BTRFS info (device loop0 state MCS): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
+  Oops: general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN NOPTI
+  KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+  RIP: 0010:backup_super_roots fs/btrfs/disk-io.c:1691 [inline]
+  RIP: 0010:write_all_supers+0x97a/0x40f0 fs/btrfs/disk-io.c:4041
+  Call Trace:
+   <TASK>
+   btrfs_commit_transaction+0x1eae/0x3740 fs/btrfs/transaction.c:2530
+   btrfs_delete_free_space_tree+0x383/0x730 fs/btrfs/free-space-tree.c:1312
+   btrfs_start_pre_rw_mount+0xf28/0x1300 fs/btrfs/disk-io.c:3012
+   btrfs_remount_rw fs/btrfs/super.c:1309 [inline]
+   btrfs_reconfigure+0xae6/0x2d40 fs/btrfs/super.c:1534
+   btrfs_reconfigure_for_mount fs/btrfs/super.c:2020 [inline]
+   btrfs_get_tree_subvol fs/btrfs/super.c:2079 [inline]
+   btrfs_get_tree+0x918/0x1920 fs/btrfs/super.c:2115
+   vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+   do_new_mount+0x2be/0xb40 fs/namespace.c:3472
+   do_mount fs/namespace.c:3812 [inline]
+   __do_sys_mount fs/namespace.c:4020 [inline]
+   __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:3997
+   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+   do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+   entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-=E5=9C=A8 2024/9/19 17:01, =E5=B0=8F=E5=A4=AA =E5=86=99=E9=81=93:
-> I just updated my kernel and I'm now encountering some additional
-> errors, that overlaps with the directory containing the previous
-> corruption:
->
-> kota@home:~/.cache$ uname -a
-> Linux home.kota.moe 6.10.9-amd64 #1 SMP PREEMPT_DYNAMIC Debian
-> 6.10.9-1 (2024-09-08) x86_64 GNU/Linux
->
-> kota@home:~/.cache$ ls -lR . | grep -F '??'
-> ls: cannot access './mesa_shader_cache/a0': Input/output error
-> ls: cannot access
-> './mesa_shader_cache/1a/bc70b1f1d2efc3fc867739909e6c3f586de8e9':
-> Input/output error
-> d????????? ? ?    ?        ?            ? a0
-> ls: cannot access
-> './mesa_shader_cache/56/af44c0b3f9711d3d2fdb577beb527d95a9ae20':
-> Input/output error
-> -????????? ? ? ? ?            ? bc70b1f1d2efc3fc867739909e6c3f586de8e9
-> ls: cannot open directory './mesa_shader_cache/77': Input/output error
-> -????????? ? ? ? ?            ? af44c0b3f9711d3d2fdb577beb527d95a9ae20
-> ls: cannot open directory './mesa_shader_cache/a0': Input/output error
-> ls: cannot access
-> './mesa_shader_cache/cd/cb796d11e04af4607054e2b7230091f5e7dc4f':
-> Input/output error
-> ls: cannot access
-> './mesa_shader_cache/f0/b401bcf9f5add776020730e84d31f4e3ac8366':
-> Input/output error
-> -????????? ? ? ? ?            ? cb796d11e04af4607054e2b7230091f5e7dc4f
-> -????????? ? ? ? ?            ? b401bcf9f5add776020730e84d31f4e3ac8366
-> ls: cannot access './mozilla/firefox-esr': Input/output error
-> d????????? ? ?    ?      ?            ? firefox-esr
-> ls: cannot open directory './mozilla/firefox-esr': Input/output error
->
-> kota@home:~/.cache$ sudo dmesg | grep BTRFS
-> ...
-> [52524.008236] BTRFS critical (device dm-0): corrupt leaf: root=3D258
-> block=3D583989673984 slot=3D0 ino=3D19219306, invalid dir item type, hav=
-e 0
-> expect (0, 9)
-> [52524.008241] BTRFS error (device dm-0): read time tree block
-> corruption detected on logical 583989673984 mirror 2
-> [52524.009237] BTRFS critical (device dm-0): corrupt leaf: root=3D258
-> block=3D583989673984 slot=3D0 ino=3D19219306, invalid dir item type, hav=
-e 0
-> expect (0, 9)
-> [52524.009240] BTRFS error (device dm-0): read time tree block
-> corruption detected on logical 583989673984 mirror 1
-> [52524.009537] BTRFS critical (device dm-0): corrupt leaf: root=3D258
-> block=3D583945076736 slot=3D151 ino=3D19219306, invalid dir item type, h=
-ave
-> 0 expect (0, 9)
-> [52524.009542] BTRFS error (device dm-0): read time tree block
-> corruption detected on logical 583945076736 mirror 2
-> [52524.009718] BTRFS critical (device dm-0): corrupt leaf: root=3D258
-> block=3D583945076736 slot=3D151 ino=3D19219306, invalid dir item type, h=
-ave
-> 0 expect (0, 9)
+[CAUSE]
+To support mounting different subvolume with different RO/RW flags for
+the new mount APIs, btrfs introduced two small hack to support this feature:
 
-No worry, it's the same problem.
+- Skip mount option/feature checks if we are mounting a different
+  subvolume
 
-Just inspired by your initial report, now btrfs kernel will also make
-sure the dir item has correct item type.
+- Reconfigure the fs to RW if the initial mount is RO
 
-Thanks,
-Qu
+Combining this two, we can have the following sequence:
 
+- Mount the fs ro,rescue=all,clear_cache,space_cache=v1
+  rescue=all will mark the fs as hard read-only, so no v2 cache clearing
+  will happen.
 
-> [52524.009721] BTRFS error (device dm-0): read time tree block
-> corruption detected on logical 583945076736 mirror 1
-> ...(repeated a few times)...
->
-> Is this the same kind of corruption as before? Or is this a completely
-> different issue?
-> (As usual, none of the corrupted data is important so I don't really
-> care to recover the data. But would be nice to get rid of the errors
-> so my backup software stops complaining)
+- Mount a subvolume rw of the same fs.
+  We go into btrfs_get_tree_subvol(), but fc_mount() returns EBUSY
+  because our new fc is RW, different from the original fs.
+
+  Now we enter btrfs_reconfigure_for_mount(), which switch the RO flag
+  first so that we can grab the existing fs_info.
+  Then we reconfigure the fs to RW.
+
+- During reconfiguration, option/features check is skipped
+  This means we will restart the v2 cache clearing, and convert back to
+  v1 cache.
+  This will trigger fs writes, and since the original fs has "rescue=all" option,
+  it skips the csum tree read.
+
+  And eventually causing NULL pointer dereference in super block
+  writeback.
+
+[FIX]
+For reconfiguration caused by different subvolume RO/RW flags, ensure we
+always run btrfs_check_options() to ensure we have proper hard RO
+requirements met.
+
+In fact the function btrfs_check_options() doesn't really do many
+complex checks, but hard RO requirement and some feature dependency
+checks, thus there is no special reason not to do the check for mount
+reconfiguration.
+
+Reported-by: syzbot+56360f93efa90ff15870@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/0000000000008c5d090621cb2770@google.com/
+Fixes: f044b318675f ("btrfs: handle the ro->rw transition for mounting different subvolumes")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Always call btrfs_check_options() for reconfiguration
+---
+ fs/btrfs/super.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 98fa0f382480..804c8fde5e8d 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1498,8 +1498,7 @@ static int btrfs_reconfigure(struct fs_context *fc)
+ 	sync_filesystem(sb);
+ 	set_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
+ 
+-	if (!mount_reconfigure &&
+-	    !btrfs_check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
++	if (!btrfs_check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
+ 		return -EINVAL;
+ 
+ 	ret = btrfs_check_features(fs_info, !(fc->sb_flags & SB_RDONLY));
+-- 
+2.46.0
+
 
