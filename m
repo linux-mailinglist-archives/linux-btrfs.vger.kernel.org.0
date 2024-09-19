@@ -1,206 +1,180 @@
-Return-Path: <linux-btrfs+bounces-8122-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8123-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 861CC97C834
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 12:48:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F07297C994
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 14:55:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 047611F22809
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 10:48:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A82171F244DF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 12:55:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D2A199FCD;
-	Thu, 19 Sep 2024 10:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAC819E7F0;
+	Thu, 19 Sep 2024 12:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SkIk4+0h";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SkIk4+0h"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mvWpO0Po";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="R+yPHDBI";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mvWpO0Po";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="R+yPHDBI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777F960B8A
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 10:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B90419AD8D;
+	Thu, 19 Sep 2024 12:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726742923; cv=none; b=hSsNXaNPsukywB8s6VNbulT12YUirw9UKC9fTU3IgUWtetlqV7XM2QKTBejrTtAWKhDxE1g/6/40UOrZRyCaalt/aHUAJW+UsKJSmlwTrNnfX8FUx2W7ZxSj4+1KYPKorUzZuSApNSALpMOM5qwAZiOp9ScNz/PGjgvqam6vxuA=
+	t=1726750537; cv=none; b=To1auZVCs6HUj68BSddLaFgqsucbaJdSUTi8Qq+XtLSw+IBmGx3vhos0IulO00B77pNYTSiumuxY2PbYwIqIYdFb1Yd0Cf2SjhAcW+bWEGefMhM5282Tyu/rObzH0N4dZANd8UQvh8AWEq9lxpfBBEJZdV/wRTq/xO/jCLf8fGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726742923; c=relaxed/simple;
-	bh=FmzLZiJoT02BfCdO7fLWG417pT6ta6GpfqeGBTrTpGI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WWvVPWehtow4Hx83E4KIRDmANq4fV1Bwl8D5QzKwiqIudy6ECJj3oZexlu9kp8wd+tceYSOac5Mb6nC0UJTV3qE1DIsoRkLKv7T8zw4sD0mDqvNJpjJmtSOTNztjUN+txXwmQaqf2gfQNaA+Ap3ATTeXFspDSQojLzHg2BbNlOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SkIk4+0h; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SkIk4+0h; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1726750537; c=relaxed/simple;
+	bh=uPk7QPnox1EKt4Oc2lIbYdayFzNPigxxINMuiljTa+U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Em4n0MnX+IxgT51rNLkrBC5TrVOKWcNwUm2RaMxVJscPAn3/BSjoGY2Kz+bCY8jvHuSnEyezSbzh53dC+hq5qtvY9LmlbnsiDgEoTqvD/Xj7Jev2HeqYjXCkz3piUYDfTWISypCQUnHgTvKyl3WgPuIrjUg8CV95hJIGqSsfae8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mvWpO0Po; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=R+yPHDBI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mvWpO0Po; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=R+yPHDBI; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 374603387B;
-	Thu, 19 Sep 2024 10:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1726742914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=NrsvIn2N6e0HEEy9AmSgmKu/Pik39a2CR2Ud3o1pNEw=;
-	b=SkIk4+0hOOigpGGlzIbA8bHPO3KpNi1QAAPhTKaFTupF8AUr4zHL3Fyo3vZcu+MFdf31tP
-	1fMwBjCxuTOXNdceKGZTrpYJiRD4mMnWha3MzbLBpABTiz5N20e+R6g7XNXsFa4SbOzFnv
-	hcPpEUoOJa8p5GnpMuc1aYwzKMltZh0=
-Authentication-Results: smtp-out1.suse.de;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 32B9F20922;
+	Thu, 19 Sep 2024 12:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1726750533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J035lXz9NqS2T7rqPIx+v9m10/fpl5HiwgmW9zEOxDQ=;
+	b=mvWpO0PoJvQa/GgqpFIRNNRh1hddqeLTEahw+JwzJsCgXy5jESa520Hq33eo6UC0d4lU6y
+	8HxDLbHF5Tmrxv0q/7UM460XvqXY8qRC1CCobXBN7XChY+bvDSRDdtOuvFP9wV15OWV0Wf
+	Iegk9ElaJfdkOmi+fFmEly/YP8GFuV4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1726750533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J035lXz9NqS2T7rqPIx+v9m10/fpl5HiwgmW9zEOxDQ=;
+	b=R+yPHDBIGnvUjbSeN57UebxkIBNmiIGc1hj7+FSRIMQnEjoBwKWNEaOn4oapqQb3BJTeTz
+	DXSwg+A1JD8KgYBw==
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1726742914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=NrsvIn2N6e0HEEy9AmSgmKu/Pik39a2CR2Ud3o1pNEw=;
-	b=SkIk4+0hOOigpGGlzIbA8bHPO3KpNi1QAAPhTKaFTupF8AUr4zHL3Fyo3vZcu+MFdf31tP
-	1fMwBjCxuTOXNdceKGZTrpYJiRD4mMnWha3MzbLBpABTiz5N20e+R6g7XNXsFa4SbOzFnv
-	hcPpEUoOJa8p5GnpMuc1aYwzKMltZh0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1726750533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J035lXz9NqS2T7rqPIx+v9m10/fpl5HiwgmW9zEOxDQ=;
+	b=mvWpO0PoJvQa/GgqpFIRNNRh1hddqeLTEahw+JwzJsCgXy5jESa520Hq33eo6UC0d4lU6y
+	8HxDLbHF5Tmrxv0q/7UM460XvqXY8qRC1CCobXBN7XChY+bvDSRDdtOuvFP9wV15OWV0Wf
+	Iegk9ElaJfdkOmi+fFmEly/YP8GFuV4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1726750533;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J035lXz9NqS2T7rqPIx+v9m10/fpl5HiwgmW9zEOxDQ=;
+	b=R+yPHDBIGnvUjbSeN57UebxkIBNmiIGc1hj7+FSRIMQnEjoBwKWNEaOn4oapqQb3BJTeTz
+	DXSwg+A1JD8KgYBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36D1D13A1E;
-	Thu, 19 Sep 2024 10:48:32 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1329E13A1E;
+	Thu, 19 Sep 2024 12:55:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KotaOoAB7GZdDAAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 19 Sep 2024 10:48:32 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: syzbot+56360f93efa90ff15870@syzkaller.appspotmail.com
-Subject: [PATCH v2] btrfs: reject ro->rw reconfiguration if there are hard ro requirements
-Date: Thu, 19 Sep 2024 20:18:11 +0930
-Message-ID: <b03b069ea18d29ccad3410c61ed40b979b12f50b.1726742871.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.0
+	id OimABEUf7GZCMwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 19 Sep 2024 12:55:33 +0000
+Date: Thu, 19 Sep 2024 14:55:31 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Luca Stefani <luca.stefani.ge1@gmail.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] btrfs: Don't block system suspend during fstrim
+Message-ID: <20240919125531.GL2920@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240917203346.9670-1-luca.stefani.ge1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240917203346.9670-1-luca.stefani.ge1@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_DN_NONE(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCPT_COUNT_TWO(0.00)[2];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[56360f93efa90ff15870];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -2.80
+	TAGGED_RCPT(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Score: -2.50
 X-Spam-Flag: NO
 
-[BUG]
-Syzbot reports the following crash:
+On Tue, Sep 17, 2024 at 10:33:03PM +0200, Luca Stefani wrote:
+> Changes since v5:
+> * Make chunk size a define
+> * Remove superfluous trim_interrupted checks
+>   after moving them to trim_no_bitmap/trim_bitmaps
+> 
+> Changes since v4:
+> * Set chunk size to 1G
+> * Set proper error return codes in case of interruption
+> * Dropped fstrim_range fixup as pulled in -next
+> 
+> Changes since v3:
+> * Went back to manual chunk size
+> 
+> Changes since v2:
+> * Use blk_alloc_discard_bio directly
+> * Reset ret to ERESTARTSYS
+> 
+> Changes since v1:
+> * Use bio_discard_limit to calculate chunk size
+> * Makes use of the split chunks
+> 
+> Original discussion: https://lore.kernel.org/lkml/20240822164908.4957-1-luca.stefani.ge1@gmail.com/
+> v1: https://lore.kernel.org/lkml/20240902114303.922472-1-luca.stefani.ge1@gmail.com/
+> v2: https://lore.kernel.org/lkml/20240902205828.943155-1-luca.stefani.ge1@gmail.com/
+> v3: https://lore.kernel.org/lkml/20240903071625.957275-4-luca.stefani.ge1@gmail.com/
+> v4: https://lore.kernel.org/lkml/20240916101615.116164-1-luca.stefani.ge1@gmail.com/
+> v5: https://lore.kernel.org/lkml/20240916125707.127118-1-luca.stefani.ge1@gmail.com/
+> 
+> ---
+> 
+> NB: I didn't change btrfs_discard_workfn yet to add error checks
+> as I don't know what semantics we should have in that case.
+> The work queue is always re-scheduled and created with WQ_FREEZABLE
+> so it should be automatically frozen. Shall I simply add some logs?
+> 
+> ---
+> 
+> Luca Stefani (2):
+>   btrfs: Split remaining space to discard in chunks
+>   btrfs: Don't block system suspend during fstrim
 
-  BTRFS info (device loop0 state MCS): disabling free space tree
-  BTRFS info (device loop0 state MCS): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-  BTRFS info (device loop0 state MCS): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-  Oops: general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN NOPTI
-  KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-  RIP: 0010:backup_super_roots fs/btrfs/disk-io.c:1691 [inline]
-  RIP: 0010:write_all_supers+0x97a/0x40f0 fs/btrfs/disk-io.c:4041
-  Call Trace:
-   <TASK>
-   btrfs_commit_transaction+0x1eae/0x3740 fs/btrfs/transaction.c:2530
-   btrfs_delete_free_space_tree+0x383/0x730 fs/btrfs/free-space-tree.c:1312
-   btrfs_start_pre_rw_mount+0xf28/0x1300 fs/btrfs/disk-io.c:3012
-   btrfs_remount_rw fs/btrfs/super.c:1309 [inline]
-   btrfs_reconfigure+0xae6/0x2d40 fs/btrfs/super.c:1534
-   btrfs_reconfigure_for_mount fs/btrfs/super.c:2020 [inline]
-   btrfs_get_tree_subvol fs/btrfs/super.c:2079 [inline]
-   btrfs_get_tree+0x918/0x1920 fs/btrfs/super.c:2115
-   vfs_get_tree+0x90/0x2b0 fs/super.c:1800
-   do_new_mount+0x2be/0xb40 fs/namespace.c:3472
-   do_mount fs/namespace.c:3812 [inline]
-   __do_sys_mount fs/namespace.c:4020 [inline]
-   __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:3997
-   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-   do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-[CAUSE]
-To support mounting different subvolume with different RO/RW flags for
-the new mount APIs, btrfs introduced two small hack to support this feature:
-
-- Skip mount option/feature checks if we are mounting a different
-  subvolume
-
-- Reconfigure the fs to RW if the initial mount is RO
-
-Combining this two, we can have the following sequence:
-
-- Mount the fs ro,rescue=all,clear_cache,space_cache=v1
-  rescue=all will mark the fs as hard read-only, so no v2 cache clearing
-  will happen.
-
-- Mount a subvolume rw of the same fs.
-  We go into btrfs_get_tree_subvol(), but fc_mount() returns EBUSY
-  because our new fc is RW, different from the original fs.
-
-  Now we enter btrfs_reconfigure_for_mount(), which switch the RO flag
-  first so that we can grab the existing fs_info.
-  Then we reconfigure the fs to RW.
-
-- During reconfiguration, option/features check is skipped
-  This means we will restart the v2 cache clearing, and convert back to
-  v1 cache.
-  This will trigger fs writes, and since the original fs has "rescue=all" option,
-  it skips the csum tree read.
-
-  And eventually causing NULL pointer dereference in super block
-  writeback.
-
-[FIX]
-For reconfiguration caused by different subvolume RO/RW flags, ensure we
-always run btrfs_check_options() to ensure we have proper hard RO
-requirements met.
-
-In fact the function btrfs_check_options() doesn't really do many
-complex checks, but hard RO requirement and some feature dependency
-checks, thus there is no special reason not to do the check for mount
-reconfiguration.
-
-Reported-by: syzbot+56360f93efa90ff15870@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/0000000000008c5d090621cb2770@google.com/
-Fixes: f044b318675f ("btrfs: handle the ro->rw transition for mounting different subvolumes")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Always call btrfs_check_options() for reconfiguration
----
- fs/btrfs/super.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 98fa0f382480..804c8fde5e8d 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1498,8 +1498,7 @@ static int btrfs_reconfigure(struct fs_context *fc)
- 	sync_filesystem(sb);
- 	set_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
- 
--	if (!mount_reconfigure &&
--	    !btrfs_check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
-+	if (!btrfs_check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
- 		return -EINVAL;
- 
- 	ret = btrfs_check_features(fs_info, !(fc->sb_flags & SB_RDONLY));
--- 
-2.46.0
-
+Added to for-next, with some minor updates to changelogs. Thanks.
 
