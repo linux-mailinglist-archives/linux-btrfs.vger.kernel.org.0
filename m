@@ -1,156 +1,200 @@
-Return-Path: <linux-btrfs+bounces-8118-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD4E597C238
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 01:46:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DCF097C35C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 06:41:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BC3E1F21FBD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2024 23:46:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E05F28393A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 04:41:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A565C1CB322;
-	Wed, 18 Sep 2024 23:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90BA418C3D;
+	Thu, 19 Sep 2024 04:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RhIeWwx3"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TgQ+mFwf";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TgQ+mFwf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA8A18732F
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2024 23:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C66A1758F
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 04:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726703156; cv=none; b=c+MdeFKzCdqmqzbaBaSGeETrkMr2fksH+4Zz01trTNO/Fqf1YMHRvLWV1lYuts3pIHdkwbef5/KTozcqlnQbVp6j6D6HF6KivTAoaRmm8cCm/OZtXy/Bd3xwHAP95sWaAvIuYl/87ewZLCE4p40S3mpor7B8evrHV2XZjAvMFIg=
+	t=1726720866; cv=none; b=ewRYurZS8p8N41Szs+YK1n0rtqfupvPQDbmIDPQ1nAGhBAtoWFYer+jhcXBRVM1Yf/YxjlJDPR3XrTOXRRJSd5PFefz7zsALKIxcv9zvgSNhQnOFEJjfH6Bfq2rgHxCsZ0tsX6aPO5oKBKM9Rz92PiIqNfXjFX//OcszjUJDEts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726703156; c=relaxed/simple;
-	bh=oVgWYIVZApIzh4Wx7odik99kFC0vJtoz3MCruouGzdA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pfo5NKxcOGccYHXL6chcG5Ka41PhegpJVaQJLpKBZsI1S9Ybazgde620kCBMipSgxo0hNcNTy9Nyq8N8nvCNLFkNWwFq9Kl49KBHdyDgmk89SK/CMaAjQ39+i/oUniAkTo3Z+u1krC7HAu4nA7C3IRm0m9/HZHSyKnvWxS1yxwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RhIeWwx3; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726703147; x=1727307947; i=quwenruo.btrfs@gmx.com;
-	bh=+bR9xqbmTCyR4i0/8cY0bZcDe88EV96GKSobXOjedSw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=RhIeWwx3ORhN5aOunxWDV5SwKxDplaljZvxU+GUzUqVcfSpXpxvstTGnpF7fRdtI
-	 pbpyPAVIsLIiL8tlmC1irA43iRNE/adiwOi8YdZoAnXgLZz3NmfXh+AR/WQ28SXJn
-	 S2fDSWsT9jKczwD4P8+7Ju89KyxLvTj0b2BfIPNoCYGCzcLhsvtrHRcy8WUBZftM4
-	 FNqhRrRo3jc9UbhzRmn9om/2BbY8+JxjI6zEEmkwqNMeHjQ+9Mi7Cv9N9dZvxceSv
-	 dq7dvhp/rPVVupvx4tT87LiRUp6TvSX+AvwhC/RSSgZE276KDTD9oyxf+MtKxZO8R
-	 OI+5goHIqbVm3ESUcg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MD9T1-1shxgB1nUX-002Jcr; Thu, 19
- Sep 2024 01:45:46 +0200
-Message-ID: <168e23bd-ab59-45d6-8f46-e01353d03084@gmx.com>
-Date: Thu, 19 Sep 2024 09:15:43 +0930
+	s=arc-20240116; t=1726720866; c=relaxed/simple;
+	bh=HABKKZrZsIqT5cZFW78LUNszqi2l90C1IYqu7Wx6VEE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jNr+MG9zPvtn+PyUesB1uEEtM99RljzgGY6yW3EtrqOKopaOGL+L7WovAi6TEwCxD1CjNKfERsTiA0U3Ynlk1dv2Ia3XJjz/GnFryVQ6BJoIfl8lg5kslcT4ebnhrQOoRWTmCwzZBJN3CETnchsoj94HPUQhsxE3KQsLMMJrseY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TgQ+mFwf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TgQ+mFwf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B1EBA33767;
+	Thu, 19 Sep 2024 04:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726720862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wgApxGyaUq6NkjYfZJLVINhLPdBaR8gOpQlO5mEh58Y=;
+	b=TgQ+mFwf7eiGmed6Z6B1twm8k5Wrxoq++rDWUMmIqBaxLpZs2ExSvsqequd88bN7vS6F/4
+	kzMkI3FXQ80TcRCVSDvaayDSZeayMJwzqvX53eAHQBXVDEE9WQeEcaVthSmHPXzI/5TPeR
+	5NP1l2MuQW3Cfz9XQa2Tv+KiXfDggg4=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1726720862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=wgApxGyaUq6NkjYfZJLVINhLPdBaR8gOpQlO5mEh58Y=;
+	b=TgQ+mFwf7eiGmed6Z6B1twm8k5Wrxoq++rDWUMmIqBaxLpZs2ExSvsqequd88bN7vS6F/4
+	kzMkI3FXQ80TcRCVSDvaayDSZeayMJwzqvX53eAHQBXVDEE9WQeEcaVthSmHPXzI/5TPeR
+	5NP1l2MuQW3Cfz9XQa2Tv+KiXfDggg4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B46F513A1E;
+	Thu, 19 Sep 2024 04:41:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id A3Z7HV2r62aWIQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 19 Sep 2024 04:41:01 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: syzbot+56360f93efa90ff15870@syzkaller.appspotmail.com
+Subject: [PATCH] btrfs: reject ro->rw reconfiguration if there are hard ro requirements
+Date: Thu, 19 Sep 2024 14:10:40 +0930
+Message-ID: <cae5cad98220b379845813de92e37f55f69afc2b.1726720697.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/2] Add dummy RAID stripe tree entries for PREALLOC data
-To: Johannes Thumshirn <jth@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <85888aaa-c8f5-453b-8344-6cabc82f537e@gmx.com>
- <20240918140850.27261-1-jth@kernel.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240918140850.27261-1-jth@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:apR1X4YV/3gl8NEGHfXi4zdMl4v4w+PjINAfkUlahaMIpyfhzmX
- qUEg6QMUoU+yxBqMNiSPznpd5ovS1WLVVSJlBZsc7s+rTLcDBqkJnGCMvzsF1wgQ+k2zVlm
- ddGPMw5t3Y75KlZZBPmeUa7eWc5EP/XOi8lTf6PlYlCS50jfYeGEhyGO3XSzA8c73+ZFX8t
- w7yJorqm4dsVbKysFOhXQ==
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[56360f93efa90ff15870];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,suse.com:mid,suse.com:email];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:V0VGWhtcoCk=;TPrc7qJbCkwvPzQta3vI4qDG9mG
- q0yIqpEyFxd2O5jgBN2+qr/mGDw6KF0nND2nwMdpOCNdzuUDBUYAe/o6uTtdQfmhauOudlPR3
- 9e5gG+vGMfrdwr5ODl7j3m/uvlVxeOI/7IV8giSoW7ENQs+mpcE7Mxzg3g2hBjJmWzJ0E5G0a
- PH1GIfJynDRCflccd/LtIFuJfaQj1RwEW7IKtoe8VX0l1cCyF7WXrB7KNSut9LTA8S+OhxKev
- Anoms4Xrwot1uGk7P9ZbM6VUPA8oSp8eSmBO2I0jl+1S9LnsOUmZR5uvLiNybeMOIQ+1rrFLJ
- WIMW2C81tkI/yWKDr8iWPC1D2Ek6OnLZ83aBuShWFE4iTOok7n5AGRfDgA5Dk6++pfk3h0NiE
- dAV2inQz9osah16GnQnNDEwVka/PlR4+mC7jyH75eRCKO/VSCbUrVnNNM+2SQHyfmFbKXoYXM
- JEjtfZWR4DdM/GnjcuNqtbrHe9dSDhZvZIc4Mygg6YF+vSJHhoYvwEe9zqolR1Vlevn6JbQma
- mpQ8EbZ20OmarBJxj56zqNpar+czuVmCZykIP/F7RY1PcVMtnqC812uesOaYqphqRLo/6j9dQ
- qzereCtgS6eNUb+xZsQS2vBvgXmt5CLFTPtbuYYdOIgurX5R0RrqnqsxgiN6UJdl67+Nsxct4
- sNOwOnHQVefvYLuJl+LaCGdQnw1qRXSSHwcZ0E3Kl4CRLS30h8lYy1LKmh+AaZo4+Dseh6RK2
- ElBpyDnwu1vbRPXTzI5xn+Z+VBaRkup4cbuZtAUrpaXkqtBQWV0EGOOlUyri/Aeu56WxPdTCU
- 9QU30+aj4JR9Wuqgf7salG8z7eRtyuLIemZy023gYtuSA=
+X-Spam-Level: 
 
+[BUG]
+Syzbot reports the following crash:
 
+  BTRFS info (device loop0 state MCS): disabling free space tree
+  BTRFS info (device loop0 state MCS): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
+  BTRFS info (device loop0 state MCS): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
+  Oops: general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN NOPTI
+  KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+  RIP: 0010:backup_super_roots fs/btrfs/disk-io.c:1691 [inline]
+  RIP: 0010:write_all_supers+0x97a/0x40f0 fs/btrfs/disk-io.c:4041
+  Call Trace:
+   <TASK>
+   btrfs_commit_transaction+0x1eae/0x3740 fs/btrfs/transaction.c:2530
+   btrfs_delete_free_space_tree+0x383/0x730 fs/btrfs/free-space-tree.c:1312
+   btrfs_start_pre_rw_mount+0xf28/0x1300 fs/btrfs/disk-io.c:3012
+   btrfs_remount_rw fs/btrfs/super.c:1309 [inline]
+   btrfs_reconfigure+0xae6/0x2d40 fs/btrfs/super.c:1534
+   btrfs_reconfigure_for_mount fs/btrfs/super.c:2020 [inline]
+   btrfs_get_tree_subvol fs/btrfs/super.c:2079 [inline]
+   btrfs_get_tree+0x918/0x1920 fs/btrfs/super.c:2115
+   vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+   do_new_mount+0x2be/0xb40 fs/namespace.c:3472
+   do_mount fs/namespace.c:3812 [inline]
+   __do_sys_mount fs/namespace.c:4020 [inline]
+   __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:3997
+   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+   do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+   entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-=E5=9C=A8 2024/9/18 23:38, Johannes Thumshirn =E5=86=99=E9=81=93:
-> This is an RFC implementation of Qu's request to be able to
-> distinguish preallocated extents in the stripe tree for scrub.
->
-> It's not 100% working yet but only showing the basic "how it's going to
-> look like".
->
-> I'm not really sure this is a better solution than returning ENOENT
-> and ignoring it in scrub.
+[CAUSE]
+To support mounting different subvolume with different RO/RW flags for
+the new mount APIs, btrfs introduced two small hack to support this feature:
 
-If RST without zoned supports preallocation and NOCOW, then I think we
-should not just insert a dummy, but a real RST entries.
+- Skip mount option/feature checks if we are mounting a different
+  subvolume
 
-So that NOCOW/preallocated writes can just re-use the existing RST
-entry, without any new RST updates.
+- Reconfigure the fs to RW if the initial mount is RO
 
-At least logically it makes more sense.
+Combining this two, we can have the following sequence:
 
-At least a quick glance into the handling shows, NOCOW writes doesn't
-trigger any RST updates, so I guess it should also apply to PREALLOCATED
-writes too.
+- Mount the fs ro,rescue=all,clear_cache,space_cache=v1
+  rescue=all will mark the fs as hard read-only, and no extra work will
+  be done to convert the original fs to v1 cache.
 
-Or did I miss something else?
+- Mount a subvolume rw of the same fs.
+  We go into btrfs_get_tree_subvol(), but fc_mount() returns EBUSY
+  because our new fc is RW.
 
-Thanks,
-Qu
->
-> A third possibility would be to do a full backref walk on
-> btrfs_map_block() error and then check if it's a preallocated extent.
->
-> Johannes Thumshirn (2):
->    btrfs: introduce dummy RAID stripes for preallocated data
->    btrfs: insert dummy RAID stripe extents for preallocated data
->
->   fs/btrfs/inode.c                | 47 +++++++++++++++++++++++++++++++++
->   fs/btrfs/raid-stripe-tree.c     | 47 +++++++++++++++++++++++++++++++++
->   fs/btrfs/raid-stripe-tree.h     |  2 ++
->   include/uapi/linux/btrfs_tree.h |  1 +
->   4 files changed, 97 insertions(+)
->
+  Now we enter btrfs_reconfigure_for_mount(), which switch the RO flag
+  first so that we can grab the existing fs_info.
+  Then we reconfigure the fs to RW.
+
+- During reconfiguration, option/features check is skipped
+  This means we will restart the v2 cache clearing, and convert back to
+  v1 cache.
+  This will trigger fs writes, and since the original fs has "rescue=all" option,
+  it skips the csum tree read.
+
+  And eventually causing NULL pointer dereference in super block
+  writeback.
+
+[FIX]
+Inside btrfs_remount_rw(), re-do the btrfs_check_options() to make sure
+there is no hard read-only requirements before reconfiguring the fs to
+RW.
+
+Reported-by: syzbot+56360f93efa90ff15870@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/linux-btrfs/0000000000008c5d090621cb2770@google.com/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/super.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 98fa0f382480..0091f377dd4d 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1286,6 +1286,13 @@ static int btrfs_remount_rw(struct btrfs_fs_info *fs_info)
+ 		return -EINVAL;
+ 	}
+ 
++	/*
++	 * Re-check the options. The check inside btrfs_reconfigure() can be
++	 * skipped to support different RO/RW flags for different subvolumes.
++	 */
++	if (!btrfs_check_options(fs_info, &fs_info->mount_opt, 0))
++		return -EINVAL;
++
+ 	if (fs_info->fs_devices->rw_devices == 0)
+ 		return -EACCES;
+ 
+-- 
+2.46.0
+
 
