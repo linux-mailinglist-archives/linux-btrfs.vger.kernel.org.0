@@ -1,278 +1,230 @@
-Return-Path: <linux-btrfs+bounces-8126-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8127-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB62D97CBB0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 17:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC1C97CCA0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 18:47:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43CA0285FC3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 15:43:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF6CF284DE9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 16:47:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2444D19FA90;
-	Thu, 19 Sep 2024 15:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 747441A01B4;
+	Thu, 19 Sep 2024 16:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="p2Qa6b/d";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="kpFZPhxl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyj184Sv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D05E1EF1D
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 15:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726760583; cv=fail; b=lxsgIkhjXflnw6N1XvulflcyyAddvQ8eRVUFmqYBrgwuJCdM8SaBVkYZ9vuJUSBgb19U42H0wkxTKgMjDCqNknK1aOViNfMpdp7mfHjtL50rfPOdbrQd78JJjjr1yL7uFeh0soFCOzis2h23mYDxdvpuF5TyFNpfXvv5x4E13l4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726760583; c=relaxed/simple;
-	bh=FNRjWB/5h6sl17clOrpHyFU4v97xpYGMWvMdhuhexIw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=p/xpp6JZxQaJPqF8lubEEDUoH3zv+Oejw2W7QSTZl5IGs5sU9egfOuOYOzfIzfYmJkL63EwdigIEVik3oDb4r7yxM7uksclK77PXiYrszAPgnQ0LvtiLZ5YapwrM7R2L/jMTLaePTuJCES2AdtONfxo4witX+PQTNnEL0IVZBUI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=p2Qa6b/d; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=kpFZPhxl; arc=fail smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1726760581; x=1758296581;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=FNRjWB/5h6sl17clOrpHyFU4v97xpYGMWvMdhuhexIw=;
-  b=p2Qa6b/dkPe/Ts30LrwifYaia9K0VoAuIlDXYMz/GPQcXUAJjXFsCkB9
-   6mW35a97oVY5b1pJlnf3PGCDCgldiDkDeXJdtv4zkJWLcLiX2qHpURxrx
-   EItw+0T1LmZ4EBCLGRT26Vn5SsSiP0ITQ+9T3cfJ4j2s/+Pb/FNDShn2g
-   xBBGIhBFryf+RTuIZXMKgMDgd9LUHj6ukHnTCcLll7PvcQRsIWgB8cMCL
-   N3ABDvgBHfkGlyJfTov6VwDYb/+HJFdpsIB2rDdWkaevONv0BqFd8SxBk
-   X2d+T6GwG/OZmCIxeMjxfZLWrGz+A1k1XmZzeCmLdYSnwLdGNOb8d7ouZ
-   A==;
-X-CSE-ConnectionGUID: 3kn7EG8FRXG5Nj8OUO/0mg==
-X-CSE-MsgGUID: bqEGzbSDTuiHppn38PthHw==
-X-IronPort-AV: E=Sophos;i="6.10,242,1719849600"; 
-   d="scan'208";a="28085580"
-Received: from mail-centralusazlp17010002.outbound.protection.outlook.com (HELO DM1PR04CU001.outbound.protection.outlook.com) ([40.93.13.2])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Sep 2024 23:42:59 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qnD4CykCMjL9deviej8oRn7Nr6VtatAS9xN/3FKvaKdPIMzGXt4n52jyEND3OT7l6sfoqIG6FmTN9F5RlEQ0k94fHO9v6g0R4iPn4U3Djxy5VGookiQuBSOMyJnW+WI3gV7X+nZvclhLz2gVg5U77bp2fwoJ3dT2QvMVz+Se7xeQ5Lj0xwPQsJs/jQk3Mei5YWd4tQYZiGR1fVRP5bFNr1CQI76+xcBo1QZqj3H2wSRW488eGfup+37lUGxK0xw7a+mhHfkku21sghkTLRYplp8AJuu3+7uuDPdPDNq+H1804iR2iHqa0hi2k1vfDo43287Zt38oLnuohctS76r3sA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FNRjWB/5h6sl17clOrpHyFU4v97xpYGMWvMdhuhexIw=;
- b=fdzKQ9q3tcHSloaBXs88r5usMxm1bNv9/vucQWg4mq0C58TYlkMd+5NEKiXTH5OmaPt6iWDVUbkph7MtTL8intkIvU3n42jvdu4Gp2MQmMzg0r8kDkkARbounitVGQaQkeWPfSfoRGlFsya0mRCEl52f4/mnBpR80OAusdknS1Q74Rzh+bwdK084qCKVJqu/idjbcQ1kDVpSWfgAS4tPVtrKlg4FWlorjezpJncl/+ZhosccWuQm2fn+ZSiN/m6jyqE8fYupGBkrWfzjkBmyBrGj/D/vneNwl7jMqRPwmYBg6d51G/0qxICdre7UxWQdcxWM8/hRCInVSWYwbnYWmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FNRjWB/5h6sl17clOrpHyFU4v97xpYGMWvMdhuhexIw=;
- b=kpFZPhxln3u7ENmrv8sfOaaTogsnYUvjHuvStCYvtaiLZf9/vvzLyjd2XJSU1oNe9q3LTAulJNriZB6y6RpcDr4FbwNW6AV5iyOyZQQ32NQ0lNckOxX513olQ2Zfb2L4dCP2or2kUSwzfmM63830t9Ux2czE3AnShY4Nls/WfmU=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by CH0PR04MB8004.namprd04.prod.outlook.com (2603:10b6:610:f4::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.17; Thu, 19 Sep
- 2024 15:42:57 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.7982.012; Thu, 19 Sep 2024
- 15:42:56 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Johannes Thumshirn <jth@kernel.org>,
-	WenRuo Qu <wqu@suse.com>
-CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [RFC 0/2] Add dummy RAID stripe tree entries for PREALLOC data
-Thread-Topic: [RFC 0/2] Add dummy RAID stripe tree entries for PREALLOC data
-Thread-Index: AQHbCdT4jVtO6XSQ6U6iM3wx68oLnbJeNhWAgAELcYA=
-Date: Thu, 19 Sep 2024 15:42:56 +0000
-Message-ID: <bb072733-3f77-4b9f-80ef-4043f1ce8112@wdc.com>
-References: <85888aaa-c8f5-453b-8344-6cabc82f537e@gmx.com>
- <20240918140850.27261-1-jth@kernel.org>
- <168e23bd-ab59-45d6-8f46-e01353d03084@gmx.com>
-In-Reply-To: <168e23bd-ab59-45d6-8f46-e01353d03084@gmx.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|CH0PR04MB8004:EE_
-x-ms-office365-filtering-correlation-id: 78a2eef6-fc95-4276-d1d5-08dcd8c1bb7e
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?Q2xTUklmcEdKR0crZ3FRK216YklDTTFaU3pTTkduWDBRSXpCRlZUK2dJcm54?=
- =?utf-8?B?eEZxcndOOEtyMHhQYWhERXUxVjMxSWw0QytJWGRHMDBUVFFOSTRkcGpvaFN0?=
- =?utf-8?B?NWM5WThDN2NvNzFFS2xwcmpnYThDZWMyUGthamVwNkZVai9kSHIwNjJTTlJq?=
- =?utf-8?B?MXlGODBMaitNNCtmdVBnVXVqbUtyemZmSGhYdS94NHFKYkdoaitmcm8zN29K?=
- =?utf-8?B?WlFmV0lkUGpzODlDTG9EaWhvOUQ2VWE1MnE2SXhyU0N5YS80anNmaFNaYnRr?=
- =?utf-8?B?OU44YWtDVXZ5RGhkNXV6MG9KZ1RxRVQ5TTRUMlB4cnQxZFZiODFqK0ZIK0JG?=
- =?utf-8?B?enc5a0dWb0U3dnNRUTJBMjV6dFpmdXdYTVhXSkVlUW9VYlNrdlRrb04rdVcz?=
- =?utf-8?B?ekdWRzBEbGJETWtvbkNCNmNhbzA1djVhYnlQWWNVUTJyL0Nmb2d4VllIS0Zj?=
- =?utf-8?B?Tm04bEJ5YUFLa29WRUF6S1JWVUJXVlFQTjZBTXY3eXBIZFpzZ0JsUFpRZG5h?=
- =?utf-8?B?VmJvQ1FFbUFMZ1cwMmFqQUplOXZuVVZRS0RFb0hwaS9wcDJJS3ZzRDlBQVpJ?=
- =?utf-8?B?MHM3NFZBMFdpVG9NQ1dBdlIyQmd4YjI2NHhLY2YxUHNTdnU4RklVSkpkSThT?=
- =?utf-8?B?R1E1SFdIenJpQ2RkdVo1d1ZpNG9uNkhOei9vOVZWbFBGQ2RkemhIdDc2VDNn?=
- =?utf-8?B?R2dvSTJ0SCsvOFBvMFFzRFozNW5WeGZrVnFyRll3cS9ocklXanoyVndjY1lV?=
- =?utf-8?B?dThXa0NNSlUrU0FaWk40SVJVWmczSTdaMUhaR3N5cHUwdlNzbUdrZTdaeHdT?=
- =?utf-8?B?VDBKYkJXVFdWU3EzVUZNaTlGSk11R3QzVlNLTHVOUjJXd2lDR2puNURweEtU?=
- =?utf-8?B?S1ExWHV5VUxhK0lhdjlMRnVNdDRYc1NBaVZLSFduQXVoTFhubFdlSDBzaWMv?=
- =?utf-8?B?K0R6bm9QNUFZYlBNT21zcjBPck0yMnFXTE5nUHEvV04rcjUraFNqaVRVZkdt?=
- =?utf-8?B?enJZTm91RnRQK0Q2RWtBMGpUKzhKQnZlYWswSzA1NlhReDFsLzJ5ZXRIemxr?=
- =?utf-8?B?VFVOdDcweUxUblVjQmVwclY2V2hrM28wQlA1MVY5SzU2M3FiRVc4RnFHOVEv?=
- =?utf-8?B?UU8raWQwVThMWmcwMkVjWldMNTdocUhUVlJqSXRHZktaMitHOTJtQ2VCeFQx?=
- =?utf-8?B?bHdEUS9leGNJcXplWGs2TkhLNUpNUFBxQkpYdVpxQ0g3eDkvTWdEWUhia1VJ?=
- =?utf-8?B?d3Zqd2loZEZPUzlmR2RsNzBNaHhua2JRZ1lYa0xrazZDUTcvYjdCUWVyVjNS?=
- =?utf-8?B?YjJZQmJUc2lkNWRwTXlQRkpsMXd1WDlic2RaeHZUY3YwNG1UVG9ZZnQvYjFZ?=
- =?utf-8?B?TUduRURBRnFaTmNSaTlDN1RiejgwQ2VEZFdFa2I2UndJQkZOajB0TFdveTFR?=
- =?utf-8?B?TXVyN0FiVjcwdTdiUDRXOWYwZlQ0NHdZcmJsNHYvMFVmYUlaLzQ5c3RPRnpt?=
- =?utf-8?B?UXFkV2t6eitLMG52aVBaVkMxOWxnY2EzbUdVM1g3dnFwMlV5Y3pWVlI0WEtB?=
- =?utf-8?B?a0tjT0xVVlZzMWx4N1ZlWnFIWEgyU1RGUElaeHZjREdGMTR3Nk01KysrUHo4?=
- =?utf-8?B?bm9aaWpaRjgwNDJtaHh3b1JIYTJVYjVYdHZxSFlUR0VEQWtacFpDa2k1RmRp?=
- =?utf-8?B?ZlFpYm1vd1ljaEovVnhLb3VHbS9ZOGIwUFBUWXR2cG43VWcxenBESE1wcmhQ?=
- =?utf-8?B?Y2tEL2xwTWxDZEo1RC9takU4d2ZxNDhqU0xTRUROMjBiNHVIUHZBWTRTQTJP?=
- =?utf-8?B?Z29rdUJIYngzTkkrNEloMm9sSlc1Y2RZbngvWHVQa0U3RVdZc0xyZ2hRdTBq?=
- =?utf-8?B?MFdlREpUWFNUa0ZnYU5pdHVjRWhiY2F4aEhBczJ0ejB0c0E9PQ==?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?UXZPTmRpQ3RrMStlbGM4ZTVwUDhvME9kVzZzSGtwNk5HS3U3QXRLN3l1ck9R?=
- =?utf-8?B?TzB3RVdpQ1o5elBJMWppcmRIRkpnbGxSdkdCancyUlBRVDB2TU4ydUovSjdU?=
- =?utf-8?B?WFE5Zjl4T21KZ0xwRmxka1hWRTEzbGVFQkVacFpzZlBzWW5FM1M1aTRlSGZa?=
- =?utf-8?B?OHhJRHBScVVvdWI4OEt2NkpGKzdZTDZzc3cxR01URm9OYi9BTXIwelkzNVBC?=
- =?utf-8?B?M3dxdDlvU09meUF5NHpRbkhEQWlydW1KODVocnUyS0QwZXFKNG0zUk9UU1N3?=
- =?utf-8?B?K05rWnJJTHQ0emJkVXJ3akNON0tTZjlVWlRjNzdqM1RHaFVjV3ZMdTZ6NkxO?=
- =?utf-8?B?NlhCWXlTZ3B3N0FtUHZlcGhnMmlzb1NuaThXNmkzdFV1SHZXYXVsdWZ3NTRS?=
- =?utf-8?B?eFo1cHczK1o1MGovQkRQR1dscW9qUkxBS2s1UjNOVW1QMEdCNEttd1B2cWFL?=
- =?utf-8?B?MHZ4alB3L1p0L0Jnb1lzcUhxS1ZhT25maDVjVWx0R0tqdCtkZkFVUkdFbnBG?=
- =?utf-8?B?RHJyUE5pZlg2bi9NQTVoWkl1a0V4N2dwNUVBY09iTFJXUm9lR3U1NVQ0ZG1R?=
- =?utf-8?B?QUtsb2ZSU3QxQW1HSUoxZmJrU2Z5VVBsd1dSeWtwVHpmYVhQNnRHK2N2OElD?=
- =?utf-8?B?dkV1QjdOKzYzUUpaRTZIOVYwSE1MZHF1bFlWZ1pYRGo5VFUrSHYzS0NhMHJS?=
- =?utf-8?B?djlrektabW1JbVlyci9RazNhYTJscjlTUUJiRGxqQ3dUYzVUMFhPNE5ONS9F?=
- =?utf-8?B?RlFuT0tlNkRsaVlmMURTeEFuN2x2aUV1ajBDRXVzSU9QSXZCQ3ZYRTkvNlJl?=
- =?utf-8?B?RlZ6RmJ3b2d1VnNtTHlXQ2R4dFhJNTc4cU5Ed1lER0JZd09kZEpFbnVNVkR5?=
- =?utf-8?B?STJXWUsyOXU5SmhPTHNaSXJUdWY3WklWLzJxb1Q4NVQ1QTNxdUlWOU9KZHFG?=
- =?utf-8?B?Zk1LQW5kdzAxNXFjWGlFZWJSSjlsdTdxMVhTYzMrZTcxUTB5TnZSZm4rZWx0?=
- =?utf-8?B?RFdJUjFvd1Y4a1lhbXRCdkJCZXNmSGNpV2QxZ05LU2EvZ2cxTVJOZ1pHcnI1?=
- =?utf-8?B?NkdaMmMraGFVVjU3VldaWVIrdW9ramVNeGpKNFB2SXhhSUpBTEZDNTlFUFJ4?=
- =?utf-8?B?OGRaWTQ3c3ZjekZJRkVRaXhSV1N0aWgvKy9pc2huZVBUWFdvQSt2VkRGOFpm?=
- =?utf-8?B?TUxvaHozZExoS0x0NUVtQWlIRi92Q3RTajIzblFqWjFHSlh5b1duWWVZT0Iw?=
- =?utf-8?B?L2taMS82dEQ1TFdUdUFhVWs3MEUzSnRvVkUxekhHdmRKdWdvNVM2K3lHWHFw?=
- =?utf-8?B?US9pWDljalBGS01LUmllbWJNMzR0TW5MS0JIOTlkYWw4azVmdXNNVjE0SXZx?=
- =?utf-8?B?Zm9NbXc3Q2JYMERwRmphWUVxSTFXUUFLRDVWU1ZMZUNTWFN2L0ttUWxWN2pY?=
- =?utf-8?B?b1JqaWloVHhTUDN1ZnNqMDdyb3dIUm1jT0d0cFQ4Zm1NRmhrWnIrSXJVMUtU?=
- =?utf-8?B?WHlsQldpQ3N6bmNnRWhGUlhMTjkvOEM5M2NGUkJhMlRyM0U3S1BobDFCZVRq?=
- =?utf-8?B?OWNtMk92MTlMVHdqVUxlbDhCL2ZGOUxUVkoyeDlUZ1VlK0hjRnh3S05SNkFr?=
- =?utf-8?B?RjBxRHFVTE04RVNtcFYzcVNSSlN5Z0JUbUhUMUR4czVBTXBxdGt4ZVhicXlx?=
- =?utf-8?B?MVlRbFVDZDRJWEI5VWUvZHE5bkt5UnN3NEhBZ2ZQYUp1empKdlo4YmpCWWlu?=
- =?utf-8?B?M1FTRnBtTXlITnNrc3FwR3VhMW0wWlZtaU5pck4zNVZoYUJLTXBSWml6eDJn?=
- =?utf-8?B?bjBHOEZqbmRYd1FPYTlCdVYrbmFUQTVILzc0QXoxTHVQNW1xVExqY1RDbkRm?=
- =?utf-8?B?WXprS1VPcUs1dk5hUUZLUm5LbGlwa3gyMi9KUnc1Q2dnTEdiZkt3MXJtdkwv?=
- =?utf-8?B?ZE4vQXY2SHdvZUE4MWVhek9vbmI4dW9NZHdtVmJEb0lsaEUzd1h5ZXc2bDlT?=
- =?utf-8?B?Y0dKSnpCWTIxdFlmWWRpdzRBTUkxTDV0Vm5jYmV6MDh6OHBuQU5za2J5UEdz?=
- =?utf-8?B?U3ZvN2t6Sm1ERHJEMmQ3MFBQR1B4NWJzUlVIVGhaM1ZBTVBhNFIyVVBKUU8x?=
- =?utf-8?B?ZGxkUEZRWVBNeGVlSjVvSmN2UWg4bEtqcFFwSlJwd2pNdnFxazMvWUg0Rkxn?=
- =?utf-8?B?NWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CCD9E721E816CB41A612700EB0A393D3@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D15A18EB1
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 16:47:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1726764420; cv=none; b=LaTkxmK1Ve52gSqirRuHeEGY6yBbfexpNCSoMAXp9TytHVUmscsMxSmsXBqN2zY/S2QC/NqVE+9Jf02Xl0liNnj6hKTJvv+rplrMFjtICjQkAIzdow4rKK/qzm23VWUe4WUMFnRioS+PWxnn9/4hICGPssT3hBH0BF5fz4kYYhc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1726764420; c=relaxed/simple;
+	bh=qolEqizsV9MzrdTMm629EEYsyC2txI1vja4SbpfBjRg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=sZ5Cgx8EGpluPl0cF3TLz+oTxBPk5AQPy9qrqrjsQX+bfP3fAfBYARNd5+4QqVId+0sA4tCkt9aXBgJGd5tZVG0PyB0sJJOGhxPLhxYe/czIabZ2h9caXZuu79Fao3XRWOYd/5s1l7cD1+X+8bJZfjENQSwVtKD0TrZMhvMsLIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lyj184Sv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24ABFC4CEC4
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 16:47:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726764420;
+	bh=qolEqizsV9MzrdTMm629EEYsyC2txI1vja4SbpfBjRg=;
+	h=References:In-Reply-To:From:Date:Subject:To:From;
+	b=lyj184SvdX9jpQOA5gxB2j5CgdlB5x2r8fDtobBM9g1FqVwQ34qtms3Z5vxaUTrQa
+	 tuDlCpL90wf+VpZT/pRSBsRn2dBD9ZZoDcuGawRJk6J3YTBTHfZqSFAS2KCErlCrQ1
+	 Pog0zDQ8xEiA/0JYM63F1PvWj+Zp61BOUcCYH83p5FH2c9YspW/UxskGXezl2E+R8o
+	 7/00w6vh8Q0nMj2bQEFROLWbowvGh6exljg4ut1eHMXpr2HSpMibtb6hWet9bVKrvM
+	 dEWQBynagdiPQz5kZnTH5gdpddumq+U9wkMvblZgmhPbXSPH40HaRgUVQTJ2DpANWi
+	 jR9JMbXfJT5tQ==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a8d2daa2262so126348166b.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 09:47:00 -0700 (PDT)
+X-Gm-Message-State: AOJu0YybL/c9sk2cSCK3j1/iRBhnXA1wvQfYTv+IZPTByw9PznYes95x
+	qqTIKQtamfJDlZ3L9aZ6P4SX2VIrEr0XEJVuadt58Wbd/636ONmTduj2it++N4fS4YfvWl6ws3G
+	U0AWJXrGmLXn9I/RB+wvqUb+M2aQ=
+X-Google-Smtp-Source: AGHT+IEeb4XYlI1NXuTurYAZsaMpjFVl+5Rqgd10vqkW/D/RVRrxvk4H+94nvXA7iXGyAN5znQWENX7GMCGENjpakkA=
+X-Received: by 2002:a17:906:794f:b0:a8d:2faf:d341 with SMTP id
+ a640c23a62f3a-a9047b47d7amr2168603166b.10.1726764418675; Thu, 19 Sep 2024
+ 09:46:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Y91w39xct2irfMfNcpd13D6gGLK2OR4riqc8jwenfgtYiiYbgBUZpZ+yR3WqKaWZhnfppuhYtJ7W8eoIC1C/qorn3zc/OsSwqWVWJFSCqRssAMZI2oOA01y+DVfVWcMQsBRRoiFJsZU00ismp64cwjQ1nKwFtdrwqQruwPoUn9suMzuLGGbrAPTBBbZ1SEK40oRhOUJXAQfhVHTHuJi75PxpkKt4icR9c5UklL1YM9yyqCimWIqmvIUGwMKFCTFn+DV3WbWkmb5u9T63V4LI1nMRHR8b4FV6aOPpERDdLTYMQ504VnWDBNWyTuMixXiWNBLIAQJHCg/ADkZSwPUzEykqv3pfq3yjPW/0oHbFkGD+n150QYDuZ2x7E0FDvtASV9/36oGaBKf7//u4Et85qTs06BHfnYxgrBqIVAk+W86iR5UPsNTc+TGEvbvL+N4GIXqQm4yjjHgnyz883+Y1W2zEnNXhg2SeGxWG9qxE4bn9QZlRT9bRBkFC6FtlKFSCtCneXJ+uH2RMLOjQ9uvT9T+9EeW/EFxX8dsC+CFLUjGkXXzQdkyI2L1lIRDi/m7QPuFflv+lkjczcfONkfTebEKrBPI2d45TtwucQMcfiMIAHgr2nx4M4V9vdS09scAK
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78a2eef6-fc95-4276-d1d5-08dcd8c1bb7e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2024 15:42:56.5489
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6ku3Vnd2QlWGsQYW+smtkVlENSC50LNz1Bf7zxmNYomkZc/iQtI9VseBHgsijUaBEbuFC1sT/smloSaaIEM3btdpBEBmw1Baz4b8E5DairA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR04MB8004
+References: <fbbc0efa2ad81b3dcc00c6dcb15af8189d343af3.1726692825.git.fdmanana@suse.com>
+In-Reply-To: <fbbc0efa2ad81b3dcc00c6dcb15af8189d343af3.1726692825.git.fdmanana@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 19 Sep 2024 17:46:21 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7xQObC5GVpL+yAwXiy44P3A3bTeRRrFG9xKPRyTGTgww@mail.gmail.com>
+Message-ID: <CAL3q7H7xQObC5GVpL+yAwXiy44P3A3bTeRRrFG9xKPRyTGTgww@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: send: fix buffer overflow when reversing path that
+ is full
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gMTkuMDkuMjQgMDE6NDYsIFF1IFdlbnJ1byB3cm90ZToNCj4g5ZyoIDIwMjQvOS8xOCAyMzoz
-OCwgSm9oYW5uZXMgVGh1bXNoaXJuIOWGmemBkzoNCj4+IFRoaXMgaXMgYW4gUkZDIGltcGxlbWVu
-dGF0aW9uIG9mIFF1J3MgcmVxdWVzdCB0byBiZSBhYmxlIHRvDQo+PiBkaXN0aW5ndWlzaCBwcmVh
-bGxvY2F0ZWQgZXh0ZW50cyBpbiB0aGUgc3RyaXBlIHRyZWUgZm9yIHNjcnViLg0KPj4NCj4+IEl0
-J3Mgbm90IDEwMCUgd29ya2luZyB5ZXQgYnV0IG9ubHkgc2hvd2luZyB0aGUgYmFzaWMgImhvdyBp
-dCdzIGdvaW5nIHRvDQo+PiBsb29rIGxpa2UiLg0KPj4NCj4+IEknbSBub3QgcmVhbGx5IHN1cmUg
-dGhpcyBpcyBhIGJldHRlciBzb2x1dGlvbiB0aGFuIHJldHVybmluZyBFTk9FTlQNCj4+IGFuZCBp
-Z25vcmluZyBpdCBpbiBzY3J1Yi4NCj4gDQo+IElmIFJTVCB3aXRob3V0IHpvbmVkIHN1cHBvcnRz
-IHByZWFsbG9jYXRpb24gYW5kIE5PQ09XLCB0aGVuIEkgdGhpbmsgd2UNCj4gc2hvdWxkIG5vdCBq
-dXN0IGluc2VydCBhIGR1bW15LCBidXQgYSByZWFsIFJTVCBlbnRyaWVzLg0KPiANCj4gU28gdGhh
-dCBOT0NPVy9wcmVhbGxvY2F0ZWQgd3JpdGVzIGNhbiBqdXN0IHJlLXVzZSB0aGUgZXhpc3Rpbmcg
-UlNUDQo+IGVudHJ5LCB3aXRob3V0IGFueSBuZXcgUlNUIHVwZGF0ZXMuDQo+IA0KPiBBdCBsZWFz
-dCBsb2dpY2FsbHkgaXQgbWFrZXMgbW9yZSBzZW5zZS4NCj4gDQo+IEF0IGxlYXN0IGEgcXVpY2sg
-Z2xhbmNlIGludG8gdGhlIGhhbmRsaW5nIHNob3dzLCBOT0NPVyB3cml0ZXMgZG9lc24ndA0KPiB0
-cmlnZ2VyIGFueSBSU1QgdXBkYXRlcywgc28gSSBndWVzcyBpdCBzaG91bGQgYWxzbyBhcHBseSB0
-byBQUkVBTExPQ0FURUQNCj4gd3JpdGVzIHRvby4NCg0KWXVwLCBnb3QgYSBmaXggZm9yIE5PQ09X
-LiBUaGF0IGFnYWluIHdhcyBhIHN0dXBpZCBtaXN0YWtlIGJlY2F1c2UgSSBvbmx5IA0KaGFkIHpv
-bmVkIGluIG1pbmQuDQoNCkZvciBwcmVhbGxvYyBJIGRvbid0IHRoaXMgSSBzaG91bGQgYWRkIFJT
-VCBlbnRyaWVzLCBiZWNhdXNlIHRoZXJlJ3MgDQpub3RoaW5nIG9uIGRpc2sgZm9yIHRoZXNlIHJh
-bmdlcy4gSXQncyBwcmUtYWxsb2NhdGVkIGFmdGVyIGFsbC4NCg0KT25jZSB3ZSB3cml0ZSBpbnRv
-IHRoZSByYW5nZSwgUlNUIGVudHJpZXMgd2lsbCBiZSBjcmVhdGVkOg0KDQp2aXJ0bWUtc2NzaTov
-bW50ICMgeGZzX2lvIC1mYyAiZmFsbG9jIDAgMU0iIHRlc3QNCnZpcnRtZS1zY3NpOi9tbnQgIyBi
-dHJmcyBpbnMgZHVtcC10cmVlIC10IGV4dGVudCAvZGV2L3NkYSB8IGdyZXAgLUEgMSANCkVYVEVO
-VF9JVEVNDQogICAgICAgICBpdGVtIDEzIGtleSAoMjk4ODQ0MTYwIEVYVEVOVF9JVEVNIDEwNDg1
-NzYpIGl0ZW1vZmYgMTU4MjggDQppdGVtc2l6ZSA1Mw0KICAgICAgICAgICAgICAgICByZWZzIDEg
-Z2VuIDggZmxhZ3MgREFUQQ0KdmlydG1lLXNjc2k6L21udCAjIGJ0cmZzIGlucyBkdW1wLXRyZWUg
-LXQgZnMgL2Rldi9zZGEgIHwgZ3JlcCAtQSAzIA0KRVhURU5UX0RBVEENCiAgICAgICAgIGl0ZW0g
-NiBrZXkgKDI1NyBFWFRFTlRfREFUQSAwKSBpdGVtb2ZmIDE1ODE2IGl0ZW1zaXplIDUzDQogICAg
-ICAgICAgICAgICAgIGdlbmVyYXRpb24gOCB0eXBlIDIgKHByZWFsbG9jKQ0KICAgICAgICAgICAg
-ICAgICBwcmVhbGxvYyBkYXRhIGRpc2sgYnl0ZSAyOTg4NDQxNjAgbnIgMTA0ODU3Ng0KICAgICAg
-ICAgICAgICAgICBwcmVhbGxvYyBkYXRhIG9mZnNldCAwIG5yIDEwNDg1NzYNCnZpcnRtZS1zY3Np
-Oi9tbnQgIyBidHJmcyBpbnMgZHVtcC10cmVlIC10IHJhaWQtc3RyaXBlIC9kZXYvc2RhDQpidHJm
-cy1wcm9ncyB2Ni45DQpyYWlkIHN0cmlwZSB0cmVlIGtleSAoUkFJRF9TVFJJUEVfVFJFRSBST09U
-X0lURU0gMCkNCmxlYWYgNTI1OTI2NCBpdGVtcyAwIGZyZWUgc3BhY2UgMTYyODMgZ2VuZXJhdGlv
-biAzIG93bmVyIFJBSURfU1RSSVBFX1RSRUUNCmxlYWYgNTI1OTI2NCBmbGFncyAweDEoV1JJVFRF
-TikgYmFja3JlZiByZXZpc2lvbiAxDQpjaGVja3N1bSBzdG9yZWQgZjU0YWRlOTQNCmNoZWNrc3Vt
-IGNhbGNlZCBmNTRhZGU5NA0KZnMgdXVpZCBiZWJmMTc1NS05Mzc5LTRhYzgtYTYyMy1hZDBkYzUy
-NjQxY2YNCmNodW5rIHV1aWQgNDYzZjdiMWQtYzBiOC00MzczLTgzMzQtNTJmNWJmODM0NzVlDQp0
-b3RhbCBieXRlcyAyMTQ3NDgzNjQ4MA0KYnl0ZXMgdXNlZCAxMjEyNDE2DQp1dWlkIGJlYmYxNzU1
-LTkzNzktNGFjOC1hNjIzLWFkMGRjNTI2NDFjZg0KdmlydG1lLXNjc2k6L21udCAjIHhmc19pbyAt
-ZmMgInB3cml0ZSA2NGsgNjRrIiB0ZXN0DQp3cm90ZSA2NTUzNi82NTUzNiBieXRlcyBhdCBvZmZz
-ZXQgNjU1MzYNCjY0IEtpQiwgMTYgb3BzOyAwLjAwMDMgc2VjICgxODMuMjg0IE1pQi9zZWMgYW5k
-IDQ2OTIwLjgyMTEgb3BzL3NlYykNCnZpcnRtZS1zY3NpOi9tbnQgIyBidHJmcyBpbnMgZHVtcC10
-cmVlIC10IGV4dGVudCAvZGV2L3NkYSB8IGdyZXAgLUEgMSANCkVYVEVOVF9JVEVNDQogICAgICAg
-ICBpdGVtIDEzIGtleSAoMjk4ODQ0MTYwIEVYVEVOVF9JVEVNIDEwNDg1NzYpIGl0ZW1vZmYgMTU4
-MjggDQppdGVtc2l6ZSA1Mw0KICAgICAgICAgICAgICAgICByZWZzIDMgZ2VuIDggZmxhZ3MgREFU
-QQ0KdmlydG1lLXNjc2k6L21udCAjIGJ0cmZzIGlucyBkdW1wLXRyZWUgLXQgZnMgL2Rldi9zZGEg
-fCBncmVwIC1BIDMgDQpFWFRFTlRfREFUQQ0KICAgICAgICAgaXRlbSA2IGtleSAoMjU3IEVYVEVO
-VF9EQVRBIDApIGl0ZW1vZmYgMTU4MTYgaXRlbXNpemUgNTMNCiAgICAgICAgICAgICAgICAgZ2Vu
-ZXJhdGlvbiA5IHR5cGUgMiAocHJlYWxsb2MpDQogICAgICAgICAgICAgICAgIHByZWFsbG9jIGRh
-dGEgZGlzayBieXRlIDI5ODg0NDE2MCBuciAxMDQ4NTc2DQogICAgICAgICAgICAgICAgIHByZWFs
-bG9jIGRhdGEgb2Zmc2V0IDAgbnIgNjU1MzYNCiAgICAgICAgIGl0ZW0gNyBrZXkgKDI1NyBFWFRF
-TlRfREFUQSA2NTUzNikgaXRlbW9mZiAxNTc2MyBpdGVtc2l6ZSA1Mw0KICAgICAgICAgICAgICAg
-ICBnZW5lcmF0aW9uIDkgdHlwZSAxIChyZWd1bGFyKQ0KICAgICAgICAgICAgICAgICBleHRlbnQg
-ZGF0YSBkaXNrIGJ5dGUgMjk4ODQ0MTYwIG5yIDEwNDg1NzYNCiAgICAgICAgICAgICAgICAgZXh0
-ZW50IGRhdGEgb2Zmc2V0IDY1NTM2IG5yIDY1NTM2IHJhbSAxMDQ4NTc2DQotLQ0KICAgICAgICAg
-aXRlbSA4IGtleSAoMjU3IEVYVEVOVF9EQVRBIDEzMTA3MikgaXRlbW9mZiAxNTcxMCBpdGVtc2l6
-ZSA1Mw0KICAgICAgICAgICAgICAgICBnZW5lcmF0aW9uIDkgdHlwZSAyIChwcmVhbGxvYykNCiAg
-ICAgICAgICAgICAgICAgcHJlYWxsb2MgZGF0YSBkaXNrIGJ5dGUgMjk4ODQ0MTYwIG5yIDEwNDg1
-NzYNCiAgICAgICAgICAgICAgICAgcHJlYWxsb2MgZGF0YSBvZmZzZXQgMTMxMDcyIG5yIDkxNzUw
-NA0KdmlydG1lLXNjc2k6L21udCAjIGJ0cmZzIGlucyBkdW1wLXRyZWUgLXQgcmFpZC1zdHJpcGUg
-L2Rldi9zZGENCmJ0cmZzLXByb2dzIHY2LjkNCnJhaWQgc3RyaXBlIHRyZWUga2V5IChSQUlEX1NU
-UklQRV9UUkVFIFJPT1RfSVRFTSAwKQ0KbGVhZiAzMDYzODA4MCBpdGVtcyAxIGZyZWUgc3BhY2Ug
-MTYyMjYgZ2VuZXJhdGlvbiA5IG93bmVyIFJBSURfU1RSSVBFX1RSRUUNCmxlYWYgMzA2MzgwODAg
-ZmxhZ3MgMHgxKFdSSVRURU4pIGJhY2tyZWYgcmV2aXNpb24gMQ0KY2hlY2tzdW0gc3RvcmVkIDll
-ZDk0YjRkDQpjaGVja3N1bSBjYWxjZWQgOWVkOTRiNGQNCmZzIHV1aWQgYmViZjE3NTUtOTM3OS00
-YWM4LWE2MjMtYWQwZGM1MjY0MWNmDQpjaHVuayB1dWlkIDQ2M2Y3YjFkLWMwYjgtNDM3My04MzM0
-LTUyZjViZjgzNDc1ZQ0KICAgICAgICAgaXRlbSAwIGtleSAoMjk4OTA5Njk2IFJBSURfU1RSSVBF
-IDY1NTM2KSBpdGVtb2ZmIDE2MjUxIGl0ZW1zaXplIDMyDQogICAgICAgICAgICAgICAgICAgICAg
-ICAgc3RyaXBlIDAgZGV2aWQgMSBwaHlzaWNhbCAyOTg5MDk2OTYNCiAgICAgICAgICAgICAgICAg
-ICAgICAgICBzdHJpcGUgMSBkZXZpZCAyIHBoeXNpY2FsIDI3NzkzODE3Ng0KdG90YWwgYnl0ZXMg
-MjE0NzQ4MzY0ODANCmJ5dGVzIHVzZWQgMTIxMjQxNg0KdXVpZCBiZWJmMTc1NS05Mzc5LTRhYzgt
-YTYyMy1hZDBkYzUyNjQxY2YNCg0K
+On Wed, Sep 18, 2024 at 9:57=E2=80=AFPM <fdmanana@kernel.org> wrote:
+>
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> When unreversing a path we are doing a memmove() for a length that
+> corresponds to the length of the path's content plus 1. This is incorrect
+> as we shouldn't add the extra 1, that is, the length of our content is
+> the difference between the path's end offset and the path's start offset,
+> and there's no NULL termination as we always use the length for all
+> operations. Most of the time this ends up being harmless because the
+> path's content is less than the path's buffer length, however when the
+> content's length matches the size of the buffer, we end up doing a buffer
+> overflow, which results in a crash like the following on a fortified
+> kernel:
+>
+>    Sep 15 23:32:17 sdslinux1 kernel: ------------[ cut here ]------------
+>    Sep 15 23:32:17 sdslinux1 kernel: strcpy: detected buffer overflow: 20
+>    byte write of buffer size 19
+>    Sep 15 23:32:17 sdslinux1 kernel: WARNING: CPU: 3 PID: 3310 at
+>    __fortify_report+0x45/0x50
+>    Sep 15 23:32:17 sdslinux1 kernel: Modules linked in: nfsd auth_rpcgss
+>    lockd grace nfs_acl bridge stp llc bonding tls vfat fat binfmt_misc
+>    snd_hda_codec_hdmi intel_rapl_msr intel_rapl_common x8
+>    6_pkg_temp_thermal intel_powerclamp kvm_intel iTCO_wdt intel_pmc_bxt
+>    spi_intel_platform kvm at24 mei_wdt spi_intel mei_pxp
+>    iTCO_vendor_support mei_hdcp btusb snd_hda_codec_realtek btbcm btinte
+>    l snd_hda_scodec_component i915 rapl iwlwifi snd_hda_codec_generic btr=
+tl
+>    intel_cstate btmtk cec snd_hda_intel intel_uncore cfg80211
+>    snd_intel_dspcfg drm_buddy coretemp snd_intel_sdw_acpi bluet
+>    ooth ttm pcspkr snd_hda_codec rfkill snd_hda_core snd_hwdep intel_vbtn
+>    snd_pcm mei_me drm_display_helper snd_timer sparse_keymap i2c_i801 mei
+>    snd i2c_smbus lpc_ich soundcore cdc_mbim cdc_wdm cdc_ncm cdc_ether
+>    usbnet crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
+>    polyval_generic ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_sss=
+e3
+>    igb r8152 serio_raw i2c_algo_bit mii dca e1000e video wmi sunrpc
+>    Sep 15 23:32:17 sdslinux1 kernel: CPU: 3 UID: 0 PID: 3310 Comm: btrfs
+>    Not tainted 6.11.0-prnet #1
+>    Sep 15 23:32:17 sdslinux1 kernel: Hardware name: CompuLab Ltd.
+>    sbc-ihsw/Intense-PC2 (IPC2), BIOS IPC2_3.330.7 X64 03/15/2018
+>    Sep 15 23:32:17 sdslinux1 kernel: RIP: 0010:__fortify_report+0x45/0x50
+>    Sep 15 23:32:17 sdslinux1 kernel: Code: 48 8b 34 (...)
+>    Sep 15 23:32:17 sdslinux1 kernel: RSP: 0018:ffff97ebc0d6f650 EFLAGS:
+>    00010246
+>    Sep 15 23:32:17 sdslinux1 kernel: RAX: 7749924ef60fa600 RBX:
+>    ffff8bf5446a521a RCX: 0000000000000027
+>    Sep 15 23:32:17 sdslinux1 kernel: RDX: 00000000ffffdfff RSI:
+>    ffff97ebc0d6f548 RDI: ffff8bf84e7a1cc8
+>    Sep 15 23:32:17 sdslinux1 kernel: RBP: ffff8bf548574080 R08:
+>    ffffffffa8c40e10 R09: 0000000000005ffd
+>    Sep 15 23:32:17 sdslinux1 kernel: R10: 0000000000000004 R11:
+>    ffffffffa8c70e10 R12: ffff8bf551eef400
+>    Sep 15 23:32:17 sdslinux1 kernel: R13: 0000000000000000 R14:
+>    0000000000000013 R15: 00000000000003a8
+>    Sep 15 23:32:17 sdslinux1 kernel: FS:  00007fae144de8c0(0000)
+>    GS:ffff8bf84e780000(0000) knlGS:0000000000000000
+>    Sep 15 23:32:17 sdslinux1 kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+>    0000000080050033
+>    Sep 15 23:32:17 sdslinux1 kernel: CR2: 00007fae14691690 CR3:
+>    00000001027a2003 CR4: 00000000001706f0
+>    Sep 15 23:32:17 sdslinux1 kernel: Call Trace:
+>    Sep 15 23:32:17 sdslinux1 kernel:  <TASK>
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __warn+0x12a/0x1d0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __fortify_report+0x45/0x50
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? report_bug+0x154/0x1c0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? handle_bug+0x42/0x70
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? exc_invalid_op+0x1a/0x50
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? asm_exc_invalid_op+0x1a/0x20
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __fortify_report+0x45/0x50
+>    Sep 15 23:32:17 sdslinux1 kernel:  __fortify_panic+0x9/0x10
+>    Sep 15 23:32:17 sdslinux1 kernel: __get_cur_name_and_parent+0x3bc/0x3c=
+0
+>    Sep 15 23:32:17 sdslinux1 kernel:  get_cur_path+0x207/0x3b0
+>    Sep 15 23:32:17 sdslinux1 kernel:  send_extent_data+0x709/0x10d0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? find_parent_nodes+0x22df/0x25d0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? mas_nomem+0x13/0x90
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? mtree_insert_range+0xa5/0x110
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? btrfs_lru_cache_store+0x5f/0x1e0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? iterate_extent_inodes+0x52d/0x5a0
+>    Sep 15 23:32:17 sdslinux1 kernel:  process_extent+0xa96/0x11a0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_lookup_backref_cache+0x10/0=
+x10
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_store_backref_cache+0x10/0x=
+10
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_iterate_backrefs+0x10/0x10
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_check_extent_item+0x10/0x10
+>    Sep 15 23:32:17 sdslinux1 kernel:  changed_cb+0x6fa/0x930
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? tree_advance+0x362/0x390
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? memcmp_extent_buffer+0xd7/0x160
+>    Sep 15 23:32:17 sdslinux1 kernel:  send_subvol+0xf0a/0x1520
+>    Sep 15 23:32:17 sdslinux1 kernel:  btrfs_ioctl_send+0x106b/0x11d0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx___clone_root_cmp_sort+0x10/=
+0x10
+>    Sep 15 23:32:17 sdslinux1 kernel:  _btrfs_ioctl_send+0x1ac/0x240
+>    Sep 15 23:32:17 sdslinux1 kernel:  btrfs_ioctl+0x75b/0x850
+>    Sep 15 23:32:17 sdslinux1 kernel:  __se_sys_ioctl+0xca/0x150
+>    Sep 15 23:32:17 sdslinux1 kernel:  do_syscall_64+0x85/0x160
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __count_memcg_events+0x69/0x100
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? handle_mm_fault+0x1327/0x15c0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? __se_sys_rt_sigprocmask+0xf1/0x18=
+0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? syscall_exit_to_user_mode+0x75/0x=
+a0
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? do_syscall_64+0x91/0x160
+>    Sep 15 23:32:17 sdslinux1 kernel:  ? do_user_addr_fault+0x21d/0x630
+>    Sep 15 23:32:17 sdslinux1 kernel: entry_SYSCALL_64_after_hwframe+0x76/=
+0x7e
+>    Sep 15 23:32:17 sdslinux1 kernel: RIP: 0033:0x7fae145eeb4f
+>    Sep 15 23:32:17 sdslinux1 kernel: Code: 00 48 89 (...)
+>    Sep 15 23:32:17 sdslinux1 kernel: RSP: 002b:00007ffdf1cb09b0 EFLAGS:
+>    00000246 ORIG_RAX: 0000000000000010
+>    Sep 15 23:32:17 sdslinux1 kernel: RAX: ffffffffffffffda RBX:
+>    0000000000000004 RCX: 00007fae145eeb4f
+>    Sep 15 23:32:17 sdslinux1 kernel: RDX: 00007ffdf1cb0ad0 RSI:
+>    0000000040489426 RDI: 0000000000000004
+>    Sep 15 23:32:17 sdslinux1 kernel: RBP: 00000000000078fe R08:
+>    00007fae144006c0 R09: 00007ffdf1cb0927
+>    Sep 15 23:32:17 sdslinux1 kernel: R10: 0000000000000008 R11:
+>    0000000000000246 R12: 00007ffdf1cb1ce8
+>    Sep 15 23:32:17 sdslinux1 kernel: R13: 0000000000000003 R14:
+>    000055c499fab2e0 R15: 0000000000000004
+>    Sep 15 23:32:17 sdslinux1 kernel:  </TASK>
+>    Sep 15 23:32:17 sdslinux1 kernel: ---[ end trace 0000000000000000 ]---
+>    Sep 15 23:32:17 sdslinux1 kernel: ------------[ cut here ]------------
+>
+> Fix this passing the actual length to memmove(), not summing 1.
+>
+> Reported-by: David Arendt <admin@prnet.org>
+> Link: https://lore.kernel.org/linux-btrfs/cee4591a-3088-49ba-99b8-d86b424=
+2b8bd@prnet.org/
+> Fixes: 31db9f7c23fb ("Btrfs: introduce BTRFS_IOC_SEND for btrfs send/rece=
+ive")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/send.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 7f48ba6c1c77..0c5a62da802d 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -620,7 +620,7 @@ static void fs_path_unreverse(struct fs_path *p)
+>         len =3D p->end - p->start;
+>         p->start =3D p->buf;
+>         p->end =3D p->start + len;
+> -       memmove(p->start, tmp, len + 1);
+> +       memmove(p->start, tmp, len);
+
+Scratch this, the problem is elsewhere, reversed paths always end with
+a nul terminator.
+
+>         p->reversed =3D 0;
+>  }
+>
+> --
+> 2.43.0
+>
+>
 
