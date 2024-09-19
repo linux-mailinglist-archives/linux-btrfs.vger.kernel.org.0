@@ -1,270 +1,222 @@
-Return-Path: <linux-btrfs+bounces-8133-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8134-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7017C97CEC9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 23:39:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2161E97CEDD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 23:51:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F038283B08
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 21:39:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 446611C2180B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2024 21:51:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0633E14E2E1;
-	Thu, 19 Sep 2024 21:39:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D746914A088;
+	Thu, 19 Sep 2024 21:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="l+m1kET2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYDcS84K"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF3217555;
-	Thu, 19 Sep 2024 21:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075FE1CAA6
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 21:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726781953; cv=none; b=nk65nQ1T5eUM7FlugD3iL03W7dAwokTw9sF+Io/0UGubn4XaaY8pIGvpokwKD4NEudCxlHsj5+8ktic44+svpEsJxFJZumFnx++AvIuiSaLpsD5YRQC7LwuXR7AsI/nTXh6416mxL21IS8imc8cfVP3ExEdTe+Xftz5hmZQjIts=
+	t=1726782656; cv=none; b=K01cDJgLoIeD3h6bxVyIR4h9dUNgvWadkuFc2iHqH9B3Mf9/aQhS3lf79IcUtikxtP2vr7Bw3ZCFVeUk8kL+Fo7p8aed1FOL5yz3cw6r+m+e8hPQhMzVraAAxubPP5b/M83VcmgrAFkT9VtWcz502AGAF/R0r4gaPoQmPG04ah0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726781953; c=relaxed/simple;
-	bh=Z1I0DB/RMKlgAR+Sca7FJPazgXUu3FZUtgSVN1VZYl8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=phnqrsaGq17+8fb3UkMVaQ7m7Z8ag4K6GSpM56his934Q89SvkHkwILSNdFj7iwmb0NeKmhWGvq5KNpW/hrcpnG5wH+MYJi0rC2Uvwsh1lkj9jQ7RKApxuaKobuJykQq7WIQWlJYUCfWFI921ggRvR2EwUxB/DOobbeVpETuUI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=l+m1kET2; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1726781871; x=1727386671; i=quwenruo.btrfs@gmx.com;
-	bh=JUowRRq74BoWX/FMn++BEqCVTyhfJXGtUi0j8Oe3jsA=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=l+m1kET2MXtAb17x5JS1hbX9sig6xIUj8SMUnZZ+bi+Y4/thnfqF2d803XklPYun
-	 VCDWGOKT7k+VAZPhrFXaVu7eBC9IZGms+zQ466paC561y5NaAFYY3SdOYSN5bJsv6
-	 1ng8uvIwuBS5z4vdO4w5W8qWJctwWhnTXg8ljv5nKz4ZCu1FeZU8HNu1SNWOAOtak
-	 Kqr0a2MbLiksme5R6tvpCeA8Ihg/yS+QzoSZKt/aSD6/0vD2DwsFnCPl89tpmFXwp
-	 CZoNc0jkq0lIAx3zriw7aiEnkmFRcb2JXjBz/uZKPoxXBhaaNm0rQyJmeHBW1SKfr
-	 UWAMvFdwP0M6Ao8wAg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxUnp-1s2yxD2tjd-015DXP; Thu, 19
- Sep 2024 23:37:51 +0200
-Message-ID: <d2c7c140-5c07-4071-b9c3-28eab1e3f462@gmx.com>
-Date: Fri, 20 Sep 2024 07:07:45 +0930
+	s=arc-20240116; t=1726782656; c=relaxed/simple;
+	bh=hq6qwCrwo9Z8/4bjxUDSF9AiWqssyKqYb0W+t60WQ7w=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=mccGy6Lnmyv+HQQSqcaTjEuViut9qLKX2tksHwofDsybCaux2ItMv2f6Dmr6Js43DOpS5AcNcKJYQVd9R72AMVqElP/tzgIJtELv1cgPx1TRCZh4U/XS0BlXvregvVbJVthydm7xZHqinDs7bYQaw/fhhaqBshVxNy78V5nANwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYDcS84K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 097E9C4CEC4
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 21:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726782655;
+	bh=hq6qwCrwo9Z8/4bjxUDSF9AiWqssyKqYb0W+t60WQ7w=;
+	h=From:To:Subject:Date:From;
+	b=iYDcS84KH+9OukTqWY6TDWUHRA4DwtDK7FXH5Zk/O3W41gsTwGI/FZRMw6IZ0A2Nx
+	 Q/vnHpKrRBrJv6tV7uB3W2yPOAeNY1vKLtgfO5RvGAKYkZU1U0CsUS79uREUDjCvub
+	 JBgp0/LFwSZehPd+lQFKBPbnfZSnTzM4AbTPHLU0Au2cpS2HQ5OnfxDFFG6m51Ej87
+	 6Im655MaAK8kAeBcKLfmqMbqnLWtIkjMFD6RB2z5Ha3NNQUpbXO7pYkLtFiJ/C4zVX
+	 y0AXG2dtVC1AoCfvNSakzQH4SxNowEZzlYMw68qM6EXA9/3L9KcNI8rTVN+KvCFwAz
+	 MjkbbLBO/j5Ww==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: send: fix buffer overflow detection when copying path to cache entry
+Date: Thu, 19 Sep 2024 22:50:52 +0100
+Message-Id: <ee24884b0255f717071ca932bda1ab398707d9cf.1726782272.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_recover_relocation
-To: syzbot <syzbot+4be543bf197a0325c7d9@syzkaller.appspotmail.com>,
- brauner@kernel.org, clm@fb.com, dsterba@suse.com,
- johannes.thumshirn@wdc.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <66ec3506.050a0220.29194.002b.GAE@google.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <66ec3506.050a0220.29194.002b.GAE@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pHahqHlZCg7fBIY8ZT7XfpcoAQQRHcvFb2lB6jfsGGutIFRCqEF
- xXmAnXmb8K6Uogce61Y820NtpESLC6mjf+j+0nGKE8tuFdBnQEMZmmNlhzBE9psGi3BWrvJ
- pv2tO5tro6MI7AQyR+AfqBSM+aLMxb0jq2ypVEKJkCVsGr2ymi/SagrBr/JOUtWwOAlNDd3
- BaDheXk3qSNYPeUaGOsbA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:3PArxUoVe8c=;9TYgWCW96Z+eDEgxJ2P4xjDqRp1
- ufMDuveZ03KIQMgzSuHNIf4XdQ2ijCbm5U902EWeyvpQMRwyAoKnBEit7H4ueJdVhiMwlLxfN
- qwiBsjTRD/lG0nUQZq+XgESbBVGS1Wp92IVj9cOSS8bmayKBvT/gLRrAZCgxdCoV7I7aeN9J5
- Bsg4YTO4hrvE3svhiLODlOy8PUjoAYjNTYFAVFEgUf1LpIPG2KFiWo0gboU1u7W3hT8GXjuVd
- BdHzPSZ/Syzn4VW2jcPYxZHrRvgwMdLFfR2ef6+DALtmCYPmhgt3AilZA6nJcSWpmqb8n4JRj
- BpL06kxc9Qi0oL9Pvu9RFhAovOzjYPxWwwbRlXTg09ssMPXFbLqx4TPg6qyniCEoep/ft1uVS
- 3SVDkhS8HkbUImURFI4NgXGH1mpUpBCoYsYKJ0L9UgGOUtPp8KMZ4A1BPbwKFfxRIx+XmcN1I
- zTBboBDL0wu2e9dsAYetpc3yg3NGj1etCFXTPz2xbAeeaJKvwc6cc5D9a5Yk+3z0NBJxe0Wv8
- 7GV+xaIGSAFQ+zhpE5uSFD+dNF6GNDHy39di2fEHpBJT2mO9NCITT79scwo5WVIBd1xd5dGfT
- ktIHBqKlGuXLS/+8ML9SYw+tjRwu6wsq5ej7EFGnsxQmxLimHwZuQDdY5HCRuguNaOK1+aIuw
- /ipwQDgAIQsmn07A8YxY/OLq8hko4QTciWhEFCTH2MZgGFtsh0DICY0Aq4n/pcFtItVuUfcM7
- wXL5AW1mRo2Nyo+EBYt8Os2grJfGs5pciCq+sgzufGZWvv2fDRr+UwYDQZ1+lehfpmb9+OHoR
- 2I62h+XaDZJSAVWMLYZCj6feKG9btMlEYv4uIYaGW3/AM=
+Content-Transfer-Encoding: 8bit
 
-#syz test: https://github.com/adam900710/linux.git syzbot_rorw
+From: Filipe Manana <fdmanana@suse.com>
 
-=E5=9C=A8 2024/9/19 23:58, syzbot =E5=86=99=E9=81=93:
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    d42f7708e27c Merge tag 'for-linus-6.11' of git://git.ker=
-ne..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D141de4079800=
-00
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D1c9e29688003=
-9df9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D4be543bf197a03=
-25c7d9
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for De=
-bian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D125748a998=
-0000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14440c9f9800=
-00
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/b879ea3b7dd4/di=
-sk-d42f7708.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/812a7fb7bfcc/vmlin=
-ux-d42f7708.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/806a22d4adbf/=
-bzImage-d42f7708.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/06797c3a4=
-d01/mount_0.gz
->
-> The issue was bisected to:
->
-> commit ad21f15b0f795daf8723dddbcb61797d4f1c2aed
-> Author: Josef Bacik <josef@toxicpanda.com>
-> Date:   Wed Nov 22 17:17:50 2023 +0000
->
->      btrfs: switch to the new mount API
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D177254079=
-80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D14f254079=
-80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D10f254079800=
-00
->
-> IMPORTANT: if you fix the issue, please add the following tag to the com=
-mit:
-> Reported-by: syzbot+4be543bf197a0325c7d9@syzkaller.appspotmail.com
-> Fixes: ad21f15b0f79 ("btrfs: switch to the new mount API")
->
-> BTRFS info (device loop0 state MC): resize thread pool 2097158 -> 4
-> assertion failed: fs_root, in fs/btrfs/relocation.c:4375
-> ------------[ cut here ]------------
-> kernel BUG at fs/btrfs/relocation.c:4375!
-> Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> CPU: 1 UID: 0 PID: 5226 Comm: syz-executor261 Not tainted 6.11.0-rc7-syz=
-kaller-00151-gd42f7708e27c #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS =
-Google 08/06/2024
-> RIP: 0010:btrfs_recover_relocation+0x1b6f/0x1ba0 fs/btrfs/relocation.c:4=
-375
-> Code: 40 d1 fd eb 05 e8 c1 40 d1 fd 48 c7 c7 60 51 2d 8c 48 c7 c6 e0 52 =
-2d 8c 48 c7 c2 e0 51 2d 8c b9 17 11 00 00 e8 02 ce eb 07 90 <0f> 0b e8 9a =
-40 d1 fd 48 c7 c7 60 51 2d 8c 48 c7 c6 00 52 2d 8c 48
-> RSP: 0018:ffffc900033e76a0 EFLAGS: 00010246
-> RAX: 0000000000000038 RBX: ffff88802918c048 RCX: 8c13e04592c8c800
-> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> RBP: ffffc900033e7830 R08: ffffffff8174016c R09: fffffbfff1cba0e0
-> R10: dffffc0000000000 R11: fffffbfff1cba0e0 R12: dffffc0000000000
-> R13: 0000000000000000 R14: ffffc900033e77a0 R15: ffff888027a8d160
-> FS:  000055557fadc380(0000) GS:ffff8880b8900000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000200011c8 CR3: 00000000693e0000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   btrfs_start_pre_rw_mount+0xe15/0x1300 fs/btrfs/disk-io.c:3048
->   btrfs_remount_rw fs/btrfs/super.c:1309 [inline]
->   btrfs_reconfigure+0xae6/0x2d40 fs/btrfs/super.c:1534
->   btrfs_reconfigure_for_mount fs/btrfs/super.c:2020 [inline]
->   btrfs_get_tree_subvol fs/btrfs/super.c:2079 [inline]
->   btrfs_get_tree+0x918/0x1920 fs/btrfs/super.c:2115
->   vfs_get_tree+0x90/0x2b0 fs/super.c:1800
->   do_new_mount+0x2be/0xb40 fs/namespace.c:3472
->   do_mount fs/namespace.c:3812 [inline]
->   __do_sys_mount fs/namespace.c:4020 [inline]
->   __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:3997
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> RIP: 0033:0x7efc59f9fed9
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 =
-f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
-ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fff486e20c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007efc59f9fed9
-> RDX: 0000000020001240 RSI: 0000000020001200 RDI: 00000000200011c0
-> RBP: 00007efc5a0195f0 R08: 0000000000000000 R09: 000055557fadd4c0
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff486e20f0
-> R13: 00007fff486e2318 R14: 431bde82d7b634db R15: 00007efc59fe903b
->   </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:btrfs_recover_relocation+0x1b6f/0x1ba0 fs/btrfs/relocation.c:4=
-375
-> Code: 40 d1 fd eb 05 e8 c1 40 d1 fd 48 c7 c7 60 51 2d 8c 48 c7 c6 e0 52 =
-2d 8c 48 c7 c2 e0 51 2d 8c b9 17 11 00 00 e8 02 ce eb 07 90 <0f> 0b e8 9a =
-40 d1 fd 48 c7 c7 60 51 2d 8c 48 c7 c6 00 52 2d 8c 48
-> RSP: 0018:ffffc900033e76a0 EFLAGS: 00010246
-> RAX: 0000000000000038 RBX: ffff88802918c048 RCX: 8c13e04592c8c800
-> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> RBP: ffffc900033e7830 R08: ffffffff8174016c R09: fffffbfff1cba0e0
-> R10: dffffc0000000000 R11: fffffbfff1cba0e0 R12: dffffc0000000000
-> R13: 0000000000000000 R14: ffffc900033e77a0 R15: ffff888027a8d160
-> FS:  000055557fadc380(0000) GS:ffff8880b8900000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000556f055030d8 CR3: 00000000693e0000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisec=
-tion
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
+Starting with commit c0247d289e73 ("btrfs: send: annotate struct
+name_cache_entry with __counted_by()") we annotated the variable length
+array "name" from the name_cache_entry structure with __counted_by() to
+improve overflow detection. However that alone was not correct, because
+the length of that array does not match the "name_len" field - it matches
+that plus 1 to include the nul string terminador, so that makes a
+fortified kernel think there's an overflow and report a splat like this:
+
+   Sep 15 23:32:17 sdslinux1 kernel: ------------[ cut here ]------------
+   Sep 15 23:32:17 sdslinux1 kernel: strcpy: detected buffer overflow: 20
+   byte write of buffer size 19
+   Sep 15 23:32:17 sdslinux1 kernel: WARNING: CPU: 3 PID: 3310 at
+   __fortify_report+0x45/0x50
+   Sep 15 23:32:17 sdslinux1 kernel: Modules linked in: nfsd auth_rpcgss
+   lockd grace nfs_acl bridge stp llc bonding tls vfat fat binfmt_misc
+   snd_hda_codec_hdmi intel_rapl_msr intel_rapl_common x8
+   6_pkg_temp_thermal intel_powerclamp kvm_intel iTCO_wdt intel_pmc_bxt
+   spi_intel_platform kvm at24 mei_wdt spi_intel mei_pxp
+   iTCO_vendor_support mei_hdcp btusb snd_hda_codec_realtek btbcm btinte
+   l snd_hda_scodec_component i915 rapl iwlwifi snd_hda_codec_generic btrtl
+   intel_cstate btmtk cec snd_hda_intel intel_uncore cfg80211
+   snd_intel_dspcfg drm_buddy coretemp snd_intel_sdw_acpi bluet
+   ooth ttm pcspkr snd_hda_codec rfkill snd_hda_core snd_hwdep intel_vbtn
+   snd_pcm mei_me drm_display_helper snd_timer sparse_keymap i2c_i801 mei
+   snd i2c_smbus lpc_ich soundcore cdc_mbim cdc_wdm cdc_ncm cdc_ether
+   usbnet crct10dif_pclmul crc32_pclmul crc32c_intel polyval_clmulni
+   polyval_generic ghash_clmulni_intel sha512_ssse3 sha256_ssse3 sha1_ssse3
+   igb r8152 serio_raw i2c_algo_bit mii dca e1000e video wmi sunrpc
+   Sep 15 23:32:17 sdslinux1 kernel: CPU: 3 UID: 0 PID: 3310 Comm: btrfs
+   Not tainted 6.11.0-prnet #1
+   Sep 15 23:32:17 sdslinux1 kernel: Hardware name: CompuLab Ltd.
+   sbc-ihsw/Intense-PC2 (IPC2), BIOS IPC2_3.330.7 X64 03/15/2018
+   Sep 15 23:32:17 sdslinux1 kernel: RIP: 0010:__fortify_report+0x45/0x50
+   Sep 15 23:32:17 sdslinux1 kernel: Code: 48 8b 34 (...)
+   Sep 15 23:32:17 sdslinux1 kernel: RSP: 0018:ffff97ebc0d6f650 EFLAGS:
+   00010246
+   Sep 15 23:32:17 sdslinux1 kernel: RAX: 7749924ef60fa600 RBX:
+   ffff8bf5446a521a RCX: 0000000000000027
+   Sep 15 23:32:17 sdslinux1 kernel: RDX: 00000000ffffdfff RSI:
+   ffff97ebc0d6f548 RDI: ffff8bf84e7a1cc8
+   Sep 15 23:32:17 sdslinux1 kernel: RBP: ffff8bf548574080 R08:
+   ffffffffa8c40e10 R09: 0000000000005ffd
+   Sep 15 23:32:17 sdslinux1 kernel: R10: 0000000000000004 R11:
+   ffffffffa8c70e10 R12: ffff8bf551eef400
+   Sep 15 23:32:17 sdslinux1 kernel: R13: 0000000000000000 R14:
+   0000000000000013 R15: 00000000000003a8
+   Sep 15 23:32:17 sdslinux1 kernel: FS:  00007fae144de8c0(0000)
+   GS:ffff8bf84e780000(0000) knlGS:0000000000000000
+   Sep 15 23:32:17 sdslinux1 kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+   0000000080050033
+   Sep 15 23:32:17 sdslinux1 kernel: CR2: 00007fae14691690 CR3:
+   00000001027a2003 CR4: 00000000001706f0
+   Sep 15 23:32:17 sdslinux1 kernel: Call Trace:
+   Sep 15 23:32:17 sdslinux1 kernel:  <TASK>
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __warn+0x12a/0x1d0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __fortify_report+0x45/0x50
+   Sep 15 23:32:17 sdslinux1 kernel:  ? report_bug+0x154/0x1c0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? handle_bug+0x42/0x70
+   Sep 15 23:32:17 sdslinux1 kernel:  ? exc_invalid_op+0x1a/0x50
+   Sep 15 23:32:17 sdslinux1 kernel:  ? asm_exc_invalid_op+0x1a/0x20
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __fortify_report+0x45/0x50
+   Sep 15 23:32:17 sdslinux1 kernel:  __fortify_panic+0x9/0x10
+   Sep 15 23:32:17 sdslinux1 kernel: __get_cur_name_and_parent+0x3bc/0x3c0
+   Sep 15 23:32:17 sdslinux1 kernel:  get_cur_path+0x207/0x3b0
+   Sep 15 23:32:17 sdslinux1 kernel:  send_extent_data+0x709/0x10d0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? find_parent_nodes+0x22df/0x25d0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? mas_nomem+0x13/0x90
+   Sep 15 23:32:17 sdslinux1 kernel:  ? mtree_insert_range+0xa5/0x110
+   Sep 15 23:32:17 sdslinux1 kernel:  ? btrfs_lru_cache_store+0x5f/0x1e0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? iterate_extent_inodes+0x52d/0x5a0
+   Sep 15 23:32:17 sdslinux1 kernel:  process_extent+0xa96/0x11a0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_lookup_backref_cache+0x10/0x10
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_store_backref_cache+0x10/0x10
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_iterate_backrefs+0x10/0x10
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx_check_extent_item+0x10/0x10
+   Sep 15 23:32:17 sdslinux1 kernel:  changed_cb+0x6fa/0x930
+   Sep 15 23:32:17 sdslinux1 kernel:  ? tree_advance+0x362/0x390
+   Sep 15 23:32:17 sdslinux1 kernel:  ? memcmp_extent_buffer+0xd7/0x160
+   Sep 15 23:32:17 sdslinux1 kernel:  send_subvol+0xf0a/0x1520
+   Sep 15 23:32:17 sdslinux1 kernel:  btrfs_ioctl_send+0x106b/0x11d0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __pfx___clone_root_cmp_sort+0x10/0x10
+   Sep 15 23:32:17 sdslinux1 kernel:  _btrfs_ioctl_send+0x1ac/0x240
+   Sep 15 23:32:17 sdslinux1 kernel:  btrfs_ioctl+0x75b/0x850
+   Sep 15 23:32:17 sdslinux1 kernel:  __se_sys_ioctl+0xca/0x150
+   Sep 15 23:32:17 sdslinux1 kernel:  do_syscall_64+0x85/0x160
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __count_memcg_events+0x69/0x100
+   Sep 15 23:32:17 sdslinux1 kernel:  ? handle_mm_fault+0x1327/0x15c0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? __se_sys_rt_sigprocmask+0xf1/0x180
+   Sep 15 23:32:17 sdslinux1 kernel:  ? syscall_exit_to_user_mode+0x75/0xa0
+   Sep 15 23:32:17 sdslinux1 kernel:  ? do_syscall_64+0x91/0x160
+   Sep 15 23:32:17 sdslinux1 kernel:  ? do_user_addr_fault+0x21d/0x630
+   Sep 15 23:32:17 sdslinux1 kernel: entry_SYSCALL_64_after_hwframe+0x76/0x7e
+   Sep 15 23:32:17 sdslinux1 kernel: RIP: 0033:0x7fae145eeb4f
+   Sep 15 23:32:17 sdslinux1 kernel: Code: 00 48 89 (...)
+   Sep 15 23:32:17 sdslinux1 kernel: RSP: 002b:00007ffdf1cb09b0 EFLAGS:
+   00000246 ORIG_RAX: 0000000000000010
+   Sep 15 23:32:17 sdslinux1 kernel: RAX: ffffffffffffffda RBX:
+   0000000000000004 RCX: 00007fae145eeb4f
+   Sep 15 23:32:17 sdslinux1 kernel: RDX: 00007ffdf1cb0ad0 RSI:
+   0000000040489426 RDI: 0000000000000004
+   Sep 15 23:32:17 sdslinux1 kernel: RBP: 00000000000078fe R08:
+   00007fae144006c0 R09: 00007ffdf1cb0927
+   Sep 15 23:32:17 sdslinux1 kernel: R10: 0000000000000008 R11:
+   0000000000000246 R12: 00007ffdf1cb1ce8
+   Sep 15 23:32:17 sdslinux1 kernel: R13: 0000000000000003 R14:
+   000055c499fab2e0 R15: 0000000000000004
+   Sep 15 23:32:17 sdslinux1 kernel:  </TASK>
+   Sep 15 23:32:17 sdslinux1 kernel: ---[ end trace 0000000000000000 ]---
+   Sep 15 23:32:17 sdslinux1 kernel: ------------[ cut here ]------------
+
+Fix this by not storing the nul string terminator since we don't actually
+need it for name cache entries, this way "name_len" corresponds to the
+actual size of the "name" array. This requires marking the "name" array
+field with __nonstring and using memcpy() instead of strcpy() as
+recommended by the guidelines at:
+
+   https://github.com/KSPP/linux/issues/90
+
+Reported-by: David Arendt <admin@prnet.org>
+Link: https://lore.kernel.org/linux-btrfs/cee4591a-3088-49ba-99b8-d86b4242b8bd@prnet.org/
+Fixes: c0247d289e73 ("btrfs: send: annotate struct name_cache_entry with __counted_by()")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/send.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 7f48ba6c1c77..ae2872033601 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -346,8 +346,10 @@ struct name_cache_entry {
+ 	u64 parent_gen;
+ 	int ret;
+ 	int need_later_update;
++	/* Name length without NUL terminator. */
+ 	int name_len;
+-	char name[] __counted_by(name_len);
++	/* Not NUL terminaed. */
++	char name[] __counted_by(name_len) __nonstring;
+ };
+ 
+ /* See the comment at lru_cache.h about struct btrfs_lru_cache_entry. */
+@@ -2388,7 +2390,7 @@ static int __get_cur_name_and_parent(struct send_ctx *sctx,
+ 	/*
+ 	 * Store the result of the lookup in the name cache.
+ 	 */
+-	nce = kmalloc(sizeof(*nce) + fs_path_len(dest) + 1, GFP_KERNEL);
++	nce = kmalloc(sizeof(*nce) + fs_path_len(dest), GFP_KERNEL);
+ 	if (!nce) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -2400,7 +2402,7 @@ static int __get_cur_name_and_parent(struct send_ctx *sctx,
+ 	nce->parent_gen = *parent_gen;
+ 	nce->name_len = fs_path_len(dest);
+ 	nce->ret = ret;
+-	strcpy(nce->name, dest->start);
++	memcpy(nce->name, dest->start, nce->name_len);
+ 
+ 	if (ino < sctx->send_progress)
+ 		nce->need_later_update = 0;
+-- 
+2.43.0
+
 
