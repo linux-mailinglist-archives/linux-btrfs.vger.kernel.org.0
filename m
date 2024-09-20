@@ -1,156 +1,153 @@
-Return-Path: <linux-btrfs+bounces-8140-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8141-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C54F997D09D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Sep 2024 06:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBC6597D10A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Sep 2024 08:01:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FAD41F21C33
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Sep 2024 04:35:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 569A71F225B1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Sep 2024 06:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93F22A1C9;
-	Fri, 20 Sep 2024 04:34:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DACCB4084D;
+	Fri, 20 Sep 2024 06:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DWCtswfb"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="NnbbVq1t"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF0679C2
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Sep 2024 04:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C702E5661
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Sep 2024 06:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726806899; cv=none; b=RM7gR9DtAae16IMv7EQywKCCL/FtRLgObU9mP/OKRdiNyzpxOGFCOCoo8gvLlMntxxMERQ2w+O9vYqn4wRkbNqtHX7Az59SahHwejSUXhFqlWOqbRBJztHJTrWfz9aGS1dAYzPLkw2FJXgY1QBgGz/aKWzWHq1dlAiboMjHYnug=
+	t=1726812086; cv=none; b=gtz4nLP4YLG0LjZ3XQJeZ70roh1H4ZgGB/HFDwd7xdpcZ0WdH4bGnMvcHinAc9o7hdsvMsyzbDo4oZ3c2qDwzxq+L/L/SlDjRqjDPz9OGqpcgeD/y4RloJnMPQRXBWhIuRJ3IIFSBRN2kBbxJANGVL0jVowUWOS2KgRNBbvY35k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726806899; c=relaxed/simple;
-	bh=c+L2YY0eYnE4ZRAk35/gAEbFAwnxPnOoEsjVV+BpSEU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=uAPvF4gZzUBHv0lcCW/xzFVlfn+yd7cwFUu+MVYTeckc7cWIdCkkoOi2CjRZQEpZcSO/ox7I0XtJtY/gEruuAhcbnn8I59hrKo5pVNj/Qu3JJNLL7NzS8P8XQPnHU+uB31ull0b7abD7GMtZFTV057cAKcI/bvO1hYK4eMK32NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DWCtswfb; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2f74e468baeso18598381fa.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Sep 2024 21:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1726806895; x=1727411695; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xamLrWSYBxyubXY5RrX+3e1E/8W0BcpAPMbCGCXlXj4=;
-        b=DWCtswfb26wXz9SCT4+PmYHYk399FsabbjMlb37o08DiiCAt22wuni3Ujp2pbhT08k
-         h1nJU75S/SmEa5VKW0YxFtXFNl7txj27+kAQ2OXwdY9k5qfAWnCEoLHjrKmiFC0reoqY
-         RLdQjBbKhI2UEBYN7uXopa/aRNNikC4tilEfY7wVNff6qdaiB8/5CUBVp742DZdpIDFy
-         mishf4oGgZLKoy/+TfxEXIrWofvWib90AY4yVrmn5pqhv0dICSV3/T+B3I9p0oz9gEUg
-         dkuANcixzyYtLltIgQGDl9kHnJMmOlh5DcPWv0h8FWI+YfiCU+NSYvWpT2k1p4PJ0SvB
-         hMpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726806895; x=1727411695;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xamLrWSYBxyubXY5RrX+3e1E/8W0BcpAPMbCGCXlXj4=;
-        b=twDO++HMpbnBmjQmiVATCamNSzQWksszhJBMHjPQP0mBplCYi7zCtNQkDgJNggdL+5
-         3xQDXPUm7X+WfaENRm1xrDuxm2KgCGviXGN3B5gsbetDlV2C7V4Zw9D62HA7parO3ALx
-         U4tlLsyFcUk/GfI6/Dvug4E8aqsVTfq3C3Ld9DD6oapoFgh5YgHZd8BVtvYk0WX4MUYB
-         e8wMDWxTCKlDCxob0quCZ/zPoEC/EpND8u13snzw8t6nfqWdfsBKx4TA+d7Rh8Nhnnx9
-         l+U8A3AC62PxHaSqJKDPMY4qBGkNPXT/OkArkp/XUEfIJCpPuou+EwdPFw6MsvrVZP0z
-         mdwg==
-X-Gm-Message-State: AOJu0Yw7kJSL2A6VlaPDJ3AhdNDNQ0//poyZxW5ZK/H88EKAWzDEZqpG
-	pCMy109QatsLTGEbQkSn02Yt8XNX9/4KxtggQSHPmj+zE3EmpABYYEhLwuDMQcKOw8bNdZ1YxlZ
-	h
-X-Google-Smtp-Source: AGHT+IE/m1pfiD+4yTJHGjVliFTi6TjIuJhM748TiPNAc5r4wfqKoPxKYw3/vzOryda1bD+F+uDhLQ==
-X-Received: by 2002:a2e:a586:0:b0:2ef:243b:6dce with SMTP id 38308e7fff4ca-2f7cb2ed40bmr8579111fa.10.1726806894350;
-        Thu, 19 Sep 2024 21:34:54 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944b7e083sm9297565b3a.140.2024.09.19.21.34.52
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Sep 2024 21:34:53 -0700 (PDT)
-Message-ID: <cac5a710-63ab-469c-bfcc-327da82fa036@suse.com>
-Date: Fri, 20 Sep 2024 14:04:50 +0930
+	s=arc-20240116; t=1726812086; c=relaxed/simple;
+	bh=rTa4EgbmILCAYtb/mNpoxJYpM5ytan4D3mQuwE+7D8M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=DmYyi4b6ZHe+C3jUX8fGHj+YRwcRTc8vEQaJjxUpU6kap8FTaEWzLCB1CJVvQSySYCSc9imnrhXQ3jBJG/wJVwqq0BpYdZhXerOaNtb804gh0V5EmrkqvzynvJ7Q9jus3SZxRcdn+X/filyvLyQJDcFCb1g4IyF1RjtLslZRbvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=NnbbVq1t; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240920060121epoutp022e365b3a68b1158f9114fb5323bae13d~23nBzLCRO2860028600epoutp02q
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Sep 2024 06:01:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240920060121epoutp022e365b3a68b1158f9114fb5323bae13d~23nBzLCRO2860028600epoutp02q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1726812081;
+	bh=aqtPKd+j8XkTvGeVEIasBG1zys+ecurLaF/n2yQUyEA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=NnbbVq1tS47Y3likl91KSOsB13LlwsCjuatdZm5oEeImZd5Qe5uUf4VbzfnQKFXTK
+	 XmIYsChFGWXIMsq6JebcWd77C/rSlt2HqN+QmE9B6cQvuVYIxCjxqnSSKh70yYWoSq
+	 bTaylKkg5WPNZERH1n1CShfxcN1KnH+X5w28kiZs=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+	20240920060121epcas5p23f66f94d3b424c129f8f4c86b3f7b139~23nBgld9e1671616716epcas5p2K;
+	Fri, 20 Sep 2024 06:01:21 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.181]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4X91wc1ssXz4x9Pp; Fri, 20 Sep
+	2024 06:01:20 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	9A.8E.09743.DAF0DE66; Fri, 20 Sep 2024 15:01:17 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240920055058epcas5p29d7d9fac2d1c71c33eb51ee02d70cf8b~23d9XbCW32249822498epcas5p20;
+	Fri, 20 Sep 2024 05:50:58 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240920055058epsmtrp1b56b60251e2469aeda08b472f89dd549~23d9WkvC41666816668epsmtrp1K;
+	Fri, 20 Sep 2024 05:50:58 +0000 (GMT)
+X-AuditID: b6c32a4a-3b1fa7000000260f-d0-66ed0fadd4b9
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	9B.DF.08456.24D0DE66; Fri, 20 Sep 2024 14:50:58 +0900 (KST)
+Received: from dpss52-OptiPlex-9020.. (unknown [109.105.118.52]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240920055056epsmtip2845f883041306867f49f0c759215f8e3~23d8Aaj2h2898528985epsmtip2F;
+	Fri, 20 Sep 2024 05:50:56 +0000 (GMT)
+From: "j.xia" <j.xia@samsung.com>
+To: dsterba@suse.cz
+Cc: clm@fb.com, dsterba@suse.com, j.xia@samsung.com, josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: Re: Re: [PATCH] fs/btrfs: Pass write-hint for buffered IO
+Date: Fri, 20 Sep 2024 13:52:08 +0800
+Message-Id: <20240920055208.29635-1-j.xia@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240919184552.GB13599@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs-progs: libbtrfsutil: fix the CI build failure which
- requires manual intervention
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <d148df614aef86dd6244dad3e0726750a3176b34.1726793990.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <d148df614aef86dd6244dad3e0726750a3176b34.1726793990.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHJsWRmVeSWpSXmKPExsWy7bCmhu5a/rdpBvef8VlM6p/BbnHhRyOT
+	xeLf31ksbh7YyWSxc9ladouPe1YzWfx5aGhx9P9bNotLj1ewW5yd8IHVgctjYvM7do++LasY
+	PdZvucricWbBEXaPCZs3snp83iQXwBaVbZORmpiSWqSQmpecn5KZl26r5B0c7xxvamZgqGto
+	aWGupJCXmJtqq+TiE6DrlpkDdJmSQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYptSAlp8Ck
+	QK84Mbe4NC9dLy+1xMrQwMDIFKgwITvj/4c3TAW7OSpeXznL2sD4hK2LkYNDQsBEYsWL+C5G
+	Tg4hgd2MEuuX8kPYnxglDs0X62LkArK/MUrMmD6fCSQBUv94ykZmiKK9jBLPZudCFH1llJj0
+	+AQbSIJNQFHi3Mw/7CC2iICwxIK1p5lAljELZEj8+JkJEhYWcJI493sm2EwWAVWJPVdnsoDY
+	vAJmEmcW7IfaJS+x/+BZZpBWTgFdiYmb/SFKBCVOznwCVs4MVNK8dTYzyAkSAp0cEj37lzBD
+	9LpI9Ox+zA5hC0u8Or4FypaSeNnfBmUXSzRPfc0C0dzAKNFw+hcjRMJaYtv6dVA3a0qs36UP
+	EZaVmHpqHRPEYj6J3t9PoO7kldgx7wnczY/WzmCGhK2oxN9VkhBhD4lT/y4wQ4IKaNX6iZdZ
+	JjAqzELyzywk/8xC2LyAkXkVo2RqQXFuemqxaYFRXmo5PIKT83M3MYITqpbXDsaHDz7oHWJk
+	4mA8xCjBwawkwiv+4WWaEG9KYmVValF+fFFpTmrxIUZTYHhPZJYSTc4HpvS8knhDE0sDEzMz
+	MxNLYzNDJXHe161zU4QE0hNLUrNTUwtSi2D6mDg4pRqY+jP87A6YzBLe8V7BU0GxtNrRgKlJ
+	qP2X+8I2voIFt+d2FH+fYJu0WPahZ7ILz6Lm3azinDvv7w3muHtwl/HSeTHZZxT4Xhjm9/34
+	XqnUIphlaL9BU9pu7+HCrtXLDp5YobD4/eUV74o747YniK4TNwwrX1hyIefR+a9tK3k0mDOj
+	uopKs+Z+Csrx+NT5sO5Ru/zpzGuWhkGT5X32vLt27U/Fi/WyiQfWcdW0CqXm2762iru6V8Ki
+	JXvnsdCrob3s9/uPuP9aWa11Ynf0tKO/9695wufEYL1JId9+1r+SogqWjRkHU3IC317Y8J7t
+	6oHsd/9Wa0359uhzvZyvycyL/9R2eiyK/Onwd33aroYvSizFGYmGWsxFxYkAeh6iSzEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBLMWRmVeSWpSXmKPExsWy7bCSvK4T79s0g01bBC0m9c9gt7jwo5HJ
+	YvHv7ywWNw/sZLLYuWwtu8XHPauZLP48NLQ4+v8tm8WlxyvYLc5O+MDqwOUxsfkdu0ffllWM
+	Huu3XGXxOLPgCLvHhM0bWT0+b5ILYIvisklJzcksSy3St0vgyvj/4Q1TwW6OitdXzrI2MD5h
+	62Lk5JAQMJF4PGUjcxcjF4eQwG5GiSk7HjNCJEQlrpw9DFUkLLHy33N2iKLPjBKrnh9gAUmw
+	CShKnJv5hx3EFgEqWrD2NFMXIwcHs0CexOVn+iBhYQEniXO/ZzKB2CwCqhJ7rs4Ea+UVMJM4
+	s2A/E8R8eYn9B88yg7RyCuhKTNzsDxIWEtCROHb6LVS5oMTJmU/AbGag8uats5knMArMQpKa
+	hSS1gJFpFaNkakFxbnpusWGBUV5quV5xYm5xaV66XnJ+7iZGcOBrae1g3LPqg94hRiYOxkOM
+	EhzMSiK84h9epgnxpiRWVqUW5ccXleakFh9ilOZgURLn/fa6N0VIID2xJDU7NbUgtQgmy8TB
+	KdXAFJcqwp4ptem8r2TtrdPq3g+ucs2wSei7tIXd8YnqxZxHlxe5qB40yFyb0at0Ybrt4a/r
+	ndecNNMwW3iE8871gM+WIWt8dc8UHTod53LD4V7qdaPPUgfabz/k/XasY+qP8+qTPx7elJO6
+	Vr9Qa2WBgOay36Whb3eXGwRv0pB7cvXJestK/4P3999ZEJL4a+/22b67j+86MC/uc035/8kX
+	fp7Sys4/3StW2b1h3h5j9Uktr5dG2a16V+a1NHe6Wqzjf+lTRoErZ/zyOVNhzbvM+Y3g10YH
+	dze7JkddvscRL/fty3O7+d/s5ccnd63PB9+dnflE4uNhFYmsWQ/i3uxRbk5LWLWeOfVhwxWt
+	84Lfbm9RYinOSDTUYi4qTgQAVCWCCusCAAA=
+X-CMS-MailID: 20240920055058epcas5p29d7d9fac2d1c71c33eb51ee02d70cf8b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240920055058epcas5p29d7d9fac2d1c71c33eb51ee02d70cf8b
+References: <20240919184552.GB13599@suse.cz>
+	<CGME20240920055058epcas5p29d7d9fac2d1c71c33eb51ee02d70cf8b@epcas5p2.samsung.com>
 
-
-
-在 2024/9/20 10:29, Qu Wenruo 写道:
-> Currently the libbtrfsutil python binding requires `pypi-README.md` as a
-> temporary file to act as the longer description.
+> On Tue, Sep 03, 2024 at 01:40:12PM +0800, j.xia wrote:
+> > Commit 449813515d3e ("block, fs: Restore the per-bio/request data
+> > lifetime fields") restored write-hint support in btrfs. But that is
+> > applicable only for direct IO. This patch supports passing
+> > write-hint for buffered IO from btrfs file system to block layer
+> > by filling bi_write_hint of struct bio in alloc_new_bio().
 > 
-> But it requires the build to be run twice to generate the temporary
-> file, preventing CI to properly build the package.
+> What's the status of the write hints? The commit chain is revert,
+  
+  "enum rw_hint" include/linux/rw_hint.h defines the status.
+
+> removal and mentioning that NVMe does not make use of the write hint so
+> what hardware is using it?
+
+  New NVMe Flexible Data Placement (FDP) SSD (TP4146) is able to 
+  use hint to place data in different streams. 
+  The related patch is
+  Link: https://lore.kernel.org/all/20240910150200.6589-6-joshi.k@samsung.com
+
 > 
-> Fix it by removing the exception raising, after copy_readme().
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Please discard this one.
-
-The offending patch shouldn't even be pushed to devel, introducing too 
-much hassles but doesn't even bother to resolve the self-introduced problem.
-
-Will send a proper patch for the long description, not building new 
-fixes for such cursed solution.
-
-Thanks,
-Qu
-> ---
->   libbtrfsutil/python/setup.py | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/libbtrfsutil/python/setup.py b/libbtrfsutil/python/setup.py
-> index d4de81dbc1f2..fe9fdf8a52b5 100755
-> --- a/libbtrfsutil/python/setup.py
-> +++ b/libbtrfsutil/python/setup.py
-> @@ -69,10 +69,8 @@ void add_module_constants(PyObject *m)
->   
->   
->   def read_readme():
-> -    # FIXME: hackish, needs to be run twice to work
->       if not os.path.exists('pypi-README.md'):
->           copy_readme()
-> -        raise Exception("Copied ../README.md to pypi-README.md, run again")
->       with open('pypi-README.md', 'r') as f:
->           desc = f.read()
->       return desc
+> The patch is probably ok as it passes the information from inode to bio,
+> otherwise btrfs does not make any use of it, we have heuristics around
+> extent size, not the expected write lifetime expectancy.
 
