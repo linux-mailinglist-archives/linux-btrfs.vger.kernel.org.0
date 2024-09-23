@@ -1,79 +1,143 @@
-Return-Path: <linux-btrfs+bounces-8173-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8174-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 332D197F114
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 21:07:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF5FB983977
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 00:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9A95B21F38
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 19:07:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A91CC2824F3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 22:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B001A01DB;
-	Mon, 23 Sep 2024 19:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B9D83CD2;
+	Mon, 23 Sep 2024 22:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sauu8xv+"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="eNX31FWL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ci7s6ms+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E1D1A28D;
-	Mon, 23 Sep 2024 19:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA637407A
+	for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2024 22:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727118391; cv=none; b=G814+rIKXkwqmG5rPK5DCXmMAxlAnlijZ/AJvFYPeCX0ClX9iI2rBVxOc0nqPYHoQ1QmiVvnhh8t9CPA6V9xjTzMuTQyQTSPvpWzgtv0ZUnwZzdGrmVGCEYg+6+7kUWAD7V+C50Ll2lboJhze98SNRVRZAmvP548tvbueKjfvVA=
+	t=1727128975; cv=none; b=k447PbC9qJKB8jGNJAVkdw6Pv/bBSL57XeNWrEdf3SkyRLQbfqDT0n7D3lzXK+9B2Vi0oHcUpxYHDiJli4zoMdy0AOq7ayvZXlYd0i28mWIbLz88PKdMYkUC0+QaTAV44+eAnt0XZud2r3JBDuOh2dOQM5McYOCz/v5PMXZBFqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727118391; c=relaxed/simple;
-	bh=EY4MOMdUU/CRLfaeZ+xJnJHrnZT4k1CgfqkwQQP979I=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=WNlaZnChi5yeH70dBFFiT7R7t/q5PmGO2YwIwgPhmJ0SWHMULwqGxcN+OdHnt+MjusH4iBrYePKj6NXwx/LPz9DP09DseQGam15tLwabylsDRO/UaSUBpMEteZCJgHnsC/ZK7ZCOIU3STIxYZZLh+4lj0t4N0dkCojmI1SQLhY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sauu8xv+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D158C4CEC4;
-	Mon, 23 Sep 2024 19:06:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727118391;
-	bh=EY4MOMdUU/CRLfaeZ+xJnJHrnZT4k1CgfqkwQQP979I=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Sauu8xv+VpRGiy8ercEn0VqRvvYK2NiA+2LBVLHmu3s2sWEJQjQD7bpYdvcoMY9w5
-	 I/4h4tKT0raK80j0CZYK/XneIVe4zJMsHP2Yuva106ibLkAEF7HLrmQ4Xhxsyx9J4R
-	 gMLEx1iLP+/B8iz/qQY34AYVVL32YIdjV1+8+JZKO8R7Ld0OgBTcxIj9eX3TYPhmyq
-	 wuLCLa0jI2+uKn8MCJaWiqz2C92JdU5XvMj4jLbRKjypav+XXfE5RaHhJkUFAeNtHy
-	 ZA3N87SpvXiuQts9QCw7EQtsVtJnh2a4XhbgcTxkVAljopH5O/6p3nR+kj5ld9TPf7
-	 vinVKC3ikZjTA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAD723809A8F;
-	Mon, 23 Sep 2024 19:06:34 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs updates for 6.12, part 2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1727091859.git.dsterba@suse.com>
-References: <cover.1727091859.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1727091859.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-tag
-X-PR-Tracked-Commit-Id: 7f1b63f981b8284c6d8238cb49b5cb156d9a833e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a1fb2fcbb60650621a7e3238629a8bfb94147b8e
-Message-Id: <172711839348.3454481.2408513667156887286.pr-tracker-bot@kernel.org>
-Date: Mon, 23 Sep 2024 19:06:33 +0000
-To: David Sterba <dsterba@suse.com>
-Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1727128975; c=relaxed/simple;
+	bh=PCuBSZ9vSf4DP/aXRIPCYr38NK8kkLL1GHIQa50rkpo=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=VcDK/7IjpNMWhDaAvALcGev0uZs+ut4ZWt4icRZn4Ic+BZ6+v0qkBRcxtOkHH+PeVx2CxaXzmkqeCYUnElU5+gRjuWVVeRALFrnkfESS8WTMRScfyVEGWQG0AtmXqTsyOQHCC+eTEveLFhUjGLfAcLkYTBTuwtDNlI3YvmTg0UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=eNX31FWL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Ci7s6ms+; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id B5588114012A;
+	Mon, 23 Sep 2024 18:02:52 -0400 (EDT)
+Received: from phl-imap-12 ([10.202.2.86])
+  by phl-compute-03.internal (MEProxy); Mon, 23 Sep 2024 18:02:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to; s=fm2; t=1727128972; x=1727215372; bh=fFrEP75WP91rPY9fvXrQS
+	x1C7ctGHr9eN5E4SoMwtWw=; b=eNX31FWLrHaadQ2Yd2oginKwTZ4LNCTJ+Vt6s
+	7IWZscztRi+mvmRF6dtdnXevrudDS6ci2GKW0xw23bP+E/6IE98HRmCzqwb97yYz
+	/e0d6Bec3ecUQKttN97JrXF7Fim9C6jDshjUL+TINl44Rx989bY332sf/7gHDT7e
+	HmNWgQ9uNwRHtQwYyD7oo3UlGH5BNq7mH6/0Qfa4qV0mPH+Clvb+m9Z5/1G+v2CR
+	TgTFrpIK6waJFYdJ2Js0AKtVYx+T6xFzdRUiY14ZwY+T6oSCY1L75EJSmOnpuHxs
+	oc9pKANlIRYi1QC7ftM5ft/zfauYm5jaOCniZIqnsP7v+t0rw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1727128972; x=
+	1727215372; bh=fFrEP75WP91rPY9fvXrQSx1C7ctGHr9eN5E4SoMwtWw=; b=C
+	i7s6ms+rESw4EyQjl8h4EKeiU4AqYsyi3zqaflb8nqNi9HLictBvC4/TWyp/4UBw
+	4lI+848s6QmP9vDpdTSu+EgxCSbK9gXqd4dakmLD5N5iyhQvV96hPOaZCV7nOJ5D
+	HcKuEl9JGccWg3KWv3fqiz+GrDLCnYUGgsan78707kiaiKy5cbV/9rLxwykrqBTk
+	N6F7PJ9QckmVvS6bEVXmTIasf5sgmFPxpQQYkE75oPbTZFE+w8/r8zLP4rXheVfG
+	VDEmbQ9kh17PI+XcRUOXTj4qbhrgDPKFzM0t9JQbEAmk3zNyJ9z7pi/MpHNcxz2c
+	pDeoyss4POhQBFcd+9W0w==
+X-ME-Sender: <xms:jOXxZozQrMFbqTDB_p1tZ5u7QRHaWGm4fqUymLhNM6cgTgK4nAYxLg>
+    <xme:jOXxZsSv-KrMMFqkjfg96lnt44R_2aUc9rre1xOOXpoZ2m0e5wBi6rvfn5Vz5a7sw
+    bE66vMaQlTXlsgCw5U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddttddgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepofggfffhvffkjghfufgtgfesthejredtredttden
+    ucfhrhhomhepfdevhhhrihhsucfouhhrphhhhidfuceolhhishhtshestgholhhorhhrvg
+    hmvgguihgvshdrtghomheqnecuggftrfgrthhtvghrnhepvddtgfejffetieeihfdvudel
+    gefghffggeeifefftdeigefgkeetgeekieefjeeinecuffhomhgrihhnpehrvgguhhgrth
+    drtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmpdhnsggprhgtphhtthhope
+    dvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehquhifvghnrhhuohdrsghtrhhf
+    shesghhmgidrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkh
+    gvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:jOXxZqVG3TEjnLaDzEPMH7No9W_N-bSrNeAO1Ekk62DGAipmFj_hIA>
+    <xmx:jOXxZmi-roMm0QUpqfp8l_tOYXKh-o2nyg2ABeBQd15GKqTqVUSWBw>
+    <xmx:jOXxZqBGnARjxVx8mbzQAtBCm-YyQ6e5WD5eKtRQ7tyal2GfQB_iuA>
+    <xmx:jOXxZnJuZLrVCvUQw_a0TAEBbAzJTflOKMSVyCyBIzkzdXCKfVYkYg>
+    <xmx:jOXxZr4uKLr8dOdPPNLFXNsVmPF8nu5xvmBLRt2Wn2o3D4DpyOoikJqt>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 662581C20066; Mon, 23 Sep 2024 18:02:52 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Date: Mon, 23 Sep 2024 18:02:31 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Qu Wenruo" <quwenruo.btrfs@gmx.com>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <8fcfe0e4-5db1-4cd1-8f94-5ce049086f9b@app.fastmail.com>
+In-Reply-To: <2ffd987f-f767-4fd2-b684-0c95d418a977@gmx.com>
+References: <47636de6-8270-4a24-b97a-df9c267439c7@app.fastmail.com>
+ <2ffd987f-f767-4fd2-b684-0c95d418a977@gmx.com>
+Subject: Re: BTRFS critical, corrupt node, unaligned pointer, should be aligned to 4096
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-The pull request you sent on Mon, 23 Sep 2024 13:52:06 +0200:
+New comment in the bug report: https://bugzilla.redhat.com/show_bug.cgi?id=2312886#c4
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-tag
+Except kernel messages. What's interesting:
+-  multiple arches (also s390x but I don't have any kernel messages for it);
+-  single workload (koji composes)
+-  the btrfs error is different for each, this makes me think we're not dealing with a btrfs bug
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a1fb2fcbb60650621a7e3238629a8bfb94147b8e
+But how can we get more information about why this is happening? Is running a KASAN enabled kernel useful?
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+6.10.5-200.fc40.aarch64
+
+Sep 21 14:06:14  kernel: BTRFS critical (device vda3): corrupt leaf: root=256 block=553541238784 slot=9 ino=1551466593, name hash mismatch with key, have 0x00000000cb63b37b expect 0x00000000fec4d99b
+Sep 21 14:06:14  kernel: BTRFS info (device vda3): leaf 553541238784 gen 623185 total ptrs 91 free space 5959 owner 256
+Sep 21 14:06:14  kernel: BTRFS error (device vda3): block=553541238784 write time tree block corruption detected
+Sep 21 14:06:14  kernel: BTRFS: error (device vda3) in btrfs_commit_transaction:2505: errno=-5 IO failure (Error while writing out transaction)
+Sep 21 14:06:14  kernel: BTRFS info (device vda3 state E): forced readonly
+Sep 21 14:06:14  kernel: BTRFS warning (device vda3 state E): Skipping commit of aborted transaction.
+Sep 21 14:06:14  kernel: BTRFS error (device vda3 state EA): Transaction aborted (error -5)
+Sep 21 14:06:14  kernel: BTRFS: error (device vda3 state EA) in cleanup_transaction:1999: errno=-5 IO failure
+Sep 21 14:06:14  kernel: BTRFS: error (device vda3 state EA) in btrfs_sync_log:3174: errno=-5 IO failure
+
+
+6.10.5-200.fc40.x86_64
+
+Sep 23 05:17:20 kernel: BTRFS warning (device vda3): csum hole found for disk bytenr range [4880289792, 4880293888)
+Sep 23 05:17:20 kernel: BTRFS warning (device vda3): csum hole found for disk bytenr range [4880293888, 4880297984)
+Sep 23 05:17:20 kernel: BTRFS warning (device vda3): csum failed root 256 ino 281 off 66670592 csum 0xb85d0050 expected csum 0x00000000 mirror 1
+Sep 23 05:17:20 kernel: BTRFS error (device vda3): bdev /dev/vda3 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+...
+Sep 23 09:38:53 kernel: BTRFS info (device loop0p4): last unmount of filesystem 2cf58b61-2878-4bc4-b0b0-64e75d467fdf
+Sep 23 09:39:30 kernel: BTRFS info (device loop2p4): last unmount of filesystem 57ad289b-2ac5-48ea-86bf-841e20af8720
+Sep 23 10:24:52 kernel: BTRFS critical (device vda3): corrupt leaf: root=7 block=1374024122368 slot=150, unexpected item end, have 4706614063 expect 14527
+Sep 23 10:24:52 kernel: BTRFS info (device vda3): leaf 1374024122368 gen 699790 total ptrs 346 free space 2909 owner 7
+
+--
+Chris Murphy
 
