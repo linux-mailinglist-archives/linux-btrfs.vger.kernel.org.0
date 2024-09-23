@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8176-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF71983A2C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 01:12:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8290A983A12
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 01:10:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4987B21DBB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 22:36:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05BFA282C64
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 22:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B1313D516;
-	Mon, 23 Sep 2024 22:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC20812F38B;
+	Mon, 23 Sep 2024 22:33:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lYn9+LGS"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="azBI7ogz"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D834A84E11;
-	Mon, 23 Sep 2024 22:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68B81386C6;
+	Mon, 23 Sep 2024 22:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727130876; cv=none; b=gHJi6XiVZhx88HwiyYHhph1UpzGe+baDNQ9SN0dqyFlllZ5uvfPZxAqpX/6fttereCUsnZw7+D46PD1aRGztPorjkXB2xwgtxHhJ96hjroLs9k+qAFFKgVbGI1yErVoYmHjBeJ8L0580rMtJAVozD04QJpLayA4fmjNXhWY11NQ=
+	t=1727130800; cv=none; b=VkRsDXE+jEbfURGU5jtN8LXZ7wmEMedQfeutBI7JPPhc1JyTB8OLbidP0lLctbxv0zEzVm1wt99SQw6L9FfnnIa3gS+NwvkiC2F2882SOlqoH6+tUAud/J7DklcBfLJ5AqmJ5K2MiIbz8kOaBhkzDGjncz6wWgbkxnCGqtUAZ4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727130876; c=relaxed/simple;
-	bh=FHUC8gt4C/Km5NrfVbRsMcFqQOElqrmHuaFrSHX11+w=;
+	s=arc-20240116; t=1727130800; c=relaxed/simple;
+	bh=UKBYeHUPfWhbuRJkgqIQsgfanpaYzIgr0W8v0pon648=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cmF8d0qTZMyY/wm5wn6Ptz8wubroErP+pGByad3IUcO+n6MOQ0rnHFgX/0pMXGJ5L8CKoSI1LWhl0MZKLabthrJH1P1f7IvGQsU4A5AGyyX/BNLURJgU2QdTSejoOBD9ZjbcqdBj0z5E/m9K86uqlmBonNV/o3GFIfYTqeTPpog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lYn9+LGS; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=EYrdNI9nlQ1xApr0EfkbMvI2ohnARnh1erUD91oad6DjQafe+/ObwmZE5d0jgQFKcYvd+mwlWj2N+rggk+ZHVRZgQUSFdW4qOhBMqYF9UWc+iMiS2y7gQ/fmd+4gK/T1fTshYCrARSA7nxWyjk8N8QSOubP61Cz00JiWLmzWIrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=azBI7ogz; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727130235; x=1727735035; i=quwenruo.btrfs@gmx.com;
-	bh=FHUC8gt4C/Km5NrfVbRsMcFqQOElqrmHuaFrSHX11+w=;
+	s=s31663417; t=1727130785; x=1727735585; i=quwenruo.btrfs@gmx.com;
+	bh=eo3xFrmn2u1v1T//pvecUt8zJOkujHQRVeeGOp8olaU=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=lYn9+LGS8Hcx9zlOmNLIaYugC/ER3iM4F21O+QOG95DIenEHvMgJUGil+iPJinmM
-	 nIyyS+i8yrBWWP8MUNIBwyyyl4LFAyNISX1f36Kk3Ucc4Npl10XlP59lZC9XRGskv
-	 9kEZRjzIADqn6UmgvX63u70dZL9C3L48hvcpE/dEJAARv5O8k7BiozQRggu6UrnY0
-	 CKWGgZoad43V+vS3zFIaPDiL4+ykrNJPgmaUM+qQl5wXZb8Q+G80Yod3ZwCkFCbcz
-	 qbbdk12M4aWo5pRx6LxfUwOq+h/yDHZnTlt8tLdDbP0hXpTEHjsiIOAQI2XGZqOi1
-	 8ObVMUAo1ZOqcjQs8Q==
+	b=azBI7ogzOvc1clvwtOrFS//HtKOCrRAnqlNkkH7k2p+APGiNxQjrkxEJ5fIGBx+7
+	 4h3kiZs5glxW879st7ifJM7r+NUcS9XWgAoVOMVthc9qtqpACuE/jTPeLunmHvPz+
+	 ZzuyvcKFVZJohS1NlUbhTCGo48gJwg5ZKc+djwSZ81koVyDRwD4XibMFgelDWQI1O
+	 HtlQlgl4UMEqe8vOa4n6UgUU1cZofmBihOMhcRrSuiJ+YvOz9TMGvDF5Nn2JFgjxn
+	 +NaOH7Le0w4gz3jnzbR4yWX4IdlkqA6tIm2r2v5fKuIBUnNXXFFJWNMagNEZj4Kfd
+	 Nmw3IW5+siZ1xMPK4A==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAfUe-1smDch15Cq-00B6So; Tue, 24
- Sep 2024 00:23:55 +0200
-Message-ID: <f6ae39fd-ee30-4e22-8d0d-6dec5c3bd192@gmx.com>
-Date: Tue, 24 Sep 2024 07:53:50 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWASY-1sQiug1Tru-00O9cO; Tue, 24
+ Sep 2024 00:33:04 +0200
+Message-ID: <d881d399-96fc-4cf5-8a40-96f2e76b7644@gmx.com>
+Date: Tue, 24 Sep 2024 08:02:59 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -59,19 +59,16 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: also add stripe entries for NOCOW writes
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Johannes Thumshirn <jth@kernel.org>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.com>,
  "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: WenRuo Qu <wqu@suse.com>, Naohiro Aota <Naohiro.Aota@wdc.com>
+ open list <linux-kernel@vger.kernel.org>, Qu Wenruo <wqu@suse.com>,
+ Naohiro Aota <naohiro.aota@wdc.com>,
+ Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <20240923064549.14224-1-jth@kernel.org>
  <71088008-c105-4eb9-9199-882091eafe07@gmx.com>
- <3c0c8517-a642-4e7b-bbcd-ef0022c49c3f@wdc.com>
- <d42756f6-d5a8-4f44-a6f0-6056f5c1015b@gmx.com>
- <aacb742c-2081-441e-ac52-d9e0f580ab1e@wdc.com>
- <47d0f003-ebc8-4959-a22c-ccf9ea7ef35a@gmx.com>
- <887a09bc-3c98-4bd1-aa31-0732fc633315@wdc.com>
+ <20240923152046.GA159452@perftesting>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -98,76 +95,129 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <887a09bc-3c98-4bd1-aa31-0732fc633315@wdc.com>
+In-Reply-To: <20240923152046.GA159452@perftesting>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TTcF/bjJ8l4vXEfT+qUrttoNpA1+fy6rl+GQrTmV4h5JbFFkjNu
- vDVk+KiGSbeID70EdmknhLCLJQXmERhdsOG5yuilQisLXY+BgmAEXRxOFG1JHF1no0ceOAH
- azDqmpXnrNTd2t3AMBRkOXrlse7eGvWigGbbLpZgSqhTsZ9tOSl9lYG2wrTIHenZkIXW8OZ
- RGt/19Jh/JqoTutyucHBQ==
+X-Provags-ID: V03:K1:c9EcqC93ClJKcayh2bcTkwP2PdheqQz1ItYaikKJq7dWf4lwy07
+ OULnOVlbyxFbQI15fcYjVxJ31tUUF5USb389f1ELYAvmcTSxRrrMWGWy++5ry86Nz9ARWNC
+ ZLIIcIgEZzRGzJJvcIYH7sXUV6F2IMX5FqGHmgH3H7e/a7rHDVZNftDL1911ie+rU8xyCIG
+ WqlaomQb+MUxVcdTwtAjg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:iw8LX7Nst7o=;qGpkp1D15wL38YIq30zBCPUitih
- cTIgz7F4COG+JbsBZza6y5pE7RU8OlEnuKg7SCpGUXSKOUOOhgkRHf/k5xkk9CPUWGeymSryK
- ZJ6gPVHMfk1vHwiP+Yzy4D9Qd6o1y0+e2SJ8LdPDUMSO0t56bn9lVPsiLcmc+udlG9MPmbkxy
- CBNxasnkVLW1l4vyZHk3ItNSfXEIVpf4uyOX4g/hX1KLisYdqwlCzTWNI7H+2TrdJ1Qxr1TLz
- Z7QH8pjJlpWOK4w+ujkYMLe/f3zLlPrbaBc7d94/FP75Mzu8YCvyPPRy0xnrQ6zI+0wp4E/4j
- F2ZCG0D80I6eL7TktTOJ98ER96FS8bCYA8vUi+Nm6Pu2RpXkq8lVQeOuu03vuJYt31eI44gc3
- rvJagJa7pu8IqxV2IsRjTgNPmBWGd7sX1RUQ8WTxK8PwdAGd18fQpZfJBkbkLCN9+owLQls+b
- 1j9F/X4x4llhwF179DP+iLQFunzPvAt+g8ZLQsSO960YTY3CTY1ijhjOfA7SwNcrW2USyZKtK
- WCg7ZUoCx7xQH6y7795KCHZzHgO6V3jdRwi0zwz4WpuB1WeOVWAIN+w3suHsyBeW8ZWd1JKGh
- z/rDtZz1pvZHapxLRFe+RbLeRhw+XiVcY82wcNcBL9+AQ0885vsIf8zvjAu4EN6Q9I01oEv38
- k+a5cuxCcK6Rpj01wgAH70o3MODplpkuCw2zOXWkwvOsG5IMXbpkPTV3LWJgSc3sSGb9/6E1y
- OGRp7c1dFwX8YhovjBxruenFbu5iFSGnCo7Te/XFuxqlalgFvyVXUtLGl8a/Sd0m2f90Q39oD
- 2qsZaWQ0UjxesvQwoD63how+keSAoNSLveHWbCfJkPlTQ=
+UI-OutboundReport: notjunk:1;M01:P0:tIvIWx+Ene8=;ZmcigRumH6F3V3IGf6O5Nf30MsQ
+ jaXbs3DpY93x+s1bG2gf+v++ZCQ5aOISlmILsEg6dO0T0sDrODj9IJIAr5x/RjngZSCeBO8v8
+ LRLw0ZBCuOo5KXAYBoJ3L2GvRqtLR2tWn7xSEOh9RB0pHhECj9r7EN1SSMEpxU1tXuozql5jM
+ cJ2kVBBCxC7McXI4Fg56PWjqWaoWpzmu74qpqd7U+2MOXLD98Lk0bQUMrjYy/E3JEepIN2lcO
+ 8xSE0c930iHjVowCsmALGCgIdu34q5MyrtWqFgWqwhXqd5+zozspkDTdFh3mmvV3l1DtOQLgm
+ O48dGAH3hwht9DRq+l205+EMxpYfmOyrBmXAW3UlC0N60jzVKHSkjv478DrEK6Vihw+zcBj18
+ rYi3fQic6Bj7qJuIVrur9U/RBbaP68YCYJPtetY0TsRAzyEFCZ/3AaTximadGPb9adLFFCUsU
+ +QGYcf/lriNJnP9zVQPghIrbBsNLz8mRq4OBYa21opUUOpHTD3HLcaTwzFFprB6GL/dB4fKrA
+ iN1zj6+WNkcPZcIAFbKX7A7f+01NJWL6wJh+CU3uQstNAzFqj9J4OVKAvDCVwpLd5/VS71AaZ
+ z4UcVJyEEYlaZShhWYP3w1V2KQ9bUNPX2jOjMmFMAOk6kWPAzBidFVgVzU/A98eItqK7VXRVo
+ jQrM9f1BWn9kajuTHwG2G8SF7Ijv7/jEnZbRy4iUgNoDLbAtvjmxC62ZBCpQlxE2Mwk95EMCQ
+ phc6AhN4rTg5TrnDyYMzcHBrNaTuOauWCb+nJIebsr2tv+DgZ+OG21/0uMNwg/5uy276j1CAl
+ pAwdy+2eJAQ54tA8hQlBPWTw==
 
 
 
-=E5=9C=A8 2024/9/24 00:11, Johannes Thumshirn =E5=86=99=E9=81=93:
-> On 23.09.24 10:54, Qu Wenruo wrote:
+=E5=9C=A8 2024/9/24 00:50, Josef Bacik =E5=86=99=E9=81=93:
+> On Mon, Sep 23, 2024 at 04:58:34PM +0930, Qu Wenruo wrote:
 >>
 >>
-[...]
->> Finally, I do not think it's a good idea to insert RST entries for NOCO=
-W.
->> If a file is set NOCOW, it means we'll doing a lot of overwrite for it.
->> Then why waste our time updating the RST entries again and again?
+>> =E5=9C=A8 2024/9/23 16:15, Johannes Thumshirn =E5=86=99=E9=81=93:
+>>> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>>>
+>>> NOCOW writes do not generate stripe_extent entries in the RAID stripe
+>>> tree, as the RAID stripe-tree feature initially was designed with a
+>>> zoned filesystem in mind and on a zoned filesystem, we do not allow NO=
+COW
+>>> writes. But the RAID stripe-tree feature is independent from the zoned
+>>> feature, so we must also allow NOCOW writes for zoned filesystems.
+>>>
+>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 >>
->> Isn't such behavior going to cause more write amplification? Meanwhile
->> for non-RST cases, NOCOW should cause the least amount of write
->> amplification.
+>> Sorry I'm going to repeat myself again, I still believe if we insert an
+>> RST entry at falloc() time, it will be more consistent with the non-RST
+>> code.
+>>
+>> Yes, I known preallocated space will not need any read nor search RST
+>> entry, and we just fill the page cache with zero at read time.
+>>
+>> But the point of proper (not just dummy) RST entry for the whole
+>> preallocated space is, we do not need to touch the RST entry anymore fo=
+r
+>> NOCOW/PREALLOCATED write at all.
+>>
+>> This makes the RST NOCOW/PREALLOC writes behavior to align with the
+>> non-RST code, which doesn't update any extent item, but only modify the
+>> file extent for PREALLOC writes.
 >
-> The whole idea behind the RST was to write the RST entries _after_ the
-> data has been persisted to disk. Otherwise we're back at the write hole
-> problem. See for example this imaginary sequence:
+> I see what you're getting at here, but it creates a huge amount of probl=
+ems
+> later down the line.
 >
-> Preallocate a range. This will then also preallocate the RST entries
-> with the mapping as you describe. Write to it and while you write you
-> have a powerloss. The copy/stripe to disk 1 is correctly written but
-> disk 2 didn't report back before the power loss happened.
-> After we have
-> power again, a read to disk 2 comes in, as we have a RST entry, the read
-> will be directed to the broken entry and garbage is returned. And this
-> is the good case, as we can repair it.
-> If it was an overwrite of a block and the same happens, we have a RST
-> entry pointing to a good and a bad copy.
+> I prealloc an extent, I map that logical extent to a physical extent and=
+ then I
+> insert a RST entry for that mapping.  Now I rip out one of my disks, and=
+ now I
+> have to update RST entries for extents I'm not going to rewrite because =
+they're
+> prealloc.
 
-Nope, that will not happen.
+Why do we even need to do anything update the RST entries?
 
-Because our metadata is still COW protected, after such powerloss, the
-file extent is still showing that range is PREALLOCATED, we won't even
-trigger a read.
+RST is just an extra layer for logical bytenr mapping, and did you see
+the non-RST btrfs do relocation just because one device went missing?
 
-And this is exactly the same as the non-RST PREALLOCATED write.
+Can you explain more on the "have to update RST entries" part?
+That mismatches from my understanding of RST.
 
 >
-> Once we're adding the RST entries after both writes succeed the problem
-> isn't there. So for preallocated extents it is even harmful to add a RST
-> entry.
+> RST is a logical->physical mapping.  We do not need to update or insert =
+anything
+> until we create that logical->physical mapping.
 
-You just forgot the metadata part, which prevents the problem from
-happening in the very beginning.
+Just consider the fallocate of non-RST as an example.
+
+We DO allocate real data extents, they have real location on the disk.
+
+Then add the RST layer. Now preallocated extent suddenly do not have RST
+mapping, but still have extents allocated for them.
+
+I do not think this is any more consistent.
+
+>  Keeping the rules consistent
+> across the different layers will make it easier to reason about and easi=
+er to
+> maintain.
+
+I think all data extents should have RST mapping, that's way more
+consistent than two different handling for different data extents.
+
+Just like we do not bother if a data extent is preallocated or not in scru=
+b.
+
+
+>  Adding an index at endio time for NOCOW makes sense, we now have
+> created a thing on disk that we need to have a mapping for.  The same go=
+es for
+> prealloc, adding an entry at prealloc time doesn't make logical sense as=
+ we
+> haven't yet instantiated that space on disk.  Thanks,
+
+But we allocated data extents. Even if we won't really utilize them for
+now, we should have RST for it.
+
+In fact, I do not even think it's correct to insert/update RST at
+endio/ordered extent time.
+
+It will be way more consistent to update/insert RST entries at data
+extent allocation time.
 
 Thanks,
 Qu
+
+>
+> Josef
+>
 
 
