@@ -1,155 +1,137 @@
-Return-Path: <linux-btrfs+bounces-8166-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8167-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 990E797EB0A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 13:52:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B42DB97EC47
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 15:30:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5F4B1C212F7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 11:52:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 200CFB21AE3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2024 13:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE771974FA;
-	Mon, 23 Sep 2024 11:52:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0126C19755A;
+	Mon, 23 Sep 2024 13:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tTsJV+hR";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qsPQ1ggJ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hep4hS+a"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F7C1E487;
-	Mon, 23 Sep 2024 11:52:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A010197A9B
+	for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2024 13:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727092349; cv=none; b=YscI+3MjbvdEOBlUPgabnb+shjwO1mqKrQJKM8RO1EHMIcE/sy5fJVfdUFPy7vntgaqakHyzFQRdxSFNnnprGFx5J2jQcQGZ9MZApNuJwK0JoyzIBr7qL5EHUCrcGMrK5+uUCIZnpGUqLz9kku7/bOV/Dy7LppPHTCZXwYQvcK0=
+	t=1727098227; cv=none; b=VOchuMHa/Gov1hdAcJOq1hmOgkCjtvOxiu4CAXaBx0gEEI13vJ0+E4AmdjlnNq9skDScocvaBQEUwGEDIuQLe+vBIzQQeJ4/zvLhQiJcBhB0gIxf1vCpCxlR+VmqyH1HyqcWp8R/p8yJ3237fu3T4Db7lTAqcCqtQ9YkkwZMLJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727092349; c=relaxed/simple;
-	bh=JOdICVRsp1bq1r70VQ8lIBskbtQCPJ2ofXQCF4GKrUk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZH96+An7GFvszDBI2ZjlfLy5QKs3qi0XpJACNdeXbroib+DgRT/Tm+WzF7mgSVZ5Nkd29qVXRMiw7FDlGCYOg/5Vk9ooYMZ84tkzieyOF9ejV8wm0/a/oeZ3YVdTxwB6XM4VBGk13urxHxR1zsvUXYuj3GUJN2mCDxUFfNKbaXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tTsJV+hR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qsPQ1ggJ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E539621E19;
-	Mon, 23 Sep 2024 11:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727092345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=YATKUI4nrthUQM6d2BJ7FjobzAxlVZVIUKgiieO3eHg=;
-	b=tTsJV+hRmESZdJKH+K0GL7p6lg6NclwxhB0KIByqInZmDyjyOFZGhRi/bI68vbiRY9LeKd
-	if1aXO2TPO6WjtdIVOD9U2508AC5LwFQrNILLN7oYDdo+wiNFAHZoFEqAP4weTdXzEWYiq
-	WT7REBuHVl4ZOxPXNxMEg6R+dwB62tk=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=qsPQ1ggJ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727092344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=YATKUI4nrthUQM6d2BJ7FjobzAxlVZVIUKgiieO3eHg=;
-	b=qsPQ1ggJtupl9b5q/Ps0DKDwAA+MbzXCd3ARW/EG2NyhvQKLEx/zYQjUAb8RGfqKWG/zDL
-	xzSwkEmbg0pJsxXjPjWbYQeQPTarnV2BqWnNrkhDX/02p7T45k6Smm1Qlv7S8pxUUAlYwZ
-	vth77ZkFK5DcMnayWljZL7peO/+9ZI8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DE1CE1347F;
-	Mon, 23 Sep 2024 11:52:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wfw1NnhW8WbqMAAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Mon, 23 Sep 2024 11:52:24 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs updates for 6.12, part 2
-Date: Mon, 23 Sep 2024 13:52:06 +0200
-Message-ID: <cover.1727091859.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1727098227; c=relaxed/simple;
+	bh=jlHg7C6osFR4OMf68Q0LoZCjJz2eDOJRWr26Zdry48o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k6O0ks8LCAGPAlZPAjHWanrLspE+LaDv+XDyMBCXOXjq581P+dycEehuT38IOinvVtk0TVpKAQmdAct+ZNFQjZzFsqQKdSUG6nSLE4Urpi2YDiw/hMK1MWRH6WaPvYyyO1Mji9wXCGrU33RO6warwUPH1ul5fJDEZm85OEEaKNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hep4hS+a; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727098224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MoW3ECQhmKIKRtGGfW8NIg/GCv2sq72PchHA3Pte/6M=;
+	b=Hep4hS+adrjmWjTHpfcnpgcb+rSmatU0r7vefsVz6DtNCqBIRsJayPZGnoKUMq14KeRbit
+	UomjaQrbfxLuGFeHLNEYU3wfpC3EtZSwz/6uFLmte9Op5Ghs3LSLEaZbn2k9EEIwS7tGEp
+	OeMmZ3dvzTniWmUfU/5QE3RCc8aVl7E=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-ccqPP-rcORy03JJsMEE1Ig-1; Mon, 23 Sep 2024 09:30:21 -0400
+X-MC-Unique: ccqPP-rcORy03JJsMEE1Ig-1
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-718d5737df6so6274568b3a.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2024 06:30:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727098216; x=1727703016;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MoW3ECQhmKIKRtGGfW8NIg/GCv2sq72PchHA3Pte/6M=;
+        b=gJ1QkUJ/B/p97rFgeaHNgQPrRbauqhM6Dbl3r4QQJPKtTHWLLq55L43gHu4mF7x9ol
+         Nxe/AvcK6vXaH5YPD07OV51m9GiF5+NaTpzUJ0JRLgLrowMU43hD9ua9djrTveUX4hoe
+         b7NAHfeI9sETqA5LAdPO9tWbDcqhortAShCqQwCgfTav4nayJVLgjNET7e1MGT/XUD3N
+         1PO4j6W5vBi/gdiYrAMF2eP0WYsQxN0Ne6+H5BzW+SJi+koJq6a406yNq10PMRL2jcAa
+         M70+eG8YbNW81Yo3yljVDEOGlPuwhUqtZasFbYJK3GwRPSw1Hj1G7D6lUnCfAoYlftY1
+         HTCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXHttSgsqh7Kh8MTloixJ/99l17sUdBPBGMEkWsTyZAqBBnEjQp/doD0X55Ux2QaEns0V2dky+KZwc6TA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGldHkadFKdh7wASoj+YOkRmKcvePSmlNwUTXun44/cVWNsnW3
+	TPI+07iHnQrwOuxVzzr5nrK+WZqMJm/HHMU+wQ8w/RwdtREBi6SuBYaYpL6dqEuGuzccrsUn2yo
+	Mjq3u4+aUVr0PXPv81YuCAgz8tPFR3769y5e7qt5GbyceLP/NBoiyUnAkSSkOV9jUc2MG
+X-Received: by 2002:a05:6a00:1702:b0:717:8f0d:ec37 with SMTP id d2e1a72fcca58-7199ca03e66mr16716090b3a.25.1727098215525;
+        Mon, 23 Sep 2024 06:30:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IErVRf6hr6pQAgmn7XFwNRwdykt6E6ZHAIbGQwgTdEo5blfg4/H8XTnVq4ucHrHY2fCOLTFgQ==
+X-Received: by 2002:a05:6a00:1702:b0:717:8f0d:ec37 with SMTP id d2e1a72fcca58-7199ca03e66mr16716059b3a.25.1727098215170;
+        Mon, 23 Sep 2024 06:30:15 -0700 (PDT)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71944bc1554sm13871107b3a.185.2024.09.23.06.30.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Sep 2024 06:30:14 -0700 (PDT)
+Date: Mon, 23 Sep 2024 21:30:11 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: An Long <lan@suse.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs/315: update filter to match mount cmd
+Message-ID: <20240923133011.cmv63zpd3yg37yw2@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <29dc7fdf9dd8cfb05ece7d5eb07858529517022f.camel@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: E539621E19
-X-Spam-Score: -5.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:dkim];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29dc7fdf9dd8cfb05ece7d5eb07858529517022f.camel@suse.com>
 
-Hi,
+On Mon, Sep 23, 2024 at 03:57:13PM +0800, An Long wrote:
+> Mount error info changed since util-linux v2.40
+> (91ea38e libmount: report failed syscall name).
+> So update _filter_mount_error() to match it.
+> 
+> Signed-off-by: An Long <lan@suse.com>
+> ---
+>  tests/btrfs/315 | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tests/btrfs/315 b/tests/btrfs/315
+> index 5852afad..5101a9a3 100755
+> --- a/tests/btrfs/315
+> +++ b/tests/btrfs/315
+> @@ -39,7 +39,11 @@ _filter_mount_error()
+>         # mount: <mnt-point>: fsconfig system call failed: File exists.
+>         # dmesg(1) may have more information after failed mount system
+> call.
+> 
+> -       grep -v dmesg | _filter_test_dir | sed -e
+> "s/mount(2)\|fsconfig//g"
+> +       # For util-linux v2.4 and later:
+> +       # mount: <mountpoint>: mount system call failed: File exists.
+> +
+> +       grep -v dmesg | _filter_test_dir | sed -e
+> "s/mount(2)\|fsconfig//g" | \
+> +        sed -E "s/mount( system call failed:)/\1/"
 
-a few more patches that I'd still like to get merged before rc1 as they
-are fixes for user reported bugs.
+Oh, there's a local _filter_mount_error() in btrfs/315. I thought you can
+change the common helper _filter_error_mount() in common/filter. So maybe
+you can merge this _filter_mount_error into that common helper in another
+patch, then other test cases can use it.
 
-Please pull, thanks.
+Thanks,
+Zorro
 
-- fix dangling pointer to rb-tree of defragmented inodes after cleanup
 
-- a followup fix to handle concurrent lseek on the same fd that could
-  leak memory under some conditions
+>  }
+> 
+>  seed_device_must_fail()
+> -- 
+> 2.43.0
+> 
+> 
 
-- fix wrong root id reported in tree checker when verifying dref
-
-----------------------------------------------------------------
-The following changes since commit bd610c0937aaf03b2835638ada1fab8b0524c61a:
-
-  btrfs: only unlock the to-be-submitted ranges inside a folio (2024-09-10 16:51:22 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-tag
-
-for you to fetch changes up to 7f1b63f981b8284c6d8238cb49b5cb156d9a833e:
-
-  btrfs: fix use-after-free on rbtree that tracks inodes for auto defrag (2024-09-17 17:35:53 +0200)
-
-----------------------------------------------------------------
-Filipe Manana (2):
-      btrfs: fix race setting file private on concurrent lseek using same fd
-      btrfs: fix use-after-free on rbtree that tracks inodes for auto defrag
-
-Qu Wenruo (1):
-      btrfs: tree-checker: fix the wrong output of data backref objectid
-
- fs/btrfs/btrfs_inode.h  |  1 +
- fs/btrfs/ctree.h        |  2 ++
- fs/btrfs/defrag.c       |  2 ++
- fs/btrfs/file.c         | 34 +++++++++++++++++++++++++++++++---
- fs/btrfs/tree-checker.c |  2 +-
- 5 files changed, 37 insertions(+), 4 deletions(-)
 
