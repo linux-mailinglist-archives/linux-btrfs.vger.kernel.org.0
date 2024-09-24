@@ -1,296 +1,224 @@
-Return-Path: <linux-btrfs+bounces-8186-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8187-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1902D983C4D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 07:17:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2ECE983C51
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 07:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD493283C5A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 05:17:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C568A1C225FE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 05:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8592348CFC;
-	Tue, 24 Sep 2024 05:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D6E3AC2B;
+	Tue, 24 Sep 2024 05:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BiCM+W1J";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BiCM+W1J"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Fgv8VLVA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6562E401
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 05:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015BF2E401
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 05:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727155052; cv=none; b=f9F0j4Eig9nyYKnNfkh0ICSR+/TJv9sE+YrURXGlMy9V5aZb0BZc0tApEk1zA/PoK3TiNuplQ1nQ0KMQlGw4S0zD49cwn5/rZbEasBlY9n0hbqNShQ2yyVDAHzVPQACOGLi273b0Qz+2BRjOqL9f/V8wKxcDF2vwQ8THuRPjGkY=
+	t=1727155135; cv=none; b=ddCI6lRBJnU0oO2Lz8xdts1kS6HSyk6XeEGGzw6KJHLqa57jhntDKKPoknqMQhwkjwmGwW64+uWvxQi23vgraWDerVSXThK2MTIPFjg5NiLCmkFNLm4Gcfp4LzgDHcyIkVqND1Qq+r5aQWvCLSJo6eFT8+C4nV3w6auz8xEfG2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727155052; c=relaxed/simple;
-	bh=gsqtYW4AXMaQjRbN7jtY5HQX9dwFkSGmtZphpfQBYX8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OCVChdc4AuPnj89MPt5EhxkGxKzCoc+6K+6FHVuHIKE4gHWRFV8agDEt+fUInRb0VrFJUj++gmny5wlOldrzHHD4mSKd0vbc6IU1rWMU26vE2xAFGsdadamuQJVqyRz/3JoalQvX3NJARs27/sbBVloQbqW+d8Yz3zgJ1VQiRgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BiCM+W1J; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BiCM+W1J; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AC98A1FBBF;
-	Tue, 24 Sep 2024 05:17:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727155048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KT+lB0gaMBEB2moluAR+qNepzAAPs+JY7g64M/Jx2r8=;
-	b=BiCM+W1JEn1+RGoPLSRjEtEckDivklBY0xT25zGXWSPf8mvXYzLZcAEIWnHxQHfIFXSD8U
-	Sa6QPFSHXOiPJDk1J4af3RbR3OG3ka/60JcL43iiK9na642kpAru2yEDdMJM5LMnMrPArf
-	TgVZq6yAf8eXFP0HV++Nu7WyNsppNug=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=BiCM+W1J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727155048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KT+lB0gaMBEB2moluAR+qNepzAAPs+JY7g64M/Jx2r8=;
-	b=BiCM+W1JEn1+RGoPLSRjEtEckDivklBY0xT25zGXWSPf8mvXYzLZcAEIWnHxQHfIFXSD8U
-	Sa6QPFSHXOiPJDk1J4af3RbR3OG3ka/60JcL43iiK9na642kpAru2yEDdMJM5LMnMrPArf
-	TgVZq6yAf8eXFP0HV++Nu7WyNsppNug=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B5EAD1386E;
-	Tue, 24 Sep 2024 05:17:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GKhTHmdL8maFQgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Tue, 24 Sep 2024 05:17:27 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Fabian Vogt <fvogt@suse.com>
-Subject: [PATCH 2/2] btrfs: canonicalize the device path before adding it
-Date: Tue, 24 Sep 2024 14:47:07 +0930
-Message-ID: <c6408ea85cd10e4042df528708dd9c2ec1db78c0.1727154543.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <cover.1727154543.git.wqu@suse.com>
-References: <cover.1727154543.git.wqu@suse.com>
+	s=arc-20240116; t=1727155135; c=relaxed/simple;
+	bh=wnlmVdseJ2GwiNwXXwHQOCfinGss4iEOFv2Z/qt84NE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gG0pkd9n+ReQ6VxHHEEnekbIAe0MFIWPJrYin2mjfvVxjBvb9whq83iho3U1zThLmvHkEJ8PBHFJN9se6zYjZ1Iv90Q97PWa7TOIF5TdOlzrbsvF1+K4nwltCXCru5F3sRoZ3Rzhb6tHG/vDR+ZQxue2sUHiwBO7v9iPuOZ8HMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Fgv8VLVA; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1727155130; x=1727759930; i=quwenruo.btrfs@gmx.com;
+	bh=4Hgac4UsSSxMubQrnh6FAizNgR9RCggq1ky+sQIVMCA=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Fgv8VLVAygbDrZ1KRU+DA3GPjG9wquLWkc7f1QD+lECa1KKtYlJr/5cuQbnw9iLJ
+	 LNzLeypG0kDcVqm92QyiOvHFrPkDOrd2xfDiFgGF/Ugd+NEH3TP5nw6Gv5SIQqpe5
+	 JoCFNEB9+gzA4lJYJFqgE+JsPxV0S3Kok7FVSxZCynCQTBCXqioYch09bKx9E95hV
+	 KOWOY3YFvUit6b7NX25PwUqOrQAFQVPXmwFkWKHRVel+5bHNQ1Y2oSiyf7mmaZxXC
+	 voXHh9l2Nu+YTLrCFFDcsDJIrRp540ULGeqoIPvwrVhmXxV6dLmRXedPkJ3xc0qwQ
+	 +54GzgGzDHX7CJXjng==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1McY8d-1sNTTo3fzx-00jJ1a; Tue, 24
+ Sep 2024 07:18:50 +0200
+Message-ID: <a9793ad6-1254-43d3-8a78-6bad7a27eaf1@gmx.com>
+Date: Tue, 24 Sep 2024 14:48:47 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: AC98A1FBBF
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url,suse.com:email,suse.com:dkim,suse.com:mid];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+User-Agent: Mozilla Thunderbird
+Subject: Re: Filesystem corrupted
+To: Dave T <davestechshop@gmail.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAGdWbB4TvLV=6JNyk+m+R-bkec-y+GZo4MaaMK8cn=5ghf9Sgg@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAGdWbB4TvLV=6JNyk+m+R-bkec-y+GZo4MaaMK8cn=5ghf9Sgg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VDUDi5XK4b11HOn3tCVNA9NOQV6w4fkl1XYhU90rHDzlsmknYoO
+ +5P1JIPv9rDZScJp+D53rOFI+qnN8lfBn3cPqNkCaebp1nADW9m66xQlwjNrHgZuLFIbkXD
+ zGG1LKhmObH+xMx17K071VjooUWMibyV4GcrKGGUu211zYBWGhF5EMAOePbQsJ6vzDbPfSp
+ Q5GiDK0zRRu7rEv3gT12Q==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:zFkbgCsuGyo=;GD7OFr/7YCjwKFW5k4+aOPU7s3d
+ 5LUBIOOf0a7RhyAFR0CayIaCS80ljK4SUVQJZKXa6+rvs6Tf3HAmOemHWLIDte2S81lw4Sh4L
+ FJZlWbDvNEFkMmjWnDy4mF0o4Enas1Q7Amtj/6ys4lfj/Bwl0/WRmueOkuhkL/ByKnZVXxAOS
+ aHyG3v+YmWbHs9gJCBeBeed4ju8n0EjgSWXcpaQRHsK1MmmgvJ8NRje4ZgRY8BTRsS4hskjy5
+ wUVrcdwL3SNfiPpEPylVvjhM0Z+THK7XI5Dhp8H6NFjqwGEZjIzSJBCNhZSY8yZRtzD6AgNaB
+ i9B3dRJLTsRwBUhEvejkJVZ3UGttqP2wXUQm2K2aO116Z5FHL8ZZ+ZX0I6dqwHvDSFFpkH51D
+ aJLDIA5PU1ScTHpVI5GGrvOOuy8Jo8YZKgXarvviKQ6yszz8/A6e9pMv1/NGPDoDnluYd3lO6
+ 15tP4stTm2Dh4qjYLjIk+p/FAaC29DgqINIvmumGPSPc2rUQqO0emsAclqeJeociWWtI5a/b+
+ 2ra9alXnD4RbelIaRCxc+5M9Be3COhmITwa9z0R2BgehBjeeq8KWAUM7jdLW+4r0zCdnNFu79
+ AQAgrmju3kWz5W6CT/rczSDHg+sOtjE3cTcwv5b6Zz6vPjlFgDeFiULaO+1/2nLrFJ6HQAI1p
+ ivANgEW3Jlh+vlMU4n+goyJ40WjrUT6FAq9PHRrtdE2czgrT4ypsYBIB5ItYm+W1loHCIQbQf
+ GlkpbjDnv6vNDNSOUYTtpFXBHW1dVuaQIxWxCYDlcA6f0inJZhUoMo+qsE3U+KhTwyKy7Bhj4
+ p2fC4mdTOhOdzdMEAvYJagRg==
 
-[PROBLEM]
-Currently btrfs accepts any file path for its device, resulting some
-weird situation:
 
- # ./mount_by_fd /dev/test/scratch1  /mnt/btrfs/
 
-The program has the following source code:
+=E5=9C=A8 2024/9/24 12:53, Dave T =E5=86=99=E9=81=93:
+> Hi. I hope you all are doing great today.
+>
+Full dmesg please, the important thing is in the tree block dump.
 
- #include <fcntl.h>
- #include <stdio.h>
- #include <sys/mount.h>
+Thanks,
+Qu
 
- int main(int argc, char *argv[]) {
-	int fd = open(argv[1], O_RDWR);
-	char path[256];
-	snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
-	return mount(path, argv[2], "btrfs", 0, NULL);
- }
-
-Then we can have the following weird device path:
-
- BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid 1 transid 7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (18440)
-
-Normally it's not a big deal, and later udev can trigger a device path
-rename. But if udev didn't trigger, the device path "/proc/self/fd/3"
-will show up in mtab.
-
-[CAUSE]
-For filename "/proc/self/fd/3", it means the opened file descriptor 3.
-In above case, it's exactly the device we want to open, aka points to
-"/dev/test/scratch1" which is another softlink pointing to "/dev/dm-2".
-
-Inside btrfs we solve the path using LOOKUP_FOLLOW, which follows the
-symbolic link and grab the proper block device.
-
-But we also save the filename into btrfs_device::name, still resulting
-the weird path.
-
-[FIX]
-Instead of unconditionally trust the path, check if the original file
-(not following the symbolic link) is inside "/dev/", if not, then
-manually lookup the path to its final destination, and use that as our
-device path.
-
-This allows us to still use symbolic links, like
-"/dev/mapper/test-scratch" from LVM2, which is required for fstests runs
-with LVM2 setup.
-
-And for really weird names, like the above case, we solve it to
-"/dev/dm-2" instead.
-
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1230641
-Reported-by: Fabian Vogt <fvogt@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/volumes.c | 79 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 78 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b713e4ebb362..8acb3c465783 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -732,6 +732,70 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb)
- 	return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
- }
- 
-+/*
-+ * We can have very wide soft links passed in.
-+ * One example is "/proc/<uid>/fd/<fd>", which can be a soft link to
-+ * a proper block device.
-+ *
-+ * But it's never a good idea to use those weird names.
-+ * Here we check if the path (not following symlinks) is a good one inside
-+ * "/dev/".
-+ */
-+static bool is_good_dev_path(const char *dev_path)
-+{
-+	struct path path = { .mnt = NULL, .dentry = NULL };
-+	char *path_buf = NULL;
-+	char *resolved_path;
-+	bool is_good = false;
-+	int ret;
-+
-+	path_buf = kmalloc(PATH_MAX, GFP_KERNEL);
-+	if (!path_buf)
-+		goto out;
-+
-+	/*
-+	 * Do not follow soft link, just check if the original path is inside
-+	 * "/dev/".
-+	 */
-+	ret = kern_path(dev_path, 0, &path);
-+	if (ret)
-+		goto out;
-+	resolved_path = d_path(&path, path_buf, PATH_MAX);
-+	if (strncmp(resolved_path, "/dev/", strlen("/dev/")))
-+		goto out;
-+	is_good = true;
-+out:
-+	kfree(path_buf);
-+	path_put(&path);
-+	return is_good;
-+}
-+
-+static int get_canonical_dev_path(const char *dev_path, char *canonical)
-+{
-+	struct path path = { .mnt = NULL, .dentry = NULL };
-+	char *path_buf = NULL;
-+	char *resolved_path;
-+	int ret;
-+
-+	path_buf = kmalloc(PATH_MAX, GFP_KERNEL);
-+	if (!path_buf) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = kern_path(dev_path, LOOKUP_FOLLOW, &path);
-+	if (ret) {
-+		pr_info("path lookup failed for %s: %d\n", dev_path, ret);
-+		goto out;
-+	}
-+	resolved_path = d_path(&path, path_buf, PATH_MAX);
-+	strncpy(canonical, resolved_path, PATH_MAX - 1);
-+out:
-+	kfree(path_buf);
-+	path_put(&path);
-+	return ret;
-+}
-+
- static bool is_same_device(struct btrfs_device *device, const char *new_path)
- {
- 	struct path old = { .mnt = NULL, .dentry = NULL };
-@@ -1408,12 +1472,23 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 	bool new_device_added = false;
- 	struct btrfs_device *device = NULL;
- 	struct file *bdev_file;
-+	char *canonical_path = NULL;
- 	u64 bytenr;
- 	dev_t devt;
- 	int ret;
- 
- 	lockdep_assert_held(&uuid_mutex);
- 
-+	if (!is_good_dev_path(path)) {
-+		canonical_path = kmalloc(PATH_MAX, GFP_KERNEL);
-+		if (canonical_path) {
-+			ret = get_canonical_dev_path(path, canonical_path);
-+			if (ret < 0) {
-+				kfree(canonical_path);
-+				canonical_path = NULL;
-+			}
-+		}
-+	}
- 	/*
- 	 * Avoid an exclusive open here, as the systemd-udev may initiate the
- 	 * device scan which may race with the user's mount or mkfs command,
-@@ -1458,7 +1533,8 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 		goto free_disk_super;
- 	}
- 
--	device = device_list_add(path, disk_super, &new_device_added);
-+	device = device_list_add(canonical_path ? canonical_path : path,
-+				 disk_super, &new_device_added);
- 	if (!IS_ERR(device) && new_device_added)
- 		btrfs_free_stale_devices(device->devt, device);
- 
-@@ -1467,6 +1543,7 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 
- error_bdev_put:
- 	fput(bdev_file);
-+	kfree(canonical_path);
- 
- 	return device;
- }
--- 
-2.46.1
+> My errors, shown by dmesg, are:
+>
+>      [  +0.000001] ---[ end trace 0000000000000000 ]---
+>      [  +0.000045] BTRFS: error (device dm-3 state A) in
+> __btrfs_free_extent:3213: errno=3D-117 Filesystem corrupted
+>      [  +0.000040] BTRFS info (device dm-3 state EA): forced readonly
+>      [  +0.000006] BTRFS info (device dm-3 state EA): leaf 253860954112
+> gen 33587 total ptrs 44 free space 7040 owner 2
+>      [  +0.000006]   item 0 key (227177136128 168 4096) itemoff 16165
+> itemsize 118
+>      [  +0.000004]           extent refs 6 gen 135 flags 1
+>      [  +0.000003]           ref#0: extent data backref root 490
+> objectid 426314 offset 0 count 1
+>      [  +0.000006]           ref#1: shared data backref parent
+> 266540040192 count 1
+>      [  +0.000004]           ref#2: shared data backref parent
+> 266489888768 count 1
+>      [  +0.000002]           ref#3: shared data backref parent
+> 266355113984 count 1
+>      [  +0.000003]           ref#4: shared data backref parent
+> 254191386624 count 1
+>      [  +0.000003]           ref#5: shared data backref parent
+> 253776723968 count 1
+>      [  +0.000003]   item 1 key (227177140224 168 4096) itemoff 16047
+> itemsize 118
+>      [  +0.000003]           extent refs 6 gen 135 flags 1
+>      [  +0.000002]           ref#0: extent data backref root 490
+> objectid 426315 offset 0 count 1
+>
+> [ many more lines similar to those ...]
+>
+> 1
+>      [  +0.000001]           ref#1: shared data backref parent
+> 267180081152 count 1
+>      [  +0.000001]           ref#2: shared data backref parent
+> 267147689984 count 1
+>      [  +0.000001]           ref#3: shared data backref parent
+> 267079172096 count 1
+>      [  +0.000001]           ref#4: shared data backref parent
+> 266967515136 count 1
+>      [  +0.000001]           ref#5: shared data backref parent
+> 266640392192 count 1
+>      [  +0.000001]           ref#6: shared data backref parent
+> 266567483392 count 1
+>      [  +0.000001]           ref#7: shared data backref parent
+> 266540072960 count 1
+>      [  +0.000000]           ref#8: shared data backref parent
+> 266504208384 count 1
+>      [  +0.000001]           ref#9: shared data backref parent
+> 266489937920 count 1
+>      [  +0.000001]           ref#10: shared data backref parent
+> 266355163136 count 1
+>      [  +0.000001]           ref#11: shared data backref parent
+> 254357438464 count 1
+>      [  +0.000002]           ref#12: shared data backref parent
+> 254230626304 count 1
+>      [  +0.000001]           ref#13: shared data backref parent
+> 254217519104 count 1
+>      [  +0.000001]           ref#14: shared data backref parent
+> 254191435776 count 1
+>      [  +0.000001]           ref#15: shared data backref parent
+> 253777051648 count 1
+>      [  +0.000001] BTRFS critical (device dm-3 state EA): unable to
+> find ref byte nr 227177795584 parent 266504192000 root 490 owner>
+>      [  +0.000018] BTRFS error (device dm-3 state EA): failed to run
+> delayed ref for logical 227177795584 num_bytes 61440 type 184 a>
+>      [  +0.000017] BTRFS: error (device dm-3 state EA) in
+> btrfs_run_delayed_refs:2207: errno=3D-2 No such entry
+>
+> The drive is a Samsung SSD 970 EVO Plus 2TB.
+>
+> Overall:
+>      Device size:                   1.82TiB
+>      Device allocated:           300.04GiB
+>      Device unallocated:            1.53TiB
+>      Device missing:                  0.00B
+>      Device slack:                    0.00B
+>      Used:                        299.07GiB
+>      Free (estimated):              1.53TiB      (min: 1.53TiB)
+>      Free (statfs, df):             1.53TiB
+>      Data ratio:                       1.00
+>      Metadata ratio:                   1.00
+>      Global reserve:              398.55MiB      (used: 16.00KiB)
+>      Multiple profiles:                  no
+>
+> Data,single: Size:298.01GiB, Used:297.82GiB (99.94%)
+>     /dev/mapper/userluks  298.01GiB
+>
+> Metadata,single: Size:2.00GiB, Used:1.25GiB (62.51%)
+>     /dev/mapper/userluks    2.00GiB
+>
+> System,single: Size:32.00MiB, Used:48.00KiB (0.15%)
+>     /dev/mapper/userluks   32.00MiB
+>
+> What is the recommended course of action given this error?
+>
+> What other info do I need to share, if any?
+>
+> Thank you!
+>
 
 
