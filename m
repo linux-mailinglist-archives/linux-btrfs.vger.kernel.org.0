@@ -1,104 +1,213 @@
-Return-Path: <linux-btrfs+bounces-8197-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8198-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B369843F6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 12:46:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D18B598451D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 13:48:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 914F92885E4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 10:46:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1D6C1C22A1D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 11:48:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92731A304F;
-	Tue, 24 Sep 2024 10:45:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F7F136330;
+	Tue, 24 Sep 2024 11:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qgZ3OL+y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dz6ykiOd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112CF1A3043
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 10:45:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF27D824AD
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 11:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727174754; cv=none; b=A4CVOai8FWO68GfNOkjxJdALUi4yDFVqp+38QV2NQvqe1qsuK7fFyHTBXeUYPnnp5CVFfDhtSHCu4G1ypp4wkvb7q9naenqF7Ktt2R4q7a/sccv0y9UGIgX0aCvBQWY43NvKCbtdWreSRSmvF301Bu3bOWHGHk3glrUaDNSx9EA=
+	t=1727178515; cv=none; b=JNqEt8OeGxgOUqkFXMwpinnKumgSlG2kfApkQJjgTgZmWm3ImUK75gdoOT3KbMPwmX6Tfr/qNkagVVQluk2ByIyPwj0twPxZqZjwmqFU2ssp4RtfALXjbzXcFUtjutHmEKJ04vo4NIy108pjQl81sGXZ6Wxzd4YAfER8hYT3qIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727174754; c=relaxed/simple;
-	bh=j0GV9dcu1E2eFQSBJ4ohjZm8NFdN10BtEOCekIqpXgk=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q6L3hHukII1RCKxX3gC2xW0sJJDI2mPmNBW1JoSgcF/3ap3GSKmmRXsXVpjxfWmVC0agx9DJZflPnQiblyPD3yjcYRHFS8qE63DBebsLQMJPefHQ4NDqkuo1FfNSWO0GIjsxuQ756IcxCPUwerpE8gp21nwPLNyz6yIR1E1Pc34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qgZ3OL+y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68E7BC4CEC6
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 10:45:53 +0000 (UTC)
+	s=arc-20240116; t=1727178515; c=relaxed/simple;
+	bh=8E7uwvCWmrAyenqnII1iiVXKBUuJkKndwLdQwUj873I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RkmZ+HjOb/Z7W2KlxR9DrmUAZ5ns/aeiFWCFGlE3U9vhKS0zGRnqtcxPIPbI6QzEGu5ia/5gLidDuSl0Flsidx0BbJglpcdls5Ac8DfqZO4WwVJPwGtp4k5JuGUpAVojM8ITEO7EGBzlRVr/+eMjQhc7Ore9phCMSL9wu73aCyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dz6ykiOd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38ED2C4CEC4
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 11:48:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727174753;
-	bh=j0GV9dcu1E2eFQSBJ4ohjZm8NFdN10BtEOCekIqpXgk=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=qgZ3OL+yGVI2LiKpqZFBsgfnGErtWZ1V5f/as8eqZJLwv5PZ62iZ23xXEyuDuqg3u
-	 +AsYxH8Ws6DNrsCGCJWPN5+7X+iaugiSar/BLJMWtmaV90JM/fdB3BgFx/3zFkMFGD
-	 GtdtlRYTA6SKh8+fFWx9vhX1c6uGMOdHjzpa3gtYFSQxiuhuxdqX7KhbMI2L1x462T
-	 RM7IK5jQWuxa/GVsY+/YhlNLglSW3mQtfKmoFJrd0VQtcyH+8qfGMmG+IVbYAX3ZBW
-	 patUkOxbmGm/3EvT3CBPfE7JyrxhcGtnafGn3r4ggPT4rE76UjVzoBg58Ro1+Vu5Ux
-	 Jp2xSpsBq6s8Q==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/5] btrfs: re-enable the extent map shrinker
-Date: Tue, 24 Sep 2024 11:45:45 +0100
-Message-Id: <2ddc45133bcee20c64699abf10cc24bf2737b606.1727174151.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1727174151.git.fdmanana@suse.com>
-References: <cover.1727174151.git.fdmanana@suse.com>
+	s=k20201202; t=1727178515;
+	bh=8E7uwvCWmrAyenqnII1iiVXKBUuJkKndwLdQwUj873I=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dz6ykiOdzXKA8aWpHJoX79HpgL9dIvdtEGZGnEZmMoy6N1WFAJ0AEpWOrU7C0l97Z
+	 W/Edu+A8ME5pUdicC/U8qw7z7rnVnliIHj3cb44iLUBl7LOGWTnFfbvns4Yzai/TOv
+	 tuvzkgzSbX0/CMgZGkf+4aJ/QXRfHoD+1/8jQ1ILbnfOQiBKi6qu/AGpVUbFVlCMMY
+	 iL8bXsgdptLf46zr3i163Gc7fQAz/BcLzw0YDt/pFl+G81acuAyY3WNZ1dvK4lcdd+
+	 TTGhQauktq6wrdqiPdITCC57+AR1Ki4/+UejSIgQa1q7ZNSid2qFetIX7b936L6oGJ
+	 Az+yfyJurYd8A==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5c42f406e29so7800751a12.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 04:48:35 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwHKiRj9eKn+nW6KJrPyZn8fXCxfMHSfpTzHD9XOEFpV5tvgoSp
+	RvfE1VwaDSgxTPUd5ugjxufSw3mbzAd/J2Z7Dvr1Gkpin9MKQX31FbSPnq326WMZA96j9hP5Sre
+	x2Eq5hq3P7Gr4nEYVwiGSGqJSd6w=
+X-Google-Smtp-Source: AGHT+IG7HPvGPavoDm5q1ygsag3BwVwL539QWGWY7+WF4Gz5E4eg2vtGaVe9Y6cJzbSH6r5LXn4wjqZiSKIaZj0CqJw=
+X-Received: by 2002:a17:907:3e05:b0:a91:158c:8057 with SMTP id
+ a640c23a62f3a-a91158c908bmr469404066b.54.1727178513700; Tue, 24 Sep 2024
+ 04:48:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1727154543.git.wqu@suse.com> <bb5f08852d68f7424b1113deb74586527912c290.1727154543.git.wqu@suse.com>
+In-Reply-To: <bb5f08852d68f7424b1113deb74586527912c290.1727154543.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 24 Sep 2024 12:47:56 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5c3CiWSaag8Sb=Wrqtj6CRYAkEA9bj69TuVgjKh-YNDA@mail.gmail.com>
+Message-ID: <CAL3q7H5c3CiWSaag8Sb=Wrqtj6CRYAkEA9bj69TuVgjKh-YNDA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btrfs: avoid unnecessary device path update for the
+ same device
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Sep 24, 2024 at 6:17=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [PROBLEM]
+> It is very common for udev to trigger device scan, and every time a
+> mounted btrfs device got re-scan from different soft links, we will get
+> unnecessary renames like this:
+>
+>  BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid 1 transid =
+7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (11096)
+>  BTRFS info (device dm-2): first mount of filesystem 2378be81-fe12-46d2-a=
+9e8-68cf08dd98d5
+>  BTRFS info (device dm-2): using crc32c (crc32c-intel) checksum algorithm
+>  BTRFS info (device dm-2): using free-space-tree
+>  BTRFS info: devid 1 device path /proc/self/fd/3 changed to /dev/dm-2 sca=
+nned by (udev-worker) (11092)
+>  BTRFS info: devid 1 device path /dev/dm-2 changed to /dev/mapper/test-sc=
+ratch1 scanned by (udev-worker) (11092)
+>
+> The program "mount_by_fd" has the following simple source code:
+>
+>  #include <fcntl.h>
+>  #include <stdio.h>
+>  #include <sys/mount.h>
+>
+>  int main(int argc, char *argv[]) {
+>         int fd =3D open(argv[1], O_RDWR);
+>         char path[256];
+>
+>         snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
+>         return mount(path, argv[2], "btrfs", 0, NULL);
+>  }
+>
+> Note that, all the above paths are all just pointing to "/dev/dm-2".
+> The "/proc/self/fd/3" is the proc fs, describing all the opened fds.
 
-Now that the extent map shrinker can only be run by a single task and runs
-asynchronously as a work queue job, enable it as it can no longer cause
-stalls on tasks allocating memory and entering the extent map shrinker
-through the fs shrinker (implemented by btrfs_free_cached_objects()).
+This is redundant to say, we all know everything inside /proc belongs
+to procfs, and self/fd/X corresponds to an open fd by the calling
+task.
 
-This is crucial to prevent exhaustion of memory due to unbounded extent
-map creation, primarily with direct IO but also for buffered IO on files
-with holes. This problem, for the direct IO case, was first reported in
-the Link tag below. That report was added to a Link tag of the first patch
-that introduced the extent map shrinker, commit 956a17d9d050 ("btrfs: add
-a shrinker for extent maps"), however the Link tag disappeared somehow
-from the committed patch (but was included in the submitted patch to the
-mailing list), so adding it below for future reference.
+> The "/dev/mapper/test-scratch1" is the soft link created by LVM2.
 
-Link: https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d42c55e@amazon.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/super.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+What would be more useful here is to have all the steps to reproduce
+the problem:
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index e9e209dd8e05..7e20b5e8386c 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2401,13 +2401,7 @@ static long btrfs_nr_cached_objects(struct super_block *sb, struct shrink_contro
- 
- 	trace_btrfs_extent_map_shrinker_count(fs_info, nr);
- 
--	/*
--	 * Only report the real number for EXPERIMENTAL builds, as there are
--	 * reports of serious performance degradation caused by too frequent shrinks.
--	 */
--	if (IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL))
--		return nr;
--	return 0;
-+	return nr;
- }
- 
- static long btrfs_free_cached_objects(struct super_block *sb, struct shrink_control *sc)
--- 
-2.43.0
+1) How you invoke that test program, what the arguments are;
+2) Any other steps that one should run to reproduce the problem.
 
+Can we also get a test case for fstests?
+Even if it's caused by a race and it doesn't always trigger, with
+several people often running fstests frequently, possible regressions
+will be quickly detected.
+
+>
+> [CAUSE]
+> Inside device_list_add(), we are using a very primitive way checking if
+> the device has changed, strcmp().
+>
+> Which can never handle links well, no matter if it's hard or soft links.
+>
+> So every different link of the same device will be treated as different
+> device, causing the unnecessary device name update.
+>
+> [FIX]
+> Introduce a helper, is_same_device(), and use path_equal() to properly
+> detect the same block device.
+> So that the different soft links won't trigger the rename race.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Since there's a publicly accessible report for this, at
+https://bugzilla.suse.com/show_bug.cgi?id=3D1230641, can we please at
+least get a Link tag here?
+
+> ---
+>  fs/btrfs/volumes.c | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 995b0647f538..b713e4ebb362 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -732,6 +732,32 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super=
+_block *sb)
+>         return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
+>  }
+>
+> +static bool is_same_device(struct btrfs_device *device, const char *new_=
+path)
+> +{
+> +       struct path old =3D { .mnt =3D NULL, .dentry =3D NULL };
+> +       struct path new =3D { .mnt =3D NULL, .dentry =3D NULL };
+
+This can simply be: ... =3D { 0 }
+
+But I don't mind this more verbose initialization.
+
+With the change log fixes:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> +       bool is_same =3D false;
+> +       int ret;
+> +
+> +       if (!device->name)
+> +               goto out;
+> +
+> +       old_path =3D rcu_str_deref(device->name);
+> +       ret =3D kern_path(old_path, LOOKUP_FOLLOW, &old);
+> +       if (ret)
+> +               goto out;
+> +       ret =3D kern_path(new_path, LOOKUP_FOLLOW, &new);
+> +       if (ret)
+> +               goto out;
+> +       if (path_equal(&old, &new))
+> +               is_same =3D true;
+> +out:
+> +       path_put(&old);
+> +       path_put(&new);
+> +       return is_same;
+> +}
+> +
+>  /*
+>   * Add new device to list of registered devices
+>   *
+> @@ -852,7 +878,7 @@ static noinline struct btrfs_device *device_list_add(=
+const char *path,
+>                                 MAJOR(path_devt), MINOR(path_devt),
+>                                 current->comm, task_pid_nr(current));
+>
+> -       } else if (!device->name || strcmp(device->name->str, path)) {
+> +       } else if (!device->name || !is_same_device(device, path)) {
+>                 /*
+>                  * When FS is already mounted.
+>                  * 1. If you are here and if the device->name is NULL tha=
+t
+> --
+> 2.46.1
+>
+>
 
