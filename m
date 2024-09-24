@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F482984C96
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 23:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8448F984C9E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 23:16:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7B351F2492D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 21:12:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E879F1F24943
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 21:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF9013D251;
-	Tue, 24 Sep 2024 21:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EF013CA8A;
+	Tue, 24 Sep 2024 21:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bKiPn7F7"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Zr1GFwb3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F767F460
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 21:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CF1139D
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 21:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727212338; cv=none; b=dGgWn2LMPYCVWjkOJ9GMFfH3ZqQRFvFLc+Gu94id6e56CWWyabbDOxBloIUifn7IXLd8Y9a3pBEhXWujQncULI7PUEV+tuSe6C2RVbilazLStWkNFOam/U56r8BF5QG7+xPXp8De51aEpRjsXhABIglZ6eUbtIkm/z6zAZPEzbQ=
+	t=1727212573; cv=none; b=Ale13u4HlsDyCf3l8TY/z+UlUmo+jR6q4eA3KygYxGk4Ps20CnwXvrNt4BerBwWlzRCpOAHytvSKlOtPl9Afp/EpQHAXk5+6slB0wCrAeEm8WjNndmmRXCZFT8Kmdmc5LdaCUbmDSJt/k0mv8WvQsIxKs4p08l/hDFTP32J0s9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727212338; c=relaxed/simple;
-	bh=O8vdg853YYNbqdpFD+lVAqeZUMDFTczJgpZhw1vm3lY=;
+	s=arc-20240116; t=1727212573; c=relaxed/simple;
+	bh=bCq1YVHeCqCaaHd2XTxdHf1uG9xaWvj2aO9CY++YFSo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fCnieYgjyF+IPDLKxnq9sTxu8FaGD2ZpJeK4Ole4S64KGFwTD9lk/EBzFRAJ93mMrAdgFK/b7qie1JtxGREBzwCqhSVILz/M0if5OQ+MLGZdGbQHTCqTXUBmWVUXv40kDPawLZWCW0VtMXPphWm1gEtRb+ElrVRH4Nnkf1xwAK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bKiPn7F7; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=BoU5PnoQlJZLPN4Ofrsb0WXLRGMrF1Fj+CnA62c03CQb3ViHB1g2EhQkrEGaA+0s+A+Vv5rf7zotyk5aHrcyLs0gG+/Dzf+80RJAqac7Z4VgR3ImaaS2zRV7pam/86le2HDQvRTulXBSokliV2TgFfqfVydn0BVpB/sER3D9f/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Zr1GFwb3; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727212328; x=1727817128; i=quwenruo.btrfs@gmx.com;
-	bh=3Wq39LfGPQeqnfvzN5eKdkKwcqQtoXpjP9SnX4cbgmw=;
+	s=s31663417; t=1727212564; x=1727817364; i=quwenruo.btrfs@gmx.com;
+	bh=/Ka+Rr557q6UUuzMUBxJI0mpElY6PoY/SK9GJPHo/lk=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=bKiPn7F7Rfg/BlX4Ag0/6+jWLsC/FgQqBZAXMCrshteuN/WdLwop6SiOFlBaSck+
-	 8Pdda56XISfkTBxMjd+KnWR7kHYabxdLU0TKPi3ba0NGkzYACqxsCHV88Jq3ujQTG
-	 crRg477bIlAQvtaekhApSgqKwKvxPWT4OCW2/O5ok36QAq5hNOaCJPGSG7w8QCF1q
-	 EQ2OWCPWQ6eZlkMrnjJ3mgMsXp5G+/8qXT23/69N80mzBksHURzgPERAbggF7+12V
-	 B9Xg9ury7Xx9VjuqnHgakPe5Qv9RNp7zrnUrQsUUoCMlb8m6+nEL8jOsPYqIy1Wml
-	 MNKgt7oLYQQ3H5T8Lg==
+	b=Zr1GFwb3hsPYIJIeznYqWvVbQJLC7hQJWtFxbgLuaQLwGhN+8Bsa0VD5d+AZ9chS
+	 GUzMka3HM6uRNT8X7W5yHOosoi//MMlaNUZFSlJ1QOxyEcrWHQ8vnZ4z/hZf7ae9r
+	 B8eLzpdl5pCjjJErSyXqBOLTEDtgN4+5z6hlhDdxiNyj9rKAEz02LcGH3d2jxowtd
+	 2ASzEwCBl/trrP7+23+M0XE/I96WrFj5JN0ik7WOTWF0RH0e43S+WDtqhapmK5UWp
+	 J+bzaj4mT8UdEiZibwxFYF3xUnMdVA6vHKbwTvwQnZ670DvefRRmZIj1pbrdirSJF
+	 SE0Oy7gK+WAaC+EN5Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwfac-1rzsBp47ek-0162Zk; Tue, 24
- Sep 2024 23:12:08 +0200
-Message-ID: <3748a184-eb72-4edc-91d3-809c3e3bb5b8@gmx.com>
-Date: Wed, 25 Sep 2024 06:42:05 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6bfq-1rs8kf1lx0-013G6c; Tue, 24
+ Sep 2024 23:16:03 +0200
+Message-ID: <4c15c43e-a706-4389-8b61-3535e273ba56@gmx.com>
+Date: Wed, 25 Sep 2024 06:46:00 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: avoid unnecessary device path update for the
- same device
+Subject: Re: [PATCH 2/2] btrfs: canonicalize the device path before adding it
 To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Fabian Vogt <fvogt@suse.com>
 References: <cover.1727154543.git.wqu@suse.com>
- <bb5f08852d68f7424b1113deb74586527912c290.1727154543.git.wqu@suse.com>
- <CAL3q7H5c3CiWSaag8Sb=Wrqtj6CRYAkEA9bj69TuVgjKh-YNDA@mail.gmail.com>
+ <c6408ea85cd10e4042df528708dd9c2ec1db78c0.1727154543.git.wqu@suse.com>
+ <CAL3q7H7aL-M3dyu7f7w1bBb5zUP00KMp=F-jWV-Q0hZH6LD=yw@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,51 +90,40 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H5c3CiWSaag8Sb=Wrqtj6CRYAkEA9bj69TuVgjKh-YNDA@mail.gmail.com>
+In-Reply-To: <CAL3q7H7aL-M3dyu7f7w1bBb5zUP00KMp=F-jWV-Q0hZH6LD=yw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sT0TBpo+JsI3Pk8s+i8fTg1nPp925NoK70k3M9BRiMiKwyzO6Oy
- oIuU2v6z5qlXAewAVKRKW6V+T+WeZFaS66G4HZtMbV3DQQLooSU8nruHk7BTyYOff90zN13
- 3VL5WvvOXSfHLbQ9JTRuKcgZ/hUAclaeBi0knHswGZCxrV1vpxgONevO2pF4b51+DajBe2v
- w/NFBkXd/5DNDd+mlXzvQ==
+X-Provags-ID: V03:K1:GBTvfHGdA0RsKlNcCdrQIAlEwJsqwsfy3dfsvLEs2Erb8M3wDMy
+ x7ZvIQSxFeeZpfd6llWYp7I3XkgNfxhzan7edJ5g8kJW2PCvrf16q9oPV2dHcs9Tzpm0dOS
+ P7qZlArnXJBO60E1JPX87mAALJEos6T5ETjfcvDMtOOhn8HkwZK6C4W7nIKoN/VOMitFcgG
+ aJnl97/3bEKM7rnYtj7eg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ILZH+G69pq8=;ZNnHOWrfnQ80YUUtdmqSXYMpJUo
- 24HqYJCRHeB2WXR3PQ91DEch9QAJlLY+7/g6zAEjCZ2v4Mc5SHzfg10Xn5Z4AJ+aJxGFghFrI
- JowuOZotNhsRGn3EGV5ddSXfyUdcV38oc2beg270TsnRmNr9M4wnSGrUkSxW8HdHfdk/3SBNk
- FNWZNbCPJHyZVr+xDHKxE8b1hUM1kEy+ZA2+PLsFJ2EyYvXD27SI70M1Q7nDaiI6a+XTYuqvg
- ikFwff1TMdMZmQ+bqUExa49+bmCnLWYeJsIgewMIMvtIObZFIPQIsOg80mvIwVD9qTU8Q7rCU
- QSyd5LTmo1ag6Xrg4qsBKo7Rcjytgmv4bUGCv617BwjNswxeizz2A7rl87f6fTjKqJzaq8CPU
- u9haEtQNhs4g7EZt83xQW3VucdEDlLZpVNU+GzsJ7oVJuxgaAt/OoOntbC/eO3hYccSKTs/w+
- n7Rz9FW4l9XjX4dvIpdosc8wlX2gGw4r2Ay+mYhyDKheUTd0ual51S/DZ1KrWRPgyRLyY+LMh
- aV5CBOo0cpYRffebFHIXF9lZDUnsF36VJ4/MtYRR0/xH1aKvaBfGjNAmXX6bEDrHSFU6m9tg2
- ixYy9qCVg6ML2RfRl9Vll5ZcZdix43d/S0v5XCxs5L1dGRT7eo3cZlN/b+AA104qLHvDLNS8/
- 0Y2f4MBnoFaeKN+fJU8hpUx3cvUMwaofKUnS9R4ZLHnAixGqxwqvf8W8rnrgAFz0LmDdx8+f2
- osTMK47Nm6VysctRNvFEmvTDqphjBnAzSCiTjfUplOauTx/Rv44CQ7VoAJblv6zOd4HGy6JxL
- HWbAabau2hEZbQmiAQX5PvsRuasR+Glc1jGdqOsHIEWlk=
+UI-OutboundReport: notjunk:1;M01:P0:KwWFAFtSpjA=;+BQS22H7PpFFGfoUj7xRjl3HPa+
+ 68LaqoWa4vgYX56NhhL5ZsUKSiFcz4yjjDY23zCStJjVlEDrx1cxDQ+mDf0W4WP9M7x/P142I
+ kiN51ViyuHdOegmRbqKrcV+BX3pkk45yOyoK1LiunK8BaNj+C825sfXRNOuOA0plKbD8fAsbj
+ hE5rvcB0AD/4kguUUWj0IQfBI7pajtSFzNBz6uW77KH6/2RaWa0VCNNjHi36iMyPUVae9GXOb
+ Vk1K0+MR/s9gBqlTg5rZNvTxn/lFCuMJS2ZqvXcq+ob5cXqYVATK2HcZpMav0yo3aVT77LRia
+ 9WV7mIk5LAWqUdP9ZCop1gO4+BIkAyIQ6yWgNyKKcPpn1laxDKBKmNR7xTQkodOU/7wCTZAgw
+ 6kjmc7e0KqHOcM3ZhweHPoDlt/cB43IPPBW7kqDVJjpPHNxqzkXLMPNGdZhtUj3dhQg+/Aojd
+ pU8iRqUVrozVW9TLtJbZ0iNOpB5aHU5d0nzgA+Asz1rdrzeQngw09QDewpV+5nVEtnH3nG72I
+ vn/SqIGNfrHQRlvJKJI1XcTWMc0HXvYUYHa5vNRQfx50/eAJV5DTeheZ5fsK5tlBqrOXnlGPG
+ ph14skLoJl5NSK+IJPE52acpJ3b/ELRy48iWVhTYTzkhmYm02rJJNtGPRym10icaPWtY0cdrf
+ 6l66xQ5YMfolG4TloEjsNdf6P3sRVUJG8eYKw91TyTO6aNyIxI2kiR34eSiXKZQriCEvX99f0
+ srsPw2CJf3ckq479NjuU+ivPHuGNvYVnT+mJqy2GWezlTVLEdJT3gNNtP72GhNe+M3svBDSDp
+ Rq108z8FgiV7fgeOI/fzoWep4XgUTVRh3Ccijr8g5Zv/A=
 
 
 
-=E5=9C=A8 2024/9/24 21:17, Filipe Manana =E5=86=99=E9=81=93:
-> On Tue, Sep 24, 2024 at 6:17=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+=E5=9C=A8 2024/9/24 21:42, Filipe Manana =E5=86=99=E9=81=93:
+> On Tue, Sep 24, 2024 at 6:18=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >>
 >> [PROBLEM]
->> It is very common for udev to trigger device scan, and every time a
->> mounted btrfs device got re-scan from different soft links, we will get
->> unnecessary renames like this:
+>> Currently btrfs accepts any file path for its device, resulting some
+>> weird situation:
 >>
->>   BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid 1 trans=
-id 7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (11096)
->>   BTRFS info (device dm-2): first mount of filesystem 2378be81-fe12-46d=
-2-a9e8-68cf08dd98d5
->>   BTRFS info (device dm-2): using crc32c (crc32c-intel) checksum algori=
-thm
->>   BTRFS info (device dm-2): using free-space-tree
->>   BTRFS info: devid 1 device path /proc/self/fd/3 changed to /dev/dm-2 =
-scanned by (udev-worker) (11092)
->>   BTRFS info: devid 1 device path /dev/dm-2 changed to /dev/mapper/test=
--scratch1 scanned by (udev-worker) (11092)
+>>   # ./mount_by_fd /dev/test/scratch1  /mnt/btrfs/
 >>
->> The program "mount_by_fd" has the following simple source code:
+>> The program has the following source code:
 >>
 >>   #include <fcntl.h>
 >>   #include <stdio.h>
@@ -144,142 +132,221 @@ scanned by (udev-worker) (11092)
 >>   int main(int argc, char *argv[]) {
 >>          int fd =3D open(argv[1], O_RDWR);
 >>          char path[256];
->>
 >>          snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
 >>          return mount(path, argv[2], "btrfs", 0, NULL);
 >>   }
 >>
->> Note that, all the above paths are all just pointing to "/dev/dm-2".
->> The "/proc/self/fd/3" is the proc fs, describing all the opened fds.
->
-> This is redundant to say, we all know everything inside /proc belongs
-> to procfs, and self/fd/X corresponds to an open fd by the calling
-> task.
->
->> The "/dev/mapper/test-scratch1" is the soft link created by LVM2.
->
-> What would be more useful here is to have all the steps to reproduce
-> the problem:
->
-> 1) How you invoke that test program, what the arguments are;
-> 2) Any other steps that one should run to reproduce the problem.
->
-> Can we also get a test case for fstests?
-
- From my tests with ext4, it's really btrfs' ability to change path name
-halfway saving us.
-
-For ext4, the weird device name will stick there forever, and I do not
-even know if this is the expected behavior or not.
-
-> Even if it's caused by a race and it doesn't always trigger, with
-> several people often running fstests frequently, possible regressions
-> will be quickly detected.
-
-So far I haven't hit a case where the proc name can stay persistent,
-udev rescan always saves us.
-
-I guess the only reliable way to get such situation is to disable udev
-or on systems without udev completely.
-
->
+>> Then we can have the following weird device path:
+>>
+>>   BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid 1 trans=
+id 7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (18440)
+>>
+>> Normally it's not a big deal, and later udev can trigger a device path
+>> rename. But if udev didn't trigger, the device path "/proc/self/fd/3"
+>> will show up in mtab.
 >>
 >> [CAUSE]
->> Inside device_list_add(), we are using a very primitive way checking if
->> the device has changed, strcmp().
+>> For filename "/proc/self/fd/3", it means the opened file descriptor 3.
+>> In above case, it's exactly the device we want to open, aka points to
+>> "/dev/test/scratch1" which is another softlink pointing to "/dev/dm-2".
 >>
->> Which can never handle links well, no matter if it's hard or soft links=
-.
+>> Inside btrfs we solve the path using LOOKUP_FOLLOW, which follows the
+>> symbolic link and grab the proper block device.
 >>
->> So every different link of the same device will be treated as different
->> device, causing the unnecessary device name update.
+>> But we also save the filename into btrfs_device::name, still resulting
+>> the weird path.
 >>
 >> [FIX]
->> Introduce a helper, is_same_device(), and use path_equal() to properly
->> detect the same block device.
->> So that the different soft links won't trigger the rename race.
+>> Instead of unconditionally trust the path, check if the original file
+>> (not following the symbolic link) is inside "/dev/", if not, then
+>> manually lookup the path to its final destination, and use that as our
+>> device path.
 >>
+>> This allows us to still use symbolic links, like
+>> "/dev/mapper/test-scratch" from LVM2, which is required for fstests run=
+s
+>> with LVM2 setup.
+>>
+>> And for really weird names, like the above case, we solve it to
+>> "/dev/dm-2" instead.
+>>
+>> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1230641
+>> Reported-by: Fabian Vogt <fvogt@suse.com>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> Since there's a publicly accessible report for this, at
-> https://bugzilla.suse.com/show_bug.cgi?id=3D1230641, can we please at
-> least get a Link tag here?
-
-Sure.
-
->
 >> ---
->>   fs/btrfs/volumes.c | 28 +++++++++++++++++++++++++++-
->>   1 file changed, 27 insertions(+), 1 deletion(-)
+>>   fs/btrfs/volumes.c | 79 +++++++++++++++++++++++++++++++++++++++++++++=
+-
+>>   1 file changed, 78 insertions(+), 1 deletion(-)
 >>
 >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 995b0647f538..b713e4ebb362 100644
+>> index b713e4ebb362..8acb3c465783 100644
 >> --- a/fs/btrfs/volumes.c
 >> +++ b/fs/btrfs/volumes.c
->> @@ -732,6 +732,32 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_sup=
+>> @@ -732,6 +732,70 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_sup=
 er_block *sb)
 >>          return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
 >>   }
 >>
->> +static bool is_same_device(struct btrfs_device *device, const char *ne=
-w_path)
+>> +/*
+>> + * We can have very wide soft links passed in.
+>
+> Wide? Did you mean wild in the sense of unusual?
+
+My bad, I mean "weird".
+
+>
+>> + * One example is "/proc/<uid>/fd/<fd>", which can be a soft link to
+>> + * a proper block device.
+>> + *
+>> + * But it's never a good idea to use those weird names.
+>> + * Here we check if the path (not following symlinks) is a good one in=
+side
+>> + * "/dev/".
+>> + */
+>> +static bool is_good_dev_path(const char *dev_path)
 >> +{
->> +       struct path old =3D { .mnt =3D NULL, .dentry =3D NULL };
->> +       struct path new =3D { .mnt =3D NULL, .dentry =3D NULL };
->
-> This can simply be: ... =3D { 0 }
-
-Unfortunately that will trigger designated-init warning since the
-structure has __randomize_layout attribute.
-
->
-> But I don't mind this more verbose initialization.
->
-> With the change log fixes:
->
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks for the review,
-Qu
-
->
-> Thanks.
->
->> +       bool is_same =3D false;
+>> +       struct path path =3D { .mnt =3D NULL, .dentry =3D NULL };
+>> +       char *path_buf =3D NULL;
+>> +       char *resolved_path;
+>> +       bool is_good =3D false;
 >> +       int ret;
 >> +
->> +       if (!device->name)
+>> +       path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
+>> +       if (!path_buf)
 >> +               goto out;
 >> +
->> +       old_path =3D rcu_str_deref(device->name);
->> +       ret =3D kern_path(old_path, LOOKUP_FOLLOW, &old);
+>> +       /*
+>> +        * Do not follow soft link, just check if the original path is =
+inside
+>> +        * "/dev/".
+>> +        */
+>> +       ret =3D kern_path(dev_path, 0, &path);
 >> +       if (ret)
 >> +               goto out;
->> +       ret =3D kern_path(new_path, LOOKUP_FOLLOW, &new);
->> +       if (ret)
+>> +       resolved_path =3D d_path(&path, path_buf, PATH_MAX);
+>> +       if (strncmp(resolved_path, "/dev/", strlen("/dev/")))
 >> +               goto out;
->> +       if (path_equal(&old, &new))
->> +               is_same =3D true;
+>> +       is_good =3D true;
 >> +out:
->> +       path_put(&old);
->> +       path_put(&new);
->> +       return is_same;
+>> +       kfree(path_buf);
+>> +       path_put(&path);
+>> +       return is_good;
 >> +}
 >> +
->>   /*
->>    * Add new device to list of registered devices
->>    *
->> @@ -852,7 +878,7 @@ static noinline struct btrfs_device *device_list_ad=
-d(const char *path,
->>                                  MAJOR(path_devt), MINOR(path_devt),
->>                                  current->comm, task_pid_nr(current));
+>> +static int get_canonical_dev_path(const char *dev_path, char *canonica=
+l)
+>> +{
+>> +       struct path path =3D { .mnt =3D NULL, .dentry =3D NULL };
+>> +       char *path_buf =3D NULL;
+>> +       char *resolved_path;
+>> +       int ret;
+>> +
+>> +       path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
+>> +       if (!path_buf) {
+>> +               ret =3D -ENOMEM;
+>> +               goto out;
+>> +       }
+>> +
+>> +       ret =3D kern_path(dev_path, LOOKUP_FOLLOW, &path);
+>> +       if (ret) {
+>> +               pr_info("path lookup failed for %s: %d\n", dev_path, re=
+t);
+>
+> Why not btrfs_info(), or better yet, btrfs_warn()?
+
+Oh, it's some debug code not removed.
+
+In fact there should be no need to output anything.
+We can always fallback to the super weird name.
+
+>
+> It accepts a NULL fs_info argument and allows for a more standardized
+> btrfs message, with a proper prefix, etc.
+>
+>
+>> +               goto out;
+>> +       }
+>> +       resolved_path =3D d_path(&path, path_buf, PATH_MAX);
+>> +       strncpy(canonical, resolved_path, PATH_MAX - 1);
+>
+> Please don't use strncpy(). This is strongly discouraged due to
+> security issues, see:
+>
+> https://github.com/KSPP/linux/issues/90
+> https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-o=
+n-nul-terminated-strings
+
+Thanks a lot for pointing to this.
+
+Thanks,
+Qu
+>
+>> +out:
+>> +       kfree(path_buf);
+>> +       path_put(&path);
+>> +       return ret;
+>> +}
+>> +
+>>   static bool is_same_device(struct btrfs_device *device, const char *n=
+ew_path)
+>>   {
+>>          struct path old =3D { .mnt =3D NULL, .dentry =3D NULL };
+>> @@ -1408,12 +1472,23 @@ struct btrfs_device *btrfs_scan_one_device(cons=
+t char *path, blk_mode_t flags,
+>>          bool new_device_added =3D false;
+>>          struct btrfs_device *device =3D NULL;
+>>          struct file *bdev_file;
+>> +       char *canonical_path =3D NULL;
+>>          u64 bytenr;
+>>          dev_t devt;
+>>          int ret;
 >>
->> -       } else if (!device->name || strcmp(device->name->str, path)) {
->> +       } else if (!device->name || !is_same_device(device, path)) {
->>                  /*
->>                   * When FS is already mounted.
->>                   * 1. If you are here and if the device->name is NULL =
-that
+>>          lockdep_assert_held(&uuid_mutex);
+>>
+>> +       if (!is_good_dev_path(path)) {
+>> +               canonical_path =3D kmalloc(PATH_MAX, GFP_KERNEL);
+>> +               if (canonical_path) {
+>> +                       ret =3D get_canonical_dev_path(path, canonical_=
+path);
+>> +                       if (ret < 0) {
+>> +                               kfree(canonical_path);
+>> +                               canonical_path =3D NULL;
+>> +                       }
+>> +               }
+>> +       }
+>>          /*
+>>           * Avoid an exclusive open here, as the systemd-udev may initi=
+ate the
+>>           * device scan which may race with the user's mount or mkfs co=
+mmand,
+>> @@ -1458,7 +1533,8 @@ struct btrfs_device *btrfs_scan_one_device(const =
+char *path, blk_mode_t flags,
+>>                  goto free_disk_super;
+>>          }
+>>
+>> -       device =3D device_list_add(path, disk_super, &new_device_added)=
+;
+>> +       device =3D device_list_add(canonical_path ? canonical_path : pa=
+th,
+>
+> Can use the shortcut:    canonical_path ?: path
+>
+> The rest looks fine, thanks.
+>
+>
+>> +                                disk_super, &new_device_added);
+>>          if (!IS_ERR(device) && new_device_added)
+>>                  btrfs_free_stale_devices(device->devt, device);
+>>
+>> @@ -1467,6 +1543,7 @@ struct btrfs_device *btrfs_scan_one_device(const =
+char *path, blk_mode_t flags,
+>>
+>>   error_bdev_put:
+>>          fput(bdev_file);
+>> +       kfree(canonical_path);
+>>
+>>          return device;
+>>   }
 >> --
 >> 2.46.1
 >>
