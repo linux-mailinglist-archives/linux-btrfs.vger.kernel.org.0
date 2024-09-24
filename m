@@ -1,289 +1,104 @@
-Return-Path: <linux-btrfs+bounces-8199-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8200-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A1F59845A6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 14:12:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6FE89847CE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 16:40:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8E8D1F210BC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 12:12:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E13FB223CE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 14:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F14B91A707D;
-	Tue, 24 Sep 2024 12:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 645D01A76B0;
+	Tue, 24 Sep 2024 14:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lT65Rs3s"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="gYKFzvv/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2848219F417
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 12:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84071A4F04
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 14:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727179970; cv=none; b=fNIeXWgwnk5JGVGoMTVkq74icbcvpC06A9izGhbFQlzw78lARr4Wxy5TJNk2VipP9VfnqCB44PPAIO5zg+/i/voUSv5DMSAz9h83LtFe28rdf4WAO4yPIl2axbFOEIHgHVhNbiNl4FjBIQsQpNs+fwmHrN0jAqkDrJeXFL/CIco=
+	t=1727188797; cv=none; b=G54MTgVrLmrooEzABV7JV3n8wQGVpTYNShOAYm4V725KfPD342rbDt9hZAguo/TXqLoAlkpth5e8YyWIDq15GHGC/JgXJWneHkjgHqwvzcVCVF2wL7JARiGLIDltfh80lvSyLoYlBuRij8rnBbHT63HbcgkxguI9FOc8ZWNgSok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727179970; c=relaxed/simple;
-	bh=77LF5pjpAeFD9r/Ixw6Nq75NArdKbAEtwjM0J8of61c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CKIfRIuny34q8NjHlE3fYd+aZZf50duvpRkIuzLKTc6KChavbixpM7f75QipGO96gbWYyh2pGRw0QQq7qKzbwWlGajlMhkS1Nr0926AX4py9y1Agk5Lp4hKfQGvQt4bJNiqPsMSG/wC+xuy8ozm5w6vevzgwN+QAb463c1huhK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lT65Rs3s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A50BAC4CEC4
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 12:12:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727179969;
-	bh=77LF5pjpAeFD9r/Ixw6Nq75NArdKbAEtwjM0J8of61c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lT65Rs3sqPm5hbSiMz2UdN35TMaHQM7u4Of5AuoV9NZRb2WQeVjHm4kwps/QqI1bk
-	 CHj6nNlaoxz2+m+HbkKgCzp2YyV3skBD/8404NzGEwuHY3iBdFtfTrdK4x577huqNJ
-	 GsvrnoMrG9aBOmiOl3fRYMqZNiWDPMtO677sdTF7HjlHy3/BYcWe54dy2O0nLtYHF5
-	 naB2ejnk5xn/R8vjehVqNTFJhc2vYWm2lv8MgrD+4uk3h1hRaGdJWNsu0lGksdZa7o
-	 iLx5QIfkHdV4U4KPusjrvu8VqPz2JUcEEzBEP1rFOM829qzztQlgxDyVhsAuq1Z3zK
-	 NhpDlATlSUyQA==
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-378c16a4d3eso5875985f8f.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 05:12:49 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyVH2MBZZ/27fj4WhB9EXyEdKsMkAnoT8vDqV9mMJI8O+3fTFPw
-	I5dQMIyjYan0U8Oq7s72p+kJ38e5DRMpu9RXzCP4N9kSZrbN6uILRNPODEQlQIXS2avJU+CRNkB
-	FOqNf+7nzmJ9e27v/VB9P9zT+vJg=
-X-Google-Smtp-Source: AGHT+IFlxW0z3K74zjlBhDYt8u+LVId6jTfcRdLT4A18oSB1FYTL8vis3Tc/97ygHJmE7IiWYAVkD+DBWrdDkyb7F3o=
-X-Received: by 2002:adf:e74c:0:b0:374:bde8:66af with SMTP id
- ffacd0b85a97d-37a4238cb41mr11882886f8f.57.1727179968181; Tue, 24 Sep 2024
- 05:12:48 -0700 (PDT)
+	s=arc-20240116; t=1727188797; c=relaxed/simple;
+	bh=wLI6yRTYpcCIuWAC5PoweuW9Nla+XSX2hAotTzUS6EM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HY4IMB2+X2iVx5KoyoXFrkAx5S83XK28c7lSMpQceoA9wiro8hRxUmVvkrDblajTawv9fDso73myfs45K7V3q+yQ5Prd6DCFamc6SeichGrLHfHAq/ng+smG5RUCfJKxHZugbe9KjPZHxno3gmljjDfv05WPUCcOkSi3lNh/Wy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=gYKFzvv/; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6c351809a80so40413016d6.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 07:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1727188794; x=1727793594; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BuDemD8gTlEaAsk8/5vD8oPUbVPzsyK/XdXTI7MpT9Y=;
+        b=gYKFzvv/YJwUAk/HaNIyoScyzMUZVZdfUZiOr4mM8HjTeoeeNDJRzwajp/q0vecXnM
+         hyxCfaFX3asD5hcb01Vo9f5a5OYYVs4dAfQzPAq1M8kGKxzZzpGPybc3kf1SpCbdSQ6K
+         OSYdfnI6Sy5DQR+KxyVwTrRy5b2atZ2pSmWImXUarsUjuDCezSTx3lICmAkaKuYo0uVD
+         /DBM/pY0hupNXUa/zmnJWR+Qlgs2HNr/chNiuag8x/xzUv5zPi40W6Al9LKRb1M1QNyl
+         mChubvswJojCIpNRQYVAuVeAlgXjV3R9iHd1dXzqn4xBb5S79qr5etOj8bsYGJkOz+Gn
+         rcmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727188794; x=1727793594;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BuDemD8gTlEaAsk8/5vD8oPUbVPzsyK/XdXTI7MpT9Y=;
+        b=SpS5YY4Kq3AV3oKXVsaqIkkj6DHMYWzYsFncQ1cTt7EokZ8D4stybhSdm5PBv0+lwl
+         pbFoODWCzZn6UdPxPEXN62af6X74LEshwdTxVtGVy/klIEvcBhLZw0PuH6yQCUi394/z
+         kFTd7z8xw6DbKwi+EclWoYntQLBGudz+DI53lIF8xkPC931LenmVHY1oz30g2m1610Iv
+         aRB9wBkqcAKrwUTXokvfHVHpcum/FmBiUdTf5qLjXaNSv+boyQBhrQZlwzGpY7E7cxEF
+         feGhaZRRAE/Wipo2A0W5+Zmzk6TNtR+dZJWF1WHPEdf8WVwdU18FTdhgdGlo0iskruTZ
+         0T4w==
+X-Forwarded-Encrypted: i=1; AJvYcCUJTsb8h1cIxwpl8s5/KP5UC75rIetpBbYBXvMz5jl9pj3Ygh6J69iLrpFXmWNX/CjDozeUTAELMGlrJg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNWDLwBDxiBPFop1Yi0Vqndw/Zvc9nogFThggd6Onl1SQcQ18b
+	yr/aSSCMT6hd6ALLCyIpjnpYKj1D+d5IuePOort0MtGoTDTu4HR4tBtBl3TXg4g=
+X-Google-Smtp-Source: AGHT+IELdbrs0UMWs8mpHf9kgrpUtyfYDYVpan7tLS4ZZ3wt8yrHWFPmKR2jpJj9QCUkq7npUPisJQ==
+X-Received: by 2002:a05:6214:4349:b0:6c5:5418:a055 with SMTP id 6a1803df08f44-6c7bd58551bmr240228246d6.30.1727188794516;
+        Tue, 24 Sep 2024 07:39:54 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cb0f4eb817sm7120046d6.71.2024.09.24.07.39.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Sep 2024 07:39:53 -0700 (PDT)
+Date: Tue, 24 Sep 2024 10:39:52 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Chris Murphy <lists@colorremedies.com>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,
+	Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: BTRFS critical, corrupt node, unaligned pointer, should be
+ aligned to 4096
+Message-ID: <20240924143952.GA183026@perftesting>
+References: <47636de6-8270-4a24-b97a-df9c267439c7@app.fastmail.com>
+ <2ffd987f-f767-4fd2-b684-0c95d418a977@gmx.com>
+ <8fcfe0e4-5db1-4cd1-8f94-5ce049086f9b@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1727154543.git.wqu@suse.com> <c6408ea85cd10e4042df528708dd9c2ec1db78c0.1727154543.git.wqu@suse.com>
-In-Reply-To: <c6408ea85cd10e4042df528708dd9c2ec1db78c0.1727154543.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 24 Sep 2024 13:12:09 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7aL-M3dyu7f7w1bBb5zUP00KMp=F-jWV-Q0hZH6LD=yw@mail.gmail.com>
-Message-ID: <CAL3q7H7aL-M3dyu7f7w1bBb5zUP00KMp=F-jWV-Q0hZH6LD=yw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: canonicalize the device path before adding it
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Fabian Vogt <fvogt@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8fcfe0e4-5db1-4cd1-8f94-5ce049086f9b@app.fastmail.com>
 
-On Tue, Sep 24, 2024 at 6:18=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> [PROBLEM]
-> Currently btrfs accepts any file path for its device, resulting some
-> weird situation:
->
->  # ./mount_by_fd /dev/test/scratch1  /mnt/btrfs/
->
-> The program has the following source code:
->
->  #include <fcntl.h>
->  #include <stdio.h>
->  #include <sys/mount.h>
->
->  int main(int argc, char *argv[]) {
->         int fd =3D open(argv[1], O_RDWR);
->         char path[256];
->         snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
->         return mount(path, argv[2], "btrfs", 0, NULL);
->  }
->
-> Then we can have the following weird device path:
->
->  BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid 1 transid =
-7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (18440)
->
-> Normally it's not a big deal, and later udev can trigger a device path
-> rename. But if udev didn't trigger, the device path "/proc/self/fd/3"
-> will show up in mtab.
->
-> [CAUSE]
-> For filename "/proc/self/fd/3", it means the opened file descriptor 3.
-> In above case, it's exactly the device we want to open, aka points to
-> "/dev/test/scratch1" which is another softlink pointing to "/dev/dm-2".
->
-> Inside btrfs we solve the path using LOOKUP_FOLLOW, which follows the
-> symbolic link and grab the proper block device.
->
-> But we also save the filename into btrfs_device::name, still resulting
-> the weird path.
->
-> [FIX]
-> Instead of unconditionally trust the path, check if the original file
-> (not following the symbolic link) is inside "/dev/", if not, then
-> manually lookup the path to its final destination, and use that as our
-> device path.
->
-> This allows us to still use symbolic links, like
-> "/dev/mapper/test-scratch" from LVM2, which is required for fstests runs
-> with LVM2 setup.
->
-> And for really weird names, like the above case, we solve it to
-> "/dev/dm-2" instead.
->
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1230641
-> Reported-by: Fabian Vogt <fvogt@suse.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/volumes.c | 79 +++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 78 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index b713e4ebb362..8acb3c465783 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -732,6 +732,70 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super=
-_block *sb)
->         return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
->  }
->
-> +/*
-> + * We can have very wide soft links passed in.
+On Mon, Sep 23, 2024 at 06:02:31PM -0400, Chris Murphy wrote:
+> New comment in the bug report: https://bugzilla.redhat.com/show_bug.cgi?id=2312886#c4
+> 
+> Except kernel messages. What's interesting:
+> -  multiple arches (also s390x but I don't have any kernel messages for it);
+> -  single workload (koji composes)
+> -  the btrfs error is different for each, this makes me think we're not dealing with a btrfs bug
+> 
+> But how can we get more information about why this is happening? Is running a KASAN enabled kernel useful?
 
-Wide? Did you mean wild in the sense of unusual?
+Yeah try KASAN.  I'm in the middle of a different investigation, once I wrap
+that up I'll dig into this some more with Qu.  Thanks,
 
-> + * One example is "/proc/<uid>/fd/<fd>", which can be a soft link to
-> + * a proper block device.
-> + *
-> + * But it's never a good idea to use those weird names.
-> + * Here we check if the path (not following symlinks) is a good one insi=
-de
-> + * "/dev/".
-> + */
-> +static bool is_good_dev_path(const char *dev_path)
-> +{
-> +       struct path path =3D { .mnt =3D NULL, .dentry =3D NULL };
-> +       char *path_buf =3D NULL;
-> +       char *resolved_path;
-> +       bool is_good =3D false;
-> +       int ret;
-> +
-> +       path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
-> +       if (!path_buf)
-> +               goto out;
-> +
-> +       /*
-> +        * Do not follow soft link, just check if the original path is in=
-side
-> +        * "/dev/".
-> +        */
-> +       ret =3D kern_path(dev_path, 0, &path);
-> +       if (ret)
-> +               goto out;
-> +       resolved_path =3D d_path(&path, path_buf, PATH_MAX);
-> +       if (strncmp(resolved_path, "/dev/", strlen("/dev/")))
-> +               goto out;
-> +       is_good =3D true;
-> +out:
-> +       kfree(path_buf);
-> +       path_put(&path);
-> +       return is_good;
-> +}
-> +
-> +static int get_canonical_dev_path(const char *dev_path, char *canonical)
-> +{
-> +       struct path path =3D { .mnt =3D NULL, .dentry =3D NULL };
-> +       char *path_buf =3D NULL;
-> +       char *resolved_path;
-> +       int ret;
-> +
-> +       path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
-> +       if (!path_buf) {
-> +               ret =3D -ENOMEM;
-> +               goto out;
-> +       }
-> +
-> +       ret =3D kern_path(dev_path, LOOKUP_FOLLOW, &path);
-> +       if (ret) {
-> +               pr_info("path lookup failed for %s: %d\n", dev_path, ret)=
-;
-
-Why not btrfs_info(), or better yet, btrfs_warn()?
-
-It accepts a NULL fs_info argument and allows for a more standardized
-btrfs message, with a proper prefix, etc.
-
-
-> +               goto out;
-> +       }
-> +       resolved_path =3D d_path(&path, path_buf, PATH_MAX);
-> +       strncpy(canonical, resolved_path, PATH_MAX - 1);
-
-Please don't use strncpy(). This is strongly discouraged due to
-security issues, see:
-
-https://github.com/KSPP/linux/issues/90
-https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-n=
-ul-terminated-strings
-
-> +out:
-> +       kfree(path_buf);
-> +       path_put(&path);
-> +       return ret;
-> +}
-> +
->  static bool is_same_device(struct btrfs_device *device, const char *new_=
-path)
->  {
->         struct path old =3D { .mnt =3D NULL, .dentry =3D NULL };
-> @@ -1408,12 +1472,23 @@ struct btrfs_device *btrfs_scan_one_device(const =
-char *path, blk_mode_t flags,
->         bool new_device_added =3D false;
->         struct btrfs_device *device =3D NULL;
->         struct file *bdev_file;
-> +       char *canonical_path =3D NULL;
->         u64 bytenr;
->         dev_t devt;
->         int ret;
->
->         lockdep_assert_held(&uuid_mutex);
->
-> +       if (!is_good_dev_path(path)) {
-> +               canonical_path =3D kmalloc(PATH_MAX, GFP_KERNEL);
-> +               if (canonical_path) {
-> +                       ret =3D get_canonical_dev_path(path, canonical_pa=
-th);
-> +                       if (ret < 0) {
-> +                               kfree(canonical_path);
-> +                               canonical_path =3D NULL;
-> +                       }
-> +               }
-> +       }
->         /*
->          * Avoid an exclusive open here, as the systemd-udev may initiate=
- the
->          * device scan which may race with the user's mount or mkfs comma=
-nd,
-> @@ -1458,7 +1533,8 @@ struct btrfs_device *btrfs_scan_one_device(const ch=
-ar *path, blk_mode_t flags,
->                 goto free_disk_super;
->         }
->
-> -       device =3D device_list_add(path, disk_super, &new_device_added);
-> +       device =3D device_list_add(canonical_path ? canonical_path : path=
-,
-
-Can use the shortcut:    canonical_path ?: path
-
-The rest looks fine, thanks.
-
-
-> +                                disk_super, &new_device_added);
->         if (!IS_ERR(device) && new_device_added)
->                 btrfs_free_stale_devices(device->devt, device);
->
-> @@ -1467,6 +1543,7 @@ struct btrfs_device *btrfs_scan_one_device(const ch=
-ar *path, blk_mode_t flags,
->
->  error_bdev_put:
->         fput(bdev_file);
-> +       kfree(canonical_path);
->
->         return device;
->  }
-> --
-> 2.46.1
->
->
+Josef
 
