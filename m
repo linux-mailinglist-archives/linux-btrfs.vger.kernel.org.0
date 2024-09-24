@@ -1,287 +1,289 @@
-Return-Path: <linux-btrfs+bounces-8204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAAF6984C95
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 23:11:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F482984C96
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 23:12:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45CD51F24991
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 21:11:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7B351F2492D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2024 21:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF4713DDB9;
-	Tue, 24 Sep 2024 21:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF9013D251;
+	Tue, 24 Sep 2024 21:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="tagKePUV"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bKiPn7F7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF6013CFA5
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 21:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F767F460
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 21:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727212306; cv=none; b=VUWcIvaImKM804hXZ3mSQ1ongiMvuR1lpvWXY1hhxZ16rqWmqtdKwTda/Stt/zx1g2rJYz281piya4N5PXCAwE/U6oIsBK0yhjG7HRQkE2mEkD4wpC42SeisRpHk1+YoVumkRKQSdCFiX96uuOc/cjU5ZEBgz3SPD6sT5fYn4NM=
+	t=1727212338; cv=none; b=dGgWn2LMPYCVWjkOJ9GMFfH3ZqQRFvFLc+Gu94id6e56CWWyabbDOxBloIUifn7IXLd8Y9a3pBEhXWujQncULI7PUEV+tuSe6C2RVbilazLStWkNFOam/U56r8BF5QG7+xPXp8De51aEpRjsXhABIglZ6eUbtIkm/z6zAZPEzbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727212306; c=relaxed/simple;
-	bh=tnqLo0XIue4Z3wHUlnSUUK4HL/FiRaMM4yEFDQbxv5o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eYkzTAIkRgyI939DL2rb4uINaXfOVuC7HwliSkLnlDllDi5jbOSrObZ8U50FSxQU4eBZ77WpyCmo4MwpkSRmTkyxsE1e9Yg8EXY1yyO3O0yV1GrlHi7OFomI7LclHbMqLY44nLdNGf9HyRwtDezszxcS5grgDShG/GEqZEDO6/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=tagKePUV; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6e1f48e7c18so23247097b3.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2024 14:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1727212303; x=1727817103; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=p4gSwcrx2D3Z2LvMOpdxJci412zEjS/9V/3phabBvE0=;
-        b=tagKePUVhde6FBo6yC7gAcAPG7q2PhjwbqjJqAhMrHtDpFXuPH3xnczPzyHixb8C9i
-         X4dSZzS2fKO3CVKuQaa1iaUXi5zSjeOv5oCK0psY9os3QpM1k89UsPk72b626m2BFOqM
-         EMw3ZyV5A6gs6+Sr/7dnfeFb5nuQH8SBPp6Sj9KbZqKxuhJh400HYA7DXMyVFY4uFOfS
-         yHMizI/x3OUivO/VPi3FIY4fEJtjJFgPkXo9UWChHGpVyMFmTLISpcsvwsLz2zVgcb1A
-         KQEe5/T2q85f9SROF8Eky5nYClywwGIxh5la4mhTEFjxkOSiJg2+lk5NPAUyIehPVh58
-         VIxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727212303; x=1727817103;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p4gSwcrx2D3Z2LvMOpdxJci412zEjS/9V/3phabBvE0=;
-        b=qlSfnFlSFZr3tuHmew348QgN3hvoJixxt1ncYJDRBwUqZ8zGFZPR5KHd+8P9iucJ8z
-         ZQJOOUrhV3heyy+orjBpSFFjYH9t8utHsUrVFuRT08lwIiWZQJXW1syGA3kgRM4UTGPO
-         pgOgMq0xnefh97uE0o74iRSu3nM9djc4pbVE3wvh+8MtNqJXOJNgfPypq05EgsKwhQGD
-         Rq1mphyaoos6JlzFz9EcBEJQKDmFDu+9vYlzTtbqShiArZLC8dVXDYIvW6glHYIijq/e
-         yXINdh4XL+nrqTcZ7H7ySbBLuyVe1Pu36Kuw4il39GVOrPr2Y+nZh1AGJT6s1AEmjcLX
-         9RPQ==
-X-Gm-Message-State: AOJu0YwPjnwZxMsGDfGvVOW1+t11z629bT2+0jdY7PrgVs/p0BQMgPxy
-	prbWjYBsG8bjTbAoeJtaqub/ExCTGt3E55FW7umINA2wjkReOUMd4auW3fuFTPp9aUoxEI59bW/
-	E
-X-Google-Smtp-Source: AGHT+IGOJn1SA8z0t9ifuOGYmhYI7orQ3ak5PAjYWiVCNbieRdTwopcqXtciyMVHil2XBvTq936lFA==
-X-Received: by 2002:a05:690c:112:b0:6e2:1570:2d4a with SMTP id 00721157ae682-6e21da61dd8mr6919587b3.30.1727212302864;
-        Tue, 24 Sep 2024 14:11:42 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e20d28062dsm3791977b3.125.2024.09.24.14.11.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2024 14:11:41 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Cc: stable@vger.kernel.org
-Subject: [PATCH] btrfs: drop the backref cache during relocation if we commit
-Date: Tue, 24 Sep 2024 17:11:37 -0400
-Message-ID: <68766e66ed15ca2e7550585ed09434249db912a2.1727212293.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1727212338; c=relaxed/simple;
+	bh=O8vdg853YYNbqdpFD+lVAqeZUMDFTczJgpZhw1vm3lY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fCnieYgjyF+IPDLKxnq9sTxu8FaGD2ZpJeK4Ole4S64KGFwTD9lk/EBzFRAJ93mMrAdgFK/b7qie1JtxGREBzwCqhSVILz/M0if5OQ+MLGZdGbQHTCqTXUBmWVUXv40kDPawLZWCW0VtMXPphWm1gEtRb+ElrVRH4Nnkf1xwAK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bKiPn7F7; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1727212328; x=1727817128; i=quwenruo.btrfs@gmx.com;
+	bh=3Wq39LfGPQeqnfvzN5eKdkKwcqQtoXpjP9SnX4cbgmw=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=bKiPn7F7Rfg/BlX4Ag0/6+jWLsC/FgQqBZAXMCrshteuN/WdLwop6SiOFlBaSck+
+	 8Pdda56XISfkTBxMjd+KnWR7kHYabxdLU0TKPi3ba0NGkzYACqxsCHV88Jq3ujQTG
+	 crRg477bIlAQvtaekhApSgqKwKvxPWT4OCW2/O5ok36QAq5hNOaCJPGSG7w8QCF1q
+	 EQ2OWCPWQ6eZlkMrnjJ3mgMsXp5G+/8qXT23/69N80mzBksHURzgPERAbggF7+12V
+	 B9Xg9ury7Xx9VjuqnHgakPe5Qv9RNp7zrnUrQsUUoCMlb8m6+nEL8jOsPYqIy1Wml
+	 MNKgt7oLYQQ3H5T8Lg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mwfac-1rzsBp47ek-0162Zk; Tue, 24
+ Sep 2024 23:12:08 +0200
+Message-ID: <3748a184-eb72-4edc-91d3-809c3e3bb5b8@gmx.com>
+Date: Wed, 25 Sep 2024 06:42:05 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] btrfs: avoid unnecessary device path update for the
+ same device
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1727154543.git.wqu@suse.com>
+ <bb5f08852d68f7424b1113deb74586527912c290.1727154543.git.wqu@suse.com>
+ <CAL3q7H5c3CiWSaag8Sb=Wrqtj6CRYAkEA9bj69TuVgjKh-YNDA@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <CAL3q7H5c3CiWSaag8Sb=Wrqtj6CRYAkEA9bj69TuVgjKh-YNDA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sT0TBpo+JsI3Pk8s+i8fTg1nPp925NoK70k3M9BRiMiKwyzO6Oy
+ oIuU2v6z5qlXAewAVKRKW6V+T+WeZFaS66G4HZtMbV3DQQLooSU8nruHk7BTyYOff90zN13
+ 3VL5WvvOXSfHLbQ9JTRuKcgZ/hUAclaeBi0knHswGZCxrV1vpxgONevO2pF4b51+DajBe2v
+ w/NFBkXd/5DNDd+mlXzvQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ILZH+G69pq8=;ZNnHOWrfnQ80YUUtdmqSXYMpJUo
+ 24HqYJCRHeB2WXR3PQ91DEch9QAJlLY+7/g6zAEjCZ2v4Mc5SHzfg10Xn5Z4AJ+aJxGFghFrI
+ JowuOZotNhsRGn3EGV5ddSXfyUdcV38oc2beg270TsnRmNr9M4wnSGrUkSxW8HdHfdk/3SBNk
+ FNWZNbCPJHyZVr+xDHKxE8b1hUM1kEy+ZA2+PLsFJ2EyYvXD27SI70M1Q7nDaiI6a+XTYuqvg
+ ikFwff1TMdMZmQ+bqUExa49+bmCnLWYeJsIgewMIMvtIObZFIPQIsOg80mvIwVD9qTU8Q7rCU
+ QSyd5LTmo1ag6Xrg4qsBKo7Rcjytgmv4bUGCv617BwjNswxeizz2A7rl87f6fTjKqJzaq8CPU
+ u9haEtQNhs4g7EZt83xQW3VucdEDlLZpVNU+GzsJ7oVJuxgaAt/OoOntbC/eO3hYccSKTs/w+
+ n7Rz9FW4l9XjX4dvIpdosc8wlX2gGw4r2Ay+mYhyDKheUTd0ual51S/DZ1KrWRPgyRLyY+LMh
+ aV5CBOo0cpYRffebFHIXF9lZDUnsF36VJ4/MtYRR0/xH1aKvaBfGjNAmXX6bEDrHSFU6m9tg2
+ ixYy9qCVg6ML2RfRl9Vll5ZcZdix43d/S0v5XCxs5L1dGRT7eo3cZlN/b+AA104qLHvDLNS8/
+ 0Y2f4MBnoFaeKN+fJU8hpUx3cvUMwaofKUnS9R4ZLHnAixGqxwqvf8W8rnrgAFz0LmDdx8+f2
+ osTMK47Nm6VysctRNvFEmvTDqphjBnAzSCiTjfUplOauTx/Rv44CQ7VoAJblv6zOd4HGy6JxL
+ HWbAabau2hEZbQmiAQX5PvsRuasR+Glc1jGdqOsHIEWlk=
 
-Since the inception of relocation we have maintained the backref cache
-across transaction commits, updating the backref cache with the new
-bytenr whenever we COW'ed blocks that were in the cache, and then
-updating their bytenr once we detected a transaction id change.
 
-This works as long as we're only ever modifying blocks, not changing the
-structure of the tree.
 
-However relocation does in fact change the structure of the tree.  For
-example, if we are relocating a data extent, we will look up all the
-leaves that point to this data extent.  We will then call
-do_relocation() on each of these leaves, which will COW down to the leaf
-and then update the file extent location.
+=E5=9C=A8 2024/9/24 21:17, Filipe Manana =E5=86=99=E9=81=93:
+> On Tue, Sep 24, 2024 at 6:17=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> [PROBLEM]
+>> It is very common for udev to trigger device scan, and every time a
+>> mounted btrfs device got re-scan from different soft links, we will get
+>> unnecessary renames like this:
+>>
+>>   BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid 1 trans=
+id 7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (11096)
+>>   BTRFS info (device dm-2): first mount of filesystem 2378be81-fe12-46d=
+2-a9e8-68cf08dd98d5
+>>   BTRFS info (device dm-2): using crc32c (crc32c-intel) checksum algori=
+thm
+>>   BTRFS info (device dm-2): using free-space-tree
+>>   BTRFS info: devid 1 device path /proc/self/fd/3 changed to /dev/dm-2 =
+scanned by (udev-worker) (11092)
+>>   BTRFS info: devid 1 device path /dev/dm-2 changed to /dev/mapper/test=
+-scratch1 scanned by (udev-worker) (11092)
+>>
+>> The program "mount_by_fd" has the following simple source code:
+>>
+>>   #include <fcntl.h>
+>>   #include <stdio.h>
+>>   #include <sys/mount.h>
+>>
+>>   int main(int argc, char *argv[]) {
+>>          int fd =3D open(argv[1], O_RDWR);
+>>          char path[256];
+>>
+>>          snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
+>>          return mount(path, argv[2], "btrfs", 0, NULL);
+>>   }
+>>
+>> Note that, all the above paths are all just pointing to "/dev/dm-2".
+>> The "/proc/self/fd/3" is the proc fs, describing all the opened fds.
+>
+> This is redundant to say, we all know everything inside /proc belongs
+> to procfs, and self/fd/X corresponds to an open fd by the calling
+> task.
+>
+>> The "/dev/mapper/test-scratch1" is the soft link created by LVM2.
+>
+> What would be more useful here is to have all the steps to reproduce
+> the problem:
+>
+> 1) How you invoke that test program, what the arguments are;
+> 2) Any other steps that one should run to reproduce the problem.
+>
+> Can we also get a test case for fstests?
 
-But, a key feature of do_relocation is the pending list.  This is all
-the pending nodes that we modified when we updated the file extent item.
-We will then process all of these blocks via finish_pending_nodes, which
-calls do_relocation() on all of the nodes that led up to that leaf.
+ From my tests with ext4, it's really btrfs' ability to change path name
+halfway saving us.
 
-The purpose of this is to make sure we don't break sharing unless we
-absolutely have to.  Consider the case that we have 3 snapshots that all
-point to this leaf through the same nodes, the initial COW would have
-created a whole new path.  If we did this for all 3 snapshots we would
-end up with 3x the number of nodes we had originally.  To avoid this we
-will cycle through each of the snapshots that point to each of these
-nodes and update their pointers to point at the new nodes.
+For ext4, the weird device name will stick there forever, and I do not
+even know if this is the expected behavior or not.
 
-Once we update the pointer to the new node we will drop the node we
-removed the link for and all of its children via btrfs_drop_subtree().
-This is essentially just btrfs_drop_snapshot(), but for an arbitrary
-point in the snapshot.
+> Even if it's caused by a race and it doesn't always trigger, with
+> several people often running fstests frequently, possible regressions
+> will be quickly detected.
 
-The problem with this is that we will never reflect this in the backref
-cache.  If we do this btrfs_drop_snapshot() for a node that is in the
-backref tree, we will leave the node in the backref tree.  This becomes
-a problem when we change the transid, as now the backref cache has
-entire subtrees that no longer exist, but exist as if they still are
-pointed to by the same roots.
+So far I haven't hit a case where the proc name can stay persistent,
+udev rescan always saves us.
 
-In the best case scenario you end up with "adding refs to an existing
-tree ref" errors from insert_inline_extent_backref(), where we attempt
-to link in nodes on roots that are no longer valid.
+I guess the only reliable way to get such situation is to disable udev
+or on systems without udev completely.
 
-Worst case you will double free some random block and re-use it when
-there's still references to the block.
+>
+>>
+>> [CAUSE]
+>> Inside device_list_add(), we are using a very primitive way checking if
+>> the device has changed, strcmp().
+>>
+>> Which can never handle links well, no matter if it's hard or soft links=
+.
+>>
+>> So every different link of the same device will be treated as different
+>> device, causing the unnecessary device name update.
+>>
+>> [FIX]
+>> Introduce a helper, is_same_device(), and use path_equal() to properly
+>> detect the same block device.
+>> So that the different soft links won't trigger the rename race.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Since there's a publicly accessible report for this, at
+> https://bugzilla.suse.com/show_bug.cgi?id=3D1230641, can we please at
+> least get a Link tag here?
 
-This is extremely subtle, and the consequences are quite bad.  There
-isn't a way to make sure our backref cache is consistent between
-transid's.
+Sure.
 
-In order to fix this we need to simply evict the entire backref cache
-anytime we cross transid's.  This reduces performance in that we have to
-rebuild this backref cache every time we change transid's, but fixes the
-bug.
+>
+>> ---
+>>   fs/btrfs/volumes.c | 28 +++++++++++++++++++++++++++-
+>>   1 file changed, 27 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 995b0647f538..b713e4ebb362 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -732,6 +732,32 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_sup=
+er_block *sb)
+>>          return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
+>>   }
+>>
+>> +static bool is_same_device(struct btrfs_device *device, const char *ne=
+w_path)
+>> +{
+>> +       struct path old =3D { .mnt =3D NULL, .dentry =3D NULL };
+>> +       struct path new =3D { .mnt =3D NULL, .dentry =3D NULL };
+>
+> This can simply be: ... =3D { 0 }
 
-This has existed since relocation was added, and is a pretty critical
-bug.  There's a lot more cleanup that can be done now that this
-functionality is going away, but this patch is as small as possible in
-order to fix the problem and make it easy for us to backport it to all
-the kernels it needs to be backported to.
+Unfortunately that will trigger designated-init warning since the
+structure has __randomize_layout attribute.
 
-Followup series will dismantle more of this code and simplify relocation
-drastically to remove this functionality.
+>
+> But I don't mind this more verbose initialization.
+>
+> With the change log fixes:
+>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-We have a reproducer that reproduced the corruption within a few minutes
-of running.  With this patch it survives several iterations/hours of
-running the reproducer.
+Thanks for the review,
+Qu
 
-Fixes: 3fd0a5585eb9 ("Btrfs: Metadata ENOSPC handling for balance")
-Cc: stable@vger.kernel.org
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/backref.c    | 12 ++++---
- fs/btrfs/relocation.c | 76 +++----------------------------------------
- 2 files changed, 13 insertions(+), 75 deletions(-)
-
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e2f478ecd7fd..f8e1d5b2c512 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -3179,10 +3179,14 @@ void btrfs_backref_release_cache(struct btrfs_backref_cache *cache)
- 		btrfs_backref_cleanup_node(cache, node);
- 	}
- 
--	cache->last_trans = 0;
--
--	for (i = 0; i < BTRFS_MAX_LEVEL; i++)
--		ASSERT(list_empty(&cache->pending[i]));
-+	for (i = 0; i < BTRFS_MAX_LEVEL; i++) {
-+		while (!list_empty(&cache->pending[i])) {
-+			node = list_first_entry(&cache->pending[i],
-+						struct btrfs_backref_node,
-+						list);
-+			btrfs_backref_cleanup_node(cache, node);
-+		}
-+	}
- 	ASSERT(list_empty(&cache->pending_edge));
- 	ASSERT(list_empty(&cache->useless_node));
- 	ASSERT(list_empty(&cache->changed));
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index ea4ed85919ec..aaa9cac213f1 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -232,70 +232,6 @@ static struct btrfs_backref_node *walk_down_backref(
- 	return NULL;
- }
- 
--static void update_backref_node(struct btrfs_backref_cache *cache,
--				struct btrfs_backref_node *node, u64 bytenr)
--{
--	struct rb_node *rb_node;
--	rb_erase(&node->rb_node, &cache->rb_root);
--	node->bytenr = bytenr;
--	rb_node = rb_simple_insert(&cache->rb_root, node->bytenr, &node->rb_node);
--	if (rb_node)
--		btrfs_backref_panic(cache->fs_info, bytenr, -EEXIST);
--}
--
--/*
-- * update backref cache after a transaction commit
-- */
--static int update_backref_cache(struct btrfs_trans_handle *trans,
--				struct btrfs_backref_cache *cache)
--{
--	struct btrfs_backref_node *node;
--	int level = 0;
--
--	if (cache->last_trans == 0) {
--		cache->last_trans = trans->transid;
--		return 0;
--	}
--
--	if (cache->last_trans == trans->transid)
--		return 0;
--
--	/*
--	 * detached nodes are used to avoid unnecessary backref
--	 * lookup. transaction commit changes the extent tree.
--	 * so the detached nodes are no longer useful.
--	 */
--	while (!list_empty(&cache->detached)) {
--		node = list_entry(cache->detached.next,
--				  struct btrfs_backref_node, list);
--		btrfs_backref_cleanup_node(cache, node);
--	}
--
--	while (!list_empty(&cache->changed)) {
--		node = list_entry(cache->changed.next,
--				  struct btrfs_backref_node, list);
--		list_del_init(&node->list);
--		BUG_ON(node->pending);
--		update_backref_node(cache, node, node->new_bytenr);
--	}
--
--	/*
--	 * some nodes can be left in the pending list if there were
--	 * errors during processing the pending nodes.
--	 */
--	for (level = 0; level < BTRFS_MAX_LEVEL; level++) {
--		list_for_each_entry(node, &cache->pending[level], list) {
--			BUG_ON(!node->pending);
--			if (node->bytenr == node->new_bytenr)
--				continue;
--			update_backref_node(cache, node, node->new_bytenr);
--		}
--	}
--
--	cache->last_trans = 0;
--	return 1;
--}
--
- static bool reloc_root_is_dead(const struct btrfs_root *root)
- {
- 	/*
-@@ -551,9 +487,6 @@ static int clone_backref_node(struct btrfs_trans_handle *trans,
- 	struct btrfs_backref_edge *new_edge;
- 	struct rb_node *rb_node;
- 
--	if (cache->last_trans > 0)
--		update_backref_cache(trans, cache);
--
- 	rb_node = rb_simple_search(&cache->rb_root, src->commit_root->start);
- 	if (rb_node) {
- 		node = rb_entry(rb_node, struct btrfs_backref_node, rb_node);
-@@ -3698,10 +3631,11 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
- 			break;
- 		}
- restart:
--		if (update_backref_cache(trans, &rc->backref_cache)) {
--			btrfs_end_transaction(trans);
--			trans = NULL;
--			continue;
-+		if (rc->backref_cache.last_trans == 0) {
-+			rc->backref_cache.last_trans = trans->transid;
-+		} else if (rc->backref_cache.last_trans != trans->transid) {
-+			btrfs_backref_release_cache(&rc->backref_cache);
-+			rc->backref_cache.last_trans = trans->transid;
- 		}
- 
- 		ret = find_next_extent(rc, path, &key);
--- 
-2.43.0
+>
+> Thanks.
+>
+>> +       bool is_same =3D false;
+>> +       int ret;
+>> +
+>> +       if (!device->name)
+>> +               goto out;
+>> +
+>> +       old_path =3D rcu_str_deref(device->name);
+>> +       ret =3D kern_path(old_path, LOOKUP_FOLLOW, &old);
+>> +       if (ret)
+>> +               goto out;
+>> +       ret =3D kern_path(new_path, LOOKUP_FOLLOW, &new);
+>> +       if (ret)
+>> +               goto out;
+>> +       if (path_equal(&old, &new))
+>> +               is_same =3D true;
+>> +out:
+>> +       path_put(&old);
+>> +       path_put(&new);
+>> +       return is_same;
+>> +}
+>> +
+>>   /*
+>>    * Add new device to list of registered devices
+>>    *
+>> @@ -852,7 +878,7 @@ static noinline struct btrfs_device *device_list_ad=
+d(const char *path,
+>>                                  MAJOR(path_devt), MINOR(path_devt),
+>>                                  current->comm, task_pid_nr(current));
+>>
+>> -       } else if (!device->name || strcmp(device->name->str, path)) {
+>> +       } else if (!device->name || !is_same_device(device, path)) {
+>>                  /*
+>>                   * When FS is already mounted.
+>>                   * 1. If you are here and if the device->name is NULL =
+that
+>> --
+>> 2.46.1
+>>
+>>
+>
 
 
