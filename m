@@ -1,269 +1,229 @@
-Return-Path: <linux-btrfs+bounces-8224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B3A0985795
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 13:05:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 801C4985896
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 13:45:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A451B243A9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 11:05:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A08A1F2356C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 11:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7A7147C79;
-	Wed, 25 Sep 2024 11:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C291418FC83;
+	Wed, 25 Sep 2024 11:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uvZRc2Tm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UeCZ1cwo"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC23D482D8
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 11:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D1318F2FB;
+	Wed, 25 Sep 2024 11:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727262307; cv=none; b=SEjQskzFGQ48pZGDLpQOBKCjXT1C81cg0BAUP093BDfVXcOjhUnOBsg4iQxTbrKy6odJJutuK6J2+WpGyzVLaSkCea4wQKsU+SDbjbAlP43rKRW9+AxFo/KXQr2EHAq93YrYfIynzndh7WCIMm6Uw1SrzxXM98sEh0ci5n94dWU=
+	t=1727264270; cv=none; b=Fmb7anrqk9ZSNAUAKsdRjP7ISX8IszfBN1ezLLqSGpr9VOgF4f6pyTBC329olZmML+iZHncJ5Fl3YkJuQ7JlOjtTG+LZphp0MdaKguDTez8HRVPv3Gc4epRJ0tWdU5+0HiMlR2xIyPbqCtteaB+5cZvt1/GW6tJ8YiFK9JLi4ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727262307; c=relaxed/simple;
-	bh=IUiOIm0z1DeLo3h92/ihWs0hAp9AfMbjhwACdFf6UX4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sLacGQLiNOkmsMYH/YA4JdKcSuO8TT7jdjffRNWIPwsD8WwLZaqDqoooJKxThKRQ419xNPZR2tVZ6QWAoFtSYCpJqE5QjPg/WzbCygzP2dIDmCS2D8yPyCXHV/X2lmBahtaVe17HHM+lfqSYchaibHojl5srLqhG6JpOl46MLW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uvZRc2Tm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55543C4CECD
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 11:05:07 +0000 (UTC)
+	s=arc-20240116; t=1727264270; c=relaxed/simple;
+	bh=1tTVDgLw7Rm3X5pUHOpL916SUzK3+Ur11aNPQtmBTD4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ibP2udxSByOPfgCQFV0xc1Lyotju5M8eq5FIdyYEJzo3i4m4qEuApILLe0otVX7IKm+et/x/S2pGMI6kcdx7XriKJcpls8bXrSN321sWkRpFXaACJIetByGhLrY+BUCx4asO9/DyXzsSvOO1/iBDMszyypj6Ul2x6cR1ghoZrs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UeCZ1cwo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F88EC4CEC3;
+	Wed, 25 Sep 2024 11:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727262307;
-	bh=IUiOIm0z1DeLo3h92/ihWs0hAp9AfMbjhwACdFf6UX4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uvZRc2TmeDcxPeGTVwQv0HpN3dXnIK14i5RyC/HFwFNiEi69lvfM66hzamaPpYYaK
-	 fsYwp5tuaa5JfSx43OHecpIEMEs/mrXxemjtKsSqi8VOJVmGrzaUzrwSkzFq7/IRXY
-	 dd7XMMUKLboC3D/QWcwO0W3lNlshInLMEASYKdv2LRl2VdyNXL34C8sVMQNfYUSdA3
-	 6koBHOKkOve1mXwQbvjE8xex1KOf/iiR6Mpv/1vVEIMxS/D+pHsqd9Wcu+YSBY8mp2
-	 aRTHCheZAe0jRzfWtVnPid2cAhPOeF8GmdrOKu4Ny7XeH23yTJ+99CRjAmPiretUyT
-	 8qBiB8YDqEedw==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a90349aa7e5so963736866b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 04:05:07 -0700 (PDT)
-X-Gm-Message-State: AOJu0Ywd4aNRI4vHNcZtvLLdsfU5pwgreddVJ1Wl03m5YlfLRoL8r+8b
-	v3/G3GaNDeulX83smLfVCpNUA+eWqe3SLm8++0IJ/B3aJlxUJb7Oo0+g/EdUW0RX7sNkZt+pmlL
-	svB946+4WIJ33bs9Uql1N8Yv4Q2Y=
-X-Google-Smtp-Source: AGHT+IGeCfMF9sCMcnal0iHJa7OqtumzwogIdBX7tRIH/h46J2x5t/J0/7Zn3AlK4SYo3U5IDMWBdwK/03RL18GTc4c=
-X-Received: by 2002:a17:907:e210:b0:a8e:a578:29df with SMTP id
- a640c23a62f3a-a93a03200admr185532166b.6.1727262305721; Wed, 25 Sep 2024
- 04:05:05 -0700 (PDT)
+	s=k20201202; t=1727264269;
+	bh=1tTVDgLw7Rm3X5pUHOpL916SUzK3+Ur11aNPQtmBTD4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=UeCZ1cwo+beoxEFDQxBHiBha+7XI/jg9SjG/Pt2xjJLQEy9ecJLRfKLVxWSyKql9B
+	 +6OE00elK+g7d+tPY21uUcW4Yquyo3VAUaui4y3WS6vXkbDbpcYPihzCqmjuT4qmIG
+	 t+kt6W6mWW2dAW/H7+Ah8MFPj5N6j75e/PgAIP+rCmV+6TAnGi0T3gwS8u3M/g+JE1
+	 q4AZ57mEJ1Qxsf/F9ZeLWNsjqDPr2v8p96kfepNYHNNKmYmcmOR7UijB2bXLAaS6im
+	 CyNvBiZ5tbLDzdR1GX5LyxxUw7U6IGVlBcxhstZZdb0lKGjUqF7Wpg/F9yrfx1asDn
+	 OVr6whwDuDQVw==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Johannes Thumshirn <jthumshirn@wdc.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Qu Wenruo <wqu@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.11 031/244] btrfs: don't readahead the relocation inode on RST
+Date: Wed, 25 Sep 2024 07:24:12 -0400
+Message-ID: <20240925113641.1297102-31-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240925113641.1297102-1-sashal@kernel.org>
+References: <20240925113641.1297102-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1727222308.git.wqu@suse.com> <3b0eb4cd4b55ae567abfc849935b4a72cea88efb.1727222308.git.wqu@suse.com>
-In-Reply-To: <3b0eb4cd4b55ae567abfc849935b4a72cea88efb.1727222308.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 25 Sep 2024 12:04:28 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4BfZ91ifh5FrmeZn_6xRsEQT+nrLwTZuJ8cW8dA-dbYA@mail.gmail.com>
-Message-ID: <CAL3q7H4BfZ91ifh5FrmeZn_6xRsEQT+nrLwTZuJ8cW8dA-dbYA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] btrfs: canonicalize the device path before adding it
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Fabian Vogt <fvogt@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.11
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 25, 2024 at 1:06=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> [PROBLEM]
-> Currently btrfs accepts any file path for its device, resulting some
-> weird situation:
->
->  # ./mount_by_fd /dev/test/scratch1  /mnt/btrfs/
->
-> The program has the following source code:
->
->  #include <fcntl.h>
->  #include <stdio.h>
->  #include <sys/mount.h>
->
->  int main(int argc, char *argv[]) {
->         int fd =3D open(argv[1], O_RDWR);
->         char path[256];
->         snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
->         return mount(path, argv[2], "btrfs", 0, NULL);
->  }
->
-> Then we can have the following weird device path:
->
->  BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid 1 transid =
-7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (18440)
->
-> Normally it's not a big deal, and later udev can trigger a device path
-> rename. But if udev didn't trigger, the device path "/proc/self/fd/3"
-> will show up in mtab.
->
-> [CAUSE]
-> For filename "/proc/self/fd/3", it means the opened file descriptor 3.
-> In above case, it's exactly the device we want to open, aka points to
-> "/dev/test/scratch1" which is another softlink pointing to "/dev/dm-2".
->
-> Inside kernel we solve the mount source using LOOKUP_FOLLOW, which
-> follows the symbolic link and grab the proper block device.
->
-> But inside btrfs we also save the filename into btrfs_device::name, and
-> utilize that member to report our mount source, which leads to the above
-> situation.
->
-> [FIX]
-> Instead of unconditionally trust the path, check if the original file
-> (not following the symbolic link) is inside "/dev/", if not, then
-> manually lookup the path to its final destination, and use that as our
-> device path.
->
-> This allows us to still use symbolic links, like
-> "/dev/mapper/test-scratch" from LVM2, which is required for fstests runs
-> with LVM2 setup.
->
-> And for really weird names, like the above case, we solve it to
-> "/dev/dm-2" instead.
->
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1230641
-> Reported-by: Fabian Vogt <fvogt@suse.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+From: Johannes Thumshirn <jthumshirn@wdc.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+[ Upstream commit 04915240e2c3a018e4c7f23418478d27226c8957 ]
 
-Looks good, thanks.
+On relocation we're doing readahead on the relocation inode, but if the
+filesystem is backed by a RAID stripe tree we can get ENOENT (e.g. due to
+preallocated extents not being mapped in the RST) from the lookup.
 
-> ---
->  fs/btrfs/volumes.c | 79 +++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 78 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index b713e4ebb362..668138451f7c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -732,6 +732,70 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super=
-_block *sb)
->         return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
->  }
->
-> +/*
-> + * We can have very weird soft links passed in.
-> + * One example is "/proc/self/fd/<fd>", which can be a soft link to
-> + * a block device.
-> + *
-> + * But it's never a good idea to use those weird names.
-> + * Here we check if the path (not following symlinks) is a good one insi=
-de
-> + * "/dev/".
-> + */
-> +static bool is_good_dev_path(const char *dev_path)
-> +{
-> +       struct path path =3D { .mnt =3D NULL, .dentry =3D NULL };
-> +       char *path_buf =3D NULL;
-> +       char *resolved_path;
-> +       bool is_good =3D false;
-> +       int ret;
-> +
-> +       path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
-> +       if (!path_buf)
-> +               goto out;
-> +
-> +       /*
-> +        * Do not follow soft link, just check if the original path is in=
-side
-> +        * "/dev/".
-> +        */
-> +       ret =3D kern_path(dev_path, 0, &path);
-> +       if (ret)
-> +               goto out;
-> +       resolved_path =3D d_path(&path, path_buf, PATH_MAX);
-> +       if (IS_ERR(resolved_path))
-> +               goto out;
-> +       if (strncmp(resolved_path, "/dev/", strlen("/dev/")))
-> +               goto out;
-> +       is_good =3D true;
-> +out:
-> +       kfree(path_buf);
-> +       path_put(&path);
-> +       return is_good;
-> +}
-> +
-> +static int get_canonical_dev_path(const char *dev_path, char *canonical)
-> +{
-> +       struct path path =3D { .mnt =3D NULL, .dentry =3D NULL };
-> +       char *path_buf =3D NULL;
-> +       char *resolved_path;
-> +       int ret;
-> +
-> +       path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
-> +       if (!path_buf) {
-> +               ret =3D -ENOMEM;
-> +               goto out;
-> +       }
-> +
-> +       ret =3D kern_path(dev_path, LOOKUP_FOLLOW, &path);
-> +       if (ret)
-> +               goto out;
-> +       resolved_path =3D d_path(&path, path_buf, PATH_MAX);
-> +       ret =3D strscpy(canonical, resolved_path, PATH_MAX);
-> +out:
-> +       kfree(path_buf);
-> +       path_put(&path);
-> +       return ret;
-> +}
-> +
->  static bool is_same_device(struct btrfs_device *device, const char *new_=
-path)
->  {
->         struct path old =3D { .mnt =3D NULL, .dentry =3D NULL };
-> @@ -1408,12 +1472,23 @@ struct btrfs_device *btrfs_scan_one_device(const =
-char *path, blk_mode_t flags,
->         bool new_device_added =3D false;
->         struct btrfs_device *device =3D NULL;
->         struct file *bdev_file;
-> +       char *canonical_path =3D NULL;
->         u64 bytenr;
->         dev_t devt;
->         int ret;
->
->         lockdep_assert_held(&uuid_mutex);
->
-> +       if (!is_good_dev_path(path)) {
-> +               canonical_path =3D kmalloc(PATH_MAX, GFP_KERNEL);
-> +               if (canonical_path) {
-> +                       ret =3D get_canonical_dev_path(path, canonical_pa=
-th);
-> +                       if (ret < 0) {
-> +                               kfree(canonical_path);
-> +                               canonical_path =3D NULL;
-> +                       }
-> +               }
-> +       }
->         /*
->          * Avoid an exclusive open here, as the systemd-udev may initiate=
- the
->          * device scan which may race with the user's mount or mkfs comma=
-nd,
-> @@ -1458,7 +1533,8 @@ struct btrfs_device *btrfs_scan_one_device(const ch=
-ar *path, blk_mode_t flags,
->                 goto free_disk_super;
->         }
->
-> -       device =3D device_list_add(path, disk_super, &new_device_added);
-> +       device =3D device_list_add(canonical_path ? : path, disk_super,
-> +                                &new_device_added);
->         if (!IS_ERR(device) && new_device_added)
->                 btrfs_free_stale_devices(device->devt, device);
->
-> @@ -1467,6 +1543,7 @@ struct btrfs_device *btrfs_scan_one_device(const ch=
-ar *path, blk_mode_t flags,
->
->  error_bdev_put:
->         fput(bdev_file);
-> +       kfree(canonical_path);
->
->         return device;
->  }
-> --
-> 2.46.1
->
->
+But readahead doesn't handle the error and submits invalid reads to the
+device, causing an assertion in the scatter-gather list code:
+
+  BTRFS info (device nvme1n1): balance: start -d -m -s
+  BTRFS info (device nvme1n1): relocating block group 6480920576 flags data|raid0
+  BTRFS error (device nvme1n1): cannot find raid-stripe for logical [6481928192, 6481969152] devid 2, profile raid0
+  ------------[ cut here ]------------
+  kernel BUG at include/linux/scatterlist.h:115!
+  Oops: invalid opcode: 0000 [#1] PREEMPT SMP PTI
+  CPU: 0 PID: 1012 Comm: btrfs Not tainted 6.10.0-rc7+ #567
+  RIP: 0010:__blk_rq_map_sg+0x339/0x4a0
+  RSP: 0018:ffffc90001a43820 EFLAGS: 00010202
+  RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffea00045d4802
+  RDX: 0000000117520000 RSI: 0000000000000000 RDI: ffff8881027d1000
+  RBP: 0000000000003000 R08: ffffea00045d4902 R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000001000 R12: ffff8881003d10b8
+  R13: ffffc90001a438f0 R14: 0000000000000000 R15: 0000000000003000
+  FS:  00007fcc048a6900(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 000000002cd11000 CR3: 00000001109ea001 CR4: 0000000000370eb0
+  Call Trace:
+   <TASK>
+   ? __die_body.cold+0x14/0x25
+   ? die+0x2e/0x50
+   ? do_trap+0xca/0x110
+   ? do_error_trap+0x65/0x80
+   ? __blk_rq_map_sg+0x339/0x4a0
+   ? exc_invalid_op+0x50/0x70
+   ? __blk_rq_map_sg+0x339/0x4a0
+   ? asm_exc_invalid_op+0x1a/0x20
+   ? __blk_rq_map_sg+0x339/0x4a0
+   nvme_prep_rq.part.0+0x9d/0x770
+   nvme_queue_rq+0x7d/0x1e0
+   __blk_mq_issue_directly+0x2a/0x90
+   ? blk_mq_get_budget_and_tag+0x61/0x90
+   blk_mq_try_issue_list_directly+0x56/0xf0
+   blk_mq_flush_plug_list.part.0+0x52b/0x5d0
+   __blk_flush_plug+0xc6/0x110
+   blk_finish_plug+0x28/0x40
+   read_pages+0x160/0x1c0
+   page_cache_ra_unbounded+0x109/0x180
+   relocate_file_extent_cluster+0x611/0x6a0
+   ? btrfs_search_slot+0xba4/0xd20
+   ? balance_dirty_pages_ratelimited_flags+0x26/0xb00
+   relocate_data_extent.constprop.0+0x134/0x160
+   relocate_block_group+0x3f2/0x500
+   btrfs_relocate_block_group+0x250/0x430
+   btrfs_relocate_chunk+0x3f/0x130
+   btrfs_balance+0x71b/0xef0
+   ? kmalloc_trace_noprof+0x13b/0x280
+   btrfs_ioctl+0x2c2e/0x3030
+   ? kvfree_call_rcu+0x1e6/0x340
+   ? list_lru_add_obj+0x66/0x80
+   ? mntput_no_expire+0x3a/0x220
+   __x64_sys_ioctl+0x96/0xc0
+   do_syscall_64+0x54/0x110
+   entry_SYSCALL_64_after_hwframe+0x76/0x7e
+  RIP: 0033:0x7fcc04514f9b
+  Code: Unable to access opcode bytes at 0x7fcc04514f71.
+  RSP: 002b:00007ffeba923370 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+  RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fcc04514f9b
+  RDX: 00007ffeba923460 RSI: 00000000c4009420 RDI: 0000000000000003
+  RBP: 0000000000000000 R08: 0000000000000013 R09: 0000000000000001
+  R10: 00007fcc043fbba8 R11: 0000000000000246 R12: 00007ffeba924fc5
+  R13: 00007ffeba923460 R14: 0000000000000002 R15: 00000000004d4bb0
+   </TASK>
+  Modules linked in:
+  ---[ end trace 0000000000000000 ]---
+  RIP: 0010:__blk_rq_map_sg+0x339/0x4a0
+  RSP: 0018:ffffc90001a43820 EFLAGS: 00010202
+  RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffea00045d4802
+  RDX: 0000000117520000 RSI: 0000000000000000 RDI: ffff8881027d1000
+  RBP: 0000000000003000 R08: ffffea00045d4902 R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000001000 R12: ffff8881003d10b8
+  R13: ffffc90001a438f0 R14: 0000000000000000 R15: 0000000000003000
+  FS:  00007fcc048a6900(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007fcc04514f71 CR3: 00000001109ea001 CR4: 0000000000370eb0
+  Kernel panic - not syncing: Fatal exception
+  Kernel Offset: disabled
+  ---[ end Kernel panic - not syncing: Fatal exception ]---
+
+So in case of a relocation on a RAID stripe-tree based file system, skip
+the readahead.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/relocation.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 0533d0f82dc99..ea4ed85919ec8 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -36,6 +36,7 @@
+ #include "relocation.h"
+ #include "super.h"
+ #include "tree-checker.h"
++#include "raid-stripe-tree.h"
+ 
+ /*
+  * Relocation overview
+@@ -2965,21 +2966,34 @@ static int relocate_one_folio(struct reloc_control *rc,
+ 	u64 folio_end;
+ 	u64 cur;
+ 	int ret;
++	const bool use_rst = btrfs_need_stripe_tree_update(fs_info, rc->block_group->flags);
+ 
+ 	ASSERT(index <= last_index);
+ 	folio = filemap_lock_folio(inode->i_mapping, index);
+ 	if (IS_ERR(folio)) {
+-		page_cache_sync_readahead(inode->i_mapping, ra, NULL,
+-					  index, last_index + 1 - index);
++
++		/*
++		 * On relocation we're doing readahead on the relocation inode,
++		 * but if the filesystem is backed by a RAID stripe tree we can
++		 * get ENOENT (e.g. due to preallocated extents not being
++		 * mapped in the RST) from the lookup.
++		 *
++		 * But readahead doesn't handle the error and submits invalid
++		 * reads to the device, causing a assertion failures.
++		 */
++		if (!use_rst)
++			page_cache_sync_readahead(inode->i_mapping, ra, NULL,
++						  index, last_index + 1 - index);
+ 		folio = __filemap_get_folio(inode->i_mapping, index,
+-					    FGP_LOCK | FGP_ACCESSED | FGP_CREAT, mask);
++					    FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
++					    mask);
+ 		if (IS_ERR(folio))
+ 			return PTR_ERR(folio);
+ 	}
+ 
+ 	WARN_ON(folio_order(folio));
+ 
+-	if (folio_test_readahead(folio))
++	if (folio_test_readahead(folio) && !use_rst)
+ 		page_cache_async_readahead(inode->i_mapping, ra, NULL,
+ 					   folio, last_index + 1 - index);
+ 
+-- 
+2.43.0
+
 
