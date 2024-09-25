@@ -1,224 +1,146 @@
-Return-Path: <linux-btrfs+bounces-8212-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8213-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E6E5984F5A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 02:14:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D549D984F74
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 02:27:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69DA628482C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 00:14:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C7DE1F246E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 00:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD6D28FD;
-	Wed, 25 Sep 2024 00:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61AF8C13;
+	Wed, 25 Sep 2024 00:27:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lhHeiRF4";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lhHeiRF4"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="NeBG8vTN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0D71849
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 00:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5302DDF5B
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 00:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727223241; cv=none; b=imvnv2iNrN/DD58JUEn8W9Bs5V1u2vn2QeefDGugmADZdRieXOAtL7HQzm/Ons37UzywnGSkLbk3JWUzazM5QeIIRvjjhzZAOETiUpgyQllNLo4hXSnmOZEgBKiVbg9pjPEmWU6Il3pStL44Nkwo7EAV3xEtu9mMc8luVcnd2A0=
+	t=1727224050; cv=none; b=aPqtm2LbZOV4LZebEyVcRjNb2f3sjR25qutNFSTAgnYCiVsm405RvjwOcHVrjTZzJvr1F2NwZePohHoQ3PyRpeqrHiCQMbeERZZNz7e86axMfY4prHVa/mTWu0crXWTi6d/s+VYX3PvyZ0NGPMU8WhgVnA9i+laSVnFPgcCcx2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727223241; c=relaxed/simple;
-	bh=T40AGQ8HFuPf/7theLK4KHqpHc9hhZ5EeQJMvCsps3A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NOkd3VEPhFpSdi0h2mJj6EhaM2auWyXosE+FVFa/JebEdx2rxxfHnKYmki4RBe4sy/HeBh0G2wm6Eb3g3psYxY7muoJP0XuuaLmhIixPpqVnsVkACRqJv+0cDOeNMfW/on39hF7/T87NEbrizYnIsrQFB8BjHw+NKjmgBJgNNFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lhHeiRF4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lhHeiRF4; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 912C61F7E1;
-	Wed, 25 Sep 2024 00:06:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727222780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0xy1A5fQ6TWcQiMRQp0JI9Q2HJpG72+2qKk6wCkYvPo=;
-	b=lhHeiRF4DpADdQwN0Dqk38ous9lX0GX14OD3uypwIRVVltc02RQsbF4j8UV2YQGTh42+Q/
-	YM+dgfO9fa4XmH2hw+ZigAjos2vsQ1Wtl6w8DFBeWXAcuu29zVU/I1lmmNowMrvgxb/2x8
-	hne29/PoWIaVFs527ryPF6a8q4HS4bI=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=lhHeiRF4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727222780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0xy1A5fQ6TWcQiMRQp0JI9Q2HJpG72+2qKk6wCkYvPo=;
-	b=lhHeiRF4DpADdQwN0Dqk38ous9lX0GX14OD3uypwIRVVltc02RQsbF4j8UV2YQGTh42+Q/
-	YM+dgfO9fa4XmH2hw+ZigAjos2vsQ1Wtl6w8DFBeWXAcuu29zVU/I1lmmNowMrvgxb/2x8
-	hne29/PoWIaVFs527ryPF6a8q4HS4bI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4BC4513A66;
-	Wed, 25 Sep 2024 00:06:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qO99A/tT82a1AgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Wed, 25 Sep 2024 00:06:19 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	Fabian Vogt <fvogt@suse.com>
-Subject: [PATCH v2 1/2] btrfs: avoid unnecessary device path update for the same device
-Date: Wed, 25 Sep 2024 09:35:59 +0930
-Message-ID: <3b02eabf87e477dd25e21a4c2cf7720e530d7531.1727222308.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <cover.1727222308.git.wqu@suse.com>
-References: <cover.1727222308.git.wqu@suse.com>
+	s=arc-20240116; t=1727224050; c=relaxed/simple;
+	bh=N9pGk9CAKtrkgAWicok2OSfQfFZwrxiOZMwfS/ozdT8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=iR1RPSyf/UgPODIOpP/nhHRNWfOIYub/tG9Tllc8+ry/TyGGBnrn+U5qy8HybMvHpWW84w72mg8IxTRLdc3OCTCZs7USaW19H13HUQ8A1aFPvIrJlcLenH5fqwkzLD2OOZ4DWvj4L6hDmviZxYoV+AFAQ0/VNwV0PlrnjRZQ9zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=NeBG8vTN; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1727224042; x=1727828842; i=quwenruo.btrfs@gmx.com;
+	bh=alLAKgw6DG4qxqEcJowmifdiq8M1ou3wCBjaqZEvnd8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=NeBG8vTNygxCt2j4DYOzwr8GlsiPzb7udmTw7hApBk4qT2wrO0/F6RcDRQLDVuOC
+	 28jANZSG9+QCC+Ty9nNnK45qQfGW1ignC+7IzCs/ysWTQiQWWzklx+74QWzYrs3WG
+	 zSSA14DmeS3JplO7Z889xfv4+5uSeW52FnIvy2h0eO4IxECmlAoYD9urGmjVnX7D8
+	 geDb2SSL7ptPdeEZoJ5mdmhvjZyw89TaEIDXQCxVfWZIn75dALswINcq1qApaV+S3
+	 jVNOtX5m0zo3afKnRt+EtppWfS4IwsDKU5CVpP9PBNrB22fCu4tAqRgLwq9sd52ca
+	 NxN1Zk/FErXIZlc6zA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mf0BG-1sHQ9b4078-00oNMt; Wed, 25
+ Sep 2024 02:27:22 +0200
+Message-ID: <3932ce42-10f0-4491-8c19-f120fd8d87fe@gmx.com>
+Date: Wed, 25 Sep 2024 09:57:18 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 912C61F7E1
-X-Spam-Score: -5.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:url,suse.com:email];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: disable rate limiting when debug enabled
+To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+References: <a0c406abae81f2824ed822ef7f5e85650d8424b1.1727219806.git.loemra.dev@gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <a0c406abae81f2824ed822ef7f5e85650d8424b1.1727219806.git.loemra.dev@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2jXdfcJuXEcRj93vkw7Kk2siELeMVAS6eNuwwPZI1nbj0Uv4Nhs
+ ZYWDxwmB7gQgMn+ikQ4V5g1cX0y6som46juXk7jo00W3WUA7JikisyqTzxo4ZqcG9Q28/Vw
+ MX12l+NrLAwtv1cTGeLo62XMYAM+V7xyTAg/p7O7aS/UMKVIF97ERudXTYNeAvKgUPqLq3s
+ KchVgMYgGocB3o3x7qA6g==
 X-Spam-Flag: NO
-X-Spam-Level: 
+UI-OutboundReport: notjunk:1;M01:P0:MV/4vHO09to=;1flr32qqNm/8tAGOE/A4ucoVwX3
+ +NHmEKuupP4aic6IYqt6DGoFxgW8Tq7Cbm2TY+VIn1BwoHQXUKPbVEv6rxjpkFp6cNapa2y88
+ zah1iBHZf3MCN6L2YWm+U0zcumcrJpzJ6ivU6IQZBAEyuAoenEhonBXeRYYBhwb/NiTAWckyv
+ DcuiTwdY1Yc6mGxFjorhz5mr2gieDzgfzAthjNMVrW7xMml+lAROZb2dnV8P1UEwHDXAQe5VE
+ LJ1tJlxBXTvXBXKVDybtZbKblVxoxA8PABhTXBI6ku106+QBkFjmd8U59jS96G+r5ETFlN1kX
+ KblwCcB+PRkFbAiz+b9qPKuYpS9P+gttGpS2o0YCe4uRsDeD02u1+VIbKZGcE1hgcMAc3YFuB
+ oV4cTBK8jIhj7XaKliP0oGfsO9D5eJi+VpMMZGteAtwyiyOERuaR/+zsqTjCDXGVgfwqoaTwU
+ 25Mg7iDOaIpBcIv4O7CY8rgY3GGtU1PkuRh0fVUeyK1EGGjUfyKzg1Rkp2evM/i2nc55uNK4y
+ YR3Y/S2RS7kaVbfx8u8y9BlYU60nMxCLzZJ/uyfX1+yxbjdIDTJO5jWsCJj3UetSVycKLj9Ro
+ CJsOLJFN76fjYMJTWvZB+xPRfI/JrPIf2U1D6N4a+9nAob5LydTjYX4U7IlusJTZ+RI0tvKUV
+ ZFIvcCQecTGKqOz8BJyKVB8iU/oVLtpso7kEGkWDOgg1/7iJ626r/BdBC3URL0310vYFPsKBh
+ c29k0LT4uEM1MCAo55RN+J8YzJBRvD3HcA3FrRNrNmMS2EoJ1vAQiFNsTKKHZ1aLGw3j0Tf/I
+ FexFF+19FpxEnQCHkd/WcYKQ==
 
-[PROBLEM]
-It is very common for udev to trigger device scan, and every time a
-mounted btrfs device got re-scan from different soft links, we will get
-some of unnecessary device path updates, this is especially common
-for LVM based storage:
 
- # lvs
-  scratch1 test -wi-ao---- 10.00g
-  scratch2 test -wi-a----- 10.00g
-  scratch3 test -wi-a----- 10.00g
-  scratch4 test -wi-a----- 10.00g
-  scratch5 test -wi-a----- 10.00g
-  test     test -wi-a----- 10.00g
 
- # mkfs.btrfs -f /dev/test/scratch1
- # mount /dev/test/scratch1 /mnt/btrfs
- # dmesg -c
- [  205.705234] BTRFS: device fsid 7be2602f-9e35-4ecf-a6ff-9e91d2c182c9 devid 1 transid 6 /dev/mapper/test-scratch1 (253:4) scanned by mount (1154)
- [  205.710864] BTRFS info (device dm-4): first mount of filesystem 7be2602f-9e35-4ecf-a6ff-9e91d2c182c9
- [  205.711923] BTRFS info (device dm-4): using crc32c (crc32c-intel) checksum algorithm
- [  205.713856] BTRFS info (device dm-4): using free-space-tree
- [  205.722324] BTRFS info (device dm-4): checking UUID tree
+=E5=9C=A8 2024/9/25 09:12, Leo Martins =E5=86=99=E9=81=93:
+> Disable ratelimiting for btrfs_printk when CONFIG_BTRFS_DEBUG is
+> enabled. This allows for more verbose output which is often needed by
+> functions like btrfs_dump_space_info().
+>
+> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
 
-So far so good, but even if we just touched any soft link of
-"dm-4", we will get quite some unnecessary device path updates.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
- # touch /dev/mapper/test-scratch1
- # dmesg -c
- [  469.295796] BTRFS info: devid 1 device path /dev/mapper/test-scratch1 changed to /dev/dm-4 scanned by (udev-worker) (1221)
- [  469.300494] BTRFS info: devid 1 device path /dev/dm-4 changed to /dev/mapper/test-scratch1 scanned by (udev-worker) (1221)
-
-Such device path rename is unnecessary and can lead to random path
-change due to the udev race.
-
-[CAUSE]
-Inside device_list_add(), we are using a very primitive way checking if
-the device has changed, strcmp().
-
-Which can never handle links well, no matter if it's hard or soft links.
-
-So every different link of the same device will be treated as a different
-device, causing the unnecessary device path update.
-
-[FIX]
-Introduce a helper, is_same_device(), and use path_equal() to properly
-detect the same block device.
-So that the different soft links won't trigger the rename race.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1230641
-Reported-by: Fabian Vogt <fvogt@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/volumes.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 995b0647f538..b713e4ebb362 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -732,6 +732,32 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb)
- 	return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
- }
- 
-+static bool is_same_device(struct btrfs_device *device, const char *new_path)
-+{
-+	struct path old = { .mnt = NULL, .dentry = NULL };
-+	struct path new = { .mnt = NULL, .dentry = NULL };
-+	char *old_path;
-+	bool is_same = false;
-+	int ret;
-+
-+	if (!device->name)
-+		goto out;
-+
-+	old_path = rcu_str_deref(device->name);
-+	ret = kern_path(old_path, LOOKUP_FOLLOW, &old);
-+	if (ret)
-+		goto out;
-+	ret = kern_path(new_path, LOOKUP_FOLLOW, &new);
-+	if (ret)
-+		goto out;
-+	if (path_equal(&old, &new))
-+		is_same = true;
-+out:
-+	path_put(&old);
-+	path_put(&new);
-+	return is_same;
-+}
-+
- /*
-  * Add new device to list of registered devices
-  *
-@@ -852,7 +878,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 				MAJOR(path_devt), MINOR(path_devt),
- 				current->comm, task_pid_nr(current));
- 
--	} else if (!device->name || strcmp(device->name->str, path)) {
-+	} else if (!device->name || !is_same_device(device, path)) {
- 		/*
- 		 * When FS is already mounted.
- 		 * 1. If you are here and if the device->name is NULL that
--- 
-2.46.1
+Thanks,
+Qu
+> ---
+>   fs/btrfs/messages.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+> index 77752eec125d9..363fd28c02688 100644
+> --- a/fs/btrfs/messages.c
+> +++ b/fs/btrfs/messages.c
+> @@ -239,7 +239,8 @@ void __cold _btrfs_printk(const struct btrfs_fs_info=
+ *fs_info, const char *fmt,
+>   	vaf.fmt =3D fmt;
+>   	vaf.va =3D &args;
+>
+> -	if (__ratelimit(ratelimit)) {
+> +	/* Do not ratelimit if CONFIG_BTRFS_DEBUG is enabled. */
+> +	if (IS_ENABLED(CONFIG_BTRFS_DEBUG) || __ratelimit(ratelimit)) {
+>   		if (fs_info) {
+>   			char statestr[STATE_STRING_BUF_LEN];
+>
 
 
