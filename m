@@ -1,75 +1,83 @@
-Return-Path: <linux-btrfs+bounces-8211-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8212-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC647984F5B
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E6E5984F5A
 	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 02:14:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FF63B22DB3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 00:14:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69DA628482C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2024 00:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDA82CA6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD6D28FD;
 	Wed, 25 Sep 2024 00:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PahCwl9x";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PahCwl9x"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lhHeiRF4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lhHeiRF4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B10C1862
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0D71849
 	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 00:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727223241; cv=none; b=guVq36dLtdV0DxeppofVdOhdPTtkKb0c966PMHuTgJdJUlDh8Y3og/lOxsk9UWolItmeeMB7am6eVU6N2U++bi7CE4RZhokfC3Au2WpAbvTN4XraELwUt5h7aplaxi6Eq3QjBJ0wJooe1r+YThr5MYawYQA5E9/LCJpXj8j2GgM=
+	t=1727223241; cv=none; b=imvnv2iNrN/DD58JUEn8W9Bs5V1u2vn2QeefDGugmADZdRieXOAtL7HQzm/Ons37UzywnGSkLbk3JWUzazM5QeIIRvjjhzZAOETiUpgyQllNLo4hXSnmOZEgBKiVbg9pjPEmWU6Il3pStL44Nkwo7EAV3xEtu9mMc8luVcnd2A0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727223241; c=relaxed/simple;
-	bh=DEswMJrPFV4Gp/az4xU4vkwAAnIy+4kp1hh4sJZrRWA=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gZjqYBNyzcAAZ3cxVYNlqzYR7eddddEF6pbdlvSpMmO9G1mRy+qTP6aqhty7YzZrUo2p1OtdYjkv3+79C3FIU9vLvvFOak9TwM9b8yldXLjYqsz2soXxPHYPge83/kPmZEzwWMWl+CHFwsvxFAYqjPLHArmTWFLCQfF7LTmXfjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PahCwl9x; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PahCwl9x; arc=none smtp.client-ip=195.135.223.131
+	bh=T40AGQ8HFuPf/7theLK4KHqpHc9hhZ5EeQJMvCsps3A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NOkd3VEPhFpSdi0h2mJj6EhaM2auWyXosE+FVFa/JebEdx2rxxfHnKYmki4RBe4sy/HeBh0G2wm6Eb3g3psYxY7muoJP0XuuaLmhIixPpqVnsVkACRqJv+0cDOeNMfW/on39hF7/T87NEbrizYnIsrQFB8BjHw+NKjmgBJgNNFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lhHeiRF4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lhHeiRF4; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C9DA21F7E0
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 00:06:18 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 912C61F7E1;
+	Wed, 25 Sep 2024 00:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727222778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dqfOQ/gCSB39/jZIFJPRWoQpce1jWhgTyEvfjbQRd2c=;
-	b=PahCwl9xSBkFtTIuWuWWT9IqxHH4PCUG6d5rz4OHoDjDFxwu6Hqgc92yHafwQ91sapb0zJ
-	b9+L0pDXYrT4fOpoag9ohJjUJx7Bo0/tvY8Yj/MZ4LuY5JyoTuTVaksIjw5ZS6I8I+c4jp
-	w3tTczVydK8Im21Mvx+PgfOSnrGdxD8=
+	t=1727222780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0xy1A5fQ6TWcQiMRQp0JI9Q2HJpG72+2qKk6wCkYvPo=;
+	b=lhHeiRF4DpADdQwN0Dqk38ous9lX0GX14OD3uypwIRVVltc02RQsbF4j8UV2YQGTh42+Q/
+	YM+dgfO9fa4XmH2hw+ZigAjos2vsQ1Wtl6w8DFBeWXAcuu29zVU/I1lmmNowMrvgxb/2x8
+	hne29/PoWIaVFs527ryPF6a8q4HS4bI=
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.com header.s=susede1 header.b=lhHeiRF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727222778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dqfOQ/gCSB39/jZIFJPRWoQpce1jWhgTyEvfjbQRd2c=;
-	b=PahCwl9xSBkFtTIuWuWWT9IqxHH4PCUG6d5rz4OHoDjDFxwu6Hqgc92yHafwQ91sapb0zJ
-	b9+L0pDXYrT4fOpoag9ohJjUJx7Bo0/tvY8Yj/MZ4LuY5JyoTuTVaksIjw5ZS6I8I+c4jp
-	w3tTczVydK8Im21Mvx+PgfOSnrGdxD8=
+	t=1727222780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0xy1A5fQ6TWcQiMRQp0JI9Q2HJpG72+2qKk6wCkYvPo=;
+	b=lhHeiRF4DpADdQwN0Dqk38ous9lX0GX14OD3uypwIRVVltc02RQsbF4j8UV2YQGTh42+Q/
+	YM+dgfO9fa4XmH2hw+ZigAjos2vsQ1Wtl6w8DFBeWXAcuu29zVU/I1lmmNowMrvgxb/2x8
+	hne29/PoWIaVFs527ryPF6a8q4HS4bI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B62A13A66
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 00:06:17 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4BC4513A66;
+	Wed, 25 Sep 2024 00:06:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BOlQL/lT82a1AgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2024 00:06:17 +0000
+	id qO99A/tT82a1AgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Wed, 25 Sep 2024 00:06:19 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/2] btrfs: enhance btrfs device path rename
-Date: Wed, 25 Sep 2024 09:35:58 +0930
-Message-ID: <cover.1727222308.git.wqu@suse.com>
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Fabian Vogt <fvogt@suse.com>
+Subject: [PATCH v2 1/2] btrfs: avoid unnecessary device path update for the same device
+Date: Wed, 25 Sep 2024 09:35:59 +0930
+Message-ID: <3b02eabf87e477dd25e21a4c2cf7720e530d7531.1727222308.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.1
+In-Reply-To: <cover.1727222308.git.wqu@suse.com>
+References: <cover.1727222308.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,93 +85,139 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
+X-Rspamd-Queue-Id: 912C61F7E1
+X-Spam-Score: -5.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-5.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
+	MX_GOOD(-0.01)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -2.80
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:url,suse.com:email];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_THREE(0.00)[3];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-[CHANGELOG]
-v2:
-- Update the example of the first patch
-  Instead of using the special C program, just touch the soft link
-  to trigger the rescan.
+[PROBLEM]
+It is very common for udev to trigger device scan, and every time a
+mounted btrfs device got re-scan from different soft links, we will get
+some of unnecessary device path updates, this is especially common
+for LVM based storage:
 
-- Add Link and reported-by tags for the first patch
+ # lvs
+  scratch1 test -wi-ao---- 10.00g
+  scratch2 test -wi-a----- 10.00g
+  scratch3 test -wi-a----- 10.00g
+  scratch4 test -wi-a----- 10.00g
+  scratch5 test -wi-a----- 10.00g
+  test     test -wi-a----- 10.00g
 
-- Fix a "weird" -> "wild" typo
-  This is really weird...
+ # mkfs.btrfs -f /dev/test/scratch1
+ # mount /dev/test/scratch1 /mnt/btrfs
+ # dmesg -c
+ [  205.705234] BTRFS: device fsid 7be2602f-9e35-4ecf-a6ff-9e91d2c182c9 devid 1 transid 6 /dev/mapper/test-scratch1 (253:4) scanned by mount (1154)
+ [  205.710864] BTRFS info (device dm-4): first mount of filesystem 7be2602f-9e35-4ecf-a6ff-9e91d2c182c9
+ [  205.711923] BTRFS info (device dm-4): using crc32c (crc32c-intel) checksum algorithm
+ [  205.713856] BTRFS info (device dm-4): using free-space-tree
+ [  205.722324] BTRFS info (device dm-4): checking UUID tree
 
-- Remove the debugging pr_info()
+So far so good, but even if we just touched any soft link of
+"dm-4", we will get quite some unnecessary device path updates.
 
-- Use safer strscpy() to replace strncpy()
+ # touch /dev/mapper/test-scratch1
+ # dmesg -c
+ [  469.295796] BTRFS info: devid 1 device path /dev/mapper/test-scratch1 changed to /dev/dm-4 scanned by (udev-worker) (1221)
+ [  469.300494] BTRFS info: devid 1 device path /dev/dm-4 changed to /dev/mapper/test-scratch1 scanned by (udev-worker) (1221)
 
-- Use the shortcut version of conditional operator when possible
+Such device path rename is unnecessary and can lead to random path
+change due to the udev race.
 
-Fabian Vogt reported a very interesting case where we can use
-"/proc/self/fd/3" to mount a btrfs, then that /proc name will remain as
-the device path for the btrfs.
+[CAUSE]
+Inside device_list_add(), we are using a very primitive way checking if
+the device has changed, strcmp().
 
-Sometimes udev scan can trigger a rename, and get a proper name back,
-but if that doesn't win the race, we got the "/proc/self/fd/3" in the
-mtab which makes no sense, since "/proc/self" is bounded to the current
-process, no one is going to know where the real device is.
+Which can never handle links well, no matter if it's hard or soft links.
 
-So to enhance the handling:
+So every different link of the same device will be treated as a different
+device, causing the unnecessary device path update.
 
-- Do proper path comparison to determine if we want to update device
-  path
-  Currently the path comparison is done by strcmp(), which will never
-  handle different hard nor soft links.
+[FIX]
+Introduce a helper, is_same_device(), and use path_equal() to properly
+detect the same block device.
+So that the different soft links won't trigger the rename race.
 
-  Instead go with path_equal() on the resolved paths, which is way more
-  reliable.
-  This should reduce the unnecessary path name updates in the first
-  place.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1230641
+Reported-by: Fabian Vogt <fvogt@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/volumes.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-- Canonicalize the device path if it's not inside "/dev/"
-  If we pass a soft link which is not inside "/dev/", we just follow the
-  soft link and use the final destination instead.
-
-  It can be something like "/dev/dm-2", other than more readable LVM
-  names like "/dev/test/scratch1", but it's still way better than
-  "/proc/self/fd/3".
-
-  If the soft link itself is already inside "/dev/", then we can
-  directly use the path.
-
-  This is to allow fstest run properly without forced to use
-  "/dev/dm-*" instead of the "/dev/mapper/test-scratch1" as test
-  devices.
-  Otherwise fs tests will reject runs because it believe the btrfs
-  is mounted somewhere else.
-
-Qu Wenruo (2):
-  btrfs: avoid unnecessary device path update for the same device
-  btrfs: canonicalize the device path before adding it
-
- fs/btrfs/volumes.c | 107 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 105 insertions(+), 2 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 995b0647f538..b713e4ebb362 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -732,6 +732,32 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb)
+ 	return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
+ }
+ 
++static bool is_same_device(struct btrfs_device *device, const char *new_path)
++{
++	struct path old = { .mnt = NULL, .dentry = NULL };
++	struct path new = { .mnt = NULL, .dentry = NULL };
++	char *old_path;
++	bool is_same = false;
++	int ret;
++
++	if (!device->name)
++		goto out;
++
++	old_path = rcu_str_deref(device->name);
++	ret = kern_path(old_path, LOOKUP_FOLLOW, &old);
++	if (ret)
++		goto out;
++	ret = kern_path(new_path, LOOKUP_FOLLOW, &new);
++	if (ret)
++		goto out;
++	if (path_equal(&old, &new))
++		is_same = true;
++out:
++	path_put(&old);
++	path_put(&new);
++	return is_same;
++}
++
+ /*
+  * Add new device to list of registered devices
+  *
+@@ -852,7 +878,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+ 				MAJOR(path_devt), MINOR(path_devt),
+ 				current->comm, task_pid_nr(current));
+ 
+-	} else if (!device->name || strcmp(device->name->str, path)) {
++	} else if (!device->name || !is_same_device(device, path)) {
+ 		/*
+ 		 * When FS is already mounted.
+ 		 * 1. If you are here and if the device->name is NULL that
 -- 
 2.46.1
 
