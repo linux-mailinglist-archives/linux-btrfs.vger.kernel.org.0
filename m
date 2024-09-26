@@ -1,139 +1,131 @@
-Return-Path: <linux-btrfs+bounces-8237-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8238-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2D8F986E33
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 09:51:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3E3986F6C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 10:56:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EB0E1F249DE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 07:51:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47FD51C225E6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 08:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036881A3A97;
-	Thu, 26 Sep 2024 07:50:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C271AB6EE;
+	Thu, 26 Sep 2024 08:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AAwNF9G3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KM6AilHz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32161422D4;
-	Thu, 26 Sep 2024 07:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1849A1A7252;
+	Thu, 26 Sep 2024 08:56:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727337048; cv=none; b=GfoUwMWzrYx7YIEh3PzLcoVH1VpFiFpH5CaHLf02cnGL4skyNouVharzbpuYSbqa4k2H8nUsvdSNXIq++fYIcDLhEbXB6Q1kVJeYm3t9w0Su4D9tEnNlk6d0Uw6L5TESR1VwpDANA1SCkD2yQEUz6dXrMHOzQpbHeIONkCmfUzs=
+	t=1727340973; cv=none; b=nFW0pPs2AgIx9OQx/PhUCoQjz6/86sak6VGlPBJZGldEh0lWcCjoVRGizc6EAmQu49nf8gsUiMdcxADWDwR/Z/EVDV70z1b9pNW428WoZtv9JvT/Zsse9jcz+cCLHg+eSeTl/OqUiM4sGLVGCktiG03dDHTzUNcOOzOO0E3M8Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727337048; c=relaxed/simple;
-	bh=iZmqX7cYZa5BDpJwqyTtwvsYmacCypWtpX0oana+mck=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ouiI5ZPTEpIMHhKlEcAbGTvQhQUi8q147ow2KLLOi4zJnwJZMBAy6ZTG+AOeJ3cQZT5sCaypeDhE2Avl0lpwRRPfBFKZCqCGA8WN+TNy3oCbhY1ABgwiDizeYwz80ReD575n28gklnv2wMqqiSBGpTDfVR366PCo9PnnqpBqKfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AAwNF9G3; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2e09a276ec6so329639a91.0;
-        Thu, 26 Sep 2024 00:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727337045; x=1727941845; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0qzff08z3q5a8E7EP1BIypHJUEty88aRUrntwACuH0=;
-        b=AAwNF9G3aI1YUHedmfRNaAV3uN031detsxO8p1kqqoCunozXMkaNlpMJ/89iILire7
-         kVzTIatlafl5hpLMKiqV8bkXpevJuMTuYcLy9Kp+6b60m4s9gAfsat+j7FZ2+2dOyKBO
-         Guu90Nr2M7p/6CgLq4AkxdNovfiviN93ycmWllkYyK1wykHKLqAh52g74Wp53r2A8Ue+
-         xXkh4D7+/cMpHyiY5DnXXxigh8d9yh3zyn5qdZObhg9krufgxcoX5AUqiidyT9bCUe5Y
-         ndVzxYCZ+2eXrmTp+y7YOHIZd3CEohp+bmTkPhEqO0Aw2Dt3DtBVKyCKUef2gWrPVIWY
-         xPyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727337045; x=1727941845;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K0qzff08z3q5a8E7EP1BIypHJUEty88aRUrntwACuH0=;
-        b=jaRACxUQMDLAHAjLztzSQvRN5RNup9w3Grkm7uDqsnLxZ15GzCcs5HKqVwDFefRXMh
-         bsHf5p/aBOm6NvZTRIcUCbC711SU5f88vHTr6YmNWVLQZjODTUhvrG/S83JcVZe+f2Ym
-         p8KvS/KvML8mEHIbUORBaS1NVU+1FptIl4dRxCOMxS7Ti9piWwvrb/efLzfEuY+//qug
-         aobG+umo6S4uxOlBTXEGVqkgm23jwBwKsJxitSLJSd5asJwDG4bOFLwhrfnn3TJ4QQzy
-         jhQm9t/Dj/XBiDUx4tXLqoA5IAwqEhkmqGjzOPqh6r6U1XJ6MENTyKKLV7Ier3cjpUfa
-         g9fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4uVxWYYa0ahdjNtRpvQigkskWONkDN8EJgKku9Tfg9uz1eryZw/fu47xhkeARIA/wcwT5F1Ic4LmSeHw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmUFYx0vxNA8OTlMAz1QZ3sJjIMxpf1wY/S63jl3u9NWsoyubc
-	3it2TIhker49WRhiUJzYy+FXq5XMLMmri+YkYSRIGt1wvK0AkksS
-X-Google-Smtp-Source: AGHT+IHh02LZbLC1YokYpQ8+bTGsaA4JedI4hRFAoFSG4HVpWGLVoaOphOY2Epf+jOJQbqx18AzStw==
-X-Received: by 2002:a17:90b:205:b0:2e0:9168:2b43 with SMTP id 98e67ed59e1d1-2e091682d01mr2652063a91.16.1727337045019;
-        Thu, 26 Sep 2024 00:50:45 -0700 (PDT)
-Received: from fedora.. ([106.219.166.49])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e06e1bb004sm2761784a91.19.2024.09.26.00.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 00:50:44 -0700 (PDT)
-From: Riyan Dhiman <riyandhiman14@gmail.com>
-To: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Riyan Dhiman <riyandhiman14@gmail.com>
-Subject: [PATCH] btrfs: remove redundant stop_loop variable in scrub_stripe()
-Date: Thu, 26 Sep 2024 13:20:34 +0530
-Message-ID: <20240926075034.39475-1-riyandhiman14@gmail.com>
-X-Mailer: git-send-email 2.46.1
+	s=arc-20240116; t=1727340973; c=relaxed/simple;
+	bh=vpkXEpKybJDncqHsEf/0PLLjsfAU3N4qHOv8jxozlLI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R7ZCcBUgiNd2AHrirYjM1gFS93nuMC5UZJYwlD1hSrsjWN+FNNrZJj2kSStF1UGl9D9TOLEat+OfpmUo7uhiJqddTnDfU0NcHRxKJpadOjahy96wlXJgyOO2MDaXa+IikQe1lCuwlB+j/5Ztzymshzu4qT74Fdob7GNK7PxCmMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KM6AilHz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F8FBC4CECF;
+	Thu, 26 Sep 2024 08:56:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727340972;
+	bh=vpkXEpKybJDncqHsEf/0PLLjsfAU3N4qHOv8jxozlLI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KM6AilHzA+NTD5jm/gvAgFZuByWPwMiI3yvn2vkUc4eB4jHrWwwIwHSOPGRbY50Pa
+	 jqCywrf8WbEikc2f7yv5e+cs7FvifHu/UvBo2f282B3o/81Dai0et/PswZKdE2mqkk
+	 ryoACtIN3ixnz8B02xed10K/Q/X1/XWFlBuweek+9BsUHmRDHNxhO166LFYN0n6PFy
+	 pwqJE06njaBds+jdkBkfD0XKtGIykOTRiVCCfbVBBWWXHeyGPDdlatu/ZQZvcbNfIq
+	 YQu8XdMKfTuWLzxeQSMMRQWVgshyg/3k/ah4u+OomYi+i+VoCrefBab0j4Ef5nfKKz
+	 4VpvMYzWmLtow==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a8d64b27c45so105758566b.3;
+        Thu, 26 Sep 2024 01:56:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVX/Q2OWXDIY+B4QCXwQ97Pi9j+Qbt+rrIsmrU80j2LGhOrNSlIlIJpY0lsN0Wajo7zThCpAY7Pv7n0/Wgx@vger.kernel.org, AJvYcCWfQlOpJEMu0wRKkmG7ZvXTAZ+Ks25bZwznakcmrx6WpnHFlAiNWeCehzeWRTWuPIHPi+IumUp8Q6i8kA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz43/dSrIiULLrCVO3QOBCXFTTYBL1iLXqN1Fu8ggQBGUFVRmzp
+	kD33x/foCM/D8uNmbr+Nls7kPf0F/z4+Hw7D68S73Nk2Pc13EASVLf0ShYZgD+G9aZromkHVN0i
+	ASYh+XPs8Gan/kWfsxxMssnRlm38=
+X-Google-Smtp-Source: AGHT+IGwv5COqIIkFVRj/th/Gliz1VNcfblucTvd75jdXUBdE/ZzldXRuUWkKawJ5ytm0JBF7ajrBugQU6DIQSlgRyo=
+X-Received: by 2002:a17:907:f199:b0:a90:348f:fad7 with SMTP id
+ a640c23a62f3a-a93a03b45d1mr501420366b.38.1727340970990; Thu, 26 Sep 2024
+ 01:56:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240926074947.39415-1-riyandhiman14@gmail.com>
+In-Reply-To: <20240926074947.39415-1-riyandhiman14@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 26 Sep 2024 09:55:34 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5vV1MLODuCHr1p4Dx6tMGOMeqxDnTGMsDz290kw8Vsew@mail.gmail.com>
+Message-ID: <CAL3q7H5vV1MLODuCHr1p4Dx6tMGOMeqxDnTGMsDz290kw8Vsew@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: add missing NULL check in btrfs_free_tree_block()
+To: Riyan Dhiman <riyandhiman14@gmail.com>
+Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The variable stop_loop was originally introduced in commit
-625f1c8dc66d7 (Btrfs: improve the loop of scrub_stripe). It was initialized
-to 0 in commit 3b080b2564287 (Btrfs: scrub raid56 stripes in the right way).
-However, in a later commit 18d30ab961497 (btrfs: scrub: use scrub_simple_mirror()
-to handle RAID56 data stripe scrub), the code that modified stop_loop was removed,
-making the variable redundant.
+On Thu, Sep 26, 2024 at 8:50=E2=80=AFAM Riyan Dhiman <riyandhiman14@gmail.c=
+om> wrote:
+>
+> In commit 3ba2d3648f9dc (btrfs: reflow btrfs_free_tree_block), the block
+> group lookup using btrfs_lookup_block_group() was added in btrfs_free_tre=
+e_block().
+> However, the return value of this function is not checked for a NULL resu=
+lt,
+> which can lead to null pointer dereferences if the block group is not fou=
+nd.
+>
+> This patch adds a check to ensure that if btrfs_lookup_block_group() retu=
+rns
+> NULL, the function will gracefully exit, preventing further operations th=
+at
+> rely on a valid block group pointer.
+>
+> Signed-off-by: Riyan Dhiman <riyandhiman14@gmail.com>
+> ---
+> Compile tested only
+>
+>  fs/btrfs/extent-tree.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index a5966324607d..7782d4436ca0 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -3454,6 +3454,8 @@ int btrfs_free_tree_block(struct btrfs_trans_handle=
+ *trans,
+>         }
+>
+>         bg =3D btrfs_lookup_block_group(fs_info, buf->start);
+> +       if (!bg)
+> +               goto out;
 
-Currently, stop_loop is only initialized with 0 and is never used or modified
-within the scrub_stripe() function. As a result, this patch removes the
-stop_loop variable to clean up the code and eliminate unnecessary redundancy.
+We are supposed to be able to always find the block group to which the
+extent buffer belongs to.
+If we don't, it means we have a serious corruption or bug.
 
-This change has no impact on functionality, as stop_loop was never utilized
-in any meaningful way in the final version of the code.
+If that happens we want it to be noisy so that it gets reported and we
+look at it.
+Letting a NULL pointer dereference happen is one way of getting our attenti=
+on.
 
-Signed-off-by: Riyan Dhiman <riyandhiman14@gmail.com>
----
-Compile tested only
+O more gentle and explicit way would be to have a:    ASSERT(bg !=3D NULL);
 
- fs/btrfs/scrub.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+But certainly not ignoring the problem.
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 3a3427428074..43431065d981 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -2256,7 +2256,6 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 	/* Offset inside the chunk */
- 	u64 offset;
- 	u64 stripe_logical;
--	int stop_loop = 0;
- 
- 	/* Extent_path should be released by now. */
- 	ASSERT(sctx->extent_path.nodes[0] == NULL);
-@@ -2370,14 +2369,8 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
- 		logical += increment;
- 		physical += BTRFS_STRIPE_LEN;
- 		spin_lock(&sctx->stat_lock);
--		if (stop_loop)
--			sctx->stat.last_physical =
--				map->stripes[stripe_index].physical + dev_stripe_len;
--		else
--			sctx->stat.last_physical = physical;
-+		sctx->stat.last_physical = physical;
- 		spin_unlock(&sctx->stat_lock);
--		if (stop_loop)
--			break;
- 	}
- out:
- 	ret2 = flush_scrub_stripes(sctx);
--- 
-2.46.1
+Thanks.
 
+>
+>         if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN)) {
+>                 pin_down_extent(trans, bg, buf->start, buf->len, 1);
+> --
+> 2.46.1
+>
+>
 
