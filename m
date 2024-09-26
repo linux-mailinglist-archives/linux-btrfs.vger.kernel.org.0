@@ -1,165 +1,156 @@
-Return-Path: <linux-btrfs+bounces-8256-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4E4D9872B3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 13:18:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10D60987329
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 14:00:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 910BB2816F8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 11:18:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262BF1F25615
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 12:00:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7200918C022;
-	Thu, 26 Sep 2024 11:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dM4ql4zA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DD0175D2F;
+	Thu, 26 Sep 2024 11:59:52 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B919158553
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 11:18:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C26F1607AC;
+	Thu, 26 Sep 2024 11:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727349522; cv=none; b=KhmKgKEq+m3r4f+GNVMAef7RdbK4po0sfQG+pUY5Dyolu785bwxv1myXm01Rl7IdxQ2EqEl7nsua/BhBuAdQMyZyXEINa2q5uy8tT+VTvGeu67AtKwY/Gr12sKbw9GzoRtvnRpGAPI1Af29b1jWnsRlH4arCKr0mWf7e/d1WZ14=
+	t=1727351991; cv=none; b=NOGEGN404h9Q9z2AVpvwBvb9N9lNHdV7ulZCTF+HKtjwy9/0SI6f38X4Evl/KQQxo82wEIOptYn0z5aTKKcLWvvPuGVwvZZIut0IOUF463pDo+n+GmtcHrlcUsC4D4/N4vTtljYHZmkhtqu+z/jU/Ag27SkwF9Yn7xq5RUJDJ+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727349522; c=relaxed/simple;
-	bh=AaRYlSHNZ1q0DtJtP/fVmK/2DpaRSOHQYTpYU40KCAs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IbBnBT9cVHCNv66FV39mLcEQpLp6G3m7e0SPvtv9JhEXKBwNMjK2NxKtYcemsrcM7VyAAKQ0O7DNI6KD1Q1zwQHS3meQ6hwt5lO+SRTEFBmSLiRBwgFPFOTXxMU1vHkNRUiwNV2aQYxibgVxF3c71jzLHPQcjiRkDmke34gVwec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dM4ql4zA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23E3EC4CEC5
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 11:18:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727349522;
-	bh=AaRYlSHNZ1q0DtJtP/fVmK/2DpaRSOHQYTpYU40KCAs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dM4ql4zAaaJfuiaLRux6J5UWrDmZBcDcpnIdSnKMWFAuCsT3KqPG9+lCg2jr4XHWr
-	 OzdFykD3jdx35DPUe7wGhoEiIS752xSdbYKOUMHpxqXg+j+u0+YtTvB+iJFEdovo3w
-	 tFnEm8As2UO00YLxcbHd3T5TaXLfoEuniFOgZum3gKKEFYIIYfpHf0wYKZQdTGGVgx
-	 nrGtfsUeCv35yJadtSCi1U+fQsldTsC9j2FqnXyhB/BtZFP49zycAM8H1fHzYwW2oM
-	 EU8giUk7szA5yhzBAfyEk3QzKGy39E7mntrp66smBAYC7pfTmX3pJguUdOS7Jg84/v
-	 zspSHr3N/Jz4g==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a8ce5db8668so137660866b.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 04:18:42 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yyr9O1RiUzxgMMwewKfAN07lNa/eNRpBS+LrGW7CZY33Xkbxpq1
-	timHZ5ssxP52SYa71oNNA+dWHEeL4/feVbo4e8wc4FGLSwbn6a83p0L2cGEwPsVI2KshF1xWD3D
-	1QWC3mUkoUSyih3wBSjzehn8A8ao=
-X-Google-Smtp-Source: AGHT+IHvhQ/Y9H4d5/Xz3aYtICOboJCULQJe4vXuu5Ho0ncVmzUDZDMgAUjUNbG+DjOvc3Lz/xHmdzkcmTSFyqr370w=
-X-Received: by 2002:a17:907:3d8d:b0:a91:158a:a900 with SMTP id
- a640c23a62f3a-a93a069bf67mr640442166b.58.1727349520525; Thu, 26 Sep 2024
- 04:18:40 -0700 (PDT)
+	s=arc-20240116; t=1727351991; c=relaxed/simple;
+	bh=9Irs03yPr6tjELLL2FPcWUMBrotw8+KG6uF7QcNk5io=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EaOQpTzbaJEjoKhRKrStBPO4xZgL78rpr3BQwOxSOJXp7JupYSxAT+d4u/P+fjX0KhJQNOp0o/WdgoX4Xe4VtNodBJjWVb1noqGaA3XrDhKcoga1i+TKRWRSTlQqFUla2tOD+QKQmD9FemYu5sVlmsRl7Y63vLwm5iNlH06lhoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-42f56ad2afaso2938175e9.1;
+        Thu, 26 Sep 2024 04:59:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727351988; x=1727956788;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gxSjjMFIL5z+1ilqVFAedbVxswn5znP/0ZSm6j/I5zU=;
+        b=nOtz0xoPkzk4iZN0pTo2XEBkDgUKsPZgp2BeL3w4gnsmuIqVSAAr4025BHo8sLqoQR
+         bFrJZPCp/phjxUjXarPAclIvGq6v26hodu84gTGTFheAnIG75ThgI+6iyp3zJnk5dZPk
+         U+A0O/MdfGFQxYicVeWFQTVyxE+aC6omBsZLFN0hUB8JRAW/aWta6IBlC4zIKdHNOBXe
+         m8jajXiGNo0K0zaIlEkhGVxL9TgzROo+WuRo7qigg0zoOzWu1V4xUKxnylS/W75pa0KJ
+         x2MMKwLudQq/FggkUaUyGr0Nx6PVgNVSfEX8dosYi0uIxXpRyO97AaAyPXaPesT6eLoX
+         OaNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFevz6AqxdwIwE2mCiuRpEuE5sv3/tIPga1FcLMN3863yOygCMwR+UyvZCFETXwRGz0PVTefe7i5zLb39x@vger.kernel.org, AJvYcCWkvGqO5CAyeqLIBuNG9JGS2GlMKOLidGK2C6vGxYVvK5/HhBWnJDiQJonWMggdgNuxKdF/3P3LhPBGtw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2sEcevA+orERRooAeZ4HtN71FCQ0ufKGyVvCvU2di7Nocxwy5
+	qsvSJIprZKdcDFj1WF2nk2fMpMK7Ky7BMp60GbEjtZghUFZUfjs4
+X-Google-Smtp-Source: AGHT+IEc5vBF0pHaaWrHKVe6N8bqzSwjg/UM76GSZVbZBUvqAeMhP6OtJMqnMG7P38GAR/+gCbkBxA==
+X-Received: by 2002:a05:600c:1c26:b0:42c:bae0:f05f with SMTP id 5b1f17b1804b1-42e9610ac1cmr49115685e9.13.1727351987911;
+        Thu, 26 Sep 2024 04:59:47 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f71aeb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71a:eb00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc2cd263sm6274057f8f.48.2024.09.26.04.59.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2024 04:59:47 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Cc: Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: remove code duplication in ordered extent finishing
+Date: Thu, 26 Sep 2024 13:59:35 +0200
+Message-ID: <20240926115935.20631-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1727174151.git.fdmanana@suse.com> <2ddc45133bcee20c64699abf10cc24bf2737b606.1727174151.git.fdmanana@suse.com>
- <fcd229e6-7d45-46bb-b886-75a8059f8dac@gmx.com> <CAL3q7H5G6pSk65esyLNryzXO8LkMbn44u8+erLTe4+bCWc9WbA@mail.gmail.com>
-In-Reply-To: <CAL3q7H5G6pSk65esyLNryzXO8LkMbn44u8+erLTe4+bCWc9WbA@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 26 Sep 2024 12:18:03 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4J9RYxr6mwVNLb5QTnJETFMCrZ7e=4SANZVhW=mLEGaw@mail.gmail.com>
-Message-ID: <CAL3q7H4J9RYxr6mwVNLb5QTnJETFMCrZ7e=4SANZVhW=mLEGaw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] btrfs: re-enable the extent map shrinker
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Sep 26, 2024 at 11:52=E2=80=AFAM Filipe Manana <fdmanana@kernel.org=
-> wrote:
->
-> On Thu, Sep 26, 2024 at 11:00=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.co=
-m> wrote:
-> >
-> >
-> >
-> > =E5=9C=A8 2024/9/24 20:15, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > Now that the extent map shrinker can only be run by a single task and=
- runs
-> > > asynchronously as a work queue job, enable it as it can no longer cau=
-se
-> > > stalls on tasks allocating memory and entering the extent map shrinke=
-r
-> > > through the fs shrinker (implemented by btrfs_free_cached_objects()).
-> > >
-> > > This is crucial to prevent exhaustion of memory due to unbounded exte=
-nt
-> > > map creation, primarily with direct IO but also for buffered IO on fi=
-les
-> > > with holes. This problem, for the direct IO case, was first reported =
-in
-> > > the Link tag below. That report was added to a Link tag of the first =
-patch
-> > > that introduced the extent map shrinker, commit 956a17d9d050 ("btrfs:=
- add
-> > > a shrinker for extent maps"), however the Link tag disappeared someho=
-w
-> > > from the committed patch (but was included in the submitted patch to =
-the
-> > > mailing list), so adding it below for future reference.
-> > >
-> > > Link: https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d4=
-2c55e@amazon.com/
-> >
-> > Forgot to mention, I'd prefer the enablement patch to be merged in a
-> > later release cycle, not at the same time inside the series.
-> >
-> > We need more tests, especially from the original reporters, and that's
-> > why we have EXPERIMENTAL flags.
->
-> Sure I can ping them and see if they have the availability to test and re=
-port.
-> But expecting every single user to be able to test may not be possible.
->
-> But I don't think we ever had to have explicit ack from users to move
-> things out of experimental, especially for things that don't affect
-> disk format changes or incompatibility issues, for things that are
-> fully transparent.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Further while this is under the experimental flags (previously debug),
-it's not a feature but a bug fix (functional and security). It just
-happened that while I was under vacation it was placed in that
-category just to disable it, instead of commenting out code or other
-alternatives.
+Remove the duplicated transaction joining, block reserve setting and raid
+extent inserting in btrfs_finish_ordered_extent().
 
->
-> >
-> > Thanks,
-> > Qu
-> >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >   fs/btrfs/super.c | 8 +-------
-> > >   1 file changed, 1 insertion(+), 7 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> > > index e9e209dd8e05..7e20b5e8386c 100644
-> > > --- a/fs/btrfs/super.c
-> > > +++ b/fs/btrfs/super.c
-> > > @@ -2401,13 +2401,7 @@ static long btrfs_nr_cached_objects(struct sup=
-er_block *sb, struct shrink_contro
-> > >
-> > >       trace_btrfs_extent_map_shrinker_count(fs_info, nr);
-> > >
-> > > -     /*
-> > > -      * Only report the real number for EXPERIMENTAL builds, as ther=
-e are
-> > > -      * reports of serious performance degradation caused by too fre=
-quent shrinks.
-> > > -      */
-> > > -     if (IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL))
-> > > -             return nr;
-> > > -     return 0;
-> > > +     return nr;
-> > >   }
-> > >
-> > >   static long btrfs_free_cached_objects(struct super_block *sb, struc=
-t shrink_control *sc)
-> >
+While at it, also abort the transaction in case inserting a RAID
+stripe-tree entry fails.
+
+Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/inode.c | 45 ++++++++++++++++-----------------------------
+ 1 file changed, 16 insertions(+), 29 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 353fb58c83da..35a03a671fc6 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3068,34 +3068,6 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 			goto out;
+ 	}
+ 
+-	if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
+-		BUG_ON(!list_empty(&ordered_extent->list)); /* Logic error */
+-
+-		btrfs_inode_safe_disk_i_size_write(inode, 0);
+-		if (freespace_inode)
+-			trans = btrfs_join_transaction_spacecache(root);
+-		else
+-			trans = btrfs_join_transaction(root);
+-		if (IS_ERR(trans)) {
+-			ret = PTR_ERR(trans);
+-			trans = NULL;
+-			goto out;
+-		}
+-		trans->block_rsv = &inode->block_rsv;
+-		ret = btrfs_update_inode_fallback(trans, inode);
+-		if (ret) /* -ENOMEM or corruption */
+-			btrfs_abort_transaction(trans, ret);
+-
+-		ret = btrfs_insert_raid_extent(trans, ordered_extent);
+-		if (ret)
+-			btrfs_abort_transaction(trans, ret);
+-
+-		goto out;
+-	}
+-
+-	clear_bits |= EXTENT_LOCKED;
+-	lock_extent(io_tree, start, end, &cached_state);
+-
+ 	if (freespace_inode)
+ 		trans = btrfs_join_transaction_spacecache(root);
+ 	else
+@@ -3109,8 +3081,23 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 	trans->block_rsv = &inode->block_rsv;
+ 
+ 	ret = btrfs_insert_raid_extent(trans, ordered_extent);
+-	if (ret)
++	if (ret) {
++		btrfs_abort_transaction(trans, ret);
++		goto out;
++	}
++
++	if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
++		BUG_ON(!list_empty(&ordered_extent->list)); /* Logic error */
++
++		btrfs_inode_safe_disk_i_size_write(inode, 0);
++		ret = btrfs_update_inode_fallback(trans, inode);
++		if (ret) /* -ENOMEM or corruption */
++			btrfs_abort_transaction(trans, ret);
+ 		goto out;
++	}
++
++	clear_bits |= EXTENT_LOCKED;
++	lock_extent(io_tree, start, end, &cached_state);
+ 
+ 	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
+ 		compress_type = ordered_extent->compress_type;
+-- 
+2.43.0
+
 
