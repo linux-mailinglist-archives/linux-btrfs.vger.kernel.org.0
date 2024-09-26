@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8251-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8252-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 867059870D0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 11:56:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAAEE9870FC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 12:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A98BF1C250B3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 09:56:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90043286A6A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 10:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B281AC439;
-	Thu, 26 Sep 2024 09:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012691A726A;
+	Thu, 26 Sep 2024 10:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="f86W+LA6"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="NiiZsAFN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C032745C
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 09:56:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2788A1D5AD4
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 10:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727344568; cv=none; b=Gj4CoTtZq0y73lraL6IGkHlzRImOHlUlZ9dxydCueEIiBHt0gYu/Q/lSa9MnLhiCYr61rc1XQvROqAMOPDP8UqOoF4Qz4IDawBiP1KhpitsgBv+fpF4M1fnK0/94BPHdQf9K2uuXohnxJhD5+k5G3iVFHywAdE0nn7QRJQ4HeAA=
+	t=1727344844; cv=none; b=U7vUdU+MmeL1Rk6iuvVUvxOeSMOC1Mzuok4pp6kgggK8iXXtAkcsi/B+9mFRLoZmmStfPY6ucB/CdwPHqMOhsnNrfBL+KfFq5TUBCTsgzvbFcpsxp8fMzGfax7gmdKMXE20Wvf9cANYsjjJgMXPW3C7gKe4mXsUYuX3wkHimKBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727344568; c=relaxed/simple;
-	bh=gtg690KL40fsb0MIZISjukdi7JOr9LKPEsXxYp6FPbw=;
+	s=arc-20240116; t=1727344844; c=relaxed/simple;
+	bh=kXEg9a6hxGoE3RXTbNgpFUwnUB6VJloNgtg213/SFgo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=PrxJk+HTQGA4yigfDZ0JcvJxU3kVwYUXupXGiiMkpgWdTSfYhC9HqVLSDJCi/Fi9wBL0ReXCKSkWkraax1noAiJNw5Fzfk0GopAzVZobRAajM+5e6kIzSH6guCzxN59h8U4lUFNMTS+fL/hmkMP7B0AaV4zmnparyaK8p0BbrXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=f86W+LA6; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=dyVI3MXV2Z09ZzZYuuH43cJ2q7Cjbzp8sr5Rdc9u/lv0pttWJMLIl4eA7VbQxtHvIXsgN+ncFZzz6UlSY9t+A1VOdaeWBVWQp+qSg1R5XVKPKcrBuUOEANFm5k79g0vPZJSD8NkIVEKBJZpu33JcWU2vsOCBD465Ojt0EOltjpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=NiiZsAFN; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727344559; x=1727949359; i=quwenruo.btrfs@gmx.com;
-	bh=Zk90ag8D9ZCMOFGfTUWK9zz/x6aC/8aG8capRlgyK/s=;
+	s=s31663417; t=1727344836; x=1727949636; i=quwenruo.btrfs@gmx.com;
+	bh=OnaGerl+FkFsDigXA3tfZJ+YCnZ/L69EKvK+qeA5F8Q=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=f86W+LA6q3PgBDhjdjeMj/EXFVSUhLaOxPoPdztJh14HvStTI3Uyr2SHPgwE5wqJ
-	 IOv+1PNTW9Ao/8LvgMzSeP7SfWzXObVks5uz0MgTPaQ9FvgHZ69QabUyy2skzSKW3
-	 3kXF9riLkugdFfPxBiqG5rxSCfk7KEcslB7o9GlpJ/iRukpqZkJWDCX2/nRBztWg2
-	 xeQehDxF9sQ0ZgNOySBQrY/FeCHwS62OGQEcCmiDYKJ3ilL+h0pMqwMqLonh0lai9
-	 nSQp+SsBHdsvLMz83NalQNz+Qm5Nj/YeF2NWpQLhQp6odlEH1qsj4krsEFz1qxqFf
-	 fbJlkudmoQmcZ8Z4gw==
+	b=NiiZsAFNoA2QQBvhsXTG1c2y1rJKe1donbPqCkwXAosheAg0gModdATtCgzR90zb
+	 i8JNUbXQBE50fedjfN9Ryu3KbW+uWJ215xCFmUa+BFPW582TFd8cvMSpVbDYkbqgB
+	 0VKZYgoJ8sLRQWOi/dgblZhhwYVDHXrpUembCHn8NTtcH3RfFaUbVju9K589vysc6
+	 XyRRXj5c/7vvp1KkjBAO3/4u7ITvxzXFyy0bQKTNb5/RQ1nNrD1PG6itEMGzoZYOT
+	 J69NBsTvXc4ICG1ZhwLPW98QtsWn+WlB5dNqYN8Cjzg5inPvW4J0kpB5pd0SHXzNN
+	 FkYeNDMPuf2ol8ZNSw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4hvb-1rtVHs04WN-014BD4; Thu, 26
- Sep 2024 11:55:59 +0200
-Message-ID: <ee7effa3-1cab-4607-a717-3df56ed091d6@gmx.com>
-Date: Thu, 26 Sep 2024 19:25:56 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzfl-1sQupG46Ib-00UIvC; Thu, 26
+ Sep 2024 12:00:36 +0200
+Message-ID: <fcd229e6-7d45-46bb-b886-75a8059f8dac@gmx.com>
+Date: Thu, 26 Sep 2024 19:30:33 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/8] btrfs: delayed refs and qgroups, fixes, cleanups,
- improvements
+Subject: Re: [PATCH 5/5] btrfs: re-enable the extent map shrinker
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1727261112.git.fdmanana@suse.com>
- <cover.1727342969.git.fdmanana@suse.com>
+References: <cover.1727174151.git.fdmanana@suse.com>
+ <2ddc45133bcee20c64699abf10cc24bf2737b606.1727174151.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,67 +88,88 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <cover.1727342969.git.fdmanana@suse.com>
+In-Reply-To: <2ddc45133bcee20c64699abf10cc24bf2737b606.1727174151.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Wezxq0AKxL9bgSvPx3Iafk/+e6CgGddhZfCpkUbi9XmL7FVNDBk
- aTOW3d8PxJYfNsmGqcx8s3McOdYzBmXJLgpiy1qbewDYeIhJD5w3tlfTPbZER8nzs9GlW4d
- rPLYC5qQHQNAPHpErry820IEx0zU+ThLWot6UUkLOPZIhWII+dIoV3JWSgwUsjGaM8tJ5Uf
- hNEBQhXSFglA6S6NjEsiQ==
+X-Provags-ID: V03:K1:oMSHg0ffK1ZoK0ycgzHq7goNa94guXiujVJ91qfts/DQ6lsSlZr
+ yUQ23/lPvMzW7jn18nv0t/6UCqMjiLjfq++kjtxdsKQPU6sVDhYylQVBpWga/yM6iO1XdyY
+ II1yJQVNHlh/dsyQL/AxStd79iTQj/JbUxK4hWjLNSyYFN5T8ydAYT5JJ8jaNxIgaAZOdzC
+ JwmuOhU/tOkyM8zb/1C/w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:cjp0UFxiVXY=;sXnbD1VXG0l+c169To53cP/E0dX
- b7Aix0uD6gDDm6gHlHeLCfJ2Q8SRTAIvQ3dMRsykKmLJhxaPe0QPPeFNXXpAcv17yIq/f+Uam
- tsvxwuG2fCjQJBmtlbuvujnurGukqwgdoe4BDjMZhqrUD1hhnRfPze9JzbM311Xw5s8/i09+s
- ZDPw//5yJPeIFnFe4be3LpAZpGyo9fqBs/mggBACPPgD3gs1cuvup5EsYAcp584ygERlYKaBX
- KJKoV0Ch9QWnEs6YlA++PB/CAHZP3Lf6Q0MxdZFyBJD2EO63akHc9flb5AQxtpLh5HEJuaQhG
- cobyXRLN6GP0bAJBVyB0Ex7ZwX8kFYp0GS2CKnZOoGiDFm3StnRC6FKVxi9KB+9qYFXh+8FTK
- 9n7IdlV4SRrpkaBsFwL06m+5Ooqx0f4BoikWXGqZBQf5KWUuUHF9ZyTiZul1B/R4NVVl6uBtM
- dKYQBukFnlw9fEnoibRm2Lb5thKny6bP7A2q9c8GgHPLzkXjH9kY/01zp8tEXtG14g5ahhcOa
- LuUredGmlzKP/swaThcs7PvOAk/+cJp7KMZQOuE6bMzzQNkB/LNCRSIE7zWyq5z3BQiyNF8z7
- fGwZ9vXr+n5K1f6efX7L+RD9ut5aR5DMcBrIjp95DJyH59Tz7aGZimTkeMqDuyd0QXIRXwZvS
- PeE0GPvz9aebPCwe/8N/0vyJh1KVAx2lrCkDNG7cYuFdNuwXETKkyo5emKkJS4gpZowEh6kwc
- TXK036DH7rw0rJ16fAq8jBE3iMcdwxbEqRgxGuPRI4Zo/76nQ32eDHAohwv1SvQ7GoDo6DmdX
- k7gJqCkpK3azoDd7C9bXTjfg==
+UI-OutboundReport: notjunk:1;M01:P0:oaYdDm+vQiI=;UAycWZTGA5SzzZHYDvRgVifjmP/
+ jvZzXQxBqQWuTRGdRB/KUoxpP74hOJvaEb0yGceCsRrrsu8+wLSkjZisO2wNVUEivs4H4WE9E
+ RiF63QogpfNWutmsRuNV4FhL+qBZy902BizkuUGS7T3hRhkYspAS4pMGazP0eJWYG5lfV24QU
+ gwXN22dXdQcVEs2yXbYfYyB+fBYuk8/GIZrMf6LFa/QQDrwj/Gtw1B4WMCFp2Ec+zkvrne8Tt
+ FbxWEmYy54RVdwRrr0Rg13M1qtVzn/Yo9rE932XcHI+U1hD//MsihY8xMj6YdMUXdq0JsbJGW
+ Qgy3LDE65w8G5E/LqgaDKIkYosn8czUFTsj2FjhPJytzodS2wcIO25iijDhT2CHF1O7u1FRWL
+ mPQQ94cXzdqpuB7zybYpVJZNAGUkBJo81X1yBjcVlecRm4vVzlD/9XxF7Zy1kNyN+4sBZ0vD2
+ GkLOV+yDdHctlJwqQ+SJUkQ1Cw3O2DhdKC81+03pVDdx+Z3B2v2gqbaNaqcKrI2N0BCLXXkp0
+ 1to5l3eZhUNVF/TVkQrmQYF/ngU2sxmCYLoFMr6ANkcekqTmZE9qffFY1BwxAtmbqCWuVke7X
+ JeY8E+y42ojoK1pFgd1XE5PXlo/K6F6SFp3eMaXgMMb9zg24YVUd92erLxICfgMJ5Ewja5DBT
+ yf4HBw4HFehj2s3ru7BgiE+ayVazi8Ab8QPBRrWzZ72QOs8Ip3OW1EavM8q+pdbQlb9Wf2237
+ SY/0qJr0Fj6q+vVtWo09cIuv3pdb9atL2gFNtdVanUL4YDem/LIIZRuCh/x6DZBvl8oo3EIkF
+ efXGYtdhGQoDouS97vqR0RTg==
 
 
 
-=E5=9C=A8 2024/9/26 19:03, fdmanana@kernel.org =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/9/24 20:15, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
 >
-> Some fixes around delayed refs and qgroups after the conversion of a
-> red black tree to xarray in this merge window, and some improvements
-> and cleanups. Details in the changelogs.
+> Now that the extent map shrinker can only be run by a single task and ru=
+ns
+> asynchronously as a work queue job, enable it as it can no longer cause
+> stalls on tasks allocating memory and entering the extent map shrinker
+> through the fs shrinker (implemented by btrfs_free_cached_objects()).
 >
-> V2: Updated patch 2/8 to check for MAX_LFS_FILESIZE and error out.
+> This is crucial to prevent exhaustion of memory due to unbounded extent
+> map creation, primarily with direct IO but also for buffered IO on files
+> with holes. This problem, for the direct IO case, was first reported in
+> the Link tag below. That report was added to a Link tag of the first pat=
+ch
+> that introduced the extent map shrinker, commit 956a17d9d050 ("btrfs: ad=
+d
+> a shrinker for extent maps"), however the Link tag disappeared somehow
+> from the committed patch (but was included in the submitted patch to the
+> mailing list), so adding it below for future reference.
 >
-> Filipe Manana (8):
->    btrfs: fix missing error handling when adding delayed ref with qgroup=
-s enabled
->    btrfs: use sector numbers as keys for the dirty extents xarray
->    btrfs: end assignment with semicolon at btrfs_qgroup_extent event cla=
-ss
->    btrfs: qgroups: remove bytenr field from struct btrfs_qgroup_extent_r=
-ecord
->    btrfs: store fs_info in a local variable at btrfs_qgroup_trace_extent=
-_post()
->    btrfs: remove unnecessary delayed refs locking at btrfs_qgroup_trace_=
-extent()
->    btrfs: always use delayed_refs local variable at btrfs_qgroup_trace_e=
-xtent()
->    btrfs: remove pointless initialization at btrfs_qgroup_trace_extent()
+> Link: https://lore.kernel.org/linux-btrfs/13f94633dcf04d29aaf1f0a43d42c5=
+5e@amazon.com/
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Forgot to mention, I'd prefer the enablement patch to be merged in a
+later release cycle, not at the same time inside the series.
+
+We need more tests, especially from the original reporters, and that's
+why we have EXPERIMENTAL flags.
 
 Thanks,
 Qu
 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/super.c | 8 +-------
+>   1 file changed, 1 insertion(+), 7 deletions(-)
 >
->   fs/btrfs/delayed-ref.c       | 59 ++++++++++++++++++++++---------
->   fs/btrfs/delayed-ref.h       | 10 +++++-
->   fs/btrfs/qgroup.c            | 68 +++++++++++++++++++++---------------
->   fs/btrfs/qgroup.h            | 13 +++++--
->   include/trace/events/btrfs.h | 17 +++++----
->   5 files changed, 111 insertions(+), 56 deletions(-)
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index e9e209dd8e05..7e20b5e8386c 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -2401,13 +2401,7 @@ static long btrfs_nr_cached_objects(struct super_=
+block *sb, struct shrink_contro
 >
+>   	trace_btrfs_extent_map_shrinker_count(fs_info, nr);
+>
+> -	/*
+> -	 * Only report the real number for EXPERIMENTAL builds, as there are
+> -	 * reports of serious performance degradation caused by too frequent s=
+hrinks.
+> -	 */
+> -	if (IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL))
+> -		return nr;
+> -	return 0;
+> +	return nr;
+>   }
+>
+>   static long btrfs_free_cached_objects(struct super_block *sb, struct s=
+hrink_control *sc)
 
 
