@@ -1,156 +1,182 @@
-Return-Path: <linux-btrfs+bounces-8257-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8258-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10D60987329
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 14:00:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AFBA987485
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 15:38:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262BF1F25615
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 12:00:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75CFFB2227D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 13:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DD0175D2F;
-	Thu, 26 Sep 2024 11:59:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B55482E9;
+	Thu, 26 Sep 2024 13:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vJ56hdDS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C26F1607AC;
-	Thu, 26 Sep 2024 11:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DC9322B;
+	Thu, 26 Sep 2024 13:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727351991; cv=none; b=NOGEGN404h9Q9z2AVpvwBvb9N9lNHdV7ulZCTF+HKtjwy9/0SI6f38X4Evl/KQQxo82wEIOptYn0z5aTKKcLWvvPuGVwvZZIut0IOUF463pDo+n+GmtcHrlcUsC4D4/N4vTtljYHZmkhtqu+z/jU/Ag27SkwF9Yn7xq5RUJDJ+4=
+	t=1727357883; cv=none; b=Uoq5J/UtHR/tOfszhV+MHxYQT31tDNtIuhq3RfmSaZqNnR0zUA5OjJ4VV5Rk3oWQo6WAQsKk5dOsZRdnKq/Qga47uhibd6Wq2hEFwrSTx0pDgxmbECfm4UJ0z24xlOJ/9JkKR8FWM6KJStoD+yoFArkSXldk2dSpnOhqk9Y1G64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727351991; c=relaxed/simple;
-	bh=9Irs03yPr6tjELLL2FPcWUMBrotw8+KG6uF7QcNk5io=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EaOQpTzbaJEjoKhRKrStBPO4xZgL78rpr3BQwOxSOJXp7JupYSxAT+d4u/P+fjX0KhJQNOp0o/WdgoX4Xe4VtNodBJjWVb1noqGaA3XrDhKcoga1i+TKRWRSTlQqFUla2tOD+QKQmD9FemYu5sVlmsRl7Y63vLwm5iNlH06lhoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-42f56ad2afaso2938175e9.1;
-        Thu, 26 Sep 2024 04:59:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727351988; x=1727956788;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gxSjjMFIL5z+1ilqVFAedbVxswn5znP/0ZSm6j/I5zU=;
-        b=nOtz0xoPkzk4iZN0pTo2XEBkDgUKsPZgp2BeL3w4gnsmuIqVSAAr4025BHo8sLqoQR
-         bFrJZPCp/phjxUjXarPAclIvGq6v26hodu84gTGTFheAnIG75ThgI+6iyp3zJnk5dZPk
-         U+A0O/MdfGFQxYicVeWFQTVyxE+aC6omBsZLFN0hUB8JRAW/aWta6IBlC4zIKdHNOBXe
-         m8jajXiGNo0K0zaIlEkhGVxL9TgzROo+WuRo7qigg0zoOzWu1V4xUKxnylS/W75pa0KJ
-         x2MMKwLudQq/FggkUaUyGr0Nx6PVgNVSfEX8dosYi0uIxXpRyO97AaAyPXaPesT6eLoX
-         OaNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUFevz6AqxdwIwE2mCiuRpEuE5sv3/tIPga1FcLMN3863yOygCMwR+UyvZCFETXwRGz0PVTefe7i5zLb39x@vger.kernel.org, AJvYcCWkvGqO5CAyeqLIBuNG9JGS2GlMKOLidGK2C6vGxYVvK5/HhBWnJDiQJonWMggdgNuxKdF/3P3LhPBGtw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2sEcevA+orERRooAeZ4HtN71FCQ0ufKGyVvCvU2di7Nocxwy5
-	qsvSJIprZKdcDFj1WF2nk2fMpMK7Ky7BMp60GbEjtZghUFZUfjs4
-X-Google-Smtp-Source: AGHT+IEc5vBF0pHaaWrHKVe6N8bqzSwjg/UM76GSZVbZBUvqAeMhP6OtJMqnMG7P38GAR/+gCbkBxA==
-X-Received: by 2002:a05:600c:1c26:b0:42c:bae0:f05f with SMTP id 5b1f17b1804b1-42e9610ac1cmr49115685e9.13.1727351987911;
-        Thu, 26 Sep 2024 04:59:47 -0700 (PDT)
-Received: from nuc.fritz.box (p200300f6f71aeb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71a:eb00:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37cbc2cd263sm6274057f8f.48.2024.09.26.04.59.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 04:59:47 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
-	linux-kernel@vger.kernel.org (open list)
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH] btrfs: remove code duplication in ordered extent finishing
-Date: Thu, 26 Sep 2024 13:59:35 +0200
-Message-ID: <20240926115935.20631-1-jth@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1727357883; c=relaxed/simple;
+	bh=INf4Wsw9kIU4k07p5ZXbzAn6HdnkbBEj2ln9NIVYgPs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s/kl2kFiyS64blp8kAocQRXUhNbCBK9+su6PySvxSoFdItyO3umAlXJYBsUtg1GyngkdJf0gNme1YkAuNiS/AT6ACdsfB9fnHdEV5cdsRuBS3lqrf5xiwbeDsS7M1twyxAAM8u2LrmZ7w//72/AyXDrhzS74L/U8WV/U5hm8TKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vJ56hdDS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A626DC4CECE;
+	Thu, 26 Sep 2024 13:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727357882;
+	bh=INf4Wsw9kIU4k07p5ZXbzAn6HdnkbBEj2ln9NIVYgPs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=vJ56hdDSTfalngNbsSNkZk5plwhxw1nCrDOA+D7dO9twrH4SiVLKvpm/Yuwpo60H5
+	 XrsxmDWrRB21+5MbIb554Wc+FPhWAkGV7W9RaQiBadkLjDYA+7nOlJdF7rLvQlz3Vy
+	 N2flUqrDjpyyubEnoozGSBAHue+Ucwx6+oYeIYGpzrDQ6tmnTSzJbTJxXa2kP0MIBK
+	 YvpgSiNN0z5YTEENwM/4p9NZdu41LqrgZ1i+BfzdCjTGa6QBqrM5N3JNr+28vXTkbE
+	 MEsKEzOjn7o5wuFyQrpXk+i5RV1QUrqJW2OJ6UeNJZ3Op6OewHeih3DSMA+rQTRr5+
+	 /RD1ffvUSW5gQ==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5c42384c517so1028387a12.3;
+        Thu, 26 Sep 2024 06:38:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVl0dKcPw0SoCR5ODZDjJv/CcZ0tM05DhEMzncblpGM7yPDKKy8Mr+jEKtBFGAM9GRK8/QecGh3ZwD7xvNI@vger.kernel.org, AJvYcCWEB4p1voFDYDntJWmcQgXnEQ1Xq49X6a/v0wk8774xfnTP0+ijGrv9qAp15W/LCe/20WxAXNgGo1bmdQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYOKkrFYzF4S9Vkf9GxpM2d60yknWzfmWj/WJVMlnXX9eloTQi
+	EiSdIpunBknmhvXfIWnGihGPvHjeHoe1VLC+u1YqH+zZkv/YWxAQ3VVCR8G/M41xoZzs6EyDZZz
+	EUwgO8OLOz0LxnCRoNsi8r4BW5SI=
+X-Google-Smtp-Source: AGHT+IEd1oXxQPnDgGCZL4fiofB/Dtsie6w4KrDfXQC2Nm37gq8acxWSWuVYs7AFIxr1+1qZH2lHgxsoZB7lR5PJuV8=
+X-Received: by 2002:a17:907:8688:b0:a86:78fd:1df0 with SMTP id
+ a640c23a62f3a-a93a03c32c2mr536927266b.34.1727357881250; Thu, 26 Sep 2024
+ 06:38:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240926115935.20631-1-jth@kernel.org>
+In-Reply-To: <20240926115935.20631-1-jth@kernel.org>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 26 Sep 2024 14:37:23 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H57KKwPWH0HYVZ+Hmo7GiWULkJkR7Hc83Zu47uE5x+-zQ@mail.gmail.com>
+Message-ID: <CAL3q7H57KKwPWH0HYVZ+Hmo7GiWULkJkR7Hc83Zu47uE5x+-zQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: remove code duplication in ordered extent finishing
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+	"open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	Naohiro Aota <naohiro.aota@wdc.com>, Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Thu, Sep 26, 2024 at 1:27=E2=80=AFPM Johannes Thumshirn <jth@kernel.org>=
+ wrote:
+>
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>
+> Remove the duplicated transaction joining, block reserve setting and raid
+> extent inserting in btrfs_finish_ordered_extent().
+>
+> While at it, also abort the transaction in case inserting a RAID
+> stripe-tree entry fails.
+>
+> Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/inode.c | 45 ++++++++++++++++-----------------------------
+>  1 file changed, 16 insertions(+), 29 deletions(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 353fb58c83da..35a03a671fc6 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3068,34 +3068,6 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_=
+extent *ordered_extent)
+>                         goto out;
+>         }
+>
+> -       if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
+> -               BUG_ON(!list_empty(&ordered_extent->list)); /* Logic erro=
+r */
+> -
+> -               btrfs_inode_safe_disk_i_size_write(inode, 0);
+> -               if (freespace_inode)
+> -                       trans =3D btrfs_join_transaction_spacecache(root)=
+;
+> -               else
+> -                       trans =3D btrfs_join_transaction(root);
+> -               if (IS_ERR(trans)) {
+> -                       ret =3D PTR_ERR(trans);
+> -                       trans =3D NULL;
+> -                       goto out;
+> -               }
+> -               trans->block_rsv =3D &inode->block_rsv;
+> -               ret =3D btrfs_update_inode_fallback(trans, inode);
+> -               if (ret) /* -ENOMEM or corruption */
+> -                       btrfs_abort_transaction(trans, ret);
+> -
+> -               ret =3D btrfs_insert_raid_extent(trans, ordered_extent);
+> -               if (ret)
+> -                       btrfs_abort_transaction(trans, ret);
+> -
+> -               goto out;
+> -       }
+> -
+> -       clear_bits |=3D EXTENT_LOCKED;
+> -       lock_extent(io_tree, start, end, &cached_state);
+> -
+>         if (freespace_inode)
+>                 trans =3D btrfs_join_transaction_spacecache(root);
+>         else
+> @@ -3109,8 +3081,23 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_=
+extent *ordered_extent)
+>         trans->block_rsv =3D &inode->block_rsv;
+>
+>         ret =3D btrfs_insert_raid_extent(trans, ordered_extent);
+> -       if (ret)
+> +       if (ret) {
+> +               btrfs_abort_transaction(trans, ret);
+> +               goto out;
+> +       }
+> +
+> +       if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
+> +               BUG_ON(!list_empty(&ordered_extent->list)); /* Logic erro=
+r */
+> +
+> +               btrfs_inode_safe_disk_i_size_write(inode, 0);
+> +               ret =3D btrfs_update_inode_fallback(trans, inode);
+> +               if (ret) /* -ENOMEM or corruption */
 
-Remove the duplicated transaction joining, block reserve setting and raid
-extent inserting in btrfs_finish_ordered_extent().
+While at it we can change the comment to comply with the preferred
+style, to leave it on the line above or inside the if:
 
-While at it, also abort the transaction in case inserting a RAID
-stripe-tree entry fails.
+if (ret) {
+   /* -ENOMEM or corruption */
+  btrfs_abort_transaction(trans, ret);
+}
 
-Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/inode.c | 45 ++++++++++++++++-----------------------------
- 1 file changed, 16 insertions(+), 29 deletions(-)
+Same for the other comment after the BUG_ON() (and we could change the
+BUG_ON() to ASSERT() plus abort transaction maybe, but that probably
+as a separate patch).
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 353fb58c83da..35a03a671fc6 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3068,34 +3068,6 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 			goto out;
- 	}
- 
--	if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
--		BUG_ON(!list_empty(&ordered_extent->list)); /* Logic error */
--
--		btrfs_inode_safe_disk_i_size_write(inode, 0);
--		if (freespace_inode)
--			trans = btrfs_join_transaction_spacecache(root);
--		else
--			trans = btrfs_join_transaction(root);
--		if (IS_ERR(trans)) {
--			ret = PTR_ERR(trans);
--			trans = NULL;
--			goto out;
--		}
--		trans->block_rsv = &inode->block_rsv;
--		ret = btrfs_update_inode_fallback(trans, inode);
--		if (ret) /* -ENOMEM or corruption */
--			btrfs_abort_transaction(trans, ret);
--
--		ret = btrfs_insert_raid_extent(trans, ordered_extent);
--		if (ret)
--			btrfs_abort_transaction(trans, ret);
--
--		goto out;
--	}
--
--	clear_bits |= EXTENT_LOCKED;
--	lock_extent(io_tree, start, end, &cached_state);
--
- 	if (freespace_inode)
- 		trans = btrfs_join_transaction_spacecache(root);
- 	else
-@@ -3109,8 +3081,23 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 	trans->block_rsv = &inode->block_rsv;
- 
- 	ret = btrfs_insert_raid_extent(trans, ordered_extent);
--	if (ret)
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
-+		goto out;
-+	}
-+
-+	if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
-+		BUG_ON(!list_empty(&ordered_extent->list)); /* Logic error */
-+
-+		btrfs_inode_safe_disk_i_size_write(inode, 0);
-+		ret = btrfs_update_inode_fallback(trans, inode);
-+		if (ret) /* -ENOMEM or corruption */
-+			btrfs_abort_transaction(trans, ret);
- 		goto out;
-+	}
-+
-+	clear_bits |= EXTENT_LOCKED;
-+	lock_extent(io_tree, start, end, &cached_state);
- 
- 	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
- 		compress_type = ordered_extent->compress_type;
--- 
-2.43.0
+Otherwise it looks fine, thanks.
 
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+
+> +                       btrfs_abort_transaction(trans, ret);
+>                 goto out;
+> +       }
+> +
+> +       clear_bits |=3D EXTENT_LOCKED;
+> +       lock_extent(io_tree, start, end, &cached_state);
+>
+>         if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
+>                 compress_type =3D ordered_extent->compress_type;
+> --
+> 2.43.0
+>
+>
 
