@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-8245-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8246-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E510987055
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 11:34:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD65A987056
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 11:34:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06132B274C4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 09:34:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D935286B29
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 09:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCFD61AD3F4;
-	Thu, 26 Sep 2024 09:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76EE61AD3FC;
+	Thu, 26 Sep 2024 09:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OhhJlhqd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="om4tngvU"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB13C1ACDF9
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 09:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6A11ACE00
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 09:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727343211; cv=none; b=qCir9qQMcxI3OmJIqj9i3SUT7+7DflQMD8Cfx0hnASBYAD7NLgWcbHbQ/+2OuuC02gVDKY9BZAmB6bOkFfGrAiuaVu6yrTUE/AD42AkxLvhjUdg5T/6/fV0mRlgJvqbMTPXQ3Mnr7wjvNbIgnQ/CvXTkdGPcw8mZ9cIG+MCmBpU=
+	t=1727343211; cv=none; b=cUhUc5KZWImoWqVTfPfCU7Kj+7h/ZV/Nn54DsSFhsfoxC9lTcTpFBdY6/MewzwkBnTEiEbmOWUtHnG2wJTeTZWfyF7dVH0vweyQYy+O/nNToPBCiH5/qQYWuqmLmOqQdUj3v2uuG3E1+5COdpUsvEdJSucNCGNv/bt2KRuxaPCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727343211; c=relaxed/simple;
-	bh=SUn/vvrncCE0nhQgNheq+rKNJo1IJc30uF6+NgEanTs=;
+	bh=V/SZqRascJ77vL6ehG1hjZCIMectILQwn69vqsidYjY=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HGOHu546DLVgrSgZ2H35Mi9/4eXdjMj1J4NpCPqQ8Vh4umsi/oC9lKyCkttRKzZu3u1Jb6egqdoeucc+dUhB31Skq7RioggErTLCMdfwxP5PL8o/I7R3kjlegUwVSW5W0kg4e8Fi4Zca0rC2ZwEdMkM8Ue/RYlLyNORE1x91ydM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OhhJlhqd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E50A1C4CEC5
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 09:33:29 +0000 (UTC)
+	 MIME-Version; b=W1j9wcZfs+C6p09jc/NHGjbV6TNWj+wSNxUKqGFtp5/fBF5h6XtyGSyQtiySoP/ioxlMVW66MKDhTuH6Ck8M1j1yw8YNaP2b7HCoo5twZKWyyZNFswzyTv0T5jWVc83Km3qM+u9MQPY9K1281R/a/LctsnGnhbgdLQK8usKZ14c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=om4tngvU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA8CC4CECD
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 09:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727343210;
-	bh=SUn/vvrncCE0nhQgNheq+rKNJo1IJc30uF6+NgEanTs=;
+	s=k20201202; t=1727343211;
+	bh=V/SZqRascJ77vL6ehG1hjZCIMectILQwn69vqsidYjY=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=OhhJlhqdgF/cMHxeRgdRFtSQL5vrIK85xsGTwwL4vxauvDwG1c/Vk4a/7cI3kH/aD
-	 CIxGJByOZ3rLeZUe6Y8/sJbruRTuuse8AIjR6oweL+/dpv+tRciQ5IY3lWDEqCvHBW
-	 3jEFO/HDt4XS9ewfiCMJO3v71IcqxcUOv2O5Q3aWPIQcQF04DeuOX4BhlygeRf4px5
-	 vrZFJJvETA+0tfKfELvkkXZWLzxl5KOZROVVoHnSc2SH/pmVI3ac+pVHo4KJFJDBzI
-	 XnKCEyADLSrVptJDi2P+nA1LW/hf3bM65Mka8DlRnk+QgrOY8GTMwvJ7HHNpwyB5ca
-	 j+bjZrayjyi2g==
+	b=om4tngvUlKxcxRRZINjTJgk5Y/CUFR6XsDRfa1BlGF5WUJoLGzBp5xc/Sg+CPx+/q
+	 Q9DVn8T/ZWra3oUhJw8/+vs9YTz13tNoOEJS8hWdMOnsUED5UTWKVtpH1fm+OVDEkZ
+	 kHRkAQ+90T1s/XlpYDboBWS4l4G9VFIXy6TJ9nuxKHSyPOgO6CKJ9kPD7j7+9bhm10
+	 zEMqRrSfiy93ckrfKvNOynAVW0fnS887sXvB4H7QSsRhe5Gd6iOjMzOj87QJgb+0oM
+	 /4lWFrpWh0x+0HMJuVdYLE0PGC9WZB8bLj/LVeGcAxEbAoXtYeD/Nx6FqJ3b42idBq
+	 EDie8v8XkvG0Q==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 5/8] btrfs: store fs_info in a local variable at btrfs_qgroup_trace_extent_post()
-Date: Thu, 26 Sep 2024 10:33:19 +0100
-Message-Id: <864cd8ab499ea61d43b5bef36bb3b2210a60c224.1727342969.git.fdmanana@suse.com>
+Subject: [PATCH v2 6/8] btrfs: remove unnecessary delayed refs locking at btrfs_qgroup_trace_extent()
+Date: Thu, 26 Sep 2024 10:33:20 +0100
+Message-Id: <6d772cdeeb6f3991578be43a0e0c741694e8b677.1727342969.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1727342969.git.fdmanana@suse.com>
 References: <cover.1727342969.git.fdmanana@suse.com>
@@ -59,55 +59,43 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of extracting fs_info from the transaction multiples times, store
-it in a local variable and use it.
+There's no need to hold the delayed refs spinlock when calling
+btrfs_qgroup_trace_extent_nolock() from btrfs_qgroup_trace_extent(), since
+it doesn't change anything in delayed refs and it only changes the xarray
+used to track qgroup extent records, which is protected by the xarray's
+lock.
+
+Holding the lock is only adding unnecessary lock contention with other
+tasks that actually need to take the lock to add/remove/change delayed
+references. So remove the locking.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/qgroup.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ fs/btrfs/qgroup.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 722edb04b78f..8d000a9d35af 100644
+index 8d000a9d35af..3574af6d25ef 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -2070,10 +2070,14 @@ int btrfs_qgroup_trace_extent_post(struct btrfs_trans_handle *trans,
- 				   struct btrfs_qgroup_extent_record *qrecord,
- 				   u64 bytenr)
- {
--	struct btrfs_backref_walk_ctx ctx = { 0 };
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_backref_walk_ctx ctx = {
-+		.bytenr = bytenr,
-+		.fs_info = fs_info,
-+	};
- 	int ret;
+@@ -2021,7 +2021,6 @@ int btrfs_qgroup_trace_extent_nolock(struct btrfs_fs_info *fs_info,
+ 	}
+ #endif
  
--	if (!btrfs_qgroup_full_accounting(trans->fs_info))
-+	if (!btrfs_qgroup_full_accounting(fs_info))
- 		return 0;
- 	/*
- 	 * We are always called in a context where we are already holding a
-@@ -2096,16 +2100,13 @@ int btrfs_qgroup_trace_extent_post(struct btrfs_trans_handle *trans,
- 	 */
- 	ASSERT(trans != NULL);
+-	lockdep_assert_held(&delayed_refs->lock);
+ 	trace_btrfs_qgroup_trace_extent(fs_info, record, bytenr);
  
--	if (trans->fs_info->qgroup_flags & BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING)
-+	if (fs_info->qgroup_flags & BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING)
- 		return 0;
+ 	xa_lock(&delayed_refs->dirty_extents);
+@@ -2160,9 +2159,7 @@ int btrfs_qgroup_trace_extent(struct btrfs_trans_handle *trans, u64 bytenr,
+ 	record->num_bytes = num_bytes;
+ 	record->old_roots = NULL;
  
--	ctx.bytenr = bytenr;
--	ctx.fs_info = trans->fs_info;
--
- 	ret = btrfs_find_all_roots(&ctx, true);
- 	if (ret < 0) {
--		qgroup_mark_inconsistent(trans->fs_info);
--		btrfs_warn(trans->fs_info,
-+		qgroup_mark_inconsistent(fs_info);
-+		btrfs_warn(fs_info,
- "error accounting new delayed refs extent (err code: %d), quota inconsistent",
- 			ret);
- 		return 0;
+-	spin_lock(&delayed_refs->lock);
+ 	ret = btrfs_qgroup_trace_extent_nolock(fs_info, delayed_refs, record, bytenr);
+-	spin_unlock(&delayed_refs->lock);
+ 	if (ret) {
+ 		/* Clean up if insertion fails or item exists. */
+ 		xa_release(&delayed_refs->dirty_extents, index);
 -- 
 2.43.0
 
