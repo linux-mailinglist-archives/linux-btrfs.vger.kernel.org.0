@@ -1,288 +1,409 @@
-Return-Path: <linux-btrfs+bounces-8268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776E3987681
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 17:28:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18F13987765
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 18:15:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 996A21C21386
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 15:28:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AB2E1F24FC1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 16:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B349014D70F;
-	Thu, 26 Sep 2024 15:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70D71552E4;
+	Thu, 26 Sep 2024 16:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ziWqze4j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QdFxe7Rz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26200132139
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 15:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 409FC20323
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 16:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727364485; cv=none; b=GLAPiQstj2Rn6ONTBfHVZ6DRmhUmEBo1TtD74morzaDobr4q0B3uh+JLrxCKlAscO9pz5PkkDgMmbLHUhe+IK8bYYBLV/ZBxoIficd793vignzR+qVyTnwGHy3qvizva9GR2hGRdVFIz0FM7b0I6Xbj5Bg3iIyi4WKLEpkuuT2s=
+	t=1727367349; cv=none; b=Q5m90he5U1zDKVP5TzN+/KwZUlRtl8Lk5RQ56jZPwEQaGC+ICd8Nk4Qs3eA7aFSMItE37YbN9odBRy/EWEKynbV5fNgbw4Op6emNHUwuOqexxW2KSYsAQFKIN4zTr4dtVT41RiwZiL7anisNjN/3YUoh54aSB/ba1kOHHw/rtC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727364485; c=relaxed/simple;
-	bh=rEfB5Hpjcg7xRZHA0gQSGFbP4BGJq/Y5/N+J7RTlKac=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rTVKtN0ooAeSPGGdyAawWJs7ssMlDcNAXi0b5aNjz1Yyr/13dY359YIDBCrO3O8FN2DyIoqkiEJoSowqpEN71kdI2StOqNDKN3ivNTFJRxGRCvQhfBJ+nmptluZl2HcMA1fk/FXjwewh/xr9pJlananHhnvUD1icIzCigVsf44k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=ziWqze4j; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-e25cf3c7278so777904276.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 08:28:03 -0700 (PDT)
+	s=arc-20240116; t=1727367349; c=relaxed/simple;
+	bh=bVjomwh9KnEnfHzyUi1dupszm6HbrVAoo9gjKkuKDbU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Wu5ZYY6LoFb+Ws85E+0mNUOt1xFkSpDiXQWFlOcK7sjhyoXmk2el9kNH9FH12XilTq4PJMbw3hLGiMTn0JhUOZXo4vupcZ9ABqQoinl+bjK0MOld5hA+wc9k3xnk/rxS9EvHiX4kj8vyj7o+koSf+4pawtSi8/YZSdpRbVu3hXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QdFxe7Rz; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7d7a9200947so820598a12.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 09:15:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1727364482; x=1727969282; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IYxTMIJYtEcyqMbG1j/lJfbh1tgoURUED47VmaAmgG4=;
-        b=ziWqze4jonRhNJEG9eCuqpOkbn4dWWhzLEQ+pn25P9ya2IQkboyfhUVON7lSdwGTLX
-         ZsSWemhP26EHluvFc6VY8qnwdingTvOercHTPHXL9UmvooFp2Cd+9Ini11QJhJJl+5gA
-         GvX9NnlfDC/g+fguQF345IZamek7/UlFGfFT18PqFn8n/xb7A4rKfzfto+KGCBHoP3tE
-         XkybDBBsH6FMD9JFRSY78T1Q8bW7CNQqES5qGLXBLoAFX6AMoxeaLrdW0d4500P1u+gF
-         AdQJrsgmNMY+O7n6KJnFRaQDLXLV0qZYZnDKWLvHiwRLruul1lzjGKR1oi4OrmRyJDvR
-         yhSg==
+        d=gmail.com; s=20230601; t=1727367346; x=1727972146; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=i1J9YATDefwZZWWnkMlZwnOLnh/g+9VJTjFuPP9lu/k=;
+        b=QdFxe7Rz/G5KRqdLvVtVQh1grXsXT4cmpCn78ihmUXHXQarFkcycFNybuzzog85MuY
+         oobNrdTl+LAusfn5UbglpoY7RX/mBFa0aOTqRWNGnFeRL5LrmDGGfn3Izu4nH81BHjJ2
+         83GeR1baPEK+jdI7LwmW1aXDDgphbXNhGQezRyBoe9rY8Tb+iuFU8VkLaZKyhOJmDdoN
+         ua6FrwKyjPkp9n4cn9/94JylbWOCr26Wn+oV8CAO745TD+/N6C1AWFtl0+5GUX+VwTm0
+         yxzi8P7oxF67ovMS/ssbtWVI6tlpm+gaPSxg2hsoRucP9ZLaAgW0rczV9p+3k+VgZk0S
+         vM8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727364482; x=1727969282;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IYxTMIJYtEcyqMbG1j/lJfbh1tgoURUED47VmaAmgG4=;
-        b=lXXFoa9xhw/usCsuiBpLfeMVKrG/xonPjdn1oCgg8UEKCI/NizoUWDA/n6odnSsLff
-         bGZp/2XXl5wEITlqdFWQ5/2jmtm0HQ+t9nlBxuzFG2Nm/qQlJz8Y03l3Sf7S755ATfYW
-         Khze3vd6WKM8tIVfiThSljVVKX/0wSHxnBZqM1ZuIC6l4sOuStU19GsQBsTtVDmrGKjl
-         vQBQel4eNCQwfcVavvGpttXaiExREL5vnSRFUjsBAamoFMJEH0b67YzhUl7DSSw+zj4l
-         AGDRssV8lJUaHCKOAm31Gg80mWdJUs/4hBuAxL3SjHjzXJbTQBpYFSlHoyl6hGDIIIV2
-         azwg==
-X-Gm-Message-State: AOJu0YzpFP8RvGNSm3V82jURjmE3X0aeSkELAxeSj9sCzbfkNIAhnnaZ
-	BlnUMsvVDkP+U+sIW+1ImxYKCgaeyC177ESEyviXIxOdP5BjM+qAOfAolLLlZWq+ouLx4fLyOwZ
-	J
-X-Google-Smtp-Source: AGHT+IH81f1Xl63uVw5FJxSyiQADqcbWbHehBGRcauaW624fvJFG8y2FfHau3Oz0W/eTfvLh51lL2w==
-X-Received: by 2002:a05:6902:118f:b0:e1d:ad92:d748 with SMTP id 3f1490d57ef6-e24d7823d82mr5418917276.8.1727364482532;
-        Thu, 26 Sep 2024 08:28:02 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e25e6c31c4bsm15937276.62.2024.09.26.08.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 08:28:01 -0700 (PDT)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Cc: stable@vger.kernel.org,
-	Boris Burkov <boris@bur.io>
-Subject: [PATCH v2] btrfs: drop the backref cache during relocation if we commit
-Date: Thu, 26 Sep 2024 11:27:56 -0400
-Message-ID: <6db9c462e7fd4c4923c222c9f4cc286946e12afc.1727364472.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1727367346; x=1727972146;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i1J9YATDefwZZWWnkMlZwnOLnh/g+9VJTjFuPP9lu/k=;
+        b=Hp7omGl9cEQxNF9tKwp+c6nfaVnnXJQD64stt7zbyOA+qZBIlx5HTcrBuSx9DuBYNf
+         ThecFZy1E6uduC/mxs/rB4e78FOAl6etpCFoxoKx++d1e3634IOiAqR9Zo/QbFqA6l/h
+         xmApvW7yvyDqwOxNR87Z6ctHog2xnvWUgFaPGs8Ew/1mrAkiP6hbfXboZI/kK9BRBz/z
+         6fDtvLxpwNLmoCgfrhCR2GNn4OaFmyD+8PU8qOBKxDpfdKO9mc82FF39L8jBPbG7J5aA
+         kp35IqYmkjsF2qsEvvzDaKRHB7IZeZgTCh7xiycVnvtdlwF3EcfFyxhPGIyQlEM9Esq2
+         h7+A==
+X-Gm-Message-State: AOJu0YynlS6q+ivMogqKfeOGIri1UE9s7eqo96JWpJuYNFrFIg7TVNg9
+	C1OOMiWyC1FL5WAlRfvldN+OOW0TafEx2dzAWW+dgZELDivd/6sPZxnctv1gZ9KO4X2SXz4ByuU
+	dKVyHBYnxDvb8b4KZeMB9qZGMbmgK4Jcj
+X-Google-Smtp-Source: AGHT+IEu3Iz4lF2z5FnGs1V/PIq7chbM3wg54VTEsRcdtrbZ/W/Sr5ve4jr1GTWVQT/Hwcl4hUD9gmXafM/cl6IH7Jw=
+X-Received: by 2002:a05:6a21:7101:b0:1cf:6c64:ee72 with SMTP id
+ adf61e73a8af0-1d4fa7ae316mr322417637.34.1727367345757; Thu, 26 Sep 2024
+ 09:15:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Ben Millwood <thebenmachine@gmail.com>
+Date: Thu, 26 Sep 2024 17:15:34 +0100
+Message-ID: <CAJhrHS2z+WViO2h=ojYvBPDLsATwLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com>
+Subject: ERROR: failed to clone extents to [...]: Invalid argument
+To: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Since the inception of relocation we have maintained the backref cache
-across transaction commits, updating the backref cache with the new
-bytenr whenever we COW'ed blocks that were in the cache, and then
-updating their bytenr once we detected a transaction id change.
+Hi folks,
 
-This works as long as we're only ever modifying blocks, not changing the
-structure of the tree.
+I got these mailing list details from
+https://github.com/kdave/btrfs-wiki/blob/master/btrfs.wiki/Btrfs%20mailing%20list
+, which sounds like it's deprecated as a source, so I hope the details
+and etiquette guidelines are still current...
 
-However relocation does in fact change the structure of the tree.  For
-example, if we are relocating a data extent, we will look up all the
-leaves that point to this data extent.  We will then call
-do_relocation() on each of these leaves, which will COW down to the leaf
-and then update the file extent location.
+Anyway, I'm seeing an error with similar symptoms as this old thing:
+https://lore.kernel.org/linux-btrfs/87blnsuv7m.fsf@gmail.com/T/ , but
+likely with a different cause.
 
-But, a key feature of do_relocation is the pending list.  This is all
-the pending nodes that we modified when we updated the file extent item.
-We will then process all of these blocks via finish_pending_nodes, which
-calls do_relocation() on all of the nodes that led up to that leaf.
+My setup is:
+- My btrfs filesystem has two top-level subvolumes, /root and /snap,
+which I mount into / and /snap respectively. (I don't remember exactly
+why I did it this way, to be honest.)
+- I have a regularly-triggered systemd unit that runs: btrfs subvolume
+snapshot -r / "/snap/root/$(date -u --iso-8601=seconds)"
+- I have two external USB disks, and I btrfs send -p
+/snap/root/LASTSNAP /snap/root/NEWSNAP | btrfs receive
+/mnt/USBDISK/root/YEAR for each one (I have scripts to do this for me,
+but I've reproduced the issue without the scripts. If you still want
+to read more about them for whatever reason, you can find them at
+https://github.com/bmillwood/backups )
+- Periodically I btrfs subvolume delete old snapshots from /snap/root.
+The ones in the external USB disks stay there forever. (I don't have
+crazy amounts of data, so this has been sustainable so far, but it
+does mean I have over 3k snapshots on there, which is perhaps
+unusual...)
 
-The purpose of this is to make sure we don't break sharing unless we
-absolutely have to.  Consider the case that we have 3 snapshots that all
-point to this leaf through the same nodes, the initial COW would have
-created a whole new path.  If we did this for all 3 snapshots we would
-end up with 3x the number of nodes we had originally.  To avoid this we
-will cycle through each of the snapshots that point to each of these
-nodes and update their pointers to point at the new nodes.
+This more-or-less works most of the time, but recently I have a
+snapshot that won't co-operate, failing with "ERROR: failed to clone
+extents to home/ben/code/nix/noether/etc-nixos/system-packages.nix:
+Invalid argument". This happens with the same snapshot + erroneous
+file path for both of my external disks.
 
-Once we update the pointer to the new node we will drop the node we
-removed the link for and all of its children via btrfs_drop_subtree().
-This is essentially just btrfs_drop_snapshot(), but for an arbitrary
-point in the snapshot.
+I redid the send / receive pipeline with -vv on the receive:
 
-The problem with this is that we will never reflect this in the backref
-cache.  If we do this btrfs_drop_snapshot() for a node that is in the
-backref tree, we will leave the node in the backref tree.  This becomes
-a problem when we change the transid, as now the backref cache has
-entire subtrees that no longer exist, but exist as if they still are
-pointed to by the same roots.
+btrfs send -p /snap/root/2024-09-12T16\:29\:16+00\:00
+/snap/root/2024-09-12T17\:04\:17+00\:00 | btrfs receive -vv
+/mnt/electricaltape/root/2024 &> /mnt/electricaltape/receive-vv.log
 
-In the best case scenario you end up with "adding refs to an existing
-tree ref" errors from insert_inline_extent_backref(), where we attempt
-to link in nodes on roots that are no longer valid.
+and here's tail receive-vv.log:
 
-Worst case you will double free some random block and re-use it when
-there's still references to the block.
+unlink o1209472-383-0/vmsish.3.gz
+utimes nix/store/.links/0h84wh2xnnfqram84dsszzii4v2r497hvxsvbxfyppgfnwc3c4rk
+unlink o1209472-383-0/warnings.3.gz
+utimes nix/store/.links/0kh81sw0mh5sm7sgfb5g99rgb45qw85qs1s8qndjh4kchi0j1jq6
+unlink o1209472-383-0/warnings::register.3.gz
+rmdir o1209472-383-0
+utimes nix/store/.links/02m8fllf71vlf6wwx2h72k2adfx015gq8sxmbb5b52xdv3rq012l
+clone home/ben/code/nix/noether/etc-nixos/system-packages.nix -
+source=etc/nixos/system-packages.nix source offset=0 offset=0
+length=4985
+ERROR: failed to clone extents to
+home/ben/code/nix/noether/etc-nixos/system-packages.nix: Invalid
+argument
+At snapshot 2024-09-12T17:04:17+00:00
 
-This is extremely subtle, and the consequences are quite bad.  There
-isn't a way to make sure our backref cache is consistent between
-transid's.
+The two files mentioned are generally copies of each other. I'm not
+sure if they're CoW shallow clones of each other or not. On its face
+I'm not sure why the clone would fail, given that the file length
+appears to be correct. Here's the file being written earlier in the
+receive:
 
-In order to fix this we need to simply evict the entire backref cache
-anytime we cross transid's.  This reduces performance in that we have to
-rebuild this backref cache every time we change transid's, but fixes the
-bug.
+# grep -nF system-packages.nix receive-vv.log
+133380:write etc/nixos/system-packages.nix - offset=0 length=4985
+133381:truncate etc/nixos/system-packages.nix size=4985
+133382:utimes etc/nixos/system-packages.nix
+316933:clone home/ben/code/nix/noether/etc-nixos/system-packages.nix -
+source=etc/nixos/system-packages.nix source offset=0 offset=0
+length=4985
+316934:ERROR: failed to clone extents to
+home/ben/code/nix/noether/etc-nixos/system-packages.nix: Invalid
+argument
 
-This has existed since relocation was added, and is a pretty critical
-bug.  There's a lot more cleanup that can be done now that this
-functionality is going away, but this patch is as small as possible in
-order to fix the problem and make it easy for us to backport it to all
-the kernels it needs to be backported to.
+Here's the local parent snapshot:
 
-Followup series will dismantle more of this code and simplify relocation
-drastically to remove this functionality.
+# btrfs subvolume show /snap/root/2024-09-12T16\:29\:16+00\:00
+snap/root/2024-09-12T16:29:16+00:00
+    Name:             2024-09-12T16:29:16+00:00
+    UUID:             1640ca1d-94ca-f448-a89c-a3d83023744a
+    Parent UUID:         a14d8622-5729-3543-8bba-62104d53e52a
+    Received UUID:         -
+    Creation time:         2024-09-12 17:29:16 +0100
+    Subvolume ID:         348
+    Generation:         63052
+    Gen at creation:     63051
+    Parent ID:         257
+    Top level ID:         257
+    Flags:             readonly
+    Send transid:         0
+    Send time:         2024-09-12 17:29:16 +0100
+    Receive transid:     0
+    Receive time:         -
+    Snapshot(s):
+    Quota group:        n/a
 
-We have a reproducer that reproduced the corruption within a few minutes
-of running.  With this patch it survives several iterations/hours of
-running the reproducer.
+the local sent snapshot:
 
-Fixes: 3fd0a5585eb9 ("Btrfs: Metadata ENOSPC handling for balance")
-Cc: stable@vger.kernel.org
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/backref.c    | 12 ++++---
- fs/btrfs/relocation.c | 75 ++-----------------------------------------
- 2 files changed, 11 insertions(+), 76 deletions(-)
+# btrfs subvolume show /snap/root/2024-09-12T17\:04\:17+00\:00/
+snap/root/2024-09-12T17:04:17+00:00
+    Name:             2024-09-12T17:04:17+00:00
+    UUID:             f4190efb-ee53-0341-9613-93be3d2afbcb
+    Parent UUID:         a14d8622-5729-3543-8bba-62104d53e52a
+    Received UUID:         -
+    Creation time:         2024-09-12 18:04:17 +0100
+    Subvolume ID:         349
+    Generation:         63122
+    Gen at creation:     63121
+    Parent ID:         257
+    Top level ID:         257
+    Flags:             readonly
+    Send transid:         0
+    Send time:         2024-09-12 18:04:17 +0100
+    Receive transid:     0
+    Receive time:         -
+    Snapshot(s):
+    Quota group:        n/a
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index e2f478ecd7fd..f8e1d5b2c512 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -3179,10 +3179,14 @@ void btrfs_backref_release_cache(struct btrfs_backref_cache *cache)
- 		btrfs_backref_cleanup_node(cache, node);
- 	}
- 
--	cache->last_trans = 0;
--
--	for (i = 0; i < BTRFS_MAX_LEVEL; i++)
--		ASSERT(list_empty(&cache->pending[i]));
-+	for (i = 0; i < BTRFS_MAX_LEVEL; i++) {
-+		while (!list_empty(&cache->pending[i])) {
-+			node = list_first_entry(&cache->pending[i],
-+						struct btrfs_backref_node,
-+						list);
-+			btrfs_backref_cleanup_node(cache, node);
-+		}
-+	}
- 	ASSERT(list_empty(&cache->pending_edge));
- 	ASSERT(list_empty(&cache->useless_node));
- 	ASSERT(list_empty(&cache->changed));
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index ea4ed85919ec..cf1dfeaaf2d8 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -232,70 +232,6 @@ static struct btrfs_backref_node *walk_down_backref(
- 	return NULL;
- }
- 
--static void update_backref_node(struct btrfs_backref_cache *cache,
--				struct btrfs_backref_node *node, u64 bytenr)
--{
--	struct rb_node *rb_node;
--	rb_erase(&node->rb_node, &cache->rb_root);
--	node->bytenr = bytenr;
--	rb_node = rb_simple_insert(&cache->rb_root, node->bytenr, &node->rb_node);
--	if (rb_node)
--		btrfs_backref_panic(cache->fs_info, bytenr, -EEXIST);
--}
--
--/*
-- * update backref cache after a transaction commit
-- */
--static int update_backref_cache(struct btrfs_trans_handle *trans,
--				struct btrfs_backref_cache *cache)
--{
--	struct btrfs_backref_node *node;
--	int level = 0;
--
--	if (cache->last_trans == 0) {
--		cache->last_trans = trans->transid;
--		return 0;
--	}
--
--	if (cache->last_trans == trans->transid)
--		return 0;
--
--	/*
--	 * detached nodes are used to avoid unnecessary backref
--	 * lookup. transaction commit changes the extent tree.
--	 * so the detached nodes are no longer useful.
--	 */
--	while (!list_empty(&cache->detached)) {
--		node = list_entry(cache->detached.next,
--				  struct btrfs_backref_node, list);
--		btrfs_backref_cleanup_node(cache, node);
--	}
--
--	while (!list_empty(&cache->changed)) {
--		node = list_entry(cache->changed.next,
--				  struct btrfs_backref_node, list);
--		list_del_init(&node->list);
--		BUG_ON(node->pending);
--		update_backref_node(cache, node, node->new_bytenr);
--	}
--
--	/*
--	 * some nodes can be left in the pending list if there were
--	 * errors during processing the pending nodes.
--	 */
--	for (level = 0; level < BTRFS_MAX_LEVEL; level++) {
--		list_for_each_entry(node, &cache->pending[level], list) {
--			BUG_ON(!node->pending);
--			if (node->bytenr == node->new_bytenr)
--				continue;
--			update_backref_node(cache, node, node->new_bytenr);
--		}
--	}
--
--	cache->last_trans = 0;
--	return 1;
--}
--
- static bool reloc_root_is_dead(const struct btrfs_root *root)
- {
- 	/*
-@@ -551,9 +487,6 @@ static int clone_backref_node(struct btrfs_trans_handle *trans,
- 	struct btrfs_backref_edge *new_edge;
- 	struct rb_node *rb_node;
- 
--	if (cache->last_trans > 0)
--		update_backref_cache(trans, cache);
--
- 	rb_node = rb_simple_search(&cache->rb_root, src->commit_root->start);
- 	if (rb_node) {
- 		node = rb_entry(rb_node, struct btrfs_backref_node, rb_node);
-@@ -3698,11 +3631,9 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
- 			break;
- 		}
- restart:
--		if (update_backref_cache(trans, &rc->backref_cache)) {
--			btrfs_end_transaction(trans);
--			trans = NULL;
--			continue;
--		}
-+		if (rc->backref_cache.last_trans != trans->transid)
-+			btrfs_backref_release_cache(&rc->backref_cache);
-+		rc->backref_cache.last_trans = trans->transid;
- 
- 		ret = find_next_extent(rc, path, &key);
- 		if (ret < 0)
--- 
-2.43.0
+and the remote parent snapshot:
 
+# btrfs subvolume show
+/mnt/electricaltape/root/2024/2024-09-12T16\:29\:16+00\:00/
+root/2024/2024-09-12T16:29:16+00:00
+    Name:             2024-09-12T16:29:16+00:00
+    UUID:             cfa79865-0272-3845-b447-4d650c2f6d5a
+    Parent UUID:         3d45fbdc-7e4e-f044-83c3-32ad05b70441
+    Received UUID:         1640ca1d-94ca-f448-a89c-a3d83023744a
+    Creation time:         2024-09-26 14:00:31 +0100
+    Subvolume ID:         5842
+    Generation:         14268
+    Gen at creation:     14255
+    Parent ID:         5
+    Top level ID:         5
+    Flags:             readonly
+    Send transid:         63051
+    Send time:         2024-09-26 14:00:31 +0100
+    Receive transid:     14261
+    Receive time:         2024-09-26 14:09:52 +0100
+    Snapshot(s):
+    Quota group:        n/a
+
+I checked, and:
+- the Parent UUID of both local snaps is the UUID of my root subvolume,
+- the Parent UUID of the remote parent is the UUID of the previous
+remote snapshot,
+- as you can see, the Received UUID of the remote parent is the UUID
+of the local parent (and neither local snapshots have a Received
+UUID).
+
+local parent files:
+
+# stat /snap/root/2024-09-12T16\:29\:16+00\:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+  File: /snap/root/2024-09-12T16:29:16+00:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+  Size: 5026          Blocks: 16         IO Block: 4096   regular file
+Device: 0,411    Inode: 1211367     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/     ben)   Gid: (  100/   users)
+Access: 2024-09-12 17:05:38.551355079 +0100
+Modify: 2024-09-12 17:26:55.867672396 +0100
+Change: 2024-09-12 17:26:55.867672396 +0100
+ Birth: 2024-07-07 23:50:28.962175308 +0100
+
+# stat /snap/root/2024-09-12T16\:29\:16+00\:00/etc/nixos/system-packages.nix
+  File: /snap/root/2024-09-12T16:29:16+00:00/etc/nixos/system-packages.nix
+  Size: 5026          Blocks: 16         IO Block: 4096   regular file
+Device: 0,411    Inode: 597357      Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2024-09-12 17:27:05.736798471 +0100
+Modify: 2024-09-12 17:27:04.700785230 +0100
+Change: 2024-09-12 17:27:04.700785230 +0100
+ Birth: 2024-07-07 22:27:35.003876023 +0100
+
+local sent files:
+
+  File: /snap/root/2024-09-12T17:04:17+00:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+  Size: 4985          Blocks: 16         IO Block: 4096   regular file
+Device: 0,415    Inode: 1211367     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/     ben)   Gid: (  100/   users)
+Access: 2024-09-12 18:02:43.410125394 +0100
+Modify: 2024-09-12 18:03:00.161350117 +0100
+Change: 2024-09-12 18:03:00.161350117 +0100
+ Birth: 2024-07-07 23:50:28.962175308 +0100
+
+  File: /snap/root/2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix
+  Size: 4985          Blocks: 16         IO Block: 4096   regular file
+Device: 0,415    Inode: 597357      Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2024-09-12 18:03:10.051482821 +0100
+Modify: 2024-09-12 18:03:09.142470623 +0100
+Change: 2024-09-12 18:03:09.142470623 +0100
+ Birth: 2024-07-07 22:27:35.003876023 +0100
+
+remote parent files:
+
+# stat /mnt/electricaltape/root/2024/2024-09-12T16\:29\:16+00\:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+  File: /mnt/electricaltape/root/2024/2024-09-12T16:29:16+00:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+  Size: 5026          Blocks: 16         IO Block: 4096   regular file
+Device: 0,3211    Inode: 42099860    Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/     ben)   Gid: (  100/   users)
+Access: 2024-09-12 17:05:38.551355079 +0100
+Modify: 2024-09-12 17:26:55.867672396 +0100
+Change: 2024-09-26 14:03:06.227153443 +0100
+ Birth: 2024-03-02 17:39:41.804616575 +0000
+
+# stat /mnt/electricaltape/root/2024/2024-09-12T16\:29\:16+00\:00/etc/nixos/system-packages.nix
+  File: /mnt/electricaltape/root/2024/2024-09-12T16:29:16+00:00/etc/nixos/system-packages.nix
+  Size: 5026          Blocks: 16         IO Block: 4096   regular file
+Device: 0,3211    Inode: 33809348    Links: 1
+Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2024-09-12 17:27:05.736798471 +0100
+Modify: 2024-09-12 17:27:04.700785230 +0100
+Change: 2024-09-26 14:01:42.081508624 +0100
+ Birth: 2022-07-14 21:32:47.972957386 +0100
+
+Here's various system and filesystem info:
+
+$ uname -a
+Linux noether 6.6.52 #1-NixOS SMP PREEMPT_DYNAMIC Wed Sep 18 17:24:10
+UTC 2024 x86_64 GNU/Linux
+
+$ btrfs --version
+btrfs-progs v6.8.1
+
+$ btrfs fi show
+Label: 'noether-root'  uuid: b7ad9a05-8f7b-44af-8952-a7f717e897e0
+    Total devices 1 FS bytes used 274.02GiB
+    devid    1 size 390.62GiB used 303.07GiB path /dev/mapper/noether-lv
+
+Label: none  uuid: 7f916f66-8afa-4de6-be52-a0f127c756e1
+    Total devices 1 FS bytes used 2.17TiB
+    devid    1 size 3.64TiB used 2.39TiB path /dev/mapper/electricaltape--vg-lv
+
+$ btrfs fi df /
+Data, single: total=251.01GiB, used=249.08GiB
+System, DUP: total=32.00MiB, used=48.00KiB
+Metadata, DUP: total=26.00GiB, used=24.94GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+I assume btrfs fi df /mnt/electricaltape is not relevant since it's
+probably on the sending side, but here it is anyway:
+Data, single: total=1.96TiB, used=1.95TiB
+System, DUP: total=8.00MiB, used=256.00KiB
+Metadata, DUP: total=225.00GiB, used=223.61GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+dmesg as a whole is pretty large, but here's me mounting my root disk
+at boot time:
+
+[   11.470686] stage-1-init: [Thu Sep 26 10:34:53 UTC 2024] Passphrase
+for /dev/disk/by-uuid/bfb4d3ae-816a-48f5-a925-30acc0d7a3ef:
+[   17.349037] Key type encrypted registered
+[   17.387864] stage-1-init: [Thu Sep 26 10:34:59 UTC 2024] Verifying
+passphrase for /dev/disk/by-uuid/bfb4d3ae-816a-48f5-a925-30acc0d7a3ef...
+- success
+[   17.390297] stage-1-init: [Thu Sep 26 10:34:59 UTC 2024] starting
+device mapper and LVM...
+[   17.412379] stage-1-init: [Thu Sep 26 10:34:59 UTC 2024] 1 logical
+volume(s) in volume group "noether" now active
+[   17.475310] BTRFS: device label noether-root devid 1 transid 75991
+/dev/mapper/noether-lv scanned by btrfs (214)
+[   17.477307] stage-1-init: [Thu Sep 26 10:34:59 UTC 2024] Scanning
+for Btrfs filesystems
+[   17.479005] stage-1-init: [Thu Sep 26 10:34:59 UTC 2024]
+registered: /dev/mapper/noether-lv
+[   17.504504] stage-1-init: [Thu Sep 26 10:34:59 UTC 2024] mounting
+/dev/disk/by-label/noether-root on /...
+[   17.506407] BTRFS info (device dm-1): first mount of filesystem
+b7ad9a05-8f7b-44af-8952-a7f717e897e0
+[   17.506429] BTRFS info (device dm-1): using crc32c (crc32c-intel)
+checksum algorithm
+[   17.506441] BTRFS info (device dm-1): use zstd compression, level 3
+[   17.506449] BTRFS info (device dm-1): using free space tree
+[   17.595741] BTRFS info (device dm-1): enabling ssd optimizations
+
+and here's everything since I plugged in electricaltape:
+
+[ 4782.354412] usb 2-1: new SuperSpeed USB device number 3 using xhci_hcd
+[ 4782.369977] usb 2-1: New USB device found, idVendor=0bc2,
+idProduct=ab28, bcdDevice= 1.00
+[ 4782.369984] usb 2-1: New USB device strings: Mfr=2, Product=3, SerialNumber=1
+[ 4782.369986] usb 2-1: Product: BUP BL
+[ 4782.369988] usb 2-1: Manufacturer: Seagate
+[ 4782.369990] usb 2-1: SerialNumber: NA9FP1AT
+[ 4782.374490] scsi host0: uas
+[ 4782.375167] scsi 0:0:0:0: Direct-Access     Seagate  BUP BL
+  0304 PQ: 0 ANSI: 6
+[ 4782.376657] sd 0:0:0:0: [sda] Spinning up disk...
+[ 4783.430402] ......ready
+[ 4788.581955] sd 0:0:0:0: [sda] 7814037167 512-byte logical blocks:
+(4.00 TB/3.64 TiB)
+[ 4788.581960] sd 0:0:0:0: [sda] 2048-byte physical blocks
+[ 4788.582079] sd 0:0:0:0: [sda] Write Protect is off
+[ 4788.582082] sd 0:0:0:0: [sda] Mode Sense: 4f 00 00 00
+[ 4788.582238] sd 0:0:0:0: [sda] Write cache: enabled, read cache:
+enabled, doesn't support DPO or FUA
+[ 4788.608463] sd 0:0:0:0: [sda] Preferred minimum I/O size 512 bytes
+not a multiple of physical block size (2048 bytes)
+[ 4788.608470] sd 0:0:0:0: [sda] Optimal transfer size 33553920 bytes
+not a multiple of physical block size (2048 bytes)
+[ 4788.703618]  sda: sda1
+[ 4788.703776] sd 0:0:0:0: [sda] Attached SCSI disk
+[ 4808.813728] BTRFS: device fsid 7f916f66-8afa-4de6-be52-a0f127c756e1
+devid 1 transid 14201 /dev/dm-3 scanned by (udev-worker) (21792)
+[ 4808.859452] BTRFS info (device dm-3): first mount of filesystem
+7f916f66-8afa-4de6-be52-a0f127c756e1
+[ 4808.859473] BTRFS info (device dm-3): using crc32c (crc32c-intel)
+checksum algorithm
+[ 4808.859483] BTRFS info (device dm-3): use zlib compression, level 3
+[ 4808.859487] BTRFS info (device dm-3): disk space caching is enabled
+[ 4895.650086] BTRFS warning (device dm-3): block group 1789991583744
+has wrong amount of free space
+[ 4895.650093] BTRFS warning (device dm-3): failed to load free space
+cache for block group 1789991583744, rebuilding it now
+[ 4896.313609] BTRFS warning (device dm-3): block group 2062722007040
+has wrong amount of free space
+[ 4896.313617] BTRFS warning (device dm-3): failed to load free space
+cache for block group 2062722007040, rebuilding it now
+[ 4896.315812] BTRFS warning (device dm-3): block group 2078828134400
+has wrong amount of free space
+[ 4896.315817] BTRFS warning (device dm-3): failed to load free space
+cache for block group 2078828134400, rebuilding it now
+
+Grateful for any help anyone can offer, happy to do more debugging
+steps. I plan to keep all relevant snapshots around until this problem
+is resolved.
+
+In the absence of any other guidance, I'm going to try to figure out
+how to upgrade my kernel and btrfs-progs to as new a version as
+possible, and see if that makes any difference. I'll reply here if it
+does.
+
+Thanks!
 
