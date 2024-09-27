@@ -1,226 +1,342 @@
-Return-Path: <linux-btrfs+bounces-8283-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8284-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A1B987E01
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 07:54:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD787988014
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 10:11:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 634FE282397
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 05:54:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D71D1F26E6F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 08:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A69B17836E;
-	Fri, 27 Sep 2024 05:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76EF91898E2;
+	Fri, 27 Sep 2024 08:11:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OI5rp1Tv";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OI5rp1Tv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eL4Mm2FF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14D0E174EFA
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 05:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36FA189505
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 08:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727416431; cv=none; b=a6ujhbEbPebYs1QEc9ZQc5y+0YNhgbZDUcYRDm5X1ET6LXB0nWtyVwTgYODEqr9KUd9Z7/udR0QeoND49bCzBlFbJOpW3fdIv4AXV6jTIyL/5yCB8mfZxQ1UwGysruQCEjoqrKtWFbapMECNZDzv2Xy4sp6Vn59jLO6qnIs9hHk=
+	t=1727424674; cv=none; b=rsqZk+/4LSZdRaTUnkWPlqajNBTw0SuXspE4LFjl/2Z25AYy5ifVfBogUPNIhoDTUUkEGIJISRt1JlhnTCqSKShMm6v8O+qvoME+qJfJ+kDawtR4LTjUfBHmGoU9UmvJ8ZRWSQbrQItB5ZWht5ylg1fb/YhfkUG5Qq7OrAvsdcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727416431; c=relaxed/simple;
-	bh=7tIMzyPtXtvqDfYxqOAqQD6OH8r8LDhl/DSh3GvBr4I=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QbBSCa2z1XJ+ZlsWrhwjhggK9dOo4W1N7Rb41PfjYILtVdKPNP9Qr9JtfiYFp0068o3bxS43H58OFABbbl2aSjoWd6bodWX+58VHws9epSEoaagGnjrCGTTwVA3U/f/AlYpf/1rIYhQ+0HtvrcCC5BuDqigcdr6K3az3OxJjbto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OI5rp1Tv; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OI5rp1Tv; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2F5481FB59
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 05:53:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727416427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3bbPipif40V+AfRZ7jn8unps3KsJ2m5fpMaPoqSgk84=;
-	b=OI5rp1Tvg9ieFRF3m9tXa26syOkEJT+PqdwG3SpSyQVSCKKv05BssIw6PFIolnTmTR9R1d
-	WOZubbqnvd2CjCBDlvy6jpNLHEUWBwFBDLMajnvVZcJ+C6l9ofbjH1fdViZMZRzmVjWp42
-	tTXf8OYX/tvSylU/zjMUstHTwVDQ9Tw=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727416427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3bbPipif40V+AfRZ7jn8unps3KsJ2m5fpMaPoqSgk84=;
-	b=OI5rp1Tvg9ieFRF3m9tXa26syOkEJT+PqdwG3SpSyQVSCKKv05BssIw6PFIolnTmTR9R1d
-	WOZubbqnvd2CjCBDlvy6jpNLHEUWBwFBDLMajnvVZcJ+C6l9ofbjH1fdViZMZRzmVjWp42
-	tTXf8OYX/tvSylU/zjMUstHTwVDQ9Tw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 694E013A58
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 05:53:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qJ8HC2pI9maDBwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 05:53:46 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs-progs: misc-tests: new test case check the handling of full file clone
-Date: Fri, 27 Sep 2024 15:23:25 +0930
-Message-ID: <4946daa87f04c8068a9af7bc7d9b7092cb70263f.1727416314.git.wqu@suse.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <cover.1727416314.git.wqu@suse.com>
-References: <cover.1727416314.git.wqu@suse.com>
+	s=arc-20240116; t=1727424674; c=relaxed/simple;
+	bh=Sa4Wd+BRxe+TbXWgHNvV3z2qf2kimZ2m/wgHIpnv1iA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dJghRXFN6fDByhEJgHVEh8zIHhbtJ2NMP3S7uQn1KpEesmjIyvnkiGbQAROHu6sJhzGoLnt3TaBvtpm8f9ogeNZCpXANqccsFGs99jyEpquRwrQGL03zwJfooYSHhk07p+XU5R7diim/Wj5BuQ4t7r2quw0AcixCjrDDQP28zO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eL4Mm2FF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D6F7C4CEC7
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 08:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727424674;
+	bh=Sa4Wd+BRxe+TbXWgHNvV3z2qf2kimZ2m/wgHIpnv1iA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eL4Mm2FF1CZObjVUngO5YFfFPRPnsy9YLoQWkEfY5Jul18tllqFtyc7ysb2XzBjOU
+	 emqA8vCStZWFSj2pUw1nX9rQ6NlZRVOx8SkurtHuIvFSQ8KYWwwt/1aZ6bTVTw6b77
+	 J1tMYgBGousDoKgXf6BOHAHkzCTMh6nPN9sJ0p3F2HRh3I8nibdhbO3QeLR3GccgNg
+	 TQyutdwERvthzsRh6VWISV/K3aTNHJofDdLXn//gGgOzSq8172OD+38vpb6Y4BWu1H
+	 klLJl7Teo9I9chYUHyEFOF+wJHWxXoe+9yP4DcJJlfajUi8iGWCeGbaxyddcLt8zzG
+	 xf2ZKNI++uemA==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5365a9574b6so2956016e87.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 01:11:14 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyyfLeA2Qs+UJi2hVNxyjWTtZZWVlR5a8ZjJ8XjjbbIVPw7D2vV
+	3/AcALtLAg5HzBC7ukqDLCxqBYqD0jhVayC5R9/eyMnX/u/f7sJXH8ZqAh5hX+jT2rBTC2WJ1hV
+	heCcog84OYOIGNzN7/jvSZZ02XR8=
+X-Google-Smtp-Source: AGHT+IFVFx+eLW3rrYk4ENrr07hj2ulRPfoOU2fudE1oYSEmm2IzhOl+WBsnwE1IGmNd18rR8wEJwwSwprLlm1vXClQ=
+X-Received: by 2002:a05:6512:a8e:b0:536:a7e0:131a with SMTP id
+ 2adb3069b0e04-5389fc46bb7mr1949676e87.26.1727424672276; Fri, 27 Sep 2024
+ 01:11:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <cover.1727174151.git.fdmanana@suse.com> <1a3f817fc3c5a6e4267bcd56f2f0518a9d8e0e4e.1727174151.git.fdmanana@suse.com>
+ <51c11bdd-cac9-4525-85e3-ce8da69dec1f@gmx.com> <CAL3q7H76=i4+s0ntAbM1BL7JNv3A+TjdCprrY8AwoOuUswcNEQ@mail.gmail.com>
+ <9323f10d-dab1-4826-a088-90b1c5bea38c@gmx.com> <CAL3q7H7LBWyfXy7XRJh7ufgLdhTBw4MGZtBtLV+2zCLJ3MrFsQ@mail.gmail.com>
+ <57645a54-43e0-4a7d-9b84-4c3b662ea1f5@gmx.com>
+In-Reply-To: <57645a54-43e0-4a7d-9b84-4c3b662ea1f5@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 27 Sep 2024 09:10:35 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H5ND+gWDJrGNnRKeNovaRo9UD-CjTCkvTDcUNSRuV1MQg@mail.gmail.com>
+Message-ID: <CAL3q7H5ND+gWDJrGNnRKeNovaRo9UD-CjTCkvTDcUNSRuV1MQg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] btrfs: make the extent map shrinker run
+ asynchronously as a work queue job
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The new test case will utilize the following send stream:
+On Thu, Sep 26, 2024 at 11:02=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com>=
+ wrote:
+>
+>
+>
+> =E5=9C=A8 2024/9/26 20:11, Filipe Manana =E5=86=99=E9=81=93:
+> > On Thu, Sep 26, 2024 at 10:55=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.=
+com> wrote:
+> [...]
+> >>> What's the problem?
+> >>> The use of the atomic and not incrementing it, as said in the comment=
+,
+> >>> makes sure we don't do more work than necessary.
+> >>>
+> >>> It's also running in the system unbound queue and has plenty of
+> >>> explicit reschedule calls to ensure it doesn't monopolize a cpu and
+> >>> doesn't block other tasks for long.
+> >>>
+> >>> So how can it cause any problem?
+> >>
+> >> Then it will be a workqueue taking CPU 100% (or near that).
+> >> Even there is only one running work.
+> >
+> > No it won't.
+> > Besides the very frequent reschedule points, the shrinker is always
+> > called with a small percentage of the total number of objects to free.
+>
+> And there is no guarantee that a small number to reclaim is not heavy.
+>
+> The latency of a scan is not directly related to the passed-in number,
+> but the amount of roots/inodes/ems.
+>
+> E.g. we have tens of thousands of inodes to go through. Even most of
+> them have no extent maps, it may still take milliseconds to go through.
 
-Stream 1:
+You're taking what I've written in the changelog as if I'm not aware of it.
+Yes I talk about several milliseconds for 10000 inodes without any
+extent maps, on a very busy system and the
+times measured were done with bpftrace which include reschedule times,
+so accounting for periods the shrinker was not running.
 
-subvol          ./ro_subv1                      uuid=769f87d1-98b2-824f-bf18-9d98178ad2e2 transid=7
-chown           ./ro_subv1/                     gid=0 uid=0
-chmod           ./ro_subv1/                     mode=755
-mkfile          ./ro_subv1/o257-7-0
-rename          ./ro_subv1/o257-7-0             dest=./ro_subv1/source
-write           ./ro_subv1/source               offset=0 len=4000
-chown           ./ro_subv1/source               gid=0 uid=0
-chmod           ./ro_subv1/source               mode=600
-utimes          ./ro_subv1/source               atime=2024-09-27T13:26:25+0800 mtime=2024-09-27T13:26:25+0800 ctime=2024-09-27T13:26:25+0800
-mkfile          ./ro_subv1/o258-7-0
-rename          ./ro_subv1/o258-7-0             dest=./ro_subv1/dest
-clone           ./ro_subv1/dest                 offset=0 len=4000 from=./ro_subv1/source clone_offset=0
-chown           ./ro_subv1/dest                 gid=0 uid=0
-chmod           ./ro_subv1/dest                 mode=600
-utimes          ./ro_subv1/dest                 atime=2024-09-27T13:26:25+0800 mtime=2024-09-27T13:26:25+0800 ctime=2024-09-27T13:26:25+0800
-utimes          ./ro_subv1/                     atime=2024-09-27T13:26:25+0800 mtime=2024-09-27T13:26:25+0800 ctime=2024-09-27T13:26:25+0800
+The point of running it asynchronously in the system unbounded queue
+is precisely so that in case it takes a long time it doesn't affect
+other tasks.
 
-Stream 2:
+>
+> And if we always have a small ems pinned for IO, so even after the
 
-snapshot        ./ro_snap1                      uuid=e78c9b7c-1bea-fc48-aaf3-6a4d98eba473 transid=9 parent_uuid=769f87d1-98b2-824f-bf18-9d98178ad2e2 parent_transid=7
-write           ./ro_snap1/source               offset=0 len=3900
-truncate        ./ro_snap1/source               size=3900
-utimes          ./ro_snap1/source               atime=2024-09-27T13:26:25+0800 mtime=2024-09-27T13:26:25+0800 ctime=2024-09-27T13:26:25+0800
-clone           ./ro_snap1/dest                 offset=0 len=3900 from=./ro_snap1/source clone_offset=0
-truncate        ./ro_snap1/dest                 size=3900
-utimes          ./ro_snap1/dest                 atime=2024-09-27T13:26:25+0800 mtime=2024-09-27T13:26:25+0800 ctime=2024-09-27T13:26:25+0800
+Small ems? How does the size of an extent map matters here?
 
-The stream is generated using v6.11 kernel, as upstream commit
-46a6e10a1ab1 ("btrfs: send: allow cloning non-aligned extent if it ends
-at i_size") allows full file clone to further reduce the stream size.
+> current reclaim done, the next reclaim work will still get some small
+> number queued to reclaim, again takes several milliseconds to reclaim
 
-Verify that "btrfs receive" command has the proper workaround to handle
-such full file clone correctly.
+And that's precisely why it's run asynchronously in the system
+unbounded workqueue, so that no matter how long it takes, it doesn't
+affect (delays) other tasks.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- .../ro_snap1.stream.zst                       | Bin 0 -> 293 bytes
- .../ro_subv1.stream.zst                       | Bin 0 -> 413 bytes
- .../066-receive-full-file-clone/test.sh       |  24 ++++++++++++++++++
- 3 files changed, 24 insertions(+)
- create mode 100644 tests/misc-tests/066-receive-full-file-clone/ro_snap1.stream.zst
- create mode 100644 tests/misc-tests/066-receive-full-file-clone/ro_subv1.stream.zst
- create mode 100755 tests/misc-tests/066-receive-full-file-clone/test.sh
+> may be a few extent maps, then IO creates new ems bumping up the em
+> counts again.
 
-diff --git a/tests/misc-tests/066-receive-full-file-clone/ro_snap1.stream.zst b/tests/misc-tests/066-receive-full-file-clone/ro_snap1.stream.zst
-new file mode 100644
-index 0000000000000000000000000000000000000000..e190b6ca7f050ae16ed11a6b278658fdea5c9adb
-GIT binary patch
-literal 293
-zcmdPcs{c3TEB{^&1{2<-lA^R?-Qtp>)Wlo{Mg|53A0TF8@Z107AU^{KLs5Qwab9A9
-zAtQqT!}FfmHPWyCc&z%I<vZi`l42&HJST$)P^N5t`^6cXn*8@m%$*_Lb?K2PP==i$
-zjGuvlpTV_b)mnZAHiqK-(xT*4A)t&fgAM<GF`zYq47Z-7Okn{E+3;Hd`63Jx^d!G>
-zGw?7lI(<vq7xY+w%T8>q5N8-rPJkiab{?|?KLZOxN@{V5h^Uyjh-*u5sKt8Y^aYtb
-zo`U<<xC)Ch1mv8YE5(q*F+-B!fZ&6S3=57fj&<5n{N4hxZ{vj9WPJn^?nvw?$u!7&
-luh{Nz-PpJJK>IC@9;31yigTFPGv;#`@UaQ7R&Bgf1OO`|ST_Iw
+And adding the delay will solve any of that?
+Please explain how.
 
-literal 0
-HcmV?d00001
+>
+> >
+> >>
+> >> The first one queued the X number to do, and the work got queued, afte=
+r
+> >> freed X items, the next call triggered, queuing another Y number to re=
+claim.
+> >
+> > And? Work queue jobs are distributed across cores as needed, so that
+> > work queue won't be monopolized with extent map shrinking.
+>
+> Scheduled across different CPUs won't make any difference if the reclaim
+> workload is queued and run again and again.
+>
+> Let me be clear, reschedule and core distribution are not changing the
+> nature of a long running CPU heavy workload.
 
-diff --git a/tests/misc-tests/066-receive-full-file-clone/ro_subv1.stream.zst b/tests/misc-tests/066-receive-full-file-clone/ro_subv1.stream.zst
-new file mode 100644
-index 0000000000000000000000000000000000000000..f70aeebb7cf5161d0fe3db25496ed29d7e12430b
-GIT binary patch
-literal 413
-zcmdPcs{c2oU$B;k;fO#|Nl{v{ZgELbYGN(}BLf424iGak?0Y}=5kCV5Ls5QwacNSS
-zAtQqTL)rZHi!(Mg`R|vQJ43wd(jz9IJUfF7P`xk%leumWKaj-+5)%M2gcu@2OHEmU
-z+_#JpKt3}=PTp<id?QnHU2|OnW}rBu7*Lp#VF$n976G8X;{4L0<kVe2L--jU-1uw9
-zFC@&cfd8ygns{>;o7n1Ov5On5fEq*?9+uT#<7VJtV08MHwlC<h02gO*tMN7qCK26Z
-zc|H~_3@NF_C1F670t{dNZ~H9)v}pl@h^Uyj!f9o>RU#b+y}w&Hi9A=x<na_V`PE^n
-zCo;2EK$IaM=j2=qg#%0zHH9Ygg)k?~VLH~Z+O6<c#9@gx)^mZUEjff<?wbDjg36^*
-zL;gdX+>I62Nw&%AE-Fmkc;syI)(Z(Njvq`8$w)j}^0w@aaM=`2gBkD6UE5N#Bd{{m
-zLHgd(?cZ4{6N>xaFIDk)`_$&`*ZC*p-p(s${q$V-*Ay0JxnfmCi8PV8k2@{_07?#w
-AHUIzs
+And how does your delay make that better?
 
-literal 0
-HcmV?d00001
+> Just take gcc as an example, it's a user space program, which can always
+> be preempted, and kernel can always reschedule the user space program to
+> whatever CPU core.
+> But it's still a long running CPU heavy workload.
+>
+> The same is for the em shrinker, the difference is the em shrinker is
+> just waked up again and again, other than a long running one.
 
-diff --git a/tests/misc-tests/066-receive-full-file-clone/test.sh b/tests/misc-tests/066-receive-full-file-clone/test.sh
-new file mode 100755
-index 000000000000..63fa922a5600
---- /dev/null
-+++ b/tests/misc-tests/066-receive-full-file-clone/test.sh
-@@ -0,0 +1,24 @@
-+#!/bin/bash
-+# Verify "btrfs-receive" can handle a full file clone (clone length is not
-+# aligned but matches inode size) into a larger destination file.
-+#
-+# Such clone stream can be generated since kernel commit 46a6e10a1ab1
-+# ("btrfs: send: allow cloning non-aligned extent if it ends at i_size").
-+
-+source "$TEST_TOP/common" || exit
-+source "$TEST_TOP/common.convert" || exit
-+
-+tmp=$(_mktemp "receive-full-file-clone")
-+
-+setup_root_helper
-+prepare_test_dev
-+check_global_prereq zstd
-+
-+run_check_mkfs_test_dev
-+run_check_mount_test_dev
-+run_check zstd -d -f ./ro_subv1.stream.zst -o "$tmp"
-+run_check "$TOP/btrfs" receive -f "$tmp" "$TEST_MNT"
-+run_check zstd -d -f ./ro_snap1.stream.zst -o "$tmp"
-+run_check "$TOP/btrfs" receive -f "$tmp" "$TEST_MNT"
-+run_check_umount_test_dev
-+rm -f -- "$tmp"
--- 
-2.46.1
+If needed, yes, that's why the shrinker (at a higher level) calls into
+the fs shrinker for a small portion of objects at a time.
 
+>
+> >
+> >>
+> >> The we get the same near-100% CPU usage, it may be rescheduled, but no=
+t
+> >> much difference.
+> >> We will always have one reclaim work item running at any moment.
+> >
+> > And if that happens it's because it's needed.
+> > The same goes for space reclaim, it's exactly what we do for space
+> > reclaim. We don't add delays there and neither for delayed iputs.
+>
+> Unlike delayed inodes, em shrinker needs to go through all roots and all
+> the inodes if we didn't free enough ems.
+
+For a portion of the total extent maps.
+Every time it's called it visits a portion of the total extent maps, a
+few roots, a few inodes, sometimes just 1 inode and 1 root.
+
+>
+> While delayed inodes has a simple list of all the delayed inodes, not
+> really much scanning.
+
+The time to move from one element to the next is shorter, yes, but if
+you have many thousands of elements it's still time consuming.
+
+>
+> And just as you mentioned in the changelog, the scanning itself can be
+> the real problem.
+
+Yes, and that's why it is being done by a single task in the system
+unbounded queue, so that no matter how slow or fast it is, it doesn't
+cause delay for other tasks.
+The problem was that it ran synchronously, through memory allocation
+paths (and kswapd), and that time introduced delays and made any
+concurrent calls spend a lot of time busy on spin locks, preventing
+other tasks from being scheduled and therefore unresponsive.
+
+>
+> >
+> >>
+> >>>
+> >>>>
+> >>>> The XFS is queuing the work with an delay, although their reason is =
+that
+> >>>> the reclaim needs to be run more frequently than syncd interval (30s=
+).
+> >>>>
+> >>>> Do we also need some delay to prevent such too frequent reclaim work=
+?
+> >>>
+> >>> See the comment above.
+> >>>
+> >>> Without the increment of the atomic counter, if it keeps getting
+> >>> scheduled it's because we're under memory pressure and need to free
+> >>> memory as quickly as possible.
+> >>
+> >> Even the atomic stays the same until the current one finished, we just
+> >> get a new number of items to reclaim next.
+> >
+> > If we do get it's because we still need to free memory, and we have to =
+do it.
+> >
+> >>
+> >> Furthermore, from our existing experience, we didn't really hit a
+> >> realworld case where the em cache is causing a huge problem, so the
+> >> relaim for em should be a very low priority thing.
+> >
+> > We had 1 person reporting it. And now that the problem is publicly
+> > known, it can be exploited by someone with bad intentions - no root
+> > privileges are required.
+>
+> I do not see how delayed reclaim will cause new problem in that case.
+> Yes, it will not reclaim those ems fast enough, but it's still doing
+> proper reclaim.
+
+If it's not fast enough it can often have consequences such as
+allocations failing anywhere or taking longer for example, or making
+the OOM killer start killing processes.
+
+>
+> In fact we have more end users affected by the too aggressive shrinker
+> behavior than not reclaiming those ems.
+
+Yes, when it ran synchronously, before this patchset.
+
+I don't think you understand why it was aggressive.
+This was already explained in the change log and comments, but let me
+rephrase it:
+
+1) Multiple tasks, during memory allocations or kswapd, end up
+concurrently triggering the fs shrinker which enters the extent map
+shrinker, let's say 100 tasks;
+
+2) There's for example 1 000 000 extent maps, and the shrinker decides
+for example to try to free 1000 extent maps (the nr_ro_scan argument);
+
+3) The decision for each calling task was made before any other task
+was able do do any progress (or very little) dropping extent maps;
+
+4) So while 1000 extent maps may have been enough to release memory,
+we end up releasing  (or trying to) 100 * 1000 extent maps
+concurrently, causing the heavy spin lock waits and CPU usage.
+
+Making it run asynchronously in the system unbound queue, ensuring
+there's only one queued work, and using the atomic without adding
+(just swapping if it's 0), solves all that.
+In the example above it ensures only 1 task is doing the extent map
+shrinking and for at most 1000 extent maps, and not 100 * 1000.
+
+
+>
+>
+> And it will be a slap in the face if we move the feature into
+> experimental, then move it out and have to move it back again.
+
+Regressions and problems happen often, yes, but we always move forward
+by analysing things and fixing them.
+I'm sure you've gone through the same in the past.
+
+>
+> So I'm very cautious on any possibility that this shrinker can be
+> triggered without any extra wait.
+
+I'm very cautious as well, and have been very responsive helping users
+ASAP, even spending too often personal time like weekends, evenings,
+and holidays.
+The last report happened at the only time of the year where I was away
+on vacation and had no possibility of having access to a computer and
+doing anything, and right at the last 6.10-rc before 6.10 final.
+
+So please don't assume or insinuate I don't care enough. I do care, and a l=
+ot.
+
+>
+> >
+> >>
+> >> Thus I still believe a delayed work will be much safer, just like what
+> >> XFS is doing for decades, and also like our cleaner kthread.
+> >
+> > Not a specialist on XFS, and maybe they have their reasons for doing
+> > what they do.
+> >
+> > But the case with our cleaner kthread is very different:
+> >
+> > 1) First for delayed iputs that delay doesn't exist.
+> > When doing a delayed iput we always wake up the cleaner if it's not
+> > currently running.
+> > We want them to run asap to prevent inode eviction from happening and
+> > holding memory and space reservations for too long.
+>
+> But the delayed iput doesn't need to scan through all the roots/inodes.
+
+And neither does the extent map shrinker, it goes through a small
+portion at a time, in a dedicated task run by the system unbounded
+queue.
+
+And running delayed iputs still takes time going through a list. If
+there are always delayed iputs being added, there's constant work.
+Yet in this case you're not worried about adding a delay.
+
+>
+> Thanks,
+> Qu
+>
+> >
+> > 2) Otherwise the delay and sleep is both because it's a kthread we
+> > manually manage and because deletion of dead roots is IO heavy.
+> >
+> > Extent map shrinking doesn't do any IO. Any concern about CPU I've
+> > already addressed above.
+> >
+> >
+>
 
