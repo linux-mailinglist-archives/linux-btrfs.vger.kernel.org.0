@@ -1,206 +1,191 @@
-Return-Path: <linux-btrfs+bounces-8277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8278-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CED3987C10
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 02:12:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7ACD987C99
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 03:34:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EF281C22B2E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 00:12:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F350B23D33
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 01:34:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A5C8467;
-	Fri, 27 Sep 2024 00:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860D5524B0;
+	Fri, 27 Sep 2024 01:33:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iniSzVb9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BGnQZ6sA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE764C8C
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 00:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5D92746D
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 01:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727395965; cv=none; b=gGmQ+dFOUXB/spDOdFiiApFBYJOhQoyO5NBWw5rV53R5hMOT3L53E929A9ydY7RdVm3FMT0/gy1KQxeD69OEicbtZsCKwPIjyuLTwe4kogxTVt/l8vacnbzyTBb55rvr3yHOJg3DIO+/1VM8PDUJCekXHOdF01roiANyGo7zGzM=
+	t=1727400834; cv=none; b=UYxsEWZ76qvROXzVxYQ53rNd7zj5gIkKo554Zwmcn9/eSUlq2ZwKJNNIy6SyhljrpFIacOgnoQLOUrxo/phsD4IWb0RfrpaKYoaaPorf/cUY12Cp8eVk0bz1EkvWxf8n/O47Q3LDJcqHRTQf+SyvEivay96wn87E1pGAPsCjONo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727395965; c=relaxed/simple;
-	bh=TVNXSlpYLC07Sseqsa1ky1U8cbnfYhC++xQSiWHzEfE=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=KVW00+/T954LIrTI/fdllcDXO6m9NZMAB3RgSpom5YFE1UvTCCFzqkHXGvLo0zsLebG8RXAvMnwQEoGX6qMTlCkdCvhRHdByQLhAZ2zt8UHZitHfzjtTD6E8BNpiQNCVTWT9kdfqYt0tMQUYz2hsjsKylg1b0PqUN8J/ZKop2h8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iniSzVb9; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727395954; x=1728000754; i=quwenruo.btrfs@gmx.com;
-	bh=BVxkxPTljopIzmHsq9dO66Tpe4hR5AHSL+DkJKqttCQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
-	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=iniSzVb9yE0ebqES2z4eB3KCJaW+9cW55k69YzrzuH6foY4oQwGrDs+VOz5GluXI
-	 LkUDp7qZw5NYXyCk3mtgaRrL3RnZfVFeRnTQhWzrxmYovjwejVWUltKB7O79o3sdX
-	 1KiiJo2IfN4juaBQ8XHTo3x27nB9433u/+wytVZKVktqQKbSb9/FE7Bw6ASaGkPQl
-	 7u1IBkW7LKFewSfbZ/22WYNxezz6cIY8ELO4lAOTJCEPYOtTLGm5wlr/eQmwj5409
-	 X2RjH/UiK5yeNGtFxs/igORI99cMJG7Um/fpaJtk2muoqbV/pAhS8pflVUbEndoHX
-	 mC+FKhSFvQkPl3L//Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MVeI8-1sSNYT22QW-00WwBV; Fri, 27
- Sep 2024 02:12:33 +0200
-Message-ID: <82386baf-1cff-4590-8c94-7a0ffb76aa07@gmx.com>
-Date: Fri, 27 Sep 2024 09:42:30 +0930
+	s=arc-20240116; t=1727400834; c=relaxed/simple;
+	bh=q/A1tQ6cvZrcOuAw2LiwyOB/iFyQoRL3yCqK2gzDuZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N/6/snvP3l8IAET7pPpgU/O3ov9qnuMsp9/m6OQrgf/aoNek39gQuGZnvBQAL00uHuBq8c6gLGg97VzIWi95EY443mN9d+dzqeqvDsye6FIp8yM0E5F9vb+8iiJK/Vh2Td4kxqB0p/nIXr1xyKx9jl5gijKc6PI9scDKaufxOFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BGnQZ6sA; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e07d85e956so1483036a91.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 18:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727400832; x=1728005632; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g31OAGLwD5KJrq7dS7r6H5iUhX3g/yjd3TgwRzKRCZY=;
+        b=BGnQZ6sAChp80eyH+ORDPaCibWLzh8P08qtJMJw1XCcAbJZBgjnjIbHZqxy98D2h1q
+         3ytdiMjYFq7JEH3lNcEcEgMB6rTFwmBQC2pfid/TeTiWGBTGYSd9t0YtceM+z3kLr7Cq
+         kVgcdliE+qZPBrNfsoucY9N0FDKowO984hquRyb2U96gABq/ydwv/eoxOY7EaXETq8zH
+         LJvRdocIjAQIj1HfXdyGh9dhmYr/kar4bBYvui53nLKYwPPS4INx4l4FDdt6cp3Cj647
+         bPsanp2POQSJlm2g9wUFNwOpKq6zrSOVlmc2GR1eTbVbDspMHy2sPLEclRRidXTdlDc5
+         IUPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727400832; x=1728005632;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g31OAGLwD5KJrq7dS7r6H5iUhX3g/yjd3TgwRzKRCZY=;
+        b=padGQfqK/E3hjiDDs4izA0wPXm1w2rUShTKwE01OGBLb/NrD65fNtfujzCWLbluakP
+         d0YFonQpRdniCSUYJAcQwnFD9WmLwJsiMpmS11SASXKRCsAgvCdxaaw3xk+cc3nVGqSb
+         Qgrwd/+uQCuot+gMBySOshqpmv6BOyXntFmO5VxZXUm+LMVrr0Wv4XYy9g+egVsoaywK
+         TzSUW5Dm1HKaoEBW2HIY8Ya47KevVfWlq8AGWAm1C2O7rIkt3rg6R5n35dezMcG34y/A
+         LJ/gUr8MtbUD9jGLbd9598k8crWbyVfzxCprBCapqzwBTZ58ogTQbyPi5OgcRcNZxl36
+         Z5tA==
+X-Gm-Message-State: AOJu0Yy3sjhMKhnT5pIIdeSxc2VCS1J1TmWfpA+8tJTKFd11l3DBFpq5
+	0Fya1g+vOONJdgTiNj3RZVJRUq4zPXDYu3R9CM5uOFQg/l+UT5pfO0lQaFr6PtM6e8mC1mu8Lib
+	nsuuiW3gCayxNTL64v/Uz6QtqxmM=
+X-Google-Smtp-Source: AGHT+IGgbUSpg524boI6hc+S7J34cMz/YUo5XD4TYLjh6O9BmBomEArlCkefL3nrtZoUCAr+9TCNLzsQjpNhji2G6l4=
+X-Received: by 2002:a05:6a21:6b0c:b0:1d3:e39:f69c with SMTP id
+ adf61e73a8af0-1d4fa6876f4mr2113089637.15.1727400832300; Thu, 26 Sep 2024
+ 18:33:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: ERROR: failed to clone extents to [...]: Invalid argument
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Ben Millwood <thebenmachine@gmail.com>, linux-btrfs@vger.kernel.org
-Cc: Filipe Manana <fdmanana@kernel.org>
 References: <CAJhrHS2z+WViO2h=ojYvBPDLsATwLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com>
- <1171b314-be9d-40cf-b3ab-b68b03a96aa2@gmx.com>
- <f9062d51-946c-4142-9be1-ea8a2701592a@gmx.com>
-Content-Language: en-US
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <f9062d51-946c-4142-9be1-ea8a2701592a@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1msD+EeLCeplV/Zh+ZqHkDJNkAmupVuO3M9lXwSxA4eLXCsTxtQ
- caPhtdy7oXfm243AimNzHJn6AydJ0zBEcJWh5MY0JfN4OpgKQcMPHeqFh2oBTyp1RV8Ly5l
- qRZNl6HDnzMYvoWhJIrbuREoNj2hlShKZNfG8w5UgSRSP66qUlj4vKntbkLzZguGQBTFsMO
- kyyREfE8zjhvF2hDtR1cw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BVS13T1byM8=;E2KH6Clfk5wDIOgE+oTULbvuf7D
- 0e1/z1SQiYd9rCzjER3lgBTZahXITP7kidQEJDeOg1NH1A3oiN1sB3I8xaN8NPFvyBQ3Wzu08
- Gca99geSAWr7Ehwu82zJJugFuNAsJHcaT1RfmSm+v7LHmZHLRDIlxx2Ol+W0Gjzidkj7/+J86
- zU20+OK93xBzqZSrtlLoNuBCWkmSaARR3cJktxQ4Mhk/z9vDQRUlj/1aJ+ts2EszWQr3/uLC9
- skIOhGJOeS4qiOf17xRBEz3BbgmLTO1URuf4P3pQQShJS1SDhPqhaSm2v6JMH2gVtIMnM5lUc
- 16LAYkWypR6ema769891V7MhgzzSVvD8s/0sfeDNtsXUHtw7F2CMuX9dLfwSPotO58xcaem24
- jZ4cgl5ES6Kq73e5+jLii97ewfKZliRcaffO6qcfr1g1HbLEXhPeSMSA578fgR4tSY0/3mRm+
- Jd+Kfay2feHCFzBeaXKPkD4iezktc50zrfMPo267JKfQDQtUveBQLjYluY5pmp9AK7vywNKEu
- x2d0p89DChUAvFC5/18ipo38vFmZsgnEGgPqLUvqaJm1uZ6DJJy4HyACaMQ07p7hYR4u3ubri
- 6tDDZpccWOLlx5aY/Gg0fd6xMi0MpEyigqY94s9W7pf2RE6C2ecKwQboAUdmSFWxPjjAeEa3I
- OWxMjVTjYNZqLPQJhKSFUR9i+GF6rAYDub5y4rCWUslVzbfW/en+Mm7VIgOsAx3iXoklq7qsz
- /P3a6iaVRdz2D/tEK813rr3rXA5Q81tzdUlgS11Fz+rsPuOAWLfn0oFEqLuDr1KG4y6pNmxd5
- 2EqEfn2TMBC1GlLUTzM1anrg==
+ <1171b314-be9d-40cf-b3ab-b68b03a96aa2@gmx.com> <f9062d51-946c-4142-9be1-ea8a2701592a@gmx.com>
+ <82386baf-1cff-4590-8c94-7a0ffb76aa07@gmx.com>
+In-Reply-To: <82386baf-1cff-4590-8c94-7a0ffb76aa07@gmx.com>
+From: Ben Millwood <thebenmachine@gmail.com>
+Date: Fri, 27 Sep 2024 02:33:40 +0100
+Message-ID: <CAJhrHS2n2Fjn+-5e1ukO2cCdH0etRf8Vh7nm-qPHtRYCzG2png@mail.gmail.com>
+Subject: Re: ERROR: failed to clone extents to [...]: Invalid argument
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+I don't think this sounds right. I didn't manually touch the snapshot
+after creation, and it's only two weeks old, so I don't think a kernel
+that old can have touched it either.
 
+I'm a bit confused about what you're calling "source snapshot" and
+etc, so I'm going to suggest the snapshots be called "old local", "new
+local", and "old remote", and we're trying to do btrfs send -p "old
+local" "new local" | btrfs receive remote, in order to create "new
+remote". The "old" snapshots are the ones with the 16:29 timestamp,
+the "new" ones are the ones with the 17:04 timestamp.
 
-=E5=9C=A8 2024/9/27 08:43, Qu Wenruo =E5=86=99=E9=81=93:
+There are two paths involved here, the home/ben/... path and the
+etc/nixos/... path. In all three existing snapshots, the two files are
+the same as each other. In both the local and remote old snapshots,
+they are size 5026. In the local new snapshot, they are size 4985,
+because of changes to the disk that occurred between the two
+snapshots.
+
+On Fri, 27 Sept 2024 at 01:12, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> Then create the file system-packages.nix:
 >
+>   write
+> ./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix offset=0 len=4985
+>   truncate
+> ./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix size=4985
 >
-[...]
-> And send the full dump.log?
+> Which has 4985 sized, so far so good.
 
-Thanks a lot for the dump.
+I don't think we're creating the file here: it already exists in both
+old local and old remote, with size 5026 in both places. We're just
+writing it with new content and then truncating it to the new length.
 
-It indeed shows something I missed before.
+> Now we do the clone, notice that there is no "mkfile" command, meaning
+> there should be an existing file at "system-packages.nix":
 
-Firstly since it's using a parent subvolume, we do a snapshot in the
-very beginning:
+Yep, the /home/ben file already exists at this location in old local
+and old remote (with size 5026 in both places, like the /etc/nixos
+one).
 
-  snapshot        ./2024-09-12T17:04:17+00:00
-uuid=3Df4190efb-ee53-0341-9613-93be3d2afbcb transid=3D63121
-parent_uuid=3D1640ca1d-94ca-f448-a89c-a3d83023744a parent_transid=3D63051
-
-Then create the file system-packages.nix:
-
-  write
-./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix offset=3D0 len=
-=3D4985
-  truncate
-./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix size=3D4985
-
-Which has 4985 sized, so far so good.
-
-Now we do the clone, notice that there is no "mkfile" command, meaning
-there should be an existing file at "system-packages.nix":
-
-  clone
-./2024-09-12T17:04:17+00:00/home/ben/code/nix/noether/etc-nixos/system-pac=
-kages.nix
-offset=3D0 len=3D4985
-from=3D./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix
-clone_offset=3D0
-
-This clone can only happen if the existing file has the same size 4985,
-or the clone ioctl will fail.
-
-Then according to your original mail, the original file in source
-subvolume indeed has a different size.
-The source subvolume is "2024-09-12T16:29:16+00:00", but the file has a
-different size:
-
-# stat
-/snap/root/2024-09-12T16\:29\:16+00\:00/home/ben/code/nix/noether/etc-nixo=
-s/system-packages.nix
-   File:
-/snap/root/2024-09-12T16:29:16+00:00/home/ben/code/nix/noether/etc-nixos/s=
-ystem-packages.nix
-   Size: 5026          Blocks: 16         IO Block: 4096   regular file
-
-This is the direct cause.
-
-The root cause is, the source subvolume has been modified:
-
-     Name:             2024-09-12T16:29:16+00:00
-     UUID:             cfa79865-0272-3845-b447-4d650c2f6d5a
-     Parent UUID:         3d45fbdc-7e4e-f044-83c3-32ad05b70441
-     Received UUID:         1640ca1d-94ca-f448-a89c-a3d83023744a
-     Creation time:         2024-09-26 14:00:31 +0100
-     Subvolume ID:         5842
-     Generation:         14268      <<<<
-     Gen at creation:     14255     <<<<
-     Parent ID:         5
-     Top level ID:         5
-     Flags:             readonly
-     Send transid:         63051
-     Send time:         2024-09-26 14:00:31 +0100
-     Receive transid:     14261
-     Receive time:         2024-09-26 14:09:52 +0100
-     Snapshot(s):
-     Quota group:        n/a
-
-And I believe the source subvolume has been changed to RW, then
-modified, causing above contents mismatch, failing the receive.
-
-I guess the recevied subvolume is modified in some older kernels, as
-since v5.14.2 kernel will reset the received uuid upon changing it from
-RO to RW.
-
-Thanks,
-Qu
-
+>   clone
+> ./2024-09-12T17:04:17+00:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+> offset=0 len=4985
+> from=./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix
+> clone_offset=0
 >
-> Thanks,
-> Qu
->
+> This clone can only happen if the existing file has the same size 4985,
+> or the clone ioctl will fail.
 
+That's odd. Given that the file had size 5026 in old local, I don't
+see what operation in the send stream was going to make it the right
+length before the clone ran. Indeed, it looks like the dump log has
+the immediate *next* line setting the length correctly:
+
+truncate
+./2024-09-12T17:04:17+00:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+size=4985
+
+Following a clone with a truncate seems like an odd thing to do if the
+clone already required the length to be correct.
+
+> Then according to your original mail, the original file in source
+> subvolume indeed has a different size.
+> The source subvolume is "2024-09-12T16:29:16+00:00", but the file has a
+> different size:
+>
+> # stat
+> /snap/root/2024-09-12T16\:29\:16+00\:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+>    File:
+> /snap/root/2024-09-12T16:29:16+00:00/home/ben/code/nix/noether/etc-nixos/system-packages.nix
+>    Size: 5026          Blocks: 16         IO Block: 4096   regular file
+>
+> This is the direct cause.
+>
+> The root cause is, the source subvolume has been modified:
+>
+>      Name:             2024-09-12T16:29:16+00:00
+>      UUID:             cfa79865-0272-3845-b447-4d650c2f6d5a
+>      Parent UUID:         3d45fbdc-7e4e-f044-83c3-32ad05b70441
+>      Received UUID:         1640ca1d-94ca-f448-a89c-a3d83023744a
+>      Creation time:         2024-09-26 14:00:31 +0100
+>      Subvolume ID:         5842
+>      Generation:         14268      <<<<
+>      Gen at creation:     14255     <<<<
+>      Parent ID:         5
+>      Top level ID:         5
+>      Flags:             readonly
+>      Send transid:         63051
+>      Send time:         2024-09-26 14:00:31 +0100
+>      Receive transid:     14261
+>      Receive time:         2024-09-26 14:09:52 +0100
+>      Snapshot(s):
+>      Quota group:        n/a
+>
+> And I believe the source subvolume has been changed to RW, then
+> modified, causing above contents mismatch, failing the receive.
+
+I'm not sure which subvolume you mean by "source subvolume", but the
+subvolume you're showing there is what I'm calling the "old remote".
+If what I'm saying about the send stream being incorrect is true, I
+don't think we can blame the old remote, because the send stream is
+only generated from the local snapshots, indeed I generated the dump
+you asked for without the external disk even being plugged in.
+
+As for the generation numbers indicating that it is modified, I'm no
+expert, but aren't those just the modifications that occur during the
+receive that created the subvolume, before it was set RO for the first
+time?
 
