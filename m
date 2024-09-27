@@ -1,217 +1,236 @@
-Return-Path: <linux-btrfs+bounces-8302-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8303-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEA53988326
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 13:20:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D97B1988700
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 16:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87E52283FC1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 11:20:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADB2D1C22D4F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 14:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3A5189904;
-	Fri, 27 Sep 2024 11:20:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dirtcellar.net header.i=@dirtcellar.net header.b="PWxVZ1ts"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB8180034;
+	Fri, 27 Sep 2024 14:22:34 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19974186E4C
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 11:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60463139D05
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 14:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727436018; cv=none; b=BjcuvlqAeMKkvAhK4UO7KAXggXe/TtCmkUH/W2gH+Hef1MCLEXx7trWqfgeTEiBoLcTx2rMf9rsP8ggB1g8GyKQuLiwPWCRsBmGP28Bx36AN5uTO845sOc1m9cEnNg0y8XbyxbSFVuCxl5Q8qM5YK0jfbBrFM7jq5ojzprrCYLQ=
+	t=1727446954; cv=none; b=IQIRagVIXQg4lnnFM+uA4GSw0l7V7XtYZy7SWtkahu8FDVM1gwKtVpyrFa6bvism5TdDbnQYlEgfTjwBttBOyGqkvSqKChkr2KOuYRHKuLzz7CNG4rvbpsfJjkm0goeBM/WUMUahYjUkNz1LN+Ve3p3rEryb9Oo2wRUuIzflhWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727436018; c=relaxed/simple;
-	bh=OToK1beIVYdkb1/co8+mok4H0U1xCQepfKk1CF+CfIY=;
-	h=From:Subject:To:Message-ID:Date:MIME-Version:Content-Type; b=hQ35whdrSs1CHhFV5NaBA7NL6pMio4ODRYTEbAhiwuGBW4J8DL/rvAqUvUuSt43pk+iym8Vm11SylZr6lNZTGV1XBr68yOE9yl26wzhQIdWLu2vA0atDRDd5s3vGF42Tntwl42mMtLzwfc9ZLGl06XyFCprruhuOhwQgVmqFQVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dirtcellar.net; spf=pass smtp.mailfrom=dirtcellar.net; dkim=pass (2048-bit key) header.d=dirtcellar.net header.i=@dirtcellar.net header.b=PWxVZ1ts; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dirtcellar.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dirtcellar.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=dirtcellar.net; s=ds202312; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Date:Message-ID:To:Reply-To:Subject:From:From:Sender:Reply-To:
-	Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
-	List-Owner:List-Archive; bh=4PXWXZIW3LYxPEdrdlw/ivmRMdm1Dm1k/Gs4rL6igB4=; b=P
-	WxVZ1tsDygblqM/j2Y1f2k0AL4obd4WWUiPf8LK+qdNnkCIa5dZOL/x9+v/u7JuZQsZbMAz0AoP+h
-	X9RsZy6UveRyQeuEKe5K1DRa0ReluoMdawYjGyPZhv2SZgJBykjr+MgT2a6aL4Pr6/LI1ESe77a7J
-	l7mEOCgYv3CT5xl07rLFwzZmvszkM/S4qZsSEHprFFeo71jhdQGzh2WjWhHUgRdse5v08wQ6nZUFu
-	3Tu70oe3sbBOKFxs+CyV40MaqCaqqzOnToqCcJKF2sAqs4HIXJ551sfihf1rXq89hwV8f0oteV6MV
-	JhhU8wxGFGKp1l0Zr2SBsE9olWKnHT2GQ==;
-Received: from 173.92-220-141.customer.lyse.net ([92.220.141.173]:25357 helo=[10.0.0.100])
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <waxhead@dirtcellar.net>)
-	id 1su91C-000Mpz-Mj
-	for linux-btrfs@vger.kernel.org;
-	Fri, 27 Sep 2024 13:20:14 +0200
-From: waxhead <waxhead@dirtcellar.net>
-Subject: BTRFS list of grievances
-Reply-To: waxhead@dirtcellar.net
-To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
-Date: Fri, 27 Sep 2024 13:20:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 SeaMonkey/2.53.19
+	s=arc-20240116; t=1727446954; c=relaxed/simple;
+	bh=aIhht4PG68qhRfY6HBtQm3jSEVcyG9Is78AbjW13dpc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=MGEZQqjjR49rIPw7AjT6der/WcX3DFYTVT3ij5Q4lqSW3HmFXJ7USLoeUC14jvHxDnUlcGLjTvORGpGQHTjre6wfUmSVpQCM2M0uvqih0+oXl84j9oXYX3l/6RnXd3WtHS4DP5883I4iAwRYngx0ae1VG6HiHamC4F/gQz6gU0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a1a8a4174dso19620135ab.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 07:22:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727446951; x=1728051751;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pQvv9V/jjUoYbB6kLmOvJiieuB/iUQwkX+2sB6oQSNk=;
+        b=oygGwZbVkL1DgPGozqLJZdDJ7ZfvF1qWerbcwtg5kCFXv40w9O/HTIfY8gbkWtkZyW
+         Y52NY8lu3Ql7NJDW/V4UjONCz6rPIReBllj+QhJRdArm9EOLVdX+gCJXqsYUxTg/j4v9
+         FvmwG30/Mgq/yigZ8ja09ZkOL3AYlLVpnAnlp7w2lk9152/JKyC26Sl1EaNMMQ4HyQac
+         uJmtC8zzjz3yKp9WyqOemtkqGqfjsFv8Rjv+rYdbP5Q3xXxlfPjXS4AFPmFPnk+Db/5a
+         OdNBxare7Z4I47nf+ZOBLAtoLi6bZ4dlvzH6KYoqdFzGXqTwmPqkvx99v4o/EhRnB9aQ
+         +MBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUyRvXBiRebuvg9/xF+iPHUULR6frMF2GmqINTFojjfbnAMtkg0YvAvlx87G04JuZS0gZRNf/Cc9kbqbg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzcOzHk/VBA/9rzKj/EzG29qvUiQ0Msx57DjpEU7r4fTHi+YQ19
+	z59ZBwVAwmpASHxLI0UHyBFQH9QLSW7ney0RYMAUhIvs8DoHnzG62Ws1pdYl8acaDrZ8+bqImh7
+	fXL2CtZ/HzUtcJdHuYNs5ICPyz21Fnz0r1LcYHKiMYwj7SRwiGRW6DCY=
+X-Google-Smtp-Source: AGHT+IFaPG9P8yNET5Pe7AZcXVYyi/C5S2auebhjEWfVj2jbXu3tpYOGcPHmlOiI8wvKMqv1Z4GdtYiC04x7OQeM+Qw0Ym4mUgaP
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:ca4c:0:b0:3a3:449b:5989 with SMTP id
+ e9e14a558f8ab-3a3452ba439mr32011415ab.21.1727446951528; Fri, 27 Sep 2024
+ 07:22:31 -0700 (PDT)
+Date: Fri, 27 Sep 2024 07:22:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66f6bfa7.050a0220.38ace9.0019.GAE@google.com>
+Subject: [syzbot] [btrfs?] general protection fault in btrfs_update_reloc_root
+From: syzbot <syzbot+283673dbc38527ef9f3d@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-First thing first: I am a long time BTRFS user and frequent reader of 
-the mailing list. I am *NOT* a BTRFS developer, but that being said I 
-have been known to summon a segmentation failure or two from years of 
-programming in C.
+Hello,
 
-Since I have been using BTRFS more or less problem free since 2013 or so 
-for nearly everything, I figured that I should be entitled to simply 
-write down a list of things that I personally think sucks (more or less) 
-with this otherwise fine filesystem
+syzbot found the following issue on:
 
-Make of it what you will, but what I am trying to get across is what the 
-upper class would probably call 'constructive criticism'.
+HEAD commit:    932d2d1fcb2b Merge tag 'dlm-6.12' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=179a3177980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c208b3605ba9ec44
+dashboard link: https://syzkaller.appspot.com/bug?extid=283673dbc38527ef9f3d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-So here goes:
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-932d2d1f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/fbcb7198214b/vmlinux-932d2d1f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/418eaebf4817/bzImage-932d2d1f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+283673dbc38527ef9f3d@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 32768
+BTRFS: device fsid c9fe44da-de57-406a-8241-57ec7d4412cf devid 1 transid 8 /dev/loop0 (7:0) scanned by syz.0.0 (5111)
+BTRFS info (device loop0): first mount of filesystem c9fe44da-de57-406a-8241-57ec7d4412cf
+BTRFS info (device loop0): using crc32c (crc32c-intel) checksum algorithm
+BTRFS info (device loop0): disk space caching is enabled
+BTRFS warning (device loop0): space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2
+BTRFS info (device loop0): rebuilding free space tree
+BTRFS info (device loop0): disabling free space tree
+BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
+BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
+BTRFS info (device loop0): balance: start -d -m
+BTRFS info (device loop0): relocating block group 6881280 flags data|metadata
+FAULT_INJECTION: forcing a failure.
+name failslab, interval 1, probability 0, space 0, times 1
+CPU: 0 UID: 0 PID: 5111 Comm: syz.0.0 Not tainted 6.11.0-syzkaller-05442-g932d2d1fcb2b #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:93 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
+ fail_dump lib/fault-inject.c:52 [inline]
+ should_fail_ex+0x3b0/0x4e0 lib/fault-inject.c:153
+ should_failslab+0xac/0x100 mm/failslab.c:45
+ slab_pre_alloc_hook mm/slub.c:4039 [inline]
+ slab_alloc_node mm/slub.c:4115 [inline]
+ kmem_cache_alloc_noprof+0x6c/0x2a0 mm/slub.c:4142
+ start_transaction+0x830/0x1670 fs/btrfs/transaction.c:676
+ prepare_to_relocate+0x31f/0x4c0 fs/btrfs/relocation.c:3642
+ relocate_block_group+0x169/0xd20 fs/btrfs/relocation.c:3678
+ btrfs_relocate_block_group+0x77d/0xd90 fs/btrfs/relocation.c:4150
+ btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3376
+ __btrfs_balance+0x1b0f/0x26b0 fs/btrfs/volumes.c:4160
+ btrfs_balance+0xbdc/0x10c0 fs/btrfs/volumes.c:4537
+ btrfs_ioctl_balance+0x493/0x7c0 fs/btrfs/ioctl.c:3673
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f9ff217def9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9ff2edc038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f9ff2335f80 RCX: 00007f9ff217def9
+RDX: 0000000020000180 RSI: 00000000c4009420 RDI: 0000000000000004
+RBP: 00007f9ff2edc090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 0000000000000000 R14: 00007f9ff2335f80 R15: 00007ffcf8ef9128
+ </TASK>
+BTRFS info (device loop0): balance: ended with status: -12
+Oops: general protection fault, probably for non-canonical address 0xdffffc00000000cc: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000660-0x0000000000000667]
+CPU: 0 UID: 0 PID: 5111 Comm: syz.0.0 Not tainted 6.11.0-syzkaller-05442-g932d2d1fcb2b #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:btrfs_update_reloc_root+0x362/0xa80 fs/btrfs/relocation.c:926
+Code: e8 03 42 80 3c 20 00 74 08 4c 89 f7 e8 07 da 34 fe bb 65 06 00 00 49 03 1e 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <0f> b6 04 08 84 c0 4c 8b 64 24 18 0f 85 c9 05 00 00 0f b6 1b 31 ff
+RSP: 0018:ffffc9000316f700 EFLAGS: 00010207
+RAX: 00000000000000cc RBX: 0000000000000665 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 00000000ffffffff
+RBP: ffffc9000316f810 R08: ffffffff83c687df R09: fffff5200062def4
+R10: dffffc0000000000 R11: fffff5200062def4 R12: dffffc0000000000
+R13: 0000000000000001 R14: ffff8880008111d0 R15: ffff888035802038
+FS:  00007f9ff2edc6c0(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9fe73f9000 CR3: 000000003feac000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ commit_fs_roots+0x2ee/0x720 fs/btrfs/transaction.c:1496
+ btrfs_commit_transaction+0xfaf/0x3740 fs/btrfs/transaction.c:2430
+ del_balance_item fs/btrfs/volumes.c:3678 [inline]
+ reset_balance_state+0x25e/0x3c0 fs/btrfs/volumes.c:3742
+ btrfs_balance+0xead/0x10c0 fs/btrfs/volumes.c:4574
+ btrfs_ioctl_balance+0x493/0x7c0 fs/btrfs/ioctl.c:3673
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f9ff217def9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9ff2edc038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f9ff2335f80 RCX: 00007f9ff217def9
+RDX: 0000000020000180 RSI: 00000000c4009420 RDI: 0000000000000004
+RBP: 00007f9ff2edc090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 0000000000000000 R14: 00007f9ff2335f80 R15: 00007ffcf8ef9128
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_update_reloc_root+0x362/0xa80 fs/btrfs/relocation.c:926
+Code: e8 03 42 80 3c 20 00 74 08 4c 89 f7 e8 07 da 34 fe bb 65 06 00 00 49 03 1e 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <0f> b6 04 08 84 c0 4c 8b 64 24 18 0f 85 c9 05 00 00 0f b6 1b 31 ff
+RSP: 0018:ffffc9000316f700 EFLAGS: 00010207
+RAX: 00000000000000cc RBX: 0000000000000665 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: 00000000ffffffff
+RBP: ffffc9000316f810 R08: ffffffff83c687df R09: fffff5200062def4
+R10: dffffc0000000000 R11: fffff5200062def4 R12: dffffc0000000000
+R13: 0000000000000001 R14: ffff8880008111d0 R15: ffff888035802038
+FS:  00007f9ff2edc6c0(0000) GS:ffff88801fe00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055e5284b79b2 CR3: 000000003feac000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	e8 03 42 80 3c       	call   0x3c804208
+   5:	20 00                	and    %al,(%rax)
+   7:	74 08                	je     0x11
+   9:	4c 89 f7             	mov    %r14,%rdi
+   c:	e8 07 da 34 fe       	call   0xfe34da18
+  11:	bb 65 06 00 00       	mov    $0x665,%ebx
+  16:	49 03 1e             	add    (%r14),%rbx
+  19:	48 89 d8             	mov    %rbx,%rax
+  1c:	48 c1 e8 03          	shr    $0x3,%rax
+  20:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
+  27:	fc ff df
+* 2a:	0f b6 04 08          	movzbl (%rax,%rcx,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	4c 8b 64 24 18       	mov    0x18(%rsp),%r12
+  35:	0f 85 c9 05 00 00    	jne    0x604
+  3b:	0f b6 1b             	movzbl (%rbx),%ebx
+  3e:	31 ff                	xor    %edi,%edi
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-1. FS MANAGEMENT
-================
-BTRFS is rather simple to manage. We can add/remove devices on the fly, 
-balance the filesystem, scrub, defrag, select compression algorithms 
-etc. Some of these things are done as mount options, some as properties 
-and some by issuing a command that process something.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Personally, I feel this is a bit messy and in some cases quite backwards 
-at times. I believe the original idea was that BTRFS should support pr. 
-subvolume mount options, storage profiles, etc etc.... and subvolumes 
-are after all a key feature of the filesystem.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Heck, we even have a root subvolume (id 256) which ideally is the parent 
-(or root) for all other subvolumes on the filesystem. So why on earth do 
-we have commands such as 'btrfs balance start -dusage=50 /fsmnt' when 
-logically it could just has easily have been 'btrfs <subvolume> balance 
-start -dusage=50' . E.g. on the root subvolume instead of the fs mount 
-point.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Besides, if BTRFS at some point are supposed to be more "subvolume 
-centric" then why are not things like scrub, balance, convert 
-(data/metadata), device add/remove or even defrag handled as properties 
-to a subvolume. E.g. why not set a flag that triggers what needs to be 
-done, and let the filesystem process that as a background task.
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-That would for example allow for finer granularity for scrub for certain 
-subvolumes, instead of having to do the entire filesystem as it 
-currently is now.
-
-Status for the jobs do in my opinion belong in sysfs, but there is 
-nothing wrong with a simple command to "pretty'fy" the status either.
-
-And yes, I even mentioned device add/remove because if it would be 
-possible at some point to assign priority/weight to certain devices for 
-certain subvolumes then making a subvolume prefer or avoid using a 
-certain storage device wold be as "simple" as setting a suitable 
-weight/priority, and it would be possible to add/remove (assign) storage 
-devices without affecting all other subvolumes.
-
-So for me , 'btrfs property set' (or something similar) sounds like the 
-only sensible way of properly managing a BTRFS. And really, with the 
-exception of the rescue and subvolume mount options most, if not all 
-other mount options seems to better belong as a property for a subvolume 
-(which may or may not be the id 256 / root subvolume)
-
-
-
-2. USE DEVICE ID's EVERYWHERE INSTEAD OF /dev/sdX:
-==================================================
-Using "btrfs filesystem show" will list all BTRFS devices, and also show 
-the assigned ID for that device / partition / whatever. Since BTRFS 
-already have the notion of a device ID, it seems pointless to not use 
-that ID for management / identification anywhere possible.
-(for example btrfs device stat /mnt)
-
-
-3. SOME DEVICES MISSING SHOULD BE ID 1,2,3,4... MISSING:
-========================================================
-If one or more devices are missing it would have been great to know WHAT 
-devices where missing. Why not print the ID's of the missing devices 
-instead of just let the user know that "some" of them are missing?
-
-
-
-4. THE ABILITY TO SET A LABEL FOR A DEVICE ID:
-==============================================
-It would have been great to set a label for a BTRFS device ID. For 
-example ID1 = "Shelf01.24", ID2 = "NAS_01", ID3 = "localdiskXYZ"
-
-
-
-5. DEDUPLICATION IS NOT INTEGRATED IN BTRFS:
-============================================
-I think that some form of (simple) deduplication should be integrated in 
-BTRFS. Using unofficial tools may be perfectly safe, but it feels 
-"unsafe" to be honest. Besides deduplication is something that might 
-have been interesting to turn on/on_whenidle/off as a property to a 
-subvolume as well.
-
-
-
-6. DEVICE STATS:
-================
-Again device ID's are not used, but also why is this info not listed in 
-a table? Showing this in a table would make 5x lines become 1x line 
-which would be far more readable. Finaly it is not clear to me what is 
-fixed errors, and what are actual damage accumulated in the filesystem
-
-
-
-7. LIST OF DAMAGED FILES:
-=========================
-There is no easy way to get a list of damaged files on a BTRFS 
-filesystem to my knowledge. It would be great to have a command for that.
-
-
-
-8. ABILITY TO RESERVE SPARE SPACE:
-==================================
-Because of the way BTRFS works a spare device is not very useful. Rather 
-spare space would be a good idea I think. That way if one device is 
-missing data, it could be replicated to other drives (or even on a 
-single device [DUP] in emergency situations)
-
-
-
-9. ABILITY TO MERGE / CONSUME EXISTING BTRFS:
-=============================================
-It would have been great to merge existing BTRFS volumes into a larger 
-volume e.g. assimilate it ..because we all know resistance is futile.
-Again a subvolume would be the cleanest way of importing another BTRFS I 
-think.
-
-
-10. AUTOREJECT FAILED DEVICES:
-==============================
-As I have mentioned before. It it was possible to assign certain storage 
-devices / storage device groups to certain subvolumes then as the 
-failure count for a device increase, it may be preferable to 
-automatically lower the weight/priority of that device so that things 
-are stored elsewhere. If auto-migration is triggered at a low enough 
-weight then devices with a high failure rate/count could be rejected.
-
-
-11. That's it folks!
-====================
-I know it is a lot of "rant", but hope someone find it useful or 
-inspiring. If for nothing more than to keep my mouth shut. ;)
-
-
+If you want to undo deduplication, reply with:
+#syz undup
 
