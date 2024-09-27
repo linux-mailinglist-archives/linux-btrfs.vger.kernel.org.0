@@ -1,52 +1,69 @@
-Return-Path: <linux-btrfs+bounces-8293-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8294-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 173FD98826A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 12:28:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28E5598826C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 12:30:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91EFB1F22422
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 10:28:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 502021C22A4E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 10:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF8471BC9E3;
-	Fri, 27 Sep 2024 10:28:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1M8YmPg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21DB186617;
+	Fri, 27 Sep 2024 10:30:25 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E866419FA66;
-	Fri, 27 Sep 2024 10:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99ED82B9CD;
+	Fri, 27 Sep 2024 10:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727432912; cv=none; b=V3TdZa0yU4WXqszyMtaic0TP8La+14aNk/PeLahsNLL9ZmmnnLhgSurLt4IkygqnWSYBE68JAHXFZZkvIHOvlcbgjtkGooaZOudPqjOF1jWzfW1RsmdcFLjyL4XsHnI/SAEHys0e3/pDNQiCQkVnhUvhDQMW+YSHDLiwVUmIJqM=
+	t=1727433025; cv=none; b=XEo+/mCB3S9kjV21JJtcSgy9Czs+pm0JQ8A0ckJ106Snhffti5aETMxjU/DlDtcI4ppxxRwf0azViDXgrVi2BwmFOw1R7EDcLkL0Xu1FsLWv5A8G+yg0MZ9BhFIisxYa4eIi3Iag2KxppjvYZbxSedMsY42dB/f46JUJtBT7q68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727432912; c=relaxed/simple;
-	bh=gD8lzGCB0sa2LJA8v4Og6GbbacLab6cvjKxhGKKGSUg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=grMMQX/OwKgPKOW/cu1UaZedm/Fs+9YKLU5YWPEnp/ogp0+HBbndWOCJMBINeUW80mX14OSaFPVPdUIg/YujE58dNFeefvy8494MYjVP8xNRByzYf7K/kMG5eK6sBRCJiCrE4R3Bjqn8h1CMukQc2DmYpFjj3BKy3YSSyktYK80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1M8YmPg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 696E3C4CEC4;
-	Fri, 27 Sep 2024 10:28:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727432910;
-	bh=gD8lzGCB0sa2LJA8v4Og6GbbacLab6cvjKxhGKKGSUg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=k1M8YmPgeGh9VV1aJ9Uo5u2n4lBdng1zlLnY1AsdkU29BlK7Elw/PCX2UijZz2B3f
-	 9TROQX7LxTa17G5OeHp6pp2V+HOaT8zoc7XWnK/U+YBJYaU7eopD9VH//3WqcLgXsY
-	 c902aAAD1xx9aMLCghidl0XjEQBsmjFwQC5yoH3ym80ofVjzc6VpUV1yqnfScy7Zqc
-	 O/H+AZwXAFVg7aIi3G98HhLivD08FOxsmr/K1Uqz+xgXL7R0vbanQ4Lclu+ivxDGtq
-	 9tQD/SzieFURwOiwXRhC6H52Ily8BeeRAX2+BKjP3mxbU6G9uJF7+VDssRrNr8NdfY
-	 R2PHipmG44Fig==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: test an incremental send scenario with cloning of unaligned extent
-Date: Fri, 27 Sep 2024 11:28:07 +0100
-Message-ID: <76d94e63cec4cb04cbfbc0dcd0928f1fbdc27bdf.1727432832.git.fdmanana@suse.com>
+	s=arc-20240116; t=1727433025; c=relaxed/simple;
+	bh=i23Iim9cXkdz6Ckb0/1ebishCfbJ1d4LcWObJufVyDU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ck0XyCzZtERVxvVY7xqjISD/9JH1bmIrJV80nZCCzKEVmtIeEn31FTiXbuo7M/x1uTi+RD8nwcuQIJu8LyjKMiY8NatR9gMuIev3DgNWUbrJppyASxjQM7vtVv8xTuWWMDwC77javYsrSqh0XSoemXGn+g/qhH3OcxM//PKi90w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-42cae4eb026so18976765e9.0;
+        Fri, 27 Sep 2024 03:30:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727433022; x=1728037822;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S0irRWsRKnoaNN2u1s1xIgNFbfY4YoxqLzDCKhb9xrs=;
+        b=LhWHMo1+LLujeUQTCig4J6EvXlQ6WnSjyJN+A0YqYn+XMiFI1mJu8CqFgdBe9SNNQK
+         XgzJQ/+g+paPCUHm4moLeX+UkZvfuFsMtX4BeMzE4TjbSh2JV6fwXC8xQ9gihNj2Z/U9
+         RqkJ2QvXiKeUSkHri5c3oo+Roz0FanIfrflnL9RbwlygXopKSBSkXTyPXd2VyUNSOHxM
+         rlq84EaFQPgOESb+tgnfu4cUW6FqyvtNHiemGTo/WQHKhBlEDHbZfIfBvqyBkqmL7s+j
+         n3iNKINtz7BVfUHfc1FTSEA9X1dG+tsK64oZxp2GsyvZ/8yMCqvU0N52jbk7aEXp9GMv
+         /E/A==
+X-Forwarded-Encrypted: i=1; AJvYcCV9GkJn017xr6h0kDKAwIcXZRHEUh6f6xLvc5X2Vty+GcmXpmop+7S62rFR0u7R7EomDKWBT4JT3LHHvzE9@vger.kernel.org, AJvYcCVVXfHjVf3tmzLUKXge0mbZkT/eg8NnWIHmwHUNUL1I0/MzubauEFmM8ZWMfXQoZDQMpoZuxePTg9LtUg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqLbBCEUXVmzhFHxGOGY3snaaZ4nsMGx+XbnZ7FOsd3QYkEgxG
+	e11k8t6gF+7KQPz3HX1G6Zmd/RfTHmmzNZRZqWCgrcJjz8NufubUCZdLTqOQGZK7Eg==
+X-Google-Smtp-Source: AGHT+IFmClhrcMQrR/bnQGKsXe8FFtEfQLC+uO9RryHGCXleHz6eZa8yvlVFO4IjZi4Tos/cCGhhVA==
+X-Received: by 2002:a05:600c:1d20:b0:42c:b995:2100 with SMTP id 5b1f17b1804b1-42f5840d2a9mr19447505e9.6.1727433021513;
+        Fri, 27 Sep 2024 03:30:21 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f71aeb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71a:eb00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42e9027450asm80141695e9.0.2024.09.27.03.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Sep 2024 03:30:20 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2] btrfs: remove code duplication in ordered extent finishing
+Date: Fri, 27 Sep 2024 12:30:05 +0200
+Message-ID: <20240927103005.16239-1-jth@kernel.org>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -56,170 +73,92 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Test that doing an incremental send with a file that had its size
-decreased and became the destination for a clone operation of an extent
-with an unaligned end offset that matches the new file size, works
-correctly.
+Remove the duplicated transaction joining, block reserve setting and raid
+extent inserting in btrfs_finish_ordered_extent().
 
-This tests a bug fixed by the following kernel patch:
+While at it, also abort the transaction in case inserting a RAID
+stripe-tree entry fails.
 
-  "btrfs: send: fix invalid clone operation for file that got its size decreased"
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Suggested-by: Naohiro Aota <naohiro.aota@wdc.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- tests/btrfs/322     | 108 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/322.out |  24 ++++++++++
- 2 files changed, 132 insertions(+)
- create mode 100755 tests/btrfs/322
- create mode 100644 tests/btrfs/322.out
+Changes to v1:
+- Moved comments to the preferred style (Filipe)
+---
+ fs/btrfs/inode.c | 48 +++++++++++++++++++-----------------------------
+ 1 file changed, 19 insertions(+), 29 deletions(-)
 
-diff --git a/tests/btrfs/322 b/tests/btrfs/322
-new file mode 100755
-index 00000000..c03f6a4c
---- /dev/null
-+++ b/tests/btrfs/322
-@@ -0,0 +1,108 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 322
-+#
-+# Test that doing an incremental send with a file that had its size decreased
-+# and became the destination for a clone operation of an extent with an
-+# unaligned end offset that matches the new file size, works correctly.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick send clone fiemap
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 353fb58c83da..412dba9c66c3 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3068,34 +3068,6 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 			goto out;
+ 	}
+ 
+-	if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
+-		BUG_ON(!list_empty(&ordered_extent->list)); /* Logic error */
+-
+-		btrfs_inode_safe_disk_i_size_write(inode, 0);
+-		if (freespace_inode)
+-			trans = btrfs_join_transaction_spacecache(root);
+-		else
+-			trans = btrfs_join_transaction(root);
+-		if (IS_ERR(trans)) {
+-			ret = PTR_ERR(trans);
+-			trans = NULL;
+-			goto out;
+-		}
+-		trans->block_rsv = &inode->block_rsv;
+-		ret = btrfs_update_inode_fallback(trans, inode);
+-		if (ret) /* -ENOMEM or corruption */
+-			btrfs_abort_transaction(trans, ret);
+-
+-		ret = btrfs_insert_raid_extent(trans, ordered_extent);
+-		if (ret)
+-			btrfs_abort_transaction(trans, ret);
+-
+-		goto out;
+-	}
+-
+-	clear_bits |= EXTENT_LOCKED;
+-	lock_extent(io_tree, start, end, &cached_state);
+-
+ 	if (freespace_inode)
+ 		trans = btrfs_join_transaction_spacecache(root);
+ 	else
+@@ -3109,8 +3081,26 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+ 	trans->block_rsv = &inode->block_rsv;
+ 
+ 	ret = btrfs_insert_raid_extent(trans, ordered_extent);
+-	if (ret)
++	if (ret) {
++		btrfs_abort_transaction(trans, ret);
+ 		goto out;
++	}
 +
-+_cleanup()
-+{
-+	cd /
-+	rm -fr $tmp.*
-+	rm -fr $send_files_dir
-+}
++	if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
++		/* Logic error */
++		BUG_ON(!list_empty(&ordered_extent->list));
 +
-+. ./common/filter
-+. ./common/reflink
-+. ./common/punch # for _filter_fiemap_flags
++		btrfs_inode_safe_disk_i_size_write(inode, 0);
++		ret = btrfs_update_inode_fallback(trans, inode);
++		if (ret) {
++			/* -ENOMEM or corruption */
++			btrfs_abort_transaction(trans, ret);
++		}
++		goto out;
++	}
 +
-+_require_test
-+_require_scratch_reflink
-+_require_xfs_io_command "fiemap"
-+_require_odirect
-+
-+_fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: send: fix invalid clone operation for file that got its size decreased"
-+
-+check_all_extents_shared()
-+{
-+	local file=$1
-+	local fiemap_output
-+
-+	fiemap_output=$($XFS_IO_PROG -r -c "fiemap -v" $file | _filter_fiemap_flags)
-+	echo "$fiemap_output" | grep -qv 'shared'
-+	if [ $? -eq 0 ]; then
-+		echo -e "Found non-shared extents for file $file:\n"
-+		echo "$fiemap_output"
-+	fi
-+}
-+
-+send_files_dir=$TEST_DIR/btrfs-test-$seq
-+full_send_stream=$send_files_dir/full_snap.stream
-+inc_send_stream=$send_files_dir/inc_snap.stream
-+
-+rm -fr $send_files_dir
-+mkdir $send_files_dir
-+
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "first mkfs failed"
-+_scratch_mount
-+
-+# Create a file with a size of 256K + 5 bytes, having two extents, the first one
-+# with a size of 128K and the second one with a size of 128K + 5 bytes.
-+last_extent_size=$((128 * 1024 + 5))
-+$XFS_IO_PROG -f -d -c "pwrite -S 0xab -b 128K 0 128K" \
-+             -c "pwrite -S 0xcd -b $last_extent_size 128K $last_extent_size" \
-+             $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Another file which we will later clone foo into, but initially with
-+# a larger size than foo.
-+$XFS_IO_PROG -f -c "pwrite -b 0xef 0 1M" $SCRATCH_MNT/bar | _filter_xfs_io
-+
-+echo "Creating snapshot and the full send stream for it..."
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
-+$BTRFS_UTIL_PROG send -f $full_send_stream $SCRATCH_MNT/snap1 >> $seqres.full 2>&1
-+
-+# Now resize bar and clone foo into it.
-+$XFS_IO_PROG -c "truncate 0" \
-+	     -c "reflink $SCRATCH_MNT/foo" $SCRATCH_MNT/bar | _filter_xfs_io
-+
-+echo "Creating another snapshot and the incremental send stream for it..."
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
-+$BTRFS_UTIL_PROG send -p $SCRATCH_MNT/snap1 -f $inc_send_stream \
-+		 $SCRATCH_MNT/snap2 >> $seqres.full 2>&1
-+
-+echo "File digests in the original filesystem:"
-+md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch
-+md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch
-+md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch
-+md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch
-+
-+check_all_extents_shared "$SCRATCH_MNT/snap2/bar"
-+check_all_extents_shared "$SCRATCH_MNT/snap1/foo"
-+
-+echo "Creating a new filesystem to receive the send streams..."
-+_scratch_unmount
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "second mkfs failed"
-+_scratch_mount
-+
-+$BTRFS_UTIL_PROG receive -f $full_send_stream $SCRATCH_MNT
-+$BTRFS_UTIL_PROG receive -f $inc_send_stream $SCRATCH_MNT
-+
-+echo "File digests in the new filesystem:"
-+md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch
-+md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch
-+md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch
-+md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch
-+
-+check_all_extents_shared "$SCRATCH_MNT/snap2/bar"
-+check_all_extents_shared "$SCRATCH_MNT/snap1/foo"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/322.out b/tests/btrfs/322.out
-new file mode 100644
-index 00000000..31e1ee55
---- /dev/null
-+++ b/tests/btrfs/322.out
-@@ -0,0 +1,24 @@
-+QA output created by 322
-+wrote 131072/131072 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 131077/131077 bytes at offset 131072
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 1048576/1048576 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Creating snapshot and the full send stream for it...
-+linked 0/0 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+Creating another snapshot and the incremental send stream for it...
-+File digests in the original filesystem:
-+c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap1/foo
-+ca539970d4b1fa1f34213ba675007381  SCRATCH_MNT/snap1/bar
-+c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/foo
-+c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/bar
-+Creating a new filesystem to receive the send streams...
-+At subvol snap1
-+At snapshot snap2
-+File digests in the new filesystem:
-+c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap1/foo
-+ca539970d4b1fa1f34213ba675007381  SCRATCH_MNT/snap1/bar
-+c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/foo
-+c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/bar
++	clear_bits |= EXTENT_LOCKED;
++	lock_extent(io_tree, start, end, &cached_state);
+ 
+ 	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
+ 		compress_type = ordered_extent->compress_type;
 -- 
-2.43.0
+2.46.1
 
 
