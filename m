@@ -1,55 +1,55 @@
-Return-Path: <linux-btrfs+bounces-8276-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8277-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77037987B86
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 01:13:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CED3987C10
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 02:12:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98F921C228CE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2024 23:13:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EF281C22B2E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 00:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102B11B0111;
-	Thu, 26 Sep 2024 23:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A5C8467;
+	Fri, 27 Sep 2024 00:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="kOj5T8Y6"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iniSzVb9"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B12611B0100
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2024 23:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE764C8C
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 00:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727392431; cv=none; b=ttjqMlqpBl5cUgjfQhdDUSNaHTm6+4wqbPUO5Q9t19L990jh4ZCHauAo5tsWVtuex4gMytQS5DIV1g7AOUKjI3wG1CrN/6HRB6Ov/vO1aQGJ2lfKSloOaLPZPfK6WCN/AgQgWu3fCpmqaCqs+wXlXs8EWNL8exE29EulswLYD8w=
+	t=1727395965; cv=none; b=gGmQ+dFOUXB/spDOdFiiApFBYJOhQoyO5NBWw5rV53R5hMOT3L53E929A9ydY7RdVm3FMT0/gy1KQxeD69OEicbtZsCKwPIjyuLTwe4kogxTVt/l8vacnbzyTBb55rvr3yHOJg3DIO+/1VM8PDUJCekXHOdF01roiANyGo7zGzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727392431; c=relaxed/simple;
-	bh=hIiCPlUJtK7lNbEcw/NWm9YRMHq1MD7jR79zL+0jOBc=;
+	s=arc-20240116; t=1727395965; c=relaxed/simple;
+	bh=TVNXSlpYLC07Sseqsa1ky1U8cbnfYhC++xQSiWHzEfE=;
 	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=F9qz6xTR85llTaldR51TBRu8/yMniuDSCmXwQQP/+wmk1/MxvnlgGE4bNiLZiA89DdXz4yQtCBZCjNljNcoGAFuIWYhuvPWCW+86tTkssO4G5U16drEzN4poYS4Kol7W95waxSALv4REhQGhPtnH3QqOalVjF6U757p0REFPi7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=kOj5T8Y6; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=KVW00+/T954LIrTI/fdllcDXO6m9NZMAB3RgSpom5YFE1UvTCCFzqkHXGvLo0zsLebG8RXAvMnwQEoGX6qMTlCkdCvhRHdByQLhAZ2zt8UHZitHfzjtTD6E8BNpiQNCVTWT9kdfqYt0tMQUYz2hsjsKylg1b0PqUN8J/ZKop2h8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iniSzVb9; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727392421; x=1727997221; i=quwenruo.btrfs@gmx.com;
-	bh=hIiCPlUJtK7lNbEcw/NWm9YRMHq1MD7jR79zL+0jOBc=;
+	s=s31663417; t=1727395954; x=1728000754; i=quwenruo.btrfs@gmx.com;
+	bh=BVxkxPTljopIzmHsq9dO66Tpe4hR5AHSL+DkJKqttCQ=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
 	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
 	 cc:content-transfer-encoding:content-type:date:from:message-id:
 	 mime-version:reply-to:subject:to;
-	b=kOj5T8Y6Rg+PiQ+M1RZqdQqwsE8oD4aXflQF6OYGB3yiEo7LqFrw90d4S6IqW/tx
-	 40xziKBGn4vsIfKJBUKxIbMDqmx73LYlb6n5PBAysj8T/zASAK/TN83g4i/8BEL9J
-	 a9JtzJO5UEGz2g/4Cw/IaYuj7xEJmSKTxiIi32MGtOxUjJ5I9bPXNUOsZza5JlrtZ
-	 rg071arNk5dVbYaGI39lZj+D43k/WXP5TsRJu1tWMDKCIXdLeUAULGpuRq9BcQdzw
-	 jCvmTIMKPN9SV87xFtO7few/dnRGiT//Z6LZt88HVZQisaXk6Gy5nO6/9xFwMnI/Y
-	 9BIOwN7Mx0zBOGL95Q==
+	b=iniSzVb9yE0ebqES2z4eB3KCJaW+9cW55k69YzrzuH6foY4oQwGrDs+VOz5GluXI
+	 LkUDp7qZw5NYXyCk3mtgaRrL3RnZfVFeRnTQhWzrxmYovjwejVWUltKB7O79o3sdX
+	 1KiiJo2IfN4juaBQ8XHTo3x27nB9433u/+wytVZKVktqQKbSb9/FE7Bw6ASaGkPQl
+	 7u1IBkW7LKFewSfbZ/22WYNxezz6cIY8ELO4lAOTJCEPYOtTLGm5wlr/eQmwj5409
+	 X2RjH/UiK5yeNGtFxs/igORI99cMJG7Um/fpaJtk2muoqbV/pAhS8pflVUbEndoHX
+	 mC+FKhSFvQkPl3L//Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYeR1-1sPLrr3sqR-00QdZ8; Fri, 27
- Sep 2024 01:13:41 +0200
-Message-ID: <f9062d51-946c-4142-9be1-ea8a2701592a@gmx.com>
-Date: Fri, 27 Sep 2024 08:43:38 +0930
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MVeI8-1sSNYT22QW-00WwBV; Fri, 27
+ Sep 2024 02:12:33 +0200
+Message-ID: <82386baf-1cff-4590-8c94-7a0ffb76aa07@gmx.com>
+Date: Fri, 27 Sep 2024 09:42:30 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -63,6 +63,7 @@ To: Ben Millwood <thebenmachine@gmail.com>, linux-btrfs@vger.kernel.org
 Cc: Filipe Manana <fdmanana@kernel.org>
 References: <CAJhrHS2z+WViO2h=ojYvBPDLsATwLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com>
  <1171b314-be9d-40cf-b3ab-b68b03a96aa2@gmx.com>
+ <f9062d51-946c-4142-9be1-ea8a2701592a@gmx.com>
 Content-Language: en-US
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -88,128 +89,118 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <1171b314-be9d-40cf-b3ab-b68b03a96aa2@gmx.com>
+In-Reply-To: <f9062d51-946c-4142-9be1-ea8a2701592a@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HxNERs4a6pNSwPz8mgqjfl423XoBxotk3v5QW7A70jCQoy04wds
- D8Aw5GH45UdGXL0+9kiFew9jN6QiKN5+rm4LUz5fTAf4cMSkJAKGJRMFTUyX6AnAyKebMyn
- LowsDa8ae6PZ3LErOsziNegVlBiqv8yCF9uVp3PnaSvpK4zl4X6Os5qiYe0AjEHNk5NYhlQ
- o6jXNCOb9qkT0mUnNassQ==
+X-Provags-ID: V03:K1:1msD+EeLCeplV/Zh+ZqHkDJNkAmupVuO3M9lXwSxA4eLXCsTxtQ
+ caPhtdy7oXfm243AimNzHJn6AydJ0zBEcJWh5MY0JfN4OpgKQcMPHeqFh2oBTyp1RV8Ly5l
+ qRZNl6HDnzMYvoWhJIrbuREoNj2hlShKZNfG8w5UgSRSP66qUlj4vKntbkLzZguGQBTFsMO
+ kyyREfE8zjhvF2hDtR1cw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Nwk7tBn/V6s=;eAHnlht1xEWDct0vTjHFypze4Lr
- qd86tgmKGpH4U3Zdg/NAOqjk4rpuKSFEBkRQ+j2G2SgwXBGwCErDUKbmBbveLWsijnDQY8KT7
- n5YYNPaMJzxQ8J0hiB2tltcWchSB5cgc/w5hjw/8dhWU220NOyUpdr6JZ71fkOc/hnMMMXVl8
- OMXUgLPY9Nz1JWiISZtSDyDl7Cb+m+EpkO1WzPD5F92UXXzQm+YaFM9YtUrJBbAtT4MeUlmL/
- 3rf6uxtM5Zrcx8qv2SaB4yYD0FlSQc7bv/bk0ZNoL3zpBG3xs+vv1tdWEQXUarq9xBsB8CNz+
- 71OQZh05Ic4CYKQvzfAEgkL0rk2GtWrXKFe1zap1u9FZqwihYgbB4TfqgXbqKtbyspposxzly
- j55dBv4dDfKCtHc0e5FywWuIQXfB8IEUgjWuKNURLKexXsIatgvBL0764hpsD1izroKGyCrJ7
- fAaJK6MYxjxFzTA/fVbAOiUvyzoQnZPPOMKFc2cE7CF/JD2hgqVBI9RtuPoBylBot6uq8xvxB
- A5b7UpKGNZmuZWPy/Z+ddj9aCR0VTGS7kcy0oK0GwbRZR52WUPQPNXQJNoFW9z0D4dDIcufic
- HiQF1GBCKuBD8oqa0cGVf0+8pTsRq0YqOVCTRwohwKxsPHFk54yh8DfwSYQql/H4FDxzkWY6U
- dECOcZ5vFHlKeHHjfJucJwYtoE/vBsYDjx0+umgZ18wqKDnF72XI9lxPvumuSdQjpdfGu4o4x
- houdBsJiTy71ydK0dbiVPkkOfmTyFHSMxigdIYT+U/GORkZkx6ya8+5rBBp+o3NdP2jzPYlTu
- vaPRW+g+fJqVVFC4QGzfZ50ZML9RFdjTcoMz6MvZwwlwg=
+UI-OutboundReport: notjunk:1;M01:P0:BVS13T1byM8=;E2KH6Clfk5wDIOgE+oTULbvuf7D
+ 0e1/z1SQiYd9rCzjER3lgBTZahXITP7kidQEJDeOg1NH1A3oiN1sB3I8xaN8NPFvyBQ3Wzu08
+ Gca99geSAWr7Ehwu82zJJugFuNAsJHcaT1RfmSm+v7LHmZHLRDIlxx2Ol+W0Gjzidkj7/+J86
+ zU20+OK93xBzqZSrtlLoNuBCWkmSaARR3cJktxQ4Mhk/z9vDQRUlj/1aJ+ts2EszWQr3/uLC9
+ skIOhGJOeS4qiOf17xRBEz3BbgmLTO1URuf4P3pQQShJS1SDhPqhaSm2v6JMH2gVtIMnM5lUc
+ 16LAYkWypR6ema769891V7MhgzzSVvD8s/0sfeDNtsXUHtw7F2CMuX9dLfwSPotO58xcaem24
+ jZ4cgl5ES6Kq73e5+jLii97ewfKZliRcaffO6qcfr1g1HbLEXhPeSMSA578fgR4tSY0/3mRm+
+ Jd+Kfay2feHCFzBeaXKPkD4iezktc50zrfMPo267JKfQDQtUveBQLjYluY5pmp9AK7vywNKEu
+ x2d0p89DChUAvFC5/18ipo38vFmZsgnEGgPqLUvqaJm1uZ6DJJy4HyACaMQ07p7hYR4u3ubri
+ 6tDDZpccWOLlx5aY/Gg0fd6xMi0MpEyigqY94s9W7pf2RE6C2ecKwQboAUdmSFWxPjjAeEa3I
+ OWxMjVTjYNZqLPQJhKSFUR9i+GF6rAYDub5y4rCWUslVzbfW/en+Mm7VIgOsAx3iXoklq7qsz
+ /P3a6iaVRdz2D/tEK813rr3rXA5Q81tzdUlgS11Fz+rsPuOAWLfn0oFEqLuDr1KG4y6pNmxd5
+ 2EqEfn2TMBC1GlLUTzM1anrg==
 
 
 
-=E5=9C=A8 2024/9/27 07:59, Qu Wenruo =E5=86=99=E9=81=93:
+=E5=9C=A8 2024/9/27 08:43, Qu Wenruo =E5=86=99=E9=81=93:
 >
 >
-> =E5=9C=A8 2024/9/27 01:45, Ben Millwood =E5=86=99=E9=81=93:
->> Hi folks,
->>
->> I got these mailing list details from
->> https://github.com/kdave/btrfs-wiki/blob/master/btrfs.wiki/
->> Btrfs%20mailing%20list
->> , which sounds like it's deprecated as a source, so I hope the details
->> and etiquette guidelines are still current...
->>
->> Anyway, I'm seeing an error with similar symptoms as this old thing:
->> https://lore.kernel.org/linux-btrfs/87blnsuv7m.fsf@gmail.com/T/ , but
->> likely with a different cause.
->>
->> My setup is:
->> - My btrfs filesystem has two top-level subvolumes, /root and /snap,
->> which I mount into / and /snap respectively. (I don't remember exactly
->> why I did it this way, to be honest.)
->> - I have a regularly-triggered systemd unit that runs: btrfs subvolume
->> snapshot -r / "/snap/root/$(date -u --iso-8601=3Dseconds)"
->> - I have two external USB disks, and I btrfs send -p
->> /snap/root/LASTSNAP /snap/root/NEWSNAP | btrfs receive
->> /mnt/USBDISK/root/YEAR for each one (I have scripts to do this for me,
->> but I've reproduced the issue without the scripts. If you still want
->> to read more about them for whatever reason, you can find them at
->> https://github.com/bmillwood/backups )
->> - Periodically I btrfs subvolume delete old snapshots from /snap/root.
->> The ones in the external USB disks stay there forever. (I don't have
->> crazy amounts of data, so this has been sustainable so far, but it
->> does mean I have over 3k snapshots on there, which is perhaps
->> unusual...)
->>
->> This more-or-less works most of the time, but recently I have a
->> snapshot that won't co-operate, failing with "ERROR: failed to clone
->> extents to home/ben/code/nix/noether/etc-nixos/system-packages.nix:
->> Invalid argument". This happens with the same snapshot + erroneous
->> file path for both of my external disks.
->>
->> I redid the send / receive pipeline with -vv on the receive:
->>
->> btrfs send -p /snap/root/2024-09-12T16\:29\:16+00\:00
->> /snap/root/2024-09-12T17\:04\:17+00\:00 | btrfs receive -vv
->> /mnt/electricaltape/root/2024 &> /mnt/electricaltape/receive-vv.log
->>
->> and here's tail receive-vv.log:
->>
->> unlink o1209472-383-0/vmsish.3.gz
->> utimes nix/
->> store/.links/0h84wh2xnnfqram84dsszzii4v2r497hvxsvbxfyppgfnwc3c4rk
->> unlink o1209472-383-0/warnings.3.gz
->> utimes nix/
->> store/.links/0kh81sw0mh5sm7sgfb5g99rgb45qw85qs1s8qndjh4kchi0j1jq6
->> unlink o1209472-383-0/warnings::register.3.gz
->> rmdir o1209472-383-0
->> utimes nix/
->> store/.links/02m8fllf71vlf6wwx2h72k2adfx015gq8sxmbb5b52xdv3rq012l
->> clone home/ben/code/nix/noether/etc-nixos/system-packages.nix -
->> source=3Detc/nixos/system-packages.nix source offset=3D0 offset=3D0
->> length=3D4985
->
-> The length is not aligned, thus it's causing problems for the receive en=
-d.
->
-> It looks like it's the slightly behavior change introduced in upstream
-> commit 46a6e10a1ab1 ("btrfs: send: allow cloning non-aligned extent if
-> it ends at i_size"), which allows the full full clone even it's not
-> fully sector aligned.
->
-> In that case, I think it's better to make receive to roundup the clone
-> length so the clone call won't be rejected by the kernel.
+[...]
+> And send the full dump.log?
 
-My bad, it's not the case.
+Thanks a lot for the dump.
 
-Kernel itself can handle such case without any problem, so it's not the
-unaligned length.
+It indeed shows something I missed before.
 
+Firstly since it's using a parent subvolume, we do a snapshot in the
+very beginning:
 
-However from your receive log, it shows the file should have the correct
-size:
+  snapshot        ./2024-09-12T17:04:17+00:00
+uuid=3Df4190efb-ee53-0341-9613-93be3d2afbcb transid=3D63121
+parent_uuid=3D1640ca1d-94ca-f448-a89c-a3d83023744a parent_transid=3D63051
 
-133380:write etc/nixos/system-packages.nix - offset=3D0 length=3D4985
-133381:truncate etc/nixos/system-packages.nix size=3D4985
-133382:utimes etc/nixos/system-packages.nix
-316933:clone home/ben/code/nix/noether/etc-nixos/system-packages.nix -
-source=3Detc/nixos/system-packages.nix source offset=3D0 offset=3D0
-length=3D4985
+Then create the file system-packages.nix:
 
-But there are quite some operations between the two, mind to dump the
-full send stream by:
+  write
+./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix offset=3D0 len=
+=3D4985
+  truncate
+./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix size=3D4985
 
-# btrfs send -p /snap/root/2024-09-12T16\:29\:16+00\:00
-/snap/root/2024-09-12T17\:04\:17+00\:00 | btrfs receive --dump &>
-/tmp/dump.log
+Which has 4985 sized, so far so good.
 
-And send the full dump.log?
+Now we do the clone, notice that there is no "mkfile" command, meaning
+there should be an existing file at "system-packages.nix":
+
+  clone
+./2024-09-12T17:04:17+00:00/home/ben/code/nix/noether/etc-nixos/system-pac=
+kages.nix
+offset=3D0 len=3D4985
+from=3D./2024-09-12T17:04:17+00:00/etc/nixos/system-packages.nix
+clone_offset=3D0
+
+This clone can only happen if the existing file has the same size 4985,
+or the clone ioctl will fail.
+
+Then according to your original mail, the original file in source
+subvolume indeed has a different size.
+The source subvolume is "2024-09-12T16:29:16+00:00", but the file has a
+different size:
+
+# stat
+/snap/root/2024-09-12T16\:29\:16+00\:00/home/ben/code/nix/noether/etc-nixo=
+s/system-packages.nix
+   File:
+/snap/root/2024-09-12T16:29:16+00:00/home/ben/code/nix/noether/etc-nixos/s=
+ystem-packages.nix
+   Size: 5026          Blocks: 16         IO Block: 4096   regular file
+
+This is the direct cause.
+
+The root cause is, the source subvolume has been modified:
+
+     Name:             2024-09-12T16:29:16+00:00
+     UUID:             cfa79865-0272-3845-b447-4d650c2f6d5a
+     Parent UUID:         3d45fbdc-7e4e-f044-83c3-32ad05b70441
+     Received UUID:         1640ca1d-94ca-f448-a89c-a3d83023744a
+     Creation time:         2024-09-26 14:00:31 +0100
+     Subvolume ID:         5842
+     Generation:         14268      <<<<
+     Gen at creation:     14255     <<<<
+     Parent ID:         5
+     Top level ID:         5
+     Flags:             readonly
+     Send transid:         63051
+     Send time:         2024-09-26 14:00:31 +0100
+     Receive transid:     14261
+     Receive time:         2024-09-26 14:09:52 +0100
+     Snapshot(s):
+     Quota group:        n/a
+
+And I believe the source subvolume has been changed to RW, then
+modified, causing above contents mismatch, failing the receive.
+
+I guess the recevied subvolume is modified in some older kernels, as
+since v5.14.2 kernel will reset the received uuid upon changing it from
+RO to RW.
 
 Thanks,
 Qu
+
+>
+> Thanks,
+> Qu
+>
+
 
