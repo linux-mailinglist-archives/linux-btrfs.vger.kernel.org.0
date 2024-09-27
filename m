@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8298-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8299-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBE8D9882A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 12:38:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748779882BF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 12:46:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E163B22C6D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 10:38:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D890CB2150B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 10:46:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44F71891A1;
-	Fri, 27 Sep 2024 10:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3D3187547;
+	Fri, 27 Sep 2024 10:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="SQqATQ7N"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="djwtSaTf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68A713698F
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 10:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E218C39AD6;
+	Fri, 27 Sep 2024 10:46:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727433516; cv=none; b=tS9TqRRcZZaqsQee4bKPoNSeX29TcFaJWcfBBQ98qTB+np0iEo5n+JPVLLETYE+xvNijWFeyri17qH1Ft1mlhCFSzfJ/Xj6ziuWcAvIto+ZX4TrdLpE5h2BXNyemw1E91+fhuiXpqbwHqBqQaqJvjrsINkPEeWeuUWPlc2b3UB4=
+	t=1727433977; cv=none; b=E7XrJLOqX2fDV77vckxce7rJgfrsYjyV26UXQh9eNz04sl5Crm4U9WKk2Bit+5hjNo12fHfB1sN9VG/tlKERAsKXmDgt/xNeqhDgRkZR67xENSqtkOpTF4W41r5xjVTCgudw0gMuu4IL4Unl5npXhxlIqTLcb3nAEbQ94j+bn7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727433516; c=relaxed/simple;
-	bh=m+iiwjfVOgw5+qD2XcOp/NSGORyLtc9htFEyk8mTN9w=;
+	s=arc-20240116; t=1727433977; c=relaxed/simple;
+	bh=OjWJgTFiMevfMHRWDd3ucH0a3xUritJCrRfF2LaWKXE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tpX3+Lke1ohFq52QJIfZdfHazq84DUS+rCAjsRk1OGBw0a/3R8bWsYOTbgR3km6Dxdr1HhVCjXDExQvsaCDqiMF1+/sHFUW2JuCftpURRv3mn0pXe3O/0yArv8t2V4j5+jPDVUIGLpklhSyFg1Xisby+8ivexdmKSpeNPrzhX1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=SQqATQ7N; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=qLf8wMR1LYQdUw4I9bsBrN9hYDW167ba8KaRRqPCHIR+27m/5DnO8FJRMof5fU9yCYdMSfWAyBpSn4OBQVl1ZxBIgsezAdItnh36A3ggB/3U3tr/oI2YlpciVymX4XEMdTJOZmRbQagnHCwS4tDzePV8ajAqWRr6ZNk2qmbdKFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=djwtSaTf; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727433507; x=1728038307; i=quwenruo.btrfs@gmx.com;
-	bh=h3ERxrTnaC1GjyuIIjL5iCRxHyLklCLi29HxdFr3KOU=;
+	s=s31663417; t=1727433967; x=1728038767; i=quwenruo.btrfs@gmx.com;
+	bh=FHLmprBN+8BvBkcYJP5lQXA36pqXWPZMUMuipRnTwyQ=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=SQqATQ7Ny6vIJoYUBwh1XgYp7ExNj7PxAWemzxibGGCF3RTYtFRpVXwZGeAhehAy
-	 r2e/+uHtPXI2NJ86B0qPkSaVsd9s6+j36rz4iGSxA2n419TB+3tCxKW0AtG/oI4dJ
-	 n8B1ClWg7WiObHHomTWa03JYHXzJDGX/4kuSnszUnCYOis44/KacIZijeB8zyubZY
-	 3LxHf4coQa5GV9Z+VGEUMLCHSHH/7hu8f4gRE/hHo2wo1vYmBk1M1C/fFuykUrMr1
-	 VF5PyBjsFFcpoLRJKXeW/uOVCBMIvBma7cfVuo2llp+nnMrOj6cE0Mw5iSlt/fgEc
-	 kDFPBcWEvpKfbmeJ4g==
+	b=djwtSaTf4FiHHXJfgwrQxSOwkLKMTE/foTijHkGX7lKR+l+p9fEUzBYShI0ec8nG
+	 U0APoccLcbKdXjm++JWTEEsbxbwoVM66tztWEbF34fmmUo3AkLhhytQuGKXVk1H3+
+	 EAblA5L/OMwUX5dbtIC52B/y5prhDu5jEOohvkkcJhKBqgvatEFj4lENXkwNUv5r6
+	 MwnHx96imD+nEAjLjA9RKfwnh1L4DU00XPdlZbnZi+YV6sJduMhXvjfBYuvuSC43w
+	 08tdEiD3SR2ZL6mkGkiOC2hn3cvbQ3OPzyaam9PYCmJqCxkvFTCtLRGR9guMHFG9E
+	 AcjU+kGfShcRbIpeTg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mg6Zq-1sGxbQ3oC6-00cpGZ; Fri, 27
- Sep 2024 12:38:27 +0200
-Message-ID: <3676e9bd-af5b-4678-9ef5-fdfedcd0e743@gmx.com>
-Date: Fri, 27 Sep 2024 20:08:24 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzBp-1scsiU15c1-00Nf3S; Fri, 27
+ Sep 2024 12:46:07 +0200
+Message-ID: <32a28670-a5bc-4638-b576-1c756417b925@gmx.com>
+Date: Fri, 27 Sep 2024 20:16:04 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: send: fix invalid clone operation for file that
- got its size decreased
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <5a406a607fcccec01684056ab011ff0742f06439.1727432566.git.fdmanana@suse.com>
- <ac929d10-d263-46b1-9584-fd00a38e6189@gmx.com>
- <CAL3q7H6vr1sDHR9DwdE7xqgr6uL=meyoGAYJz2AygtuisR1DyQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: test an incremental send scenario with cloning of
+ unaligned extent
+To: fdmanana@kernel.org, fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <76d94e63cec4cb04cbfbc0dcd0928f1fbdc27bdf.1727432832.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,194 +89,183 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CAL3q7H6vr1sDHR9DwdE7xqgr6uL=meyoGAYJz2AygtuisR1DyQ@mail.gmail.com>
+In-Reply-To: <76d94e63cec4cb04cbfbc0dcd0928f1fbdc27bdf.1727432832.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:d/WYMs3Tt9vUeUs635i94J/Ci0whKB0iyPs4/6qF2RVryqgZHCu
- KaaBS7/GkLK9XuBgj9vLNcO9oGW7jhxfzeHXfBZjKbrEm6Aqdrdu97eP63YmBuc32GtY2OA
- Hqld7cU6RoMZJFv5ssI+hTTwrtYEfHeSreXnILHorzGdRVsf+wQ3cdgcIncIRJycMw/iFvh
- DW/L2m3CP9bjNDaTL96jg==
+X-Provags-ID: V03:K1:5qLlNotGX6HJ1//eCre8AURe8BxyZYiAuHkaRyJ9rjuMy+C3S3i
+ gCP7S0aA63YHT7DU18Rhv7XBGTfi6l6qsyiHGV818OV4CFdbBidB3TsVcbrwl5SB/SxYEqm
+ liiAzOihnIlVVAifPucj0BIYtG++x+gieYMOffxwSy8AqCapCQoHkz1szxNuJZF1LAwrUZy
+ vVRyK9mz7Eq3fMYOTr+Rw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wWoKWShxO0M=;6dWZBvxvAbMv002d9PAQlHyBOMk
- ViLOCC9wmACAPjde+ljkhRl8O7K3PbEBJOs1c8lw4rCFiQ2AUzOV5g1lYhXeRhTTHk+fVljzg
- nKVTd4YxuShPyuRZtSJIsDu2gYzKD4BoJa0F5JUykOR4J8nO+SL0rYfuXdm0cOxOFEGXxe+Zo
- Gm2top9Nr/Sr9yEQYk9dZa9JoH+xrkU0ISakfLuj7V+Wabft59ENb9p2B0C1s1q2XwdS8TIDC
- Y8Y15HpdzSY8rDsZu2yl/YwSXg3dIpP++gU0komYm7+uEtcCiUFJciVpE4uTYvkHEkw403014
- zJdGtdfW/0OXe2KfWPzKWiPmPDGCYbAQ78KLlICRdypvJgUSPDw5EfDKu4c0Yg3+EDW4JU7ld
- pVxriMJq3gMva6bDnouAIkO+nWiCLDCGeDPHHMRvaWMRix5ix45eKnUyHv9N1pVx6Js4qV1io
- cTPj7vl0qyij2rbHT2FYlLwnMtXkWzAFEj8zIiQrKhx9yIOEA/QqdQjNMgOkeImXttTz6qvvp
- Rv/trO7M7BraDINQ0CjuK9lnK0+KwCIJhuHVQWIyLSonlU3IHL3vrNe9vJTSoAU6u1ULUAI2N
- Jc9+lNlPRcXnovEuxDCBUKWVic9zn9pZu0OCn4C8JzUR4dWAkY5B+If/rIh58Kh6M4QGMhmFq
- mOp24Hyhd1C0bcNlHU9VDZl5/mt9gDCW18zn9tnSlWTTk8dFrrQbT+RJFg9gEVc0PpZeJ8+0g
- PWU6OLBuSJ7HThTgL93MGqbZ+NpucXqiXTlKv1aMgUOpYK6gryHuzgSImOuk20v5CHL/eMlPg
- VoSVB0ApOfp143nrrZzk8BtQ==
+UI-OutboundReport: notjunk:1;M01:P0:LNdReHfvlKI=;jKNO8dohBLaCeQi1xB4zNSOXz6+
+ 0p/taQ8QDpXii2f5V9GS7ieIjOWmGUeiNzKsNGOkv0K+0j1Ve+O9/RTa6Ob6X0TWj61wR8Bsi
+ HvvTN7uaV6Cb8EjRfOhxU98c4rLF60TpE35nt2/xT2b+Jih/J85E1rj+dbZ6q6Q9A46mYv3x2
+ gUXPJey0P5aOgVg7y+RoxHmNhuPs8WxPd0eZnYLuvTPfrdCC1ALUFg4ns4VfKTNTUoeGX9ad9
+ 8nkMdzmdk4reyru5xPQHrVYO2oPRo+BunxQ1uUmhFoCTgVwFaNNDHnhFUa/jZGZq426+vDrqW
+ iOq50Rj+4SCKxBDCtS1DMtk/EUtlZsynJUVpG9hzTyoL5BjDd4vvph08BwPD86Sicu5Cmn91p
+ OJkpj0DZ6bHk1a6UsmB5wrgDnS+LuqLjHRpfYByTtFKGOuP5SOvo5lAYyK6ZjLjTwXss6ALzt
+ D/sdQjFjQPWeVmjVaXJ9+PH58b3pGEdnjm7zhf8W8FOgi7RKhoqhISJVugPp9BiCZ8h9VzpDb
+ re6CzejZA7o3CMevnQKFVs5GrK+xPHGv9BHYH7dkXE4k2n7cQXKiNh5li9nxW0BhHt2OFaf0w
+ qsl1rMVXWfhnr2c+q2q097QgFjQ46UqlMvvp8gGnTb/NwbIRR2Mo9p/290vsWhVbT0XZ+mlx4
+ EtQBvYm9wNQmJ8WMgMdNojgq8NRx58OB0lSDrXfYni+mGx3nshy83nSgQBcpPPNYQj4yLnGjB
+ svfM5M+Ph1vDMjmSNyYk7C9hTV2nlA/fc5azPn4EoG4jcPtXoFOwXgaSVdR4rZCNJidULQiuo
+ wu/394sC8ax8zWW2MWezaLUA==
 
 
 
-=E5=9C=A8 2024/9/27 20:06, Filipe Manana =E5=86=99=E9=81=93:
-> On Fri, Sep 27, 2024 at 11:34=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.c=
-om> wrote:
->>
->>
->>
->> =E5=9C=A8 2024/9/27 19:55, fdmanana@kernel.org =E5=86=99=E9=81=93:
->>> From: Filipe Manana <fdmanana@suse.com>
->>>
->>> During an incremental send we may end up sending an invalid clone
->>> operation, for the last extent of a file which ends at an unaligned of=
-fset
->>> that matches the final i_size of the file in the send snapshot, in cas=
-e
->>> the file had its initial size (the size in the parent snapshot) decrea=
-sed
->>> in the send snapshot. In this case the destination will fail to apply =
-the
->>> clone operation because its end offset is not sector size aligned and =
-it
->>> ends before the current size of the file.
->>>
->>> Sending the truncate operation always happens when we finish processin=
-g an
->>> inode, after we process all its extents (and xattrs, names, etc). So f=
-ix
->>> this by ensuring the file has the correct size before we send a clone
->>> operation for an unaligned extent that ends at the final i_size of the=
- file.
->>>
->>> The following test reproduces the issue:
->>>
->>>     $ cat test.sh
->>>     #!/bin/bash
->>>
->>>     DEV=3D/dev/sdi
->>>     MNT=3D/mnt/sdi
->>>
->>>     mkfs.btrfs -f $DEV
->>>     mount $DEV $MNT
->>>
->>>     # Create a file with a size of 256K + 5 bytes, having two extents,=
- one
->>>     # with a size of 128K and another one with a size of 128K + 5 byte=
-s.
->>>     last_ext_size=3D$((128 * 1024 + 5))
->>>     xfs_io -f -d -c "pwrite -S 0xab -b 128K 0 128K" \
->>>            -c "pwrite -S 0xcd -b $last_ext_size 128K $last_ext_size" \
->>>            $MNT/foo
->>>
->>>     # Another file which we will later clone foo into, but initially w=
-ith
->>>     # a larger size than foo.
->>>     xfs_io -f -c "pwrite -S 0xef 0 1M" $MNT/bar
->>>
->>>     btrfs subvolume snapshot -r $MNT/ $MNT/snap1
->>>
->>>     # Now resize bar and clone foo into it.
->>>     xfs_io -c "truncate 0" \
->>>            -c "reflink $MNT/foo" $MNT/bar
->>>
->>>     btrfs subvolume snapshot -r $MNT/ $MNT/snap2
->>>
->>>     rm -f /tmp/send-full /tmp/send-inc
->>>     btrfs send -f /tmp/send-full $MNT/snap1
->>>     btrfs send -p $MNT/snap1 -f /tmp/send-inc $MNT/snap2
->>>
->>>     umount $MNT
->>>     mkfs.btrfs -f $DEV
->>>     mount $DEV $MNT
->>>
->>>     btrfs receive -f /tmp/send-full $MNT
->>>     btrfs receive -f /tmp/send-inc $MNT
->>>
->>>     umount $MNT
->>>
->>> Running it before this patch:
->>>
->>>     $ ./test.sh
->>>     (...)
->>>     At subvol snap1
->>>     At snapshot snap2
->>>     ERROR: failed to clone extents to bar: Invalid argument
->>>
->>> A test case for fstests will be sent soon.
->>>
->>> Reported-by: Ben Millwood <thebenmachine@gmail.com>
->>> Link: https://lore.kernel.org/linux-btrfs/CAJhrHS2z+WViO2h=3DojYvBPDLs=
-ATwLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com/
->>> Fixes: 46a6e10a1ab1 ("btrfs: send: allow cloning non-aligned extent if=
- it ends at i_size")
->>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>
->> Just a small nitpick inlined below.
->>> ---
->>>    fs/btrfs/send.c | 19 ++++++++++++++++++-
->>>    1 file changed, 18 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
->>> index 5871ca845b0e..3ee27840a95a 100644
->>> --- a/fs/btrfs/send.c
->>> +++ b/fs/btrfs/send.c
->>> @@ -6189,8 +6189,25 @@ static int send_write_or_clone(struct send_ctx =
-*sctx,
->>>        if (ret < 0)
->>>                return ret;
->>>
->>> -     if (clone_root->offset + num_bytes =3D=3D info.size)
->>> +     if (clone_root->offset + num_bytes =3D=3D info.size) {
->>> +             /*
->>> +              * The final size of our file matches the end offset, bu=
-t it may
->>> +              * be that its current size is larger, so we have to tru=
-ncate it
->>> +              * to that size (or to the start offset of the extent) o=
-therwise
->>> +              * the clone operation is invalid because it's unaligned=
- and it
->>> +              * ends before the current EOF.
->>> +              * We do this truncate when we finish processing the ino=
-de, but
->>> +              * it's too late by then, so we must do it now.
->>> +              */
->>> +             if (sctx->parent_root !=3D NULL) {
->>> +                     ret =3D send_truncate(sctx, sctx->cur_ino,
->>> +                                         sctx->cur_inode_gen,
->>> +                                         sctx->cur_inode_size);
->>
->> I know this is a little overkilled, but can we just truncate the inode
->> size to round_down(cur_inode_size, secotrsize)?
->>
->> As the truncate will still dirty the last sector, and later clone() wil=
-l
->> writeback the range covering the last sector, causing unnecessary IO fo=
-r
->> the sector we are going to drop immediately.
+=E5=9C=A8 2024/9/27 19:58, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >
-> For that it's more logical to truncate to the start offset which is
-> always aligned.
+> Test that doing an incremental send with a file that had its size
+> decreased and became the destination for a clone operation of an extent
+> with an unaligned end offset that matches the new file size, works
+> correctly.
+>
+> This tests a bug fixed by the following kernel patch:
+>
+>    "btrfs: send: fix invalid clone operation for file that got its size =
+decreased"
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Right, that's more reasonable.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Thanks for the fix.
+Just a small nitpick.
+
+[...]
+> +. ./common/filter
+> +. ./common/reflink
+> +. ./common/punch # for _filter_fiemap_flags
+> +
+> +_require_test
+
+Initially I thought test is not necessary, but later turns out that
+we're using TEST_MNT to store the two streams.
+
+May be we can just reuse $tmp.*?
+
+Thanks,
 Qu
 
-> I'll do that.
->
-> Thanks.
->
->>
->> Thanks,
->> Qu
->>
->>> +                     if (ret < 0)
->>> +                             return ret;
->>> +             }
->>>                goto clone_data;
->>> +     }
->>>
->>>    write_data:
->>>        ret =3D send_extent_data(sctx, path, offset, num_bytes);
->>
->
+> +_require_scratch_reflink
+> +_require_xfs_io_command "fiemap"
+> +_require_odirect
+> +
+> +_fixed_by_kernel_commit xxxxxxxxxxxx \
+> +	"btrfs: send: fix invalid clone operation for file that got its size d=
+ecreased"
+> +
+> +check_all_extents_shared()
+> +{
+> +	local file=3D$1
+> +	local fiemap_output
+> +
+> +	fiemap_output=3D$($XFS_IO_PROG -r -c "fiemap -v" $file | _filter_fiema=
+p_flags)
+> +	echo "$fiemap_output" | grep -qv 'shared'
+> +	if [ $? -eq 0 ]; then
+> +		echo -e "Found non-shared extents for file $file:\n"
+> +		echo "$fiemap_output"
+> +	fi
+> +}
+> +
+> +send_files_dir=3D$TEST_DIR/btrfs-test-$seq
+> +full_send_stream=3D$send_files_dir/full_snap.stream
+> +inc_send_stream=3D$send_files_dir/inc_snap.stream
+> +
+> +rm -fr $send_files_dir
+> +mkdir $send_files_dir
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "first mkfs failed"
+> +_scratch_mount
+> +
+> +# Create a file with a size of 256K + 5 bytes, having two extents, the =
+first one
+> +# with a size of 128K and the second one with a size of 128K + 5 bytes.
+> +last_extent_size=3D$((128 * 1024 + 5))
+> +$XFS_IO_PROG -f -d -c "pwrite -S 0xab -b 128K 0 128K" \
+> +             -c "pwrite -S 0xcd -b $last_extent_size 128K $last_extent_=
+size" \
+> +             $SCRATCH_MNT/foo | _filter_xfs_io
+> +
+> +# Another file which we will later clone foo into, but initially with
+> +# a larger size than foo.
+> +$XFS_IO_PROG -f -c "pwrite -b 0xef 0 1M" $SCRATCH_MNT/bar | _filter_xfs=
+_io
+> +
+> +echo "Creating snapshot and the full send stream for it..."
+> +_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
+> +$BTRFS_UTIL_PROG send -f $full_send_stream $SCRATCH_MNT/snap1 >> $seqre=
+s.full 2>&1
+> +
+> +# Now resize bar and clone foo into it.
+> +$XFS_IO_PROG -c "truncate 0" \
+> +	     -c "reflink $SCRATCH_MNT/foo" $SCRATCH_MNT/bar | _filter_xfs_io
+> +
+> +echo "Creating another snapshot and the incremental send stream for it.=
+.."
+> +_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
+> +$BTRFS_UTIL_PROG send -p $SCRATCH_MNT/snap1 -f $inc_send_stream \
+> +		 $SCRATCH_MNT/snap2 >> $seqres.full 2>&1
+> +
+> +echo "File digests in the original filesystem:"
+> +md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch
+> +md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch
+> +md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch
+> +md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch
+> +
+> +check_all_extents_shared "$SCRATCH_MNT/snap2/bar"
+> +check_all_extents_shared "$SCRATCH_MNT/snap1/foo"
+> +
+> +echo "Creating a new filesystem to receive the send streams..."
+> +_scratch_unmount
+> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "second mkfs failed"
+> +_scratch_mount
+> +
+> +$BTRFS_UTIL_PROG receive -f $full_send_stream $SCRATCH_MNT
+> +$BTRFS_UTIL_PROG receive -f $inc_send_stream $SCRATCH_MNT
+> +
+> +echo "File digests in the new filesystem:"
+> +md5sum $SCRATCH_MNT/snap1/foo | _filter_scratch
+> +md5sum $SCRATCH_MNT/snap1/bar | _filter_scratch
+> +md5sum $SCRATCH_MNT/snap2/foo | _filter_scratch
+> +md5sum $SCRATCH_MNT/snap2/bar | _filter_scratch
+> +
+> +check_all_extents_shared "$SCRATCH_MNT/snap2/bar"
+> +check_all_extents_shared "$SCRATCH_MNT/snap1/foo"
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/322.out b/tests/btrfs/322.out
+> new file mode 100644
+> index 00000000..31e1ee55
+> --- /dev/null
+> +++ b/tests/btrfs/322.out
+> @@ -0,0 +1,24 @@
+> +QA output created by 322
+> +wrote 131072/131072 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +wrote 131077/131077 bytes at offset 131072
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +wrote 1048576/1048576 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +Creating snapshot and the full send stream for it...
+> +linked 0/0 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +Creating another snapshot and the incremental send stream for it...
+> +File digests in the original filesystem:
+> +c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap1/foo
+> +ca539970d4b1fa1f34213ba675007381  SCRATCH_MNT/snap1/bar
+> +c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/foo
+> +c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/bar
+> +Creating a new filesystem to receive the send streams...
+> +At subvol snap1
+> +At snapshot snap2
+> +File digests in the new filesystem:
+> +c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap1/foo
+> +ca539970d4b1fa1f34213ba675007381  SCRATCH_MNT/snap1/bar
+> +c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/foo
+> +c3bb068b7e21d3f009581f047be84f44  SCRATCH_MNT/snap2/bar
 
 
