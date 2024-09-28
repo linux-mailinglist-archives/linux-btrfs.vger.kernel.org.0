@@ -1,74 +1,83 @@
-Return-Path: <linux-btrfs+bounces-8310-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8311-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC6AB988C82
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Sep 2024 00:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B0123988DDC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Sep 2024 06:46:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D0BEB2154D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2024 22:36:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 112B0B20E1C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Sep 2024 04:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED90D1B3742;
-	Fri, 27 Sep 2024 22:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5356319AD97;
+	Sat, 28 Sep 2024 04:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GeGHa7XA";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GeGHa7XA"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cX4/qXw4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cX4/qXw4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35C791B3737
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2024 22:36:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2501C6A5;
+	Sat, 28 Sep 2024 04:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727476584; cv=none; b=mvdBLJUPT7jJw7T7ljpu7BKg95FPPz8P1oxPoDjfZheEE7Y63oeGjlpa2pE/DiDUGQpgRH6Bi3YLzJEaW+p/MbOBxVesGoYth6WXyYoct7yoIipVEtq80lF38hnHr1hflAFS5xxN8LguqR1NtG83kHR2pqYfvrbL5zgsIDWMfSA=
+	t=1727498768; cv=none; b=i6TtF07/zq7N/asS0CpYMIzds5JxuxymiEpX4nNUO6AGuYCbQXj/0gzkHdp50wxouni28rOH+wpki5X6OV4drvIa4K6XS0aLv8thBcQoJznuYoI6aU6YuAEr/Mx+xzvdx8RNAeCt4aRFne72mLQ/j+B91E0upEngi+E218vMCwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727476584; c=relaxed/simple;
-	bh=btHVR/PqrMDS77a9iwa+uCrFlUxJ41+oVa7h1IhHqvM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ToMqA2xj8zZclIAd+8fEIMzo6jXvlCUI00q+RTWSSWkad/dLEglA3x8v+5L/VENFq5G6ycoHcMbPrhTwWVsZvir4381yxJr9GugahauMDClUwibVX+/VL8uejrglXDJyQ/lebZFHkulGRJDrFsgeKcWRAOO6/ms0kRcMLtyD9ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GeGHa7XA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GeGHa7XA; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1727498768; c=relaxed/simple;
+	bh=swj22psNBjQ40hMTU03U/9naZS1ekdn6yU2+3M4hs5M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SqZPkrXThF4JD20Na96jK3xeaIvTXDi5kR2tSJs5MAUy5ZalJDLl2EPqCvqHD0KNDe+4dYqLXjaxhhLkvIhLm/joLT5axX1nlwt9920KurtuTgdClA8CD0sNJ9hjXaVqjZoRn3+gsgB4lPBRfUbfm0NM0O1jNr3e8eKN7l0cj+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cX4/qXw4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cX4/qXw4; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5B70D1F396;
-	Fri, 27 Sep 2024 22:36:17 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F20A31F8D7;
+	Sat, 28 Sep 2024 04:46:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727476577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727498763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=KU3F8NaOw9uOHjCYuaYBkvPv+QNhBmCf7OSZarrkyIY=;
-	b=GeGHa7XAg0HhFf4SFDduz6TUTrhQGC9mtQSqXz8uO0h2QEXuzidQP748urud5in0pEQFIU
-	7l7ym2YWNRXs2YNBrsQAMtIZn+oXC1r8qiJxtL9GA+dNut5BHW90hNaxNPgTZXH0THNjen
-	Lg47cqs17IW7GeD+oB/Ag6iw1e1MY34=
+	bh=8rnCt/V46QSqAx330W1615tslS9zKGk6eFgRTHFjKk0=;
+	b=cX4/qXw40cY2GcC3rqBQTQpi393Hfj51eqOCs1XiJZOVf0yVOrvna5ViG8Mu3AKuSttA18
+	are3zTUlDRz/Y5BQ1e5WrexLmIgpY2GvFsMWeu4okw8M9UdJJDx1xg4Rn4Wcb5N8wQC8tz
+	1L9uGZLSV9eeTUwwna2sG6iYaawcLn8=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727476577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727498763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=KU3F8NaOw9uOHjCYuaYBkvPv+QNhBmCf7OSZarrkyIY=;
-	b=GeGHa7XAg0HhFf4SFDduz6TUTrhQGC9mtQSqXz8uO0h2QEXuzidQP748urud5in0pEQFIU
-	7l7ym2YWNRXs2YNBrsQAMtIZn+oXC1r8qiJxtL9GA+dNut5BHW90hNaxNPgTZXH0THNjen
-	Lg47cqs17IW7GeD+oB/Ag6iw1e1MY34=
+	bh=8rnCt/V46QSqAx330W1615tslS9zKGk6eFgRTHFjKk0=;
+	b=cX4/qXw40cY2GcC3rqBQTQpi393Hfj51eqOCs1XiJZOVf0yVOrvna5ViG8Mu3AKuSttA18
+	are3zTUlDRz/Y5BQ1e5WrexLmIgpY2GvFsMWeu4okw8M9UdJJDx1xg4Rn4Wcb5N8wQC8tz
+	1L9uGZLSV9eeTUwwna2sG6iYaawcLn8=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F48B1386E;
-	Fri, 27 Sep 2024 22:36:16 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C885513A6E;
+	Sat, 28 Sep 2024 04:45:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Z/BqBGAz92a6KQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 27 Sep 2024 22:36:16 +0000
+	id zzp2IgeK92ZyDQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Sat, 28 Sep 2024 04:45:59 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: syzbot+283673dbc38527ef9f3d@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: fix a NULL pointer dereference when failed to start a new trasacntion
-Date: Sat, 28 Sep 2024 08:05:58 +0930
-Message-ID: <c3663ebd875fb3576710f61aefedc25bf452d141.1727476551.git.wqu@suse.com>
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>,
+	"Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Subject: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
+Date: Sat, 28 Sep 2024 14:15:56 +0930
+Message-ID: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -85,101 +94,115 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	R_MISSING_CHARSET(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_TWO(0.00)[2];
-	ARC_NA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[283673dbc38527ef9f3d];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-[BUG]
-Syzbot reported a NULL pointer dereference with the following crash:
+[BACKGROUND]
+The function filemap_add_folio() charges the memory cgroup,
+as we assume all page caches are accessible by user space progresses
+thus needs the cgroup accounting.
 
-FAULT_INJECTION: forcing a failure.
- start_transaction+0x830/0x1670 fs/btrfs/transaction.c:676
- prepare_to_relocate+0x31f/0x4c0 fs/btrfs/relocation.c:3642
- relocate_block_group+0x169/0xd20 fs/btrfs/relocation.c:3678
-...
-BTRFS info (device loop0): balance: ended with status: -12
-Oops: general protection fault, probably for non-canonical address 0xdffffc00000000cc: 0000 [#1] PREEMPT SMP KASAN NOPTI
-KASAN: null-ptr-deref in range [0x0000000000000660-0x0000000000000667]
-RIP: 0010:btrfs_update_reloc_root+0x362/0xa80 fs/btrfs/relocation.c:926
-Call Trace:
- <TASK>
- commit_fs_roots+0x2ee/0x720 fs/btrfs/transaction.c:1496
- btrfs_commit_transaction+0xfaf/0x3740 fs/btrfs/transaction.c:2430
- del_balance_item fs/btrfs/volumes.c:3678 [inline]
- reset_balance_state+0x25e/0x3c0 fs/btrfs/volumes.c:3742
- btrfs_balance+0xead/0x10c0 fs/btrfs/volumes.c:4574
- btrfs_ioctl_balance+0x493/0x7c0 fs/btrfs/ioctl.c:3673
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:907 [inline]
- __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:893
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
----[ end trace 0000000000000000 ]---
+However btrfs is a special case, it has a very large metadata thanks to
+its support of data csum (by default it's 4 bytes per 4K data, and can
+be as large as 32 bytes per 4K data).
+This means btrfs has to go page cache for its metadata pages, to take
+advantage of both cache and reclaim ability of filemap.
 
-[CAUSE]
-The allocation failure happens at the start_transaction() inside
-prepare_to_relocate(), and during the error handling we call
-unset_reloc_control(), which makes fs_info->balance_ctl to be NULL.
+This has a tiny problem, that all btrfs metadata pages have to go through
+the memcgroup charge, even all those metadata pages are not
+accessible by the user space, and doing the charging can introduce some
+latency if there is a memory limits set.
 
-Then we continue the error path cleanup in btrfs_balance() by calling
-reset_balance_state() which will call del_balance_item() to fully delete
-the balance item in the root tree.
+Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
+charge situation so that metadata pages won't really be limited by
+memcgroup.
 
-However during the small window between set_reloc_contrl() and
-unset_reloc_control(), we can have a subvolume tree update and created a
-reloc_root for that subvolume.
+[ENHANCEMENT]
+Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
+memory cgroup to attach metadata pages.
 
-Then we go into the final btrfs_commit_transaction() of
-del_balance_item(), and into btrfs_update_reloc_root() inside
-commit_fs_roots().
+Although this needs to export the symbol mem_root_cgroup for
+CONFIG_MEMCG, or define mem_root_cgroup as NULL for !CONFIG_MEMCG.
 
-That function checks if fs_info->reloc_ctl is in the merge_reloc_tree
-stage, but since fs_info->reloc_ctl is NULL, it results a NULL pointer
-dereference.
+With root memory cgroup, we directly skip the charging part, and only
+rely on __GFP_NOFAIL for the real memory allocation part.
 
-[FIX]
-Just add extra check on fs_info->reloc_ctl inside
-btrfs_update_reloc_root(), before checking
-fs_info->reloc_ctl->merge_reloc_tree.
-
-That DEAD_RELOC_TREE handling is to prevent further modification to the
-reloc tree during merge stage, but since there is no reloc_ctl at all,
-we do not need to bother that.
-
-Reported-by: syzbot+283673dbc38527ef9f3d@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/linux-btrfs/66f6bfa7.050a0220.38ace9.0019.GAE@google.com/
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/relocation.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/extent_io.c       | 9 +++++++++
+ include/linux/memcontrol.h | 2 ++
+ mm/memcontrol.c            | 1 +
+ 3 files changed, 12 insertions(+)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index cf1dfeaaf2d8..f3834f8d26b4 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -856,7 +856,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
- 	btrfs_grab_root(reloc_root);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 9302fde9c464..a3a3fb825a47 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2919,6 +2919,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+ 	const unsigned long index = eb->start >> PAGE_SHIFT;
+ 	struct folio *existing_folio = NULL;
++	struct mem_cgroup *old_memcg;
+ 	int ret;
  
- 	/* root->reloc_root will stay until current relocation finished */
--	if (fs_info->reloc_ctl->merge_reloc_tree &&
-+	if (fs_info->reloc_ctl && fs_info->reloc_ctl->merge_reloc_tree &&
- 	    btrfs_root_refs(root_item) == 0) {
- 		set_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
- 		/*
+ 	ASSERT(found_eb_ret);
+@@ -2927,8 +2928,16 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 	ASSERT(eb->folios[i]);
+ 
+ retry:
++	/*
++	 * Btree inode is a btrfs internal inode, and not exposed to any user.
++	 *
++	 * We do not want any cgroup limit on this inode, thus using
++	 * root_mem_cgroup for metadata filemap.
++	 */
++	old_memcg = set_active_memcg(root_mem_cgroup);
+ 	ret = filemap_add_folio(mapping, eb->folios[i], index + i,
+ 				GFP_NOFS | __GFP_NOFAIL);
++	set_active_memcg(old_memcg);
+ 	if (!ret)
+ 		goto finish;
+ 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0e5bf25d324f..efec74344a4d 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1067,6 +1067,8 @@ void split_page_memcg(struct page *head, int old_order, int new_order);
+ 
+ #define MEM_CGROUP_ID_SHIFT	0
+ 
++#define root_mem_cgroup		(NULL)
++
+ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
+ {
+ 	return NULL;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d563fb515766..2dd1f286364d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -75,6 +75,7 @@ struct cgroup_subsys memory_cgrp_subsys __read_mostly;
+ EXPORT_SYMBOL(memory_cgrp_subsys);
+ 
+ struct mem_cgroup *root_mem_cgroup __read_mostly;
++EXPORT_SYMBOL(root_mem_cgroup);
+ 
+ /* Active memory cgroup to use from an interrupt context */
+ DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
 -- 
 2.46.1
 
