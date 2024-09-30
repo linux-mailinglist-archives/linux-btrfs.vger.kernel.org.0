@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-8319-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8320-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9137F989908
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 03:51:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52234989909
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 03:51:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 241771F21C18
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 01:51:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 529F71C211A5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 01:51:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474B7F9DF;
-	Mon, 30 Sep 2024 01:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D9717736;
+	Mon, 30 Sep 2024 01:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MDMsC69S";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MDMsC69S"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BKTWeDAy";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BKTWeDAy"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CC75684
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5331163D5
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727661054; cv=none; b=KTEHgGa9DzH94senkjT1NXcpFlRe/l6P7r1oH2gLtWwzmvf4HLxp5fTM69e7yJ8NXpXzgKyM4McHGMAqx7lhoo2NLhhWnibSQd7BYQL3MyMKASXRO6yv3GuI31MlSFWX4U9hvswUdAN2ekvs1gQGmxiGkT2SsDrzPPkTYxSZRHo=
+	t=1727661055; cv=none; b=qUW00ZpvrFrn2E1LmED1BAx7FfLxesYT6hw3fNrfcySVdAshLxd4ptdDr6BOsNKoHpWTAj4NvOI1pJDcZSx+icvb9gCc/0ZQBOg6Ia8b5cZPcAEg3aytsF/dGLbNRLzHZAAdCLP9Aj/opz1My8as6R/N6UT7dke6yUjPXOms3Zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727661054; c=relaxed/simple;
-	bh=rqx2hkp4gNmYNknjyWQ0y8+fzR/PYw4AafepE/57t1Q=;
+	s=arc-20240116; t=1727661055; c=relaxed/simple;
+	bh=AYBP7ZJB7/qci5xrVYdD9G7V2Fzp8kOFIvaGTmcv964=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UxnFtZf19rhdigzNA/SXdvkllsxSSuzAKskahLGmk01xe9oiYWayT7Ir6hYOybmdeGDFKkwXNR7a4gOPHWtjigys8u9FnnAkVV93BSPjpVssX+1EXadrAhXaBKnMoNcdPSnxyP3k330/JFvYYsBuhWOFmK/JTdvlmWOlpdbMTsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MDMsC69S; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MDMsC69S; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=pfMe8gSvV7a+xbMNpY8fHG0th2obtJHKMkcT+f4+gEFjbPX6jtUDNCiaFEDsSeFYRg5fF6UZlJYNTPl6UgYbDRiLxLWT5RmaJ2TkRBDeEVca1m7YVm7u7XpZkP1fKMtVE+8lKDoX/hKCsp2BiBtbz9bFNT5q0pkQw+bFqcn9TeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BKTWeDAy; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BKTWeDAy; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6A7A92121F
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:50 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9A19521A09
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727661050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1727661051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eQ+CnvCDGFzlEuVPzuaOdocnQPWlZjXJDNWkbfs49aM=;
-	b=MDMsC69SrN+C3Ftr9Mp4Kd8uf4U/h2wChRnc2/kKPaGvo9lgAZNjRkHrMGMeuBZGRWjCmY
-	lNTPgXEltU1oQ+xGuo9gGQFn9oSs9XUXlPhjLoCnm8u4ybbK9j5XRbJhw/2JRPQz0tTxtt
-	FmdvM4vx6SFkhbyciJhicas6DyCx2mA=
+	bh=wQuly3bWEQe396QExQpkceCgQMzhLeHO6dW5QQG5GA4=;
+	b=BKTWeDAyzICUoX49W593GNpQeF1Sm0wUWji2uSITB09NTf4FOYxpeks8EI5N2sonrqkErd
+	qRbTMPsvRfJUE9ezyS0z5y69WW1uDcXvXYUEvVQ6IN1WQd9YigptQ4bBfhYmwNRaGDFQls
+	lqAumBMUT6OPgd6mFjP/4rkvAl6imCo=
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1727661050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1727661051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eQ+CnvCDGFzlEuVPzuaOdocnQPWlZjXJDNWkbfs49aM=;
-	b=MDMsC69SrN+C3Ftr9Mp4Kd8uf4U/h2wChRnc2/kKPaGvo9lgAZNjRkHrMGMeuBZGRWjCmY
-	lNTPgXEltU1oQ+xGuo9gGQFn9oSs9XUXlPhjLoCnm8u4ybbK9j5XRbJhw/2JRPQz0tTxtt
-	FmdvM4vx6SFkhbyciJhicas6DyCx2mA=
+	bh=wQuly3bWEQe396QExQpkceCgQMzhLeHO6dW5QQG5GA4=;
+	b=BKTWeDAyzICUoX49W593GNpQeF1Sm0wUWji2uSITB09NTf4FOYxpeks8EI5N2sonrqkErd
+	qRbTMPsvRfJUE9ezyS0z5y69WW1uDcXvXYUEvVQ6IN1WQd9YigptQ4bBfhYmwNRaGDFQls
+	lqAumBMUT6OPgd6mFjP/4rkvAl6imCo=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB23713318
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:49 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DB3E613318
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id sD+VG/kD+mZvLgAAD6G6ig
+	id yEFMJ/oD+mZvLgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:49 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 01:50:50 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: remove the dirty_page local variable
-Date: Mon, 30 Sep 2024 11:20:29 +0930
-Message-ID: <274af9fcd34264fd6e74b707ac33f1544e73c655.1727660754.git.wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: simplify the page uptodate preparation for prepare_pages()
+Date: Mon, 30 Sep 2024 11:20:30 +0930
+Message-ID: <f7504d38c6e6938e4d50e7cee5108a7010e9e8d8.1727660754.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <cover.1727660754.git.wqu@suse.com>
 References: <cover.1727660754.git.wqu@suse.com>
@@ -109,118 +109,114 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-Inside btrfs_buffered_write(), we have a local variable @dirty_pages,
-recording the number of pages we dirtied in the current iteration.
+Currently inside prepare_pages(), we handle the leading and tailing page
+differently, and skip the middle pages (if any).
 
-However we do not really need that variable, since it can be calculated
-from @pos and @copied.
+This is to avoid reading pages which is fully covered by the dirty
+range.
 
-In fact there is already a problem inside the short copy path, where we
-use @dirty_pages to calculate the range we need to release.
-But that usage assumes sectorsize == PAGE_SIZE, which is no longer true.
+Refactor the code by moving all checks (alignment check, range check,
+force read check) into prepare_uptodate_page().
 
-Instead of keeping @dirty_pages and cause incorrect usage, just
-calculate the number of dirtied pages inside btrfs_dirty_pages().
+So that prepare_pages() only need to iterate all the pages
+unconditionally.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/file.c             | 19 +++++++------------
- fs/btrfs/file.h             |  2 +-
- fs/btrfs/free-space-cache.c |  2 +-
- 3 files changed, 9 insertions(+), 14 deletions(-)
+ fs/btrfs/file.c | 68 +++++++++++++++++++++++++++----------------------
+ 1 file changed, 37 insertions(+), 31 deletions(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 4fb521d91b06..9555a3485670 100644
+index 9555a3485670..cc8edf8da79d 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -124,12 +124,14 @@ static void btrfs_drop_pages(struct btrfs_fs_info *fs_info,
-  * - Update inode size for past EOF write
+@@ -858,36 +858,46 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
   */
- int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
--		      size_t num_pages, loff_t pos, size_t write_bytes,
-+		      loff_t pos, size_t write_bytes,
- 		      struct extent_state **cached, bool noreserve)
+ static int prepare_uptodate_page(struct inode *inode,
+ 				 struct page *page, u64 pos,
+-				 bool force_uptodate)
++				 u64 len, bool force_uptodate)
  {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct folio *folio = page_folio(page);
++	u64 clamp_start = max_t(u64, pos, folio_pos(folio));
++	u64 clamp_end = min_t(u64, pos + len, folio_pos(folio) + folio_size(folio));
  	int ret = 0;
- 	int i;
-+	const int num_pages = (round_up(pos + write_bytes, PAGE_SIZE) -
-+			       round_down(pos, PAGE_SIZE)) >> PAGE_SHIFT;
- 	u64 num_bytes;
- 	u64 start_pos;
- 	u64 end_of_last_block;
-@@ -1242,7 +1244,6 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 					 offset);
- 		size_t num_pages;
- 		size_t reserve_bytes;
--		size_t dirty_pages;
- 		size_t copied;
- 		size_t dirty_sectors;
- 		size_t num_sectors;
-@@ -1361,11 +1362,8 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 		if (copied == 0) {
- 			force_page_uptodate = true;
- 			dirty_sectors = 0;
--			dirty_pages = 0;
- 		} else {
- 			force_page_uptodate = false;
--			dirty_pages = DIV_ROUND_UP(copied + offset,
--						   PAGE_SIZE);
+ 
+-	if (((pos & (PAGE_SIZE - 1)) || force_uptodate) &&
+-	    !PageUptodate(page)) {
+-		ret = btrfs_read_folio(NULL, folio);
+-		if (ret)
+-			return ret;
+-		lock_page(page);
+-		if (!PageUptodate(page)) {
+-			unlock_page(page);
+-			return -EIO;
+-		}
++	if (PageUptodate(page))
++		return 0;
+ 
+-		/*
+-		 * Since btrfs_read_folio() will unlock the folio before it
+-		 * returns, there is a window where btrfs_release_folio() can be
+-		 * called to release the page.  Here we check both inode
+-		 * mapping and PagePrivate() to make sure the page was not
+-		 * released.
+-		 *
+-		 * The private flag check is essential for subpage as we need
+-		 * to store extra bitmap using folio private.
+-		 */
+-		if (page->mapping != inode->i_mapping || !folio_test_private(folio)) {
+-			unlock_page(page);
+-			return -EAGAIN;
+-		}
++	if (force_uptodate)
++		goto read;
++
++	/* The dirty range fully cover the page, no need to read it out. */
++	if (IS_ALIGNED(clamp_start, PAGE_SIZE) &&
++	    IS_ALIGNED(clamp_end, PAGE_SIZE))
++		return 0;
++read:
++	ret = btrfs_read_folio(NULL, folio);
++	if (ret)
++		return ret;
++	lock_page(page);
++	if (!PageUptodate(page)) {
++		unlock_page(page);
++		return -EIO;
++	}
++
++	/*
++	 * Since btrfs_read_folio() will unlock the folio before it
++	 * returns, there is a window where btrfs_release_folio() can be
++	 * called to release the page.  Here we check both inode
++	 * mapping and PagePrivate() to make sure the page was not
++	 * released.
++	 *
++	 * The private flag check is essential for subpage as we need
++	 * to store extra bitmap using folio private.
++	 */
++	if (page->mapping != inode->i_mapping || !folio_test_private(folio)) {
++		unlock_page(page);
++		return -EAGAIN;
+ 	}
+ 	return 0;
+ }
+@@ -949,12 +959,8 @@ static noinline int prepare_pages(struct inode *inode, struct page **pages,
+ 			goto fail;
  		}
  
- 		if (num_sectors > dirty_sectors) {
-@@ -1375,13 +1373,10 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 				btrfs_delalloc_release_metadata(BTRFS_I(inode),
- 							release_bytes, true);
- 			} else {
--				u64 __pos;
--
--				__pos = round_down(pos,
--						   fs_info->sectorsize) +
--					(dirty_pages << PAGE_SHIFT);
-+				u64 release_start = round_up(pos + copied,
-+							     fs_info->sectorsize);
- 				btrfs_delalloc_release_space(BTRFS_I(inode),
--						data_reserved, __pos,
-+						data_reserved, release_start,
- 						release_bytes, true);
- 			}
- 		}
-@@ -1390,7 +1385,7 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 					fs_info->sectorsize);
- 
- 		ret = btrfs_dirty_pages(BTRFS_I(inode), pages,
--					dirty_pages, pos, copied,
-+					pos, copied,
- 					&cached_state, only_release_metadata);
- 
- 		/*
-diff --git a/fs/btrfs/file.h b/fs/btrfs/file.h
-index 912254e653cf..c23d0bf42598 100644
---- a/fs/btrfs/file.h
-+++ b/fs/btrfs/file.h
-@@ -35,7 +35,7 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
- 			    const struct btrfs_ioctl_encoded_io_args *encoded);
- int btrfs_release_file(struct inode *inode, struct file *file);
- int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
--		      size_t num_pages, loff_t pos, size_t write_bytes,
-+		      loff_t pos, size_t write_bytes,
- 		      struct extent_state **cached, bool noreserve);
- int btrfs_fdatawrite_range(struct btrfs_inode *inode, loff_t start, loff_t end);
- int btrfs_check_nocow_lock(struct btrfs_inode *inode, loff_t pos,
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index f4bcb2530660..4a3a6db91878 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -1458,7 +1458,7 @@ static int __btrfs_write_out_cache(struct inode *inode,
- 
- 	/* Everything is written out, now we dirty the pages in the file. */
- 	ret = btrfs_dirty_pages(BTRFS_I(inode), io_ctl->pages,
--				io_ctl->num_pages, 0, i_size_read(inode),
-+				0, i_size_read(inode),
- 				&cached_state, false);
- 	if (ret)
- 		goto out_nospc;
+-		if (i == 0)
+-			ret = prepare_uptodate_page(inode, pages[i], pos,
+-						    force_uptodate);
+-		if (!ret && i == num_pages - 1)
+-			ret = prepare_uptodate_page(inode, pages[i],
+-						    pos + write_bytes, false);
++		ret = prepare_uptodate_page(inode, pages[i], pos, write_bytes,
++					    force_uptodate);
+ 		if (ret) {
+ 			put_page(pages[i]);
+ 			if (!nowait && ret == -EAGAIN) {
 -- 
 2.46.1
 
