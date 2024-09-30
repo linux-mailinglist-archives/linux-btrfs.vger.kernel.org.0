@@ -1,74 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8347-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A95898AF8A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 00:01:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3A3C98AFBD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 00:17:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5441F28385A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 22:01:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA1761C219A9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 22:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813D0188596;
-	Mon, 30 Sep 2024 22:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F77418873D;
+	Mon, 30 Sep 2024 22:17:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Vuu4CmQu"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="gcIZskkq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45DB185B68
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 22:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7EB17BB38
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 22:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727733648; cv=none; b=TvpuC8/rwPaNdlx7U/1EV8WnEtcqQm4Ihsu1DIPIUuiwh5jHgH/6L/EmsFeFHyEv0j22g9yb0wooIhkP3p6ak33/vP33/lSZxA17M1JdTpxAg7hJig2LNGRpi5afxrzMLjNMaVd/839wa4rgm0tCKb0Wf2xM0P17kRgTEOLGTDg=
+	t=1727734668; cv=none; b=Uh33VYPMkPBawu4gD2zeTA6Rv9wqvDNH4OqixrDrsQTPg5PLqKiwVVDBqx4HQQBeOO5DHN7TD6AzKw2SnYz97I8T7dsr6fjUq79/nqbppQNJ0xdgBaVCCEJf8WS/PN6BUoNNUNbhap5miar6CnbfJRzEV/8rGEhBbd5ddtA6nFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727733648; c=relaxed/simple;
-	bh=jTnVQLl6lOpdVV0MDuhMVodo1CWb5dEOmoMSel4V8Us=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eLJWcwHNVAqVxXjlNywx0GkyUblLVbxQDQOkKqabSMaq5FBU637wgvKjJQ9CXyNmsGFJESr7vxEubITy4p4WHdUtGJk8EgbMgCg2AqDRh3g3VSB8yalg8umu3X1YYliLgqVsPqrsTHfVxbXwzzrACztcE+mfCrhWZIWiyRHFack=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Vuu4CmQu; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-37ce14ab7eeso1998435f8f.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 15:00:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1727733645; x=1728338445; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=L2mFpUOHLDzVxx/ZIGFl4CWIEl1Ta1q5zyxabezUC7o=;
-        b=Vuu4CmQurHz+wDbzD8z4bi17XqRnSRKNGEA2yT9gNX0RCpnorauVyAqj7Nr6jZxOnv
-         jeaZ+wKT4A8f3/U/8eoI8d6j04XcW0BeeCKXA/AhuwxPEL28VK4JOR6f/Fq2OTapkMXV
-         lMYOvDgnOaLRots+w4dPOYtLDKqHonB4MM7Bp+F15B/uw+v0TckZf5O2XdbGGU8SPpNt
-         cz4RZTAAetIuSaLbcKtyV3pRDMjHtlhMCA2FyP7CUew24TBlAuPPF+SvnKGd27SuGbDV
-         NEAVEOvSYPDscIIMAOnOhpVEGznnA26i8rKNICi5xafb8zZy9a149BN0cxjVHukqy70w
-         jSKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727733645; x=1728338445;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L2mFpUOHLDzVxx/ZIGFl4CWIEl1Ta1q5zyxabezUC7o=;
-        b=nq6Wl5ZYn+oWPzyRIVJVHWXc3irLiXqDLnYg7yaf0v1lc6PCLI8920A4kBngrzTiV6
-         BpzZ454Yr4rK2WzGFg9OAriWH5sYfOaisJlDKzt2oO8wbpJ60l5Wx1zALf0nhengLEqz
-         FYhOaTotdPOl7e3ihBNyltpNJ2VQ2QLUUOtBrxvmegzoJNNp0UiD4J8TQpPdWq5Q2GfJ
-         AUI2hRV2lUBy90skuNy25LmB9mIgeWT72OOFGjcoWO6weumMqiHY12jjZWGUDDHlTINy
-         gkY2okEhcEmQfVpEKDiZedkjZhnVx2vVKlDQEVLwsFTWoqpA6EguEd3x7S3K97cz1LuD
-         upCA==
-X-Gm-Message-State: AOJu0YxDGBN1iV0BBTfU1YspWyFnHtXrKO9cjzZ3U7+vuEeNnCAsOu3O
-	yzJYSHP29e50h9LJrZuygjE96RYdPhXgxAaMOpFodYS/+fvoYs+X0bxfPHuTgAc=
-X-Google-Smtp-Source: AGHT+IHFYeBKfI1EAN3zAjxXMPApcDZWCKA60zfD/7mFgkcgN9iCUPnZcVes0tbuxzyWue7tmWzc9A==
-X-Received: by 2002:adf:b31a:0:b0:374:c3cd:73de with SMTP id ffacd0b85a97d-37cd5ab1164mr12881784f8f.35.1727733644688;
-        Mon, 30 Sep 2024 15:00:44 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20b37d92386sm59082215ad.90.2024.09.30.15.00.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Sep 2024 15:00:44 -0700 (PDT)
-Message-ID: <08ccb40d-6261-4757-957d-537d295d2cf5@suse.com>
-Date: Tue, 1 Oct 2024 07:30:38 +0930
+	s=arc-20240116; t=1727734668; c=relaxed/simple;
+	bh=hy7DGl8wj26l7Jh6eDksuQDT/vQKbLLy4IgQW6llNvE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=SHUtZxmo7WjMMUuh9vqFi45DsAGumGa7EOC+pT0l9U3pIXav/jzJAj11/iI6OokNRqUhJnzSxL3OzD3f9ip7vs1O4oq41vS9YLJ5yng0aVyml/JOrJ+xTlFxJ6doVReJRAnjCJ7SOqWSdxeJ+Md1xnrDK+nJQr21HeQ+TV86e0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=gcIZskkq; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1727734658; x=1728339458; i=quwenruo.btrfs@gmx.com;
+	bh=Bnl8AK1DoWsVcqTdGriiGk/c4cww8Pj5WOMKGmGWN0k=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=gcIZskkqiLQgM2qQqoQsuBfTNWaEuoPe3XfA/zcSosfugKVMK0go9oXL5/pW3TTA
+	 rQOL43M8/+kvAiIp6o21/4cmSSJgA4bUiSMrZUuyjPPysinVBMC8hJ/yvrpSMDW0e
+	 x0CJ3atdAvTwpQbxayq3MRbgKNR/fvVLlFY6KOYd6RYudp9r9+Oj2QJv+jbmkQaPN
+	 9Yne+EXsJMeAiUovce0ZYqF+xmtdLRSqa9kjKzGeezFdOGyJIBk9oIzsHRr8tXUGK
+	 TLea1s6z+iHkS6yHhRvznbIJ9yXOWX7Wp1gGiFT3h2G1i/zkTMDA4mW2ycnYuH+5v
+	 1ine7bCzx/1zTcjCog==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MwwZX-1rxPAo3uXL-00uG5X; Tue, 01
+ Oct 2024 00:17:38 +0200
+Message-ID: <76f9eecf-dacd-4e83-b278-2028c5cf6082@gmx.com>
+Date: Tue, 1 Oct 2024 07:47:35 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -76,147 +58,196 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: linux-btrfs@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
- roman.gushchin@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
- "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-References: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
- <iwjlzsphxhqdpml5gn3t3qt5zhizgcmizel5vug7g7bwlkzeob@g2jlar2nynqb>
+Subject: Re: [PATCH v2] btrfs: send: fix invalid clone operation for file that
+ got its size decreased
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <5a406a607fcccec01684056ab011ff0742f06439.1727432566.git.fdmanana@suse.com>
+ <794af660cbd6c6fc417a683bfc914bbf9fb34ab0.1727434488.git.fdmanana@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <iwjlzsphxhqdpml5gn3t3qt5zhizgcmizel5vug7g7bwlkzeob@g2jlar2nynqb>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <794af660cbd6c6fc417a683bfc914bbf9fb34ab0.1727434488.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8EtH17MkLcTIgGExAtxqVERCkFGviLzuPcdRVLwUgVUwn+bvhoM
+ Rq292xFrAPI29FTRTAfiiwQ6HHyhuhOFPolC8q1/mOdRhVcrovt1MV9rBksd3B/JQdR51v4
+ E1uXEYUMAhFMNP3nAdswbkenjtWWMFUlj9F3HuqrR7X2BmgmQbCQ4B0/AkHzNashgmXq4hk
+ q4D4is2n3EnrJWSPhLEpg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Vbx6f7ZY4ps=;sHIYlNKznreOuzDPzwiERnOw8bT
+ p3zTjcRwBf2ZzFrvv2Aj9nY0avehulSBZYODZqAThcjT36tqIw/2Vc9WDV/Pgltqzam9YhO2o
+ tpL2AS1Dpa4w7QhZRDnwI75Y9eZPmq9s52ea3YYiLoDRz2pfl9J9wmd+VrXSodsN9+LqhKv1u
+ znbGHDmojRkLDiLXrhEPBjf5YFsJSOSxa7EyL2wFoCVLER36mrvYGA8q070IIn7gXpkz6r9Oo
+ w60y8VCZudKJBevUWCEyWYlusiS/PEg1xaSRClf/E6UbmGvptZqKB8QqXvtLned3w4JKk55yd
+ b9qc6XV7HGhY01uO1fa43Y1pKIkvQKAw4lvInzYqWRIqtAZ0DaLzSRQ6uGH71oReMbMobTw71
+ ei51Tk0rTuwbh5cr91iX7oLHDVwgMuYVx9Rk54HAg4sCO3Ocm5waSM0RcoZs873H3wn9uQMz+
+ gXS62YTriRRuCBinPzXewTUfrNjIWsw+kjlhTV6OKXJ27cQb11vh6NiRCMp9Ajp4+nsL1rtUH
+ p2dMCIJonGZ7D7UBd9G1Qejzb2fQU0EKJ6GR4rCmRbz1R5xWVPo2eTm5gwyv/egWdNvaaOD/6
+ i1N2MKgjAFQzlGmObRu2Qe7+614akNMRDHSd9/ZneIiGaur7Iyq+NiHzZLHNzZLViXHREk698
+ P7djbDr0U5DFkzIto+mcR4ZlCMLoWf3cdbr8EXrR2ulJHrAsci0Do0ToQBbx2VqZsrf/LBhp1
+ pg/Vsli9CMthjgHTY2hhsuDKh7Kwcd7XZ7Qh6NyIhSEGWKmzGveVzRnHVWOSrrvL2XcYt3U8O
+ Oh3Q0sDDLlmOL0ZjXDYc1vOnjdZ/UK06DQuYQr2h6Jrvk=
 
 
 
-在 2024/10/1 02:53, Shakeel Butt 写道:
-> Hi Qu,
-> 
-> On Sat, Sep 28, 2024 at 02:15:56PM GMT, Qu Wenruo wrote:
->> [BACKGROUND]
->> The function filemap_add_folio() charges the memory cgroup,
->> as we assume all page caches are accessible by user space progresses
->> thus needs the cgroup accounting.
->>
->> However btrfs is a special case, it has a very large metadata thanks to
->> its support of data csum (by default it's 4 bytes per 4K data, and can
->> be as large as 32 bytes per 4K data).
->> This means btrfs has to go page cache for its metadata pages, to take
->> advantage of both cache and reclaim ability of filemap.
->>
->> This has a tiny problem, that all btrfs metadata pages have to go through
->> the memcgroup charge, even all those metadata pages are not
->> accessible by the user space, and doing the charging can introduce some
->> latency if there is a memory limits set.
->>
->> Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
->> charge situation so that metadata pages won't really be limited by
->> memcgroup.
->>
->> [ENHANCEMENT]
->> Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
->> memory cgroup to attach metadata pages.
->>
->> Although this needs to export the symbol mem_root_cgroup for
->> CONFIG_MEMCG, or define mem_root_cgroup as NULL for !CONFIG_MEMCG.
->>
->> With root memory cgroup, we directly skip the charging part, and only
->> rely on __GFP_NOFAIL for the real memory allocation part.
->>
-> 
-> I have a couple of questions:
-> 
-> 1. Were you using __GFP_NOFAIL just to avoid ENOMEMs? Are you ok with
-> oom-kills?
+=E5=9C=A8 2024/9/27 20:33, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> During an incremental send we may end up sending an invalid clone
+> operation, for the last extent of a file which ends at an unaligned offs=
+et
+> that matches the final i_size of the file in the send snapshot, in case
+> the file had its initial size (the size in the parent snapshot) decrease=
+d
+> in the send snapshot. In this case the destination will fail to apply th=
+e
+> clone operation because its end offset is not sector size aligned and it
+> ends before the current size of the file.
+>
+> Sending the truncate operation always happens when we finish processing =
+an
+> inode, after we process all its extents (and xattrs, names, etc). So fix
+> this by ensuring the file has a valid size before we send a clone
+> operation for an unaligned extent that ends at the final i_size of the
+> file. The size we truncate to matches the start offset of the clone rang=
+e
+> but it could be any value between that start offset and the final size o=
+f
+> the file since the clone operation will expand the i_size if the current
+> size is smaller than the end offset. The start offset of the range was
+> chosen because it's always sector size aligned and avoids a truncation
+> into the middle of a page, which results in dirtying the page due to
+> filling part of it with zeroes and then making the clone operation at th=
+e
+> receiver trigger IO.
+>
+> The following test reproduces the issue:
+>
+>    $ cat test.sh
+>    #!/bin/bash
+>
+>    DEV=3D/dev/sdi
+>    MNT=3D/mnt/sdi
+>
+>    mkfs.btrfs -f $DEV
+>    mount $DEV $MNT
+>
+>    # Create a file with a size of 256K + 5 bytes, having two extents, on=
+e
+>    # with a size of 128K and another one with a size of 128K + 5 bytes.
+>    last_ext_size=3D$((128 * 1024 + 5))
+>    xfs_io -f -d -c "pwrite -S 0xab -b 128K 0 128K" \
+>           -c "pwrite -S 0xcd -b $last_ext_size 128K $last_ext_size" \
+>           $MNT/foo
+>
+>    # Another file which we will later clone foo into, but initially with
+>    # a larger size than foo.
+>    xfs_io -f -c "pwrite -S 0xef 0 1M" $MNT/bar
+>
+>    btrfs subvolume snapshot -r $MNT/ $MNT/snap1
+>
+>    # Now resize bar and clone foo into it.
+>    xfs_io -c "truncate 0" \
+>           -c "reflink $MNT/foo" $MNT/bar
+>
+>    btrfs subvolume snapshot -r $MNT/ $MNT/snap2
+>
+>    rm -f /tmp/send-full /tmp/send-inc
+>    btrfs send -f /tmp/send-full $MNT/snap1
+>    btrfs send -p $MNT/snap1 -f /tmp/send-inc $MNT/snap2
+>
+>    umount $MNT
+>    mkfs.btrfs -f $DEV
+>    mount $DEV $MNT
+>
+>    btrfs receive -f /tmp/send-full $MNT
+>    btrfs receive -f /tmp/send-inc $MNT
+>
+>    umount $MNT
+>
+> Running it before this patch:
+>
+>    $ ./test.sh
+>    (...)
+>    At subvol snap1
+>    At snapshot snap2
+>    ERROR: failed to clone extents to bar: Invalid argument
+>
+> A test case for fstests will be sent soon.
+>
+> Reported-by: Ben Millwood <thebenmachine@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/CAJhrHS2z+WViO2h=3DojYvBPDLsAT=
+wLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com/
+> Fixes: 46a6e10a1ab1 ("btrfs: send: allow cloning non-aligned extent if i=
+t ends at i_size")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-The NOFAIL flag is inherited from the memory allocation for metadata 
-tree blocks.
-
-Although btrfs has error handling already for all the possible ENOMEMs, 
-hitting ENOMEMs for metadata may still be a big problem, thus all my 
-previous attempt to remove NOFAIL flag all got rejected.
-
-> 
-> 2. What the normal overhead of these metadata in real world production
-> environment? I see 4 to 32 bytes per 4k but what's the most used one and
-> does it depend on the data of 4k or something else?
-
-What did you mean by the "overhead" part? Did you mean the checksum?
-
-If so, there is none, because btrfs store metadata checksum inside the 
-tree block (thus the page cache).
-The first 32 bytes of a tree block are always reserved for metadata 
-checksum.
-
-The tree block size depends on the mkfs time option nodesize, is 16K by 
-default, and that's the most common value.
-
-> 
-> 3. Most probably multiple metadata values are colocated on a single 4k
-> page of the btrfs page cache even though the corresponding page cache
-> might be charged to different cgroups. Is that correct?
-
-Not always a single 4K page, it depends on the nodesize, which is 16K by 
-default.
-
-Otherwise yes, the metadata page cache can be charged to different 
-cgroup, depending on the caller's context.
-And we do not want to charge the metadata page cache to the caller's 
-cgroup, since it's really a shared resource and the caller has no way to 
-directly accessing the page cache.
-
-Not charging the metadata page cache will align btrfs more to the 
-ext4/xfs, which all uses regular page allocation without attaching to a 
-filemap.
-
-> 
-> 4. What is stopping us to use reclaimable slab cache for this metadata?
-
-Josef has tried this before, the attempt failed on the shrinker part, 
-and partly due to the size.
-
-Btrfs has very large metadata compared to all other fses, not only due 
-to the COW nature and a larger tree block size (16K by default), but 
-also the extra data checksum (4 bytes per 4K by default, 32 bytes per 4K 
-maximum).
-
-On a real world system, the metadata itself can easily go hundreds of 
-GiBs, thus a shrinker is definitely needed.
-
-Thus so far btrfs is using page cache for its metadata cache.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> 
-> thanks,
-> Shakeel
+> ---
+>   fs/btrfs/send.c | 23 ++++++++++++++++++++++-
+>   1 file changed, 22 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 5871ca845b0e..27306d98ec43 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -6189,8 +6189,29 @@ static int send_write_or_clone(struct send_ctx *s=
+ctx,
+>   	if (ret < 0)
+>   		return ret;
+>
+> -	if (clone_root->offset + num_bytes =3D=3D info.size)
+> +	if (clone_root->offset + num_bytes =3D=3D info.size) {
+> +		/*
+> +		 * The final size of our file matches the end offset, but it may
+> +		 * be that its current size is larger, so we have to truncate it
+> +		 * to any value between the start offset of the range and the
+> +		 * final i_size, otherwise the clone operation is invalid
+> +		 * because it's unaligned and it ends before the current EOF.
+> +		 * We do this truncate to the final i_size when we finish
+> +		 * processing the inode, but it's too late by then. And here we
+> +		 * truncate to the start offset of the range because it's always
+> +		 * sector size aligned while if it were the final i_size it
+> +		 * would result in dirtying part of a page, filling part of a
+> +		 * page with zeroes and then having the clone operation at the
+> +		 * receiver trigger IO and wait for it due to the dirty page.
+> +		 */
+> +		if (sctx->parent_root !=3D NULL) {
+> +			ret =3D send_truncate(sctx, sctx->cur_ino,
+> +					    sctx->cur_inode_gen, offset);
+> +			if (ret < 0)
+> +				return ret;
+> +		}
+>   		goto clone_data;
+> +	}
+>
+>   write_data:
+>   	ret =3D send_extent_data(sctx, path, offset, num_bytes);
 
 
