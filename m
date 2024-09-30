@@ -1,149 +1,127 @@
-Return-Path: <linux-btrfs+bounces-8342-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8343-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED5A98AF17
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 23:30:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0613D98AF3A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 23:35:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DCE51C21923
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 21:30:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F8E282C02
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 21:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200541A2C03;
-	Mon, 30 Sep 2024 21:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8EB185B6B;
+	Mon, 30 Sep 2024 21:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U5OfyoMz"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YgR2fuSG";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OLBn3xaq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688481A2559;
-	Mon, 30 Sep 2024 21:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6C9EDE;
+	Mon, 30 Sep 2024 21:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727731722; cv=none; b=Xq9ZIVnAyCT6oNnoSYGnb6wTWdN2uvFTBNug3BaatSZ7IOAI6P9efuWdWYruNbhENGqn19tn+T9sOvV6LYK8t119uRnxjh9SSLy1Lfz95mElc3g9bjftvrCRie1eTxal2xyqKccsn1pEvHEwuQ2R84dwhWb7z/9APDNzXQg+jrE=
+	t=1727732117; cv=none; b=naEh++21QmxFDDKo6Dfl0rDBnD3dCjZpaXQgR83FzX6sgU47Fz1pbAkTx3Dmkao9Y2lwFqS04ThIKwpv1B68+WmTcQy29LMYdyodBmfXys3sXzOS+YA3TItpqIBbZedCqYJhhTfpfAtwi75Uym5z99vO8BNFNfGtE3xB3GCVPvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727731722; c=relaxed/simple;
-	bh=9E17lymEk6KtKuJ59Yq30OasH/9iFmcmwiud63nlNWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S59bfLtcaWYr8q2KO4grTR23Gnayxh5mYAzoSJsmOPQoUGFVdOok9NYEUmZURqC5KTwXmbupzi+Dw4mW6qBLaSA31KJSFxNiyrHXZm/oIgL4/mdCcXjhAxbftMzRdGZijU4G0u0jFfzLHJMTmOAb4/Kn7DEIt6c3/097xSiSRCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U5OfyoMz; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1727731720; x=1759267720;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9E17lymEk6KtKuJ59Yq30OasH/9iFmcmwiud63nlNWQ=;
-  b=U5OfyoMzT90+V9qy1D5g4QAMeli/3rCS3aBKgRhKYCwB9Lr0YYecsSMb
-   y4vEWtQAXilBYvPiSR1kZuPaLeliLC1pjTpeHVDV6D8nktwMcR1mfoMHL
-   AJas2QpvpafebltIARp0FAvMxCwsdoiOgaALy/76rsFH7+SNVFMqKydXt
-   ns9kuqH4zG2g8LaJKahkD98S1yJ+eQvZi/ASibVICyIU+b8Bf6tamxaav
-   Qmix5t7goo8Jcn+yXkCHP/STevNwU3rXpKFtfdnOdyIqOUVVi34iTNJ+H
-   u6v5pDfuzx1hIjl8GcUdOVnNIiy7SzCVgTsKxfUSq10mNyp2iAqJv33sK
-   w==;
-X-CSE-ConnectionGUID: Jbf4/gMfSrGz5ySSmnduPg==
-X-CSE-MsgGUID: 9Hx3VsOnRRCF/89bAI513w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11211"; a="37517005"
-X-IronPort-AV: E=Sophos;i="6.11,166,1725346800"; 
-   d="scan'208";a="37517005"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2024 14:28:39 -0700
-X-CSE-ConnectionGUID: mRsnRJanT9+iRBBLZund2Q==
-X-CSE-MsgGUID: +ZB6XlJmRjmbvWEkNgwzeA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,166,1725346800"; 
-   d="scan'208";a="73846662"
-Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
-  by orviesa007.jf.intel.com with ESMTP; 30 Sep 2024 14:28:36 -0700
-Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1svNwX-000Puf-2r;
-	Mon, 30 Sep 2024 21:28:33 +0000
-Date: Tue, 1 Oct 2024 05:27:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Johannes Thumshirn <jth@kernel.org>,
-	Chris Mason <chris.mason@fusionio.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Filipe Manana <fdmanana@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] btrfs: tests: add selftests for RAID stripe-tree
-Message-ID: <202410010421.NzGgvE6Y-lkp@intel.com>
-References: <20240930104054.12290-1-jth@kernel.org>
+	s=arc-20240116; t=1727732117; c=relaxed/simple;
+	bh=dxuL2+8ZVHuUyZGDZyBs/XcF0TJ+A4SDCBg5GNm49/8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QoGacCURkZJ84TA7yV+AECPhkWqYMUcLtIoI8OjAlrnRLO8G2LgMQuDTiQ7jvBmSdyfF5pwSL4nIoEp0mjHLNeo5a2j2c4kNl+gxcpWsCg27c5ZqaxzjdgOUALM0kRN9/7KBNW+zADvEmZItFf8GZ7QEqNKtDI7Z25ExrKPnyE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YgR2fuSG; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OLBn3xaq; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1727732113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uVbdFg6I8fwu/3AqZyEvbGS1WvCMLB3EhLlpsNhR5nI=;
+	b=YgR2fuSGQ+1CC0G5H4MzE4t8olbAFU5BafUyaLxjF2QIjTs3UbzCwwk7QvMFHeeLW8vuY5
+	HIuz05kBaI+PAU5kDbE9O5ysw0ZigkKVd+8BT9ZePG9tf2kJcuF4pv35EhkZ99cPbhVZbC
+	GQ7Jjbx9vgE0Rcx85zIefGMO0cL2dvmr4gN0aD9m2NtQeKfb7b8TsCdFADjl1RJyD/x6T5
+	2c0wF9l6tXZjPe+9VRbHHcVyeREQUnQ1EWRZc+6eA8hsmw0RLjF4PEs0g0/Gf5TgScX/Mf
+	xmwiJC8MCArfDFIIe+35ZCXxip+JZBfa+y8nD1s/uIVBn02yxnXIdg3SaXmy3A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1727732113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uVbdFg6I8fwu/3AqZyEvbGS1WvCMLB3EhLlpsNhR5nI=;
+	b=OLBn3xaqldkwQyCXLWWfC5gXBWhLeCEwb2syNUFGVZ4mPsvyd455m2aCZBRPk2SHmQTkzb
+	bQfsnyFmm/fDZ2Dg==
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+ Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
+ <corbet@lwn.net>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J.
+ Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
+ <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Hugh Dickins
+ <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Chuck Lever
+ <chuck.lever@oracle.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v8 01/11] timekeeping: move multigrain timestamp floor
+ handling into timekeeper
+In-Reply-To: <79a32ab9308d6e63e066aa17c5c2492b51b55850.camel@kernel.org>
+References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
+ <20240914-mgtime-v8-1-5bd872330bed@kernel.org> <87a5g79aag.ffs@tglx>
+ <874j6f99dg.ffs@tglx>
+ <b300fec8b6f611662195e0339f290d473a41607c.camel@kernel.org>
+ <878qv90x6w.ffs@tglx>
+ <4933075b1023f466edb516e86608e0938de28c1d.camel@kernel.org>
+ <87y138zyfu.ffs@tglx>
+ <79a32ab9308d6e63e066aa17c5c2492b51b55850.camel@kernel.org>
+Date: Mon, 30 Sep 2024 23:35:13 +0200
+Message-ID: <87plokzuy6.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240930104054.12290-1-jth@kernel.org>
+Content-Type: text/plain
 
-Hi Johannes,
+On Mon, Sep 30 2024 at 16:53, Jeff Layton wrote:
+> On Mon, 2024-09-30 at 22:19 +0200, Thomas Gleixner wrote:
+>> On Mon, Sep 30 2024 at 15:37, Jeff Layton wrote:
+>> > If however, two threads have racing syscalls that overlap in time, then there                       
+>> > is no such guarantee, and the second file may appear to have been modified                          
+>> > before, after or at the same time as the first, regardless of which one was                         
+>> > submitted first.
+>> 
+>> That makes me ask a question. Are the timestamps always taken in thread
+>> (syscall) context or can they be taken in other contexts (worker,
+>> [soft]interrupt, etc.) too?
+>> 
+>
+> That's a good question.
+>
+> The main place we do this is inode_set_ctime_current(). That is mostly
+> called in the context of a syscall or similar sort of operation
+> (io_uring, nfsd RPC request, etc.).
+>
+> I certainly wouldn't rule out a workqueue job calling that function,
+> but this is something we do while dirtying an inode, and that's not
+> typically done in interrupt context.
 
-kernel test robot noticed the following build warnings:
+The reason I'm asking is that if it's always syscall context,
+i.e. write() or io_uring()/RPC request etc., then you can avoid the
+whole global floor value dance and make it strictly per thread, which
+simplifies the exercise significantly.
 
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on linus/master v6.12-rc1 next-20240930]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+But even if it's not syscall/thread context then the worker or io_uring
+state machine might just require to serialize against itself and not
+coordinate with something else. But what do I know.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Johannes-Thumshirn/btrfs-tests-add-selftests-for-RAID-stripe-tree/20240930-184234
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-patch link:    https://lore.kernel.org/r/20240930104054.12290-1-jth%40kernel.org
-patch subject: [PATCH] btrfs: tests: add selftests for RAID stripe-tree
-config: i386-buildonly-randconfig-004-20241001 (https://download.01.org/0day-ci/archive/20241001/202410010421.NzGgvE6Y-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241001/202410010421.NzGgvE6Y-lkp@intel.com/reproduce)
+Thanks,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410010421.NzGgvE6Y-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from fs/btrfs/ioctl.c:37:
->> fs/btrfs/volumes.h:837:5: warning: "CONFIG_BTRFS_FS_RUN_SANITY_TESTS" is not defined, evaluates to 0 [-Wundef]
-     837 | #if CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   In file included from fs/btrfs/relocation.c:16:
->> fs/btrfs/volumes.h:837:5: warning: "CONFIG_BTRFS_FS_RUN_SANITY_TESTS" is not defined, evaluates to 0 [-Wundef]
-     837 | #if CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from fs/btrfs/relocation.c:39:
->> fs/btrfs/raid-stripe-tree.h:31:5: warning: "CONFIG_BTRFS_FS_RUN_SANITY_TESTS" is not defined, evaluates to 0 [-Wundef]
-      31 | #if CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   In file included from fs/btrfs/raid-stripe-tree.c:12:
->> fs/btrfs/raid-stripe-tree.h:31:5: warning: "CONFIG_BTRFS_FS_RUN_SANITY_TESTS" is not defined, evaluates to 0 [-Wundef]
-      31 | #if CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from fs/btrfs/raid-stripe-tree.c:13:
->> fs/btrfs/volumes.h:837:5: warning: "CONFIG_BTRFS_FS_RUN_SANITY_TESTS" is not defined, evaluates to 0 [-Wundef]
-     837 | #if CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/CONFIG_BTRFS_FS_RUN_SANITY_TESTS +837 fs/btrfs/volumes.h
-
-   836	
- > 837	#if CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-   838	struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
-   839							u64 logical, u16 total_stripes);
-   840	#endif
-   841	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+        tglx
 
