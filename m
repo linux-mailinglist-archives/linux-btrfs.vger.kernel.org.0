@@ -1,56 +1,54 @@
-Return-Path: <linux-btrfs+bounces-8344-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8345-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45CEF98AF59
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 23:43:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC4E98AF5E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 23:46:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ABEB1C20B50
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 21:43:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4B29B2331D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 21:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE5F18661C;
-	Mon, 30 Sep 2024 21:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4BB186E4B;
+	Mon, 30 Sep 2024 21:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="mJy+5j6T"
+	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="HZPmL+qr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CE2185B6C
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 21:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BB715E97
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 21:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727732540; cv=none; b=c3gS/5EHtDTgWCyLXWT20Hm/fD9pG1G8XNHztJP/MnypPibe552Hj0X7V8fTtuCPI8u8MfLQ3qYGnF381mhqgVfbOMwhyAh1V7EDzxiWXHSApCnxshh9R+6lHDdaoYEkjqqDoryj1etfmNHDiOLDcJApUzQrj7kt4BvdVEaVF1Y=
+	t=1727732797; cv=none; b=gAKzFOhFscDdrq+AfZRn9knoBg4NjdpgNdw6PSBIP53yY5E8Hf8JGBM2OOVF4gkrzm0p5suZ3lItYfhpLR5T6SxJnx7CrD8ILC460P5KqHqTcLLA5B6lEvfxW3gXOc77GXeNNdC4LKqZzAGDwdFfgrmzCGvlvImkSZX8yeM+VOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727732540; c=relaxed/simple;
-	bh=M6og70XBEwR8lk+gq4exZnmBSvFpV35uJP9fBtuTOzU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VPHBgOiGoSlgQDsojSKxbNiaLZwrI4fy4oUMEP1ftKC6bp/VhcaCSeiYLZ6by59Rgvr1vFOy7F7YCXxy+ilfHLk/Fwtp6+685boQ3pZRr1TPXwctyfqXDZelILcWO5B/8fltlLUosc2a3fZrMxb7wEa8NXRm5M6nbfKL1Ym4ml0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=mJy+5j6T; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727732530; x=1728337330; i=quwenruo.btrfs@gmx.com;
-	bh=M6og70XBEwR8lk+gq4exZnmBSvFpV35uJP9fBtuTOzU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=mJy+5j6TNBCzeg4FyX1qC8BHizSvo5wBvIymorl3nWVVjcw20b+T6eeTOTsCgz4E
-	 HcnNUS93KGa63fLXYiCJhY4xCH61/8Nt9Av89zfB8w43SNAWoUOVghz90gsqiUiqI
-	 lFSDDnAO/baEApC5lNf6xIJf3J+HH84M9jtMqb7uhOYTKtFdICuEAgukDB2sOPfWO
-	 j7r3ErfIXtdGBBOxhtfLBWLEtVnxeR7DYuD1lrNzJ3U+EAiib6gnBYI6X0iS/aM3V
-	 lsHHVm2sJbr8RIrgpoZ0Wl1lEhhyxOd/w7xtXa2vLqBYna5JM3LuNy4po+JOuboyA
-	 ThgBVQBDZ422TXsBWA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLR1f-1sd1xS3JGl-00MG9t; Mon, 30
- Sep 2024 23:42:10 +0200
-Message-ID: <ac327e16-3002-4d6b-b073-27be759cf608@gmx.com>
-Date: Tue, 1 Oct 2024 07:12:06 +0930
+	s=arc-20240116; t=1727732797; c=relaxed/simple;
+	bh=0BoIbut1gvwmevFRxqZeFL2Qq4oyBbJgVHW5Mk3wozA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=i/GyZskMIjPqWMPfBn6d9Sj3sYE6raDkorWV3nlge0iQl2pU03KY5JJwknxuFC2jDAsDusnA6KCppCKK9QMHxQ1EzDP5gaHbOXE0TlMcF/asrNuVD4Twy4HpuKJ9/k04S9+A6ovO5Nl+UOk8OrSPRaCaLefyJtkZlRI0XRghOvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=HZPmL+qr; arc=none smtp.client-ip=213.209.10.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
+Received: from [192.168.1.27] ([84.220.171.3])
+	by smtp-18.iol.local with ESMTPA
+	id vOBOspIm92bxevOBOsXCE7; Mon, 30 Sep 2024 23:43:54 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+	t=1727732635; bh=5RaxI1Ql+FebJ9M7FZKnjmfdsicFZKfPO8iioE2+3oc=;
+	h=From;
+	b=HZPmL+qrK235uyAL8lQ+xbnCEMOQE+a4NKBsepxXSVgBSRpPcBzWwZn3PUDSGsZP0
+	 fO5Dfpl3IluCXeb/NXHOuY55XWuynzwVBZbdh0EKX7+9emtCkw+5sVDJQ16dCiSFCB
+	 aNxhKCdw5zpf5Hqc8wVIs/ttHLnR2jg/WlTCmFlcg3Tk9A3rKFErzGbKeEpsStnciE
+	 /2CrxXn5p6CFGFQQIlIsq0hGP2yO9CQV7byzas7rVT3qMiZmKxVot8a5NmjC9Z7LQS
+	 lbpPK/YWMSXcSgqy0HTTru0xPMT/o/saoSUQRaw5tUlhNRZ8lh0++6TcZhGteAw9Pi
+	 QT7HVhkVOSxiQ==
+X-CNFS-Analysis: v=2.4 cv=bN/dI++Z c=1 sm=1 tr=0 ts=66fb1b9b cx=a_exe
+ a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
+ a=IkcTkHD0fZMA:10 a=w5_F2YlBW8SFMIdiTPkA:9 a=QEXdDO2ut3YA:10
+Message-ID: <4f672a82-28d8-490e-bdce-e794748d41fd@libero.it>
+Date: Mon, 30 Sep 2024 23:43:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,300 +56,135 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] btrfs: canonicalize the device path before adding
- it
-To: Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-Cc: Fabian Vogt <fvogt@suse.com>
-References: <cover.1727222308.git.wqu@suse.com>
- <3b0eb4cd4b55ae567abfc849935b4a72cea88efb.1727222308.git.wqu@suse.com>
- <af8014ff-d4c2-4f43-8602-49d11d4977fa@oracle.com>
- <97e23756-2740-45ea-a1d6-7cf95a115e8b@suse.com>
- <d9f1189d-b51d-4b0b-a3c8-cc7141fa9584@oracle.com>
+Reply-To: kreijack@inwind.it
+Subject: Re: BTRFS list of grievances
+To: waxhead@dirtcellar.net, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <d9f1189d-b51d-4b0b-a3c8-cc7141fa9584@oracle.com>
+From: Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rMQs7Ooc95J0TRebF1maDKKwB8yLQ94zmykvXg7d6JcK1INKtV9
- wW3ukTWqJZJEI5D2GnWV+FtXEf9xC0iYm79ZMki4spPF0M9HUv/hGK2NDTDEuvasSc7Qbu/
- pbuV7h+6k8VSg7SP2SG7tiyG/ngoKyBzbZlX3s4Qt9F88Rqzn0ou1YYcO+9OWtRr4vcOIoX
- cBUaZYzbpPOadk+/FmO/A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8xDq1O8gAFM=;oJNtDqknMBl7Y4jHMtFH54DVO2e
- tU4votXZc88usMNq8zJ28KqDJVarxu2tT2OSo6NCB7di0ZSjTfdoTppvZ9FvwJpjJYfvszfpd
- zK5Kri14c/4ruz+B5nA8CQtyFRQPvL+k0QMjFclhSkTl3dMOClGiCacCQcXKK2B0h4Fmu8Abp
- Yb9S5KhBB/OlrMeJ4HGKIWWbrTDqSbA6CBTFxIe6PuUGwYgCWnfnXhHeaOWPwwZZEx4MxMepw
- PMAKMTs8g0rkhvny8LKBizJRnjeMDwrmulyqkq3xWl6kzBS95kYzRjg5Jzy/5knoOVlBrhnzp
- Q1XcKE2L+ej09mCOyBjEvDpPAHMYhfKVUENEusF479ee1vTCZXTx/JAfDec5uQyRw0D5r37M3
- UINKKUlH6oKOTGVIlh/Yvw05NvAHH7t60nWtDwYTOosFrMtp9tXWrwhMt120abVoUsD+Bx+ct
- KhrUsbYMND+w2wJxnpiva12Ru/hBL3dIKS+nXQ9BpERJR6XcUsOYC8cmjRor8yEqmpqny6uMu
- RtvQ6vOy1+fOjGRWW7PM5ZDuaXIeBmxEXb7D3DBOKpcgCswfsKZJSxdfxIV6Pa7uvySDRrT9g
- xk9yjbJYrwQ/PdjKYeOTK/wQv6HZje882ClGN5Uk4OBWEJYVw7RVR6Be9r9pC34A8qeOe7xb6
- jGVhYuui4EpS7typqPsmdLeEE3lSGq62ZSvybVD9ePnV3m6Xqi6P1a9FWiPhCpqIP/ETycSMV
- khtF2YAaHlLiCnvg5onjTyofIbJV/aEYnJmLIanBrDIgAUAGnGb0wUlLkpBGKu7l0sM7wXFeZ
- d9wlVqR5mBAomOF0cgFwd87w==
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfID0XZVbmLxVH4s8AaFlLhrn8DPGT+pUdwnHlf26UIodE5w+GNE+AXAMswsEKC1mslG+Wj1vh6MpPX7rftVm9THu/8rS+BdEepMi5DKM8nGQYjQsUuW6
+ GrPMinBH9fur/jtWVLOAOBJAYSdRO513n3OPLBhgpEibFL6k3GntLD8j4uK0ysVHmiwK1kJModC9UKJXZl2kQEJZUQOX49/hEpZjkir47zpVPz6DrLA/EFe+
+
+On 27/09/2024 13.20, waxhead wrote:
+> First thing first: I am a long time BTRFS user and frequent reader of the mailing list. I am *NOT* a BTRFS developer, but that being said I have been known to summon a segmentation failure or two from years of programming in C.
+> 
+> Since I have been using BTRFS more or less problem free since 2013 or so for nearly everything, I figured that I should be entitled to simply write down a list of things that I personally think sucks (more or less) with this otherwise fine filesystem
+> 
+> Make of it what you will, but what I am trying to get across is what the upper class would probably call 'constructive criticism'.
+> 
+> So here goes:
+> 
+> 
+> 
+> 1. FS MANAGEMENT
+> ================
+> BTRFS is rather simple to manage. We can add/remove devices on the fly, balance the filesystem, scrub, defrag, select compression algorithms etc. Some of these things are done as mount options, some as properties and some by issuing a command that process something.
+> 
+> Personally, I feel this is a bit messy and in some cases quite backwards at times. I believe the original idea was that BTRFS should support pr. subvolume mount options, storage profiles, etc etc.... and subvolumes are after all a key feature of the filesystem.
+> 
+> Heck, we even have a root subvolume (id 256) which ideally is the parent (or root) for all other subvolumes on the filesystem. So why on earth do we have commands such as 'btrfs balance start -dusage=50 /fsmnt' when logically it could just has easily have been 'btrfs <subvolume> balance start -dusage=50' . E.g. on the root subvolume instead of the fs mount point.
+> 
+> Besides, if BTRFS at some point are supposed to be more "subvolume centric" then why are not things like scrub, balance, convert (data/metadata), device add/remove or even defrag handled as properties to a subvolume. E.g. why not set a flag that triggers what needs to be done, and let the filesystem process that as a background task.
+> 
+> That would for example allow for finer granularity for scrub for certain subvolumes, instead of having to do the entire filesystem as it currently is now.
+
+I am not sure to agree. Some properties are per "filesystem", others are per "sub-volume"; being a "subvolume" a subset of a filesystem, it might seem that providing a setting on a per "sub-volume" basis gives to the user more flexibility.
+However this is a gain only if there isn't any possible confusion about what the filesystem will do. For example, it is not clear to me, what means doing a balance (e.g. reshape the raid profile) for a subvolume when also a snapshot exists: the user want to balance only the subvolume (un-sharing the data), or the user want to balance the subvolume data and all the shared extents. I am not saying that we cannot define a semantic of a subvolume balance; I am saying that this is not so obvious and should be avoided.
+
+I think that, depending by the user case, the expectation might be different. IMHO a filesystem should behaves following the "least surprise" principle. And if something my be misunderstood, then it is better to not have it.
+
+This to say that form me, if something is related to shared data, it should be "per filesystem" (like the raid profile), to avoid any ambiguity. Other properties (like a inode property) should be per "sub-volume" basis.
+
+> 
+> Status for the jobs do in my opinion belong in sysfs, but there is nothing wrong with a simple command to "pretty'fy" the status either.
+> 
+> And yes, I even mentioned device add/remove because if it would be possible at some point to assign priority/weight to certain devices for certain subvolumes then making a subvolume prefer or avoid using a certain storage device wold be as "simple" as setting a suitable weight/priority, and it would be possible to add/remove (assign) storage devices without affecting all other subvolumes.
+> 
+> So for me , 'btrfs property set' (or something similar) sounds like the only sensible way of properly managing a BTRFS. And really, with the exception of the rescue and subvolume mount options most, if not all other mount options seems to better belong as a property for a subvolume (which may or may not be the id 256 / root subvolume)
+> 
+> 
+> 
+> 2. USE DEVICE ID's EVERYWHERE INSTEAD OF /dev/sdX:
+> ==================================================
+> Using "btrfs filesystem show" will list all BTRFS devices, and also show the assigned ID for that device / partition / whatever. Since BTRFS already have the notion of a device ID, it seems pointless to not use that ID for management / identification anywhere possible.
+> (for example btrfs device stat /mnt)
+> 
+
+I suggest both the ways. If something is a device, interpret as device, otherwise a try to interpret as id; I worked in the past on something like that. But I never finalize it.
+
+> 
+> 3. SOME DEVICES MISSING SHOULD BE ID 1,2,3,4... MISSING:
+> ========================================================
+> If one or more devices are missing it would have been great to know WHAT devices where missing. Why not print the ID's of the missing devices instead of just let the user know that "some" of them are missing?
+> 
+
++1
+
+> 
+> 4. THE ABILITY TO SET A LABEL FOR A DEVICE ID:
+> ==============================================
+> It would have been great to set a label for a BTRFS device ID. For example ID1 = "Shelf01.24", ID2 = "NAS_01", ID3 = "localdiskXYZ"
+> 
+
+Considering the ubiquitous of a GUID partition table, currently we have:
+- a device name (/dev/sdx), which can be customized by udev
+- a partition type GUID
+- a unique partition UUID
+- a partition label (yes GUID has room for 36 UTF16 code unit)
+- a btrfs sub UUID
+- a btrfs ID
+
+I think that it is enough :-), and a further label would only increase the confusion
+
+> 
+> 5. DEDUPLICATION IS NOT INTEGRATED IN BTRFS:
+> ============================================
+> I think that some form of (simple) deduplication should be integrated in BTRFS. Using unofficial tools may be perfectly safe, but it feels "unsafe" to be honest. Besides deduplication is something that might have been interesting to turn on/on_whenidle/off as a property to a subvolume as well.
+> 
+
+It is not clear if the problem is "online vs offline" deduplication or the fact that the dedup is not integrate in the btrfs-prog command.
+
+> 
+> 6. DEVICE STATS:
+> ================
+> Again device ID's are not used, but also why is this info not listed in a table? Showing this in a table would make 5x lines become 1x line which would be far more readable. Finaly it is not clear to me what is fixed errors, and what are actual damage accumulated in the filesystem
+> 
+
++1
+
+> 
+> 7. LIST OF DAMAGED FILES:
+> =========================
+> There is no easy way to get a list of damaged files on a BTRFS filesystem to my knowledge. It would be great to have a command for that.
+> 
+
+I am not sure if it's worth the complexity. Basically now it is enough to look in the log for a filesystem error showing the inode. Logging an inode at the filesystem level would increase the complexity.
+
+> 
+> 8. ABILITY TO RESERVE SPARE SPACE:
+> ==================================
+> Because of the way BTRFS works a spare device is not very useful. Rather spare space would be a good idea I think. That way if one device is missing data, it could be replicated to other drives (or even on a single device [DUP] in emergency situations)
+> 
+
+We could reserve (e.g.) 1G for each disk, that cannot be allocated until root request it. It will not prevent the exhaustion of the free space, but would prevent the situation where the user cannot free space because.. it has not space.
+When the filesystem fill all the disk(s) (with the except of the above 1GB reserved space), it goes in RO; then the administrator might unlock the reserved space and start to remove the thing.
 
 
+> 
+> 9. ABILITY TO MERGE / CONSUME EXISTING BTRFS:
+> =============================================
+> It would have been great to merge existing BTRFS volumes into a larger volume e.g. assimilate it ..because we all know resistance is futile.
+> Again a subvolume would be the cleanest way of importing another BTRFS I think.
+> 
 
-=E5=9C=A8 2024/9/30 22:10, Anand Jain =E5=86=99=E9=81=93:
+What about the inode collision ?
+
 [...]
->>> Quick question: both XFS and ext4 fail this test case=E2=80=94any idea=
- why?
->>
->> Because they are single device filesystems (except the log device),
->> thus they do not need to nor are able to update their device path
->> halfway.
->>
->
-> How is a single or multi-device filesystem relevant here?
 
-Since it's a single device fs, they won't bother about device scanning
-nor updating their device path to handle re-occuring device.
-
-Thus they just accept whatever path passed in.
-
-Thanks,
-Qu
->
->>> Can a generic/btrfs specific testcase be added to fstests?
->>
->> I can add it as a btrfs specific one, but I guess not a generic one?
->>
->
-> Yes, you can make it a Btrfs-specific test case, as XFS and EXT4
-> currently fail on this test.
->
-> Thanks, Anand
->
->> Thanks,
->> Qu
->>
->>>
->>> Thanks, Anand
->>>
->>>> Then we can have the following weird device path:
->>>>
->>>> =C2=A0 BTRFS: device fsid 2378be81-fe12-46d2-a9e8-68cf08dd98d5 devid =
-1
->>>> transid 7 /proc/self/fd/3 (253:2) scanned by mount_by_fd (18440)
->>>>
->>>> Normally it's not a big deal, and later udev can trigger a device pat=
-h
->>>> rename. But if udev didn't trigger, the device path "/proc/self/fd/3"
->>>> will show up in mtab.
->>>>
->>>> [CAUSE]
->>>> For filename "/proc/self/fd/3", it means the opened file descriptor 3=
-.
->>>> In above case, it's exactly the device we want to open, aka points to
->>>> "/dev/test/scratch1" which is another softlink pointing to "/dev/dm-2=
-".
->>>>
->>>> Inside kernel we solve the mount source using LOOKUP_FOLLOW, which
->>>> follows the symbolic link and grab the proper block device.
->>>>
->>>> But inside btrfs we also save the filename into btrfs_device::name, a=
-nd
->>>> utilize that member to report our mount source, which leads to the
->>>> above
->>>> situation.
->>>>
->>>> [FIX]
->>>> Instead of unconditionally trust the path, check if the original file
->>>> (not following the symbolic link) is inside "/dev/", if not, then
->>>> manually lookup the path to its final destination, and use that as ou=
-r
->>>> device path.
->>>>
->>>> This allows us to still use symbolic links, like
->>>> "/dev/mapper/test-scratch" from LVM2, which is required for fstests
->>>> runs
->>>> with LVM2 setup.
->>>>
->>>> And for really weird names, like the above case, we solve it to
->>>> "/dev/dm-2" instead.
->>>>
->>>> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1230641
->>>> Reported-by: Fabian Vogt <fvogt@suse.com>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>> =C2=A0 fs/btrfs/volumes.c | 79 ++++++++++++++++++++++++++++++++++++++=
-++++
->>>> +++-
->>>> =C2=A0 1 file changed, 78 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index b713e4ebb362..668138451f7c 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -732,6 +732,70 @@ const u8 *btrfs_sb_fsid_ptr(const struct
->>>> btrfs_super_block *sb)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return has_metadata_uuid ? sb->metadat=
-a_uuid : sb->fsid;
->>>> =C2=A0 }
->>>> +/*
->>>> + * We can have very weird soft links passed in.
->>>> + * One example is "/proc/self/fd/<fd>", which can be a soft link to
->>>> + * a block device.
->>>> + *
->>>> + * But it's never a good idea to use those weird names.
->>>> + * Here we check if the path (not following symlinks) is a good one
->>>> inside
->>>> + * "/dev/".
->>>> + */
->>>> +static bool is_good_dev_path(const char *dev_path)
->>>> +{
->>>> +=C2=A0=C2=A0=C2=A0 struct path path =3D { .mnt =3D NULL, .dentry =3D=
- NULL };
->>>> +=C2=A0=C2=A0=C2=A0 char *path_buf =3D NULL;
->>>> +=C2=A0=C2=A0=C2=A0 char *resolved_path;
->>>> +=C2=A0=C2=A0=C2=A0 bool is_good =3D false;
->>>> +=C2=A0=C2=A0=C2=A0 int ret;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
->>>> +=C2=A0=C2=A0=C2=A0 if (!path_buf)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 /*
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Do not follow soft link, just check if th=
-e original path is
->>>> inside
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * "/dev/".
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>> +=C2=A0=C2=A0=C2=A0 ret =3D kern_path(dev_path, 0, &path);
->>>> +=C2=A0=C2=A0=C2=A0 if (ret)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->>>> +=C2=A0=C2=A0=C2=A0 resolved_path =3D d_path(&path, path_buf, PATH_MA=
-X);
->>>> +=C2=A0=C2=A0=C2=A0 if (IS_ERR(resolved_path))
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->>>> +=C2=A0=C2=A0=C2=A0 if (strncmp(resolved_path, "/dev/", strlen("/dev/=
-")))
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->>>> +=C2=A0=C2=A0=C2=A0 is_good =3D true;
->>>> +out:
->>>> +=C2=A0=C2=A0=C2=A0 kfree(path_buf);
->>>> +=C2=A0=C2=A0=C2=A0 path_put(&path);
->>>> +=C2=A0=C2=A0=C2=A0 return is_good;
->>>> +}
->>>> +
->>>> +static int get_canonical_dev_path(const char *dev_path, char
->>>> *canonical)
->>>> +{
->>>> +=C2=A0=C2=A0=C2=A0 struct path path =3D { .mnt =3D NULL, .dentry =3D=
- NULL };
->>>> +=C2=A0=C2=A0=C2=A0 char *path_buf =3D NULL;
->>>> +=C2=A0=C2=A0=C2=A0 char *resolved_path;
->>>> +=C2=A0=C2=A0=C2=A0 int ret;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 path_buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
->>>> +=C2=A0=C2=A0=C2=A0 if (!path_buf) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 ret =3D kern_path(dev_path, LOOKUP_FOLLOW, &path)=
-;
->>>> +=C2=A0=C2=A0=C2=A0 if (ret)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->>>> +=C2=A0=C2=A0=C2=A0 resolved_path =3D d_path(&path, path_buf, PATH_MA=
-X);
->>>> +=C2=A0=C2=A0=C2=A0 ret =3D strscpy(canonical, resolved_path, PATH_MA=
-X);
->>>> +out:
->>>> +=C2=A0=C2=A0=C2=A0 kfree(path_buf);
->>>> +=C2=A0=C2=A0=C2=A0 path_put(&path);
->>>> +=C2=A0=C2=A0=C2=A0 return ret;
->>>> +}
->>>> +
->>>> =C2=A0 static bool is_same_device(struct btrfs_device *device, const =
-char
->>>> *new_path)
->>>> =C2=A0 {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct path old =3D { .mnt =3D NULL, .=
-dentry =3D NULL };
->>>> @@ -1408,12 +1472,23 @@ struct btrfs_device
->>>> *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool new_device_added =3D false;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_device *device =3D NULL;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct file *bdev_file;
->>>> +=C2=A0=C2=A0=C2=A0 char *canonical_path =3D NULL;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 bytenr;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev_t devt;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lockdep_assert_held(&uuid_mutex);
->>>> +=C2=A0=C2=A0=C2=A0 if (!is_good_dev_path(path)) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 canonical_path =3D kmallo=
-c(PATH_MAX, GFP_KERNEL);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (canonical_path) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
-et =3D get_canonical_dev_path(path, canonical_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i=
-f (ret < 0) {
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 kfree(canonical_path);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 canonical_path =3D NULL;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>> +=C2=A0=C2=A0=C2=A0 }
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Avoid an exclusive open here, =
-as the systemd-udev may
->>>> initiate the
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * device scan which may race wit=
-h the user's mount or mkfs
->>>> command,
->>>> @@ -1458,7 +1533,8 @@ struct btrfs_device
->>>> *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto free_disk=
-_super;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>> -=C2=A0=C2=A0=C2=A0 device =3D device_list_add(path, disk_super, &new=
-_device_added);
->>>> +=C2=A0=C2=A0=C2=A0 device =3D device_list_add(canonical_path ? : pat=
-h, disk_super,
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &new_device_added);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!IS_ERR(device) && new_device_adde=
-d)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_free_sta=
-le_devices(device->devt, device);
->>>> @@ -1467,6 +1543,7 @@ struct btrfs_device
->>>> *btrfs_scan_one_device(const char *path, blk_mode_t flags,
->>>> =C2=A0 error_bdev_put:
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fput(bdev_file);
->>>> +=C2=A0=C2=A0=C2=A0 kfree(canonical_path);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return device;
->>>> =C2=A0 }
->>>
->>
->
->
-
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
