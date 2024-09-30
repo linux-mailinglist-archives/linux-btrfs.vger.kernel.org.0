@@ -1,54 +1,74 @@
-Return-Path: <linux-btrfs+bounces-8345-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DC4E98AF5E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 23:46:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A95898AF8A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 00:01:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4B29B2331D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 21:46:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5441F28385A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2024 22:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4BB186E4B;
-	Mon, 30 Sep 2024 21:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813D0188596;
+	Mon, 30 Sep 2024 22:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b="HZPmL+qr"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Vuu4CmQu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-18.italiaonline.it [213.209.10.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BB715E97
-	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 21:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45DB185B68
+	for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 22:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727732797; cv=none; b=gAKzFOhFscDdrq+AfZRn9knoBg4NjdpgNdw6PSBIP53yY5E8Hf8JGBM2OOVF4gkrzm0p5suZ3lItYfhpLR5T6SxJnx7CrD8ILC460P5KqHqTcLLA5B6lEvfxW3gXOc77GXeNNdC4LKqZzAGDwdFfgrmzCGvlvImkSZX8yeM+VOQ=
+	t=1727733648; cv=none; b=TvpuC8/rwPaNdlx7U/1EV8WnEtcqQm4Ihsu1DIPIUuiwh5jHgH/6L/EmsFeFHyEv0j22g9yb0wooIhkP3p6ak33/vP33/lSZxA17M1JdTpxAg7hJig2LNGRpi5afxrzMLjNMaVd/839wa4rgm0tCKb0Wf2xM0P17kRgTEOLGTDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727732797; c=relaxed/simple;
-	bh=0BoIbut1gvwmevFRxqZeFL2Qq4oyBbJgVHW5Mk3wozA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=i/GyZskMIjPqWMPfBn6d9Sj3sYE6raDkorWV3nlge0iQl2pU03KY5JJwknxuFC2jDAsDusnA6KCppCKK9QMHxQ1EzDP5gaHbOXE0TlMcF/asrNuVD4Twy4HpuKJ9/k04S9+A6ovO5Nl+UOk8OrSPRaCaLefyJtkZlRI0XRghOvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it; spf=pass smtp.mailfrom=libero.it; dkim=pass (2048-bit key) header.d=libero.it header.i=@libero.it header.b=HZPmL+qr; arc=none smtp.client-ip=213.209.10.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=libero.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=libero.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-18.iol.local with ESMTPA
-	id vOBOspIm92bxevOBOsXCE7; Mon, 30 Sep 2024 23:43:54 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-	t=1727732635; bh=5RaxI1Ql+FebJ9M7FZKnjmfdsicFZKfPO8iioE2+3oc=;
-	h=From;
-	b=HZPmL+qrK235uyAL8lQ+xbnCEMOQE+a4NKBsepxXSVgBSRpPcBzWwZn3PUDSGsZP0
-	 fO5Dfpl3IluCXeb/NXHOuY55XWuynzwVBZbdh0EKX7+9emtCkw+5sVDJQ16dCiSFCB
-	 aNxhKCdw5zpf5Hqc8wVIs/ttHLnR2jg/WlTCmFlcg3Tk9A3rKFErzGbKeEpsStnciE
-	 /2CrxXn5p6CFGFQQIlIsq0hGP2yO9CQV7byzas7rVT3qMiZmKxVot8a5NmjC9Z7LQS
-	 lbpPK/YWMSXcSgqy0HTTru0xPMT/o/saoSUQRaw5tUlhNRZ8lh0++6TcZhGteAw9Pi
-	 QT7HVhkVOSxiQ==
-X-CNFS-Analysis: v=2.4 cv=bN/dI++Z c=1 sm=1 tr=0 ts=66fb1b9b cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=w5_F2YlBW8SFMIdiTPkA:9 a=QEXdDO2ut3YA:10
-Message-ID: <4f672a82-28d8-490e-bdce-e794748d41fd@libero.it>
-Date: Mon, 30 Sep 2024 23:43:41 +0200
+	s=arc-20240116; t=1727733648; c=relaxed/simple;
+	bh=jTnVQLl6lOpdVV0MDuhMVodo1CWb5dEOmoMSel4V8Us=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eLJWcwHNVAqVxXjlNywx0GkyUblLVbxQDQOkKqabSMaq5FBU637wgvKjJQ9CXyNmsGFJESr7vxEubITy4p4WHdUtGJk8EgbMgCg2AqDRh3g3VSB8yalg8umu3X1YYliLgqVsPqrsTHfVxbXwzzrACztcE+mfCrhWZIWiyRHFack=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Vuu4CmQu; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-37ce14ab7eeso1998435f8f.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 15:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1727733645; x=1728338445; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=L2mFpUOHLDzVxx/ZIGFl4CWIEl1Ta1q5zyxabezUC7o=;
+        b=Vuu4CmQurHz+wDbzD8z4bi17XqRnSRKNGEA2yT9gNX0RCpnorauVyAqj7Nr6jZxOnv
+         jeaZ+wKT4A8f3/U/8eoI8d6j04XcW0BeeCKXA/AhuwxPEL28VK4JOR6f/Fq2OTapkMXV
+         lMYOvDgnOaLRots+w4dPOYtLDKqHonB4MM7Bp+F15B/uw+v0TckZf5O2XdbGGU8SPpNt
+         cz4RZTAAetIuSaLbcKtyV3pRDMjHtlhMCA2FyP7CUew24TBlAuPPF+SvnKGd27SuGbDV
+         NEAVEOvSYPDscIIMAOnOhpVEGznnA26i8rKNICi5xafb8zZy9a149BN0cxjVHukqy70w
+         jSKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727733645; x=1728338445;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L2mFpUOHLDzVxx/ZIGFl4CWIEl1Ta1q5zyxabezUC7o=;
+        b=nq6Wl5ZYn+oWPzyRIVJVHWXc3irLiXqDLnYg7yaf0v1lc6PCLI8920A4kBngrzTiV6
+         BpzZ454Yr4rK2WzGFg9OAriWH5sYfOaisJlDKzt2oO8wbpJ60l5Wx1zALf0nhengLEqz
+         FYhOaTotdPOl7e3ihBNyltpNJ2VQ2QLUUOtBrxvmegzoJNNp0UiD4J8TQpPdWq5Q2GfJ
+         AUI2hRV2lUBy90skuNy25LmB9mIgeWT72OOFGjcoWO6weumMqiHY12jjZWGUDDHlTINy
+         gkY2okEhcEmQfVpEKDiZedkjZhnVx2vVKlDQEVLwsFTWoqpA6EguEd3x7S3K97cz1LuD
+         upCA==
+X-Gm-Message-State: AOJu0YxDGBN1iV0BBTfU1YspWyFnHtXrKO9cjzZ3U7+vuEeNnCAsOu3O
+	yzJYSHP29e50h9LJrZuygjE96RYdPhXgxAaMOpFodYS/+fvoYs+X0bxfPHuTgAc=
+X-Google-Smtp-Source: AGHT+IHFYeBKfI1EAN3zAjxXMPApcDZWCKA60zfD/7mFgkcgN9iCUPnZcVes0tbuxzyWue7tmWzc9A==
+X-Received: by 2002:adf:b31a:0:b0:374:c3cd:73de with SMTP id ffacd0b85a97d-37cd5ab1164mr12881784f8f.35.1727733644688;
+        Mon, 30 Sep 2024 15:00:44 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20b37d92386sm59082215ad.90.2024.09.30.15.00.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Sep 2024 15:00:44 -0700 (PDT)
+Message-ID: <08ccb40d-6261-4757-957d-537d295d2cf5@suse.com>
+Date: Tue, 1 Oct 2024 07:30:38 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,135 +76,147 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: BTRFS list of grievances
-To: waxhead@dirtcellar.net, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
+Subject: Re: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: linux-btrfs@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
+ "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+References: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
+ <iwjlzsphxhqdpml5gn3t3qt5zhizgcmizel5vug7g7bwlkzeob@g2jlar2nynqb>
 Content-Language: en-US
-From: Goffredo Baroncelli <kreijack@libero.it>
-In-Reply-To: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <iwjlzsphxhqdpml5gn3t3qt5zhizgcmizel5vug7g7bwlkzeob@g2jlar2nynqb>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfID0XZVbmLxVH4s8AaFlLhrn8DPGT+pUdwnHlf26UIodE5w+GNE+AXAMswsEKC1mslG+Wj1vh6MpPX7rftVm9THu/8rS+BdEepMi5DKM8nGQYjQsUuW6
- GrPMinBH9fur/jtWVLOAOBJAYSdRO513n3OPLBhgpEibFL6k3GntLD8j4uK0ysVHmiwK1kJModC9UKJXZl2kQEJZUQOX49/hEpZjkir47zpVPz6DrLA/EFe+
-
-On 27/09/2024 13.20, waxhead wrote:
-> First thing first: I am a long time BTRFS user and frequent reader of the mailing list. I am *NOT* a BTRFS developer, but that being said I have been known to summon a segmentation failure or two from years of programming in C.
-> 
-> Since I have been using BTRFS more or less problem free since 2013 or so for nearly everything, I figured that I should be entitled to simply write down a list of things that I personally think sucks (more or less) with this otherwise fine filesystem
-> 
-> Make of it what you will, but what I am trying to get across is what the upper class would probably call 'constructive criticism'.
-> 
-> So here goes:
-> 
-> 
-> 
-> 1. FS MANAGEMENT
-> ================
-> BTRFS is rather simple to manage. We can add/remove devices on the fly, balance the filesystem, scrub, defrag, select compression algorithms etc. Some of these things are done as mount options, some as properties and some by issuing a command that process something.
-> 
-> Personally, I feel this is a bit messy and in some cases quite backwards at times. I believe the original idea was that BTRFS should support pr. subvolume mount options, storage profiles, etc etc.... and subvolumes are after all a key feature of the filesystem.
-> 
-> Heck, we even have a root subvolume (id 256) which ideally is the parent (or root) for all other subvolumes on the filesystem. So why on earth do we have commands such as 'btrfs balance start -dusage=50 /fsmnt' when logically it could just has easily have been 'btrfs <subvolume> balance start -dusage=50' . E.g. on the root subvolume instead of the fs mount point.
-> 
-> Besides, if BTRFS at some point are supposed to be more "subvolume centric" then why are not things like scrub, balance, convert (data/metadata), device add/remove or even defrag handled as properties to a subvolume. E.g. why not set a flag that triggers what needs to be done, and let the filesystem process that as a background task.
-> 
-> That would for example allow for finer granularity for scrub for certain subvolumes, instead of having to do the entire filesystem as it currently is now.
-
-I am not sure to agree. Some properties are per "filesystem", others are per "sub-volume"; being a "subvolume" a subset of a filesystem, it might seem that providing a setting on a per "sub-volume" basis gives to the user more flexibility.
-However this is a gain only if there isn't any possible confusion about what the filesystem will do. For example, it is not clear to me, what means doing a balance (e.g. reshape the raid profile) for a subvolume when also a snapshot exists: the user want to balance only the subvolume (un-sharing the data), or the user want to balance the subvolume data and all the shared extents. I am not saying that we cannot define a semantic of a subvolume balance; I am saying that this is not so obvious and should be avoided.
-
-I think that, depending by the user case, the expectation might be different. IMHO a filesystem should behaves following the "least surprise" principle. And if something my be misunderstood, then it is better to not have it.
-
-This to say that form me, if something is related to shared data, it should be "per filesystem" (like the raid profile), to avoid any ambiguity. Other properties (like a inode property) should be per "sub-volume" basis.
-
-> 
-> Status for the jobs do in my opinion belong in sysfs, but there is nothing wrong with a simple command to "pretty'fy" the status either.
-> 
-> And yes, I even mentioned device add/remove because if it would be possible at some point to assign priority/weight to certain devices for certain subvolumes then making a subvolume prefer or avoid using a certain storage device wold be as "simple" as setting a suitable weight/priority, and it would be possible to add/remove (assign) storage devices without affecting all other subvolumes.
-> 
-> So for me , 'btrfs property set' (or something similar) sounds like the only sensible way of properly managing a BTRFS. And really, with the exception of the rescue and subvolume mount options most, if not all other mount options seems to better belong as a property for a subvolume (which may or may not be the id 256 / root subvolume)
-> 
-> 
-> 
-> 2. USE DEVICE ID's EVERYWHERE INSTEAD OF /dev/sdX:
-> ==================================================
-> Using "btrfs filesystem show" will list all BTRFS devices, and also show the assigned ID for that device / partition / whatever. Since BTRFS already have the notion of a device ID, it seems pointless to not use that ID for management / identification anywhere possible.
-> (for example btrfs device stat /mnt)
-> 
-
-I suggest both the ways. If something is a device, interpret as device, otherwise a try to interpret as id; I worked in the past on something like that. But I never finalize it.
-
-> 
-> 3. SOME DEVICES MISSING SHOULD BE ID 1,2,3,4... MISSING:
-> ========================================================
-> If one or more devices are missing it would have been great to know WHAT devices where missing. Why not print the ID's of the missing devices instead of just let the user know that "some" of them are missing?
-> 
-
-+1
-
-> 
-> 4. THE ABILITY TO SET A LABEL FOR A DEVICE ID:
-> ==============================================
-> It would have been great to set a label for a BTRFS device ID. For example ID1 = "Shelf01.24", ID2 = "NAS_01", ID3 = "localdiskXYZ"
-> 
-
-Considering the ubiquitous of a GUID partition table, currently we have:
-- a device name (/dev/sdx), which can be customized by udev
-- a partition type GUID
-- a unique partition UUID
-- a partition label (yes GUID has room for 36 UTF16 code unit)
-- a btrfs sub UUID
-- a btrfs ID
-
-I think that it is enough :-), and a further label would only increase the confusion
-
-> 
-> 5. DEDUPLICATION IS NOT INTEGRATED IN BTRFS:
-> ============================================
-> I think that some form of (simple) deduplication should be integrated in BTRFS. Using unofficial tools may be perfectly safe, but it feels "unsafe" to be honest. Besides deduplication is something that might have been interesting to turn on/on_whenidle/off as a property to a subvolume as well.
-> 
-
-It is not clear if the problem is "online vs offline" deduplication or the fact that the dedup is not integrate in the btrfs-prog command.
-
-> 
-> 6. DEVICE STATS:
-> ================
-> Again device ID's are not used, but also why is this info not listed in a table? Showing this in a table would make 5x lines become 1x line which would be far more readable. Finaly it is not clear to me what is fixed errors, and what are actual damage accumulated in the filesystem
-> 
-
-+1
-
-> 
-> 7. LIST OF DAMAGED FILES:
-> =========================
-> There is no easy way to get a list of damaged files on a BTRFS filesystem to my knowledge. It would be great to have a command for that.
-> 
-
-I am not sure if it's worth the complexity. Basically now it is enough to look in the log for a filesystem error showing the inode. Logging an inode at the filesystem level would increase the complexity.
-
-> 
-> 8. ABILITY TO RESERVE SPARE SPACE:
-> ==================================
-> Because of the way BTRFS works a spare device is not very useful. Rather spare space would be a good idea I think. That way if one device is missing data, it could be replicated to other drives (or even on a single device [DUP] in emergency situations)
-> 
-
-We could reserve (e.g.) 1G for each disk, that cannot be allocated until root request it. It will not prevent the exhaustion of the free space, but would prevent the situation where the user cannot free space because.. it has not space.
-When the filesystem fill all the disk(s) (with the except of the above 1GB reserved space), it goes in RO; then the administrator might unlock the reserved space and start to remove the thing.
+Content-Transfer-Encoding: 8bit
 
 
+
+在 2024/10/1 02:53, Shakeel Butt 写道:
+> Hi Qu,
 > 
-> 9. ABILITY TO MERGE / CONSUME EXISTING BTRFS:
-> =============================================
-> It would have been great to merge existing BTRFS volumes into a larger volume e.g. assimilate it ..because we all know resistance is futile.
-> Again a subvolume would be the cleanest way of importing another BTRFS I think.
+> On Sat, Sep 28, 2024 at 02:15:56PM GMT, Qu Wenruo wrote:
+>> [BACKGROUND]
+>> The function filemap_add_folio() charges the memory cgroup,
+>> as we assume all page caches are accessible by user space progresses
+>> thus needs the cgroup accounting.
+>>
+>> However btrfs is a special case, it has a very large metadata thanks to
+>> its support of data csum (by default it's 4 bytes per 4K data, and can
+>> be as large as 32 bytes per 4K data).
+>> This means btrfs has to go page cache for its metadata pages, to take
+>> advantage of both cache and reclaim ability of filemap.
+>>
+>> This has a tiny problem, that all btrfs metadata pages have to go through
+>> the memcgroup charge, even all those metadata pages are not
+>> accessible by the user space, and doing the charging can introduce some
+>> latency if there is a memory limits set.
+>>
+>> Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
+>> charge situation so that metadata pages won't really be limited by
+>> memcgroup.
+>>
+>> [ENHANCEMENT]
+>> Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
+>> memory cgroup to attach metadata pages.
+>>
+>> Although this needs to export the symbol mem_root_cgroup for
+>> CONFIG_MEMCG, or define mem_root_cgroup as NULL for !CONFIG_MEMCG.
+>>
+>> With root memory cgroup, we directly skip the charging part, and only
+>> rely on __GFP_NOFAIL for the real memory allocation part.
+>>
 > 
+> I have a couple of questions:
+> 
+> 1. Were you using __GFP_NOFAIL just to avoid ENOMEMs? Are you ok with
+> oom-kills?
 
-What about the inode collision ?
+The NOFAIL flag is inherited from the memory allocation for metadata 
+tree blocks.
 
-[...]
+Although btrfs has error handling already for all the possible ENOMEMs, 
+hitting ENOMEMs for metadata may still be a big problem, thus all my 
+previous attempt to remove NOFAIL flag all got rejected.
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+> 
+> 2. What the normal overhead of these metadata in real world production
+> environment? I see 4 to 32 bytes per 4k but what's the most used one and
+> does it depend on the data of 4k or something else?
+
+What did you mean by the "overhead" part? Did you mean the checksum?
+
+If so, there is none, because btrfs store metadata checksum inside the 
+tree block (thus the page cache).
+The first 32 bytes of a tree block are always reserved for metadata 
+checksum.
+
+The tree block size depends on the mkfs time option nodesize, is 16K by 
+default, and that's the most common value.
+
+> 
+> 3. Most probably multiple metadata values are colocated on a single 4k
+> page of the btrfs page cache even though the corresponding page cache
+> might be charged to different cgroups. Is that correct?
+
+Not always a single 4K page, it depends on the nodesize, which is 16K by 
+default.
+
+Otherwise yes, the metadata page cache can be charged to different 
+cgroup, depending on the caller's context.
+And we do not want to charge the metadata page cache to the caller's 
+cgroup, since it's really a shared resource and the caller has no way to 
+directly accessing the page cache.
+
+Not charging the metadata page cache will align btrfs more to the 
+ext4/xfs, which all uses regular page allocation without attaching to a 
+filemap.
+
+> 
+> 4. What is stopping us to use reclaimable slab cache for this metadata?
+
+Josef has tried this before, the attempt failed on the shrinker part, 
+and partly due to the size.
+
+Btrfs has very large metadata compared to all other fses, not only due 
+to the COW nature and a larger tree block size (16K by default), but 
+also the extra data checksum (4 bytes per 4K by default, 32 bytes per 4K 
+maximum).
+
+On a real world system, the metadata itself can easily go hundreds of 
+GiBs, thus a shrinker is definitely needed.
+
+Thus so far btrfs is using page cache for its metadata cache.
+
+Thanks,
+Qu
+
+> 
+> thanks,
+> Shakeel
+
 
