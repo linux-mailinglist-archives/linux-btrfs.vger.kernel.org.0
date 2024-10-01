@@ -1,236 +1,496 @@
-Return-Path: <linux-btrfs+bounces-8358-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8359-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5365198B201
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 04:04:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A635E98B4F1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 08:55:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1095F28268E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 02:04:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EBDF1F23D9D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 06:55:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCC43716D;
-	Tue,  1 Oct 2024 02:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fPLkRW0i"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F061BC084;
+	Tue,  1 Oct 2024 06:55:15 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD3C286A8
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Oct 2024 02:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2B463D;
+	Tue,  1 Oct 2024 06:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727748235; cv=none; b=PTPhBrweyTEeIvd1cDfipM5zLSG1/3KgTjGBIp0200uE6SdKK6qnt6nBcVWcNlcMlJ2Hf+hvqzuAZ0gsGIVDiy5YIXhHX08Qecfz+OjPgEMPPWR1647/5Llk2ZfKQQuZ380BWmeY8GcETYp/DEn+MQf+ZMA3S4qTBK0NcZLEruA=
+	t=1727765715; cv=none; b=QgG94VhclBOZmtivquAySIUW5qW5dBwDXu3oEundxqjDTjlmwjeVub6wKz5eQo81AouqNVjwjG4zW26m6JD1QwC51Ni6FavLcaGDPb1n8MsZzgBjlWeIj30uGAXrxkR2QYRQGSK0XoVXYnykfzHGm0q4HeNePBHW+g7R64C8KqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727748235; c=relaxed/simple;
-	bh=g1a0EVN/7dJu0bj/tIDSSC1ZRUEYufySY/9ZSZLQR2I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LMkCQWgswpSrGraYM1a1vMA7eMM9av/PvYRO+gRArTYJD8v12sYDvKZdZ1g/HMHx2ck3SUV6xZzkxGojBHaSWnrUtdjugGPmChZmgKbxdPnqD6ScSQBWo78Mrg8NUDCKU3edt4BrNF+uupB/eQV+vKlFe0uMq5FP8OpJO1tKUjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fPLkRW0i; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37cc60c9838so2822817f8f.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2024 19:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1727748232; x=1728353032; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=y2XJ1eZ28xIo+GDgkaOimxZFzT7dJYCNXgTF8/d60Ik=;
-        b=fPLkRW0i7Fp+5iEEkVXy0tmkH/ggSyx5GdQFT+ppIbwvKH+u2UAgNAA21SbUBZ4e6x
-         VHA0aVnS2/y7vySAlAeCeKqn1JnrTouFfarR//wuCmbHoWsqfFszXoRXCmY3NXzJyahE
-         K7iUHY9hVmN8w+ApJ80tW5bFz8ehe6O+BU6CtdnzboSgi2ZwLQbv2TQPoPmXhNl9g8mZ
-         1JO0VHKEr0n7MLENjPiMFg6Hz8KDhE2jhYtROsUaBFTgzm3/k+v5V1IZQIHBSfGzNVt9
-         sGnOLScII6bR2SOxcVj4n+Ibwv/kn3DH3CnNMp9tc5fDs1Ccw2UPVHERKIvaQ9rdj/Ku
-         QDzQ==
+	s=arc-20240116; t=1727765715; c=relaxed/simple;
+	bh=GOyyeDyj6fWzhxggBF5mXpZut9yBjmt2NC3bnGngILQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iNVmqXMDsnu8N19znfNfIjhWgliNfstdQxVTW2qQVQVpxiol2Ch4zvMfRdXG2EbJdPwSJUadQYKrNBMHN9AHx1xLk7f34TJZt/V0zTQFWppI24Bj0WDK9xRzr1pOcxEeTyP7p4DDfKUkD7VxfGwMI/OYGu1+QlqS6LAzSNYG6T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42cb7a2e4d6so45846125e9.0;
+        Mon, 30 Sep 2024 23:55:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727748232; x=1728353032;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y2XJ1eZ28xIo+GDgkaOimxZFzT7dJYCNXgTF8/d60Ik=;
-        b=CS/KNUmWoWuU1/hdQXN9hhU1QcR2TTR1mNGFWOB5bWXn2zqt7l+u8cMLoki5eBgesW
-         NSnoHOiWD020DZGS/0n5bmB22G35rtlva1/4IxvqbUEv6hBRpfuX48yBmJSuYNxuRM3e
-         bQyVv3kkaw5h0lLZlg01o2ox2G2TLh+KCI7wxLTPQgnL/2RZZJ6neQuuHvehpGa6043V
-         AQM/eu9QLv9+pmLBrOnJYYoeU8+sA+3IcXiss8zWO1/U30EgtJ31OOpb18gMN34lg72u
-         z25ZsQgc3OXUHhcZzVW0NTqG0tPSH+DZWWoH+f8T1EP0adxq5Z6mVvQ1UH4WQnY359py
-         rnlg==
-X-Gm-Message-State: AOJu0YzFpmniTBzmmfbk+v2cvZlXGIXTqPK/EJ9D464sGqcMkYgrko8z
-	jRU8Lsg/Y4zYUcmH8zC3a1H4EecMgrWu3RBJYRdDOyh90pmQmKEYjNyKuqIq7x8=
-X-Google-Smtp-Source: AGHT+IGrbVaEv02BAaGNjuWgSQHZ5Y9jc5QV9rWk1a63acmiVYjx9DCoIKIhFPNAa6nFmMy8Y++cZg==
-X-Received: by 2002:adf:fe05:0:b0:374:c33d:377d with SMTP id ffacd0b85a97d-37cf28d67b7mr631698f8f.28.1727748231557;
-        Mon, 30 Sep 2024 19:03:51 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20b37e38ccfsm60115475ad.200.2024.09.30.19.03.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Sep 2024 19:03:50 -0700 (PDT)
-Message-ID: <54f0bbef-267b-48d9-ae09-0f3907d4fdc3@suse.com>
-Date: Tue, 1 Oct 2024 11:33:44 +0930
+        d=1e100.net; s=20230601; t=1727765712; x=1728370512;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YVm9zO0hmmG8VhSJT1OhUAoYywpRh6CGJTKtcu5ADIU=;
+        b=eXdZkKoUlrx36eHIF8cJoqgc2Zv97zRYwksL/yjFq6XHyoraq5dpLWJMhEPWrQQMIh
+         BZbV/QHr3F/rVdTbSOdCwcaTq1eBlTjDo5lO0uhrTyJsdDVgG+kmDu/mTT/TIY+9x3B3
+         UoeezLQAYC9VzFXMeh1TW+GmPfc2TEFEta7fr5ASlTzSMMc0cjcLKA4nvsiwjHGY4XSk
+         LD0tJlGgfonOdIQC5cy7t8h1TY3z8+oJjDqOyG86g04rCETENx+0YKCu1vuWOz2zvTep
+         uBztkuxGLoDqjbECjOYd0mHpGqaGA9mzmZXm7f3eh7g4MxkgchctxqvhovZjF03EG4C5
+         y4Uw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBo3mkpixKgCaY5spkn1vKBXvi2enyE1a0OZjpeUz0P5E+Kshr8T9Q3UCVWZSwSUdFjgsYIJfNrOBENmbd@vger.kernel.org, AJvYcCWJTfVT2QeAQ0Arp+VI58JKVNWIqeFPWZ9uSsEYyPz2VnszhncStl8l1nkS6qGrnvkbv7NNUCgHwODXPQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxXzc/qkMvIt7GjpDGHcs1X0YL7WfTbFogCfJNzfEg/tDwVRXmZ
+	tnzjhQ+cHizG76GviAPqAxCaSJZdx/qzr5MbXJfU/9UbvlL72YwZ
+X-Google-Smtp-Source: AGHT+IH+aoGP+iO4PeEcbkncB0Ts6hCuoastxodeI1T4zW3DTSD4BeI6W3LIJ1a2USlVo5jrYHTmLg==
+X-Received: by 2002:a05:600c:3ca6:b0:42c:b750:19d8 with SMTP id 5b1f17b1804b1-42f5840b379mr117052085e9.4.1727765711308;
+        Mon, 30 Sep 2024 23:55:11 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f71aeb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71a:eb00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f57e30621sm126960045e9.47.2024.09.30.23.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2024 23:55:10 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	linux-kernel@vger.kernel.org (open list),
+	linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM)
+Cc: Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v2] btrfs: tests: add selftests for RAID stripe-tree
+Date: Tue,  1 Oct 2024 08:54:38 +0200
+Message-ID: <20241001065451.2378-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: linux-btrfs@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
- roman.gushchin@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
- "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-References: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
- <iwjlzsphxhqdpml5gn3t3qt5zhizgcmizel5vug7g7bwlkzeob@g2jlar2nynqb>
- <08ccb40d-6261-4757-957d-537d295d2cf5@suse.com>
- <7jmtrebounxuu44qgmc2y52bqlqdyuko7zp53p6iz6rkzmzzqg@m2csfnfbmv6c>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <7jmtrebounxuu44qgmc2y52bqlqdyuko7zp53p6iz6rkzmzzqg@m2csfnfbmv6c>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
+Add first stash of very basic self tests for the RAID stripe-tree.
 
-在 2024/10/1 11:07, Shakeel Butt 写道:
-> On Tue, Oct 01, 2024 at 07:30:38AM GMT, Qu Wenruo wrote:
-[...]
->>
->> Although btrfs has error handling already for all the possible ENOMEMs,
->> hitting ENOMEMs for metadata may still be a big problem, thus all my
->> previous attempt to remove NOFAIL flag all got rejected.
-> 
-> __GFP_NOFAIL for memcg charging is reasonable in many scenarios. Memcg
-> oom-killer is enabled for __GFP_NOFAIL and going over limit and getting
-> oom-killed is totally reasonable. Orthogonal to the discussion though.
-> 
->>
->>>
->>> 2. What the normal overhead of these metadata in real world production
->>> environment? I see 4 to 32 bytes per 4k but what's the most used one and
->>> does it depend on the data of 4k or something else?
->>
->> What did you mean by the "overhead" part? Did you mean the checksum?
->>
-> 
-> To me this metadata is overhead, so yes checksum is something not the
-> actual data stored on the storage.
+More test cases will follow exercising the tree.
 
-Oh, by "metadata" it means everything not data.
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+Changes to v1:
+* Fix build errors with CONFIG_BTRFS_FS_RUN_SANITY_TESTS=n
+* Document expectations from the test cases
 
-It includes all the info like directory layout, file layout, data 
-checksum and all the other needed info to represent a btrfs.
+Link to v1:
+https://lore.kernel.org/linux-btrfs/20240930104054.12290-1-jth@kernel.org
 
-> 
->> If so, there is none, because btrfs store metadata checksum inside the tree
->> block (thus the page cache).
->> The first 32 bytes of a tree block are always reserved for metadata
->> checksum.
->>
->> The tree block size depends on the mkfs time option nodesize, is 16K by
->> default, and that's the most common value.
-> 
-> Sorry I am not very familiar with btrfs. What is tree block?
+ fs/btrfs/Makefile                       |   3 +-
+ fs/btrfs/raid-stripe-tree.c             |   5 +-
+ fs/btrfs/raid-stripe-tree.h             |   5 +
+ fs/btrfs/tests/btrfs-tests.c            |   3 +
+ fs/btrfs/tests/btrfs-tests.h            |   1 +
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 285 ++++++++++++++++++++++++
+ fs/btrfs/volumes.c                      |   6 +-
+ fs/btrfs/volumes.h                      |   5 +
+ 8 files changed, 307 insertions(+), 6 deletions(-)
+ create mode 100644 fs/btrfs/tests/raid-stripe-tree-tests.c
 
-A tree block of btrfs is a fixed block, containing metadata (aka, 
-everything other than the data), organized in a B-tree structure.
-
-A tree block can be a node, containing the pointers to the next level 
-nodes/leaves.
-Or a leave, contains the key and the extra info bound to that key.
-
-And btrfs uses the same tree block structure for all different kind of 
-info.
-
-E.g. an inode is stored with (<ino> INODE_ITEM 0) as the key, with a 
-btrfs_inode_item structure as the extra data bound to that key.
-
-And a file extent is stored with (<ino> EXTENT_DATA <file pos>) as the 
-key, with a btrfs_file_extent_item structure bound to that key.
-
-> 
->>
->>>
->>> 3. Most probably multiple metadata values are colocated on a single 4k
->>> page of the btrfs page cache even though the corresponding page cache
->>> might be charged to different cgroups. Is that correct?
->>
->> Not always a single 4K page, it depends on the nodesize, which is 16K by
->> default.
->>
->> Otherwise yes, the metadata page cache can be charged to different cgroup,
->> depending on the caller's context.
->> And we do not want to charge the metadata page cache to the caller's cgroup,
->> since it's really a shared resource and the caller has no way to directly
->> accessing the page cache.
->>
->> Not charging the metadata page cache will align btrfs more to the ext4/xfs,
->> which all uses regular page allocation without attaching to a filemap.
->>
-> 
-> Can you point me to ext4/xfs code where they are allocating uncharged
-> memory for their metadata?
-
-For xfs, it's inside fs/xfs/xfs_buf.c.
-E.g. xfs_buf_alloc_pages(), which goes with kzalloc() to allocate needed 
-pages.
-
-For ext4 it's using buffer header, which is I'm not familiar at all.
-But it looks like the bh folios are from the block device mapping, which 
-may still be charged by cgroup.
-
-Thanks,
-Qu
-
-> 
->>>
->>> 4. What is stopping us to use reclaimable slab cache for this metadata?
->>
->> Josef has tried this before, the attempt failed on the shrinker part, and
->> partly due to the size.
->>
->> Btrfs has very large metadata compared to all other fses, not only due to
->> the COW nature and a larger tree block size (16K by default), but also the
->> extra data checksum (4 bytes per 4K by default, 32 bytes per 4K maximum).
->>
->> On a real world system, the metadata itself can easily go hundreds of GiBs,
->> thus a shrinker is definitely needed.
-> 
-> This amount of uncharged memory is concerning which becomes part of
-> system overhead and may impact the schedulable memory for the datacenter
-> environment.
-> 
-> Overall the code seems fine and no pushback from me if btrfs maintainers
-> are ok with this. I think btrfs should move to slab+shrinker based
-> solution for this metadata unless there is deep technical reason not to.
-> 
-> thanks,
-> Shakeel
+diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+index 87617f2968bc..3cfc440c636c 100644
+--- a/fs/btrfs/Makefile
++++ b/fs/btrfs/Makefile
+@@ -43,4 +43,5 @@ btrfs-$(CONFIG_FS_VERITY) += verity.o
+ btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
+ 	tests/extent-buffer-tests.o tests/btrfs-tests.o \
+ 	tests/extent-io-tests.o tests/inode-tests.o tests/qgroup-tests.o \
+-	tests/free-space-tree-tests.o tests/extent-map-tests.o
++	tests/free-space-tree-tests.o tests/extent-map-tests.o \
++	tests/raid-stripe-tree-tests.o
+diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+index 4c859b550f6c..b7787a8e4af2 100644
+--- a/fs/btrfs/raid-stripe-tree.c
++++ b/fs/btrfs/raid-stripe-tree.c
+@@ -108,8 +108,9 @@ static int update_raid_extent_item(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
+ 
+-static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
+-					struct btrfs_io_context *bioc)
++EXPORT_FOR_TESTS
++int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
++				 struct btrfs_io_context *bioc)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_key stripe_key;
+diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
+index 1ac1c21aac2f..541836421778 100644
+--- a/fs/btrfs/raid-stripe-tree.h
++++ b/fs/btrfs/raid-stripe-tree.h
+@@ -28,6 +28,11 @@ int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
+ int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_ordered_extent *ordered_extent);
+ 
++#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
++int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
++				 struct btrfs_io_context *bioc);
++#endif
++
+ static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *fs_info,
+ 						 u64 map_type)
+ {
+diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
+index ce50847e1e01..18e1ab4a0914 100644
+--- a/fs/btrfs/tests/btrfs-tests.c
++++ b/fs/btrfs/tests/btrfs-tests.c
+@@ -291,6 +291,9 @@ int btrfs_run_sanity_tests(void)
+ 			ret = btrfs_test_free_space_tree(sectorsize, nodesize);
+ 			if (ret)
+ 				goto out;
++			ret = btrfs_test_raid_stripe_tree(sectorsize, nodesize);
++			if (ret)
++				goto out;
+ 		}
+ 	}
+ 	ret = btrfs_test_extent_map();
+diff --git a/fs/btrfs/tests/btrfs-tests.h b/fs/btrfs/tests/btrfs-tests.h
+index dc2f2ab15fa5..61bcadaf2036 100644
+--- a/fs/btrfs/tests/btrfs-tests.h
++++ b/fs/btrfs/tests/btrfs-tests.h
+@@ -37,6 +37,7 @@ int btrfs_test_extent_io(u32 sectorsize, u32 nodesize);
+ int btrfs_test_inodes(u32 sectorsize, u32 nodesize);
+ int btrfs_test_qgroups(u32 sectorsize, u32 nodesize);
+ int btrfs_test_free_space_tree(u32 sectorsize, u32 nodesize);
++int btrfs_test_raid_stripe_tree(u32 sectorsize, u32 nodesize);
+ int btrfs_test_extent_map(void);
+ struct inode *btrfs_new_test_inode(void);
+ struct btrfs_fs_info *btrfs_alloc_dummy_fs_info(u32 nodesize, u32 sectorsize);
+diff --git a/fs/btrfs/tests/raid-stripe-tree-tests.c b/fs/btrfs/tests/raid-stripe-tree-tests.c
+new file mode 100644
+index 000000000000..7b6380d3a44c
+--- /dev/null
++++ b/fs/btrfs/tests/raid-stripe-tree-tests.c
+@@ -0,0 +1,285 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2024 Western Digital Corporation or its affiliates.
++ */
++
++#include <linux/sizes.h>
++#include "../fs.h"
++#include "../disk-io.h"
++#include "../transaction.h"
++#include "../volumes.h"
++#include "../raid-stripe-tree.h"
++#include "btrfs-tests.h"
++
++#define RST_TEST_NUM_DEVICES	2
++#define RST_TEST_RAID1_TYPE	(BTRFS_BLOCK_GROUP_DATA | BTRFS_BLOCK_GROUP_RAID1)
++
++typedef int (*test_func_t)(struct btrfs_trans_handle *trans);
++
++static struct btrfs_device *btrfs_device_by_devid(struct btrfs_fs_devices *fs_devices,
++						  u64 devid)
++{
++	struct btrfs_device *dev;
++
++	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
++		if (dev->devid == devid)
++			return dev;
++	}
++
++	return NULL;
++}
++
++/*
++ * Test a 64k RST write on a 2 disk RAID1 at a logical address of 1M and then
++ * overwrite the whole range giving it new physical address at an offset of 1G.
++ * The intent of this test is to exercise the 'update_raid_extent_item()'
++ * function called be btrfs_insert_one_raid_extent().
++ */
++static int test_create_update_delete(struct btrfs_trans_handle *trans)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_io_context *bioc;
++	struct btrfs_io_stripe io_stripe = { };
++	u64 map_type = RST_TEST_RAID1_TYPE;
++	u64 logical = SZ_1M;
++	u64 len = SZ_64K;
++	int ret;
++
++	bioc = alloc_btrfs_io_context(fs_info, logical, RST_TEST_NUM_DEVICES);
++	if (!bioc) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
++
++	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
++		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
++		struct btrfs_device *dev;
++
++		dev = btrfs_device_by_devid(fs_info->fs_devices, i);
++		if (!dev) {
++			ret = -EINVAL;
++			goto out;
++		}
++
++		stripe->dev = dev;
++		stripe->physical = logical + i * SZ_1G;
++	}
++
++	ret = btrfs_insert_one_raid_extent(trans, bioc);
++	if (ret)
++		goto out;
++
++	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
++	if (!io_stripe.dev) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
++					   &io_stripe);
++	if (ret)
++		goto out;
++
++	if (io_stripe.physical != logical) {
++		test_err("invalid physical address, expected %llu, got %llu",
++			 logical, io_stripe.physical);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (len != SZ_64K) {
++		test_err("invalid stripe length, expected %llu, got %llu",
++			 (u64)SZ_64K, len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
++		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
++		struct btrfs_device *dev;
++
++		dev = btrfs_device_by_devid(fs_info->fs_devices, i);
++		if (!dev) {
++			ret = -EINVAL;
++			goto out;
++		}
++
++		stripe->dev = dev;
++		stripe->physical = SZ_1G + logical + i * SZ_1G;
++	}
++
++	ret = btrfs_insert_one_raid_extent(trans, bioc);
++	if (ret)
++		goto out;
++	if (io_stripe.physical != logical + SZ_1G) {
++		test_err("invalid physical address, expected %llu, got %llu",
++			 logical + SZ_1G, io_stripe.physical);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (len != SZ_64K) {
++		test_err("invalid stripe length, expected %llu, got %llu",
++			 (u64)SZ_64K, len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_delete_raid_extent(trans, logical, len);
++
++out:
++	btrfs_put_bioc(bioc);
++	return ret;
++}
++
++/*
++ * Test a simple 64k RST write on a 2 disk RAID1 at a logical address of 1M.
++ * The "physical" copy on device 0 is at 1M, on device 1 it is at 1G+1M.
++ */
++static int test_simple_create_delete(struct btrfs_trans_handle *trans)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_io_context *bioc;
++	struct btrfs_io_stripe io_stripe = { };
++	u64 map_type = RST_TEST_RAID1_TYPE;
++	u64 logical = SZ_1M;
++	u64 len = SZ_64K;
++	int ret;
++
++	bioc = alloc_btrfs_io_context(fs_info, logical, RST_TEST_NUM_DEVICES);
++	if (!bioc) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	bioc->map_type = map_type;
++	bioc->size = SZ_64K;
++
++	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
++		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
++		struct btrfs_device *dev;
++
++		dev = btrfs_device_by_devid(fs_info->fs_devices, i);
++		if (!dev) {
++			ret = -EINVAL;
++			goto out;
++		}
++
++		stripe->dev = dev;
++		stripe->physical = logical + i * SZ_1G;
++	}
++
++	ret = btrfs_insert_one_raid_extent(trans, bioc);
++	if (ret)
++		goto out;
++
++	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
++	if (!io_stripe.dev) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
++					   &io_stripe);
++	if (ret)
++		goto out;
++
++	if (io_stripe.physical != logical) {
++		test_err("invalid physical address, expected %llu, got %llu",
++			 logical, io_stripe.physical);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (len != SZ_64K) {
++		test_err("invalid stripe length, expected %llu, got %llu",
++			 (u64)SZ_64K, len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = btrfs_delete_raid_extent(trans, logical, len);
++
++out:
++	btrfs_put_bioc(bioc);
++	return ret;
++}
++
++test_func_t tests[] = {
++	test_simple_create_delete,
++	test_create_update_delete,
++};
++
++static int run_test(test_func_t test, u32 sectorsize, u32 nodesize)
++{
++	struct btrfs_trans_handle trans;
++	struct btrfs_fs_info *fs_info;
++	struct btrfs_root *root = NULL;
++	int ret;
++
++	fs_info = btrfs_alloc_dummy_fs_info(sectorsize, nodesize);
++	if (!fs_info) {
++		test_std_err(TEST_ALLOC_FS_INFO);
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	root = btrfs_alloc_dummy_root(fs_info);
++	if (IS_ERR(root)) {
++		test_std_err(TEST_ALLOC_ROOT);
++		ret = PTR_ERR(root);
++		goto out;
++	}
++	btrfs_set_super_compat_ro_flags(root->fs_info->super_copy,
++		BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE);
++	root->root_key.objectid = BTRFS_RAID_STRIPE_TREE_OBJECTID;
++	root->root_key.type = BTRFS_ROOT_ITEM_KEY;
++	root->root_key.offset = 0;
++	fs_info->stripe_root = root;
++	root->fs_info->tree_root = root;
++
++	root->node = alloc_test_extent_buffer(root->fs_info, nodesize);
++	if (IS_ERR(root->node)) {
++		test_std_err(TEST_ALLOC_EXTENT_BUFFER);
++		ret = PTR_ERR(root->node);
++		goto out;
++	}
++	btrfs_set_header_level(root->node, 0);
++	btrfs_set_header_nritems(root->node, 0);
++	root->alloc_bytenr += 2 * nodesize;
++
++	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
++		struct btrfs_device *dev;
++
++		dev = btrfs_alloc_dummy_device(fs_info);
++		dev->devid = i;
++	}
++
++	btrfs_init_dummy_trans(&trans, root->fs_info);
++	ret = test(&trans);
++	if (ret)
++		goto out;
++
++out:
++	btrfs_free_dummy_root(root);
++	btrfs_free_dummy_fs_info(fs_info);
++
++	return ret;
++}
++
++int btrfs_test_raid_stripe_tree(u32 sectorsize, u32 nodesize)
++{
++	int ret = 0;
++
++	test_msg("running RAID stripe-tree tests");
++	for (int i = 0; i < ARRAY_SIZE(tests); i++) {
++		ret = run_test(tests[i], sectorsize, nodesize);
++		if (ret)
++			goto out;
++	}
++
++out:
++	return ret;
++}
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 668138451f7c..6ff64a30349f 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6022,9 +6022,9 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+ 	return preferred_mirror;
+ }
+ 
+-static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
+-						       u64 logical,
+-						       u16 total_stripes)
++EXPORT_FOR_TESTS
++struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
++						u64 logical, u16 total_stripes)
+ {
+ 	struct btrfs_io_context *bioc;
+ 
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 26e35fc1c8fd..3ebb3c2732b0 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -840,4 +840,9 @@ bool btrfs_repair_one_zone(struct btrfs_fs_info *fs_info, u64 logical);
+ bool btrfs_pinned_by_swapfile(struct btrfs_fs_info *fs_info, void *ptr);
+ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_super_block *sb);
+ 
++#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
++struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
++						u64 logical, u16 total_stripes);
++#endif
++
+ #endif
+-- 
+2.43.0
 
 
