@@ -1,208 +1,166 @@
-Return-Path: <linux-btrfs+bounces-8381-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8382-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ECBA98BAFE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 13:27:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 303FF98BB04
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 13:28:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 021A6B20C55
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 11:27:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD94E1F228F5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 11:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047441BF805;
-	Tue,  1 Oct 2024 11:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3141BFDE2;
+	Tue,  1 Oct 2024 11:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="FuNHKDXX";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="df7wI5dY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NwXKMEU9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C091BF81D
-	for <linux-btrfs@vger.kernel.org>; Tue,  1 Oct 2024 11:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727782027; cv=fail; b=PHWZrUnIcKaUTBptcbnTfdFkdcUo0Eee0SGs6OwvhZ14ofVsz3LQggBiRC0T9ybds3xUYsqZL5OikihNwuVUHxHG6kEKUYOXwwpsvqB2hTZ2n6kD4qjbuhx+kPu/Mf1Du1CobuPX8q8QJZVu+yj5TaPjf9RDXxPCfTjoTgrnwWc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727782027; c=relaxed/simple;
-	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=sex7J6Lbzt3c/Z9LRG4d977M2fPRvEnibLKm1LRVhWvLXWEglto/4f0hUx7zBSN1uGkHqTLyhpn3zWnwZoMj9ckwmrO78aumOGaFDAX0F3Fo3Q6vfUAjFQ3EZ+1vmx1Qv9Kp//r28lH4228nnFJxcBzh6dYI/Q4dkqJX2Pq6QAA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=FuNHKDXX; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=df7wI5dY; arc=fail smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1727782025; x=1759318025;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=FuNHKDXX4JuV6id+olOMwFV1NTNxc88lT6i6sb3kbL34VcRf7AuN9Ko/
-   fbLC7RcG1dLggEsIcO5I2gyor9lHbZrXDdl3lLyuzbHszOlIqn0QI/ZZ9
-   mPd2LlnExApS3aSXZEk4RRg6ZiJpIEfBQLakua7B+ti1GI5rCdoF8LLjm
-   rz701wRVjAqACeKTOYDcYO6QRa75TN/PYEFgtxQuKG98a6wLMcFtSJqvp
-   /agkvgsNUSk6NrdbbcTyiO3vsjEb9T3NVCWWiNzcsF0AXumtee8Oa0M2+
-   LR+lA8xeKMrOwP+JO8rOdWf3YPGKbmFyNr/24tmVpYOQLOLjt3AW9xD/5
-   g==;
-X-CSE-ConnectionGUID: 3AaRgIw8RfCTNoeWjEsmCA==
-X-CSE-MsgGUID: Z9sHW0ooRrSBhxfzvLCqXg==
-X-IronPort-AV: E=Sophos;i="6.11,167,1725292800"; 
-   d="scan'208";a="28057498"
-Received: from mail-northcentralusazlp17010000.outbound.protection.outlook.com (HELO CH1PR05CU001.outbound.protection.outlook.com) ([40.93.20.0])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Oct 2024 19:27:04 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GVbR91vv8llzY+1tIyNrS8U7iWUKTsDBFw7NxI+Wh1WFB2+S1On6xI5ZqhjTZ+IyDXHfIBGPPESczcqKkgB4X7b9stF2T8+SvKP4vK1cdRuMI0X9c0D6k4MDivl+WgoKe2jYB4LHSgPvNwEGCeviVJxZx6uu8Q7os3CDta4Iz+GpoWsK+WedBg1cAagUVGTIYSfgwNDKtSeBbdAYGiGGL2ZXDam77Zsi9nglz8OX1hHvFkSeeypHkbJZSoHntGP41Qse7QK2ONy9fyoJ0jygvwUhlg1NVks5R+bP4QaoCapZCdhyGC67T5a1eBX08qE3JbA4PkRC3Q+83vLpsoOaIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=MhFXsycULSV56EmxuR04fnsKnLk/I8YL5fjNTyk45nfPUGuE7tKhZEUfo/ZNo3lEWlQoErcVKQhg2T1SSIhUo7cjlPl1+HJd6S/jDHwyJjAq4dpRH8uuwEVcCK3KvqeLoGE/Xb4oy5XYj4jk1K9lgZxy9CoGwb85wtEn1pby/DyU3rNE2v9oFro6DqUc7YYcQ41mwqR1WxnCNqM4J4ikiRGNULA8B+oGPtup0UwhFRM7xeA0oyXor890GooidJcGHP2MJf12KBRKNpR1mwPIHni0KfpfeZayNgVWDSyeQ1zXdh+6Lh8YU1EdwdQTiqDY/I9T00PRzHHCDjEm2xdtcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=df7wI5dYVLjyTXsDLyyxE5yNiSH3WPrupxIGcCLMAlo0Js/eK1Mum+ES5W1dk4C1HMsRnva8VeZMZM32Lmw+PiCscq1ByVbixeQPx+jb3N9gs7cHTxPEXkI64dxK4nk4Tf0VQxAyOwj00s4GB7OS0GXkNBKdmp85KCwx9K+wEPQ=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7788.namprd04.prod.outlook.com (2603:10b6:510:e4::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8005.26; Tue, 1 Oct
- 2024 11:27:01 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8005.028; Tue, 1 Oct 2024
- 11:27:01 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: wait for fixup workers before stopping cleaner
- kthread during umount
-Thread-Topic: [PATCH] btrfs: wait for fixup workers before stopping cleaner
- kthread during umount
-Thread-Index: AQHbE+vK+IIw7bC5J0OtlpxNgrpkprJxwdOA
-Date: Tue, 1 Oct 2024 11:27:01 +0000
-Message-ID: <1528c4a5-948f-4514-a8a7-52eab378801a@wdc.com>
-References:
- <91b0cff4e87fbc01a7a6fd7d068c6e54ea7296ea.1727777967.git.fdmanana@suse.com>
-In-Reply-To:
- <91b0cff4e87fbc01a7a6fd7d068c6e54ea7296ea.1727777967.git.fdmanana@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH0PR04MB7788:EE_
-x-ms-office365-filtering-correlation-id: b119e024-77ab-45bd-0de9-08dce20bf832
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|10070799003|376014|1800799024|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?NTlqUEdobnpCQnRoMmx0cjhUYlJvcVB3eVJaUVMzQU9ra0JmWldUYStqclAw?=
- =?utf-8?B?dVN0UmFUQnR2QTRmcmZnN1QrVlRET2paSUkrN1ZzOVZ3N29VUUJzMjhuaHZ3?=
- =?utf-8?B?UjNtNm8zZFIxU2V5WXNZUnBETGVFOEp6ZW5vUUIxclFNUnlwaUN5SnNhTzBQ?=
- =?utf-8?B?U1d2Y3dHNEZTZXJBdWpVUXFFRWV3Y0NJc0FXWVBtK0dmMXdoV3lhdS84NkxO?=
- =?utf-8?B?Z0ZVcFYxZ1VOM1RnTlJYajJLcklESWtqV0o1MmJHTTFJYWwvWVR3LzdBbzYz?=
- =?utf-8?B?bEtaODVxZk80Q25EWmFzSVdHU1krTmRSRTNEVWNvTEE5UHFwY0tscE10ZHV4?=
- =?utf-8?B?RXkycVQyYXdsT2h5Mlc5RUd2dU15T3cvK1duQWltaElFQmlKZGtGekoyZzJN?=
- =?utf-8?B?Nmc3L0tHRnFVYUNiUlZPRlFGVEFyKzVBYUZPOVZhb0hyOHJBb0lJYnRkTDNw?=
- =?utf-8?B?ZkFNVWpvTitzakJGeWhQU3YrZ3YyWE4zbVZaU1VlUURmRzRDemNTd25SaFZI?=
- =?utf-8?B?RmY5aTdTZWR5RU4vUXN3MVl2YUEwaTZ3MXJQbEpwUDhYK1J6OTJ1YVNFL1Zh?=
- =?utf-8?B?djVsOXFZU0tYSktuYTlQc1NtYXFJZnd3RW8vUkRaYzZFamNjMXU3a01OczhH?=
- =?utf-8?B?SjFYUCs1NHM3S1NPWXh0TDFaMXVyc3FXcVVWL1ZJdHM4U05XNytVNVRDM0dl?=
- =?utf-8?B?ZVMwbVlnb0pHTmU4Tmw4MExsSXc5R1habHJGVElGRC9XTzU4Q1h1QzhJRXB2?=
- =?utf-8?B?YzlmbURSazZIS0MwL3ZGUGlzR0xHYUJyWXMxK1V1Rm83UG5wc095TFdtUE9L?=
- =?utf-8?B?RVBVUUdNQ0Z1amNVRTRlRURCUmNKaWRzaHE4VlhoTG5yQXNXNHlxaUcxN2w1?=
- =?utf-8?B?YXNBOG9RRjNudHkzK0pDTVFGOWhsbWRGUFZucW5HNStRWDFLeDNNbUZVQXBV?=
- =?utf-8?B?Y2lybi9vaFBtZ0NSR2VrWHVZMzRJWEY0eUswc2dKMzRoVkdpMUxEbjI1VmtY?=
- =?utf-8?B?RjRuWFY1STlGMHlJSlI5Q2xkTElnYVB4V2tqN0lBellPQ1BHd3RtQTRDaE16?=
- =?utf-8?B?WXpLOUhOOE5USlhWcGxJdFQyWnVOOVBUTkNSckpibjRzZFhJd0IrdU9UdjFi?=
- =?utf-8?B?ZkVWVFhVQ3p5VDZyT3pxZ3FvRFB1Rks4S1d2UkJQTkVHSFg2TEIranE0OHlu?=
- =?utf-8?B?WGFmVXlNMjZxZnlkaHpnZWlMZnQvMDBISnJmTHRTTW5HWVdPcW9wWkZHb0pv?=
- =?utf-8?B?OWdyVkNUdHI3dmlLQm1mRFdEanRtOGptOHhleXB5aUdhQWU5Qis4STRpUnZs?=
- =?utf-8?B?VlIrdlhGL1hTTC95dEpxUWpxV3AvK1ZoWTJjQmZsQkN6WUZSVVRqeDk2bnl0?=
- =?utf-8?B?bjZ6M0ozbVo5SzNXWEpWVDU2ZExTK0QvMlpkUXM1bmJIUVl5emJjcjRySnFM?=
- =?utf-8?B?NU9qVU52M011bHQweFJTaFRzWlNaOE4rUXdWZzlFWEJ3QlFPUURlTGdhbnJr?=
- =?utf-8?B?am9zc2NpTm5SWlRkWk9HN1RNV2l6OFFuQzFLUHFBb1dUdDdsL2s3WTcrR25J?=
- =?utf-8?B?dFl5VWlCeTlGcndTUDd4TFcrNmVRYlpsQlBqWjRwSjFoTmRUd2pMM2VMSHVL?=
- =?utf-8?B?QlBWWmNwbEdkYXBrNXFmUDJDWUY0Sk5yY3FycXV6amg2MmlJbmdDSVkzQzVF?=
- =?utf-8?B?dmM1eHV5ckMwKzhWU3NMcVN4V3ZTeWJFdThtYnVKOEFKV2ljQmRKaDBkTllW?=
- =?utf-8?B?UTFWZTR1aUVBZkdDYUtNM1JhSWxZVFEvSXRLbWNRcGs0clZFWDMxL0JLUWkz?=
- =?utf-8?B?QzVvcG5XeUFyRS84eVVOSjBSNlRTYWpYT2tpRUUzVURGTkR2ZERYb3dJV3lY?=
- =?utf-8?B?NFBENEwrZ2FOcHU5QjExTktKWXV6NXV2QUw4NnNnUSsxZFE9PQ==?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(10070799003)(376014)(1800799024)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?VVlraXRiblZjeXFZZ25VcmV2b25nc2w5TVpEL1h2T0RuNVBzTHk2amNJaGE0?=
- =?utf-8?B?RHp0dXBFakp0a09PV2FSSXhtTlZhVDZlMnV0MTlCYjJFS05tQzI1SGlSc1RT?=
- =?utf-8?B?SDFsOStVRUhWR0IrVTJwbU9nVlhlOTcvenpyVWtiQ25QUGtjM1A0VGtoM3ZZ?=
- =?utf-8?B?WENkcFd3OE9ucVVRNVZKNkNjd2FBUW05V3pqaFZIZ0swUSsxVFFRYk5HQnZm?=
- =?utf-8?B?cnorRWpMUEg5VHZDalF1YzBTandrRW1Jay8vYU9EY3BnMUdDLzlJV2ZTRVJu?=
- =?utf-8?B?TjRpeUgzRlhUR0ZCY21LZEFmcVp2ZWN6UUxqUGc2dzVMd1RBZWFITWZnOURX?=
- =?utf-8?B?Q2ZzcUFTYS9MYXJUL3JXQkIxWTc2T2N5Ui84STZyTzZpdk9GSysrbSs3c28y?=
- =?utf-8?B?ZUxhWFgrTG9RZDZTREI4czZFYlo3ZDhzbFhvMW5JU29POTczeW5XTmdWMElN?=
- =?utf-8?B?OEhuVmI2ZGo2ekZjckNEMkt3dDFxdk1FVi8zR0Q0OTlmSTc0VmtDcHhwZ0hM?=
- =?utf-8?B?WFlicVBEYXZrVTNwd2owRVg0bk9RQ1ZBaW9Ecit0UFhuVEU4cXMxWjZKa3ho?=
- =?utf-8?B?WHVWSU5KejY5RzhuekRPMUxZN08zRTdiRGl1amZKbnJ6L1B1SXFZK0dzUXda?=
- =?utf-8?B?bmVDRXZtUWwrd2N5bEpEdDUyRzdXN2ZhbDJURk5nSSs1bzRUNEl2bUFwOUcz?=
- =?utf-8?B?MnpLR2dBOEFPc3F2Y1VKZ3B1SkUvZ3Jadi9QRkl0cG9LNEdkUDBLa1prbzBB?=
- =?utf-8?B?dHNkSTA2dDJUY2JRbXZYTjVydUJzVTk5RDd2VHY5czBUeGwwMjBwU0pQVHBq?=
- =?utf-8?B?aXFmWWQzODZIOWNhdnNKdHdLZHFVM1lVQkQxM1JuMlFYOEpmcjR4bURnTmZq?=
- =?utf-8?B?Sm5HM1IvbVJQQktZV0dFVFNWSVFTZGdtaTRRRmtPMjgraHVSQXh1cThYYThV?=
- =?utf-8?B?ZFltQ3Jsb1hCdkpzSUlIRVpUL2hvbXEzOTgyVStraC9wTkdicWdWTXVocmx1?=
- =?utf-8?B?T3B6dExVcE0yWTRYRUt1TnpweXBDSm43S1lVb2Yra3M5NTk3MGRxUllSVHZ5?=
- =?utf-8?B?R3RyUEkzSTdnaVNyVW5PUVZ3V1FRTFRKRmxHclcrdndCa3huTnNaZUVORlRG?=
- =?utf-8?B?bngrVVpqZEYyK2kvaGpoSGhYamQvQ0JwUFBNMTlpb0tCc1d3dkxTR0I3L3Aw?=
- =?utf-8?B?WTNrZXJzT3dZRlQxQnJoRnhoa0RqeVV0QnRwU0E3anR6R2pkdW54QUwzaDcz?=
- =?utf-8?B?R2VSSXltRDBZVDRrWEtzeldKUVp3M3BKTUhEWElwOUZtSWo1Uys0UTJoblZV?=
- =?utf-8?B?UGN1NzI4UnR6bU1mVGFsUitFQml3VlNTUjhvd2lKczhQby9EbjVpTkxnc1RT?=
- =?utf-8?B?TWFPbHRWVmJ5VVRCMTV0YzhLUitCVFc0WGYzbjl4VzhXSml2OFA5RE5zUHBt?=
- =?utf-8?B?VVZ6ZXB5Ui9YdzhmRE1aZS93SURCTC9kT09yZW5FSGlySGllWFZSeVAxeUpP?=
- =?utf-8?B?K1pWY3hpUVR2K0lReEs2L0kwVnRZSWFRcXRaVG01cDR0aUxTL0EvQ25jUFlS?=
- =?utf-8?B?dXYwU0hQeWRxQU93S253Q29PZ0hYa0lWVlg4cXlLZXdxbUZxRHZzOVhsNzdB?=
- =?utf-8?B?aWtvSnRjSDdqVzltV2xid1ZrcWZFaXk3QTVoTnNoV1FWWWtDdnpQb2xyS05N?=
- =?utf-8?B?S0Q4TExNUCtkWGRvZGZjVlBwcnB1TTBERm1jVXJPb2FiM3hGdEthSlR1a1R6?=
- =?utf-8?B?NjZrS011U05xTWJNWnp1ajZIckdtZGJlMnRCdHprTWFzQm5hZHZRU1o3UjlN?=
- =?utf-8?B?RTRnb1NjTVAxcFNjaFUzOHh3dXNnVDlmQUF0a25vUUUyV1R3M045akY0UDB2?=
- =?utf-8?B?RDZnNTJXeXNPbUgyUjNZMXNGVmNhTHNnaVdJUSsyYngrV2pZY3lCUzJQT29Q?=
- =?utf-8?B?TVBJU0hKZFdpRGRnSkRRTHNNZmdlNkNXMERtK244NEFJcE5ocTF2eUQvSDJr?=
- =?utf-8?B?Q1h0NFFHejNvbHJqM0VLMGcrVkY4MkpKU1N2bStDV1pUbkJRZUZKemFhRCtx?=
- =?utf-8?B?WE9Pai9DcHRWZkZNcksrdTVNSGdDVm5yMk1rbzFkTXdEa3ozUmJvOTludXhQ?=
- =?utf-8?B?aXN6bGFHTHBMZ1BtS29EMnpnak9aRHhqYlJmOGdLRk1lWWtCNktDYm85L1ZC?=
- =?utf-8?B?VFNwRWJRQWVZMHFrTEd2RE16QkNZditHOHNveEZ2eEVWczl0dWt2RlRGMVgz?=
- =?utf-8?B?bXJDSWkrc21VbmxJTEtBbDl4cGpRPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <24F3B51AD3C3EC43B28F2CC572949BA5@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262031BF802
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Oct 2024 11:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727782080; cv=none; b=LE+JzZsiLs/52kcSd+zdX4EHpGSyEMBEz9pY5Ui66IpzbYlvoiop9woQtaFHLR6RGmNQogyapq67QeccmI1OphvXP6Ify/hUawQIRrU5lB47A7AtAA9iBcvJ+U4nf7c2QpCDqQf8ED26pl7fLpSSkGDhHJpEEGpphBfdpRQvQOM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727782080; c=relaxed/simple;
+	bh=j2YN0E4875eCkH7MYr1uX8kw4DS9u7XxWwd+gLhD69Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PIpneXB3uOvEbCCdSzkDHvnsRSL7f9bg81JdVCS8yGhdBTNiX2fQugNw4UNCaRVbFyNtGsALn3IDaRmIi10Uot6MZsotD/7dhAJms87Mqg1CjIfTH69Pw8ki5x61ME45rf+cWpLbBC35XjjDIdEqkOoyYjP7by9QOKIJlBTd/4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NwXKMEU9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3AA5C4CED1
+	for <linux-btrfs@vger.kernel.org>; Tue,  1 Oct 2024 11:27:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727782079;
+	bh=j2YN0E4875eCkH7MYr1uX8kw4DS9u7XxWwd+gLhD69Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NwXKMEU9Ny5yj646uiE3cA31Um0M7k3m77Q/+Y7Orh2KS9UEzGeX77Lp8qwdHX7u/
+	 c1sokHRyqrGflcMjvDzElp/ESBj6j+oYoRdX4Ns30D4TTa0uzlGNsJfXXnsTIwpbOX
+	 MWdYvAzh25nbdK0Cr7C9je8pCF6dFsPxGLUAulCP4S6ab35L6+AmXvCPV3UeIXeeZO
+	 WQBJAMOIwWDKPsmG/KORUAtx+/anC/ZfL1/589z1k7PVp4kocvDwyNdIyvPwWBJm0y
+	 Az03KC7BxX0j1qf+NVdu0OZsHghrjLGZjNN6gTRA8WTn80k+JUuKtHzmMKNLyS0som
+	 0hYo8iKNR/AGw==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a8d0d0aea3cso825159366b.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 01 Oct 2024 04:27:59 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyBSIyOCyYCeRjLflRAmbyv2yNJbb5HdozYaWtKso8cOqN2dkfM
+	ITGnHIBydadGsNJRhVJRzs/SJEX9aZt3sFOXFgLaWgPFbRhyuy8wDhp+uiO87urNWkSLZQKXi6R
+	Y9WnbQKdCf6bTtEyyWKN7oZJhHaY=
+X-Google-Smtp-Source: AGHT+IHKQ6wIaS3Q1t6vrBDKUu7vpz2KWddz23BbShKe+n398Gus/IOW4ig4Syqj+A1jooYAjHJJVnEfl0ehbeStTCA=
+X-Received: by 2002:a17:907:a08:b0:a8d:55ce:fb97 with SMTP id
+ a640c23a62f3a-a93c48f33c3mr1892637366b.11.1727782078494; Tue, 01 Oct 2024
+ 04:27:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	5UaZb1Y0ZON4ES9RyaaA+qU8p19GRQwMA2ZHzsIi+EsEE3NgDzBqDg7CehiEis7Svns30ehmEr6HH7385o1VGz5DTJRz776NUmsuVPPPAVzG7MOp32xDL3zZzA7wrNsiw3s6gucf+VKzb7+uijhcFcTpQ0VmWO7fBpEuMNAIPfn7v5V9uGEsezcBJho+CVXzCO/eXXD2509pWhfexZo40v7pcELr7MkBtMpGz3UKpExJTdkxDjRQpMgu1DqS7jeT8uDchssHRjQjnKXSiQtbvzRaD/GaOTF8reZMfvpkCDkgbkwAb1Aq/RGGdVliDsPNjRfEZsjZUk8sSdxaltCSDBeGkmKbkdNVCOpq4W4z0FjvSosBj0XeI02VKsEqKAK61DWiyU1nrq22vLrCWDYBn0Yr7XqbxZjk88BxDib22PuMaGGbEZReJWr05Ir2D7WdPzb97/gdvf+KeI0nmVHhm24yDspcw5kPXMXL3YRYFKMzAP4srjTPTCTJ2gtpAbVD4C4lv7ljZYLnn805tYKkF4X1i1rscfLW+omXUQyxzw7IPSyrDOTVDKXedzk+AbhKz7GlG0dNhhElBGx+wT7CqWEhVDReGooCWGttH8MJ2hHVdMD+s/UIc75IAHbEu73S
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b119e024-77ab-45bd-0de9-08dce20bf832
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2024 11:27:01.5960
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nG5MV8f16/Q1eWLjuWgASVUWRGqAlOK2WL7jyhYIsMFHh+ZJnhwrBgqV5aVrjk/loHDbAfx4hXnqQlivvMRD7Xcl+Rd2DlBYcjpvZpNevLw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7788
+References: <CAOcd+r1Cwaa9SG=ND4RtuT0CBP4gmCE1tvj0uW-VybD2hry_uQ@mail.gmail.com>
+In-Reply-To: <CAOcd+r1Cwaa9SG=ND4RtuT0CBP4gmCE1tvj0uW-VybD2hry_uQ@mail.gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 1 Oct 2024 12:27:21 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6xcBs20+O5T5yOkJ4KYnPjZjgzU2JsFpo29MDvb6_yEw@mail.gmail.com>
+Message-ID: <CAL3q7H6xcBs20+O5T5yOkJ4KYnPjZjgzU2JsFpo29MDvb6_yEw@mail.gmail.com>
+Subject: Re: assertion failed: ctl->total_bitmaps <= max_bitmaps
+To: Alex Lyakas <alex.lyakas@zadara.com>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>, Qu Wenruo <quwenruo@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Tue, Oct 1, 2024 at 12:09=E2=80=AFPM Alex Lyakas <alex.lyakas@zadara.com=
+> wrote:
+>
+> Greetings,
+>
+> We have hit the above assert a few times in kernel 4.14 LTS with
+> stacks [1] [2] [3]. In all times it happens on a METADATA block group.
+> We are not using free space caching - not v1 and not v2 (free space
+> tree).
+>
+> I looked over the free space cache code in kernel 6.6 which is the
+> latest LTS kernel. However, I did not see a fix related to this issue.
+>
+> I did see a patch that prints some information about the block group
+> in case the above assert is fired
+> (https://www.spinics.net/lists/linux-btrfs/msg127072.html). We will
+> apply that patch.
+>
+> Is there any other way to move forward with this issue?
+
+With a 4.4 kernel, which is no longer supported, and supposing it's a
+zadara storage fork, you are on your own.
+
+We had a fix for a bug that matches what you are experiencing, but it
+didn't end up merged to 4.4 stable:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3D3c17916510428dbccdf657de050c34e208347089
+
+
+
+>
+> Thanks,
+> Alex.
+>
+> [1]
+> Call Trace:
+>  dump_stack+0x5c/0x85
+>  panic+0xe4/0x252
+>  assfail.constprop.18+0x50/0x50 [btrfs]
+>  recalculate_thresholds+0xa5/0xb0 [btrfs]
+>  __btrfs_add_free_space+0x2d2/0x430 [btrfs]
+>  ? _raw_spin_unlock+0xa/0x20
+>  btrfs_free_tree_block+0x19a/0x2e0 [btrfs]
+>  btrfs_del_leaf+0xa5/0xd0 [btrfs]
+>  btrfs_del_items+0x3f9/0x470 [btrfs]
+>  ? btrfs_get_token_64+0x103/0x120 [btrfs]
+>  __btrfs_free_extent.isra.63+0x626/0xf60 [btrfs]
+>  __btrfs_run_delayed_refs+0x74d/0x1cf0 [btrfs]
+>  ? walk_up_proc+0xa2/0x600 [btrfs]
+>  btrfs_run_delayed_refs+0x62/0x270 [btrfs]
+>  btrfs_should_end_transaction+0x3e/0x60 [btrfs]
+>  btrfs_drop_snapshot+0x3db/0xf70 [btrfs]
+>  ? __schedule+0x298/0x8a0
+>  ? __btree_submit_bio_start+0x10/0x10 [btrfs]
+>  btrfs_clean_one_deleted_snapshot+0xb6/0xf0 [btrfs]
+>  cleaner_kthread+0x330/0x3b0 [btrfs]
+>  kthread+0x11a/0x130
+>  ? kthread_create_on_node+0x70/0x70
+>  ret_from_fork+0x1f/0x40
+>
+> [2]
+> [2512545.669387]  dump_stack+0x5c/0x85
+> [2512545.670047]  panic+0xe4/0x252
+> [2512545.670660]  assfail.constprop.18+0x50/0x50 [btrfs]
+> [2512545.671612]  recalculate_thresholds+0xa5/0xb0 [btrfs]
+> [2512545.672622]  __btrfs_add_free_space+0x2d2/0x430 [btrfs]
+> [2512545.673629]  ? _raw_spin_unlock+0xa/0x20
+> [2512545.674405]  btrfs_free_tree_block+0x19a/0x2e0 [btrfs]
+> [2512545.675401]  btrfs_del_leaf+0xa5/0xd0 [btrfs]
+> [2512545.676259]  btrfs_del_items+0x3f9/0x470 [btrfs]
+> [2512545.677165]  ? btrfs_get_token_64+0x103/0x120 [btrfs]
+> [2512545.678156]  __btrfs_free_extent.isra.63+0x626/0xfa0 [btrfs]
+> [2512545.679245]  __btrfs_run_delayed_refs+0x74d/0x1cf0 [btrfs]
+> [2512545.680285]  ? finish_task_switch+0x74/0x210
+> [2512545.681112]  btrfs_run_delayed_refs+0x62/0x270 [btrfs]
+>
+> [3]
+> [1272566.513241] Call Trace:
+> [1272566.513764]  dump_stack+0x5c/0x85
+> [1272566.514442]  panic+0xe4/0x252
+> [1272566.515080]  assfail.constprop.18+0x50/0x50 [btrfs]
+> [1272566.516071]  recalculate_thresholds+0xa5/0xb0 [btrfs]
+> [1272566.517119]  __btrfs_add_free_space+0x2d2/0x430 [btrfs]
+> [1272566.518155]  ? _raw_spin_unlock+0xa/0x20
+> [1272566.518963]  btrfs_free_tree_block+0x19a/0x2e0 [btrfs]
+> [1272566.519993]  btrfs_del_leaf+0xa5/0xd0 [btrfs]
+> [1272566.520891]  btrfs_del_items+0x3f9/0x470 [btrfs]
+> [1272566.521833]  ? btrfs_get_token_64+0x103/0x120 [btrfs]
+> [1272566.522847]  __btrfs_free_extent.isra.63+0x626/0xfa0 [btrfs]
+> [1272566.523975]  __btrfs_run_delayed_refs+0x74d/0x1cf0 [btrfs]
+> [1272566.525082]  ? btrfs_add_delayed_data_ref+0x251/0x2b0 [btrfs]
+> [1272566.526235]  btrfs_run_delayed_refs+0x62/0x270 [btrfs]
+> [1272566.527283]  __btrfs_end_transaction+0x2fd/0x520 [btrfs]
+>
 
