@@ -1,102 +1,101 @@
-Return-Path: <linux-btrfs+bounces-8393-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8394-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BDFF98C1E5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 17:43:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6F998C1F5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 17:46:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA3EEB22AE4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 15:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB7F41C23E5A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2024 15:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD9B1CB30A;
-	Tue,  1 Oct 2024 15:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248701CB319;
+	Tue,  1 Oct 2024 15:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SrHYeqlg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w54RzSh4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SrHYeqlg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w54RzSh4"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IGuiYNo3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aDHlkgcI";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iFyUYLBS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vyCIefVL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3F71C9EA7;
-	Tue,  1 Oct 2024 15:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1FF1C6F7A;
+	Tue,  1 Oct 2024 15:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727797373; cv=none; b=Mb1Zt3TDhlVprNYxB4Ilu/nWTp49ypemaPLrIdTWdpxgtnbRM8L87invXgZr+ieQWXxMBMiFzxUIE2FMKCCoP3/3Q1LoF02y/Cel7vn4Et3/ts8m4asxIdSwQIVGHND2WwvZphgThGuta/R0Y6xg3XjmdPrKIv6GsoqGzu3zIhA=
+	t=1727797594; cv=none; b=RTdqavNjp10aKFxLuxfMuMH3yTJB20w9RwoMygbkx68Yrf0CMaaXzbbM6HhLLunn0wiNdXxJdCAJ2gNXS1jtbJUoQwgorbUmGMJkzvqOUlUz4E22PQ0fvjQyhPAgSVrPehdp2M9PoKCRwJgADwz1z3/6RS2Hn3Mr7QZnEy5ylRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727797373; c=relaxed/simple;
-	bh=m9Z6bfOmopOQeDltEIfaT1/ui3ZQxiiLQsLJnOe6P30=;
+	s=arc-20240116; t=1727797594; c=relaxed/simple;
+	bh=3KN2AF9YfIhgOcUt3bUrdexS/PsSfycZ5mTRF5oGXPE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MCxRy4HmNTAypScAF/ItfAqDVC8ObnEN/5yhzvO0Y87mWb0mV+64HR6vtjKu2RKpVUjwD5ZLNEHlAYx7sAZMc8EENRP1hjSCB5HI+G9Vm1bNHHHLONGflIUOcNM+eXqFctWjRYcus4+wcJJObNbQdIa4MmEOAJvGWRvLbDjwIDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SrHYeqlg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w54RzSh4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SrHYeqlg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w54RzSh4; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=gCHzGiy5wtTZRCGx+q5Ea6z4P6dLUo4DvJYZ7Lx8DRGjlvJPlHgftfWADd6Lc/V+kv8bXy/jb80qDRE6o3x5NR9KMiOUWeqhWEOUApYJFrLwpjg0YRQWC9tQqLOiF+6aMh+IbVjLOOsGy2W0WuJG8AQHlwE0WVOPQST6Ge2VEH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IGuiYNo3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aDHlkgcI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iFyUYLBS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vyCIefVL; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 549FC1FCD5;
-	Tue,  1 Oct 2024 15:42:50 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E0ACB21AB8;
+	Tue,  1 Oct 2024 15:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727797370;
+	t=1727797591;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fc2bb/ki4XgIG8vXJwQ+J+JjXui1J0/arOIOLFXO5LU=;
-	b=SrHYeqlg7VNKlXyNJ5dZCPO0LvBDwB8y3/eihgHb0i5l14P6fLYPdKX1gYPBaz3gc8UQMB
-	5fekZijGX6rtommnOaWBkMqnKwRV+6ECIqw/wyvr6ujI3nV9M1Zxnrezu/ieiYC7YCj/wk
-	ol5qVLgEX6EXZj68ll0aNUXXCK8QAeY=
+	bh=V49BQuQhLTHAs4GRDZAQda3MEDdXCavqQfTvSAUNYRI=;
+	b=IGuiYNo3QqT1u85wD6rXh8lFiQN9G4f8Ger9BcV3eSTpxvt+mGrJyf97dtKvIbaTDYa8bd
+	LSLg0yt7pOXlmssnC+UnoXl9GzGMYmPc3o1FOhkYHhnCrstZXqiNcb37X8qPzDBVWXXY5W
+	EhJ4gdYjDCBKjZcDO8seEpOh8LYsFZQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727797370;
+	s=susede2_ed25519; t=1727797591;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fc2bb/ki4XgIG8vXJwQ+J+JjXui1J0/arOIOLFXO5LU=;
-	b=w54RzSh45+0g62/kIoG1XwUwQVl9Fc6M96CFkGx1G1NbZMIIsSZNoDSWGG5JJ9f67nAAvC
-	rkuwsRslLHbgOzDg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SrHYeqlg;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=w54RzSh4
+	bh=V49BQuQhLTHAs4GRDZAQda3MEDdXCavqQfTvSAUNYRI=;
+	b=aDHlkgcI3xE43spHtXV9XtsWwSeUX12073siKA3AMlNOOLnaZ7TYSj7XjJpPUn8m5Kmg1+
+	NDYzVBgOOJ9wUPCQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727797370;
+	t=1727797590;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fc2bb/ki4XgIG8vXJwQ+J+JjXui1J0/arOIOLFXO5LU=;
-	b=SrHYeqlg7VNKlXyNJ5dZCPO0LvBDwB8y3/eihgHb0i5l14P6fLYPdKX1gYPBaz3gc8UQMB
-	5fekZijGX6rtommnOaWBkMqnKwRV+6ECIqw/wyvr6ujI3nV9M1Zxnrezu/ieiYC7YCj/wk
-	ol5qVLgEX6EXZj68ll0aNUXXCK8QAeY=
+	bh=V49BQuQhLTHAs4GRDZAQda3MEDdXCavqQfTvSAUNYRI=;
+	b=iFyUYLBS/JFrSopFfM/RxmJaGKlOUFmRV+Z1ldMqxf4m+G6mBYRcsRNGIlNQNTsC1pID6J
+	53YTTqj7assrOd1yg2RWIWq01x1WU2bPgxLUVfDa9AYEW6eflRs6Mc8V0wIL+U1cjOLuoJ
+	l4s7HUJrQPyVA6BAzOkVhD7dB6KEuWE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727797370;
+	s=susede2_ed25519; t=1727797590;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fc2bb/ki4XgIG8vXJwQ+J+JjXui1J0/arOIOLFXO5LU=;
-	b=w54RzSh45+0g62/kIoG1XwUwQVl9Fc6M96CFkGx1G1NbZMIIsSZNoDSWGG5JJ9f67nAAvC
-	rkuwsRslLHbgOzDg==
+	bh=V49BQuQhLTHAs4GRDZAQda3MEDdXCavqQfTvSAUNYRI=;
+	b=vyCIefVLM5vHYnvpAobAOQU1YsdqNGwaYETU0mAM0+whZsVMTNhxO6srijx1NLbI5Aqgxm
+	jyptefH2a8e7XkAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3562413A73;
-	Tue,  1 Oct 2024 15:42:50 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C316A13A73;
+	Tue,  1 Oct 2024 15:46:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HfFHDHoY/GYjOQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 01 Oct 2024 15:42:50 +0000
-Date: Tue, 1 Oct 2024 17:42:44 +0200
+	id UtBhL1YZ/GZAOgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 01 Oct 2024 15:46:30 +0000
+Date: Tue, 1 Oct 2024 17:46:29 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Riyan Dhiman <riyandhiman14@gmail.com>
-Cc: clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove redundant stop_loop variable in
- scrub_stripe()
-Message-ID: <20241001154244.GF28777@twin.jikos.cz>
+To: Youling Tang <youling.tang@linux.dev>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH] btrfs: Remove unused page_to_{inode,fs_info} macros
+Message-ID: <20241001154629.GG28777@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20240926075034.39475-1-riyandhiman14@gmail.com>
+References: <20240924023135.3861974-1-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -105,63 +104,42 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240926075034.39475-1-riyandhiman14@gmail.com>
+In-Reply-To: <20240924023135.3861974-1-youling.tang@linux.dev>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 549FC1FCD5
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	NEURAL_HAM_SHORT(-0.20)[-0.993];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
 	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Thu, Sep 26, 2024 at 01:20:34PM +0530, Riyan Dhiman wrote:
-> The variable stop_loop was originally introduced in commit
-> 625f1c8dc66d7 (Btrfs: improve the loop of scrub_stripe). It was initialized
-> to 0 in commit 3b080b2564287 (Btrfs: scrub raid56 stripes in the right way).
-> However, in a later commit 18d30ab961497 (btrfs: scrub: use scrub_simple_mirror()
-> to handle RAID56 data stripe scrub), the code that modified stop_loop was removed,
-> making the variable redundant.
+On Tue, Sep 24, 2024 at 10:31:35AM +0800, Youling Tang wrote:
+> From: Youling Tang <tangyouling@kylinos.cn>
 > 
-> Currently, stop_loop is only initialized with 0 and is never used or modified
-> within the scrub_stripe() function. As a result, this patch removes the
-> stop_loop variable to clean up the code and eliminate unnecessary redundancy.
+> This macro is no longer used after the "btrfs: Cleaned up folio->page
+> conversion" series patch [1] was applied, so remove it.
 > 
-> This change has no impact on functionality, as stop_loop was never utilized
-> in any meaningful way in the final version of the code.
+> [1]: https://patchwork.kernel.org/project/linux-btrfs/cover/20240828182908.3735344-1-lizetao1@huawei.com/
 > 
-> Signed-off-by: Riyan Dhiman <riyandhiman14@gmail.com>
+> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
 
-Added to for-next, thanks. Adding the references when the code was added
-or last used is great, I slightly updated the references as it's common
-to use the same formatting like the Fixes: tag which puts the subject to
-("...").
+Added to for-next thanks.
 
