@@ -1,125 +1,136 @@
-Return-Path: <linux-btrfs+bounces-8476-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8477-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6829B98E545
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 23:33:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 562EB98E54F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 23:34:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A38C1C220E8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 21:33:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D9EB287962
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 21:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2A222AA82;
-	Wed,  2 Oct 2024 21:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C67A21B449;
+	Wed,  2 Oct 2024 21:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pY4qgNaa"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UQGSRPpa";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UQGSRPpa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77C52225D9;
-	Wed,  2 Oct 2024 21:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3081B21B444
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 21:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727904484; cv=none; b=l+HcEFYaQQjtnnmY4idEFq+BA2N2v64VfmPuR0bhwRoeLmSaTPcX61xw+SPsh29YXQfhFyFoIS+R6tIYMblxProIZPdVoIWzYi1WN4NyUkyYL+I/P7PgyuS3nQgmPNJtqEpyPpmKDJvz71daYNvL+5ghpHGROCrnxvIqLMC1C5A=
+	t=1727904592; cv=none; b=pyfey8BDDDbgN7N4Yv8rU8EqDagX+3rWYnIKFjukUJ8+8uu40/l4KBg4oOvahtqWjqW1Zj8/GcC5Bo1hiVLd5uoXZ4nTwnKe/LdHvIEmfCF5t1BWf8DmtKsGdUI3OGVeC2j4AMf7nSqMnWb8pqI2AM8ZJFyd5jfifB0hzrJojj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727904484; c=relaxed/simple;
-	bh=5/dsLO8cNmOaM6p0rv+Qvzx/xMvPBJnx6tvOBbPfMzs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dcUa7mhcQ8lr/TLJfNg75UgjQkB79jsi2EJOkQko4x4xekno8YFYkWMk/2/GnF0mWwndmohbkUNdaKh9iPHHg25rrgbHcfJXDr17yXTwURXhAwEUUUXFAAZKqOYfcB3Wlg6sP584izJ1fIVBH4+mwSO8TT9xxN6Okysx517og5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pY4qgNaa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF362C4CEE1;
-	Wed,  2 Oct 2024 21:28:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727904484;
-	bh=5/dsLO8cNmOaM6p0rv+Qvzx/xMvPBJnx6tvOBbPfMzs=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=pY4qgNaaCqezS32qjDZEbsRs2uGb8OTkbND/gQNC3DZDk0GQyrjGRmxHYO6BtyTWX
-	 EQfJp0qmbpEp8Y4fEBEdJjYyDC1X6D/lcrtX9zhRMFR6vrtcr9gEpaw9lqhsBV4dzt
-	 hc/hRRGOV1mrRGkkpHthnO5R0XB4+yg2XN5Y8PwXRYhYvmUUyN5X088MqLAETzHPqn
-	 O26reMyyJqwCWRtn9LB+2DwWyURABcR1Pa7VdYMKNk9ArrOhg9DFEh4PfCmVFPe9Be
-	 NqUMbmrsKxgNgWyLK1sCeoxlIVRcC4VfPN2PcY5JZrL6kxFEm9kVwZtbsg1V1uskh8
-	 uQiYUVOkUhxhA==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Wed, 02 Oct 2024 17:27:27 -0400
-Subject: [PATCH v10 12/12] tmpfs: add support for multigrain timestamps
+	s=arc-20240116; t=1727904592; c=relaxed/simple;
+	bh=r2vfjPeZKruLsC60vIGHcu1eQ5cWX0/EdZY4u9aoZhg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Xnwt827opk+dWaMylHOt6UCpM4imnyaVQN+JYa6nqkuWzdRSdEOLnN0mI5VXF9bFtKVL6+A9ZWp0TfkelZAyRZfRzgsKgBuEcZiuPJ4HyQj85DPCsP82+S/4FqtiF/9ucw78ERGYR6Os3BCwVAQQpTWb1UrzsvRrZW3xQ88vQno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UQGSRPpa; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UQGSRPpa; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2A0E821C81
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 21:29:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1727904588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=bwZ4Fo3pqtiQvovs36OodhAdBJ0ivwsY27/wLqo08CQ=;
+	b=UQGSRPpaE/ghlL+zWrWJHJqpFEBJhupXCfdSq24yuNq8U3+6uMLX19epJCUFCYXYtHqCc8
+	EcQ5HblqOydntd+JtOU15ue2X5gPxnOwQEUYDgVcpkUxPg/6onTGvth0vchF7eYZXNhmIm
+	qAt8hzwkn29Cvt3YDuC6qBlNbRus90I=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1727904588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=bwZ4Fo3pqtiQvovs36OodhAdBJ0ivwsY27/wLqo08CQ=;
+	b=UQGSRPpaE/ghlL+zWrWJHJqpFEBJhupXCfdSq24yuNq8U3+6uMLX19epJCUFCYXYtHqCc8
+	EcQ5HblqOydntd+JtOU15ue2X5gPxnOwQEUYDgVcpkUxPg/6onTGvth0vchF7eYZXNhmIm
+	qAt8hzwkn29Cvt3YDuC6qBlNbRus90I=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6608013A6E
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 21:29:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id TJIjCku7/WbAKwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2024 21:29:47 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix the wrong rcu_str_deref() usage
+Date: Thu,  3 Oct 2024 06:59:29 +0930
+Message-ID: <a4a0faeba1d195f2eb71fcaae388f5976f822dc2.1727904561.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241002-mgtime-v10-12-d1c4717f5284@kernel.org>
-References: <20241002-mgtime-v10-0-d1c4717f5284@kernel.org>
-In-Reply-To: <20241002-mgtime-v10-0-d1c4717f5284@kernel.org>
-To: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
- Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, 
- Chandan Babu R <chandan.babu@oracle.com>, 
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
- Chuck Lever <chuck.lever@oracle.com>, 
- Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org, linux-mm@kvack.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=988; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=5/dsLO8cNmOaM6p0rv+Qvzx/xMvPBJnx6tvOBbPfMzs=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBm/brALjfB22SLtWrZvbq9dOIudVwmi0I1qA+aV
- n4HN6LIytCJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZv26wAAKCRAADmhBGVaC
- FRSFEACPohqXeTh7KgceuIiMgaiZvFEfTN6SD/E380ADOa3A/9s4jdNxUzvvIUF5TGO3RjuqvXp
- vQ39lbU+sN/EReWdsZdlcuP9wIJTEDPEo0Sd1UVdKEqRfvB7MXkHnFyhigbts8E4EeZm3vtO5Um
- dEueBuYGU/uHUQ+C6uWNdEqboX38koaVM6De2O+XxmDB25xapHTAlc+OjmcQvs6DpWxF5RNdpJg
- 84pcISszclA73/fk3T5S6O5wVNqceFy6Rj/wOaY0mSjy0XDKDJKGBWz7VJtKWZKTPmcLIh46ehW
- D3rEEFjv/THx5b+VU8ecQynhSjyfgPRiRgZ/ZFcxmYMlGzxi639VSAmecRyY4j1lwNLBwcaxP3U
- qfns+SkW0ZRePXxgunj1ox6ARPkr5OFR5Pa7/h0JkK0hjguHgiSpu5K82GofgSxXHpUFOv0Dkyj
- Ee32pebJG1fZRa4wWzJRSNqUvn+2uXCZvk35HWRS2uPOeNohiJVtbaJ34ZRn78lHec+pf5Z7ZJ5
- GKT64vZ0wq2zEDEprVAk5g9Pid6BM0mn2dixzCz1QwYLKWJdWrcK7YfU6uGpmvh/UiXzYOPesTz
- zpKM7FScCuy994O5F+7EBot7sYRW87SFI2Nu0MwRE5tPQdBY/CHLfBwZP8GTD2ThHGIm8ZnGudD
- XIxJwAEylXRaCkQ==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-Enable multigrain timestamps, which should ensure that there is an
-apparent change to the timestamp whenever it has been written after
-being actively observed via getattr.
+For rcu_str_deref(), it should be called with rcu read lock hold.
+But inside the function is_same_device(), the rcu string is accessed
+without holding the rcu read lock, causing rcu warnings.
 
-tmpfs only requires the FS_MGTIME flag.
+Fix it by holding the rcu read lock during the path resolution of the
+existing device.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # documentation bits
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+This will be folded into the offending patch "btrfs: avoid unnecessary
+device path update for the same device"
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/volumes.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 5a77acf6ac6a621dc7b5e7b46402b2b714b45bea..5f17eaaa32e2902228be7b245c5b3b11c5fb6a56 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4804,7 +4804,7 @@ static struct file_system_type shmem_fs_type = {
- 	.parameters	= shmem_fs_parameters,
- #endif
- 	.kill_sb	= kill_litter_super,
--	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
- };
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 35c4d151b5b0..3867d3c18be5 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -807,8 +807,10 @@ static bool is_same_device(struct btrfs_device *device, const char *new_path)
+ 	if (!device->name)
+ 		goto out;
  
- void __init shmem_init(void)
-
++	rcu_read_lock();
+ 	old_path = rcu_str_deref(device->name);
+ 	ret = kern_path(old_path, LOOKUP_FOLLOW, &old);
++	rcu_read_unlock();
+ 	if (ret)
+ 		goto out;
+ 	ret = kern_path(new_path, LOOKUP_FOLLOW, &new);
 -- 
 2.46.2
 
