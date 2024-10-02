@@ -1,126 +1,153 @@
-Return-Path: <linux-btrfs+bounces-8457-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8458-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6356598E32F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 20:55:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16FEC98E37D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 21:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 959841C22A42
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 18:55:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84912285B46
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 19:32:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0F82216B0;
-	Wed,  2 Oct 2024 18:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0831D12F9;
+	Wed,  2 Oct 2024 19:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O6KA5467"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="SkVWPigc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="L8xbwm1r"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE8C221684;
-	Wed,  2 Oct 2024 18:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6A6215F77
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 19:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727895027; cv=none; b=uiPw/6MmB2iykWj/0hdv3F7164dIFogyO62ipVW6BLCzehWgaIJz8Z7Jy260UAKFizLwRzxFZhhmlOyfaSdQDxwRJ3Hfz//j4IppN4aL8YWrrMZmwvALFejudvwfBOAJUjcWIHrwmUVjHTn8uBRVc8HrcX5JMxyQrEHxZOAMZdI=
+	t=1727897524; cv=none; b=HAXsuFgejsjgJPUwccZV/eHcaeYH5wEXWeF689PIQB7NB30+0OFbU7eHO3uxiZUaEnhdYLSu/nijWVmh4uLQHz+GjqEJiH5uw1igBmayIogoVrfteBxao8FsS42Dtm39vYfpAhi/NQT61t6nkR6yiG+iTATjLUKedeQtHF9ZB9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727895027; c=relaxed/simple;
-	bh=XlC7YeycewlZi2a3r3W7IO7Qd7YSP47/MVJ/d8lrj20=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Jrq70AskMzB1JD6DO9XVEgImT3gbp4moyWOXDis+JgGjvjUPUfqZbVDItlZeTNcLy5pOU9BPMBPNFYcLxrXfytWzNUtjsDEbrj5veQAO7COGBDUmnz1btmN9+Y1jNrQckhl7Aa3Ex6KQE7yAXvOAzx0hVayy+Z6g69lL4rporZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O6KA5467; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DCDFC4CED6;
-	Wed,  2 Oct 2024 18:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727895025;
-	bh=XlC7YeycewlZi2a3r3W7IO7Qd7YSP47/MVJ/d8lrj20=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=O6KA5467Sbp5TN0nr9okSkPDnFzH6zjeE7j6psU2LHS76B0vrpzt9XXInhnHpKxj6
-	 IJs1st80UCkJwLsitlK7096E6X9jQZ7DAweZwN5sVJy+FC2ISbg1SbXK3VGPenYxEk
-	 U1IAgYoMVkepjPYtM/hR3yd7lJxl9NKfOImCUoaQR4qRm/5o/Tv+wRjtMzSXJXvoRk
-	 icvbBr7WDPMt13T6kpBcJ1IQsUsshFCn4l47xcRCfIkm/Pt+BUR0EEtuogKsRctilw
-	 Z7ryrSB373dkJA5xHGzMG+5E8MF7Q282D9nx7DfVsDLyUd396fvwKC8xgFkLfmt5Pi
-	 CNEBkjUV9IVeQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Wed, 02 Oct 2024 14:49:40 -0400
-Subject: [PATCH v9 12/12] tmpfs: add support for multigrain timestamps
+	s=arc-20240116; t=1727897524; c=relaxed/simple;
+	bh=z77Q0Bbo40jmEWC5pMBvxyydF+CimfkfWuyBR+BetrU=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=CEfA3ULN1TCDdEY/NxUCXFRDxd9Tzl6cNOuW6tzbojfn1CNGQCfsXMdeK4nygQX89lA0Uo/oeO5LOg18mBONOi3Le04a6sIqOUwbI1rxXbw5fUeguAUqHtBV8NOC5ZI37qKgSz+rq/tNsbd7QpCt8Yumsr6B17Q3U+2hPhjX5v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=SkVWPigc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=L8xbwm1r; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 95F9C11401C3;
+	Wed,  2 Oct 2024 15:32:01 -0400 (EDT)
+Received: from phl-imap-12 ([10.202.2.86])
+  by phl-compute-03.internal (MEProxy); Wed, 02 Oct 2024 15:32:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to; s=fm3; t=1727897521; x=1727983921; bh=pqwATKrsPjwK6AGBjJp+/
+	GCaf0pPz6bnYRH1PewDZRg=; b=SkVWPigcfrNxmDAbogXUS2UxbyjKZP1cyq88D
+	YyGP43OV/WIZLoTNCoA9wobaEjiE5L3KQ6jy0JETTXpj0lWRqZZRyQc0dSDs4FMO
+	qvgtabp2TkgviN1fOjs0nCVFzLpNhuC0vUXDysZBlnmCyTBDe1BT8A512WLV0fRG
+	xznkEpvfcGv8x4DQ5oUjvk10zD04TbtrC/+P2lB0Eu36SekReI6LZnKPtqx16SVk
+	9vT2A0zm5wPcG/5/CfnR/HgJnTVXnYIytCHONJDKm6++CIEbG3SZdT8V0nH7rxHv
+	MKi7SQA4PC9krTMBrjoeVmPCe53GH0XTLnchcImp2bYnJGfVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1727897521; x=
+	1727983921; bh=pqwATKrsPjwK6AGBjJp+/GCaf0pPz6bnYRH1PewDZRg=; b=L
+	8xbwm1r4aaHmgGWvTZZdDJmQpNhi402xo2Q48mTbBRob5BzgM5++nS2CWoKI7OAl
+	KXJtM70nmQLRgQ1LN6dFzLEJuQIgzJ/yQimm3fkMB2AyQbR60VRxtrRDEwPOYG+c
+	8NEInP2KesuSho6yXlRMBiTtFu7hhay+fuR8oQ1JLueEBI9qvOkzJ+t6zCvyLWNd
+	2ZF0fwg4dbBJxEzHFFvyVmGujPRJO/N2EoTZgR8Dt5OI76AggKWvOUJVlpgOHOGv
+	nkgNyjUZHs5xCDyfi0ZzdX4hJXbvwdEkbDfChFc6yAAKb6Hxr461rVg0NXG3HHD2
+	0fwn4nvxy6I/lxXjt6JXg==
+X-ME-Sender: <xms:sZ_9ZoFg5ioi5-4RVE2n7iO7oPUifOR2aDMlhV5f-dU0W7amc1G85A>
+    <xme:sZ_9ZhUZrVvc61NSzlr8tFUwz1bjHPylYrDCanZGhdBCX_t-R0VBVNH4dJaAVV58-
+    p0PldiONg3LiP31WCk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdduledgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvkfgjfhfutgfgsehtqhertdertdej
+    necuhfhrohhmpedfvehhrhhishcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrh
+    gvmhgvughivghsrdgtohhmqeenucggtffrrghtthgvrhhnpeekieeujeekfffhvedvfeeg
+    fefflefflefgjeeiveetveelffeuuedvgffhudejhfenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegtohhlohhrrhgvmhgvughi
+    vghsrdgtohhmpdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtph
+    htthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghp
+    thhtoheplhhinhhugidqsghtrhhfshdqmhhlseiivghtrghflhgvvghtrdgtohhm
+X-ME-Proxy: <xmx:sZ_9ZiLk-Nl4jn701SWlU8NG1eNfHuq2sPOVw8kRLcbdZ5p1YxZczQ>
+    <xmx:sZ_9ZqEaK3xc8gaM0FaxvJLocRkWz4pvzt0jlrzDyIXtR5Ya9QoMmA>
+    <xmx:sZ_9ZuXA9v72ejGFnv-qWrCTmN67Xqcqru05Vbq03_ZfDcquLA-AXA>
+    <xmx:sZ_9ZtN7YCo0aiRlCcQf8-oCis0eSIfRcTzB3N5ekpi87MnWB9Kzew>
+    <xmx:sZ_9Zhd5tLrti7E9bcJAZquBE44fueIAngqJ_7Oc1j9wdSLZjbsCwj-r>
+Feedback-ID: i06494636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 2D5CC1C20066; Wed,  2 Oct 2024 15:32:01 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241002-mgtime-v9-12-77e2baad57ac@kernel.org>
-References: <20241002-mgtime-v9-0-77e2baad57ac@kernel.org>
-In-Reply-To: <20241002-mgtime-v9-0-77e2baad57ac@kernel.org>
-To: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
- Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, 
- Chandan Babu R <chandan.babu@oracle.com>, 
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
- Chuck Lever <chuck.lever@oracle.com>, 
- Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org, linux-mm@kvack.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=932; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=XlC7YeycewlZi2a3r3W7IO7Qd7YSP47/MVJ/d8lrj20=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBm/ZXN6h1nh3Jd6jDRqtordF48NCXbHTMIIvKYt
- k0JvUmUUnGJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZv2VzQAKCRAADmhBGVaC
- Feo8D/41p25TrFB0UfY7raME3RSw3V2+1l+VzsBd4T4VUALomAlvpx4rASZanyQ4quJ03pKkB6s
- rQ9nT3rVtZ+El2EmDy69MXcp8S4KT6MYsiE3NYuVD68oO/NzqNxYUJqM+iSlB7dOB9VONqcos/D
- uuLiZrD4b/K1jV8heLBwjcXK5mn0koIux75p1x/JCycT5gLRXS2ADRz0cntSbdRPheNG+QcWJtP
- kt1yBPc6JbSDnXd7F7W+ouC3SylDJfAntabc8Xi0Wns5/8XFWcLjMw0xCsW3dGwbIl8o0O8GEd1
- eSpRT0khfdmm2ovPwC9gPXrrQPRdD+ZeEB1o8iUUhQ4LZmc8DWRL5sQ8gDH30E0P748Z/x/QvL1
- dTNj80QaMOjeDyzEczN/3basPLVSn6FmAJMSHy04/Q48JvoMbBlLDfaNqlMSg8BT5WneKtii63O
- VYAAGC+sHZBu/sCKkSE49A4yZZ11DWlK5lD8zYO6BxmQMkhQ/X8weMwUFlZz5jwnFO6dZOtoFg1
- RwtHKlDJSUn37SiERYT+bS9JfPGzMDXPW4grx9yYoHTgw9K3MvbsLBlXqCNU5SkAH+HY8mkKr40
- MQom1aU4ONpgq+6oOFh1kuv+sb4AUhpUCpPaSDInyl1cNw2X4crJh9AJQR6ujOvMOCbLK9NjmRi
- F8V1mxt8ohQeGyw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Date: Wed, 02 Oct 2024 15:31:34 -0400
+From: "Chris Murphy" <lists@colorremedies.com>
+To: "Colin S" <linux-btrfs-ml@zetafleet.com>,
+ "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <b33797e4-476f-4719-90ae-87218079499f@app.fastmail.com>
+In-Reply-To: <28059007-9d87-458d-ab4e-a498977d8268@zetafleet.com>
+References: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
+ <20240927212755.5b24ecd4@nvm>
+ <03de7723-0be2-a153-d264-a1024be3c2b8@georgianit.com>
+ <28059007-9d87-458d-ab4e-a498977d8268@zetafleet.com>
+Subject: Re: BTRFS list of grievances
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Enable multigrain timestamps, which should ensure that there is an
-apparent change to the timestamp whenever it has been written after
-being actively observed via getattr.
 
-tmpfs only requires the FS_MGTIME flag.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # documentation bits
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Sep 27, 2024, at 3:01 PM, Colin S wrote:
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 5a77acf6ac6a..5f17eaaa32e2 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4804,7 +4804,7 @@ static struct file_system_type shmem_fs_type = {
- 	.parameters	= shmem_fs_parameters,
- #endif
- 	.kill_sb	= kill_litter_super,
--	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
- };
- 
- void __init shmem_init(void)
+> Furthermore, if a lost device ever mounts rw on its own, it will cause=20
+> permanent split-brain, because btrfs doesn=E2=80=99t track lost device=
+s so will=20
+> happily rejoin all devices again later.=20
 
--- 
-2.46.2
+RW degraded mount makes transid ambiguous. There isn't a timestamp in th=
+e super, so we can't use that to help disambiguate matching or similar t=
+ransids on multiple members that were mounted rw degraded.
 
+One idea I had is a "mounted degraded" flag that would cause the kernel =
+to do some logic to prevent rw mount that will cause the split brain pro=
+blem. i.e. do not permit the mount of a file system when 2+ devices pres=
+ent have the degraded rw flag set. Perhaps not even RO, I'm not sure.
+
+Would such a flag need to go in the super though? Or could we just make =
+such a thing an item in the device tree? And for that matter, add fs cre=
+ate time, and the last mounted and unmounted times in device tree?
+
+We also need a partial scrub, i.e. start a scrub from a certain point so=
+ that not all data and metadata needs to be read. Write intent bitmap wo=
+uld help do that but can we infer a write intent bitmap via transid?=20
+
+Or still another idea, a variation on the seed device but a single devic=
+e can be both seed and sprout?  i.e. upon mounting rw degraded, changes =
+to the filesystem need to go in a separate location, the point being to =
+preserve the state prior to mounting degraded, and isolate the degraded =
+writes to "play them back" later when all the drives are together again =
+and we're running normally (not degraded).
+
+We really need some things in place with automatic degraded recovery and=
+ device readd before we could ever figure out how to have unattended deg=
+raded boot (for the 10 people on earth who want this - bad but funny jok=
+e). Right now we can't set degraded mount option persistently because sp=
+lit brain. And we can't even try to mount when not all devices are prese=
+nt because mount will fail (without degraded mount option). Therefore th=
+ere's a udev rule in place to not even try to mount during boot if not a=
+ll devices are found. Indefinitely waits. Kinda annoying!
+
+
+
+--=20
+Chris Murphy
 
