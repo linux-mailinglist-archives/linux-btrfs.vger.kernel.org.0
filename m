@@ -1,94 +1,97 @@
-Return-Path: <linux-btrfs+bounces-8442-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2828398E232
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 20:21:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CFD298E241
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 20:22:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF2A1F2499E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 18:21:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F7DDB20E57
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 18:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0DE2139A8;
-	Wed,  2 Oct 2024 18:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9FEA212F0D;
+	Wed,  2 Oct 2024 18:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="LACt4gpj";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZawNzzKf"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="plFYqKSw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WMKUHc8/"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fhigh-a3-smtp.messagingengine.com (fhigh-a3-smtp.messagingengine.com [103.168.172.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44526212F12
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 18:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48801D0BA2;
+	Wed,  2 Oct 2024 18:22:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727893245; cv=none; b=H7Ywfst0ZXYtG1fE5KVEJYV+aXfn7vUvdOkoy8DUGFfhS3gnf/kOuRzpLBQAUfXLg+D0p2zWnqhoJrXLmv+e1jwbFL4aZWG/IA3S1tAOHAhSdRdgLfBb9gZZD2wm0mNu54ecJUkNXl+uYJmLxGg4nD3j8bT3sLVLAzZ7e1btmpI=
+	t=1727893329; cv=none; b=NL2078DnWoAS8AlA3G7Rir0yBf5a1OkQNuqYrTXPeBQStYo/YW6MhIkm4+xmHon1YqSiI1dKtC4n1kzFM6pyYUI/RJne7f5vLeaUtulNaTtHHnFgh/Su57T4SxsNjnxNeadv5H23qUsEIoxEe98k2qrwQwBwEz5y8vxrjadrasI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727893245; c=relaxed/simple;
-	bh=LUiEHGCCaXtqzn3Txd2HEMCZxlNgFCMTPOw+pn5pSlI=;
+	s=arc-20240116; t=1727893329; c=relaxed/simple;
+	bh=qW5XGJNWukWV2cu8q6blemjUI23kK8hdA3Qc6ivw+7o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AOxeIPuTLscYTlzlNa/15qIr7HtZxr7NcC1yobits1agMaJ/iXZDuCN0o1hGOEWw/pEeLHNKpIDNoN936eD1rajPV4jgDnALoUUWafzRgLO04Xw5g7LVG0m8qS3UQuBPz3/3qDW0bS5lugjykVla7yoAb4Ce83NAU34xYtJvyRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=LACt4gpj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZawNzzKf; arc=none smtp.client-ip=103.168.172.154
+	 Content-Type:Content-Disposition:In-Reply-To; b=PSaeL4ntZjy2F2unST1KvIqdF7i8d+ktHPZ1QR/ItXTbQSoBX/zaqzqexqgMNTsgTqFVxbdIlenzt33m85AQ47/abF/jaJ9z0Q7OPpAP6kLEq+/s7skTrieHRpViJe3WlyUSTL1QSoFdm1AO6gbx8lXMAvLc0xHZhLYkmgjgWh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=plFYqKSw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WMKUHc8/; arc=none smtp.client-ip=103.168.172.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-07.internal (phl-compute-07.phl.internal [10.202.2.47])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 217961140149;
-	Wed,  2 Oct 2024 14:20:42 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-07.internal (MEProxy); Wed, 02 Oct 2024 14:20:42 -0400
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id ED6451140134;
+	Wed,  2 Oct 2024 14:22:06 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Wed, 02 Oct 2024 14:22:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1727893242; x=1727979642; bh=twhWGTLi2q
-	ejPJu2kz5392QXttpX3tfdcUaN3rQ8zcI=; b=LACt4gpjl6etgTjEa6u2bYqgz1
-	bTBWjWTF4GNS9KWN5wf/vUtdYCXB8NKQUBStAMH41U+4/czBlqu8hbE/Cx00x1H3
-	3dOrIfa4uRRRPiyklRsFsL2zBHqv/1B2jHvk+KFsgMMbvSl4waOoPN7PxwLwA0NM
-	Fkzv+MqdwKzzuDISIRXwJ6/cmgHhwqkDpxCzNURPrDXtbNZZ7xXRoArQGsq9Hr2j
-	7aLjg4LxMCGUdUygz+H3s7SRtsVzjkiFWhe+3GNWKCKkK9xWyO4xYQjtDyda8HMS
-	5J0eG3Q1LMpuygGAXy2Uf9hyRpVSr1ipxcMxJlmDkMiWJcbnnR3RGxKuqcdg==
+	:subject:to:to; s=fm3; t=1727893326; x=1727979726; bh=bHJ+t0+t0X
+	kq8wcHuMTyU6aFPL2QfGUL4rtBF/EsVKM=; b=plFYqKSwIxu74FZiOo9JT2gnBq
+	gvGtHJVDpUIVL0pJWqvkUcua4cuWKWTXrietjxf9nxNMhu7BYWMYoixXWkOVYNua
+	nCSgfu48VOXJ93EsFbpFv/s7tqjZbNN+PLxJ1npL6f3d+0wGWrvtZc8J6jE/ngVE
+	zybcsyyy01lkz8foPkHBeCyKIQtT+Vyt2lgT5XUDzubvZu90Re3G1OL7T2uPN67z
+	Qe+2skqPmwoZO6VKVBFKAH8AYnmyV4/jfr9CyHToNk+IgNkgx5GOkkTtlXppoi7Q
+	oqtnmIKMoxiW6rOVl6yg97T+aCtiR01ab8CgwdppfUmIL3OVMU+yVSFKXr6Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1727893242; x=1727979642; bh=twhWGTLi2qejPJu2kz5392QXttpX
-	3tfdcUaN3rQ8zcI=; b=ZawNzzKfuvYaIOgfzTO2bgfh/GET0KsnLRP1KHxxlFWQ
-	616PtrZSpBP9GW2JnzSnHeJVWgPs53vYWAymFcbP6niOPcfv0hz2vVej0XLAbdvU
-	Gum7ZBMgxvW9O+R/kStmL24GinQJbGFUUOF26+v54ycxUxp/7Dx4aCj7XCFg+Bbg
-	oAHPkZ6aF79/5nKO8iUCt5BiP8bvrdL0j73jIDITYoXT+MaalWcSyyY6MvzDZ7HT
-	KR/q7C+9iWUU3zsjq5pWpbtWNiVBl8p3Cbx2ZsNIqCy//GJGsYY0qPy6/mpwKRIT
-	slOghuQ8bSbrXGZ5JxIzlEfl5ZITirlhu/3TYWybLw==
-X-ME-Sender: <xms:-Y79ZivajD1fYmOcnRDB9_XI6HrSFb7HsKI-865oEI13UyZROEFPHw>
-    <xme:-Y79ZneilXKSVYjN4-y2yo-Sdz1wiorbOW8KkkfrqWw5WzWexUHcJEtj1ideDtBu1
-    1EYDMocXqH1GownHm8>
-X-ME-Received: <xmr:-Y79ZtxuwShFmlHzFkM8hUTdxyh_IVgT0p6tz_rRntMCW1Stbr3_6qT4YpnLat5wLy6To7ygoiyFtLCuZrZOA7V4tH8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdduledguddulecutefuodetggdotefrod
+	fm2; t=1727893326; x=1727979726; bh=bHJ+t0+t0Xkq8wcHuMTyU6aFPL2Q
+	fGUL4rtBF/EsVKM=; b=WMKUHc8/tRmOmgXV45BFCeHYb020wtSmMfzRhKcknk4m
+	Tco5bQS67t02hcegxXsmgaY9faLTbCza+QZfpnkSV56tTaglWSmZeoLGhTi1AiT3
+	4sHaQZG/yYp7QpE81pnizuDmAUsPIgTGCy5aPTarj00cc8bS+tzwFUbVhYF38GeO
+	OlzFCpdaTNlC8oHG+VU/JUXZu1MLvGUxavV4xzhN9LSJwFHVO1fF13ZadbZhYjjE
+	r2KN91SCYq4KQoH2bKWtmmjwK7X4J2B+jUYPQqBvBFZlH2gYJ/aB/NUK37yYt3mn
+	rPkpondhjH55AdEFM9eoxBtBCuENFnoGJoJiEc5Ojg==
+X-ME-Sender: <xms:To_9ZpPDPcUzMq-PIDL3leESOFpTlhQyIdu1ga4o5aAf4ujtc4nVbQ>
+    <xme:To_9Zr9zfIZRKDdCIoAnf0qD5ZmFHMGT_ZD7CBKy0BgOajxFZ3BuasF4Sdafvdh1b
+    G54EcwSSaMjItJNlHQ>
+X-ME-Received: <xmr:To_9ZoQ6b2DM_uFYCKm8T22-PtC5KbmOr6xm27nI6_4iUDOqWx6faZLRfjR0otXqk3DEbF6G1Qe990d4x1rKoEK34OU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdduledguddvtdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
     uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
     hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
     necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
-    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
-    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgep
-    shhmthhpohhuthdprhgtphhtthhopehmrghhrghrmhhsthhonhgvsehfsgdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:-Y79ZtNHqWP_CjYrbAJ5UgI4FM44ifh5ZfyaRR_5ucXcYCBP-Zk_Lw>
-    <xmx:-Y79Zi_rYvJwLdc4tTOU8whOf69RCvVLJF4mG8tYN_44Wdcp_UuR_Q>
-    <xmx:-Y79ZlX5pCXsOxWsi6TPxsCq2Yl6hgSPuC4ZS-QrzPUhvopqmwMAXA>
-    <xmx:-Y79ZrcYOkI93nIhOcNBJzE965jqMikSMHcDHiE9tPRxH-xa8arHEA>
-    <xmx:-o79ZkKPaJrPN8jNIxZlhWjNVf8Q_4gUJB94OCk9qByoa2Pf6BYJ6E8P>
+    cuggftrfgrthhtvghrnhepudetjeeghfdvjeejfeejteelueettdehvdfhleefgeejudef
+    jeektefgfeehteefnecuffhomhgrihhnpeduuddrshhonecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggp
+    rhgtphhtthhopeegpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrg
+    hnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhsthgvshhtshesvhhgvghrrdhk
+    vghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkh
+    gvrhhnvghlrdhorhhgpdhrtghpthhtohepfhgumhgrnhgrnhgrsehsuhhsvgdrtghomh
+X-ME-Proxy: <xmx:To_9Zlvugaxyd9RaxCa3Y4kJTjPI_s6S-gNUNM8mQ22LaOJbQZx78w>
+    <xmx:To_9ZhcDoBHu8MFtS3AxHcW56dA3_dVi232OcQ8VXWwTBQNlOA3DVg>
+    <xmx:To_9Zh2XApCJl9H7ZLBfYd8kuihXDlgCTCbgzu07IaIZh9DRvOwi6g>
+    <xmx:To_9Zt_2N4yAeNIVQdaH9DwTTHOrVk3UyfBUUUkJwZR_NYOS_JJtXA>
+    <xmx:To_9Zo7it1m6cQ2Xyg59iSQ3m_b6wkNzcCGT5HLSTVjEa3yutdKjHGGB>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 2 Oct 2024 14:20:41 -0400 (EDT)
-Date: Wed, 2 Oct 2024 11:20:40 -0700
+ 2 Oct 2024 14:22:06 -0400 (EDT)
+Date: Wed, 2 Oct 2024 11:22:05 -0700
 From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix comments in definition of struct
- btrfs_file_extent_item
-Message-ID: <20241002182040.GA3917419@zen.localdomain>
-References: <20241002164500.2775775-1-maharmstone@fb.com>
+To: fdmanana@kernel.org
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: update some tests to be able to run with
+ btrfs-progs v6.11
+Message-ID: <20241002182205.GB3917419@zen.localdomain>
+References: <7914963e2c04a864edc45d7510de515c59b4fc95.1727882758.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,61 +100,88 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241002164500.2775775-1-maharmstone@fb.com>
+In-Reply-To: <7914963e2c04a864edc45d7510de515c59b4fc95.1727882758.git.fdmanana@suse.com>
 
-On Wed, Oct 02, 2024 at 05:44:45PM +0100, Mark Harmstone wrote:
-> The comments in the definition of struct btrfs_file_extent_item were
-> written while the FS was still in flux, and are no longer accurate.
+On Wed, Oct 02, 2024 at 04:28:49PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> The range [disk_bytenr, disk_num_bytes) is the same as the extent in the
-> extent tree. There's no difference here between csummed and non-csummed
-> extents, as the comments were implying. And the fields offset and
-> num_bytes are in bytes, not file blocks.
+> In btrfs-progs v6.11 the output of the "filesystem show" command changed
+> so that it no longers prints blank lines. This happened with commit
+> 4331bfb011bd ("btrfs-progs: fi show: remove stray newline in filesystem
+> show").
 > 
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> We have some tests that expect the blank lines in their golden output,
+> and therefore they fail with btrfs-progs v6.11.
+> 
+> So update the filter _filter_btrfs_filesystem_show to remove blank lines
+> and change the golden output of the tests to not expect the blank lines,
+> making the tests work with btrfs-progs v6.11 and older versions.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: Boris Burkov <boris@bur.io>
 > ---
->  include/uapi/linux/btrfs_tree.h | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+>  common/filter.btrfs | 5 ++++-
+>  tests/btrfs/100.out | 2 --
+>  tests/btrfs/218.out | 1 -
+>  tests/btrfs/254.out | 1 -
+>  4 files changed, 4 insertions(+), 5 deletions(-)
 > 
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index fc29d273845d..5df54a11c74c 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -1094,24 +1094,23 @@ struct btrfs_file_extent_item {
->  	__u8 type;
+> diff --git a/common/filter.btrfs b/common/filter.btrfs
+> index 5a944aeb..6c53dffe 100644
+> --- a/common/filter.btrfs
+> +++ b/common/filter.btrfs
+> @@ -30,11 +30,14 @@ _filter_btrfs_filesystem_show()
+>  		UUID=$2
+>  	fi
 >  
->  	/*
-> -	 * disk space consumed by the extent, checksum blocks are included
-> -	 * in these numbers
-> +	 * The address and size of the referenced extent.  These should exactly
-> +	 * match an entry in the extent tree.
->  	 *
->  	 * At this offset in the structure, the inline extent data start.
->  	 */
->  	__le64 disk_bytenr;
->  	__le64 disk_num_bytes;
->  	/*
-> -	 * the logical offset in file blocks (no csums)
-> -	 * this extent record is for.  This allows a file extent to point
-> -	 * into the middle of an existing extent on disk, sharing it
-> -	 * between two snapshots (useful if some bytes in the middle of the
-> -	 * extent have changed
-> +	 * The logical offset in bytes this extent record is for.
-> +	 * This allows a file extent to point into the middle of an existing
-> +	 * extent on disk, sharing it between two snapshots (useful if some
-> +	 * bytes in the middle of the extent have changed)
->  	 */
->  	__le64 offset;
->  	/*
-> -	 * the logical number of file blocks (no csums included).  This
-> -	 * always reflects the size uncompressed and without encoding.
-> +	 * The logical number of bytes.  This always reflects the size
-> +	 * uncompressed and without encoding.
->  	 */
->  	__le64 num_bytes;
+> -	# the uniq collapses all device lines into 1
+> +	# Before btrfs-progs v6.11 we had some blank lines in the output, so
+> +	# delete them.
+> +	# The uniq collapses all device lines into 1.
+>  	_filter_uuid $UUID | _filter_scratch | _filter_scratch_pool | \
+>  	_filter_size | _filter_btrfs_version | _filter_devid | \
+>  	_filter_zero_size | \
+>  	sed -e "s/\(Total devices\) $NUMDEVS/\1 $NUM_SUBST/g" | \
+> +	sed -e "/^\s*$/d" | \
+>  	uniq > $tmp.btrfs_filesystem_show
 >  
+>  	# The first two lines are Label/UUID and total devices
+> diff --git a/tests/btrfs/100.out b/tests/btrfs/100.out
+> index aa492919..1fe3c0de 100644
+> --- a/tests/btrfs/100.out
+> +++ b/tests/btrfs/100.out
+> @@ -3,9 +3,7 @@ Label: none  uuid: <UUID>
+>  	Total devices <NUM> FS bytes used <SIZE>
+>  	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+>  	devid <DEVID> size <SIZE> used <SIZE> path /dev/mapper/error-test
+> -
+>  Label: none  uuid: <UUID>
+>  	Total devices <NUM> FS bytes used <SIZE>
+>  	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+> -
+>  === device replace completed
+> diff --git a/tests/btrfs/218.out b/tests/btrfs/218.out
+> index 7ccf13e9..be11074c 100644
+> --- a/tests/btrfs/218.out
+> +++ b/tests/btrfs/218.out
+> @@ -2,7 +2,6 @@ QA output created by 218
+>  Label: none  uuid: <UUID>
+>  	Total devices <NUM> FS bytes used <SIZE>
+>  	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+> -
+>  [SCRATCH_DEV].write_io_errs    0
+>  [SCRATCH_DEV].read_io_errs     0
+>  [SCRATCH_DEV].flush_io_errs    0
+> diff --git a/tests/btrfs/254.out b/tests/btrfs/254.out
+> index 20819cf5..86089ee3 100644
+> --- a/tests/btrfs/254.out
+> +++ b/tests/btrfs/254.out
+> @@ -3,4 +3,3 @@ Label: none  uuid: <UUID>
+>  	Total devices <NUM> FS bytes used <SIZE>
+>  	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+>  	*** Some devices missing
+> -
 > -- 
-> 2.44.2
+> 2.43.0
 > 
 
