@@ -1,207 +1,619 @@
-Return-Path: <linux-btrfs+bounces-8436-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8437-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6BE798DE01
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 16:55:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B173298DE6C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 17:07:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3EE21C23E98
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 14:55:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7488F28261F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 15:07:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8891D0E2A;
-	Wed,  2 Oct 2024 14:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5711D096A;
+	Wed,  2 Oct 2024 15:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="d4Kn7DHO";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="SmU1L3K1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z2uCU4g6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1020B9475
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 14:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727880732; cv=fail; b=aZ7Hzus3oXd4UBnp3METwmxhFQu8iJLUQVHclLfN3zNkV9fMMN5oo9jYSqnZNlewfomTXU4jfbNm1BIgYw+yNhFtefeXkTEuXMIdZhmWsKucU+NXwARRtVL7UGIDeelNnN9FKL+wuZiT2X3asjhBNSwHaPgVFxFJsvrwzyfJ0eI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727880732; c=relaxed/simple;
-	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qf1C/IpMXQMUYneXNDFhBe7KLZoJ6isf9wKY3aFRwoXzQ5LrdVTAPPb9S0AyHuENl8exAl7XBgET2plVkcswWVaq9ahF4580pygyW6Gag7c48pyWaWV5WvSvXxpCoU8xCsEQTG7vdgMp9bp/AGhjjMvQw8n1xj6cK4Lck3mdW5g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=d4Kn7DHO; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=SmU1L3K1; arc=fail smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1727880731; x=1759416731;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
-  b=d4Kn7DHOaIeIl12pXuL1BTxZu6flS4uT9R9xe1ZMloGffKsBXx7EefyQ
-   RuOt8UmflK7N/v/qYP3/NOaDYrzu5/i32Es1mipcMc1CnavVbgQVA/74b
-   eDQqgi7hEP9TPaUZfejIzKTjq4YtXK2IIugHuU4o7ZU8pCPgAWFg+XcyP
-   HjPNePtw+rhuPu5nwC3ykZVE/cBn2EhdvxrM1eeCOXQGaOEtOWPZJf4MA
-   ltxb/sJPfDjoYtR1qNmV5NZqOY9HNP9hKC2EBiHl5FC3mQPRv0E5tK+Jm
-   M4ZHq/CJuJGvO+nRW95by5RJGKuf94M+imEeD5lpw7y2iqxU+dQ8zI0mD
-   Q==;
-X-CSE-ConnectionGUID: ERIrmvDsRXKiucKnpBOSow==
-X-CSE-MsgGUID: EPbc9PeGRX2jvGLXxiZMcw==
-X-IronPort-AV: E=Sophos;i="6.11,171,1725292800"; 
-   d="scan'208";a="29164928"
-Received: from mail-co1nam11lp2174.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.174])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Oct 2024 22:52:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=lbuWFklJfPYkQfIY7HeZ/leiixJeh/ZEIhYjhJo3k2G4VqBhqkBPSyTFdQKMqJ7xGmPntSOl7K0+uVcXIlxqTJCcFsudw4F7FyXOPg3qXRAFgxgqoBM5Wb/wePgs0wqrTpQ3dIK1t709gu0rVBGq1rhwgEovXLHiGGx6R+rggiN2T26FQcAe4gP+jeqSZNV6sPVoMkL29b9w+YUbONee4mghnTtNnNyOO/hT7PTtCRMPAqge0Gi6Os09KvFJbP0HiWdC8T4e5IE6XV8nPCEQvyypQA7jxsWxbbIAhyJICV0J699PwTWLhLcF3Rz3NE6H7kg5Aoay1maO1NXzdyy4dQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=vVzMf6rWUq7TCXSqZ3BortCb8UqZWd2o9DCXVw17Dj7BAke8bRg6DLZF25UaBX4/NbyROfQ8R6sywgvvyG0auWG4VF4YEKqqNwIIy16c76VKjqovdbak5pBebEJab589VJ9jUtpHH/YKq495AahTAL6HYNSAuTersOV9WHOLeYuVpRY6wljTtT4Z15cjdfPzfBMrZJxHRH0pNTG4M/RIOWMpiCrc/FK2OhD0GvMnC0L4wOKnxQLrezm7Ke66tOOpcg7yotyNcWvHRedZ8n9dco89VzcCdC8/ElVzCAlb7xcuf66LmWGMIwIYCfJuxrlCHiVzZ5VieV8A7zAMe4pW9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
- b=SmU1L3K15m6rRI2BzOBV1CzTJfEDw0bpSgltIcEPwE3osJiW6E/1NlWUMwbbB1Xd5NanMPC1zQRDEZcyO7H2J2Av1zAa6/NmWIozbLnGkpYfCCfniVAFd+Qj/aTjq69bsJQQR5XjMcTgB3z0zJDOyyKkMA3aTE4fTXczQroB+0k=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by DM6PR04MB7018.namprd04.prod.outlook.com (2603:10b6:5:24d::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.15; Wed, 2 Oct
- 2024 14:52:05 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ee22:5d81:bfcf:7969%5]) with mapi id 15.20.8026.016; Wed, 2 Oct 2024
- 14:52:05 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: zoned: fix missing rcu locking in error message
- when loading zone info
-Thread-Topic: [PATCH] btrfs: zoned: fix missing rcu locking in error message
- when loading zone info
-Thread-Index: AQHbFNZG5qC2BooT8kKmERDE8UEX0rJzi56A
-Date: Wed, 2 Oct 2024 14:52:05 +0000
-Message-ID: <06054b86-089a-4280-82ac-9e479aaf16f4@wdc.com>
-References:
- <446a65bde464d5a19554687ffd1944bfbf9062ae.1727878321.git.fdmanana@suse.com>
-In-Reply-To:
- <446a65bde464d5a19554687ffd1944bfbf9062ae.1727878321.git.fdmanana@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|DM6PR04MB7018:EE_
-x-ms-office365-filtering-correlation-id: 6ed7a640-51ab-4fb5-c9d6-08dce2f1c855
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|366016|10070799003|376014|38070700018;
-x-microsoft-antispam-message-info:
- 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
- =?utf-8?B?blExRE1Lb0lKUGFpUnhKQT09?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(10070799003)(376014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- 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
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BD6B3431DC6BA8408AAA13359B9FE7A1@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F621D042F
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 15:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727881641; cv=none; b=jq6b/rUr3EW9C4yna92GRdvEDo7PNHFplRotfo1/Os3F5AQG2yOEWAeGU0fGURgHCwoVIkEgAVKhzcA+Ii4aIsdMG7bC0BiOH5zUu7fh3qSkuejYZsAMpkMYiY4kqjHR+uergu9jjffGp48cMBxcJN2ELhj1Owvxv7m8q+uYAiU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727881641; c=relaxed/simple;
+	bh=+2Boy7pihy2UuLz3VXoU8tDZ3Nx45Mg/43HwKZwCmHM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tGxAmjnzoWbmQ1h+EOEBa4R1o4QDXNLtscASJkz/yi1Td9+FlqV/5zvI2MqfNAbZ5JXh20S2jY22RIsBPre6PpMoq67vnRNxpGpraYd+pbtGKigHnoaqKxHina0r6AN8o/+h4dAjxXtiqsiKuwFPdYRc9QVB3II7Wb0vaO7oP7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z2uCU4g6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EABFC4CECE
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 15:07:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727881641;
+	bh=+2Boy7pihy2UuLz3VXoU8tDZ3Nx45Mg/43HwKZwCmHM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Z2uCU4g6yHEAbo/8h+FydUnEDRPCs2EyXMqMYPOPBWFXu6MYZHTb7sW4BoWur5Evo
+	 sauxUbumqRqvGBF6mnfwwgu5WBet5WPsOCywdqvtd2YLrkTTLwYOQDbV1fvaBvL9dQ
+	 X2MpPom5D/shnv0fP5qFOMu/UJXjyA4FwYDfr0nXV3yqJ4ZT2vjM8ErG6YrHqaMtUw
+	 4uRh814R6kqJy0F1FV7JW7+KTQ8/ysfK28tXSB+anHoSINvTeWGdXZKoWA7VtQMXWa
+	 AMPDHJi9AwQ8EINW28iRSrEU+2eCFiy8ke7AjoTM6KYN2jZZd7koki6KXtdyG/YFbz
+	 C6Y6Xd5VsuUxw==
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-37cd26c6dd1so5305355f8f.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2024 08:07:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzjjgdsYwIKCc/IW8H89XJI1+keqE3XBQ7KPNr3BKq3M3Nw+DEW
+	ZJMflzdiSnG9QRZeHXhKacZkRpG6VA8ir2mxDpSb6suz/9zJFsTk6rhvff46ZEUUV7cPKkJix7h
+	E1/2umCyNMEcIijR2jcIiWcEHBqQ=
+X-Google-Smtp-Source: AGHT+IGnLe347G6AbtrAXVNpZR4Ho5PTfLgLnQxZMlOZGYWr74qoqQE2hNQ3U05VCGSrph3gncOWMA91H+VzCDpYTGo=
+X-Received: by 2002:a5d:5d81:0:b0:37c:fbf8:fc4 with SMTP id
+ ffacd0b85a97d-37cfbf8110amr2445624f8f.59.1727881639653; Wed, 02 Oct 2024
+ 08:07:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	RZftEpKY2v3PcO55T/UVfDsZ4bznbVa3R0+yu11sehVAbVb77mndvO5DNMppNWl+AoqHNwkZ7DD9BO8u0RDQMlKCzZzdYX0BtuKZB0thzdWFjd2Ux+4ZDKDVSgkY+SAGzmv9FwQ12nS/LnjfDp8/MtkMclMTn0AyHuXK3SpPAvsSQTPDVHaXbnAyqxwVmD52Rxdalfc0q1xvpqqZKW50tmimFDgdR5Ye+jSSlMy52qEH62zyouptvC+/SPq8EWkApf8GCjshj3nb7V1g65c4M0saVQPCcPWEph59avRhaleoEpRZbYO1Vp5KwU3pAugMs3J/3u29S0qCICLQrxUeWwR8Wo+S5E5t0WJ1zwVsCi0xZgZUI8PZWizWagl9SfHhcINMBydrpUqe+pJivISKiCBW1DMD2ts8cmYrbRIiarJdVc5Ny5ghXxLp9gd6QksidnE7jAI+97sgwFwIA4PLxlhPJq23fEjvTAkCYGh0Ze5JU4LLH4n4e9br5+Jy4plUPid8De2FgFYrCAYbvOI0Oqn4iOISsZoybsDj2+zGbWCg9iQbV0QthJaQay9f7ufZeXmaBjJHN0tnHbdG0UcQrvdjHQM8uN7htGVNqtG3uO2nERCwM93f7kh9EKCVMQEW
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ed7a640-51ab-4fb5-c9d6-08dce2f1c855
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Oct 2024 14:52:05.5386
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: o3+GzhnvuFk1JLmxSF1ZdA8tmGYuHejXRguK9JWnaSCyIleB5qcvOVSsoOFsgDlenLqQmDPUdOS7+iCZZElB3MxZKvtbinG1GT3Vu1QNOts=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB7018
+References: <20240715143830.2067478-1-maharmstone@fb.com>
+In-Reply-To: <20240715143830.2067478-1-maharmstone@fb.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 2 Oct 2024 16:06:42 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6xfZMa7htN3ebD7RZBYh2uJmcH4JvYcmjXRd6RaKTyug@mail.gmail.com>
+Message-ID: <CAL3q7H6xfZMa7htN3ebD7RZBYh2uJmcH4JvYcmjXRd6RaKTyug@mail.gmail.com>
+Subject: Re: [PATCH v3] btrfs-progs: add rudimentary log checking
+To: Mark Harmstone <maharmstone@fb.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
-dW1zaGlybkB3ZGMuY29tPg0K
+On Mon, Jul 15, 2024 at 3:38=E2=80=AFPM Mark Harmstone <maharmstone@fb.com>=
+ wrote:
+>
+> Currently the transaction log is more or less ignored by btrfs check,
+> meaning that it's possible for a FS with a corrupt log to pass btrfs
+> check, but be immediately corrupted by the kernel when it's mounted.
+>
+> This patch adds a check that if there's an inode in the log, any pending
+> non-compressed writes also have corresponding csum entries.
+>
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> ---
+> Changes:
+> v2:
+> helper to load log root
+> handle compressed extents
+> loop logic improvements
+> fix bug in check_log_csum
+>
+> v3:
+> added test
+> added explanatory comment to check_log_csum
+> changed length operation to -=3D
+>
+>  check/main.c                                  | 304 +++++++++++++++++-
+>  .../063-log-missing-csum/default.img.xz       | Bin 0 -> 1288 bytes
+>  tests/fsck-tests/063-log-missing-csum/test.sh |  14 +
+>  3 files changed, 306 insertions(+), 12 deletions(-)
+>  create mode 100644 tests/fsck-tests/063-log-missing-csum/default.img.xz
+>  create mode 100755 tests/fsck-tests/063-log-missing-csum/test.sh
+>
+> diff --git a/check/main.c b/check/main.c
+> index 83c721d3..eaae3042 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -9787,6 +9787,274 @@ static int zero_log_tree(struct btrfs_root *root)
+>         return ret;
+>  }
+>
+> +/* Searches the given root for checksums in the range [addr, addr+length=
+].
+> + * Returns 1 if found, 0 if not found, and < 0 for an error. */
+> +static int check_log_csum(struct btrfs_root *root, u64 addr, u64 length)
+> +{
+> +       struct btrfs_path path =3D { 0 };
+> +       struct btrfs_key key;
+> +       struct extent_buffer *leaf;
+> +       u16 csum_size =3D gfs_info->csum_size;
+> +       u16 num_entries;
+> +       u64 data_len;
+> +       int ret;
+> +
+> +       key.objectid =3D BTRFS_EXTENT_CSUM_OBJECTID;
+> +       key.type =3D BTRFS_EXTENT_CSUM_KEY;
+> +       key.offset =3D addr;
+> +
+> +       ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       if (ret > 0 && path.slots[0])
+> +               path.slots[0]--;
+> +
+> +       ret =3D 0;
+> +
+> +       while (1) {
+> +               leaf =3D path.nodes[0];
+> +               if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
+> +                       ret =3D btrfs_next_leaf(root, &path);
+> +                       if (ret) {
+> +                               if (ret > 0)
+> +                                       ret =3D 0;
+> +
+> +                               break;
+> +                       }
+> +                       leaf =3D path.nodes[0];
+> +               }
+> +
+> +               btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
+> +
+> +               if (key.objectid > BTRFS_EXTENT_CSUM_OBJECTID)
+> +                       break;
+> +
+> +               if (key.objectid !=3D BTRFS_EXTENT_CSUM_OBJECTID ||
+> +                   key.type !=3D BTRFS_EXTENT_CSUM_KEY)
+> +                       goto next;
+> +
+> +               if (key.offset >=3D addr + length)
+> +                       break;
+> +
+> +               num_entries =3D btrfs_item_size(leaf, path.slots[0]) / cs=
+um_size;
+> +               data_len =3D num_entries * gfs_info->sectorsize;
+> +
+> +               if (addr >=3D key.offset && addr <=3D key.offset + data_l=
+en) {
+> +                       u64 end =3D min(addr + length, key.offset + data_=
+len);
+> +
+> +                       length -=3D (end - addr);
+> +                       addr =3D end;
+> +
+> +                       if (length =3D=3D 0)
+> +                               break;
+> +               }
+> +
+> +next:
+> +               path.slots[0]++;
+> +       }
+> +
+> +       btrfs_release_path(&path);
+> +
+> +       if (ret >=3D 0)
+> +               ret =3D length =3D=3D 0 ? 1 : 0;
+> +
+> +       return ret;
+> +}
+> +
+> +static int check_log_root(struct btrfs_root *root, struct cache_tree *ro=
+ot_cache,
+> +                         struct walk_control *wc)
+> +{
+> +       struct btrfs_path path =3D { 0 };
+> +       struct btrfs_key key;
+> +       struct extent_buffer *leaf;
+> +       int ret, err =3D 0;
+> +       u64 last_csum_inode =3D 0;
+> +
+> +       key.objectid =3D BTRFS_FIRST_FREE_OBJECTID;
+> +       key.type =3D BTRFS_INODE_ITEM_KEY;
+> +       key.offset =3D 0;
+> +       ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+> +       if (ret < 0)
+> +               return 1;
+> +
+> +       while (1) {
+> +               leaf =3D path.nodes[0];
+> +               if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
+> +                       ret =3D btrfs_next_leaf(root, &path);
+> +                       if (ret) {
+> +                               if (ret < 0)
+> +                                       err =3D 1;
+> +
+> +                               break;
+> +                       }
+> +                       leaf =3D path.nodes[0];
+> +               }
+> +               btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
+> +
+> +               if (key.objectid =3D=3D BTRFS_EXTENT_CSUM_OBJECTID)
+> +                       break;
+> +
+> +               if (key.type =3D=3D BTRFS_INODE_ITEM_KEY) {
+> +                       struct btrfs_inode_item *item;
+> +
+> +                       item =3D btrfs_item_ptr(leaf, path.slots[0],
+> +                                             struct btrfs_inode_item);
+> +
+> +                       if (!(btrfs_inode_flags(leaf, item) & BTRFS_INODE=
+_NODATASUM))
+> +                               last_csum_inode =3D key.objectid;
+> +               } else if (key.type =3D=3D BTRFS_EXTENT_DATA_KEY &&
+> +                          key.objectid =3D=3D last_csum_inode) {
+> +                       struct btrfs_file_extent_item *fi;
+> +                       u64 addr, length;
+> +
+> +                       fi =3D btrfs_item_ptr(leaf, path.slots[0],
+> +                                           struct btrfs_file_extent_item=
+);
+> +
+> +                       if (btrfs_file_extent_type(leaf, fi) !=3D BTRFS_F=
+ILE_EXTENT_REG)
+> +                               goto next;
+> +
+> +                       addr =3D btrfs_file_extent_disk_bytenr(leaf, fi) =
++
+> +                               btrfs_file_extent_offset(leaf, fi);
+> +                       length =3D btrfs_file_extent_num_bytes(leaf, fi);
+> +
+> +                       ret =3D check_log_csum(root, addr, length);
+> +                       if (ret < 0) {
+> +                               err =3D 1;
+> +                               break;
+> +                       }
+> +
+> +                       if (!ret) {
+> +                               error("csum missing in log (root %llu, in=
+ode %llu, "
+> +                                     "offset %llu, address 0x%llx, lengt=
+h %llu)",
+> +                                     root->objectid, last_csum_inode, ke=
+y.offset,
+> +                                     addr, length);
+
+This is causing some false failures when running fstests, like test
+btrfs/056 for example.
+There it's attempting to lookup csums for file extents representing
+holes (disk_bytenr =3D=3D 0), which don't exist.
+
+Also this change assumes that for every file extent item we must have
+a csum item logged, which is not always the case.
+For example, before the following kernel commit:
+
+commit 7f30c07288bb9e20463182d0db56416025f85e08
+Author: Filipe Manana <fdmanana@suse.com>
+Date:   Thu Feb 17 12:12:03 2022 +0000
+
+    btrfs: stop copying old file extents when doing a full fsync
+
+We could log old file extent items, from past transactions, but
+because they were from past transactions, we didn't log the csums
+because they aren't needed.
+
+So on older kernels that triggers a false alarm too.
+
+Thanks.
+
+> +                               err =3D 1;
+> +                       }
+> +               }
+> +
+> +next:
+> +               path.slots[0]++;
+> +       }
+> +
+> +       btrfs_release_path(&path);
+> +
+> +       return err;
+> +}
+> +
+> +static int load_log_root(u64 root_id, struct btrfs_path *path,
+> +                        struct btrfs_root *tmp_root)
+> +{
+> +       struct extent_buffer *l;
+> +       struct btrfs_tree_parent_check check =3D { 0 };
+> +
+> +       btrfs_setup_root(tmp_root, gfs_info, root_id);
+> +
+> +       l =3D path->nodes[0];
+> +       read_extent_buffer(l, &tmp_root->root_item,
+> +                       btrfs_item_ptr_offset(l, path->slots[0]),
+> +                       sizeof(tmp_root->root_item));
+> +
+> +       tmp_root->root_key.objectid =3D root_id;
+> +       tmp_root->root_key.type =3D BTRFS_ROOT_ITEM_KEY;
+> +       tmp_root->root_key.offset =3D 0;
+> +
+> +       check.owner_root =3D btrfs_root_id(tmp_root);
+> +       check.transid =3D btrfs_root_generation(&tmp_root->root_item);
+> +       check.level =3D btrfs_root_level(&tmp_root->root_item);
+> +
+> +       tmp_root->node =3D read_tree_block(gfs_info,
+> +                                        btrfs_root_bytenr(&tmp_root->roo=
+t_item),
+> +                                        &check);
+> +       if (IS_ERR(tmp_root->node)) {
+> +               tmp_root->node =3D NULL;
+> +               return 1;
+> +       }
+> +
+> +       if (btrfs_header_level(tmp_root->node) !=3D btrfs_root_level(&tmp=
+_root->root_item)) {
+> +               error("root [%llu %llu] level %d does not match %d",
+> +                       tmp_root->root_key.objectid,
+> +                       tmp_root->root_key.offset,
+> +                       btrfs_header_level(tmp_root->node),
+> +                       btrfs_root_level(&tmp_root->root_item));
+> +               return 1;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int check_log(struct cache_tree *root_cache)
+> +{
+> +       struct btrfs_path path =3D { 0 };
+> +       struct walk_control wc =3D { 0 };
+> +       struct btrfs_key key;
+> +       struct extent_buffer *leaf;
+> +       struct btrfs_root *log_root =3D gfs_info->log_root_tree;
+> +       int ret;
+> +       int err =3D 0;
+> +
+> +       cache_tree_init(&wc.shared);
+> +
+> +       key.objectid =3D BTRFS_TREE_LOG_OBJECTID;
+> +       key.type =3D BTRFS_ROOT_ITEM_KEY;
+> +       key.offset =3D 0;
+> +       ret =3D btrfs_search_slot(NULL, log_root, &key, &path, 0, 0);
+> +       if (ret < 0) {
+> +               err =3D 1;
+> +               goto out;
+> +       }
+> +
+> +       while (1) {
+> +               leaf =3D path.nodes[0];
+> +               if (path.slots[0] >=3D btrfs_header_nritems(leaf)) {
+> +                       ret =3D btrfs_next_leaf(log_root, &path);
+> +                       if (ret) {
+> +                               if (ret < 0)
+> +                                       err =3D 1;
+> +                               break;
+> +                       }
+> +                       leaf =3D path.nodes[0];
+> +               }
+> +               btrfs_item_key_to_cpu(leaf, &key, path.slots[0]);
+> +
+> +               if (key.objectid > BTRFS_TREE_LOG_OBJECTID ||
+> +                   key.type > BTRFS_ROOT_ITEM_KEY)
+> +                       break;
+> +
+> +               if (key.objectid =3D=3D BTRFS_TREE_LOG_OBJECTID &&
+> +                   key.type =3D=3D BTRFS_ROOT_ITEM_KEY &&
+> +                   fs_root_objectid(key.offset)) {
+> +                       struct btrfs_root tmp_root;
+> +
+> +                       memset(&tmp_root, 0, sizeof(tmp_root));
+> +
+> +                       ret =3D load_log_root(key.offset, &path, &tmp_roo=
+t);
+> +                       if (ret) {
+> +                               err =3D 1;
+> +                               goto next;
+> +                       }
+> +
+> +                       ret =3D check_log_root(&tmp_root, root_cache, &wc=
+);
+> +                       if (ret)
+> +                               err =3D 1;
+> +
+> +next:
+> +                       if (tmp_root.node)
+> +                               free_extent_buffer(tmp_root.node);
+> +               }
+> +
+> +               path.slots[0]++;
+> +       }
+> +out:
+> +       btrfs_release_path(&path);
+> +       if (err)
+> +               free_extent_cache_tree(&wc.shared);
+> +       if (!cache_tree_empty(&wc.shared))
+> +               fprintf(stderr, "warning line %d\n", __LINE__);
+> +
+> +       return err;
+> +}
+> +
+>  static void free_roots_info_cache(void)
+>  {
+>         if (!roots_info_cache)
+> @@ -10585,9 +10853,21 @@ static int cmd_check(const struct cmd_struct *cm=
+d, int argc, char **argv)
+>                 goto close_out;
+>         }
+>
+> +       if (gfs_info->log_root_tree) {
+> +               fprintf(stderr, "[1/8] checking log\n");
+> +               ret =3D check_log(&root_cache);
+> +
+> +               if (ret)
+> +                       error("errors found in log");
+> +               err |=3D !!ret;
+> +       } else {
+> +               fprintf(stderr,
+> +               "[1/8] checking log skipped (none written)\n");
+> +       }
+> +
+>         if (!init_extent_tree) {
+>                 if (!g_task_ctx.progress_enabled) {
+> -                       fprintf(stderr, "[1/7] checking root items\n");
+> +                       fprintf(stderr, "[2/8] checking root items\n");
+>                 } else {
+>                         g_task_ctx.tp =3D TASK_ROOT_ITEMS;
+>                         task_start(g_task_ctx.info, &g_task_ctx.start_tim=
+e,
+> @@ -10622,11 +10902,11 @@ static int cmd_check(const struct cmd_struct *c=
+md, int argc, char **argv)
+>                         }
+>                 }
+>         } else {
+> -               fprintf(stderr, "[1/7] checking root items... skipped\n")=
+;
+> +               fprintf(stderr, "[2/8] checking root items... skipped\n")=
+;
+>         }
+>
+>         if (!g_task_ctx.progress_enabled) {
+> -               fprintf(stderr, "[2/7] checking extents\n");
+> +               fprintf(stderr, "[3/8] checking extents\n");
+>         } else {
+>                 g_task_ctx.tp =3D TASK_EXTENTS;
+>                 task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_ta=
+sk_ctx.item_count);
+> @@ -10644,9 +10924,9 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+>
+>         if (!g_task_ctx.progress_enabled) {
+>                 if (is_free_space_tree)
+> -                       fprintf(stderr, "[3/7] checking free space tree\n=
+");
+> +                       fprintf(stderr, "[4/8] checking free space tree\n=
+");
+>                 else
+> -                       fprintf(stderr, "[3/7] checking free space cache\=
+n");
+> +                       fprintf(stderr, "[4/8] checking free space cache\=
+n");
+>         } else {
+>                 g_task_ctx.tp =3D TASK_FREE_SPACE;
+>                 task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_ta=
+sk_ctx.item_count);
+> @@ -10664,7 +10944,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+>          */
+>         no_holes =3D btrfs_fs_incompat(gfs_info, NO_HOLES);
+>         if (!g_task_ctx.progress_enabled) {
+> -               fprintf(stderr, "[4/7] checking fs roots\n");
+> +               fprintf(stderr, "[5/8] checking fs roots\n");
+>         } else {
+>                 g_task_ctx.tp =3D TASK_FS_ROOTS;
+>                 task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_ta=
+sk_ctx.item_count);
+> @@ -10680,10 +10960,10 @@ static int cmd_check(const struct cmd_struct *c=
+md, int argc, char **argv)
+>
+>         if (!g_task_ctx.progress_enabled) {
+>                 if (check_data_csum)
+> -                       fprintf(stderr, "[5/7] checking csums against dat=
+a\n");
+> +                       fprintf(stderr, "[6/8] checking csums against dat=
+a\n");
+>                 else
+>                         fprintf(stderr,
+> -               "[5/7] checking only csums items (without verifying data)=
+\n");
+> +               "[6/8] checking only csums items (without verifying data)=
+\n");
+>         } else {
+>                 g_task_ctx.tp =3D TASK_CSUMS;
+>                 task_start(g_task_ctx.info, &g_task_ctx.start_time, &g_ta=
+sk_ctx.item_count);
+> @@ -10702,7 +10982,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+>         /* For low memory mode, check_fs_roots_v2 handles root refs */
+>          if (check_mode !=3D CHECK_MODE_LOWMEM) {
+>                 if (!g_task_ctx.progress_enabled) {
+> -                       fprintf(stderr, "[6/7] checking root refs\n");
+> +                       fprintf(stderr, "[7/8] checking root refs\n");
+>                 } else {
+>                         g_task_ctx.tp =3D TASK_ROOT_REFS;
+>                         task_start(g_task_ctx.info, &g_task_ctx.start_tim=
+e, &g_task_ctx.item_count);
+> @@ -10717,7 +10997,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+>                 }
+>         } else {
+>                 fprintf(stderr,
+> -       "[6/7] checking root refs done with fs roots in lowmem mode, skip=
+ping\n");
+> +       "[7/8] checking root refs done with fs roots in lowmem mode, skip=
+ping\n");
+>         }
+>
+>         while (opt_check_repair && !list_empty(&gfs_info->recow_ebs)) {
+> @@ -10749,7 +11029,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+>
+>         if (gfs_info->quota_enabled) {
+>                 if (!g_task_ctx.progress_enabled) {
+> -                       fprintf(stderr, "[7/7] checking quota groups\n");
+> +                       fprintf(stderr, "[8/8] checking quota groups\n");
+>                 } else {
+>                         g_task_ctx.tp =3D TASK_QGROUPS;
+>                         task_start(g_task_ctx.info, &g_task_ctx.start_tim=
+e, &g_task_ctx.item_count);
+> @@ -10772,7 +11052,7 @@ static int cmd_check(const struct cmd_struct *cmd=
+, int argc, char **argv)
+>                 ret =3D 0;
+>         } else {
+>                 fprintf(stderr,
+> -               "[7/7] checking quota groups skipped (not enabled on this=
+ FS)\n");
+> +               "[8/8] checking quota groups skipped (not enabled on this=
+ FS)\n");
+>         }
+>
+>         if (!list_empty(&gfs_info->recow_ebs)) {
+> diff --git a/tests/fsck-tests/063-log-missing-csum/default.img.xz b/tests=
+/fsck-tests/063-log-missing-csum/default.img.xz
+> new file mode 100644
+> index 0000000000000000000000000000000000000000..c9b4f420ac23866cd142428da=
+f21739efda0762d
+> GIT binary patch
+> literal 1288
+> zcmV+j1^4>>H+ooF000E$*0e?f03iVu0001VFXf}+)Bgm;T>wRyj;C3^v%$$4d1wo3
+> zjjaF1$8Jv*pMMm%#Ch6IM%}7&=3D@^TvKIIdYjZ@t7T($M|Hz%Cr>ZwJ6sj_bRsY^a*
+> zIr#q#U>$p<Go1bOhu5#Q<?@08{(UO6n<sqYIY$<RXz3}#&sBuS|AUrsgQ{%?z1>tr
+> zW^k~hR~HJs$P?zuw_V+%>i2AU4x-C~^RmH%0#2o7VY;D>d@D<+CC=3DJ4l?Bs2d@5yC
+> z&pKh_V}nG$A*f{hGHlfKeT*E3NA1Q(Nt;TxvV6m2A_RVpD=3D`*t<8b6_KTom1S=3D|eG
+> z>OMhPCcl7*3tYx)YhtFm-3)~e_SPBasmqw|$jnE_-QZfatuNh^bkJ5yW{ZX7NmD)i
+> zLKCQYs5y!To5G>tIYzSNigXu|<l&x%JzxMA5aW-t+nod|B!efqr+_#STUo@Xu>wY=3D
+> z*;zh8-nLPC+GYq6HU^A<Qjkh41{(MMB=3Dp?8i7|;p<cL9o>Q7;56uclyq=3DuCMb1GmZ
+> zuq5@iwv1^<TQdlj9#Xdq$Vj!1d~GO$P#HmKmPt*t2iPme{8~y6{{T++2nv+X7)Fnf
+> z`$pgevh)w!LR&hx2a|{sW@ac43(Sl>??<SGJB`t-nDXvSDSY*87<ziAenKb9p4UlP
+> z*(x(s)OBgD_f*R-*yBUaiD3U<uhy+{P{T&x@o^!9gXa@=3DKts_p@u`Tb)rQcu{)tzQ
+> zhCXcu`CGkyKuQRy(M0c#fPDWJwyhC`w2mizWqVSf=3D=3DSk-nywG!nJzNT5aM0tVb}Va
+> zK?^BQbY*CPLeJtG``VF4F@BVWBpSVWDFk`J!cOhagXH=3DGB1GApQ?zsg8%y=3DJ$Fgl1
+> z)+=3DjFc)g}pALW^HG}wkoY7fOfbZ274b~+dEoA?l%Xzz`P-F)vb1^UziIz|no!02bS
+> zWPfo?`TiKe8aIuiPilXte381GZ4tQc6=3DY*KS0rehLE^7!W+MOr0AEFmQgw<KSH}Ix
+> ze4qlov3aIg5e(Oh1%CwTZN^`UI!7g(U;iDFt(>e4XDB-M)l0stJd3pf<XujqB2}MW
+> z6EY1#$l>s;T1IYy#{A9ljl@Ba_*dh)Qfq@8Y1A#q%p|d;USrIAZ*n1`%ho*!-RYOY
+> z4j%X?D?CoiaW8A*7aue82GA9jmMGg6Bv&mO#v6uKVw1V~Uu01wXbz(RJN_|xw{`8K
+> zSfdyQCJOdIwdN%h+Jr{$9!6otgQ8^`lkU4u;5wJlsy#P<D{Nc39m@=3D*OHZ533tvD<
+> zfb=3Dc>-IWOj%>%mQ@Ja!#!QIOVuluA}ecSFg;*v@<bR@g*YX>1-?kl9WGes{ulrRWq
+> zTCW@Om{iybhK+m8SiS%n^)Kgk21T`IEW#){Czvz;Fix;5bdkB$BFXimx9iBaRZ9r=3D
+> zV(H0OD8mK94(j^6gF8)|^i-78H`hR#ebBvFq}>vK6-ni7j1S>*viG^nA7<~Bn2KW0
+> zw%D36qxTcpO;c2bYwf)K?p#^LFL4Ifq8?kP?#;(Jo8*(twFPRBj*u~h%Ej$X6JI2E
+> z<L5)YZY#@aM-2sxodox#)=3DG1ycE6A6j?am&HLbKPv@FI{(HAJ#D*V@xG^U`bnRtH<
+> y%w+Y9$G2sBKv@6)0000tuOhH&%TnS10pSUNs0#q29h=3DIr#Ao{g000001X)@}7Iu~Z
+>
+> literal 0
+> HcmV?d00001
+>
+> diff --git a/tests/fsck-tests/063-log-missing-csum/test.sh b/tests/fsck-t=
+ests/063-log-missing-csum/test.sh
+> new file mode 100755
+> index 00000000..40a48508
+> --- /dev/null
+> +++ b/tests/fsck-tests/063-log-missing-csum/test.sh
+> @@ -0,0 +1,14 @@
+> +#!/bin/bash
+> +#
+> +# Verify that check can detect missing log csum items.
+> +
+> +source "$TEST_TOP/common" || exit
+> +
+> +check_prereq btrfs
+> +
+> +check_image() {
+> +       run_mustfail "missing log csum items not detected" \
+> +               "$TOP/btrfs" check "$1"
+> +}
+> +
+> +check_all_images
+> --
+> 2.45.2
+>
+>
 
