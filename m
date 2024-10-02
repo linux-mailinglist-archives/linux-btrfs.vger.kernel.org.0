@@ -1,229 +1,190 @@
-Return-Path: <linux-btrfs+bounces-8463-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8462-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 694FF98E4D0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 23:21:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C63598E4CF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 23:21:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D20FB203E2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 21:21:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CE41B2039F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2024 21:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABDC01946B9;
-	Wed,  2 Oct 2024 21:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 161AB217305;
+	Wed,  2 Oct 2024 21:21:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pNQVcf+k"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RBoGXQnB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97E9216A33
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 21:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E27216A33
+	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 21:21:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727904092; cv=none; b=ofJbZka/XKu+poYx1WbHSLQ7yyFg0C3ZkcSReY8du6peHaDQYr5ZKTqc/GsQq8hCH2sXXmESFa/RnfxO5DFKDZh1SCoj/heDgvkhBBP07B5Eyc8iEoPkbTCA5PO1RdmSZn0oQO+lL0V434KHHCe/pTMxeyMiQ/r8J72+/26sCkE=
+	t=1727904088; cv=none; b=if4sNCGiUdD5WYwvBHVrgxAPA3oCGOqgpJg7A0HUqwkuTtKoDmvsjuZ11fbGt78HxghHLTXZFb77e7qI+xccKwPnAEFZIy9DuIeRNaRwIvHpjr1F1fLzZFmA80vyYRJiHyzIJdGveRCUGdfeaf0i6A6c0AOxmKL9whsS017QnqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727904092; c=relaxed/simple;
-	bh=oWpbKrfVw8zXx7VLXmUm6GSVHxnCP8fvZq5HCSPItuY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nErMBhP6imQPmM9yHWAqWxwSKQ1z5mIZng4WxAYwcuK0V6guHkC5ILSEi1yqn62y2N1/Vo2FPA+Mn1bNrfc/t0x/1yAYKEPd1BWX9iNqX6ThPy2X1dbNB8Oj1SWyFtnW/+ZCJnVky71d4/e4GedX4VaGZ4XGWqzRxul0nzg97e0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pNQVcf+k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B32EC4CED0
-	for <linux-btrfs@vger.kernel.org>; Wed,  2 Oct 2024 21:21:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727904090;
-	bh=oWpbKrfVw8zXx7VLXmUm6GSVHxnCP8fvZq5HCSPItuY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=pNQVcf+kyFuN9uolFT2ArFVGUOAGocJ5rgEL1c4QvkJGhBYpOtk0zPa3o8e8kNHFC
-	 PtWVOgdKvTgApcyR6OU+qLBGQgGzldnAfJHqNlYwX+JlJrrojhNzYObUSD/qbeb57w
-	 zhNnC2m1vd+vgHX+ScYiYC4cOHGqQEjPc5IAsSN5bhI7Rbw2a2FBKl00H+KLlu/b1n
-	 H98topFNtwdeYLDnx+pyRkN/9MJsA/68BFcL3BcWD8K4wUBlqsAUUYEDtcSjlHywFm
-	 iIducM5139s8DRrTIjytW9NAKBlFOdgUy75rXU+k0oqsb1bUIkgEBjxCrKnprLFpDt
-	 6aQsCj6amvf0Q==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5398e33155fso230126e87.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2024 14:21:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXX2GJPYS/SC92eWC+LVmelvI0yJ0UrVmlckfpbzDqywxfAseCXggNnlE/hkNTL1pg+drVtb+fECGz3DQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyY0ZRhkdLBMghvu6fuLZ8mRsHKDIXpX6e6ceCFkTRpXd36HyPb
-	zNpD8z8dQ/Mq4EXRvNylOya9qJZ1takMtsXKV2hEiDzmOg1EMVuPcNmqr+kbj2UIsfDGBZ5ZUM5
-	1rNmGSPjoGCxovqhGl72LnLCaogI=
-X-Google-Smtp-Source: AGHT+IF+60Y6cnkyyIFXFRaPcco7qnGUs5ZnQislwqWOo8KeAev5xo95jV9E7YzHMyGspBwLEwyS2nlMGBvmXLpNy7s=
-X-Received: by 2002:a05:6512:10c9:b0:539:94c4:d9cb with SMTP id
- 2adb3069b0e04-539a06783afmr2941638e87.31.1727904088632; Wed, 02 Oct 2024
- 14:21:28 -0700 (PDT)
+	s=arc-20240116; t=1727904088; c=relaxed/simple;
+	bh=wJL59/Cf+NPRbItCgkvjDu2EofkqQjKNyr8HsE+AltU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Gm2kzjDgoRFxvJ5T5fQR3fXLQiEYCWrZcD7nEjDSf0aOV3W3UWjUeldlKRBtmZI0ktHpafgyCHrswvVjtfie3G1D+hrbCJX6wT+pqxgBvdR/EAyvioeiqkjXz3YQ67xnefez2ANItEDDnYdUzxFee3TBx3K9EdsJxHAH9di7uKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RBoGXQnB; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1727904073; x=1728508873; i=quwenruo.btrfs@gmx.com;
+	bh=cQeYDFLqrhIVSK3PEGEXSEgpwBlK7lPqgrtjAGCtRP8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=RBoGXQnBLuv7eRLz5mWoRb8HxtVTxfT6WlX7XL09LYli4IodLnNG+8ZwrMhXSFh/
+	 Jh9rdtXxcjXjLGty3jfydGYTPOqfkxY8UdbV3bFbpJtAzL/EMnglw1zjtlr0uhz1s
+	 VL7h4OxDqegoXDX42L1CYTqxmUtLbXIc6x0jdd9y5uG5BmUt2KW0P2zBU8g6M+LNh
+	 fwwdFDaKqRByYijYcnj5a7wG0eiM2qk1qnYqe4z1+5dLqP1Tkc4ROtW6HFXEuU776
+	 Q10PrJ9zk10sfBzaugIYfoaWgnDasOHe47DeQtZIjuC1cmsV9SLVqPOSqwKKSwhlq
+	 8nF8N0c0C2EBUpSBAg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MrQEx-1s8hgc1SQ3-00iGWj; Wed, 02
+ Oct 2024 23:21:13 +0200
+Message-ID: <d4445e83-c5a0-4add-b266-2d97bd590efc@gmx.com>
+Date: Thu, 3 Oct 2024 06:51:10 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1727222308.git.wqu@suse.com> <3b02eabf87e477dd25e21a4c2cf7720e530d7531.1727222308.git.wqu@suse.com>
- <CAL3q7H50O_LA8vje8JSH+xVM07VA55G286bWtUwfCdpzfVavfQ@mail.gmail.com> <421d016b-672e-4eb7-bd0c-3269eb675f66@gmx.com>
-In-Reply-To: <421d016b-672e-4eb7-bd0c-3269eb675f66@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 2 Oct 2024 22:20:51 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H66XxddXSiOZ3AC1=fbpyJb+Q5TQrw9ZR=ac4e-wR72Nw@mail.gmail.com>
-Message-ID: <CAL3q7H66XxddXSiOZ3AC1=fbpyJb+Q5TQrw9ZR=ac4e-wR72Nw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] btrfs: avoid unnecessary device path update for
- the same device
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
-	Filipe Manana <fdmanana@suse.com>, Fabian Vogt <fvogt@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix comments in definition of struct
+ btrfs_file_extent_item
+To: Mark Harmstone <maharmstone@fb.com>, linux-btrfs@vger.kernel.org,
+ HAN Yuwei <hrx@bupt.moe>
+References: <20241002164500.2775775-1-maharmstone@fb.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20241002164500.2775775-1-maharmstone@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dEl4j1wn1eHStrKAckQL4zFztwbW6pgkTvas7kBh1CUKO1z0RGJ
+ f4kmAAU7hRHLRHzQoeatL4xI12nHpytUhzejFOAz9xcuo2/x+BDcoyXhQlrd6PD5TuF4oMy
+ rNRf7fiDMX/JLvAWYEOqIQjgX/8ctTj8bhzqIMuUf4EavfWTAAFOwbKOjKa+ZqNzAVWfBhN
+ rkxrCoQZKzivsWxRhUfYg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:6tL+9DrjeYE=;BICS0H/k1uw+anaAxjQGlzAWwYa
+ O1qdcdeE+NxOvIlhXyu/aAoDJpbP+TpU1SPi9T0TvplSlbmrk8mT1/cmfO3KcPx1AlUAOcMPH
+ wiwBPCCNmXC/n1C3i6Jl8PSBXO6/ZmUoFoicUQc96XpxmKWw8ULTCjTIEkYL8sG0OkiiVPYMC
+ hCSwLDnBCrH9D3fgZ+4o1XgcTor1xwtzyGMBT5I+tWYfv8Ez79PB69WUXpAvPt40/Mi1MN+gz
+ +PhRx/uMkoqVpaQYkuUO+tazhZQ3v7AIxkscmMIcywn2Y3JMCg0hgmSQ9549oCBLwx/ldy+8g
+ hHrx0Ha9NxqOgQNt0YQvB4ZWkCmzruX5OdvQBTfAEdhZuKGpfGFcBvVCIMzwXj3jD6y5eoip2
+ AanQk5yGPm+bKSljIGITiEJC5pfnD+tVaQVpWWPtXsX8Pwiq7ntW6STMcbxCAhVsgibRARrUk
+ tZ54Solxx4q2ofxftNLkim/8/w/jZ01uHpqfASnjhd6AhrfKGysHlrdgA1dyCHNv0C/SqoSbo
+ 1bwFTjg0cUDDOSiFUI7VoglUG5lZzt1EyHJpsuN+5NagB3piYKeEEIeS+ZrHngPJQDHErUR6z
+ owBDmL2aXeHt0V5HrpQyufMXX2DRiWukBjArAST92zbJkeRnThnjMtEKhrfSyI1dCo2pAdw42
+ oPvNTVL77z6/bUi6/6DZYe6sHANgei6jeQwzEWEENbJXxYQ6vzLN/rSizPSjsVAGxLGt8raXu
+ I4pPGbLyX5gAIUKWwc2qSO1vOnj/vLMeejKBCpOyvh85a3o4Px6rYPIhKIcCrRhILXTBnwQqq
+ V1OyaWrEIacIxOttYf2YsE9g==
 
-On Wed, Oct 2, 2024 at 10:09=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> =E5=9C=A8 2024/10/2 23:44, Filipe Manana =E5=86=99=E9=81=93:
-> > On Wed, Sep 25, 2024 at 1:14=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
-> >>
-> >> [PROBLEM]
-> >> It is very common for udev to trigger device scan, and every time a
-> >> mounted btrfs device got re-scan from different soft links, we will ge=
-t
-> >> some of unnecessary device path updates, this is especially common
-> >> for LVM based storage:
-> >>
-> >>   # lvs
-> >>    scratch1 test -wi-ao---- 10.00g
-> >>    scratch2 test -wi-a----- 10.00g
-> >>    scratch3 test -wi-a----- 10.00g
-> >>    scratch4 test -wi-a----- 10.00g
-> >>    scratch5 test -wi-a----- 10.00g
-> >>    test     test -wi-a----- 10.00g
-> >>
-> >>   # mkfs.btrfs -f /dev/test/scratch1
-> >>   # mount /dev/test/scratch1 /mnt/btrfs
-> >>   # dmesg -c
-> >>   [  205.705234] BTRFS: device fsid 7be2602f-9e35-4ecf-a6ff-9e91d2c182=
-c9 devid 1 transid 6 /dev/mapper/test-scratch1 (253:4) scanned by mount (11=
-54)
-> >>   [  205.710864] BTRFS info (device dm-4): first mount of filesystem 7=
-be2602f-9e35-4ecf-a6ff-9e91d2c182c9
-> >>   [  205.711923] BTRFS info (device dm-4): using crc32c (crc32c-intel)=
- checksum algorithm
-> >>   [  205.713856] BTRFS info (device dm-4): using free-space-tree
-> >>   [  205.722324] BTRFS info (device dm-4): checking UUID tree
-> >>
-> >> So far so good, but even if we just touched any soft link of
-> >> "dm-4", we will get quite some unnecessary device path updates.
-> >>
-> >>   # touch /dev/mapper/test-scratch1
-> >>   # dmesg -c
-> >>   [  469.295796] BTRFS info: devid 1 device path /dev/mapper/test-scra=
-tch1 changed to /dev/dm-4 scanned by (udev-worker) (1221)
-> >>   [  469.300494] BTRFS info: devid 1 device path /dev/dm-4 changed to =
-/dev/mapper/test-scratch1 scanned by (udev-worker) (1221)
-> >>
-> >> Such device path rename is unnecessary and can lead to random path
-> >> change due to the udev race.
-> >>
-> >> [CAUSE]
-> >> Inside device_list_add(), we are using a very primitive way checking i=
-f
-> >> the device has changed, strcmp().
-> >>
-> >> Which can never handle links well, no matter if it's hard or soft link=
-s.
-> >>
-> >> So every different link of the same device will be treated as a differ=
-ent
-> >> device, causing the unnecessary device path update.
-> >>
-> >> [FIX]
-> >> Introduce a helper, is_same_device(), and use path_equal() to properly
-> >> detect the same block device.
-> >> So that the different soft links won't trigger the rename race.
-> >>
-> >> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> >> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1230641
-> >> Reported-by: Fabian Vogt <fvogt@suse.com>
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >> ---
-> >>   fs/btrfs/volumes.c | 28 +++++++++++++++++++++++++++-
-> >>   1 file changed, 27 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> >> index 995b0647f538..b713e4ebb362 100644
-> >> --- a/fs/btrfs/volumes.c
-> >> +++ b/fs/btrfs/volumes.c
-> >> @@ -732,6 +732,32 @@ const u8 *btrfs_sb_fsid_ptr(const struct btrfs_su=
-per_block *sb)
-> >>          return has_metadata_uuid ? sb->metadata_uuid : sb->fsid;
-> >>   }
-> >>
-> >> +static bool is_same_device(struct btrfs_device *device, const char *n=
-ew_path)
-> >> +{
-> >> +       struct path old =3D { .mnt =3D NULL, .dentry =3D NULL };
-> >> +       struct path new =3D { .mnt =3D NULL, .dentry =3D NULL };
-> >> +       char *old_path;
-> >> +       bool is_same =3D false;
-> >> +       int ret;
-> >> +
-> >> +       if (!device->name)
-> >> +               goto out;
-> >> +
-> >> +       old_path =3D rcu_str_deref(device->name);
-> >
-> > There's a missing rcu_read_lock / unlock btw. It's triggering warnings
-> > in the test vms.
->
-> Thanks a lot, I was also wondering if it's the case, but the zoned code
-> gave me a bad example of not calling rcu_read_lock().
 
-It doesn't call rcu_read_lock() explicitly because it uses the
-btrfs_*_in_rcu() log functions, which do the locking.
-Except for one place for which I've sent a patch earlier today.
 
+=E5=9C=A8 2024/10/3 02:14, Mark Harmstone =E5=86=99=E9=81=93:
+> The comments in the definition of struct btrfs_file_extent_item were
+> written while the FS was still in flux, and are no longer accurate.
 >
-> Shouldn't all btrfs_dev_name() and the usages inside zoned code also be
-> fixed?
+> The range [disk_bytenr, disk_num_bytes) is the same as the extent in the
+> extent tree. There's no difference here between csummed and non-csummed
+> extents, as the comments were implying. And the fields offset and
+> num_bytes are in bytes, not file blocks.
+>
+> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+> ---
+>   include/uapi/linux/btrfs_tree.h | 17 ++++++++---------
+>   1 file changed, 8 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_=
+tree.h
+> index fc29d273845d..5df54a11c74c 100644
+> --- a/include/uapi/linux/btrfs_tree.h
+> +++ b/include/uapi/linux/btrfs_tree.h
+> @@ -1094,24 +1094,23 @@ struct btrfs_file_extent_item {
+>   	__u8 type;
+>
+>   	/*
+> -	 * disk space consumed by the extent, checksum blocks are included
+> -	 * in these numbers
+> +	 * The address and size of the referenced extent.  These should exactl=
+y
+> +	 * match an entry in the extent tree.
 
-Except for that single case, there's no other case anywhere else,
-zoned code or non-zoned code.
+Recently I'm also helping Han Yuwei to understand all the ondisk format.
+Maybe he can provide a better advice from a new respective.
 
+And he is definitely not happy with the docs and comments on those
+structures.
+
+>   	 *
+>   	 * At this offset in the structure, the inline extent data start.
+>   	 */
+>   	__le64 disk_bytenr;
+>   	__le64 disk_num_bytes;
+>   	/*
+> -	 * the logical offset in file blocks (no csums)
+> -	 * this extent record is for.  This allows a file extent to point
+> -	 * into the middle of an existing extent on disk, sharing it
+> -	 * between two snapshots (useful if some bytes in the middle of the
+> -	 * extent have changed
+> +	 * The logical offset in bytes this extent record is for.
+> +	 * This allows a file extent to point into the middle of an existing
+> +	 * extent on disk, sharing it between two snapshots (useful if some
+> +	 * bytes in the middle of the extent have changed)
+
+Maybe you want to add the offset is for the uncompressed data.
+
+Another thing is, maybe we want to have a more consistent wording.
+
+The word "extent record" may be a little confusing, I guess you mean
+"file extent".
+Since the structure is called "btrfs_file_extent_item", we may want to
+unify to "file extent" when referring to the file extent, and "data
+extent" to refer to the data extent.
+
+Thanks,
+Qu
+>   	 */
+>   	__le64 offset;
+>   	/*
+> -	 * the logical number of file blocks (no csums included).  This
+> -	 * always reflects the size uncompressed and without encoding.
+> +	 * The logical number of bytes.  This always reflects the size
+> +	 * uncompressed and without encoding.
+>   	 */
+>   	__le64 num_bytes;
 >
-> Thanks,
-> Qu
-> >
-> > Thanks.
-> >
-> >> +       ret =3D kern_path(old_path, LOOKUP_FOLLOW, &old);
-> >> +       if (ret)
-> >> +               goto out;
-> >> +       ret =3D kern_path(new_path, LOOKUP_FOLLOW, &new);
-> >> +       if (ret)
-> >> +               goto out;
-> >> +       if (path_equal(&old, &new))
-> >> +               is_same =3D true;
-> >> +out:
-> >> +       path_put(&old);
-> >> +       path_put(&new);
-> >> +       return is_same;
-> >> +}
-> >> +
-> >>   /*
-> >>    * Add new device to list of registered devices
-> >>    *
-> >> @@ -852,7 +878,7 @@ static noinline struct btrfs_device *device_list_a=
-dd(const char *path,
-> >>                                  MAJOR(path_devt), MINOR(path_devt),
-> >>                                  current->comm, task_pid_nr(current));
-> >>
-> >> -       } else if (!device->name || strcmp(device->name->str, path)) {
-> >> +       } else if (!device->name || !is_same_device(device, path)) {
-> >>                  /*
-> >>                   * When FS is already mounted.
-> >>                   * 1. If you are here and if the device->name is NULL=
- that
-> >> --
-> >> 2.46.1
-> >>
-> >>
-> >
->
+
 
