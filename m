@@ -1,183 +1,87 @@
-Return-Path: <linux-btrfs+bounces-8493-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8494-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E358398EEDD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 14:13:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9C9598F0B6
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 15:45:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 719A71F2370E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 12:13:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 835052832D1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 13:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD00415E5D3;
-	Thu,  3 Oct 2024 12:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5048C07;
+	Thu,  3 Oct 2024 13:45:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XHlOASG1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FLB2yonR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XHlOASG1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FLB2yonR"
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="N1hK4VTv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A3F16C6A7;
-	Thu,  3 Oct 2024 12:13:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE261474A2
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 13:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727957593; cv=none; b=Y8En0Eqk8uA5FSo+o5ijPoctDhJAvEFkNHf9vX3z/HZ9oxaMPRDxO7OLL9zUXdqqhuMJJtvzvWGK8tWtLybk5sFSMlahCYrC4vrZxTXdkG5K79FLnbSPTCbqgkcAWcI0thyKdCTKxjvCBfMhr4DTT8M8LsvsiBySQEl9uqQFtk4=
+	t=1727963136; cv=none; b=q3DhhFLbv4LvJwScjbHyFxQXiiSXhAWtucReMcu2RUzOI8iJmo5/nhaZfM9NqLBQ189EdvYn+8iBi6n+1Jrl34mLdqZZN7v23kD2WJ7+y1NFn75yJxqkgVvPX2WKTP7rTC7//Rz6Z4sGt8lijM2SfVfxBcskPiPFXyPXM7vaiRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727957593; c=relaxed/simple;
-	bh=ZJIsPxUxCakaPDnQQGQAClJ/pXQL3cD6sbEbl4qM8L0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JU2ho9cr0Prgv13wlDUNTRkK+Zajnyt9iRHkEnQpRtiJ1zYLjbzP2G/riFeL/mDa4e6Uk4K/UIZ0U15qNBEMEvrGdjiNOpP5zXh9mc+j3tQ7HTFOpcU0LZexmRsc1RvOBqT/l9sCAKGVyXgVwBN+J4min5v1lcn/PHdXPVMRxtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XHlOASG1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FLB2yonR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XHlOASG1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FLB2yonR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 65D3B21C03;
-	Thu,  3 Oct 2024 12:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727957589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YmDERVK5Bjc/XeyReSYqm539EjnZa14Ik4KdwHWDMhA=;
-	b=XHlOASG1XtOXjH9Ll6eRj7NR60sQUaktDbEdmUb2GBrh5e1Vn5NMKWXh3cG0Vb4LF+wa/W
-	v9+OIwmg3CDOKupnArecYb48DZMzNM6zXh6J2JPRNAdUaSSbiL+nHPnbEd5AlP8Yt7sGxX
-	+plBcN7tmjOB+qF2ThHL8loAeB0AH2I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727957589;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YmDERVK5Bjc/XeyReSYqm539EjnZa14Ik4KdwHWDMhA=;
-	b=FLB2yonRDGwAdDIY9qTyqPWbywTauirq+ZYTd+3+CEPo8E9U+ysqhRSFmBjHOVxENQq5aP
-	Mucg9UAU4w3mUrDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XHlOASG1;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FLB2yonR
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727957589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YmDERVK5Bjc/XeyReSYqm539EjnZa14Ik4KdwHWDMhA=;
-	b=XHlOASG1XtOXjH9Ll6eRj7NR60sQUaktDbEdmUb2GBrh5e1Vn5NMKWXh3cG0Vb4LF+wa/W
-	v9+OIwmg3CDOKupnArecYb48DZMzNM6zXh6J2JPRNAdUaSSbiL+nHPnbEd5AlP8Yt7sGxX
-	+plBcN7tmjOB+qF2ThHL8loAeB0AH2I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727957589;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YmDERVK5Bjc/XeyReSYqm539EjnZa14Ik4KdwHWDMhA=;
-	b=FLB2yonRDGwAdDIY9qTyqPWbywTauirq+ZYTd+3+CEPo8E9U+ysqhRSFmBjHOVxENQq5aP
-	Mucg9UAU4w3mUrDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5905B13882;
-	Thu,  3 Oct 2024 12:13:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HJi6FVWK/mbYIgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 03 Oct 2024 12:13:09 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0E9ECA086F; Thu,  3 Oct 2024 14:13:05 +0200 (CEST)
-Date: Thu, 3 Oct 2024 14:13:04 +0200
-From: Jan Kara <jack@suse.cz>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
-	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 6/6] migrate: Remove references to Private2
-Message-ID: <20241003121304.fhrjs5ocuzyqbemk@quack3>
-References: <20241002040111.1023018-1-willy@infradead.org>
- <20241002040111.1023018-7-willy@infradead.org>
+	s=arc-20240116; t=1727963136; c=relaxed/simple;
+	bh=A0K8nTar5ZZ6kXsR7wc+2H1+1X/eaZCQjVSjlq0obcA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=BuojSFBjqT9uS+iqRFhSmCk+bzxVqMrrJzF3eDHizeqWxDQoXMZWmCaE9kFZPXs2+OMSup7r447bXusTC8znHRdWmJp5S6wkBIjdS1RpdiuuT/vTAiIxuLwkQ6S4J2i0ggHIs5tsWYKrGYR8q1zwszLtya1GvTl6ZdxTV/hsHlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=N1hK4VTv; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
+	:Subject; bh=i8ADvnXg2KKcDW9+HD6nQ82/Zz/63jALKUEWRr2U/Ss=; b=N1hK4VTvx4RgEpP6
+	9B9qHzRAHlW5j1r8c5mjoK9OA23BTMkCIzwUJBNx7Gi0yLrjvbOV0uJW1CRkkv3ygvHMuYXV8X+mN
+	3uQ/MCGQ9e+oyeMPufBXEhjVi70caBB10zmZQEwhoEtr90VHjOjWC5456e2HsFwjzRHBEKjxbJnxe
+	yCLXUloogxAKvto3bXQaUn5FkgvIoLYl4gfXrTkn9gWzQPWI3PT5E1opK2CCwdX6hgOq9L9XmekoU
+	Q/i2nLjcdf+8mDB3G91hnK+R3n3xBZ1O6/0rOyNrsihu1349Zt0yQg8ej54YI6CFBFv81Uf+Tk18g
+	6DAsqdmpsJh2E5uKWA==;
+Received: from dg by mx.treblig.org with local (Exim 4.96)
+	(envelope-from <dg@treblig.org>)
+	id 1swM96-008f81-28;
+	Thu, 03 Oct 2024 13:45:32 +0000
+Date: Thu, 3 Oct 2024 13:45:32 +0000
+From: "Dr. David Alan Gilbert" <dave@treblig.org>
+To: boris@bur.io
+Cc: linux-btrfs@vger.kernel.org
+Subject: of btrfs_free_squota_rsv
+Message-ID: <Zv6f_ALAoC_kFg9z@gallifrey>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20241002040111.1023018-7-willy@infradead.org>
-X-Rspamd-Queue-Id: 65D3B21C03
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,infradead.org:email];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
+X-Uptime: 13:43:40 up 148 days, 57 min,  1 user,  load average: 0.03, 0.05,
+ 0.02
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On Wed 02-10-24 05:01:08, Matthew Wilcox (Oracle) wrote:
-> These comments are now stale; rewrite them.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Hi Boris,
+  One of my scripts noticed that 'btrfs_free_squota_rsv' is unused;
+it came from your commit:
 
-Looks good. Feel free to add:
+commit e85a0adacf170634878fffcbf34b725aff3f49ed
+Author: Boris Burkov <boris@bur.io>
+Date:   Fri Dec 1 13:00:13 2023 -0800
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+    btrfs: ensure releasing squota reserve on head refs
 
-								Honza
+I was going to deadcode it, but then thought I'd better check since
+unused 'free's sometime turn out to be someone forgot to free something!
 
-> ---
->  mm/migrate.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index df91248755e4..21264c24a404 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -472,7 +472,7 @@ static int folio_expected_refs(struct address_space *mapping,
->   * The number of remaining references must be:
->   * 1 for anonymous folios without a mapping
->   * 2 for folios with a mapping
-> - * 3 for folios with a mapping and PagePrivate/PagePrivate2 set.
-> + * 3 for folios with a mapping and the private flag set.
->   */
->  static int __folio_migrate_mapping(struct address_space *mapping,
->  		struct folio *newfolio, struct folio *folio, int expected_count)
-> @@ -786,7 +786,7 @@ static int __migrate_folio(struct address_space *mapping, struct folio *dst,
->   * @mode: How to migrate the page.
->   *
->   * Common logic to directly migrate a single LRU folio suitable for
-> - * folios that do not use PagePrivate/PagePrivate2.
-> + * folios that do not have private data.
->   *
->   * Folios are locked upon entry and exit.
->   */
-> -- 
-> 2.43.0
-> 
-> 
+Thoughts?
+
+Dave
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
 
