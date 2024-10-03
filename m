@@ -1,87 +1,92 @@
-Return-Path: <linux-btrfs+bounces-8494-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8495-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9C9598F0B6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 15:45:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BFE98F142
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 16:19:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 835052832D1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 13:45:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10ED8B21FBD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 14:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5048C07;
-	Thu,  3 Oct 2024 13:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74A519EEA1;
+	Thu,  3 Oct 2024 14:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="N1hK4VTv"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sQOQ31A8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE261474A2
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 13:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84A36197A65;
+	Thu,  3 Oct 2024 14:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727963136; cv=none; b=q3DhhFLbv4LvJwScjbHyFxQXiiSXhAWtucReMcu2RUzOI8iJmo5/nhaZfM9NqLBQ189EdvYn+8iBi6n+1Jrl34mLdqZZN7v23kD2WJ7+y1NFn75yJxqkgVvPX2WKTP7rTC7//Rz6Z4sGt8lijM2SfVfxBcskPiPFXyPXM7vaiRk=
+	t=1727965162; cv=none; b=IFzjYjQioZWU1srzKoY0AbkxfEsWtkbJT57smcR1JA9oxLzCEa2kruwDBuXcXlbgDBoIu8EOVTN5FNEUrH9EzLPHNXoXYHB7/YgxEjBgoFA5dKJOVUJhL/CGUFCCCOY7vRNAbaDEOC/DxDt46CyiEndXzd6H0rAdyHOaWsDofRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727963136; c=relaxed/simple;
-	bh=A0K8nTar5ZZ6kXsR7wc+2H1+1X/eaZCQjVSjlq0obcA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=BuojSFBjqT9uS+iqRFhSmCk+bzxVqMrrJzF3eDHizeqWxDQoXMZWmCaE9kFZPXs2+OMSup7r447bXusTC8znHRdWmJp5S6wkBIjdS1RpdiuuT/vTAiIxuLwkQ6S4J2i0ggHIs5tsWYKrGYR8q1zwszLtya1GvTl6ZdxTV/hsHlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=N1hK4VTv; arc=none smtp.client-ip=46.235.229.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
-	:Subject; bh=i8ADvnXg2KKcDW9+HD6nQ82/Zz/63jALKUEWRr2U/Ss=; b=N1hK4VTvx4RgEpP6
-	9B9qHzRAHlW5j1r8c5mjoK9OA23BTMkCIzwUJBNx7Gi0yLrjvbOV0uJW1CRkkv3ygvHMuYXV8X+mN
-	3uQ/MCGQ9e+oyeMPufBXEhjVi70caBB10zmZQEwhoEtr90VHjOjWC5456e2HsFwjzRHBEKjxbJnxe
-	yCLXUloogxAKvto3bXQaUn5FkgvIoLYl4gfXrTkn9gWzQPWI3PT5E1opK2CCwdX6hgOq9L9XmekoU
-	Q/i2nLjcdf+8mDB3G91hnK+R3n3xBZ1O6/0rOyNrsihu1349Zt0yQg8ej54YI6CFBFv81Uf+Tk18g
-	6DAsqdmpsJh2E5uKWA==;
-Received: from dg by mx.treblig.org with local (Exim 4.96)
-	(envelope-from <dg@treblig.org>)
-	id 1swM96-008f81-28;
-	Thu, 03 Oct 2024 13:45:32 +0000
-Date: Thu, 3 Oct 2024 13:45:32 +0000
-From: "Dr. David Alan Gilbert" <dave@treblig.org>
-To: boris@bur.io
-Cc: linux-btrfs@vger.kernel.org
-Subject: of btrfs_free_squota_rsv
-Message-ID: <Zv6f_ALAoC_kFg9z@gallifrey>
+	s=arc-20240116; t=1727965162; c=relaxed/simple;
+	bh=yvV/XCZSBeAgPdM0l8YoGpcgZKpyLl9J2RRsBcI7UM8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QJlmhRBHJdTouzK+CeMdNseXZvDqX/wmrymIYwDMWN2bIi+AFXJJnB+xV8XxDW/kgx6wNSsDCpwy4zc8CRxd9POwPL4t7rBYjhk8gMTU/YPmss0Kb/1YvG5ZFHCU/z900orJvFfB6BaltkjQpHPv7r2zZ1o4Gi5NF6nrb7EBUy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sQOQ31A8; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=zVgRWuybk2Cw8g/RlzCJeQTCunq05g5McEWnZP+Fqjg=; b=sQOQ31A87Eez7nqYo4z6bXXHcY
+	KMIfgDY9QdWpwKMwpj76N4pBHwBawzpnp65CuuYOcIQ74zYbQ579z1WO+BOiuQBGZAg1kX1ytavoO
+	tY+EP7PLiGFyVpjKYqnx1pFY8ZxazOj8/TqmZzblMbtTsvhSZMmwgiGgSAERI/oHV2Db/WoNnC5ns
+	de1+k6AfBrzZRxWuVh3zuRseJ0LJEzzcMpSsGja8d+hjOqjVuifwRHorRY+ZSPlLq7jDXVAQulbqB
+	QCDOf8gZ+r2tHssTkhiiTlK9ZGNf55QAxb48bAGwWiP4BBCNjHpXxgEa7P+qltoYx+hDZr7RfsrhW
+	O3Ov+DKQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1swMfm-000000080GV-3Jt3;
+	Thu, 03 Oct 2024 14:19:18 +0000
+Date: Thu, 3 Oct 2024 15:19:18 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
+	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/6] fs: Move clearing of mappedtodisk to buffer.c
+Message-ID: <Zv6n5oAy_2lZzrZ2@casper.infradead.org>
+References: <20241002040111.1023018-1-willy@infradead.org>
+ <20241002040111.1023018-2-willy@infradead.org>
+ <20241003121020.36i4ufbbuf4fbua7@quack3>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/6.1.0-21-amd64 (x86_64)
-X-Uptime: 13:43:40 up 148 days, 57 min,  1 user,  load average: 0.03, 0.05,
- 0.02
-User-Agent: Mutt/2.2.12 (2023-09-09)
+In-Reply-To: <20241003121020.36i4ufbbuf4fbua7@quack3>
 
-Hi Boris,
-  One of my scripts noticed that 'btrfs_free_squota_rsv' is unused;
-it came from your commit:
+On Thu, Oct 03, 2024 at 02:10:20PM +0200, Jan Kara wrote:
+> On Wed 02-10-24 05:01:03, Matthew Wilcox (Oracle) wrote:
+> > The mappedtodisk flag is only meaningful for buffer head based
+> > filesystems.  It should not be cleared for other filesystems.  This allows
+> > us to reuse the mappedtodisk flag to have other meanings in filesystems
+> > that do not use buffer heads.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> 
+> The patch looks good. But I'm bit confused about the changelog. There's no
+> generic code checking for mappedtodisk. Only nilfs2 actually uses it for
+> anything, all other filesystems just never look at it as far as my grepping
+> shows. So speaking about "filesystems that do not use buffer heads" looks
+> somewhat broad to me. Anyway feel free to add:
 
-commit e85a0adacf170634878fffcbf34b725aff3f49ed
-Author: Boris Burkov <boris@bur.io>
-Date:   Fri Dec 1 13:00:13 2023 -0800
+Hmm.  f2fs also uses it in page_mkwrite().  But it looks odd to me.
+Perhaps we could get rid of mappedtodisk entirely ... I see ext4
+used to use it until someone removed it in 9ea7df534ed2 ;-)
 
-    btrfs: ensure releasing squota reserve on head refs
-
-I was going to deadcode it, but then thought I'd better check since
-unused 'free's sometime turn out to be someone forgot to free something!
-
-Thoughts?
-
-Dave
--- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+Anyway, what the changelog is trying to say is that only
+buffer-head filesystems ever have the mappedtodisk flag set, eg by
+block_read_full_folio() or do_mpage_readpage().  So it doesn't make
+sense to clear it for non-buffer-head filesystems, and may inhibit their
+ability to use it for unrelated purposes.
 
