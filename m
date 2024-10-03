@@ -1,93 +1,94 @@
-Return-Path: <linux-btrfs+bounces-8517-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8518-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 363B098F645
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 20:38:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A973298F6E1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 21:15:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E19451F228C0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 18:38:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F01F0B22655
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 19:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0475F1AB506;
-	Thu,  3 Oct 2024 18:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D5FF1AB6ED;
+	Thu,  3 Oct 2024 19:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="RlaHvJRw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K6RPj3CF"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="cVAxsIoT";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pBv9ztbc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B886A8D2
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 18:38:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C95A38DE0;
+	Thu,  3 Oct 2024 19:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727980689; cv=none; b=leczbT4TCBX/uZVS3T81rHCH/5V9BeIjoXaK6YKlgP6N7tlQ+8q0XSgnKs6r+5W8p/B1Amc6DSudCWM70yqgVmMg+HELUeQIxyT7Y97ivfYGNjgN5TcZkzGu2sknDtZrbWsIC0u/mGTT5APHkGJRfgDjOLNfhS78+UohD28DkGI=
+	t=1727982915; cv=none; b=FvJdJ4Jpe76z/Crb6bCzl6sMfDuHdRnbM5P9VTFU+OTIjOKja7ImwYUzBwpewdvg9H2ofhjfvlNRF+AxTEmwPngrQD+K/EmSgiYqThaplD/WEmIQDGH4gWz8fwYkthWpzfgvN8EU7vKtOkdPQcTuubj9PReqq8tY2JXY8LM7RMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727980689; c=relaxed/simple;
-	bh=+ec9cb7vn2u7Rn1Lz4WKv6NUomND/mWkRN2XTpPZ03I=;
+	s=arc-20240116; t=1727982915; c=relaxed/simple;
+	bh=gprhaAfRLX23AC0athsL5N8eHyPnGvBa/jSxZtpXM0k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C71/B82hr/zkHVO4ABSVEC6hV9DH3XnBEJcZ3rBNSoLZf9Cy22zdtTHH2uoqZH7sPa2FbG0cr0RoN5V6olA7MNJYpT0tBRCVpR2mJL0VEVLxsUGfKT/5V+zNP3xqXEF1PgIcaQfH29qsQa5fJjXxKPBwBj3tM/FJzq50kan2Nmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=RlaHvJRw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=K6RPj3CF; arc=none smtp.client-ip=103.168.172.148
+	 Content-Type:Content-Disposition:In-Reply-To; b=vBV+/4uHUuEX9Kpi+kg1oR62y57UNws+MK5d5oKlYFpIfIcslPR+3PDRB43BZ3Xo86vqGsqtMV34Rn8X9H5xKj3JmxDqDj5b/PNFhhZxaaccfGEni2eufZAY+X+G6w2T89Z3DaXRxsFL9VRBqDgcjK3kGXDREUxjKiPO3ycXLMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=cVAxsIoT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pBv9ztbc; arc=none smtp.client-ip=103.168.172.153
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
-	by mailfout.phl.internal (Postfix) with ESMTP id 1603313802C2;
-	Thu,  3 Oct 2024 14:38:06 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-10.internal (MEProxy); Thu, 03 Oct 2024 14:38:06 -0400
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 11D0111400C9;
+	Thu,  3 Oct 2024 15:15:12 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Thu, 03 Oct 2024 15:15:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1727980686; x=1728067086; bh=5AAXA6gOO2
-	QlO1vzPupYLHz5h1S+2Ip2B0Ze7j1xleU=; b=RlaHvJRwywWhrEvy0F5XMs8Sfj
-	aka8qep+xAEBO3hhjkIZE+lg8fCWPX4nysYJHLBdqjDMPj5Lp0MyMtLTncAerHc4
-	EP/5D8qQQGK2nwgCnuMRJssIwOm9kF4Nd5e8iqXB1HFBO72gkn+AHD0jjqMRbBpN
-	RBMZqU0BFzRYYiqVxkLzMhWKrs+18xDVQFHoulPG/7y+XTo2nk0J23zj3VeuF4l2
-	gTW7W26pogJSXFkr3avCYfs50m1Wh8ITSC2ZUqOVbtOvuSIjGIKy7uOUwmdw+dg5
-	AhB05p8iCFiW1ypU7lWyWSqee7PEustcKiwcUbut7vuav1+c9VeNf6pcBKOg==
+	:subject:to:to; s=fm3; t=1727982912; x=1728069312; bh=tV0lDiO1RJ
+	0VvqU94T/ZjPsf+GxfS+Dqd6Z+BWlsIpc=; b=cVAxsIoTlMyLeiOAuqGLHXEy5p
+	/9p3jDH+kE2HepVuAoPMwbDjhuf+Dvw1auusdHda05fcdax1mGGKhdVIcNCpWfvz
+	ArL0buhaALk1tdojnaiM8EcL6qnrue9ffMRzDanTfuKJL8j/f6NNV+kOvUkNbPH3
+	vb6Ix3mzAvYiy+uPThjNMwUnPza4klYMninZezi51RiMyufiLq7R0PvcHxApkS9+
+	L9vIg1TPIb19HIeD7GnZGtFxh/sCLNq1NxgZH2aUOgRCT28rGRqRiGGrK//znvq6
+	uR7EwYTONiDZy4XMH/s0kGKiqjCFKIzIS2yYz9JZ99R+48Ub4tZVYPHM7Lqw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1727980686; x=1728067086; bh=5AAXA6gOO2QlO1vzPupYLHz5h1S+
-	2Ip2B0Ze7j1xleU=; b=K6RPj3CFZgRaYq/owLGQKz4B9aeWxjh0yL51hnpPd/qV
-	MaPXwRkLM4KWQJwD48oLjqUtTDluZ2dZSwxC2cjMrUpa879J62skSAvxl4/huSBQ
-	DD5F/jdO9IhZ14Ywjy/HyR0AQwBKjeg1krRR8E9jwrzguSw8ml3fI7+OpSiIOu0Z
-	Evbh0EwBXKbnCtC3hOplaTMtBpTRZRuygVm/AuCRzOktfeQnu9Jo91B5rlq+cSs5
-	uWyYi8l1W5zjVRJgO8HtEdhXmF+AR14BDEsXaT9J8h8MP38QkXP6MMgd3b/blCIS
-	IiXPtF6y+5ju4BF3vMWx21T6SWHr4I+po+wFuzloYg==
-X-ME-Sender: <xms:jeT-Zv6JNDspCiD2rHX1ggJsiRL-ow-hI9BPwECwWZSD40U1cKgn8A>
-    <xme:jeT-Zk4RdytqetfZvuICGK5SCmvNBicjxNM5g0rDOnA3x5xt631a6Mmt_WambWDHD
-    1bxPlvkEXbWJjnafxM>
-X-ME-Received: <xmr:jeT-ZmfKhgpOSF655vJZ2ev2qGiO6fIpX9CvSJJal867mI1QuK0aHURVPfvma300mH-D_91MzYpIqUhUIATxfqCL27M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvuddguddvkecutefuodetggdotefrod
+	fm2; t=1727982912; x=1728069312; bh=tV0lDiO1RJ0VvqU94T/ZjPsf+Gxf
+	S+Dqd6Z+BWlsIpc=; b=pBv9ztbc963oYYcMqBm6qtPuFu6aE/C+9N9lfjpWqjLr
+	IKJqNQ8/GvskF+DyC0xVbI2pmgwrcSio5S8XyinXylNv6QQEw/AWjrsQvLM+sc5n
+	ZfwOFI9Amn4TlKQTHhYrRrHsgyIT5KV5qeWU/PFQkgngGNikoeQbef1FeOUBlntv
+	ko5WCqBmQLWa7xtfUwfbzoAf9rwMGbgbodClBfu/UscudpC2n7dSut3BX+EZO+RK
+	F80absnP91nCnAAB9p+adN0u9PzEmdbYQC4IpJRrcsl6FgHIm5q8BFZIDEPHII9H
+	wDV6Mhabb/ygQzSoB3wLmcJ8A4XD6MKAsYyBt6eODQ==
+X-ME-Sender: <xms:P-3-ZodV0OF0WcBqnjRZ23BiHSNb42G8KRsqInSzWhONMouX9RqgTA>
+    <xme:P-3-ZqPQ9YR4RB0PvpzWlE7Mk52e0erhwBDFOCMKw79iWo7BFJ2NXDoWC6rODA8MR
+    pOTmfzxVEQB6Ru0n6g>
+X-ME-Received: <xmr:P-3-ZpifwB0QcenZeK9RvqzVFWAkQIihreo1UdZ7b4Lve1iEKRgdn9HcSpsXeaVq_i6matiCsfWs1G8AayPfczemBbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvuddgudefiecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvf
-    evuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhv
-    uceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeejtdegheejfeeuvd
-    ejgfegvedtffeggfffffevffdvgeeuhfdtfeevleejgeeigfenucffohhmrghinhepthhr
-    vggslhhighdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtohepuggrvhgvsehtrhgvsghlihhgrdhorhhgpdhrtg
-    hpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:jeT-ZgIkFMOkThib2j6y2ZQV9v_oIuArpGCSg38S6Wl_SE1KI3C2dw>
-    <xmx:jeT-ZjLlCFJb2qQ3tUhNf23_1VRz36JogJkAdoSC09WGa6eQIdnP0A>
-    <xmx:jeT-ZpwesxIHcTdTypgHvlFWwX-uQhSBz4WrIypGmnFMAQvcLS2cyQ>
-    <xmx:jeT-ZvLBMdb8n9xCBXjOoIj4MP5BTCkHPVdxYp9sEB1PXGkQ5cR5CA>
-    <xmx:juT-ZqWmhARWZrUj9NV-HiLJT7wB24X-3jvHJLhq54FGU5wbxflMsmDO>
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
+    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
+    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeefpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhope
+    hlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    fhhsthgvshhtshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:P-3-Zt_vae_CGXZO1mrrLi1aDEaz4dN6OVV9JlGrvFq3PkvxVTMXlg>
+    <xmx:P-3-ZktAdd3E2E3ztS3VqG37UiTkDT-pgCeJwz6Eva1_BJOX1Em2Gg>
+    <xmx:P-3-ZkFeunL1yq0ODkJJFKf8H-kvF1ObsW5B0JR62YffkM6K14TFyQ>
+    <xmx:P-3-ZjMZkv4y21Yn7Em9mV1G4y12wacxxmqrYZjFMAZ0JGLYX4dAcA>
+    <xmx:QO3-ZgLrnW7rdlRyk35zgJwyXufSGevoXGqjG6DMsDe1BiCxQqwdL7ei>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 3 Oct 2024 14:38:05 -0400 (EDT)
-Date: Thu, 3 Oct 2024 11:38:02 -0700
+ 3 Oct 2024 15:15:11 -0400 (EDT)
+Date: Thu, 3 Oct 2024 12:15:08 -0700
 From: Boris Burkov <boris@bur.io>
-To: "Dr. David Alan Gilbert" <dave@treblig.org>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: of btrfs_free_squota_rsv
-Message-ID: <20241003183802.GA414021@zen.localdomain>
-References: <Zv6f_ALAoC_kFg9z@gallifrey>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH] fstests: generic/563: use fs blocksize to do the writes
+Message-ID: <20241003191508.GA435178@zen.localdomain>
+References: <20240929235038.24497-1-wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -96,42 +97,97 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zv6f_ALAoC_kFg9z@gallifrey>
+In-Reply-To: <20240929235038.24497-1-wqu@suse.com>
 
-On Thu, Oct 03, 2024 at 01:45:32PM +0000, Dr. David Alan Gilbert wrote:
-> Hi Boris,
->   One of my scripts noticed that 'btrfs_free_squota_rsv' is unused;
-> it came from your commit:
+On Mon, Sep 30, 2024 at 09:20:38AM +0930, Qu Wenruo wrote:
+> [FALSE ALERTS]
+> If the system has a page size larger than 4K, and the fs block size
+> matches the page size, test case generic/563 will fail:
 > 
-> commit e85a0adacf170634878fffcbf34b725aff3f49ed
-> Author: Boris Burkov <boris@bur.io>
-> Date:   Fri Dec 1 13:00:13 2023 -0800
+>     --- tests/generic/563.out	2024-04-25 18:13:45.178550333 +0930
+>     +++ /home/adam/xfstests-dev/results//generic/563.out.bad	2024-09-30 09:09:16.155312379 +0930
+>     @@ -3,7 +3,8 @@
+>      read is in range
+>      write is in range
+>      write -> read/write
+>     -read is in range
+>     +read has value of 8388608
+>     +read is NOT in range -33792 .. 33792
+>      write is in range
+>     ...
 > 
->     btrfs: ensure releasing squota reserve on head refs
+> Both Ext4 and btrfs fail with 64K block size and 64K page size
 > 
-> I was going to deadcode it, but then thought I'd better check since
-> unused 'free's sometime turn out to be someone forgot to free something!
+> [CAUSE]
+> The test case writes the 8MiB file using the default block size xfs_io
+> pwrite, which is 4KiB.
 > 
-> Thoughts?
-
-Hi Dave,
-
-Thanks for catching it, and for the thoughtful message.
-
-I believe that function is just pure sloppy duplication. The same
-functionality is in introduced in the same patch in
-fs/btrfs/extent-tree.c in `free_head_ref_squota_rsv`, which _is_ used
-in the cleanup path.
-
-So with that said, please deadcode away!
-
-Boris
-
+> Since the fs block size is 64K, such 4KiB write is unaligned inside a
+> block, causing the fs to read out the full page.
 > 
-> Dave
+> Thus the pwrite will cause the fs to read out every page, resulting the
+> above 8MiB+ read value.
+> 
+> [FIX]
+> Fix the test case by using the fs block size to avoid such unaligned
+> buffered write.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+The rationale and change look good to me. I also tested it on my system
+with blocksize=pagesize=4k, though I don't have access to one with a 64k
+page size for the more interesting confirmation.
+
+Reviewed-by: Boris Burkov <boris@bur.io>
+
+> ---
+>  tests/generic/563 | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tests/generic/563 b/tests/generic/563
+> index 0a8129a6..e8db8acf 100755
+> --- a/tests/generic/563
+> +++ b/tests/generic/563
+> @@ -94,6 +94,8 @@ sminor=$((0x`stat -L -c %T $LOOP_DEV`))
+>  _mkfs_dev $LOOP_DEV >> $seqres.full 2>&1
+>  _mount $LOOP_DEV $SCRATCH_MNT || _fail "mount failed"
+>  
+> +blksize=$(_get_block_size "$SCRATCH_MNT")
+> +
+>  drop_io_cgroup=
+>  grep -q -w io $cgdir/cgroup.subtree_control || drop_io_cgroup=1
+>  
+> @@ -103,7 +105,7 @@ echo "+io" > $cgdir/cgroup.subtree_control || _fail "subtree control"
+>  echo "read/write"
+>  reset
+>  switch_cg $cgdir/$seq-cg
+> -$XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite 0 $iosize" -c fsync \
+> +$XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite -b $blksize 0 $iosize" -c fsync \
+>  	$SCRATCH_MNT/file >> $seqres.full 2>&1
+>  switch_cg $cgdir
+>  $XFS_IO_PROG -c fsync $SCRATCH_MNT/file
+> @@ -114,9 +116,9 @@ check_cg $cgdir/$seq-cg $iosize $iosize 5% 5%
+>  echo "write -> read/write"
+>  reset
+>  switch_cg $cgdir/$seq-cg
+> -$XFS_IO_PROG -c "pwrite 0 $iosize" $SCRATCH_MNT/file >> $seqres.full 2>&1
+> +$XFS_IO_PROG -c "pwrite -b $blksize 0 $iosize" $SCRATCH_MNT/file >> $seqres.full 2>&1
+>  switch_cg $cgdir/$seq-cg-2
+> -$XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite 0 $iosize" $SCRATCH_MNT/file \
+> +$XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite -b $blksize 0 $iosize" $SCRATCH_MNT/file \
+>  	>> $seqres.full 2>&1
+>  switch_cg $cgdir
+>  $XFS_IO_PROG -c fsync $SCRATCH_MNT/file
+> @@ -134,7 +136,7 @@ reset
+>  switch_cg $cgdir/$seq-cg
+>  $XFS_IO_PROG -c "pread 0 $iosize" $SCRATCH_MNT/file >> $seqres.full 2>&1
+>  switch_cg $cgdir/$seq-cg-2
+> -$XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite 0 $iosize" $SCRATCH_MNT/file \
+> +$XFS_IO_PROG -c "pread 0 $iosize" -c "pwrite -b $blksize 0 $iosize" $SCRATCH_MNT/file \
+>  	>> $seqres.full 2>&1
+>  switch_cg $cgdir
+>  $XFS_IO_PROG -c fsync $SCRATCH_MNT/file
 > -- 
->  -----Open up your eyes, open up your mind, open up your code -------   
-> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-> \        dave @ treblig.org |                               | In Hex /
->  \ _________________________|_____ http://www.treblig.org   |_______/
+> 2.46.0
+> 
 
