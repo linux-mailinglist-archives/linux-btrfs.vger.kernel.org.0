@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-8507-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8508-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F09E898F300
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 17:45:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4ED98F301
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 17:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7881EB23740
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 15:45:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF4241F22CA7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 15:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7461AB528;
-	Thu,  3 Oct 2024 15:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04A51AB536;
+	Thu,  3 Oct 2024 15:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="UipRfLA+"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="kV1y60cM"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D76F61AAE16
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 15:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7D11AB522
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 15:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727970213; cv=none; b=sY6A6moXFZkO/xiGOvtnDmC+ar2HPLrRM6EMIVrHavdUqpSVt4By8nA2aYftSqOr9Z34ah55bxzTYrk3ezFOYju+17jmZrSR8aN2TynMEciNFzMzUwqXL0uRKrwsfvfUiJSibfC1UcwuNos7Fel58diRk3cDOjMLCfI4Dck3hoY=
+	t=1727970214; cv=none; b=Pm4HWhiE086o24RJuzOib+nqRALcfJS8iAL4YlEwk10PBnzPb05i0gM2VY6EmidZ88FKv5LLzfUHvnekcB4iI+EVpnN1bR0Ij+FEmaLf+rX+tHFlVAUm+Z2BYhITAExMO3rgUePnVyaTdHgvG53oTNn6MpW4KaV6tVVU/jMaK1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727970213; c=relaxed/simple;
-	bh=Lk4wDPgCaqJdBkq4KjXEaWvM8/p5eXEcoYEqgLXSWDU=;
+	s=arc-20240116; t=1727970214; c=relaxed/simple;
+	bh=SmO24r4D/24sLPqKI8euNDgKL7G5ZQuKKA4EjRnLq8g=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MutPwDh04g6LUUezl0t+knTVLXhqQz6W+FsaA1zIJpp1JGwcRruvW3Kys+vGeUdnsG2bToHkj2oneddDtByA/PgMeOximcHsJnDfuhT+ajgIsFUPptTq+JIbajwk+8n1wsnyGeoZY2xEU1X72Wdktb6C9jibgUg6JPMpVowYinw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=UipRfLA+; arc=none smtp.client-ip=209.85.222.179
+	 MIME-Version; b=svqIZZWELT107bh9n1Bh2cO61wmlnz/RIwaOwlS/fN+yess+8Cfebq1WDwp8LMHdLQRfcsirZnflrCIjTFbtRjB1uJ1hZYiHjOKdkqBBPMtW6AyD0nRz5H5cSaiCWcyz5CSXIWN/3C4CYjRmqpm6UvBLwMGzbiIANxJfL0GNrds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=kV1y60cM; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7a99eee4a5bso83225785a.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Oct 2024 08:43:31 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7a9af813f6cso95058785a.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Oct 2024 08:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1727970210; x=1728575010; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1727970212; x=1728575012; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=U2vw2q9Lj3ia4Ysl9JdLS/BhRI3oAC18Kr8Zfp6lBUg=;
-        b=UipRfLA+bIivFNfxwOZRJxyidIz5fLhgiUcYFsSTaocbMyafnCeIU1GSBIPHUjt3KQ
-         SJsuNwBxDXfeMHgevcwi4/kyriDagDUvkC6vbBlYEJVgXFCQcSrGdFU3DCxzd5nnbdH+
-         UFQJa/XZavTO9yZEVTSOs5VJUJ4zhKPpN6P3bCiU75mmGL/q9+XIvvbGK+l+vj5kFhHZ
-         Gw7XVSw65z+oSTMtrN0vYoaa9vCsZymDPfQguNck/QIZYz/SYjO1oq7ht2novWmSzShM
-         CwtbnRaJ0DXPGdZ7x9PtV17pBD8s0zmSSmpVBmupitlfVqS53NbcDUVc9+zgWAx9zqsN
-         W8oQ==
+        bh=Q+5SgY6eSSkSzB7yxei3Tn7MALUZ5NKccDpnwrg0yUs=;
+        b=kV1y60cMg51TnCsPBq7TEL3WrsjY67fGreisWQHM/OzBrN/IR1EobLkZhYLHmqxX/L
+         z9xkcXdeeGdRZHqlYB9m/PxWiIpAK+pqc6Jx7YDdqPUmBRMahp37DL27HBDzZrreLWHb
+         64VWKbrsHmcmZuj6wRHsuXJnB35t45grCwNHRZ2LfTgqGeuHeSpngHNbrNwZtvV9MxZ7
+         oJWwp8RT7Lkeol9vVwhfLDXBGbl0y0Oe6cWeFhTqn5LVoNWw7Nzp2UQQqsx9wHD3dkMT
+         kskp/mMG5lZlPiXpT/RMKBHb0MdHT4LsLrSZ5pWZwo/NHZkmgaOawe0B9Pzkg0Sg5IKK
+         1E7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727970210; x=1728575010;
+        d=1e100.net; s=20230601; t=1727970212; x=1728575012;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U2vw2q9Lj3ia4Ysl9JdLS/BhRI3oAC18Kr8Zfp6lBUg=;
-        b=Fq4qsnCJNFDk74n+2V2tEJddeXnftAV05lTonmGhAvuyDoQVtlsv8W4n5TCbaX+b1s
-         99ZGuBXUaWftsttw5Zqa6SQJmkL3+j6bIgAO7ttDJ0cGfv3sRiHyShjOoxRyb70kbpnl
-         c03q+YKHAFxHGYIxsx2DX7+tcmRBKCqh2VusnkCCGo2lWf/r6iN2AcTaBwMtvOJVlKuP
-         1pHwpETN18RheqqRF/7KumQgplaKGUi5VJiex89CYH0/UudHjHW7Jl+epW+nf+/hSJIm
-         0tMW34YU8U746zEUR9ggPES0BBDelCYrm9CFuub6ld+rMgkkmepGJFYkLY1kNU8+ifY2
-         PzOA==
-X-Gm-Message-State: AOJu0Yxq8biRT5Clmll2LWD8FiuXIQlptCvjERKRb03CengcTFWpKjKb
-	/77Vmq5iEXU7080fSq+mNsNYn/P85BnfIbP7Zmv1IVGV7X850Risk4NkjF1LH5GkPiLOv52IVrN
-	T
-X-Google-Smtp-Source: AGHT+IGv3vFMRd5ChFRbvLLErvHCyCQ6uNo/O2kR+CvtlbrpMhS4ss5YbhMWequW7MWIeauHVL2Qjw==
-X-Received: by 2002:a05:620a:4004:b0:7a3:524f:7ef7 with SMTP id af79cd13be357-7ae626b23ccmr924779285a.12.1727970210526;
-        Thu, 03 Oct 2024 08:43:30 -0700 (PDT)
+        bh=Q+5SgY6eSSkSzB7yxei3Tn7MALUZ5NKccDpnwrg0yUs=;
+        b=Hc43PhB/CaeGk+5N6cqGHtjVQxObxDJJracDUnQSJX/nOVQ3f7ZUI7ag/zv5mvP5Cg
+         fg58YP5+VOLPYBA3XeW23V0HcpWq6atcq0IFKjI8AXPdFYBKIF4JuNgUpdDv7ciSIODp
+         BvXLAH+tJ6N5T5Bazl00qKeDkB/Xz9WNbwsDl7OBcJY7Tw6HnWLReNEniuhHAWqwq9qM
+         a7N49Mrn14XZksBp9JB+l+Uy6kxjh9rk3q6trJGqjDWE44HF9uDj/YGmsfr3MW5UGVSu
+         d3mHd0zUu8p96yFP1Es5bPk4BNXCn5AA0va0sybExHzr10Cgf1YHi6V1mzHskmCAnNAb
+         A98Q==
+X-Gm-Message-State: AOJu0YyewRLmLpojnEHZn6DNtSVCv3t7/D5NaJODWBdnNJTlXN7nxJyn
+	KeLIGjqR5svnWnXrrPrOkzDVRMh0Qf93Xr8m+zdkCzTN4KuOEz0hJL+3PeaL0SadDRCtnvAgNH+
+	a
+X-Google-Smtp-Source: AGHT+IER3caYw6PmOVv6UmiGMvY1zJ35IgGbZShYLQ/03F59R274GvBOXoatCRSClM8Oj6GsEbRfaw==
+X-Received: by 2002:a05:620a:2496:b0:7ac:e879:1a20 with SMTP id af79cd13be357-7ae626af7d1mr1177321285a.1.1727970211958;
+        Thu, 03 Oct 2024 08:43:31 -0700 (PDT)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae6b3d55basm60076185a.86.2024.10.03.08.43.29
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae6b3dc587sm59683685a.111.2024.10.03.08.43.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2024 08:43:29 -0700 (PDT)
+        Thu, 03 Oct 2024 08:43:31 -0700 (PDT)
 From: Josef Bacik <josef@toxicpanda.com>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH 08/10] btrfs: simplify btrfs_backref_release_cache
-Date: Thu,  3 Oct 2024 11:43:10 -0400
-Message-ID: <4f7e20a5e41c837f05cc88f3f2e4942ca18f8154.1727970063.git.josef@toxicpanda.com>
+Subject: [PATCH 09/10] btrfs: remove the ->lowest and ->leaves members from backref cache
+Date: Thu,  3 Oct 2024 11:43:11 -0400
+Message-ID: <28f56ec3b86951cdae8fa94822bda7a898f6ffbc.1727970063.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1727970062.git.josef@toxicpanda.com>
 References: <cover.1727970062.git.josef@toxicpanda.com>
@@ -84,54 +84,128 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We rely on finding all our nodes on the various lists in the backref
-cache, when they are all also in the rbtree.  Instead just search
-through the rbtree and free everything.
+Before we were keeping all of our nodes on various lists in order to
+make sure everything got cleaned up correctly.  We used node->lowest to
+indicate that node->lower was linked into the cache->leaves list.  Now
+that we do cleanup based on the rb tree both the list and the flag are
+useless, so delete them both.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/backref.c | 22 ++--------------------
- 1 file changed, 2 insertions(+), 20 deletions(-)
+ fs/btrfs/backref.c    | 19 -------------------
+ fs/btrfs/backref.h    |  4 ----
+ fs/btrfs/relocation.c |  7 -------
+ 3 files changed, 30 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 9c011ccd7209..a7462d7f2531 100644
+index a7462d7f2531..5e7d41a8efdb 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -3164,32 +3164,14 @@ void btrfs_backref_cleanup_node(struct btrfs_backref_cache *cache,
- void btrfs_backref_release_cache(struct btrfs_backref_cache *cache)
+@@ -3022,7 +3022,6 @@ void btrfs_backref_init_cache(struct btrfs_fs_info *fs_info,
+ 	for (i = 0; i < BTRFS_MAX_LEVEL; i++)
+ 		INIT_LIST_HEAD(&cache->pending[i]);
+ 	INIT_LIST_HEAD(&cache->detached);
+-	INIT_LIST_HEAD(&cache->leaves);
+ 	INIT_LIST_HEAD(&cache->pending_edge);
+ 	INIT_LIST_HEAD(&cache->useless_node);
+ 	cache->fs_info = fs_info;
+@@ -3130,29 +3129,17 @@ void btrfs_backref_drop_node(struct btrfs_backref_cache *tree,
+ void btrfs_backref_cleanup_node(struct btrfs_backref_cache *cache,
+ 				struct btrfs_backref_node *node)
  {
- 	struct btrfs_backref_node *node;
--	int i;
+-	struct btrfs_backref_node *upper;
+ 	struct btrfs_backref_edge *edge;
  
--	while (!list_empty(&cache->detached)) {
--		node = list_entry(cache->detached.next,
--				  struct btrfs_backref_node, list);
-+	while ((node = rb_entry_safe(rb_first(&cache->rb_root),
-+				     struct btrfs_backref_node, rb_node)))
- 		btrfs_backref_cleanup_node(cache, node);
--	}
+ 	if (!node)
+ 		return;
  
--	while (!list_empty(&cache->leaves)) {
--		node = list_entry(cache->leaves.next,
--				  struct btrfs_backref_node, lower);
--		btrfs_backref_cleanup_node(cache, node);
--	}
+-	BUG_ON(!node->lowest && !node->detached);
+ 	while (!list_empty(&node->upper)) {
+ 		edge = list_entry(node->upper.next, struct btrfs_backref_edge,
+ 				  list[LOWER]);
+-		upper = edge->node[UPPER];
+ 		list_del(&edge->list[LOWER]);
+ 		list_del(&edge->list[UPPER]);
+ 		btrfs_backref_free_edge(cache, edge);
 -
--	for (i = 0; i < BTRFS_MAX_LEVEL; i++) {
--		while (!list_empty(&cache->pending[i])) {
--			node = list_first_entry(&cache->pending[i],
--						struct btrfs_backref_node,
--						list);
--			btrfs_backref_cleanup_node(cache, node);
+-		/*
+-		 * Add the node to leaf node list if no other child block
+-		 * cached.
+-		 */
+-		if (list_empty(&upper->lower)) {
+-			list_add_tail(&upper->lower, &cache->leaves);
+-			upper->lowest = 1;
 -		}
--	}
- 	ASSERT(list_empty(&cache->pending_edge));
- 	ASSERT(list_empty(&cache->useless_node));
- 	ASSERT(list_empty(&cache->detached));
--	ASSERT(RB_EMPTY_ROOT(&cache->rb_root));
- 	ASSERT(!cache->nr_nodes);
- 	ASSERT(!cache->nr_edges);
- }
+ 	}
+ 
+ 	btrfs_backref_drop_node(cache, node);
+@@ -3599,7 +3586,6 @@ int btrfs_backref_finish_upper_links(struct btrfs_backref_cache *cache,
+ 	if (rb_node)
+ 		btrfs_backref_panic(cache->fs_info, start->bytenr,
+ 				    -EEXIST);
+-	list_add_tail(&start->lower, &cache->leaves);
+ 
+ 	/*
+ 	 * Use breadth first search to iterate all related edges.
+@@ -3638,11 +3624,6 @@ int btrfs_backref_finish_upper_links(struct btrfs_backref_cache *cache,
+ 		 * parents have already been linked.
+ 		 */
+ 		if (!RB_EMPTY_NODE(&upper->rb_node)) {
+-			if (upper->lowest) {
+-				list_del_init(&upper->lower);
+-				upper->lowest = 0;
+-			}
+-
+ 			list_add_tail(&edge->list[UPPER], &upper->lower);
+ 			continue;
+ 		}
+diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
+index 6c27c070025a..13c9bc33095a 100644
+--- a/fs/btrfs/backref.h
++++ b/fs/btrfs/backref.h
+@@ -341,8 +341,6 @@ struct btrfs_backref_node {
+ 	struct extent_buffer *eb;
+ 	/* Level of the tree block */
+ 	unsigned int level:8;
+-	/* 1 if no child node is in the cache */
+-	unsigned int lowest:1;
+ 	/* Is the extent buffer locked */
+ 	unsigned int locked:1;
+ 	/* Has the block been processed */
+@@ -395,8 +393,6 @@ struct btrfs_backref_cache {
+ 	 * level blocks may not reflect the new location
+ 	 */
+ 	struct list_head pending[BTRFS_MAX_LEVEL];
+-	/* List of backref nodes with no child node */
+-	struct list_head leaves;
+ 	/* List of detached backref node. */
+ 	struct list_head detached;
+ 
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 507fcc3f56e6..7fb021dd0e67 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -342,12 +342,6 @@ static bool handle_useless_nodes(struct reloc_control *rc,
+ 		if (cur == node)
+ 			ret = true;
+ 
+-		/* The node is the lowest node */
+-		if (cur->lowest) {
+-			list_del_init(&cur->lower);
+-			cur->lowest = 0;
+-		}
+-
+ 		/* Cleanup the lower edges */
+ 		while (!list_empty(&cur->lower)) {
+ 			struct btrfs_backref_edge *edge;
+@@ -426,7 +420,6 @@ static noinline_for_stack struct btrfs_backref_node *build_backref_tree(
+ 		goto out;
+ 	}
+ 
+-	node->lowest = 1;
+ 	cur = node;
+ 
+ 	/* Breadth-first search to build backref cache */
 -- 
 2.43.0
 
