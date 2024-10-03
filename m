@@ -1,110 +1,133 @@
-Return-Path: <linux-btrfs+bounces-8515-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8516-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F314998F601
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 20:27:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 054A898F628
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 20:32:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8128CB21F09
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 18:27:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221541C218AF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 18:32:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695FE1AAE2E;
-	Thu,  3 Oct 2024 18:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A743A1A7076;
+	Thu,  3 Oct 2024 18:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b="ZAbwSQ91"
+	dkim=pass (2048-bit key) header.d=georgianit.com header.i=@georgianit.com header.b="XyPn6iyQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="McK5DSeo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from libero.it (smtp-16.italiaonline.it [213.209.10.16])
+Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA5847F5F
-	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 18:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.209.10.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB1CBA41
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 18:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727980041; cv=none; b=pkUWsJCEHPFtWvaXg19P9JaNEQ3cf2hB0vDnIl+dVfwAmqk+KxzGWhVM/SCTc7wb7oW+wRk7onRxstzG/c60OWpNWzqCse0cq/+XrwQZ+KApgU/KToX3drof/Xlec+0Kg/TlmqX/YabU9uTjAhxsdQ+ebvOqNzy8vbsmEOzw09w=
+	t=1727980350; cv=none; b=hkMihPJ7hnIwPrD9fOBYXHyLJ92cxnpRBFTw23UPmF2Rv40w1EO3F+MrUe8EhAfCn/0iUakv2N8towS0ugwrudmVJAx5Tcu9G+J5mfoghb6GLmTh3zQ/ca7RZ4QfzcWbM4LXQgdrpid/OtN+fTHe7wlvyta64JPTxrNyI1lWXuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727980041; c=relaxed/simple;
-	bh=kszYJN321nr4EXuPRYW9e0OqivcPpvR0VrghzCHOYRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y5NHPBZP/KmMiPJ+jjEl7ecVja5XtuPRvxERHzy4gNnScpEoPc2NDfQyWLmFRUeOj04//hKFQcgUdp7Bxv3XtqydJrw6Mfv6oFr3rWnzXNMSm1mpAK6iSyFQk5yaC7jwp2KoFiBW/TEGx3cqg4TtwpOSyF9Fy0IQPp1AHXEJpQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it; spf=pass smtp.mailfrom=inwind.it; dkim=pass (2048-bit key) header.d=inwind.it header.i=@inwind.it header.b=ZAbwSQ91; arc=none smtp.client-ip=213.209.10.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=inwind.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inwind.it
-Received: from [192.168.1.27] ([84.220.171.3])
-	by smtp-16.iol.local with ESMTPSA
-	id wQVBsKRJRn1YKwQVCsTMr8; Thu, 03 Oct 2024 20:24:38 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-	t=1727979878; bh=9yZS2n/odx/V3WPQjp4F4lSztSvZa5zR59lrCoHeWdI=;
-	h=From;
-	b=ZAbwSQ91TdYyyQ+0LyizfVJWSloyFOzFSRVT8o4R1M4u2DQ75lQlB8FVLoc72fTUS
-	 pQxCwUUi1SD6ftKdSdyZqQHml+nGHobAQ/suIHke33H/CtmGzkzXLEVZ/vFfLyN172
-	 Yh7g3GHexlE30GS3SuUilyIb1IxpKBPdLv3Go6Oq7b4R+hsxiOZuRaM3S7Wkx9wR/q
-	 +Appavu3SNCHAjEWbs2waidEr/cxPGCqt1P1NVVa2H7S0BCERR4rPDPVj+NWHJo1sv
-	 TcHJPFEAvBd09aCJthoG0ENy6ul83cgOODfdvodbv75hYglEFlRTVU7UzvWZpgTQcd
-	 oBHcae3ASIxkQ==
-X-CNFS-Analysis: v=2.4 cv=F62cdbhN c=1 sm=1 tr=0 ts=66fee166 cx=a_exe
- a=hciw9o01/L1eIHAASTHaSw==:117 a=hciw9o01/L1eIHAASTHaSw==:17
- a=IkcTkHD0fZMA:10 a=ok5rCHcrOnwyp_ZeS8oA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-Message-ID: <2733d961-cef0-4fac-8a46-3d74f1c4bf7a@inwind.it>
-Date: Thu, 3 Oct 2024 20:24:23 +0200
+	s=arc-20240116; t=1727980350; c=relaxed/simple;
+	bh=hCzV0hr5zykgu3ekNANywQ3rckfr7IPW91DstsymL68=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=uBLeQp8zWw3IqIFt0gsjrMYwD83LdBHWxmwJ0pEbbq86DJfxnLcO4kYKvYHIhUvBULlW9nSD9O3UhM9y+yW2iQkB8zz7Cz6RTSKKDfJzwHtLEssp6gheqVQaM1vqGg/298m+fQu++I2K9vNr+gtMaOUMI2lAB1JRIf8izzlbPLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=georgianit.com; spf=pass smtp.mailfrom=georgianit.com; dkim=pass (2048-bit key) header.d=georgianit.com header.i=@georgianit.com header.b=XyPn6iyQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=McK5DSeo; arc=none smtp.client-ip=103.168.172.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=georgianit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=georgianit.com
+Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
+	by mailfout.phl.internal (Postfix) with ESMTP id 9AD7D13801E2;
+	Thu,  3 Oct 2024 14:32:26 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-08.internal (MEProxy); Thu, 03 Oct 2024 14:32:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
+	 t=1727980346; x=1728066746; bh=hCzV0hr5zykgu3ekNANywQ3rckfr7IPW
+	91DstsymL68=; b=XyPn6iyQnO8fZxguwkxCmHiN4leOmS4wI8l4huPW1vFZHCr6
+	XE0XB0BfwFxlcDedUhAjdRl01eIrpi6qCj7hMsK5Mfv73PlMyGJ9lTM4j0+Mo+Qh
+	LVW5nSZp4ImzD9DUrINHA+pHgjqAaqMKhyN8Fxe+b6sMbWSxbcPwwYld8e+7H+EE
+	L03Skd1NRAgP4n1+HwHwxCxsO82tojm2YCN/dB46Ip0OtVOV23J8BwsP5jBVF1Ak
+	8zhZ2Mqojy5IYHZ/+yJ4URkP/ZboNPMWQKM5qYesk+a3mdFP+Hiwg/qXQoo4Qcof
+	LAWKTt31lwhArOGsjTna7VGhiGg7ve7U+b62bA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1727980346; x=
+	1728066746; bh=hCzV0hr5zykgu3ekNANywQ3rckfr7IPW91DstsymL68=; b=M
+	cK5DSeooBqX6oDkkYj0We3UGj+7y6DR7hdj+Y+ZVGMVD1UhI3SnIN/doCdSFCPNH
+	TVBus9hstdvz2uCBcoJw1HOlTUXhGpuocDcIrXo0VS+ec87zrrfukdlQ5sIu/bIg
+	rjCxp79QoKI0XHuuJ/spECHiyTavif35QiAQc0vHOOYHH/Ld4ga+sBT34JLmn94u
+	fOoECqsiJX3w3L5jY6zSng2KnIlaiOQ+R2NA1GeugUmZ08cC4yL+03fryE4wgr/t
+	SzzTwr5BEogOG5UhQ4VB7oxGbpFi2VDNrg/0cYsh/v+exk6gWuJYG9oWzqAmmPCE
+	REO6XXb9jNRZ5l2lgQcuw==
+X-ME-Sender: <xms:OuP-ZqdandOWupKjLehvduB0-_cNqEv4f5Zz9Scr9LUE5LK-YlKclQ>
+    <xme:OuP-ZkO_WyW26rZ4Xh75wnE1L7jp5QhE-Er18qynAwhHeTv6ksh4Sbg8JiDHKhOaC
+    HriQJGYO7d87MkTCA>
+X-ME-Received: <xmr:OuP-Zrj5CrmQ7ML2FhOMUuLtEHhckuALLJ-FoO94pY5hqRZKf8TbmKbyAt5sHn7z97JIa0NR2VXkq6FczwQ5KG3LTWANaQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvuddguddvjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefuvfevfhfhkffffgggjggtgfesthejredttdef
+    jeenucfhrhhomheptfgvmhhiucfirghuvhhinhcuoehrvghmihesghgvohhrghhirghnih
+    htrdgtohhmqeenucggtffrrghtthgvrhhnpeefgfeivdefgeffteeffffgtdduleevgeej
+    udevheegtdevteegjeelffeuffehkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtohhmpdhnsggp
+    rhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqd
+    gsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhhrvghijhgr
+    tghksehinhifihhnugdrihht
+X-ME-Proxy: <xmx:OuP-Zn8Pi7BeyYvMJcA0AqmCIoafa83xNRVzt8Ynw2EsXpp0CoQ8Ew>
+    <xmx:OuP-Zmt3ecL3GwQ-HWNVRuoQhZhaOFBlPH5f5qO-TMnY6VnndsoDGg>
+    <xmx:OuP-ZuGWjFBPjGB6llbCdrCXz9DUNClthxTWJJr4Aeu9RG2gFdD1Kw>
+    <xmx:OuP-ZlP1c0MyFm1CNmdEns3g4NhLGQ4ogOWHSn4embQTgrcTgJV9yQ>
+    <xmx:OuP-Zv7mFfejtO_VS5m9yJhoO4kV1S2y6Ba1m0SuNoKo2ccXSVA6V-Ul>
+Feedback-ID: i10c840cd:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Oct 2024 14:32:26 -0400 (EDT)
+Subject: Re: BTRFS list of grievances
+To: kreijack@inwind.it
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
+ <4f672a82-28d8-490e-bdce-e794748d41fd@libero.it>
+ <401088cf-85c0-4ea2-bc4c-b34138eae5e9@libero.it>
+ <8236a191-88d5-b2bb-2048-87b49539a8a3@georgianit.com>
+ <2733d961-cef0-4fac-8a46-3d74f1c4bf7a@inwind.it>
+From: Remi Gauvin <remi@georgianit.com>
+Message-ID: <9fe02f8f-9ad0-56a1-08a6-7949177adce6@georgianit.com>
+Date: Thu, 3 Oct 2024 14:32:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: kreijack@inwind.it
-Subject: Re: BTRFS list of grievances
-To: Remi Gauvin <remi@georgianit.com>
-Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <aebe9671-6f44-9d20-f077-b19e09fa1fcd@dirtcellar.net>
- <4f672a82-28d8-490e-bdce-e794748d41fd@libero.it>
- <401088cf-85c0-4ea2-bc4c-b34138eae5e9@libero.it>
- <8236a191-88d5-b2bb-2048-87b49539a8a3@georgianit.com>
+In-Reply-To: <2733d961-cef0-4fac-8a46-3d74f1c4bf7a@inwind.it>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-From: Goffredo Baroncelli <kreijack@inwind.it>
-In-Reply-To: <8236a191-88d5-b2bb-2048-87b49539a8a3@georgianit.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfAsYXVnmqGfAyQl3xA3/tZYtaazPYiwshk9qx8kKo725CwiHDbC7sQLZj2Rijbr8ePMxDpr4AeGSjidqgjf4byo0u2aIb5AWy2Czdc/9mm5ikxqsrL4H
- vpWrs2TWSDMqceE9TG9b5whvbS1qMK0OlUhIiTVjyNm0XmtayQKeOm2EIfYxpw33Eya9OlT3fTjcQz3A/EztokmGugngaxE4WzW2/x1YZ4pGZlkbFjJ1HtLR
 
-On 03/10/2024 19.26, Remi Gauvin wrote:
-> On 2024-10-03 1:10 p.m., Goffredo Baroncelli wrote:
+On 2024-10-03 2:24 p.m., Goffredo Baroncelli wrote:
+>
 >>
->> $ sudo ./btrfs dev stat -T /mnt/btrfs-raid1/
->> Id Path      Write errors Read errors Flush errors Corruption errors
->> Generation errors
->> -- --------- ------------ ----------- ------------ -----------------
->> -----------------
->>   1 /dev/sda2            0           0            0
->> 763                 0
->>   2 /dev/sdb2            0           0            0
->> 3504                 0
->>   3 /dev/sdd2           13           0            0
->> 6218                 0
->>
-> 
-> I hope that's a made up sample and not actual output of your
-> filesystem.  Otherwise, you have a problem...
-> 
+>
+> It is a real output, and I didn't notice these errors.
+>
+> This was an old disks set. And these are old errors, due to a bad
+> power supply.
+> Replaced the power supply all the problem disappeared.
+>
+> Of course I didn't have any data issue, due to btrfs+raid1.
+>
+> However I never cared to clear those errors. Anyway I run a "btrfs scrub"
+> which didn't find any error.
 
-It is a real output, and I didn't notice these errors.
 
-This was an old disks set. And these are old errors, due to a bad power supply.
-Replaced the power supply all the problem disappeared.
 
-Of course I didn't have any data issue, due to btrfs+raid1.
+An excellent example of btrfs doing it's job as advertised!.. I would
+suggest resetting the counters though, so future problems will be easy
+to spot.
 
-However I never cared to clear those errors. Anyway I run a "btrfs scrub"
-which didn't find any error.
 
-BR
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
 
