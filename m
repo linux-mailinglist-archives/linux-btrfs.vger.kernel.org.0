@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8525-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9488898F89F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 23:11:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7105D98F8A3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 23:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED167B21163
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 21:11:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 953DA1C20B74
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 21:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02AB21B85E0;
-	Thu,  3 Oct 2024 21:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1906D1B85F0;
+	Thu,  3 Oct 2024 21:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="I760Sr1E"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rZR2KbGP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021EA1DFFC;
-	Thu,  3 Oct 2024 21:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670191DFFC;
+	Thu,  3 Oct 2024 21:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727989887; cv=none; b=i6aKi8TV+axows6xFNSxLSXtsum6N9o90SR9BrmM+Xx+q1A3wKXPP60xS5J0igj8p7uYKfTEhiGPNxmcdfkdLoOMfHYODLiUyPbJotj3balj/5o3NTGyT/qKMt7kyHnwp/15Jq1ak8JFW8gF1UrpJa4AcGaPUPCVnJOQfyLctK4=
+	t=1727989919; cv=none; b=LDm2CYnhek/iLkXIoja1QsDq/BUNYvanExQm67MLcN/JEJGW+mAuiIXWzka+caMAQdxn/017t9txN0n0emKqewuAWrayoWuBOD/WDmCy5AkXhP1/+CKyYjUSd51lYq4HvNHm+IUnoSc3mSMFEVBiR/1KaQ88WU2/FYUTQWXpqxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727989887; c=relaxed/simple;
-	bh=BjwhLb7Xvtl2TuwlTfR3B9eUZRhkaQhwh6xIKSkJui4=;
+	s=arc-20240116; t=1727989919; c=relaxed/simple;
+	bh=zHtwbfPKl9esjzv8yZt2knOYFqGTnUuf6NCKuEJj5lg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ScyOOOFUkzdyAhGUScGRx+uGSAlQ2PhGfFugx1Jh3nXV3QQD+9Z2KPMQ3BObkCTn4IYJHCRcIr/5YGbxhMfO8fvuAaYWGKJ2DoYdoP+DfZd8t60/coiWBdgtZ0rJXX9xZDDaqiOxec5oJqeGxzICz2s8ofIq/VuZibuN3vWs1XY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=I760Sr1E; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=NNAcpK2FA0ZEJ3W6yRTbE7yfXt8/4di0LhDWp5ZNcKvACSIwI4nnH+DzFM+5pCPtPz9M6ldUMlqNB2y6EZHRfLtzAwryTfUCR/uMK/3LadlpL1NV3VRsUMHrpHHpHQXvz5USBDrw3pgoCto3472eGsb+PIbd1dxwgQYfgrBiv/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rZR2KbGP; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727989867; x=1728594667; i=quwenruo.btrfs@gmx.com;
-	bh=f7yyoQFSOQT+b4o47Ikgi8HeKRR68DNo0UDKGdowkpY=;
+	s=s31663417; t=1727989901; x=1728594701; i=quwenruo.btrfs@gmx.com;
+	bh=c/lCeAT6hSDYTc+cIPnNyxRQIdQxXMgdm39Hp9rPd68=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=I760Sr1Eg0JkOlO3ArIvJil/4agNBm7RfJcxy9NaNWTMd7hycficV78qCDNhPftz
-	 UCHtavmPopwE/sTSjX2gLM20wmyyqvzmbdFXNi07FhfChLIxkIyQnGdxoh/OAnbS0
-	 gLyDmUs9x4wS2jM9nb4FXSTERZpX4ym0UzSiLrCpY4z8JxPn3uNdEfu5IU635r8PJ
-	 cO5cBi/6TG1GKqymVp7xF6YvUia6lTd4vSR+HWy+U8h9hBamGfKMeDkqZNuoP2uwx
-	 KAaxzdkVx9pkSjhmB7k750IOB2VgDbN6qRXVbQEL6HXcbXTLq9Oj+Ru8EZ5iDQMtg
-	 qUjgllQ4gxip7SNVEA==
+	b=rZR2KbGP8LuADC5pGU1BFCzTYPV7/5KYeat8p4JmrxE4RKrYdxUz48kejBvnItCE
+	 DcwGvPsBphfyMOpoqGtG1lknDB9csSjJV4huZxNUNdYdq5u7rL4/8/9TK7akWFjdt
+	 LtmVNaNPSbQtI5XvPTA+G5TPhqXosnXftIOKa4TWHZpwZWJerLB+MnflzOf19jPdT
+	 OGW2GJhYfBFasETyATaLXR1bO3RVsk2XWb87LnzBXc8eja+4xgDjBOACdW7BBPu7U
+	 iR+I1pX5rYR+yzpVuqoVOJyEgdm8taySqOeFTFwKVohQdMVbxT5Gp/gIxTKNSiSYH
+	 gVCqg4PmkWViFnPVVw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYNNy-1sRF602oyo-00Rq6k; Thu, 03
- Oct 2024 23:11:07 +0200
-Message-ID: <aa56f811-4b80-4df6-92c5-c4f44f73f0f4@gmx.com>
-Date: Fri, 4 Oct 2024 06:41:02 +0930
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MSKu0-1sTxuG3niK-00Y3SI; Thu, 03
+ Oct 2024 23:11:41 +0200
+Message-ID: <99053f27-621e-449c-9d88-f8f82300cd97@gmx.com>
+Date: Fri, 4 Oct 2024 06:41:35 +0930
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: Remove unused btrfs_is_parity_mirror
+Subject: Re: [PATCH] btrfs: Remove unused btrfs_try_tree_write_lock
 To: linux@treblig.org, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
  hch@lst.de
 Cc: rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
  linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20241003142727.203981-1-linux@treblig.org>
+ <20241003142727.203981-2-linux@treblig.org>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,38 +91,37 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20241003142727.203981-1-linux@treblig.org>
+In-Reply-To: <20241003142727.203981-2-linux@treblig.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+OGNNLriVCXX/guSVds8pDWTvhyYa2FMxfnssA2ZU45fbzS8+Bn
- KG1T/njyIOHi14Sca5V4AmKZW6cQEifStiStMvOfQadDbMxf841ELAjtWuoz5DYxEduQuZK
- zzLarnjgk9KEDrBerKrIMVbjZI5vnhI6/OFsbSC0CvvP5a/aKyUs8NWVpPMS5oG0W8xV6az
- GS0/zGY7iscwcmekAHaQQ==
+X-Provags-ID: V03:K1:MqMdwWvqnbZm9lXwDrcyD2ThATOP4QxDs+xR6yUt0MT+SGmW854
+ czVGGFbc5CLn9gL5OToIHvWa4U8D/4keHCD+i3tzYojxEWqXt0br/nfdGL26BPM7paL7+iR
+ 0gF9eJzBXtA6zRdr0B8yzjLyPLFhwnj1/ufUvirUgs7YmRmmwLqouoEpxxKiym0ChN0c7ls
+ kXFywuX7nU5zRgiMZxw4A==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:OsYBCBG2DVs=;X2dfpYhstNvd3KQcHkAqy18miQJ
- ba5ul94SnqURYY04lV60oXYIdQ8iNpAylzsTCQrcnNwNuyQ56eVMH0ixY13DYGKJMNIEXui1W
- CjAOIvThAPL+D3zK0GCvCRV/MJIc+/7Bbcmfk4qop1bQGUDkZg8YyOmnkPn0G89sThb7jIavj
- +4kcS1afJpbYp9GV7sZ+Kv03T/ZoXtrvRTnBFRJjAkGu7jAReiJ8Ue9oREXHwQI+LDpevk54r
- ODLTSbeiDBAtcNiE+NTaw/cjfkd490UUfB92QWa7qeYdOCzwmEhRevovdSZqEToaWgF2M3vGs
- mP0gQzDVab/ezdPrg9HIFyZEic6SYMv4PAgyug89GF89AzBz81aOLdV7QB4JfeM9YWMy2U0PV
- 4fJuwcoXZ4evKDK7JCEtNomIm3BA2K5Ff5QdsDJQo77ULbVUaMEdfSEjZF4SJ8Ap/ZLvjxF7+
- cWtgUjbOYP1fIjLF4lbWDF086dKFXvw3gaVIdGpoC4RYXwyevNqM/0aZ10oqfS6MmLWv6jNV1
- WDSMgMMpIAdmHYcRh2wRVwXX77AdbWarplCDLC0cK6lqDjwwOSrHXQ8PBBesmHzepcLttHBAL
- /oXufdZFboina6qo/WgJBC/13PHB9NNB5FNK+4UHRMGz5rOzXkFzdoP3butVaaFdoBMURu073
- maRdGsdBhUUhrUQj9TkDV5XNsKfbDvbupOSKbpnJMFjEPp/ZwKPX7GKPux8Cx4jMxDoZwAki5
- PNyYAYxF7EjQsv9un1Yl2sk37aUo9K/IAR1cOLJscRj82DQxvh8ArEc+XtmbLJGAhze0hHuaa
- CuhV/WyavMSesn6UbgYu0Y+g==
+UI-OutboundReport: notjunk:1;M01:P0:6QHpx0DvlBY=;9Fn4w0ujUpf2jXBOiXmEWEmfFee
+ Xy68yieZ8QryAvnlPazx1OzQrHRQ+6Lhnpi6G+Z0Q0R6rGdtxA3g/ys3ctc39jjgIuJsPSf5C
+ Qk54tZX3xYDXKJHFpMue70fM81aHB/3DmNjboIcqfGUfSB+7CI3eJjukWaEGSL4CtCHtnlK0X
+ nemYWdsf/Vp4qVdSM0LL66aaKVca5hP/YphaKyAxlZ6noni8GfbPDRjpZxXU2ZBScb5hYSVXX
+ oJLTasG7e3bhVbygmgp1RGBL/VAaCTQVygjctQbIpq832z1hQ2jkrVTy+pNov2KL6mDgTE9B4
+ pyNsZm4IiK15eJu0pp8rpH1PFf+gdTLEi6jRsPLEQLyHmX23wkizlmVEbp5J4gl35hBcZeWIu
+ 87LVckUO7Noaqpp3OLv4dsS9HMCn/qMHNVllFKqfS8eK9YgSaNHYQZrFPb7vtVRMsk6mPi9q0
+ iKcurlnVrdf9xHxgAnz/6UdppbWzF9tIo2dFaVV5xLkdcsjBQKavP6b4Ydp+QhwsnrywaXrCN
+ fYLy5lBaZGz3/88lfQQu4MLwfZozmajpwQMkRFCMn9R+OGfM8VjLvS2CM/q5/U/jTBz5l1iP/
+ WELzH302IVjT3wjyKdVPJjS4dDzXA8IjnAlU73TzUCqTnxhHhsB6rfkAZdCWHXM38kbONGAlW
+ eLRNOciaCB7W0guDRm8ROJl5Zwqv9HG0hPBpHpdqmRzT1zrbX8cttHRyMAVAeZiGTELfhHe4P
+ 9cehMdrfLdxVaDNcGkbl71v0ouw7u9t8xl0epc6ckeYCwkLFRm/XxYaYb7E4Pa9euCWbXoPQ7
+ PetAKcxh44ag6N0kLe910LPQ==
 
 
 
 =E5=9C=A8 2024/10/3 23:57, linux@treblig.org =E5=86=99=E9=81=93:
 > From: "Dr. David Alan Gilbert" <linux@treblig.org>
 >
-> btrfs_is_parity_mirror() has been unused since commit
-> 4886ff7b50f6 ("btrfs: introduce a new helper to submit write bio for rep=
-air")
+> btrfs_try_tree_write_lock() is unused since commit
+> 50b21d7a066f ("btrfs: submit a writeback bio per extent_buffer")
 >
-> Remove it.
+> Remove it (and it's associated trace).
 >
 > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 
@@ -130,54 +130,65 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/volumes.c | 18 ------------------
->   fs/btrfs/volumes.h |  2 --
->   2 files changed, 20 deletions(-)
+>   fs/btrfs/locking.c           | 15 ---------------
+>   fs/btrfs/locking.h           |  1 -
+>   include/trace/events/btrfs.h |  1 -
+>   3 files changed, 17 deletions(-)
 >
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 8f340ad1d938..7453b4999263 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5841,24 +5841,6 @@ unsigned long btrfs_full_stripe_len(struct btrfs_=
-fs_info *fs_info,
->   	return len;
+> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+> index 6a0b7abb5bd9..9a7a7b723305 100644
+> --- a/fs/btrfs/locking.c
+> +++ b/fs/btrfs/locking.c
+> @@ -161,21 +161,6 @@ int btrfs_try_tree_read_lock(struct extent_buffer *=
+eb)
+>   	return 0;
 >   }
 >
-> -int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, =
-u64 len)
+> -/*
+> - * Try-lock for write.
+> - *
+> - * Return 1 if the rwlock has been taken, 0 otherwise
+> - */
+> -int btrfs_try_tree_write_lock(struct extent_buffer *eb)
 > -{
-> -	struct btrfs_chunk_map *map;
-> -	int ret =3D 0;
-> -
-> -	if (!btrfs_fs_incompat(fs_info, RAID56))
-> -		return 0;
-> -
-> -	map =3D btrfs_get_chunk_map(fs_info, logical, len);
-> -
-> -	if (!WARN_ON(IS_ERR(map))) {
-> -		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
-> -			ret =3D 1;
-> -		btrfs_free_chunk_map(map);
+> -	if (down_write_trylock(&eb->lock)) {
+> -		btrfs_set_eb_lock_owner(eb, current->pid);
+> -		trace_btrfs_try_tree_write_lock(eb);
+> -		return 1;
 > -	}
-> -	return ret;
+> -	return 0;
 > -}
 > -
->   static int find_live_mirror(struct btrfs_fs_info *fs_info,
->   			    struct btrfs_chunk_map *map, int first,
->   			    int dev_replace_is_ongoing)
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 03d2d60afe0c..715af107ea5d 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -735,8 +735,6 @@ int btrfs_run_dev_stats(struct btrfs_trans_handle *t=
-rans);
->   void btrfs_rm_dev_replace_remove_srcdev(struct btrfs_device *srcdev);
->   void btrfs_rm_dev_replace_free_srcdev(struct btrfs_device *srcdev);
->   void btrfs_destroy_dev_replace_tgtdev(struct btrfs_device *tgtdev);
-> -int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info,
-> -			   u64 logical, u64 len);
->   unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
->   				    u64 logical);
->   u64 btrfs_calc_stripe_length(const struct btrfs_chunk_map *map);
+>   /*
+>    * Release read lock.
+>    */
+> diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
+> index 3c15c75e0582..46c8be2afab1 100644
+> --- a/fs/btrfs/locking.h
+> +++ b/fs/btrfs/locking.h
+> @@ -180,7 +180,6 @@ static inline void btrfs_tree_read_lock(struct exten=
+t_buffer *eb)
+>
+>   void btrfs_tree_read_unlock(struct extent_buffer *eb);
+>   int btrfs_try_tree_read_lock(struct extent_buffer *eb);
+> -int btrfs_try_tree_write_lock(struct extent_buffer *eb);
+>   struct extent_buffer *btrfs_lock_root_node(struct btrfs_root *root);
+>   struct extent_buffer *btrfs_read_lock_root_node(struct btrfs_root *roo=
+t);
+>   struct extent_buffer *btrfs_try_read_lock_root_node(struct btrfs_root =
+*root);
+> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+> index bf60ad50011e..9b8d41a00234 100644
+> --- a/include/trace/events/btrfs.h
+> +++ b/include/trace/events/btrfs.h
+> @@ -2341,7 +2341,6 @@ DEFINE_BTRFS_LOCK_EVENT(btrfs_tree_read_unlock_blo=
+cking);
+>   DEFINE_BTRFS_LOCK_EVENT(btrfs_set_lock_blocking_read);
+>   DEFINE_BTRFS_LOCK_EVENT(btrfs_set_lock_blocking_write);
+>   DEFINE_BTRFS_LOCK_EVENT(btrfs_try_tree_read_lock);
+> -DEFINE_BTRFS_LOCK_EVENT(btrfs_try_tree_write_lock);
+>   DEFINE_BTRFS_LOCK_EVENT(btrfs_tree_read_lock_atomic);
+>
+>   DECLARE_EVENT_CLASS(btrfs__space_info_update,
 
 
