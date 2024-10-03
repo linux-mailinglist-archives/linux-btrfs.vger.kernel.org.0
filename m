@@ -1,92 +1,127 @@
-Return-Path: <linux-btrfs+bounces-8495-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8497-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92BFE98F142
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 16:19:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BC698F160
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 16:28:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10ED8B21FBD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 14:19:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCFBCB2309D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 14:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C74A519EEA1;
-	Thu,  3 Oct 2024 14:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 079FA1CFBC;
+	Thu,  3 Oct 2024 14:28:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sQOQ31A8"
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="UQL1ETZn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84A36197A65;
-	Thu,  3 Oct 2024 14:19:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 316EC19F100;
+	Thu,  3 Oct 2024 14:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727965162; cv=none; b=IFzjYjQioZWU1srzKoY0AbkxfEsWtkbJT57smcR1JA9oxLzCEa2kruwDBuXcXlbgDBoIu8EOVTN5FNEUrH9EzLPHNXoXYHB7/YgxEjBgoFA5dKJOVUJhL/CGUFCCCOY7vRNAbaDEOC/DxDt46CyiEndXzd6H0rAdyHOaWsDofRY=
+	t=1727965684; cv=none; b=B3Wb6AESY54mb+oTih009yKelufJpy6tYOCuCLe2VpGgPbr9KiPJhgJZDUl64DlqICqzprGz5jS2A8VClLNLrhviB1/3IQWrGRItE7sSVyNxHL2mIo39Rf/l/QCWAKE7TNslcVnHctnUB2KrUWmjvJ53y9bplO98iA92vCXuRFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727965162; c=relaxed/simple;
-	bh=yvV/XCZSBeAgPdM0l8YoGpcgZKpyLl9J2RRsBcI7UM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QJlmhRBHJdTouzK+CeMdNseXZvDqX/wmrymIYwDMWN2bIi+AFXJJnB+xV8XxDW/kgx6wNSsDCpwy4zc8CRxd9POwPL4t7rBYjhk8gMTU/YPmss0Kb/1YvG5ZFHCU/z900orJvFfB6BaltkjQpHPv7r2zZ1o4Gi5NF6nrb7EBUy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sQOQ31A8; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=zVgRWuybk2Cw8g/RlzCJeQTCunq05g5McEWnZP+Fqjg=; b=sQOQ31A87Eez7nqYo4z6bXXHcY
-	KMIfgDY9QdWpwKMwpj76N4pBHwBawzpnp65CuuYOcIQ74zYbQ579z1WO+BOiuQBGZAg1kX1ytavoO
-	tY+EP7PLiGFyVpjKYqnx1pFY8ZxazOj8/TqmZzblMbtTsvhSZMmwgiGgSAERI/oHV2Db/WoNnC5ns
-	de1+k6AfBrzZRxWuVh3zuRseJ0LJEzzcMpSsGja8d+hjOqjVuifwRHorRY+ZSPlLq7jDXVAQulbqB
-	QCDOf8gZ+r2tHssTkhiiTlK9ZGNf55QAxb48bAGwWiP4BBCNjHpXxgEa7P+qltoYx+hDZr7RfsrhW
-	O3Ov+DKQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1swMfm-000000080GV-3Jt3;
-	Thu, 03 Oct 2024 14:19:18 +0000
-Date: Thu, 3 Oct 2024 15:19:18 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
-	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 1/6] fs: Move clearing of mappedtodisk to buffer.c
-Message-ID: <Zv6n5oAy_2lZzrZ2@casper.infradead.org>
-References: <20241002040111.1023018-1-willy@infradead.org>
- <20241002040111.1023018-2-willy@infradead.org>
- <20241003121020.36i4ufbbuf4fbua7@quack3>
+	s=arc-20240116; t=1727965684; c=relaxed/simple;
+	bh=e2vBzQgDG3J70InybM+okDYij3ht//n4E24P3h7DHpI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U4qFuDGPndf7yLwJfK0aSCpx0DtJ0rgAOGSTZ/r4reaq4ZZ6vC1IE1bAR15tOUpNFrptx6sqGO+FfS6pyz1nmXXuKphDZZKyL2fRohts2ZgBT1MQNGvk1XUY7YNUDkRCt3O5muIgi4Ry4arsI/0iZrkUvluesQa4xP77ld/Ok/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=UQL1ETZn; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=MIME-Version:Message-ID:Date:Subject:From:Content-Type:From
+	:Subject; bh=ryR75RtHi8480dF5YG3zRz82tnDhripKj2gfaZvDK8w=; b=UQL1ETZnmvmqUjCi
+	aB8nbg82yne+QVR17QkChUsB/oO9oPUDaINuLV77Lpgy7QXGm7pL7SvEpTtjHvIGwEPG1gqxBLb5D
+	Lf7ar+/At7L11v5Iq2bI8rsxGvQQhXlkwepsv/HUrWms27obuqoiMW+0dXjnV1TIc4G9NzBLNHfea
+	x8uKCn5Mp8vT2YXm/5+XgY7MT8rcIEMfDuGLqGa+IzZrF6GvnncOk2OpPXpaIH0+0SW2JtitnHPIP
+	H6o9gTpdyCIGjUdrX0cnCnUvqJum83DnH5cOlruPmhTkwB5ZF4ZNshn2NbLIkFsPTsxCR81pBaJHC
+	UbhGEjVeZ3BvXdPVxA==;
+Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
+	by mx.treblig.org with esmtp (Exim 4.96)
+	(envelope-from <linux@treblig.org>)
+	id 1swMng-008fdF-0l;
+	Thu, 03 Oct 2024 14:27:28 +0000
+From: linux@treblig.org
+To: clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	hch@lst.de
+Cc: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Dr. David Alan Gilbert" <linux@treblig.org>
+Subject: [PATCH] btrfs: Remove unused btrfs_is_parity_mirror
+Date: Thu,  3 Oct 2024 15:27:26 +0100
+Message-ID: <20241003142727.203981-1-linux@treblig.org>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241003121020.36i4ufbbuf4fbua7@quack3>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 03, 2024 at 02:10:20PM +0200, Jan Kara wrote:
-> On Wed 02-10-24 05:01:03, Matthew Wilcox (Oracle) wrote:
-> > The mappedtodisk flag is only meaningful for buffer head based
-> > filesystems.  It should not be cleared for other filesystems.  This allows
-> > us to reuse the mappedtodisk flag to have other meanings in filesystems
-> > that do not use buffer heads.
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> The patch looks good. But I'm bit confused about the changelog. There's no
-> generic code checking for mappedtodisk. Only nilfs2 actually uses it for
-> anything, all other filesystems just never look at it as far as my grepping
-> shows. So speaking about "filesystems that do not use buffer heads" looks
-> somewhat broad to me. Anyway feel free to add:
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
 
-Hmm.  f2fs also uses it in page_mkwrite().  But it looks odd to me.
-Perhaps we could get rid of mappedtodisk entirely ... I see ext4
-used to use it until someone removed it in 9ea7df534ed2 ;-)
+btrfs_is_parity_mirror() has been unused since commit
+4886ff7b50f6 ("btrfs: introduce a new helper to submit write bio for repair")
 
-Anyway, what the changelog is trying to say is that only
-buffer-head filesystems ever have the mappedtodisk flag set, eg by
-block_read_full_folio() or do_mpage_readpage().  So it doesn't make
-sense to clear it for non-buffer-head filesystems, and may inhibit their
-ability to use it for unrelated purposes.
+Remove it.
+
+Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+---
+ fs/btrfs/volumes.c | 18 ------------------
+ fs/btrfs/volumes.h |  2 --
+ 2 files changed, 20 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 8f340ad1d938..7453b4999263 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5841,24 +5841,6 @@ unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
+ 	return len;
+ }
+ 
+-int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
+-{
+-	struct btrfs_chunk_map *map;
+-	int ret = 0;
+-
+-	if (!btrfs_fs_incompat(fs_info, RAID56))
+-		return 0;
+-
+-	map = btrfs_get_chunk_map(fs_info, logical, len);
+-
+-	if (!WARN_ON(IS_ERR(map))) {
+-		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
+-			ret = 1;
+-		btrfs_free_chunk_map(map);
+-	}
+-	return ret;
+-}
+-
+ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_chunk_map *map, int first,
+ 			    int dev_replace_is_ongoing)
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 03d2d60afe0c..715af107ea5d 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -735,8 +735,6 @@ int btrfs_run_dev_stats(struct btrfs_trans_handle *trans);
+ void btrfs_rm_dev_replace_remove_srcdev(struct btrfs_device *srcdev);
+ void btrfs_rm_dev_replace_free_srcdev(struct btrfs_device *srcdev);
+ void btrfs_destroy_dev_replace_tgtdev(struct btrfs_device *tgtdev);
+-int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info,
+-			   u64 logical, u64 len);
+ unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
+ 				    u64 logical);
+ u64 btrfs_calc_stripe_length(const struct btrfs_chunk_map *map);
+-- 
+2.46.2
+
 
