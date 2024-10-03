@@ -1,194 +1,290 @@
-Return-Path: <linux-btrfs+bounces-8526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8527-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7105D98F8A3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 23:12:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42DAB98F8E8
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 23:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 953DA1C20B74
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 21:12:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C78CE2839A3
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2024 21:27:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1906D1B85F0;
-	Thu,  3 Oct 2024 21:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7013E1B85F6;
+	Thu,  3 Oct 2024 21:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rZR2KbGP"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="dLPKoKho";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qFGLIn44"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670191DFFC;
-	Thu,  3 Oct 2024 21:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3672B224D1
+	for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2024 21:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727989919; cv=none; b=LDm2CYnhek/iLkXIoja1QsDq/BUNYvanExQm67MLcN/JEJGW+mAuiIXWzka+caMAQdxn/017t9txN0n0emKqewuAWrayoWuBOD/WDmCy5AkXhP1/+CKyYjUSd51lYq4HvNHm+IUnoSc3mSMFEVBiR/1KaQ88WU2/FYUTQWXpqxs=
+	t=1727990870; cv=none; b=Q0h99+Q5L6BNbEgCHiovYgCE+lu/d9BgO90Vos7XweXhdZ6y1s7pFf2J4/I8fXTKJzxd9NvRba91l59zEk+BPjHi42+l3GZgqi1UG1CwrmpfVv9dPxuJ4njDZQr4AG6owm1XWZSvrLc6515Rs9OWRXtxpsa7pJ1KekzJf85OBUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727989919; c=relaxed/simple;
-	bh=zHtwbfPKl9esjzv8yZt2knOYFqGTnUuf6NCKuEJj5lg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NNAcpK2FA0ZEJ3W6yRTbE7yfXt8/4di0LhDWp5ZNcKvACSIwI4nnH+DzFM+5pCPtPz9M6ldUMlqNB2y6EZHRfLtzAwryTfUCR/uMK/3LadlpL1NV3VRsUMHrpHHpHQXvz5USBDrw3pgoCto3472eGsb+PIbd1dxwgQYfgrBiv/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rZR2KbGP; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1727989901; x=1728594701; i=quwenruo.btrfs@gmx.com;
-	bh=c/lCeAT6hSDYTc+cIPnNyxRQIdQxXMgdm39Hp9rPd68=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=rZR2KbGP8LuADC5pGU1BFCzTYPV7/5KYeat8p4JmrxE4RKrYdxUz48kejBvnItCE
-	 DcwGvPsBphfyMOpoqGtG1lknDB9csSjJV4huZxNUNdYdq5u7rL4/8/9TK7akWFjdt
-	 LtmVNaNPSbQtI5XvPTA+G5TPhqXosnXftIOKa4TWHZpwZWJerLB+MnflzOf19jPdT
-	 OGW2GJhYfBFasETyATaLXR1bO3RVsk2XWb87LnzBXc8eja+4xgDjBOACdW7BBPu7U
-	 iR+I1pX5rYR+yzpVuqoVOJyEgdm8taySqOeFTFwKVohQdMVbxT5Gp/gIxTKNSiSYH
-	 gVCqg4PmkWViFnPVVw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MSKu0-1sTxuG3niK-00Y3SI; Thu, 03
- Oct 2024 23:11:41 +0200
-Message-ID: <99053f27-621e-449c-9d88-f8f82300cd97@gmx.com>
-Date: Fri, 4 Oct 2024 06:41:35 +0930
+	s=arc-20240116; t=1727990870; c=relaxed/simple;
+	bh=fgwRrO+BDYPgXinLLxRZzm3VhkmEtyL7CCi0TdD60WM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WgMCaNWHBwELCWV6cFyJKkjkFkyltsUg5ayGV2AKD6Yb1SdF35rvCVhqyJXpkGEoJjle4F3j3MiSGbXuVyHvy0tMV2iMI9kOohSLDp0FhIHtcqRrWfWWQuuCGiagQnMEgCfDBKU3IlvknKgaZjF/0v8CQSBkaxq6ArIjnzpXKdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=dLPKoKho; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qFGLIn44; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfout.phl.internal (Postfix) with ESMTP id 5914E13800CB;
+	Thu,  3 Oct 2024 17:27:47 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Thu, 03 Oct 2024 17:27:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1727990867; x=1728077267; bh=YZuv0BReAO
+	e7FCN5TEaKhTm1K8bXRpPCgLKiz6EuTyM=; b=dLPKoKhox65LCsY27l35bz2B6h
+	WAK5fLspR2GR+4czAy01wcIq67bwVNT3GNCCogrAo4Ot+9raIRgJtAX5RwEq+C6S
+	wcGiYAJifi5c5ebQjdhjvOKGeu1zSR4e0KLfkIOCSTOV5eAclFIq7BblMEJRVKyS
+	uRX+GVHon99ndpNTtpUurqqr9eTlAN8njLaqJxioEDvy8W13AUGbsC5B4yqtooF8
+	u9gG1/dd8fwTIzvTwu5d23aNlAALNo+oXwXcnWRQ3xwEynve77kJwD9YUFAVaXk/
+	3SsOjSN+d7j2a77W0DL1lChNcKbEn82YrwUOQ0lu9uxbV/I4XjNJ75DrXmWg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1727990867; x=1728077267; bh=YZuv0BReAOe7FCN5TEaKhTm1K8bX
+	RpPCgLKiz6EuTyM=; b=qFGLIn44R7PqA/7QpuTA6ZeQmfqP9T5+DSFurLpffC9G
+	Fo82dKio/r1Ii7EERhvZ2gVoj8JKaZZCfdL2raRbuVRjTVwqq5bZucbOtEVW1VxZ
+	KZCrhJmo+rKP4Y5P69rOuymupOEhXgmYbflfUJ6RPCnCA72HFpPar+UNapHf7odT
+	ro+bxY8sekJw83dT1MzcygKa4KCmPEedhH7L7qQOSUJbXPcMNDKmWLeBuaNx3OJY
+	D/Jt1P08ZihLAqcuVyb7Z8hV6bB8fW0SWZ2opGHEsHDbKrmswXnbqJVYY2xLCFxq
+	5g7sOWRjl8+SIsefkN54ZerqyGDuf8Mk4l6A0YtbTw==
+X-ME-Sender: <xms:Ugz_Zu7iIkj3cNuSo33CBRfFsig3EXGrqTZXoktwixuBcYJWsFynGA>
+    <xme:Ugz_Zn6PGu4uRCRjxmBYo_l7Jf-vvtNB65nDV0tFeT8LBPduGBcelue8HLVJALBUP
+    In_neeCSR9YPqrD5vI>
+X-ME-Received: <xmr:Ugz_ZtekwsFc-HlMBFmMaM3iPtM_m-JsJFAaYDAmAOieB06jD517RS06if3hY0TXMbH0xYeiZL1GKEnHpeJmqNWvSus>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddvuddgudeivdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddv
+    necuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqne
+    cuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiudfg
+    uefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeefpdhmohguvgep
+    shhmthhpohhuthdprhgtphhtthhopehjohhsvghfsehtohigihgtphgrnhgurgdrtghomh
+    dprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+    pdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:Uwz_ZrLFEA3Jk4SdmZERYgoLq53aPebl1GHFDzHz0A1lu_C5qPgONA>
+    <xmx:Uwz_ZiLdHXr6TYeluITmwWce0hP6QslMoGSAYqKcRYro6QHwEYyMSg>
+    <xmx:Uwz_ZsxPoquNK3tlqbgtO-SP22sxCeVBoYhVEN-Ngtx8Ik5il53pkQ>
+    <xmx:Uwz_ZmLTetLK-Lk1YkbwvxwcDyXkJqVFpl6vUzOAK1le6QmBN57xig>
+    <xmx:Uwz_Zu1ioBH5Rr7IhbHB2cLJltNYAtrrrZyVcFJLyYWy7too92up29cT>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 3 Oct 2024 17:27:46 -0400 (EDT)
+Date: Thu, 3 Oct 2024 14:27:43 -0700
+From: Boris Burkov <boris@bur.io>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 04/10] btrfs: cleanup select_reloc_root
+Message-ID: <20241003212743.GB435178@zen.localdomain>
+References: <cover.1727970062.git.josef@toxicpanda.com>
+ <fe72732de97d83d6f5b649fce1642019e78de981.1727970063.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: Remove unused btrfs_try_tree_write_lock
-To: linux@treblig.org, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
- hch@lst.de
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20241003142727.203981-1-linux@treblig.org>
- <20241003142727.203981-2-linux@treblig.org>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20241003142727.203981-2-linux@treblig.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MqMdwWvqnbZm9lXwDrcyD2ThATOP4QxDs+xR6yUt0MT+SGmW854
- czVGGFbc5CLn9gL5OToIHvWa4U8D/4keHCD+i3tzYojxEWqXt0br/nfdGL26BPM7paL7+iR
- 0gF9eJzBXtA6zRdr0B8yzjLyPLFhwnj1/ufUvirUgs7YmRmmwLqouoEpxxKiym0ChN0c7ls
- kXFywuX7nU5zRgiMZxw4A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:6QHpx0DvlBY=;9Fn4w0ujUpf2jXBOiXmEWEmfFee
- Xy68yieZ8QryAvnlPazx1OzQrHRQ+6Lhnpi6G+Z0Q0R6rGdtxA3g/ys3ctc39jjgIuJsPSf5C
- Qk54tZX3xYDXKJHFpMue70fM81aHB/3DmNjboIcqfGUfSB+7CI3eJjukWaEGSL4CtCHtnlK0X
- nemYWdsf/Vp4qVdSM0LL66aaKVca5hP/YphaKyAxlZ6noni8GfbPDRjpZxXU2ZBScb5hYSVXX
- oJLTasG7e3bhVbygmgp1RGBL/VAaCTQVygjctQbIpq832z1hQ2jkrVTy+pNov2KL6mDgTE9B4
- pyNsZm4IiK15eJu0pp8rpH1PFf+gdTLEi6jRsPLEQLyHmX23wkizlmVEbp5J4gl35hBcZeWIu
- 87LVckUO7Noaqpp3OLv4dsS9HMCn/qMHNVllFKqfS8eK9YgSaNHYQZrFPb7vtVRMsk6mPi9q0
- iKcurlnVrdf9xHxgAnz/6UdppbWzF9tIo2dFaVV5xLkdcsjBQKavP6b4Ydp+QhwsnrywaXrCN
- fYLy5lBaZGz3/88lfQQu4MLwfZozmajpwQMkRFCMn9R+OGfM8VjLvS2CM/q5/U/jTBz5l1iP/
- WELzH302IVjT3wjyKdVPJjS4dDzXA8IjnAlU73TzUCqTnxhHhsB6rfkAZdCWHXM38kbONGAlW
- eLRNOciaCB7W0guDRm8ROJl5Zwqv9HG0hPBpHpdqmRzT1zrbX8cttHRyMAVAeZiGTELfhHe4P
- 9cehMdrfLdxVaDNcGkbl71v0ouw7u9t8xl0epc6ckeYCwkLFRm/XxYaYb7E4Pa9euCWbXoPQ7
- PetAKcxh44ag6N0kLe910LPQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe72732de97d83d6f5b649fce1642019e78de981.1727970063.git.josef@toxicpanda.com>
 
-
-
-=E5=9C=A8 2024/10/3 23:57, linux@treblig.org =E5=86=99=E9=81=93:
-> From: "Dr. David Alan Gilbert" <linux@treblig.org>
->
-> btrfs_try_tree_write_lock() is unused since commit
-> 50b21d7a066f ("btrfs: submit a writeback bio per extent_buffer")
->
-> Remove it (and it's associated trace).
->
-> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
+On Thu, Oct 03, 2024 at 11:43:06AM -0400, Josef Bacik wrote:
+> We have this setup as a loop, but in reality we will never walk back up
+> the backref tree, if we do then it's a bug.  Get rid of the loop and
+> handle the case where we have node->new_bytenr set at all.  Previous the
+> check was only if node->new_bytenr != root->node->start, but if it did
+> then we would hit the WARN_ON() and walk back up the tree.
+> 
+> Instead we want to just freak out if ->new_bytenr is set, and then do
+> the normal updating of the node for the reloc root and carry on.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->   fs/btrfs/locking.c           | 15 ---------------
->   fs/btrfs/locking.h           |  1 -
->   include/trace/events/btrfs.h |  1 -
->   3 files changed, 17 deletions(-)
->
-> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index 6a0b7abb5bd9..9a7a7b723305 100644
-> --- a/fs/btrfs/locking.c
-> +++ b/fs/btrfs/locking.c
-> @@ -161,21 +161,6 @@ int btrfs_try_tree_read_lock(struct extent_buffer *=
-eb)
->   	return 0;
->   }
->
-> -/*
-> - * Try-lock for write.
-> - *
-> - * Return 1 if the rwlock has been taken, 0 otherwise
-> - */
-> -int btrfs_try_tree_write_lock(struct extent_buffer *eb)
-> -{
-> -	if (down_write_trylock(&eb->lock)) {
-> -		btrfs_set_eb_lock_owner(eb, current->pid);
-> -		trace_btrfs_try_tree_write_lock(eb);
-> -		return 1;
-> -	}
-> -	return 0;
-> -}
-> -
->   /*
->    * Release read lock.
->    */
-> diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-> index 3c15c75e0582..46c8be2afab1 100644
-> --- a/fs/btrfs/locking.h
-> +++ b/fs/btrfs/locking.h
-> @@ -180,7 +180,6 @@ static inline void btrfs_tree_read_lock(struct exten=
-t_buffer *eb)
->
->   void btrfs_tree_read_unlock(struct extent_buffer *eb);
->   int btrfs_try_tree_read_lock(struct extent_buffer *eb);
-> -int btrfs_try_tree_write_lock(struct extent_buffer *eb);
->   struct extent_buffer *btrfs_lock_root_node(struct btrfs_root *root);
->   struct extent_buffer *btrfs_read_lock_root_node(struct btrfs_root *roo=
-t);
->   struct extent_buffer *btrfs_try_read_lock_root_node(struct btrfs_root =
-*root);
-> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-> index bf60ad50011e..9b8d41a00234 100644
-> --- a/include/trace/events/btrfs.h
-> +++ b/include/trace/events/btrfs.h
-> @@ -2341,7 +2341,6 @@ DEFINE_BTRFS_LOCK_EVENT(btrfs_tree_read_unlock_blo=
-cking);
->   DEFINE_BTRFS_LOCK_EVENT(btrfs_set_lock_blocking_read);
->   DEFINE_BTRFS_LOCK_EVENT(btrfs_set_lock_blocking_write);
->   DEFINE_BTRFS_LOCK_EVENT(btrfs_try_tree_read_lock);
-> -DEFINE_BTRFS_LOCK_EVENT(btrfs_try_tree_write_lock);
->   DEFINE_BTRFS_LOCK_EVENT(btrfs_tree_read_lock_atomic);
->
->   DECLARE_EVENT_CLASS(btrfs__space_info_update,
+>  fs/btrfs/relocation.c | 144 ++++++++++++++++++------------------------
+>  1 file changed, 61 insertions(+), 83 deletions(-)
+> 
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index ac3658dce6a3..6b2308671d83 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
 
+I think this (and most other functions in backref caching) could really
+benefit from some description of their invariants. I think that will pay
+its weight in gold if we ever have to read this code again in 10
+years...
+
+> @@ -2058,97 +2058,75 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
+>  	int index = 0;
+>  	int ret;
+>  
+> -	next = node;
+> -	while (1) {
+> -		cond_resched();
+> -		next = walk_up_backref(next, edges, &index);
+> -		root = next->root;
+> +	next = walk_up_backref(node, edges, &index);
+> +	root = next->root;
+>  
+> -		/*
+> -		 * If there is no root, then our references for this block are
+> -		 * incomplete, as we should be able to walk all the way up to a
+> -		 * block that is owned by a root.
+> -		 *
+> -		 * This path is only for SHAREABLE roots, so if we come upon a
+> -		 * non-SHAREABLE root then we have backrefs that resolve
+> -		 * improperly.
+> -		 *
+> -		 * Both of these cases indicate file system corruption, or a bug
+> -		 * in the backref walking code.
+> -		 */
+> -		if (!root) {
+> -			ASSERT(0);
+> -			btrfs_err(trans->fs_info,
+> -		"bytenr %llu doesn't have a backref path ending in a root",
+> -				  node->bytenr);
+> -			return ERR_PTR(-EUCLEAN);
+> -		}
+> -		if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state)) {
+> -			ASSERT(0);
+> -			btrfs_err(trans->fs_info,
+> -	"bytenr %llu has multiple refs with one ending in a non-shareable root",
+> -				  node->bytenr);
+> -			return ERR_PTR(-EUCLEAN);
+> -		}
+> +	/*
+> +	 * If there is no root, then our references for this block are
+> +	 * incomplete, as we should be able to walk all the way up to a block
+> +	 * that is owned by a root.
+> +	 *
+> +	 * This path is only for SHAREABLE roots, so if we come upon a
+> +	 * non-SHAREABLE root then we have backrefs that resolve improperly.
+> +	 *
+> +	 * Both of these cases indicate file system corruption, or a bug in the
+> +	 * backref walking code.
+> +	 */
+> +	if (!root) {
+> +		ASSERT(0);
+> +		btrfs_err(trans->fs_info,
+> +			  "bytenr %llu doesn't have a backref path ending in a root",
+> +			  node->bytenr);
+> +		return ERR_PTR(-EUCLEAN);
+> +	}
+> +	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state)) {
+> +		ASSERT(0);
+> +		btrfs_err(trans->fs_info,
+> +			  "bytenr %llu has multiple refs with one ending in a non-shareable root",
+> +			  node->bytenr);
+> +		return ERR_PTR(-EUCLEAN);
+> +	}
+>  
+> -		if (btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID) {
+> -			ret = record_reloc_root_in_trans(trans, root);
+> -			if (ret)
+> -				return ERR_PTR(ret);
+> -			break;
+> -		}
+> -
+> -		ret = btrfs_record_root_in_trans(trans, root);
+> +	if (btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID) {
+> +		ret = record_reloc_root_in_trans(trans, root);
+>  		if (ret)
+>  			return ERR_PTR(ret);
+> -		root = root->reloc_root;
+> -
+> -		/*
+> -		 * We could have raced with another thread which failed, so
+> -		 * root->reloc_root may not be set, return ENOENT in this case.
+> -		 */
+> -		if (!root)
+> -			return ERR_PTR(-ENOENT);
+> -
+> -		if (next->new_bytenr != root->node->start) {
+> -			/*
+> -			 * We just created the reloc root, so we shouldn't have
+> -			 * ->new_bytenr set yet. If it is then we have multiple
+> -			 *  roots pointing at the same bytenr which indicates
+> -			 *  corruption, or we've made a mistake in the backref
+> -			 *  walking code.
+> -			 */
+> -			ASSERT(next->new_bytenr == 0);
+> -			if (next->new_bytenr) {
+> -				btrfs_err(trans->fs_info,
+> -	"bytenr %llu possibly has multiple roots pointing at the same bytenr %llu",
+> -					  node->bytenr, next->bytenr);
+> -				return ERR_PTR(-EUCLEAN);
+> -			}
+> -
+> -			next->new_bytenr = root->node->start;
+> -			btrfs_put_root(next->root);
+> -			next->root = btrfs_grab_root(root);
+> -			ASSERT(next->root);
+> -			mark_block_processed(rc, next);
+> -			break;
+> -		}
+> -
+> -		WARN_ON(1);
+> -		root = NULL;
+> -		next = walk_down_backref(edges, &index);
+> -		if (!next || next->level <= node->level)
+> -			break;
+> +		goto found;
+>  	}
+> -	if (!root) {
+> -		/*
+> -		 * This can happen if there's fs corruption or if there's a bug
+> -		 * in the backref lookup code.
+> -		 */
+> -		ASSERT(0);
+> +
+> +	ret = btrfs_record_root_in_trans(trans, root);
+> +	if (ret)
+> +		return ERR_PTR(ret);
+> +	root = root->reloc_root;
+> +
+> +	/*
+> +	 * We could have raced with another thread which failed, so
+> +	 * root->reloc_root may not be set, return ENOENT in this case.
+> +	 */
+> +	if (!root)
+>  		return ERR_PTR(-ENOENT);
+> +
+> +	if (next->new_bytenr) {
+> +		/*
+> +		 * We just created the reloc root, so we shouldn't have
+> +		 * ->new_bytenr set yet. If it is then we have multiple
+> +		 * roots pointing at the same bytenr which indicates
+> +		 * corruption, or we've made a mistake in the backref
+> +		 * walking code.
+> +		 */
+> +		ASSERT(next->new_bytenr == 0);
+> +		btrfs_err(trans->fs_info,
+> +			  "bytenr %llu possibly has multiple roots pointing at the same bytenr %llu",
+> +			  node->bytenr, next->bytenr);
+> +		return ERR_PTR(-EUCLEAN);
+>  	}
+>  
+> +	next->new_bytenr = root->node->start;
+> +	btrfs_put_root(next->root);
+> +	next->root = btrfs_grab_root(root);
+> +	ASSERT(next->root);
+> +	mark_block_processed(rc, next);
+> +found:
+>  	next = node;
+>  	/* setup backref node path for btrfs_reloc_cow_block */
+>  	while (1) {
+> -- 
+> 2.43.0
+> 
 
