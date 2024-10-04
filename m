@@ -1,135 +1,181 @@
-Return-Path: <linux-btrfs+bounces-8561-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8562-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832199905F6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 16:25:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58A2F990640
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 16:37:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D18A1C21FB4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 14:25:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E136280EB8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 14:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5528A217330;
-	Fri,  4 Oct 2024 14:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33590217900;
+	Fri,  4 Oct 2024 14:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xt6CT1tz"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="F7bPzap/";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="F7bPzap/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790B9215F6A;
-	Fri,  4 Oct 2024 14:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95EC4212EEA;
+	Fri,  4 Oct 2024 14:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728051919; cv=none; b=MQuQUrhkKF6Jht7OcERBs+zbRNyS6Gx9SklUETAtLnAfZsY0FbRAeQAXklPU6CLh4ohIuFuVjzg8iJOLDExNJ7yfTJgqsyrjTlyr4S8TNKfSrOrESlzVAnnMnObaGq2exaaihOg9Xn9Fz6pu5eHRb9i3guOJJqpRB8EKplEhuLU=
+	t=1728052643; cv=none; b=C1/olsBje5EtwuN5cD6kUtX4SNPQk2GdngFw5ZSNBXG32WEN1prkXGdEDHk3MuzEalWJ02bHTBz3NK1YLdu5qOuTmpKIaQby1diuN+tW3A6rSPmN1MabBU3J66SR9jmsFRJFtOd+ucwTDUgwLE2BvfJA2K4LbQd4w5iqR+Q8dWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728051919; c=relaxed/simple;
-	bh=wp87TzXy8arOOizSxy3nPf0PPkUbIlH0ZKswDWUROkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DnRaiMlBi1xbR2iKgW99Efw/trhfEN+oTVCfV6Rv+cd/BLZ4TdA8x5W41fFNInUxEdPeS7jE8nfDiFHZN2Fel1ROiWwRyPA1i6UJWEn28YdyV/yS6L+COgI5qsDJxht/9f8I0iu5laBrslKDYspUybl2lZVu9J94hfBAiuzcLUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xt6CT1tz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B1D2C4CECF;
-	Fri,  4 Oct 2024 14:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728051918;
-	bh=wp87TzXy8arOOizSxy3nPf0PPkUbIlH0ZKswDWUROkU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Xt6CT1tzAyUvGuvWWqFcHNtzgz8NWRQnKRDa2T8kQ7WGvHiERZZbV3a1JQvN7tX6c
-	 otWpG739daOu6B7rwu3fBTK3uQTExcD0mNI80Stk3gwK04ofIr9HTdAY9yThCS9WvO
-	 rkWBKHGPG3ZGabPkFBM30NhGd8db30/+jbRuXTzNXLp5JVCn4Xjrl6XtAqFSnlzTVf
-	 H9iy9f+bjghl/HinJtBCJ/pHY9UGx1wGUlYqe/aQL+vrh43Qthghr+2KjZZ+4wjY4O
-	 X2Qd5Q34JA8AOHyGFUgttaUvEqsnWoDFb9Ok53G16nNMWGwIsNsWb4tFLauBdFstwz
-	 1F6VbF8KCc9lg==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a8ce5db8668so343899366b.1;
-        Fri, 04 Oct 2024 07:25:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUg9BD1UDLxDke5CTa8Xw8kxk9dOpAv7tlUubp/qYKA45EiXvxac0dEA3eG6bvOnY8evtH6E/lRrIA4gg==@vger.kernel.org, AJvYcCWlsArqJEC2505+0EoO1l5hRY02Qxh0e3nzdcaKUS7ljwACJbqRydgZ8di0py+qmsS0ynqdH2cV/x9xJNEL@vger.kernel.org
-X-Gm-Message-State: AOJu0YwexKYO5GX9Vvzii3xIinzeX1cHco3/lNfPsgkoHZphtxZtUfWP
-	zOpkvFwHt17r3S3guF6Wlz48GQHKWUMVqDNR8iAg/pOO58VnoUqGHZ9BJ6Wmw2sB/LHg9M/isfg
-	Qxs4wuPMoI3HN1t99+4uvYqN/LL4=
-X-Google-Smtp-Source: AGHT+IG9JcV+Te1SmvxoahUcxOg6QuaJAQN16qmFLfUGKgYUBZVSSC2m6JqzJk6Cm2lD0uIUsWOcf5QNy+dJvIhUIpY=
-X-Received: by 2002:a17:907:6eab:b0:a86:9793:350d with SMTP id
- a640c23a62f3a-a991c077e20mr343049866b.62.1728051916466; Fri, 04 Oct 2024
- 07:25:16 -0700 (PDT)
+	s=arc-20240116; t=1728052643; c=relaxed/simple;
+	bh=MAK8JWmVjNO8FXi5tEdbRgJHHAYoZFtJbZOaHkJe1xg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hFmHCnzeUnwNAsbTwREKOV5ZwAoLBVdddZu0W1BaA4Kr2JdJopZCGF6JlVpU3kcyiFgYNxNfQum3KZpzzzh979FifOQFsXh0ZhP6h5R814IbTtDYYIj3bxmn9SiFOrRsTtNuEMmnLvfuGUITwpPCogsSm69WHjBZKCKWawzdWLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=F7bPzap/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=F7bPzap/; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 78F631F78E;
+	Fri,  4 Oct 2024 14:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728052638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=IoNx+MylgNQZdr8mAZLP2m82RL0nRPwe/aXde4USFqI=;
+	b=F7bPzap/Id7sGjj8LHb22rgPLxHE7JjE7W6/VetKVujQ5nQUwDLJE6zmje1YIc/7lygLq5
+	73QTo5FoKwIDqslRS1qp9H92k+c3oByo5WquBWory2Ywd8c1YNEWorzUrykao4TwYeOh4r
+	nU6bCH+UfwTi6Xn4xFIgn8R3QwlepS4=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="F7bPzap/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728052638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=IoNx+MylgNQZdr8mAZLP2m82RL0nRPwe/aXde4USFqI=;
+	b=F7bPzap/Id7sGjj8LHb22rgPLxHE7JjE7W6/VetKVujQ5nQUwDLJE6zmje1YIc/7lygLq5
+	73QTo5FoKwIDqslRS1qp9H92k+c3oByo5WquBWory2Ywd8c1YNEWorzUrykao4TwYeOh4r
+	nU6bCH+UfwTi6Xn4xFIgn8R3QwlepS4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 70C9813A55;
+	Fri,  4 Oct 2024 14:37:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8QCFG579/2YoawAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Fri, 04 Oct 2024 14:37:18 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.12-rc2
+Date: Fri,  4 Oct 2024 16:37:13 +0200
+Message-ID: <cover.1728050979.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241004131901.21720-1-jth@kernel.org>
-In-Reply-To: <20241004131901.21720-1-jth@kernel.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 4 Oct 2024 15:24:39 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6JVtZsr38yy9cwGA8kHvO=r2FpkHdTQVeVRbUrK8UbnA@mail.gmail.com>
-Message-ID: <CAL3q7H6JVtZsr38yy9cwGA8kHvO=r2FpkHdTQVeVRbUrK8UbnA@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs: don't BUG_ON() NOCOW ordered-extents with
- checksum list
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	"open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	Qu Wenruo <wqu@suse.com>, Naohiro Aota <naohiro.aota@wdc.com>, 
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 78F631F78E
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Fri, Oct 4, 2024 at 2:21=E2=80=AFPM Johannes Thumshirn <jth@kernel.org> =
-wrote:
->
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->
-> Currently we BUG_ON() in btrfs_finish_one_ordered() if we finishing an
-> ordered-extent that is flagged as NOCOW, but it's checsum list is non-emp=
-ty.
->
-> This is clearly a logic error which we can recover from by aborting the
-> transaction.
->
-> For developer builds which enable CONFIG_BTRFS_ASSERT, also ASSERT() that=
- the
-> list is empty.
->
-> Suggested-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+Hi,
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+please pull the following fixes, thanks.
 
-Looks good, thanks.
+- in incremental send, fix invalid clone operation for file that got its
+  size decreased
 
-> ---
-> Changes to v2:
-> * Move ASSERT() out of if () block (Filipe)
-> * goto 'out' after aborting the transaction (Filipe)
->
-> Changes to v1:
-> * Fixup if () and ASSERT() (Qu)
-> * Fix spelling of 'Currently'
-> ---
->  fs/btrfs/inode.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 103ec917ca9d..ef82579dfe09 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3088,7 +3088,12 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_=
-extent *ordered_extent)
->
->         if (test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags)) {
->                 /* Logic error */
-> -               BUG_ON(!list_empty(&ordered_extent->list));
-> +               ASSERT(list_empty(&ordered_extent->list));
-> +               if (!list_empty(&ordered_extent->list)) {
-> +                       ret =3D -EINVAL;
-> +                       btrfs_abort_transaction(trans, ret);
-> +                       goto out;
-> +               }
->
->                 btrfs_inode_safe_disk_i_size_write(inode, 0);
->                 ret =3D btrfs_update_inode_fallback(trans, inode);
-> --
-> 2.43.0
->
->
+- fix __counted_by() annotation of send path cache entries, we don not
+  store the terminating NUL
+
+- fix a longstanding bug in relocation (and quite hard to hit by
+  chance), drop back reference cache that can get out of sync after
+  transaction commit
+
+- wait for fixup worker kthread before finishing umount
+
+- add missing raid-stripe-tree extent for NOCOW files, zoned mode
+  cannot have NOCOW files but RST is meant to be a standalone feature
+
+- handle transaction start error during relocation, avoid potential NULL
+  pointer dereference of relocation control structure (reported by syzbot)
+
+- disable module-wide rate limiting of debug level messages
+
+- minor fix to tracepoint definition (reported by checkpatch.pl)
+
+----------------------------------------------------------------
+The following changes since commit 7f1b63f981b8284c6d8238cb49b5cb156d9a833e:
+
+  btrfs: fix use-after-free on rbtree that tracks inodes for auto defrag (2024-09-17 17:35:53 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.12-rc1-tag
+
+for you to fetch changes up to d6e7ac65d4c106149d08a0ffba39fc516ae3d21b:
+
+  btrfs: disable rate limiting when debug enabled (2024-10-01 19:29:41 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (4):
+      btrfs: send: fix buffer overflow detection when copying path to cache entry
+      btrfs: tracepoints: end assignment with semicolon at btrfs_qgroup_extent event class
+      btrfs: send: fix invalid clone operation for file that got its size decreased
+      btrfs: wait for fixup workers before stopping cleaner kthread during umount
+
+Johannes Thumshirn (1):
+      btrfs: also add stripe entries for NOCOW writes
+
+Josef Bacik (1):
+      btrfs: drop the backref cache during relocation if we commit
+
+Leo Martins (1):
+      btrfs: disable rate limiting when debug enabled
+
+Qu Wenruo (1):
+      btrfs: fix a NULL pointer dereference when failed to start a new trasacntion
+
+ fs/btrfs/backref.c           | 12 ++++---
+ fs/btrfs/disk-io.c           | 11 +++++++
+ fs/btrfs/inode.c             |  5 +++
+ fs/btrfs/messages.c          |  3 +-
+ fs/btrfs/relocation.c        | 77 +++-----------------------------------------
+ fs/btrfs/send.c              | 31 +++++++++++++++---
+ include/trace/events/btrfs.h |  2 +-
+ 7 files changed, 58 insertions(+), 83 deletions(-)
 
