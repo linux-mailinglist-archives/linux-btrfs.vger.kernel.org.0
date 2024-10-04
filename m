@@ -1,68 +1,74 @@
-Return-Path: <linux-btrfs+bounces-8533-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8534-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D174B98FCDC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 06:54:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B11B98FD1C
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 07:52:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F21251C224EF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 04:54:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79A8E284480
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 05:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A524DA00;
-	Fri,  4 Oct 2024 04:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA49284037;
+	Fri,  4 Oct 2024 05:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="kYFU9iRX"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MVwB+wMp";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MVwB+wMp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84C6A328DB
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 04:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A571D5ADA
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728017689; cv=none; b=IX4HwoHrycoSjK9UurNywKcinYwZxGmeyd5BIQX3aplZsbgQx07jTMLgfYwrmMTm5wsD6LLhwFgmkd5iBPUZylW033Gd0NqxOuEPA0b/e6nXwYeA+QL9XllM90C6L0z/B6HuSO70JTW0xqJYT3iCuAL2s9LcnMHxQvt2bMTR0JU=
+	t=1728021153; cv=none; b=Cos9fQF2NJBz9RUstYjRuJFpW6h3xjUN/fo9HpHbyh3pmIB1A1l9h/XE4ahN/73CMMA5yD0/VEoT8Kj4L84oX3RHiG3rptHz4VPxjYFr3CBw+SEumJz2b9t9nTp7APb8IpnWdAmT41Arjh7xWQ7Bps2HdXJ20E6Gy+yNuVfc/+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728017689; c=relaxed/simple;
-	bh=oppL/8jjCzNAO/fI2t9AzkBppI5oYBBcZlEIOfzSaqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LMwjtt5CHy3N2Dqh4Ub7yQI6X9P7q9jKO87lAaqicg6dHWp1RIHc80XDJTTqTOtP2Cuaw344CjtsLc+ywk02Dog2M1fXpbs4oUXJDyC/lqQF9Ysmh3MyYMTcXmAvO4V0RbXfcTXtYtGCJofgQL+r7q+H5OAYhnFifMyq7mGJx30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=kYFU9iRX; arc=none smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1728017687; x=1759553687;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=oppL/8jjCzNAO/fI2t9AzkBppI5oYBBcZlEIOfzSaqg=;
-  b=kYFU9iRX6WANI9bwvVBIS8gsP2p7XI5sf1FCl3Y68PvIN1pmBysJVRzA
-   0Jl93LkOH6uH5PoyBlvGl2RMn3aAiKLfTMpQJ2XsFRD3N/TuweKk1bJwH
-   otIQsDfVtcxGygHnUHT+S52zriCKYaFnoNgXypN/i2Akfzpjwk7/udQU7
-   bDII5IIuPvUNY7OunQRrKpivXKvW/Ufb84Ehj/1xptMjeb13AEpP0naOt
-   TfVhDMk0b2ojV6XK6veUiiLtP9Nmd7XUuHPChqnQVvH1jnQhblMWP9ndY
-   JWoixGlwto4ZfA3ciK6FV6uHNNnMMflCyRqKZWq6eLCii0Upxg8GQRm9N
-   Q==;
-X-CSE-ConnectionGUID: QVmtWewzQXWTdcCNGtaOCQ==
-X-CSE-MsgGUID: NXECxROtSt+mYMd1/eBXBg==
-X-IronPort-AV: E=Sophos;i="6.11,176,1725292800"; 
-   d="scan'208";a="29122234"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Oct 2024 12:53:37 +0800
-IronPort-SDR: 66ff6690_FUrrUwoyag8pvw9TF04g+//P3KieONkWUFxPmN/ml3XhWyk
- 8ZG5mts1ilbCULDAA0XJ8noZLeFUXGoCLFJ6yPg==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Oct 2024 20:52:48 -0700
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.8])
-  by uls-op-cesaip01.wdc.com with ESMTP; 03 Oct 2024 21:53:38 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
+	s=arc-20240116; t=1728021153; c=relaxed/simple;
+	bh=qNUQnWOJDuBFcEksn7mz+84fsOLz2gwQSKzECbeOhQY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=n3/OO7LjU0tcEIEg0vgxuyMgF/Y6MgSNTju/rMazllJLsmqO3s+yQbsq30GuwJEZru7tQf6sngM1YVHaL0tfLBwL12KdEiqA72bFMS5mMGp0bpc9ZXV0Zyev12/hNEPQ+9fsIXR6JxP80w5kpxoh+NhzeuE6tChZqaFArp6wrsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MVwB+wMp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MVwB+wMp; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 14A561FED0
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728021148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=FsTgnYkMMaXoVzg/wvw7n2d7XOdFXV0Kg5vM03EkXWg=;
+	b=MVwB+wMpiMEpJCwMaP9NVzd0ZyVfOPr6oqWjRFOAH7UOUIqWYTOHGdPXLFuezlA3M9DB+t
+	N9VQLLKq9Lqc0LHgiBpPvMdDzX0FxArETgRvJlFOav7ccSQ8h4M9bG0Ev75EZhfm6L/Lno
+	UVUzyI0vNms7xLQysAO+nCkKUq4DfpQ=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728021148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=FsTgnYkMMaXoVzg/wvw7n2d7XOdFXV0Kg5vM03EkXWg=;
+	b=MVwB+wMpiMEpJCwMaP9NVzd0ZyVfOPr6oqWjRFOAH7UOUIqWYTOHGdPXLFuezlA3M9DB+t
+	N9VQLLKq9Lqc0LHgiBpPvMdDzX0FxArETgRvJlFOav7ccSQ8h4M9bG0Ev75EZhfm6L/Lno
+	UVUzyI0vNms7xLQysAO+nCkKUq4DfpQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4946D1376C
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id P1i4ApuC/2ZrRAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 04 Oct 2024 05:52:27 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: wqu@suse.com,
-	Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: fix clear_dirty and writeback ordering
-Date: Fri,  4 Oct 2024 13:53:35 +0900
-Message-ID: <e329dec3e85540e13dac7aefab1d554134214ebe.1728017511.git.naohiro.aota@wdc.com>
+Subject: [PATCH 0/3] btrfs-progs: print-tree: cleanup for regular bitmap based flags print
+Date: Fri,  4 Oct 2024 15:22:02 +0930
+Message-ID: <cover.1728020867.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -71,54 +77,58 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_NONE(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-This commit is a replay of commit 6252690f7e1b ("btrfs: fix invalid mapping
-of extent xarray state"). We need to call btrfs_folio_clear_dirty() before
-btrfs_set_range_writeback(), so that xarray DIRTY tag is cleared. With a
-refactoring commit 8189197425e7 ("btrfs: refactor __extent_writepage_io()
-to do sector-by-sector submission"), it screwed up and the order is
-reversed and causing the same hang. Fix the ordering now in
-submit_one_sector().
+The first 2 are small cleanups for __print_readable_flag().
 
-Fixes: 8189197425e7 ("btrfs: refactor __extent_writepage_io() to do sector-by-sector submission")
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/extent_io.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+The last one introduces an sprint version, sprint_readable_flag(),
+allowing the same bitmap handling of print_readable_flag() to be output
+into a string buffer.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index cb0a39370d30..9fbc83c76b94 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1352,6 +1352,13 @@ static int submit_one_sector(struct btrfs_inode *inode,
- 	free_extent_map(em);
- 	em = NULL;
- 
-+	/*
-+	 * Although the PageDirty bit is cleared before entering this
-+	 * function, subpage dirty bit is not cleared.
-+	 * So clear subpage dirty bit here so next time we won't submit
-+	 * a folio for a range already written to disk.
-+	 */
-+	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
- 	btrfs_set_range_writeback(inode, filepos, filepos + sectorsize - 1);
- 	/*
- 	 * Above call should set the whole folio with writeback flag, even
-@@ -1361,13 +1368,6 @@ static int submit_one_sector(struct btrfs_inode *inode,
- 	 */
- 	ASSERT(folio_test_writeback(folio));
- 
--	/*
--	 * Although the PageDirty bit is cleared before entering this
--	 * function, subpage dirty bit is not cleared.
--	 * So clear subpage dirty bit here so next time we won't submit
--	 * folio for range already written to disk.
--	 */
--	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
- 	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
- 			    sectorsize, filepos - folio_pos(folio));
- 	return 0;
--- 
+And use that sprint_readable_flag() to handle inode flags, inspired by a
+recent report that Synology's out-of-tree btrfs can not be handled by
+upstream kernel (unsupported inode flag).
+
+This allows print-tree to handle the unknown flags of inode flags.
+
+Unfortunately I didn't find any other location can benefit the
+sprint_readable_flag() yet.
+
+It's either bg flags which needs special handling for SINGLE profile, or
+not bitmap in the first place (e.g. compress flags).
+
+Qu Wenruo (3):
+  btrfs-progs: print-tree: use ARRAY_SIZE() to replace open-coded ones
+  btrfs-progs: print-tree: cleanup __print_readable_flag()
+  btrfs-progs: print-tree: use readable_flag_entry for inode flags
+
+ kernel-shared/print-tree.c | 128 +++++++++++++++++++++----------------
+ 1 file changed, 72 insertions(+), 56 deletions(-)
+
+--
 2.46.2
 
 
