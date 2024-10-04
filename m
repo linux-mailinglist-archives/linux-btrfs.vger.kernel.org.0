@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-8534-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8535-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B11B98FD1C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 07:52:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D282698FD1D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 07:52:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79A8E284480
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 05:52:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 822381F23353
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 05:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA49284037;
-	Fri,  4 Oct 2024 05:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9CE126C04;
+	Fri,  4 Oct 2024 05:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MVwB+wMp";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MVwB+wMp"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eE8jGkQR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eE8jGkQR"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A571D5ADA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C9244AEF2
 	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728021153; cv=none; b=Cos9fQF2NJBz9RUstYjRuJFpW6h3xjUN/fo9HpHbyh3pmIB1A1l9h/XE4ahN/73CMMA5yD0/VEoT8Kj4L84oX3RHiG3rptHz4VPxjYFr3CBw+SEumJz2b9t9nTp7APb8IpnWdAmT41Arjh7xWQ7Bps2HdXJ20E6Gy+yNuVfc/+w=
+	t=1728021154; cv=none; b=dYJ9OmfCBEOus9HkASh1Cmv2xkpAwVOrGBWTBFRjtswuBLtzPlOa4KwoUCHzZ7REI4yBYeQT83XhdtJj7jcZ1j0RcFqADfl3X/qWIWpeC7qlD7Wnpb3Mcc+rrXxg/WmIOkNCK7+8eiRZ5P4r10iiKnyX6KO9Glr/BtxtWiqg3IE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728021153; c=relaxed/simple;
-	bh=qNUQnWOJDuBFcEksn7mz+84fsOLz2gwQSKzECbeOhQY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=n3/OO7LjU0tcEIEg0vgxuyMgF/Y6MgSNTju/rMazllJLsmqO3s+yQbsq30GuwJEZru7tQf6sngM1YVHaL0tfLBwL12KdEiqA72bFMS5mMGp0bpc9ZXV0Zyev12/hNEPQ+9fsIXR6JxP80w5kpxoh+NhzeuE6tChZqaFArp6wrsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MVwB+wMp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MVwB+wMp; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1728021154; c=relaxed/simple;
+	bh=EdXqjTzf6lMBcugrsimLxGiitVcVVLC7shrDQ+s5Khc=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=u18FtfKGScE9TBexfoOmeMaYeLKaFtS1iSTeRebzZRAlbV+eZ7NdUNZ3XiRV96o2+uVYmAdNqMN3LMv7VlehvuMwJeMwS0MEFObFPirTxOlrZyxVlGYlLQUiApQ3pUXBRhlQpgjWIqEB5KOlU2wDv0hgEXkQw4/ko9M6BOsFVks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eE8jGkQR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eE8jGkQR; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 14A561FED0
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:28 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4A33A1FED3
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728021148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FsTgnYkMMaXoVzg/wvw7n2d7XOdFXV0Kg5vM03EkXWg=;
-	b=MVwB+wMpiMEpJCwMaP9NVzd0ZyVfOPr6oqWjRFOAH7UOUIqWYTOHGdPXLFuezlA3M9DB+t
-	N9VQLLKq9Lqc0LHgiBpPvMdDzX0FxArETgRvJlFOav7ccSQ8h4M9bG0Ev75EZhfm6L/Lno
-	UVUzyI0vNms7xLQysAO+nCkKUq4DfpQ=
+	t=1728021149; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SsCxd05pd6Ombj06JSHXJMTaFr2Gl6RF5s8GDg+BNmI=;
+	b=eE8jGkQR8aFQJHL6DSAzdRKUdNEt69XcbFMThuHKjF7o4rdf2ZQJ8BaV5JTBtlMvPjxxbx
+	U7XM162wntQfhLE57MZ1V21SleWKxGW8rwiav5f6OFFg/KKnL+WdIAb19m9/G6BHYh398w
+	4B02r/3s7Ke6G4ciA6ZH5V1AEckn1ig=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728021148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=FsTgnYkMMaXoVzg/wvw7n2d7XOdFXV0Kg5vM03EkXWg=;
-	b=MVwB+wMpiMEpJCwMaP9NVzd0ZyVfOPr6oqWjRFOAH7UOUIqWYTOHGdPXLFuezlA3M9DB+t
-	N9VQLLKq9Lqc0LHgiBpPvMdDzX0FxArETgRvJlFOav7ccSQ8h4M9bG0Ev75EZhfm6L/Lno
-	UVUzyI0vNms7xLQysAO+nCkKUq4DfpQ=
+	t=1728021149; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SsCxd05pd6Ombj06JSHXJMTaFr2Gl6RF5s8GDg+BNmI=;
+	b=eE8jGkQR8aFQJHL6DSAzdRKUdNEt69XcbFMThuHKjF7o4rdf2ZQJ8BaV5JTBtlMvPjxxbx
+	U7XM162wntQfhLE57MZ1V21SleWKxGW8rwiav5f6OFFg/KKnL+WdIAb19m9/G6BHYh398w
+	4B02r/3s7Ke6G4ciA6ZH5V1AEckn1ig=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4946D1376C
-	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 83C971376C
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 05:52:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id P1i4ApuC/2ZrRAAAD6G6ig
+	id AJdmEZyC/2ZrRAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 04 Oct 2024 05:52:27 +0000
+	for <linux-btrfs@vger.kernel.org>; Fri, 04 Oct 2024 05:52:28 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs-progs: print-tree: cleanup for regular bitmap based flags print
-Date: Fri,  4 Oct 2024 15:22:02 +0930
-Message-ID: <cover.1728020867.git.wqu@suse.com>
+Subject: [PATCH 1/3] btrfs-progs: print-tree: use ARRAY_SIZE() to replace open-coded ones
+Date: Fri,  4 Oct 2024 15:22:03 +0930
+Message-ID: <ab1b8425469a6ccb386d7d2c05bdee72c9deb59b.1728020867.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.2
+In-Reply-To: <cover.1728020867.git.wqu@suse.com>
+References: <cover.1728020867.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,37 +105,42 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid]
 X-Spam-Score: -2.80
 X-Spam-Flag: NO
 
-The first 2 are small cleanups for __print_readable_flag().
+For compat_ro_flags_num and incompat_flags_num, just use ARRAY_SIZE().
 
-The last one introduces an sprint version, sprint_readable_flag(),
-allowing the same bitmap handling of print_readable_flag() to be output
-into a string buffer.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/print-tree.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-And use that sprint_readable_flag() to handle inode flags, inspired by a
-recent report that Synology's out-of-tree btrfs can not be handled by
-upstream kernel (unsupported inode flag).
-
-This allows print-tree to handle the unknown flags of inode flags.
-
-Unfortunately I didn't find any other location can benefit the
-sprint_readable_flag() yet.
-
-It's either bg flags which needs special handling for SINGLE profile, or
-not bitmap in the first place (e.g. compress flags).
-
-Qu Wenruo (3):
-  btrfs-progs: print-tree: use ARRAY_SIZE() to replace open-coded ones
-  btrfs-progs: print-tree: cleanup __print_readable_flag()
-  btrfs-progs: print-tree: use readable_flag_entry for inode flags
-
- kernel-shared/print-tree.c | 128 +++++++++++++++++++++----------------
- 1 file changed, 72 insertions(+), 56 deletions(-)
-
---
+diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+index ab85432e2807..14f7dcdf0ee9 100644
+--- a/kernel-shared/print-tree.c
++++ b/kernel-shared/print-tree.c
+@@ -1889,8 +1889,7 @@ static struct readable_flag_entry compat_ro_flags_array[] = {
+ 	DEF_COMPAT_RO_FLAG_ENTRY(FREE_SPACE_TREE_VALID),
+ 	DEF_COMPAT_RO_FLAG_ENTRY(BLOCK_GROUP_TREE),
+ };
+-static const int compat_ro_flags_num = sizeof(compat_ro_flags_array) /
+-				       sizeof(struct readable_flag_entry);
++static const int compat_ro_flags_num = ARRAY_SIZE(compat_ro_flags_array);
+ 
+ #define DEF_INCOMPAT_FLAG_ENTRY(bit_name)		\
+ 	{BTRFS_FEATURE_INCOMPAT_##bit_name, #bit_name}
+@@ -1913,8 +1912,7 @@ static struct readable_flag_entry incompat_flags_array[] = {
+ 	DEF_INCOMPAT_FLAG_ENTRY(RAID_STRIPE_TREE),
+ 	DEF_INCOMPAT_FLAG_ENTRY(SIMPLE_QUOTA),
+ };
+-static const int incompat_flags_num = sizeof(incompat_flags_array) /
+-				      sizeof(struct readable_flag_entry);
++static const int incompat_flags_num = ARRAY_SIZE(incompat_flags_array);
+ 
+ #define DEF_HEADER_FLAG_ENTRY(bit_name)			\
+ 	{BTRFS_HEADER_FLAG_##bit_name, #bit_name}
+-- 
 2.46.2
 
 
