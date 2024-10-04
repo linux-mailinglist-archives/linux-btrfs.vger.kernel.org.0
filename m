@@ -1,106 +1,140 @@
-Return-Path: <linux-btrfs+bounces-8539-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8540-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 040C898FDC9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 09:25:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 361B098FE66
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 10:02:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90603B21BA6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 07:25:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F9CE1C231E4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2024 08:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECE413A3F3;
-	Fri,  4 Oct 2024 07:25:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA5513AD2A;
+	Fri,  4 Oct 2024 08:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k11QLPld"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T32VUK23"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5496A13957E;
-	Fri,  4 Oct 2024 07:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4751D13957C
+	for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2024 08:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728026707; cv=none; b=F73/+zu4V3ZbDknBWQJssarQhtX5ESGZpwZrTFs0K2gGl762dwGIRIrUJVmHC61hWlfGCkusdrYJvkhHG5Rr0whM30nfSJHwXFk1JOSmwV6f+a6wAqBIXzm0dJakHnazUf3lFkE8p8p9Yxq7z65w4TxZ1VEAB2pPgNUAlY4jNGU=
+	t=1728028937; cv=none; b=k1mIEpESVJypFNOcVigbj1P/1l49A1HqNdQcaN6l69ZxBNMJu1EY1o4/1apv2YCiPsbkEvgVjyi0xJ2cjkqfXP1V/5xEuaeTXDyAFp75TsIlmNN/gd2oL4Kqmq7VXTHCss0LYm6wPS01Yvv0Phpf8r/1O7uTE3E+rsBS7yC9Jso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728026707; c=relaxed/simple;
-	bh=ox0/7qp/2Dq4kEyBgTZRN6pkZoZOR57GiIeS/LuHzc8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TW0Gnd4Bb+3gVyhU9RIkOJH0rAvFXt88HNlnvqX7/t0I/pybI0U5BgPasbBMeSEnZAkVjvCodbZSF1XvlEoyAJQ8pHde8mpI+jG3+e7NtHZoAy1wX5bUOf4kgVu+H3jLyNkD0TJJcdzjQX/0f3vMjK3PUfkQqMsaWsGfWlpbofw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k11QLPld; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26267C4CEC6;
-	Fri,  4 Oct 2024 07:25:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728026706;
-	bh=ox0/7qp/2Dq4kEyBgTZRN6pkZoZOR57GiIeS/LuHzc8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=k11QLPldqRmsJfEq/SOtT1cY9NkV8rs3UgsRKcjz5E+0HUxa2tRZ0UIus3UdoZlsq
-	 yzHvO28pBUhgf2KkGbA5+F4QERLx7oVaPKrpUbm76tFhxXdTmSt0qmgdaDXkNf6lNg
-	 8IYB3R9KOjnxKBiTbeEhJH3yJqb59HhCMhZr4bJze/V4xTwiZzj+gwE0IYYIUTxBzO
-	 WsRnEV54bUIDOByhgyE75OPSvKy7eD0lwXjM42PhEdyP8E/Cpv4DREd0fz19qqLrjV
-	 bRX1P2EZNbKr8E8GcW0wn5pzUlpWvWb1WHrrhb7Dom46H7G8/MjKYI09vDhXaH5WET
-	 TkBmI5gkL/wUw==
-From: Christian Brauner <brauner@kernel.org>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 0/6] Filesystem page flags cleanup
-Date: Fri,  4 Oct 2024 09:24:57 +0200
-Message-ID: <20241004-witzig-eisern-e47b5e26031a@brauner>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241002040111.1023018-1-willy@infradead.org>
-References: <20241002040111.1023018-1-willy@infradead.org>
+	s=arc-20240116; t=1728028937; c=relaxed/simple;
+	bh=jEqsPPNVmuUfFAQgNb1ddEZ/0T9mzGZ8272lCwnXxtE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hY96xNJl2VshrHIkkc9HyuPvjxlMJ8bpeOQoVIJXT3iGAa4WaAre80cYFkoWs7XlQLlJ+yFKUKyUC+zwVwXwVQcTTK+aM1UAt+3PO2hA7SY3vEaWOIBZk8MS37qXeZg3E8xUAcRBkd5yXJYFzF3joWyrPnDF9XDTmztYaQbVIvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T32VUK23; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2fada911953so27711881fa.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Oct 2024 01:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728028932; x=1728633732; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LkALpbu5OFiEhXaRMZOUcWTxVNPZFxeCEMUkozP3/zE=;
+        b=T32VUK23vNan2vHM9fapAkNivBlf2Gg0V6BxxeDbb3jgR8NVJDDPjvYxrTh10OciDy
+         /8DzqKPG/cvQ/r48/yoN3j6Fzllm83nGxAkE0U8aFT3Bj8w5xftduxSryQI795Q2CoeI
+         9yM9p1zW8rejM0hqujZ6OrlgmxJJh5oEA8PWd4LalrJYaai3tY6cYKzxgToQ15DfP9A5
+         KA8Ufjqd+v+YB0d3QIjEQ6jvak/N0d6pE6W9mBAzWPJRsmiZrS7DEKTzqyc0Cm18y7O5
+         gjy5m+7svxAKpoF2OKIVsivb6pADJ5MUDsZqv+IYp+7fjDXTRYXmAFngaAs0Oyt0dJ3j
+         jERA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728028932; x=1728633732;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LkALpbu5OFiEhXaRMZOUcWTxVNPZFxeCEMUkozP3/zE=;
+        b=i8ITxLyiAl0rnqzJGZOLO99DKldeEV9YjrBreDMTkxASOUSBEpBDoaCvwPegOZtfSo
+         P0x83up34s4i+p77iSzQMztY+bznMwUD2yAB1MX+JWR5+2fz27XPFaM6cIs1rT/sPakT
+         /n0XuxNwZYuRZ5/4x5BrvRYaUR4tlV1VJJxMfI9OedHxiPKyLr5z1l0spAuUxLXvZUFg
+         m9Mape1VFNXaUTkJfpLNOsuvsDuX5QPupxKAAAr8WaYOPkdYIGtOaaKAWSWl/qh/hS6y
+         PjuergLLKH3zqRNncuh6jRwUyV5FHkIXsCdLfhU7GEGyo9J/UGtPE2btlxa+ZtZ4Y6He
+         6/vg==
+X-Forwarded-Encrypted: i=1; AJvYcCX9JB+nwXK3TIKd1OSulVW/6PXfkUnNkEFUaPFWw3XgqUErtgEVqZM9cOni7HRuxs5K5c+Yn6gpKiHGrQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZJ9ovYbFiulhgggsTRoOVlnzWh1f5LIJhA62n5lchM9BgZujN
+	p7tEHoJH81lnxS1yd/unpbvJy67gsH0O3Gkczw5tehq4lXHzyUT4G7imNJk4httQB5yJuQAYprE
+	VB+1u1MAi6kwDWtzWM/ZfUxqU0DM=
+X-Google-Smtp-Source: AGHT+IGNJr/c9hZ/BsmTorGA1YwbWwLwQMET1OmdAZ3jJ9+xxPAcHdW0CFA2CZ24peSk1xM/P9dSSEWZYobdBeLiqQI=
+X-Received: by 2002:a05:6512:230e:b0:539:9088:240a with SMTP id
+ 2adb3069b0e04-539a6260713mr1955521e87.10.1728028932087; Fri, 04 Oct 2024
+ 01:02:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1751; i=brauner@kernel.org; h=from:subject:message-id; bh=ox0/7qp/2Dq4kEyBgTZRN6pkZoZOR57GiIeS/LuHzc8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaT9n+HNkSV9YNpxw4l3JC4wn+CwVhN0WPYtv61PsG2y9 HlhzbuSHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABM5Y8vI0H6H5XRKtVdyeKDD 4S/Sk+QX8nGerxc/IVr8PY99wZsvXgx/OBO4xSa8Mqo0ZtVPr+K+ONfTacf9bVtUlZtKD7HcvP2 aHwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <CAE+k_g+XFhkRBF0ErnRCBVaXAwUb3Tf9rm+Yny8u6aOLDQqihA@mail.gmail.com>
+ <20241001150941.GB28777@twin.jikos.cz> <CAE+k_gJETiAtToyw9LoG3QWj-5Govupt9Shp9TFuqevSbt_RbA@mail.gmail.com>
+ <094b3ff1-05f4-4557-80db-947a8224b671@suse.com>
+In-Reply-To: <094b3ff1-05f4-4557-80db-947a8224b671@suse.com>
+From: Peter Volkov <peter.volkov@gmail.com>
+Date: Fri, 4 Oct 2024 08:01:59 +0000
+Message-ID: <CAE+k_gJcO=T=2amNoNWUEjq8hssmXxZw_KaOTUCqqJ_XvaBpYQ@mail.gmail.com>
+Subject: Re: BTRFS critical (device dm-0): corrupt node: root=256
+ block=1035372494848 slot=364, bad key order, current (8796143471049 108 0)
+ next (50450969 1 0)
+To: Qu Wenruo <wqu@suse.com>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 02 Oct 2024 05:01:02 +0100, Matthew Wilcox (Oracle) wrote:
-> I think this pile of patches makes most sense to take through the VFS
-> tree.  The first four continue the work begun in 02e1960aafac to make the
-> mappedtodisk/owner_2 flag available to filesystems which don't use
-> buffer heads.  The last two remove uses of Private2 (we're achingly
-> close to being rid of it entirely, but that doesn't seem like it'll
-> land this merge window).
-> 
-> [...]
+On Wed, Oct 2, 2024 at 1:12=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+> =E5=9C=A8 2024/10/2 02:40, Peter Volkov =E5=86=99=E9=81=93:
+> > On Tue, Oct 1, 2024 at 3:09=E2=80=AFPM David Sterba <dsterba@suse.cz> w=
+rote:
+> >> On Tue, Oct 01, 2024 at 02:15:51PM +0000, Peter Volkov wrote:
+> >>> Hi! I've been using this system with this kernel (6.10.10) for a few
+> >>> months already and today out of nowhere btrfs broke with this error
+> >>> message:
+> >>>
+> >>> [53923.816740] page dumped because: eb page dump
+> >>> [53923.816743] BTRFS critical (device dm-0): corrupt node: root=3D256
+> >>> block=3D1035372494848 slot=3D364, bad key order, current (87961434710=
+49
+> >>> 108 0) next (50450969 1 0)
+> >>
+> >> Quite obvious memory bitflip:
+> >>
+> >> 8796143471049 =3D 0x8000301c9c9
+> >>       50450969 =3D 0x301d219
+> >>
+> >> The first one should probably be 0x301c9c9, but it's impossible to tel=
+l
+> >> how many other data/metadata could have been hit by this or another
+> >> memory bitflip so check can detect the things but not fix.
+> >
+> > Thank you David! Is my understanding correct, that btrfs catches
+> > memory problems,
+> > so this bitflip most probably means that my drive is failing?
+>
+> In this particular case, it's your hardware memory, not the drive.
 
-Applied to the vfs.pagecache branch of the vfs/vfs.git tree.
-Patches in the vfs.pagecache branch should appear in linux-next soon.
+Thank you, guys! You are right. memtest showed memory errors.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+> The error is happening at write time, so the metadata read from disk is
+> fine, thus not your driver returning some weird data.
+>
+> Furthermore, it's pretty hard that a simple bitflip can pass the
+> internal checksums of the storage device, thus it's very unlikely it's
+> your drive.
+>
+> So, please do a full memtest of your system before doing anything else.
+>
+> And considering your fsck result is already bad, it's no doubt that some
+> bitflip has already corrupted extent tree, and I believe the csum tree
+> is also corrupted.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+So I have to start over from last backup. Or is it possible to fix
+some of this bitflips to read at least part of tree?
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.pagecache
-
-[1/6] fs: Move clearing of mappedtodisk to buffer.c
-      https://git.kernel.org/vfs/vfs/c/9c33d85e34c2
-[2/6] nilfs2: Convert nilfs_copy_buffer() to use folios
-      https://git.kernel.org/vfs/vfs/c/a38117bc0de6
-[3/6] mm: Remove PageMappedToDisk
-      https://git.kernel.org/vfs/vfs/c/a04d5f82fa38
-[4/6] btrfs: Switch from using the private_2 flag to owner_2
-      https://git.kernel.org/vfs/vfs/c/a6752a6e7fb0
-[5/6] ceph: Remove call to PagePrivate2()
-      https://git.kernel.org/vfs/vfs/c/fd15ba4cb00a
-[6/6] migrate: Remove references to Private2
-      https://git.kernel.org/vfs/vfs/c/7735348d9f3a
+--
+Peter.
 
