@@ -1,66 +1,67 @@
-Return-Path: <linux-btrfs+bounces-8628-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8614-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB02993B28
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 01:26:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1617993AF2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 01:21:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D4321C23023
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 23:26:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25152B22CB6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 23:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6004B1E0E02;
-	Mon,  7 Oct 2024 23:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A491DF247;
+	Mon,  7 Oct 2024 23:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RGalx/UK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="czjCQj1G"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C728B1C242D;
-	Mon,  7 Oct 2024 23:17:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA35E1DE8B0;
+	Mon,  7 Oct 2024 23:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728343069; cv=none; b=QBhm52diAVdVA6muRDMGldDDjf8h8Y6WpWXvFEN7t1RXE6uAGc89xRT5S4OtoK0vfc+XPg81nMr7dVomxYoHLu0af+ruzWLL0Jj+uzKNJX0ZQt5bwFREZkJ3Yuh4RL2gp3y6O0qiJ1440RwHvqQOxVyrrT+/SBUWFEDoOBsZvik=
+	t=1728343036; cv=none; b=uNxuLtSdwju81+N0eV+qVFr7EXJnamWbrzOSNBH9rC0+mAGJgrteBpWSzFLg4/fe7A4z0EdS3Gig8GUZzdyoZ85l6Yk2utnckieiRoNiDrHB2S2ZoHFqr0eVoeNDvlkQQOCi86piRUnwlOrxHW50jxa65G0UivQ/NiUGG0ruhxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728343069; c=relaxed/simple;
-	bh=nbmlR3m/1dxZRKIaG1X2yqXOWQA7D/Qm2/wWl8k/BY8=;
+	s=arc-20240116; t=1728343036; c=relaxed/simple;
+	bh=7Aziv7pKJRTmg8ztGr51uqBKOZLkS3Ovx05kHI1NfI8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EyPYQW5sWy+YPD++3Gfr8yGm3KKgz2jKzQJhiMI8/mN8ucVa/2ZBScvJTIjkOQgkUUhSJs4/7gy1YoDjwhSiSzfBXwi8cFwbynmj0A2ITosE2dy9CnHdxJO0qPgandiGSzV+WK4zd3C8hiG1sfr9OeN7fqcVee5J6788SHSR4IU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RGalx/UK; arc=none smtp.client-ip=192.198.163.8
+	 In-Reply-To:To:Cc; b=PF8i9RPHN+LYww6CNwPU39fQKvomHC7eH1eI6W0KLSj+Vk8RppJdj5Bb+5rHCFxz2lcFvaLiIaWfkMrfIxmmajQwE0LSXMHgqY3MIOSCLfb8ZZ8vSW/0wFXevcmbEONXT+sT3RjgyEfCoN5jPJ69dxBb1NUr9NPgNyd7qtWGodk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=czjCQj1G; arc=none smtp.client-ip=192.198.163.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728343068; x=1759879068;
+  t=1728343034; x=1759879034;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=nbmlR3m/1dxZRKIaG1X2yqXOWQA7D/Qm2/wWl8k/BY8=;
-  b=RGalx/UKVq00fJPC6o/l8mt+Y009zk3tlE6735Ynyk+j8AMFaOB/tqOi
-   XJMHjQAYw+h4QV+8Td01J38E92yvBmFae+7B6Gn7smuDp5YNm55+s2qpS
-   L4ebCNYMGDeRNkuClWJ3MwMwgyjh3okr+W3BfeVhvtWifDvUWJdrWKcf9
-   RVkWvyJ8aRJzjDstqWvnjOLn1YYP8TOja+KRHZx8VIeBg2VcWtRbnyzJ3
-   rsSKt9njWaF7U55/DmRJj4/BS0iIQa6H1sH0tN+51iINYQGoAu2+tUG17
-   T8NHgAjnrK7gnEwfsv+M3O3VjIJuCpWRG8UZgrNqdbM3UE/s9SMd8kkzg
-   w==;
-X-CSE-ConnectionGUID: IqnrcXoATRmj44EiLjpsgw==
-X-CSE-MsgGUID: mHSwx3H2TZar1Cs8IGWGhg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11218"; a="45036990"
+  bh=7Aziv7pKJRTmg8ztGr51uqBKOZLkS3Ovx05kHI1NfI8=;
+  b=czjCQj1GOJbmfr0RMhg6yDVezvZbuHNngxSoC4uMFOtxKJtjpnEMZxQz
+   Pmd+tEdjXNK4kooOxREUSBnJekXOR302esA7FKzwCSQmxrOn7ethWLuqZ
+   xJ/z/dIScF7XwRNAcC+m1QKdjPS4G7TFkC2zDuyboJIk44fhy8kPPibCe
+   MmZybkQUaPvwtcdE5B2WpV4uf5JbA9SCTlal7eMo8i4YjP5SXDw7/sqBq
+   u02MJ165PgFNICd2FCgQLl8M6CsB15npHV666xBbY/fMzAjzgPaVt5uNB
+   R2JKXgpavARpH4+KV7Lxrzj3ZWPieC51qNU8lTFOGdyzke2cW7QB1J4QF
+   g==;
+X-CSE-ConnectionGUID: 7KYrokG0QDqaZ3Pr6+uQHg==
+X-CSE-MsgGUID: 1jLZZblDRUSbhimCxU6f5Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11218"; a="26972652"
 X-IronPort-AV: E=Sophos;i="6.11,185,1725346800"; 
-   d="scan'208";a="45036990"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:10 -0700
-X-CSE-ConnectionGUID: sHXGOXjFQVa+uDfTF3vkow==
-X-CSE-MsgGUID: 3Wo8bTU1T6Kue4N4QUlEjA==
+   d="scan'208";a="26972652"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:13 -0700
+X-CSE-ConnectionGUID: gFddk6zdTf6EusCUOxhxzg==
+X-CSE-MsgGUID: mH1R8XMDRxSCUiUSk9ogqA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,185,1725346800"; 
-   d="scan'208";a="75309213"
+   d="scan'208";a="76001797"
 Received: from ldmartin-desk2.corp.intel.com (HELO localhost) ([10.125.110.112])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:08 -0700
-From: ira.weiny@intel.com
-Date: Mon, 07 Oct 2024 18:16:25 -0500
-Subject: [PATCH v4 19/28] cxl/mem: Configure dynamic capacity interrupts
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:11 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+Date: Mon, 07 Oct 2024 18:16:26 -0500
+Subject: [PATCH v4 20/28] cxl/core: Return endpoint decoder information
+ from region search
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -69,7 +70,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241007-dcd-type2-upstream-v4-19-c261ee6eeded@intel.com>
+Message-Id: <20241007-dcd-type2-upstream-v4-20-c261ee6eeded@intel.com>
 References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
 In-Reply-To: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
 To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
@@ -84,189 +85,125 @@ Cc: Dan Williams <dan.j.williams@intel.com>,
  linux-doc@vger.kernel.org, nvdimm@lists.linux.dev, 
  linux-kernel@vger.kernel.org
 X-Mailer: b4 0.15-dev-37811
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1728342968; l=5357;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1728342968; l=4183;
  i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=Eew5uMTIVjbji9OsLBSh/pYxpB1Na7fle6NKI2rD/X4=;
- b=kulb4Kktx95NEKXN+PknfviKMrsiLiGtlNe6u8ygSaplB+WJFlpAHeu6ejVVHVtRRaKqtbn62
- dCZTq5u7cEMDfDPvSpgDRd0HVcqGPNxlFUV/wR7SouZGkFF+MAkpAuh
+ bh=7Aziv7pKJRTmg8ztGr51uqBKOZLkS3Ovx05kHI1NfI8=;
+ b=SYNH12WQME42J8YnWeQicXrhArlCiFX55UMTAAJi173NdrqSnWdS/6CTkv14avXanX0Md/Ocu
+ Fh94O08hItGDKpHTuRoP0lGQlxnvKwAaFR8JXlJsj+/R1XtrsFvlB+N
 X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
  pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
 
-From: Navneet Singh <navneet.singh@intel.com>
+cxl_dpa_to_region() finds the region from a <DPA, device> tuple.
+The search involves finding the device endpoint decoder as well.
 
-Dynamic Capacity Devices (DCD) support extent change notifications
-through the event log mechanism.  The interrupt mailbox commands were
-extended in CXL 3.1 to support these notifications.  Firmware can't
-configure DCD events to be FW controlled but can retain control of
-memory events.
+Dynamic capacity extent processing uses the endpoint decoder HPA
+information to calculate the HPA offset.  In addition, well behaved
+extents should be contained within an endpoint decoder.
 
-Configure DCD event log interrupts on devices supporting dynamic
-capacity.  Disable DCD if interrupts are not supported.
+Return the endpoint decoder found to be used in subsequent DCD code.
 
-Care is taken to preserve the interrupt policy set by the FW if FW first
-has been selected by the BIOS.
-
-Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-Co-developed-by: Ira Weiny <ira.weiny@intel.com>
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
 ---
-Changes:
-[iweiny: rebase on 6.12]
----
- drivers/cxl/cxlmem.h |  2 ++
- drivers/cxl/pci.c    | 72 +++++++++++++++++++++++++++++++++++++++++++---------
- 2 files changed, 62 insertions(+), 12 deletions(-)
+ drivers/cxl/core/core.h   | 6 ++++--
+ drivers/cxl/core/mbox.c   | 2 +-
+ drivers/cxl/core/memdev.c | 4 ++--
+ drivers/cxl/core/region.c | 8 +++++++-
+ 4 files changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index c3b889a586d8..2d2a1884a174 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -226,7 +226,9 @@ struct cxl_event_interrupt_policy {
- 	u8 warn_settings;
- 	u8 failure_settings;
- 	u8 fatal_settings;
-+	u8 dcd_settings;
- } __packed;
-+#define CXL_EVENT_INT_POLICY_BASE_SIZE 4 /* info, warn, failure, fatal */
+diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
+index 5d6fe7ab0a78..94ee06cfbdca 100644
+--- a/drivers/cxl/core/core.h
++++ b/drivers/cxl/core/core.h
+@@ -39,7 +39,8 @@ void cxl_decoder_kill_region(struct cxl_endpoint_decoder *cxled);
+ int cxl_region_init(void);
+ void cxl_region_exit(void);
+ int cxl_get_poison_by_endpoint(struct cxl_port *port);
+-struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa);
++struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa,
++				     struct cxl_endpoint_decoder **cxled);
+ u64 cxl_dpa_to_hpa(struct cxl_region *cxlr, const struct cxl_memdev *cxlmd,
+ 		   u64 dpa);
  
- /**
-  * struct cxl_event_state - Event log driver state
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index c6042db0653d..2ba059d313c2 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -672,23 +672,34 @@ static int cxl_event_get_int_policy(struct cxl_memdev_state *mds,
+@@ -50,7 +51,8 @@ static inline u64 cxl_dpa_to_hpa(struct cxl_region *cxlr,
+ 	return ULLONG_MAX;
+ }
+ static inline
+-struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa)
++struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa,
++				     struct cxl_endpoint_decoder **cxled)
+ {
+ 	return NULL;
+ }
+diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+index 3ba465823564..584d7d282a97 100644
+--- a/drivers/cxl/core/mbox.c
++++ b/drivers/cxl/core/mbox.c
+@@ -916,7 +916,7 @@ void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+ 		guard(rwsem_read)(&cxl_dpa_rwsem);
+ 
+ 		dpa = le64_to_cpu(evt->media_hdr.phys_addr) & CXL_DPA_MASK;
+-		cxlr = cxl_dpa_to_region(cxlmd, dpa);
++		cxlr = cxl_dpa_to_region(cxlmd, dpa, NULL);
+ 		if (cxlr)
+ 			hpa = cxl_dpa_to_hpa(cxlr, cxlmd, dpa);
+ 
+diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+index 2565b10a769c..31872c03006b 100644
+--- a/drivers/cxl/core/memdev.c
++++ b/drivers/cxl/core/memdev.c
+@@ -313,7 +313,7 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
+ 	if (rc)
+ 		goto out;
+ 
+-	cxlr = cxl_dpa_to_region(cxlmd, dpa);
++	cxlr = cxl_dpa_to_region(cxlmd, dpa, NULL);
+ 	if (cxlr)
+ 		dev_warn_once(cxl_mbox->host,
+ 			      "poison inject dpa:%#llx region: %s\n", dpa,
+@@ -377,7 +377,7 @@ int cxl_clear_poison(struct cxl_memdev *cxlmd, u64 dpa)
+ 	if (rc)
+ 		goto out;
+ 
+-	cxlr = cxl_dpa_to_region(cxlmd, dpa);
++	cxlr = cxl_dpa_to_region(cxlmd, dpa, NULL);
+ 	if (cxlr)
+ 		dev_warn_once(cxl_mbox->host,
+ 			      "poison clear dpa:%#llx region: %s\n", dpa,
+diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+index 34a6f447e75b..a0c181cc33e4 100644
+--- a/drivers/cxl/core/region.c
++++ b/drivers/cxl/core/region.c
+@@ -2827,6 +2827,7 @@ int cxl_get_poison_by_endpoint(struct cxl_port *port)
+ struct cxl_dpa_to_region_context {
+ 	struct cxl_region *cxlr;
+ 	u64 dpa;
++	struct cxl_endpoint_decoder *cxled;
+ };
+ 
+ static int __cxl_dpa_to_region(struct device *dev, void *arg)
+@@ -2860,11 +2861,13 @@ static int __cxl_dpa_to_region(struct device *dev, void *arg)
+ 			dev_name(dev));
+ 
+ 	ctx->cxlr = cxlr;
++	ctx->cxled = cxled;
+ 
+ 	return 1;
  }
  
- static int cxl_event_config_msgnums(struct cxl_memdev_state *mds,
--				    struct cxl_event_interrupt_policy *policy)
-+				    struct cxl_event_interrupt_policy *policy,
-+				    bool native_cxl)
+-struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa)
++struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa,
++				     struct cxl_endpoint_decoder **cxled)
  {
- 	struct cxl_mailbox *cxl_mbox = &mds->cxlds.cxl_mbox;
-+	size_t size_in = CXL_EVENT_INT_POLICY_BASE_SIZE;
- 	struct cxl_mbox_cmd mbox_cmd;
- 	int rc;
+ 	struct cxl_dpa_to_region_context ctx;
+ 	struct cxl_port *port;
+@@ -2876,6 +2879,9 @@ struct cxl_region *cxl_dpa_to_region(const struct cxl_memdev *cxlmd, u64 dpa)
+ 	if (port && is_cxl_endpoint(port) && cxl_num_decoders_committed(port))
+ 		device_for_each_child(&port->dev, &ctx, __cxl_dpa_to_region);
  
--	*policy = (struct cxl_event_interrupt_policy) {
--		.info_settings = CXL_INT_MSI_MSIX,
--		.warn_settings = CXL_INT_MSI_MSIX,
--		.failure_settings = CXL_INT_MSI_MSIX,
--		.fatal_settings = CXL_INT_MSI_MSIX,
--	};
-+	/* memory event policy is left if FW has control */
-+	if (native_cxl) {
-+		*policy = (struct cxl_event_interrupt_policy) {
-+			.info_settings = CXL_INT_MSI_MSIX,
-+			.warn_settings = CXL_INT_MSI_MSIX,
-+			.failure_settings = CXL_INT_MSI_MSIX,
-+			.fatal_settings = CXL_INT_MSI_MSIX,
-+			.dcd_settings = 0,
-+		};
-+	}
++	if (cxled)
++		*cxled = ctx.cxled;
 +
-+	if (cxl_dcd_supported(mds)) {
-+		policy->dcd_settings = CXL_INT_MSI_MSIX;
-+		size_in += sizeof(policy->dcd_settings);
-+	}
- 
- 	mbox_cmd = (struct cxl_mbox_cmd) {
- 		.opcode = CXL_MBOX_OP_SET_EVT_INT_POLICY,
- 		.payload_in = policy,
--		.size_in = sizeof(*policy),
-+		.size_in = size_in,
- 	};
- 
- 	rc = cxl_internal_send_cmd(cxl_mbox, &mbox_cmd);
-@@ -735,6 +746,31 @@ static int cxl_event_irqsetup(struct cxl_memdev_state *mds,
- 	return 0;
- }
- 
-+static int cxl_irqsetup(struct cxl_memdev_state *mds,
-+			struct cxl_event_interrupt_policy *policy,
-+			bool native_cxl)
-+{
-+	struct cxl_dev_state *cxlds = &mds->cxlds;
-+	int rc;
-+
-+	if (native_cxl) {
-+		rc = cxl_event_irqsetup(mds, policy);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	if (cxl_dcd_supported(mds)) {
-+		rc = cxl_event_req_irq(cxlds, policy->dcd_settings);
-+		if (rc) {
-+			dev_err(cxlds->dev, "Failed to get interrupt for DCD event log\n");
-+			cxl_disable_dcd(mds);
-+			return rc;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static bool cxl_event_int_is_fw(u8 setting)
- {
- 	u8 mode = FIELD_GET(CXLDEV_EVENT_INT_MODE_MASK, setting);
-@@ -761,17 +797,25 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 			    struct cxl_memdev_state *mds, bool irq_avail)
- {
- 	struct cxl_event_interrupt_policy policy = { 0 };
-+	bool native_cxl = host_bridge->native_cxl_error;
- 	int rc;
- 
- 	/*
- 	 * When BIOS maintains CXL error reporting control, it will process
- 	 * event records.  Only one agent can do so.
-+	 *
-+	 * If BIOS has control of events and DCD is not supported skip event
-+	 * configuration.
- 	 */
--	if (!host_bridge->native_cxl_error)
-+	if (!native_cxl && !cxl_dcd_supported(mds))
- 		return 0;
- 
- 	if (!irq_avail) {
- 		dev_info(mds->cxlds.dev, "No interrupt support, disable event processing.\n");
-+		if (cxl_dcd_supported(mds)) {
-+			dev_info(mds->cxlds.dev, "DCD requires interrupts, disable DCD\n");
-+			cxl_disable_dcd(mds);
-+		}
- 		return 0;
- 	}
- 
-@@ -779,10 +823,10 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 	if (rc)
- 		return rc;
- 
--	if (!cxl_event_validate_mem_policy(mds, &policy))
-+	if (native_cxl && !cxl_event_validate_mem_policy(mds, &policy))
- 		return -EBUSY;
- 
--	rc = cxl_event_config_msgnums(mds, &policy);
-+	rc = cxl_event_config_msgnums(mds, &policy, native_cxl);
- 	if (rc)
- 		return rc;
- 
-@@ -790,12 +834,16 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 	if (rc)
- 		return rc;
- 
--	rc = cxl_event_irqsetup(mds, &policy);
-+	rc = cxl_irqsetup(mds, &policy, native_cxl);
- 	if (rc)
- 		return rc;
- 
- 	cxl_mem_get_event_records(mds, CXLDEV_EVENT_STATUS_ALL);
- 
-+	dev_dbg(mds->cxlds.dev, "Event config : %s DCD %s\n",
-+		native_cxl ? "OS" : "BIOS",
-+		cxl_dcd_supported(mds) ? "supported" : "not supported");
-+
- 	return 0;
+ 	return ctx.cxlr;
  }
  
 
