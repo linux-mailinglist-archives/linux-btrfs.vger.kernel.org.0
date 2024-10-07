@@ -1,132 +1,126 @@
-Return-Path: <linux-btrfs+bounces-8591-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8592-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A5A1993155
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 17:35:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D6A99378F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 21:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6C071F242E7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 15:35:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B16EBB2297D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 19:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E871D1D8E17;
-	Mon,  7 Oct 2024 15:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340C81DE3B7;
+	Mon,  7 Oct 2024 19:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nCZMuruq"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dubielvitrum.pl header.i=@dubielvitrum.pl header.b="h8fgNTc4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from naboo.endor.pl (naboo.endor.pl [91.194.229.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1751E1D2714
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 15:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F9CE1DB52A
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 19:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.194.229.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728315291; cv=none; b=Q3IYk1vfmrb7B/UsZDHWxy+24MgyAepXIeGuzagCmGi6tpR1zuY6tcm5Fm0jM6x0+kprwfjG9PkFCilU1MUwy0dh5cekN7jCKn86qokf0jZHEHRf2yrR/GrmbP0rrff3ZMZzhhmEGswXaACEplKYnr7qa/chUKd0ONzvuV7xKxI=
+	t=1728330328; cv=none; b=i/kt8ash3fOj6Rn/uU9HLNXNcY2jzUVm9Ton0aS0+osU35zURPpGtyp8xcrrg/0BMjmd24n3lbnuXZlIozZzQqFrQyuA24AaKn8eIG48iQ2QxuEad7B1hQixbU9Un0J2kcneQTVLzo0x7N47tDWNC0McRRk/8qtnNlWh50IwHtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728315291; c=relaxed/simple;
-	bh=klqBF/JyD13M9xF/27vkVng1AJibZAdiT4K9gQDbA5A=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=smj47q8tPY6hLL3tzTDL14/udxHoEMrJdrPCUsQh5n/pRR4vNZrDpQmQfVZh8TV21ceSQ2N2V6UghyHZBU6YzHVnLdUDx7uD7XjMeLPR6OifU6t3y5/RfXUdXHrapBE+CrPBVhoAI71VrxhJNFg3X63tGpKnD4mvC5OB4Cro8pE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nCZMuruq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 242DBC4CEC6
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 15:34:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728315290;
-	bh=klqBF/JyD13M9xF/27vkVng1AJibZAdiT4K9gQDbA5A=;
-	h=From:To:Subject:Date:From;
-	b=nCZMuruqj9SEv4jDxZjyLQQdrwiIF0CwZBrGHjo2xKhAGWS842nGqp9pwtMtRKH6b
-	 TIg3HwjFy9DR2ymg2tWF/zkLGMxQfAtIkWI+2K2qxI4A4nh7+Ratlvsg8sehx7Br0w
-	 m6nyCCbXw06b2t5VtNIVrLVcgk6UfA6t+Wfr5fKH72hysuLAOmp4lxM2CSdWq4Y+vQ
-	 lDQ45jokYlJjk8KjiqH6j1GvvehOqpDbpi9+HY2mkOnJC9+ZmlIjBtW30+dV9LwDSB
-	 RGjM5Q1tmxlOu7cbJnFP91cwebdwjZ4DmD4GE/ST0lHfEaslXeZggUTbKa5Ry64xPy
-	 eBv/cRkZ3tGDA==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: qgroup: run delayed iputs after ordered extent completion
-Date: Mon,  7 Oct 2024 16:34:47 +0100
-Message-Id: <2efe2794ecbfbfab1545a9341d3a1fb7464dc048.1728315195.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1728330328; c=relaxed/simple;
+	bh=MZVoAbJcLH924NM4byE3u28uloJDwv5X3bWQxUnR5yw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=IeMAdf8fsPR6Ny0YaRQSlln/LIHwkB+kiekgtlt4g9MQC0cbhhFHFqlU2hY0t0PBq0GhCE0yJjJpjTWmmsEWi+IEICYjaCLPB5nvnWoXoN74G7urhFmMDbCTm1vNLKQUbrlgyEItVuWCOdh5lLwTH585jOPZ2e7UMZSRk5EZIuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubielvitrum.pl; spf=pass smtp.mailfrom=dubielvitrum.pl; dkim=pass (2048-bit key) header.d=dubielvitrum.pl header.i=@dubielvitrum.pl header.b=h8fgNTc4; arc=none smtp.client-ip=91.194.229.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubielvitrum.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubielvitrum.pl
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by naboo.endor.pl (Postfix) with ESMTP id C8155C0A220;
+	Mon,  7 Oct 2024 21:45:21 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at 
+Authentication-Results: naboo.endor.pl (amavisd-new); dkim=pass (2048-bit key)
+	header.d=dubielvitrum.pl
+Received: from naboo.endor.pl ([91.194.229.15])
+	by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Ja3V4e36gc-v; Mon,  7 Oct 2024 21:45:17 +0200 (CEST)
+Received: from orion.dubielvitrum.pl (unknown [157.25.148.26])
+	(Authenticated sender: postmaster@dubielvitrum.pl)
+	by naboo.endor.pl (Postfix) with ESMTPSA id 4E329C0A169;
+	Mon,  7 Oct 2024 21:45:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=dubielvitrum.pl; s=dkim-2022; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=62BEUOOKdlWGqb/9snOrXlb+9jP5yRl3YWhw/PGk/jw=; b=h8fgNTc462RvAzBluI7RBDl/T0
+	komDrw7geHbx/OvlUSxLTGobCaPr03eBxCL4kP1bTNAmpntZQY4KkiCEi+zBImmYfGSMOc1pYdd5O
+	i4bjr2I1tEb28AFpPVh2r1glmaSlfTLPfe5URCdV0jc8jikYI7wNT19sFH/i0A6FtbICFYKZ7CQON
+	k7ImDhUWiW9KKG+oRsa0Nu3n3BMFs+/+XTUgla2TCVuK12o638uFuM6uyfMVeGds6Xjwl5dqZXTFP
+	WR6OoGtOvN5oZQCOLA48N8YPgm7tzqRNhfLfyHQfirr81aQFxjhecOtdwb2o5PuY/ahAfesChSt75
+	eIlwJPkw==;
+Received: from [176.100.193.184] (helo=[192.168.55.107])
+	by orion.dubielvitrum.pl with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <leszek.dubiel@dubielvitrum.pl>)
+	id 1sxtfP-00BYsw-3B;
+	Mon, 07 Oct 2024 21:45:16 +0200
+Message-ID: <7069125d-76e2-4e02-8162-80bc0c1b9eb5@dubielvitrum.pl>
+Date: Mon, 7 Oct 2024 21:45:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: failed to clone extents ... Invalid argument
+From: Leszek Dubiel <leszek.dubiel@dubielvitrum.pl>
+To: linux-btrfs@vger.kernel.org
+Cc: Filipe Manana <fdmanana@kernel.org>
+References: <f7ca5e8c-7771-430a-92d5-52a80184040e@dubielvitrum.pl>
+ <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com>
+ <fda83046-98b0-408f-a1d5-0fc2f35c8dfb@dubielvitrum.pl>
+Content-Language: en-US, pl-PL
+In-Reply-To: <fda83046-98b0-408f-a1d5-0fc2f35c8dfb@dubielvitrum.pl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
 
-When trying to flush qgroups in order to release space we run delayed
-iputs in order to release space from recently deleted files (their link
-counted reached zero), and then we start delalloc and wait for any
-existing ordered extents to complete.
+>
+>> This is probably the same issue recently reported here:
+>>
+>> https://lore.kernel.org/linux-btrfs/CAJhrHS2z+WViO2h=ojYvBPDLsATwLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com/ 
+>>
+>>
+>>
 
-However there's a time window here where we end up not doing the final
-iput on a deleted file which could release necessary space:
+>> In the meanwhile you can either use a v6.1.106 kernel
 
-1) An unlink operation starts;
 
-2) During the unlink, or right before it completes, delalloc is flushed
-   and an ordered extent is created;
 
-3) When the ordered extent is created, the inode's ref count is
-   incremented (with igrab() at alloc_ordered_extent());
+On Debian it solved the problem:
 
-4) When the unlink finishes it doesn't drop the last reference on the
-   inode and so it doesn't trigger inode eviction to delete all of
-   the inode's items in its root and drop all references on its data
-   extents;
 
-5) Another task enters try_flush_qgroup() to try to release space,
-   it runs all delayed iputs, but there's no delayed iput yet for that
-   deleted file because the ordered extent hasn't completed yet;
+root@orion:~/Admin# uname -a
 
-6) Then at try_flush_qgroup() we wait for the ordered extent to complete
-   and that results in adding a delayed iput at btrfs_put_ordered_extent()
-   when called from btrfs_finish_one_ordered();
+Linux orion 6.1.0-25-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.106-3 
+(2024-08-26) x86_64 GNU/Linux
 
-7) Adding the delayed iput results in waking the cleaner kthread if it's
-   not running already. However it may take some time for it to be
-   scheduled, or it may be running but busy running auto defrag, dropping
-   deleted snapshots or doing other work, so by the time we return from
-   try_flush_qgroup() the space for deleted file isn't released.
 
-Improve on this by running delayed iputs only after flushing delalloc
-and waiting for ordered extent completion.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/qgroup.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+root@orion:~/Admin# dpkg -l | grep linux-ima
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index f68a26390589..bbc54dd154ec 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -4195,13 +4195,20 @@ static int try_flush_qgroup(struct btrfs_root *root)
- 		return 0;
- 	}
- 
--	btrfs_run_delayed_iputs(root->fs_info);
--	btrfs_wait_on_delayed_iputs(root->fs_info);
- 	ret = btrfs_start_delalloc_snapshot(root, true);
- 	if (ret < 0)
- 		goto out;
- 	btrfs_wait_ordered_extents(root, U64_MAX, NULL);
- 
-+	/*
-+	 * After waiting for ordered extents run delayed iputs in order to free
-+	 * space from unlinked files before committing the current transaction,
-+	 * as ordered extents may have been holding the last reference of an
-+	 * inode and they add a delayed iput when they complete.
-+	 */
-+	btrfs_run_delayed_iputs(root->fs_info);
-+	btrfs_wait_on_delayed_iputs(root->fs_info);
-+
- 	ret = btrfs_commit_current_transaction(root);
- out:
- 	clear_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state);
--- 
-2.43.0
+ii  linux-image-6.1.0-25-amd64 6.1.106-3                                 
+amd64        Linux 6.1 for 64-bit PCs (signed)
+ii  linux-image-6.1.0-26-amd64 6.1.112-1                                 
+amd64        Linux 6.1 for 64-bit PCs (signed)
+ii  linux-image-amd64 6.1.112-1                                 
+amd64        Linux for 64-bit PCs (meta-package)
 
+
+
+
+To boot previous kernel I edited /boot/grub/grub.cfg and moved menuentry 
+to be the first:
+
+                         menuentry 'Debian GNU/Linux, with Linux 
+6.1.0-25-amd64'
 
