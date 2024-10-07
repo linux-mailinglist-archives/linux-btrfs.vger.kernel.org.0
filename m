@@ -1,67 +1,66 @@
-Return-Path: <linux-btrfs+bounces-8620-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8622-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3170E993B07
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 01:22:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D089D993B10
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 01:23:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 507CC1C2152D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 23:22:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FAADB247DA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 23:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB971DFD9D;
-	Mon,  7 Oct 2024 23:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDEF1DFD9C;
+	Mon,  7 Oct 2024 23:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lY+Wcsbg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ISc9kqzu"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5F71DF753;
-	Mon,  7 Oct 2024 23:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D8D1DF98A;
+	Mon,  7 Oct 2024 23:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728343042; cv=none; b=G3GJ9D/vwdzYCipEiMNLrzK4HH8xo9OeXkX5kR7pB3qJD9XD0IpA3jQ9qMDhD99cX1z+ZvQRop7ydzU3KCfH0aXMz/piufIFRfVxcPxs0lHpcv32P76u95ErOXvqriB0g08szTC0KXkW9eyMiXLTrRYozrgsOB0RTozO3yUKxPs=
+	t=1728343044; cv=none; b=azv2lUyDM8HX5w0PEv9DTWSjBS+nPk4k04UJmN9kuvUS/aDJTG+bVJppmOfPXYVsH/LHcFRjI0+9FNHJwmhHN5nFNXbgtld7FzfbcXiTewhKDEV7PyQuL5RCx8bmB3zZEY2EPnSfAEVWOlqIX2JUx+Tx1B3/xskYX5RD6JPFpGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728343042; c=relaxed/simple;
-	bh=RYD5mX4v541rozxI90MPUDtRQ6WgI1e9REWFUZB3eSI=;
+	s=arc-20240116; t=1728343044; c=relaxed/simple;
+	bh=zpLcqfG6HyhDZCNK5TVj3iMSlUiCnACWF2RBTDqdc50=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=JY/Zo0H2X5buC7aDMmIbciz6tLe/AvUutrFaYbLpFDm9gBrbmnucl6YfQb4Ox3Z4TcWnw54kyGTqPY2gsR0rUOZXxFY0PxSCTYXP1EXHVYW8NR0Jee4bp6YmAnjTPgx8BuRX9m3vv14HM0xe+h0xTADuYDcKI2pbKFYnglY8fpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lY+Wcsbg; arc=none smtp.client-ip=192.198.163.18
+	 In-Reply-To:To:Cc; b=KC1s21u2fESbvhg9FtxNaasLLaWc9mFeHy+0Kj5SGxP9VjAev679JyOvYDYC2vOZI2DPQfoaIZArtS6Ku1wO6GMNFsLyrh8NC4EjqvvM/+XKJhaeDtBqwY7Vjot70i2LxThZfffgFAzKobOKFCpLQ5yrpczTk4V/KQtnvVZNDXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ISc9kqzu; arc=none smtp.client-ip=192.198.163.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728343040; x=1759879040;
+  t=1728343042; x=1759879042;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=RYD5mX4v541rozxI90MPUDtRQ6WgI1e9REWFUZB3eSI=;
-  b=lY+Wcsbg1wDvKyY0D+Iw9tLJHOujXixSYflcyHh9nTczy4zGbhcOM3jv
-   kiU3ZkcUmsDtUph/O2QbdPiUT04ktT8MTDann5FNhjMlikxuri2H/a9D5
-   MF1OpJAHP4L1EpgA2izlX+/sbh2Kr3wr9Hh5CqqqkVDGAYzLzGduK3vSQ
-   uWFdpZM4QJ92t503j6rRGpTPdtvRa1qLB4r4wBly5hYVV9hE2Hd909dME
-   k1NckXxcgb5gIOasiyEsnU020JWrjQ5Zyk30HNkEa0Jf6YQ/EW8UU/ZJg
-   FXA4fIbzDz5EWql8T+jgs/tQ+PXY7DsEC4Sf52b6fOHkkJ5IwF13HcemH
-   w==;
-X-CSE-ConnectionGUID: 5TL7kIE6T1OSKB14nRRbBw==
-X-CSE-MsgGUID: owhXcf/8QnC+7YI9heEnSQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11218"; a="26972674"
+  bh=zpLcqfG6HyhDZCNK5TVj3iMSlUiCnACWF2RBTDqdc50=;
+  b=ISc9kqzutuQ1t/TEOJqx6WtKa/xjQi1XlhdKZW7SGEXvsPEAx1y1fs4Z
+   z+9LzgniSLwOv0kaxEm0wukI6j2T/aMGNdU5kVWG1vKuqlthDOeekev31
+   9KtvVcTfv2+tu3CVLCWOTQJorNtaSvXTey5N8kEfSqM5/3zP12ed87rId
+   O8UDuNrTs6gR4vIkSIZpmIq3nnuV5IrZMPtI4TfGOkqjnL3ShKqBWoWah
+   hunuRkM7dkMBAXPQRcn+Y3FKmEFZcMyq5I3xmfAHwbnk+OSXz7fz7qbiu
+   MIqd4mmh03cMt9kqRp4axi8nXxogbbRMUqphz1FevZ+wtSdQ/Al/jP93D
+   g==;
+X-CSE-ConnectionGUID: Q74HWDtmQait3Td5xasTRA==
+X-CSE-MsgGUID: gvIb4i36R8GLFTAK5I+1lw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11218"; a="26972682"
 X-IronPort-AV: E=Sophos;i="6.11,185,1725346800"; 
-   d="scan'208";a="26972674"
+   d="scan'208";a="26972682"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:19 -0700
-X-CSE-ConnectionGUID: 1PyCAfo2SP2l0kPlJ/0gMA==
-X-CSE-MsgGUID: +QazMjtdRuqXjln9IIwxXw==
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:22 -0700
+X-CSE-ConnectionGUID: ykHvmp5FTb6uC0gIkB+6jw==
+X-CSE-MsgGUID: hRDGdKMLQMiVXEWTIqQxCw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,185,1725346800"; 
-   d="scan'208";a="76001804"
+   d="scan'208";a="76001812"
 Received: from ldmartin-desk2.corp.intel.com (HELO localhost) ([10.125.110.112])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:17 -0700
-From: ira.weiny@intel.com
-Date: Mon, 07 Oct 2024 18:16:28 -0500
-Subject: [PATCH v4 22/28] cxl/region/extent: Expose region extent
- information in sysfs
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2024 16:17:20 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+Date: Mon, 07 Oct 2024 18:16:29 -0500
+Subject: [PATCH v4 23/28] dax/bus: Factor out dev dax resize logic
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -70,7 +69,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241007-dcd-type2-upstream-v4-22-c261ee6eeded@intel.com>
+Message-Id: <20241007-dcd-type2-upstream-v4-23-c261ee6eeded@intel.com>
 References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
 In-Reply-To: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
 To: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, 
@@ -85,156 +84,257 @@ Cc: Dan Williams <dan.j.williams@intel.com>,
  linux-doc@vger.kernel.org, nvdimm@lists.linux.dev, 
  linux-kernel@vger.kernel.org
 X-Mailer: b4 0.15-dev-37811
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1728342968; l=4810;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1728342968; l=8680;
  i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=+h1dc0HZCoo0KKUZMEsS6awspM1Y177ePPaCUO0qWIw=;
- b=myXgaoNgsRB8a7EMRPvw1CJ4ovKlYRQ7vUC+Z6mKOWLtuJBxMTCA0+HYmuMH36/LF7AtPj/kn
- IJ8dCfbnF8FDSAbqKVHXG1udmUx9vVqX+0WuXpAOxF2xHwPWPoQfxm1
+ bh=zpLcqfG6HyhDZCNK5TVj3iMSlUiCnACWF2RBTDqdc50=;
+ b=BFTdhEszDjMky+rR1ZnsAB4bh1dr+Q+M07XEtmkRyleuHncbW3ZJDMazZeu0gWm4l0DEn0jen
+ v0d27mNjzT8A9fZy11SFP0Elyc1ANQQntHsGjrGA879guH6ESIZCszQ
 X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
  pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
 
-From: Navneet Singh <navneet.singh@intel.com>
+Dynamic Capacity regions must limit dev dax resources to those areas
+which have extents backing real memory.  Such DAX regions are dubbed
+'sparse' regions.  In order to manage where memory is available four
+alternatives were considered:
 
-Extent information can be helpful to the user to coordinate memory usage
-with the external orchestrator and FM.
+1) Create a single region resource child on region creation which
+   reserves the entire region.  Then as extents are added punch holes in
+   this reservation.  This requires new resource manipulation to punch
+   the holes and still requires an additional iteration over the extent
+   areas which may already have existing dev dax resources used.
 
-Expose the details of region extents by creating the following
-sysfs entries.
+2) Maintain an ordered xarray of extents which can be queried while
+   processing the resize logic.  The issue is that existing region->res
+   children may artificially limit the allocation size sent to
+   alloc_dev_dax_range().  IE the resource children can't be directly
+   used in the resize logic to find where space in the region is.  This
+   also poses a problem of managing the available size in 2 places.
 
-        /sys/bus/cxl/devices/dax_regionX/extentX.Y
-        /sys/bus/cxl/devices/dax_regionX/extentX.Y/offset
-        /sys/bus/cxl/devices/dax_regionX/extentX.Y/length
-        /sys/bus/cxl/devices/dax_regionX/extentX.Y/tag
+3) Maintain a separate resource tree with extents.  This option is the
+   same as 2) but with the different data structure.  Most ideally there
+   should be a unified representation of the resource tree not two places
+   to look for space.
 
-Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+4) Create region resource children for each extent.  Manage the dax dev
+   resize logic in the same way as before but use a region child
+   (extent) resource as the parents to find space within each extent.
+
+Option 4 can leverage the existing resize algorithm to find space within
+the extents.  It manages the available space in a singular resource tree
+which is less complicated for finding space.
+
+In preparation for this change, factor out the dev_dax_resize logic.
+For static regions use dax_region->res as the parent to find space for
+the dax ranges.  Future patches will use the same algorithm with
+individual extent resources as the parent.
+
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
 ---
 Changes:
-[djiang: Split sysfs docs up]
-[iweiny: Adjust sysfs docs dates]
+[Jonathan: Fix handling of alloc]
 ---
- Documentation/ABI/testing/sysfs-bus-cxl | 32 ++++++++++++++++++
- drivers/cxl/core/extent.c               | 58 +++++++++++++++++++++++++++++++++
- 2 files changed, 90 insertions(+)
+ drivers/dax/bus.c | 129 +++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 79 insertions(+), 50 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-index b63ab622515f..64918180a3c9 100644
---- a/Documentation/ABI/testing/sysfs-bus-cxl
-+++ b/Documentation/ABI/testing/sysfs-bus-cxl
-@@ -632,3 +632,35 @@ Description:
- 		See Documentation/ABI/stable/sysfs-devices-node. access0 provides
- 		the number to the closest initiator and access1 provides the
- 		number to the closest CPU.
-+
-+What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/offset
-+Date:		December, 2024
-+KernelVersion:	v6.13
-+Contact:	linux-cxl@vger.kernel.org
-+Description:
-+		(RO) [For Dynamic Capacity regions only] Users can use the
-+		extent information to create DAX devices on specific extents.
-+		This is done by creating and destroying DAX devices in specific
-+		sequences and looking at the mappings created.  Extent offset
-+		within the region.
-+
-+What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/length
-+Date:		December, 2024
-+KernelVersion:	v6.13
-+Contact:	linux-cxl@vger.kernel.org
-+Description:
-+		(RO) [For Dynamic Capacity regions only] Users can use the
-+		extent information to create DAX devices on specific extents.
-+		This is done by creating and destroying DAX devices in specific
-+		sequences and looking at the mappings created.  Extent length
-+		within the region.
-+
-+What:		/sys/bus/cxl/devices/dax_regionX/extentX.Y/tag
-+Date:		December, 2024
-+KernelVersion:	v6.13
-+Contact:	linux-cxl@vger.kernel.org
-+Description:
-+		(RO) [For Dynamic Capacity regions only] Users can use the
-+		extent information to create DAX devices on specific extents.
-+		This is done by creating and destroying DAX devices in specific
-+		sequences and looking at the mappings created.  Extent tag.
-diff --git a/drivers/cxl/core/extent.c b/drivers/cxl/core/extent.c
-index 69a7614ba6a9..a1eb6e8e4f1a 100644
---- a/drivers/cxl/core/extent.c
-+++ b/drivers/cxl/core/extent.c
-@@ -6,6 +6,63 @@
+diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+index d8cb5195a227..f0e3f8c787df 100644
+--- a/drivers/dax/bus.c
++++ b/drivers/dax/bus.c
+@@ -844,11 +844,9 @@ static int devm_register_dax_mapping(struct dev_dax *dev_dax, int range_id)
+ 	return 0;
+ }
  
- #include "core.h"
- 
-+static ssize_t offset_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
-+{
-+	struct region_extent *region_extent = to_region_extent(dev);
-+
-+	return sysfs_emit(buf, "%#llx\n", region_extent->hpa_range.start);
-+}
-+static DEVICE_ATTR_RO(offset);
-+
-+static ssize_t length_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
-+{
-+	struct region_extent *region_extent = to_region_extent(dev);
-+	u64 length = range_len(&region_extent->hpa_range);
-+
-+	return sysfs_emit(buf, "%#llx\n", length);
-+}
-+static DEVICE_ATTR_RO(length);
-+
-+static ssize_t tag_show(struct device *dev, struct device_attribute *attr,
-+			char *buf)
-+{
-+	struct region_extent *region_extent = to_region_extent(dev);
-+
-+	return sysfs_emit(buf, "%pUb\n", &region_extent->tag);
-+}
-+static DEVICE_ATTR_RO(tag);
-+
-+static struct attribute *region_extent_attrs[] = {
-+	&dev_attr_offset.attr,
-+	&dev_attr_length.attr,
-+	&dev_attr_tag.attr,
-+	NULL,
-+};
-+
-+static uuid_t empty_tag = { 0 };
-+
-+static umode_t region_extent_visible(struct kobject *kobj,
-+				     struct attribute *a, int n)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct region_extent *region_extent = to_region_extent(dev);
-+
-+	if (a == &dev_attr_tag.attr &&
-+	    uuid_equal(&region_extent->tag, &empty_tag))
-+		return 0;
-+
-+	return a->mode;
-+}
-+
-+static const struct attribute_group region_extent_attribute_group = {
-+	.attrs = region_extent_attrs,
-+	.is_visible = region_extent_visible,
-+};
-+
-+__ATTRIBUTE_GROUPS(region_extent_attribute);
-+
- static void cxled_release_extent(struct cxl_endpoint_decoder *cxled,
- 				 struct cxled_extent *ed_extent)
+-static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+-		resource_size_t size)
++static int alloc_dev_dax_range(struct resource *parent, struct dev_dax *dev_dax,
++			       u64 start, resource_size_t size)
  {
-@@ -44,6 +101,7 @@ static void region_extent_release(struct device *dev)
- static const struct device_type region_extent_type = {
- 	.name = "extent",
- 	.release = region_extent_release,
-+	.groups = region_extent_attribute_groups,
- };
+-	struct dax_region *dax_region = dev_dax->region;
+-	struct resource *res = &dax_region->res;
+ 	struct device *dev = &dev_dax->dev;
+ 	struct dev_dax_range *ranges;
+ 	unsigned long pgoff = 0;
+@@ -866,14 +864,14 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+ 		return 0;
+ 	}
  
- bool is_region_extent(struct device *dev)
+-	alloc = __request_region(res, start, size, dev_name(dev), 0);
++	alloc = __request_region(parent, start, size, dev_name(dev), 0);
+ 	if (!alloc)
+ 		return -ENOMEM;
+ 
+ 	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
+ 			* (dev_dax->nr_range + 1), GFP_KERNEL);
+ 	if (!ranges) {
+-		__release_region(res, alloc->start, resource_size(alloc));
++		__release_region(parent, alloc->start, resource_size(alloc));
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -1026,50 +1024,45 @@ static bool adjust_ok(struct dev_dax *dev_dax, struct resource *res)
+ 	return true;
+ }
+ 
+-static ssize_t dev_dax_resize(struct dax_region *dax_region,
+-		struct dev_dax *dev_dax, resource_size_t size)
++/**
++ * dev_dax_resize_static - Expand the device into the unused portion of the
++ * region. This may involve adjusting the end of an existing resource, or
++ * allocating a new resource.
++ *
++ * @parent: parent resource to allocate this range in
++ * @dev_dax: DAX device to be expanded
++ * @to_alloc: amount of space to alloc; must be <= space available in @parent
++ *
++ * Return the amount of space allocated or -ERRNO on failure
++ */
++static ssize_t dev_dax_resize_static(struct resource *parent,
++				     struct dev_dax *dev_dax,
++				     resource_size_t to_alloc)
+ {
+-	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+-	resource_size_t dev_size = dev_dax_size(dev_dax);
+-	struct resource *region_res = &dax_region->res;
+-	struct device *dev = &dev_dax->dev;
+ 	struct resource *res, *first;
+-	resource_size_t alloc = 0;
+ 	int rc;
+ 
+-	if (dev->driver)
+-		return -EBUSY;
+-	if (size == dev_size)
+-		return 0;
+-	if (size > dev_size && size - dev_size > avail)
+-		return -ENOSPC;
+-	if (size < dev_size)
+-		return dev_dax_shrink(dev_dax, size);
+-
+-	to_alloc = size - dev_size;
+-	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
+-			"resize of %pa misaligned\n", &to_alloc))
+-		return -ENXIO;
+-
+-	/*
+-	 * Expand the device into the unused portion of the region. This
+-	 * may involve adjusting the end of an existing resource, or
+-	 * allocating a new resource.
+-	 */
+-retry:
+-	first = region_res->child;
+-	if (!first)
+-		return alloc_dev_dax_range(dev_dax, dax_region->res.start, to_alloc);
++	first = parent->child;
++	if (!first) {
++		rc = alloc_dev_dax_range(parent, dev_dax,
++					   parent->start, to_alloc);
++		if (rc)
++			return rc;
++		return to_alloc;
++	}
+ 
+-	rc = -ENOSPC;
+ 	for (res = first; res; res = res->sibling) {
+ 		struct resource *next = res->sibling;
++		resource_size_t alloc;
+ 
+ 		/* space at the beginning of the region */
+-		if (res == first && res->start > dax_region->res.start) {
+-			alloc = min(res->start - dax_region->res.start, to_alloc);
+-			rc = alloc_dev_dax_range(dev_dax, dax_region->res.start, alloc);
+-			break;
++		if (res == first && res->start > parent->start) {
++			alloc = min(res->start - parent->start, to_alloc);
++			rc = alloc_dev_dax_range(parent, dev_dax,
++						 parent->start, alloc);
++			if (rc)
++				return rc;
++			return alloc;
+ 		}
+ 
+ 		alloc = 0;
+@@ -1078,21 +1071,55 @@ static ssize_t dev_dax_resize(struct dax_region *dax_region,
+ 			alloc = min(next->start - (res->end + 1), to_alloc);
+ 
+ 		/* space at the end of the region */
+-		if (!alloc && !next && res->end < region_res->end)
+-			alloc = min(region_res->end - res->end, to_alloc);
++		if (!alloc && !next && res->end < parent->end)
++			alloc = min(parent->end - res->end, to_alloc);
+ 
+ 		if (!alloc)
+ 			continue;
+ 
+ 		if (adjust_ok(dev_dax, res)) {
+ 			rc = adjust_dev_dax_range(dev_dax, res, resource_size(res) + alloc);
+-			break;
++			if (rc)
++				return rc;
++			return alloc;
+ 		}
+-		rc = alloc_dev_dax_range(dev_dax, res->end + 1, alloc);
+-		break;
++		rc = alloc_dev_dax_range(parent, dev_dax, res->end + 1, alloc);
++		if (rc)
++			return rc;
++		return alloc;
+ 	}
+-	if (rc)
+-		return rc;
++
++	/* available was already calculated and should never be an issue */
++	dev_WARN_ONCE(&dev_dax->dev, 1, "space not found?");
++	return 0;
++}
++
++static ssize_t dev_dax_resize(struct dax_region *dax_region,
++		struct dev_dax *dev_dax, resource_size_t size)
++{
++	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
++	resource_size_t dev_size = dev_dax_size(dev_dax);
++	struct device *dev = &dev_dax->dev;
++	resource_size_t alloc;
++
++	if (dev->driver)
++		return -EBUSY;
++	if (size == dev_size)
++		return 0;
++	if (size > dev_size && size - dev_size > avail)
++		return -ENOSPC;
++	if (size < dev_size)
++		return dev_dax_shrink(dev_dax, size);
++
++	to_alloc = size - dev_size;
++	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
++			"resize of %pa misaligned\n", &to_alloc))
++		return -ENXIO;
++
++retry:
++	alloc = dev_dax_resize_static(&dax_region->res, dev_dax, to_alloc);
++	if (alloc <= 0)
++		return alloc;
+ 	to_alloc -= alloc;
+ 	if (to_alloc)
+ 		goto retry;
+@@ -1198,7 +1225,8 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
+ 
+ 	to_alloc = range_len(&r);
+ 	if (alloc_is_aligned(dev_dax, to_alloc))
+-		rc = alloc_dev_dax_range(dev_dax, r.start, to_alloc);
++		rc = alloc_dev_dax_range(&dax_region->res, dev_dax, r.start,
++					 to_alloc);
+ 	up_write(&dax_dev_rwsem);
+ 	up_write(&dax_region_rwsem);
+ 
+@@ -1466,7 +1494,8 @@ static struct dev_dax *__devm_create_dev_dax(struct dev_dax_data *data)
+ 	device_initialize(dev);
+ 	dev_set_name(dev, "dax%d.%d", dax_region->id, dev_dax->id);
+ 
+-	rc = alloc_dev_dax_range(dev_dax, dax_region->res.start, data->size);
++	rc = alloc_dev_dax_range(&dax_region->res, dev_dax, dax_region->res.start,
++				 data->size);
+ 	if (rc)
+ 		goto err_range;
+ 
 
 -- 
 2.46.0
