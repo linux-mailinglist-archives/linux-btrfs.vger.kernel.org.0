@@ -1,117 +1,85 @@
-Return-Path: <linux-btrfs+bounces-8587-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8588-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E25992ADE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 13:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71CCB992B00
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 14:03:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5F75282D58
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 11:58:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B537284D59
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 12:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC6A11D2215;
-	Mon,  7 Oct 2024 11:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2173E1D26EE;
+	Mon,  7 Oct 2024 12:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c2VcCdqy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cMerIUZj"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84FB1BA285
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 11:58:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495D0A2D;
+	Mon,  7 Oct 2024 12:02:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728302309; cv=none; b=oQnkksdm4tvGJgyu04CwpoeOmPDIRdXm5hZhlu5o4k8WZyqoA6TE5qchT92kOgcESayTmEry8OVquye0126da4oZaJ/nrvzZV+MpUnNw6PnmyaxYYr44pHhFQy8rcB1QahlY/HMfvN2gw6rFUKPGqJFG7mCztG4UUN/G63QmbL4=
+	t=1728302544; cv=none; b=bWtguUAeerSuXaH58CUdklQIPyoCTTqE2YrQ5sVh5EfYoiqKwwRDXI2EhKhu+MjjnQKJsWXN4TI13OZX+fYWzt0X8IiKjTnWOXCLELvidhl+knOyHUwfy6rctvrSVHoxJA3J5uStmWibyLTTbU8Ltp4WqvBXxwWYeDjT+34wrG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728302309; c=relaxed/simple;
-	bh=5c9Q9CU+Iaw7kaSh6WjDI9Baoyg5uEn4q8mMeJsuFfI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G4ca/RXLkWMDtoGnG26oyraGqYR9k0JWFEkOONotYvL7iWjzpQNTrNjXC/dH5ezjE/5agxBj+D91+nB1aVNdYdtkn8a+oueKA7LeZDLloi08hKnmCEzcFXKI/U007XaQG5oymdx9eoAC+fDNlmKQsNe60KbyuRLPYOE3pVb7bDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c2VcCdqy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D201C4CEC6
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 11:58:29 +0000 (UTC)
+	s=arc-20240116; t=1728302544; c=relaxed/simple;
+	bh=IjRoJ5ttRI+wbnPVrZUlxvrNKwtP+vicBzmCuD2r/8M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NSmHQEqYgYcb2FCo19pdd/B7TdgmTyLLKkaZMb7W2fQzpJqwyf1LmtXNjHt/OJ0Jd+r7vGlqMd2/rzkQzU8fc6dZ046APlD+URwpKBHw33iUprDhqnRCCrSOMMbDgmZ9W0T0WxsZsTnKOO22ejNGWsfhNeZm9lvoHO5zh9NpGzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cMerIUZj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C4CC4CEC6;
+	Mon,  7 Oct 2024 12:02:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728302309;
-	bh=5c9Q9CU+Iaw7kaSh6WjDI9Baoyg5uEn4q8mMeJsuFfI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=c2VcCdqyycST81A0z8mBReoGgzRGCDvMKnueop+VALb6fkELJgpeHLFASTNHy0J8W
-	 XTJM799K997EimpvuAuC/1A97mOZtnKVrhXTKADqK5DoBIP0dqVK7bKR81t617f59T
-	 RaKR4rlZBtuSYDHlfXUO6Lz2u4jYjkHGEohbREqRuOFbDCNLQJiRpstGnhimGheoit
-	 HUqFU/Xy2GhtRoKO0XH0LZi+FS3Vvh1eX6BrPE3O6gj2X2MOvKGuqAn/A784o5VHJJ
-	 /mNVwh0eMPaO8GGAPRB7H+2Wn2t/HCdatPJRF/nNclC7VsYzmyXt+RTsWA6JqiT9O5
-	 OLOpm6P7VC4PQ==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2fabb837ddbso56533881fa.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2024 04:58:29 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwBnXp0AGzXko1hzZptthZvrUSGhCTaGI25YT+6fWqFAKMV1lu2
-	7QkUSbtEq3bM+HodHuF47fndhJsFeLR9KZ6fUM3ZAfritEdnk0raWYEsnEUBpxhidm9HJ2vd+ce
-	z4ZjSVGVlwEzfjv2zCGufQW/nI+I=
-X-Google-Smtp-Source: AGHT+IFqSW/SDMJ90oFihka6FtCsj5WM7wgeAbzvMAuwQ/hhrW1hOkgpm9dYQ112PCUEyWsDPNrq+8uTATn3V7MrNKs=
-X-Received: by 2002:a05:651c:1545:b0:2f7:6653:8053 with SMTP id
- 38308e7fff4ca-2faf3c2bf63mr60443601fa.18.1728302307857; Mon, 07 Oct 2024
- 04:58:27 -0700 (PDT)
+	s=k20201202; t=1728302543;
+	bh=IjRoJ5ttRI+wbnPVrZUlxvrNKwtP+vicBzmCuD2r/8M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=cMerIUZjXYSzi3uibf5+cnW31D3wdGmYSGZAXPAOx8kpBVHuQLkqTt2UUJOh/dixp
+	 hgFEKVTTC+3hsW/d6bZ/if+UrbnjRM9cOelV/nadja++VCPa7LqqgYlN3KIbN/7uUm
+	 WNJiJVU1tCFYtFJqd3GXlz3/7ND/jlJ26LD/+Kif5Qcf47UNn7GNb9JAR8Xg1zht0w
+	 KoK7ObOV/zI41dV/YaJJtJq4+kTkqYozep5UyuSubacOUuffS1zTb4l0EBQGf8YOcq
+	 sVuHqucKkci+n2JRoP18vhSQXQoBYHJmF+UF9EY0WpE7o8vFSsBKWOf/A3Mq9Gknqm
+	 zbv+KA+ADgYpA==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs/322: add git commit ID
+Date: Mon,  7 Oct 2024 13:02:16 +0100
+Message-ID: <2126c43fff7fc7b421c3ed692f1eabbf10d8e534.1728302503.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f7ca5e8c-7771-430a-92d5-52a80184040e@dubielvitrum.pl>
- <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com> <fda83046-98b0-408f-a1d5-0fc2f35c8dfb@dubielvitrum.pl>
-In-Reply-To: <fda83046-98b0-408f-a1d5-0fc2f35c8dfb@dubielvitrum.pl>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 7 Oct 2024 12:57:50 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6QPE_Ksyt18zQkbWr1VpcFW0BA4jMWj_R6Q1c=gQN_3w@mail.gmail.com>
-Message-ID: <CAL3q7H6QPE_Ksyt18zQkbWr1VpcFW0BA4jMWj_R6Q1c=gQN_3w@mail.gmail.com>
-Subject: Re: failed to clone extents ... Invalid argument
-To: Leszek Dubiel <leszek.dubiel@dubielvitrum.pl>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Oct 7, 2024 at 12:50=E2=80=AFPM Leszek Dubiel
-<leszek.dubiel@dubielvitrum.pl> wrote:
->
->
->
-> Thank you for support.
->
->
-> > This is probably the same issue recently reported here:
-> >
-> > https://lore.kernel.org/linux-btrfs/CAJhrHS2z+WViO2h=3DojYvBPDLsATwLbg+=
-7JaNCyYomv0fUxEpQQ@mail.gmail.com/
-> >
-> > The corresponding fix was merged last friday to Linus' tree, and now
-> > in 6.12-rc2 as of yesterday.
-> > It will probably take some more days until it gets to the next 6.1
-> > stable release.
-> >
-> > In the meanwhile you can either use a v6.1.106 kernel or older, if
-> > it's an option for you, or apply the patch yourself to a kernel and
-> > build it.
-> > Or do a full send instead of an incremental send.
-> >
->
->
-> Do you think standard Debian kernel as below wolud be okey to solve the
-> problem? Its "106-3"...
+From: Filipe Manana <fdmanana@suse.com>
 
-That probably matches upstream/vanilla v6.1.106, so it should be ok.
-I'm not familiar with the Debian kernel trees, so I can't quickly verify.
+The corresponding btrfs kernel patch was merged into Linus' tree and
+included in kernel 6.12-rc2, so update the test with the commit ID.
 
->
->
-> root@gamma:~/Admin# uname -a
->
-> Linux gamma 6.1.0-25-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.106-3
-> (2024-08-26) x86_64 GNU/Linux
->
->
->
->
->
->
->
->
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/btrfs/322 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/btrfs/322 b/tests/btrfs/322
+index 06a62bb5..12aaad71 100755
+--- a/tests/btrfs/322
++++ b/tests/btrfs/322
+@@ -28,7 +28,7 @@ _require_xfs_io_command "fiemap"
+ _require_xfs_io_command "reflink"
+ _require_odirect
+ 
+-_fixed_by_kernel_commit xxxxxxxxxxxx \
++_fixed_by_kernel_commit fa630df665aa \
+ 	"btrfs: send: fix invalid clone operation for file that got its size decreased"
+ 
+ check_all_extents_shared()
+-- 
+2.43.0
+
 
