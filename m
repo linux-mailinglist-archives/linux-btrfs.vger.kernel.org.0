@@ -1,178 +1,122 @@
-Return-Path: <linux-btrfs+bounces-8582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8583-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10C46992A42
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 13:33:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5583992AA9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 13:50:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0C831F23006
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 11:33:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DBA1B23ECA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 11:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA5E1D1319;
-	Mon,  7 Oct 2024 11:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8E01D1319;
+	Mon,  7 Oct 2024 11:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l8dCe47F"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dubielvitrum.pl header.i=@dubielvitrum.pl header.b="X6setXD9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from naboo.endor.pl (naboo.endor.pl [91.194.229.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3649C101C4;
-	Mon,  7 Oct 2024 11:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F67618A6AD
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 11:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.194.229.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728300780; cv=none; b=cAIzRM3sTrAXYuBVMmT9h64xGlUtxP84BQdsDJhX5YnDyXOY19z9VsbXLviFfh/qo9E9jITOt+MUP1diHN6vlJ1cRewO2nJngRlH++p8+9sDpKxUdyjPxInKLOXLR8mbKg+u5tZL07R+/rlayfLL/c1NoODWpILvMDQJCMQ1GxQ=
+	t=1728301849; cv=none; b=AvYPD4Qn4tm9Ori2Y0rANGvlKJqS1YzzZTICPzk3cEmaKmzfHMPVMkJDecWPZ0vN9IGDX/ACO+LlhPezOQlIIBVh53fVjTRv2rSPYGBl8Z7vvWaxYM5htt7FkmjV5ztZ3Z40mVj69gwcqgloRuwLL7N77Vp4Uu4KAxnj1yQTVZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728300780; c=relaxed/simple;
-	bh=PyM0DwevYnXrw0K/beAskeSXszuAMsf8VnQQtq8F0bw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vkfh8k23GXLX9ckCrE9cIvBoUN0p6686awo31r/5vpoEeWavm6fi+Akw/njcTPz0qqCrXA5WyLNktPFRBQN00eYPcuaR5C5+i/8HS4Bj1Ql+lxXyas2v8z1QejeWPDD/fEeYTVv0hrUa2BJ0JPuM0PlHnbjcnp724W5pSVyAcj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l8dCe47F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82392C4CEC6;
-	Mon,  7 Oct 2024 11:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728300778;
-	bh=PyM0DwevYnXrw0K/beAskeSXszuAMsf8VnQQtq8F0bw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l8dCe47F/b172Yr93sxwzs2xQdrqEgggh2nRpPHRsBrlhmFhnfpRm+Mf3rb+LiK7I
-	 LGRfpAKIukvOlJfnLjA+dILtcaXeEuTC+tnN5lfVxFP/NjOvHK/BT+ppNywAwiZmOD
-	 sL9JK1rZ9gFLwl4/sFLPf+byL9go20Eq0VC+NhR66sOWbw4kA0FeElS4Ns30rvdpO7
-	 bRCZUyqM0yu5bM1o3YJc0+9o3LgMcOFDwK4KVDGaaCBz1bqyHPeF8xymnK/HpM7a4T
-	 nMl5IA9huk0IapJ+NulTxvESiBdEw77cEDqviGHBouUMI4xjaOPHmFFCP0KUzBVz8M
-	 QIXZL3duFvP5Q==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>,
-	Boris Burkov <boris@bur.io>,
-	Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v2] btrfs: update some tests to be able to run with btrfs-progs v6.11
-Date: Mon,  7 Oct 2024 12:32:50 +0100
-Message-ID: <e75725e3d3c50922892ca07cd2b0965340c228be.1728300476.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <7914963e2c04a864edc45d7510de515c59b4fc95.1727882758.git.fdmanana@suse.com>
-References: <7914963e2c04a864edc45d7510de515c59b4fc95.1727882758.git.fdmanana@suse.com>
+	s=arc-20240116; t=1728301849; c=relaxed/simple;
+	bh=8JWKGvrOf5he8IxSF8Dv4IVkL5amwhxpzpH+PDpK8wQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lre+rru0heQIZD5uixS28o9XzCTNuypBg8hmsXSScXmCOLugFVseDjw+V1JYSemlGLVv45I1R0LoRN1qCD9G3eLmxgq2Qme90/kXZU7Q8RQWWdlYhF6Eyhu7Kh9974dLVWPDEQubgOXzsXK8P7D7knbzMJPpwbyLz0hdDszi4dY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubielvitrum.pl; spf=pass smtp.mailfrom=dubielvitrum.pl; dkim=pass (2048-bit key) header.d=dubielvitrum.pl header.i=@dubielvitrum.pl header.b=X6setXD9; arc=none smtp.client-ip=91.194.229.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubielvitrum.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubielvitrum.pl
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by naboo.endor.pl (Postfix) with ESMTP id 8D59DC0AC46;
+	Mon,  7 Oct 2024 13:50:42 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at 
+Authentication-Results: naboo.endor.pl (amavisd-new); dkim=pass (2048-bit key)
+	header.d=dubielvitrum.pl
+Received: from naboo.endor.pl ([91.194.229.15])
+	by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id BOJTbnYTaXnw; Mon,  7 Oct 2024 13:50:39 +0200 (CEST)
+Received: from orion.dubielvitrum.pl (unknown [157.25.148.26])
+	(Authenticated sender: postmaster@dubielvitrum.pl)
+	by naboo.endor.pl (Postfix) with ESMTPSA id DE424C021E3;
+	Mon,  7 Oct 2024 13:50:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=dubielvitrum.pl; s=dkim-2022; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=zCX9Btd8BQT1GF3hM0rOdS6YXoSIyHfYo4oYijilvCQ=; b=X6setXD99zFJwVLsjPMORzzYDE
+	qbpk2qNAtpJvWgKQF8cZaJIc/t4o1CvZKRbD8RkxAJFJgmkh3cQeySn3n9POqUrPVDhhZ2rsw8GhX
+	S+5etGQh5lAF5p7xLfrLnjvy8scWONp7SIym5BTCnL0KxhGS58rGezEwwZHm9+9+ST4OAXlw/rCjl
+	5DHCAkmoGh9CD3yKnnjmL7FUuV1fMyXchcTjQsPgmi+ljSAf/tsZ0NTqU/oIJ8fm2oVtQ9rWvf1VU
+	hhJPU2GFEQfWkIuVShfuZotDGHECZtx4Wo3Rmg12CwOV3ZIpVLdxpj3OKJnGqNiIsoxvEaJpVkQg4
+	1Gp+oiOg==;
+Received: from [176.100.193.184] (helo=[192.168.55.107])
+	by orion.dubielvitrum.pl with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <leszek.dubiel@dubielvitrum.pl>)
+	id 1sxmG6-0092lz-1p;
+	Mon, 07 Oct 2024 13:50:38 +0200
+Message-ID: <fda83046-98b0-408f-a1d5-0fc2f35c8dfb@dubielvitrum.pl>
+Date: Mon, 7 Oct 2024 13:50:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: failed to clone extents ... Invalid argument
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org
+References: <f7ca5e8c-7771-430a-92d5-52a80184040e@dubielvitrum.pl>
+ <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com>
+Content-Language: en-US, pl-PL
+From: Leszek Dubiel <leszek.dubiel@dubielvitrum.pl>
+In-Reply-To: <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Filipe Manana <fdmanana@suse.com>
 
-In btrfs-progs v6.11 the output of the "filesystem show" command changed
-so that it no longers prints blank lines. This happened with commit
-4331bfb011bd ("btrfs-progs: fi show: remove stray newline in filesystem
-show").
 
-We have some tests that expect the blank lines in their golden output,
-and therefore they fail with btrfs-progs v6.11.
+Thank you for support.
 
-So update the filter _filter_btrfs_filesystem_show to remove blank lines
-and change the golden output of the tests to not expect the blank lines,
-making the tests work with btrfs-progs v6.11 and older versions.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
+> This is probably the same issue recently reported here:
+>
+> https://lore.kernel.org/linux-btrfs/CAJhrHS2z+WViO2h=ojYvBPDLsATwLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com/
+>
+> The corresponding fix was merged last friday to Linus' tree, and now
+> in 6.12-rc2 as of yesterday.
+> It will probably take some more days until it gets to the next 6.1
+> stable release.
+>
+> In the meanwhile you can either use a v6.1.106 kernel or older, if
+> it's an option for you, or apply the patch yourself to a kernel and
+> build it.
+> Or do a full send instead of an incremental send.
+>
 
-V2: Add missing updates to btrfs/006 and btrfs/100.
 
- common/filter.btrfs | 5 ++++-
- tests/btrfs/006.out | 2 --
- tests/btrfs/100.out | 2 --
- tests/btrfs/101.out | 2 --
- tests/btrfs/218.out | 1 -
- tests/btrfs/254.out | 1 -
- 6 files changed, 4 insertions(+), 9 deletions(-)
+Do you think standard Debian kernel as below wolud be okey to solve the 
+problem? Its "106-3"...
 
-diff --git a/common/filter.btrfs b/common/filter.btrfs
-index 5a944aeb..bc914642 100644
---- a/common/filter.btrfs
-+++ b/common/filter.btrfs
-@@ -30,7 +30,10 @@ _filter_btrfs_filesystem_show()
- 		UUID=$2
- 	fi
- 
--	# the uniq collapses all device lines into 1
-+	# Before btrfs-progs v6.11 we had some blank lines in the output, so
-+	# delete them.
-+	# The uniq collapses all device lines into 1.
-+	sed -e "/^\s*$/d" | \
- 	_filter_uuid $UUID | _filter_scratch | _filter_scratch_pool | \
- 	_filter_size | _filter_btrfs_version | _filter_devid | \
- 	_filter_zero_size | \
-diff --git a/tests/btrfs/006.out b/tests/btrfs/006.out
-index b7f29f96..97d44f13 100644
---- a/tests/btrfs/006.out
-+++ b/tests/btrfs/006.out
-@@ -7,12 +7,10 @@ TestLabel.006
- Label: 'TestLabel.006'  uuid: <UUID>
- 	Total devices <EXACTNUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
--
- == Show filesystem by UUID
- Label: 'TestLabel.006'  uuid: <EXACTUUID>
- 	Total devices <EXACTNUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
--
- == Sync filesystem
- == Show device stats by mountpoint
- <NUMDEVS> [SCRATCH_DEV].corruption_errs <NUM>
-diff --git a/tests/btrfs/100.out b/tests/btrfs/100.out
-index aa492919..1fe3c0de 100644
---- a/tests/btrfs/100.out
-+++ b/tests/btrfs/100.out
-@@ -3,9 +3,7 @@ Label: none  uuid: <UUID>
- 	Total devices <NUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
- 	devid <DEVID> size <SIZE> used <SIZE> path /dev/mapper/error-test
--
- Label: none  uuid: <UUID>
- 	Total devices <NUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
--
- === device replace completed
-diff --git a/tests/btrfs/101.out b/tests/btrfs/101.out
-index e1b88c2d..c2359c7c 100644
---- a/tests/btrfs/101.out
-+++ b/tests/btrfs/101.out
-@@ -3,9 +3,7 @@ Label: none  uuid: <UUID>
- 	Total devices <NUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
- 	devid <DEVID> size <SIZE> used <SIZE> path /dev/mapper/error-test
--
- Label: none  uuid: <UUID>
- 	Total devices <NUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
--
- === device delete completed
-diff --git a/tests/btrfs/218.out b/tests/btrfs/218.out
-index 7ccf13e9..be11074c 100644
---- a/tests/btrfs/218.out
-+++ b/tests/btrfs/218.out
-@@ -2,7 +2,6 @@ QA output created by 218
- Label: none  uuid: <UUID>
- 	Total devices <NUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
--
- [SCRATCH_DEV].write_io_errs    0
- [SCRATCH_DEV].read_io_errs     0
- [SCRATCH_DEV].flush_io_errs    0
-diff --git a/tests/btrfs/254.out b/tests/btrfs/254.out
-index 20819cf5..86089ee3 100644
---- a/tests/btrfs/254.out
-+++ b/tests/btrfs/254.out
-@@ -3,4 +3,3 @@ Label: none  uuid: <UUID>
- 	Total devices <NUM> FS bytes used <SIZE>
- 	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
- 	*** Some devices missing
--
--- 
-2.43.0
+
+root@gamma:~/Admin# uname -a
+
+Linux gamma 6.1.0-25-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.106-3 
+(2024-08-26) x86_64 GNU/Linux
+
+
+
+
+
+
+
 
 
