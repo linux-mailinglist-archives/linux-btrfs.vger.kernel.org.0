@@ -1,145 +1,133 @@
-Return-Path: <linux-btrfs+bounces-8579-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8580-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B2779929A9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 12:59:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D05F79929BE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 12:59:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2488D284233
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 10:59:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B1C41F23B24
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 10:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40941D2F66;
-	Mon,  7 Oct 2024 10:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2AC1D1E64;
+	Mon,  7 Oct 2024 10:59:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xo6a7QoP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8Ows08e"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F386315D5C1;
-	Mon,  7 Oct 2024 10:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1D81D0F78
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 10:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728298714; cv=none; b=jwJnNg5UFPdwvncNbgOHpU3ge8MnLePNH36mNBmYPLDggaqB9IT8bqjihmIFsdr5KXyjsX0mx4uSFYtFuKLPIlKr1f4AwljXKeq8P3ta/lVcf9uPMSUGDYTmmbJLaqkhOQNejJk0wpQTg4am/SD+QuWHtlXUmDGDo0CY65H3Cn8=
+	t=1728298746; cv=none; b=agY9OSQtQ/wpC1n3rd+bG3FMNWCyL1CZKn9QryNFf5dG3wOh7lVc8KDaWTF7fazM/NCb6LpCRvSmycnhUDS+4wlHi49dFHvFu3qNzJJOK2s8FePKlibctbcWl8PiDb1/x9NocbK/2ta2fxCZMtAT8dvwynI1Ev3hHYSOLxwk0dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728298714; c=relaxed/simple;
-	bh=2GHIYkn8cRFjuA6UoXjds38baJgePZQPA32Pa4pACIs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lRDly8FY6G9BuBtQstwR5mm4mJtcBabfECSTlYEtxqE1Uv96++qT8p1FEvkiQLz0f7EEMKYB01BCaCk8Kfrrp7ZhTPc74i6jT5TO5ixuf3VGwXTC8Baf7HvZGQXZ/JOqeEWohuJnTZvMnJSNTd/Ia7oAmWxr9aASZNiiBluOXvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xo6a7QoP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69F3CC4CECF;
-	Mon,  7 Oct 2024 10:58:27 +0000 (UTC)
+	s=arc-20240116; t=1728298746; c=relaxed/simple;
+	bh=lFAMmr05LXOn3xLnoDl4MZ9BTyrGrl7Q3RC8HBvj1Fo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UOffzXT/56rN0jJ0NxTZAHWnaD9VbEuS3IiS4Ape/I/G9KHfLiILm1Brb4RvWloJ0RNyf4H5K+j0wv/u31ob27RLmkpIC1wxKVry2q+LGHXd7zZ0AV6O2mjCRj5n+WmWMdsr+BKahG5BZ+VhC7WBTUAjnoGdtbKJa8ZHNHaykRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8Ows08e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE00C4CECC
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 10:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728298713;
-	bh=2GHIYkn8cRFjuA6UoXjds38baJgePZQPA32Pa4pACIs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xo6a7QoPaAsdhkEDock0VKt30RgKQGDYB55iSjs8d7YTjilKAWw7i3RESilp0cQmJ
-	 RkjDVaYeEP4FP9Um0SKIfeDcDl7H+Fi+NhKi0FBYdFB987Lxfsc/g9l1JNp8UGKwMc
-	 Fw4+iKLZ4j5+PeS1HlhU82WbFMjMgy9PbJI3nNlnMDRZI+xMrTIf9oliBkKKNKIEUV
-	 3iQt4cjUHMHjHCiQn6OAZh2AOaoIPFY3DYE1VAJSG1MGdziqr64pvzgt8d9LGQCH6l
-	 6Yp4ik5VqzQOvKusiZPsiQyiGE/GDJ+EKPs8F/8xOnQ5XAM59NbuIRCxgjag482bXQ
-	 /nWr7X/hM+SpQ==
-From: Christian Brauner <brauner@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	linux-mm@kvack.org,
-	John Stultz <jstultz@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Subject: Re: (subset) [PATCH v10 00/12] timekeeping/fs: multigrain timestamp redux
-Date: Mon,  7 Oct 2024 12:58:21 +0200
-Message-ID: <20241007-restlaufzeit-birnen-2f412852441e@brauner>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241002-mgtime-v10-0-d1c4717f5284@kernel.org>
-References: <20241002-mgtime-v10-0-d1c4717f5284@kernel.org>
+	s=k20201202; t=1728298746;
+	bh=lFAMmr05LXOn3xLnoDl4MZ9BTyrGrl7Q3RC8HBvj1Fo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=X8Ows08enP59/2wy01RWvLUaXwMG7lE3MeiWBameJbb8bFtua0g7mLXC97Jif1qrK
+	 MXnBbWgoQ9mGbTMBlTn1wM1htFpMSexZVLzbg4JzYyDyMgH+jZqPg/gwQrBHXYjr4+
+	 hS8nM3j3oxksp0LOA/WWiNS2eLWFUkN65yG6q9UiqFMkE2NXY2/DdZXYV+f3T8/664
+	 3K58M4cZAAV9SC9MYOdx6BSt1yiEp/c+Mi3TDwb8Ofk+UZE33azj1qGMvGh9iBzJ2p
+	 JtuMCu63dufNsksiGSSHL7dx9jCRENR+blCx9g+cv3e0FqS3scQY9oRCSZJF8Y1tqR
+	 ZxihQFw1Izg7w==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a8d446adf6eso725456466b.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2024 03:59:06 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwQkWmkwqyEVYNlY+qyTNuInQqYoZ1HpsXmBmuahuQYV5+9UTrE
+	UIx+F3OqBXw8yljvYpFdMG4r5gMUbF1wUbV4iIb84l7ylftHmsBVr+kvajRXlPz00+7ODP0e7rh
+	I/Qnr0Be0hKocqMPc4WQqDsHsAjo=
+X-Google-Smtp-Source: AGHT+IEvTA95virWpsD92KF0080Eu7yHHVaPvRQAVKaVixFwVyXWUmIZnOympoWDvuqDvN/RoGlhaTw4GKZtwqTeS1w=
+X-Received: by 2002:a17:907:72ca:b0:a99:5ea9:ad50 with SMTP id
+ a640c23a62f3a-a995ea9afcdmr122970066b.11.1728298745292; Mon, 07 Oct 2024
+ 03:59:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2375; i=brauner@kernel.org; h=from:subject:message-id; bh=2GHIYkn8cRFjuA6UoXjds38baJgePZQPA32Pa4pACIs=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQz7zt3ROG96vKmhmAJRb2iW0lPrWYvcrN65X025sO3H TIF+Vq3O0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZSuo7hD++GxO7jd4sfeZ2Y e2VOTlbbRvlo2xPWddtPcQQeKVu3dBrDP+O0xuMVC6u2NJnKzzd25XLIvFWufkOs6q/e5LaD4Z3 LWQE=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <f7ca5e8c-7771-430a-92d5-52a80184040e@dubielvitrum.pl>
+In-Reply-To: <f7ca5e8c-7771-430a-92d5-52a80184040e@dubielvitrum.pl>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 7 Oct 2024 11:58:28 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com>
+Message-ID: <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com>
+Subject: Re: failed to clone extents ... Invalid argument
+To: Leszek Dubiel <leszek.dubiel@dubielvitrum.pl>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 02 Oct 2024 17:27:15 -0400, Jeff Layton wrote:
-> This is a replacement for the v6 series sitting in Christian's
-> vfs.mgtime branch. The main changes here are to the changelogs,
-> documentation and comments. I've also moved the timekeeping patches to
-> the front of the series, and done some minor cleanups.
-> 
-> The pipe1_threads test shows these averages on my test rig with this
-> series:
-> 
-> [...]
+On Mon, Oct 7, 2024 at 11:17=E2=80=AFAM Leszek Dubiel
+<leszek.dubiel@dubielvitrum.pl> wrote:
+>
+>
+>
+> Backup system failed with error:
+>
+> ERROR: failed to clone extents to
+> root/Metki/Repository/Dyspozycje/etykiety_transportowe_rozkroj.csv:
+> Invalid argument
+>
+>
+>
+> I moved serwer to new one =E2=80=94 new hardware, new disk, restored serv=
+er from
+> backups.
+>
+>
+>
+> It was running few hours, and again fails with that errors.
 
-I've merged the tag that Thomas provided with the time specific changes and
-pulled the remaining patches - excluding 01/12 and 02/12.
+This is probably the same issue recently reported here:
 
----
+https://lore.kernel.org/linux-btrfs/CAJhrHS2z+WViO2h=3DojYvBPDLsATwLbg+7JaN=
+CyYomv0fUxEpQQ@mail.gmail.com/
 
-Applied to the vfs.mgtime branch of the vfs/vfs.git tree.
-Patches in the vfs.mgtime branch should appear in linux-next soon.
+The corresponding fix was merged last friday to Linus' tree, and now
+in 6.12-rc2 as of yesterday.
+It will probably take some more days until it gets to the next 6.1
+stable release.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+In the meanwhile you can either use a v6.1.106 kernel or older, if
+it's an option for you, or apply the patch yourself to a kernel and
+build it.
+Or do a full send instead of an incremental send.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+Thanks.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.mgtime
-
-[03/12] fs: add infrastructure for multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/4e40eff0b573
-[04/12] fs: have setattr_copy handle multigrain timestamps appropriately
-        https://git.kernel.org/vfs/vfs/c/b82f92d5dd1a
-[05/12] fs: handle delegated timestamps in setattr_copy_mgtime
-        https://git.kernel.org/vfs/vfs/c/d8d11298e8a1
-[06/12] fs: tracepoints around multigrain timestamp events
-        https://git.kernel.org/vfs/vfs/c/a80f53809ccc
-[07/12] fs: add percpu counters for significant multigrain timestamp events
-        https://git.kernel.org/vfs/vfs/c/7b1aba010c47
-[08/12] Documentation: add a new file documenting multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/95c6907be544
-[09/12] xfs: switch to multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/0f4865448420
-[10/12] ext4: switch to multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/e44ab3151adc
-[11/12] btrfs: convert to multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/0d4f9f7ad685
-[12/12] tmpfs: add support for multigrain timestamps
-        https://git.kernel.org/vfs/vfs/c/cba2a92eff80
+>
+>
+>
+>
+> Source system:
+>
+> root@orion:~/Admin# uname -a; btrfs --version
+> Linux orion 6.1.0-26-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.112-1
+> (2024-09-30) x86_64 GNU/Linux
+> btrfs-progs v6.6.3
+>
+>
+>
+>
+> Target system:
+>
+>
+> root@zefir:/mnt/root/orion_recznie# uname -a; btrfs --version
+> Linux zefir 6.1.0-26-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.112-1
+> (2024-09-30) x86_64 GNU/Linux
+> btrfs-progs v6.6.3
+>
+>
+>
 
