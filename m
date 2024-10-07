@@ -1,122 +1,96 @@
-Return-Path: <linux-btrfs+bounces-8583-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8584-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5583992AA9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 13:50:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5BC6992AD5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 13:53:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DBA1B23ECA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 11:50:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C2781F23BE4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2024 11:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8E01D1319;
-	Mon,  7 Oct 2024 11:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dubielvitrum.pl header.i=@dubielvitrum.pl header.b="X6setXD9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91EA91D2223;
+	Mon,  7 Oct 2024 11:53:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from naboo.endor.pl (naboo.endor.pl [91.194.229.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F67618A6AD
-	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 11:50:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.194.229.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F28B18A6AD
+	for <linux-btrfs@vger.kernel.org>; Mon,  7 Oct 2024 11:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728301849; cv=none; b=AvYPD4Qn4tm9Ori2Y0rANGvlKJqS1YzzZTICPzk3cEmaKmzfHMPVMkJDecWPZ0vN9IGDX/ACO+LlhPezOQlIIBVh53fVjTRv2rSPYGBl8Z7vvWaxYM5htt7FkmjV5ztZ3Z40mVj69gwcqgloRuwLL7N77Vp4Uu4KAxnj1yQTVZc=
+	t=1728301987; cv=none; b=hveAYYCdLNeQs2ewmBipCO6ym1BgLz4u3IJcNSftMfJHzPyCMgDKFb2jOk/h5F5a8uu7okBNLYf8shS9YyOUqiz4RriVZdGPQQHzsXI/V2CDFGyLCw8MDtQuFF1UR5Y1Hxxzudkuhj107YUiZsWbq8k1oH2IB7kgGtxqijN39lU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728301849; c=relaxed/simple;
-	bh=8JWKGvrOf5he8IxSF8Dv4IVkL5amwhxpzpH+PDpK8wQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lre+rru0heQIZD5uixS28o9XzCTNuypBg8hmsXSScXmCOLugFVseDjw+V1JYSemlGLVv45I1R0LoRN1qCD9G3eLmxgq2Qme90/kXZU7Q8RQWWdlYhF6Eyhu7Kh9974dLVWPDEQubgOXzsXK8P7D7knbzMJPpwbyLz0hdDszi4dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubielvitrum.pl; spf=pass smtp.mailfrom=dubielvitrum.pl; dkim=pass (2048-bit key) header.d=dubielvitrum.pl header.i=@dubielvitrum.pl header.b=X6setXD9; arc=none smtp.client-ip=91.194.229.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dubielvitrum.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dubielvitrum.pl
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by naboo.endor.pl (Postfix) with ESMTP id 8D59DC0AC46;
-	Mon,  7 Oct 2024 13:50:42 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at 
-Authentication-Results: naboo.endor.pl (amavisd-new); dkim=pass (2048-bit key)
-	header.d=dubielvitrum.pl
-Received: from naboo.endor.pl ([91.194.229.15])
-	by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id BOJTbnYTaXnw; Mon,  7 Oct 2024 13:50:39 +0200 (CEST)
-Received: from orion.dubielvitrum.pl (unknown [157.25.148.26])
-	(Authenticated sender: postmaster@dubielvitrum.pl)
-	by naboo.endor.pl (Postfix) with ESMTPSA id DE424C021E3;
-	Mon,  7 Oct 2024 13:50:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=dubielvitrum.pl; s=dkim-2022; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zCX9Btd8BQT1GF3hM0rOdS6YXoSIyHfYo4oYijilvCQ=; b=X6setXD99zFJwVLsjPMORzzYDE
-	qbpk2qNAtpJvWgKQF8cZaJIc/t4o1CvZKRbD8RkxAJFJgmkh3cQeySn3n9POqUrPVDhhZ2rsw8GhX
-	S+5etGQh5lAF5p7xLfrLnjvy8scWONp7SIym5BTCnL0KxhGS58rGezEwwZHm9+9+ST4OAXlw/rCjl
-	5DHCAkmoGh9CD3yKnnjmL7FUuV1fMyXchcTjQsPgmi+ljSAf/tsZ0NTqU/oIJ8fm2oVtQ9rWvf1VU
-	hhJPU2GFEQfWkIuVShfuZotDGHECZtx4Wo3Rmg12CwOV3ZIpVLdxpj3OKJnGqNiIsoxvEaJpVkQg4
-	1Gp+oiOg==;
-Received: from [176.100.193.184] (helo=[192.168.55.107])
-	by orion.dubielvitrum.pl with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <leszek.dubiel@dubielvitrum.pl>)
-	id 1sxmG6-0092lz-1p;
-	Mon, 07 Oct 2024 13:50:38 +0200
-Message-ID: <fda83046-98b0-408f-a1d5-0fc2f35c8dfb@dubielvitrum.pl>
-Date: Mon, 7 Oct 2024 13:50:35 +0200
+	s=arc-20240116; t=1728301987; c=relaxed/simple;
+	bh=Z3vl418UxYCnJ2Bxry9haiajhx9HrAJSlnB6eWQMWP8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UQePyFUzDw1M4Vn8Kxni0fVcbCBZNsmY1vlOvEETaZMsY4xKa/l3YSQD75hZHjyxtXnNRyhxtxqRRNVmDmZgxL2gxgVlMWO0ZQonZr12AwNs3nRQY1QWIgAjpnYwwzaWIxq/yJSZ28debTcM1ckl1m95zgAw7XaVq7Te6CZ35WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-37ce8458ae3so4071039f8f.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2024 04:53:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728301984; x=1728906784;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WsRQQBEvbrWmCk6C8HtACsyRrvw5oKPa9Bvkw02/jhs=;
+        b=I5kGuyWU9PJZ+z1QeYcbj6tPBPLzFoxNKSmpJUk9lH1OjFM1+wXf/LXU2WYaZoTNxT
+         guZgWU3f7GiNxS40q/9OUROxQDE331QEzzcIPsz55PzS5CBGFioc9EFoyijCf8v9VzTR
+         0JRJRxDxFkG1N9Nykk8XDXx1AsGEjo8arGCGGia7gdcinc1j/xKlHGgpiOfcfvqA6MBi
+         aHG8i6sgtkVkF+CgC+OoV/56vP/6kDvl0LZ7VakWJx7xUrvU5JIXlgOKRc6MIwwi0KYs
+         uIvc+eB9XCXYZb6UvVEicxmjLbQplfFznWg6m1F4VDBAaTu6bFOW0Ojzt3RXWXfq1A4J
+         5/Nw==
+X-Gm-Message-State: AOJu0YwvaOQYJoHJqNNsKA5MKyicyMjWwEUi+H6WrqNbKzuaajbFzKUx
+	vJpPGQshbDOk1I8sQwgXkrTPjI0/eqJ31ABN8BqlAh3MWzBeGNN2
+X-Google-Smtp-Source: AGHT+IH/drncg/raiTvvcJWhpEGMuBV0IT8eliG5P8BrYfvuK1jaeWS1gqfPM1KsRazG7rr27jKLvg==
+X-Received: by 2002:a5d:6448:0:b0:37c:d123:f3bf with SMTP id ffacd0b85a97d-37d0e6ec0ccmr9621253f8f.3.1728301983454;
+        Mon, 07 Oct 2024 04:53:03 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f71aeb00fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f71a:eb00:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d1695e36dsm5570238f8f.85.2024.10.07.04.53.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2024 04:53:02 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: David Sterba <dsterba@suse.com>,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/2] btrfs: RST scrub fixes for prealloc
+Date: Mon,  7 Oct 2024 13:52:46 +0200
+Message-ID: <20241007115248.16434-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: failed to clone extents ... Invalid argument
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-References: <f7ca5e8c-7771-430a-92d5-52a80184040e@dubielvitrum.pl>
- <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com>
-Content-Language: en-US, pl-PL
-From: Leszek Dubiel <leszek.dubiel@dubielvitrum.pl>
-In-Reply-To: <CAL3q7H6Pm-5=qGZfAyvawVes-hgm61hKz4tsXWAw2vguGL0vWw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
+When scrubbing a non-zoned RAID stripe tree filesystem, the RST specific scrub
+code finds false positives becuase preallocated extents are not backed by the
+stripe-tree and so the lookup failes.
 
-Thank you for support.
+These patches address the issue by a) changing RST lookup failures from
+ENOENT to ENODATA and b) skipping ENODATA on RST mapping errors from the scrub
+side.
 
+This aproach was suggested by Josef in 
+https://lore.kernel.org/linux-btrfs/20240923152705.GB159452@perftesting/
 
-> This is probably the same issue recently reported here:
->
-> https://lore.kernel.org/linux-btrfs/CAJhrHS2z+WViO2h=ojYvBPDLsATwLbg+7JaNCyYomv0fUxEpQQ@mail.gmail.com/
->
-> The corresponding fix was merged last friday to Linus' tree, and now
-> in 6.12-rc2 as of yesterday.
-> It will probably take some more days until it gets to the next 6.1
-> stable release.
->
-> In the meanwhile you can either use a v6.1.106 kernel or older, if
-> it's an option for you, or apply the patch yourself to a kernel and
-> build it.
-> Or do a full send instead of an incremental send.
->
+Johannes Thumshirn (2):
+  btrfs: return ENODATA in case RST lookup fails
+  btrfs: scrub: skip initial RAID stripe-tree lookup errors
 
+ fs/btrfs/raid-stripe-tree.c | 6 +++---
+ fs/btrfs/scrub.c            | 6 ++++--
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-Do you think standard Debian kernel as below wolud be okey to solve the 
-problem? Its "106-3"...
-
-
-root@gamma:~/Admin# uname -a
-
-Linux gamma 6.1.0-25-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.106-3 
-(2024-08-26) x86_64 GNU/Linux
-
-
-
-
-
-
-
+-- 
+2.43.0
 
 
