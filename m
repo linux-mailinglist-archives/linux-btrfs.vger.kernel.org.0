@@ -1,157 +1,294 @@
-Return-Path: <linux-btrfs+bounces-8633-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8634-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93C5993BCA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 02:29:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9A2993E8C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 08:01:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B785284AEC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 00:29:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B09412859CD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 06:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2470111AD;
-	Tue,  8 Oct 2024 00:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158D013E02B;
+	Tue,  8 Oct 2024 06:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNelfpbb"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="id4wcN0R";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="niimqrMv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6266C148
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 00:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341747E101
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 06:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728347327; cv=none; b=ueoFPcXrqOuQz5HC1crXROr+mWkX0ZqeXtNq5JPYDgdRBDsEe6urKS4zxSKzgioQQL9WyJzesmsUrwwvgL+/my5njZkgfHhaqWF0gIR9O8eRbNeS41UzN5NrgbHzqIhLFEbAdKzybGEA0cvO252EaTnFH2Z6mnEgS7NbJ45/qt0=
+	t=1728367255; cv=none; b=mxgSvFDWfAx+jNYkuqDBX+xmvwXtRmIqdPTFBtV3MeospnmNY6CGX76Q+U2XmM9hSk9qP5gh+KA06F2RZrlfccOCH3OSP+sgUagK3FricfMLsEHIvgGKuT8DWhaSyeAU9fnMNbaKSc9rJY+kueuPL8f9dadruEJHpMZYP4Cvj4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728347327; c=relaxed/simple;
-	bh=tMKwIfEqDC2CcRuFj7V/i4ZDx2ncXTo0kTM8V2a3MHs=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oBJYDgaAsCzi94ETl4qac1TpeXqC2HRZ5bPgtCb4fqs6AAo7yrEgRCyJ6bYx2RlBhUnzNror/1AhZuMg/j+nfRvPwMCbgdXYiHx+ApHMHcxJ16sPq2FwTHUVIEX01YyD+kkg3Sad2bYFSFRDiM5IK11veTWJmuINne5FA9/UAg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNelfpbb; arc=none smtp.client-ip=209.85.215.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-7c3e1081804so2274389a12.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2024 17:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728347324; x=1728952124; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qRlDen1x04WLqn4bdS5L9+9UdbeAOT6cyt5e05ZYNdY=;
-        b=LNelfpbboz2DkzxBEkh4WwviOPxXecYtQ4v689gPoHgvkglpA2lZCwx/EoLVtnrOyo
-         Jjd5KNX7b+2JmlnAZTCP5z1+fKSnFFu6vlFm4OiC8R2uxDUMK2qXzUW5/V4VOrdsXSiu
-         +ANXgDXa/aJiQ4AFdN5n9bBJoJJh27lsrdDzL8COpmShy+AEw+WUDZraXr2HJP2ZsGQ8
-         OIKrrLRimfG6x19XS1UCcVY0n8RAWQAgf5lCnMWW8eY+MYRMYfc5uACIDVXCckzQh3pW
-         5ER2V8QoTHnFKPNJLUp9AI/UtKedBb3UKOmFQAvZioUmsQXP8/UbA91DY+uDljE9nfgH
-         VMDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728347324; x=1728952124;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qRlDen1x04WLqn4bdS5L9+9UdbeAOT6cyt5e05ZYNdY=;
-        b=LsMEF8Z7HIWfM3trvzGzAFkI1kBZ6st1Zby4JI+Wl1GWs4Oxw0KapJLrAUOVB1lKl8
-         OC4ifdnUqj/3EqrLPkoE6OYpyieGHN9mCZHVuhSwmzXV9cEYFu7oSicxFxxb8c7+la7D
-         ZWFxQgNEdKhZVPDZENSje8Vc+AH8SlO5MhFMbCdxKvDeSoGPVs31mxUwU+MzcFo0nKqp
-         elP4LuNT2ZrwiSiTdhQYBxzkgvrLX0whP807XCxc8l6wfarZk5YwWuUZc9SEX3FK6APK
-         A4H8PoQACzRT2RS+e6qDOZU0+nzm+DfLVMiTggnnMFvp7EcLZcdaD80TSu0NwuFMhXES
-         kndw==
-X-Gm-Message-State: AOJu0YyX+jE+j5Uu3e0nb5qe6sLa6k+sHsftdrB11kxiwZ6D9h6bf0Vv
-	BZUWmnuPwmSqS+TTzwARu12esvyZi8fT1CqrdRrR5ng8PHemvhc9AUUouc2/
-X-Google-Smtp-Source: AGHT+IGdSVt+p/jQWpe69olpioup7f7VFQDZAtV6D7PCtg8okvRWv7q0g5F0V8PUqW4Qhf9zf2m1tg==
-X-Received: by 2002:a05:6a21:3414:b0:1d4:fb0c:613 with SMTP id adf61e73a8af0-1d6dfa27e78mr17016711637.1.1728347324299;
-        Mon, 07 Oct 2024 17:28:44 -0700 (PDT)
-Received: from localhost (fwdproxy-eag-007.fbsv.net. [2a03:2880:3ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71df0cd16a3sm5005355b3a.59.2024.10.07.17.28.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2024 17:28:44 -0700 (PDT)
-From: Leo Martins <loemra.dev@gmail.com>
-To: linux-btrfs@vger.kernel.org,
+	s=arc-20240116; t=1728367255; c=relaxed/simple;
+	bh=3SzuBTJxoWhFbvhc/Q56yZHtLqzOjQRt4aQoIPeViD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TiP93BKv2DPKnCkmZ8Px7WyY8L3sDRf+ilevg43gjmnCOeFPfTmmEBsyd2eoff66H8posmkByGfGd3SDH3UAy20X24k3v95Uq+XfNwznwhwInudotVA0Uj7jyMIx25NGy7HU7yEW3ls0/rFOMXtdg6cjMlS+S0RrLeLmUtc6ThI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=id4wcN0R; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=niimqrMv; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 25CB0114028B;
+	Tue,  8 Oct 2024 02:00:51 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-05.internal (MEProxy); Tue, 08 Oct 2024 02:00:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1728367251;
+	 x=1728453651; bh=Spep7LSdHJvHPdy/K1FwoNv0TYcR9fLFQncYRA5dPg8=; b=
+	id4wcN0R9IMu2ThS4nDToP1ljuGuZumTJtNCrO+CtAr7i7M0u2aF6gNRyrozXQxO
+	Z9IW48QLZCyA1mDqlTNn0IJHKjoqRBw/l7C9sL0Nwhg8KEyX1liE6ishbq+4dAnq
+	E0lOFEuQ1dCkr6ozCH7t2Xmi94E+B21Uje3donnGRWiK1R+GgGuBeXPGoMjthR0z
+	ob+GWxhmEbvWGAtL5ttXmlO4c1rA2N5yqvDMI7ahObvW+JTzpnzHj96SbZcQLSkM
+	TFl61ZREjpn6NDZyccD/ZFk9IvONW3ttGN2LPCPGJRnvpuXfF1jC+rETrCy4xQJ9
+	7pTbxbQMp/dSztBAe2fjkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728367251; x=
+	1728453651; bh=Spep7LSdHJvHPdy/K1FwoNv0TYcR9fLFQncYRA5dPg8=; b=n
+	iimqrMvs01BsELLwi79LRJueszNUdcHZGsMgA/8hq0gM1wqr9HgUd+d0RG1roKIf
+	a2BHi30cih/WitL9ZBg761C7ee9xeXztijyFv6i9ZrWo/QfzVbaqUiRVFBuKef9/
+	Xr0H8bxY4pxx8Td2xQ5uyWTXQZ90rgGpPzQK//rC9SrrZxD9bSZzn4tIgl2VUif2
+	n5JhjRt7lXZOolXFKQI9jyjV4EyYYt9dd+5YqkByoiU1ypHk/jG1AWMz1tjynLRf
+	r8tpmXkqcEdwqdqHBSOOobMrYNHh1ZBfiJns2UnjxvRGsXM0gGteMtBr6fzJN/J2
+	kFSqPlcDi+eTWiOFhfPYw==
+X-ME-Sender: <xms:ksoEZ91JSGYpVPim10SZRpet7usiGhuSvKOAsUvn7kE9YbCSRkgqNA>
+    <xme:ksoEZ0Ed1oShlppaCves8eKYrqkLMkAgaEw7QCKUfnvVmm4o0F7TpdzdHvJTvlcMW
+    FpDqQfJuJXxIHnp0vI>
+X-ME-Received: <xmr:ksoEZ94yvzojWgxc49hIt68TA9DqI7JLnxyNEzoSLEG5a0ij0_VaemMVs-mTrCsrMP_QzB5uz2iSoa4Bbv_m6MKqvtE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdeftddguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddt
+    jeenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqe
+    enucggtffrrghtthgvrhhnpefhudekieejffdvuddufeeufefggfetteehgfehfffgvdfg
+    leelueehtdduhedtjeenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhruhhnrdhshh
+    dplhhptgdrvghvvghnthhsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeegpdhmoh
+    guvgepshhmthhpohhuthdprhgtphhtthhopehquhifvghnrhhuohdrsghtrhhfshesghhm
+    gidrtghomhdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopehlih
+    hnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgv
+    rhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:ksoEZ62Ip3jBk3YtfV7bkY0DHX69YRMp54kO2k3dFd7yf1XGDPTB3A>
+    <xmx:ksoEZwFk4CWsBand-hsQ_UeeqxRr5pY7aVVUnZgnCtlxa1FaaPS78Q>
+    <xmx:ksoEZ78WNkpy1EFVMEFaUBFWO4DXku_MPph3MsPG2CHgkHM7vh7hEg>
+    <xmx:ksoEZ9naKD7rDh-S3Ikr3BxobywSejg-KecJ3ZAILkW4jvUpoazh6g>
+    <xmx:k8oEZ8iLfyAqjfjN1Csx8-g9wuJuIbD0nQw-lCFvrCepjjGyRX-P08VS>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Oct 2024 02:00:50 -0400 (EDT)
+Date: Mon, 7 Oct 2024 23:00:40 -0700
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v3 3/3] btrfs-progs: free-space-info tree-checker
-Date: Mon,  7 Oct 2024 17:27:48 -0700
-Message-ID: <41fc4441860cc2769fd11c236067ff979547faf7.1728346056.git.loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <cover.1728346056.git.loemra.dev@gmail.com>
-References: <cover.1728346056.git.loemra.dev@gmail.com>
+Subject: Re: [PATCH] btrfs: try to search for data csums in commit root
+Message-ID: <20241008060040.GA416028@zen.localdomain>
+References: <9d12c373a49184e84897ff2d6df601f2c7c66a32.1728084164.git.boris@bur.io>
+ <6a34b96c-0b00-46c8-a0e8-69f0028173e4@suse.com>
+ <20241007223045.GA388113@zen.localdomain>
+ <2aac3cdc-4b99-491b-8b52-f27803bc37fe@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2aac3cdc-4b99-491b-8b52-f27803bc37fe@gmx.com>
 
-Add a new check in check_leaf_item for btrfs_free_space_info. This check
-performs exactly the same check that is performed in btrfs check. That
-is it searches for the block group that the current free-space-info
-belogns to and warns if there is none. When I was testing I found that
-sometimes this would be called before the block group cache was
-initialized leading to incorrect warnings so I added a check to make
-sure that the cache was initialized.
+On Tue, Oct 08, 2024 at 10:13:03AM +1030, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/10/8 09:00, Boris Burkov 写道:
+> > On Sat, Oct 05, 2024 at 04:30:29PM +0930, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > 在 2024/10/5 08:53, Boris Burkov 写道:
+> > > > If you run a workload like:
+> > > > - a cgroup that does tons of data reading, with a harsh memory limit
+> > > > - a second cgroup that tries to write new files
+> > > > e.g.:
+> > > > https://github.com/boryas/scripts/blob/main/sh/noisy-neighbor/run.sh
+> > > > 
+> > > > then what quickly occurs is:
+> > > > - a high degree of contention on the csum root node eb rwsem
+> > > > - memory starved cgroup doing tons of reclaim on CPU.
+> > > > - many reader threads in the memory starved cgroup "holding" the sem
+> > > >     as readers, but not scheduling promptly. i.e., task __state == 0, but
+> > > >     not running on a cpu.
+> > > > - btrfs_commit_transaction stuck trying to acquire the sem as a writer.
+> > > > 
+> > > > This results in VERY long transactions. On my test system, that script
+> > > > produces 20-30s long transaction commits. This then results in
+> > > > seriously degraded performance for any cgroup using the filesystem (the
+> > > > victim cgroup in the script).
+> > > > 
+> > > > This reproducer is a bit silly, as the villanous cgroup is using almost
+> > > > all of its memory.max for kernel memory (specifically pagetables) but it
+> > > > sort of doesn't matter, as I am most interested in the btrfs locking
+> > > > behavior. It isn't an academic problem, as we see this exact problem in
+> > > > production at Meta with one cgroup over memory.max ruining btrfs
+> > > > performance for the whole system.
+> > > > 
+> > > > The underlying scheduling "problem" with global rwsems is sort of thorny
+> > > > and apparently well known. e.g.
+> > > > https://lpc.events/event/18/contributions/1883/
+> > > > 
+> > > > As a result, our main lever in the short term is just trying to reduce
+> > > > contention on our various rwsems. In the case of the csum tree, we can
+> > > > either redesign btree locking (hard...) or try to use the commit root
+> > > > when we can. Luckily, it seems likely that many reads are for old extents
+> > > > written many transactions ago, and that for those we *can* in fact
+> > > > search the commit root!
+> > > 
+> > > The idea looks good to me.
+> > > 
+> > > The extent_map::generation is updated to the larger one during merge, so if
+> > > we got a em whose generation is smaller than the current generation it's
+> > > definitely older.
+> > > 
+> > > And since data extents in commit root won't be overwritten until the current
+> > > transaction committed, so it should also be fine.
+> > > 
+> > > 
+> > > But my concern is, the path->need_commit_sem is only blocking transaction
+> > > from happening when the path is holding something.
+> > > And inside search_csum_tree() we can release the path halfway, would that
+> > > cause 2 transaction to be committed during that release window?
+> > > 
+> > > Shouldn't we hold the semaphore manually inside btrfs_lookup_bio_sums()
+> > > other than relying on the btrfs_path::need_commit_sem?
+> > 
+> > Yes, I think you are right. Good catch! I will test that version and
+> > re-send, assuming it still works well.
+> 
+> The problem is, if we hold the semaphore that long, it will be no better
+> than the regular tree search method...
 
-I also chose to not return an error since this bug does not really affect
-the ability of the system to function properly.
+Quite possible, I have a hard time seeing a difference for the reader
+logic.
 
-I'm still not convinced that this tree-checker is helpful or necessary
-so if anyone has any opinions I would love to hear them! If this is
-deemed helpful I will send out another patch to add this check to the
-kernel tree-checker.
+But! There is good news: you need a writer in the wait queue to trigger
+the full worst version of this where some readers are "holding" the lock
+but starved on CPU while other readers pile up in the wait queue with
+the writer. Without a writer, all the other readers also acquire the
+semaphore successfully and hopefully make progress. And the
+commit_root_sem should have much less write contention than the csum
+tree route node.
 
-Signed-off-by: Leo Martins <loemra.dev@gmail.com>
----
- kernel-shared/tree-checker.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+I'll test the performance of your fix on the reproducer tomorrow and
+hopefully come back with happy news :)
 
-diff --git a/kernel-shared/tree-checker.c b/kernel-shared/tree-checker.c
-index 0be8f022..cf2e389e 100644
---- a/kernel-shared/tree-checker.c
-+++ b/kernel-shared/tree-checker.c
-@@ -1737,6 +1737,32 @@ static int check_raid_stripe_extent(const struct extent_buffer *leaf,
- 	return 0;
- }
- 
-+static int check_free_space_info_item(const struct extent_buffer *leaf,
-+				      const struct btrfs_key *key, int slot)
-+{
-+	struct btrfs_fs_info *fs_info = leaf->fs_info;
-+	struct btrfs_block_group *bg;
-+
-+	/* block_group_cache is uninitialized at this point */
-+	if (!fs_info->block_group_cache_tree.rb_node)
-+		return 0;
-+
-+	bg = btrfs_lookup_first_block_group(fs_info, key->objectid);
-+	if (unlikely(!bg || key->objectid != bg->start ||
-+		     key->offset != bg->length)) {
-+		generic_err(
-+			leaf, slot,
-+			"We have a space info key [%llu %u %llu] for a block group that "
-+			"doesn't exist.\n"
-+			"This is likely due to a minor bug in mkfs.btrfs that doesn't properly\n"
-+			"cleanup free spaces and can be fixed using btrfs rescue "
-+			"clear-space-cache v2\n",
-+			key->objectid, key->type, key->offset);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Common point to switch the item-specific validation.
-  */
-@@ -1798,6 +1824,9 @@ static enum btrfs_tree_block_status check_leaf_item(struct extent_buffer *leaf,
- 	case BTRFS_RAID_STRIPE_KEY:
- 		ret = check_raid_stripe_extent(leaf, key, slot);
- 		break;
-+	case BTRFS_FREE_SPACE_INFO_KEY:
-+		ret = check_free_space_info_item(leaf, key, slot);
-+		break;
- 	}
- 
- 	if (ret)
--- 
-2.43.5
-
+> 
+> So I'm out of good ideas.
+> 
+> Thanks,
+> Qu
+> > 
+> > > 
+> > > Thanks,
+> > > Qu
+> > > > 
+> > > > This change detects when we are trying to read an old extent (according
+> > > > to extent map generation) and then wires that through bio_ctrl to the
+> > > > btrfs_bio, which unfortunately isn't allocated yet when we have this
+> > > > information. When we go to lookup the csums in lookup_bio_sums we can
+> > > > check this condition on the btrfs_bio and do the commit root lookup
+> > > > accordingly.
+> > > > 
+> > > > With the fix, on that same test case, commit latencies no longer exceed
+> > > > ~400ms on my system.
+> > > > 
+> > > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > > > ---
+> > > >    fs/btrfs/bio.h       |  1 +
+> > > >    fs/btrfs/extent_io.c | 21 +++++++++++++++++++++
+> > > >    fs/btrfs/file-item.c |  7 +++++++
+> > > >    3 files changed, 29 insertions(+)
+> > > > 
+> > > > diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+> > > > index e48612340745..159f6a4425a6 100644
+> > > > --- a/fs/btrfs/bio.h
+> > > > +++ b/fs/btrfs/bio.h
+> > > > @@ -48,6 +48,7 @@ struct btrfs_bio {
+> > > >    			u8 *csum;
+> > > >    			u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
+> > > >    			struct bvec_iter saved_iter;
+> > > > +			bool commit_root_csum;
+> > > >    		};
+> > > >    		/*
+> > > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > > > index cb0a39370d30..8544fe2302ff 100644
+> > > > --- a/fs/btrfs/extent_io.c
+> > > > +++ b/fs/btrfs/extent_io.c
+> > > > @@ -108,6 +108,21 @@ struct btrfs_bio_ctrl {
+> > > >    	 * This is to avoid touching ranges covered by compression/inline.
+> > > >    	 */
+> > > >    	unsigned long submit_bitmap;
+> > > > +	/*
+> > > > +	 * If this is a data read bio, we set this to true if it is safe to
+> > > > +	 * search for csums in the commit root. Otherwise, it is set to false.
+> > > > +	 *
+> > > > +	 * This is an optimization to reduce the contention on the csum tree
+> > > > +	 * root rwsem. Due to how rwsem is implemented, there is a possible
+> > > > +	 * priority inversion where the readers holding the lock don't get
+> > > > +	 * scheduled (say they're in a cgroup stuck in heavy reclaim) which
+> > > > +	 * then blocks btrfs transactions. The only real help is to try to
+> > > > +	 * reduce the contention on the lock as much as we can.
+> > > > +	 *
+> > > > +	 * Do this by detecting when a data read is reading data from an old
+> > > > +	 * transaction so it's safe to look in the commit root.
+> > > > +	 */
+> > > > +	bool commit_root_csum;
+> > > >    };
+> > > >    static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+> > > > @@ -770,6 +785,9 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
+> > > >    			alloc_new_bio(inode, bio_ctrl, disk_bytenr,
+> > > >    				      folio_pos(folio) + pg_offset);
+> > > >    		}
+> > > > +		if (btrfs_op(&bio_ctrl->bbio->bio) == BTRFS_MAP_READ && is_data_inode(inode))
+> > > > +			bio_ctrl->bbio->commit_root_csum = bio_ctrl->commit_root_csum;
+> > > > +
+> > > >    		/* Cap to the current ordered extent boundary if there is one. */
+> > > >    		if (len > bio_ctrl->len_to_oe_boundary) {
+> > > > @@ -1048,6 +1066,9 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+> > > >    		if (prev_em_start)
+> > > >    			*prev_em_start = em->start;
+> > > > +		if (em->generation < btrfs_get_fs_generation(fs_info))
+> > > > +			bio_ctrl->commit_root_csum = true;
+> > > > +
+> > > >    		free_extent_map(em);
+> > > >    		em = NULL;
+> > > > diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> > > > index 886749b39672..2433b169a4e6 100644
+> > > > --- a/fs/btrfs/file-item.c
+> > > > +++ b/fs/btrfs/file-item.c
+> > > > @@ -401,6 +401,13 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+> > > >    		path->skip_locking = 1;
+> > > >    	}
+> > > > +	/* See the comment on btrfs_bio_ctrl->commit_root_csum. */
+> > > > +	if (bbio->commit_root_csum) {
+> > > > +		path->search_commit_root = 1;
+> > > > +		path->skip_locking = 1;
+> > > > +		path->need_commit_sem = 1;
+> > > > +	}
+> > > > +
+> > > >    	while (bio_offset < orig_len) {
+> > > >    		int count;
+> > > >    		u64 cur_disk_bytenr = orig_disk_bytenr + bio_offset;
+> > > 
+> > 
+> 
 
