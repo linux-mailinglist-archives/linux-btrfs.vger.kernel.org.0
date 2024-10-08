@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-8660-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8661-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDABC9958C0
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 22:50:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52EAE9958D9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 22:56:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D9451F247DA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 20:50:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 761E31C21E65
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 20:56:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120DE2139C7;
-	Tue,  8 Oct 2024 20:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8763F2139C7;
+	Tue,  8 Oct 2024 20:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bjUVKQoW"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OC1yHU9N"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40443137C2A;
-	Tue,  8 Oct 2024 20:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD7A58222
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 20:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728420647; cv=none; b=vET2UDk6YJDinF9RkR5LfOXHyD+0sA4l4vOWCXuZuOqSafaoKKgy5oHLdnUTCsQl1wAflOOnTCVPbuevbCK1ibEPazMi6JJXmNWgYFnfgRgU1p8XsWOvic7+QPM8+Dtn5WEgUYDyryM6un1LqGKla+s5d/eT4siq/BQbQMgxlsE=
+	t=1728421007; cv=none; b=au0AkOAK8B/BmRnyB5z7vTi2Q+8RInBKfxwmSbEbvOJENOORwOrACdMgcjfkPDy+PWnKJ7g+RtFFzUB55Ty2p1/SifKpuoIA+SkpQe/GwyNlIhRTE89RH7JZX8AGJ1jMVVjjgcolOtXMJyEwhqeU61fTDkEVrwTy2JgEmoEPGo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728420647; c=relaxed/simple;
-	bh=pfet137Megyf88mIb3sFxJpg7I04z71aKPBpBTqHDhs=;
+	s=arc-20240116; t=1728421007; c=relaxed/simple;
+	bh=fbeTpFjfeUX1Xq/KWUCrG40CTc7WIhFtbAwgMEkezT0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=auVCR3+/Pvg/lVryXMbWywiZyn9IjjSMHBB0E+0NjbEYEY3eH5BWx7qZuuI/jNwNTZRLXY0V3LzOWpqVtlyWDhrD4HZQo1GhdLdLf/XSoRDrh0eg2szDwJGAsD3UHCqiY1RIvX9l4JspJrgBilo0lU/GD6lRqG+5WrJQSDkJUpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bjUVKQoW; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=DuHlIRoP1OMHdMNlZPevY1UwbhlOzkW0UUt/bDQo88UTiPEz9cloPjCTYsUA+EyseAFtD16rSJtLEyeNt8l4yiZf/GIoehghOZJ2OeJfSxsOxHOedvqZWpvXZ+IT3OtKd75tEX3Ivwy60mLTy/rXkxMx1ZNAgihYHnROub6BVO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OC1yHU9N; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1728420628; x=1729025428; i=quwenruo.btrfs@gmx.com;
-	bh=OrJTxoD7qxrhevwECMmn58eMMaEytlEPD0r3z162wBo=;
+	s=s31663417; t=1728421000; x=1729025800; i=quwenruo.btrfs@gmx.com;
+	bh=co2gNJPT3hpqCGeDpUBIbl7xorQlyEhE84zO8DnuE8c=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=bjUVKQoWxCspaGooIKtt66jZA3JHCMlSLp+/am3dOo+ZE9ZeY4Y8WOyRBDZY0MiX
-	 3XRW9VaOLHnaEkrx5Q2KDUKNnPdbOVUedcczHtHkqyECScOKm8T6MBfXJRct2vKS4
-	 mq1xomHcPnlcLaGg4aHmlzTfED+SjVOU8LbtO7HTpu5Ze+Pal+g+UQXJd5bkG5EIw
-	 MhK37cnfrkPNWLJOb3uawaym1eJdL0RzqWKuzQs5CSp03CrSLOJo73/cc0qsLAJTb
-	 m1+2+3sznJiZ+nIWhbTdSirheDVdqXKPI9cFYpq9goh9xLhwQLoxJ1F0xD5U3HqK7
-	 DIT3Fviy9Jl7jjOADA==
+	b=OC1yHU9NXXr07CKBLSgo40ET2h3iixKO5+CzWi7LWTL6R7FGIwjWImTbzq0N2+gc
+	 EmwrjAjCGh2yWNkhwq1DrKyxn8iaxeF0ZN94m7q85ZdQP/aUBB7otY4Y2+rVoHGsp
+	 vz7YBjqy6voF/vxlGO3WTlkXzAlCw0BD6aTs+B7Jf90PclQZI+D9nCr7bB24WsGKl
+	 LWquih83RNBXtLpnt9sWs9b3S6dbQTYjW4WD3yBp/5Xnqx5EyVZ+aKzzawS2r7D8G
+	 +8yeDnqOd5YDoE5YO+o2GuAfpLQHE8IX9oEwRH/pV+8CFy343v3gmv5QOzb+7kT4c
+	 gvoUHz6+tw3No/hqtg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDQic-1t6Ytx3C4M-00DaPG; Tue, 08
- Oct 2024 22:50:28 +0200
-Message-ID: <ea99632a-e873-4f53-9d47-97b1a714586b@gmx.com>
-Date: Wed, 9 Oct 2024 07:20:22 +1030
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MG9g4-1tCa552aJY-00D5H5; Tue, 08
+ Oct 2024 22:56:40 +0200
+Message-ID: <9de4892b-f1dc-4dc1-a63b-71564aaf1a94@gmx.com>
+Date: Wed, 9 Oct 2024 07:26:36 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix the length of reserved qgroup to free
-To: hs wang <iamhswang@gmail.com>
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
- dsterba@suse.com, wqu@suse.com, boris@bur.io, linux-kernel@vger.kernel.org,
- Haisu Wang <haisuwang@tencent.com>
-References: <20241008064849.1814829-1-haisuwang@tencent.com>
- <b677188b-b41b-4a3d-8598-61e8ccdef075@gmx.com>
- <CALv5hoQwjE=4mqEst1ay5YF3eAj2TNdjtLmHbBNCwxsfDXJQTA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: remove btrfs_set_range_writeback()
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <2c53f7555d45d6697e836fa2bb7dce137ab04c99.1728175215.git.wqu@suse.com>
+ <20241008164356.GC1609@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,208 +89,153 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
  DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
  iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <CALv5hoQwjE=4mqEst1ay5YF3eAj2TNdjtLmHbBNCwxsfDXJQTA@mail.gmail.com>
+In-Reply-To: <20241008164356.GC1609@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7yas0XO7P6EF77H84XQhqknfj5nzCu+p8sun9zH5FAgv7B3gNBo
- ZhQwZ43JwQE1egA8siITwJj1JwpfYP3vcfli9f8rnkS/R7aa7FSPlTp+nxOGmA+CR03WKgw
- Ud4aPl6Oc+M1/HJwX9s6zH8nLrci2j+JMnnaCn9zFhEjMtA2TMJhfxp1KVTs1NC3EoSWggs
- TVDOQkJ6u45+4XFnb8aYA==
+X-Provags-ID: V03:K1:gK37oQFiX4u5ovF0CQmzziiQlMVQfgW7UI0W+dzB0owq4H9jwkH
+ 3ye4BTi2x4vUl67h4UZaI8bZ4qxh/ArWp2EvxsCj7XNXSLVjmd3tSF5laP+3QrM2F6eV63W
+ lpXUULvcjRjk7YlnliqdxjVwysc3eBbVl/GFEz01IOuT54pkYiwOItYZfP23ipunXJPTwOx
+ BOPIdufPso692YKe3x2Rg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:IKriuLKEfzI=;JB5d7Leii/HIGJMubjAWX/27phy
- sopSwYxQBeq3YnpDyEDxunKnSDcrVO0SSO3Qevex9+vlIy/YUQK9lkZptZo5NIVH6WmkCjw+3
- TSVP30igs5k/RCC3YTfZ2iP1YAEfuzpOt5WpwDI++7/DuGPNEMTBUZwdLAeoxAOkUesciCKwP
- ziWvo0+ieBak1HQ5jgz/2HBQ+EUH6ut8p1lZKfqQJ8wljM3YQqFxovE9M6K99sR394IUzzRv+
- uc2X80V+I9ACqHICHnFRJf+PrbDkOlY2FLJJNxqcbqNIg5v51pvjYhHcQGl9I4BQ+kNPjXmiy
- cpQofRlxOLvbhagKZXgFRv66iZiSsBaLPE0tlxaVN/oY4dpWOwzv3HsHKWVE0HfZq1C26gvho
- Aui3VYHcw1+3RvqvXvPtEssaMu8pHkbBJu2E8cQ+k22ALMdYDGrPAvtI3zF660d3LJvAy3G50
- UDsKS705H4T3E/9hLB9yieCIv7A+B7GqwSzSiWEpyiSdu5eyd8L2krYbdxMBIAXC74r3isIae
- Kcm3NhqQAPsHGx2lNS90UuT/Xnsrb+uZD1WFrrNLBvGN5BZ1mvq92ykuqI1MPC2uDnV/Bd8J9
- vu+dq4HK0xp0VQlyS/3H+fvPo191E10XxZteGs5YdWgvGX7VTud54Tet8tzn/rtHHeXIL+BzL
- YwzQNXtF/tCujXjzX5JalRM9LJcBMOapgdVo2D4EIPijgw61YeJP+CorbdC5ktqxnvOeiPKH4
- mUscYSg5o+In4ikGhjBxnKxF8uYwrLujr00/TMdNgwnW46MOqeyIlphtPpeI6ElgzGFRUX4Sc
- 6n4mvxvqXJ5NvEEi1kLtpZVg==
+UI-OutboundReport: notjunk:1;M01:P0:Ij3Hoo+Bpnw=;qlzLPUIOrRG8mrGOBvlsF04r/5I
+ yAvICgLeAeEJ42DjTW6g/P+3VxdFrEBNsEpdIyEHfnH9LxYT6JBlPVuR4YZO7PMuDev4+UKh9
+ a5A7aHeh/J7Pk7K1IOCrezHIGlejC0MC7KgX8vepYkOFULP0UmUki/qity16xJKbeTjF4/i3R
+ twvh9r5bnCxkYK5zMilxAoEtZJ/ujDT4iV+mJLMGZBOTjhzZjBZyQKZmhCE4wNr6EreF9XoYv
+ WmogmLqc1v5yJ7Q4CO94ECYS2Yk4Wk+6oPF76SIp0KEVI1ZwBLFJD8xkyel+PYlELEAOWip4W
+ yJ31tb73NchVvMR0WXKfOsG7IxlKA62QgvoqhhCBN+ICnGsIIf6ngicnHMeP6J8CaIvM4Fbo6
+ o0ncvBUkZNl9XNdiSnd7lEVusWT0BU1OJ9wAZ6LoUyAFT9ceiSZISqBC320PyEK6CPE/WyE1+
+ FCaeyK8IlBCA4cl3VYkxSyienjK5pmiiEPMeL039E/zDylvdLWtizY0FkclVDCz/o/UMnB/9O
+ mn3xl3b3ZX7arHXRzLMggdJdz0tDyA4l8etm4NlwcoZttrYzw0WR+1p0LaKMhsZr4fRr+m8bd
+ jDE3Zcnrc9sDEWXeGTpum0KVpMJivkzoF3LFjknRhZiaxCsyqZKqeKlEPoJLbicEcL7mjdedR
+ JTWRqz9oMaqt4Memu5KBlcEzrEeUTx/cYYaNsV+k7ORgmKEbus9DGdRI+cG3YFKotD7DrIEYF
+ hgEc/zKoVClScstapSKT3X9zVBKQJQk6un5BI+xuLo02I0NapXFtsQqECL70m0Ll5Z7skTOdz
+ lLIa4X0RreSp/O4oMNtEiEsg==
 
 
 
-=E5=9C=A8 2024/10/8 21:48, hs wang =E5=86=99=E9=81=93:
-> Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2024=E5=B9=B410=E6=9C=888=E6=
-=97=A5=E5=91=A8=E4=BA=8C 15:56=E5=86=99=E9=81=93=EF=BC=9A
->>
->>
->>
->> =E5=9C=A8 2024/10/8 17:18, iamhswang@gmail.com =E5=86=99=E9=81=93:
->>> From: Haisu Wang <haisuwang@tencent.com>
->>>
->>> The dealloc flag may be cleared and the extent won't reach the disk
->>> in cow_file_range when errors path. The reserved qgroup space is
->>> freed in commit 30479f31d44d ("btrfs: fix qgroup reserve leaks in
->>> cow_file_range"). However, the length of untouched region to free
->>> need to be adjusted with the region size.
->>>
->>> Fixes: 30479f31d44d ("btrfs: fix qgroup reserve leaks in cow_file_rang=
-e")
->>> Signed-off-by: Haisu Wang <haisuwang@tencent.com>
->>
->> Right, just several lines before that, we increased @start by
->> @cur_alloc_size if @extent_reserved is true.
->>
->> So we can not directly use the old range size.
+=E5=9C=A8 2024/10/9 03:13, David Sterba =E5=86=99=E9=81=93:
+> I have more comments on the grammar than on the code, sorry.
 >
-> Thanks for the review.
+> On Sun, Oct 06, 2024 at 11:10:22AM +1030, Qu Wenruo wrote:
+>> The function btrfs_set_range_writeback() is originally a callback for
+>                                             was
 >
+>> metadata and data, to mark a range with writeback flag.
 >>
->> You can improve that one step further by not modifying @start just for
->> the error handling path, although that should be another patch.
->
-> Indeed, modify the start value based on @extent_reserved in
-> error path only is tricky and ambiguous.
->
-> I agree to keep the fix as simple as possible (like the previous patch),
-> since commit 30479f31d44d ("btrfs: fix qgroupreserve leaks in
-> cow_file_range") assigned to CVE-2024-46733 already.
-> A simple fix is easier to port to stable branch of different versions.
-> Also the possible change to keep @start is more like an
-> enhancement instead of a fix.
->
+>> Then it was converted into a common function call for both metadata and
+>> data.
 >>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
+>> >From the very beginning, the function is only called on a full page,
+>                                           'had been' because of the othe=
+r past tense, idk
+>
+>> later converted to handle range inside a page.
 >>
->> Thanks,
->> Qu
+>> But it never needs to handle multiple pages, and since commit
+>                 needed
 >
-> To make sure we are on the same page of keeping the @start
-> unchanged. I write a POC below for your opinion.
-> (Anyway, i will think/test again before convert POC to a PATCH.)
+>> 8189197425e7 ("btrfs: refactor __extent_writepage_io() to do
+>> sector-by-sector submission") the function is only called on a
+>                                               has been
 >
-> The @start will advanced in every succeed reservation, the
-> @cur_alloc_size can represent the @extent_reserved state
-> instead of using a standalone @extent_reserved flag.
-> In this case, the @start region no longer need to be modified
-> based on @extent_reserved state in the error path.
+>> sector-by-sector basis.
+>>
+>> This makes the function unnecessary, and can be converted to a simple
+>> btrfs_folio_set_writeback() call instead.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/btrfs_inode.h |  1 -
+>>   fs/btrfs/extent_io.c   |  2 +-
+>>   fs/btrfs/inode.c       | 22 ----------------------
+>>   3 files changed, 1 insertion(+), 24 deletions(-)
+>>
+>> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+>> index e152fde888fc..c514bab532fa 100644
+>> --- a/fs/btrfs/btrfs_inode.h
+>> +++ b/fs/btrfs/btrfs_inode.h
+>> @@ -577,7 +577,6 @@ void btrfs_merge_delalloc_extent(struct btrfs_inode=
+ *inode, struct extent_state
+>>   				 struct extent_state *other);
+>>   void btrfs_split_delalloc_extent(struct btrfs_inode *inode,
+>>   				 struct extent_state *orig, u64 split);
+>> -void btrfs_set_range_writeback(struct btrfs_inode *inode, u64 start, u=
+64 end);
+>>   void btrfs_evict_inode(struct inode *inode);
+>>   struct inode *btrfs_alloc_inode(struct super_block *sb);
+>>   void btrfs_destroy_inode(struct inode *inode);
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 9fbc83c76b94..d87dcafab537 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -1359,7 +1359,7 @@ static int submit_one_sector(struct btrfs_inode *=
+inode,
+>>   	 * a folio for a range already written to disk.
+>>   	 */
+>>   	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
+>> -	btrfs_set_range_writeback(inode, filepos, filepos + sectorsize - 1);
+>> +	btrfs_folio_set_writeback(fs_info, folio, filepos, sectorsize);
+>>   	/*
+>>   	 * Above call should set the whole folio with writeback flag, even
+>>   	 * just for a single subpage sector.
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 103ec917ca9d..21e51924742a 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -8939,28 +8939,6 @@ static int btrfs_tmpfile(struct mnt_idmap *idmap=
+, struct inode *dir,
+>>   	return finish_open_simple(file, ret);
+>>   }
+>>
+>> -void btrfs_set_range_writeback(struct btrfs_inode *inode, u64 start, u=
+64 end)
+>> -{
+>> -	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>> -	unsigned long index =3D start >> PAGE_SHIFT;
+>> -	unsigned long end_index =3D end >> PAGE_SHIFT;
+>> -	struct folio *folio;
+>> -	u32 len;
+>> -
+>> -	ASSERT(end + 1 - start <=3D U32_MAX);
+>> -	len =3D end + 1 - start;
+>> -	while (index <=3D end_index) {
+>> -		folio =3D __filemap_get_folio(inode->vfs_inode.i_mapping, index, 0, =
+0);
+>> -		ASSERT(!IS_ERR(folio)); /* folios should be in the extent_io_tree */
+>> -
+>> -		/* This is for data, which doesn't yet support larger folio. */
+>> -		ASSERT(folio_order(folio) =3D=3D 0);
+>> -		btrfs_folio_set_writeback(fs_info, folio, start, len);
+>
+> So the new code is just btrfs_folio_set_writeback(), with the removed
+> comment and assertion,
 
-This snippet looks good to me.
+Firstly, the length check is already inside btrfs_folio_set_writeback()
+for the subpage cases.
+If it's not subpage, we do not even need to check the range (it's always
+page aligned).
+
+Secondly for the folio, we do not need the ASSERT(), because this time
+we have the folio pointer already.
+
+So for the assert part, there is no change.
+
+> what's the status regarding large folios?
+
+That stays the same, no larger folio support.
+
+The larger folio support requires us to get rid of the per-fs
+sectors_per_page check, but using folio_size() to do the calculation.
+
+That will still be a lot of work to do before we can support larger
+folios for data.
 
 Thanks,
 Qu
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 5eefa2318fa8..0c35292550bd 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1341,7 +1341,6 @@ static noinline int cow_file_range(struct
-> btrfs_inode *inode,
->          struct extent_map *em;
->          unsigned clear_bits;
->          unsigned long page_ops;
-> -       bool extent_reserved =3D false;
->          int ret =3D 0;
+> I assume that this now implicitly supports them, we don't necessarily
+> need the assertion as I think we have more places where this would be
+> detected.
 >
->          if (btrfs_is_free_space_inode(inode)) {
-> @@ -1395,8 +1394,7 @@ static noinline int cow_file_range(struct
-> btrfs_inode *inode,
->                  struct btrfs_ordered_extent *ordered;
->                  struct btrfs_file_extent file_extent;
->
-> -               cur_alloc_size =3D num_bytes;
-> -               ret =3D btrfs_reserve_extent(root, cur_alloc_size, cur_a=
-lloc_size,
-> +               ret =3D btrfs_reserve_extent(root, num_bytes, num_bytes,
->                                             min_alloc_size, 0, alloc_hin=
-t,
->                                             &ins, 1, 1);
->                  if (ret =3D=3D -EAGAIN) {
-> @@ -1427,7 +1425,6 @@ static noinline int cow_file_range(struct
-> btrfs_inode *inode,
->                  if (ret < 0)
->                          goto out_unlock;
->                  cur_alloc_size =3D ins.offset;
-> -               extent_reserved =3D true;
->
->                  ram_size =3D ins.offset;
->                  file_extent.disk_bytenr =3D ins.objectid;
-> @@ -1503,7 +1500,7 @@ static noinline int cow_file_range(struct
-> btrfs_inode *inode,
->                          num_bytes -=3D cur_alloc_size;
->                  alloc_hint =3D ins.objectid + ins.offset;
->                  start +=3D cur_alloc_size;
-> -               extent_reserved =3D false;
-> +               cur_alloc_size =3D 0;
->
->                  /*
->                   * btrfs_reloc_clone_csums() error, since start is incr=
-eased
-> @@ -1573,13 +1570,12 @@ static noinline int cow_file_range(struct
-> btrfs_inode *inode,
->           * to decrement again the data space_info's bytes_may_use count=
-er,
->           * therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV.
->           */
-> -       if (extent_reserved) {
-> +       if (cur_alloc_size) {
->                  extent_clear_unlock_delalloc(inode, start,
->                                               start + cur_alloc_size - 1=
-,
->                                               locked_folio, &cached, cle=
-ar_bits,
->                                               page_ops);
->                  btrfs_qgroup_free_data(inode, NULL, start,
-> cur_alloc_size, NULL);
-> -               start +=3D cur_alloc_size;
->          }
->
->          /*
-> @@ -1588,11 +1584,13 @@ static noinline int cow_file_range(struct
-> btrfs_inode *inode,
->           * space_info's bytes_may_use counter, reserved in
->           * btrfs_check_data_free_space().
->           */
-> -       if (start < end) {
-> +       if (start + cur_alloc_size < end) {
->                  clear_bits |=3D EXTENT_CLEAR_DATA_RESV;
-> -               extent_clear_unlock_delalloc(inode, start, end, locked_f=
-olio,
-> +               extent_clear_unlock_delalloc(inode, start + cur_alloc_si=
-ze,
-> +                                            end, locked_folio,
->                                               &cached, clear_bits, page_=
-ops);
-> -               btrfs_qgroup_free_data(inode, NULL, start, end - start
-> + 1, NULL);
-> +               btrfs_qgroup_free_data(inode, NULL, start + cur_alloc_si=
-ze,
-> +                               end - start - cur_alloc_size + 1, NULL);
->          }
->          return ret;
->   }
->
->
-> Thanks,
-> Haisu Wang
->
->>
->>> ---
->>>    fs/btrfs/inode.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->>> index b0ad46b734c3..5eefa2318fa8 100644
->>> --- a/fs/btrfs/inode.c
->>> +++ b/fs/btrfs/inode.c
->>> @@ -1592,7 +1592,7 @@ static noinline int cow_file_range(struct btrfs_=
-inode *inode,
->>>                clear_bits |=3D EXTENT_CLEAR_DATA_RESV;
->>>                extent_clear_unlock_delalloc(inode, start, end, locked_=
-folio,
->>>                                             &cached, clear_bits, page_=
-ops);
->>> -             btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_siz=
-e, NULL);
->>> +             btrfs_qgroup_free_data(inode, NULL, start, end - start +=
- 1, NULL);
->>>        }
->>>        return ret;
->>>    }
->>
 
 
