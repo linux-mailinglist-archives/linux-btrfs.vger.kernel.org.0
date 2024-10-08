@@ -1,255 +1,253 @@
-Return-Path: <linux-btrfs+bounces-8637-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8638-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B475D994669
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 13:18:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5170A9946BA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 13:25:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D8E51F215E2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 11:18:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16329286472
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 11:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F771CFEBE;
-	Tue,  8 Oct 2024 11:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A9A1D0BB2;
+	Tue,  8 Oct 2024 11:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kaxoIFTh"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="FDu7GbGL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B1217CA02;
-	Tue,  8 Oct 2024 11:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246BA1D0BAE
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 11:23:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728386310; cv=none; b=dRMS/FHpzaf8qY0THV8A4EEEUxkzXGdUWijpJzYIv3CmDpXCJPWfmbhoF5Sz/URN4Rf11kcpCdg6/BbNusYJKwaIPPGN2tX+4W4jgpOWUJDxTnqfZYcaPtmgVbOpN997XBBTNYfsdI0ypl1uisAHaItH69jpyEXjPe70TltcBRI=
+	t=1728386625; cv=none; b=PbUnI88tJPSY2ry+WWH4Yg9mXPi0Aib/z52wy5WHaghSkO9GmF0bFa22EBsn9k5CDnJNuBQBgycyl/GvTT07LxsNQNWXaaqNcPZWpZGrcbCTBF63bEIPoQ4n5EnuxURV7WvqQrVbnlbqviEgChAlW55SI3lNsspvoirRXB0/XvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728386310; c=relaxed/simple;
-	bh=LRuYmZ3/V33MHhyVWFvQWknFm8VBc1M0CHNL+tMK2dY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XUzpccR1PR1C3ncbc6XoYfIWnn3bif9J1d0FDKyV4s81wjJ0nehp6+8WVq2qr9xrXLVbECbE2ml4NNSqCPxoQXjtmrGO7B/i19j8I1UieTvWxG39tkMdzAreNWbGKVaKpSlsaGHfwTxvkZx5eBrkKSSFGXBng4Kl1EgTjAcrPM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kaxoIFTh; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9941a48ac8so380659366b.3;
-        Tue, 08 Oct 2024 04:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728386307; x=1728991107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IKqlKPOONVYnAvGBMSSMOYAcjpTVpNTtTM7AOZrEN6w=;
-        b=kaxoIFTh9YtPddWdAptsnbp2wXz2hxkCrYOEHUWsTU73TuWwAkt5jEqV86NFI7pECS
-         IzWen4OJCeVGiwzgJlo/eRHesVsk7kb2IxgGEdQpcNzSlzRbniyvgM2sc1ET7+1oZh3V
-         CcG1SMwJMlVtBmHDrB7f0SSUEFAeyZljz2UAzmkO7Ke/n7PBR+Fg5a6SZvZT3q2teYTp
-         aJPd87FOgcbvJ4ZixUD9HHULvuXgJ1DTgBLAD8tVGv985qz6l086h/6dNYYod9uhYykK
-         LIFpiO0/XGq/OeY6gmr+4c8t2Pr+AZMakYacuWfLqHYrkMVWlVHtKXMeqhetvLmrlxBd
-         8U7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728386307; x=1728991107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IKqlKPOONVYnAvGBMSSMOYAcjpTVpNTtTM7AOZrEN6w=;
-        b=YZnCLtjlh7udBAvregiBU0H1wf+Kf7x9qVSAm4BkpZnKJeug3rateDDE2EaEB0QUFU
-         wjXIgHKuMp7mY1XMWitreueGXJPKs+kw1n1u+u0Q0Bxm8QMEn66zffBof1x9h958XXaR
-         eC4d7G4K+ZK7G6t15Bcj71ynmxf998ugVlXZTP/Ws0iA2WpKGz5bQccQTKq6y5SF0tbH
-         HNUgwhpmOC5Do7eFIH9ElIevvhuj1RWU/SYn8rNmR59ZkdtFaZDe9I9c4eomI/9/Dh1A
-         Ba++mVX+4lUdL5e1VsuqKPe/auVXJO+uCrE+O7afR5AWfTbwDn2L1SsRDtWLAfR9pAVE
-         o8tA==
-X-Forwarded-Encrypted: i=1; AJvYcCXush49pFLuGmeyPdCJTnclvpoe+yQfw112TQIs9qq/DhzOlld0uW4E7gosVs++9pME7zNbAAhtW8j2E8I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YweJX3tv848Jb+iqfBXLV4goBUgAoDuH2Pb08gTHVQygcIv6etR
-	KRwuEitcsjym4bxk4sorzuspZpAqYZrV4eEk2UF3LZY59M+MSynMXywxFo9sP0HpMxiCyHwWxW7
-	zvzCSjd2nj6tTgJp36KyB/lqFiV0huLd/z1KPSQfg
-X-Google-Smtp-Source: AGHT+IHC8A9lDrVKFRuKfxW91lgfBljY33Zfl/zG4CfRhvvp1qgtnQfH1NS3Fu+GuBbLnr10mGJS5jr3YA7oJ6i2SBI=
-X-Received: by 2002:a17:907:7e91:b0:a99:48a8:5a1c with SMTP id
- a640c23a62f3a-a9948a85b33mr950725766b.40.1728386306401; Tue, 08 Oct 2024
- 04:18:26 -0700 (PDT)
+	s=arc-20240116; t=1728386625; c=relaxed/simple;
+	bh=vI9JZ6EDI6lQhZLKSOi7yqHOeShtKeqjx0RWa9I5OfE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KGQl4Sh5ZYKcEu0WSgjbbjoGqxn8IOFn4KqbgIyQeMVgGxrrYyKbtvUHbL6WZ4e+T3VHnGBBXQQdtZTN4t9DxoQSXBWoB5UBpp/o7EQJ2KHizvcqG4Rrqqohtlc0xAe5LggzQM5kg4JfRDAFySqaE9edSWxzi29ezECz8RmLDRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b=FDu7GbGL; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fb.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 498BNN11013413
+	for <linux-btrfs@vger.kernel.org>; Tue, 8 Oct 2024 04:23:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=cc
+	:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=facebook; bh=lFhGPnT2D5YfyQH9NdPusGd
+	c2f7yO9nt3rBHwC1Bxr0=; b=FDu7GbGLHRY8zox7dQDVNbvkQzxzQLYh4mVo75r
+	pXZHmOWHZRCSGgTH7lXZKj7bBDbn54pCLaccOuVxkj4uR/LNPk70jNs/XM8aEpfH
+	H+0+TWNvMHRk3A/QJdjCStmfeNEar8lhnHppqAui/FekJ/LsWk14nqXs4cYt3i75
+	G5a0=
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by m0089730.ppops.net (PPS) with ESMTPS id 4230y4fjkp-11
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Tue, 08 Oct 2024 04:23:32 -0700 (PDT)
+Received: from twshared17314.02.ash9.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1544.11; Tue, 8 Oct 2024 11:23:26 +0000
+Received: by devbig276.nha1.facebook.com (Postfix, from userid 660015)
+	id 5DFA378E827E; Tue,  8 Oct 2024 12:23:18 +0100 (BST)
+From: Mark Harmstone <maharmstone@fb.com>
+To: <fstests@vger.kernel.org>
+CC: <linux-btrfs@vger.kernel.org>, Mark Harmstone <maharmstone@fb.com>
+Subject: [PATCH] btrfs: add test for missing csums in log when doing async on subpage vol
+Date: Tue, 8 Oct 2024 12:22:54 +0100
+Message-ID: <20241008112302.2757404-1-maharmstone@fb.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241008064849.1814829-1-haisuwang@tencent.com> <b677188b-b41b-4a3d-8598-61e8ccdef075@gmx.com>
-In-Reply-To: <b677188b-b41b-4a3d-8598-61e8ccdef075@gmx.com>
-From: hs wang <iamhswang@gmail.com>
-Date: Tue, 8 Oct 2024 19:18:14 +0800
-Message-ID: <CALv5hoQwjE=4mqEst1ay5YF3eAj2TNdjtLmHbBNCwxsfDXJQTA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix the length of reserved qgroup to free
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com, 
-	dsterba@suse.com, wqu@suse.com, boris@bur.io, linux-kernel@vger.kernel.org, 
-	Haisu Wang <haisuwang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: HnrH9_Q87_-rdaPWTPM9BdOpPAC05Zfu
+X-Proofpoint-GUID: HnrH9_Q87_-rdaPWTPM9BdOpPAC05Zfu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 
-Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2024=E5=B9=B410=E6=9C=888=E6=97=
-=A5=E5=91=A8=E4=BA=8C 15:56=E5=86=99=E9=81=93=EF=BC=9A
->
->
->
-> =E5=9C=A8 2024/10/8 17:18, iamhswang@gmail.com =E5=86=99=E9=81=93:
-> > From: Haisu Wang <haisuwang@tencent.com>
-> >
-> > The dealloc flag may be cleared and the extent won't reach the disk
-> > in cow_file_range when errors path. The reserved qgroup space is
-> > freed in commit 30479f31d44d ("btrfs: fix qgroup reserve leaks in
-> > cow_file_range"). However, the length of untouched region to free
-> > need to be adjusted with the region size.
-> >
-> > Fixes: 30479f31d44d ("btrfs: fix qgroup reserve leaks in cow_file_range=
-")
-> > Signed-off-by: Haisu Wang <haisuwang@tencent.com>
->
-> Right, just several lines before that, we increased @start by
-> @cur_alloc_size if @extent_reserved is true.
->
-> So we can not directly use the old range size.
+Adds a test for a bug we encountered on Linux 6.4 on aarch64, where a
+race could mean that csums weren't getting written to the log tree,
+leading to corruption when it was replayed.
 
-Thanks for the review.
+The patches to detect log this tree corruption are in btrfs-progs 6.11.
 
->
-> You can improve that one step further by not modifying @start just for
-> the error handling path, although that should be another patch.
+Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+---
+ common/dmlogwrites  | 24 ++++++++++++++++++
+ tests/btrfs/192     | 26 +-------------------
+ tests/btrfs/333     | 59 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/333.out |  2 ++
+ 4 files changed, 86 insertions(+), 25 deletions(-)
+ create mode 100755 tests/btrfs/333
+ create mode 100644 tests/btrfs/333.out
 
-Indeed, modify the start value based on @extent_reserved in
-error path only is tricky and ambiguous.
-
-I agree to keep the fix as simple as possible (like the previous patch),
-since commit 30479f31d44d ("btrfs: fix qgroupreserve leaks in
-cow_file_range") assigned to CVE-2024-46733 already.
-A simple fix is easier to port to stable branch of different versions.
-Also the possible change to keep @start is more like an
-enhancement instead of a fix.
-
->
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
->
-> Thanks,
-> Qu
-
-To make sure we are on the same page of keeping the @start
-unchanged. I write a POC below for your opinion.
-(Anyway, i will think/test again before convert POC to a PATCH.)
-
-The @start will advanced in every succeed reservation, the
-@cur_alloc_size can represent the @extent_reserved state
-instead of using a standalone @extent_reserved flag.
-In this case, the @start region no longer need to be modified
-based on @extent_reserved state in the error path.
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5eefa2318fa8..0c35292550bd 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1341,7 +1341,6 @@ static noinline int cow_file_range(struct
-btrfs_inode *inode,
-        struct extent_map *em;
-        unsigned clear_bits;
-        unsigned long page_ops;
--       bool extent_reserved =3D false;
-        int ret =3D 0;
-
-        if (btrfs_is_free_space_inode(inode)) {
-@@ -1395,8 +1394,7 @@ static noinline int cow_file_range(struct
-btrfs_inode *inode,
-                struct btrfs_ordered_extent *ordered;
-                struct btrfs_file_extent file_extent;
-
--               cur_alloc_size =3D num_bytes;
--               ret =3D btrfs_reserve_extent(root, cur_alloc_size, cur_allo=
-c_size,
-+               ret =3D btrfs_reserve_extent(root, num_bytes, num_bytes,
-                                           min_alloc_size, 0, alloc_hint,
-                                           &ins, 1, 1);
-                if (ret =3D=3D -EAGAIN) {
-@@ -1427,7 +1425,6 @@ static noinline int cow_file_range(struct
-btrfs_inode *inode,
-                if (ret < 0)
-                        goto out_unlock;
-                cur_alloc_size =3D ins.offset;
--               extent_reserved =3D true;
-
-                ram_size =3D ins.offset;
-                file_extent.disk_bytenr =3D ins.objectid;
-@@ -1503,7 +1500,7 @@ static noinline int cow_file_range(struct
-btrfs_inode *inode,
-                        num_bytes -=3D cur_alloc_size;
-                alloc_hint =3D ins.objectid + ins.offset;
-                start +=3D cur_alloc_size;
--               extent_reserved =3D false;
-+               cur_alloc_size =3D 0;
-
-                /*
-                 * btrfs_reloc_clone_csums() error, since start is increase=
-d
-@@ -1573,13 +1570,12 @@ static noinline int cow_file_range(struct
-btrfs_inode *inode,
-         * to decrement again the data space_info's bytes_may_use counter,
-         * therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV.
-         */
--       if (extent_reserved) {
-+       if (cur_alloc_size) {
-                extent_clear_unlock_delalloc(inode, start,
-                                             start + cur_alloc_size - 1,
-                                             locked_folio, &cached, clear_b=
-its,
-                                             page_ops);
-                btrfs_qgroup_free_data(inode, NULL, start,
-cur_alloc_size, NULL);
--               start +=3D cur_alloc_size;
-        }
-
-        /*
-@@ -1588,11 +1584,13 @@ static noinline int cow_file_range(struct
-btrfs_inode *inode,
-         * space_info's bytes_may_use counter, reserved in
-         * btrfs_check_data_free_space().
-         */
--       if (start < end) {
-+       if (start + cur_alloc_size < end) {
-                clear_bits |=3D EXTENT_CLEAR_DATA_RESV;
--               extent_clear_unlock_delalloc(inode, start, end, locked_foli=
-o,
-+               extent_clear_unlock_delalloc(inode, start + cur_alloc_size,
-+                                            end, locked_folio,
-                                             &cached, clear_bits, page_ops)=
-;
--               btrfs_qgroup_free_data(inode, NULL, start, end - start
-+ 1, NULL);
-+               btrfs_qgroup_free_data(inode, NULL, start + cur_alloc_size,
-+                               end - start - cur_alloc_size + 1, NULL);
-        }
-        return ret;
+diff --git a/common/dmlogwrites b/common/dmlogwrites
+index c1c85de9..f7faf244 100644
+--- a/common/dmlogwrites
++++ b/common/dmlogwrites
+@@ -203,3 +203,27 @@ _log_writes_replay_log_range()
+ 		>> $seqres.full 2>&1
+ 	[ $? -ne 0 ] && _fail "replay failed"
  }
++
++# Replay and check each fua/flush (specified by $2) point.
++#
++# Since dm-log-writes records bio sequentially, even just replaying a ra=
+nge
++# still needs to iterate all records before the end point.
++# When number of records grows, it will be unacceptably slow, thus we ne=
+ed
++# to use relay-log itself to trigger fsck, avoid unnecessary seek.
++_log_writes_fast_replay_check()
++{
++	local check_point=3D$1
++	local blkdev=3D$2
++	local fsck_command=3D$3
++	local ret
++
++	[ -z "$check_point" -o -z "$blkdev" ] && _fail \
++	"check_point and blkdev must be specified for log_writes_fast_replay_ch=
+eck"
++
++	$here/src/log-writes/replay-log --log $LOGWRITES_DEV \
++		--replay $blkdev --check $check_point --fsck "$fsck_command" \
++		&> $tmp.full_fsck
++	ret=3D$?
++	tail -n 150 $tmp.full_fsck >> $seqres.full
++	[ $ret -ne 0 ] && _fail "fsck failed during replay"
++}
+diff --git a/tests/btrfs/192 b/tests/btrfs/192
+index f7fb65b8..449f0459 100755
+--- a/tests/btrfs/192
++++ b/tests/btrfs/192
+@@ -96,30 +96,6 @@ delete_workload()
+ 	done
+ }
+=20
+-# Replay and check each fua/flush (specified by $2) point.
+-#
+-# Since dm-log-writes records bio sequentially, even just replaying a ra=
+nge
+-# still needs to iterate all records before the end point.
+-# When number of records grows, it will be unacceptably slow, thus we ne=
+ed
+-# to use relay-log itself to trigger fsck, avoid unnecessary seek.
+-log_writes_fast_replay_check()
+-{
+-	local check_point=3D$1
+-	local blkdev=3D$2
+-	local fsck_command=3D"$BTRFS_UTIL_PROG check $blkdev"
+-	local ret
+-
+-	[ -z "$check_point" -o -z "$blkdev" ] && _fail \
+-	"check_point and blkdev must be specified for log_writes_fast_replay_ch=
+eck"
+-
+-	$here/src/log-writes/replay-log --log $LOGWRITES_DEV \
+-		--replay $blkdev --check $check_point --fsck "$fsck_command" \
+-		&> $tmp.full_fsck
+-	ret=3D$?
+-	tail -n 150 $tmp.full_fsck >> $seqres.full
+-	[ $ret -ne 0 ] && _fail "fsck failed during replay"
+-}
+-
+ xattr_value=3D$(printf '%0.sX' $(seq 1 3800))
+=20
+ # Bumping tree height to level 2.
+@@ -145,7 +121,7 @@ wait
+ _log_writes_unmount
+ _log_writes_remove
+=20
+-log_writes_fast_replay_check fua "$SCRATCH_DEV"
++_log_writes_fast_replay_check fua "$SCRATCH_DEV" "$BTRFS_UTIL_PROG check=
+ $SCRATCH_DEV"
+=20
+ echo "Silence is golden"
+=20
+diff --git a/tests/btrfs/333 b/tests/btrfs/333
+new file mode 100755
+index 00000000..13f113ca
+--- /dev/null
++++ b/tests/btrfs/333
+@@ -0,0 +1,59 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# FS QA Test 333
++#
++# Test async dio with fsync to test a bug where a race meant that csums =
+weren't
++# getting written to the log tree, causing corruptions on remount. This =
+can be
++# seen on subpage FSes on 6.4.
++#
++. ./common/preamble
++_begin_fstest auto quick metadata log volume
++
++_fixed_by_kernel_commit e917ff56c8e7 \
++	"btrfs: determine synchronous writers from bio or writeback control"
++
++fio_config=3D$tmp.fio
++
++. ./common/dmlogwrites
++
++_require_scratch
++_require_log_writes
++
++cat >$fio_config <<EOF
++[global]
++iodepth=3D128
++direct=3D1
++ioengine=3Dlibaio
++rw=3Drandwrite
++runtime=3D1s
++[job0]
++rw=3Drandwrite
++filename=3D$SCRATCH_MNT/file
++size=3D1g
++fdatasync=3D1
++EOF
++
++_require_fio $fio_config
++
++cat $fio_config >> $seqres.full
++
++_log_writes_init $SCRATCH_DEV
++_log_writes_mkfs >> $seqres.full 2>&1
++_log_writes_mark mkfs
++
++_log_writes_mount
++
++$FIO_PROG $fio_config > /dev/null 2>&1
++_log_writes_unmount
++
++_log_writes_remove
++_log_writes_replay_log mkfs $SCRATCH_DEV
++
++_log_writes_fast_replay_check fua "$SCRATCH_DEV" "$BTRFS_UTIL_PROG check=
+ $SCRATCH_DEV"
++
++echo "Silence is golden"
++
++# success, all done
++status=3D0
++exit
+diff --git a/tests/btrfs/333.out b/tests/btrfs/333.out
+new file mode 100644
+index 00000000..60a15898
+--- /dev/null
++++ b/tests/btrfs/333.out
+@@ -0,0 +1,2 @@
++QA output created by 333
++Silence is golden
+--=20
+2.44.2
 
-
-Thanks,
-Haisu Wang
-
->
-> > ---
-> >   fs/btrfs/inode.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index b0ad46b734c3..5eefa2318fa8 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -1592,7 +1592,7 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
-> >               clear_bits |=3D EXTENT_CLEAR_DATA_RESV;
-> >               extent_clear_unlock_delalloc(inode, start, end, locked_fo=
-lio,
-> >                                            &cached, clear_bits, page_op=
-s);
-> > -             btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size=
-, NULL);
-> > +             btrfs_qgroup_free_data(inode, NULL, start, end - start + =
-1, NULL);
-> >       }
-> >       return ret;
-> >   }
->
 
