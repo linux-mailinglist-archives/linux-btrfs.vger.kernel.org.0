@@ -1,183 +1,173 @@
-Return-Path: <linux-btrfs+bounces-8653-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDFBF9955A2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 19:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC1F9957A8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 21:32:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE060286703
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 17:29:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F4B328B823
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 19:32:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AAD1FA27E;
-	Tue,  8 Oct 2024 17:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4aImclo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rDtuvCsn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="WdhnIYDz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3Q9XEn3S"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50243213ED9;
+	Tue,  8 Oct 2024 19:32:34 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from freki.datenkhaos.de (freki.datenkhaos.de [23.88.67.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC6D1F9A9F
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 17:29:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECBF1E0DCC
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 19:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.88.67.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728408590; cv=none; b=WXnPYLacxNVJs+ZH01Q58YASEEIMABxvqBo7DXZSD+Luu14uGCvkutfgUgaHk8LNKiOyHoHXEMmYOHTKQDyzU8WWlskkBlmnDoeJ3P7zkArNYoI7A38jwex1vZZD3mDlMdq88AhLNT+F/Mgju3nqLpor4BkC7+hWpVe7ZD3UTNc=
+	t=1728415953; cv=none; b=Hsgpbh4TFsDe/sESNehBG6zpFrTfFABhUoBFiV7JcpIkmQsWf0zzkSkYt18+CVzvZbWAsYLSJBkAvER/eu51Vd1Go4fVJh/cDpJl14o2SPoMDn/JCC8y3Aze2YB46b5smjYmr3EIO8nXI6ilbXvecqZ2XlhCk7NCSVK/0gQ6fl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728408590; c=relaxed/simple;
-	bh=voAIN3swvbIlF6O0Z3bNQ/eLwwM+n/MwOikd6ULRtLo=;
+	s=arc-20240116; t=1728415953; c=relaxed/simple;
+	bh=4uY7nHoSRoiGN8qFKweGBwdCa3g5KLGSIYzIfEdX2zQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S9Y/8EWBld9DDhCiCz6ehFj9FaGgMawisO2Y8lY+tX0w5wV0qqKCUekV55bUzh90oDPeaq1aEIcD4lVbso3d+Gc2B8zR/h2b6aRahkBittJtWoq1T/zhUTC15fdY1euJspIa0IGxdkTwzYVNUffkUIB7CbZF2AzOjC2/1QKdhQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4aImclo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rDtuvCsn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=WdhnIYDz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3Q9XEn3S; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	 Content-Type:Content-Disposition:In-Reply-To; b=ahYq3KDYVuCpKlUsUECxY4ZSr/6L218zvxd4jsem9isFcIxmsSrAL4RUKEDYVv4KOfZQJCV/7iFsFLhsfxmsJxxhLSW+33PXsRWo4tDjiNjrOKa6JQydthXaNhXoOXiIlcczydtqhTFQ5UiqY7XKC89RvZcJflLMCCa0FpG8SxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=datenkhaos.de; spf=pass smtp.mailfrom=datenkhaos.de; arc=none smtp.client-ip=23.88.67.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=datenkhaos.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datenkhaos.de
+Received: from elitebook (unknown [134.19.35.230])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2B9C921CDF;
-	Tue,  8 Oct 2024 17:29:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728408587;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ea1VJoiO3DiBT05z8YV8916KFTrO54KXjKb6rfRHL7E=;
-	b=N4aImclozdmSHmG5HSC1FV5rdvGJ7zM7zNPxBT6IWbTnC2mQ1NMPJfRFGTMnf3IRFo1B4o
-	d6cDcXpOOgisW7tGLCvVRmFo4ljx7dQ9GAt5s2c9br4wT6peIVqSXy0mzG4gkoUmNW9Q9T
-	xnVeDNpvzJ1+hu0VNXM9TKbGew1lGB4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728408587;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ea1VJoiO3DiBT05z8YV8916KFTrO54KXjKb6rfRHL7E=;
-	b=rDtuvCsnC1TaY+X105cPFc8+ByybJEpZ9ZmB3gfA4aL+1kvrfw2LdX8KVKI+jX+bTsWpBb
-	y1n096Fu0SrywJDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=WdhnIYDz;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=3Q9XEn3S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728408586;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ea1VJoiO3DiBT05z8YV8916KFTrO54KXjKb6rfRHL7E=;
-	b=WdhnIYDzd/pfZxk4GBDE49KOhpQTjvheWzPQsdYTjatvSkt8rcb7aPL80af7i+kkonzSuz
-	o/SzHwpaVs7nDypByfc2WJZthpGp5sVUUOg/fGyCrXr9t0rk5O1pJmSMKdzZBkLZ3VGJkG
-	mlW9dzeI8iwuNRSloR+Q5VC1T5mqUAE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728408586;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ea1VJoiO3DiBT05z8YV8916KFTrO54KXjKb6rfRHL7E=;
-	b=3Q9XEn3SfiGUNJNIyGzD0pIhSjrLsXHnpuesfyWzqBClvzI9u4SVP5jyNTX9joVkZDenOT
-	+lp7wUFbq0IkdWCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 11EAF137CF;
-	Tue,  8 Oct 2024 17:29:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1orjAwpsBWcPWwAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 08 Oct 2024 17:29:46 +0000
-Date: Tue, 8 Oct 2024 19:29:44 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 01/10] btrfs: convert BUG_ON in btrfs_reloc_cow_block to
- proper error handling
-Message-ID: <20241008172944.GH1609@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1727970062.git.josef@toxicpanda.com>
- <8f6d53a745813c8267a20b1dc1caa4fb722423bb.1727970062.git.josef@toxicpanda.com>
+	by freki.datenkhaos.de (Postfix) with ESMTPSA id 73FDED76D99;
+	Tue, 08 Oct 2024 21:32:29 +0200 (CEST)
+Date: Tue, 8 Oct 2024 21:32:25 +0200
+From: Johannes Hirte <johannes.hirte@datenkhaos.de>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: "cwalou@gmail.com" <cwalou@gmail.com>, linux-btrfs@vger.kernel.org
+Subject: Re: mount: can't read superblock on - corrupt leaf - read time tree
+ block corruption detected
+Message-ID: <cuab5thyorquonghaxpqwxkfhog7lgrxzv3a5kdjs2zfw4ulaj@gutzirf5ipiv>
+References: <492c06c3-5e37-4026-96a8-cacc8eb28f51@gmail.com>
+ <e040f6b8-6775-4b87-a345-6f6fb56aab26@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8f6d53a745813c8267a20b1dc1caa4fb722423bb.1727970062.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 2B9C921CDF
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.21
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e040f6b8-6775-4b87-a345-6f6fb56aab26@gmx.com>
 
-On Thu, Oct 03, 2024 at 11:43:03AM -0400, Josef Bacik wrote:
-> This BUG_ON is meant to catch backref cache problems, but these can
-> arise from either bugs in the backref cache or corruption in the extent
-> tree.  Fix it to be a proper error and change it to an ASSERT() so that
-> developers notice problems.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/relocation.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index f3834f8d26b4..3c89e79d0259 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -4399,8 +4399,20 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
->  		WARN_ON(!first_cow && level == 0);
+On 2024 Okt 03, Qu Wenruo wrote:
 >  
->  		node = rc->backref_cache.path[level];
-> -		BUG_ON(node->bytenr != buf->start &&
-> -		       node->new_bytenr != buf->start);
-> +
-> +		/*
-> +		 * If node->bytenr != buf->start and node->new_bytenr !=
-> +		 * buf->start then we've got the wrong backref node for what we
-> +		 * expected to see here and the cache is incorrect.
-> +		 */
-> +		if (node->bytenr != buf->start &&
-> +		    node->new_bytenr != buf->start) {
-> +			btrfs_err(fs_info,
-> +"bytenr %llu was found but our backref cache was expecting %llu or %llu",
-> +				  buf->start, node->bytenr, node->new_bytenr);
-> +			ASSERT(0);
+> 在 2024/10/3 17:02, cwalou@gmail.com 写道:
+> > Hello.
+> > 
+> > A 4TB drive taken out of a synology NAS. When I try to mount it, it
+> > won't. This is what I did :
+> 
+> Synology has out-of-tree features that upstream kernel doesn't support.
+>
 
-Please don't add the assert(0), the error message and EUCLEAN should be
-sufficient. The caller btrfs_force_cow_block() aborts if it fails so
-this will be noticealbe. Syzbot is good at hitting strange assertions so
-we'll eventually get a report and have to fix it by removing the
-assert(0) again.
+Hello,
+
+I've noticed similar errors on my server too. It's a gentoo box with
+vanilla kernel. It happend first with linux-6.10.9 and happens with 6.11
+too:
+
+[   67.310316] BTRFS: device label bigraid1 devid 1 transid 98985 /dev/sdd1 (8:49) scanned by mount (4069)
+[   67.313109] BTRFS info (device sdd1): first mount of filesystem 83a02224-c807-4e70-a2cd-8b7156bfbbd2
+[   67.313137] BTRFS info (device sdd1): using crc32c (crc32c-generic) checksum algorithm
+[   67.313156] BTRFS info (device sdd1): using free-space-tree
+[   67.527088] page: refcount:4 mapcount:0 mapping:000000004bf8c7c2 index:0x2ffb1be8 pfn:0x11b55c
+[   67.527114] memcg:ffff8881174ab800
+[   67.527120] aops:0xffffffff8206c960 ino:1
+[   67.527129] flags: 0x2000000000004000(private|node=0|zone=2)
+[   67.527144] raw: 2000000000004000 0000000000000000 dead000000000122 ffff8881022c9678
+[   67.527152] raw: 000000002ffb1be8 ffff88811b5304b0 00000004ffffffff ffff8881174ab800
+[   67.527157] page dumped because: eb page dump
+[   67.527162] BTRFS critical (device sdd1): corrupt leaf: block=3297221967872 slot=47 extent bytenr=2176663552 len=36864 invalid data ref objectid value 259
+[   67.527179] BTRFS error (device sdd1): read time tree block corruption detected on logical 3297221967872 mirror 1
+[   67.535814] page: refcount:4 mapcount:0 mapping:000000004bf8c7c2 index:0x2ffb1be8 pfn:0x11b55c
+[   67.535872] memcg:ffff8881174ab800
+[   67.535877] aops:0xffffffff8206c960 ino:1
+[   67.535886] flags: 0x2000000000004000(private|node=0|zone=2)
+[   67.535900] raw: 2000000000004000 0000000000000000 dead000000000122 ffff8881022c9678
+[   67.535907] raw: 000000002ffb1be8 ffff88811b5304b0 00000004ffffffff ffff8881174ab800
+[   67.535912] page dumped because: eb page dump
+[   67.535917] BTRFS critical (device sdd1): corrupt leaf: block=3297221967872 slot=47 extent bytenr=2176663552 len=36864 invalid data ref objectid value 259
+[   67.535931] BTRFS error (device sdd1): read time tree block corruption detected on logical 3297221967872 mirror 2
+[   67.535996] BTRFS error (device sdd1): failed to read block groups: -5
+[   67.539666] BTRFS error (device sdd1): open_ctree failed
+[   70.026232] BTRFS info (device sdb1): first mount of filesystem cae06473-5f45-4cd4-a822-733c036e36d9
+[   70.026270] BTRFS info (device sdb1): using crc32c (crc32c-generic) checksum algorithm
+[   70.026300] BTRFS info (device sdb1): disk space caching is enabled
+[   70.026306] BTRFS warning (device sdb1): space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2
+[   70.130069] page: refcount:3 mapcount:0 mapping:00000000a884d48d index:0x5abd618 pfn:0x11b665
+[   70.130094] memcg:ffff8881174ab800
+[   70.130100] aops:0xffffffff8206c960 ino:1
+[   70.130110] flags: 0x2400000000004020(lru|private|node=0|zone=2)
+[   70.130126] raw: 2400000000004020 ffffea00046d9908 ffffea00046d9988 ffff888102262618
+[   70.130134] raw: 0000000005abd618 ffff88811b63a4b0 00000003ffffffff ffff8881174ab800
+[   70.130139] page dumped because: eb page dump
+[   70.130144] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
+[   70.130160] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 2
+[   70.136382] page: refcount:3 mapcount:0 mapping:00000000a884d48d index:0x5abd618 pfn:0x11b665
+[   70.136404] memcg:ffff8881174ab800
+[   70.136409] aops:0xffffffff8206c960 ino:1
+[   70.136418] flags: 0x2400000000004020(lru|private|node=0|zone=2)
+[   70.136431] raw: 2400000000004020 ffffea00046d9908 ffffea00046d9988 ffff888102262618
+[   70.136439] raw: 0000000005abd618 ffff88811b63a4b0 00000003ffffffff ffff8881174ab800
+[   70.136443] page dumped because: eb page dump
+[   70.136448] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
+[   70.136462] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 1
+[   70.136555] BTRFS error (device sdb1): failed to read block groups: -5
+[   70.138216] BTRFS error (device sdb1): open_ctree failed
+[   71.825004] BTRFS: device label BIGBIGRAID devid 1 transid 4121 /dev/sde1 (8:65) scanned by mount (4102)
+[   71.826496] BTRFS info (device sde1): first mount of filesystem c9fa0269-733e-4e76-88c9-68c8247c81e5
+[   71.826532] BTRFS info (device sde1): using crc32c (crc32c-generic) checksum algorithm
+[   71.826561] BTRFS info (device sde1): using free-space-tree
+[  140.718646] BTRFS info (device sdb1): first mount of filesystem cae06473-5f45-4cd4-a822-733c036e36d9
+[  140.718683] BTRFS info (device sdb1): using crc32c (crc32c-generic) checksum algorithm
+[  140.718711] BTRFS info (device sdb1): disk space caching is enabled
+[  140.718717] BTRFS warning (device sdb1): space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2
+[  140.845547] page: refcount:4 mapcount:0 mapping:0000000049bde2be index:0x5abd618 pfn:0x11d9a3
+[  140.845571] memcg:ffff8881174ab800
+[  140.845578] aops:0xffffffff8206c960 ino:1
+[  140.845587] flags: 0x2000000000004000(private|node=0|zone=2)
+[  140.845602] raw: 2000000000004000 0000000000000000 dead000000000122 ffff888102262de8
+[  140.845611] raw: 0000000005abd618 ffff88811d96f5a0 00000004ffffffff ffff8881174ab800
+[  140.845615] page dumped because: eb page dump
+[  140.845621] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
+[  140.845636] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 1
+[  140.846180] page: refcount:4 mapcount:0 mapping:0000000049bde2be index:0x5abd618 pfn:0x11d9a3
+[  140.846202] memcg:ffff8881174ab800
+[  140.846208] aops:0xffffffff8206c960 ino:1
+[  140.846216] flags: 0x2000000000004000(private|node=0|zone=2)
+[  140.846229] raw: 2000000000004000 0000000000000000 dead000000000122 ffff888102262de8
+[  140.846236] raw: 0000000005abd618 ffff88811d96f5a0 00000004ffffffff ffff8881174ab800
+[  140.846240] page dumped because: eb page dump
+[  140.846245] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
+[  140.846259] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 2
+[  140.846329] BTRFS error (device sdb1): failed to read block groups: -5
+[  140.848015] BTRFS error (device sdb1): open_ctree failed
+
+
+It seems following commit is responsible:
+
+commit f333a3c7e8323499aa65038e77fe8f3199d4e283
+Author: Qu Wenruo <wqu@suse.com>
+Date:   Mon Jul 15 16:07:07 2024 +0930
+
+    btrfs: tree-checker: validate dref root and objectid
+
+
+After reverting this, I'm able to mount the filesystems again. There are
+three filesystems on this server that are affected, two single disk and
+one with two disk in RAID1/0. I was able to copy all data from all
+filesytems via rsync without noticing any error when running without
+this commit. Also btrfscheck doesn't notice any error. It's just this
+commit that prevents these three filesystem from mounting. As I was able
+to get all data this is not critical to me. But I think this should be
+addressed in some way.
+
+regards,
+  Johannes
 
