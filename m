@@ -1,100 +1,88 @@
-Return-Path: <linux-btrfs+bounces-8645-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8646-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303B5995426
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 18:12:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B05C995483
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 18:36:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B18761F264A9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 16:12:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36D0C1F2636D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 16:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D17CE1E0DE5;
-	Tue,  8 Oct 2024 16:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2F71E0DF2;
+	Tue,  8 Oct 2024 16:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="oWfc76lA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lGG2H3J7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RSOUAmHI"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810DA1DF73A;
-	Tue,  8 Oct 2024 16:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60F8E1E0DBF;
+	Tue,  8 Oct 2024 16:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728403963; cv=none; b=b4poEBX9d5GsMMkq6cN2keJ7w8hu4ogoZri/l0+WkjqoVF1EfUiNDccbjbmlt4cgzXOthbyOq/mujyzwFn0J5RLbfGIFBXyO34CezobX1ejCRW5esHo33K6mwrZx5bi9EtDHcHnojcmiUjmjlupUor22xJ2fPXFjGb6LsrVp7Oc=
+	t=1728405368; cv=none; b=gv8EY77xY7nCqEN5ghFkV1YZ+p01n3t6qR5aOEGdE9sJl8dt1bpqrrF/3OqOyOL8YNJ23Thtvh0edonuhGZNQq+JRcfmj3nX0CWYyh4H7nBUhQVlEBX4lTR2npF3GNv/Vl0a+3IMuFWhFxmeFv85nSnbXDwW8vKQXtW/KkDo0Hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728403963; c=relaxed/simple;
-	bh=CZzxIEzsSBRkKYDnxi/RJ5cxMIFspJYW5g6U1vDUYIg=;
+	s=arc-20240116; t=1728405368; c=relaxed/simple;
+	bh=oZcQukqGx5bUQm6yXcjn2BsYy0HPcJMlVrzSQquwZDI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nJiN8kW2E8NImom4zHmuM53lSzueLUcDnQgr7WyOMXjopfL6HxjcpoFUoDN8vmvxv1jWRqPSwtPIihAMMFedjOVphtHKDLm9Gws8gxqK1QJKL4xLheQrCfX63Y4oUXgYfo+gE2Y/Yi8/Psjms5L/yuHZHt1CfZeMzIk/f0OaUxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=oWfc76lA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lGG2H3J7; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 909AD1140136;
-	Tue,  8 Oct 2024 12:12:40 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-08.internal (MEProxy); Tue, 08 Oct 2024 12:12:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1728403960; x=1728490360; bh=VyC/b9rlj+
-	/31o65lQgzesL2ybRFvnklpCPJrXTWWgE=; b=oWfc76lA4VinHe5zlPumOYkwZV
-	H9VidyWRHDm3rEORTlmUPI9J2GLkOmWUDJF0PvOQaCELU6TW1mDy4rmDVnWQ/Tkb
-	60HPfvlWTRysVYKSTkGgWAytlTXbmihDRHaJXj8cSW3o0L4a05+2BXYJx5fx3C4U
-	bWS1DkgNhM24cXRrd+TinyON9+Fs3cRR10HeSlXvzRwqPayx90D5fIDgirAS/zjX
-	/tZaRNMtJVSkDH/GOq9vt7xdrw/WpxLnjuzrryt2yVqAQPottg8X6Dj7K4a+rrjo
-	6rcon7Gyw7BGb5RM4vAlTZ4D7lK4vnGTdqXTntRPlY/mUVEg0OC2tOJgi13w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1728403960; x=1728490360; bh=VyC/b9rlj+/31o65lQgzesL2ybRF
-	vnklpCPJrXTWWgE=; b=lGG2H3J71viquZR5+FSxtlzlcaEvP9eKaxu0w95ocYnu
-	Clgvt6YkrBPxtRy8KEqtH15AEcf0VBz3FPdnBNsOttKRqtYx6TtksaC2eNJZa4Ut
-	NNQHK/0iGrgza4/HDfEaH3T8sf7gCfHT3con4PBHx2VtD148mN4w9dL5zVETLWZ2
-	xqo8sqMdIi6K9REeqdHhnSEqI/iWK7IDsMM3LlEy6LPCJbUOfVqYVoMuqj6SyoiN
-	v32HS/Cfa6Q7sBuKijxsmxz8bfJ+CyDfQZbwaj6Gs41WDiidH6uC8/K0YieZ+Alj
-	rzdR9DerTOy97yZVq/jwDS4Ef30CqMC3p675da0Q/w==
-X-ME-Sender: <xms:91kFZzVhKpjUFhJ1bSPVx9xO-EDfqz73FOTfhQLs_FIBeCFChKCzoQ>
-    <xme:91kFZ7kdM7jWNJfdW9HETac-jIrxQBzCb9bcfm_Fq454lg4NepcdUC7TxLW1fIjnU
-    YTMOyv99mhSUUFcCPo>
-X-ME-Received: <xmr:91kFZ_Y1ZCZDHklK0RxoURFJrTsqeSLe6_5CIrfrtOakn0Bx5SJlJ9X6HRmm0_6cZ4UAr5xQtkdmsuKRG9kFW9eTEbk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgleekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
-    ucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenuc
-    ggtffrrghtthgvrhhnpeekvdekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeu
-    gfdtjefgfeeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepkedpmhhouggvpehs
-    mhhtphhouhhtpdhrtghpthhtohepihgrmhhhshifrghnghesghhmrghilhdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhr
-    tghpthhtoheptghlmhesfhgsrdgtohhmpdhrtghpthhtohepjhhoshgvfhesthhogihitg
-    hprghnuggrrdgtohhmpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtohhmpdhr
-    tghpthhtohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrh
-    hnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgrihhsuhifrghn
-    ghesthgvnhgtvghnthdrtghomh
-X-ME-Proxy: <xmx:91kFZ-Vp0bgP1gT-t2tmq4Mox9VZ2oC3EevGAzDhmUeG8WYkE_g7Wg>
-    <xmx:91kFZ9mYrUdyZ5KnSg_NumpLF3pvzdc-C5Azf_ll67M8_WIqH2x4AA>
-    <xmx:91kFZ7emLxNOE_008YeJ8PnqtTweQv5TMn2k6NyxKJa3nCjWfxX8lg>
-    <xmx:91kFZ3H3Y9AgoUaejc89ZXD6w_r53MA2gSrbm0hTLnwFM7AV_mBsxQ>
-    <xmx:-FkFZ_6HBHP0ROWQWpYvI7Jp2YIke4dPJ8sjo1CGFEqtrm7MKQbN6yrd>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Oct 2024 12:12:39 -0400 (EDT)
-Date: Tue, 8 Oct 2024 09:12:28 -0700
-From: Boris Burkov <boris@bur.io>
-To: iamhswang@gmail.com
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, wqu@suse.com, linux-kernel@vger.kernel.org,
-	Haisu Wang <haisuwang@tencent.com>
-Subject: Re: [PATCH] btrfs: fix the length of reserved qgroup to free
-Message-ID: <20241008161228.GA796369@zen.localdomain>
-References: <20241008064849.1814829-1-haisuwang@tencent.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z3tztvLn2XqcXukVM/CXEBVhQeG1ocfMindx/BgUsJ5F3sf7flxdiYb0OPl6kpSF46rspwH6fE8H8ApyQBI+Y1WfnWExEOdjF5mvXEysW7yberwYBziSeeMTd059GvjLmQU/bbmgYGRKAvhWDODmbq8Xv+wsFOxOz9wgu3qKh6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RSOUAmHI; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1728405367; x=1759941367;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oZcQukqGx5bUQm6yXcjn2BsYy0HPcJMlVrzSQquwZDI=;
+  b=RSOUAmHI5nTeUeKt8OmsF0cfS/UEx1lgozrl6Vo7DaLOfSiR1B7wLuM6
+   CruhzKiGCGgLHXdB5ctYOvTSrlTVhC4EZRPcaqwXdjYJzd4zkSFS/0s26
+   ZQWJY5FOqd4723l0eaCcHJICQMWKwpWz9zx35zpdnwHA40bm5D0fHBccv
+   SjUAAWzYAVKy9sIUteA7OWx3FBxC7pQNxE4zbJ+xkIzMD3CXyxbqKQMgA
+   Tp/rf+QEL9hJngZcVdFBdQPVU45VzLAjfUVBho0TIkc6BUVll71vKiiYM
+   Ng5nLAqaNbrvRWcfZQtMG/GgBzU/fhukuJSfPZyqmWHW3nbIrvERnsNId
+   A==;
+X-CSE-ConnectionGUID: c9IifAZMQMGDZFnEsq3Dmg==
+X-CSE-MsgGUID: T/e09TbvRXqWeHJlnXjOAQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11219"; a="27752786"
+X-IronPort-AV: E=Sophos;i="6.11,187,1725346800"; 
+   d="scan'208";a="27752786"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2024 09:35:08 -0700
+X-CSE-ConnectionGUID: exbY07Q4S4ywNqgKJVohvg==
+X-CSE-MsgGUID: TeIMBjbkQ5SrMCPO3QSHbQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,187,1725346800"; 
+   d="scan'208";a="75998570"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa008.fm.intel.com with ESMTP; 08 Oct 2024 09:35:03 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 98EB220F; Tue, 08 Oct 2024 19:35:02 +0300 (EEST)
+Date: Tue, 8 Oct 2024 19:35:02 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Ira Weiny <ira.weiny@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH v4 01/28] test printk: Add very basic struct resource
+ tests
+Message-ID: <ZwVfNpg3yuLx3W6F@black.fi.intel.com>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-1-c261ee6eeded@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,56 +91,22 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241008064849.1814829-1-haisuwang@tencent.com>
+In-Reply-To: <20241007-dcd-type2-upstream-v4-1-c261ee6eeded@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Oct 08, 2024 at 02:48:46PM +0800, iamhswang@gmail.com wrote:
-> From: Haisu Wang <haisuwang@tencent.com>
+On Mon, Oct 07, 2024 at 06:16:07PM -0500, Ira Weiny wrote:
+> The printk tests for struct resource were stubbed out.  struct range
+> printing will leverage the struct resource implementation.
 > 
-> The dealloc flag may be cleared and the extent won't reach the disk
-> in cow_file_range when errors path. The reserved qgroup space is
-> freed in commit 30479f31d44d ("btrfs: fix qgroup reserve leaks in
-> cow_file_range"). However, the length of untouched region to free
-> need to be adjusted with the region size.
-> 
-> Fixes: 30479f31d44d ("btrfs: fix qgroup reserve leaks in cow_file_range")
-> Signed-off-by: Haisu Wang <haisuwang@tencent.com>
+> To prevent regression add some basic sanity tests for struct resource.
 
-Good catch and fix, thank you!
-Reviewed-by: Boris Burkov <boris@bur.io>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Can you please share more information about how you reproduced and
-tested this issue for the fix? In one of the other emails in the chain,
-you also mentioned a CVE, so explaining the specific impact of the bug
-is helpful too.
+Good we start having them!
 
-As far as I can tell, we risk freeing too much space past the real
-desired range if start gets bumped before this free, which could lead to
-prematurely freeing some other rsv marked data past end. This naturally
-leads to incorrect accounting, And I think would allow us to reserve
-this same range again. Though perhaps delalloc extent range stuff would
-prevent that. Between that, and the changesets gating most of the qgroup
-freeing, it's hard to actually see what happens :)
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Long ramble short: do you have a reproducer?
 
-> ---
->  fs/btrfs/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index b0ad46b734c3..5eefa2318fa8 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1592,7 +1592,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
->  		clear_bits |= EXTENT_CLEAR_DATA_RESV;
->  		extent_clear_unlock_delalloc(inode, start, end, locked_folio,
->  					     &cached, clear_bits, page_ops);
-> -		btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size, NULL);
-> +		btrfs_qgroup_free_data(inode, NULL, start, end - start + 1, NULL);
->  	}
->  	return ret;
->  }
-> -- 
-> 2.39.3
-> 
 
