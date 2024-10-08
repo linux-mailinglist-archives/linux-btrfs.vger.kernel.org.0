@@ -1,173 +1,253 @@
-Return-Path: <linux-btrfs+bounces-8654-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8655-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC1F9957A8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 21:32:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF3A9957BA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 21:37:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F4B328B823
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 19:32:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0259289087
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2024 19:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50243213ED9;
-	Tue,  8 Oct 2024 19:32:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7736A213EDF;
+	Tue,  8 Oct 2024 19:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="SH5CQefg";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iVjNvqKX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from freki.datenkhaos.de (freki.datenkhaos.de [23.88.67.217])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECBF1E0DCC
-	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 19:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.88.67.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03BA7770E2
+	for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2024 19:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728415953; cv=none; b=Hsgpbh4TFsDe/sESNehBG6zpFrTfFABhUoBFiV7JcpIkmQsWf0zzkSkYt18+CVzvZbWAsYLSJBkAvER/eu51Vd1Go4fVJh/cDpJl14o2SPoMDn/JCC8y3Aze2YB46b5smjYmr3EIO8nXI6ilbXvecqZ2XlhCk7NCSVK/0gQ6fl4=
+	t=1728416215; cv=none; b=gkeaRocKgnh0XZWpLB/B3ZDkGmCqdlKEkkIocsUnDQgopULJ+oxDjhSzwumg/HfohYJeXfFX0+tsr7oGV0q/Nhxmsv7YZ1iJKH6pmp7AHKEfDuUNvJEo9MWRgUoylMj/jF2UwgMhRU+YRDOEZwyH+KiMC3UFBrA83niMi6Es3eY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728415953; c=relaxed/simple;
-	bh=4uY7nHoSRoiGN8qFKweGBwdCa3g5KLGSIYzIfEdX2zQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ahYq3KDYVuCpKlUsUECxY4ZSr/6L218zvxd4jsem9isFcIxmsSrAL4RUKEDYVv4KOfZQJCV/7iFsFLhsfxmsJxxhLSW+33PXsRWo4tDjiNjrOKa6JQydthXaNhXoOXiIlcczydtqhTFQ5UiqY7XKC89RvZcJflLMCCa0FpG8SxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=datenkhaos.de; spf=pass smtp.mailfrom=datenkhaos.de; arc=none smtp.client-ip=23.88.67.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=datenkhaos.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datenkhaos.de
-Received: from elitebook (unknown [134.19.35.230])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by freki.datenkhaos.de (Postfix) with ESMTPSA id 73FDED76D99;
-	Tue, 08 Oct 2024 21:32:29 +0200 (CEST)
-Date: Tue, 8 Oct 2024 21:32:25 +0200
-From: Johannes Hirte <johannes.hirte@datenkhaos.de>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: "cwalou@gmail.com" <cwalou@gmail.com>, linux-btrfs@vger.kernel.org
-Subject: Re: mount: can't read superblock on - corrupt leaf - read time tree
- block corruption detected
-Message-ID: <cuab5thyorquonghaxpqwxkfhog7lgrxzv3a5kdjs2zfw4ulaj@gutzirf5ipiv>
-References: <492c06c3-5e37-4026-96a8-cacc8eb28f51@gmail.com>
- <e040f6b8-6775-4b87-a345-6f6fb56aab26@gmx.com>
+	s=arc-20240116; t=1728416215; c=relaxed/simple;
+	bh=FxpxfRmvg2bFelwPhjVQ2HKFLuHyWU1NMVmiYXskfxA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=RnXLoKNxvvDOGoOtL8wApzjJ7ryEl0n8h7sgX9Aeu5PwQYv659emieOwpH14VEJJuypDPX4ovtiTrjk/ImOYW4iZkEJR7BbzdFzMqmc2at7bVvqFtAnswPfbhKM2jmUOcR0XAOmDUoVsLwbE4GZhA0dGOdZ8h5VJ06zyLm+u+EQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=SH5CQefg; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iVjNvqKX; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 07F1111401C5;
+	Tue,  8 Oct 2024 15:36:52 -0400 (EDT)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-10.internal (MEProxy); Tue, 08 Oct 2024 15:36:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1728416212; x=1728502612; bh=0cseSP+5yTgWRCS9krYh+
+	w9EodfUUhE6xgCHyCsLLE4=; b=SH5CQefg89/5xwdK++RdzfmwGj3F7ka50xVZM
+	ZA52rDFFMT1AwcHv4eqThOfYs/ySzWkC1B336WMot01l36JGtEQ4UlY8vcevLarl
+	DTtdGJevS34ULXA5aemid/PB//htlh5psjJH7jrdkSXBYeYSdULmdj56D7IcYJ4h
+	xhiNUINYvH8AGns1kGZy7kU1t9RFawAR2++mLeh3Q99UJYeKqzI27c3DJJRLUOr3
+	BXQH9sPaqm8HDFEJQDPLUo0Kgd61qhuWyN4kcAFv43rWh0FZDcjjMeYHRMJ0P5qo
+	NvT9hPG7EwED5OFRmwxu3hivAnN31Q4O8GudQMFIhTYVHSung==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1728416212; x=1728502612; bh=0cseSP+5yTgWRCS9krYh+w9EodfU
+	UhE6xgCHyCsLLE4=; b=iVjNvqKXc+hZG9hcMoZzkG0NdWSqCHnF5+yzJgWAEOIb
+	wvhhzqSHwxLSBOJHwikaLqKMWYX1y/lUGveZC01KurEnm4goQkym/sCAWQk6P2T+
+	/JicR7Bo9Vpg2Z4MfsIGfFf2ia+ngS3YsaLuc+ZIRfrRMqKdP95Tiw+hPgFG9O30
+	DX+n3nqS7Ji1q8NCCm6PkR4H9WFcc50+MAVQNQV04HkwaikxK6HtvhK63FKX505W
+	AOJQBebPqnkbO3+RibjDBI8PyN681SJR72w0PamIjughxHfgh8ca2cJexyHUJjjD
+	n2b12AV+EH/4J9sYKucdxVCvJ4vk5JFt7liMgZZ4CA==
+X-ME-Sender: <xms:04kFZ_ji7CyH0ierlz8RPQtd5B0tTrI-sO2B_-LyilGvJ9t5ojECSg>
+    <xme:04kFZ8CPXYmuuM6fg7d4s3bmo7ZJ-zH7ex_zr8dCb6mrro19AK7amgrbey2NJ41C8
+    49sugA2IL_Xbu_8OJs>
+X-ME-Received: <xmr:04kFZ_EMXYh-BJ0j5s9vVvdr-jpnsHSClFik27OfsLsnokLFvwcERMHxpS4n92QrFCyLrZdzyvG1d9a2g4tF2M-2C5o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgudegtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhephffvuf
+    ffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegs
+    ohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnheptdejkefhkedvudelfeevue
+    ejjeejhfetffeuvedtfedtkeefueeggeeghfehheffnecuffhomhgrihhnpehgihhthhhu
+    sgdrtghomhdprhhunhdrshhhpdhlphgtrdgvvhgvnhhtshenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgs
+    pghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugi
+    dqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgv
+    lhdqthgvrghmsehfsgdrtghomh
+X-ME-Proxy: <xmx:04kFZ8R0TtqJFmFRRYiUsCUi685vfl24VUmrzYF9hBt_TdHD4FTuBw>
+    <xmx:04kFZ8yTQ0mPniQJpSV0rIgsZchUeYNBeGcvS5semBn3sH0Yo-gRqg>
+    <xmx:04kFZy7ShZFpCOiFbeIUg2Gv3vcbDeWdcihrQmUogbqFovfKwalzgw>
+    <xmx:04kFZxxj1UnbzfAaX5YpTmeSlTKJFFyuhZUT8HNrhq7-1ov9uYPFbg>
+    <xmx:04kFZ3_OyDe6cvhVpFPY-lp8LdTn9jmH95SLUdNliHOkbp3ILk2F-aCY>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Oct 2024 15:36:51 -0400 (EDT)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2] btrfs: try to search for data csums in commit root
+Date: Tue,  8 Oct 2024 12:36:34 -0700
+Message-ID: <0a59693a70f542120a0302e9864e7f9b86e1cb4c.1728415983.git.boris@bur.io>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e040f6b8-6775-4b87-a345-6f6fb56aab26@gmx.com>
 
-On 2024 Okt 03, Qu Wenruo wrote:
->  
-> 在 2024/10/3 17:02, cwalou@gmail.com 写道:
-> > Hello.
-> > 
-> > A 4TB drive taken out of a synology NAS. When I try to mount it, it
-> > won't. This is what I did :
-> 
-> Synology has out-of-tree features that upstream kernel doesn't support.
->
+If you run a workload like:
+- a cgroup that does tons of data reading, with a harsh memory limit
+- a second cgroup that tries to write new files
+e.g.:
+https://github.com/boryas/scripts/blob/main/sh/noisy-neighbor/run.sh
 
-Hello,
+then what quickly occurs is:
+- a high degree of contention on the csum root node eb rwsem
+- memory starved cgroup doing tons of reclaim on CPU.
+- many reader threads in the memory starved cgroup "holding" the sem
+  as readers, but not scheduling promptly. i.e., task __state == 0, but
+  not running on a cpu.
+- btrfs_commit_transaction stuck trying to acquire the sem as a writer.
 
-I've noticed similar errors on my server too. It's a gentoo box with
-vanilla kernel. It happend first with linux-6.10.9 and happens with 6.11
-too:
+This results in VERY long transactions. On my test system, that script
+produces 20-30s long transaction commits. This then results in
+seriously degraded performance for any cgroup using the filesystem (the
+victim cgroup in the script).
 
-[   67.310316] BTRFS: device label bigraid1 devid 1 transid 98985 /dev/sdd1 (8:49) scanned by mount (4069)
-[   67.313109] BTRFS info (device sdd1): first mount of filesystem 83a02224-c807-4e70-a2cd-8b7156bfbbd2
-[   67.313137] BTRFS info (device sdd1): using crc32c (crc32c-generic) checksum algorithm
-[   67.313156] BTRFS info (device sdd1): using free-space-tree
-[   67.527088] page: refcount:4 mapcount:0 mapping:000000004bf8c7c2 index:0x2ffb1be8 pfn:0x11b55c
-[   67.527114] memcg:ffff8881174ab800
-[   67.527120] aops:0xffffffff8206c960 ino:1
-[   67.527129] flags: 0x2000000000004000(private|node=0|zone=2)
-[   67.527144] raw: 2000000000004000 0000000000000000 dead000000000122 ffff8881022c9678
-[   67.527152] raw: 000000002ffb1be8 ffff88811b5304b0 00000004ffffffff ffff8881174ab800
-[   67.527157] page dumped because: eb page dump
-[   67.527162] BTRFS critical (device sdd1): corrupt leaf: block=3297221967872 slot=47 extent bytenr=2176663552 len=36864 invalid data ref objectid value 259
-[   67.527179] BTRFS error (device sdd1): read time tree block corruption detected on logical 3297221967872 mirror 1
-[   67.535814] page: refcount:4 mapcount:0 mapping:000000004bf8c7c2 index:0x2ffb1be8 pfn:0x11b55c
-[   67.535872] memcg:ffff8881174ab800
-[   67.535877] aops:0xffffffff8206c960 ino:1
-[   67.535886] flags: 0x2000000000004000(private|node=0|zone=2)
-[   67.535900] raw: 2000000000004000 0000000000000000 dead000000000122 ffff8881022c9678
-[   67.535907] raw: 000000002ffb1be8 ffff88811b5304b0 00000004ffffffff ffff8881174ab800
-[   67.535912] page dumped because: eb page dump
-[   67.535917] BTRFS critical (device sdd1): corrupt leaf: block=3297221967872 slot=47 extent bytenr=2176663552 len=36864 invalid data ref objectid value 259
-[   67.535931] BTRFS error (device sdd1): read time tree block corruption detected on logical 3297221967872 mirror 2
-[   67.535996] BTRFS error (device sdd1): failed to read block groups: -5
-[   67.539666] BTRFS error (device sdd1): open_ctree failed
-[   70.026232] BTRFS info (device sdb1): first mount of filesystem cae06473-5f45-4cd4-a822-733c036e36d9
-[   70.026270] BTRFS info (device sdb1): using crc32c (crc32c-generic) checksum algorithm
-[   70.026300] BTRFS info (device sdb1): disk space caching is enabled
-[   70.026306] BTRFS warning (device sdb1): space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2
-[   70.130069] page: refcount:3 mapcount:0 mapping:00000000a884d48d index:0x5abd618 pfn:0x11b665
-[   70.130094] memcg:ffff8881174ab800
-[   70.130100] aops:0xffffffff8206c960 ino:1
-[   70.130110] flags: 0x2400000000004020(lru|private|node=0|zone=2)
-[   70.130126] raw: 2400000000004020 ffffea00046d9908 ffffea00046d9988 ffff888102262618
-[   70.130134] raw: 0000000005abd618 ffff88811b63a4b0 00000003ffffffff ffff8881174ab800
-[   70.130139] page dumped because: eb page dump
-[   70.130144] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
-[   70.130160] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 2
-[   70.136382] page: refcount:3 mapcount:0 mapping:00000000a884d48d index:0x5abd618 pfn:0x11b665
-[   70.136404] memcg:ffff8881174ab800
-[   70.136409] aops:0xffffffff8206c960 ino:1
-[   70.136418] flags: 0x2400000000004020(lru|private|node=0|zone=2)
-[   70.136431] raw: 2400000000004020 ffffea00046d9908 ffffea00046d9988 ffff888102262618
-[   70.136439] raw: 0000000005abd618 ffff88811b63a4b0 00000003ffffffff ffff8881174ab800
-[   70.136443] page dumped because: eb page dump
-[   70.136448] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
-[   70.136462] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 1
-[   70.136555] BTRFS error (device sdb1): failed to read block groups: -5
-[   70.138216] BTRFS error (device sdb1): open_ctree failed
-[   71.825004] BTRFS: device label BIGBIGRAID devid 1 transid 4121 /dev/sde1 (8:65) scanned by mount (4102)
-[   71.826496] BTRFS info (device sde1): first mount of filesystem c9fa0269-733e-4e76-88c9-68c8247c81e5
-[   71.826532] BTRFS info (device sde1): using crc32c (crc32c-generic) checksum algorithm
-[   71.826561] BTRFS info (device sde1): using free-space-tree
-[  140.718646] BTRFS info (device sdb1): first mount of filesystem cae06473-5f45-4cd4-a822-733c036e36d9
-[  140.718683] BTRFS info (device sdb1): using crc32c (crc32c-generic) checksum algorithm
-[  140.718711] BTRFS info (device sdb1): disk space caching is enabled
-[  140.718717] BTRFS warning (device sdb1): space cache v1 is being deprecated and will be removed in a future release, please use -o space_cache=v2
-[  140.845547] page: refcount:4 mapcount:0 mapping:0000000049bde2be index:0x5abd618 pfn:0x11d9a3
-[  140.845571] memcg:ffff8881174ab800
-[  140.845578] aops:0xffffffff8206c960 ino:1
-[  140.845587] flags: 0x2000000000004000(private|node=0|zone=2)
-[  140.845602] raw: 2000000000004000 0000000000000000 dead000000000122 ffff888102262de8
-[  140.845611] raw: 0000000005abd618 ffff88811d96f5a0 00000004ffffffff ffff8881174ab800
-[  140.845615] page dumped because: eb page dump
-[  140.845621] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
-[  140.845636] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 1
-[  140.846180] page: refcount:4 mapcount:0 mapping:0000000049bde2be index:0x5abd618 pfn:0x11d9a3
-[  140.846202] memcg:ffff8881174ab800
-[  140.846208] aops:0xffffffff8206c960 ino:1
-[  140.846216] flags: 0x2000000000004000(private|node=0|zone=2)
-[  140.846229] raw: 2000000000004000 0000000000000000 dead000000000122 ffff888102262de8
-[  140.846236] raw: 0000000005abd618 ffff88811d96f5a0 00000004ffffffff ffff8881174ab800
-[  140.846240] page dumped because: eb page dump
-[  140.846245] BTRFS critical (device sdb1): corrupt leaf: block=389724340224 slot=7 extent bytenr=12652544 len=36864 invalid data ref objectid value 258
-[  140.846259] BTRFS error (device sdb1): read time tree block corruption detected on logical 389724340224 mirror 2
-[  140.846329] BTRFS error (device sdb1): failed to read block groups: -5
-[  140.848015] BTRFS error (device sdb1): open_ctree failed
+This reproducer is a bit silly, as the villanous cgroup is using almost
+all of its memory.max for kernel memory (specifically pagetables) but it
+sort of doesn't matter, as I am most interested in the btrfs locking
+behavior. It isn't an academic problem, as we see this exact problem in
+production at Meta with one cgroup over memory.max ruining btrfs
+performance for the whole system.
 
+The underlying scheduling "problem" with global rwsems is sort of thorny
+and apparently well known. e.g.
+https://lpc.events/event/18/contributions/1883/
 
-It seems following commit is responsible:
+As a result, our main lever in the short term is just trying to reduce
+contention on our various rwsems. In the case of the csum tree, we can
+either redesign btree locking (hard...) or try to use the commit root
+when we can. Luckily, it seems likely that many reads are for old extents
+written many transactions ago, and that for those we *can* in fact
+search the commit root!
 
-commit f333a3c7e8323499aa65038e77fe8f3199d4e283
-Author: Qu Wenruo <wqu@suse.com>
-Date:   Mon Jul 15 16:07:07 2024 +0930
+This change detects when we are trying to read an old extent (according
+to extent map generation) and then wires that through bio_ctrl to the
+btrfs_bio, which unfortunately isn't allocated yet when we have this
+information. When we go to lookup the csums in lookup_bio_sums we can
+check this condition on the btrfs_bio and do the commit root lookup
+accordingly.
 
-    btrfs: tree-checker: validate dref root and objectid
+With the fix, on that same test case, commit latencies no longer exceed
+~400ms on my system.
 
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+Changelog:
+v2:
+- hold the commit_root_sem for the duration of the entire lookup, not
+  just per btrfs_search_slot. Note that we can't naively do the thing
+  where we release the lock every loop as that is exactly what we are
+  trying to avoid. Theoretically, we could re-grab the lock and fully
+  start over if the lock is write contended or something. I suspect the
+  rwsem fairness features will let the commit writer get it fast enough
+  anyway.
 
-After reverting this, I'm able to mount the filesystems again. There are
-three filesystems on this server that are affected, two single disk and
-one with two disk in RAID1/0. I was able to copy all data from all
-filesytems via rsync without noticing any error when running without
-this commit. Also btrfscheck doesn't notice any error. It's just this
-commit that prevents these three filesystem from mounting. As I was able
-to get all data this is not critical to me. But I think this should be
-addressed in some way.
+---
+ fs/btrfs/bio.h       |  1 +
+ fs/btrfs/extent_io.c | 21 +++++++++++++++++++++
+ fs/btrfs/file-item.c | 10 ++++++++++
+ 3 files changed, 32 insertions(+)
 
-regards,
-  Johannes
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index e48612340745..159f6a4425a6 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -48,6 +48,7 @@ struct btrfs_bio {
+ 			u8 *csum;
+ 			u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
+ 			struct bvec_iter saved_iter;
++			bool commit_root_csum;
+ 		};
+ 
+ 		/*
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 9fbc83c76b94..b1c0a531b26a 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -108,6 +108,21 @@ struct btrfs_bio_ctrl {
+ 	 * This is to avoid touching ranges covered by compression/inline.
+ 	 */
+ 	unsigned long submit_bitmap;
++	/*
++	 * If this is a data read bio, we set this to true if it is safe to
++	 * search for csums in the commit root. Otherwise, it is set to false.
++	 *
++	 * This is an optimization to reduce the contention on the csum tree
++	 * root rwsem. Due to how rwsem is implemented, there is a possible
++	 * priority inversion where the readers holding the lock don't get
++	 * scheduled (say they're in a cgroup stuck in heavy reclaim) which
++	 * then blocks btrfs transactions. The only real help is to try to
++	 * reduce the contention on the lock as much as we can.
++	 *
++	 * Do this by detecting when a data read is reading data from an old
++	 * transaction so it's safe to look in the commit root.
++	 */
++	bool commit_root_csum;
+ };
+ 
+ static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+@@ -770,6 +785,9 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
+ 			alloc_new_bio(inode, bio_ctrl, disk_bytenr,
+ 				      folio_pos(folio) + pg_offset);
+ 		}
++		if (btrfs_op(&bio_ctrl->bbio->bio) == BTRFS_MAP_READ && is_data_inode(inode))
++			bio_ctrl->bbio->commit_root_csum = bio_ctrl->commit_root_csum;
++
+ 
+ 		/* Cap to the current ordered extent boundary if there is one. */
+ 		if (len > bio_ctrl->len_to_oe_boundary) {
+@@ -1048,6 +1066,9 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 		if (prev_em_start)
+ 			*prev_em_start = em->start;
+ 
++		if (em->generation < btrfs_get_fs_generation(fs_info))
++			bio_ctrl->commit_root_csum = true;
++
+ 		free_extent_map(em);
+ 		em = NULL;
+ 
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 886749b39672..c59f9e84e314 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -401,6 +401,13 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+ 		path->skip_locking = 1;
+ 	}
+ 
++	/* See the comment on btrfs_bio_ctrl->commit_root_csum. */
++	if (bbio->commit_root_csum) {
++		path->search_commit_root = 1;
++		path->skip_locking = 1;
++		down_read(&fs_info->commit_root_sem);
++	}
++
+ 	while (bio_offset < orig_len) {
+ 		int count;
+ 		u64 cur_disk_bytenr = orig_disk_bytenr + bio_offset;
+@@ -446,6 +453,9 @@ blk_status_t btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+ 		bio_offset += count * sectorsize;
+ 	}
+ 
++	if (bbio->commit_root_csum)
++		up_read(&fs_info->commit_root_sem);
++
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
+-- 
+2.46.2
+
 
