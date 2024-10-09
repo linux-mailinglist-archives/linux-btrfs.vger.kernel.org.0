@@ -1,334 +1,185 @@
-Return-Path: <linux-btrfs+bounces-8731-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8732-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8469999702D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 18:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 322F4997051
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 18:02:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7B381C224B6
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:00:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54CA61C229A5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDFB1E1A18;
-	Wed,  9 Oct 2024 15:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61CBF1F4FC9;
+	Wed,  9 Oct 2024 15:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XooOIQ2F";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Eq3LJeDc";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XooOIQ2F";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Eq3LJeDc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026337E765
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 15:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8322B1F4FC2;
+	Wed,  9 Oct 2024 15:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728487860; cv=none; b=ic9nV2viYr+u0xWRZn8bdXhpo2c76NGxSzdRrqPJ6FfD/06c1NqYaTrvOUhgl13sF0IFah9RTukLQSSMI/wQX21QPRqRkkGr7Neq0WRyjzvDWCEMw6fb1vCZiO0hBTYLG7wPh0XBKWTak0Lor3hHy814LG+uUdXlAHfKakm2m/8=
+	t=1728488230; cv=none; b=SRYYsySDG4rbuLZ5JPj7xNZZ88BmA4mtr3F+QyLVlErgDVsXC27lNaw1NjuIcchePedwu2STuaOJWJWTC15hlA7ay99XtTcb4jaaVwDuD7lLbIuPbpD14xktXgQ7opLl4LJRRe8eQ7yR6P5SCq/2u2aSrDDyLbDt1TKu2arGx/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728487860; c=relaxed/simple;
-	bh=MRa0Xsnz77pNiLhCEYoR1EBeH5Mtv2RodA2Bdeh5D0M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PDoD13MAL0K6KFD3ujwsl0v8R8qEwfN8IGR4qfEi4wFQugqabgxXGR4ARTKc0XU0B7Bi/ldDVHhvkaGyy3V9Qc7g0kWfCtO+jw47+ThQrl+Ur68H8Z+JIJRJEFfCui5mVaHQ33GcmkMdvjWq+I8p2asHORPPSFM7vglovoGeS0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-42cae102702so56327845e9.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 08:30:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728487857; x=1729092657;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nshRKds/A6uq6snpucW4vdlyKaUmqEaKMZu+3of92Xg=;
-        b=lzFqWx38KcBYyKUJTmib/EE5Le7kbENDPq4pOX1NKaHmCCeDcUDD7nRBatWl53Yki6
-         N/TFCz82HWElA+yQdYQT18zEPoHGncNn7sj4FakotKNI+4HE4iNFvA6TmymLYaL6+Grq
-         TP1zRDsXd+zTh02qkSRd52IBFe1HDeSyFwIsxBDIHQ7/rXTk+a6QfjhLrJAQC/6AXSP0
-         Da4WaYPPztEz3/mgc/qifauBXPWrKNBLFJSQsYbCEHSdyLG9rOBwERBy+UHZ0fhlCcKB
-         /LlAvgsCD7aFUygnEVB3ZEOC4eC5AAAlqEYKHPO/bwgkL/xNBZcnfbRypbHRDUgMdcN1
-         JEtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWh4sWcjRMKjIyPudouUJsCBLY5mpJUmWpJM5bKjwG7iGNW4IHjYJC0IiQvgbGcJgdVjxjgjuCVMR65XQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwG4fcK4sOV6IsDMciAMyyAhrs3+dC1Q6JaxoYsuR7zL91+bwNj
-	2eaaQhOae18bKDXuDnLUR6NR9I/EBAplGZANk3jdmN0LoaTJZ0lX
-X-Google-Smtp-Source: AGHT+IEd6b42DhNfQ1L5GNcwbkdlpA6J3Qr2GsjLh7W6+xqME9SVWRqxrPenGzmJlNYOTJH+PVhVpQ==
-X-Received: by 2002:a5d:5745:0:b0:37c:d244:bdb1 with SMTP id ffacd0b85a97d-37d3aa57b97mr1753268f8f.26.1728487857172;
-        Wed, 09 Oct 2024 08:30:57 -0700 (PDT)
-Received: from nuc.fritz.box (p200300f6f724f700fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f724:f700:fa63:3fff:fe02:74c])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d371b0731sm3252521f8f.90.2024.10.09.08.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2024 08:30:56 -0700 (PDT)
-From: Johannes Thumshirn <jth@kernel.org>
-To: David Sterba <dsterba@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>
-Cc: Filipe Manana <fdmanana@suse.com>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	linux-btrfs@vger.kernel.org,
+	s=arc-20240116; t=1728488230; c=relaxed/simple;
+	bh=yrWK9guy4QSl6qtQfqv509X0npMUw4ahN/8mznSDu3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B+xpjf9TPtnZQn4QXk2HOeZnzY1NzprYHZO/qEqI24tIMnF+5+I8khiQo3lFC5PqIEpkyrm02ZXhXFaPCfoUQl2EjhPIalkkmq+jGH+QZjriMnxjYPP/OhEAboYVmqqzqbpoWHBK79MHbAVJFKeuQlcvP8APPlFLj8qIQ9l6Muw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XooOIQ2F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Eq3LJeDc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XooOIQ2F; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Eq3LJeDc; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 328ED1F896;
+	Wed,  9 Oct 2024 15:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728488205;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cNjL0RSe+pEK01YoJ4LcI5i4jyH5jOdUOpsxh2f8Gbg=;
+	b=XooOIQ2FTDzKMFmK04SgigiPIsBbMhZyOs0u4xZ//UFBYiD530ZmZGd87NOhyjqaFn3MaK
+	f8bQeLiDXy02satFUGVLpi297p1cGN2gqZBIONIR8vwwGY/zWDGfEztuv9zREq6KRuH1rc
+	UFoJjh/B9ziBuMaNfTwPomaJjSCajQM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728488205;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cNjL0RSe+pEK01YoJ4LcI5i4jyH5jOdUOpsxh2f8Gbg=;
+	b=Eq3LJeDcLQ5edAAhku6R8PeobEF4P8P/b7qZAm889pwHEQeHvX5tnx6+B44A7tBJpxJwXB
+	CX79zOcInd2504BQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XooOIQ2F;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Eq3LJeDc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728488205;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cNjL0RSe+pEK01YoJ4LcI5i4jyH5jOdUOpsxh2f8Gbg=;
+	b=XooOIQ2FTDzKMFmK04SgigiPIsBbMhZyOs0u4xZ//UFBYiD530ZmZGd87NOhyjqaFn3MaK
+	f8bQeLiDXy02satFUGVLpi297p1cGN2gqZBIONIR8vwwGY/zWDGfEztuv9zREq6KRuH1rc
+	UFoJjh/B9ziBuMaNfTwPomaJjSCajQM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728488205;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cNjL0RSe+pEK01YoJ4LcI5i4jyH5jOdUOpsxh2f8Gbg=;
+	b=Eq3LJeDcLQ5edAAhku6R8PeobEF4P8P/b7qZAm889pwHEQeHvX5tnx6+B44A7tBJpxJwXB
+	CX79zOcInd2504BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B07813A58;
+	Wed,  9 Oct 2024 15:36:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 3ciBAg2jBmf5WgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 09 Oct 2024 15:36:45 +0000
+Date: Wed, 9 Oct 2024 17:36:42 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+	Fan Ni <fan.ni@samsung.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Navneet Singh <navneet.singh@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 2/2] btrfs: implement self-tests for partial RAID srtipe-tree delete
-Date: Wed,  9 Oct 2024 17:30:32 +0200
-Message-ID: <20241009153032.23336-3-jth@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241009153032.23336-1-jth@kernel.org>
-References: <20241009153032.23336-1-jth@kernel.org>
+Subject: Re: [PATCH v4 04/28] range: Add range_overlaps()
+Message-ID: <20241009153641.GK1609@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-4-c261ee6eeded@intel.com>
+ <20241008161032.GB1609@twin.jikos.cz>
+ <ZwaW9gXuh_JzqRfh@black.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZwaW9gXuh_JzqRfh@black.fi.intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Rspamd-Queue-Id: 328ED1F896
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.21
+X-Spam-Flag: NO
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Wed, Oct 09, 2024 at 05:45:10PM +0300, Andy Shevchenko wrote:
+> On Tue, Oct 08, 2024 at 06:10:32PM +0200, David Sterba wrote:
+> > On Mon, Oct 07, 2024 at 06:16:10PM -0500, Ira Weiny wrote:
+> 
+> ...
+> 
+> > > +static inline bool range_overlaps(struct range *r1, struct range *r2)
+> > 
+> > I've noticed only now, you can constify the arguments, but this applise
+> > to other range_* functions so that can be done later in one go.
+> 
+> Frankly you may add the same to each new API being added to the file and
+> the "one go" will never happen.
 
-Implement self-tests for partial deletion of RAID stripe-tree entries.
+Yeah, but it's a minor issue for a 28 patchset, I don't know if there
+are some other major things still to do so that a v5 is expected.
 
-These two new tests cover both the deletion of the front of a RAID
-stripe-tree stripe extent as well as truncation of an item to make it
-smaller.
+If anybody is interested, reviewing APIs and interfaces with focus on
+some data structure and const is relatively easy, compile test is
+typically enough. The hard part is to find the missing ones. There's no
+compiler aid thad I'd know of (-Wsuggest-attribute=const is not for
+parameters), so it's been reading a file top-down for me.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/tests/raid-stripe-tree-tests.c | 223 ++++++++++++++++++++++++
- 1 file changed, 223 insertions(+)
+> So, I support your first part with
+> constifying, but I think it would be rather done now to start that "one
+> go" to happen.
 
-diff --git a/fs/btrfs/tests/raid-stripe-tree-tests.c b/fs/btrfs/tests/raid-stripe-tree-tests.c
-index b8013ab13c43..dafa6a9addee 100644
---- a/fs/btrfs/tests/raid-stripe-tree-tests.c
-+++ b/fs/btrfs/tests/raid-stripe-tree-tests.c
-@@ -29,6 +29,227 @@ static struct btrfs_device *btrfs_device_by_devid(struct btrfs_fs_devices *fs_de
- 	return NULL;
- }
- 
-+/*
-+ * Test a 64K RST write on a 2 disk RAID1 at a logical address of 1M and then
-+ * delete the 1st 32K, making the new start address 1M+32K.
-+ */
-+static int test_front_delete(struct btrfs_trans_handle *trans)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_io_context *bioc;
-+	struct btrfs_io_stripe io_stripe = { 0 };
-+	u64 map_type = RST_TEST_RAID1_TYPE;
-+	u64 logical = SZ_1M;
-+	u64 len = SZ_64K;
-+	int ret;
-+
-+	bioc = alloc_btrfs_io_context(fs_info, logical, RST_TEST_NUM_DEVICES);
-+	if (!bioc) {
-+		test_std_err(TEST_ALLOC_IO_CONTEXT);
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
-+	bioc->map_type = map_type;
-+	bioc->size = len;
-+
-+	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
-+		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
-+
-+		stripe->dev = btrfs_device_by_devid(fs_info->fs_devices, i);
-+		if (!stripe->dev) {
-+			test_err("cannot find device with devid %d", i);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		stripe->physical = logical + i * SZ_1G;
-+	}
-+
-+	ret = btrfs_insert_one_raid_extent(trans, bioc);
-+	if (ret) {
-+		test_err("inserting RAID extent failed: %d", ret);
-+		goto out;
-+	}
-+
-+	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
-+					   &io_stripe);
-+	if (ret) {
-+		test_err("lookup of RAID extent [%llu, %llu] failed", logical,
-+			 logical + len);
-+		goto out;
-+	}
-+
-+	if (io_stripe.physical != logical) {
-+		test_err("invalid physical address, expected %llu got %llu",
-+			 logical, io_stripe.physical);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (len != SZ_64K) {
-+		test_err("invalid stripe length, expected %llu got %llu",
-+			 (u64)SZ_64K, len);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = btrfs_delete_raid_extent(trans, logical, SZ_32K);
-+	if (ret) {
-+		test_err("deleting RAID extent [%llu, %llu] failed", logical,
-+			 logical + SZ_32K);
-+		goto out;
-+	}
-+
-+	len = SZ_32K;
-+	ret = btrfs_get_raid_extent_offset(fs_info, logical + SZ_32K, &len,
-+					   map_type, 0, &io_stripe);
-+	if (ret) {
-+		test_err("lookup of RAID extent [%llu, %llu] failed",
-+			 logical + SZ_32K, logical + SZ_32K + len);
-+		goto out;
-+	}
-+
-+	if (io_stripe.physical != logical + SZ_32K) {
-+		test_err("invalid physical address, expected %llu, got %llu",
-+			 logical + SZ_32K, io_stripe.physical);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (len != SZ_32K) {
-+		test_err("invalid stripe length, expected %llu, got %llu",
-+			 (u64)SZ_32K, len);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
-+					   &io_stripe);
-+	if (!ret) {
-+		ret = -EINVAL;
-+		test_err("lookup of RAID extent [%llu, %llu] succeeded, should fail",
-+			 logical, logical + len);
-+		goto out;
-+	}
-+
-+	ret = btrfs_delete_raid_extent(trans, logical + SZ_32K, SZ_32K);
-+ out:
-+	return ret;
-+}
-+
-+/*
-+ * Test a 64K RST write on a 2 disk RAID1 at a logical address of 1M and then
-+ * truncate the stripe extent down to 32K.
-+ */
-+static int test_tail_delete(struct btrfs_trans_handle *trans)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_io_context *bioc;
-+	struct btrfs_io_stripe io_stripe = { 0 };
-+	u64 map_type = RST_TEST_RAID1_TYPE;
-+	u64 logical = SZ_1M;
-+	u64 len = SZ_64K;
-+	int ret;
-+
-+	bioc = alloc_btrfs_io_context(fs_info, logical, RST_TEST_NUM_DEVICES);
-+	if (!bioc) {
-+		test_std_err(TEST_ALLOC_IO_CONTEXT);
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
-+	bioc->map_type = map_type;
-+	bioc->size = len;
-+
-+	for (int i = 0; i < RST_TEST_NUM_DEVICES; i++) {
-+		struct btrfs_io_stripe *stripe = &bioc->stripes[i];
-+
-+		stripe->dev = btrfs_device_by_devid(fs_info->fs_devices, i);
-+		if (!stripe->dev) {
-+			test_err("cannot find device with devid %d", i);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		stripe->physical = logical + i * SZ_1G;
-+	}
-+
-+	ret = btrfs_insert_one_raid_extent(trans, bioc);
-+	if (ret) {
-+		test_err("inserting RAID extent failed: %d", ret);
-+		goto out;
-+	}
-+
-+	io_stripe.dev = btrfs_device_by_devid(fs_info->fs_devices, 0);
-+	if (!io_stripe.dev) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0,
-+					   &io_stripe);
-+	if (ret) {
-+		test_err("lookup of RAID extent [%llu, %llu] failed", logical,
-+			 logical + len);
-+		goto out;
-+	}
-+
-+	if (io_stripe.physical != logical) {
-+		test_err("invalid physical address, expected %llu got %llu",
-+			 logical, io_stripe.physical);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (len != SZ_64K) {
-+		test_err("invalid stripe length, expected %llu got %llu",
-+			 (u64)SZ_64K, len);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = btrfs_delete_raid_extent(trans, logical + SZ_32K, SZ_32K);
-+	if (ret) {
-+		test_err("deleting RAID extent [%llu, %llu] failed",
-+			 logical + SZ_32K, logical + SZ_64K);
-+		goto out;
-+	}
-+
-+	len = SZ_32K;
-+	ret = btrfs_get_raid_extent_offset(fs_info, logical, &len, map_type, 0, &io_stripe);
-+	if (ret) {
-+		test_err("lookup of RAID extent [%llu, %llu] failed", logical,
-+			 logical + len);
-+		goto out;
-+	}
-+
-+	if (io_stripe.physical != logical) {
-+		test_err("invalid physical address, expected %llu, got %llu",
-+			 logical, io_stripe.physical);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (len != SZ_32K) {
-+		test_err("invalid stripe length, expected %llu, got %llu",
-+			 (u64)SZ_32K, len);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = btrfs_delete_raid_extent(trans, logical, len);
-+	if (ret)
-+		test_err("deleting RAID extent [%llu, %llu] failed", logical,
-+			 logical + len);
-+
-+out:
-+	btrfs_put_bioc(bioc);
-+	return ret;
-+}
-+
- /*
-  * Test a 64K RST write on a 2 disk RAID1 at a logical address of 1M and then
-  * overwrite the whole range giving it new physical address at an offset of 1G.
-@@ -235,6 +456,8 @@ static int test_simple_create_delete(struct btrfs_trans_handle *trans)
- static const test_func_t tests[] = {
- 	test_simple_create_delete,
- 	test_create_update_delete,
-+	test_tail_delete,
-+	test_front_delete,
- };
- 
- static int run_test(test_func_t test, u32 sectorsize, u32 nodesize)
--- 
-2.43.0
-
+Agreed, one patch on top is probably the least intrusive way.
 
