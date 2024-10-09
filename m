@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-8703-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8704-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E21A996DD9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:31:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5D64996DDC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:31:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD10C1F21EAA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:31:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 061DA1C20A8F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 614C519CC28;
-	Wed,  9 Oct 2024 14:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE2119EED7;
+	Wed,  9 Oct 2024 14:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UPv3aj1x";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UPv3aj1x"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WBRARv7D";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WBRARv7D"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2461126BF1
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 14:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE371DA3D
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 14:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728484280; cv=none; b=OOsk/8TPSbWa+KaBD/U365uYuSCj9oRLQiNDs5NzLmNEFTA+jjvwPFmQzuJavYYzrO2MhX+YxrGazdBdA1+poutho3+BBnWRbWbJEGlnZq7w7l6Na+ayRfXCGbSYS/Q+iybKio9Z+GyQ5f0oVBQui0kIgVnU8yxYBjbv+uTe+iU=
+	t=1728484283; cv=none; b=XsAxGJnhTJKDpzHQMiCrqLGUHg4rfW6XNpSArH5hwDj1Tho7nmQf7L/E9RpbOlbDQTQWy6zSSGYwJkDwjsQIWiPzXKGO8l7RAQTxnTaAQHevjkEKqoVF7iYpI5jcZmFA4UAqZuPJru9h1x37B9fPsIu6viLXAMNDAlr2oXhdQFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728484280; c=relaxed/simple;
-	bh=Wr6YPu9L9n1+aasp/BIWOE+t7pSHQmvTZxIFUjX0huo=;
+	s=arc-20240116; t=1728484283; c=relaxed/simple;
+	bh=4F1xCBrnn7QLOQm2tOmEimNa5ghZcd8MsI8poQtvaZ8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WNafCnbhSXx5E62G6gg0xt46x1Uzc7gIcSL+QKdb76P6JAQWP6zfU8/uo2hOVLpUvG9N/WPNpIy1bzJejdk8hVtPCXFr9RLbFRUgtRP8ZBY0A6cAU9u8vebvHUUd1w6IY6k90+21ZZwvx7r7c6gu/1TqUbz24PRcHbz8Lp+ZA0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UPv3aj1x; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UPv3aj1x; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=Qs9xfyyl15oYCP6lSsijY3Sivm1olS9Bty3WUkFqZfPg6n3qjZBl7qOjlbtaekY61mQr7/cL6fUTGDc8f8dUTO7NDhQL+g+avnNKCuC/YBIk9cARgkbKdlYLb2Xhcc96G+DeMFACe7ajQycJllluS9u9pBN9+11la8TjIEs1Spg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WBRARv7D; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WBRARv7D; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 24BDF1F7C8;
-	Wed,  9 Oct 2024 14:31:16 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 892711F80B;
+	Wed,  9 Oct 2024 14:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728484276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1728484278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FCp36bU6YdYd5i2GLutXcWbqajZboaT6p+jYyhp7cgQ=;
-	b=UPv3aj1x5eXxbsd3V7wzC9T2crgXm8lcX1ydc9nI22VJf7qsCEAH0BwuMshIUb85DBeCOg
-	//JzHE21f0Xi6FIpIXURJfl1mdwka4HNIVLORfCTII5HqWRl+DxH6g1nIuNH1Rjodyj+eL
-	12b+TQ8Pmtjic6y46wQrQqOSGL8CTyo=
+	bh=3C1cf8IdxnGwUXbcCRzNP+x33JLnyUm4gQbA5vBIG0c=;
+	b=WBRARv7DgxgeLq4rupYjgj1lrVfRmCcaWD5YFw3EM0rchkHADgdaTYoJGwzCkdItaiQkEX
+	XweuSvYVSx9Mg7Ma9jfDxngvZ62h4dbUREx1K5q8PZQp8sPyDT/60QQ9yn3t8YNgUHHBgq
+	ebSWkEv6ZSRcSb993N0Cip/Mdq51H10=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1728484276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1728484278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FCp36bU6YdYd5i2GLutXcWbqajZboaT6p+jYyhp7cgQ=;
-	b=UPv3aj1x5eXxbsd3V7wzC9T2crgXm8lcX1ydc9nI22VJf7qsCEAH0BwuMshIUb85DBeCOg
-	//JzHE21f0Xi6FIpIXURJfl1mdwka4HNIVLORfCTII5HqWRl+DxH6g1nIuNH1Rjodyj+eL
-	12b+TQ8Pmtjic6y46wQrQqOSGL8CTyo=
+	bh=3C1cf8IdxnGwUXbcCRzNP+x33JLnyUm4gQbA5vBIG0c=;
+	b=WBRARv7DgxgeLq4rupYjgj1lrVfRmCcaWD5YFw3EM0rchkHADgdaTYoJGwzCkdItaiQkEX
+	XweuSvYVSx9Mg7Ma9jfDxngvZ62h4dbUREx1K5q8PZQp8sPyDT/60QQ9yn3t8YNgUHHBgq
+	ebSWkEv6ZSRcSb993N0Cip/Mdq51H10=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 12FE1136BA;
-	Wed,  9 Oct 2024 14:31:16 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 825D7136BA;
+	Wed,  9 Oct 2024 14:31:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id DHKgBLSTBmcTRQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 09 Oct 2024 14:31:16 +0000
+	id DuDQH7aTBmcYRQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 09 Oct 2024 14:31:18 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 08/25] btrfs: scrub: drop unused parameter sctx from scrub_submit_extent_sector_read()
-Date: Wed,  9 Oct 2024 16:31:15 +0200
-Message-ID: <a7f21b39b213c8c53aa9d57daa534c59017a59db.1728484021.git.dsterba@suse.com>
+Subject: [PATCH 09/25] btrfs: drop unused parameter map from scrub_simple_mirror()
+Date: Wed,  9 Oct 2024 16:31:18 +0200
+Message-ID: <23a41b79f9113dc3fa136da5a65a903ced95fcf4.1728484021.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1728484021.git.dsterba@suse.com>
 References: <cover.1728484021.git.dsterba@suse.com>
@@ -84,7 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
+X-Spam-Score: -6.80
 X-Spamd-Result: default: False [-6.80 / 50.00];
 	REPLY(-4.00)[];
 	BAYES_HAM(-3.00)[100.00%];
@@ -102,44 +102,62 @@ X-Spamd-Result: default: False [-6.80 / 50.00];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -6.80
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-The parameter is unused and we can reach sctx from scrub stripe if
-needed.
+The parameter map used to be passed to scrub_extent() until
+e02ee89baa66c4 ("btrfs: scrub: switch scrub_simple_mirror() to
+scrub_stripe infrastructure"), where the scrub implementation was
+completely reworked.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/scrub.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ fs/btrfs/scrub.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 52e09f307462..f21fc6cf07c0 100644
+index f21fc6cf07c0..204c928beaf9 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -1656,8 +1656,7 @@ static u32 stripe_length(const struct scrub_stripe *stripe)
- 		   stripe->bg->start + stripe->bg->length - stripe->logical);
- }
- 
--static void scrub_submit_extent_sector_read(struct scrub_ctx *sctx,
--					    struct scrub_stripe *stripe)
-+static void scrub_submit_extent_sector_read(struct scrub_stripe *stripe)
- {
- 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
- 	struct btrfs_bio *bbio = NULL;
-@@ -1753,7 +1752,7 @@ static void scrub_submit_initial_read(struct scrub_ctx *sctx,
- 	ASSERT(test_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state));
- 
- 	if (btrfs_need_stripe_tree_update(fs_info, stripe->bg->flags)) {
--		scrub_submit_extent_sector_read(sctx, stripe);
-+		scrub_submit_extent_sector_read(stripe);
- 		return;
- 	}
- 
+@@ -2112,7 +2112,6 @@ static int scrub_raid56_parity_stripe(struct scrub_ctx *sctx,
+  */
+ static int scrub_simple_mirror(struct scrub_ctx *sctx,
+ 			       struct btrfs_block_group *bg,
+-			       struct btrfs_chunk_map *map,
+ 			       u64 logical_start, u64 logical_length,
+ 			       struct btrfs_device *device,
+ 			       u64 physical, int mirror_num)
+@@ -2231,7 +2230,7 @@ static int scrub_simple_stripe(struct scrub_ctx *sctx,
+ 		 * just RAID1, so we can reuse scrub_simple_mirror() to scrub
+ 		 * this stripe.
+ 		 */
+-		ret = scrub_simple_mirror(sctx, bg, map, cur_logical,
++		ret = scrub_simple_mirror(sctx, bg, cur_logical,
+ 					  BTRFS_STRIPE_LEN, device, cur_physical,
+ 					  mirror_num);
+ 		if (ret)
+@@ -2315,7 +2314,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 		 * Only @physical and @mirror_num needs to calculated using
+ 		 * @stripe_index.
+ 		 */
+-		ret = scrub_simple_mirror(sctx, bg, map, bg->start, bg->length,
++		ret = scrub_simple_mirror(sctx, bg, bg->start, bg->length,
+ 				scrub_dev, map->stripes[stripe_index].physical,
+ 				stripe_index + 1);
+ 		offset = 0;
+@@ -2370,7 +2369,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 		 * We can reuse scrub_simple_mirror() here, as the repair part
+ 		 * is still based on @mirror_num.
+ 		 */
+-		ret = scrub_simple_mirror(sctx, bg, map, logical, BTRFS_STRIPE_LEN,
++		ret = scrub_simple_mirror(sctx, bg, logical, BTRFS_STRIPE_LEN,
+ 					  scrub_dev, physical, 1);
+ 		if (ret < 0)
+ 			goto out;
 -- 
 2.45.0
 
