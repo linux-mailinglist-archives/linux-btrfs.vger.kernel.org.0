@@ -1,294 +1,155 @@
-Return-Path: <linux-btrfs+bounces-8689-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8690-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C9F996BDE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 15:30:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2E62996C9B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 15:48:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A083B281551
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 13:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C880283308
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 13:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF2F198E61;
-	Wed,  9 Oct 2024 13:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="fABxu4P/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929BF1993AE;
+	Wed,  9 Oct 2024 13:48:27 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE9C1917C7
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 13:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966BA197A77
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 13:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728480614; cv=none; b=mU80Cr5Pao6eih3C0pH5es8vQA16GMUPAltLC+P3RKeu2vVsYQMOZtzRp1rNatYw38/fPaAucN8sjS1Dz1zhlDM1TTuu3R+VhnvpMNk1minq+WanVWIllWZtHJakn+BfGXXqLTkvJYyy55izV+sgl8hBnar0FPZdgxcF2dbSgnI=
+	t=1728481707; cv=none; b=Witd/hH5erNdUVg2GMkOlO9K1OheY2tiHlshhxVkWBVTPsjg9MsNq7SWPKaqyUZ1si/vzC14Zj84NjoVGilv5cDnMZXNVFpLqECxOST0Ebo/3DNNgN3L5QUFLagSamHTcs0XZuwoNH6fzyTVdfMrNaFU22dLlu93xm8s3346iDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728480614; c=relaxed/simple;
-	bh=l1EOQkhxaNMEb0c23pFrQuttKWwlPFuD+SnneqwfcII=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UH8+ELKkXb4+OrVzdXVMZdYjmZh104Fy+gXSduvX7HMU1UiefKDv+bB+BjGnj7AS4YYPyUwuZMnVqhjd+oviuAFMhxZ23j9Vllq9+neT4Fqna3+LAu7OOrKrANXZdrwpTdoJy5X+PGWIhsfpN7VTqwR/E0kM10uGf3Ftc6PJEbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=fABxu4P/; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2fb18f14242so9179861fa.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 06:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1728480611; x=1729085411; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=47baqCnQCvkfvrwoy37anFk6NSMQvffBtJAu5gT3YZk=;
-        b=fABxu4P/YFN39efjhg8koDiM+kWMECpSs5cDa0gpIA6hDFjrPVMYjkJmCgw5lPSn0x
-         A+7B2VHHnY/EPaXl1Lg+ELBqiin9NR9GeTrZXs/ufHlZSMHX21lBInM6Jz7UtRPaCVTe
-         zG6/Aew3eX/SyyiGjGoCM2SAbI3cYsvZucgxE=
+	s=arc-20240116; t=1728481707; c=relaxed/simple;
+	bh=gASEXiZR66bIA/k4cHkwbKLHltIkFeNNC/Gi3e2bsuU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HFtExir79zTE5V69p/AFoT0T+DYQvAiKzau+snddJsbbwC64PWaBLAFX5u02BIna6yVdqXjUWaZpjhegsGDOagg9h4d7+6MZyBlwgZm7nn4CUI1OeNeHk/YsXW7G5o07WGSgdvkcD3uer9sehZNvSPcDdLflYjNSL6vZg+juqkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a343c444afso78321305ab.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 06:48:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728480611; x=1729085411;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=47baqCnQCvkfvrwoy37anFk6NSMQvffBtJAu5gT3YZk=;
-        b=P4YoO0th7Os9rjtHXoWv+wqpO5FnhhJdvQKvlVj1xTxt79OK9rH7lpMmajQ7Dm1Ra8
-         J6L0Ku0kzk+8UwXHuFdINcVyZG4YDmKaYoxYkeWQZZZetriv1FnFbM1ztMSTvDEQfpeo
-         ic36xIT2AqmpX0KaGHj8phvdCdz05QKvv3kJh+zpVO7JCczAJKNSDPhLnNywJXsupubW
-         idp+ANpWQCCW8d6sITT0BySIenkddJo83tDzGzBS27uiwN877/7LnFnEuMYDtGf2HZlp
-         dl+SYSqdi0DkVIdVX+JwTvagPdtDXVFxrgfX+An3xV+D13fUo2kWFCHJ9aC8NyWBP/V9
-         AsoA==
-X-Forwarded-Encrypted: i=1; AJvYcCUR0AupCLXO+OcBVBW8GW/PhH+ll5uRwXhGTl1SoJEWLrmJ72a7wIpJP96BPC+Kv6jgcTEOwjT65bEHWA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyyXgkVRKVu7QMZZZs467uYqUiAY4HUZLvq78u9GEKHgj0ycIEf
-	SimglB9oqjexqDKEmS+1kZGHxOyEWNuCwkS/SCitbblhsGpyv1ZfCtOOmLUSaBw=
-X-Google-Smtp-Source: AGHT+IGzs8AU/VidaqWomdqq3zlWcnDvu5kW/cZXUPcR7Heq9OLcNFfOUxKuKAPf8diwyUfBEMfPRw==
-X-Received: by 2002:a2e:1312:0:b0:2fa:cdac:8723 with SMTP id 38308e7fff4ca-2fb1f849b4fmr193341fa.29.1728480610830;
-        Wed, 09 Oct 2024 06:30:10 -0700 (PDT)
-Received: from localhost ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2faf9adcb62sm14228011fa.63.2024.10.09.06.30.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2024 06:30:10 -0700 (PDT)
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To: Ira Weiny <ira.weiny@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>,  Fan Ni <fan.ni@samsung.com>,
-  Jonathan Cameron <Jonathan.Cameron@huawei.com>,  Navneet Singh
- <navneet.singh@intel.com>,  Jonathan Corbet <corbet@lwn.net>,  Andrew
- Morton <akpm@linux-foundation.org>,  Dan Williams
- <dan.j.williams@intel.com>,  Davidlohr Bueso <dave@stgolabs.net>,  Alison
- Schofield <alison.schofield@intel.com>,  Vishal Verma
- <vishal.l.verma@intel.com>,  linux-btrfs@vger.kernel.org,
-  linux-cxl@vger.kernel.org,  linux-doc@vger.kernel.org,
-  nvdimm@lists.linux.dev,  linux-kernel@vger.kernel.org,  Petr Mladek
- <pmladek@suse.com>,  Steven Rostedt <rostedt@goodmis.org>,  Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>,  Rasmus Villemoes
- <linux@rasmusvillemoes.dk>,  Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH v4 02/28] printk: Add print format (%pra) for struct range
-In-Reply-To: <20241007-dcd-type2-upstream-v4-2-c261ee6eeded@intel.com> (Ira
-	Weiny's message of "Mon, 07 Oct 2024 18:16:08 -0500")
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
-	<20241007-dcd-type2-upstream-v4-2-c261ee6eeded@intel.com>
-Date: Wed, 09 Oct 2024 15:30:14 +0200
-Message-ID: <871q0p5rq1.fsf@prevas.dk>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        d=1e100.net; s=20230601; t=1728481705; x=1729086505;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KW6iitnhrdxBBikdTOFclZWe4/hWRw3Ieoda0j2XAM0=;
+        b=Kzmh13D6Tsa7yS5ichCersGNEI8Ql4iUWzc0lh6XbXPpilQwURyzg6Xs5aesyTXgXc
+         1usHFLbvlt8KKMBwPaxElcXE+RnyLWGw8RXizEfuhNFDCUK+YQymvRQf4JQAVr79Fgf7
+         3hP5M0L6A1gJtFm0pTZly7Ysw2Foz+troy3ZBOsJDWQD3bUaiud/qT7hFyPCn5NfWHly
+         Zoa+I05mRj78FTrc411RkftvZc54SMTDK3r12G3BNb2AS6Z7KhMUhcUV9kUQpXlRFELZ
+         9WvvZXMdKuHDQQEb5jAwyTs3kcZ7kLRwTT1fnnu6mWELsP9vrkA13Y1b8MW6jlsFMr2W
+         FoeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUGPJ/+UAqYWG37qtRUUS4IuQlPmLj1O9nuDEmrWCoJV87DaULtXkoHldbCg1YVh0PbwYWRJp0WcgFS/Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywyiems5hH3H2Y+5oraswoTTCvNdwllu6hMoQYPLC9ViaBpdAJv
+	QweE99jPiQV8GYHQIxt/+KVu1dyYIfP545lxzGd/l7BlfSvaP1SDNnW/1vX+yH80cKjpKzIwigB
+	/m6z4IBPpqsktm605xta7i4sMSWWn4Yb4vL8XeokFQ7m7MUcRFBTvxck=
+X-Google-Smtp-Source: AGHT+IG5JEIuLJwUtyBsinNP2mTDyUISUgPaE2+buwDKV7XSwd97X7JfIR2ztJzlmSDl+maQ+yhTqdB9PWlW9fbHzJwUrBsO2M1J
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:1c07:b0:3a0:926a:8d31 with SMTP id
+ e9e14a558f8ab-3a397d10f9bmr29600295ab.16.1728481704766; Wed, 09 Oct 2024
+ 06:48:24 -0700 (PDT)
+Date: Wed, 09 Oct 2024 06:48:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <670689a8.050a0220.67064.0045.GAE@google.com>
+Subject: [syzbot] [btrfs?] BUG: sleeping function called from invalid context
+ in getname_kernel
+From: syzbot <syzbot+02a127be2df04bdc5df0@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Ira Weiny <ira.weiny@intel.com> writes:
+Hello,
 
-> ---
->  Documentation/core-api/printk-formats.rst | 13 ++++++++
->  lib/test_printf.c                         | 26 +++++++++++++++
->  lib/vsprintf.c                            | 55 +++++++++++++++++++++++++++----
->  3 files changed, 88 insertions(+), 6 deletions(-)
->
-> diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-> index 14e093da3ccd..03b102fc60bb 100644
-> --- a/Documentation/core-api/printk-formats.rst
-> +++ b/Documentation/core-api/printk-formats.rst
-> @@ -231,6 +231,19 @@ width of the CPU data path.
->  
->  Passed by reference.
->  
-> +Struct Range
-> +------------
+syzbot found the following issue on:
 
-Probably neither of those words should be capitalized.
+HEAD commit:    33ce24234fca Add linux-next specific files for 20241008
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14771780580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4750ca93740b938d
+dashboard link: https://syzkaller.appspot.com/bug?extid=02a127be2df04bdc5df0
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112f97d0580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=101d4f9f980000
 
-> +
-> +::
-> +
-> +	%pra    [range 0x0000000060000000-0x000000006fffffff]
-> +	%pra    [range 0x0000000060000000]
-> +
-> +For printing struct range.  struct range holds an arbitrary range of u64
-> +values.  If start is equal to end only 1 value is printed.
-> +
-> +Passed by reference.
-> +
->  DMA address types dma_addr_t
->  ----------------------------
->  
-> diff --git a/lib/test_printf.c b/lib/test_printf.c
-> index 5afdf5efc627..e3e75b6d10a0 100644
-> --- a/lib/test_printf.c
-> +++ b/lib/test_printf.c
-> @@ -432,6 +432,31 @@ struct_resource(void)
->  	     "%pR", &test_resource);
->  }
->  
-> +static void __init
-> +struct_range(void)
-> +{
-> +	struct range test_range = {
-> +		.start = 0xc0ffee00ba5eba11,
-> +		.end = 0xc0ffee00ba5eba11,
-> +	};
-> +
-> +	test("[range 0xc0ffee00ba5eba11]", "%pra", &test_range);
-> +
-> +	test_range = (struct range) {
-> +		.start = 0xc0ffee,
-> +		.end = 0xba5eba11,
-> +	};
-> +	test("[range 0x0000000000c0ffee-0x00000000ba5eba11]",
-> +	     "%pra", &test_range);
-> +
-> +	test_range = (struct range) {
-> +		.start = 0xba5eba11,
-> +		.end = 0xc0ffee,
-> +	};
-> +	test("[range 0x00000000ba5eba11-0x0000000000c0ffee]",
-> +	     "%pra", &test_range);
-> +}
-> +
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ee8dc2df0c57/disk-33ce2423.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/dc473c0fa06e/vmlinux-33ce2423.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4671f1ca2e61/bzImage-33ce2423.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/9876580e56ab/mount_0.gz
 
-Thanks for including tests!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+02a127be2df04bdc5df0@syzkaller.appspotmail.com
 
-Rather than the struct assignments, I think it's easier to read if you
-just do
-
-  struct range r;
-
-  r.start = 0xc0ffee00ba5eba11;
-  r.end   = r.start;
-  ...
-
-  r.start = 0xc0ffee;
-  r.end   = 0xba5eba11;
-  ...
-
-which saves two lines per test and for the first one makes it more
-obvious that the start and end values are identical.
-
->  static void __init
->  addr(void)
->  {
-> @@ -807,6 +832,7 @@ test_pointer(void)
->  	symbol_ptr();
->  	kernel_ptr();
->  	struct_resource();
-> +	struct_range();
->  	addr();
->  	escaped_str();
->  	hex_string();
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 09f022ba1c05..f8f5ed8f4d39 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -1039,6 +1039,19 @@ static const struct printf_spec default_dec04_spec = {
->  	.flags = ZEROPAD,
->  };
->  
-> +static noinline_for_stack
-> +char *hex_range(char *buf, char *end, u64 start_val, u64 end_val,
-> +		struct printf_spec spec)
-> +{
-> +	buf = number(buf, end, start_val, spec);
-> +	if (start_val != end_val) {
-> +		if (buf < end)
-> +			*buf++ = '-';
-
-No. Either all your callers pass a (probably stack-allocated) buffer
-which is guaranteed to be big enough, in which case you don't need the
-"if (buf < end)", or if some callers may "print" directly to the buffer
-passed to vsnprintf(), the buf++ must still be done unconditionally in
-order that vsnprintf(NULL, 0, ...) [used by fx kasprintf] can accurately
-determine how large the output string would be.
-
-So, either
-
-  *buf++ = '-'
-
-or
-
-  if (buf < end)
-    *buf = '-';
-  buf++;
-
-Please don't mix the two. 
+BUG: sleeping function called from invalid context at include/linux/sched/mm.h:330
+in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 5233, name: udevd
+preempt_count: 0, expected: 0
+RCU nest depth: 1, expected: 0
+INFO: lockdep is turned off.
+CPU: 1 UID: 0 PID: 5233 Comm: udevd Not tainted 6.12.0-rc2-next-20241008-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ __might_resched+0x5d4/0x780 kernel/sched/core.c:8638
+ might_alloc include/linux/sched/mm.h:330 [inline]
+ slab_pre_alloc_hook mm/slub.c:4062 [inline]
+ slab_alloc_node mm/slub.c:4140 [inline]
+ kmem_cache_alloc_noprof+0x61/0x380 mm/slub.c:4167
+ getname_kernel+0x59/0x2f0 fs/namei.c:234
+ kern_path+0x1d/0x50 fs/namei.c:2716
+ is_same_device fs/btrfs/volumes.c:812 [inline]
+ device_list_add+0xc64/0x1ea0 fs/btrfs/volumes.c:947
+ btrfs_scan_one_device+0xab5/0xd90 fs/btrfs/volumes.c:1538
+ btrfs_control_ioctl+0x165/0x3e0 fs/btrfs/super.c:2264
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:893
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7faa2bb1ad49
+Code: 5c c3 48 8d 44 24 08 48 89 54 24 e0 48 89 44 24 c0 48 8d 44 24 d0 48 89 44 24 c8 b8 10 00 00 00 c7 44 24 b8 10 00 00 00 0f 05 <41> 89 c0 3d 00 f0 ff ff 76 10 48 8b 15 ae 60 0d 00 f7 d8 41 83 c8
+RSP: 002b:00007ffd55ec91e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007faa2bb1ad49
+RDX: 00007ffd55ec91f8 RSI: 0000000090009427 RDI: 0000000000000009
+RBP: 0000000000000009 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffd55eca238 R14: 000055773bb412a0 R15: 00007ffd55ecaf58
+ </TASK>
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> +		buf = number(buf, end, end_val, spec);
-> +	}
-> +	return buf;
-> +}
-> +
->  static noinline_for_stack
->  char *resource_string(char *buf, char *end, struct resource *res,
->  		      struct printf_spec spec, const char *fmt)
-> @@ -1115,11 +1128,7 @@ char *resource_string(char *buf, char *end, struct resource *res,
->  		p = string_nocheck(p, pend, "size ", str_spec);
->  		p = number(p, pend, resource_size(res), *specp);
->  	} else {
-> -		p = number(p, pend, res->start, *specp);
-> -		if (res->start != res->end) {
-> -			*p++ = '-';
-> -			p = number(p, pend, res->end, *specp);
-> -		}
-> +		p = hex_range(p, pend, res->start, res->end, *specp);
->  	}
->  	if (decode) {
->  		if (res->flags & IORESOURCE_MEM_64)
-> @@ -1140,6 +1149,34 @@ char *resource_string(char *buf, char *end, struct resource *res,
->  	return string_nocheck(buf, end, sym, spec);
->  }
->  
-> +static noinline_for_stack
-> +char *range_string(char *buf, char *end, const struct range *range,
-> +		   struct printf_spec spec, const char *fmt)
-> +{
-> +#define RANGE_DECODED_BUF_SIZE		((2 * sizeof(struct range)) + 4)
-> +#define RANGE_PRINT_BUF_SIZE		sizeof("[range -]")
-> +	char sym[RANGE_DECODED_BUF_SIZE + RANGE_PRINT_BUF_SIZE];
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-I don't think these names or the split in two constants helps
-convincing that's the right amount. I have to think quite a bit to see
-that 2*sizeof is because struct range has two u64 and we're printing in
-hex so four-bits-per-char and probably the +4 are for two time "0x".
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Why not just size the buffer directly using an "example" string?
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-  char sym[sizeof("[range 0x0123456789abcdef-0x0123456789abcdef]")]
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-> +	char *p = sym, *pend = sym + sizeof(sym);
-> +
-> +	struct printf_spec range_spec = {
-> +		.field_width = 2 + 2 * sizeof(range->start), /* 0x + 2 * 8 */
-> +		.flags = SPECIAL | SMALL | ZEROPAD,
-> +		.base = 16,
-> +		.precision = -1,
-> +	};
-> +
-> +	if (check_pointer(&buf, end, range, spec))
-> +		return buf;
-> +
-> +	*p++ = '[';
-> +	p = string_nocheck(p, pend, "range ", default_str_spec);
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-We really should have mempcpy or stpcpy. I don't see the point of using
-string_nocheck here, or not including the [ in the string copy (however
-it's done). But yeah, without stpcpy() that's a bit awkward. 
-
-Rasmus
+If you want to undo deduplication, reply with:
+#syz undup
 
