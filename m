@@ -1,89 +1,53 @@
-Return-Path: <linux-btrfs+bounces-8725-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 780D0996E8B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:46:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E721996E8C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31A99282203
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:46:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D09B7282543
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985E019DF9E;
-	Wed,  9 Oct 2024 14:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEA419CC28;
+	Wed,  9 Oct 2024 14:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n/uGmT0Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQ0sYz39"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6E5433B6;
-	Wed,  9 Oct 2024 14:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB345466B;
+	Wed,  9 Oct 2024 14:46:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728485190; cv=none; b=my9ibOiENj3Z+eIYpc/9A3nU2oWv/STbFshs0slPoabxdcgZUPqj0qxDZafd8ChytdxTPagp7Z5FcBPXnNAIZZYafVvVyYxHO9vfzfr8kif7cz9a5crKqTZ1XvK92HV1kF/fCXrytzZIJB4Lz/Nkagf/WLnqvTUbNNdoE4YNMN0=
+	t=1728485205; cv=none; b=cz+ow7ZXIzQxu/3tQ46So43TCkPBQkk0tOIfL/+18uGFSFSVuknb6aF2q4mvMp0g3coxU6UrU10ArbU5j7ROIpJa0icq+LCGkpbXrRp3L/TSB3gLTYpZmfbqKKGKPZeDxvEpir3EJDxoGhtsMwZE26dUR1ltNJRXD/DyfvX9a/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728485190; c=relaxed/simple;
-	bh=xXD0CGxWWzLTAw/TXApXZkvVnSpZBuc19McI4xF2HPE=;
+	s=arc-20240116; t=1728485205; c=relaxed/simple;
+	bh=rZt1BDsL7XH/WgQBqMBRmA5UirvaAbx0lcp3+s2Jg20=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=plwXkkm+SiF1XSB6w7ApXy9xBt/3PZto+dhR5lpH5mKQOEdkBvMjNDerItiC26F84E30XlZHSJ4AE61sxuTrk5r69QhVwFDCb+d/9QKjJ26tYNhmuYRY65Vkwqco8hqyxuBrrL25c35SNUjVOj1p/Jau8rsubEcgK2sRwmKQU90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n/uGmT0Z; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1728485189; x=1760021189;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xXD0CGxWWzLTAw/TXApXZkvVnSpZBuc19McI4xF2HPE=;
-  b=n/uGmT0Zz2vHm/9KBfuqprqmB90YGYP77EzztxEol4weJVGApEobYyXD
-   s4kzNm1+cl40ibp3kVuTAvuVsHLKibP5I2L+gaqU1+kZTbm7R0/6gb10k
-   8IexRY49x9L0bG7nZE7sZYbxPj29+dMgp3H2PWb59xpViL5pa5HUnS7bw
-   sMAE5G24JkJJ0IksH6xMiD6xvxLUu1K1pqr1yuoswkSIcm/nJwvKzAzxy
-   Vek4os0faE1Q0KLaiLdkpfpMqPWd4swbWdTbusROlk6p18nAUPv8s32Th
-   Ez/9s0vRNwLsQ2Zp4HfcMsxwX8nm8Oer2lNndjUj4LQnnCqhVCsgjpDhT
-   A==;
-X-CSE-ConnectionGUID: SNFjQBGiQxiVyVnpFAi6Yg==
-X-CSE-MsgGUID: PZ4ws1chSsaNVzKqTNZ3hg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11220"; a="45259095"
-X-IronPort-AV: E=Sophos;i="6.11,190,1725346800"; 
-   d="scan'208";a="45259095"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2024 07:46:28 -0700
-X-CSE-ConnectionGUID: AJQomrpJQ2WqZ2mRP+8BlA==
-X-CSE-MsgGUID: nNhaAVk2TEuOKbqR/zLgWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,190,1725346800"; 
-   d="scan'208";a="99606822"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa002.fm.intel.com with ESMTP; 09 Oct 2024 07:46:24 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id EFE8B807; Wed, 09 Oct 2024 17:46:22 +0300 (EEST)
-Date: Wed, 9 Oct 2024 17:46:22 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-	Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v4 04/28] range: Add range_overlaps()
-Message-ID: <ZwaXPm5WrzLVoUuw@black.fi.intel.com>
-References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-4-c261ee6eeded@intel.com>
- <20241008161032.GB1609@twin.jikos.cz>
- <ZwaW9gXuh_JzqRfh@black.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iY58q/LNgdcUmWkTFQFSLk/JENVqwgj06Msr39dt96SFaxDDTW8PikXuMftmrQmVOq9CRekeurkSSTdPm0+AKheWZlbkYZbRtV9BfGeZ6v7/YRDZ8ZCaFObwnzmGgwL+D71OjNyEifrK4m03ieRo/SaBsD06RS/PcWcmyPSsW+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PQ0sYz39; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA742C4CEC3;
+	Wed,  9 Oct 2024 14:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728485205;
+	bh=rZt1BDsL7XH/WgQBqMBRmA5UirvaAbx0lcp3+s2Jg20=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PQ0sYz39EhEsQpXLIPdL81I7Nr1TbHPFSqBQuC8+MqmGrc6UuzlP1s40gxPm2deWD
+	 yiEkad7/obJhbcHtFovfEwjYq52oliN4kXWqvOg2G8uKhAqZGQ4GAQXLYbtsaLHF24
+	 qhJNufFQttCvCNNbTa/FhExlK18ezUowsxOvpw8DyxKxo2mCuBuJmqCzs6jO77WWdE
+	 OEC2wBybTJDKiFvvqRan5wYhgw7bTXZF/d1/Gx61w75iHPSUMz5zWkiH0nEviTwpNN
+	 3dAm8HFk9ljw/+Z8RBjQRT16I3IQzywNiHM3cNXtpqRH14ySCQijAqAT/J0Ocm3O4E
+	 /eYidywDHXfcg==
+Date: Wed, 9 Oct 2024 07:46:44 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: An Long <lan@suse.com>
+Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] generic/746: install two necessary files
+Message-ID: <20241009144644.GK21840@frogsfrogsfrogs>
+References: <9d7ef6a9de1cdd2bbb6d91a407905254c4784c68.camel@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -92,31 +56,42 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZwaW9gXuh_JzqRfh@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <9d7ef6a9de1cdd2bbb6d91a407905254c4784c68.camel@suse.com>
 
-On Wed, Oct 09, 2024 at 05:45:10PM +0300, Andy Shevchenko wrote:
-> On Tue, Oct 08, 2024 at 06:10:32PM +0200, David Sterba wrote:
-> > On Mon, Oct 07, 2024 at 06:16:10PM -0500, Ira Weiny wrote:
-
-...
-
-> > > +static inline bool range_overlaps(struct range *r1, struct range *r2)
-> > 
-> > I've noticed only now, you can constify the arguments, but this applise
-> > to other range_* functions so that can be done later in one go.
+On Wed, Oct 09, 2024 at 04:45:37PM +0800, An Long wrote:
+> parse-dev-tree.awk and parse-extent-tree.awk are used by generic/746.
+> We need to make sure them are installed, otherwise generic/746 will
+> have problems if fstests is installed via "make install".
+> ---
+>  src/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Frankly you may add the same to each new API being added to the file and
-> the "one go" will never happen. So, I support your first part with
-> constifying, but I think it would be rather done now to start that "one
-> go" to happen.
+> diff --git a/src/Makefile b/src/Makefile
+> index 3097c29e..a0396332 100644
+> --- a/src/Makefile
+> +++ b/src/Makefile
+> @@ -38,7 +38,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize
+> preallo_rw_pattern_reader \
+> 
+>  EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
+>               btrfs_crc32c_forged_name.py popdir.pl popattr.py \
+> -             soak_duration.awk
+> +             soak_duration.awk parse-dev-tree.awk parse-extent-
+> tree.awk
 
-Alternatively there is should be the patch _in this series_ to make it
-happen before extending an API. I leave the choice to Ira.
+^^ I think this is a broken line wrapping here, but otherwise the change
+seems sensible.
 
--- 
-With Best Regards,
-Andy Shevchenko
+With that fixed,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
+--D
 
+> 
+>  SUBDIRS = log-writes perf
+> 
+> -- 
+> 2.43.0
+> 
+> 
 
