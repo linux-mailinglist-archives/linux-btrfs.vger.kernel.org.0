@@ -1,47 +1,47 @@
-Return-Path: <linux-btrfs+bounces-8686-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8687-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6BD8996A45
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:42:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 953E5996AC2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98AD51F252EB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 12:42:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE32C1C220E6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 12:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8CA1957E4;
-	Wed,  9 Oct 2024 12:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA721AE864;
+	Wed,  9 Oct 2024 12:49:44 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77252194ACA;
-	Wed,  9 Oct 2024 12:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B75194C76;
+	Wed,  9 Oct 2024 12:49:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728477731; cv=none; b=DsFjCZmhZqB3/x5upnEgimK1v/d9OhuuYtDJZf1z/ozcvTwjRGJWfHEY1GxQb2KWvrRqkJswGJ2O0g/ZX3Q04+1H1AV9Y5n5zl6FwPy7ONCRwhxMEThg+A9RoQqKcZYPKqo+ovoc6kRsVXV3Qwr52YxYz9HFuiA/rAy8BOuwBuA=
+	t=1728478183; cv=none; b=YzNvdiya+4EGGjBWqyfq1KF6hH96sh+PRFvqdOzVCTmROqP7VcJu+ewPcKR4pIyPUYjZ1L8NYgrgdyZhsU84vuJ3p7pCAef7UPAH1XKFHKPKxPPNTyscGVzXBi2n6FNUjydT5ZtfDnMhB7DJJU2REhaqViKy795K8rFPs2jswCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728477731; c=relaxed/simple;
-	bh=FBeCe84ePWum+frqJl3ahOPHsMe4Ua2FWQMYnIXwT+Q=;
+	s=arc-20240116; t=1728478183; c=relaxed/simple;
+	bh=BaVk3s2KAvoqDvsifoqUDpefeIGff22P2TiuTCvppqk=;
 	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DzsHXXBL6ObuI6v+93M+zDzDVIL/IhjkQXVLkvC28gmXuR3qkaTFm8fy4JoO46L3Amslz/A/1JfmnHJ3YK0e+Itc2A1161hC1NxgMsPwLSOuoHcZRtuheVPhW4nY2ju1XUWyS29bpHZjiVNpp01IkNaPuM4QeIVtKMsxR98eavg=
+	 MIME-Version:Content-Type; b=H16KZ7ut3ss0uf2HGGtq4j99o/gLAcg+l24Uj9kIvK7JNswfiaDFLP+R4Y/Ip+Dw+INVZ+HZzwGqsjTeyTkE8Puw/aGad0dpVGUvKKcv8D8ywbg764PHYxx/iaPtTidvixwkuk16sGGZKpbVLEH+rkJT09nIXR2s6LNJwoNeXLY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XNstm1QhBz6K70v;
-	Wed,  9 Oct 2024 20:40:48 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XNt4f1v2bz6GD69;
+	Wed,  9 Oct 2024 20:49:22 +0800 (CST)
 Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id D819D140133;
-	Wed,  9 Oct 2024 20:42:05 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 0B01A140133;
+	Wed,  9 Oct 2024 20:49:40 +0800 (CST)
 Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
  (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 9 Oct
- 2024 14:42:03 +0200
-Date: Wed, 9 Oct 2024 13:42:01 +0100
+ 2024 14:49:38 +0200
+Date: Wed, 9 Oct 2024 13:49:36 +0100
 From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
+To: <ira.weiny@intel.com>
 CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
  Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
  Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
@@ -49,12 +49,13 @@ CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
 	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
 	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
 	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 05/28] dax: Document dax dev range tuple
-Message-ID: <20241009134201.000011b4@Huawei.com>
-In-Reply-To: <20241007-dcd-type2-upstream-v4-5-c261ee6eeded@intel.com>
+	<linux-kernel@vger.kernel.org>, "Li, Ming" <ming4.li@intel.com>
+Subject: Re: [PATCH v4 08/28] cxl/mem: Read dynamic capacity configuration
+ from the device
+Message-ID: <20241009134936.00003e0e@Huawei.com>
+In-Reply-To: <20241007-dcd-type2-upstream-v4-8-c261ee6eeded@intel.com>
 References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
-	<20241007-dcd-type2-upstream-v4-5-c261ee6eeded@intel.com>
+	<20241007-dcd-type2-upstream-v4-8-c261ee6eeded@intel.com>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
@@ -68,50 +69,63 @@ Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
  frapeml500008.china.huawei.com (7.182.85.71)
 
-On Mon, 07 Oct 2024 18:16:11 -0500
-Ira Weiny <ira.weiny@intel.com> wrote:
+On Mon, 07 Oct 2024 18:16:14 -0500
+ira.weiny@intel.com wrote:
 
-> The device DAX structure is being enhanced to track additional DCD
-> information.
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> The current range tuple was not fully documented.  Document it prior to
-> adding information for DC.
+> Devices which optionally support Dynamic Capacity (DC) are configured
+> via mailbox commands.  CXL 3.1 requires the host to issue the Get DC
+> Configuration command in order to properly configure DCDs.  Without the
+> Get DC Configuration command DCD can't be supported.
 > 
-> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Implement the DC mailbox commands as specified in CXL 3.1 section
+> 8.2.9.9.9 (opcodes 48XXh) to read and store the DCD configuration
+> information.  Disable DCD if DCD is not supported.  Leverage the Get DC
+> Configuration command supported bit to indicate if DCD support.
+> 
+> Linux has no use for the trailing fields of the Get Dynamic Capacity
+> Configuration Output Payload (Total number of supported extents, number
+> of available extents, total number of supported tags, and number of
+> available tags). Avoid defining those fields to use the more useful
+> dynamic C array.
+> 
+> Cc: "Li, Ming" <ming4.li@intel.com>
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-Isn't this a nested struct?
-https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
 
-I'm not quite sure how we document when it's a nested pointer to a
-a structure.  Is it the same as for a 'normal' nested struct?
-  
-> ---
-> Changes:
-> [iweiny: move to start of series]
-> ---
->  drivers/dax/dax-private.h | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-> index 446617b73aea..ccde98c3d4e2 100644
-> --- a/drivers/dax/dax-private.h
-> +++ b/drivers/dax/dax-private.h
-> @@ -58,7 +58,10 @@ struct dax_mapping {
->   * @dev - device core
->   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
->   * @nr_range: size of @ranges
-> - * @ranges: resource-span + pgoff tuples for the instance
-> + * @ranges: range tuples of memory used
-> + * @pgoff: page offset
-      @ranges.pgoff?
-etc
+Looks fine to me.  Trivial comment inline
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-> + * @range: resource-span
-> + * @mapping: device to assist in interrogating the range layout
->   */
->  struct dev_dax {
->  	struct dax_region *region;
-> 
 
+
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index e8907c403edb..0690b917b1e0 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+...
+
+> +/* See CXL 3.1 Table 8-164 get dynamic capacity config Output Payload */
+> +struct cxl_mbox_get_dc_config_out {
+> +	u8 avail_region_count;
+> +	u8 regions_returned;
+> +	u8 rsvd[6];
+> +	/* See CXL 3.1 Table 8-165 */
+> +	struct cxl_dc_region_config {
+> +		__le64 region_base;
+> +		__le64 region_decode_length;
+> +		__le64 region_length;
+> +		__le64 region_block_size;
+> +		__le32 region_dsmad_handle;
+> +		u8 flags;
+> +		u8 rsvd[3];
+> +	} __packed region[];
+
+Could throw in a __counted_by I think?
+
+> +	/* Trailing fields unused */
+> +} __packed;
+> +#define CXL_DYNAMIC_CAPACITY_SANITIZE_ON_RELEASE_FLAG BIT(0)
+> +#define CXL_DCD_BLOCK_LINE_SIZE 0x40
 
