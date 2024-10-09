@@ -1,348 +1,97 @@
-Return-Path: <linux-btrfs+bounces-8728-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8729-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A420996F7E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 17:17:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EE2F99702A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 17:59:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAAE41F221DB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 15:17:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EB5728509F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 15:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99111E32BB;
-	Wed,  9 Oct 2024 15:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L5KZZacK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B220D1E1A14;
+	Wed,  9 Oct 2024 15:30:58 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45B31E32DC
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 15:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC527E765
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 15:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728486631; cv=none; b=n0nHuj78lyCY7S+bdFeUHxXm0Q2gr/xJmqvGcVW7WMYvCEJlLy7Op1VzCJlqyixq5I7NXKNATTQ7oTe82gyRCgrb9RHThmJrvK6WShSoqc+est5cGofW5VuaKPPW3xL7KXEjwsZpzDKvefRSj6+3Xdd53Ap9t0NdHJKHUhc9Vyo=
+	t=1728487858; cv=none; b=ErL2eg1i+4CaG+yRY3sY659LcMyoR5L5Pfi9cVP1fSHRYmmo2RoLei2xhQNBv4ndyOkckVJniCSshCQ7CpgEH7bd2IjhSK0O48AKYN9vYIh8UfKs43X1ODSGFOsYx3whnw7FI6JiqX83g6UBS/CG1pLSbDCOAtCsJUucBZRo+GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728486631; c=relaxed/simple;
-	bh=9RtjoNsCFoyAzTw3fL96naAYKHnJMvWaYteLNNqnBpk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XrJkcjEPMZPyajGz7U513jnK6PyARnf7bquw4wgjntiAaQePO0LPy4yTOt/Vr9xGrXq+DpZ4H+693QWCs2kwaNhmxWsWEvB2dhiI/kHWfbWfKMacU+ohefvD+/tgI9i/A01HaaMV3o2JexwD5JU3t0rnAiQ30FPVO/PU8dWCnLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L5KZZacK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7188EC4CECF
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 15:10:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728486631;
-	bh=9RtjoNsCFoyAzTw3fL96naAYKHnJMvWaYteLNNqnBpk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=L5KZZacKhZFoRxaVdC5BaZW6lSserA9r7bhOISRT4zCD1U+dTE6iPrfaMRkA+Rh94
-	 C0r08Artrht4GlztaqKOkFBiV+9vJoLVfgALsriwm21JSjlEkTVC5iiMXSqQiuIhqD
-	 IQWjVPtCnPTXjHO+9IDn2EKwepvdf4ARtxivGv80wZPMLqSbcGzkyZgdocz3sd3V3c
-	 T+6CqVzHQEfWZd3tQ8clv85vVRT0eCOPE6fdaTufl1gIAxCnu/S6QCYMajQytAHtoU
-	 UgKW2V6Ut+M4pAwpnlUjo65MJwTBpROQDLQnTaQUDi219iboOkt11KUDUbU4pyQ89j
-	 fppZELAQMk6ew==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a995f56ea2dso479316366b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 08:10:31 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyFozH07+JNxPLZvSsE3Ca6GQqOj+WRcC5uPOFGZrD0QhdUXKip
-	bfF9NdbFPEDO7zH+cWXZJDCTrGFB+3hQzS2sUr+NYFHPNaMdDIam69gJqGLV8BzoqWk80gmUxW0
-	+l43ARy3J2swBC35l/3D09PPDbNs=
-X-Google-Smtp-Source: AGHT+IE9nUh05E3g1BS2Y8SC0TxN87G8qJfD9yluIXePnzvDio/YV+aZW0R5m5/EGeKr5xgmIGsO6Yp/Qi/2H4U0/9A=
-X-Received: by 2002:a17:907:7f94:b0:a7a:aa35:408c with SMTP id
- a640c23a62f3a-a998d10df8bmr235407066b.8.1728486629879; Wed, 09 Oct 2024
- 08:10:29 -0700 (PDT)
+	s=arc-20240116; t=1728487858; c=relaxed/simple;
+	bh=yZS1gRV9Amfzo4O5lXKsH71lkC2BKtjwmrcqfCJrWYE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PH9B7JmfeENPyastoyGVCrf4E5Wc/eGdD05y1BqTnE3pm80B0MK+KIYONwuFhVEuXsJltcnvL9Rs9HrZijg18ToKuL5mYHwDTs4Kk/UwmHkG0Y6J62odEB1fmp6VOweB/tX6K9OHlbOg+wV3MmSN/dWu/IxH1d23kSR7pWokv3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-430558cddbeso6876775e9.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 08:30:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728487855; x=1729092655;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M9Y0SqlRsRe2rsp2H7MsbwKJH7O9zRM1QhTy82zXMvo=;
+        b=DajvWPj1FNkCStZPiL3hF9pEzVXrG4yThX/pupigWChkRrvoqnG0ALTj6UcHMX0OzC
+         o+zWyPM30urUGmBa5XCSQke7Ge7lWLYjXBt/P6eZHgB98jtjXlHeWHsRRWZQg2MphtjF
+         TgSx/ANm2+VKhUFL0lRXr0KD8nKyL6VM/5d+TPJaARZkiDRiA6MHsALsTACgWTO5MFvX
+         upV7NBFcUG+32ECuo8S7FenNntnybsJK44bO31i4OCN+ijiVkj9/PxxLeOncPACLR1iw
+         oQPSytW/NBl8VDB17EFicY0VFOBfPjIa5sO4kBfM4c6oiroSLtfK2OaOLSdocS04Irrk
+         /MFA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqyDGoLTLs2eVSy5hf494XtGgznyH4+7BRvGJ4FoKmWXahZ1ynP+z6jtortKDqY7A9vPLz5Ro3QWuUWw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLKuCwJYidww79gcM5/sZgEDq7JVm4tMtoq1K5o+TKk//kn2SN
+	NptX5TpKen7pO1oqtKnWyQdxzsK5upal6zg74J+lJbKxTV3N8zdd
+X-Google-Smtp-Source: AGHT+IF88kdUP2UkbDTmO8aiUAX4u4cnnTSqErLC75ExGKEEEnS7yOZD8t1VF8dj08CwweRO/DjPDg==
+X-Received: by 2002:a05:600c:63d3:b0:426:5e32:4857 with SMTP id 5b1f17b1804b1-43115a2ea01mr531375e9.0.1728487854516;
+        Wed, 09 Oct 2024 08:30:54 -0700 (PDT)
+Received: from nuc.fritz.box (p200300f6f724f700fa633ffffe02074c.dip0.t-ipconnect.de. [2003:f6:f724:f700:fa63:3fff:fe02:74c])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d371b0731sm3252521f8f.90.2024.10.09.08.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Oct 2024 08:30:53 -0700 (PDT)
+From: Johannes Thumshirn <jth@kernel.org>
+To: David Sterba <dsterba@suse.com>,
+	Josef Bacik <josef@toxicpanda.com>
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	linux-btrfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 0/2] implement truncation for RAID stripe-extents
+Date: Wed,  9 Oct 2024 17:30:30 +0200
+Message-ID: <20241009153032.23336-1-jth@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241009020149.23467-1-robbieko@synology.com> <CAL3q7H4sjkQ2-s=jdP-bsF3Jpc7iqGTkOfKe1asfo17+a4Mvgg@mail.gmail.com>
-In-Reply-To: <CAL3q7H4sjkQ2-s=jdP-bsF3Jpc7iqGTkOfKe1asfo17+a4Mvgg@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 9 Oct 2024 16:09:52 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4sdxdnLx9uaSDrhVpJCdsik+ZPVCH4cjeZKCBKY_ohzw@mail.gmail.com>
-Message-ID: <CAL3q7H4sdxdnLx9uaSDrhVpJCdsik+ZPVCH4cjeZKCBKY_ohzw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: reduce lock contention when eb cache miss for
- btree search
-To: robbieko <robbieko@synology.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 9, 2024 at 3:18=E2=80=AFPM Filipe Manana <fdmanana@kernel.org> =
-wrote:
->
-> On Wed, Oct 9, 2024 at 3:09=E2=80=AFAM robbieko <robbieko@synology.com> w=
-rote:
-> >
-> > From: Robbie Ko <robbieko@synology.com>
-> >
-> > When crawling btree, if an eb cache miss occurs, we change to use
-> > the eb read lock and release all previous locks to reduce lock contenti=
-on.
-> >
-> > Because we have prepared the check parameters and the read lock
-> > of eb we hold, we can ensure that no race will occur during the check
-> > and cause unexpected errors.
-> >
-> > Signed-off-by: Robbie Ko <robbieko@synology.com>
-> > ---
-> >  fs/btrfs/ctree.c | 88 ++++++++++++++++++++++++++++--------------------
-> >  1 file changed, 52 insertions(+), 36 deletions(-)
-> >
-> > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> > index 0cc919d15b14..0efbe61497f3 100644
-> > --- a/fs/btrfs/ctree.c
-> > +++ b/fs/btrfs/ctree.c
-> > @@ -1515,12 +1515,12 @@ read_block_for_search(struct btrfs_root *root, =
-struct btrfs_path *p,
-> >         struct btrfs_tree_parent_check check =3D { 0 };
-> >         u64 blocknr;
-> >         u64 gen;
-> > -       struct extent_buffer *tmp;
-> > -       int ret;
-> > +       struct extent_buffer *tmp =3D NULL;
-> > +       int ret, err;
->
-> Please avoid declaring two (or more) variables in the same line. 1 per
-> line is prefered for readability and be consistent with this
-> function's code.
->
-> >         int parent_level;
-> > -       bool unlock_up;
-> > +       bool create =3D false;
-> > +       bool lock =3D false;
-> >
-> > -       unlock_up =3D ((level + 1 < BTRFS_MAX_LEVEL) && p->locks[level =
-+ 1]);
-> >         blocknr =3D btrfs_node_blockptr(*eb_ret, slot);
-> >         gen =3D btrfs_node_ptr_generation(*eb_ret, slot);
-> >         parent_level =3D btrfs_header_level(*eb_ret);
-> > @@ -1551,52 +1551,66 @@ read_block_for_search(struct btrfs_root *root, =
-struct btrfs_path *p,
-> >                          */
-> >                         if (btrfs_verify_level_key(tmp,
-> >                                         parent_level - 1, &check.first_=
-key, gen)) {
-> > -                               free_extent_buffer(tmp);
-> > -                               return -EUCLEAN;
-> > +                               ret =3D -EUCLEAN;
-> > +                               goto out;
-> >                         }
-> >                         *eb_ret =3D tmp;
-> > -                       return 0;
-> > +                       tmp =3D NULL;
-> > +                       ret =3D 0;
-> > +                       goto out;
->
-> By setting tmp to NULL and jumping to the out label, we leak a
-> reference on the tmp extent buffer.
->
-> >                 }
-> >
-> >                 if (p->nowait) {
-> > -                       free_extent_buffer(tmp);
-> > -                       return -EAGAIN;
-> > +                       ret =3D -EAGAIN;
-> > +                       btrfs_release_path(p);
->
-> To reduce the critical section sizes, please set ret to -EAGAIN after
-> releasing the path.
->
-> > +                       goto out;
-> >                 }
-> >
-> > -               if (unlock_up)
-> > -                       btrfs_unlock_up_safe(p, level + 1);
-> > +               ret =3D -EAGAIN;
-> > +               btrfs_unlock_up_safe(p, level + 1);
->
-> Same here, set ret after the unlocking.
->
-> But why set ret to -EAGAIN? Here we know p->nowait is false.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Nevermind this is because of the unconditional unlock now.
+Implement truncation of RAID stripe-tree entries and add selftests for these
+two edge cases of deletion to the RAID stripe-tree selftests.
 
->
-> > +               btrfs_tree_read_lock(tmp);
-> > +               lock =3D true;
->
-> And here, with the same reasoning, set 'lock' to true before calling
-> btrfs_tree_read_lock().
->
-> > +               btrfs_release_path(p);
-> >
-> >                 /* now we're allowed to do a blocking uptodate check */
-> > -               ret =3D btrfs_read_extent_buffer(tmp, &check);
-> > -               if (ret) {
-> > -                       free_extent_buffer(tmp);
-> > -                       btrfs_release_path(p);
-> > -                       return ret;
-> > +               err =3D btrfs_read_extent_buffer(tmp, &check);
-> > +               if (err) {
-> > +                       ret =3D err;
-> > +                       goto out;
->
-> Why do we need to have this 'err' variable?
-> Why not use 'ret' and simplify?
->
-> >                 }
-> > -
-> > -               if (unlock_up)
-> > -                       ret =3D -EAGAIN;
-> > -
-> >                 goto out;
-> >         } else if (p->nowait) {
-> > -               return -EAGAIN;
-> > -       }
-> > -
-> > -       if (unlock_up) {
-> > -               btrfs_unlock_up_safe(p, level + 1);
-> >                 ret =3D -EAGAIN;
-> > -       } else {
-> > -               ret =3D 0;
-> > +               btrfs_release_path(p);
->
-> Same here, set 'ret' to -EAGAIN after releasing the path.
->
-> > +               goto out;
-> >         }
-> >
-> > +       ret =3D -EAGAIN;
-> > +       btrfs_unlock_up_safe(p, level + 1);
->
-> Same here.
->
-> But why set ret to -EAGAIN? Here we know p->nowait is false.
+Changes to v2:
+- Correctly adjust the btree keys and insert new items instead (Filipe)
+- Add selftests
 
-Nevermind this is because of the unconditional unlock now.
+Link to v2:
+https://lore.kernel.org/linux-btrfs/20240911095206.31060-1-jth@kernel.org
 
-In both cases we still don't need the 'err' variable.
-Just set 'ret' to -EAGAIN if btrfs_find_create_tree_block() below
-doesn't return an error and btrfs_read_extent_buffer() below and above
-don't return an error.
+Johannes Thumshirn (2):
+  btrfs: implement partial deletion of RAID stripe extents
+  btrfs: implement self-tests for partial RAID srtipe-tree delete
 
->
-> > +
-> >         if (p->reada !=3D READA_NONE)
-> >                 reada_for_search(fs_info, p, level, slot, key->objectid=
-);
-> >
-> > -       tmp =3D read_tree_block(fs_info, blocknr, &check);
-> > +       tmp =3D btrfs_find_create_tree_block(fs_info, blocknr, check.ow=
-ner_root, check.level);
-> >         if (IS_ERR(tmp)) {
-> > +               ret =3D PTR_ERR(tmp);
-> > +               tmp =3D NULL;
-> >                 btrfs_release_path(p);
-> > -               return PTR_ERR(tmp);
-> > +               goto out;
-> >         }
-> > +       create =3D true;
-> > +
-> > +       btrfs_tree_read_lock(tmp);
-> > +       lock =3D true;
->
-> Same here, set 'lock' to true before the call to btrfs_tree_read_lock();
->
-> > +       btrfs_release_path(p);
-> > +
-> > +       /* now we're allowed to do a blocking uptodate check */
->
-> Please capitalize the first word of a sentence and end the sentence
-> with punctuation.
-> This is the preferred style and we strive to do that for new comments
-> or code that moves comments around.
->
-> > +       err =3D btrfs_read_extent_buffer(tmp, &check);
->
-> This can block, so if p->nowait at this point we should instead exit
-> with -EAGAIN and not call this function.
->
-> > +       if (err) {
-> > +               ret =3D err;
-> > +               goto out;
-> > +       }
->
-> Same here, no need to use extra variable 'err', can just use 'ret'.
->
-> > +
-> >         /*
-> >          * If the read above didn't mark this buffer up to date,
-> >          * it will never end up being up to date.  Set ret to EIO now
-> > @@ -1607,11 +1621,13 @@ read_block_for_search(struct btrfs_root *root, =
-struct btrfs_path *p,
-> >                 ret =3D -EIO;
-> >
-> >  out:
-> > -       if (ret =3D=3D 0) {
-> > -               *eb_ret =3D tmp;
-> > -       } else {
-> > -               free_extent_buffer(tmp);
-> > -               btrfs_release_path(p);
-> > +       if (tmp) {
-> > +               if (lock)
-> > +                       btrfs_tree_read_unlock(tmp);
-> > +               if (create && ret && ret !=3D -EAGAIN)
-> > +                       free_extent_buffer_stale(tmp);
-> > +               else
-> > +                       free_extent_buffer(tmp);
->
-> So in the success case we no longer set *eb_ret to tmp. Why? The
-> callers expect that.
+ fs/btrfs/raid-stripe-tree.c             |  85 ++++++++-
+ fs/btrfs/tests/raid-stripe-tree-tests.c | 223 ++++++++++++++++++++++++
+ 2 files changed, 304 insertions(+), 4 deletions(-)
 
-Ok, it's because of the -EAGAIN due to having the unconditional unlock now.
+-- 
+2.43.0
 
-And btw, have you observed any case where this improved anything? Any
-benchmarks?
-
-I can't see how this can make anything better because this function is
-never called for a root node, and therefore level + 1 <
-BTRFS_MAX_LEVEL.
-
-But there is one case where this patch causes unnecessary path
-releases and makes the caller retry a search:
-when none of the levels above were locked. That's why we had the
-following expression before:
-
-unlock_up =3D ((level + 1 < BTRFS_MAX_LEVEL) && p->locks[level + 1]);
-
-So we wouldn't make the caller retry the search if upper levels aren't
-locked or p->skip_locking =3D=3D 1.
-But now after this patch we make the caller retry the search in that case.
-
-Thanks.
-
->
-> Thanks.
->
-> >         }
-> >
-> >         return ret;
-> > @@ -2198,7 +2214,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *=
-trans, struct btrfs_root *root,
-> >                 }
-> >
-> >                 err =3D read_block_for_search(root, p, &b, level, slot,=
- key);
-> > -               if (err =3D=3D -EAGAIN)
-> > +               if (err =3D=3D -EAGAIN && !p->nowait)
-> >                         goto again;
-> >                 if (err) {
-> >                         ret =3D err;
-> > @@ -2325,7 +2341,7 @@ int btrfs_search_old_slot(struct btrfs_root *root=
-, const struct btrfs_key *key,
-> >                 }
-> >
-> >                 err =3D read_block_for_search(root, p, &b, level, slot,=
- key);
-> > -               if (err =3D=3D -EAGAIN)
-> > +               if (err =3D=3D -EAGAIN && !p->nowait)
-> >                         goto again;
-> >                 if (err) {
-> >                         ret =3D err;
-> > --
-> > 2.17.1
-> >
-> >
 
