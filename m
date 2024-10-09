@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-8744-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8745-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02E8F99732B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 19:35:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8922F9973B6
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 19:49:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247DC1C22632
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 17:35:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DB031F24537
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 17:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D2A1E0E16;
-	Wed,  9 Oct 2024 17:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECCBE1E1A36;
+	Wed,  9 Oct 2024 17:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b5WLis4o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gqSiY4lT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79C7E1A2630;
-	Wed,  9 Oct 2024 17:34:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935DC1D318A;
+	Wed,  9 Oct 2024 17:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728495296; cv=none; b=aiL7Yg7t6fIyx7g2Ee4xefKW9Z34PjOcLAh3Ackvo9VcmvgFWHkHVYlqk/+1Xsy//ILNSiGMja6j4eQLIht7nMceRhxfpYxbozZAV/QwIqMvbnQ81h1HJIUcxqHGoDZ4Cdzr+QExtdHuVa4EoP30s5CIeuOp1ONRhJQxMOkgihw=
+	t=1728496046; cv=none; b=VOoAZuIGIvCidtBov95sQBBbcsUNamdYNmLFCousY3xCjyuJH2oraD1gDrfRVXcH714UNSTzF/kSgQFP0PXPErT75tkhKDnD3eDjZxX1sgbEQ10UG4wM0EBMFMGxBUPVmTfRFP3/PUrbjxhBWTC7x834EHfvvEQ/4iS0LgR03G4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728495296; c=relaxed/simple;
-	bh=oeLkdWrCv5LkmpnXbhNmxwvlNNYmSlIvBrYlfACHjGY=;
+	s=arc-20240116; t=1728496046; c=relaxed/simple;
+	bh=hrduq5hX72SJbr+Ep+RCPMEc9rDr01SBnYcCDcMmYbM=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a585qglNemJF5UcQJresl1PHI706lPwt8Or/vPa0jTXS+lDz1wItaUjm7nwcT8F3Yg35tGc+cHFSL2EoBYu0dEE6kYlSa+cbhwcgQnZQUnKKrtlyUbWehe0kRUyymeObBte+gK0+qerb/en3t7dzXyODYdfKZWGM0e2hM4OOjUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b5WLis4o; arc=none smtp.client-ip=209.85.128.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=O8CaJbgxzXYV2HyEhkiABRuqWc/0GCj2Typqi4ezlNfciP13jydUzICgVRNC0y0k0U7VTHYXU6lnNLUY8rTBTd8cyxCPNj7ErNieaCm9vuZ17IOySRI4qyRa2F7RKX0ejLx9/Q+/6cpvFIsVp/1E29oIF865NiGbfyiqV/VbHHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gqSiY4lT; arc=none smtp.client-ip=209.85.128.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6e2772f7df9so784167b3.2;
-        Wed, 09 Oct 2024 10:34:54 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6dde476d3dfso1127857b3.3;
+        Wed, 09 Oct 2024 10:47:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728495293; x=1729100093; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728496043; x=1729100843; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2woNv3OfgPw1OV3xE2cmaefjQ/xqlt3SqQjOoMCmrEc=;
-        b=b5WLis4oBC/lurcyHcsx4fxgD3EvEU7mzTnAcRu5E4ymuNI0iH3l5fbiMt4wVREpSG
-         hM7hUbBSIGoYXncIY85gmOTEuzTz3t2XzopbgII9YYeSNsFJwN8Btz584iJ3StzZDcRH
-         +0GPwUj+3tMplIBpO6Y87He6lZABsSDKI4CDOJToVUUP+grY9evfdx5QUl/AWt8Y2ZGh
-         EWsuTdWeNCHhO3L4t9PPgrii/b6Y3wKkAGf7A19J5wry+pefs5O22ebVA3F1DIAWRtBX
-         FhHAGbWNrOmEnAaFlO6ajqwcqKt5nohjLw0ZL3PlYM0qXCDWNHMo06dz/TLyUEOjuKg0
-         b2xA==
+        bh=UC1+s/+UBvzxoqZUG6QZubGws8xau17tsJaWekZSoEE=;
+        b=gqSiY4lT/WpoYkClexk4gSxjYO66pCZ26pMyWFseAJxcEsGN/1iqRh+80f9R35eeX1
+         Ei6TLD4d394N/H5DAgJI2eWMjcX32B9UwOX9/MsL+Zxvt4gtmMKctGTwXk2HgTj8iixd
+         PUnD7MaEylOffSyThRHb3QMfywy6cX0R2kEbkx/8IbiYtKMfDTiO1LhYOWCX+aDC0NRq
+         cEymwr1MJ92YEZgOtomtVww0U+Az+oSwNhIgEg8edZhVmlbD75cpKpCqJ0N1jVsIuUeu
+         PBRl0eKdtKGjAsv2ovPQsMJdClFWhvNETKDVqbcMm4m1Q/Vsu9GjjRJ1qE4EqBOTa/dB
+         3dZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728495293; x=1729100093;
+        d=1e100.net; s=20230601; t=1728496043; x=1729100843;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2woNv3OfgPw1OV3xE2cmaefjQ/xqlt3SqQjOoMCmrEc=;
-        b=oHcC9FbCch1NEMTx++UhpxwMI1b+3ZG1rb/HFh+tMWdnZCtb25sdSQc6RIh7ZG1P/v
-         rqpTCs74+FtvEi8ge2xIFUudm5ZY/wiEbVUpv6BsGn6HoqabHzlIwkm+ysjA/A2ReP3F
-         PsjRRlV38Ikv0Nd4W0wXfSjNb3Qs6fgBculpz0nMmyC7lc99OfZfGc2BSWMN6SI3zYGx
-         5VeUVTvV05G/v4iIYKTptgvVM4ITQbyUcSbgYTJgvfKhoSXWX7Hk8PflPd3Sk/yogvnA
-         xe2smVamddzNs/xizXUZxl+E1eY5AcsOkKjNbP0P4RNgkgac3V04fQ/xF7N11hCnOIfL
-         OrcA==
-X-Forwarded-Encrypted: i=1; AJvYcCUE9t6CWpQKVnw4rGtT4rm5ZqNYjcC8nxOq+iURE+Zn5OgY6WCjqW2sT1p4bw8Y4dBSjYNZmOQsBJL83aml@vger.kernel.org, AJvYcCVJgtImijma1yuGCNcthYIfo5dZ3dj8auN4iz1rJ+B8uFa7KXoa28cYl36XcGDzW0BreRQNMbTSdHYd@vger.kernel.org, AJvYcCVdc8BbNS7gFeW/MddKzlypGOOx7fTD+EyVQfa0XtdZ69K0tjM3dAcTBFyHNxcgRk750m+KiCAKCo1n4A==@vger.kernel.org, AJvYcCWnjyxkCI24+EI2U2nrfv2qUYN1YH9sSGx1gvB7J/9eYj2kW7srBxD9d1A2IkResCyVp2gvZP1GCiuJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yykgdjbu48tnvB2z/9XAhCHGcwyP/4zAnreOb6S9N+hyciDdGwf
-	Y0rEjN0V4bOopBBFJ80on1ovjT5vWjjn/mkZtZhdp04s+iBzkmGm
-X-Google-Smtp-Source: AGHT+IEq3MufEOXftigWGdRndlAx7RSkyaK4tsjkc/CE/MlAYMgrL2JdUZFXoPxMKIZAE4l7TzPynA==
-X-Received: by 2002:a05:690c:660b:b0:6e2:b263:1045 with SMTP id 00721157ae682-6e322132ef2mr37828337b3.6.1728495293438;
-        Wed, 09 Oct 2024 10:34:53 -0700 (PDT)
+        bh=UC1+s/+UBvzxoqZUG6QZubGws8xau17tsJaWekZSoEE=;
+        b=KjiRVxJShlNWZgB16KNkBAn+bmAI/xaPFYkhPhIy38lRARgH9acxb4oY0QaMjZ9fNp
+         YaBp98J45+OJmDG25qaxmc2W3Xx+VNTh+yopDvZ1T6wGpW7Y0a4S+cfcmodHHrAWstBQ
+         PnhUpYpmMX9Am+ByzzkGinDMafPI4osHaxl+EA2KsvsZ2HQfEFGydIK2fnKVS5j87vLO
+         hywERyjsRJpf/Wpv3MpjgDkiFYU+6pofmu11c1uUTg2fImJREzRVmf0/Q3dGXCgxYqTT
+         IXUU1yl3LRc/ZoPQNWZ1qNt+lLg4WoE2GiZmRrbKp/zACAy+wPNs6qAd3KXrO2xhyM/2
+         kBOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqIQB21zH/+BsM89/2e0iWBExKDKi1Y3tuf59FOL23l/69XyJM2JhAueVijYV2yY1hm43sy6K9vYMBHg==@vger.kernel.org, AJvYcCUtC5DduCXuvLEQ1S56ETX8XoB3n1+L8BJcaIPTV7BtE6XCMMExdQkKUaaH/iOwigYvXOHNqsKHpdmk@vger.kernel.org, AJvYcCVdN00GtlgUMEalDJR6nvwB0qEeyjyXbh8qgUYv4l+ZCnQpG8XtRDNyGmi33j5wK76k5eXIfZL6fBsA@vger.kernel.org, AJvYcCX4jJV+9+fHzDyGnaMcOIP6TG2IMEE0V9RXWF/2dQHMiU7DFk2ftfYMtTMJ8NwylhSjS6AGRGfg5LMZKc90@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZFXfgnhbYFZdj2bf8ItzLzg5ZnRgiupo0Y4ucIU93fY/E1gxH
+	hgW6vMf+fcF8jh4WO9Ol/Dk4nUi3oRB+PHMomD3prw0aYE4m/Ymm
+X-Google-Smtp-Source: AGHT+IF7Ewv221Glscvu1OZcOfztkqBqsRZZI6mFeYxOjowv6x9OgIFXt36jk+9E6Y2K+UdD8DipVA==
+X-Received: by 2002:a05:690c:6a05:b0:6e2:63e:f087 with SMTP id 00721157ae682-6e3221f8577mr35924477b3.42.1728496043387;
+        Wed, 09 Oct 2024 10:47:23 -0700 (PDT)
 Received: from fan ([50.205.20.42])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e2d9388279sm19362137b3.65.2024.10.09.10.34.51
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e2d93f7d31sm19219847b3.135.2024.10.09.10.47.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2024 10:34:53 -0700 (PDT)
+        Wed, 09 Oct 2024 10:47:23 -0700 (PDT)
 From: Fan Ni <nifan.cxl@gmail.com>
 X-Google-Original-From: Fan Ni <fan.ni@samsung.com>
-Date: Wed, 9 Oct 2024 10:34:50 -0700
+Date: Wed, 9 Oct 2024 10:47:20 -0700
 To: Ira Weiny <ira.weiny@intel.com>
 Cc: Dave Jiang <dave.jiang@intel.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
@@ -81,15 +81,11 @@ Cc: Dave Jiang <dave.jiang@intel.com>,
 	Vishal Verma <vishal.l.verma@intel.com>,
 	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
 	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH v4 03/28] cxl/cdat: Use %pra for dpa range outputs
-Message-ID: <Zwa-urzkRBCtV9S2@fan>
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 06/28] cxl/pci: Delay event buffer allocation
+Message-ID: <ZwbBqNnKXfNMTGEF@fan>
 References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-3-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-6-c261ee6eeded@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,54 +94,58 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241007-dcd-type2-upstream-v4-3-c261ee6eeded@intel.com>
+In-Reply-To: <20241007-dcd-type2-upstream-v4-6-c261ee6eeded@intel.com>
 
-On Mon, Oct 07, 2024 at 06:16:09PM -0500, Ira Weiny wrote:
-> Now that there is a printk specifier for struct range use it in
-> debug output of CDAT data.
+On Mon, Oct 07, 2024 at 06:16:12PM -0500, Ira Weiny wrote:
+> The event buffer does not need to be allocated if something has failed in
+> setting up event irq's.
 > 
-> To: Petr Mladek <pmladek@suse.com>
-> To: Steven Rostedt <rostedt@goodmis.org>
-> To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> To: Sergey Senozhatsky <senozhatsky@chromium.org>
-> To: Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION)
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org (open list)
+> In prep for adjusting event configuration for DCD events move the buffer
+> allocation to the end of the event configuration.
+> 
+> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
+> 
 
 Reviewed-by: Fan Ni <fan.ni@samsung.com>
 
->  drivers/cxl/core/cdat.c | 8 ++++----
+> ---
+> Changes:
+> [iweiny: keep tags for early simple patch]
+> [Davidlohr, Jonathan, djiang: move to beginning of series]
+> 	[Dave feel free to pick this up if you like]
+> ---
+>  drivers/cxl/pci.c | 8 ++++----
 >  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/cxl/core/cdat.c b/drivers/cxl/core/cdat.c
-> index ef1621d40f05..438869df241a 100644
-> --- a/drivers/cxl/core/cdat.c
-> +++ b/drivers/cxl/core/cdat.c
-> @@ -247,8 +247,8 @@ static void update_perf_entry(struct device *dev, struct dsmas_entry *dent,
->  	dpa_perf->dpa_range = dent->dpa_range;
->  	dpa_perf->qos_class = dent->qos_class;
->  	dev_dbg(dev,
-> -		"DSMAS: dpa: %#llx qos: %d read_bw: %d write_bw %d read_lat: %d write_lat: %d\n",
-> -		dent->dpa_range.start, dpa_perf->qos_class,
-> +		"DSMAS: dpa: %pra qos: %d read_bw: %d write_bw %d read_lat: %d write_lat: %d\n",
-> +		&dent->dpa_range, dpa_perf->qos_class,
->  		dent->coord[ACCESS_COORDINATE_CPU].read_bandwidth,
->  		dent->coord[ACCESS_COORDINATE_CPU].write_bandwidth,
->  		dent->coord[ACCESS_COORDINATE_CPU].read_latency,
-> @@ -279,8 +279,8 @@ static void cxl_memdev_set_qos_class(struct cxl_dev_state *cxlds,
->  			 range_contains(&pmem_range, &dent->dpa_range))
->  			update_perf_entry(dev, dent, &mds->pmem_perf);
->  		else
-> -			dev_dbg(dev, "no partition for dsmas dpa: %#llx\n",
-> -				dent->dpa_range.start);
-> +			dev_dbg(dev, "no partition for dsmas dpa: %pra\n",
-> +				&dent->dpa_range);
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 37164174b5fb..0ccd6fd98b9d 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -764,10 +764,6 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
+>  		return 0;
 >  	}
->  }
 >  
+> -	rc = cxl_mem_alloc_event_buf(mds);
+> -	if (rc)
+> -		return rc;
+> -
+>  	rc = cxl_event_get_int_policy(mds, &policy);
+>  	if (rc)
+>  		return rc;
+> @@ -781,6 +777,10 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
+>  		return -EBUSY;
+>  	}
+>  
+> +	rc = cxl_mem_alloc_event_buf(mds);
+> +	if (rc)
+> +		return rc;
+> +
+>  	rc = cxl_event_irqsetup(mds);
+>  	if (rc)
+>  		return rc;
 > 
 > -- 
 > 2.46.0
