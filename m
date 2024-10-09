@@ -1,97 +1,114 @@
-Return-Path: <linux-btrfs+bounces-8726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8727-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E721996E8C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:47:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A691B996F18
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 17:01:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D09B7282543
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:46:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D80131C21E5E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 15:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEA419CC28;
-	Wed,  9 Oct 2024 14:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQ0sYz39"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F012E1C0DF3;
+	Wed,  9 Oct 2024 15:00:52 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from freki.datenkhaos.de (freki.datenkhaos.de [23.88.67.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB345466B;
-	Wed,  9 Oct 2024 14:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87741537FF
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 15:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.88.67.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728485205; cv=none; b=cz+ow7ZXIzQxu/3tQ46So43TCkPBQkk0tOIfL/+18uGFSFSVuknb6aF2q4mvMp0g3coxU6UrU10ArbU5j7ROIpJa0icq+LCGkpbXrRp3L/TSB3gLTYpZmfbqKKGKPZeDxvEpir3EJDxoGhtsMwZE26dUR1ltNJRXD/DyfvX9a/Y=
+	t=1728486052; cv=none; b=c8H87VMAx1kULSskKDvanrJSEf/i7OPMuG+40YPkRpMQ+j5gE6g+fVvdXTBYttAoidTXjvmjblLDBB9/rukDhI2NCRK5EDsf3nNSn5sqgs3rXvSietByedkmu5ao3TC556bZM/Iicy0dO102F99+W2zb16jDeLoESeur3dKx670=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728485205; c=relaxed/simple;
-	bh=rZt1BDsL7XH/WgQBqMBRmA5UirvaAbx0lcp3+s2Jg20=;
+	s=arc-20240116; t=1728486052; c=relaxed/simple;
+	bh=QoXIkl3VC1q13p7qS6WP6f9hBmQrpsLuESijpJqKg3U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iY58q/LNgdcUmWkTFQFSLk/JENVqwgj06Msr39dt96SFaxDDTW8PikXuMftmrQmVOq9CRekeurkSSTdPm0+AKheWZlbkYZbRtV9BfGeZ6v7/YRDZ8ZCaFObwnzmGgwL+D71OjNyEifrK4m03ieRo/SaBsD06RS/PcWcmyPSsW+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PQ0sYz39; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA742C4CEC3;
-	Wed,  9 Oct 2024 14:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728485205;
-	bh=rZt1BDsL7XH/WgQBqMBRmA5UirvaAbx0lcp3+s2Jg20=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PQ0sYz39EhEsQpXLIPdL81I7Nr1TbHPFSqBQuC8+MqmGrc6UuzlP1s40gxPm2deWD
-	 yiEkad7/obJhbcHtFovfEwjYq52oliN4kXWqvOg2G8uKhAqZGQ4GAQXLYbtsaLHF24
-	 qhJNufFQttCvCNNbTa/FhExlK18ezUowsxOvpw8DyxKxo2mCuBuJmqCzs6jO77WWdE
-	 OEC2wBybTJDKiFvvqRan5wYhgw7bTXZF/d1/Gx61w75iHPSUMz5zWkiH0nEviTwpNN
-	 3dAm8HFk9ljw/+Z8RBjQRT16I3IQzywNiHM3cNXtpqRH14ySCQijAqAT/J0Ocm3O4E
-	 /eYidywDHXfcg==
-Date: Wed, 9 Oct 2024 07:46:44 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: An Long <lan@suse.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] generic/746: install two necessary files
-Message-ID: <20241009144644.GK21840@frogsfrogsfrogs>
-References: <9d7ef6a9de1cdd2bbb6d91a407905254c4784c68.camel@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FqETwtoMAUWEVcCK1V5wckEeMVpZSw1IHIFNdLBrMZ84rizoxalzR5s6POxJ+DIpvd9pEk/ORzb1I3gQIABfTeY4MPt3NtmQpDdZE+ODMvAjJqrfn/4/h2+Inadb36VELqOHLU8AFn9mkAd2ud+7BdWFtX6C5DJ/Az98/+OjS8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=datenkhaos.de; spf=pass smtp.mailfrom=datenkhaos.de; arc=none smtp.client-ip=23.88.67.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=datenkhaos.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=datenkhaos.de
+Received: from elitebook (unknown [134.19.35.230])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by freki.datenkhaos.de (Postfix) with ESMTPSA id 0DD68D7DC20;
+	Wed, 09 Oct 2024 17:00:43 +0200 (CEST)
+Date: Wed, 9 Oct 2024 17:00:38 +0200
+From: Johannes Hirte <johannes.hirte@datenkhaos.de>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: "cwalou@gmail.com" <cwalou@gmail.com>, linux-btrfs@vger.kernel.org
+Subject: Re: mount: can't read superblock on - corrupt leaf - read time tree
+ block corruption detected
+Message-ID: <32s5sdlmlz2jhqweoyvrync734f7rn4goqfka3nie4epa6ltvm@dfrz37wefhc6>
+References: <492c06c3-5e37-4026-96a8-cacc8eb28f51@gmail.com>
+ <e040f6b8-6775-4b87-a345-6f6fb56aab26@gmx.com>
+ <cuab5thyorquonghaxpqwxkfhog7lgrxzv3a5kdjs2zfw4ulaj@gutzirf5ipiv>
+ <6a11b718-4d72-4422-ae08-7af7598a9403@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9d7ef6a9de1cdd2bbb6d91a407905254c4784c68.camel@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6a11b718-4d72-4422-ae08-7af7598a9403@gmx.com>
 
-On Wed, Oct 09, 2024 at 04:45:37PM +0800, An Long wrote:
-> parse-dev-tree.awk and parse-extent-tree.awk are used by generic/746.
-> We need to make sure them are installed, otherwise generic/746 will
-> have problems if fstests is installed via "make install".
-> ---
->  src/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On 2024 Okt 09, Qu Wenruo wrote:
 > 
-> diff --git a/src/Makefile b/src/Makefile
-> index 3097c29e..a0396332 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -38,7 +38,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize
-> preallo_rw_pattern_reader \
 > 
->  EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
->               btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-> -             soak_duration.awk
-> +             soak_duration.awk parse-dev-tree.awk parse-extent-
-> tree.awk
+> 在 2024/10/9 06:02, Johannes Hirte 写道:
+> > On 2024 Okt 03, Qu Wenruo wrote:
+> > > 
+> > > 在 2024/10/3 17:02, cwalou@gmail.com 写道:
+> > > > Hello.
+> > > > 
+> > > > A 4TB drive taken out of a synology NAS. When I try to mount it, it
+> > > > won't. This is what I did :
+> > > 
+> > > Synology has out-of-tree features that upstream kernel doesn't support.
+> > > 
+> > 
+> > Hello,
+> > 
+> > I've noticed similar errors on my server too. It's a gentoo box with
+> > vanilla kernel. It happend first with linux-6.10.9 and happens with 6.11
+> > too:
+> 
+> This is a different one from the original report.
+> 
+> > 
+> > [   67.310316] BTRFS: device label bigraid1 devid 1 transid 98985 /dev/sdd1 (8:49) scanned by mount (4069)
+> > [   67.313109] BTRFS info (device sdd1): first mount of filesystem 83a02224-c807-4e70-a2cd-8b7156bfbbd2
+> > [   67.313137] BTRFS info (device sdd1): using crc32c (crc32c-generic) checksum algorithm
+> > [   67.313156] BTRFS info (device sdd1): using free-space-tree
+> > [   67.527088] page: refcount:4 mapcount:0 mapping:000000004bf8c7c2 index:0x2ffb1be8 pfn:0x11b55c
+> > [   67.527114] memcg:ffff8881174ab800
+> > [   67.527120] aops:0xffffffff8206c960 ino:1
+> > [   67.527129] flags: 0x2000000000004000(private|node=0|zone=2)
+> > [   67.527144] raw: 2000000000004000 0000000000000000 dead000000000122 ffff8881022c9678
+> > [   67.527152] raw: 000000002ffb1be8 ffff88811b5304b0 00000004ffffffff ffff8881174ab800
+> > [   67.527157] page dumped because: eb page dump
+> > [   67.527162] BTRFS critical (device sdd1): corrupt leaf: block=3297221967872 slot=47 extent bytenr=2176663552 len=36864 invalid data ref objectid value 259
+> 
+> This is caused by the long deprecated inode_cache feature.
+> 
+> Newer btrfs-check can report it as an error.
+> 
+> You can fix it by "btrfs rescue clear-ino-cache <device>" on the
+> unmounted fs, using btrfs-progs v6.11 (the command is there for a long
+> time, but has some small bugs).
+> 
+> Thanks,
+> Qu
 
-^^ I think this is a broken line wrapping here, but otherwise the change
-seems sensible.
+Thank you, this fixed it. Just one question, can't this be done automatically
+at mount-time? Would be much more convenient than a system that doesn't come
+back after kernel update.
 
-With that fixed,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> 
->  SUBDIRS = log-writes perf
-> 
-> -- 
-> 2.43.0
-> 
-> 
+regards,
+  Johannes
 
