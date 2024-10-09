@@ -1,58 +1,79 @@
-Return-Path: <linux-btrfs+bounces-8712-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8713-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8D4996DF4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:33:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EE9D996DF7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:33:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C27CAB21CF0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:32:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECF692835ED
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A98E1A2C0B;
-	Wed,  9 Oct 2024 14:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66401A303E;
+	Wed,  9 Oct 2024 14:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QISR8BRW";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QISR8BRW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFF91A2550
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 14:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8DE1A263F
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 14:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728484317; cv=none; b=Pt6USLESevebU1K54LWUwTjHHC+ry7ottEBJe7kHdzTv3PQ0feM2ZdLxAVJhEsACdRukaLyOzprJ2UxF8kIUy3gMy9+KTy/pg27IRMG2MU5vbq8nCr6+TWsBdeYQeNUj95YkrdpK6gqGXUwi2shH6xpFHxvGlPFVftjPJHPYjvg=
+	t=1728484320; cv=none; b=jqL39h1VahEabReAGFzXnZXGONvQJrsNxxXKLGE4AD6ZCCeqP2a6dp+faoULL1v3QWfovhqADGrEAJDCgVjFjGXneKOzJG3g1bkP1QTCKFxNXfv2bmcbXZIyWFDZAPkyKSVrfS28bFKeyY+SZPCuCgQk/oJuRbzI0zaHi2Xs6ZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728484317; c=relaxed/simple;
-	bh=APVpFfm0ox9LgHUjJhpP0SkoW4v31SuM9dcx/ble4D4=;
+	s=arc-20240116; t=1728484320; c=relaxed/simple;
+	bh=I5Z03UKj/NcQmXDNQNLAvBmmh3AG6p8XVAR9dBByZRw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E65/+BvEa3Cpb53MQHTmERtzwTU7sy9LCcej+9iq+8sn4S09J6fRlLUYBCXA+lsyd/S2sr6ouXMF9z1IUy1miaJZq+bqreHvYAhhZS6MuwNWvZYnj9Nm83hEves+JMtOYQ/Tw51HyfEmkar8qWG8rN34BcP/iR0BOtgFR/Vmp9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=H6y6D1+kXvUs5ZeRgZxH84wLm5sxlFSR7MaAekGxXL+DZM0PldBFZjGfd2RXk00oWiS3n3kl55XB92gNNku/eLTV4h00BqWmPCRt8iWUiFwwSnqCdH0E0c8PrfHBbuvQEcEtt8ibHTLU3mu8Jnmdf3kj+r2lweIFFGa212PK+xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QISR8BRW; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QISR8BRW; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 11D3F21EB2;
-	Wed,  9 Oct 2024 14:31:54 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 832C91F7C8;
+	Wed,  9 Oct 2024 14:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728484316; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b9obhORMzhzfNHpqpF8YZ+T1N6eDSEjgJgoAnxio9GA=;
+	b=QISR8BRWj2B/IT3fWiemzt+a1YlCdzumE9kHZvo8NyZYuDOwXbB6C9KF7JIjwC+6y8alFW
+	tpA4jcYLpioSPsafoUo3RBL7PyLFZcQf7lamGlONhed05nGrBbwrBHllbbe2S160M/DxyJ
+	gvByG2yd+Gl/CwKgsUbUSZHtfFUBZnI=
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728484316; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b9obhORMzhzfNHpqpF8YZ+T1N6eDSEjgJgoAnxio9GA=;
+	b=QISR8BRWj2B/IT3fWiemzt+a1YlCdzumE9kHZvo8NyZYuDOwXbB6C9KF7JIjwC+6y8alFW
+	tpA4jcYLpioSPsafoUo3RBL7PyLFZcQf7lamGlONhed05nGrBbwrBHllbbe2S160M/DxyJ
+	gvByG2yd+Gl/CwKgsUbUSZHtfFUBZnI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B77E136BA;
-	Wed,  9 Oct 2024 14:31:54 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7CA10136BA;
+	Wed,  9 Oct 2024 14:31:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hVHKAtqTBmdgRQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 09 Oct 2024 14:31:54 +0000
+	id uAlqHtyTBmdlRQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 09 Oct 2024 14:31:56 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 17/25] btrfs: drop unused parameter iov_iter from btrfs_write_check()
-Date: Wed,  9 Oct 2024 16:31:49 +0200
-Message-ID: <be6697b9b6f84f38e1a034aee9e09efd29f8feae.1728484021.git.dsterba@suse.com>
+Subject: [PATCH 18/25] btrfs: drop unused parameter refs from visit_node_for_delete()
+Date: Wed,  9 Oct 2024 16:31:56 +0200
+Message-ID: <5e1469e3a3e591b1e7e5563d20d730e8a46844a7.1728484021.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1728484021.git.dsterba@suse.com>
 References: <cover.1728484021.git.dsterba@suse.com>
@@ -63,90 +84,73 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 11D3F21EB2
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Level: 
+X-Spamd-Result: default: False [-6.80 / 50.00];
+	REPLY(-4.00)[];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -6.80
+X-Spam-Flag: NO
 
-The parameter 'from' has never been used since commit b8d8e1fd570a
-("btrfs: introduce btrfs_write_check()"), this is for buffered write.
-Direct io write needs it so it was probably an interface thing, but we
-can drop it.
+The parameter duplicates what can be effectively obtained from
+wc->refs[level - 1] and this is what's actually used inside. Added in
+commit 2b73c7e761c4 ("btrfs: unify logic to decide if we need to walk
+down into a node during snapshot delete").
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/direct-io.c | 2 +-
- fs/btrfs/file.c      | 6 +++---
- fs/btrfs/file.h      | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ fs/btrfs/extent-tree.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
-index bd38df5647e3..a7c3e221378d 100644
---- a/fs/btrfs/direct-io.c
-+++ b/fs/btrfs/direct-io.c
-@@ -834,7 +834,7 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 		return ret;
- 	}
- 
--	ret = btrfs_write_check(iocb, from, ret);
-+	ret = btrfs_write_check(iocb, ret);
- 	if (ret < 0) {
- 		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
- 		goto out;
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 160d77f8eb6f..033f85ea8c9d 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1144,7 +1144,7 @@ static void update_time_for_write(struct inode *inode)
- 		inode_inc_iversion(inode);
- }
- 
--int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from, size_t count)
-+int btrfs_write_check(struct kiocb *iocb, size_t count)
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 79373f0ab6ce..e29024c66edb 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5270,7 +5270,7 @@ struct walk_control {
+  * corrupted file systems must have been caught before calling this function.
+  */
+ static bool visit_node_for_delete(struct btrfs_root *root, struct walk_control *wc,
+-				  struct extent_buffer *eb, u64 refs, u64 flags, int slot)
++				  struct extent_buffer *eb, u64 flags, int slot)
  {
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file_inode(file);
-@@ -1222,7 +1222,7 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 	if (ret <= 0)
- 		goto out;
+ 	struct btrfs_key key;
+ 	u64 generation;
+@@ -5384,7 +5384,7 @@ static noinline void reada_walk_down(struct btrfs_trans_handle *trans,
+ 			continue;
  
--	ret = btrfs_write_check(iocb, i, ret);
-+	ret = btrfs_write_check(iocb, ret);
- 	if (ret < 0)
- 		goto out;
+ 		/* If we don't need to visit this node don't reada. */
+-		if (!visit_node_for_delete(root, wc, eb, refs, flags, slot))
++		if (!visit_node_for_delete(root, wc, eb, flags, slot))
+ 			continue;
+ reada:
+ 		btrfs_readahead_node_child(eb, slot);
+@@ -5737,8 +5737,7 @@ static noinline int do_walk_down(struct btrfs_trans_handle *trans,
  
-@@ -1467,7 +1467,7 @@ static ssize_t btrfs_encoded_write(struct kiocb *iocb, struct iov_iter *from,
- 	if (ret || encoded->len == 0)
- 		goto out;
+ 	/* If we don't have to walk into this node skip it. */
+ 	if (!visit_node_for_delete(root, wc, path->nodes[level],
+-				   wc->refs[level - 1], wc->flags[level - 1],
+-				   path->slots[level]))
++				   wc->flags[level - 1], path->slots[level]))
+ 		goto skip;
  
--	ret = btrfs_write_check(iocb, from, encoded->len);
-+	ret = btrfs_write_check(iocb, encoded->len);
- 	if (ret < 0)
- 		goto out;
- 
-diff --git a/fs/btrfs/file.h b/fs/btrfs/file.h
-index c23d0bf42598..c2ce0ae94a9c 100644
---- a/fs/btrfs/file.h
-+++ b/fs/btrfs/file.h
-@@ -44,7 +44,7 @@ void btrfs_check_nocow_unlock(struct btrfs_inode *inode);
- bool btrfs_find_delalloc_in_range(struct btrfs_inode *inode, u64 start, u64 end,
- 				  struct extent_state **cached_state,
- 				  u64 *delalloc_start_ret, u64 *delalloc_end_ret);
--int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from, size_t count);
-+int btrfs_write_check(struct kiocb *iocb, size_t count);
- ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i);
- 
- #endif
+ 	/*
 -- 
 2.45.0
 
