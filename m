@@ -1,67 +1,74 @@
-Return-Path: <linux-btrfs+bounces-8676-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8677-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE45F995EA0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 06:30:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79B0E995F40
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 07:51:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBAC81C21FC3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 04:30:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03F3328485F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 05:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E0D02868B;
-	Wed,  9 Oct 2024 04:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C89166307;
+	Wed,  9 Oct 2024 05:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="d1l2uSZO"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lailfWzx";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lailfWzx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B397913D297
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 04:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481252AF1D
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 05:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728448229; cv=none; b=qkk7yoJrPYUzqt8AXd8oddXVUEFNCFP2mpreFei0RHi16/dxuoktXEP7nAuCnsi+bJGje/AJOu9z766CSlVvL+d2qL2/YsdQWZCCS2BZz10od8c0Ur3RJfUzt2sDkcnjDeR477vMh1sXAoh/FljiVD/byHDlRWQdSDHByJYd6bI=
+	t=1728453098; cv=none; b=GfxmE7nkx1mOnZ6wgQh4Da5j44IUoc0aHEbXsa3lQSHJ+UmFjCveZMMeMHpR10xCktREqdTyDFWeeeWFcEk1ZMoMTv6lvmw8nAf7XuPp2iI/YS1esO4q+tc6EOqJ5Tb+RnQQHWXHOV55OerJIg9Ojy8Y2bGaAoaottlv4FY6wok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728448229; c=relaxed/simple;
-	bh=pfkTIAIBRceKezzBLVZiusJIFUgcr0F6VMr05Ztuvv0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FlM8BDi3lRMGdaUdnSPARZeioS6tLTnvi+yzHoxuMV6rKQKSI8xna71Q1o6Z48xmmOhnWpDHYdkNmOJJ+KnlnJkkFokpmm8wp13pIOWir495IN/tlh3bFA8b6Nmvjh6Cm1acRNP2fpeib1hru57e08d+zoKuAcQ73cfi9o7X9xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=d1l2uSZO; arc=none smtp.client-ip=216.71.154.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1728448227; x=1759984227;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=pfkTIAIBRceKezzBLVZiusJIFUgcr0F6VMr05Ztuvv0=;
-  b=d1l2uSZOKjQuOJBiQVdfmk/c1mJGSqdxmhh++50/I/9WjRhMUhkkTnzp
-   YtVqU8o7eDDAmG5oTEYMzw9aI+8U+w1+dDWNofAGu6Q3gyxR6PDrHIdkY
-   /Mqdh8G6NwfIJsfz8QGUjy7hIN+PNGbIGNPWuI0DfBHuF2n72aY2lphxj
-   JXKogZbdQ1Mlqm2I++SMM4oy/DvJY6VwTR4oNq7esYc16FTk19DYYnEbf
-   LGTzJBphbVOoHKBn/bB6vchJ/j/jFVLn5v55DX9Ink6hrWaYb8yimksLm
-   FVZ+tXEg0vJbqxVz0bLStKXfVUxlRrzecvNjapOnwS5Lllv7vWKyIh+eX
-   A==;
-X-CSE-ConnectionGUID: qboxoZgWS5aXdj9kmz1aag==
-X-CSE-MsgGUID: nzJTR31+SHqi5DKRHIw0Iw==
-X-IronPort-AV: E=Sophos;i="6.11,189,1725292800"; 
-   d="scan'208";a="27943874"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Oct 2024 12:30:21 +0800
-IronPort-SDR: 6705f9d7_fW2uEWLFXcYIBLfE7fSa5HhU0MVkStZVfXIfnRXP38mErIC
- mkLimXMMapn1scljUWgSGukJsIPjxPpvN7EGd+g==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Oct 2024 20:34:47 -0700
-WDCIronportException: Internal
-Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.12])
-  by uls-op-cesaip01.wdc.com with ESMTP; 08 Oct 2024 21:30:22 -0700
-From: Naohiro Aota <naohiro.aota@wdc.com>
+	s=arc-20240116; t=1728453098; c=relaxed/simple;
+	bh=eP2uP7DMdHAbWDBhSsdLZ9fP2cvRwKq526koOV443Qk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=feEDiCWPLhKshpdRM014As8AKUGkWMXARcYmyaeEppGGpCBjlz35wTu/OsMQiSsYhi6bST0YAaGZRDYmRprBNSU39lIO/QDO/EpSIxtHRvQ/p5pLcwwDhucdt019GjElG8vBr7LC1IjKWwq8VAPeOkKBDQt0F02sbCiFQlbgvls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lailfWzx; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lailfWzx; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4858221AD2
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 05:51:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728453094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=E3U7CnALkqHWnzoM8YyKgK8RQfplMWILDSl69xhLrgA=;
+	b=lailfWzxlF52OekjFTiB/+01mC6gz6j1N67JIz5Eib0hYqP6ZTX4bodpd2pcZeM7hMXwUY
+	jmV7bi/hxcNCV2iO1qmjDkU14UlQVZvi4TtByNRoxFFgbWzonTrKlPbPbLvRGCh96L+Jvl
+	GRFIdhSEh+SVwxYWgvResPH7yKED0V4=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=lailfWzx
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728453094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=E3U7CnALkqHWnzoM8YyKgK8RQfplMWILDSl69xhLrgA=;
+	b=lailfWzxlF52OekjFTiB/+01mC6gz6j1N67JIz5Eib0hYqP6ZTX4bodpd2pcZeM7hMXwUY
+	jmV7bi/hxcNCV2iO1qmjDkU14UlQVZvi4TtByNRoxFFgbWzonTrKlPbPbLvRGCh96L+Jvl
+	GRFIdhSEh+SVwxYWgvResPH7yKED0V4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 825B0132BD
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 05:51:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zj0LEeUZBmcFHgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 05:51:33 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: fix zone unusable accounting for freed reserved extent
-Date: Wed,  9 Oct 2024 13:30:18 +0900
-Message-ID: <4d5f6524a0c84e98383ea52dcced34544ff4ae42.1728448186.git.naohiro.aota@wdc.com>
+Subject: [PATCH v2 0/2] btrfs: unify the read and writer locks for btrfs_subpage
+Date: Wed,  9 Oct 2024 16:21:05 +1030
+Message-ID: <cover.1728452897.git.wqu@suse.com>
 X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -70,47 +77,69 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4858221AD2
+X-Spam-Score: -3.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_NONE(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-When btrfs reserves an extent and does not use it (e.g, by an error), it
-calls btrfs_free_reserved_extent() to free the reserved extent. In the
-process, it calls btrfs_add_free_space() and then it accounts the region
-bytes as block_group->zone_unusable.
+[CHANGELOG]
+v2:
+- Rename btrfs_subpage::locked to btrfs_subpage::nr_locked
 
-However, it leaves the space_info->bytes_zone_unusable side not updated. As
-a result, ENOSPC can happen while a space_info reservation succeeded. The
-reservation is fine because the freed region is not added in
-space_info->bytes_zone_unusable, leaving that space as "free". OTOH,
-corresponding block group counts it as zone_unusable and its allocation
-pointer is not rewound, we cannot allocate an extent from that block group.
-That will also negate space_info's async/sync reclaim process, and cause an
-ENOSPC error from the extent allocation process.
+When the handling of sector size < page size is introduced, there are
+two types of locking, reader and writer lock.
 
-Fix that by returning the space to space_info->bytes_zone_unusable.
-Ideally, since a bio is not submitted for this reserved region, we should
-return the space to free space and rewind the allocation pointer. But, it
-needs rework on extent allocation handling, so let it work in this way for
-now.
+The main reason for the reader lock is to handle metadata to make sure
+the page::private is not released when there is still a metadata being
+read.
 
-Fixes: 169e0da91a21 ("btrfs: zoned: track unusable bytes for zones")
-CC: stable@vger.kernel.org # 5.15+
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/block-group.c | 2 ++
- 1 file changed, 2 insertions(+)
+However since commit d7172f52e993 ("btrfs: use per-buffer locking for
+extent_buffer reading"), metadata read no longer relies on
+btrfs_subpage::readers.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 5c5539eb82d3..4427c1b835e8 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3819,6 +3819,8 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
- 	spin_lock(&cache->lock);
- 	if (cache->ro)
- 		space_info->bytes_readonly += num_bytes;
-+	else if (btrfs_is_zoned(cache->fs_info))
-+		space_info->bytes_zone_unusable += num_bytes;
- 	cache->reserved -= num_bytes;
- 	space_info->bytes_reserved -= num_bytes;
- 	space_info->max_extent_size = 0;
+Making the writer lock as the only utilized subpage locking.
+
+This patchset converts all the existing reader lock usage and rename the
+writer lock into a generic lock.
+
+This patchset relies on this patch "btrfs: fix the delalloc range
+locking if sector size < page size", as it removes the last user of
+btrfs_folio_start_writer_lock().
+
+Qu Wenruo (2):
+  btrfs: unify to use writer locks for subpage locking
+  btrfs: rename btrfs_folio_(set|start|end)_writer_lock()
+
+ fs/btrfs/compression.c |   3 +-
+ fs/btrfs/extent_io.c   |  20 +++-----
+ fs/btrfs/subpage.c     | 108 ++++++++++-------------------------------
+ fs/btrfs/subpage.h     |  33 +++++--------
+ 4 files changed, 45 insertions(+), 119 deletions(-)
+
 -- 
 2.46.2
 
