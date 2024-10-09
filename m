@@ -1,58 +1,79 @@
-Return-Path: <linux-btrfs+bounces-8719-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8720-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E75AC996DFF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:33:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9620996E00
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 16:33:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 204031C219E9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:33:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1741F1C21A30
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2024 14:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8B31A0B0E;
-	Wed,  9 Oct 2024 14:32:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F1A19DF5F;
+	Wed,  9 Oct 2024 14:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ElR8pS/5";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ElR8pS/5"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7E1199FB4
-	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 14:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BC7199FB4
+	for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2024 14:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728484346; cv=none; b=AtS2OdBDOHYBtFBtNJk9VwrG9srySrXPWPsWAk5pKfoHa5cJ4pqUdb+xEyaYu3lIURXjpTRdXP0ZHjF+/tsgrXRVzt69BvIPbwg8IRH45RHH83ccVrWsXa4nZkPVseW/CtEcuIalU7lbuIjuvE3QPypwWJWYfxHd9l795VXaC84=
+	t=1728484353; cv=none; b=XnqGZ94Q0t6d05yrB1p3l/nQnUASY/WKfv74pOh2fNt9N9tKJP32IEA8j/eg6q5ocUYFvoDoJCFEUnhkrKdgFrNVMkk0FjqNfp43m7QZa59lZ/KXqSomBrUlwDIHoPrdtSUv6UIFZdR237/7f/MybaGr6JP/O9xuhfUzq5vAd14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728484346; c=relaxed/simple;
-	bh=Yj78/QFQWU/tnE8ZvyTHPL+LItK/2LuMWDP+CQegbp8=;
+	s=arc-20240116; t=1728484353; c=relaxed/simple;
+	bh=lXZP8rSMVEg25/CRgiWvAiJ1XDHZXFVk9awSWCkQFrY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M676Yz05h7NBhyCt4jX4iFESY7xIBYqj3eUnTvLofe+WUKzjWPa5yj2i/wou8M4RlhCKOW9H1Y+k8zQ44XAbMgIqRONqguLjMDAQFUTxmwNv2zJlYOo0oWvzjmWjLVJTxUt2sBEHoyhh7WO2sLZV+JmdfgAAEzfVIn+J6d+/gCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=nj07PVyZWvQoD/XpHkJKK8oPafW1P7GyofaZLA7wggC1HdhUdluoNkMwuHozTwoA2d2QJEVXwG6ZVXFNozPnr+d2JinDDpcKOD104f0QxDN+/ezeNBCKsndPDg7S5Vx4j8xbWjFwXFB0U+KSpS+mvixLyffz1dyrZM1eJ2fR7QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ElR8pS/5; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ElR8pS/5; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4B8BD21EB2;
-	Wed,  9 Oct 2024 14:32:23 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CA22221EB2;
+	Wed,  9 Oct 2024 14:32:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728484349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=95IGy7cHJg9X4EkgSqMpw/JXQ2N/BakD0/wmivDKCQk=;
+	b=ElR8pS/5SPsVa0a7zw785xc78bFqjGfktpzlsApz/kB6+GL+rtZiBx5jLG+WjjgZz+sA97
+	1gjdYdXBRUIkdMcNRuxvqwjRt6OHvuy6b39Sh94UNqz5HiV4Z6ZL+YhD8yI4JLVrYH1Eou
+	4AQh0k7nxWqlFi2lMicQVfZpCxSSn4k=
 Authentication-Results: smtp-out1.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1728484349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=95IGy7cHJg9X4EkgSqMpw/JXQ2N/BakD0/wmivDKCQk=;
+	b=ElR8pS/5SPsVa0a7zw785xc78bFqjGfktpzlsApz/kB6+GL+rtZiBx5jLG+WjjgZz+sA97
+	1gjdYdXBRUIkdMcNRuxvqwjRt6OHvuy6b39Sh94UNqz5HiV4Z6ZL+YhD8yI4JLVrYH1Eou
+	4AQh0k7nxWqlFi2lMicQVfZpCxSSn4k=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FF1F136BA;
-	Wed,  9 Oct 2024 14:32:23 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C45CC136BA;
+	Wed,  9 Oct 2024 14:32:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WUiaD/eTBmeTRQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Wed, 09 Oct 2024 14:32:23 +0000
+	id MdvtL/2TBmecRQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Wed, 09 Oct 2024 14:32:29 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 24/25] btrfs: drop unused parameter fs_info from btrfs_match_dir_item_name()
-Date: Wed,  9 Oct 2024 16:32:22 +0200
-Message-ID: <cb4133727ec448a44cb9fe940bbd172a9423dcc0.1728484021.git.dsterba@suse.com>
+Subject: [PATCH 25/25] btrfs: drop unused parameter level from alloc_heuristic_ws()
+Date: Wed,  9 Oct 2024 16:32:25 +0200
+Message-ID: <b536b709dc678dd514850dea60fb64130cf63b96.1728484021.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1728484021.git.dsterba@suse.com>
 References: <cover.1728484021.git.dsterba@suse.com>
@@ -63,145 +84,61 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
+X-Spam-Score: -6.80
+X-Spamd-Result: default: False [-6.80 / 50.00];
+	REPLY(-4.00)[];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email]
 X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 4B8BD21EB2
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Level: 
 
-Cascaded removal of fs_info that is not needed in several functions.
+The compression heuristic pass does not need a level, so we can drop the
+parameter.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/dir-item.c | 11 ++++-------
- fs/btrfs/dir-item.h |  3 +--
- fs/btrfs/send.c     |  3 +--
- fs/btrfs/xattr.c    |  5 ++---
- 4 files changed, 8 insertions(+), 14 deletions(-)
+ fs/btrfs/compression.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
-index 001c0c2f872c..d3093eba54a5 100644
---- a/fs/btrfs/dir-item.c
-+++ b/fs/btrfs/dir-item.c
-@@ -27,7 +27,6 @@ static struct btrfs_dir_item *insert_with_overflow(struct btrfs_trans_handle
- 						   const char *name,
- 						   int name_len)
- {
--	struct btrfs_fs_info *fs_info = root->fs_info;
- 	int ret;
- 	char *ptr;
- 	struct extent_buffer *leaf;
-@@ -35,7 +34,7 @@ static struct btrfs_dir_item *insert_with_overflow(struct btrfs_trans_handle
- 	ret = btrfs_insert_empty_item(trans, root, path, cpu_key, data_size);
- 	if (ret == -EEXIST) {
- 		struct btrfs_dir_item *di;
--		di = btrfs_match_dir_item_name(fs_info, path, name, name_len);
-+		di = btrfs_match_dir_item_name(path, name, name_len);
- 		if (di)
- 			return ERR_PTR(-EEXIST);
- 		btrfs_extend_item(trans, path, data_size);
-@@ -190,7 +189,7 @@ static struct btrfs_dir_item *btrfs_lookup_match_dir(
- 	if (ret > 0)
- 		return ERR_PTR(-ENOENT);
- 
--	return btrfs_match_dir_item_name(root->fs_info, path, name, name_len);
-+	return btrfs_match_dir_item_name(path, name, name_len);
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 655e3212b409..abcf8ed06afc 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -702,7 +702,7 @@ static void free_heuristic_ws(struct list_head *ws)
+ 	kfree(workspace);
  }
  
- /*
-@@ -341,8 +340,7 @@ btrfs_search_dir_index_item(struct btrfs_root *root, struct btrfs_path *path,
- 		if (key.objectid != dirid || key.type != BTRFS_DIR_INDEX_KEY)
- 			break;
- 
--		di = btrfs_match_dir_item_name(root->fs_info, path,
--					       name->name, name->len);
-+		di = btrfs_match_dir_item_name(path, name->name, name->len);
- 		if (di)
- 			return di;
- 	}
-@@ -378,8 +376,7 @@ struct btrfs_dir_item *btrfs_lookup_xattr(struct btrfs_trans_handle *trans,
-  * this walks through all the entries in a dir item and finds one
-  * for a specific name.
-  */
--struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
--						 const struct btrfs_path *path,
-+struct btrfs_dir_item *btrfs_match_dir_item_name(const struct btrfs_path *path,
- 						 const char *name, int name_len)
+-static struct list_head *alloc_heuristic_ws(unsigned int level)
++static struct list_head *alloc_heuristic_ws(void)
  {
- 	struct btrfs_dir_item *dir_item;
-diff --git a/fs/btrfs/dir-item.h b/fs/btrfs/dir-item.h
-index 5f6dfafc91f1..28d69970bc70 100644
---- a/fs/btrfs/dir-item.h
-+++ b/fs/btrfs/dir-item.h
-@@ -44,8 +44,7 @@ struct btrfs_dir_item *btrfs_lookup_xattr(struct btrfs_trans_handle *trans,
- 					  struct btrfs_path *path, u64 dir,
- 					  const char *name, u16 name_len,
- 					  int mod);
--struct btrfs_dir_item *btrfs_match_dir_item_name(struct btrfs_fs_info *fs_info,
--						 const struct btrfs_path *path,
-+struct btrfs_dir_item *btrfs_match_dir_item_name(const struct btrfs_path *path,
- 						 const char *name,
- 						 int name_len);
+ 	struct heuristic_ws *ws;
  
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 75bcfbda8d47..e3a0293a86b1 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -3760,7 +3760,6 @@ static int wait_for_dest_dir_move(struct send_ctx *sctx,
- 				  struct recorded_ref *parent_ref,
- 				  const bool is_orphan)
+@@ -744,7 +744,7 @@ static const struct btrfs_compress_op * const btrfs_compress_op[] = {
+ static struct list_head *alloc_workspace(int type, unsigned int level)
  {
--	struct btrfs_fs_info *fs_info = sctx->parent_root->fs_info;
- 	struct btrfs_path *path;
- 	struct btrfs_key key;
- 	struct btrfs_key di_key;
-@@ -3789,7 +3788,7 @@ static int wait_for_dest_dir_move(struct send_ctx *sctx,
- 		goto out;
- 	}
- 
--	di = btrfs_match_dir_item_name(fs_info, path, parent_ref->name,
-+	di = btrfs_match_dir_item_name(path, parent_ref->name,
- 				       parent_ref->name_len);
- 	if (!di) {
- 		ret = 0;
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index ce464cd8e0ac..bc18710d1dcf 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -85,7 +85,6 @@ int btrfs_setxattr(struct btrfs_trans_handle *trans, struct inode *inode,
- {
- 	struct btrfs_dir_item *di = NULL;
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
--	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_path *path;
- 	size_t name_len = strlen(name);
- 	int ret = 0;
-@@ -143,14 +142,14 @@ int btrfs_setxattr(struct btrfs_trans_handle *trans, struct inode *inode,
- 		 */
- 		ret = 0;
- 		btrfs_assert_tree_write_locked(path->nodes[0]);
--		di = btrfs_match_dir_item_name(fs_info, path, name, name_len);
-+		di = btrfs_match_dir_item_name(path, name, name_len);
- 		if (!di && !(flags & XATTR_REPLACE)) {
- 			ret = -ENOSPC;
- 			goto out;
- 		}
- 	} else if (ret == -EEXIST) {
- 		ret = 0;
--		di = btrfs_match_dir_item_name(fs_info, path, name, name_len);
-+		di = btrfs_match_dir_item_name(path, name, name_len);
- 		ASSERT(di); /* logic error */
- 	} else if (ret) {
- 		goto out;
+ 	switch (type) {
+-	case BTRFS_COMPRESS_NONE: return alloc_heuristic_ws(level);
++	case BTRFS_COMPRESS_NONE: return alloc_heuristic_ws();
+ 	case BTRFS_COMPRESS_ZLIB: return zlib_alloc_workspace(level);
+ 	case BTRFS_COMPRESS_LZO:  return lzo_alloc_workspace();
+ 	case BTRFS_COMPRESS_ZSTD: return zstd_alloc_workspace(level);
 -- 
 2.45.0
 
