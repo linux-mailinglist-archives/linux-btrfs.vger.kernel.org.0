@@ -1,63 +1,61 @@
-Return-Path: <linux-btrfs+bounces-8794-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8795-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED422998AAA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 16:59:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06127998C7C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:56:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B22C1C245FA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 14:59:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9483B31EA7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 15:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25E41F4736;
-	Thu, 10 Oct 2024 14:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403341E32A6;
+	Thu, 10 Oct 2024 14:58:29 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB941CCB2A;
-	Thu, 10 Oct 2024 14:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 951971CC890;
+	Thu, 10 Oct 2024 14:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728571825; cv=none; b=TlnVL3EQP5y3GEcxhCZ030tj/Afon6+gVhP8EWhHs1d7iLWqLkkRJEo4+prlANEiUnH5yZaug1uN9kXbCs/qMBiw5nq8JJV80QDewUWgLYjGoG1+7Xzek8+NO8fHmupfP1KCa0FkdQU9dQGOFv2ueOWKgsAlAFDwQJkpX/730Sw=
+	t=1728572308; cv=none; b=YfHLho6xsESofzxblCS7gFWTwX+ey0hMyr6Ka04uMDrwwE4H91bWSciie+g0nm/JS/PSy74TjQMQRQQgf7eGRSQtq+8R/cjpGFzBb8j9OWIGzZzJngcM0gy512aLMiPdoogvegTZKGGCIQJqQbUpbIDpd8d/ed384nRB7CHVUvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728571825; c=relaxed/simple;
-	bh=zTZrKpc3++acJH71wcSToxcmBGqF9xoved3uUzneqK0=;
+	s=arc-20240116; t=1728572308; c=relaxed/simple;
+	bh=6hJI0MRVsBlMGi7Ta6d9H6idg6lpjewWYMhoGxoBzy0=;
 	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FPLBKU5s3AK9IJod/E9js/1fjg2ot92Qm3yG4I6gipzMaPXd27g4fdI6XTxiL5jQLI5gh3L5tqbmxwB01vAn/M7UdRFgd08obWTVeVxpb4hz9G5jAl8vUKg1hcgqp/zdxKCYSglAvTIcxBuQ2LqpPFSCgQINIyOS8DcOHrmxUDg=
+	 MIME-Version:Content-Type; b=kPipcx6ICTvk20Et/errkM5Q2kHBrne/yceiwL/DY4T1ZbpQDtqx/+rED1lQtLOXeya7aCbjubvgsc4h3Xbl/KNJEKCdx7gt4xRVKyIRxrZ440piZAf5D8dba+AaODc3k+C7rJBN/ZCDsxiguOkdV2WKABJMOaYAQGIlSC4qgG0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XPXh76qqKz6J6Lx;
-	Thu, 10 Oct 2024 22:48:55 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XPXtf3qCJz6HJy2;
+	Thu, 10 Oct 2024 22:58:02 +0800 (CST)
 Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2257D140A78;
-	Thu, 10 Oct 2024 22:50:17 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 54D37140A36;
+	Thu, 10 Oct 2024 22:58:23 +0800 (CST)
 Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
  (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 10 Oct
- 2024 16:50:15 +0200
-Date: Thu, 10 Oct 2024 15:50:14 +0100
+ 2024 16:58:22 +0200
+Date: Thu, 10 Oct 2024 15:58:21 +0100
 From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: "Li, Ming4" <ming4.li@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Fan
- Ni" <fan.ni@samsung.com>, Navneet Singh <navneet.singh@intel.com>, "Jonathan
- Corbet" <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>, "Dan
- Williams" <dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Alison Schofield <alison.schofield@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+To: <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Jonathan Corbet <corbet@lwn.net>, "Andrew
+ Morton" <akpm@linux-foundation.org>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, "Alison Schofield"
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <nvdimm@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v4 21/28] cxl/extent: Process DCD events and realize
  region extents
-Message-ID: <20241010155014.00004bdd@Huawei.com>
-In-Reply-To: <6706de3530f5c_40429294b8@iweiny-mobl.notmuch>
+Message-ID: <20241010155821.00005079@Huawei.com>
+In-Reply-To: <20241007-dcd-type2-upstream-v4-21-c261ee6eeded@intel.com>
 References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
 	<20241007-dcd-type2-upstream-v4-21-c261ee6eeded@intel.com>
-	<4337ddd9-312b-4fb7-9597-81e8b00d57cb@intel.com>
-	<6706de3530f5c_40429294b8@iweiny-mobl.notmuch>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
@@ -71,164 +69,199 @@ Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
  frapeml500008.china.huawei.com (7.182.85.71)
 
-On Wed, 9 Oct 2024 14:49:09 -0500
-Ira Weiny <ira.weiny@intel.com> wrote:
+On Mon, 07 Oct 2024 18:16:27 -0500
+ira.weiny@intel.com wrote:
 
-> Li, Ming4 wrote:
-> > On 10/8/2024 7:16 AM, ira.weiny@intel.com wrote:  
-> > > From: Navneet Singh <navneet.singh@intel.com>
-> > >  
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> [snip]
+> A dynamic capacity device (DCD) sends events to signal the host for
+> changes in the availability of Dynamic Capacity (DC) memory.  These
+> events contain extents describing a DPA range and meta data for memory
+> to be added or removed.  Events may be sent from the device at any time.
 > 
-> > >
-> > > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> > > Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > >  
-> > Hi Ira,
-> > 
-> > I guess you missed my comments for V3, I comment it again for this patch.  
+> Three types of events can be signaled, Add, Release, and Force Release.
 > 
-> Apologies.  Yes I totally missed your reply.  :-(
+> On add, the host may accept or reject the memory being offered.  If no
+> region exists, or the extent is invalid, the extent should be rejected.
+> Add extent events may be grouped by a 'more' bit which indicates those
+> extents should be processed as a group.
 > 
-> >   
-> > > +static bool extents_contain(struct cxl_dax_region *cxlr_dax,
-> > > +			    struct cxl_endpoint_decoder *cxled,
-> > > +			    struct range *new_range)
-> > > +{
-> > > +	struct device *extent_device;
-> > > +	struct match_data md = {
-> > > +		.cxled = cxled,
-> > > +		.new_range = new_range,
-> > > +	};
-> > > +
-> > > +	extent_device = device_find_child(&cxlr_dax->dev, &md, match_contains);
-> > > +	if (!extent_device)
-> > > +		return false;
-> > > +
-> > > +	put_device(extent_device);  
-> > could use __free(put_device) to drop this 'put_device(extent_device)'  
+> On remove, the host can delay the response until the host is safely not
+> using the memory.  If no region exists the release can be sent
+> immediately.  The host may also release extents (or partial extents) at
+> any time.  Thus the 'more' bit grouping of release events is of less
+> value and can be ignored in favor of sending multiple release capacity
+> responses for groups of release events.
+
+True today - I think that would be an error for shared extents
+though as they need to be released in one go.  We can deal with
+that when it matters.  
+
+
+Mind you patch seems to try to handle more bit anyway, so maybe just
+remove that discussion from this description?
 > 
-> Yep.
+> Simplify extent tracking with the following restrictions.
 > 
-> > > +	return true;
-> > > +}  
-> > [...]  
-> > > +static bool extents_overlap(struct cxl_dax_region *cxlr_dax,
-> > > +			    struct cxl_endpoint_decoder *cxled,
-> > > +			    struct range *new_range)
-> > > +{
-> > > +	struct device *extent_device;
-> > > +	struct match_data md = {
-> > > +		.cxled = cxled,
-> > > +		.new_range = new_range,
-> > > +	};
-> > > +
-> > > +	extent_device = device_find_child(&cxlr_dax->dev, &md, match_overlaps);
-> > > +	if (!extent_device)
-> > > +		return false;
-> > > +
-> > > +	put_device(extent_device);  
-> > Same as above.  
+> 	1) Flag for removal any extent which overlaps a requested
+> 	   release range.
+> 	2) Refuse the offer of extents which overlap already accepted
+> 	   memory ranges.
+> 	3) Accept again a range which has already been accepted by the
+> 	   host.  Eating duplicates serves three purposes.  First, this
+> 	   simplifies the code if the device should get out of sync with
+> 	   the host. 
+
+Maybe scream about this a little.  AFAIK that happening is a device
+bug.
+
+> And it should be safe to acknowledge the extent
+> 	   again.  Second, this simplifies the code to process existing
+> 	   extents if the extent list should change while the extent
+> 	   list is being read.  Third, duplicates for a given region
+> 	   which are seen during a race between the hardware surfacing
+> 	   an extent and the cxl dax driver scanning for existing
+> 	   extents will be ignored.
+
+This last one is a good justification.
+
 > 
-> Done.
+> 	   NOTE: Processing existing extents is done in a later patch.
 > 
-> > > +	return true;
-> > > +}
-> > > +  
-> > [...]  
-> > > +static int cxl_send_dc_response(struct cxl_memdev_state *mds, int opcode,
-> > > +				struct xarray *extent_array, int cnt)
-> > > +{
-> > > +	struct cxl_mailbox *cxl_mbox = &mds->cxlds.cxl_mbox;
-> > > +	struct cxl_mbox_dc_response *p;
-> > > +	struct cxl_mbox_cmd mbox_cmd;
-> > > +	struct cxl_extent *extent;
-> > > +	unsigned long index;
-> > > +	u32 pl_index;
-> > > +	int rc;
-> > > +
-> > > +	size_t pl_size = struct_size(p, extent_list, cnt);
-> > > +	u32 max_extents = cnt;
-> > > +
-> > > +	/* May have to use more bit on response. */
-> > > +	if (pl_size > cxl_mbox->payload_size) {
-> > > +		max_extents = (cxl_mbox->payload_size - sizeof(*p)) /
-> > > +			      sizeof(struct updated_extent_list);
-> > > +		pl_size = struct_size(p, extent_list, max_extents);
-> > > +	}
-> > > +
-> > > +	struct cxl_mbox_dc_response *response __free(kfree) =
-> > > +						kzalloc(pl_size, GFP_KERNEL);
-> > > +	if (!response)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	pl_index = 0;
-> > > +	xa_for_each(extent_array, index, extent) {
-> > > +
-> > > +		response->extent_list[pl_index].dpa_start = extent->start_dpa;
-> > > +		response->extent_list[pl_index].length = extent->length;
-> > > +		pl_index++;
-> > > +		response->extent_list_size = cpu_to_le32(pl_index);
-> > > +
-> > > +		if (pl_index == max_extents) {
-> > > +			mbox_cmd = (struct cxl_mbox_cmd) {
-> > > +				.opcode = opcode,
-> > > +				.size_in = struct_size(response, extent_list,
-> > > +						       pl_index),
-> > > +				.payload_in = response,
-> > > +			};
-> > > +
-> > > +			response->flags = 0;
-> > > +			if (pl_index < cnt)
-> > > +				response->flags &= CXL_DCD_EVENT_MORE;  
-> > 
-> > It should be 'response->flags |= CXL_DCD_EVENT_MORE' here.  
+> Management of the region extent devices must be synchronized with
+> potential uses of the memory within the DAX layer.  Create region extent
+> devices as children of the cxl_dax_region device such that the DAX
+> region driver can co-drive them and synchronize with the DAX layer.
+> Synchronization and management is handled in a subsequent patch.
 > 
-> Ah yea.  Good catch.
+> Tag support within the DAX layer is not yet supported.  To maintain
+> compatibility legacy DAX/region processing only tags with a value of 0
+> are allowed.  This defines existing DAX devices as having a 0 tag which
+> makes the most logical sense as a default.
 > 
-> > 
-> > Another issue is if 'cnt' is N times bigger than 'max_extents'(e,g. cnt=20, max_extents=10). all responses will be sent in this xa_for_each(), and CXL_DCD_EVENT_MORE will be set in the last response but it should not be set in these cases.
-> >   
+> Process DCD events and create region devices.
 > 
-> Ah yes.  cnt must be decremented.  As I looked at the patch just now the
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > 
-> 	if (cnt == 0 || pl_index)
-> 
-> ... seemed very wrong to me.  That change masked this bug.
-> 
-> This should fix it:
-> 
+A couple of minor comments from me.
+
+J
+> diff --git a/drivers/cxl/core/extent.c b/drivers/cxl/core/extent.c
+> new file mode 100644
+> index 000000000000..69a7614ba6a9
+> --- /dev/null
+> +++ b/drivers/cxl/core/extent.c
+
+
 > diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index d66beec687a0..99200274dea8 100644
+> index 584d7d282a97..d66beec687a0 100644
 > --- a/drivers/cxl/core/mbox.c
 > +++ b/drivers/cxl/core/mbox.c
-> @@ -1119,10 +1119,11 @@ static int cxl_send_dc_response(struct cxl_memdev_state *mds, int opcode,
->                         if (rc)
->                                 return rc;
->                         pl_index = 0;
-> +                       cnt -= pl_index;
->                 }
->         }
+> @@ -889,6 +889,58 @@ int cxl_enumerate_cmds(struct cxl_memdev_state *mds)
+
+
+> @@ -1017,6 +1069,223 @@ static int cxl_clear_event_record(struct cxl_memdev_state *mds,
+>  	return rc;
+>  }
 >  
-> -       if (cnt == 0 || pl_index) {
+> +static int cxl_send_dc_response(struct cxl_memdev_state *mds, int opcode,
+> +				struct xarray *extent_array, int cnt)
+> +{
+> +	struct cxl_mailbox *cxl_mbox = &mds->cxlds.cxl_mbox;
+> +	struct cxl_mbox_dc_response *p;
+> +	struct cxl_mbox_cmd mbox_cmd;
+> +	struct cxl_extent *extent;
+> +	unsigned long index;
+> +	u32 pl_index;
+> +	int rc;
+> +
+> +	size_t pl_size = struct_size(p, extent_list, cnt);
+> +	u32 max_extents = cnt;
+> +
+> +	/* May have to use more bit on response. */
 
-I thought this cnt == 0 check was to deal with the no valid
-extents case where an empty reply is needed.
+I thought you argued in the patch description that it didn't matter if you
+didn't set it?
+
+> +	if (pl_size > cxl_mbox->payload_size) {
+> +		max_extents = (cxl_mbox->payload_size - sizeof(*p)) /
+> +			      sizeof(struct updated_extent_list);
+> +		pl_size = struct_size(p, extent_list, max_extents);
+> +	}
+> +
+> +	struct cxl_mbox_dc_response *response __free(kfree) =
+> +						kzalloc(pl_size, GFP_KERNEL);
+> +	if (!response)
+> +		return -ENOMEM;
+> +
+> +	pl_index = 0;
+> +	xa_for_each(extent_array, index, extent) {
+> +
+> +		response->extent_list[pl_index].dpa_start = extent->start_dpa;
+> +		response->extent_list[pl_index].length = extent->length;
+> +		pl_index++;
+> +		response->extent_list_size = cpu_to_le32(pl_index);
+> +
+> +		if (pl_index == max_extents) {
+> +			mbox_cmd = (struct cxl_mbox_cmd) {
+> +				.opcode = opcode,
+> +				.size_in = struct_size(response, extent_list,
+> +						       pl_index),
+> +				.payload_in = response,
+> +			};
+> +
+> +			response->flags = 0;
+> +			if (pl_index < cnt)
+> +				response->flags &= CXL_DCD_EVENT_MORE;
+Covered in other branch of thread.
+
+> +
+> +			rc = cxl_internal_send_cmd(cxl_mbox, &mbox_cmd);
+> +			if (rc)
+> +				return rc;
+> +			pl_index = 0;
+> +		}
+> +	}
+> +
+> +	if (cnt == 0 || pl_index) {
+> +		mbox_cmd = (struct cxl_mbox_cmd) {
+> +			.opcode = opcode,
+> +			.size_in = struct_size(response, extent_list,
+> +					       pl_index),
+> +			.payload_in = response,
+> +		};
+> +
+> +		response->flags = 0;
+> +		rc = cxl_internal_send_cmd(cxl_mbox, &mbox_cmd);
+> +		if (rc)
+> +			return rc;
+> +	}
+> +
+> +	return 0;
+> +}
 
 
-> +       if (pl_index) {
->                 mbox_cmd = (struct cxl_mbox_cmd) {
->                         .opcode = opcode,
->                         .size_in = struct_size(response, extent_list,
-> 
-> 
-> Thank you, and sorry again for missing your feedback.
-> 
-> Ira
-> 
-> [snip]
-> 
+
+
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index cbaacbe0f36d..b75653e9bc32 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+
+
+>  
+> +/* See CXL 3.0 8.2.9.2.1.5 */
+
+Maybe update to 3.1? Otherwise patch reviewer needs to open two 
+spec versions!  In 3.1 it is 8.2.9.2.1.6
+
+> +enum dc_event {
+> +	DCD_ADD_CAPACITY,
+> +	DCD_RELEASE_CAPACITY,
+> +	DCD_FORCED_CAPACITY_RELEASE,
+> +	DCD_REGION_CONFIGURATION_UPDATED,
+> +};
 
 
