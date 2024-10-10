@@ -1,261 +1,190 @@
-Return-Path: <linux-btrfs+bounces-8815-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8816-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49C8E998E0D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 19:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 643F1998E1C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 19:12:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6141283B33
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:09:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67BD5283D85
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E694A19CC16;
-	Thu, 10 Oct 2024 17:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9151119D06D;
+	Thu, 10 Oct 2024 17:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="npJuhWzm";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MZIS41op";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="npJuhWzm";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="MZIS41op"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M2JHHTmY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OTnWmUJI";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M2JHHTmY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OTnWmUJI"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56012558B7
-	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 17:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BE419CC07
+	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 17:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728580127; cv=none; b=hoQ65vc6zbymRd+ZFqAsNx3HbvxvJxVhq4xqIRLorWZXQrIpd4Ymnlkrnvl5lOurqMSeeROwhbrG3mWeN/Y37jzl8lY1s6gRSxBxyJx3SHO0C+FQC0eJ8H3pzc5EzQs6/gd+P6jsXbbd/aMVTA1OLeqGXK4m5QZOMLphng7B5ww=
+	t=1728580323; cv=none; b=NUZICFQIuNObHQDUi7D7e+Es83a7su4J671EnKzWCwgx/8Dr3tB3m1TkWoY/e+G+yMaN8Awyy1WwojeInlf97tuWMLygu45m2OuCvb8iH6n2yoXVJCSTi7/EvLB84wG2QSV/QyBVvCfPFzpmwI4UHKJ1T3MDx8kH4N7qUxDMeDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728580127; c=relaxed/simple;
-	bh=IB1N70ld8qTSkuWf3PxuIJnZsKCCZL/45CX1PIKsAR8=;
+	s=arc-20240116; t=1728580323; c=relaxed/simple;
+	bh=QdP5vvGYNJjWIA/ArABgjRmBlyo0qkJvimXBhM/wYRk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YgaVoaQmqwicrxjrKUpXHEeurxHYN85a3m+bZKnWSWrIpzr902KillfP+onvEXVonQSVokVyAg8pEuDb76XFWKTTbeEPjvGHch4XXlR2FwGUZaJ3Xi7oYsrbLeE8+BAivsOntQKrN+N1NjwnQ8eynJRqTMD257X7U96K9j0wb5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=npJuhWzm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MZIS41op; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=npJuhWzm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=MZIS41op; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=eRbb6ajY84i6uQQMNWVyVrx+wF8GYHYfbFrf5dJtc/QbtBh/yL12urnZqwU8sWPyaB4B2PZBrLScri5fq5ycX3c+BF5l9VFkOaTefbt9G8bGyh9isGwMci7PYulNBn6j2bz0IQqALd46NfEuw0Pe1nY4E2SoHZa8CQFDe2zYK5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M2JHHTmY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OTnWmUJI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M2JHHTmY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OTnWmUJI; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 404E11F7EE;
-	Thu, 10 Oct 2024 17:08:43 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5E6F21F7EE;
+	Thu, 10 Oct 2024 17:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728580123;
+	t=1728580320;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4LcFT7VPeXTXKDtPh3ACmYa7ATtVPHL9sVEx7gusdEc=;
-	b=npJuhWzmjccCy3cQkydPtsvRFMDeWmoEyq+VGFi2Nrzzplw3+ErSpMSyX4lhnwLCJslscd
-	t3A9UqPOZ2+LFk+7UwBQERH8udf7tuQrYZOUi+bJVmp5eQROhgeRRMo4TOb/7NPX33R7qk
-	KuaLF8ZZEj7FXyOFIBIJfOYma9kK5Os=
+	bh=lnzooejaljZgEwYvRrTuBfnUFR7uKNtyxa4jpqkyWOo=;
+	b=M2JHHTmYi4KymkK6VuhWbNnblwuU0Q3FZO3II1td/dUOJ7OcZfi2w63MqwgKmLzp5QzCJz
+	YRSpHOFuuUaxoIRly8e4v8Fk3i1v15DQc7WbICExm2rwOknlIF6kiCDZIvxjQRSLC1kDTU
+	z9O8oF0U6AVOH9lbq6L0/g3aRtyWkm8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728580123;
+	s=susede2_ed25519; t=1728580320;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4LcFT7VPeXTXKDtPh3ACmYa7ATtVPHL9sVEx7gusdEc=;
-	b=MZIS41opX9+wTFcmCjB9FNEYMNgNinTYd7LJCqzBrEzCTyRgwWdm7OaW6T2ioYooZ4rvLb
-	uhTXqFtf2yUtfRAQ==
+	bh=lnzooejaljZgEwYvRrTuBfnUFR7uKNtyxa4jpqkyWOo=;
+	b=OTnWmUJIP3U2nHLWQCB19bLRGrzzikUe4iDB50GqImFE4RbLLXpoZc+j2va8YEVpmOrY6Q
+	IBAfHuszeYPaT3Bw==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=npJuhWzm;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=MZIS41op
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728580123;
+	t=1728580320;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4LcFT7VPeXTXKDtPh3ACmYa7ATtVPHL9sVEx7gusdEc=;
-	b=npJuhWzmjccCy3cQkydPtsvRFMDeWmoEyq+VGFi2Nrzzplw3+ErSpMSyX4lhnwLCJslscd
-	t3A9UqPOZ2+LFk+7UwBQERH8udf7tuQrYZOUi+bJVmp5eQROhgeRRMo4TOb/7NPX33R7qk
-	KuaLF8ZZEj7FXyOFIBIJfOYma9kK5Os=
+	bh=lnzooejaljZgEwYvRrTuBfnUFR7uKNtyxa4jpqkyWOo=;
+	b=M2JHHTmYi4KymkK6VuhWbNnblwuU0Q3FZO3II1td/dUOJ7OcZfi2w63MqwgKmLzp5QzCJz
+	YRSpHOFuuUaxoIRly8e4v8Fk3i1v15DQc7WbICExm2rwOknlIF6kiCDZIvxjQRSLC1kDTU
+	z9O8oF0U6AVOH9lbq6L0/g3aRtyWkm8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728580123;
+	s=susede2_ed25519; t=1728580320;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4LcFT7VPeXTXKDtPh3ACmYa7ATtVPHL9sVEx7gusdEc=;
-	b=MZIS41opX9+wTFcmCjB9FNEYMNgNinTYd7LJCqzBrEzCTyRgwWdm7OaW6T2ioYooZ4rvLb
-	uhTXqFtf2yUtfRAQ==
+	bh=lnzooejaljZgEwYvRrTuBfnUFR7uKNtyxa4jpqkyWOo=;
+	b=OTnWmUJIP3U2nHLWQCB19bLRGrzzikUe4iDB50GqImFE4RbLLXpoZc+j2va8YEVpmOrY6Q
+	IBAfHuszeYPaT3Bw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1216B13A6E;
-	Thu, 10 Oct 2024 17:08:43 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3474E13A6E;
+	Thu, 10 Oct 2024 17:12:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MWjUAxsKCGf2GgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Thu, 10 Oct 2024 17:08:43 +0000
-Date: Thu, 10 Oct 2024 19:08:41 +0200
+	id DquWDOAKCGfnGwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 10 Oct 2024 17:12:00 +0000
+Date: Thu, 10 Oct 2024 19:11:59 +0200
 From: David Sterba <dsterba@suse.cz>
-To: Yuwei Han <hrx@bupt.moe>
-Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [RFC] New ioctl to query deleted subvolumes
-Message-ID: <20241010170841.GR1609@twin.jikos.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org,
+	syzbot+cee29f5a48caf10cd475@syzkaller.appspotmail.com
+Subject: Re: [PATCH] btrfs: handle NULL as device path for
+ btrfs_scan_one_device()
+Message-ID: <20241010171159.GS1609@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <20241009180300.GN1609@twin.jikos.cz>
- <308CF1DDC38EE68A+91e40dff-783f-43f4-9e49-a5cd4fa0b7a8@bupt.moe>
+References: <330f0214f1d8150e25dc609477e89534e3da961a.1728527388.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <308CF1DDC38EE68A+91e40dff-783f-43f4-9e49-a5cd4fa0b7a8@bupt.moe>
+In-Reply-To: <330f0214f1d8150e25dc609477e89534e3da961a.1728527388.git.wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 404E11F7EE
-X-Spam-Score: -4.21
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.21 / 50.00];
+X-Spam-Score: -8.00
+X-Spamd-Result: default: False [-8.00 / 50.00];
+	REPLY(-4.00)[];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	NEURAL_HAM_SHORT(-0.20)[-0.983];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[cee29f5a48caf10cd475];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCPT_COUNT_THREE(0.00)[3];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Thu, Oct 10, 2024 at 08:29:14PM +0800, Yuwei Han wrote:
+On Thu, Oct 10, 2024 at 01:00:57PM +1030, Qu Wenruo wrote:
+> [BUG]
+> Syzbot reports a crash when mounting a btrfs with NULL as @path for
+> btrfs_scan_one_device():
 > 
+> Oops: general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN PTI
+> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> CPU: 0 UID: 0 PID: 5235 Comm: syz-executor338 Not tainted 6.12.0-rc2-next-20241008-syzkaller #0
+> RIP: 0010:strlen+0x2c/0x70 lib/string.c:402
+> Call Trace:
+>  <TASK>
+>  getname_kernel+0x1d/0x2f0 fs/namei.c:232
+>  kern_path+0x1d/0x50 fs/namei.c:2716
+>  is_good_dev_path fs/btrfs/volumes.c:760 [inline]
+>  btrfs_scan_one_device+0x19e/0xd90 fs/btrfs/volumes.c:1484
+>  btrfs_get_tree_super fs/btrfs/super.c:1841 [inline]
+>  btrfs_get_tree+0x30e/0x1920 fs/btrfs/super.c:2114
+>  vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+>  fc_mount+0x1b/0xb0 fs/namespace.c:1231
+>  btrfs_get_tree_subvol fs/btrfs/super.c:2077 [inline]
+>  btrfs_get_tree+0x652/0x1920 fs/btrfs/super.c:2115
+>  vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+>  vfs_cmd_create+0xa0/0x1f0 fs/fsopen.c:225
+>  __do_sys_fsconfig fs/fsopen.c:472 [inline]
+>  __se_sys_fsconfig+0xa1f/0xf70 fs/fsopen.c:344
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> RIP: 0033:0x7fe8c78542a9
+> ---[ end trace 0000000000000000 ]---
 > 
-> 在 2024/10/10 02:03, David Sterba 写道:
-> > Hi,
-> > 
-> > I'd like some user feedback on a new ioctl that should handle several use cases
-> > around subvolume deletion. Currently it's implemented on top of the privileged
-> > SEARCH_TREE ioctl, it's not possible to do that with libbtrfsutil or
-> > unprivileged ioctls.
-> > 
-> > The use cases:
-> > 
-> >    1) wait for a specific id until it's cleaned (blocking, not blocking)
-> > 
-> > This is what 'btrfs subvol sync id' does. In the non-blocking mode it checks if
-> > a subvolume is in the queue for deletion.
-> > 
-> >    2) wait for all currently queued subvolumes (blocking)
-> > 
-> > Same as 'btrfs subvol sync' without any id.
-> > 
-> >    3) read id of the currently cleaned subvolume (not blocking)
-> > 
-> > Allow to implement sync purely in user space.
-> > 
-> >    4) read id of the last in the queue (not blocking)
-> > 
-> > As the subvolumes are added to the list in the order of deletion, reading the
-> > last one is kind of a checkpoint. More subvolumes can be added to the queue in
-> > the meanwhile so this adds some flexibility to applications.
-> > 
-> >    5) count the number of queued subvolumes (not blocking)
-> > 
-> > This is for convenience and progress reports.
+> [CAUSE]
+> The reproducer passes NULL as the device path for
+> btrfs_scan_one_device().
+> 
+> Normally such case will be rejected by bdev_file_open_by_path(), which
+> will return -EINVAL and we reject the mount.
+> 
+> But since commit ("btrfs: avoid unnecessary device path update for the
+> same device") and commit ("btrfs: canonicalize the device path before
+> adding") will do extra kern_path() lookup before
+> bdev_file_open_by_path().
+> 
+> Unlike bdev_file_open_by_path(), kern_path() doesn't do the NULL pointer
+> check and triggers the above strlen() on NULL pointer.
+> 
+> [FIX]
+> For function is_good_dev_path() and get_canonical_dev_path(), do the
+> extra NULL pointer checks.
+> 
+> This will be folded into the two offending patches, and I hope this is
+> really the last fix I need to fold...
 
-> I don't understand why we need to get the status about subvolume 
-> deletion. Can you provide some real world usage?
-
-https://github.com/kdave/btrfs-progs/blob/devel/cmds/subvolume.c#L85
-
-'btrfs subvol sync' prints at the beginning number of subvolumes
-
-  "Waiting for 123 subvolumes"
-
-And then prints the progress like
-
-  "Subvolume id 456 is gone (1/10)"
-
-So the ioctl mode is there to emulate that, for the common case of "wait
-for all subvolumes currently queued for deletion".
-
-> > 
-> > There are some questions and potential problems stemming from the general
-> > availability of the ioctl:
-> > 
-> > - the operations will need to take locks and/or lookup the subvolumes in the
-> >    data structures, so it could be abused to overload the locks, but there are
-> >    more such ways how to do that so I'm not sure what to do here
-> Since it's privileged operation. I think it is up to users. But we can 
-> have some hints like balance do.
-> > - deleted subvolume loses it's connection to path in directory hierarchy, so
-> >    querying an id does not tell us if the user was allowed to see the subvolume
-> > 
-> > - the blocking operations can take a timeout parameter (seconds), this is for
-> >    convenience, otherwise a simple "while (ioctl) sleep(1)" will always work
-> > 
-> > 
-> > My questions:
-> > 
-> > - Are there other use cases that are missing from the list?
-> > 
-> > - Are there use cases that should not be implemented? E.g. not worth the
-> >    trouble or not really useful.
-> > 
-> > I have a prototype for 1 and 2, the others would be easy to implement
-> > but the number of cases affects the ioctl design (simple id vs modes).
-> > 
-> > Thanks.
-> > 
-> Overall I am confused about this message. Did I miss something before?
-
-Sorry, without the code it could be cryptic.  In the simplest version,
-the ioctl could be defined to take only the a u64, the id of the
-subvolume to wait for, or 0 to wait for all.
-
-#define BTRFS_IOC_SUBVOL_SYNC_WAIT _IOW(BTRFS_IOCTL_MAGIC, 65, u64)
-
-and implemented like (schematically):
-
-btrfs_ioctl_subvol_sync_wait(struct btrfs_fs_info *fs_info, void __user *argp) {
-	u64 subvolid;
-
-	copy_from_user(&subvolid, argp);
-
-	if (subvolid == 0)
-		subvolid = btrfs_root_id("last root in the dead_roots list");
-
-	while (1) {
-		root = lookup_root(subvolid)
-		"if exists, continue looping"
-		"if gone, exit"
-	}
-}
-
-So my question is if this is sufficient for all what's needed or if the
-argument passed to the ioctl should be a structure with flags, modes,
-timeout and such:
-
-struct btrfs_ioctl_subvol_wailt {
-	u32 mode;
-	union {
-		u32 timeout;
-		u32 count;
-	};
-	u64 subvolid;
-};
+After you fold it please manually close the syzbot reports as this won't
+be done by the automatic detection of the reported-by links.
 
