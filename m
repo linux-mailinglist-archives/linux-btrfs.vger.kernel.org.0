@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-8820-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8821-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB4BE998F18
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 19:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB376998F6B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 20:09:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63C271F25D0B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:59:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 456871F25FBC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 18:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992CA19D083;
-	Thu, 10 Oct 2024 17:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1DB81E47A7;
+	Thu, 10 Oct 2024 18:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YJYdGDCo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8teAtA1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A6B19CD07;
-	Thu, 10 Oct 2024 17:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B841E379F;
+	Thu, 10 Oct 2024 18:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728583144; cv=none; b=JvjQAM+ZMCVYLxXuE1UC95VYqhN8jsVljRThDW1moY30twwCaAKpAOMyHKO1MLVCQrkgz0PA2o2h1IXwIMeGh6eL88aNpNBkEvQ+9Voy6tb78JmyIkxJ+eTHR9O+y3rWzCvI5TJHiL32QHE+3UH9jVHaQTlCM5l1M5C7/ozy7Bs=
+	t=1728583634; cv=none; b=VTkl7hwtfKIfpf6wriZYVRkoLmPXvOYmKNOTZX/VqGSetgGvmJs+Gu9nYmY3NMCIP+FjJC4UAbVsB3dKNvLgX6IvNSvraHklrNZ53gQ8s2jmP6fZawh1zAhDzBuJ3q9xie5/PfwIpErAZbQOxjFpaRrVblWpo43POcJJvWwbPH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728583144; c=relaxed/simple;
-	bh=Kge7wc2eVf7UslF+TD3gPb+FeB7D+a2MobjWWFDO3WA=;
+	s=arc-20240116; t=1728583634; c=relaxed/simple;
+	bh=cxG+YNl+v9iEpZmHv73E0r3KZfsBXIVJgAGWTwlWd8E=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oP8h0sYLytWXWBbpXDUsE2cOx1prdfOtvPsJSwRr0AWhsjdGCAr/sSklRO73XzlMcBL/l6ln842wr0b2htUwx7o+Km4UfhcoyxH69x6hBoI2F095uFhhe6TpvsLohPKT6t7AHyzWpU6JA1QCwXH5dd9k0667/CK4xflcBo3Aks8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YJYdGDCo; arc=none smtp.client-ip=209.85.214.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=mzJMVc3VajOoGa/bChGL1QR4E6fCPBH0WVpro95QPsteAeFJl6Abx+hHJ0FsmFKIzX/WNPFmTgowzu16EZ3u8xyYjGJwkPBBqF2zq+iK/SrOrMhT6y9/zlwFQu6Yzjnj+GllKzTWz4nVRn7AdWpWZR4jfBurb0qcAOqBsOVM1v0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M8teAtA1; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20b7259be6fso12959545ad.0;
-        Thu, 10 Oct 2024 10:59:03 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-71e0cd1f3b6so993513b3a.0;
+        Thu, 10 Oct 2024 11:07:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728583143; x=1729187943; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728583632; x=1729188432; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pjaq1ccy6Z8uwpI+HpuudFCkgY1TCeYNA3gLc2Vpidw=;
-        b=YJYdGDCoT8voQXMVWvBmEFHBxTu2e6pYABtWOn0OAlW4UI03xgNWVCDQLxV2JSBsZU
-         zQ1ZnlPE8Ix/koHON7JildJzYhchxpGWNQfRoywcF/qfaMDrm3HQiM+Uak1zwCI458lh
-         c91SGSmE5GVTIRi0iruAsntfs05q6srPTKQCytWEcJeuukTOKgAmETIbVLLWLES659Iu
-         XMyKOY5KiZbX+5CegTZN0v5Q3z2ued5m7vD620VHy/9i8WmR7jz6xS0G05AB1/M7oW4S
-         OYOQ+AJZvH8OrvUQ1Qw/s26uONpdBGwEjsOb1HLDpqUKVwvSakgF+pI1UcnXsNSkNN/Q
-         HUcw==
+        bh=hJrjmdMI96zPiPqng8kU9+m7/MaNtEw4rEx+JduNOGM=;
+        b=M8teAtA16WgNPN5webbAUs98e7Liu9bCjxwQclZ3c1m3eYmsASwY5kPZARPgxvlOi6
+         UFTolg3BVA8qdiR5NvYBS4NfEdEWwo5DT7XfE2hNgY8a9G9cIT21AYAwDwBBfgfhca0r
+         cEDGv1TYvKKs71X5z3lL9kudh0a4WoKYe5oqfpPkvOUgRrJUOI7UD+6rNSpUiEQr64ev
+         eYwPq+xulw4ON8/3MLE0jwKNhLZXtN+DIEhkPvZnL9YNLcvnuF/dHpIjOEr9MR5Oxz+W
+         UbSX6K8PCVdaBHl1pu1B1PbFdbHR7JNI4Nf6+tU2XB/egQavRCzlxxsy5t6DP+awu7sS
+         O++g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728583143; x=1729187943;
+        d=1e100.net; s=20230601; t=1728583632; x=1729188432;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pjaq1ccy6Z8uwpI+HpuudFCkgY1TCeYNA3gLc2Vpidw=;
-        b=poKcsjn2BV2Q3M8DgSUcejyU/+fOtdeYZbA8O593hZ2O+ntCJEcT8yAxOAcT4fJmQn
-         3SQvU2jkmF/J4QgChSR1nPyxDeot5X4YM6RNB5paHzjmgNc64o33TVdJpIDFqiw89rQ2
-         SCkMPQffbkyZ3vZAOGM2nMaKXhdbL/6dFoogtVY5q/vfJSdWyofoxWnw5CSnAfRy3oaa
-         nwo2Ux6JI2vv0QYJ3yW96IzgDo2bA9qnJ0TSzxJ4boJ5rhG2fq9CJ4nnzmcwV7S6reaN
-         AkhZdpb7k6WQaXAu+gQ1AD2Tb+o7cZ7MDKhZfy75pLd7M2ZIizWBAZItwaYEHCKhY1Dn
-         el8w==
-X-Forwarded-Encrypted: i=1; AJvYcCUJZu7ozhBJb4SUx6e3qSrcDat42p2YHh2RhBron4EpbgGabLT+GsY5MQBlkkE/Slgi0AYQFQ0CJITV@vger.kernel.org, AJvYcCV/lbgsCHSGQtD9dm4hdt0bkb5tEmdMdUFnhr8UpX8HGkgSzcuk/9RooYNNHz1sp7aYZW1xQ1pvI0sgDg==@vger.kernel.org, AJvYcCXG97lEzg2JNob9GMPByXRkUccmtjg1FEIMQokypwCq1TlXMSPDXXNWiR6iIrwO4Q2gRv4h/VcHo6dc@vger.kernel.org, AJvYcCXbKR8D+3xaRmcY+cdxT3UMGbC41M2lyr+NP8ZypjwThS3Lt9wuhkI2PfB+FbQO8x70hmjhZAHyEi08wPx0@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/MrQuxtUVkTDZ0yE5Sv5UrFnK+CABbsLa8vn1Dy5e1AEIbyoo
-	w0ezYKVN9MdOl9T+cEwKTqPB7mhlawUqonA+nTVY6kDZpmPKLJ4+oQmirw==
-X-Google-Smtp-Source: AGHT+IEyOee19JN6mF8IjynsdGZ4gyhcTytl8LOHNBi6Lt4Mwgsu9dLliHXMPgXybxOPTDtUxxBD0w==
-X-Received: by 2002:a17:903:1208:b0:20c:70ab:b9c3 with SMTP id d9443c01a7336-20c9d8d2615mr5434325ad.34.1728583142564;
-        Thu, 10 Oct 2024 10:59:02 -0700 (PDT)
+        bh=hJrjmdMI96zPiPqng8kU9+m7/MaNtEw4rEx+JduNOGM=;
+        b=Rig6OJUQVglEbbtcS/IJSi+0y4vzny5sILHgtg1ICKsaLS3eEc0vjWrm2TXJbom41B
+         ZJyxbedoCmjmed7BNM0qi5M3AQy7ss257N6o7okK2ebUd6XQm4tbxkavgDJDZmZQ1c++
+         1CQTt8WdicAC6/GqzXstZc7ycsgPE4DsHH9lLmICvtlxl/kNEVLUrLlVGHuX5VMahNZd
+         EgyniZWhC8L/y/obvYizaBNgiEdHLTXQUstAv3jcWlm2RcQhdAS/wzcRzGBm/vVa0V1n
+         rfGQWp73tDT/qj2h4vs1RUr/swo9LM6dNq/B2ljH9glEgHEa+Pb7uZ/o8WvGcxj3hGED
+         GbZg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+3TVDftcbsmug1wWzFkikMH+AmFdzrrt0AXFTPOgN1E8xGCIIJMlQ3ZYtlgn3WK2E2JCwuHnkfqrT@vger.kernel.org, AJvYcCVnZTq5Itt2r2HcaJ+wg2f1qA2FsCJHnNVEWd1NmttyGuRWhs5DUyZ1RLk8WvbEJgz+QysI7+7+xSU/@vger.kernel.org, AJvYcCWnpqeuYdGOyhIqX9UMi2XABRjTPijCO9Bxss5Qm4+KZTAMFbSsMG/VokQf6LneaQKpWcUqwZ134ZwazXr2@vger.kernel.org, AJvYcCXfqiFA3KqBGM16ziaOyTazro7/Yj9d8POSuE9cE99tebFIX6+qua6zP2s8imOK99MQa5JHWRIQu7CuZw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzguAHtShH3GhMNhgpjTEwMNHPpb9Tesb7kzx8tTg4bQRbk4fxk
+	qVMeIgNU1oK/f6vqoCprec5u5sz9SsVD3PN4BrL1aPUpxZuSPhW+
+X-Google-Smtp-Source: AGHT+IEjAcQXROm73I8kzCjIfwzpA2mw6XHOqLkD8N3Qu45MZeHc2xU90RHnBEIvm8wQO7RYA0ZqHQ==
+X-Received: by 2002:a05:6a00:3cd3:b0:71d:fb83:6301 with SMTP id d2e1a72fcca58-71e1db878d0mr10326087b3a.16.1728583631847;
+        Thu, 10 Oct 2024 11:07:11 -0700 (PDT)
 Received: from fan ([2601:646:8f03:9fee:c165:c800:4280:d79b])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8c340106sm11950045ad.265.2024.10.10.10.58.58
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e2aa0ccd4sm1341853b3a.93.2024.10.10.11.07.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 10:59:02 -0700 (PDT)
+        Thu, 10 Oct 2024 11:07:11 -0700 (PDT)
 From: Fan Ni <nifan.cxl@gmail.com>
 X-Google-Original-From: Fan Ni <fan.ni@samsung.com>
-Date: Thu, 10 Oct 2024 10:58:56 -0700
+Date: Thu, 10 Oct 2024 11:07:08 -0700
 To: Ira Weiny <ira.weiny@intel.com>
 Cc: Dave Jiang <dave.jiang@intel.com>,
 	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
@@ -82,11 +82,10 @@ Cc: Dave Jiang <dave.jiang@intel.com>,
 	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
 	linux-doc@vger.kernel.org, nvdimm@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 17/28] cxl/events: Split event msgnum configuration
- from irq setup
-Message-ID: <ZwgV4D9NmcC-SAYQ@fan>
+Subject: Re: [PATCH v4 18/28] cxl/pci: Factor out interrupt policy check
+Message-ID: <ZwgXzOwhryyyaEds@fan>
 References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
- <20241007-dcd-type2-upstream-v4-17-c261ee6eeded@intel.com>
+ <20241007-dcd-type2-upstream-v4-18-c261ee6eeded@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -95,112 +94,73 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241007-dcd-type2-upstream-v4-17-c261ee6eeded@intel.com>
+In-Reply-To: <20241007-dcd-type2-upstream-v4-18-c261ee6eeded@intel.com>
 
-On Mon, Oct 07, 2024 at 06:16:23PM -0500, Ira Weiny wrote:
+On Mon, Oct 07, 2024 at 06:16:24PM -0500, Ira Weiny wrote:
 > Dynamic Capacity Devices (DCD) require event interrupts to process
 > memory addition or removal.  BIOS may have control over non-DCD event
 > processing.  DCD interrupt configuration needs to be separate from
 > memory event interrupt configuration.
 > 
-> Split cxl_event_config_msgnums() from irq setup in preparation for
-> separate DCD interrupts configuration.
+> Factor out event interrupt setting validation.
 > 
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
-One minor comment inline; otherwise
+> 
 
 Reviewed-by: Fan Ni <fan.ni@samsung.com>
 
->  drivers/cxl/pci.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+> ---
+> Changes:
+> [iweiny: reword commit message]
+> [iweiny: keep review tags on simple patch]
+> ---
+>  drivers/cxl/pci.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
 > 
 > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index fc5ab74448cc..29a863331bec 100644
+> index 29a863331bec..c6042db0653d 100644
 > --- a/drivers/cxl/pci.c
 > +++ b/drivers/cxl/pci.c
-> @@ -702,35 +702,31 @@ static int cxl_event_config_msgnums(struct cxl_memdev_state *mds,
->  	return cxl_event_get_int_policy(mds, policy);
+> @@ -742,6 +742,21 @@ static bool cxl_event_int_is_fw(u8 setting)
+>  	return mode == CXL_INT_FW;
 >  }
 >  
-> -static int cxl_event_irqsetup(struct cxl_memdev_state *mds)
-> +static int cxl_event_irqsetup(struct cxl_memdev_state *mds,
-> +			      struct cxl_event_interrupt_policy *policy)
->  {
->  	struct cxl_dev_state *cxlds = &mds->cxlds;
-> -	struct cxl_event_interrupt_policy policy;
->  	int rc;
->  
-> -	rc = cxl_event_config_msgnums(mds, &policy);
-> -	if (rc)
-> -		return rc;
-> -
-> -	rc = cxl_event_req_irq(cxlds, policy.info_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->info_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Info log\n");
->  		return rc;
->  	}
->  
-> -	rc = cxl_event_req_irq(cxlds, policy.warn_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->warn_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Warn log\n");
->  		return rc;
->  	}
->  
-> -	rc = cxl_event_req_irq(cxlds, policy.failure_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->failure_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Failure log\n");
->  		return rc;
->  	}
->  
-> -	rc = cxl_event_req_irq(cxlds, policy.fatal_settings);
-> +	rc = cxl_event_req_irq(cxlds, policy->fatal_settings);
->  	if (rc) {
->  		dev_err(cxlds->dev, "Failed to get interrupt for event Fatal log\n");
->  		return rc;
-
-There is a lot of duplicate code here, can we simplify it by
-iteratting all setttings in cxl_event_interrrupt_policy like 
-
-for setting in policy:
-    rc = cxl_event_req_irq(cxlds, setting);
-    if (rc) {
-        ...
-    }
-
-For DCD, handle the setup separately afterwards.
-
-Fan
-
-> @@ -749,7 +745,7 @@ static bool cxl_event_int_is_fw(u8 setting)
+> +static bool cxl_event_validate_mem_policy(struct cxl_memdev_state *mds,
+> +					  struct cxl_event_interrupt_policy *policy)
+> +{
+> +	if (cxl_event_int_is_fw(policy->info_settings) ||
+> +	    cxl_event_int_is_fw(policy->warn_settings) ||
+> +	    cxl_event_int_is_fw(policy->failure_settings) ||
+> +	    cxl_event_int_is_fw(policy->fatal_settings)) {
+> +		dev_err(mds->cxlds.dev,
+> +			"FW still in control of Event Logs despite _OSC settings\n");
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
 >  static int cxl_event_config(struct pci_host_bridge *host_bridge,
 >  			    struct cxl_memdev_state *mds, bool irq_avail)
 >  {
-> -	struct cxl_event_interrupt_policy policy;
-> +	struct cxl_event_interrupt_policy policy = { 0 };
->  	int rc;
+> @@ -764,14 +779,8 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
+>  	if (rc)
+>  		return rc;
 >  
->  	/*
-> @@ -777,11 +773,15 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
+> -	if (cxl_event_int_is_fw(policy.info_settings) ||
+> -	    cxl_event_int_is_fw(policy.warn_settings) ||
+> -	    cxl_event_int_is_fw(policy.failure_settings) ||
+> -	    cxl_event_int_is_fw(policy.fatal_settings)) {
+> -		dev_err(mds->cxlds.dev,
+> -			"FW still in control of Event Logs despite _OSC settings\n");
+> +	if (!cxl_event_validate_mem_policy(mds, &policy))
 >  		return -EBUSY;
->  	}
+> -	}
 >  
-> +	rc = cxl_event_config_msgnums(mds, &policy);
-> +	if (rc)
-> +		return rc;
-> +
->  	rc = cxl_mem_alloc_event_buf(mds);
+>  	rc = cxl_event_config_msgnums(mds, &policy);
 >  	if (rc)
->  		return rc;
->  
-> -	rc = cxl_event_irqsetup(mds);
-> +	rc = cxl_event_irqsetup(mds, &policy);
->  	if (rc)
->  		return rc;
->  
 > 
 > -- 
 > 2.46.0
