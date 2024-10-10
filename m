@@ -1,119 +1,234 @@
-Return-Path: <linux-btrfs+bounces-8793-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8794-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28EA998A9C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 16:58:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED422998AAA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 16:59:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A97DF28A7B9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 14:58:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B22C1C245FA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 14:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB37B1F12E1;
-	Thu, 10 Oct 2024 14:48:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="yd0bvUIA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25E41F4736;
+	Thu, 10 Oct 2024 14:50:25 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA3D1EF95D
-	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 14:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB941CCB2A;
+	Thu, 10 Oct 2024 14:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728571711; cv=none; b=TdkG90TyLkJgdewg5o1xeittW3oOv7h/WCsHl0ZluWPj1Dz/4ONpjSuoRGQICXsE598QAW9COAt7+DjLjoQX5M0iqocQBqC7P57SMrSNSmwhFCLPhYnpnstXNuhkxpvWtZ2dsBQeDmLX7ewg19qDIrBq9IhOjIXoP4EV7zB5dpQ=
+	t=1728571825; cv=none; b=TlnVL3EQP5y3GEcxhCZ030tj/Afon6+gVhP8EWhHs1d7iLWqLkkRJEo4+prlANEiUnH5yZaug1uN9kXbCs/qMBiw5nq8JJV80QDewUWgLYjGoG1+7Xzek8+NO8fHmupfP1KCa0FkdQU9dQGOFv2ueOWKgsAlAFDwQJkpX/730Sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728571711; c=relaxed/simple;
-	bh=WtcqMvAJ2Yicn3RbagkjlfH69i2113gLY6P62lqKVI4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l27SE6UWbLIdLZWf8dLqNKXtF42c2bOI0cDtE8QhcpoLJFRgb68NPwOxWqHQWRNjl4WmCSXfX19QYFiFBA/jm1lBIFtVO4CmQMT+7GQTfV7zWUA9HXHTDckfcDa9Uu0izy7K76J3ZhmA033MzkCISkG/au9L98hS7VYs6whKG1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=yd0bvUIA; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-71549d19983so624220a34.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 07:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1728571709; x=1729176509; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cb9ZzYELvl8lqeEM9x/PhJlsPHEZcbyHcKgmoOtKfN8=;
-        b=yd0bvUIAwajbB8VszD0YpPTlwdJsZ6B7MjJuTY2tdFetz75JSYrGqKO39zhZ0ccyhQ
-         4tQomtHzmvYc28lHscCIlDY740rayoUqOdFgdYoLJbKroX70TS0wm8CYc29KgtdwwPtL
-         J+j9pG6jRt2bMDL7b2PKJB8uAk9J5pSgyQOW/+SnX7hL0v7rf9FOnk5nL1uA77lMJUaf
-         b0BgazqtqqRjrKwSu9EsQ1LqPSYQouWiQPVMj9E9yeIcAnzyCHw/rRT9maczKLfD2TVB
-         u3obPHPULERz+75xBxho/QJfCNrb6pCa3AbTqvqkjc1yRzHrjUY0Fj2Q0HYtcWWKtcr/
-         VKPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728571709; x=1729176509;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cb9ZzYELvl8lqeEM9x/PhJlsPHEZcbyHcKgmoOtKfN8=;
-        b=XcKcmtnRF+dPKNNeqtX0a0ZC5DD4j6rMta3jC69/Ts+4A6YRxotWJDPQLW3w0KXURm
-         ovADhEaCZI9xkh5txXsLSJH2PI16N/4dVYlye33iDooLcM4b4sDXVKWob4NybPb/hwAt
-         +tUwH2ZB5aYhtWisoG5mjnTHZRs+qpfPrqcOURDC6dIxYr6R3rlvxH5vXtMr5v8yfbq5
-         QoLUxgoaeD4QLYMfJrD8CX623/AT+K0QWrk7sUUBUdNcbbgqjjXzEwqfyPrlyrps2ECL
-         oonqmMHwJKmaVgEmGGbJrCRmqTvupJsiVQVhPvn2O3VId7W4wQ/SIcUmy/JjjJumT6Lm
-         OJzA==
-X-Gm-Message-State: AOJu0Yx2JvQMSOvrH/SmVxfiGifoyhBl/P70D0U4n57VE3G3EY/68f3f
-	V4x2IextdNAOZjeAW5f+D9p18WmNs7Nk/qJ6BN8fUo31zJ/90w1IjxR2GNYYIeA3WyvkC4L4uST
-	QTH0=
-X-Google-Smtp-Source: AGHT+IH83qHYA5qC96+sax1lLiOMsmgeuxkAsA5vuhambPlNaIOgTK9n/yAyzrB1diWiWWLrkaHS+w==
-X-Received: by 2002:a05:6358:60c3:b0:1aa:c492:1d34 with SMTP id e5c5f4694b2df-1c3081e723amr289965855d.23.1728571708943;
-        Thu, 10 Oct 2024 07:48:28 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-46049606cadsm635851cf.95.2024.10.10.07.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2024 07:48:27 -0700 (PDT)
-Date: Thu, 10 Oct 2024 10:48:26 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/5] btrfs: make extent map shrinker more efficient and
- re-enable it
-Message-ID: <20241010144826.GA10456@fedora>
-References: <cover.1727174151.git.fdmanana@suse.com>
+	s=arc-20240116; t=1728571825; c=relaxed/simple;
+	bh=zTZrKpc3++acJH71wcSToxcmBGqF9xoved3uUzneqK0=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FPLBKU5s3AK9IJod/E9js/1fjg2ot92Qm3yG4I6gipzMaPXd27g4fdI6XTxiL5jQLI5gh3L5tqbmxwB01vAn/M7UdRFgd08obWTVeVxpb4hz9G5jAl8vUKg1hcgqp/zdxKCYSglAvTIcxBuQ2LqpPFSCgQINIyOS8DcOHrmxUDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4XPXh76qqKz6J6Lx;
+	Thu, 10 Oct 2024 22:48:55 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2257D140A78;
+	Thu, 10 Oct 2024 22:50:17 +0800 (CST)
+Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 10 Oct
+ 2024 16:50:15 +0200
+Date: Thu, 10 Oct 2024 15:50:14 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: "Li, Ming4" <ming4.li@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Fan
+ Ni" <fan.ni@samsung.com>, Navneet Singh <navneet.singh@intel.com>, "Jonathan
+ Corbet" <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>, "Dan
+ Williams" <dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
+	Alison Schofield <alison.schofield@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 21/28] cxl/extent: Process DCD events and realize
+ region extents
+Message-ID: <20241010155014.00004bdd@Huawei.com>
+In-Reply-To: <6706de3530f5c_40429294b8@iweiny-mobl.notmuch>
+References: <20241007-dcd-type2-upstream-v4-0-c261ee6eeded@intel.com>
+	<20241007-dcd-type2-upstream-v4-21-c261ee6eeded@intel.com>
+	<4337ddd9-312b-4fb7-9597-81e8b00d57cb@intel.com>
+	<6706de3530f5c_40429294b8@iweiny-mobl.notmuch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1727174151.git.fdmanana@suse.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
-On Tue, Sep 24, 2024 at 11:45:40AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Wed, 9 Oct 2024 14:49:09 -0500
+Ira Weiny <ira.weiny@intel.com> wrote:
+
+> Li, Ming4 wrote:
+> > On 10/8/2024 7:16 AM, ira.weiny@intel.com wrote:  
+> > > From: Navneet Singh <navneet.singh@intel.com>
+> > >  
 > 
-> This makes the extent map shrinker run by a single task and asynchronously
-> in a work queue, re-enables it by default and some cleanups. More details
-> in the changelogs of each patch.
+> [snip]
 > 
-> Filipe Manana (5):
->   btrfs: add and use helper to remove extent map from its inode's tree
->   btrfs: make the extent map shrinker run asynchronously as a work queue job
->   btrfs: simplify tracking progress for the extent map shrinker
->   btrfs: rename extent map shrinker members from struct btrfs_fs_info
->   btrfs: re-enable the extent map shrinker
+> > >
+> > > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> > > Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > >  
+> > Hi Ira,
+> > 
+> > I guess you missed my comments for V3, I comment it again for this patch.  
+> 
+> Apologies.  Yes I totally missed your reply.  :-(
+> 
+> >   
+> > > +static bool extents_contain(struct cxl_dax_region *cxlr_dax,
+> > > +			    struct cxl_endpoint_decoder *cxled,
+> > > +			    struct range *new_range)
+> > > +{
+> > > +	struct device *extent_device;
+> > > +	struct match_data md = {
+> > > +		.cxled = cxled,
+> > > +		.new_range = new_range,
+> > > +	};
+> > > +
+> > > +	extent_device = device_find_child(&cxlr_dax->dev, &md, match_contains);
+> > > +	if (!extent_device)
+> > > +		return false;
+> > > +
+> > > +	put_device(extent_device);  
+> > could use __free(put_device) to drop this 'put_device(extent_device)'  
+> 
+> Yep.
+> 
+> > > +	return true;
+> > > +}  
+> > [...]  
+> > > +static bool extents_overlap(struct cxl_dax_region *cxlr_dax,
+> > > +			    struct cxl_endpoint_decoder *cxled,
+> > > +			    struct range *new_range)
+> > > +{
+> > > +	struct device *extent_device;
+> > > +	struct match_data md = {
+> > > +		.cxled = cxled,
+> > > +		.new_range = new_range,
+> > > +	};
+> > > +
+> > > +	extent_device = device_find_child(&cxlr_dax->dev, &md, match_overlaps);
+> > > +	if (!extent_device)
+> > > +		return false;
+> > > +
+> > > +	put_device(extent_device);  
+> > Same as above.  
+> 
+> Done.
+> 
+> > > +	return true;
+> > > +}
+> > > +  
+> > [...]  
+> > > +static int cxl_send_dc_response(struct cxl_memdev_state *mds, int opcode,
+> > > +				struct xarray *extent_array, int cnt)
+> > > +{
+> > > +	struct cxl_mailbox *cxl_mbox = &mds->cxlds.cxl_mbox;
+> > > +	struct cxl_mbox_dc_response *p;
+> > > +	struct cxl_mbox_cmd mbox_cmd;
+> > > +	struct cxl_extent *extent;
+> > > +	unsigned long index;
+> > > +	u32 pl_index;
+> > > +	int rc;
+> > > +
+> > > +	size_t pl_size = struct_size(p, extent_list, cnt);
+> > > +	u32 max_extents = cnt;
+> > > +
+> > > +	/* May have to use more bit on response. */
+> > > +	if (pl_size > cxl_mbox->payload_size) {
+> > > +		max_extents = (cxl_mbox->payload_size - sizeof(*p)) /
+> > > +			      sizeof(struct updated_extent_list);
+> > > +		pl_size = struct_size(p, extent_list, max_extents);
+> > > +	}
+> > > +
+> > > +	struct cxl_mbox_dc_response *response __free(kfree) =
+> > > +						kzalloc(pl_size, GFP_KERNEL);
+> > > +	if (!response)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	pl_index = 0;
+> > > +	xa_for_each(extent_array, index, extent) {
+> > > +
+> > > +		response->extent_list[pl_index].dpa_start = extent->start_dpa;
+> > > +		response->extent_list[pl_index].length = extent->length;
+> > > +		pl_index++;
+> > > +		response->extent_list_size = cpu_to_le32(pl_index);
+> > > +
+> > > +		if (pl_index == max_extents) {
+> > > +			mbox_cmd = (struct cxl_mbox_cmd) {
+> > > +				.opcode = opcode,
+> > > +				.size_in = struct_size(response, extent_list,
+> > > +						       pl_index),
+> > > +				.payload_in = response,
+> > > +			};
+> > > +
+> > > +			response->flags = 0;
+> > > +			if (pl_index < cnt)
+> > > +				response->flags &= CXL_DCD_EVENT_MORE;  
+> > 
+> > It should be 'response->flags |= CXL_DCD_EVENT_MORE' here.  
+> 
+> Ah yea.  Good catch.
+> 
+> > 
+> > Another issue is if 'cnt' is N times bigger than 'max_extents'(e,g. cnt=20, max_extents=10). all responses will be sent in this xa_for_each(), and CXL_DCD_EVENT_MORE will be set in the last response but it should not be set in these cases.
+> >   
+> 
+> Ah yes.  cnt must be decremented.  As I looked at the patch just now the
+> 
+> 	if (cnt == 0 || pl_index)
+> 
+> ... seemed very wrong to me.  That change masked this bug.
+> 
+> This should fix it:
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index d66beec687a0..99200274dea8 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -1119,10 +1119,11 @@ static int cxl_send_dc_response(struct cxl_memdev_state *mds, int opcode,
+>                         if (rc)
+>                                 return rc;
+>                         pl_index = 0;
+> +                       cnt -= pl_index;
+>                 }
+>         }
+>  
+> -       if (cnt == 0 || pl_index) {
+
+I thought this cnt == 0 check was to deal with the no valid
+extents case where an empty reply is needed.
+
+
+> +       if (pl_index) {
+>                 mbox_cmd = (struct cxl_mbox_cmd) {
+>                         .opcode = opcode,
+>                         .size_in = struct_size(response, extent_list,
+> 
+> 
+> Thank you, and sorry again for missing your feedback.
+> 
+> Ira
+> 
+> [snip]
 > 
 
-I think as a first step this is good.
-
-I am concerned that async shrinking under heavy memory pressure will
-lead to spurious OOM's because we're never waiting for the async
-shrinker to do work.  I think that a next step would be to investigate
-that possibility, and possibly use the nr_to_scan or some other
-mechanism to figure out that we're getting called multiple times and
-then wait for the shrinker to make progress.  This will keep the VM from
-deciding we aren't making progress and OOM'ing.
-
-That being said this series looks good to me, you can add
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-to the whole thing.  Thanks,
-
-Josef
 
