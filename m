@@ -1,104 +1,311 @@
-Return-Path: <linux-btrfs+bounces-8810-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8811-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62045998C63
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:53:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 634A4998C8B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 17:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 089741F23EFF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 15:53:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF46828143F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 15:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58BA1CCEF4;
-	Thu, 10 Oct 2024 15:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE281CCEF4;
+	Thu, 10 Oct 2024 15:57:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dK5LbDOt"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="C1g8z8fj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05E41CCB41;
-	Thu, 10 Oct 2024 15:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A1401C7B68
+	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 15:57:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728575598; cv=none; b=AibCiyFyShU1l1iMoPj/fdvuH3/chl9HYm5xq7OCwl553lZBZtOJwt4nG6E3KGQ7R22L4HRCJQ7ZPdu4UOUzO9SfmDKd6Gg5MfZkpx89YqIJV+3aqkRlp9IizB4VVjo9tgR4I4xTQ7zYmpRLkQLSOAIrIrK+g24RnRJBmzcLbVs=
+	t=1728575853; cv=none; b=fnxDgA2rSZ45LrsheKoHni7CR4eDMlUEB+IOWwYV0BqHR8mhIk39m85Fy65ZGPAYebuj+8vbLCKGpvJVpoLt/asaJy4FozkIQO6s7iT2PfgaBnDB4V+W0uyMYatQya/724a54BkAIbAeCfRp6R6wWbVz0XI8rO9G7TOBfLsecjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728575598; c=relaxed/simple;
-	bh=6Xk/hm2b3OcgM8FvDvwtDE3O6L8y5egTkuO+hbgD3PQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ncbw9tqG81lTXg0UDACQWxsBeydwwJumFVX03exMPhL/cVpHDjPfP0MLEqcB+z0Ap3poH+0UKSgvl76Ho/+tlJcz2Hda9PQC9/YWZKHJf33M8Z+ZSrwY8HeJYOBLfuYZ5psZXYpYMF/8E4rCs1c3CxIQQwqjvBq4lqxLujqjlZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dK5LbDOt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5C5CC4CECE;
-	Thu, 10 Oct 2024 15:53:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728575597;
-	bh=6Xk/hm2b3OcgM8FvDvwtDE3O6L8y5egTkuO+hbgD3PQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=dK5LbDOtKSW5h6MQ76eN5Vuk3D1a9R8nBPA2XycT2Py5OoqJS1xDykoVzWS/xkfIT
-	 bXSNXTeA95yiGq1Hwa+EyadJE+Q7fCw8Ygf50nriwWeyuhICM3zwRwhIwnq7Cmd65E
-	 G8ofgipfyl7BgcxPo/Lb+uSq02tEC5N4i3s4tvFaPI0C0ygGSZcDsK7th532dnth7r
-	 k1Hc+zVvr4ER1j4AaiP6HHAYxrXqC1dx9cMJYljU1MZFIIDyM0ayo52jtf2DQuqsks
-	 fzLktPEmEaYySV3Agw5a+0cCZFkSASKPhlIhQ0jLo2xz1HvXcAp9hEt2hrceJ1KexZ
-	 HCYW2m/ZirLww==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9952ea05c5so179656366b.2;
-        Thu, 10 Oct 2024 08:53:17 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVLrXtePPAKtWve55alJJvu8bXno6e3wdqtMNKIsAj35ySgo7Y+NCQ+AZRkr6OavxRCNWBrSaluLEDfmQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDQ+o3ZV5PmCT6X2QTri/+wRGhHXv4gTXi12CCln7jS4H3dLM3
-	P9d4ubfrkvn/49r2AAsq5s0RPgY2JP8E+EtPQo4v8X7dNBpbgkmDdqHTx7CgGVU6zcfYoQA0THZ
-	Iv1aIzVeJt8yFcRQwFUsdSt3dxsI=
-X-Google-Smtp-Source: AGHT+IFf/nqyi+Om+lNXUSNPkl701Xi2GlZ3y/GPTfuobO43nxzsfmXZ2r/YuqCIh5Tu82pRA79CbIN7vyLr5Mhk1k0=
-X-Received: by 2002:a17:907:970e:b0:a99:4ccc:9018 with SMTP id
- a640c23a62f3a-a998d334ac8mr683440366b.59.1728575596399; Thu, 10 Oct 2024
- 08:53:16 -0700 (PDT)
+	s=arc-20240116; t=1728575853; c=relaxed/simple;
+	bh=INWKrsvdI7sfsuyoIcZnSSyV0zDdf4GazZM9+ehLAyY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qTFDxfD0WyRFAmXLJbL8dkyY+JTz8R1VDKkpbydznnA8nrxc7osCMLzXO0tCjJ3vtmgTKxuF2/aVPG871/6m1R4DVJ9jbLwmLQg5i9Get9V2zE3BeSSYtUzWvGOwmvhBqz+TKYsY//ofpSZND3DJs9krqLWMIZaLb/bc7V2ty+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=C1g8z8fj; arc=none smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1728575851; x=1760111851;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=INWKrsvdI7sfsuyoIcZnSSyV0zDdf4GazZM9+ehLAyY=;
+  b=C1g8z8fjT4Q9A62AnEmX5HG0IPZcsnj1L5gSREmYM76fQcH2vHlbnhLG
+   SWUSRQVoI6tiOJxp2t/vgAjgrdzhA0S5J2sl8zsCwxvHvM82R1IdHuswS
+   3saihFwN+Yl+toEgvT/BtbBNWNWok0p7j1MjNkZZF2MlhNgVug9o9Rwos
+   xdDlMCNeUTcvuyyw+zO1pwySvJb8q1Xp3yNu1iVk0lgtpzdkGJgWc+MSC
+   ++JuTdaDq2qUW2U0awx4ZUQbpd8MjwcKXGa92kq4s0YwSp/+aAik0CPkk
+   9eBLBToj8fTc39IxTUW7CBtB6HmqobaI4DaT9u+zrOls7SSVoni8ETf9y
+   g==;
+X-CSE-ConnectionGUID: R2UHYkefRaWz3dnyzslb4Q==
+X-CSE-MsgGUID: q4RSScPmTMCQlw0B4aqqvA==
+X-IronPort-AV: E=Sophos;i="6.11,193,1725292800"; 
+   d="scan'208";a="29129992"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Oct 2024 23:57:30 +0800
+IronPort-SDR: 6707eb21_7cPAF8fpOQ28o/2A/BDZ1ODbqo1XRhO4h0ekqLLOAr6+QEN
+ TYaph+Y8Y8ArJUv1OipAf43M2cKLduj+tSf7ZBg==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 10 Oct 2024 07:56:33 -0700
+WDCIronportException: Internal
+Received: from unknown (HELO naota-xeon.wdc.com) ([10.225.163.14])
+  by uls-op-cesaip01.wdc.com with ESMTP; 10 Oct 2024 08:57:30 -0700
+From: Naohiro Aota <naohiro.aota@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: wqu@suse.com,
+	hch@lst.de,
+	Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v2] btrfs: fix error propagation of split bios
+Date: Fri, 11 Oct 2024 00:57:24 +0900
+Message-ID: <1d4f72f7fee285b2ddf4bf62b0ac0fd89def5417.1728575379.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.46.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241010153630.1225162-1-maharmstone@fb.com>
-In-Reply-To: <20241010153630.1225162-1-maharmstone@fb.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 10 Oct 2024 16:52:39 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5f=EfNXryU37zxNHe8=wp6z2rXD5CTwMB9vszbLnVU5A@mail.gmail.com>
-Message-ID: <CAL3q7H5f=EfNXryU37zxNHe8=wp6z2rXD5CTwMB9vszbLnVU5A@mail.gmail.com>
-Subject: Re: [PATCH] btrfs/318: add _require_loop
-To: Mark Harmstone <maharmstone@fb.com>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 10, 2024 at 4:46=E2=80=AFPM Mark Harmstone <maharmstone@fb.com>=
- wrote:
->
-> btrfs/318 uses loopback devices, but was missing a call to _require_loop
-> to print the correct message if CONFIG_LOOP is not set.
->
-> Signed-off-by: Mark Harmstone <maharmstone@fb.com>
+The purpose of btrfs_bbio_propagate_error() shall be propagating an error
+of split bio to its original btrfs_bio, and tell the error to the upper
+layer. However, it's not working well on some cases.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+* Case 1. Immediate (or quick) end_bio with an error
 
-Looks good, thanks.
+When btrfs sends btrfs_bio to mirrored devices, btrfs calls
+btrfs_bio_end_io() when all the mirroring bios are completed. If that
+btrfs_bio was split, it is from btrfs_clone_bioset and its end_io function
+is btrfs_orig_write_end_io. For this case, btrfs_bbio_propagate_error()
+accesses the orig_bbio's bio context to increase the error count.
 
-> ---
->  tests/btrfs/318 | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tests/btrfs/318 b/tests/btrfs/318
-> index 79977276..df5a4a07 100755
-> --- a/tests/btrfs/318
-> +++ b/tests/btrfs/318
-> @@ -18,6 +18,7 @@ _fixed_by_kernel_commit 9f7eb8405dcb \
->  _require_test
->  _require_command "$PARTED_PROG" parted
->  _require_batched_discard "$TEST_DIR"
-> +_require_loop
->
->  _cleanup() {
->         cd /
-> --
-> 2.44.2
->
->
+That works well in most cases. However, if the end_io is called enough
+fast, orig_bbio's (remaining part after split) bio context may not be
+properly set at that time. Since the bio context is set when the orig_bbio
+(the last btrfs_bio) is sent to devices, that might be too late for earlier
+split btrfs_bio's completion.  That will result in NULL pointer
+dereference.
+
+That bug is easily reproducible by running btrfs/146 on zoned devices [1]
+and it shows the following trace.
+
+[1] You need raid-stripe-tree feature as it create "-d raid0 -m raid1" FS.
+
+    [   20.923980][   T13] BUG: kernel NULL pointer dereference, address: 0000000000000020
+    [   20.925234][   T13] #PF: supervisor read access in kernel mode
+    [   20.926122][   T13] #PF: error_code(0x0000) - not-present page
+    [   20.927118][   T13] PGD 0 P4D 0
+    [   20.927607][   T13] Oops: Oops: 0000 [#1] PREEMPT SMP PTI
+    [   20.928424][   T13] CPU: 1 UID: 0 PID: 13 Comm: kworker/u32:1 Not tainted 6.11.0-rc7-BTRFS-ZNS+ #474
+    [   20.929740][   T13] Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+    [   20.930697][   T13] Workqueue: writeback wb_workfn (flush-btrfs-5)
+    [   20.931643][   T13] RIP: 0010:btrfs_bio_end_io+0xae/0xc0 [btrfs]
+    [   20.932573][ T1415] BTRFS error (device dm-0): bdev /dev/mapper/error-test errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
+    [   20.932871][   T13] Code: ba e1 48 8b 7b 10 e8 f1 f5 f6 ff eb da 48 81 bf 10 01 00 00 40 0c 33 a0 74 09 40 88 b5 f1 00 00 00 eb b8 48 8b 85 18 01 00 00 <48> 8b 40 20 0f b7 50 24 f0 01 50 20 eb a3 0f 1f 40 00 90 90 90 90
+    [   20.936623][   T13] RSP: 0018:ffffc9000006f248 EFLAGS: 00010246
+    [   20.937543][   T13] RAX: 0000000000000000 RBX: ffff888005a7f080 RCX: ffffc9000006f1dc
+    [   20.938788][   T13] RDX: 0000000000000000 RSI: 000000000000000a RDI: ffff888005a7f080
+    [   20.940016][   T13] RBP: ffff888011dfc540 R08: 0000000000000000 R09: 0000000000000001
+    [   20.941227][   T13] R10: ffffffff82e508e0 R11: 0000000000000005 R12: ffff88800ddfbe58
+    [   20.942375][   T13] R13: ffff888005a7f080 R14: ffff888005a7f158 R15: ffff888005a7f158
+    [   20.943531][   T13] FS:  0000000000000000(0000) GS:ffff88803ea80000(0000) knlGS:0000000000000000
+    [   20.944838][   T13] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    [   20.945811][   T13] CR2: 0000000000000020 CR3: 0000000002e22006 CR4: 0000000000370ef0
+    [   20.946984][   T13] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+    [   20.948150][   T13] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+    [   20.949327][   T13] Call Trace:
+    [   20.949949][   T13]  <TASK>
+    [   20.950374][   T13]  ? __die_body.cold+0x19/0x26
+    [   20.951066][   T13]  ? page_fault_oops+0x13e/0x2b0
+    [   20.951766][   T13]  ? _printk+0x58/0x73
+    [   20.952358][   T13]  ? do_user_addr_fault+0x5f/0x750
+    [   20.953120][   T13]  ? exc_page_fault+0x76/0x240
+    [   20.953827][   T13]  ? asm_exc_page_fault+0x22/0x30
+    [   20.954606][   T13]  ? btrfs_bio_end_io+0xae/0xc0 [btrfs]
+    [   20.955616][   T13]  ? btrfs_log_dev_io_error+0x7f/0x90 [btrfs]
+    [   20.956682][   T13]  btrfs_orig_write_end_io+0x51/0x90 [btrfs]
+    [   20.957769][   T13]  dm_submit_bio+0x5c2/0xa50 [dm_mod]
+    [   20.958623][   T13]  ? find_held_lock+0x2b/0x80
+    [   20.959339][   T13]  ? blk_try_enter_queue+0x90/0x1e0
+    [   20.960228][   T13]  __submit_bio+0xe0/0x130
+    [   20.960879][   T13]  ? ktime_get+0x10a/0x160
+    [   20.961546][   T13]  ? lockdep_hardirqs_on+0x74/0x100
+    [   20.962310][   T13]  submit_bio_noacct_nocheck+0x199/0x410
+    [   20.963140][   T13]  btrfs_submit_bio+0x7d/0x150 [btrfs]
+    [   20.964089][   T13]  btrfs_submit_chunk+0x1a1/0x6d0 [btrfs]
+    [   20.965066][   T13]  ? lockdep_hardirqs_on+0x74/0x100
+    [   20.965824][   T13]  ? __folio_start_writeback+0x10/0x2c0
+    [   20.966659][   T13]  btrfs_submit_bbio+0x1c/0x40 [btrfs]
+    [   20.967617][   T13]  submit_one_bio+0x44/0x60 [btrfs]
+    [   20.968536][   T13]  submit_extent_folio+0x13f/0x330 [btrfs]
+    [   20.969552][   T13]  ? btrfs_set_range_writeback+0xa3/0xd0 [btrfs]
+    [   20.970625][   T13]  extent_writepage_io+0x18b/0x360 [btrfs]
+    [   20.971632][   T13]  extent_write_locked_range+0x17c/0x340 [btrfs]
+    [   20.972702][   T13]  ? __pfx_end_bbio_data_write+0x10/0x10 [btrfs]
+    [   20.973857][   T13]  run_delalloc_cow+0x71/0xd0 [btrfs]
+    [   20.974841][   T13]  btrfs_run_delalloc_range+0x176/0x500 [btrfs]
+    [   20.975870][   T13]  ? find_lock_delalloc_range+0x119/0x260 [btrfs]
+    [   20.976911][   T13]  writepage_delalloc+0x2ab/0x480 [btrfs]
+    [   20.977792][   T13]  extent_write_cache_pages+0x236/0x7d0 [btrfs]
+    [   20.978728][   T13]  btrfs_writepages+0x72/0x130 [btrfs]
+    [   20.979531][   T13]  do_writepages+0xd4/0x240
+    [   20.980111][   T13]  ? find_held_lock+0x2b/0x80
+    [   20.980695][   T13]  ? wbc_attach_and_unlock_inode+0x12c/0x290
+    [   20.981461][   T13]  ? wbc_attach_and_unlock_inode+0x12c/0x290
+    [   20.982213][   T13]  __writeback_single_inode+0x5c/0x4c0
+    [   20.982859][   T13]  ? do_raw_spin_unlock+0x49/0xb0
+    [   20.983439][   T13]  writeback_sb_inodes+0x22c/0x560
+    [   20.984079][   T13]  __writeback_inodes_wb+0x4c/0xe0
+    [   20.984886][   T13]  wb_writeback+0x1d6/0x3f0
+    [   20.985536][   T13]  wb_workfn+0x334/0x520
+    [   20.986044][   T13]  process_one_work+0x1ee/0x570
+    [   20.986580][   T13]  ? lock_is_held_type+0xc6/0x130
+    [   20.987142][   T13]  worker_thread+0x1d1/0x3b0
+    [   20.987918][   T13]  ? __pfx_worker_thread+0x10/0x10
+    [   20.988690][   T13]  kthread+0xee/0x120
+    [   20.989180][   T13]  ? __pfx_kthread+0x10/0x10
+    [   20.989915][   T13]  ret_from_fork+0x30/0x50
+    [   20.990615][   T13]  ? __pfx_kthread+0x10/0x10
+    [   20.991336][   T13]  ret_from_fork_asm+0x1a/0x30
+    [   20.992106][   T13]  </TASK>
+    [   20.992482][   T13] Modules linked in: dm_mod btrfs blake2b_generic xor raid6_pq rapl
+    [   20.993406][   T13] CR2: 0000000000000020
+    [   20.993884][   T13] ---[ end trace 0000000000000000 ]---
+    [   20.993954][ T1415] BUG: kernel NULL pointer dereference, address: 0000000000000020
+
+* Case 2. Earlier completion of orig_bbio for mirrored btrfs_bios
+
+btrfs_bbio_propagate_error() assumes the end_io function for orig_bbio is
+called last among split bios. In that case, btrfs_orig_write_end_io() sets
+the bio->bi_status to BLK_STS_IOERR by seeing the bioc->error [2].
+Otherwise, the increased orig_bio's bioc->error is not checked by anyone
+and return BLK_STS_OK to the upper layer.
+
+[2] Actually, this is not true. Because we only increases orig_bioc->errors
+by max_errors, the condition "atomic_read(&bioc->error) > bioc->max_errors"
+is still not met if only one split btrfs_bio fails.
+
+* Case 3. Later completion of orig_bbio for un-mirrored btrfs_bios
+
+In contrast to the above case, btrfs_bbio_propagate_error() is not working
+well if un-mirrored orig_bbio is completed last. It sets
+orig_bbio->bio.bi_status to the btrfs_bio's error. But, that is easily
+over-written by orig_bbio's completion status. If the status is BLK_STS_OK,
+the upper layer would not know the failure.
+
+* Solution
+
+Considering the above cases, we can only save the error status in the
+orig_bbio (remaining part after split) itself as it is always
+available. Also, the saved error status should be propagated when all the
+split btrfs_bios are finished (i.e, bbio->pending_ios == 0).
+
+This commit introduces "status" to btrfs_bbio and saves the first error of
+split bios to original btrfs_bio's "status" variable. When all the split
+bios are finished, the saved status is loaded into original btrfs_bio's
+status.
+
+With this commit, btrfs/146 on zoned devices does not hit the NULL pointer
+dereference.
+
+Fixes: 852eee62d31a ("btrfs: allow btrfs_submit_bio to split bios")
+CC: stable@vger.kernel.org # 6.6+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+- v1: https://lore.kernel.org/linux-btrfs/db5c272fc27c59ddded5c691373c26458698cb1a.1728489285.git.naohiro.aota@wdc.com/
+- v2
+  - Replace atomic_t usage to blk_status_t and cmpxchg()
+---
+ fs/btrfs/bio.c | 36 ++++++++++++------------------------
+ fs/btrfs/bio.h |  3 +++
+ 2 files changed, 15 insertions(+), 24 deletions(-)
+
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 056f8a171bba..af12b23c8531 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -49,6 +49,7 @@ void btrfs_bio_init(struct btrfs_bio *bbio, struct btrfs_fs_info *fs_info,
+ 	bbio->end_io = end_io;
+ 	bbio->private = private;
+ 	atomic_set(&bbio->pending_ios, 1);
++	WRITE_ONCE(bbio->status, BLK_STS_OK);
+ }
+ 
+ /*
+@@ -120,41 +121,28 @@ static void __btrfs_bio_end_io(struct btrfs_bio *bbio)
+ 	}
+ }
+ 
+-static void btrfs_orig_write_end_io(struct bio *bio);
+-
+-static void btrfs_bbio_propagate_error(struct btrfs_bio *bbio,
+-				       struct btrfs_bio *orig_bbio)
+-{
+-	/*
+-	 * For writes we tolerate nr_mirrors - 1 write failures, so we can't
+-	 * just blindly propagate a write failure here.  Instead increment the
+-	 * error count in the original I/O context so that it is guaranteed to
+-	 * be larger than the error tolerance.
+-	 */
+-	if (bbio->bio.bi_end_io == &btrfs_orig_write_end_io) {
+-		struct btrfs_io_stripe *orig_stripe = orig_bbio->bio.bi_private;
+-		struct btrfs_io_context *orig_bioc = orig_stripe->bioc;
+-
+-		atomic_add(orig_bioc->max_errors, &orig_bioc->error);
+-	} else {
+-		orig_bbio->bio.bi_status = bbio->bio.bi_status;
+-	}
+-}
+-
+ void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ {
+ 	bbio->bio.bi_status = status;
+ 	if (bbio->bio.bi_pool == &btrfs_clone_bioset) {
+ 		struct btrfs_bio *orig_bbio = bbio->private;
+ 
+-		if (bbio->bio.bi_status)
+-			btrfs_bbio_propagate_error(bbio, orig_bbio);
+ 		btrfs_cleanup_bio(bbio);
+ 		bbio = orig_bbio;
+ 	}
+ 
+-	if (atomic_dec_and_test(&bbio->pending_ios))
++	/* At this point, bbio always points to the original btrfs_bio. Save the
++	 * first error in it.
++	 */
++	if (status != BLK_STS_OK)
++		cmpxchg(&bbio->status, BLK_STS_OK, status);
++
++	if (atomic_dec_and_test(&bbio->pending_ios)) {
++		/* Load split bio's error which might be set above. */
++		if (status == BLK_STS_OK)
++			bbio->bio.bi_status = READ_ONCE(bbio->status);
+ 		__btrfs_bio_end_io(bbio);
++	}
+ }
+ 
+ static int next_repair_mirror(struct btrfs_failed_bio *fbio, int cur_mirror)
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index e48612340745..566c3e1d077b 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -79,6 +79,9 @@ struct btrfs_bio {
+ 	/* File system that this I/O operates on. */
+ 	struct btrfs_fs_info *fs_info;
+ 
++	/* Set the error status of split bio. */
++	blk_status_t status;
++
+ 	/*
+ 	 * This member must come last, bio_alloc_bioset will allocate enough
+ 	 * bytes for entire btrfs_bio but relies on bio being last.
+-- 
+2.46.2
+
 
