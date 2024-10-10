@@ -1,136 +1,94 @@
-Return-Path: <linux-btrfs+bounces-8764-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-8765-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AD43997B76
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 05:47:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B91D997BD2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 06:30:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DC851C21FCD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 03:47:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F13F91F24806
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2024 04:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FF1179A3;
-	Thu, 10 Oct 2024 03:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="C/iPWe0V"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D761516A395;
+	Thu, 10 Oct 2024 04:30:05 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B60192B71
-	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 03:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10D319DF8E
+	for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2024 04:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728532013; cv=none; b=CPh0ZFcnPmtsPct2zIdmKI+REw+ppZKgMMZ8ocq3dXwYUQv0ao3tMcdvAUlMd/3css5MEy6BuU6HoSQoE5Ip2g7AP8CUllmoZWrW9H/p0oPxcRLQ/VvZiaDoM8QfwbvxSHmYe7jAuxuIgOEp/8/ifqapSdRhdFCMf9ITafIONj4=
+	t=1728534605; cv=none; b=O0TkoE3pYixrRlGG6Abu7VSL3Oz1g+SWPDkan5fQ/ZV6ZsP1B9WOCcLCUfX30h+kmb1bm/gVgIDmN+tIcfoXcy9hKryj61mXp83Th34xA4dcwvAZx+AeuqcdiQpt8zSRn6yNOoupsnC7FKGZoYc+MuHKD01tZBS3utFZqspfB6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728532013; c=relaxed/simple;
-	bh=sPUjoxRMY+wUajUpCb4vMW+kK7OUObVAeyy1X54iY0g=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bztPrAqDEVJK7XS8+DWeIt7K0tloQtnvvogZR2JO1ol7fLya3KHTzK5mkwM8vFB/LvjV0d4gDfNDIPsk0ZzEgGvuQWhp6NKAPTFfGX5tS6GYi34kNGXhirD1C85KCwMf+fEm3a/Q+HTAPfG8V4zMM20tA2Z+DmRI6nJOZe44GoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=C/iPWe0V; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-37d473c4bb6so297841f8f.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 20:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1728532010; x=1729136810; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :autocrypt:references:in-reply-to:date:cc:to:from:subject:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sPUjoxRMY+wUajUpCb4vMW+kK7OUObVAeyy1X54iY0g=;
-        b=C/iPWe0Vr/oM8HA+wp0GMqi5CzJd+G0TimHrPXMPvgbJT6fueV8dGVX4jO9uVk8k06
-         RYrYsbph+U72Qw9OujuCcec2n1JXyhcfi9nxmCH5KTa7gBhS1MEfzuYxwhqAo0cFpra4
-         bnBYlQbWZeh/SHCfYK8YfuG80rr8GjeggiwaWQlpCvZ7RePhMC5LjTkVCQbqwCGDJIVj
-         6ySDfVIkd8MARsoK9wpEk8BPnPvcsveNRkTWFkEgSpJxa3BqUA7CIsQFbmDzP3pWCUdw
-         k6e5nH90k2g8bY6XYa3OGyrVvdXvrjgMnnp1Y40BVK6D9ukWFT1rNgPMiMPn3DqwmOub
-         h6mg==
+	s=arc-20240116; t=1728534605; c=relaxed/simple;
+	bh=5QiEIoQR6cUxDQ0vO9v5JFZcbkxYYfbYg1jzlcNDLZE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=qqeai5+AS5LFSnBUhJe6N2QUVieLkfWxQX7M2UIIQ81v/Rmi8eW54wmoFZj+sNLYQMcjt6Jm+U4WfsRe66e3ByDlEuOpfcH1pKqlK/PcG/YocoE4tcA3V7td2SeLJjVLfeQSruovgwQgYYvqvzHjFgnUW6HtOBiiJ0elnwAb4W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a3a5f6cb13so4918265ab.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2024 21:30:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728532010; x=1729136810;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :autocrypt:references:in-reply-to:date:cc:to:from:subject:message-id
+        d=1e100.net; s=20230601; t=1728534603; x=1729139403;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sPUjoxRMY+wUajUpCb4vMW+kK7OUObVAeyy1X54iY0g=;
-        b=pYNh9FEj5mhEUlw/XRCsyWqIdHfhty9LuQ6xm4UfhC7hQtV/V0wN0qj2PMgYZHWIlI
-         AZYb9JornYS+Mirhwo/UaRR/7MwsQFqZakFbj9s8gOZKZ+xDiVEHsuNxfe8+FEF5/QPn
-         wE5C8eV4JFuxKfShFI45W5Fxew9Y0zbmVOunWWjfWydF+/6NlaoK89yXB1sZYY5Olm96
-         FStnYPOWIQgu9SoiJeFAkt+T532/8LK6xkXFtfWZIXS9xhdf0f//ObvMF4YyWDTu9r4/
-         4msoKHO9n67se4WTH+JEpes6mruQ2wwl38yRhdqvNn2QzD9V6Db5n7hNW2YUZhEHh/F+
-         fKCA==
-X-Forwarded-Encrypted: i=1; AJvYcCX3OBk7ga48+a4KqcY7uKQfIv3fkipS85Dl7ty+sJ/dI1bG30UiV0rw644LrGWvwXdV1Q8I7EgaWPPW2Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCxy079qG3HQkV8it1FfTXPpA8QBfv9Xl02cmtTVP/J9FZdEht
-	8DRvDofRVOzE44W3Q1nXNM/wIaxCUX6oDvyyTDAq8Nx7haC2FF9wX0QT1lCvvOQ=
-X-Google-Smtp-Source: AGHT+IENBOsDHKaaEzHXI5ohB5APwv5P/GLZBD9ojUDZ/dsKqkYOvk2w7w//8ImK5MhLQAt9UlhthA==
-X-Received: by 2002:a05:6000:1a4f:b0:37d:397a:5a05 with SMTP id ffacd0b85a97d-37d3ab1c11bmr3422772f8f.54.1728532009674;
-        Wed, 09 Oct 2024 20:46:49 -0700 (PDT)
-Received: from [10.202.112.42] ([202.127.77.110])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71e2ab10398sm171854b3a.218.2024.10.09.20.46.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2024 20:46:49 -0700 (PDT)
-Message-ID: <facac6fce8974ec31e8bfd0fd9d9484652fc858a.camel@suse.com>
-Subject: Re: [PATCH v2] generic/746: install two necessary files
-From: An Long <lan@suse.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Date: Thu, 10 Oct 2024 11:46:54 +0800
-In-Reply-To: <20241009163800.GM21840@frogsfrogsfrogs>
-References: <878d46618e9851f7a019f675716630f9517f4e02.camel@suse.com>
-	 <20241009163800.GM21840@frogsfrogsfrogs>
-Autocrypt: addr=lan@suse.com; prefer-encrypt=mutual; keydata=mQENBFvqfKcBCADKdcrLxNKpkBPfxZwVu1Q3ADpyWdnXZfyQOIO+1Z/WSDeXgr70HUhk/zu81WoO5WyXMK3N1dcS4KrOdNOmDp0H4G5hR+BIkgbIJpo4ekYWVdrAMT8oJgX5EgSIeuDdn2ZJ7K0EDLX9M7969gaw2nHWgBzj/ALGFdCE8zYkZAfPrwN80M5Xl+NBvOrTMypW78WOg5NdGd3E4jjgbKreHFdc9/Bmp2XKQKhjClelfM5aThhsM9wljzWdX1frN2AoAomHKuxKJGvZf30eHoXAs/ikHM4cvoUcY/8H8VgJO3mQMYEFWJR6qSbnfdy3T9Ns/Xy5QGj/XmATwhDg3BMBwvEZABEBAAG0FkFuIExvbmcgPGxhbkBzdXNlLmNvbT6JAU4EEwEIADgWIQSGtWkd+xUNZVZsuhNmwA3KtD5SBgUCW+p8pwIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRBmwA3KtD5SBuAwCACDifSf/raZ05H/0l2xAjZo9JFrWib391QLNbDYFi+Nm7nJ3ATse33ibLheOP0hJ07bsZo7uKNio8DIHDZ5CsTMd21ZvvJlNGT+l9BQV/OLRExCTcK9CpLcHoEI3M1niqL42QjVZPkKcjSwbTCa8mySNmIl64K0YTq1HnuWxShTHNlLBBkId9OMEnztgp9Ke4g+SxcU2+058v8ZTnM5wUp6fMsQelsfigJJfRqHbpy6Fap3XIY+1gKuNVIdyKWXovxtwd++fADyZVh/Zh5IKgp/1HyWE9g0MG6TUzJ+LV57jOrIJJbzl39HUp+5mFBI+RSHiJjoBZAQ7diUzT7+ns+0uQENBFvqfKcBCADCPC4telre7E8pAZITzcVsl1BP3PoMAaow4gh1SOO44J34GHJS7CRqpt4YfbPBEVmFZQiJEhb0GL2KH
- qg7J8hO7J9fmpEiCe1Vv+cK8DSxygXXL0fltVkQlgOjFlzYks+tv g58qti7uykoyavLPSu7yuGvDtzIxB3lXwUnvmS0X8MTBFIdK0s4vJOu/2cDIAnYCNdypZ8H44XtYZVDdB9r4E253y35Nd1QDjJFu/8BQxQXK5sReIYl5fRtz+4TzZQPxWt3/j62RmjY5elPEBTd2q4K6reqRuIwDBXjTWjEKylx9yw47nMH7TzIrXpSWLG08+F8Cb9KhUJysBN4tJY1ABEBAAGJATYEGAEIACAWIQSGtWkd+xUNZVZsuhNmwA3KtD5SBgUCW+p8pwIbDAAKCRBmwA3KtD5SBlJuCACzhZDj5+zuuqYMl07AiV5BqOkGmjghybACLtHjMZDbFOmxnvt7GOfTdf7ug1YguQQI6xIssqzGvXTJVgIfTP38dOSAssrYp78VyFtcAZMiN25GxOOqYlpwhKH1PAr04Ylizz/EZlbfCQ8XCFuTziZ7HwEyjTkvs5XUYJObEhj2Sv9ebhwm3vTZv0VTb8+BpxyQuuGYYakbH94D5Ne5gAC6FaCevXdeqjSCTzV6NZ5seldc3FogQ+TB+riX4G4SA4Nq36Xt4hpAoDoZhh25KsH/9Kq65+eyYKsCnpY+N3f4SAEf5NEODmGF9eKC0K8XcjhXGcpDmnae2tUnjWnjLBXO
-Organization: SUSE QE LSG, QE 2, Beijing
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        bh=zp7xZSP/rHcnUq6WPDWf9OxkdFDmkIPFNvZX4QqxE9g=;
+        b=di3WPBWLYE40MHt0ybz8Iio/XFIUQTF976tt2ipUlO0mSz12lngaQOmlmtp0GFATRr
+         KffgRa3vbRM1gIJZxGpqAhJM4lOIwUYLnvzrWvjoMSS2wkokpocLRDnChon5WIL0eSgW
+         S67GM5vCOsug3OLL7tKMa8Z+t3DtUEiHb0I7rTXCMDHLbss42LZn2+1PTfX+5gL73wlL
+         QIs//SFX6oAN40QHBTt6oz1NgK0R0ljGngVVRalv5DnEnLdJ77OWxM55H2a5jVbeR+3E
+         j0Eg6yMRLIqPU3s5tYsvlTa5Iq08RTOWayOHVkf/xlMTFAV9jdaiPTmP5wav7SkVUjrX
+         QDeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWiEtZWitzz+2+/wOJRLhnXBPBPRZRReYkZH/ADFal+3/l4Zv+Tshf8N+4dTnVyPnL3lk0VNGF3i6luKA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/zmWJFJ1XP9EjyFTYIqZqdoh8U83yAk5S9JPakshboJ/16UaZ
+	lwGGZaA61IUNQXoLjY8WtbUHYr7xyLTdO8yTALkQRn4TmjlVscDOjsyNkSB+QPTHkXT4ii9FdsY
+	02UCDvY2p/fxSxwWeTSCdQKwN3QNSt/+1Lvp+Mj/IJ7rxy5Gw34vIWIQ=
+X-Google-Smtp-Source: AGHT+IEfvVlsBHUeO5VijbB5da9hpkHdYd2A/1T2V8iIaSp50CJK33p+FfKRPhS1flyS9eppJU74SLMhrgAr/v1G/TSknFmW9Jhv
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:5a8:b0:3a3:a7bf:7f85 with SMTP id
+ e9e14a558f8ab-3a3a7bf80c4mr9683785ab.5.1728534603153; Wed, 09 Oct 2024
+ 21:30:03 -0700 (PDT)
+Date: Wed, 09 Oct 2024 21:30:03 -0700
+In-Reply-To: <670689a8.050a0220.67064.0046.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6707584b.050a0220.67064.0059.GAE@google.com>
+Subject: Re: [syzbot] [btrfs?] general protection fault in getname_kernel (2)
+From: syzbot <syzbot+cee29f5a48caf10cd475@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, eadavis@qq.com, fdmanana@suse.com, 
+	josef@toxicpanda.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, quwenruo.btrfs@gmx.com, 
+	syzkaller-bugs@googlegroups.com, wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2024-10-09 at 09:38 -0700, Darrick J. Wong wrote:
-> On Wed, Oct 09, 2024 at 11:56:16PM +0800, An Long wrote:
-> > parse-dev-tree.awk and parse-extent-tree.awk are used by
-> > generic/746.
-> > We need to make sure them are installed, otherwise generic/746 will
-> > have problems if fstests is installed via "make install".
-> > ---
->=20
-> Needs a SoB tag.
-Added. I used -S instead of -s. Sorry for mistake.
->=20
-> --D
->=20
-> > =C2=A0src/Makefile | 2 +-
-> > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/src/Makefile b/src/Makefile
-> > index 3097c29e..a0396332 100644
-> > --- a/src/Makefile
-> > +++ b/src/Makefile
-> > @@ -38,7 +38,7 @@ LINUX_TARGETS =3D xfsctl bstat t_mtab getdevicesize
-> > preallo_rw_pattern_reader \
-> >=20
-> > =C2=A0EXTRA_EXECS =3D dmerror fill2attr fill2fs fill2fs_check scaleread=
-.sh
-> > \
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 soak_duration.awk
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 soak_duration.awk parse-dev-tree.awk parse-extent-
-> > tree.awk
-> >=20
-> > =C2=A0SUBDIRS =3D log-writes perf
-> >=20
-> > --=20
-> > 2.43.0
-> >=20
-> >=20
+syzbot has bisected this issue to:
 
---=20
-An Long <lan@suse.com>
-SUSE QE LSG, QE 2, Beijing
+commit b4b3fb6c00f37a9da91022adcd83555bc339e044
+Author: Qu Wenruo <wqu@suse.com>
+Date:   Tue Sep 24 04:57:07 2024 +0000
+
+    btrfs: canonicalize the device path before adding it
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15744f07980000
+start commit:   33ce24234fca Add linux-next specific files for 20241008
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17744f07980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13744f07980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4750ca93740b938d
+dashboard link: https://syzkaller.appspot.com/bug?extid=cee29f5a48caf10cd475
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160ce327980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15ea7707980000
+
+Reported-by: syzbot+cee29f5a48caf10cd475@syzkaller.appspotmail.com
+Fixes: b4b3fb6c00f3 ("btrfs: canonicalize the device path before adding it")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
